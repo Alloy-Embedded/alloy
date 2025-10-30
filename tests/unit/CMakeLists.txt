@@ -5,6 +5,7 @@
 add_executable(alloy_unit_tests
     test_error_handling.cpp
     test_gpio_host.cpp
+    test_uart_host.cpp
 )
 
 target_include_directories(alloy_unit_tests

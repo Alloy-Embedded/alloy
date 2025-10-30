@@ -3,6 +3,7 @@
 
 add_library(alloy_hal_host STATIC
     gpio.cpp
+    uart.cpp
 )
 
 target_include_directories(alloy_hal_host
