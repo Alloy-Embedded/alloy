@@ -46,11 +46,19 @@ message(STATUS "  Build Type  : ${CMAKE_BUILD_TYPE}")
 message(STATUS "  C++ Standard: ${CMAKE_CXX_STANDARD}")
 message(STATUS "========================================")
 
-# Add subdirectories (will be populated in future changes)
+# Add subdirectories
 # add_subdirectory(src/core)
-# add_subdirectory(src/hal)
+
+# HAL subdirectories (conditional based on board)
+if(ALLOY_BOARD STREQUAL "host")
+    add_subdirectory(src/hal/host)
+endif()
+
 # add_subdirectory(src/drivers)
-# add_subdirectory(examples)
+
+# Examples
+add_subdirectory(examples/blinky)
+
 # add_subdirectory(tests)
 
 # Export compile commands for IDEs
