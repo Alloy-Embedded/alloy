@@ -1,0 +1,72 @@
+# Build artifacts
+build/
+build-*/
+cmake-build-*/
+
+# External dependencies
+external/
+
+# Backup files
+*.bak
+*.bak2
+*~
+*.swp
+*.swo
+
+# IDE files
+.vscode/
+.idea/
+*.code-workspace
+.vs/
+.DS_Store
+
+# Compiled objects
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.elf
+*.bin
+*.hex
+*.uf2
+*.map
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.egg-info/
+dist/
+.venv/
+venv/
+
+# Generated documentation
+docs/_build/
+docs/html/
+docs/latex/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake.in
+CTestTestfile.cmake
+
+# Testing
+Testing/
+*.gcov
+*.gcda
+*.gcno
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
