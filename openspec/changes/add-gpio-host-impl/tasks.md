@@ -18,7 +18,7 @@
 
 ## 3. Testing
 
-- [ ] 3.1 Create unit tests for host GPIO (deferred - no test infrastructure yet)
-- [ ] 3.2 Test set_high() changes state (deferred)
-- [ ] 3.3 Test toggle() flips state (deferred)
-- [ ] 3.4 Verify console output (manual check - will be done in blinky example)
+- [x] 3.1 Create unit tests for host GPIO (completed in add-testing-infrastructure)
+- [x] 3.2 Test set_high() changes state (10 comprehensive tests)
+- [x] 3.3 Test toggle() flips state (multiple toggle tests)
+- [x] 3.4 Verify console output (validated in blinky example)
