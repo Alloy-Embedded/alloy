@@ -950,18 +950,258 @@ static_assert(std::is_trivially_copyable_v<alloy::hal::GpioPin<0>>);
 
 ---
 
+## ADR-014: Code Generation com SVD/Database para Suportar Múltiplos MCUs
+
+**Data:** 2025-10-30
+**Status:** Aceito
+**Decisores:** Equipe Alloy
+
+### Contexto
+
+Para suportar centenas de MCUs de diferentes vendors (STM32, nRF, RL78, ESP32, etc.), precisamos decidir entre:
+1. Escrever código manualmente para cada MCU
+2. Usar sistema de geração de código baseado em databases
+
+Frameworks de sucesso (modm, Zephyr, libopencm3) usam code generation extensivamente.
+
+### Decisão
+
+Usaremos **sistema de code generation** baseado em:
+- **CMSIS-SVD files** (ARM-based MCUs): Parser automático
+- **JSON databases** (MCUs sem SVD): Database manual estruturado
+- **Python + Jinja2**: Generator + templates
+- **Integração CMake**: Geração automática e transparente
+
+### Arquitetura do Sistema
+
+```
+SVD/Headers → Parser Python → JSON Database → Generator → C++ Code
+                                   ↓
+                            (tools/codegen/database/families/)
+                                   ↓
+                            Jinja2 Templates
+                                   ↓
+                    (build/generated/STM32F446RE/)
+```
+
+**Arquivos gerados:**
+- `startup.cpp` - Reset handler, inicialização .data/.bss
+- `vectors.cpp` - Vector table específica do MCU
+- `registers.hpp` - Structs para acessar periféricos
+- `{mcu}.ld` - Linker script com layout de memória
+- `system.cpp` - Configuração de clocks e PLLs
+
+### Alternativas Consideradas
+
+| Abordagem | Prós | Contras | Decisão |
+|-----------|------|---------|---------|
+| **Manual** | Controle total, simplicidade inicial | Não escala, muitos erros, manutenção impossível | ❌ Rejeitado |
+| **SVD direto** | Dados oficiais dos vendors | SVD muito complexo, precisa parser | ⚠️ Parte da solução |
+| **Code generation** | Escala massivamente, reduz erros | Complexidade inicial, precisa tooling | ✅ **Escolhido** |
+| **Library externa** (HAL vendor) | Pronto para usar | Overhead alto, não portável, API ruim | ❌ Rejeitado |
+
+### Componentes do Sistema
+
+#### 1. SVD Parser (`tools/codegen/svd_parser.py`)
+```python
+def parse_svd(svd_path: Path) -> dict:
+    """
+    Converte SVD XML → JSON intermediário
+
+    Extrai:
+    - Peripherals (GPIO, UART, etc)
+    - Memory layout (Flash, RAM)
+    - Interrupt vectors
+    - Clock configuration
+    """
+```
+
+#### 2. Code Generator (`tools/codegen/generator.py`)
+```python
+class CodeGenerator:
+    def generate_all(self, mcu: str):
+        self.generate_startup()
+        self.generate_vectors()
+        self.generate_registers()
+        self.generate_linker_script()
+```
+
+#### 3. Database Format (JSON)
+```json
+{
+  "family": "STM32F4",
+  "mcus": {
+    "STM32F446RE": {
+      "flash": {"size_kb": 512, "base": "0x08000000"},
+      "ram": {"size_kb": 128, "base": "0x20000000"},
+      "peripherals": {
+        "GPIO": {
+          "instances": [
+            {"name": "GPIOA", "base": "0x40020000"}
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+#### 4. Templates (Jinja2)
+```jinja2
+{# templates/registers/peripheral_struct.hpp.j2 #}
+struct {{ peripheral_name }}_TypeDef {
+    {% for reg in registers %}
+    volatile uint32_t {{ reg.name }};  // {{ reg.offset }}
+    {% endfor %}
+};
+```
+
+### Coverage de Vendors
+
+| Vendor | Tecnologia | SVD Disponível? | Esforço | Status |
+|--------|-----------|-----------------|---------|--------|
+| ST (STM32) | ARM Cortex-M | ✅ Sim | Baixo | Planejado Phase 1 |
+| Nordic (nRF) | ARM Cortex-M | ✅ Sim | Baixo | Planejado Phase 2 |
+| NXP (LPC) | ARM Cortex-M | ✅ Sim | Baixo | Planejado Phase 2 |
+| Renesas (RL78) | 16-bit | ❌ Não | Médio | Database manual |
+| Espressif (ESP32) | Xtensa | ⚠️ Headers | Médio | Parser de headers |
+| Raspberry Pi (RP2040) | ARM Cortex-M0+ | ✅ Sim | Baixo | Planejado Phase 1 |
+
+### Fluxo de Uso (Transparente ao Usuário)
+
+```cmake
+# User project CMakeLists.txt
+set(ALLOY_BOARD "bluepill")  # STM32F103C8
+
+# CMake automaticamente:
+# 1. Detecta que precisa gerar código
+# 2. Executa generator.py
+# 3. Compila código gerado
+# 4. Linka tudo junto
+```
+
+**Usuário nunca precisa chamar o generator manualmente!**
+
+### Adicionando Novo MCU
+
+**Com SVD (ARM-based):**
+```bash
+# 1. Baixar SVD do vendor
+wget https://example.com/STM32F446.svd
+
+# 2. Parsear automaticamente
+python tools/codegen/svd_parser.py \
+    --input STM32F446.svd \
+    --output database/families/stm32f4xx.json \
+    --merge
+
+# 3. Pronto! MCU suportado
+```
+
+**Sem SVD (RL78, ESP32):**
+```bash
+# 1. Criar database manual (1-2 dias de trabalho)
+# 2. Validar com geração de teste
+python tools/codegen/generator.py \
+    --mcu RL78G13 \
+    --database database/families/rl78g13.json \
+    --output /tmp/test
+
+# 3. Ajustar database se necessário
+# 4. Pronto!
+```
+
+### Justificativa
+
+**Escalabilidade:**
+- **modm**: 3500+ MCUs suportados com code generation
+- **Zephyr**: 1000+ boards
+- **libopencm3**: 600+ MCUs
+- **Alloy**: Meta de 500+ MCUs até 2026
+
+**Redução de Erros:**
+- Endereços de registradores sempre corretos
+- Vetores de interrupção sempre na ordem certa
+- Linker scripts sempre compatíveis com memória
+
+**Manutenção:**
+- 1 bugfix no template = fix em todos os MCUs
+- Vendor atualiza SVD = re-parsear e pronto
+- Adicionar periférico = update template (não código manual)
+
+**Time to Market:**
+- Novo MCU: **Horas** vs **Semanas** (manual)
+- Nova família: **Dias** vs **Meses** (manual)
+
+### Consequências
+
+**Positivas:**
+- ✅ Suporte massivo a MCUs (centenas)
+- ✅ Código gerado é legível, navegável, debugável
+- ✅ Zero overhead (tão eficiente quanto manual)
+- ✅ Reduz drasticamente erros de digitação
+- ✅ Facilita contribuições da comunidade
+
+**Negativas:**
+- ⚠️ Complexidade inicial (desenvolver o generator)
+- ⚠️ Precisa Python 3.8+ e Jinja2
+- ⚠️ MCUs sem SVD precisam database manual
+- ⚠️ Templates precisam ser bem testados
+
+**Riscos Mitigados:**
+- 📝 Código gerado versionado no git (visibilidade total)
+- 📝 Templates bem documentados
+- 📝 Testes automatizados do generator
+- 📝 Validação que código gerado compila
+
+### Métricas de Sucesso
+
+**Phase 0 (Atual):**
+- [ ] Generator MVP funcional
+- [ ] 1 template (startup) gerando código válido
+- [ ] Integração CMake básica
+
+**Phase 1:**
+- [ ] SVD parser funcional (STM32F103)
+- [ ] Todos os templates implementados
+- [ ] 5+ MCUs STM32 suportados
+- [ ] Blinky rodando em hardware gerado
+
+**Phase 2:**
+- [ ] 50+ MCUs suportados
+- [ ] 3+ vendors (STM32, nRF, RL78)
+- [ ] Documentação completa
+- [ ] Contribuições da comunidade
+
+### Implementação
+
+**Próximos passos:**
+1. Implementar `svd_parser.py` MVP
+2. Criar template básico de startup
+3. Testar com STM32F103 (Blue Pill)
+4. Integrar com CMake
+5. Expandir templates (vectors, registers, linker)
+
+**Dependências:**
+- Python 3.8+
+- Jinja2
+- lxml (para parsing SVD XML)
+- CMake 3.25+
+
+---
+
 ## Decisões Pendentes (Para Discutir)
 
 Estas decisões ainda precisam ser tomadas nas próximas iterações:
 
-### ⏳ ADR-014: Formato de Logging/Debugging
+### ⏳ ADR-015: Formato de Logging/Debugging
 
 **Opções:**
 - `printf`-like tradicional
 - Custom logging framework
 - Sem logging na HAL (deixar para usuário)
 
-### ⏳ ADR-015: Política de Interrupts
+### ⏳ ADR-016: Política de Interrupts
 
 **Opções:**
 - Callbacks registrados em compile-time
@@ -969,7 +1209,7 @@ Estas decisões ainda precisam ser tomadas nas próximas iterações:
 - Template-based dispatch
 - Direct ISR implementation pelo usuário
 
-### ⏳ ADR-015: Clock Configuration
+### ⏳ ADR-017: Clock Configuration
 
 **Opções:**
 - Gerado automaticamente (ferramenta tipo STM32CubeMX)
