@@ -269,46 +269,121 @@ class SVDParser:
         return peripherals
 
     def _classify_peripheral(self, name: str) -> str:
-        """Classify peripheral by name"""
+        """Classify peripheral by name
+
+        Supports multiple vendor naming conventions:
+        - STM32: GPIO, USART, TIM, etc.
+        - Nordic: GPIOTE, UARTE, TWIM/TWIS, TIMER
+        - Atmel: PORT, SERCOM, TC/TCC
+        - NXP: TPM, PIT, LPTMR
+        - Espressif: TIMG, LEDC, TWAI
+        """
         name_upper = name.upper()
 
-        # Match full peripheral types first
-        if 'GPIO' in name_upper:
+        # GPIO variants
+        if 'GPIO' in name_upper or 'PORT' in name_upper and 'REPORT' not in name_upper:
             return 'GPIO'
+
+        # UART/USART variants (including UARTE from Nordic)
         elif 'USART' in name_upper or 'UART' in name_upper:
             return 'USART'
+
+        # SPI variants (including SPIM/SPIS from Nordic, QSPI)
         elif 'SPI' in name_upper:
             return 'SPI'
-        elif 'I2C' in name_upper or 'I²C' in name_upper:
+
+        # I2C variants (I2C, TWI, TWIM/TWIS from Nordic)
+        elif 'I2C' in name_upper or 'I²C' in name_upper or 'TWI' in name_upper:
             return 'I2C'
-        elif 'TIM' in name_upper and not 'SYSTICK' in name_upper:
+
+        # Serial Communication (Atmel SERCOM can be UART/SPI/I2C)
+        elif 'SERCOM' in name_upper:
+            return 'SERCOM'
+
+        # Timer variants (TIM, TIMER, TC, TCC, TPM, PIT, LPTMR, TIMG)
+        elif (('TIM' in name_upper and 'SYSTICK' not in name_upper and 'OPTIM' not in name_upper) or
+              'TIMER' in name_upper or
+              name_upper.startswith('TC') and len(name_upper) <= 4 or  # TC3, TCC0, etc
+              name_upper.startswith('TCC') and len(name_upper) <= 5 or
+              'TPM' in name_upper or
+              'PIT' in name_upper and 'SPIT' not in name_upper or
+              'LPTMR' in name_upper):
             return 'TIM'
+
+        # ADC variants (ADC, SAADC from Nordic, SARADC from ESP32)
         elif 'ADC' in name_upper:
             return 'ADC'
+
+        # DAC
         elif 'DAC' in name_upper:
             return 'DAC'
+
+        # DMA variants (DMA, DMAC from Atmel, DMAMUX)
         elif 'DMA' in name_upper:
             return 'DMA'
-        elif 'RCC' in name_upper:
-            return 'RCC'
-        elif 'PWR' in name_upper:
-            return 'PWR'
-        elif 'RTC' in name_upper:
-            return 'RTC'
-        elif 'CAN' in name_upper:
+
+        # PWM/LED Controller (LEDC from ESP32)
+        elif 'PWM' in name_upper or 'LEDC' in name_upper:
+            return 'PWM'
+
+        # CAN variants (CAN, TWAI from ESP32)
+        elif 'CAN' in name_upper or 'TWAI' in name_upper:
             return 'CAN'
+
+        # USB
         elif 'USB' in name_upper:
             return 'USB'
-        elif 'ETH' in name_upper:
+
+        # Ethernet
+        elif 'ETH' in name_upper or 'EMAC' in name_upper:
             return 'ETH'
-        elif 'SDIO' in name_upper:
-            return 'SDIO'
-        elif 'FLASH' in name_upper and 'INTERFACE' in name_upper:
-            return 'FLASH'
-        elif 'WWDG' in name_upper or 'IWDG' in name_upper:
+
+        # Clock/Reset Control (RCC, CLOCK, MCG, SYSCTRL, SYSTEM)
+        elif 'RCC' in name_upper or ('CLOCK' in name_upper and 'UNCLOCK' not in name_upper) or 'MCG' in name_upper:
+            return 'RCC'
+
+        # Power Management
+        elif 'PWR' in name_upper or 'POWER' in name_upper:
+            return 'PWR'
+
+        # Real-Time Clock
+        elif 'RTC' in name_upper:
+            return 'RTC'
+
+        # Watchdog (WDT, WWDG, IWDG)
+        elif 'WDG' in name_upper or 'WDT' in name_upper:
             return 'WDG'
+
+        # SDIO/SD/MMC
+        elif 'SDIO' in name_upper or 'SDMMC' in name_upper:
+            return 'SDIO'
+
+        # Flash Controller
+        elif 'FLASH' in name_upper or 'FTFA' in name_upper or 'NVMCTRL' in name_upper:
+            return 'FLASH'
+
+        # I2S (Audio)
+        elif 'I2S' in name_upper:
+            return 'I2S'
+
+        # Cryptography (AES, SHA, RSA, etc.)
+        elif any(crypto in name_upper for crypto in ['AES', 'SHA', 'RSA', 'HMAC', 'CRYP', 'CRYPTO']):
+            return 'CRYPTO'
+
+        # Random Number Generator
+        elif 'RNG' in name_upper or 'TRNG' in name_upper:
+            return 'RNG'
+
+        # Comparator
+        elif 'COMP' in name_upper and 'LPCOMP' not in name_upper:
+            return 'COMP'
+
+        # Radio (Nordic, ESP32)
+        elif 'RADIO' in name_upper or 'BLE' in name_upper:
+            return 'RADIO'
+
         else:
-            # Return first word (e.g., EXTI, AFIO, etc.)
+            # Return first word (e.g., EXTI, AFIO, NVIC, etc.)
             return name.split('_')[0].split('[')[0]
 
     def _parse_registers(self, periph: ET.Element) -> Dict[str, Any]:
