@@ -83,6 +83,11 @@ endif()
 add_subdirectory(examples/blinky)
 # add_subdirectory(examples/portable_blinky)  # Portable example for all MCUs
 
+# STM32F103 blink example (Blue Pill)
+if(ALLOY_BOARD STREQUAL "bluepill")
+    add_subdirectory(examples/blink_stm32f103)
+endif()
+
 # Tests
 if(ALLOY_BUILD_TESTS)
     add_subdirectory(tests/unit)

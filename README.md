@@ -81,17 +81,71 @@ alloy_generate_code(MCU STM32F103C8)
 
 ## 🛠️ Supported Hardware
 
-### Phase 0 (Current - Development)
+### Currently Supported MCUs
+
+Alloy now supports **5 different MCU families** across 3 architectures with complete clock configuration, GPIO control, and blink examples:
+
+| MCU/Board | Core | Max Freq | Flash | RAM | Supported Peripherals | Status |
+|-----------|------|----------|-------|-----|----------------------|--------|
+| **STM32F103C8** (Blue Pill) | ARM Cortex-M3 | 72 MHz | 64KB | 20KB | Clock, GPIO | ✅ Complete |
+| **ESP32** (DevKit) | Xtensa LX6 Dual | 240 MHz | 4MB | 320KB | Clock, GPIO | ✅ Complete |
+| **STM32F407VG** (Discovery) | ARM Cortex-M4F | 168 MHz | 1MB | 192KB (128KB+64KB CCM) | Clock, GPIO, FPU | ✅ Complete |
+| **ATSAMD21G18** (Arduino Zero) | ARM Cortex-M0+ | 48 MHz | 256KB | 32KB | Clock, GPIO, DFLL48M | ✅ Complete |
+| **RP2040** (Raspberry Pi Pico) | ARM Cortex-M0+ Dual | 133 MHz | 2MB | 264KB | Clock, GPIO, SIO, XIP | ✅ Complete |
+
+### Architecture Support
+
+- ✅ **ARM Cortex-M0+** (ATSAMD21, RP2040)
+- ✅ **ARM Cortex-M3** (STM32F1)
+- ✅ **ARM Cortex-M4F** (STM32F4 with FPU)
+- ✅ **Xtensa LX6** (ESP32)
 - ✅ **Host** (Linux/macOS/Windows) - Simulated HAL for development
 
-### Phase 1 (Planned)
-- 🔄 **Raspberry Pi Pico** (RP2040)
-- 🔄 **STM32F446RE** (Nucleo board)
+### Peripheral Support by MCU
 
-### Phase 2+ (Future)
-- ⏳ STM32L4 (low-power)
-- ⏳ ESP32-C6 (RISC-V + WiFi)
-- ⏳ nRF52840 (BLE)
+#### STM32F103C8 (Blue Pill)
+- ✅ Clock: HSE (8MHz) + PLL → 72MHz
+- ✅ GPIO: CRL/CRH configuration
+- 🔄 UART, I2C, SPI, ADC, PWM, Timer (planned)
+
+#### ESP32 (DevKit)
+- ✅ Clock: 40MHz XTAL + PLL → 80/160/240MHz
+- ✅ GPIO: 40 pins (GPIO0-39)
+- 🔄 WiFi, Bluetooth, UART, I2C, SPI (planned)
+
+#### STM32F407VG (Discovery)
+- ✅ Clock: HSE (8MHz) + VCO PLL → 168MHz
+- ✅ GPIO: MODER-based, 9 ports
+- ✅ FPU: Hardware floating-point (enabled)
+- 🔄 UART, I2C, SPI, ADC, DAC, PWM, DMA, USB OTG (planned)
+
+#### ATSAMD21G18 (Arduino Zero)
+- ✅ Clock: 32kHz XOSC32K + DFLL48M → 48MHz
+- ✅ GPIO: PORT-based, atomic operations
+- 🔄 SERCOM (UART/I2C/SPI), USB, ADC, DAC (planned)
+
+#### RP2040 (Raspberry Pi Pico)
+- ✅ Clock: 12MHz XOSC + PLL → 125/133MHz
+- ✅ GPIO: SIO (single-cycle IO), 30 pins
+- ✅ XIP: Execute-in-place from flash
+- ✅ Dual-core support (startup ready)
+- 🔄 PIO, UART, I2C, SPI, ADC, PWM, USB (planned)
+
+### Board-Specific Details
+
+Each board includes:
+- ✅ Complete linker script (`.ld`)
+- ✅ Startup code with vector table
+- ✅ Board definition header with pin mappings
+- ✅ Working blink example
+- ✅ CMake build configuration
+
+### Coming Soon
+
+- ⏳ STM32L4 (ultra-low-power)
+- ⏳ nRF52840 (Bluetooth LE)
+- ⏳ STM32H7 (high-performance, 480MHz)
+- ⏳ More peripherals (UART, I2C, SPI, ADC, PWM, DMA)
 
 ---
 
