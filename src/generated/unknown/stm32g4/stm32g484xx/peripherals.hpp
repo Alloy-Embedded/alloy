@@ -3,7 +3,7 @@
 /// Source: st_stm32g484.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:38
+/// Generated: 2025-10-30 23:30:18
 #ifndef ALLOY_GENERATED_STM32G484XX_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32G484XX_PERIPHERALS_HPP
 

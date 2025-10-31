@@ -46,23 +46,77 @@ def print_error(msg: str):
     print(f"{Colors.FAIL}✗{Colors.ENDC} {msg}")
 
 
-def get_vendor_mapping(vendor_dir: str) -> Dict[str, str]:
+def normalize_name(name: str) -> str:
+    """Normalize vendor/family name to safe directory name
+
+    Converts to lowercase, removes spaces, dots, special chars
+    Examples:
+        "Example Vendor" -> "example_vendor"
+        "NXP.com" -> "nxp"
+        "Raspberry Pi" -> "raspberry_pi"
+    """
+    import re
+    # Convert to lowercase
+    name = name.lower()
+    # Remove common suffixes
+    name = re.sub(r'\.(com|org|net|io)$', '', name)
+    # Replace spaces and special chars with underscore
+    name = re.sub(r'[^a-z0-9]+', '_', name)
+    # Remove leading/trailing underscores
+    name = name.strip('_')
+    # Collapse multiple underscores
+    name = re.sub(r'_+', '_', name)
+    return name
+
+
+def get_vendor_mapping(vendor_dir: str) -> str:
     """Map vendor directory names to clean names"""
+    # Known mappings for cleaner names
     mappings = {
         "STMicro": "st",
+        "STMicroelectronics": "st",
         "Nordic": "nordic",
+        "Nordic Semiconductor": "nordic",
         "NXP": "nxp",
+        "NXP.com": "nxp",
+        "NXP Semiconductors": "nxp",
+        "Freescale": "nxp",  # Freescale is now NXP
         "Atmel": "atmel",
+        "Microchip": "microchip",
         "SiliconLabs": "silabs",
+        "Silicon Laboratories": "silabs",
         "Toshiba": "toshiba",
         "Holtek": "holtek",
-        "Nuvoton": "nuvoton"
+        "Nuvoton": "nuvoton",
+        "Espressif": "espressif",
+        "Espressif Systems": "espressif",
+        "Cypress": "cypress",
+        "Infineon": "infineon",
+        "Infineon Technologies AG": "infineon",
+        "Renesas": "renesas",
+        "Renesas Electronics Corporation": "renesas",
+        "Texas Instruments": "ti",
+        "Raspberry Pi": "raspberrypi",
+        "GigaDevice": "gigadevice",
+        "SiFive": "sifive",
+        "Fujitsu": "fujitsu",
+        "Spansion": "spansion",
+        "Canaan Inc.": "canaan"
     }
-    return mappings.get(vendor_dir, vendor_dir.lower())
+
+    # Try exact match first
+    if vendor_dir in mappings:
+        return mappings[vendor_dir]
+
+    # Otherwise normalize the name
+    return normalize_name(vendor_dir)
 
 
 def get_family_from_mcu(mcu_name: str) -> str:
-    """Extract family from MCU name"""
+    """Extract family from MCU name
+
+    Returns normalized family name (no spaces, dots, or special chars)
+    """
     mcu_lower = mcu_name.lower()
 
     # STM32 families
@@ -76,8 +130,8 @@ def get_family_from_mcu(mcu_name: str) -> str:
         # nRF52840 -> nrf52
         return mcu_lower[:5]
 
-    # Default: lowercase MCU name
-    return mcu_lower
+    # Default: normalize the MCU name (removes spaces, dots, etc.)
+    return normalize_name(mcu_lower)
 
 
 def generate_for_database(database_path: Path, vendor: str):
@@ -93,15 +147,16 @@ def generate_for_database(database_path: Path, vendor: str):
     if 'vendor' in db:
         vendor_clean = get_vendor_mapping(db['vendor'])
 
-    family = db.get('family', 'unknown').lower()
+    family = db.get('family', 'unknown')
+    family_clean = normalize_name(family)
     mcus = db.get('mcus', {})
 
-    print_info(f"  Vendor: {vendor_clean}, Family: {family}, MCUs: {len(mcus)}")
+    print_info(f"  Vendor: {vendor_clean}, Family: {family_clean}, MCUs: {len(mcus)}")
 
     # Generate for each MCU
     for mcu_name in mcus.keys():
-        mcu_lower = mcu_name.lower()
-        mcu_output = OUTPUT_DIR / vendor_clean / family / mcu_lower
+        mcu_clean = normalize_name(mcu_name)
+        mcu_output = OUTPUT_DIR / vendor_clean / family_clean / mcu_clean
 
         print_info(f"    Generating {mcu_name}...")
 

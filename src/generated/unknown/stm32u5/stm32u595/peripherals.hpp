@@ -3,7 +3,7 @@
 /// Source: st_stm32u595.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:42
+/// Generated: 2025-10-30 23:30:23
 #ifndef ALLOY_GENERATED_STM32U595_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32U595_PERIPHERALS_HPP
 

@@ -3,7 +3,7 @@
 /// Source: nxp_lpc11e6x.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:31
+/// Generated: 2025-10-30 23:30:11
 #ifndef ALLOY_GENERATED_LPC11E6X_PERIPHERALS_HPP
 #define ALLOY_GENERATED_LPC11E6X_PERIPHERALS_HPP
 

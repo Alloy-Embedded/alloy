@@ -3,7 +3,7 @@
 /// Source: infineon_tle987x.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:37
+/// Generated: 2025-10-30 23:30:17
 #ifndef ALLOY_GENERATED_TLE987X_PERIPHERALS_HPP
 #define ALLOY_GENERATED_TLE987X_PERIPHERALS_HPP
 

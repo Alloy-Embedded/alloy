@@ -3,7 +3,7 @@
 /// Source: fujitsu_mb9afa4xm.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:42
+/// Generated: 2025-10-30 23:30:23
 #ifndef ALLOY_GENERATED_MB9AFA4XM_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MB9AFA4XM_PERIPHERALS_HPP
 

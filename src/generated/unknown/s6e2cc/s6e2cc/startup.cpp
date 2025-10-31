@@ -3,7 +3,7 @@
 /// Source: fujitsu_s6e2cc.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:34
+/// Generated: 2025-10-30 23:30:14
 #include <cstdint>
 #include <cstring>
 

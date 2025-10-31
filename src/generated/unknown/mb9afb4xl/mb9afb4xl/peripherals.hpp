@@ -3,7 +3,7 @@
 /// Source: spansion_mb9afb4xl.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:39
+/// Generated: 2025-10-30 23:30:20
 #ifndef ALLOY_GENERATED_MB9AFB4XL_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MB9AFB4XL_PERIPHERALS_HPP
 

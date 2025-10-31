@@ -1,7 +1,7 @@
 # INFINEON Generated Code
 
-**MCUs Supported**: 17
-**Families**: imc300a, imm100a, tle984x, tle9868, tle986x, tle987x, xmc1100, xmc1200, xmc1300, xmc1400, xmc4100, xmc4200, xmc4300, xmc4400, xmc4500, xmc4700, xmc4800
+**MCUs Supported**: 18
+**Families**: imc300a, imm100a, tle984x, tle985x, tle9868, tle986x, tle987x, xmc1100, xmc1200, xmc1300, xmc1400, xmc4100, xmc4200, xmc4300, xmc4400, xmc4500, xmc4700, xmc4800
 
 ## Structure
 
@@ -17,6 +17,10 @@ infineon/
 │   │   └── peripherals.hpp
 ├── tle984x/
 │   ├── TLE984X/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── tle985x/
+│   ├── TLE985X/
 │   │   ├── startup.cpp
 │   │   └── peripherals.hpp
 ├── tle9868/

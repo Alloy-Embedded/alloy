@@ -52,25 +52,77 @@ def print_header(msg: str):
     print(f"{Colors.BOLD}{'='*70}{Colors.ENDC}\n")
 
 
+def normalize_name(name: str) -> str:
+    """Normalize vendor/family name to safe directory name
+
+    Converts to lowercase, removes spaces, dots, special chars
+    Examples:
+        "Example Vendor" -> "example_vendor"
+        "NXP.com" -> "nxp"
+        "Raspberry Pi" -> "raspberry_pi"
+    """
+    # Convert to lowercase
+    name = name.lower()
+    # Remove common suffixes
+    name = re.sub(r'\.(com|org|net|io)$', '', name)
+    # Replace spaces and special chars with underscore
+    name = re.sub(r'[^a-z0-9]+', '_', name)
+    # Remove leading/trailing underscores
+    name = name.strip('_')
+    # Collapse multiple underscores
+    name = re.sub(r'_+', '_', name)
+    return name
+
+
 def get_vendor_mapping(vendor_dir: str) -> str:
     """Map vendor directory names to clean names"""
+    # Known mappings for cleaner names
     mappings = {
         "STMicro": "st",
+        "STMicroelectronics": "st",
         "Nordic": "nordic",
+        "Nordic Semiconductor": "nordic",
         "NXP": "nxp",
+        "NXP.com": "nxp",
+        "NXP Semiconductors": "nxp",
         "Freescale": "nxp",  # Freescale is now NXP
         "Atmel": "atmel",
+        "Microchip": "microchip",
         "SiliconLabs": "silabs",
+        "Silicon Laboratories": "silabs",
         "Toshiba": "toshiba",
         "Holtek": "holtek",
         "Nuvoton": "nuvoton",
         "Espressif": "espressif",
+        "Espressif Systems": "espressif",
+        "Espressif-Community": "espressif_community",
         "Cypress": "cypress",
-        "GigaDevice": "gigadevice",
+        "Infineon": "infineon",
+        "Infineon Technologies AG": "infineon",
         "Renesas": "renesas",
-        "Fujitsu": "fujitsu"
+        "Renesas Electronics Corporation": "renesas",
+        "Texas Instruments": "ti",
+        "Raspberry Pi": "raspberrypi",
+        "RaspberryPi": "raspberrypi",
+        "GigaDevice": "gigadevice",
+        "SiFive": "sifive",
+        "SiFive-Community": "sifive_community",
+        "Fujitsu": "fujitsu",
+        "Spansion": "spansion",
+        "Canaan Inc.": "canaan",
+        "Kendryte-Community": "kendryte",
+        "AlifSemi": "alifsemi",
+        "Allwinner-Community": "allwinner",
+        "ArteryTek": "arterytek",
+        "ARM_SAMPLE": "arm_sample"
     }
-    return mappings.get(vendor_dir, vendor_dir.lower())
+
+    # Try exact match first
+    if vendor_dir in mappings:
+        return mappings[vendor_dir]
+
+    # Otherwise normalize the name
+    return normalize_name(vendor_dir)
 
 
 def extract_family_from_name(mcu_name: str, vendor: str) -> str:
@@ -123,8 +175,9 @@ def extract_family_from_name(mcu_name: str, vendor: str) -> str:
             return f"mk{match.group(1)}"
         return "kinetis"
 
-    # Default: first word
-    return mcu_lower.split('_')[0].split('-')[0][:10]
+    # Default: normalize the MCU name (removes spaces, dots, etc.)
+    family = mcu_lower.split('_')[0].split('-')[0][:10]
+    return normalize_name(family)
 
 
 def find_svd_files(vendor_filter: str = None, family_filter: str = None) -> Dict[str, List[Path]]:

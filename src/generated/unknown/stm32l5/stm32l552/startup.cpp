@@ -3,7 +3,7 @@
 /// Source: st_stm32l552.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:36
+/// Generated: 2025-10-30 23:30:16
 #include <cstdint>
 #include <cstring>
 

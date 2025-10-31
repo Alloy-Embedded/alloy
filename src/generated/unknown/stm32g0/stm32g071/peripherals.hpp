@@ -3,7 +3,7 @@
 /// Source: st_stm32g071.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:39
+/// Generated: 2025-10-30 23:30:19
 #ifndef ALLOY_GENERATED_STM32G071_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32G071_PERIPHERALS_HPP
 

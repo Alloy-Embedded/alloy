@@ -3,7 +3,7 @@
 /// Source: fujitsu_s6e1a1.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:34
+/// Generated: 2025-10-30 23:30:14
 #ifndef ALLOY_GENERATED_S6E1A1_PERIPHERALS_HPP
 #define ALLOY_GENERATED_S6E1A1_PERIPHERALS_HPP
 

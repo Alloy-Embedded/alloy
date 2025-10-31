@@ -3,7 +3,7 @@
 /// Source: fujitsu_mb9bf52xk.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:41
+/// Generated: 2025-10-30 23:30:22
 #ifndef ALLOY_GENERATED_MB9BF52XK_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MB9BF52XK_PERIPHERALS_HPP
 

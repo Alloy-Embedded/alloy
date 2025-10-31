@@ -3,7 +3,7 @@
 /// Source: infineon_xmc4800.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:42
+/// Generated: 2025-10-30 23:30:23
 #ifndef ALLOY_GENERATED_XMC4800_PERIPHERALS_HPP
 #define ALLOY_GENERATED_XMC4800_PERIPHERALS_HPP
 

@@ -3,7 +3,7 @@
 /// Source: fujitsu_mb9b560l.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:33
+/// Generated: 2025-10-30 23:30:13
 #ifndef ALLOY_GENERATED_MB9B560L_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MB9B560L_PERIPHERALS_HPP
 

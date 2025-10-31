@@ -3,7 +3,7 @@
 /// Source: fujitsu_mb9b460l.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:35
+/// Generated: 2025-10-30 23:30:15
 #include <cstdint>
 #include <cstring>
 

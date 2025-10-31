@@ -3,7 +3,7 @@
 /// Source: st_stm32h750.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:32
+/// Generated: 2025-10-30 23:30:12
 #ifndef ALLOY_GENERATED_STM32H750X_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32H750X_PERIPHERALS_HPP
 
