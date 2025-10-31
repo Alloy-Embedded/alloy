@@ -258,6 +258,11 @@ class SVDParser:
                 if registers:
                     peripherals[periph_type]["registers"] = registers
 
+                # Parse bit fields
+                bit_fields = self._parse_bit_fields(periph)
+                if bit_fields:
+                    peripherals[periph_type]["bits"] = bit_fields
+
         if self.verbose:
             print_info(f"Found {len(peripherals)} peripheral types")
 
@@ -267,22 +272,43 @@ class SVDParser:
         """Classify peripheral by name"""
         name_upper = name.upper()
 
+        # Match full peripheral types first
         if 'GPIO' in name_upper:
             return 'GPIO'
         elif 'USART' in name_upper or 'UART' in name_upper:
             return 'USART'
         elif 'SPI' in name_upper:
             return 'SPI'
-        elif 'I2C' in name_upper:
+        elif 'I2C' in name_upper or 'I²C' in name_upper:
             return 'I2C'
-        elif 'TIM' in name_upper:
+        elif 'TIM' in name_upper and not 'SYSTICK' in name_upper:
             return 'TIM'
         elif 'ADC' in name_upper:
             return 'ADC'
+        elif 'DAC' in name_upper:
+            return 'DAC'
         elif 'DMA' in name_upper:
             return 'DMA'
+        elif 'RCC' in name_upper:
+            return 'RCC'
+        elif 'PWR' in name_upper:
+            return 'PWR'
+        elif 'RTC' in name_upper:
+            return 'RTC'
+        elif 'CAN' in name_upper:
+            return 'CAN'
+        elif 'USB' in name_upper:
+            return 'USB'
+        elif 'ETH' in name_upper:
+            return 'ETH'
+        elif 'SDIO' in name_upper:
+            return 'SDIO'
+        elif 'FLASH' in name_upper and 'INTERFACE' in name_upper:
+            return 'FLASH'
+        elif 'WWDG' in name_upper or 'IWDG' in name_upper:
+            return 'WDG'
         else:
-            # Return first word (e.g., RCC, PWR, etc.)
+            # Return first word (e.g., EXTI, AFIO, etc.)
             return name.split('_')[0].split('[')[0]
 
     def _parse_registers(self, periph: ET.Element) -> Dict[str, Any]:
@@ -308,6 +334,72 @@ class SVDParser:
                 registers[name]["description"] = desc
 
         return registers
+
+    def _parse_bit_fields(self, periph: ET.Element) -> Dict[str, Any]:
+        """Parse bit field definitions for a peripheral"""
+        bit_fields = {}
+
+        for reg in periph.findall('.//register'):
+            reg_name = self._get_text('.//name', parent=reg)
+            if not reg_name:
+                continue
+
+            fields = reg.find('.//fields')
+            if fields is None:
+                continue
+
+            reg_bits = {}
+            for field in fields.findall('.//field'):
+                field_name = self._get_text('.//name', parent=field)
+                if not field_name:
+                    continue
+
+                # Get bit offset
+                bit_offset = self._get_int('.//bitOffset', parent=field, default=-1)
+                lsb = self._get_int('.//lsb', parent=field, default=-1)
+
+                # Prefer bitOffset, fallback to lsb
+                if bit_offset >= 0:
+                    bit_pos = bit_offset
+                elif lsb >= 0:
+                    bit_pos = lsb
+                else:
+                    continue
+
+                # Get bit width
+                bit_width = self._get_int('.//bitWidth', parent=field, default=-1)
+                msb = self._get_int('.//msb', parent=field, default=-1)
+
+                # Calculate width
+                if bit_width > 0:
+                    width = bit_width
+                elif msb >= 0 and lsb >= 0:
+                    width = msb - lsb + 1
+                else:
+                    width = 1  # Default: single bit
+
+                # Get description
+                desc = self._get_text('.//description', parent=field)
+                if not desc:
+                    desc = field_name
+
+                # Store bit field
+                bit_info = {
+                    "bit": bit_pos,
+                    "description": desc
+                }
+
+                # Only add width if > 1
+                if width > 1:
+                    bit_info["width"] = width
+
+                reg_bits[field_name] = bit_info
+
+            # Only add register if it has fields
+            if reg_bits:
+                bit_fields[reg_name] = reg_bits
+
+        return bit_fields
 
     def _parse_interrupts(self) -> Dict[str, Any]:
         """Parse interrupt vector table"""
