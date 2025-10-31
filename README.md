@@ -32,6 +32,50 @@ The result: A framework that's simultaneously robust, efficient, and a pleasure 
 - **🎯 Bare-Metal First**: No RTOS dependencies (RTOS support planned)
 - **📦 No Dynamic Allocation**: Everything static or stack-based in HAL
 - **🌍 Cross-Platform**: Consistent API across different MCUs
+- **🤖 Auto Code Generation**: Startup code and peripherals generated from SVD files
+
+---
+
+## 🤖 Code Generation
+
+Alloy includes an **automated code generation system** that creates startup code, vector tables, and peripheral definitions from CMSIS-SVD files. This allows adding support for new ARM MCUs in minutes instead of weeks.
+
+### Features
+
+- **Automatic Startup Code**: `.data`/`.bss` initialization, static constructors, vector tables
+- **SVD Parser**: Converts CMSIS-SVD XML to normalized JSON databases
+- **CMake Integration**: Code generated transparently during build configuration
+- **Hundreds of MCUs**: Supports STM32, nRF, RP2040, and more via CMSIS-SVD
+- **Validated Output**: 38 automated tests ensure correct generation
+
+### Quick Example
+
+```bash
+# Parse an SVD file to create database
+python3 tools/codegen/svd_parser.py \
+    --input STM32F103.svd \
+    --output database/families/stm32f1xx.json
+
+# Generate code for your MCU
+python3 tools/codegen/generator.py \
+    --mcu STM32F103C8 \
+    --database database/families/stm32f1xx.json \
+    --output build/generated
+```
+
+Or let CMake handle it automatically:
+```cmake
+include(codegen)
+alloy_generate_code(MCU STM32F103C8)
+```
+
+### Documentation
+
+- **[Tutorial: Adding a New MCU](tools/codegen/docs/TUTORIAL_ADDING_MCU.md)**
+- **[CMake Integration Guide](tools/codegen/docs/CMAKE_INTEGRATION.md)**
+- **[Template Customization](tools/codegen/docs/TEMPLATES.md)**
+- **[Troubleshooting Guide](tools/codegen/docs/TROUBLESHOOTING.md)**
+- **[Code Generator README](tools/codegen/README.md)**
 
 ---
 

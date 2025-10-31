@@ -1,0 +1,132 @@
+{
+  "family": "STM32F1",
+  "architecture": "arm-cortex-m3",
+  "vendor": "ST",
+  "description": "STM32F1 series - ARM Cortex-M3 MCUs",
+  "mcus": {
+    "STM32F103C8": {
+      "description": "STM32F103C8 - 64KB Flash, 20KB RAM (Blue Pill)",
+      "flash": {
+        "size_kb": 64,
+        "base_address": "0x08000000"
+      },
+      "ram": {
+        "size_kb": 20,
+        "base_address": "0x20000000"
+      },
+      "peripherals": {
+        "GPIO": {
+          "instances": [
+            {"name": "GPIOA", "base": "0x40010800"},
+            {"name": "GPIOB", "base": "0x40010C00"},
+            {"name": "GPIOC", "base": "0x40011000"}
+          ],
+          "registers": {
+            "CRL": {"offset": "0x00", "size": 32, "description": "Port configuration register low"},
+            "CRH": {"offset": "0x04", "size": 32, "description": "Port configuration register high"},
+            "IDR": {"offset": "0x08", "size": 32, "description": "Port input data register"},
+            "ODR": {"offset": "0x0C", "size": 32, "description": "Port output data register"},
+            "BSRR": {"offset": "0x10", "size": 32, "description": "Port bit set/reset register"},
+            "BRR": {"offset": "0x14", "size": 32, "description": "Port bit reset register"}
+          }
+        },
+        "USART": {
+          "instances": [
+            {"name": "USART1", "base": "0x40013800", "irq": 37},
+            {"name": "USART2", "base": "0x40004400", "irq": 38}
+          ],
+          "registers": {
+            "SR": {"offset": "0x00", "size": 32, "description": "Status register"},
+            "DR": {"offset": "0x04", "size": 32, "description": "Data register"},
+            "BRR": {"offset": "0x08", "size": 32, "description": "Baud rate register"},
+            "CR1": {"offset": "0x0C", "size": 32, "description": "Control register 1"},
+            "CR2": {"offset": "0x10", "size": 32, "description": "Control register 2"},
+            "CR3": {"offset": "0x14", "size": 32, "description": "Control register 3"}
+          }
+        }
+      },
+      "interrupts": {
+        "count": 68,
+        "vectors": [
+          {"number": 0, "name": "Initial_SP", "description": "Initial Stack Pointer"},
+          {"number": 1, "name": "Reset_Handler", "description": "Reset Handler"},
+          {"number": 2, "name": "NMI_Handler", "description": "Non-Maskable Interrupt"},
+          {"number": 3, "name": "HardFault_Handler", "description": "Hard Fault Handler"},
+          {"number": 4, "name": "MemManage_Handler", "description": "Memory Management Fault"},
+          {"number": 5, "name": "BusFault_Handler", "description": "Bus Fault"},
+          {"number": 6, "name": "UsageFault_Handler", "description": "Usage Fault"},
+          {"number": 11, "name": "SVC_Handler", "description": "Supervisor Call"},
+          {"number": 12, "name": "DebugMon_Handler", "description": "Debug Monitor"},
+          {"number": 14, "name": "PendSV_Handler", "description": "Pendable Service Call"},
+          {"number": 15, "name": "SysTick_Handler", "description": "SysTick Timer"},
+          {"number": 16, "name": "WWDG_IRQHandler", "description": "Window Watchdog"},
+          {"number": 37, "name": "USART1_IRQHandler", "description": "USART1 Global Interrupt"},
+          {"number": 38, "name": "USART2_IRQHandler", "description": "USART2 Global Interrupt"}
+        ]
+      }
+    },
+    "STM32F103CB": {
+      "description": "STM32F103CB - 128KB Flash, 20KB RAM",
+      "flash": {
+        "size_kb": 128,
+        "base_address": "0x08000000"
+      },
+      "ram": {
+        "size_kb": 20,
+        "base_address": "0x20000000"
+      },
+      "peripherals": {
+        "GPIO": {
+          "instances": [
+            {"name": "GPIOA", "base": "0x40010800"},
+            {"name": "GPIOB", "base": "0x40010C00"},
+            {"name": "GPIOC", "base": "0x40011000"}
+          ],
+          "registers": {
+            "CRL": {"offset": "0x00", "size": 32, "description": "Port configuration register low"},
+            "CRH": {"offset": "0x04", "size": 32, "description": "Port configuration register high"},
+            "IDR": {"offset": "0x08", "size": 32, "description": "Port input data register"},
+            "ODR": {"offset": "0x0C", "size": 32, "description": "Port output data register"},
+            "BSRR": {"offset": "0x10", "size": 32, "description": "Port bit set/reset register"},
+            "BRR": {"offset": "0x14", "size": 32, "description": "Port bit reset register"}
+          }
+        },
+        "USART": {
+          "instances": [
+            {"name": "USART1", "base": "0x40013800", "irq": 37},
+            {"name": "USART2", "base": "0x40004400", "irq": 38},
+            {"name": "USART3", "base": "0x40004800", "irq": 39}
+          ],
+          "registers": {
+            "SR": {"offset": "0x00", "size": 32, "description": "Status register"},
+            "DR": {"offset": "0x04", "size": 32, "description": "Data register"},
+            "BRR": {"offset": "0x08", "size": 32, "description": "Baud rate register"},
+            "CR1": {"offset": "0x0C", "size": 32, "description": "Control register 1"},
+            "CR2": {"offset": "0x10", "size": 32, "description": "Control register 2"},
+            "CR3": {"offset": "0x14", "size": 32, "description": "Control register 3"}
+          }
+        }
+      },
+      "interrupts": {
+        "count": 68,
+        "vectors": [
+          {"number": 0, "name": "Initial_SP", "description": "Initial Stack Pointer"},
+          {"number": 1, "name": "Reset_Handler", "description": "Reset Handler"},
+          {"number": 2, "name": "NMI_Handler", "description": "Non-Maskable Interrupt"},
+          {"number": 3, "name": "HardFault_Handler", "description": "Hard Fault Handler"},
+          {"number": 4, "name": "MemManage_Handler", "description": "Memory Management Fault"},
+          {"number": 5, "name": "BusFault_Handler", "description": "Bus Fault"},
+          {"number": 6, "name": "UsageFault_Handler", "description": "Usage Fault"},
+          {"number": 11, "name": "SVC_Handler", "description": "Supervisor Call"},
+          {"number": 12, "name": "DebugMon_Handler", "description": "Debug Monitor"},
+          {"number": 14, "name": "PendSV_Handler", "description": "Pendable Service Call"},
+          {"number": 15, "name": "SysTick_Handler", "description": "SysTick Timer"},
+          {"number": 16, "name": "WWDG_IRQHandler", "description": "Window Watchdog"},
+          {"number": 37, "name": "USART1_IRQHandler", "description": "USART1 Global Interrupt"},
+          {"number": 38, "name": "USART2_IRQHandler", "description": "USART2 Global Interrupt"},
+          {"number": 39, "name": "USART3_IRQHandler", "description": "USART3 Global Interrupt"}
+        ]
+      }
+    }
+  }
+}

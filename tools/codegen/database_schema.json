@@ -1,0 +1,204 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Alloy MCU Database Schema",
+  "description": "Schema for MCU database files used by Alloy code generator",
+  "type": "object",
+  "required": ["family", "architecture", "vendor", "mcus"],
+  "properties": {
+    "family": {
+      "type": "string",
+      "description": "MCU family name (e.g., STM32F1, nRF52)",
+      "examples": ["STM32F1", "STM32F4", "nRF52"]
+    },
+    "architecture": {
+      "type": "string",
+      "description": "CPU architecture",
+      "enum": [
+        "arm-cortex-m0",
+        "arm-cortex-m0plus",
+        "arm-cortex-m3",
+        "arm-cortex-m4",
+        "arm-cortex-m4f",
+        "arm-cortex-m7",
+        "arm-cortex-m33",
+        "rl78",
+        "xtensa"
+      ]
+    },
+    "vendor": {
+      "type": "string",
+      "description": "MCU vendor/manufacturer",
+      "examples": ["ST", "Nordic", "NXP", "Renesas", "Espressif"]
+    },
+    "mcus": {
+      "type": "object",
+      "description": "Map of MCU name to MCU configuration",
+      "patternProperties": {
+        "^[A-Z0-9]+$": {
+          "$ref": "#/definitions/mcu"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "mcu": {
+      "type": "object",
+      "required": ["flash", "ram", "peripherals", "interrupts"],
+      "properties": {
+        "flash": {
+          "$ref": "#/definitions/memory_region"
+        },
+        "ram": {
+          "$ref": "#/definitions/memory_region"
+        },
+        "peripherals": {
+          "type": "object",
+          "description": "Map of peripheral type to peripheral definition",
+          "patternProperties": {
+            ".*": {
+              "$ref": "#/definitions/peripheral"
+            }
+          }
+        },
+        "interrupts": {
+          "$ref": "#/definitions/interrupt_table"
+        },
+        "clock": {
+          "$ref": "#/definitions/clock_config"
+        }
+      }
+    },
+    "memory_region": {
+      "type": "object",
+      "required": ["size_kb", "base_address"],
+      "properties": {
+        "size_kb": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Memory size in kilobytes"
+        },
+        "base_address": {
+          "type": "string",
+          "pattern": "^0x[0-9A-Fa-f]{8}$",
+          "description": "Base address in hex format (e.g., 0x08000000)"
+        },
+        "page_size_kb": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Flash page/sector size in kilobytes"
+        }
+      }
+    },
+    "peripheral": {
+      "type": "object",
+      "required": ["instances", "registers"],
+      "properties": {
+        "instances": {
+          "type": "array",
+          "description": "List of peripheral instances",
+          "items": {
+            "$ref": "#/definitions/peripheral_instance"
+          }
+        },
+        "registers": {
+          "type": "object",
+          "description": "Map of register name to register definition",
+          "patternProperties": {
+            ".*": {
+              "$ref": "#/definitions/register"
+            }
+          }
+        }
+      }
+    },
+    "peripheral_instance": {
+      "type": "object",
+      "required": ["name", "base"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Instance name (e.g., GPIOA, USART1)"
+        },
+        "base": {
+          "type": "string",
+          "pattern": "^0x[0-9A-Fa-f]{8}$",
+          "description": "Base address in hex format"
+        },
+        "irq": {
+          "type": "integer",
+          "description": "IRQ number for this peripheral"
+        }
+      }
+    },
+    "register": {
+      "type": "object",
+      "required": ["offset", "size"],
+      "properties": {
+        "offset": {
+          "type": "string",
+          "pattern": "^0x[0-9A-Fa-f]{2,4}$",
+          "description": "Register offset from base in hex format"
+        },
+        "size": {
+          "type": "integer",
+          "enum": [8, 16, 32],
+          "description": "Register size in bits"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable register description"
+        }
+      }
+    },
+    "interrupt_table": {
+      "type": "object",
+      "required": ["count", "vectors"],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Total number of interrupt vectors"
+        },
+        "vectors": {
+          "type": "array",
+          "description": "List of interrupt vectors",
+          "items": {
+            "$ref": "#/definitions/interrupt_vector"
+          }
+        }
+      }
+    },
+    "interrupt_vector": {
+      "type": "object",
+      "required": ["number", "name"],
+      "properties": {
+        "number": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Vector number/position in table"
+        },
+        "name": {
+          "type": "string",
+          "description": "Handler function name (e.g., USART1_IRQHandler)"
+        }
+      }
+    },
+    "clock_config": {
+      "type": "object",
+      "properties": {
+        "max_freq_mhz": {
+          "type": "integer",
+          "description": "Maximum CPU frequency in MHz"
+        },
+        "hse_freq_mhz": {
+          "type": "integer",
+          "description": "High-speed external crystal frequency"
+        },
+        "hsi_freq_mhz": {
+          "type": "integer",
+          "description": "High-speed internal oscillator frequency"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<device schemaVersion="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance">
+  <name>TEST_MCU</name>
+  <version>1.0</version>
+  <description>Test MCU for unit tests</description>
+  <addressUnitBits>8</addressUnitBits>
+  <width>32</width>
+  <size>32</size>
+  <resetValue>0x0</resetValue>
+  <resetMask>0xFFFFFFFF</resetMask>
+
+  <cpu>
+    <name>CM3</name>
+    <revision>r2p1</revision>
+    <endian>little</endian>
+    <mpuPresent>true</mpuPresent>
+    <fpuPresent>false</fpuPresent>
+    <nvicPrioBits>4</nvicPrioBits>
+    <vendorSystickConfig>false</vendorSystickConfig>
+  </cpu>
+
+  <peripherals>
+    <peripheral>
+      <name>GPIOA</name>
+      <description>General Purpose I/O Port A</description>
+      <groupName>GPIO</groupName>
+      <baseAddress>0x40010800</baseAddress>
+      <addressBlock>
+        <offset>0x0</offset>
+        <size>0x400</size>
+        <usage>registers</usage>
+      </addressBlock>
+      <registers>
+        <register>
+          <name>CRL</name>
+          <description>Port configuration register low</description>
+          <addressOffset>0x00</addressOffset>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x44444444</resetValue>
+        </register>
+        <register>
+          <name>CRH</name>
+          <description>Port configuration register high</description>
+          <addressOffset>0x04</addressOffset>
+          <size>32</size>
+          <access>read-write</access>
+          <resetValue>0x44444444</resetValue>
+        </register>
+        <register>
+          <name>IDR</name>
+          <description>Port input data register</description>
+          <addressOffset>0x08</addressOffset>
+          <size>32</size>
+          <access>read-only</access>
+        </register>
+        <register>
+          <name>ODR</name>
+          <description>Port output data register</description>
+          <addressOffset>0x0C</addressOffset>
+          <size>32</size>
+          <access>read-write</access>
+        </register>
+      </registers>
+    </peripheral>
+
+    <peripheral>
+      <name>GPIOB</name>
+      <description>General Purpose I/O Port B</description>
+      <groupName>GPIO</groupName>
+      <baseAddress>0x40010C00</baseAddress>
+      <addressBlock>
+        <offset>0x0</offset>
+        <size>0x400</size>
+        <usage>registers</usage>
+      </addressBlock>
+      <registers>
+        <register>
+          <name>CRL</name>
+          <description>Port configuration register low</description>
+          <addressOffset>0x00</addressOffset>
+          <size>32</size>
+        </register>
+        <register>
+          <name>CRH</name>
+          <description>Port configuration register high</description>
+          <addressOffset>0x04</addressOffset>
+          <size>32</size>
+        </register>
+        <register>
+          <name>IDR</name>
+          <description>Port input data register</description>
+          <addressOffset>0x08</addressOffset>
+          <size>32</size>
+        </register>
+        <register>
+          <name>ODR</name>
+          <description>Port output data register</description>
+          <addressOffset>0x0C</addressOffset>
+          <size>32</size>
+        </register>
+      </registers>
+    </peripheral>
+
+    <peripheral>
+      <name>USART1</name>
+      <description>Universal Synchronous Asynchronous Receiver Transmitter 1</description>
+      <groupName>USART</groupName>
+      <baseAddress>0x40013800</baseAddress>
+      <addressBlock>
+        <offset>0x0</offset>
+        <size>0x400</size>
+        <usage>registers</usage>
+      </addressBlock>
+      <interrupt>
+        <name>USART1</name>
+        <description>USART1 global interrupt</description>
+        <value>37</value>
+      </interrupt>
+      <registers>
+        <register>
+          <name>SR</name>
+          <description>Status register</description>
+          <addressOffset>0x00</addressOffset>
+          <size>32</size>
+        </register>
+        <register>
+          <name>DR</name>
+          <description>Data register</description>
+          <addressOffset>0x04</addressOffset>
+          <size>32</size>
+        </register>
+        <register>
+          <name>BRR</name>
+          <description>Baud rate register</description>
+          <addressOffset>0x08</addressOffset>
+          <size>32</size>
+        </register>
+      </registers>
+    </peripheral>
+
+    <peripheral>
+      <name>USART2</name>
+      <description>Universal Synchronous Asynchronous Receiver Transmitter 2</description>
+      <groupName>USART</groupName>
+      <baseAddress>0x40004400</baseAddress>
+      <interrupt>
+        <name>USART2</name>
+        <description>USART2 global interrupt</description>
+        <value>38</value>
+      </interrupt>
+      <registers>
+        <register>
+          <name>SR</name>
+          <addressOffset>0x00</addressOffset>
+          <size>32</size>
+        </register>
+        <register>
+          <name>DR</name>
+          <addressOffset>0x04</addressOffset>
+          <size>32</size>
+        </register>
+        <register>
+          <name>BRR</name>
+          <addressOffset>0x08</addressOffset>
+          <size>32</size>
+        </register>
+      </registers>
+    </peripheral>
+  </peripherals>
+</device>
