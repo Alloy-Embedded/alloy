@@ -159,12 +159,12 @@
 
 ## 9. Documentation
 
-- [ ] 9.1 Write `docs/boards.md` with board list and specs
-- [ ] 9.2 Write `docs/building_for_boards.md` with build instructions
-- [ ] 9.3 Write `docs/flashing.md` with flash instructions (OpenOCD, esptool, etc)
-- [ ] 9.4 Document pin mappings for each board
-- [ ] 9.5 Document clock configurations for each MCU
-- [ ] 9.6 Create troubleshooting guide
+- [x] 9.1 Write `docs/boards.md` with board list and specs
+- [x] 9.2 Write `docs/building_for_boards.md` with build instructions
+- [x] 9.3 Write `docs/flashing.md` with flash instructions (OpenOCD, esptool, etc)
+- [x] 9.4 Document pin mappings for each board
+- [x] 9.5 Document clock configurations for each MCU
+- [x] 9.6 Create troubleshooting guide
 
 ## 10. Testing and Validation
 

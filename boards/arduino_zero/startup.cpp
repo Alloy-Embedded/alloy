@@ -10,9 +10,15 @@ extern uint32_t _estack;  // End of stack
 // User application entry point
 extern "C" int main();
 
-// Note: SystemInit() is provided by startup_common.hpp with a weak default
-// SAMD21 typically doesn't need custom SystemInit as bootloader handles initialization
-// If custom clock configuration is needed, override SystemInit() here
+// Weak default SystemInit - does nothing (SAMD21 bootloader handles initialization)
+// Override this in board.hpp if custom clock configuration is needed
+extern "C" __attribute__((weak)) void SystemInit() {
+    // SAMD21 Arduino Zero bootloader already initializes:
+    // - 48MHz system clock via DFLL48M
+    // - USB peripheral
+    // - LED pin as output
+    // No additional initialization needed for simple blink example
+}
 
 // Reset Handler - Entry point after reset
 extern "C" [[noreturn]] void Reset_Handler() {

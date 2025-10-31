@@ -33,15 +33,17 @@ set(ALLOY_PLATFORM "arm" CACHE STRING "Target platform")
 # Common ARM flags (will be specialized per board/MCU)
 # -ffunction-sections -fdata-sections: Place each function/data in separate sections for better linker optimization
 # -fno-exceptions -fno-rtti: Disable C++ exceptions and RTTI to reduce code size
+# -fno-threadsafe-statics: Disable thread-safe static initialization (no threading in bare-metal)
 set(CMAKE_C_FLAGS_INIT "-ffunction-sections -fdata-sections")
-set(CMAKE_CXX_FLAGS_INIT "-ffunction-sections -fdata-sections -fno-exceptions -fno-rtti")
+set(CMAKE_CXX_FLAGS_INIT "-ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-threadsafe-statics")
 set(CMAKE_ASM_FLAGS_INIT "")
 
 # Linker flags
 # -Wl,--gc-sections: Enable garbage collection of unused sections
-# -specs=nano.specs: Use newlib-nano (smaller libc implementation)
-# -specs=nosys.specs: Provide stub implementations for system calls
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,--gc-sections -specs=nano.specs -specs=nosys.specs")
+#
+# NOTE: xPack ARM toolchain v14.2.1+ has spec file conflicts with nosys.specs and nano.specs
+# Workaround: We link libraries explicitly via target_link_libraries() in examples
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,--gc-sections")
 
 # Build type specific flags
 set(CMAKE_C_FLAGS_DEBUG_INIT "-g -Og")

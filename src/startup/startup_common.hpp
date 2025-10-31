@@ -150,11 +150,7 @@ extern "C" [[noreturn]] void Default_Handler() {
     }
 }
 
-// Weak default SystemInit that does nothing
-// Boards should override this to perform board-specific initialization
-// (e.g., clock configuration, FPU enable, etc.)
-extern "C" void SystemInit() __attribute__((weak));
-extern "C" void SystemInit() {
-    // Default: do nothing
-    // Override this in your board-specific code
-}
+// SystemInit declaration - boards should provide this
+// This function performs board-specific initialization
+// (e.g., clock configuration, FPU enable, peripheral setup, etc.)
+extern "C" void SystemInit();

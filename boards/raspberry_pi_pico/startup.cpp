@@ -10,8 +10,15 @@ extern uint32_t _estack;  // End of stack
 // User application entry point
 extern "C" int main();
 
-// Note: SystemInit() is provided by startup_common.hpp with a weak default
-// RP2040 typically doesn't need custom SystemInit as bootrom handles initialization
+// Weak default SystemInit - does nothing (RP2040 bootrom handles initialization)
+// Override this in board.hpp if custom clock configuration is needed
+extern "C" __attribute__((weak)) void SystemInit() {
+    // RP2040 with default settings from bootrom:
+    // - 12MHz XOSC is running
+    // - System clock is running from bootrom (~12MHz)
+    // - No additional initialization needed for simple blink example
+    // For production use, configure PLL to reach 125-133MHz
+}
 
 // Reset Handler - Entry point after reset
 extern "C" [[noreturn]] void Reset_Handler() {

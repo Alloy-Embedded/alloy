@@ -32,7 +32,9 @@ set(CMAKE_ASM_FLAGS_INIT "-mlongcalls")
 # Linker flags
 # -Wl,--gc-sections: Enable garbage collection of unused sections
 # -mlongcalls: Required for ESP32 memory layout
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,--gc-sections -mlongcalls")
+# -nostdlib: Don't link standard startup files
+# -lc -lgcc: Link newlib C library and GCC runtime support
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,--gc-sections -mlongcalls -lc -lgcc")
 
 # Build type specific flags
 set(CMAKE_C_FLAGS_DEBUG_INIT "-g -Og")

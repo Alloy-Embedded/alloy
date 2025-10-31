@@ -26,7 +26,8 @@ target_link_options(blink_esp32 PRIVATE
     -mtext-section-literals
     -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/blink_esp32.map
     -Wl,--print-memory-usage
-    -nostdlib
+    -nostartfiles
+    -lc
     -lgcc
     -lstdc++
 )

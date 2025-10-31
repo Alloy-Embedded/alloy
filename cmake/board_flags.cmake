@@ -173,6 +173,37 @@ function(alloy_target_linker_script target_name)
 endfunction()
 
 #
+# Link required libraries for bare-metal ARM targets
+#
+# For xPack ARM toolchain v14+, we can't use spec files due to conflicts,
+# so we link libraries explicitly in the correct order.
+#
+function(alloy_target_arm_libraries target_name)
+    if(NOT TARGET ${target_name})
+        message(FATAL_ERROR "Target '${target_name}' does not exist")
+    endif()
+
+    # Only apply to ARM targets
+    if(ALLOY_ARCH MATCHES "arm")
+        # Disable default libraries and link explicitly to avoid conflicts
+        # -nodefaultlibs: Don't link standard system libraries automatically
+        # Then we manually link only what we need in the right order
+        target_link_options(${target_name} PRIVATE
+            -nodefaultlibs
+            -Wl,--start-group
+            -lc_nano
+            -lnosys
+            -lgcc
+            -lm
+            -lstdc++_nano
+            -lsupc++
+            -Wl,--end-group
+        )
+        message(STATUS "Linked ARM bare-metal libraries to ${target_name}")
+    endif()
+endfunction()
+
+#
 # Convenience function to apply all board-specific settings to a target
 #
 # Usage:
@@ -181,4 +212,5 @@ endfunction()
 function(alloy_target_board_settings target_name)
     alloy_target_board_flags(${target_name})
     alloy_target_linker_script(${target_name})
+    alloy_target_arm_libraries(${target_name})
 endfunction()

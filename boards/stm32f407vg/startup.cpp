@@ -10,9 +10,15 @@ extern uint32_t _estack;  // End of stack
 // User application entry point
 extern "C" int main();
 
-// Note: SystemInit() is provided by startup_common.hpp with a weak default
-// STM32F407 doesn't require custom SystemInit - FPU is enabled automatically by hardware
-// If custom clock configuration is needed, override SystemInit() here
+// Weak default SystemInit - does nothing (STM32F407 FPU is enabled automatically)
+// Override this in board.hpp if custom clock configuration is needed
+extern "C" __attribute__((weak)) void SystemInit() {
+    // STM32F407VG with default settings:
+    // - HSI 16MHz used as system clock (after reset)
+    // - FPU enabled automatically by hardware
+    // - No additional initialization needed for simple blink example
+    // For production use, configure PLL to reach 168MHz max frequency
+}
 
 // Reset Handler - Entry point after reset
 extern "C" [[noreturn]] void Reset_Handler() {

@@ -101,6 +101,14 @@ SECTIONS
         *(.gnu.linkonce.e.*)
         *(.gnu.version_r)
         *(.eh_frame)
+
+        /* C++ global constructors */
+        . = ALIGN(4);
+        __init_array_start = ABSOLUTE(.);
+        KEEP(*(SORT(.init_array.*)))
+        KEEP(*(.init_array))
+        __init_array_end = ABSOLUTE(.);
+
         . = ALIGN(4);
         _rodata_end = ABSOLUTE(.);
     } > FLASH
