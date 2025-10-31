@@ -8,66 +8,33 @@
 
 namespace alloy::hal::stm32f1 {
 
-// Include generated peripheral definitions
-#ifdef ALLOY_USE_GENERATED_PERIPHERALS
+// All peripheral definitions come from generated code
 #include "peripherals.hpp"
-    // Use generated definitions
-    using UsartRegs = alloy::generated::stm32f103c8::usart::Registers;
-    namespace usart_addresses {
-        using namespace alloy::generated::stm32f103c8::usart;
-    }
-#else
-    // Fallback to hardcoded definitions
 
-    /// STM32F1 USART peripheral base addresses
-    namespace usart_addresses {
-        constexpr uint32_t USART1_BASE = 0x40013800;
-        constexpr uint32_t USART2_BASE = 0x40004400;
-        constexpr uint32_t USART3_BASE = 0x40004800;
+// Import generated definitions into local namespace
+using UsartRegs = alloy::generated::stm32f103c8::usart::Registers;
+using RccRegs = alloy::generated::stm32f103c8::rcc::Registers;
 
-        constexpr uint32_t RCC_BASE = 0x40021000;
-    }
+namespace usart_addresses {
+    using namespace alloy::generated::stm32f103c8::usart;
+}
 
-    /// STM32F1 USART register structure
-    struct UsartRegs {
-        volatile uint32_t SR;    ///< Status register
-        volatile uint32_t DR;    ///< Data register
-        volatile uint32_t BRR;   ///< Baud rate register
-        volatile uint32_t CR1;   ///< Control register 1
-        volatile uint32_t CR2;   ///< Control register 2
-        volatile uint32_t CR3;   ///< Control register 3
-        volatile uint32_t GTPR;  ///< Guard time and prescaler register
-    };
-#endif
+namespace rcc {
+    using namespace alloy::generated::stm32f103c8::rcc;
+}
 
-/// USART Status Register (SR) bits
+// Import bit definitions
 namespace sr_bits {
-    constexpr uint32_t TXE  = (1U << 7);  ///< Transmit data register empty
-    constexpr uint32_t TC   = (1U << 6);  ///< Transmission complete
-    constexpr uint32_t RXNE = (1U << 5);  ///< Read data register not empty
-    constexpr uint32_t IDLE = (1U << 4);  ///< IDLE line detected
-    constexpr uint32_t ORE  = (1U << 3);  ///< Overrun error
-    constexpr uint32_t NE   = (1U << 2);  ///< Noise error
-    constexpr uint32_t FE   = (1U << 1);  ///< Framing error
-    constexpr uint32_t PE   = (1U << 0);  ///< Parity error
+    using namespace alloy::generated::stm32f103c8::usart::sr_bits;
 }
 
-/// USART Control Register 1 (CR1) bits
 namespace cr1_bits {
-    constexpr uint32_t UE    = (1U << 13); ///< USART enable
-    constexpr uint32_t M     = (1U << 12); ///< Word length (0=8bit, 1=9bit)
-    constexpr uint32_t PCE   = (1U << 10); ///< Parity control enable
-    constexpr uint32_t PS    = (1U << 9);  ///< Parity selection (0=even, 1=odd)
-    constexpr uint32_t PEIE  = (1U << 8);  ///< PE interrupt enable
-    constexpr uint32_t TXEIE = (1U << 7);  ///< TXE interrupt enable
-    constexpr uint32_t TCIE  = (1U << 6);  ///< TC interrupt enable
-    constexpr uint32_t RXNEIE= (1U << 5);  ///< RXNE interrupt enable
-    constexpr uint32_t TE    = (1U << 3);  ///< Transmitter enable
-    constexpr uint32_t RE    = (1U << 2);  ///< Receiver enable
+    using namespace alloy::generated::stm32f103c8::usart::cr1_bits;
 }
 
-/// USART Control Register 2 (CR2) bits
 namespace cr2_bits {
+    using namespace alloy::generated::stm32f103c8::usart::cr2_bits;
+    // CR2 STOP bit values for convenience
     constexpr uint32_t STOP_1BIT = (0b00 << 12); ///< 1 stop bit
     constexpr uint32_t STOP_2BIT = (0b10 << 12); ///< 2 stop bits
 }

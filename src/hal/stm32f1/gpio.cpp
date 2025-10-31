@@ -16,8 +16,8 @@ GpioPort* GpioPin<PIN>::get_port_registers() {
 }
 
 template<uint8_t PIN>
-RCC* GpioPin<PIN>::get_rcc_registers() {
-    return reinterpret_cast<RCC*>(gpio_ports::RCC_BASE);
+RccRegs* GpioPin<PIN>::get_rcc_registers() {
+    return rcc::RCC;
 }
 
 template<uint8_t PIN>

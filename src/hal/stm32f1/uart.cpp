@@ -2,10 +2,6 @@
 
 namespace alloy::hal::stm32f1 {
 
-// RCC register offsets for USART clock enable
-constexpr uint32_t RCC_APB2ENR_OFFSET = 0x18;  // APB2 peripheral clock enable
-constexpr uint32_t RCC_APB1ENR_OFFSET = 0x1C;  // APB1 peripheral clock enable
-
 template<UsartId ID>
 UartDevice<ID>::UartDevice() {
     enable_usart_clock();
@@ -17,17 +13,15 @@ UartDevice<ID>::UartDevice() {
 
 template<UsartId ID>
 void UartDevice<ID>::enable_usart_clock() {
-    volatile uint32_t* rcc_base = reinterpret_cast<volatile uint32_t*>(usart_addresses::RCC_BASE);
+    auto* rcc_regs = rcc::RCC;
     const uint32_t enable_bit = get_usart_enable_bit(ID);
 
     if (is_usart_on_apb2(ID)) {
         // Enable USART1 clock (APB2ENR)
-        volatile uint32_t* apb2enr = rcc_base + (RCC_APB2ENR_OFFSET / 4);
-        *apb2enr |= (1U << enable_bit);
+        rcc_regs->APB2ENR |= (1U << enable_bit);
     } else {
         // Enable USART2/3 clock (APB1ENR)
-        volatile uint32_t* apb1enr = rcc_base + (RCC_APB1ENR_OFFSET / 4);
-        *apb1enr |= (1U << enable_bit);
+        rcc_regs->APB1ENR |= (1U << enable_bit);
     }
 }
 

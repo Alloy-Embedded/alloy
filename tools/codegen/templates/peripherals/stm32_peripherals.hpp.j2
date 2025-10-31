@@ -37,6 +37,23 @@ namespace {{ periph_type | lower }} {
     {% for instance in periph.instances %}
     inline Registers* {{ instance.name }} = reinterpret_cast<Registers*>({{ instance.name }}_BASE);
     {% endfor %}
+
+    {% if periph.bits is defined %}
+    // Bit definitions
+    {% for reg_name, bits in periph.bits.items() %}
+    /// {{ reg_name }} Register bits
+    namespace {{ reg_name | lower }}_bits {
+        {% for bit_name, bit_def in bits.items() %}
+        {% if bit_def.width is defined %}
+        constexpr uint32_t {{ bit_name }} = ({{ bit_def.width }} << {{ bit_def.bit }});  ///< {{ bit_def.description }}
+        {% else %}
+        constexpr uint32_t {{ bit_name }} = (1U << {{ bit_def.bit }});  ///< {{ bit_def.description }}
+        {% endif %}
+        {% endfor %}
+    }
+
+    {% endfor %}
+    {% endif %}
 }
 
 {% endfor %}

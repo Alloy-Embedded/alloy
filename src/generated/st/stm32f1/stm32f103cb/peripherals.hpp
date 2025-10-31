@@ -3,7 +3,7 @@
 /// Source: stm32f1xx.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 22:25:27
+/// Generated: 2025-10-30 22:38:13
 #ifndef ALLOY_GENERATED_STM32F103CB_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32F103CB_PERIPHERALS_HPP
 
@@ -28,6 +28,8 @@ namespace gpio {
     constexpr uint32_t GPIOA_BASE = 0x40010800;
     constexpr uint32_t GPIOB_BASE = 0x40010C00;
     constexpr uint32_t GPIOC_BASE = 0x40011000;
+    constexpr uint32_t GPIOD_BASE = 0x40011400;
+    constexpr uint32_t GPIOE_BASE = 0x40011800;
 
     /// GPIO Register structure
     struct Registers {
@@ -43,6 +45,36 @@ namespace gpio {
     inline Registers* GPIOA = reinterpret_cast<Registers*>(GPIOA_BASE);
     inline Registers* GPIOB = reinterpret_cast<Registers*>(GPIOB_BASE);
     inline Registers* GPIOC = reinterpret_cast<Registers*>(GPIOC_BASE);
+    inline Registers* GPIOD = reinterpret_cast<Registers*>(GPIOD_BASE);
+    inline Registers* GPIOE = reinterpret_cast<Registers*>(GPIOE_BASE);
+
+}
+
+// ============================================================================
+// RCC Peripheral
+// ============================================================================
+
+namespace rcc {
+    /// Base addresses
+    constexpr uint32_t RCC_BASE = 0x40021000;
+
+    /// RCC Register structure
+    struct Registers {
+        volatile uint32_t CR;  ///< Offset: 0x00 - Clock control register
+        volatile uint32_t CFGR;  ///< Offset: 0x04 - Clock configuration register
+        volatile uint32_t CIR;  ///< Offset: 0x08 - Clock interrupt register
+        volatile uint32_t APB2RSTR;  ///< Offset: 0x0C - APB2 peripheral reset register
+        volatile uint32_t APB1RSTR;  ///< Offset: 0x10 - APB1 peripheral reset register
+        volatile uint32_t AHBENR;  ///< Offset: 0x14 - AHB peripheral clock enable register
+        volatile uint32_t APB2ENR;  ///< Offset: 0x18 - APB2 peripheral clock enable register
+        volatile uint32_t APB1ENR;  ///< Offset: 0x1C - APB1 peripheral clock enable register
+        volatile uint32_t BDCR;  ///< Offset: 0x20 - Backup domain control register
+        volatile uint32_t CSR;  ///< Offset: 0x24 - Control/status register
+    };
+
+    /// Peripheral instances
+    inline Registers* RCC = reinterpret_cast<Registers*>(RCC_BASE);
+
 }
 
 // ============================================================================
@@ -69,6 +101,39 @@ namespace usart {
     inline Registers* USART1 = reinterpret_cast<Registers*>(USART1_BASE);
     inline Registers* USART2 = reinterpret_cast<Registers*>(USART2_BASE);
     inline Registers* USART3 = reinterpret_cast<Registers*>(USART3_BASE);
+
+    // Bit definitions
+    /// SR Register bits
+    namespace sr_bits {
+        constexpr uint32_t PE = (1U << 0);  ///< Parity error
+        constexpr uint32_t FE = (1U << 1);  ///< Framing error
+        constexpr uint32_t NE = (1U << 2);  ///< Noise error
+        constexpr uint32_t ORE = (1U << 3);  ///< Overrun error
+        constexpr uint32_t IDLE = (1U << 4);  ///< IDLE line detected
+        constexpr uint32_t RXNE = (1U << 5);  ///< Read data register not empty
+        constexpr uint32_t TC = (1U << 6);  ///< Transmission complete
+        constexpr uint32_t TXE = (1U << 7);  ///< Transmit data register empty
+    }
+
+    /// CR1 Register bits
+    namespace cr1_bits {
+        constexpr uint32_t RE = (1U << 2);  ///< Receiver enable
+        constexpr uint32_t TE = (1U << 3);  ///< Transmitter enable
+        constexpr uint32_t RXNEIE = (1U << 5);  ///< RXNE interrupt enable
+        constexpr uint32_t TCIE = (1U << 6);  ///< TC interrupt enable
+        constexpr uint32_t TXEIE = (1U << 7);  ///< TXE interrupt enable
+        constexpr uint32_t PEIE = (1U << 8);  ///< PE interrupt enable
+        constexpr uint32_t PS = (1U << 9);  ///< Parity selection
+        constexpr uint32_t PCE = (1U << 10);  ///< Parity control enable
+        constexpr uint32_t M = (1U << 12);  ///< Word length
+        constexpr uint32_t UE = (1U << 13);  ///< USART enable
+    }
+
+    /// CR2 Register bits
+    namespace cr2_bits {
+        constexpr uint32_t STOP = (2 << 12);  ///< STOP bits
+    }
+
 }
 
 
