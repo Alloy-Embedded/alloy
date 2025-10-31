@@ -89,6 +89,160 @@
               "STOP": {"bit": 12, "width": 2, "description": "STOP bits"}
             }
           }
+        },
+        "ADC": {
+          "instances": [
+            {"name": "ADC1", "base": "0x40012400"},
+            {"name": "ADC2", "base": "0x40012800"}
+          ],
+          "registers": {
+            "SR": {"offset": "0x00", "size": 32, "description": "Status register"},
+            "CR1": {"offset": "0x04", "size": 32, "description": "Control register 1"},
+            "CR2": {"offset": "0x08", "size": 32, "description": "Control register 2"},
+            "SMPR1": {"offset": "0x0C", "size": 32, "description": "Sample time register 1"},
+            "SMPR2": {"offset": "0x10", "size": 32, "description": "Sample time register 2"},
+            "JOFR1": {"offset": "0x14", "size": 32, "description": "Injected channel data offset register 1"},
+            "JOFR2": {"offset": "0x18", "size": 32, "description": "Injected channel data offset register 2"},
+            "JOFR3": {"offset": "0x1C", "size": 32, "description": "Injected channel data offset register 3"},
+            "JOFR4": {"offset": "0x20", "size": 32, "description": "Injected channel data offset register 4"},
+            "HTR": {"offset": "0x24", "size": 32, "description": "Watchdog high threshold register"},
+            "LTR": {"offset": "0x28", "size": 32, "description": "Watchdog low threshold register"},
+            "SQR1": {"offset": "0x2C", "size": 32, "description": "Regular sequence register 1"},
+            "SQR2": {"offset": "0x30", "size": 32, "description": "Regular sequence register 2"},
+            "SQR3": {"offset": "0x34", "size": 32, "description": "Regular sequence register 3"},
+            "JSQR": {"offset": "0x38", "size": 32, "description": "Injected sequence register"},
+            "JDR1": {"offset": "0x3C", "size": 32, "description": "Injected data register 1"},
+            "JDR2": {"offset": "0x40", "size": 32, "description": "Injected data register 2"},
+            "JDR3": {"offset": "0x44", "size": 32, "description": "Injected data register 3"},
+            "JDR4": {"offset": "0x48", "size": 32, "description": "Injected data register 4"},
+            "DR": {"offset": "0x4C", "size": 32, "description": "Regular data register"}
+          },
+          "bits": {
+            "SR": {
+              "AWD": {"bit": 0, "description": "Analog watchdog flag"},
+              "EOC": {"bit": 1, "description": "End of conversion"},
+              "JEOC": {"bit": 2, "description": "Injected channel end of conversion"},
+              "JSTRT": {"bit": 3, "description": "Injected channel start flag"},
+              "STRT": {"bit": 4, "description": "Regular channel start flag"}
+            },
+            "CR1": {
+              "AWDCH": {"bit": 0, "width": 5, "description": "Analog watchdog channel select"},
+              "EOCIE": {"bit": 5, "description": "EOC interrupt enable"},
+              "AWDIE": {"bit": 6, "description": "Analog watchdog interrupt enable"},
+              "JEOCIE": {"bit": 7, "description": "Injected EOC interrupt enable"},
+              "SCAN": {"bit": 8, "description": "Scan mode"},
+              "AWDSGL": {"bit": 9, "description": "Enable watchdog on single channel"},
+              "JAUTO": {"bit": 10, "description": "Automatic injected group conversion"},
+              "DISCEN": {"bit": 11, "description": "Discontinuous mode on regular channels"},
+              "JDISCEN": {"bit": 12, "description": "Discontinuous mode on injected channels"},
+              "JAWDEN": {"bit": 22, "description": "Analog watchdog enable on injected channels"},
+              "AWDEN": {"bit": 23, "description": "Analog watchdog enable on regular channels"}
+            },
+            "CR2": {
+              "ADON": {"bit": 0, "description": "ADC on/off"},
+              "CONT": {"bit": 1, "description": "Continuous conversion"},
+              "CAL": {"bit": 2, "description": "ADC calibration"},
+              "RSTCAL": {"bit": 3, "description": "Reset calibration"},
+              "DMA": {"bit": 8, "description": "Direct memory access mode"},
+              "ALIGN": {"bit": 11, "description": "Data alignment"},
+              "JSWSTART": {"bit": 21, "description": "Start conversion of injected channels"},
+              "SWSTART": {"bit": 22, "description": "Start conversion of regular channels"},
+              "TSVREFE": {"bit": 23, "description": "Temperature sensor and VREFINT enable"}
+            }
+          }
+        },
+        "TIM": {
+          "instances": [
+            {"name": "TIM1", "base": "0x40012C00"},
+            {"name": "TIM2", "base": "0x40000000"},
+            {"name": "TIM3", "base": "0x40000400"},
+            {"name": "TIM4", "base": "0x40000800"}
+          ],
+          "registers": {
+            "CR1": {"offset": "0x00", "size": 32, "description": "Control register 1"},
+            "CR2": {"offset": "0x04", "size": 32, "description": "Control register 2"},
+            "SMCR": {"offset": "0x08", "size": 32, "description": "Slave mode control register"},
+            "DIER": {"offset": "0x0C", "size": 32, "description": "DMA/interrupt enable register"},
+            "SR": {"offset": "0x10", "size": 32, "description": "Status register"},
+            "EGR": {"offset": "0x14", "size": 32, "description": "Event generation register"},
+            "CCMR1": {"offset": "0x18", "size": 32, "description": "Capture/compare mode register 1"},
+            "CCMR2": {"offset": "0x1C", "size": 32, "description": "Capture/compare mode register 2"},
+            "CCER": {"offset": "0x20", "size": 32, "description": "Capture/compare enable register"},
+            "CNT": {"offset": "0x24", "size": 32, "description": "Counter"},
+            "PSC": {"offset": "0x28", "size": 32, "description": "Prescaler"},
+            "ARR": {"offset": "0x2C", "size": 32, "description": "Auto-reload register"},
+            "RCR": {"offset": "0x30", "size": 32, "description": "Repetition counter register"},
+            "CCR1": {"offset": "0x34", "size": 32, "description": "Capture/compare register 1"},
+            "CCR2": {"offset": "0x38", "size": 32, "description": "Capture/compare register 2"},
+            "CCR3": {"offset": "0x3C", "size": 32, "description": "Capture/compare register 3"},
+            "CCR4": {"offset": "0x40", "size": 32, "description": "Capture/compare register 4"},
+            "BDTR": {"offset": "0x44", "size": 32, "description": "Break and dead-time register"},
+            "DCR": {"offset": "0x48", "size": 32, "description": "DMA control register"},
+            "DMAR": {"offset": "0x4C", "size": 32, "description": "DMA address for full transfer"}
+          },
+          "bits": {
+            "CR1": {
+              "CEN": {"bit": 0, "description": "Counter enable"},
+              "UDIS": {"bit": 1, "description": "Update disable"},
+              "URS": {"bit": 2, "description": "Update request source"},
+              "OPM": {"bit": 3, "description": "One-pulse mode"},
+              "DIR": {"bit": 4, "description": "Direction"},
+              "CMS": {"bit": 5, "width": 2, "description": "Center-aligned mode selection"},
+              "ARPE": {"bit": 7, "description": "Auto-reload preload enable"},
+              "CKD": {"bit": 8, "width": 2, "description": "Clock division"}
+            },
+            "CR2": {
+              "CCPC": {"bit": 0, "description": "Capture/compare preloaded control"},
+              "CCUS": {"bit": 2, "description": "Capture/compare control update selection"},
+              "CCDS": {"bit": 3, "description": "Capture/compare DMA selection"},
+              "MMS": {"bit": 4, "width": 3, "description": "Master mode selection"},
+              "TI1S": {"bit": 7, "description": "TI1 selection"},
+              "OIS1": {"bit": 8, "description": "Output Idle state 1"},
+              "OIS1N": {"bit": 9, "description": "Output Idle state 1N"},
+              "OIS2": {"bit": 10, "description": "Output Idle state 2"},
+              "OIS2N": {"bit": 11, "description": "Output Idle state 2N"},
+              "OIS3": {"bit": 12, "description": "Output Idle state 3"},
+              "OIS3N": {"bit": 13, "description": "Output Idle state 3N"},
+              "OIS4": {"bit": 14, "description": "Output Idle state 4"}
+            },
+            "DIER": {
+              "UIE": {"bit": 0, "description": "Update interrupt enable"},
+              "CC1IE": {"bit": 1, "description": "Capture/Compare 1 interrupt enable"},
+              "CC2IE": {"bit": 2, "description": "Capture/Compare 2 interrupt enable"},
+              "CC3IE": {"bit": 3, "description": "Capture/Compare 3 interrupt enable"},
+              "CC4IE": {"bit": 4, "description": "Capture/Compare 4 interrupt enable"},
+              "TIE": {"bit": 6, "description": "Trigger interrupt enable"},
+              "UDE": {"bit": 8, "description": "Update DMA request enable"}
+            },
+            "SR": {
+              "UIF": {"bit": 0, "description": "Update interrupt flag"},
+              "CC1IF": {"bit": 1, "description": "Capture/Compare 1 interrupt flag"},
+              "CC2IF": {"bit": 2, "description": "Capture/Compare 2 interrupt flag"},
+              "CC3IF": {"bit": 3, "description": "Capture/Compare 3 interrupt flag"},
+              "CC4IF": {"bit": 4, "description": "Capture/Compare 4 interrupt flag"},
+              "TIF": {"bit": 6, "description": "Trigger interrupt flag"},
+              "CC1OF": {"bit": 9, "description": "Capture/Compare 1 overcapture flag"},
+              "CC2OF": {"bit": 10, "description": "Capture/Compare 2 overcapture flag"},
+              "CC3OF": {"bit": 11, "description": "Capture/Compare 3 overcapture flag"},
+              "CC4OF": {"bit": 12, "description": "Capture/Compare 4 overcapture flag"}
+            },
+            "CCER": {
+              "CC1E": {"bit": 0, "description": "Capture/Compare 1 output enable"},
+              "CC1P": {"bit": 1, "description": "Capture/Compare 1 output polarity"},
+              "CC1NE": {"bit": 2, "description": "Capture/Compare 1 complementary output enable"},
+              "CC1NP": {"bit": 3, "description": "Capture/Compare 1 complementary output polarity"},
+              "CC2E": {"bit": 4, "description": "Capture/Compare 2 output enable"},
+              "CC2P": {"bit": 5, "description": "Capture/Compare 2 output polarity"},
+              "CC2NE": {"bit": 6, "description": "Capture/Compare 2 complementary output enable"},
+              "CC2NP": {"bit": 7, "description": "Capture/Compare 2 complementary output polarity"},
+              "CC3E": {"bit": 8, "description": "Capture/Compare 3 output enable"},
+              "CC3P": {"bit": 9, "description": "Capture/Compare 3 output polarity"},
+              "CC3NE": {"bit": 10, "description": "Capture/Compare 3 complementary output enable"},
+              "CC3NP": {"bit": 11, "description": "Capture/Compare 3 complementary output polarity"},
+              "CC4E": {"bit": 12, "description": "Capture/Compare 4 output enable"},
+              "CC4P": {"bit": 13, "description": "Capture/Compare 4 output polarity"}
+            }
+          }
         }
       },
       "interrupts": {
@@ -195,6 +349,160 @@
             },
             "CR2": {
               "STOP": {"bit": 12, "width": 2, "description": "STOP bits"}
+            }
+          }
+        },
+        "ADC": {
+          "instances": [
+            {"name": "ADC1", "base": "0x40012400"},
+            {"name": "ADC2", "base": "0x40012800"}
+          ],
+          "registers": {
+            "SR": {"offset": "0x00", "size": 32, "description": "Status register"},
+            "CR1": {"offset": "0x04", "size": 32, "description": "Control register 1"},
+            "CR2": {"offset": "0x08", "size": 32, "description": "Control register 2"},
+            "SMPR1": {"offset": "0x0C", "size": 32, "description": "Sample time register 1"},
+            "SMPR2": {"offset": "0x10", "size": 32, "description": "Sample time register 2"},
+            "JOFR1": {"offset": "0x14", "size": 32, "description": "Injected channel data offset register 1"},
+            "JOFR2": {"offset": "0x18", "size": 32, "description": "Injected channel data offset register 2"},
+            "JOFR3": {"offset": "0x1C", "size": 32, "description": "Injected channel data offset register 3"},
+            "JOFR4": {"offset": "0x20", "size": 32, "description": "Injected channel data offset register 4"},
+            "HTR": {"offset": "0x24", "size": 32, "description": "Watchdog high threshold register"},
+            "LTR": {"offset": "0x28", "size": 32, "description": "Watchdog low threshold register"},
+            "SQR1": {"offset": "0x2C", "size": 32, "description": "Regular sequence register 1"},
+            "SQR2": {"offset": "0x30", "size": 32, "description": "Regular sequence register 2"},
+            "SQR3": {"offset": "0x34", "size": 32, "description": "Regular sequence register 3"},
+            "JSQR": {"offset": "0x38", "size": 32, "description": "Injected sequence register"},
+            "JDR1": {"offset": "0x3C", "size": 32, "description": "Injected data register 1"},
+            "JDR2": {"offset": "0x40", "size": 32, "description": "Injected data register 2"},
+            "JDR3": {"offset": "0x44", "size": 32, "description": "Injected data register 3"},
+            "JDR4": {"offset": "0x48", "size": 32, "description": "Injected data register 4"},
+            "DR": {"offset": "0x4C", "size": 32, "description": "Regular data register"}
+          },
+          "bits": {
+            "SR": {
+              "AWD": {"bit": 0, "description": "Analog watchdog flag"},
+              "EOC": {"bit": 1, "description": "End of conversion"},
+              "JEOC": {"bit": 2, "description": "Injected channel end of conversion"},
+              "JSTRT": {"bit": 3, "description": "Injected channel start flag"},
+              "STRT": {"bit": 4, "description": "Regular channel start flag"}
+            },
+            "CR1": {
+              "AWDCH": {"bit": 0, "width": 5, "description": "Analog watchdog channel select"},
+              "EOCIE": {"bit": 5, "description": "EOC interrupt enable"},
+              "AWDIE": {"bit": 6, "description": "Analog watchdog interrupt enable"},
+              "JEOCIE": {"bit": 7, "description": "Injected EOC interrupt enable"},
+              "SCAN": {"bit": 8, "description": "Scan mode"},
+              "AWDSGL": {"bit": 9, "description": "Enable watchdog on single channel"},
+              "JAUTO": {"bit": 10, "description": "Automatic injected group conversion"},
+              "DISCEN": {"bit": 11, "description": "Discontinuous mode on regular channels"},
+              "JDISCEN": {"bit": 12, "description": "Discontinuous mode on injected channels"},
+              "JAWDEN": {"bit": 22, "description": "Analog watchdog enable on injected channels"},
+              "AWDEN": {"bit": 23, "description": "Analog watchdog enable on regular channels"}
+            },
+            "CR2": {
+              "ADON": {"bit": 0, "description": "ADC on/off"},
+              "CONT": {"bit": 1, "description": "Continuous conversion"},
+              "CAL": {"bit": 2, "description": "ADC calibration"},
+              "RSTCAL": {"bit": 3, "description": "Reset calibration"},
+              "DMA": {"bit": 8, "description": "Direct memory access mode"},
+              "ALIGN": {"bit": 11, "description": "Data alignment"},
+              "JSWSTART": {"bit": 21, "description": "Start conversion of injected channels"},
+              "SWSTART": {"bit": 22, "description": "Start conversion of regular channels"},
+              "TSVREFE": {"bit": 23, "description": "Temperature sensor and VREFINT enable"}
+            }
+          }
+        },
+        "TIM": {
+          "instances": [
+            {"name": "TIM1", "base": "0x40012C00"},
+            {"name": "TIM2", "base": "0x40000000"},
+            {"name": "TIM3", "base": "0x40000400"},
+            {"name": "TIM4", "base": "0x40000800"}
+          ],
+          "registers": {
+            "CR1": {"offset": "0x00", "size": 32, "description": "Control register 1"},
+            "CR2": {"offset": "0x04", "size": 32, "description": "Control register 2"},
+            "SMCR": {"offset": "0x08", "size": 32, "description": "Slave mode control register"},
+            "DIER": {"offset": "0x0C", "size": 32, "description": "DMA/interrupt enable register"},
+            "SR": {"offset": "0x10", "size": 32, "description": "Status register"},
+            "EGR": {"offset": "0x14", "size": 32, "description": "Event generation register"},
+            "CCMR1": {"offset": "0x18", "size": 32, "description": "Capture/compare mode register 1"},
+            "CCMR2": {"offset": "0x1C", "size": 32, "description": "Capture/compare mode register 2"},
+            "CCER": {"offset": "0x20", "size": 32, "description": "Capture/compare enable register"},
+            "CNT": {"offset": "0x24", "size": 32, "description": "Counter"},
+            "PSC": {"offset": "0x28", "size": 32, "description": "Prescaler"},
+            "ARR": {"offset": "0x2C", "size": 32, "description": "Auto-reload register"},
+            "RCR": {"offset": "0x30", "size": 32, "description": "Repetition counter register"},
+            "CCR1": {"offset": "0x34", "size": 32, "description": "Capture/compare register 1"},
+            "CCR2": {"offset": "0x38", "size": 32, "description": "Capture/compare register 2"},
+            "CCR3": {"offset": "0x3C", "size": 32, "description": "Capture/compare register 3"},
+            "CCR4": {"offset": "0x40", "size": 32, "description": "Capture/compare register 4"},
+            "BDTR": {"offset": "0x44", "size": 32, "description": "Break and dead-time register"},
+            "DCR": {"offset": "0x48", "size": 32, "description": "DMA control register"},
+            "DMAR": {"offset": "0x4C", "size": 32, "description": "DMA address for full transfer"}
+          },
+          "bits": {
+            "CR1": {
+              "CEN": {"bit": 0, "description": "Counter enable"},
+              "UDIS": {"bit": 1, "description": "Update disable"},
+              "URS": {"bit": 2, "description": "Update request source"},
+              "OPM": {"bit": 3, "description": "One-pulse mode"},
+              "DIR": {"bit": 4, "description": "Direction"},
+              "CMS": {"bit": 5, "width": 2, "description": "Center-aligned mode selection"},
+              "ARPE": {"bit": 7, "description": "Auto-reload preload enable"},
+              "CKD": {"bit": 8, "width": 2, "description": "Clock division"}
+            },
+            "CR2": {
+              "CCPC": {"bit": 0, "description": "Capture/compare preloaded control"},
+              "CCUS": {"bit": 2, "description": "Capture/compare control update selection"},
+              "CCDS": {"bit": 3, "description": "Capture/compare DMA selection"},
+              "MMS": {"bit": 4, "width": 3, "description": "Master mode selection"},
+              "TI1S": {"bit": 7, "description": "TI1 selection"},
+              "OIS1": {"bit": 8, "description": "Output Idle state 1"},
+              "OIS1N": {"bit": 9, "description": "Output Idle state 1N"},
+              "OIS2": {"bit": 10, "description": "Output Idle state 2"},
+              "OIS2N": {"bit": 11, "description": "Output Idle state 2N"},
+              "OIS3": {"bit": 12, "description": "Output Idle state 3"},
+              "OIS3N": {"bit": 13, "description": "Output Idle state 3N"},
+              "OIS4": {"bit": 14, "description": "Output Idle state 4"}
+            },
+            "DIER": {
+              "UIE": {"bit": 0, "description": "Update interrupt enable"},
+              "CC1IE": {"bit": 1, "description": "Capture/Compare 1 interrupt enable"},
+              "CC2IE": {"bit": 2, "description": "Capture/Compare 2 interrupt enable"},
+              "CC3IE": {"bit": 3, "description": "Capture/Compare 3 interrupt enable"},
+              "CC4IE": {"bit": 4, "description": "Capture/Compare 4 interrupt enable"},
+              "TIE": {"bit": 6, "description": "Trigger interrupt enable"},
+              "UDE": {"bit": 8, "description": "Update DMA request enable"}
+            },
+            "SR": {
+              "UIF": {"bit": 0, "description": "Update interrupt flag"},
+              "CC1IF": {"bit": 1, "description": "Capture/Compare 1 interrupt flag"},
+              "CC2IF": {"bit": 2, "description": "Capture/Compare 2 interrupt flag"},
+              "CC3IF": {"bit": 3, "description": "Capture/Compare 3 interrupt flag"},
+              "CC4IF": {"bit": 4, "description": "Capture/Compare 4 interrupt flag"},
+              "TIF": {"bit": 6, "description": "Trigger interrupt flag"},
+              "CC1OF": {"bit": 9, "description": "Capture/Compare 1 overcapture flag"},
+              "CC2OF": {"bit": 10, "description": "Capture/Compare 2 overcapture flag"},
+              "CC3OF": {"bit": 11, "description": "Capture/Compare 3 overcapture flag"},
+              "CC4OF": {"bit": 12, "description": "Capture/Compare 4 overcapture flag"}
+            },
+            "CCER": {
+              "CC1E": {"bit": 0, "description": "Capture/Compare 1 output enable"},
+              "CC1P": {"bit": 1, "description": "Capture/Compare 1 output polarity"},
+              "CC1NE": {"bit": 2, "description": "Capture/Compare 1 complementary output enable"},
+              "CC1NP": {"bit": 3, "description": "Capture/Compare 1 complementary output polarity"},
+              "CC2E": {"bit": 4, "description": "Capture/Compare 2 output enable"},
+              "CC2P": {"bit": 5, "description": "Capture/Compare 2 output polarity"},
+              "CC2NE": {"bit": 6, "description": "Capture/Compare 2 complementary output enable"},
+              "CC2NP": {"bit": 7, "description": "Capture/Compare 2 complementary output polarity"},
+              "CC3E": {"bit": 8, "description": "Capture/Compare 3 output enable"},
+              "CC3P": {"bit": 9, "description": "Capture/Compare 3 output polarity"},
+              "CC3NE": {"bit": 10, "description": "Capture/Compare 3 complementary output enable"},
+              "CC3NP": {"bit": 11, "description": "Capture/Compare 3 complementary output polarity"},
+              "CC4E": {"bit": 12, "description": "Capture/Compare 4 output enable"},
+              "CC4P": {"bit": 13, "description": "Capture/Compare 4 output polarity"}
             }
           }
         }
