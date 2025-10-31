@@ -2,9 +2,9 @@
 # Popular STM32 development board
 
 # Board identification
-set(ALLOY_BOARD_NAME "Blue Pill" CACHE STRING "Board name")
-set(ALLOY_MCU "STM32F103C8" CACHE STRING "MCU model")
-set(ALLOY_ARCH "arm-cortex-m3" CACHE STRING "CPU architecture")
+set(ALLOY_BOARD_NAME "Blue Pill" CACHE STRING "Board name" FORCE)
+set(ALLOY_MCU "STM32F103C8" CACHE STRING "MCU model" FORCE)
+set(ALLOY_ARCH "arm-cortex-m3" CACHE STRING "CPU architecture" FORCE)
 
 # Clock configuration
 set(ALLOY_CLOCK_FREQ_HZ 72000000 CACHE STRING "System clock frequency (72 MHz)")
@@ -31,14 +31,19 @@ set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/../toolchains/arm-none-eabi.
 include(codegen)
 
 # Generate code for STM32F103C8
-if(ALLOY_CODEGEN_AVAILABLE)
-    alloy_generate_code(
-        MCU STM32F103C8
-        FAMILY stm32f1xx
-    )
+alloy_generate_code(
+    MCU STM32F103C8
+    VENDOR st
+    FAMILY stm32f1
+)
 
+# Use generated code if available
+if(ALLOY_CODEGEN_AVAILABLE)
     # Make generated directory available to targets
     include_directories(${ALLOY_GENERATED_DIR})
+
+    # Define namespace for generated code (full namespace path)
+    add_compile_definitions(ALLOY_GENERATED_NAMESPACE=alloy::generated::stm32f103c8)
 endif()
 
 message(STATUS "Board configured: ${ALLOY_BOARD_NAME}")

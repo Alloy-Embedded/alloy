@@ -3,7 +3,7 @@
 /// Source: nxp_lpc11xx.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:27
+/// Generated: 2025-10-31 17:44:01
 #ifndef ALLOY_GENERATED_LPC111X_LPC11CXX_PERIPHERALS_HPP
 #define ALLOY_GENERATED_LPC111X_LPC11CXX_PERIPHERALS_HPP
 
@@ -152,9 +152,9 @@ namespace i2c {
         volatile uint32_t SCLL;  ///< Offset: 0x14 - SCL Duty Cycle Register Low Half Word. Determines the...
         volatile uint32_t CONCLR;  ///< Offset: 0x18 - I2C Control Clear Register. When a one is written to a...
         volatile uint32_t MMCTRL;  ///< Offset: 0x1C - Monitor mode control register.
-        volatile uint32_t ADR%s;  ///< Offset: 0x20 - I2C Slave Address Register 1. Contains the 7-bit slave...
+        volatile uint32_t ADR;  ///< Offset: 0x20 - I2C Slave Address Register 1. Contains the 7-bit slave... (renamed from ADR)
         volatile uint32_t DATA_BUFFER;  ///< Offset: 0x2C - Data buffer register. The contents of the 8 MSBs of the...
-        volatile uint32_t MASK%s;  ///< Offset: 0x30 - I2C Slave address mask register 0. This mask register is...
+        volatile uint32_t MASK;  ///< Offset: 0x30 - I2C Slave address mask register 0. This mask register is... (renamed from MASK)
     };
 
     /// Peripheral instances
@@ -236,9 +236,9 @@ namespace ct16b0 {
         volatile uint32_t PR;  ///< Offset: 0x0C - Prescale Register (PR). When the Prescale Counter...
         volatile uint32_t PC;  ///< Offset: 0x10 - Prescale Counter (PC). The 16-bit PC is a counter which...
         volatile uint32_t MCR;  ///< Offset: 0x14 - Match Control Register (MCR). The MCR is used to control...
-        volatile uint32_t MR%s;  ///< Offset: 0x18 - Match Register. MR can be enabled through the MCR to...
+        volatile uint32_t MR;  ///< Offset: 0x18 - Match Register. MR can be enabled through the MCR to... (renamed from MR)
         volatile uint32_t CCR;  ///< Offset: 0x28 - Capture Control Register (CCR). The CCR controls which...
-        volatile uint32_t CR%s;  ///< Offset: 0x2C - Capture Register (CR). CR is loaded with the value of TC...
+        volatile uint32_t CR;  ///< Offset: 0x2C - Capture Register (CR). CR is loaded with the value of TC... (renamed from CR)
         volatile uint32_t EMR;  ///< Offset: 0x3C - External Match Register (EMR). The EMR controls the...
         volatile uint32_t CTCR;  ///< Offset: 0x70 - Count Control Register (CTCR). The CTCR selects between...
         volatile uint32_t PWMC;  ///< Offset: 0x74 - PWM Control Register (PWMCON). The PWMCON enables PWM...
@@ -282,9 +282,9 @@ namespace ct32b0 {
         volatile uint32_t PR;  ///< Offset: 0x0C - Prescale Register (PR). When the Prescale Counter...
         volatile uint32_t PC;  ///< Offset: 0x10 - Prescale Counter (PC). The 32-bit PC is a counter which...
         volatile uint32_t MCR;  ///< Offset: 0x14 - Match Control Register (MCR). The MCR is used to control...
-        volatile uint32_t MR%s;  ///< Offset: 0x18 - Match Register. MR can be enabled through the MCR to...
+        volatile uint32_t MR;  ///< Offset: 0x18 - Match Register. MR can be enabled through the MCR to... (renamed from MR)
         volatile uint32_t CCR;  ///< Offset: 0x28 - Capture Control Register (CCR). The CCR controls which...
-        volatile uint32_t CR%s;  ///< Offset: 0x2C - Capture Register (CR). CR is loaded with the value of TC...
+        volatile uint32_t CR;  ///< Offset: 0x2C - Capture Register (CR). CR is loaded with the value of TC... (renamed from CR)
         volatile uint32_t EMR;  ///< Offset: 0x3C - External Match Register (EMR). The EMR controls the...
         volatile uint32_t CTCR;  ///< Offset: 0x70 - Count Control Register (CTCR). The CTCR selects between...
         volatile uint32_t PWMC;  ///< Offset: 0x74 - PWM Control Register (PWMCON). The PWMCON enables PWM...
@@ -326,7 +326,7 @@ namespace adc {
         volatile uint32_t GDR;  ///< Offset: 0x04 - A/D Global Data Register. Contains the result of the...
         volatile uint32_t STAT;  ///< Offset: 0x30 - A/D Status Register. This register contains DONE and...
         volatile uint32_t INTEN;  ///< Offset: 0x0C - A/D Interrupt Enable Register. This register contains...
-        volatile uint32_t DR%s;  ///< Offset: 0x10 - A/D Channel n Data Register. This register contains the...
+        volatile uint32_t DR;  ///< Offset: 0x10 - A/D Channel n Data Register. This register contains the... (renamed from DR)
     };
 
     /// Peripheral instances
@@ -345,7 +345,7 @@ namespace pmu {
     /// PMU Register structure
     struct Registers {
         volatile uint32_t PCON;  ///< Offset: 0x00 - Power control register
-        volatile uint32_t GPREG%s;  ///< Offset: 0x04 - General purpose register
+        volatile uint32_t GPREG;  ///< Offset: 0x04 - General purpose register (renamed from GPREG)
         volatile uint32_t GPREG4;  ///< Offset: 0x14 - General purpose register 4
     };
 
@@ -548,18 +548,18 @@ namespace can {
         volatile uint32_t CANINT;  ///< Offset: 0x10 - Interrupt register
         volatile uint32_t CANTEST;  ///< Offset: 0x14 - Test register
         volatile uint32_t CANBRPE;  ///< Offset: 0x18 - Baud rate prescaler extension register
-        volatile uint32_t CANIF%s_CMDREQ;  ///< Offset: 0x20 - Message interface command request
-        volatile uint32_t CANIF%s_CMDMSK_W;  ///< Offset: 0x24 - Message interface command mask - write direction
-        volatile uint32_t CANIF%s_CMDMSK_R;  ///< Offset: 0x24 - Message interface command mask - read direction
-        volatile uint32_t CANIF%s_MSK1;  ///< Offset: 0x28 - Message interface 1 mask 1
-        volatile uint32_t CANIF%s_MSK2;  ///< Offset: 0x2C - Message interface 1 mask 2
-        volatile uint32_t CANIF%s_ARB1;  ///< Offset: 0x30 - Message interface 1 arbitration 1
-        volatile uint32_t CANIF%s_ARB2;  ///< Offset: 0x34 - Message interface 1 arbitration 2
-        volatile uint32_t CANIF%s_MCTRL;  ///< Offset: 0x38 - Message interface 1 message control
-        volatile uint32_t CANIF%s_DA1;  ///< Offset: 0x3C - Message interface 1 data A1
-        volatile uint32_t CANIF%s_DA2;  ///< Offset: 0x40 - Message interface 1 data A2
-        volatile uint32_t CANIF%s_DB1;  ///< Offset: 0x44 - Message interface 1 data B1
-        volatile uint32_t CANIF%s_DB2;  ///< Offset: 0x48 - Message interface 1 data B2
+        volatile uint32_t CANIF_CMDREQ;  ///< Offset: 0x20 - Message interface command request (renamed from CANIF_CMDREQ)
+        volatile uint32_t CANIF_CMDMSK_W;  ///< Offset: 0x24 - Message interface command mask - write direction (renamed from CANIF_CMDMSK_W)
+        volatile uint32_t CANIF_CMDMSK_R;  ///< Offset: 0x24 - Message interface command mask - read direction (renamed from CANIF_CMDMSK_R)
+        volatile uint32_t CANIF_MSK1;  ///< Offset: 0x28 - Message interface 1 mask 1 (renamed from CANIF_MSK1)
+        volatile uint32_t CANIF_MSK2;  ///< Offset: 0x2C - Message interface 1 mask 2 (renamed from CANIF_MSK2)
+        volatile uint32_t CANIF_ARB1;  ///< Offset: 0x30 - Message interface 1 arbitration 1 (renamed from CANIF_ARB1)
+        volatile uint32_t CANIF_ARB2;  ///< Offset: 0x34 - Message interface 1 arbitration 2 (renamed from CANIF_ARB2)
+        volatile uint32_t CANIF_MCTRL;  ///< Offset: 0x38 - Message interface 1 message control (renamed from CANIF_MCTRL)
+        volatile uint32_t CANIF_DA1;  ///< Offset: 0x3C - Message interface 1 data A1 (renamed from CANIF_DA1)
+        volatile uint32_t CANIF_DA2;  ///< Offset: 0x40 - Message interface 1 data A2 (renamed from CANIF_DA2)
+        volatile uint32_t CANIF_DB1;  ///< Offset: 0x44 - Message interface 1 data B1 (renamed from CANIF_DB1)
+        volatile uint32_t CANIF_DB2;  ///< Offset: 0x48 - Message interface 1 data B2 (renamed from CANIF_DB2)
         volatile uint32_t CANTXREQ1;  ///< Offset: 0x100 - Transmission request 1
         volatile uint32_t CANTXREQ2;  ///< Offset: 0x104 - Transmission request 2
         volatile uint32_t CANND1;  ///< Offset: 0x120 - New data 1

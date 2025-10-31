@@ -3,7 +3,7 @@
 /// Source: st_stm32f405.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:25
+/// Generated: 2025-10-31 17:45:05
 #ifndef ALLOY_GENERATED_STM32F405_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32F405_PERIPHERALS_HPP
 

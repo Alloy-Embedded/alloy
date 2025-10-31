@@ -10,21 +10,20 @@ target_include_directories(blink_esp32 PRIVATE
     ${CMAKE_SOURCE_DIR}/boards
 )
 
+# Apply board-specific flags and linker script
+alloy_target_board_settings(blink_esp32)
+
+# ESP32-specific compile options
 target_compile_options(blink_esp32 PRIVATE
-    -mlongcalls
     -mtext-section-literals
-    -ffunction-sections
-    -fdata-sections
+    -O2
     -Wall
     -Wextra
-    -O2
 )
 
+# ESP32-specific link options
 target_link_options(blink_esp32 PRIVATE
-    -mlongcalls
     -mtext-section-literals
-    -T${CMAKE_SOURCE_DIR}/boards/esp32_devkit/esp32.ld
-    -Wl,--gc-sections
     -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/blink_esp32.map
     -Wl,--print-memory-usage
     -nostdlib
@@ -32,9 +31,8 @@ target_link_options(blink_esp32 PRIVATE
     -lstdc++
 )
 
-# Generate additional output formats
-add_custom_command(TARGET blink_esp32 POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:blink_esp32> ${CMAKE_CURRENT_BINARY_DIR}/blink_esp32.bin
-    COMMAND ${CMAKE_SIZE} $<TARGET_FILE:blink_esp32>
-    COMMENT "Generating BIN file for ESP32"
-)
+# Generate binary outputs (.bin, .hex) and print size
+alloy_add_binary_outputs(blink_esp32)
+
+# Create flash target (default port: /dev/ttyUSB0, baud: 115200)
+alloy_add_flash_target(blink_esp32 PORT /dev/ttyUSB0 BAUD 115200)

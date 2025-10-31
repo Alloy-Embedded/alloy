@@ -3,7 +3,7 @@
 /// Source: nxp_mkw40.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:15
+/// Generated: 2025-10-31 17:44:54
 #include <cstdint>
 #include <cstring>
 

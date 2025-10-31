@@ -3,7 +3,7 @@
 /// Source: espressif_esp32.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:16
+/// Generated: 2025-10-31 17:44:55
 #ifndef ALLOY_GENERATED_ESP32_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ESP32_PERIPHERALS_HPP
 
@@ -229,8 +229,8 @@ namespace crypto {
         volatile uint32_t START;  ///< Offset: 0x00 - Write 1 to start the AES operation.
         volatile uint32_t IDLE;  ///< Offset: 0x04 - AES Idle register. Reads ’zero’ while the AES...
         volatile uint32_t MODE;  ///< Offset: 0x08 - Selects the AES accelerator mode of operation. See Table...
-        volatile uint32_t KEY_%s;  ///< Offset: 0x10 - AES key material register.
-        volatile uint32_t TEXT_%s;  ///< Offset: 0x30 - Plaintext and ciphertext register.
+        volatile uint32_t KEY_;  ///< Offset: 0x10 - AES key material register. (renamed from KEY_)
+        volatile uint32_t TEXT_;  ///< Offset: 0x30 - Plaintext and ciphertext register. (renamed from TEXT_)
         volatile uint32_t ENDIAN;  ///< Offset: 0x40 - Endianness selection register. See Table 22-2 for details.
     };
 
@@ -255,13 +255,13 @@ namespace crypto {
         constexpr uint32_t MODE = (8 << 0);  ///< Selects the AES accelerator mode of operation. See Table 22-1 for details.
     }
 
-    /// KEY_%s Register bits
-    namespace key_%s_bits {
+    /// KEY_ Register bits
+    namespace key__bits {
         constexpr uint32_t KEY = (8 << 0);  ///< AES key material register.
     }
 
-    /// TEXT_%s Register bits
-    namespace text_%s_bits {
+    /// TEXT_ Register bits
+    namespace text__bits {
         constexpr uint32_t TEXT = (8 << 0);  ///< Plaintext and ciphertext register.
     }
 
@@ -289,8 +289,8 @@ namespace apb {
         volatile uint32_t APB_SARADC_CTRL;  ///< Offset: 0x10 - 1: SAR ADC2 is controlled by DIG ADC2 CTRL 0: SAR ADC2...
         volatile uint32_t APB_SARADC_CTRL2;  ///< Offset: 0x14 - max conversion number
         volatile uint32_t APB_SARADC_FSM;  ///< Offset: 0x18 - sample cycles
-        volatile uint32_t APB_SARADC_SAR1_PATT_TAB%s;  ///< Offset: 0x1C - item 0 ~ 3 for pattern table 1 (each item one byte)
-        volatile uint32_t APB_SARADC_SAR2_PATT_TAB%s;  ///< Offset: 0x2C - item 0 ~ 3 for pattern table 2 (each item one byte)
+        volatile uint32_t APB_SARADC_SAR1_PATT_TAB;  ///< Offset: 0x1C - item 0 ~ 3 for pattern table 1 (each item one byte) (renamed from APB_SARADC_SAR1_PATT_TAB)
+        volatile uint32_t APB_SARADC_SAR2_PATT_TAB;  ///< Offset: 0x2C - item 0 ~ 3 for pattern table 2 (each item one byte) (renamed from APB_SARADC_SAR2_PATT_TAB)
         volatile uint32_t APLL_TICK_CONF;  ///< Offset: 0x3C - 
         volatile uint32_t DATE;  ///< Offset: 0x7C - 
     };
@@ -356,13 +356,13 @@ namespace apb {
         constexpr uint32_t SARADC_SAMPLE_CYCLE = (8 << 24);  ///< sample cycles
     }
 
-    /// APB_SARADC_SAR1_PATT_TAB%s Register bits
-    namespace apb_saradc_sar1_patt_tab%s_bits {
+    /// APB_SARADC_SAR1_PATT_TAB Register bits
+    namespace apb_saradc_sar1_patt_tab_bits {
         constexpr uint32_t SARADC_SAR1_PATT_TAB1 = (32 << 0);  ///< item 0 ~ 3 for pattern table 1 (each item one byte)
     }
 
-    /// APB_SARADC_SAR2_PATT_TAB%s Register bits
-    namespace apb_saradc_sar2_patt_tab%s_bits {
+    /// APB_SARADC_SAR2_PATT_TAB Register bits
+    namespace apb_saradc_sar2_patt_tab_bits {
         constexpr uint32_t SARADC_SAR2_PATT_TAB1 = (32 << 0);  ///< item 0 ~ 3 for pattern table 2 (each item one byte)
     }
 
@@ -3654,7 +3654,7 @@ namespace flash {
 
     /// FLASH Register structure
     struct Registers {
-        volatile uint32_t BUFFER_%s;  ///< Offset: 0x00 - Data buffers for encryption.
+        volatile uint32_t BUFFER_;  ///< Offset: 0x00 - Data buffers for encryption. (renamed from BUFFER_)
         volatile uint32_t START;  ///< Offset: 0x20 - Set this bit to start encryption operation on data buffer.
         volatile uint32_t ADDRESS;  ///< Offset: 0x24 - The physical address on the off-chip flash must be...
         volatile uint32_t DONE;  ///< Offset: 0x28 - Set this bit when encryption operation is complete.
@@ -3664,8 +3664,8 @@ namespace flash {
     inline Registers* FLASH_ENCRYPTION = reinterpret_cast<Registers*>(FLASH_ENCRYPTION_BASE);
 
     // Bit definitions
-    /// BUFFER_%s Register bits
-    namespace buffer_%s_bits {
+    /// BUFFER_ Register bits
+    namespace buffer__bits {
         constexpr uint32_t BUFFER = (8 << 0);  ///< Data buffers for encryption.
     }
 
@@ -3887,7 +3887,7 @@ namespace i2c {
         volatile uint32_t SCL_STOP_SETUP;  ///< Offset: 0x4C - This register is used to configure the clock num between...
         volatile uint32_t SCL_FILTER_CFG;  ///< Offset: 0x50 - When input SCL's pulse width is smaller than this...
         volatile uint32_t SDA_FILTER_CFG;  ///< Offset: 0x54 - When input SCL's pulse width is smaller than this...
-        volatile uint32_t COMD%s;  ///< Offset: 0x58 - This is the content of command0. It consists of three...
+        volatile uint32_t COMD;  ///< Offset: 0x58 - This is the content of command0. It consists of three... (renamed from COMD)
         volatile uint32_t DATE;  ///< Offset: 0xF8 - 
         volatile uint32_t FIFO_START_ADDR;  ///< Offset: 0x100 - 
     };
@@ -4081,8 +4081,8 @@ namespace i2c {
         constexpr uint32_t SDA_FILTER_EN = (1U << 3);  ///< This is the filter enable bit for SDA.
     }
 
-    /// COMD%s Register bits
-    namespace comd%s_bits {
+    /// COMD Register bits
+    namespace comd_bits {
         constexpr uint32_t COMMAND = (14 << 0);  ///< This is the content of command0. It consists of three part. op_code is the command 0: RSTART 1: WRITE 2: READ 3: STOP . 4:END. Byte_num represent the number of data need to be send or data need to be received. ack_check_en ack_exp and ack value are used to control the ack bit.
         constexpr uint32_t COMMAND_DONE = (1U << 31);  ///< When command0 is done in I2C Master mode this bit changes to high level.
     }
@@ -5188,20 +5188,20 @@ namespace pwm {
 
     /// PWM Register structure
     struct Registers {
-        volatile uint32_t HSCH%s_CONF0;  ///< Offset: 0x00 - There are four high speed timers the two bits are used...
-        volatile uint32_t HSCH%s_HPOINT;  ///< Offset: 0x04 - The output value changes to high when htimerx(x=[0 3])...
-        volatile uint32_t HSCH%s_DUTY;  ///< Offset: 0x08 - This register represents the current duty of the output...
-        volatile uint32_t HSCH%s_CONF1;  ///< Offset: 0x0C - This register controls the increase or decrease step...
-        volatile uint32_t HSCH%s_DUTY_R;  ///< Offset: 0x10 - This register represents the current duty cycle of the...
-        volatile uint32_t LSCH%s_CONF0;  ///< Offset: 0xA0 - There are four low speed timers the two bits are used to...
-        volatile uint32_t LSCH%s_HPOINT;  ///< Offset: 0xA4 - The output value changes to high when lstimerx(x=[0 3])...
-        volatile uint32_t LSCH%s_DUTY;  ///< Offset: 0xA8 - This register represents the current duty of the output...
-        volatile uint32_t LSCH%s_CONF1;  ///< Offset: 0xAC - This register controls the increase or decrease step...
-        volatile uint32_t LSCH%s_DUTY_R;  ///< Offset: 0xB0 - This register represents the current duty cycle of the...
-        volatile uint32_t HSTIMER%s_CONF;  ///< Offset: 0x140 - This register controls the range of the counter in high...
-        volatile uint32_t HSTIMER%s_VALUE;  ///< Offset: 0x144 - software can read this register to get the current...
-        volatile uint32_t LSTIMER%s_CONF;  ///< Offset: 0x160 - This register controls the range of the counter in low...
-        volatile uint32_t LSTIMER%s_VALUE;  ///< Offset: 0x164 - software can read this register to get the current...
+        volatile uint32_t HSCH_CONF0;  ///< Offset: 0x00 - There are four high speed timers the two bits are used... (renamed from HSCH_CONF0)
+        volatile uint32_t HSCH_HPOINT;  ///< Offset: 0x04 - The output value changes to high when htimerx(x=[0 3])... (renamed from HSCH_HPOINT)
+        volatile uint32_t HSCH_DUTY;  ///< Offset: 0x08 - This register represents the current duty of the output... (renamed from HSCH_DUTY)
+        volatile uint32_t HSCH_CONF1;  ///< Offset: 0x0C - This register controls the increase or decrease step... (renamed from HSCH_CONF1)
+        volatile uint32_t HSCH_DUTY_R;  ///< Offset: 0x10 - This register represents the current duty cycle of the... (renamed from HSCH_DUTY_R)
+        volatile uint32_t LSCH_CONF0;  ///< Offset: 0xA0 - There are four low speed timers the two bits are used to... (renamed from LSCH_CONF0)
+        volatile uint32_t LSCH_HPOINT;  ///< Offset: 0xA4 - The output value changes to high when lstimerx(x=[0 3])... (renamed from LSCH_HPOINT)
+        volatile uint32_t LSCH_DUTY;  ///< Offset: 0xA8 - This register represents the current duty of the output... (renamed from LSCH_DUTY)
+        volatile uint32_t LSCH_CONF1;  ///< Offset: 0xAC - This register controls the increase or decrease step... (renamed from LSCH_CONF1)
+        volatile uint32_t LSCH_DUTY_R;  ///< Offset: 0xB0 - This register represents the current duty cycle of the... (renamed from LSCH_DUTY_R)
+        volatile uint32_t HSTIMER_CONF;  ///< Offset: 0x140 - This register controls the range of the counter in high... (renamed from HSTIMER_CONF)
+        volatile uint32_t HSTIMER_VALUE;  ///< Offset: 0x144 - software can read this register to get the current... (renamed from HSTIMER_VALUE)
+        volatile uint32_t LSTIMER_CONF;  ///< Offset: 0x160 - This register controls the range of the counter in low... (renamed from LSTIMER_CONF)
+        volatile uint32_t LSTIMER_VALUE;  ///< Offset: 0x164 - software can read this register to get the current... (renamed from LSTIMER_VALUE)
         volatile uint32_t INT_RAW;  ///< Offset: 0x180 - The interrupt raw bit for high speed channel0 counter overflow.
         volatile uint32_t INT_ST;  ///< Offset: 0x184 - The interrupt status bit for high speed channel0 counter...
         volatile uint32_t INT_ENA;  ///< Offset: 0x188 - The interrupt enable bit for high speed channel0 counter...
@@ -5216,25 +5216,25 @@ namespace pwm {
     inline Registers* MCPWM1 = reinterpret_cast<Registers*>(MCPWM1_BASE);
 
     // Bit definitions
-    /// HSCH%s_CONF0 Register bits
-    namespace hsch%s_conf0_bits {
+    /// HSCH_CONF0 Register bits
+    namespace hsch_conf0_bits {
         constexpr uint32_t TIMER_SEL = (2 << 0);  ///< There are four high speed timers the two bits are used to select one of them for high speed channel0. 2'b00: seletc hstimer0. 2'b01: select hstimer1. 2'b10: select hstimer2. 2'b11: select hstimer3.
         constexpr uint32_t SIG_OUT_EN = (1U << 2);  ///< This is the output enable control bit for high speed channel0
         constexpr uint32_t IDLE_LV = (1U << 3);  ///< This bit is used to control the output value when high speed channel0 is off.
     }
 
-    /// HSCH%s_HPOINT Register bits
-    namespace hsch%s_hpoint_bits {
+    /// HSCH_HPOINT Register bits
+    namespace hsch_hpoint_bits {
         constexpr uint32_t HPOINT = (20 << 0);  ///< The output value changes to high when htimerx(x=[0 3]) selected by high speed channel0 has reached reg_hpoint_hsch0[19:0]
     }
 
-    /// HSCH%s_DUTY Register bits
-    namespace hsch%s_duty_bits {
+    /// HSCH_DUTY Register bits
+    namespace hsch_duty_bits {
         constexpr uint32_t DUTY = (25 << 0);  ///< This register represents the current duty of the output signal for high speed channel0.
     }
 
-    /// HSCH%s_CONF1 Register bits
-    namespace hsch%s_conf1_bits {
+    /// HSCH_CONF1 Register bits
+    namespace hsch_conf1_bits {
         constexpr uint32_t DUTY_SCALE = (10 << 0);  ///< This register controls the increase or decrease step scale for high speed channel0.
         constexpr uint32_t DUTY_CYCLE = (10 << 10);  ///< This register is used to increase or decrease the duty every reg_duty_cycle_hsch0 cycles for high speed channel0.
         constexpr uint32_t DUTY_NUM = (10 << 20);  ///< This register is used to control the num of increased or decreased times for high speed channel0.
@@ -5242,31 +5242,31 @@ namespace pwm {
         constexpr uint32_t DUTY_START = (1U << 31);  ///< When reg_duty_num_hsch0 reg_duty_cycle_hsch0 and reg_duty_scale_hsch0 has been configured. these register won't take effect until set reg_duty_start_hsch0. this bit is automatically cleared by hardware.
     }
 
-    /// HSCH%s_DUTY_R Register bits
-    namespace hsch%s_duty_r_bits {
+    /// HSCH_DUTY_R Register bits
+    namespace hsch_duty_r_bits {
         constexpr uint32_t DUTY_R = (25 << 0);  ///< This register represents the current duty cycle of the output signal for high-speed channel %s
     }
 
-    /// LSCH%s_CONF0 Register bits
-    namespace lsch%s_conf0_bits {
+    /// LSCH_CONF0 Register bits
+    namespace lsch_conf0_bits {
         constexpr uint32_t TIMER_SEL = (2 << 0);  ///< There are four low speed timers the two bits are used to select one of them for low speed channel0. 2'b00: seletc lstimer0. 2'b01: select lstimer1. 2'b10: select lstimer2. 2'b11: select lstimer3.
         constexpr uint32_t SIG_OUT_EN = (1U << 2);  ///< This is the output enable control bit for low speed channel0.
         constexpr uint32_t IDLE_LV = (1U << 3);  ///< This bit is used to control the output value when low speed channel0 is off.
         constexpr uint32_t PARA_UP = (1U << 4);  ///< This bit is used to update register LEDC_LSCH0_HPOINT and LEDC_LSCH0_DUTY for low speed channel0.
     }
 
-    /// LSCH%s_HPOINT Register bits
-    namespace lsch%s_hpoint_bits {
+    /// LSCH_HPOINT Register bits
+    namespace lsch_hpoint_bits {
         constexpr uint32_t HPOINT = (20 << 0);  ///< The output value changes to high when lstimerx(x=[0 3]) selected by low speed channel0 has reached reg_hpoint_lsch0[19:0]
     }
 
-    /// LSCH%s_DUTY Register bits
-    namespace lsch%s_duty_bits {
+    /// LSCH_DUTY Register bits
+    namespace lsch_duty_bits {
         constexpr uint32_t DUTY = (25 << 0);  ///< This register represents the current duty of the output signal for low speed channel0.
     }
 
-    /// LSCH%s_CONF1 Register bits
-    namespace lsch%s_conf1_bits {
+    /// LSCH_CONF1 Register bits
+    namespace lsch_conf1_bits {
         constexpr uint32_t DUTY_SCALE = (10 << 0);  ///< This register controls the increase or decrease step scale for low speed channel0.
         constexpr uint32_t DUTY_CYCLE = (10 << 10);  ///< This register is used to increase or decrease the duty every reg_duty_cycle_lsch0 cycles for low speed channel0.
         constexpr uint32_t DUTY_NUM = (10 << 20);  ///< This register is used to control the num of increased or decreased times for low speed channel6.
@@ -5274,13 +5274,13 @@ namespace pwm {
         constexpr uint32_t DUTY_START = (1U << 31);  ///< When reg_duty_num_hsch1 reg_duty_cycle_hsch1 and reg_duty_scale_hsch1 has been configured. these register won't take effect until set reg_duty_start_hsch1. this bit is automatically cleared by hardware.
     }
 
-    /// LSCH%s_DUTY_R Register bits
-    namespace lsch%s_duty_r_bits {
+    /// LSCH_DUTY_R Register bits
+    namespace lsch_duty_r_bits {
         constexpr uint32_t DUTY_R = (25 << 0);  ///< This register represents the current duty cycle of the output signal for low-speed channel %s
     }
 
-    /// HSTIMER%s_CONF Register bits
-    namespace hstimer%s_conf_bits {
+    /// HSTIMER_CONF Register bits
+    namespace hstimer_conf_bits {
         constexpr uint32_t DUTY_RES = (5 << 0);  ///< This register controls the range of the counter in high speed timer0. the counter range is [0 2**reg_hstimer0_lim] the max bit width for counter is 20.
         constexpr uint32_t DIV_NUM = (18 << 5);  ///< This register is used to configure parameter for divider in high speed timer0 the least significant eight bits represent the decimal part.
         constexpr uint32_t PAUSE = (1U << 23);  ///< This bit is used to pause the counter in high speed timer0
@@ -5288,13 +5288,13 @@ namespace pwm {
         constexpr uint32_t TICK_SEL = (1U << 25);  ///< This bit is used to choose apb_clk or ref_tick for high speed timer0. 1'b1:apb_clk 0:ref_tick
     }
 
-    /// HSTIMER%s_VALUE Register bits
-    namespace hstimer%s_value_bits {
+    /// HSTIMER_VALUE Register bits
+    namespace hstimer_value_bits {
         constexpr uint32_t CNT = (20 << 0);  ///< software can read this register to get the current counter value in high speed timer0
     }
 
-    /// LSTIMER%s_CONF Register bits
-    namespace lstimer%s_conf_bits {
+    /// LSTIMER_CONF Register bits
+    namespace lstimer_conf_bits {
         constexpr uint32_t DUTY_RES = (5 << 0);  ///< This register controls the range of the counter in low speed timer0. the counter range is [0 2**reg_lstimer0_lim] the max bit width for counter is 20.
         constexpr uint32_t DIV_NUM = (18 << 5);  ///< This register is used to configure parameter for divider in low speed timer0 the least significant eight bits represent the decimal part.
         constexpr uint32_t PAUSE = (1U << 23);  ///< This bit is used to pause the counter in low speed timer0.
@@ -5303,8 +5303,8 @@ namespace pwm {
         constexpr uint32_t PARA_UP = (1U << 26);  ///< Set this bit to update reg_div_num_lstime0 and reg_lstimer0_lim.
     }
 
-    /// LSTIMER%s_VALUE Register bits
-    namespace lstimer%s_value_bits {
+    /// LSTIMER_VALUE Register bits
+    namespace lstimer_value_bits {
         constexpr uint32_t CNT = (20 << 0);  ///< software can read this register to get the current counter value in low speed timer0.
     }
 
@@ -5473,15 +5473,15 @@ namespace pcnt {
 
     /// PCNT Register structure
     struct Registers {
-        volatile uint32_t U%s_CONF0;  ///< Offset: 0x00 - This register is used to filter pluse whose width is...
-        volatile uint32_t U%s_CONF1;  ///< Offset: 0x04 - This register is used to configure thres0 value for unit0.
-        volatile uint32_t U%s_CONF2;  ///< Offset: 0x08 - This register is used to configure thr_h_lim value for unit0.
-        volatile uint32_t U%s_CNT;  ///< Offset: 0x60 - This register stores the current pulse count value for unit0.
+        volatile uint32_t U_CONF0;  ///< Offset: 0x00 - This register is used to filter pluse whose width is... (renamed from U_CONF0)
+        volatile uint32_t U_CONF1;  ///< Offset: 0x04 - This register is used to configure thres0 value for unit0. (renamed from U_CONF1)
+        volatile uint32_t U_CONF2;  ///< Offset: 0x08 - This register is used to configure thr_h_lim value for unit0. (renamed from U_CONF2)
+        volatile uint32_t U_CNT;  ///< Offset: 0x60 - This register stores the current pulse count value for unit0. (renamed from U_CNT)
         volatile uint32_t INT_RAW;  ///< Offset: 0x80 - This is the interrupt raw bit for channel0 event.
         volatile uint32_t INT_ST;  ///< Offset: 0x84 - This is the interrupt status bit for channel0 event.
         volatile uint32_t INT_ENA;  ///< Offset: 0x88 - This is the interrupt enable bit for channel0 event.
         volatile uint32_t INT_CLR;  ///< Offset: 0x8C - Set this bit to clear channel0 event interrupt.
-        volatile uint32_t U%s_STATUS;  ///< Offset: 0x90 - 
+        volatile uint32_t U_STATUS;  ///< Offset: 0x90 -  (renamed from U_STATUS)
         volatile uint32_t CTRL;  ///< Offset: 0xB0 - Set this bit to clear unit0's counter.
         volatile uint32_t DATE;  ///< Offset: 0xFC - 
     };
@@ -5490,8 +5490,8 @@ namespace pcnt {
     inline Registers* PCNT = reinterpret_cast<Registers*>(PCNT_BASE);
 
     // Bit definitions
-    /// U%s_CONF0 Register bits
-    namespace u%s_conf0_bits {
+    /// U_CONF0 Register bits
+    namespace u_conf0_bits {
         constexpr uint32_t FILTER_THRES = (10 << 0);  ///< This register is used to filter pluse whose width is smaller than this value for unit0.
         constexpr uint32_t FILTER_EN = (1U << 10);  ///< This is the enable bit for filtering input signals for unit0.
         constexpr uint32_t THR_ZERO_EN = (1U << 11);  ///< This is the enable bit for comparing unit0's count with 0 value.
@@ -5509,20 +5509,20 @@ namespace pcnt {
         constexpr uint32_t CH1_LCTRL_MODE = (2 << 30);  ///< This register is used to control the mode of channel1's low control signal for unit0. 2'd0:increase when control signal is low 2'd1: decrease when control signal is high others:forbidden
     }
 
-    /// U%s_CONF1 Register bits
-    namespace u%s_conf1_bits {
+    /// U_CONF1 Register bits
+    namespace u_conf1_bits {
         constexpr uint32_t CNT_THRES0 = (16 << 0);  ///< This register is used to configure thres0 value for unit0.
         constexpr uint32_t CNT_THRES1 = (16 << 16);  ///< This register is used to configure thres1 value for unit0.
     }
 
-    /// U%s_CONF2 Register bits
-    namespace u%s_conf2_bits {
+    /// U_CONF2 Register bits
+    namespace u_conf2_bits {
         constexpr uint32_t CNT_H_LIM = (16 << 0);  ///< This register is used to configure thr_h_lim value for unit0.
         constexpr uint32_t CNT_L_LIM = (16 << 16);  ///< This register is used to confiugre thr_l_lim value for unit0.
     }
 
-    /// U%s_CNT Register bits
-    namespace u%s_cnt_bits {
+    /// U_CNT Register bits
+    namespace u_cnt_bits {
         constexpr uint32_t CNT = (16 << 0);  ///< This register stores the current pulse count value for unit0.
     }
 
@@ -5574,8 +5574,8 @@ namespace pcnt {
         constexpr uint32_t CNT_THR_EVENT_U7 = (1U << 7);  ///< Set this bit to clear channel7 event interrupt.
     }
 
-    /// U%s_STATUS Register bits
-    namespace u%s_status_bits {
+    /// U_STATUS Register bits
+    namespace u_status_bits {
         constexpr uint32_t CORE_STATUS_U0 = (32 << 0);  ///< CORE_STATUS_U0
         constexpr uint32_t ZERO_MODE = (2 << 0);  ///< ZERO_MODE
         constexpr uint32_t THRES1 = (1U << 2);  ///< THRES1
@@ -5623,17 +5623,17 @@ namespace rmt {
 
     /// RMT Register structure
     struct Registers {
-        volatile uint32_t CH%sDATA;  ///< Offset: 0x00 - 
-        volatile uint32_t CH%sCONF0;  ///< Offset: 0x20 - This register is used to configure the frequency...
-        volatile uint32_t CH%sCONF1;  ///< Offset: 0x24 - Set this bit to start sending data for channel0.
-        volatile uint32_t CH%sSTATUS;  ///< Offset: 0x60 - The status for channel0
-        volatile uint32_t CH%sADDR;  ///< Offset: 0x80 - The ram relative address in channel0 by apb fifo access
+        volatile uint32_t CHDATA;  ///< Offset: 0x00 -  (renamed from CHDATA)
+        volatile uint32_t CHCONF0;  ///< Offset: 0x20 - This register is used to configure the frequency... (renamed from CHCONF0)
+        volatile uint32_t CHCONF1;  ///< Offset: 0x24 - Set this bit to start sending data for channel0. (renamed from CHCONF1)
+        volatile uint32_t CHSTATUS;  ///< Offset: 0x60 - The status for channel0 (renamed from CHSTATUS)
+        volatile uint32_t CHADDR;  ///< Offset: 0x80 - The ram relative address in channel0 by apb fifo access (renamed from CHADDR)
         volatile uint32_t INT_RAW;  ///< Offset: 0xA0 - The interrupt raw bit for channel %s turns to high level...
         volatile uint32_t INT_ST;  ///< Offset: 0xA4 - The interrupt state bit for channel %s's...
         volatile uint32_t INT_ENA;  ///< Offset: 0xA8 - Set this bit to enable rmt_ch%s_tx_end_int_st.
         volatile uint32_t INT_CLR;  ///< Offset: 0xAC - Set this bit to clear the rmt_ch%s_rx_end_int_raw..
-        volatile uint32_t CH%sCARRIER_DUTY;  ///< Offset: 0xB0 - This register is used to configure carrier wave's low...
-        volatile uint32_t CH%s_TX_LIM;  ///< Offset: 0xD0 - When channel0 sends more than reg_rmt_tx_lim_ch0 datas...
+        volatile uint32_t CHCARRIER_DUTY;  ///< Offset: 0xB0 - This register is used to configure carrier wave's low... (renamed from CHCARRIER_DUTY)
+        volatile uint32_t CH_TX_LIM;  ///< Offset: 0xD0 - When channel0 sends more than reg_rmt_tx_lim_ch0 datas... (renamed from CH_TX_LIM)
         volatile uint32_t APB_CONF;  ///< Offset: 0xF0 - Set this bit to disable apb fifo access
         volatile uint32_t DATE;  ///< Offset: 0xFC - This is the version register.
     };
@@ -5642,8 +5642,8 @@ namespace rmt {
     inline Registers* RMT = reinterpret_cast<Registers*>(RMT_BASE);
 
     // Bit definitions
-    /// CH%sCONF0 Register bits
-    namespace ch%sconf0_bits {
+    /// CHCONF0 Register bits
+    namespace chconf0_bits {
         constexpr uint32_t DIV_CNT = (8 << 0);  ///< This register is used to configure the frequency divider's factor in channel0.
         constexpr uint32_t IDLE_THRES = (16 << 8);  ///< In receive mode when no edge is detected on the input signal for longer than reg_idle_thres_ch0 then the receive process is done.
         constexpr uint32_t MEM_SIZE = (4 << 24);  ///< This register is used to configure the the amount of memory blocks allocated to channel0.
@@ -5653,8 +5653,8 @@ namespace rmt {
         constexpr uint32_t CLK_EN = (1U << 31);  ///< This bit is used to control clock.when software config RMT internal registers it controls the register clock.
     }
 
-    /// CH%sCONF1 Register bits
-    namespace ch%sconf1_bits {
+    /// CHCONF1 Register bits
+    namespace chconf1_bits {
         constexpr uint32_t TX_START = (1U << 0);  ///< Set this bit to start sending data for channel0.
         constexpr uint32_t RX_EN = (1U << 1);  ///< Set this bit to enbale receving data for channel0.
         constexpr uint32_t MEM_WR_RST = (1U << 2);  ///< Set this bit to reset write ram address for channel0 by receiver access.
@@ -5670,8 +5670,8 @@ namespace rmt {
         constexpr uint32_t IDLE_OUT_EN = (1U << 19);  ///< This is the output enable control bit for channel0 in IDLE state.
     }
 
-    /// CH%sSTATUS Register bits
-    namespace ch%sstatus_bits {
+    /// CHSTATUS Register bits
+    namespace chstatus_bits {
         constexpr uint32_t STATUS = (32 << 0);  ///< The status for channel0
         constexpr uint32_t MEM_WADDR_EX = (10 << 0);  ///< The current memory read address of channel0.
         constexpr uint32_t MEM_RADDR_EX = (10 << 12);  ///< The current memory write address of channel0.
@@ -5683,51 +5683,51 @@ namespace rmt {
         constexpr uint32_t APB_MEM_RD_ERR = (1U << 31);  ///< The apb read memory status bit for channel0 turns to high level when the apb read address exceeds the configuration range.
     }
 
-    /// CH%sADDR Register bits
-    namespace ch%saddr_bits {
+    /// CHADDR Register bits
+    namespace chaddr_bits {
         constexpr uint32_t APB_MEM_ADDR = (32 << 0);  ///< The ram relative address in channel0 by apb fifo access
     }
 
     /// INT_RAW Register bits
     namespace int_raw_bits {
-        constexpr uint32_t CH%s_TX_END = (1U << 0);  ///< The interrupt raw bit for channel %s turns to high level when the transmit process is done.
-        constexpr uint32_t CH%s_RX_END = (1U << 1);  ///< The interrupt raw bit for channel %s turns to high level when the receive process is done.
-        constexpr uint32_t CH%s_ERR = (1U << 2);  ///< The interrupt raw bit for channel %s turns to high level when channle %s detects some errors.
-        constexpr uint32_t CH%s_TX_THR_EVENT = (1U << 24);  ///< The interrupt raw bit for channel %s turns to high level when transmitter in channle%s have send datas more than reg_rmt_tx_lim_ch%s after detecting this interrupt software can updata the old datas with new datas.
+        constexpr uint32_t CH_TX_END = (1U << 0);  ///< The interrupt raw bit for channel %s turns to high level when the transmit process is done. (renamed from CH_TX_END)
+        constexpr uint32_t CH_RX_END = (1U << 1);  ///< The interrupt raw bit for channel %s turns to high level when the receive process is done. (renamed from CH_RX_END)
+        constexpr uint32_t CH_ERR = (1U << 2);  ///< The interrupt raw bit for channel %s turns to high level when channle %s detects some errors. (renamed from CH_ERR)
+        constexpr uint32_t CH_TX_THR_EVENT = (1U << 24);  ///< The interrupt raw bit for channel %s turns to high level when transmitter in channle%s have send datas more than reg_rmt_tx_lim_ch%s after detecting this interrupt software can updata the old datas with new datas. (renamed from CH_TX_THR_EVENT)
     }
 
     /// INT_ST Register bits
     namespace int_st_bits {
-        constexpr uint32_t CH%s_TX_END = (1U << 0);  ///< The interrupt state bit for channel %s's mt_ch%s_tx_end_int_raw when mt_ch%s_tx_end_int_ena is set to %s.
-        constexpr uint32_t CH%s_RX_END = (1U << 1);  ///< The interrupt state bit for channel %s's rmt_ch%s_rx_end_int_raw when rmt_ch%s_rx_end_int_ena is set to %s.
-        constexpr uint32_t CH%s_ERR = (1U << 2);  ///< The interrupt state bit for channel %s's rmt_ch%s_err_int_raw when rmt_ch%s_err_int_ena is set to %s.
-        constexpr uint32_t CH%s_TX_THR_EVENT = (1U << 24);  ///< The interrupt state bit for channel %s's rmt_ch%s_tx_thr_event_int_raw when mt_ch%s_tx_thr_event_int_ena is set to 1.
+        constexpr uint32_t CH_TX_END = (1U << 0);  ///< The interrupt state bit for channel %s's mt_ch%s_tx_end_int_raw when mt_ch%s_tx_end_int_ena is set to %s. (renamed from CH_TX_END)
+        constexpr uint32_t CH_RX_END = (1U << 1);  ///< The interrupt state bit for channel %s's rmt_ch%s_rx_end_int_raw when rmt_ch%s_rx_end_int_ena is set to %s. (renamed from CH_RX_END)
+        constexpr uint32_t CH_ERR = (1U << 2);  ///< The interrupt state bit for channel %s's rmt_ch%s_err_int_raw when rmt_ch%s_err_int_ena is set to %s. (renamed from CH_ERR)
+        constexpr uint32_t CH_TX_THR_EVENT = (1U << 24);  ///< The interrupt state bit for channel %s's rmt_ch%s_tx_thr_event_int_raw when mt_ch%s_tx_thr_event_int_ena is set to 1. (renamed from CH_TX_THR_EVENT)
     }
 
     /// INT_ENA Register bits
     namespace int_ena_bits {
-        constexpr uint32_t CH%s_TX_END = (1U << 0);  ///< Set this bit to enable rmt_ch%s_tx_end_int_st.
-        constexpr uint32_t CH%s_RX_END = (1U << 1);  ///< Set this bit to enable rmt_ch%s_rx_end_int_st.
-        constexpr uint32_t CH%s_ERR = (1U << 2);  ///< Set this bit to enable rmt_ch%s_err_int_st.
-        constexpr uint32_t CH%s_TX_THR_EVENT = (1U << 24);  ///< Set this bit to enable rmt_ch%s_tx_thr_event_int_st.
+        constexpr uint32_t CH_TX_END = (1U << 0);  ///< Set this bit to enable rmt_ch%s_tx_end_int_st. (renamed from CH_TX_END)
+        constexpr uint32_t CH_RX_END = (1U << 1);  ///< Set this bit to enable rmt_ch%s_rx_end_int_st. (renamed from CH_RX_END)
+        constexpr uint32_t CH_ERR = (1U << 2);  ///< Set this bit to enable rmt_ch%s_err_int_st. (renamed from CH_ERR)
+        constexpr uint32_t CH_TX_THR_EVENT = (1U << 24);  ///< Set this bit to enable rmt_ch%s_tx_thr_event_int_st. (renamed from CH_TX_THR_EVENT)
     }
 
     /// INT_CLR Register bits
     namespace int_clr_bits {
-        constexpr uint32_t CH%s_TX_END = (1U << 0);  ///< Set this bit to clear the rmt_ch%s_rx_end_int_raw..
-        constexpr uint32_t CH%s_RX_END = (1U << 1);  ///< Set this bit to clear the rmt_ch%s_tx_end_int_raw.
-        constexpr uint32_t CH%s_ERR = (1U << 2);  ///< Set this bit to clear the rmt_ch%s_err_int_raw.
-        constexpr uint32_t CH%s_TX_THR_EVENT = (1U << 24);  ///< Set this bit to clear the rmt_ch%s_tx_thr_event_int_raw interrupt.
+        constexpr uint32_t CH_TX_END = (1U << 0);  ///< Set this bit to clear the rmt_ch%s_rx_end_int_raw.. (renamed from CH_TX_END)
+        constexpr uint32_t CH_RX_END = (1U << 1);  ///< Set this bit to clear the rmt_ch%s_tx_end_int_raw. (renamed from CH_RX_END)
+        constexpr uint32_t CH_ERR = (1U << 2);  ///< Set this bit to clear the rmt_ch%s_err_int_raw. (renamed from CH_ERR)
+        constexpr uint32_t CH_TX_THR_EVENT = (1U << 24);  ///< Set this bit to clear the rmt_ch%s_tx_thr_event_int_raw interrupt. (renamed from CH_TX_THR_EVENT)
     }
 
-    /// CH%sCARRIER_DUTY Register bits
-    namespace ch%scarrier_duty_bits {
+    /// CHCARRIER_DUTY Register bits
+    namespace chcarrier_duty_bits {
         constexpr uint32_t CARRIER_LOW = (16 << 0);  ///< This register is used to configure carrier wave's low level value for channel0.
         constexpr uint32_t CARRIER_HIGH = (16 << 16);  ///< This register is used to configure carrier wave's high level value for channel0.
     }
 
-    /// CH%s_TX_LIM Register bits
-    namespace ch%s_tx_lim_bits {
+    /// CH_TX_LIM Register bits
+    namespace ch_tx_lim_bits {
         constexpr uint32_t TX_LIM = (9 << 0);  ///< When channel0 sends more than reg_rmt_tx_lim_ch0 datas then channel0 produce the relative interrupt.
     }
 

@@ -3,7 +3,7 @@
 /// Source: infineon_tle986x.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:48
+/// Generated: 2025-10-31 17:44:24
 #ifndef ALLOY_GENERATED_TLE986X_PERIPHERALS_HPP
 #define ALLOY_GENERATED_TLE986X_PERIPHERALS_HPP
 
@@ -1830,7 +1830,7 @@ namespace pmu {
         constexpr uint32_t OK = (1U << 6);  ///< VDDEXT Supply works inside its specified range 2
         constexpr uint32_t OVERLOAD = (1U << 5);  ///< VDDEXT Supply Overload
         constexpr uint32_t OVERVOLT = (1U << 4);  ///< VDDEXT Supply Overvoltage
-        constexpr uint32_t SHORT = (1U << 3);  ///< VDDEXT Supply Shorted Output
+        constexpr uint32_t SHORT_ = (1U << 3);  ///< VDDEXT Supply Shorted Output (renamed from SHORT_)
         constexpr uint32_t FAIL_EN = (1U << 2);  ///< Enabling of VDDEXT Supply status information as interrupt source
         constexpr uint32_t CYC_EN = (1U << 1);  ///< VDDEXT Supply for Cyclic Sense Enable
         constexpr uint32_t ENABLE = (1U << 0);  ///< VDDEXT Supply Enable

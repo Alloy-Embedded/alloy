@@ -1,35 +1,42 @@
 /// Blink LED Example for ESP32 DevKit
 ///
-/// This example demonstrates:
-/// - Clock configuration (XTAL + PLL → 160MHz)
-/// - GPIO configuration and control
-/// - Basic LED blinking
+/// This example demonstrates the modern C++20 board API inspired by modm.
+/// The board pre-defines commonly used peripherals that users can access
+/// directly without needing to know pin numbers.
+///
+/// Architecture:
+///   User Code (main.cpp)
+///     ↓ uses Board::Led
+///   Board API (board.hpp - pre-instantiated pins)
+///     ↓ type aliases to GpioPin<N>
+///   HAL Layer (gpio.hpp - templates + concepts)
+///     ↓ uses MCU namespace
+///   Generated Peripherals (peripherals.hpp)
+///     ↓ raw register access
+///   Hardware
+///
+/// This approach provides:
+/// - Zero-cost abstractions (everything inline/constexpr)
+/// - Type safety (compile-time validation)
+/// - Simple API (Board::Led::on())
+/// - Portable (same code works on different boards)
 ///
 /// Hardware: ESP32 DevKit board
 /// LED: GPIO2 (active HIGH, built-in blue LED on many boards)
 
-#include "boards/esp32_devkit/board.hpp"
+#include "esp32_devkit/board.hpp"
 
 int main() {
-    // Initialize board (configures clock to 160MHz)
-    auto result = alloy::board::init();
-    if (result.is_error()) {
-        // Clock initialization failed - trap
-        while (true) {
-            __asm__ volatile("waiti 0");
-        }
-    }
+    // Initialize LED
+    Board::Led::init();
 
-    // Initialize LED pin
-    alloy::board::init_led();
-
-    // Blink LED forever at 1Hz (500ms on, 500ms off)
+    // Blink LED forever - ultra simple!
     while (true) {
-        alloy::board::led_on();
-        alloy::board::delay_ms(500);
+        Board::Led::on();
+        Board::delay_ms(500);
 
-        alloy::board::led_off();
-        alloy::board::delay_ms(500);
+        Board::Led::off();
+        Board::delay_ms(500);
     }
 
     return 0;

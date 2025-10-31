@@ -3,7 +3,7 @@
 /// Source: arm_sample_arm.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:36
+/// Generated: 2025-10-31 17:44:11
 #ifndef ALLOY_GENERATED_ARMCM3XXX_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ARMCM3XXX_PERIPHERALS_HPP
 
@@ -61,12 +61,12 @@ namespace tim {
     struct Registers {
         volatile uint32_t CR;  ///< Offset: 0x00 - Control Register
         volatile uint32_t SR;  ///< Offset: 0x04 - Status Register
-        volatile uint32_t INT;  ///< Offset: 0x10 - Interrupt Register
+        volatile uint32_t INT_;  ///< Offset: 0x10 - Interrupt Register (renamed from INT_)
         volatile uint32_t COUNT;  ///< Offset: 0x20 - The Counter Register reflects the actual Value of the...
         volatile uint32_t MATCH;  ///< Offset: 0x24 - The Match Register stores the compare Value for the...
         volatile uint32_t PRESCALE_RD;  ///< Offset: 0x28 - The Prescale Register stores the Value for the...
         volatile uint32_t PRESCALE_WR;  ///< Offset: 0x28 - The Prescale Register stores the Value for the...
-        volatile uint32_t RELOAD[%s];  ///< Offset: 0x50 - The Reload Register stores the Value the COUNT Register...
+        volatile uint32_t RELOAD__;  ///< Offset: 0x50 - The Reload Register stores the Value the COUNT Register... (renamed from RELOAD__)
     };
 
     /// Peripheral instances

@@ -3,7 +3,7 @@
 /// Source: texasinstruments_msp432p401.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:26
+/// Generated: 2025-10-31 17:45:06
 #ifndef ALLOY_GENERATED_MSP432P401V_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MSP432P401V_PERIPHERALS_HPP
 
@@ -305,9 +305,9 @@ namespace tim {
     /// TIM Register structure
     struct Registers {
         volatile uint32_t TAxCTL;  ///< Offset: 0x00 - TimerAx Control Register
-        volatile uint32_t TAxCCTL[%s];  ///< Offset: 0x02 - Timer_A Capture/Compare Control Register
+        volatile uint32_t TAxCCTL__;  ///< Offset: 0x02 - Timer_A Capture/Compare Control Register (renamed from TAxCCTL__)
         volatile uint32_t TAxR;  ///< Offset: 0x10 - TimerA register
-        volatile uint32_t TAxCCR[%s];  ///< Offset: 0x12 - Timer_A Capture/Compare Register
+        volatile uint32_t TAxCCR__;  ///< Offset: 0x12 - Timer_A Capture/Compare Register (renamed from TAxCCR__)
         volatile uint32_t TAxEX0;  ///< Offset: 0x20 - TimerAx Expansion 0 Register
         volatile uint32_t TAxIV;  ///< Offset: 0x2E - TimerAx Interrupt Vector Register
     };
@@ -329,8 +329,8 @@ namespace tim {
         constexpr uint32_t TASSEL = (2 << 8);  ///< TimerA clock source select
     }
 
-    /// TAxCCTL[%s] Register bits
-    namespace taxcctl[%s]_bits {
+    /// TAxCCTL__ Register bits
+    namespace taxcctl___bits {
         constexpr uint32_t CCIFG = (1U << 0);  ///< Capture/compare interrupt flag
         constexpr uint32_t COV = (1U << 1);  ///< Capture overflow
         constexpr uint32_t OUT = (1U << 2);  ///< Output
@@ -344,8 +344,8 @@ namespace tim {
         constexpr uint32_t CM = (2 << 14);  ///< Capture mode
     }
 
-    /// TAxCCR[%s] Register bits
-    namespace taxccr[%s]_bits {
+    /// TAxCCR__ Register bits
+    namespace taxccr___bits {
         constexpr uint32_t TAxR = (16 << 0);  ///< TimerA register
     }
 
@@ -1740,7 +1740,7 @@ namespace dma {
     struct Registers {
         volatile uint32_t DMA_DEVICE_CFG;  ///< Offset: 0x00 - Device Configuration Status
         volatile uint32_t DMA_SW_CHTRIG;  ///< Offset: 0x04 - Software Channel Trigger Register
-        volatile uint32_t DMA_CH_SRCCFG[%s];  ///< Offset: 0x10 - Channel n Source Configuration Register
+        volatile uint32_t DMA_CH_SRCCFG__;  ///< Offset: 0x10 - Channel n Source Configuration Register (renamed from DMA_CH_SRCCFG__)
         volatile uint32_t DMA_INT1_SRCCFG;  ///< Offset: 0x100 - Interrupt 1 Source Channel Configuration
         volatile uint32_t DMA_INT2_SRCCFG;  ///< Offset: 0x104 - Interrupt 2 Source Channel Configuration Register
         volatile uint32_t DMA_INT3_SRCCFG;  ///< Offset: 0x108 - Interrupt 3 Source Channel Configuration Register
@@ -1811,8 +1811,8 @@ namespace dma {
         constexpr uint32_t CH31 = (1U << 31);  ///< Write 1, triggers DMA_CHANNEL31
     }
 
-    /// DMA_CH_SRCCFG[%s] Register bits
-    namespace dma_ch_srccfg[%s]_bits {
+    /// DMA_CH_SRCCFG__ Register bits
+    namespace dma_ch_srccfg___bits {
         constexpr uint32_t DMA_SRC = (8 << 0);  ///< Device level DMA source mapping to channel input
     }
 
@@ -3380,8 +3380,8 @@ namespace adc {
         volatile uint32_t ADC14HI0;  ///< Offset: 0x0C - Window Comparator High Threshold 0 Register
         volatile uint32_t ADC14LO1;  ///< Offset: 0x10 - Window Comparator Low Threshold 1 Register
         volatile uint32_t ADC14HI1;  ///< Offset: 0x14 - Window Comparator High Threshold 1 Register
-        volatile uint32_t ADC14MCTL[%s];  ///< Offset: 0x18 - Conversion Memory Control Register
-        volatile uint32_t ADC14MEM[%s];  ///< Offset: 0x98 - Conversion Memory Register
+        volatile uint32_t ADC14MCTL__;  ///< Offset: 0x18 - Conversion Memory Control Register (renamed from ADC14MCTL__)
+        volatile uint32_t ADC14MEM__;  ///< Offset: 0x98 - Conversion Memory Register (renamed from ADC14MEM__)
         volatile uint32_t ADC14IER0;  ///< Offset: 0x13C - Interrupt Enable 0 Register
         volatile uint32_t ADC14IER1;  ///< Offset: 0x140 - Interrupt Enable 1 Register
         volatile uint32_t ADC14IFGR0;  ///< Offset: 0x144 - Interrupt Flag 0 Register
@@ -3448,8 +3448,8 @@ namespace adc {
         constexpr uint32_t ADC14HI1 = (16 << 0);  ///< High threshold 1
     }
 
-    /// ADC14MCTL[%s] Register bits
-    namespace adc14mctl[%s]_bits {
+    /// ADC14MCTL__ Register bits
+    namespace adc14mctl___bits {
         constexpr uint32_t ADC14INCH = (5 << 0);  ///< Input channel select
         constexpr uint32_t ADC14EOS = (1U << 7);  ///< End of sequence
         constexpr uint32_t ADC14VRSEL = (4 << 8);  ///< Selects combinations of V(R+) and V(R-) sources
@@ -3458,8 +3458,8 @@ namespace adc {
         constexpr uint32_t ADC14WINCTH = (1U << 15);  ///< Window comparator threshold register selection
     }
 
-    /// ADC14MEM[%s] Register bits
-    namespace adc14mem[%s]_bits {
+    /// ADC14MEM__ Register bits
+    namespace adc14mem___bits {
         constexpr uint32_t Conversion_Results = (16 << 0);  ///< Conversion Result
     }
 
@@ -4918,7 +4918,7 @@ namespace sysctl {
         volatile uint32_t SYS_SRAM_BLKRET_CTL3;  ///< Offset: 0x7C - SRAM Block Retention Control Register 3
         volatile uint32_t SYS_SRAM_STAT;  ///< Offset: 0x90 - SRAM Status Register
         volatile uint32_t SYS_MASTER_UNLOCK;  ///< Offset: 0x1000 - Master Unlock Register
-        volatile uint32_t SYS_BOOTOVER_REQ[%s];  ///< Offset: 0x1004 - Boot Override Request Register
+        volatile uint32_t SYS_BOOTOVER_REQ__;  ///< Offset: 0x1004 - Boot Override Request Register (renamed from SYS_BOOTOVER_REQ__)
         volatile uint32_t SYS_BOOTOVER_ACK;  ///< Offset: 0x100C - Boot Override Acknowledge Register
         volatile uint32_t SYS_RESET_REQ;  ///< Offset: 0x1010 - Reset Request Register
         volatile uint32_t SYS_RESET_STATOVER;  ///< Offset: 0x1014 - Reset Status and Override Register
@@ -5308,8 +5308,8 @@ namespace sysctl {
         constexpr uint32_t UNLKEY = (16 << 0);  ///< Unlock Key
     }
 
-    /// SYS_BOOTOVER_REQ[%s] Register bits
-    namespace sys_bootover_req[%s]_bits {
+    /// SYS_BOOTOVER_REQ__ Register bits
+    namespace sys_bootover_req___bits {
         constexpr uint32_t REGVAL = (32 << 0);  ///< Value set by debugger, read and clear by the CPU
     }
 

@@ -3,7 +3,7 @@
 /// Source: st_stm32u5.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:55
+/// Generated: 2025-10-31 17:44:31
 #ifndef ALLOY_GENERATED_STM32U5GX_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32U5GX_PERIPHERALS_HPP
 
@@ -1820,7 +1820,7 @@ namespace dbgmcu {
     /// CIDR1 Register bits
     namespace cidr1_bits {
         constexpr uint32_t PREAMBLE = (4 << 0);  ///< component identification bits [11:8]
-        constexpr uint32_t CLASS = (4 << 4);  ///< component identification bits [15:12] - component class
+        constexpr uint32_t CLASS_ = (4 << 4);  ///< component identification bits [15:12] - component class (renamed from CLASS_)
     }
 
     /// CIDR2 Register bits
@@ -3536,7 +3536,7 @@ namespace can {
     namespace fdcan_cccr_bits {
         constexpr uint32_t INIT = (1U << 0);  ///< Initialization
         constexpr uint32_t CCE = (1U << 1);  ///< Configuration Change Enable
-        constexpr uint32_t ASM = (1U << 2);  ///< ASM Restricted Operation Mode
+        constexpr uint32_t ASM_ = (1U << 2);  ///< ASM Restricted Operation Mode (renamed from ASM_)
         constexpr uint32_t CSA = (1U << 3);  ///< Clock Stop Acknowledge
         constexpr uint32_t CSR = (1U << 4);  ///< Clock Stop Request
         constexpr uint32_t MON = (1U << 5);  ///< Bus Monitoring Mode

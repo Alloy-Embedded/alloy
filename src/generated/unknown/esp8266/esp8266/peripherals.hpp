@@ -3,7 +3,7 @@
 /// Source: espressif_community_esp8266.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:52
+/// Generated: 2025-10-31 17:44:28
 #ifndef ALLOY_GENERATED_ESP8266_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ESP8266_PERIPHERALS_HPP
 
@@ -139,7 +139,7 @@ namespace gpio {
     // Bit definitions
     /// EDGE_INT_ENABLE Register bits
     namespace edge_int_enable_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t wdt_edge_int_enable = (1U << 0);  ///< Enable the watchdog timer edge interrupt
         constexpr uint32_t timer1_edge_int_enable = (1U << 1);  ///< Enable the timer1 edge interrupt
     }
@@ -173,22 +173,22 @@ namespace efuse {
     // Bit definitions
     /// EFUSE_DATA0 Register bits
     namespace efuse_data0_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// EFUSE_DATA1 Register bits
     namespace efuse_data1_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// EFUSE_DATA2 Register bits
     namespace efuse_data2_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// EFUSE_DATA3 Register bits
     namespace efuse_data3_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
 }
@@ -222,12 +222,12 @@ namespace i2s {
     // Bit definitions
     /// I2STXFIFO Register bits
     namespace i2stxfifo_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// I2SRXFIFO Register bits
     namespace i2srxfifo_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// I2SCONF Register bits
@@ -368,7 +368,7 @@ namespace io {
 
     /// IO_MUX_MTDI Register bits
     namespace io_mux_mtdi_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -378,7 +378,7 @@ namespace io {
 
     /// IO_MUX_MTCK Register bits
     namespace io_mux_mtck_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -388,7 +388,7 @@ namespace io {
 
     /// IO_MUX_MTMS Register bits
     namespace io_mux_mtms_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -398,7 +398,7 @@ namespace io {
 
     /// IO_MUX_MTDO Register bits
     namespace io_mux_mtdo_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -408,7 +408,7 @@ namespace io {
 
     /// IO_MUX_U0RXD Register bits
     namespace io_mux_u0rxd_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -418,7 +418,7 @@ namespace io {
 
     /// IO_MUX_U0TXD Register bits
     namespace io_mux_u0txd_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -428,7 +428,7 @@ namespace io {
 
     /// IO_MUX_SD_CLK Register bits
     namespace io_mux_sd_clk_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -438,7 +438,7 @@ namespace io {
 
     /// IO_MUX_SD_DATA0 Register bits
     namespace io_mux_sd_data0_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -448,7 +448,7 @@ namespace io {
 
     /// IO_MUX_SD_DATA1 Register bits
     namespace io_mux_sd_data1_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -458,7 +458,7 @@ namespace io {
 
     /// IO_MUX_SD_DATA2 Register bits
     namespace io_mux_sd_data2_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -468,7 +468,7 @@ namespace io {
 
     /// IO_MUX_SD_DATA3 Register bits
     namespace io_mux_sd_data3_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -478,7 +478,7 @@ namespace io {
 
     /// IO_MUX_SD_CMD Register bits
     namespace io_mux_sd_cmd_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -488,7 +488,7 @@ namespace io {
 
     /// IO_MUX_GPIO0 Register bits
     namespace io_mux_gpio0_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -498,7 +498,7 @@ namespace io {
 
     /// IO_MUX_GPIO2 Register bits
     namespace io_mux_gpio2_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -508,7 +508,7 @@ namespace io {
 
     /// IO_MUX_GPIO4 Register bits
     namespace io_mux_gpio4_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -518,7 +518,7 @@ namespace io {
 
     /// IO_MUX_GPIO5 Register bits
     namespace io_mux_gpio5_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
         constexpr uint32_t FUNCTION_SELECT_LOW_BITS = (2 << 4);  ///< configures IO_MUX function, bottom 2 bits
         constexpr uint32_t FUNCTION_SELECT_HIGH_BIT = (1U << 8);  ///< configures IO_MUX function, upper bit
         constexpr uint32_t PULLUP = (1U << 7);  ///< configures pull up
@@ -548,12 +548,12 @@ namespace rtc {
     // Bit definitions
     /// RTC_STORE0 Register bits
     namespace rtc_store0_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// RTC_STATE1 Register bits
     namespace rtc_state1_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
 }
@@ -792,17 +792,17 @@ namespace slc {
 
     /// SLC_CONF1 Register bits
     namespace slc_conf1_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_STATE0 Register bits
     namespace slc_state0_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_STATE1 Register bits
     namespace slc_state1_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_BRIDGE_CONF Register bits
@@ -815,17 +815,17 @@ namespace slc {
 
     /// SLC_RX_EOF_DES_ADDR Register bits
     namespace slc_rx_eof_des_addr_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_TX_EOF_DES_ADDR Register bits
     namespace slc_tx_eof_des_addr_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_RX_EOF_BFR_DES_ADDR Register bits
     namespace slc_rx_eof_bfr_des_addr_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_AHB_TEST Register bits
@@ -850,42 +850,42 @@ namespace slc {
 
     /// SLC_TXLINK_DSCR Register bits
     namespace slc_txlink_dscr_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_TXLINK_DSCR_BF0 Register bits
     namespace slc_txlink_dscr_bf0_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_TXLINK_DSCR_BF1 Register bits
     namespace slc_txlink_dscr_bf1_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_RXLINK_DSCR Register bits
     namespace slc_rxlink_dscr_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_RXLINK_DSCR_BF0 Register bits
     namespace slc_rxlink_dscr_bf0_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_RXLINK_DSCR_BF1 Register bits
     namespace slc_rxlink_dscr_bf1_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_DATE Register bits
     namespace slc_date_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// SLC_ID Register bits
     namespace slc_id_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
 }
@@ -1466,22 +1466,22 @@ namespace wdg {
     // Bit definitions
     /// WDT_CTL Register bits
     namespace wdt_ctl_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// WDT_OP Register bits
     namespace wdt_op_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// WDT_OP_ND Register bits
     namespace wdt_op_nd_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
     /// WDT_RST Register bits
     namespace wdt_rst_bits {
-        constexpr uint32_t Register = (32 << 0);  ///< Register
+        constexpr uint32_t Register_ = (32 << 0);  ///< Register (renamed from Register_)
     }
 
 }

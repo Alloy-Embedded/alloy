@@ -1,34 +1,42 @@
 /// Blink LED Example for STM32F407VG Discovery
 ///
-/// This example demonstrates:
-/// - Clock configuration (HSE + PLL → 168MHz)
-/// - GPIO configuration and control (MODER-based)
-/// - Basic LED blinking
+/// This example demonstrates the modern C++20 board API inspired by modm.
+/// The board pre-defines commonly used peripherals that users can access
+/// directly without needing to know pin numbers.
+///
+/// Architecture:
+///   User Code (main.cpp)
+///     ↓ uses Board::Led
+///   Board API (board.hpp - pre-instantiated pins)
+///     ↓ type aliases to GpioPin<N>
+///   HAL Layer (gpio.hpp - templates + concepts)
+///     ↓ uses MCU namespace
+///   Generated Peripherals (peripherals.hpp)
+///     ↓ raw register access
+///   Hardware
+///
+/// This approach provides:
+/// - Zero-cost abstractions (everything inline/constexpr)
+/// - Type safety (compile-time validation)
+/// - Simple API (Board::Led::on())
+/// - Portable (same code works on different boards)
 ///
 /// Hardware: STM32F407VG Discovery board
-/// LEDs: PD12 (Green), PD13 (Orange), PD14 (Red), PD15 (Blue)
-/// This example blinks the green LED (PD12)
+/// LED: PD12 (Green, built-in LED)
 
-#include "boards/stm32f407vg/board.hpp"
+#include "stm32f407vg/board.hpp"
 
 int main() {
-    // Initialize board (configures clock to 168MHz and enables FPU)
-    auto result = alloy::board::init();
-    if (result.is_error()) {
-        // Clock initialization failed - trap
-        while (true);
-    }
+    // Initialize LED
+    Board::Led::init();
 
-    // Initialize LED pin
-    alloy::board::init_led();
-
-    // Blink LED forever at 1Hz (500ms on, 500ms off)
+    // Blink LED forever - ultra simple!
     while (true) {
-        alloy::board::led_on();
-        alloy::board::delay_ms(500);
+        Board::Led::on();
+        Board::delay_ms(500);
 
-        alloy::board::led_off();
-        alloy::board::delay_ms(500);
+        Board::Led::off();
+        Board::delay_ms(500);
     }
 
     return 0;

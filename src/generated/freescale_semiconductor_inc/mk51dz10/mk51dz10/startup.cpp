@@ -3,7 +3,7 @@
 /// Source: nxp_mk51.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:52
+/// Generated: 2025-10-31 17:44:28
 #include <cstdint>
 #include <cstring>
 

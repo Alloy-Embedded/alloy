@@ -3,7 +3,7 @@
 /// Source: texasinstruments_cc13x0.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:19
+/// Generated: 2025-10-31 17:44:59
 #include <cstdint>
 #include <cstring>
 

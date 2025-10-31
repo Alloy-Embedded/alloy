@@ -3,7 +3,7 @@
 /// Source: texasinstruments_msp432e401.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:27
+/// Generated: 2025-10-31 17:45:07
 #ifndef ALLOY_GENERATED_MSP432E401Y_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MSP432E401Y_PERIPHERALS_HPP
 
@@ -775,7 +775,7 @@ namespace can {
         volatile uint32_t STS;  ///< Offset: 0x04 - CAN Status
         volatile uint32_t ERR;  ///< Offset: 0x08 - CAN Error Counter
         volatile uint32_t BIT;  ///< Offset: 0x0C - CAN Bit Timing
-        volatile uint32_t INT;  ///< Offset: 0x10 - CAN Interrupt
+        volatile uint32_t INT_;  ///< Offset: 0x10 - CAN Interrupt (renamed from INT_)
         volatile uint32_t TST;  ///< Offset: 0x14 - CAN Test
         volatile uint32_t BRPE;  ///< Offset: 0x18 - CAN Baud Rate Prescaler Extension
         volatile uint32_t IF1CRQ;  ///< Offset: 0x20 - CAN IF1 Command Request
@@ -1407,7 +1407,7 @@ namespace flash {
         volatile uint32_t FMC2;  ///< Offset: 0x20 - Flash Memory Control 2
         volatile uint32_t FWBVAL;  ///< Offset: 0x30 - Flash Write Buffer Valid
         volatile uint32_t FLPEKEY;  ///< Offset: 0x3C - Flash Program/Erase Key
-        volatile uint32_t FWBN[%s];  ///< Offset: 0x100 - Flash Write Buffer n
+        volatile uint32_t FWBN__;  ///< Offset: 0x100 - Flash Write Buffer n (renamed from FWBN__)
         volatile uint32_t PP;  ///< Offset: 0xFC0 - Flash Peripheral Properties
         volatile uint32_t SSIZE;  ///< Offset: 0xFC4 - SRAM Size
         volatile uint32_t CONF;  ///< Offset: 0xFC8 - Flash Configuration Register

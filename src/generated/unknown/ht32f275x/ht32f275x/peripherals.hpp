@@ -3,7 +3,7 @@
 /// Source: holtek_ht32f275x.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:12
+/// Generated: 2025-10-31 17:44:51
 #ifndef ALLOY_GENERATED_HT32F275X_PERIPHERALS_HPP
 #define ALLOY_GENERATED_HT32F275X_PERIPHERALS_HPP
 

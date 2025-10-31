@@ -3,7 +3,7 @@
 /// Source: nordic_nrf52820.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:34
+/// Generated: 2025-10-31 17:44:08
 #ifndef ALLOY_GENERATED_NRF52820_PERIPHERALS_HPP
 #define ALLOY_GENERATED_NRF52820_PERIPHERALS_HPP
 
@@ -273,17 +273,17 @@ namespace ficr {
     struct Registers {
         volatile uint32_t CODEPAGESIZE;  ///< Offset: 0x10 - Code memory page size
         volatile uint32_t CODESIZE;  ///< Offset: 0x14 - Code memory size
-        volatile uint32_t DEVICEID[%s];  ///< Offset: 0x60 - Description collection: Device identifier
-        volatile uint32_t ER[%s];  ///< Offset: 0x80 - Description collection: Encryption root, word n
-        volatile uint32_t IR[%s];  ///< Offset: 0x90 - Description collection: Identity Root, word n
+        volatile uint32_t DEVICEID__;  ///< Offset: 0x60 - Description collection: Device identifier (renamed from DEVICEID__)
+        volatile uint32_t ER__;  ///< Offset: 0x80 - Description collection: Encryption root, word n (renamed from ER__)
+        volatile uint32_t IR__;  ///< Offset: 0x90 - Description collection: Identity Root, word n (renamed from IR__)
         volatile uint32_t DEVICEADDRTYPE;  ///< Offset: 0xA0 - Device address type
-        volatile uint32_t DEVICEADDR[%s];  ///< Offset: 0xA4 - Description collection: Device address n
+        volatile uint32_t DEVICEADDR__;  ///< Offset: 0xA4 - Description collection: Device address n (renamed from DEVICEADDR__)
         volatile uint32_t PART;  ///< Offset: 0x00 - Part code
         volatile uint32_t VARIANT;  ///< Offset: 0x04 - Build code (hardware version and production configuration)
         volatile uint32_t PACKAGE;  ///< Offset: 0x08 - Package option
         volatile uint32_t RAM;  ///< Offset: 0x0C - RAM variant
         volatile uint32_t FLASH;  ///< Offset: 0x10 - Flash variant
-        volatile uint32_t PRODTEST[%s];  ///< Offset: 0x350 - Description collection: Production test signature n
+        volatile uint32_t PRODTEST__;  ///< Offset: 0x350 - Description collection: Production test signature n (renamed from PRODTEST__)
         volatile uint32_t A0;  ///< Offset: 0x00 - Slope definition A0
         volatile uint32_t A1;  ///< Offset: 0x04 - Slope definition A1
         volatile uint32_t A2;  ///< Offset: 0x08 - Slope definition A2
@@ -317,18 +317,18 @@ namespace ficr {
         constexpr uint32_t CODESIZE = (32 << 0);  ///< Code memory size in number of pages
     }
 
-    /// DEVICEID[%s] Register bits
-    namespace deviceid[%s]_bits {
+    /// DEVICEID__ Register bits
+    namespace deviceid___bits {
         constexpr uint32_t DEVICEID = (32 << 0);  ///< 64 bit unique device identifier
     }
 
-    /// ER[%s] Register bits
-    namespace er[%s]_bits {
+    /// ER__ Register bits
+    namespace er___bits {
         constexpr uint32_t ER = (32 << 0);  ///< Encryption root, word n
     }
 
-    /// IR[%s] Register bits
-    namespace ir[%s]_bits {
+    /// IR__ Register bits
+    namespace ir___bits {
         constexpr uint32_t IR = (32 << 0);  ///< Identity Root, word n
     }
 
@@ -337,8 +337,8 @@ namespace ficr {
         constexpr uint32_t DEVICEADDRTYPE = (1U << 0);  ///< Device address type
     }
 
-    /// DEVICEADDR[%s] Register bits
-    namespace deviceaddr[%s]_bits {
+    /// DEVICEADDR__ Register bits
+    namespace deviceaddr___bits {
         constexpr uint32_t DEVICEADDR = (32 << 0);  ///< 48 bit device address
     }
 
@@ -367,8 +367,8 @@ namespace ficr {
         constexpr uint32_t FLASH = (32 << 0);  ///< Flash variant
     }
 
-    /// PRODTEST[%s] Register bits
-    namespace prodtest[%s]_bits {
+    /// PRODTEST__ Register bits
+    namespace prodtest___bits {
         constexpr uint32_t PRODTEST = (32 << 0);  ///< Production test signature n
     }
 
@@ -469,10 +469,10 @@ namespace uicr {
 
     /// UICR Register structure
     struct Registers {
-        volatile uint32_t NRFFW[%s];  ///< Offset: 0x14 - Description collection: Reserved for Nordic firmware design
-        volatile uint32_t NRFHW[%s];  ///< Offset: 0x50 - Description collection: Reserved for Nordic hardware design
-        volatile uint32_t CUSTOMER[%s];  ///< Offset: 0x80 - Description collection: Reserved for customer
-        volatile uint32_t PSELRESET[%s];  ///< Offset: 0x200 - Description collection: Mapping of the nRESET function...
+        volatile uint32_t NRFFW__;  ///< Offset: 0x14 - Description collection: Reserved for Nordic firmware design (renamed from NRFFW__)
+        volatile uint32_t NRFHW__;  ///< Offset: 0x50 - Description collection: Reserved for Nordic hardware design (renamed from NRFHW__)
+        volatile uint32_t CUSTOMER__;  ///< Offset: 0x80 - Description collection: Reserved for customer (renamed from CUSTOMER__)
+        volatile uint32_t PSELRESET__;  ///< Offset: 0x200 - Description collection: Mapping of the nRESET function... (renamed from PSELRESET__)
         volatile uint32_t APPROTECT;  ///< Offset: 0x208 - Access port protection
         volatile uint32_t DEBUGCTRL;  ///< Offset: 0x210 - Processor debug control
         volatile uint32_t REGOUT0;  ///< Offset: 0x304 - Output voltage from REG0 regulator stage. The maximum...
@@ -482,23 +482,23 @@ namespace uicr {
     inline Registers* UICR = reinterpret_cast<Registers*>(UICR_BASE);
 
     // Bit definitions
-    /// NRFFW[%s] Register bits
-    namespace nrffw[%s]_bits {
+    /// NRFFW__ Register bits
+    namespace nrffw___bits {
         constexpr uint32_t NRFFW = (32 << 0);  ///< Reserved for Nordic firmware design
     }
 
-    /// NRFHW[%s] Register bits
-    namespace nrfhw[%s]_bits {
+    /// NRFHW__ Register bits
+    namespace nrfhw___bits {
         constexpr uint32_t NRFHW = (32 << 0);  ///< Reserved for Nordic hardware design
     }
 
-    /// CUSTOMER[%s] Register bits
-    namespace customer[%s]_bits {
+    /// CUSTOMER__ Register bits
+    namespace customer___bits {
         constexpr uint32_t CUSTOMER = (32 << 0);  ///< Reserved for customer
     }
 
-    /// PSELRESET[%s] Register bits
-    namespace pselreset[%s]_bits {
+    /// PSELRESET__ Register bits
+    namespace pselreset___bits {
         constexpr uint32_t PIN = (5 << 0);  ///< GPIO pin number onto which nRESET is exposed
         constexpr uint32_t CONNECT = (1U << 31);  ///< Connection
     }
@@ -894,7 +894,7 @@ namespace p0 {
         volatile uint32_t DIRCLR;  ///< Offset: 0x51C - DIR clear register
         volatile uint32_t LATCH;  ///< Offset: 0x520 - Latch register indicating what GPIO pins that have met...
         volatile uint32_t DETECTMODE;  ///< Offset: 0x524 - Select between default DETECT signal behaviour and LDETECT mode
-        volatile uint32_t PIN_CNF[%s];  ///< Offset: 0x700 - Description collection: Configuration of GPIO pins
+        volatile uint32_t PIN_CNF__;  ///< Offset: 0x700 - Description collection: Configuration of GPIO pins (renamed from PIN_CNF__)
     };
 
     /// Peripheral instances
@@ -1194,8 +1194,8 @@ namespace p0 {
         constexpr uint32_t DETECTMODE = (1U << 0);  ///< Select between default DETECT signal behaviour and LDETECT mode
     }
 
-    /// PIN_CNF[%s] Register bits
-    namespace pin_cnf[%s]_bits {
+    /// PIN_CNF__ Register bits
+    namespace pin_cnf___bits {
         constexpr uint32_t DIR = (1U << 0);  ///< Pin direction. Same physical register as DIR register
         constexpr uint32_t INPUT = (1U << 1);  ///< Connect or disconnect input buffer
         constexpr uint32_t PULL = (2 << 2);  ///< Pull configuration
@@ -1282,8 +1282,8 @@ namespace radio {
         volatile uint32_t STATE;  ///< Offset: 0x550 - Current radio state
         volatile uint32_t DATAWHITEIV;  ///< Offset: 0x554 - Data whitening initial value
         volatile uint32_t BCC;  ///< Offset: 0x560 - Bit counter compare
-        volatile uint32_t DAB[%s];  ///< Offset: 0x600 - Description collection: Device address base segment n
-        volatile uint32_t DAP[%s];  ///< Offset: 0x620 - Description collection: Device address prefix n
+        volatile uint32_t DAB__;  ///< Offset: 0x600 - Description collection: Device address base segment n (renamed from DAB__)
+        volatile uint32_t DAP__;  ///< Offset: 0x620 - Description collection: Device address prefix n (renamed from DAP__)
         volatile uint32_t DACNF;  ///< Offset: 0x640 - Device address match configuration
         volatile uint32_t MHRMATCHCONF;  ///< Offset: 0x644 - Search pattern configuration
         volatile uint32_t MHRMATCHMAS;  ///< Offset: 0x648 - Pattern mask
@@ -1298,7 +1298,7 @@ namespace radio {
         volatile uint32_t DFECTRL2;  ///< Offset: 0x914 - Start offset for Direction finding
         volatile uint32_t SWITCHPATTERN;  ///< Offset: 0x928 - GPIO patterns to be used for each antenna
         volatile uint32_t CLEARPATTERN;  ///< Offset: 0x92C - Clear the GPIO pattern array for antenna control
-        volatile uint32_t DFEGPIO[%s];  ///< Offset: 0x00 - Description collection: Pin select for DFE pin n
+        volatile uint32_t DFEGPIO__;  ///< Offset: 0x00 - Description collection: Pin select for DFE pin n (renamed from DFEGPIO__)
         volatile uint32_t PTR;  ///< Offset: 0x00 - Data pointer
         volatile uint32_t MAXCNT;  ///< Offset: 0x04 - Maximum number of buffer words to transfer
         volatile uint32_t AMOUNT;  ///< Offset: 0x08 - Number of samples transferred in the last transaction
@@ -1738,13 +1738,13 @@ namespace radio {
         constexpr uint32_t BCC = (32 << 0);  ///< Bit counter compare
     }
 
-    /// DAB[%s] Register bits
-    namespace dab[%s]_bits {
+    /// DAB__ Register bits
+    namespace dab___bits {
         constexpr uint32_t DAB = (32 << 0);  ///< Device address base segment n
     }
 
-    /// DAP[%s] Register bits
-    namespace dap[%s]_bits {
+    /// DAP__ Register bits
+    namespace dap___bits {
         constexpr uint32_t DAP = (16 << 0);  ///< Device address prefix n
     }
 
@@ -1852,8 +1852,8 @@ namespace radio {
         constexpr uint32_t CLEARPATTERN = (1U << 0);  ///< Clears GPIO pattern array for antenna control
     }
 
-    /// DFEGPIO[%s] Register bits
-    namespace dfegpio[%s]_bits {
+    /// DFEGPIO__ Register bits
+    namespace dfegpio___bits {
         constexpr uint32_t PIN = (5 << 0);  ///< Pin number
         constexpr uint32_t CONNECT = (1U << 31);  ///< Connection
     }
@@ -2006,7 +2006,7 @@ namespace usart {
         constexpr uint32_t OVERRUN = (1U << 0);  ///< Overrun error
         constexpr uint32_t PARITY = (1U << 1);  ///< Parity error
         constexpr uint32_t FRAMING = (1U << 2);  ///< Framing error occurred
-        constexpr uint32_t BREAK = (1U << 3);  ///< Break condition
+        constexpr uint32_t BREAK_ = (1U << 3);  ///< Break condition (renamed from BREAK_)
     }
 
     /// ENABLE Register bits
@@ -2335,37 +2335,37 @@ namespace gpio {
 
     /// GPIO Register structure
     struct Registers {
-        volatile uint32_t TASKS_OUT[%s];  ///< Offset: 0x00 - Description collection: Task for writing to pin...
-        volatile uint32_t TASKS_SET[%s];  ///< Offset: 0x30 - Description collection: Task for writing to pin...
-        volatile uint32_t TASKS_CLR[%s];  ///< Offset: 0x60 - Description collection: Task for writing to pin...
-        volatile uint32_t EVENTS_IN[%s];  ///< Offset: 0x100 - Description collection: Event generated from pin...
+        volatile uint32_t TASKS_OUT__;  ///< Offset: 0x00 - Description collection: Task for writing to pin... (renamed from TASKS_OUT__)
+        volatile uint32_t TASKS_SET__;  ///< Offset: 0x30 - Description collection: Task for writing to pin... (renamed from TASKS_SET__)
+        volatile uint32_t TASKS_CLR__;  ///< Offset: 0x60 - Description collection: Task for writing to pin... (renamed from TASKS_CLR__)
+        volatile uint32_t EVENTS_IN__;  ///< Offset: 0x100 - Description collection: Event generated from pin... (renamed from EVENTS_IN__)
         volatile uint32_t EVENTS_PORT;  ///< Offset: 0x17C - Event generated from multiple input GPIO pins with SENSE...
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
-        volatile uint32_t CONFIG[%s];  ///< Offset: 0x510 - Description collection: Configuration for OUT[n],...
+        volatile uint32_t CONFIG__;  ///< Offset: 0x510 - Description collection: Configuration for OUT[n],... (renamed from CONFIG__)
     };
 
     /// Peripheral instances
     inline Registers* GPIOTE = reinterpret_cast<Registers*>(GPIOTE_BASE);
 
     // Bit definitions
-    /// TASKS_OUT[%s] Register bits
-    namespace tasks_out[%s]_bits {
+    /// TASKS_OUT__ Register bits
+    namespace tasks_out___bits {
         constexpr uint32_t TASKS_OUT = (1U << 0);  ///< Task for writing to pin specified in CONFIG[n].PSEL. Action on pin is configured in CONFIG[n].POLARITY.
     }
 
-    /// TASKS_SET[%s] Register bits
-    namespace tasks_set[%s]_bits {
+    /// TASKS_SET__ Register bits
+    namespace tasks_set___bits {
         constexpr uint32_t TASKS_SET = (1U << 0);  ///< Task for writing to pin specified in CONFIG[n].PSEL. Action on pin is to set it high.
     }
 
-    /// TASKS_CLR[%s] Register bits
-    namespace tasks_clr[%s]_bits {
+    /// TASKS_CLR__ Register bits
+    namespace tasks_clr___bits {
         constexpr uint32_t TASKS_CLR = (1U << 0);  ///< Task for writing to pin specified in CONFIG[n].PSEL. Action on pin is to set it low.
     }
 
-    /// EVENTS_IN[%s] Register bits
-    namespace events_in[%s]_bits {
+    /// EVENTS_IN__ Register bits
+    namespace events_in___bits {
         constexpr uint32_t EVENTS_IN = (1U << 0);  ///< Event generated from pin specified in CONFIG[n].PSEL
     }
 
@@ -2400,8 +2400,8 @@ namespace gpio {
         constexpr uint32_t PORT = (1U << 31);  ///< Write '1' to disable interrupt for event PORT
     }
 
-    /// CONFIG[%s] Register bits
-    namespace config[%s]_bits {
+    /// CONFIG__ Register bits
+    namespace config___bits {
         constexpr uint32_t MODE = (2 << 0);  ///< Mode
         constexpr uint32_t PSEL = (5 << 8);  ///< GPIO number associated with SET[n], CLR[n], and OUT[n] tasks and IN[n] event
         constexpr uint32_t POLARITY = (2 << 16);  ///< When In task mode: Operation to be performed on output when OUT[n] task is triggered. When In event mode: Operation on input that shall trigger IN[n] event.
@@ -2428,15 +2428,15 @@ namespace tim {
         volatile uint32_t TASKS_COUNT;  ///< Offset: 0x08 - Increment Timer (Counter mode only)
         volatile uint32_t TASKS_CLEAR;  ///< Offset: 0x0C - Clear time
         volatile uint32_t TASKS_SHUTDOWN;  ///< Offset: 0x10 - Deprecated register - Shut down timer
-        volatile uint32_t TASKS_CAPTURE[%s];  ///< Offset: 0x40 - Description collection: Capture Timer value to CC[n] register
-        volatile uint32_t EVENTS_COMPARE[%s];  ///< Offset: 0x140 - Description collection: Compare event on CC[n] match
+        volatile uint32_t TASKS_CAPTURE__;  ///< Offset: 0x40 - Description collection: Capture Timer value to CC[n] register (renamed from TASKS_CAPTURE__)
+        volatile uint32_t EVENTS_COMPARE__;  ///< Offset: 0x140 - Description collection: Compare event on CC[n] match (renamed from EVENTS_COMPARE__)
         volatile uint32_t SHORTS;  ///< Offset: 0x200 - Shortcuts between local events and tasks
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
         volatile uint32_t MODE;  ///< Offset: 0x504 - Timer mode selection
         volatile uint32_t BITMODE;  ///< Offset: 0x508 - Configure the number of bits used by the TIMER
         volatile uint32_t PRESCALER;  ///< Offset: 0x510 - Timer prescaler register
-        volatile uint32_t CC[%s];  ///< Offset: 0x540 - Description collection: Capture/Compare register n
+        volatile uint32_t CC__;  ///< Offset: 0x540 - Description collection: Capture/Compare register n (renamed from CC__)
     };
 
     /// Peripheral instances
@@ -2471,13 +2471,13 @@ namespace tim {
         constexpr uint32_t TASKS_SHUTDOWN = (1U << 0);  ///< Deprecated field - Shut down timer
     }
 
-    /// TASKS_CAPTURE[%s] Register bits
-    namespace tasks_capture[%s]_bits {
+    /// TASKS_CAPTURE__ Register bits
+    namespace tasks_capture___bits {
         constexpr uint32_t TASKS_CAPTURE = (1U << 0);  ///< Capture Timer value to CC[n] register
     }
 
-    /// EVENTS_COMPARE[%s] Register bits
-    namespace events_compare[%s]_bits {
+    /// EVENTS_COMPARE__ Register bits
+    namespace events_compare___bits {
         constexpr uint32_t EVENTS_COMPARE = (1U << 0);  ///< Compare event on CC[n] match
     }
 
@@ -2532,8 +2532,8 @@ namespace tim {
         constexpr uint32_t PRESCALER = (4 << 0);  ///< Prescaler value
     }
 
-    /// CC[%s] Register bits
-    namespace cc[%s]_bits {
+    /// CC__ Register bits
+    namespace cc___bits {
         constexpr uint32_t CC = (32 << 0);  ///< Capture/Compare value
     }
 
@@ -2556,7 +2556,7 @@ namespace rtc {
         volatile uint32_t TASKS_TRIGOVRFLW;  ///< Offset: 0x0C - Set COUNTER to 0xFFFFF0
         volatile uint32_t EVENTS_TICK;  ///< Offset: 0x100 - Event on COUNTER increment
         volatile uint32_t EVENTS_OVRFLW;  ///< Offset: 0x104 - Event on COUNTER overflow
-        volatile uint32_t EVENTS_COMPARE[%s];  ///< Offset: 0x140 - Description collection: Compare event on CC[n] match
+        volatile uint32_t EVENTS_COMPARE__;  ///< Offset: 0x140 - Description collection: Compare event on CC[n] match (renamed from EVENTS_COMPARE__)
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
         volatile uint32_t EVTEN;  ///< Offset: 0x340 - Enable or disable event routing
@@ -2564,7 +2564,7 @@ namespace rtc {
         volatile uint32_t EVTENCLR;  ///< Offset: 0x348 - Disable event routing
         volatile uint32_t COUNTER;  ///< Offset: 0x504 - Current COUNTER value
         volatile uint32_t PRESCALER;  ///< Offset: 0x508 - 12 bit prescaler for COUNTER frequency...
-        volatile uint32_t CC[%s];  ///< Offset: 0x540 - Description collection: Compare register n
+        volatile uint32_t CC__;  ///< Offset: 0x540 - Description collection: Compare register n (renamed from CC__)
     };
 
     /// Peripheral instances
@@ -2602,8 +2602,8 @@ namespace rtc {
         constexpr uint32_t EVENTS_OVRFLW = (1U << 0);  ///< Event on COUNTER overflow
     }
 
-    /// EVENTS_COMPARE[%s] Register bits
-    namespace events_compare[%s]_bits {
+    /// EVENTS_COMPARE__ Register bits
+    namespace events_compare___bits {
         constexpr uint32_t EVENTS_COMPARE = (1U << 0);  ///< Compare event on CC[n] match
     }
 
@@ -2667,8 +2667,8 @@ namespace rtc {
         constexpr uint32_t PRESCALER = (12 << 0);  ///< Prescaler value
     }
 
-    /// CC[%s] Register bits
-    namespace cc[%s]_bits {
+    /// CC__ Register bits
+    namespace cc___bits {
         constexpr uint32_t COMPARE = (24 << 0);  ///< Compare value
     }
 
@@ -3215,7 +3215,7 @@ namespace wdg {
         volatile uint32_t CRV;  ///< Offset: 0x504 - Counter reload value
         volatile uint32_t RREN;  ///< Offset: 0x508 - Enable register for reload request registers
         volatile uint32_t CONFIG;  ///< Offset: 0x50C - Configuration register
-        volatile uint32_t RR[%s];  ///< Offset: 0x600 - Description collection: Reload request n
+        volatile uint32_t RR__;  ///< Offset: 0x600 - Description collection: Reload request n (renamed from RR__)
     };
 
     /// Peripheral instances
@@ -3282,8 +3282,8 @@ namespace wdg {
         constexpr uint32_t HALT = (1U << 3);  ///< Configure the watchdog to either be paused, or kept running, while the CPU is halted by the debugger
     }
 
-    /// RR[%s] Register bits
-    namespace rr[%s]_bits {
+    /// RR__ Register bits
+    namespace rr___bits {
         constexpr uint32_t RR = (32 << 0);  ///< Reload request register
     }
 
@@ -3643,8 +3643,8 @@ namespace egu0 {
 
     /// EGU0 Register structure
     struct Registers {
-        volatile uint32_t TASKS_TRIGGER[%s];  ///< Offset: 0x00 - Description collection: Trigger n for triggering the...
-        volatile uint32_t EVENTS_TRIGGERED[%s];  ///< Offset: 0x100 - Description collection: Event number n generated by...
+        volatile uint32_t TASKS_TRIGGER__;  ///< Offset: 0x00 - Description collection: Trigger n for triggering the... (renamed from TASKS_TRIGGER__)
+        volatile uint32_t EVENTS_TRIGGERED__;  ///< Offset: 0x100 - Description collection: Event number n generated by... (renamed from EVENTS_TRIGGERED__)
         volatile uint32_t INTEN;  ///< Offset: 0x300 - Enable or disable interrupt
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
@@ -3654,13 +3654,13 @@ namespace egu0 {
     inline Registers* EGU0 = reinterpret_cast<Registers*>(EGU0_BASE);
 
     // Bit definitions
-    /// TASKS_TRIGGER[%s] Register bits
-    namespace tasks_trigger[%s]_bits {
+    /// TASKS_TRIGGER__ Register bits
+    namespace tasks_trigger___bits {
         constexpr uint32_t TASKS_TRIGGER = (1U << 0);  ///< Trigger n for triggering the corresponding TRIGGERED[n] event
     }
 
-    /// EVENTS_TRIGGERED[%s] Register bits
-    namespace events_triggered[%s]_bits {
+    /// EVENTS_TRIGGERED__ Register bits
+    namespace events_triggered___bits {
         constexpr uint32_t EVENTS_TRIGGERED = (1U << 0);  ///< Event number n generated by triggering the corresponding TRIGGER[n] task
     }
 
@@ -4046,7 +4046,7 @@ namespace ppi {
         volatile uint32_t CHENCLR;  ///< Offset: 0x508 - Channel enable clear register
         volatile uint32_t EEP;  ///< Offset: 0x00 - Description cluster: Channel n event end-point
         volatile uint32_t TEP;  ///< Offset: 0x00 - Description cluster: Channel n task end-point
-        volatile uint32_t CHG[%s];  ///< Offset: 0x800 - Description collection: Channel group n
+        volatile uint32_t CHG__;  ///< Offset: 0x800 - Description collection: Channel group n (renamed from CHG__)
     };
 
     /// Peripheral instances
@@ -4181,8 +4181,8 @@ namespace ppi {
         constexpr uint32_t TEP = (32 << 0);  ///< Pointer to task register
     }
 
-    /// CHG[%s] Register bits
-    namespace chg[%s]_bits {
+    /// CHG__ Register bits
+    namespace chg___bits {
         constexpr uint32_t CH0 = (1U << 0);  ///< Include or exclude channel 0
         constexpr uint32_t CH1 = (1U << 1);  ///< Include or exclude channel 1
         constexpr uint32_t CH2 = (1U << 2);  ///< Include or exclude channel 2
@@ -4229,9 +4229,9 @@ namespace usb {
 
     /// USB Register structure
     struct Registers {
-        volatile uint32_t TASKS_STARTEPIN[%s];  ///< Offset: 0x04 - Description collection: Captures the EPIN[n].PTR and...
+        volatile uint32_t TASKS_STARTEPIN__;  ///< Offset: 0x04 - Description collection: Captures the EPIN[n].PTR and... (renamed from TASKS_STARTEPIN__)
         volatile uint32_t TASKS_STARTISOIN;  ///< Offset: 0x24 - Captures the ISOIN.PTR and ISOIN.MAXCNT registers...
-        volatile uint32_t TASKS_STARTEPOUT[%s];  ///< Offset: 0x28 - Description collection: Captures the EPOUT[n].PTR and...
+        volatile uint32_t TASKS_STARTEPOUT__;  ///< Offset: 0x28 - Description collection: Captures the EPOUT[n].PTR and... (renamed from TASKS_STARTEPOUT__)
         volatile uint32_t TASKS_STARTISOOUT;  ///< Offset: 0x48 - Captures the ISOOUT.PTR and ISOOUT.MAXCNT registers...
         volatile uint32_t TASKS_EP0RCVOUT;  ///< Offset: 0x4C - Allows OUT data stage on control endpoint 0
         volatile uint32_t TASKS_EP0STATUS;  ///< Offset: 0x50 - Allows status stage on control endpoint 0
@@ -4240,10 +4240,10 @@ namespace usb {
         volatile uint32_t TASKS_DPDMNODRIVE;  ///< Offset: 0x5C - Stops forcing D+ and D- lines into any state (USB engine...
         volatile uint32_t EVENTS_USBRESET;  ///< Offset: 0x100 - Signals that a USB reset condition has been detected on USB lines
         volatile uint32_t EVENTS_STARTED;  ///< Offset: 0x104 - Confirms that the EPIN[n].PTR and EPIN[n].MAXCNT, or...
-        volatile uint32_t EVENTS_ENDEPIN[%s];  ///< Offset: 0x108 - Description collection: The whole EPIN[n] buffer has...
+        volatile uint32_t EVENTS_ENDEPIN__;  ///< Offset: 0x108 - Description collection: The whole EPIN[n] buffer has... (renamed from EVENTS_ENDEPIN__)
         volatile uint32_t EVENTS_EP0DATADONE;  ///< Offset: 0x128 - An acknowledged data transfer has taken place on the...
         volatile uint32_t EVENTS_ENDISOIN;  ///< Offset: 0x12C - The whole ISOIN buffer has been consumed. The buffer can...
-        volatile uint32_t EVENTS_ENDEPOUT[%s];  ///< Offset: 0x130 - Description collection: The whole EPOUT[n] buffer has...
+        volatile uint32_t EVENTS_ENDEPOUT__;  ///< Offset: 0x130 - Description collection: The whole EPOUT[n] buffer has... (renamed from EVENTS_ENDEPOUT__)
         volatile uint32_t EVENTS_ENDISOOUT;  ///< Offset: 0x150 - The whole ISOOUT buffer has been consumed. The buffer...
         volatile uint32_t EVENTS_SOF;  ///< Offset: 0x154 - Signals that a SOF (start of frame) condition has been...
         volatile uint32_t EVENTS_USBEVENT;  ///< Offset: 0x158 - An event or an error not covered by specific events has...
@@ -4254,8 +4254,8 @@ namespace usb {
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
         volatile uint32_t EVENTCAUSE;  ///< Offset: 0x400 - Details on what caused the USBEVENT event
-        volatile uint32_t EPIN[%s];  ///< Offset: 0x00 - Description collection: IN endpoint halted status. Can...
-        volatile uint32_t EPOUT[%s];  ///< Offset: 0x00 - Description collection: Number of bytes received last in...
+        volatile uint32_t EPIN__;  ///< Offset: 0x00 - Description collection: IN endpoint halted status. Can... (renamed from EPIN__)
+        volatile uint32_t EPOUT__;  ///< Offset: 0x00 - Description collection: Number of bytes received last in... (renamed from EPOUT__)
         volatile uint32_t EPSTATUS;  ///< Offset: 0x468 - Provides information on which endpoint's EasyDMA...
         volatile uint32_t EPDATASTATUS;  ///< Offset: 0x46C - Provides information on which endpoint(s) an...
         volatile uint32_t USBADDR;  ///< Offset: 0x470 - Device USB address
@@ -4288,8 +4288,8 @@ namespace usb {
     inline Registers* USBD = reinterpret_cast<Registers*>(USBD_BASE);
 
     // Bit definitions
-    /// TASKS_STARTEPIN[%s] Register bits
-    namespace tasks_startepin[%s]_bits {
+    /// TASKS_STARTEPIN__ Register bits
+    namespace tasks_startepin___bits {
         constexpr uint32_t TASKS_STARTEPIN = (1U << 0);  ///< Captures the EPIN[n].PTR and EPIN[n].MAXCNT registers values, and enables endpoint IN n to respond to traffic from host
     }
 
@@ -4298,8 +4298,8 @@ namespace usb {
         constexpr uint32_t TASKS_STARTISOIN = (1U << 0);  ///< Captures the ISOIN.PTR and ISOIN.MAXCNT registers values, and enables sending data on ISO endpoint
     }
 
-    /// TASKS_STARTEPOUT[%s] Register bits
-    namespace tasks_startepout[%s]_bits {
+    /// TASKS_STARTEPOUT__ Register bits
+    namespace tasks_startepout___bits {
         constexpr uint32_t TASKS_STARTEPOUT = (1U << 0);  ///< Captures the EPOUT[n].PTR and EPOUT[n].MAXCNT registers values, and enables endpoint n to respond to traffic from host
     }
 
@@ -4343,8 +4343,8 @@ namespace usb {
         constexpr uint32_t EVENTS_STARTED = (1U << 0);  ///< Confirms that the EPIN[n].PTR and EPIN[n].MAXCNT, or EPOUT[n].PTR and EPOUT[n].MAXCNT registers have been captured on all endpoints reported in the EPSTATUS register
     }
 
-    /// EVENTS_ENDEPIN[%s] Register bits
-    namespace events_endepin[%s]_bits {
+    /// EVENTS_ENDEPIN__ Register bits
+    namespace events_endepin___bits {
         constexpr uint32_t EVENTS_ENDEPIN = (1U << 0);  ///< The whole EPIN[n] buffer has been consumed. The buffer can be accessed safely by software.
     }
 
@@ -4358,8 +4358,8 @@ namespace usb {
         constexpr uint32_t EVENTS_ENDISOIN = (1U << 0);  ///< The whole ISOIN buffer has been consumed. The buffer can be accessed safely by software.
     }
 
-    /// EVENTS_ENDEPOUT[%s] Register bits
-    namespace events_endepout[%s]_bits {
+    /// EVENTS_ENDEPOUT__ Register bits
+    namespace events_endepout___bits {
         constexpr uint32_t EVENTS_ENDEPOUT = (1U << 0);  ///< The whole EPOUT[n] buffer has been consumed. The buffer can be accessed safely by software.
     }
 
@@ -4493,13 +4493,13 @@ namespace usb {
         constexpr uint32_t READY = (1U << 11);  ///< USB device is ready for normal operation. Write '1' to clear.
     }
 
-    /// EPIN[%s] Register bits
-    namespace epin[%s]_bits {
+    /// EPIN__ Register bits
+    namespace epin___bits {
         constexpr uint32_t GETSTATUS = (16 << 0);  ///< IN endpoint halted status. Can be used as is as response to a GetStatus() request to endpoint.
     }
 
-    /// EPOUT[%s] Register bits
-    namespace epout[%s]_bits {
+    /// EPOUT__ Register bits
+    namespace epout___bits {
         constexpr uint32_t SIZE = (7 << 0);  ///< Number of bytes received last in the data stage of this OUT endpoint
     }
 

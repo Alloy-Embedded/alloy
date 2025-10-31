@@ -3,7 +3,7 @@
 /// Source: spansion_mb9bf56xx.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:31
+/// Generated: 2025-10-31 17:44:05
 #ifndef ALLOY_GENERATED_MB9BF56XX_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MB9BF56XX_PERIPHERALS_HPP
 
@@ -5015,7 +5015,7 @@ namespace mfs0 {
         constexpr uint32_t CNDE = (1U << 3);  ///< bitfield CNDE
         constexpr uint32_t INTE = (1U << 2);  ///< bitfield INTE
         constexpr uint32_t BER = (1U << 1);  ///< bitfield BER
-        constexpr uint32_t INT = (1U << 0);  ///< bitfield INT
+        constexpr uint32_t INT_ = (1U << 0);  ///< bitfield INT (renamed from INT_)
     }
 
     /// I2C_SMR Register bits

@@ -3,7 +3,7 @@
 /// Source: fujitsu_mb9afa3xn.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:56
+/// Generated: 2025-10-31 17:44:33
 #include <cstdint>
 #include <cstring>
 

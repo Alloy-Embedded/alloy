@@ -17,9 +17,19 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Alloy configuration variables
 set(ALLOY_ROOT ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Alloy framework root directory")
-set(ALLOY_BOARD "host" CACHE STRING "Target board (host, rp_pico, bluepill, cf_rl78, esp32_devkit)")
+set(ALLOY_BOARD "host" CACHE STRING "Target board (host, bluepill, esp32_devkit, stm32f407vg, arduino_zero, rp_pico)")
 set(ALLOY_MCU "" CACHE STRING "Target MCU (set by board configuration)")
 set(ALLOY_ARCH "" CACHE STRING "Target architecture (set by board configuration)")
+
+# Board options
+set_property(CACHE ALLOY_BOARD PROPERTY STRINGS
+    "host"
+    "bluepill"           # STM32F103C8 Blue Pill
+    "esp32_devkit"       # ESP32 DevKit
+    "stm32f407vg"        # STM32F407VG Discovery
+    "arduino_zero"       # ATSAMD21G18 Arduino Zero
+    "rp_pico"            # RP2040 Raspberry Pi Pico
+)
 
 # Build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -29,6 +39,9 @@ endif()
 # Include CMake modules
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(compiler_options)
+include(toolchain_check)
+include(board_flags)
+include(flash_targets)
 
 # Testing support
 option(ALLOY_BUILD_TESTS "Build unit tests" ON)
@@ -58,6 +71,9 @@ else()
     message(WARNING "Board '${ALLOY_BOARD}' not found, using defaults")
 endif()
 
+# Validate toolchain for selected board
+alloy_validate_toolchain()
+
 # Display configuration
 message(STATUS "========================================")
 message(STATUS "Alloy Framework Configuration")
@@ -83,9 +99,25 @@ endif()
 add_subdirectory(examples/blinky)
 # add_subdirectory(examples/portable_blinky)  # Portable example for all MCUs
 
-# STM32F103 blink example (Blue Pill)
+# Board-specific blink examples
 if(ALLOY_BOARD STREQUAL "bluepill")
     add_subdirectory(examples/blink_stm32f103)
+endif()
+
+if(ALLOY_BOARD STREQUAL "esp32_devkit")
+    add_subdirectory(examples/blink_esp32)
+endif()
+
+if(ALLOY_BOARD STREQUAL "stm32f407vg")
+    add_subdirectory(examples/blink_stm32f407)
+endif()
+
+if(ALLOY_BOARD STREQUAL "arduino_zero")
+    add_subdirectory(examples/blink_arduino_zero)
+endif()
+
+if(ALLOY_BOARD STREQUAL "rp_pico")
+    add_subdirectory(examples/blink_rp_pico)
 endif()
 
 # Tests

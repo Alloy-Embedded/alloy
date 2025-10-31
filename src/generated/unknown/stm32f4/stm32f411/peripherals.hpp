@@ -3,7 +3,7 @@
 /// Source: st_stm32f411.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:37
+/// Generated: 2025-10-31 17:44:12
 #ifndef ALLOY_GENERATED_STM32F411_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32F411_PERIPHERALS_HPP
 

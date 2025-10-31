@@ -3,7 +3,7 @@
 /// Source: infineon_xmc1200.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:26
+/// Generated: 2025-10-31 17:45:06
 #ifndef ALLOY_GENERATED_XMC1200_PERIPHERALS_HPP
 #define ALLOY_GENERATED_XMC1200_PERIPHERALS_HPP
 
@@ -369,8 +369,8 @@ namespace eru0 {
     /// ERU0 Register structure
     struct Registers {
         volatile uint32_t EXISEL;  ///< Offset: 0x00 - Event Input Select
-        volatile uint32_t EXICON[%s];  ///< Offset: 0x10 - Event Input Control
-        volatile uint32_t EXOCON[%s];  ///< Offset: 0x20 - Event Output Trigger Control
+        volatile uint32_t EXICON__;  ///< Offset: 0x10 - Event Input Control (renamed from EXICON__)
+        volatile uint32_t EXOCON__;  ///< Offset: 0x20 - Event Output Trigger Control (renamed from EXOCON__)
     };
 
     /// Peripheral instances
@@ -389,8 +389,8 @@ namespace eru0 {
         constexpr uint32_t EXS3B = (2 << 14);  ///< Event Source Select for B3 (ERS3)
     }
 
-    /// EXICON[%s] Register bits
-    namespace exicon[%s]_bits {
+    /// EXICON__ Register bits
+    namespace exicon___bits {
         constexpr uint32_t PE = (1U << 0);  ///< Output Trigger Pulse Enable for ETLx
         constexpr uint32_t LD = (1U << 1);  ///< Rebuild Level Detection for Status Flag for ETLx
         constexpr uint32_t RE = (1U << 2);  ///< Rising Edge Detection Enable ETLx
@@ -402,8 +402,8 @@ namespace eru0 {
         constexpr uint32_t NB = (1U << 11);  ///< Input B Negation Select for ERSx
     }
 
-    /// EXOCON[%s] Register bits
-    namespace exocon[%s]_bits {
+    /// EXOCON__ Register bits
+    namespace exocon___bits {
         constexpr uint32_t ISS = (2 << 0);  ///< Internal Trigger Source Selection
         constexpr uint32_t GEEN = (1U << 2);  ///< Gating Event Enable
         constexpr uint32_t PDR = (1U << 3);  ///< Pattern Detection Result Flag
@@ -1319,12 +1319,12 @@ namespace adc {
         volatile uint32_t GLOBCFG;  ///< Offset: 0x80 - Global Configuration Register
         volatile uint32_t ACCPROT0;  ///< Offset: 0x88 - Access Protection Register
         volatile uint32_t ACCPROT1;  ///< Offset: 0x8C - Access Protection Register
-        volatile uint32_t GLOBICLASS[%s];  ///< Offset: 0xA0 - Input Class Register, Global
+        volatile uint32_t GLOBICLASS__;  ///< Offset: 0xA0 - Input Class Register, Global (renamed from GLOBICLASS__)
         volatile uint32_t GLOBBOUND;  ///< Offset: 0xB8 - Global Boundary Select Register
         volatile uint32_t GLOBEFLAG;  ///< Offset: 0xE0 - Global Event Flag Register
         volatile uint32_t GLOBEVNP;  ///< Offset: 0x140 - Global Event Node Pointer Register
-        volatile uint32_t BRSSEL[%s];  ///< Offset: 0x180 - Background Request Source Channel Select Register
-        volatile uint32_t BRSPND[%s];  ///< Offset: 0x1C0 - Background Request Source Pending Register
+        volatile uint32_t BRSSEL__;  ///< Offset: 0x180 - Background Request Source Channel Select Register (renamed from BRSSEL__)
+        volatile uint32_t BRSPND__;  ///< Offset: 0x1C0 - Background Request Source Pending Register (renamed from BRSPND__)
         volatile uint32_t BRSCTRL;  ///< Offset: 0x200 - Background Request Source Control Register
         volatile uint32_t BRSMR;  ///< Offset: 0x204 - Background Request Source Mode Register
         volatile uint32_t GLOBRCR;  ///< Offset: 0x280 - Global Result Control Register
@@ -1393,8 +1393,8 @@ namespace adc {
         constexpr uint32_t APR1 = (1U << 17);  ///< Access Protection Result Registers, Group 0 - 1
     }
 
-    /// GLOBICLASS[%s] Register bits
-    namespace globiclass[%s]_bits {
+    /// GLOBICLASS__ Register bits
+    namespace globiclass___bits {
         constexpr uint32_t STCS = (5 << 0);  ///< Sample Time Control for Standard Conversions
         constexpr uint32_t CMS = (3 << 8);  ///< Conversion Mode for Standard Conversions
         constexpr uint32_t STCE = (5 << 16);  ///< Sample Time Control for EMUX Conversions
@@ -1421,8 +1421,8 @@ namespace adc {
         constexpr uint32_t REV0NP = (4 << 16);  ///< Service Request Node Pointer Global Result
     }
 
-    /// BRSSEL[%s] Register bits
-    namespace brssel[%s]_bits {
+    /// BRSSEL__ Register bits
+    namespace brssel___bits {
         constexpr uint32_t CHSELG0 = (1U << 0);  ///< Channel Selection Group x
         constexpr uint32_t CHSELG1 = (1U << 1);  ///< Channel Selection Group x
         constexpr uint32_t CHSELG2 = (1U << 2);  ///< Channel Selection Group x
@@ -1433,8 +1433,8 @@ namespace adc {
         constexpr uint32_t CHSELG7 = (1U << 7);  ///< Channel Selection Group x
     }
 
-    /// BRSPND[%s] Register bits
-    namespace brspnd[%s]_bits {
+    /// BRSPND__ Register bits
+    namespace brspnd___bits {
         constexpr uint32_t CHPNDG0 = (1U << 0);  ///< Channels Pending Group x
         constexpr uint32_t CHPNDG1 = (1U << 1);  ///< Channels Pending Group x
         constexpr uint32_t CHPNDG2 = (1U << 2);  ///< Channels Pending Group x

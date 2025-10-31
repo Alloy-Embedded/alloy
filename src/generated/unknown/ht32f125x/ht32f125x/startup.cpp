@@ -3,7 +3,7 @@
 /// Source: holtek_ht32f125x.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:31
+/// Generated: 2025-10-31 17:44:06
 #include <cstdint>
 #include <cstring>
 

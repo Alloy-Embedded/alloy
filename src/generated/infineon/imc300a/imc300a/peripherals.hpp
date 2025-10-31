@@ -3,7 +3,7 @@
 /// Source: infineon_imc300a.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:11
+/// Generated: 2025-10-31 17:44:50
 #ifndef ALLOY_GENERATED_IMC300A_PERIPHERALS_HPP
 #define ALLOY_GENERATED_IMC300A_PERIPHERALS_HPP
 
@@ -393,8 +393,8 @@ namespace eru0 {
     /// ERU0 Register structure
     struct Registers {
         volatile uint32_t EXISEL;  ///< Offset: 0x00 - Event Input Select
-        volatile uint32_t EXICON[%s];  ///< Offset: 0x10 - Event Input Control
-        volatile uint32_t EXOCON[%s];  ///< Offset: 0x20 - Event Output Trigger Control
+        volatile uint32_t EXICON__;  ///< Offset: 0x10 - Event Input Control (renamed from EXICON__)
+        volatile uint32_t EXOCON__;  ///< Offset: 0x20 - Event Output Trigger Control (renamed from EXOCON__)
     };
 
     /// Peripheral instances
@@ -413,8 +413,8 @@ namespace eru0 {
         constexpr uint32_t EXS3B = (2 << 14);  ///< Event Source Select for B3 (ERS3)
     }
 
-    /// EXICON[%s] Register bits
-    namespace exicon[%s]_bits {
+    /// EXICON__ Register bits
+    namespace exicon___bits {
         constexpr uint32_t PE = (1U << 0);  ///< Output Trigger Pulse Enable for ETLx
         constexpr uint32_t LD = (1U << 1);  ///< Rebuild Level Detection for Status Flag for ETLx
         constexpr uint32_t RE = (1U << 2);  ///< Rising Edge Detection Enable ETLx
@@ -426,8 +426,8 @@ namespace eru0 {
         constexpr uint32_t NB = (1U << 11);  ///< Input B Negation Select for ERSx
     }
 
-    /// EXOCON[%s] Register bits
-    namespace exocon[%s]_bits {
+    /// EXOCON__ Register bits
+    namespace exocon___bits {
         constexpr uint32_t ISS = (2 << 0);  ///< Internal Trigger Source Selection
         constexpr uint32_t GEEN = (1U << 2);  ///< Gating Event Enable
         constexpr uint32_t PDR = (1U << 3);  ///< Pattern Detection Result Flag
@@ -1108,9 +1108,9 @@ namespace can {
         volatile uint32_t CLC;  ///< Offset: 0x00 - CAN Clock Control Register
         volatile uint32_t ID;  ///< Offset: 0x08 - Module Identification Register
         volatile uint32_t FDR;  ///< Offset: 0x0C - CAN Fractional Divider Register
-        volatile uint32_t LIST[%s];  ///< Offset: 0x100 - List Register
-        volatile uint32_t MSPND[%s];  ///< Offset: 0x140 - Message Pending Register
-        volatile uint32_t MSID[%s];  ///< Offset: 0x180 - Message Index Register
+        volatile uint32_t LIST__;  ///< Offset: 0x100 - List Register (renamed from LIST__)
+        volatile uint32_t MSPND__;  ///< Offset: 0x140 - Message Pending Register (renamed from MSPND__)
+        volatile uint32_t MSID__;  ///< Offset: 0x180 - Message Index Register (renamed from MSID__)
         volatile uint32_t MSIMASK;  ///< Offset: 0x1C0 - Message Index Mask Register
         volatile uint32_t PANCTR;  ///< Offset: 0x1C4 - Panel Control Register
         volatile uint32_t MCR;  ///< Offset: 0x1C8 - Module Control Register
@@ -1144,21 +1144,21 @@ namespace can {
         constexpr uint32_t DM = (2 << 14);  ///< Divider Mode
     }
 
-    /// LIST[%s] Register bits
-    namespace list[%s]_bits {
+    /// LIST__ Register bits
+    namespace list___bits {
         constexpr uint32_t BEGIN = (8 << 0);  ///< List Begin
         constexpr uint32_t END = (8 << 8);  ///< List End
         constexpr uint32_t SIZE = (8 << 16);  ///< List Size
         constexpr uint32_t EMPTY = (1U << 24);  ///< List Empty Indication
     }
 
-    /// MSPND[%s] Register bits
-    namespace mspnd[%s]_bits {
+    /// MSPND__ Register bits
+    namespace mspnd___bits {
         constexpr uint32_t PND = (32 << 0);  ///< Message Pending
     }
 
-    /// MSID[%s] Register bits
-    namespace msid[%s]_bits {
+    /// MSID__ Register bits
+    namespace msid___bits {
         constexpr uint32_t INDEX = (6 << 0);  ///< Message Pending Index
     }
 

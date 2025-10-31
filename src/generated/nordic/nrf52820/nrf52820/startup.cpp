@@ -3,7 +3,7 @@
 /// Source: nordic_nrf52820.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:34
+/// Generated: 2025-10-31 17:44:08
 #include <cstdint>
 #include <cstring>
 

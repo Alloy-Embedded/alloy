@@ -3,7 +3,7 @@
 /// Source: atmel_samd.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:33
+/// Generated: 2025-10-31 17:44:07
 #ifndef ALLOY_GENERATED_ATSAMD21J18A_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ATSAMD21J18A_PERIPHERALS_HPP
 
@@ -201,8 +201,8 @@ namespace ac {
         volatile uint32_t STATUSB;  ///< Offset: 0x09 - Status B
         volatile uint32_t STATUSC;  ///< Offset: 0x0A - Status C
         volatile uint32_t WINCTRL;  ///< Offset: 0x0C - Window Control
-        volatile uint32_t COMPCTRL%s;  ///< Offset: 0x10 - Comparator Control n
-        volatile uint32_t SCALER%s;  ///< Offset: 0x20 - Scaler n
+        volatile uint32_t COMPCTRL;  ///< Offset: 0x10 - Comparator Control n (renamed from COMPCTRL)
+        volatile uint32_t SCALER;  ///< Offset: 0x20 - Scaler n (renamed from SCALER)
     };
 
     /// Peripheral instances
@@ -280,8 +280,8 @@ namespace ac {
         constexpr uint32_t WINTSEL0 = (2 << 1);  ///< Window 0 Interrupt Selection
     }
 
-    /// COMPCTRL%s Register bits
-    namespace compctrl%s_bits {
+    /// COMPCTRL Register bits
+    namespace compctrl_bits {
         constexpr uint32_t ENABLE = (1U << 0);  ///< Enable
         constexpr uint32_t SINGLE = (1U << 1);  ///< Single-Shot Mode
         constexpr uint32_t SPEED = (2 << 2);  ///< Speed Selection
@@ -294,8 +294,8 @@ namespace ac {
         constexpr uint32_t FLEN = (3 << 24);  ///< Filter Length
     }
 
-    /// SCALER%s Register bits
-    namespace scaler%s_bits {
+    /// SCALER Register bits
+    namespace scaler_bits {
         constexpr uint32_t VALUE = (6 << 0);  ///< Scaler Value
     }
 
@@ -813,7 +813,7 @@ namespace dsu {
         volatile uint32_t ADDR;  ///< Offset: 0x04 - Address
         volatile uint32_t LENGTH;  ///< Offset: 0x08 - Length
         volatile uint32_t DATA;  ///< Offset: 0x0C - Data
-        volatile uint32_t DCC%s;  ///< Offset: 0x10 - Debug Communication Channel n
+        volatile uint32_t DCC;  ///< Offset: 0x10 - Debug Communication Channel n (renamed from DCC)
         volatile uint32_t DID;  ///< Offset: 0x18 - Device Identification
         volatile uint32_t ENTRY;  ///< Offset: 0x1000 - CoreSight ROM Table Entry 0
         volatile uint32_t ENTRY1;  ///< Offset: 0x1004 - CoreSight ROM Table Entry 1
@@ -875,8 +875,8 @@ namespace dsu {
         constexpr uint32_t DATA = (32 << 0);  ///< Data
     }
 
-    /// DCC%s Register bits
-    namespace dcc%s_bits {
+    /// DCC Register bits
+    namespace dcc_bits {
         constexpr uint32_t DATA = (32 << 0);  ///< Data
     }
 
@@ -979,7 +979,7 @@ namespace eic {
         volatile uint32_t INTENSET;  ///< Offset: 0x0C - Interrupt Enable Set
         volatile uint32_t INTFLAG;  ///< Offset: 0x10 - Interrupt Flag Status and Clear
         volatile uint32_t WAKEUP;  ///< Offset: 0x14 - Wake-Up Enable
-        volatile uint32_t CONFIG%s;  ///< Offset: 0x18 - Configuration n
+        volatile uint32_t CONFIG;  ///< Offset: 0x18 - Configuration n (renamed from CONFIG)
     };
 
     /// Peripheral instances
@@ -1108,8 +1108,8 @@ namespace eic {
         constexpr uint32_t WAKEUPEN15 = (1U << 15);  ///< External Interrupt 15 Wake-up Enable
     }
 
-    /// CONFIG%s Register bits
-    namespace config%s_bits {
+    /// CONFIG Register bits
+    namespace config_bits {
         constexpr uint32_t SENSE0 = (3 << 0);  ///< Input Sense 0 Configuration
         constexpr uint32_t FILTEN0 = (1U << 3);  ///< Filter 0 Enable
         constexpr uint32_t SENSE1 = (3 << 4);  ///< Input Sense 1 Configuration
@@ -1357,17 +1357,17 @@ namespace hmatrix {
 
     /// HMATRIX Register structure
     struct Registers {
-        volatile uint32_t PRAS%s;  ///< Offset: 0x80 - Priority A for Slave
-        volatile uint32_t PRBS%s;  ///< Offset: 0x84 - Priority B for Slave
-        volatile uint32_t SFR%s;  ///< Offset: 0x110 - Special Function
+        volatile uint32_t PRAS;  ///< Offset: 0x80 - Priority A for Slave (renamed from PRAS)
+        volatile uint32_t PRBS;  ///< Offset: 0x84 - Priority B for Slave (renamed from PRBS)
+        volatile uint32_t SFR;  ///< Offset: 0x110 - Special Function (renamed from SFR)
     };
 
     /// Peripheral instances
     inline Registers* HMATRIX = reinterpret_cast<Registers*>(HMATRIX_BASE);
 
     // Bit definitions
-    /// SFR%s Register bits
-    namespace sfr%s_bits {
+    /// SFR Register bits
+    namespace sfr_bits {
         constexpr uint32_t SFR = (32 << 0);  ///< Special Function Register
     }
 
@@ -1384,13 +1384,13 @@ namespace i2s {
     /// I2S Register structure
     struct Registers {
         volatile uint32_t CTRLA;  ///< Offset: 0x00 - Control A
-        volatile uint32_t CLKCTRL%s;  ///< Offset: 0x04 - Clock Unit n Control
+        volatile uint32_t CLKCTRL;  ///< Offset: 0x04 - Clock Unit n Control (renamed from CLKCTRL)
         volatile uint32_t INTENCLR;  ///< Offset: 0x0C - Interrupt Enable Clear
         volatile uint32_t INTENSET;  ///< Offset: 0x10 - Interrupt Enable Set
         volatile uint32_t INTFLAG;  ///< Offset: 0x14 - Interrupt Flag Status and Clear
         volatile uint32_t SYNCBUSY;  ///< Offset: 0x18 - Synchronization Status
-        volatile uint32_t SERCTRL%s;  ///< Offset: 0x20 - Serializer n Control
-        volatile uint32_t DATA%s;  ///< Offset: 0x30 - Data n
+        volatile uint32_t SERCTRL;  ///< Offset: 0x20 - Serializer n Control (renamed from SERCTRL)
+        volatile uint32_t DATA;  ///< Offset: 0x30 - Data n (renamed from DATA)
     };
 
     /// Peripheral instances
@@ -1407,8 +1407,8 @@ namespace i2s {
         constexpr uint32_t SEREN1 = (1U << 5);  ///< Serializer 1 Enable
     }
 
-    /// CLKCTRL%s Register bits
-    namespace clkctrl%s_bits {
+    /// CLKCTRL Register bits
+    namespace clkctrl_bits {
         constexpr uint32_t SLOTSIZE = (2 << 0);  ///< Slot Size
         constexpr uint32_t NBSLOTS = (3 << 2);  ///< Number of Slots in Frame
         constexpr uint32_t FSWIDTH = (2 << 5);  ///< Frame Sync Width
@@ -1473,8 +1473,8 @@ namespace i2s {
         constexpr uint32_t DATA1 = (1U << 9);  ///< Data 1 Synchronization Status
     }
 
-    /// SERCTRL%s Register bits
-    namespace serctrl%s_bits {
+    /// SERCTRL Register bits
+    namespace serctrl_bits {
         constexpr uint32_t SERMODE = (2 << 0);  ///< Serializer Mode
         constexpr uint32_t TXDEFAULT = (2 << 2);  ///< Line Default Line when Slot Disabled
         constexpr uint32_t TXSAME = (1U << 4);  ///< Transmit Data when Underrun
@@ -1497,8 +1497,8 @@ namespace i2s {
         constexpr uint32_t RXLOOP = (1U << 26);  ///< Loop-back Test Mode
     }
 
-    /// DATA%s Register bits
-    namespace data%s_bits {
+    /// DATA Register bits
+    namespace data_bits {
         constexpr uint32_t DATA = (32 << 0);  ///< Sample Data
     }
 
@@ -1872,21 +1872,21 @@ namespace gpio {
 
     /// GPIO Register structure
     struct Registers {
-        volatile uint32_t DIR%s;  ///< Offset: 0x00 - Data Direction
-        volatile uint32_t DIRCLR%s;  ///< Offset: 0x04 - Data Direction Clear
-        volatile uint32_t DIRSET%s;  ///< Offset: 0x08 - Data Direction Set
-        volatile uint32_t DIRTGL%s;  ///< Offset: 0x0C - Data Direction Toggle
-        volatile uint32_t OUT%s;  ///< Offset: 0x10 - Data Output Value
-        volatile uint32_t OUTCLR%s;  ///< Offset: 0x14 - Data Output Value Clear
-        volatile uint32_t OUTSET%s;  ///< Offset: 0x18 - Data Output Value Set
-        volatile uint32_t OUTTGL%s;  ///< Offset: 0x1C - Data Output Value Toggle
-        volatile uint32_t IN%s;  ///< Offset: 0x20 - Data Input Value
-        volatile uint32_t CTRL%s;  ///< Offset: 0x24 - Control
-        volatile uint32_t WRCONFIG%s;  ///< Offset: 0x28 - Write Configuration
-        volatile uint32_t PMUX0_%s;  ///< Offset: 0x30 - Peripheral Multiplexing n - Group 0
-        volatile uint32_t PMUX1_%s;  ///< Offset: 0xB0 - Peripheral Multiplexing n - Group 1
-        volatile uint32_t PINCFG0_%s;  ///< Offset: 0x40 - Pin Configuration n - Group 0
-        volatile uint32_t PINCFG1_%s;  ///< Offset: 0xC0 - Pin Configuration n - Group 1
+        volatile uint32_t DIR;  ///< Offset: 0x00 - Data Direction (renamed from DIR)
+        volatile uint32_t DIRCLR;  ///< Offset: 0x04 - Data Direction Clear (renamed from DIRCLR)
+        volatile uint32_t DIRSET;  ///< Offset: 0x08 - Data Direction Set (renamed from DIRSET)
+        volatile uint32_t DIRTGL;  ///< Offset: 0x0C - Data Direction Toggle (renamed from DIRTGL)
+        volatile uint32_t OUT;  ///< Offset: 0x10 - Data Output Value (renamed from OUT)
+        volatile uint32_t OUTCLR;  ///< Offset: 0x14 - Data Output Value Clear (renamed from OUTCLR)
+        volatile uint32_t OUTSET;  ///< Offset: 0x18 - Data Output Value Set (renamed from OUTSET)
+        volatile uint32_t OUTTGL;  ///< Offset: 0x1C - Data Output Value Toggle (renamed from OUTTGL)
+        volatile uint32_t IN;  ///< Offset: 0x20 - Data Input Value (renamed from IN)
+        volatile uint32_t CTRL;  ///< Offset: 0x24 - Control (renamed from CTRL)
+        volatile uint32_t WRCONFIG;  ///< Offset: 0x28 - Write Configuration (renamed from WRCONFIG)
+        volatile uint32_t PMUX0_;  ///< Offset: 0x30 - Peripheral Multiplexing n - Group 0 (renamed from PMUX0_)
+        volatile uint32_t PMUX1_;  ///< Offset: 0xB0 - Peripheral Multiplexing n - Group 1 (renamed from PMUX1_)
+        volatile uint32_t PINCFG0_;  ///< Offset: 0x40 - Pin Configuration n - Group 0 (renamed from PINCFG0_)
+        volatile uint32_t PINCFG1_;  ///< Offset: 0xC0 - Pin Configuration n - Group 1 (renamed from PINCFG1_)
     };
 
     /// Peripheral instances
@@ -1894,58 +1894,58 @@ namespace gpio {
     inline Registers* PORT_IOBUS = reinterpret_cast<Registers*>(PORT_IOBUS_BASE);
 
     // Bit definitions
-    /// DIR%s Register bits
-    namespace dir%s_bits {
+    /// DIR Register bits
+    namespace dir_bits {
         constexpr uint32_t DIR = (32 << 0);  ///< Port Data Direction
     }
 
-    /// DIRCLR%s Register bits
-    namespace dirclr%s_bits {
+    /// DIRCLR Register bits
+    namespace dirclr_bits {
         constexpr uint32_t DIRCLR = (32 << 0);  ///< Port Data Direction Clear
     }
 
-    /// DIRSET%s Register bits
-    namespace dirset%s_bits {
+    /// DIRSET Register bits
+    namespace dirset_bits {
         constexpr uint32_t DIRSET = (32 << 0);  ///< Port Data Direction Set
     }
 
-    /// DIRTGL%s Register bits
-    namespace dirtgl%s_bits {
+    /// DIRTGL Register bits
+    namespace dirtgl_bits {
         constexpr uint32_t DIRTGL = (32 << 0);  ///< Port Data Direction Toggle
     }
 
-    /// OUT%s Register bits
-    namespace out%s_bits {
+    /// OUT Register bits
+    namespace out_bits {
         constexpr uint32_t OUT = (32 << 0);  ///< Port Data Output Value
     }
 
-    /// OUTCLR%s Register bits
-    namespace outclr%s_bits {
+    /// OUTCLR Register bits
+    namespace outclr_bits {
         constexpr uint32_t OUTCLR = (32 << 0);  ///< Port Data Output Value Clear
     }
 
-    /// OUTSET%s Register bits
-    namespace outset%s_bits {
+    /// OUTSET Register bits
+    namespace outset_bits {
         constexpr uint32_t OUTSET = (32 << 0);  ///< Port Data Output Value Set
     }
 
-    /// OUTTGL%s Register bits
-    namespace outtgl%s_bits {
+    /// OUTTGL Register bits
+    namespace outtgl_bits {
         constexpr uint32_t OUTTGL = (32 << 0);  ///< Port Data Output Value Toggle
     }
 
-    /// IN%s Register bits
-    namespace in%s_bits {
+    /// IN Register bits
+    namespace in_bits {
         constexpr uint32_t IN = (32 << 0);  ///< Port Data Input Value
     }
 
-    /// CTRL%s Register bits
-    namespace ctrl%s_bits {
+    /// CTRL Register bits
+    namespace ctrl_bits {
         constexpr uint32_t SAMPLING = (32 << 0);  ///< Input Sampling Mode
     }
 
-    /// WRCONFIG%s Register bits
-    namespace wrconfig%s_bits {
+    /// WRCONFIG Register bits
+    namespace wrconfig_bits {
         constexpr uint32_t PINMASK = (16 << 0);  ///< Pin Mask for Multiple Pin Configuration
         constexpr uint32_t PMUXEN = (1U << 16);  ///< Peripheral Multiplexer Enable
         constexpr uint32_t INEN = (1U << 17);  ///< Input Enable
@@ -1957,14 +1957,14 @@ namespace gpio {
         constexpr uint32_t HWSEL = (1U << 31);  ///< Half-Word Select
     }
 
-    /// PMUX0_%s Register bits
-    namespace pmux0_%s_bits {
+    /// PMUX0_ Register bits
+    namespace pmux0__bits {
         constexpr uint32_t PMUXE = (4 << 0);  ///< Peripheral Multiplexing Even
         constexpr uint32_t PMUXO = (4 << 4);  ///< Peripheral Multiplexing Odd
     }
 
-    /// PINCFG0_%s Register bits
-    namespace pincfg0_%s_bits {
+    /// PINCFG0_ Register bits
+    namespace pincfg0__bits {
         constexpr uint32_t PMUXEN = (1U << 0);  ///< Peripheral Multiplexer Enable
         constexpr uint32_t INEN = (1U << 1);  ///< Input Enable
         constexpr uint32_t PULLEN = (1U << 2);  ///< Pull Enable
@@ -1993,11 +1993,11 @@ namespace rtc {
         volatile uint32_t DBGCTRL;  ///< Offset: 0x0B - Debug Control
         volatile uint32_t FREQCORR;  ///< Offset: 0x0C - Frequency Correction
         volatile uint32_t COUNT;  ///< Offset: 0x10 - MODE1 Counter Value
-        volatile uint32_t COMP%s;  ///< Offset: 0x18 - MODE1 Compare n Value
+        volatile uint32_t COMP;  ///< Offset: 0x18 - MODE1 Compare n Value (renamed from COMP)
         volatile uint32_t PER;  ///< Offset: 0x14 - MODE1 Counter Period
         volatile uint32_t CLOCK;  ///< Offset: 0x10 - MODE2 Clock Value
-        volatile uint32_t ALARM%s;  ///< Offset: 0x18 - MODE2 Alarm n Value
-        volatile uint32_t MASK%s;  ///< Offset: 0x1C - MODE2 Alarm n Mask
+        volatile uint32_t ALARM;  ///< Offset: 0x18 - MODE2 Alarm n Value (renamed from ALARM)
+        volatile uint32_t MASK;  ///< Offset: 0x1C - MODE2 Alarm n Mask (renamed from MASK)
     };
 
     /// Peripheral instances
@@ -2077,8 +2077,8 @@ namespace rtc {
         constexpr uint32_t COUNT = (16 << 0);  ///< Counter Value
     }
 
-    /// COMP%s Register bits
-    namespace comp%s_bits {
+    /// COMP Register bits
+    namespace comp_bits {
         constexpr uint32_t COMP = (16 << 0);  ///< Compare Value
     }
 
@@ -2097,8 +2097,8 @@ namespace rtc {
         constexpr uint32_t YEAR = (6 << 26);  ///< Year
     }
 
-    /// ALARM%s Register bits
-    namespace alarm%s_bits {
+    /// ALARM Register bits
+    namespace alarm_bits {
         constexpr uint32_t SECOND = (6 << 0);  ///< Second
         constexpr uint32_t MINUTE = (6 << 6);  ///< Minute
         constexpr uint32_t HOUR = (5 << 12);  ///< Hour
@@ -2107,8 +2107,8 @@ namespace rtc {
         constexpr uint32_t YEAR = (6 << 26);  ///< Year
     }
 
-    /// MASK%s Register bits
-    namespace mask%s_bits {
+    /// MASK Register bits
+    namespace mask_bits {
         constexpr uint32_t SEL = (3 << 0);  ///< Alarm Mask Selection
     }
 
@@ -2566,7 +2566,7 @@ namespace tim {
         volatile uint32_t STATUS;  ///< Offset: 0x0F - Status
         volatile uint32_t COUNT;  ///< Offset: 0x10 - COUNT32 Counter Value
         volatile uint32_t PER;  ///< Offset: 0x14 - COUNT8 Period Value
-        volatile uint32_t CC%s;  ///< Offset: 0x18 - COUNT32 Compare/Capture
+        volatile uint32_t CC;  ///< Offset: 0x18 - COUNT32 Compare/Capture (renamed from CC)
     };
 
     /// Peripheral instances
@@ -2679,8 +2679,8 @@ namespace tim {
         constexpr uint32_t PER = (8 << 0);  ///< Period Value
     }
 
-    /// CC%s Register bits
-    namespace cc%s_bits {
+    /// CC Register bits
+    namespace cc_bits {
         constexpr uint32_t CC = (32 << 0);  ///< Compare/Capture Value
     }
 
@@ -2710,24 +2710,24 @@ namespace usb {
         volatile uint32_t EPINTSMRY;  ///< Offset: 0x20 - DEVICE End Point Interrupt Summary
         volatile uint32_t DESCADD;  ///< Offset: 0x24 - Descriptor Address
         volatile uint32_t PADCAL;  ///< Offset: 0x28 - USB PAD Calibration
-        volatile uint32_t EPCFG%s;  ///< Offset: 0x100 - DEVICE End Point Configuration
-        volatile uint32_t EPSTATUSCLR%s;  ///< Offset: 0x104 - DEVICE End Point Pipe Status Clear
-        volatile uint32_t EPSTATUSSET%s;  ///< Offset: 0x105 - DEVICE End Point Pipe Status Set
-        volatile uint32_t EPSTATUS%s;  ///< Offset: 0x106 - DEVICE End Point Pipe Status
-        volatile uint32_t EPINTFLAG%s;  ///< Offset: 0x107 - DEVICE End Point Interrupt Flag
-        volatile uint32_t EPINTENCLR%s;  ///< Offset: 0x108 - DEVICE End Point Interrupt Clear Flag
-        volatile uint32_t EPINTENSET%s;  ///< Offset: 0x109 - DEVICE End Point Interrupt Set Flag
+        volatile uint32_t EPCFG;  ///< Offset: 0x100 - DEVICE End Point Configuration (renamed from EPCFG)
+        volatile uint32_t EPSTATUSCLR;  ///< Offset: 0x104 - DEVICE End Point Pipe Status Clear (renamed from EPSTATUSCLR)
+        volatile uint32_t EPSTATUSSET;  ///< Offset: 0x105 - DEVICE End Point Pipe Status Set (renamed from EPSTATUSSET)
+        volatile uint32_t EPSTATUS;  ///< Offset: 0x106 - DEVICE End Point Pipe Status (renamed from EPSTATUS)
+        volatile uint32_t EPINTFLAG;  ///< Offset: 0x107 - DEVICE End Point Interrupt Flag (renamed from EPINTFLAG)
+        volatile uint32_t EPINTENCLR;  ///< Offset: 0x108 - DEVICE End Point Interrupt Clear Flag (renamed from EPINTENCLR)
+        volatile uint32_t EPINTENSET;  ///< Offset: 0x109 - DEVICE End Point Interrupt Set Flag (renamed from EPINTENSET)
         volatile uint32_t HSOFC;  ///< Offset: 0x0A - HOST Host Start Of Frame Control
         volatile uint32_t FLENHIGH;  ///< Offset: 0x12 - HOST Host Frame Length
         volatile uint32_t PINTSMRY;  ///< Offset: 0x20 - HOST Pipe Interrupt Summary
-        volatile uint32_t PCFG%s;  ///< Offset: 0x100 - HOST End Point Configuration
-        volatile uint32_t BINTERVAL%s;  ///< Offset: 0x103 - HOST Bus Access Period of Pipe
-        volatile uint32_t PSTATUSCLR%s;  ///< Offset: 0x104 - HOST End Point Pipe Status Clear
-        volatile uint32_t PSTATUSSET%s;  ///< Offset: 0x105 - HOST End Point Pipe Status Set
-        volatile uint32_t PSTATUS%s;  ///< Offset: 0x106 - HOST End Point Pipe Status
-        volatile uint32_t PINTFLAG%s;  ///< Offset: 0x107 - HOST Pipe Interrupt Flag
-        volatile uint32_t PINTENCLR%s;  ///< Offset: 0x108 - HOST Pipe Interrupt Flag Clear
-        volatile uint32_t PINTENSET%s;  ///< Offset: 0x109 - HOST Pipe Interrupt Flag Set
+        volatile uint32_t PCFG;  ///< Offset: 0x100 - HOST End Point Configuration (renamed from PCFG)
+        volatile uint32_t BINTERVAL;  ///< Offset: 0x103 - HOST Bus Access Period of Pipe (renamed from BINTERVAL)
+        volatile uint32_t PSTATUSCLR;  ///< Offset: 0x104 - HOST End Point Pipe Status Clear (renamed from PSTATUSCLR)
+        volatile uint32_t PSTATUSSET;  ///< Offset: 0x105 - HOST End Point Pipe Status Set (renamed from PSTATUSSET)
+        volatile uint32_t PSTATUS;  ///< Offset: 0x106 - HOST End Point Pipe Status (renamed from PSTATUS)
+        volatile uint32_t PINTFLAG;  ///< Offset: 0x107 - HOST Pipe Interrupt Flag (renamed from PINTFLAG)
+        volatile uint32_t PINTENCLR;  ///< Offset: 0x108 - HOST Pipe Interrupt Flag Clear (renamed from PINTENCLR)
+        volatile uint32_t PINTENSET;  ///< Offset: 0x109 - HOST Pipe Interrupt Flag Set (renamed from PINTENSET)
     };
 
     /// Peripheral instances
@@ -2849,15 +2849,15 @@ namespace usb {
         constexpr uint32_t TRIM = (3 << 12);  ///< USB Pad Trim calibration
     }
 
-    /// EPCFG%s Register bits
-    namespace epcfg%s_bits {
+    /// EPCFG Register bits
+    namespace epcfg_bits {
         constexpr uint32_t EPTYPE0 = (3 << 0);  ///< End Point Type0
         constexpr uint32_t EPTYPE1 = (3 << 4);  ///< End Point Type1
         constexpr uint32_t NYETDIS = (1U << 7);  ///< NYET Token Disable
     }
 
-    /// EPSTATUSCLR%s Register bits
-    namespace epstatusclr%s_bits {
+    /// EPSTATUSCLR Register bits
+    namespace epstatusclr_bits {
         constexpr uint32_t DTGLOUT = (1U << 0);  ///< Data Toggle OUT Clear
         constexpr uint32_t DTGLIN = (1U << 1);  ///< Data Toggle IN Clear
         constexpr uint32_t CURBK = (1U << 2);  ///< Curren Bank Clear
@@ -2867,8 +2867,8 @@ namespace usb {
         constexpr uint32_t BK1RDY = (1U << 7);  ///< Bank 1 Ready Clear
     }
 
-    /// EPSTATUSSET%s Register bits
-    namespace epstatusset%s_bits {
+    /// EPSTATUSSET Register bits
+    namespace epstatusset_bits {
         constexpr uint32_t DTGLOUT = (1U << 0);  ///< Data Toggle OUT Set
         constexpr uint32_t DTGLIN = (1U << 1);  ///< Data Toggle IN Set
         constexpr uint32_t CURBK = (1U << 2);  ///< Current Bank Set
@@ -2878,8 +2878,8 @@ namespace usb {
         constexpr uint32_t BK1RDY = (1U << 7);  ///< Bank 1 Ready Set
     }
 
-    /// EPSTATUS%s Register bits
-    namespace epstatus%s_bits {
+    /// EPSTATUS Register bits
+    namespace epstatus_bits {
         constexpr uint32_t DTGLOUT = (1U << 0);  ///< Data Toggle Out
         constexpr uint32_t DTGLIN = (1U << 1);  ///< Data Toggle In
         constexpr uint32_t CURBK = (1U << 2);  ///< Current Bank
@@ -2889,8 +2889,8 @@ namespace usb {
         constexpr uint32_t BK1RDY = (1U << 7);  ///< Bank 1 ready
     }
 
-    /// EPINTFLAG%s Register bits
-    namespace epintflag%s_bits {
+    /// EPINTFLAG Register bits
+    namespace epintflag_bits {
         constexpr uint32_t TRCPT0 = (1U << 0);  ///< Transfer Complete 0
         constexpr uint32_t TRCPT1 = (1U << 1);  ///< Transfer Complete 1
         constexpr uint32_t TRFAIL0 = (1U << 2);  ///< Error Flow 0
@@ -2900,8 +2900,8 @@ namespace usb {
         constexpr uint32_t STALL1 = (1U << 6);  ///< Stall 1 In/out
     }
 
-    /// EPINTENCLR%s Register bits
-    namespace epintenclr%s_bits {
+    /// EPINTENCLR Register bits
+    namespace epintenclr_bits {
         constexpr uint32_t TRCPT0 = (1U << 0);  ///< Transfer Complete 0 Interrupt Disable
         constexpr uint32_t TRCPT1 = (1U << 1);  ///< Transfer Complete 1 Interrupt Disable
         constexpr uint32_t TRFAIL0 = (1U << 2);  ///< Error Flow 0 Interrupt Disable
@@ -2911,8 +2911,8 @@ namespace usb {
         constexpr uint32_t STALL1 = (1U << 6);  ///< Stall 1 In/Out Interrupt Disable
     }
 
-    /// EPINTENSET%s Register bits
-    namespace epintenset%s_bits {
+    /// EPINTENSET Register bits
+    namespace epintenset_bits {
         constexpr uint32_t TRCPT0 = (1U << 0);  ///< Transfer Complete 0 Interrupt Enable
         constexpr uint32_t TRCPT1 = (1U << 1);  ///< Transfer Complete 1 Interrupt Enable
         constexpr uint32_t TRFAIL0 = (1U << 2);  ///< Error Flow 0 Interrupt Enable
@@ -2945,20 +2945,20 @@ namespace usb {
         constexpr uint32_t EPINT7 = (1U << 7);  ///< Pipe 7 Interrupt
     }
 
-    /// PCFG%s Register bits
-    namespace pcfg%s_bits {
+    /// PCFG Register bits
+    namespace pcfg_bits {
         constexpr uint32_t PTOKEN = (2 << 0);  ///< Pipe Token
         constexpr uint32_t BK = (1U << 2);  ///< Pipe Bank
         constexpr uint32_t PTYPE = (3 << 3);  ///< Pipe Type
     }
 
-    /// BINTERVAL%s Register bits
-    namespace binterval%s_bits {
+    /// BINTERVAL Register bits
+    namespace binterval_bits {
         constexpr uint32_t BITINTERVAL = (8 << 0);  ///< Bit Interval
     }
 
-    /// PSTATUSCLR%s Register bits
-    namespace pstatusclr%s_bits {
+    /// PSTATUSCLR Register bits
+    namespace pstatusclr_bits {
         constexpr uint32_t DTGL = (1U << 0);  ///< Data Toggle clear
         constexpr uint32_t CURBK = (1U << 2);  ///< Curren Bank clear
         constexpr uint32_t PFREEZE = (1U << 4);  ///< Pipe Freeze Clear
@@ -2966,8 +2966,8 @@ namespace usb {
         constexpr uint32_t BK1RDY = (1U << 7);  ///< Bank 1 Ready Clear
     }
 
-    /// PSTATUSSET%s Register bits
-    namespace pstatusset%s_bits {
+    /// PSTATUSSET Register bits
+    namespace pstatusset_bits {
         constexpr uint32_t DTGL = (1U << 0);  ///< Data Toggle Set
         constexpr uint32_t CURBK = (1U << 2);  ///< Current Bank Set
         constexpr uint32_t PFREEZE = (1U << 4);  ///< Pipe Freeze Set
@@ -2975,8 +2975,8 @@ namespace usb {
         constexpr uint32_t BK1RDY = (1U << 7);  ///< Bank 1 Ready Set
     }
 
-    /// PSTATUS%s Register bits
-    namespace pstatus%s_bits {
+    /// PSTATUS Register bits
+    namespace pstatus_bits {
         constexpr uint32_t DTGL = (1U << 0);  ///< Data Toggle
         constexpr uint32_t CURBK = (1U << 2);  ///< Current Bank
         constexpr uint32_t PFREEZE = (1U << 4);  ///< Pipe Freeze
@@ -2984,8 +2984,8 @@ namespace usb {
         constexpr uint32_t BK1RDY = (1U << 7);  ///< Bank 1 ready
     }
 
-    /// PINTFLAG%s Register bits
-    namespace pintflag%s_bits {
+    /// PINTFLAG Register bits
+    namespace pintflag_bits {
         constexpr uint32_t TRCPT0 = (1U << 0);  ///< Transfer Complete 0 Interrupt Flag
         constexpr uint32_t TRCPT1 = (1U << 1);  ///< Transfer Complete 1 Interrupt Flag
         constexpr uint32_t TRFAIL = (1U << 2);  ///< Error Flow Interrupt Flag
@@ -2994,8 +2994,8 @@ namespace usb {
         constexpr uint32_t STALL = (1U << 5);  ///< Stall Interrupt Flag
     }
 
-    /// PINTENCLR%s Register bits
-    namespace pintenclr%s_bits {
+    /// PINTENCLR Register bits
+    namespace pintenclr_bits {
         constexpr uint32_t TRCPT0 = (1U << 0);  ///< Transfer Complete 0 Disable
         constexpr uint32_t TRCPT1 = (1U << 1);  ///< Transfer Complete 1 Disable
         constexpr uint32_t TRFAIL = (1U << 2);  ///< Error Flow Interrupt Disable
@@ -3004,8 +3004,8 @@ namespace usb {
         constexpr uint32_t STALL = (1U << 5);  ///< Stall Inetrrupt Disable
     }
 
-    /// PINTENSET%s Register bits
-    namespace pintenset%s_bits {
+    /// PINTENSET Register bits
+    namespace pintenset_bits {
         constexpr uint32_t TRCPT0 = (1U << 0);  ///< Transfer Complete 0 Interrupt Enable
         constexpr uint32_t TRCPT1 = (1U << 1);  ///< Transfer Complete 1 Interrupt Enable
         constexpr uint32_t TRFAIL = (1U << 2);  ///< Error Flow Interrupt Enable

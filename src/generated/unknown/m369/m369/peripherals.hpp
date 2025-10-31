@@ -3,7 +3,7 @@
 /// Source: toshiba_m369.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:53
+/// Generated: 2025-10-31 17:44:29
 #ifndef ALLOY_GENERATED_M369_PERIPHERALS_HPP
 #define ALLOY_GENERATED_M369_PERIPHERALS_HPP
 
@@ -973,7 +973,7 @@ namespace udfs2 {
         volatile uint32_t WVL;  ///< Offset: 0x14 - UDC2 wValue
         volatile uint32_t WIDX;  ///< Offset: 0x18 - UDC2 wIndex
         volatile uint32_t WLGTH;  ///< Offset: 0x1C - UDC2 wLength
-        volatile uint32_t INT;  ///< Offset: 0x20 - UDC2 INT
+        volatile uint32_t INT_;  ///< Offset: 0x20 - UDC2 INT (renamed from INT_)
         volatile uint32_t INTEP;  ///< Offset: 0x24 - UDC2 INT_EP
         volatile uint32_t INTEPMSK;  ///< Offset: 0x28 - UDC2 INT_EP_MASK
         volatile uint32_t INTRX0;  ///< Offset: 0x2C - UDC2 INT RX DATA0
@@ -1020,7 +1020,7 @@ namespace udfs2 {
     /// ADR Register bits
     namespace adr_bits {
         constexpr uint32_t DEV_ADR = (7 << 0);  ///< DEV_ADR
-        constexpr uint32_t DEFAULT = (1U << 8);  ///< DEFAULT
+        constexpr uint32_t DEFAULT_ = (1U << 8);  ///< DEFAULT (renamed from DEFAULT_)
         constexpr uint32_t ADDRESSED = (1U << 9);  ///< ADDRESSED
         constexpr uint32_t CONFIGURED = (1U << 10);  ///< CONFIGURED
         constexpr uint32_t SUSPEND = (1U << 11);  ///< SUSPEND
@@ -1067,8 +1067,8 @@ namespace udfs2 {
         constexpr uint32_t LENGTH = (16 << 0);  ///< LENGTH
     }
 
-    /// INT Register bits
-    namespace int_bits {
+    /// INT_ Register bits
+    namespace int__bits {
         constexpr uint32_t I_SETUP = (1U << 0);  ///< I_SETUP
         constexpr uint32_t I_STATUS_NAK = (1U << 1);  ///< I_STATUS_NAK
         constexpr uint32_t I_STATUS = (1U << 2);  ///< I_STATUS
@@ -6189,7 +6189,7 @@ namespace en0 {
     struct Registers {
         volatile uint32_t TNCR;  ///< Offset: 0x00 - Encoder Input Control Register
         volatile uint32_t RELOAD;  ///< Offset: 0x04 - Encoder Counter Reload Register
-        volatile uint32_t INT;  ///< Offset: 0x08 - Encoder Compare Register
+        volatile uint32_t INT_;  ///< Offset: 0x08 - Encoder Compare Register (renamed from INT_)
         volatile uint32_t CNT;  ///< Offset: 0x0C - Encoder Counter Register
     };
 
@@ -6221,9 +6221,9 @@ namespace en0 {
         constexpr uint32_t RELOAD = (16 << 0);  ///< RELOAD
     }
 
-    /// INT Register bits
-    namespace int_bits {
-        constexpr uint32_t INT = (24 << 0);  ///< INT
+    /// INT_ Register bits
+    namespace int__bits {
+        constexpr uint32_t INT_ = (24 << 0);  ///< INT (renamed from INT_)
     }
 
     /// CNT Register bits

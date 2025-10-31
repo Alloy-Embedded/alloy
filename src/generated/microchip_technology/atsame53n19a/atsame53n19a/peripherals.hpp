@@ -3,7 +3,7 @@
 /// Source: atmel_same.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:32
+/// Generated: 2025-10-31 17:44:06
 #ifndef ALLOY_GENERATED_ATSAME53N19A_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ATSAME53N19A_PERIPHERALS_HPP
 
@@ -345,8 +345,8 @@ namespace ac {
         volatile uint32_t STATUSB;  ///< Offset: 0x08 - Status B
         volatile uint32_t DBGCTRL;  ///< Offset: 0x09 - Debug Control
         volatile uint32_t WINCTRL;  ///< Offset: 0x0A - Window Control
-        volatile uint32_t SCALER[%s];  ///< Offset: 0x0C - Scaler n
-        volatile uint32_t COMPCTRL[%s];  ///< Offset: 0x10 - Comparator Control n
+        volatile uint32_t SCALER__;  ///< Offset: 0x0C - Scaler n (renamed from SCALER__)
+        volatile uint32_t COMPCTRL__;  ///< Offset: 0x10 - Comparator Control n (renamed from COMPCTRL__)
         volatile uint32_t SYNCBUSY;  ///< Offset: 0x20 - Synchronization Busy
         volatile uint32_t CALIB;  ///< Offset: 0x24 - Calibration
     };
@@ -423,13 +423,13 @@ namespace ac {
         constexpr uint32_t WINTSEL0 = (2 << 1);  ///< Window 0 Interrupt Selection
     }
 
-    /// SCALER[%s] Register bits
-    namespace scaler[%s]_bits {
+    /// SCALER__ Register bits
+    namespace scaler___bits {
         constexpr uint32_t VALUE = (6 << 0);  ///< Scaler Value
     }
 
-    /// COMPCTRL[%s] Register bits
-    namespace compctrl[%s]_bits {
+    /// COMPCTRL__ Register bits
+    namespace compctrl___bits {
         constexpr uint32_t ENABLE = (1U << 1);  ///< Enable
         constexpr uint32_t SINGLE = (1U << 2);  ///< Single-Shot Mode
         constexpr uint32_t INTSEL = (2 << 3);  ///< Interrupt Selection
@@ -703,11 +703,11 @@ namespace crypto {
         volatile uint32_t INTFLAG;  ///< Offset: 0x07 - Interrupt Flag Status
         volatile uint32_t DATABUFPTR;  ///< Offset: 0x08 - Data buffer pointer
         volatile uint32_t DBGCTRL;  ///< Offset: 0x09 - Debug control
-        volatile uint32_t KEYWORD[%s];  ///< Offset: 0x0C - Keyword n
+        volatile uint32_t KEYWORD__;  ///< Offset: 0x0C - Keyword n (renamed from KEYWORD__)
         volatile uint32_t INDATA;  ///< Offset: 0x38 - Indata
-        volatile uint32_t INTVECTV[%s];  ///< Offset: 0x3C - Initialisation Vector n
-        volatile uint32_t HASHKEY[%s];  ///< Offset: 0x5C - Hash key n
-        volatile uint32_t GHASH[%s];  ///< Offset: 0x6C - Galois Hash n
+        volatile uint32_t INTVECTV__;  ///< Offset: 0x3C - Initialisation Vector n (renamed from INTVECTV__)
+        volatile uint32_t HASHKEY__;  ///< Offset: 0x5C - Hash key n (renamed from HASHKEY__)
+        volatile uint32_t GHASH__;  ///< Offset: 0x6C - Galois Hash n (renamed from GHASH__)
         volatile uint32_t CIPLEN;  ///< Offset: 0x80 - Cipher Length
         volatile uint32_t RANDSEED;  ///< Offset: 0x84 - Random Seed
     };
@@ -780,8 +780,8 @@ namespace ccl {
     /// CCL Register structure
     struct Registers {
         volatile uint32_t CTRL;  ///< Offset: 0x00 - Control
-        volatile uint32_t SEQCTRL[%s];  ///< Offset: 0x04 - SEQ Control x
-        volatile uint32_t LUTCTRL[%s];  ///< Offset: 0x08 - LUT Control x
+        volatile uint32_t SEQCTRL__;  ///< Offset: 0x04 - SEQ Control x (renamed from SEQCTRL__)
+        volatile uint32_t LUTCTRL__;  ///< Offset: 0x08 - LUT Control x (renamed from LUTCTRL__)
     };
 
     /// Peripheral instances
@@ -795,13 +795,13 @@ namespace ccl {
         constexpr uint32_t RUNSTDBY = (1U << 6);  ///< Run in Standby
     }
 
-    /// SEQCTRL[%s] Register bits
-    namespace seqctrl[%s]_bits {
+    /// SEQCTRL__ Register bits
+    namespace seqctrl___bits {
         constexpr uint32_t SEQSEL = (4 << 0);  ///< Sequential Selection
     }
 
-    /// LUTCTRL[%s] Register bits
-    namespace lutctrl[%s]_bits {
+    /// LUTCTRL__ Register bits
+    namespace lutctrl___bits {
         constexpr uint32_t ENABLE = (1U << 1);  ///< LUT Enable
         constexpr uint32_t FILTSEL = (2 << 4);  ///< Filter Selection
         constexpr uint32_t EDGESEL = (1U << 7);  ///< Edge Selection
@@ -926,11 +926,11 @@ namespace dac {
         volatile uint32_t INTFLAG;  ///< Offset: 0x06 - Interrupt Flag Status and Clear
         volatile uint32_t STATUS;  ///< Offset: 0x07 - Status
         volatile uint32_t SYNCBUSY;  ///< Offset: 0x08 - Synchronization Busy
-        volatile uint32_t DACCTRL[%s];  ///< Offset: 0x0C - DAC n Control
-        volatile uint32_t DATA[%s];  ///< Offset: 0x10 - DAC n Data
-        volatile uint32_t DATABUF[%s];  ///< Offset: 0x14 - DAC n Data Buffer
+        volatile uint32_t DACCTRL__;  ///< Offset: 0x0C - DAC n Control (renamed from DACCTRL__)
+        volatile uint32_t DATA__;  ///< Offset: 0x10 - DAC n Data (renamed from DATA__)
+        volatile uint32_t DATABUF__;  ///< Offset: 0x14 - DAC n Data Buffer (renamed from DATABUF__)
         volatile uint32_t DBGCTRL;  ///< Offset: 0x18 - Debug Control
-        volatile uint32_t RESULT[%s];  ///< Offset: 0x1C - Filter Result
+        volatile uint32_t RESULT__;  ///< Offset: 0x1C - Filter Result (renamed from RESULT__)
     };
 
     /// Peripheral instances
@@ -1015,8 +1015,8 @@ namespace dac {
         constexpr uint32_t DATABUF1 = (1U << 5);  ///< Data Buffer DAC 1
     }
 
-    /// DACCTRL[%s] Register bits
-    namespace dacctrl[%s]_bits {
+    /// DACCTRL__ Register bits
+    namespace dacctrl___bits {
         constexpr uint32_t LEFTADJ = (1U << 0);  ///< Left Adjusted Data
         constexpr uint32_t ENABLE = (1U << 1);  ///< Enable DAC0
         constexpr uint32_t CCTRL = (2 << 2);  ///< Current Control
@@ -1027,13 +1027,13 @@ namespace dac {
         constexpr uint32_t OSR = (3 << 13);  ///< Sampling Rate
     }
 
-    /// DATA[%s] Register bits
-    namespace data[%s]_bits {
+    /// DATA__ Register bits
+    namespace data___bits {
         constexpr uint32_t DATA = (16 << 0);  ///< DAC0 Data
     }
 
-    /// DATABUF[%s] Register bits
-    namespace databuf[%s]_bits {
+    /// DATABUF__ Register bits
+    namespace databuf___bits {
         constexpr uint32_t DATABUF = (16 << 0);  ///< DAC0 Data Buffer
     }
 
@@ -1042,8 +1042,8 @@ namespace dac {
         constexpr uint32_t DBGRUN = (1U << 0);  ///< Debug Run
     }
 
-    /// RESULT[%s] Register bits
-    namespace result[%s]_bits {
+    /// RESULT__ Register bits
+    namespace result___bits {
         constexpr uint32_t RESULT = (16 << 0);  ///< Filter Result
     }
 
@@ -1397,10 +1397,10 @@ namespace dsu {
         volatile uint32_t ADDR;  ///< Offset: 0x04 - Address
         volatile uint32_t LENGTH;  ///< Offset: 0x08 - Length
         volatile uint32_t DATA;  ///< Offset: 0x0C - Data
-        volatile uint32_t DCC[%s];  ///< Offset: 0x10 - Debug Communication Channel n
+        volatile uint32_t DCC__;  ///< Offset: 0x10 - Debug Communication Channel n (renamed from DCC__)
         volatile uint32_t DID;  ///< Offset: 0x18 - Device Identification
         volatile uint32_t CFG;  ///< Offset: 0x1C - Configuration
-        volatile uint32_t DCFG[%s];  ///< Offset: 0xF0 - Device Configuration
+        volatile uint32_t DCFG__;  ///< Offset: 0xF0 - Device Configuration (renamed from DCFG__)
         volatile uint32_t ENTRY0;  ///< Offset: 0x1000 - CoreSight ROM Table Entry 0
         volatile uint32_t ENTRY1;  ///< Offset: 0x1004 - CoreSight ROM Table Entry 1
         volatile uint32_t END;  ///< Offset: 0x1008 - CoreSight ROM Table End
@@ -1470,8 +1470,8 @@ namespace dsu {
         constexpr uint32_t DATA = (32 << 0);  ///< Data
     }
 
-    /// DCC[%s] Register bits
-    namespace dcc[%s]_bits {
+    /// DCC__ Register bits
+    namespace dcc___bits {
         constexpr uint32_t DATA = (32 << 0);  ///< Data
     }
 
@@ -1492,8 +1492,8 @@ namespace dsu {
         constexpr uint32_t ETBRAMEN = (1U << 4);  ///< Trace Control
     }
 
-    /// DCFG[%s] Register bits
-    namespace dcfg[%s]_bits {
+    /// DCFG__ Register bits
+    namespace dcfg___bits {
         constexpr uint32_t DCFG = (32 << 0);  ///< Device Configuration
     }
 
@@ -1586,7 +1586,7 @@ namespace eic {
         volatile uint32_t INTENSET;  ///< Offset: 0x10 - Interrupt Enable Set
         volatile uint32_t INTFLAG;  ///< Offset: 0x14 - Interrupt Flag Status and Clear
         volatile uint32_t ASYNCH;  ///< Offset: 0x18 - External Interrupt Asynchronous Mode
-        volatile uint32_t CONFIG[%s];  ///< Offset: 0x1C - External Interrupt Sense Configuration
+        volatile uint32_t CONFIG__;  ///< Offset: 0x1C - External Interrupt Sense Configuration (renamed from CONFIG__)
         volatile uint32_t DEBOUNCEN;  ///< Offset: 0x30 - Debouncer Enable
         volatile uint32_t DPRESCALER;  ///< Offset: 0x34 - Debouncer Prescaler
         volatile uint32_t PINSTATE;  ///< Offset: 0x38 - Pin State
@@ -1646,8 +1646,8 @@ namespace eic {
         constexpr uint32_t ASYNCH = (16 << 0);  ///< Asynchronous Edge Detection Mode
     }
 
-    /// CONFIG[%s] Register bits
-    namespace config[%s]_bits {
+    /// CONFIG__ Register bits
+    namespace config___bits {
         constexpr uint32_t SENSE0 = (3 << 0);  ///< Input Sense Configuration 0
         constexpr uint32_t FILTEN0 = (1U << 3);  ///< Filter Enable 0
         constexpr uint32_t SENSE1 = (3 << 4);  ///< Input Sense Configuration 1
@@ -1709,7 +1709,7 @@ namespace evsys {
         volatile uint32_t CHINTENSET;  ///< Offset: 0x05 - Channel n Interrupt Enable Set
         volatile uint32_t CHINTFLAG;  ///< Offset: 0x06 - Channel n Interrupt Flag Status and Clear
         volatile uint32_t CHSTATUS;  ///< Offset: 0x07 - Channel n Status
-        volatile uint32_t USER[%s];  ///< Offset: 0x120 - User Multiplexer n
+        volatile uint32_t USER__;  ///< Offset: 0x120 - User Multiplexer n (renamed from USER__)
     };
 
     /// Peripheral instances
@@ -1853,8 +1853,8 @@ namespace evsys {
         constexpr uint32_t BUSYCH = (1U << 1);  ///< Busy Channel
     }
 
-    /// USER[%s] Register bits
-    namespace user[%s]_bits {
+    /// USER__ Register bits
+    namespace user___bits {
         constexpr uint32_t CHANNEL = (6 << 0);  ///< Channel Event Selection
     }
 
@@ -1947,8 +1947,8 @@ namespace gclk {
     struct Registers {
         volatile uint32_t CTRLA;  ///< Offset: 0x00 - Control
         volatile uint32_t SYNCBUSY;  ///< Offset: 0x04 - Synchronization Busy
-        volatile uint32_t GENCTRL[%s];  ///< Offset: 0x20 - Generic Clock Generator Control
-        volatile uint32_t PCHCTRL[%s];  ///< Offset: 0x80 - Peripheral Clock Control
+        volatile uint32_t GENCTRL__;  ///< Offset: 0x20 - Generic Clock Generator Control (renamed from GENCTRL__)
+        volatile uint32_t PCHCTRL__;  ///< Offset: 0x80 - Peripheral Clock Control (renamed from PCHCTRL__)
     };
 
     /// Peripheral instances
@@ -1966,8 +1966,8 @@ namespace gclk {
         constexpr uint32_t GENCTRL = (12 << 2);  ///< Generic Clock Generator Control n Synchronization Busy bits
     }
 
-    /// GENCTRL[%s] Register bits
-    namespace genctrl[%s]_bits {
+    /// GENCTRL__ Register bits
+    namespace genctrl___bits {
         constexpr uint32_t SRC = (4 << 0);  ///< Source Select
         constexpr uint32_t GENEN = (1U << 8);  ///< Generic Clock Generator Enable
         constexpr uint32_t IDC = (1U << 9);  ///< Improve Duty Cycle
@@ -1978,8 +1978,8 @@ namespace gclk {
         constexpr uint32_t DIV = (16 << 16);  ///< Division Factor
     }
 
-    /// PCHCTRL[%s] Register bits
-    namespace pchctrl[%s]_bits {
+    /// PCHCTRL__ Register bits
+    namespace pchctrl___bits {
         constexpr uint32_t GEN = (4 << 0);  ///< Generic Clock Generator
         constexpr uint32_t CHEN = (1U << 6);  ///< Channel Enable
         constexpr uint32_t WRTLOCK = (1U << 7);  ///< Write Lock
@@ -2020,7 +2020,7 @@ namespace gmac {
         volatile uint32_t HRT;  ///< Offset: 0x84 - Hash Register Top [63:32]
         volatile uint32_t SAB;  ///< Offset: 0x00 - Specific Address Bottom [31:0] Register
         volatile uint32_t SAT;  ///< Offset: 0x04 - Specific Address Top [47:32] Register
-        volatile uint32_t TIDM[%s];  ///< Offset: 0xA8 - Type ID Match Register
+        volatile uint32_t TIDM__;  ///< Offset: 0xA8 - Type ID Match Register (renamed from TIDM__)
         volatile uint32_t WOL;  ///< Offset: 0xB8 - Wake on LAN
         volatile uint32_t IPGS;  ///< Offset: 0xBC - IPG Stretch Register
         volatile uint32_t SVLAN;  ///< Offset: 0xC0 - Stacked VLAN Register
@@ -2379,8 +2379,8 @@ namespace gmac {
         constexpr uint32_t ADDR = (16 << 0);  ///< Specific Address 1
     }
 
-    /// TIDM[%s] Register bits
-    namespace tidm[%s]_bits {
+    /// TIDM__ Register bits
+    namespace tidm___bits {
         constexpr uint32_t TID = (16 << 0);  ///< Type ID Match 1
     }
 
@@ -2824,7 +2824,7 @@ namespace icm {
         volatile uint32_t UASR;  ///< Offset: 0x20 - Undefined Access Status
         volatile uint32_t DSCR;  ///< Offset: 0x30 - Region Descriptor Area Start Address
         volatile uint32_t HASH;  ///< Offset: 0x34 - Region Hash Area Start Address
-        volatile uint32_t UIHVAL[%s];  ///< Offset: 0x38 - User Initial Hash Value n
+        volatile uint32_t UIHVAL__;  ///< Offset: 0x38 - User Initial Hash Value n (renamed from UIHVAL__)
     };
 
     /// Peripheral instances
@@ -2921,8 +2921,8 @@ namespace icm {
         constexpr uint32_t HASA = (25 << 7);  ///< Hash Area Start Address
     }
 
-    /// UIHVAL[%s] Register bits
-    namespace uihval[%s]_bits {
+    /// UIHVAL__ Register bits
+    namespace uihval___bits {
         constexpr uint32_t VAL = (32 << 0);  ///< Initial Hash Value
     }
 
@@ -2939,7 +2939,7 @@ namespace i2s {
     /// I2S Register structure
     struct Registers {
         volatile uint32_t CTRLA;  ///< Offset: 0x00 - Control A
-        volatile uint32_t CLKCTRL[%s];  ///< Offset: 0x04 - Clock Unit n Control
+        volatile uint32_t CLKCTRL__;  ///< Offset: 0x04 - Clock Unit n Control (renamed from CLKCTRL__)
         volatile uint32_t INTENCLR;  ///< Offset: 0x0C - Interrupt Enable Clear
         volatile uint32_t INTENSET;  ///< Offset: 0x10 - Interrupt Enable Set
         volatile uint32_t INTFLAG;  ///< Offset: 0x14 - Interrupt Flag Status and Clear
@@ -2964,8 +2964,8 @@ namespace i2s {
         constexpr uint32_t RXEN = (1U << 5);  ///< Rx Serializer Enable
     }
 
-    /// CLKCTRL[%s] Register bits
-    namespace clkctrl[%s]_bits {
+    /// CLKCTRL__ Register bits
+    namespace clkctrl___bits {
         constexpr uint32_t SLOTSIZE = (2 << 0);  ///< Slot Size
         constexpr uint32_t NBSLOTS = (3 << 2);  ///< Number of Slots in Frame
         constexpr uint32_t FSWIDTH = (2 << 5);  ///< Frame Sync Width
@@ -3254,7 +3254,7 @@ namespace flash {
         volatile uint32_t STATUS;  ///< Offset: 0x12 - Status
         volatile uint32_t ADDR;  ///< Offset: 0x14 - Address
         volatile uint32_t RUNLOCK;  ///< Offset: 0x18 - Lock Section
-        volatile uint32_t PBLDATA[%s];  ///< Offset: 0x1C - Page Buffer Load Data x
+        volatile uint32_t PBLDATA__;  ///< Offset: 0x1C - Page Buffer Load Data x (renamed from PBLDATA__)
         volatile uint32_t ECCERR;  ///< Offset: 0x24 - ECC Error Status Register
         volatile uint32_t DBGCTRL;  ///< Offset: 0x28 - Debug Control
         volatile uint32_t SEECFG;  ///< Offset: 0x2A - SmartEEPROM Configuration Register
@@ -3357,8 +3357,8 @@ namespace flash {
         constexpr uint32_t RUNLOCK = (32 << 0);  ///< Region Un-Lock Bits
     }
 
-    /// PBLDATA[%s] Register bits
-    namespace pbldata[%s]_bits {
+    /// PBLDATA__ Register bits
+    namespace pbldata___bits {
         constexpr uint32_t DATA = (32 << 0);  ///< Page Buffer Data
     }
 
@@ -3409,7 +3409,7 @@ namespace oscctrl {
         volatile uint32_t INTENSET;  ///< Offset: 0x08 - Interrupt Enable Set
         volatile uint32_t INTFLAG;  ///< Offset: 0x0C - Interrupt Flag Status and Clear
         volatile uint32_t STATUS;  ///< Offset: 0x10 - Status
-        volatile uint32_t XOSCCTRL[%s];  ///< Offset: 0x14 - External Multipurpose Crystal Oscillator Control
+        volatile uint32_t XOSCCTRL__;  ///< Offset: 0x14 - External Multipurpose Crystal Oscillator Control (renamed from XOSCCTRL__)
         volatile uint32_t DFLLCTRLA;  ///< Offset: 0x1C - DFLL48M Control A
         volatile uint32_t DFLLCTRLB;  ///< Offset: 0x20 - DFLL48M Control B
         volatile uint32_t DFLLVAL;  ///< Offset: 0x24 - DFLL48M Value
@@ -3518,8 +3518,8 @@ namespace oscctrl {
         constexpr uint32_t DPLL1LDRTO = (1U << 27);  ///< DPLL1 Loop Divider Ratio Update Complete
     }
 
-    /// XOSCCTRL[%s] Register bits
-    namespace xoscctrl[%s]_bits {
+    /// XOSCCTRL__ Register bits
+    namespace xoscctrl___bits {
         constexpr uint32_t ENABLE = (1U << 1);  ///< Oscillator Enable
         constexpr uint32_t XTALEN = (1U << 2);  ///< Crystal Oscillator Enable
         constexpr uint32_t RUNSTDBY = (1U << 6);  ///< Run in Standby
@@ -4024,8 +4024,8 @@ namespace pdec {
         volatile uint32_t PRESCBUF;  ///< Offset: 0x18 - Prescaler Buffer Value
         volatile uint32_t FILTERBUF;  ///< Offset: 0x19 - Filter Buffer Value
         volatile uint32_t COUNT;  ///< Offset: 0x1C - Counter Value
-        volatile uint32_t CC[%s];  ///< Offset: 0x20 - Channel n Compare Value
-        volatile uint32_t CCBUF[%s];  ///< Offset: 0x30 - Channel Compare Buffer Value
+        volatile uint32_t CC__;  ///< Offset: 0x20 - Channel n Compare Value (renamed from CC__)
+        volatile uint32_t CCBUF__;  ///< Offset: 0x30 - Channel Compare Buffer Value (renamed from CCBUF__)
     };
 
     /// Peripheral instances
@@ -4165,13 +4165,13 @@ namespace pdec {
         constexpr uint32_t COUNT = (16 << 0);  ///< Counter Value
     }
 
-    /// CC[%s] Register bits
-    namespace cc[%s]_bits {
+    /// CC__ Register bits
+    namespace cc___bits {
         constexpr uint32_t CC = (16 << 0);  ///< Channel Compare Value
     }
 
-    /// CCBUF[%s] Register bits
-    namespace ccbuf[%s]_bits {
+    /// CCBUF__ Register bits
+    namespace ccbuf___bits {
         constexpr uint32_t CCBUF = (16 << 0);  ///< Channel Compare Buffer Value
     }
 
@@ -4274,8 +4274,8 @@ namespace gpio {
         volatile uint32_t CTRL;  ///< Offset: 0x24 - Control
         volatile uint32_t WRCONFIG;  ///< Offset: 0x28 - Write Configuration
         volatile uint32_t EVCTRL;  ///< Offset: 0x2C - Event Input Control
-        volatile uint32_t PMUX[%s];  ///< Offset: 0x30 - Peripheral Multiplexing
-        volatile uint32_t PINCFG[%s];  ///< Offset: 0x40 - Pin Configuration
+        volatile uint32_t PMUX__;  ///< Offset: 0x30 - Peripheral Multiplexing (renamed from PMUX__)
+        volatile uint32_t PINCFG__;  ///< Offset: 0x40 - Pin Configuration (renamed from PINCFG__)
     };
 
     /// Peripheral instances
@@ -4361,14 +4361,14 @@ namespace gpio {
         constexpr uint32_t PORTEI3 = (1U << 31);  ///< PORT Event Input Enable 3
     }
 
-    /// PMUX[%s] Register bits
-    namespace pmux[%s]_bits {
+    /// PMUX__ Register bits
+    namespace pmux___bits {
         constexpr uint32_t PMUXE = (4 << 0);  ///< Peripheral Multiplexing for Even-Numbered Pin
         constexpr uint32_t PMUXO = (4 << 4);  ///< Peripheral Multiplexing for Odd-Numbered Pin
     }
 
-    /// PINCFG[%s] Register bits
-    namespace pincfg[%s]_bits {
+    /// PINCFG__ Register bits
+    namespace pincfg___bits {
         constexpr uint32_t PMUXEN = (1U << 0);  ///< Peripheral Multiplexer Enable
         constexpr uint32_t INEN = (1U << 1);  ///< Input Enable
         constexpr uint32_t PULLEN = (1U << 2);  ///< Pull Enable
@@ -4636,12 +4636,12 @@ namespace rtc {
         volatile uint32_t SYNCBUSY;  ///< Offset: 0x10 - MODE2 Synchronization Busy Status
         volatile uint32_t FREQCORR;  ///< Offset: 0x14 - Frequency Correction
         volatile uint32_t COUNT;  ///< Offset: 0x18 - MODE1 Counter Value
-        volatile uint32_t COMP[%s];  ///< Offset: 0x20 - MODE1 Compare n Value
-        volatile uint32_t GP[%s];  ///< Offset: 0x40 - General Purpose
+        volatile uint32_t COMP__;  ///< Offset: 0x20 - MODE1 Compare n Value (renamed from COMP__)
+        volatile uint32_t GP__;  ///< Offset: 0x40 - General Purpose (renamed from GP__)
         volatile uint32_t TAMPCTRL;  ///< Offset: 0x60 - Tamper Control
         volatile uint32_t TIMESTAMP;  ///< Offset: 0x64 - MODE2 Timestamp
         volatile uint32_t TAMPID;  ///< Offset: 0x68 - Tamper ID
-        volatile uint32_t BKUP[%s];  ///< Offset: 0x80 - Backup
+        volatile uint32_t BKUP__;  ///< Offset: 0x80 - Backup (renamed from BKUP__)
         volatile uint32_t PER;  ///< Offset: 0x1C - MODE1 Counter Period
         volatile uint32_t CLOCK;  ///< Offset: 0x18 - MODE2 Clock Value
         volatile uint32_t ALARM0;  ///< Offset: 0x20 - MODE2_ALARM Alarm n Value
@@ -4777,13 +4777,13 @@ namespace rtc {
         constexpr uint32_t COUNT = (16 << 0);  ///< Counter Value
     }
 
-    /// COMP[%s] Register bits
-    namespace comp[%s]_bits {
+    /// COMP__ Register bits
+    namespace comp___bits {
         constexpr uint32_t COMP = (16 << 0);  ///< Compare Value
     }
 
-    /// GP[%s] Register bits
-    namespace gp[%s]_bits {
+    /// GP__ Register bits
+    namespace gp___bits {
         constexpr uint32_t GP = (32 << 0);  ///< General Purpose
     }
 
@@ -4826,8 +4826,8 @@ namespace rtc {
         constexpr uint32_t TAMPEVT = (1U << 31);  ///< Tamper Event Detected
     }
 
-    /// BKUP[%s] Register bits
-    namespace bkup[%s]_bits {
+    /// BKUP__ Register bits
+    namespace bkup___bits {
         constexpr uint32_t BKUP = (32 << 0);  ///< Backup
     }
 
@@ -4895,7 +4895,7 @@ namespace sdhc0 {
         volatile uint32_t ARG1R;  ///< Offset: 0x08 - Argument 1
         volatile uint32_t TMR;  ///< Offset: 0x0C - Transfer Mode
         volatile uint32_t CR;  ///< Offset: 0x0E - Command
-        volatile uint32_t RR[%s];  ///< Offset: 0x10 - Response
+        volatile uint32_t RR__;  ///< Offset: 0x10 - Response (renamed from RR__)
         volatile uint32_t BDPR;  ///< Offset: 0x20 - Buffer Data Port
         volatile uint32_t PSR;  ///< Offset: 0x24 - Present State
         volatile uint32_t HC1R;  ///< Offset: 0x28 - Host Control 1
@@ -4928,8 +4928,8 @@ namespace sdhc0 {
         volatile uint32_t FERACES;  ///< Offset: 0x50 - Force Event for Auto CMD Error Status
         volatile uint32_t FEREIS;  ///< Offset: 0x52 - Force Event for Error Interrupt Status
         volatile uint32_t AESR;  ///< Offset: 0x54 - ADMA Error Status
-        volatile uint32_t ASAR[%s];  ///< Offset: 0x58 - ADMA System Address n
-        volatile uint32_t PVR[%s];  ///< Offset: 0x60 - Preset Value n
+        volatile uint32_t ASAR__;  ///< Offset: 0x58 - ADMA System Address n (renamed from ASAR__)
+        volatile uint32_t PVR__;  ///< Offset: 0x60 - Preset Value n (renamed from PVR__)
         volatile uint32_t SISR;  ///< Offset: 0xFC - Slot Interrupt Status
         volatile uint32_t HCVR;  ///< Offset: 0xFE - Host Controller Version
         volatile uint32_t MC1R;  ///< Offset: 0x204 - MMC Control 1
@@ -4989,8 +4989,8 @@ namespace sdhc0 {
         constexpr uint32_t CMDIDX = (6 << 8);  ///< Command Index
     }
 
-    /// RR[%s] Register bits
-    namespace rr[%s]_bits {
+    /// RR__ Register bits
+    namespace rr___bits {
         constexpr uint32_t CMDRESP = (32 << 0);  ///< Command Response
     }
 
@@ -5344,13 +5344,13 @@ namespace sdhc0 {
         constexpr uint32_t LMIS = (1U << 2);  ///< ADMA Length Mismatch Error
     }
 
-    /// ASAR[%s] Register bits
-    namespace asar[%s]_bits {
+    /// ASAR__ Register bits
+    namespace asar___bits {
         constexpr uint32_t ADMASA = (32 << 0);  ///< ADMA System Address
     }
 
-    /// PVR[%s] Register bits
-    namespace pvr[%s]_bits {
+    /// PVR__ Register bits
+    namespace pvr___bits {
         constexpr uint32_t SDCLKFSEL = (10 << 0);  ///< SDCLK Frequency Select Value for Initialization
         constexpr uint32_t CLKGSEL = (1U << 10);  ///< Clock Generator Select Value for Initialization
         constexpr uint32_t DRVSEL = (2 << 14);  ///< Driver Strength Select Value for Initialization
@@ -5776,9 +5776,9 @@ namespace tim {
         volatile uint32_t SYNCBUSY;  ///< Offset: 0x10 - Synchronization Status
         volatile uint32_t COUNT;  ///< Offset: 0x14 - COUNT32 Count
         volatile uint32_t PER;  ///< Offset: 0x1B - COUNT8 Period
-        volatile uint32_t CC[%s];  ///< Offset: 0x1C - COUNT32 Compare and Capture
+        volatile uint32_t CC__;  ///< Offset: 0x1C - COUNT32 Compare and Capture (renamed from CC__)
         volatile uint32_t PERBUF;  ///< Offset: 0x2F - COUNT8 Period Buffer
-        volatile uint32_t CCBUF[%s];  ///< Offset: 0x30 - COUNT32 Compare and Capture Buffer
+        volatile uint32_t CCBUF__;  ///< Offset: 0x30 - COUNT32 Compare and Capture Buffer (renamed from CCBUF__)
     };
 
     /// Peripheral instances
@@ -5912,8 +5912,8 @@ namespace tim {
         constexpr uint32_t PER = (8 << 0);  ///< Period Value
     }
 
-    /// CC[%s] Register bits
-    namespace cc[%s]_bits {
+    /// CC__ Register bits
+    namespace cc___bits {
         constexpr uint32_t CC = (32 << 0);  ///< Counter/Compare Value
     }
 
@@ -5922,8 +5922,8 @@ namespace tim {
         constexpr uint32_t PERBUF = (8 << 0);  ///< Period Buffer Value
     }
 
-    /// CCBUF[%s] Register bits
-    namespace ccbuf[%s]_bits {
+    /// CCBUF__ Register bits
+    namespace ccbuf___bits {
         constexpr uint32_t CCBUF = (32 << 0);  ///< Counter/Compare Buffer Value
     }
 
@@ -6769,9 +6769,9 @@ namespace itm {
 
     /// ITM Register structure
     struct Registers {
-        volatile uint32_t PORT_WORD_MODE[%s];  ///< Offset: 0x00 - ITM Stimulus Port Registers
-        volatile uint32_t PORT_BYTE_MODE[%s];  ///< Offset: 0x00 - ITM Stimulus Port Registers
-        volatile uint32_t PORT_HWORD_MODE[%s];  ///< Offset: 0x00 - ITM Stimulus Port Registers
+        volatile uint32_t PORT_WORD_MODE__;  ///< Offset: 0x00 - ITM Stimulus Port Registers (renamed from PORT_WORD_MODE__)
+        volatile uint32_t PORT_BYTE_MODE__;  ///< Offset: 0x00 - ITM Stimulus Port Registers (renamed from PORT_BYTE_MODE__)
+        volatile uint32_t PORT_HWORD_MODE__;  ///< Offset: 0x00 - ITM Stimulus Port Registers (renamed from PORT_HWORD_MODE__)
         volatile uint32_t TER;  ///< Offset: 0xE00 - ITM Trace Enable Register
         volatile uint32_t TPR;  ///< Offset: 0xE40 - ITM Trace Privilege Register
         volatile uint32_t TCR;  ///< Offset: 0xE80 - ITM Trace Control Register
@@ -6783,18 +6783,18 @@ namespace itm {
     inline Registers* ITM = reinterpret_cast<Registers*>(ITM_BASE);
 
     // Bit definitions
-    /// PORT_WORD_MODE[%s] Register bits
-    namespace port_word_mode[%s]_bits {
+    /// PORT_WORD_MODE__ Register bits
+    namespace port_word_mode___bits {
         constexpr uint32_t PORT = (32 << 0);  ///< PORT
     }
 
-    /// PORT_BYTE_MODE[%s] Register bits
-    namespace port_byte_mode[%s]_bits {
+    /// PORT_BYTE_MODE__ Register bits
+    namespace port_byte_mode___bits {
         constexpr uint32_t PORT = (8 << 0);  ///< PORT
     }
 
-    /// PORT_HWORD_MODE[%s] Register bits
-    namespace port_hword_mode[%s]_bits {
+    /// PORT_HWORD_MODE__ Register bits
+    namespace port_hword_mode___bits {
         constexpr uint32_t PORT = (16 << 0);  ///< PORT
     }
 
@@ -6967,12 +6967,12 @@ namespace nvic {
 
     /// NVIC Register structure
     struct Registers {
-        volatile uint32_t ISER[%s];  ///< Offset: 0x00 - Interrupt Set Enable Register
-        volatile uint32_t ICER[%s];  ///< Offset: 0x80 - Interrupt Clear Enable Register
-        volatile uint32_t ISPR[%s];  ///< Offset: 0x100 - Interrupt Set Pending Register
-        volatile uint32_t ICPR[%s];  ///< Offset: 0x180 - Interrupt Clear Pending Register
-        volatile uint32_t IABR[%s];  ///< Offset: 0x200 - Interrupt Active Bit Register
-        volatile uint32_t IP[%s];  ///< Offset: 0x300 - Interrupt Priority Register n
+        volatile uint32_t ISER__;  ///< Offset: 0x00 - Interrupt Set Enable Register (renamed from ISER__)
+        volatile uint32_t ICER__;  ///< Offset: 0x80 - Interrupt Clear Enable Register (renamed from ICER__)
+        volatile uint32_t ISPR__;  ///< Offset: 0x100 - Interrupt Set Pending Register (renamed from ISPR__)
+        volatile uint32_t ICPR__;  ///< Offset: 0x180 - Interrupt Clear Pending Register (renamed from ICPR__)
+        volatile uint32_t IABR__;  ///< Offset: 0x200 - Interrupt Active Bit Register (renamed from IABR__)
+        volatile uint32_t IP__;  ///< Offset: 0x300 - Interrupt Priority Register n (renamed from IP__)
         volatile uint32_t STIR;  ///< Offset: 0xE00 - Software Trigger Interrupt Register
     };
 
@@ -6980,33 +6980,33 @@ namespace nvic {
     inline Registers* NVIC = reinterpret_cast<Registers*>(NVIC_BASE);
 
     // Bit definitions
-    /// ISER[%s] Register bits
-    namespace iser[%s]_bits {
+    /// ISER__ Register bits
+    namespace iser___bits {
         constexpr uint32_t SETENA = (32 << 0);  ///< Interrupt set enable bits
     }
 
-    /// ICER[%s] Register bits
-    namespace icer[%s]_bits {
+    /// ICER__ Register bits
+    namespace icer___bits {
         constexpr uint32_t CLRENA = (32 << 0);  ///< Interrupt clear-enable bits
     }
 
-    /// ISPR[%s] Register bits
-    namespace ispr[%s]_bits {
+    /// ISPR__ Register bits
+    namespace ispr___bits {
         constexpr uint32_t SETPEND = (32 << 0);  ///< Interrupt set-pending bits
     }
 
-    /// ICPR[%s] Register bits
-    namespace icpr[%s]_bits {
+    /// ICPR__ Register bits
+    namespace icpr___bits {
         constexpr uint32_t CLRPEND = (32 << 0);  ///< Interrupt clear-pending bits
     }
 
-    /// IABR[%s] Register bits
-    namespace iabr[%s]_bits {
+    /// IABR__ Register bits
+    namespace iabr___bits {
         constexpr uint32_t ACTIVE = (32 << 0);  ///< Interrupt active bits
     }
 
-    /// IP[%s] Register bits
-    namespace ip[%s]_bits {
+    /// IP__ Register bits
+    namespace ip___bits {
         constexpr uint32_t PRI0 = (3 << 0);  ///< Priority of interrupt n
     }
 
@@ -7092,11 +7092,11 @@ namespace systemcontrol {
         volatile uint32_t MMFAR;  ///< Offset: 0xD34 - MemManage Fault Address Register
         volatile uint32_t BFAR;  ///< Offset: 0xD38 - BusFault Address Register
         volatile uint32_t AFSR;  ///< Offset: 0xD3C - Auxiliary Fault Status Register
-        volatile uint32_t PFR[%s];  ///< Offset: 0xD40 - Processor Feature Register
+        volatile uint32_t PFR__;  ///< Offset: 0xD40 - Processor Feature Register (renamed from PFR__)
         volatile uint32_t DFR;  ///< Offset: 0xD48 - Debug Feature Register
         volatile uint32_t ADR;  ///< Offset: 0xD4C - Auxiliary Feature Register
-        volatile uint32_t MMFR[%s];  ///< Offset: 0xD50 - Memory Model Feature Register
-        volatile uint32_t ISAR[%s];  ///< Offset: 0xD60 - Instruction Set Attributes Register
+        volatile uint32_t MMFR__;  ///< Offset: 0xD50 - Memory Model Feature Register (renamed from MMFR__)
+        volatile uint32_t ISAR__;  ///< Offset: 0xD60 - Instruction Set Attributes Register (renamed from ISAR__)
         volatile uint32_t CPACR;  ///< Offset: 0xD88 - Coprocessor Access Control Register
     };
 

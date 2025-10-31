@@ -3,7 +3,7 @@
 /// Source: nordic_nrf52.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:58
+/// Generated: 2025-10-31 17:44:35
 #ifndef ALLOY_GENERATED_NRF52_PERIPHERALS_HPP
 #define ALLOY_GENERATED_NRF52_PERIPHERALS_HPP
 
@@ -315,17 +315,17 @@ namespace ficr {
     struct Registers {
         volatile uint32_t CODEPAGESIZE;  ///< Offset: 0x10 - Code memory page size
         volatile uint32_t CODESIZE;  ///< Offset: 0x14 - Code memory size
-        volatile uint32_t DEVICEID[%s];  ///< Offset: 0x60 - Description collection[0]: Device identifier
-        volatile uint32_t ER[%s];  ///< Offset: 0x80 - Description collection[0]: Encryption Root, word 0
-        volatile uint32_t IR[%s];  ///< Offset: 0x90 - Description collection[0]: Identity Root, word 0
+        volatile uint32_t DEVICEID__;  ///< Offset: 0x60 - Description collection[0]: Device identifier (renamed from DEVICEID__)
+        volatile uint32_t ER__;  ///< Offset: 0x80 - Description collection[0]: Encryption Root, word 0 (renamed from ER__)
+        volatile uint32_t IR__;  ///< Offset: 0x90 - Description collection[0]: Identity Root, word 0 (renamed from IR__)
         volatile uint32_t DEVICEADDRTYPE;  ///< Offset: 0xA0 - Device address type
-        volatile uint32_t DEVICEADDR[%s];  ///< Offset: 0xA4 - Description collection[0]: Device address 0
+        volatile uint32_t DEVICEADDR__;  ///< Offset: 0xA4 - Description collection[0]: Device address 0 (renamed from DEVICEADDR__)
         volatile uint32_t PART;  ///< Offset: 0x00 - Part code
         volatile uint32_t VARIANT;  ///< Offset: 0x04 - Part Variant, Hardware version and Production configuration
         volatile uint32_t PACKAGE;  ///< Offset: 0x08 - Package option
         volatile uint32_t RAM;  ///< Offset: 0x0C - RAM variant
         volatile uint32_t FLASH;  ///< Offset: 0x10 - Flash variant
-        volatile uint32_t UNUSED0[%s];  ///< Offset: 0x14 - Description collection[0]: Unspecified
+        volatile uint32_t UNUSED0__;  ///< Offset: 0x14 - Description collection[0]: Unspecified (renamed from UNUSED0__)
         volatile uint32_t A0;  ///< Offset: 0x00 - Slope definition A0.
         volatile uint32_t A1;  ///< Offset: 0x04 - Slope definition A1.
         volatile uint32_t A2;  ///< Offset: 0x08 - Slope definition A2.
@@ -363,18 +363,18 @@ namespace ficr {
         constexpr uint32_t CODESIZE = (32 << 0);  ///< Code memory size in number of pages
     }
 
-    /// DEVICEID[%s] Register bits
-    namespace deviceid[%s]_bits {
+    /// DEVICEID__ Register bits
+    namespace deviceid___bits {
         constexpr uint32_t DEVICEID = (32 << 0);  ///< 64 bit unique device identifier
     }
 
-    /// ER[%s] Register bits
-    namespace er[%s]_bits {
+    /// ER__ Register bits
+    namespace er___bits {
         constexpr uint32_t ER = (32 << 0);  ///< Encryption Root, word n
     }
 
-    /// IR[%s] Register bits
-    namespace ir[%s]_bits {
+    /// IR__ Register bits
+    namespace ir___bits {
         constexpr uint32_t IR = (32 << 0);  ///< Identity Root, word n
     }
 
@@ -383,8 +383,8 @@ namespace ficr {
         constexpr uint32_t DEVICEADDRTYPE = (1U << 0);  ///< Device address type
     }
 
-    /// DEVICEADDR[%s] Register bits
-    namespace deviceaddr[%s]_bits {
+    /// DEVICEADDR__ Register bits
+    namespace deviceaddr___bits {
         constexpr uint32_t DEVICEADDR = (32 << 0);  ///< 48 bit device address
     }
 
@@ -546,10 +546,10 @@ namespace uicr {
         volatile uint32_t UNUSED1;  ///< Offset: 0x04 - Unspecified
         volatile uint32_t UNUSED2;  ///< Offset: 0x08 - Unspecified
         volatile uint32_t UNUSED3;  ///< Offset: 0x10 - Unspecified
-        volatile uint32_t NRFFW[%s];  ///< Offset: 0x14 - Description collection[0]: Reserved for Nordic firmware design
-        volatile uint32_t NRFHW[%s];  ///< Offset: 0x50 - Description collection[0]: Reserved for Nordic hardware design
-        volatile uint32_t CUSTOMER[%s];  ///< Offset: 0x80 - Description collection[0]: Reserved for customer
-        volatile uint32_t PSELRESET[%s];  ///< Offset: 0x200 - Description collection[0]: Mapping of the nRESET...
+        volatile uint32_t NRFFW__;  ///< Offset: 0x14 - Description collection[0]: Reserved for Nordic firmware design (renamed from NRFFW__)
+        volatile uint32_t NRFHW__;  ///< Offset: 0x50 - Description collection[0]: Reserved for Nordic hardware design (renamed from NRFHW__)
+        volatile uint32_t CUSTOMER__;  ///< Offset: 0x80 - Description collection[0]: Reserved for customer (renamed from CUSTOMER__)
+        volatile uint32_t PSELRESET__;  ///< Offset: 0x200 - Description collection[0]: Mapping of the nRESET... (renamed from PSELRESET__)
         volatile uint32_t APPROTECT;  ///< Offset: 0x208 - Access Port protection
         volatile uint32_t NFCPINS;  ///< Offset: 0x20C - Setting of pins dedicated to NFC functionality: NFC...
     };
@@ -558,23 +558,23 @@ namespace uicr {
     inline Registers* UICR = reinterpret_cast<Registers*>(UICR_BASE);
 
     // Bit definitions
-    /// NRFFW[%s] Register bits
-    namespace nrffw[%s]_bits {
+    /// NRFFW__ Register bits
+    namespace nrffw___bits {
         constexpr uint32_t NRFFW = (32 << 0);  ///< Reserved for Nordic firmware design
     }
 
-    /// NRFHW[%s] Register bits
-    namespace nrfhw[%s]_bits {
+    /// NRFHW__ Register bits
+    namespace nrfhw___bits {
         constexpr uint32_t NRFHW = (32 << 0);  ///< Reserved for Nordic hardware design
     }
 
-    /// CUSTOMER[%s] Register bits
-    namespace customer[%s]_bits {
+    /// CUSTOMER__ Register bits
+    namespace customer___bits {
         constexpr uint32_t CUSTOMER = (32 << 0);  ///< Reserved for customer
     }
 
-    /// PSELRESET[%s] Register bits
-    namespace pselreset[%s]_bits {
+    /// PSELRESET__ Register bits
+    namespace pselreset___bits {
         constexpr uint32_t PIN = (6 << 0);  ///< GPIO number P0.n onto which Reset is exposed
         constexpr uint32_t CONNECT = (1U << 31);  ///< Connection
     }
@@ -1059,8 +1059,8 @@ namespace radio {
         volatile uint32_t STATE;  ///< Offset: 0x550 - Current radio state
         volatile uint32_t DATAWHITEIV;  ///< Offset: 0x554 - Data whitening initial value
         volatile uint32_t BCC;  ///< Offset: 0x560 - Bit counter compare
-        volatile uint32_t DAB[%s];  ///< Offset: 0x600 - Description collection[0]: Device address base segment 0
-        volatile uint32_t DAP[%s];  ///< Offset: 0x620 - Description collection[0]: Device address prefix 0
+        volatile uint32_t DAB__;  ///< Offset: 0x600 - Description collection[0]: Device address base segment 0 (renamed from DAB__)
+        volatile uint32_t DAP__;  ///< Offset: 0x620 - Description collection[0]: Device address prefix 0 (renamed from DAP__)
         volatile uint32_t DACNF;  ///< Offset: 0x640 - Device address match configuration
         volatile uint32_t MODECNF0;  ///< Offset: 0x650 - Radio mode configuration register 0
         volatile uint32_t POWER;  ///< Offset: 0xFFC - Peripheral power control
@@ -1255,13 +1255,13 @@ namespace radio {
         constexpr uint32_t BCC = (32 << 0);  ///< Bit counter compare
     }
 
-    /// DAB[%s] Register bits
-    namespace dab[%s]_bits {
+    /// DAB__ Register bits
+    namespace dab___bits {
         constexpr uint32_t DAB = (32 << 0);  ///< Device address base segment 0
     }
 
-    /// DAP[%s] Register bits
-    namespace dap[%s]_bits {
+    /// DAP__ Register bits
+    namespace dap___bits {
         constexpr uint32_t DAP = (16 << 0);  ///< Device address prefix 0
     }
 
@@ -1403,7 +1403,7 @@ namespace usart {
         constexpr uint32_t OVERRUN = (1U << 0);  ///< Overrun error
         constexpr uint32_t PARITY = (1U << 1);  ///< Parity error
         constexpr uint32_t FRAMING = (1U << 2);  ///< Framing error occurred
-        constexpr uint32_t BREAK = (1U << 3);  ///< Break condition
+        constexpr uint32_t BREAK_ = (1U << 3);  ///< Break condition (renamed from BREAK_)
     }
 
     /// ENABLE Register bits
@@ -1989,14 +1989,14 @@ namespace gpio {
 
     /// GPIO Register structure
     struct Registers {
-        volatile uint32_t TASKS_OUT[%s];  ///< Offset: 0x00 - Description collection[0]: Task for writing to pin...
-        volatile uint32_t TASKS_SET[%s];  ///< Offset: 0x30 - Description collection[0]: Task for writing to pin...
-        volatile uint32_t TASKS_CLR[%s];  ///< Offset: 0x60 - Description collection[0]: Task for writing to pin...
-        volatile uint32_t EVENTS_IN[%s];  ///< Offset: 0x100 - Description collection[0]: Event generated from pin...
+        volatile uint32_t TASKS_OUT__;  ///< Offset: 0x00 - Description collection[0]: Task for writing to pin... (renamed from TASKS_OUT__)
+        volatile uint32_t TASKS_SET__;  ///< Offset: 0x30 - Description collection[0]: Task for writing to pin... (renamed from TASKS_SET__)
+        volatile uint32_t TASKS_CLR__;  ///< Offset: 0x60 - Description collection[0]: Task for writing to pin... (renamed from TASKS_CLR__)
+        volatile uint32_t EVENTS_IN__;  ///< Offset: 0x100 - Description collection[0]: Event generated from pin... (renamed from EVENTS_IN__)
         volatile uint32_t EVENTS_PORT;  ///< Offset: 0x17C - Event generated from multiple input GPIO pins with SENSE...
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
-        volatile uint32_t CONFIG[%s];  ///< Offset: 0x510 - Description collection[0]: Configuration for OUT[n],...
+        volatile uint32_t CONFIG__;  ///< Offset: 0x510 - Description collection[0]: Configuration for OUT[n],... (renamed from CONFIG__)
     };
 
     /// Peripheral instances
@@ -2029,8 +2029,8 @@ namespace gpio {
         constexpr uint32_t PORT = (1U << 31);  ///< Write '1' to Disable interrupt for PORT event
     }
 
-    /// CONFIG[%s] Register bits
-    namespace config[%s]_bits {
+    /// CONFIG__ Register bits
+    namespace config___bits {
         constexpr uint32_t MODE = (2 << 0);  ///< Mode
         constexpr uint32_t PSEL = (5 << 8);  ///< GPIO number associated with SET[n], CLR[n] and OUT[n] tasks and IN[n] event
         constexpr uint32_t POLARITY = (2 << 16);  ///< When In task mode: Operation to be performed on output when OUT[n] task is triggered. When In event mode: Operation on input that shall trigger IN[n] event.
@@ -2249,15 +2249,15 @@ namespace tim {
         volatile uint32_t TASKS_COUNT;  ///< Offset: 0x08 - Increment Timer (Counter mode only)
         volatile uint32_t TASKS_CLEAR;  ///< Offset: 0x0C - Clear time
         volatile uint32_t TASKS_SHUTDOWN;  ///< Offset: 0x10 - Deprecated register - Shut down timer
-        volatile uint32_t TASKS_CAPTURE[%s];  ///< Offset: 0x40 - Description collection[0]: Capture Timer value to CC[0] register
-        volatile uint32_t EVENTS_COMPARE[%s];  ///< Offset: 0x140 - Description collection[0]: Compare event on CC[0] match
+        volatile uint32_t TASKS_CAPTURE__;  ///< Offset: 0x40 - Description collection[0]: Capture Timer value to CC[0] register (renamed from TASKS_CAPTURE__)
+        volatile uint32_t EVENTS_COMPARE__;  ///< Offset: 0x140 - Description collection[0]: Compare event on CC[0] match (renamed from EVENTS_COMPARE__)
         volatile uint32_t SHORTS;  ///< Offset: 0x200 - Shortcut register
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
         volatile uint32_t MODE;  ///< Offset: 0x504 - Timer mode selection
         volatile uint32_t BITMODE;  ///< Offset: 0x508 - Configure the number of bits used by the TIMER
         volatile uint32_t PRESCALER;  ///< Offset: 0x510 - Timer prescaler register
-        volatile uint32_t CC[%s];  ///< Offset: 0x540 - Description collection[0]: Capture/Compare register 0
+        volatile uint32_t CC__;  ///< Offset: 0x540 - Description collection[0]: Capture/Compare register 0 (renamed from CC__)
     };
 
     /// Peripheral instances
@@ -2319,8 +2319,8 @@ namespace tim {
         constexpr uint32_t PRESCALER = (4 << 0);  ///< Prescaler value
     }
 
-    /// CC[%s] Register bits
-    namespace cc[%s]_bits {
+    /// CC__ Register bits
+    namespace cc___bits {
         constexpr uint32_t CC = (32 << 0);  ///< Capture/Compare value
     }
 
@@ -2344,7 +2344,7 @@ namespace rtc {
         volatile uint32_t TASKS_TRIGOVRFLW;  ///< Offset: 0x0C - Set COUNTER to 0xFFFFF0
         volatile uint32_t EVENTS_TICK;  ///< Offset: 0x100 - Event on COUNTER increment
         volatile uint32_t EVENTS_OVRFLW;  ///< Offset: 0x104 - Event on COUNTER overflow
-        volatile uint32_t EVENTS_COMPARE[%s];  ///< Offset: 0x140 - Description collection[0]: Compare event on CC[0] match
+        volatile uint32_t EVENTS_COMPARE__;  ///< Offset: 0x140 - Description collection[0]: Compare event on CC[0] match (renamed from EVENTS_COMPARE__)
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
         volatile uint32_t EVTEN;  ///< Offset: 0x340 - Enable or disable event routing
@@ -2352,7 +2352,7 @@ namespace rtc {
         volatile uint32_t EVTENCLR;  ///< Offset: 0x348 - Disable event routing
         volatile uint32_t COUNTER;  ///< Offset: 0x504 - Current COUNTER value
         volatile uint32_t PRESCALER;  ///< Offset: 0x508 - 12 bit prescaler for COUNTER frequency...
-        volatile uint32_t CC[%s];  ///< Offset: 0x540 - Description collection[0]: Compare register 0
+        volatile uint32_t CC__;  ///< Offset: 0x540 - Description collection[0]: Compare register 0 (renamed from CC__)
     };
 
     /// Peripheral instances
@@ -2421,8 +2421,8 @@ namespace rtc {
         constexpr uint32_t PRESCALER = (12 << 0);  ///< Prescaler value
     }
 
-    /// CC[%s] Register bits
-    namespace cc[%s]_bits {
+    /// CC__ Register bits
+    namespace cc___bits {
         constexpr uint32_t COMPARE = (24 << 0);  ///< Compare value
     }
 
@@ -2846,7 +2846,7 @@ namespace wdg {
         volatile uint32_t CRV;  ///< Offset: 0x504 - Counter reload value
         volatile uint32_t RREN;  ///< Offset: 0x508 - Enable register for reload request registers
         volatile uint32_t CONFIG;  ///< Offset: 0x50C - Configuration register
-        volatile uint32_t RR[%s];  ///< Offset: 0x600 - Description collection[0]: Reload request 0
+        volatile uint32_t RR__;  ///< Offset: 0x600 - Description collection[0]: Reload request 0 (renamed from RR__)
     };
 
     /// Peripheral instances
@@ -2903,8 +2903,8 @@ namespace wdg {
         constexpr uint32_t HALT = (1U << 3);  ///< Configure the watchdog to either be paused, or kept running, while the CPU is halted by the debugger
     }
 
-    /// RR[%s] Register bits
-    namespace rr[%s]_bits {
+    /// RR__ Register bits
+    namespace rr___bits {
         constexpr uint32_t RR = (32 << 0);  ///< Reload request register
     }
 
@@ -3298,8 +3298,8 @@ namespace egu0 {
 
     /// EGU0 Register structure
     struct Registers {
-        volatile uint32_t TASKS_TRIGGER[%s];  ///< Offset: 0x00 - Description collection[0]: Trigger 0 for triggering the...
-        volatile uint32_t EVENTS_TRIGGERED[%s];  ///< Offset: 0x100 - Description collection[0]: Event number 0 generated by...
+        volatile uint32_t TASKS_TRIGGER__;  ///< Offset: 0x00 - Description collection[0]: Trigger 0 for triggering the... (renamed from TASKS_TRIGGER__)
+        volatile uint32_t EVENTS_TRIGGERED__;  ///< Offset: 0x100 - Description collection[0]: Event number 0 generated by... (renamed from EVENTS_TRIGGERED__)
         volatile uint32_t INTEN;  ///< Offset: 0x300 - Enable or disable interrupt
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
@@ -3554,11 +3554,11 @@ namespace pwm {
     /// PWM Register structure
     struct Registers {
         volatile uint32_t TASKS_STOP;  ///< Offset: 0x04 - Stops PWM pulse generation on all channels at the end of...
-        volatile uint32_t TASKS_SEQSTART[%s];  ///< Offset: 0x08 - Description collection[0]: Loads the first PWM value on...
+        volatile uint32_t TASKS_SEQSTART__;  ///< Offset: 0x08 - Description collection[0]: Loads the first PWM value on... (renamed from TASKS_SEQSTART__)
         volatile uint32_t TASKS_NEXTSTEP;  ///< Offset: 0x10 - Steps by one value in the current sequence on all...
         volatile uint32_t EVENTS_STOPPED;  ///< Offset: 0x104 - Response to STOP task, emitted when PWM pulses are no...
-        volatile uint32_t EVENTS_SEQSTARTED[%s];  ///< Offset: 0x108 - Description collection[0]: First PWM period started on sequence 0
-        volatile uint32_t EVENTS_SEQEND[%s];  ///< Offset: 0x110 - Description collection[0]: Emitted at end of every...
+        volatile uint32_t EVENTS_SEQSTARTED__;  ///< Offset: 0x108 - Description collection[0]: First PWM period started on sequence 0 (renamed from EVENTS_SEQSTARTED__)
+        volatile uint32_t EVENTS_SEQEND__;  ///< Offset: 0x110 - Description collection[0]: Emitted at end of every... (renamed from EVENTS_SEQEND__)
         volatile uint32_t EVENTS_PWMPERIODEND;  ///< Offset: 0x118 - Emitted at the end of each PWM period
         volatile uint32_t EVENTS_LOOPSDONE;  ///< Offset: 0x11C - Concatenated sequences have been played the amount of...
         volatile uint32_t SHORTS;  ///< Offset: 0x200 - Shortcut register
@@ -3575,7 +3575,7 @@ namespace pwm {
         volatile uint32_t CNT;  ///< Offset: 0x04 - Description cluster[0]: Amount of values (duty cycles)...
         volatile uint32_t REFRESH;  ///< Offset: 0x08 - Description cluster[0]: Amount of additional PWM periods...
         volatile uint32_t ENDDELAY;  ///< Offset: 0x0C - Description cluster[0]: Time added after the sequence
-        volatile uint32_t OUT[%s];  ///< Offset: 0x00 - Description collection[0]: Output pin select for PWM channel 0
+        volatile uint32_t OUT__;  ///< Offset: 0x00 - Description collection[0]: Output pin select for PWM channel 0 (renamed from OUT__)
     };
 
     /// Peripheral instances
@@ -3677,8 +3677,8 @@ namespace pwm {
         constexpr uint32_t CNT = (24 << 0);  ///< Time added after the sequence in PWM periods
     }
 
-    /// OUT[%s] Register bits
-    namespace out[%s]_bits {
+    /// OUT__ Register bits
+    namespace out___bits {
         constexpr uint32_t PIN = (5 << 0);  ///< Pin number
         constexpr uint32_t CONNECT = (1U << 31);  ///< Connection
     }
@@ -3885,7 +3885,7 @@ namespace ppi {
         volatile uint32_t CHENCLR;  ///< Offset: 0x508 - Channel enable clear register
         volatile uint32_t EEP;  ///< Offset: 0x00 - Description cluster[0]: Channel 0 event end-point
         volatile uint32_t TEP;  ///< Offset: 0x00 - Description cluster[0]: Channel 0 task end-point
-        volatile uint32_t CHG[%s];  ///< Offset: 0x800 - Description collection[0]: Channel group 0
+        volatile uint32_t CHG__;  ///< Offset: 0x800 - Description collection[0]: Channel group 0 (renamed from CHG__)
     };
 
     /// Peripheral instances
@@ -4010,8 +4010,8 @@ namespace ppi {
         constexpr uint32_t TEP = (32 << 0);  ///< Pointer to task register
     }
 
-    /// CHG[%s] Register bits
-    namespace chg[%s]_bits {
+    /// CHG__ Register bits
+    namespace chg___bits {
         constexpr uint32_t CH0 = (1U << 0);  ///< Include or exclude channel 0
         constexpr uint32_t CH1 = (1U << 1);  ///< Include or exclude channel 1
         constexpr uint32_t CH2 = (1U << 2);  ///< Include or exclude channel 2
@@ -4541,7 +4541,7 @@ namespace p0 {
         volatile uint32_t DIRCLR;  ///< Offset: 0x51C - DIR clear register
         volatile uint32_t LATCH;  ///< Offset: 0x520 - Latch register indicating what GPIO pins that have met...
         volatile uint32_t DETECTMODE;  ///< Offset: 0x524 - Select between default DETECT signal behaviour and LDETECT mode
-        volatile uint32_t PIN_CNF[%s];  ///< Offset: 0x700 - Description collection[0]: Configuration of GPIO pins
+        volatile uint32_t PIN_CNF__;  ///< Offset: 0x700 - Description collection[0]: Configuration of GPIO pins (renamed from PIN_CNF__)
     };
 
     /// Peripheral instances
@@ -4841,8 +4841,8 @@ namespace p0 {
         constexpr uint32_t DETECTMODE = (1U << 0);  ///< Select between default DETECT signal behaviour and LDETECT mode
     }
 
-    /// PIN_CNF[%s] Register bits
-    namespace pin_cnf[%s]_bits {
+    /// PIN_CNF__ Register bits
+    namespace pin_cnf___bits {
         constexpr uint32_t DIR = (1U << 0);  ///< Pin direction. Same physical register as DIR register
         constexpr uint32_t INPUT = (1U << 1);  ///< Connect or disconnect input buffer
         constexpr uint32_t PULL = (2 << 2);  ///< Pull configuration

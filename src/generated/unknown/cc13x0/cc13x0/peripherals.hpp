@@ -3,7 +3,7 @@
 /// Source: texasinstruments_cc13x0.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:19
+/// Generated: 2025-10-31 17:44:59
 #ifndef ALLOY_GENERATED_CC13X0_PERIPHERALS_HPP
 #define ALLOY_GENERATED_CC13X0_PERIPHERALS_HPP
 
@@ -437,9 +437,9 @@ namespace crypto {
         volatile uint32_t KEYWRITTENAREA;  ///< Offset: 0x404 - Key Written Area Status This register shows which areas...
         volatile uint32_t KEYSIZE;  ///< Offset: 0x408 - Key Size This register defines the size of the keys that...
         volatile uint32_t KEYREADAREA;  ///< Offset: 0x40C - Key Read Area
-        volatile uint32_t AESKEY2%s;  ///< Offset: 0x500 - Clear AES_KEY2/GHASH Key
-        volatile uint32_t AESKEY3%s;  ///< Offset: 0x510 - Clear AES_KEY3
-        volatile uint32_t AESIV%s;  ///< Offset: 0x540 - AES Initialization Vector
+        volatile uint32_t AESKEY2;  ///< Offset: 0x500 - Clear AES_KEY2/GHASH Key (renamed from AESKEY2)
+        volatile uint32_t AESKEY3;  ///< Offset: 0x510 - Clear AES_KEY3 (renamed from AESKEY3)
+        volatile uint32_t AESIV;  ///< Offset: 0x540 - AES Initialization Vector (renamed from AESIV)
         volatile uint32_t AESCTL;  ///< Offset: 0x550 - AES Input/Output Buffer Control
         volatile uint32_t AESDATALEN0;  ///< Offset: 0x554 - Crypto Data Length LSW
         volatile uint32_t AESDATALEN1;  ///< Offset: 0x558 - Crypto Data Length MSW
@@ -452,7 +452,7 @@ namespace crypto {
         volatile uint32_t AESDATAIN2;  ///< Offset: 0x568 - AES Data Input/Output 2
         volatile uint32_t AESDATAOUT3;  ///< Offset: 0x56C - AES Data Input/Output 3
         volatile uint32_t AESDATAIN3;  ///< Offset: 0x56C - Data Input/Output
-        volatile uint32_t AESTAGOUT%s;  ///< Offset: 0x570 - AES Tag Output
+        volatile uint32_t AESTAGOUT;  ///< Offset: 0x570 - AES Tag Output (renamed from AESTAGOUT)
         volatile uint32_t ALGSEL;  ///< Offset: 0x700 - Master Algorithm Select This register configures the...
         volatile uint32_t DMAPROTCTL;  ///< Offset: 0x704 - Master Protection Control
         volatile uint32_t SWRESET;  ///< Offset: 0x740 - Software Reset

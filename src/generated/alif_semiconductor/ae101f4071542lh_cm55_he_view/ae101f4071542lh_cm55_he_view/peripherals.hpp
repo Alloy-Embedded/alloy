@@ -3,7 +3,7 @@
 /// Source: alifsemi_ae101f4071.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:54
+/// Generated: 2025-10-31 17:44:30
 #ifndef ALLOY_GENERATED_AE101F4071542LH_CM55_HE_VIEW_PERIPHERALS_HPP
 #define ALLOY_GENERATED_AE101F4071542LH_CM55_HE_VIEW_PERIPHERALS_HPP
 
@@ -637,7 +637,7 @@ namespace dma {
         volatile uint32_t DMA_FSRD;  ///< Offset: 0x30 - Fault Status DMA Manager Register
         volatile uint32_t DMA_FSRC;  ///< Offset: 0x34 - Fault Status DMA Channel Register
         volatile uint32_t DMA_FTRD;  ///< Offset: 0x38 - Fault Type DMA Manager Register
-        volatile uint32_t DMA_FTR[%s];  ///< Offset: 0x40 - Fault Type for DMA Channel (n) Register
+        volatile uint32_t DMA_FTR__;  ///< Offset: 0x40 - Fault Type for DMA Channel (n) Register (renamed from DMA_FTR__)
         volatile uint32_t DMA_CSR;  ///< Offset: 0x00 - Channel Status for DMA Channel (n) Register
         volatile uint32_t DMA_CPC;  ///< Offset: 0x04 - Channel PC for DMA Channel (n) Register
         volatile uint32_t DMA_SAR;  ///< Offset: 0x00 - Source Address for DMA Channel (n) Register
@@ -764,7 +764,7 @@ namespace evtrtr2 {
 
     /// EVTRTR2 Register structure
     struct Registers {
-        volatile uint32_t DMA_CTRL[%s];  ///< Offset: 0x00 - DMA/Event Router Control and Status Register (n)
+        volatile uint32_t DMA_CTRL__;  ///< Offset: 0x00 - DMA/Event Router Control and Status Register (n) (renamed from DMA_CTRL__)
         volatile uint32_t DMA_REQ_CTRL;  ///< Offset: 0x80 - DMA REQ Control Register
         volatile uint32_t DMA_ACK_TYPE0;  ///< Offset: 0x90 - DMA Handshake Type Register 0
         volatile uint32_t DMA_ACK_TYPE1;  ///< Offset: 0x94 - DMA Handshake Type Register 1
@@ -972,7 +972,7 @@ namespace spi {
         volatile uint32_t SPI_DMARDLR;  ///< Offset: 0x54 - DMA Receive Data Level Register
         volatile uint32_t SPI_IDR;  ///< Offset: 0x58 - Reserved
         volatile uint32_t SPI_VERSION_ID;  ///< Offset: 0x5C - Reserved
-        volatile uint32_t SPI_DR[%s];  ///< Offset: 0x60 - SPI Data Register (n)
+        volatile uint32_t SPI_DR__;  ///< Offset: 0x60 - SPI Data Register (n) (renamed from SPI_DR__)
         volatile uint32_t SPI_RX_SAMPLE_DELAY;  ///< Offset: 0xF0 - RX Sample Delay Register
     };
 
@@ -1171,8 +1171,8 @@ namespace usart {
         volatile uint32_t UART_LSR;  ///< Offset: 0x14 - Line Status Register
         volatile uint32_t UART_MSR;  ///< Offset: 0x18 - Modem Status Register
         volatile uint32_t UART_SCR;  ///< Offset: 0x1C - Scratchpad Register
-        volatile uint32_t UART_SRBR[%s];  ///< Offset: 0x30 - Shadow Receive Buffer Register (n)
-        volatile uint32_t UART_STHR[%s];  ///< Offset: 0x30 - Shadow Transmit Holding Register (n)
+        volatile uint32_t UART_SRBR__;  ///< Offset: 0x30 - Shadow Receive Buffer Register (n) (renamed from UART_SRBR__)
+        volatile uint32_t UART_STHR__;  ///< Offset: 0x30 - Shadow Transmit Holding Register (n) (renamed from UART_STHR__)
         volatile uint32_t UART_FAR;  ///< Offset: 0x70 - FIFO Access Register
         volatile uint32_t UART_TFR;  ///< Offset: 0x74 - Tx FIFO Read Register
         volatile uint32_t UART_RFW;  ///< Offset: 0x78 - Rx FIFO Write Register
@@ -1324,8 +1324,8 @@ namespace crc0 {
         volatile uint32_t CRC_SEED;  ///< Offset: 0x10 - Seed Value Register
         volatile uint32_t CRC_POLY_CUSTOM;  ///< Offset: 0x14 - Custom Polynomial Register
         volatile uint32_t CRC_OUT;  ///< Offset: 0x18 - Accumulated CRC Register
-        volatile uint32_t CRC_DATA_IN_8_[%s];  ///< Offset: 0x20 - 8-bit Values Register n
-        volatile uint32_t CRC_DATA_IN_32_[%s];  ///< Offset: 0x60 - 32-bit Values Register n
+        volatile uint32_t CRC_DATA_IN_8___;  ///< Offset: 0x20 - 8-bit Values Register n (renamed from CRC_DATA_IN_8___)
+        volatile uint32_t CRC_DATA_IN_32___;  ///< Offset: 0x60 - 32-bit Values Register n (renamed from CRC_DATA_IN_32___)
     };
 
     /// Peripheral instances
@@ -1392,8 +1392,8 @@ namespace usb {
         volatile uint32_t GPRTBIMAP_FSHI;  ///< Offset: 0xC18C - Global Full-Speed Port to Bus Instance Mapping (High)
         volatile uint32_t GUCTL2;  ///< Offset: 0xC19C - Global User Control Register 2
         volatile uint32_t GUSB2PHYCFG0;  ///< Offset: 0xC200 - Global USB2 PHY Configuration Register
-        volatile uint32_t GTXFIFOSIZ[%s];  ///< Offset: 0xC300 - Global Transmit FIFO Size Register n
-        volatile uint32_t GRXFIFOSIZ[%s];  ///< Offset: 0xC380 - Global Receive FIFO Size Register n
+        volatile uint32_t GTXFIFOSIZ__;  ///< Offset: 0xC300 - Global Transmit FIFO Size Register n (renamed from GTXFIFOSIZ__)
+        volatile uint32_t GRXFIFOSIZ__;  ///< Offset: 0xC380 - Global Receive FIFO Size Register n (renamed from GRXFIFOSIZ__)
         volatile uint32_t GEVNTADRLO0;  ///< Offset: 0xC400 - Global Event Buffer Address (Low)
         volatile uint32_t GEVNTADRHI0;  ///< Offset: 0xC404 - Global Event Buffer Address (High)
         volatile uint32_t GEVNTSIZ0;  ///< Offset: 0xC408 - Global Event Buffer Size Register
@@ -1448,7 +1448,7 @@ namespace adc {
         volatile uint32_t ADC_SEQUENCER_CTRL;  ///< Offset: 0x34 - ADC Sequencer Control Register
         volatile uint32_t ADC_REG1;  ///< Offset: 0x38 - ADC Analog Control Register for ADC12 Modules
         volatile uint32_t ADC_SEL;  ///< Offset: 0x3C - ADC Sample Register Selected (read-only value of n)
-        volatile uint32_t ADC_SAMPLE_REG_[%s];  ///< Offset: 0x50 - ADC Sampled Value From Input n Register
+        volatile uint32_t ADC_SAMPLE_REG___;  ///< Offset: 0x50 - ADC Sampled Value From Input n Register (renamed from ADC_SAMPLE_REG___)
     };
 
     /// Peripheral instances
@@ -2046,8 +2046,8 @@ namespace can {
 
     /// CAN Register structure
     struct Registers {
-        volatile uint32_t CANFD_RBUF[%s];  ///< Offset: 0x00 - Receive Buffer Register
-        volatile uint32_t CANFD_TBUF[%s];  ///< Offset: 0x50 - Transmit Buffer Register
+        volatile uint32_t CANFD_RBUF__;  ///< Offset: 0x00 - Receive Buffer Register (renamed from CANFD_RBUF__)
+        volatile uint32_t CANFD_TBUF__;  ///< Offset: 0x50 - Transmit Buffer Register (renamed from CANFD_TBUF__)
         volatile uint32_t CANFD_TTS;  ///< Offset: 0x98 - Transmission Time Stamp Register
         volatile uint32_t CANFD_CFG_STAT;  ///< Offset: 0xA0 - Configuration and Status Register
         volatile uint32_t CANFD_TCMD;  ///< Offset: 0xA1 - Command Register

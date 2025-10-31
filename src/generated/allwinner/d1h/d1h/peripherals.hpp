@@ -3,7 +3,7 @@
 /// Source: allwinner_d1.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:02
+/// Generated: 2025-10-31 17:44:40
 #ifndef ALLOY_GENERATED_D1H_PERIPHERALS_HPP
 #define ALLOY_GENERATED_D1H_PERIPHERALS_HPP
 
@@ -280,7 +280,7 @@ namespace ccu {
         volatile uint32_t CPU_AXI_CFG;  ///< Offset: 0x500 - CPU_AXI Configuration Register
         volatile uint32_t CPU_GATING;  ///< Offset: 0x504 - CPU_GATING Configuration Register
         volatile uint32_t PSI_CLK;  ///< Offset: 0x510 - PSI Clock Register
-        volatile uint32_t APB%s_CLK;  ///< Offset: 0x520 - APB Clock Register
+        volatile uint32_t APB_CLK;  ///< Offset: 0x520 - APB Clock Register (renamed from APB_CLK)
         volatile uint32_t MBUS_CLK;  ///< Offset: 0x540 - MBUS Clock Register
         volatile uint32_t DE_CLK;  ///< Offset: 0x600 - DE Clock Register
         volatile uint32_t DE_BGR;  ///< Offset: 0x60C - DE Bus Gating Reset Register
@@ -318,7 +318,7 @@ namespace ccu {
         volatile uint32_t IRTX_BGR;  ///< Offset: 0x9CC - IRTX Bus Gating Reset Register
         volatile uint32_t GPADC_BGR;  ///< Offset: 0x9EC - GPADC Bus Gating Reset Register
         volatile uint32_t THS_BGR;  ///< Offset: 0x9FC - THS Bus Gating Reset Register
-        volatile uint32_t I2S%s_CLK;  ///< Offset: 0xA10 - I2S Clock Register
+        volatile uint32_t I2S_CLK;  ///< Offset: 0xA10 - I2S Clock Register (renamed from I2S_CLK)
         volatile uint32_t I2S2_ASRC_CLK;  ///< Offset: 0xA1C - I2S2_ASRC Clock Register
         volatile uint32_t I2S_BGR;  ///< Offset: 0xA20 - I2S Bus Gating Reset Register
         volatile uint32_t OWA_TX_CLK;  ///< Offset: 0xA24 - OWA_TX Clock Register
@@ -411,13 +411,13 @@ namespace riscv {
         volatile uint32_t RF1P_CFG_REG;  ///< Offset: 0x10 - RF1P Configuration Register
         volatile uint32_t ROM_CFG_REG;  ///< Offset: 0x1C - ROM Configuration Register
         volatile uint32_t WAKEUP_EN_REG;  ///< Offset: 0x20 - Wakeup Enable Register
-        volatile uint32_t WAKEUP_MASK%s_REG;  ///< Offset: 0x24 - Wakeup Mask Register
+        volatile uint32_t WAKEUP_MASK_REG;  ///< Offset: 0x24 - Wakeup Mask Register (renamed from WAKEUP_MASK_REG)
         volatile uint32_t TS_TMODE_SEL_REG;  ///< Offset: 0x40 - Timestamp Test Mode Select Register
         volatile uint32_t SRAM_ADDR_TWIST_REG;  ///< Offset: 0x44 - SRAM Address Twist Register
         volatile uint32_t WORK_MODE_REG;  ///< Offset: 0x48 - Work Mode Register
         volatile uint32_t RETITE_PC0_REG;  ///< Offset: 0x50 - Retire PC0 Register
         volatile uint32_t RETITE_PC1_REG;  ///< Offset: 0x54 - Retire PC1 Register
-        volatile uint32_t IRQ_MODE%s_REG;  ///< Offset: 0x60 - IRQ Mode Register
+        volatile uint32_t IRQ_MODE_REG;  ///< Offset: 0x60 - IRQ Mode Register (renamed from IRQ_MODE_REG)
         volatile uint32_t RISCV_AXI_PMU_CTRL;  ///< Offset: 0x104 - RISCV AXI PMU Control Register
         volatile uint32_t RISCV_AXI_PMU_PRD;  ///< Offset: 0x108 - RISCV AXI PMU Period Register
         volatile uint32_t RISCV_AXI_PMU_LAT_RD;  ///< Offset: 0x10C - RISCV AXI PMU Read Latency Register
@@ -470,9 +470,9 @@ namespace tim {
     struct Registers {
         volatile uint32_t tmr_irq_en;  ///< Offset: 0x00 - Timer IRQ Enable Register
         volatile uint32_t tmr_irq_sta;  ///< Offset: 0x04 - Timer Status Register
-        volatile uint32_t tmr%s_ctrl;  ///< Offset: 0x10 - Timer IRQ Enable Register
-        volatile uint32_t tmr%s_intv_value;  ///< Offset: 0x14 - Timer Interval Value Register
-        volatile uint32_t tmr%s_cur_value;  ///< Offset: 0x18 - Timer Current Value Register
+        volatile uint32_t tmr_ctrl;  ///< Offset: 0x10 - Timer IRQ Enable Register (renamed from tmr_ctrl)
+        volatile uint32_t tmr_intv_value;  ///< Offset: 0x14 - Timer Interval Value Register (renamed from tmr_intv_value)
+        volatile uint32_t tmr_cur_value;  ///< Offset: 0x18 - Timer Current Value Register (renamed from tmr_cur_value)
         volatile uint32_t wdog_irq_en;  ///< Offset: 0xA0 - Watchdog IRQ Enable Register
         volatile uint32_t wdog_irq_sta;  ///< Offset: 0xA4 - Watchdog Status Register
         volatile uint32_t wdog_soft_rst;  ///< Offset: 0xA8 - Watchdog Software Reset Register
@@ -502,10 +502,10 @@ namespace plic {
 
     /// PLIC Register structure
     struct Registers {
-        volatile uint32_t prio[%s];  ///< Offset: 0x00 - Interrupt Priority Register
-        volatile uint32_t ip[%s];  ///< Offset: 0x1000 - Interrupt Pending Register
-        volatile uint32_t mie[%s];  ///< Offset: 0x2000 - Machine Mode Interrupt Enable Register
-        volatile uint32_t sie[%s];  ///< Offset: 0x2080 - Supervisor Mode Interrupt Enable Register
+        volatile uint32_t prio__;  ///< Offset: 0x00 - Interrupt Priority Register (renamed from prio__)
+        volatile uint32_t ip__;  ///< Offset: 0x1000 - Interrupt Pending Register (renamed from ip__)
+        volatile uint32_t mie__;  ///< Offset: 0x2000 - Machine Mode Interrupt Enable Register (renamed from mie__)
+        volatile uint32_t sie__;  ///< Offset: 0x2080 - Supervisor Mode Interrupt Enable Register (renamed from sie__)
         volatile uint32_t ctrl;  ///< Offset: 0x1FFFFC - Control Register
         volatile uint32_t mth;  ///< Offset: 0x200000 - Machine Mode Priority Threshold Register
         volatile uint32_t mclaim;  ///< Offset: 0x200004 - Machine Mode Claim/Complete Register
@@ -517,8 +517,8 @@ namespace plic {
     inline Registers* PLIC = reinterpret_cast<Registers*>(PLIC_BASE);
 
     // Bit definitions
-    /// prio[%s] Register bits
-    namespace prio[%s]_bits {
+    /// prio__ Register bits
+    namespace prio___bits {
         constexpr uint32_t priority = (5 << 0);  ///< Priority 0 (never interrupt)
     }
 
@@ -550,17 +550,17 @@ namespace dma {
         volatile uint32_t DMAC_IRQ_PEND_REG1;  ///< Offset: 0x14 - DMAC IRQ Pending Register 1
         volatile uint32_t DMAC_AUTO_GATE_REG;  ///< Offset: 0x28 - DMAC Auto Gating Register
         volatile uint32_t DMAC_STA_REG;  ///< Offset: 0x30 - DMAC Status Register
-        volatile uint32_t DMAC_EN_REG%s;  ///< Offset: 0x100 - DMAC Channel Enable Register
-        volatile uint32_t DMAC_PAU_REG%s;  ///< Offset: 0x104 - DMAC Channel Pause Register
-        volatile uint32_t DMAC_DESC_ADDR_REG%s;  ///< Offset: 0x108 - DMAC Channel Start Address Register
-        volatile uint32_t DMAC_CFG_REG%s;  ///< Offset: 0x10C - DMAC Channel Configuration Register
-        volatile uint32_t DMAC_CUR_SRC_REG%s;  ///< Offset: 0x110 - DMAC Channel Current Source Register
-        volatile uint32_t DMAC_CUR_DEST_REG%s;  ///< Offset: 0x114 - DMAC Channel Current Destination Register
-        volatile uint32_t DMAC_BCNT_LEFT_REG%s;  ///< Offset: 0x118 - DMAC Channel Byte Counter Left Register
-        volatile uint32_t DMAC_PARA_REG%s;  ///< Offset: 0x11C - DMAC Channel Parameter Register
-        volatile uint32_t DMAC_MODE_REG%s;  ///< Offset: 0x128 - DMAC Mode Register
-        volatile uint32_t DMAC_FDESC_ADDR_REG%s;  ///< Offset: 0x12C - DMAC Former Descriptor Address Register
-        volatile uint32_t DMAC_PKG_NUM_REG%s;  ///< Offset: 0x130 - DMAC Package Number Register
+        volatile uint32_t DMAC_EN_REG;  ///< Offset: 0x100 - DMAC Channel Enable Register (renamed from DMAC_EN_REG)
+        volatile uint32_t DMAC_PAU_REG;  ///< Offset: 0x104 - DMAC Channel Pause Register (renamed from DMAC_PAU_REG)
+        volatile uint32_t DMAC_DESC_ADDR_REG;  ///< Offset: 0x108 - DMAC Channel Start Address Register (renamed from DMAC_DESC_ADDR_REG)
+        volatile uint32_t DMAC_CFG_REG;  ///< Offset: 0x10C - DMAC Channel Configuration Register (renamed from DMAC_CFG_REG)
+        volatile uint32_t DMAC_CUR_SRC_REG;  ///< Offset: 0x110 - DMAC Channel Current Source Register (renamed from DMAC_CUR_SRC_REG)
+        volatile uint32_t DMAC_CUR_DEST_REG;  ///< Offset: 0x114 - DMAC Channel Current Destination Register (renamed from DMAC_CUR_DEST_REG)
+        volatile uint32_t DMAC_BCNT_LEFT_REG;  ///< Offset: 0x118 - DMAC Channel Byte Counter Left Register (renamed from DMAC_BCNT_LEFT_REG)
+        volatile uint32_t DMAC_PARA_REG;  ///< Offset: 0x11C - DMAC Channel Parameter Register (renamed from DMAC_PARA_REG)
+        volatile uint32_t DMAC_MODE_REG;  ///< Offset: 0x128 - DMAC Mode Register (renamed from DMAC_MODE_REG)
+        volatile uint32_t DMAC_FDESC_ADDR_REG;  ///< Offset: 0x12C - DMAC Former Descriptor Address Register (renamed from DMAC_FDESC_ADDR_REG)
+        volatile uint32_t DMAC_PKG_NUM_REG;  ///< Offset: 0x130 - DMAC Package Number Register (renamed from DMAC_PKG_NUM_REG)
     };
 
     /// Peripheral instances
@@ -743,15 +743,15 @@ namespace dsp {
 
     /// DSP Register structure
     struct Registers {
-        volatile uint32_t MSGBOX_RD_IRQ_EN_REG_%s;  ///< Offset: 0x20 - MSGBOX Read IRQ Enable Register
-        volatile uint32_t MSGBOX_RD_IRQ_STATUS_REG_%s;  ///< Offset: 0x24 - MSGBOX Read IRQ Status Register
-        volatile uint32_t MSGBOX_WR_IRQ_EN_REG_%s;  ///< Offset: 0x30 - MSGBOX Write IRQ Enable Register
-        volatile uint32_t MSGBOX_WR_IRQ_STATUS_REG_%s;  ///< Offset: 0x34 - MSGBOX Write IRQ Status Register
-        volatile uint32_t MSGBOX_DEBUG_REG_%s;  ///< Offset: 0x40 - MSGBOX Debug Register
-        volatile uint32_t MSGBOX_FIFO_STATUS_REG_P%s;  ///< Offset: 0x00 - MSGBOX FIFO Status Register
-        volatile uint32_t MSGBOX_MSG_STATUS_REG_P%s;  ///< Offset: 0x00 - MSGBOX Message Status Register
-        volatile uint32_t MSGBOX_MSG_REG_P%s;  ///< Offset: 0x00 - MSGBOX Message Queue Register
-        volatile uint32_t MSGBOX_WR_INT_THRESHOLD_REG_P%s;  ///< Offset: 0x00 - MSGBOX Write IRQ Threshold Register
+        volatile uint32_t MSGBOX_RD_IRQ_EN_REG_;  ///< Offset: 0x20 - MSGBOX Read IRQ Enable Register (renamed from MSGBOX_RD_IRQ_EN_REG_)
+        volatile uint32_t MSGBOX_RD_IRQ_STATUS_REG_;  ///< Offset: 0x24 - MSGBOX Read IRQ Status Register (renamed from MSGBOX_RD_IRQ_STATUS_REG_)
+        volatile uint32_t MSGBOX_WR_IRQ_EN_REG_;  ///< Offset: 0x30 - MSGBOX Write IRQ Enable Register (renamed from MSGBOX_WR_IRQ_EN_REG_)
+        volatile uint32_t MSGBOX_WR_IRQ_STATUS_REG_;  ///< Offset: 0x34 - MSGBOX Write IRQ Status Register (renamed from MSGBOX_WR_IRQ_STATUS_REG_)
+        volatile uint32_t MSGBOX_DEBUG_REG_;  ///< Offset: 0x40 - MSGBOX Debug Register (renamed from MSGBOX_DEBUG_REG_)
+        volatile uint32_t MSGBOX_FIFO_STATUS_REG_P;  ///< Offset: 0x00 - MSGBOX FIFO Status Register (renamed from MSGBOX_FIFO_STATUS_REG_P)
+        volatile uint32_t MSGBOX_MSG_STATUS_REG_P;  ///< Offset: 0x00 - MSGBOX Message Status Register (renamed from MSGBOX_MSG_STATUS_REG_P)
+        volatile uint32_t MSGBOX_MSG_REG_P;  ///< Offset: 0x00 - MSGBOX Message Queue Register (renamed from MSGBOX_MSG_REG_P)
+        volatile uint32_t MSGBOX_WR_INT_THRESHOLD_REG_P;  ///< Offset: 0x00 - MSGBOX Write IRQ Threshold Register (renamed from MSGBOX_WR_INT_THRESHOLD_REG_P)
     };
 
     /// Peripheral instances
@@ -769,15 +769,15 @@ namespace risc {
 
     /// RISC Register structure
     struct Registers {
-        volatile uint32_t MSGBOX_RD_IRQ_EN_REG_%s;  ///< Offset: 0x20 - MSGBOX Read IRQ Enable Register
-        volatile uint32_t MSGBOX_RD_IRQ_STATUS_REG_%s;  ///< Offset: 0x24 - MSGBOX Read IRQ Status Register
-        volatile uint32_t MSGBOX_WR_IRQ_EN_REG_%s;  ///< Offset: 0x30 - MSGBOX Write IRQ Enable Register
-        volatile uint32_t MSGBOX_WR_IRQ_STATUS_REG_%s;  ///< Offset: 0x34 - MSGBOX Write IRQ Status Register
-        volatile uint32_t MSGBOX_DEBUG_REG_%s;  ///< Offset: 0x40 - MSGBOX Debug Register
-        volatile uint32_t MSGBOX_FIFO_STATUS_REG_P%s;  ///< Offset: 0x00 - MSGBOX FIFO Status Register
-        volatile uint32_t MSGBOX_MSG_STATUS_REG_P%s;  ///< Offset: 0x00 - MSGBOX Message Status Register
-        volatile uint32_t MSGBOX_MSG_REG_P%s;  ///< Offset: 0x00 - MSGBOX Message Queue Register
-        volatile uint32_t MSGBOX_WR_INT_THRESHOLD_REG_P%s;  ///< Offset: 0x00 - MSGBOX Write IRQ Threshold Register
+        volatile uint32_t MSGBOX_RD_IRQ_EN_REG_;  ///< Offset: 0x20 - MSGBOX Read IRQ Enable Register (renamed from MSGBOX_RD_IRQ_EN_REG_)
+        volatile uint32_t MSGBOX_RD_IRQ_STATUS_REG_;  ///< Offset: 0x24 - MSGBOX Read IRQ Status Register (renamed from MSGBOX_RD_IRQ_STATUS_REG_)
+        volatile uint32_t MSGBOX_WR_IRQ_EN_REG_;  ///< Offset: 0x30 - MSGBOX Write IRQ Enable Register (renamed from MSGBOX_WR_IRQ_EN_REG_)
+        volatile uint32_t MSGBOX_WR_IRQ_STATUS_REG_;  ///< Offset: 0x34 - MSGBOX Write IRQ Status Register (renamed from MSGBOX_WR_IRQ_STATUS_REG_)
+        volatile uint32_t MSGBOX_DEBUG_REG_;  ///< Offset: 0x40 - MSGBOX Debug Register (renamed from MSGBOX_DEBUG_REG_)
+        volatile uint32_t MSGBOX_FIFO_STATUS_REG_P;  ///< Offset: 0x00 - MSGBOX FIFO Status Register (renamed from MSGBOX_FIFO_STATUS_REG_P)
+        volatile uint32_t MSGBOX_MSG_STATUS_REG_P;  ///< Offset: 0x00 - MSGBOX Message Status Register (renamed from MSGBOX_MSG_STATUS_REG_P)
+        volatile uint32_t MSGBOX_MSG_REG_P;  ///< Offset: 0x00 - MSGBOX Message Queue Register (renamed from MSGBOX_MSG_REG_P)
+        volatile uint32_t MSGBOX_WR_INT_THRESHOLD_REG_P;  ///< Offset: 0x00 - MSGBOX Write IRQ Threshold Register (renamed from MSGBOX_WR_INT_THRESHOLD_REG_P)
     };
 
     /// Peripheral instances
@@ -806,7 +806,7 @@ namespace spi {
         volatile uint32_t SPINLOCK_LOCKID2_REG;  ///< Offset: 0x88 - Spinlock Lockid2 Register
         volatile uint32_t SPINLOCK_LOCKID3_REG;  ///< Offset: 0x8C - Spinlock Lockid3 Register
         volatile uint32_t SPINLOCK_LOCKID4_REG;  ///< Offset: 0x90 - Spinlock Lockid4 Register
-        volatile uint32_t SPINLOCK_LOCK_REG%s;  ///< Offset: 0x100 - Spinlock Register
+        volatile uint32_t SPINLOCK_LOCK_REG;  ///< Offset: 0x100 - Spinlock Register (renamed from SPINLOCK_LOCK_REG)
     };
 
     /// Peripheral instances
@@ -838,7 +838,7 @@ namespace rtc {
         volatile uint32_t ALARM0_IRQ_STA_REG;  ///< Offset: 0x30 - Alarm 0 IRQ Status Register
         volatile uint32_t ALARM_CONFIG_REG;  ///< Offset: 0x50 - Alarm Configuration Register
         volatile uint32_t _32K_FOUT_CTRL_GATING_REG;  ///< Offset: 0x60 - 32K Fanout Control Gating Register
-        volatile uint32_t GP_DATA_REG%s;  ///< Offset: 0x100 - General Purpose Register
+        volatile uint32_t GP_DATA_REG;  ///< Offset: 0x100 - General Purpose Register (renamed from GP_DATA_REG)
         volatile uint32_t FBOOT_INFO_REG0;  ///< Offset: 0x120 - Fast Boot Information Register0
         volatile uint32_t FBOOT_INFO_REG1;  ///< Offset: 0x124 - Fast Boot Information Register1
         volatile uint32_t DCXO_CTRL_REG;  ///< Offset: 0x160 - DCXO Control Register
@@ -869,8 +869,8 @@ namespace tcon {
         volatile uint32_t LCD_GINT0_REG;  ///< Offset: 0x04 - LCD Global Interrupt Register0
         volatile uint32_t LCD_GINT1_REG;  ///< Offset: 0x08 - LCD Global Interrupt Register1
         volatile uint32_t LCD_FRM_CTL_REG;  ///< Offset: 0x10 - LCD FRM Control Register
-        volatile uint32_t LCD_FRM_SEED_REG%s;  ///< Offset: 0x14 - LCD FRM Seed Register
-        volatile uint32_t LCD_FRM_TAB_REG%s;  ///< Offset: 0x2C - LCD FRM Table Register
+        volatile uint32_t LCD_FRM_SEED_REG;  ///< Offset: 0x14 - LCD FRM Seed Register (renamed from LCD_FRM_SEED_REG)
+        volatile uint32_t LCD_FRM_TAB_REG;  ///< Offset: 0x2C - LCD FRM Table Register (renamed from LCD_FRM_TAB_REG)
         volatile uint32_t LCD_3D_FIFO_REG;  ///< Offset: 0x3C - LCD 3D FIFO Register
         volatile uint32_t LCD_CTL_REG;  ///< Offset: 0x40 - LCD Control Register
         volatile uint32_t LCD_DCLK_REG;  ///< Offset: 0x44 - LCD Data Clock Register
@@ -888,9 +888,9 @@ namespace tcon {
         volatile uint32_t LCD_IO_TRI_REG;  ///< Offset: 0x8C - LCD IO Control Register
         volatile uint32_t LCD_DEBUG_REG;  ///< Offset: 0xFC - LCD Debug Register
         volatile uint32_t LCD_CEU_CTL_REG;  ///< Offset: 0x100 - LCD CEU Control Register
-        volatile uint32_t LCD_CEU_COEF_MUL_REG%s;  ///< Offset: 0x110 - LCD CEU Coefficient Register0
-        volatile uint32_t LCD_CEU_COEF_ADD_REG%s;  ///< Offset: 0x11C - LCD CEU Coefficient Register1
-        volatile uint32_t LCD_CEU_COEF_RANG_REG%s;  ///< Offset: 0x140 - LCD CEU Coefficient Register2
+        volatile uint32_t LCD_CEU_COEF_MUL_REG;  ///< Offset: 0x110 - LCD CEU Coefficient Register0 (renamed from LCD_CEU_COEF_MUL_REG)
+        volatile uint32_t LCD_CEU_COEF_ADD_REG;  ///< Offset: 0x11C - LCD CEU Coefficient Register1 (renamed from LCD_CEU_COEF_ADD_REG)
+        volatile uint32_t LCD_CEU_COEF_RANG_REG;  ///< Offset: 0x140 - LCD CEU Coefficient Register2 (renamed from LCD_CEU_COEF_RANG_REG)
         volatile uint32_t LCD_CPU_TRI0_REG;  ///< Offset: 0x160 - LCD CPU Panel Trigger Register0
         volatile uint32_t LCD_CPU_TRI1_REG;  ///< Offset: 0x164 - LCD CPU Panel Trigger Register1
         volatile uint32_t LCD_CPU_TRI2_REG;  ///< Offset: 0x168 - LCD CPU Panel Trigger Register2
@@ -909,7 +909,7 @@ namespace tcon {
         volatile uint32_t LCD_SYNC_POS_REG;  ///< Offset: 0x234 - LCD Sync Position Register
         volatile uint32_t LCD_SLAVE_STOP_POS_REG;  ///< Offset: 0x238 - LCD Slave Stop Position Register
         volatile uint32_t LCD_LVDS1_IF_REG;  ///< Offset: 0x244 - LCD LVDS1 IF Register
-        volatile uint32_t LCD_GAMMA_TABLE_REG%s;  ///< Offset: 0x400 - LCD Gamma Table Register
+        volatile uint32_t LCD_GAMMA_TABLE_REG;  ///< Offset: 0x400 - LCD Gamma Table Register (renamed from LCD_GAMMA_TABLE_REG)
     };
 
     /// Peripheral instances
@@ -1076,9 +1076,9 @@ namespace tvd {
         volatile uint32_t TVD_3D_CTL3;  ///< Offset: 0x10 - TVD 3D DMA CONTROL Register3
         volatile uint32_t TVD_3D_CTL4;  ///< Offset: 0x14 - TVD 3D DMA CONTROL Register4
         volatile uint32_t TVD_3D_CTL5;  ///< Offset: 0x18 - TVD 3D DMA CONTROL Register5
-        volatile uint32_t TVD_TOP_CTL%s;  ///< Offset: 0x24 - TVD TOP CONTROL Register
-        volatile uint32_t TVD_ADC_CTL%s;  ///< Offset: 0x28 - TVD ADC CONTROL Register
-        volatile uint32_t TVD_ADC_CFG%s;  ///< Offset: 0x2C - TVD ADC CONFIGURATION Register
+        volatile uint32_t TVD_TOP_CTL;  ///< Offset: 0x24 - TVD TOP CONTROL Register (renamed from TVD_TOP_CTL)
+        volatile uint32_t TVD_ADC_CTL;  ///< Offset: 0x28 - TVD ADC CONTROL Register (renamed from TVD_ADC_CTL)
+        volatile uint32_t TVD_ADC_CFG;  ///< Offset: 0x2C - TVD ADC CONFIGURATION Register (renamed from TVD_ADC_CFG)
     };
 
     /// Peripheral instances
@@ -1762,13 +1762,13 @@ namespace pwm {
         volatile uint32_t PGR2;  ///< Offset: 0x98 - PWM Group2 Register
         volatile uint32_t PGR3;  ///< Offset: 0x9C - PWM Group3 Register
         volatile uint32_t CER;  ///< Offset: 0xC0 - Capture Enable Register
-        volatile uint32_t pcr%s;  ///< Offset: 0x100 - PWM Control Register
-        volatile uint32_t ppr%s;  ///< Offset: 0x104 - PWM Period Register
-        volatile uint32_t pcntr%s;  ///< Offset: 0x108 - PWM Count Register
-        volatile uint32_t ppcntr%s;  ///< Offset: 0x10C - PWM Pulse Count Register
-        volatile uint32_t ccr%s;  ///< Offset: 0x110 - Capture Control Register
-        volatile uint32_t crlr%s;  ///< Offset: 0x114 - Capture Rise Lock Register
-        volatile uint32_t cflr%s;  ///< Offset: 0x118 - Capture Fall Lock Register
+        volatile uint32_t pcr;  ///< Offset: 0x100 - PWM Control Register (renamed from pcr)
+        volatile uint32_t ppr;  ///< Offset: 0x104 - PWM Period Register (renamed from ppr)
+        volatile uint32_t pcntr;  ///< Offset: 0x108 - PWM Count Register (renamed from pcntr)
+        volatile uint32_t ppcntr;  ///< Offset: 0x10C - PWM Pulse Count Register (renamed from ppcntr)
+        volatile uint32_t ccr;  ///< Offset: 0x110 - Capture Control Register (renamed from ccr)
+        volatile uint32_t crlr;  ///< Offset: 0x114 - Capture Rise Lock Register (renamed from crlr)
+        volatile uint32_t cflr;  ///< Offset: 0x118 - Capture Fall Lock Register (renamed from cflr)
     };
 
     /// Peripheral instances
@@ -1804,8 +1804,8 @@ namespace eth {
         volatile uint32_t EMAC_MII_CMD;  ///< Offset: 0x48 - EMAC Management Interface Command Register
         volatile uint32_t EMAC_MII_DATA;  ///< Offset: 0x4C - EMAC Management Interface Data Register
         volatile uint32_t EMAC_ADDR_HIGH0;  ///< Offset: 0x50 - EMAC MAC Address High Register
-        volatile uint32_t EMAC_ADDR_HIGH%s;  ///< Offset: 0x58 - EMAC MAC Address High Register
-        volatile uint32_t EMAC_ADDR_LOW%s;  ///< Offset: 0x54 - EMAC MAC Address Low Register
+        volatile uint32_t EMAC_ADDR_HIGH;  ///< Offset: 0x58 - EMAC MAC Address High Register (renamed from EMAC_ADDR_HIGH)
+        volatile uint32_t EMAC_ADDR_LOW;  ///< Offset: 0x54 - EMAC MAC Address Low Register (renamed from EMAC_ADDR_LOW)
         volatile uint32_t EMAC_TX_DMA_STA;  ///< Offset: 0xB0 - EMAC Transmit DMA Status Register
         volatile uint32_t EMAC_TX_CUR_DESC;  ///< Offset: 0xB4 - EMAC Current Transmit Descriptor Register
         volatile uint32_t EMAC_TX_CUR_BUF;  ///< Offset: 0xB8 - EMAC Current Transmit Buffer Address Register

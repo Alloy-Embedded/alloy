@@ -3,7 +3,7 @@
 /// Source: renesas_r7fa6t2bd.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:01
+/// Generated: 2025-10-31 17:44:39
 #ifndef ALLOY_GENERATED_R7FA6T2BD_PERIPHERALS_HPP
 #define ALLOY_GENERATED_R7FA6T2BD_PERIPHERALS_HPP
 
@@ -383,9 +383,9 @@ namespace rmpu {
         volatile uint32_t MMPUENPTDMAC;  ///< Offset: 0x104 - MMPU Enable Protect Register for DMAC
         volatile uint32_t MMPURPTDMAC;  ///< Offset: 0x108 - MMPU Regions Protect Register for DMAC
         volatile uint32_t MMPURPTDMAC_SEC;  ///< Offset: 0x10C - MMPU Regions Protect register for DMAC Secure
-        volatile uint32_t MMPUACDMAC%s;  ///< Offset: 0x200 - MMPU Access Control Register for DMAC
-        volatile uint32_t MMPUSDMAC%s;  ///< Offset: 0x204 - MMPU Start Address Register for DMAC
-        volatile uint32_t MMPUEDMAC%s;  ///< Offset: 0x208 - MMPU End Address Register for DMAC
+        volatile uint32_t MMPUACDMAC;  ///< Offset: 0x200 - MMPU Access Control Register for DMAC (renamed from MMPUACDMAC)
+        volatile uint32_t MMPUSDMAC;  ///< Offset: 0x204 - MMPU Start Address Register for DMAC (renamed from MMPUSDMAC)
+        volatile uint32_t MMPUEDMAC;  ///< Offset: 0x208 - MMPU End Address Register for DMAC (renamed from MMPUEDMAC)
     };
 
     /// Peripheral instances
@@ -428,20 +428,20 @@ namespace rmpu {
         constexpr uint32_t KEY = (8 << 8);  ///< These bits enable or disable writes to the PROTECT bit.
     }
 
-    /// MMPUACDMAC%s Register bits
-    namespace mmpuacdmac%s_bits {
+    /// MMPUACDMAC Register bits
+    namespace mmpuacdmac_bits {
         constexpr uint32_t ENABLE = (1U << 0);  ///< Region enable
         constexpr uint32_t RP = (1U << 1);  ///< Read protection
         constexpr uint32_t WP = (1U << 2);  ///< Write protection
     }
 
-    /// MMPUSDMAC%s Register bits
-    namespace mmpusdmac%s_bits {
+    /// MMPUSDMAC Register bits
+    namespace mmpusdmac_bits {
         constexpr uint32_t MMPUS = (27 << 5);  ///< Region start address register
     }
 
-    /// MMPUEDMAC%s Register bits
-    namespace mmpuedmac%s_bits {
+    /// MMPUEDMAC Register bits
+    namespace mmpuedmac_bits {
         constexpr uint32_t MMPUE = (27 << 5);  ///< Region end address register
     }
 
@@ -576,12 +576,12 @@ namespace bus {
         volatile uint32_t BUSSCNTPSBIU;  ///< Offset: 0x1120 - Slave Bus Control Register
         volatile uint32_t BUSSCNTPLBIU;  ///< Offset: 0x1130 - Slave Bus Control Register
         volatile uint32_t BUSSCNTPHBIU;  ///< Offset: 0x1134 - Slave Bus Control Register
-        volatile uint32_t BUS%sERRADD;  ///< Offset: 0x1800 - BUS Error Address Register
-        volatile uint32_t BUS%sERRRW;  ///< Offset: 0x1804 - BUS Error Read Write Register
-        volatile uint32_t BTZF%sERRADD;  ///< Offset: 0x1900 - BUS TZF Error Address Register
-        volatile uint32_t BTZF%sERRRW;  ///< Offset: 0x1904 - BUS TZF Error Read Write Register
-        volatile uint32_t BUS%sERRSTAT;  ///< Offset: 0x1A00 - BUS Error Status Register %s
-        volatile uint32_t BUS%sERRCLR;  ///< Offset: 0x1A08 - BUS Error Clear Register %s
+        volatile uint32_t BUSERRADD;  ///< Offset: 0x1800 - BUS Error Address Register (renamed from BUSERRADD)
+        volatile uint32_t BUSERRRW;  ///< Offset: 0x1804 - BUS Error Read Write Register (renamed from BUSERRRW)
+        volatile uint32_t BTZFERRADD;  ///< Offset: 0x1900 - BUS TZF Error Address Register (renamed from BTZFERRADD)
+        volatile uint32_t BTZFERRRW;  ///< Offset: 0x1904 - BUS TZF Error Read Write Register (renamed from BTZFERRRW)
+        volatile uint32_t BUSERRSTAT;  ///< Offset: 0x1A00 - BUS Error Status Register %s (renamed from BUSERRSTAT)
+        volatile uint32_t BUSERRCLR;  ///< Offset: 0x1A08 - BUS Error Clear Register %s (renamed from BUSERRCLR)
         volatile uint32_t DMACDTCERRSTAT;  ///< Offset: 0x1A24 - DMAC/DTC Error Status Register
         volatile uint32_t DMACDTCERRCLR;  ///< Offset: 0x1A2C - DMAC/DTC Error Clear Register
     };
@@ -620,36 +620,36 @@ namespace bus {
         constexpr uint32_t ARBS = (1U << 0);  ///< Arbitration Select for two masters
     }
 
-    /// BUS%sERRADD Register bits
-    namespace bus%serradd_bits {
+    /// BUSERRADD Register bits
+    namespace buserradd_bits {
         constexpr uint32_t BERAD = (32 << 0);  ///< Bus Error Address
     }
 
-    /// BUS%sERRRW Register bits
-    namespace bus%serrrw_bits {
+    /// BUSERRRW Register bits
+    namespace buserrrw_bits {
         constexpr uint32_t RWSTAT = (1U << 0);  ///< Error Access Read/Write Status
     }
 
-    /// BTZF%sERRADD Register bits
-    namespace btzf%serradd_bits {
+    /// BTZFERRADD Register bits
+    namespace btzferradd_bits {
         constexpr uint32_t BTZFERAD = (32 << 0);  ///< Bus TrustZone Filter Error Address
     }
 
-    /// BTZF%sERRRW Register bits
-    namespace btzf%serrrw_bits {
+    /// BTZFERRRW Register bits
+    namespace btzferrrw_bits {
         constexpr uint32_t TRWSTAT = (1U << 0);  ///< TrustZone filter error access Read/Write Status
     }
 
-    /// BUS%sERRSTAT Register bits
-    namespace bus%serrstat_bits {
+    /// BUSERRSTAT Register bits
+    namespace buserrstat_bits {
         constexpr uint32_t SLERRSTAT = (1U << 0);  ///< Slave bus Error Status
         constexpr uint32_t STERRSTAT = (1U << 1);  ///< Slave TrustZone filter Error Status
         constexpr uint32_t MMERRSTAT = (1U << 3);  ///< Master MPU Error Status
         constexpr uint32_t ILERRSTAT = (1U << 4);  ///< Illegal address access Error Status
     }
 
-    /// BUS%sERRCLR Register bits
-    namespace bus%serrclr_bits {
+    /// BUSERRCLR Register bits
+    namespace buserrclr_bits {
         constexpr uint32_t SLERRCLR = (1U << 0);  ///< Slave bus Error Clear
         constexpr uint32_t STERRCLR = (1U << 1);  ///< Slave TrustZone filter Error Clear
         constexpr uint32_t MMERRCLR = (1U << 3);  ///< Master MPU Error Clear
@@ -850,23 +850,23 @@ namespace icu {
 
     /// ICU Register structure
     struct Registers {
-        volatile uint32_t IRQCR%s;  ///< Offset: 0x00 - IRQ Control Register %s
+        volatile uint32_t IRQCR;  ///< Offset: 0x00 - IRQ Control Register %s (renamed from IRQCR)
         volatile uint32_t NMICR;  ///< Offset: 0x100 - NMI Pin Interrupt Control Register
         volatile uint32_t NMIER;  ///< Offset: 0x120 - Non-Maskable Interrupt Enable Register
         volatile uint32_t NMICLR;  ///< Offset: 0x130 - Non-Maskable Interrupt Status Clear Register
         volatile uint32_t NMISR;  ///< Offset: 0x140 - Non-Maskable Interrupt Status Register
         volatile uint32_t WUPEN0;  ///< Offset: 0x1A0 - Wake Up Interrupt Enable Register 0
         volatile uint32_t SELSR0;  ///< Offset: 0x200 - SYS Event Link Setting Register
-        volatile uint32_t DELSR%s;  ///< Offset: 0x280 - DMAC Event Link Setting Register %s
-        volatile uint32_t IELSR%s;  ///< Offset: 0x300 - ICU Event Link Setting Register %s
+        volatile uint32_t DELSR;  ///< Offset: 0x280 - DMAC Event Link Setting Register %s (renamed from DELSR)
+        volatile uint32_t IELSR;  ///< Offset: 0x300 - ICU Event Link Setting Register %s (renamed from IELSR)
     };
 
     /// Peripheral instances
     inline Registers* ICU = reinterpret_cast<Registers*>(ICU_BASE);
 
     // Bit definitions
-    /// IRQCR%s Register bits
-    namespace irqcr%s_bits {
+    /// IRQCR Register bits
+    namespace irqcr_bits {
         constexpr uint32_t IRQMD = (2 << 0);  ///< IRQi Detection Sense Select
         constexpr uint32_t FCLKSEL = (2 << 4);  ///< IRQi Digital Filter Sampling Clock Select
         constexpr uint32_t FLTEN = (1U << 7);  ///< IRQi Digital Filter Enable
@@ -937,8 +937,8 @@ namespace icu {
         constexpr uint32_t IIC0WUPEN = (1U << 31);  ///< IIC0 Address Match Interrupt Software Standby/Snooze Mode Returns Enable bit
     }
 
-    /// DELSR%s Register bits
-    namespace delsr%s_bits {
+    /// DELSR Register bits
+    namespace delsr_bits {
         constexpr uint32_t DELS = (9 << 0);  ///< DMAC Event Link Select
         constexpr uint32_t IR = (1U << 16);  ///< DMAC Activation Request Status Flag
     }
@@ -2156,27 +2156,27 @@ namespace pfs {
 
     /// PFS Register structure
     struct Registers {
-        volatile uint32_t P00%sPFS;  ///< Offset: 0x00 - Port 00%s Pin Function Select Register
-        volatile uint32_t P00%sPFS_HA;  ///< Offset: 0x00 - Port 00%s Pin Function Select Register
-        volatile uint32_t P00%sPFS_BY;  ///< Offset: 0x00 - Port 00%s Pin Function Select Register
+        volatile uint32_t P00PFS;  ///< Offset: 0x00 - Port 00%s Pin Function Select Register (renamed from P00PFS)
+        volatile uint32_t P00PFS_HA;  ///< Offset: 0x00 - Port 00%s Pin Function Select Register (renamed from P00PFS_HA)
+        volatile uint32_t P00PFS_BY;  ///< Offset: 0x00 - Port 00%s Pin Function Select Register (renamed from P00PFS_BY)
         volatile uint32_t P002PFS;  ///< Offset: 0x08 - Port 002 Pin Function Select Register
         volatile uint32_t P002PFS_HA;  ///< Offset: 0x08 - Port 002 Pin Function Select Register
         volatile uint32_t P002PFS_BY;  ///< Offset: 0x08 - Port 002 Pin Function Select Register
         volatile uint32_t P201PFS;  ///< Offset: 0x84 - Port 201 Pin Function Select Register
         volatile uint32_t P201PFS_HA;  ///< Offset: 0x84 - Port 201 Pin Function Select Register
         volatile uint32_t P201PFS_BY;  ///< Offset: 0x84 - Port 201 Pin Function Select Register
-        volatile uint32_t PA0%sPFS;  ///< Offset: 0x298 - Port A0%s Pin Function Select Register
-        volatile uint32_t PA0%sPFS_HA;  ///< Offset: 0x298 - Port A0%s Pin Function Select Register
-        volatile uint32_t PA0%sPFS_BY;  ///< Offset: 0x298 - Port A0%s Pin Function Select Register
-        volatile uint32_t PA1%sPFS;  ///< Offset: 0x2B8 - Port A1%s Pin Function Select Register
-        volatile uint32_t PA1%sPFS_HA;  ///< Offset: 0x2B8 - Port A1%s Pin Function Select Register
-        volatile uint32_t PA1%sPFS_BY;  ///< Offset: 0x2B8 - Port A1%s Pin Function Select Register
+        volatile uint32_t PA0PFS;  ///< Offset: 0x298 - Port A0%s Pin Function Select Register (renamed from PA0PFS)
+        volatile uint32_t PA0PFS_HA;  ///< Offset: 0x298 - Port A0%s Pin Function Select Register (renamed from PA0PFS_HA)
+        volatile uint32_t PA0PFS_BY;  ///< Offset: 0x298 - Port A0%s Pin Function Select Register (renamed from PA0PFS_BY)
+        volatile uint32_t PA1PFS;  ///< Offset: 0x2B8 - Port A1%s Pin Function Select Register (renamed from PA1PFS)
+        volatile uint32_t PA1PFS_HA;  ///< Offset: 0x2B8 - Port A1%s Pin Function Select Register (renamed from PA1PFS_HA)
+        volatile uint32_t PA1PFS_BY;  ///< Offset: 0x2B8 - Port A1%s Pin Function Select Register (renamed from PA1PFS_BY)
         volatile uint32_t PA13PFS;  ///< Offset: 0x2B4 - Port A13 Pin Function Select Register
         volatile uint32_t PA13PFS_HA;  ///< Offset: 0x2B4 - Port A13 Pin Function Select Register
         volatile uint32_t PA13PFS_BY;  ///< Offset: 0x2B4 - Port A13 Pin Function Select Register
-        volatile uint32_t PB0%sPFS;  ///< Offset: 0x2D0 - Port B0%s Pin Function Select Register
-        volatile uint32_t PB0%sPFS_HA;  ///< Offset: 0x2D0 - Port B0%s Pin Function Select Register
-        volatile uint32_t PB0%sPFS_BY;  ///< Offset: 0x2D0 - Port B0%s Pin Function Select Register
+        volatile uint32_t PB0PFS;  ///< Offset: 0x2D0 - Port B0%s Pin Function Select Register (renamed from PB0PFS)
+        volatile uint32_t PB0PFS_HA;  ///< Offset: 0x2D0 - Port B0%s Pin Function Select Register (renamed from PB0PFS_HA)
+        volatile uint32_t PB0PFS_BY;  ///< Offset: 0x2D0 - Port B0%s Pin Function Select Register (renamed from PB0PFS_BY)
         volatile uint32_t PB02PFS;  ///< Offset: 0x2C8 - Port B02 Pin Function Select Register
         volatile uint32_t PB02PFS_HA;  ///< Offset: 0x2C8 - Port B02 Pin Function Select Register
         volatile uint32_t PB02PFS_BY;  ///< Offset: 0x2C8 - Port B02 Pin Function Select Register
@@ -2186,27 +2186,27 @@ namespace pfs {
         volatile uint32_t PB10PFS;  ///< Offset: 0x2E8 - Port B10 Pin Function Select Register
         volatile uint32_t PB10PFS_HA;  ///< Offset: 0x2E8 - Port B10 Pin Function Select Register
         volatile uint32_t PB10PFS_BY;  ///< Offset: 0x2E8 - Port B10 Pin Function Select Register
-        volatile uint32_t PB1%sPFS;  ///< Offset: 0x2F0 - Port B1%s Pin Function Select Register
-        volatile uint32_t PB1%sPFS_HA;  ///< Offset: 0x2F0 - Port B1%s Pin Function Select Register
-        volatile uint32_t PB1%sPFS_BY;  ///< Offset: 0x2F0 - Port B1%s Pin Function Select Register
-        volatile uint32_t PC0%sPFS;  ///< Offset: 0x300 - Port C0%s Pin Function Select Register
-        volatile uint32_t PC0%sPFS_HA;  ///< Offset: 0x300 - Port C0%s Pin Function Select Register
-        volatile uint32_t PC0%sPFS_BY;  ///< Offset: 0x300 - Port C0%s Pin Function Select Register
-        volatile uint32_t PC1%sPFS;  ///< Offset: 0x328 - Port C1%s Pin Function Select Register
-        volatile uint32_t PC1%sPFS_HA;  ///< Offset: 0x328 - Port C1%s Pin Function Select Register
-        volatile uint32_t PC1%sPFS_BY;  ///< Offset: 0x328 - Port C1%s Pin Function Select Register
-        volatile uint32_t PD0%sPFS;  ///< Offset: 0x340 - Port D0%s Pin Function Select Register
-        volatile uint32_t PD0%sPFS_HA;  ///< Offset: 0x340 - Port D0%s Pin Function Select Register
-        volatile uint32_t PD0%sPFS_BY;  ///< Offset: 0x340 - Port D0%s Pin Function Select Register
-        volatile uint32_t PD1%sPFS;  ///< Offset: 0x368 - Port D1%s Pin Function Select Register
-        volatile uint32_t PD1%sPFS_HA;  ///< Offset: 0x368 - Port D1%s Pin Function Select Register
-        volatile uint32_t PD1%sPFS_BY;  ///< Offset: 0x368 - Port D1%s Pin Function Select Register
-        volatile uint32_t PE0%sPFS;  ///< Offset: 0x3A0 - Port E0%s Pin Function Select Register
-        volatile uint32_t PE0%sPFS_HA;  ///< Offset: 0x3A0 - Port E0%s Pin Function Select Register
-        volatile uint32_t PE0%sPFS_BY;  ///< Offset: 0x3A0 - Port E0%s Pin Function Select Register
-        volatile uint32_t PE1%sPFS;  ///< Offset: 0x3A8 - Port E1%s Pin Function Select Register
-        volatile uint32_t PE1%sPFS_HA;  ///< Offset: 0x3A8 - Port E1%s Pin Function Select Register
-        volatile uint32_t PE1%sPFS_BY;  ///< Offset: 0x3A8 - Port E1%s Pin Function Select Register
+        volatile uint32_t PB1PFS;  ///< Offset: 0x2F0 - Port B1%s Pin Function Select Register (renamed from PB1PFS)
+        volatile uint32_t PB1PFS_HA;  ///< Offset: 0x2F0 - Port B1%s Pin Function Select Register (renamed from PB1PFS_HA)
+        volatile uint32_t PB1PFS_BY;  ///< Offset: 0x2F0 - Port B1%s Pin Function Select Register (renamed from PB1PFS_BY)
+        volatile uint32_t PC0PFS;  ///< Offset: 0x300 - Port C0%s Pin Function Select Register (renamed from PC0PFS)
+        volatile uint32_t PC0PFS_HA;  ///< Offset: 0x300 - Port C0%s Pin Function Select Register (renamed from PC0PFS_HA)
+        volatile uint32_t PC0PFS_BY;  ///< Offset: 0x300 - Port C0%s Pin Function Select Register (renamed from PC0PFS_BY)
+        volatile uint32_t PC1PFS;  ///< Offset: 0x328 - Port C1%s Pin Function Select Register (renamed from PC1PFS)
+        volatile uint32_t PC1PFS_HA;  ///< Offset: 0x328 - Port C1%s Pin Function Select Register (renamed from PC1PFS_HA)
+        volatile uint32_t PC1PFS_BY;  ///< Offset: 0x328 - Port C1%s Pin Function Select Register (renamed from PC1PFS_BY)
+        volatile uint32_t PD0PFS;  ///< Offset: 0x340 - Port D0%s Pin Function Select Register (renamed from PD0PFS)
+        volatile uint32_t PD0PFS_HA;  ///< Offset: 0x340 - Port D0%s Pin Function Select Register (renamed from PD0PFS_HA)
+        volatile uint32_t PD0PFS_BY;  ///< Offset: 0x340 - Port D0%s Pin Function Select Register (renamed from PD0PFS_BY)
+        volatile uint32_t PD1PFS;  ///< Offset: 0x368 - Port D1%s Pin Function Select Register (renamed from PD1PFS)
+        volatile uint32_t PD1PFS_HA;  ///< Offset: 0x368 - Port D1%s Pin Function Select Register (renamed from PD1PFS_HA)
+        volatile uint32_t PD1PFS_BY;  ///< Offset: 0x368 - Port D1%s Pin Function Select Register (renamed from PD1PFS_BY)
+        volatile uint32_t PE0PFS;  ///< Offset: 0x3A0 - Port E0%s Pin Function Select Register (renamed from PE0PFS)
+        volatile uint32_t PE0PFS_HA;  ///< Offset: 0x3A0 - Port E0%s Pin Function Select Register (renamed from PE0PFS_HA)
+        volatile uint32_t PE0PFS_BY;  ///< Offset: 0x3A0 - Port E0%s Pin Function Select Register (renamed from PE0PFS_BY)
+        volatile uint32_t PE1PFS;  ///< Offset: 0x3A8 - Port E1%s Pin Function Select Register (renamed from PE1PFS)
+        volatile uint32_t PE1PFS_HA;  ///< Offset: 0x3A8 - Port E1%s Pin Function Select Register (renamed from PE1PFS_HA)
+        volatile uint32_t PE1PFS_BY;  ///< Offset: 0x3A8 - Port E1%s Pin Function Select Register (renamed from PE1PFS_BY)
         volatile uint32_t PWPR;  ///< Offset: 0x50C - Write-Protect Register
         volatile uint32_t PWPRS;  ///< Offset: 0x514 - Write-Protect Register for Secure
         volatile uint32_t P0SAR;  ///< Offset: 0x530 - Port 0 Security Attribution register
@@ -2222,8 +2222,8 @@ namespace pfs {
     inline Registers* PFS_B = reinterpret_cast<Registers*>(PFS_B_BASE);
 
     // Bit definitions
-    /// P00%sPFS Register bits
-    namespace p00%spfs_bits {
+    /// P00PFS Register bits
+    namespace p00pfs_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2236,8 +2236,8 @@ namespace pfs {
         constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
     }
 
-    /// P00%sPFS_HA Register bits
-    namespace p00%spfs_ha_bits {
+    /// P00PFS_HA Register bits
+    namespace p00pfs_ha_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2248,8 +2248,8 @@ namespace pfs {
         constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
     }
 
-    /// P00%sPFS_BY Register bits
-    namespace p00%spfs_by_bits {
+    /// P00PFS_BY Register bits
+    namespace p00pfs_by_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2327,8 +2327,8 @@ namespace pfs {
         constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
     }
 
-    /// PA0%sPFS Register bits
-    namespace pa0%spfs_bits {
+    /// PA0PFS Register bits
+    namespace pa0pfs_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2341,8 +2341,8 @@ namespace pfs {
         constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
     }
 
-    /// PA0%sPFS_HA Register bits
-    namespace pa0%spfs_ha_bits {
+    /// PA0PFS_HA Register bits
+    namespace pa0pfs_ha_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2353,8 +2353,8 @@ namespace pfs {
         constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
     }
 
-    /// PA0%sPFS_BY Register bits
-    namespace pa0%spfs_by_bits {
+    /// PA0PFS_BY Register bits
+    namespace pa0pfs_by_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2362,8 +2362,8 @@ namespace pfs {
         constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
     }
 
-    /// PA1%sPFS Register bits
-    namespace pa1%spfs_bits {
+    /// PA1PFS Register bits
+    namespace pa1pfs_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2376,8 +2376,8 @@ namespace pfs {
         constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
     }
 
-    /// PA1%sPFS_HA Register bits
-    namespace pa1%spfs_ha_bits {
+    /// PA1PFS_HA Register bits
+    namespace pa1pfs_ha_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2388,8 +2388,8 @@ namespace pfs {
         constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
     }
 
-    /// PA1%sPFS_BY Register bits
-    namespace pa1%spfs_by_bits {
+    /// PA1PFS_BY Register bits
+    namespace pa1pfs_by_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2432,8 +2432,8 @@ namespace pfs {
         constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
     }
 
-    /// PB0%sPFS Register bits
-    namespace pb0%spfs_bits {
+    /// PB0PFS Register bits
+    namespace pb0pfs_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2447,8 +2447,8 @@ namespace pfs {
         constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
     }
 
-    /// PB0%sPFS_HA Register bits
-    namespace pb0%spfs_ha_bits {
+    /// PB0PFS_HA Register bits
+    namespace pb0pfs_ha_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2460,8 +2460,8 @@ namespace pfs {
         constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
     }
 
-    /// PB0%sPFS_BY Register bits
-    namespace pb0%spfs_by_bits {
+    /// PB0PFS_BY Register bits
+    namespace pb0pfs_by_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2580,8 +2580,8 @@ namespace pfs {
         constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
     }
 
-    /// PB1%sPFS Register bits
-    namespace pb1%spfs_bits {
+    /// PB1PFS Register bits
+    namespace pb1pfs_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2595,8 +2595,8 @@ namespace pfs {
         constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
     }
 
-    /// PB1%sPFS_HA Register bits
-    namespace pb1%spfs_ha_bits {
+    /// PB1PFS_HA Register bits
+    namespace pb1pfs_ha_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2608,8 +2608,8 @@ namespace pfs {
         constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
     }
 
-    /// PB1%sPFS_BY Register bits
-    namespace pb1%spfs_by_bits {
+    /// PB1PFS_BY Register bits
+    namespace pb1pfs_by_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2617,45 +2617,8 @@ namespace pfs {
         constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
     }
 
-    /// PC0%sPFS Register bits
-    namespace pc0%spfs_bits {
-        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
-        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
-        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
-        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
-        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
-        constexpr uint32_t DSCR = (2 << 10);  ///< Port Drive Capability
-        constexpr uint32_t EOFR = (2 << 12);  ///< Event on Falling/Event on Rising
-        constexpr uint32_t ISEL = (1U << 14);  ///< IRQ Input Enable
-        constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
-        constexpr uint32_t PMR = (1U << 16);  ///< Port Mode Control
-        constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
-    }
-
-    /// PC0%sPFS_HA Register bits
-    namespace pc0%spfs_ha_bits {
-        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
-        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
-        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
-        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
-        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
-        constexpr uint32_t DSCR = (2 << 10);  ///< Port Drive Capability
-        constexpr uint32_t EOFR = (2 << 12);  ///< Event on Falling/Event on Rising
-        constexpr uint32_t ISEL = (1U << 14);  ///< IRQ Input Enable
-        constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
-    }
-
-    /// PC0%sPFS_BY Register bits
-    namespace pc0%spfs_by_bits {
-        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
-        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
-        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
-        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
-        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
-    }
-
-    /// PC1%sPFS Register bits
-    namespace pc1%spfs_bits {
+    /// PC0PFS Register bits
+    namespace pc0pfs_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2669,8 +2632,8 @@ namespace pfs {
         constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
     }
 
-    /// PC1%sPFS_HA Register bits
-    namespace pc1%spfs_ha_bits {
+    /// PC0PFS_HA Register bits
+    namespace pc0pfs_ha_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2682,8 +2645,8 @@ namespace pfs {
         constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
     }
 
-    /// PC1%sPFS_BY Register bits
-    namespace pc1%spfs_by_bits {
+    /// PC0PFS_BY Register bits
+    namespace pc0pfs_by_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2691,45 +2654,8 @@ namespace pfs {
         constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
     }
 
-    /// PD0%sPFS Register bits
-    namespace pd0%spfs_bits {
-        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
-        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
-        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
-        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
-        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
-        constexpr uint32_t DSCR = (2 << 10);  ///< Port Drive Capability
-        constexpr uint32_t EOFR = (2 << 12);  ///< Event on Falling/Event on Rising
-        constexpr uint32_t ISEL = (1U << 14);  ///< IRQ Input Enable
-        constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
-        constexpr uint32_t PMR = (1U << 16);  ///< Port Mode Control
-        constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
-    }
-
-    /// PD0%sPFS_HA Register bits
-    namespace pd0%spfs_ha_bits {
-        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
-        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
-        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
-        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
-        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
-        constexpr uint32_t DSCR = (2 << 10);  ///< Port Drive Capability
-        constexpr uint32_t EOFR = (2 << 12);  ///< Event on Falling/Event on Rising
-        constexpr uint32_t ISEL = (1U << 14);  ///< IRQ Input Enable
-        constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
-    }
-
-    /// PD0%sPFS_BY Register bits
-    namespace pd0%spfs_by_bits {
-        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
-        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
-        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
-        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
-        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
-    }
-
-    /// PD1%sPFS Register bits
-    namespace pd1%spfs_bits {
+    /// PC1PFS Register bits
+    namespace pc1pfs_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2743,8 +2669,8 @@ namespace pfs {
         constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
     }
 
-    /// PD1%sPFS_HA Register bits
-    namespace pd1%spfs_ha_bits {
+    /// PC1PFS_HA Register bits
+    namespace pc1pfs_ha_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2756,8 +2682,8 @@ namespace pfs {
         constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
     }
 
-    /// PD1%sPFS_BY Register bits
-    namespace pd1%spfs_by_bits {
+    /// PC1PFS_BY Register bits
+    namespace pc1pfs_by_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2765,45 +2691,8 @@ namespace pfs {
         constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
     }
 
-    /// PE0%sPFS Register bits
-    namespace pe0%spfs_bits {
-        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
-        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
-        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
-        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
-        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
-        constexpr uint32_t DSCR = (2 << 10);  ///< Port Drive Capability
-        constexpr uint32_t EOFR = (2 << 12);  ///< Event on Falling/Event on Rising
-        constexpr uint32_t ISEL = (1U << 14);  ///< IRQ Input Enable
-        constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
-        constexpr uint32_t PMR = (1U << 16);  ///< Port Mode Control
-        constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
-    }
-
-    /// PE0%sPFS_HA Register bits
-    namespace pe0%spfs_ha_bits {
-        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
-        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
-        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
-        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
-        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
-        constexpr uint32_t DSCR = (2 << 10);  ///< Port Drive Capability
-        constexpr uint32_t EOFR = (2 << 12);  ///< Event on Falling/Event on Rising
-        constexpr uint32_t ISEL = (1U << 14);  ///< IRQ Input Enable
-        constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
-    }
-
-    /// PE0%sPFS_BY Register bits
-    namespace pe0%spfs_by_bits {
-        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
-        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
-        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
-        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
-        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
-    }
-
-    /// PE1%sPFS Register bits
-    namespace pe1%spfs_bits {
+    /// PD0PFS Register bits
+    namespace pd0pfs_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2817,8 +2706,8 @@ namespace pfs {
         constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
     }
 
-    /// PE1%sPFS_HA Register bits
-    namespace pe1%spfs_ha_bits {
+    /// PD0PFS_HA Register bits
+    namespace pd0pfs_ha_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2830,8 +2719,119 @@ namespace pfs {
         constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
     }
 
-    /// PE1%sPFS_BY Register bits
-    namespace pe1%spfs_by_bits {
+    /// PD0PFS_BY Register bits
+    namespace pd0pfs_by_bits {
+        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
+        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
+        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
+        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
+        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
+    }
+
+    /// PD1PFS Register bits
+    namespace pd1pfs_bits {
+        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
+        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
+        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
+        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
+        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
+        constexpr uint32_t DSCR = (2 << 10);  ///< Port Drive Capability
+        constexpr uint32_t EOFR = (2 << 12);  ///< Event on Falling/Event on Rising
+        constexpr uint32_t ISEL = (1U << 14);  ///< IRQ Input Enable
+        constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
+        constexpr uint32_t PMR = (1U << 16);  ///< Port Mode Control
+        constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
+    }
+
+    /// PD1PFS_HA Register bits
+    namespace pd1pfs_ha_bits {
+        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
+        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
+        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
+        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
+        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
+        constexpr uint32_t DSCR = (2 << 10);  ///< Port Drive Capability
+        constexpr uint32_t EOFR = (2 << 12);  ///< Event on Falling/Event on Rising
+        constexpr uint32_t ISEL = (1U << 14);  ///< IRQ Input Enable
+        constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
+    }
+
+    /// PD1PFS_BY Register bits
+    namespace pd1pfs_by_bits {
+        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
+        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
+        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
+        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
+        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
+    }
+
+    /// PE0PFS Register bits
+    namespace pe0pfs_bits {
+        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
+        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
+        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
+        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
+        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
+        constexpr uint32_t DSCR = (2 << 10);  ///< Port Drive Capability
+        constexpr uint32_t EOFR = (2 << 12);  ///< Event on Falling/Event on Rising
+        constexpr uint32_t ISEL = (1U << 14);  ///< IRQ Input Enable
+        constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
+        constexpr uint32_t PMR = (1U << 16);  ///< Port Mode Control
+        constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
+    }
+
+    /// PE0PFS_HA Register bits
+    namespace pe0pfs_ha_bits {
+        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
+        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
+        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
+        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
+        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
+        constexpr uint32_t DSCR = (2 << 10);  ///< Port Drive Capability
+        constexpr uint32_t EOFR = (2 << 12);  ///< Event on Falling/Event on Rising
+        constexpr uint32_t ISEL = (1U << 14);  ///< IRQ Input Enable
+        constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
+    }
+
+    /// PE0PFS_BY Register bits
+    namespace pe0pfs_by_bits {
+        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
+        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
+        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
+        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
+        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
+    }
+
+    /// PE1PFS Register bits
+    namespace pe1pfs_bits {
+        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
+        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
+        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
+        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
+        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
+        constexpr uint32_t DSCR = (2 << 10);  ///< Port Drive Capability
+        constexpr uint32_t EOFR = (2 << 12);  ///< Event on Falling/Event on Rising
+        constexpr uint32_t ISEL = (1U << 14);  ///< IRQ Input Enable
+        constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
+        constexpr uint32_t PMR = (1U << 16);  ///< Port Mode Control
+        constexpr uint32_t PSEL = (5 << 24);  ///< Peripheral Select
+    }
+
+    /// PE1PFS_HA Register bits
+    namespace pe1pfs_ha_bits {
+        constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
+        constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
+        constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
+        constexpr uint32_t PCR = (1U << 4);  ///< Pull-up Control
+        constexpr uint32_t NCODR = (1U << 6);  ///< N-Channel Open-Drain Control
+        constexpr uint32_t DSCR = (2 << 10);  ///< Port Drive Capability
+        constexpr uint32_t EOFR = (2 << 12);  ///< Event on Falling/Event on Rising
+        constexpr uint32_t ISEL = (1U << 14);  ///< IRQ Input Enable
+        constexpr uint32_t ASEL = (1U << 15);  ///< Analog Input Enable
+    }
+
+    /// PE1PFS_BY Register bits
+    namespace pe1pfs_by_bits {
         constexpr uint32_t PODR = (1U << 0);  ///< Port Output Data
         constexpr uint32_t PIDR = (1U << 1);  ///< Pmn State
         constexpr uint32_t PDR = (1U << 2);  ///< Port Direction
@@ -2909,19 +2909,19 @@ namespace iirfa {
         volatile uint32_t IIRECCEFCLR;  ///< Offset: 0x34 - ECC Error Flag Clear Register
         volatile uint32_t IIRESEADR;  ///< Offset: 0x38 - ECC 1-bit Error Address Register
         volatile uint32_t IIREDEADR;  ///< Offset: 0x3C - ECC 2-bit Error Address Register
-        volatile uint32_t IIRCH%sINP;  ///< Offset: 0x100 - Channel %s Input Register
-        volatile uint32_t IIRCH%sOUT;  ///< Offset: 0x104 - Channel %s Output Register
-        volatile uint32_t IIRCH%sCNT;  ///< Offset: 0x108 - Channel %s Control Register
-        volatile uint32_t IIRCH%sINT;  ///< Offset: 0x10C - Channel %s Interrupt Enable Register
-        volatile uint32_t IIRCH%sSTS;  ///< Offset: 0x10D - Channel %s Status Register
-        volatile uint32_t IIRCH%sFCLR;  ///< Offset: 0x10E - Channel %s Flag Clear Register
-        volatile uint32_t IIRSTG%sB0;  ///< Offset: 0x400 - Stage %s Coefficient b0 Register
-        volatile uint32_t IIRSTG%sB1;  ///< Offset: 0x404 - Stage %s Coefficient b1 Register
-        volatile uint32_t IIRSTG%sB2;  ///< Offset: 0x408 - Stage %s Coefficient b2 Register
-        volatile uint32_t IIRSTG%sA1;  ///< Offset: 0x40C - Stage %s Coefficient a1 Register
-        volatile uint32_t IIRSTG%sA2;  ///< Offset: 0x410 - Stage %s Coefficient a2 Register
-        volatile uint32_t IIRSTG%sD0;  ///< Offset: 0x414 - Stage %s Delay Data D0 Register
-        volatile uint32_t IIRSTG%sD1;  ///< Offset: 0x418 - Stage %s Delay Data D1 Register
+        volatile uint32_t IIRCHINP;  ///< Offset: 0x100 - Channel %s Input Register (renamed from IIRCHINP)
+        volatile uint32_t IIRCHOUT;  ///< Offset: 0x104 - Channel %s Output Register (renamed from IIRCHOUT)
+        volatile uint32_t IIRCHCNT;  ///< Offset: 0x108 - Channel %s Control Register (renamed from IIRCHCNT)
+        volatile uint32_t IIRCHINT;  ///< Offset: 0x10C - Channel %s Interrupt Enable Register (renamed from IIRCHINT)
+        volatile uint32_t IIRCHSTS;  ///< Offset: 0x10D - Channel %s Status Register (renamed from IIRCHSTS)
+        volatile uint32_t IIRCHFCLR;  ///< Offset: 0x10E - Channel %s Flag Clear Register (renamed from IIRCHFCLR)
+        volatile uint32_t IIRSTGB0;  ///< Offset: 0x400 - Stage %s Coefficient b0 Register (renamed from IIRSTGB0)
+        volatile uint32_t IIRSTGB1;  ///< Offset: 0x404 - Stage %s Coefficient b1 Register (renamed from IIRSTGB1)
+        volatile uint32_t IIRSTGB2;  ///< Offset: 0x408 - Stage %s Coefficient b2 Register (renamed from IIRSTGB2)
+        volatile uint32_t IIRSTGA1;  ///< Offset: 0x40C - Stage %s Coefficient a1 Register (renamed from IIRSTGA1)
+        volatile uint32_t IIRSTGA2;  ///< Offset: 0x410 - Stage %s Coefficient a2 Register (renamed from IIRSTGA2)
+        volatile uint32_t IIRSTGD0;  ///< Offset: 0x414 - Stage %s Delay Data D0 Register (renamed from IIRSTGD0)
+        volatile uint32_t IIRSTGD1;  ///< Offset: 0x418 - Stage %s Delay Data D1 Register (renamed from IIRSTGD1)
     };
 
     /// Peripheral instances
@@ -2987,28 +2987,28 @@ namespace iirfa {
         constexpr uint32_t DEADR = (11 << 0);  ///< Error address
     }
 
-    /// IIRCH%sCNT Register bits
-    namespace iirch%scnt_bits {
+    /// IIRCHCNT Register bits
+    namespace iirchcnt_bits {
         constexpr uint32_t STGSEL = (32 << 0);  ///< Stage selection bit
     }
 
-    /// IIRCH%sINT Register bits
-    namespace iirch%sint_bits {
+    /// IIRCHINT Register bits
+    namespace iirchint_bits {
         constexpr uint32_t CPRCFIE = (1U << 1);  ///< Channel processing completion interrupt enable bit
         constexpr uint32_t ORDYIE = (1U << 2);  ///< Output data preparation completion interrupt enable bit
         constexpr uint32_t CERRIE = (1U << 3);  ///< Operation error interrupt enable bit
     }
 
-    /// IIRCH%sSTS Register bits
-    namespace iirch%ssts_bits {
+    /// IIRCHSTS Register bits
+    namespace iirchsts_bits {
         constexpr uint32_t CPRCS = (1U << 0);  ///< Channel processing status flag
         constexpr uint32_t CPRCFF = (1U << 1);  ///< Channel processing completion flag
         constexpr uint32_t ORDYF = (1U << 2);  ///< Output data preparation completion flag
         constexpr uint32_t CERRF = (1U << 3);  ///< Operation error flag
     }
 
-    /// IIRCH%sFCLR Register bits
-    namespace iirch%sfclr_bits {
+    /// IIRCHFCLR Register bits
+    namespace iirchfclr_bits {
         constexpr uint32_t CPRCFFCLR = (1U << 1);  ///< Channel processing completion flag clear bit
         constexpr uint32_t CERRFCLR = (1U << 3);  ///< Operation error flag clear bit
     }
@@ -3075,8 +3075,8 @@ namespace elc {
     /// ELC Register structure
     struct Registers {
         volatile uint32_t ELCR;  ///< Offset: 0x00 - Event Link Controller Register
-        volatile uint32_t ELSEGR%s;  ///< Offset: 0x04 - Event Link Software Event Generation Register %s
-        volatile uint32_t ELSR%s;  ///< Offset: 0x90 - Event Link Setting Register %s
+        volatile uint32_t ELSEGR;  ///< Offset: 0x04 - Event Link Software Event Generation Register %s (renamed from ELSEGR)
+        volatile uint32_t ELSR;  ///< Offset: 0x90 - Event Link Setting Register %s (renamed from ELSR)
         volatile uint32_t ELCSARA;  ///< Offset: 0xE0 - Event Link Controller Security Attribution Register A
         volatile uint32_t ELCSARB;  ///< Offset: 0xE4 - Event Link Controller Security Attribution Register B
     };
@@ -3090,15 +3090,15 @@ namespace elc {
         constexpr uint32_t ELCON = (1U << 7);  ///< All Event Link Enable
     }
 
-    /// ELSEGR%s Register bits
-    namespace elsegr%s_bits {
+    /// ELSEGR Register bits
+    namespace elsegr_bits {
         constexpr uint32_t SEG = (1U << 0);  ///< Software Event Generation
         constexpr uint32_t WE = (1U << 6);  ///< SEG Bit Write Enable
         constexpr uint32_t WI = (1U << 7);  ///< ELSEGR Register Write Disable
     }
 
-    /// ELSR%s Register bits
-    namespace elsr%s_bits {
+    /// ELSR Register bits
+    namespace elsr_bits {
         constexpr uint32_t ELS = (9 << 0);  ///< Event Link Select
     }
 
@@ -3543,9 +3543,9 @@ namespace can {
         volatile uint32_t CFDRMNB;  ///< Offset: 0x30 - RX Message Buffer Number Register
         volatile uint32_t CFDRMND;  ///< Offset: 0x34 - RX Message Buffer New Data Register
         volatile uint32_t CFDRMIEC;  ///< Offset: 0x38 - RX Message Buffer Interrupt Enable Configuration Register
-        volatile uint32_t CFDRFCC%s;  ///< Offset: 0x3C - RX FIFO Configuration/Control Registers %s
-        volatile uint32_t CFDRFSTS%s;  ///< Offset: 0x44 - RX FIFO Status Registers %s
-        volatile uint32_t CFDRFPCTR%s;  ///< Offset: 0x4C - RX FIFO Pointer Control Registers %s
+        volatile uint32_t CFDRFCC;  ///< Offset: 0x3C - RX FIFO Configuration/Control Registers %s (renamed from CFDRFCC)
+        volatile uint32_t CFDRFSTS;  ///< Offset: 0x44 - RX FIFO Status Registers %s (renamed from CFDRFSTS)
+        volatile uint32_t CFDRFPCTR;  ///< Offset: 0x4C - RX FIFO Pointer Control Registers %s (renamed from CFDRFPCTR)
         volatile uint32_t CFDCFCC;  ///< Offset: 0x54 - Common FIFO Configuration/Control Register
         volatile uint32_t CFDCFSTS;  ///< Offset: 0x58 - Common FIFO Status Register
         volatile uint32_t CFDCFPCTR;  ///< Offset: 0x5C - Common FIFO Pointer Control Register
@@ -3553,8 +3553,8 @@ namespace can {
         volatile uint32_t CFDFFSTS;  ///< Offset: 0x64 - FIFO Full Status Register
         volatile uint32_t CFDFMSTS;  ///< Offset: 0x68 - FIFO Message Lost Status Register
         volatile uint32_t CFDRFISTS;  ///< Offset: 0x6C - RX FIFO Interrupt Flag Status Register
-        volatile uint32_t CFDTMC%s;  ///< Offset: 0x70 - TX Message Buffer Control Registers %s
-        volatile uint32_t CFDTMSTS%s;  ///< Offset: 0x74 - TX Message Buffer Status Registers %s
+        volatile uint32_t CFDTMC;  ///< Offset: 0x70 - TX Message Buffer Control Registers %s (renamed from CFDTMC)
+        volatile uint32_t CFDTMSTS;  ///< Offset: 0x74 - TX Message Buffer Status Registers %s (renamed from CFDTMSTS)
         volatile uint32_t CFDTMTRSTS;  ///< Offset: 0x78 - TX Message Buffer Transmission Request Status Register
         volatile uint32_t CFDTMTARSTS;  ///< Offset: 0x7C - TX Message Buffer Transmission Abort Request Status Register
         volatile uint32_t CFDTMTCSTS;  ///< Offset: 0x80 - TX Message Buffer Transmission Completion Status Register
@@ -3581,74 +3581,74 @@ namespace can {
         volatile uint32_t CFDC0FDCTR;  ///< Offset: 0x108 - Channel 0 CANFD Control Register
         volatile uint32_t CFDC0FDSTS;  ///< Offset: 0x10C - Channel 0 CANFD Status Register
         volatile uint32_t CFDC0FDCRC;  ///< Offset: 0x110 - Channel 0 CANFD CRC Register
-        volatile uint32_t CFDGAFLID%s;  ///< Offset: 0x120 - Global Acceptance Filter List ID Registers
-        volatile uint32_t CFDGAFLM%s;  ///< Offset: 0x124 - Global Acceptance Filter List Mask Registers
-        volatile uint32_t CFDGAFLP0%s;  ///< Offset: 0x128 - Global Acceptance Filter List Pointer 0 Registers
-        volatile uint32_t CFDGAFLP1%s;  ///< Offset: 0x12C - Global Acceptance Filter List Pointer 1 Registers
-        volatile uint32_t CFDRPGACC%s;  ///< Offset: 0x280 - RAM Test Page Access Registers %s
-        volatile uint32_t CFDRFID%s;  ///< Offset: 0x520 - RX FIFO Access ID Register %s
-        volatile uint32_t CFDRFPTR%s;  ///< Offset: 0x524 - RX FIFO Access Pointer Register %s
-        volatile uint32_t CFDRFFDSTS%s;  ///< Offset: 0x528 - RX FIFO Access CANFD Status Register %s
-        volatile uint32_t CFDRFDF%s_0;  ///< Offset: 0x52C - RX FIFO Access Data Field 0 Register %s
-        volatile uint32_t CFDRFDF%s_1;  ///< Offset: 0x530 - RX FIFO Access Data Field 1 Register %s
-        volatile uint32_t CFDRFDF%s_2;  ///< Offset: 0x534 - RX FIFO Access Data Field 2 Register %s
-        volatile uint32_t CFDRFDF%s_3;  ///< Offset: 0x538 - RX FIFO Access Data Field 3 Register %s
-        volatile uint32_t CFDRFDF%s_4;  ///< Offset: 0x53C - RX FIFO Access Data Field 4 Register %s
-        volatile uint32_t CFDRFDF%s_5;  ///< Offset: 0x540 - RX FIFO Access Data Field 5 Register %s
-        volatile uint32_t CFDRFDF%s_6;  ///< Offset: 0x544 - RX FIFO Access Data Field 6 Register %s
-        volatile uint32_t CFDRFDF%s_7;  ///< Offset: 0x548 - RX FIFO Access Data Field 7 Register %s
-        volatile uint32_t CFDRFDF%s_8;  ///< Offset: 0x54C - RX FIFO Access Data Field 8 Register %s
-        volatile uint32_t CFDRFDF%s_9;  ///< Offset: 0x550 - RX FIFO Access Data Field 9 Register %s
-        volatile uint32_t CFDRFDF%s_10;  ///< Offset: 0x554 - RX FIFO Access Data Field 10 Register %s
-        volatile uint32_t CFDRFDF%s_11;  ///< Offset: 0x558 - RX FIFO Access Data Field 11 Register %s
-        volatile uint32_t CFDRFDF%s_12;  ///< Offset: 0x55C - RX FIFO Access Data Field 12 Register %s
-        volatile uint32_t CFDRFDF%s_13;  ///< Offset: 0x560 - RX FIFO Access Data Field 13 Register %s
-        volatile uint32_t CFDRFDF%s_14;  ///< Offset: 0x564 - RX FIFO Access Data Field 14 Register %s
-        volatile uint32_t CFDRFDF%s_15;  ///< Offset: 0x568 - RX FIFO Access Data Field 15 Register %s
+        volatile uint32_t CFDGAFLID;  ///< Offset: 0x120 - Global Acceptance Filter List ID Registers (renamed from CFDGAFLID)
+        volatile uint32_t CFDGAFLM;  ///< Offset: 0x124 - Global Acceptance Filter List Mask Registers (renamed from CFDGAFLM)
+        volatile uint32_t CFDGAFLP0;  ///< Offset: 0x128 - Global Acceptance Filter List Pointer 0 Registers (renamed from CFDGAFLP0)
+        volatile uint32_t CFDGAFLP1;  ///< Offset: 0x12C - Global Acceptance Filter List Pointer 1 Registers (renamed from CFDGAFLP1)
+        volatile uint32_t CFDRPGACC;  ///< Offset: 0x280 - RAM Test Page Access Registers %s (renamed from CFDRPGACC)
+        volatile uint32_t CFDRFID;  ///< Offset: 0x520 - RX FIFO Access ID Register %s (renamed from CFDRFID)
+        volatile uint32_t CFDRFPTR;  ///< Offset: 0x524 - RX FIFO Access Pointer Register %s (renamed from CFDRFPTR)
+        volatile uint32_t CFDRFFDSTS;  ///< Offset: 0x528 - RX FIFO Access CANFD Status Register %s (renamed from CFDRFFDSTS)
+        volatile uint32_t CFDRFDF_0;  ///< Offset: 0x52C - RX FIFO Access Data Field 0 Register %s (renamed from CFDRFDF_0)
+        volatile uint32_t CFDRFDF_1;  ///< Offset: 0x530 - RX FIFO Access Data Field 1 Register %s (renamed from CFDRFDF_1)
+        volatile uint32_t CFDRFDF_2;  ///< Offset: 0x534 - RX FIFO Access Data Field 2 Register %s (renamed from CFDRFDF_2)
+        volatile uint32_t CFDRFDF_3;  ///< Offset: 0x538 - RX FIFO Access Data Field 3 Register %s (renamed from CFDRFDF_3)
+        volatile uint32_t CFDRFDF_4;  ///< Offset: 0x53C - RX FIFO Access Data Field 4 Register %s (renamed from CFDRFDF_4)
+        volatile uint32_t CFDRFDF_5;  ///< Offset: 0x540 - RX FIFO Access Data Field 5 Register %s (renamed from CFDRFDF_5)
+        volatile uint32_t CFDRFDF_6;  ///< Offset: 0x544 - RX FIFO Access Data Field 6 Register %s (renamed from CFDRFDF_6)
+        volatile uint32_t CFDRFDF_7;  ///< Offset: 0x548 - RX FIFO Access Data Field 7 Register %s (renamed from CFDRFDF_7)
+        volatile uint32_t CFDRFDF_8;  ///< Offset: 0x54C - RX FIFO Access Data Field 8 Register %s (renamed from CFDRFDF_8)
+        volatile uint32_t CFDRFDF_9;  ///< Offset: 0x550 - RX FIFO Access Data Field 9 Register %s (renamed from CFDRFDF_9)
+        volatile uint32_t CFDRFDF_10;  ///< Offset: 0x554 - RX FIFO Access Data Field 10 Register %s (renamed from CFDRFDF_10)
+        volatile uint32_t CFDRFDF_11;  ///< Offset: 0x558 - RX FIFO Access Data Field 11 Register %s (renamed from CFDRFDF_11)
+        volatile uint32_t CFDRFDF_12;  ///< Offset: 0x55C - RX FIFO Access Data Field 12 Register %s (renamed from CFDRFDF_12)
+        volatile uint32_t CFDRFDF_13;  ///< Offset: 0x560 - RX FIFO Access Data Field 13 Register %s (renamed from CFDRFDF_13)
+        volatile uint32_t CFDRFDF_14;  ///< Offset: 0x564 - RX FIFO Access Data Field 14 Register %s (renamed from CFDRFDF_14)
+        volatile uint32_t CFDRFDF_15;  ///< Offset: 0x568 - RX FIFO Access Data Field 15 Register %s (renamed from CFDRFDF_15)
         volatile uint32_t CFDCFID;  ///< Offset: 0x5B8 - Common FIFO Access ID Register
         volatile uint32_t CFDCFPTR;  ///< Offset: 0x5BC - Common FIFO Access Pointer Register
         volatile uint32_t CFDCFFDCSTS;  ///< Offset: 0x5C0 - Common FIFO Access CANFD Control/Status Register
-        volatile uint32_t CFDCFDF%s;  ///< Offset: 0x5C4 - Common FIFO Access Data Field %s Registers
-        volatile uint32_t CFDTMID%s;  ///< Offset: 0x604 - TX Message Buffer ID Registers
-        volatile uint32_t CFDTMPTR%s;  ///< Offset: 0x608 - TX Message Buffer Pointer Register
-        volatile uint32_t CFDTMFDCTR%s;  ///< Offset: 0x60C - TX Message Buffer CANFD Control Register
-        volatile uint32_t CFDTMDF%s_0;  ///< Offset: 0x610 - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_1;  ///< Offset: 0x614 - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_2;  ///< Offset: 0x618 - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_3;  ///< Offset: 0x61C - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_4;  ///< Offset: 0x620 - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_5;  ///< Offset: 0x624 - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_6;  ///< Offset: 0x628 - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_7;  ///< Offset: 0x62C - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_8;  ///< Offset: 0x630 - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_9;  ///< Offset: 0x634 - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_10;  ///< Offset: 0x638 - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_11;  ///< Offset: 0x63C - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_12;  ///< Offset: 0x640 - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_13;  ///< Offset: 0x644 - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_14;  ///< Offset: 0x648 - TX Message Buffer Data Field Register
-        volatile uint32_t CFDTMDF%s_15;  ///< Offset: 0x64C - TX Message Buffer Data Field Register
+        volatile uint32_t CFDCFDF;  ///< Offset: 0x5C4 - Common FIFO Access Data Field %s Registers (renamed from CFDCFDF)
+        volatile uint32_t CFDTMID;  ///< Offset: 0x604 - TX Message Buffer ID Registers (renamed from CFDTMID)
+        volatile uint32_t CFDTMPTR;  ///< Offset: 0x608 - TX Message Buffer Pointer Register (renamed from CFDTMPTR)
+        volatile uint32_t CFDTMFDCTR;  ///< Offset: 0x60C - TX Message Buffer CANFD Control Register (renamed from CFDTMFDCTR)
+        volatile uint32_t CFDTMDF_0;  ///< Offset: 0x610 - TX Message Buffer Data Field Register (renamed from CFDTMDF_0)
+        volatile uint32_t CFDTMDF_1;  ///< Offset: 0x614 - TX Message Buffer Data Field Register (renamed from CFDTMDF_1)
+        volatile uint32_t CFDTMDF_2;  ///< Offset: 0x618 - TX Message Buffer Data Field Register (renamed from CFDTMDF_2)
+        volatile uint32_t CFDTMDF_3;  ///< Offset: 0x61C - TX Message Buffer Data Field Register (renamed from CFDTMDF_3)
+        volatile uint32_t CFDTMDF_4;  ///< Offset: 0x620 - TX Message Buffer Data Field Register (renamed from CFDTMDF_4)
+        volatile uint32_t CFDTMDF_5;  ///< Offset: 0x624 - TX Message Buffer Data Field Register (renamed from CFDTMDF_5)
+        volatile uint32_t CFDTMDF_6;  ///< Offset: 0x628 - TX Message Buffer Data Field Register (renamed from CFDTMDF_6)
+        volatile uint32_t CFDTMDF_7;  ///< Offset: 0x62C - TX Message Buffer Data Field Register (renamed from CFDTMDF_7)
+        volatile uint32_t CFDTMDF_8;  ///< Offset: 0x630 - TX Message Buffer Data Field Register (renamed from CFDTMDF_8)
+        volatile uint32_t CFDTMDF_9;  ///< Offset: 0x634 - TX Message Buffer Data Field Register (renamed from CFDTMDF_9)
+        volatile uint32_t CFDTMDF_10;  ///< Offset: 0x638 - TX Message Buffer Data Field Register (renamed from CFDTMDF_10)
+        volatile uint32_t CFDTMDF_11;  ///< Offset: 0x63C - TX Message Buffer Data Field Register (renamed from CFDTMDF_11)
+        volatile uint32_t CFDTMDF_12;  ///< Offset: 0x640 - TX Message Buffer Data Field Register (renamed from CFDTMDF_12)
+        volatile uint32_t CFDTMDF_13;  ///< Offset: 0x644 - TX Message Buffer Data Field Register (renamed from CFDTMDF_13)
+        volatile uint32_t CFDTMDF_14;  ///< Offset: 0x648 - TX Message Buffer Data Field Register (renamed from CFDTMDF_14)
+        volatile uint32_t CFDTMDF_15;  ///< Offset: 0x64C - TX Message Buffer Data Field Register (renamed from CFDTMDF_15)
         volatile uint32_t CFDTHLACC0;  ///< Offset: 0x740 - TX History List Access Register 0
         volatile uint32_t CFDTHLACC1;  ///< Offset: 0x744 - TX History List Access Register 1
-        volatile uint32_t CFDRMID%s;  ///< Offset: 0x1520 - RX Message Buffer ID Registers
-        volatile uint32_t CFDRMPTR%s;  ///< Offset: 0x1524 - RX Message Buffer Pointer Registers
-        volatile uint32_t CFDRMFDSTS%s;  ///< Offset: 0x1528 - RX Message Buffer CANFD Status Registers
-        volatile uint32_t CFDRMDF%s_0;  ///< Offset: 0x152C - RX Message Buffer Data Field 0 Registers
-        volatile uint32_t CFDRMDF%s_1;  ///< Offset: 0x1530 - RX Message Buffer Data Field 1 Registers
-        volatile uint32_t CFDRMDF%s_2;  ///< Offset: 0x1534 - RX Message Buffer Data Field 2 Registers
-        volatile uint32_t CFDRMDF%s_3;  ///< Offset: 0x1538 - RX Message Buffer Data Field 3 Registers
-        volatile uint32_t CFDRMDF%s_4;  ///< Offset: 0x153C - RX Message Buffer Data Field 4 Registers
-        volatile uint32_t CFDRMDF%s_5;  ///< Offset: 0x1540 - RX Message Buffer Data Field 5 Registers
-        volatile uint32_t CFDRMDF%s_6;  ///< Offset: 0x1544 - RX Message Buffer Data Field 6 Registers
-        volatile uint32_t CFDRMDF%s_7;  ///< Offset: 0x1548 - RX Message Buffer Data Field 7 Registers
-        volatile uint32_t CFDRMDF%s_8;  ///< Offset: 0x154C - RX Message Buffer Data Field 8 Registers
-        volatile uint32_t CFDRMDF%s_9;  ///< Offset: 0x1550 - RX Message Buffer Data Field 9 Registers
-        volatile uint32_t CFDRMDF%s_10;  ///< Offset: 0x1554 - RX Message Buffer Data Field 10 Registers
-        volatile uint32_t CFDRMDF%s_11;  ///< Offset: 0x1558 - RX Message Buffer Data Field 11 Registers
-        volatile uint32_t CFDRMDF%s_12;  ///< Offset: 0x155C - RX Message Buffer Data Field 12 Registers
-        volatile uint32_t CFDRMDF%s_13;  ///< Offset: 0x1560 - RX Message Buffer Data Field 13 Registers
-        volatile uint32_t CFDRMDF%s_14;  ///< Offset: 0x1564 - RX Message Buffer Data Field 14 Registers
-        volatile uint32_t CFDRMDF%s_15;  ///< Offset: 0x1568 - RX Message Buffer Data Field 15 Registers
+        volatile uint32_t CFDRMID;  ///< Offset: 0x1520 - RX Message Buffer ID Registers (renamed from CFDRMID)
+        volatile uint32_t CFDRMPTR;  ///< Offset: 0x1524 - RX Message Buffer Pointer Registers (renamed from CFDRMPTR)
+        volatile uint32_t CFDRMFDSTS;  ///< Offset: 0x1528 - RX Message Buffer CANFD Status Registers (renamed from CFDRMFDSTS)
+        volatile uint32_t CFDRMDF_0;  ///< Offset: 0x152C - RX Message Buffer Data Field 0 Registers (renamed from CFDRMDF_0)
+        volatile uint32_t CFDRMDF_1;  ///< Offset: 0x1530 - RX Message Buffer Data Field 1 Registers (renamed from CFDRMDF_1)
+        volatile uint32_t CFDRMDF_2;  ///< Offset: 0x1534 - RX Message Buffer Data Field 2 Registers (renamed from CFDRMDF_2)
+        volatile uint32_t CFDRMDF_3;  ///< Offset: 0x1538 - RX Message Buffer Data Field 3 Registers (renamed from CFDRMDF_3)
+        volatile uint32_t CFDRMDF_4;  ///< Offset: 0x153C - RX Message Buffer Data Field 4 Registers (renamed from CFDRMDF_4)
+        volatile uint32_t CFDRMDF_5;  ///< Offset: 0x1540 - RX Message Buffer Data Field 5 Registers (renamed from CFDRMDF_5)
+        volatile uint32_t CFDRMDF_6;  ///< Offset: 0x1544 - RX Message Buffer Data Field 6 Registers (renamed from CFDRMDF_6)
+        volatile uint32_t CFDRMDF_7;  ///< Offset: 0x1548 - RX Message Buffer Data Field 7 Registers (renamed from CFDRMDF_7)
+        volatile uint32_t CFDRMDF_8;  ///< Offset: 0x154C - RX Message Buffer Data Field 8 Registers (renamed from CFDRMDF_8)
+        volatile uint32_t CFDRMDF_9;  ///< Offset: 0x1550 - RX Message Buffer Data Field 9 Registers (renamed from CFDRMDF_9)
+        volatile uint32_t CFDRMDF_10;  ///< Offset: 0x1554 - RX Message Buffer Data Field 10 Registers (renamed from CFDRMDF_10)
+        volatile uint32_t CFDRMDF_11;  ///< Offset: 0x1558 - RX Message Buffer Data Field 11 Registers (renamed from CFDRMDF_11)
+        volatile uint32_t CFDRMDF_12;  ///< Offset: 0x155C - RX Message Buffer Data Field 12 Registers (renamed from CFDRMDF_12)
+        volatile uint32_t CFDRMDF_13;  ///< Offset: 0x1560 - RX Message Buffer Data Field 13 Registers (renamed from CFDRMDF_13)
+        volatile uint32_t CFDRMDF_14;  ///< Offset: 0x1564 - RX Message Buffer Data Field 14 Registers (renamed from CFDRMDF_14)
+        volatile uint32_t CFDRMDF_15;  ///< Offset: 0x1568 - RX Message Buffer Data Field 15 Registers (renamed from CFDRMDF_15)
     };
 
     /// Peripheral instances
@@ -3796,8 +3796,8 @@ namespace can {
         constexpr uint32_t RMIEg = (32 << 0);  ///< RX Message Buffer Interrupt Enable
     }
 
-    /// CFDRFCC%s Register bits
-    namespace cfdrfcc%s_bits {
+    /// CFDRFCC Register bits
+    namespace cfdrfcc_bits {
         constexpr uint32_t RFE = (1U << 0);  ///< RX FIFO Enable
         constexpr uint32_t RFIE = (1U << 1);  ///< RX FIFO Interrupt Enable
         constexpr uint32_t RFPLS = (3 << 4);  ///< Rx FIFO Payload Data Size Configuration
@@ -3806,8 +3806,8 @@ namespace can {
         constexpr uint32_t RFIGCV = (3 << 13);  ///< RX FIFO Interrupt Generation Counter Value
     }
 
-    /// CFDRFSTS%s Register bits
-    namespace cfdrfsts%s_bits {
+    /// CFDRFSTS Register bits
+    namespace cfdrfsts_bits {
         constexpr uint32_t RFEMP = (1U << 0);  ///< RX FIFO Empty
         constexpr uint32_t RFFLL = (1U << 1);  ///< RX FIFO Full
         constexpr uint32_t RFMLT = (1U << 2);  ///< RX FIFO Message Lost
@@ -3815,8 +3815,8 @@ namespace can {
         constexpr uint32_t RFMC = (6 << 8);  ///< RX FIFO Message Count
     }
 
-    /// CFDRFPCTR%s Register bits
-    namespace cfdrfpctr%s_bits {
+    /// CFDRFPCTR Register bits
+    namespace cfdrfpctr_bits {
         constexpr uint32_t RFPC = (8 << 0);  ///< RX FIFO Pointer Control
     }
 
@@ -3874,15 +3874,15 @@ namespace can {
         constexpr uint32_t RFXIF = (2 << 0);  ///< RX FIFO[x] Interrupt Flag Status
     }
 
-    /// CFDTMC%s Register bits
-    namespace cfdtmc%s_bits {
+    /// CFDTMC Register bits
+    namespace cfdtmc_bits {
         constexpr uint32_t TMTR = (1U << 0);  ///< TX Message Buffer Transmission Request
         constexpr uint32_t TMTAR = (1U << 1);  ///< TX Message Buffer Transmission Abort Request
         constexpr uint32_t TMOM = (1U << 2);  ///< TX Message Buffer One-shot Mode
     }
 
-    /// CFDTMSTS%s Register bits
-    namespace cfdtmsts%s_bits {
+    /// CFDTMSTS Register bits
+    namespace cfdtmsts_bits {
         constexpr uint32_t TMTSTS = (1U << 0);  ///< TX Message Buffer Transmission Status
         constexpr uint32_t TMTRF = (2 << 1);  ///< TX Message Buffer Transmission Result Flag
         constexpr uint32_t TMTRM = (1U << 3);  ///< TX Message Buffer Transmission Request Mirrored
@@ -4060,24 +4060,24 @@ namespace can {
         constexpr uint32_t SCNT = (4 << 24);  ///< Stuff bit count
     }
 
-    /// CFDGAFLID%s Register bits
-    namespace cfdgaflid%s_bits {
+    /// CFDGAFLID Register bits
+    namespace cfdgaflid_bits {
         constexpr uint32_t GAFLID = (29 << 0);  ///< Global Acceptance Filter List Entry ID Field
         constexpr uint32_t GAFLLB = (1U << 29);  ///< Global Acceptance Filter List Entry Loopback Configuration
         constexpr uint32_t GAFLRTR = (1U << 30);  ///< Global Acceptance Filter List Entry RTR Field
         constexpr uint32_t GAFLIDE = (1U << 31);  ///< Global Acceptance Filter List Entry IDE Field
     }
 
-    /// CFDGAFLM%s Register bits
-    namespace cfdgaflm%s_bits {
+    /// CFDGAFLM Register bits
+    namespace cfdgaflm_bits {
         constexpr uint32_t GAFLIDM = (29 << 0);  ///< Global Acceptance Filter List ID Mask Field
         constexpr uint32_t GAFLIFL1 = (1U << 29);  ///< Global Acceptance Filter List Information Label 1
         constexpr uint32_t GAFLRTRM = (1U << 30);  ///< Global Acceptance Filter List Entry RTR Mask
         constexpr uint32_t GAFLIDEM = (1U << 31);  ///< Global Acceptance Filter List IDE Mask
     }
 
-    /// CFDGAFLP0%s Register bits
-    namespace cfdgaflp0%s_bits {
+    /// CFDGAFLP0 Register bits
+    namespace cfdgaflp0_bits {
         constexpr uint32_t GAFLDLC = (4 << 0);  ///< Global Acceptance Filter List DLC Field
         constexpr uint32_t GAFLIFL0 = (1U << 7);  ///< Global Acceptance Filter List Information Label 0
         constexpr uint32_t GAFLRMDP = (5 << 8);  ///< Global Acceptance Filter List RX Message Buffer Direction Pointer
@@ -4085,33 +4085,33 @@ namespace can {
         constexpr uint32_t GAFLPTR = (16 << 16);  ///< Global Acceptance Filter List Pointer
     }
 
-    /// CFDGAFLP1%s Register bits
-    namespace cfdgaflp1%s_bits {
+    /// CFDGAFLP1 Register bits
+    namespace cfdgaflp1_bits {
         constexpr uint32_t GAFLFDP0 = (1U << 0);  ///< Global Acceptance Filter List FIFO Direction Pointer
         constexpr uint32_t GAFLFDP1 = (1U << 1);  ///< Global Acceptance Filter List FIFO Direction Pointer
         constexpr uint32_t GAFLFDP8 = (1U << 8);  ///< Global Acceptance Filter List FIFO Direction Pointer
     }
 
-    /// CFDRPGACC%s Register bits
-    namespace cfdrpgacc%s_bits {
+    /// CFDRPGACC Register bits
+    namespace cfdrpgacc_bits {
         constexpr uint32_t RDTA = (32 << 0);  ///< RAM Data Test Access
     }
 
-    /// CFDRFID%s Register bits
-    namespace cfdrfid%s_bits {
+    /// CFDRFID Register bits
+    namespace cfdrfid_bits {
         constexpr uint32_t RFID = (29 << 0);  ///< RX FIFO Buffer ID Field
         constexpr uint32_t RFRTR = (1U << 30);  ///< RX FIFO Buffer RTR bit
         constexpr uint32_t RFIDE = (1U << 31);  ///< RX FIFO Buffer IDE bit
     }
 
-    /// CFDRFPTR%s Register bits
-    namespace cfdrfptr%s_bits {
+    /// CFDRFPTR Register bits
+    namespace cfdrfptr_bits {
         constexpr uint32_t RFTS = (16 << 0);  ///< RX FIFO Timestamp Value
         constexpr uint32_t RFDLC = (4 << 28);  ///< RX FIFO Buffer DLC Field
     }
 
-    /// CFDRFFDSTS%s Register bits
-    namespace cfdrffdsts%s_bits {
+    /// CFDRFFDSTS Register bits
+    namespace cfdrffdsts_bits {
         constexpr uint32_t RFESI = (1U << 0);  ///< Error State Indicator bit
         constexpr uint32_t RFBRS = (1U << 1);  ///< Bit Rate Switch bit
         constexpr uint32_t RFFDF = (1U << 2);  ///< CAN FD Format bit
@@ -4119,128 +4119,128 @@ namespace can {
         constexpr uint32_t CFDRFPTR = (16 << 16);  ///< RX FIFO Buffer Pointer Field
     }
 
-    /// CFDRFDF%s_0 Register bits
-    namespace cfdrfdf%s_0_bits {
+    /// CFDRFDF_0 Register bits
+    namespace cfdrfdf_0_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_1 Register bits
-    namespace cfdrfdf%s_1_bits {
+    /// CFDRFDF_1 Register bits
+    namespace cfdrfdf_1_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_2 Register bits
-    namespace cfdrfdf%s_2_bits {
+    /// CFDRFDF_2 Register bits
+    namespace cfdrfdf_2_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_3 Register bits
-    namespace cfdrfdf%s_3_bits {
+    /// CFDRFDF_3 Register bits
+    namespace cfdrfdf_3_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_4 Register bits
-    namespace cfdrfdf%s_4_bits {
+    /// CFDRFDF_4 Register bits
+    namespace cfdrfdf_4_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_5 Register bits
-    namespace cfdrfdf%s_5_bits {
+    /// CFDRFDF_5 Register bits
+    namespace cfdrfdf_5_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_6 Register bits
-    namespace cfdrfdf%s_6_bits {
+    /// CFDRFDF_6 Register bits
+    namespace cfdrfdf_6_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_7 Register bits
-    namespace cfdrfdf%s_7_bits {
+    /// CFDRFDF_7 Register bits
+    namespace cfdrfdf_7_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_8 Register bits
-    namespace cfdrfdf%s_8_bits {
+    /// CFDRFDF_8 Register bits
+    namespace cfdrfdf_8_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_9 Register bits
-    namespace cfdrfdf%s_9_bits {
+    /// CFDRFDF_9 Register bits
+    namespace cfdrfdf_9_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_10 Register bits
-    namespace cfdrfdf%s_10_bits {
+    /// CFDRFDF_10 Register bits
+    namespace cfdrfdf_10_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_11 Register bits
-    namespace cfdrfdf%s_11_bits {
+    /// CFDRFDF_11 Register bits
+    namespace cfdrfdf_11_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_12 Register bits
-    namespace cfdrfdf%s_12_bits {
+    /// CFDRFDF_12 Register bits
+    namespace cfdrfdf_12_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_13 Register bits
-    namespace cfdrfdf%s_13_bits {
+    /// CFDRFDF_13 Register bits
+    namespace cfdrfdf_13_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_14 Register bits
-    namespace cfdrfdf%s_14_bits {
+    /// CFDRFDF_14 Register bits
+    namespace cfdrfdf_14_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RFDB_HH = (8 << 24);  ///< RX FIFO Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRFDF%s_15 Register bits
-    namespace cfdrfdf%s_15_bits {
+    /// CFDRFDF_15 Register bits
+    namespace cfdrfdf_15_bits {
         constexpr uint32_t RFDB_LL = (8 << 0);  ///< RX FIFO Buffer Data Byte (p × 4)
         constexpr uint32_t RFDB_LH = (8 << 8);  ///< RX FIFO Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RFDB_HL = (8 << 16);  ///< RX FIFO Buffer Data Byte ((p × 4) + 2)
@@ -4270,29 +4270,29 @@ namespace can {
         constexpr uint32_t CFPTR = (16 << 16);  ///< Common FIFO Buffer Pointer Field
     }
 
-    /// CFDCFDF%s Register bits
-    namespace cfdcfdf%s_bits {
+    /// CFDCFDF Register bits
+    namespace cfdcfdf_bits {
         constexpr uint32_t CFDB_LL = (8 << 0);  ///< Common FIFO Buffer Data Bytes (p × 4)
         constexpr uint32_t CFDB_LH = (8 << 8);  ///< Common FIFO Buffer Data Bytes ((p × 4) + 1)
         constexpr uint32_t CFDB_HL = (8 << 16);  ///< Common FIFO Buffer Data Bytes ((p × 4) + 2)
         constexpr uint32_t CFDB_HH = (8 << 24);  ///< Common FIFO Buffer Data Bytes ((p × 4) + 3)
     }
 
-    /// CFDTMID%s Register bits
-    namespace cfdtmid%s_bits {
+    /// CFDTMID Register bits
+    namespace cfdtmid_bits {
         constexpr uint32_t TMID = (29 << 0);  ///< TX Message Buffer ID Field
         constexpr uint32_t THLEN = (1U << 29);  ///< Tx History List Entry
         constexpr uint32_t TMRTR = (1U << 30);  ///< TX Message Buffer RTR bit
         constexpr uint32_t TMIDE = (1U << 31);  ///< TX Message Buffer IDE bit
     }
 
-    /// CFDTMPTR%s Register bits
-    namespace cfdtmptr%s_bits {
+    /// CFDTMPTR Register bits
+    namespace cfdtmptr_bits {
         constexpr uint32_t TMDLC = (4 << 28);  ///< TX Message Buffer DLC Field
     }
 
-    /// CFDTMFDCTR%s Register bits
-    namespace cfdtmfdctr%s_bits {
+    /// CFDTMFDCTR Register bits
+    namespace cfdtmfdctr_bits {
         constexpr uint32_t TMESI = (1U << 0);  ///< Error State Indicator bit
         constexpr uint32_t TMBRS = (1U << 1);  ///< Bit Rate Switch bit
         constexpr uint32_t TMFDF = (1U << 2);  ///< CAN FD Format bit
@@ -4300,128 +4300,128 @@ namespace can {
         constexpr uint32_t TMPTR = (16 << 16);  ///< TX Message Buffer Pointer Field
     }
 
-    /// CFDTMDF%s_0 Register bits
-    namespace cfdtmdf%s_0_bits {
+    /// CFDTMDF_0 Register bits
+    namespace cfdtmdf_0_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_1 Register bits
-    namespace cfdtmdf%s_1_bits {
+    /// CFDTMDF_1 Register bits
+    namespace cfdtmdf_1_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_2 Register bits
-    namespace cfdtmdf%s_2_bits {
+    /// CFDTMDF_2 Register bits
+    namespace cfdtmdf_2_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_3 Register bits
-    namespace cfdtmdf%s_3_bits {
+    /// CFDTMDF_3 Register bits
+    namespace cfdtmdf_3_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_4 Register bits
-    namespace cfdtmdf%s_4_bits {
+    /// CFDTMDF_4 Register bits
+    namespace cfdtmdf_4_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_5 Register bits
-    namespace cfdtmdf%s_5_bits {
+    /// CFDTMDF_5 Register bits
+    namespace cfdtmdf_5_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_6 Register bits
-    namespace cfdtmdf%s_6_bits {
+    /// CFDTMDF_6 Register bits
+    namespace cfdtmdf_6_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_7 Register bits
-    namespace cfdtmdf%s_7_bits {
+    /// CFDTMDF_7 Register bits
+    namespace cfdtmdf_7_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_8 Register bits
-    namespace cfdtmdf%s_8_bits {
+    /// CFDTMDF_8 Register bits
+    namespace cfdtmdf_8_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_9 Register bits
-    namespace cfdtmdf%s_9_bits {
+    /// CFDTMDF_9 Register bits
+    namespace cfdtmdf_9_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_10 Register bits
-    namespace cfdtmdf%s_10_bits {
+    /// CFDTMDF_10 Register bits
+    namespace cfdtmdf_10_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_11 Register bits
-    namespace cfdtmdf%s_11_bits {
+    /// CFDTMDF_11 Register bits
+    namespace cfdtmdf_11_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_12 Register bits
-    namespace cfdtmdf%s_12_bits {
+    /// CFDTMDF_12 Register bits
+    namespace cfdtmdf_12_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_13 Register bits
-    namespace cfdtmdf%s_13_bits {
+    /// CFDTMDF_13 Register bits
+    namespace cfdtmdf_13_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_14 Register bits
-    namespace cfdtmdf%s_14_bits {
+    /// CFDTMDF_14 Register bits
+    namespace cfdtmdf_14_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t TMDB_HH = (8 << 24);  ///< TX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDTMDF%s_15 Register bits
-    namespace cfdtmdf%s_15_bits {
+    /// CFDTMDF_15 Register bits
+    namespace cfdtmdf_15_bits {
         constexpr uint32_t TMDB_LL = (8 << 0);  ///< TX Message Buffer Data Byte ((p × 4)
         constexpr uint32_t TMDB_LH = (8 << 8);  ///< TX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t TMDB_HL = (8 << 16);  ///< TX Message Buffer Data Byte ((p × 4) + 2)
@@ -4441,21 +4441,21 @@ namespace can {
         constexpr uint32_t TIFL = (2 << 16);  ///< Transmit Information Label
     }
 
-    /// CFDRMID%s Register bits
-    namespace cfdrmid%s_bits {
+    /// CFDRMID Register bits
+    namespace cfdrmid_bits {
         constexpr uint32_t RMID = (29 << 0);  ///< RX Message Buffer ID Field
         constexpr uint32_t RMRTR = (1U << 30);  ///< RX Message Buffer RTR Bit
         constexpr uint32_t RMIDE = (1U << 31);  ///< RX Message Buffer IDE Bit
     }
 
-    /// CFDRMPTR%s Register bits
-    namespace cfdrmptr%s_bits {
+    /// CFDRMPTR Register bits
+    namespace cfdrmptr_bits {
         constexpr uint32_t RMTS = (16 << 0);  ///< RX Message Buffer Timestamp Field
         constexpr uint32_t RMDLC = (4 << 28);  ///< RX Message Buffer DLC Field
     }
 
-    /// CFDRMFDSTS%s Register bits
-    namespace cfdrmfdsts%s_bits {
+    /// CFDRMFDSTS Register bits
+    namespace cfdrmfdsts_bits {
         constexpr uint32_t RMESI = (1U << 0);  ///< Error State Indicator bit
         constexpr uint32_t RMBRS = (1U << 1);  ///< Bit Rate Switch bit
         constexpr uint32_t RMFDF = (1U << 2);  ///< CAN FD Format bit
@@ -4463,128 +4463,128 @@ namespace can {
         constexpr uint32_t RMPTR = (16 << 16);  ///< RX Message Buffer Pointer Field
     }
 
-    /// CFDRMDF%s_0 Register bits
-    namespace cfdrmdf%s_0_bits {
+    /// CFDRMDF_0 Register bits
+    namespace cfdrmdf_0_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_1 Register bits
-    namespace cfdrmdf%s_1_bits {
+    /// CFDRMDF_1 Register bits
+    namespace cfdrmdf_1_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_2 Register bits
-    namespace cfdrmdf%s_2_bits {
+    /// CFDRMDF_2 Register bits
+    namespace cfdrmdf_2_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_3 Register bits
-    namespace cfdrmdf%s_3_bits {
+    /// CFDRMDF_3 Register bits
+    namespace cfdrmdf_3_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_4 Register bits
-    namespace cfdrmdf%s_4_bits {
+    /// CFDRMDF_4 Register bits
+    namespace cfdrmdf_4_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_5 Register bits
-    namespace cfdrmdf%s_5_bits {
+    /// CFDRMDF_5 Register bits
+    namespace cfdrmdf_5_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_6 Register bits
-    namespace cfdrmdf%s_6_bits {
+    /// CFDRMDF_6 Register bits
+    namespace cfdrmdf_6_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_7 Register bits
-    namespace cfdrmdf%s_7_bits {
+    /// CFDRMDF_7 Register bits
+    namespace cfdrmdf_7_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_8 Register bits
-    namespace cfdrmdf%s_8_bits {
+    /// CFDRMDF_8 Register bits
+    namespace cfdrmdf_8_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_9 Register bits
-    namespace cfdrmdf%s_9_bits {
+    /// CFDRMDF_9 Register bits
+    namespace cfdrmdf_9_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_10 Register bits
-    namespace cfdrmdf%s_10_bits {
+    /// CFDRMDF_10 Register bits
+    namespace cfdrmdf_10_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_11 Register bits
-    namespace cfdrmdf%s_11_bits {
+    /// CFDRMDF_11 Register bits
+    namespace cfdrmdf_11_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_12 Register bits
-    namespace cfdrmdf%s_12_bits {
+    /// CFDRMDF_12 Register bits
+    namespace cfdrmdf_12_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_13 Register bits
-    namespace cfdrmdf%s_13_bits {
+    /// CFDRMDF_13 Register bits
+    namespace cfdrmdf_13_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_14 Register bits
-    namespace cfdrmdf%s_14_bits {
+    /// CFDRMDF_14 Register bits
+    namespace cfdrmdf_14_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
         constexpr uint32_t RMDB_HH = (8 << 24);  ///< RX Message Buffer Data Byte ((p × 4) + 3)
     }
 
-    /// CFDRMDF%s_15 Register bits
-    namespace cfdrmdf%s_15_bits {
+    /// CFDRMDF_15 Register bits
+    namespace cfdrmdf_15_bits {
         constexpr uint32_t RMDB_LL = (8 << 0);  ///< RX Message Buffer Data Byte (p × 4)
         constexpr uint32_t RMDB_LH = (8 << 8);  ///< RX Message Buffer Data Byte ((p × 4) + 1)
         constexpr uint32_t RMDB_HL = (8 << 16);  ///< RX Message Buffer Data Byte ((p × 4) + 2)
@@ -5362,7 +5362,7 @@ namespace spi {
         volatile uint32_t SPCR;  ///< Offset: 0x08 - SPI Control Register
         volatile uint32_t SPCR2;  ///< Offset: 0x0C - SPI Control Register 2
         volatile uint32_t SPCR3;  ///< Offset: 0x10 - SPI Control Register 3
-        volatile uint32_t SPCMD%s;  ///< Offset: 0x14 - SPI Command Register
+        volatile uint32_t SPCMD;  ///< Offset: 0x14 - SPI Command Register (renamed from SPCMD)
         volatile uint32_t SPDCR;  ///< Offset: 0x40 - SPI Data Control Register
         volatile uint32_t SPDCR2;  ///< Offset: 0x44 - SPI Data Control Register 2
         volatile uint32_t SPSR;  ///< Offset: 0x50 - SPI Status Register
@@ -5429,8 +5429,8 @@ namespace spi {
         constexpr uint32_t SPSLN = (3 << 24);  ///< SPI Sequence Length
     }
 
-    /// SPCMD%s Register bits
-    namespace spcmd%s_bits {
+    /// SPCMD Register bits
+    namespace spcmd_bits {
         constexpr uint32_t CPHA = (1U << 0);  ///< RSPCK Phase
         constexpr uint32_t CPOL = (1U << 1);  ///< RSPCK Polarity
         constexpr uint32_t BRDV = (2 << 2);  ///< Bit Rate Division
@@ -5544,8 +5544,8 @@ namespace iic {
         volatile uint32_t NTSTFC;  ///< Offset: 0x1EC - Normal Transfer Status Force Register
         volatile uint32_t BCST;  ///< Offset: 0x210 - Bus Condition Status Register
         volatile uint32_t SVST;  ///< Offset: 0x214 - Slave Status Register
-        volatile uint32_t SDATBAS%s;  ///< Offset: 0x2B0 - Slave Device Address Table Basic Register %s
-        volatile uint32_t SVDVAD%s;  ///< Offset: 0x330 - Slave Device Address Register %s
+        volatile uint32_t SDATBAS;  ///< Offset: 0x2B0 - Slave Device Address Table Basic Register %s (renamed from SDATBAS)
+        volatile uint32_t SVDVAD;  ///< Offset: 0x330 - Slave Device Address Register %s (renamed from SVDVAD)
         volatile uint32_t BITCNT;  ///< Offset: 0x380 - Bit Count Register
         volatile uint32_t PRSTDBG;  ///< Offset: 0x3CC - Present State Debug Register
     };
@@ -5746,14 +5746,14 @@ namespace iic {
         constexpr uint32_t SVAF2 = (1U << 18);  ///< Slave Address Detection Flag 2
     }
 
-    /// SDATBAS%s Register bits
-    namespace sdatbas%s_bits {
+    /// SDATBAS Register bits
+    namespace sdatbas_bits {
         constexpr uint32_t SDSTAD = (10 << 0);  ///< Slave Device Static Address
         constexpr uint32_t SDADLS = (1U << 10);  ///< Slave Device Address Length Selection
     }
 
-    /// SVDVAD%s Register bits
-    namespace svdvad%s_bits {
+    /// SVDVAD Register bits
+    namespace svdvad_bits {
         constexpr uint32_t SVAD = (10 << 16);  ///< Slave Address
         constexpr uint32_t SADLG = (1U << 27);  ///< Slave Address Length
         constexpr uint32_t SSTADV = (1U << 30);  ///< Slave Static Address Valid
@@ -7369,10 +7369,10 @@ namespace pdg {
     struct Registers {
         volatile uint32_t GTDLYCR;  ///< Offset: 0x00 - PWM Output Delay Control Register
         volatile uint32_t GTDLYCR2;  ///< Offset: 0x02 - PWM Output Delay Control Register 2
-        volatile uint32_t GTDLYR%sA;  ///< Offset: 0x18 - GTIOCnA Rising Output Delay Register
-        volatile uint32_t GTDLYR%sB;  ///< Offset: 0x1A - GTIOCnB Rising Output Delay Register
-        volatile uint32_t GTDLYF%sA;  ///< Offset: 0x28 - GTIOCnA Falling Output Delay Register
-        volatile uint32_t GTDLYF%sB;  ///< Offset: 0x2A - GTIOCnB Falling Output Delay Register
+        volatile uint32_t GTDLYRA;  ///< Offset: 0x18 - GTIOCnA Rising Output Delay Register (renamed from GTDLYRA)
+        volatile uint32_t GTDLYRB;  ///< Offset: 0x1A - GTIOCnB Rising Output Delay Register (renamed from GTDLYRB)
+        volatile uint32_t GTDLYFA;  ///< Offset: 0x28 - GTIOCnA Falling Output Delay Register (renamed from GTDLYFA)
+        volatile uint32_t GTDLYFB;  ///< Offset: 0x2A - GTIOCnB Falling Output Delay Register (renamed from GTDLYFB)
     };
 
     /// Peripheral instances
@@ -7398,23 +7398,23 @@ namespace pdg {
         constexpr uint32_t DLYEN3 = (1U << 11);  ///< PWM Delay Generation Circuit enable for channel 3
     }
 
-    /// GTDLYR%sA Register bits
-    namespace gtdlyr%sa_bits {
+    /// GTDLYRA Register bits
+    namespace gtdlyra_bits {
         constexpr uint32_t DLY = (5 << 0);  ///< GTIOCnA Output Rising Edge Delay Setting
     }
 
-    /// GTDLYR%sB Register bits
-    namespace gtdlyr%sb_bits {
+    /// GTDLYRB Register bits
+    namespace gtdlyrb_bits {
         constexpr uint32_t DLY = (5 << 0);  ///< GTIOCnB Output Rising Edge Delay Setting
     }
 
-    /// GTDLYF%sA Register bits
-    namespace gtdlyf%sa_bits {
+    /// GTDLYFA Register bits
+    namespace gtdlyfa_bits {
         constexpr uint32_t DLY = (5 << 0);  ///< GTIOCnA Output Falling Edge Delay Setting
     }
 
-    /// GTDLYF%sB Register bits
-    namespace gtdlyf%sb_bits {
+    /// GTDLYFB Register bits
+    namespace gtdlyfb_bits {
         constexpr uint32_t DLY = (5 << 0);  ///< GTIOCnB Output Falling Edge Delay Setting
     }
 
@@ -7444,15 +7444,15 @@ namespace adc {
         volatile uint32_t ADSGCR1;  ///< Offset: 0x50 - Scan Group Control Register 1
         volatile uint32_t ADSGCR2;  ///< Offset: 0x54 - Scan Group Control Register 2
         volatile uint32_t ADINTCR;  ///< Offset: 0x5C - Scan End Interrupt Enable Register
-        volatile uint32_t ADTRGEXT%s;  ///< Offset: 0xC0 - External Trigger Enable Register %s
-        volatile uint32_t ADTRGELC%s;  ///< Offset: 0xC4 - ELC Trigger Enable Register %s
-        volatile uint32_t ADTRGGPT%s;  ///< Offset: 0xC8 - GPT Trigger Enable Register %s
+        volatile uint32_t ADTRGEXT;  ///< Offset: 0xC0 - External Trigger Enable Register %s (renamed from ADTRGEXT)
+        volatile uint32_t ADTRGELC;  ///< Offset: 0xC4 - ELC Trigger Enable Register %s (renamed from ADTRGELC)
+        volatile uint32_t ADTRGGPT;  ///< Offset: 0xC8 - GPT Trigger Enable Register %s (renamed from ADTRGGPT)
         volatile uint32_t ADTRGDLR0;  ///< Offset: 0x1C0 - A/D Conversion Start Trigger Delay Register 0
         volatile uint32_t ADTRGDLR1;  ///< Offset: 0x1C4 - A/D Conversion Start Trigger Delay Register 1
         volatile uint32_t ADTRGDLR2;  ///< Offset: 0x1C8 - A/D Conversion Start Trigger Delay Register 2
         volatile uint32_t ADTRGDLR3;  ///< Offset: 0x1CC - A/D Conversion Start Trigger Delay Register 3
         volatile uint32_t ADTRGDLR4;  ///< Offset: 0x1D0 - A/D Conversion Start Trigger Delay Register 4
-        volatile uint32_t ADSGDCR%s;  ///< Offset: 0x200 - Scan Group Diagnosis Function Control Register %s
+        volatile uint32_t ADSGDCR;  ///< Offset: 0x200 - Scan Group Diagnosis Function Control Register %s (renamed from ADSGDCR)
         volatile uint32_t ADSSTR0;  ///< Offset: 0x240 - Sampling State Table Register 0
         volatile uint32_t ADSSTR1;  ///< Offset: 0x244 - Sampling State Table Register 1
         volatile uint32_t ADSSTR2;  ///< Offset: 0x248 - Sampling State Table Register 2
@@ -7468,20 +7468,20 @@ namespace adc {
         volatile uint32_t ADSHCR1;  ///< Offset: 0x28C - Channel-dedicated Sample-and-hold Circuit Control Register 1
         volatile uint32_t ADSHSTR1;  ///< Offset: 0x294 - Channel-dedicated Sample-and-hold Circuit State Register 1
         volatile uint32_t ADCALSHCR;  ///< Offset: 0x2B0 - Channel-dedicated Sample-and-hold Circuit...
-        volatile uint32_t ADPGACR%s;  ///< Offset: 0x2C0 - Programmable Gain Amplifier Control Register %s
+        volatile uint32_t ADPGACR;  ///< Offset: 0x2C0 - Programmable Gain Amplifier Control Register %s (renamed from ADPGACR)
         volatile uint32_t ADPGAMONCR;  ///< Offset: 0x300 - Programable Gain Amp Monitor Output Control Register
         volatile uint32_t ADREFCR;  ///< Offset: 0x320 - Internal Reference Voltage Monitor Enable Register
-        volatile uint32_t ADDFSR%s;  ///< Offset: 0x340 - A/D Converter Digital Filter Selection Register %s
-        volatile uint32_t ADUOFTR%s;  ///< Offset: 0x360 - User Offset Table Register %s
-        volatile uint32_t ADUGTR%s;  ///< Offset: 0x380 - User Gain Table Register %s
+        volatile uint32_t ADDFSR;  ///< Offset: 0x340 - A/D Converter Digital Filter Selection Register %s (renamed from ADDFSR)
+        volatile uint32_t ADUOFTR;  ///< Offset: 0x360 - User Offset Table Register %s (renamed from ADUOFTR)
+        volatile uint32_t ADUGTR;  ///< Offset: 0x380 - User Gain Table Register %s (renamed from ADUGTR)
         volatile uint32_t ADLIMINTCR;  ///< Offset: 0x3A0 - Limiter Clip Interrupt Enable Register
-        volatile uint32_t ADLIMTR%s;  ///< Offset: 0x3A4 - Limiter Clip Table Register %s
+        volatile uint32_t ADLIMTR;  ///< Offset: 0x3A4 - Limiter Clip Table Register %s (renamed from ADLIMTR)
         volatile uint32_t ADCMPENR;  ///< Offset: 0x400 - Compare Match Enable Register
         volatile uint32_t ADCMPINTCR;  ///< Offset: 0x404 - Compare Match Interrupt Enable Register
-        volatile uint32_t ADCCMPCR%s;  ///< Offset: 0x408 - Composite Compare Match Configuration Register %s
+        volatile uint32_t ADCCMPCR;  ///< Offset: 0x408 - Composite Compare Match Configuration Register %s (renamed from ADCCMPCR)
         volatile uint32_t ADCMPMDR0;  ///< Offset: 0x448 - Compare Match Mode Selection Register 0
         volatile uint32_t ADCMPMDR1;  ///< Offset: 0x44C - Compare Match Mode Selection Register 1
-        volatile uint32_t ADCMPTBR%s;  ///< Offset: 0x458 - Compare Match Table Register %s
+        volatile uint32_t ADCMPTBR;  ///< Offset: 0x458 - Compare Match Table Register %s (renamed from ADCMPTBR)
         volatile uint32_t ADFIFOCR;  ///< Offset: 0x4C0 - FIFO Control Register
         volatile uint32_t ADFIFOINTCR;  ///< Offset: 0x4C4 - FIFO Interrupt Control Register
         volatile uint32_t ADFIFOINTLR0;  ///< Offset: 0x4C8 - FIFO Interrupt Generation Level Register 0
@@ -7489,14 +7489,14 @@ namespace adc {
         volatile uint32_t ADFIFOINTLR2;  ///< Offset: 0x4D0 - FIFO Interrupt Generation Level Register 2
         volatile uint32_t ADFIFOINTLR3;  ///< Offset: 0x4D4 - FIFO Interrupt Generation Level Register 3
         volatile uint32_t ADFIFOINTLR4;  ///< Offset: 0x4D8 - FIFO Interrupt Generation Level Register 4
-        volatile uint32_t ADCHCR%s;  ///< Offset: 0x600 - A/D Conversion Channel Configuration Register %s
-        volatile uint32_t ADDOPCRA%s;  ///< Offset: 0x604 - A/D Conversion Data Operation Control A Register %s
-        volatile uint32_t ADDOPCRB%s;  ///< Offset: 0x608 - A/D Conversion Data Operation Control B Register %s
-        volatile uint32_t ADDOPCRC%s;  ///< Offset: 0x60C - A/D Conversion Data Operation Control C Register %s
+        volatile uint32_t ADCHCR;  ///< Offset: 0x600 - A/D Conversion Channel Configuration Register %s (renamed from ADCHCR)
+        volatile uint32_t ADDOPCRA;  ///< Offset: 0x604 - A/D Conversion Data Operation Control A Register %s (renamed from ADDOPCRA)
+        volatile uint32_t ADDOPCRB;  ///< Offset: 0x608 - A/D Conversion Data Operation Control B Register %s (renamed from ADDOPCRB)
+        volatile uint32_t ADDOPCRC;  ///< Offset: 0x60C - A/D Conversion Data Operation Control C Register %s (renamed from ADDOPCRC)
         volatile uint32_t ADCALSTR;  ///< Offset: 0xC00 - A/D Converter Self-calibration Start Register
         volatile uint32_t ADTRGENR;  ///< Offset: 0xC08 - A/D Conversion Start Trigger Enable Register
         volatile uint32_t ADSYSTR;  ///< Offset: 0xC10 - A/D Conversion Synchronous Software Start Register
-        volatile uint32_t ADSTR%s;  ///< Offset: 0xC20 - A/D Conversion Software Start Register %s
+        volatile uint32_t ADSTR;  ///< Offset: 0xC20 - A/D Conversion Software Start Register %s (renamed from ADSTR)
         volatile uint32_t ADSTOPR;  ///< Offset: 0xC60 - A/D Conversion Stop Register
         volatile uint32_t ADSR;  ///< Offset: 0xC80 - A/D Conversion Status Register
         volatile uint32_t ADGRSR;  ///< Offset: 0xC84 - Scan Group Status Register
@@ -7532,9 +7532,9 @@ namespace adc {
         volatile uint32_t ADLIMEXSCR;  ///< Offset: 0xD4C - Extended Analog Limiter Clip Status Clear Register
         volatile uint32_t ADSCANENDSR;  ///< Offset: 0xD50 - Scan End Status Register
         volatile uint32_t ADSCANENDSCR;  ///< Offset: 0xD54 - Scan End Status Clear Register
-        volatile uint32_t ADDR%s;  ///< Offset: 0x1000 - A/D Data Register %s
-        volatile uint32_t ADEXDR%s;  ///< Offset: 0x1194 - A/D Extended Analog Data Register %s
-        volatile uint32_t ADFIFODR%s;  ///< Offset: 0x1200 - FIFO Data Register %s
+        volatile uint32_t ADDR;  ///< Offset: 0x1000 - A/D Data Register %s (renamed from ADDR)
+        volatile uint32_t ADEXDR;  ///< Offset: 0x1194 - A/D Extended Analog Data Register %s (renamed from ADEXDR)
+        volatile uint32_t ADFIFODR;  ///< Offset: 0x1200 - FIFO Data Register %s (renamed from ADFIFODR)
     };
 
     /// Peripheral instances
@@ -7647,14 +7647,14 @@ namespace adc {
         constexpr uint32_t ADIE8 = (1U << 8);  ///< Scan Group n Scan End Interrupt Enable
     }
 
-    /// ADTRGEXT%s Register bits
-    namespace adtrgext%s_bits {
+    /// ADTRGEXT Register bits
+    namespace adtrgext_bits {
         constexpr uint32_t TRGEXT0 = (1U << 0);  ///< External Trigger Input 0 (ADTRG0) Enable
         constexpr uint32_t TRGEXT1 = (1U << 1);  ///< External Trigger Input 1 (ADTRG1) Enable
     }
 
-    /// ADTRGELC%s Register bits
-    namespace adtrgelc%s_bits {
+    /// ADTRGELC Register bits
+    namespace adtrgelc_bits {
         constexpr uint32_t TRGELC0 = (1U << 0);  ///< ELC Trigger m Enable
         constexpr uint32_t TRGELC1 = (1U << 1);  ///< ELC Trigger m Enable
         constexpr uint32_t TRGELC2 = (1U << 2);  ///< ELC Trigger m Enable
@@ -7663,8 +7663,8 @@ namespace adc {
         constexpr uint32_t TRGELC5 = (1U << 5);  ///< ELC Trigger m Enable
     }
 
-    /// ADTRGGPT%s Register bits
-    namespace adtrggpt%s_bits {
+    /// ADTRGGPT Register bits
+    namespace adtrggpt_bits {
         constexpr uint32_t TRGGPTA0 = (1U << 0);  ///< GPT channel m A/D Conversion Starting Request A Enable
         constexpr uint32_t TRGGPTA1 = (1U << 1);  ///< GPT channel m A/D Conversion Starting Request A Enable
         constexpr uint32_t TRGGPTA2 = (1U << 2);  ///< GPT channel m A/D Conversion Starting Request A Enable
@@ -7716,8 +7716,8 @@ namespace adc {
         constexpr uint32_t TRGDLY8 = (8 << 0);  ///< Scan Group 8 Trigger Input Delay Configuration
     }
 
-    /// ADSGDCR%s Register bits
-    namespace adsgdcr%s_bits {
+    /// ADSGDCR Register bits
+    namespace adsgdcr_bits {
         constexpr uint32_t DIAGVAL = (3 << 0);  ///< Self-diagnosis Mode Selection
         constexpr uint32_t ADDISEN = (1U << 16);  ///< Disconnection Detection Assist Enable
         constexpr uint32_t ADDISP = (1U << 20);  ///< Disconnection Detection Assist Mode Selection
@@ -7823,8 +7823,8 @@ namespace adc {
         constexpr uint32_t CALSHHST = (3 << 16);  ///< Channel-dedicated Sample-and-hold Circuit Self-calibration Hold Mode Switching Time Configuration
     }
 
-    /// ADPGACR%s Register bits
-    namespace adpgacr%s_bits {
+    /// ADPGACR Register bits
+    namespace adpgacr_bits {
         constexpr uint32_t PGADEN = (1U << 1);  ///< PGA Unit n Input Mode Select
         constexpr uint32_t PGASEL1 = (1U << 2);  ///< PGA Unit n Amplifier Output Enable
         constexpr uint32_t PGAENAMP = (1U << 3);  ///< PGA Unit n Enable
@@ -7847,21 +7847,21 @@ namespace adc {
         constexpr uint32_t VDE = (1U << 0);  ///< Internal Reference Voltage A/D Conversion Select
     }
 
-    /// ADDFSR%s Register bits
-    namespace addfsr%s_bits {
+    /// ADDFSR Register bits
+    namespace addfsr_bits {
         constexpr uint32_t DFSEL0 = (2 << 0);  ///< A/D Converter Unit n the 1st Digital Filter Characteristic Selection
         constexpr uint32_t DFSEL1 = (2 << 8);  ///< A/D Converter Unit n the 2nd Digital Filter Characteristic Selection
         constexpr uint32_t DFSEL2 = (2 << 16);  ///< A/D Converter Unit n the 3rd Digital Filter Characteristic Selection
         constexpr uint32_t DFSEL3 = (2 << 24);  ///< A/D Converter Unit n the 4th Digital Filter Characteristic Selection
     }
 
-    /// ADUOFTR%s Register bits
-    namespace aduoftr%s_bits {
+    /// ADUOFTR Register bits
+    namespace aduoftr_bits {
         constexpr uint32_t UOFSET = (16 << 0);  ///< User Offset Table n
     }
 
-    /// ADUGTR%s Register bits
-    namespace adugtr%s_bits {
+    /// ADUGTR Register bits
+    namespace adugtr_bits {
         constexpr uint32_t UGAIN = (24 << 0);  ///< User Gain Table n
     }
 
@@ -7878,8 +7878,8 @@ namespace adc {
         constexpr uint32_t LIMIE8 = (1U << 8);  ///< Limiter Clip Interrupt n Enable bit
     }
 
-    /// ADLIMTR%s Register bits
-    namespace adlimtr%s_bits {
+    /// ADLIMTR Register bits
+    namespace adlimtr_bits {
         constexpr uint32_t LIML = (16 << 0);  ///< Limiter clip table n : Lower-side limit value
         constexpr uint32_t LIMU = (16 << 16);  ///< Limiter clip table n : Upper-side limit value
     }
@@ -7904,8 +7904,8 @@ namespace adc {
         constexpr uint32_t CMPIE3 = (1U << 3);  ///< Compare Match Interrupt n Enable
     }
 
-    /// ADCCMPCR%s Register bits
-    namespace adccmpcr%s_bits {
+    /// ADCCMPCR Register bits
+    namespace adccmpcr_bits {
         constexpr uint32_t CCMPCND = (2 << 0);  ///< Composite Compare Match Condition Selection
         constexpr uint32_t CCMPTBL0 = (1U << 16);  ///< Composite Compare Match Condition Table Selection
         constexpr uint32_t CCMPTBL1 = (1U << 17);  ///< Composite Compare Match Condition Table Selection
@@ -7933,8 +7933,8 @@ namespace adc {
         constexpr uint32_t CMPMD7 = (2 << 24);  ///< Compare Match 7 : Match Mode Selection
     }
 
-    /// ADCMPTBR%s Register bits
-    namespace adcmptbr%s_bits {
+    /// ADCMPTBR Register bits
+    namespace adcmptbr_bits {
         constexpr uint32_t CMPTBL = (16 << 0);  ///< Compare Match Table n : Low-side level
         constexpr uint32_t CMPTBH = (16 << 16);  ///< Compare Match Table n : High-side level
     }
@@ -7994,23 +7994,23 @@ namespace adc {
         constexpr uint32_t FIFOILV8 = (4 << 0);  ///< Scan Group 8 FIFO Interrupt Output Timing Setting
     }
 
-    /// ADCHCR%s Register bits
-    namespace adchcr%s_bits {
+    /// ADCHCR Register bits
+    namespace adchcr_bits {
         constexpr uint32_t SGSEL = (5 << 0);  ///< Scan Group Selection
         constexpr uint32_t CNVCS = (7 << 8);  ///< A/D Conversion Channel Selection
         constexpr uint32_t AINMD = (1U << 15);  ///< Analog Input mode selection
         constexpr uint32_t SSTSEL = (4 << 16);  ///< Sampling State Table Selection
     }
 
-    /// ADDOPCRA%s Register bits
-    namespace addopcra%s_bits {
+    /// ADDOPCRA Register bits
+    namespace addopcra_bits {
         constexpr uint32_t DFSEL = (3 << 0);  ///< Digital Filter Selection
         constexpr uint32_t GAINSEL = (4 << 16);  ///< User Gain Table Selection
         constexpr uint32_t OFSETSEL = (4 << 24);  ///< User Offset Table Selection
     }
 
-    /// ADDOPCRB%s Register bits
-    namespace addopcrb%s_bits {
+    /// ADDOPCRB Register bits
+    namespace addopcrb_bits {
         constexpr uint32_t AVEMD = (2 << 0);  ///< Addition/Averaging Mode Selection
         constexpr uint32_t ADC = (4 << 8);  ///< Addition/Averaging Times Selection
         constexpr uint32_t CMPTBLE0 = (1U << 16);  ///< Compare Match Enable
@@ -8023,8 +8023,8 @@ namespace adc {
         constexpr uint32_t CMPTBLE7 = (1U << 23);  ///< Compare Match Enable
     }
 
-    /// ADDOPCRC%s Register bits
-    namespace addopcrc%s_bits {
+    /// ADDOPCRC Register bits
+    namespace addopcrc_bits {
         constexpr uint32_t LIMTBLS = (4 << 0);  ///< Limiter Clip Table Selection
         constexpr uint32_t ADPRC = (2 << 16);  ///< A/D Conversion Data Format Selection
         constexpr uint32_t SIGNSEL = (1U << 20);  ///< A/D Conversion Data Signed/Un-signed Selection
@@ -8062,8 +8062,8 @@ namespace adc {
         constexpr uint32_t ADSYST8 = (1U << 8);  ///< Scan Group n: A/D Conversion start
     }
 
-    /// ADSTR%s Register bits
-    namespace adstr%s_bits {
+    /// ADSTR Register bits
+    namespace adstr_bits {
         constexpr uint32_t ADST = (1U << 0);  ///< Scan Group n A/D Conversion Start
     }
 
@@ -8556,21 +8556,21 @@ namespace adc {
         constexpr uint32_t SCENDC8 = (1U << 8);  ///< Scan Group n Scan End Flag Clear
     }
 
-    /// ADDR%s Register bits
-    namespace addr%s_bits {
+    /// ADDR Register bits
+    namespace addr_bits {
         constexpr uint32_t DATA = (16 << 0);  ///< A/D conversion data
         constexpr uint32_t ERR = (1U << 31);  ///< A/D conversion data error status
     }
 
-    /// ADEXDR%s Register bits
-    namespace adexdr%s_bits {
+    /// ADEXDR Register bits
+    namespace adexdr_bits {
         constexpr uint32_t DATA = (16 << 0);  ///< A/D conversion data
         constexpr uint32_t DIAGSR = (3 << 24);  ///< Self-diagnosis Status
         constexpr uint32_t ERR = (1U << 31);  ///< A/D Conversion Error Status
     }
 
-    /// ADFIFODR%s Register bits
-    namespace adfifodr%s_bits {
+    /// ADFIFODR Register bits
+    namespace adfifodr_bits {
         constexpr uint32_t DATA = (16 << 0);  ///< A/D Conversion Data
         constexpr uint32_t CH = (7 << 24);  ///< A/D Conversion Channel Number
         constexpr uint32_t ERR = (1U << 31);  ///< A/D Conversion Data Error Status
@@ -8589,7 +8589,7 @@ namespace dac {
 
     /// DAC Register structure
     struct Registers {
-        volatile uint32_t DADR%s;  ///< Offset: 0x00 - D/A Data Register %s
+        volatile uint32_t DADR;  ///< Offset: 0x00 - D/A Data Register %s (renamed from DADR)
         volatile uint32_t DACR;  ///< Offset: 0x04 - D/A Control Register
         volatile uint32_t DADPR;  ///< Offset: 0x05 - DADRn Format Select Register
         volatile uint32_t DAAMPCR;  ///< Offset: 0x08 - D/A Output Amplifier Control Register

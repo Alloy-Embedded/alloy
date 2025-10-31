@@ -3,7 +3,7 @@
 /// Source: nordic_nrf51.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:54
+/// Generated: 2025-10-31 17:44:31
 #ifndef ALLOY_GENERATED_NRF51_PERIPHERALS_HPP
 #define ALLOY_GENERATED_NRF51_PERIPHERALS_HPP
 
@@ -582,8 +582,8 @@ namespace radio {
         volatile uint32_t STATE;  ///< Offset: 0x550 - Current radio state.
         volatile uint32_t DATAWHITEIV;  ///< Offset: 0x554 - Data whitening initial value.
         volatile uint32_t BCC;  ///< Offset: 0x560 - Bit counter compare.
-        volatile uint32_t DAB[%s];  ///< Offset: 0x600 - Device address base segment.
-        volatile uint32_t DAP[%s];  ///< Offset: 0x620 - Device address prefix.
+        volatile uint32_t DAB__;  ///< Offset: 0x600 - Device address base segment. (renamed from DAB__)
+        volatile uint32_t DAP__;  ///< Offset: 0x620 - Device address prefix. (renamed from DAP__)
         volatile uint32_t DACNF;  ///< Offset: 0x640 - Device address match configuration.
         volatile uint32_t OVERRIDE0;  ///< Offset: 0x724 - Trim value override register 0.
         volatile uint32_t OVERRIDE1;  ///< Offset: 0x728 - Trim value override register 1.
@@ -761,8 +761,8 @@ namespace radio {
         constexpr uint32_t DATAWHITEIV = (7 << 0);  ///< Data whitening initial value. Bit 0 corresponds to Position 0 of the LSFR, Bit 1 to position 5... Decision point: TXEN or RXEN task.
     }
 
-    /// DAP[%s] Register bits
-    namespace dap[%s]_bits {
+    /// DAP__ Register bits
+    namespace dap___bits {
         constexpr uint32_t DAP = (16 << 0);  ///< Device address prefix.
     }
 
@@ -891,7 +891,7 @@ namespace usart {
         constexpr uint32_t OVERRUN = (1U << 0);  ///< A start bit is received while the previous data still lies in RXD. (Data loss).
         constexpr uint32_t PARITY = (1U << 1);  ///< A character with bad parity is received. Only checked if HW parity control is enabled.
         constexpr uint32_t FRAMING = (1U << 2);  ///< A valid stop bit is not detected on the serial data input after all bits in a character have been received.
-        constexpr uint32_t BREAK = (1U << 3);  ///< The serial data input is '0' for longer than the length of a data frame.
+        constexpr uint32_t BREAK_ = (1U << 3);  ///< The serial data input is '0' for longer than the length of a data frame. (renamed from BREAK_)
     }
 
     /// ENABLE Register bits
@@ -1120,12 +1120,12 @@ namespace gpio {
 
     /// GPIO Register structure
     struct Registers {
-        volatile uint32_t TASKS_OUT[%s];  ///< Offset: 0x00 - Tasks asssociated with GPIOTE channels.
-        volatile uint32_t EVENTS_IN[%s];  ///< Offset: 0x100 - Tasks asssociated with GPIOTE channels.
+        volatile uint32_t TASKS_OUT__;  ///< Offset: 0x00 - Tasks asssociated with GPIOTE channels. (renamed from TASKS_OUT__)
+        volatile uint32_t EVENTS_IN__;  ///< Offset: 0x100 - Tasks asssociated with GPIOTE channels. (renamed from EVENTS_IN__)
         volatile uint32_t EVENTS_PORT;  ///< Offset: 0x17C - Event generated from multiple pins.
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Interrupt enable set register.
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Interrupt enable clear register.
-        volatile uint32_t CONFIG[%s];  ///< Offset: 0x510 - Channel configuration registers.
+        volatile uint32_t CONFIG__;  ///< Offset: 0x510 - Channel configuration registers. (renamed from CONFIG__)
         volatile uint32_t POWER;  ///< Offset: 0xFFC - Peripheral power control.
     };
 
@@ -1152,8 +1152,8 @@ namespace gpio {
         constexpr uint32_t PORT = (1U << 31);  ///< Disable interrupt on PORT event.
     }
 
-    /// CONFIG[%s] Register bits
-    namespace config[%s]_bits {
+    /// CONFIG__ Register bits
+    namespace config___bits {
         constexpr uint32_t MODE = (2 << 0);  ///< Mode
         constexpr uint32_t PSEL = (5 << 8);  ///< Pin select.
         constexpr uint32_t POLARITY = (2 << 16);  ///< Effects on output when in Task mode, or events on input that generates an event.
@@ -1251,15 +1251,15 @@ namespace tim {
         volatile uint32_t TASKS_COUNT;  ///< Offset: 0x08 - Increment Timer (In counter mode).
         volatile uint32_t TASKS_CLEAR;  ///< Offset: 0x0C - Clear timer.
         volatile uint32_t TASKS_SHUTDOWN;  ///< Offset: 0x10 - Shutdown timer.
-        volatile uint32_t TASKS_CAPTURE[%s];  ///< Offset: 0x40 - Capture Timer value to CC[n] registers.
-        volatile uint32_t EVENTS_COMPARE[%s];  ///< Offset: 0x140 - Compare event on CC[n] match.
+        volatile uint32_t TASKS_CAPTURE__;  ///< Offset: 0x40 - Capture Timer value to CC[n] registers. (renamed from TASKS_CAPTURE__)
+        volatile uint32_t EVENTS_COMPARE__;  ///< Offset: 0x140 - Compare event on CC[n] match. (renamed from EVENTS_COMPARE__)
         volatile uint32_t SHORTS;  ///< Offset: 0x200 - Shortcuts for Timer.
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Interrupt enable set register.
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Interrupt enable clear register.
         volatile uint32_t MODE;  ///< Offset: 0x504 - Timer Mode selection.
         volatile uint32_t BITMODE;  ///< Offset: 0x508 - Sets timer behaviour.
         volatile uint32_t PRESCALER;  ///< Offset: 0x510 - 4-bit prescaler to source clock frequency (max value 9)....
-        volatile uint32_t CC[%s];  ///< Offset: 0x540 - Capture/compare registers.
+        volatile uint32_t CC__;  ///< Offset: 0x540 - Capture/compare registers. (renamed from CC__)
         volatile uint32_t POWER;  ///< Offset: 0xFFC - Peripheral power control.
     };
 
@@ -1336,7 +1336,7 @@ namespace rtc {
         volatile uint32_t TASKS_TRIGOVRFLW;  ///< Offset: 0x0C - Set COUNTER to 0xFFFFFFF0.
         volatile uint32_t EVENTS_TICK;  ///< Offset: 0x100 - Event on COUNTER increment.
         volatile uint32_t EVENTS_OVRFLW;  ///< Offset: 0x104 - Event on COUNTER overflow.
-        volatile uint32_t EVENTS_COMPARE[%s];  ///< Offset: 0x140 - Compare event on CC[n] match.
+        volatile uint32_t EVENTS_COMPARE__;  ///< Offset: 0x140 - Compare event on CC[n] match. (renamed from EVENTS_COMPARE__)
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Interrupt enable set register.
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Interrupt enable clear register.
         volatile uint32_t EVTEN;  ///< Offset: 0x340 - Configures event enable routing to PPI for each RTC event.
@@ -1344,7 +1344,7 @@ namespace rtc {
         volatile uint32_t EVTENCLR;  ///< Offset: 0x348 - Disable events routing to PPI. The reading of this...
         volatile uint32_t COUNTER;  ///< Offset: 0x504 - Current COUNTER value.
         volatile uint32_t PRESCALER;  ///< Offset: 0x508 - 12-bit prescaler for COUNTER frequency...
-        volatile uint32_t CC[%s];  ///< Offset: 0x540 - Capture/compare registers.
+        volatile uint32_t CC__;  ///< Offset: 0x540 - Capture/compare registers. (renamed from CC__)
         volatile uint32_t POWER;  ///< Offset: 0xFFC - Peripheral power control.
     };
 
@@ -1413,8 +1413,8 @@ namespace rtc {
         constexpr uint32_t PRESCALER = (12 << 0);  ///< RTC PRESCALER value.
     }
 
-    /// CC[%s] Register bits
-    namespace cc[%s]_bits {
+    /// CC__ Register bits
+    namespace cc___bits {
         constexpr uint32_t COMPARE = (24 << 0);  ///< Compare value.
     }
 
@@ -1724,7 +1724,7 @@ namespace wdg {
         volatile uint32_t CRV;  ///< Offset: 0x504 - Counter reload value in number of 32kiHz clock cycles.
         volatile uint32_t RREN;  ///< Offset: 0x508 - Reload request enable.
         volatile uint32_t CONFIG;  ///< Offset: 0x50C - Configuration register.
-        volatile uint32_t RR[%s];  ///< Offset: 0x600 - Reload requests registers.
+        volatile uint32_t RR__;  ///< Offset: 0x600 - Reload requests registers. (renamed from RR__)
         volatile uint32_t POWER;  ///< Offset: 0xFFC - Peripheral power control.
     };
 
@@ -1777,8 +1777,8 @@ namespace wdg {
         constexpr uint32_t HALT = (1U << 3);  ///< Configure the watchdog to pause or not while the CPU is halted by the debugger.
     }
 
-    /// RR[%s] Register bits
-    namespace rr[%s]_bits {
+    /// RR__ Register bits
+    namespace rr___bits {
         constexpr uint32_t RR = (32 << 0);  ///< Reload register.
     }
 
@@ -2076,7 +2076,7 @@ namespace ppi {
         volatile uint32_t CHENCLR;  ///< Offset: 0x508 - Channel enable clear.
         volatile uint32_t EEP;  ///< Offset: 0x00 - Channel event end-point.
         volatile uint32_t TEP;  ///< Offset: 0x04 - Channel task end-point.
-        volatile uint32_t CHG[%s];  ///< Offset: 0x800 - Channel group configuration.
+        volatile uint32_t CHG__;  ///< Offset: 0x800 - Channel group configuration. (renamed from CHG__)
     };
 
     /// Peripheral instances
@@ -2179,8 +2179,8 @@ namespace ppi {
         constexpr uint32_t CH31 = (1U << 31);  ///< Disable PPI channel 31.
     }
 
-    /// CHG[%s] Register bits
-    namespace chg[%s]_bits {
+    /// CHG__ Register bits
+    namespace chg___bits {
         constexpr uint32_t CH0 = (1U << 0);  ///< Include CH0 in channel group.
         constexpr uint32_t CH1 = (1U << 1);  ///< Include CH1 in channel group.
         constexpr uint32_t CH2 = (1U << 2);  ///< Include CH2 in channel group.
@@ -2229,16 +2229,16 @@ namespace ficr {
         volatile uint32_t PPFC;  ///< Offset: 0x2C - Pre-programmed factory code present.
         volatile uint32_t NUMRAMBLOCK;  ///< Offset: 0x34 - Number of individualy controllable RAM blocks.
         volatile uint32_t SIZERAMBLOCKS;  ///< Offset: 0x38 - Size of RAM blocks in bytes.
-        volatile uint32_t SIZERAMBLOCK[%s];  ///< Offset: 0x38 - Deprecated array of size of RAM block in bytes. This...
+        volatile uint32_t SIZERAMBLOCK__;  ///< Offset: 0x38 - Deprecated array of size of RAM block in bytes. This... (renamed from SIZERAMBLOCK__)
         volatile uint32_t CONFIGID;  ///< Offset: 0x5C - Configuration identifier.
-        volatile uint32_t DEVICEID[%s];  ///< Offset: 0x60 - Device identifier.
-        volatile uint32_t ER[%s];  ///< Offset: 0x80 - Encryption root.
-        volatile uint32_t IR[%s];  ///< Offset: 0x90 - Identity root.
+        volatile uint32_t DEVICEID__;  ///< Offset: 0x60 - Device identifier. (renamed from DEVICEID__)
+        volatile uint32_t ER__;  ///< Offset: 0x80 - Encryption root. (renamed from ER__)
+        volatile uint32_t IR__;  ///< Offset: 0x90 - Identity root. (renamed from IR__)
         volatile uint32_t DEVICEADDRTYPE;  ///< Offset: 0xA0 - Device address type.
-        volatile uint32_t DEVICEADDR[%s];  ///< Offset: 0xA4 - Device address.
+        volatile uint32_t DEVICEADDR__;  ///< Offset: 0xA4 - Device address. (renamed from DEVICEADDR__)
         volatile uint32_t OVERRIDEEN;  ///< Offset: 0xAC - Radio calibration override enable.
-        volatile uint32_t NRF_1MBIT[%s];  ///< Offset: 0xB0 - Override values for the OVERRIDEn registers in RADIO for...
-        volatile uint32_t BLE_1MBIT[%s];  ///< Offset: 0xEC - Override values for the OVERRIDEn registers in RADIO for...
+        volatile uint32_t NRF_1MBIT__;  ///< Offset: 0xB0 - Override values for the OVERRIDEn registers in RADIO for... (renamed from NRF_1MBIT__)
+        volatile uint32_t BLE_1MBIT__;  ///< Offset: 0xEC - Override values for the OVERRIDEn registers in RADIO for... (renamed from BLE_1MBIT__)
     };
 
     /// Peripheral instances
@@ -2284,9 +2284,9 @@ namespace uicr {
         volatile uint32_t XTALFREQ;  ///< Offset: 0x08 - Reset value for CLOCK XTALFREQ register.
         volatile uint32_t FWID;  ///< Offset: 0x10 - Firmware ID.
         volatile uint32_t BOOTLOADERADDR;  ///< Offset: 0x14 - Bootloader start address.
-        volatile uint32_t NRFFW[%s];  ///< Offset: 0x14 - Reserved for Nordic firmware design.
-        volatile uint32_t NRFHW[%s];  ///< Offset: 0x50 - Reserved for Nordic hardware design.
-        volatile uint32_t CUSTOMER[%s];  ///< Offset: 0x80 - Reserved for customer.
+        volatile uint32_t NRFFW__;  ///< Offset: 0x14 - Reserved for Nordic firmware design. (renamed from NRFFW__)
+        volatile uint32_t NRFHW__;  ///< Offset: 0x50 - Reserved for Nordic hardware design. (renamed from NRFHW__)
+        volatile uint32_t CUSTOMER__;  ///< Offset: 0x80 - Reserved for customer. (renamed from CUSTOMER__)
     };
 
     /// Peripheral instances

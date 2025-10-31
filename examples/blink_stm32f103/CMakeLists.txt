@@ -10,31 +10,24 @@ target_include_directories(blink_stm32f103 PRIVATE
     ${CMAKE_SOURCE_DIR}/boards
 )
 
+# Apply board-specific flags and linker script
+alloy_target_board_settings(blink_stm32f103)
+
+# Additional compile options
 target_compile_options(blink_stm32f103 PRIVATE
-    -mcpu=cortex-m3
-    -mthumb
     -O2
-    -ffunction-sections
-    -fdata-sections
     -Wall
     -Wextra
 )
 
+# Additional link options
 target_link_options(blink_stm32f103 PRIVATE
-    -mcpu=cortex-m3
-    -mthumb
-    -specs=nosys.specs
-    -specs=nano.specs
-    -T${CMAKE_SOURCE_DIR}/boards/stm32f103c8/STM32F103C8.ld
-    -Wl,--gc-sections
     -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/blink_stm32f103.map
     -Wl,--print-memory-usage
 )
 
-# Generate additional output formats
-add_custom_command(TARGET blink_stm32f103 POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:blink_stm32f103> ${CMAKE_CURRENT_BINARY_DIR}/blink_stm32f103.hex
-    COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:blink_stm32f103> ${CMAKE_CURRENT_BINARY_DIR}/blink_stm32f103.bin
-    COMMAND ${CMAKE_SIZE} $<TARGET_FILE:blink_stm32f103>
-    COMMENT "Generating HEX and BIN files for STM32F103"
-)
+# Generate binary outputs (.bin, .hex) and print size
+alloy_add_binary_outputs(blink_stm32f103)
+
+# Create flash target
+alloy_add_flash_target(blink_stm32f103)

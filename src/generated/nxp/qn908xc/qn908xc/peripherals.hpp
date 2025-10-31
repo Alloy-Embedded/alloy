@@ -3,7 +3,7 @@
 /// Source: nxp_qn908xc.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:26
+/// Generated: 2025-10-31 17:44:00
 #ifndef ALLOY_GENERATED_QN908XC_PERIPHERALS_HPP
 #define ALLOY_GENERATED_QN908XC_PERIPHERALS_HPP
 
@@ -1136,9 +1136,9 @@ namespace tim {
         volatile uint32_t PR;  ///< Offset: 0x0C - Prescale Register. When the Prescale Counter (PC) is...
         volatile uint32_t PC;  ///< Offset: 0x10 - Prescale Counter. The 32 bit PC is a counter which is...
         volatile uint32_t MCR;  ///< Offset: 0x14 - Match Control Register. The MCR is used to control if an...
-        volatile uint32_t MR[%s];  ///< Offset: 0x18 - Match Register . MR can be enabled through the MCR to...
+        volatile uint32_t MR__;  ///< Offset: 0x18 - Match Register . MR can be enabled through the MCR to... (renamed from MR__)
         volatile uint32_t CCR;  ///< Offset: 0x28 - Capture Control Register. The CCR controls which edges...
-        volatile uint32_t CR[%s];  ///< Offset: 0x2C - Capture Register . CR is loaded with the value of TC...
+        volatile uint32_t CR__;  ///< Offset: 0x2C - Capture Register . CR is loaded with the value of TC... (renamed from CR__)
         volatile uint32_t EMR;  ///< Offset: 0x3C - External Match Register. The EMR controls the match...
         volatile uint32_t CTCR;  ///< Offset: 0x70 - Count Control Register. The CTCR selects between Timer...
         volatile uint32_t PWMC;  ///< Offset: 0x74 - PWM Control Register. The PWMCON enables PWM mode for...
@@ -1199,8 +1199,8 @@ namespace tim {
         constexpr uint32_t MR3S = (1U << 11);  ///< Stop on MR3: the TC and PC will be stopped and TCR[0] will be set to 0 if MR3 matches the TC. 0 = disabled. 1 = enabled.
     }
 
-    /// MR[%s] Register bits
-    namespace mr[%s]_bits {
+    /// MR__ Register bits
+    namespace mr___bits {
         constexpr uint32_t MATCH = (32 << 0);  ///< Timer counter match value.
     }
 
@@ -1217,8 +1217,8 @@ namespace tim {
         constexpr uint32_t CAP2I = (1U << 8);  ///< Generate interrupt on channel 2 capture event: a CR2 load generates an interrupt.
     }
 
-    /// CR[%s] Register bits
-    namespace cr[%s]_bits {
+    /// CR__ Register bits
+    namespace cr___bits {
         constexpr uint32_t CAP = (32 << 0);  ///< Timer counter capture value.
     }
 
@@ -1381,27 +1381,27 @@ namespace inputmux {
 
     /// INPUTMUX Register structure
     struct Registers {
-        volatile uint32_t PINTSEL[%s];  ///< Offset: 0x00 - Pin interrupt select register
-        volatile uint32_t DMA_ITRIG_INMUX[%s];  ///< Offset: 0x200 - Trigger select register for DMA channel
-        volatile uint32_t DMA_OTRIG_INMUX[%s];  ///< Offset: 0x800 - DMA output trigger selection to become DMA trigger
+        volatile uint32_t PINTSEL__;  ///< Offset: 0x00 - Pin interrupt select register (renamed from PINTSEL__)
+        volatile uint32_t DMA_ITRIG_INMUX__;  ///< Offset: 0x200 - Trigger select register for DMA channel (renamed from DMA_ITRIG_INMUX__)
+        volatile uint32_t DMA_OTRIG_INMUX__;  ///< Offset: 0x800 - DMA output trigger selection to become DMA trigger (renamed from DMA_OTRIG_INMUX__)
     };
 
     /// Peripheral instances
     inline Registers* INPUTMUX = reinterpret_cast<Registers*>(INPUTMUX_BASE);
 
     // Bit definitions
-    /// PINTSEL[%s] Register bits
-    namespace pintsel[%s]_bits {
+    /// PINTSEL__ Register bits
+    namespace pintsel___bits {
         constexpr uint32_t INTPIN = (5 << 0);  ///< Pin number select for pin interrupt or pattern match engine input. (PIO0_0 to PIO1_31 correspond to numbers 0 to 63).
     }
 
-    /// DMA_ITRIG_INMUX[%s] Register bits
-    namespace dma_itrig_inmux[%s]_bits {
+    /// DMA_ITRIG_INMUX__ Register bits
+    namespace dma_itrig_inmux___bits {
         constexpr uint32_t INP = (5 << 0);  ///< Trigger input number (decimal value) for DMA channel n (n = 0 to 21). 0 = ADC0 Sequence A interrupt 1 = ADC0 Sequence B interrupt 2 = SCT0 DMA request 0 3 = SCT0 DMA request 1 4 = Timer CT32B0 Match 0 5 = Timer CT32B0 Match 1 6 = Timer CT32B1 Match 0 7 = Timer CT32B2 Match 0 8 = Timer CT32B2 Match 1 9 = Timer CT32B3 Match 0 10 = Timer CT32B4 Match 0 11 = Timer CT32B4 Match 1 12 = Pin interrupt 0 13 = Pin interrupt 1 14 = Pin interrupt 2 15 = Pin interrupt 3 16 = DMA output trigger mux 0 17 = DMA output trigger mux 1 18 = DMA output trigger mux 2 19 = DMA output trigger mux 3
     }
 
-    /// DMA_OTRIG_INMUX[%s] Register bits
-    namespace dma_otrig_inmux[%s]_bits {
+    /// DMA_OTRIG_INMUX__ Register bits
+    namespace dma_otrig_inmux___bits {
         constexpr uint32_t INP = (5 << 0);  ///< DMA trigger output number (decimal value) for DMA channel n (n = 0 to 19).
     }
 
@@ -1422,9 +1422,9 @@ namespace adc {
         volatile uint32_t CH_CFG;  ///< Offset: 0x08 - ADC channel configuration register
         volatile uint32_t WCMP_THR;  ///< Offset: 0x0C - Window compare threshold register
         volatile uint32_t INTEN;  ///< Offset: 0x10 - ADC interrupt enable register
-        volatile uint32_t INT;  ///< Offset: 0x14 - ADC interrupt status register
+        volatile uint32_t INT_;  ///< Offset: 0x14 - ADC interrupt status register (renamed from INT_)
         volatile uint32_t DATA;  ///< Offset: 0x18 - ADC converted data output
-        volatile uint32_t CFG[%s];  ///< Offset: 0x20 - ADC configuration register
+        volatile uint32_t CFG__;  ///< Offset: 0x20 - ADC configuration register (renamed from CFG__)
         volatile uint32_t BG_BF;  ///< Offset: 0x28 - ADC bandcap and buffer setting register
         volatile uint32_t ANA_CTRL;  ///< Offset: 0x2C - ADC core and reference setting regsiter
     };
@@ -1474,8 +1474,8 @@ namespace adc {
         constexpr uint32_t ADC_INTEN = (1U << 31);  ///< 1 to enable ADC interrupt
     }
 
-    /// INT Register bits
-    namespace int_bits {
+    /// INT_ Register bits
+    namespace int__bits {
         constexpr uint32_t DAT_RDY_INT = (1U << 0);  ///< Data ready interrupt will be cleared after fifo data is read can not be cleared by write 1.
         constexpr uint32_t WCMP_INT = (1U << 1);  ///< Window compare interrupt.
         constexpr uint32_t FIFO_OF_INT = (1U << 2);  ///< FIFO overflow interrupt.
@@ -1487,8 +1487,8 @@ namespace adc {
         constexpr uint32_t DATA = (32 << 0);  ///< ADC data read from FIFO.
     }
 
-    /// CFG[%s] Register bits
-    namespace cfg[%s]_bits {
+    /// CFG__ Register bits
+    namespace cfg___bits {
         constexpr uint32_t PGA_GAIN = (3 << 0);  ///< SD ADC input PGA gain=2^value the range is 1-16.
         constexpr uint32_t PGA_BP = (1U << 3);  ///< 1 to bypass SD ADC input PGA
         constexpr uint32_t PGA_VINN = (2 << 4);  ///< SD ADC PGA VIN input offset selection
@@ -1546,7 +1546,7 @@ namespace dac {
         volatile uint32_t GAIN_CTRL;  ///< Offset: 0x10 - reserved
         volatile uint32_t CLR_TRG;  ///< Offset: 0x14 - Reserved
         volatile uint32_t DIN;  ///< Offset: 0x18 - DAC data input
-        volatile uint32_t INT;  ///< Offset: 0x1C - Reserved
+        volatile uint32_t INT_;  ///< Offset: 0x1C - Reserved (renamed from INT_)
         volatile uint32_t INTEN;  ///< Offset: 0x20 - Reserved
         volatile uint32_t INT_STAT;  ///< Offset: 0x24 - Reserved
         volatile uint32_t STATUS;  ///< Offset: 0x28 - Reserved
@@ -1609,8 +1609,8 @@ namespace dac {
         constexpr uint32_t DIN = (32 << 0);  ///< DAC data input
     }
 
-    /// INT Register bits
-    namespace int_bits {
+    /// INT_ Register bits
+    namespace int__bits {
         constexpr uint32_t BUF_NFUL_INT = (1U << 0);  ///< Buffer not full interrupt
         constexpr uint32_t BUF_FUL_INT = (1U << 1);  ///< Buffer full interrupt
         constexpr uint32_t BUF_EMT_INT = (1U << 2);  ///< Buffer empty interrupt
@@ -1664,7 +1664,7 @@ namespace cs {
     struct Registers {
         volatile uint32_t CTRL0;  ///< Offset: 0x00 - CapSense control register 0
         volatile uint32_t CTRL1;  ///< Offset: 0x04 - CapSense control register 1
-        volatile uint32_t INT;  ///< Offset: 0x08 - Interrupt status register
+        volatile uint32_t INT_;  ///< Offset: 0x08 - Interrupt status register (renamed from INT_)
         volatile uint32_t INTEN;  ///< Offset: 0x0C - Interrupt mask register
         volatile uint32_t DATA;  ///< Offset: 0x10 - Output data register
         volatile uint32_t LP_CTRL;  ///< Offset: 0x14 - Control register for low power mode
@@ -1691,8 +1691,8 @@ namespace cs {
         constexpr uint32_t CH = (8 << 16);  ///< Channel enable, each bit represent one channel, with CH[0] for CS0, CH[1] for CS1
     }
 
-    /// INT Register bits
-    namespace int_bits {
+    /// INT_ Register bits
+    namespace int__bits {
         constexpr uint32_t FIFO_NOTEMPTY_INT = (1U << 0);  ///< FIFO not empty status indicator. Will clear automatically if no data available.
         constexpr uint32_t FIFO_HFULL_INT = (1U << 1);  ///< FIFO half full status indicator. Will clear automatically once less than half.
         constexpr uint32_t FIFO_FULL_INT = (1U << 2);  ///< FIFO full status indicator. Will clear automatically once not full.
@@ -1750,7 +1750,7 @@ namespace rng {
         volatile uint32_t CTRL;  ///< Offset: 0x00 - control register
         volatile uint32_t STAT;  ///< Offset: 0x04 - status register
         volatile uint32_t DATA;  ///< Offset: 0x08 - random data output register
-        volatile uint32_t INT;  ///< Offset: 0x0C - interrupt register
+        volatile uint32_t INT_;  ///< Offset: 0x0C - interrupt register (renamed from INT_)
         volatile uint32_t INTEN;  ///< Offset: 0x10 - interrupt mask register
     };
 
@@ -1775,8 +1775,8 @@ namespace rng {
         constexpr uint32_t DATA = (32 << 0);  ///< final random data read by SW
     }
 
-    /// INT Register bits
-    namespace int_bits {
+    /// INT_ Register bits
+    namespace int__bits {
         constexpr uint32_t DONE = (1U << 0);  ///< random data generate done
     }
 
@@ -1804,7 +1804,7 @@ namespace qdec0 {
         volatile uint32_t ACC_R;  ///< Offset: 0x10 - QDEC accumulate snapshot register
         volatile uint32_t DB;  ///< Offset: 0x14 - double sample register
         volatile uint32_t DB_R;  ///< Offset: 0x18 - DB snapshot register
-        volatile uint32_t INT;  ///< Offset: 0x1C - interrupt register
+        volatile uint32_t INT_;  ///< Offset: 0x1C - interrupt register (renamed from INT_)
         volatile uint32_t INTEN;  ///< Offset: 0x20 - interrupt mask register
         volatile uint32_t STAT;  ///< Offset: 0x24 - QDEC is running
     };
@@ -1856,8 +1856,8 @@ namespace qdec0 {
         constexpr uint32_t DB_R = (4 << 0);  ///< DB_R RO snapshot when END event is valid
     }
 
-    /// INT Register bits
-    namespace int_bits {
+    /// INT_ Register bits
+    namespace int__bits {
         constexpr uint32_t SINGLE_SAMPLE = (1U << 0);  ///< Each time when normal sample is done
         constexpr uint32_t SAMPLE_END = (1U << 1);  ///< END event triggered
         constexpr uint32_t ACC_OF = (1U << 2);  ///< Normal sample (+1/-1) number is overflow
@@ -3881,10 +3881,10 @@ namespace sct0 {
         volatile uint32_t EVFLAG;  ///< Offset: 0xF4 - SCT event flag register
         volatile uint32_t CONEN;  ///< Offset: 0xF8 - SCT conflict interrupt enable register
         volatile uint32_t CONFLAG;  ///< Offset: 0xFC - SCT conflict flag register
-        volatile uint32_t SCTCAP[%s];  ///< Offset: 0x100 - SCT capture register of capture channel
-        volatile uint32_t SCTMATCH[%s];  ///< Offset: 0x100 - SCT match value register of match channels
-        volatile uint32_t SCTCAPCTRL[%s];  ///< Offset: 0x200 - SCT capture control register
-        volatile uint32_t SCTMATCHREL[%s];  ///< Offset: 0x200 - SCT match reload value register
+        volatile uint32_t SCTCAP__;  ///< Offset: 0x100 - SCT capture register of capture channel (renamed from SCTCAP__)
+        volatile uint32_t SCTMATCH__;  ///< Offset: 0x100 - SCT match value register of match channels (renamed from SCTMATCH__)
+        volatile uint32_t SCTCAPCTRL__;  ///< Offset: 0x200 - SCT capture control register (renamed from SCTCAPCTRL__)
+        volatile uint32_t SCTMATCHREL__;  ///< Offset: 0x200 - SCT match reload value register (renamed from SCTMATCHREL__)
         volatile uint32_t SET;  ///< Offset: 0x00 - SCT output 0 set register
         volatile uint32_t CLR;  ///< Offset: 0x04 - SCT output 0 clear register
         volatile uint32_t MODULECONTENT;  ///< Offset: 0x7FC - Reserved
@@ -4078,26 +4078,26 @@ namespace sct0 {
         constexpr uint32_t BUSERRH = (1U << 31);  ///< The most recent bus error from this SCT involved writing CTR H, STATE H, MATCH H, or the Output register when the H counter was not halted.
     }
 
-    /// SCTCAP[%s] Register bits
-    namespace sctcap[%s]_bits {
+    /// SCTCAP__ Register bits
+    namespace sctcap___bits {
         constexpr uint32_t CAPn_L = (16 << 0);  ///< When UNIFY = 0, read the 16-bit counter value at which this register was last captured. When UNIFY = 1, read the lower 16 bits of the 32-bit value at which this register was last captured.
         constexpr uint32_t CAPn_H = (16 << 16);  ///< When UNIFY = 0, read the 16-bit counter value at which this register was last captured. When UNIFY = 1, read the upper 16 bits of the 32-bit value at which this register was last captured.
     }
 
-    /// SCTMATCH[%s] Register bits
-    namespace sctmatch[%s]_bits {
+    /// SCTMATCH__ Register bits
+    namespace sctmatch___bits {
         constexpr uint32_t MATCHn_L = (16 << 0);  ///< When UNIFY = 0, read or write the 16-bit value to be compared to the L counter. When UNIFY = 1, read or write the lower 16 bits of the 32-bit value to be compared to the unified counter.
         constexpr uint32_t MATCHn_H = (16 << 16);  ///< When UNIFY = 0, read or write the 16-bit value to be compared to the H counter. When UNIFY = 1, read or write the upper 16 bits of the 32-bit value to be compared to the unified counter.
     }
 
-    /// SCTCAPCTRL[%s] Register bits
-    namespace sctcapctrl[%s]_bits {
+    /// SCTCAPCTRL__ Register bits
+    namespace sctcapctrl___bits {
         constexpr uint32_t CAPCONn_L = (16 << 0);  ///< If bit m is one, event m causes the CAPn_L (UNIFY = 0) or the CAPn (UNIFY = 1) register to be loaded (event 0 = bit 0, event 1 = bit 1, etc.). The number of bits = number of match/captures in this SCT.
         constexpr uint32_t CAPCONn_H = (16 << 16);  ///< If bit m is one, event m causes the CAPn_H (UNIFY = 0) register to be loaded (event 0 = bit 16, event 1 = bit 17, etc.). The number of bits = number of match/captures in this SCT.
     }
 
-    /// SCTMATCHREL[%s] Register bits
-    namespace sctmatchrel[%s]_bits {
+    /// SCTMATCHREL__ Register bits
+    namespace sctmatchrel___bits {
         constexpr uint32_t RELOADn_L = (16 << 0);  ///< When UNIFY = 0, specifies the 16-bit value to be loaded into the MATCHn_L register. When UNIFY = 1, specifies the lower 16 bits of the 32-bit value to be loaded into the MATCHn register.
         constexpr uint32_t RELOADn_H = (16 << 16);  ///< When UNIFY = 0, specifies the 16-bit to be loaded into the MATCHn_H register. When UNIFY = 1, specifies the upper 16 bits of the 32-bit value to be loaded into the MATCHn register.
     }
@@ -4137,7 +4137,7 @@ namespace i2c {
         volatile uint32_t MSTDAT;  ///< Offset: 0x828 - Combined Master receiver and transmitter data register.
         volatile uint32_t SLVCTL;  ///< Offset: 0x840 - Slave control register.
         volatile uint32_t SLVDAT;  ///< Offset: 0x844 - Combined Slave receiver and transmitter data register.
-        volatile uint32_t SLVADR[%s];  ///< Offset: 0x848 - Slave address register.
+        volatile uint32_t SLVADR__;  ///< Offset: 0x848 - Slave address register. (renamed from SLVADR__)
         volatile uint32_t SLVQUAL0;  ///< Offset: 0x858 - Slave Qualification for address 0.
         volatile uint32_t MONRXDAT;  ///< Offset: 0x880 - Monitor receiver data register.
         volatile uint32_t ID;  ///< Offset: 0xFFC - I2C module Identification. This value appears in the...
@@ -4266,8 +4266,8 @@ namespace i2c {
         constexpr uint32_t DATA = (8 << 0);  ///< Slave function data register. Read: read the most recently received data for the Slave function. Write: transmit data using the Slave function.
     }
 
-    /// SLVADR[%s] Register bits
-    namespace slvadr[%s]_bits {
+    /// SLVADR__ Register bits
+    namespace slvadr___bits {
         constexpr uint32_t SADISABLE = (1U << 0);  ///< Slave Address n Disable.
         constexpr uint32_t SLVADR = (7 << 1);  ///< Slave Address. Seven bit slave address that is compared to received addresses if enabled.
         constexpr uint32_t AUTONACK = (1U << 15);  ///< Automatic NACK operation. Used in conjunction with AUTOACK and AUTOMATCHREAD, allows software to ignore I2C traffic while handling previous I2C data or other operations.
@@ -4309,7 +4309,7 @@ namespace fsp {
     struct Registers {
         volatile uint32_t SYS_CTRL;  ///< Offset: 0x00 - FSP system control register
         volatile uint32_t STATUS;  ///< Offset: 0x04 - FSP status register
-        volatile uint32_t INT;  ///< Offset: 0x08 - FSP interrupt register
+        volatile uint32_t INT_;  ///< Offset: 0x08 - FSP interrupt register (renamed from INT_)
         volatile uint32_t INTEN;  ///< Offset: 0x0C - FSP interrupt enable register
         volatile uint32_t TE_CTRL;  ///< Offset: 0x20 - transmit engine control register
         volatile uint32_t TE_SRC_BASE;  ///< Offset: 0x24 - transfer engine source data memory base register
@@ -4401,8 +4401,8 @@ namespace fsp {
         constexpr uint32_t FIR_READY = (1U << 2);  ///< FIR output buffer is not empty which is valid for read
     }
 
-    /// INT Register bits
-    namespace int_bits {
+    /// INT_ Register bits
+    namespace int__bits {
         constexpr uint32_t TE_DONE_INT = (1U << 0);  ///< Transform engine done interrupt
         constexpr uint32_t MOU_DONE_INT = (1U << 1);  ///< Matrix operation unit done interrupt
         constexpr uint32_t SE_DONE_INT = (1U << 2);  ///< Statistic engine done interrupt

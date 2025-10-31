@@ -3,7 +3,7 @@
 /// Source: nxp_mkl46.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:38
+/// Generated: 2025-10-31 17:44:12
 #include <cstdint>
 #include <cstring>
 

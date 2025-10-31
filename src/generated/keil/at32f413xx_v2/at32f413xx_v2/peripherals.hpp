@@ -3,7 +3,7 @@
 /// Source: arterytek_sam.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:27
+/// Generated: 2025-10-31 17:44:01
 #ifndef ALLOY_GENERATED_AT32F413XX_V2_PERIPHERALS_HPP
 #define ALLOY_GENERATED_AT32F413XX_V2_PERIPHERALS_HPP
 

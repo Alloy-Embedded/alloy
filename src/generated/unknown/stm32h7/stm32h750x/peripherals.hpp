@@ -3,7 +3,7 @@
 /// Source: st_stm32h750.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:30
+/// Generated: 2025-10-31 17:44:04
 #ifndef ALLOY_GENERATED_STM32H750X_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32H750X_PERIPHERALS_HPP
 
@@ -396,7 +396,7 @@ namespace comp {
     /// COMP1_OR Register bits
     namespace comp1_or_bits {
         constexpr uint32_t AFOP = (11 << 0);  ///< Selection of source for alternate function of output ports
-        constexpr uint32_t OR = (21 << 11);  ///< Option Register
+        constexpr uint32_t OR_ = (21 << 11);  ///< Option Register (renamed from OR_)
     }
 
     /// COMP1_CFGR1 Register bits
@@ -7587,7 +7587,7 @@ namespace axi {
     /// AXI_COMP_ID_1 Register bits
     namespace axi_comp_id_1_bits {
         constexpr uint32_t PREAMBLE = (4 << 0);  ///< Preamble bits 8 to 11
-        constexpr uint32_t CLASS = (4 << 4);  ///< Component class
+        constexpr uint32_t CLASS_ = (4 << 4);  ///< Component class (renamed from CLASS_)
     }
 
     /// AXI_COMP_ID_2 Register bits
@@ -10611,7 +10611,7 @@ namespace can {
     namespace fdcan_cccr_bits {
         constexpr uint32_t INIT = (1U << 0);  ///< Initialization
         constexpr uint32_t CCE = (1U << 1);  ///< Configuration Change Enable
-        constexpr uint32_t ASM = (1U << 2);  ///< ASM Restricted Operation Mode
+        constexpr uint32_t ASM_ = (1U << 2);  ///< ASM Restricted Operation Mode (renamed from ASM_)
         constexpr uint32_t CSA = (1U << 3);  ///< Clock Stop Acknowledge
         constexpr uint32_t CSR = (1U << 4);  ///< Clock Stop Request
         constexpr uint32_t MON = (1U << 5);  ///< Bus Monitoring Mode
@@ -11770,7 +11770,7 @@ namespace swpmi {
         volatile uint32_t RFL;  ///< Offset: 0x18 - SWPMI Receive Frame Length register
         volatile uint32_t TDR;  ///< Offset: 0x1C - SWPMI Transmit data register
         volatile uint32_t RDR;  ///< Offset: 0x20 - SWPMI Receive data register
-        volatile uint32_t OR;  ///< Offset: 0x24 - SWPMI Option register
+        volatile uint32_t OR_;  ///< Offset: 0x24 - SWPMI Option register (renamed from OR_)
     };
 
     /// Peripheral instances
@@ -11851,8 +11851,8 @@ namespace swpmi {
         constexpr uint32_t RD = (32 << 0);  ///< received data
     }
 
-    /// OR Register bits
-    namespace or_bits {
+    /// OR_ Register bits
+    namespace or__bits {
         constexpr uint32_t SWP_TBYP = (1U << 0);  ///< SWP transceiver bypass
         constexpr uint32_t SWP_CLASS = (1U << 1);  ///< SWP class selection
     }

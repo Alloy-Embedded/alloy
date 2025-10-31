@@ -3,7 +3,7 @@
 /// Source: nxp_mkv45.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:26
+/// Generated: 2025-10-31 17:45:05
 #ifndef ALLOY_GENERATED_MKV45F15_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MKV45F15_PERIPHERALS_HPP
 
@@ -399,26 +399,26 @@ namespace dma {
         volatile uint32_t SSRT;  ///< Offset: 0x1D - Set START Bit Register
         volatile uint32_t CERR;  ///< Offset: 0x1E - Clear Error Register
         volatile uint32_t CINT;  ///< Offset: 0x1F - Clear Interrupt Request Register
-        volatile uint32_t INT;  ///< Offset: 0x24 - Interrupt Request Register
+        volatile uint32_t INT_;  ///< Offset: 0x24 - Interrupt Request Register (renamed from INT_)
         volatile uint32_t ERR;  ///< Offset: 0x2C - Error Register
         volatile uint32_t HRS;  ///< Offset: 0x34 - Hardware Request Status Register
         volatile uint32_t EARS;  ///< Offset: 0x44 - Enable Asynchronous Request in Stop Register
-        volatile uint32_t DCHPRI%s;  ///< Offset: 0x100 - Channel n Priority Register
-        volatile uint32_t TCD%s_SADDR;  ///< Offset: 0x1000 - TCD Source Address
-        volatile uint32_t TCD%s_SOFF;  ///< Offset: 0x1004 - TCD Signed Source Address Offset
-        volatile uint32_t TCD%s_ATTR;  ///< Offset: 0x1006 - TCD Transfer Attributes
-        volatile uint32_t TCD%s_NBYTES_MLNO;  ///< Offset: 0x1008 - TCD Minor Byte Count (Minor Loop Disabled)
-        volatile uint32_t TCD%s_NBYTES_MLOFFNO;  ///< Offset: 0x1008 - TCD Signed Minor Loop Offset (Minor Loop Enabled and...
-        volatile uint32_t TCD%s_NBYTES_MLOFFYES;  ///< Offset: 0x1008 - TCD Signed Minor Loop Offset (Minor Loop and Offset Enabled)
-        volatile uint32_t TCD%s_SLAST;  ///< Offset: 0x100C - TCD Last Source Address Adjustment
-        volatile uint32_t TCD%s_DADDR;  ///< Offset: 0x1010 - TCD Destination Address
-        volatile uint32_t TCD%s_DOFF;  ///< Offset: 0x1014 - TCD Signed Destination Address Offset
-        volatile uint32_t TCD%s_CITER_ELINKNO;  ///< Offset: 0x1016 - TCD Current Minor Loop Link, Major Loop Count (Channel...
-        volatile uint32_t TCD%s_CITER_ELINKYES;  ///< Offset: 0x1016 - TCD Current Minor Loop Link, Major Loop Count (Channel...
-        volatile uint32_t TCD%s_DLASTSGA;  ///< Offset: 0x1018 - TCD Last Destination Address Adjustment/Scatter Gather Address
-        volatile uint32_t TCD%s_CSR;  ///< Offset: 0x101C - TCD Control and Status
-        volatile uint32_t TCD%s_BITER_ELINKNO;  ///< Offset: 0x101E - TCD Beginning Minor Loop Link, Major Loop Count (Channel...
-        volatile uint32_t TCD%s_BITER_ELINKYES;  ///< Offset: 0x101E - TCD Beginning Minor Loop Link, Major Loop Count (Channel...
+        volatile uint32_t DCHPRI;  ///< Offset: 0x100 - Channel n Priority Register (renamed from DCHPRI)
+        volatile uint32_t TCD_SADDR;  ///< Offset: 0x1000 - TCD Source Address (renamed from TCD_SADDR)
+        volatile uint32_t TCD_SOFF;  ///< Offset: 0x1004 - TCD Signed Source Address Offset (renamed from TCD_SOFF)
+        volatile uint32_t TCD_ATTR;  ///< Offset: 0x1006 - TCD Transfer Attributes (renamed from TCD_ATTR)
+        volatile uint32_t TCD_NBYTES_MLNO;  ///< Offset: 0x1008 - TCD Minor Byte Count (Minor Loop Disabled) (renamed from TCD_NBYTES_MLNO)
+        volatile uint32_t TCD_NBYTES_MLOFFNO;  ///< Offset: 0x1008 - TCD Signed Minor Loop Offset (Minor Loop Enabled and... (renamed from TCD_NBYTES_MLOFFNO)
+        volatile uint32_t TCD_NBYTES_MLOFFYES;  ///< Offset: 0x1008 - TCD Signed Minor Loop Offset (Minor Loop and Offset Enabled) (renamed from TCD_NBYTES_MLOFFYES)
+        volatile uint32_t TCD_SLAST;  ///< Offset: 0x100C - TCD Last Source Address Adjustment (renamed from TCD_SLAST)
+        volatile uint32_t TCD_DADDR;  ///< Offset: 0x1010 - TCD Destination Address (renamed from TCD_DADDR)
+        volatile uint32_t TCD_DOFF;  ///< Offset: 0x1014 - TCD Signed Destination Address Offset (renamed from TCD_DOFF)
+        volatile uint32_t TCD_CITER_ELINKNO;  ///< Offset: 0x1016 - TCD Current Minor Loop Link, Major Loop Count (Channel... (renamed from TCD_CITER_ELINKNO)
+        volatile uint32_t TCD_CITER_ELINKYES;  ///< Offset: 0x1016 - TCD Current Minor Loop Link, Major Loop Count (Channel... (renamed from TCD_CITER_ELINKYES)
+        volatile uint32_t TCD_DLASTSGA;  ///< Offset: 0x1018 - TCD Last Destination Address Adjustment/Scatter Gather Address (renamed from TCD_DLASTSGA)
+        volatile uint32_t TCD_CSR;  ///< Offset: 0x101C - TCD Control and Status (renamed from TCD_CSR)
+        volatile uint32_t TCD_BITER_ELINKNO;  ///< Offset: 0x101E - TCD Beginning Minor Loop Link, Major Loop Count (Channel... (renamed from TCD_BITER_ELINKNO)
+        volatile uint32_t TCD_BITER_ELINKYES;  ///< Offset: 0x101E - TCD Beginning Minor Loop Link, Major Loop Count (Channel... (renamed from TCD_BITER_ELINKYES)
     };
 
     /// Peripheral instances
@@ -550,8 +550,8 @@ namespace dma {
         constexpr uint32_t NOP = (1U << 7);  ///< No Op enable
     }
 
-    /// INT Register bits
-    namespace int_bits {
+    /// INT_ Register bits
+    namespace int__bits {
         constexpr uint32_t INT0 = (1U << 0);  ///< Interrupt Request 0
         constexpr uint32_t INT1 = (1U << 1);  ///< Interrupt Request 1
         constexpr uint32_t INT2 = (1U << 2);  ///< Interrupt Request 2
@@ -630,86 +630,86 @@ namespace dma {
         constexpr uint32_t EDREQ_15 = (1U << 15);  ///< Enable asynchronous DMA request in stop mode for channel 15
     }
 
-    /// DCHPRI%s Register bits
-    namespace dchpri%s_bits {
+    /// DCHPRI Register bits
+    namespace dchpri_bits {
         constexpr uint32_t CHPRI = (4 << 0);  ///< Channel n Arbitration Priority
         constexpr uint32_t DPA = (1U << 6);  ///< Disable Preempt Ability.
         constexpr uint32_t ECP = (1U << 7);  ///< Enable Channel Preemption.
     }
 
-    /// TCD%s_SADDR Register bits
-    namespace tcd%s_saddr_bits {
+    /// TCD_SADDR Register bits
+    namespace tcd_saddr_bits {
         constexpr uint32_t SADDR = (32 << 0);  ///< Source Address
     }
 
-    /// TCD%s_SOFF Register bits
-    namespace tcd%s_soff_bits {
+    /// TCD_SOFF Register bits
+    namespace tcd_soff_bits {
         constexpr uint32_t SOFF = (16 << 0);  ///< Source address signed offset
     }
 
-    /// TCD%s_ATTR Register bits
-    namespace tcd%s_attr_bits {
+    /// TCD_ATTR Register bits
+    namespace tcd_attr_bits {
         constexpr uint32_t DSIZE = (3 << 0);  ///< Destination data transfer size
         constexpr uint32_t DMOD = (5 << 3);  ///< Destination Address Modulo
         constexpr uint32_t SSIZE = (3 << 8);  ///< Source data transfer size
         constexpr uint32_t SMOD = (5 << 11);  ///< Source Address Modulo
     }
 
-    /// TCD%s_NBYTES_MLNO Register bits
-    namespace tcd%s_nbytes_mlno_bits {
+    /// TCD_NBYTES_MLNO Register bits
+    namespace tcd_nbytes_mlno_bits {
         constexpr uint32_t NBYTES = (32 << 0);  ///< Minor Byte Transfer Count
     }
 
-    /// TCD%s_NBYTES_MLOFFNO Register bits
-    namespace tcd%s_nbytes_mloffno_bits {
+    /// TCD_NBYTES_MLOFFNO Register bits
+    namespace tcd_nbytes_mloffno_bits {
         constexpr uint32_t NBYTES = (30 << 0);  ///< Minor Byte Transfer Count
         constexpr uint32_t DMLOE = (1U << 30);  ///< Destination Minor Loop Offset enable
         constexpr uint32_t SMLOE = (1U << 31);  ///< Source Minor Loop Offset Enable
     }
 
-    /// TCD%s_NBYTES_MLOFFYES Register bits
-    namespace tcd%s_nbytes_mloffyes_bits {
+    /// TCD_NBYTES_MLOFFYES Register bits
+    namespace tcd_nbytes_mloffyes_bits {
         constexpr uint32_t NBYTES = (10 << 0);  ///< Minor Byte Transfer Count
         constexpr uint32_t MLOFF = (20 << 10);  ///< If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
         constexpr uint32_t DMLOE = (1U << 30);  ///< Destination Minor Loop Offset enable
         constexpr uint32_t SMLOE = (1U << 31);  ///< Source Minor Loop Offset Enable
     }
 
-    /// TCD%s_SLAST Register bits
-    namespace tcd%s_slast_bits {
+    /// TCD_SLAST Register bits
+    namespace tcd_slast_bits {
         constexpr uint32_t SLAST = (32 << 0);  ///< Last Source Address Adjustment
     }
 
-    /// TCD%s_DADDR Register bits
-    namespace tcd%s_daddr_bits {
+    /// TCD_DADDR Register bits
+    namespace tcd_daddr_bits {
         constexpr uint32_t DADDR = (32 << 0);  ///< Destination Address
     }
 
-    /// TCD%s_DOFF Register bits
-    namespace tcd%s_doff_bits {
+    /// TCD_DOFF Register bits
+    namespace tcd_doff_bits {
         constexpr uint32_t DOFF = (16 << 0);  ///< Destination Address Signed Offset
     }
 
-    /// TCD%s_CITER_ELINKNO Register bits
-    namespace tcd%s_citer_elinkno_bits {
+    /// TCD_CITER_ELINKNO Register bits
+    namespace tcd_citer_elinkno_bits {
         constexpr uint32_t CITER = (15 << 0);  ///< Current Major Iteration Count
         constexpr uint32_t ELINK = (1U << 15);  ///< Enable channel-to-channel linking on minor-loop complete
     }
 
-    /// TCD%s_CITER_ELINKYES Register bits
-    namespace tcd%s_citer_elinkyes_bits {
+    /// TCD_CITER_ELINKYES Register bits
+    namespace tcd_citer_elinkyes_bits {
         constexpr uint32_t CITER = (9 << 0);  ///< Current Major Iteration Count
         constexpr uint32_t LINKCH = (4 << 9);  ///< Link Channel Number
         constexpr uint32_t ELINK = (1U << 15);  ///< Enable channel-to-channel linking on minor-loop complete
     }
 
-    /// TCD%s_DLASTSGA Register bits
-    namespace tcd%s_dlastsga_bits {
+    /// TCD_DLASTSGA Register bits
+    namespace tcd_dlastsga_bits {
         constexpr uint32_t DLASTSGA = (32 << 0);  ///< no description available
     }
 
-    /// TCD%s_CSR Register bits
-    namespace tcd%s_csr_bits {
+    /// TCD_CSR Register bits
+    namespace tcd_csr_bits {
         constexpr uint32_t START = (1U << 0);  ///< Channel Start
         constexpr uint32_t INTMAJOR = (1U << 1);  ///< Enable an interrupt when major iteration count completes.
         constexpr uint32_t INTHALF = (1U << 2);  ///< Enable an interrupt when major counter is half complete.
@@ -722,14 +722,14 @@ namespace dma {
         constexpr uint32_t BWC = (2 << 14);  ///< Bandwidth Control
     }
 
-    /// TCD%s_BITER_ELINKNO Register bits
-    namespace tcd%s_biter_elinkno_bits {
+    /// TCD_BITER_ELINKNO Register bits
+    namespace tcd_biter_elinkno_bits {
         constexpr uint32_t BITER = (15 << 0);  ///< Starting Major Iteration Count
         constexpr uint32_t ELINK = (1U << 15);  ///< Enables channel-to-channel linking on minor loop complete
     }
 
-    /// TCD%s_BITER_ELINKYES Register bits
-    namespace tcd%s_biter_elinkyes_bits {
+    /// TCD_BITER_ELINKYES Register bits
+    namespace tcd_biter_elinkyes_bits {
         constexpr uint32_t BITER = (9 << 0);  ///< Starting major iteration count
         constexpr uint32_t LINKCH = (4 << 9);  ///< Link Channel Number
         constexpr uint32_t ELINK = (1U << 15);  ///< Enables channel-to-channel linking on minor loop complete
@@ -750,26 +750,26 @@ namespace fmc {
         volatile uint32_t PFAPR;  ///< Offset: 0x00 - Flash Access Protection Register
         volatile uint32_t PFB0CR;  ///< Offset: 0x04 - Flash Bank 0 Control Register
         volatile uint32_t PFB1CR;  ///< Offset: 0x08 - Flash Bank 1 Control Register
-        volatile uint32_t TAGVDW0S%s;  ///< Offset: 0x100 - Cache Tag Storage
-        volatile uint32_t TAGVDW1S%s;  ///< Offset: 0x108 - Cache Tag Storage
-        volatile uint32_t TAGVDW2S%s;  ///< Offset: 0x110 - Cache Tag Storage
-        volatile uint32_t TAGVDW3S%s;  ///< Offset: 0x118 - Cache Tag Storage
-        volatile uint32_t DATAW0S%sUM;  ///< Offset: 0x200 - Cache Data Storage (uppermost word)
-        volatile uint32_t DATAW0S%sMU;  ///< Offset: 0x204 - Cache Data Storage (mid-upper word)
-        volatile uint32_t DATAW0S%sML;  ///< Offset: 0x208 - Cache Data Storage (mid-lower word)
-        volatile uint32_t DATAW0S%sLM;  ///< Offset: 0x20C - Cache Data Storage (lowermost word)
-        volatile uint32_t DATAW1S%sUM;  ///< Offset: 0x240 - Cache Data Storage (uppermost word)
-        volatile uint32_t DATAW1S%sMU;  ///< Offset: 0x244 - Cache Data Storage (mid-upper word)
-        volatile uint32_t DATAW1S%sML;  ///< Offset: 0x248 - Cache Data Storage (mid-lower word)
-        volatile uint32_t DATAW1S%sLM;  ///< Offset: 0x24C - Cache Data Storage (lowermost word)
-        volatile uint32_t DATAW2S%sUM;  ///< Offset: 0x280 - Cache Data Storage (uppermost word)
-        volatile uint32_t DATAW2S%sMU;  ///< Offset: 0x284 - Cache Data Storage (mid-upper word)
-        volatile uint32_t DATAW2S%sML;  ///< Offset: 0x288 - Cache Data Storage (mid-lower word)
-        volatile uint32_t DATAW2S%sLM;  ///< Offset: 0x28C - Cache Data Storage (lowermost word)
-        volatile uint32_t DATAW3S%sUM;  ///< Offset: 0x2C0 - Cache Data Storage (uppermost word)
-        volatile uint32_t DATAW3S%sMU;  ///< Offset: 0x2C4 - Cache Data Storage (mid-upper word)
-        volatile uint32_t DATAW3S%sML;  ///< Offset: 0x2C8 - Cache Data Storage (mid-lower word)
-        volatile uint32_t DATAW3S%sLM;  ///< Offset: 0x2CC - Cache Data Storage (lowermost word)
+        volatile uint32_t TAGVDW0S;  ///< Offset: 0x100 - Cache Tag Storage (renamed from TAGVDW0S)
+        volatile uint32_t TAGVDW1S;  ///< Offset: 0x108 - Cache Tag Storage (renamed from TAGVDW1S)
+        volatile uint32_t TAGVDW2S;  ///< Offset: 0x110 - Cache Tag Storage (renamed from TAGVDW2S)
+        volatile uint32_t TAGVDW3S;  ///< Offset: 0x118 - Cache Tag Storage (renamed from TAGVDW3S)
+        volatile uint32_t DATAW0SUM;  ///< Offset: 0x200 - Cache Data Storage (uppermost word) (renamed from DATAW0SUM)
+        volatile uint32_t DATAW0SMU;  ///< Offset: 0x204 - Cache Data Storage (mid-upper word) (renamed from DATAW0SMU)
+        volatile uint32_t DATAW0SML;  ///< Offset: 0x208 - Cache Data Storage (mid-lower word) (renamed from DATAW0SML)
+        volatile uint32_t DATAW0SLM;  ///< Offset: 0x20C - Cache Data Storage (lowermost word) (renamed from DATAW0SLM)
+        volatile uint32_t DATAW1SUM;  ///< Offset: 0x240 - Cache Data Storage (uppermost word) (renamed from DATAW1SUM)
+        volatile uint32_t DATAW1SMU;  ///< Offset: 0x244 - Cache Data Storage (mid-upper word) (renamed from DATAW1SMU)
+        volatile uint32_t DATAW1SML;  ///< Offset: 0x248 - Cache Data Storage (mid-lower word) (renamed from DATAW1SML)
+        volatile uint32_t DATAW1SLM;  ///< Offset: 0x24C - Cache Data Storage (lowermost word) (renamed from DATAW1SLM)
+        volatile uint32_t DATAW2SUM;  ///< Offset: 0x280 - Cache Data Storage (uppermost word) (renamed from DATAW2SUM)
+        volatile uint32_t DATAW2SMU;  ///< Offset: 0x284 - Cache Data Storage (mid-upper word) (renamed from DATAW2SMU)
+        volatile uint32_t DATAW2SML;  ///< Offset: 0x288 - Cache Data Storage (mid-lower word) (renamed from DATAW2SML)
+        volatile uint32_t DATAW2SLM;  ///< Offset: 0x28C - Cache Data Storage (lowermost word) (renamed from DATAW2SLM)
+        volatile uint32_t DATAW3SUM;  ///< Offset: 0x2C0 - Cache Data Storage (uppermost word) (renamed from DATAW3SUM)
+        volatile uint32_t DATAW3SMU;  ///< Offset: 0x2C4 - Cache Data Storage (mid-upper word) (renamed from DATAW3SMU)
+        volatile uint32_t DATAW3SML;  ///< Offset: 0x2C8 - Cache Data Storage (mid-lower word) (renamed from DATAW3SML)
+        volatile uint32_t DATAW3SLM;  ///< Offset: 0x2CC - Cache Data Storage (lowermost word) (renamed from DATAW3SLM)
     };
 
     /// Peripheral instances
@@ -801,107 +801,107 @@ namespace fmc {
         constexpr uint32_t B0RWSC = (4 << 28);  ///< Bank 0 Read Wait State Control
     }
 
-    /// TAGVDW0S%s Register bits
-    namespace tagvdw0s%s_bits {
+    /// TAGVDW0S Register bits
+    namespace tagvdw0s_bits {
         constexpr uint32_t valid = (1U << 0);  ///< 1-bit valid for cache entry
         constexpr uint32_t cache_tag = (15 << 5);  ///< the tag for cache entry
     }
 
-    /// TAGVDW1S%s Register bits
-    namespace tagvdw1s%s_bits {
+    /// TAGVDW1S Register bits
+    namespace tagvdw1s_bits {
         constexpr uint32_t valid = (1U << 0);  ///< 1-bit valid for cache entry
         constexpr uint32_t cache_tag = (15 << 5);  ///< the tag for cache entry
     }
 
-    /// TAGVDW2S%s Register bits
-    namespace tagvdw2s%s_bits {
+    /// TAGVDW2S Register bits
+    namespace tagvdw2s_bits {
         constexpr uint32_t valid = (1U << 0);  ///< 1-bit valid for cache entry
         constexpr uint32_t cache_tag = (15 << 5);  ///< the tag for cache entry
     }
 
-    /// TAGVDW3S%s Register bits
-    namespace tagvdw3s%s_bits {
+    /// TAGVDW3S Register bits
+    namespace tagvdw3s_bits {
         constexpr uint32_t valid = (1U << 0);  ///< 1-bit valid for cache entry
         constexpr uint32_t cache_tag = (15 << 5);  ///< the tag for cache entry
     }
 
-    /// DATAW0S%sUM Register bits
-    namespace dataw0s%sum_bits {
+    /// DATAW0SUM Register bits
+    namespace dataw0sum_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [127:96] of data entry
     }
 
-    /// DATAW0S%sMU Register bits
-    namespace dataw0s%smu_bits {
+    /// DATAW0SMU Register bits
+    namespace dataw0smu_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [95:64] of data entry
     }
 
-    /// DATAW0S%sML Register bits
-    namespace dataw0s%sml_bits {
+    /// DATAW0SML Register bits
+    namespace dataw0sml_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [63:32] of data entry
     }
 
-    /// DATAW0S%sLM Register bits
-    namespace dataw0s%slm_bits {
+    /// DATAW0SLM Register bits
+    namespace dataw0slm_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [31:0] of data entry
     }
 
-    /// DATAW1S%sUM Register bits
-    namespace dataw1s%sum_bits {
+    /// DATAW1SUM Register bits
+    namespace dataw1sum_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [127:96] of data entry
     }
 
-    /// DATAW1S%sMU Register bits
-    namespace dataw1s%smu_bits {
+    /// DATAW1SMU Register bits
+    namespace dataw1smu_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [95:64] of data entry
     }
 
-    /// DATAW1S%sML Register bits
-    namespace dataw1s%sml_bits {
+    /// DATAW1SML Register bits
+    namespace dataw1sml_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [63:32] of data entry
     }
 
-    /// DATAW1S%sLM Register bits
-    namespace dataw1s%slm_bits {
+    /// DATAW1SLM Register bits
+    namespace dataw1slm_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [31:0] of data entry
     }
 
-    /// DATAW2S%sUM Register bits
-    namespace dataw2s%sum_bits {
+    /// DATAW2SUM Register bits
+    namespace dataw2sum_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [127:96] of data entry
     }
 
-    /// DATAW2S%sMU Register bits
-    namespace dataw2s%smu_bits {
+    /// DATAW2SMU Register bits
+    namespace dataw2smu_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [95:64] of data entry
     }
 
-    /// DATAW2S%sML Register bits
-    namespace dataw2s%sml_bits {
+    /// DATAW2SML Register bits
+    namespace dataw2sml_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [63:32] of data entry
     }
 
-    /// DATAW2S%sLM Register bits
-    namespace dataw2s%slm_bits {
+    /// DATAW2SLM Register bits
+    namespace dataw2slm_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [31:0] of data entry
     }
 
-    /// DATAW3S%sUM Register bits
-    namespace dataw3s%sum_bits {
+    /// DATAW3SUM Register bits
+    namespace dataw3sum_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [127:96] of data entry
     }
 
-    /// DATAW3S%sMU Register bits
-    namespace dataw3s%smu_bits {
+    /// DATAW3SMU Register bits
+    namespace dataw3smu_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [95:64] of data entry
     }
 
-    /// DATAW3S%sML Register bits
-    namespace dataw3s%sml_bits {
+    /// DATAW3SML Register bits
+    namespace dataw3sml_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [63:32] of data entry
     }
 
-    /// DATAW3S%sLM Register bits
-    namespace dataw3s%slm_bits {
+    /// DATAW3SLM Register bits
+    namespace dataw3slm_bits {
         constexpr uint32_t data = (32 << 0);  ///< Bits [31:0] of data entry
     }
 
@@ -998,7 +998,7 @@ namespace can {
         volatile uint32_t ID15;  ///< Offset: 0x174 - Message Buffer 15 ID Register
         volatile uint32_t WORD015;  ///< Offset: 0x178 - Message Buffer 15 WORD0 Register
         volatile uint32_t WORD115;  ///< Offset: 0x17C - Message Buffer 15 WORD1 Register
-        volatile uint32_t RXIMR%s;  ///< Offset: 0x880 - Rx Individual Mask Registers
+        volatile uint32_t RXIMR;  ///< Offset: 0x880 - Rx Individual Mask Registers (renamed from RXIMR)
     };
 
     /// Peripheral instances
@@ -1735,8 +1735,8 @@ namespace can {
         constexpr uint32_t DATA_BYTE_4 = (8 << 24);  ///< Data byte 4 of Rx/Tx frame.
     }
 
-    /// RXIMR%s Register bits
-    namespace rximr%s_bits {
+    /// RXIMR Register bits
+    namespace rximr_bits {
         constexpr uint32_t MI = (32 << 0);  ///< Individual Mask Bits
     }
 
@@ -1755,8 +1755,8 @@ namespace ftm0 {
         volatile uint32_t SC;  ///< Offset: 0x00 - Status And Control
         volatile uint32_t CNT;  ///< Offset: 0x04 - Counter
         volatile uint32_t MOD;  ///< Offset: 0x08 - Modulo
-        volatile uint32_t C%sSC;  ///< Offset: 0x0C - Channel (n) Status And Control
-        volatile uint32_t C%sV;  ///< Offset: 0x10 - Channel (n) Value
+        volatile uint32_t CSC;  ///< Offset: 0x0C - Channel (n) Status And Control (renamed from CSC)
+        volatile uint32_t CV;  ///< Offset: 0x10 - Channel (n) Value (renamed from CV)
         volatile uint32_t CNTIN;  ///< Offset: 0x4C - Counter Initial Value
         volatile uint32_t STATUS;  ///< Offset: 0x50 - Capture And Compare Status
         volatile uint32_t MODE;  ///< Offset: 0x54 - Features Mode Selection
@@ -1802,8 +1802,8 @@ namespace ftm0 {
         constexpr uint32_t MOD = (16 << 0);  ///< no description available
     }
 
-    /// C%sSC Register bits
-    namespace c%ssc_bits {
+    /// CSC Register bits
+    namespace csc_bits {
         constexpr uint32_t DMA = (1U << 0);  ///< DMA Enable
         constexpr uint32_t ICRST = (1U << 1);  ///< FTM counter reset by the selected input capture event.
         constexpr uint32_t ELSA = (1U << 2);  ///< Edge or Level Select
@@ -1814,8 +1814,8 @@ namespace ftm0 {
         constexpr uint32_t CHF = (1U << 7);  ///< Channel Flag
     }
 
-    /// C%sV Register bits
-    namespace c%sv_bits {
+    /// CV Register bits
+    namespace cv_bits {
         constexpr uint32_t VAL = (16 << 0);  ///< Channel Value
     }
 
@@ -2080,8 +2080,8 @@ namespace ftm1 {
         volatile uint32_t SC;  ///< Offset: 0x00 - Status And Control
         volatile uint32_t CNT;  ///< Offset: 0x04 - Counter
         volatile uint32_t MOD;  ///< Offset: 0x08 - Modulo
-        volatile uint32_t C%sSC;  ///< Offset: 0x0C - Channel (n) Status And Control
-        volatile uint32_t C%sV;  ///< Offset: 0x10 - Channel (n) Value
+        volatile uint32_t CSC;  ///< Offset: 0x0C - Channel (n) Status And Control (renamed from CSC)
+        volatile uint32_t CV;  ///< Offset: 0x10 - Channel (n) Value (renamed from CV)
         volatile uint32_t CNTIN;  ///< Offset: 0x4C - Counter Initial Value
         volatile uint32_t STATUS;  ///< Offset: 0x50 - Capture And Compare Status
         volatile uint32_t MODE;  ///< Offset: 0x54 - Features Mode Selection
@@ -2127,8 +2127,8 @@ namespace ftm1 {
         constexpr uint32_t MOD = (16 << 0);  ///< no description available
     }
 
-    /// C%sSC Register bits
-    namespace c%ssc_bits {
+    /// CSC Register bits
+    namespace csc_bits {
         constexpr uint32_t DMA = (1U << 0);  ///< DMA Enable
         constexpr uint32_t ICRST = (1U << 1);  ///< FTM counter reset by the selected input capture event.
         constexpr uint32_t ELSA = (1U << 2);  ///< Edge or Level Select
@@ -2139,8 +2139,8 @@ namespace ftm1 {
         constexpr uint32_t CHF = (1U << 7);  ///< Channel Flag
     }
 
-    /// C%sV Register bits
-    namespace c%sv_bits {
+    /// CV Register bits
+    namespace cv_bits {
         constexpr uint32_t VAL = (16 << 0);  ///< Channel Value
     }
 
@@ -2405,8 +2405,8 @@ namespace ftm3 {
         volatile uint32_t SC;  ///< Offset: 0x00 - Status And Control
         volatile uint32_t CNT;  ///< Offset: 0x04 - Counter
         volatile uint32_t MOD;  ///< Offset: 0x08 - Modulo
-        volatile uint32_t C%sSC;  ///< Offset: 0x0C - Channel (n) Status And Control
-        volatile uint32_t C%sV;  ///< Offset: 0x10 - Channel (n) Value
+        volatile uint32_t CSC;  ///< Offset: 0x0C - Channel (n) Status And Control (renamed from CSC)
+        volatile uint32_t CV;  ///< Offset: 0x10 - Channel (n) Value (renamed from CV)
         volatile uint32_t CNTIN;  ///< Offset: 0x4C - Counter Initial Value
         volatile uint32_t STATUS;  ///< Offset: 0x50 - Capture And Compare Status
         volatile uint32_t MODE;  ///< Offset: 0x54 - Features Mode Selection
@@ -2452,8 +2452,8 @@ namespace ftm3 {
         constexpr uint32_t MOD = (16 << 0);  ///< no description available
     }
 
-    /// C%sSC Register bits
-    namespace c%ssc_bits {
+    /// CSC Register bits
+    namespace csc_bits {
         constexpr uint32_t DMA = (1U << 0);  ///< DMA Enable
         constexpr uint32_t ICRST = (1U << 1);  ///< FTM counter reset by the selected input capture event.
         constexpr uint32_t ELSA = (1U << 2);  ///< Edge or Level Select
@@ -2464,8 +2464,8 @@ namespace ftm3 {
         constexpr uint32_t CHF = (1U << 7);  ///< Channel Flag
     }
 
-    /// C%sV Register bits
-    namespace c%sv_bits {
+    /// CV Register bits
+    namespace cv_bits {
         constexpr uint32_t VAL = (16 << 0);  ///< Channel Value
     }
 
@@ -2729,15 +2729,15 @@ namespace spi {
     struct Registers {
         volatile uint32_t MCR;  ///< Offset: 0x00 - Module Configuration Register
         volatile uint32_t TCR;  ///< Offset: 0x08 - Transfer Count Register
-        volatile uint32_t CTAR%s;  ///< Offset: 0x0C - Clock and Transfer Attributes Register (In Master Mode)
+        volatile uint32_t CTAR;  ///< Offset: 0x0C - Clock and Transfer Attributes Register (In Master Mode) (renamed from CTAR)
         volatile uint32_t CTAR_SLAVE;  ///< Offset: 0x0C - Clock and Transfer Attributes Register (In Slave Mode)
         volatile uint32_t SR;  ///< Offset: 0x2C - Status Register
         volatile uint32_t RSER;  ///< Offset: 0x30 - DMA/Interrupt Request Select and Enable Register
         volatile uint32_t PUSHR;  ///< Offset: 0x34 - PUSH TX FIFO Register In Master Mode
         volatile uint32_t PUSHR_SLAVE;  ///< Offset: 0x34 - PUSH TX FIFO Register In Slave Mode
         volatile uint32_t POPR;  ///< Offset: 0x38 - POP RX FIFO Register
-        volatile uint32_t TXFR%s;  ///< Offset: 0x3C - Transmit FIFO Registers
-        volatile uint32_t RXFR%s;  ///< Offset: 0x7C - Receive FIFO Registers
+        volatile uint32_t TXFR;  ///< Offset: 0x3C - Transmit FIFO Registers (renamed from TXFR)
+        volatile uint32_t RXFR;  ///< Offset: 0x7C - Receive FIFO Registers (renamed from RXFR)
         volatile uint32_t SREX;  ///< Offset: 0x13C - Status Register Extended
     };
 
@@ -2770,8 +2770,8 @@ namespace spi {
         constexpr uint32_t SPI_TCNT = (16 << 16);  ///< SPI Transfer Counter
     }
 
-    /// CTAR%s Register bits
-    namespace ctar%s_bits {
+    /// CTAR Register bits
+    namespace ctar_bits {
         constexpr uint32_t BR = (4 << 0);  ///< Baud Rate Scaler
         constexpr uint32_t DT = (4 << 4);  ///< Delay After Transfer Scaler
         constexpr uint32_t ASC = (4 << 8);  ///< After SCK Delay Scaler
@@ -2841,14 +2841,14 @@ namespace spi {
         constexpr uint32_t RXDATA = (32 << 0);  ///< Received Data
     }
 
-    /// TXFR%s Register bits
-    namespace txfr%s_bits {
+    /// TXFR Register bits
+    namespace txfr_bits {
         constexpr uint32_t TXDATA = (16 << 0);  ///< Transmit Data
         constexpr uint32_t TXCMD_TXDATA = (16 << 16);  ///< Transmit Command or Transmit Data
     }
 
-    /// RXFR%s Register bits
-    namespace rxfr%s_bits {
+    /// RXFR Register bits
+    namespace rxfr_bits {
         constexpr uint32_t RXDATA = (32 << 0);  ///< Receive Data
     }
 
@@ -2885,7 +2885,7 @@ namespace pdb0 {
         volatile uint32_t DACINTC;  ///< Offset: 0x150 - DAC Interval Trigger n Control register
         volatile uint32_t DACINT;  ///< Offset: 0x154 - DAC Interval n register
         volatile uint32_t POEN;  ///< Offset: 0x190 - Pulse-Out n Enable register
-        volatile uint32_t PO%sDLY;  ///< Offset: 0x194 - Pulse-Out n Delay register
+        volatile uint32_t PODLY;  ///< Offset: 0x194 - Pulse-Out n Delay register (renamed from PODLY)
     };
 
     /// Peripheral instances
@@ -2964,7 +2964,7 @@ namespace pdb0 {
 
     /// DACINT Register bits
     namespace dacint_bits {
-        constexpr uint32_t INT = (16 << 0);  ///< DAC Interval
+        constexpr uint32_t INT_ = (16 << 0);  ///< DAC Interval (renamed from INT_)
     }
 
     /// POEN Register bits
@@ -2972,8 +2972,8 @@ namespace pdb0 {
         constexpr uint32_t POEN = (8 << 0);  ///< PDB Pulse-Out Enable
     }
 
-    /// PO%sDLY Register bits
-    namespace po%sdly_bits {
+    /// PODLY Register bits
+    namespace podly_bits {
         constexpr uint32_t DLY2 = (16 << 0);  ///< PDB Pulse-Out Delay 2
         constexpr uint32_t DLY1 = (16 << 16);  ///< PDB Pulse-Out Delay 1
     }
@@ -3003,7 +3003,7 @@ namespace pdb1 {
         volatile uint32_t DACINTC;  ///< Offset: 0x150 - DAC Interval Trigger n Control register
         volatile uint32_t DACINT;  ///< Offset: 0x154 - DAC Interval n register
         volatile uint32_t POEN;  ///< Offset: 0x190 - Pulse-Out n Enable register
-        volatile uint32_t PO%sDLY;  ///< Offset: 0x194 - Pulse-Out n Delay register
+        volatile uint32_t PODLY;  ///< Offset: 0x194 - Pulse-Out n Delay register (renamed from PODLY)
     };
 
     /// Peripheral instances
@@ -3082,7 +3082,7 @@ namespace pdb1 {
 
     /// DACINT Register bits
     namespace dacint_bits {
-        constexpr uint32_t INT = (16 << 0);  ///< DAC Interval
+        constexpr uint32_t INT_ = (16 << 0);  ///< DAC Interval (renamed from INT_)
     }
 
     /// POEN Register bits
@@ -3090,8 +3090,8 @@ namespace pdb1 {
         constexpr uint32_t POEN = (8 << 0);  ///< PDB Pulse-Out Enable
     }
 
-    /// PO%sDLY Register bits
-    namespace po%sdly_bits {
+    /// PODLY Register bits
+    namespace podly_bits {
         constexpr uint32_t DLY2 = (16 << 0);  ///< PDB Pulse-Out Delay 2
         constexpr uint32_t DLY1 = (16 << 16);  ///< PDB Pulse-Out Delay 1
     }
@@ -3234,48 +3234,48 @@ namespace pwm {
 
     /// PWM Register structure
     struct Registers {
-        volatile uint32_t SM%sCNT;  ///< Offset: 0x00 - Counter Register
-        volatile uint32_t SM%sINIT;  ///< Offset: 0x02 - Initial Count Register
-        volatile uint32_t SM%sCTRL2;  ///< Offset: 0x04 - Control 2 Register
-        volatile uint32_t SM%sCTRL;  ///< Offset: 0x06 - Control Register
-        volatile uint32_t SM%sVAL0;  ///< Offset: 0x0A - Value Register 0
-        volatile uint32_t SM%sFRACVAL1;  ///< Offset: 0x0C - Fractional Value Register 1
-        volatile uint32_t SM%sVAL1;  ///< Offset: 0x0E - Value Register 1
-        volatile uint32_t SM%sFRACVAL2;  ///< Offset: 0x10 - Fractional Value Register 2
-        volatile uint32_t SM%sVAL2;  ///< Offset: 0x12 - Value Register 2
-        volatile uint32_t SM%sFRACVAL3;  ///< Offset: 0x14 - Fractional Value Register 3
-        volatile uint32_t SM%sVAL3;  ///< Offset: 0x16 - Value Register 3
-        volatile uint32_t SM%sFRACVAL4;  ///< Offset: 0x18 - Fractional Value Register 4
-        volatile uint32_t SM%sVAL4;  ///< Offset: 0x1A - Value Register 4
-        volatile uint32_t SM%sFRACVAL5;  ///< Offset: 0x1C - Fractional Value Register 5
-        volatile uint32_t SM%sVAL5;  ///< Offset: 0x1E - Value Register 5
-        volatile uint32_t SM%sFRCTRL;  ///< Offset: 0x20 - Fractional Control Register
-        volatile uint32_t SM%sOCTRL;  ///< Offset: 0x22 - Output Control Register
-        volatile uint32_t SM%sSTS;  ///< Offset: 0x24 - Status Register
-        volatile uint32_t SM%sINTEN;  ///< Offset: 0x26 - Interrupt Enable Register
-        volatile uint32_t SM%sDMAEN;  ///< Offset: 0x28 - DMA Enable Register
-        volatile uint32_t SM%sTCTRL;  ///< Offset: 0x2A - Output Trigger Control Register
-        volatile uint32_t SM%sDISMAP0;  ///< Offset: 0x2C - Fault Disable Mapping Register 0
-        volatile uint32_t SM%sDTCNT0;  ///< Offset: 0x30 - Deadtime Count Register 0
-        volatile uint32_t SM%sDTCNT1;  ///< Offset: 0x32 - Deadtime Count Register 1
-        volatile uint32_t SM%sCAPTCTRLA;  ///< Offset: 0x34 - Capture Control A Register
-        volatile uint32_t SM%sCAPTCOMPA;  ///< Offset: 0x36 - Capture Compare A Register
-        volatile uint32_t SM%sCAPTCTRLB;  ///< Offset: 0x38 - Capture Control B Register
-        volatile uint32_t SM%sCAPTCOMPB;  ///< Offset: 0x3A - Capture Compare B Register
-        volatile uint32_t SM%sCAPTCTRLX;  ///< Offset: 0x3C - Capture Control X Register
-        volatile uint32_t SM%sCAPTCOMPX;  ///< Offset: 0x3E - Capture Compare X Register
-        volatile uint32_t SM%sCVAL0;  ///< Offset: 0x40 - Capture Value 0 Register
-        volatile uint32_t SM%sCVAL0CYC;  ///< Offset: 0x42 - Capture Value 0 Cycle Register
-        volatile uint32_t SM%sCVAL1;  ///< Offset: 0x44 - Capture Value 1 Register
-        volatile uint32_t SM%sCVAL1CYC;  ///< Offset: 0x46 - Capture Value 1 Cycle Register
-        volatile uint32_t SM%sCVAL2;  ///< Offset: 0x48 - Capture Value 2 Register
-        volatile uint32_t SM%sCVAL2CYC;  ///< Offset: 0x4A - Capture Value 2 Cycle Register
-        volatile uint32_t SM%sCVAL3;  ///< Offset: 0x4C - Capture Value 3 Register
-        volatile uint32_t SM%sCVAL3CYC;  ///< Offset: 0x4E - Capture Value 3 Cycle Register
-        volatile uint32_t SM%sCVAL4;  ///< Offset: 0x50 - Capture Value 4 Register
-        volatile uint32_t SM%sCVAL4CYC;  ///< Offset: 0x52 - Capture Value 4 Cycle Register
-        volatile uint32_t SM%sCVAL5;  ///< Offset: 0x54 - Capture Value 5 Register
-        volatile uint32_t SM%sCVAL5CYC;  ///< Offset: 0x56 - Capture Value 5 Cycle Register
+        volatile uint32_t SMCNT;  ///< Offset: 0x00 - Counter Register (renamed from SMCNT)
+        volatile uint32_t SMINIT;  ///< Offset: 0x02 - Initial Count Register (renamed from SMINIT)
+        volatile uint32_t SMCTRL2;  ///< Offset: 0x04 - Control 2 Register (renamed from SMCTRL2)
+        volatile uint32_t SMCTRL;  ///< Offset: 0x06 - Control Register (renamed from SMCTRL)
+        volatile uint32_t SMVAL0;  ///< Offset: 0x0A - Value Register 0 (renamed from SMVAL0)
+        volatile uint32_t SMFRACVAL1;  ///< Offset: 0x0C - Fractional Value Register 1 (renamed from SMFRACVAL1)
+        volatile uint32_t SMVAL1;  ///< Offset: 0x0E - Value Register 1 (renamed from SMVAL1)
+        volatile uint32_t SMFRACVAL2;  ///< Offset: 0x10 - Fractional Value Register 2 (renamed from SMFRACVAL2)
+        volatile uint32_t SMVAL2;  ///< Offset: 0x12 - Value Register 2 (renamed from SMVAL2)
+        volatile uint32_t SMFRACVAL3;  ///< Offset: 0x14 - Fractional Value Register 3 (renamed from SMFRACVAL3)
+        volatile uint32_t SMVAL3;  ///< Offset: 0x16 - Value Register 3 (renamed from SMVAL3)
+        volatile uint32_t SMFRACVAL4;  ///< Offset: 0x18 - Fractional Value Register 4 (renamed from SMFRACVAL4)
+        volatile uint32_t SMVAL4;  ///< Offset: 0x1A - Value Register 4 (renamed from SMVAL4)
+        volatile uint32_t SMFRACVAL5;  ///< Offset: 0x1C - Fractional Value Register 5 (renamed from SMFRACVAL5)
+        volatile uint32_t SMVAL5;  ///< Offset: 0x1E - Value Register 5 (renamed from SMVAL5)
+        volatile uint32_t SMFRCTRL;  ///< Offset: 0x20 - Fractional Control Register (renamed from SMFRCTRL)
+        volatile uint32_t SMOCTRL;  ///< Offset: 0x22 - Output Control Register (renamed from SMOCTRL)
+        volatile uint32_t SMSTS;  ///< Offset: 0x24 - Status Register (renamed from SMSTS)
+        volatile uint32_t SMINTEN;  ///< Offset: 0x26 - Interrupt Enable Register (renamed from SMINTEN)
+        volatile uint32_t SMDMAEN;  ///< Offset: 0x28 - DMA Enable Register (renamed from SMDMAEN)
+        volatile uint32_t SMTCTRL;  ///< Offset: 0x2A - Output Trigger Control Register (renamed from SMTCTRL)
+        volatile uint32_t SMDISMAP0;  ///< Offset: 0x2C - Fault Disable Mapping Register 0 (renamed from SMDISMAP0)
+        volatile uint32_t SMDTCNT0;  ///< Offset: 0x30 - Deadtime Count Register 0 (renamed from SMDTCNT0)
+        volatile uint32_t SMDTCNT1;  ///< Offset: 0x32 - Deadtime Count Register 1 (renamed from SMDTCNT1)
+        volatile uint32_t SMCAPTCTRLA;  ///< Offset: 0x34 - Capture Control A Register (renamed from SMCAPTCTRLA)
+        volatile uint32_t SMCAPTCOMPA;  ///< Offset: 0x36 - Capture Compare A Register (renamed from SMCAPTCOMPA)
+        volatile uint32_t SMCAPTCTRLB;  ///< Offset: 0x38 - Capture Control B Register (renamed from SMCAPTCTRLB)
+        volatile uint32_t SMCAPTCOMPB;  ///< Offset: 0x3A - Capture Compare B Register (renamed from SMCAPTCOMPB)
+        volatile uint32_t SMCAPTCTRLX;  ///< Offset: 0x3C - Capture Control X Register (renamed from SMCAPTCTRLX)
+        volatile uint32_t SMCAPTCOMPX;  ///< Offset: 0x3E - Capture Compare X Register (renamed from SMCAPTCOMPX)
+        volatile uint32_t SMCVAL0;  ///< Offset: 0x40 - Capture Value 0 Register (renamed from SMCVAL0)
+        volatile uint32_t SMCVAL0CYC;  ///< Offset: 0x42 - Capture Value 0 Cycle Register (renamed from SMCVAL0CYC)
+        volatile uint32_t SMCVAL1;  ///< Offset: 0x44 - Capture Value 1 Register (renamed from SMCVAL1)
+        volatile uint32_t SMCVAL1CYC;  ///< Offset: 0x46 - Capture Value 1 Cycle Register (renamed from SMCVAL1CYC)
+        volatile uint32_t SMCVAL2;  ///< Offset: 0x48 - Capture Value 2 Register (renamed from SMCVAL2)
+        volatile uint32_t SMCVAL2CYC;  ///< Offset: 0x4A - Capture Value 2 Cycle Register (renamed from SMCVAL2CYC)
+        volatile uint32_t SMCVAL3;  ///< Offset: 0x4C - Capture Value 3 Register (renamed from SMCVAL3)
+        volatile uint32_t SMCVAL3CYC;  ///< Offset: 0x4E - Capture Value 3 Cycle Register (renamed from SMCVAL3CYC)
+        volatile uint32_t SMCVAL4;  ///< Offset: 0x50 - Capture Value 4 Register (renamed from SMCVAL4)
+        volatile uint32_t SMCVAL4CYC;  ///< Offset: 0x52 - Capture Value 4 Cycle Register (renamed from SMCVAL4CYC)
+        volatile uint32_t SMCVAL5;  ///< Offset: 0x54 - Capture Value 5 Register (renamed from SMCVAL5)
+        volatile uint32_t SMCVAL5CYC;  ///< Offset: 0x56 - Capture Value 5 Cycle Register (renamed from SMCVAL5CYC)
         volatile uint32_t OUTEN;  ///< Offset: 0x180 - Output Enable Register
         volatile uint32_t MASK;  ///< Offset: 0x182 - Mask Register
         volatile uint32_t SWCOUT;  ///< Offset: 0x184 - Software Controlled Output Register
@@ -3293,18 +3293,18 @@ namespace pwm {
     inline Registers* PWMA = reinterpret_cast<Registers*>(PWMA_BASE);
 
     // Bit definitions
-    /// SM%sCNT Register bits
-    namespace sm%scnt_bits {
+    /// SMCNT Register bits
+    namespace smcnt_bits {
         constexpr uint32_t CNT = (16 << 0);  ///< Counter Register Bits
     }
 
-    /// SM%sINIT Register bits
-    namespace sm%sinit_bits {
+    /// SMINIT Register bits
+    namespace sminit_bits {
         constexpr uint32_t INIT = (16 << 0);  ///< Initial Count Register Bits
     }
 
-    /// SM%sCTRL2 Register bits
-    namespace sm%sctrl2_bits {
+    /// SMCTRL2 Register bits
+    namespace smctrl2_bits {
         constexpr uint32_t CLK_SEL = (2 << 0);  ///< Clock Source Select
         constexpr uint32_t RELOAD_SEL = (1U << 2);  ///< Reload Source Select
         constexpr uint32_t FORCE_SEL = (3 << 3);  ///< This read/write bit determines the source of the FORCE OUTPUT signal for this submodule.
@@ -3319,8 +3319,8 @@ namespace pwm {
         constexpr uint32_t DBGEN = (1U << 15);  ///< Debug Enable
     }
 
-    /// SM%sCTRL Register bits
-    namespace sm%sctrl_bits {
+    /// SMCTRL Register bits
+    namespace smctrl_bits {
         constexpr uint32_t DBLEN = (1U << 0);  ///< Double Switching Enable
         constexpr uint32_t DBLX = (1U << 1);  ///< PWMX Double Switching Enable
         constexpr uint32_t LDMOD = (1U << 2);  ///< Load Mode Select
@@ -3331,63 +3331,63 @@ namespace pwm {
         constexpr uint32_t LDFQ = (4 << 12);  ///< no description available
     }
 
-    /// SM%sVAL0 Register bits
-    namespace sm%sval0_bits {
+    /// SMVAL0 Register bits
+    namespace smval0_bits {
         constexpr uint32_t VAL0 = (16 << 0);  ///< Value Register 0
     }
 
-    /// SM%sFRACVAL1 Register bits
-    namespace sm%sfracval1_bits {
+    /// SMFRACVAL1 Register bits
+    namespace smfracval1_bits {
         constexpr uint32_t FRACVAL1 = (5 << 11);  ///< Fractional Value 1 Register
     }
 
-    /// SM%sVAL1 Register bits
-    namespace sm%sval1_bits {
+    /// SMVAL1 Register bits
+    namespace smval1_bits {
         constexpr uint32_t VAL1 = (16 << 0);  ///< Value Register 1
     }
 
-    /// SM%sFRACVAL2 Register bits
-    namespace sm%sfracval2_bits {
+    /// SMFRACVAL2 Register bits
+    namespace smfracval2_bits {
         constexpr uint32_t FRACVAL2 = (5 << 11);  ///< Fractional Value 2
     }
 
-    /// SM%sVAL2 Register bits
-    namespace sm%sval2_bits {
+    /// SMVAL2 Register bits
+    namespace smval2_bits {
         constexpr uint32_t VAL2 = (16 << 0);  ///< Value Register 2
     }
 
-    /// SM%sFRACVAL3 Register bits
-    namespace sm%sfracval3_bits {
+    /// SMFRACVAL3 Register bits
+    namespace smfracval3_bits {
         constexpr uint32_t FRACVAL3 = (5 << 11);  ///< Fractional Value 3
     }
 
-    /// SM%sVAL3 Register bits
-    namespace sm%sval3_bits {
+    /// SMVAL3 Register bits
+    namespace smval3_bits {
         constexpr uint32_t VAL3 = (16 << 0);  ///< Value Register 3
     }
 
-    /// SM%sFRACVAL4 Register bits
-    namespace sm%sfracval4_bits {
+    /// SMFRACVAL4 Register bits
+    namespace smfracval4_bits {
         constexpr uint32_t FRACVAL4 = (5 << 11);  ///< Fractional Value 4
     }
 
-    /// SM%sVAL4 Register bits
-    namespace sm%sval4_bits {
+    /// SMVAL4 Register bits
+    namespace smval4_bits {
         constexpr uint32_t VAL4 = (16 << 0);  ///< Value Register 4
     }
 
-    /// SM%sFRACVAL5 Register bits
-    namespace sm%sfracval5_bits {
+    /// SMFRACVAL5 Register bits
+    namespace smfracval5_bits {
         constexpr uint32_t FRACVAL5 = (5 << 11);  ///< Fractional Value 5
     }
 
-    /// SM%sVAL5 Register bits
-    namespace sm%sval5_bits {
+    /// SMVAL5 Register bits
+    namespace smval5_bits {
         constexpr uint32_t VAL5 = (16 << 0);  ///< Value Register 5
     }
 
-    /// SM%sFRCTRL Register bits
-    namespace sm%sfrctrl_bits {
+    /// SMFRCTRL Register bits
+    namespace smfrctrl_bits {
         constexpr uint32_t FRAC1_EN = (1U << 1);  ///< Fractional Cycle PWM Period Enable
         constexpr uint32_t FRAC23_EN = (1U << 2);  ///< Fractional Cycle Placement Enable for PWM_A
         constexpr uint32_t FRAC45_EN = (1U << 4);  ///< Fractional Cycle Placement Enable for PWM_B
@@ -3395,8 +3395,8 @@ namespace pwm {
         constexpr uint32_t TEST = (1U << 15);  ///< Test Status Bit
     }
 
-    /// SM%sOCTRL Register bits
-    namespace sm%soctrl_bits {
+    /// SMOCTRL Register bits
+    namespace smoctrl_bits {
         constexpr uint32_t PWMXFS = (2 << 0);  ///< PWM_X Fault State
         constexpr uint32_t PWMBFS = (2 << 2);  ///< PWM_B Fault State
         constexpr uint32_t PWMAFS = (2 << 4);  ///< PWM_A Fault State
@@ -3408,8 +3408,8 @@ namespace pwm {
         constexpr uint32_t PWMA_IN = (1U << 15);  ///< PWM_A Input
     }
 
-    /// SM%sSTS Register bits
-    namespace sm%ssts_bits {
+    /// SMSTS Register bits
+    namespace smsts_bits {
         constexpr uint32_t CMPF = (6 << 0);  ///< Compare Flags
         constexpr uint32_t CFX0 = (1U << 6);  ///< Capture Flag X0
         constexpr uint32_t CFX1 = (1U << 7);  ///< Capture Flag X1
@@ -3422,8 +3422,8 @@ namespace pwm {
         constexpr uint32_t RUF = (1U << 14);  ///< Registers Updated Flag
     }
 
-    /// SM%sINTEN Register bits
-    namespace sm%sinten_bits {
+    /// SMINTEN Register bits
+    namespace sminten_bits {
         constexpr uint32_t CMPIE = (6 << 0);  ///< Compare Interrupt Enables
         constexpr uint32_t CX0IE = (1U << 6);  ///< Capture X 0 Interrupt Enable
         constexpr uint32_t CX1IE = (1U << 7);  ///< Capture X 1 Interrupt Enable
@@ -3435,8 +3435,8 @@ namespace pwm {
         constexpr uint32_t REIE = (1U << 13);  ///< Reload Error Interrupt Enable
     }
 
-    /// SM%sDMAEN Register bits
-    namespace sm%sdmaen_bits {
+    /// SMDMAEN Register bits
+    namespace smdmaen_bits {
         constexpr uint32_t CX0DE = (1U << 0);  ///< Capture X0 FIFO DMA Enable
         constexpr uint32_t CX1DE = (1U << 1);  ///< Capture X1 FIFO DMA Enable
         constexpr uint32_t CB0DE = (1U << 2);  ///< Capture B0 FIFO DMA Enable
@@ -3448,32 +3448,32 @@ namespace pwm {
         constexpr uint32_t VALDE = (1U << 9);  ///< Value Registers DMA Enable
     }
 
-    /// SM%sTCTRL Register bits
-    namespace sm%stctrl_bits {
+    /// SMTCTRL Register bits
+    namespace smtctrl_bits {
         constexpr uint32_t OUT_TRIG_EN = (6 << 0);  ///< Output Trigger Enables
         constexpr uint32_t PWBOT1 = (1U << 14);  ///< Output Trigger 1 Source Select
         constexpr uint32_t PWAOT0 = (1U << 15);  ///< Output Trigger 0 Source Select
     }
 
-    /// SM%sDISMAP0 Register bits
-    namespace sm%sdismap0_bits {
+    /// SMDISMAP0 Register bits
+    namespace smdismap0_bits {
         constexpr uint32_t DIS0A = (4 << 0);  ///< PWM_A Fault Disable Mask 0
         constexpr uint32_t DIS0B = (4 << 4);  ///< PWM_B Fault Disable Mask 0
         constexpr uint32_t DIS0X = (4 << 8);  ///< PWM_X Fault Disable Mask 0
     }
 
-    /// SM%sDTCNT0 Register bits
-    namespace sm%sdtcnt0_bits {
+    /// SMDTCNT0 Register bits
+    namespace smdtcnt0_bits {
         constexpr uint32_t DTCNT0 = (11 << 0);  ///< Deadtime Count Register 0
     }
 
-    /// SM%sDTCNT1 Register bits
-    namespace sm%sdtcnt1_bits {
+    /// SMDTCNT1 Register bits
+    namespace smdtcnt1_bits {
         constexpr uint32_t DTCNT1 = (11 << 0);  ///< Deadtime Count Register 1
     }
 
-    /// SM%sCAPTCTRLA Register bits
-    namespace sm%scaptctrla_bits {
+    /// SMCAPTCTRLA Register bits
+    namespace smcaptctrla_bits {
         constexpr uint32_t ARMA = (1U << 0);  ///< Arm A
         constexpr uint32_t ONESHOTA = (1U << 1);  ///< One Shot Mode A
         constexpr uint32_t EDGA0 = (2 << 2);  ///< Edge A 0
@@ -3485,14 +3485,14 @@ namespace pwm {
         constexpr uint32_t CA1CNT = (3 << 13);  ///< Capture A1 FIFO Word Count
     }
 
-    /// SM%sCAPTCOMPA Register bits
-    namespace sm%scaptcompa_bits {
+    /// SMCAPTCOMPA Register bits
+    namespace smcaptcompa_bits {
         constexpr uint32_t EDGCMPA = (8 << 0);  ///< Edge Compare A
         constexpr uint32_t EDGCNTA = (8 << 8);  ///< Edge Counter A
     }
 
-    /// SM%sCAPTCTRLB Register bits
-    namespace sm%scaptctrlb_bits {
+    /// SMCAPTCTRLB Register bits
+    namespace smcaptctrlb_bits {
         constexpr uint32_t ARMB = (1U << 0);  ///< Arm B
         constexpr uint32_t ONESHOTB = (1U << 1);  ///< One Shot Mode B
         constexpr uint32_t EDGB0 = (2 << 2);  ///< Edge B 0
@@ -3504,14 +3504,14 @@ namespace pwm {
         constexpr uint32_t CB1CNT = (3 << 13);  ///< Capture B1 FIFO Word Count
     }
 
-    /// SM%sCAPTCOMPB Register bits
-    namespace sm%scaptcompb_bits {
+    /// SMCAPTCOMPB Register bits
+    namespace smcaptcompb_bits {
         constexpr uint32_t EDGCMPB = (8 << 0);  ///< Edge Compare B
         constexpr uint32_t EDGCNTB = (8 << 8);  ///< Edge Counter B
     }
 
-    /// SM%sCAPTCTRLX Register bits
-    namespace sm%scaptctrlx_bits {
+    /// SMCAPTCTRLX Register bits
+    namespace smcaptctrlx_bits {
         constexpr uint32_t ARMX = (1U << 0);  ///< Arm X
         constexpr uint32_t ONESHOTX = (1U << 1);  ///< One Shot Mode Aux
         constexpr uint32_t EDGX0 = (2 << 2);  ///< Edge X 0
@@ -3523,69 +3523,69 @@ namespace pwm {
         constexpr uint32_t CX1CNT = (3 << 13);  ///< Capture X1 FIFO Word Count
     }
 
-    /// SM%sCAPTCOMPX Register bits
-    namespace sm%scaptcompx_bits {
+    /// SMCAPTCOMPX Register bits
+    namespace smcaptcompx_bits {
         constexpr uint32_t EDGCMPX = (8 << 0);  ///< Edge Compare X
         constexpr uint32_t EDGCNTX = (8 << 8);  ///< Edge Counter X
     }
 
-    /// SM%sCVAL0 Register bits
-    namespace sm%scval0_bits {
+    /// SMCVAL0 Register bits
+    namespace smcval0_bits {
         constexpr uint32_t CAPTVAL0 = (16 << 0);  ///< no description available
     }
 
-    /// SM%sCVAL0CYC Register bits
-    namespace sm%scval0cyc_bits {
+    /// SMCVAL0CYC Register bits
+    namespace smcval0cyc_bits {
         constexpr uint32_t CVAL0CYC = (4 << 0);  ///< no description available
     }
 
-    /// SM%sCVAL1 Register bits
-    namespace sm%scval1_bits {
+    /// SMCVAL1 Register bits
+    namespace smcval1_bits {
         constexpr uint32_t CAPTVAL1 = (16 << 0);  ///< no description available
     }
 
-    /// SM%sCVAL1CYC Register bits
-    namespace sm%scval1cyc_bits {
+    /// SMCVAL1CYC Register bits
+    namespace smcval1cyc_bits {
         constexpr uint32_t CVAL1CYC = (4 << 0);  ///< no description available
     }
 
-    /// SM%sCVAL2 Register bits
-    namespace sm%scval2_bits {
+    /// SMCVAL2 Register bits
+    namespace smcval2_bits {
         constexpr uint32_t CAPTVAL2 = (16 << 0);  ///< no description available
     }
 
-    /// SM%sCVAL2CYC Register bits
-    namespace sm%scval2cyc_bits {
+    /// SMCVAL2CYC Register bits
+    namespace smcval2cyc_bits {
         constexpr uint32_t CVAL2CYC = (4 << 0);  ///< no description available
     }
 
-    /// SM%sCVAL3 Register bits
-    namespace sm%scval3_bits {
+    /// SMCVAL3 Register bits
+    namespace smcval3_bits {
         constexpr uint32_t CAPTVAL3 = (16 << 0);  ///< no description available
     }
 
-    /// SM%sCVAL3CYC Register bits
-    namespace sm%scval3cyc_bits {
+    /// SMCVAL3CYC Register bits
+    namespace smcval3cyc_bits {
         constexpr uint32_t CVAL3CYC = (4 << 0);  ///< no description available
     }
 
-    /// SM%sCVAL4 Register bits
-    namespace sm%scval4_bits {
+    /// SMCVAL4 Register bits
+    namespace smcval4_bits {
         constexpr uint32_t CAPTVAL4 = (16 << 0);  ///< no description available
     }
 
-    /// SM%sCVAL4CYC Register bits
-    namespace sm%scval4cyc_bits {
+    /// SMCVAL4CYC Register bits
+    namespace smcval4cyc_bits {
         constexpr uint32_t CVAL4CYC = (4 << 0);  ///< no description available
     }
 
-    /// SM%sCVAL5 Register bits
-    namespace sm%scval5_bits {
+    /// SMCVAL5 Register bits
+    namespace smcval5_bits {
         constexpr uint32_t CAPTVAL5 = (16 << 0);  ///< no description available
     }
 
-    /// SM%sCVAL5CYC Register bits
-    namespace sm%scval5cyc_bits {
+    /// SMCVAL5CYC Register bits
+    namespace smcval5cyc_bits {
         constexpr uint32_t CVAL5CYC = (4 << 0);  ///< no description available
     }
 
@@ -3688,10 +3688,10 @@ namespace tim {
     /// TIM Register structure
     struct Registers {
         volatile uint32_t MCR;  ///< Offset: 0x00 - PIT Module Control Register
-        volatile uint32_t LDVAL%s;  ///< Offset: 0x100 - Timer Load Value Register
-        volatile uint32_t CVAL%s;  ///< Offset: 0x104 - Current Timer Value Register
-        volatile uint32_t TCTRL%s;  ///< Offset: 0x108 - Timer Control Register
-        volatile uint32_t TFLG%s;  ///< Offset: 0x10C - Timer Flag Register
+        volatile uint32_t LDVAL;  ///< Offset: 0x100 - Timer Load Value Register (renamed from LDVAL)
+        volatile uint32_t CVAL;  ///< Offset: 0x104 - Current Timer Value Register (renamed from CVAL)
+        volatile uint32_t TCTRL;  ///< Offset: 0x108 - Timer Control Register (renamed from TCTRL)
+        volatile uint32_t TFLG;  ///< Offset: 0x10C - Timer Flag Register (renamed from TFLG)
     };
 
     /// Peripheral instances
@@ -3705,25 +3705,25 @@ namespace tim {
         constexpr uint32_t MDIS = (1U << 1);  ///< Module Disable - (PIT section)
     }
 
-    /// LDVAL%s Register bits
-    namespace ldval%s_bits {
+    /// LDVAL Register bits
+    namespace ldval_bits {
         constexpr uint32_t TSV = (32 << 0);  ///< Timer Start Value
     }
 
-    /// CVAL%s Register bits
-    namespace cval%s_bits {
+    /// CVAL Register bits
+    namespace cval_bits {
         constexpr uint32_t TVL = (32 << 0);  ///< Current Timer Value
     }
 
-    /// TCTRL%s Register bits
-    namespace tctrl%s_bits {
+    /// TCTRL Register bits
+    namespace tctrl_bits {
         constexpr uint32_t TEN = (1U << 0);  ///< Timer Enable
         constexpr uint32_t TIE = (1U << 1);  ///< Timer Interrupt Enable
         constexpr uint32_t CHN = (1U << 2);  ///< Chain Mode
     }
 
-    /// TFLG%s Register bits
-    namespace tflg%s_bits {
+    /// TFLG Register bits
+    namespace tflg_bits {
         constexpr uint32_t TIF = (1U << 0);  ///< Timer Interrupt Flag
     }
 
@@ -4029,7 +4029,7 @@ namespace gpio {
 
     /// GPIO Register structure
     struct Registers {
-        volatile uint32_t PCR%s;  ///< Offset: 0x00 - Pin Control Register n
+        volatile uint32_t PCR;  ///< Offset: 0x00 - Pin Control Register n (renamed from PCR)
         volatile uint32_t GPCLR;  ///< Offset: 0x80 - Global Pin Control Low Register
         volatile uint32_t GPCHR;  ///< Offset: 0x84 - Global Pin Control High Register
         volatile uint32_t ISFR;  ///< Offset: 0xA0 - Interrupt Status Flag Register
@@ -4048,8 +4048,8 @@ namespace gpio {
     inline Registers* GPIOE = reinterpret_cast<Registers*>(GPIOE_BASE);
 
     // Bit definitions
-    /// PCR%s Register bits
-    namespace pcr%s_bits {
+    /// PCR Register bits
+    namespace pcr_bits {
         constexpr uint32_t PS = (1U << 0);  ///< Pull Select
         constexpr uint32_t PE = (1U << 1);  ///< Pull Enable
         constexpr uint32_t SRE = (1U << 2);  ///< Slew Rate Enable
@@ -4695,16 +4695,16 @@ namespace aoi {
 
     /// AOI Register structure
     struct Registers {
-        volatile uint32_t BFCRT01%s;  ///< Offset: 0x00 - Boolean Function Term 0 and 1 Configuration Register for EVENTn
-        volatile uint32_t BFCRT23%s;  ///< Offset: 0x02 - Boolean Function Term 2 and 3 Configuration Register for EVENTn
+        volatile uint32_t BFCRT01;  ///< Offset: 0x00 - Boolean Function Term 0 and 1 Configuration Register for EVENTn (renamed from BFCRT01)
+        volatile uint32_t BFCRT23;  ///< Offset: 0x02 - Boolean Function Term 2 and 3 Configuration Register for EVENTn (renamed from BFCRT23)
     };
 
     /// Peripheral instances
     inline Registers* AOI = reinterpret_cast<Registers*>(AOI_BASE);
 
     // Bit definitions
-    /// BFCRT01%s Register bits
-    namespace bfcrt01%s_bits {
+    /// BFCRT01 Register bits
+    namespace bfcrt01_bits {
         constexpr uint32_t PT1_DC = (2 << 0);  ///< Product term 1, D input configuration
         constexpr uint32_t PT1_CC = (2 << 2);  ///< Product term 1, C input configuration
         constexpr uint32_t PT1_BC = (2 << 4);  ///< Product term 1, B input configuration
@@ -4715,8 +4715,8 @@ namespace aoi {
         constexpr uint32_t PT0_AC = (2 << 14);  ///< Product term 0, A input configuration
     }
 
-    /// BFCRT23%s Register bits
-    namespace bfcrt23%s_bits {
+    /// BFCRT23 Register bits
+    namespace bfcrt23_bits {
         constexpr uint32_t PT3_DC = (2 << 0);  ///< Product term 3, D input configuration
         constexpr uint32_t PT3_CC = (2 << 2);  ///< Product term 3, C input configuration
         constexpr uint32_t PT3_BC = (2 << 4);  ///< Product term 3, B input configuration
@@ -4753,10 +4753,10 @@ namespace adc {
         volatile uint32_t LOLIMSTAT;  ///< Offset: 0x16 - ADC Low Limit Status Register
         volatile uint32_t HILIMSTAT;  ///< Offset: 0x18 - ADC High Limit Status Register
         volatile uint32_t ZXSTAT;  ///< Offset: 0x1A - ADC Zero Crossing Status Register
-        volatile uint32_t RSLT%s;  ///< Offset: 0x1C - ADC Result Registers with sign extension
-        volatile uint32_t LOLIM%s;  ///< Offset: 0x3C - ADC Low Limit Registers
-        volatile uint32_t HILIM%s;  ///< Offset: 0x5C - ADC High Limit Registers
-        volatile uint32_t OFFST%s;  ///< Offset: 0x7C - ADC Offset Registers
+        volatile uint32_t RSLT;  ///< Offset: 0x1C - ADC Result Registers with sign extension (renamed from RSLT)
+        volatile uint32_t LOLIM;  ///< Offset: 0x3C - ADC Low Limit Registers (renamed from LOLIM)
+        volatile uint32_t HILIM;  ///< Offset: 0x5C - ADC High Limit Registers (renamed from HILIM)
+        volatile uint32_t OFFST;  ///< Offset: 0x7C - ADC Offset Registers (renamed from OFFST)
         volatile uint32_t PWR;  ///< Offset: 0x9C - ADC Power Control Register
         volatile uint32_t CAL;  ///< Offset: 0x9E - ADC Calibration Register
         volatile uint32_t GC1;  ///< Offset: 0xA0 - Gain Control 1 Register
@@ -4890,24 +4890,24 @@ namespace adc {
         constexpr uint32_t ZCS = (16 << 0);  ///< Zero Crossing Status
     }
 
-    /// RSLT%s Register bits
-    namespace rslt%s_bits {
+    /// RSLT Register bits
+    namespace rslt_bits {
         constexpr uint32_t RSLT = (12 << 3);  ///< Digital Result of the Conversion
         constexpr uint32_t SEXT = (1U << 15);  ///< Sign Extend
     }
 
-    /// LOLIM%s Register bits
-    namespace lolim%s_bits {
+    /// LOLIM Register bits
+    namespace lolim_bits {
         constexpr uint32_t LLMT = (12 << 3);  ///< Low Limit Bits
     }
 
-    /// HILIM%s Register bits
-    namespace hilim%s_bits {
+    /// HILIM Register bits
+    namespace hilim_bits {
         constexpr uint32_t HLMT = (12 << 3);  ///< High Limit Bits
     }
 
-    /// OFFST%s Register bits
-    namespace offst%s_bits {
+    /// OFFST Register bits
+    namespace offst_bits {
         constexpr uint32_t OFFSET = (12 << 3);  ///< ADC Offset Bits
     }
 
@@ -5375,7 +5375,7 @@ namespace usart {
         constexpr uint32_t PF = (1U << 0);  ///< Parity Error Flag
         constexpr uint32_t FE = (1U << 1);  ///< Framing Error Flag
         constexpr uint32_t NF = (1U << 2);  ///< Noise Flag
-        constexpr uint32_t OR = (1U << 3);  ///< Receiver Overrun Flag
+        constexpr uint32_t OR_ = (1U << 3);  ///< Receiver Overrun Flag (renamed from OR_)
         constexpr uint32_t IDLE = (1U << 4);  ///< Idle Line Flag
         constexpr uint32_t RDRF = (1U << 5);  ///< Receive Data Register Full Flag
         constexpr uint32_t TC = (1U << 6);  ///< Transmit Complete Flag

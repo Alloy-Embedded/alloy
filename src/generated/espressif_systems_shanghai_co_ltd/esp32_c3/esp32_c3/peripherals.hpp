@@ -3,7 +3,7 @@
 /// Source: espressif_esp32c3.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:26
+/// Generated: 2025-10-31 17:44:00
 #ifndef ALLOY_GENERATED_ESP32-C3_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ESP32-C3_PERIPHERALS_HPP
 
@@ -241,17 +241,17 @@ namespace crypto {
         volatile uint32_t ENDIAN;  ///< Offset: 0x44 - AES Endian configure register
         volatile uint32_t TRIGGER;  ///< Offset: 0x48 - AES trigger register
         volatile uint32_t STATE;  ///< Offset: 0x4C - AES state register
-        volatile uint32_t IV_MEM[%s];  ///< Offset: 0x50 - The memory that stores initialization vector
-        volatile uint32_t H_MEM[%s];  ///< Offset: 0x60 - The memory that stores GCM hash subkey
-        volatile uint32_t J0_MEM[%s];  ///< Offset: 0x70 - The memory that stores J0
-        volatile uint32_t T0_MEM[%s];  ///< Offset: 0x80 - The memory that stores T0
+        volatile uint32_t IV_MEM__;  ///< Offset: 0x50 - The memory that stores initialization vector (renamed from IV_MEM__)
+        volatile uint32_t H_MEM__;  ///< Offset: 0x60 - The memory that stores GCM hash subkey (renamed from H_MEM__)
+        volatile uint32_t J0_MEM__;  ///< Offset: 0x70 - The memory that stores J0 (renamed from J0_MEM__)
+        volatile uint32_t T0_MEM__;  ///< Offset: 0x80 - The memory that stores T0 (renamed from T0_MEM__)
         volatile uint32_t DMA_ENABLE;  ///< Offset: 0x90 - DMA-AES working mode register
         volatile uint32_t BLOCK_MODE;  ///< Offset: 0x94 - AES cipher block mode register
         volatile uint32_t BLOCK_NUM;  ///< Offset: 0x98 - AES block number register
         volatile uint32_t INC_SEL;  ///< Offset: 0x9C - Standard incrementing function configure register
         volatile uint32_t AAD_BLOCK_NUM;  ///< Offset: 0xA0 - Additional Authential Data block number register
         volatile uint32_t REMAINDER_BIT_NUM;  ///< Offset: 0xA4 - AES remainder bit number register
-        volatile uint32_t CONTINUE;  ///< Offset: 0xA8 - AES continue register
+        volatile uint32_t CONTINUE_;  ///< Offset: 0xA8 - AES continue register (renamed from CONTINUE_)
         volatile uint32_t INT_CLEAR;  ///< Offset: 0xAC - AES Interrupt clear register
         volatile uint32_t INT_ENA;  ///< Offset: 0xB0 - AES Interrupt enable register
         volatile uint32_t DATE;  ///< Offset: 0xB4 - AES version control register
@@ -396,9 +396,9 @@ namespace crypto {
         constexpr uint32_t REMAINDER_BIT_NUM = (7 << 0);  ///< Those bits stores the number of remainder bit.
     }
 
-    /// CONTINUE Register bits
-    namespace continue_bits {
-        constexpr uint32_t CONTINUE = (1U << 0);  ///< Set this bit to continue GCM operation.
+    /// CONTINUE_ Register bits
+    namespace continue__bits {
+        constexpr uint32_t CONTINUE_ = (1U << 0);  ///< Set this bit to continue GCM operation. (renamed from CONTINUE_)
     }
 
     /// INT_CLEAR Register bits
@@ -2145,12 +2145,12 @@ namespace ds {
 
     /// DS Register structure
     struct Registers {
-        volatile uint32_t Y_MEM[%s];  ///< Offset: 0x00 - memory that stores Y
-        volatile uint32_t M_MEM[%s];  ///< Offset: 0x200 - memory that stores M
-        volatile uint32_t RB_MEM[%s];  ///< Offset: 0x400 - memory that stores Rb
-        volatile uint32_t BOX_MEM[%s];  ///< Offset: 0x600 - memory that stores BOX
-        volatile uint32_t X_MEM[%s];  ///< Offset: 0x800 - memory that stores X
-        volatile uint32_t Z_MEM[%s];  ///< Offset: 0xA00 - memory that stores Z
+        volatile uint32_t Y_MEM__;  ///< Offset: 0x00 - memory that stores Y (renamed from Y_MEM__)
+        volatile uint32_t M_MEM__;  ///< Offset: 0x200 - memory that stores M (renamed from M_MEM__)
+        volatile uint32_t RB_MEM__;  ///< Offset: 0x400 - memory that stores Rb (renamed from RB_MEM__)
+        volatile uint32_t BOX_MEM__;  ///< Offset: 0x600 - memory that stores BOX (renamed from BOX_MEM__)
+        volatile uint32_t X_MEM__;  ///< Offset: 0x800 - memory that stores X (renamed from X_MEM__)
+        volatile uint32_t Z_MEM__;  ///< Offset: 0xA00 - memory that stores Z (renamed from Z_MEM__)
         volatile uint32_t SET_START;  ///< Offset: 0xE00 - DS start control register
         volatile uint32_t SET_CONTINUE;  ///< Offset: 0xE04 - DS continue control register
         volatile uint32_t SET_FINISH;  ///< Offset: 0xE08 - DS finish control register
@@ -3547,10 +3547,10 @@ namespace gpio {
         volatile uint32_t PCPU_INT;  ///< Offset: 0x5C - GPIO PRO_CPU interrupt status register
         volatile uint32_t PCPU_NMI_INT;  ///< Offset: 0x60 - GPIO PRO_CPU(not shielded) interrupt status register
         volatile uint32_t CPUSDIO_INT;  ///< Offset: 0x64 - GPIO CPUSDIO interrupt status register
-        volatile uint32_t PIN%s;  ///< Offset: 0x74 - GPIO pin configuration register
+        volatile uint32_t PIN;  ///< Offset: 0x74 - GPIO pin configuration register (renamed from PIN)
         volatile uint32_t STATUS_NEXT;  ///< Offset: 0x14C - GPIO interrupt source register
-        volatile uint32_t FUNC%s_IN_SEL_CFG;  ///< Offset: 0x154 - GPIO input function configuration register
-        volatile uint32_t FUNC%s_OUT_SEL_CFG;  ///< Offset: 0x554 - GPIO output function select register
+        volatile uint32_t FUNC_IN_SEL_CFG;  ///< Offset: 0x154 - GPIO input function configuration register (renamed from FUNC_IN_SEL_CFG)
+        volatile uint32_t FUNC_OUT_SEL_CFG;  ///< Offset: 0x554 - GPIO output function select register (renamed from FUNC_OUT_SEL_CFG)
         volatile uint32_t CLOCK_GATE;  ///< Offset: 0x62C - GPIO clock gate register
         volatile uint32_t REG_DATE;  ///< Offset: 0x6FC - GPIO version register
     };
@@ -3640,8 +3640,8 @@ namespace gpio {
         constexpr uint32_t SDIO_INT = (26 << 0);  ///< GPIO CPUSDIO interrupt status register for GPIO0-25
     }
 
-    /// PIN%s Register bits
-    namespace pin%s_bits {
+    /// PIN Register bits
+    namespace pin_bits {
         constexpr uint32_t SYNC2_BYPASS = (2 << 0);  ///< set GPIO input_sync2 signal mode. 0:disable. 1:trigger at negedge. 2or3:trigger at posedge.
         constexpr uint32_t PAD_DRIVER = (1U << 2);  ///< set this bit to select pad driver. 1:open-drain. 0:normal.
         constexpr uint32_t SYNC1_BYPASS = (2 << 3);  ///< set GPIO input_sync1 signal mode. 0:disable. 1:trigger at negedge. 2or3:trigger at posedge.
@@ -3656,15 +3656,15 @@ namespace gpio {
         constexpr uint32_t STATUS_INTERRUPT_NEXT = (26 << 0);  ///< GPIO interrupt source register for GPIO0-25
     }
 
-    /// FUNC%s_IN_SEL_CFG Register bits
-    namespace func%s_in_sel_cfg_bits {
+    /// FUNC_IN_SEL_CFG Register bits
+    namespace func_in_sel_cfg_bits {
         constexpr uint32_t IN_SEL = (5 << 0);  ///< set this value: s=0-53: connect GPIO[s] to this port. s=0x38: set this port always high level. s=0x3C: set this port always low level.
         constexpr uint32_t IN_INV_SEL = (1U << 5);  ///< set this bit to invert input signal. 1:invert. 0:not invert.
         constexpr uint32_t SEL = (1U << 6);  ///< set this bit to bypass GPIO. 1:do not bypass GPIO. 0:bypass GPIO.
     }
 
-    /// FUNC%s_OUT_SEL_CFG Register bits
-    namespace func%s_out_sel_cfg_bits {
+    /// FUNC_OUT_SEL_CFG Register bits
+    namespace func_out_sel_cfg_bits {
         constexpr uint32_t OUT_SEL = (8 << 0);  ///< The value of the bits: 0<=s<=256. Set the value to select output signal. s=0-255: output of GPIO[n] equals input of peripheral[s]. s=256: output of GPIO[n] equals GPIO_OUT_REG[n].
         constexpr uint32_t INV_SEL = (1U << 8);  ///< set this bit to invert output signal.1:invert.0:not invert.
         constexpr uint32_t OEN_SEL = (1U << 9);  ///< set this bit to select output enable signal.1:use GPIO_ENABLE_REG[n] as output enable signal.0:use peripheral output enable signal.
@@ -3714,7 +3714,7 @@ namespace i2c {
         volatile uint32_t SCL_STOP_SETUP;  ///< Offset: 0x4C - I2C_SCL_STOP_SETUP_REG
         volatile uint32_t FILTER_CFG;  ///< Offset: 0x50 - I2C_FILTER_CFG_REG
         volatile uint32_t CLK_CONF;  ///< Offset: 0x54 - I2C_CLK_CONF_REG
-        volatile uint32_t COMD%s;  ///< Offset: 0x58 - I2C_COMD%s_REG
+        volatile uint32_t COMD;  ///< Offset: 0x58 - I2C_COMD%s_REG (renamed from COMD)
         volatile uint32_t SCL_ST_TIME_OUT;  ///< Offset: 0x78 - I2C_SCL_ST_TIME_OUT_REG
         volatile uint32_t SCL_MAIN_ST_TIME_OUT;  ///< Offset: 0x7C - I2C_SCL_MAIN_ST_TIME_OUT_REG
         volatile uint32_t SCL_SP_CONF;  ///< Offset: 0x80 - I2C_SCL_SP_CONF_REG
@@ -3944,8 +3944,8 @@ namespace i2c {
         constexpr uint32_t SCLK_ACTIVE = (1U << 21);  ///< reg_sclk_active
     }
 
-    /// COMD%s Register bits
-    namespace comd%s_bits {
+    /// COMD Register bits
+    namespace comd_bits {
         constexpr uint32_t COMMAND = (14 << 0);  ///< reg_command
         constexpr uint32_t COMMAND_DONE = (1U << 31);  ///< reg_command_done
     }
@@ -4925,7 +4925,7 @@ namespace io {
     /// IO Register structure
     struct Registers {
         volatile uint32_t PIN_CTRL;  ///< Offset: 0x00 - Clock Output Configuration Register
-        volatile uint32_t GPIO%s;  ///< Offset: 0x04 - IO MUX Configure Register for pad XTAL_32K_P
+        volatile uint32_t GPIO;  ///< Offset: 0x04 - IO MUX Configure Register for pad XTAL_32K_P (renamed from GPIO)
         volatile uint32_t DATE;  ///< Offset: 0xFC - IO MUX Version Control Register
     };
 
@@ -4940,8 +4940,8 @@ namespace io {
         constexpr uint32_t CLK_OUT3 = (4 << 8);  ///< If you want to output clock for I2S to CLK_OUT_out3, set this register to 0x0. CLK_OUT_out3 can be found in peripheral output signals.
     }
 
-    /// GPIO%s Register bits
-    namespace gpio%s_bits {
+    /// GPIO Register bits
+    namespace gpio_bits {
         constexpr uint32_t MCU_OE = (1U << 0);  ///< Output enable of the pad in sleep mode. 1: output enabled; 0: output disabled.
         constexpr uint32_t SLP_SEL = (1U << 1);  ///< Sleep mode selection of this pad. Set to 1 to put the pad in pad mode.
         constexpr uint32_t MCU_WPD = (1U << 2);  ///< Pull-down enable of the pad in sleep mode. 1: internal pull-down enabled; 0: internal pull-down disabled.
@@ -4972,13 +4972,13 @@ namespace pwm {
 
     /// PWM Register structure
     struct Registers {
-        volatile uint32_t CH%s_CONF0;  ///< Offset: 0x00 - LEDC_LSCH%s_CONF%s.
-        volatile uint32_t CH%s_HPOINT;  ///< Offset: 0x04 - LEDC_LSCH%s_HPOINT.
-        volatile uint32_t CH%s_DUTY;  ///< Offset: 0x08 - LEDC_LSCH%s_DUTY.
-        volatile uint32_t CH%s_CONF1;  ///< Offset: 0x0C - LEDC_LSCH%s_CONF1.
-        volatile uint32_t CH%s_DUTY_R;  ///< Offset: 0x10 - LEDC_LSCH%s_DUTY_R.
-        volatile uint32_t TIMER%s_CONF;  ///< Offset: 0xA0 - LEDC_LSTIMER%s_CONF.
-        volatile uint32_t TIMER%s_VALUE;  ///< Offset: 0xA4 - LEDC_LSTIMER%s_VALUE.
+        volatile uint32_t CH_CONF0;  ///< Offset: 0x00 - LEDC_LSCH%s_CONF%s. (renamed from CH_CONF0)
+        volatile uint32_t CH_HPOINT;  ///< Offset: 0x04 - LEDC_LSCH%s_HPOINT. (renamed from CH_HPOINT)
+        volatile uint32_t CH_DUTY;  ///< Offset: 0x08 - LEDC_LSCH%s_DUTY. (renamed from CH_DUTY)
+        volatile uint32_t CH_CONF1;  ///< Offset: 0x0C - LEDC_LSCH%s_CONF1. (renamed from CH_CONF1)
+        volatile uint32_t CH_DUTY_R;  ///< Offset: 0x10 - LEDC_LSCH%s_DUTY_R. (renamed from CH_DUTY_R)
+        volatile uint32_t TIMER_CONF;  ///< Offset: 0xA0 - LEDC_LSTIMER%s_CONF. (renamed from TIMER_CONF)
+        volatile uint32_t TIMER_VALUE;  ///< Offset: 0xA4 - LEDC_LSTIMER%s_VALUE. (renamed from TIMER_VALUE)
         volatile uint32_t INT_RAW;  ///< Offset: 0xC0 - LEDC_INT_RAW.
         volatile uint32_t INT_ST;  ///< Offset: 0xC4 - LEDC_INT_ST.
         volatile uint32_t INT_ENA;  ///< Offset: 0xC8 - LEDC_INT_ENA.
@@ -4991,8 +4991,8 @@ namespace pwm {
     inline Registers* LEDC = reinterpret_cast<Registers*>(LEDC_BASE);
 
     // Bit definitions
-    /// CH%s_CONF0 Register bits
-    namespace ch%s_conf0_bits {
+    /// CH_CONF0 Register bits
+    namespace ch_conf0_bits {
         constexpr uint32_t TIMER_SEL = (2 << 0);  ///< reg_timer_sel_lsch0.
         constexpr uint32_t SIG_OUT_EN = (1U << 2);  ///< reg_sig_out_en_lsch0.
         constexpr uint32_t IDLE_LV = (1U << 3);  ///< reg_idle_lv_lsch0.
@@ -5002,18 +5002,18 @@ namespace pwm {
         constexpr uint32_t OVF_CNT_RESET = (1U << 16);  ///< reg_ovf_cnt_reset_lsch0.
     }
 
-    /// CH%s_HPOINT Register bits
-    namespace ch%s_hpoint_bits {
+    /// CH_HPOINT Register bits
+    namespace ch_hpoint_bits {
         constexpr uint32_t HPOINT = (14 << 0);  ///< reg_hpoint_lsch0.
     }
 
-    /// CH%s_DUTY Register bits
-    namespace ch%s_duty_bits {
+    /// CH_DUTY Register bits
+    namespace ch_duty_bits {
         constexpr uint32_t DUTY = (19 << 0);  ///< reg_duty_lsch0.
     }
 
-    /// CH%s_CONF1 Register bits
-    namespace ch%s_conf1_bits {
+    /// CH_CONF1 Register bits
+    namespace ch_conf1_bits {
         constexpr uint32_t DUTY_SCALE = (10 << 0);  ///< reg_duty_scale_lsch0.
         constexpr uint32_t DUTY_CYCLE = (10 << 10);  ///< reg_duty_cycle_lsch0.
         constexpr uint32_t DUTY_NUM = (10 << 20);  ///< reg_duty_num_lsch0.
@@ -5021,13 +5021,13 @@ namespace pwm {
         constexpr uint32_t DUTY_START = (1U << 31);  ///< reg_duty_start_lsch0.
     }
 
-    /// CH%s_DUTY_R Register bits
-    namespace ch%s_duty_r_bits {
+    /// CH_DUTY_R Register bits
+    namespace ch_duty_r_bits {
         constexpr uint32_t DUTY_R = (19 << 0);  ///< reg_duty_lsch0_r.
     }
 
-    /// TIMER%s_CONF Register bits
-    namespace timer%s_conf_bits {
+    /// TIMER_CONF Register bits
+    namespace timer_conf_bits {
         constexpr uint32_t DUTY_RES = (4 << 0);  ///< reg_lstimer0_duty_res.
         constexpr uint32_t CLK_DIV = (18 << 4);  ///< reg_clk_div_lstimer0.
         constexpr uint32_t PAUSE = (1U << 22);  ///< reg_lstimer0_pause.
@@ -5036,8 +5036,8 @@ namespace pwm {
         constexpr uint32_t PARA_UP = (1U << 25);  ///< reg_lstimer0_para_up.
     }
 
-    /// TIMER%s_VALUE Register bits
-    namespace timer%s_value_bits {
+    /// TIMER_VALUE Register bits
+    namespace timer_value_bits {
         constexpr uint32_t CNT = (14 << 0);  ///< reg_lstimer0_cnt.
     }
 
@@ -5144,20 +5144,20 @@ namespace rmt {
 
     /// RMT Register structure
     struct Registers {
-        volatile uint32_t CH%sDATA;  ///< Offset: 0x00 - RMT_CH%sDATA_REG.
-        volatile uint32_t CH%s_TX_CONF0;  ///< Offset: 0x10 - RMT_CH%sCONF%s_REG.
-        volatile uint32_t CH%s_RX_CONF0;  ///< Offset: 0x18 - RMT_CH2CONF0_REG.
-        volatile uint32_t CH%s_RX_CONF1;  ///< Offset: 0x1C - RMT_CH2CONF1_REG.
-        volatile uint32_t CH%s_TX_STATUS;  ///< Offset: 0x28 - RMT_CH%sSTATUS_REG.
-        volatile uint32_t CH%s_RX_STATUS;  ///< Offset: 0x30 - RMT_CH2STATUS_REG.
+        volatile uint32_t CHDATA;  ///< Offset: 0x00 - RMT_CH%sDATA_REG. (renamed from CHDATA)
+        volatile uint32_t CH_TX_CONF0;  ///< Offset: 0x10 - RMT_CH%sCONF%s_REG. (renamed from CH_TX_CONF0)
+        volatile uint32_t CH_RX_CONF0;  ///< Offset: 0x18 - RMT_CH2CONF0_REG. (renamed from CH_RX_CONF0)
+        volatile uint32_t CH_RX_CONF1;  ///< Offset: 0x1C - RMT_CH2CONF1_REG. (renamed from CH_RX_CONF1)
+        volatile uint32_t CH_TX_STATUS;  ///< Offset: 0x28 - RMT_CH%sSTATUS_REG. (renamed from CH_TX_STATUS)
+        volatile uint32_t CH_RX_STATUS;  ///< Offset: 0x30 - RMT_CH2STATUS_REG. (renamed from CH_RX_STATUS)
         volatile uint32_t INT_RAW;  ///< Offset: 0x38 - RMT_INT_RAW_REG.
         volatile uint32_t INT_ST;  ///< Offset: 0x3C - RMT_INT_ST_REG.
         volatile uint32_t INT_ENA;  ///< Offset: 0x40 - RMT_INT_ENA_REG.
         volatile uint32_t INT_CLR;  ///< Offset: 0x44 - RMT_INT_CLR_REG.
-        volatile uint32_t CH%sCARRIER_DUTY;  ///< Offset: 0x48 - RMT_CH%sCARRIER_DUTY_REG.
-        volatile uint32_t CH%s_RX_CARRIER_RM;  ///< Offset: 0x50 - RMT_CH2_RX_CARRIER_RM_REG.
-        volatile uint32_t CH%s_TX_LIM;  ///< Offset: 0x58 - RMT_CH%s_TX_LIM_REG.
-        volatile uint32_t CH%s_RX_LIM;  ///< Offset: 0x60 - RMT_CH2_RX_LIM_REG.
+        volatile uint32_t CHCARRIER_DUTY;  ///< Offset: 0x48 - RMT_CH%sCARRIER_DUTY_REG. (renamed from CHCARRIER_DUTY)
+        volatile uint32_t CH_RX_CARRIER_RM;  ///< Offset: 0x50 - RMT_CH2_RX_CARRIER_RM_REG. (renamed from CH_RX_CARRIER_RM)
+        volatile uint32_t CH_TX_LIM;  ///< Offset: 0x58 - RMT_CH%s_TX_LIM_REG. (renamed from CH_TX_LIM)
+        volatile uint32_t CH_RX_LIM;  ///< Offset: 0x60 - RMT_CH2_RX_LIM_REG. (renamed from CH_RX_LIM)
         volatile uint32_t SYS_CONF;  ///< Offset: 0x68 - RMT_SYS_CONF_REG.
         volatile uint32_t TX_SIM;  ///< Offset: 0x6C - RMT_TX_SIM_REG.
         volatile uint32_t REF_CNT_RST;  ///< Offset: 0x70 - RMT_REF_CNT_RST_REG.
@@ -5168,13 +5168,13 @@ namespace rmt {
     inline Registers* RMT = reinterpret_cast<Registers*>(RMT_BASE);
 
     // Bit definitions
-    /// CH%sDATA Register bits
-    namespace ch%sdata_bits {
+    /// CHDATA Register bits
+    namespace chdata_bits {
         constexpr uint32_t DATA = (32 << 0);  ///< Reserved.
     }
 
-    /// CH%s_TX_CONF0 Register bits
-    namespace ch%s_tx_conf0_bits {
+    /// CH_TX_CONF0 Register bits
+    namespace ch_tx_conf0_bits {
         constexpr uint32_t TX_START = (1U << 0);  ///< reg_tx_start_ch0.
         constexpr uint32_t MEM_RD_RST = (1U << 1);  ///< reg_mem_rd_rst_ch0.
         constexpr uint32_t APB_MEM_RST = (1U << 2);  ///< reg_apb_mem_rst_ch0.
@@ -5192,8 +5192,8 @@ namespace rmt {
         constexpr uint32_t CONF_UPDATE = (1U << 24);  ///< reg_reg_conf_update_ch0.
     }
 
-    /// CH%s_RX_CONF0 Register bits
-    namespace ch%s_rx_conf0_bits {
+    /// CH_RX_CONF0 Register bits
+    namespace ch_rx_conf0_bits {
         constexpr uint32_t DIV_CNT = (8 << 0);  ///< reg_div_cnt_ch2.
         constexpr uint32_t IDLE_THRES = (15 << 8);  ///< reg_idle_thres_ch2.
         constexpr uint32_t MEM_SIZE = (3 << 23);  ///< reg_mem_size_ch2.
@@ -5201,8 +5201,8 @@ namespace rmt {
         constexpr uint32_t CARRIER_OUT_LV = (1U << 29);  ///< reg_carrier_out_lv_ch2.
     }
 
-    /// CH%s_RX_CONF1 Register bits
-    namespace ch%s_rx_conf1_bits {
+    /// CH_RX_CONF1 Register bits
+    namespace ch_rx_conf1_bits {
         constexpr uint32_t RX_EN = (1U << 0);  ///< reg_rx_en_ch2.
         constexpr uint32_t MEM_WR_RST = (1U << 1);  ///< reg_mem_wr_rst_ch2.
         constexpr uint32_t APB_MEM_RST = (1U << 2);  ///< reg_apb_mem_rst_ch2.
@@ -5214,8 +5214,8 @@ namespace rmt {
         constexpr uint32_t CONF_UPDATE = (1U << 15);  ///< reg_conf_update_ch2.
     }
 
-    /// CH%s_TX_STATUS Register bits
-    namespace ch%s_tx_status_bits {
+    /// CH_TX_STATUS Register bits
+    namespace ch_tx_status_bits {
         constexpr uint32_t MEM_RADDR_EX = (9 << 0);  ///< reg_mem_raddr_ex_ch0.
         constexpr uint32_t STATE = (3 << 9);  ///< reg_state_ch0.
         constexpr uint32_t APB_MEM_WADDR = (9 << 12);  ///< reg_apb_mem_waddr_ch0.
@@ -5225,8 +5225,8 @@ namespace rmt {
         constexpr uint32_t APB_MEM_RADDR = (8 << 24);  ///< reg_apb_mem_raddr_ch0.
     }
 
-    /// CH%s_RX_STATUS Register bits
-    namespace ch%s_rx_status_bits {
+    /// CH_RX_STATUS Register bits
+    namespace ch_rx_status_bits {
         constexpr uint32_t MEM_WADDR_EX = (9 << 0);  ///< reg_mem_waddr_ex_ch2.
         constexpr uint32_t APB_MEM_RADDR = (9 << 12);  ///< reg_apb_mem_raddr_ch2.
         constexpr uint32_t STATE = (3 << 22);  ///< reg_state_ch2.
@@ -5237,70 +5237,70 @@ namespace rmt {
 
     /// INT_RAW Register bits
     namespace int_raw_bits {
-        constexpr uint32_t CH%s_TX_END = (1U << 0);  ///< reg_ch%s_tx_end_int_raw.
-        constexpr uint32_t CH%s_RX_END = (1U << 2);  ///< reg_ch2_rx_end_int_raw.
-        constexpr uint32_t CH%s_TX_ERR = (1U << 4);  ///< reg_ch%s_err_int_raw.
-        constexpr uint32_t CH%s_RX_ERR = (1U << 6);  ///< reg_ch2_err_int_raw.
-        constexpr uint32_t CH%s_TX_THR_EVENT = (1U << 8);  ///< reg_ch%s_tx_thr_event_int_raw.
-        constexpr uint32_t CH%s_RX_THR_EVENT = (1U << 10);  ///< reg_ch2_rx_thr_event_int_raw.
-        constexpr uint32_t CH%s_TX_LOOP = (1U << 12);  ///< reg_ch%s_tx_loop_int_raw.
+        constexpr uint32_t CH_TX_END = (1U << 0);  ///< reg_ch%s_tx_end_int_raw. (renamed from CH_TX_END)
+        constexpr uint32_t CH_RX_END = (1U << 2);  ///< reg_ch2_rx_end_int_raw. (renamed from CH_RX_END)
+        constexpr uint32_t CH_TX_ERR = (1U << 4);  ///< reg_ch%s_err_int_raw. (renamed from CH_TX_ERR)
+        constexpr uint32_t CH_RX_ERR = (1U << 6);  ///< reg_ch2_err_int_raw. (renamed from CH_RX_ERR)
+        constexpr uint32_t CH_TX_THR_EVENT = (1U << 8);  ///< reg_ch%s_tx_thr_event_int_raw. (renamed from CH_TX_THR_EVENT)
+        constexpr uint32_t CH_RX_THR_EVENT = (1U << 10);  ///< reg_ch2_rx_thr_event_int_raw. (renamed from CH_RX_THR_EVENT)
+        constexpr uint32_t CH_TX_LOOP = (1U << 12);  ///< reg_ch%s_tx_loop_int_raw. (renamed from CH_TX_LOOP)
     }
 
     /// INT_ST Register bits
     namespace int_st_bits {
-        constexpr uint32_t CH%s_TX_END = (1U << 0);  ///< reg_ch%s_tx_end_int_st.
-        constexpr uint32_t CH%s_RX_END = (1U << 2);  ///< reg_ch2_rx_end_int_st.
-        constexpr uint32_t CH%s_TX_ERR = (1U << 4);  ///< reg_ch%s_err_int_st.
-        constexpr uint32_t CH%s_RX_ERR = (1U << 6);  ///< reg_ch2_err_int_st.
-        constexpr uint32_t CH%s_TX_THR_EVENT = (1U << 8);  ///< reg_ch%s_tx_thr_event_int_st.
-        constexpr uint32_t CH%s_RX_THR_EVENT = (1U << 10);  ///< reg_ch2_rx_thr_event_int_st.
-        constexpr uint32_t CH%s_TX_LOOP = (1U << 12);  ///< reg_ch%s_tx_loop_int_st.
+        constexpr uint32_t CH_TX_END = (1U << 0);  ///< reg_ch%s_tx_end_int_st. (renamed from CH_TX_END)
+        constexpr uint32_t CH_RX_END = (1U << 2);  ///< reg_ch2_rx_end_int_st. (renamed from CH_RX_END)
+        constexpr uint32_t CH_TX_ERR = (1U << 4);  ///< reg_ch%s_err_int_st. (renamed from CH_TX_ERR)
+        constexpr uint32_t CH_RX_ERR = (1U << 6);  ///< reg_ch2_err_int_st. (renamed from CH_RX_ERR)
+        constexpr uint32_t CH_TX_THR_EVENT = (1U << 8);  ///< reg_ch%s_tx_thr_event_int_st. (renamed from CH_TX_THR_EVENT)
+        constexpr uint32_t CH_RX_THR_EVENT = (1U << 10);  ///< reg_ch2_rx_thr_event_int_st. (renamed from CH_RX_THR_EVENT)
+        constexpr uint32_t CH_TX_LOOP = (1U << 12);  ///< reg_ch%s_tx_loop_int_st. (renamed from CH_TX_LOOP)
     }
 
     /// INT_ENA Register bits
     namespace int_ena_bits {
-        constexpr uint32_t CH%s_TX_END = (1U << 0);  ///< reg_ch%s_tx_end_int_ena.
-        constexpr uint32_t CH%s_RX_END = (1U << 2);  ///< reg_ch2_rx_end_int_ena.
-        constexpr uint32_t CH%s_TX_ERR = (1U << 4);  ///< reg_ch%s_err_int_ena.
-        constexpr uint32_t CH%s_RX_ERR = (1U << 6);  ///< reg_ch2_err_int_ena.
-        constexpr uint32_t CH%s_TX_THR_EVENT = (1U << 8);  ///< reg_ch%s_tx_thr_event_int_ena.
-        constexpr uint32_t CH%s_RX_THR_EVENT = (1U << 10);  ///< reg_ch2_rx_thr_event_int_ena.
-        constexpr uint32_t CH%s_TX_LOOP = (1U << 12);  ///< reg_ch%s_tx_loop_int_ena.
+        constexpr uint32_t CH_TX_END = (1U << 0);  ///< reg_ch%s_tx_end_int_ena. (renamed from CH_TX_END)
+        constexpr uint32_t CH_RX_END = (1U << 2);  ///< reg_ch2_rx_end_int_ena. (renamed from CH_RX_END)
+        constexpr uint32_t CH_TX_ERR = (1U << 4);  ///< reg_ch%s_err_int_ena. (renamed from CH_TX_ERR)
+        constexpr uint32_t CH_RX_ERR = (1U << 6);  ///< reg_ch2_err_int_ena. (renamed from CH_RX_ERR)
+        constexpr uint32_t CH_TX_THR_EVENT = (1U << 8);  ///< reg_ch%s_tx_thr_event_int_ena. (renamed from CH_TX_THR_EVENT)
+        constexpr uint32_t CH_RX_THR_EVENT = (1U << 10);  ///< reg_ch2_rx_thr_event_int_ena. (renamed from CH_RX_THR_EVENT)
+        constexpr uint32_t CH_TX_LOOP = (1U << 12);  ///< reg_ch%s_tx_loop_int_ena. (renamed from CH_TX_LOOP)
     }
 
     /// INT_CLR Register bits
     namespace int_clr_bits {
-        constexpr uint32_t CH%s_TX_END = (1U << 0);  ///< reg_ch%s_tx_end_int_clr.
-        constexpr uint32_t CH%s_RX_END = (1U << 2);  ///< reg_ch2_rx_end_int_clr.
-        constexpr uint32_t CH%s_TX_ERR = (1U << 4);  ///< reg_ch%s_err_int_clr.
-        constexpr uint32_t CH%s_RX_ERR = (1U << 6);  ///< reg_ch2_err_int_clr.
-        constexpr uint32_t CH%s_TX_THR_EVENT = (1U << 8);  ///< reg_ch%s_tx_thr_event_int_clr.
-        constexpr uint32_t CH%s_RX_THR_EVENT = (1U << 10);  ///< reg_ch2_rx_thr_event_int_clr.
-        constexpr uint32_t CH%s_TX_LOOP = (1U << 12);  ///< reg_ch%s_tx_loop_int_clr.
+        constexpr uint32_t CH_TX_END = (1U << 0);  ///< reg_ch%s_tx_end_int_clr. (renamed from CH_TX_END)
+        constexpr uint32_t CH_RX_END = (1U << 2);  ///< reg_ch2_rx_end_int_clr. (renamed from CH_RX_END)
+        constexpr uint32_t CH_TX_ERR = (1U << 4);  ///< reg_ch%s_err_int_clr. (renamed from CH_TX_ERR)
+        constexpr uint32_t CH_RX_ERR = (1U << 6);  ///< reg_ch2_err_int_clr. (renamed from CH_RX_ERR)
+        constexpr uint32_t CH_TX_THR_EVENT = (1U << 8);  ///< reg_ch%s_tx_thr_event_int_clr. (renamed from CH_TX_THR_EVENT)
+        constexpr uint32_t CH_RX_THR_EVENT = (1U << 10);  ///< reg_ch2_rx_thr_event_int_clr. (renamed from CH_RX_THR_EVENT)
+        constexpr uint32_t CH_TX_LOOP = (1U << 12);  ///< reg_ch%s_tx_loop_int_clr. (renamed from CH_TX_LOOP)
     }
 
-    /// CH%sCARRIER_DUTY Register bits
-    namespace ch%scarrier_duty_bits {
+    /// CHCARRIER_DUTY Register bits
+    namespace chcarrier_duty_bits {
         constexpr uint32_t CARRIER_LOW = (16 << 0);  ///< reg_carrier_low_ch0.
         constexpr uint32_t CARRIER_HIGH = (16 << 16);  ///< reg_carrier_high_ch0.
     }
 
-    /// CH%s_RX_CARRIER_RM Register bits
-    namespace ch%s_rx_carrier_rm_bits {
+    /// CH_RX_CARRIER_RM Register bits
+    namespace ch_rx_carrier_rm_bits {
         constexpr uint32_t CARRIER_LOW_THRES = (16 << 0);  ///< reg_carrier_low_thres_ch2.
         constexpr uint32_t CARRIER_HIGH_THRES = (16 << 16);  ///< reg_carrier_high_thres_ch2.
     }
 
-    /// CH%s_TX_LIM Register bits
-    namespace ch%s_tx_lim_bits {
+    /// CH_TX_LIM Register bits
+    namespace ch_tx_lim_bits {
         constexpr uint32_t TX_LIM = (9 << 0);  ///< reg_rmt_tx_lim_ch0.
         constexpr uint32_t TX_LOOP_NUM = (10 << 9);  ///< reg_rmt_tx_loop_num_ch0.
         constexpr uint32_t TX_LOOP_CNT_EN = (1U << 19);  ///< reg_rmt_tx_loop_cnt_en_ch0.
         constexpr uint32_t LOOP_COUNT_RESET = (1U << 20);  ///< reg_loop_count_reset_ch0.
     }
 
-    /// CH%s_RX_LIM Register bits
-    namespace ch%s_rx_lim_bits {
+    /// CH_RX_LIM Register bits
+    namespace ch_rx_lim_bits {
         constexpr uint32_t RX_LIM = (9 << 0);  ///< reg_rmt_rx_lim_ch2.
     }
 

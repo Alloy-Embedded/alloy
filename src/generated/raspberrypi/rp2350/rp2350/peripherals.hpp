@@ -3,7 +3,7 @@
 /// Source: raspberrypi_rp2350.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:24
+/// Generated: 2025-10-31 17:45:04
 #ifndef ALLOY_GENERATED_RP2350_PERIPHERALS_HPP
 #define ALLOY_GENERATED_RP2350_PERIPHERALS_HPP
 

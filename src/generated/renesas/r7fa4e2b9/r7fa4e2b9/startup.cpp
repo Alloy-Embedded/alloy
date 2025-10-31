@@ -3,7 +3,7 @@
 /// Source: renesas_r7fa4e2b9.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:11
+/// Generated: 2025-10-31 17:44:50
 #include <cstdint>
 #include <cstring>
 

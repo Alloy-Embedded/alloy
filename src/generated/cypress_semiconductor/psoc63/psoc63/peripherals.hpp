@@ -3,7 +3,7 @@
 /// Source: cypress_psoc63.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:39
+/// Generated: 2025-10-31 17:44:14
 #ifndef ALLOY_GENERATED_PSOC63_PERIPHERALS_HPP
 #define ALLOY_GENERATED_PSOC63_PERIPHERALS_HPP
 
@@ -279,13 +279,13 @@ namespace peri {
         volatile uint32_t SL_CTL;  ///< Offset: 0x20 - Slave control
         volatile uint32_t TIMEOUT_CTL;  ///< Offset: 0x24 - Timeout control
         volatile uint32_t DIV_CMD;  ///< Offset: 0x400 - Divider command register
-        volatile uint32_t DIV_8_CTL[%s];  ///< Offset: 0x800 - Divider control register (for 8.0 divider)
-        volatile uint32_t DIV_16_CTL[%s];  ///< Offset: 0x900 - Divider control register (for 16.0 divider)
-        volatile uint32_t DIV_16_5_CTL[%s];  ///< Offset: 0xA00 - Divider control register (for 16.5 divider)
-        volatile uint32_t DIV_24_5_CTL[%s];  ///< Offset: 0xB00 - Divider control register (for 24.5 divider)
-        volatile uint32_t CLOCK_CTL[%s];  ///< Offset: 0xC00 - Clock control register
+        volatile uint32_t DIV_8_CTL__;  ///< Offset: 0x800 - Divider control register (for 8.0 divider) (renamed from DIV_8_CTL__)
+        volatile uint32_t DIV_16_CTL__;  ///< Offset: 0x900 - Divider control register (for 16.0 divider) (renamed from DIV_16_CTL__)
+        volatile uint32_t DIV_16_5_CTL__;  ///< Offset: 0xA00 - Divider control register (for 16.5 divider) (renamed from DIV_16_5_CTL__)
+        volatile uint32_t DIV_24_5_CTL__;  ///< Offset: 0xB00 - Divider control register (for 24.5 divider) (renamed from DIV_24_5_CTL__)
+        volatile uint32_t CLOCK_CTL__;  ///< Offset: 0xC00 - Clock control register (renamed from CLOCK_CTL__)
         volatile uint32_t TR_CMD;  ///< Offset: 0x1000 - Trigger command register
-        volatile uint32_t TR_OUT_CTL[%s];  ///< Offset: 0x00 - Trigger control register
+        volatile uint32_t TR_OUT_CTL__;  ///< Offset: 0x00 - Trigger control register (renamed from TR_OUT_CTL__)
         volatile uint32_t ADDR0;  ///< Offset: 0x00 - PPU region address 0 (slave structure)
         volatile uint32_t ATT0;  ///< Offset: 0x04 - PPU region attributes 0 (slave structure)
         volatile uint32_t ADDR1;  ///< Offset: 0x20 - PPU region address 1 (master structure)
@@ -324,7 +324,7 @@ namespace cpuss {
         volatile uint32_t CM4_CLOCK_CTL;  ///< Offset: 0x90 - CM4 clock control
         volatile uint32_t CM4_NMI_CTL;  ///< Offset: 0xA0 - CM4 NMI control
         volatile uint32_t RAM0_CTL0;  ///< Offset: 0x100 - RAM 0 control 0
-        volatile uint32_t RAM0_PWR_MACRO_CTL[%s];  ///< Offset: 0x140 - RAM 0 power control
+        volatile uint32_t RAM0_PWR_MACRO_CTL__;  ///< Offset: 0x140 - RAM 0 power control (renamed from RAM0_PWR_MACRO_CTL__)
         volatile uint32_t RAM1_CTL0;  ///< Offset: 0x180 - RAM 1 control 0
         volatile uint32_t RAM1_PWR_CTL;  ///< Offset: 0x190 - RAM1 power control
         volatile uint32_t RAM2_CTL0;  ///< Offset: 0x1A0 - RAM 2 control 0
@@ -365,7 +365,7 @@ namespace fault {
     struct Registers {
         volatile uint32_t CTL;  ///< Offset: 0x00 - Fault control
         volatile uint32_t STATUS;  ///< Offset: 0x0C - Fault status
-        volatile uint32_t DATA[%s];  ///< Offset: 0x10 - Fault data
+        volatile uint32_t DATA__;  ///< Offset: 0x10 - Fault data (renamed from DATA__)
         volatile uint32_t PENDING0;  ///< Offset: 0x40 - Fault pending 0
         volatile uint32_t PENDING1;  ///< Offset: 0x44 - Fault pending 1
         volatile uint32_t PENDING2;  ///< Offset: 0x48 - Fault pending 2
@@ -465,9 +465,9 @@ namespace flash {
         volatile uint32_t BIST_CTL;  ///< Offset: 0x100 - BIST control
         volatile uint32_t BIST_CMD;  ///< Offset: 0x104 - BIST command
         volatile uint32_t BIST_ADDR_START;  ///< Offset: 0x108 - BIST address start register
-        volatile uint32_t BIST_DATA[%s];  ///< Offset: 0x10C - BIST data register(s)
-        volatile uint32_t BIST_DATA_ACT[%s];  ///< Offset: 0x12C - BIST data actual register(s)
-        volatile uint32_t BIST_DATA_EXP[%s];  ///< Offset: 0x14C - BIST data expected register(s)
+        volatile uint32_t BIST_DATA__;  ///< Offset: 0x10C - BIST data register(s) (renamed from BIST_DATA__)
+        volatile uint32_t BIST_DATA_ACT__;  ///< Offset: 0x12C - BIST data actual register(s) (renamed from BIST_DATA_ACT__)
+        volatile uint32_t BIST_DATA_EXP__;  ///< Offset: 0x14C - BIST data expected register(s) (renamed from BIST_DATA_EXP__)
         volatile uint32_t BIST_ADDR;  ///< Offset: 0x16C - BIST address register
         volatile uint32_t BIST_STATUS;  ///< Offset: 0x170 - BIST status register
         volatile uint32_t CM0_CA_CTL0;  ///< Offset: 0x400 - CM0+ cache control
@@ -526,9 +526,9 @@ namespace flash {
         volatile uint32_t RED_CTL45;  ///< Offset: 0x88 - Redundancy Controll normal sectors 4,5
         volatile uint32_t RED_CTL67;  ///< Offset: 0x8C - Redundancy Controll normal sectors 6,7
         volatile uint32_t RED_CTL_SM01;  ///< Offset: 0x90 - Redundancy Controll special sectors 0,1
-        volatile uint32_t TM_CMPR[%s];  ///< Offset: 0x100 - Do Not Use
-        volatile uint32_t FM_HV_DATA[%s];  ///< Offset: 0x800 - Flash macro high Voltage page latches data
-        volatile uint32_t FM_MEM_DATA[%s];  ///< Offset: 0xC00 - Flash macro memory sense amplifier and column decoder data
+        volatile uint32_t TM_CMPR__;  ///< Offset: 0x100 - Do Not Use (renamed from TM_CMPR__)
+        volatile uint32_t FM_HV_DATA__;  ///< Offset: 0x800 - Flash macro high Voltage page latches data (renamed from FM_HV_DATA__)
+        volatile uint32_t FM_MEM_DATA__;  ///< Offset: 0xC00 - Flash macro memory sense amplifier and column decoder data (renamed from FM_MEM_DATA__)
     };
 
     /// Peripheral instances
@@ -552,7 +552,7 @@ namespace srss {
         volatile uint32_t PWR_BUCK_CTL;  ///< Offset: 0x14 - Buck Control Register
         volatile uint32_t PWR_BUCK_CTL2;  ///< Offset: 0x18 - Buck Control Register 2
         volatile uint32_t PWR_LVD_STATUS;  ///< Offset: 0x1C - Low Voltage Detector (LVD) Status Register
-        volatile uint32_t PWR_HIB_DATA[%s];  ///< Offset: 0x80 - HIBERNATE Data Register
+        volatile uint32_t PWR_HIB_DATA__;  ///< Offset: 0x80 - HIBERNATE Data Register (renamed from PWR_HIB_DATA__)
         volatile uint32_t WDT_CTL;  ///< Offset: 0x180 - Watchdog Counter Control Register
         volatile uint32_t WDT_CNT;  ///< Offset: 0x184 - Watchdog Counter Count Register
         volatile uint32_t WDT_MATCH;  ///< Offset: 0x188 - Watchdog Counter Match Register
@@ -566,9 +566,9 @@ namespace srss {
         volatile uint32_t MCWDT_INTR_MASK;  ///< Offset: 0x20 - Multi-Counter Watchdog Counter Interrupt Mask Register
         volatile uint32_t MCWDT_INTR_MASKED;  ///< Offset: 0x24 - Multi-Counter Watchdog Counter Interrupt Masked Register
         volatile uint32_t MCWDT_LOCK;  ///< Offset: 0x28 - Multi-Counter Watchdog Counter Lock Register
-        volatile uint32_t CLK_DSI_SELECT[%s];  ///< Offset: 0x300 - Clock DSI Select Register
-        volatile uint32_t CLK_PATH_SELECT[%s];  ///< Offset: 0x340 - Clock Path Select Register
-        volatile uint32_t CLK_ROOT_SELECT[%s];  ///< Offset: 0x380 - Clock Root Select Register
+        volatile uint32_t CLK_DSI_SELECT__;  ///< Offset: 0x300 - Clock DSI Select Register (renamed from CLK_DSI_SELECT__)
+        volatile uint32_t CLK_PATH_SELECT__;  ///< Offset: 0x340 - Clock Path Select Register (renamed from CLK_PATH_SELECT__)
+        volatile uint32_t CLK_ROOT_SELECT__;  ///< Offset: 0x380 - Clock Root Select Register (renamed from CLK_ROOT_SELECT__)
         volatile uint32_t CLK_SELECT;  ///< Offset: 0x500 - Clock selection register
         volatile uint32_t CLK_TIMER_CTL;  ///< Offset: 0x504 - Timer Clock Control Register
         volatile uint32_t CLK_ILO_CONFIG;  ///< Offset: 0x50C - ILO Configuration
@@ -585,8 +585,8 @@ namespace srss {
         volatile uint32_t CLK_FLL_CONFIG3;  ///< Offset: 0x588 - FLL Configuration Register 3
         volatile uint32_t CLK_FLL_CONFIG4;  ///< Offset: 0x58C - FLL Configuration Register 4
         volatile uint32_t CLK_FLL_STATUS;  ///< Offset: 0x590 - FLL Status Register
-        volatile uint32_t CLK_PLL_CONFIG[%s];  ///< Offset: 0x600 - PLL Configuration Register
-        volatile uint32_t CLK_PLL_STATUS[%s];  ///< Offset: 0x640 - PLL Status Register
+        volatile uint32_t CLK_PLL_CONFIG__;  ///< Offset: 0x600 - PLL Configuration Register (renamed from CLK_PLL_CONFIG__)
+        volatile uint32_t CLK_PLL_STATUS__;  ///< Offset: 0x640 - PLL Status Register (renamed from CLK_PLL_STATUS__)
         volatile uint32_t SRSS_INTR;  ///< Offset: 0x700 - SRSS Interrupt Register
         volatile uint32_t SRSS_INTR_SET;  ///< Offset: 0x704 - SRSS Interrupt Set Register
         volatile uint32_t SRSS_INTR_MASK;  ///< Offset: 0x708 - SRSS Interrupt Mask Register
@@ -641,7 +641,7 @@ namespace backup {
         volatile uint32_t TICKS;  ///< Offset: 0x40 - 128Hz tick counter
         volatile uint32_t PMIC_CTL;  ///< Offset: 0x44 - PMIC control register
         volatile uint32_t RESET;  ///< Offset: 0x48 - Backup reset register
-        volatile uint32_t BREG[%s];  ///< Offset: 0x1000 - Backup register region
+        volatile uint32_t BREG__;  ///< Offset: 0x1000 - Backup register region (renamed from BREG__)
         volatile uint32_t TRIM;  ///< Offset: 0xFF00 - Trim Register
     };
 
@@ -774,7 +774,7 @@ namespace hsiom {
     struct Registers {
         volatile uint32_t PORT_SEL0;  ///< Offset: 0x00 - Port selection 0
         volatile uint32_t PORT_SEL1;  ///< Offset: 0x04 - Port selection 1
-        volatile uint32_t AMUX_SPLIT_CTL[%s];  ///< Offset: 0x2000 - AMUX splitter cell control
+        volatile uint32_t AMUX_SPLIT_CTL__;  ///< Offset: 0x2000 - AMUX splitter cell control (renamed from AMUX_SPLIT_CTL__)
     };
 
     /// Peripheral instances
@@ -835,8 +835,8 @@ namespace smartio {
     struct Registers {
         volatile uint32_t CTL;  ///< Offset: 0x00 - Control register
         volatile uint32_t SYNC_CTL;  ///< Offset: 0x10 - Synchronization control register
-        volatile uint32_t LUT_SEL[%s];  ///< Offset: 0x20 - LUT component input selection
-        volatile uint32_t LUT_CTL[%s];  ///< Offset: 0x40 - LUT component control register
+        volatile uint32_t LUT_SEL__;  ///< Offset: 0x20 - LUT component input selection (renamed from LUT_SEL__)
+        volatile uint32_t LUT_CTL__;  ///< Offset: 0x40 - LUT component control register (renamed from LUT_CTL__)
         volatile uint32_t DU_SEL;  ///< Offset: 0xC0 - Data unit component input selection
         volatile uint32_t DU_CTL;  ///< Offset: 0xC4 - Data unit component control register
         volatile uint32_t DATA;  ///< Offset: 0xF0 - Data register
@@ -985,10 +985,10 @@ namespace lcd0 {
         volatile uint32_t ID;  ///< Offset: 0x00 - ID & Revision
         volatile uint32_t DIVIDER;  ///< Offset: 0x04 - LCD Divider Register
         volatile uint32_t CONTROL;  ///< Offset: 0x08 - LCD Configuration Register
-        volatile uint32_t DATA0[%s];  ///< Offset: 0x100 - LCD Pin Data Registers
-        volatile uint32_t DATA1[%s];  ///< Offset: 0x200 - LCD Pin Data Registers
-        volatile uint32_t DATA2[%s];  ///< Offset: 0x300 - LCD Pin Data Registers
-        volatile uint32_t DATA3[%s];  ///< Offset: 0x400 - LCD Pin Data Registers
+        volatile uint32_t DATA0__;  ///< Offset: 0x100 - LCD Pin Data Registers (renamed from DATA0__)
+        volatile uint32_t DATA1__;  ///< Offset: 0x200 - LCD Pin Data Registers (renamed from DATA1__)
+        volatile uint32_t DATA2__;  ///< Offset: 0x300 - LCD Pin Data Registers (renamed from DATA2__)
+        volatile uint32_t DATA3__;  ///< Offset: 0x400 - LCD Pin Data Registers (renamed from DATA3__)
     };
 
     /// Peripheral instances
@@ -1088,7 +1088,7 @@ namespace radio {
         volatile uint32_t CE_CNFG_STS_REGISTER_EXT;  ///< Offset: 0x130 - connection configuration & status register
         volatile uint32_t CONN_EXT_INTR;  ///< Offset: 0x134 - Connection extended interrupt status and Clear register
         volatile uint32_t CONN_EXT_INTR_MASK;  ///< Offset: 0x138 - Connection Extended Interrupt mask
-        volatile uint32_t DATA_MEM_DESCRIPTOR[%s];  ///< Offset: 0x140 - Data buffer descriptor 0 to 4
+        volatile uint32_t DATA_MEM_DESCRIPTOR__;  ///< Offset: 0x140 - Data buffer descriptor 0 to 4 (renamed from DATA_MEM_DESCRIPTOR__)
         volatile uint32_t WINDOW_WIDEN_INTVL;  ///< Offset: 0x160 - Window widen for interval
         volatile uint32_t WINDOW_WIDEN_WINOFF;  ///< Offset: 0x164 - Window widen for offset
         volatile uint32_t LE_RF_TEST_MODE;  ///< Offset: 0x170 - Direct Test Mode control
@@ -1172,7 +1172,7 @@ namespace radio {
         volatile uint32_t DEV_PA_ADDR_L;  ///< Offset: 0xF04 - Device Resolvable/Non-Resolvable Private address lower register
         volatile uint32_t DEV_PA_ADDR_M;  ///< Offset: 0xF08 - Device Resolvable/Non-Resolvable Private address middle register
         volatile uint32_t DEV_PA_ADDR_H;  ///< Offset: 0xF0C - Device Resolvable/Non-Resolvable Private address higher register
-        volatile uint32_t RSLV_LIST_ENABLE[%s];  ///< Offset: 0xF10 - Resolving list entry control bit
+        volatile uint32_t RSLV_LIST_ENABLE__;  ///< Offset: 0xF10 - Resolving list entry control bit (renamed from RSLV_LIST_ENABLE__)
         volatile uint32_t WL_CONNECTION_STATUS;  ///< Offset: 0xFA0 - whitelist valid entry bit
         volatile uint32_t CONN_RXMEM_BASE_ADDR_DLE;  ///< Offset: 0x1800 - DLE Connection RX memory base address
         volatile uint32_t CONN_TXMEM_BASE_ADDR_DLE;  ///< Offset: 0x2800 - DLE Connection TX memory base address
@@ -1199,7 +1199,7 @@ namespace radio {
         volatile uint32_t MMMS_MASTER_CREATE_BT_CAPT;  ///< Offset: 0x14080 - BT slot capture for master connection creation
         volatile uint32_t MMMS_SLAVE_CREATE_BT_CAPT;  ///< Offset: 0x14084 - BT slot capture for slave connection creation
         volatile uint32_t MMMS_SLAVE_CREATE_US_CAPT;  ///< Offset: 0x14088 - Micro second capture for slave connection creation
-        volatile uint32_t MMMS_DATA_MEM_DESCRIPTOR[%s];  ///< Offset: 0x14100 - Data buffer descriptor 0 to 15
+        volatile uint32_t MMMS_DATA_MEM_DESCRIPTOR__;  ///< Offset: 0x14100 - Data buffer descriptor 0 to 15 (renamed from MMMS_DATA_MEM_DESCRIPTOR__)
         volatile uint32_t CONN_1_DATA_LIST_SENT;  ///< Offset: 0x14200 - data list sent update and status for connection 1
         volatile uint32_t CONN_1_DATA_LIST_ACK;  ///< Offset: 0x14204 - data list ack update and status for connection 1
         volatile uint32_t CONN_1_CE_DATA_LIST_CFG;  ///< Offset: 0x14208 - Connection specific pause resume for connection 1
@@ -1220,7 +1220,7 @@ namespace radio {
         volatile uint32_t HW_LOAD_OFFSET;  ///< Offset: 0x14420 - Register to configure offset from connection anchor...
         volatile uint32_t ADV_RAND;  ///< Offset: 0x14424 - Random number generated by Hardware for ADV NI calculation
         volatile uint32_t MMMS_RX_PKT_CNTR;  ///< Offset: 0x14428 - Packet Counter of packets in RX FIFO in MMMS mode
-        volatile uint32_t CONN_RX_PKT_CNTR[%s];  ///< Offset: 0x14430 - Packet Counter for Individual connection index
+        volatile uint32_t CONN_RX_PKT_CNTR__;  ///< Offset: 0x14430 - Packet Counter for Individual connection index (renamed from CONN_RX_PKT_CNTR__)
         volatile uint32_t WHITELIST_BASE_ADDR;  ///< Offset: 0x14800 - Whitelist base address
         volatile uint32_t RSLV_LIST_PEER_IDNTT_BASE_ADDR;  ///< Offset: 0x148C0 - Resolving list base address for storing Peer Identity address
         volatile uint32_t RSLV_LIST_PEER_RPA_BASE_ADDR;  ///< Offset: 0x14980 - Resolving list base address for storing resolved Peer RPA address
@@ -1257,20 +1257,20 @@ namespace radio {
         volatile uint32_t PACKET_COUNTER2;  ///< Offset: 0x104 - Packet counter 2
         volatile uint32_t IV_MASTER0;  ///< Offset: 0x108 - Master Initialization Vector 0
         volatile uint32_t IV_SLAVE0;  ///< Offset: 0x10C - Slave Initialization Vector 0
-        volatile uint32_t ENC_KEY[%s];  ///< Offset: 0x110 - Encryption Key register 0-3
+        volatile uint32_t ENC_KEY__;  ///< Offset: 0x110 - Encryption Key register 0-3 (renamed from ENC_KEY__)
         volatile uint32_t MIC_IN0;  ///< Offset: 0x120 - MIC input register
         volatile uint32_t MIC_OUT0;  ///< Offset: 0x124 - MIC output register
         volatile uint32_t ENC_PARAMS;  ///< Offset: 0x128 - Encryption Parameter register
         volatile uint32_t ENC_CONFIG;  ///< Offset: 0x12C - Encryption Configuration
         volatile uint32_t ENC_INTR_EN;  ///< Offset: 0x130 - Encryption Interrupt enable
         volatile uint32_t ENC_INTR;  ///< Offset: 0x134 - Encryption Interrupt status and clear register
-        volatile uint32_t B1_DATA_REG[%s];  ///< Offset: 0x140 - Programmable B1 Data register (0-3)
+        volatile uint32_t B1_DATA_REG__;  ///< Offset: 0x140 - Programmable B1 Data register (0-3) (renamed from B1_DATA_REG__)
         volatile uint32_t ENC_MEM_BASE_ADDR;  ///< Offset: 0x150 - Encryption memory base address
         volatile uint32_t TRIM_LDO_0;  ///< Offset: 0xF00 - LDO Trim register 0
         volatile uint32_t TRIM_LDO_1;  ///< Offset: 0xF04 - LDO Trim register 1
         volatile uint32_t TRIM_LDO_2;  ///< Offset: 0xF08 - LDO Trim register 2
         volatile uint32_t TRIM_LDO_3;  ///< Offset: 0xF0C - LDO Trim register 3
-        volatile uint32_t TRIM_MXD[%s];  ///< Offset: 0xF10 - MXD die Trim registers
+        volatile uint32_t TRIM_MXD__;  ///< Offset: 0xF10 - MXD die Trim registers (renamed from TRIM_MXD__)
         volatile uint32_t TRIM_LDO_4;  ///< Offset: 0xF30 - LDO Trim register 4
         volatile uint32_t TRIM_LDO_5;  ///< Offset: 0xF34 - LDO Trim register 5
     };
@@ -1290,7 +1290,7 @@ namespace usb {
 
     /// USB Register structure
     struct Registers {
-        volatile uint32_t EP0_DR[%s];  ///< Offset: 0x00 - Control End point EP0 Data Register
+        volatile uint32_t EP0_DR__;  ///< Offset: 0x00 - Control End point EP0 Data Register (renamed from EP0_DR__)
         volatile uint32_t CR0;  ///< Offset: 0x20 - USB control 0 Register
         volatile uint32_t CR1;  ///< Offset: 0x24 - USB control 1 Register
         volatile uint32_t SIE_EP_INT_EN;  ///< Offset: 0x28 - USB SIE Data Endpoints Interrupt Enable Register
@@ -1405,7 +1405,7 @@ namespace usb {
         volatile uint32_t ARB_RW8_RA;  ///< Offset: 0x3D8 - Endpoint Read Address value *1
         volatile uint32_t ARB_RW8_RA_MSB;  ///< Offset: 0x3DC - Endpoint Read Address value *1
         volatile uint32_t ARB_RW8_DR;  ///< Offset: 0x3E0 - Endpoint Data Register
-        volatile uint32_t MEM_DATA[%s];  ///< Offset: 0x400 - DATA
+        volatile uint32_t MEM_DATA__;  ///< Offset: 0x400 - DATA (renamed from MEM_DATA__)
         volatile uint32_t SOF16;  ///< Offset: 0x1060 - Start Of Frame Register
         volatile uint32_t OSCLK_DR16;  ///< Offset: 0x1080 - Oscillator lock data register
         volatile uint32_t ARB_RW1_WA16;  ///< Offset: 0x1210 - Endpoint Write Address value
@@ -1846,9 +1846,9 @@ namespace sar {
         volatile uint32_t RANGE_COND;  ///< Offset: 0x1C - Global range detect mode register.
         volatile uint32_t CHAN_EN;  ///< Offset: 0x20 - Enable bits for the channels
         volatile uint32_t START_CTRL;  ///< Offset: 0x24 - Start control register (firmware trigger).
-        volatile uint32_t CHAN_CONFIG[%s];  ///< Offset: 0x80 - Channel configuration register.
-        volatile uint32_t CHAN_WORK[%s];  ///< Offset: 0x100 - Channel working data register
-        volatile uint32_t CHAN_RESULT[%s];  ///< Offset: 0x180 - Channel result data register
+        volatile uint32_t CHAN_CONFIG__;  ///< Offset: 0x80 - Channel configuration register. (renamed from CHAN_CONFIG__)
+        volatile uint32_t CHAN_WORK__;  ///< Offset: 0x100 - Channel working data register (renamed from CHAN_WORK__)
+        volatile uint32_t CHAN_RESULT__;  ///< Offset: 0x180 - Channel result data register (renamed from CHAN_RESULT__)
         volatile uint32_t CHAN_WORK_UPDATED;  ///< Offset: 0x200 - Channel working data register 'updated' bits
         volatile uint32_t CHAN_RESULT_UPDATED;  ///< Offset: 0x204 - Channel result data register 'updated' bits
         volatile uint32_t CHAN_WORK_NEWVALUE;  ///< Offset: 0x208 - Channel working data register 'new value' bits

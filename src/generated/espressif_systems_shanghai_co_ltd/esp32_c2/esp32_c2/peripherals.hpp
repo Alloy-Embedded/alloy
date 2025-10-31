@@ -3,7 +3,7 @@
 /// Source: espressif_esp32c2.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:37
+/// Generated: 2025-10-31 17:44:12
 #ifndef ALLOY_GENERATED_ESP32-C2_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ESP32-C2_PERIPHERALS_HPP
 
@@ -1172,9 +1172,9 @@ namespace ecc {
         volatile uint32_t MULT_INT_CLR;  ///< Offset: 0x18 - I2S interrupt clear register.
         volatile uint32_t MULT_CONF;  ///< Offset: 0x1C - I2S RX configure register
         volatile uint32_t MULT_DATE;  ///< Offset: 0xFC - Version control register
-        volatile uint32_t K_MEM[%s];  ///< Offset: 0x100 - The memory that stores k.
-        volatile uint32_t PX_MEM[%s];  ///< Offset: 0x120 - The memory that stores Px.
-        volatile uint32_t PY_MEM[%s];  ///< Offset: 0x140 - The memory that stores Py.
+        volatile uint32_t K_MEM__;  ///< Offset: 0x100 - The memory that stores k. (renamed from K_MEM__)
+        volatile uint32_t PX_MEM__;  ///< Offset: 0x120 - The memory that stores Px. (renamed from PX_MEM__)
+        volatile uint32_t PY_MEM__;  ///< Offset: 0x140 - The memory that stores Py. (renamed from PY_MEM__)
     };
 
     /// Peripheral instances
@@ -1908,10 +1908,10 @@ namespace gpio {
         volatile uint32_t PCPU_INT;  ///< Offset: 0x5C - GPIO PRO_CPU interrupt status register
         volatile uint32_t PCPU_NMI_INT;  ///< Offset: 0x60 - GPIO PRO_CPU(not shielded) interrupt status register
         volatile uint32_t CPUSDIO_INT;  ///< Offset: 0x64 - GPIO CPUSDIO interrupt status register
-        volatile uint32_t PIN%s;  ///< Offset: 0x74 - GPIO pin configuration register
+        volatile uint32_t PIN;  ///< Offset: 0x74 - GPIO pin configuration register (renamed from PIN)
         volatile uint32_t STATUS_NEXT;  ///< Offset: 0x14C - GPIO interrupt source register
-        volatile uint32_t FUNC%s_IN_SEL_CFG;  ///< Offset: 0x154 - GPIO input function configuration register
-        volatile uint32_t FUNC%s_OUT_SEL_CFG;  ///< Offset: 0x554 - GPIO output function select register
+        volatile uint32_t FUNC_IN_SEL_CFG;  ///< Offset: 0x154 - GPIO input function configuration register (renamed from FUNC_IN_SEL_CFG)
+        volatile uint32_t FUNC_OUT_SEL_CFG;  ///< Offset: 0x554 - GPIO output function select register (renamed from FUNC_OUT_SEL_CFG)
         volatile uint32_t CLOCK_GATE;  ///< Offset: 0x62C - GPIO clock gate register
         volatile uint32_t REG_DATE;  ///< Offset: 0x6FC - GPIO version register
     };
@@ -2000,8 +2000,8 @@ namespace gpio {
         constexpr uint32_t SDIO_INT = (25 << 0);  ///< GPIO CPUSDIO interrupt status register for GPIO0-24
     }
 
-    /// PIN%s Register bits
-    namespace pin%s_bits {
+    /// PIN Register bits
+    namespace pin_bits {
         constexpr uint32_t SYNC2_BYPASS = (2 << 0);  ///< set GPIO input_sync2 signal mode. 0:disable. 1:trigger at negedge. 2or3:trigger at posedge.
         constexpr uint32_t PAD_DRIVER = (1U << 2);  ///< set this bit to select pad driver. 1:open-drain. 0:normal.
         constexpr uint32_t SYNC1_BYPASS = (2 << 3);  ///< set GPIO input_sync1 signal mode. 0:disable. 1:trigger at negedge. 2or3:trigger at posedge.
@@ -2016,15 +2016,15 @@ namespace gpio {
         constexpr uint32_t STATUS_INTERRUPT_NEXT = (26 << 0);  ///< GPIO interrupt source register for GPIO0-24
     }
 
-    /// FUNC%s_IN_SEL_CFG Register bits
-    namespace func%s_in_sel_cfg_bits {
+    /// FUNC_IN_SEL_CFG Register bits
+    namespace func_in_sel_cfg_bits {
         constexpr uint32_t IN_SEL = (5 << 0);  ///< set this value: s=0-53: connect GPIO[s] to this port. s=0x38: set this port always high level. s=0x3C: set this port always low level.
         constexpr uint32_t IN_INV_SEL = (1U << 5);  ///< set this bit to invert input signal. 1:invert. 0:not invert.
         constexpr uint32_t SEL = (1U << 6);  ///< set this bit to bypass GPIO. 1:do not bypass GPIO. 0:bypass GPIO.
     }
 
-    /// FUNC%s_OUT_SEL_CFG Register bits
-    namespace func%s_out_sel_cfg_bits {
+    /// FUNC_OUT_SEL_CFG Register bits
+    namespace func_out_sel_cfg_bits {
         constexpr uint32_t OUT_SEL = (8 << 0);  ///< The value of the bits: 0<=s<=256. Set the value to select output signal. s=0-255: output of GPIO[n] equals input of peripheral[s]. s=256: output of GPIO[n] equals GPIO_OUT_REG[n].
         constexpr uint32_t INV_SEL = (1U << 8);  ///< set this bit to invert output signal.1:invert.0:not invert.
         constexpr uint32_t OEN_SEL = (1U << 9);  ///< set this bit to select output enable signal.1:use GPIO_ENABLE_REG[n] as output enable signal.0:use peripheral output enable signal.
@@ -2073,7 +2073,7 @@ namespace i2c {
         volatile uint32_t SCL_STOP_SETUP;  ///< Offset: 0x4C - Configures the delay between the SDA and SCL positive...
         volatile uint32_t FILTER_CFG;  ///< Offset: 0x50 - SCL and SDA filter configuration register
         volatile uint32_t CLK_CONF;  ///< Offset: 0x54 - I2C CLK configuration register
-        volatile uint32_t COMD%s;  ///< Offset: 0x58 - I2C command register %s
+        volatile uint32_t COMD;  ///< Offset: 0x58 - I2C command register %s (renamed from COMD)
         volatile uint32_t SCL_ST_TIME_OUT;  ///< Offset: 0x78 - SCL status time out register
         volatile uint32_t SCL_MAIN_ST_TIME_OUT;  ///< Offset: 0x7C - SCL main status time out register
         volatile uint32_t SCL_SP_CONF;  ///< Offset: 0x80 - Power configuration register
@@ -2281,8 +2281,8 @@ namespace i2c {
         constexpr uint32_t SCLK_ACTIVE = (1U << 21);  ///< The clock switch for i2c module
     }
 
-    /// COMD%s Register bits
-    namespace comd%s_bits {
+    /// COMD Register bits
+    namespace comd_bits {
         constexpr uint32_t COMMAND = (14 << 0);  ///< This is the content of command 0. It consists of three parts: op_code is the command, 0: RSTART, 1: WRITE, 2: READ, 3: STOP, 4: END. Byte_num represents the number of bytes that need to be sent or received. ack_check_en, ack_exp and ack are used to control the ACK bit. See I2C cmd structure for more Information.
         constexpr uint32_t COMMAND_DONE = (1U << 31);  ///< When command 0 is done in I2C Master mode, this bit changes to high level.
     }
@@ -2855,7 +2855,7 @@ namespace io {
     /// IO Register structure
     struct Registers {
         volatile uint32_t PIN_CTRL;  ///< Offset: 0x00 - Clock Output Configuration Register
-        volatile uint32_t GPIO%s;  ///< Offset: 0x04 - IO MUX Configure Register for pad XTAL_32K_P
+        volatile uint32_t GPIO;  ///< Offset: 0x04 - IO MUX Configure Register for pad XTAL_32K_P (renamed from GPIO)
         volatile uint32_t DATE;  ///< Offset: 0xFC - IO MUX Version Control Register
     };
 
@@ -2870,8 +2870,8 @@ namespace io {
         constexpr uint32_t CLK_OUT3 = (4 << 8);  ///< If you want to output clock for I2S to CLK_OUT_out3, set this register to 0x0. CLK_OUT_out3 can be found in peripheral output signals.
     }
 
-    /// GPIO%s Register bits
-    namespace gpio%s_bits {
+    /// GPIO Register bits
+    namespace gpio_bits {
         constexpr uint32_t MCU_OE = (1U << 0);  ///< Output enable of the pad in sleep mode. 1: output enabled; 0: output disabled.
         constexpr uint32_t SLP_SEL = (1U << 1);  ///< Sleep mode selection of this pad. Set to 1 to put the pad in pad mode.
         constexpr uint32_t MCU_WPD = (1U << 2);  ///< Pull-down enable of the pad in sleep mode. 1: internal pull-down enabled; 0: internal pull-down disabled.
@@ -2902,13 +2902,13 @@ namespace pwm {
 
     /// PWM Register structure
     struct Registers {
-        volatile uint32_t CH%s_CONF0;  ///< Offset: 0x00 - Configuration register 0 for channel %s
-        volatile uint32_t CH%s_HPOINT;  ///< Offset: 0x04 - High point register for channel %s
-        volatile uint32_t CH%s_DUTY;  ///< Offset: 0x08 - Initial duty cycle for channel %s
-        volatile uint32_t CH%s_CONF1;  ///< Offset: 0x0C - Configuration register 1 for channel %s
-        volatile uint32_t CH%s_DUTY_R;  ///< Offset: 0x10 - Current duty cycle for channel %s
-        volatile uint32_t TIMER%s_CONF;  ///< Offset: 0xA0 - Timer %s configuration
-        volatile uint32_t TIMER%s_VALUE;  ///< Offset: 0xA4 - Timer %s current counter value
+        volatile uint32_t CH_CONF0;  ///< Offset: 0x00 - Configuration register 0 for channel %s (renamed from CH_CONF0)
+        volatile uint32_t CH_HPOINT;  ///< Offset: 0x04 - High point register for channel %s (renamed from CH_HPOINT)
+        volatile uint32_t CH_DUTY;  ///< Offset: 0x08 - Initial duty cycle for channel %s (renamed from CH_DUTY)
+        volatile uint32_t CH_CONF1;  ///< Offset: 0x0C - Configuration register 1 for channel %s (renamed from CH_CONF1)
+        volatile uint32_t CH_DUTY_R;  ///< Offset: 0x10 - Current duty cycle for channel %s (renamed from CH_DUTY_R)
+        volatile uint32_t TIMER_CONF;  ///< Offset: 0xA0 - Timer %s configuration (renamed from TIMER_CONF)
+        volatile uint32_t TIMER_VALUE;  ///< Offset: 0xA4 - Timer %s current counter value (renamed from TIMER_VALUE)
         volatile uint32_t INT_RAW;  ///< Offset: 0xC0 - Raw interrupt status
         volatile uint32_t INT_ST;  ///< Offset: 0xC4 - Masked interrupt status
         volatile uint32_t INT_ENA;  ///< Offset: 0xC8 - Interrupt enable bits
@@ -2921,8 +2921,8 @@ namespace pwm {
     inline Registers* LEDC = reinterpret_cast<Registers*>(LEDC_BASE);
 
     // Bit definitions
-    /// CH%s_CONF0 Register bits
-    namespace ch%s_conf0_bits {
+    /// CH_CONF0 Register bits
+    namespace ch_conf0_bits {
         constexpr uint32_t TIMER_SEL = (2 << 0);  ///< This field is used to select one of timers for channel %s. 0: select timer0; 1: select timer1; 2: select timer2; 3: select timer3
         constexpr uint32_t SIG_OUT_EN = (1U << 2);  ///< Set this bit to enable signal output on channel %s.
         constexpr uint32_t IDLE_LV = (1U << 3);  ///< This bit is used to control the output value when channel %s is inactive (when LEDC_SIG_OUT_EN_CH%s is 0).
@@ -2932,18 +2932,18 @@ namespace pwm {
         constexpr uint32_t OVF_CNT_RESET = (1U << 16);  ///< Set this bit to reset the ovf_cnt of channel %s.
     }
 
-    /// CH%s_HPOINT Register bits
-    namespace ch%s_hpoint_bits {
+    /// CH_HPOINT Register bits
+    namespace ch_hpoint_bits {
         constexpr uint32_t HPOINT = (14 << 0);  ///< The output value changes to high when the selected timers has reached the value specified by this register.
     }
 
-    /// CH%s_DUTY Register bits
-    namespace ch%s_duty_bits {
+    /// CH_DUTY Register bits
+    namespace ch_duty_bits {
         constexpr uint32_t DUTY = (19 << 0);  ///< This register is used to change the output duty by controlling the Lpoint. The output value turns to low when the selected timers has reached the Lpoint.
     }
 
-    /// CH%s_CONF1 Register bits
-    namespace ch%s_conf1_bits {
+    /// CH_CONF1 Register bits
+    namespace ch_conf1_bits {
         constexpr uint32_t DUTY_SCALE = (10 << 0);  ///< This register is used to configure the changing step scale of duty on channel %s.
         constexpr uint32_t DUTY_CYCLE = (10 << 10);  ///< The duty will change every LEDC_DUTY_CYCLE_CH%s on channel %s.
         constexpr uint32_t DUTY_NUM = (10 << 20);  ///< This register is used to control the number of times the duty cycle will be changed.
@@ -2951,13 +2951,13 @@ namespace pwm {
         constexpr uint32_t DUTY_START = (1U << 31);  ///< Other configured fields in LEDC_CH%s_CONF1_REG will start to take effect when this bit is set to 1.
     }
 
-    /// CH%s_DUTY_R Register bits
-    namespace ch%s_duty_r_bits {
+    /// CH_DUTY_R Register bits
+    namespace ch_duty_r_bits {
         constexpr uint32_t DUTY_CH0_R = (19 << 0);  ///< This register stores the current duty of output signal on channel %s.
     }
 
-    /// TIMER%s_CONF Register bits
-    namespace timer%s_conf_bits {
+    /// TIMER_CONF Register bits
+    namespace timer_conf_bits {
         constexpr uint32_t DUTY_RES = (4 << 0);  ///< This register is used to control the range of the counter in timer %s.
         constexpr uint32_t CLK_DIV = (18 << 4);  ///< This register is used to configure the divisor for the divider in timer %s. The least significant eight bits represent the fractional part.
         constexpr uint32_t PAUSE = (1U << 22);  ///< This bit is used to suspend the counter in timer %s.
@@ -2966,8 +2966,8 @@ namespace pwm {
         constexpr uint32_t PARA_UP = (1U << 25);  ///< Set this bit to update LEDC_CLK_DIV_TIMER%s and LEDC_TIMER%s_DUTY_RES.
     }
 
-    /// TIMER%s_VALUE Register bits
-    namespace timer%s_value_bits {
+    /// TIMER_VALUE Register bits
+    namespace timer_value_bits {
         constexpr uint32_t CNT = (14 << 0);  ///< This register stores the current counter value of timer %s.
     }
 
@@ -3951,15 +3951,15 @@ namespace crypto {
         volatile uint32_t T_LENGTH;  ///< Offset: 0x08 - SHA 512/t configuration register 1.
         volatile uint32_t DMA_BLOCK_NUM;  ///< Offset: 0x0C - DMA configuration register 0.
         volatile uint32_t START;  ///< Offset: 0x10 - Typical SHA configuration register 0.
-        volatile uint32_t CONTINUE;  ///< Offset: 0x14 - Typical SHA configuration register 1.
+        volatile uint32_t CONTINUE_;  ///< Offset: 0x14 - Typical SHA configuration register 1. (renamed from CONTINUE_)
         volatile uint32_t BUSY;  ///< Offset: 0x18 - Busy register.
         volatile uint32_t DMA_START;  ///< Offset: 0x1C - DMA configuration register 1.
         volatile uint32_t DMA_CONTINUE;  ///< Offset: 0x20 - DMA configuration register 2.
         volatile uint32_t CLEAR_IRQ;  ///< Offset: 0x24 - Interrupt clear register.
         volatile uint32_t IRQ_ENA;  ///< Offset: 0x28 - Interrupt enable register.
         volatile uint32_t DATE;  ///< Offset: 0x2C - Date register.
-        volatile uint32_t H_MEM[%s];  ///< Offset: 0x40 - Sha H memory which contains intermediate hash or finial hash.
-        volatile uint32_t M_MEM[%s];  ///< Offset: 0x80 - Sha M memory which contains message.
+        volatile uint32_t H_MEM__;  ///< Offset: 0x40 - Sha H memory which contains intermediate hash or finial hash. (renamed from H_MEM__)
+        volatile uint32_t M_MEM__;  ///< Offset: 0x80 - Sha M memory which contains message. (renamed from M_MEM__)
     };
 
     /// Peripheral instances
@@ -3992,9 +3992,9 @@ namespace crypto {
         constexpr uint32_t START = (31 << 1);  ///< Reserved.
     }
 
-    /// CONTINUE Register bits
-    namespace continue_bits {
-        constexpr uint32_t CONTINUE = (31 << 1);  ///< Reserved.
+    /// CONTINUE_ Register bits
+    namespace continue__bits {
+        constexpr uint32_t CONTINUE_ = (31 << 1);  ///< Reserved. (renamed from CONTINUE_)
     }
 
     /// BUSY Register bits

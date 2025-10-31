@@ -1,66 +1,31 @@
 /// Startup code for RP2040 (Raspberry Pi Pico)
-/// Minimal vector table and reset handler for dual Cortex-M0+
+/// Uses Alloy common startup framework
 
+#include "../../src/startup/startup_common.hpp"
 #include <cstdint>
-#include <cstring>
 
 // Linker script symbols
-extern uint32_t _sidata;  // Start of .data in flash
-extern uint32_t _sdata;   // Start of .data in RAM
-extern uint32_t _edata;   // End of .data in RAM
-extern uint32_t _sbss;    // Start of .bss
-extern uint32_t _ebss;    // End of .bss
 extern uint32_t _estack;  // End of stack
 
 // User application entry point
 extern "C" int main();
 
-// System initialization (weak, can be overridden)
-extern "C" void SystemInit() __attribute__((weak));
-extern "C" void SystemInit() {
-    // RP2040 system initialization
-    // Typically done by bootrom, but we can initialize basics here
-}
-
-// Default handler for unhandled interrupts
-extern "C" [[noreturn]] void Default_Handler() {
-    while (true) {
-        // Trap
-    }
-}
+// Note: SystemInit() is provided by startup_common.hpp with a weak default
+// RP2040 typically doesn't need custom SystemInit as bootrom handles initialization
 
 // Reset Handler - Entry point after reset
 extern "C" [[noreturn]] void Reset_Handler() {
-    // 1. Copy .data section from Flash to RAM
-    uint32_t* src = &_sidata;
-    uint32_t* dest = &_sdata;
-    while (dest < &_edata) {
-        *dest++ = *src++;
-    }
+    // Perform runtime initialization (data/bss/constructors)
+    alloy::startup::initialize_runtime();
 
-    // 2. Zero out .bss section
-    dest = &_sbss;
-    while (dest < &_ebss) {
-        *dest++ = 0;
-    }
-
-    // 3. Call system initialization
+    // Call system initialization (clock setup, etc.)
     SystemInit();
 
-    // 4. Call static constructors
-    extern void (*__init_array_start[])();
-    extern void (*__init_array_end[])();
-    for (auto ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
-        (*ctor)();
-    }
-
-    // 5. Call main
+    // Call main
     main();
 
-    // 6. If main returns, loop forever
-    while (true) {
-        __asm__ volatile("wfi");  // Wait for interrupt
-    }
+    // If main returns, loop forever
+    alloy::startup::infinite_loop();
 }
 
 // Exception handlers (weak aliases to Default_Handler)

@@ -3,7 +3,7 @@
 /// Source: kendryte-community_k210.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:40
+/// Generated: 2025-10-31 17:44:14
 #ifndef ALLOY_GENERATED_K210_PERIPHERALS_HPP
 #define ALLOY_GENERATED_K210_PERIPHERALS_HPP
 
@@ -171,8 +171,8 @@ namespace clint {
 
     /// CLINT Register structure
     struct Registers {
-        volatile uint32_t msip[%s];  ///< Offset: 0x00 - Hart software interrupt register
-        volatile uint32_t mtimecmp[%s];  ///< Offset: 0x4000 - Hart time comparator register
+        volatile uint32_t msip__;  ///< Offset: 0x00 - Hart software interrupt register (renamed from msip__)
+        volatile uint32_t mtimecmp__;  ///< Offset: 0x4000 - Hart time comparator register (renamed from mtimecmp__)
         volatile uint32_t mtime;  ///< Offset: 0xBFF8 - Timer register
     };
 
@@ -191,9 +191,9 @@ namespace plic {
 
     /// PLIC Register structure
     struct Registers {
-        volatile uint32_t priority[%s];  ///< Offset: 0x00 - Interrupt Source Priority Register
-        volatile uint32_t pending[%s];  ///< Offset: 0x1000 - Interrupt Pending Register
-        volatile uint32_t enable[%s];  ///< Offset: 0x00 - Interrupt Enable Register
+        volatile uint32_t priority__;  ///< Offset: 0x00 - Interrupt Source Priority Register (renamed from priority__)
+        volatile uint32_t pending__;  ///< Offset: 0x1000 - Interrupt Pending Register (renamed from pending__)
+        volatile uint32_t enable__;  ///< Offset: 0x00 - Interrupt Enable Register (renamed from enable__)
         volatile uint32_t threshold;  ///< Offset: 0x00 - Priority Threshold Register
         volatile uint32_t claim;  ///< Offset: 0x04 - Claim/Complete Register
         volatile uint32_t _reserved;  ///< Offset: 0xFFC - Padding to make sure targets is an array
@@ -277,87 +277,87 @@ namespace gpio {
     // Bit definitions
     /// input_val Register bits
     namespace input_val_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// input_en Register bits
     namespace input_en_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// output_en Register bits
     namespace output_en_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// output_val Register bits
     namespace output_val_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// pullup_en Register bits
     namespace pullup_en_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// drive Register bits
     namespace drive_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// rise_ie Register bits
     namespace rise_ie_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// rise_ip Register bits
     namespace rise_ip_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// fall_ie Register bits
     namespace fall_ie_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// fall_ip Register bits
     namespace fall_ip_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// high_ie Register bits
     namespace high_ie_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// high_ip Register bits
     namespace high_ip_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// low_ie Register bits
     namespace low_ie_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// low_ip Register bits
     namespace low_ip_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// iof_en Register bits
     namespace iof_en_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// iof_sel Register bits
     namespace iof_sel_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
     /// output_xor Register bits
     namespace output_xor_bits {
-        constexpr uint32_t pin%s = (1U << 0);  ///< pin%s
+        constexpr uint32_t pin = (1U << 0);  ///< pin%s (renamed from pin)
     }
 
 }
@@ -492,7 +492,7 @@ namespace spi {
         volatile uint32_t dmardlr;  ///< Offset: 0x54 - DMA Receive Data Level
         volatile uint32_t idr;  ///< Offset: 0x58 - Identification Register
         volatile uint32_t ssic_version_id;  ///< Offset: 0x5C - DWC_ssi component version
-        volatile uint32_t dr%s;  ///< Offset: 0x60 - Data Register
+        volatile uint32_t dr;  ///< Offset: 0x60 - Data Register (renamed from dr)
         volatile uint32_t rx_sample_delay;  ///< Offset: 0xF0 - RX Sample Delay Register
         volatile uint32_t spi_ctrlr0;  ///< Offset: 0xF4 - SPI Control Register
         volatile uint32_t xip_mode_bits;  ///< Offset: 0xFC - XIP Mode bits
@@ -546,7 +546,7 @@ namespace i2s {
         volatile uint32_t tfcr;  ///< Offset: 0x2C - Transmit FIFO Configuration Register
         volatile uint32_t rff;  ///< Offset: 0x30 - Receive FIFO Flush Register
         volatile uint32_t tff;  ///< Offset: 0x34 - Transmit FIFO Flush Register
-        volatile uint32_t _reserved%s;  ///< Offset: 0x38 - _RESERVED0
+        volatile uint32_t _reserved;  ///< Offset: 0x38 - _RESERVED0 (renamed from _reserved)
         volatile uint32_t rxdma;  ///< Offset: 0x1C0 - Receiver Block DMA Register
         volatile uint32_t rrxdma;  ///< Offset: 0x1C4 - Reset Receiver Block DMA Register
         volatile uint32_t txdma;  ///< Offset: 0x1C8 - Transmitter Block DMA Register
@@ -576,11 +576,11 @@ namespace apu {
     struct Registers {
         volatile uint32_t ch_cfg;  ///< Offset: 0x00 - Channel Config Register
         volatile uint32_t ctl;  ///< Offset: 0x04 - Control Register
-        volatile uint32_t dir_bidx[%s];  ///< Offset: 0x08 - Direction Sample Buffer Read Index Configure Register...
-        volatile uint32_t pre_fir0_coef[%s];  ///< Offset: 0x88 - FIR0 pre-filter coefficients
-        volatile uint32_t post_fir0_coef[%s];  ///< Offset: 0xAC - FIR0 post-filter coefficients
-        volatile uint32_t pre_fir1_coef[%s];  ///< Offset: 0xD0 - FIR1 pre-filter coeffecients
-        volatile uint32_t post_fir1_coef[%s];  ///< Offset: 0xF4 - FIR1 post-filter coefficients
+        volatile uint32_t dir_bidx__;  ///< Offset: 0x08 - Direction Sample Buffer Read Index Configure Register... (renamed from dir_bidx__)
+        volatile uint32_t pre_fir0_coef__;  ///< Offset: 0x88 - FIR0 pre-filter coefficients (renamed from pre_fir0_coef__)
+        volatile uint32_t post_fir0_coef__;  ///< Offset: 0xAC - FIR0 post-filter coefficients (renamed from post_fir0_coef__)
+        volatile uint32_t pre_fir1_coef__;  ///< Offset: 0xD0 - FIR1 pre-filter coeffecients (renamed from pre_fir1_coef__)
+        volatile uint32_t post_fir1_coef__;  ///< Offset: 0xF4 - FIR1 post-filter coefficients (renamed from post_fir1_coef__)
         volatile uint32_t dwsz_cfg;  ///< Offset: 0x118 - Downsize Config Register
         volatile uint32_t fft_cfg;  ///< Offset: 0x11C - FFT Config Register
         volatile uint32_t sobuf_dma_rdata;  ///< Offset: 0x120 - Read register for DMA to sample-out buffers
@@ -665,9 +665,9 @@ namespace fpioa {
 
     /// FPIOA Register structure
     struct Registers {
-        volatile uint32_t io[%s];  ///< Offset: 0x00 - FPIOA GPIO multiplexer io array
-        volatile uint32_t tie_en[%s];  ///< Offset: 0xC0 - FPIOA GPIO multiplexer tie enable array
-        volatile uint32_t tie_val[%s];  ///< Offset: 0xE0 - FPIOA GPIO multiplexer tie value array
+        volatile uint32_t io__;  ///< Offset: 0x00 - FPIOA GPIO multiplexer io array (renamed from io__)
+        volatile uint32_t tie_en__;  ///< Offset: 0xC0 - FPIOA GPIO multiplexer tie enable array (renamed from tie_en__)
+        volatile uint32_t tie_val__;  ///< Offset: 0xE0 - FPIOA GPIO multiplexer tie value array (renamed from tie_val__)
     };
 
     /// Peripheral instances
@@ -686,7 +686,7 @@ namespace crypto {
 
     /// CRYPTO Register structure
     struct Registers {
-        volatile uint32_t result[%s];  ///< Offset: 0x00 - Calculated SHA256 return value
+        volatile uint32_t result__;  ///< Offset: 0x00 - Calculated SHA256 return value (renamed from result__)
         volatile uint32_t data_in;  ///< Offset: 0x20 - SHA256 input data is written to this register
         volatile uint32_t num_reg;  ///< Offset: 0x28 - Counters register
         volatile uint32_t function_reg_0;  ///< Offset: 0x2C - Function configuration register 0
@@ -718,7 +718,7 @@ namespace tim {
         volatile uint32_t intr_stat;  ///< Offset: 0xA0 - Interrupt Status Register
         volatile uint32_t raw_intr_stat;  ///< Offset: 0xA8 - Raw Interrupt Status Register
         volatile uint32_t comp_version;  ///< Offset: 0xAC - Component Version Register
-        volatile uint32_t load_count2%s;  ///< Offset: 0xB0 - Load Count2 Register
+        volatile uint32_t load_count2;  ///< Offset: 0xB0 - Load Count2 Register (renamed from load_count2)
     };
 
     /// Peripheral instances

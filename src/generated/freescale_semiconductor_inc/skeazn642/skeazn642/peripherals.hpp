@@ -3,7 +3,7 @@
 /// Source: nxp_skeazn642.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:00
+/// Generated: 2025-10-31 17:44:37
 #ifndef ALLOY_GENERATED_SKEAZN642_PERIPHERALS_HPP
 #define ALLOY_GENERATED_SKEAZN642_PERIPHERALS_HPP
 
@@ -580,10 +580,10 @@ namespace tim {
     /// TIM Register structure
     struct Registers {
         volatile uint32_t MCR;  ///< Offset: 0x00 - PIT Module Control Register
-        volatile uint32_t LDVAL%s;  ///< Offset: 0x100 - Timer Load Value Register
-        volatile uint32_t CVAL%s;  ///< Offset: 0x104 - Current Timer Value Register
-        volatile uint32_t TCTRL%s;  ///< Offset: 0x108 - Timer Control Register
-        volatile uint32_t TFLG%s;  ///< Offset: 0x10C - Timer Flag Register
+        volatile uint32_t LDVAL;  ///< Offset: 0x100 - Timer Load Value Register (renamed from LDVAL)
+        volatile uint32_t CVAL;  ///< Offset: 0x104 - Current Timer Value Register (renamed from CVAL)
+        volatile uint32_t TCTRL;  ///< Offset: 0x108 - Timer Control Register (renamed from TCTRL)
+        volatile uint32_t TFLG;  ///< Offset: 0x10C - Timer Flag Register (renamed from TFLG)
     };
 
     /// Peripheral instances
@@ -596,25 +596,25 @@ namespace tim {
         constexpr uint32_t MDIS = (1U << 1);  ///< Module Disable - (PIT section)
     }
 
-    /// LDVAL%s Register bits
-    namespace ldval%s_bits {
+    /// LDVAL Register bits
+    namespace ldval_bits {
         constexpr uint32_t TSV = (32 << 0);  ///< Timer Start Value
     }
 
-    /// CVAL%s Register bits
-    namespace cval%s_bits {
+    /// CVAL Register bits
+    namespace cval_bits {
         constexpr uint32_t TVL = (32 << 0);  ///< Current Timer Value
     }
 
-    /// TCTRL%s Register bits
-    namespace tctrl%s_bits {
+    /// TCTRL Register bits
+    namespace tctrl_bits {
         constexpr uint32_t TEN = (1U << 0);  ///< Timer Enable
         constexpr uint32_t TIE = (1U << 1);  ///< Timer Interrupt Enable
         constexpr uint32_t CHN = (1U << 2);  ///< Chain Mode
     }
 
-    /// TFLG%s Register bits
-    namespace tflg%s_bits {
+    /// TFLG Register bits
+    namespace tflg_bits {
         constexpr uint32_t TIF = (1U << 0);  ///< Timer Interrupt Flag
     }
 
@@ -633,8 +633,8 @@ namespace ftm0 {
         volatile uint32_t SC;  ///< Offset: 0x00 - Status And Control
         volatile uint32_t CNT;  ///< Offset: 0x04 - Counter
         volatile uint32_t MOD;  ///< Offset: 0x08 - Modulo
-        volatile uint32_t C%sSC;  ///< Offset: 0x0C - Channel (n) Status And Control
-        volatile uint32_t C%sV;  ///< Offset: 0x10 - Channel (n) Value
+        volatile uint32_t CSC;  ///< Offset: 0x0C - Channel (n) Status And Control (renamed from CSC)
+        volatile uint32_t CV;  ///< Offset: 0x10 - Channel (n) Value (renamed from CV)
     };
 
     /// Peripheral instances
@@ -660,8 +660,8 @@ namespace ftm0 {
         constexpr uint32_t MOD = (16 << 0);  ///< no description available
     }
 
-    /// C%sSC Register bits
-    namespace c%ssc_bits {
+    /// CSC Register bits
+    namespace csc_bits {
         constexpr uint32_t ELSA = (1U << 2);  ///< Edge or Level Select
         constexpr uint32_t ELSB = (1U << 3);  ///< Edge or Level Select
         constexpr uint32_t MSA = (1U << 4);  ///< Channel Mode Select
@@ -670,8 +670,8 @@ namespace ftm0 {
         constexpr uint32_t CHF = (1U << 7);  ///< Channel Flag
     }
 
-    /// C%sV Register bits
-    namespace c%sv_bits {
+    /// CV Register bits
+    namespace cv_bits {
         constexpr uint32_t VAL = (16 << 0);  ///< Channel Value
     }
 
@@ -690,8 +690,8 @@ namespace ftm1 {
         volatile uint32_t SC;  ///< Offset: 0x00 - Status And Control
         volatile uint32_t CNT;  ///< Offset: 0x04 - Counter
         volatile uint32_t MOD;  ///< Offset: 0x08 - Modulo
-        volatile uint32_t C%sSC;  ///< Offset: 0x0C - Channel (n) Status And Control
-        volatile uint32_t C%sV;  ///< Offset: 0x10 - Channel (n) Value
+        volatile uint32_t CSC;  ///< Offset: 0x0C - Channel (n) Status And Control (renamed from CSC)
+        volatile uint32_t CV;  ///< Offset: 0x10 - Channel (n) Value (renamed from CV)
     };
 
     /// Peripheral instances
@@ -717,8 +717,8 @@ namespace ftm1 {
         constexpr uint32_t MOD = (16 << 0);  ///< no description available
     }
 
-    /// C%sSC Register bits
-    namespace c%ssc_bits {
+    /// CSC Register bits
+    namespace csc_bits {
         constexpr uint32_t ELSA = (1U << 2);  ///< Edge or Level Select
         constexpr uint32_t ELSB = (1U << 3);  ///< Edge or Level Select
         constexpr uint32_t MSA = (1U << 4);  ///< Channel Mode Select
@@ -727,8 +727,8 @@ namespace ftm1 {
         constexpr uint32_t CHF = (1U << 7);  ///< Channel Flag
     }
 
-    /// C%sV Register bits
-    namespace c%sv_bits {
+    /// CV Register bits
+    namespace cv_bits {
         constexpr uint32_t VAL = (16 << 0);  ///< Channel Value
     }
 
@@ -747,8 +747,8 @@ namespace ftm2 {
         volatile uint32_t SC;  ///< Offset: 0x00 - Status And Control
         volatile uint32_t CNT;  ///< Offset: 0x04 - Counter
         volatile uint32_t MOD;  ///< Offset: 0x08 - Modulo
-        volatile uint32_t C%sSC;  ///< Offset: 0x0C - Channel (n) Status And Control
-        volatile uint32_t C%sV;  ///< Offset: 0x10 - Channel (n) Value
+        volatile uint32_t CSC;  ///< Offset: 0x0C - Channel (n) Status And Control (renamed from CSC)
+        volatile uint32_t CV;  ///< Offset: 0x10 - Channel (n) Value (renamed from CV)
         volatile uint32_t CNTIN;  ///< Offset: 0x4C - Counter Initial Value
         volatile uint32_t STATUS;  ///< Offset: 0x50 - Capture And Compare Status
         volatile uint32_t MODE;  ///< Offset: 0x54 - Features Mode Selection
@@ -793,8 +793,8 @@ namespace ftm2 {
         constexpr uint32_t MOD = (16 << 0);  ///< no description available
     }
 
-    /// C%sSC Register bits
-    namespace c%ssc_bits {
+    /// CSC Register bits
+    namespace csc_bits {
         constexpr uint32_t ELSA = (1U << 2);  ///< Edge or Level Select
         constexpr uint32_t ELSB = (1U << 3);  ///< Edge or Level Select
         constexpr uint32_t MSA = (1U << 4);  ///< Channel Mode Select
@@ -803,8 +803,8 @@ namespace ftm2 {
         constexpr uint32_t CHF = (1U << 7);  ///< Channel Flag
     }
 
-    /// C%sV Register bits
-    namespace c%sv_bits {
+    /// CV Register bits
+    namespace cv_bits {
         constexpr uint32_t VAL = (16 << 0);  ///< Channel Value
     }
 
@@ -1434,7 +1434,7 @@ namespace wdog {
         constexpr uint32_t DBG = (1U << 2);  ///< Debug Enable
         constexpr uint32_t TST = (2 << 3);  ///< Watchdog Test
         constexpr uint32_t UPDATE = (1U << 5);  ///< Allow updates
-        constexpr uint32_t INT = (1U << 6);  ///< Watchdog Interrupt
+        constexpr uint32_t INT_ = (1U << 6);  ///< Watchdog Interrupt (renamed from INT_)
         constexpr uint32_t EN = (1U << 7);  ///< Watchdog Enable
     }
 
@@ -1769,7 +1769,7 @@ namespace usart {
         constexpr uint32_t PF = (1U << 0);  ///< Parity Error Flag
         constexpr uint32_t FE = (1U << 1);  ///< Framing Error Flag
         constexpr uint32_t NF = (1U << 2);  ///< Noise Flag
-        constexpr uint32_t OR = (1U << 3);  ///< Receiver Overrun Flag
+        constexpr uint32_t OR_ = (1U << 3);  ///< Receiver Overrun Flag (renamed from OR_)
         constexpr uint32_t IDLE = (1U << 4);  ///< Idle Line Flag
         constexpr uint32_t RDRF = (1U << 5);  ///< Receive Data Register Full Flag
         constexpr uint32_t TC = (1U << 6);  ///< Transmission Complete Flag
@@ -2375,8 +2375,8 @@ namespace rom {
         volatile uint32_t ENTRY;  ///< Offset: 0x00 - Entry
         volatile uint32_t TABLEMARK;  ///< Offset: 0x04 - End of Table Marker Register
         volatile uint32_t SYSACCESS;  ///< Offset: 0xFCC - System Access Register
-        volatile uint32_t PERIPHID%s;  ///< Offset: 0xFD0 - Peripheral ID Register
-        volatile uint32_t COMPID%s;  ///< Offset: 0xFF0 - Component ID Register
+        volatile uint32_t PERIPHID;  ///< Offset: 0xFD0 - Peripheral ID Register (renamed from PERIPHID)
+        volatile uint32_t COMPID;  ///< Offset: 0xFF0 - Component ID Register (renamed from COMPID)
     };
 
     /// Peripheral instances
@@ -2398,13 +2398,13 @@ namespace rom {
         constexpr uint32_t SYSACCESS = (32 << 0);  ///< no description available
     }
 
-    /// PERIPHID%s Register bits
-    namespace periphid%s_bits {
+    /// PERIPHID Register bits
+    namespace periphid_bits {
         constexpr uint32_t PERIPHID = (32 << 0);  ///< no description available
     }
 
-    /// COMPID%s Register bits
-    namespace compid%s_bits {
+    /// COMPID Register bits
+    namespace compid_bits {
         constexpr uint32_t COMPID = (32 << 0);  ///< Component ID
     }
 

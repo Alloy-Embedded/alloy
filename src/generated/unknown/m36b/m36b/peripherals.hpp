@@ -3,7 +3,7 @@
 /// Source: toshiba_m36b.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:52
+/// Generated: 2025-10-31 17:44:28
 #ifndef ALLOY_GENERATED_M36B_PERIPHERALS_HPP
 #define ALLOY_GENERATED_M36B_PERIPHERALS_HPP
 
@@ -4096,7 +4096,7 @@ namespace en {
     struct Registers {
         volatile uint32_t TNCR;  ///< Offset: 0x00 - Encoder Input Control Register
         volatile uint32_t RELOAD;  ///< Offset: 0x04 - Encoder Counter Reload Register
-        volatile uint32_t INT;  ///< Offset: 0x08 - Encoder Compare Register
+        volatile uint32_t INT_;  ///< Offset: 0x08 - Encoder Compare Register (renamed from INT_)
         volatile uint32_t CNT;  ///< Offset: 0x0C - Encoder Counter Register
     };
 
@@ -4128,9 +4128,9 @@ namespace en {
         constexpr uint32_t RELOAD = (16 << 0);  ///< RELOAD
     }
 
-    /// INT Register bits
-    namespace int_bits {
-        constexpr uint32_t INT = (24 << 0);  ///< INT
+    /// INT_ Register bits
+    namespace int__bits {
+        constexpr uint32_t INT_ = (24 << 0);  ///< INT (renamed from INT_)
     }
 
     /// CNT Register bits

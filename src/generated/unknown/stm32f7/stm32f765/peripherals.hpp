@@ -3,7 +3,7 @@
 /// Source: st_stm32f765.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:54
+/// Generated: 2025-10-31 17:44:31
 #ifndef ALLOY_GENERATED_STM32F765_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32F765_PERIPHERALS_HPP
 
@@ -8410,7 +8410,7 @@ namespace rtc {
         volatile uint32_t TAMPCR;  ///< Offset: 0x40 - tamper configuration register
         volatile uint32_t ALRMASSR;  ///< Offset: 0x44 - alarm A sub second register
         volatile uint32_t ALRMBSSR;  ///< Offset: 0x48 - alarm B sub second register
-        volatile uint32_t OR;  ///< Offset: 0x4C - option register
+        volatile uint32_t OR_;  ///< Offset: 0x4C - option register (renamed from OR_)
         volatile uint32_t BKP0R;  ///< Offset: 0x50 - backup register
         volatile uint32_t BKP1R;  ///< Offset: 0x54 - backup register
         volatile uint32_t BKP2R;  ///< Offset: 0x58 - backup register
@@ -8650,8 +8650,8 @@ namespace rtc {
         constexpr uint32_t SS = (15 << 0);  ///< Sub seconds value
     }
 
-    /// OR Register bits
-    namespace or_bits {
+    /// OR_ Register bits
+    namespace or__bits {
         constexpr uint32_t RTC_ALARM_TYPE = (1U << 0);  ///< RTC_ALARM on PC13 output type
         constexpr uint32_t RTC_OUT_RMP = (1U << 1);  ///< RTC_OUT remap
     }

@@ -3,7 +3,7 @@
 /// Source: nordic_nrf5340.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:06
+/// Generated: 2025-10-31 17:44:44
 #ifndef ALLOY_GENERATED_NRF5340_NETWORK_PERIPHERALS_HPP
 #define ALLOY_GENERATED_NRF5340_NETWORK_PERIPHERALS_HPP
 
@@ -265,7 +265,7 @@ namespace ficr {
     /// FICR Register structure
     struct Registers {
         volatile uint32_t CONFIGID;  ///< Offset: 0x00 - Configuration identifier
-        volatile uint32_t DEVICEID[%s];  ///< Offset: 0x04 - Description collection: Device identifier
+        volatile uint32_t DEVICEID__;  ///< Offset: 0x04 - Description collection: Device identifier (renamed from DEVICEID__)
         volatile uint32_t PART;  ///< Offset: 0x0C - Part code
         volatile uint32_t VARIANT;  ///< Offset: 0x10 - Part Variant, Hardware version and Production configuration
         volatile uint32_t PACKAGE;  ///< Offset: 0x14 - Package option
@@ -274,10 +274,10 @@ namespace ficr {
         volatile uint32_t CODEPAGESIZE;  ///< Offset: 0x20 - Code memory page size in bytes
         volatile uint32_t CODESIZE;  ///< Offset: 0x24 - Code memory size
         volatile uint32_t DEVICETYPE;  ///< Offset: 0x28 - Device type
-        volatile uint32_t ER[%s];  ///< Offset: 0x280 - Description collection: Encryption Root, word n
-        volatile uint32_t IR[%s];  ///< Offset: 0x290 - Description collection: Identity Root, word n
+        volatile uint32_t ER__;  ///< Offset: 0x280 - Description collection: Encryption Root, word n (renamed from ER__)
+        volatile uint32_t IR__;  ///< Offset: 0x290 - Description collection: Identity Root, word n (renamed from IR__)
         volatile uint32_t DEVICEADDRTYPE;  ///< Offset: 0x2A0 - Device address type
-        volatile uint32_t DEVICEADDR[%s];  ///< Offset: 0x2A4 - Description collection: Device address n
+        volatile uint32_t DEVICEADDR__;  ///< Offset: 0x2A4 - Description collection: Device address n (renamed from DEVICEADDR__)
         volatile uint32_t ADDR;  ///< Offset: 0x00 - Description cluster: Address
         volatile uint32_t DATA;  ///< Offset: 0x04 - Description cluster: Data
     };
@@ -291,8 +291,8 @@ namespace ficr {
         constexpr uint32_t HWID = (16 << 0);  ///< Identification number for the HW
     }
 
-    /// DEVICEID[%s] Register bits
-    namespace deviceid[%s]_bits {
+    /// DEVICEID__ Register bits
+    namespace deviceid___bits {
         constexpr uint32_t DEVICEID = (32 << 0);  ///< 64 bit unique device identifier
     }
 
@@ -336,13 +336,13 @@ namespace ficr {
         constexpr uint32_t DEVICETYPE = (32 << 0);  ///< Device type
     }
 
-    /// ER[%s] Register bits
-    namespace er[%s]_bits {
+    /// ER__ Register bits
+    namespace er___bits {
         constexpr uint32_t ER = (32 << 0);  ///< Encryption Root, word n
     }
 
-    /// IR[%s] Register bits
-    namespace ir[%s]_bits {
+    /// IR__ Register bits
+    namespace ir___bits {
         constexpr uint32_t IR = (32 << 0);  ///< Identity Root, word n
     }
 
@@ -351,8 +351,8 @@ namespace ficr {
         constexpr uint32_t DEVICEADDRTYPE = (1U << 0);  ///< Device address type
     }
 
-    /// DEVICEADDR[%s] Register bits
-    namespace deviceaddr[%s]_bits {
+    /// DEVICEADDR__ Register bits
+    namespace deviceaddr___bits {
         constexpr uint32_t DEVICEADDR = (32 << 0);  ///< 48 bit device address
     }
 
@@ -380,8 +380,8 @@ namespace uicr {
     struct Registers {
         volatile uint32_t APPROTECT;  ///< Offset: 0x00 - Access port protection
         volatile uint32_t ERASEPROTECT;  ///< Offset: 0x04 - Erase protection
-        volatile uint32_t NRFFW[%s];  ///< Offset: 0x200 - Description collection: Reserved for Nordic firmware design
-        volatile uint32_t CUSTOMER[%s];  ///< Offset: 0x300 - Description collection: Reserved for customer
+        volatile uint32_t NRFFW__;  ///< Offset: 0x200 - Description collection: Reserved for Nordic firmware design (renamed from NRFFW__)
+        volatile uint32_t CUSTOMER__;  ///< Offset: 0x300 - Description collection: Reserved for customer (renamed from CUSTOMER__)
     };
 
     /// Peripheral instances
@@ -398,13 +398,13 @@ namespace uicr {
         constexpr uint32_t PALL = (32 << 0);  ///< Blocks NVMC ERASEALL and CTRLAP ERASEALL functionality. Using any value except Unprotected will lead to the protection being enabled.
     }
 
-    /// NRFFW[%s] Register bits
-    namespace nrffw[%s]_bits {
+    /// NRFFW__ Register bits
+    namespace nrffw___bits {
         constexpr uint32_t NRFFW = (32 << 0);  ///< Reserved for Nordic firmware design
     }
 
-    /// CUSTOMER[%s] Register bits
-    namespace customer[%s]_bits {
+    /// CUSTOMER__ Register bits
+    namespace customer___bits {
         constexpr uint32_t CUSTOMER = (32 << 0);  ///< Reserved for customer
     }
 
@@ -425,8 +425,8 @@ namespace cti {
         volatile uint32_t CTIAPPSET;  ///< Offset: 0x14 - CTI Application Trigger Set register
         volatile uint32_t CTIAPPCLEAR;  ///< Offset: 0x18 - CTI Application Trigger Clear register
         volatile uint32_t CTIAPPPULSE;  ///< Offset: 0x1C - CTI Application Pulse register
-        volatile uint32_t CTIINEN[%s];  ///< Offset: 0x20 - Description collection: CTI Trigger input
-        volatile uint32_t CTIOUTEN[%s];  ///< Offset: 0xA0 - Description collection: CTI Trigger output
+        volatile uint32_t CTIINEN__;  ///< Offset: 0x20 - Description collection: CTI Trigger input (renamed from CTIINEN__)
+        volatile uint32_t CTIOUTEN__;  ///< Offset: 0xA0 - Description collection: CTI Trigger output (renamed from CTIOUTEN__)
         volatile uint32_t CTITRIGINSTATUS;  ///< Offset: 0x130 - CTI Trigger In Status register
         volatile uint32_t CTITRIGOUTSTATUS;  ///< Offset: 0x134 - CTI Trigger Out Status register
         volatile uint32_t CTICHINSTATUS;  ///< Offset: 0x138 - CTI Channel In Status register
@@ -493,16 +493,16 @@ namespace cti {
         constexpr uint32_t APPULSE_3 = (1U << 3);  ///< Setting a bit HIGH generates a channel event pulse for the selected channel. There is one bit of the register for each channel.
     }
 
-    /// CTIINEN[%s] Register bits
-    namespace ctiinen[%s]_bits {
+    /// CTIINEN__ Register bits
+    namespace ctiinen___bits {
         constexpr uint32_t TRIGINEN_0 = (1U << 0);  ///< Enables a cross trigger event to channel 0 when a ctitrigin input is activated.
         constexpr uint32_t TRIGINEN_1 = (1U << 1);  ///< Enables a cross trigger event to channel 1 when a ctitrigin input is activated.
         constexpr uint32_t TRIGINEN_2 = (1U << 2);  ///< Enables a cross trigger event to channel 2 when a ctitrigin input is activated.
         constexpr uint32_t TRIGINEN_3 = (1U << 3);  ///< Enables a cross trigger event to channel 3 when a ctitrigin input is activated.
     }
 
-    /// CTIOUTEN[%s] Register bits
-    namespace ctiouten[%s]_bits {
+    /// CTIOUTEN__ Register bits
+    namespace ctiouten___bits {
         constexpr uint32_t TRIGOUTEN_0 = (1U << 0);  ///< Enables a cross trigger event to ctitrigout when channel 0 is activated.
         constexpr uint32_t TRIGOUTEN_1 = (1U << 1);  ///< Enables a cross trigger event to ctitrigout when channel 1 is activated.
         constexpr uint32_t TRIGOUTEN_2 = (1U << 2);  ///< Enables a cross trigger event to ctitrigout when channel 2 is activated.
@@ -605,7 +605,7 @@ namespace cti {
     /// CIDR1 Register bits
     namespace cidr1_bits {
         constexpr uint32_t PRMBL_1 = (4 << 0);  ///< Preamble[1]. Contains bits[11:8] of the component identification code.
-        constexpr uint32_t CLASS = (4 << 4);  ///< Class of the component, for example, whether the component is a ROM table or a generic CoreSight component. Contains bits[15:12] of the component identification code
+        constexpr uint32_t CLASS_ = (4 << 4);  ///< Class of the component, for example, whether the component is a ROM table or a generic CoreSight component. Contains bits[15:12] of the component identification code (renamed from CLASS_)
     }
 
     /// CIDR2 Register bits
@@ -915,7 +915,7 @@ namespace pwr {
         volatile uint32_t INTEN;  ///< Offset: 0x300 - Enable or disable interrupt
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
-        volatile uint32_t GPREGRET[%s];  ///< Offset: 0x51C - Description collection: General purpose retention register
+        volatile uint32_t GPREGRET__;  ///< Offset: 0x51C - Description collection: General purpose retention register (renamed from GPREGRET__)
     };
 
     /// Peripheral instances
@@ -998,8 +998,8 @@ namespace pwr {
         constexpr uint32_t SLEEPEXIT = (1U << 6);  ///< Write '1' to disable interrupt for event SLEEPEXIT
     }
 
-    /// GPREGRET[%s] Register bits
-    namespace gpregret[%s]_bits {
+    /// GPREGRET__ Register bits
+    namespace gpregret___bits {
         constexpr uint32_t GPREGRET = (8 << 0);  ///< General purpose retention register
     }
 
@@ -1219,8 +1219,8 @@ namespace radio {
         volatile uint32_t STATE;  ///< Offset: 0x550 - Current radio state
         volatile uint32_t DATAWHITEIV;  ///< Offset: 0x554 - Data whitening initial value
         volatile uint32_t BCC;  ///< Offset: 0x560 - Bit counter compare
-        volatile uint32_t DAB[%s];  ///< Offset: 0x600 - Description collection: Device address base segment n
-        volatile uint32_t DAP[%s];  ///< Offset: 0x620 - Description collection: Device address prefix n
+        volatile uint32_t DAB__;  ///< Offset: 0x600 - Description collection: Device address base segment n (renamed from DAB__)
+        volatile uint32_t DAP__;  ///< Offset: 0x620 - Description collection: Device address prefix n (renamed from DAP__)
         volatile uint32_t DACNF;  ///< Offset: 0x640 - Device address match configuration
         volatile uint32_t MHRMATCHCONF;  ///< Offset: 0x644 - Search pattern configuration
         volatile uint32_t MHRMATCHMAS;  ///< Offset: 0x648 - Pattern mask
@@ -1235,7 +1235,7 @@ namespace radio {
         volatile uint32_t DFECTRL2;  ///< Offset: 0x914 - Start offset for Direction finding
         volatile uint32_t SWITCHPATTERN;  ///< Offset: 0x928 - GPIO patterns to be used for each antenna
         volatile uint32_t CLEARPATTERN;  ///< Offset: 0x92C - Clear the GPIO pattern array for antenna control
-        volatile uint32_t DFEGPIO[%s];  ///< Offset: 0x00 - Description collection: Pin select for DFE pin n
+        volatile uint32_t DFEGPIO__;  ///< Offset: 0x00 - Description collection: Pin select for DFE pin n (renamed from DFEGPIO__)
         volatile uint32_t PTR;  ///< Offset: 0x00 - Data pointer
         volatile uint32_t MAXCNT;  ///< Offset: 0x04 - Maximum number of buffer words to transfer
         volatile uint32_t AMOUNT;  ///< Offset: 0x08 - Number of samples transferred in the last transaction
@@ -1897,13 +1897,13 @@ namespace radio {
         constexpr uint32_t BCC = (32 << 0);  ///< Bit counter compare
     }
 
-    /// DAB[%s] Register bits
-    namespace dab[%s]_bits {
+    /// DAB__ Register bits
+    namespace dab___bits {
         constexpr uint32_t DAB = (32 << 0);  ///< Device address base segment n
     }
 
-    /// DAP[%s] Register bits
-    namespace dap[%s]_bits {
+    /// DAP__ Register bits
+    namespace dap___bits {
         constexpr uint32_t DAP = (16 << 0);  ///< Device address prefix n
     }
 
@@ -2011,8 +2011,8 @@ namespace radio {
         constexpr uint32_t CLEARPATTERN = (1U << 0);  ///< Clears GPIO pattern array for antenna control
     }
 
-    /// DFEGPIO[%s] Register bits
-    namespace dfegpio[%s]_bits {
+    /// DFEGPIO__ Register bits
+    namespace dfegpio___bits {
         constexpr uint32_t PIN = (5 << 0);  ///< Pin number
         constexpr uint32_t PORT = (1U << 5);  ///< Port number
         constexpr uint32_t CONNECT = (1U << 31);  ///< Connection
@@ -2137,61 +2137,61 @@ namespace gpio {
 
     /// GPIO Register structure
     struct Registers {
-        volatile uint32_t TASKS_OUT[%s];  ///< Offset: 0x00 - Description collection: Task for writing to pin...
-        volatile uint32_t TASKS_SET[%s];  ///< Offset: 0x30 - Description collection: Task for writing to pin...
-        volatile uint32_t TASKS_CLR[%s];  ///< Offset: 0x60 - Description collection: Task for writing to pin...
-        volatile uint32_t SUBSCRIBE_OUT[%s];  ///< Offset: 0x80 - Description collection: Subscribe configuration for task OUT[n]
-        volatile uint32_t SUBSCRIBE_SET[%s];  ///< Offset: 0xB0 - Description collection: Subscribe configuration for task SET[n]
-        volatile uint32_t SUBSCRIBE_CLR[%s];  ///< Offset: 0xE0 - Description collection: Subscribe configuration for task CLR[n]
-        volatile uint32_t EVENTS_IN[%s];  ///< Offset: 0x100 - Description collection: Event generated from pin...
+        volatile uint32_t TASKS_OUT__;  ///< Offset: 0x00 - Description collection: Task for writing to pin... (renamed from TASKS_OUT__)
+        volatile uint32_t TASKS_SET__;  ///< Offset: 0x30 - Description collection: Task for writing to pin... (renamed from TASKS_SET__)
+        volatile uint32_t TASKS_CLR__;  ///< Offset: 0x60 - Description collection: Task for writing to pin... (renamed from TASKS_CLR__)
+        volatile uint32_t SUBSCRIBE_OUT__;  ///< Offset: 0x80 - Description collection: Subscribe configuration for task OUT[n] (renamed from SUBSCRIBE_OUT__)
+        volatile uint32_t SUBSCRIBE_SET__;  ///< Offset: 0xB0 - Description collection: Subscribe configuration for task SET[n] (renamed from SUBSCRIBE_SET__)
+        volatile uint32_t SUBSCRIBE_CLR__;  ///< Offset: 0xE0 - Description collection: Subscribe configuration for task CLR[n] (renamed from SUBSCRIBE_CLR__)
+        volatile uint32_t EVENTS_IN__;  ///< Offset: 0x100 - Description collection: Event generated from pin... (renamed from EVENTS_IN__)
         volatile uint32_t EVENTS_PORT;  ///< Offset: 0x17C - Event generated from multiple input GPIO pins with SENSE...
-        volatile uint32_t PUBLISH_IN[%s];  ///< Offset: 0x180 - Description collection: Publish configuration for event IN[n]
+        volatile uint32_t PUBLISH_IN__;  ///< Offset: 0x180 - Description collection: Publish configuration for event IN[n] (renamed from PUBLISH_IN__)
         volatile uint32_t PUBLISH_PORT;  ///< Offset: 0x1FC - Publish configuration for event PORT
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
         volatile uint32_t LATENCY;  ///< Offset: 0x504 - Latency selection for Event mode (MODE=Event) with...
-        volatile uint32_t CONFIG[%s];  ///< Offset: 0x510 - Description collection: Configuration for OUT[n],...
+        volatile uint32_t CONFIG__;  ///< Offset: 0x510 - Description collection: Configuration for OUT[n],... (renamed from CONFIG__)
     };
 
     /// Peripheral instances
     inline Registers* GPIOTE_NS = reinterpret_cast<Registers*>(GPIOTE_NS_BASE);
 
     // Bit definitions
-    /// TASKS_OUT[%s] Register bits
-    namespace tasks_out[%s]_bits {
+    /// TASKS_OUT__ Register bits
+    namespace tasks_out___bits {
         constexpr uint32_t TASKS_OUT = (1U << 0);  ///< Task for writing to pin specified in CONFIG[n].PSEL. Action on pin is configured in CONFIG[n].POLARITY.
     }
 
-    /// TASKS_SET[%s] Register bits
-    namespace tasks_set[%s]_bits {
+    /// TASKS_SET__ Register bits
+    namespace tasks_set___bits {
         constexpr uint32_t TASKS_SET = (1U << 0);  ///< Task for writing to pin specified in CONFIG[n].PSEL. Action on pin is to set it high.
     }
 
-    /// TASKS_CLR[%s] Register bits
-    namespace tasks_clr[%s]_bits {
+    /// TASKS_CLR__ Register bits
+    namespace tasks_clr___bits {
         constexpr uint32_t TASKS_CLR = (1U << 0);  ///< Task for writing to pin specified in CONFIG[n].PSEL. Action on pin is to set it low.
     }
 
-    /// SUBSCRIBE_OUT[%s] Register bits
-    namespace subscribe_out[%s]_bits {
+    /// SUBSCRIBE_OUT__ Register bits
+    namespace subscribe_out___bits {
         constexpr uint32_t CHIDX = (8 << 0);  ///< DPPI channel that task OUT[n] will subscribe to
         constexpr uint32_t EN = (1U << 31);  ///< Disable subscription
     }
 
-    /// SUBSCRIBE_SET[%s] Register bits
-    namespace subscribe_set[%s]_bits {
+    /// SUBSCRIBE_SET__ Register bits
+    namespace subscribe_set___bits {
         constexpr uint32_t CHIDX = (8 << 0);  ///< DPPI channel that task SET[n] will subscribe to
         constexpr uint32_t EN = (1U << 31);  ///< Disable subscription
     }
 
-    /// SUBSCRIBE_CLR[%s] Register bits
-    namespace subscribe_clr[%s]_bits {
+    /// SUBSCRIBE_CLR__ Register bits
+    namespace subscribe_clr___bits {
         constexpr uint32_t CHIDX = (8 << 0);  ///< DPPI channel that task CLR[n] will subscribe to
         constexpr uint32_t EN = (1U << 31);  ///< Disable subscription
     }
 
-    /// EVENTS_IN[%s] Register bits
-    namespace events_in[%s]_bits {
+    /// EVENTS_IN__ Register bits
+    namespace events_in___bits {
         constexpr uint32_t EVENTS_IN = (1U << 0);  ///< Event generated from pin specified in CONFIG[n].PSEL
     }
 
@@ -2200,8 +2200,8 @@ namespace gpio {
         constexpr uint32_t EVENTS_PORT = (1U << 0);  ///< Event generated from multiple input GPIO pins with SENSE mechanism enabled
     }
 
-    /// PUBLISH_IN[%s] Register bits
-    namespace publish_in[%s]_bits {
+    /// PUBLISH_IN__ Register bits
+    namespace publish_in___bits {
         constexpr uint32_t CHIDX = (8 << 0);  ///< DPPI channel that event IN[n] will publish to.
         constexpr uint32_t EN = (1U << 31);  ///< Disable publishing
     }
@@ -2243,8 +2243,8 @@ namespace gpio {
         constexpr uint32_t LATENCY = (1U << 0);  ///< Latency setting
     }
 
-    /// CONFIG[%s] Register bits
-    namespace config[%s]_bits {
+    /// CONFIG__ Register bits
+    namespace config___bits {
         constexpr uint32_t MODE = (2 << 0);  ///< Mode
         constexpr uint32_t PSEL = (5 << 8);  ///< GPIO number associated with SET[n], CLR[n], and OUT[n] tasks and IN[n] event
         constexpr uint32_t PORT = (1U << 13);  ///< Port number
@@ -2282,7 +2282,7 @@ namespace wdg {
         volatile uint32_t RREN;  ///< Offset: 0x508 - Enable register for reload request registers
         volatile uint32_t CONFIG;  ///< Offset: 0x50C - Configuration register
         volatile uint32_t TSEN;  ///< Offset: 0x520 - Task stop enable
-        volatile uint32_t RR[%s];  ///< Offset: 0x600 - Description collection: Reload request n
+        volatile uint32_t RR__;  ///< Offset: 0x600 - Description collection: Reload request n (renamed from RR__)
     };
 
     /// Peripheral instances
@@ -2403,8 +2403,8 @@ namespace wdg {
         constexpr uint32_t TSEN = (32 << 0);  ///< Allow stopping WDT
     }
 
-    /// RR[%s] Register bits
-    namespace rr[%s]_bits {
+    /// RR__ Register bits
+    namespace rr___bits {
         constexpr uint32_t RR = (32 << 0);  ///< Reload request register
     }
 
@@ -2427,15 +2427,15 @@ namespace tim {
         volatile uint32_t TASKS_COUNT;  ///< Offset: 0x08 - Increment Timer (Counter mode only)
         volatile uint32_t TASKS_CLEAR;  ///< Offset: 0x0C - Clear time
         volatile uint32_t TASKS_SHUTDOWN;  ///< Offset: 0x10 - Deprecated register - Shut down timer
-        volatile uint32_t TASKS_CAPTURE[%s];  ///< Offset: 0x40 - Description collection: Capture Timer value to CC[n] register
+        volatile uint32_t TASKS_CAPTURE__;  ///< Offset: 0x40 - Description collection: Capture Timer value to CC[n] register (renamed from TASKS_CAPTURE__)
         volatile uint32_t SUBSCRIBE_START;  ///< Offset: 0x80 - Subscribe configuration for task START
         volatile uint32_t SUBSCRIBE_STOP;  ///< Offset: 0x84 - Subscribe configuration for task STOP
         volatile uint32_t SUBSCRIBE_COUNT;  ///< Offset: 0x88 - Subscribe configuration for task COUNT
         volatile uint32_t SUBSCRIBE_CLEAR;  ///< Offset: 0x8C - Subscribe configuration for task CLEAR
         volatile uint32_t SUBSCRIBE_SHUTDOWN;  ///< Offset: 0x90 - Deprecated register - Subscribe configuration for task SHUTDOWN
-        volatile uint32_t SUBSCRIBE_CAPTURE[%s];  ///< Offset: 0xC0 - Description collection: Subscribe configuration for task...
-        volatile uint32_t EVENTS_COMPARE[%s];  ///< Offset: 0x140 - Description collection: Compare event on CC[n] match
-        volatile uint32_t PUBLISH_COMPARE[%s];  ///< Offset: 0x1C0 - Description collection: Publish configuration for event...
+        volatile uint32_t SUBSCRIBE_CAPTURE__;  ///< Offset: 0xC0 - Description collection: Subscribe configuration for task... (renamed from SUBSCRIBE_CAPTURE__)
+        volatile uint32_t EVENTS_COMPARE__;  ///< Offset: 0x140 - Description collection: Compare event on CC[n] match (renamed from EVENTS_COMPARE__)
+        volatile uint32_t PUBLISH_COMPARE__;  ///< Offset: 0x1C0 - Description collection: Publish configuration for event... (renamed from PUBLISH_COMPARE__)
         volatile uint32_t SHORTS;  ///< Offset: 0x200 - Shortcuts between local events and tasks
         volatile uint32_t INTEN;  ///< Offset: 0x300 - Enable or disable interrupt
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
@@ -2443,8 +2443,8 @@ namespace tim {
         volatile uint32_t MODE;  ///< Offset: 0x504 - Timer mode selection
         volatile uint32_t BITMODE;  ///< Offset: 0x508 - Configure the number of bits used by the TIMER
         volatile uint32_t PRESCALER;  ///< Offset: 0x510 - Timer prescaler register
-        volatile uint32_t CC[%s];  ///< Offset: 0x540 - Description collection: Capture/Compare register n
-        volatile uint32_t ONESHOTEN[%s];  ///< Offset: 0x580 - Description collection: Enable one-shot operation for...
+        volatile uint32_t CC__;  ///< Offset: 0x540 - Description collection: Capture/Compare register n (renamed from CC__)
+        volatile uint32_t ONESHOTEN__;  ///< Offset: 0x580 - Description collection: Enable one-shot operation for... (renamed from ONESHOTEN__)
     };
 
     /// Peripheral instances
@@ -2478,8 +2478,8 @@ namespace tim {
         constexpr uint32_t TASKS_SHUTDOWN = (1U << 0);  ///< Deprecated field - Shut down timer
     }
 
-    /// TASKS_CAPTURE[%s] Register bits
-    namespace tasks_capture[%s]_bits {
+    /// TASKS_CAPTURE__ Register bits
+    namespace tasks_capture___bits {
         constexpr uint32_t TASKS_CAPTURE = (1U << 0);  ///< Capture Timer value to CC[n] register
     }
 
@@ -2513,19 +2513,19 @@ namespace tim {
         constexpr uint32_t EN = (1U << 31);  ///< Disable subscription
     }
 
-    /// SUBSCRIBE_CAPTURE[%s] Register bits
-    namespace subscribe_capture[%s]_bits {
+    /// SUBSCRIBE_CAPTURE__ Register bits
+    namespace subscribe_capture___bits {
         constexpr uint32_t CHIDX = (8 << 0);  ///< DPPI channel that task CAPTURE[n] will subscribe to
         constexpr uint32_t EN = (1U << 31);  ///< Disable subscription
     }
 
-    /// EVENTS_COMPARE[%s] Register bits
-    namespace events_compare[%s]_bits {
+    /// EVENTS_COMPARE__ Register bits
+    namespace events_compare___bits {
         constexpr uint32_t EVENTS_COMPARE = (1U << 0);  ///< Compare event on CC[n] match
     }
 
-    /// PUBLISH_COMPARE[%s] Register bits
-    namespace publish_compare[%s]_bits {
+    /// PUBLISH_COMPARE__ Register bits
+    namespace publish_compare___bits {
         constexpr uint32_t CHIDX = (8 << 0);  ///< DPPI channel that event COMPARE[n] will publish to.
         constexpr uint32_t EN = (1U << 31);  ///< Disable publishing
     }
@@ -2601,13 +2601,13 @@ namespace tim {
         constexpr uint32_t PRESCALER = (4 << 0);  ///< Prescaler value
     }
 
-    /// CC[%s] Register bits
-    namespace cc[%s]_bits {
+    /// CC__ Register bits
+    namespace cc___bits {
         constexpr uint32_t CC = (32 << 0);  ///< Capture/Compare value
     }
 
-    /// ONESHOTEN[%s] Register bits
-    namespace oneshoten[%s]_bits {
+    /// ONESHOTEN__ Register bits
+    namespace oneshoten___bits {
         constexpr uint32_t ONESHOTEN = (1U << 0);  ///< Enable one-shot operation
     }
 
@@ -3046,7 +3046,7 @@ namespace dppic {
         volatile uint32_t CHEN;  ///< Offset: 0x500 - Channel enable register
         volatile uint32_t CHENSET;  ///< Offset: 0x504 - Channel enable set register
         volatile uint32_t CHENCLR;  ///< Offset: 0x508 - Channel enable clear register
-        volatile uint32_t CHG[%s];  ///< Offset: 0x800 - Description collection: Channel group n Note: Writes to...
+        volatile uint32_t CHG__;  ///< Offset: 0x800 - Description collection: Channel group n Note: Writes to... (renamed from CHG__)
     };
 
     /// Peripheral instances
@@ -3125,8 +3125,8 @@ namespace dppic {
         constexpr uint32_t CH15 = (1U << 15);  ///< Channel 15 enable clear register. Writing 0 has no effect.
     }
 
-    /// CHG[%s] Register bits
-    namespace chg[%s]_bits {
+    /// CHG__ Register bits
+    namespace chg___bits {
         constexpr uint32_t CH0 = (1U << 0);  ///< Include or exclude channel 0
         constexpr uint32_t CH1 = (1U << 1);  ///< Include or exclude channel 1
         constexpr uint32_t CH2 = (1U << 2);  ///< Include or exclude channel 2
@@ -3339,18 +3339,18 @@ namespace rtc {
         volatile uint32_t TASKS_STOP;  ///< Offset: 0x04 - Stop RTC counter
         volatile uint32_t TASKS_CLEAR;  ///< Offset: 0x08 - Clear RTC counter
         volatile uint32_t TASKS_TRIGOVRFLW;  ///< Offset: 0x0C - Set counter to 0xFFFFF0
-        volatile uint32_t TASKS_CAPTURE[%s];  ///< Offset: 0x40 - Description collection: Capture RTC counter to CC[n] register
+        volatile uint32_t TASKS_CAPTURE__;  ///< Offset: 0x40 - Description collection: Capture RTC counter to CC[n] register (renamed from TASKS_CAPTURE__)
         volatile uint32_t SUBSCRIBE_START;  ///< Offset: 0x80 - Subscribe configuration for task START
         volatile uint32_t SUBSCRIBE_STOP;  ///< Offset: 0x84 - Subscribe configuration for task STOP
         volatile uint32_t SUBSCRIBE_CLEAR;  ///< Offset: 0x88 - Subscribe configuration for task CLEAR
         volatile uint32_t SUBSCRIBE_TRIGOVRFLW;  ///< Offset: 0x8C - Subscribe configuration for task TRIGOVRFLW
-        volatile uint32_t SUBSCRIBE_CAPTURE[%s];  ///< Offset: 0xC0 - Description collection: Subscribe configuration for task...
+        volatile uint32_t SUBSCRIBE_CAPTURE__;  ///< Offset: 0xC0 - Description collection: Subscribe configuration for task... (renamed from SUBSCRIBE_CAPTURE__)
         volatile uint32_t EVENTS_TICK;  ///< Offset: 0x100 - Event on counter increment
         volatile uint32_t EVENTS_OVRFLW;  ///< Offset: 0x104 - Event on counter overflow
-        volatile uint32_t EVENTS_COMPARE[%s];  ///< Offset: 0x140 - Description collection: Compare event on CC[n] match
+        volatile uint32_t EVENTS_COMPARE__;  ///< Offset: 0x140 - Description collection: Compare event on CC[n] match (renamed from EVENTS_COMPARE__)
         volatile uint32_t PUBLISH_TICK;  ///< Offset: 0x180 - Publish configuration for event TICK
         volatile uint32_t PUBLISH_OVRFLW;  ///< Offset: 0x184 - Publish configuration for event OVRFLW
-        volatile uint32_t PUBLISH_COMPARE[%s];  ///< Offset: 0x1C0 - Description collection: Publish configuration for event...
+        volatile uint32_t PUBLISH_COMPARE__;  ///< Offset: 0x1C0 - Description collection: Publish configuration for event... (renamed from PUBLISH_COMPARE__)
         volatile uint32_t SHORTS;  ///< Offset: 0x200 - Shortcuts between local events and tasks
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
@@ -3359,7 +3359,7 @@ namespace rtc {
         volatile uint32_t EVTENCLR;  ///< Offset: 0x348 - Disable event routing
         volatile uint32_t COUNTER;  ///< Offset: 0x504 - Current counter value
         volatile uint32_t PRESCALER;  ///< Offset: 0x508 - 12-bit prescaler for counter frequency (32768 /...
-        volatile uint32_t CC[%s];  ///< Offset: 0x540 - Description collection: Compare register n
+        volatile uint32_t CC__;  ///< Offset: 0x540 - Description collection: Compare register n (renamed from CC__)
     };
 
     /// Peripheral instances
@@ -3387,8 +3387,8 @@ namespace rtc {
         constexpr uint32_t TASKS_TRIGOVRFLW = (1U << 0);  ///< Set counter to 0xFFFFF0
     }
 
-    /// TASKS_CAPTURE[%s] Register bits
-    namespace tasks_capture[%s]_bits {
+    /// TASKS_CAPTURE__ Register bits
+    namespace tasks_capture___bits {
         constexpr uint32_t TASKS_CAPTURE = (1U << 0);  ///< Capture RTC counter to CC[n] register
     }
 
@@ -3416,8 +3416,8 @@ namespace rtc {
         constexpr uint32_t EN = (1U << 31);  ///< Disable subscription
     }
 
-    /// SUBSCRIBE_CAPTURE[%s] Register bits
-    namespace subscribe_capture[%s]_bits {
+    /// SUBSCRIBE_CAPTURE__ Register bits
+    namespace subscribe_capture___bits {
         constexpr uint32_t CHIDX = (8 << 0);  ///< DPPI channel that task CAPTURE[n] will subscribe to
         constexpr uint32_t EN = (1U << 31);  ///< Disable subscription
     }
@@ -3432,8 +3432,8 @@ namespace rtc {
         constexpr uint32_t EVENTS_OVRFLW = (1U << 0);  ///< Event on counter overflow
     }
 
-    /// EVENTS_COMPARE[%s] Register bits
-    namespace events_compare[%s]_bits {
+    /// EVENTS_COMPARE__ Register bits
+    namespace events_compare___bits {
         constexpr uint32_t EVENTS_COMPARE = (1U << 0);  ///< Compare event on CC[n] match
     }
 
@@ -3449,8 +3449,8 @@ namespace rtc {
         constexpr uint32_t EN = (1U << 31);  ///< Disable publishing
     }
 
-    /// PUBLISH_COMPARE[%s] Register bits
-    namespace publish_compare[%s]_bits {
+    /// PUBLISH_COMPARE__ Register bits
+    namespace publish_compare___bits {
         constexpr uint32_t CHIDX = (8 << 0);  ///< DPPI channel that event COMPARE[n] will publish to.
         constexpr uint32_t EN = (1U << 31);  ///< Disable publishing
     }
@@ -3523,8 +3523,8 @@ namespace rtc {
         constexpr uint32_t PRESCALER = (12 << 0);  ///< Prescaler value
     }
 
-    /// CC[%s] Register bits
-    namespace cc[%s]_bits {
+    /// CC__ Register bits
+    namespace cc___bits {
         constexpr uint32_t COMPARE = (24 << 0);  ///< Compare value
     }
 
@@ -3540,41 +3540,41 @@ namespace ipc {
 
     /// IPC Register structure
     struct Registers {
-        volatile uint32_t TASKS_SEND[%s];  ///< Offset: 0x00 - Description collection: Trigger events on IPC channel...
-        volatile uint32_t SUBSCRIBE_SEND[%s];  ///< Offset: 0x80 - Description collection: Subscribe configuration for task SEND[n]
-        volatile uint32_t EVENTS_RECEIVE[%s];  ///< Offset: 0x100 - Description collection: Event received on one or more of...
-        volatile uint32_t PUBLISH_RECEIVE[%s];  ///< Offset: 0x180 - Description collection: Publish configuration for event...
+        volatile uint32_t TASKS_SEND__;  ///< Offset: 0x00 - Description collection: Trigger events on IPC channel... (renamed from TASKS_SEND__)
+        volatile uint32_t SUBSCRIBE_SEND__;  ///< Offset: 0x80 - Description collection: Subscribe configuration for task SEND[n] (renamed from SUBSCRIBE_SEND__)
+        volatile uint32_t EVENTS_RECEIVE__;  ///< Offset: 0x100 - Description collection: Event received on one or more of... (renamed from EVENTS_RECEIVE__)
+        volatile uint32_t PUBLISH_RECEIVE__;  ///< Offset: 0x180 - Description collection: Publish configuration for event... (renamed from PUBLISH_RECEIVE__)
         volatile uint32_t INTEN;  ///< Offset: 0x300 - Enable or disable interrupt
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
         volatile uint32_t INTPEND;  ///< Offset: 0x30C - Pending interrupts
-        volatile uint32_t SEND_CNF[%s];  ///< Offset: 0x510 - Description collection: Send event configuration for...
-        volatile uint32_t RECEIVE_CNF[%s];  ///< Offset: 0x590 - Description collection: Receive event configuration for...
-        volatile uint32_t GPMEM[%s];  ///< Offset: 0x610 - Description collection: General purpose memory
+        volatile uint32_t SEND_CNF__;  ///< Offset: 0x510 - Description collection: Send event configuration for... (renamed from SEND_CNF__)
+        volatile uint32_t RECEIVE_CNF__;  ///< Offset: 0x590 - Description collection: Receive event configuration for... (renamed from RECEIVE_CNF__)
+        volatile uint32_t GPMEM__;  ///< Offset: 0x610 - Description collection: General purpose memory (renamed from GPMEM__)
     };
 
     /// Peripheral instances
     inline Registers* IPC_NS = reinterpret_cast<Registers*>(IPC_NS_BASE);
 
     // Bit definitions
-    /// TASKS_SEND[%s] Register bits
-    namespace tasks_send[%s]_bits {
+    /// TASKS_SEND__ Register bits
+    namespace tasks_send___bits {
         constexpr uint32_t TASKS_SEND = (1U << 0);  ///< Trigger events on IPC channel enabled in SEND_CNF[n]
     }
 
-    /// SUBSCRIBE_SEND[%s] Register bits
-    namespace subscribe_send[%s]_bits {
+    /// SUBSCRIBE_SEND__ Register bits
+    namespace subscribe_send___bits {
         constexpr uint32_t CHIDX = (8 << 0);  ///< DPPI channel that task SEND[n] will subscribe to
         constexpr uint32_t EN = (1U << 31);  ///< Disable subscription
     }
 
-    /// EVENTS_RECEIVE[%s] Register bits
-    namespace events_receive[%s]_bits {
+    /// EVENTS_RECEIVE__ Register bits
+    namespace events_receive___bits {
         constexpr uint32_t EVENTS_RECEIVE = (1U << 0);  ///< Event received on one or more of the enabled IPC channels in RECEIVE_CNF[n]
     }
 
-    /// PUBLISH_RECEIVE[%s] Register bits
-    namespace publish_receive[%s]_bits {
+    /// PUBLISH_RECEIVE__ Register bits
+    namespace publish_receive___bits {
         constexpr uint32_t CHIDX = (8 << 0);  ///< DPPI channel that event RECEIVE[n] will publish to.
         constexpr uint32_t EN = (1U << 31);  ///< Disable publishing
     }
@@ -3659,8 +3659,8 @@ namespace ipc {
         constexpr uint32_t RECEIVE15 = (1U << 15);  ///< Read pending status of interrupt for event RECEIVE[15]
     }
 
-    /// SEND_CNF[%s] Register bits
-    namespace send_cnf[%s]_bits {
+    /// SEND_CNF__ Register bits
+    namespace send_cnf___bits {
         constexpr uint32_t CHEN0 = (1U << 0);  ///< Enable broadcasting on IPC channel 0
         constexpr uint32_t CHEN1 = (1U << 1);  ///< Enable broadcasting on IPC channel 1
         constexpr uint32_t CHEN2 = (1U << 2);  ///< Enable broadcasting on IPC channel 2
@@ -3679,8 +3679,8 @@ namespace ipc {
         constexpr uint32_t CHEN15 = (1U << 15);  ///< Enable broadcasting on IPC channel 15
     }
 
-    /// RECEIVE_CNF[%s] Register bits
-    namespace receive_cnf[%s]_bits {
+    /// RECEIVE_CNF__ Register bits
+    namespace receive_cnf___bits {
         constexpr uint32_t CHEN0 = (1U << 0);  ///< Enable subscription to IPC channel 0
         constexpr uint32_t CHEN1 = (1U << 1);  ///< Enable subscription to IPC channel 1
         constexpr uint32_t CHEN2 = (1U << 2);  ///< Enable subscription to IPC channel 2
@@ -3699,8 +3699,8 @@ namespace ipc {
         constexpr uint32_t CHEN15 = (1U << 15);  ///< Enable subscription to IPC channel 15
     }
 
-    /// GPMEM[%s] Register bits
-    namespace gpmem[%s]_bits {
+    /// GPMEM__ Register bits
+    namespace gpmem___bits {
         constexpr uint32_t GPMEM = (32 << 0);  ///< General purpose memory
     }
 
@@ -4573,7 +4573,7 @@ namespace usart {
         constexpr uint32_t OVERRUN = (1U << 0);  ///< Overrun error
         constexpr uint32_t PARITY = (1U << 1);  ///< Parity error
         constexpr uint32_t FRAMING = (1U << 2);  ///< Framing error occurred
-        constexpr uint32_t BREAK = (1U << 3);  ///< Break condition
+        constexpr uint32_t BREAK_ = (1U << 3);  ///< Break condition (renamed from BREAK_)
     }
 
     /// ENABLE Register bits
@@ -4649,10 +4649,10 @@ namespace egu0 {
 
     /// EGU0 Register structure
     struct Registers {
-        volatile uint32_t TASKS_TRIGGER[%s];  ///< Offset: 0x00 - Description collection: Trigger n for triggering the...
-        volatile uint32_t SUBSCRIBE_TRIGGER[%s];  ///< Offset: 0x80 - Description collection: Subscribe configuration for task...
-        volatile uint32_t EVENTS_TRIGGERED[%s];  ///< Offset: 0x100 - Description collection: Event number n generated by...
-        volatile uint32_t PUBLISH_TRIGGERED[%s];  ///< Offset: 0x180 - Description collection: Publish configuration for event...
+        volatile uint32_t TASKS_TRIGGER__;  ///< Offset: 0x00 - Description collection: Trigger n for triggering the... (renamed from TASKS_TRIGGER__)
+        volatile uint32_t SUBSCRIBE_TRIGGER__;  ///< Offset: 0x80 - Description collection: Subscribe configuration for task... (renamed from SUBSCRIBE_TRIGGER__)
+        volatile uint32_t EVENTS_TRIGGERED__;  ///< Offset: 0x100 - Description collection: Event number n generated by... (renamed from EVENTS_TRIGGERED__)
+        volatile uint32_t PUBLISH_TRIGGERED__;  ///< Offset: 0x180 - Description collection: Publish configuration for event... (renamed from PUBLISH_TRIGGERED__)
         volatile uint32_t INTEN;  ///< Offset: 0x300 - Enable or disable interrupt
         volatile uint32_t INTENSET;  ///< Offset: 0x304 - Enable interrupt
         volatile uint32_t INTENCLR;  ///< Offset: 0x308 - Disable interrupt
@@ -4662,24 +4662,24 @@ namespace egu0 {
     inline Registers* EGU0_NS = reinterpret_cast<Registers*>(EGU0_NS_BASE);
 
     // Bit definitions
-    /// TASKS_TRIGGER[%s] Register bits
-    namespace tasks_trigger[%s]_bits {
+    /// TASKS_TRIGGER__ Register bits
+    namespace tasks_trigger___bits {
         constexpr uint32_t TASKS_TRIGGER = (1U << 0);  ///< Trigger n for triggering the corresponding TRIGGERED[n] event
     }
 
-    /// SUBSCRIBE_TRIGGER[%s] Register bits
-    namespace subscribe_trigger[%s]_bits {
+    /// SUBSCRIBE_TRIGGER__ Register bits
+    namespace subscribe_trigger___bits {
         constexpr uint32_t CHIDX = (8 << 0);  ///< DPPI channel that task TRIGGER[n] will subscribe to
         constexpr uint32_t EN = (1U << 31);  ///< Disable subscription
     }
 
-    /// EVENTS_TRIGGERED[%s] Register bits
-    namespace events_triggered[%s]_bits {
+    /// EVENTS_TRIGGERED__ Register bits
+    namespace events_triggered___bits {
         constexpr uint32_t EVENTS_TRIGGERED = (1U << 0);  ///< Event number n generated by triggering the corresponding TRIGGER[n] task
     }
 
-    /// PUBLISH_TRIGGERED[%s] Register bits
-    namespace publish_triggered[%s]_bits {
+    /// PUBLISH_TRIGGERED__ Register bits
+    namespace publish_triggered___bits {
         constexpr uint32_t CHIDX = (8 << 0);  ///< DPPI channel that event TRIGGERED[n] will publish to.
         constexpr uint32_t EN = (1U << 31);  ///< Disable publishing
     }
@@ -4826,7 +4826,7 @@ namespace appmutex {
 
     /// APPMUTEX Register structure
     struct Registers {
-        volatile uint32_t MUTEX[%s];  ///< Offset: 0x400 - Description collection: Mutex register
+        volatile uint32_t MUTEX__;  ///< Offset: 0x400 - Description collection: Mutex register (renamed from MUTEX__)
     };
 
     /// Peripheral instances
@@ -4834,8 +4834,8 @@ namespace appmutex {
     inline Registers* APPMUTEX_S = reinterpret_cast<Registers*>(APPMUTEX_S_BASE);
 
     // Bit definitions
-    /// MUTEX[%s] Register bits
-    namespace mutex[%s]_bits {
+    /// MUTEX__ Register bits
+    namespace mutex___bits {
         constexpr uint32_t MUTEX = (1U << 0);  ///< Mutex register n
     }
 
@@ -5022,7 +5022,7 @@ namespace p0 {
         volatile uint32_t LATCH;  ///< Offset: 0x20 - Latch register indicating what GPIO pins that have met...
         volatile uint32_t DETECTMODE;  ///< Offset: 0x24 - Select between default DETECT signal behavior and...
         volatile uint32_t DETECTMODE_SEC;  ///< Offset: 0x28 - Select between default DETECT signal behavior and...
-        volatile uint32_t PIN_CNF[%s];  ///< Offset: 0x200 - Description collection: Configuration of GPIO pins
+        volatile uint32_t PIN_CNF__;  ///< Offset: 0x200 - Description collection: Configuration of GPIO pins (renamed from PIN_CNF__)
     };
 
     /// Peripheral instances
@@ -5327,8 +5327,8 @@ namespace p0 {
         constexpr uint32_t DETECTMODE = (1U << 0);  ///< Select between default DETECT signal behavior and LDETECT mode
     }
 
-    /// PIN_CNF[%s] Register bits
-    namespace pin_cnf[%s]_bits {
+    /// PIN_CNF__ Register bits
+    namespace pin_cnf___bits {
         constexpr uint32_t DIR = (1U << 0);  ///< Pin direction. Same physical register as DIR register
         constexpr uint32_t INPUT = (1U << 1);  ///< Connect or disconnect input buffer
         constexpr uint32_t PULL = (2 << 2);  ///< Pull configuration

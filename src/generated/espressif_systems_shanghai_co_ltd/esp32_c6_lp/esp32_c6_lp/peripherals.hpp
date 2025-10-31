@@ -3,7 +3,7 @@
 /// Source: espressif_esp32c6.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:05
+/// Generated: 2025-10-31 17:44:44
 #ifndef ALLOY_GENERATED_ESP32-C6-LP_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ESP32-C6-LP_PERIPHERALS_HPP
 

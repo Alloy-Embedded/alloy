@@ -3,7 +3,7 @@
 /// Source: fujitsu_mb9b560r.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:49
+/// Generated: 2025-10-31 17:44:25
 #include <cstdint>
 #include <cstring>
 

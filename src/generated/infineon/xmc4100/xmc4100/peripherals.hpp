@@ -3,7 +3,7 @@
 /// Source: infineon_xmc4100.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:04
+/// Generated: 2025-10-31 17:44:42
 #ifndef ALLOY_GENERATED_XMC4100_PERIPHERALS_HPP
 #define ALLOY_GENERATED_XMC4100_PERIPHERALS_HPP
 
@@ -1023,8 +1023,8 @@ namespace eru0 {
     /// ERU0 Register structure
     struct Registers {
         volatile uint32_t EXISEL;  ///< Offset: 0x00 - Event Input Select
-        volatile uint32_t EXICON[%s];  ///< Offset: 0x10 - Event Input Control
-        volatile uint32_t EXOCON[%s];  ///< Offset: 0x20 - Event Output Trigger Control
+        volatile uint32_t EXICON__;  ///< Offset: 0x10 - Event Input Control (renamed from EXICON__)
+        volatile uint32_t EXOCON__;  ///< Offset: 0x20 - Event Output Trigger Control (renamed from EXOCON__)
     };
 
     /// Peripheral instances
@@ -1043,8 +1043,8 @@ namespace eru0 {
         constexpr uint32_t EXS3B = (2 << 14);  ///< Event Source Select for B3 (ERS3)
     }
 
-    /// EXICON[%s] Register bits
-    namespace exicon[%s]_bits {
+    /// EXICON__ Register bits
+    namespace exicon___bits {
         constexpr uint32_t PE = (1U << 0);  ///< Output Trigger Pulse Enable for ETLx
         constexpr uint32_t LD = (1U << 1);  ///< Rebuild Level Detection for Status Flag for ETLx
         constexpr uint32_t RE = (1U << 2);  ///< Rising Edge Detection Enable ETLx
@@ -1056,8 +1056,8 @@ namespace eru0 {
         constexpr uint32_t NB = (1U << 11);  ///< Input B Negation Select for ERSx
     }
 
-    /// EXOCON[%s] Register bits
-    namespace exocon[%s]_bits {
+    /// EXOCON__ Register bits
+    namespace exocon___bits {
         constexpr uint32_t ISS = (2 << 0);  ///< Internal Trigger Source Selection
         constexpr uint32_t GEEN = (1U << 2);  ///< Gating Event Enable
         constexpr uint32_t PDR = (1U << 3);  ///< Pattern Detection Result Flag
@@ -2899,9 +2899,9 @@ namespace can {
         volatile uint32_t CLC;  ///< Offset: 0x00 - CAN Clock Control Register
         volatile uint32_t ID;  ///< Offset: 0x08 - Module Identification Register
         volatile uint32_t FDR;  ///< Offset: 0x0C - CAN Fractional Divider Register
-        volatile uint32_t LIST[%s];  ///< Offset: 0x100 - List Register
-        volatile uint32_t MSPND[%s];  ///< Offset: 0x140 - Message Pending Register
-        volatile uint32_t MSID[%s];  ///< Offset: 0x180 - Message Index Register
+        volatile uint32_t LIST__;  ///< Offset: 0x100 - List Register (renamed from LIST__)
+        volatile uint32_t MSPND__;  ///< Offset: 0x140 - Message Pending Register (renamed from MSPND__)
+        volatile uint32_t MSID__;  ///< Offset: 0x180 - Message Index Register (renamed from MSID__)
         volatile uint32_t MSIMASK;  ///< Offset: 0x1C0 - Message Index Mask Register
         volatile uint32_t PANCTR;  ///< Offset: 0x1C4 - Panel Control Register
         volatile uint32_t MCR;  ///< Offset: 0x1C8 - Module Control Register
@@ -3006,21 +3006,21 @@ namespace can {
         constexpr uint32_t DISCLK = (1U << 31);  ///< Disable Clock
     }
 
-    /// LIST[%s] Register bits
-    namespace list[%s]_bits {
+    /// LIST__ Register bits
+    namespace list___bits {
         constexpr uint32_t BEGIN = (8 << 0);  ///< List Begin
         constexpr uint32_t END = (8 << 8);  ///< List End
         constexpr uint32_t SIZE = (8 << 16);  ///< List Size
         constexpr uint32_t EMPTY = (1U << 24);  ///< List Empty Indication
     }
 
-    /// MSPND[%s] Register bits
-    namespace mspnd[%s]_bits {
+    /// MSPND__ Register bits
+    namespace mspnd___bits {
         constexpr uint32_t PND = (32 << 0);  ///< Message Pending
     }
 
-    /// MSID[%s] Register bits
-    namespace msid[%s]_bits {
+    /// MSID__ Register bits
+    namespace msid___bits {
         constexpr uint32_t INDEX = (6 << 0);  ///< Message Pending Index
     }
 
@@ -3066,13 +3066,13 @@ namespace adc {
         volatile uint32_t ID;  ///< Offset: 0x08 - Module Identification Register
         volatile uint32_t OCS;  ///< Offset: 0x28 - OCDS Control and Status Register
         volatile uint32_t GLOBCFG;  ///< Offset: 0x80 - Global Configuration Register
-        volatile uint32_t GLOBICLASS[%s];  ///< Offset: 0xA0 - Input Class Register, Global
+        volatile uint32_t GLOBICLASS__;  ///< Offset: 0xA0 - Input Class Register, Global (renamed from GLOBICLASS__)
         volatile uint32_t GLOBBOUND;  ///< Offset: 0xB8 - Global Boundary Select Register
         volatile uint32_t GLOBEFLAG;  ///< Offset: 0xE0 - Global Event Flag Register
         volatile uint32_t GLOBEVNP;  ///< Offset: 0x140 - Global Event Node Pointer Register
         volatile uint32_t GLOBTF;  ///< Offset: 0x160 - Global Test Functions Register
-        volatile uint32_t BRSSEL[%s];  ///< Offset: 0x180 - Background Request Source Channel Select Register
-        volatile uint32_t BRSPND[%s];  ///< Offset: 0x1C0 - Background Request Source Pending Register
+        volatile uint32_t BRSSEL__;  ///< Offset: 0x180 - Background Request Source Channel Select Register (renamed from BRSSEL__)
+        volatile uint32_t BRSPND__;  ///< Offset: 0x1C0 - Background Request Source Pending Register (renamed from BRSPND__)
         volatile uint32_t BRSCTRL;  ///< Offset: 0x200 - Background Request Source Control Register
         volatile uint32_t BRSMR;  ///< Offset: 0x204 - Background Request Source Mode Register
         volatile uint32_t GLOBRCR;  ///< Offset: 0x280 - Global Result Control Register
@@ -3124,8 +3124,8 @@ namespace adc {
         constexpr uint32_t SUCAL = (1U << 31);  ///< Start-Up Calibration
     }
 
-    /// GLOBICLASS[%s] Register bits
-    namespace globiclass[%s]_bits {
+    /// GLOBICLASS__ Register bits
+    namespace globiclass___bits {
         constexpr uint32_t STCS = (5 << 0);  ///< Sample Time Control for Standard Conversions
         constexpr uint32_t CMS = (3 << 8);  ///< Conversion Mode for Standard Conversions
         constexpr uint32_t STCE = (5 << 16);  ///< Sample Time Control for EMUX Conversions
@@ -3162,8 +3162,8 @@ namespace adc {
         constexpr uint32_t MDWC = (1U << 23);  ///< Write Control for Multiplexer Diagnostics
     }
 
-    /// BRSSEL[%s] Register bits
-    namespace brssel[%s]_bits {
+    /// BRSSEL__ Register bits
+    namespace brssel___bits {
         constexpr uint32_t CHSELG0 = (1U << 0);  ///< Channel Selection Group x
         constexpr uint32_t CHSELG1 = (1U << 1);  ///< Channel Selection Group x
         constexpr uint32_t CHSELG2 = (1U << 2);  ///< Channel Selection Group x
@@ -3174,8 +3174,8 @@ namespace adc {
         constexpr uint32_t CHSELG7 = (1U << 7);  ///< Channel Selection Group x
     }
 
-    /// BRSPND[%s] Register bits
-    namespace brspnd[%s]_bits {
+    /// BRSPND__ Register bits
+    namespace brspnd___bits {
         constexpr uint32_t CHPNDG0 = (1U << 0);  ///< Channels Pending Group x
         constexpr uint32_t CHPNDG1 = (1U << 1);  ///< Channels Pending Group x
         constexpr uint32_t CHPNDG2 = (1U << 2);  ///< Channels Pending Group x

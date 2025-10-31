@@ -72,7 +72,8 @@ namespace {{ periph_type | lower }} {
     /// {{ periph_type }} Register structure
     struct Registers {
         {% for reg_name, reg in periph.registers.items() %}
-        volatile uint32_t {{ reg_name }};  ///< Offset: {{ reg.offset }} - {{ reg.description | replace('\n', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | truncate(60) }}
+        volatile uint32_t {{ reg_name | sanitize_identifier }};  ///< Offset: {{ reg.offset }} - {{ reg.description | replace('\n', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | truncate(60) }}{% if reg_name | sanitize_identifier != reg_name %} (renamed from {{ reg_name | sanitize_identifier }}){% endif %}
+
         {% endfor %}
     };
 
@@ -84,13 +85,15 @@ namespace {{ periph_type | lower }} {
     {% if periph.bits is defined %}
     // Bit definitions
     {% for reg_name, bits in periph.bits.items() %}
-    /// {{ reg_name }} Register bits
-    namespace {{ reg_name | lower }}_bits {
+    /// {{ reg_name | sanitize_identifier }} Register bits
+    namespace {{ reg_name | lower | sanitize_identifier }}_bits {
         {% for bit_name, bit_def in bits.items() %}
         {% if bit_def.width is defined %}
-        constexpr uint32_t {{ bit_name }} = ({{ bit_def.width }} << {{ bit_def.bit }});  ///< {{ bit_def.description | replace('\n', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') }}
+        constexpr uint32_t {{ bit_name | sanitize_identifier }} = ({{ bit_def.width }} << {{ bit_def.bit }});  ///< {{ bit_def.description | replace('\n', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') }}{% if bit_name | sanitize_identifier != bit_name %} (renamed from {{ bit_name | sanitize_identifier }}){% endif %}
+
         {% else %}
-        constexpr uint32_t {{ bit_name }} = (1U << {{ bit_def.bit }});  ///< {{ bit_def.description | replace('\n', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') }}
+        constexpr uint32_t {{ bit_name | sanitize_identifier }} = (1U << {{ bit_def.bit }});  ///< {{ bit_def.description | replace('\n', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') }}{% if bit_name | sanitize_identifier != bit_name %} (renamed from {{ bit_name | sanitize_identifier }}){% endif %}
+
         {% endif %}
         {% endfor %}
     }

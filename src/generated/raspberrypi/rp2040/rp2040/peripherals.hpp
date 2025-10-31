@@ -3,7 +3,7 @@
 /// Source: raspberrypi_rp2040.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:29
+/// Generated: 2025-10-31 17:44:04
 #ifndef ALLOY_GENERATED_RP2040_PERIPHERALS_HPP
 #define ALLOY_GENERATED_RP2040_PERIPHERALS_HPP
 
@@ -293,7 +293,7 @@ namespace rcc {
     /// RCC Register structure
     struct Registers {
         volatile uint32_t NUDGE;  ///< Offset: 0x6C - Clock control, can be changed on-the-fly (except for auxsrc)
-        volatile uint32_t INT;  ///< Offset: 0x70 - Clock divisor, can be changed on-the-fly
+        volatile uint32_t INT_;  ///< Offset: 0x70 - Clock divisor, can be changed on-the-fly (renamed from INT_)
         volatile uint32_t CLK_GPOUT0_SELECTED;  ///< Offset: 0x08 - Indicates which src is currently selected (one-hot)
         volatile uint32_t CLK_GPOUT1_SELECTED;  ///< Offset: 0x14 - Indicates which src is currently selected (one-hot)
         volatile uint32_t CLK_GPOUT2_SELECTED;  ///< Offset: 0x20 - Indicates which src is currently selected (one-hot)
@@ -314,7 +314,7 @@ namespace rcc {
         volatile uint32_t FC0_MAX_KHZ;  ///< Offset: 0x88 - Maximum pass frequency in kHz. This is optional. Set to...
         volatile uint32_t FC0_DELAY;  ///< Offset: 0x8C - Delays the start of frequency counting to allow the mux...
         volatile uint32_t FC0_INTERVAL;  ///< Offset: 0x90 - The test interval is 0.98us * 2**interval, but let's...
-        volatile uint32_t NULL;  ///< Offset: 0x94 - Clock sent to frequency counter, set to 0 when not...
+        volatile uint32_t NULL_;  ///< Offset: 0x94 - Clock sent to frequency counter, set to 0 when not... (renamed from NULL_)
         volatile uint32_t DIED;  ///< Offset: 0x98 - Frequency counter status
         volatile uint32_t KHZ;  ///< Offset: 0x9C - Result of frequency measurement, only valid when status_done=1
         volatile uint32_t clk_sys_sram3;  ///< Offset: 0xB0 - indicates the state of the clock enable
@@ -422,7 +422,7 @@ namespace pads {
 
     /// PADS Register structure
     struct Registers {
-        volatile uint32_t 3v3;  ///< Offset: 0x00 - Voltage select. Per bank control
+        volatile uint32_t v3v3;  ///< Offset: 0x00 - Voltage select. Per bank control (renamed from v3v3)
         volatile uint32_t OD;  ///< Offset: 0x80 - Pad control register
     };
 
@@ -645,7 +645,7 @@ namespace adc {
         volatile uint32_t RESULT;  ///< Offset: 0x04 - Result of most recent ADC conversion
         volatile uint32_t THRESH;  ///< Offset: 0x08 - FIFO control and status
         volatile uint32_t ERR;  ///< Offset: 0x0C - Conversion result FIFO
-        volatile uint32_t INT;  ///< Offset: 0x10 - Clock divider. If non-zero, CS_START_MANY will start...
+        volatile uint32_t INT_;  ///< Offset: 0x10 - Clock divider. If non-zero, CS_START_MANY will start... (renamed from INT_)
         volatile uint32_t FIFO;  ///< Offset: 0x20 - Interrupt status after masking & forcing
     };
 
@@ -665,7 +665,7 @@ namespace pwm {
     /// PWM Register structure
     struct Registers {
         volatile uint32_t PH_ADV;  ///< Offset: 0x8C - Control and status register
-        volatile uint32_t INT;  ///< Offset: 0x90 - INT and FRAC form a fixed-point fractional number.\n...
+        volatile uint32_t INT_;  ///< Offset: 0x90 - INT and FRAC form a fixed-point fractional number.\n... (renamed from INT_)
         volatile uint32_t CH0_CTR;  ///< Offset: 0x08 - Direct access to the PWM counter
         volatile uint32_t B;  ///< Offset: 0x98 - Counter compare values
         volatile uint32_t CH0_TOP;  ///< Offset: 0x10 - Counter wrap value
@@ -1133,7 +1133,7 @@ namespace pio0 {
         volatile uint32_t INSTR_MEM29;  ///< Offset: 0xBC - Write-only access to instruction memory location 29
         volatile uint32_t INSTR_MEM30;  ///< Offset: 0xC0 - Write-only access to instruction memory location 30
         volatile uint32_t INSTR_MEM31;  ///< Offset: 0xC4 - Write-only access to instruction memory location 31
-        volatile uint32_t INT;  ///< Offset: 0x110 - Clock divider register for state machine 3\n Frequency =...
+        volatile uint32_t INT_;  ///< Offset: 0x110 - Clock divider register for state machine 3\n Frequency =... (renamed from INT_)
         volatile uint32_t EXEC_STALLED;  ///< Offset: 0x114 - Execution/behavioural settings for state machine 3
         volatile uint32_t FJOIN_RX;  ///< Offset: 0x118 - Control behaviour of the input/output shift registers...
         volatile uint32_t SM0_ADDR;  ///< Offset: 0xD4 - Current instruction address of state machine 0

@@ -61,6 +61,7 @@ class CodeGenerator:
 
         # Add custom filters
         self.jinja_env.filters['hex'] = lambda x: f"0x{x:08X}" if isinstance(x, int) else x
+        self.jinja_env.filters['sanitize_identifier'] = self._sanitize_cpp_identifier
 
     def _load_database(self) -> Dict[str, Any]:
         """Load and parse database JSON"""
@@ -87,6 +88,80 @@ class CodeGenerator:
             sys.exit(1)
 
         return self.database['mcus'][self.mcu_name]
+
+    def _sanitize_cpp_identifier(self, name: str) -> str:
+        """Sanitize a name to be a valid C++ identifier
+
+        Rules:
+        - Remove %s placeholders (from SVD array-style registers)
+        - Reserved keywords get '_' suffix
+        - Names starting with digits get 'v' prefix
+        - Invalid characters are replaced with '_'
+        """
+        if not name:
+            return "UNNAMED"
+
+        # Remove %s placeholders that appear in some SVD files
+        # These are typically used for array-style registers (e.g., COMPCTRL%s -> COMPCTRL)
+        name = name.replace('%s', '')
+
+        # C++ reserved keywords (comprehensive list)
+        cpp_keywords = {
+            'alignas', 'alignof', 'and', 'and_eq', 'asm', 'auto', 'bitand', 'bitor',
+            'bool', 'break', 'case', 'catch', 'char', 'char8_t', 'char16_t', 'char32_t',
+            'class', 'compl', 'concept', 'const', 'consteval', 'constexpr', 'constinit',
+            'const_cast', 'continue', 'co_await', 'co_return', 'co_yield', 'decltype',
+            'default', 'delete', 'do', 'double', 'dynamic_cast', 'else', 'enum', 'explicit',
+            'export', 'extern', 'false', 'float', 'for', 'friend', 'goto', 'if', 'inline',
+            'int', 'long', 'mutable', 'namespace', 'new', 'noexcept', 'not', 'not_eq',
+            'nullptr', 'operator', 'or', 'or_eq', 'private', 'protected', 'public',
+            'register', 'reinterpret_cast', 'requires', 'return', 'short', 'signed',
+            'sizeof', 'static', 'static_assert', 'static_cast', 'struct', 'switch',
+            'template', 'this', 'thread_local', 'throw', 'true', 'try', 'typedef',
+            'typeid', 'typename', 'union', 'unsigned', 'using', 'virtual', 'void',
+            'volatile', 'wchar_t', 'while', 'xor', 'xor_eq',
+            # Common macro names that should be avoided
+            'NULL', 'TRUE', 'FALSE'
+        }
+
+        original = name
+        sanitized = name
+
+        # Check for reserved keywords (case-insensitive for safety)
+        if name.lower() in cpp_keywords or name.upper() in cpp_keywords:
+            sanitized = name + '_'
+            if self.verbose:
+                print_info(f"Renamed reserved keyword: {original} → {sanitized}")
+
+        # Check if starts with digit
+        elif sanitized and sanitized[0].isdigit():
+            sanitized = 'v' + sanitized
+            if self.verbose:
+                print_info(f"Fixed digit start: {original} → {sanitized}")
+
+        # Replace invalid characters
+        valid_chars = []
+        for i, char in enumerate(sanitized):
+            if i == 0:
+                # First character: must be letter or underscore
+                if char.isalpha() or char == '_':
+                    valid_chars.append(char)
+                else:
+                    valid_chars.append('_')
+            else:
+                # Subsequent characters: letter, digit, or underscore
+                if char.isalnum() or char == '_':
+                    valid_chars.append(char)
+                else:
+                    valid_chars.append('_')
+
+        result = ''.join(valid_chars)
+
+        # Ensure not empty
+        if not result:
+            result = "UNNAMED"
+
+        return result
 
     def _render_template(self, template_name: str, context: Dict[str, Any]) -> str:
         """Render a Jinja2 template"""

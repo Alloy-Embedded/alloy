@@ -3,7 +3,7 @@
 /// Source: nxp_lpc15xx.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:48
+/// Generated: 2025-10-31 17:44:24
 #ifndef ALLOY_GENERATED_LPC15XX_PERIPHERALS_HPP
 #define ALLOY_GENERATED_LPC15XX_PERIPHERALS_HPP
 
@@ -236,15 +236,15 @@ namespace gpio {
 
     /// GPIO Register structure
     struct Registers {
-        volatile uint32_t B[%s];  ///< Offset: 0x00 - Byte pin registers
-        volatile uint32_t W[%s];  ///< Offset: 0x1000 - Word pin registers
-        volatile uint32_t DIR[%s];  ///< Offset: 0x2000 - Port Direction registers
-        volatile uint32_t MASK[%s];  ///< Offset: 0x2080 - Port Mask register
-        volatile uint32_t PIN[%s];  ///< Offset: 0x2100 - Port pin register
-        volatile uint32_t MPIN[%s];  ///< Offset: 0x2180 - Masked port register
-        volatile uint32_t SET[%s];  ///< Offset: 0x2200 - Write: Set port register Read: port output bits
-        volatile uint32_t CLR[%s];  ///< Offset: 0x2280 - Clear port
-        volatile uint32_t NOT[%s];  ///< Offset: 0x2300 - Toggle port
+        volatile uint32_t B__;  ///< Offset: 0x00 - Byte pin registers (renamed from B__)
+        volatile uint32_t W__;  ///< Offset: 0x1000 - Word pin registers (renamed from W__)
+        volatile uint32_t DIR__;  ///< Offset: 0x2000 - Port Direction registers (renamed from DIR__)
+        volatile uint32_t MASK__;  ///< Offset: 0x2080 - Port Mask register (renamed from MASK__)
+        volatile uint32_t PIN__;  ///< Offset: 0x2100 - Port pin register (renamed from PIN__)
+        volatile uint32_t MPIN__;  ///< Offset: 0x2180 - Masked port register (renamed from MPIN__)
+        volatile uint32_t SET__;  ///< Offset: 0x2200 - Write: Set port register Read: port output bits (renamed from SET__)
+        volatile uint32_t CLR__;  ///< Offset: 0x2280 - Clear port (renamed from CLR__)
+        volatile uint32_t NOT__;  ///< Offset: 0x2300 - Toggle port (renamed from NOT__)
     };
 
     /// Peripheral instances
@@ -277,9 +277,9 @@ namespace dma {
         volatile uint32_t SETVALID0;  ///< Offset: 0x68 - Set ValidPending control bits for all DMA channels.
         volatile uint32_t SETTRIG0;  ///< Offset: 0x70 - Set Trigger control bits for all DMA channels.
         volatile uint32_t ABORT0;  ///< Offset: 0x78 - Channel Abort control for all DMA channels.
-        volatile uint32_t CFG%s;  ///< Offset: 0x400 - Configuration register for DMA channel 0.
-        volatile uint32_t CTLSTAT%s;  ///< Offset: 0x404 - Control and status register for DMA channel 0.
-        volatile uint32_t XFERCFG%s;  ///< Offset: 0x408 - Transfer configuration register for DMA channel 0.
+        volatile uint32_t CFG;  ///< Offset: 0x400 - Configuration register for DMA channel 0. (renamed from CFG)
+        volatile uint32_t CTLSTAT;  ///< Offset: 0x404 - Control and status register for DMA channel 0. (renamed from CTLSTAT)
+        volatile uint32_t XFERCFG;  ///< Offset: 0x408 - Transfer configuration register for DMA channel 0. (renamed from XFERCFG)
     };
 
     /// Peripheral instances
@@ -368,16 +368,16 @@ namespace sct0 {
         volatile uint32_t EVFLAG;  ///< Offset: 0xF4 - SCT event flag register
         volatile uint32_t CONEN;  ///< Offset: 0xF8 - SCT conflict enable register
         volatile uint32_t CONFLAG;  ///< Offset: 0xFC - SCT conflict flag register
-        volatile uint32_t MATCH%s;  ///< Offset: 0x100 - SCT match value register of match channels 0 to 15;...
-        volatile uint32_t FRACMAT%s;  ///< Offset: 0x140 - Fractional match registers 0 to 5 for SCT match value...
-        volatile uint32_t CAP%s;  ///< Offset: 0x100 - SCT capture register of capture channel 0 to 15; REGMOD0...
-        volatile uint32_t MATCHREL%s;  ///< Offset: 0x200 - SCT match reload value register 0 to 15; REGMOD0 = 0 to...
-        volatile uint32_t FRACMATREL%s;  ///< Offset: 0x240 - Fractional match reload registers 0 to 5 for SCT match...
-        volatile uint32_t CAPCTRL%s;  ///< Offset: 0x200 - SCT capture control register 0 to 15; REGMOD0 = 1 to...
-        volatile uint32_t EV%s_STATE;  ///< Offset: 0x300 - SCT event state register 0
-        volatile uint32_t EV%s_CTRL;  ///< Offset: 0x304 - SCT event control register 0
-        volatile uint32_t OUT%s_SET;  ///< Offset: 0x500 - SCT output 0 set register
-        volatile uint32_t OUT%s_CLR;  ///< Offset: 0x504 - SCT output 0 clear register
+        volatile uint32_t MATCH;  ///< Offset: 0x100 - SCT match value register of match channels 0 to 15;... (renamed from MATCH)
+        volatile uint32_t FRACMAT;  ///< Offset: 0x140 - Fractional match registers 0 to 5 for SCT match value... (renamed from FRACMAT)
+        volatile uint32_t CAP;  ///< Offset: 0x100 - SCT capture register of capture channel 0 to 15; REGMOD0... (renamed from CAP)
+        volatile uint32_t MATCHREL;  ///< Offset: 0x200 - SCT match reload value register 0 to 15; REGMOD0 = 0 to... (renamed from MATCHREL)
+        volatile uint32_t FRACMATREL;  ///< Offset: 0x240 - Fractional match reload registers 0 to 5 for SCT match... (renamed from FRACMATREL)
+        volatile uint32_t CAPCTRL;  ///< Offset: 0x200 - SCT capture control register 0 to 15; REGMOD0 = 1 to... (renamed from CAPCTRL)
+        volatile uint32_t EV_STATE;  ///< Offset: 0x300 - SCT event state register 0 (renamed from EV_STATE)
+        volatile uint32_t EV_CTRL;  ///< Offset: 0x304 - SCT event control register 0 (renamed from EV_CTRL)
+        volatile uint32_t OUT_SET;  ///< Offset: 0x500 - SCT output 0 set register (renamed from OUT_SET)
+        volatile uint32_t OUT_CLR;  ///< Offset: 0x504 - SCT output 0 clear register (renamed from OUT_CLR)
     };
 
     /// Peripheral instances
@@ -431,14 +431,14 @@ namespace sct2 {
         volatile uint32_t EVFLAG;  ///< Offset: 0xF4 - SCT event flag register
         volatile uint32_t CONEN;  ///< Offset: 0xF8 - SCT conflict enable register
         volatile uint32_t CONFLAG;  ///< Offset: 0xFC - SCT conflict flag register
-        volatile uint32_t MATCH%s;  ///< Offset: 0x100 - SCT match value register of match channels 0 to 7;...
-        volatile uint32_t CAP%s;  ///< Offset: 0x100 - SCT capture register of capture channel 0 to 7; REGMOD0...
-        volatile uint32_t MATCHREL%s;  ///< Offset: 0x200 - SCT match reload value register 0 to 7; REGMOD0 = 0 to...
-        volatile uint32_t CAPCTRL%s;  ///< Offset: 0x200 - SCT capture control register 0 to 7; REGMOD0 = 1 to REGMODE7 = 1
-        volatile uint32_t EV%s_STATE;  ///< Offset: 0x300 - SCT event state register 0
-        volatile uint32_t EV%s_CTRL;  ///< Offset: 0x304 - SCT event control register 0
-        volatile uint32_t OUT%s_SET;  ///< Offset: 0x500 - SCT output 0 set register
-        volatile uint32_t OUT%s_CLR;  ///< Offset: 0x504 - SCT output 0 clear register
+        volatile uint32_t MATCH;  ///< Offset: 0x100 - SCT match value register of match channels 0 to 7;... (renamed from MATCH)
+        volatile uint32_t CAP;  ///< Offset: 0x100 - SCT capture register of capture channel 0 to 7; REGMOD0... (renamed from CAP)
+        volatile uint32_t MATCHREL;  ///< Offset: 0x200 - SCT match reload value register 0 to 7; REGMOD0 = 0 to... (renamed from MATCHREL)
+        volatile uint32_t CAPCTRL;  ///< Offset: 0x200 - SCT capture control register 0 to 7; REGMOD0 = 1 to REGMODE7 = 1 (renamed from CAPCTRL)
+        volatile uint32_t EV_STATE;  ///< Offset: 0x300 - SCT event state register 0 (renamed from EV_STATE)
+        volatile uint32_t EV_CTRL;  ///< Offset: 0x304 - SCT event control register 0 (renamed from EV_CTRL)
+        volatile uint32_t OUT_SET;  ///< Offset: 0x500 - SCT output 0 set register (renamed from OUT_SET)
+        volatile uint32_t OUT_CLR;  ///< Offset: 0x504 - SCT output 0 clear register (renamed from OUT_CLR)
     };
 
     /// Peripheral instances
@@ -480,7 +480,7 @@ namespace adc {
         volatile uint32_t SEQB_CTRL;  ///< Offset: 0x0C - A/D Conversion Sequence-B Control Register: Controls...
         volatile uint32_t SEQA_GDAT;  ///< Offset: 0x10 - A/D Sequence-A Global Data Register. This register...
         volatile uint32_t SEQB_GDAT;  ///< Offset: 0x14 - A/D Sequence-B Global Data Register. This register...
-        volatile uint32_t DAT[%s];  ///< Offset: 0x20 - A/D Channel 0 Data Register. This register contains the...
+        volatile uint32_t DAT__;  ///< Offset: 0x20 - A/D Channel 0 Data Register. This register contains the... (renamed from DAT__)
         volatile uint32_t THR0_LOW;  ///< Offset: 0x50 - A/D Low Compare Threshold Register 0 : Contains the...
         volatile uint32_t THR1_LOW;  ///< Offset: 0x54 - A/D Low Compare Threshold Register 1: Contains the lower...
         volatile uint32_t THR0_HIGH;  ///< Offset: 0x58 - A/D High Compare Threshold Register 0: Contains the...
@@ -532,7 +532,7 @@ namespace acmp {
         volatile uint32_t CMP1;  ///< Offset: 0x0C - Comparator 1 source control
         volatile uint32_t CMP2;  ///< Offset: 0x14 - Comparator 2 source control
         volatile uint32_t CMP3;  ///< Offset: 0x1C - Comparator 3 source control
-        volatile uint32_t CMPFILTR%s;  ///< Offset: 0x08 - Comparator 0 pin filter set-up
+        volatile uint32_t CMPFILTR;  ///< Offset: 0x08 - Comparator 0 pin filter set-up (renamed from CMPFILTR)
     };
 
     /// Peripheral instances
@@ -550,13 +550,13 @@ namespace inmux {
 
     /// INMUX Register structure
     struct Registers {
-        volatile uint32_t SCT0_INMUX[%s];  ///< Offset: 0x00 - Pinmux register for SCT0 input 0
-        volatile uint32_t SCT1_INMUX[%s];  ///< Offset: 0x20 - Pinmux register for SCT1 input 0
-        volatile uint32_t SCT2_INMUX[%s];  ///< Offset: 0x40 - Pinmux register for SCT2 input 0
-        volatile uint32_t SCT3_INMUX[%s];  ///< Offset: 0x60 - Pinmux register for SCT3 input 0
-        volatile uint32_t PINTSEL[%s];  ///< Offset: 0xC0 - Pin interrupt select register 0
-        volatile uint32_t DMA_ITRIG_INMUX[%s];  ///< Offset: 0xE0 - Trigger input for DMA channel 0 select register.
-        volatile uint32_t DMA_INMUX_INMUX[%s];  ///< Offset: 0x140 - DMA trigger input select register.
+        volatile uint32_t SCT0_INMUX__;  ///< Offset: 0x00 - Pinmux register for SCT0 input 0 (renamed from SCT0_INMUX__)
+        volatile uint32_t SCT1_INMUX__;  ///< Offset: 0x20 - Pinmux register for SCT1 input 0 (renamed from SCT1_INMUX__)
+        volatile uint32_t SCT2_INMUX__;  ///< Offset: 0x40 - Pinmux register for SCT2 input 0 (renamed from SCT2_INMUX__)
+        volatile uint32_t SCT3_INMUX__;  ///< Offset: 0x60 - Pinmux register for SCT3 input 0 (renamed from SCT3_INMUX__)
+        volatile uint32_t PINTSEL__;  ///< Offset: 0xC0 - Pin interrupt select register 0 (renamed from PINTSEL__)
+        volatile uint32_t DMA_ITRIG_INMUX__;  ///< Offset: 0xE0 - Trigger input for DMA channel 0 select register. (renamed from DMA_ITRIG_INMUX__)
+        volatile uint32_t DMA_INMUX_INMUX__;  ///< Offset: 0x140 - DMA trigger input select register. (renamed from DMA_INMUX_INMUX__)
         volatile uint32_t FREQMEAS_REF;  ///< Offset: 0x160 - Clock selection for frequency measurement function...
         volatile uint32_t FREQMEAS_TARGET;  ///< Offset: 0x164 - Clock selection for frequency measurement function target clock
     };
@@ -656,7 +656,7 @@ namespace pmu {
     /// PMU Register structure
     struct Registers {
         volatile uint32_t PCON;  ///< Offset: 0x00 - Power control register
-        volatile uint32_t GPREG%s;  ///< Offset: 0x04 - General purpose register 0
+        volatile uint32_t GPREG;  ///< Offset: 0x04 - General purpose register 0 (renamed from GPREG)
         volatile uint32_t DPDCTRL;  ///< Offset: 0x14 - Deep power-down control register
     };
 
@@ -750,7 +750,7 @@ namespace i2c {
         volatile uint32_t MSTDAT;  ///< Offset: 0x28 - Combined Master receiver and transmitter data register.
         volatile uint32_t SLVCTL;  ///< Offset: 0x40 - Slave control register.
         volatile uint32_t SLVDAT;  ///< Offset: 0x44 - Combined Slave receiver and transmitter data register.
-        volatile uint32_t SLVADR%s;  ///< Offset: 0x48 - Slave address 0.
+        volatile uint32_t SLVADR;  ///< Offset: 0x48 - Slave address 0. (renamed from SLVADR)
         volatile uint32_t SLVQUAL0;  ///< Offset: 0x58 - Slave Qualification for address 0.
         volatile uint32_t MONRXDAT;  ///< Offset: 0x80 - Monitor receiver data register.
     };
@@ -875,10 +875,10 @@ namespace mrt {
 
     /// MRT Register structure
     struct Registers {
-        volatile uint32_t INTVAL%s;  ///< Offset: 0x00 - MRT0 Time interval value register. This value is loaded...
-        volatile uint32_t TIMER%s;  ///< Offset: 0x04 - MRT0 Timer register. This register reads the value of...
-        volatile uint32_t CTRL%s;  ///< Offset: 0x08 - MRT0 Control register. This register controls the MRT0 modes.
-        volatile uint32_t STAT%s;  ///< Offset: 0x0C - MRT0 Status register.
+        volatile uint32_t INTVAL;  ///< Offset: 0x00 - MRT0 Time interval value register. This value is loaded... (renamed from INTVAL)
+        volatile uint32_t TIMER;  ///< Offset: 0x04 - MRT0 Timer register. This register reads the value of... (renamed from TIMER)
+        volatile uint32_t CTRL;  ///< Offset: 0x08 - MRT0 Control register. This register controls the MRT0 modes. (renamed from CTRL)
+        volatile uint32_t STAT;  ///< Offset: 0x0C - MRT0 Status register. (renamed from STAT)
         volatile uint32_t IDLE_CH;  ///< Offset: 0xF4 - Idle channel register. This register returns the number...
         volatile uint32_t IRQ_FLAG;  ///< Offset: 0xF8 - Global interrupt flag register
     };
@@ -929,8 +929,8 @@ namespace gint0 {
     /// GINT0 Register structure
     struct Registers {
         volatile uint32_t CTRL;  ///< Offset: 0x00 - GPIO grouped interrupt control register
-        volatile uint32_t PORT_POL[%s];  ///< Offset: 0x20 - GPIO grouped interrupt port 0 polarity register
-        volatile uint32_t PORT_ENA[%s];  ///< Offset: 0x40 - GPIO grouped interrupt port 0 enable register
+        volatile uint32_t PORT_POL__;  ///< Offset: 0x20 - GPIO grouped interrupt port 0 polarity register (renamed from PORT_POL__)
+        volatile uint32_t PORT_ENA__;  ///< Offset: 0x40 - GPIO grouped interrupt port 0 enable register (renamed from PORT_ENA__)
     };
 
     /// Peripheral instances
@@ -990,8 +990,8 @@ namespace sctipu {
     /// SCTIPU Register structure
     struct Registers {
         volatile uint32_t SAMPLE_CTRL;  ///< Offset: 0x00 - SCT IPU sample control register. Contains the input mux...
-        volatile uint32_t ABORT_ENABLE%s;  ///< Offset: 0x20 - SCT IPU abort enable register: Selects which input...
-        volatile uint32_t ABORT_SOURCE%s;  ///< Offset: 0x24 - SCT IPU abort source register: Status register...
+        volatile uint32_t ABORT_ENABLE;  ///< Offset: 0x20 - SCT IPU abort enable register: Selects which input... (renamed from ABORT_ENABLE)
+        volatile uint32_t ABORT_SOURCE;  ///< Offset: 0x24 - SCT IPU abort source register: Status register... (renamed from ABORT_SOURCE)
     };
 
     /// Peripheral instances
@@ -1033,21 +1033,21 @@ namespace can {
         volatile uint32_t STAT;  ///< Offset: 0x04 - Status register
         volatile uint32_t EC;  ///< Offset: 0x08 - Error counter
         volatile uint32_t BT;  ///< Offset: 0x0C - Bit timing register
-        volatile uint32_t INT;  ///< Offset: 0x10 - Interrupt register
+        volatile uint32_t INT_;  ///< Offset: 0x10 - Interrupt register (renamed from INT_)
         volatile uint32_t TEST;  ///< Offset: 0x14 - Test register
         volatile uint32_t BRPE;  ///< Offset: 0x18 - Baud rate prescaler extension register
-        volatile uint32_t IF%s_CMDREQ;  ///< Offset: 0x20 - Message interface command request
-        volatile uint32_t IF%s_CMDMSK_W;  ///< Offset: 0x24 - Message interface command mask (write direction)
-        volatile uint32_t IF%s_CMDMSK_R;  ///< Offset: 0x24 - Message interface command mask (read direction)
-        volatile uint32_t IF%s_MSK1;  ///< Offset: 0x28 - Message interface mask 1
-        volatile uint32_t IF%s_MSK2;  ///< Offset: 0x2C - Message interface mask 2
-        volatile uint32_t IF%s_ARB1;  ///< Offset: 0x30 - Message interface arbitration 1
-        volatile uint32_t IF%s_ARB2;  ///< Offset: 0x34 - Message interface arbitration 2
-        volatile uint32_t IF%s_MCTRL;  ///< Offset: 0x38 - Message interface message control
-        volatile uint32_t IF%s_DA1;  ///< Offset: 0x3C - Message interface data A1
-        volatile uint32_t IF%s_DA2;  ///< Offset: 0x40 - Message interface 1 data A2
-        volatile uint32_t IF%s_DB1;  ///< Offset: 0x44 - Message interface 1 data B1
-        volatile uint32_t IF%s_DB2;  ///< Offset: 0x48 - Message interface 1 data B2
+        volatile uint32_t IF_CMDREQ;  ///< Offset: 0x20 - Message interface command request (renamed from IF_CMDREQ)
+        volatile uint32_t IF_CMDMSK_W;  ///< Offset: 0x24 - Message interface command mask (write direction) (renamed from IF_CMDMSK_W)
+        volatile uint32_t IF_CMDMSK_R;  ///< Offset: 0x24 - Message interface command mask (read direction) (renamed from IF_CMDMSK_R)
+        volatile uint32_t IF_MSK1;  ///< Offset: 0x28 - Message interface mask 1 (renamed from IF_MSK1)
+        volatile uint32_t IF_MSK2;  ///< Offset: 0x2C - Message interface mask 2 (renamed from IF_MSK2)
+        volatile uint32_t IF_ARB1;  ///< Offset: 0x30 - Message interface arbitration 1 (renamed from IF_ARB1)
+        volatile uint32_t IF_ARB2;  ///< Offset: 0x34 - Message interface arbitration 2 (renamed from IF_ARB2)
+        volatile uint32_t IF_MCTRL;  ///< Offset: 0x38 - Message interface message control (renamed from IF_MCTRL)
+        volatile uint32_t IF_DA1;  ///< Offset: 0x3C - Message interface data A1 (renamed from IF_DA1)
+        volatile uint32_t IF_DA2;  ///< Offset: 0x40 - Message interface 1 data A2 (renamed from IF_DA2)
+        volatile uint32_t IF_DB1;  ///< Offset: 0x44 - Message interface 1 data B1 (renamed from IF_DB1)
+        volatile uint32_t IF_DB2;  ///< Offset: 0x48 - Message interface 1 data B2 (renamed from IF_DB2)
         volatile uint32_t TXREQ1;  ///< Offset: 0x100 - Transmission request 1
         volatile uint32_t TXREQ2;  ///< Offset: 0x104 - Transmission request 2
         volatile uint32_t ND1;  ///< Offset: 0x120 - New data 1
@@ -1074,9 +1074,9 @@ namespace iocon {
 
     /// IOCON Register structure
     struct Registers {
-        volatile uint32_t PIO0_%s;  ///< Offset: 0x64 - Digital I/O control for port 0 pins PIO0_25 to PIO0_31....
-        volatile uint32_t PIO1_%s;  ///< Offset: 0xAC - Digital I/O control for port 1 pins PIO1_11 to PIO1_31....
-        volatile uint32_t PIO2_%s;  ///< Offset: 0x100 - Digital I/O control for port 2 pins PIO2_0 to PIO2_13....
+        volatile uint32_t PIO0_;  ///< Offset: 0x64 - Digital I/O control for port 0 pins PIO0_25 to PIO0_31.... (renamed from PIO0_)
+        volatile uint32_t PIO1_;  ///< Offset: 0xAC - Digital I/O control for port 1 pins PIO1_11 to PIO1_31.... (renamed from PIO1_)
+        volatile uint32_t PIO2_;  ///< Offset: 0x100 - Digital I/O control for port 2 pins PIO2_0 to PIO2_13.... (renamed from PIO2_)
     };
 
     /// Peripheral instances

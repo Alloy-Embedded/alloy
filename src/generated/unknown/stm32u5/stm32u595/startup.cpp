@@ -3,7 +3,7 @@
 /// Source: st_stm32u595.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:43
+/// Generated: 2025-10-31 17:44:19
 #include <cstdint>
 #include <cstring>
 

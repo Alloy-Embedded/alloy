@@ -3,7 +3,7 @@
 /// Source: texasinstruments_tm4c1233c3.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:46
+/// Generated: 2025-10-31 17:44:22
 #include <cstdint>
 #include <cstring>
 

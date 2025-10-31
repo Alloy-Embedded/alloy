@@ -3,7 +3,7 @@
 /// Source: st_stm32f091.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:00
+/// Generated: 2025-10-31 17:44:37
 #ifndef ALLOY_GENERATED_STM32F091X_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32F091X_PERIPHERALS_HPP
 

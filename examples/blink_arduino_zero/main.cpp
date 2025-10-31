@@ -1,33 +1,42 @@
 /// Blink LED Example for Arduino Zero
 ///
-/// This example demonstrates:
-/// - Clock configuration (DFLL48M → 48MHz)
-/// - GPIO configuration and control (PORT-based)
-/// - Basic LED blinking
+/// This example demonstrates the modern C++20 board API inspired by modm.
+/// The board pre-defines commonly used peripherals that users can access
+/// directly without needing to know pin numbers.
+///
+/// Architecture:
+///   User Code (main.cpp)
+///     ↓ uses Board::LedControl
+///   Board API (board.hpp - pre-instantiated pins)
+///     ↓ type aliases to GpioPin<N>
+///   HAL Layer (gpio.hpp - templates + concepts)
+///     ↓ uses MCU namespace
+///   Generated Peripherals (peripherals.hpp)
+///     ↓ raw register access
+///   Hardware
+///
+/// This approach provides:
+/// - Zero-cost abstractions (everything inline/constexpr)
+/// - Type safety (compile-time validation)
+/// - Simple API (Board::LedControl::on())
+/// - Portable (same code works on different boards)
 ///
 /// Hardware: Arduino Zero board (ATSAMD21G18)
 /// LED: PA17 (Yellow LED marked "L")
 
-#include "boards/arduino_zero/board.hpp"
+#include "arduino_zero/board.hpp"
 
 int main() {
-    // Initialize board (configures clock to 48MHz via DFLL48M)
-    auto result = alloy::board::init();
-    if (result.is_error()) {
-        // Clock initialization failed - trap
-        while (true);
-    }
+    // Initialize LED
+    Board::LedControl::init();
 
-    // Initialize LED pin
-    alloy::board::init_led();
-
-    // Blink LED forever at 1Hz (500ms on, 500ms off)
+    // Blink LED forever - ultra simple!
     while (true) {
-        alloy::board::led_on();
-        alloy::board::delay_ms(500);
+        Board::LedControl::on();
+        Board::delay_ms(500);
 
-        alloy::board::led_off();
-        alloy::board::delay_ms(500);
+        Board::LedControl::off();
+        Board::delay_ms(500);
     }
 
     return 0;

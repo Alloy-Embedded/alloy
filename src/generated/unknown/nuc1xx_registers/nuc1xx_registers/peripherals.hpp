@@ -3,7 +3,7 @@
 /// Source: nuvoton_nuc100.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:25
+/// Generated: 2025-10-31 17:45:04
 #ifndef ALLOY_GENERATED_NUC1XX_REGISTERS_PERIPHERALS_HPP
 #define ALLOY_GENERATED_NUC1XX_REGISTERS_PERIPHERALS_HPP
 
@@ -2753,7 +2753,7 @@ namespace spi {
         constexpr uint32_t LSB = (1U << 10);  ///< LSB First 1 = The LSB is sent first on the line (bit 0 of SPI_TX0/1), and the first bit received from the line will be put in the LSB position of the RX register (bit 0 of SPI_RX0/1). 0 = The MSB is transmitted/received first (which bit in SPI_TX0/1 and SPI_RX0/1 register that is depends on the TX_BIT_LEN field).
         constexpr uint32_t CLKP = (1U << 11);  ///< Clock Polarity 1 = SPICLK idle high. 0 = SPICLK idle low.
         constexpr uint32_t SP_CYCLE = (4 << 12);  ///< Suspend Interval (master only) These four bits provide configurable suspend interval between two successive transmit/receive transactions in a transfer. The suspend interval is from the last falling clock edge of the current transaction to the first rising clock edge of the successive transaction if CLKP = 0. If CLKP = 1, the interval is from the rising clock edge to the falling clock edge. The default value is 0x0. When TX_NUM = 00b, setting this field has no effect on transfer. The desired suspend interval is obtained according to the following equation: (SP_CYCLE[3:0] + 2)*period of SPI clock SP_CYCLE = 0x0 ... 2 SPICLK clock cycle SP_CYCLE = 0x1 ... 3 SPICLK clock cycle ...... SP_CYCLE = 0xe ... 16 SPICLK clock cycle SP_CYCLE = 0xf ... 17 SPICLK clock cycle
-        constexpr uint32_t IF = (1U << 16);  ///< Interrupt Flag 1 = It indicates that the transfer is done. The interrupt flag is set if it was enable. 0 = It indicates that the transfer does not finish yet. NOTE: This bit can be cleared by writing 1 to itself.
+        constexpr uint32_t IF_ = (1U << 16);  ///< Interrupt Flag 1 = It indicates that the transfer is done. The interrupt flag is set if it was enable. 0 = It indicates that the transfer does not finish yet. NOTE: This bit can be cleared by writing 1 to itself. (renamed from IF_)
         constexpr uint32_t IE = (1U << 17);  ///< Interrupt Enable 1 = Enable MICROWIRE/SPI Interrupt. 0 = Disable MICROWIRE/SPI Interrupt.
         constexpr uint32_t SLAVE = (1U << 18);  ///< SLAVE Mode Indication 1 = Slave mode. 0 = Master mode.
         constexpr uint32_t REORDER = (2 << 19);  ///< Reorder Mode Select 00 = Disable both byte reorder and byte suspend functions. 01 = Enable byte reorder function and insert a byte suspend interval (2~17 SPICLK cycles) among each byte. The setting of TX_BIT_LEN must be configured as 0x00. (32 bits/word). 10 = Enable byte reorder function, but disable byte suspend function. 11 = Disable byte reorder function, but insert a suspend interval (2~17 SPICLK cycles) among each byte. The setting of TX_BIT_LEN must be configured as 0x00. (32 bits/word). Byte reorder function is only available if TX_BIT_LEN is defined as 16, 24 and 32.

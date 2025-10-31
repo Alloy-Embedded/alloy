@@ -3,7 +3,7 @@
 /// Source: texasinstruments_tm4c1237d5.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:28
+/// Generated: 2025-10-31 17:44:02
 #ifndef ALLOY_GENERATED_TM4C1237D5PZ_PERIPHERALS_HPP
 #define ALLOY_GENERATED_TM4C1237D5PZ_PERIPHERALS_HPP
 
@@ -657,7 +657,7 @@ namespace can {
         volatile uint32_t STS;  ///< Offset: 0x04 - CAN Status
         volatile uint32_t ERR;  ///< Offset: 0x08 - CAN Error Counter
         volatile uint32_t BIT;  ///< Offset: 0x0C - CAN Bit Timing
-        volatile uint32_t INT;  ///< Offset: 0x10 - CAN Interrupt
+        volatile uint32_t INT_;  ///< Offset: 0x10 - CAN Interrupt (renamed from INT_)
         volatile uint32_t TST;  ///< Offset: 0x14 - CAN Test
         volatile uint32_t BRPE;  ///< Offset: 0x18 - CAN Baud Rate Prescaler Extension
         volatile uint32_t IF1CRQ;  ///< Offset: 0x20 - CAN IF1 Command Request

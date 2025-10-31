@@ -3,7 +3,7 @@
 /// Source: st_stm32u073.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:29
+/// Generated: 2025-10-31 17:44:04
 #ifndef ALLOY_GENERATED_STM32U073_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32U073_PERIPHERALS_HPP
 
@@ -845,7 +845,7 @@ namespace dbgmcu {
     /// DBGMCU_CIDR1 Register bits
     namespace dbgmcu_cidr1_bits {
         constexpr uint32_t PREAMBLE = (4 << 0);  ///< component identification bits [11:8]
-        constexpr uint32_t CLASS = (4 << 4);  ///< component identification bits [15:12] - component class
+        constexpr uint32_t CLASS_ = (4 << 4);  ///< component identification bits [15:12] - component class (renamed from CLASS_)
     }
 
     /// DBGMCU_CIDR2 Register bits

@@ -3,7 +3,7 @@
 /// Source: st_stm32f373.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:28
+/// Generated: 2025-10-31 17:44:02
 #ifndef ALLOY_GENERATED_STM32F373_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32F373_PERIPHERALS_HPP
 
@@ -1493,7 +1493,7 @@ namespace tim {
         volatile uint32_t CCR4;  ///< Offset: 0x40 - capture/compare register 4
         volatile uint32_t DCR;  ///< Offset: 0x48 - DMA control register
         volatile uint32_t DMAR;  ///< Offset: 0x4C - DMA address for full transfer
-        volatile uint32_t OR;  ///< Offset: 0x50 - option register
+        volatile uint32_t OR_;  ///< Offset: 0x50 - option register (renamed from OR_)
     };
 
     /// Peripheral instances
@@ -1699,8 +1699,8 @@ namespace tim {
         constexpr uint32_t DMAB = (16 << 0);  ///< DMA register for burst accesses
     }
 
-    /// OR Register bits
-    namespace or_bits {
+    /// OR_ Register bits
+    namespace or__bits {
         constexpr uint32_t ITR1_RMP = (2 << 10);  ///< Internal trigger 1 remap
     }
 

@@ -3,7 +3,7 @@
 /// Source: sifive_community_e310x.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:18
+/// Generated: 2025-10-31 17:44:57
 #ifndef ALLOY_GENERATED_FE310_PERIPHERALS_HPP
 #define ALLOY_GENERATED_FE310_PERIPHERALS_HPP
 
@@ -161,9 +161,9 @@ namespace plic {
 
     /// PLIC Register structure
     struct Registers {
-        volatile uint32_t priority[%s];  ///< Offset: 0x00 - Interrupt Priority Register
-        volatile uint32_t pending[%s];  ///< Offset: 0x1000 - Interrupt Pending Register
-        volatile uint32_t enable[%s];  ///< Offset: 0x2000 - Interrupt Enable Register
+        volatile uint32_t priority__;  ///< Offset: 0x00 - Interrupt Priority Register (renamed from priority__)
+        volatile uint32_t pending__;  ///< Offset: 0x1000 - Interrupt Pending Register (renamed from pending__)
+        volatile uint32_t enable__;  ///< Offset: 0x2000 - Interrupt Enable Register (renamed from enable__)
         volatile uint32_t threshold;  ///< Offset: 0x200000 - Priority Threshold Register
         volatile uint32_t claim;  ///< Offset: 0x200004 - Claim/Complete Register
     };
@@ -289,7 +289,7 @@ namespace backup {
 
     /// BACKUP Register structure
     struct Registers {
-        volatile uint32_t backup[%s];  ///< Offset: 0x80 - Backup Register
+        volatile uint32_t backup__;  ///< Offset: 0x80 - Backup Register (renamed from backup__)
     };
 
     /// Peripheral instances
@@ -307,8 +307,8 @@ namespace pmu {
 
     /// PMU Register structure
     struct Registers {
-        volatile uint32_t pmuwakepm[%s];  ///< Offset: 0x100 - PMU Wake Program Memory
-        volatile uint32_t pmusleeppm[%s];  ///< Offset: 0x120 - PMU Sleep Program Memory
+        volatile uint32_t pmuwakepm__;  ///< Offset: 0x100 - PMU Wake Program Memory (renamed from pmuwakepm__)
+        volatile uint32_t pmusleeppm__;  ///< Offset: 0x120 - PMU Sleep Program Memory (renamed from pmusleeppm__)
         volatile uint32_t pmuie;  ///< Offset: 0x140 - PMU Interrupt Enable Register
         volatile uint32_t pmucause;  ///< Offset: 0x144 - PMU Cause Register
         volatile uint32_t pmusleep;  ///< Offset: 0x148 - PMU Sleep Register
@@ -319,8 +319,8 @@ namespace pmu {
     inline Registers* PMU = reinterpret_cast<Registers*>(PMU_BASE);
 
     // Bit definitions
-    /// pmuwakepm[%s] Register bits
-    namespace pmuwakepm[%s]_bits {
+    /// pmuwakepm__ Register bits
+    namespace pmuwakepm___bits {
         constexpr uint32_t isolate = (1U << 9);  ///< isolate
         constexpr uint32_t hfclkrst = (1U << 8);  ///< hfclkrst
         constexpr uint32_t corerst = (1U << 7);  ///< corerst
@@ -329,8 +329,8 @@ namespace pmu {
         constexpr uint32_t delay = (4 << 0);  ///< delay
     }
 
-    /// pmusleeppm[%s] Register bits
-    namespace pmusleeppm[%s]_bits {
+    /// pmusleeppm__ Register bits
+    namespace pmusleeppm___bits {
         constexpr uint32_t isolate = (1U << 9);  ///< isolate
         constexpr uint32_t hfclkrst = (1U << 8);  ///< hfclkrst
         constexpr uint32_t corerst = (1U << 7);  ///< corerst

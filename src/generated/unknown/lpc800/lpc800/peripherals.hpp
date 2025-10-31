@@ -3,7 +3,7 @@
 /// Source: nxp_lpc800.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:10
+/// Generated: 2025-10-31 17:44:49
 #ifndef ALLOY_GENERATED_LPC800_PERIPHERALS_HPP
 #define ALLOY_GENERATED_LPC800_PERIPHERALS_HPP
 
@@ -175,10 +175,10 @@ namespace mrt {
 
     /// MRT Register structure
     struct Registers {
-        volatile uint32_t INTVAL%s;  ///< Offset: 0x00 - MRT0 Time interval value register. This value is loaded...
-        volatile uint32_t TIMER%s;  ///< Offset: 0x04 - MRT0 Timer register. This register reads the value of...
-        volatile uint32_t CTRL%s;  ///< Offset: 0x08 - MRT0 Control register. This register controls the MRT0 modes.
-        volatile uint32_t STAT%s;  ///< Offset: 0x0C - MRT0 Status register.
+        volatile uint32_t INTVAL;  ///< Offset: 0x00 - MRT0 Time interval value register. This value is loaded... (renamed from INTVAL)
+        volatile uint32_t TIMER;  ///< Offset: 0x04 - MRT0 Timer register. This register reads the value of... (renamed from TIMER)
+        volatile uint32_t CTRL;  ///< Offset: 0x08 - MRT0 Control register. This register controls the MRT0 modes. (renamed from CTRL)
+        volatile uint32_t STAT;  ///< Offset: 0x0C - MRT0 Status register. (renamed from STAT)
         volatile uint32_t IDLE_CH;  ///< Offset: 0xF4 - Idle channel register. This register returns the number...
         volatile uint32_t IRQ_FLAG;  ///< Offset: 0xF8 - Global interrupt flag register
     };
@@ -245,7 +245,7 @@ namespace pmu {
     /// PMU Register structure
     struct Registers {
         volatile uint32_t PCON;  ///< Offset: 0x00 - Power control register
-        volatile uint32_t GPREG%s;  ///< Offset: 0x04 - General purpose register 0
+        volatile uint32_t GPREG;  ///< Offset: 0x04 - General purpose register 0 (renamed from GPREG)
         volatile uint32_t DPDCTRL;  ///< Offset: 0x14 - Deep power-down control register
     };
 
@@ -371,7 +371,7 @@ namespace syscon {
         volatile uint32_t SYSTCKCAL;  ///< Offset: 0x154 - System tick counter calibration
         volatile uint32_t IRQLATENCY;  ///< Offset: 0x170 - IQR delay. Allows trade-off between interrupt latency...
         volatile uint32_t NMISRC;  ///< Offset: 0x174 - NMI Source Control
-        volatile uint32_t PINTSEL%s;  ///< Offset: 0x178 - GPIO Pin Interrupt Select register 0
+        volatile uint32_t PINTSEL;  ///< Offset: 0x178 - GPIO Pin Interrupt Select register 0 (renamed from PINTSEL)
         volatile uint32_t STARTERP0;  ///< Offset: 0x204 - Start logic 0 pin wake-up enable register
         volatile uint32_t STARTERP1;  ///< Offset: 0x214 - Start logic 1 interrupt wake-up enable register
         volatile uint32_t PDSLEEPCFG;  ///< Offset: 0x230 - Power-down states in deep-sleep mode
@@ -407,7 +407,7 @@ namespace i2c {
         volatile uint32_t MSTDAT;  ///< Offset: 0x28 - Combined Master receiver and transmitter data register.
         volatile uint32_t SLVCTL;  ///< Offset: 0x40 - Slave control register.
         volatile uint32_t SLVDAT;  ///< Offset: 0x44 - Combined Slave receiver and transmitter data register.
-        volatile uint32_t SLVADR%s;  ///< Offset: 0x48 - Slave address 0.
+        volatile uint32_t SLVADR;  ///< Offset: 0x48 - Slave address 0. (renamed from SLVADR)
         volatile uint32_t SLVQUAL0;  ///< Offset: 0x58 - Slave Qualification for address 0.
         volatile uint32_t MONRXDAT;  ///< Offset: 0x80 - Monitor receiver data register.
     };
@@ -526,10 +526,10 @@ namespace sct {
         volatile uint32_t EVFLAG;  ///< Offset: 0xF4 - SCT event flag register
         volatile uint32_t CONEN;  ///< Offset: 0xF8 - SCT conflict enable register
         volatile uint32_t CONFLAG;  ///< Offset: 0xFC - SCT conflict flag register
-        volatile uint32_t MATCH%s;  ///< Offset: 0x100 - SCT match value register of match channels 0 to 4;...
-        volatile uint32_t CAP%s;  ///< Offset: 0x100 - SCT capture register of capture channel 0 to 4; REGMOD0...
-        volatile uint32_t MATCHREL%s;  ///< Offset: 0x200 - SCT match reload value register 0 to 4 REGMOD0 = 0 to...
-        volatile uint32_t CAPCTRL%s;  ///< Offset: 0x200 - SCT capture control register 0 to 4; REGMOD0 = 1 to REGMODE4 = 1
+        volatile uint32_t MATCH;  ///< Offset: 0x100 - SCT match value register of match channels 0 to 4;... (renamed from MATCH)
+        volatile uint32_t CAP;  ///< Offset: 0x100 - SCT capture register of capture channel 0 to 4; REGMOD0... (renamed from CAP)
+        volatile uint32_t MATCHREL;  ///< Offset: 0x200 - SCT match reload value register 0 to 4 REGMOD0 = 0 to... (renamed from MATCHREL)
+        volatile uint32_t CAPCTRL;  ///< Offset: 0x200 - SCT capture control register 0 to 4; REGMOD0 = 1 to REGMODE4 = 1 (renamed from CAPCTRL)
         volatile uint32_t EV0_STATE;  ///< Offset: 0x300 - SCT event state register 0
         volatile uint32_t EV0_CTRL;  ///< Offset: 0x304 - SCT event control register 0
         volatile uint32_t EV1_STATE;  ///< Offset: 0x308 - SCT event state register 1
@@ -567,8 +567,8 @@ namespace gpio {
 
     /// GPIO Register structure
     struct Registers {
-        volatile uint32_t B%s;  ///< Offset: 0x00 - Byte pin registers port 0; pins PIO0_0 to PIO0_17
-        volatile uint32_t W%s;  ///< Offset: 0x1000 - Word pin registers port 0
+        volatile uint32_t B;  ///< Offset: 0x00 - Byte pin registers port 0; pins PIO0_0 to PIO0_17 (renamed from B)
+        volatile uint32_t W;  ///< Offset: 0x1000 - Word pin registers port 0 (renamed from W)
         volatile uint32_t DIR0;  ///< Offset: 0x2000 - Direction registers port 0
         volatile uint32_t MASK0;  ///< Offset: 0x2080 - Mask register port 0
         volatile uint32_t PIN0;  ///< Offset: 0x2100 - Port pin register port 0

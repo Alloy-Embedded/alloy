@@ -3,7 +3,7 @@
 /// Source: spansion_mb9bf52xm.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:54
+/// Generated: 2025-10-31 17:44:31
 #include <cstdint>
 #include <cstring>
 

@@ -3,7 +3,7 @@
 /// Source: nxp_mkl46.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:38
+/// Generated: 2025-10-31 17:44:12
 #ifndef ALLOY_GENERATED_MKL46Z4_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MKL46Z4_PERIPHERALS_HPP
 
@@ -707,10 +707,10 @@ namespace tim {
         volatile uint32_t MCR;  ///< Offset: 0x00 - PIT Module Control Register
         volatile uint32_t LTMR64H;  ///< Offset: 0xE0 - PIT Upper Lifetime Timer Register
         volatile uint32_t LTMR64L;  ///< Offset: 0xE4 - PIT Lower Lifetime Timer Register
-        volatile uint32_t LDVAL%s;  ///< Offset: 0x100 - Timer Load Value Register
-        volatile uint32_t CVAL%s;  ///< Offset: 0x104 - Current Timer Value Register
-        volatile uint32_t TCTRL%s;  ///< Offset: 0x108 - Timer Control Register
-        volatile uint32_t TFLG%s;  ///< Offset: 0x10C - Timer Flag Register
+        volatile uint32_t LDVAL;  ///< Offset: 0x100 - Timer Load Value Register (renamed from LDVAL)
+        volatile uint32_t CVAL;  ///< Offset: 0x104 - Current Timer Value Register (renamed from CVAL)
+        volatile uint32_t TCTRL;  ///< Offset: 0x108 - Timer Control Register (renamed from TCTRL)
+        volatile uint32_t TFLG;  ///< Offset: 0x10C - Timer Flag Register (renamed from TFLG)
     };
 
     /// Peripheral instances
@@ -737,25 +737,25 @@ namespace tim {
         constexpr uint32_t LTL = (32 << 0);  ///< Life Timer value
     }
 
-    /// LDVAL%s Register bits
-    namespace ldval%s_bits {
+    /// LDVAL Register bits
+    namespace ldval_bits {
         constexpr uint32_t TSV = (32 << 0);  ///< Timer Start Value
     }
 
-    /// CVAL%s Register bits
-    namespace cval%s_bits {
+    /// CVAL Register bits
+    namespace cval_bits {
         constexpr uint32_t TVL = (32 << 0);  ///< Current Timer Value
     }
 
-    /// TCTRL%s Register bits
-    namespace tctrl%s_bits {
+    /// TCTRL Register bits
+    namespace tctrl_bits {
         constexpr uint32_t TEN = (1U << 0);  ///< Timer Enable
         constexpr uint32_t TIE = (1U << 1);  ///< Timer Interrupt Enable
         constexpr uint32_t CHN = (1U << 2);  ///< Chain Mode
     }
 
-    /// TFLG%s Register bits
-    namespace tflg%s_bits {
+    /// TFLG Register bits
+    namespace tflg_bits {
         constexpr uint32_t TIF = (1U << 0);  ///< Timer Interrupt Flag
     }
 
@@ -771,11 +771,11 @@ namespace adc {
 
     /// ADC Register structure
     struct Registers {
-        volatile uint32_t SC1%s;  ///< Offset: 0x00 - ADC Status and Control Registers 1
+        volatile uint32_t SC1;  ///< Offset: 0x00 - ADC Status and Control Registers 1 (renamed from SC1)
         volatile uint32_t CFG1;  ///< Offset: 0x08 - ADC Configuration Register 1
         volatile uint32_t CFG2;  ///< Offset: 0x0C - ADC Configuration Register 2
-        volatile uint32_t R%s;  ///< Offset: 0x10 - ADC Data Result Register
-        volatile uint32_t CV%s;  ///< Offset: 0x18 - Compare Value Registers
+        volatile uint32_t R;  ///< Offset: 0x10 - ADC Data Result Register (renamed from R)
+        volatile uint32_t CV;  ///< Offset: 0x18 - Compare Value Registers (renamed from CV)
         volatile uint32_t SC2;  ///< Offset: 0x20 - Status and Control Register 2
         volatile uint32_t SC3;  ///< Offset: 0x24 - Status and Control Register 3
         volatile uint32_t OFS;  ///< Offset: 0x28 - ADC Offset Correction Register
@@ -801,8 +801,8 @@ namespace adc {
     inline Registers* ADC0 = reinterpret_cast<Registers*>(ADC0_BASE);
 
     // Bit definitions
-    /// SC1%s Register bits
-    namespace sc1%s_bits {
+    /// SC1 Register bits
+    namespace sc1_bits {
         constexpr uint32_t ADCH = (5 << 0);  ///< Input channel select
         constexpr uint32_t DIFF = (1U << 5);  ///< Differential Mode Enable
         constexpr uint32_t AIEN = (1U << 6);  ///< Interrupt Enable
@@ -826,13 +826,13 @@ namespace adc {
         constexpr uint32_t MUXSEL = (1U << 4);  ///< ADC Mux Select
     }
 
-    /// R%s Register bits
-    namespace r%s_bits {
+    /// R Register bits
+    namespace r_bits {
         constexpr uint32_t D = (16 << 0);  ///< Data result
     }
 
-    /// CV%s Register bits
-    namespace cv%s_bits {
+    /// CV Register bits
+    namespace cv_bits {
         constexpr uint32_t CV = (16 << 0);  ///< Compare Value.
     }
 
@@ -1042,8 +1042,8 @@ namespace dac {
 
     /// DAC Register structure
     struct Registers {
-        volatile uint32_t DAT%sL;  ///< Offset: 0x00 - DAC Data Low Register
-        volatile uint32_t DAT%sH;  ///< Offset: 0x01 - DAC Data High Register
+        volatile uint32_t DATL;  ///< Offset: 0x00 - DAC Data Low Register (renamed from DATL)
+        volatile uint32_t DATH;  ///< Offset: 0x01 - DAC Data High Register (renamed from DATH)
         volatile uint32_t SR;  ///< Offset: 0x20 - DAC Status Register
         volatile uint32_t C0;  ///< Offset: 0x21 - DAC Control Register
         volatile uint32_t C1;  ///< Offset: 0x22 - DAC Control Register 1
@@ -1054,13 +1054,13 @@ namespace dac {
     inline Registers* DAC0 = reinterpret_cast<Registers*>(DAC0_BASE);
 
     // Bit definitions
-    /// DAT%sL Register bits
-    namespace dat%sl_bits {
+    /// DATL Register bits
+    namespace datl_bits {
         constexpr uint32_t DATA0 = (8 << 0);  ///< When the DAC buffer is not enabled, DATA[11:0] controls the output voltage based on the following formula: V out = V in * (1 + DACDAT0[11:0])/4096 When the DAC buffer is enabled, DATA is mapped to the 16-word buffer
     }
 
-    /// DAT%sH Register bits
-    namespace dat%sh_bits {
+    /// DATH Register bits
+    namespace dath_bits {
         constexpr uint32_t DATA1 = (4 << 0);  ///< When the DAC Buffer is not enabled, DATA[11:0] controls the output voltage based on the following formula
     }
 
@@ -1836,8 +1836,8 @@ namespace lcd {
         volatile uint32_t AR;  ///< Offset: 0x04 - LCD Auxiliary Register
         volatile uint32_t FDCR;  ///< Offset: 0x08 - LCD Fault Detect Control Register
         volatile uint32_t FDSR;  ///< Offset: 0x0C - LCD Fault Detect Status Register
-        volatile uint32_t PEN%s;  ///< Offset: 0x10 - LCD Pin Enable register
-        volatile uint32_t BPEN%s;  ///< Offset: 0x18 - LCD Back Plane Enable register
+        volatile uint32_t PEN;  ///< Offset: 0x10 - LCD Pin Enable register (renamed from PEN)
+        volatile uint32_t BPEN;  ///< Offset: 0x18 - LCD Back Plane Enable register (renamed from BPEN)
         volatile uint32_t WF3TO0;  ///< Offset: 0x20 - LCD Waveform register
         volatile uint32_t WF0;  ///< Offset: 0x20 - LCD Waveform Register 0.
         volatile uint32_t WF1;  ///< Offset: 0x21 - LCD Waveform Register 1.
@@ -1968,13 +1968,13 @@ namespace lcd {
         constexpr uint32_t FDCF = (1U << 15);  ///< Fault Detection Complete Flag
     }
 
-    /// PEN%s Register bits
-    namespace pen%s_bits {
+    /// PEN Register bits
+    namespace pen_bits {
         constexpr uint32_t PEN = (32 << 0);  ///< LCD Pin Enable
     }
 
-    /// BPEN%s Register bits
-    namespace bpen%s_bits {
+    /// BPEN Register bits
+    namespace bpen_bits {
         constexpr uint32_t BPEN = (32 << 0);  ///< Back Plane Enable
     }
 
@@ -3223,7 +3223,7 @@ namespace usart {
         constexpr uint32_t PF = (1U << 0);  ///< Parity Error Flag
         constexpr uint32_t FE = (1U << 1);  ///< Framing Error Flag
         constexpr uint32_t NF = (1U << 2);  ///< Noise Flag
-        constexpr uint32_t OR = (1U << 3);  ///< Receiver Overrun Flag
+        constexpr uint32_t OR_ = (1U << 3);  ///< Receiver Overrun Flag (renamed from OR_)
         constexpr uint32_t IDLE = (1U << 4);  ///< Idle Line Flag
         constexpr uint32_t RDRF = (1U << 5);  ///< Receive Data Register Full Flag
         constexpr uint32_t TC = (1U << 6);  ///< Transmission Complete Flag
@@ -3326,7 +3326,7 @@ namespace usb {
         volatile uint32_t SOFTHLD;  ///< Offset: 0xAC - SOF Threshold register
         volatile uint32_t BDTPAGE2;  ///< Offset: 0xB0 - BDT Page Register 2
         volatile uint32_t BDTPAGE3;  ///< Offset: 0xB4 - BDT Page Register 3
-        volatile uint32_t ENDPT%s;  ///< Offset: 0xC0 - Endpoint Control register
+        volatile uint32_t ENDPT;  ///< Offset: 0xC0 - Endpoint Control register (renamed from ENDPT)
         volatile uint32_t USBCTRL;  ///< Offset: 0x100 - USB Control register
         volatile uint32_t OBSERVE;  ///< Offset: 0x104 - USB OTG Observe register
         volatile uint32_t CONTROL;  ///< Offset: 0x108 - USB OTG Control register
@@ -3504,8 +3504,8 @@ namespace usb {
         constexpr uint32_t BDTBA = (8 << 0);  ///< Provides address bits 31 through 24 of the BDT base address that defines the location of Buffer Descriptor Table resides in system memory
     }
 
-    /// ENDPT%s Register bits
-    namespace endpt%s_bits {
+    /// ENDPT Register bits
+    namespace endpt_bits {
         constexpr uint32_t EPHSHK = (1U << 0);  ///< When set this bit enables an endpoint to perform handshaking during a transaction to this endpoint
         constexpr uint32_t EPSTALL = (1U << 1);  ///< When set this bit indicates that the endpoint is called
         constexpr uint32_t EPTXEN = (1U << 2);  ///< This bit, when set, enables the endpoint for TX transfers.
@@ -3996,8 +3996,8 @@ namespace mtb {
         volatile uint32_t DEVICEARCH;  ///< Offset: 0xFBC - Device Architecture Register
         volatile uint32_t DEVICECFG;  ///< Offset: 0xFC8 - Device Configuration Register
         volatile uint32_t DEVICETYPID;  ///< Offset: 0xFCC - Device Type Identifier Register
-        volatile uint32_t PERIPHID%s;  ///< Offset: 0xFD0 - Peripheral ID Register
-        volatile uint32_t COMPID%s;  ///< Offset: 0xFF0 - Component ID Register
+        volatile uint32_t PERIPHID;  ///< Offset: 0xFD0 - Peripheral ID Register (renamed from PERIPHID)
+        volatile uint32_t COMPID;  ///< Offset: 0xFF0 - Component ID Register (renamed from COMPID)
     };
 
     /// Peripheral instances
@@ -4081,13 +4081,13 @@ namespace mtb {
         constexpr uint32_t DEVICETYPID = (32 << 0);  ///< Hardwired to 0x0000_0031.
     }
 
-    /// PERIPHID%s Register bits
-    namespace periphid%s_bits {
+    /// PERIPHID Register bits
+    namespace periphid_bits {
         constexpr uint32_t PERIPHID = (32 << 0);  ///< Peripheral ID4 is hardwired to 0x0000_0004; ID0 to 0x0000_0032; ID1 to 0x0000_00B9; ID2 to 0x0000_000B; and all the others to 0x0000_0000
     }
 
-    /// COMPID%s Register bits
-    namespace compid%s_bits {
+    /// COMPID Register bits
+    namespace compid_bits {
         constexpr uint32_t COMPID = (32 << 0);  ///< Component ID
     }
 
@@ -4104,15 +4104,15 @@ namespace mtbdwt {
     /// MTBDWT Register structure
     struct Registers {
         volatile uint32_t CTRL;  ///< Offset: 0x00 - MTB DWT Control Register
-        volatile uint32_t COMP%s;  ///< Offset: 0x20 - MTB_DWT Comparator Register
-        volatile uint32_t MASK%s;  ///< Offset: 0x24 - MTB_DWT Comparator Mask Register
+        volatile uint32_t COMP;  ///< Offset: 0x20 - MTB_DWT Comparator Register (renamed from COMP)
+        volatile uint32_t MASK;  ///< Offset: 0x24 - MTB_DWT Comparator Mask Register (renamed from MASK)
         volatile uint32_t FCT0;  ///< Offset: 0x28 - MTB_DWT Comparator Function Register 0
         volatile uint32_t FCT1;  ///< Offset: 0x38 - MTB_DWT Comparator Function Register 1
         volatile uint32_t TBCTRL;  ///< Offset: 0x200 - MTB_DWT Trace Buffer Control Register
         volatile uint32_t DEVICECFG;  ///< Offset: 0xFC8 - Device Configuration Register
         volatile uint32_t DEVICETYPID;  ///< Offset: 0xFCC - Device Type Identifier Register
-        volatile uint32_t PERIPHID%s;  ///< Offset: 0xFD0 - Peripheral ID Register
-        volatile uint32_t COMPID%s;  ///< Offset: 0xFF0 - Component ID Register
+        volatile uint32_t PERIPHID;  ///< Offset: 0xFD0 - Peripheral ID Register (renamed from PERIPHID)
+        volatile uint32_t COMPID;  ///< Offset: 0xFF0 - Component ID Register (renamed from COMPID)
     };
 
     /// Peripheral instances
@@ -4125,13 +4125,13 @@ namespace mtbdwt {
         constexpr uint32_t NUMCMP = (4 << 28);  ///< Number of comparators
     }
 
-    /// COMP%s Register bits
-    namespace comp%s_bits {
+    /// COMP Register bits
+    namespace comp_bits {
         constexpr uint32_t COMP = (32 << 0);  ///< Reference value for comparison
     }
 
-    /// MASK%s Register bits
-    namespace mask%s_bits {
+    /// MASK Register bits
+    namespace mask_bits {
         constexpr uint32_t MASK = (5 << 0);  ///< MASK
     }
 
@@ -4167,13 +4167,13 @@ namespace mtbdwt {
         constexpr uint32_t DEVICETYPID = (32 << 0);  ///< Hardwired to 0x0000_0004.
     }
 
-    /// PERIPHID%s Register bits
-    namespace periphid%s_bits {
+    /// PERIPHID Register bits
+    namespace periphid_bits {
         constexpr uint32_t PERIPHID = (32 << 0);  ///< Peripheral ID1 is hardwired to 0x0000_00E0; ID2 to 0x0000_0008; and all the others to 0x0000_0000.
     }
 
-    /// COMPID%s Register bits
-    namespace compid%s_bits {
+    /// COMPID Register bits
+    namespace compid_bits {
         constexpr uint32_t COMPID = (32 << 0);  ///< Component ID
     }
 
@@ -4189,19 +4189,19 @@ namespace rom {
 
     /// ROM Register structure
     struct Registers {
-        volatile uint32_t ENTRY%s;  ///< Offset: 0x00 - Entry
+        volatile uint32_t ENTRY;  ///< Offset: 0x00 - Entry (renamed from ENTRY)
         volatile uint32_t TABLEMARK;  ///< Offset: 0x0C - End of Table Marker Register
         volatile uint32_t SYSACCESS;  ///< Offset: 0xFCC - System Access Register
-        volatile uint32_t PERIPHID%s;  ///< Offset: 0xFD0 - Peripheral ID Register
-        volatile uint32_t COMPID%s;  ///< Offset: 0xFF0 - Component ID Register
+        volatile uint32_t PERIPHID;  ///< Offset: 0xFD0 - Peripheral ID Register (renamed from PERIPHID)
+        volatile uint32_t COMPID;  ///< Offset: 0xFF0 - Component ID Register (renamed from COMPID)
     };
 
     /// Peripheral instances
     inline Registers* ROM = reinterpret_cast<Registers*>(ROM_BASE);
 
     // Bit definitions
-    /// ENTRY%s Register bits
-    namespace entry%s_bits {
+    /// ENTRY Register bits
+    namespace entry_bits {
         constexpr uint32_t ENTRY = (32 << 0);  ///< ENTRY
     }
 
@@ -4215,13 +4215,13 @@ namespace rom {
         constexpr uint32_t SYSACCESS = (32 << 0);  ///< Hardwired to 0x0000_0001
     }
 
-    /// PERIPHID%s Register bits
-    namespace periphid%s_bits {
+    /// PERIPHID Register bits
+    namespace periphid_bits {
         constexpr uint32_t PERIPHID = (32 << 0);  ///< Peripheral ID1 is hardwired to 0x0000_00E0; ID2 to 0x0000_0008; and all the others to 0x0000_0000.
     }
 
-    /// COMPID%s Register bits
-    namespace compid%s_bits {
+    /// COMPID Register bits
+    namespace compid_bits {
         constexpr uint32_t COMPID = (32 << 0);  ///< Component ID
     }
 

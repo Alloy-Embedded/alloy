@@ -3,7 +3,7 @@
 /// Source: espressif_community_esp32.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:40
+/// Generated: 2025-10-31 17:44:15
 #ifndef ALLOY_GENERATED_ESP32_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ESP32_PERIPHERALS_HPP
 
@@ -2862,11 +2862,11 @@ namespace gpio {
         volatile uint32_t PCPU_INT1;  ///< Offset: 0x7C - GPIO_PCPU_INT1
         volatile uint32_t PCPU_NMI_INT1;  ///< Offset: 0x80 - GPIO_PCPU_NMI_INT1
         volatile uint32_t CPUSDIO_INT1;  ///< Offset: 0x84 - GPIO_CPUSDIO_INT1
-        volatile uint32_t PIN%s;  ///< Offset: 0x88 - GPIO_PIN0
+        volatile uint32_t PIN;  ///< Offset: 0x88 - GPIO_PIN0 (renamed from PIN)
         volatile uint32_t cali_conf;  ///< Offset: 0x128 - GPIO_cali_conf
         volatile uint32_t cali_data;  ///< Offset: 0x12C - GPIO_cali_data
-        volatile uint32_t FUNC%s_IN_SEL_CFG;  ///< Offset: 0x130 - GPIO_FUNC0_IN_SEL_CFG
-        volatile uint32_t FUNC%s_OUT_SEL_CFG;  ///< Offset: 0x530 - GPIO_FUNC0_OUT_SEL_CFG
+        volatile uint32_t FUNC_IN_SEL_CFG;  ///< Offset: 0x130 - GPIO_FUNC0_IN_SEL_CFG (renamed from FUNC_IN_SEL_CFG)
+        volatile uint32_t FUNC_OUT_SEL_CFG;  ///< Offset: 0x530 - GPIO_FUNC0_OUT_SEL_CFG (renamed from FUNC_OUT_SEL_CFG)
     };
 
     /// Peripheral instances
@@ -3040,8 +3040,8 @@ namespace gpio {
         constexpr uint32_t SDIO_INT_H = (8 << 0);  ///< SDIO_INT_H
     }
 
-    /// PIN%s Register bits
-    namespace pin%s_bits {
+    /// PIN Register bits
+    namespace pin_bits {
         constexpr uint32_t INT_ENA = (5 << 13);  ///< INT_ENA
         constexpr uint32_t CONFIG = (2 << 11);  ///< CONFIG
         constexpr uint32_t WAKEUP_ENABLE = (1U << 10);  ///< WAKEUP_ENABLE
@@ -3062,15 +3062,15 @@ namespace gpio {
         constexpr uint32_t CALI_VALUE_SYNC2 = (20 << 0);  ///< CALI_VALUE_SYNC2
     }
 
-    /// FUNC%s_IN_SEL_CFG Register bits
-    namespace func%s_in_sel_cfg_bits {
+    /// FUNC_IN_SEL_CFG Register bits
+    namespace func_in_sel_cfg_bits {
         constexpr uint32_t SEL = (1U << 7);  ///< SEL
         constexpr uint32_t IN_INV_SEL = (1U << 6);  ///< IN_INV_SEL
         constexpr uint32_t IN_SEL = (6 << 0);  ///< IN_SEL
     }
 
-    /// FUNC%s_OUT_SEL_CFG Register bits
-    namespace func%s_out_sel_cfg_bits {
+    /// FUNC_OUT_SEL_CFG Register bits
+    namespace func_out_sel_cfg_bits {
         constexpr uint32_t OEN_INV_SEL = (1U << 11);  ///< OEN_INV_SEL
         constexpr uint32_t OEN_SEL = (1U << 10);  ///< OEN_SEL
         constexpr uint32_t OUT_INV_SEL = (1U << 9);  ///< OUT_INV_SEL
@@ -3947,86 +3947,86 @@ namespace slc {
     /// SLC Register structure
     struct Registers {
         volatile uint32_t CONF0;  ///< Offset: 0x00 - SLC_CONF0
-        volatile uint32_t 0INT_RAW;  ///< Offset: 0x04 - SLC_0INT_RAW
-        volatile uint32_t 0INT_ST;  ///< Offset: 0x08 - SLC_0INT_ST
-        volatile uint32_t 0INT_ENA;  ///< Offset: 0x0C - SLC_0INT_ENA
-        volatile uint32_t 0INT_CLR;  ///< Offset: 0x10 - SLC_0INT_CLR
-        volatile uint32_t 1INT_RAW;  ///< Offset: 0x14 - SLC_1INT_RAW
-        volatile uint32_t 1INT_ST;  ///< Offset: 0x18 - SLC_1INT_ST
-        volatile uint32_t 1INT_ENA;  ///< Offset: 0x1C - SLC_1INT_ENA
-        volatile uint32_t 1INT_CLR;  ///< Offset: 0x20 - SLC_1INT_CLR
+        volatile uint32_t v0INT_RAW;  ///< Offset: 0x04 - SLC_0INT_RAW (renamed from v0INT_RAW)
+        volatile uint32_t v0INT_ST;  ///< Offset: 0x08 - SLC_0INT_ST (renamed from v0INT_ST)
+        volatile uint32_t v0INT_ENA;  ///< Offset: 0x0C - SLC_0INT_ENA (renamed from v0INT_ENA)
+        volatile uint32_t v0INT_CLR;  ///< Offset: 0x10 - SLC_0INT_CLR (renamed from v0INT_CLR)
+        volatile uint32_t v1INT_RAW;  ///< Offset: 0x14 - SLC_1INT_RAW (renamed from v1INT_RAW)
+        volatile uint32_t v1INT_ST;  ///< Offset: 0x18 - SLC_1INT_ST (renamed from v1INT_ST)
+        volatile uint32_t v1INT_ENA;  ///< Offset: 0x1C - SLC_1INT_ENA (renamed from v1INT_ENA)
+        volatile uint32_t v1INT_CLR;  ///< Offset: 0x20 - SLC_1INT_CLR (renamed from v1INT_CLR)
         volatile uint32_t RX_STATUS;  ///< Offset: 0x24 - SLC_RX_STATUS
-        volatile uint32_t 0RXFIFO_PUSH;  ///< Offset: 0x28 - SLC_0RXFIFO_PUSH
-        volatile uint32_t 1RXFIFO_PUSH;  ///< Offset: 0x2C - SLC_1RXFIFO_PUSH
+        volatile uint32_t v0RXFIFO_PUSH;  ///< Offset: 0x28 - SLC_0RXFIFO_PUSH (renamed from v0RXFIFO_PUSH)
+        volatile uint32_t v1RXFIFO_PUSH;  ///< Offset: 0x2C - SLC_1RXFIFO_PUSH (renamed from v1RXFIFO_PUSH)
         volatile uint32_t TX_STATUS;  ///< Offset: 0x30 - SLC_TX_STATUS
-        volatile uint32_t 0TXFIFO_POP;  ///< Offset: 0x34 - SLC_0TXFIFO_POP
-        volatile uint32_t 1TXFIFO_POP;  ///< Offset: 0x38 - SLC_1TXFIFO_POP
-        volatile uint32_t 0RX_LINK;  ///< Offset: 0x3C - SLC_0RX_LINK
-        volatile uint32_t 0TX_LINK;  ///< Offset: 0x40 - SLC_0TX_LINK
-        volatile uint32_t 1RX_LINK;  ///< Offset: 0x44 - SLC_1RX_LINK
-        volatile uint32_t 1TX_LINK;  ///< Offset: 0x48 - SLC_1TX_LINK
+        volatile uint32_t v0TXFIFO_POP;  ///< Offset: 0x34 - SLC_0TXFIFO_POP (renamed from v0TXFIFO_POP)
+        volatile uint32_t v1TXFIFO_POP;  ///< Offset: 0x38 - SLC_1TXFIFO_POP (renamed from v1TXFIFO_POP)
+        volatile uint32_t v0RX_LINK;  ///< Offset: 0x3C - SLC_0RX_LINK (renamed from v0RX_LINK)
+        volatile uint32_t v0TX_LINK;  ///< Offset: 0x40 - SLC_0TX_LINK (renamed from v0TX_LINK)
+        volatile uint32_t v1RX_LINK;  ///< Offset: 0x44 - SLC_1RX_LINK (renamed from v1RX_LINK)
+        volatile uint32_t v1TX_LINK;  ///< Offset: 0x48 - SLC_1TX_LINK (renamed from v1TX_LINK)
         volatile uint32_t INTVEC_TOHOST;  ///< Offset: 0x4C - SLC_INTVEC_TOHOST
-        volatile uint32_t 0TOKEN0;  ///< Offset: 0x50 - SLC_0TOKEN0
-        volatile uint32_t 0TOKEN1;  ///< Offset: 0x54 - SLC_0TOKEN1
-        volatile uint32_t 1TOKEN0;  ///< Offset: 0x58 - SLC_1TOKEN0
-        volatile uint32_t 1TOKEN1;  ///< Offset: 0x5C - SLC_1TOKEN1
+        volatile uint32_t v0TOKEN0;  ///< Offset: 0x50 - SLC_0TOKEN0 (renamed from v0TOKEN0)
+        volatile uint32_t v0TOKEN1;  ///< Offset: 0x54 - SLC_0TOKEN1 (renamed from v0TOKEN1)
+        volatile uint32_t v1TOKEN0;  ///< Offset: 0x58 - SLC_1TOKEN0 (renamed from v1TOKEN0)
+        volatile uint32_t v1TOKEN1;  ///< Offset: 0x5C - SLC_1TOKEN1 (renamed from v1TOKEN1)
         volatile uint32_t CONF1;  ///< Offset: 0x60 - SLC_CONF1
-        volatile uint32_t 0_STATE0;  ///< Offset: 0x64 - SLC_0_STATE0
-        volatile uint32_t 0_STATE1;  ///< Offset: 0x68 - SLC_0_STATE1
-        volatile uint32_t 1_STATE0;  ///< Offset: 0x6C - SLC_1_STATE0
-        volatile uint32_t 1_STATE1;  ///< Offset: 0x70 - SLC_1_STATE1
+        volatile uint32_t v0_STATE0;  ///< Offset: 0x64 - SLC_0_STATE0 (renamed from v0_STATE0)
+        volatile uint32_t v0_STATE1;  ///< Offset: 0x68 - SLC_0_STATE1 (renamed from v0_STATE1)
+        volatile uint32_t v1_STATE0;  ///< Offset: 0x6C - SLC_1_STATE0 (renamed from v1_STATE0)
+        volatile uint32_t v1_STATE1;  ///< Offset: 0x70 - SLC_1_STATE1 (renamed from v1_STATE1)
         volatile uint32_t BRIDGE_CONF;  ///< Offset: 0x74 - SLC_BRIDGE_CONF
-        volatile uint32_t 0_TO_EOF_DES_ADDR;  ///< Offset: 0x78 - SLC_0_TO_EOF_DES_ADDR
-        volatile uint32_t 0_TX_EOF_DES_ADDR;  ///< Offset: 0x7C - SLC_0_TX_EOF_DES_ADDR
-        volatile uint32_t 0_TO_EOF_BFR_DES_ADDR;  ///< Offset: 0x80 - SLC_0_TO_EOF_BFR_DES_ADDR
-        volatile uint32_t 1_TO_EOF_DES_ADDR;  ///< Offset: 0x84 - SLC_1_TO_EOF_DES_ADDR
-        volatile uint32_t 1_TX_EOF_DES_ADDR;  ///< Offset: 0x88 - SLC_1_TX_EOF_DES_ADDR
-        volatile uint32_t 1_TO_EOF_BFR_DES_ADDR;  ///< Offset: 0x8C - SLC_1_TO_EOF_BFR_DES_ADDR
+        volatile uint32_t v0_TO_EOF_DES_ADDR;  ///< Offset: 0x78 - SLC_0_TO_EOF_DES_ADDR (renamed from v0_TO_EOF_DES_ADDR)
+        volatile uint32_t v0_TX_EOF_DES_ADDR;  ///< Offset: 0x7C - SLC_0_TX_EOF_DES_ADDR (renamed from v0_TX_EOF_DES_ADDR)
+        volatile uint32_t v0_TO_EOF_BFR_DES_ADDR;  ///< Offset: 0x80 - SLC_0_TO_EOF_BFR_DES_ADDR (renamed from v0_TO_EOF_BFR_DES_ADDR)
+        volatile uint32_t v1_TO_EOF_DES_ADDR;  ///< Offset: 0x84 - SLC_1_TO_EOF_DES_ADDR (renamed from v1_TO_EOF_DES_ADDR)
+        volatile uint32_t v1_TX_EOF_DES_ADDR;  ///< Offset: 0x88 - SLC_1_TX_EOF_DES_ADDR (renamed from v1_TX_EOF_DES_ADDR)
+        volatile uint32_t v1_TO_EOF_BFR_DES_ADDR;  ///< Offset: 0x8C - SLC_1_TO_EOF_BFR_DES_ADDR (renamed from v1_TO_EOF_BFR_DES_ADDR)
         volatile uint32_t AHB_TEST;  ///< Offset: 0x90 - SLC_AHB_TEST
         volatile uint32_t SDIO_ST;  ///< Offset: 0x94 - SLC_SDIO_ST
         volatile uint32_t RX_DSCR_CONF;  ///< Offset: 0x98 - SLC_RX_DSCR_CONF
-        volatile uint32_t 0_TXLINK_DSCR;  ///< Offset: 0x9C - SLC_0_TXLINK_DSCR
-        volatile uint32_t 0_TXLINK_DSCR_BF0;  ///< Offset: 0xA0 - SLC_0_TXLINK_DSCR_BF0
-        volatile uint32_t 0_TXLINK_DSCR_BF1;  ///< Offset: 0xA4 - SLC_0_TXLINK_DSCR_BF1
-        volatile uint32_t 0_RXLINK_DSCR;  ///< Offset: 0xA8 - SLC_0_RXLINK_DSCR
-        volatile uint32_t 0_RXLINK_DSCR_BF0;  ///< Offset: 0xAC - SLC_0_RXLINK_DSCR_BF0
-        volatile uint32_t 0_RXLINK_DSCR_BF1;  ///< Offset: 0xB0 - SLC_0_RXLINK_DSCR_BF1
-        volatile uint32_t 1_TXLINK_DSCR;  ///< Offset: 0xB4 - SLC_1_TXLINK_DSCR
-        volatile uint32_t 1_TXLINK_DSCR_BF0;  ///< Offset: 0xB8 - SLC_1_TXLINK_DSCR_BF0
-        volatile uint32_t 1_TXLINK_DSCR_BF1;  ///< Offset: 0xBC - SLC_1_TXLINK_DSCR_BF1
-        volatile uint32_t 1_RXLINK_DSCR;  ///< Offset: 0xC0 - SLC_1_RXLINK_DSCR
-        volatile uint32_t 1_RXLINK_DSCR_BF0;  ///< Offset: 0xC4 - SLC_1_RXLINK_DSCR_BF0
-        volatile uint32_t 1_RXLINK_DSCR_BF1;  ///< Offset: 0xC8 - SLC_1_RXLINK_DSCR_BF1
-        volatile uint32_t 0_TX_ERREOF_DES_ADDR;  ///< Offset: 0xCC - SLC_0_TX_ERREOF_DES_ADDR
-        volatile uint32_t 1_TX_ERREOF_DES_ADDR;  ///< Offset: 0xD0 - SLC_1_TX_ERREOF_DES_ADDR
+        volatile uint32_t v0_TXLINK_DSCR;  ///< Offset: 0x9C - SLC_0_TXLINK_DSCR (renamed from v0_TXLINK_DSCR)
+        volatile uint32_t v0_TXLINK_DSCR_BF0;  ///< Offset: 0xA0 - SLC_0_TXLINK_DSCR_BF0 (renamed from v0_TXLINK_DSCR_BF0)
+        volatile uint32_t v0_TXLINK_DSCR_BF1;  ///< Offset: 0xA4 - SLC_0_TXLINK_DSCR_BF1 (renamed from v0_TXLINK_DSCR_BF1)
+        volatile uint32_t v0_RXLINK_DSCR;  ///< Offset: 0xA8 - SLC_0_RXLINK_DSCR (renamed from v0_RXLINK_DSCR)
+        volatile uint32_t v0_RXLINK_DSCR_BF0;  ///< Offset: 0xAC - SLC_0_RXLINK_DSCR_BF0 (renamed from v0_RXLINK_DSCR_BF0)
+        volatile uint32_t v0_RXLINK_DSCR_BF1;  ///< Offset: 0xB0 - SLC_0_RXLINK_DSCR_BF1 (renamed from v0_RXLINK_DSCR_BF1)
+        volatile uint32_t v1_TXLINK_DSCR;  ///< Offset: 0xB4 - SLC_1_TXLINK_DSCR (renamed from v1_TXLINK_DSCR)
+        volatile uint32_t v1_TXLINK_DSCR_BF0;  ///< Offset: 0xB8 - SLC_1_TXLINK_DSCR_BF0 (renamed from v1_TXLINK_DSCR_BF0)
+        volatile uint32_t v1_TXLINK_DSCR_BF1;  ///< Offset: 0xBC - SLC_1_TXLINK_DSCR_BF1 (renamed from v1_TXLINK_DSCR_BF1)
+        volatile uint32_t v1_RXLINK_DSCR;  ///< Offset: 0xC0 - SLC_1_RXLINK_DSCR (renamed from v1_RXLINK_DSCR)
+        volatile uint32_t v1_RXLINK_DSCR_BF0;  ///< Offset: 0xC4 - SLC_1_RXLINK_DSCR_BF0 (renamed from v1_RXLINK_DSCR_BF0)
+        volatile uint32_t v1_RXLINK_DSCR_BF1;  ///< Offset: 0xC8 - SLC_1_RXLINK_DSCR_BF1 (renamed from v1_RXLINK_DSCR_BF1)
+        volatile uint32_t v0_TX_ERREOF_DES_ADDR;  ///< Offset: 0xCC - SLC_0_TX_ERREOF_DES_ADDR (renamed from v0_TX_ERREOF_DES_ADDR)
+        volatile uint32_t v1_TX_ERREOF_DES_ADDR;  ///< Offset: 0xD0 - SLC_1_TX_ERREOF_DES_ADDR (renamed from v1_TX_ERREOF_DES_ADDR)
         volatile uint32_t TOKEN_LAT;  ///< Offset: 0xD4 - SLC_TOKEN_LAT
         volatile uint32_t TX_DSCR_CONF;  ///< Offset: 0xD8 - SLC_TX_DSCR_CONF
         volatile uint32_t CMD_INFOR0;  ///< Offset: 0xDC - SLC_CMD_INFOR0
         volatile uint32_t CMD_INFOR1;  ///< Offset: 0xE0 - SLC_CMD_INFOR1
-        volatile uint32_t 0_LEN_CONF;  ///< Offset: 0xE4 - SLC_0_LEN_CONF
-        volatile uint32_t 0_LENGTH;  ///< Offset: 0xE8 - SLC_0_LENGTH
-        volatile uint32_t 0_TXPKT_H_DSCR;  ///< Offset: 0xEC - SLC_0_TXPKT_H_DSCR
-        volatile uint32_t 0_TXPKT_E_DSCR;  ///< Offset: 0xF0 - SLC_0_TXPKT_E_DSCR
-        volatile uint32_t 0_RXPKT_H_DSCR;  ///< Offset: 0xF4 - SLC_0_RXPKT_H_DSCR
-        volatile uint32_t 0_RXPKT_E_DSCR;  ///< Offset: 0xF8 - SLC_0_RXPKT_E_DSCR
-        volatile uint32_t 0_TXPKTU_H_DSCR;  ///< Offset: 0xFC - SLC_0_TXPKTU_H_DSCR
-        volatile uint32_t 0_TXPKTU_E_DSCR;  ///< Offset: 0x100 - SLC_0_TXPKTU_E_DSCR
-        volatile uint32_t 0_RXPKTU_H_DSCR;  ///< Offset: 0x104 - SLC_0_RXPKTU_H_DSCR
-        volatile uint32_t 0_RXPKTU_E_DSCR;  ///< Offset: 0x108 - SLC_0_RXPKTU_E_DSCR
+        volatile uint32_t v0_LEN_CONF;  ///< Offset: 0xE4 - SLC_0_LEN_CONF (renamed from v0_LEN_CONF)
+        volatile uint32_t v0_LENGTH;  ///< Offset: 0xE8 - SLC_0_LENGTH (renamed from v0_LENGTH)
+        volatile uint32_t v0_TXPKT_H_DSCR;  ///< Offset: 0xEC - SLC_0_TXPKT_H_DSCR (renamed from v0_TXPKT_H_DSCR)
+        volatile uint32_t v0_TXPKT_E_DSCR;  ///< Offset: 0xF0 - SLC_0_TXPKT_E_DSCR (renamed from v0_TXPKT_E_DSCR)
+        volatile uint32_t v0_RXPKT_H_DSCR;  ///< Offset: 0xF4 - SLC_0_RXPKT_H_DSCR (renamed from v0_RXPKT_H_DSCR)
+        volatile uint32_t v0_RXPKT_E_DSCR;  ///< Offset: 0xF8 - SLC_0_RXPKT_E_DSCR (renamed from v0_RXPKT_E_DSCR)
+        volatile uint32_t v0_TXPKTU_H_DSCR;  ///< Offset: 0xFC - SLC_0_TXPKTU_H_DSCR (renamed from v0_TXPKTU_H_DSCR)
+        volatile uint32_t v0_TXPKTU_E_DSCR;  ///< Offset: 0x100 - SLC_0_TXPKTU_E_DSCR (renamed from v0_TXPKTU_E_DSCR)
+        volatile uint32_t v0_RXPKTU_H_DSCR;  ///< Offset: 0x104 - SLC_0_RXPKTU_H_DSCR (renamed from v0_RXPKTU_H_DSCR)
+        volatile uint32_t v0_RXPKTU_E_DSCR;  ///< Offset: 0x108 - SLC_0_RXPKTU_E_DSCR (renamed from v0_RXPKTU_E_DSCR)
         volatile uint32_t SEQ_POSITION;  ///< Offset: 0x114 - SLC_SEQ_POSITION
-        volatile uint32_t 0_DSCR_REC_CONF;  ///< Offset: 0x118 - SLC_0_DSCR_REC_CONF
+        volatile uint32_t v0_DSCR_REC_CONF;  ///< Offset: 0x118 - SLC_0_DSCR_REC_CONF (renamed from v0_DSCR_REC_CONF)
         volatile uint32_t SDIO_CRC_ST0;  ///< Offset: 0x11C - SLC_SDIO_CRC_ST0
         volatile uint32_t SDIO_CRC_ST1;  ///< Offset: 0x120 - SLC_SDIO_CRC_ST1
-        volatile uint32_t 0_EOF_START_DES;  ///< Offset: 0x124 - SLC_0_EOF_START_DES
-        volatile uint32_t 0_PUSH_DSCR_ADDR;  ///< Offset: 0x128 - SLC_0_PUSH_DSCR_ADDR
-        volatile uint32_t 0_DONE_DSCR_ADDR;  ///< Offset: 0x12C - SLC_0_DONE_DSCR_ADDR
-        volatile uint32_t 0_SUB_START_DES;  ///< Offset: 0x130 - SLC_0_SUB_START_DES
-        volatile uint32_t 0_DSCR_CNT;  ///< Offset: 0x134 - SLC_0_DSCR_CNT
-        volatile uint32_t 0_LEN_LIM_CONF;  ///< Offset: 0x138 - SLC_0_LEN_LIM_CONF
-        volatile uint32_t 0INT_ST1;  ///< Offset: 0x13C - SLC_0INT_ST1
-        volatile uint32_t 0INT_ENA1;  ///< Offset: 0x140 - SLC_0INT_ENA1
-        volatile uint32_t 1INT_ST1;  ///< Offset: 0x144 - SLC_1INT_ST1
-        volatile uint32_t 1INT_ENA1;  ///< Offset: 0x148 - SLC_1INT_ENA1
+        volatile uint32_t v0_EOF_START_DES;  ///< Offset: 0x124 - SLC_0_EOF_START_DES (renamed from v0_EOF_START_DES)
+        volatile uint32_t v0_PUSH_DSCR_ADDR;  ///< Offset: 0x128 - SLC_0_PUSH_DSCR_ADDR (renamed from v0_PUSH_DSCR_ADDR)
+        volatile uint32_t v0_DONE_DSCR_ADDR;  ///< Offset: 0x12C - SLC_0_DONE_DSCR_ADDR (renamed from v0_DONE_DSCR_ADDR)
+        volatile uint32_t v0_SUB_START_DES;  ///< Offset: 0x130 - SLC_0_SUB_START_DES (renamed from v0_SUB_START_DES)
+        volatile uint32_t v0_DSCR_CNT;  ///< Offset: 0x134 - SLC_0_DSCR_CNT (renamed from v0_DSCR_CNT)
+        volatile uint32_t v0_LEN_LIM_CONF;  ///< Offset: 0x138 - SLC_0_LEN_LIM_CONF (renamed from v0_LEN_LIM_CONF)
+        volatile uint32_t v0INT_ST1;  ///< Offset: 0x13C - SLC_0INT_ST1 (renamed from v0INT_ST1)
+        volatile uint32_t v0INT_ENA1;  ///< Offset: 0x140 - SLC_0INT_ENA1 (renamed from v0INT_ENA1)
+        volatile uint32_t v1INT_ST1;  ///< Offset: 0x144 - SLC_1INT_ST1 (renamed from v1INT_ST1)
+        volatile uint32_t v1INT_ENA1;  ///< Offset: 0x148 - SLC_1INT_ENA1 (renamed from v1INT_ENA1)
         volatile uint32_t DATE;  ///< Offset: 0x1F8 - SLC_DATE
         volatile uint32_t ID;  ///< Offset: 0x1FC - SLC_ID
     };
@@ -4071,8 +4071,8 @@ namespace slc {
         constexpr uint32_t SLC0_TX_RST = (1U << 0);  ///< SLC0_TX_RST
     }
 
-    /// 0INT_RAW Register bits
-    namespace 0int_raw_bits {
+    /// v0INT_RAW Register bits
+    namespace v0int_raw_bits {
         constexpr uint32_t SLC0_RX_QUICK_EOF_INT_RAW = (1U << 26);  ///< SLC0_RX_QUICK_EOF_INT_RAW
         constexpr uint32_t CMD_DTC_INT_RAW = (1U << 25);  ///< CMD_DTC_INT_RAW
         constexpr uint32_t SLC0_TX_ERR_EOF_INT_RAW = (1U << 24);  ///< SLC0_TX_ERR_EOF_INT_RAW
@@ -4102,8 +4102,8 @@ namespace slc {
         constexpr uint32_t FRHOST_BIT0_INT_RAW = (1U << 0);  ///< FRHOST_BIT0_INT_RAW
     }
 
-    /// 0INT_ST Register bits
-    namespace 0int_st_bits {
+    /// v0INT_ST Register bits
+    namespace v0int_st_bits {
         constexpr uint32_t SLC0_RX_QUICK_EOF_INT_ST = (1U << 26);  ///< SLC0_RX_QUICK_EOF_INT_ST
         constexpr uint32_t CMD_DTC_INT_ST = (1U << 25);  ///< CMD_DTC_INT_ST
         constexpr uint32_t SLC0_TX_ERR_EOF_INT_ST = (1U << 24);  ///< SLC0_TX_ERR_EOF_INT_ST
@@ -4133,8 +4133,8 @@ namespace slc {
         constexpr uint32_t FRHOST_BIT0_INT_ST = (1U << 0);  ///< FRHOST_BIT0_INT_ST
     }
 
-    /// 0INT_ENA Register bits
-    namespace 0int_ena_bits {
+    /// v0INT_ENA Register bits
+    namespace v0int_ena_bits {
         constexpr uint32_t SLC0_RX_QUICK_EOF_INT_ENA = (1U << 26);  ///< SLC0_RX_QUICK_EOF_INT_ENA
         constexpr uint32_t CMD_DTC_INT_ENA = (1U << 25);  ///< CMD_DTC_INT_ENA
         constexpr uint32_t SLC0_TX_ERR_EOF_INT_ENA = (1U << 24);  ///< SLC0_TX_ERR_EOF_INT_ENA
@@ -4164,8 +4164,8 @@ namespace slc {
         constexpr uint32_t FRHOST_BIT0_INT_ENA = (1U << 0);  ///< FRHOST_BIT0_INT_ENA
     }
 
-    /// 0INT_CLR Register bits
-    namespace 0int_clr_bits {
+    /// v0INT_CLR Register bits
+    namespace v0int_clr_bits {
         constexpr uint32_t SLC0_RX_QUICK_EOF_INT_CLR = (1U << 26);  ///< SLC0_RX_QUICK_EOF_INT_CLR
         constexpr uint32_t CMD_DTC_INT_CLR = (1U << 25);  ///< CMD_DTC_INT_CLR
         constexpr uint32_t SLC0_TX_ERR_EOF_INT_CLR = (1U << 24);  ///< SLC0_TX_ERR_EOF_INT_CLR
@@ -4195,8 +4195,8 @@ namespace slc {
         constexpr uint32_t FRHOST_BIT0_INT_CLR = (1U << 0);  ///< FRHOST_BIT0_INT_CLR
     }
 
-    /// 1INT_RAW Register bits
-    namespace 1int_raw_bits {
+    /// v1INT_RAW Register bits
+    namespace v1int_raw_bits {
         constexpr uint32_t SLC1_TX_ERR_EOF_INT_RAW = (1U << 24);  ///< SLC1_TX_ERR_EOF_INT_RAW
         constexpr uint32_t SLC1_WR_RETRY_DONE_INT_RAW = (1U << 23);  ///< SLC1_WR_RETRY_DONE_INT_RAW
         constexpr uint32_t SLC1_HOST_RD_ACK_INT_RAW = (1U << 22);  ///< SLC1_HOST_RD_ACK_INT_RAW
@@ -4224,8 +4224,8 @@ namespace slc {
         constexpr uint32_t FRHOST_BIT8_INT_RAW = (1U << 0);  ///< FRHOST_BIT8_INT_RAW
     }
 
-    /// 1INT_ST Register bits
-    namespace 1int_st_bits {
+    /// v1INT_ST Register bits
+    namespace v1int_st_bits {
         constexpr uint32_t SLC1_TX_ERR_EOF_INT_ST = (1U << 24);  ///< SLC1_TX_ERR_EOF_INT_ST
         constexpr uint32_t SLC1_WR_RETRY_DONE_INT_ST = (1U << 23);  ///< SLC1_WR_RETRY_DONE_INT_ST
         constexpr uint32_t SLC1_HOST_RD_ACK_INT_ST = (1U << 22);  ///< SLC1_HOST_RD_ACK_INT_ST
@@ -4253,8 +4253,8 @@ namespace slc {
         constexpr uint32_t FRHOST_BIT8_INT_ST = (1U << 0);  ///< FRHOST_BIT8_INT_ST
     }
 
-    /// 1INT_ENA Register bits
-    namespace 1int_ena_bits {
+    /// v1INT_ENA Register bits
+    namespace v1int_ena_bits {
         constexpr uint32_t SLC1_TX_ERR_EOF_INT_ENA = (1U << 24);  ///< SLC1_TX_ERR_EOF_INT_ENA
         constexpr uint32_t SLC1_WR_RETRY_DONE_INT_ENA = (1U << 23);  ///< SLC1_WR_RETRY_DONE_INT_ENA
         constexpr uint32_t SLC1_HOST_RD_ACK_INT_ENA = (1U << 22);  ///< SLC1_HOST_RD_ACK_INT_ENA
@@ -4282,8 +4282,8 @@ namespace slc {
         constexpr uint32_t FRHOST_BIT8_INT_ENA = (1U << 0);  ///< FRHOST_BIT8_INT_ENA
     }
 
-    /// 1INT_CLR Register bits
-    namespace 1int_clr_bits {
+    /// v1INT_CLR Register bits
+    namespace v1int_clr_bits {
         constexpr uint32_t SLC1_TX_ERR_EOF_INT_CLR = (1U << 24);  ///< SLC1_TX_ERR_EOF_INT_CLR
         constexpr uint32_t SLC1_WR_RETRY_DONE_INT_CLR = (1U << 23);  ///< SLC1_WR_RETRY_DONE_INT_CLR
         constexpr uint32_t SLC1_HOST_RD_ACK_INT_CLR = (1U << 22);  ///< SLC1_HOST_RD_ACK_INT_CLR
@@ -4319,14 +4319,14 @@ namespace slc {
         constexpr uint32_t SLC0_RX_FULL = (1U << 0);  ///< SLC0_RX_FULL
     }
 
-    /// 0RXFIFO_PUSH Register bits
-    namespace 0rxfifo_push_bits {
+    /// v0RXFIFO_PUSH Register bits
+    namespace v0rxfifo_push_bits {
         constexpr uint32_t SLC0_RXFIFO_PUSH = (1U << 16);  ///< SLC0_RXFIFO_PUSH
         constexpr uint32_t SLC0_RXFIFO_WDATA = (9 << 0);  ///< SLC0_RXFIFO_WDATA
     }
 
-    /// 1RXFIFO_PUSH Register bits
-    namespace 1rxfifo_push_bits {
+    /// v1RXFIFO_PUSH Register bits
+    namespace v1rxfifo_push_bits {
         constexpr uint32_t SLC1_RXFIFO_PUSH = (1U << 16);  ///< SLC1_RXFIFO_PUSH
         constexpr uint32_t SLC1_RXFIFO_WDATA = (9 << 0);  ///< SLC1_RXFIFO_WDATA
     }
@@ -4339,20 +4339,20 @@ namespace slc {
         constexpr uint32_t SLC0_TX_FULL = (1U << 0);  ///< SLC0_TX_FULL
     }
 
-    /// 0TXFIFO_POP Register bits
-    namespace 0txfifo_pop_bits {
+    /// v0TXFIFO_POP Register bits
+    namespace v0txfifo_pop_bits {
         constexpr uint32_t SLC0_TXFIFO_POP = (1U << 16);  ///< SLC0_TXFIFO_POP
         constexpr uint32_t SLC0_TXFIFO_RDATA = (11 << 0);  ///< SLC0_TXFIFO_RDATA
     }
 
-    /// 1TXFIFO_POP Register bits
-    namespace 1txfifo_pop_bits {
+    /// v1TXFIFO_POP Register bits
+    namespace v1txfifo_pop_bits {
         constexpr uint32_t SLC1_TXFIFO_POP = (1U << 16);  ///< SLC1_TXFIFO_POP
         constexpr uint32_t SLC1_TXFIFO_RDATA = (11 << 0);  ///< SLC1_TXFIFO_RDATA
     }
 
-    /// 0RX_LINK Register bits
-    namespace 0rx_link_bits {
+    /// v0RX_LINK Register bits
+    namespace v0rx_link_bits {
         constexpr uint32_t SLC0_RXLINK_PARK = (1U << 31);  ///< SLC0_RXLINK_PARK
         constexpr uint32_t SLC0_RXLINK_RESTART = (1U << 30);  ///< SLC0_RXLINK_RESTART
         constexpr uint32_t SLC0_RXLINK_START = (1U << 29);  ///< SLC0_RXLINK_START
@@ -4360,8 +4360,8 @@ namespace slc {
         constexpr uint32_t SLC0_RXLINK_ADDR = (20 << 0);  ///< SLC0_RXLINK_ADDR
     }
 
-    /// 0TX_LINK Register bits
-    namespace 0tx_link_bits {
+    /// v0TX_LINK Register bits
+    namespace v0tx_link_bits {
         constexpr uint32_t SLC0_TXLINK_PARK = (1U << 31);  ///< SLC0_TXLINK_PARK
         constexpr uint32_t SLC0_TXLINK_RESTART = (1U << 30);  ///< SLC0_TXLINK_RESTART
         constexpr uint32_t SLC0_TXLINK_START = (1U << 29);  ///< SLC0_TXLINK_START
@@ -4369,8 +4369,8 @@ namespace slc {
         constexpr uint32_t SLC0_TXLINK_ADDR = (20 << 0);  ///< SLC0_TXLINK_ADDR
     }
 
-    /// 1RX_LINK Register bits
-    namespace 1rx_link_bits {
+    /// v1RX_LINK Register bits
+    namespace v1rx_link_bits {
         constexpr uint32_t SLC1_RXLINK_PARK = (1U << 31);  ///< SLC1_RXLINK_PARK
         constexpr uint32_t SLC1_RXLINK_RESTART = (1U << 30);  ///< SLC1_RXLINK_RESTART
         constexpr uint32_t SLC1_RXLINK_START = (1U << 29);  ///< SLC1_RXLINK_START
@@ -4379,8 +4379,8 @@ namespace slc {
         constexpr uint32_t SLC1_RXLINK_ADDR = (20 << 0);  ///< SLC1_RXLINK_ADDR
     }
 
-    /// 1TX_LINK Register bits
-    namespace 1tx_link_bits {
+    /// v1TX_LINK Register bits
+    namespace v1tx_link_bits {
         constexpr uint32_t SLC1_TXLINK_PARK = (1U << 31);  ///< SLC1_TXLINK_PARK
         constexpr uint32_t SLC1_TXLINK_RESTART = (1U << 30);  ///< SLC1_TXLINK_RESTART
         constexpr uint32_t SLC1_TXLINK_START = (1U << 29);  ///< SLC1_TXLINK_START
@@ -4394,8 +4394,8 @@ namespace slc {
         constexpr uint32_t SLC0_TOHOST_INTVEC = (8 << 0);  ///< SLC0_TOHOST_INTVEC
     }
 
-    /// 0TOKEN0 Register bits
-    namespace 0token0_bits {
+    /// v0TOKEN0 Register bits
+    namespace v0token0_bits {
         constexpr uint32_t SLC0_TOKEN0 = (12 << 16);  ///< SLC0_TOKEN0
         constexpr uint32_t SLC0_TOKEN0_INC_MORE = (1U << 14);  ///< SLC0_TOKEN0_INC_MORE
         constexpr uint32_t SLC0_TOKEN0_INC = (1U << 13);  ///< SLC0_TOKEN0_INC
@@ -4403,8 +4403,8 @@ namespace slc {
         constexpr uint32_t SLC0_TOKEN0_WDATA = (12 << 0);  ///< SLC0_TOKEN0_WDATA
     }
 
-    /// 0TOKEN1 Register bits
-    namespace 0token1_bits {
+    /// v0TOKEN1 Register bits
+    namespace v0token1_bits {
         constexpr uint32_t SLC0_TOKEN1 = (12 << 16);  ///< SLC0_TOKEN1
         constexpr uint32_t SLC0_TOKEN1_INC_MORE = (1U << 14);  ///< SLC0_TOKEN1_INC_MORE
         constexpr uint32_t SLC0_TOKEN1_INC = (1U << 13);  ///< SLC0_TOKEN1_INC
@@ -4412,8 +4412,8 @@ namespace slc {
         constexpr uint32_t SLC0_TOKEN1_WDATA = (12 << 0);  ///< SLC0_TOKEN1_WDATA
     }
 
-    /// 1TOKEN0 Register bits
-    namespace 1token0_bits {
+    /// v1TOKEN0 Register bits
+    namespace v1token0_bits {
         constexpr uint32_t SLC1_TOKEN0 = (12 << 16);  ///< SLC1_TOKEN0
         constexpr uint32_t SLC1_TOKEN0_INC_MORE = (1U << 14);  ///< SLC1_TOKEN0_INC_MORE
         constexpr uint32_t SLC1_TOKEN0_INC = (1U << 13);  ///< SLC1_TOKEN0_INC
@@ -4421,8 +4421,8 @@ namespace slc {
         constexpr uint32_t SLC1_TOKEN0_WDATA = (12 << 0);  ///< SLC1_TOKEN0_WDATA
     }
 
-    /// 1TOKEN1 Register bits
-    namespace 1token1_bits {
+    /// v1TOKEN1 Register bits
+    namespace v1token1_bits {
         constexpr uint32_t SLC1_TOKEN1 = (12 << 16);  ///< SLC1_TOKEN1
         constexpr uint32_t SLC1_TOKEN1_INC_MORE = (1U << 14);  ///< SLC1_TOKEN1_INC_MORE
         constexpr uint32_t SLC1_TOKEN1_INC = (1U << 13);  ///< SLC1_TOKEN1_INC
@@ -4448,23 +4448,23 @@ namespace slc {
         constexpr uint32_t SLC0_CHECK_OWNER = (1U << 0);  ///< SLC0_CHECK_OWNER
     }
 
-    /// 0_STATE0 Register bits
-    namespace 0_state0_bits {
+    /// v0_STATE0 Register bits
+    namespace v0_state0_bits {
         constexpr uint32_t SLC0_STATE0 = (32 << 0);  ///< SLC0_STATE0
     }
 
-    /// 0_STATE1 Register bits
-    namespace 0_state1_bits {
+    /// v0_STATE1 Register bits
+    namespace v0_state1_bits {
         constexpr uint32_t SLC0_STATE1 = (32 << 0);  ///< SLC0_STATE1
     }
 
-    /// 1_STATE0 Register bits
-    namespace 1_state0_bits {
+    /// v1_STATE0 Register bits
+    namespace v1_state0_bits {
         constexpr uint32_t SLC1_STATE0 = (32 << 0);  ///< SLC1_STATE0
     }
 
-    /// 1_STATE1 Register bits
-    namespace 1_state1_bits {
+    /// v1_STATE1 Register bits
+    namespace v1_state1_bits {
         constexpr uint32_t SLC1_STATE1 = (32 << 0);  ///< SLC1_STATE1
     }
 
@@ -4478,33 +4478,33 @@ namespace slc {
         constexpr uint32_t TXEOF_ENA = (6 << 0);  ///< TXEOF_ENA
     }
 
-    /// 0_TO_EOF_DES_ADDR Register bits
-    namespace 0_to_eof_des_addr_bits {
+    /// v0_TO_EOF_DES_ADDR Register bits
+    namespace v0_to_eof_des_addr_bits {
         constexpr uint32_t SLC0_TO_EOF_DES_ADDR = (32 << 0);  ///< SLC0_TO_EOF_DES_ADDR
     }
 
-    /// 0_TX_EOF_DES_ADDR Register bits
-    namespace 0_tx_eof_des_addr_bits {
+    /// v0_TX_EOF_DES_ADDR Register bits
+    namespace v0_tx_eof_des_addr_bits {
         constexpr uint32_t SLC0_TX_SUC_EOF_DES_ADDR = (32 << 0);  ///< SLC0_TX_SUC_EOF_DES_ADDR
     }
 
-    /// 0_TO_EOF_BFR_DES_ADDR Register bits
-    namespace 0_to_eof_bfr_des_addr_bits {
+    /// v0_TO_EOF_BFR_DES_ADDR Register bits
+    namespace v0_to_eof_bfr_des_addr_bits {
         constexpr uint32_t SLC0_TO_EOF_BFR_DES_ADDR = (32 << 0);  ///< SLC0_TO_EOF_BFR_DES_ADDR
     }
 
-    /// 1_TO_EOF_DES_ADDR Register bits
-    namespace 1_to_eof_des_addr_bits {
+    /// v1_TO_EOF_DES_ADDR Register bits
+    namespace v1_to_eof_des_addr_bits {
         constexpr uint32_t SLC1_TO_EOF_DES_ADDR = (32 << 0);  ///< SLC1_TO_EOF_DES_ADDR
     }
 
-    /// 1_TX_EOF_DES_ADDR Register bits
-    namespace 1_tx_eof_des_addr_bits {
+    /// v1_TX_EOF_DES_ADDR Register bits
+    namespace v1_tx_eof_des_addr_bits {
         constexpr uint32_t SLC1_TX_SUC_EOF_DES_ADDR = (32 << 0);  ///< SLC1_TX_SUC_EOF_DES_ADDR
     }
 
-    /// 1_TO_EOF_BFR_DES_ADDR Register bits
-    namespace 1_to_eof_bfr_des_addr_bits {
+    /// v1_TO_EOF_BFR_DES_ADDR Register bits
+    namespace v1_to_eof_bfr_des_addr_bits {
         constexpr uint32_t SLC1_TO_EOF_BFR_DES_ADDR = (32 << 0);  ///< SLC1_TO_EOF_BFR_DES_ADDR
     }
 
@@ -4540,73 +4540,73 @@ namespace slc {
         constexpr uint32_t SLC0_TOKEN_NO_REPLACE = (1U << 0);  ///< SLC0_TOKEN_NO_REPLACE
     }
 
-    /// 0_TXLINK_DSCR Register bits
-    namespace 0_txlink_dscr_bits {
+    /// v0_TXLINK_DSCR Register bits
+    namespace v0_txlink_dscr_bits {
         constexpr uint32_t SLC0_TXLINK_DSCR = (32 << 0);  ///< SLC0_TXLINK_DSCR
     }
 
-    /// 0_TXLINK_DSCR_BF0 Register bits
-    namespace 0_txlink_dscr_bf0_bits {
+    /// v0_TXLINK_DSCR_BF0 Register bits
+    namespace v0_txlink_dscr_bf0_bits {
         constexpr uint32_t SLC0_TXLINK_DSCR_BF0 = (32 << 0);  ///< SLC0_TXLINK_DSCR_BF0
     }
 
-    /// 0_TXLINK_DSCR_BF1 Register bits
-    namespace 0_txlink_dscr_bf1_bits {
+    /// v0_TXLINK_DSCR_BF1 Register bits
+    namespace v0_txlink_dscr_bf1_bits {
         constexpr uint32_t SLC0_TXLINK_DSCR_BF1 = (32 << 0);  ///< SLC0_TXLINK_DSCR_BF1
     }
 
-    /// 0_RXLINK_DSCR Register bits
-    namespace 0_rxlink_dscr_bits {
+    /// v0_RXLINK_DSCR Register bits
+    namespace v0_rxlink_dscr_bits {
         constexpr uint32_t SLC0_RXLINK_DSCR = (32 << 0);  ///< SLC0_RXLINK_DSCR
     }
 
-    /// 0_RXLINK_DSCR_BF0 Register bits
-    namespace 0_rxlink_dscr_bf0_bits {
+    /// v0_RXLINK_DSCR_BF0 Register bits
+    namespace v0_rxlink_dscr_bf0_bits {
         constexpr uint32_t SLC0_RXLINK_DSCR_BF0 = (32 << 0);  ///< SLC0_RXLINK_DSCR_BF0
     }
 
-    /// 0_RXLINK_DSCR_BF1 Register bits
-    namespace 0_rxlink_dscr_bf1_bits {
+    /// v0_RXLINK_DSCR_BF1 Register bits
+    namespace v0_rxlink_dscr_bf1_bits {
         constexpr uint32_t SLC0_RXLINK_DSCR_BF1 = (32 << 0);  ///< SLC0_RXLINK_DSCR_BF1
     }
 
-    /// 1_TXLINK_DSCR Register bits
-    namespace 1_txlink_dscr_bits {
+    /// v1_TXLINK_DSCR Register bits
+    namespace v1_txlink_dscr_bits {
         constexpr uint32_t SLC1_TXLINK_DSCR = (32 << 0);  ///< SLC1_TXLINK_DSCR
     }
 
-    /// 1_TXLINK_DSCR_BF0 Register bits
-    namespace 1_txlink_dscr_bf0_bits {
+    /// v1_TXLINK_DSCR_BF0 Register bits
+    namespace v1_txlink_dscr_bf0_bits {
         constexpr uint32_t SLC1_TXLINK_DSCR_BF0 = (32 << 0);  ///< SLC1_TXLINK_DSCR_BF0
     }
 
-    /// 1_TXLINK_DSCR_BF1 Register bits
-    namespace 1_txlink_dscr_bf1_bits {
+    /// v1_TXLINK_DSCR_BF1 Register bits
+    namespace v1_txlink_dscr_bf1_bits {
         constexpr uint32_t SLC1_TXLINK_DSCR_BF1 = (32 << 0);  ///< SLC1_TXLINK_DSCR_BF1
     }
 
-    /// 1_RXLINK_DSCR Register bits
-    namespace 1_rxlink_dscr_bits {
+    /// v1_RXLINK_DSCR Register bits
+    namespace v1_rxlink_dscr_bits {
         constexpr uint32_t SLC1_RXLINK_DSCR = (32 << 0);  ///< SLC1_RXLINK_DSCR
     }
 
-    /// 1_RXLINK_DSCR_BF0 Register bits
-    namespace 1_rxlink_dscr_bf0_bits {
+    /// v1_RXLINK_DSCR_BF0 Register bits
+    namespace v1_rxlink_dscr_bf0_bits {
         constexpr uint32_t SLC1_RXLINK_DSCR_BF0 = (32 << 0);  ///< SLC1_RXLINK_DSCR_BF0
     }
 
-    /// 1_RXLINK_DSCR_BF1 Register bits
-    namespace 1_rxlink_dscr_bf1_bits {
+    /// v1_RXLINK_DSCR_BF1 Register bits
+    namespace v1_rxlink_dscr_bf1_bits {
         constexpr uint32_t SLC1_RXLINK_DSCR_BF1 = (32 << 0);  ///< SLC1_RXLINK_DSCR_BF1
     }
 
-    /// 0_TX_ERREOF_DES_ADDR Register bits
-    namespace 0_tx_erreof_des_addr_bits {
+    /// v0_TX_ERREOF_DES_ADDR Register bits
+    namespace v0_tx_erreof_des_addr_bits {
         constexpr uint32_t SLC0_TX_ERR_EOF_DES_ADDR = (32 << 0);  ///< SLC0_TX_ERR_EOF_DES_ADDR
     }
 
-    /// 1_TX_ERREOF_DES_ADDR Register bits
-    namespace 1_tx_erreof_des_addr_bits {
+    /// v1_TX_ERREOF_DES_ADDR Register bits
+    namespace v1_tx_erreof_des_addr_bits {
         constexpr uint32_t SLC1_TX_ERR_EOF_DES_ADDR = (32 << 0);  ///< SLC1_TX_ERR_EOF_DES_ADDR
     }
 
@@ -4631,8 +4631,8 @@ namespace slc {
         constexpr uint32_t CMD_CONTENT1 = (32 << 0);  ///< CMD_CONTENT1
     }
 
-    /// 0_LEN_CONF Register bits
-    namespace 0_len_conf_bits {
+    /// v0_LEN_CONF Register bits
+    namespace v0_len_conf_bits {
         constexpr uint32_t SLC0_TX_NEW_PKT_IND = (1U << 28);  ///< SLC0_TX_NEW_PKT_IND
         constexpr uint32_t SLC0_RX_NEW_PKT_IND = (1U << 27);  ///< SLC0_RX_NEW_PKT_IND
         constexpr uint32_t SLC0_TX_GET_USED_DSCR = (1U << 26);  ///< SLC0_TX_GET_USED_DSCR
@@ -4645,48 +4645,48 @@ namespace slc {
         constexpr uint32_t SLC0_LEN_WDATA = (20 << 0);  ///< SLC0_LEN_WDATA
     }
 
-    /// 0_LENGTH Register bits
-    namespace 0_length_bits {
+    /// v0_LENGTH Register bits
+    namespace v0_length_bits {
         constexpr uint32_t SLC0_LEN = (20 << 0);  ///< SLC0_LEN
     }
 
-    /// 0_TXPKT_H_DSCR Register bits
-    namespace 0_txpkt_h_dscr_bits {
+    /// v0_TXPKT_H_DSCR Register bits
+    namespace v0_txpkt_h_dscr_bits {
         constexpr uint32_t SLC0_TX_PKT_H_DSCR_ADDR = (32 << 0);  ///< SLC0_TX_PKT_H_DSCR_ADDR
     }
 
-    /// 0_TXPKT_E_DSCR Register bits
-    namespace 0_txpkt_e_dscr_bits {
+    /// v0_TXPKT_E_DSCR Register bits
+    namespace v0_txpkt_e_dscr_bits {
         constexpr uint32_t SLC0_TX_PKT_E_DSCR_ADDR = (32 << 0);  ///< SLC0_TX_PKT_E_DSCR_ADDR
     }
 
-    /// 0_RXPKT_H_DSCR Register bits
-    namespace 0_rxpkt_h_dscr_bits {
+    /// v0_RXPKT_H_DSCR Register bits
+    namespace v0_rxpkt_h_dscr_bits {
         constexpr uint32_t SLC0_RX_PKT_H_DSCR_ADDR = (32 << 0);  ///< SLC0_RX_PKT_H_DSCR_ADDR
     }
 
-    /// 0_RXPKT_E_DSCR Register bits
-    namespace 0_rxpkt_e_dscr_bits {
+    /// v0_RXPKT_E_DSCR Register bits
+    namespace v0_rxpkt_e_dscr_bits {
         constexpr uint32_t SLC0_RX_PKT_E_DSCR_ADDR = (32 << 0);  ///< SLC0_RX_PKT_E_DSCR_ADDR
     }
 
-    /// 0_TXPKTU_H_DSCR Register bits
-    namespace 0_txpktu_h_dscr_bits {
+    /// v0_TXPKTU_H_DSCR Register bits
+    namespace v0_txpktu_h_dscr_bits {
         constexpr uint32_t SLC0_TX_PKT_START_DSCR_ADDR = (32 << 0);  ///< SLC0_TX_PKT_START_DSCR_ADDR
     }
 
-    /// 0_TXPKTU_E_DSCR Register bits
-    namespace 0_txpktu_e_dscr_bits {
+    /// v0_TXPKTU_E_DSCR Register bits
+    namespace v0_txpktu_e_dscr_bits {
         constexpr uint32_t SLC0_TX_PKT_END_DSCR_ADDR = (32 << 0);  ///< SLC0_TX_PKT_END_DSCR_ADDR
     }
 
-    /// 0_RXPKTU_H_DSCR Register bits
-    namespace 0_rxpktu_h_dscr_bits {
+    /// v0_RXPKTU_H_DSCR Register bits
+    namespace v0_rxpktu_h_dscr_bits {
         constexpr uint32_t SLC0_RX_PKT_START_DSCR_ADDR = (32 << 0);  ///< SLC0_RX_PKT_START_DSCR_ADDR
     }
 
-    /// 0_RXPKTU_E_DSCR Register bits
-    namespace 0_rxpktu_e_dscr_bits {
+    /// v0_RXPKTU_E_DSCR Register bits
+    namespace v0_rxpktu_e_dscr_bits {
         constexpr uint32_t SLC0_RX_PKT_END_DSCR_ADDR = (32 << 0);  ///< SLC0_RX_PKT_END_DSCR_ADDR
     }
 
@@ -4696,8 +4696,8 @@ namespace slc {
         constexpr uint32_t SLC0_SEQ_POSITION = (8 << 0);  ///< SLC0_SEQ_POSITION
     }
 
-    /// 0_DSCR_REC_CONF Register bits
-    namespace 0_dscr_rec_conf_bits {
+    /// v0_DSCR_REC_CONF Register bits
+    namespace v0_dscr_rec_conf_bits {
         constexpr uint32_t SLC0_RX_DSCR_REC_LIM = (10 << 0);  ///< SLC0_RX_DSCR_REC_LIM
     }
 
@@ -4715,39 +4715,39 @@ namespace slc {
         constexpr uint32_t CMD_CRC_ERR_CNT = (8 << 0);  ///< CMD_CRC_ERR_CNT
     }
 
-    /// 0_EOF_START_DES Register bits
-    namespace 0_eof_start_des_bits {
+    /// v0_EOF_START_DES Register bits
+    namespace v0_eof_start_des_bits {
         constexpr uint32_t SLC0_EOF_START_DES_ADDR = (32 << 0);  ///< SLC0_EOF_START_DES_ADDR
     }
 
-    /// 0_PUSH_DSCR_ADDR Register bits
-    namespace 0_push_dscr_addr_bits {
+    /// v0_PUSH_DSCR_ADDR Register bits
+    namespace v0_push_dscr_addr_bits {
         constexpr uint32_t SLC0_RX_PUSH_DSCR_ADDR = (32 << 0);  ///< SLC0_RX_PUSH_DSCR_ADDR
     }
 
-    /// 0_DONE_DSCR_ADDR Register bits
-    namespace 0_done_dscr_addr_bits {
+    /// v0_DONE_DSCR_ADDR Register bits
+    namespace v0_done_dscr_addr_bits {
         constexpr uint32_t SLC0_RX_DONE_DSCR_ADDR = (32 << 0);  ///< SLC0_RX_DONE_DSCR_ADDR
     }
 
-    /// 0_SUB_START_DES Register bits
-    namespace 0_sub_start_des_bits {
+    /// v0_SUB_START_DES Register bits
+    namespace v0_sub_start_des_bits {
         constexpr uint32_t SLC0_SUB_PAC_START_DSCR_ADDR = (32 << 0);  ///< SLC0_SUB_PAC_START_DSCR_ADDR
     }
 
-    /// 0_DSCR_CNT Register bits
-    namespace 0_dscr_cnt_bits {
+    /// v0_DSCR_CNT Register bits
+    namespace v0_dscr_cnt_bits {
         constexpr uint32_t SLC0_RX_GET_EOF_OCC = (1U << 16);  ///< SLC0_RX_GET_EOF_OCC
         constexpr uint32_t SLC0_RX_DSCR_CNT_LAT = (10 << 0);  ///< SLC0_RX_DSCR_CNT_LAT
     }
 
-    /// 0_LEN_LIM_CONF Register bits
-    namespace 0_len_lim_conf_bits {
+    /// v0_LEN_LIM_CONF Register bits
+    namespace v0_len_lim_conf_bits {
         constexpr uint32_t SLC0_LEN_LIM = (20 << 0);  ///< SLC0_LEN_LIM
     }
 
-    /// 0INT_ST1 Register bits
-    namespace 0int_st1_bits {
+    /// v0INT_ST1 Register bits
+    namespace v0int_st1_bits {
         constexpr uint32_t SLC0_RX_QUICK_EOF_INT_ST1 = (1U << 26);  ///< SLC0_RX_QUICK_EOF_INT_ST1
         constexpr uint32_t CMD_DTC_INT_ST1 = (1U << 25);  ///< CMD_DTC_INT_ST1
         constexpr uint32_t SLC0_TX_ERR_EOF_INT_ST1 = (1U << 24);  ///< SLC0_TX_ERR_EOF_INT_ST1
@@ -4777,8 +4777,8 @@ namespace slc {
         constexpr uint32_t FRHOST_BIT0_INT_ST1 = (1U << 0);  ///< FRHOST_BIT0_INT_ST1
     }
 
-    /// 0INT_ENA1 Register bits
-    namespace 0int_ena1_bits {
+    /// v0INT_ENA1 Register bits
+    namespace v0int_ena1_bits {
         constexpr uint32_t SLC0_RX_QUICK_EOF_INT_ENA1 = (1U << 26);  ///< SLC0_RX_QUICK_EOF_INT_ENA1
         constexpr uint32_t CMD_DTC_INT_ENA1 = (1U << 25);  ///< CMD_DTC_INT_ENA1
         constexpr uint32_t SLC0_TX_ERR_EOF_INT_ENA1 = (1U << 24);  ///< SLC0_TX_ERR_EOF_INT_ENA1
@@ -4808,8 +4808,8 @@ namespace slc {
         constexpr uint32_t FRHOST_BIT0_INT_ENA1 = (1U << 0);  ///< FRHOST_BIT0_INT_ENA1
     }
 
-    /// 1INT_ST1 Register bits
-    namespace 1int_st1_bits {
+    /// v1INT_ST1 Register bits
+    namespace v1int_st1_bits {
         constexpr uint32_t SLC1_TX_ERR_EOF_INT_ST1 = (1U << 24);  ///< SLC1_TX_ERR_EOF_INT_ST1
         constexpr uint32_t SLC1_WR_RETRY_DONE_INT_ST1 = (1U << 23);  ///< SLC1_WR_RETRY_DONE_INT_ST1
         constexpr uint32_t SLC1_HOST_RD_ACK_INT_ST1 = (1U << 22);  ///< SLC1_HOST_RD_ACK_INT_ST1
@@ -4837,8 +4837,8 @@ namespace slc {
         constexpr uint32_t FRHOST_BIT8_INT_ST1 = (1U << 0);  ///< FRHOST_BIT8_INT_ST1
     }
 
-    /// 1INT_ENA1 Register bits
-    namespace 1int_ena1_bits {
+    /// v1INT_ENA1 Register bits
+    namespace v1int_ena1_bits {
         constexpr uint32_t SLC1_TX_ERR_EOF_INT_ENA1 = (1U << 24);  ///< SLC1_TX_ERR_EOF_INT_ENA1
         constexpr uint32_t SLC1_WR_RETRY_DONE_INT_ENA1 = (1U << 23);  ///< SLC1_WR_RETRY_DONE_INT_ENA1
         constexpr uint32_t SLC1_HOST_RD_ACK_INT_ENA1 = (1U << 22);  ///< SLC1_HOST_RD_ACK_INT_ENA1

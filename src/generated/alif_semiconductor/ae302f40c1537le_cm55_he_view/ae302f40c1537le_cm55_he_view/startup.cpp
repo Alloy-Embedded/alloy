@@ -3,7 +3,7 @@
 /// Source: alifsemi_ae302f40c1.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:27
+/// Generated: 2025-10-31 17:45:08
 #include <cstdint>
 #include <cstring>
 

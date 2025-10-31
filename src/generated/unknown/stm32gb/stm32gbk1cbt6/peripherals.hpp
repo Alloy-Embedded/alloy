@@ -3,7 +3,7 @@
 /// Source: st_stm32.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:30
+/// Generated: 2025-10-31 17:44:04
 #ifndef ALLOY_GENERATED_STM32GBK1CBT6_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32GBK1CBT6_PERIPHERALS_HPP
 
@@ -5800,7 +5800,7 @@ namespace can {
     namespace cccr_bits {
         constexpr uint32_t INIT = (1U << 0);  ///< INIT
         constexpr uint32_t CCE = (1U << 1);  ///< CCE
-        constexpr uint32_t ASM = (1U << 2);  ///< ASM
+        constexpr uint32_t ASM_ = (1U << 2);  ///< ASM (renamed from ASM_)
         constexpr uint32_t CSA = (1U << 3);  ///< CSA
         constexpr uint32_t CSR = (1U << 4);  ///< CSR
         constexpr uint32_t MON = (1U << 5);  ///< MON

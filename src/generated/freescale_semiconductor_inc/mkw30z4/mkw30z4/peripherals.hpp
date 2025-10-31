@@ -3,7 +3,7 @@
 /// Source: nxp_mkw30.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:11
+/// Generated: 2025-10-31 17:44:50
 #ifndef ALLOY_GENERATED_MKW30Z4_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MKW30Z4_PERIPHERALS_HPP
 
@@ -971,15 +971,15 @@ namespace spi {
     struct Registers {
         volatile uint32_t MCR;  ///< Offset: 0x00 - Module Configuration Register
         volatile uint32_t TCR;  ///< Offset: 0x08 - Transfer Count Register
-        volatile uint32_t CTAR%s;  ///< Offset: 0x0C - Clock and Transfer Attributes Register (In Master Mode)
+        volatile uint32_t CTAR;  ///< Offset: 0x0C - Clock and Transfer Attributes Register (In Master Mode) (renamed from CTAR)
         volatile uint32_t CTAR_SLAVE;  ///< Offset: 0x0C - Clock and Transfer Attributes Register (In Slave Mode)
         volatile uint32_t SR;  ///< Offset: 0x2C - Status Register
         volatile uint32_t RSER;  ///< Offset: 0x30 - DMA/Interrupt Request Select and Enable Register
         volatile uint32_t PUSHR;  ///< Offset: 0x34 - PUSH TX FIFO Register In Master Mode
         volatile uint32_t PUSHR_SLAVE;  ///< Offset: 0x34 - PUSH TX FIFO Register In Slave Mode
         volatile uint32_t POPR;  ///< Offset: 0x38 - POP RX FIFO Register
-        volatile uint32_t TXFR%s;  ///< Offset: 0x3C - Transmit FIFO Registers
-        volatile uint32_t RXFR%s;  ///< Offset: 0x7C - Receive FIFO Registers
+        volatile uint32_t TXFR;  ///< Offset: 0x3C - Transmit FIFO Registers (renamed from TXFR)
+        volatile uint32_t RXFR;  ///< Offset: 0x7C - Receive FIFO Registers (renamed from RXFR)
     };
 
     /// Peripheral instances
@@ -1011,8 +1011,8 @@ namespace spi {
         constexpr uint32_t SPI_TCNT = (16 << 16);  ///< SPI Transfer Counter
     }
 
-    /// CTAR%s Register bits
-    namespace ctar%s_bits {
+    /// CTAR Register bits
+    namespace ctar_bits {
         constexpr uint32_t BR = (4 << 0);  ///< Baud Rate Scaler
         constexpr uint32_t DT = (4 << 4);  ///< Delay After Transfer Scaler
         constexpr uint32_t ASC = (4 << 8);  ///< After SCK Delay Scaler
@@ -1082,14 +1082,14 @@ namespace spi {
         constexpr uint32_t RXDATA = (32 << 0);  ///< Received Data
     }
 
-    /// TXFR%s Register bits
-    namespace txfr%s_bits {
+    /// TXFR Register bits
+    namespace txfr_bits {
         constexpr uint32_t TXDATA = (16 << 0);  ///< Transmit Data
         constexpr uint32_t TXCMD_TXDATA = (16 << 16);  ///< Transmit Command or Transmit Data
     }
 
-    /// RXFR%s Register bits
-    namespace rxfr%s_bits {
+    /// RXFR Register bits
+    namespace rxfr_bits {
         constexpr uint32_t RXDATA = (32 << 0);  ///< Receive Data
     }
 
@@ -1112,10 +1112,10 @@ namespace tim {
         volatile uint32_t MCR;  ///< Offset: 0x00 - PIT Module Control Register
         volatile uint32_t LTMR64H;  ///< Offset: 0xE0 - PIT Upper Lifetime Timer Register
         volatile uint32_t LTMR64L;  ///< Offset: 0xE4 - PIT Lower Lifetime Timer Register
-        volatile uint32_t LDVAL%s;  ///< Offset: 0x100 - Timer Load Value Register
-        volatile uint32_t CVAL%s;  ///< Offset: 0x104 - Current Timer Value Register
-        volatile uint32_t TCTRL%s;  ///< Offset: 0x108 - Timer Control Register
-        volatile uint32_t TFLG%s;  ///< Offset: 0x10C - Timer Flag Register
+        volatile uint32_t LDVAL;  ///< Offset: 0x100 - Timer Load Value Register (renamed from LDVAL)
+        volatile uint32_t CVAL;  ///< Offset: 0x104 - Current Timer Value Register (renamed from CVAL)
+        volatile uint32_t TCTRL;  ///< Offset: 0x108 - Timer Control Register (renamed from TCTRL)
+        volatile uint32_t TFLG;  ///< Offset: 0x10C - Timer Flag Register (renamed from TFLG)
     };
 
     /// Peripheral instances
@@ -1142,25 +1142,25 @@ namespace tim {
         constexpr uint32_t LTL = (32 << 0);  ///< Life Timer value
     }
 
-    /// LDVAL%s Register bits
-    namespace ldval%s_bits {
+    /// LDVAL Register bits
+    namespace ldval_bits {
         constexpr uint32_t TSV = (32 << 0);  ///< Timer Start Value
     }
 
-    /// CVAL%s Register bits
-    namespace cval%s_bits {
+    /// CVAL Register bits
+    namespace cval_bits {
         constexpr uint32_t TVL = (32 << 0);  ///< Current Timer Value
     }
 
-    /// TCTRL%s Register bits
-    namespace tctrl%s_bits {
+    /// TCTRL Register bits
+    namespace tctrl_bits {
         constexpr uint32_t TEN = (1U << 0);  ///< Timer Enable
         constexpr uint32_t TIE = (1U << 1);  ///< Timer Interrupt Enable
         constexpr uint32_t CHN = (1U << 2);  ///< Chain Mode
     }
 
-    /// TFLG%s Register bits
-    namespace tflg%s_bits {
+    /// TFLG Register bits
+    namespace tflg_bits {
         constexpr uint32_t TIF = (1U << 0);  ///< Timer Interrupt Flag
     }
 
@@ -1176,11 +1176,11 @@ namespace adc {
 
     /// ADC Register structure
     struct Registers {
-        volatile uint32_t SC1%s;  ///< Offset: 0x00 - ADC Status and Control Registers 1
+        volatile uint32_t SC1;  ///< Offset: 0x00 - ADC Status and Control Registers 1 (renamed from SC1)
         volatile uint32_t CFG1;  ///< Offset: 0x08 - ADC Configuration Register 1
         volatile uint32_t CFG2;  ///< Offset: 0x0C - ADC Configuration Register 2
-        volatile uint32_t R%s;  ///< Offset: 0x10 - ADC Data Result Register
-        volatile uint32_t CV%s;  ///< Offset: 0x18 - Compare Value Registers
+        volatile uint32_t R;  ///< Offset: 0x10 - ADC Data Result Register (renamed from R)
+        volatile uint32_t CV;  ///< Offset: 0x18 - Compare Value Registers (renamed from CV)
         volatile uint32_t SC2;  ///< Offset: 0x20 - Status and Control Register 2
         volatile uint32_t SC3;  ///< Offset: 0x24 - Status and Control Register 3
         volatile uint32_t OFS;  ///< Offset: 0x28 - ADC Offset Correction Register
@@ -1206,8 +1206,8 @@ namespace adc {
     inline Registers* ADC0 = reinterpret_cast<Registers*>(ADC0_BASE);
 
     // Bit definitions
-    /// SC1%s Register bits
-    namespace sc1%s_bits {
+    /// SC1 Register bits
+    namespace sc1_bits {
         constexpr uint32_t ADCH = (5 << 0);  ///< Input channel select
         constexpr uint32_t DIFF = (1U << 5);  ///< Differential Mode Enable
         constexpr uint32_t AIEN = (1U << 6);  ///< Interrupt Enable
@@ -1231,13 +1231,13 @@ namespace adc {
         constexpr uint32_t MUXSEL = (1U << 4);  ///< ADC Mux Select
     }
 
-    /// R%s Register bits
-    namespace r%s_bits {
+    /// R Register bits
+    namespace r_bits {
         constexpr uint32_t D = (16 << 0);  ///< Data result
     }
 
-    /// CV%s Register bits
-    namespace cv%s_bits {
+    /// CV Register bits
+    namespace cv_bits {
         constexpr uint32_t CV = (16 << 0);  ///< Compare Value.
     }
 
@@ -1448,8 +1448,8 @@ namespace dac {
 
     /// DAC Register structure
     struct Registers {
-        volatile uint32_t DAT%sL;  ///< Offset: 0x00 - DAC Data Low Register
-        volatile uint32_t DAT%sH;  ///< Offset: 0x01 - DAC Data High Register
+        volatile uint32_t DATL;  ///< Offset: 0x00 - DAC Data Low Register (renamed from DATL)
+        volatile uint32_t DATH;  ///< Offset: 0x01 - DAC Data High Register (renamed from DATH)
         volatile uint32_t SR;  ///< Offset: 0x20 - DAC Status Register
         volatile uint32_t C0;  ///< Offset: 0x21 - DAC Control Register
         volatile uint32_t C1;  ///< Offset: 0x22 - DAC Control Register 1
@@ -1460,13 +1460,13 @@ namespace dac {
     inline Registers* DAC0 = reinterpret_cast<Registers*>(DAC0_BASE);
 
     // Bit definitions
-    /// DAT%sL Register bits
-    namespace dat%sl_bits {
+    /// DATL Register bits
+    namespace datl_bits {
         constexpr uint32_t DATA0 = (8 << 0);  ///< DATA0
     }
 
-    /// DAT%sH Register bits
-    namespace dat%sh_bits {
+    /// DATH Register bits
+    namespace dath_bits {
         constexpr uint32_t DATA1 = (4 << 0);  ///< DATA1
     }
 
@@ -2250,7 +2250,7 @@ namespace usart {
         constexpr uint32_t PF = (1U << 16);  ///< Parity Error Flag
         constexpr uint32_t FE = (1U << 17);  ///< Framing Error Flag
         constexpr uint32_t NF = (1U << 18);  ///< Noise Flag
-        constexpr uint32_t OR = (1U << 19);  ///< Receiver Overrun Flag
+        constexpr uint32_t OR_ = (1U << 19);  ///< Receiver Overrun Flag (renamed from OR_)
         constexpr uint32_t IDLE = (1U << 20);  ///< Idle Line Flag
         constexpr uint32_t RDRF = (1U << 21);  ///< Receive Data Register Full Flag
         constexpr uint32_t TC = (1U << 22);  ///< Transmission Complete Flag
@@ -2866,14 +2866,14 @@ namespace xcvr {
         volatile uint32_t AGC_GAIN_TBL_19_16;  ///< Offset: 0x90 - AGC Gain Tables Step 19..16
         volatile uint32_t AGC_GAIN_TBL_23_20;  ///< Offset: 0x94 - AGC Gain Tables Step 23..20
         volatile uint32_t AGC_GAIN_TBL_26_24;  ///< Offset: 0x98 - AGC Gain Tables Step 26..24
-        volatile uint32_t DCOC_OFFSET_%s;  ///< Offset: 0xA0 - DCOC Offset
-        volatile uint32_t DCOC_TZA_STEP_%s;  ///< Offset: 0x110 - DCOC TZA DC step
+        volatile uint32_t DCOC_OFFSET_;  ///< Offset: 0xA0 - DCOC Offset (renamed from DCOC_OFFSET_)
+        volatile uint32_t DCOC_TZA_STEP_;  ///< Offset: 0x110 - DCOC TZA DC step (renamed from DCOC_TZA_STEP_)
         volatile uint32_t DCOC_CAL_ALPHA;  ///< Offset: 0x16C - DCOC Calibration Alpha
         volatile uint32_t DCOC_CAL_BETA;  ///< Offset: 0x170 - DCOC Calibration Beta
         volatile uint32_t DCOC_CAL_GAMMA;  ///< Offset: 0x174 - DCOC Calibration Gamma
         volatile uint32_t DCOC_CAL_IIR;  ///< Offset: 0x178 - DCOC Calibration IIR
-        volatile uint32_t DCOC_CAL%s;  ///< Offset: 0x180 - DCOC Calibration Result
-        volatile uint32_t RX_CHF_COEF%s;  ///< Offset: 0x1A0 - Receive Channel Filter Coefficient
+        volatile uint32_t DCOC_CAL;  ///< Offset: 0x180 - DCOC Calibration Result (renamed from DCOC_CAL)
+        volatile uint32_t RX_CHF_COEF;  ///< Offset: 0x1A0 - Receive Channel Filter Coefficient (renamed from RX_CHF_COEF)
         volatile uint32_t TX_DIG_CTRL;  ///< Offset: 0x200 - TX Digital Control
         volatile uint32_t TX_DATA_PAD_PAT;  ///< Offset: 0x204 - TX Data Padding Pattern
         volatile uint32_t TX_GFSK_MOD_CTRL;  ///< Offset: 0x208 - TX GFSK Modulation Control
@@ -3340,16 +3340,16 @@ namespace xcvr {
         constexpr uint32_t LNM_GAIN_26 = (4 << 20);  ///< LNM Gain 26
     }
 
-    /// DCOC_OFFSET_%s Register bits
-    namespace dcoc_offset_%s_bits {
+    /// DCOC_OFFSET_ Register bits
+    namespace dcoc_offset__bits {
         constexpr uint32_t DCOC_BBF_OFFSET_I = (6 << 0);  ///< DCOC BBF I-channel offset
         constexpr uint32_t DCOC_BBF_OFFSET_Q = (6 << 8);  ///< DCOC BBF Q-channel offset
         constexpr uint32_t DCOC_TZA_OFFSET_I = (8 << 16);  ///< DCOC TZA I-channel offset
         constexpr uint32_t DCOC_TZA_OFFSET_Q = (8 << 24);  ///< DCOC TZA Q-channel offset
     }
 
-    /// DCOC_TZA_STEP_%s Register bits
-    namespace dcoc_tza_step_%s_bits {
+    /// DCOC_TZA_STEP_ Register bits
+    namespace dcoc_tza_step__bits {
         constexpr uint32_t DCOC_TZA_STEP_RCP = (13 << 0);  ///< DCOC_TZA_STEP_RCP
         constexpr uint32_t DCOC_TZA_STEP_GAIN = (12 << 16);  ///< DCOC_TZA_STEP_GAIN
     }
@@ -3379,14 +3379,14 @@ namespace xcvr {
         constexpr uint32_t DCOC_CAL_IIR3A_IDX = (2 << 4);  ///< DCOC Calibration IIR 3A Index
     }
 
-    /// DCOC_CAL%s Register bits
-    namespace dcoc_cal%s_bits {
+    /// DCOC_CAL Register bits
+    namespace dcoc_cal_bits {
         constexpr uint32_t DCOC_CAL_RES_I = (12 << 0);  ///< DCOC Calibration Result - I Channel
         constexpr uint32_t DCOC_CAL_RES_Q = (12 << 16);  ///< DCOC Calibration Result - Q Channel
     }
 
-    /// RX_CHF_COEF%s Register bits
-    namespace rx_chf_coef%s_bits {
+    /// RX_CHF_COEF Register bits
+    namespace rx_chf_coef_bits {
         constexpr uint32_t RX_CH_FILT_HX = (8 << 0);  ///< RX Channel Filter Coefficient
     }
 
@@ -4435,7 +4435,7 @@ namespace zll {
         volatile uint32_t LENIENCY_LSB;  ///< Offset: 0x98 - LENIENCY LSB
         volatile uint32_t LENIENCY_MSB;  ///< Offset: 0x9C - LENIENCY MSB
         volatile uint32_t PART_ID;  ///< Offset: 0xA0 - PART ID
-        volatile uint32_t PKT_BUFFER%s;  ///< Offset: 0x100 - PACKET BUFFER
+        volatile uint32_t PKT_BUFFER;  ///< Offset: 0x100 - PACKET BUFFER (renamed from PKT_BUFFER)
     };
 
     /// Peripheral instances
@@ -4768,8 +4768,8 @@ namespace zll {
         constexpr uint32_t PART_ID = (8 << 0);  ///< Zigbee Part ID
     }
 
-    /// PKT_BUFFER%s Register bits
-    namespace pkt_buffer%s_bits {
+    /// PKT_BUFFER Register bits
+    namespace pkt_buffer_bits {
         constexpr uint32_t PKT_BUFFER = (32 << 0);  ///< Packet Buffer Entry
     }
 
@@ -5473,8 +5473,8 @@ namespace mtb {
         volatile uint32_t DEVICEARCH;  ///< Offset: 0xFBC - Device Architecture Register
         volatile uint32_t DEVICECFG;  ///< Offset: 0xFC8 - Device Configuration Register
         volatile uint32_t DEVICETYPID;  ///< Offset: 0xFCC - Device Type Identifier Register
-        volatile uint32_t PERIPHID%s;  ///< Offset: 0xFD0 - Peripheral ID Register
-        volatile uint32_t COMPID%s;  ///< Offset: 0xFF0 - Component ID Register
+        volatile uint32_t PERIPHID;  ///< Offset: 0xFD0 - Peripheral ID Register (renamed from PERIPHID)
+        volatile uint32_t COMPID;  ///< Offset: 0xFF0 - Component ID Register (renamed from COMPID)
     };
 
     /// Peripheral instances
@@ -5558,13 +5558,13 @@ namespace mtb {
         constexpr uint32_t DEVICETYPID = (32 << 0);  ///< DEVICETYPID
     }
 
-    /// PERIPHID%s Register bits
-    namespace periphid%s_bits {
+    /// PERIPHID Register bits
+    namespace periphid_bits {
         constexpr uint32_t PERIPHID = (32 << 0);  ///< PERIPHID
     }
 
-    /// COMPID%s Register bits
-    namespace compid%s_bits {
+    /// COMPID Register bits
+    namespace compid_bits {
         constexpr uint32_t COMPID = (32 << 0);  ///< Component ID
     }
 
@@ -5581,15 +5581,15 @@ namespace mtbdwt {
     /// MTBDWT Register structure
     struct Registers {
         volatile uint32_t CTRL;  ///< Offset: 0x00 - MTB DWT Control Register
-        volatile uint32_t COMP%s;  ///< Offset: 0x20 - MTB_DWT Comparator Register
-        volatile uint32_t MASK%s;  ///< Offset: 0x24 - MTB_DWT Comparator Mask Register
+        volatile uint32_t COMP;  ///< Offset: 0x20 - MTB_DWT Comparator Register (renamed from COMP)
+        volatile uint32_t MASK;  ///< Offset: 0x24 - MTB_DWT Comparator Mask Register (renamed from MASK)
         volatile uint32_t FCT0;  ///< Offset: 0x28 - MTB_DWT Comparator Function Register 0
         volatile uint32_t FCT1;  ///< Offset: 0x38 - MTB_DWT Comparator Function Register 1
         volatile uint32_t TBCTRL;  ///< Offset: 0x200 - MTB_DWT Trace Buffer Control Register
         volatile uint32_t DEVICECFG;  ///< Offset: 0xFC8 - Device Configuration Register
         volatile uint32_t DEVICETYPID;  ///< Offset: 0xFCC - Device Type Identifier Register
-        volatile uint32_t PERIPHID%s;  ///< Offset: 0xFD0 - Peripheral ID Register
-        volatile uint32_t COMPID%s;  ///< Offset: 0xFF0 - Component ID Register
+        volatile uint32_t PERIPHID;  ///< Offset: 0xFD0 - Peripheral ID Register (renamed from PERIPHID)
+        volatile uint32_t COMPID;  ///< Offset: 0xFF0 - Component ID Register (renamed from COMPID)
     };
 
     /// Peripheral instances
@@ -5602,13 +5602,13 @@ namespace mtbdwt {
         constexpr uint32_t NUMCMP = (4 << 28);  ///< Number of comparators
     }
 
-    /// COMP%s Register bits
-    namespace comp%s_bits {
+    /// COMP Register bits
+    namespace comp_bits {
         constexpr uint32_t COMP = (32 << 0);  ///< Reference value for comparison
     }
 
-    /// MASK%s Register bits
-    namespace mask%s_bits {
+    /// MASK Register bits
+    namespace mask_bits {
         constexpr uint32_t MASK = (5 << 0);  ///< MASK
     }
 
@@ -5644,13 +5644,13 @@ namespace mtbdwt {
         constexpr uint32_t DEVICETYPID = (32 << 0);  ///< DEVICETYPID
     }
 
-    /// PERIPHID%s Register bits
-    namespace periphid%s_bits {
+    /// PERIPHID Register bits
+    namespace periphid_bits {
         constexpr uint32_t PERIPHID = (32 << 0);  ///< PERIPHID
     }
 
-    /// COMPID%s Register bits
-    namespace compid%s_bits {
+    /// COMPID Register bits
+    namespace compid_bits {
         constexpr uint32_t COMPID = (32 << 0);  ///< Component ID
     }
 
@@ -5666,19 +5666,19 @@ namespace rom {
 
     /// ROM Register structure
     struct Registers {
-        volatile uint32_t ENTRY%s;  ///< Offset: 0x00 - Entry
+        volatile uint32_t ENTRY;  ///< Offset: 0x00 - Entry (renamed from ENTRY)
         volatile uint32_t TABLEMARK;  ///< Offset: 0x0C - End of Table Marker Register
         volatile uint32_t SYSACCESS;  ///< Offset: 0xFCC - System Access Register
-        volatile uint32_t PERIPHID%s;  ///< Offset: 0xFD0 - Peripheral ID Register
-        volatile uint32_t COMPID%s;  ///< Offset: 0xFF0 - Component ID Register
+        volatile uint32_t PERIPHID;  ///< Offset: 0xFD0 - Peripheral ID Register (renamed from PERIPHID)
+        volatile uint32_t COMPID;  ///< Offset: 0xFF0 - Component ID Register (renamed from COMPID)
     };
 
     /// Peripheral instances
     inline Registers* ROM = reinterpret_cast<Registers*>(ROM_BASE);
 
     // Bit definitions
-    /// ENTRY%s Register bits
-    namespace entry%s_bits {
+    /// ENTRY Register bits
+    namespace entry_bits {
         constexpr uint32_t ENTRY = (32 << 0);  ///< ENTRY
     }
 
@@ -5692,13 +5692,13 @@ namespace rom {
         constexpr uint32_t SYSACCESS = (32 << 0);  ///< SYSACCESS
     }
 
-    /// PERIPHID%s Register bits
-    namespace periphid%s_bits {
+    /// PERIPHID Register bits
+    namespace periphid_bits {
         constexpr uint32_t PERIPHID = (32 << 0);  ///< PERIPHID
     }
 
-    /// COMPID%s Register bits
-    namespace compid%s_bits {
+    /// COMPID Register bits
+    namespace compid_bits {
         constexpr uint32_t COMPID = (32 << 0);  ///< Component ID
     }
 

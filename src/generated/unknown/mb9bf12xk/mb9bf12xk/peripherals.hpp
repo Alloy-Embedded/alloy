@@ -3,7 +3,7 @@
 /// Source: spansion_mb9bf12xk.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:21
+/// Generated: 2025-10-31 17:45:00
 #ifndef ALLOY_GENERATED_MB9BF12XK_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MB9BF12XK_PERIPHERALS_HPP
 
@@ -2888,7 +2888,7 @@ namespace mfs0 {
         constexpr uint32_t CNDE = (1U << 3);  ///< Condition detection interrupt enable bit
         constexpr uint32_t INTE = (1U << 2);  ///< Interrupt enable bit
         constexpr uint32_t BER = (1U << 1);  ///< Bus error flag bit
-        constexpr uint32_t INT = (1U << 0);  ///< interrupt flag bit
+        constexpr uint32_t INT_ = (1U << 0);  ///< interrupt flag bit (renamed from INT_)
     }
 
     /// I2C_SMR Register bits

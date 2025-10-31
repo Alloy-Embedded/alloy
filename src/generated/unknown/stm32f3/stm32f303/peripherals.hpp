@@ -3,7 +3,7 @@
 /// Source: st_stm32f303.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:47
+/// Generated: 2025-10-31 17:44:23
 #ifndef ALLOY_GENERATED_STM32F303_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32F303_PERIPHERALS_HPP
 

@@ -3,7 +3,7 @@
 /// Source: st_stm32l15.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:03
+/// Generated: 2025-10-31 17:44:41
 #ifndef ALLOY_GENERATED_STM32L15XXXA_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32L15XXXA_PERIPHERALS_HPP
 
@@ -2834,7 +2834,7 @@ namespace tim {
         volatile uint32_t PSC;  ///< Offset: 0x28 - prescaler
         volatile uint32_t ARR;  ///< Offset: 0x2C - auto-reload register
         volatile uint32_t CCR1;  ///< Offset: 0x34 - capture/compare register 1
-        volatile uint32_t OR;  ///< Offset: 0x50 - option register
+        volatile uint32_t OR_;  ///< Offset: 0x50 - option register (renamed from OR_)
     };
 
     /// Peripheral instances
@@ -2918,8 +2918,8 @@ namespace tim {
         constexpr uint32_t CCR1 = (16 << 0);  ///< Capture/Compare 1 value
     }
 
-    /// OR Register bits
-    namespace or_bits {
+    /// OR_ Register bits
+    namespace or__bits {
         constexpr uint32_t TI1_RMP = (2 << 0);  ///< TIM11 Input 1 remapping capability
     }
 

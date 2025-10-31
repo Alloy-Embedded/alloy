@@ -3,7 +3,7 @@
 /// Source: gigadevice_gd32vf103.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:44
+/// Generated: 2025-10-31 17:44:19
 #ifndef ALLOY_GENERATED_GD32VF103_PERIPHERALS_HPP
 #define ALLOY_GENERATED_GD32VF103_PERIPHERALS_HPP
 
@@ -6748,7 +6748,7 @@ namespace rcu {
     struct Registers {
         volatile uint32_t CTL;  ///< Offset: 0x00 - Control register
         volatile uint32_t CFG0;  ///< Offset: 0x04 - Clock configuration register 0 (RCU_CFG0)
-        volatile uint32_t INT;  ///< Offset: 0x08 - Clock interrupt register (RCU_INT)
+        volatile uint32_t INT_;  ///< Offset: 0x08 - Clock interrupt register (RCU_INT) (renamed from INT_)
         volatile uint32_t APB2RST;  ///< Offset: 0x0C - APB2 reset register (RCU_APB2RST)
         volatile uint32_t APB1RST;  ///< Offset: 0x10 - APB1 reset register (RCU_APB1RST)
         volatile uint32_t AHBEN;  ///< Offset: 0x14 - AHB enable register
@@ -6800,8 +6800,8 @@ namespace rcu {
         constexpr uint32_t PLLMF_4 = (1U << 29);  ///< Bit 4 of PLLMF
     }
 
-    /// INT Register bits
-    namespace int_bits {
+    /// INT_ Register bits
+    namespace int__bits {
         constexpr uint32_t IRC40KSTBIF = (1U << 0);  ///< IRC40K stabilization interrupt flag
         constexpr uint32_t LXTALSTBIF = (1U << 1);  ///< LXTAL stabilization interrupt flag
         constexpr uint32_t IRC8MSTBIF = (1U << 2);  ///< IRC8M stabilization interrupt flag

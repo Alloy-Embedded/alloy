@@ -23,6 +23,56 @@ The result: A framework that's simultaneously robust, efficient, and a pleasure 
 
 ---
 
+## 🚀 Quick Start
+
+### 1. Install ARM Toolchain (Required)
+
+**Automatic Installation (Recommended):**
+```bash
+./scripts/install-xpack-toolchain.sh
+```
+
+This will download and install the [xPack ARM toolchain](https://xpack-dev-tools.github.io/arm-none-eabi-gcc-xpack/) which includes complete newlib support.
+
+**After installation, add to your PATH:**
+```bash
+export PATH="$HOME/.local/xpack-arm-toolchain/bin:$PATH"
+```
+
+### 2. Build an Example
+
+```bash
+# Configure for your board
+cmake -B build -DALLOY_BOARD=bluepill
+
+# Build
+cmake --build build
+
+# Flash to hardware (requires OpenOCD)
+cmake --build build --target flash
+```
+
+**Supported boards:** `bluepill`, `stm32f407vg`, `arduino_zero`, `rp_pico`, `esp32_devkit`, `host`
+
+### 3. Your First Blink
+
+```cpp
+#include "stm32f103c8/board.hpp"
+
+int main() {
+    alloy::board::init();  // 72MHz system clock
+
+    while (true) {
+        alloy::board::led.toggle();
+        alloy::board::delay_ms(500);
+    }
+}
+```
+
+📖 **Full documentation:** [docs/toolchains.md](docs/toolchains.md)
+
+---
+
 ## ✨ Features
 
 - **🚀 Modern C++20**: Leverages Concepts, Ranges, and compile-time programming

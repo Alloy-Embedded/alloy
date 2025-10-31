@@ -3,7 +3,7 @@
 /// Source: atmel_sam9.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:52
+/// Generated: 2025-10-31 17:44:29
 #ifndef ALLOY_GENERATED_AT91SAM9N12_PERIPHERALS_HPP
 #define ALLOY_GENERATED_AT91SAM9N12_PERIPHERALS_HPP
 
@@ -258,7 +258,7 @@ namespace spi {
         volatile uint32_t IER;  ///< Offset: 0x14 - Interrupt Enable Register
         volatile uint32_t IDR;  ///< Offset: 0x18 - Interrupt Disable Register
         volatile uint32_t IMR;  ///< Offset: 0x1C - Interrupt Mask Register
-        volatile uint32_t CSR[%s];  ///< Offset: 0x30 - Chip Select Register
+        volatile uint32_t CSR__;  ///< Offset: 0x30 - Chip Select Register (renamed from CSR__)
         volatile uint32_t WPMR;  ///< Offset: 0xE4 - Write Protection Control Register
         volatile uint32_t WPSR;  ///< Offset: 0xE8 - Write Protection Status Register
     };
@@ -342,8 +342,8 @@ namespace spi {
         constexpr uint32_t TXEMPTY = (1U << 9);  ///< Transmission Registers Empty Mask
     }
 
-    /// CSR[%s] Register bits
-    namespace csr[%s]_bits {
+    /// CSR__ Register bits
+    namespace csr___bits {
         constexpr uint32_t CPOL = (1U << 0);  ///< Clock Polarity
         constexpr uint32_t NCPHA = (1U << 1);  ///< Clock Phase
         constexpr uint32_t CSNAAT = (1U << 2);  ///< Chip Select Not Active After Transfer (Ignored if CSAAT = 1)
@@ -386,7 +386,7 @@ namespace hsmci {
         volatile uint32_t CMDR;  ///< Offset: 0x14 - Command Register
         volatile uint32_t BLKR;  ///< Offset: 0x18 - Block Register
         volatile uint32_t CSTOR;  ///< Offset: 0x1C - Completion Signal Timeout Register
-        volatile uint32_t RSPR[%s];  ///< Offset: 0x20 - Response Register
+        volatile uint32_t RSPR__;  ///< Offset: 0x20 - Response Register (renamed from RSPR__)
         volatile uint32_t RDR;  ///< Offset: 0x30 - Receive Data Register
         volatile uint32_t TDR;  ///< Offset: 0x34 - Transmit Data Register
         volatile uint32_t SR;  ///< Offset: 0x40 - Status Register
@@ -397,7 +397,7 @@ namespace hsmci {
         volatile uint32_t CFG;  ///< Offset: 0x54 - Configuration Register
         volatile uint32_t WPMR;  ///< Offset: 0xE4 - Write Protection Mode Register
         volatile uint32_t WPSR;  ///< Offset: 0xE8 - Write Protection Status Register
-        volatile uint32_t FIFO[%s];  ///< Offset: 0x200 - FIFO Memory Aperture0
+        volatile uint32_t FIFO__;  ///< Offset: 0x200 - FIFO Memory Aperture0 (renamed from FIFO__)
     };
 
     /// Peripheral instances
@@ -468,8 +468,8 @@ namespace hsmci {
         constexpr uint32_t CSTOMUL = (3 << 4);  ///< Completion Signal Timeout Multiplier
     }
 
-    /// RSPR[%s] Register bits
-    namespace rspr[%s]_bits {
+    /// RSPR__ Register bits
+    namespace rspr___bits {
         constexpr uint32_t RSP = (32 << 0);  ///< Response
     }
 
@@ -627,8 +627,8 @@ namespace hsmci {
         constexpr uint32_t WP_VSRC = (16 << 8);  ///< Write Protection Violation SouRCe
     }
 
-    /// FIFO[%s] Register bits
-    namespace fifo[%s]_bits {
+    /// FIFO__ Register bits
+    namespace fifo___bits {
         constexpr uint32_t DATA = (32 << 0);  ///< Data to Read or Data to Write
     }
 
@@ -1436,7 +1436,7 @@ namespace usart {
         volatile uint32_t TTGR;  ///< Offset: 0x28 - Transmitter Timeguard Register
         volatile uint32_t FIDI;  ///< Offset: 0x40 - FI DI Ratio Register
         volatile uint32_t NER;  ///< Offset: 0x44 - Number of Errors Register
-        volatile uint32_t IF;  ///< Offset: 0x4C - IrDA Filter Register
+        volatile uint32_t IF_;  ///< Offset: 0x4C - IrDA Filter Register (renamed from IF_)
         volatile uint32_t MAN;  ///< Offset: 0x50 - Manchester Encoder Decoder Register
         volatile uint32_t LINMR;  ///< Offset: 0x54 - LIN Mode Register
         volatile uint32_t LINIR;  ///< Offset: 0x58 - LIN Identifier Register
@@ -1738,8 +1738,8 @@ namespace usart {
         constexpr uint32_t NB_ERRORS = (8 << 0);  ///< Number of Errors
     }
 
-    /// IF Register bits
-    namespace if_bits {
+    /// IF_ Register bits
+    namespace if__bits {
         constexpr uint32_t IRDA_FILTER = (8 << 0);  ///< IrDA Filter
     }
 
@@ -2049,9 +2049,9 @@ namespace lcdc {
         volatile uint32_t BASECFG2;  ///< Offset: 0x74 - Base Layer Configuration Register 2
         volatile uint32_t BASECFG3;  ///< Offset: 0x78 - Base Layer Configuration Register 3
         volatile uint32_t BASECFG4;  ///< Offset: 0x7C - Base Layer Configuration Register 4
-        volatile uint32_t BASECLUT[%s];  ///< Offset: 0x400 - Base CLUT Register
+        volatile uint32_t BASECLUT__;  ///< Offset: 0x400 - Base CLUT Register (renamed from BASECLUT__)
         volatile uint32_t ADDRSIZE;  ///< Offset: 0x1FEC - Address Size Register
-        volatile uint32_t IPNAME[%s];  ///< Offset: 0x1FF0 - IP Name1 Register
+        volatile uint32_t IPNAME__;  ///< Offset: 0x1FF0 - IP Name1 Register (renamed from IPNAME__)
         volatile uint32_t FEATURES;  ///< Offset: 0x1FF8 - Features Register
         volatile uint32_t VERSION;  ///< Offset: 0x1FFC - Version Register
     };
@@ -2292,8 +2292,8 @@ namespace lcdc {
         constexpr uint32_t REP = (1U << 9);  ///< Use Replication logic to expand RGB color to 24 bits
     }
 
-    /// BASECLUT[%s] Register bits
-    namespace baseclut[%s]_bits {
+    /// BASECLUT__ Register bits
+    namespace baseclut___bits {
         constexpr uint32_t BCLUT = (8 << 0);  ///< Blue Color entry
         constexpr uint32_t GCLUT = (8 << 8);  ///< Green Color entry
         constexpr uint32_t RCLUT = (8 << 16);  ///< Red Color entry
@@ -2320,9 +2320,9 @@ namespace udp {
         volatile uint32_t ISR;  ///< Offset: 0x1C - Interrupt Status Register
         volatile uint32_t ICR;  ///< Offset: 0x20 - Interrupt Clear Register
         volatile uint32_t RST_EP;  ///< Offset: 0x28 - Reset Endpoint Register
-        volatile uint32_t CSR[%s];  ///< Offset: 0x30 - Endpoint Control and Status Register
+        volatile uint32_t CSR__;  ///< Offset: 0x30 - Endpoint Control and Status Register (renamed from CSR__)
         volatile uint32_t CSR0_ISOENDPT;  ///< Offset: 0x30 - Endpoint Control and Status Register
-        volatile uint32_t FDR[%s];  ///< Offset: 0x50 - Endpoint FIFO Data Register
+        volatile uint32_t FDR__;  ///< Offset: 0x50 - Endpoint FIFO Data Register (renamed from FDR__)
         volatile uint32_t TXVC;  ///< Offset: 0x74 - Transceiver Control Register
     };
 
@@ -2434,8 +2434,8 @@ namespace udp {
         constexpr uint32_t EP5 = (1U << 5);  ///< Reset Endpoint 5
     }
 
-    /// CSR[%s] Register bits
-    namespace csr[%s]_bits {
+    /// CSR__ Register bits
+    namespace csr___bits {
         constexpr uint32_t TXCOMP = (1U << 0);  ///< Generates an IN Packet with Data Previously Written in the DPR
         constexpr uint32_t RX_DATA_BK0 = (1U << 1);  ///< Receive Data Bank 0
         constexpr uint32_t RXSETUP = (1U << 2);  ///< Received Setup
@@ -2466,8 +2466,8 @@ namespace udp {
         constexpr uint32_t RXBYTECNT = (11 << 16);  ///< Number of Bytes Available in the FIFO
     }
 
-    /// FDR[%s] Register bits
-    namespace fdr[%s]_bits {
+    /// FDR__ Register bits
+    namespace fdr___bits {
         constexpr uint32_t FIFO_DATA = (8 << 0);  ///< FIFO Data Value
     }
 
@@ -2559,7 +2559,7 @@ namespace adc {
         volatile uint32_t OVER;  ///< Offset: 0x3C - Overrun Status Register
         volatile uint32_t EMR;  ///< Offset: 0x40 - Extended Mode Register
         volatile uint32_t CWR;  ///< Offset: 0x44 - Compare Window Register
-        volatile uint32_t CDR[%s];  ///< Offset: 0x50 - Channel Data Register
+        volatile uint32_t CDR__;  ///< Offset: 0x50 - Channel Data Register (renamed from CDR__)
         volatile uint32_t ACR;  ///< Offset: 0x94 - Analog Control Register
         volatile uint32_t TSMR;  ///< Offset: 0xB0 - Touchscreen Mode Register
         volatile uint32_t XPOSR;  ///< Offset: 0xB4 - Touchscreen X Position Register
@@ -2797,8 +2797,8 @@ namespace adc {
         constexpr uint32_t HIGHTHRES = (12 << 16);  ///< High Threshold
     }
 
-    /// CDR[%s] Register bits
-    namespace cdr[%s]_bits {
+    /// CDR__ Register bits
+    namespace cdr___bits {
         constexpr uint32_t DATA = (12 << 0);  ///< Converted Data
     }
 
@@ -2870,7 +2870,7 @@ namespace fuse {
         volatile uint32_t MR;  ///< Offset: 0x04 - Fuse Mode Register
         volatile uint32_t IR;  ///< Offset: 0x08 - Fuse Index Register
         volatile uint32_t DR;  ///< Offset: 0x0C - Fuse Data Register
-        volatile uint32_t SR[%s];  ///< Offset: 0x10 - Fuse Status Register
+        volatile uint32_t SR__;  ///< Offset: 0x10 - Fuse Status Register (renamed from SR__)
     };
 
     /// Peripheral instances
@@ -2901,8 +2901,8 @@ namespace fuse {
         constexpr uint32_t DATA = (32 << 0);  ///< Data to Program
     }
 
-    /// SR[%s] Register bits
-    namespace sr[%s]_bits {
+    /// SR__ Register bits
+    namespace sr___bits {
         constexpr uint32_t FUSE = (32 << 0);  ///< Fuse Status
     }
 
@@ -2918,8 +2918,8 @@ namespace matrix {
 
     /// MATRIX Register structure
     struct Registers {
-        volatile uint32_t MCFG[%s];  ///< Offset: 0x00 - Master Configuration Register
-        volatile uint32_t SCFG[%s];  ///< Offset: 0x40 - Slave Configuration Register
+        volatile uint32_t MCFG__;  ///< Offset: 0x00 - Master Configuration Register (renamed from MCFG__)
+        volatile uint32_t SCFG__;  ///< Offset: 0x40 - Slave Configuration Register (renamed from SCFG__)
         volatile uint32_t PRAS0;  ///< Offset: 0x80 - Priority Register A for Slave 0
         volatile uint32_t PRAS1;  ///< Offset: 0x88 - Priority Register A for Slave 1
         volatile uint32_t PRAS2;  ///< Offset: 0x90 - Priority Register A for Slave 2
@@ -2934,13 +2934,13 @@ namespace matrix {
     inline Registers* MATRIX = reinterpret_cast<Registers*>(MATRIX_BASE);
 
     // Bit definitions
-    /// MCFG[%s] Register bits
-    namespace mcfg[%s]_bits {
+    /// MCFG__ Register bits
+    namespace mcfg___bits {
         constexpr uint32_t ULBT = (3 << 0);  ///< Undefined Length Burst Type
     }
 
-    /// SCFG[%s] Register bits
-    namespace scfg[%s]_bits {
+    /// SCFG__ Register bits
+    namespace scfg___bits {
         constexpr uint32_t SLOT_CYCLE = (9 << 0);  ///< Maximum Bus Grant Duration for Masters
         constexpr uint32_t DEFMSTR_TYPE = (2 << 16);  ///< Default Master Type
         constexpr uint32_t FIXED_DEFMSTR = (4 << 18);  ///< Fixed Default Master
@@ -3238,7 +3238,7 @@ namespace pmecc {
         constexpr uint32_t PAGESIZE = (2 << 8);  ///< Number of Sectors in the Page
         constexpr uint32_t NANDWR = (1U << 12);  ///< NAND Write Access
         constexpr uint32_t SPAREEN = (1U << 16);  ///< Spare Enable
-        constexpr uint32_t AUTO = (1U << 20);  ///< Automatic Mode Enable
+        constexpr uint32_t AUTO_ = (1U << 20);  ///< Automatic Mode Enable (renamed from AUTO_)
     }
 
     /// SAREA Register bits
@@ -4333,8 +4333,8 @@ namespace pmerrloc {
         volatile uint32_t ELIDR;  ///< Offset: 0x18 - Error Location Interrupt Disable Register
         volatile uint32_t ELIMR;  ///< Offset: 0x1C - Error Location Interrupt Mask Register
         volatile uint32_t ELISR;  ///< Offset: 0x20 - Error Location Interrupt Status Register
-        volatile uint32_t SIGMA[%s];  ///< Offset: 0x28 - PMECC SIGMA 0 Register
-        volatile uint32_t EL[%s];  ///< Offset: 0x8C - PMECC Error Location 0 Register
+        volatile uint32_t SIGMA__;  ///< Offset: 0x28 - PMECC SIGMA 0 Register (renamed from SIGMA__)
+        volatile uint32_t EL__;  ///< Offset: 0x8C - PMECC Error Location 0 Register (renamed from EL__)
     };
 
     /// Peripheral instances
@@ -4388,13 +4388,13 @@ namespace pmerrloc {
         constexpr uint32_t ERR_CNT = (5 << 8);  ///< Error Counter value
     }
 
-    /// SIGMA[%s] Register bits
-    namespace sigma[%s]_bits {
+    /// SIGMA__ Register bits
+    namespace sigma___bits {
         constexpr uint32_t SIGMAN = (14 << 0);  ///< SIGMAN
     }
 
-    /// EL[%s] Register bits
-    namespace el[%s]_bits {
+    /// EL__ Register bits
+    namespace el___bits {
         constexpr uint32_t ERRLOCN = (14 << 0);  ///< Error Position within the set {sector area, spare area}.
     }
 
@@ -5244,7 +5244,7 @@ namespace dma {
         constexpr uint32_t SRC_INCR = (2 << 24);  ///< Incrementing, Decrementing or Fixed Address for the Source
         constexpr uint32_t DST_INCR = (2 << 28);  ///< Incrementing, Decrementing or Fixed Address for the Destination
         constexpr uint32_t IEN = (1U << 30);  ///< IEN
-        constexpr uint32_t AUTO = (1U << 31);  ///< Automatic Multiple Buffer Transfer
+        constexpr uint32_t AUTO_ = (1U << 31);  ///< Automatic Multiple Buffer Transfer (renamed from AUTO_)
     }
 
     /// CFG0 Register bits
@@ -5315,7 +5315,7 @@ namespace dma {
         constexpr uint32_t SRC_INCR = (2 << 24);  ///< Incrementing, Decrementing or Fixed Address for the Source
         constexpr uint32_t DST_INCR = (2 << 28);  ///< Incrementing, Decrementing or Fixed Address for the Destination
         constexpr uint32_t IEN = (1U << 30);  ///< IEN
-        constexpr uint32_t AUTO = (1U << 31);  ///< Automatic Multiple Buffer Transfer
+        constexpr uint32_t AUTO_ = (1U << 31);  ///< Automatic Multiple Buffer Transfer (renamed from AUTO_)
     }
 
     /// CFG1 Register bits
@@ -5386,7 +5386,7 @@ namespace dma {
         constexpr uint32_t SRC_INCR = (2 << 24);  ///< Incrementing, Decrementing or Fixed Address for the Source
         constexpr uint32_t DST_INCR = (2 << 28);  ///< Incrementing, Decrementing or Fixed Address for the Destination
         constexpr uint32_t IEN = (1U << 30);  ///< IEN
-        constexpr uint32_t AUTO = (1U << 31);  ///< Automatic Multiple Buffer Transfer
+        constexpr uint32_t AUTO_ = (1U << 31);  ///< Automatic Multiple Buffer Transfer (renamed from AUTO_)
     }
 
     /// CFG2 Register bits
@@ -5457,7 +5457,7 @@ namespace dma {
         constexpr uint32_t SRC_INCR = (2 << 24);  ///< Incrementing, Decrementing or Fixed Address for the Source
         constexpr uint32_t DST_INCR = (2 << 28);  ///< Incrementing, Decrementing or Fixed Address for the Destination
         constexpr uint32_t IEN = (1U << 30);  ///< IEN
-        constexpr uint32_t AUTO = (1U << 31);  ///< Automatic Multiple Buffer Transfer
+        constexpr uint32_t AUTO_ = (1U << 31);  ///< Automatic Multiple Buffer Transfer (renamed from AUTO_)
     }
 
     /// CFG3 Register bits
@@ -5528,7 +5528,7 @@ namespace dma {
         constexpr uint32_t SRC_INCR = (2 << 24);  ///< Incrementing, Decrementing or Fixed Address for the Source
         constexpr uint32_t DST_INCR = (2 << 28);  ///< Incrementing, Decrementing or Fixed Address for the Destination
         constexpr uint32_t IEN = (1U << 30);  ///< IEN
-        constexpr uint32_t AUTO = (1U << 31);  ///< Automatic Multiple Buffer Transfer
+        constexpr uint32_t AUTO_ = (1U << 31);  ///< Automatic Multiple Buffer Transfer (renamed from AUTO_)
     }
 
     /// CFG4 Register bits
@@ -5599,7 +5599,7 @@ namespace dma {
         constexpr uint32_t SRC_INCR = (2 << 24);  ///< Incrementing, Decrementing or Fixed Address for the Source
         constexpr uint32_t DST_INCR = (2 << 28);  ///< Incrementing, Decrementing or Fixed Address for the Destination
         constexpr uint32_t IEN = (1U << 30);  ///< IEN
-        constexpr uint32_t AUTO = (1U << 31);  ///< Automatic Multiple Buffer Transfer
+        constexpr uint32_t AUTO_ = (1U << 31);  ///< Automatic Multiple Buffer Transfer (renamed from AUTO_)
     }
 
     /// CFG5 Register bits
@@ -5670,7 +5670,7 @@ namespace dma {
         constexpr uint32_t SRC_INCR = (2 << 24);  ///< Incrementing, Decrementing or Fixed Address for the Source
         constexpr uint32_t DST_INCR = (2 << 28);  ///< Incrementing, Decrementing or Fixed Address for the Destination
         constexpr uint32_t IEN = (1U << 30);  ///< IEN
-        constexpr uint32_t AUTO = (1U << 31);  ///< Automatic Multiple Buffer Transfer
+        constexpr uint32_t AUTO_ = (1U << 31);  ///< Automatic Multiple Buffer Transfer (renamed from AUTO_)
     }
 
     /// CFG6 Register bits
@@ -5741,7 +5741,7 @@ namespace dma {
         constexpr uint32_t SRC_INCR = (2 << 24);  ///< Incrementing, Decrementing or Fixed Address for the Source
         constexpr uint32_t DST_INCR = (2 << 28);  ///< Incrementing, Decrementing or Fixed Address for the Destination
         constexpr uint32_t IEN = (1U << 30);  ///< IEN
-        constexpr uint32_t AUTO = (1U << 31);  ///< Automatic Multiple Buffer Transfer
+        constexpr uint32_t AUTO_ = (1U << 31);  ///< Automatic Multiple Buffer Transfer (renamed from AUTO_)
     }
 
     /// CFG7 Register bits
@@ -5798,8 +5798,8 @@ namespace aic {
 
     /// AIC Register structure
     struct Registers {
-        volatile uint32_t SMR[%s];  ///< Offset: 0x00 - Source Mode Register
-        volatile uint32_t SVR[%s];  ///< Offset: 0x80 - Source Vector Register
+        volatile uint32_t SMR__;  ///< Offset: 0x00 - Source Mode Register (renamed from SMR__)
+        volatile uint32_t SVR__;  ///< Offset: 0x80 - Source Vector Register (renamed from SVR__)
         volatile uint32_t IVR;  ///< Offset: 0x100 - Interrupt Vector Register
         volatile uint32_t FVR;  ///< Offset: 0x104 - FIQ Interrupt Vector Register
         volatile uint32_t ISR;  ///< Offset: 0x108 - Interrupt Status Register
@@ -5824,14 +5824,14 @@ namespace aic {
     inline Registers* AIC = reinterpret_cast<Registers*>(AIC_BASE);
 
     // Bit definitions
-    /// SMR[%s] Register bits
-    namespace smr[%s]_bits {
+    /// SMR__ Register bits
+    namespace smr___bits {
         constexpr uint32_t PRIOR = (3 << 0);  ///< Priority Level
         constexpr uint32_t SRCTYPE = (2 << 5);  ///< Interrupt Source Type
     }
 
-    /// SVR[%s] Register bits
-    namespace svr[%s]_bits {
+    /// SVR__ Register bits
+    namespace svr___bits {
         constexpr uint32_t VECTOR = (32 << 0);  ///< Source Vector
     }
 
@@ -6367,7 +6367,7 @@ namespace pioa {
         volatile uint32_t PUDR;  ///< Offset: 0x60 - Pull-up Disable Register
         volatile uint32_t PUER;  ///< Offset: 0x64 - Pull-up Enable Register
         volatile uint32_t PUSR;  ///< Offset: 0x68 - Pad Pull-up Status Register
-        volatile uint32_t ABCDSR[%s];  ///< Offset: 0x70 - Peripheral Select Register
+        volatile uint32_t ABCDSR__;  ///< Offset: 0x70 - Peripheral Select Register (renamed from ABCDSR__)
         volatile uint32_t IFSCDR;  ///< Offset: 0x80 - Input Filter Slow Clock Disable Register
         volatile uint32_t IFSCER;  ///< Offset: 0x84 - Input Filter Slow Clock Enable Register
         volatile uint32_t IFSCSR;  ///< Offset: 0x88 - Input Filter Slow Clock Status Register
@@ -7228,8 +7228,8 @@ namespace pioa {
         constexpr uint32_t P31 = (1U << 31);  ///< Pull Up Status.
     }
 
-    /// ABCDSR[%s] Register bits
-    namespace abcdsr[%s]_bits {
+    /// ABCDSR__ Register bits
+    namespace abcdsr___bits {
         constexpr uint32_t P0 = (1U << 0);  ///< Peripheral Select.
         constexpr uint32_t P1 = (1U << 1);  ///< Peripheral Select.
         constexpr uint32_t P2 = (1U << 2);  ///< Peripheral Select.
@@ -8088,7 +8088,7 @@ namespace piob {
         volatile uint32_t PUDR;  ///< Offset: 0x60 - Pull-up Disable Register
         volatile uint32_t PUER;  ///< Offset: 0x64 - Pull-up Enable Register
         volatile uint32_t PUSR;  ///< Offset: 0x68 - Pad Pull-up Status Register
-        volatile uint32_t ABCDSR[%s];  ///< Offset: 0x70 - Peripheral Select Register
+        volatile uint32_t ABCDSR__;  ///< Offset: 0x70 - Peripheral Select Register (renamed from ABCDSR__)
         volatile uint32_t IFSCDR;  ///< Offset: 0x80 - Input Filter Slow Clock Disable Register
         volatile uint32_t IFSCER;  ///< Offset: 0x84 - Input Filter Slow Clock Enable Register
         volatile uint32_t IFSCSR;  ///< Offset: 0x88 - Input Filter Slow Clock Status Register
@@ -8949,8 +8949,8 @@ namespace piob {
         constexpr uint32_t P31 = (1U << 31);  ///< Pull Up Status.
     }
 
-    /// ABCDSR[%s] Register bits
-    namespace abcdsr[%s]_bits {
+    /// ABCDSR__ Register bits
+    namespace abcdsr___bits {
         constexpr uint32_t P0 = (1U << 0);  ///< Peripheral Select.
         constexpr uint32_t P1 = (1U << 1);  ///< Peripheral Select.
         constexpr uint32_t P2 = (1U << 2);  ///< Peripheral Select.
@@ -9809,7 +9809,7 @@ namespace pioc {
         volatile uint32_t PUDR;  ///< Offset: 0x60 - Pull-up Disable Register
         volatile uint32_t PUER;  ///< Offset: 0x64 - Pull-up Enable Register
         volatile uint32_t PUSR;  ///< Offset: 0x68 - Pad Pull-up Status Register
-        volatile uint32_t ABCDSR[%s];  ///< Offset: 0x70 - Peripheral Select Register
+        volatile uint32_t ABCDSR__;  ///< Offset: 0x70 - Peripheral Select Register (renamed from ABCDSR__)
         volatile uint32_t IFSCDR;  ///< Offset: 0x80 - Input Filter Slow Clock Disable Register
         volatile uint32_t IFSCER;  ///< Offset: 0x84 - Input Filter Slow Clock Enable Register
         volatile uint32_t IFSCSR;  ///< Offset: 0x88 - Input Filter Slow Clock Status Register
@@ -10670,8 +10670,8 @@ namespace pioc {
         constexpr uint32_t P31 = (1U << 31);  ///< Pull Up Status.
     }
 
-    /// ABCDSR[%s] Register bits
-    namespace abcdsr[%s]_bits {
+    /// ABCDSR__ Register bits
+    namespace abcdsr___bits {
         constexpr uint32_t P0 = (1U << 0);  ///< Peripheral Select.
         constexpr uint32_t P1 = (1U << 1);  ///< Peripheral Select.
         constexpr uint32_t P2 = (1U << 2);  ///< Peripheral Select.
@@ -11530,7 +11530,7 @@ namespace piod {
         volatile uint32_t PUDR;  ///< Offset: 0x60 - Pull-up Disable Register
         volatile uint32_t PUER;  ///< Offset: 0x64 - Pull-up Enable Register
         volatile uint32_t PUSR;  ///< Offset: 0x68 - Pad Pull-up Status Register
-        volatile uint32_t ABCDSR[%s];  ///< Offset: 0x70 - Peripheral Select Register
+        volatile uint32_t ABCDSR__;  ///< Offset: 0x70 - Peripheral Select Register (renamed from ABCDSR__)
         volatile uint32_t IFSCDR;  ///< Offset: 0x80 - Input Filter Slow Clock Disable Register
         volatile uint32_t IFSCER;  ///< Offset: 0x84 - Input Filter Slow Clock Enable Register
         volatile uint32_t IFSCSR;  ///< Offset: 0x88 - Input Filter Slow Clock Status Register
@@ -12391,8 +12391,8 @@ namespace piod {
         constexpr uint32_t P31 = (1U << 31);  ///< Pull Up Status.
     }
 
-    /// ABCDSR[%s] Register bits
-    namespace abcdsr[%s]_bits {
+    /// ABCDSR__ Register bits
+    namespace abcdsr___bits {
         constexpr uint32_t P0 = (1U << 0);  ///< Peripheral Select.
         constexpr uint32_t P1 = (1U << 1);  ///< Peripheral Select.
         constexpr uint32_t P2 = (1U << 2);  ///< Peripheral Select.
@@ -13240,7 +13240,7 @@ namespace pmc {
         volatile uint32_t CKGR_PLLBR;  ///< Offset: 0x2C - PLLB Register
         volatile uint32_t PMC_MCKR;  ///< Offset: 0x30 - Master Clock Register
         volatile uint32_t PMC_USB;  ///< Offset: 0x38 - USB Clock Register
-        volatile uint32_t PMC_PCK[%s];  ///< Offset: 0x40 - Programmable Clock 0 Register
+        volatile uint32_t PMC_PCK__;  ///< Offset: 0x40 - Programmable Clock 0 Register (renamed from PMC_PCK__)
         volatile uint32_t PMC_IER;  ///< Offset: 0x60 - Interrupt Enable Register
         volatile uint32_t PMC_IDR;  ///< Offset: 0x64 - Interrupt Disable Register
         volatile uint32_t PMC_SR;  ///< Offset: 0x68 - Status Register
@@ -13438,8 +13438,8 @@ namespace pmc {
         constexpr uint32_t USBDIV = (4 << 8);  ///< Divider for USB Clock
     }
 
-    /// PMC_PCK[%s] Register bits
-    namespace pmc_pck[%s]_bits {
+    /// PMC_PCK__ Register bits
+    namespace pmc_pck___bits {
         constexpr uint32_t CSS = (3 << 0);  ///< Master Clock Source Selection
         constexpr uint32_t PRES = (3 << 4);  ///< Programmable Clock Prescaler
     }
@@ -13716,15 +13716,15 @@ namespace gpbr {
 
     /// GPBR Register structure
     struct Registers {
-        volatile uint32_t GPBR[%s];  ///< Offset: 0x00 - General Purpose Backup Register
+        volatile uint32_t GPBR__;  ///< Offset: 0x00 - General Purpose Backup Register (renamed from GPBR__)
     };
 
     /// Peripheral instances
     inline Registers* GPBR = reinterpret_cast<Registers*>(GPBR_BASE);
 
     // Bit definitions
-    /// GPBR[%s] Register bits
-    namespace gpbr[%s]_bits {
+    /// GPBR__ Register bits
+    namespace gpbr___bits {
         constexpr uint32_t GPBR_VALUE = (32 << 0);  ///< Value of GPBR x
     }
 

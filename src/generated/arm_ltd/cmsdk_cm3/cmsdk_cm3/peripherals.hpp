@@ -3,7 +3,7 @@
 /// Source: arm_sample_cmsdk.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:01:13
+/// Generated: 2025-10-31 17:44:52
 #ifndef ALLOY_GENERATED_CMSDK_CM3_PERIPHERALS_HPP
 #define ALLOY_GENERATED_CMSDK_CM3_PERIPHERALS_HPP
 
@@ -232,7 +232,7 @@ namespace wdg {
 
     /// WDOGINTCLR Register bits
     namespace wdogintclr_bits {
-        constexpr uint32_t INT = (1U << 0);  ///< Interrupt
+        constexpr uint32_t INT_ = (1U << 0);  ///< Interrupt (renamed from INT_)
     }
 
     /// WDOGRIS Register bits

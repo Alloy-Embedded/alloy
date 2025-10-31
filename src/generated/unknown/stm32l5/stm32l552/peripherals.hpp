@@ -3,7 +3,7 @@
 /// Source: st_stm32l552.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:35
+/// Generated: 2025-10-31 17:44:10
 #ifndef ALLOY_GENERATED_STM32L552_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32L552_PERIPHERALS_HPP
 
@@ -5928,7 +5928,7 @@ namespace tim {
         volatile uint32_t CMP;  ///< Offset: 0x14 - Compare Register
         volatile uint32_t ARR;  ///< Offset: 0x18 - Autoreload Register
         volatile uint32_t CNT;  ///< Offset: 0x1C - Counter Register
-        volatile uint32_t OR;  ///< Offset: 0x20 - LPTIM option register
+        volatile uint32_t OR_;  ///< Offset: 0x20 - LPTIM option register (renamed from OR_)
         volatile uint32_t RCR;  ///< Offset: 0x28 - LPTIM repetition register
     };
 
@@ -6043,8 +6043,8 @@ namespace tim {
         constexpr uint32_t CNT = (16 << 0);  ///< Counter value
     }
 
-    /// OR Register bits
-    namespace or_bits {
+    /// OR_ Register bits
+    namespace or__bits {
         constexpr uint32_t OR_0 = (1U << 0);  ///< Option register bit 0
         constexpr uint32_t OR_1 = (1U << 1);  ///< Option register bit 1
     }
@@ -11954,7 +11954,7 @@ namespace can {
     namespace fdcan_cccr_bits {
         constexpr uint32_t INIT = (1U << 0);  ///< Initialization
         constexpr uint32_t CCE = (1U << 1);  ///< Configuration Change Enable
-        constexpr uint32_t ASM = (1U << 2);  ///< ASM Restricted Operation Mode
+        constexpr uint32_t ASM_ = (1U << 2);  ///< ASM Restricted Operation Mode (renamed from ASM_)
         constexpr uint32_t CSA = (1U << 3);  ///< Clock Stop Acknowledge
         constexpr uint32_t CSR = (1U << 4);  ///< Clock Stop Request
         constexpr uint32_t MON = (1U << 5);  ///< Bus Monitoring Mode

@@ -3,7 +3,7 @@
 /// Source: fujitsu_mb9bf40xr.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:44
+/// Generated: 2025-10-31 17:44:20
 #include <cstdint>
 #include <cstring>
 

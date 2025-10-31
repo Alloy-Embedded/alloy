@@ -3,7 +3,7 @@
 /// Source: nxp_lpc176x5x.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-31 12:00:41
+/// Generated: 2025-10-31 17:44:16
 #ifndef ALLOY_GENERATED_LPC176X5X_PERIPHERALS_HPP
 #define ALLOY_GENERATED_LPC176X5X_PERIPHERALS_HPP
 
@@ -209,9 +209,9 @@ namespace tim {
         volatile uint32_t PR;  ///< Offset: 0x0C - Prescale Register. When the Prescale Counter (PC) is...
         volatile uint32_t PC;  ///< Offset: 0x10 - Prescale Counter. The 32 bit PC is a counter which is...
         volatile uint32_t MCR;  ///< Offset: 0x14 - Match Control Register. The MCR is used to control if an...
-        volatile uint32_t MR[%s];  ///< Offset: 0x18 - Match Register 0. MR0 can be enabled through the MCR to...
+        volatile uint32_t MR__;  ///< Offset: 0x18 - Match Register 0. MR0 can be enabled through the MCR to... (renamed from MR__)
         volatile uint32_t CCR;  ///< Offset: 0x28 - Capture Control Register. The CCR controls which edges...
-        volatile uint32_t CR[%s];  ///< Offset: 0x2C - Capture Register 0. CR0 is loaded with the value of TC...
+        volatile uint32_t CR__;  ///< Offset: 0x2C - Capture Register 0. CR0 is loaded with the value of TC... (renamed from CR__)
         volatile uint32_t EMR;  ///< Offset: 0x3C - External Match Register. The EMR controls the external...
         volatile uint32_t CTCR;  ///< Offset: 0x70 - Count Control Register. The CTCR selects between Timer...
     };
@@ -281,9 +281,9 @@ namespace pwm {
         volatile uint32_t PR;  ///< Offset: 0x0C - Prescale Register. Determines how often the PWM counter...
         volatile uint32_t PC;  ///< Offset: 0x10 - Prescale Counter. Prescaler for the main PWM counter.
         volatile uint32_t MCR;  ///< Offset: 0x14 - Match Control Register. The MCR is used to control...
-        volatile uint32_t MR%s;  ///< Offset: 0x40 - Match Register. Match registers are continuously...
+        volatile uint32_t MR;  ///< Offset: 0x40 - Match Register. Match registers are continuously... (renamed from MR)
         volatile uint32_t CCR;  ///< Offset: 0x28 - Capture Control Register. The CCR controls which edges...
-        volatile uint32_t CR[%s];  ///< Offset: 0x2C - PWM Control Register. Enables PWM outputs and selects...
+        volatile uint32_t CR__;  ///< Offset: 0x2C - PWM Control Register. Enables PWM outputs and selects... (renamed from CR__)
         volatile uint32_t PCR;  ///< Offset: 0x4C - PWM Control Register. Enables PWM outputs and selects...
         volatile uint32_t LER;  ///< Offset: 0x50 - Load Enable Register. Enables use of updated PWM match values.
         volatile uint32_t CTCR;  ///< Offset: 0x70 - Count Control Register. The CTCR selects between Timer...
@@ -315,9 +315,9 @@ namespace i2c {
         volatile uint32_t SCLL;  ///< Offset: 0x14 - SCL Duty Cycle Register Low Half Word. Determines the...
         volatile uint32_t CONCLR;  ///< Offset: 0x18 - I2C Control Clear Register. When a one is written to a...
         volatile uint32_t MMCTRL;  ///< Offset: 0x1C - Monitor mode control register.
-        volatile uint32_t ADR%s;  ///< Offset: 0x20 - I2C Slave Address Register. Contains the 7-bit slave...
+        volatile uint32_t ADR;  ///< Offset: 0x20 - I2C Slave Address Register. Contains the 7-bit slave... (renamed from ADR)
         volatile uint32_t DATA_BUFFER;  ///< Offset: 0x2C - Data buffer register. The contents of the 8 MSBs of the...
-        volatile uint32_t MASK[%s];  ///< Offset: 0x30 - I2C Slave address mask register
+        volatile uint32_t MASK__;  ///< Offset: 0x30 - I2C Slave address mask register (renamed from MASK__)
     };
 
     /// Peripheral instances
@@ -341,7 +341,7 @@ namespace spi {
         volatile uint32_t SR;  ///< Offset: 0x04 - SPI Status Register. This register shows the status of the SPI.
         volatile uint32_t DR;  ///< Offset: 0x08 - SPI Data Register. This bi-directional register provides...
         volatile uint32_t CCR;  ///< Offset: 0x0C - SPI Clock Counter Register. This register controls the...
-        volatile uint32_t INT;  ///< Offset: 0x1C - SPI Interrupt Flag. This register contains the interrupt...
+        volatile uint32_t INT_;  ///< Offset: 0x1C - SPI Interrupt Flag. This register contains the interrupt... (renamed from INT_)
     };
 
     /// Peripheral instances
@@ -375,7 +375,7 @@ namespace rtc {
         volatile uint32_t MONTH;  ///< Offset: 0x38 - Months Register
         volatile uint32_t YEAR;  ///< Offset: 0x3C - Years Register
         volatile uint32_t CALIBRATION;  ///< Offset: 0x40 - Calibration Value Register
-        volatile uint32_t GPREG%s;  ///< Offset: 0x44 - General Purpose Register 0
+        volatile uint32_t GPREG;  ///< Offset: 0x44 - General Purpose Register 0 (renamed from GPREG)
         volatile uint32_t RTC_AUX;  ///< Offset: 0x5C - RTC Auxiliary control register
         volatile uint32_t RTC_AUXEN;  ///< Offset: 0x58 - RTC Auxiliary Enable register
         volatile uint32_t ASEC;  ///< Offset: 0x60 - Alarm value for Seconds
@@ -501,7 +501,7 @@ namespace adc {
         volatile uint32_t CR;  ///< Offset: 0x00 - A/D Control Register. The ADCR register must be written...
         volatile uint32_t GDR;  ///< Offset: 0x04 - A/D Global Data Register. This register contains the...
         volatile uint32_t INTEN;  ///< Offset: 0x0C - A/D Interrupt Enable Register. This register contains...
-        volatile uint32_t DR[%s];  ///< Offset: 0x10 - A/D Channel 0 Data Register. This register contains the...
+        volatile uint32_t DR__;  ///< Offset: 0x10 - A/D Channel 0 Data Register. This register contains the... (renamed from DR__)
         volatile uint32_t STAT;  ///< Offset: 0x30 - A/D Status Register. This register contains DONE and...
         volatile uint32_t TRM;  ///< Offset: 0x34 - ADC trim register.
     };
@@ -525,7 +525,7 @@ namespace can {
 
     /// CAN Register structure
     struct Registers {
-        volatile uint32_t MASK[%s];  ///< Offset: 0x00 - CAN AF ram access register
+        volatile uint32_t MASK__;  ///< Offset: 0x00 - CAN AF ram access register (renamed from MASK__)
     };
 
     /// Peripheral instances
@@ -772,11 +772,11 @@ namespace dma {
         volatile uint32_t SOFTLSREQ;  ///< Offset: 0x2C - DMA Software Last Single Request Register
         volatile uint32_t CONFIG;  ///< Offset: 0x30 - DMA Configuration Register
         volatile uint32_t SYNC;  ///< Offset: 0x34 - DMA Synchronization Register
-        volatile uint32_t SRCADDR%s;  ///< Offset: 0x100 - DMA Channel 0 Source Address Register
-        volatile uint32_t DESTADDR%s;  ///< Offset: 0x104 - DMA Channel 0 Destination Address Register
-        volatile uint32_t LLI%s;  ///< Offset: 0x108 - DMA Channel 0 Linked List Item Register
-        volatile uint32_t CONTROL%s;  ///< Offset: 0x10C - DMA Channel 0 Control Register
-        volatile uint32_t CONFIG%s;  ///< Offset: 0x110 - DMA Channel 0 Configuration Register[1]
+        volatile uint32_t SRCADDR;  ///< Offset: 0x100 - DMA Channel 0 Source Address Register (renamed from SRCADDR)
+        volatile uint32_t DESTADDR;  ///< Offset: 0x104 - DMA Channel 0 Destination Address Register (renamed from DESTADDR)
+        volatile uint32_t LLI;  ///< Offset: 0x108 - DMA Channel 0 Linked List Item Register (renamed from LLI)
+        volatile uint32_t CONTROL;  ///< Offset: 0x10C - DMA Channel 0 Control Register (renamed from CONTROL)
+        volatile uint32_t CONFIG;  ///< Offset: 0x110 - DMA Channel 0 Configuration Register[1] (renamed from CONFIG)
     };
 
     /// Peripheral instances
