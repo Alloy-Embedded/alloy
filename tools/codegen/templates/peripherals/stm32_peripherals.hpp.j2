@@ -29,7 +29,7 @@ namespace {{ periph_type | lower }} {
     /// {{ periph_type }} Register structure
     struct Registers {
         {% for reg_name, reg in periph.registers.items() %}
-        volatile uint32_t {{ reg_name }};  ///< Offset: {{ reg.offset }} - {{ reg.description | replace('\n', ' ') | truncate(60) }}
+        volatile uint32_t {{ reg_name }};  ///< Offset: {{ reg.offset }} - {{ reg.description | replace('\n', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | truncate(60) }}
         {% endfor %}
     };
 
@@ -45,9 +45,9 @@ namespace {{ periph_type | lower }} {
     namespace {{ reg_name | lower }}_bits {
         {% for bit_name, bit_def in bits.items() %}
         {% if bit_def.width is defined %}
-        constexpr uint32_t {{ bit_name }} = ({{ bit_def.width }} << {{ bit_def.bit }});  ///< {{ bit_def.description }}
+        constexpr uint32_t {{ bit_name }} = ({{ bit_def.width }} << {{ bit_def.bit }});  ///< {{ bit_def.description | replace('\n', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') }}
         {% else %}
-        constexpr uint32_t {{ bit_name }} = (1U << {{ bit_def.bit }});  ///< {{ bit_def.description }}
+        constexpr uint32_t {{ bit_name }} = (1U << {{ bit_def.bit }});  ///< {{ bit_def.description | replace('\n', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') | replace('  ', ' ') }}
         {% endif %}
         {% endfor %}
     }

@@ -3,7 +3,7 @@
 /// Source: stm32f1xx.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 22:59:06
+/// Generated: 2025-10-30 23:07:35
 #ifndef ALLOY_GENERATED_STM32F103C8_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32F103C8_PERIPHERALS_HPP
 
@@ -29,33 +29,33 @@ namespace fsmc {
 
     /// FSMC Register structure
     struct Registers {
-        volatile uint32_t BCR1;  ///< Offset: 0x00 - SRAM/NOR-Flash chip-select control register           1
-        volatile uint32_t BTR1;  ///< Offset: 0x04 - SRAM/NOR-Flash chip-select timing register           1
-        volatile uint32_t BCR2;  ///< Offset: 0x08 - SRAM/NOR-Flash chip-select control register           2
-        volatile uint32_t BTR2;  ///< Offset: 0x0C - SRAM/NOR-Flash chip-select timing register           2
-        volatile uint32_t BCR3;  ///< Offset: 0x10 - SRAM/NOR-Flash chip-select control register           3
-        volatile uint32_t BTR3;  ///< Offset: 0x14 - SRAM/NOR-Flash chip-select timing register           3
-        volatile uint32_t BCR4;  ///< Offset: 0x18 - SRAM/NOR-Flash chip-select control register           4
-        volatile uint32_t BTR4;  ///< Offset: 0x1C - SRAM/NOR-Flash chip-select timing register           4
-        volatile uint32_t PCR2;  ///< Offset: 0x60 - PC Card/NAND Flash control register           2
-        volatile uint32_t SR2;  ///< Offset: 0x64 - FIFO status and interrupt register           2
-        volatile uint32_t PMEM2;  ///< Offset: 0x68 - Common memory space timing register           2
-        volatile uint32_t PATT2;  ///< Offset: 0x6C - Attribute memory space timing register           2
+        volatile uint32_t BCR1;  ///< Offset: 0x00 - SRAM/NOR-Flash chip-select control register 1
+        volatile uint32_t BTR1;  ///< Offset: 0x04 - SRAM/NOR-Flash chip-select timing register 1
+        volatile uint32_t BCR2;  ///< Offset: 0x08 - SRAM/NOR-Flash chip-select control register 2
+        volatile uint32_t BTR2;  ///< Offset: 0x0C - SRAM/NOR-Flash chip-select timing register 2
+        volatile uint32_t BCR3;  ///< Offset: 0x10 - SRAM/NOR-Flash chip-select control register 3
+        volatile uint32_t BTR3;  ///< Offset: 0x14 - SRAM/NOR-Flash chip-select timing register 3
+        volatile uint32_t BCR4;  ///< Offset: 0x18 - SRAM/NOR-Flash chip-select control register 4
+        volatile uint32_t BTR4;  ///< Offset: 0x1C - SRAM/NOR-Flash chip-select timing register 4
+        volatile uint32_t PCR2;  ///< Offset: 0x60 - PC Card/NAND Flash control register 2
+        volatile uint32_t SR2;  ///< Offset: 0x64 - FIFO status and interrupt register 2
+        volatile uint32_t PMEM2;  ///< Offset: 0x68 - Common memory space timing register 2
+        volatile uint32_t PATT2;  ///< Offset: 0x6C - Attribute memory space timing register 2
         volatile uint32_t ECCR2;  ///< Offset: 0x74 - ECC result register 2
-        volatile uint32_t PCR3;  ///< Offset: 0x80 - PC Card/NAND Flash control register           3
-        volatile uint32_t SR3;  ///< Offset: 0x84 - FIFO status and interrupt register           3
-        volatile uint32_t PMEM3;  ///< Offset: 0x88 - Common memory space timing register           3
-        volatile uint32_t PATT3;  ///< Offset: 0x8C - Attribute memory space timing register           3
+        volatile uint32_t PCR3;  ///< Offset: 0x80 - PC Card/NAND Flash control register 3
+        volatile uint32_t SR3;  ///< Offset: 0x84 - FIFO status and interrupt register 3
+        volatile uint32_t PMEM3;  ///< Offset: 0x88 - Common memory space timing register 3
+        volatile uint32_t PATT3;  ///< Offset: 0x8C - Attribute memory space timing register 3
         volatile uint32_t ECCR3;  ///< Offset: 0x94 - ECC result register 3
-        volatile uint32_t PCR4;  ///< Offset: 0xA0 - PC Card/NAND Flash control register           4
-        volatile uint32_t SR4;  ///< Offset: 0xA4 - FIFO status and interrupt register           4
-        volatile uint32_t PMEM4;  ///< Offset: 0xA8 - Common memory space timing register           4
-        volatile uint32_t PATT4;  ///< Offset: 0xAC - Attribute memory space timing register           4
+        volatile uint32_t PCR4;  ///< Offset: 0xA0 - PC Card/NAND Flash control register 4
+        volatile uint32_t SR4;  ///< Offset: 0xA4 - FIFO status and interrupt register 4
+        volatile uint32_t PMEM4;  ///< Offset: 0xA8 - Common memory space timing register 4
+        volatile uint32_t PATT4;  ///< Offset: 0xAC - Attribute memory space timing register 4
         volatile uint32_t PIO4;  ///< Offset: 0xB0 - I/O space timing register 4
-        volatile uint32_t BWTR1;  ///< Offset: 0x104 - SRAM/NOR-Flash write timing registers           1
-        volatile uint32_t BWTR2;  ///< Offset: 0x10C - SRAM/NOR-Flash write timing registers           2
-        volatile uint32_t BWTR3;  ///< Offset: 0x114 - SRAM/NOR-Flash write timing registers           3
-        volatile uint32_t BWTR4;  ///< Offset: 0x11C - SRAM/NOR-Flash write timing registers           4
+        volatile uint32_t BWTR1;  ///< Offset: 0x104 - SRAM/NOR-Flash write timing registers 1
+        volatile uint32_t BWTR2;  ///< Offset: 0x10C - SRAM/NOR-Flash write timing registers 2
+        volatile uint32_t BWTR3;  ///< Offset: 0x114 - SRAM/NOR-Flash write timing registers 3
+        volatile uint32_t BWTR4;  ///< Offset: 0x11C - SRAM/NOR-Flash write timing registers 4
     };
 
     /// Peripheral instances
@@ -210,14 +210,10 @@ namespace fsmc {
 
     /// PATT2 Register bits
     namespace patt2_bits {
-        constexpr uint32_t ATTHIZx = (8 << 24);  ///< Attribute memory x databus HiZ
-              time
-        constexpr uint32_t ATTHOLDx = (8 << 16);  ///< Attribute memory x hold
-              time
-        constexpr uint32_t ATTWAITx = (8 << 8);  ///< Attribute memory x wait
-              time
-        constexpr uint32_t ATTSETx = (8 << 0);  ///< Attribute memory x setup
-              time
+        constexpr uint32_t ATTHIZx = (8 << 24);  ///< Attribute memory x databus HiZ time
+        constexpr uint32_t ATTHOLDx = (8 << 16);  ///< Attribute memory x hold time
+        constexpr uint32_t ATTWAITx = (8 << 8);  ///< Attribute memory x wait time
+        constexpr uint32_t ATTSETx = (8 << 0);  ///< Attribute memory x setup time
     }
 
     /// ECCR2 Register bits
@@ -368,8 +364,8 @@ namespace pwr {
 
     /// PWR Register structure
     struct Registers {
-        volatile uint32_t CR;  ///< Offset: 0x00 - Power control register           (PWR_CR)
-        volatile uint32_t CSR;  ///< Offset: 0x04 - Power control register           (PWR_CR)
+        volatile uint32_t CR;  ///< Offset: 0x00 - Power control register (PWR_CR)
+        volatile uint32_t CSR;  ///< Offset: 0x04 - Power control register (PWR_CR)
     };
 
     /// Peripheral instances
@@ -382,11 +378,9 @@ namespace pwr {
         constexpr uint32_t PDDS = (1U << 1);  ///< Power Down Deep Sleep
         constexpr uint32_t CWUF = (1U << 2);  ///< Clear Wake-up Flag
         constexpr uint32_t CSBF = (1U << 3);  ///< Clear STANDBY Flag
-        constexpr uint32_t PVDE = (1U << 4);  ///< Power Voltage Detector
-              Enable
+        constexpr uint32_t PVDE = (1U << 4);  ///< Power Voltage Detector Enable
         constexpr uint32_t PLS = (3 << 5);  ///< PVD Level Selection
-        constexpr uint32_t DBP = (1U << 8);  ///< Disable Backup Domain write
-              protection
+        constexpr uint32_t DBP = (1U << 8);  ///< Disable Backup Domain write protection
     }
 
     /// CSR Register bits
@@ -410,15 +404,15 @@ namespace rcc {
     /// RCC Register structure
     struct Registers {
         volatile uint32_t CR;  ///< Offset: 0x00 - Clock control register
-        volatile uint32_t CFGR;  ///< Offset: 0x04 - Clock configuration register           (RCC_CFGR)
-        volatile uint32_t CIR;  ///< Offset: 0x08 - Clock interrupt register           (RCC_CIR)
-        volatile uint32_t APB2RSTR;  ///< Offset: 0x0C - APB2 peripheral reset register           (RCC_APB2RSTR)
-        volatile uint32_t APB1RSTR;  ///< Offset: 0x10 - APB1 peripheral reset register           (RCC_APB1RSTR)
-        volatile uint32_t AHBENR;  ///< Offset: 0x14 - AHB Peripheral Clock enable register           (RCC_AHBENR)
-        volatile uint32_t APB2ENR;  ///< Offset: 0x18 - APB2 peripheral clock enable register           (RCC_APB2ENR)
-        volatile uint32_t APB1ENR;  ///< Offset: 0x1C - APB1 peripheral clock enable register           (RCC_APB1ENR)
-        volatile uint32_t BDCR;  ///< Offset: 0x20 - Backup domain control register           (RCC_BDCR)
-        volatile uint32_t CSR;  ///< Offset: 0x24 - Control/status register           (RCC_CSR)
+        volatile uint32_t CFGR;  ///< Offset: 0x04 - Clock configuration register (RCC_CFGR)
+        volatile uint32_t CIR;  ///< Offset: 0x08 - Clock interrupt register (RCC_CIR)
+        volatile uint32_t APB2RSTR;  ///< Offset: 0x0C - APB2 peripheral reset register (RCC_APB2RSTR)
+        volatile uint32_t APB1RSTR;  ///< Offset: 0x10 - APB1 peripheral reset register (RCC_APB1RSTR)
+        volatile uint32_t AHBENR;  ///< Offset: 0x14 - AHB Peripheral Clock enable register (RCC_AHBENR)
+        volatile uint32_t APB2ENR;  ///< Offset: 0x18 - APB2 peripheral clock enable register (RCC_APB2ENR)
+        volatile uint32_t APB1ENR;  ///< Offset: 0x1C - APB1 peripheral clock enable register (RCC_APB1ENR)
+        volatile uint32_t BDCR;  ///< Offset: 0x20 - Backup domain control register (RCC_BDCR)
+        volatile uint32_t CSR;  ///< Offset: 0x24 - Control/status register (RCC_CSR)
     };
 
     /// Peripheral instances
@@ -427,22 +421,14 @@ namespace rcc {
     // Bit definitions
     /// CR Register bits
     namespace cr_bits {
-        constexpr uint32_t HSION = (1U << 0);  ///< Internal High Speed clock
-              enable
-        constexpr uint32_t HSIRDY = (1U << 1);  ///< Internal High Speed clock ready
-              flag
-        constexpr uint32_t HSITRIM = (5 << 3);  ///< Internal High Speed clock
-              trimming
-        constexpr uint32_t HSICAL = (8 << 8);  ///< Internal High Speed clock
-              Calibration
-        constexpr uint32_t HSEON = (1U << 16);  ///< External High Speed clock
-              enable
-        constexpr uint32_t HSERDY = (1U << 17);  ///< External High Speed clock ready
-              flag
-        constexpr uint32_t HSEBYP = (1U << 18);  ///< External High Speed clock
-              Bypass
-        constexpr uint32_t CSSON = (1U << 19);  ///< Clock Security System
-              enable
+        constexpr uint32_t HSION = (1U << 0);  ///< Internal High Speed clock enable
+        constexpr uint32_t HSIRDY = (1U << 1);  ///< Internal High Speed clock ready flag
+        constexpr uint32_t HSITRIM = (5 << 3);  ///< Internal High Speed clock trimming
+        constexpr uint32_t HSICAL = (8 << 8);  ///< Internal High Speed clock Calibration
+        constexpr uint32_t HSEON = (1U << 16);  ///< External High Speed clock enable
+        constexpr uint32_t HSERDY = (1U << 17);  ///< External High Speed clock ready flag
+        constexpr uint32_t HSEBYP = (1U << 18);  ///< External High Speed clock Bypass
+        constexpr uint32_t CSSON = (1U << 19);  ///< Clock Security System enable
         constexpr uint32_t PLLON = (1U << 24);  ///< PLL enable
         constexpr uint32_t PLLRDY = (1U << 25);  ///< PLL clock ready flag
     }
@@ -452,17 +438,14 @@ namespace rcc {
         constexpr uint32_t SW = (2 << 0);  ///< System clock Switch
         constexpr uint32_t SWS = (2 << 2);  ///< System Clock Switch Status
         constexpr uint32_t HPRE = (4 << 4);  ///< AHB prescaler
-        constexpr uint32_t PPRE1 = (3 << 8);  ///< APB Low speed prescaler
-              (APB1)
-        constexpr uint32_t PPRE2 = (3 << 11);  ///< APB High speed prescaler
-              (APB2)
+        constexpr uint32_t PPRE1 = (3 << 8);  ///< APB Low speed prescaler (APB1)
+        constexpr uint32_t PPRE2 = (3 << 11);  ///< APB High speed prescaler (APB2)
         constexpr uint32_t ADCPRE = (2 << 14);  ///< ADC prescaler
         constexpr uint32_t PLLSRC = (1U << 16);  ///< PLL entry clock source
         constexpr uint32_t PLLXTPRE = (1U << 17);  ///< HSE divider for PLL entry
         constexpr uint32_t PLLMUL = (4 << 18);  ///< PLL Multiplication Factor
         constexpr uint32_t OTGFSPRE = (1U << 22);  ///< USB OTG FS prescaler
-        constexpr uint32_t MCO = (3 << 24);  ///< Microcontroller clock
-              output
+        constexpr uint32_t MCO = (3 << 24);  ///< Microcontroller clock output
     }
 
     /// CIR Register bits
@@ -472,8 +455,7 @@ namespace rcc {
         constexpr uint32_t HSIRDYF = (1U << 2);  ///< HSI Ready Interrupt flag
         constexpr uint32_t HSERDYF = (1U << 3);  ///< HSE Ready Interrupt flag
         constexpr uint32_t PLLRDYF = (1U << 4);  ///< PLL Ready Interrupt flag
-        constexpr uint32_t CSSF = (1U << 7);  ///< Clock Security System Interrupt
-              flag
+        constexpr uint32_t CSSF = (1U << 7);  ///< Clock Security System Interrupt flag
         constexpr uint32_t LSIRDYIE = (1U << 8);  ///< LSI Ready Interrupt Enable
         constexpr uint32_t LSERDYIE = (1U << 9);  ///< LSE Ready Interrupt Enable
         constexpr uint32_t HSIRDYIE = (1U << 10);  ///< HSI Ready Interrupt Enable
@@ -484,14 +466,12 @@ namespace rcc {
         constexpr uint32_t HSIRDYC = (1U << 18);  ///< HSI Ready Interrupt Clear
         constexpr uint32_t HSERDYC = (1U << 19);  ///< HSE Ready Interrupt Clear
         constexpr uint32_t PLLRDYC = (1U << 20);  ///< PLL Ready Interrupt Clear
-        constexpr uint32_t CSSC = (1U << 23);  ///< Clock security system interrupt
-              clear
+        constexpr uint32_t CSSC = (1U << 23);  ///< Clock security system interrupt clear
     }
 
     /// APB2RSTR Register bits
     namespace apb2rstr_bits {
-        constexpr uint32_t AFIORST = (1U << 0);  ///< Alternate function I/O
-              reset
+        constexpr uint32_t AFIORST = (1U << 0);  ///< Alternate function I/O reset
         constexpr uint32_t IOPARST = (1U << 2);  ///< IO port A reset
         constexpr uint32_t IOPBRST = (1U << 3);  ///< IO port B reset
         constexpr uint32_t IOPCRST = (1U << 4);  ///< IO port C reset
@@ -542,8 +522,7 @@ namespace rcc {
     namespace ahbenr_bits {
         constexpr uint32_t DMA1EN = (1U << 0);  ///< DMA1 clock enable
         constexpr uint32_t DMA2EN = (1U << 1);  ///< DMA2 clock enable
-        constexpr uint32_t SRAMEN = (1U << 2);  ///< SRAM interface clock
-              enable
+        constexpr uint32_t SRAMEN = (1U << 2);  ///< SRAM interface clock enable
         constexpr uint32_t FLITFEN = (1U << 4);  ///< FLITF clock enable
         constexpr uint32_t CRCEN = (1U << 6);  ///< CRC clock enable
         constexpr uint32_t FSMCEN = (1U << 8);  ///< FSMC clock enable
@@ -552,8 +531,7 @@ namespace rcc {
 
     /// APB2ENR Register bits
     namespace apb2enr_bits {
-        constexpr uint32_t AFIOEN = (1U << 0);  ///< Alternate function I/O clock
-              enable
+        constexpr uint32_t AFIOEN = (1U << 0);  ///< Alternate function I/O clock enable
         constexpr uint32_t IOPAEN = (1U << 2);  ///< I/O port A clock enable
         constexpr uint32_t IOPBEN = (1U << 3);  ///< I/O port B clock enable
         constexpr uint32_t IOPCEN = (1U << 4);  ///< I/O port C clock enable
@@ -561,16 +539,13 @@ namespace rcc {
         constexpr uint32_t IOPEEN = (1U << 6);  ///< I/O port E clock enable
         constexpr uint32_t IOPFEN = (1U << 7);  ///< I/O port F clock enable
         constexpr uint32_t IOPGEN = (1U << 8);  ///< I/O port G clock enable
-        constexpr uint32_t ADC1EN = (1U << 9);  ///< ADC 1 interface clock
-              enable
-        constexpr uint32_t ADC2EN = (1U << 10);  ///< ADC 2 interface clock
-              enable
+        constexpr uint32_t ADC1EN = (1U << 9);  ///< ADC 1 interface clock enable
+        constexpr uint32_t ADC2EN = (1U << 10);  ///< ADC 2 interface clock enable
         constexpr uint32_t TIM1EN = (1U << 11);  ///< TIM1 Timer clock enable
         constexpr uint32_t SPI1EN = (1U << 12);  ///< SPI 1 clock enable
         constexpr uint32_t TIM8EN = (1U << 13);  ///< TIM8 Timer clock enable
         constexpr uint32_t USART1EN = (1U << 14);  ///< USART1 clock enable
-        constexpr uint32_t ADC3EN = (1U << 15);  ///< ADC3 interface clock
-              enable
+        constexpr uint32_t ADC3EN = (1U << 15);  ///< ADC3 interface clock enable
         constexpr uint32_t TIM9EN = (1U << 19);  ///< TIM9 Timer clock enable
         constexpr uint32_t TIM10EN = (1U << 20);  ///< TIM10 Timer clock enable
         constexpr uint32_t TIM11EN = (1U << 21);  ///< TIM11 Timer clock enable
@@ -587,8 +562,7 @@ namespace rcc {
         constexpr uint32_t TIM12EN = (1U << 6);  ///< Timer 12 clock enable
         constexpr uint32_t TIM13EN = (1U << 7);  ///< Timer 13 clock enable
         constexpr uint32_t TIM14EN = (1U << 8);  ///< Timer 14 clock enable
-        constexpr uint32_t WWDGEN = (1U << 11);  ///< Window watchdog clock
-              enable
+        constexpr uint32_t WWDGEN = (1U << 11);  ///< Window watchdog clock enable
         constexpr uint32_t SPI2EN = (1U << 14);  ///< SPI 2 clock enable
         constexpr uint32_t SPI3EN = (1U << 15);  ///< SPI 3 clock enable
         constexpr uint32_t USART2EN = (1U << 17);  ///< USART 2 clock enable
@@ -599,39 +573,30 @@ namespace rcc {
         constexpr uint32_t I2C2EN = (1U << 22);  ///< I2C 2 clock enable
         constexpr uint32_t USBEN = (1U << 23);  ///< USB clock enable
         constexpr uint32_t CANEN = (1U << 25);  ///< CAN clock enable
-        constexpr uint32_t BKPEN = (1U << 27);  ///< Backup interface clock
-              enable
-        constexpr uint32_t PWREN = (1U << 28);  ///< Power interface clock
-              enable
+        constexpr uint32_t BKPEN = (1U << 27);  ///< Backup interface clock enable
+        constexpr uint32_t PWREN = (1U << 28);  ///< Power interface clock enable
         constexpr uint32_t DACEN = (1U << 29);  ///< DAC interface clock enable
     }
 
     /// BDCR Register bits
     namespace bdcr_bits {
-        constexpr uint32_t LSEON = (1U << 0);  ///< External Low Speed oscillator
-              enable
-        constexpr uint32_t LSERDY = (1U << 1);  ///< External Low Speed oscillator
-              ready
-        constexpr uint32_t LSEBYP = (1U << 2);  ///< External Low Speed oscillator
-              bypass
+        constexpr uint32_t LSEON = (1U << 0);  ///< External Low Speed oscillator enable
+        constexpr uint32_t LSERDY = (1U << 1);  ///< External Low Speed oscillator ready
+        constexpr uint32_t LSEBYP = (1U << 2);  ///< External Low Speed oscillator bypass
         constexpr uint32_t RTCSEL = (2 << 8);  ///< RTC clock source selection
         constexpr uint32_t RTCEN = (1U << 15);  ///< RTC clock enable
-        constexpr uint32_t BDRST = (1U << 16);  ///< Backup domain software
-              reset
+        constexpr uint32_t BDRST = (1U << 16);  ///< Backup domain software reset
     }
 
     /// CSR Register bits
     namespace csr_bits {
-        constexpr uint32_t LSION = (1U << 0);  ///< Internal low speed oscillator
-              enable
-        constexpr uint32_t LSIRDY = (1U << 1);  ///< Internal low speed oscillator
-              ready
+        constexpr uint32_t LSION = (1U << 0);  ///< Internal low speed oscillator enable
+        constexpr uint32_t LSIRDY = (1U << 1);  ///< Internal low speed oscillator ready
         constexpr uint32_t RMVF = (1U << 24);  ///< Remove reset flag
         constexpr uint32_t PINRSTF = (1U << 26);  ///< PIN reset flag
         constexpr uint32_t PORRSTF = (1U << 27);  ///< POR/PDR reset flag
         constexpr uint32_t SFTRSTF = (1U << 28);  ///< Software reset flag
-        constexpr uint32_t IWDGRSTF = (1U << 29);  ///< Independent watchdog reset
-              flag
+        constexpr uint32_t IWDGRSTF = (1U << 29);  ///< Independent watchdog reset flag
         constexpr uint32_t WWDGRSTF = (1U << 30);  ///< Window watchdog reset flag
         constexpr uint32_t LPWRRSTF = (1U << 31);  ///< Low-power reset flag
     }
@@ -654,13 +619,13 @@ namespace gpio {
 
     /// GPIO Register structure
     struct Registers {
-        volatile uint32_t CRL;  ///< Offset: 0x00 - Port configuration register low           (GPIOn_CRL)
-        volatile uint32_t CRH;  ///< Offset: 0x04 - Port configuration register high           (GPIOn_CRL)
-        volatile uint32_t IDR;  ///< Offset: 0x08 - Port input data register           (GPIOn_IDR)
-        volatile uint32_t ODR;  ///< Offset: 0x0C - Port output data register           (GPIOn_ODR)
-        volatile uint32_t BSRR;  ///< Offset: 0x10 - Port bit set/reset register           (GPIOn_BSRR)
-        volatile uint32_t BRR;  ///< Offset: 0x14 - Port bit reset register           (GPIOn_BRR)
-        volatile uint32_t LCKR;  ///< Offset: 0x18 - Port configuration lock           register
+        volatile uint32_t CRL;  ///< Offset: 0x00 - Port configuration register low (GPIOn_CRL)
+        volatile uint32_t CRH;  ///< Offset: 0x04 - Port configuration register high (GPIOn_CRL)
+        volatile uint32_t IDR;  ///< Offset: 0x08 - Port input data register (GPIOn_IDR)
+        volatile uint32_t ODR;  ///< Offset: 0x0C - Port output data register (GPIOn_ODR)
+        volatile uint32_t BSRR;  ///< Offset: 0x10 - Port bit set/reset register (GPIOn_BSRR)
+        volatile uint32_t BRR;  ///< Offset: 0x14 - Port bit reset register (GPIOn_BRR)
+        volatile uint32_t LCKR;  ///< Offset: 0x18 - Port configuration lock register
     };
 
     /// Peripheral instances
@@ -676,57 +641,41 @@ namespace gpio {
     /// CRL Register bits
     namespace crl_bits {
         constexpr uint32_t MODE0 = (2 << 0);  ///< Port n.0 mode bits
-        constexpr uint32_t CNF0 = (2 << 2);  ///< Port n.0 configuration
-              bits
+        constexpr uint32_t CNF0 = (2 << 2);  ///< Port n.0 configuration bits
         constexpr uint32_t MODE1 = (2 << 4);  ///< Port n.1 mode bits
-        constexpr uint32_t CNF1 = (2 << 6);  ///< Port n.1 configuration
-              bits
+        constexpr uint32_t CNF1 = (2 << 6);  ///< Port n.1 configuration bits
         constexpr uint32_t MODE2 = (2 << 8);  ///< Port n.2 mode bits
-        constexpr uint32_t CNF2 = (2 << 10);  ///< Port n.2 configuration
-              bits
+        constexpr uint32_t CNF2 = (2 << 10);  ///< Port n.2 configuration bits
         constexpr uint32_t MODE3 = (2 << 12);  ///< Port n.3 mode bits
-        constexpr uint32_t CNF3 = (2 << 14);  ///< Port n.3 configuration
-              bits
+        constexpr uint32_t CNF3 = (2 << 14);  ///< Port n.3 configuration bits
         constexpr uint32_t MODE4 = (2 << 16);  ///< Port n.4 mode bits
-        constexpr uint32_t CNF4 = (2 << 18);  ///< Port n.4 configuration
-              bits
+        constexpr uint32_t CNF4 = (2 << 18);  ///< Port n.4 configuration bits
         constexpr uint32_t MODE5 = (2 << 20);  ///< Port n.5 mode bits
-        constexpr uint32_t CNF5 = (2 << 22);  ///< Port n.5 configuration
-              bits
+        constexpr uint32_t CNF5 = (2 << 22);  ///< Port n.5 configuration bits
         constexpr uint32_t MODE6 = (2 << 24);  ///< Port n.6 mode bits
-        constexpr uint32_t CNF6 = (2 << 26);  ///< Port n.6 configuration
-              bits
+        constexpr uint32_t CNF6 = (2 << 26);  ///< Port n.6 configuration bits
         constexpr uint32_t MODE7 = (2 << 28);  ///< Port n.7 mode bits
-        constexpr uint32_t CNF7 = (2 << 30);  ///< Port n.7 configuration
-              bits
+        constexpr uint32_t CNF7 = (2 << 30);  ///< Port n.7 configuration bits
     }
 
     /// CRH Register bits
     namespace crh_bits {
         constexpr uint32_t MODE8 = (2 << 0);  ///< Port n.8 mode bits
-        constexpr uint32_t CNF8 = (2 << 2);  ///< Port n.8 configuration
-              bits
+        constexpr uint32_t CNF8 = (2 << 2);  ///< Port n.8 configuration bits
         constexpr uint32_t MODE9 = (2 << 4);  ///< Port n.9 mode bits
-        constexpr uint32_t CNF9 = (2 << 6);  ///< Port n.9 configuration
-              bits
+        constexpr uint32_t CNF9 = (2 << 6);  ///< Port n.9 configuration bits
         constexpr uint32_t MODE10 = (2 << 8);  ///< Port n.10 mode bits
-        constexpr uint32_t CNF10 = (2 << 10);  ///< Port n.10 configuration
-              bits
+        constexpr uint32_t CNF10 = (2 << 10);  ///< Port n.10 configuration bits
         constexpr uint32_t MODE11 = (2 << 12);  ///< Port n.11 mode bits
-        constexpr uint32_t CNF11 = (2 << 14);  ///< Port n.11 configuration
-              bits
+        constexpr uint32_t CNF11 = (2 << 14);  ///< Port n.11 configuration bits
         constexpr uint32_t MODE12 = (2 << 16);  ///< Port n.12 mode bits
-        constexpr uint32_t CNF12 = (2 << 18);  ///< Port n.12 configuration
-              bits
+        constexpr uint32_t CNF12 = (2 << 18);  ///< Port n.12 configuration bits
         constexpr uint32_t MODE13 = (2 << 20);  ///< Port n.13 mode bits
-        constexpr uint32_t CNF13 = (2 << 22);  ///< Port n.13 configuration
-              bits
+        constexpr uint32_t CNF13 = (2 << 22);  ///< Port n.13 configuration bits
         constexpr uint32_t MODE14 = (2 << 24);  ///< Port n.14 mode bits
-        constexpr uint32_t CNF14 = (2 << 26);  ///< Port n.14 configuration
-              bits
+        constexpr uint32_t CNF14 = (2 << 26);  ///< Port n.14 configuration bits
         constexpr uint32_t MODE15 = (2 << 28);  ///< Port n.15 mode bits
-        constexpr uint32_t CNF15 = (2 << 30);  ///< Port n.15 configuration
-              bits
+        constexpr uint32_t CNF15 = (2 << 30);  ///< Port n.15 configuration bits
     }
 
     /// IDR Register bits
@@ -858,13 +807,13 @@ namespace afio {
 
     /// AFIO Register structure
     struct Registers {
-        volatile uint32_t EVCR;  ///< Offset: 0x00 - Event Control Register           (AFIO_EVCR)
-        volatile uint32_t MAPR;  ///< Offset: 0x04 - AF remap and debug I/O configuration           register...
-        volatile uint32_t EXTICR1;  ///< Offset: 0x08 - External interrupt configuration register 1          ...
-        volatile uint32_t EXTICR2;  ///< Offset: 0x0C - External interrupt configuration register 2          ...
-        volatile uint32_t EXTICR3;  ///< Offset: 0x10 - External interrupt configuration register 3          ...
-        volatile uint32_t EXTICR4;  ///< Offset: 0x14 - External interrupt configuration register 4          ...
-        volatile uint32_t MAPR2;  ///< Offset: 0x1C - AF remap and debug I/O configuration           register
+        volatile uint32_t EVCR;  ///< Offset: 0x00 - Event Control Register (AFIO_EVCR)
+        volatile uint32_t MAPR;  ///< Offset: 0x04 - AF remap and debug I/O configuration register (AFIO_MAPR)
+        volatile uint32_t EXTICR1;  ///< Offset: 0x08 - External interrupt configuration register 1 (AFIO_EXTICR1)
+        volatile uint32_t EXTICR2;  ///< Offset: 0x0C - External interrupt configuration register 2 (AFIO_EXTICR2)
+        volatile uint32_t EXTICR3;  ///< Offset: 0x10 - External interrupt configuration register 3 (AFIO_EXTICR3)
+        volatile uint32_t EXTICR4;  ///< Offset: 0x14 - External interrupt configuration register 4 (AFIO_EXTICR4)
+        volatile uint32_t MAPR2;  ///< Offset: 0x1C - AF remap and debug I/O configuration register
     };
 
     /// Peripheral instances
@@ -890,20 +839,13 @@ namespace afio {
         constexpr uint32_t TIM3_REMAP = (2 << 10);  ///< TIM3 remapping
         constexpr uint32_t TIM4_REMAP = (1U << 12);  ///< TIM4 remapping
         constexpr uint32_t CAN_REMAP = (2 << 13);  ///< CAN1 remapping
-        constexpr uint32_t PD01_REMAP = (1U << 15);  ///< Port D0/Port D1 mapping on
-              OSCIN/OSCOUT
-        constexpr uint32_t TIM5CH4_IREMAP = (1U << 16);  ///< Set and cleared by
-              software
-        constexpr uint32_t ADC1_ETRGINJ_REMAP = (1U << 17);  ///< ADC 1 External trigger injected
-              conversion remapping
-        constexpr uint32_t ADC1_ETRGREG_REMAP = (1U << 18);  ///< ADC 1 external trigger regular
-              conversion remapping
-        constexpr uint32_t ADC2_ETRGINJ_REMAP = (1U << 19);  ///< ADC 2 external trigger injected
-              conversion remapping
-        constexpr uint32_t ADC2_ETRGREG_REMAP = (1U << 20);  ///< ADC 2 external trigger regular
-              conversion remapping
-        constexpr uint32_t SWJ_CFG = (3 << 24);  ///< Serial wire JTAG
-              configuration
+        constexpr uint32_t PD01_REMAP = (1U << 15);  ///< Port D0/Port D1 mapping on OSCIN/OSCOUT
+        constexpr uint32_t TIM5CH4_IREMAP = (1U << 16);  ///< Set and cleared by software
+        constexpr uint32_t ADC1_ETRGINJ_REMAP = (1U << 17);  ///< ADC 1 External trigger injected conversion remapping
+        constexpr uint32_t ADC1_ETRGREG_REMAP = (1U << 18);  ///< ADC 1 external trigger regular conversion remapping
+        constexpr uint32_t ADC2_ETRGINJ_REMAP = (1U << 19);  ///< ADC 2 external trigger injected conversion remapping
+        constexpr uint32_t ADC2_ETRGREG_REMAP = (1U << 20);  ///< ADC 2 external trigger regular conversion remapping
+        constexpr uint32_t SWJ_CFG = (3 << 24);  ///< Serial wire JTAG configuration
     }
 
     /// EXTICR1 Register bits
@@ -960,11 +902,11 @@ namespace exti {
 
     /// EXTI Register structure
     struct Registers {
-        volatile uint32_t IMR;  ///< Offset: 0x00 - Interrupt mask register           (EXTI_IMR)
+        volatile uint32_t IMR;  ///< Offset: 0x00 - Interrupt mask register (EXTI_IMR)
         volatile uint32_t EMR;  ///< Offset: 0x04 - Event mask register (EXTI_EMR)
-        volatile uint32_t RTSR;  ///< Offset: 0x08 - Rising Trigger selection register           (EXTI_RTSR)
-        volatile uint32_t FTSR;  ///< Offset: 0x0C - Falling Trigger selection register           (EXTI_FTSR)
-        volatile uint32_t SWIER;  ///< Offset: 0x10 - Software interrupt event register           (EXTI_SWIER)
+        volatile uint32_t RTSR;  ///< Offset: 0x08 - Rising Trigger selection register (EXTI_RTSR)
+        volatile uint32_t FTSR;  ///< Offset: 0x0C - Falling Trigger selection register (EXTI_FTSR)
+        volatile uint32_t SWIER;  ///< Offset: 0x10 - Software interrupt event register (EXTI_SWIER)
         volatile uint32_t PR;  ///< Offset: 0x14 - Pending register (EXTI_PR)
     };
 
@@ -1020,128 +962,71 @@ namespace exti {
 
     /// RTSR Register bits
     namespace rtsr_bits {
-        constexpr uint32_t TR0 = (1U << 0);  ///< Rising trigger event configuration of
-              line 0
-        constexpr uint32_t TR1 = (1U << 1);  ///< Rising trigger event configuration of
-              line 1
-        constexpr uint32_t TR2 = (1U << 2);  ///< Rising trigger event configuration of
-              line 2
-        constexpr uint32_t TR3 = (1U << 3);  ///< Rising trigger event configuration of
-              line 3
-        constexpr uint32_t TR4 = (1U << 4);  ///< Rising trigger event configuration of
-              line 4
-        constexpr uint32_t TR5 = (1U << 5);  ///< Rising trigger event configuration of
-              line 5
-        constexpr uint32_t TR6 = (1U << 6);  ///< Rising trigger event configuration of
-              line 6
-        constexpr uint32_t TR7 = (1U << 7);  ///< Rising trigger event configuration of
-              line 7
-        constexpr uint32_t TR8 = (1U << 8);  ///< Rising trigger event configuration of
-              line 8
-        constexpr uint32_t TR9 = (1U << 9);  ///< Rising trigger event configuration of
-              line 9
-        constexpr uint32_t TR10 = (1U << 10);  ///< Rising trigger event configuration of
-              line 10
-        constexpr uint32_t TR11 = (1U << 11);  ///< Rising trigger event configuration of
-              line 11
-        constexpr uint32_t TR12 = (1U << 12);  ///< Rising trigger event configuration of
-              line 12
-        constexpr uint32_t TR13 = (1U << 13);  ///< Rising trigger event configuration of
-              line 13
-        constexpr uint32_t TR14 = (1U << 14);  ///< Rising trigger event configuration of
-              line 14
-        constexpr uint32_t TR15 = (1U << 15);  ///< Rising trigger event configuration of
-              line 15
-        constexpr uint32_t TR16 = (1U << 16);  ///< Rising trigger event configuration of
-              line 16
-        constexpr uint32_t TR17 = (1U << 17);  ///< Rising trigger event configuration of
-              line 17
-        constexpr uint32_t TR18 = (1U << 18);  ///< Rising trigger event configuration of
-              line 18
+        constexpr uint32_t TR0 = (1U << 0);  ///< Rising trigger event configuration of line 0
+        constexpr uint32_t TR1 = (1U << 1);  ///< Rising trigger event configuration of line 1
+        constexpr uint32_t TR2 = (1U << 2);  ///< Rising trigger event configuration of line 2
+        constexpr uint32_t TR3 = (1U << 3);  ///< Rising trigger event configuration of line 3
+        constexpr uint32_t TR4 = (1U << 4);  ///< Rising trigger event configuration of line 4
+        constexpr uint32_t TR5 = (1U << 5);  ///< Rising trigger event configuration of line 5
+        constexpr uint32_t TR6 = (1U << 6);  ///< Rising trigger event configuration of line 6
+        constexpr uint32_t TR7 = (1U << 7);  ///< Rising trigger event configuration of line 7
+        constexpr uint32_t TR8 = (1U << 8);  ///< Rising trigger event configuration of line 8
+        constexpr uint32_t TR9 = (1U << 9);  ///< Rising trigger event configuration of line 9
+        constexpr uint32_t TR10 = (1U << 10);  ///< Rising trigger event configuration of line 10
+        constexpr uint32_t TR11 = (1U << 11);  ///< Rising trigger event configuration of line 11
+        constexpr uint32_t TR12 = (1U << 12);  ///< Rising trigger event configuration of line 12
+        constexpr uint32_t TR13 = (1U << 13);  ///< Rising trigger event configuration of line 13
+        constexpr uint32_t TR14 = (1U << 14);  ///< Rising trigger event configuration of line 14
+        constexpr uint32_t TR15 = (1U << 15);  ///< Rising trigger event configuration of line 15
+        constexpr uint32_t TR16 = (1U << 16);  ///< Rising trigger event configuration of line 16
+        constexpr uint32_t TR17 = (1U << 17);  ///< Rising trigger event configuration of line 17
+        constexpr uint32_t TR18 = (1U << 18);  ///< Rising trigger event configuration of line 18
     }
 
     /// FTSR Register bits
     namespace ftsr_bits {
-        constexpr uint32_t TR0 = (1U << 0);  ///< Falling trigger event configuration of
-              line 0
-        constexpr uint32_t TR1 = (1U << 1);  ///< Falling trigger event configuration of
-              line 1
-        constexpr uint32_t TR2 = (1U << 2);  ///< Falling trigger event configuration of
-              line 2
-        constexpr uint32_t TR3 = (1U << 3);  ///< Falling trigger event configuration of
-              line 3
-        constexpr uint32_t TR4 = (1U << 4);  ///< Falling trigger event configuration of
-              line 4
-        constexpr uint32_t TR5 = (1U << 5);  ///< Falling trigger event configuration of
-              line 5
-        constexpr uint32_t TR6 = (1U << 6);  ///< Falling trigger event configuration of
-              line 6
-        constexpr uint32_t TR7 = (1U << 7);  ///< Falling trigger event configuration of
-              line 7
-        constexpr uint32_t TR8 = (1U << 8);  ///< Falling trigger event configuration of
-              line 8
-        constexpr uint32_t TR9 = (1U << 9);  ///< Falling trigger event configuration of
-              line 9
-        constexpr uint32_t TR10 = (1U << 10);  ///< Falling trigger event configuration of
-              line 10
-        constexpr uint32_t TR11 = (1U << 11);  ///< Falling trigger event configuration of
-              line 11
-        constexpr uint32_t TR12 = (1U << 12);  ///< Falling trigger event configuration of
-              line 12
-        constexpr uint32_t TR13 = (1U << 13);  ///< Falling trigger event configuration of
-              line 13
-        constexpr uint32_t TR14 = (1U << 14);  ///< Falling trigger event configuration of
-              line 14
-        constexpr uint32_t TR15 = (1U << 15);  ///< Falling trigger event configuration of
-              line 15
-        constexpr uint32_t TR16 = (1U << 16);  ///< Falling trigger event configuration of
-              line 16
-        constexpr uint32_t TR17 = (1U << 17);  ///< Falling trigger event configuration of
-              line 17
-        constexpr uint32_t TR18 = (1U << 18);  ///< Falling trigger event configuration of
-              line 18
+        constexpr uint32_t TR0 = (1U << 0);  ///< Falling trigger event configuration of line 0
+        constexpr uint32_t TR1 = (1U << 1);  ///< Falling trigger event configuration of line 1
+        constexpr uint32_t TR2 = (1U << 2);  ///< Falling trigger event configuration of line 2
+        constexpr uint32_t TR3 = (1U << 3);  ///< Falling trigger event configuration of line 3
+        constexpr uint32_t TR4 = (1U << 4);  ///< Falling trigger event configuration of line 4
+        constexpr uint32_t TR5 = (1U << 5);  ///< Falling trigger event configuration of line 5
+        constexpr uint32_t TR6 = (1U << 6);  ///< Falling trigger event configuration of line 6
+        constexpr uint32_t TR7 = (1U << 7);  ///< Falling trigger event configuration of line 7
+        constexpr uint32_t TR8 = (1U << 8);  ///< Falling trigger event configuration of line 8
+        constexpr uint32_t TR9 = (1U << 9);  ///< Falling trigger event configuration of line 9
+        constexpr uint32_t TR10 = (1U << 10);  ///< Falling trigger event configuration of line 10
+        constexpr uint32_t TR11 = (1U << 11);  ///< Falling trigger event configuration of line 11
+        constexpr uint32_t TR12 = (1U << 12);  ///< Falling trigger event configuration of line 12
+        constexpr uint32_t TR13 = (1U << 13);  ///< Falling trigger event configuration of line 13
+        constexpr uint32_t TR14 = (1U << 14);  ///< Falling trigger event configuration of line 14
+        constexpr uint32_t TR15 = (1U << 15);  ///< Falling trigger event configuration of line 15
+        constexpr uint32_t TR16 = (1U << 16);  ///< Falling trigger event configuration of line 16
+        constexpr uint32_t TR17 = (1U << 17);  ///< Falling trigger event configuration of line 17
+        constexpr uint32_t TR18 = (1U << 18);  ///< Falling trigger event configuration of line 18
     }
 
     /// SWIER Register bits
     namespace swier_bits {
-        constexpr uint32_t SWIER0 = (1U << 0);  ///< Software Interrupt on line
-              0
-        constexpr uint32_t SWIER1 = (1U << 1);  ///< Software Interrupt on line
-              1
-        constexpr uint32_t SWIER2 = (1U << 2);  ///< Software Interrupt on line
-              2
-        constexpr uint32_t SWIER3 = (1U << 3);  ///< Software Interrupt on line
-              3
-        constexpr uint32_t SWIER4 = (1U << 4);  ///< Software Interrupt on line
-              4
-        constexpr uint32_t SWIER5 = (1U << 5);  ///< Software Interrupt on line
-              5
-        constexpr uint32_t SWIER6 = (1U << 6);  ///< Software Interrupt on line
-              6
-        constexpr uint32_t SWIER7 = (1U << 7);  ///< Software Interrupt on line
-              7
-        constexpr uint32_t SWIER8 = (1U << 8);  ///< Software Interrupt on line
-              8
-        constexpr uint32_t SWIER9 = (1U << 9);  ///< Software Interrupt on line
-              9
-        constexpr uint32_t SWIER10 = (1U << 10);  ///< Software Interrupt on line
-              10
-        constexpr uint32_t SWIER11 = (1U << 11);  ///< Software Interrupt on line
-              11
-        constexpr uint32_t SWIER12 = (1U << 12);  ///< Software Interrupt on line
-              12
-        constexpr uint32_t SWIER13 = (1U << 13);  ///< Software Interrupt on line
-              13
-        constexpr uint32_t SWIER14 = (1U << 14);  ///< Software Interrupt on line
-              14
-        constexpr uint32_t SWIER15 = (1U << 15);  ///< Software Interrupt on line
-              15
-        constexpr uint32_t SWIER16 = (1U << 16);  ///< Software Interrupt on line
-              16
-        constexpr uint32_t SWIER17 = (1U << 17);  ///< Software Interrupt on line
-              17
-        constexpr uint32_t SWIER18 = (1U << 18);  ///< Software Interrupt on line
-              18
+        constexpr uint32_t SWIER0 = (1U << 0);  ///< Software Interrupt on line 0
+        constexpr uint32_t SWIER1 = (1U << 1);  ///< Software Interrupt on line 1
+        constexpr uint32_t SWIER2 = (1U << 2);  ///< Software Interrupt on line 2
+        constexpr uint32_t SWIER3 = (1U << 3);  ///< Software Interrupt on line 3
+        constexpr uint32_t SWIER4 = (1U << 4);  ///< Software Interrupt on line 4
+        constexpr uint32_t SWIER5 = (1U << 5);  ///< Software Interrupt on line 5
+        constexpr uint32_t SWIER6 = (1U << 6);  ///< Software Interrupt on line 6
+        constexpr uint32_t SWIER7 = (1U << 7);  ///< Software Interrupt on line 7
+        constexpr uint32_t SWIER8 = (1U << 8);  ///< Software Interrupt on line 8
+        constexpr uint32_t SWIER9 = (1U << 9);  ///< Software Interrupt on line 9
+        constexpr uint32_t SWIER10 = (1U << 10);  ///< Software Interrupt on line 10
+        constexpr uint32_t SWIER11 = (1U << 11);  ///< Software Interrupt on line 11
+        constexpr uint32_t SWIER12 = (1U << 12);  ///< Software Interrupt on line 12
+        constexpr uint32_t SWIER13 = (1U << 13);  ///< Software Interrupt on line 13
+        constexpr uint32_t SWIER14 = (1U << 14);  ///< Software Interrupt on line 14
+        constexpr uint32_t SWIER15 = (1U << 15);  ///< Software Interrupt on line 15
+        constexpr uint32_t SWIER16 = (1U << 16);  ///< Software Interrupt on line 16
+        constexpr uint32_t SWIER17 = (1U << 17);  ///< Software Interrupt on line 17
+        constexpr uint32_t SWIER18 = (1U << 18);  ///< Software Interrupt on line 18
     }
 
     /// PR Register bits
@@ -1180,36 +1065,36 @@ namespace dma {
 
     /// DMA Register structure
     struct Registers {
-        volatile uint32_t ISR;  ///< Offset: 0x00 - DMA interrupt status register           (DMA_ISR)
-        volatile uint32_t IFCR;  ///< Offset: 0x04 - DMA interrupt flag clear register           (DMA_IFCR)
-        volatile uint32_t CCR1;  ///< Offset: 0x08 - DMA channel configuration register           (DMA_CCR)
-        volatile uint32_t CNDTR1;  ///< Offset: 0x0C - DMA channel 1 number of data           register
-        volatile uint32_t CPAR1;  ///< Offset: 0x10 - DMA channel 1 peripheral address           register
-        volatile uint32_t CMAR1;  ///< Offset: 0x14 - DMA channel 1 memory address           register
-        volatile uint32_t CCR2;  ///< Offset: 0x1C - DMA channel configuration register           (DMA_CCR)
-        volatile uint32_t CNDTR2;  ///< Offset: 0x20 - DMA channel 2 number of data           register
-        volatile uint32_t CPAR2;  ///< Offset: 0x24 - DMA channel 2 peripheral address           register
-        volatile uint32_t CMAR2;  ///< Offset: 0x28 - DMA channel 2 memory address           register
-        volatile uint32_t CCR3;  ///< Offset: 0x30 - DMA channel configuration register           (DMA_CCR)
-        volatile uint32_t CNDTR3;  ///< Offset: 0x34 - DMA channel 3 number of data           register
-        volatile uint32_t CPAR3;  ///< Offset: 0x38 - DMA channel 3 peripheral address           register
-        volatile uint32_t CMAR3;  ///< Offset: 0x3C - DMA channel 3 memory address           register
-        volatile uint32_t CCR4;  ///< Offset: 0x44 - DMA channel configuration register           (DMA_CCR)
-        volatile uint32_t CNDTR4;  ///< Offset: 0x48 - DMA channel 4 number of data           register
-        volatile uint32_t CPAR4;  ///< Offset: 0x4C - DMA channel 4 peripheral address           register
-        volatile uint32_t CMAR4;  ///< Offset: 0x50 - DMA channel 4 memory address           register
-        volatile uint32_t CCR5;  ///< Offset: 0x58 - DMA channel configuration register           (DMA_CCR)
-        volatile uint32_t CNDTR5;  ///< Offset: 0x5C - DMA channel 5 number of data           register
-        volatile uint32_t CPAR5;  ///< Offset: 0x60 - DMA channel 5 peripheral address           register
-        volatile uint32_t CMAR5;  ///< Offset: 0x64 - DMA channel 5 memory address           register
-        volatile uint32_t CCR6;  ///< Offset: 0x6C - DMA channel configuration register           (DMA_CCR)
-        volatile uint32_t CNDTR6;  ///< Offset: 0x70 - DMA channel 6 number of data           register
-        volatile uint32_t CPAR6;  ///< Offset: 0x74 - DMA channel 6 peripheral address           register
-        volatile uint32_t CMAR6;  ///< Offset: 0x78 - DMA channel 6 memory address           register
-        volatile uint32_t CCR7;  ///< Offset: 0x80 - DMA channel configuration register           (DMA_CCR)
-        volatile uint32_t CNDTR7;  ///< Offset: 0x84 - DMA channel 7 number of data           register
-        volatile uint32_t CPAR7;  ///< Offset: 0x88 - DMA channel 7 peripheral address           register
-        volatile uint32_t CMAR7;  ///< Offset: 0x8C - DMA channel 7 memory address           register
+        volatile uint32_t ISR;  ///< Offset: 0x00 - DMA interrupt status register (DMA_ISR)
+        volatile uint32_t IFCR;  ///< Offset: 0x04 - DMA interrupt flag clear register (DMA_IFCR)
+        volatile uint32_t CCR1;  ///< Offset: 0x08 - DMA channel configuration register (DMA_CCR)
+        volatile uint32_t CNDTR1;  ///< Offset: 0x0C - DMA channel 1 number of data register
+        volatile uint32_t CPAR1;  ///< Offset: 0x10 - DMA channel 1 peripheral address register
+        volatile uint32_t CMAR1;  ///< Offset: 0x14 - DMA channel 1 memory address register
+        volatile uint32_t CCR2;  ///< Offset: 0x1C - DMA channel configuration register (DMA_CCR)
+        volatile uint32_t CNDTR2;  ///< Offset: 0x20 - DMA channel 2 number of data register
+        volatile uint32_t CPAR2;  ///< Offset: 0x24 - DMA channel 2 peripheral address register
+        volatile uint32_t CMAR2;  ///< Offset: 0x28 - DMA channel 2 memory address register
+        volatile uint32_t CCR3;  ///< Offset: 0x30 - DMA channel configuration register (DMA_CCR)
+        volatile uint32_t CNDTR3;  ///< Offset: 0x34 - DMA channel 3 number of data register
+        volatile uint32_t CPAR3;  ///< Offset: 0x38 - DMA channel 3 peripheral address register
+        volatile uint32_t CMAR3;  ///< Offset: 0x3C - DMA channel 3 memory address register
+        volatile uint32_t CCR4;  ///< Offset: 0x44 - DMA channel configuration register (DMA_CCR)
+        volatile uint32_t CNDTR4;  ///< Offset: 0x48 - DMA channel 4 number of data register
+        volatile uint32_t CPAR4;  ///< Offset: 0x4C - DMA channel 4 peripheral address register
+        volatile uint32_t CMAR4;  ///< Offset: 0x50 - DMA channel 4 memory address register
+        volatile uint32_t CCR5;  ///< Offset: 0x58 - DMA channel configuration register (DMA_CCR)
+        volatile uint32_t CNDTR5;  ///< Offset: 0x5C - DMA channel 5 number of data register
+        volatile uint32_t CPAR5;  ///< Offset: 0x60 - DMA channel 5 peripheral address register
+        volatile uint32_t CMAR5;  ///< Offset: 0x64 - DMA channel 5 memory address register
+        volatile uint32_t CCR6;  ///< Offset: 0x6C - DMA channel configuration register (DMA_CCR)
+        volatile uint32_t CNDTR6;  ///< Offset: 0x70 - DMA channel 6 number of data register
+        volatile uint32_t CPAR6;  ///< Offset: 0x74 - DMA channel 6 peripheral address register
+        volatile uint32_t CMAR6;  ///< Offset: 0x78 - DMA channel 6 memory address register
+        volatile uint32_t CCR7;  ///< Offset: 0x80 - DMA channel configuration register (DMA_CCR)
+        volatile uint32_t CNDTR7;  ///< Offset: 0x84 - DMA channel 7 number of data register
+        volatile uint32_t CPAR7;  ///< Offset: 0x88 - DMA channel 7 peripheral address register
+        volatile uint32_t CMAR7;  ///< Offset: 0x8C - DMA channel 7 memory address register
     };
 
     /// Peripheral instances
@@ -1219,133 +1104,74 @@ namespace dma {
     // Bit definitions
     /// ISR Register bits
     namespace isr_bits {
-        constexpr uint32_t GIF1 = (1U << 0);  ///< Channel 1 Global interrupt
-              flag
-        constexpr uint32_t TCIF1 = (1U << 1);  ///< Channel 1 Transfer Complete
-              flag
-        constexpr uint32_t HTIF1 = (1U << 2);  ///< Channel 1 Half Transfer Complete
-              flag
-        constexpr uint32_t TEIF1 = (1U << 3);  ///< Channel 1 Transfer Error
-              flag
-        constexpr uint32_t GIF2 = (1U << 4);  ///< Channel 2 Global interrupt
-              flag
-        constexpr uint32_t TCIF2 = (1U << 5);  ///< Channel 2 Transfer Complete
-              flag
-        constexpr uint32_t HTIF2 = (1U << 6);  ///< Channel 2 Half Transfer Complete
-              flag
-        constexpr uint32_t TEIF2 = (1U << 7);  ///< Channel 2 Transfer Error
-              flag
-        constexpr uint32_t GIF3 = (1U << 8);  ///< Channel 3 Global interrupt
-              flag
-        constexpr uint32_t TCIF3 = (1U << 9);  ///< Channel 3 Transfer Complete
-              flag
-        constexpr uint32_t HTIF3 = (1U << 10);  ///< Channel 3 Half Transfer Complete
-              flag
-        constexpr uint32_t TEIF3 = (1U << 11);  ///< Channel 3 Transfer Error
-              flag
-        constexpr uint32_t GIF4 = (1U << 12);  ///< Channel 4 Global interrupt
-              flag
-        constexpr uint32_t TCIF4 = (1U << 13);  ///< Channel 4 Transfer Complete
-              flag
-        constexpr uint32_t HTIF4 = (1U << 14);  ///< Channel 4 Half Transfer Complete
-              flag
-        constexpr uint32_t TEIF4 = (1U << 15);  ///< Channel 4 Transfer Error
-              flag
-        constexpr uint32_t GIF5 = (1U << 16);  ///< Channel 5 Global interrupt
-              flag
-        constexpr uint32_t TCIF5 = (1U << 17);  ///< Channel 5 Transfer Complete
-              flag
-        constexpr uint32_t HTIF5 = (1U << 18);  ///< Channel 5 Half Transfer Complete
-              flag
-        constexpr uint32_t TEIF5 = (1U << 19);  ///< Channel 5 Transfer Error
-              flag
-        constexpr uint32_t GIF6 = (1U << 20);  ///< Channel 6 Global interrupt
-              flag
-        constexpr uint32_t TCIF6 = (1U << 21);  ///< Channel 6 Transfer Complete
-              flag
-        constexpr uint32_t HTIF6 = (1U << 22);  ///< Channel 6 Half Transfer Complete
-              flag
-        constexpr uint32_t TEIF6 = (1U << 23);  ///< Channel 6 Transfer Error
-              flag
-        constexpr uint32_t GIF7 = (1U << 24);  ///< Channel 7 Global interrupt
-              flag
-        constexpr uint32_t TCIF7 = (1U << 25);  ///< Channel 7 Transfer Complete
-              flag
-        constexpr uint32_t HTIF7 = (1U << 26);  ///< Channel 7 Half Transfer Complete
-              flag
-        constexpr uint32_t TEIF7 = (1U << 27);  ///< Channel 7 Transfer Error
-              flag
+        constexpr uint32_t GIF1 = (1U << 0);  ///< Channel 1 Global interrupt flag
+        constexpr uint32_t TCIF1 = (1U << 1);  ///< Channel 1 Transfer Complete flag
+        constexpr uint32_t HTIF1 = (1U << 2);  ///< Channel 1 Half Transfer Complete flag
+        constexpr uint32_t TEIF1 = (1U << 3);  ///< Channel 1 Transfer Error flag
+        constexpr uint32_t GIF2 = (1U << 4);  ///< Channel 2 Global interrupt flag
+        constexpr uint32_t TCIF2 = (1U << 5);  ///< Channel 2 Transfer Complete flag
+        constexpr uint32_t HTIF2 = (1U << 6);  ///< Channel 2 Half Transfer Complete flag
+        constexpr uint32_t TEIF2 = (1U << 7);  ///< Channel 2 Transfer Error flag
+        constexpr uint32_t GIF3 = (1U << 8);  ///< Channel 3 Global interrupt flag
+        constexpr uint32_t TCIF3 = (1U << 9);  ///< Channel 3 Transfer Complete flag
+        constexpr uint32_t HTIF3 = (1U << 10);  ///< Channel 3 Half Transfer Complete flag
+        constexpr uint32_t TEIF3 = (1U << 11);  ///< Channel 3 Transfer Error flag
+        constexpr uint32_t GIF4 = (1U << 12);  ///< Channel 4 Global interrupt flag
+        constexpr uint32_t TCIF4 = (1U << 13);  ///< Channel 4 Transfer Complete flag
+        constexpr uint32_t HTIF4 = (1U << 14);  ///< Channel 4 Half Transfer Complete flag
+        constexpr uint32_t TEIF4 = (1U << 15);  ///< Channel 4 Transfer Error flag
+        constexpr uint32_t GIF5 = (1U << 16);  ///< Channel 5 Global interrupt flag
+        constexpr uint32_t TCIF5 = (1U << 17);  ///< Channel 5 Transfer Complete flag
+        constexpr uint32_t HTIF5 = (1U << 18);  ///< Channel 5 Half Transfer Complete flag
+        constexpr uint32_t TEIF5 = (1U << 19);  ///< Channel 5 Transfer Error flag
+        constexpr uint32_t GIF6 = (1U << 20);  ///< Channel 6 Global interrupt flag
+        constexpr uint32_t TCIF6 = (1U << 21);  ///< Channel 6 Transfer Complete flag
+        constexpr uint32_t HTIF6 = (1U << 22);  ///< Channel 6 Half Transfer Complete flag
+        constexpr uint32_t TEIF6 = (1U << 23);  ///< Channel 6 Transfer Error flag
+        constexpr uint32_t GIF7 = (1U << 24);  ///< Channel 7 Global interrupt flag
+        constexpr uint32_t TCIF7 = (1U << 25);  ///< Channel 7 Transfer Complete flag
+        constexpr uint32_t HTIF7 = (1U << 26);  ///< Channel 7 Half Transfer Complete flag
+        constexpr uint32_t TEIF7 = (1U << 27);  ///< Channel 7 Transfer Error flag
     }
 
     /// IFCR Register bits
     namespace ifcr_bits {
-        constexpr uint32_t CGIF1 = (1U << 0);  ///< Channel 1 Global interrupt
-              clear
-        constexpr uint32_t CGIF2 = (1U << 4);  ///< Channel 2 Global interrupt
-              clear
-        constexpr uint32_t CGIF3 = (1U << 8);  ///< Channel 3 Global interrupt
-              clear
-        constexpr uint32_t CGIF4 = (1U << 12);  ///< Channel 4 Global interrupt
-              clear
-        constexpr uint32_t CGIF5 = (1U << 16);  ///< Channel 5 Global interrupt
-              clear
-        constexpr uint32_t CGIF6 = (1U << 20);  ///< Channel 6 Global interrupt
-              clear
-        constexpr uint32_t CGIF7 = (1U << 24);  ///< Channel 7 Global interrupt
-              clear
-        constexpr uint32_t CTCIF1 = (1U << 1);  ///< Channel 1 Transfer Complete
-              clear
-        constexpr uint32_t CTCIF2 = (1U << 5);  ///< Channel 2 Transfer Complete
-              clear
-        constexpr uint32_t CTCIF3 = (1U << 9);  ///< Channel 3 Transfer Complete
-              clear
-        constexpr uint32_t CTCIF4 = (1U << 13);  ///< Channel 4 Transfer Complete
-              clear
-        constexpr uint32_t CTCIF5 = (1U << 17);  ///< Channel 5 Transfer Complete
-              clear
-        constexpr uint32_t CTCIF6 = (1U << 21);  ///< Channel 6 Transfer Complete
-              clear
-        constexpr uint32_t CTCIF7 = (1U << 25);  ///< Channel 7 Transfer Complete
-              clear
-        constexpr uint32_t CHTIF1 = (1U << 2);  ///< Channel 1 Half Transfer
-              clear
-        constexpr uint32_t CHTIF2 = (1U << 6);  ///< Channel 2 Half Transfer
-              clear
-        constexpr uint32_t CHTIF3 = (1U << 10);  ///< Channel 3 Half Transfer
-              clear
-        constexpr uint32_t CHTIF4 = (1U << 14);  ///< Channel 4 Half Transfer
-              clear
-        constexpr uint32_t CHTIF5 = (1U << 18);  ///< Channel 5 Half Transfer
-              clear
-        constexpr uint32_t CHTIF6 = (1U << 22);  ///< Channel 6 Half Transfer
-              clear
-        constexpr uint32_t CHTIF7 = (1U << 26);  ///< Channel 7 Half Transfer
-              clear
-        constexpr uint32_t CTEIF1 = (1U << 3);  ///< Channel 1 Transfer Error
-              clear
-        constexpr uint32_t CTEIF2 = (1U << 7);  ///< Channel 2 Transfer Error
-              clear
-        constexpr uint32_t CTEIF3 = (1U << 11);  ///< Channel 3 Transfer Error
-              clear
-        constexpr uint32_t CTEIF4 = (1U << 15);  ///< Channel 4 Transfer Error
-              clear
-        constexpr uint32_t CTEIF5 = (1U << 19);  ///< Channel 5 Transfer Error
-              clear
-        constexpr uint32_t CTEIF6 = (1U << 23);  ///< Channel 6 Transfer Error
-              clear
-        constexpr uint32_t CTEIF7 = (1U << 27);  ///< Channel 7 Transfer Error
-              clear
+        constexpr uint32_t CGIF1 = (1U << 0);  ///< Channel 1 Global interrupt clear
+        constexpr uint32_t CGIF2 = (1U << 4);  ///< Channel 2 Global interrupt clear
+        constexpr uint32_t CGIF3 = (1U << 8);  ///< Channel 3 Global interrupt clear
+        constexpr uint32_t CGIF4 = (1U << 12);  ///< Channel 4 Global interrupt clear
+        constexpr uint32_t CGIF5 = (1U << 16);  ///< Channel 5 Global interrupt clear
+        constexpr uint32_t CGIF6 = (1U << 20);  ///< Channel 6 Global interrupt clear
+        constexpr uint32_t CGIF7 = (1U << 24);  ///< Channel 7 Global interrupt clear
+        constexpr uint32_t CTCIF1 = (1U << 1);  ///< Channel 1 Transfer Complete clear
+        constexpr uint32_t CTCIF2 = (1U << 5);  ///< Channel 2 Transfer Complete clear
+        constexpr uint32_t CTCIF3 = (1U << 9);  ///< Channel 3 Transfer Complete clear
+        constexpr uint32_t CTCIF4 = (1U << 13);  ///< Channel 4 Transfer Complete clear
+        constexpr uint32_t CTCIF5 = (1U << 17);  ///< Channel 5 Transfer Complete clear
+        constexpr uint32_t CTCIF6 = (1U << 21);  ///< Channel 6 Transfer Complete clear
+        constexpr uint32_t CTCIF7 = (1U << 25);  ///< Channel 7 Transfer Complete clear
+        constexpr uint32_t CHTIF1 = (1U << 2);  ///< Channel 1 Half Transfer clear
+        constexpr uint32_t CHTIF2 = (1U << 6);  ///< Channel 2 Half Transfer clear
+        constexpr uint32_t CHTIF3 = (1U << 10);  ///< Channel 3 Half Transfer clear
+        constexpr uint32_t CHTIF4 = (1U << 14);  ///< Channel 4 Half Transfer clear
+        constexpr uint32_t CHTIF5 = (1U << 18);  ///< Channel 5 Half Transfer clear
+        constexpr uint32_t CHTIF6 = (1U << 22);  ///< Channel 6 Half Transfer clear
+        constexpr uint32_t CHTIF7 = (1U << 26);  ///< Channel 7 Half Transfer clear
+        constexpr uint32_t CTEIF1 = (1U << 3);  ///< Channel 1 Transfer Error clear
+        constexpr uint32_t CTEIF2 = (1U << 7);  ///< Channel 2 Transfer Error clear
+        constexpr uint32_t CTEIF3 = (1U << 11);  ///< Channel 3 Transfer Error clear
+        constexpr uint32_t CTEIF4 = (1U << 15);  ///< Channel 4 Transfer Error clear
+        constexpr uint32_t CTEIF5 = (1U << 19);  ///< Channel 5 Transfer Error clear
+        constexpr uint32_t CTEIF6 = (1U << 23);  ///< Channel 6 Transfer Error clear
+        constexpr uint32_t CTEIF7 = (1U << 27);  ///< Channel 7 Transfer Error clear
     }
 
     /// CCR1 Register bits
     namespace ccr1_bits {
         constexpr uint32_t EN = (1U << 0);  ///< Channel enable
-        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt
-              enable
-        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt
-              enable
-        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt
-              enable
+        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt enable
+        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt enable
+        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt enable
         constexpr uint32_t DIR = (1U << 4);  ///< Data transfer direction
         constexpr uint32_t CIRC = (1U << 5);  ///< Circular mode
         constexpr uint32_t PINC = (1U << 6);  ///< Peripheral increment mode
@@ -1374,12 +1200,9 @@ namespace dma {
     /// CCR2 Register bits
     namespace ccr2_bits {
         constexpr uint32_t EN = (1U << 0);  ///< Channel enable
-        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt
-              enable
-        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt
-              enable
-        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt
-              enable
+        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt enable
+        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt enable
+        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt enable
         constexpr uint32_t DIR = (1U << 4);  ///< Data transfer direction
         constexpr uint32_t CIRC = (1U << 5);  ///< Circular mode
         constexpr uint32_t PINC = (1U << 6);  ///< Peripheral increment mode
@@ -1408,12 +1231,9 @@ namespace dma {
     /// CCR3 Register bits
     namespace ccr3_bits {
         constexpr uint32_t EN = (1U << 0);  ///< Channel enable
-        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt
-              enable
-        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt
-              enable
-        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt
-              enable
+        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt enable
+        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt enable
+        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt enable
         constexpr uint32_t DIR = (1U << 4);  ///< Data transfer direction
         constexpr uint32_t CIRC = (1U << 5);  ///< Circular mode
         constexpr uint32_t PINC = (1U << 6);  ///< Peripheral increment mode
@@ -1442,12 +1262,9 @@ namespace dma {
     /// CCR4 Register bits
     namespace ccr4_bits {
         constexpr uint32_t EN = (1U << 0);  ///< Channel enable
-        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt
-              enable
-        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt
-              enable
-        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt
-              enable
+        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt enable
+        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt enable
+        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt enable
         constexpr uint32_t DIR = (1U << 4);  ///< Data transfer direction
         constexpr uint32_t CIRC = (1U << 5);  ///< Circular mode
         constexpr uint32_t PINC = (1U << 6);  ///< Peripheral increment mode
@@ -1476,12 +1293,9 @@ namespace dma {
     /// CCR5 Register bits
     namespace ccr5_bits {
         constexpr uint32_t EN = (1U << 0);  ///< Channel enable
-        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt
-              enable
-        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt
-              enable
-        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt
-              enable
+        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt enable
+        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt enable
+        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt enable
         constexpr uint32_t DIR = (1U << 4);  ///< Data transfer direction
         constexpr uint32_t CIRC = (1U << 5);  ///< Circular mode
         constexpr uint32_t PINC = (1U << 6);  ///< Peripheral increment mode
@@ -1510,12 +1324,9 @@ namespace dma {
     /// CCR6 Register bits
     namespace ccr6_bits {
         constexpr uint32_t EN = (1U << 0);  ///< Channel enable
-        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt
-              enable
-        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt
-              enable
-        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt
-              enable
+        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt enable
+        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt enable
+        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt enable
         constexpr uint32_t DIR = (1U << 4);  ///< Data transfer direction
         constexpr uint32_t CIRC = (1U << 5);  ///< Circular mode
         constexpr uint32_t PINC = (1U << 6);  ///< Peripheral increment mode
@@ -1544,12 +1355,9 @@ namespace dma {
     /// CCR7 Register bits
     namespace ccr7_bits {
         constexpr uint32_t EN = (1U << 0);  ///< Channel enable
-        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt
-              enable
-        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt
-              enable
-        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt
-              enable
+        constexpr uint32_t TCIE = (1U << 1);  ///< Transfer complete interrupt enable
+        constexpr uint32_t HTIE = (1U << 2);  ///< Half Transfer interrupt enable
+        constexpr uint32_t TEIE = (1U << 3);  ///< Transfer error interrupt enable
         constexpr uint32_t DIR = (1U << 4);  ///< Data transfer direction
         constexpr uint32_t CIRC = (1U << 5);  ///< Circular mode
         constexpr uint32_t PINC = (1U << 6);  ///< Peripheral increment mode
@@ -1587,24 +1395,24 @@ namespace sdio {
 
     /// SDIO Register structure
     struct Registers {
-        volatile uint32_t POWER;  ///< Offset: 0x00 - Bits 1:0 = PWRCTRL: Power supply control           bits
-        volatile uint32_t CLKCR;  ///< Offset: 0x04 - SDI clock control register           (SDIO_CLKCR)
+        volatile uint32_t POWER;  ///< Offset: 0x00 - Bits 1:0 = PWRCTRL: Power supply control bits
+        volatile uint32_t CLKCR;  ///< Offset: 0x04 - SDI clock control register (SDIO_CLKCR)
         volatile uint32_t ARG;  ///< Offset: 0x08 - Bits 31:0 = : Command argument
-        volatile uint32_t CMD;  ///< Offset: 0x0C - SDIO command register           (SDIO_CMD)
+        volatile uint32_t CMD;  ///< Offset: 0x0C - SDIO command register (SDIO_CMD)
         volatile uint32_t RESPCMD;  ///< Offset: 0x10 - SDIO command register
         volatile uint32_t RESPI1;  ///< Offset: 0x14 - Bits 31:0 = CARDSTATUS1
         volatile uint32_t RESP2;  ///< Offset: 0x18 - Bits 31:0 = CARDSTATUS2
         volatile uint32_t RESP3;  ///< Offset: 0x1C - Bits 31:0 = CARDSTATUS3
         volatile uint32_t RESP4;  ///< Offset: 0x20 - Bits 31:0 = CARDSTATUS4
-        volatile uint32_t DTIMER;  ///< Offset: 0x24 - Bits 31:0 = DATATIME: Data timeout           period
-        volatile uint32_t DLEN;  ///< Offset: 0x28 - Bits 24:0 = DATALENGTH: Data length           value
-        volatile uint32_t DCTRL;  ///< Offset: 0x2C - SDIO data control register           (SDIO_DCTRL)
-        volatile uint32_t DCOUNT;  ///< Offset: 0x30 - Bits 24:0 = DATACOUNT: Data count           value
-        volatile uint32_t STA;  ///< Offset: 0x34 - SDIO status register           (SDIO_STA)
-        volatile uint32_t ICR;  ///< Offset: 0x38 - SDIO interrupt clear register           (SDIO_ICR)
+        volatile uint32_t DTIMER;  ///< Offset: 0x24 - Bits 31:0 = DATATIME: Data timeout period
+        volatile uint32_t DLEN;  ///< Offset: 0x28 - Bits 24:0 = DATALENGTH: Data length value
+        volatile uint32_t DCTRL;  ///< Offset: 0x2C - SDIO data control register (SDIO_DCTRL)
+        volatile uint32_t DCOUNT;  ///< Offset: 0x30 - Bits 24:0 = DATACOUNT: Data count value
+        volatile uint32_t STA;  ///< Offset: 0x34 - SDIO status register (SDIO_STA)
+        volatile uint32_t ICR;  ///< Offset: 0x38 - SDIO interrupt clear register (SDIO_ICR)
         volatile uint32_t MASK;  ///< Offset: 0x3C - SDIO mask register (SDIO_MASK)
-        volatile uint32_t FIFOCNT;  ///< Offset: 0x48 - Bits 23:0 = FIFOCOUNT: Remaining number of          ...
-        volatile uint32_t FIFO;  ///< Offset: 0x80 - bits 31:0 = FIFOData: Receive and transmit           FIFO data
+        volatile uint32_t FIFOCNT;  ///< Offset: 0x48 - Bits 23:0 = FIFOCOUNT: Remaining number of words to be...
+        volatile uint32_t FIFO;  ///< Offset: 0x80 - bits 31:0 = FIFOData: Receive and transmit FIFO data
     };
 
     /// Peripheral instances
@@ -1620,13 +1428,10 @@ namespace sdio {
     namespace clkcr_bits {
         constexpr uint32_t CLKDIV = (8 << 0);  ///< Clock divide factor
         constexpr uint32_t CLKEN = (1U << 8);  ///< Clock enable bit
-        constexpr uint32_t PWRSAV = (1U << 9);  ///< Power saving configuration
-              bit
-        constexpr uint32_t BYPASS = (1U << 10);  ///< Clock divider bypass enable
-              bit
+        constexpr uint32_t PWRSAV = (1U << 9);  ///< Power saving configuration bit
+        constexpr uint32_t BYPASS = (1U << 10);  ///< Clock divider bypass enable bit
         constexpr uint32_t WIDBUS = (2 << 11);  ///< Wide bus mode enable bit
-        constexpr uint32_t NEGEDGE = (1U << 13);  ///< SDIO_CK dephasing selection
-              bit
+        constexpr uint32_t NEGEDGE = (1U << 13);  ///< SDIO_CK dephasing selection bit
         constexpr uint32_t HWFC_EN = (1U << 14);  ///< HW Flow Control enable
     }
 
@@ -1798,10 +1603,10 @@ namespace rtc {
     struct Registers {
         volatile uint32_t CRH;  ///< Offset: 0x00 - RTC Control Register High
         volatile uint32_t CRL;  ///< Offset: 0x04 - RTC Control Register Low
-        volatile uint32_t PRLH;  ///< Offset: 0x08 - RTC Prescaler Load Register           High
-        volatile uint32_t PRLL;  ///< Offset: 0x0C - RTC Prescaler Load Register           Low
-        volatile uint32_t DIVH;  ///< Offset: 0x10 - RTC Prescaler Divider Register           High
-        volatile uint32_t DIVL;  ///< Offset: 0x14 - RTC Prescaler Divider Register           Low
+        volatile uint32_t PRLH;  ///< Offset: 0x08 - RTC Prescaler Load Register High
+        volatile uint32_t PRLL;  ///< Offset: 0x0C - RTC Prescaler Load Register Low
+        volatile uint32_t DIVH;  ///< Offset: 0x10 - RTC Prescaler Divider Register High
+        volatile uint32_t DIVL;  ///< Offset: 0x14 - RTC Prescaler Divider Register Low
         volatile uint32_t CNTH;  ///< Offset: 0x18 - RTC Counter Register High
         volatile uint32_t CNTL;  ///< Offset: 0x1C - RTC Counter Register Low
         volatile uint32_t ALRH;  ///< Offset: 0x20 - RTC Alarm Register High
@@ -1824,34 +1629,29 @@ namespace rtc {
         constexpr uint32_t SECF = (1U << 0);  ///< Second Flag
         constexpr uint32_t ALRF = (1U << 1);  ///< Alarm Flag
         constexpr uint32_t OWF = (1U << 2);  ///< Overflow Flag
-        constexpr uint32_t RSF = (1U << 3);  ///< Registers Synchronized
-              Flag
+        constexpr uint32_t RSF = (1U << 3);  ///< Registers Synchronized Flag
         constexpr uint32_t CNF = (1U << 4);  ///< Configuration Flag
         constexpr uint32_t RTOFF = (1U << 5);  ///< RTC operation OFF
     }
 
     /// PRLH Register bits
     namespace prlh_bits {
-        constexpr uint32_t PRLH = (4 << 0);  ///< RTC Prescaler Load Register
-              High
+        constexpr uint32_t PRLH = (4 << 0);  ///< RTC Prescaler Load Register High
     }
 
     /// PRLL Register bits
     namespace prll_bits {
-        constexpr uint32_t PRLL = (16 << 0);  ///< RTC Prescaler Divider Register
-              Low
+        constexpr uint32_t PRLL = (16 << 0);  ///< RTC Prescaler Divider Register Low
     }
 
     /// DIVH Register bits
     namespace divh_bits {
-        constexpr uint32_t DIVH = (4 << 0);  ///< RTC prescaler divider register
-              high
+        constexpr uint32_t DIVH = (4 << 0);  ///< RTC prescaler divider register high
     }
 
     /// DIVL Register bits
     namespace divl_bits {
-        constexpr uint32_t DIVL = (16 << 0);  ///< RTC prescaler divider register
-              Low
+        constexpr uint32_t DIVL = (16 << 0);  ///< RTC prescaler divider register Low
     }
 
     /// CNTH Register bits
@@ -1928,9 +1728,9 @@ namespace bkp {
         volatile uint32_t DR40;  ///< Offset: 0xB0 - Backup data register (BKP_DR)
         volatile uint32_t DR41;  ///< Offset: 0xB4 - Backup data register (BKP_DR)
         volatile uint32_t DR42;  ///< Offset: 0xB8 - Backup data register (BKP_DR)
-        volatile uint32_t RTCCR;  ///< Offset: 0x28 - RTC clock calibration register           (BKP_RTCCR)
-        volatile uint32_t CR;  ///< Offset: 0x2C - Backup control register           (BKP_CR)
-        volatile uint32_t CSR;  ///< Offset: 0x30 - BKP_CSR control/status register           (BKP_CSR)
+        volatile uint32_t RTCCR;  ///< Offset: 0x28 - RTC clock calibration register (BKP_RTCCR)
+        volatile uint32_t CR;  ///< Offset: 0x2C - Backup control register (BKP_CR)
+        volatile uint32_t CSR;  ///< Offset: 0x30 - BKP_CSR control/status register (BKP_CSR)
     };
 
     /// Peripheral instances
@@ -2151,10 +1951,8 @@ namespace bkp {
     namespace rtccr_bits {
         constexpr uint32_t CAL = (7 << 0);  ///< Calibration value
         constexpr uint32_t CCO = (1U << 7);  ///< Calibration Clock Output
-        constexpr uint32_t ASOE = (1U << 8);  ///< Alarm or second output
-              enable
-        constexpr uint32_t ASOS = (1U << 9);  ///< Alarm or second output
-              selection
+        constexpr uint32_t ASOE = (1U << 8);  ///< Alarm or second output enable
+        constexpr uint32_t ASOS = (1U << 9);  ///< Alarm or second output selection
     }
 
     /// CR Register bits
@@ -2167,8 +1965,7 @@ namespace bkp {
     namespace csr_bits {
         constexpr uint32_t CTE = (1U << 0);  ///< Clear Tamper event
         constexpr uint32_t CTI = (1U << 1);  ///< Clear Tamper Interrupt
-        constexpr uint32_t TPIE = (1U << 2);  ///< Tamper Pin interrupt
-              enable
+        constexpr uint32_t TPIE = (1U << 2);  ///< Tamper Pin interrupt enable
         constexpr uint32_t TEF = (1U << 8);  ///< Tamper Event Flag
         constexpr uint32_t TIF = (1U << 9);  ///< Tamper Interrupt Flag
     }
@@ -2209,16 +2006,13 @@ namespace wdg {
 
     /// RLR Register bits
     namespace rlr_bits {
-        constexpr uint32_t RL = (12 << 0);  ///< Watchdog counter reload
-              value
+        constexpr uint32_t RL = (12 << 0);  ///< Watchdog counter reload value
     }
 
     /// SR Register bits
     namespace sr_bits {
-        constexpr uint32_t PVU = (1U << 0);  ///< Watchdog prescaler value
-              update
-        constexpr uint32_t RVU = (1U << 1);  ///< Watchdog counter reload value
-              update
+        constexpr uint32_t PVU = (1U << 0);  ///< Watchdog prescaler value update
+        constexpr uint32_t RVU = (1U << 1);  ///< Watchdog counter reload value update
     }
 
 }
@@ -2252,11 +2046,11 @@ namespace tim {
         volatile uint32_t DIER;  ///< Offset: 0x0C - DMA/Interrupt enable register
         volatile uint32_t SR;  ///< Offset: 0x10 - status register
         volatile uint32_t EGR;  ///< Offset: 0x14 - event generation register
-        volatile uint32_t CCMR1_Output;  ///< Offset: 0x18 - capture/compare mode register (output           mode)
-        volatile uint32_t CCMR1_Input;  ///< Offset: 0x18 - capture/compare mode register 1 (input           mode)
-        volatile uint32_t CCMR2_Output;  ///< Offset: 0x1C - capture/compare mode register (output           mode)
-        volatile uint32_t CCMR2_Input;  ///< Offset: 0x1C - capture/compare mode register 2 (input           mode)
-        volatile uint32_t CCER;  ///< Offset: 0x20 - capture/compare enable           register
+        volatile uint32_t CCMR1_Output;  ///< Offset: 0x18 - capture/compare mode register (output mode)
+        volatile uint32_t CCMR1_Input;  ///< Offset: 0x18 - capture/compare mode register 1 (input mode)
+        volatile uint32_t CCMR2_Output;  ///< Offset: 0x1C - capture/compare mode register (output mode)
+        volatile uint32_t CCMR2_Input;  ///< Offset: 0x1C - capture/compare mode register 2 (input mode)
+        volatile uint32_t CCER;  ///< Offset: 0x20 - capture/compare enable register
         volatile uint32_t CNT;  ///< Offset: 0x24 - counter
         volatile uint32_t PSC;  ///< Offset: 0x28 - prescaler
         volatile uint32_t ARR;  ///< Offset: 0x2C - auto-reload register
@@ -2291,8 +2085,7 @@ namespace tim {
     namespace cr1_bits {
         constexpr uint32_t CKD = (2 << 8);  ///< Clock division
         constexpr uint32_t ARPE = (1U << 7);  ///< Auto-reload preload enable
-        constexpr uint32_t CMS = (2 << 5);  ///< Center-aligned mode
-              selection
+        constexpr uint32_t CMS = (2 << 5);  ///< Center-aligned mode selection
         constexpr uint32_t DIR = (1U << 4);  ///< Direction
         constexpr uint32_t OPM = (1U << 3);  ///< One-pulse mode
         constexpr uint32_t URS = (1U << 2);  ///< Update request source
@@ -2311,12 +2104,9 @@ namespace tim {
         constexpr uint32_t OIS1 = (1U << 8);  ///< Output Idle state 1
         constexpr uint32_t TI1S = (1U << 7);  ///< TI1 selection
         constexpr uint32_t MMS = (3 << 4);  ///< Master mode selection
-        constexpr uint32_t CCDS = (1U << 3);  ///< Capture/compare DMA
-              selection
-        constexpr uint32_t CCUS = (1U << 2);  ///< Capture/compare control update
-              selection
-        constexpr uint32_t CCPC = (1U << 0);  ///< Capture/compare preloaded
-              control
+        constexpr uint32_t CCDS = (1U << 3);  ///< Capture/compare DMA selection
+        constexpr uint32_t CCUS = (1U << 2);  ///< Capture/compare control update selection
+        constexpr uint32_t CCPC = (1U << 0);  ///< Capture/compare preloaded control
     }
 
     /// SMCR Register bits
@@ -2334,24 +2124,16 @@ namespace tim {
     namespace dier_bits {
         constexpr uint32_t TDE = (1U << 14);  ///< Trigger DMA request enable
         constexpr uint32_t COMDE = (1U << 13);  ///< COM DMA request enable
-        constexpr uint32_t CC4DE = (1U << 12);  ///< Capture/Compare 4 DMA request
-              enable
-        constexpr uint32_t CC3DE = (1U << 11);  ///< Capture/Compare 3 DMA request
-              enable
-        constexpr uint32_t CC2DE = (1U << 10);  ///< Capture/Compare 2 DMA request
-              enable
-        constexpr uint32_t CC1DE = (1U << 9);  ///< Capture/Compare 1 DMA request
-              enable
+        constexpr uint32_t CC4DE = (1U << 12);  ///< Capture/Compare 4 DMA request enable
+        constexpr uint32_t CC3DE = (1U << 11);  ///< Capture/Compare 3 DMA request enable
+        constexpr uint32_t CC2DE = (1U << 10);  ///< Capture/Compare 2 DMA request enable
+        constexpr uint32_t CC1DE = (1U << 9);  ///< Capture/Compare 1 DMA request enable
         constexpr uint32_t UDE = (1U << 8);  ///< Update DMA request enable
         constexpr uint32_t TIE = (1U << 6);  ///< Trigger interrupt enable
-        constexpr uint32_t CC4IE = (1U << 4);  ///< Capture/Compare 4 interrupt
-              enable
-        constexpr uint32_t CC3IE = (1U << 3);  ///< Capture/Compare 3 interrupt
-              enable
-        constexpr uint32_t CC2IE = (1U << 2);  ///< Capture/Compare 2 interrupt
-              enable
-        constexpr uint32_t CC1IE = (1U << 1);  ///< Capture/Compare 1 interrupt
-              enable
+        constexpr uint32_t CC4IE = (1U << 4);  ///< Capture/Compare 4 interrupt enable
+        constexpr uint32_t CC3IE = (1U << 3);  ///< Capture/Compare 3 interrupt enable
+        constexpr uint32_t CC2IE = (1U << 2);  ///< Capture/Compare 2 interrupt enable
+        constexpr uint32_t CC1IE = (1U << 1);  ///< Capture/Compare 1 interrupt enable
         constexpr uint32_t UIE = (1U << 0);  ///< Update interrupt enable
         constexpr uint32_t BIE = (1U << 7);  ///< Break interrupt enable
         constexpr uint32_t COMIE = (1U << 5);  ///< COM interrupt enable
@@ -2359,25 +2141,17 @@ namespace tim {
 
     /// SR Register bits
     namespace sr_bits {
-        constexpr uint32_t CC4OF = (1U << 12);  ///< Capture/Compare 4 overcapture
-              flag
-        constexpr uint32_t CC3OF = (1U << 11);  ///< Capture/Compare 3 overcapture
-              flag
-        constexpr uint32_t CC2OF = (1U << 10);  ///< Capture/compare 2 overcapture
-              flag
-        constexpr uint32_t CC1OF = (1U << 9);  ///< Capture/Compare 1 overcapture
-              flag
+        constexpr uint32_t CC4OF = (1U << 12);  ///< Capture/Compare 4 overcapture flag
+        constexpr uint32_t CC3OF = (1U << 11);  ///< Capture/Compare 3 overcapture flag
+        constexpr uint32_t CC2OF = (1U << 10);  ///< Capture/compare 2 overcapture flag
+        constexpr uint32_t CC1OF = (1U << 9);  ///< Capture/Compare 1 overcapture flag
         constexpr uint32_t BIF = (1U << 7);  ///< Break interrupt flag
         constexpr uint32_t TIF = (1U << 6);  ///< Trigger interrupt flag
         constexpr uint32_t COMIF = (1U << 5);  ///< COM interrupt flag
-        constexpr uint32_t CC4IF = (1U << 4);  ///< Capture/Compare 4 interrupt
-              flag
-        constexpr uint32_t CC3IF = (1U << 3);  ///< Capture/Compare 3 interrupt
-              flag
-        constexpr uint32_t CC2IF = (1U << 2);  ///< Capture/Compare 2 interrupt
-              flag
-        constexpr uint32_t CC1IF = (1U << 1);  ///< Capture/compare 1 interrupt
-              flag
+        constexpr uint32_t CC4IF = (1U << 4);  ///< Capture/Compare 4 interrupt flag
+        constexpr uint32_t CC3IF = (1U << 3);  ///< Capture/Compare 3 interrupt flag
+        constexpr uint32_t CC2IF = (1U << 2);  ///< Capture/Compare 2 interrupt flag
+        constexpr uint32_t CC1IF = (1U << 1);  ///< Capture/compare 1 interrupt flag
         constexpr uint32_t UIF = (1U << 0);  ///< Update interrupt flag
     }
 
@@ -2385,117 +2159,78 @@ namespace tim {
     namespace egr_bits {
         constexpr uint32_t BG = (1U << 7);  ///< Break generation
         constexpr uint32_t TG = (1U << 6);  ///< Trigger generation
-        constexpr uint32_t COMG = (1U << 5);  ///< Capture/Compare control update
-              generation
-        constexpr uint32_t CC4G = (1U << 4);  ///< Capture/compare 4
-              generation
-        constexpr uint32_t CC3G = (1U << 3);  ///< Capture/compare 3
-              generation
-        constexpr uint32_t CC2G = (1U << 2);  ///< Capture/compare 2
-              generation
-        constexpr uint32_t CC1G = (1U << 1);  ///< Capture/compare 1
-              generation
+        constexpr uint32_t COMG = (1U << 5);  ///< Capture/Compare control update generation
+        constexpr uint32_t CC4G = (1U << 4);  ///< Capture/compare 4 generation
+        constexpr uint32_t CC3G = (1U << 3);  ///< Capture/compare 3 generation
+        constexpr uint32_t CC2G = (1U << 2);  ///< Capture/compare 2 generation
+        constexpr uint32_t CC1G = (1U << 1);  ///< Capture/compare 1 generation
         constexpr uint32_t UG = (1U << 0);  ///< Update generation
     }
 
     /// CCMR1_Output Register bits
     namespace ccmr1_output_bits {
-        constexpr uint32_t OC2CE = (1U << 15);  ///< Output Compare 2 clear
-              enable
+        constexpr uint32_t OC2CE = (1U << 15);  ///< Output Compare 2 clear enable
         constexpr uint32_t OC2M = (3 << 12);  ///< Output Compare 2 mode
-        constexpr uint32_t OC2PE = (1U << 11);  ///< Output Compare 2 preload
-              enable
-        constexpr uint32_t OC2FE = (1U << 10);  ///< Output Compare 2 fast
-              enable
-        constexpr uint32_t CC2S = (2 << 8);  ///< Capture/Compare 2
-              selection
-        constexpr uint32_t OC1CE = (1U << 7);  ///< Output Compare 1 clear
-              enable
+        constexpr uint32_t OC2PE = (1U << 11);  ///< Output Compare 2 preload enable
+        constexpr uint32_t OC2FE = (1U << 10);  ///< Output Compare 2 fast enable
+        constexpr uint32_t CC2S = (2 << 8);  ///< Capture/Compare 2 selection
+        constexpr uint32_t OC1CE = (1U << 7);  ///< Output Compare 1 clear enable
         constexpr uint32_t OC1M = (3 << 4);  ///< Output Compare 1 mode
-        constexpr uint32_t OC1PE = (1U << 3);  ///< Output Compare 1 preload
-              enable
-        constexpr uint32_t OC1FE = (1U << 2);  ///< Output Compare 1 fast
-              enable
-        constexpr uint32_t CC1S = (2 << 0);  ///< Capture/Compare 1
-              selection
+        constexpr uint32_t OC1PE = (1U << 3);  ///< Output Compare 1 preload enable
+        constexpr uint32_t OC1FE = (1U << 2);  ///< Output Compare 1 fast enable
+        constexpr uint32_t CC1S = (2 << 0);  ///< Capture/Compare 1 selection
     }
 
     /// CCMR1_Input Register bits
     namespace ccmr1_input_bits {
         constexpr uint32_t IC2F = (4 << 12);  ///< Input capture 2 filter
         constexpr uint32_t IC2PCS = (2 << 10);  ///< Input capture 2 prescaler
-        constexpr uint32_t CC2S = (2 << 8);  ///< Capture/Compare 2
-              selection
+        constexpr uint32_t CC2S = (2 << 8);  ///< Capture/Compare 2 selection
         constexpr uint32_t IC1F = (4 << 4);  ///< Input capture 1 filter
         constexpr uint32_t ICPCS = (2 << 2);  ///< Input capture 1 prescaler
-        constexpr uint32_t CC1S = (2 << 0);  ///< Capture/Compare 1
-              selection
+        constexpr uint32_t CC1S = (2 << 0);  ///< Capture/Compare 1 selection
     }
 
     /// CCMR2_Output Register bits
     namespace ccmr2_output_bits {
-        constexpr uint32_t OC4CE = (1U << 15);  ///< Output compare 4 clear
-              enable
+        constexpr uint32_t OC4CE = (1U << 15);  ///< Output compare 4 clear enable
         constexpr uint32_t OC4M = (3 << 12);  ///< Output compare 4 mode
-        constexpr uint32_t OC4PE = (1U << 11);  ///< Output compare 4 preload
-              enable
-        constexpr uint32_t OC4FE = (1U << 10);  ///< Output compare 4 fast
-              enable
-        constexpr uint32_t CC4S = (2 << 8);  ///< Capture/Compare 4
-              selection
-        constexpr uint32_t OC3CE = (1U << 7);  ///< Output compare 3 clear
-              enable
+        constexpr uint32_t OC4PE = (1U << 11);  ///< Output compare 4 preload enable
+        constexpr uint32_t OC4FE = (1U << 10);  ///< Output compare 4 fast enable
+        constexpr uint32_t CC4S = (2 << 8);  ///< Capture/Compare 4 selection
+        constexpr uint32_t OC3CE = (1U << 7);  ///< Output compare 3 clear enable
         constexpr uint32_t OC3M = (3 << 4);  ///< Output compare 3 mode
-        constexpr uint32_t OC3PE = (1U << 3);  ///< Output compare 3 preload
-              enable
-        constexpr uint32_t OC3FE = (1U << 2);  ///< Output compare 3 fast
-              enable
-        constexpr uint32_t CC3S = (2 << 0);  ///< Capture/Compare 3
-              selection
+        constexpr uint32_t OC3PE = (1U << 3);  ///< Output compare 3 preload enable
+        constexpr uint32_t OC3FE = (1U << 2);  ///< Output compare 3 fast enable
+        constexpr uint32_t CC3S = (2 << 0);  ///< Capture/Compare 3 selection
     }
 
     /// CCMR2_Input Register bits
     namespace ccmr2_input_bits {
         constexpr uint32_t IC4F = (4 << 12);  ///< Input capture 4 filter
         constexpr uint32_t IC4PSC = (2 << 10);  ///< Input capture 4 prescaler
-        constexpr uint32_t CC4S = (2 << 8);  ///< Capture/Compare 4
-              selection
+        constexpr uint32_t CC4S = (2 << 8);  ///< Capture/Compare 4 selection
         constexpr uint32_t IC3F = (4 << 4);  ///< Input capture 3 filter
         constexpr uint32_t IC3PSC = (2 << 2);  ///< Input capture 3 prescaler
-        constexpr uint32_t CC3S = (2 << 0);  ///< Capture/compare 3
-              selection
+        constexpr uint32_t CC3S = (2 << 0);  ///< Capture/compare 3 selection
     }
 
     /// CCER Register bits
     namespace ccer_bits {
-        constexpr uint32_t CC4P = (1U << 13);  ///< Capture/Compare 3 output
-              Polarity
-        constexpr uint32_t CC4E = (1U << 12);  ///< Capture/Compare 4 output
-              enable
-        constexpr uint32_t CC3NP = (1U << 11);  ///< Capture/Compare 3 output
-              Polarity
-        constexpr uint32_t CC3NE = (1U << 10);  ///< Capture/Compare 3 complementary output
-              enable
-        constexpr uint32_t CC3P = (1U << 9);  ///< Capture/Compare 3 output
-              Polarity
-        constexpr uint32_t CC3E = (1U << 8);  ///< Capture/Compare 3 output
-              enable
-        constexpr uint32_t CC2NP = (1U << 7);  ///< Capture/Compare 2 output
-              Polarity
-        constexpr uint32_t CC2NE = (1U << 6);  ///< Capture/Compare 2 complementary output
-              enable
-        constexpr uint32_t CC2P = (1U << 5);  ///< Capture/Compare 2 output
-              Polarity
-        constexpr uint32_t CC2E = (1U << 4);  ///< Capture/Compare 2 output
-              enable
-        constexpr uint32_t CC1NP = (1U << 3);  ///< Capture/Compare 1 output
-              Polarity
-        constexpr uint32_t CC1NE = (1U << 2);  ///< Capture/Compare 1 complementary output
-              enable
-        constexpr uint32_t CC1P = (1U << 1);  ///< Capture/Compare 1 output
-              Polarity
-        constexpr uint32_t CC1E = (1U << 0);  ///< Capture/Compare 1 output
-              enable
+        constexpr uint32_t CC4P = (1U << 13);  ///< Capture/Compare 3 output Polarity
+        constexpr uint32_t CC4E = (1U << 12);  ///< Capture/Compare 4 output enable
+        constexpr uint32_t CC3NP = (1U << 11);  ///< Capture/Compare 3 output Polarity
+        constexpr uint32_t CC3NE = (1U << 10);  ///< Capture/Compare 3 complementary output enable
+        constexpr uint32_t CC3P = (1U << 9);  ///< Capture/Compare 3 output Polarity
+        constexpr uint32_t CC3E = (1U << 8);  ///< Capture/Compare 3 output enable
+        constexpr uint32_t CC2NP = (1U << 7);  ///< Capture/Compare 2 output Polarity
+        constexpr uint32_t CC2NE = (1U << 6);  ///< Capture/Compare 2 complementary output enable
+        constexpr uint32_t CC2P = (1U << 5);  ///< Capture/Compare 2 output Polarity
+        constexpr uint32_t CC2E = (1U << 4);  ///< Capture/Compare 2 output enable
+        constexpr uint32_t CC1NP = (1U << 3);  ///< Capture/Compare 1 output Polarity
+        constexpr uint32_t CC1NE = (1U << 2);  ///< Capture/Compare 1 complementary output enable
+        constexpr uint32_t CC1P = (1U << 1);  ///< Capture/Compare 1 output Polarity
+        constexpr uint32_t CC1E = (1U << 0);  ///< Capture/Compare 1 output enable
     }
 
     /// CNT Register bits
@@ -2541,8 +2276,7 @@ namespace tim {
 
     /// DMAR Register bits
     namespace dmar_bits {
-        constexpr uint32_t DMAB = (16 << 0);  ///< DMA register for burst
-              accesses
+        constexpr uint32_t DMAB = (16 << 0);  ///< DMA register for burst accesses
     }
 
     /// RCR Register bits
@@ -2556,10 +2290,8 @@ namespace tim {
         constexpr uint32_t AOE = (1U << 14);  ///< Automatic output enable
         constexpr uint32_t BKP = (1U << 13);  ///< Break polarity
         constexpr uint32_t BKE = (1U << 12);  ///< Break enable
-        constexpr uint32_t OSSR = (1U << 11);  ///< Off-state selection for Run
-              mode
-        constexpr uint32_t OSSI = (1U << 10);  ///< Off-state selection for Idle
-              mode
+        constexpr uint32_t OSSR = (1U << 11);  ///< Off-state selection for Run mode
+        constexpr uint32_t OSSI = (1U << 10);  ///< Off-state selection for Idle mode
         constexpr uint32_t LOCK = (2 << 8);  ///< Lock configuration
         constexpr uint32_t DTG = (8 << 0);  ///< Dead-time generator setup
     }
@@ -2598,13 +2330,11 @@ namespace i2c {
         constexpr uint32_t SWRST = (1U << 15);  ///< Software reset
         constexpr uint32_t ALERT = (1U << 13);  ///< SMBus alert
         constexpr uint32_t PEC = (1U << 12);  ///< Packet error checking
-        constexpr uint32_t POS = (1U << 11);  ///< Acknowledge/PEC Position (for data
-              reception)
+        constexpr uint32_t POS = (1U << 11);  ///< Acknowledge/PEC Position (for data reception)
         constexpr uint32_t ACK = (1U << 10);  ///< Acknowledge enable
         constexpr uint32_t STOP = (1U << 9);  ///< Stop generation
         constexpr uint32_t START = (1U << 8);  ///< Start generation
-        constexpr uint32_t NOSTRETCH = (1U << 7);  ///< Clock stretching disable (Slave
-              mode)
+        constexpr uint32_t NOSTRETCH = (1U << 7);  ///< Clock stretching disable (Slave mode)
         constexpr uint32_t ENGC = (1U << 6);  ///< General call enable
         constexpr uint32_t ENPEC = (1U << 5);  ///< PEC enable
         constexpr uint32_t ENARP = (1U << 4);  ///< ARP enable
@@ -2625,8 +2355,7 @@ namespace i2c {
 
     /// OAR1 Register bits
     namespace oar1_bits {
-        constexpr uint32_t ADDMODE = (1U << 15);  ///< Addressing mode (slave
-              mode)
+        constexpr uint32_t ADDMODE = (1U << 15);  ///< Addressing mode (slave mode)
         constexpr uint32_t ADD10 = (2 << 8);  ///< Interface address
         constexpr uint32_t ADD7 = (7 << 1);  ///< Interface address
         constexpr uint32_t ADD0 = (1U << 0);  ///< Interface address
@@ -2635,8 +2364,7 @@ namespace i2c {
     /// OAR2 Register bits
     namespace oar2_bits {
         constexpr uint32_t ADD2 = (7 << 1);  ///< Interface address
-        constexpr uint32_t ENDUAL = (1U << 0);  ///< Dual addressing mode
-              enable
+        constexpr uint32_t ENDUAL = (1U << 0);  ///< Dual addressing mode enable
     }
 
     /// DR Register bits
@@ -2651,34 +2379,24 @@ namespace i2c {
         constexpr uint32_t PECERR = (1U << 12);  ///< PEC Error in reception
         constexpr uint32_t OVR = (1U << 11);  ///< Overrun/Underrun
         constexpr uint32_t AF = (1U << 10);  ///< Acknowledge failure
-        constexpr uint32_t ARLO = (1U << 9);  ///< Arbitration lost (master
-              mode)
+        constexpr uint32_t ARLO = (1U << 9);  ///< Arbitration lost (master mode)
         constexpr uint32_t BERR = (1U << 8);  ///< Bus error
-        constexpr uint32_t TxE = (1U << 7);  ///< Data register empty
-              (transmitters)
-        constexpr uint32_t RxNE = (1U << 6);  ///< Data register not empty
-              (receivers)
-        constexpr uint32_t STOPF = (1U << 4);  ///< Stop detection (slave
-              mode)
-        constexpr uint32_t ADD10 = (1U << 3);  ///< 10-bit header sent (Master
-              mode)
+        constexpr uint32_t TxE = (1U << 7);  ///< Data register empty (transmitters)
+        constexpr uint32_t RxNE = (1U << 6);  ///< Data register not empty (receivers)
+        constexpr uint32_t STOPF = (1U << 4);  ///< Stop detection (slave mode)
+        constexpr uint32_t ADD10 = (1U << 3);  ///< 10-bit header sent (Master mode)
         constexpr uint32_t BTF = (1U << 2);  ///< Byte transfer finished
-        constexpr uint32_t ADDR = (1U << 1);  ///< Address sent (master mode)/matched
-              (slave mode)
+        constexpr uint32_t ADDR = (1U << 1);  ///< Address sent (master mode)/matched (slave mode)
         constexpr uint32_t SB = (1U << 0);  ///< Start bit (Master mode)
     }
 
     /// SR2 Register bits
     namespace sr2_bits {
-        constexpr uint32_t PEC = (8 << 8);  ///< acket error checking
-              register
+        constexpr uint32_t PEC = (8 << 8);  ///< acket error checking register
         constexpr uint32_t DUALF = (1U << 7);  ///< Dual flag (Slave mode)
-        constexpr uint32_t SMBHOST = (1U << 6);  ///< SMBus host header (Slave
-              mode)
-        constexpr uint32_t SMBDEFAULT = (1U << 5);  ///< SMBus device default address (Slave
-              mode)
-        constexpr uint32_t GENCALL = (1U << 4);  ///< General call address (Slave
-              mode)
+        constexpr uint32_t SMBHOST = (1U << 6);  ///< SMBus host header (Slave mode)
+        constexpr uint32_t SMBDEFAULT = (1U << 5);  ///< SMBus device default address (Slave mode)
+        constexpr uint32_t GENCALL = (1U << 4);  ///< General call address (Slave mode)
         constexpr uint32_t TRA = (1U << 2);  ///< Transmitter/receiver
         constexpr uint32_t BUSY = (1U << 1);  ///< Bus busy
         constexpr uint32_t MSL = (1U << 0);  ///< Master/slave
@@ -2688,14 +2406,12 @@ namespace i2c {
     namespace ccr_bits {
         constexpr uint32_t F_S = (1U << 15);  ///< I2C master mode selection
         constexpr uint32_t DUTY = (1U << 14);  ///< Fast mode duty cycle
-        constexpr uint32_t CCR = (12 << 0);  ///< Clock control register in Fast/Standard
-              mode (Master mode)
+        constexpr uint32_t CCR = (12 << 0);  ///< Clock control register in Fast/Standard mode (Master mode)
     }
 
     /// TRISE Register bits
     namespace trise_bits {
-        constexpr uint32_t TRISE = (6 << 0);  ///< Maximum rise time in Fast/Standard mode
-              (Master mode)
+        constexpr uint32_t TRISE = (6 << 0);  ///< Maximum rise time in Fast/Standard mode (Master mode)
     }
 
 }
@@ -2731,12 +2447,9 @@ namespace spi {
     // Bit definitions
     /// CR1 Register bits
     namespace cr1_bits {
-        constexpr uint32_t BIDIMODE = (1U << 15);  ///< Bidirectional data mode
-              enable
-        constexpr uint32_t BIDIOE = (1U << 14);  ///< Output enable in bidirectional
-              mode
-        constexpr uint32_t CRCEN = (1U << 13);  ///< Hardware CRC calculation
-              enable
+        constexpr uint32_t BIDIMODE = (1U << 15);  ///< Bidirectional data mode enable
+        constexpr uint32_t BIDIOE = (1U << 14);  ///< Output enable in bidirectional mode
+        constexpr uint32_t CRCEN = (1U << 13);  ///< Hardware CRC calculation enable
         constexpr uint32_t CRCNEXT = (1U << 12);  ///< CRC transfer next
         constexpr uint32_t DFF = (1U << 11);  ///< Data frame format
         constexpr uint32_t RXONLY = (1U << 10);  ///< Receive only
@@ -2752,10 +2465,8 @@ namespace spi {
 
     /// CR2 Register bits
     namespace cr2_bits {
-        constexpr uint32_t TXEIE = (1U << 7);  ///< Tx buffer empty interrupt
-              enable
-        constexpr uint32_t RXNEIE = (1U << 6);  ///< RX buffer not empty interrupt
-              enable
+        constexpr uint32_t TXEIE = (1U << 7);  ///< Tx buffer empty interrupt enable
+        constexpr uint32_t RXNEIE = (1U << 6);  ///< RX buffer not empty interrupt enable
         constexpr uint32_t ERRIE = (1U << 5);  ///< Error interrupt enable
         constexpr uint32_t SSOE = (1U << 2);  ///< SS output enable
         constexpr uint32_t TXDMAEN = (1U << 1);  ///< Tx buffer DMA enable
@@ -2801,19 +2512,15 @@ namespace spi {
         constexpr uint32_t I2SCFG = (2 << 8);  ///< I2S configuration mode
         constexpr uint32_t PCMSYNC = (1U << 7);  ///< PCM frame synchronization
         constexpr uint32_t I2SSTD = (2 << 4);  ///< I2S standard selection
-        constexpr uint32_t CKPOL = (1U << 3);  ///< Steady state clock
-              polarity
-        constexpr uint32_t DATLEN = (2 << 1);  ///< Data length to be
-              transferred
-        constexpr uint32_t CHLEN = (1U << 0);  ///< Channel length (number of bits per audio
-              channel)
+        constexpr uint32_t CKPOL = (1U << 3);  ///< Steady state clock polarity
+        constexpr uint32_t DATLEN = (2 << 1);  ///< Data length to be transferred
+        constexpr uint32_t CHLEN = (1U << 0);  ///< Channel length (number of bits per audio channel)
     }
 
     /// I2SPR Register bits
     namespace i2spr_bits {
         constexpr uint32_t MCKOE = (1U << 9);  ///< Master clock output enable
-        constexpr uint32_t ODD = (1U << 8);  ///< Odd factor for the
-              prescaler
+        constexpr uint32_t ODD = (1U << 8);  ///< Odd factor for the prescaler
         constexpr uint32_t I2SDIV = (8 << 0);  ///< I2S Linear prescaler
     }
 
@@ -2839,7 +2546,7 @@ namespace usart {
         volatile uint32_t CR1;  ///< Offset: 0x0C - Control register 1
         volatile uint32_t CR2;  ///< Offset: 0x10 - Control register 2
         volatile uint32_t CR3;  ///< Offset: 0x14 - Control register 3
-        volatile uint32_t GTPR;  ///< Offset: 0x18 - Guard time and prescaler           register
+        volatile uint32_t GTPR;  ///< Offset: 0x18 - Guard time and prescaler register
     };
 
     /// Peripheral instances
@@ -2854,11 +2561,9 @@ namespace usart {
     namespace sr_bits {
         constexpr uint32_t CTS = (1U << 9);  ///< CTS flag
         constexpr uint32_t LBD = (1U << 8);  ///< LIN break detection flag
-        constexpr uint32_t TXE = (1U << 7);  ///< Transmit data register
-              empty
+        constexpr uint32_t TXE = (1U << 7);  ///< Transmit data register empty
         constexpr uint32_t TC = (1U << 6);  ///< Transmission complete
-        constexpr uint32_t RXNE = (1U << 5);  ///< Read data register not
-              empty
+        constexpr uint32_t RXNE = (1U << 5);  ///< Read data register not empty
         constexpr uint32_t IDLE = (1U << 4);  ///< IDLE line detected
         constexpr uint32_t ORE = (1U << 3);  ///< Overrun error
         constexpr uint32_t NE = (1U << 2);  ///< Noise error flag
@@ -2886,8 +2591,7 @@ namespace usart {
         constexpr uint32_t PS = (1U << 9);  ///< Parity selection
         constexpr uint32_t PEIE = (1U << 8);  ///< PE interrupt enable
         constexpr uint32_t TXEIE = (1U << 7);  ///< TXE interrupt enable
-        constexpr uint32_t TCIE = (1U << 6);  ///< Transmission complete interrupt
-              enable
+        constexpr uint32_t TCIE = (1U << 6);  ///< Transmission complete interrupt enable
         constexpr uint32_t RXNEIE = (1U << 5);  ///< RXNE interrupt enable
         constexpr uint32_t IDLEIE = (1U << 4);  ///< IDLE interrupt enable
         constexpr uint32_t TE = (1U << 3);  ///< Transmitter enable
@@ -2904,8 +2608,7 @@ namespace usart {
         constexpr uint32_t CPOL = (1U << 10);  ///< Clock polarity
         constexpr uint32_t CPHA = (1U << 9);  ///< Clock phase
         constexpr uint32_t LBCL = (1U << 8);  ///< Last bit clock pulse
-        constexpr uint32_t LBDIE = (1U << 6);  ///< LIN break detection interrupt
-              enable
+        constexpr uint32_t LBDIE = (1U << 6);  ///< LIN break detection interrupt enable
         constexpr uint32_t LBDL = (1U << 5);  ///< lin break detection length
         constexpr uint32_t ADD = (4 << 0);  ///< Address of the USART node
     }
@@ -2950,12 +2653,12 @@ namespace adc {
         volatile uint32_t CR2;  ///< Offset: 0x08 - control register 2
         volatile uint32_t SMPR1;  ///< Offset: 0x0C - sample time register 1
         volatile uint32_t SMPR2;  ///< Offset: 0x10 - sample time register 2
-        volatile uint32_t JOFR1;  ///< Offset: 0x14 - injected channel data offset register           x
-        volatile uint32_t JOFR2;  ///< Offset: 0x18 - injected channel data offset register           x
-        volatile uint32_t JOFR3;  ///< Offset: 0x1C - injected channel data offset register           x
-        volatile uint32_t JOFR4;  ///< Offset: 0x20 - injected channel data offset register           x
-        volatile uint32_t HTR;  ///< Offset: 0x24 - watchdog higher threshold           register
-        volatile uint32_t LTR;  ///< Offset: 0x28 - watchdog lower threshold           register
+        volatile uint32_t JOFR1;  ///< Offset: 0x14 - injected channel data offset register x
+        volatile uint32_t JOFR2;  ///< Offset: 0x18 - injected channel data offset register x
+        volatile uint32_t JOFR3;  ///< Offset: 0x1C - injected channel data offset register x
+        volatile uint32_t JOFR4;  ///< Offset: 0x20 - injected channel data offset register x
+        volatile uint32_t HTR;  ///< Offset: 0x24 - watchdog higher threshold register
+        volatile uint32_t LTR;  ///< Offset: 0x28 - watchdog lower threshold register
         volatile uint32_t SQR1;  ///< Offset: 0x2C - regular sequence register 1
         volatile uint32_t SQR2;  ///< Offset: 0x30 - regular sequence register 2
         volatile uint32_t SQR3;  ///< Offset: 0x34 - regular sequence register 3
@@ -2976,58 +2679,38 @@ namespace adc {
     /// SR Register bits
     namespace sr_bits {
         constexpr uint32_t STRT = (1U << 4);  ///< Regular channel start flag
-        constexpr uint32_t JSTRT = (1U << 3);  ///< Injected channel start
-              flag
-        constexpr uint32_t JEOC = (1U << 2);  ///< Injected channel end of
-              conversion
-        constexpr uint32_t EOC = (1U << 1);  ///< Regular channel end of
-              conversion
+        constexpr uint32_t JSTRT = (1U << 3);  ///< Injected channel start flag
+        constexpr uint32_t JEOC = (1U << 2);  ///< Injected channel end of conversion
+        constexpr uint32_t EOC = (1U << 1);  ///< Regular channel end of conversion
         constexpr uint32_t AWD = (1U << 0);  ///< Analog watchdog flag
     }
 
     /// CR1 Register bits
     namespace cr1_bits {
-        constexpr uint32_t AWDEN = (1U << 23);  ///< Analog watchdog enable on regular
-              channels
-        constexpr uint32_t JAWDEN = (1U << 22);  ///< Analog watchdog enable on injected
-              channels
+        constexpr uint32_t AWDEN = (1U << 23);  ///< Analog watchdog enable on regular channels
+        constexpr uint32_t JAWDEN = (1U << 22);  ///< Analog watchdog enable on injected channels
         constexpr uint32_t DUALMOD = (4 << 16);  ///< Dual mode selection
-        constexpr uint32_t DISCNUM = (3 << 13);  ///< Discontinuous mode channel
-              count
-        constexpr uint32_t JDISCEN = (1U << 12);  ///< Discontinuous mode on injected
-              channels
-        constexpr uint32_t DISCEN = (1U << 11);  ///< Discontinuous mode on regular
-              channels
-        constexpr uint32_t JAUTO = (1U << 10);  ///< Automatic injected group
-              conversion
-        constexpr uint32_t AWDSGL = (1U << 9);  ///< Enable the watchdog on a single channel
-              in scan mode
+        constexpr uint32_t DISCNUM = (3 << 13);  ///< Discontinuous mode channel count
+        constexpr uint32_t JDISCEN = (1U << 12);  ///< Discontinuous mode on injected channels
+        constexpr uint32_t DISCEN = (1U << 11);  ///< Discontinuous mode on regular channels
+        constexpr uint32_t JAUTO = (1U << 10);  ///< Automatic injected group conversion
+        constexpr uint32_t AWDSGL = (1U << 9);  ///< Enable the watchdog on a single channel in scan mode
         constexpr uint32_t SCAN = (1U << 8);  ///< Scan mode
-        constexpr uint32_t JEOCIE = (1U << 7);  ///< Interrupt enable for injected
-              channels
-        constexpr uint32_t AWDIE = (1U << 6);  ///< Analog watchdog interrupt
-              enable
+        constexpr uint32_t JEOCIE = (1U << 7);  ///< Interrupt enable for injected channels
+        constexpr uint32_t AWDIE = (1U << 6);  ///< Analog watchdog interrupt enable
         constexpr uint32_t EOCIE = (1U << 5);  ///< Interrupt enable for EOC
-        constexpr uint32_t AWDCH = (5 << 0);  ///< Analog watchdog channel select
-              bits
+        constexpr uint32_t AWDCH = (5 << 0);  ///< Analog watchdog channel select bits
     }
 
     /// CR2 Register bits
     namespace cr2_bits {
-        constexpr uint32_t TSVREFE = (1U << 23);  ///< Temperature sensor and VREFINT
-              enable
-        constexpr uint32_t SWSTART = (1U << 22);  ///< Start conversion of regular
-              channels
-        constexpr uint32_t JSWSTART = (1U << 21);  ///< Start conversion of injected
-              channels
-        constexpr uint32_t EXTTRIG = (1U << 20);  ///< External trigger conversion mode for
-              regular channels
-        constexpr uint32_t EXTSEL = (3 << 17);  ///< External event select for regular
-              group
-        constexpr uint32_t JEXTTRIG = (1U << 15);  ///< External trigger conversion mode for
-              injected channels
-        constexpr uint32_t JEXTSEL = (3 << 12);  ///< External event select for injected
-              group
+        constexpr uint32_t TSVREFE = (1U << 23);  ///< Temperature sensor and VREFINT enable
+        constexpr uint32_t SWSTART = (1U << 22);  ///< Start conversion of regular channels
+        constexpr uint32_t JSWSTART = (1U << 21);  ///< Start conversion of injected channels
+        constexpr uint32_t EXTTRIG = (1U << 20);  ///< External trigger conversion mode for regular channels
+        constexpr uint32_t EXTSEL = (3 << 17);  ///< External event select for regular group
+        constexpr uint32_t JEXTTRIG = (1U << 15);  ///< External trigger conversion mode for injected channels
+        constexpr uint32_t JEXTSEL = (3 << 12);  ///< External event select for injected group
         constexpr uint32_t ALIGN = (1U << 11);  ///< Data alignment
         constexpr uint32_t DMA = (1U << 8);  ///< Direct memory access mode
         constexpr uint32_t RSTCAL = (1U << 3);  ///< Reset calibration
@@ -3038,141 +2721,96 @@ namespace adc {
 
     /// SMPR1 Register bits
     namespace smpr1_bits {
-        constexpr uint32_t SMP10 = (3 << 0);  ///< Channel 10 sample time
-              selection
-        constexpr uint32_t SMP11 = (3 << 3);  ///< Channel 11 sample time
-              selection
-        constexpr uint32_t SMP12 = (3 << 6);  ///< Channel 12 sample time
-              selection
-        constexpr uint32_t SMP13 = (3 << 9);  ///< Channel 13 sample time
-              selection
-        constexpr uint32_t SMP14 = (3 << 12);  ///< Channel 14 sample time
-              selection
-        constexpr uint32_t SMP15 = (3 << 15);  ///< Channel 15 sample time
-              selection
-        constexpr uint32_t SMP16 = (3 << 18);  ///< Channel 16 sample time
-              selection
-        constexpr uint32_t SMP17 = (3 << 21);  ///< Channel 17 sample time
-              selection
+        constexpr uint32_t SMP10 = (3 << 0);  ///< Channel 10 sample time selection
+        constexpr uint32_t SMP11 = (3 << 3);  ///< Channel 11 sample time selection
+        constexpr uint32_t SMP12 = (3 << 6);  ///< Channel 12 sample time selection
+        constexpr uint32_t SMP13 = (3 << 9);  ///< Channel 13 sample time selection
+        constexpr uint32_t SMP14 = (3 << 12);  ///< Channel 14 sample time selection
+        constexpr uint32_t SMP15 = (3 << 15);  ///< Channel 15 sample time selection
+        constexpr uint32_t SMP16 = (3 << 18);  ///< Channel 16 sample time selection
+        constexpr uint32_t SMP17 = (3 << 21);  ///< Channel 17 sample time selection
     }
 
     /// SMPR2 Register bits
     namespace smpr2_bits {
-        constexpr uint32_t SMP0 = (3 << 0);  ///< Channel 0 sample time
-              selection
-        constexpr uint32_t SMP1 = (3 << 3);  ///< Channel 1 sample time
-              selection
-        constexpr uint32_t SMP2 = (3 << 6);  ///< Channel 2 sample time
-              selection
-        constexpr uint32_t SMP3 = (3 << 9);  ///< Channel 3 sample time
-              selection
-        constexpr uint32_t SMP4 = (3 << 12);  ///< Channel 4 sample time
-              selection
-        constexpr uint32_t SMP5 = (3 << 15);  ///< Channel 5 sample time
-              selection
-        constexpr uint32_t SMP6 = (3 << 18);  ///< Channel 6 sample time
-              selection
-        constexpr uint32_t SMP7 = (3 << 21);  ///< Channel 7 sample time
-              selection
-        constexpr uint32_t SMP8 = (3 << 24);  ///< Channel 8 sample time
-              selection
-        constexpr uint32_t SMP9 = (3 << 27);  ///< Channel 9 sample time
-              selection
+        constexpr uint32_t SMP0 = (3 << 0);  ///< Channel 0 sample time selection
+        constexpr uint32_t SMP1 = (3 << 3);  ///< Channel 1 sample time selection
+        constexpr uint32_t SMP2 = (3 << 6);  ///< Channel 2 sample time selection
+        constexpr uint32_t SMP3 = (3 << 9);  ///< Channel 3 sample time selection
+        constexpr uint32_t SMP4 = (3 << 12);  ///< Channel 4 sample time selection
+        constexpr uint32_t SMP5 = (3 << 15);  ///< Channel 5 sample time selection
+        constexpr uint32_t SMP6 = (3 << 18);  ///< Channel 6 sample time selection
+        constexpr uint32_t SMP7 = (3 << 21);  ///< Channel 7 sample time selection
+        constexpr uint32_t SMP8 = (3 << 24);  ///< Channel 8 sample time selection
+        constexpr uint32_t SMP9 = (3 << 27);  ///< Channel 9 sample time selection
     }
 
     /// JOFR1 Register bits
     namespace jofr1_bits {
-        constexpr uint32_t JOFFSET1 = (12 << 0);  ///< Data offset for injected channel
-              x
+        constexpr uint32_t JOFFSET1 = (12 << 0);  ///< Data offset for injected channel x
     }
 
     /// JOFR2 Register bits
     namespace jofr2_bits {
-        constexpr uint32_t JOFFSET2 = (12 << 0);  ///< Data offset for injected channel
-              x
+        constexpr uint32_t JOFFSET2 = (12 << 0);  ///< Data offset for injected channel x
     }
 
     /// JOFR3 Register bits
     namespace jofr3_bits {
-        constexpr uint32_t JOFFSET3 = (12 << 0);  ///< Data offset for injected channel
-              x
+        constexpr uint32_t JOFFSET3 = (12 << 0);  ///< Data offset for injected channel x
     }
 
     /// JOFR4 Register bits
     namespace jofr4_bits {
-        constexpr uint32_t JOFFSET4 = (12 << 0);  ///< Data offset for injected channel
-              x
+        constexpr uint32_t JOFFSET4 = (12 << 0);  ///< Data offset for injected channel x
     }
 
     /// HTR Register bits
     namespace htr_bits {
-        constexpr uint32_t HT = (12 << 0);  ///< Analog watchdog higher
-              threshold
+        constexpr uint32_t HT = (12 << 0);  ///< Analog watchdog higher threshold
     }
 
     /// LTR Register bits
     namespace ltr_bits {
-        constexpr uint32_t LT = (12 << 0);  ///< Analog watchdog lower
-              threshold
+        constexpr uint32_t LT = (12 << 0);  ///< Analog watchdog lower threshold
     }
 
     /// SQR1 Register bits
     namespace sqr1_bits {
-        constexpr uint32_t L = (4 << 20);  ///< Regular channel sequence
-              length
-        constexpr uint32_t SQ16 = (5 << 15);  ///< 16th conversion in regular
-              sequence
-        constexpr uint32_t SQ15 = (5 << 10);  ///< 15th conversion in regular
-              sequence
-        constexpr uint32_t SQ14 = (5 << 5);  ///< 14th conversion in regular
-              sequence
-        constexpr uint32_t SQ13 = (5 << 0);  ///< 13th conversion in regular
-              sequence
+        constexpr uint32_t L = (4 << 20);  ///< Regular channel sequence length
+        constexpr uint32_t SQ16 = (5 << 15);  ///< 16th conversion in regular sequence
+        constexpr uint32_t SQ15 = (5 << 10);  ///< 15th conversion in regular sequence
+        constexpr uint32_t SQ14 = (5 << 5);  ///< 14th conversion in regular sequence
+        constexpr uint32_t SQ13 = (5 << 0);  ///< 13th conversion in regular sequence
     }
 
     /// SQR2 Register bits
     namespace sqr2_bits {
-        constexpr uint32_t SQ12 = (5 << 25);  ///< 12th conversion in regular
-              sequence
-        constexpr uint32_t SQ11 = (5 << 20);  ///< 11th conversion in regular
-              sequence
-        constexpr uint32_t SQ10 = (5 << 15);  ///< 10th conversion in regular
-              sequence
-        constexpr uint32_t SQ9 = (5 << 10);  ///< 9th conversion in regular
-              sequence
-        constexpr uint32_t SQ8 = (5 << 5);  ///< 8th conversion in regular
-              sequence
-        constexpr uint32_t SQ7 = (5 << 0);  ///< 7th conversion in regular
-              sequence
+        constexpr uint32_t SQ12 = (5 << 25);  ///< 12th conversion in regular sequence
+        constexpr uint32_t SQ11 = (5 << 20);  ///< 11th conversion in regular sequence
+        constexpr uint32_t SQ10 = (5 << 15);  ///< 10th conversion in regular sequence
+        constexpr uint32_t SQ9 = (5 << 10);  ///< 9th conversion in regular sequence
+        constexpr uint32_t SQ8 = (5 << 5);  ///< 8th conversion in regular sequence
+        constexpr uint32_t SQ7 = (5 << 0);  ///< 7th conversion in regular sequence
     }
 
     /// SQR3 Register bits
     namespace sqr3_bits {
-        constexpr uint32_t SQ6 = (5 << 25);  ///< 6th conversion in regular
-              sequence
-        constexpr uint32_t SQ5 = (5 << 20);  ///< 5th conversion in regular
-              sequence
-        constexpr uint32_t SQ4 = (5 << 15);  ///< 4th conversion in regular
-              sequence
-        constexpr uint32_t SQ3 = (5 << 10);  ///< 3rd conversion in regular
-              sequence
-        constexpr uint32_t SQ2 = (5 << 5);  ///< 2nd conversion in regular
-              sequence
-        constexpr uint32_t SQ1 = (5 << 0);  ///< 1st conversion in regular
-              sequence
+        constexpr uint32_t SQ6 = (5 << 25);  ///< 6th conversion in regular sequence
+        constexpr uint32_t SQ5 = (5 << 20);  ///< 5th conversion in regular sequence
+        constexpr uint32_t SQ4 = (5 << 15);  ///< 4th conversion in regular sequence
+        constexpr uint32_t SQ3 = (5 << 10);  ///< 3rd conversion in regular sequence
+        constexpr uint32_t SQ2 = (5 << 5);  ///< 2nd conversion in regular sequence
+        constexpr uint32_t SQ1 = (5 << 0);  ///< 1st conversion in regular sequence
     }
 
     /// JSQR Register bits
     namespace jsqr_bits {
         constexpr uint32_t JL = (2 << 20);  ///< Injected sequence length
-        constexpr uint32_t JSQ4 = (5 << 15);  ///< 4th conversion in injected
-              sequence
-        constexpr uint32_t JSQ3 = (5 << 10);  ///< 3rd conversion in injected
-              sequence
-        constexpr uint32_t JSQ2 = (5 << 5);  ///< 2nd conversion in injected
-              sequence
-        constexpr uint32_t JSQ1 = (5 << 0);  ///< 1st conversion in injected
-              sequence
+        constexpr uint32_t JSQ4 = (5 << 15);  ///< 4th conversion in injected sequence
+        constexpr uint32_t JSQ3 = (5 << 10);  ///< 3rd conversion in injected sequence
+        constexpr uint32_t JSQ2 = (5 << 5);  ///< 2nd conversion in injected sequence
+        constexpr uint32_t JSQ1 = (5 << 0);  ///< 1st conversion in injected sequence
     }
 
     /// JDR1 Register bits
@@ -3309,18 +2947,12 @@ namespace can {
 
     /// CAN_TSR Register bits
     namespace can_tsr_bits {
-        constexpr uint32_t LOW2 = (1U << 31);  ///< Lowest priority flag for mailbox
-              2
-        constexpr uint32_t LOW1 = (1U << 30);  ///< Lowest priority flag for mailbox
-              1
-        constexpr uint32_t LOW0 = (1U << 29);  ///< Lowest priority flag for mailbox
-              0
-        constexpr uint32_t TME2 = (1U << 28);  ///< Lowest priority flag for mailbox
-              2
-        constexpr uint32_t TME1 = (1U << 27);  ///< Lowest priority flag for mailbox
-              1
-        constexpr uint32_t TME0 = (1U << 26);  ///< Lowest priority flag for mailbox
-              0
+        constexpr uint32_t LOW2 = (1U << 31);  ///< Lowest priority flag for mailbox 2
+        constexpr uint32_t LOW1 = (1U << 30);  ///< Lowest priority flag for mailbox 1
+        constexpr uint32_t LOW0 = (1U << 29);  ///< Lowest priority flag for mailbox 0
+        constexpr uint32_t TME2 = (1U << 28);  ///< Lowest priority flag for mailbox 2
+        constexpr uint32_t TME1 = (1U << 27);  ///< Lowest priority flag for mailbox 1
+        constexpr uint32_t TME0 = (1U << 26);  ///< Lowest priority flag for mailbox 0
         constexpr uint32_t CODE = (2 << 24);  ///< CODE
         constexpr uint32_t ABRQ2 = (1U << 23);  ///< ABRQ2
         constexpr uint32_t TERR2 = (1U << 19);  ///< TERR2
@@ -3594,34 +3226,20 @@ namespace can {
 
     /// CAN_FFA1R Register bits
     namespace can_ffa1r_bits {
-        constexpr uint32_t FFA0 = (1U << 0);  ///< Filter FIFO assignment for filter
-              0
-        constexpr uint32_t FFA1 = (1U << 1);  ///< Filter FIFO assignment for filter
-              1
-        constexpr uint32_t FFA2 = (1U << 2);  ///< Filter FIFO assignment for filter
-              2
-        constexpr uint32_t FFA3 = (1U << 3);  ///< Filter FIFO assignment for filter
-              3
-        constexpr uint32_t FFA4 = (1U << 4);  ///< Filter FIFO assignment for filter
-              4
-        constexpr uint32_t FFA5 = (1U << 5);  ///< Filter FIFO assignment for filter
-              5
-        constexpr uint32_t FFA6 = (1U << 6);  ///< Filter FIFO assignment for filter
-              6
-        constexpr uint32_t FFA7 = (1U << 7);  ///< Filter FIFO assignment for filter
-              7
-        constexpr uint32_t FFA8 = (1U << 8);  ///< Filter FIFO assignment for filter
-              8
-        constexpr uint32_t FFA9 = (1U << 9);  ///< Filter FIFO assignment for filter
-              9
-        constexpr uint32_t FFA10 = (1U << 10);  ///< Filter FIFO assignment for filter
-              10
-        constexpr uint32_t FFA11 = (1U << 11);  ///< Filter FIFO assignment for filter
-              11
-        constexpr uint32_t FFA12 = (1U << 12);  ///< Filter FIFO assignment for filter
-              12
-        constexpr uint32_t FFA13 = (1U << 13);  ///< Filter FIFO assignment for filter
-              13
+        constexpr uint32_t FFA0 = (1U << 0);  ///< Filter FIFO assignment for filter 0
+        constexpr uint32_t FFA1 = (1U << 1);  ///< Filter FIFO assignment for filter 1
+        constexpr uint32_t FFA2 = (1U << 2);  ///< Filter FIFO assignment for filter 2
+        constexpr uint32_t FFA3 = (1U << 3);  ///< Filter FIFO assignment for filter 3
+        constexpr uint32_t FFA4 = (1U << 4);  ///< Filter FIFO assignment for filter 4
+        constexpr uint32_t FFA5 = (1U << 5);  ///< Filter FIFO assignment for filter 5
+        constexpr uint32_t FFA6 = (1U << 6);  ///< Filter FIFO assignment for filter 6
+        constexpr uint32_t FFA7 = (1U << 7);  ///< Filter FIFO assignment for filter 7
+        constexpr uint32_t FFA8 = (1U << 8);  ///< Filter FIFO assignment for filter 8
+        constexpr uint32_t FFA9 = (1U << 9);  ///< Filter FIFO assignment for filter 9
+        constexpr uint32_t FFA10 = (1U << 10);  ///< Filter FIFO assignment for filter 10
+        constexpr uint32_t FFA11 = (1U << 11);  ///< Filter FIFO assignment for filter 11
+        constexpr uint32_t FFA12 = (1U << 12);  ///< Filter FIFO assignment for filter 12
+        constexpr uint32_t FFA13 = (1U << 13);  ///< Filter FIFO assignment for filter 13
     }
 
     /// CAN_FA1R Register bits
@@ -4663,18 +4281,18 @@ namespace dac {
     /// DAC Register structure
     struct Registers {
         volatile uint32_t CR;  ///< Offset: 0x00 - Control register (DAC_CR)
-        volatile uint32_t SWTRIGR;  ///< Offset: 0x04 - DAC software trigger register           (DAC_SWTRIGR)
-        volatile uint32_t DHR12R1;  ///< Offset: 0x08 - DAC channel1 12-bit right-aligned data           holding...
-        volatile uint32_t DHR12L1;  ///< Offset: 0x0C - DAC channel1 12-bit left aligned data           holding...
-        volatile uint32_t DHR8R1;  ///< Offset: 0x10 - DAC channel1 8-bit right aligned data           holding...
-        volatile uint32_t DHR12R2;  ///< Offset: 0x14 - DAC channel2 12-bit right aligned data           holding...
-        volatile uint32_t DHR12L2;  ///< Offset: 0x18 - DAC channel2 12-bit left aligned data           holding...
-        volatile uint32_t DHR8R2;  ///< Offset: 0x1C - DAC channel2 8-bit right-aligned data           holding...
-        volatile uint32_t DHR12RD;  ///< Offset: 0x20 - Dual DAC 12-bit right-aligned data holding          ...
-        volatile uint32_t DHR12LD;  ///< Offset: 0x24 - DUAL DAC 12-bit left aligned data holding          ...
-        volatile uint32_t DHR8RD;  ///< Offset: 0x28 - DUAL DAC 8-bit right aligned data holding          ...
-        volatile uint32_t DOR1;  ///< Offset: 0x2C - DAC channel1 data output register           (DAC_DOR1)
-        volatile uint32_t DOR2;  ///< Offset: 0x30 - DAC channel2 data output register           (DAC_DOR2)
+        volatile uint32_t SWTRIGR;  ///< Offset: 0x04 - DAC software trigger register (DAC_SWTRIGR)
+        volatile uint32_t DHR12R1;  ///< Offset: 0x08 - DAC channel1 12-bit right-aligned data holding...
+        volatile uint32_t DHR12L1;  ///< Offset: 0x0C - DAC channel1 12-bit left aligned data holding register...
+        volatile uint32_t DHR8R1;  ///< Offset: 0x10 - DAC channel1 8-bit right aligned data holding register...
+        volatile uint32_t DHR12R2;  ///< Offset: 0x14 - DAC channel2 12-bit right aligned data holding register...
+        volatile uint32_t DHR12L2;  ///< Offset: 0x18 - DAC channel2 12-bit left aligned data holding register...
+        volatile uint32_t DHR8R2;  ///< Offset: 0x1C - DAC channel2 8-bit right-aligned data holding register...
+        volatile uint32_t DHR12RD;  ///< Offset: 0x20 - Dual DAC 12-bit right-aligned data holding register...
+        volatile uint32_t DHR12LD;  ///< Offset: 0x24 - DUAL DAC 12-bit left aligned data holding register...
+        volatile uint32_t DHR8RD;  ///< Offset: 0x28 - DUAL DAC 8-bit right aligned data holding register...
+        volatile uint32_t DOR1;  ///< Offset: 0x2C - DAC channel1 data output register (DAC_DOR1)
+        volatile uint32_t DOR2;  ///< Offset: 0x30 - DAC channel2 data output register (DAC_DOR2)
     };
 
     /// Peripheral instances
@@ -4684,97 +4302,73 @@ namespace dac {
     /// CR Register bits
     namespace cr_bits {
         constexpr uint32_t EN1 = (1U << 0);  ///< DAC channel1 enable
-        constexpr uint32_t BOFF1 = (1U << 1);  ///< DAC channel1 output buffer
-              disable
-        constexpr uint32_t TEN1 = (1U << 2);  ///< DAC channel1 trigger
-              enable
-        constexpr uint32_t TSEL1 = (3 << 3);  ///< DAC channel1 trigger
-              selection
-        constexpr uint32_t WAVE1 = (2 << 6);  ///< DAC channel1 noise/triangle wave
-              generation enable
-        constexpr uint32_t MAMP1 = (4 << 8);  ///< DAC channel1 mask/amplitude
-              selector
+        constexpr uint32_t BOFF1 = (1U << 1);  ///< DAC channel1 output buffer disable
+        constexpr uint32_t TEN1 = (1U << 2);  ///< DAC channel1 trigger enable
+        constexpr uint32_t TSEL1 = (3 << 3);  ///< DAC channel1 trigger selection
+        constexpr uint32_t WAVE1 = (2 << 6);  ///< DAC channel1 noise/triangle wave generation enable
+        constexpr uint32_t MAMP1 = (4 << 8);  ///< DAC channel1 mask/amplitude selector
         constexpr uint32_t DMAEN1 = (1U << 12);  ///< DAC channel1 DMA enable
         constexpr uint32_t EN2 = (1U << 16);  ///< DAC channel2 enable
-        constexpr uint32_t BOFF2 = (1U << 17);  ///< DAC channel2 output buffer
-              disable
-        constexpr uint32_t TEN2 = (1U << 18);  ///< DAC channel2 trigger
-              enable
-        constexpr uint32_t TSEL2 = (3 << 19);  ///< DAC channel2 trigger
-              selection
-        constexpr uint32_t WAVE2 = (2 << 22);  ///< DAC channel2 noise/triangle wave
-              generation enable
-        constexpr uint32_t MAMP2 = (4 << 24);  ///< DAC channel2 mask/amplitude
-              selector
+        constexpr uint32_t BOFF2 = (1U << 17);  ///< DAC channel2 output buffer disable
+        constexpr uint32_t TEN2 = (1U << 18);  ///< DAC channel2 trigger enable
+        constexpr uint32_t TSEL2 = (3 << 19);  ///< DAC channel2 trigger selection
+        constexpr uint32_t WAVE2 = (2 << 22);  ///< DAC channel2 noise/triangle wave generation enable
+        constexpr uint32_t MAMP2 = (4 << 24);  ///< DAC channel2 mask/amplitude selector
         constexpr uint32_t DMAEN2 = (1U << 28);  ///< DAC channel2 DMA enable
     }
 
     /// SWTRIGR Register bits
     namespace swtrigr_bits {
-        constexpr uint32_t SWTRIG1 = (1U << 0);  ///< DAC channel1 software
-              trigger
-        constexpr uint32_t SWTRIG2 = (1U << 1);  ///< DAC channel2 software
-              trigger
+        constexpr uint32_t SWTRIG1 = (1U << 0);  ///< DAC channel1 software trigger
+        constexpr uint32_t SWTRIG2 = (1U << 1);  ///< DAC channel2 software trigger
     }
 
     /// DHR12R1 Register bits
     namespace dhr12r1_bits {
-        constexpr uint32_t DACC1DHR = (12 << 0);  ///< DAC channel1 12-bit right-aligned
-              data
+        constexpr uint32_t DACC1DHR = (12 << 0);  ///< DAC channel1 12-bit right-aligned data
     }
 
     /// DHR12L1 Register bits
     namespace dhr12l1_bits {
-        constexpr uint32_t DACC1DHR = (12 << 4);  ///< DAC channel1 12-bit left-aligned
-              data
+        constexpr uint32_t DACC1DHR = (12 << 4);  ///< DAC channel1 12-bit left-aligned data
     }
 
     /// DHR8R1 Register bits
     namespace dhr8r1_bits {
-        constexpr uint32_t DACC1DHR = (8 << 0);  ///< DAC channel1 8-bit right-aligned
-              data
+        constexpr uint32_t DACC1DHR = (8 << 0);  ///< DAC channel1 8-bit right-aligned data
     }
 
     /// DHR12R2 Register bits
     namespace dhr12r2_bits {
-        constexpr uint32_t DACC2DHR = (12 << 0);  ///< DAC channel2 12-bit right-aligned
-              data
+        constexpr uint32_t DACC2DHR = (12 << 0);  ///< DAC channel2 12-bit right-aligned data
     }
 
     /// DHR12L2 Register bits
     namespace dhr12l2_bits {
-        constexpr uint32_t DACC2DHR = (12 << 4);  ///< DAC channel2 12-bit left-aligned
-              data
+        constexpr uint32_t DACC2DHR = (12 << 4);  ///< DAC channel2 12-bit left-aligned data
     }
 
     /// DHR8R2 Register bits
     namespace dhr8r2_bits {
-        constexpr uint32_t DACC2DHR = (8 << 0);  ///< DAC channel2 8-bit right-aligned
-              data
+        constexpr uint32_t DACC2DHR = (8 << 0);  ///< DAC channel2 8-bit right-aligned data
     }
 
     /// DHR12RD Register bits
     namespace dhr12rd_bits {
-        constexpr uint32_t DACC1DHR = (12 << 0);  ///< DAC channel1 12-bit right-aligned
-              data
-        constexpr uint32_t DACC2DHR = (12 << 16);  ///< DAC channel2 12-bit right-aligned
-              data
+        constexpr uint32_t DACC1DHR = (12 << 0);  ///< DAC channel1 12-bit right-aligned data
+        constexpr uint32_t DACC2DHR = (12 << 16);  ///< DAC channel2 12-bit right-aligned data
     }
 
     /// DHR12LD Register bits
     namespace dhr12ld_bits {
-        constexpr uint32_t DACC1DHR = (12 << 4);  ///< DAC channel1 12-bit left-aligned
-              data
-        constexpr uint32_t DACC2DHR = (12 << 20);  ///< DAC channel2 12-bit right-aligned
-              data
+        constexpr uint32_t DACC1DHR = (12 << 4);  ///< DAC channel1 12-bit left-aligned data
+        constexpr uint32_t DACC2DHR = (12 << 20);  ///< DAC channel2 12-bit right-aligned data
     }
 
     /// DHR8RD Register bits
     namespace dhr8rd_bits {
-        constexpr uint32_t DACC1DHR = (8 << 0);  ///< DAC channel1 8-bit right-aligned
-              data
-        constexpr uint32_t DACC2DHR = (8 << 8);  ///< DAC channel2 8-bit right-aligned
-              data
+        constexpr uint32_t DACC1DHR = (8 << 0);  ///< DAC channel1 8-bit right-aligned data
+        constexpr uint32_t DACC2DHR = (8 << 8);  ///< DAC channel2 8-bit right-aligned data
     }
 
     /// DOR1 Register bits
@@ -4901,8 +4495,7 @@ namespace flash {
     /// ACR Register bits
     namespace acr_bits {
         constexpr uint32_t LATENCY = (3 << 0);  ///< Latency
-        constexpr uint32_t HLFCYA = (1U << 3);  ///< Flash half cycle access
-              enable
+        constexpr uint32_t HLFCYA = (1U << 3);  ///< Flash half cycle access enable
         constexpr uint32_t PRFTBE = (1U << 4);  ///< Prefetch buffer enable
         constexpr uint32_t PRFTBS = (1U << 5);  ///< Prefetch buffer status
     }
@@ -4936,8 +4529,7 @@ namespace flash {
         constexpr uint32_t LOCK = (1U << 7);  ///< Lock
         constexpr uint32_t OPTWRE = (1U << 9);  ///< Option bytes write enable
         constexpr uint32_t ERRIE = (1U << 10);  ///< Error interrupt enable
-        constexpr uint32_t EOPIE = (1U << 12);  ///< End of operation interrupt
-              enable
+        constexpr uint32_t EOPIE = (1U << 12);  ///< End of operation interrupt enable
     }
 
     /// AR Register bits
@@ -4973,16 +4565,16 @@ namespace nvic {
 
     /// NVIC Register structure
     struct Registers {
-        volatile uint32_t ICTR;  ///< Offset: 0x04 - Interrupt Controller Type           Register
-        volatile uint32_t STIR;  ///< Offset: 0xF00 - Software Triggered Interrupt           Register
+        volatile uint32_t ICTR;  ///< Offset: 0x04 - Interrupt Controller Type Register
+        volatile uint32_t STIR;  ///< Offset: 0xF00 - Software Triggered Interrupt Register
         volatile uint32_t ISER0;  ///< Offset: 0x100 - Interrupt Set-Enable Register
         volatile uint32_t ISER1;  ///< Offset: 0x104 - Interrupt Set-Enable Register
-        volatile uint32_t ICER0;  ///< Offset: 0x180 - Interrupt Clear-Enable           Register
-        volatile uint32_t ICER1;  ///< Offset: 0x184 - Interrupt Clear-Enable           Register
+        volatile uint32_t ICER0;  ///< Offset: 0x180 - Interrupt Clear-Enable Register
+        volatile uint32_t ICER1;  ///< Offset: 0x184 - Interrupt Clear-Enable Register
         volatile uint32_t ISPR0;  ///< Offset: 0x200 - Interrupt Set-Pending Register
         volatile uint32_t ISPR1;  ///< Offset: 0x204 - Interrupt Set-Pending Register
-        volatile uint32_t ICPR0;  ///< Offset: 0x280 - Interrupt Clear-Pending           Register
-        volatile uint32_t ICPR1;  ///< Offset: 0x284 - Interrupt Clear-Pending           Register
+        volatile uint32_t ICPR0;  ///< Offset: 0x280 - Interrupt Clear-Pending Register
+        volatile uint32_t ICPR1;  ///< Offset: 0x284 - Interrupt Clear-Pending Register
         volatile uint32_t IABR0;  ///< Offset: 0x300 - Interrupt Active Bit Register
         volatile uint32_t IABR1;  ///< Offset: 0x304 - Interrupt Active Bit Register
         volatile uint32_t IPR0;  ///< Offset: 0x400 - Interrupt Priority Register
@@ -5008,8 +4600,7 @@ namespace nvic {
     // Bit definitions
     /// ICTR Register bits
     namespace ictr_bits {
-        constexpr uint32_t INTLINESNUM = (4 << 0);  ///< Total number of interrupt lines in
-              groups
+        constexpr uint32_t INTLINESNUM = (4 << 0);  ///< Total number of interrupt lines in groups
     }
 
     /// STIR Register bits
@@ -5221,169 +4812,113 @@ namespace usb {
     /// EP0R Register bits
     namespace ep0r_bits {
         constexpr uint32_t EA = (4 << 0);  ///< Endpoint address
-        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission
-              transfers
-        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission
-              transfers
-        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for
-              transmission
+        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission transfers
+        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission transfers
+        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for transmission
         constexpr uint32_t EP_KIND = (1U << 8);  ///< Endpoint kind
         constexpr uint32_t EP_TYPE = (2 << 9);  ///< Endpoint type
-        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction
-              completed
-        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception
-              transfers
-        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception
-              transfers
-        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for
-              reception
+        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction completed
+        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception transfers
+        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception transfers
+        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for reception
     }
 
     /// EP1R Register bits
     namespace ep1r_bits {
         constexpr uint32_t EA = (4 << 0);  ///< Endpoint address
-        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission
-              transfers
-        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission
-              transfers
-        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for
-              transmission
+        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission transfers
+        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission transfers
+        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for transmission
         constexpr uint32_t EP_KIND = (1U << 8);  ///< Endpoint kind
         constexpr uint32_t EP_TYPE = (2 << 9);  ///< Endpoint type
-        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction
-              completed
-        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception
-              transfers
-        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception
-              transfers
-        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for
-              reception
+        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction completed
+        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception transfers
+        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception transfers
+        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for reception
     }
 
     /// EP2R Register bits
     namespace ep2r_bits {
         constexpr uint32_t EA = (4 << 0);  ///< Endpoint address
-        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission
-              transfers
-        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission
-              transfers
-        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for
-              transmission
+        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission transfers
+        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission transfers
+        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for transmission
         constexpr uint32_t EP_KIND = (1U << 8);  ///< Endpoint kind
         constexpr uint32_t EP_TYPE = (2 << 9);  ///< Endpoint type
-        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction
-              completed
-        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception
-              transfers
-        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception
-              transfers
-        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for
-              reception
+        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction completed
+        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception transfers
+        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception transfers
+        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for reception
     }
 
     /// EP3R Register bits
     namespace ep3r_bits {
         constexpr uint32_t EA = (4 << 0);  ///< Endpoint address
-        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission
-              transfers
-        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission
-              transfers
-        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for
-              transmission
+        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission transfers
+        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission transfers
+        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for transmission
         constexpr uint32_t EP_KIND = (1U << 8);  ///< Endpoint kind
         constexpr uint32_t EP_TYPE = (2 << 9);  ///< Endpoint type
-        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction
-              completed
-        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception
-              transfers
-        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception
-              transfers
-        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for
-              reception
+        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction completed
+        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception transfers
+        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception transfers
+        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for reception
     }
 
     /// EP4R Register bits
     namespace ep4r_bits {
         constexpr uint32_t EA = (4 << 0);  ///< Endpoint address
-        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission
-              transfers
-        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission
-              transfers
-        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for
-              transmission
+        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission transfers
+        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission transfers
+        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for transmission
         constexpr uint32_t EP_KIND = (1U << 8);  ///< Endpoint kind
         constexpr uint32_t EP_TYPE = (2 << 9);  ///< Endpoint type
-        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction
-              completed
-        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception
-              transfers
-        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception
-              transfers
-        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for
-              reception
+        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction completed
+        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception transfers
+        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception transfers
+        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for reception
     }
 
     /// EP5R Register bits
     namespace ep5r_bits {
         constexpr uint32_t EA = (4 << 0);  ///< Endpoint address
-        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission
-              transfers
-        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission
-              transfers
-        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for
-              transmission
+        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission transfers
+        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission transfers
+        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for transmission
         constexpr uint32_t EP_KIND = (1U << 8);  ///< Endpoint kind
         constexpr uint32_t EP_TYPE = (2 << 9);  ///< Endpoint type
-        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction
-              completed
-        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception
-              transfers
-        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception
-              transfers
-        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for
-              reception
+        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction completed
+        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception transfers
+        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception transfers
+        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for reception
     }
 
     /// EP6R Register bits
     namespace ep6r_bits {
         constexpr uint32_t EA = (4 << 0);  ///< Endpoint address
-        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission
-              transfers
-        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission
-              transfers
-        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for
-              transmission
+        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission transfers
+        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission transfers
+        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for transmission
         constexpr uint32_t EP_KIND = (1U << 8);  ///< Endpoint kind
         constexpr uint32_t EP_TYPE = (2 << 9);  ///< Endpoint type
-        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction
-              completed
-        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception
-              transfers
-        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception
-              transfers
-        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for
-              reception
+        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction completed
+        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception transfers
+        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception transfers
+        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for reception
     }
 
     /// EP7R Register bits
     namespace ep7r_bits {
         constexpr uint32_t EA = (4 << 0);  ///< Endpoint address
-        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission
-              transfers
-        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission
-              transfers
-        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for
-              transmission
+        constexpr uint32_t STAT_TX = (2 << 4);  ///< Status bits, for transmission transfers
+        constexpr uint32_t DTOG_TX = (1U << 6);  ///< Data Toggle, for transmission transfers
+        constexpr uint32_t CTR_TX = (1U << 7);  ///< Correct Transfer for transmission
         constexpr uint32_t EP_KIND = (1U << 8);  ///< Endpoint kind
         constexpr uint32_t EP_TYPE = (2 << 9);  ///< Endpoint type
-        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction
-              completed
-        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception
-              transfers
-        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception
-              transfers
-        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for
-              reception
+        constexpr uint32_t SETUP = (1U << 11);  ///< Setup transaction completed
+        constexpr uint32_t STAT_RX = (2 << 12);  ///< Status bits, for reception transfers
+        constexpr uint32_t DTOG_RX = (1U << 14);  ///< Data Toggle, for reception transfers
+        constexpr uint32_t CTR_RX = (1U << 15);  ///< Correct transfer for reception
     }
 
     /// CNTR Register bits
@@ -5393,19 +4928,14 @@ namespace usb {
         constexpr uint32_t LPMODE = (1U << 2);  ///< Low-power mode
         constexpr uint32_t FSUSP = (1U << 3);  ///< Force suspend
         constexpr uint32_t RESUME = (1U << 4);  ///< Resume request
-        constexpr uint32_t ESOFM = (1U << 8);  ///< Expected start of frame interrupt
-              mask
-        constexpr uint32_t SOFM = (1U << 9);  ///< Start of frame interrupt
-              mask
+        constexpr uint32_t ESOFM = (1U << 8);  ///< Expected start of frame interrupt mask
+        constexpr uint32_t SOFM = (1U << 9);  ///< Start of frame interrupt mask
         constexpr uint32_t RESETM = (1U << 10);  ///< USB reset interrupt mask
-        constexpr uint32_t SUSPM = (1U << 11);  ///< Suspend mode interrupt
-              mask
+        constexpr uint32_t SUSPM = (1U << 11);  ///< Suspend mode interrupt mask
         constexpr uint32_t WKUPM = (1U << 12);  ///< Wakeup interrupt mask
         constexpr uint32_t ERRM = (1U << 13);  ///< Error interrupt mask
-        constexpr uint32_t PMAOVRM = (1U << 14);  ///< Packet memory area over / underrun
-              interrupt mask
-        constexpr uint32_t CTRM = (1U << 15);  ///< Correct transfer interrupt
-              mask
+        constexpr uint32_t PMAOVRM = (1U << 14);  ///< Packet memory area over / underrun interrupt mask
+        constexpr uint32_t CTRM = (1U << 15);  ///< Correct transfer interrupt mask
     }
 
     /// ISTR Register bits
@@ -5418,8 +4948,7 @@ namespace usb {
         constexpr uint32_t SUSP = (1U << 11);  ///< Suspend mode request
         constexpr uint32_t WKUP = (1U << 12);  ///< Wakeup
         constexpr uint32_t ERR = (1U << 13);  ///< Error
-        constexpr uint32_t PMAOVR = (1U << 14);  ///< Packet memory area over /
-              underrun
+        constexpr uint32_t PMAOVR = (1U << 14);  ///< Packet memory area over / underrun
         constexpr uint32_t CTR = (1U << 15);  ///< Correct transfer
     }
 

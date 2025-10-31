@@ -3,7 +3,7 @@
 /// Source: stm32f1xx.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 22:59:06
+/// Generated: 2025-10-30 23:07:35
 #include <cstdint>
 #include <cstring>
 
