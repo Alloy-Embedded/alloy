@@ -1,0 +1,46 @@
+{% include 'common/header.j2' %}
+
+#ifndef ALLOY_GENERATED_{{ mcu_name | upper }}_PERIPHERALS_HPP
+#define ALLOY_GENERATED_{{ mcu_name | upper }}_PERIPHERALS_HPP
+
+#include <cstdint>
+
+namespace alloy::generated::{{ mcu_name | lower }} {
+
+/// Memory map
+namespace memory {
+    constexpr uint32_t FLASH_BASE = {{ mcu.flash.base_address }};
+    constexpr uint32_t FLASH_SIZE = {{ mcu.flash.size_kb }} * 1024;
+    constexpr uint32_t RAM_BASE   = {{ mcu.ram.base_address }};
+    constexpr uint32_t RAM_SIZE   = {{ mcu.ram.size_kb }} * 1024;
+}
+
+{% for periph_type, periph in mcu.peripherals.items() %}
+// ============================================================================
+// {{ periph_type }} Peripheral
+// ============================================================================
+
+namespace {{ periph_type | lower }} {
+    /// Base addresses
+    {% for instance in periph.instances %}
+    constexpr uint32_t {{ instance.name }}_BASE = {{ instance.base }};
+    {% endfor %}
+
+    /// {{ periph_type }} Register structure
+    struct Registers {
+        {% for reg_name, reg in periph.registers.items() %}
+        volatile uint32_t {{ reg_name }};  ///< Offset: {{ reg.offset }} - {{ reg.description | replace('\n', ' ') | truncate(60) }}
+        {% endfor %}
+    };
+
+    /// Peripheral instances
+    {% for instance in periph.instances %}
+    inline Registers* {{ instance.name }} = reinterpret_cast<Registers*>({{ instance.name }}_BASE);
+    {% endfor %}
+}
+
+{% endfor %}
+
+} // namespace alloy::generated::{{ mcu_name | lower }}
+
+#endif // ALLOY_GENERATED_{{ mcu_name | upper }}_PERIPHERALS_HPP

@@ -128,11 +128,28 @@ class CodeGenerator:
         content = self._render_template('startup/cortex_m_startup.cpp.j2', context)
         self._write_file('startup.cpp', content)
 
+    def generate_peripherals(self):
+        """Generate peripheral definitions header"""
+        if self.verbose:
+            print_info("Generating peripheral definitions...")
+
+        context = {
+            'mcu_name': self.mcu_name,
+            'source_file': str(self.database_path.name),
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'mcu': self.mcu,
+            'architecture': self.database.get('architecture', 'arm-cortex-m3')
+        }
+
+        content = self._render_template('peripherals/stm32_peripherals.hpp.j2', context)
+        self._write_file('peripherals.hpp', content)
+
     def generate_all(self):
         """Generate all files"""
         print_info(f"Generating code for {self.mcu_name}...")
 
         self.generate_startup()
+        self.generate_peripherals()
 
         print_success(f"Code generation complete in {self.output_dir}")
 
