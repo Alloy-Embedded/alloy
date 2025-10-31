@@ -10,6 +10,8 @@
 #define ALLOY_BOARD_STM32F407VG_HPP
 
 #include "hal/st/stm32f4/gpio.hpp"
+#include "hal/st/stm32f4/clock.hpp"
+#include "hal/st/stm32f4/delay.hpp"
 #include <cstdint>
 
 namespace Board {
@@ -158,18 +160,31 @@ using AccelCs = alloy::hal::stm32f4::GpioPin<detail::ACCEL_CS_PIN>;
 
 /// Initialize board (can be called before main)
 inline void initialize() {
-    // Future: Initialize clocks, enable peripherals, etc.
+    using namespace alloy::hal::st::stm32f4;
+    using alloy::hal::Peripheral;
+
+    // Create static clock instance
+    static SystemClock clock;
+
+    // Configure system clock to 168MHz using HSE (8MHz crystal) + PLL
+    auto result = clock.set_frequency(168'000'000);
+    if (!result.is_ok()) {
+        // Fallback to HSI if HSE fails
+        clock.set_frequency(16'000'000);
+    }
+
+    // Enable GPIO clocks for all ports used on the Discovery board
+    clock.enable_peripheral(Peripheral::GpioA);
+    clock.enable_peripheral(Peripheral::GpioB);
+    clock.enable_peripheral(Peripheral::GpioC);
+    clock.enable_peripheral(Peripheral::GpioD);  // LEDs on PD12-15
+    clock.enable_peripheral(Peripheral::GpioE);
 }
 
 /// Simple delay (busy wait - not accurate, for basic use only)
 /// @param ms Approximate milliseconds to delay
 inline void delay_ms(uint32_t ms) {
-    // Very rough estimate: at 168MHz (system clock)
-    // Assuming ~4 cycles per loop iteration
-    volatile uint32_t count = ms * 42000;
-    while (count--) {
-        __asm__ volatile("nop");
-    }
+    alloy::hal::st::stm32f4::delay_ms(ms);
 }
 
 //

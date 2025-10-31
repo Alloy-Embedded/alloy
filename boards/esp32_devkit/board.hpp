@@ -10,6 +10,8 @@
 #define ALLOY_BOARD_ESP32_DEVKIT_HPP
 
 #include "hal/espressif/esp32/gpio.hpp"
+#include "hal/espressif/esp32/clock.hpp"
+#include "hal/espressif/esp32/delay.hpp"
 #include <cstdint>
 
 namespace Board {
@@ -175,19 +177,30 @@ using Dac2 = alloy::hal::esp32::GpioPin<detail::DAC2_PIN>;
 
 /// Initialize board (can be called before main)
 inline void initialize() {
-    // Future: Initialize clocks, enable peripherals, etc.
-    // ESP32 typically doesn't need manual peripheral clock enable
+    using namespace alloy::hal::espressif::esp32;
+
+    // Create static clock instance
+    static SystemClock clock;
+
+    // Configure system clock to 240MHz (maximum for ESP32)
+    // ESP32 typically runs at 240MHz for best performance
+    auto result = clock.set_frequency(240'000'000);
+    if (!result.is_ok()) {
+        // Fallback to 160MHz if 240MHz fails
+        result = clock.set_frequency(160'000'000);
+        if (!result.is_ok()) {
+            // Final fallback to 80MHz
+            clock.set_frequency(80'000'000);
+        }
+    }
+
+    // ESP32 doesn't need manual peripheral clock enable (auto-enabled on use)
 }
 
 /// Simple delay (busy wait - not accurate, for basic use only)
 /// @param ms Approximate milliseconds to delay
 inline void delay_ms(uint32_t ms) {
-    // Very rough estimate: at 160MHz
-    // Assuming ~4 cycles per loop iteration
-    volatile uint32_t count = ms * (system_clock_hz / 4000);
-    while (count--) {
-        __asm__ volatile("nop");
-    }
+    alloy::hal::espressif::esp32::delay_ms(ms);
 }
 
 //

@@ -10,6 +10,8 @@
 #define ALLOY_BOARD_STM32F103C8_HPP
 
 #include "hal/st/stm32f1/gpio.hpp"
+#include "hal/st/stm32f1/clock.hpp"
+#include "hal/st/stm32f1/delay.hpp"
 #include <cstdint>
 
 namespace Board {
@@ -106,18 +108,29 @@ using Spi1Nss = alloy::hal::stm32f1::GpioPin<detail::SPI1_NSS_PIN>;
 
 /// Initialize board (can be called before main)
 inline void initialize() {
-    // Future: Initialize clocks, enable peripherals, etc.
+    using namespace alloy::hal::st::stm32f1;
+    using alloy::hal::Peripheral;
+
+    // Create static clock instance
+    static SystemClock clock;
+
+    // Configure system clock to 72MHz using HSE (8MHz crystal) + PLL
+    auto result = clock.set_frequency(72'000'000);
+    if (!result.is_ok()) {
+        // Fallback to HSI if HSE fails
+        clock.set_frequency(8'000'000);
+    }
+
+    // Enable GPIO clocks for all ports used on the board
+    clock.enable_peripheral(Peripheral::GpioA);
+    clock.enable_peripheral(Peripheral::GpioB);
+    clock.enable_peripheral(Peripheral::GpioC);
 }
 
 /// Simple delay (busy wait - not accurate, for basic use only)
 /// @param ms Approximate milliseconds to delay
 inline void delay_ms(uint32_t ms) {
-    // Very rough estimate: at 8MHz HSI (default clock)
-    // Assuming ~4 cycles per loop iteration
-    volatile uint32_t count = ms * 2000;
-    while (count--) {
-        __asm__ volatile("nop");
-    }
+    alloy::hal::stm32f1::delay_ms(ms);
 }
 
 //

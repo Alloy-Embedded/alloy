@@ -10,6 +10,8 @@
 #define ALLOY_BOARD_RASPBERRY_PI_PICO_HPP
 
 #include "hal/raspberry/rp2040/gpio.hpp"
+#include "hal/raspberrypi/rp2040/clock.hpp"
+#include "hal/raspberrypi/rp2040/delay.hpp"
 #include <cstdint>
 
 namespace Board {
@@ -146,18 +148,25 @@ using Adc2 = alloy::hal::rp2040::GpioPin<detail::ADC2_PIN>;
 
 /// Initialize board (can be called before main)
 inline void initialize() {
-    // Future: Initialize clocks, enable peripherals, etc.
+    using namespace alloy::hal::raspberrypi::rp2040;
+
+    // Create static clock instance
+    static SystemClock clock;
+
+    // Configure system clock to 125MHz (standard RP2040 frequency)
+    auto result = clock.set_frequency(125'000'000);
+    if (!result.is_ok()) {
+        // Fallback to ROSC if XOSC/PLL fails
+        clock.set_frequency(6'500'000);
+    }
+
+    // RP2040 enables peripheral clocks automatically
 }
 
 /// Simple delay (busy wait - not accurate, for basic use only)
 /// @param ms Approximate milliseconds to delay
 inline void delay_ms(uint32_t ms) {
-    // Very rough estimate: at 125MHz system clock
-    // Assuming ~4 cycles per loop iteration
-    volatile uint32_t count = ms * 31250;
-    while (count--) {
-        __asm__ volatile("nop");
-    }
+    alloy::hal::raspberrypi::rp2040::delay_ms(ms);
 }
 
 //

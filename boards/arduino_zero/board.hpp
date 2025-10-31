@@ -17,6 +17,8 @@
 #define ALLOY_BOARD_ARDUINO_ZERO_HPP
 
 #include "hal/microchip/samd21/gpio.hpp"
+#include "hal/microchip/samd21/clock.hpp"
+#include "hal/microchip/samd21/delay.hpp"
 #include <cstdint>
 
 namespace Board {
@@ -149,18 +151,29 @@ using UsbDp = alloy::hal::samd21::GpioPin<detail::USB_DP_PIN>;
 
 /// Initialize board (can be called before main)
 inline void initialize() {
-    // Future: Initialize clocks, enable peripherals, etc.
+    using namespace alloy::hal::microchip::samd21;
+    using alloy::hal::Peripheral;
+
+    // Create static clock instance
+    static SystemClock clock;
+
+    // Configure system clock to 48MHz using DFLL48M
+    // Arduino Zero typically uses 48MHz from DFLL48M
+    auto result = clock.set_frequency(48'000'000);
+    if (!result.is_ok()) {
+        // Fallback to OSC8M if DFLL fails
+        clock.set_frequency(8'000'000);
+    }
+
+    // Enable GPIO port clocks
+    clock.enable_peripheral(Peripheral::GpioA);
+    clock.enable_peripheral(Peripheral::GpioB);
 }
 
 /// Simple delay (busy wait - not accurate, for basic use only)
 /// @param ms Approximate milliseconds to delay
 inline void delay_ms(uint32_t ms) {
-    // Very rough estimate: at 48MHz system clock
-    // Assuming ~4 cycles per loop iteration
-    volatile uint32_t count = ms * (system_clock_hz / 4000);
-    while (count--) {
-        __asm__ volatile("nop");
-    }
+    alloy::hal::microchip::samd21::delay_ms(ms);
 }
 
 //

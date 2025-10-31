@@ -37,14 +37,16 @@ public:
             return configure_hsi();
         } else if (frequency_hz == 72000000) {
             // Use standard 72MHz config (HSE 8MHz * 9)
-            ClockConfig config{
-                .source = ClockSource::ExternalCrystal,
-                .crystal_frequency_hz = 8000000,
-                .pll_multiplier = 9,
-                .ahb_divider = 1,
-                .apb1_divider = 2,
-                .apb2_divider = 1
-            };
+            ClockConfig config(
+                ClockSource::ExternalCrystal,  // source
+                8000000,                         // crystal_hz
+                9,                               // pll_mul
+                1,                               // pll_div
+                1,                               // ahb_div
+                2,                               // apb1_div (must be ≤36MHz)
+                1,                               // apb2_div
+                72000000                         // target_freq
+            );
             return configure(config);
         }
         return core::Result<void>::error(core::ErrorCode::ClockInvalidFrequency);
@@ -132,6 +134,14 @@ public:
 
 private:
     core::u32 system_frequency_;
+
+    /// Calculate flash latency based on frequency
+    /// STM32F1: 0 WS (24MHz), 1 WS (48MHz), 2 WS (72MHz)
+    static constexpr core::u8 calculate_flash_latency(core::u32 frequency_hz) {
+        if (frequency_hz <= 24000000) return 0;
+        if (frequency_hz <= 48000000) return 1;
+        return 2;  // Up to 72MHz
+    }
 
     /// Configure HSI (8MHz internal oscillator)
     core::Result<void> configure_hsi() {

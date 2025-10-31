@@ -57,15 +57,16 @@ public:
             return configure_hsi();
         } else if (frequency_hz == 168000000) {
             // Use standard 168MHz config (HSE 8MHz → PLL → 168MHz)
-            ClockConfig config{
-                .source = ClockSource::ExternalCrystal,
-                .crystal_frequency_hz = 8000000,
-                .pll_multiplier = 168,   // VCO = 8MHz * 168 / 4 = 336MHz
-                .pll_divider = 4,        // PLLM = 4
-                .ahb_divider = 1,
-                .apb1_divider = 4,       // APB1 = 168/4 = 42MHz (max)
-                .apb2_divider = 2        // APB2 = 168/2 = 84MHz (max)
-            };
+            ClockConfig config(
+                ClockSource::ExternalCrystal,  // source
+                8000000,                         // crystal_hz
+                168,                             // pll_mul (VCO = 8MHz * 168 / 4 = 336MHz)
+                4,                               // pll_div (PLLM = 4)
+                1,                               // ahb_div
+                4,                               // apb1_div (APB1 = 168/4 = 42MHz max)
+                2,                               // apb2_div (APB2 = 168/2 = 84MHz max)
+                168000000                        // target_freq
+            );
             return configure(config);
         }
         return core::Result<void>::error(core::ErrorCode::ClockInvalidFrequency);
@@ -164,6 +165,10 @@ private:
     core::Result<void> configure_hsi() {
         using namespace rcc::cfgr_bits;
 
+        // SW and SWS masks (2 bits each)
+        constexpr uint32_t SW = (SW1 | SW0);   // Bits [1:0]
+        constexpr uint32_t SWS = (SWS1 | SWS0); // Bits [3:2]
+
         // HSI is always on, just switch to it
         rcc::RCC->CFGR = (rcc::RCC->CFGR & ~SW) | 0x0;  // SW = 0b00 = HSI
 
@@ -179,6 +184,10 @@ private:
         using namespace rcc::cr_bits;
         using namespace rcc::cfgr_bits;
         using namespace rcc::pllcfgr_bits;
+
+        // SW and SWS masks (2 bits each)
+        constexpr uint32_t SW = (SW1 | SW0);   // Bits [1:0]
+        constexpr uint32_t SWS = (SWS1 | SWS0); // Bits [3:2]
 
         // 1. Enable HSE
         rcc::RCC->CR |= HSEON;

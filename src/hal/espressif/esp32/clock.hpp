@@ -39,34 +39,40 @@ public:
     /// Set system frequency (high-level API)
     core::Result<void> set_frequency(core::u32 frequency_hz) {
         if (frequency_hz == 80000000) {
-            ClockConfig config{
-                .source = ClockSource::ExternalCrystal,
-                .crystal_frequency_hz = 40000000,
-                .pll_multiplier = 2,  // 40MHz * 8 = 320MHz PLL, then /4 = 80MHz
-                .ahb_divider = 1,
-                .apb1_divider = 1,
-                .apb2_divider = 1
-            };
+            ClockConfig config(
+                ClockSource::ExternalCrystal,  // source
+                40000000,                        // crystal_hz
+                2,                               // pll_mul (40MHz * 8 = 320MHz PLL, then /4 = 80MHz)
+                1,                               // pll_div
+                1,                               // ahb_div
+                1,                               // apb1_div
+                1,                               // apb2_div
+                80000000                         // target_freq
+            );
             return configure(config);
         } else if (frequency_hz == 160000000) {
-            ClockConfig config{
-                .source = ClockSource::ExternalCrystal,
-                .crystal_frequency_hz = 40000000,
-                .pll_multiplier = 4,  // 40MHz * 8 = 320MHz PLL, then /2 = 160MHz
-                .ahb_divider = 1,
-                .apb1_divider = 1,
-                .apb2_divider = 1
-            };
+            ClockConfig config(
+                ClockSource::ExternalCrystal,  // source
+                40000000,                        // crystal_hz
+                4,                               // pll_mul (40MHz * 8 = 320MHz PLL, then /2 = 160MHz)
+                1,                               // pll_div
+                1,                               // ahb_div
+                1,                               // apb1_div
+                1,                               // apb2_div
+                160000000                        // target_freq
+            );
             return configure(config);
         } else if (frequency_hz == 240000000) {
-            ClockConfig config{
-                .source = ClockSource::ExternalCrystal,
-                .crystal_frequency_hz = 40000000,
-                .pll_multiplier = 6,  // 40MHz * 12 = 480MHz PLL, then /2 = 240MHz
-                .ahb_divider = 1,
-                .apb1_divider = 1,
-                .apb2_divider = 1
-            };
+            ClockConfig config(
+                ClockSource::ExternalCrystal,  // source
+                40000000,                        // crystal_hz
+                6,                               // pll_mul (40MHz * 12 = 480MHz PLL, then /2 = 240MHz)
+                1,                               // pll_div
+                1,                               // ahb_div
+                1,                               // apb1_div
+                1,                               // apb2_div
+                240000000                        // target_freq
+            );
             return configure(config);
         }
         return core::Result<void>::error(core::ErrorCode::ClockInvalidFrequency);
