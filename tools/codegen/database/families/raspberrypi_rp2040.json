@@ -1,0 +1,3624 @@
+{
+  "family": "RP2040",
+  "architecture": "arm-cortex-m0plus",
+  "vendor": "Raspberry Pi",
+  "mcus": {
+    "RP2040": {
+      "flash": {
+        "size_kb": 64,
+        "base_address": "0x08000000",
+        "page_size_kb": 1
+      },
+      "ram": {
+        "size_kb": 20,
+        "base_address": "0x20000000"
+      },
+      "peripherals": {
+        "XIP": {
+          "instances": [
+            {
+              "name": "XIP_IRQ",
+              "base": "0x14000000",
+              "irq": 6
+            },
+            {
+              "name": "XIP_SSI",
+              "base": "0x18000000"
+            }
+          ],
+          "registers": {
+            "POWER_DOWN": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Cache control"
+            },
+            "FLUSH": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Cache Flush control"
+            },
+            "FIFO_FULL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Cache Status"
+            },
+            "CTR_HIT": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Cache Hit counter\\n\n            A 32 bit saturating counter that increments upon each cache hit,\\n\n            i.e. when an XIP access is serviced directly from cached data.\\n\n            Write any value to clear."
+            },
+            "CTR_ACC": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Cache Access counter\\n\n            A 32 bit saturating counter that increments upon each XIP access,\\n\n            whether the cache is hit or not. This includes noncacheable accesses.\\n\n            Write any value to clear."
+            },
+            "STREAM_ADDR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "FIFO stream address"
+            },
+            "STREAM_CTR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "FIFO stream control"
+            },
+            "STREAM_FIFO": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "FIFO stream data\\n\n            Streamed data is buffered here, for retrieval by the system DMA.\\n\n            This FIFO can also be accessed via the XIP_AUX slave, to avoid exposing\\n\n            the DMA to bus stalls caused by other XIP traffic."
+            }
+          }
+        },
+        "SYSINFO": {
+          "instances": [
+            {
+              "name": "SYSINFO",
+              "base": "0x40000000"
+            }
+          ],
+          "registers": {
+            "REVISION": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "JEDEC JEP-106 compliant chip identifier."
+            },
+            "ASIC": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Platform register. Allows software to know what environment it is running in."
+            },
+            "GITREF_RP2040": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Git hash of the chip source. Used to identify chip version."
+            }
+          }
+        },
+        "SYSCFG": {
+          "instances": [
+            {
+              "name": "SYSCFG",
+              "base": "0x40004000"
+            }
+          ],
+          "registers": {
+            "PROC0_NMI_MASK": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Processor core 0 NMI source mask\\n\n            Set a bit high to enable NMI from that IRQ"
+            },
+            "PROC1_NMI_MASK": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Processor core 1 NMI source mask\\n\n            Set a bit high to enable NMI from that IRQ"
+            },
+            "PROC1_DAP_INSTID": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Configuration for processors"
+            },
+            "PROC_IN_SYNC_BYPASS": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "For each bit, if 1, bypass the input synchronizer between that GPIO\\n\n            and the GPIO input register in the SIO. The input synchronizers should\\n\n            generally be unbypassed, to avoid injecting metastabilities into processors.\\n\n            If you're feeling brave, you can bypass to save two cycles of input\\n\n            latency. This register applies to GPIO 0...29."
+            },
+            "PROC_IN_SYNC_BYPASS_HI": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "For each bit, if 1, bypass the input synchronizer between that GPIO\\n\n            and the GPIO input register in the SIO. The input synchronizers should\\n\n            generally be unbypassed, to avoid injecting metastabilities into processors.\\n\n            If you're feeling brave, you can bypass to save two cycles of input\\n\n            latency. This register applies to GPIO 30...35 (the QSPI IOs)."
+            },
+            "PROC1_ATTACH": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Directly control the SWD debug port of either processor"
+            },
+            "ROM": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Control power downs to memories. Set high to power down memories.\\n\n            Use with extreme caution"
+            }
+          }
+        },
+        "RCC": {
+          "instances": [
+            {
+              "name": "CLOCKS_IRQ",
+              "base": "0x40008000",
+              "irq": 17
+            }
+          ],
+          "registers": {
+            "NUDGE": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "Clock control, can be changed on-the-fly (except for auxsrc)"
+            },
+            "INT": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Clock divisor, can be changed on-the-fly"
+            },
+            "CLK_GPOUT0_SELECTED": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Indicates which src is currently selected (one-hot)"
+            },
+            "CLK_GPOUT1_SELECTED": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Indicates which src is currently selected (one-hot)"
+            },
+            "CLK_GPOUT2_SELECTED": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Indicates which src is currently selected (one-hot)"
+            },
+            "CLK_GPOUT3_SELECTED": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Indicates which src is currently selected (one-hot)"
+            },
+            "clksrc_pll_usb": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Clock control, can be changed on-the-fly (except for auxsrc)"
+            },
+            "CLK_REF_SELECTED": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Indicates which src is currently selected (one-hot)"
+            },
+            "clksrc_pll_sys": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Clock control, can be changed on-the-fly (except for auxsrc)"
+            },
+            "CLK_SYS_SELECTED": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Indicates which src is currently selected (one-hot)"
+            },
+            "ENABLE": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Clock control, can be changed on-the-fly (except for auxsrc)"
+            },
+            "CLK_PERI_SELECTED": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Indicates which src is currently selected (one-hot)"
+            },
+            "CLK_USB_SELECTED": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Indicates which src is currently selected (one-hot)"
+            },
+            "CLK_ADC_SELECTED": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Indicates which src is currently selected (one-hot)"
+            },
+            "CLK_RTC_SELECTED": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Indicates which src is currently selected (one-hot)"
+            },
+            "CLEAR": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "For clearing the resus after the fault that triggered it has been corrected"
+            },
+            "RESUSSED": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "Clock has been resuscitated, correct the error then send ctrl_clear=1"
+            },
+            "FC0_REF_KHZ": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Reference clock frequency in kHz"
+            },
+            "FC0_MIN_KHZ": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "Minimum pass frequency in kHz. This is optional. Set to 0 if you are not using the pass/fail flags"
+            },
+            "FC0_MAX_KHZ": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "Maximum pass frequency in kHz. This is optional. Set to 0x1ffffff if you are not using the pass/fail flags"
+            },
+            "FC0_DELAY": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "Delays the start of frequency counting to allow the mux to settle\\n\n            Delay is measured in multiples of the reference clock period"
+            },
+            "FC0_INTERVAL": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "The test interval is 0.98us * 2**interval, but let's call it 1us * 2**interval\\n\n            The default gives a test interval of 250us"
+            },
+            "NULL": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "Clock sent to frequency counter, set to 0 when not required\\n\n            Writing to this register initiates the frequency count"
+            },
+            "DIED": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "Frequency counter status"
+            },
+            "KHZ": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "Result of frequency measurement, only valid when status_done=1"
+            },
+            "clk_sys_sram3": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "indicates the state of the clock enable"
+            },
+            "clk_sys_xosc": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "indicates the state of the clock enable"
+            },
+            "CLK_SYS_RESUS": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "Interrupt status after masking & forcing"
+            }
+          }
+        },
+        "RESETS": {
+          "instances": [
+            {
+              "name": "RESETS",
+              "base": "0x4000C000"
+            }
+          ],
+          "registers": {
+            "usbctrl": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Reset done. If a bit is set then a reset done signal has been returned by the peripheral. This indicates that the peripheral's registers are ready to be accessed."
+            }
+          }
+        },
+        "PSM": {
+          "instances": [
+            {
+              "name": "PSM",
+              "base": "0x40010000"
+            }
+          ],
+          "registers": {
+            "proc1": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Indicates the peripheral's registers are ready to access."
+            }
+          }
+        },
+        "IO": {
+          "instances": [
+            {
+              "name": "IO_IRQ_BANK0",
+              "base": "0x40014000",
+              "irq": 13
+            }
+          ],
+          "registers": {
+            "IRQTOPROC": {
+              "offset": "0xE8",
+              "size": 32,
+              "description": "GPIO status"
+            },
+            "NORMAL": {
+              "offset": "0xEC",
+              "size": 32,
+              "description": "GPIO control including function select and overrides."
+            },
+            "GPIO7_EDGE_HIGH": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "Interrupt status after masking & forcing for dormant_wake"
+            },
+            "GPIO15_EDGE_HIGH": {
+              "offset": "0x184",
+              "size": 32,
+              "description": "Interrupt status after masking & forcing for dormant_wake"
+            },
+            "GPIO23_EDGE_HIGH": {
+              "offset": "0x188",
+              "size": 32,
+              "description": "Interrupt status after masking & forcing for dormant_wake"
+            },
+            "GPIO29_EDGE_HIGH": {
+              "offset": "0x18C",
+              "size": 32,
+              "description": "Interrupt status after masking & forcing for dormant_wake"
+            }
+          }
+        },
+        "SPI": {
+          "instances": [
+            {
+              "name": "IO_IRQ_QSPI",
+              "base": "0x40018000",
+              "irq": 14
+            },
+            {
+              "name": "PADS_QSPI",
+              "base": "0x40020000"
+            },
+            {
+              "name": "SPI0_IRQ",
+              "base": "0x4003C000",
+              "irq": 18
+            },
+            {
+              "name": "SPI1_IRQ",
+              "base": "0x40040000",
+              "irq": 19
+            }
+          ],
+          "registers": {
+            "IRQTOPROC": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "GPIO status"
+            },
+            "NORMAL": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "GPIO control including function select and overrides."
+            },
+            "GPIO_QSPI_SD3_EDGE_HIGH": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Interrupt status after masking & forcing for dormant_wake"
+            }
+          }
+        },
+        "PADS": {
+          "instances": [
+            {
+              "name": "PADS_BANK0",
+              "base": "0x4001C000"
+            }
+          ],
+          "registers": {
+            "3v3": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Voltage select. Per bank control"
+            },
+            "OD": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Pad control register"
+            }
+          }
+        },
+        "XOSC": {
+          "instances": [
+            {
+              "name": "XOSC",
+              "base": "0x40024000"
+            }
+          ],
+          "registers": {
+            "DISABLE": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Crystal Oscillator Control"
+            },
+            "STABLE": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Crystal Oscillator Status"
+            },
+            "DORMANT": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Crystal Oscillator pause control\\n\n            This is used to save power by pausing the XOSC\\n\n            On power-up this field is initialised to WAKE\\n\n            An invalid write will also select WAKE\\n\n            WARNING: stop the PLLs before selecting dormant mode\\n\n            WARNING: setup the irq before selecting dormant mode"
+            },
+            "X4": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Controls the startup delay"
+            },
+            "COUNT": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "A down counter running at the xosc frequency which counts to zero and stops.\\n\n            To start the counter write a non-zero value.\\n\n            Can be used for short software pauses when setting up time sensitive hardware."
+            }
+          }
+        },
+        "PLL": {
+          "instances": [
+            {
+              "name": "PLL_SYS",
+              "base": "0x40028000"
+            }
+          ],
+          "registers": {
+            "LOCK": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Control and Status\\n\n            GENERAL CONSTRAINTS:\\n\n            Reference clock frequency min=5MHz, max=800MHz\\n\n            Feedback divider min=16, max=320\\n\n            VCO frequency min=400MHz, max=1600MHz"
+            },
+            "VCOPD": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Controls the PLL power modes."
+            },
+            "FBDIV_INT": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Feedback divisor\\n\n            (note: this PLL does not support fractional division)"
+            },
+            "POSTDIV1": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Controls the PLL post dividers for the primary output\\n\n            (note: this PLL does not have a secondary output)\\n\n            the primary output is driven from VCO divided by postdiv1*postdiv2"
+            }
+          }
+        },
+        "USB": {
+          "instances": [
+            {
+              "name": "PLL_USB",
+              "base": "0x4002C000"
+            },
+            {
+              "name": "USBCTRL_IRQ",
+              "base": "0x50110000",
+              "irq": 5
+            }
+          ],
+          "registers": {
+            "ENDPOINT": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Device address and endpoint control"
+            },
+            "INTEP_PREAMBLE": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Interrupt endpoint 15. Only valid for HOST mode."
+            },
+            "SIM_TIMING": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Main control register"
+            },
+            "COUNT": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Read the last SOF (Start of Frame) frame number seen. In device mode the last SOF received from the host. In host mode the last SOF sent by the host."
+            },
+            "EP0_INT_STALL": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "SIE control register"
+            },
+            "DATA_SEQ_ERROR": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "SIE status register"
+            },
+            "INT_EP_ACTIVE": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "interrupt endpoint control register"
+            },
+            "EP15_OUT": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Device: bits are set when the `IRQ_ON_NAK` or `IRQ_ON_STALL` bits are set. For EP0 this comes from `SIE_CTRL`. For all other endpoints it comes from the endpoint control register."
+            },
+            "EP0_OUT": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Device: this bit must be set in conjunction with the `STALL` bit in the buffer control register to send a STALL on EP0. The device controller clears these bits when a SETUP packet is received because the USB spec requires that a STALL condition is cleared when a SETUP packet is received."
+            },
+            "DELAY_FS": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "Used by the host controller. Sets the wait time in microseconds before trying again if the device replies with a NAK."
+            },
+            "SOFTCON": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Where to connect the USB controller. Should be to_phy by default."
+            },
+            "OVERCURR_DETECT_EN": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "Overrides for the power signals in the event that the VBUS signals are not hooked up to GPIO. Set the value of the override and then the override enable to switch over to the override value."
+            },
+            "DM_OVV": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "This register allows for direct control of the USB phy. Use in conjunction with usbphy_direct_override register to enable each override bit."
+            },
+            "TX_DIFFMODE_OVERRIDE_EN": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Override enable for each control in usbphy_direct"
+            },
+            "DM_PULLDN_TRIM": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "Used to adjust trim values of USB phy pull down resistors."
+            },
+            "EP_STALL_NAK": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "Interrupt status after masking & forcing"
+            }
+          }
+        },
+        "BUSCTRL": {
+          "instances": [
+            {
+              "name": "BUSCTRL",
+              "base": "0x40030000"
+            }
+          ],
+          "registers": {
+            "DMA_W": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Set the priority of each master for bus arbitration."
+            },
+            "BUS_PRIORITY_ACK": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Bus priority acknowledge"
+            },
+            "PERFCTR0": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Bus fabric performance counter 0"
+            },
+            "PERFSEL0": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Bus fabric performance event select for PERFCTR0"
+            },
+            "PERFCTR1": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Bus fabric performance counter 1"
+            },
+            "PERFSEL1": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Bus fabric performance event select for PERFCTR1"
+            },
+            "PERFCTR2": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Bus fabric performance counter 2"
+            },
+            "PERFSEL2": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Bus fabric performance event select for PERFCTR2"
+            },
+            "PERFCTR3": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Bus fabric performance counter 3"
+            },
+            "PERFSEL3": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Bus fabric performance event select for PERFCTR3"
+            }
+          }
+        },
+        "USART": {
+          "instances": [
+            {
+              "name": "UART0_IRQ",
+              "base": "0x40034000",
+              "irq": 20
+            },
+            {
+              "name": "UART1_IRQ",
+              "base": "0x40038000",
+              "irq": 21
+            }
+          ],
+          "registers": {
+            "OE": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Receive Status Register/Error Clear Register, UARTRSR/UARTECR"
+            },
+            "RI": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Flag Register, UARTFR"
+            },
+            "ILPDVSR": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "IrDA Low-Power Counter Register, UARTILPR"
+            },
+            "BAUD_DIVINT": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Integer Baud Rate Register, UARTIBRD"
+            },
+            "BAUD_DIVFRAC": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Fractional Baud Rate Register, UARTFBRD"
+            },
+            "SPS": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Line Control Register, UARTLCR_H"
+            },
+            "CTSEN": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Control Register, UARTCR"
+            },
+            "RXIFLSEL": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Interrupt FIFO Level Select Register, UARTIFLS"
+            },
+            "OEIM": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Interrupt Mask Set/Clear Register, UARTIMSC"
+            },
+            "OERIS": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Raw Interrupt Status Register, UARTRIS"
+            },
+            "OEMIS": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Masked Interrupt Status Register, UARTMIS"
+            },
+            "OEIC": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Interrupt Clear Register, UARTICR"
+            },
+            "DMAONERR": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "DMA Control Register, UARTDMACR"
+            },
+            "PARTNUMBER0": {
+              "offset": "0xFE0",
+              "size": 32,
+              "description": "UARTPeriphID0 Register"
+            },
+            "DESIGNER0": {
+              "offset": "0xFE4",
+              "size": 32,
+              "description": "UARTPeriphID1 Register"
+            },
+            "REVISION": {
+              "offset": "0xFE8",
+              "size": 32,
+              "description": "UARTPeriphID2 Register"
+            },
+            "CONFIGURATION": {
+              "offset": "0xFEC",
+              "size": 32,
+              "description": "UARTPeriphID3 Register"
+            },
+            "UARTPCELLID0": {
+              "offset": "0xFF0",
+              "size": 32,
+              "description": "UARTPCellID0 Register"
+            },
+            "UARTPCELLID1": {
+              "offset": "0xFF4",
+              "size": 32,
+              "description": "UARTPCellID1 Register"
+            },
+            "UARTPCELLID2": {
+              "offset": "0xFF8",
+              "size": 32,
+              "description": "UARTPCellID2 Register"
+            },
+            "UARTPCELLID3": {
+              "offset": "0xFFC",
+              "size": 32,
+              "description": "UARTPCellID3 Register"
+            }
+          }
+        },
+        "I2C": {
+          "instances": [
+            {
+              "name": "I2C0_IRQ",
+              "base": "0x40044000",
+              "irq": 23
+            },
+            {
+              "name": "I2C1_IRQ",
+              "base": "0x40048000",
+              "irq": 24
+            }
+          ],
+          "registers": {
+            "STOP_DET_IF_MASTER_ACTIVE": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "I2C Control Register. This register can be written only when the DW_apb_i2c is disabled, which corresponds to the IC_ENABLE[0] register being set to 0. Writes at other times have no effect.\\n\\n\n            Read/Write Access: - bit 10 is read only. - bit 11 is read only - bit 16 is read only - bit 17 is read only - bits 18 and 19 are read only."
+            },
+            "DISABLED": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "I2C ACK General Call Register\\n\\n\n            The register controls whether DW_apb_i2c responds with a ACK or NACK when it receives an I2C General Call address.\\n\\n\n            This register is applicable only when the DW_apb_i2c is in slave mode."
+            },
+            "IC_SAR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "I2C Slave Address Register"
+            },
+            "INACTIVE": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "I2C Enable Status Register\\n\\n\n            The register is used to report the DW_apb_i2c hardware status when the IC_ENABLE[0] register is set from 1 to 0; that is, when DW_apb_i2c is disabled.\\n\\n\n            If IC_ENABLE[0] has been set to 1, bits 2:1 are forced to 0, and bit 0 is forced to 1.\\n\\n\n            If IC_ENABLE[0] has been set to 0, bits 2:1 is only be valid as soon as bit 0 is read as '0'.\\n\\n\n            Note: When IC_ENABLE[0] has been set to 0, a delay occurs for bit 0 to be read as 0 because disabling the DW_apb_i2c depends on I2C bus activities."
+            },
+            "IC_SS_SCL_HCNT": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Standard Speed I2C Clock SCL High Count Register"
+            },
+            "IC_SS_SCL_LCNT": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Standard Speed I2C Clock SCL Low Count Register"
+            },
+            "IC_FS_SCL_HCNT": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Fast Mode or Fast Mode Plus I2C Clock SCL High Count Register"
+            },
+            "IC_FS_SCL_LCNT": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Fast Mode or Fast Mode Plus I2C Clock SCL Low Count Register"
+            },
+            "ENABLED": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "I2C Interrupt Mask Register.\\n\\n\n            These bits mask their corresponding interrupt status bits. This register is active low; a value of 0 masks the interrupt, whereas a value of 1 unmasks the interrupt."
+            },
+            "RX_TL": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "I2C Receive FIFO Threshold Register"
+            },
+            "TX_TL": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "I2C Transmit FIFO Threshold Register"
+            },
+            "CLR_INTR": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Clear Combined and Individual Interrupt Register"
+            },
+            "CLR_RX_UNDER": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Clear RX_UNDER Interrupt Register"
+            },
+            "CLR_RX_OVER": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Clear RX_OVER Interrupt Register"
+            },
+            "CLR_TX_OVER": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Clear TX_OVER Interrupt Register"
+            },
+            "CLR_RD_REQ": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Clear RD_REQ Interrupt Register"
+            },
+            "CLR_TX_ABRT": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Clear TX_ABRT Interrupt Register"
+            },
+            "CLR_RX_DONE": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Clear RX_DONE Interrupt Register"
+            },
+            "CLR_ACTIVITY": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Clear ACTIVITY Interrupt Register"
+            },
+            "CLR_STOP_DET": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Clear STOP_DET Interrupt Register"
+            },
+            "CLR_START_DET": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Clear START_DET Interrupt Register"
+            },
+            "CLR_GEN_CALL": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Clear GEN_CALL Interrupt Register"
+            },
+            "NOT_BLOCKED": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "I2C Enable Register"
+            },
+            "IDLE": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "I2C Status Register\\n\\n\n            This is a read-only register used to indicate the current transfer status and FIFO status. The status register may be read at any time. None of the bits in this register request an interrupt.\\n\\n\n            When the I2C is disabled by writing 0 in bit 0 of the IC_ENABLE register: - Bits 1 and 2 are set to 1 - Bits 3 and 10 are set to 0 When the master or slave state machines goes to idle and ic_en=0: - Bits 5 and 6 are set to 0"
+            },
+            "TXFLR": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "I2C Transmit FIFO Level Register This register contains the number of valid data entries in the transmit FIFO buffer. It is cleared whenever: - The I2C is disabled - There is a transmit abort - that is, TX_ABRT bit is set in the IC_RAW_INTR_STAT register - The slave bulk transmit mode is aborted The register increments whenever data is placed into the transmit FIFO and decrements when data is taken from the transmit FIFO."
+            },
+            "RXFLR": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "I2C Receive FIFO Level Register This register contains the number of valid data entries in the receive FIFO buffer. It is cleared whenever: - The I2C is disabled - Whenever there is a transmit abort caused by any of the events tracked in IC_TX_ABRT_SOURCE The register increments whenever data is placed into the receive FIFO and decrements when data is taken from the receive FIFO."
+            },
+            "IC_SDA_RX_HOLD": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "I2C SDA Hold Time Length Register\\n\\n\n            The bits [15:0] of this register are used to control the hold time of SDA during transmit in both slave and master mode (after SCL goes from HIGH to LOW).\\n\\n\n            The bits [23:16] of this register are used to extend the SDA transition (if any) whenever SCL is HIGH in the receiver in either master or slave mode.\\n\\n\n            Writes to this register succeed only when IC_ENABLE[0]=0.\\n\\n\n            The values in this register are in units of ic_clk period. The value programmed in IC_SDA_TX_HOLD must be greater than the minimum hold time in each mode one cycle in master mode, seven cycles in slave mode for the value to be implemented.\\n\\n\n            The programmed SDA hold time during transmit (IC_SDA_TX_HOLD) cannot exceed at any time the duration of the low part of scl. Therefore the programmed value cannot be larger than N_SCL_LOW-2, where N_SCL_LOW is the duration of the low part of the scl period measured in ic_clk cycles."
+            },
+            "TX_FLUSH_CNT": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "I2C Transmit Abort Source Register\\n\\n\n            This register has 32 bits that indicate the source of the TX_ABRT bit. Except for Bit 9, this register is cleared whenever the IC_CLR_TX_ABRT register or the IC_CLR_INTR register is read. To clear Bit 9, the source of the ABRT_SBYTE_NORSTRT must be fixed first; RESTART must be enabled (IC_CON[5]=1), the SPECIAL bit must be cleared (IC_TAR[11]), or the GC_OR_START bit must be cleared (IC_TAR[10]).\\n\\n\n            Once the source of the ABRT_SBYTE_NORSTRT is fixed, then this bit can be cleared in the same manner as other bits in this register. If the source of the ABRT_SBYTE_NORSTRT is not fixed before attempting to clear this bit, Bit 9 clears for one cycle and is then re-asserted."
+            },
+            "DMATDL": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "DMA Transmit Data Level Register"
+            },
+            "DMARDL": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "I2C Receive Data Level Register"
+            },
+            "SDA_SETUP": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "I2C SDA Setup Register\\n\\n\n            This register controls the amount of time delay (in terms of number of ic_clk clock periods) introduced in the rising edge of SCL - relative to SDA changing - when DW_apb_i2c services a read request in a slave-transmitter operation. The relevant I2C requirement is tSU:DAT (note 4) as detailed in the I2C Bus Specification. This register must be programmed with a value equal to or greater than 2.\\n\\n\n            Writes to this register succeed only when IC_ENABLE[0] = 0.\\n\\n\n            Note: The length of setup time is calculated using [(IC_SDA_SETUP - 1) * (ic_clk_period)], so if the user requires 10 ic_clk periods of setup time, they should program a value of 11. The IC_SDA_SETUP register is only used by the DW_apb_i2c when operating as a slave transmitter."
+            },
+            "IC_FS_SPKLEN": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "I2C SS, FS or FM+ spike suppression limit\\n\\n\n            This register is used to store the duration, measured in ic_clk cycles, of the longest spike that is filtered out by the spike suppression logic when the component is operating in SS, FS or FM+ modes. The relevant I2C requirement is tSP (table 4) as detailed in the I2C Bus Specification. This register must be programmed with a minimum value of 1."
+            },
+            "CLR_RESTART_DET": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "Clear RESTART_DET Interrupt Register"
+            },
+            "TX_BUFFER_DEPTH": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "Component Parameter Register 1\\n\\n\n            Note This register is not implemented and therefore reads as 0. If it was implemented it would be a constant read-only register that contains encoded information about the component's parameter settings. Fields shown below are the settings for those parameters"
+            },
+            "IC_COMP_VERSION": {
+              "offset": "0xF8",
+              "size": 32,
+              "description": "I2C Component Version Register"
+            },
+            "IC_COMP_TYPE": {
+              "offset": "0xFC",
+              "size": 32,
+              "description": "I2C Component Type Register"
+            }
+          }
+        },
+        "ADC": {
+          "instances": [
+            {
+              "name": "ADC_IRQ_FIFO",
+              "base": "0x4004C000",
+              "irq": 22
+            }
+          ],
+          "registers": {
+            "RROBIN": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "ADC Control and Status"
+            },
+            "RESULT": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Result of most recent ADC conversion"
+            },
+            "THRESH": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "FIFO control and status"
+            },
+            "ERR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Conversion result FIFO"
+            },
+            "INT": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Clock divider. If non-zero, CS_START_MANY will start conversions\\n\n            at regular intervals rather than back-to-back.\\n\n            The divider is reset when either of these fields are written.\\n\n            Total period is 1 + INT + FRAC / 256"
+            },
+            "FIFO": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Interrupt status after masking & forcing"
+            }
+          }
+        },
+        "PWM": {
+          "instances": [
+            {
+              "name": "PWM_IRQ_WRAP",
+              "base": "0x40050000",
+              "irq": 4
+            }
+          ],
+          "registers": {
+            "PH_ADV": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "Control and status register"
+            },
+            "INT": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "INT and FRAC form a fixed-point fractional number.\\n\n            Counting rate is system clock frequency divided by this number.\\n\n            Fractional division uses simple 1st-order sigma-delta."
+            },
+            "CH0_CTR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Direct access to the PWM counter"
+            },
+            "B": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "Counter compare values"
+            },
+            "CH0_TOP": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Counter wrap value"
+            },
+            "CH1_CTR": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Direct access to the PWM counter"
+            },
+            "CH1_TOP": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Counter wrap value"
+            },
+            "CH2_CTR": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Direct access to the PWM counter"
+            },
+            "CH2_TOP": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Counter wrap value"
+            },
+            "CH3_CTR": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Direct access to the PWM counter"
+            },
+            "CH3_TOP": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Counter wrap value"
+            },
+            "CH4_CTR": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Direct access to the PWM counter"
+            },
+            "CH4_TOP": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Counter wrap value"
+            },
+            "CH5_CTR": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "Direct access to the PWM counter"
+            },
+            "CH5_TOP": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Counter wrap value"
+            },
+            "CH6_CTR": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Direct access to the PWM counter"
+            },
+            "CH6_TOP": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "Counter wrap value"
+            },
+            "CH7_CTR": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "Direct access to the PWM counter"
+            },
+            "CH7_TOP": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "Counter wrap value"
+            },
+            "CH7": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "Interrupt status after masking & forcing"
+            }
+          }
+        },
+        "TIM": {
+          "instances": [
+            {
+              "name": "TIMER_IRQ_0",
+              "base": "0x40054000",
+              "irq": 0
+            }
+          ],
+          "registers": {
+            "TIMEHW": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Write to bits 63:32 of time\\n\n            always write timelw before timehw"
+            },
+            "TIMELW": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Write to bits 31:0 of time\\n\n            writes do not get copied to time until timehw is written"
+            },
+            "TIMEHR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Read from bits 63:32 of time\\n\n            always read timelr before timehr"
+            },
+            "TIMELR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Read from bits 31:0 of time"
+            },
+            "ALARM0": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Arm alarm 0, and configure the time it will fire.\\n\n            Once armed, the alarm fires when TIMER_ALARM0 == TIMELR.\\n\n            The alarm will disarm itself once it fires, and can\\n\n            be disarmed early using the ARMED status register."
+            },
+            "ALARM1": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Arm alarm 1, and configure the time it will fire.\\n\n            Once armed, the alarm fires when TIMER_ALARM1 == TIMELR.\\n\n            The alarm will disarm itself once it fires, and can\\n\n            be disarmed early using the ARMED status register."
+            },
+            "ALARM2": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Arm alarm 2, and configure the time it will fire.\\n\n            Once armed, the alarm fires when TIMER_ALARM2 == TIMELR.\\n\n            The alarm will disarm itself once it fires, and can\\n\n            be disarmed early using the ARMED status register."
+            },
+            "ALARM3": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Arm alarm 3, and configure the time it will fire.\\n\n            Once armed, the alarm fires when TIMER_ALARM3 == TIMELR.\\n\n            The alarm will disarm itself once it fires, and can\\n\n            be disarmed early using the ARMED status register."
+            },
+            "ARMED": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Indicates the armed/disarmed status of each alarm.\\n\n            A write to the corresponding ALARMx register arms the alarm.\\n\n            Alarms automatically disarm upon firing, but writing ones here\\n\n            will disarm immediately without waiting to fire."
+            },
+            "TIMERAWH": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Raw read from bits 63:32 of time (no side effects)"
+            },
+            "TIMERAWL": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Raw read from bits 31:0 of time (no side effects)"
+            },
+            "DBG1": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Set bits high to enable pause when the corresponding debug ports are active"
+            },
+            "PAUSE": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Set high to pause the timer"
+            },
+            "ALARM_3": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Interrupt status after masking & forcing"
+            }
+          }
+        },
+        "WATCHDOG": {
+          "instances": [
+            {
+              "name": "WATCHDOG",
+              "base": "0x40058000"
+            }
+          ],
+          "registers": {
+            "TRIGGER": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Watchdog control\\n\n            The rst_wdsel register determines which subsystems are reset when the watchdog is triggered.\\n\n            The watchdog can be triggered in software."
+            },
+            "LOAD": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Load the watchdog timer. The maximum setting is 0xffffff which corresponds to 0xffffff / 2 ticks before triggering a watchdog reset (see errata RP2040-E1)."
+            },
+            "FORCE": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Logs the reason for the last reset. Both bits are zero for the case of a hardware reset."
+            },
+            "SCRATCH0": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Scratch register. Information persists through soft reset of the chip."
+            },
+            "SCRATCH1": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Scratch register. Information persists through soft reset of the chip."
+            },
+            "SCRATCH2": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Scratch register. Information persists through soft reset of the chip."
+            },
+            "SCRATCH3": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Scratch register. Information persists through soft reset of the chip."
+            },
+            "SCRATCH4": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Scratch register. Information persists through soft reset of the chip."
+            },
+            "SCRATCH5": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Scratch register. Information persists through soft reset of the chip."
+            },
+            "SCRATCH6": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Scratch register. Information persists through soft reset of the chip."
+            },
+            "SCRATCH7": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Scratch register. Information persists through soft reset of the chip."
+            },
+            "COUNT": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Controls the tick generator"
+            }
+          }
+        },
+        "RTC": {
+          "instances": [
+            {
+              "name": "RTC_IRQ",
+              "base": "0x4005C000",
+              "irq": 25
+            }
+          ],
+          "registers": {
+            "CLKDIV_M1": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Divider minus 1 for the 1 second counter. Safe to change the value when RTC is not enabled."
+            },
+            "YEAR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "RTC register 1."
+            },
+            "DOTW": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "RTC register 0\\n\n            Read this before RTC 1!"
+            },
+            "FORCE_NOTLEAPYEAR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "RTC Control and status"
+            },
+            "MATCH_ACTIVE": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Interrupt setup register 0"
+            },
+            "DOTW_ENA": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Interrupt setup register 1"
+            },
+            "RTC": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Interrupt status after masking & forcing"
+            }
+          }
+        },
+        "ROSC": {
+          "instances": [
+            {
+              "name": "ROSC",
+              "base": "0x40060000"
+            }
+          ],
+          "registers": {
+            "DISABLE": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Ring Oscillator control"
+            },
+            "PASS": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Controls the output divider"
+            },
+            "DORMANT": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Ring Oscillator pause control\\n\n            This is used to save power by pausing the ROSC\\n\n            On power-up this field is initialised to WAKE\\n\n            An invalid write will also select WAKE\\n\n            Warning: setup the irq before selecting dormant mode"
+            },
+            "PASSWD": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Controls the phase shifted output"
+            },
+            "STABLE": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Ring Oscillator Status"
+            },
+            "RANDOMBIT": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "This just reads the state of the oscillator output so randomness is compromised if the ring oscillator is stopped or run at a harmonic of the bus frequency"
+            },
+            "COUNT": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "A down counter running at the ROSC frequency which counts to zero and stops.\\n\n            To start the counter write a non-zero value.\\n\n            Can be used for short software pauses when setting up time sensitive hardware."
+            }
+          }
+        },
+        "VREG": {
+          "instances": [
+            {
+              "name": "VREG_AND_CHIP_RESET",
+              "base": "0x40064000"
+            }
+          ],
+          "registers": {
+            "ROK": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Voltage regulator control and status"
+            },
+            "VSEL": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "brown-out detection control"
+            },
+            "PSM_RESTART_FLAG": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Chip reset control and status"
+            }
+          }
+        },
+        "TBMAN": {
+          "instances": [
+            {
+              "name": "TBMAN",
+              "base": "0x4006C000"
+            }
+          ],
+          "registers": {
+            "FPGA": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Indicates the type of platform in use"
+            }
+          }
+        },
+        "DMA": {
+          "instances": [
+            {
+              "name": "DMA_IRQ_0",
+              "base": "0x50000000",
+              "irq": 11
+            }
+          ],
+          "registers": {
+            "CH0_READ_ADDR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "DMA Channel 0 Read Address pointer\\n\n            This register updates automatically each time a read completes. The current value is the next address to be read by this channel."
+            },
+            "CH0_WRITE_ADDR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "DMA Channel 0 Write Address pointer\\n\n            This register updates automatically each time a write completes. The current value is the next address to be written by this channel."
+            },
+            "CH0_TRANS_COUNT": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "DMA Channel 0 Transfer Count\\n\n            Program the number of bus transfers a channel will perform before halting. Note that, if transfers are larger than one byte in size, this is not equal to the number of bytes transferred (see CTRL_DATA_SIZE).\\n\\n\n            When the channel is active, reading this register shows the number of transfers remaining, updating automatically each time a write transfer completes.\\n\\n\n            Writing this register sets the RELOAD value for the transfer counter. Each time this channel is triggered, the RELOAD value is copied into the live transfer counter. The channel can be started multiple times, and will perform the same number of transfers each time, as programmed by most recent write.\\n\\n\n            The RELOAD value can be observed at CHx_DBG_TCR. If TRANS_COUNT is used as a trigger, the written value is used immediately as the length of the new transfer sequence, as well as being written to RELOAD."
+            },
+            "AHB_ERROR": {
+              "offset": "0x2CC",
+              "size": 32,
+              "description": "DMA Channel 11 Control and Status"
+            },
+            "CH0_AL1_CTRL": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Alias for channel 0 CTRL register"
+            },
+            "CH0_AL1_READ_ADDR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Alias for channel 0 READ_ADDR register"
+            },
+            "CH0_AL1_WRITE_ADDR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Alias for channel 0 WRITE_ADDR register"
+            },
+            "CH0_AL1_TRANS_COUNT_TRIG": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Alias for channel 0 TRANS_COUNT register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH0_AL2_CTRL": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Alias for channel 0 CTRL register"
+            },
+            "CH0_AL2_TRANS_COUNT": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Alias for channel 0 TRANS_COUNT register"
+            },
+            "CH0_AL2_READ_ADDR": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Alias for channel 0 READ_ADDR register"
+            },
+            "CH0_AL2_WRITE_ADDR_TRIG": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Alias for channel 0 WRITE_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH0_AL3_CTRL": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Alias for channel 0 CTRL register"
+            },
+            "CH0_AL3_WRITE_ADDR": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Alias for channel 0 WRITE_ADDR register"
+            },
+            "CH0_AL3_TRANS_COUNT": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Alias for channel 0 TRANS_COUNT register"
+            },
+            "CH0_AL3_READ_ADDR_TRIG": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Alias for channel 0 READ_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH1_READ_ADDR": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "DMA Channel 1 Read Address pointer\\n\n            This register updates automatically each time a read completes. The current value is the next address to be read by this channel."
+            },
+            "CH1_WRITE_ADDR": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "DMA Channel 1 Write Address pointer\\n\n            This register updates automatically each time a write completes. The current value is the next address to be written by this channel."
+            },
+            "CH1_TRANS_COUNT": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "DMA Channel 1 Transfer Count\\n\n            Program the number of bus transfers a channel will perform before halting. Note that, if transfers are larger than one byte in size, this is not equal to the number of bytes transferred (see CTRL_DATA_SIZE).\\n\\n\n            When the channel is active, reading this register shows the number of transfers remaining, updating automatically each time a write transfer completes.\\n\\n\n            Writing this register sets the RELOAD value for the transfer counter. Each time this channel is triggered, the RELOAD value is copied into the live transfer counter. The channel can be started multiple times, and will perform the same number of transfers each time, as programmed by most recent write.\\n\\n\n            The RELOAD value can be observed at CHx_DBG_TCR. If TRANS_COUNT is used as a trigger, the written value is used immediately as the length of the new transfer sequence, as well as being written to RELOAD."
+            },
+            "CH1_AL1_CTRL": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Alias for channel 1 CTRL register"
+            },
+            "CH1_AL1_READ_ADDR": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Alias for channel 1 READ_ADDR register"
+            },
+            "CH1_AL1_WRITE_ADDR": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Alias for channel 1 WRITE_ADDR register"
+            },
+            "CH1_AL1_TRANS_COUNT_TRIG": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Alias for channel 1 TRANS_COUNT register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH1_AL2_CTRL": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Alias for channel 1 CTRL register"
+            },
+            "CH1_AL2_TRANS_COUNT": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Alias for channel 1 TRANS_COUNT register"
+            },
+            "CH1_AL2_READ_ADDR": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Alias for channel 1 READ_ADDR register"
+            },
+            "CH1_AL2_WRITE_ADDR_TRIG": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "Alias for channel 1 WRITE_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH1_AL3_CTRL": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Alias for channel 1 CTRL register"
+            },
+            "CH1_AL3_WRITE_ADDR": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Alias for channel 1 WRITE_ADDR register"
+            },
+            "CH1_AL3_TRANS_COUNT": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "Alias for channel 1 TRANS_COUNT register"
+            },
+            "CH1_AL3_READ_ADDR_TRIG": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "Alias for channel 1 READ_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH2_READ_ADDR": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "DMA Channel 2 Read Address pointer\\n\n            This register updates automatically each time a read completes. The current value is the next address to be read by this channel."
+            },
+            "CH2_WRITE_ADDR": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "DMA Channel 2 Write Address pointer\\n\n            This register updates automatically each time a write completes. The current value is the next address to be written by this channel."
+            },
+            "CH2_TRANS_COUNT": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "DMA Channel 2 Transfer Count\\n\n            Program the number of bus transfers a channel will perform before halting. Note that, if transfers are larger than one byte in size, this is not equal to the number of bytes transferred (see CTRL_DATA_SIZE).\\n\\n\n            When the channel is active, reading this register shows the number of transfers remaining, updating automatically each time a write transfer completes.\\n\\n\n            Writing this register sets the RELOAD value for the transfer counter. Each time this channel is triggered, the RELOAD value is copied into the live transfer counter. The channel can be started multiple times, and will perform the same number of transfers each time, as programmed by most recent write.\\n\\n\n            The RELOAD value can be observed at CHx_DBG_TCR. If TRANS_COUNT is used as a trigger, the written value is used immediately as the length of the new transfer sequence, as well as being written to RELOAD."
+            },
+            "CH2_AL1_CTRL": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "Alias for channel 2 CTRL register"
+            },
+            "CH2_AL1_READ_ADDR": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "Alias for channel 2 READ_ADDR register"
+            },
+            "CH2_AL1_WRITE_ADDR": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "Alias for channel 2 WRITE_ADDR register"
+            },
+            "CH2_AL1_TRANS_COUNT_TRIG": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "Alias for channel 2 TRANS_COUNT register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH2_AL2_CTRL": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "Alias for channel 2 CTRL register"
+            },
+            "CH2_AL2_TRANS_COUNT": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "Alias for channel 2 TRANS_COUNT register"
+            },
+            "CH2_AL2_READ_ADDR": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "Alias for channel 2 READ_ADDR register"
+            },
+            "CH2_AL2_WRITE_ADDR_TRIG": {
+              "offset": "0xAC",
+              "size": 32,
+              "description": "Alias for channel 2 WRITE_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH2_AL3_CTRL": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "Alias for channel 2 CTRL register"
+            },
+            "CH2_AL3_WRITE_ADDR": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "Alias for channel 2 WRITE_ADDR register"
+            },
+            "CH2_AL3_TRANS_COUNT": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "Alias for channel 2 TRANS_COUNT register"
+            },
+            "CH2_AL3_READ_ADDR_TRIG": {
+              "offset": "0xBC",
+              "size": 32,
+              "description": "Alias for channel 2 READ_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH3_READ_ADDR": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "DMA Channel 3 Read Address pointer\\n\n            This register updates automatically each time a read completes. The current value is the next address to be read by this channel."
+            },
+            "CH3_WRITE_ADDR": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "DMA Channel 3 Write Address pointer\\n\n            This register updates automatically each time a write completes. The current value is the next address to be written by this channel."
+            },
+            "CH3_TRANS_COUNT": {
+              "offset": "0xC8",
+              "size": 32,
+              "description": "DMA Channel 3 Transfer Count\\n\n            Program the number of bus transfers a channel will perform before halting. Note that, if transfers are larger than one byte in size, this is not equal to the number of bytes transferred (see CTRL_DATA_SIZE).\\n\\n\n            When the channel is active, reading this register shows the number of transfers remaining, updating automatically each time a write transfer completes.\\n\\n\n            Writing this register sets the RELOAD value for the transfer counter. Each time this channel is triggered, the RELOAD value is copied into the live transfer counter. The channel can be started multiple times, and will perform the same number of transfers each time, as programmed by most recent write.\\n\\n\n            The RELOAD value can be observed at CHx_DBG_TCR. If TRANS_COUNT is used as a trigger, the written value is used immediately as the length of the new transfer sequence, as well as being written to RELOAD."
+            },
+            "CH3_AL1_CTRL": {
+              "offset": "0xD0",
+              "size": 32,
+              "description": "Alias for channel 3 CTRL register"
+            },
+            "CH3_AL1_READ_ADDR": {
+              "offset": "0xD4",
+              "size": 32,
+              "description": "Alias for channel 3 READ_ADDR register"
+            },
+            "CH3_AL1_WRITE_ADDR": {
+              "offset": "0xD8",
+              "size": 32,
+              "description": "Alias for channel 3 WRITE_ADDR register"
+            },
+            "CH3_AL1_TRANS_COUNT_TRIG": {
+              "offset": "0xDC",
+              "size": 32,
+              "description": "Alias for channel 3 TRANS_COUNT register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH3_AL2_CTRL": {
+              "offset": "0xE0",
+              "size": 32,
+              "description": "Alias for channel 3 CTRL register"
+            },
+            "CH3_AL2_TRANS_COUNT": {
+              "offset": "0xE4",
+              "size": 32,
+              "description": "Alias for channel 3 TRANS_COUNT register"
+            },
+            "CH3_AL2_READ_ADDR": {
+              "offset": "0xE8",
+              "size": 32,
+              "description": "Alias for channel 3 READ_ADDR register"
+            },
+            "CH3_AL2_WRITE_ADDR_TRIG": {
+              "offset": "0xEC",
+              "size": 32,
+              "description": "Alias for channel 3 WRITE_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH3_AL3_CTRL": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "Alias for channel 3 CTRL register"
+            },
+            "CH3_AL3_WRITE_ADDR": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "Alias for channel 3 WRITE_ADDR register"
+            },
+            "CH3_AL3_TRANS_COUNT": {
+              "offset": "0xF8",
+              "size": 32,
+              "description": "Alias for channel 3 TRANS_COUNT register"
+            },
+            "CH3_AL3_READ_ADDR_TRIG": {
+              "offset": "0xFC",
+              "size": 32,
+              "description": "Alias for channel 3 READ_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH4_READ_ADDR": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "DMA Channel 4 Read Address pointer\\n\n            This register updates automatically each time a read completes. The current value is the next address to be read by this channel."
+            },
+            "CH4_WRITE_ADDR": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "DMA Channel 4 Write Address pointer\\n\n            This register updates automatically each time a write completes. The current value is the next address to be written by this channel."
+            },
+            "CH4_TRANS_COUNT": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "DMA Channel 4 Transfer Count\\n\n            Program the number of bus transfers a channel will perform before halting. Note that, if transfers are larger than one byte in size, this is not equal to the number of bytes transferred (see CTRL_DATA_SIZE).\\n\\n\n            When the channel is active, reading this register shows the number of transfers remaining, updating automatically each time a write transfer completes.\\n\\n\n            Writing this register sets the RELOAD value for the transfer counter. Each time this channel is triggered, the RELOAD value is copied into the live transfer counter. The channel can be started multiple times, and will perform the same number of transfers each time, as programmed by most recent write.\\n\\n\n            The RELOAD value can be observed at CHx_DBG_TCR. If TRANS_COUNT is used as a trigger, the written value is used immediately as the length of the new transfer sequence, as well as being written to RELOAD."
+            },
+            "CH4_AL1_CTRL": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "Alias for channel 4 CTRL register"
+            },
+            "CH4_AL1_READ_ADDR": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "Alias for channel 4 READ_ADDR register"
+            },
+            "CH4_AL1_WRITE_ADDR": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "Alias for channel 4 WRITE_ADDR register"
+            },
+            "CH4_AL1_TRANS_COUNT_TRIG": {
+              "offset": "0x11C",
+              "size": 32,
+              "description": "Alias for channel 4 TRANS_COUNT register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH4_AL2_CTRL": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "Alias for channel 4 CTRL register"
+            },
+            "CH4_AL2_TRANS_COUNT": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "Alias for channel 4 TRANS_COUNT register"
+            },
+            "CH4_AL2_READ_ADDR": {
+              "offset": "0x128",
+              "size": 32,
+              "description": "Alias for channel 4 READ_ADDR register"
+            },
+            "CH4_AL2_WRITE_ADDR_TRIG": {
+              "offset": "0x12C",
+              "size": 32,
+              "description": "Alias for channel 4 WRITE_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH4_AL3_CTRL": {
+              "offset": "0x130",
+              "size": 32,
+              "description": "Alias for channel 4 CTRL register"
+            },
+            "CH4_AL3_WRITE_ADDR": {
+              "offset": "0x134",
+              "size": 32,
+              "description": "Alias for channel 4 WRITE_ADDR register"
+            },
+            "CH4_AL3_TRANS_COUNT": {
+              "offset": "0x138",
+              "size": 32,
+              "description": "Alias for channel 4 TRANS_COUNT register"
+            },
+            "CH4_AL3_READ_ADDR_TRIG": {
+              "offset": "0x13C",
+              "size": 32,
+              "description": "Alias for channel 4 READ_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH5_READ_ADDR": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "DMA Channel 5 Read Address pointer\\n\n            This register updates automatically each time a read completes. The current value is the next address to be read by this channel."
+            },
+            "CH5_WRITE_ADDR": {
+              "offset": "0x144",
+              "size": 32,
+              "description": "DMA Channel 5 Write Address pointer\\n\n            This register updates automatically each time a write completes. The current value is the next address to be written by this channel."
+            },
+            "CH5_TRANS_COUNT": {
+              "offset": "0x148",
+              "size": 32,
+              "description": "DMA Channel 5 Transfer Count\\n\n            Program the number of bus transfers a channel will perform before halting. Note that, if transfers are larger than one byte in size, this is not equal to the number of bytes transferred (see CTRL_DATA_SIZE).\\n\\n\n            When the channel is active, reading this register shows the number of transfers remaining, updating automatically each time a write transfer completes.\\n\\n\n            Writing this register sets the RELOAD value for the transfer counter. Each time this channel is triggered, the RELOAD value is copied into the live transfer counter. The channel can be started multiple times, and will perform the same number of transfers each time, as programmed by most recent write.\\n\\n\n            The RELOAD value can be observed at CHx_DBG_TCR. If TRANS_COUNT is used as a trigger, the written value is used immediately as the length of the new transfer sequence, as well as being written to RELOAD."
+            },
+            "CH5_AL1_CTRL": {
+              "offset": "0x150",
+              "size": 32,
+              "description": "Alias for channel 5 CTRL register"
+            },
+            "CH5_AL1_READ_ADDR": {
+              "offset": "0x154",
+              "size": 32,
+              "description": "Alias for channel 5 READ_ADDR register"
+            },
+            "CH5_AL1_WRITE_ADDR": {
+              "offset": "0x158",
+              "size": 32,
+              "description": "Alias for channel 5 WRITE_ADDR register"
+            },
+            "CH5_AL1_TRANS_COUNT_TRIG": {
+              "offset": "0x15C",
+              "size": 32,
+              "description": "Alias for channel 5 TRANS_COUNT register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH5_AL2_CTRL": {
+              "offset": "0x160",
+              "size": 32,
+              "description": "Alias for channel 5 CTRL register"
+            },
+            "CH5_AL2_TRANS_COUNT": {
+              "offset": "0x164",
+              "size": 32,
+              "description": "Alias for channel 5 TRANS_COUNT register"
+            },
+            "CH5_AL2_READ_ADDR": {
+              "offset": "0x168",
+              "size": 32,
+              "description": "Alias for channel 5 READ_ADDR register"
+            },
+            "CH5_AL2_WRITE_ADDR_TRIG": {
+              "offset": "0x16C",
+              "size": 32,
+              "description": "Alias for channel 5 WRITE_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH5_AL3_CTRL": {
+              "offset": "0x170",
+              "size": 32,
+              "description": "Alias for channel 5 CTRL register"
+            },
+            "CH5_AL3_WRITE_ADDR": {
+              "offset": "0x174",
+              "size": 32,
+              "description": "Alias for channel 5 WRITE_ADDR register"
+            },
+            "CH5_AL3_TRANS_COUNT": {
+              "offset": "0x178",
+              "size": 32,
+              "description": "Alias for channel 5 TRANS_COUNT register"
+            },
+            "CH5_AL3_READ_ADDR_TRIG": {
+              "offset": "0x17C",
+              "size": 32,
+              "description": "Alias for channel 5 READ_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH6_READ_ADDR": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "DMA Channel 6 Read Address pointer\\n\n            This register updates automatically each time a read completes. The current value is the next address to be read by this channel."
+            },
+            "CH6_WRITE_ADDR": {
+              "offset": "0x184",
+              "size": 32,
+              "description": "DMA Channel 6 Write Address pointer\\n\n            This register updates automatically each time a write completes. The current value is the next address to be written by this channel."
+            },
+            "CH6_TRANS_COUNT": {
+              "offset": "0x188",
+              "size": 32,
+              "description": "DMA Channel 6 Transfer Count\\n\n            Program the number of bus transfers a channel will perform before halting. Note that, if transfers are larger than one byte in size, this is not equal to the number of bytes transferred (see CTRL_DATA_SIZE).\\n\\n\n            When the channel is active, reading this register shows the number of transfers remaining, updating automatically each time a write transfer completes.\\n\\n\n            Writing this register sets the RELOAD value for the transfer counter. Each time this channel is triggered, the RELOAD value is copied into the live transfer counter. The channel can be started multiple times, and will perform the same number of transfers each time, as programmed by most recent write.\\n\\n\n            The RELOAD value can be observed at CHx_DBG_TCR. If TRANS_COUNT is used as a trigger, the written value is used immediately as the length of the new transfer sequence, as well as being written to RELOAD."
+            },
+            "CH6_AL1_CTRL": {
+              "offset": "0x190",
+              "size": 32,
+              "description": "Alias for channel 6 CTRL register"
+            },
+            "CH6_AL1_READ_ADDR": {
+              "offset": "0x194",
+              "size": 32,
+              "description": "Alias for channel 6 READ_ADDR register"
+            },
+            "CH6_AL1_WRITE_ADDR": {
+              "offset": "0x198",
+              "size": 32,
+              "description": "Alias for channel 6 WRITE_ADDR register"
+            },
+            "CH6_AL1_TRANS_COUNT_TRIG": {
+              "offset": "0x19C",
+              "size": 32,
+              "description": "Alias for channel 6 TRANS_COUNT register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH6_AL2_CTRL": {
+              "offset": "0x1A0",
+              "size": 32,
+              "description": "Alias for channel 6 CTRL register"
+            },
+            "CH6_AL2_TRANS_COUNT": {
+              "offset": "0x1A4",
+              "size": 32,
+              "description": "Alias for channel 6 TRANS_COUNT register"
+            },
+            "CH6_AL2_READ_ADDR": {
+              "offset": "0x1A8",
+              "size": 32,
+              "description": "Alias for channel 6 READ_ADDR register"
+            },
+            "CH6_AL2_WRITE_ADDR_TRIG": {
+              "offset": "0x1AC",
+              "size": 32,
+              "description": "Alias for channel 6 WRITE_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH6_AL3_CTRL": {
+              "offset": "0x1B0",
+              "size": 32,
+              "description": "Alias for channel 6 CTRL register"
+            },
+            "CH6_AL3_WRITE_ADDR": {
+              "offset": "0x1B4",
+              "size": 32,
+              "description": "Alias for channel 6 WRITE_ADDR register"
+            },
+            "CH6_AL3_TRANS_COUNT": {
+              "offset": "0x1B8",
+              "size": 32,
+              "description": "Alias for channel 6 TRANS_COUNT register"
+            },
+            "CH6_AL3_READ_ADDR_TRIG": {
+              "offset": "0x1BC",
+              "size": 32,
+              "description": "Alias for channel 6 READ_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH7_READ_ADDR": {
+              "offset": "0x1C0",
+              "size": 32,
+              "description": "DMA Channel 7 Read Address pointer\\n\n            This register updates automatically each time a read completes. The current value is the next address to be read by this channel."
+            },
+            "CH7_WRITE_ADDR": {
+              "offset": "0x1C4",
+              "size": 32,
+              "description": "DMA Channel 7 Write Address pointer\\n\n            This register updates automatically each time a write completes. The current value is the next address to be written by this channel."
+            },
+            "CH7_TRANS_COUNT": {
+              "offset": "0x1C8",
+              "size": 32,
+              "description": "DMA Channel 7 Transfer Count\\n\n            Program the number of bus transfers a channel will perform before halting. Note that, if transfers are larger than one byte in size, this is not equal to the number of bytes transferred (see CTRL_DATA_SIZE).\\n\\n\n            When the channel is active, reading this register shows the number of transfers remaining, updating automatically each time a write transfer completes.\\n\\n\n            Writing this register sets the RELOAD value for the transfer counter. Each time this channel is triggered, the RELOAD value is copied into the live transfer counter. The channel can be started multiple times, and will perform the same number of transfers each time, as programmed by most recent write.\\n\\n\n            The RELOAD value can be observed at CHx_DBG_TCR. If TRANS_COUNT is used as a trigger, the written value is used immediately as the length of the new transfer sequence, as well as being written to RELOAD."
+            },
+            "CH7_AL1_CTRL": {
+              "offset": "0x1D0",
+              "size": 32,
+              "description": "Alias for channel 7 CTRL register"
+            },
+            "CH7_AL1_READ_ADDR": {
+              "offset": "0x1D4",
+              "size": 32,
+              "description": "Alias for channel 7 READ_ADDR register"
+            },
+            "CH7_AL1_WRITE_ADDR": {
+              "offset": "0x1D8",
+              "size": 32,
+              "description": "Alias for channel 7 WRITE_ADDR register"
+            },
+            "CH7_AL1_TRANS_COUNT_TRIG": {
+              "offset": "0x1DC",
+              "size": 32,
+              "description": "Alias for channel 7 TRANS_COUNT register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH7_AL2_CTRL": {
+              "offset": "0x1E0",
+              "size": 32,
+              "description": "Alias for channel 7 CTRL register"
+            },
+            "CH7_AL2_TRANS_COUNT": {
+              "offset": "0x1E4",
+              "size": 32,
+              "description": "Alias for channel 7 TRANS_COUNT register"
+            },
+            "CH7_AL2_READ_ADDR": {
+              "offset": "0x1E8",
+              "size": 32,
+              "description": "Alias for channel 7 READ_ADDR register"
+            },
+            "CH7_AL2_WRITE_ADDR_TRIG": {
+              "offset": "0x1EC",
+              "size": 32,
+              "description": "Alias for channel 7 WRITE_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH7_AL3_CTRL": {
+              "offset": "0x1F0",
+              "size": 32,
+              "description": "Alias for channel 7 CTRL register"
+            },
+            "CH7_AL3_WRITE_ADDR": {
+              "offset": "0x1F4",
+              "size": 32,
+              "description": "Alias for channel 7 WRITE_ADDR register"
+            },
+            "CH7_AL3_TRANS_COUNT": {
+              "offset": "0x1F8",
+              "size": 32,
+              "description": "Alias for channel 7 TRANS_COUNT register"
+            },
+            "CH7_AL3_READ_ADDR_TRIG": {
+              "offset": "0x1FC",
+              "size": 32,
+              "description": "Alias for channel 7 READ_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH8_READ_ADDR": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "DMA Channel 8 Read Address pointer\\n\n            This register updates automatically each time a read completes. The current value is the next address to be read by this channel."
+            },
+            "CH8_WRITE_ADDR": {
+              "offset": "0x204",
+              "size": 32,
+              "description": "DMA Channel 8 Write Address pointer\\n\n            This register updates automatically each time a write completes. The current value is the next address to be written by this channel."
+            },
+            "CH8_TRANS_COUNT": {
+              "offset": "0x208",
+              "size": 32,
+              "description": "DMA Channel 8 Transfer Count\\n\n            Program the number of bus transfers a channel will perform before halting. Note that, if transfers are larger than one byte in size, this is not equal to the number of bytes transferred (see CTRL_DATA_SIZE).\\n\\n\n            When the channel is active, reading this register shows the number of transfers remaining, updating automatically each time a write transfer completes.\\n\\n\n            Writing this register sets the RELOAD value for the transfer counter. Each time this channel is triggered, the RELOAD value is copied into the live transfer counter. The channel can be started multiple times, and will perform the same number of transfers each time, as programmed by most recent write.\\n\\n\n            The RELOAD value can be observed at CHx_DBG_TCR. If TRANS_COUNT is used as a trigger, the written value is used immediately as the length of the new transfer sequence, as well as being written to RELOAD."
+            },
+            "CH8_AL1_CTRL": {
+              "offset": "0x210",
+              "size": 32,
+              "description": "Alias for channel 8 CTRL register"
+            },
+            "CH8_AL1_READ_ADDR": {
+              "offset": "0x214",
+              "size": 32,
+              "description": "Alias for channel 8 READ_ADDR register"
+            },
+            "CH8_AL1_WRITE_ADDR": {
+              "offset": "0x218",
+              "size": 32,
+              "description": "Alias for channel 8 WRITE_ADDR register"
+            },
+            "CH8_AL1_TRANS_COUNT_TRIG": {
+              "offset": "0x21C",
+              "size": 32,
+              "description": "Alias for channel 8 TRANS_COUNT register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH8_AL2_CTRL": {
+              "offset": "0x220",
+              "size": 32,
+              "description": "Alias for channel 8 CTRL register"
+            },
+            "CH8_AL2_TRANS_COUNT": {
+              "offset": "0x224",
+              "size": 32,
+              "description": "Alias for channel 8 TRANS_COUNT register"
+            },
+            "CH8_AL2_READ_ADDR": {
+              "offset": "0x228",
+              "size": 32,
+              "description": "Alias for channel 8 READ_ADDR register"
+            },
+            "CH8_AL2_WRITE_ADDR_TRIG": {
+              "offset": "0x22C",
+              "size": 32,
+              "description": "Alias for channel 8 WRITE_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH8_AL3_CTRL": {
+              "offset": "0x230",
+              "size": 32,
+              "description": "Alias for channel 8 CTRL register"
+            },
+            "CH8_AL3_WRITE_ADDR": {
+              "offset": "0x234",
+              "size": 32,
+              "description": "Alias for channel 8 WRITE_ADDR register"
+            },
+            "CH8_AL3_TRANS_COUNT": {
+              "offset": "0x238",
+              "size": 32,
+              "description": "Alias for channel 8 TRANS_COUNT register"
+            },
+            "CH8_AL3_READ_ADDR_TRIG": {
+              "offset": "0x23C",
+              "size": 32,
+              "description": "Alias for channel 8 READ_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH9_READ_ADDR": {
+              "offset": "0x240",
+              "size": 32,
+              "description": "DMA Channel 9 Read Address pointer\\n\n            This register updates automatically each time a read completes. The current value is the next address to be read by this channel."
+            },
+            "CH9_WRITE_ADDR": {
+              "offset": "0x244",
+              "size": 32,
+              "description": "DMA Channel 9 Write Address pointer\\n\n            This register updates automatically each time a write completes. The current value is the next address to be written by this channel."
+            },
+            "CH9_TRANS_COUNT": {
+              "offset": "0x248",
+              "size": 32,
+              "description": "DMA Channel 9 Transfer Count\\n\n            Program the number of bus transfers a channel will perform before halting. Note that, if transfers are larger than one byte in size, this is not equal to the number of bytes transferred (see CTRL_DATA_SIZE).\\n\\n\n            When the channel is active, reading this register shows the number of transfers remaining, updating automatically each time a write transfer completes.\\n\\n\n            Writing this register sets the RELOAD value for the transfer counter. Each time this channel is triggered, the RELOAD value is copied into the live transfer counter. The channel can be started multiple times, and will perform the same number of transfers each time, as programmed by most recent write.\\n\\n\n            The RELOAD value can be observed at CHx_DBG_TCR. If TRANS_COUNT is used as a trigger, the written value is used immediately as the length of the new transfer sequence, as well as being written to RELOAD."
+            },
+            "CH9_AL1_CTRL": {
+              "offset": "0x250",
+              "size": 32,
+              "description": "Alias for channel 9 CTRL register"
+            },
+            "CH9_AL1_READ_ADDR": {
+              "offset": "0x254",
+              "size": 32,
+              "description": "Alias for channel 9 READ_ADDR register"
+            },
+            "CH9_AL1_WRITE_ADDR": {
+              "offset": "0x258",
+              "size": 32,
+              "description": "Alias for channel 9 WRITE_ADDR register"
+            },
+            "CH9_AL1_TRANS_COUNT_TRIG": {
+              "offset": "0x25C",
+              "size": 32,
+              "description": "Alias for channel 9 TRANS_COUNT register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH9_AL2_CTRL": {
+              "offset": "0x260",
+              "size": 32,
+              "description": "Alias for channel 9 CTRL register"
+            },
+            "CH9_AL2_TRANS_COUNT": {
+              "offset": "0x264",
+              "size": 32,
+              "description": "Alias for channel 9 TRANS_COUNT register"
+            },
+            "CH9_AL2_READ_ADDR": {
+              "offset": "0x268",
+              "size": 32,
+              "description": "Alias for channel 9 READ_ADDR register"
+            },
+            "CH9_AL2_WRITE_ADDR_TRIG": {
+              "offset": "0x26C",
+              "size": 32,
+              "description": "Alias for channel 9 WRITE_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH9_AL3_CTRL": {
+              "offset": "0x270",
+              "size": 32,
+              "description": "Alias for channel 9 CTRL register"
+            },
+            "CH9_AL3_WRITE_ADDR": {
+              "offset": "0x274",
+              "size": 32,
+              "description": "Alias for channel 9 WRITE_ADDR register"
+            },
+            "CH9_AL3_TRANS_COUNT": {
+              "offset": "0x278",
+              "size": 32,
+              "description": "Alias for channel 9 TRANS_COUNT register"
+            },
+            "CH9_AL3_READ_ADDR_TRIG": {
+              "offset": "0x27C",
+              "size": 32,
+              "description": "Alias for channel 9 READ_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH10_READ_ADDR": {
+              "offset": "0x280",
+              "size": 32,
+              "description": "DMA Channel 10 Read Address pointer\\n\n            This register updates automatically each time a read completes. The current value is the next address to be read by this channel."
+            },
+            "CH10_WRITE_ADDR": {
+              "offset": "0x284",
+              "size": 32,
+              "description": "DMA Channel 10 Write Address pointer\\n\n            This register updates automatically each time a write completes. The current value is the next address to be written by this channel."
+            },
+            "CH10_TRANS_COUNT": {
+              "offset": "0x288",
+              "size": 32,
+              "description": "DMA Channel 10 Transfer Count\\n\n            Program the number of bus transfers a channel will perform before halting. Note that, if transfers are larger than one byte in size, this is not equal to the number of bytes transferred (see CTRL_DATA_SIZE).\\n\\n\n            When the channel is active, reading this register shows the number of transfers remaining, updating automatically each time a write transfer completes.\\n\\n\n            Writing this register sets the RELOAD value for the transfer counter. Each time this channel is triggered, the RELOAD value is copied into the live transfer counter. The channel can be started multiple times, and will perform the same number of transfers each time, as programmed by most recent write.\\n\\n\n            The RELOAD value can be observed at CHx_DBG_TCR. If TRANS_COUNT is used as a trigger, the written value is used immediately as the length of the new transfer sequence, as well as being written to RELOAD."
+            },
+            "CH10_AL1_CTRL": {
+              "offset": "0x290",
+              "size": 32,
+              "description": "Alias for channel 10 CTRL register"
+            },
+            "CH10_AL1_READ_ADDR": {
+              "offset": "0x294",
+              "size": 32,
+              "description": "Alias for channel 10 READ_ADDR register"
+            },
+            "CH10_AL1_WRITE_ADDR": {
+              "offset": "0x298",
+              "size": 32,
+              "description": "Alias for channel 10 WRITE_ADDR register"
+            },
+            "CH10_AL1_TRANS_COUNT_TRIG": {
+              "offset": "0x29C",
+              "size": 32,
+              "description": "Alias for channel 10 TRANS_COUNT register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH10_AL2_CTRL": {
+              "offset": "0x2A0",
+              "size": 32,
+              "description": "Alias for channel 10 CTRL register"
+            },
+            "CH10_AL2_TRANS_COUNT": {
+              "offset": "0x2A4",
+              "size": 32,
+              "description": "Alias for channel 10 TRANS_COUNT register"
+            },
+            "CH10_AL2_READ_ADDR": {
+              "offset": "0x2A8",
+              "size": 32,
+              "description": "Alias for channel 10 READ_ADDR register"
+            },
+            "CH10_AL2_WRITE_ADDR_TRIG": {
+              "offset": "0x2AC",
+              "size": 32,
+              "description": "Alias for channel 10 WRITE_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH10_AL3_CTRL": {
+              "offset": "0x2B0",
+              "size": 32,
+              "description": "Alias for channel 10 CTRL register"
+            },
+            "CH10_AL3_WRITE_ADDR": {
+              "offset": "0x2B4",
+              "size": 32,
+              "description": "Alias for channel 10 WRITE_ADDR register"
+            },
+            "CH10_AL3_TRANS_COUNT": {
+              "offset": "0x2B8",
+              "size": 32,
+              "description": "Alias for channel 10 TRANS_COUNT register"
+            },
+            "CH10_AL3_READ_ADDR_TRIG": {
+              "offset": "0x2BC",
+              "size": 32,
+              "description": "Alias for channel 10 READ_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH11_READ_ADDR": {
+              "offset": "0x2C0",
+              "size": 32,
+              "description": "DMA Channel 11 Read Address pointer\\n\n            This register updates automatically each time a read completes. The current value is the next address to be read by this channel."
+            },
+            "CH11_WRITE_ADDR": {
+              "offset": "0x2C4",
+              "size": 32,
+              "description": "DMA Channel 11 Write Address pointer\\n\n            This register updates automatically each time a write completes. The current value is the next address to be written by this channel."
+            },
+            "CH11_TRANS_COUNT": {
+              "offset": "0x2C8",
+              "size": 32,
+              "description": "DMA Channel 11 Transfer Count\\n\n            Program the number of bus transfers a channel will perform before halting. Note that, if transfers are larger than one byte in size, this is not equal to the number of bytes transferred (see CTRL_DATA_SIZE).\\n\\n\n            When the channel is active, reading this register shows the number of transfers remaining, updating automatically each time a write transfer completes.\\n\\n\n            Writing this register sets the RELOAD value for the transfer counter. Each time this channel is triggered, the RELOAD value is copied into the live transfer counter. The channel can be started multiple times, and will perform the same number of transfers each time, as programmed by most recent write.\\n\\n\n            The RELOAD value can be observed at CHx_DBG_TCR. If TRANS_COUNT is used as a trigger, the written value is used immediately as the length of the new transfer sequence, as well as being written to RELOAD."
+            },
+            "CH11_AL1_CTRL": {
+              "offset": "0x2D0",
+              "size": 32,
+              "description": "Alias for channel 11 CTRL register"
+            },
+            "CH11_AL1_READ_ADDR": {
+              "offset": "0x2D4",
+              "size": 32,
+              "description": "Alias for channel 11 READ_ADDR register"
+            },
+            "CH11_AL1_WRITE_ADDR": {
+              "offset": "0x2D8",
+              "size": 32,
+              "description": "Alias for channel 11 WRITE_ADDR register"
+            },
+            "CH11_AL1_TRANS_COUNT_TRIG": {
+              "offset": "0x2DC",
+              "size": 32,
+              "description": "Alias for channel 11 TRANS_COUNT register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH11_AL2_CTRL": {
+              "offset": "0x2E0",
+              "size": 32,
+              "description": "Alias for channel 11 CTRL register"
+            },
+            "CH11_AL2_TRANS_COUNT": {
+              "offset": "0x2E4",
+              "size": 32,
+              "description": "Alias for channel 11 TRANS_COUNT register"
+            },
+            "CH11_AL2_READ_ADDR": {
+              "offset": "0x2E8",
+              "size": 32,
+              "description": "Alias for channel 11 READ_ADDR register"
+            },
+            "CH11_AL2_WRITE_ADDR_TRIG": {
+              "offset": "0x2EC",
+              "size": 32,
+              "description": "Alias for channel 11 WRITE_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "CH11_AL3_CTRL": {
+              "offset": "0x2F0",
+              "size": 32,
+              "description": "Alias for channel 11 CTRL register"
+            },
+            "CH11_AL3_WRITE_ADDR": {
+              "offset": "0x2F4",
+              "size": 32,
+              "description": "Alias for channel 11 WRITE_ADDR register"
+            },
+            "CH11_AL3_TRANS_COUNT": {
+              "offset": "0x2F8",
+              "size": 32,
+              "description": "Alias for channel 11 TRANS_COUNT register"
+            },
+            "CH11_AL3_READ_ADDR_TRIG": {
+              "offset": "0x2FC",
+              "size": 32,
+              "description": "Alias for channel 11 READ_ADDR register\\n\n            This is a trigger register (0xc). Writing a nonzero value will\\n\n            reload the channel counter and start the channel."
+            },
+            "INTR": {
+              "offset": "0x400",
+              "size": 32,
+              "description": "Interrupt Status (raw)"
+            },
+            "INTE0": {
+              "offset": "0x404",
+              "size": 32,
+              "description": "Interrupt Enables for IRQ 0"
+            },
+            "INTF0": {
+              "offset": "0x408",
+              "size": 32,
+              "description": "Force Interrupts"
+            },
+            "INTS0": {
+              "offset": "0x40C",
+              "size": 32,
+              "description": "Interrupt Status for IRQ 0"
+            },
+            "INTE1": {
+              "offset": "0x414",
+              "size": 32,
+              "description": "Interrupt Enables for IRQ 1"
+            },
+            "INTF1": {
+              "offset": "0x418",
+              "size": 32,
+              "description": "Force Interrupts for IRQ 1"
+            },
+            "INTS1": {
+              "offset": "0x41C",
+              "size": 32,
+              "description": "Interrupt Status (masked) for IRQ 1"
+            },
+            "X": {
+              "offset": "0x424",
+              "size": 32,
+              "description": "Pacing (X/Y) Fractional Timer\\n\n            The pacing timer produces TREQ assertions at a rate set by ((X/Y) * sys_clk). This equation is evaluated every sys_clk cycles and therefore can only generate TREQs at a rate of 1 per sys_clk (i.e. permanent TREQ) or less."
+            },
+            "MULTI_CHAN_TRIGGER": {
+              "offset": "0x430",
+              "size": 32,
+              "description": "Trigger one or more channels simultaneously"
+            },
+            "OUT_INV": {
+              "offset": "0x434",
+              "size": 32,
+              "description": "Sniffer Control"
+            },
+            "SNIFF_DATA": {
+              "offset": "0x438",
+              "size": 32,
+              "description": "Data accumulator for sniff hardware\\n\n            Write an initial seed value here before starting a DMA transfer on the channel indicated by SNIFF_CTRL_DMACH. The hardware will update this register each time it observes a read from the indicated channel. Once the channel completes, the final result can be read from this register."
+            },
+            "RAF_LVL": {
+              "offset": "0x440",
+              "size": 32,
+              "description": "Debug RAF, WAF, TDF levels"
+            },
+            "CHAN_ABORT": {
+              "offset": "0x444",
+              "size": 32,
+              "description": "Abort an in-progress transfer sequence on one or more channels"
+            },
+            "N_CHANNELS": {
+              "offset": "0x448",
+              "size": 32,
+              "description": "The number of channels this DMA instance is equipped with. This DMA supports up to 16 hardware channels, but can be configured with as few as one, to minimise silicon area."
+            },
+            "CH0_DBG_CTDREQ": {
+              "offset": "0x800",
+              "size": 32,
+              "description": "Read: get channel DREQ counter (i.e. how many accesses the DMA expects it can perform on the peripheral without overflow/underflow. Write any value: clears the counter, and cause channel to re-initiate DREQ handshake."
+            },
+            "CH0_DBG_TCR": {
+              "offset": "0x804",
+              "size": 32,
+              "description": "Read to get channel TRANS_COUNT reload value, i.e. the length of the next transfer"
+            },
+            "CH1_DBG_CTDREQ": {
+              "offset": "0x840",
+              "size": 32,
+              "description": "Read: get channel DREQ counter (i.e. how many accesses the DMA expects it can perform on the peripheral without overflow/underflow. Write any value: clears the counter, and cause channel to re-initiate DREQ handshake."
+            },
+            "CH1_DBG_TCR": {
+              "offset": "0x844",
+              "size": 32,
+              "description": "Read to get channel TRANS_COUNT reload value, i.e. the length of the next transfer"
+            },
+            "CH2_DBG_CTDREQ": {
+              "offset": "0x880",
+              "size": 32,
+              "description": "Read: get channel DREQ counter (i.e. how many accesses the DMA expects it can perform on the peripheral without overflow/underflow. Write any value: clears the counter, and cause channel to re-initiate DREQ handshake."
+            },
+            "CH2_DBG_TCR": {
+              "offset": "0x884",
+              "size": 32,
+              "description": "Read to get channel TRANS_COUNT reload value, i.e. the length of the next transfer"
+            },
+            "CH3_DBG_CTDREQ": {
+              "offset": "0x8C0",
+              "size": 32,
+              "description": "Read: get channel DREQ counter (i.e. how many accesses the DMA expects it can perform on the peripheral without overflow/underflow. Write any value: clears the counter, and cause channel to re-initiate DREQ handshake."
+            },
+            "CH3_DBG_TCR": {
+              "offset": "0x8C4",
+              "size": 32,
+              "description": "Read to get channel TRANS_COUNT reload value, i.e. the length of the next transfer"
+            },
+            "CH4_DBG_CTDREQ": {
+              "offset": "0x900",
+              "size": 32,
+              "description": "Read: get channel DREQ counter (i.e. how many accesses the DMA expects it can perform on the peripheral without overflow/underflow. Write any value: clears the counter, and cause channel to re-initiate DREQ handshake."
+            },
+            "CH4_DBG_TCR": {
+              "offset": "0x904",
+              "size": 32,
+              "description": "Read to get channel TRANS_COUNT reload value, i.e. the length of the next transfer"
+            },
+            "CH5_DBG_CTDREQ": {
+              "offset": "0x940",
+              "size": 32,
+              "description": "Read: get channel DREQ counter (i.e. how many accesses the DMA expects it can perform on the peripheral without overflow/underflow. Write any value: clears the counter, and cause channel to re-initiate DREQ handshake."
+            },
+            "CH5_DBG_TCR": {
+              "offset": "0x944",
+              "size": 32,
+              "description": "Read to get channel TRANS_COUNT reload value, i.e. the length of the next transfer"
+            },
+            "CH6_DBG_CTDREQ": {
+              "offset": "0x980",
+              "size": 32,
+              "description": "Read: get channel DREQ counter (i.e. how many accesses the DMA expects it can perform on the peripheral without overflow/underflow. Write any value: clears the counter, and cause channel to re-initiate DREQ handshake."
+            },
+            "CH6_DBG_TCR": {
+              "offset": "0x984",
+              "size": 32,
+              "description": "Read to get channel TRANS_COUNT reload value, i.e. the length of the next transfer"
+            },
+            "CH7_DBG_CTDREQ": {
+              "offset": "0x9C0",
+              "size": 32,
+              "description": "Read: get channel DREQ counter (i.e. how many accesses the DMA expects it can perform on the peripheral without overflow/underflow. Write any value: clears the counter, and cause channel to re-initiate DREQ handshake."
+            },
+            "CH7_DBG_TCR": {
+              "offset": "0x9C4",
+              "size": 32,
+              "description": "Read to get channel TRANS_COUNT reload value, i.e. the length of the next transfer"
+            },
+            "CH8_DBG_CTDREQ": {
+              "offset": "0xA00",
+              "size": 32,
+              "description": "Read: get channel DREQ counter (i.e. how many accesses the DMA expects it can perform on the peripheral without overflow/underflow. Write any value: clears the counter, and cause channel to re-initiate DREQ handshake."
+            },
+            "CH8_DBG_TCR": {
+              "offset": "0xA04",
+              "size": 32,
+              "description": "Read to get channel TRANS_COUNT reload value, i.e. the length of the next transfer"
+            },
+            "CH9_DBG_CTDREQ": {
+              "offset": "0xA40",
+              "size": 32,
+              "description": "Read: get channel DREQ counter (i.e. how many accesses the DMA expects it can perform on the peripheral without overflow/underflow. Write any value: clears the counter, and cause channel to re-initiate DREQ handshake."
+            },
+            "CH9_DBG_TCR": {
+              "offset": "0xA44",
+              "size": 32,
+              "description": "Read to get channel TRANS_COUNT reload value, i.e. the length of the next transfer"
+            },
+            "CH10_DBG_CTDREQ": {
+              "offset": "0xA80",
+              "size": 32,
+              "description": "Read: get channel DREQ counter (i.e. how many accesses the DMA expects it can perform on the peripheral without overflow/underflow. Write any value: clears the counter, and cause channel to re-initiate DREQ handshake."
+            },
+            "CH10_DBG_TCR": {
+              "offset": "0xA84",
+              "size": 32,
+              "description": "Read to get channel TRANS_COUNT reload value, i.e. the length of the next transfer"
+            },
+            "CH11_DBG_CTDREQ": {
+              "offset": "0xAC0",
+              "size": 32,
+              "description": "Read: get channel DREQ counter (i.e. how many accesses the DMA expects it can perform on the peripheral without overflow/underflow. Write any value: clears the counter, and cause channel to re-initiate DREQ handshake."
+            },
+            "CH11_DBG_TCR": {
+              "offset": "0xAC4",
+              "size": 32,
+              "description": "Read to get channel TRANS_COUNT reload value, i.e. the length of the next transfer"
+            }
+          }
+        },
+        "PIO0": {
+          "instances": [
+            {
+              "name": "PIO0_IRQ_0",
+              "base": "0x50200000",
+              "irq": 7
+            }
+          ],
+          "registers": {
+            "CLKDIV_RESTART": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "PIO control register"
+            },
+            "TXEMPTY": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "FIFO status register"
+            },
+            "TXSTALL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "FIFO debug register"
+            },
+            "RX3": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "FIFO levels"
+            },
+            "TXF0": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Direct write access to the TX FIFO for this state machine. Each write pushes one word to the FIFO."
+            },
+            "TXF1": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Direct write access to the TX FIFO for this state machine. Each write pushes one word to the FIFO."
+            },
+            "TXF2": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Direct write access to the TX FIFO for this state machine. Each write pushes one word to the FIFO."
+            },
+            "TXF3": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Direct write access to the TX FIFO for this state machine. Each write pushes one word to the FIFO."
+            },
+            "RXF0": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Direct read access to the RX FIFO for this state machine. Each read pops one word from the FIFO."
+            },
+            "RXF1": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Direct read access to the RX FIFO for this state machine. Each read pops one word from the FIFO."
+            },
+            "RXF2": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Direct read access to the RX FIFO for this state machine. Each read pops one word from the FIFO."
+            },
+            "RXF3": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Direct read access to the RX FIFO for this state machine. Each read pops one word from the FIFO."
+            },
+            "IRQ": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Interrupt request register. Write 1 to clear"
+            },
+            "IRQ_FORCE": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Writing a 1 to each of these bits will forcibly assert the corresponding IRQ.\\n\n            Note this is different to the INTF register: writing here affects PIO internal\\n\n            state. INTF just asserts the processor-facing IRQ signal for testing ISRs,\\n\n            and is not visible to the state machines."
+            },
+            "INPUT_SYNC_BYPASS": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "There is a 2-flipflop synchronizer on each GPIO input, which protects\\n\n            PIO logic from metastabilities. This increases input delay, and for fast\\n\n            synchronous IO (e.g. SPI) these synchronizers may need to be bypassed.\\n\n            Each bit in this register corresponds to one GPIO.\\n\n            0 -> input is synchronized (default)\\n\n            1 -> synchronizer is bypassed\\n\n            If in doubt, leave this register as all zeroes."
+            },
+            "DBG_PADOUT": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Read to sample the pad output values PIO is currently driving to the GPIOs."
+            },
+            "DBG_PADOE": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Read to sample the pad output enables (direction) PIO is currently driving to the GPIOs."
+            },
+            "IMEM_SIZE": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "The PIO hardware has some free parameters that may vary between chip products.\\n\n            These should be provided in the chip datasheet, but are also exposed here."
+            },
+            "INSTR_MEM0": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 0"
+            },
+            "INSTR_MEM1": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 1"
+            },
+            "INSTR_MEM2": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 2"
+            },
+            "INSTR_MEM3": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 3"
+            },
+            "INSTR_MEM4": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 4"
+            },
+            "INSTR_MEM5": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 5"
+            },
+            "INSTR_MEM6": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 6"
+            },
+            "INSTR_MEM7": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 7"
+            },
+            "INSTR_MEM8": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 8"
+            },
+            "INSTR_MEM9": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 9"
+            },
+            "INSTR_MEM10": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 10"
+            },
+            "INSTR_MEM11": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 11"
+            },
+            "INSTR_MEM12": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 12"
+            },
+            "INSTR_MEM13": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 13"
+            },
+            "INSTR_MEM14": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 14"
+            },
+            "INSTR_MEM15": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 15"
+            },
+            "INSTR_MEM16": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 16"
+            },
+            "INSTR_MEM17": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 17"
+            },
+            "INSTR_MEM18": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 18"
+            },
+            "INSTR_MEM19": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 19"
+            },
+            "INSTR_MEM20": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 20"
+            },
+            "INSTR_MEM21": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 21"
+            },
+            "INSTR_MEM22": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 22"
+            },
+            "INSTR_MEM23": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 23"
+            },
+            "INSTR_MEM24": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 24"
+            },
+            "INSTR_MEM25": {
+              "offset": "0xAC",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 25"
+            },
+            "INSTR_MEM26": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 26"
+            },
+            "INSTR_MEM27": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 27"
+            },
+            "INSTR_MEM28": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 28"
+            },
+            "INSTR_MEM29": {
+              "offset": "0xBC",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 29"
+            },
+            "INSTR_MEM30": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 30"
+            },
+            "INSTR_MEM31": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "Write-only access to instruction memory location 31"
+            },
+            "INT": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "Clock divider register for state machine 3\\n\n            Frequency = clock freq / (CLKDIV_INT + CLKDIV_FRAC / 256)"
+            },
+            "EXEC_STALLED": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "Execution/behavioural settings for state machine 3"
+            },
+            "FJOIN_RX": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "Control behaviour of the input/output shift registers for state machine 3"
+            },
+            "SM0_ADDR": {
+              "offset": "0xD4",
+              "size": 32,
+              "description": "Current instruction address of state machine 0"
+            },
+            "SM0_INSTR": {
+              "offset": "0xD8",
+              "size": 32,
+              "description": "Instruction currently being executed by state machine 0\\n\n            Write to execute an instruction immediately (including jumps) and then resume execution."
+            },
+            "SIDESET_COUNT": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "State machine pin control"
+            },
+            "SM1_ADDR": {
+              "offset": "0xEC",
+              "size": 32,
+              "description": "Current instruction address of state machine 1"
+            },
+            "SM1_INSTR": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "Instruction currently being executed by state machine 1\\n\n            Write to execute an instruction immediately (including jumps) and then resume execution."
+            },
+            "SM2_ADDR": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "Current instruction address of state machine 2"
+            },
+            "SM2_INSTR": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "Instruction currently being executed by state machine 2\\n\n            Write to execute an instruction immediately (including jumps) and then resume execution."
+            },
+            "SM3_ADDR": {
+              "offset": "0x11C",
+              "size": 32,
+              "description": "Current instruction address of state machine 3"
+            },
+            "SM3_INSTR": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "Instruction currently being executed by state machine 3\\n\n            Write to execute an instruction immediately (including jumps) and then resume execution."
+            },
+            "SM3": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "Interrupt status after masking & forcing for irq1"
+            }
+          }
+        },
+        "PIO1": {
+          "instances": [
+            {
+              "name": "PIO1_IRQ_0",
+              "base": "0x50300000",
+              "irq": 9
+            }
+          ],
+          "registers": {}
+        },
+        "SIO": {
+          "instances": [
+            {
+              "name": "SIO_IRQ_PROC0",
+              "base": "0xD0000000",
+              "irq": 15
+            }
+          ],
+          "registers": {
+            "CPUID": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Processor core identifier\\n\n            Value is 0 when read from processor core 0, and 1 when read from processor core 1."
+            },
+            "GPIO_IN": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Input value for GPIO pins"
+            },
+            "GPIO_HI_IN": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Input value for QSPI pins"
+            },
+            "GPIO_OUT": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "GPIO output value"
+            },
+            "GPIO_OUT_SET": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "GPIO output value set"
+            },
+            "GPIO_OUT_CLR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "GPIO output value clear"
+            },
+            "GPIO_OUT_XOR": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "GPIO output value XOR"
+            },
+            "GPIO_OE": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "GPIO output enable"
+            },
+            "GPIO_OE_SET": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "GPIO output enable set"
+            },
+            "GPIO_OE_CLR": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "GPIO output enable clear"
+            },
+            "GPIO_OE_XOR": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "GPIO output enable XOR"
+            },
+            "GPIO_HI_OUT": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "QSPI output value"
+            },
+            "GPIO_HI_OUT_SET": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "QSPI output value set"
+            },
+            "GPIO_HI_OUT_CLR": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "QSPI output value clear"
+            },
+            "GPIO_HI_OUT_XOR": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "QSPI output value XOR"
+            },
+            "GPIO_HI_OE": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "QSPI output enable"
+            },
+            "GPIO_HI_OE_SET": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "QSPI output enable set"
+            },
+            "GPIO_HI_OE_CLR": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "QSPI output enable clear"
+            },
+            "GPIO_HI_OE_XOR": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "QSPI output enable XOR"
+            },
+            "ROE": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Status register for inter-core FIFOs (mailboxes).\\n\n            There is one FIFO in the core 0 -> core 1 direction, and one core 1 -> core 0. Both are 32 bits wide and 8 words deep.\\n\n            Core 0 can see the read side of the 1->0 FIFO (RX), and the write side of 0->1 FIFO (TX).\\n\n            Core 1 can see the read side of the 0->1 FIFO (RX), and the write side of 1->0 FIFO (TX).\\n\n            The SIO IRQ for each core is the logical OR of the VLD, WOF and ROE fields of its FIFO_ST register."
+            },
+            "FIFO_WR": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Write access to this core's TX FIFO"
+            },
+            "FIFO_RD": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Read access to this core's RX FIFO"
+            },
+            "SPINLOCK_ST": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Spinlock state\\n\n            A bitmap containing the state of all 32 spinlocks (1=locked).\\n\n            Mainly intended for debugging."
+            },
+            "DIV_UDIVIDEND": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Divider unsigned dividend\\n\n            Write to the DIVIDEND operand of the divider, i.e. the p in `p / q`.\\n\n            Any operand write starts a new calculation. The results appear in QUOTIENT, REMAINDER.\\n\n            UDIVIDEND/SDIVIDEND are aliases of the same internal register. The U alias starts an\\n\n            unsigned calculation, and the S alias starts a signed calculation."
+            },
+            "DIV_UDIVISOR": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Divider unsigned divisor\\n\n            Write to the DIVISOR operand of the divider, i.e. the q in `p / q`.\\n\n            Any operand write starts a new calculation. The results appear in QUOTIENT, REMAINDER.\\n\n            UDIVIDEND/SDIVIDEND are aliases of the same internal register. The U alias starts an\\n\n            unsigned calculation, and the S alias starts a signed calculation."
+            },
+            "DIV_SDIVIDEND": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Divider signed dividend\\n\n            The same as UDIVIDEND, but starts a signed calculation, rather than unsigned."
+            },
+            "DIV_SDIVISOR": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "Divider signed divisor\\n\n            The same as UDIVISOR, but starts a signed calculation, rather than unsigned."
+            },
+            "DIV_QUOTIENT": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Divider result quotient\\n\n            The result of `DIVIDEND / DIVISOR` (division). Contents undefined while CSR_READY is low.\\n\n            For signed calculations, QUOTIENT is negative when the signs of DIVIDEND and DIVISOR differ.\\n\n            This register can be written to directly, for context save/restore purposes. This halts any\\n\n            in-progress calculation and sets the CSR_READY and CSR_DIRTY flags.\\n\n            Reading from QUOTIENT clears the CSR_DIRTY flag, so should read results in the order\\n\n            REMAINDER, QUOTIENT if CSR_DIRTY is used."
+            },
+            "DIV_REMAINDER": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Divider result remainder\\n\n            The result of `DIVIDEND % DIVISOR` (modulo). Contents undefined while CSR_READY is low.\\n\n            For signed calculations, REMAINDER is negative only when DIVIDEND is negative.\\n\n            This register can be written to directly, for context save/restore purposes. This halts any\\n\n            in-progress calculation and sets the CSR_READY and CSR_DIRTY flags."
+            },
+            "DIRTY": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "Control and status register for divider."
+            },
+            "INTERP0_ACCUM0": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Read/write access to accumulator 0"
+            },
+            "INTERP0_ACCUM1": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "Read/write access to accumulator 1"
+            },
+            "INTERP0_BASE0": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "Read/write access to BASE0 register."
+            },
+            "INTERP0_BASE1": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "Read/write access to BASE1 register."
+            },
+            "INTERP0_BASE2": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "Read/write access to BASE2 register."
+            },
+            "INTERP0_POP_LANE0": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "Read LANE0 result, and simultaneously write lane results to both accumulators (POP)."
+            },
+            "INTERP0_POP_LANE1": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "Read LANE1 result, and simultaneously write lane results to both accumulators (POP)."
+            },
+            "INTERP0_POP_FULL": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "Read FULL result, and simultaneously write lane results to both accumulators (POP)."
+            },
+            "INTERP0_PEEK_LANE0": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "Read LANE0 result, without altering any internal state (PEEK)."
+            },
+            "INTERP0_PEEK_LANE1": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "Read LANE1 result, without altering any internal state (PEEK)."
+            },
+            "INTERP0_PEEK_FULL": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "Read FULL result, without altering any internal state (PEEK)."
+            },
+            "OVERF": {
+              "offset": "0xEC",
+              "size": 32,
+              "description": "Control register for lane 0"
+            },
+            "FORCE_MSB": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "Control register for lane 1"
+            },
+            "INTERP0_ACCUM0_ADD": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "Values written here are atomically added to ACCUM0\\n\n            Reading yields lane 0's raw shift and mask value (BASE0 not added)."
+            },
+            "INTERP0_ACCUM1_ADD": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "Values written here are atomically added to ACCUM1\\n\n            Reading yields lane 1's raw shift and mask value (BASE1 not added)."
+            },
+            "INTERP0_BASE_1AND0": {
+              "offset": "0xBC",
+              "size": 32,
+              "description": "On write, the lower 16 bits go to BASE0, upper bits to BASE1 simultaneously.\\n\n            Each half is sign-extended to 32 bits if that lane's SIGNED flag is set."
+            },
+            "INTERP1_ACCUM0": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "Read/write access to accumulator 0"
+            },
+            "INTERP1_ACCUM1": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "Read/write access to accumulator 1"
+            },
+            "INTERP1_BASE0": {
+              "offset": "0xC8",
+              "size": 32,
+              "description": "Read/write access to BASE0 register."
+            },
+            "INTERP1_BASE1": {
+              "offset": "0xCC",
+              "size": 32,
+              "description": "Read/write access to BASE1 register."
+            },
+            "INTERP1_BASE2": {
+              "offset": "0xD0",
+              "size": 32,
+              "description": "Read/write access to BASE2 register."
+            },
+            "INTERP1_POP_LANE0": {
+              "offset": "0xD4",
+              "size": 32,
+              "description": "Read LANE0 result, and simultaneously write lane results to both accumulators (POP)."
+            },
+            "INTERP1_POP_LANE1": {
+              "offset": "0xD8",
+              "size": 32,
+              "description": "Read LANE1 result, and simultaneously write lane results to both accumulators (POP)."
+            },
+            "INTERP1_POP_FULL": {
+              "offset": "0xDC",
+              "size": 32,
+              "description": "Read FULL result, and simultaneously write lane results to both accumulators (POP)."
+            },
+            "INTERP1_PEEK_LANE0": {
+              "offset": "0xE0",
+              "size": 32,
+              "description": "Read LANE0 result, without altering any internal state (PEEK)."
+            },
+            "INTERP1_PEEK_LANE1": {
+              "offset": "0xE4",
+              "size": 32,
+              "description": "Read LANE1 result, without altering any internal state (PEEK)."
+            },
+            "INTERP1_PEEK_FULL": {
+              "offset": "0xE8",
+              "size": 32,
+              "description": "Read FULL result, without altering any internal state (PEEK)."
+            },
+            "INTERP1_ACCUM0_ADD": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "Values written here are atomically added to ACCUM0\\n\n            Reading yields lane 0's raw shift and mask value (BASE0 not added)."
+            },
+            "INTERP1_ACCUM1_ADD": {
+              "offset": "0xF8",
+              "size": 32,
+              "description": "Values written here are atomically added to ACCUM1\\n\n            Reading yields lane 1's raw shift and mask value (BASE1 not added)."
+            },
+            "INTERP1_BASE_1AND0": {
+              "offset": "0xFC",
+              "size": 32,
+              "description": "On write, the lower 16 bits go to BASE0, upper bits to BASE1 simultaneously.\\n\n            Each half is sign-extended to 32 bits if that lane's SIGNED flag is set."
+            },
+            "SPINLOCK0": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK1": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK2": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK3": {
+              "offset": "0x10C",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK4": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK5": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK6": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK7": {
+              "offset": "0x11C",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK8": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK9": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK10": {
+              "offset": "0x128",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK11": {
+              "offset": "0x12C",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK12": {
+              "offset": "0x130",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK13": {
+              "offset": "0x134",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK14": {
+              "offset": "0x138",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK15": {
+              "offset": "0x13C",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK16": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK17": {
+              "offset": "0x144",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK18": {
+              "offset": "0x148",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK19": {
+              "offset": "0x14C",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK20": {
+              "offset": "0x150",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK21": {
+              "offset": "0x154",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK22": {
+              "offset": "0x158",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK23": {
+              "offset": "0x15C",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK24": {
+              "offset": "0x160",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK25": {
+              "offset": "0x164",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK26": {
+              "offset": "0x168",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK27": {
+              "offset": "0x16C",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK28": {
+              "offset": "0x170",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK29": {
+              "offset": "0x174",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK30": {
+              "offset": "0x178",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            },
+            "SPINLOCK31": {
+              "offset": "0x17C",
+              "size": 32,
+              "description": "Reading from a spinlock address will:\\n\n            - Return 0 if lock is already locked\\n\n            - Otherwise return nonzero, and simultaneously claim the lock\\n\\n\n            Writing (any value) releases the lock.\\n\n            If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins.\\n\n            The value returned on success is 0x1 << lock number."
+            }
+          }
+        },
+        "PPB": {
+          "instances": [
+            {
+              "name": "PPB",
+              "base": "0xE0000000"
+            }
+          ],
+          "registers": {
+            "COUNTFLAG": {
+              "offset": "0xE010",
+              "size": 32,
+              "description": "Use the SysTick Control and Status Register to enable the SysTick features."
+            },
+            "RELOAD": {
+              "offset": "0xE014",
+              "size": 32,
+              "description": "Use the SysTick Reload Value Register to specify the start value to load into the current value register when the counter reaches 0. It can be any value between 0 and 0x00FFFFFF. A start value of 0 is possible, but has no effect because the SysTick interrupt and COUNTFLAG are activated when counting from 1 to 0. The reset value of this register is UNKNOWN.\\n\n            To generate a multi-shot timer with a period of N processor clock cycles, use a RELOAD value of N-1. For example, if the SysTick interrupt is required every 100 clock pulses, set RELOAD to 99."
+            },
+            "CURRENT": {
+              "offset": "0xE018",
+              "size": 32,
+              "description": "Use the SysTick Current Value Register to find the current value in the register. The reset value of this register is UNKNOWN."
+            },
+            "NOREF": {
+              "offset": "0xE01C",
+              "size": 32,
+              "description": "Use the SysTick Calibration Value Register to enable software to scale to any required speed using divide and multiply."
+            },
+            "SETENA": {
+              "offset": "0xE100",
+              "size": 32,
+              "description": "Use the Interrupt Set-Enable Register to enable interrupts and determine which interrupts are currently enabled.\\n\n            If a pending interrupt is enabled, the NVIC activates the interrupt based on its priority. If an interrupt is not enabled, asserting its interrupt signal changes the interrupt state to pending, but the NVIC never activates the interrupt, regardless of its priority."
+            },
+            "CLRENA": {
+              "offset": "0xE180",
+              "size": 32,
+              "description": "Use the Interrupt Clear-Enable Registers to disable interrupts and determine which interrupts are currently enabled."
+            },
+            "SETPEND": {
+              "offset": "0xE200",
+              "size": 32,
+              "description": "The NVIC_ISPR forces interrupts into the pending state, and shows which interrupts are pending."
+            },
+            "CLRPEND": {
+              "offset": "0xE280",
+              "size": 32,
+              "description": "Use the Interrupt Clear-Pending Register to clear pending interrupts and determine which interrupts are currently pending."
+            },
+            "IP_3": {
+              "offset": "0xE400",
+              "size": 32,
+              "description": "Use the Interrupt Priority Registers to assign a priority from 0 to 3 to each of the available interrupts. 0 is the highest priority, and 3 is the lowest.\\n\n            Note: Writing 1 to an NVIC_ICPR bit does not affect the active state of the corresponding interrupt.\\n\n            These registers are only word-accessible"
+            },
+            "IP_7": {
+              "offset": "0xE404",
+              "size": 32,
+              "description": "Use the Interrupt Priority Registers to assign a priority from 0 to 3 to each of the available interrupts. 0 is the highest priority, and 3 is the lowest."
+            },
+            "IP_11": {
+              "offset": "0xE408",
+              "size": 32,
+              "description": "Use the Interrupt Priority Registers to assign a priority from 0 to 3 to each of the available interrupts. 0 is the highest priority, and 3 is the lowest."
+            },
+            "IP_15": {
+              "offset": "0xE40C",
+              "size": 32,
+              "description": "Use the Interrupt Priority Registers to assign a priority from 0 to 3 to each of the available interrupts. 0 is the highest priority, and 3 is the lowest."
+            },
+            "IP_19": {
+              "offset": "0xE410",
+              "size": 32,
+              "description": "Use the Interrupt Priority Registers to assign a priority from 0 to 3 to each of the available interrupts. 0 is the highest priority, and 3 is the lowest."
+            },
+            "IP_23": {
+              "offset": "0xE414",
+              "size": 32,
+              "description": "Use the Interrupt Priority Registers to assign a priority from 0 to 3 to each of the available interrupts. 0 is the highest priority, and 3 is the lowest."
+            },
+            "IP_27": {
+              "offset": "0xE418",
+              "size": 32,
+              "description": "Use the Interrupt Priority Registers to assign a priority from 0 to 3 to each of the available interrupts. 0 is the highest priority, and 3 is the lowest."
+            },
+            "IP_31": {
+              "offset": "0xE41C",
+              "size": 32,
+              "description": "Use the Interrupt Priority Registers to assign a priority from 0 to 3 to each of the available interrupts. 0 is the highest priority, and 3 is the lowest."
+            },
+            "IMPLEMENTER": {
+              "offset": "0xED00",
+              "size": 32,
+              "description": "Read the CPU ID Base Register to determine: the ID number of the processor core, the version number of the processor core, the implementation details of the processor core."
+            },
+            "NMIPENDSET": {
+              "offset": "0xED04",
+              "size": 32,
+              "description": "Use the Interrupt Control State Register to set a pending Non-Maskable Interrupt (NMI), set or clear a pending PendSV, set or clear a pending SysTick, check for pending exceptions, check the vector number of the highest priority pended exception, check the vector number of the active exception."
+            },
+            "TBLOFF": {
+              "offset": "0xED08",
+              "size": 32,
+              "description": "The VTOR holds the vector table offset address."
+            },
+            "VECTKEY": {
+              "offset": "0xED0C",
+              "size": 32,
+              "description": "Use the Application Interrupt and Reset Control Register to: determine data endianness, clear all active state information from debug halt mode, request a system reset."
+            },
+            "SEVONPEND": {
+              "offset": "0xED10",
+              "size": 32,
+              "description": "System Control Register. Use the System Control Register for power-management functions: signal to the system when the processor can enter a low power state, control how the processor enters and exits low power states."
+            },
+            "STKALIGN": {
+              "offset": "0xED14",
+              "size": 32,
+              "description": "The Configuration and Control Register permanently enables stack alignment and causes unaligned accesses to result in a Hard Fault."
+            },
+            "PRI_11": {
+              "offset": "0xED1C",
+              "size": 32,
+              "description": "System handlers are a special class of exception handler that can have their priority set to any of the priority levels. Use the System Handler Priority Register 2 to set the priority of SVCall."
+            },
+            "PRI_15": {
+              "offset": "0xED20",
+              "size": 32,
+              "description": "System handlers are a special class of exception handler that can have their priority set to any of the priority levels. Use the System Handler Priority Register 3 to set the priority of PendSV and SysTick."
+            },
+            "SVCALLPENDED": {
+              "offset": "0xED24",
+              "size": 32,
+              "description": "Use the System Handler Control and State Register to determine or clear the pending status of SVCall."
+            },
+            "IREGION": {
+              "offset": "0xED90",
+              "size": 32,
+              "description": "Read the MPU Type Register to determine if the processor implements an MPU, and how many regions the MPU supports."
+            },
+            "PRIVDEFENA": {
+              "offset": "0xED94",
+              "size": 32,
+              "description": "Use the MPU Control Register to enable and disable the MPU, and to control whether the default memory map is enabled as a background region for privileged accesses, and whether the MPU is enabled for HardFaults and NMIs."
+            },
+            "REGION": {
+              "offset": "0xED98",
+              "size": 32,
+              "description": "Use the MPU Region Number Register to select the region currently accessed by MPU_RBAR and MPU_RASR."
+            },
+            "ADDR": {
+              "offset": "0xED9C",
+              "size": 32,
+              "description": "Read the MPU Region Base Address Register to determine the base address of the region identified by MPU_RNR. Write to update the base address of said region or that of a specified region, with whose number MPU_RNR will also be updated."
+            },
+            "ATTRS": {
+              "offset": "0xEDA0",
+              "size": 32,
+              "description": "Use the MPU Region Attribute and Size Register to define the size, access behaviour and memory type of the region identified by MPU_RNR, and enable that region."
+            }
+          }
+        }
+      },
+      "interrupts": {
+        "count": 42,
+        "vectors": [
+          {
+            "number": 0,
+            "name": "Initial_SP"
+          },
+          {
+            "number": 1,
+            "name": "Reset_Handler"
+          },
+          {
+            "number": 2,
+            "name": "NMI_Handler"
+          },
+          {
+            "number": 3,
+            "name": "HardFault_Handler"
+          },
+          {
+            "number": 4,
+            "name": "MemManage_Handler"
+          },
+          {
+            "number": 5,
+            "name": "BusFault_Handler"
+          },
+          {
+            "number": 6,
+            "name": "UsageFault_Handler"
+          },
+          {
+            "number": 11,
+            "name": "SVC_Handler"
+          },
+          {
+            "number": 12,
+            "name": "DebugMon_Handler"
+          },
+          {
+            "number": 14,
+            "name": "PendSV_Handler"
+          },
+          {
+            "number": 15,
+            "name": "SysTick_Handler"
+          },
+          {
+            "number": 16,
+            "name": "TIMER_IRQ_0_IRQHandler"
+          },
+          {
+            "number": 17,
+            "name": "TIMER_IRQ_1_IRQHandler"
+          },
+          {
+            "number": 18,
+            "name": "TIMER_IRQ_2_IRQHandler"
+          },
+          {
+            "number": 19,
+            "name": "TIMER_IRQ_3_IRQHandler"
+          },
+          {
+            "number": 20,
+            "name": "PWM_IRQ_WRAP_IRQHandler"
+          },
+          {
+            "number": 21,
+            "name": "USBCTRL_IRQ_IRQHandler"
+          },
+          {
+            "number": 22,
+            "name": "XIP_IRQ_IRQHandler"
+          },
+          {
+            "number": 23,
+            "name": "PIO0_IRQ_0_IRQHandler"
+          },
+          {
+            "number": 24,
+            "name": "PIO0_IRQ_1_IRQHandler"
+          },
+          {
+            "number": 25,
+            "name": "PIO1_IRQ_0_IRQHandler"
+          },
+          {
+            "number": 26,
+            "name": "PIO1_IRQ_1_IRQHandler"
+          },
+          {
+            "number": 27,
+            "name": "DMA_IRQ_0_IRQHandler"
+          },
+          {
+            "number": 28,
+            "name": "DMA_IRQ_1_IRQHandler"
+          },
+          {
+            "number": 29,
+            "name": "IO_IRQ_BANK0_IRQHandler"
+          },
+          {
+            "number": 30,
+            "name": "IO_IRQ_QSPI_IRQHandler"
+          },
+          {
+            "number": 31,
+            "name": "SIO_IRQ_PROC0_IRQHandler"
+          },
+          {
+            "number": 32,
+            "name": "SIO_IRQ_PROC1_IRQHandler"
+          },
+          {
+            "number": 33,
+            "name": "CLOCKS_IRQ_IRQHandler"
+          },
+          {
+            "number": 34,
+            "name": "SPI0_IRQ_IRQHandler"
+          },
+          {
+            "number": 35,
+            "name": "SPI1_IRQ_IRQHandler"
+          },
+          {
+            "number": 36,
+            "name": "UART0_IRQ_IRQHandler"
+          },
+          {
+            "number": 37,
+            "name": "UART1_IRQ_IRQHandler"
+          },
+          {
+            "number": 38,
+            "name": "ADC_IRQ_FIFO_IRQHandler"
+          },
+          {
+            "number": 39,
+            "name": "I2C0_IRQ_IRQHandler"
+          },
+          {
+            "number": 40,
+            "name": "I2C1_IRQ_IRQHandler"
+          },
+          {
+            "number": 41,
+            "name": "RTC_IRQ_IRQHandler"
+          }
+        ]
+      }
+    }
+  }
+}

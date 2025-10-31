@@ -1,0 +1,4720 @@
+{
+  "family": "CC13x0",
+  "architecture": "arm-cortex-m3",
+  "vendor": "Unknown",
+  "mcus": {
+    "CC13x0": {
+      "flash": {
+        "size_kb": 64,
+        "base_address": "0x08000000",
+        "page_size_kb": 1
+      },
+      "ram": {
+        "size_kb": 20,
+        "base_address": "0x20000000"
+      },
+      "peripherals": {
+        "AON": {
+          "instances": [
+            {
+              "name": "AON_BATMON",
+              "base": "0x40095000"
+            },
+            {
+              "name": "AON_EVENT",
+              "base": "0x40093000"
+            },
+            {
+              "name": "AON_IOC",
+              "base": "0x40094000"
+            },
+            {
+              "name": "AON_SYSCTL",
+              "base": "0x40090000"
+            },
+            {
+              "name": "AON_WUC",
+              "base": "0x40091000"
+            }
+          ],
+          "registers": {
+            "CTL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "MEASCFG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "TEMPP0": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "TEMPP1": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "TEMPP2": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "BATMONP0": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "BATMONP1": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "IOSTRP0": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASHPUMPP0": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "BAT": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Last Measured Battery Voltage\n\nThis register may be read while BATUPD.STAT = 1"
+            },
+            "BATUPD": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Battery Update\n\nIndicates BAT Updates"
+            },
+            "TEMP": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Temperature\n\nLast Measured Temperature in Degrees Celsius\n\nThis register may be read while TEMPUPD.STAT = 1."
+            },
+            "TEMPUPD": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Temperature Update\n\nIndicates TEMP Updates"
+            }
+          }
+        },
+        "RTC": {
+          "instances": [
+            {
+              "name": "AON_RTC",
+              "base": "0x40092000"
+            }
+          ],
+          "registers": {
+            "CTL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Control\n\nThis register contains various  bitfields for configuration of RTC"
+            },
+            "EVFLAGS": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Event Flags, RTC Status\n\nThis register contains event flags from the 3 RTC channels. Each flag will be cleared when writing a '1' to the corresponding bitfield."
+            },
+            "SEC": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Second Counter Value, Integer Part"
+            },
+            "SUBSEC": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Second Counter Value, Fractional Part"
+            },
+            "SUBSECINC": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Subseconds Increment\nValue added to SUBSEC.VALUE on every SCLK_LFclock cycle."
+            },
+            "CHCTL": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Channel Configuration"
+            },
+            "CH0CMP": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Channel 0 Compare Value"
+            },
+            "CH1CMP": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Channel 1 Compare Value"
+            },
+            "CH2CMP": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Channel 2 Compare Value"
+            },
+            "CH2CMPINC": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Channel 2 Compare Value Auto-increment\n\nThis register is primarily used to generate periodical wake-up for the AUX_SCE module, through the [AUX_EVCTL.EVSTAT0.AON_RTC] event."
+            },
+            "CH1CAPT": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Channel 1 Capture Value\n\nIf CHCTL.CH1_EN = 1and CHCTL.CH1_CAPT_EN = 1, capture occurs on each rising edge of the event selected in AON_EVENT:RTCSEL."
+            },
+            "SYNC": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "AON Synchronization\n\nThis register is used for synchronizing between MCU and entire AON domain."
+            }
+          }
+        },
+        "AUX": {
+          "instances": [
+            {
+              "name": "AUX_ADI4",
+              "base": "0x400CB000"
+            },
+            {
+              "name": "AUX_AIODIO0",
+              "base": "0x400C1000"
+            },
+            {
+              "name": "AUX_AIODIO1",
+              "base": "0x400C2000"
+            },
+            {
+              "name": "AUX_ANAIF",
+              "base": "0x400C9000"
+            },
+            {
+              "name": "AUX_DDI0_OSC",
+              "base": "0x400CA000"
+            },
+            {
+              "name": "AUX_EVCTL",
+              "base": "0x400C5000"
+            },
+            {
+              "name": "AUX_SCE",
+              "base": "0x400E1000"
+            },
+            {
+              "name": "AUX_SMPH",
+              "base": "0x400C8000"
+            },
+            {
+              "name": "AUX_TDCIF",
+              "base": "0x400C4000"
+            },
+            {
+              "name": "AUX_WUC",
+              "base": "0x400C6000"
+            }
+          ],
+          "registers": {
+            "MUX0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "MUX1": {
+              "offset": "0x01",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "MUX2": {
+              "offset": "0x02",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "MUX3": {
+              "offset": "0x03",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "ISRC": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Current Source\n\nStrength and trim control for current source"
+            },
+            "COMP": {
+              "offset": "0x05",
+              "size": 32,
+              "description": "Comparator\n\nControl COMPA and COMPB comparators"
+            },
+            "MUX4": {
+              "offset": "0x07",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "ADC0": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "ADC Control 0"
+            },
+            "ADC1": {
+              "offset": "0x09",
+              "size": 32,
+              "description": "ADC Control 1"
+            },
+            "ADCREF0": {
+              "offset": "0x0A",
+              "size": 32,
+              "description": "ADC Reference 0\n\nControl reference used by the ADC"
+            },
+            "ADCREF1": {
+              "offset": "0x0B",
+              "size": 32,
+              "description": "ADC Reference 1\n\nControl reference used by the ADC"
+            }
+          }
+        },
+        "TIM": {
+          "instances": [
+            {
+              "name": "AUX_TIMER",
+              "base": "0x400C7000"
+            }
+          ],
+          "registers": {
+            "T0CFG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Timer 0 Configuration"
+            },
+            "T1CFG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Timer 1 Configuration"
+            },
+            "T0CTL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Timer 0 Control\n\nRun control/status for timer 0"
+            },
+            "T0TARGET": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Timer 0 Target\n\nTarget counter value for timer 0"
+            },
+            "T1TARGET": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Timer 1 Target\n\nTarget Counter Value Timer 1"
+            },
+            "T1CTL": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Timer 1 Control\n\nRun Control/Status For Timer 1"
+            }
+          }
+        },
+        "CCFG": {
+          "instances": [
+            {
+              "name": "CCFG",
+              "base": "0x50003000"
+            }
+          ],
+          "registers": {
+            "EXT_LF_CLK": {
+              "offset": "0xFA8",
+              "size": 32,
+              "description": "Extern LF clock configuration"
+            },
+            "MODE_CONF_1": {
+              "offset": "0xFAC",
+              "size": 32,
+              "description": "Mode Configuration 1"
+            },
+            "SIZE_AND_DIS_FLAGS": {
+              "offset": "0xFB0",
+              "size": 32,
+              "description": "CCFG Size and Disable Flags"
+            },
+            "MODE_CONF": {
+              "offset": "0xFB4",
+              "size": 32,
+              "description": "Mode Configuration 0"
+            },
+            "VOLT_LOAD_0": {
+              "offset": "0xFB8",
+              "size": 32,
+              "description": "Voltage Load 0\nEnabled by MODE_CONF.VDDR_EXT_LOAD."
+            },
+            "VOLT_LOAD_1": {
+              "offset": "0xFBC",
+              "size": 32,
+              "description": "Voltage Load 1\nEnabled by MODE_CONF.VDDR_EXT_LOAD."
+            },
+            "RTC_OFFSET": {
+              "offset": "0xFC0",
+              "size": 32,
+              "description": "Real Time Clock Offset\nEnabled by MODE_CONF.RTC_COMP."
+            },
+            "FREQ_OFFSET": {
+              "offset": "0xFC4",
+              "size": 32,
+              "description": "Frequency Offset"
+            },
+            "IEEE_MAC_0": {
+              "offset": "0xFC8",
+              "size": 32,
+              "description": "IEEE MAC Address 0"
+            },
+            "IEEE_MAC_1": {
+              "offset": "0xFCC",
+              "size": 32,
+              "description": "IEEE MAC Address 1"
+            },
+            "IEEE_BLE_0": {
+              "offset": "0xFD0",
+              "size": 32,
+              "description": "IEEE BLE Address 0"
+            },
+            "IEEE_BLE_1": {
+              "offset": "0xFD4",
+              "size": 32,
+              "description": "IEEE BLE Address 1"
+            },
+            "BL_CONFIG": {
+              "offset": "0xFD8",
+              "size": 32,
+              "description": "Bootloader Configuration\nConfigures the functionality of the ROM boot loader.\nIf both the boot loader is enabled by the BOOTLOADER_ENABLE field and the boot loader backdoor is enabled by the BL_ENABLE field it is possible to force entry of the ROM boot loader even if a valid image is present in flash."
+            },
+            "ERASE_CONF": {
+              "offset": "0xFDC",
+              "size": 32,
+              "description": "Erase Configuration"
+            },
+            "CCFG_TI_OPTIONS": {
+              "offset": "0xFE0",
+              "size": 32,
+              "description": "TI Options"
+            },
+            "CCFG_TAP_DAP_0": {
+              "offset": "0xFE4",
+              "size": 32,
+              "description": "Test Access Points Enable 0"
+            },
+            "CCFG_TAP_DAP_1": {
+              "offset": "0xFE8",
+              "size": 32,
+              "description": "Test Access Points Enable 1"
+            },
+            "IMAGE_VALID_CONF": {
+              "offset": "0xFEC",
+              "size": 32,
+              "description": "Image Valid"
+            },
+            "CCFG_PROT_31_0": {
+              "offset": "0xFF0",
+              "size": 32,
+              "description": "Protect Sectors 0-31\nEach bit write protects one 4KB flash sector from being both programmed and erased. Bit must be set to 0 in order to enable sector write protect."
+            },
+            "CCFG_PROT_63_32": {
+              "offset": "0xFF4",
+              "size": 32,
+              "description": "Protect Sectors 32-63\nEach bit write protects one 4KB flash sector from being both programmed and erased. Bit must be set to 0 in order to enable sector write protect. Not in use by CC26xx and CC13xx."
+            },
+            "CCFG_PROT_95_64": {
+              "offset": "0xFF8",
+              "size": 32,
+              "description": "Protect Sectors 64-95\nEach bit write protects one flash sector from being both programmed and erased. Bit must be set to 0 in order to enable sector write protect. Not in use by CC26xx and CC13xx."
+            },
+            "CCFG_PROT_127_96": {
+              "offset": "0xFFC",
+              "size": 32,
+              "description": "Protect Sectors 96-127\nEach bit write protects one flash sector from being both programmed and erased. Bit must be set to 0 in order to enable sector write protect. Not in use by CC26xx and CC13xx."
+            }
+          }
+        },
+        "CPU": {
+          "instances": [
+            {
+              "name": "CPU_TIPROP",
+              "base": "0xE00FE000"
+            }
+          ],
+          "registers": {
+            "TRACECLKMUX": {
+              "offset": "0xFF8",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "DYN_CG": {
+              "offset": "0xFFC",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            }
+          }
+        },
+        "CRYPTO": {
+          "instances": [
+            {
+              "name": "CRYPTO",
+              "base": "0x40024000"
+            }
+          ],
+          "registers": {
+            "DMACH0CTL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "DMA Channel 0 Control"
+            },
+            "DMACH0EXTADDR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "DMA Channel 0 External Address"
+            },
+            "DMACH0LEN": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "DMA Channel 0 Length"
+            },
+            "DMASTAT": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "DMA Controller Status"
+            },
+            "DMASWRESET": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "DMA Controller Software Reset"
+            },
+            "DMACH1CTL": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "DMA Channel 1 Control"
+            },
+            "DMACH1EXTADDR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "DMA Channel 1 External Address"
+            },
+            "DMACH1LEN": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "DMA Channel 1 Length"
+            },
+            "DMABUSCFG": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "DMA Controller Master Configuration"
+            },
+            "DMAPORTERR": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "DMA Controller Port Error"
+            },
+            "DMAHWVER": {
+              "offset": "0xFC",
+              "size": 32,
+              "description": "DMA Controller Version"
+            },
+            "KEYWRITEAREA": {
+              "offset": "0x400",
+              "size": 32,
+              "description": "Key Write Area"
+            },
+            "KEYWRITTENAREA": {
+              "offset": "0x404",
+              "size": 32,
+              "description": "Key Written Area Status\nThis register shows which areas of the key store RAM contain valid written keys.\nWhen a new key needs to be written to the key store, on a location that is already occupied by a valid key, this key area must be cleared first. This can be done by writing this register before the new key is written to the key store memory.\nAttempting to write to a key area that already contains a valid key is not allowed and will result in an error."
+            },
+            "KEYSIZE": {
+              "offset": "0x408",
+              "size": 32,
+              "description": "Key Size\nThis register defines the size of the keys that are written with DMA."
+            },
+            "KEYREADAREA": {
+              "offset": "0x40C",
+              "size": 32,
+              "description": "Key Read Area"
+            },
+            "AESKEY2%s": {
+              "offset": "0x500",
+              "size": 32,
+              "description": "Clear AES_KEY2/GHASH Key"
+            },
+            "AESKEY3%s": {
+              "offset": "0x510",
+              "size": 32,
+              "description": "Clear AES_KEY3"
+            },
+            "AESIV%s": {
+              "offset": "0x540",
+              "size": 32,
+              "description": "AES Initialization Vector"
+            },
+            "AESCTL": {
+              "offset": "0x550",
+              "size": 32,
+              "description": "AES Input/Output Buffer Control"
+            },
+            "AESDATALEN0": {
+              "offset": "0x554",
+              "size": 32,
+              "description": "Crypto Data Length LSW"
+            },
+            "AESDATALEN1": {
+              "offset": "0x558",
+              "size": 32,
+              "description": "Crypto Data Length MSW"
+            },
+            "AESAUTHLEN": {
+              "offset": "0x55C",
+              "size": 32,
+              "description": "AES Authentication Length"
+            },
+            "AESDATAOUT0": {
+              "offset": "0x560",
+              "size": 32,
+              "description": "Data Input/Output"
+            },
+            "AESDATAIN0": {
+              "offset": "0x560",
+              "size": 32,
+              "description": "AES Data Input/Output 0"
+            },
+            "AESDATAOUT1": {
+              "offset": "0x564",
+              "size": 32,
+              "description": "AES Data Input/Output 3"
+            },
+            "AESDATAIN1": {
+              "offset": "0x564",
+              "size": 32,
+              "description": "AES Data Input/Output 1"
+            },
+            "AESDATAOUT2": {
+              "offset": "0x568",
+              "size": 32,
+              "description": "AES Data Input/Output 2"
+            },
+            "AESDATAIN2": {
+              "offset": "0x568",
+              "size": 32,
+              "description": "AES Data Input/Output 2"
+            },
+            "AESDATAOUT3": {
+              "offset": "0x56C",
+              "size": 32,
+              "description": "AES Data Input/Output 3"
+            },
+            "AESDATAIN3": {
+              "offset": "0x56C",
+              "size": 32,
+              "description": "Data Input/Output"
+            },
+            "AESTAGOUT%s": {
+              "offset": "0x570",
+              "size": 32,
+              "description": "AES Tag Output"
+            },
+            "ALGSEL": {
+              "offset": "0x700",
+              "size": 32,
+              "description": "Master Algorithm Select\nThis register configures the internal destination of the DMA controller."
+            },
+            "DMAPROTCTL": {
+              "offset": "0x704",
+              "size": 32,
+              "description": "Master Protection Control"
+            },
+            "SWRESET": {
+              "offset": "0x740",
+              "size": 32,
+              "description": "Software Reset"
+            },
+            "IRQTYPE": {
+              "offset": "0x780",
+              "size": 32,
+              "description": "Interrupt Configuration"
+            },
+            "IRQEN": {
+              "offset": "0x784",
+              "size": 32,
+              "description": "Interrupt Enable"
+            },
+            "IRQCLR": {
+              "offset": "0x788",
+              "size": 32,
+              "description": "Interrupt Clear"
+            },
+            "IRQSET": {
+              "offset": "0x78C",
+              "size": 32,
+              "description": "Interrupt Set"
+            },
+            "IRQSTAT": {
+              "offset": "0x790",
+              "size": 32,
+              "description": "Interrupt Status"
+            },
+            "HWVER": {
+              "offset": "0x7FC",
+              "size": 32,
+              "description": "CTRL Module Version"
+            }
+          }
+        },
+        "EVENT": {
+          "instances": [
+            {
+              "name": "EVENT",
+              "base": "0x40083000"
+            }
+          ],
+          "registers": {
+            "CPUIRQSEL0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 0"
+            },
+            "CPUIRQSEL1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 1"
+            },
+            "CPUIRQSEL2": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 2"
+            },
+            "CPUIRQSEL3": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 3"
+            },
+            "CPUIRQSEL4": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 4"
+            },
+            "CPUIRQSEL5": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 5"
+            },
+            "CPUIRQSEL6": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 6"
+            },
+            "CPUIRQSEL7": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 7"
+            },
+            "CPUIRQSEL8": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 8"
+            },
+            "CPUIRQSEL9": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 9"
+            },
+            "CPUIRQSEL10": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 10"
+            },
+            "CPUIRQSEL11": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 11"
+            },
+            "CPUIRQSEL12": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 12"
+            },
+            "CPUIRQSEL13": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 13"
+            },
+            "CPUIRQSEL14": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 14"
+            },
+            "CPUIRQSEL15": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 15"
+            },
+            "CPUIRQSEL16": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 16"
+            },
+            "CPUIRQSEL17": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 17"
+            },
+            "CPUIRQSEL18": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 18"
+            },
+            "CPUIRQSEL19": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 19"
+            },
+            "CPUIRQSEL20": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 20"
+            },
+            "CPUIRQSEL21": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 21"
+            },
+            "CPUIRQSEL22": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 22"
+            },
+            "CPUIRQSEL23": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 23"
+            },
+            "CPUIRQSEL24": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 24"
+            },
+            "CPUIRQSEL25": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 25"
+            },
+            "CPUIRQSEL26": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 26"
+            },
+            "CPUIRQSEL27": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 27"
+            },
+            "CPUIRQSEL28": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 28"
+            },
+            "CPUIRQSEL29": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 29"
+            },
+            "CPUIRQSEL30": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 30"
+            },
+            "CPUIRQSEL31": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 31"
+            },
+            "CPUIRQSEL32": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 32"
+            },
+            "CPUIRQSEL33": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "Output Selection for CPU Interrupt 33"
+            },
+            "RFCSEL0": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "Output Selection for RFC Event 0"
+            },
+            "RFCSEL1": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "Output Selection for RFC Event 1"
+            },
+            "RFCSEL2": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "Output Selection for RFC Event 2"
+            },
+            "RFCSEL3": {
+              "offset": "0x10C",
+              "size": 32,
+              "description": "Output Selection for RFC Event 3"
+            },
+            "RFCSEL4": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "Output Selection for RFC Event 4"
+            },
+            "RFCSEL5": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "Output Selection for RFC Event 5"
+            },
+            "RFCSEL6": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "Output Selection for RFC Event 6"
+            },
+            "RFCSEL7": {
+              "offset": "0x11C",
+              "size": 32,
+              "description": "Output Selection for RFC Event 7"
+            },
+            "RFCSEL8": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "Output Selection for RFC Event 8"
+            },
+            "RFCSEL9": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "Output Selection for RFC Event 9"
+            },
+            "GPT0ACAPTSEL": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "Output Selection for GPT0 0"
+            },
+            "GPT0BCAPTSEL": {
+              "offset": "0x204",
+              "size": 32,
+              "description": "Output Selection for GPT0 1"
+            },
+            "GPT1ACAPTSEL": {
+              "offset": "0x300",
+              "size": 32,
+              "description": "Output Selection for GPT1 0"
+            },
+            "GPT1BCAPTSEL": {
+              "offset": "0x304",
+              "size": 32,
+              "description": "Output Selection for GPT1 1"
+            },
+            "GPT2ACAPTSEL": {
+              "offset": "0x400",
+              "size": 32,
+              "description": "Output Selection for GPT2 0"
+            },
+            "GPT2BCAPTSEL": {
+              "offset": "0x404",
+              "size": 32,
+              "description": "Output Selection for GPT2 1"
+            },
+            "UDMACH1SSEL": {
+              "offset": "0x508",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 1 SREQ"
+            },
+            "UDMACH1BSEL": {
+              "offset": "0x50C",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 1 REQ"
+            },
+            "UDMACH2SSEL": {
+              "offset": "0x510",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 2 SREQ"
+            },
+            "UDMACH2BSEL": {
+              "offset": "0x514",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 2 REQ"
+            },
+            "UDMACH3SSEL": {
+              "offset": "0x518",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 3 SREQ"
+            },
+            "UDMACH3BSEL": {
+              "offset": "0x51C",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 3 REQ"
+            },
+            "UDMACH4SSEL": {
+              "offset": "0x520",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 4 SREQ"
+            },
+            "UDMACH4BSEL": {
+              "offset": "0x524",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 4 REQ"
+            },
+            "UDMACH5SSEL": {
+              "offset": "0x528",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 5 SREQ"
+            },
+            "UDMACH5BSEL": {
+              "offset": "0x52C",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 5 REQ"
+            },
+            "UDMACH6SSEL": {
+              "offset": "0x530",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 6 SREQ"
+            },
+            "UDMACH6BSEL": {
+              "offset": "0x534",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 6 REQ"
+            },
+            "UDMACH7SSEL": {
+              "offset": "0x538",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 7 SREQ"
+            },
+            "UDMACH7BSEL": {
+              "offset": "0x53C",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 7 REQ"
+            },
+            "UDMACH8SSEL": {
+              "offset": "0x540",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 8 SREQ\n\nSingle request is ignored for this channel"
+            },
+            "UDMACH8BSEL": {
+              "offset": "0x544",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 8 REQ"
+            },
+            "UDMACH9SSEL": {
+              "offset": "0x548",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 9 SREQ\n\nDMA_DONE for the corresponding DMA channel is available as interrupt on GPT0 as GPT0:RIS.DMAARIS"
+            },
+            "UDMACH9BSEL": {
+              "offset": "0x54C",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 9 REQ\n\nDMA_DONE for the corresponding DMA channel is available as interrupt on GPT0 as GPT0:RIS.DMAARIS"
+            },
+            "UDMACH10SSEL": {
+              "offset": "0x550",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 10 SREQ\n\nDMA_DONE for the corresponding DMA channel is available as interrupt on GPT0 as GPT0:RIS.DMABRIS"
+            },
+            "UDMACH10BSEL": {
+              "offset": "0x554",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 10 REQ\n\nDMA_DONE for the corresponding DMA channel is available as interrupt on GPT0 as GPT0:RIS.DMABRIS"
+            },
+            "UDMACH11SSEL": {
+              "offset": "0x558",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 11 SREQ\n\nDMA_DONE for the corresponding DMA channel is available as interrupt on GPT1 as GPT1:RIS.DMAARIS"
+            },
+            "UDMACH11BSEL": {
+              "offset": "0x55C",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 11 REQ\n\nDMA_DONE for the corresponding DMA channel is available as interrupt on GPT1 as GPT1:RIS.DMAARIS"
+            },
+            "UDMACH12SSEL": {
+              "offset": "0x560",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 12 SREQ\n\nDMA_DONE for the corresponding DMA channel is available as interrupt on GPT1 as GPT1:RIS.DMABRIS"
+            },
+            "UDMACH12BSEL": {
+              "offset": "0x564",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 12 REQ\n\nDMA_DONE for the corresponding DMA channel is available as interrupt on GPT1 as GPT1:RIS.DMABRIS"
+            },
+            "UDMACH13BSEL": {
+              "offset": "0x56C",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 13 REQ"
+            },
+            "UDMACH14BSEL": {
+              "offset": "0x574",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 14 REQ"
+            },
+            "UDMACH15BSEL": {
+              "offset": "0x57C",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 15 REQ"
+            },
+            "UDMACH16SSEL": {
+              "offset": "0x580",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 16 SREQ"
+            },
+            "UDMACH16BSEL": {
+              "offset": "0x584",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 16 REQ"
+            },
+            "UDMACH17SSEL": {
+              "offset": "0x588",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 17 SREQ"
+            },
+            "UDMACH17BSEL": {
+              "offset": "0x58C",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 17 REQ"
+            },
+            "UDMACH21SSEL": {
+              "offset": "0x5A8",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 21 SREQ"
+            },
+            "UDMACH21BSEL": {
+              "offset": "0x5AC",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 21 REQ"
+            },
+            "UDMACH22SSEL": {
+              "offset": "0x5B0",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 22 SREQ"
+            },
+            "UDMACH22BSEL": {
+              "offset": "0x5B4",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 22 REQ"
+            },
+            "UDMACH23SSEL": {
+              "offset": "0x5B8",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 23 SREQ"
+            },
+            "UDMACH23BSEL": {
+              "offset": "0x5BC",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 23 REQ"
+            },
+            "UDMACH24SSEL": {
+              "offset": "0x5C0",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 24 SREQ"
+            },
+            "UDMACH24BSEL": {
+              "offset": "0x5C4",
+              "size": 32,
+              "description": "Output Selection for DMA Channel 24 REQ"
+            },
+            "GPT3ACAPTSEL": {
+              "offset": "0x600",
+              "size": 32,
+              "description": "Output Selection for GPT3 0"
+            },
+            "GPT3BCAPTSEL": {
+              "offset": "0x604",
+              "size": 32,
+              "description": "Output Selection for GPT3 1"
+            },
+            "AUXSEL0": {
+              "offset": "0x700",
+              "size": 32,
+              "description": "Output Selection for AUX Subscriber 0"
+            },
+            "CM3NMISEL0": {
+              "offset": "0x800",
+              "size": 32,
+              "description": "Output Selection for NMI Subscriber 0"
+            },
+            "I2SSTMPSEL0": {
+              "offset": "0x900",
+              "size": 32,
+              "description": "Output Selection for I2S Subscriber 0"
+            },
+            "FRZSEL0": {
+              "offset": "0xA00",
+              "size": 32,
+              "description": "Output Selection for FRZ Subscriber 0"
+            },
+            "SWEV": {
+              "offset": "0xF00",
+              "size": 32,
+              "description": "Set or Clear Software Events"
+            }
+          }
+        },
+        "FCFG1": {
+          "instances": [
+            {
+              "name": "FCFG1",
+              "base": "0x50001000"
+            }
+          ],
+          "registers": {
+            "MISC_CONF_1": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "Misc configurations"
+            },
+            "BAW_MEAS_5": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "BAW_MEAS_4": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "BAW_MEAS_3": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "BAW_MEAS_2": {
+              "offset": "0xBC",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "BAW_MEAS_1": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_RF_FRONTEND_DIV5": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_RF_FRONTEND_DIV6": {
+              "offset": "0xC8",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_RF_FRONTEND_DIV10": {
+              "offset": "0xCC",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_RF_FRONTEND_DIV12": {
+              "offset": "0xD0",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_RF_FRONTEND_DIV15": {
+              "offset": "0xD4",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_RF_FRONTEND_DIV30": {
+              "offset": "0xD8",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_SYNTH_DIV5": {
+              "offset": "0xDC",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_SYNTH_DIV6": {
+              "offset": "0xE0",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_SYNTH_DIV10": {
+              "offset": "0xE4",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_SYNTH_DIV12": {
+              "offset": "0xE8",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_SYNTH_DIV15": {
+              "offset": "0xEC",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_SYNTH_DIV30": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_MISC_ADC_DIV5": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_MISC_ADC_DIV6": {
+              "offset": "0xF8",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_MISC_ADC_DIV10": {
+              "offset": "0xFC",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_MISC_ADC_DIV12": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_MISC_ADC_DIV15": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_MISC_ADC_DIV30": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "SHDW_DIE_ID_0": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "Shadow of the DIE_ID_0 register in eFuse"
+            },
+            "SHDW_DIE_ID_1": {
+              "offset": "0x11C",
+              "size": 32,
+              "description": "Shadow of the DIE_ID_1 register in eFuse"
+            },
+            "SHDW_DIE_ID_2": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "Shadow of the DIE_ID_2 register in eFuse"
+            },
+            "SHDW_DIE_ID_3": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "Shadow of the DIE_ID_3 register in eFuse"
+            },
+            "SHDW_OSC_BIAS_LDO_TRIM": {
+              "offset": "0x138",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "SHDW_ANA_TRIM": {
+              "offset": "0x13C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASH_NUMBER": {
+              "offset": "0x164",
+              "size": 32
+            },
+            "FLASH_COORDINATE": {
+              "offset": "0x16C",
+              "size": 32
+            },
+            "FLASH_E_P": {
+              "offset": "0x170",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASH_C_E_P_R": {
+              "offset": "0x174",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASH_P_R_PV": {
+              "offset": "0x178",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASH_EH_SEQ": {
+              "offset": "0x17C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASH_VHV_E": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASH_PP": {
+              "offset": "0x184",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASH_PROG_EP": {
+              "offset": "0x188",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASH_ERA_PW": {
+              "offset": "0x18C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASH_VHV": {
+              "offset": "0x190",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASH_VHV_PV": {
+              "offset": "0x194",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASH_V": {
+              "offset": "0x198",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "USER_ID": {
+              "offset": "0x294",
+              "size": 32,
+              "description": "User Identification.\nReading this register or the ICEPICK_DEVICE_ID register is the only support way of identifying a device.\nThe value of this register will be written to AON_WUC:JTAGUSERCODE by boot FW while in safezone."
+            },
+            "FLASH_OTP_DATA3": {
+              "offset": "0x2B0",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "ANA2_TRIM": {
+              "offset": "0x2B4",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "LDO_TRIM": {
+              "offset": "0x2B8",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "MAC_BLE_0": {
+              "offset": "0x2E8",
+              "size": 32,
+              "description": "MAC BLE Address 0"
+            },
+            "MAC_BLE_1": {
+              "offset": "0x2EC",
+              "size": 32,
+              "description": "MAC BLE Address 1"
+            },
+            "MAC_15_4_0": {
+              "offset": "0x2F0",
+              "size": 32,
+              "description": "MAC IEEE 802.15.4 Address 0"
+            },
+            "MAC_15_4_1": {
+              "offset": "0x2F4",
+              "size": 32,
+              "description": "MAC IEEE 802.15.4 Address 1"
+            },
+            "FLASH_OTP_DATA4": {
+              "offset": "0x308",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "MISC_TRIM": {
+              "offset": "0x30C",
+              "size": 32,
+              "description": "Miscellaneous Trim  Parameters"
+            },
+            "RCOSC_HF_TEMPCOMP": {
+              "offset": "0x310",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "ICEPICK_DEVICE_ID": {
+              "offset": "0x318",
+              "size": 32,
+              "description": "IcePick Device Identification\nReading this register or the USER_ID register is the only support way of identifying a device."
+            },
+            "FCFG1_REVISION": {
+              "offset": "0x31C",
+              "size": 32,
+              "description": "Factory Configuration (FCFG1) Revision"
+            },
+            "MISC_OTP_DATA": {
+              "offset": "0x320",
+              "size": 32,
+              "description": "Misc OTP Data"
+            },
+            "IOCONF": {
+              "offset": "0x344",
+              "size": 32,
+              "description": "IO Configuration"
+            },
+            "CONFIG_IF_ADC": {
+              "offset": "0x34C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_OSC_TOP": {
+              "offset": "0x350",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_RF_FRONTEND": {
+              "offset": "0x354",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_SYNTH": {
+              "offset": "0x358",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "SOC_ADC_ABS_GAIN": {
+              "offset": "0x35C",
+              "size": 32,
+              "description": "AUX_ADC Gain in Absolute Reference Mode"
+            },
+            "SOC_ADC_REL_GAIN": {
+              "offset": "0x360",
+              "size": 32,
+              "description": "AUX_ADC Gain in Relative Reference Mode"
+            },
+            "SOC_ADC_OFFSET_INT": {
+              "offset": "0x368",
+              "size": 32,
+              "description": "AUX_ADC Temperature Offsets in Absolute Reference Mode"
+            },
+            "SOC_ADC_REF_TRIM_AND_OFFSET_EXT": {
+              "offset": "0x36C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "AMPCOMP_TH1": {
+              "offset": "0x370",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "AMPCOMP_TH2": {
+              "offset": "0x374",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "AMPCOMP_CTRL1": {
+              "offset": "0x378",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "ANABYPASS_VALUE2": {
+              "offset": "0x37C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "CONFIG_MISC_ADC": {
+              "offset": "0x380",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "VOLT_TRIM": {
+              "offset": "0x388",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "OSC_CONF": {
+              "offset": "0x38C",
+              "size": 32,
+              "description": "OSC Configuration"
+            },
+            "CAP_TRIM": {
+              "offset": "0x394",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "MISC_OTP_DATA_1": {
+              "offset": "0x398",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "PWD_CURR_20C": {
+              "offset": "0x39C",
+              "size": 32,
+              "description": "Power Down Current Control 20C"
+            },
+            "PWD_CURR_35C": {
+              "offset": "0x3A0",
+              "size": 32,
+              "description": "Power Down Current Control 35C"
+            },
+            "PWD_CURR_50C": {
+              "offset": "0x3A4",
+              "size": 32,
+              "description": "Power Down Current Control 50C"
+            },
+            "PWD_CURR_65C": {
+              "offset": "0x3A8",
+              "size": 32,
+              "description": "Power Down Current Control 65C"
+            },
+            "PWD_CURR_80C": {
+              "offset": "0x3AC",
+              "size": 32,
+              "description": "Power Down Current Control 80C"
+            },
+            "PWD_CURR_95C": {
+              "offset": "0x3B0",
+              "size": 32,
+              "description": "Power Down Current Control 95C"
+            },
+            "PWD_CURR_110C": {
+              "offset": "0x3B4",
+              "size": 32,
+              "description": "Power Down Current Control 110C"
+            },
+            "PWD_CURR_125C": {
+              "offset": "0x3B8",
+              "size": 32,
+              "description": "Power Down Current Control 125C"
+            }
+          }
+        },
+        "FLASH": {
+          "instances": [
+            {
+              "name": "FLASH",
+              "base": "0x40030000"
+            }
+          ],
+          "registers": {
+            "STAT": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "FMC and Efuse Status"
+            },
+            "CFG": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "SYSCODE_START": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLASH_SIZE": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FWLOCK": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FWFLAG": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "EFUSE": {
+              "offset": "0x1000",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "EFUSEADDR": {
+              "offset": "0x1004",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "DATAUPPER": {
+              "offset": "0x1008",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "DATALOWER": {
+              "offset": "0x100C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "EFUSECFG": {
+              "offset": "0x1010",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "EFUSESTAT": {
+              "offset": "0x1014",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "ACC": {
+              "offset": "0x1018",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "BOUNDARY": {
+              "offset": "0x101C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "EFUSEFLAG": {
+              "offset": "0x1020",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "EFUSEKEY": {
+              "offset": "0x1024",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "EFUSERELEASE": {
+              "offset": "0x1028",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "EFUSEPINS": {
+              "offset": "0x102C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "EFUSECRA": {
+              "offset": "0x1030",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "EFUSEREAD": {
+              "offset": "0x1034",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "EFUSEPROGRAM": {
+              "offset": "0x1038",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "EFUSEERROR": {
+              "offset": "0x103C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "SINGLEBIT": {
+              "offset": "0x1040",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "TWOBIT": {
+              "offset": "0x1044",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "SELFTESTCYC": {
+              "offset": "0x1048",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "SELFTESTSIGN": {
+              "offset": "0x104C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FRDCTL": {
+              "offset": "0x2000",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSPRD": {
+              "offset": "0x2004",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FEDACCTL1": {
+              "offset": "0x2008",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FEDACSTAT": {
+              "offset": "0x201C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FBPROT": {
+              "offset": "0x2030",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FBSE": {
+              "offset": "0x2034",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FBBUSY": {
+              "offset": "0x2038",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FBAC": {
+              "offset": "0x203C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FBFALLBACK": {
+              "offset": "0x2040",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FBPRDY": {
+              "offset": "0x2044",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FPAC1": {
+              "offset": "0x2048",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FPAC2": {
+              "offset": "0x204C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FMAC": {
+              "offset": "0x2050",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FMSTAT": {
+              "offset": "0x2054",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FLOCK": {
+              "offset": "0x2064",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FVREADCT": {
+              "offset": "0x2080",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FVHVCT1": {
+              "offset": "0x2084",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FVHVCT2": {
+              "offset": "0x2088",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FVHVCT3": {
+              "offset": "0x208C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FVNVCT": {
+              "offset": "0x2090",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FVSLP": {
+              "offset": "0x2094",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FVWLCT": {
+              "offset": "0x2098",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FEFUSECTL": {
+              "offset": "0x209C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FEFUSESTAT": {
+              "offset": "0x20A0",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FEFUSEDATA": {
+              "offset": "0x20A4",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSEQPMP": {
+              "offset": "0x20A8",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FBSTROBES": {
+              "offset": "0x2100",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FPSTROBES": {
+              "offset": "0x2104",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FBMODE": {
+              "offset": "0x2108",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FTCR": {
+              "offset": "0x210C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FADDR": {
+              "offset": "0x2110",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FTCTL": {
+              "offset": "0x211C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FWPWRITE0": {
+              "offset": "0x2120",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FWPWRITE1": {
+              "offset": "0x2124",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FWPWRITE2": {
+              "offset": "0x2128",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FWPWRITE3": {
+              "offset": "0x212C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FWPWRITE4": {
+              "offset": "0x2130",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FWPWRITE5": {
+              "offset": "0x2134",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FWPWRITE6": {
+              "offset": "0x2138",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FWPWRITE7": {
+              "offset": "0x213C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FWPWRITE_ECC": {
+              "offset": "0x2140",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSWSTAT": {
+              "offset": "0x2144",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_GLBCTL": {
+              "offset": "0x2200",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_STATE": {
+              "offset": "0x2204",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_STAT": {
+              "offset": "0x2208",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_CMD": {
+              "offset": "0x220C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_PE_OSU": {
+              "offset": "0x2210",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_VSTAT": {
+              "offset": "0x2214",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_PE_VSU": {
+              "offset": "0x2218",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_CMP_VSU": {
+              "offset": "0x221C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_EX_VAL": {
+              "offset": "0x2220",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_RD_H": {
+              "offset": "0x2224",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_P_OH": {
+              "offset": "0x2228",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_ERA_OH": {
+              "offset": "0x222C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_SAV_PPUL": {
+              "offset": "0x2230",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_PE_VH": {
+              "offset": "0x2234",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_PRG_PW": {
+              "offset": "0x2240",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_ERA_PW": {
+              "offset": "0x2244",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_SAV_ERA_PUL": {
+              "offset": "0x2254",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_TIMER": {
+              "offset": "0x2258",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_MODE": {
+              "offset": "0x225C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_PGM": {
+              "offset": "0x2260",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_ERA": {
+              "offset": "0x2264",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_PRG_PUL": {
+              "offset": "0x2268",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_ERA_PUL": {
+              "offset": "0x226C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_STEP_SIZE": {
+              "offset": "0x2270",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_PUL_CNTR": {
+              "offset": "0x2274",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_EC_STEP_HEIGHT": {
+              "offset": "0x2278",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_ST_MACHINE": {
+              "offset": "0x227C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_FLES": {
+              "offset": "0x2280",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_WR_ENA": {
+              "offset": "0x2288",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_ACC_PP": {
+              "offset": "0x228C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_ACC_EP": {
+              "offset": "0x2290",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_ADDR": {
+              "offset": "0x22A0",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_SECTOR": {
+              "offset": "0x22A4",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FMC_REV_ID": {
+              "offset": "0x22A8",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_ERR_ADDR": {
+              "offset": "0x22AC",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_PGM_MAXPUL": {
+              "offset": "0x22B0",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_EXECUTE": {
+              "offset": "0x22B4",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_SECTOR1": {
+              "offset": "0x22C0",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_SECTOR2": {
+              "offset": "0x22C4",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_BSLE0": {
+              "offset": "0x22E0",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_BSLE1": {
+              "offset": "0x22E4",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_BSLP0": {
+              "offset": "0x22F0",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FSM_BSLP1": {
+              "offset": "0x22F4",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FCFG_BANK": {
+              "offset": "0x2400",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FCFG_WRAPPER": {
+              "offset": "0x2404",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FCFG_BNK_TYPE": {
+              "offset": "0x2408",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FCFG_B0_START": {
+              "offset": "0x2410",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FCFG_B1_START": {
+              "offset": "0x2414",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FCFG_B2_START": {
+              "offset": "0x2418",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FCFG_B3_START": {
+              "offset": "0x241C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FCFG_B4_START": {
+              "offset": "0x2420",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FCFG_B5_START": {
+              "offset": "0x2424",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FCFG_B6_START": {
+              "offset": "0x2428",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FCFG_B7_START": {
+              "offset": "0x242C",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "FCFG_B0_SSIZE0": {
+              "offset": "0x2430",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            }
+          }
+        },
+        "GPIO": {
+          "instances": [
+            {
+              "name": "GPIO",
+              "base": "0x40022000"
+            }
+          ],
+          "registers": {
+            "DOUT3_0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Data Out 0 to 3\n\nAlias register for byte access to each bit in DOUT31_0"
+            },
+            "DOUT7_4": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Data Out 4 to 7\n\nAlias register for byte access to each bit in DOUT31_0"
+            },
+            "DOUT11_8": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Data Out 8 to 11\n\nAlias register for byte access to each bit in DOUT31_0"
+            },
+            "DOUT15_12": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Data Out 12 to 15\n\nAlias register for byte access to each bit in DOUT31_0"
+            },
+            "DOUT19_16": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Data Out 16 to 19\n\nAlias register for byte access to each bit in DOUT31_0"
+            },
+            "DOUT23_20": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Data Out 20 to 23\n\nAlias register for byte access to each bit in DOUT31_0"
+            },
+            "DOUT27_24": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Data Out 24 to 27\n\nAlias register for byte access to each bit in DOUT31_0"
+            },
+            "DOUT31_28": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Data Out 28 to 31\n\nAlias register for byte access to each bit in DOUT31_0"
+            },
+            "DOUT31_0": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Data Output for DIO 0 to 31"
+            },
+            "DOUTSET31_0": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "Data Out Set\n\nWriting 1 to a bit position sets the corresponding bit in the DOUT31_0 register"
+            },
+            "DOUTCLR31_0": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "Data Out Clear\n\nWriting 1 to a bit position clears the corresponding bit in the DOUT31_0 register"
+            },
+            "DOUTTGL31_0": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "Data Out Toggle\n\nWriting 1 to a bit position will invert the corresponding DIO output."
+            },
+            "DIN31_0": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "Data Input from DIO 0 to 31"
+            },
+            "DOE31_0": {
+              "offset": "0xD0",
+              "size": 32,
+              "description": "Data Output Enable for DIO 0 to 31"
+            },
+            "EVFLAGS31_0": {
+              "offset": "0xE0",
+              "size": 32,
+              "description": "Event Register for DIO 0 to 31\n\nReading  this registers will return 1 for triggered event and 0 for non-triggered events. \nWriting a 1 to a bit field will clear the event. \n\nThe configuration of events is done inside MCU IOC, e.g. events for DIO #0 is configured in IOC:IOCFG0.EDGE_DET and IOC:IOCFG0.EDGE_IRQ_EN."
+            }
+          }
+        },
+        "GPT0": {
+          "instances": [
+            {
+              "name": "GPT0",
+              "base": "0x40010000"
+            }
+          ],
+          "registers": {
+            "CFG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Configuration"
+            },
+            "TAMR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Timer A Mode"
+            },
+            "TBMR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Timer B Mode"
+            },
+            "CTL": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Control"
+            },
+            "SYNC": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Synch Register"
+            },
+            "IMR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Interrupt Mask\nThis register is used to enable the interrupts.\nAssociated registers:\nRIS, MIS, ICLR"
+            },
+            "RIS": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Raw Interrupt Status\nAssociated registers:\nIMR, MIS, ICLR"
+            },
+            "MIS": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Masked Interrupt Status\nValues are result of bitwise AND operation between RIS and IMR\nAssosciated clear register: ICLR"
+            },
+            "ICLR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Interrupt Clear\nThis register is used to clear status bits in the RIS and MIS registers"
+            },
+            "TAILR": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Timer A Interval Load  Register"
+            },
+            "TBILR": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Timer B Interval Load  Register"
+            },
+            "TAMATCHR": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Timer A Match Register\n\nInterrupts can be generated when the timer value is equal to the value in this register in one-shot or periodic mode.\n\nIn Edge-Count mode, this register along with TAILR, determines how many edge events are counted.\nThe total number of edge events counted is equal to the value in TAILR minus this value.\n\nNote that in edge-count mode, when executing an up-count, the value of TAPR and TAILR must be greater than the value of TAPMR and TAMATCHR.\n\nIn PWM mode, this value along with TAILR, determines the duty cycle of the output PWM signal.\n\nWhen a 16/32-bit GPT is configured to one of the 32-bit modes, TAMATCHR appears as a 32-bit register. (The upper 16-bits correspond to the contents TBMATCHR).\n\nIn a 16-bit mode, the upper 16 bits of this register read as 0s and have no effect on the state of TBMATCHR.\n\nNote : This register is updated internally (takes effect) based on TAMR.TAMRSU"
+            },
+            "TBMATCHR": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Timer B Match Register\n\n When a GPT is configured to one of the 32-bit modes, the contents of bits 15:0 in this register are loaded into the upper 16 bits of  TAMATCHR.\nReads from this register return the current match value of Timer B and writes are ignored.\nIn a 16-bit mode, bits 15:0 are used for the match value. Bits 31:16 are reserved in both cases.\n\nNote : This register is updated internally (takes effect) based on TBMR.TBMRSU"
+            },
+            "TAPR": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Timer A Pre-scale\nThis register allows software to extend the range of the timers when they are used individually.\nWhen in one-shot or periodic down count modes, this register acts as a true prescaler for the timer counter.\nWhen acting as a true prescaler, the prescaler counts down to 0 before the value in TAR and TAV registers are incremented.\nIn all other individual/split modes, this register is a linear extension of the upper range of the timer counter, holding bits 23:16 in the 16-bit modes of the 16/32-bit GPT."
+            },
+            "TBPR": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Timer B Pre-scale\nThis register allows software to extend the range of the timers when they are used individually.\nWhen in one-shot or periodic down count modes, this register acts as a true prescaler for the timer counter.\nWhen acting as a true prescaler, the prescaler counts down to 0 before the value in TBR and TBV registers are incremented.\nIn all other individual/split modes, this register is a linear extension of the upper range of the timer counter, holding bits 23:16 in the 16-bit modes of the 16/32-bit GPT."
+            },
+            "TAPMR": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Timer A Pre-scale Match\nThis register allows software to extend the range of the TAMATCHR when used individually."
+            },
+            "TBPMR": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Timer B Pre-scale Match\nThis register allows software to extend the range of the TBMATCHR when used individually."
+            },
+            "TAR": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Timer A Register"
+            },
+            "TBR": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Timer B Register"
+            },
+            "TAV": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Timer A Value \nThis register shows the current value of the free running 16-bit Timer A. In the 32-bit mode"
+            },
+            "TBV": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Timer B Value \nThis register shows the current value of the free running 16-bit Timer B. Note: When the alternate timer clock (TIMCLK) is enabled, a read of a timer value will return the current count  1."
+            },
+            "RTCPD": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "RTC Pre-divide Value \nThis register shows the current value of the RTC pre-divider in RTC mode. Note: When the alternate timer clock (TIMCLK) is enabled, a read of a timer value will return the current count  -1."
+            },
+            "TAPS": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Timer A Pre-scale Snap-shot \n\nBased on the value in the register field TAMR.TAILD, this register is updated with the value from TAPR register either on the next cycle or on the next timeout.\n\n\nThis register shows the current value of the Timer A pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled a read of a timer value will return the current count -1."
+            },
+            "TBPS": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Timer B Pre-scale Snap-shot \n\nBased on the value in the register field TBMR.TBILD, this register is updated with the value from TBPR register either on the next cycle or on the next timeout.\n\nThis register shows the current value of the Timer B pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled  a read of a timer value will return the current count -1."
+            },
+            "TAPV": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Timer A Pre-scale Value \nThis register shows the current value of the Timer A free running pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled,  a read of a timer value will return the current count  1."
+            },
+            "TBPV": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Timer B Pre-scale Value \nThis register shows the current value of the Timer B free running pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled, a read of a timer value will return the current count-1."
+            },
+            "DMAEV": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "DMA Event \nThis register allows software to enable/disable GPT DMA trigger events."
+            },
+            "VERSION": {
+              "offset": "0xFB0",
+              "size": 32,
+              "description": "Peripheral Version\nThis register provides information regarding the GPT version"
+            },
+            "ANDCCP": {
+              "offset": "0xFB4",
+              "size": 32,
+              "description": "Combined CCP Output\nThis register is used to logically AND CCP output pairs for each timer"
+            }
+          }
+        },
+        "GPT1": {
+          "instances": [
+            {
+              "name": "GPT1",
+              "base": "0x40011000"
+            }
+          ],
+          "registers": {
+            "CFG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Configuration"
+            },
+            "TAMR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Timer A Mode"
+            },
+            "TBMR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Timer B Mode"
+            },
+            "CTL": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Control"
+            },
+            "SYNC": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Synch Register"
+            },
+            "IMR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Interrupt Mask\nThis register is used to enable the interrupts.\nAssociated registers:\nRIS, MIS, ICLR"
+            },
+            "RIS": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Raw Interrupt Status\nAssociated registers:\nIMR, MIS, ICLR"
+            },
+            "MIS": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Masked Interrupt Status\nValues are result of bitwise AND operation between RIS and IMR\nAssosciated clear register: ICLR"
+            },
+            "ICLR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Interrupt Clear\nThis register is used to clear status bits in the RIS and MIS registers"
+            },
+            "TAILR": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Timer A Interval Load  Register"
+            },
+            "TBILR": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Timer B Interval Load  Register"
+            },
+            "TAMATCHR": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Timer A Match Register\n\nInterrupts can be generated when the timer value is equal to the value in this register in one-shot or periodic mode.\n\nIn Edge-Count mode, this register along with TAILR, determines how many edge events are counted.\nThe total number of edge events counted is equal to the value in TAILR minus this value.\n\nNote that in edge-count mode, when executing an up-count, the value of TAPR and TAILR must be greater than the value of TAPMR and TAMATCHR.\n\nIn PWM mode, this value along with TAILR, determines the duty cycle of the output PWM signal.\n\nWhen a 16/32-bit GPT is configured to one of the 32-bit modes, TAMATCHR appears as a 32-bit register. (The upper 16-bits correspond to the contents TBMATCHR).\n\nIn a 16-bit mode, the upper 16 bits of this register read as 0s and have no effect on the state of TBMATCHR.\n\nNote : This register is updated internally (takes effect) based on TAMR.TAMRSU"
+            },
+            "TBMATCHR": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Timer B Match Register\n\n When a GPT is configured to one of the 32-bit modes, the contents of bits 15:0 in this register are loaded into the upper 16 bits of  TAMATCHR.\nReads from this register return the current match value of Timer B and writes are ignored.\nIn a 16-bit mode, bits 15:0 are used for the match value. Bits 31:16 are reserved in both cases.\n\nNote : This register is updated internally (takes effect) based on TBMR.TBMRSU"
+            },
+            "TAPR": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Timer A Pre-scale\nThis register allows software to extend the range of the timers when they are used individually.\nWhen in one-shot or periodic down count modes, this register acts as a true prescaler for the timer counter.\nWhen acting as a true prescaler, the prescaler counts down to 0 before the value in TAR and TAV registers are incremented.\nIn all other individual/split modes, this register is a linear extension of the upper range of the timer counter, holding bits 23:16 in the 16-bit modes of the 16/32-bit GPT."
+            },
+            "TBPR": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Timer B Pre-scale\nThis register allows software to extend the range of the timers when they are used individually.\nWhen in one-shot or periodic down count modes, this register acts as a true prescaler for the timer counter.\nWhen acting as a true prescaler, the prescaler counts down to 0 before the value in TBR and TBV registers are incremented.\nIn all other individual/split modes, this register is a linear extension of the upper range of the timer counter, holding bits 23:16 in the 16-bit modes of the 16/32-bit GPT."
+            },
+            "TAPMR": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Timer A Pre-scale Match\nThis register allows software to extend the range of the TAMATCHR when used individually."
+            },
+            "TBPMR": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Timer B Pre-scale Match\nThis register allows software to extend the range of the TBMATCHR when used individually."
+            },
+            "TAR": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Timer A Register"
+            },
+            "TBR": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Timer B Register"
+            },
+            "TAV": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Timer A Value \nThis register shows the current value of the free running 16-bit Timer A. In the 32-bit mode"
+            },
+            "TBV": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Timer B Value \nThis register shows the current value of the free running 16-bit Timer B. Note: When the alternate timer clock (TIMCLK) is enabled, a read of a timer value will return the current count  1."
+            },
+            "RTCPD": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "RTC Pre-divide Value \nThis register shows the current value of the RTC pre-divider in RTC mode. Note: When the alternate timer clock (TIMCLK) is enabled, a read of a timer value will return the current count  -1."
+            },
+            "TAPS": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Timer A Pre-scale Snap-shot \n\nBased on the value in the register field TAMR.TAILD, this register is updated with the value from TAPR register either on the next cycle or on the next timeout.\n\n\nThis register shows the current value of the Timer A pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled a read of a timer value will return the current count -1."
+            },
+            "TBPS": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Timer B Pre-scale Snap-shot \n\nBased on the value in the register field TBMR.TBILD, this register is updated with the value from TBPR register either on the next cycle or on the next timeout.\n\nThis register shows the current value of the Timer B pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled  a read of a timer value will return the current count -1."
+            },
+            "TAPV": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Timer A Pre-scale Value \nThis register shows the current value of the Timer A free running pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled,  a read of a timer value will return the current count  1."
+            },
+            "TBPV": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Timer B Pre-scale Value \nThis register shows the current value of the Timer B free running pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled, a read of a timer value will return the current count-1."
+            },
+            "DMAEV": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "DMA Event \nThis register allows software to enable/disable GPT DMA trigger events."
+            },
+            "VERSION": {
+              "offset": "0xFB0",
+              "size": 32,
+              "description": "Peripheral Version\nThis register provides information regarding the GPT version"
+            },
+            "ANDCCP": {
+              "offset": "0xFB4",
+              "size": 32,
+              "description": "Combined CCP Output\nThis register is used to logically AND CCP output pairs for each timer"
+            }
+          }
+        },
+        "GPT2": {
+          "instances": [
+            {
+              "name": "GPT2",
+              "base": "0x40012000"
+            }
+          ],
+          "registers": {
+            "CFG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Configuration"
+            },
+            "TAMR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Timer A Mode"
+            },
+            "TBMR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Timer B Mode"
+            },
+            "CTL": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Control"
+            },
+            "SYNC": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Synch Register"
+            },
+            "IMR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Interrupt Mask\nThis register is used to enable the interrupts.\nAssociated registers:\nRIS, MIS, ICLR"
+            },
+            "RIS": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Raw Interrupt Status\nAssociated registers:\nIMR, MIS, ICLR"
+            },
+            "MIS": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Masked Interrupt Status\nValues are result of bitwise AND operation between RIS and IMR\nAssosciated clear register: ICLR"
+            },
+            "ICLR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Interrupt Clear\nThis register is used to clear status bits in the RIS and MIS registers"
+            },
+            "TAILR": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Timer A Interval Load  Register"
+            },
+            "TBILR": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Timer B Interval Load  Register"
+            },
+            "TAMATCHR": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Timer A Match Register\n\nInterrupts can be generated when the timer value is equal to the value in this register in one-shot or periodic mode.\n\nIn Edge-Count mode, this register along with TAILR, determines how many edge events are counted.\nThe total number of edge events counted is equal to the value in TAILR minus this value.\n\nNote that in edge-count mode, when executing an up-count, the value of TAPR and TAILR must be greater than the value of TAPMR and TAMATCHR.\n\nIn PWM mode, this value along with TAILR, determines the duty cycle of the output PWM signal.\n\nWhen a 16/32-bit GPT is configured to one of the 32-bit modes, TAMATCHR appears as a 32-bit register. (The upper 16-bits correspond to the contents TBMATCHR).\n\nIn a 16-bit mode, the upper 16 bits of this register read as 0s and have no effect on the state of TBMATCHR.\n\nNote : This register is updated internally (takes effect) based on TAMR.TAMRSU"
+            },
+            "TBMATCHR": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Timer B Match Register\n\n When a GPT is configured to one of the 32-bit modes, the contents of bits 15:0 in this register are loaded into the upper 16 bits of  TAMATCHR.\nReads from this register return the current match value of Timer B and writes are ignored.\nIn a 16-bit mode, bits 15:0 are used for the match value. Bits 31:16 are reserved in both cases.\n\nNote : This register is updated internally (takes effect) based on TBMR.TBMRSU"
+            },
+            "TAPR": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Timer A Pre-scale\nThis register allows software to extend the range of the timers when they are used individually.\nWhen in one-shot or periodic down count modes, this register acts as a true prescaler for the timer counter.\nWhen acting as a true prescaler, the prescaler counts down to 0 before the value in TAR and TAV registers are incremented.\nIn all other individual/split modes, this register is a linear extension of the upper range of the timer counter, holding bits 23:16 in the 16-bit modes of the 16/32-bit GPT."
+            },
+            "TBPR": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Timer B Pre-scale\nThis register allows software to extend the range of the timers when they are used individually.\nWhen in one-shot or periodic down count modes, this register acts as a true prescaler for the timer counter.\nWhen acting as a true prescaler, the prescaler counts down to 0 before the value in TBR and TBV registers are incremented.\nIn all other individual/split modes, this register is a linear extension of the upper range of the timer counter, holding bits 23:16 in the 16-bit modes of the 16/32-bit GPT."
+            },
+            "TAPMR": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Timer A Pre-scale Match\nThis register allows software to extend the range of the TAMATCHR when used individually."
+            },
+            "TBPMR": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Timer B Pre-scale Match\nThis register allows software to extend the range of the TBMATCHR when used individually."
+            },
+            "TAR": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Timer A Register"
+            },
+            "TBR": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Timer B Register"
+            },
+            "TAV": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Timer A Value \nThis register shows the current value of the free running 16-bit Timer A. In the 32-bit mode"
+            },
+            "TBV": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Timer B Value \nThis register shows the current value of the free running 16-bit Timer B. Note: When the alternate timer clock (TIMCLK) is enabled, a read of a timer value will return the current count  1."
+            },
+            "RTCPD": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "RTC Pre-divide Value \nThis register shows the current value of the RTC pre-divider in RTC mode. Note: When the alternate timer clock (TIMCLK) is enabled, a read of a timer value will return the current count  -1."
+            },
+            "TAPS": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Timer A Pre-scale Snap-shot \n\nBased on the value in the register field TAMR.TAILD, this register is updated with the value from TAPR register either on the next cycle or on the next timeout.\n\n\nThis register shows the current value of the Timer A pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled a read of a timer value will return the current count -1."
+            },
+            "TBPS": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Timer B Pre-scale Snap-shot \n\nBased on the value in the register field TBMR.TBILD, this register is updated with the value from TBPR register either on the next cycle or on the next timeout.\n\nThis register shows the current value of the Timer B pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled  a read of a timer value will return the current count -1."
+            },
+            "TAPV": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Timer A Pre-scale Value \nThis register shows the current value of the Timer A free running pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled,  a read of a timer value will return the current count  1."
+            },
+            "TBPV": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Timer B Pre-scale Value \nThis register shows the current value of the Timer B free running pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled, a read of a timer value will return the current count-1."
+            },
+            "DMAEV": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "DMA Event \nThis register allows software to enable/disable GPT DMA trigger events."
+            },
+            "VERSION": {
+              "offset": "0xFB0",
+              "size": 32,
+              "description": "Peripheral Version\nThis register provides information regarding the GPT version"
+            },
+            "ANDCCP": {
+              "offset": "0xFB4",
+              "size": 32,
+              "description": "Combined CCP Output\nThis register is used to logically AND CCP output pairs for each timer"
+            }
+          }
+        },
+        "GPT3": {
+          "instances": [
+            {
+              "name": "GPT3",
+              "base": "0x40013000"
+            }
+          ],
+          "registers": {
+            "CFG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Configuration"
+            },
+            "TAMR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Timer A Mode"
+            },
+            "TBMR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Timer B Mode"
+            },
+            "CTL": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Control"
+            },
+            "SYNC": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Synch Register"
+            },
+            "IMR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Interrupt Mask\nThis register is used to enable the interrupts.\nAssociated registers:\nRIS, MIS, ICLR"
+            },
+            "RIS": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Raw Interrupt Status\nAssociated registers:\nIMR, MIS, ICLR"
+            },
+            "MIS": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Masked Interrupt Status\nValues are result of bitwise AND operation between RIS and IMR\nAssosciated clear register: ICLR"
+            },
+            "ICLR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Interrupt Clear\nThis register is used to clear status bits in the RIS and MIS registers"
+            },
+            "TAILR": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Timer A Interval Load  Register"
+            },
+            "TBILR": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Timer B Interval Load  Register"
+            },
+            "TAMATCHR": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Timer A Match Register\n\nInterrupts can be generated when the timer value is equal to the value in this register in one-shot or periodic mode.\n\nIn Edge-Count mode, this register along with TAILR, determines how many edge events are counted.\nThe total number of edge events counted is equal to the value in TAILR minus this value.\n\nNote that in edge-count mode, when executing an up-count, the value of TAPR and TAILR must be greater than the value of TAPMR and TAMATCHR.\n\nIn PWM mode, this value along with TAILR, determines the duty cycle of the output PWM signal.\n\nWhen a 16/32-bit GPT is configured to one of the 32-bit modes, TAMATCHR appears as a 32-bit register. (The upper 16-bits correspond to the contents TBMATCHR).\n\nIn a 16-bit mode, the upper 16 bits of this register read as 0s and have no effect on the state of TBMATCHR.\n\nNote : This register is updated internally (takes effect) based on TAMR.TAMRSU"
+            },
+            "TBMATCHR": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Timer B Match Register\n\n When a GPT is configured to one of the 32-bit modes, the contents of bits 15:0 in this register are loaded into the upper 16 bits of  TAMATCHR.\nReads from this register return the current match value of Timer B and writes are ignored.\nIn a 16-bit mode, bits 15:0 are used for the match value. Bits 31:16 are reserved in both cases.\n\nNote : This register is updated internally (takes effect) based on TBMR.TBMRSU"
+            },
+            "TAPR": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Timer A Pre-scale\nThis register allows software to extend the range of the timers when they are used individually.\nWhen in one-shot or periodic down count modes, this register acts as a true prescaler for the timer counter.\nWhen acting as a true prescaler, the prescaler counts down to 0 before the value in TAR and TAV registers are incremented.\nIn all other individual/split modes, this register is a linear extension of the upper range of the timer counter, holding bits 23:16 in the 16-bit modes of the 16/32-bit GPT."
+            },
+            "TBPR": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Timer B Pre-scale\nThis register allows software to extend the range of the timers when they are used individually.\nWhen in one-shot or periodic down count modes, this register acts as a true prescaler for the timer counter.\nWhen acting as a true prescaler, the prescaler counts down to 0 before the value in TBR and TBV registers are incremented.\nIn all other individual/split modes, this register is a linear extension of the upper range of the timer counter, holding bits 23:16 in the 16-bit modes of the 16/32-bit GPT."
+            },
+            "TAPMR": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Timer A Pre-scale Match\nThis register allows software to extend the range of the TAMATCHR when used individually."
+            },
+            "TBPMR": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Timer B Pre-scale Match\nThis register allows software to extend the range of the TBMATCHR when used individually."
+            },
+            "TAR": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Timer A Register"
+            },
+            "TBR": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Timer B Register"
+            },
+            "TAV": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Timer A Value \nThis register shows the current value of the free running 16-bit Timer A. In the 32-bit mode"
+            },
+            "TBV": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Timer B Value \nThis register shows the current value of the free running 16-bit Timer B. Note: When the alternate timer clock (TIMCLK) is enabled, a read of a timer value will return the current count  1."
+            },
+            "RTCPD": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "RTC Pre-divide Value \nThis register shows the current value of the RTC pre-divider in RTC mode. Note: When the alternate timer clock (TIMCLK) is enabled, a read of a timer value will return the current count  -1."
+            },
+            "TAPS": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Timer A Pre-scale Snap-shot \n\nBased on the value in the register field TAMR.TAILD, this register is updated with the value from TAPR register either on the next cycle or on the next timeout.\n\n\nThis register shows the current value of the Timer A pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled a read of a timer value will return the current count -1."
+            },
+            "TBPS": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Timer B Pre-scale Snap-shot \n\nBased on the value in the register field TBMR.TBILD, this register is updated with the value from TBPR register either on the next cycle or on the next timeout.\n\nThis register shows the current value of the Timer B pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled  a read of a timer value will return the current count -1."
+            },
+            "TAPV": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Timer A Pre-scale Value \nThis register shows the current value of the Timer A free running pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled,  a read of a timer value will return the current count  1."
+            },
+            "TBPV": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Timer B Pre-scale Value \nThis register shows the current value of the Timer B free running pre-scaler in the 16-bit mode. Note: When the alternate timer clock (TIMCLK) is enabled, a read of a timer value will return the current count-1."
+            },
+            "DMAEV": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "DMA Event \nThis register allows software to enable/disable GPT DMA trigger events."
+            },
+            "VERSION": {
+              "offset": "0xFB0",
+              "size": 32,
+              "description": "Peripheral Version\nThis register provides information regarding the GPT version"
+            },
+            "ANDCCP": {
+              "offset": "0xFB4",
+              "size": 32,
+              "description": "Combined CCP Output\nThis register is used to logically AND CCP output pairs for each timer"
+            }
+          }
+        },
+        "I2C": {
+          "instances": [
+            {
+              "name": "I2C0",
+              "base": "0x40002000"
+            }
+          ],
+          "registers": {
+            "SOAR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Slave Own Address\nThis register consists of seven address bits that identify this I2C device on the I2C bus."
+            },
+            "SSTAT": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Slave Status \nNote: This register shares address with SCTL, meaning that this register functions as a control register when written, and a status register when read."
+            },
+            "SCTL": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Slave Control\nNote: This register shares address with SSTAT, meaning that this register functions as a control register when written, and a status register when read."
+            },
+            "SDR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Slave Data\nThis register contains the data to be transmitted when in the Slave Transmit state, and the data received when in the Slave Receive state."
+            },
+            "SIMR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Slave Interrupt Mask\nThis register controls whether a raw interrupt is promoted to a controller interrupt."
+            },
+            "SRIS": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Slave Raw Interrupt Status\nThis register shows the unmasked interrupt status."
+            },
+            "SMIS": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Slave Masked Interrupt Status\nThis register show which interrupt is active (based on result from SRIS and SIMR)."
+            },
+            "SICR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Slave Interrupt Clear\nThis register clears the raw interrupt SRIS."
+            },
+            "MSA": {
+              "offset": "0x800",
+              "size": 32,
+              "description": "Master Salve Address\nThis register contains seven address bits of the slave to be accessed by the master (a6-a0), and an RS bit determining if the next operation is a receive or transmit."
+            },
+            "MSTAT": {
+              "offset": "0x804",
+              "size": 32,
+              "description": "Master Status"
+            },
+            "MCTRL": {
+              "offset": "0x804",
+              "size": 32,
+              "description": "Master Control\n\nThis register accesses status bits when read and control bits when written. When read, the status register indicates the state of the I2C bus controller as stated in MSTAT. When written, the control register configures the I2C controller operation.\n\nTo generate a single transmit cycle, the I2C Master Slave Address (MSA) register is written with the desired address, the MSA.RS bit is cleared, and this register is written with \n* ACK=X (0 or 1), \n* STOP=1, \n* START=1, \n* RUN=1 \nto perform the operation and stop. \nWhen the operation is completed (or aborted due an error), an interrupt becomes active and the data may be read from the MDR register."
+            },
+            "MDR": {
+              "offset": "0x808",
+              "size": 32,
+              "description": "Master Data\nThis register contains the data to be transmitted when in the Master Transmit state and the data received when in the Master Receive state."
+            },
+            "MTPR": {
+              "offset": "0x80C",
+              "size": 32,
+              "description": "I2C Master Timer Period\nThis register specifies the period of the SCL clock."
+            },
+            "MIMR": {
+              "offset": "0x810",
+              "size": 32,
+              "description": "Master Interrupt Mask\nThis register controls whether a raw interrupt is promoted to a controller interrupt."
+            },
+            "MRIS": {
+              "offset": "0x814",
+              "size": 32,
+              "description": "Master Raw Interrupt Status\nThis register show the unmasked interrupt status."
+            },
+            "MMIS": {
+              "offset": "0x818",
+              "size": 32,
+              "description": "Master Masked Interrupt Status\nThis register show which interrupt is active (based on result from MRIS and MIMR)."
+            },
+            "MICR": {
+              "offset": "0x81C",
+              "size": 32,
+              "description": "Master Interrupt Clear\nThis register clears the raw and masked interrupt."
+            },
+            "MCR": {
+              "offset": "0x820",
+              "size": 32,
+              "description": "Master Configuration\nThis register configures the mode (Master or Slave) and sets the interface for test mode loopback."
+            }
+          }
+        },
+        "I2S": {
+          "instances": [
+            {
+              "name": "I2S0",
+              "base": "0x40021000"
+            }
+          ],
+          "registers": {
+            "AIFWCLKSRC": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "WCLK Source Selection"
+            },
+            "AIFDMACFG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "DMA Buffer Size Configuration"
+            },
+            "AIFDIRCFG": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Pin Direction"
+            },
+            "AIFFMTCFG": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Serial Interface Format Configuration"
+            },
+            "AIFWMASK0": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Word Selection Bit Mask for Pin 0"
+            },
+            "AIFWMASK1": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Word Selection Bit Mask for Pin 1"
+            },
+            "AIFWMASK2": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Word Selection Bit Mask for Pin 2"
+            },
+            "AIFPWMVALUE": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Audio Interface PWM Debug Value"
+            },
+            "AIFINPTRNEXT": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "DMA Input Buffer Next Pointer"
+            },
+            "AIFINPTR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "DMA Input Buffer Current Pointer"
+            },
+            "AIFOUTPTRNEXT": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "DMA Output Buffer Next Pointer"
+            },
+            "AIFOUTPTR": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "DMA Output Buffer Current Pointer"
+            },
+            "STMPCTL": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "SampleStaMP Generator Control Register"
+            },
+            "STMPXCNTCAPT0": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Captured XOSC Counter Value, Capture Channel 0"
+            },
+            "STMPXPER": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "XOSC Period Value"
+            },
+            "STMPWCNTCAPT0": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Captured WCLK Counter Value, Capture Channel 0"
+            },
+            "STMPWPER": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "WCLK Counter Period Value"
+            },
+            "STMPINTRIG": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "WCLK Counter Trigger Value for Input Pins"
+            },
+            "STMPOUTTRIG": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "WCLK Counter Trigger Value for Output Pins"
+            },
+            "STMPWSET": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "WCLK Counter Set Operation"
+            },
+            "STMPWADD": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "WCLK Counter Add Operation"
+            },
+            "STMPXPERMIN": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "XOSC Minimum Period Value\nMinimum Value of STMPXPER"
+            },
+            "STMPWCNT": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Current Value of WCNT"
+            },
+            "STMPXCNT": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Current Value of XCNT"
+            },
+            "STMPXCNTCAPT1": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Captured XOSC Counter Value, Capture Channel 1"
+            },
+            "STMPWCNTCAPT1": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Captured WCLK Counter Value, Capture Channel 1"
+            },
+            "IRQMASK": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Masked Interrupt Status Register"
+            },
+            "IRQFLAGS": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Raw Interrupt Status Register"
+            },
+            "IRQSET": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "Interrupt Set Register"
+            },
+            "IRQCLR": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "Interrupt Clear Register"
+            }
+          }
+        },
+        "IOC": {
+          "instances": [
+            {
+              "name": "IOC",
+              "base": "0x40081000"
+            }
+          ],
+          "registers": {
+            "IOCFG0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Configuration of DIO0"
+            },
+            "IOCFG1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Configuration of DIO1"
+            },
+            "IOCFG2": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Configuration of DIO2"
+            },
+            "IOCFG3": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Configuration of DIO3"
+            },
+            "IOCFG4": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Configuration of DIO4"
+            },
+            "IOCFG5": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Configuration of DIO5"
+            },
+            "IOCFG6": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Configuration of DIO6"
+            },
+            "IOCFG7": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Configuration of DIO7"
+            },
+            "IOCFG8": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Configuration of DIO8"
+            },
+            "IOCFG9": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Configuration of DIO9"
+            },
+            "IOCFG10": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Configuration of DIO10"
+            },
+            "IOCFG11": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Configuration of DIO11"
+            },
+            "IOCFG12": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Configuration of DIO12"
+            },
+            "IOCFG13": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Configuration of DIO13"
+            },
+            "IOCFG14": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Configuration of DIO14"
+            },
+            "IOCFG15": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Configuration of DIO15"
+            },
+            "IOCFG16": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Configuration of DIO16"
+            },
+            "IOCFG17": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Configuration of DIO17"
+            },
+            "IOCFG18": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Configuration of DIO18"
+            },
+            "IOCFG19": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Configuration of DIO19"
+            },
+            "IOCFG20": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Configuration of DIO20"
+            },
+            "IOCFG21": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Configuration of DIO21"
+            },
+            "IOCFG22": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Configuration of DIO22"
+            },
+            "IOCFG23": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Configuration of DIO23"
+            },
+            "IOCFG24": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Configuration of DIO24"
+            },
+            "IOCFG25": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Configuration of DIO25"
+            },
+            "IOCFG26": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Configuration of DIO26"
+            },
+            "IOCFG27": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "Configuration of DIO27"
+            },
+            "IOCFG28": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Configuration of DIO28"
+            },
+            "IOCFG29": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Configuration of DIO29"
+            },
+            "IOCFG30": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "Configuration of DIO30"
+            },
+            "IOCFG31": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "Configuration of DIO31"
+            }
+          }
+        },
+        "PRCM": {
+          "instances": [
+            {
+              "name": "PRCM",
+              "base": "0x40082000"
+            }
+          ],
+          "registers": {
+            "INFRCLKDIVR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Infrastructure Clock Division Factor For Run Mode"
+            },
+            "INFRCLKDIVS": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Infrastructure Clock Division Factor For Sleep Mode"
+            },
+            "INFRCLKDIVDS": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Infrastructure Clock Division Factor For DeepSleep Mode"
+            },
+            "VDCTL": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "MCU Voltage Domain Control"
+            },
+            "CLKLOADCTL": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Clock Load Control"
+            },
+            "RFCCLKG": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "RFC Clock Gate"
+            },
+            "VIMSCLKG": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "VIMS Clock Gate"
+            },
+            "SECDMACLKGR": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "TRNG, CRYPTO And UDMA Clock Gate For Run Mode"
+            },
+            "SECDMACLKGS": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "TRNG, CRYPTO And UDMA Clock Gate For Sleep Mode"
+            },
+            "SECDMACLKGDS": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "TRNG, CRYPTO And UDMA Clock Gate For Deep Sleep Mode"
+            },
+            "GPIOCLKGR": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "GPIO Clock Gate For Run Mode"
+            },
+            "GPIOCLKGS": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "GPIO Clock Gate For Sleep Mode"
+            },
+            "GPIOCLKGDS": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "GPIO Clock Gate For Deep Sleep Mode"
+            },
+            "GPTCLKGR": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "GPT Clock Gate For Run Mode"
+            },
+            "GPTCLKGS": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "GPT Clock Gate For Sleep Mode"
+            },
+            "GPTCLKGDS": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "GPT Clock Gate For Deep Sleep Mode"
+            },
+            "I2CCLKGR": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "I2C Clock Gate For Run Mode"
+            },
+            "I2CCLKGS": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "I2C Clock Gate For Sleep Mode"
+            },
+            "I2CCLKGDS": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "I2C Clock Gate For Deep Sleep Mode"
+            },
+            "UARTCLKGR": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "UART Clock Gate For Run Mode"
+            },
+            "UARTCLKGS": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "UART Clock Gate For Sleep Mode"
+            },
+            "UARTCLKGDS": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "UART Clock Gate For Deep Sleep Mode"
+            },
+            "SSICLKGR": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "SSI Clock Gate For Run Mode"
+            },
+            "SSICLKGS": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "SSI Clock Gate For Sleep Mode"
+            },
+            "SSICLKGDS": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "SSI Clock Gate For Deep Sleep Mode"
+            },
+            "I2SCLKGR": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "I2S Clock Gate For Run Mode"
+            },
+            "I2SCLKGS": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "I2S Clock Gate For Sleep Mode"
+            },
+            "I2SCLKGDS": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "I2S Clock Gate For Deep Sleep Mode"
+            },
+            "CPUCLKDIV": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "Internal. Only to be used through TI provided API."
+            },
+            "I2SBCLKSEL": {
+              "offset": "0xC8",
+              "size": 32,
+              "description": "I2S Clock Control"
+            },
+            "GPTCLKDIV": {
+              "offset": "0xCC",
+              "size": 32,
+              "description": "GPT Scalar"
+            },
+            "I2SCLKCTL": {
+              "offset": "0xD0",
+              "size": 32,
+              "description": "I2S Clock Control"
+            },
+            "I2SMCLKDIV": {
+              "offset": "0xD4",
+              "size": 32,
+              "description": "MCLK Division Ratio"
+            },
+            "I2SBCLKDIV": {
+              "offset": "0xD8",
+              "size": 32,
+              "description": "BCLK Division Ratio"
+            },
+            "I2SWCLKDIV": {
+              "offset": "0xDC",
+              "size": 32,
+              "description": "WCLK Division Ratio"
+            },
+            "SWRESET": {
+              "offset": "0x10C",
+              "size": 32,
+              "description": "SW Initiated Resets"
+            },
+            "WARMRESET": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "WARM Reset Control And Status"
+            },
+            "PDCTL0": {
+              "offset": "0x12C",
+              "size": 32,
+              "description": "Power Domain Control"
+            },
+            "PDCTL0RFC": {
+              "offset": "0x130",
+              "size": 32,
+              "description": "RFC Power Domain Control"
+            },
+            "PDCTL0SERIAL": {
+              "offset": "0x134",
+              "size": 32,
+              "description": "SERIAL Power Domain Control"
+            },
+            "PDCTL0PERIPH": {
+              "offset": "0x138",
+              "size": 32,
+              "description": "PERIPH Power Domain Control"
+            },
+            "PDSTAT0": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "Power Domain Status"
+            },
+            "PDSTAT0RFC": {
+              "offset": "0x144",
+              "size": 32,
+              "description": "RFC Power Domain Status"
+            },
+            "PDSTAT0SERIAL": {
+              "offset": "0x148",
+              "size": 32,
+              "description": "SERIAL Power Domain Status"
+            },
+            "PDSTAT0PERIPH": {
+              "offset": "0x14C",
+              "size": 32,
+              "description": "PERIPH Power Domain Status"
+            },
+            "PDCTL1": {
+              "offset": "0x17C",
+              "size": 32,
+              "description": "Power Domain Control"
+            },
+            "PDCTL1CPU": {
+              "offset": "0x184",
+              "size": 32,
+              "description": "CPU Power Domain Control"
+            },
+            "PDCTL1RFC": {
+              "offset": "0x188",
+              "size": 32,
+              "description": "RFC Power Domain Control"
+            },
+            "PDCTL1VIMS": {
+              "offset": "0x18C",
+              "size": 32,
+              "description": "VIMS Power Domain Control"
+            },
+            "PDSTAT1": {
+              "offset": "0x194",
+              "size": 32,
+              "description": "Power Domain Status"
+            },
+            "PDSTAT1BUS": {
+              "offset": "0x198",
+              "size": 32,
+              "description": "BUS Power Domain Status"
+            },
+            "PDSTAT1RFC": {
+              "offset": "0x19C",
+              "size": 32,
+              "description": "RFC Power Domain Status"
+            },
+            "PDSTAT1CPU": {
+              "offset": "0x1A0",
+              "size": 32,
+              "description": "CPU Power Domain Status"
+            },
+            "PDSTAT1VIMS": {
+              "offset": "0x1A4",
+              "size": 32,
+              "description": "VIMS Power Domain Status"
+            },
+            "RFCMODESEL": {
+              "offset": "0x1D0",
+              "size": 32,
+              "description": "Selected RFC Mode"
+            },
+            "RAMRETEN": {
+              "offset": "0x224",
+              "size": 32,
+              "description": "Memory Retention Control"
+            }
+          }
+        },
+        "RFC": {
+          "instances": [
+            {
+              "name": "RFC_DBELL",
+              "base": "0x40041000"
+            },
+            {
+              "name": "RFC_RAT",
+              "base": "0x40043000"
+            }
+          ],
+          "registers": {
+            "CMDR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Doorbell Command Register"
+            },
+            "CMDSTA": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Doorbell Command Status Register"
+            },
+            "RFHWIFG": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Interrupt Flags From RF Hardware Modules"
+            },
+            "RFHWIEN": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Interrupt Enable For RF Hardware Modules"
+            },
+            "RFCPEIFG": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Interrupt Flags For Command and Packet Engine Generated Interrupts"
+            },
+            "RFCPEIEN": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Interrupt Enable For Command and Packet Engine Generated Interrupts"
+            },
+            "RFCPEISL": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Interrupt Vector Selection For Command and Packet Engine Generated Interrupts"
+            },
+            "RFACKIFG": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Doorbell Command Acknowledgement Interrupt Flag"
+            },
+            "SYSGPOCTL": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "RF Core General Purpose Output Control"
+            }
+          }
+        },
+        "PWR": {
+          "instances": [
+            {
+              "name": "RFC_PWR",
+              "base": "0x40040000"
+            }
+          ],
+          "registers": {
+            "PWMCLKEN": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "RF Core Power Management and Clock Enable"
+            }
+          }
+        },
+        "SMPH": {
+          "instances": [
+            {
+              "name": "SMPH",
+              "base": "0x40084000"
+            }
+          ],
+          "registers": {
+            "SMPH0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "MCU SEMAPHORE 0"
+            },
+            "SMPH1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "MCU SEMAPHORE 1"
+            },
+            "SMPH2": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "MCU SEMAPHORE 2"
+            },
+            "SMPH3": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 3"
+            },
+            "SMPH4": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "MCU SEMAPHORE 4"
+            },
+            "SMPH5": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "MCU SEMAPHORE 5"
+            },
+            "SMPH6": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "MCU SEMAPHORE 6"
+            },
+            "SMPH7": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 7"
+            },
+            "SMPH8": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "MCU SEMAPHORE 8"
+            },
+            "SMPH9": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "MCU SEMAPHORE 9"
+            },
+            "SMPH10": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "MCU SEMAPHORE 10"
+            },
+            "SMPH11": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 11"
+            },
+            "SMPH12": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "MCU SEMAPHORE 12"
+            },
+            "SMPH13": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "MCU SEMAPHORE 13"
+            },
+            "SMPH14": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "MCU SEMAPHORE 14"
+            },
+            "SMPH15": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 15"
+            },
+            "SMPH16": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "MCU SEMAPHORE 16"
+            },
+            "SMPH17": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "MCU SEMAPHORE 17"
+            },
+            "SMPH18": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "MCU SEMAPHORE 18"
+            },
+            "SMPH19": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 19"
+            },
+            "SMPH20": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "MCU SEMAPHORE 20"
+            },
+            "SMPH21": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "MCU SEMAPHORE 21"
+            },
+            "SMPH22": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "MCU SEMAPHORE 22"
+            },
+            "SMPH23": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 23"
+            },
+            "SMPH24": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "MCU SEMAPHORE 24"
+            },
+            "SMPH25": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "MCU SEMAPHORE 25"
+            },
+            "SMPH26": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "MCU SEMAPHORE 26"
+            },
+            "SMPH27": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 27"
+            },
+            "SMPH28": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "MCU SEMAPHORE 28"
+            },
+            "SMPH29": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "MCU SEMAPHORE 29"
+            },
+            "SMPH30": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "MCU SEMAPHORE 30"
+            },
+            "SMPH31": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 31"
+            },
+            "PEEK0": {
+              "offset": "0x800",
+              "size": 32,
+              "description": "MCU SEMAPHORE 0 ALIAS"
+            },
+            "PEEK1": {
+              "offset": "0x804",
+              "size": 32,
+              "description": "MCU SEMAPHORE 1 ALIAS"
+            },
+            "PEEK2": {
+              "offset": "0x808",
+              "size": 32,
+              "description": "MCU SEMAPHORE 2 ALIAS"
+            },
+            "PEEK3": {
+              "offset": "0x80C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 3 ALIAS"
+            },
+            "PEEK4": {
+              "offset": "0x810",
+              "size": 32,
+              "description": "MCU SEMAPHORE 4 ALIAS"
+            },
+            "PEEK5": {
+              "offset": "0x814",
+              "size": 32,
+              "description": "MCU SEMAPHORE 5 ALIAS"
+            },
+            "PEEK6": {
+              "offset": "0x818",
+              "size": 32,
+              "description": "MCU SEMAPHORE 6 ALIAS"
+            },
+            "PEEK7": {
+              "offset": "0x81C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 7 ALIAS"
+            },
+            "PEEK8": {
+              "offset": "0x820",
+              "size": 32,
+              "description": "MCU SEMAPHORE 8 ALIAS"
+            },
+            "PEEK9": {
+              "offset": "0x824",
+              "size": 32,
+              "description": "MCU SEMAPHORE 9 ALIAS"
+            },
+            "PEEK10": {
+              "offset": "0x828",
+              "size": 32,
+              "description": "MCU SEMAPHORE 10 ALIAS"
+            },
+            "PEEK11": {
+              "offset": "0x82C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 11 ALIAS"
+            },
+            "PEEK12": {
+              "offset": "0x830",
+              "size": 32,
+              "description": "MCU SEMAPHORE 12 ALIAS"
+            },
+            "PEEK13": {
+              "offset": "0x834",
+              "size": 32,
+              "description": "MCU SEMAPHORE 13 ALIAS"
+            },
+            "PEEK14": {
+              "offset": "0x838",
+              "size": 32,
+              "description": "MCU SEMAPHORE 14 ALIAS"
+            },
+            "PEEK15": {
+              "offset": "0x83C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 15 ALIAS"
+            },
+            "PEEK16": {
+              "offset": "0x840",
+              "size": 32,
+              "description": "MCU SEMAPHORE 16 ALIAS"
+            },
+            "PEEK17": {
+              "offset": "0x844",
+              "size": 32,
+              "description": "MCU SEMAPHORE 17 ALIAS"
+            },
+            "PEEK18": {
+              "offset": "0x848",
+              "size": 32,
+              "description": "MCU SEMAPHORE 18 ALIAS"
+            },
+            "PEEK19": {
+              "offset": "0x84C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 19 ALIAS"
+            },
+            "PEEK20": {
+              "offset": "0x850",
+              "size": 32,
+              "description": "MCU SEMAPHORE 20 ALIAS"
+            },
+            "PEEK21": {
+              "offset": "0x854",
+              "size": 32,
+              "description": "MCU SEMAPHORE 21 ALIAS"
+            },
+            "PEEK22": {
+              "offset": "0x858",
+              "size": 32,
+              "description": "MCU SEMAPHORE 22 ALIAS"
+            },
+            "PEEK23": {
+              "offset": "0x85C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 23 ALIAS"
+            },
+            "PEEK24": {
+              "offset": "0x860",
+              "size": 32,
+              "description": "MCU SEMAPHORE 24 ALIAS"
+            },
+            "PEEK25": {
+              "offset": "0x864",
+              "size": 32,
+              "description": "MCU SEMAPHORE 25 ALIAS"
+            },
+            "PEEK26": {
+              "offset": "0x868",
+              "size": 32,
+              "description": "MCU SEMAPHORE 26 ALIAS"
+            },
+            "PEEK27": {
+              "offset": "0x86C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 27 ALIAS"
+            },
+            "PEEK28": {
+              "offset": "0x870",
+              "size": 32,
+              "description": "MCU SEMAPHORE 28 ALIAS"
+            },
+            "PEEK29": {
+              "offset": "0x874",
+              "size": 32,
+              "description": "MCU SEMAPHORE 29 ALIAS"
+            },
+            "PEEK30": {
+              "offset": "0x878",
+              "size": 32,
+              "description": "MCU SEMAPHORE 30 ALIAS"
+            },
+            "PEEK31": {
+              "offset": "0x87C",
+              "size": 32,
+              "description": "MCU SEMAPHORE 31 ALIAS"
+            }
+          }
+        },
+        "SSI0": {
+          "instances": [
+            {
+              "name": "SSI0",
+              "base": "0x40000000"
+            }
+          ],
+          "registers": {
+            "CR0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Control 0"
+            },
+            "CR1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Control 1"
+            },
+            "DR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Data\n16-bits wide data register:\nWhen read, the entry in the receive FIFO, pointed to by the current FIFO read pointer, is accessed. As data values are removed by the  receive logic from the incoming data frame, they are placed into the entry in the receive FIFO, pointed to by the current FIFO write pointer.\nWhen written, the entry in the transmit FIFO, pointed to by the write pointer, is written to. Data values are removed from the transmit FIFO one value at a time by the transmit logic. It is loaded into the transmit serial shifter, then serially shifted out onto the TXD output pin at the programmed bit rate.\nWhen a data size of less than 16 bits is selected, the user must right-justify data written to the transmit FIFO. The transmit logic ignores the unused bits. Received data less than 16 bits is automatically right-justified in the receive buffer."
+            },
+            "SR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Status"
+            },
+            "CPSR": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Clock Prescale"
+            },
+            "IMSC": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Interrupt Mask Set and Clear"
+            },
+            "RIS": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Raw Interrupt Status"
+            },
+            "MIS": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Masked Interrupt Status"
+            },
+            "ICR": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Interrupt Clear\nOn a write of 1, the corresponding interrupt is cleared. A write of 0 has no effect."
+            },
+            "DMACR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "DMA Control"
+            }
+          }
+        },
+        "SSI1": {
+          "instances": [
+            {
+              "name": "SSI1",
+              "base": "0x40008000"
+            }
+          ],
+          "registers": {
+            "CR0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Control 0"
+            },
+            "CR1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Control 1"
+            },
+            "DR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Data\n16-bits wide data register:\nWhen read, the entry in the receive FIFO, pointed to by the current FIFO read pointer, is accessed. As data values are removed by the  receive logic from the incoming data frame, they are placed into the entry in the receive FIFO, pointed to by the current FIFO write pointer.\nWhen written, the entry in the transmit FIFO, pointed to by the write pointer, is written to. Data values are removed from the transmit FIFO one value at a time by the transmit logic. It is loaded into the transmit serial shifter, then serially shifted out onto the TXD output pin at the programmed bit rate.\nWhen a data size of less than 16 bits is selected, the user must right-justify data written to the transmit FIFO. The transmit logic ignores the unused bits. Received data less than 16 bits is automatically right-justified in the receive buffer."
+            },
+            "SR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Status"
+            },
+            "CPSR": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Clock Prescale"
+            },
+            "IMSC": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Interrupt Mask Set and Clear"
+            },
+            "RIS": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Raw Interrupt Status"
+            },
+            "MIS": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Masked Interrupt Status"
+            },
+            "ICR": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Interrupt Clear\nOn a write of 1, the corresponding interrupt is cleared. A write of 0 has no effect."
+            },
+            "DMACR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "DMA Control"
+            }
+          }
+        },
+        "RNG": {
+          "instances": [
+            {
+              "name": "TRNG",
+              "base": "0x40028000"
+            }
+          ],
+          "registers": {
+            "OUT0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Random Number Lower Word Readout Value"
+            },
+            "OUT1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Random Number Upper Word Readout Value"
+            },
+            "IRQFLAGSTAT": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Interrupt Status"
+            },
+            "IRQFLAGMASK": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Interrupt Mask"
+            },
+            "IRQFLAGCLR": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Interrupt Flag Clear"
+            },
+            "CTL": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Control"
+            },
+            "CFG0": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Configuration 0"
+            },
+            "ALARMCNT": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Alarm Control"
+            },
+            "FROEN": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "FRO Enable"
+            },
+            "FRODETUNE": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "FRO De-tune Bit"
+            },
+            "ALARMMASK": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Alarm Event"
+            },
+            "ALARMSTOP": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Alarm Shutdown"
+            },
+            "LFSR0": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "LFSR Readout Value"
+            },
+            "LFSR1": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "LFSR Readout Value"
+            },
+            "LFSR2": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "LFSR Readout Value"
+            },
+            "HWOPT": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "TRNG Engine Options Information"
+            },
+            "HWVER0": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "HW Version 0\nEIP Number And Core Revision"
+            },
+            "IRQSTATMASK": {
+              "offset": "0x1FD8",
+              "size": 32,
+              "description": "Interrupt Status After Masking"
+            },
+            "HWVER1": {
+              "offset": "0x1FE0",
+              "size": 32,
+              "description": "HW Version 1\nTRNG Revision Number"
+            },
+            "IRQSET": {
+              "offset": "0x1FEC",
+              "size": 32,
+              "description": "Interrupt Set"
+            },
+            "SWRESET": {
+              "offset": "0x1FF0",
+              "size": 32,
+              "description": "SW Reset Control"
+            },
+            "IRQSTAT": {
+              "offset": "0x1FF8",
+              "size": 32,
+              "description": "Interrupt Status"
+            }
+          }
+        },
+        "USART": {
+          "instances": [
+            {
+              "name": "UART0",
+              "base": "0x40001000"
+            }
+          ],
+          "registers": {
+            "DR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Data\nFor words to be transmitted:\n  - if the FIFOs are enabled (LCRH.FEN = 1), data written to this location is pushed onto the transmit FIFO\n  - if the FIFOs are not enabled (LCRH.FEN = 0), data is stored in the transmitter holding register (the bottom word of the transmit FIFO).\nThe write operation initiates transmission from the UART. The data is prefixed with a start bit, appended with the appropriate parity bit (if parity is enabled), and a stop bit.\nThe resultant word is then transmitted.\nFor received words:\n  - if the FIFOs are enabled (LCRH.FEN = 1), the data byte and the 4-bit status (break, frame, parity, and overrun) is pushed onto the 12-bit wide receive FIFO \n  - if the FIFOs are not enabled (LCRH.FEN = 0), the data byte and status are stored in the receiving holding register (the bottom word of the receive FIFO).\nThe received data byte is read by performing reads from this register along with the corresponding status information. The status information can also be read by a read of the RSR register."
+            },
+            "RSR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Status\nThis register is mapped to the same address as ECR register.  Reads from this address are associated with RSR register and return the receive status. Writes to this address are associated with ECR register and clear the receive status flags (framing, parity, break, and overrun errors).\nIf the status is read from this register, then the status information for break, framing and parity corresponds to the data character read from the Data Register, DR prior to reading the RSR. The status information for overrun is set immediately when an overrun condition occurs."
+            },
+            "ECR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Error Clear\nThis register is mapped to the same address as RSR register.  Reads from this address are associated with RSR register and return the receive status. Writes to this address are associated with ECR register and clear the receive status flags (framing, parity, break, and overrun errors)."
+            },
+            "FR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Flag\nReads from this register return the UART flags."
+            },
+            "IBRD": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Integer Baud-Rate Divisor\nIf this register is modified while trasmission or reception is on-going, the baudrate will not be updated until transmission or reception of the current character is complete."
+            },
+            "FBRD": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Fractional Baud-Rate Divisor\nIf this register is modified while trasmission or reception is on-going, the baudrate will not be updated until transmission or reception of the current character is complete."
+            },
+            "LCRH": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Line Control"
+            },
+            "CTL": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Control"
+            },
+            "IFLS": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Interrupt FIFO Level Select"
+            },
+            "IMSC": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Interrupt Mask Set/Clear"
+            },
+            "RIS": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Raw Interrupt Status"
+            },
+            "MIS": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Masked Interrupt Status"
+            },
+            "ICR": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Interrupt Clear\nOn a write of 1, the corresponding interrupt is cleared. A write of 0 has no effect."
+            },
+            "DMACTL": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "DMA Control"
+            }
+          }
+        },
+        "DMA": {
+          "instances": [
+            {
+              "name": "UDMA0",
+              "base": "0x40020000"
+            }
+          ],
+          "registers": {
+            "STATUS": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Status"
+            },
+            "CFG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Configuration"
+            },
+            "CTRL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Channel Control Data Base Pointer"
+            },
+            "ALTCTRL": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Channel Alternate Control Data Base Pointer"
+            },
+            "WAITONREQ": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Channel Wait On Request Status"
+            },
+            "SOFTREQ": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Channel Software Request"
+            },
+            "SETBURST": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Channel Set UseBurst"
+            },
+            "CLEARBURST": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Channel Clear UseBurst"
+            },
+            "SETREQMASK": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Channel Set Request Mask"
+            },
+            "CLEARREQMASK": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Clear Channel Request Mask"
+            },
+            "SETCHANNELEN": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Set Channel Enable"
+            },
+            "CLEARCHANNELEN": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Clear Channel Enable"
+            },
+            "SETCHNLPRIALT": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Channel Set Primary-Alternate"
+            },
+            "CLEARCHNLPRIALT": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Channel Clear Primary-Alternate"
+            },
+            "SETCHNLPRIORITY": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Set Channel Priority"
+            },
+            "CLEARCHNLPRIORITY": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Clear Channel Priority"
+            },
+            "ERROR": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Error Status and Clear"
+            },
+            "REQDONE": {
+              "offset": "0x504",
+              "size": 32,
+              "description": "Channel Request Done"
+            },
+            "DONEMASK": {
+              "offset": "0x520",
+              "size": 32,
+              "description": "Channel Request Done Mask"
+            }
+          }
+        },
+        "VIMS": {
+          "instances": [
+            {
+              "name": "VIMS",
+              "base": "0x40034000"
+            }
+          ],
+          "registers": {
+            "STAT": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Status\nDisplays current VIMS mode and line buffer status"
+            },
+            "CTL": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Control\nConfigure VIMS mode and line buffer settings"
+            }
+          }
+        },
+        "WDG": {
+          "instances": [
+            {
+              "name": "WDT",
+              "base": "0x40080000"
+            }
+          ],
+          "registers": {
+            "LOAD": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Configuration"
+            },
+            "VALUE": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Current Count Value"
+            },
+            "CTL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Control"
+            },
+            "ICR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Interrupt Clear"
+            },
+            "RIS": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Raw Interrupt Status"
+            },
+            "MIS": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Masked Interrupt Status"
+            },
+            "TEST": {
+              "offset": "0x418",
+              "size": 32,
+              "description": "Test Mode"
+            },
+            "INT_CAUS": {
+              "offset": "0x41C",
+              "size": 32,
+              "description": "Interrupt Cause Test Mode"
+            },
+            "LOCK": {
+              "offset": "0xC00",
+              "size": 32,
+              "description": "Lock"
+            }
+          }
+        }
+      },
+      "interrupts": {
+        "count": 149,
+        "vectors": [
+          {
+            "number": 0,
+            "name": "Initial_SP"
+          },
+          {
+            "number": 1,
+            "name": "Reset_Handler"
+          },
+          {
+            "number": 2,
+            "name": "NMI_Handler"
+          },
+          {
+            "number": 3,
+            "name": "HardFault_Handler"
+          },
+          {
+            "number": 4,
+            "name": "MemManage_Handler"
+          },
+          {
+            "number": 5,
+            "name": "BusFault_Handler"
+          },
+          {
+            "number": 6,
+            "name": "UsageFault_Handler"
+          },
+          {
+            "number": 11,
+            "name": "SVC_Handler"
+          },
+          {
+            "number": 12,
+            "name": "DebugMon_Handler"
+          },
+          {
+            "number": 14,
+            "name": "PendSV_Handler"
+          },
+          {
+            "number": 15,
+            "name": "SysTick_Handler"
+          },
+          {
+            "number": 16,
+            "name": "AON_GPIO_EDGE_IRQHandler"
+          },
+          {
+            "number": 20,
+            "name": "I2C_IRQ_IRQHandler"
+          },
+          {
+            "number": 24,
+            "name": "RFC_CPE_1_IRQHandler"
+          },
+          {
+            "number": 32,
+            "name": "AON_RTC_COMB_IRQHandler"
+          },
+          {
+            "number": 36,
+            "name": "UART0_COMB_IRQHandler"
+          },
+          {
+            "number": 40,
+            "name": "AUX_SWEV0_IRQHandler"
+          },
+          {
+            "number": 44,
+            "name": "SSI0_COMB_IRQHandler"
+          },
+          {
+            "number": 48,
+            "name": "SSI1_COMB_IRQHandler"
+          },
+          {
+            "number": 52,
+            "name": "RFC_CPE_0_IRQHandler"
+          },
+          {
+            "number": 56,
+            "name": "RFC_HW_COMB_IRQHandler"
+          },
+          {
+            "number": 60,
+            "name": "RFC_CMD_ACK_IRQHandler"
+          },
+          {
+            "number": 64,
+            "name": "I2S_IRQ_IRQHandler"
+          },
+          {
+            "number": 68,
+            "name": "AUX_SWEV1_IRQHandler"
+          },
+          {
+            "number": 72,
+            "name": "WDT_IRQ_IRQHandler"
+          },
+          {
+            "number": 76,
+            "name": "GPT0A_IRQHandler"
+          },
+          {
+            "number": 80,
+            "name": "GPT0B_IRQHandler"
+          },
+          {
+            "number": 84,
+            "name": "GPT1A_IRQHandler"
+          },
+          {
+            "number": 88,
+            "name": "GPT1B_IRQHandler"
+          },
+          {
+            "number": 92,
+            "name": "GPT2A_IRQHandler"
+          },
+          {
+            "number": 96,
+            "name": "GPT2B_IRQHandler"
+          },
+          {
+            "number": 100,
+            "name": "GPT3A_IRQHandler"
+          },
+          {
+            "number": 104,
+            "name": "GPT3B_IRQHandler"
+          },
+          {
+            "number": 108,
+            "name": "CRYPTO_RESULT_AVAIL_IRQ_IRQHandler"
+          },
+          {
+            "number": 112,
+            "name": "DMA_DONE_COMB_IRQHandler"
+          },
+          {
+            "number": 116,
+            "name": "DMA_ERR_IRQHandler"
+          },
+          {
+            "number": 120,
+            "name": "FLASH_IRQHandler"
+          },
+          {
+            "number": 124,
+            "name": "SWEV0_IRQHandler"
+          },
+          {
+            "number": 128,
+            "name": "AUX_COMB_IRQHandler"
+          },
+          {
+            "number": 132,
+            "name": "AON_PROG0_IRQHandler"
+          },
+          {
+            "number": 136,
+            "name": "PROG0_IRQHandler"
+          },
+          {
+            "number": 140,
+            "name": "AUX_COMPA_IRQHandler"
+          },
+          {
+            "number": 144,
+            "name": "AUX_ADC_IRQ_IRQHandler"
+          },
+          {
+            "number": 148,
+            "name": "TRNG_IRQ_IRQHandler"
+          }
+        ]
+      }
+    }
+  }
+}

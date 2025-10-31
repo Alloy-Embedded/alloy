@@ -3,7 +3,7 @@
 /// Source: example.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 22:25:27
+/// Generated: 2025-10-30 23:21:48
 #ifndef ALLOY_GENERATED_EXAMPLE_MCU_PERIPHERALS_HPP
 #define ALLOY_GENERATED_EXAMPLE_MCU_PERIPHERALS_HPP
 
@@ -44,6 +44,7 @@ namespace gpio {
     inline Registers* GPIOA = reinterpret_cast<Registers*>(GPIOA_BASE);
     inline Registers* GPIOB = reinterpret_cast<Registers*>(GPIOB_BASE);
     inline Registers* GPIOC = reinterpret_cast<Registers*>(GPIOC_BASE);
+
 }
 
 // ============================================================================
@@ -68,6 +69,7 @@ namespace usart {
     /// Peripheral instances
     inline Registers* USART1 = reinterpret_cast<Registers*>(USART1_BASE);
     inline Registers* USART2 = reinterpret_cast<Registers*>(USART2_BASE);
+
 }
 
 

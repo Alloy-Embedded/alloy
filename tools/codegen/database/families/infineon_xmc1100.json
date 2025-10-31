@@ -1,0 +1,3778 @@
+{
+  "family": "XMC1100",
+  "architecture": "arm-cortex-m0",
+  "vendor": "Infineon",
+  "mcus": {
+    "XMC1100": {
+      "flash": {
+        "size_kb": 64,
+        "base_address": "0x08000000",
+        "page_size_kb": 1
+      },
+      "ram": {
+        "size_kb": 20,
+        "base_address": "0x20000000"
+      },
+      "peripherals": {
+        "PPB": {
+          "instances": [
+            {
+              "name": "PPB",
+              "base": "0xE000E000"
+            }
+          ],
+          "registers": {
+            "SYST_CSR": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "SysTick Control and Status Register"
+            },
+            "SYST_RVR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "SysTick Reload Value Register"
+            },
+            "SYST_CVR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "SysTick Current Value Register"
+            },
+            "SYST_CALIB": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "SysTick Calibration Value Register"
+            },
+            "NVIC_ISER": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "Interrupt Set-enable Register"
+            },
+            "NVIC_ICER": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "IInterrupt Clear-enable Register"
+            },
+            "NVIC_ISPR": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "Interrupt Set-pending Register"
+            },
+            "NVIC_ICPR": {
+              "offset": "0x280",
+              "size": 32,
+              "description": "Interrupt Clear-pending Register"
+            },
+            "NVIC_IPR0": {
+              "offset": "0x400",
+              "size": 32,
+              "description": "Interrupt Priority Register 0"
+            },
+            "NVIC_IPR1": {
+              "offset": "0x404",
+              "size": 32,
+              "description": "Interrupt Priority Register 1"
+            },
+            "NVIC_IPR2": {
+              "offset": "0x408",
+              "size": 32,
+              "description": "Interrupt Priority Register 2"
+            },
+            "NVIC_IPR3": {
+              "offset": "0x40C",
+              "size": 32,
+              "description": "Interrupt Priority Register 3"
+            },
+            "NVIC_IPR4": {
+              "offset": "0x410",
+              "size": 32,
+              "description": "Interrupt Priority Register 4"
+            },
+            "NVIC_IPR5": {
+              "offset": "0x414",
+              "size": 32,
+              "description": "Interrupt Priority Register 5"
+            },
+            "NVIC_IPR6": {
+              "offset": "0x418",
+              "size": 32,
+              "description": "Interrupt Priority Register 6"
+            },
+            "NVIC_IPR7": {
+              "offset": "0x41C",
+              "size": 32,
+              "description": "Interrupt Priority Register 7"
+            },
+            "CPUID": {
+              "offset": "0xD00",
+              "size": 32,
+              "description": "CPUID Base Register"
+            },
+            "ICSR": {
+              "offset": "0xD04",
+              "size": 32,
+              "description": "Interrupt Control and State Register"
+            },
+            "AIRCR": {
+              "offset": "0xD0C",
+              "size": 32,
+              "description": "Application Interrupt and Reset Control Register"
+            },
+            "SCR": {
+              "offset": "0xD10",
+              "size": 32,
+              "description": "System Control Register"
+            },
+            "CCR": {
+              "offset": "0xD14",
+              "size": 32,
+              "description": "Configuration and Control Register"
+            },
+            "SHPR2": {
+              "offset": "0xD1C",
+              "size": 32,
+              "description": "System Handler Priority Register 2"
+            },
+            "SHPR3": {
+              "offset": "0xD20",
+              "size": 32,
+              "description": "System Handler Priority Register 3"
+            },
+            "SHCSR": {
+              "offset": "0xD24",
+              "size": 32,
+              "description": "System Handler Control and State Register"
+            }
+          },
+          "bits": {
+            "SYST_CSR": {
+              "ENABLE": {
+                "bit": 0,
+                "description": "Counter Enable"
+              },
+              "TICKINT": {
+                "bit": 1,
+                "description": "SysTick Exception Request"
+              },
+              "CLKSOURCE": {
+                "bit": 2,
+                "description": "Clock Source"
+              },
+              "COUNTFLAG": {
+                "bit": 16,
+                "description": "Counter Flag"
+              }
+            },
+            "SYST_RVR": {
+              "RELOAD": {
+                "bit": 0,
+                "description": "Reload Value",
+                "width": 24
+              }
+            },
+            "SYST_CVR": {
+              "CURRENT": {
+                "bit": 0,
+                "description": "SysTick Counter Current Value",
+                "width": 24
+              }
+            },
+            "SYST_CALIB": {
+              "TENMS": {
+                "bit": 0,
+                "description": "10 Milliseconds",
+                "width": 24
+              },
+              "SKEW": {
+                "bit": 30,
+                "description": "Clock Skew"
+              },
+              "NOREF": {
+                "bit": 31,
+                "description": "Reference Clock"
+              }
+            },
+            "NVIC_ISER": {
+              "SETENA": {
+                "bit": 0,
+                "description": "Interrupt Node Set-enable",
+                "width": 32
+              }
+            },
+            "NVIC_ICER": {
+              "CLRENA": {
+                "bit": 0,
+                "description": "Interrupt Node Clear-enable",
+                "width": 32
+              }
+            },
+            "NVIC_ISPR": {
+              "SETPEND": {
+                "bit": 0,
+                "description": "Interrupt Node Set-pending",
+                "width": 32
+              }
+            },
+            "NVIC_ICPR": {
+              "CLRPEND": {
+                "bit": 0,
+                "description": "Interrupt Node Clear-pending",
+                "width": 32
+              }
+            },
+            "NVIC_IPR0": {
+              "PRI_3": {
+                "bit": 24,
+                "description": "Priority, Byte Offset 3",
+                "width": 8
+              },
+              "PRI_2": {
+                "bit": 16,
+                "description": "Priority, Byte Offset 2",
+                "width": 8
+              },
+              "PRI_1": {
+                "bit": 8,
+                "description": "Priority, Byte Offset 1",
+                "width": 8
+              },
+              "PRI_0": {
+                "bit": 0,
+                "description": "Priority, Byte Offset 0",
+                "width": 8
+              }
+            },
+            "NVIC_IPR1": {
+              "PRI_3": {
+                "bit": 24,
+                "description": "Priority, Byte Offset 3",
+                "width": 8
+              },
+              "PRI_2": {
+                "bit": 16,
+                "description": "Priority, Byte Offset 2",
+                "width": 8
+              },
+              "PRI_1": {
+                "bit": 8,
+                "description": "Priority, Byte Offset 1",
+                "width": 8
+              },
+              "PRI_0": {
+                "bit": 0,
+                "description": "Priority, Byte Offset 0",
+                "width": 8
+              }
+            },
+            "NVIC_IPR2": {
+              "PRI_3": {
+                "bit": 24,
+                "description": "Priority, Byte Offset 3",
+                "width": 8
+              },
+              "PRI_2": {
+                "bit": 16,
+                "description": "Priority, Byte Offset 2",
+                "width": 8
+              },
+              "PRI_1": {
+                "bit": 8,
+                "description": "Priority, Byte Offset 1",
+                "width": 8
+              },
+              "PRI_0": {
+                "bit": 0,
+                "description": "Priority, Byte Offset 0",
+                "width": 8
+              }
+            },
+            "NVIC_IPR3": {
+              "PRI_3": {
+                "bit": 24,
+                "description": "Priority, Byte Offset 3",
+                "width": 8
+              },
+              "PRI_2": {
+                "bit": 16,
+                "description": "Priority, Byte Offset 2",
+                "width": 8
+              },
+              "PRI_1": {
+                "bit": 8,
+                "description": "Priority, Byte Offset 1",
+                "width": 8
+              },
+              "PRI_0": {
+                "bit": 0,
+                "description": "Priority, Byte Offset 0",
+                "width": 8
+              }
+            },
+            "NVIC_IPR4": {
+              "PRI_3": {
+                "bit": 24,
+                "description": "Priority, Byte Offset 3",
+                "width": 8
+              },
+              "PRI_2": {
+                "bit": 16,
+                "description": "Priority, Byte Offset 2",
+                "width": 8
+              },
+              "PRI_1": {
+                "bit": 8,
+                "description": "Priority, Byte Offset 1",
+                "width": 8
+              },
+              "PRI_0": {
+                "bit": 0,
+                "description": "Priority, Byte Offset 0",
+                "width": 8
+              }
+            },
+            "NVIC_IPR5": {
+              "PRI_3": {
+                "bit": 24,
+                "description": "Priority, Byte Offset 3",
+                "width": 8
+              },
+              "PRI_2": {
+                "bit": 16,
+                "description": "Priority, Byte Offset 2",
+                "width": 8
+              },
+              "PRI_1": {
+                "bit": 8,
+                "description": "Priority, Byte Offset 1",
+                "width": 8
+              },
+              "PRI_0": {
+                "bit": 0,
+                "description": "Priority, Byte Offset 0",
+                "width": 8
+              }
+            },
+            "NVIC_IPR6": {
+              "PRI_3": {
+                "bit": 24,
+                "description": "Priority, Byte Offset 3",
+                "width": 8
+              },
+              "PRI_2": {
+                "bit": 16,
+                "description": "Priority, Byte Offset 2",
+                "width": 8
+              },
+              "PRI_1": {
+                "bit": 8,
+                "description": "Priority, Byte Offset 1",
+                "width": 8
+              },
+              "PRI_0": {
+                "bit": 0,
+                "description": "Priority, Byte Offset 0",
+                "width": 8
+              }
+            },
+            "NVIC_IPR7": {
+              "PRI_3": {
+                "bit": 24,
+                "description": "Priority, Byte Offset 3",
+                "width": 8
+              },
+              "PRI_2": {
+                "bit": 16,
+                "description": "Priority, Byte Offset 2",
+                "width": 8
+              },
+              "PRI_1": {
+                "bit": 8,
+                "description": "Priority, Byte Offset 1",
+                "width": 8
+              },
+              "PRI_0": {
+                "bit": 0,
+                "description": "Priority, Byte Offset 0",
+                "width": 8
+              }
+            },
+            "CPUID": {
+              "Revision": {
+                "bit": 0,
+                "description": "Revision Number",
+                "width": 4
+              },
+              "PartNo": {
+                "bit": 4,
+                "description": "Part Number of the Processor",
+                "width": 12
+              },
+              "Architecture": {
+                "bit": 16,
+                "description": "Architecture",
+                "width": 4
+              },
+              "Variant": {
+                "bit": 20,
+                "description": "Variant Number",
+                "width": 4
+              },
+              "Implementer": {
+                "bit": 24,
+                "description": "Implementer Code",
+                "width": 8
+              }
+            },
+            "ICSR": {
+              "VECTACTIVE": {
+                "bit": 0,
+                "description": "Active Exception Number",
+                "width": 6
+              },
+              "VECTPENDING": {
+                "bit": 12,
+                "description": "Pending Exception Number",
+                "width": 6
+              },
+              "ISRPENDING": {
+                "bit": 22,
+                "description": "Interrupt Pending Flag"
+              },
+              "PENDSTCLR": {
+                "bit": 25,
+                "description": "SysTick Exception Clear-pending"
+              },
+              "PENDSTSET": {
+                "bit": 26,
+                "description": "SysTick Exception Set-pending"
+              },
+              "PENDSVCLR": {
+                "bit": 27,
+                "description": "PendSV Clear Pending"
+              },
+              "PENDSVSET": {
+                "bit": 28,
+                "description": "PendSV Set Pending"
+              }
+            },
+            "AIRCR": {
+              "SYSRESETREQ": {
+                "bit": 2,
+                "description": "System Reset Request"
+              },
+              "ENDIANNESS": {
+                "bit": 15,
+                "description": "Data Endianness"
+              },
+              "VECTKEY": {
+                "bit": 16,
+                "description": "Register Key",
+                "width": 16
+              }
+            },
+            "SCR": {
+              "SLEEPONEXIT": {
+                "bit": 1,
+                "description": "Sleep-on-exit"
+              },
+              "SLEEPDEEP": {
+                "bit": 2,
+                "description": "Low Power Sleep Mode"
+              },
+              "SEVONPEND": {
+                "bit": 4,
+                "description": "Send Event on Pending bit"
+              }
+            },
+            "CCR": {
+              "UNALIGN_TRP": {
+                "bit": 3,
+                "description": "Unaligned Access Traps"
+              },
+              "STKALIGN": {
+                "bit": 9,
+                "description": "Stack Alignment"
+              }
+            },
+            "SHPR2": {
+              "PRI_11": {
+                "bit": 24,
+                "description": "Priority of System Handler 11",
+                "width": 8
+              }
+            },
+            "SHPR3": {
+              "PRI_14": {
+                "bit": 16,
+                "description": "Priority of System Handler 14",
+                "width": 8
+              },
+              "PRI_15": {
+                "bit": 24,
+                "description": "Priority of System Handler 15",
+                "width": 8
+              }
+            },
+            "SHCSR": {
+              "SVCALLPENDED": {
+                "bit": 15,
+                "description": "SVCall Pending bit"
+              }
+            }
+          }
+        },
+        "ERU0": {
+          "instances": [
+            {
+              "name": "ERU0",
+              "base": "0x40010600",
+              "irq": 3
+            }
+          ],
+          "registers": {
+            "EXISEL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Event Input Select"
+            },
+            "EXICON[%s]": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Event Input Control"
+            },
+            "EXOCON[%s]": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Event Output Trigger Control"
+            }
+          },
+          "bits": {
+            "EXISEL": {
+              "EXS0A": {
+                "bit": 0,
+                "description": "Event Source Select for A0 (ERS0)",
+                "width": 2
+              },
+              "EXS0B": {
+                "bit": 2,
+                "description": "Event Source Select for B0 (ERS0)",
+                "width": 2
+              },
+              "EXS1A": {
+                "bit": 4,
+                "description": "Event Source Select for A1 (ERS1)",
+                "width": 2
+              },
+              "EXS1B": {
+                "bit": 6,
+                "description": "Event Source Select for B1 (ERS1)",
+                "width": 2
+              },
+              "EXS2A": {
+                "bit": 8,
+                "description": "Event Source Select for A2 (ERS2)",
+                "width": 2
+              },
+              "EXS2B": {
+                "bit": 10,
+                "description": "Event Source Select for B2 (ERS2)",
+                "width": 2
+              },
+              "EXS3A": {
+                "bit": 12,
+                "description": "Event Source Select for A3 (ERS3)",
+                "width": 2
+              },
+              "EXS3B": {
+                "bit": 14,
+                "description": "Event Source Select for B3 (ERS3)",
+                "width": 2
+              }
+            },
+            "EXICON[%s]": {
+              "PE": {
+                "bit": 0,
+                "description": "Output Trigger Pulse Enable for ETLx"
+              },
+              "LD": {
+                "bit": 1,
+                "description": "Rebuild Level Detection for Status Flag for ETLx"
+              },
+              "RE": {
+                "bit": 2,
+                "description": "Rising Edge Detection Enable ETLx"
+              },
+              "FE": {
+                "bit": 3,
+                "description": "Falling Edge Detection Enable ETLx"
+              },
+              "OCS": {
+                "bit": 4,
+                "description": "Output Channel Select for ETLx Output Trigger Pulse",
+                "width": 3
+              },
+              "FL": {
+                "bit": 7,
+                "description": "Status Flag for ETLx"
+              },
+              "SS": {
+                "bit": 8,
+                "description": "Input Source Select for ERSx",
+                "width": 2
+              },
+              "NA": {
+                "bit": 10,
+                "description": "Input A Negation Select for ERSx"
+              },
+              "NB": {
+                "bit": 11,
+                "description": "Input B Negation Select for ERSx"
+              }
+            },
+            "EXOCON[%s]": {
+              "ISS": {
+                "bit": 0,
+                "description": "Internal Trigger Source Selection",
+                "width": 2
+              },
+              "GEEN": {
+                "bit": 2,
+                "description": "Gating Event Enable"
+              },
+              "PDR": {
+                "bit": 3,
+                "description": "Pattern Detection Result Flag"
+              },
+              "GP": {
+                "bit": 4,
+                "description": "Gating Selection for Pattern Detection Result",
+                "width": 2
+              },
+              "IPEN0": {
+                "bit": 12,
+                "description": "Pattern Detection Enable for ETL0"
+              },
+              "IPEN1": {
+                "bit": 13,
+                "description": "Pattern Detection Enable for ETL1"
+              },
+              "IPEN2": {
+                "bit": 14,
+                "description": "Pattern Detection Enable for ETL2"
+              },
+              "IPEN3": {
+                "bit": 15,
+                "description": "Pattern Detection Enable for ETL3"
+              }
+            }
+          }
+        },
+        "PAU": {
+          "instances": [
+            {
+              "name": "PAU",
+              "base": "0x40000000"
+            }
+          ],
+          "registers": {
+            "AVAIL0": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Peripheral Availability Register 0"
+            },
+            "AVAIL1": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Peripheral Availability Register 1"
+            },
+            "AVAIL2": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Peripheral Availability Register 2"
+            },
+            "PRIVDIS0": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Peripheral Privilege Access Register 0"
+            },
+            "PRIVDIS1": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "Peripheral Privilege Access Register 1"
+            },
+            "ROMSIZE": {
+              "offset": "0x400",
+              "size": 32,
+              "description": "ROM Size Register"
+            },
+            "FLSIZE": {
+              "offset": "0x404",
+              "size": 32,
+              "description": "Flash Size Register"
+            },
+            "RAM0SIZE": {
+              "offset": "0x410",
+              "size": 32,
+              "description": "RAM0 Size Register"
+            }
+          },
+          "bits": {
+            "AVAIL0": {
+              "AVAIL5": {
+                "bit": 5,
+                "description": "RAM Block 1 Availability Flag"
+              },
+              "AVAIL6": {
+                "bit": 6,
+                "description": "RAM Block 2 Availability Flag"
+              },
+              "AVAIL7": {
+                "bit": 7,
+                "description": "RAM Block 3 Availability Flag"
+              },
+              "AVAIL22": {
+                "bit": 22,
+                "description": "Port 0 Availability Flag"
+              },
+              "AVAIL23": {
+                "bit": 23,
+                "description": "Port 1 Availability Flag"
+              },
+              "AVAIL24": {
+                "bit": 24,
+                "description": "Port 0 Availability Flag"
+              }
+            },
+            "AVAIL1": {
+              "AVAIL0": {
+                "bit": 0,
+                "description": "USIC0 Channel 0 Availability Flag"
+              },
+              "AVAIL1": {
+                "bit": 1,
+                "description": "USIC0 Channel 1 Availability Flag"
+              },
+              "AVAIL4": {
+                "bit": 4,
+                "description": "PRNG Availability Flag"
+              },
+              "AVAIL5": {
+                "bit": 5,
+                "description": "VADC0 Basic SFRs Availability Flag"
+              },
+              "AVAIL8": {
+                "bit": 8,
+                "description": "SHS0 Availability Flag"
+              },
+              "AVAIL9": {
+                "bit": 9,
+                "description": "CC40 Availability Flag"
+              },
+              "AVAIL10": {
+                "bit": 10,
+                "description": "CC41 Availability Flag"
+              },
+              "AVAIL11": {
+                "bit": 11,
+                "description": "CC42 Availability Flag"
+              },
+              "AVAIL12": {
+                "bit": 12,
+                "description": "CC43 Availability Flag"
+              }
+            },
+            "PRIVDIS0": {
+              "PDIS2": {
+                "bit": 2,
+                "description": "Flash SFRs Privilege Disable Flag"
+              },
+              "PDIS5": {
+                "bit": 5,
+                "description": "RAM Block 1 Privilege Disable Flag"
+              },
+              "PDIS6": {
+                "bit": 6,
+                "description": "RAM Block 2 Privilege Disable Flag"
+              },
+              "PDIS7": {
+                "bit": 7,
+                "description": "RAM Block 3 Privilege Disable Flag"
+              },
+              "PDIS19": {
+                "bit": 19,
+                "description": "WDT Privilege Disable Flag"
+              },
+              "PDIS22": {
+                "bit": 22,
+                "description": "Port 0 Privilege Disable Flag"
+              },
+              "PDIS23": {
+                "bit": 23,
+                "description": "Port 1 Privilege Disable Flag"
+              },
+              "PDIS24": {
+                "bit": 24,
+                "description": "Port 2 Privilege Disable Flag"
+              }
+            },
+            "PRIVDIS1": {
+              "PDIS0": {
+                "bit": 0,
+                "description": "USIC0 Channel 0 Privilege Disable Flag"
+              },
+              "PDIS1": {
+                "bit": 1,
+                "description": "USIC0 Channel 1 Privilege Disable Flag"
+              },
+              "PDIS5": {
+                "bit": 5,
+                "description": "VADC0 Basic SFRs Privilege Disable Flag"
+              },
+              "PDIS8": {
+                "bit": 8,
+                "description": "SHS0 Privilege Disable Flag"
+              },
+              "PDIS9": {
+                "bit": 9,
+                "description": "CC40 and CCU40 Kernel SFRs Privilege Disable Flag"
+              },
+              "PDIS10": {
+                "bit": 10,
+                "description": "CC41 Privilege Disable Flag"
+              },
+              "PDIS11": {
+                "bit": 11,
+                "description": "CC42 Privilege Disable Flag"
+              },
+              "PDIS12": {
+                "bit": 12,
+                "description": "CC43 Privilege Disable Flag"
+              }
+            },
+            "ROMSIZE": {
+              "ADDR": {
+                "bit": 8,
+                "description": "ROM Size",
+                "width": 6
+              }
+            },
+            "FLSIZE": {
+              "ADDR": {
+                "bit": 12,
+                "description": "Flash Size",
+                "width": 6
+              }
+            },
+            "RAM0SIZE": {
+              "ADDR": {
+                "bit": 8,
+                "description": "RAM0 Size",
+                "width": 5
+              }
+            }
+          }
+        },
+        "NVM": {
+          "instances": [
+            {
+              "name": "NVM",
+              "base": "0x40050000"
+            }
+          ],
+          "registers": {
+            "NVMSTATUS": {
+              "offset": "0x00",
+              "size": 16,
+              "description": "NVM Status Register"
+            },
+            "NVMPROG": {
+              "offset": "0x04",
+              "size": 16,
+              "description": "NVM Programming Control Register"
+            },
+            "NVMCONF": {
+              "offset": "0x08",
+              "size": 16,
+              "description": "NVM Configuration Register"
+            },
+            "CONFIG1": {
+              "offset": "0x48",
+              "size": 16,
+              "description": "Configuration 1 Register"
+            }
+          },
+          "bits": {
+            "NVMSTATUS": {
+              "WRPERR": {
+                "bit": 6,
+                "description": "Write Protocol Error"
+              },
+              "ECC2READ": {
+                "bit": 5,
+                "description": "ECC2 Read"
+              },
+              "ECC1READ": {
+                "bit": 4,
+                "description": "ECC1 Read"
+              },
+              "VERR": {
+                "bit": 2,
+                "description": "Verify Error",
+                "width": 2
+              },
+              "SLEEP": {
+                "bit": 1,
+                "description": "Sleep Mode"
+              },
+              "BUSY": {
+                "bit": 0,
+                "description": "Busy"
+              }
+            },
+            "NVMPROG": {
+              "RSTECC": {
+                "bit": 13,
+                "description": "Reset ECC"
+              },
+              "RSTVERR": {
+                "bit": 12,
+                "description": "Reset Verify Error"
+              },
+              "ACTION": {
+                "bit": 0,
+                "description": "ACTION: [VERIFY, ONE_SHOT, OPTYPE]",
+                "width": 8
+              }
+            },
+            "NVMCONF": {
+              "NVM_ON": {
+                "bit": 15,
+                "description": "NVM On"
+              },
+              "INT_ON": {
+                "bit": 14,
+                "description": "Interrupt On"
+              },
+              "WS": {
+                "bit": 12,
+                "description": "Number of fixed Wait States"
+              },
+              "SECPROT": {
+                "bit": 4,
+                "description": "Sector Protection",
+                "width": 8
+              },
+              "HRLEV": {
+                "bit": 1,
+                "description": "Hardread Level",
+                "width": 2
+              }
+            },
+            "CONFIG1": {
+              "FIXWS": {
+                "bit": 11,
+                "description": "Wait States Scheme"
+              }
+            }
+          }
+        },
+        "WDG": {
+          "instances": [
+            {
+              "name": "WDT",
+              "base": "0x40020000"
+            }
+          ],
+          "registers": {
+            "ID": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "WDT Module ID Register"
+            },
+            "CTR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "WDT Control Register"
+            },
+            "SRV": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "WDT Service Register"
+            },
+            "TIM": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "WDT Timer Register"
+            },
+            "WLB": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "WDT Window Lower Bound Register"
+            },
+            "WUB": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "WDT Window Upper Bound Register"
+            },
+            "WDTSTS": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "WDT Status Register"
+            },
+            "WDTCLR": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "WDT Clear Register"
+            }
+          },
+          "bits": {
+            "ID": {
+              "MOD_REV": {
+                "bit": 0,
+                "description": "Module Revision Number",
+                "width": 8
+              },
+              "MOD_TYPE": {
+                "bit": 8,
+                "description": "Module Type",
+                "width": 8
+              },
+              "MOD_NUMBER": {
+                "bit": 16,
+                "description": "Module Number Value",
+                "width": 16
+              }
+            },
+            "CTR": {
+              "ENB": {
+                "bit": 0,
+                "description": "Enable"
+              },
+              "PRE": {
+                "bit": 1,
+                "description": "Pre-warning"
+              },
+              "DSP": {
+                "bit": 4,
+                "description": "Debug Suspend"
+              },
+              "SPW": {
+                "bit": 8,
+                "description": "Service Indication Pulse Width",
+                "width": 8
+              }
+            },
+            "SRV": {
+              "SRV": {
+                "bit": 0,
+                "description": "Service",
+                "width": 32
+              }
+            },
+            "TIM": {
+              "TIM": {
+                "bit": 0,
+                "description": "Timer Value",
+                "width": 32
+              }
+            },
+            "WLB": {
+              "WLB": {
+                "bit": 0,
+                "description": "Window Lower Bound",
+                "width": 32
+              }
+            },
+            "WUB": {
+              "WUB": {
+                "bit": 0,
+                "description": "Window Upper Bound",
+                "width": 32
+              }
+            },
+            "WDTSTS": {
+              "ALMS": {
+                "bit": 0,
+                "description": "Pre-warning Alarm"
+              }
+            },
+            "WDTCLR": {
+              "ALMC": {
+                "bit": 0,
+                "description": "Pre-warning Alarm"
+              }
+            }
+          }
+        },
+        "RTC": {
+          "instances": [
+            {
+              "name": "RTC",
+              "base": "0x40010A00"
+            }
+          ],
+          "registers": {
+            "ID": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "RTC Module ID Register"
+            },
+            "CTR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "RTC Control Register"
+            },
+            "RAWSTAT": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "RTC Raw Service Request Register"
+            },
+            "STSSR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "RTC Service Request Status Register"
+            },
+            "MSKSR": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "RTC Service Request Mask Register"
+            },
+            "CLRSR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "RTC Clear Service Request Register"
+            },
+            "ATIM0": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "RTC Alarm Time Register 0"
+            },
+            "ATIM1": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "RTC Alarm Time Register 1"
+            },
+            "TIM0": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "RTC Time Register 0"
+            },
+            "TIM1": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "RTC Time Register 1"
+            }
+          },
+          "bits": {
+            "ID": {
+              "MOD_REV": {
+                "bit": 0,
+                "description": "Module Revision Number",
+                "width": 8
+              },
+              "MOD_TYPE": {
+                "bit": 8,
+                "description": "Module Type",
+                "width": 8
+              },
+              "MOD_NUMBER": {
+                "bit": 16,
+                "description": "Module Number Value",
+                "width": 16
+              }
+            },
+            "CTR": {
+              "ENB": {
+                "bit": 0,
+                "description": "RTC Module Enable"
+              },
+              "SUS": {
+                "bit": 1,
+                "description": "Debug Suspend Control"
+              },
+              "DIV": {
+                "bit": 16,
+                "description": "Divider Value",
+                "width": 16
+              }
+            },
+            "RAWSTAT": {
+              "RPSE": {
+                "bit": 0,
+                "description": "Raw Periodic Seconds Service Request"
+              },
+              "RPMI": {
+                "bit": 1,
+                "description": "Raw Periodic Minutes Service Request"
+              },
+              "RPHO": {
+                "bit": 2,
+                "description": "Raw Periodic Hours Service Request"
+              },
+              "RPDA": {
+                "bit": 3,
+                "description": "Raw Periodic Days Service Request"
+              },
+              "RPMO": {
+                "bit": 5,
+                "description": "Raw Periodic Months Service Request"
+              },
+              "RPYE": {
+                "bit": 6,
+                "description": "Raw Periodic Years Service Request"
+              },
+              "RAI": {
+                "bit": 8,
+                "description": "Alarm Service Request"
+              }
+            },
+            "STSSR": {
+              "SPSE": {
+                "bit": 0,
+                "description": "Periodic Seconds Service Request Status after masking"
+              },
+              "SPMI": {
+                "bit": 1,
+                "description": "Periodic Minutes Service Request Status after masking"
+              },
+              "SPHO": {
+                "bit": 2,
+                "description": "Periodic Hours Service Request Status after masking"
+              },
+              "SPDA": {
+                "bit": 3,
+                "description": "Periodic Days Service Request Status after masking"
+              },
+              "SPMO": {
+                "bit": 5,
+                "description": "Periodic Months Service Request Status after masking"
+              },
+              "SPYE": {
+                "bit": 6,
+                "description": "Periodic Years Service Request Status after masking"
+              },
+              "SAI": {
+                "bit": 8,
+                "description": "Alarm Service Request Status after masking"
+              }
+            },
+            "MSKSR": {
+              "MPSE": {
+                "bit": 0,
+                "description": "Periodic Seconds Interrupt Mask"
+              },
+              "MPMI": {
+                "bit": 1,
+                "description": "Periodic Minutes Interrupt Mask"
+              },
+              "MPHO": {
+                "bit": 2,
+                "description": "Periodic Hours Interrupt Mask"
+              },
+              "MPDA": {
+                "bit": 3,
+                "description": "Periodic Days Interrupt Mask"
+              },
+              "MPMO": {
+                "bit": 5,
+                "description": "Periodic Months Interrupt Mask"
+              },
+              "MPYE": {
+                "bit": 6,
+                "description": "Periodic Years Interrupt Mask"
+              },
+              "MAI": {
+                "bit": 8,
+                "description": "Alarm Interrupt Mask"
+              }
+            },
+            "CLRSR": {
+              "RPSE": {
+                "bit": 0,
+                "description": "Raw Periodic Seconds Interrupt Clear"
+              },
+              "RPMI": {
+                "bit": 1,
+                "description": "Raw Periodic Minutes Interrupt Clear"
+              },
+              "RPHO": {
+                "bit": 2,
+                "description": "Raw Periodic Hours Interrupt Clear"
+              },
+              "RPDA": {
+                "bit": 3,
+                "description": "Raw Periodic Days Interrupt Clear"
+              },
+              "RPMO": {
+                "bit": 5,
+                "description": "Raw Periodic Months Interrupt Clear"
+              },
+              "RPYE": {
+                "bit": 6,
+                "description": "Raw Periodic Years Interrupt Clear"
+              },
+              "RAI": {
+                "bit": 8,
+                "description": "Raw Alarm Interrupt Clear"
+              }
+            },
+            "ATIM0": {
+              "ASE": {
+                "bit": 0,
+                "description": "Alarm Seconds Compare Value",
+                "width": 6
+              },
+              "AMI": {
+                "bit": 8,
+                "description": "Alarm Minutes Compare Value",
+                "width": 6
+              },
+              "AHO": {
+                "bit": 16,
+                "description": "Alarm Hours Compare Value",
+                "width": 5
+              },
+              "ADA": {
+                "bit": 24,
+                "description": "Alarm Days Compare Value",
+                "width": 5
+              }
+            },
+            "ATIM1": {
+              "AMO": {
+                "bit": 8,
+                "description": "Alarm Month Compare Value",
+                "width": 4
+              },
+              "AYE": {
+                "bit": 16,
+                "description": "Alarm Year Compare Value",
+                "width": 16
+              }
+            },
+            "TIM0": {
+              "SE": {
+                "bit": 0,
+                "description": "Seconds Time Value",
+                "width": 6
+              },
+              "MI": {
+                "bit": 8,
+                "description": "Minutes Time Value",
+                "width": 6
+              },
+              "HO": {
+                "bit": 16,
+                "description": "Hours Time Value",
+                "width": 5
+              },
+              "DA": {
+                "bit": 24,
+                "description": "Days Time Value",
+                "width": 5
+              }
+            },
+            "TIM1": {
+              "DAWE": {
+                "bit": 0,
+                "description": "Days of Week Time Value",
+                "width": 3
+              },
+              "MO": {
+                "bit": 8,
+                "description": "Month Time Value",
+                "width": 4
+              },
+              "YE": {
+                "bit": 16,
+                "description": "Year Time Value",
+                "width": 16
+              }
+            }
+          }
+        },
+        "RNG": {
+          "instances": [
+            {
+              "name": "PRNG",
+              "base": "0x48020000"
+            }
+          ],
+          "registers": {
+            "WORD": {
+              "offset": "0x00",
+              "size": 16,
+              "description": "PRNG Word Register"
+            },
+            "CHK": {
+              "offset": "0x04",
+              "size": 16,
+              "description": "PRNG Status Check Register"
+            },
+            "CTRL": {
+              "offset": "0x0C",
+              "size": 16,
+              "description": "PRNG Control Register"
+            }
+          },
+          "bits": {
+            "WORD": {
+              "RDATA": {
+                "bit": 0,
+                "description": "Random Data",
+                "width": 16
+              }
+            },
+            "CHK": {
+              "RDV": {
+                "bit": 0,
+                "description": "Random Data / Key Valid Flag"
+              }
+            },
+            "CTRL": {
+              "KLD": {
+                "bit": 3,
+                "description": "Key Load Operation Mode"
+              },
+              "RDBS": {
+                "bit": 1,
+                "description": "Random Data Block Size",
+                "width": 2
+              }
+            }
+          }
+        },
+        "USIC0": {
+          "instances": [
+            {
+              "name": "USIC0",
+              "base": "0x48000008",
+              "irq": 9
+            },
+            {
+              "name": "USIC0_CH0",
+              "base": "0x48000000"
+            },
+            {
+              "name": "USIC0_CH1",
+              "base": "0x48000200"
+            }
+          ],
+          "registers": {
+            "ID": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Module Identification Register"
+            }
+          },
+          "bits": {
+            "ID": {
+              "MOD_REV": {
+                "bit": 0,
+                "description": "Module Revision Number",
+                "width": 8
+              },
+              "MOD_TYPE": {
+                "bit": 8,
+                "description": "Module Type",
+                "width": 8
+              },
+              "MOD_NUMBER": {
+                "bit": 16,
+                "description": "Module Number Value",
+                "width": 16
+              }
+            }
+          }
+        },
+        "SCU": {
+          "instances": [
+            {
+              "name": "SCU_GENERAL",
+              "base": "0x40010000"
+            },
+            {
+              "name": "SCU_INTERRUPT",
+              "base": "0x40010038",
+              "irq": 0
+            },
+            {
+              "name": "SCU_CLK",
+              "base": "0x40010300"
+            },
+            {
+              "name": "SCU_RESET",
+              "base": "0x40010400"
+            },
+            {
+              "name": "SCU_ANALOG",
+              "base": "0x40011000"
+            }
+          ],
+          "registers": {
+            "DBGROMID": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Debug System ROM ID Register"
+            },
+            "IDCHIP": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Chip ID Register"
+            },
+            "ID": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "SCU Module ID Register"
+            },
+            "SSW0": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "SSW Register 0"
+            },
+            "PASSWD": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Password Register"
+            },
+            "CCUCON": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "CCU Control Register"
+            },
+            "MIRRSTS": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Mirror Update Status Register"
+            },
+            "PMTSR": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Parity Memory Test Select Register"
+            }
+          },
+          "bits": {
+            "DBGROMID": {
+              "MANUFID": {
+                "bit": 1,
+                "description": "Manufactory Identity",
+                "width": 11
+              },
+              "PARTNO": {
+                "bit": 12,
+                "description": "Part Number",
+                "width": 16
+              },
+              "VERSION": {
+                "bit": 28,
+                "description": "Product version",
+                "width": 4
+              }
+            },
+            "IDCHIP": {
+              "IDCHIP": {
+                "bit": 0,
+                "description": "CHIP ID",
+                "width": 32
+              }
+            },
+            "ID": {
+              "MOD_REV": {
+                "bit": 0,
+                "description": "Module Revision Number",
+                "width": 8
+              },
+              "MOD_TYPE": {
+                "bit": 8,
+                "description": "Module Type",
+                "width": 8
+              },
+              "MOD_NUMBER": {
+                "bit": 16,
+                "description": "Module Number Value",
+                "width": 16
+              }
+            },
+            "SSW0": {
+              "DAT": {
+                "bit": 0,
+                "description": "SSW Data",
+                "width": 32
+              }
+            },
+            "PASSWD": {
+              "MODE": {
+                "bit": 0,
+                "description": "Bit Protection Scheme Control Bits",
+                "width": 2
+              },
+              "PROTS": {
+                "bit": 2,
+                "description": "Bit Protection Signal Status Bit"
+              },
+              "PASS": {
+                "bit": 3,
+                "description": "Password Bits",
+                "width": 5
+              }
+            },
+            "CCUCON": {
+              "GSC40": {
+                "bit": 0,
+                "description": "Global Start Control CCU40"
+              }
+            },
+            "MIRRSTS": {
+              "RTC_CTR": {
+                "bit": 0,
+                "description": "RTC CTR Mirror Register Update Status"
+              },
+              "RTC_ATIM0": {
+                "bit": 1,
+                "description": "RTC ATIM0 Mirror Register Update Status"
+              },
+              "RTC_ATIM1": {
+                "bit": 2,
+                "description": "RTC ATIM1 Mirror Register Update Status"
+              },
+              "RTC_TIM0": {
+                "bit": 3,
+                "description": "RTC TIM0 Mirror Register Update Status"
+              },
+              "RTC_TIM1": {
+                "bit": 4,
+                "description": "RTC TIM1 Mirror Register Update Status"
+              }
+            },
+            "PMTSR": {
+              "MTENS": {
+                "bit": 0,
+                "description": "Parity Test Enable Control for 16kbytes SRAM"
+              }
+            }
+          }
+        },
+        "PWR": {
+          "instances": [
+            {
+              "name": "SCU_POWER",
+              "base": "0x40010200"
+            }
+          ],
+          "registers": {
+            "VDESR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Voltage Detector Status Register"
+            }
+          },
+          "bits": {
+            "VDESR": {
+              "VCLIP": {
+                "bit": 0,
+                "description": "VCLIP Indication"
+              },
+              "VDDPPW": {
+                "bit": 1,
+                "description": "VDDPPW Indication"
+              }
+            }
+          }
+        },
+        "CCU40": {
+          "instances": [
+            {
+              "name": "CCU40",
+              "base": "0x48040000",
+              "irq": 21
+            },
+            {
+              "name": "CCU40_CC40",
+              "base": "0x48040100"
+            },
+            {
+              "name": "CCU40_CC41",
+              "base": "0x48040200"
+            },
+            {
+              "name": "CCU40_CC42",
+              "base": "0x48040300"
+            },
+            {
+              "name": "CCU40_CC43",
+              "base": "0x48040400"
+            }
+          ],
+          "registers": {
+            "GCTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Global Control Register"
+            },
+            "GSTAT": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Global Status Register"
+            },
+            "GIDLS": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Global Idle Set"
+            },
+            "GIDLC": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Global Idle Clear"
+            },
+            "GCSS": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Global Channel Set"
+            },
+            "GCSC": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Global Channel Clear"
+            },
+            "GCST": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Global Channel Status"
+            },
+            "MIDR": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Module Identification"
+            }
+          },
+          "bits": {
+            "GCTRL": {
+              "PRBC": {
+                "bit": 0,
+                "description": "Prescaler Clear Configuration",
+                "width": 3
+              },
+              "PCIS": {
+                "bit": 4,
+                "description": "Prescaler Input Clock Selection",
+                "width": 2
+              },
+              "SUSCFG": {
+                "bit": 8,
+                "description": "Suspend Mode Configuration",
+                "width": 2
+              },
+              "MSE0": {
+                "bit": 10,
+                "description": "Slice 0 Multi Channel shadow transfer enable"
+              },
+              "MSE1": {
+                "bit": 11,
+                "description": "Slice 1 Multi Channel shadow transfer enable"
+              },
+              "MSE2": {
+                "bit": 12,
+                "description": "Slice 2 Multi Channel shadow transfer enable"
+              },
+              "MSE3": {
+                "bit": 13,
+                "description": "Slice 3 Multi Channel shadow transfer enable"
+              },
+              "MSDE": {
+                "bit": 14,
+                "description": "Multi Channel shadow transfer request configuration",
+                "width": 2
+              }
+            },
+            "GSTAT": {
+              "S0I": {
+                "bit": 0,
+                "description": "CC40 IDLE status"
+              },
+              "S1I": {
+                "bit": 1,
+                "description": "CC41 IDLE status"
+              },
+              "S2I": {
+                "bit": 2,
+                "description": "CC42 IDLE status"
+              },
+              "S3I": {
+                "bit": 3,
+                "description": "CC43 IDLE status"
+              },
+              "PRB": {
+                "bit": 8,
+                "description": "Prescaler Run Bit"
+              }
+            },
+            "GIDLS": {
+              "SS0I": {
+                "bit": 0,
+                "description": "CC40 IDLE mode set"
+              },
+              "SS1I": {
+                "bit": 1,
+                "description": "CC41 IDLE mode set"
+              },
+              "SS2I": {
+                "bit": 2,
+                "description": "CC42 IDLE mode set"
+              },
+              "SS3I": {
+                "bit": 3,
+                "description": "CC43 IDLE mode set"
+              },
+              "CPRB": {
+                "bit": 8,
+                "description": "Prescaler Run Bit Clear"
+              },
+              "PSIC": {
+                "bit": 9,
+                "description": "Prescaler clear"
+              }
+            },
+            "GIDLC": {
+              "CS0I": {
+                "bit": 0,
+                "description": "CC40 IDLE mode clear"
+              },
+              "CS1I": {
+                "bit": 1,
+                "description": "CC41 IDLE mode clear"
+              },
+              "CS2I": {
+                "bit": 2,
+                "description": "CC42 IDLE mode clear"
+              },
+              "CS3I": {
+                "bit": 3,
+                "description": "CC43 IDLE mode clear"
+              },
+              "SPRB": {
+                "bit": 8,
+                "description": "Prescaler Run Bit Set"
+              }
+            },
+            "GCSS": {
+              "S0SE": {
+                "bit": 0,
+                "description": "Slice 0 shadow transfer set enable"
+              },
+              "S0DSE": {
+                "bit": 1,
+                "description": "Slice 0 Dither shadow transfer set enable"
+              },
+              "S0PSE": {
+                "bit": 2,
+                "description": "Slice 0 Prescaler shadow transfer set enable"
+              },
+              "S1SE": {
+                "bit": 4,
+                "description": "Slice 1 shadow transfer set enable"
+              },
+              "S1DSE": {
+                "bit": 5,
+                "description": "Slice 1 Dither shadow transfer set enable"
+              },
+              "S1PSE": {
+                "bit": 6,
+                "description": "Slice 1 Prescaler shadow transfer set enable"
+              },
+              "S2SE": {
+                "bit": 8,
+                "description": "Slice 2 shadow transfer set enable"
+              },
+              "S2DSE": {
+                "bit": 9,
+                "description": "Slice 2 Dither shadow transfer set enable"
+              },
+              "S2PSE": {
+                "bit": 10,
+                "description": "Slice 2 Prescaler shadow transfer set enable"
+              },
+              "S3SE": {
+                "bit": 12,
+                "description": "Slice 3 shadow transfer set enable"
+              },
+              "S3DSE": {
+                "bit": 13,
+                "description": "Slice 3 Dither shadow transfer set enable"
+              },
+              "S3PSE": {
+                "bit": 14,
+                "description": "Slice 3 Prescaler shadow transfer set enable"
+              },
+              "S0STS": {
+                "bit": 16,
+                "description": "Slice 0 status bit set"
+              },
+              "S1STS": {
+                "bit": 17,
+                "description": "Slice 1 status bit set"
+              },
+              "S2STS": {
+                "bit": 18,
+                "description": "Slice 2 status bit set"
+              },
+              "S3STS": {
+                "bit": 19,
+                "description": "Slice 3 status bit set"
+              }
+            },
+            "GCSC": {
+              "S0SC": {
+                "bit": 0,
+                "description": "Slice 0 shadow transfer clear"
+              },
+              "S0DSC": {
+                "bit": 1,
+                "description": "Slice 0 Dither shadow transfer clear"
+              },
+              "S0PSC": {
+                "bit": 2,
+                "description": "Slice 0 Prescaler shadow transfer clear"
+              },
+              "S1SC": {
+                "bit": 4,
+                "description": "Slice 1 shadow transfer clear"
+              },
+              "S1DSC": {
+                "bit": 5,
+                "description": "Slice 1 Dither shadow transfer clear"
+              },
+              "S1PSC": {
+                "bit": 6,
+                "description": "Slice 1 Prescaler shadow transfer clear"
+              },
+              "S2SC": {
+                "bit": 8,
+                "description": "Slice 2 shadow transfer clear"
+              },
+              "S2DSC": {
+                "bit": 9,
+                "description": "Slice 2 Dither shadow transfer clear"
+              },
+              "S2PSC": {
+                "bit": 10,
+                "description": "Slice 2 Prescaler shadow transfer clear"
+              },
+              "S3SC": {
+                "bit": 12,
+                "description": "Slice 3 shadow transfer clear"
+              },
+              "S3DSC": {
+                "bit": 13,
+                "description": "Slice 3 Dither shadow transfer clear"
+              },
+              "S3PSC": {
+                "bit": 14,
+                "description": "Slice 3 Prescaler shadow transfer clear"
+              },
+              "S0STC": {
+                "bit": 16,
+                "description": "Slice 0 status bit clear"
+              },
+              "S1STC": {
+                "bit": 17,
+                "description": "Slice 1 status bit clear"
+              },
+              "S2STC": {
+                "bit": 18,
+                "description": "Slice 2 status bit clear"
+              },
+              "S3STC": {
+                "bit": 19,
+                "description": "Slice 3 status bit clear"
+              }
+            },
+            "GCST": {
+              "S0SS": {
+                "bit": 0,
+                "description": "Slice 0 shadow transfer status"
+              },
+              "S0DSS": {
+                "bit": 1,
+                "description": "Slice 0 Dither shadow transfer status"
+              },
+              "S0PSS": {
+                "bit": 2,
+                "description": "Slice 0 Prescaler shadow transfer status"
+              },
+              "S1SS": {
+                "bit": 4,
+                "description": "Slice 1 shadow transfer status"
+              },
+              "S1DSS": {
+                "bit": 5,
+                "description": "Slice 1 Dither shadow transfer status"
+              },
+              "S1PSS": {
+                "bit": 6,
+                "description": "Slice 1 Prescaler shadow transfer status"
+              },
+              "S2SS": {
+                "bit": 8,
+                "description": "Slice 2 shadow transfer status"
+              },
+              "S2DSS": {
+                "bit": 9,
+                "description": "Slice 2 Dither shadow transfer status"
+              },
+              "S2PSS": {
+                "bit": 10,
+                "description": "Slice 2 Prescaler shadow transfer status"
+              },
+              "S3SS": {
+                "bit": 12,
+                "description": "Slice 3 shadow transfer status"
+              },
+              "S3DSS": {
+                "bit": 13,
+                "description": "Slice 3 Dither shadow transfer status"
+              },
+              "S3PSS": {
+                "bit": 14,
+                "description": "Slice 3 Prescaler shadow transfer status"
+              },
+              "CC40ST": {
+                "bit": 16,
+                "description": "Slice 0 status bit"
+              },
+              "CC41ST": {
+                "bit": 17,
+                "description": "Slice 1 status bit"
+              },
+              "CC42ST": {
+                "bit": 18,
+                "description": "Slice 2 status bit"
+              },
+              "CC43ST": {
+                "bit": 19,
+                "description": "Slice 3 status bit"
+              }
+            },
+            "MIDR": {
+              "MODR": {
+                "bit": 0,
+                "description": "Module Revision",
+                "width": 8
+              },
+              "MODT": {
+                "bit": 8,
+                "description": "Module Type",
+                "width": 8
+              },
+              "MODN": {
+                "bit": 16,
+                "description": "Module Number",
+                "width": 16
+              }
+            }
+          }
+        },
+        "ADC": {
+          "instances": [
+            {
+              "name": "VADC",
+              "base": "0x48030000",
+              "irq": 15
+            }
+          ],
+          "registers": {
+            "CLC": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Clock Control Register"
+            },
+            "ID": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Module Identification Register"
+            },
+            "OCS": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "OCDS Control and Status Register"
+            },
+            "GLOBCFG": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Global Configuration Register"
+            },
+            "GLOBICLASS[%s]": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "Input Class Register, Global"
+            },
+            "GLOBEFLAG": {
+              "offset": "0xE0",
+              "size": 32,
+              "description": "Global Event Flag Register"
+            },
+            "GLOBEVNP": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "Global Event Node Pointer Register"
+            },
+            "BRSSEL[%s]": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "Background Request Source Channel Select Register"
+            },
+            "BRSPND[%s]": {
+              "offset": "0x1C0",
+              "size": 32,
+              "description": "Background Request Source Pending Register"
+            },
+            "BRSCTRL": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "Background Request Source Control Register"
+            },
+            "BRSMR": {
+              "offset": "0x204",
+              "size": 32,
+              "description": "Background Request Source Mode Register"
+            },
+            "GLOBRCR": {
+              "offset": "0x280",
+              "size": 32,
+              "description": "Global Result Control Register"
+            },
+            "GLOBRES": {
+              "offset": "0x300",
+              "size": 32,
+              "description": "Global Result Register"
+            },
+            "GLOBRESD": {
+              "offset": "0x380",
+              "size": 32,
+              "description": "Global Result Register, Debug"
+            }
+          },
+          "bits": {
+            "CLC": {
+              "DISR": {
+                "bit": 0,
+                "description": "Module Disable Request Bit"
+              },
+              "DISS": {
+                "bit": 1,
+                "description": "Module Disable Status Bit"
+              },
+              "EDIS": {
+                "bit": 3,
+                "description": "Sleep Mode Enable Control"
+              }
+            },
+            "ID": {
+              "MOD_REV": {
+                "bit": 0,
+                "description": "Module Revision",
+                "width": 8
+              },
+              "MOD_TYPE": {
+                "bit": 8,
+                "description": "Module Type",
+                "width": 8
+              },
+              "MOD_NUMBER": {
+                "bit": 16,
+                "description": "Module Number",
+                "width": 16
+              }
+            },
+            "OCS": {
+              "TGS": {
+                "bit": 0,
+                "description": "Trigger Set for OTGB0/1",
+                "width": 2
+              },
+              "TGB": {
+                "bit": 2,
+                "description": "OTGB0/1 Bus Select"
+              },
+              "TG_P": {
+                "bit": 3,
+                "description": "TGS, TGB Write Protection"
+              },
+              "SUS": {
+                "bit": 24,
+                "description": "OCDS Suspend Control",
+                "width": 4
+              },
+              "SUS_P": {
+                "bit": 28,
+                "description": "SUS Write Protection"
+              },
+              "SUSSTA": {
+                "bit": 29,
+                "description": "Suspend State"
+              }
+            },
+            "GLOBCFG": {
+              "DIVA": {
+                "bit": 0,
+                "description": "Divider Factor for the Analog Internal Clock",
+                "width": 5
+              },
+              "DCMSB": {
+                "bit": 7,
+                "description": "Double Clock for the MSB Conversion"
+              },
+              "DIVD": {
+                "bit": 8,
+                "description": "Divider Factor for the Arbiter Clock",
+                "width": 2
+              },
+              "DIVWC": {
+                "bit": 15,
+                "description": "Write Control for Divider Parameters"
+              },
+              "DPCAL0": {
+                "bit": 16,
+                "description": "Disable Post-Calibration"
+              },
+              "DPCAL1": {
+                "bit": 17,
+                "description": "Disable Post-Calibration"
+              },
+              "SUCAL": {
+                "bit": 31,
+                "description": "Start-Up Calibration"
+              }
+            },
+            "GLOBICLASS[%s]": {
+              "STCS": {
+                "bit": 0,
+                "description": "Sample Time Control for Standard Conversions",
+                "width": 5
+              },
+              "CMS": {
+                "bit": 8,
+                "description": "Conversion Mode for Standard Conversions",
+                "width": 3
+              }
+            },
+            "GLOBEFLAG": {
+              "SEVGLB": {
+                "bit": 0,
+                "description": "Source Event (Background)"
+              },
+              "REVGLB": {
+                "bit": 8,
+                "description": "Global Result Event"
+              },
+              "SEVGLBCLR": {
+                "bit": 16,
+                "description": "Clear Source Event (Background)"
+              },
+              "REVGLBCLR": {
+                "bit": 24,
+                "description": "Clear Global Result Event"
+              }
+            },
+            "GLOBEVNP": {
+              "SEV0NP": {
+                "bit": 0,
+                "description": "Service Request Node Pointer Backgr. Source",
+                "width": 4
+              },
+              "REV0NP": {
+                "bit": 16,
+                "description": "Service Request Node Pointer Global Result",
+                "width": 4
+              }
+            },
+            "BRSSEL[%s]": {
+              "CHSELG0": {
+                "bit": 0,
+                "description": "Channel Selection Group x"
+              },
+              "CHSELG1": {
+                "bit": 1,
+                "description": "Channel Selection Group x"
+              },
+              "CHSELG2": {
+                "bit": 2,
+                "description": "Channel Selection Group x"
+              },
+              "CHSELG3": {
+                "bit": 3,
+                "description": "Channel Selection Group x"
+              },
+              "CHSELG4": {
+                "bit": 4,
+                "description": "Channel Selection Group x"
+              },
+              "CHSELG5": {
+                "bit": 5,
+                "description": "Channel Selection Group x"
+              },
+              "CHSELG6": {
+                "bit": 6,
+                "description": "Channel Selection Group x"
+              },
+              "CHSELG7": {
+                "bit": 7,
+                "description": "Channel Selection Group x"
+              }
+            },
+            "BRSPND[%s]": {
+              "CHPNDG0": {
+                "bit": 0,
+                "description": "Channels Pending Group x"
+              },
+              "CHPNDG1": {
+                "bit": 1,
+                "description": "Channels Pending Group x"
+              },
+              "CHPNDG2": {
+                "bit": 2,
+                "description": "Channels Pending Group x"
+              },
+              "CHPNDG3": {
+                "bit": 3,
+                "description": "Channels Pending Group x"
+              },
+              "CHPNDG4": {
+                "bit": 4,
+                "description": "Channels Pending Group x"
+              },
+              "CHPNDG5": {
+                "bit": 5,
+                "description": "Channels Pending Group x"
+              },
+              "CHPNDG6": {
+                "bit": 6,
+                "description": "Channels Pending Group x"
+              },
+              "CHPNDG7": {
+                "bit": 7,
+                "description": "Channels Pending Group x"
+              }
+            },
+            "BRSCTRL": {
+              "SRCRESREG": {
+                "bit": 0,
+                "description": "Source-specific Result Register",
+                "width": 4
+              },
+              "XTSEL": {
+                "bit": 8,
+                "description": "External Trigger Input Selection",
+                "width": 4
+              },
+              "XTLVL": {
+                "bit": 12,
+                "description": "External Trigger Level"
+              },
+              "XTMODE": {
+                "bit": 13,
+                "description": "Trigger Operating Mode",
+                "width": 2
+              },
+              "XTWC": {
+                "bit": 15,
+                "description": "Write Control for Trigger Configuration"
+              },
+              "GTSEL": {
+                "bit": 16,
+                "description": "Gate Input Selection",
+                "width": 4
+              },
+              "GTLVL": {
+                "bit": 20,
+                "description": "Gate Input Level"
+              },
+              "GTWC": {
+                "bit": 23,
+                "description": "Write Control for Gate Configuration"
+              }
+            },
+            "BRSMR": {
+              "ENGT": {
+                "bit": 0,
+                "description": "Enable Gate",
+                "width": 2
+              },
+              "ENTR": {
+                "bit": 2,
+                "description": "Enable External Trigger"
+              },
+              "ENSI": {
+                "bit": 3,
+                "description": "Enable Source Interrupt"
+              },
+              "SCAN": {
+                "bit": 4,
+                "description": "Autoscan Enable"
+              },
+              "LDM": {
+                "bit": 5,
+                "description": "Autoscan Source Load Event Mode"
+              },
+              "REQGT": {
+                "bit": 7,
+                "description": "Request Gate Level"
+              },
+              "CLRPND": {
+                "bit": 8,
+                "description": "Clear Pending Bits"
+              },
+              "LDEV": {
+                "bit": 9,
+                "description": "Generate Load Event"
+              },
+              "RPTDIS": {
+                "bit": 16,
+                "description": "Repeat Disable"
+              }
+            },
+            "GLOBRCR": {
+              "DRCTR": {
+                "bit": 16,
+                "description": "Data Reduction Control",
+                "width": 4
+              },
+              "WFR": {
+                "bit": 24,
+                "description": "Wait-for-Read Mode Enable"
+              },
+              "SRGEN": {
+                "bit": 31,
+                "description": "Service Request Generation Enable"
+              }
+            },
+            "GLOBRES": {
+              "RESULT": {
+                "bit": 0,
+                "description": "Result of most recent conversion",
+                "width": 16
+              },
+              "GNR": {
+                "bit": 16,
+                "description": "Group Number",
+                "width": 4
+              },
+              "CHNR": {
+                "bit": 20,
+                "description": "Channel Number",
+                "width": 5
+              },
+              "EMUX": {
+                "bit": 25,
+                "description": "External Multiplexer Setting",
+                "width": 3
+              },
+              "CRS": {
+                "bit": 28,
+                "description": "Converted Request Source",
+                "width": 2
+              },
+              "FCR": {
+                "bit": 30,
+                "description": "Fast Compare Result"
+              },
+              "VF": {
+                "bit": 31,
+                "description": "Valid Flag"
+              }
+            },
+            "GLOBRESD": {
+              "RESULT": {
+                "bit": 0,
+                "description": "Result of most recent conversion",
+                "width": 16
+              },
+              "GNR": {
+                "bit": 16,
+                "description": "Group Number",
+                "width": 4
+              },
+              "CHNR": {
+                "bit": 20,
+                "description": "Channel Number",
+                "width": 5
+              },
+              "EMUX": {
+                "bit": 25,
+                "description": "External Multiplexer Setting",
+                "width": 3
+              },
+              "CRS": {
+                "bit": 28,
+                "description": "Converted Request Source",
+                "width": 2
+              },
+              "FCR": {
+                "bit": 30,
+                "description": "Fast Compare Result"
+              },
+              "VF": {
+                "bit": 31,
+                "description": "Valid Flag"
+              }
+            }
+          }
+        },
+        "SHS0": {
+          "instances": [
+            {
+              "name": "SHS0",
+              "base": "0x48034000"
+            }
+          ],
+          "registers": {
+            "ID": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Module Identification Register"
+            },
+            "SHSCFG": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "SHS Configuration Register"
+            },
+            "STEPCFG": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Stepper Configuration Register"
+            },
+            "TIMCFG0": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Timing Configuration Register 0"
+            },
+            "TIMCFG1": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "Timing Configuration Register 1"
+            },
+            "CALCTR": {
+              "offset": "0xBC",
+              "size": 32,
+              "description": "Calibration Control Register"
+            },
+            "CALGC0": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "Gain Calibration Control Register 0"
+            },
+            "CALGC1": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "Gain Calibration Control Register 1"
+            },
+            "GNCTR00": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "Gain Control Register 00"
+            },
+            "GNCTR10": {
+              "offset": "0x190",
+              "size": 32,
+              "description": "Gain Control Register 10"
+            },
+            "LOOP": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Loop Control Register"
+            }
+          },
+          "bits": {
+            "ID": {
+              "MOD_REV": {
+                "bit": 0,
+                "description": "Module Revision",
+                "width": 8
+              },
+              "MOD_TYPE": {
+                "bit": 8,
+                "description": "Module Type",
+                "width": 8
+              },
+              "MOD_NUMBER": {
+                "bit": 16,
+                "description": "Module Number",
+                "width": 16
+              }
+            },
+            "SHSCFG": {
+              "DIVS": {
+                "bit": 0,
+                "description": "Divider Factor for the SHS Clock",
+                "width": 4
+              },
+              "AREF": {
+                "bit": 10,
+                "description": "Analog Reference Voltage Selection",
+                "width": 2
+              },
+              "ANOFF": {
+                "bit": 12,
+                "description": "Analog Converter Power Down Force"
+              },
+              "ANRDY": {
+                "bit": 14,
+                "description": "Analog Converter Ready"
+              },
+              "SCWC": {
+                "bit": 15,
+                "description": "Write Control for SHS Configuration"
+              },
+              "SP0": {
+                "bit": 16,
+                "description": "Sample Pending on S&H Unit x"
+              },
+              "SP1": {
+                "bit": 17,
+                "description": "Sample Pending on S&H Unit x"
+              },
+              "TC": {
+                "bit": 24,
+                "description": "Test Control",
+                "width": 4
+              },
+              "STATE": {
+                "bit": 28,
+                "description": "Current State of Sequencer",
+                "width": 4
+              }
+            },
+            "STEPCFG": {
+              "KSEL0": {
+                "bit": 0,
+                "description": "Kernel Select",
+                "width": 3
+              },
+              "KSEL1": {
+                "bit": 4,
+                "description": "Kernel Select",
+                "width": 3
+              },
+              "KSEL2": {
+                "bit": 8,
+                "description": "Kernel Select",
+                "width": 3
+              },
+              "KSEL3": {
+                "bit": 12,
+                "description": "Kernel Select",
+                "width": 3
+              },
+              "KSEL4": {
+                "bit": 16,
+                "description": "Kernel Select",
+                "width": 3
+              },
+              "KSEL5": {
+                "bit": 20,
+                "description": "Kernel Select",
+                "width": 3
+              },
+              "KSEL6": {
+                "bit": 24,
+                "description": "Kernel Select",
+                "width": 3
+              },
+              "KSEL7": {
+                "bit": 28,
+                "description": "Kernel Select",
+                "width": 3
+              },
+              "SEN0": {
+                "bit": 3,
+                "description": "Step x Enable"
+              },
+              "SEN1": {
+                "bit": 7,
+                "description": "Step x Enable"
+              },
+              "SEN2": {
+                "bit": 11,
+                "description": "Step x Enable"
+              },
+              "SEN3": {
+                "bit": 15,
+                "description": "Step x Enable"
+              },
+              "SEN4": {
+                "bit": 19,
+                "description": "Step x Enable"
+              },
+              "SEN5": {
+                "bit": 23,
+                "description": "Step x Enable"
+              },
+              "SEN6": {
+                "bit": 27,
+                "description": "Step x Enable"
+              },
+              "SEN7": {
+                "bit": 31,
+                "description": "Step x Enable"
+              }
+            },
+            "TIMCFG0": {
+              "AT": {
+                "bit": 0,
+                "description": "Accelerated Timing"
+              },
+              "FCRT": {
+                "bit": 4,
+                "description": "Fast Compare Mode Response Time",
+                "width": 4
+              },
+              "SST": {
+                "bit": 8,
+                "description": "Short Sample Time",
+                "width": 6
+              },
+              "TGEN": {
+                "bit": 16,
+                "description": "Timing Generator",
+                "width": 14
+              }
+            },
+            "TIMCFG1": {
+              "AT": {
+                "bit": 0,
+                "description": "Accelerated Timing"
+              },
+              "FCRT": {
+                "bit": 4,
+                "description": "Fast Compare Mode Response Time",
+                "width": 4
+              },
+              "SST": {
+                "bit": 8,
+                "description": "Short Sample Time",
+                "width": 6
+              },
+              "TGEN": {
+                "bit": 16,
+                "description": "Timing Generator",
+                "width": 14
+              }
+            },
+            "CALCTR": {
+              "CALORD": {
+                "bit": 0,
+                "description": "Calibration Order"
+              },
+              "CALGNSTC": {
+                "bit": 8,
+                "description": "Gain Calibration Sample Time Control",
+                "width": 6
+              },
+              "SUCALVAL": {
+                "bit": 16,
+                "description": "Startup Calibration Cycles",
+                "width": 7
+              },
+              "CALMAX": {
+                "bit": 24,
+                "description": "Calibration Maximum Timing",
+                "width": 6
+              },
+              "SUCAL": {
+                "bit": 31,
+                "description": "Start-Up Calibration"
+              }
+            },
+            "CALGC0": {
+              "CALGNVALS": {
+                "bit": 0,
+                "description": "Gain Calibration Value, Standard Reference",
+                "width": 14
+              },
+              "GNSWC": {
+                "bit": 15,
+                "description": "Gain Calibration Write Control, Standard"
+              },
+              "CALGNVALA": {
+                "bit": 16,
+                "description": "Gain Calibration Value, Alternate Reference",
+                "width": 14
+              },
+              "GNAWC": {
+                "bit": 31,
+                "description": "Gain Calibration Write Control, Alternate"
+              }
+            },
+            "CALGC1": {
+              "CALGNVALS": {
+                "bit": 0,
+                "description": "Gain Calibration Value, Standard Reference",
+                "width": 14
+              },
+              "GNSWC": {
+                "bit": 15,
+                "description": "Gain Calibration Write Control, Standard"
+              },
+              "CALGNVALA": {
+                "bit": 16,
+                "description": "Gain Calibration Value, Alternate Reference",
+                "width": 14
+              },
+              "GNAWC": {
+                "bit": 31,
+                "description": "Gain Calibration Write Control, Alternate"
+              }
+            },
+            "GNCTR00": {
+              "GAIN0": {
+                "bit": 0,
+                "description": "Gain Control 0",
+                "width": 4
+              },
+              "GAIN1": {
+                "bit": 4,
+                "description": "Gain Control 1",
+                "width": 4
+              },
+              "GAIN2": {
+                "bit": 8,
+                "description": "Gain Control 2",
+                "width": 4
+              },
+              "GAIN3": {
+                "bit": 12,
+                "description": "Gain Control 3",
+                "width": 4
+              },
+              "GAIN4": {
+                "bit": 16,
+                "description": "Gain Control 4",
+                "width": 4
+              },
+              "GAIN5": {
+                "bit": 20,
+                "description": "Gain Control 5",
+                "width": 4
+              },
+              "GAIN6": {
+                "bit": 24,
+                "description": "Gain Control 6",
+                "width": 4
+              },
+              "GAIN7": {
+                "bit": 28,
+                "description": "Gain Control 7",
+                "width": 4
+              }
+            },
+            "GNCTR10": {
+              "GAIN0": {
+                "bit": 0,
+                "description": "Gain Control 0",
+                "width": 4
+              },
+              "GAIN1": {
+                "bit": 4,
+                "description": "Gain Control 1",
+                "width": 4
+              },
+              "GAIN2": {
+                "bit": 8,
+                "description": "Gain Control 2",
+                "width": 4
+              },
+              "GAIN3": {
+                "bit": 12,
+                "description": "Gain Control 3",
+                "width": 4
+              },
+              "GAIN4": {
+                "bit": 16,
+                "description": "Gain Control 4",
+                "width": 4
+              },
+              "GAIN5": {
+                "bit": 20,
+                "description": "Gain Control 5",
+                "width": 4
+              },
+              "GAIN6": {
+                "bit": 24,
+                "description": "Gain Control 6",
+                "width": 4
+              },
+              "GAIN7": {
+                "bit": 28,
+                "description": "Gain Control 7",
+                "width": 4
+              }
+            },
+            "LOOP": {
+              "LPCH0": {
+                "bit": 0,
+                "description": "Loop y Channel",
+                "width": 5
+              },
+              "LPCH1": {
+                "bit": 16,
+                "description": "Loop y Channel",
+                "width": 5
+              },
+              "LPSH0": {
+                "bit": 8,
+                "description": "Loop y Sample&Hold Unit"
+              },
+              "LPSH1": {
+                "bit": 24,
+                "description": "Loop y Sample&Hold Unit"
+              },
+              "LPEN0": {
+                "bit": 15,
+                "description": "Loop y Enable"
+              },
+              "LPEN1": {
+                "bit": 31,
+                "description": "Loop y Enable"
+              }
+            }
+          }
+        },
+        "GPIO": {
+          "instances": [
+            {
+              "name": "PORT0",
+              "base": "0x40040000"
+            },
+            {
+              "name": "PORT1",
+              "base": "0x40040100"
+            },
+            {
+              "name": "PORT2",
+              "base": "0x40040200"
+            }
+          ],
+          "registers": {
+            "OUT": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Port 0 Output Register"
+            },
+            "OMR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Port 0 Output Modification Register"
+            },
+            "IOCR0": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Port 0 Input/Output Control Register 0"
+            },
+            "IOCR4": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Port 0 Input/Output Control Register 4"
+            },
+            "IOCR8": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Port 0 Input/Output Control Register 8"
+            },
+            "IOCR12": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Port 0 Input/Output Control Register 12"
+            },
+            "IN": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Port 0 Input Register"
+            },
+            "PHCR0": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Port 0 Pad Hysteresis Control Register 0"
+            },
+            "PHCR1": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Port 0 Pad Hysteresis Control Register 1"
+            },
+            "PDISC": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Port 0 Pin Function Decision Control Register"
+            },
+            "PPS": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Port 0 Pin Power Save Register"
+            },
+            "HWSEL": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Port 0 Pin Hardware Select Register"
+            }
+          },
+          "bits": {
+            "OUT": {
+              "P0": {
+                "bit": 0,
+                "description": "Port 0 Output Bit 0"
+              },
+              "P1": {
+                "bit": 1,
+                "description": "Port 0 Output Bit 1"
+              },
+              "P2": {
+                "bit": 2,
+                "description": "Port 0 Output Bit 2"
+              },
+              "P3": {
+                "bit": 3,
+                "description": "Port 0 Output Bit 3"
+              },
+              "P4": {
+                "bit": 4,
+                "description": "Port 0 Output Bit 4"
+              },
+              "P5": {
+                "bit": 5,
+                "description": "Port 0 Output Bit 5"
+              },
+              "P6": {
+                "bit": 6,
+                "description": "Port 0 Output Bit 6"
+              },
+              "P7": {
+                "bit": 7,
+                "description": "Port 0 Output Bit 7"
+              },
+              "P8": {
+                "bit": 8,
+                "description": "Port 0 Output Bit 8"
+              },
+              "P9": {
+                "bit": 9,
+                "description": "Port 0 Output Bit 9"
+              },
+              "P10": {
+                "bit": 10,
+                "description": "Port 0 Output Bit 10"
+              },
+              "P11": {
+                "bit": 11,
+                "description": "Port 0 Output Bit 11"
+              },
+              "P12": {
+                "bit": 12,
+                "description": "Port 0 Output Bit 12"
+              },
+              "P13": {
+                "bit": 13,
+                "description": "Port 0 Output Bit 13"
+              },
+              "P14": {
+                "bit": 14,
+                "description": "Port 0 Output Bit 14"
+              },
+              "P15": {
+                "bit": 15,
+                "description": "Port 0 Output Bit 15"
+              }
+            },
+            "OMR": {
+              "PS0": {
+                "bit": 0,
+                "description": "Port 0 Set Bit 0"
+              },
+              "PS1": {
+                "bit": 1,
+                "description": "Port 0 Set Bit 1"
+              },
+              "PS2": {
+                "bit": 2,
+                "description": "Port 0 Set Bit 2"
+              },
+              "PS3": {
+                "bit": 3,
+                "description": "Port 0 Set Bit 3"
+              },
+              "PS4": {
+                "bit": 4,
+                "description": "Port 0 Set Bit 4"
+              },
+              "PS5": {
+                "bit": 5,
+                "description": "Port 0 Set Bit 5"
+              },
+              "PS6": {
+                "bit": 6,
+                "description": "Port 0 Set Bit 6"
+              },
+              "PS7": {
+                "bit": 7,
+                "description": "Port 0 Set Bit 7"
+              },
+              "PS8": {
+                "bit": 8,
+                "description": "Port 0 Set Bit 8"
+              },
+              "PS9": {
+                "bit": 9,
+                "description": "Port 0 Set Bit 9"
+              },
+              "PS10": {
+                "bit": 10,
+                "description": "Port 0 Set Bit 10"
+              },
+              "PS11": {
+                "bit": 11,
+                "description": "Port 0 Set Bit 11"
+              },
+              "PS12": {
+                "bit": 12,
+                "description": "Port 0 Set Bit 12"
+              },
+              "PS13": {
+                "bit": 13,
+                "description": "Port 0 Set Bit 13"
+              },
+              "PS14": {
+                "bit": 14,
+                "description": "Port 0 Set Bit 14"
+              },
+              "PS15": {
+                "bit": 15,
+                "description": "Port 0 Set Bit 15"
+              },
+              "PR0": {
+                "bit": 16,
+                "description": "Port 0 Reset Bit 0"
+              },
+              "PR1": {
+                "bit": 17,
+                "description": "Port 0 Reset Bit 1"
+              },
+              "PR2": {
+                "bit": 18,
+                "description": "Port 0 Reset Bit 2"
+              },
+              "PR3": {
+                "bit": 19,
+                "description": "Port 0 Reset Bit 3"
+              },
+              "PR4": {
+                "bit": 20,
+                "description": "Port 0 Reset Bit 4"
+              },
+              "PR5": {
+                "bit": 21,
+                "description": "Port 0 Reset Bit 5"
+              },
+              "PR6": {
+                "bit": 22,
+                "description": "Port 0 Reset Bit 6"
+              },
+              "PR7": {
+                "bit": 23,
+                "description": "Port 0 Reset Bit 7"
+              },
+              "PR8": {
+                "bit": 24,
+                "description": "Port 0 Reset Bit 8"
+              },
+              "PR9": {
+                "bit": 25,
+                "description": "Port 0 Reset Bit 9"
+              },
+              "PR10": {
+                "bit": 26,
+                "description": "Port 0 Reset Bit 10"
+              },
+              "PR11": {
+                "bit": 27,
+                "description": "Port 0 Reset Bit 11"
+              },
+              "PR12": {
+                "bit": 28,
+                "description": "Port 0 Reset Bit 12"
+              },
+              "PR13": {
+                "bit": 29,
+                "description": "Port 0 Reset Bit 13"
+              },
+              "PR14": {
+                "bit": 30,
+                "description": "Port 0 Reset Bit 14"
+              },
+              "PR15": {
+                "bit": 31,
+                "description": "Port 0 Reset Bit 15"
+              }
+            },
+            "IOCR0": {
+              "PC0": {
+                "bit": 3,
+                "description": "Port Control for Port n Pin 0 to 3",
+                "width": 5
+              },
+              "PC1": {
+                "bit": 11,
+                "description": "Port Control for Port n Pin 0 to 3",
+                "width": 5
+              },
+              "PC2": {
+                "bit": 19,
+                "description": "Port Control for Port n Pin 0 to 3",
+                "width": 5
+              },
+              "PC3": {
+                "bit": 27,
+                "description": "Port Control for Port n Pin 0 to 3",
+                "width": 5
+              }
+            },
+            "IOCR4": {
+              "PC4": {
+                "bit": 3,
+                "description": "Port Control for Port n Pin 4 to 7",
+                "width": 5
+              },
+              "PC5": {
+                "bit": 11,
+                "description": "Port Control for Port n Pin 4 to 7",
+                "width": 5
+              },
+              "PC6": {
+                "bit": 19,
+                "description": "Port Control for Port n Pin 4 to 7",
+                "width": 5
+              },
+              "PC7": {
+                "bit": 27,
+                "description": "Port Control for Port n Pin 4 to 7",
+                "width": 5
+              }
+            },
+            "IOCR8": {
+              "PC8": {
+                "bit": 3,
+                "description": "Port Control for Port n Pin 8 to 11",
+                "width": 5
+              },
+              "PC9": {
+                "bit": 11,
+                "description": "Port Control for Port n Pin 8 to 11",
+                "width": 5
+              },
+              "PC10": {
+                "bit": 19,
+                "description": "Port Control for Port n Pin 8 to 11",
+                "width": 5
+              },
+              "PC11": {
+                "bit": 27,
+                "description": "Port Control for Port n Pin 8 to 11",
+                "width": 5
+              }
+            },
+            "IOCR12": {
+              "PC12": {
+                "bit": 3,
+                "description": "Port Control for Port n Pin 12 to 15",
+                "width": 5
+              },
+              "PC13": {
+                "bit": 11,
+                "description": "Port Control for Port n Pin 12 to 15",
+                "width": 5
+              },
+              "PC14": {
+                "bit": 19,
+                "description": "Port Control for Port n Pin 12 to 15",
+                "width": 5
+              },
+              "PC15": {
+                "bit": 27,
+                "description": "Port Control for Port n Pin 12 to 15",
+                "width": 5
+              }
+            },
+            "IN": {
+              "P0": {
+                "bit": 0,
+                "description": "Port 0 Input Bit 0"
+              },
+              "P1": {
+                "bit": 1,
+                "description": "Port 0 Input Bit 1"
+              },
+              "P2": {
+                "bit": 2,
+                "description": "Port 0 Input Bit 2"
+              },
+              "P3": {
+                "bit": 3,
+                "description": "Port 0 Input Bit 3"
+              },
+              "P4": {
+                "bit": 4,
+                "description": "Port 0 Input Bit 4"
+              },
+              "P5": {
+                "bit": 5,
+                "description": "Port 0 Input Bit 5"
+              },
+              "P6": {
+                "bit": 6,
+                "description": "Port 0 Input Bit 6"
+              },
+              "P7": {
+                "bit": 7,
+                "description": "Port 0 Input Bit 7"
+              },
+              "P8": {
+                "bit": 8,
+                "description": "Port 0 Input Bit 8"
+              },
+              "P9": {
+                "bit": 9,
+                "description": "Port 0 Input Bit 9"
+              },
+              "P10": {
+                "bit": 10,
+                "description": "Port 0 Input Bit 10"
+              },
+              "P11": {
+                "bit": 11,
+                "description": "Port 0 Input Bit 11"
+              },
+              "P12": {
+                "bit": 12,
+                "description": "Port 0 Input Bit 12"
+              },
+              "P13": {
+                "bit": 13,
+                "description": "Port 0 Input Bit 13"
+              },
+              "P14": {
+                "bit": 14,
+                "description": "Port 0 Input Bit 14"
+              },
+              "P15": {
+                "bit": 15,
+                "description": "Port 0 Input Bit 15"
+              }
+            },
+            "PHCR0": {
+              "PH0": {
+                "bit": 2,
+                "description": "Pad Hysteresis for Pn.0"
+              },
+              "PH1": {
+                "bit": 6,
+                "description": "Pad Hysteresis for Pn.1"
+              },
+              "PH2": {
+                "bit": 10,
+                "description": "Pad Hysteresis for Pn.2"
+              },
+              "PH3": {
+                "bit": 14,
+                "description": "Pad Hysteresis for Pn.3"
+              },
+              "PH4": {
+                "bit": 18,
+                "description": "Pad Hysteresis for Pn.4"
+              },
+              "PH5": {
+                "bit": 22,
+                "description": "Pad Hysteresis for Pn.5"
+              },
+              "PH6": {
+                "bit": 26,
+                "description": "Pad Hysteresis for Pn.6"
+              },
+              "PH7": {
+                "bit": 30,
+                "description": "Pad Hysteresis for Pn.7"
+              }
+            },
+            "PHCR1": {
+              "PH8": {
+                "bit": 2,
+                "description": "Pad Hysteresis for P0.8"
+              },
+              "PH9": {
+                "bit": 6,
+                "description": "Pad Hysteresis for P0.9"
+              },
+              "PH10": {
+                "bit": 10,
+                "description": "Pad Hysteresis for P0.10"
+              },
+              "PH11": {
+                "bit": 14,
+                "description": "Pad Hysteresis for P0.11"
+              },
+              "PH12": {
+                "bit": 18,
+                "description": "Pad Hysteresis for P0.12"
+              },
+              "PH13": {
+                "bit": 22,
+                "description": "Pad Hysteresis for P0.13"
+              },
+              "PH14": {
+                "bit": 26,
+                "description": "Pad Hysteresis for P0.14"
+              },
+              "PH15": {
+                "bit": 30,
+                "description": "Pad Hysteresis for P0.15"
+              }
+            },
+            "PDISC": {
+              "PDIS0": {
+                "bit": 0,
+                "description": "Pad Disable for Port 0 Pin 0"
+              },
+              "PDIS1": {
+                "bit": 1,
+                "description": "Pad Disable for Port 0 Pin 1"
+              },
+              "PDIS2": {
+                "bit": 2,
+                "description": "Pad Disable for Port 0 Pin 2"
+              },
+              "PDIS3": {
+                "bit": 3,
+                "description": "Pad Disable for Port 0 Pin 3"
+              },
+              "PDIS4": {
+                "bit": 4,
+                "description": "Pad Disable for Port 0 Pin 4"
+              },
+              "PDIS5": {
+                "bit": 5,
+                "description": "Pad Disable for Port 0 Pin 5"
+              },
+              "PDIS6": {
+                "bit": 6,
+                "description": "Pad Disable for Port 0 Pin 6"
+              },
+              "PDIS7": {
+                "bit": 7,
+                "description": "Pad Disable for Port 0 Pin 7"
+              },
+              "PDIS8": {
+                "bit": 8,
+                "description": "Pad Disable for Port 0 Pin 8"
+              },
+              "PDIS9": {
+                "bit": 9,
+                "description": "Pad Disable for Port 0 Pin 9"
+              },
+              "PDIS10": {
+                "bit": 10,
+                "description": "Pad Disable for Port 0 Pin 10"
+              },
+              "PDIS11": {
+                "bit": 11,
+                "description": "Pad Disable for Port 0 Pin 11"
+              },
+              "PDIS12": {
+                "bit": 12,
+                "description": "Pad Disable for Port 0 Pin 12"
+              },
+              "PDIS13": {
+                "bit": 13,
+                "description": "Pad Disable for Port 0 Pin 13"
+              },
+              "PDIS14": {
+                "bit": 14,
+                "description": "Pad Disable for Port 0 Pin 14"
+              },
+              "PDIS15": {
+                "bit": 15,
+                "description": "Pad Disable for Port 0 Pin 15"
+              }
+            },
+            "PPS": {
+              "PPS0": {
+                "bit": 0,
+                "description": "Port 0 Pin Power Save Bit 0"
+              },
+              "PPS1": {
+                "bit": 1,
+                "description": "Port 0 Pin Power Save Bit 1"
+              },
+              "PPS2": {
+                "bit": 2,
+                "description": "Port 0 Pin Power Save Bit 2"
+              },
+              "PPS3": {
+                "bit": 3,
+                "description": "Port 0 Pin Power Save Bit 3"
+              },
+              "PPS4": {
+                "bit": 4,
+                "description": "Port 0 Pin Power Save Bit 4"
+              },
+              "PPS5": {
+                "bit": 5,
+                "description": "Port 0 Pin Power Save Bit 5"
+              },
+              "PPS6": {
+                "bit": 6,
+                "description": "Port 0 Pin Power Save Bit 6"
+              },
+              "PPS7": {
+                "bit": 7,
+                "description": "Port 0 Pin Power Save Bit 7"
+              },
+              "PPS8": {
+                "bit": 8,
+                "description": "Port 0 Pin Power Save Bit 8"
+              },
+              "PPS9": {
+                "bit": 9,
+                "description": "Port 0 Pin Power Save Bit 9"
+              },
+              "PPS10": {
+                "bit": 10,
+                "description": "Port 0 Pin Power Save Bit 10"
+              },
+              "PPS11": {
+                "bit": 11,
+                "description": "Port 0 Pin Power Save Bit 11"
+              },
+              "PPS12": {
+                "bit": 12,
+                "description": "Port 0 Pin Power Save Bit 12"
+              },
+              "PPS13": {
+                "bit": 13,
+                "description": "Port 0 Pin Power Save Bit 13"
+              },
+              "PPS14": {
+                "bit": 14,
+                "description": "Port 0 Pin Power Save Bit 14"
+              },
+              "PPS15": {
+                "bit": 15,
+                "description": "Port 0 Pin Power Save Bit 15"
+              }
+            },
+            "HWSEL": {
+              "HW0": {
+                "bit": 0,
+                "description": "Port 0 Pin Hardware Select Bit 0",
+                "width": 2
+              },
+              "HW1": {
+                "bit": 2,
+                "description": "Port 0 Pin Hardware Select Bit 1",
+                "width": 2
+              },
+              "HW2": {
+                "bit": 4,
+                "description": "Port 0 Pin Hardware Select Bit 2",
+                "width": 2
+              },
+              "HW3": {
+                "bit": 6,
+                "description": "Port 0 Pin Hardware Select Bit 3",
+                "width": 2
+              },
+              "HW4": {
+                "bit": 8,
+                "description": "Port 0 Pin Hardware Select Bit 4",
+                "width": 2
+              },
+              "HW5": {
+                "bit": 10,
+                "description": "Port 0 Pin Hardware Select Bit 5",
+                "width": 2
+              },
+              "HW6": {
+                "bit": 12,
+                "description": "Port 0 Pin Hardware Select Bit 6",
+                "width": 2
+              },
+              "HW7": {
+                "bit": 14,
+                "description": "Port 0 Pin Hardware Select Bit 7",
+                "width": 2
+              },
+              "HW8": {
+                "bit": 16,
+                "description": "Port 0 Pin Hardware Select Bit 8",
+                "width": 2
+              },
+              "HW9": {
+                "bit": 18,
+                "description": "Port 0 Pin Hardware Select Bit 9",
+                "width": 2
+              },
+              "HW10": {
+                "bit": 20,
+                "description": "Port 0 Pin Hardware Select Bit 10",
+                "width": 2
+              },
+              "HW11": {
+                "bit": 22,
+                "description": "Port 0 Pin Hardware Select Bit 11",
+                "width": 2
+              },
+              "HW12": {
+                "bit": 24,
+                "description": "Port 0 Pin Hardware Select Bit 12",
+                "width": 2
+              },
+              "HW13": {
+                "bit": 26,
+                "description": "Port 0 Pin Hardware Select Bit 13",
+                "width": 2
+              },
+              "HW14": {
+                "bit": 28,
+                "description": "Port 0 Pin Hardware Select Bit 14",
+                "width": 2
+              },
+              "HW15": {
+                "bit": 30,
+                "description": "Port 0 Pin Hardware Select Bit 15",
+                "width": 2
+              }
+            }
+          }
+        }
+      },
+      "interrupts": {
+        "count": 41,
+        "vectors": [
+          {
+            "number": 0,
+            "name": "Initial_SP"
+          },
+          {
+            "number": 1,
+            "name": "Reset_Handler"
+          },
+          {
+            "number": 2,
+            "name": "NMI_Handler"
+          },
+          {
+            "number": 3,
+            "name": "HardFault_Handler"
+          },
+          {
+            "number": 4,
+            "name": "MemManage_Handler"
+          },
+          {
+            "number": 5,
+            "name": "BusFault_Handler"
+          },
+          {
+            "number": 6,
+            "name": "UsageFault_Handler"
+          },
+          {
+            "number": 11,
+            "name": "SVC_Handler"
+          },
+          {
+            "number": 12,
+            "name": "DebugMon_Handler"
+          },
+          {
+            "number": 14,
+            "name": "PendSV_Handler"
+          },
+          {
+            "number": 15,
+            "name": "SysTick_Handler"
+          },
+          {
+            "number": 16,
+            "name": "SCU_0_IRQHandler"
+          },
+          {
+            "number": 17,
+            "name": "SCU_1_IRQHandler"
+          },
+          {
+            "number": 18,
+            "name": "SCU_2_IRQHandler"
+          },
+          {
+            "number": 19,
+            "name": "ERU0_0_IRQHandler"
+          },
+          {
+            "number": 20,
+            "name": "ERU0_1_IRQHandler"
+          },
+          {
+            "number": 21,
+            "name": "ERU0_2_IRQHandler"
+          },
+          {
+            "number": 22,
+            "name": "ERU0_3_IRQHandler"
+          },
+          {
+            "number": 25,
+            "name": "USIC0_0_IRQHandler"
+          },
+          {
+            "number": 26,
+            "name": "USIC0_1_IRQHandler"
+          },
+          {
+            "number": 27,
+            "name": "USIC0_2_IRQHandler"
+          },
+          {
+            "number": 28,
+            "name": "USIC0_3_IRQHandler"
+          },
+          {
+            "number": 29,
+            "name": "USIC0_4_IRQHandler"
+          },
+          {
+            "number": 30,
+            "name": "USIC0_5_IRQHandler"
+          },
+          {
+            "number": 31,
+            "name": "VADC0_C0_0_IRQHandler"
+          },
+          {
+            "number": 32,
+            "name": "VADC0_C0_1_IRQHandler"
+          },
+          {
+            "number": 37,
+            "name": "CCU40_0_IRQHandler"
+          },
+          {
+            "number": 38,
+            "name": "CCU40_1_IRQHandler"
+          },
+          {
+            "number": 39,
+            "name": "CCU40_2_IRQHandler"
+          },
+          {
+            "number": 40,
+            "name": "CCU40_3_IRQHandler"
+          }
+        ]
+      }
+    }
+  }
+}

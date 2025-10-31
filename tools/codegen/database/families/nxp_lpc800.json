@@ -1,0 +1,1304 @@
+{
+  "family": "LPC800",
+  "architecture": "arm-cortex-m0",
+  "vendor": "Unknown",
+  "mcus": {
+    "LPC800": {
+      "flash": {
+        "size_kb": 64,
+        "base_address": "0x08000000",
+        "page_size_kb": 1
+      },
+      "ram": {
+        "size_kb": 20,
+        "base_address": "0x20000000"
+      },
+      "peripherals": {
+        "WDG": {
+          "instances": [
+            {
+              "name": "WWDT",
+              "base": "0x40000000",
+              "irq": 12
+            }
+          ],
+          "registers": {
+            "MOD": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Watchdog mode register. This register contains the basic mode and status of the Watchdog Timer."
+            },
+            "TC": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Watchdog timer constant register. This 24-bit register determines the time-out value."
+            },
+            "FEED": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Watchdog feed sequence register. Writing 0xAA followed by 0x55 to this register reloads the Watchdog timer with the value contained in WDTC."
+            },
+            "TV": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Watchdog timer value register. This 24-bit register reads out the current value of the Watchdog timer."
+            },
+            "WARNINT": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Watchdog Warning Interrupt compare value."
+            },
+            "WINDOW": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Watchdog Window compare value."
+            }
+          }
+        },
+        "MRT": {
+          "instances": [
+            {
+              "name": "MRT",
+              "base": "0x40004000",
+              "irq": 10
+            }
+          ],
+          "registers": {
+            "INTVAL%s": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "MRT0 Time interval value register. This value is loaded into the TIMER0 register."
+            },
+            "TIMER%s": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "MRT0 Timer register. This register reads the value of the down-counter."
+            },
+            "CTRL%s": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "MRT0 Control register. This register controls the MRT0 modes."
+            },
+            "STAT%s": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "MRT0 Status register."
+            },
+            "IDLE_CH": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "Idle channel register. This register returns the number of the first idle channel."
+            },
+            "IRQ_FLAG": {
+              "offset": "0xF8",
+              "size": 32,
+              "description": "Global interrupt flag register"
+            }
+          }
+        },
+        "WKT": {
+          "instances": [
+            {
+              "name": "WKT",
+              "base": "0x40008000",
+              "irq": 15
+            }
+          ],
+          "registers": {
+            "CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Self wake-up timer control register."
+            },
+            "COUNT": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Counter register."
+            }
+          }
+        },
+        "SWM": {
+          "instances": [
+            {
+              "name": "SWM",
+              "base": "0x4000C000"
+            }
+          ],
+          "registers": {
+            "PINASSIGN0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Pin assign register 0. Assign movable functions U0_TXD, U0_RXD, U0_RTS, U0_CTS"
+            },
+            "PINASSIGN1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Pin assign register 1. Assign movable functions U0_SCLC, U1_TXD, U1_RXD"
+            },
+            "PINASSIGN2": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Pin assign register 2. Assign movable functions U2_TXD, U2_RXD"
+            },
+            "PINASSIGN3": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Pin assignregister 3. Assign movable function SPI0_SCK"
+            },
+            "PINASSIGN4": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Pin assign register 4. Assign movable functions SPI0_MOSI, SPI0_MISO, SPI0_SSEL, SPI1_SCK"
+            },
+            "PINASSIGN5": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Pin assign register 5. Assign movable functions SPI1_MOSI, SPI1_MISO, SPI1_SSEL, CTIN_0"
+            },
+            "PINASSIGN6": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Pin assign register 6. Assign movable functions CTIN_1, CTIN_2, CTIN_3, CTOUT_0"
+            },
+            "PINASSIGN7": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Pin assign egister 7. Assign movable functions CTOUT_1, CTOUT_2, CTOUT_3, I2C_SDA"
+            },
+            "PINASSIGN8": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Pin assign register 8. Assign movable functions I2C_SCL, ACMP_O, CLKOUT, GPIO_INT_BMAT"
+            },
+            "PINENABLE0": {
+              "offset": "0x1C0",
+              "size": 32,
+              "description": "Pin enable register 0. Enables fixed-pin functions ACMP_I0, ACMP_I1, SWCLK, SWDIO, XTALIN, XTALOUT, RESET, CLKIN, VDDCMP"
+            }
+          }
+        },
+        "PMU": {
+          "instances": [
+            {
+              "name": "PMU",
+              "base": "0x40020000"
+            }
+          ],
+          "registers": {
+            "PCON": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Power control register"
+            },
+            "GPREG%s": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "General purpose register 0"
+            },
+            "DPDCTRL": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Deep power-down control register"
+            }
+          }
+        },
+        "CMP": {
+          "instances": [
+            {
+              "name": "CMP",
+              "base": "0x40024000",
+              "irq": 11
+            }
+          ],
+          "registers": {
+            "CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Comparator control register"
+            },
+            "LAD": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Voltage ladder register"
+            }
+          }
+        },
+        "FLASH": {
+          "instances": [
+            {
+              "name": "FLASHCTRL",
+              "base": "0x40040000",
+              "irq": 14
+            }
+          ],
+          "registers": {
+            "FLASHCFG": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Flash configuration register"
+            },
+            "FMSSTART": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Signature start address register"
+            },
+            "FMSSTOP": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Signature stop-address register"
+            },
+            "FMSW0": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Signature Word"
+            }
+          }
+        },
+        "IOCON": {
+          "instances": [
+            {
+              "name": "IOCON",
+              "base": "0x40044000"
+            }
+          ],
+          "registers": {
+            "PIO0_17": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_17"
+            },
+            "PIO0_13": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_13"
+            },
+            "PIO0_12": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_12"
+            },
+            "PIO0_5": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_5/RESET"
+            },
+            "PIO0_4": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_4"
+            },
+            "PIO0_3": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_3/SWCLK"
+            },
+            "PIO0_2": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_2/SWDIO"
+            },
+            "PIO0_11": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_11. This is the pin configuration for the true open-drain pin."
+            },
+            "PIO0_10": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_10. This is the pin configuration for the true open-drain pin."
+            },
+            "PIO0_16": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_16"
+            },
+            "PIO0_15": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_15"
+            },
+            "PIO0_1": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_1/ACMP_I1/CLKIN"
+            },
+            "PIO0_9": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_9/XTALOUT"
+            },
+            "PIO0_8": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_8/XTALIN"
+            },
+            "PIO0_7": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_7"
+            },
+            "PIO0_6": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_6/VDDCMP"
+            },
+            "PIO0_0": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_0/ACMP_I0"
+            },
+            "PIO0_14": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "I/O configuration for pin PIO0_14"
+            }
+          }
+        },
+        "SYSCON": {
+          "instances": [
+            {
+              "name": "SYSCON",
+              "base": "0x40048000",
+              "irq": 13
+            }
+          ],
+          "registers": {
+            "SYSMEMREMAP": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "System memory remap"
+            },
+            "PRESETCTRL": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Peripheral reset control"
+            },
+            "SYSPLLCTRL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "System PLL control"
+            },
+            "SYSPLLSTAT": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "System PLL status"
+            },
+            "SYSOSCCTRL": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "System oscillator control"
+            },
+            "WDTOSCCTRL": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Watchdog oscillator control"
+            },
+            "SYSRSTSTAT": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "System reset status register"
+            },
+            "SYSPLLCLKSEL": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "System PLL clock source select"
+            },
+            "SYSPLLCLKUEN": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "System PLL clock source update enable"
+            },
+            "MAINCLKSEL": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Main clock source select"
+            },
+            "MAINCLKUEN": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Main clock source update enable"
+            },
+            "SYSAHBCLKDIV": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "System clock divider"
+            },
+            "SYSAHBCLKCTRL": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "System clock control"
+            },
+            "UARTCLKDIV": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "UART clock divider"
+            },
+            "CLKOUTSEL": {
+              "offset": "0xE0",
+              "size": 32,
+              "description": "CLKOUT clock source select"
+            },
+            "CLKOUTUEN": {
+              "offset": "0xE4",
+              "size": 32,
+              "description": "CLKOUT clock source update enable"
+            },
+            "CLKOUTDIV": {
+              "offset": "0xE8",
+              "size": 32,
+              "description": "CLKOUT clock divider"
+            },
+            "UARTFRGDIV": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "UART fractional generator divider value"
+            },
+            "UARTFRGMULT": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "UART fractional generator multiplier value"
+            },
+            "EXTTRACECMD": {
+              "offset": "0xFC",
+              "size": 32,
+              "description": "External trace buffer command register"
+            },
+            "PIOPORCAP0": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "POR captured PIO status 0"
+            },
+            "IOCONCLKDIV6": {
+              "offset": "0x134",
+              "size": 32,
+              "description": "Peripheral clock 6 to the IOCON block for programmable glitch filter"
+            },
+            "IOCONCLKDIV5": {
+              "offset": "0x138",
+              "size": 32,
+              "description": "Peripheral clock 5 to the IOCON block for programmable glitch filter"
+            },
+            "IOCONCLKDIV4": {
+              "offset": "0x13C",
+              "size": 32,
+              "description": "Peripheral clock 4 to the IOCON block for programmable glitch filter"
+            },
+            "IOCONCLKDIV3": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "Peripheral clock 3 to the IOCON block for programmable glitch filter"
+            },
+            "IOCONCLKDIV2": {
+              "offset": "0x144",
+              "size": 32,
+              "description": "Peripheral clock 2 to the IOCON block for programmable glitch filter"
+            },
+            "IOCONCLKDIV1": {
+              "offset": "0x148",
+              "size": 32,
+              "description": "Peripheral clock 1 to the IOCON block for programmable glitch filter"
+            },
+            "IOCONCLKDIV0": {
+              "offset": "0x14C",
+              "size": 32,
+              "description": "Peripheral clock 0 to the IOCON block for programmable glitch filter"
+            },
+            "BODCTRL": {
+              "offset": "0x150",
+              "size": 32,
+              "description": "Brown-Out Detect"
+            },
+            "SYSTCKCAL": {
+              "offset": "0x154",
+              "size": 32,
+              "description": "System tick counter calibration"
+            },
+            "IRQLATENCY": {
+              "offset": "0x170",
+              "size": 32,
+              "description": "IQR delay. Allows trade-off between interrupt latency and determinism."
+            },
+            "NMISRC": {
+              "offset": "0x174",
+              "size": 32,
+              "description": "NMI Source Control"
+            },
+            "PINTSEL%s": {
+              "offset": "0x178",
+              "size": 32,
+              "description": "GPIO Pin Interrupt Select register 0"
+            },
+            "STARTERP0": {
+              "offset": "0x204",
+              "size": 32,
+              "description": "Start logic 0 pin wake-up enable register"
+            },
+            "STARTERP1": {
+              "offset": "0x214",
+              "size": 32,
+              "description": "Start logic 1 interrupt wake-up enable register"
+            },
+            "PDSLEEPCFG": {
+              "offset": "0x230",
+              "size": 32,
+              "description": "Power-down states in deep-sleep mode"
+            },
+            "PDAWAKECFG": {
+              "offset": "0x234",
+              "size": 32,
+              "description": "Power-down states for wake-up from deep-sleep"
+            },
+            "PDRUNCFG": {
+              "offset": "0x238",
+              "size": 32,
+              "description": "Power configuration register"
+            },
+            "DEVICE_ID": {
+              "offset": "0x3F4",
+              "size": 32,
+              "description": "Device ID"
+            }
+          }
+        },
+        "I2C": {
+          "instances": [
+            {
+              "name": "I2C",
+              "base": "0x40050000",
+              "irq": 8
+            }
+          ],
+          "registers": {
+            "CFG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Configuration for shared functions."
+            },
+            "STAT": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Status register for Master, Slave, and Monitor functions."
+            },
+            "INTENSET": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Interrupt Enable Set and read register."
+            },
+            "INTENCLR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Interrupt Enable Clear register."
+            },
+            "TIMEOUT": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Time-out value register."
+            },
+            "DIV": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Clock pre-divider for the entire I2C block. This determines what time increments are used for the MSTTIME and SLVTIME registers."
+            },
+            "INTSTAT": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Interrupt Status register for Master, Slave, and Monitor functions."
+            },
+            "MSTCTL": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Master control register."
+            },
+            "MSTTIME": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Master timing configuration."
+            },
+            "MSTDAT": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Combined Master receiver and transmitter data register."
+            },
+            "SLVCTL": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Slave control register."
+            },
+            "SLVDAT": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Combined Slave receiver and transmitter data register."
+            },
+            "SLVADR%s": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Slave address 0."
+            },
+            "SLVQUAL0": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Slave Qualification for address 0."
+            },
+            "MONRXDAT": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Monitor receiver data register."
+            }
+          }
+        },
+        "SPI": {
+          "instances": [
+            {
+              "name": "SPI0",
+              "base": "0x40058000",
+              "irq": 0
+            },
+            {
+              "name": "SPI1",
+              "base": "0x4005C000",
+              "irq": 1
+            }
+          ],
+          "registers": {
+            "CFG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "SPI Configuration register"
+            },
+            "DLY": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "SPI Delay register"
+            },
+            "STAT": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "SPI Status. Some status flags can be cleared by writing a 1 to that bit position"
+            },
+            "INTENSET": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "SPI Interrupt Enable read and Set. A complete value may be read from this register. Writing a 1 to any implemented bit position causes that bit to be set."
+            },
+            "INTENCLR": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "SPI Interrupt Enable Clear. Writing a 1 to any implemented bit position causes the corresponding bit in INTENSET to be cleared."
+            },
+            "RXDAT": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "SPI Receive Data"
+            },
+            "TXDATCTL": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "SPI Transmit Data with Control"
+            },
+            "TXDAT": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "SPI Transmit Data"
+            },
+            "TXCTL": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "SPI Transmit Control"
+            },
+            "DIV": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "SPI clock Divider"
+            },
+            "INTSTAT": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "SPI Interrupt Status"
+            }
+          }
+        },
+        "USART": {
+          "instances": [
+            {
+              "name": "USART0",
+              "base": "0x40064000",
+              "irq": 3
+            },
+            {
+              "name": "USART1",
+              "base": "0x40068000",
+              "irq": 4
+            },
+            {
+              "name": "USART2",
+              "base": "0x4006C000",
+              "irq": 5
+            }
+          ],
+          "registers": {
+            "CFG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "USART Configuration register. Basic USART configuration settings that typically are not changed during operation."
+            },
+            "CTRL": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "USART Control register. USART control settings that are more likely to change during operation."
+            },
+            "STAT": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "USART Status register. The complete status value can be read here. Writing 1s clears some bits in the register. Some bits can be cleared by writing a 1 to them."
+            },
+            "INTENSET": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Interrupt Enable read and Set register. Contains an individual interrupt enable bit for each potential USART interrupt. A complete value may be read from this register. Writing a 1 to any implemented bit position causes that bit to be set."
+            },
+            "INTENCLR": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Interrupt Enable Clear register. Allows clearing any combination of bits in the INTENSET register. Writing a 1 to any implemented bit position causes the corresponding bit to be cleared."
+            },
+            "RXDATA": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Receiver Data register. Contains the last character received."
+            },
+            "RXDATASTAT": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Receiver Data with Status register. Combines the last character received with the current USART receive status. Allows software to recover incoming data and status together."
+            },
+            "TXDATA": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Transmit Data register. Data to be transmitted is written here."
+            },
+            "BRG": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Baud Rate Generator register. 16-bit integer baud rate divisor value."
+            },
+            "INTSTAT": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Interrupt status register. Reflects interrupts that are currently enabled."
+            }
+          }
+        },
+        "CRC": {
+          "instances": [
+            {
+              "name": "CRC",
+              "base": "0x50000000"
+            }
+          ],
+          "registers": {
+            "MODE": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "CRC mode register"
+            },
+            "SEED": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "CRC seed register"
+            },
+            "SUM": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "CRC checksum register"
+            },
+            "WR_DATA": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "CRC data register"
+            }
+          }
+        },
+        "SCT": {
+          "instances": [
+            {
+              "name": "SCT",
+              "base": "0x50004000",
+              "irq": 9
+            }
+          ],
+          "registers": {
+            "CONFIG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "SCT configuration register"
+            },
+            "CTRL": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "SCT control register"
+            },
+            "LIMIT": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "SCT limit register"
+            },
+            "HALT": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "SCT halt condition register"
+            },
+            "STOP": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "SCT stop condition register"
+            },
+            "START": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "SCT start condition register"
+            },
+            "COUNT": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "SCT counter register"
+            },
+            "STATE": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "SCT state register"
+            },
+            "INPUT": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "SCT input register"
+            },
+            "REGMODE": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "SCT match/capture registers mode register"
+            },
+            "OUTPUT": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "SCT output register"
+            },
+            "OUTPUTDIRCTRL": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "SCT output counter direction control register"
+            },
+            "RES": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "SCT conflict resolution register"
+            },
+            "EVEN": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "SCT event enable register"
+            },
+            "EVFLAG": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "SCT event flag register"
+            },
+            "CONEN": {
+              "offset": "0xF8",
+              "size": 32,
+              "description": "SCT conflict enable register"
+            },
+            "CONFLAG": {
+              "offset": "0xFC",
+              "size": 32,
+              "description": "SCT conflict flag register"
+            },
+            "MATCH%s": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "SCT match value register of match channels 0 to 4; REGMOD0 to REGMODE4 = 0"
+            },
+            "CAP%s": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "SCT capture register of capture channel 0 to 4; REGMOD0 to REGMODE4 = 1"
+            },
+            "MATCHREL%s": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "SCT match reload value register 0 to 4 REGMOD0 = 0 to REGMODE4 = 0"
+            },
+            "CAPCTRL%s": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "SCT capture control register 0 to 4; REGMOD0 = 1 to REGMODE4 = 1"
+            },
+            "EV0_STATE": {
+              "offset": "0x300",
+              "size": 32,
+              "description": "SCT event state register 0"
+            },
+            "EV0_CTRL": {
+              "offset": "0x304",
+              "size": 32,
+              "description": "SCT event control register 0"
+            },
+            "EV1_STATE": {
+              "offset": "0x308",
+              "size": 32,
+              "description": "SCT event state register 1"
+            },
+            "EV1_CTRL": {
+              "offset": "0x30C",
+              "size": 32,
+              "description": "SCT event control register 1"
+            },
+            "EV2_STATE": {
+              "offset": "0x310",
+              "size": 32,
+              "description": "SCT event state register 2"
+            },
+            "EV2_CTRL": {
+              "offset": "0x314",
+              "size": 32,
+              "description": "SCT event control register 2"
+            },
+            "EV3_STATE": {
+              "offset": "0x318",
+              "size": 32,
+              "description": "SCT event state register 3"
+            },
+            "EV3_CTRL": {
+              "offset": "0x31C",
+              "size": 32,
+              "description": "SCT event control register 3"
+            },
+            "EV4_STATE": {
+              "offset": "0x320",
+              "size": 32,
+              "description": "SCT event state register 4"
+            },
+            "EV4_CTRL": {
+              "offset": "0x324",
+              "size": 32,
+              "description": "SCT event control register 4"
+            },
+            "EV5_STATE": {
+              "offset": "0x328",
+              "size": 32,
+              "description": "SCT event state register 5"
+            },
+            "EV5_CTRL": {
+              "offset": "0x32C",
+              "size": 32,
+              "description": "SCT event control register 5"
+            },
+            "OUT0_SET": {
+              "offset": "0x500",
+              "size": 32,
+              "description": "SCT output 0 set register"
+            },
+            "OUT0_CLR": {
+              "offset": "0x504",
+              "size": 32,
+              "description": "SCT output 0 clear register"
+            },
+            "OUT1_SET": {
+              "offset": "0x508",
+              "size": 32,
+              "description": "SCT output 1 set register"
+            },
+            "OUT1_CLR": {
+              "offset": "0x50C",
+              "size": 32,
+              "description": "SCT output 1 clear register"
+            },
+            "OUT2_SET": {
+              "offset": "0x510",
+              "size": 32,
+              "description": "SCT output 2 set register"
+            },
+            "OUT2_CLR": {
+              "offset": "0x514",
+              "size": 32,
+              "description": "SCT output 2 clear register"
+            },
+            "OUT3_SET": {
+              "offset": "0x518",
+              "size": 32,
+              "description": "SCT output 3 set register"
+            },
+            "OUT3_CLR": {
+              "offset": "0x51C",
+              "size": 32,
+              "description": "SCT output 3 clear register"
+            }
+          }
+        },
+        "GPIO": {
+          "instances": [
+            {
+              "name": "GPIO_PORT",
+              "base": "0xA0000000"
+            }
+          ],
+          "registers": {
+            "B%s": {
+              "offset": "0x00",
+              "size": 8,
+              "description": "Byte pin registers port 0; pins PIO0_0 to PIO0_17"
+            },
+            "W%s": {
+              "offset": "0x1000",
+              "size": 32,
+              "description": "Word pin registers port 0"
+            },
+            "DIR0": {
+              "offset": "0x2000",
+              "size": 32,
+              "description": "Direction registers port 0"
+            },
+            "MASK0": {
+              "offset": "0x2080",
+              "size": 32,
+              "description": "Mask register port 0"
+            },
+            "PIN0": {
+              "offset": "0x2100",
+              "size": 32,
+              "description": "Port pin register port 0"
+            },
+            "MPIN0": {
+              "offset": "0x2180",
+              "size": 32,
+              "description": "Masked port register port 0"
+            },
+            "SET0": {
+              "offset": "0x2200",
+              "size": 32,
+              "description": "Write: Set register for port 0 Read: output bits for port 0"
+            },
+            "CLR0": {
+              "offset": "0x2280",
+              "size": 32,
+              "description": "Clear port 0"
+            },
+            "NOT0": {
+              "offset": "0x2300",
+              "size": 32,
+              "description": "Toggle port 0"
+            }
+          }
+        },
+        "PIN": {
+          "instances": [
+            {
+              "name": "PIN_INT",
+              "base": "0xA0004000",
+              "irq": 24
+            }
+          ],
+          "registers": {
+            "ISEL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Pin Interrupt Mode register"
+            },
+            "IENR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Pin interrupt level or rising edge interrupt enable register"
+            },
+            "SIENR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Pin interrupt level (rising edge) interrupt set register"
+            },
+            "CIENR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Pin interrupt level  or rising edge interrupt clear register"
+            },
+            "IENF": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Pin interrupt active level or falling edge interrupt enable register"
+            },
+            "SIENF": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Pin interrupt active level or falling edge interrupt set register"
+            },
+            "CIENF": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Pin interrupt active level (falling edge) interrupt clear register"
+            },
+            "RISE": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Pin interrupt rising edge register"
+            },
+            "FALL": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Pin interrupt falling edge register"
+            },
+            "IST": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Pin interrupt status register"
+            },
+            "PMCTRL": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "GPIO pattern match interrupt control register"
+            },
+            "PMSRC": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "GPIO pattern match interrupt bit-slice source register"
+            },
+            "PMCFG": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "GPIO pattern match interrupt bit slice configuration register"
+            }
+          }
+        }
+      },
+      "interrupts": {
+        "count": 48,
+        "vectors": [
+          {
+            "number": 0,
+            "name": "Initial_SP"
+          },
+          {
+            "number": 1,
+            "name": "Reset_Handler"
+          },
+          {
+            "number": 2,
+            "name": "NMI_Handler"
+          },
+          {
+            "number": 3,
+            "name": "HardFault_Handler"
+          },
+          {
+            "number": 4,
+            "name": "MemManage_Handler"
+          },
+          {
+            "number": 5,
+            "name": "BusFault_Handler"
+          },
+          {
+            "number": 6,
+            "name": "UsageFault_Handler"
+          },
+          {
+            "number": 11,
+            "name": "SVC_Handler"
+          },
+          {
+            "number": 12,
+            "name": "DebugMon_Handler"
+          },
+          {
+            "number": 14,
+            "name": "PendSV_Handler"
+          },
+          {
+            "number": 15,
+            "name": "SysTick_Handler"
+          },
+          {
+            "number": 16,
+            "name": "SPI0_IRQHandler"
+          },
+          {
+            "number": 17,
+            "name": "SPI1_IRQHandler"
+          },
+          {
+            "number": 19,
+            "name": "UART0_IRQHandler"
+          },
+          {
+            "number": 20,
+            "name": "UART1_IRQHandler"
+          },
+          {
+            "number": 21,
+            "name": "UART2_IRQHandler"
+          },
+          {
+            "number": 24,
+            "name": "I2C_IRQHandler"
+          },
+          {
+            "number": 25,
+            "name": "SCT_IRQHandler"
+          },
+          {
+            "number": 26,
+            "name": "MRT_IRQHandler"
+          },
+          {
+            "number": 27,
+            "name": "CMP_IRQHandler"
+          },
+          {
+            "number": 28,
+            "name": "WDT_IRQHandler"
+          },
+          {
+            "number": 29,
+            "name": "BOD_IRQHandler"
+          },
+          {
+            "number": 30,
+            "name": "FLASH_IRQ_IRQHandler"
+          },
+          {
+            "number": 31,
+            "name": "WKT_IRQHandler"
+          },
+          {
+            "number": 40,
+            "name": "PININT0_IRQHandler"
+          },
+          {
+            "number": 41,
+            "name": "PININT1_IRQHandler"
+          },
+          {
+            "number": 42,
+            "name": "PININT2_IRQHandler"
+          },
+          {
+            "number": 43,
+            "name": "PININT3_IRQHandler"
+          },
+          {
+            "number": 44,
+            "name": "PININT4_IRQHandler"
+          },
+          {
+            "number": 45,
+            "name": "PININT5_IRQHandler"
+          },
+          {
+            "number": 46,
+            "name": "PININT6_IRQHandler"
+          },
+          {
+            "number": 47,
+            "name": "PININT7_IRQHandler"
+          }
+        ]
+      }
+    }
+  }
+}

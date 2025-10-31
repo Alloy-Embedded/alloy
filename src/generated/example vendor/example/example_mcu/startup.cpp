@@ -3,7 +3,7 @@
 /// Source: example.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 22:25:27
+/// Generated: 2025-10-30 23:21:48
 #include <cstdint>
 #include <cstring>
 
