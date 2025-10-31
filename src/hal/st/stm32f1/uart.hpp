@@ -1,39 +1,42 @@
 #ifndef ALLOY_HAL_STM32F1_UART_HPP
 #define ALLOY_HAL_STM32F1_UART_HPP
 
-#include "../interface/uart.hpp"
+#include "../../interface/uart.hpp"
 #include "core/error.hpp"
 #include "core/types.hpp"
 #include <cstdint>
 
+// Include generated peripheral definitions
+#ifndef ALLOY_GENERATED_NAMESPACE
+#error "ALLOY_GENERATED_NAMESPACE must be defined by CMake"
+#endif
+#include <peripherals.hpp>
+
 namespace alloy::hal::stm32f1 {
 
-// All peripheral definitions come from generated code
-#include "peripherals.hpp"
-
 // Import generated definitions into local namespace
-using UsartRegs = alloy::generated::stm32f103c8::usart::Registers;
-using RccRegs = alloy::generated::stm32f103c8::rcc::Registers;
+using UsartRegs = ALLOY_GENERATED_NAMESPACE::usart::Registers;
+using RccRegs = ALLOY_GENERATED_NAMESPACE::rcc::Registers;
 
 namespace usart_addresses {
-    using namespace alloy::generated::stm32f103c8::usart;
+    using namespace ALLOY_GENERATED_NAMESPACE::usart;
 }
 
 namespace rcc {
-    using namespace alloy::generated::stm32f103c8::rcc;
+    using namespace ALLOY_GENERATED_NAMESPACE::rcc;
 }
 
 // Import bit definitions
 namespace sr_bits {
-    using namespace alloy::generated::stm32f103c8::usart::sr_bits;
+    using namespace ALLOY_GENERATED_NAMESPACE::usart::sr_bits;
 }
 
 namespace cr1_bits {
-    using namespace alloy::generated::stm32f103c8::usart::cr1_bits;
+    using namespace ALLOY_GENERATED_NAMESPACE::usart::cr1_bits;
 }
 
 namespace cr2_bits {
-    using namespace alloy::generated::stm32f103c8::usart::cr2_bits;
+    using namespace ALLOY_GENERATED_NAMESPACE::usart::cr2_bits;
     // CR2 STOP bit values for convenience
     constexpr uint32_t STOP_1BIT = (0b00 << 12); ///< 1 stop bit
     constexpr uint32_t STOP_2BIT = (0b10 << 12); ///< 2 stop bits

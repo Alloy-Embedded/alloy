@@ -1,24 +1,33 @@
 #ifndef ALLOY_HAL_STM32F1_GPIO_HPP
 #define ALLOY_HAL_STM32F1_GPIO_HPP
 
-#include "../interface/gpio.hpp"
+#include "../../interface/gpio.hpp"
 #include <cstdint>
+
+// Forward declare the generated namespace
+// CMake will define ALLOY_GENERATED_NAMESPACE based on the MCU
+// For example: alloy::generated::stm32f103c8
+#ifndef ALLOY_GENERATED_NAMESPACE
+#error "ALLOY_GENERATED_NAMESPACE must be defined by CMake"
+#endif
+
+// Include generated peripheral definitions
+// CMake adds the correct include path: generated/st/stm32f1/${ALLOY_MCU}/
+#include <peripherals.hpp>
 
 namespace alloy::hal::stm32f1 {
 
-// All peripheral definitions come from generated code
-#include "peripherals.hpp"
-
 // Import generated definitions into local namespace
-using GpioPort = alloy::generated::stm32f103c8::gpio::Registers;
-using RccRegs = alloy::generated::stm32f103c8::rcc::Registers;
+// ALLOY_GENERATED_NAMESPACE expands to something like alloy::generated::stm32f103c8
+using GpioPort = ALLOY_GENERATED_NAMESPACE::gpio::Registers;
+using RccRegs = ALLOY_GENERATED_NAMESPACE::rcc::Registers;
 
 namespace gpio_ports {
-    using namespace alloy::generated::stm32f103c8::gpio;
+    using namespace ALLOY_GENERATED_NAMESPACE::gpio;
 }
 
 namespace rcc {
-    using namespace alloy::generated::stm32f103c8::rcc;
+    using namespace ALLOY_GENERATED_NAMESPACE::rcc;
 }
 
 /// GPIO port identifiers
