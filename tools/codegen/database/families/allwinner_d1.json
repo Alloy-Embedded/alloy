@@ -1,0 +1,5977 @@
+{
+  "family": "D1H",
+  "architecture": "arm-cortex-m3",
+  "vendor": "Allwinner",
+  "mcus": {
+    "D1H": {
+      "flash": {
+        "size_kb": 64,
+        "base_address": "0x08000000",
+        "page_size_kb": 1
+      },
+      "ram": {
+        "size_kb": 20,
+        "base_address": "0x20000000"
+      },
+      "peripherals": {
+        "CCU": {
+          "instances": [
+            {
+              "name": "CCU",
+              "base": "0x02001000"
+            }
+          ],
+          "registers": {
+            "PLL_CPU_CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "PLL_CPU Control Register"
+            },
+            "PLL_DDR_CTRL": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "PLL_DDR Control Register"
+            },
+            "PLL_PERI_CTRL": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "PLL_PERI Control Register"
+            },
+            "PLL_VIDEO0_CTRL": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "PLL_VIDEO0 Control Register"
+            },
+            "PLL_VIDEO1_CTRL": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "PLL_VIDEO1 Control Register"
+            },
+            "PLL_VE_CTRL": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "PLL_VE Control Register"
+            },
+            "PLL_AUDIO0_CTRL": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "PLL_AUDIO0 Control Register"
+            },
+            "PLL_AUDIO1_CTRL": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "PLL_AUDIO1 Control Register"
+            },
+            "PLL_DDR_PAT0_CTRL": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "PLL_DDR Pattern0 Control Register"
+            },
+            "PLL_DDR_PAT1_CTRL": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "PLL_DDR Pattern1 Control Register"
+            },
+            "PLL_PERI_PAT0_CTRL": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "PLL_PERI Pattern0 Control Register"
+            },
+            "PLL_PERI_PAT1_CTRL": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "PLL_PERI Pattern1 Control Register"
+            },
+            "PLL_VIDEO0_PAT0_CTRL": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "PLL_VIDEO0 Pattern0 Control Register"
+            },
+            "PLL_VIDEO0_PAT1_CTRL": {
+              "offset": "0x144",
+              "size": 32,
+              "description": "PLL_VIDEO0 Pattern1 Control Register"
+            },
+            "PLL_VIDEO1_PAT0_CTRL": {
+              "offset": "0x148",
+              "size": 32,
+              "description": "PLL_VIDEO1 Pattern0 Control Register"
+            },
+            "PLL_VIDEO1_PAT1_CTRL": {
+              "offset": "0x14C",
+              "size": 32,
+              "description": "PLL_VIDEO1 Pattern1 Control Register"
+            },
+            "PLL_VE_PAT0_CTRL": {
+              "offset": "0x158",
+              "size": 32,
+              "description": "PLL_VE Pattern0 Control Register"
+            },
+            "PLL_VE_PAT1_CTRL": {
+              "offset": "0x15C",
+              "size": 32,
+              "description": "PLL_VE Pattern1 Control Register"
+            },
+            "PLL_AUDIO0_PAT0_CTRL": {
+              "offset": "0x178",
+              "size": 32,
+              "description": "PLL_AUDIO0 Pattern0 Control Register"
+            },
+            "PLL_AUDIO0_PAT1_CTRL": {
+              "offset": "0x17C",
+              "size": 32,
+              "description": "PLL_AUDIO0 Pattern1 Control Register"
+            },
+            "PLL_AUDIO1_PAT0_CTRL": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "PLL_AUDIO1 Pattern0 Control Register"
+            },
+            "PLL_AUDIO1_PAT1_CTRL": {
+              "offset": "0x184",
+              "size": 32,
+              "description": "PLL_AUDIO1 Pattern1 Control Register"
+            },
+            "PLL_CPU_BIAS": {
+              "offset": "0x300",
+              "size": 32,
+              "description": "PLL_CPU Bias Register"
+            },
+            "PLL_DDR_BIAS": {
+              "offset": "0x310",
+              "size": 32,
+              "description": "PLL_DDR Bias Register"
+            },
+            "PLL_PERI_BIAS": {
+              "offset": "0x320",
+              "size": 32,
+              "description": "PLL_PERI Bias Register"
+            },
+            "PLL_VIDEO0_BIAS": {
+              "offset": "0x340",
+              "size": 32,
+              "description": "PLL_VIDEO0 Bias Register"
+            },
+            "PLL_VIDEO1_BIAS": {
+              "offset": "0x348",
+              "size": 32,
+              "description": "PLL_VIDEO1 Bias Register"
+            },
+            "PLL_VE_BIAS": {
+              "offset": "0x358",
+              "size": 32,
+              "description": "PLL_VE Bias Register"
+            },
+            "PLL_AUDIO0_BIAS": {
+              "offset": "0x378",
+              "size": 32,
+              "description": "PLL_AUDIO0 Bias Register"
+            },
+            "PLL_AUDIO1_BIAS": {
+              "offset": "0x380",
+              "size": 32,
+              "description": "PLL_AUDIO1 Bias Register"
+            },
+            "PLL_CPU_TUN": {
+              "offset": "0x400",
+              "size": 32,
+              "description": "PLL_CPU Tuning Register"
+            },
+            "CPU_AXI_CFG": {
+              "offset": "0x500",
+              "size": 32,
+              "description": "CPU_AXI Configuration Register"
+            },
+            "CPU_GATING": {
+              "offset": "0x504",
+              "size": 32,
+              "description": "CPU_GATING Configuration Register"
+            },
+            "PSI_CLK": {
+              "offset": "0x510",
+              "size": 32,
+              "description": "PSI Clock Register"
+            },
+            "APB%s_CLK": {
+              "offset": "0x520",
+              "size": 32,
+              "description": "APB Clock Register"
+            },
+            "MBUS_CLK": {
+              "offset": "0x540",
+              "size": 32,
+              "description": "MBUS Clock Register"
+            },
+            "DE_CLK": {
+              "offset": "0x600",
+              "size": 32,
+              "description": "DE Clock Register"
+            },
+            "DE_BGR": {
+              "offset": "0x60C",
+              "size": 32,
+              "description": "DE Bus Gating Reset Register"
+            },
+            "DI_CLK": {
+              "offset": "0x620",
+              "size": 32,
+              "description": "DI Clock Register"
+            },
+            "DI_BGR": {
+              "offset": "0x62C",
+              "size": 32,
+              "description": "DI Bus Gating Reset Register"
+            },
+            "G2D_CLK": {
+              "offset": "0x630",
+              "size": 32,
+              "description": "G2D Clock Register"
+            },
+            "G2D_BGR": {
+              "offset": "0x63C",
+              "size": 32,
+              "description": "G2D Bus Gating Reset Register"
+            },
+            "CE_CLK": {
+              "offset": "0x680",
+              "size": 32,
+              "description": "CE Clock Register"
+            },
+            "CE_BGR": {
+              "offset": "0x68C",
+              "size": 32,
+              "description": "CE Bus Gating Reset Register"
+            },
+            "VE_CLK": {
+              "offset": "0x690",
+              "size": 32,
+              "description": "VE Clock Register"
+            },
+            "VE_BGR": {
+              "offset": "0x69C",
+              "size": 32,
+              "description": "VE Bus Gating Reset Register"
+            },
+            "DMA_BGR": {
+              "offset": "0x70C",
+              "size": 32,
+              "description": "DMA Bus Gating Reset Register"
+            },
+            "MSGBOX_BGR": {
+              "offset": "0x71C",
+              "size": 32,
+              "description": "MSGBOX Bus Gating Reset Register"
+            },
+            "SPINLOCK_BGR": {
+              "offset": "0x72C",
+              "size": 32,
+              "description": "SPINLOCK Bus Gating Reset Register"
+            },
+            "HSTIMER_BGR": {
+              "offset": "0x73C",
+              "size": 32,
+              "description": "HSTIMER Bus Gating Reset Register"
+            },
+            "AVS_CLK": {
+              "offset": "0x740",
+              "size": 32,
+              "description": "AVS Clock Register"
+            },
+            "DBGSYS_BGR": {
+              "offset": "0x78C",
+              "size": 32,
+              "description": "DBGSYS Bus Gating Reset Register"
+            },
+            "PWM_BGR": {
+              "offset": "0x7AC",
+              "size": 32,
+              "description": "PWM Bus Gating Reset Register"
+            },
+            "IOMMU_BGR": {
+              "offset": "0x7BC",
+              "size": 32,
+              "description": "IOMMU Bus Gating Reset Register"
+            },
+            "DRAM_CLK": {
+              "offset": "0x800",
+              "size": 32,
+              "description": "DRAM Clock Register"
+            },
+            "MBUS_MAT_CLK_GATING": {
+              "offset": "0x804",
+              "size": 32,
+              "description": "MBUS Master Clock Gating Register"
+            },
+            "DRAM_BGR": {
+              "offset": "0x80C",
+              "size": 32,
+              "description": "DRAM Bus Gating Reset Register"
+            },
+            "SMHC0_CLK": {
+              "offset": "0x830",
+              "size": 32,
+              "description": "SMHC0 Clock Register"
+            },
+            "SMHC1_CLK": {
+              "offset": "0x834",
+              "size": 32,
+              "description": "SMHC1 Clock Register"
+            },
+            "SMHC2_CLK": {
+              "offset": "0x838",
+              "size": 32,
+              "description": "SMHC2 Clock Register"
+            },
+            "SMHC_BGR": {
+              "offset": "0x84C",
+              "size": 32,
+              "description": "SMHC Bus Gating Reset Register"
+            },
+            "UART_BGR": {
+              "offset": "0x90C",
+              "size": 32,
+              "description": "UART Bus Gating Reset Register"
+            },
+            "TWI_BGR": {
+              "offset": "0x91C",
+              "size": 32,
+              "description": "TWI Bus Gating Reset Register"
+            },
+            "SPI0_CLK": {
+              "offset": "0x940",
+              "size": 32,
+              "description": "SPI0 Clock Register"
+            },
+            "SPI1_CLK": {
+              "offset": "0x944",
+              "size": 32,
+              "description": "SPI1 Clock Register"
+            },
+            "SPI_BGR": {
+              "offset": "0x96C",
+              "size": 32,
+              "description": "SPI Bus Gating Reset Register"
+            },
+            "EMAC_25M_CLK": {
+              "offset": "0x970",
+              "size": 32,
+              "description": "EMAC_25M Clock Register"
+            },
+            "EMAC_BGR": {
+              "offset": "0x97C",
+              "size": 32,
+              "description": "EMAC Bus Gating Reset Register"
+            },
+            "IRTX_CLK": {
+              "offset": "0x9C0",
+              "size": 32,
+              "description": "IRTX Clock Register"
+            },
+            "IRTX_BGR": {
+              "offset": "0x9CC",
+              "size": 32,
+              "description": "IRTX Bus Gating Reset Register"
+            },
+            "GPADC_BGR": {
+              "offset": "0x9EC",
+              "size": 32,
+              "description": "GPADC Bus Gating Reset Register"
+            },
+            "THS_BGR": {
+              "offset": "0x9FC",
+              "size": 32,
+              "description": "THS Bus Gating Reset Register"
+            },
+            "I2S%s_CLK": {
+              "offset": "0xA10",
+              "size": 32,
+              "description": "I2S Clock Register"
+            },
+            "I2S2_ASRC_CLK": {
+              "offset": "0xA1C",
+              "size": 32,
+              "description": "I2S2_ASRC Clock Register"
+            },
+            "I2S_BGR": {
+              "offset": "0xA20",
+              "size": 32,
+              "description": "I2S Bus Gating Reset Register"
+            },
+            "OWA_TX_CLK": {
+              "offset": "0xA24",
+              "size": 32,
+              "description": "OWA_TX Clock Register"
+            },
+            "OWA_RX_CLK": {
+              "offset": "0xA28",
+              "size": 32,
+              "description": "OWA_RX Clock Register"
+            },
+            "OWA_BGR": {
+              "offset": "0xA2C",
+              "size": 32,
+              "description": "OWA Bus Gating Reset Register"
+            },
+            "DMIC_CLK": {
+              "offset": "0xA40",
+              "size": 32,
+              "description": "DMIC Clock Register"
+            },
+            "DMIC_BGR": {
+              "offset": "0xA4C",
+              "size": 32,
+              "description": "DMIC Bus Gating Reset Register"
+            },
+            "AUDIO_CODEC_DAC_CLK": {
+              "offset": "0xA50",
+              "size": 32,
+              "description": "AUDIO_CODEC_DAC Clock Register"
+            },
+            "AUDIO_CODEC_ADC_CLK": {
+              "offset": "0xA54",
+              "size": 32,
+              "description": "AUDIO_CODEC_ADC Clock Register"
+            },
+            "AUDIO_CODEC_BGR": {
+              "offset": "0xA5C",
+              "size": 32,
+              "description": "AUDIO_CODEC Bus Gating Reset Register"
+            },
+            "USB0_CLK": {
+              "offset": "0xA70",
+              "size": 32,
+              "description": "USB0 Clock Register"
+            },
+            "USB1_CLK": {
+              "offset": "0xA74",
+              "size": 32,
+              "description": "USB1 Clock Register"
+            },
+            "USB_BGR": {
+              "offset": "0xA8C",
+              "size": 32,
+              "description": "USB Bus Gating Reset Register"
+            },
+            "LRADC_BGR": {
+              "offset": "0xA9C",
+              "size": 32,
+              "description": "LRADC Bus Gating Reset Register"
+            },
+            "DPSS_TOP_BGR": {
+              "offset": "0xABC",
+              "size": 32,
+              "description": "DPSS_TOP Bus Gating Reset Register"
+            },
+            "DSI_CLK": {
+              "offset": "0xB24",
+              "size": 32,
+              "description": "DSI Clock Register"
+            },
+            "DSI_BGR": {
+              "offset": "0xB4C",
+              "size": 32,
+              "description": "DSI Bus Gating Reset Register"
+            },
+            "TCONLCD_CLK": {
+              "offset": "0xB60",
+              "size": 32,
+              "description": "TCONLCD Clock Register"
+            },
+            "TCONLCD_BGR": {
+              "offset": "0xB7C",
+              "size": 32,
+              "description": "TCONLCD Bus Gating Reset Register"
+            },
+            "TCONTV_CLK": {
+              "offset": "0xB80",
+              "size": 32,
+              "description": "TCONTV Clock Register"
+            },
+            "TCONTV_BGR": {
+              "offset": "0xB9C",
+              "size": 32,
+              "description": "TCONTV Bus Gating Reset Register"
+            },
+            "LVDS_BGR": {
+              "offset": "0xBAC",
+              "size": 32,
+              "description": "LVDS Bus Gating Reset Register"
+            },
+            "TVE_CLK": {
+              "offset": "0xBB0",
+              "size": 32,
+              "description": "TVE Clock Register"
+            },
+            "TVE_BGR": {
+              "offset": "0xBBC",
+              "size": 32,
+              "description": "TVE Bus Gating Reset Register"
+            },
+            "TVD_CLK": {
+              "offset": "0xBC0",
+              "size": 32,
+              "description": "TVD Clock Register"
+            },
+            "TVD_BGR": {
+              "offset": "0xBDC",
+              "size": 32,
+              "description": "TVD Bus Gating Reset Register"
+            },
+            "LEDC_CLK": {
+              "offset": "0xBF0",
+              "size": 32,
+              "description": "LEDC Clock Register"
+            },
+            "LEDC_BGR": {
+              "offset": "0xBFC",
+              "size": 32,
+              "description": "LEDC Bus Gating Reset Register"
+            },
+            "CSI_CLK": {
+              "offset": "0xC04",
+              "size": 32,
+              "description": "CSI Clock Register"
+            },
+            "CSI_MASTER_CLK": {
+              "offset": "0xC08",
+              "size": 32,
+              "description": "CSI Master Clock Register"
+            },
+            "CSI_BGR": {
+              "offset": "0xC1C",
+              "size": 32,
+              "description": "CSI Bus Gating Reset Register"
+            },
+            "TPADC_CLK": {
+              "offset": "0xC50",
+              "size": 32,
+              "description": "TPADC Clock Register"
+            },
+            "TPADC_BGR": {
+              "offset": "0xC5C",
+              "size": 32,
+              "description": "TPADC Bus Gating Reset Register"
+            },
+            "DSP_CLK": {
+              "offset": "0xC70",
+              "size": 32,
+              "description": "DSP Clock Register"
+            },
+            "DSP_BGR": {
+              "offset": "0xC7C",
+              "size": 32,
+              "description": "DSP Bus Gating Reset Register"
+            },
+            "RISCV_CLK": {
+              "offset": "0xD00",
+              "size": 32,
+              "description": "RISC-V Clock Register"
+            },
+            "RISCV_GATING": {
+              "offset": "0xD04",
+              "size": 32,
+              "description": "RISC-V GATING Configuration Register"
+            },
+            "RISCV_CFG_BGR": {
+              "offset": "0xD0C",
+              "size": 32,
+              "description": "RISC-V_CFG Bus Gating Reset Register"
+            },
+            "PLL_LOCK_DBG_CTRL": {
+              "offset": "0xF04",
+              "size": 32,
+              "description": "PLL Lock Debug Control Register"
+            },
+            "FRE_DET_CTRL": {
+              "offset": "0xF08",
+              "size": 32,
+              "description": "Frequency Detect Control Register"
+            },
+            "FRE_UP_LIM": {
+              "offset": "0xF0C",
+              "size": 32,
+              "description": "Frequency Up Limit Register"
+            },
+            "FRE_DOWN_LIM": {
+              "offset": "0xF10",
+              "size": 32,
+              "description": "Frequency Down Limit Register"
+            },
+            "CCU_FAN_GATE": {
+              "offset": "0xF30",
+              "size": 32,
+              "description": "CCU FANOUT CLOCK GATE Register"
+            },
+            "CLK27M_FAN": {
+              "offset": "0xF34",
+              "size": 32,
+              "description": "CLK27M FANOUT Register"
+            },
+            "PCLK_FAN": {
+              "offset": "0xF38",
+              "size": 32,
+              "description": "PCLK FANOUT Register"
+            },
+            "CCU_FAN": {
+              "offset": "0xF3C",
+              "size": 32,
+              "description": "CCU FANOUT Register"
+            }
+          }
+        },
+        "SYS": {
+          "instances": [
+            {
+              "name": "SYS_CFG",
+              "base": "0x03000000"
+            }
+          ],
+          "registers": {
+            "DSP_BOOT_RAMMAP": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "DSP Boot SRAM Remap Control Register"
+            },
+            "VER": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Version Register"
+            },
+            "EMAC_EPHY_CLK0": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "EMAC-EPHY Clock Register 0"
+            },
+            "SYS_LDO_CTRL": {
+              "offset": "0x150",
+              "size": 32,
+              "description": "System LDO Control Register"
+            },
+            "RESCAL_CTRL": {
+              "offset": "0x160",
+              "size": 32,
+              "description": "Resistor Calibration Control Register"
+            },
+            "RES240_CTRL": {
+              "offset": "0x168",
+              "size": 32,
+              "description": "240ohms Resistor Manual Control Register"
+            },
+            "RESCAL_STATUS": {
+              "offset": "0x16C",
+              "size": 32,
+              "description": "Resistor Calibration Status Register"
+            }
+          }
+        },
+        "RISCV": {
+          "instances": [
+            {
+              "name": "RISCV_CFG",
+              "base": "0x06010000"
+            }
+          ],
+          "registers": {
+            "RISCV_STA_ADD0_REG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "RISCV Start Address0 Register"
+            },
+            "RISCV_STA_ADD1_REG": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "RISCV Start Address1 Register"
+            },
+            "RF1P_CFG_REG": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "RF1P Configuration Register"
+            },
+            "ROM_CFG_REG": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "ROM Configuration Register"
+            },
+            "WAKEUP_EN_REG": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Wakeup Enable Register"
+            },
+            "WAKEUP_MASK%s_REG": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Wakeup Mask Register"
+            },
+            "TS_TMODE_SEL_REG": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Timestamp Test Mode Select Register"
+            },
+            "SRAM_ADDR_TWIST_REG": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "SRAM Address Twist Register"
+            },
+            "WORK_MODE_REG": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Work Mode Register"
+            },
+            "RETITE_PC0_REG": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Retire PC0 Register"
+            },
+            "RETITE_PC1_REG": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Retire PC1 Register"
+            },
+            "IRQ_MODE%s_REG": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "IRQ Mode Register"
+            },
+            "RISCV_AXI_PMU_CTRL": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "RISCV AXI PMU Control Register"
+            },
+            "RISCV_AXI_PMU_PRD": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "RISCV AXI PMU Period Register"
+            },
+            "RISCV_AXI_PMU_LAT_RD": {
+              "offset": "0x10C",
+              "size": 32,
+              "description": "RISCV AXI PMU Read Latency Register"
+            },
+            "RISCV_AXI_PMU_LAT_WR": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "RISCV AXI PMU Write Latency Register"
+            },
+            "RISCV_AXI_PMU_REQ_RD": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "RISCV AXI PMU Read Request Register"
+            },
+            "RISCV_AXI_PMU_REQ_WR": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "RISCV AXI PMU Write Request Register"
+            },
+            "RISCV_AXI_PMU_BW_RD": {
+              "offset": "0x11C",
+              "size": 32,
+              "description": "RISCV AXI PMU Read Bandwidth Register"
+            },
+            "RISCV_AXI_PMU_BW_WR": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "RISCV AXI PMU Write Bandwidth Register"
+            }
+          }
+        },
+        "CLINT": {
+          "instances": [
+            {
+              "name": "CLINT",
+              "base": "0x14000000"
+            }
+          ],
+          "registers": {
+            "msip": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "MSIP Register for hart 0"
+            },
+            "mtimecmpl": {
+              "offset": "0x4000",
+              "size": 32,
+              "description": "MTIMECMPL Register for hart 0"
+            },
+            "mtimecmph": {
+              "offset": "0x4004",
+              "size": 32,
+              "description": "MTIMECMPH Register for hart 0"
+            },
+            "mtime": {
+              "offset": "0xBFF8",
+              "size": 64,
+              "description": "MTIME\\n\\nREF: opensbi"
+            },
+            "ssip": {
+              "offset": "0xC000",
+              "size": 32,
+              "description": "SSIP Register for hart 0"
+            },
+            "stimecmpl": {
+              "offset": "0xD000",
+              "size": 32,
+              "description": "STIMECMPL Register for hart 0"
+            },
+            "stimecmph": {
+              "offset": "0xD004",
+              "size": 32,
+              "description": "STIMECMPH Register for hart 0"
+            }
+          }
+        },
+        "TIM": {
+          "instances": [
+            {
+              "name": "TIMER",
+              "base": "0x02050000",
+              "irq": 75
+            },
+            {
+              "name": "HSTimer",
+              "base": "0x03008000",
+              "irq": 71
+            }
+          ],
+          "registers": {
+            "tmr_irq_en": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Timer IRQ Enable Register"
+            },
+            "tmr_irq_sta": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Timer Status Register"
+            },
+            "tmr%s_ctrl": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Timer IRQ Enable Register"
+            },
+            "tmr%s_intv_value": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Timer Interval Value Register"
+            },
+            "tmr%s_cur_value": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Timer Current Value Register"
+            },
+            "wdog_irq_en": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "Watchdog IRQ Enable Register"
+            },
+            "wdog_irq_sta": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "Watchdog Status Register"
+            },
+            "wdog_soft_rst": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "Watchdog Software Reset Register"
+            },
+            "wdog_ctrl": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "Watchdog Control Register"
+            },
+            "wdog_cfg": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "Watchdog Configuration Register"
+            },
+            "wdog_mode": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "Watchdog Mode Register"
+            },
+            "wdog_output_cfg": {
+              "offset": "0xBC",
+              "size": 32,
+              "description": "Watchdog Output Configuration Register"
+            },
+            "avs_cnt_ctl": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "AVS Counter Control Register"
+            },
+            "avs_cnt0": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "AVS Counter 0 Register"
+            },
+            "avs_cnt1": {
+              "offset": "0xC8",
+              "size": 32,
+              "description": "AVS Counter 1 Register"
+            },
+            "avs_cnt_div": {
+              "offset": "0xCC",
+              "size": 32,
+              "description": "AVS Counter Divisor Register"
+            }
+          }
+        },
+        "PLIC": {
+          "instances": [
+            {
+              "name": "PLIC",
+              "base": "0x10000000"
+            }
+          ],
+          "registers": {
+            "prio[%s]": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Interrupt Priority Register"
+            },
+            "ip[%s]": {
+              "offset": "0x1000",
+              "size": 32,
+              "description": "Interrupt Pending Register"
+            },
+            "mie[%s]": {
+              "offset": "0x2000",
+              "size": 32,
+              "description": "Machine Mode Interrupt Enable Register"
+            },
+            "sie[%s]": {
+              "offset": "0x2080",
+              "size": 32,
+              "description": "Supervisor Mode Interrupt Enable Register"
+            },
+            "ctrl": {
+              "offset": "0x1FFFFC",
+              "size": 32,
+              "description": "Control Register"
+            },
+            "mth": {
+              "offset": "0x200000",
+              "size": 32,
+              "description": "Machine Mode Priority Threshold Register"
+            },
+            "mclaim": {
+              "offset": "0x200004",
+              "size": 32,
+              "description": "Machine Mode Claim/Complete Register"
+            },
+            "sth": {
+              "offset": "0x201000",
+              "size": 32,
+              "description": "Supervisor Mode Priority Threshold Register"
+            },
+            "sclaim": {
+              "offset": "0x201004",
+              "size": 32,
+              "description": "Supervisor Mode Claim/Complete Register"
+            }
+          },
+          "bits": {
+            "prio[%s]": {
+              "priority": {
+                "bit": 0,
+                "description": "Priority 0 (never interrupt)",
+                "width": 5
+              }
+            },
+            "mth": {
+              "priority": {
+                "bit": 0,
+                "description": "Priority 0 (never interrupt)",
+                "width": 5
+              }
+            },
+            "sth": {
+              "priority": {
+                "bit": 0,
+                "description": "Priority 0 (never interrupt)",
+                "width": 5
+              }
+            }
+          }
+        },
+        "DMA": {
+          "instances": [
+            {
+              "name": "DMAC",
+              "base": "0x03002000",
+              "irq": 66
+            }
+          ],
+          "registers": {
+            "DMAC_IRQ_EN_REG0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "DMAC IRQ Enable Register 0"
+            },
+            "DMAC_IRQ_EN_REG1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "DMAC IRQ Enable Register 1"
+            },
+            "DMAC_IRQ_PEND_REG0": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "DMAC IRQ Pending Register 0"
+            },
+            "DMAC_IRQ_PEND_REG1": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "DMAC IRQ Pending Register 1"
+            },
+            "DMAC_AUTO_GATE_REG": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "DMAC Auto Gating Register"
+            },
+            "DMAC_STA_REG": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "DMAC Status Register"
+            },
+            "DMAC_EN_REG%s": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "DMAC Channel Enable Register"
+            },
+            "DMAC_PAU_REG%s": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "DMAC Channel Pause Register"
+            },
+            "DMAC_DESC_ADDR_REG%s": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "DMAC Channel Start Address Register"
+            },
+            "DMAC_CFG_REG%s": {
+              "offset": "0x10C",
+              "size": 32,
+              "description": "DMAC Channel Configuration Register"
+            },
+            "DMAC_CUR_SRC_REG%s": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "DMAC Channel Current Source Register"
+            },
+            "DMAC_CUR_DEST_REG%s": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "DMAC Channel Current Destination Register"
+            },
+            "DMAC_BCNT_LEFT_REG%s": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "DMAC Channel Byte Counter Left Register"
+            },
+            "DMAC_PARA_REG%s": {
+              "offset": "0x11C",
+              "size": 32,
+              "description": "DMAC Channel Parameter Register"
+            },
+            "DMAC_MODE_REG%s": {
+              "offset": "0x128",
+              "size": 32,
+              "description": "DMAC Mode Register"
+            },
+            "DMAC_FDESC_ADDR_REG%s": {
+              "offset": "0x12C",
+              "size": 32,
+              "description": "DMAC Former Descriptor Address Register"
+            },
+            "DMAC_PKG_NUM_REG%s": {
+              "offset": "0x130",
+              "size": 32,
+              "description": "DMAC Package Number Register"
+            }
+          }
+        },
+        "THC": {
+          "instances": [
+            {
+              "name": "THC",
+              "base": "0x02009400",
+              "irq": 74
+            }
+          ],
+          "registers": {
+            "THS_CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "THS Control Register"
+            },
+            "THS_EN": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "THS Enable Register"
+            },
+            "THS_PER": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "THS Period Control Register"
+            },
+            "THS_DATA_INTC": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "THS Data Interrupt Control Register"
+            },
+            "THS_SHUT_INTC": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "THS Shut Interrupt Control Register"
+            },
+            "THS_ALARM_INTC": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "THS Alarm Interrupt Control Register"
+            },
+            "THS_DATA_INTS": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "THS Data Interrupt Status Register"
+            },
+            "THS_SHUT_INTS": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "THS Shut Interrupt Status Register"
+            },
+            "THS_ALARMO_INTS": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "THS Alarm off Interrupt Status Register"
+            },
+            "THS_ALARM_INTS": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "THS Alarm Interrupt Status Register"
+            },
+            "THS_FILTER": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "THS Median Filter Control Register"
+            },
+            "THS_ALARM_CTRL": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "THS Alarm Threshold Control Register"
+            },
+            "THS_SHUTDOWN_CTRL": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "THS Shutdown Threshold Control Register"
+            },
+            "THS_CDATA": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "THS Calibration Data"
+            },
+            "THS_DATA": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "THS Data Register"
+            }
+          }
+        },
+        "IOMMU": {
+          "instances": [
+            {
+              "name": "IOMMU",
+              "base": "0x02010000",
+              "irq": 80
+            }
+          ],
+          "registers": {
+            "IOMMU_RESET_REG": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "IOMMU Reset Register"
+            },
+            "IOMMU_ENABLE_REG": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "IOMMU Enable Register"
+            },
+            "IOMMU_BYPASS_REG": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "IOMMU Bypass Register"
+            },
+            "IOMMU_AUTO_GATING_REG": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "IOMMU Auto Gating Register"
+            },
+            "IOMMU_WBUF_CTRL_REG": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "IOMMU Write Buffer Control Register"
+            },
+            "IOMMU_OOO_CTRL_REG": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "IOMMU Out of Order Control Register"
+            },
+            "IOMMU_4KB_BDY_PRT_CTRL_REG": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "IOMMU 4KB Boundary Protect Control Register"
+            },
+            "IOMMU_TTB_REG": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "IOMMU Translation Table Base Register"
+            },
+            "IOMMU_TLB_ENABLE_REG": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "IOMMU TLB Enable Register"
+            },
+            "IOMMU_TLB_PREFETCH_REG": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "IOMMU TLB Prefetch Register"
+            },
+            "IOMMU_TLB_FLUSH_ENABLE_REG": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "IOMMU TLB Flush Enable Register"
+            },
+            "IOMMU_TLB_IVLD_MODE_SEL_REG": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "IOMMU TLB Invalidation Mode Select Register"
+            },
+            "IOMMU_TLB_IVLD_STA_ADDR_REG": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "IOMMU TLB Invalidation Start Address Register"
+            },
+            "IOMMU_TLB_IVLD_END_ADDR_REG": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "IOMMU TLB Invalidation End Address Register"
+            },
+            "IOMMU_TLB_IVLD_ADDR_REG": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "IOMMU TLB Invalidation Address Register"
+            },
+            "IOMMU_TLB_IVLD_ADDR_MASK_REG": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "IOMMU TLB Invalidation Address Mask Register"
+            },
+            "IOMMU_TLB_IVLD_ENABLE_REG": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "IOMMU TLB Invalidation Enable Register"
+            },
+            "IOMMU_PC_IVLD_MODE_SEL_REG": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "IOMMU PC Invalidation Mode Select Register"
+            },
+            "IOMMU_PC_IVLD_ADDR_REG": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "IOMMU PC Invalidation Address Register"
+            },
+            "IOMMU_PC_IVLD_STA_ADDR_REG": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "IOMMU PC Invalidation Start Address Register"
+            },
+            "IOMMU_PC_IVLD_ENABLE_REG": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "IOMMU PC Invalidation Enable Register"
+            },
+            "IOMMU_PC_IVLD_END_ADDR_REG": {
+              "offset": "0xAC",
+              "size": 32,
+              "description": "IOMMU PC Invalidation End Address Register"
+            },
+            "IOMMU_DM_AUT_CTRL0_REG": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "IOMMU Domain Authority Control 0 Register"
+            },
+            "IOMMU_DM_AUT_CTRL1_REG": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "IOMMU Domain Authority Control 1 Register"
+            },
+            "IOMMU_DM_AUT_CTRL2_REG": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "IOMMU Domain Authority Control 2 Register"
+            },
+            "IOMMU_DM_AUT_CTRL3_REG": {
+              "offset": "0xBC",
+              "size": 32,
+              "description": "IOMMU Domain Authority Control 3 Register"
+            },
+            "IOMMU_DM_AUT_CTRL4_REG": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "IOMMU Domain Authority Control 4 Register"
+            },
+            "IOMMU_DM_AUT_CTRL5_REG": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "IOMMU Domain Authority Control 5 Register"
+            },
+            "IOMMU_DM_AUT_CTRL6_REG": {
+              "offset": "0xC8",
+              "size": 32,
+              "description": "IOMMU Domain Authority Control 6 Register"
+            },
+            "IOMMU_DM_AUT_CTRL7_REG": {
+              "offset": "0xCC",
+              "size": 32,
+              "description": "IOMMU Domain Authority Control 7 Register"
+            },
+            "IOMMU_DM_AUT_OVWT_REG": {
+              "offset": "0xD0",
+              "size": 32,
+              "description": "IOMMU Domain Authority Overwrite Register"
+            },
+            "IOMMU_INT_ENABLE_REG": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "IOMMU Interrupt Enable Register"
+            },
+            "IOMMU_INT_CLR_REG": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "IOMMU Interrupt Clear Register"
+            },
+            "IOMMU_INT_STA_REG": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "IOMMU Interrupt Status Register"
+            },
+            "IOMMU_INT_ERR_ADDR0_REG": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Address 0"
+            },
+            "IOMMU_INT_ERR_ADDR1_REG": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Address 1"
+            },
+            "IOMMU_INT_ERR_ADDR2_REG": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Address 2"
+            },
+            "IOMMU_INT_ERR_ADDR3_REG": {
+              "offset": "0x11C",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Address 3"
+            },
+            "IOMMU_INT_ERR_ADDR4_REG": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Address 4"
+            },
+            "IOMMU_INT_ERR_ADDR5_REG": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Address 5"
+            },
+            "IOMMU_INT_ERR_ADDR6_REG": {
+              "offset": "0x128",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Address 6"
+            },
+            "IOMMU_INT_ERR_ADDR7_REG": {
+              "offset": "0x130",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Address 7"
+            },
+            "IOMMU_INT_ERR_ADDR8_REG": {
+              "offset": "0x134",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Address 8"
+            },
+            "IOMMU_INT_ERR_DATA0_REG": {
+              "offset": "0x150",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Data 0 Register"
+            },
+            "IOMMU_INT_ERR_DATA1_REG": {
+              "offset": "0x154",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Data 1 Register"
+            },
+            "IOMMU_INT_ERR_DATA2_REG": {
+              "offset": "0x158",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Data 2 Register"
+            },
+            "IOMMU_INT_ERR_DATA3_REG": {
+              "offset": "0x15C",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Data 3 Register"
+            },
+            "IOMMU_INT_ERR_DATA4_REG": {
+              "offset": "0x160",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Data 4 Register"
+            },
+            "IOMMU_INT_ERR_DATA5_REG": {
+              "offset": "0x164",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Data 5 Register"
+            },
+            "IOMMU_INT_ERR_DATA6_REG": {
+              "offset": "0x168",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Data 6 Register"
+            },
+            "IOMMU_INT_ERR_DATA7_REG": {
+              "offset": "0x170",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Data 7 Register"
+            },
+            "IOMMU_INT_ERR_DATA8_REG": {
+              "offset": "0x174",
+              "size": 32,
+              "description": "IOMMU Interrupt Error Data 8 Register"
+            },
+            "IOMMU_L1PG_INT_REG": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "IOMMU L1 Page Table Interrupt Register"
+            },
+            "IOMMU_L2PG_INT_REG": {
+              "offset": "0x184",
+              "size": 32,
+              "description": "IOMMU L2 Page Table Interrupt Register"
+            },
+            "IOMMU_VA_REG": {
+              "offset": "0x190",
+              "size": 32,
+              "description": "IOMMU Virtual Address Register"
+            },
+            "IOMMU_VA_DATA_REG": {
+              "offset": "0x194",
+              "size": 32,
+              "description": "IOMMU Virtual Address Data Register"
+            },
+            "IOMMU_VA_CONFIG_REG": {
+              "offset": "0x198",
+              "size": 32,
+              "description": "IOMMU Virtual Address Configuration Register"
+            },
+            "IOMMU_PMU_ENABLE_REG": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "IOMMU PMU Enable Register"
+            },
+            "IOMMU_PMU_CLR_REG": {
+              "offset": "0x210",
+              "size": 32,
+              "description": "IOMMU PMU Clear Register"
+            },
+            "IOMMU_PMU_ACCESS_LOW0_REG": {
+              "offset": "0x230",
+              "size": 32,
+              "description": "IOMMU PMU Access Low 0 Register"
+            },
+            "IOMMU_PMU_ACCESS_HIGH0_REG": {
+              "offset": "0x234",
+              "size": 32,
+              "description": "IOMMU PMU Access High 0 Register"
+            },
+            "IOMMU_PMU_HIT_LOW0_REG": {
+              "offset": "0x238",
+              "size": 32,
+              "description": "IOMMU PMU Hit Low 0 Register"
+            },
+            "IOMMU_PMU_HIT_HIGH0_REG": {
+              "offset": "0x23C",
+              "size": 32,
+              "description": "IOMMU PMU Hit High 0 Register"
+            },
+            "IOMMU_PMU_ACCESS_LOW1_REG": {
+              "offset": "0x240",
+              "size": 32,
+              "description": "IOMMU PMU Access Low 1 Register"
+            },
+            "IOMMU_PMU_ACCESS_HIGH1_REG": {
+              "offset": "0x244",
+              "size": 32,
+              "description": "IOMMU PMU Access High 1 Register"
+            },
+            "IOMMU_PMU_HIT_LOW1_REG": {
+              "offset": "0x248",
+              "size": 32,
+              "description": "IOMMU PMU Hit Low 1 Register"
+            },
+            "IOMMU_PMU_HIT_HIGH1_REG": {
+              "offset": "0x24C",
+              "size": 32,
+              "description": "IOMMU PMU Hit High 1 Register"
+            },
+            "IOMMU_PMU_ACCESS_LOW2_REG": {
+              "offset": "0x250",
+              "size": 32,
+              "description": "IOMMU PMU Access Low 2 Register"
+            },
+            "IOMMU_PMU_ACCESS_HIGH2_REG": {
+              "offset": "0x254",
+              "size": 32,
+              "description": "IOMMU PMU Access High 2 Register"
+            },
+            "IOMMU_PMU_HIT_LOW2_REG": {
+              "offset": "0x258",
+              "size": 32,
+              "description": "IOMMU PMU Hit Low 2 Register"
+            },
+            "IOMMU_PMU_HIT_HIGH2_REG": {
+              "offset": "0x25C",
+              "size": 32,
+              "description": "IOMMU PMU Hit High 2 Register"
+            },
+            "IOMMU_PMU_ACCESS_LOW3_REG": {
+              "offset": "0x260",
+              "size": 32,
+              "description": "IOMMU PMU Access Low 3 Register"
+            },
+            "IOMMU_PMU_ACCESS_HIGH3_REG": {
+              "offset": "0x264",
+              "size": 32,
+              "description": "IOMMU PMU Access High 3 Register"
+            },
+            "IOMMU_PMU_HIT_LOW3_REG": {
+              "offset": "0x268",
+              "size": 32,
+              "description": "IOMMU PMU Hit Low 3 Register"
+            },
+            "IOMMU_PMU_HIT_HIGH3_REG": {
+              "offset": "0x26C",
+              "size": 32,
+              "description": "IOMMU PMU Hit High 3 Register"
+            },
+            "IOMMU_PMU_ACCESS_LOW4_REG": {
+              "offset": "0x270",
+              "size": 32,
+              "description": "IOMMU PMU Access Low 4 Register"
+            },
+            "IOMMU_PMU_ACCESS_HIGH4_REG": {
+              "offset": "0x274",
+              "size": 32,
+              "description": "IOMMU PMU Access High 4 Register"
+            },
+            "IOMMU_PMU_HIT_LOW4_REG": {
+              "offset": "0x278",
+              "size": 32,
+              "description": "IOMMU PMU Hit Low 4 Register"
+            },
+            "IOMMU_PMU_HIT_HIGH4_REG": {
+              "offset": "0x27C",
+              "size": 32,
+              "description": "IOMMU PMU Hit High 4 Register"
+            },
+            "IOMMU_PMU_ACCESS_LOW5_REG": {
+              "offset": "0x280",
+              "size": 32,
+              "description": "IOMMU PMU Access Low 5 Register"
+            },
+            "IOMMU_PMU_ACCESS_HIGH5_REG": {
+              "offset": "0x284",
+              "size": 32,
+              "description": "IOMMU PMU Access High 5 Register"
+            },
+            "IOMMU_PMU_HIT_LOW5_REG": {
+              "offset": "0x288",
+              "size": 32,
+              "description": "IOMMU PMU Hit Low 5 Register"
+            },
+            "IOMMU_PMU_HIT_HIGH5_REG": {
+              "offset": "0x28C",
+              "size": 32,
+              "description": "IOMMU PMU Hit High 5 Register"
+            },
+            "IOMMU_PMU_ACCESS_LOW6_REG": {
+              "offset": "0x290",
+              "size": 32,
+              "description": "IOMMU PMU Access Low 6 Register"
+            },
+            "IOMMU_PMU_ACCESS_HIGH6_REG": {
+              "offset": "0x294",
+              "size": 32,
+              "description": "IOMMU PMU Access High 6 Register"
+            },
+            "IOMMU_PMU_HIT_LOW6_REG": {
+              "offset": "0x298",
+              "size": 32,
+              "description": "IOMMU PMU Hit Low 6 Register"
+            },
+            "IOMMU_PMU_HIT_HIGH6_REG": {
+              "offset": "0x29C",
+              "size": 32,
+              "description": "IOMMU PMU Hit High 6 Register"
+            },
+            "IOMMU_PMU_ACCESS_LOW7_REG": {
+              "offset": "0x2D0",
+              "size": 32,
+              "description": "IOMMU PMU Access Low 7 Register"
+            },
+            "IOMMU_PMU_ACCESS_HIGH7_REG": {
+              "offset": "0x2D4",
+              "size": 32,
+              "description": "IOMMU PMU Access High 7 Register"
+            },
+            "IOMMU_PMU_HIT_LOW7_REG": {
+              "offset": "0x2D8",
+              "size": 32,
+              "description": "IOMMU PMU Hit Low 7 Register"
+            },
+            "IOMMU_PMU_HIT_HIGH7_REG": {
+              "offset": "0x2DC",
+              "size": 32,
+              "description": "IOMMU PMU Hit High 7 Register"
+            },
+            "IOMMU_PMU_ACCESS_LOW8_REG": {
+              "offset": "0x2E0",
+              "size": 32,
+              "description": "IOMMU PMU Access Low 8 Register"
+            },
+            "IOMMU_PMU_ACCESS_HIGH8_REG": {
+              "offset": "0x2E4",
+              "size": 32,
+              "description": "IOMMU PMU Access High 8 Register"
+            },
+            "IOMMU_PMU_HIT_LOW8_REG": {
+              "offset": "0x2E8",
+              "size": 32,
+              "description": "IOMMU PMU Hit Low 8 Register"
+            },
+            "IOMMU_PMU_HIT_HIGH8_REG": {
+              "offset": "0x2EC",
+              "size": 32,
+              "description": "IOMMU PMU Hit High 8 Register"
+            },
+            "IOMMU_PMU_TL_LOW0_REG": {
+              "offset": "0x300",
+              "size": 32,
+              "description": "IOMMU Total Latency Low 0 Register"
+            },
+            "IOMMU_PMU_TL_HIGH0_REG": {
+              "offset": "0x304",
+              "size": 32,
+              "description": "IOMMU Total Latency High 0 Register"
+            },
+            "IOMMU_PMU_ML0_REG": {
+              "offset": "0x308",
+              "size": 32,
+              "description": "IOMMU Max Latency 0 Register"
+            },
+            "IOMMU_PMU_TL_LOW1_REG": {
+              "offset": "0x310",
+              "size": 32,
+              "description": "IOMMU Total Latency Low 1 Register"
+            },
+            "IOMMU_PMU_TL_HIGH1_REG": {
+              "offset": "0x314",
+              "size": 32,
+              "description": "IOMMU Total Latency High 1 Register"
+            },
+            "IOMMU_PMU_ML1_REG": {
+              "offset": "0x318",
+              "size": 32,
+              "description": "IOMMU Max Latency 1 Register"
+            },
+            "IOMMU_PMU_TL_LOW2_REG": {
+              "offset": "0x320",
+              "size": 32,
+              "description": "IOMMU Total Latency Low 2 Register"
+            },
+            "IOMMU_PMU_TL_HIGH2_REG": {
+              "offset": "0x324",
+              "size": 32,
+              "description": "IOMMU Total Latency High 2 Register"
+            },
+            "IOMMU_PMU_ML2_REG": {
+              "offset": "0x328",
+              "size": 32,
+              "description": "IOMMU Max Latency 2 Register"
+            },
+            "IOMMU_PMU_TL_LOW3_REG": {
+              "offset": "0x330",
+              "size": 32,
+              "description": "IOMMU Total Latency Low 3 Register"
+            },
+            "IOMMU_PMU_TL_HIGH3_REG": {
+              "offset": "0x334",
+              "size": 32,
+              "description": "IOMMU Total Latency High 3 Register"
+            },
+            "IOMMU_PMU_ML3_REG": {
+              "offset": "0x338",
+              "size": 32,
+              "description": "IOMMU Max Latency 3 Register"
+            },
+            "IOMMU_PMU_TL_LOW4_REG": {
+              "offset": "0x340",
+              "size": 32,
+              "description": "IOMMU Total Latency Low 4 Register"
+            },
+            "IOMMU_PMU_TL_HIGH4_REG": {
+              "offset": "0x344",
+              "size": 32,
+              "description": "IOMMU Total Latency High 4 Register"
+            },
+            "IOMMU_PMU_ML4_REG": {
+              "offset": "0x348",
+              "size": 32,
+              "description": "IOMMU Max Latency 4 Register"
+            },
+            "IOMMU_PMU_TL_LOW5_REG": {
+              "offset": "0x350",
+              "size": 32,
+              "description": "IOMMU Total Latency Low 5 Register"
+            },
+            "IOMMU_PMU_TL_HIGH5_REG": {
+              "offset": "0x354",
+              "size": 32,
+              "description": "IOMMU Total Latency High 5 Register"
+            },
+            "IOMMU_PMU_ML5_REG": {
+              "offset": "0x358",
+              "size": 32,
+              "description": "IOMMU Max Latency 5 Register"
+            },
+            "IOMMU_PMU_TL_LOW6_REG": {
+              "offset": "0x360",
+              "size": 32,
+              "description": "IOMMU Total Latency Low 6 Register"
+            },
+            "IOMMU_PMU_TL_HIGH6_REG": {
+              "offset": "0x364",
+              "size": 32,
+              "description": "IOMMU Total Latency High 6 Register"
+            },
+            "IOMMU_PMU_ML6_REG": {
+              "offset": "0x368",
+              "size": 32,
+              "description": "IOMMU Max Latency 6 Register"
+            }
+          }
+        },
+        "DSP": {
+          "instances": [
+            {
+              "name": "DSP_MSGBOX",
+              "base": "0x01701000"
+            }
+          ],
+          "registers": {
+            "MSGBOX_RD_IRQ_EN_REG_%s": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "MSGBOX Read IRQ Enable Register"
+            },
+            "MSGBOX_RD_IRQ_STATUS_REG_%s": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "MSGBOX Read IRQ Status Register"
+            },
+            "MSGBOX_WR_IRQ_EN_REG_%s": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "MSGBOX Write IRQ Enable Register"
+            },
+            "MSGBOX_WR_IRQ_STATUS_REG_%s": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "MSGBOX Write IRQ Status Register"
+            },
+            "MSGBOX_DEBUG_REG_%s": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "MSGBOX Debug Register"
+            },
+            "MSGBOX_FIFO_STATUS_REG_P%s": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "MSGBOX FIFO Status Register"
+            },
+            "MSGBOX_MSG_STATUS_REG_P%s": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "MSGBOX Message Status Register"
+            },
+            "MSGBOX_MSG_REG_P%s": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "MSGBOX Message Queue Register"
+            },
+            "MSGBOX_WR_INT_THRESHOLD_REG_P%s": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "MSGBOX Write IRQ Threshold Register"
+            }
+          }
+        },
+        "RISC": {
+          "instances": [
+            {
+              "name": "RISC_V_MSGBOX",
+              "base": "0x0601F000",
+              "irq": 144
+            }
+          ],
+          "registers": {
+            "MSGBOX_RD_IRQ_EN_REG_%s": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "MSGBOX Read IRQ Enable Register"
+            },
+            "MSGBOX_RD_IRQ_STATUS_REG_%s": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "MSGBOX Read IRQ Status Register"
+            },
+            "MSGBOX_WR_IRQ_EN_REG_%s": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "MSGBOX Write IRQ Enable Register"
+            },
+            "MSGBOX_WR_IRQ_STATUS_REG_%s": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "MSGBOX Write IRQ Status Register"
+            },
+            "MSGBOX_DEBUG_REG_%s": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "MSGBOX Debug Register"
+            },
+            "MSGBOX_FIFO_STATUS_REG_P%s": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "MSGBOX FIFO Status Register"
+            },
+            "MSGBOX_MSG_STATUS_REG_P%s": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "MSGBOX Message Status Register"
+            },
+            "MSGBOX_MSG_REG_P%s": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "MSGBOX Message Queue Register"
+            },
+            "MSGBOX_WR_INT_THRESHOLD_REG_P%s": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "MSGBOX Write IRQ Threshold Register"
+            }
+          }
+        },
+        "SPI": {
+          "instances": [
+            {
+              "name": "Spinlock",
+              "base": "0x03005000",
+              "irq": 70
+            },
+            {
+              "name": "SPI0",
+              "base": "0x04025000",
+              "irq": 31
+            },
+            {
+              "name": "SPI_DBI",
+              "base": "0x04026000",
+              "irq": 32
+            }
+          ],
+          "registers": {
+            "SPINLOCK_SYSTATUS_REG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Spinlock System Status Register"
+            },
+            "SPINLOCK_STATUS_REG": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Spinlock Status Register"
+            },
+            "SPINLOCK_IRQ_EN_REG": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Spinlock Interrupt Enable Register"
+            },
+            "SPINLOCK_IRQ_STA_REG": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Spinlock Interrupt Status Register"
+            },
+            "SPINLOCK_LOCKID0_REG": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Spinlock Lockid0 Register"
+            },
+            "SPINLOCK_LOCKID1_REG": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "Spinlock Lockid1 Register"
+            },
+            "SPINLOCK_LOCKID2_REG": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "Spinlock Lockid2 Register"
+            },
+            "SPINLOCK_LOCKID3_REG": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "Spinlock Lockid3 Register"
+            },
+            "SPINLOCK_LOCKID4_REG": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "Spinlock Lockid4 Register"
+            },
+            "SPINLOCK_LOCK_REG%s": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "Spinlock Register"
+            }
+          }
+        },
+        "RTC": {
+          "instances": [
+            {
+              "name": "RTC",
+              "base": "0x07090000"
+            }
+          ],
+          "registers": {
+            "LOSC_CTRL_REG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Low Oscillator Control Register"
+            },
+            "LOSC_AUTO_SWT_STA_REG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "LOSC Auto Switch Status Register"
+            },
+            "INTOSC_CLK_PRESCAL_REG": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Internal OSC Clock Pre-scalar Register"
+            },
+            "RTC_DAY_REG": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "RTC Year-Month-Day Register"
+            },
+            "RTC_HH_MM_SS_REG": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "RTC Hour-Minute-Second Register"
+            },
+            "ALARM0_DAY_SET_REG": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Alarm 0 Day Setting Register"
+            },
+            "ALARM0_CUR_VLU_REG": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Alarm 0 Counter Current Value Register"
+            },
+            "ALARM0_ENABLE_REG": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Alarm 0 Enable Register"
+            },
+            "ALARM0_IRQ_EN": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Alarm 0 IRQ Enable Register"
+            },
+            "ALARM0_IRQ_STA_REG": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Alarm 0 IRQ Status Register"
+            },
+            "ALARM_CONFIG_REG": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Alarm Configuration Register"
+            },
+            "_32K_FOUT_CTRL_GATING_REG": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "32K Fanout Control Gating Register"
+            },
+            "GP_DATA_REG%s": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "General Purpose Register"
+            },
+            "FBOOT_INFO_REG0": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "Fast Boot Information Register0"
+            },
+            "FBOOT_INFO_REG1": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "Fast Boot Information Register1"
+            },
+            "DCXO_CTRL_REG": {
+              "offset": "0x160",
+              "size": 32,
+              "description": "DCXO Control Register"
+            },
+            "RTC_VIO_REG": {
+              "offset": "0x190",
+              "size": 32,
+              "description": "RTC_VIO Regulation Register"
+            },
+            "IC_CHARA_REG": {
+              "offset": "0x1F0",
+              "size": 32,
+              "description": "IC Characteristic Register"
+            },
+            "VDD_OFF_GATING_CTRL_REG": {
+              "offset": "0x1F4",
+              "size": 32,
+              "description": "VDD Off Gating Control Register"
+            },
+            "EFUSE_HV_PWRSWT_CTRL_REG": {
+              "offset": "0x204",
+              "size": 32,
+              "description": "Efuse High Voltage Power Switch Control Register"
+            },
+            "RTC_SPI_CLK_CTRL_REG": {
+              "offset": "0x310",
+              "size": 32,
+              "description": "RTC SPI Clock Control Register"
+            }
+          }
+        },
+        "TCON": {
+          "instances": [
+            {
+              "name": "TCON_LCD0",
+              "base": "0x05461000"
+            },
+            {
+              "name": "TCON_TV0",
+              "base": "0x05470000"
+            }
+          ],
+          "registers": {
+            "LCD_GCTL_REG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "LCD Global Control Register"
+            },
+            "LCD_GINT0_REG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "LCD Global Interrupt Register0"
+            },
+            "LCD_GINT1_REG": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "LCD Global Interrupt Register1"
+            },
+            "LCD_FRM_CTL_REG": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "LCD FRM Control Register"
+            },
+            "LCD_FRM_SEED_REG%s": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "LCD FRM Seed Register"
+            },
+            "LCD_FRM_TAB_REG%s": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "LCD FRM Table Register"
+            },
+            "LCD_3D_FIFO_REG": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "LCD 3D FIFO Register"
+            },
+            "LCD_CTL_REG": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "LCD Control Register"
+            },
+            "LCD_DCLK_REG": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "LCD Data Clock Register"
+            },
+            "LCD_BASIC0_REG": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "LCD Basic Timing Register0"
+            },
+            "LCD_BASIC1_REG": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "LCD Basic Timing Register1"
+            },
+            "LCD_BASIC2_REG": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "LCD Basic Timing Register2"
+            },
+            "LCD_BASIC3_REG": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "LCD Basic Timing Register3"
+            },
+            "LCD_HV_IF_REG": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "LCD HV Panel Interface Register"
+            },
+            "LCD_CPU_IF_REG": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "LCD CPU Panel Interface Register"
+            },
+            "LCD_CPU_WR_REG": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "LCD CPU Panel Write Data Register"
+            },
+            "LCD_CPU_RD0_REG": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "LCD CPU Panel Read Data Register0"
+            },
+            "LCD_CPU_RD1_REG": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "LCD CPU Panel Read Data Register1"
+            },
+            "LCD_LVDS_IF_REG": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "LCD LVDS Configure Register"
+            },
+            "LCD_IO_POL_REG": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "LCD IO Polarity Register"
+            },
+            "LCD_IO_TRI_REG": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "LCD IO Control Register"
+            },
+            "LCD_DEBUG_REG": {
+              "offset": "0xFC",
+              "size": 32,
+              "description": "LCD Debug Register"
+            },
+            "LCD_CEU_CTL_REG": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "LCD CEU Control Register"
+            },
+            "LCD_CEU_COEF_MUL_REG%s": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "LCD CEU Coefficient Register0"
+            },
+            "LCD_CEU_COEF_ADD_REG%s": {
+              "offset": "0x11C",
+              "size": 32,
+              "description": "LCD CEU Coefficient Register1"
+            },
+            "LCD_CEU_COEF_RANG_REG%s": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "LCD CEU Coefficient Register2"
+            },
+            "LCD_CPU_TRI0_REG": {
+              "offset": "0x160",
+              "size": 32,
+              "description": "LCD CPU Panel Trigger Register0"
+            },
+            "LCD_CPU_TRI1_REG": {
+              "offset": "0x164",
+              "size": 32,
+              "description": "LCD CPU Panel Trigger Register1"
+            },
+            "LCD_CPU_TRI2_REG": {
+              "offset": "0x168",
+              "size": 32,
+              "description": "LCD CPU Panel Trigger Register2"
+            },
+            "LCD_CPU_TRI3_REG": {
+              "offset": "0x16C",
+              "size": 32,
+              "description": "LCD CPU Panel Trigger Register3"
+            },
+            "LCD_CPU_TRI4_REG": {
+              "offset": "0x170",
+              "size": 32,
+              "description": "LCD CPU Panel Trigger Register4"
+            },
+            "LCD_CPU_TRI5_REG": {
+              "offset": "0x174",
+              "size": 32,
+              "description": "LCD CPU Panel Trigger Register5"
+            },
+            "LCD_CMAP_CTL_REG": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "LCD Color Map Control Register"
+            },
+            "LCD_CMAP_ODD0_REG": {
+              "offset": "0x190",
+              "size": 32,
+              "description": "LCD Color Map Odd Line Register0"
+            },
+            "LCD_CMAP_ODD1_REG": {
+              "offset": "0x194",
+              "size": 32,
+              "description": "LCD Color Map Odd Line Register1"
+            },
+            "LCD_CMAP_EVEN0_REG": {
+              "offset": "0x198",
+              "size": 32,
+              "description": "LCD Color Map Even Line Register0"
+            },
+            "LCD_CMAP_EVEN1_REG": {
+              "offset": "0x19C",
+              "size": 32,
+              "description": "LCD Color Map Even Line Register1"
+            },
+            "LCD_SAFE_PERIOD_REG": {
+              "offset": "0x1F0",
+              "size": 32,
+              "description": "LCD Safe Period Register"
+            },
+            "LCD_LVDS0_ANA_REG": {
+              "offset": "0x220",
+              "size": 32,
+              "description": "LCD LVDS Analog Register 0"
+            },
+            "LCD_LVDS1_ANA_REG": {
+              "offset": "0x224",
+              "size": 32,
+              "description": "LCD LVDS Analog Register 1"
+            },
+            "LCD_SYNC_CTL_REG": {
+              "offset": "0x230",
+              "size": 32,
+              "description": "LCD Sync Control Register"
+            },
+            "LCD_SYNC_POS_REG": {
+              "offset": "0x234",
+              "size": 32,
+              "description": "LCD Sync Position Register"
+            },
+            "LCD_SLAVE_STOP_POS_REG": {
+              "offset": "0x238",
+              "size": 32,
+              "description": "LCD Slave Stop Position Register"
+            },
+            "LCD_LVDS1_IF_REG": {
+              "offset": "0x244",
+              "size": 32,
+              "description": "LCD LVDS1 IF Register"
+            },
+            "LCD_GAMMA_TABLE_REG%s": {
+              "offset": "0x400",
+              "size": 32,
+              "description": "LCD Gamma Table Register"
+            }
+          }
+        },
+        "TVE": {
+          "instances": [
+            {
+              "name": "TVE_TOP",
+              "base": "0x05600000"
+            },
+            {
+              "name": "TVE",
+              "base": "0x05604000"
+            }
+          ],
+          "registers": {
+            "TVE_DAC_MAP": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "TV Encoder DAC MAP Register"
+            },
+            "TVE_DAC_STATUS": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "TV Encoder DAC STAUTS Register"
+            },
+            "TVE_DAC_CFG0": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "TV Encoder DAC CFG0 Register"
+            },
+            "TVE_DAC_CFG1": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "TV Encoder DAC CFG1 Register"
+            },
+            "TVE_DAC_CFG2": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "TV Encoder DAC CFG2 Register"
+            },
+            "TVE_DAC_CFG3": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "TV Encoder DAC CFG2 Register"
+            },
+            "TVE_DAC_TEST": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "TV Encoder DAC TEST Register"
+            }
+          }
+        },
+        "CSIC": {
+          "instances": [
+            {
+              "name": "CSIC",
+              "base": "0x05800000",
+              "irq": 111
+            }
+          ],
+          "registers": {
+            "CCU_CLK_MODE_REG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "CCU Clock Mode Register"
+            },
+            "CCU_PARSER_CLK_EN_REG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "CCU Parser Clock Enable Register"
+            },
+            "CCU_POST0_CLK_EN_REG": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "CCU Post0 Clock Enable Register"
+            },
+            "CSIC_TOP_EN_REG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "CSIC TOP Enable Register"
+            },
+            "CSIC_PTN_GEN_EN_REG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "CSIC Pattern Generation Enable Register"
+            },
+            "CSIC_PTN_CTRL_REG": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "CSIC Pattern Control Register"
+            },
+            "CSIC_PTN_LEN_REG": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "CSIC Pattern Generation Length Register"
+            },
+            "CSIC_PTN_ADDR_REG": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "CSIC Pattern Generation Address Register"
+            },
+            "CSIC_PTN_ISP_SIZE_REG": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "CSIC Pattern ISP Size Register"
+            },
+            "CSIC_DMA0_INPUT_SEL_REG": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "CSIC DMA0 Input Select Register"
+            },
+            "CSIC_DMA1_INPUT_SEL_REG": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "CSIC DMA1 Input Select Register"
+            },
+            "CSIC_BIST_CS_REG": {
+              "offset": "0xDC",
+              "size": 32,
+              "description": "CSIC BIST CS Register"
+            },
+            "CSIC_BIST_CONTROL_REG": {
+              "offset": "0xE0",
+              "size": 32,
+              "description": "CSIC BIST Control Register"
+            },
+            "CSIC_BIST_START_REG": {
+              "offset": "0xE4",
+              "size": 32,
+              "description": "CSIC BIST Start Register"
+            },
+            "CSIC_BIST_END_REG": {
+              "offset": "0xE8",
+              "size": 32,
+              "description": "CSIC BIST End Register"
+            },
+            "CSIC_BIST_DATA_MASK_REG": {
+              "offset": "0xEC",
+              "size": 32,
+              "description": "CSIC BIST Data Mask Register"
+            },
+            "CSIC_MBUS_REQ_MAX_REG": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "CSIC MBUS REQ MAX Register"
+            },
+            "CSIC_MULF_MOD_REG": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "CSIC Multi-Frame Mode Register"
+            },
+            "CSIC_MULF_INT_REG": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "CSIC Multi-Frame Interrupt Register"
+            },
+            "PRS_EN_REG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Parser Enable Register"
+            },
+            "PRS_NCSIC_IF_CFG_REG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Parser NCSIC Interface Configuration Register"
+            },
+            "PRS_CAP_REG": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Parser Capture Register"
+            },
+            "CSIC_PRS_SIGNAL_STA_REG": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "CSIC Parser Signal Status Register"
+            },
+            "CSIC_PRS_NCSIC_BT656_HEAD_CFG_REG": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "CSIC Parser NCSIC BT656 Header Configuration Register"
+            },
+            "PRS_C0_INFMT_REG": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Parser Channel_0 Input Format Register"
+            },
+            "PRS_C0_OUTPUT_HSIZE_REG": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Parser Channel_0 Output Horizontal Size Register"
+            },
+            "PRS_C0_OUTPUT_VSIZE_REG": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Parser Channel_0 Output Vertical Size Register"
+            },
+            "PRS_C0_INPUT_PARA0_REG": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Parser Channel_0 Input Parameter0 Register"
+            },
+            "PRS_C0_INPUT_PARA1_REG": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Parser Channel_0 Input Parameter1 Register"
+            },
+            "PRS_C0_INPUT_PARA2_REG": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Parser Channel_0 Input Parameter2 Register"
+            },
+            "PRS_C0_INPUT_PARA3_REG": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Parser Channel_0 Input Parameter3 Register"
+            },
+            "PRS_C0_INT_EN_REG": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Parser Channel_0 Interrupt Enable Register"
+            },
+            "PRS_C0_INT_STA_REG": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Parser Channel_0 Interrupt Status Register"
+            },
+            "PRS_CH0_LINE_TIME_REG": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Parser Channel_0 Line Time Register"
+            },
+            "PRS_C1_INFMT_REG": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "Parser Channel_1 Input Format Register"
+            },
+            "PRS_C1_OUTPUT_HSIZE_REG": {
+              "offset": "0x128",
+              "size": 32,
+              "description": "Parser Channel_1 Output Horizontal Size"
+            },
+            "PRS_C1_OUTPUT_VSIZE_REG": {
+              "offset": "0x12C",
+              "size": 32,
+              "description": "Parser Channel_1 Output Vertical Size Register"
+            },
+            "PRS_C1_INPUT_PARA0_REG": {
+              "offset": "0x130",
+              "size": 32,
+              "description": "Parser Channel_1 Input Parameter0 Register"
+            },
+            "PRS_C1_INPUT_PARA1_REG": {
+              "offset": "0x134",
+              "size": 32,
+              "description": "Parser Channel_1 Input Parameter1 Register"
+            },
+            "PRS_C1_INPUT_PARA2_REG": {
+              "offset": "0x138",
+              "size": 32,
+              "description": "Parser Channel_1 Input Parameter2 Register"
+            },
+            "PRS_C1_INPUT_PARA3_REG": {
+              "offset": "0x13C",
+              "size": 32,
+              "description": "Parser Channel_1 Input Parameter3 Register"
+            },
+            "PRS_C1_INT_EN_REG": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "Parser Channel_1 Interrupt Enable Register"
+            },
+            "PRS_C1_INT_STA_REG": {
+              "offset": "0x144",
+              "size": 32,
+              "description": "Parser Channel_1 Interrupt Status Register"
+            },
+            "PRS_CH1_LINE_TIME_REG": {
+              "offset": "0x148",
+              "size": 32,
+              "description": "Parser Channel_1 Line Time Register"
+            },
+            "PRS_C2_INFMT_REG": {
+              "offset": "0x224",
+              "size": 32,
+              "description": "Parser Channel_2 Input Format Register"
+            },
+            "PRS_C2_OUTPUT_HSIZE_REG": {
+              "offset": "0x228",
+              "size": 32,
+              "description": "Parser Channel_2 Output Horizontal Size Register"
+            },
+            "PRS_C2_OUTPUT_VSIZE_REG": {
+              "offset": "0x22C",
+              "size": 32,
+              "description": "Parser Channel_2 Output Vertical Size Register"
+            },
+            "PRS_C2_INPUT_PARA0_REG": {
+              "offset": "0x230",
+              "size": 32,
+              "description": "Parser Channel_2 Input Parameter0 Register"
+            },
+            "PRS_C2_INPUT_PARA1_REG": {
+              "offset": "0x234",
+              "size": 32,
+              "description": "Parser Channel_2 Input Parameter1 Register"
+            },
+            "PRS_C2_INPUT_PARA2_REG": {
+              "offset": "0x238",
+              "size": 32,
+              "description": "Parser Channel_2 Input Parameter2 Register"
+            },
+            "PRS_C2_INPUT_PARA3_REG": {
+              "offset": "0x23C",
+              "size": 32,
+              "description": "Parser Channel_2 Input Parameter3 Register"
+            },
+            "PRS_C2_INT_EN_REG": {
+              "offset": "0x240",
+              "size": 32,
+              "description": "Parser Channel_2 Interrupt Enable Register"
+            },
+            "PRS_C2_INT_STA_REG": {
+              "offset": "0x244",
+              "size": 32,
+              "description": "Parser Channel_2 Interrupt Status Register"
+            },
+            "PRS_CH2_LINE_TIME_REG": {
+              "offset": "0x248",
+              "size": 32,
+              "description": "Parser Channel_2 Line Time Register"
+            },
+            "PRS_C3_INFMT_REG": {
+              "offset": "0x324",
+              "size": 32,
+              "description": "Parser Channel_3 Input Format Register"
+            },
+            "PRS_C3_OUTPUT_HSIZE_REG": {
+              "offset": "0x328",
+              "size": 32,
+              "description": "Parser Channel_3 Output Horizontal Size Register"
+            },
+            "PRS_C3_OUTPUT_VSIZE_REG": {
+              "offset": "0x32C",
+              "size": 32,
+              "description": "Parser Channel_3 Output Vertical Size Register"
+            },
+            "PRS_C3_INPUT_PARA0_REG": {
+              "offset": "0x330",
+              "size": 32,
+              "description": "Parser Channel_3 Input Parameter0 Register"
+            },
+            "PRS_C3_INPUT_PARA1_REG": {
+              "offset": "0x334",
+              "size": 32,
+              "description": "Parser Channel_3 Input Parameter1 Register"
+            },
+            "PRS_C3_INPUT_PARA2_REG": {
+              "offset": "0x338",
+              "size": 32,
+              "description": "Parser Channel_3 Input Parameter2 Register"
+            },
+            "PRS_C3_INPUT_PARA3_REG": {
+              "offset": "0x33C",
+              "size": 32,
+              "description": "Parser Channel_3 Input Parameter3 Register"
+            },
+            "PRS_C3_INT_EN_REG": {
+              "offset": "0x340",
+              "size": 32,
+              "description": "Parser Channel_3 Interrupt Enable Register"
+            },
+            "PRS_C3_INT_STA_REG": {
+              "offset": "0x344",
+              "size": 32,
+              "description": "Parser Channel_3 Interrupt Status Register"
+            },
+            "PRS_CH3_LINE_TIME_REG": {
+              "offset": "0x348",
+              "size": 32,
+              "description": "Parser Channel_3 Line Time Register"
+            },
+            "CSIC_PRS_NCSIC_RX_SIGNAL0_DLY_ADJ_REG": {
+              "offset": "0x500",
+              "size": 32,
+              "description": "CSIC Parser NCSIC RX Signal0 Delay Adjust Register"
+            },
+            "CSIC_PRS_NCSIC_RX_SIGNAL5_DLY_ADJ_REG": {
+              "offset": "0x514",
+              "size": 32,
+              "description": "CSIC Parser NCSIC RX Signal5 Delay Adjust Register"
+            },
+            "CSIC_PRS_NCSIC_RX_SIGNAL6_DLY_ADJ_REG": {
+              "offset": "0x518",
+              "size": 32,
+              "description": "CSIC Parser NCSIC RX Signal6 Delay Adjust Register"
+            },
+            "CSIC_DMA_EN_REG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "CSIC DMA Enable Register"
+            },
+            "CSIC_DMA_CFG_REG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "CSIC DMA Configuration Register"
+            },
+            "CSIC_DMA_HSIZE_REG": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "CSIC DMA Horizontal Size Register"
+            },
+            "CSIC_DMA_VSIZE_REG": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "CSIC DMA Vertical Size Register"
+            },
+            "CSIC_DMA_F0_BUFA_REG": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "CSIC DMA FIFO 0 Output Buffer-A Address Register"
+            },
+            "CSIC_DMA_F0_BUFA_RESULT_REG": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "CSIC DMA FIFO 0 Output Buffer-A Address Result Register"
+            },
+            "CSIC_DMA_F1_BUFA_REG": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "CSIC DMA FIFO 1 Output Buffer-A Address Register"
+            },
+            "CSIC_DMA_F1_BUFA_RESULT_REG": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "CSIC DMA FIFO 1 Output Buffer-A Address Result Register"
+            },
+            "CSIC_DMA_F2_BUFA_REG": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "CSIC DMA FIFO 2 Output Buffer-A Address Register"
+            },
+            "CSIC_DMA_F2_BUFA_RESULT_REG": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "CSIC DMA FIFO 2 Output Buffer-A Address Result Register"
+            },
+            "CSIC_DMA_BUF_LEN_REG": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "CSIC DMA Buffer Length Register"
+            },
+            "CSIC_DMA_FLIP_SIZE_REG": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "CSIC DMA Flip Size Register"
+            },
+            "CSIC_DMA_VI_TO_TH0_REG": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "CSIC DMA Video Input Timeout Threshold0 Register"
+            },
+            "CSIC_DMA_VI_TO_TH1_REG": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "CSIC DMA Video Input Timeout Threshold1 Register"
+            },
+            "CSIC_DMA_VI_TO_CNT_VAL_REG": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "CSIC DMA Video Input Timeout Counter Value Register"
+            },
+            "CSIC_DMA_CAP_STA_REG": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "CSIC DMA Capture Status Register"
+            },
+            "CSIC_DMA_INT_EN_REG": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "CSIC DMA Interrupt Enable Register"
+            },
+            "CSIC_DMA_INT_STA_REG": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "CSIC DMA Interrupt Status Register"
+            },
+            "CSIC_DMA_LINE_CNT_REG": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "CSIC DMA LINE Counter Register"
+            },
+            "CSIC_DMA_FRM_CNT_REG": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "CSIC DMA Frame Counter Register"
+            },
+            "CSIC_DMA_FRM_CLK_CNT_REG": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "CSIC DMA Frame Clock Counter Register"
+            },
+            "CSIC_DMA_ACC_ITNL_CLK_CNT_REG": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "CSIC DMA Accumulated And Internal Clock Counter Register"
+            },
+            "CSIC_DMA_FIFO_STAT_REG": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "CSIC DMA FIFO Statistic Register"
+            },
+            "CSIC_DMA_FIFO_THRS_REG": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "CSIC DMA FIFO Threshold Register"
+            },
+            "CSIC_DMA_PCLK_STAT_REG": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "CSIC DMA PCLK Statistic Register"
+            },
+            "CSIC_DMA_BUF_ADDR_FIFO0_ENTRY_REG": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "CSIC DMA BUF Address FIFO0 Entry Register"
+            },
+            "CSIC_DMA_BUF_ADDR_FIFO1_ENTRY_REG": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "CSIC DMA BUF Address FIFO1 Entry Register"
+            },
+            "CSIC_DMA_BUF_ADDR_FIFO2_ENTRY_REG": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "CSIC DMA BUF Address FIFO2 Entry Register"
+            },
+            "CSIC_DMA_BUF_TH_REG": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "CSIC DMA BUF Threshold Register"
+            },
+            "CSIC_DMA_BUF_ADDR_FIFO_CON_REG": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "CSIC DMA BUF Address FIFO Content Register"
+            },
+            "CSIC_DMA_STORED_FRM_CNT_REG": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "CSIC DMA Stored Frame Counter Register"
+            },
+            "CSIC_FEATURE_REG": {
+              "offset": "0x1F4",
+              "size": 32,
+              "description": "CSIC DMA Feature List Register"
+            }
+          }
+        },
+        "TVD": {
+          "instances": [
+            {
+              "name": "TVD_TOP",
+              "base": "0x05C00000",
+              "irq": 123
+            }
+          ],
+          "registers": {
+            "TVD_TOP_MAP": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "TVD TOP MAP Register"
+            },
+            "TVD_3D_CTL1": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "TVD 3D DMA CONTROL Register1"
+            },
+            "TVD_3D_CTL2": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "TVD 3D DMA CONTROL Register2"
+            },
+            "TVD_3D_CTL3": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "TVD 3D DMA CONTROL Register3"
+            },
+            "TVD_3D_CTL4": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "TVD 3D DMA CONTROL Register4"
+            },
+            "TVD_3D_CTL5": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "TVD 3D DMA CONTROL Register5"
+            },
+            "TVD_TOP_CTL%s": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "TVD TOP CONTROL Register"
+            },
+            "TVD_ADC_CTL%s": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "TVD ADC CONTROL Register"
+            },
+            "TVD_ADC_CFG%s": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "TVD ADC CONFIGURATION Register"
+            }
+          }
+        },
+        "TVD0": {
+          "instances": [
+            {
+              "name": "TVD0",
+              "base": "0x05C01000"
+            }
+          ],
+          "registers": {
+            "TVD_EN": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "TVD MODULE CONTROL Register"
+            },
+            "TVD_MODE": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "TVD MODE CONTROL Register"
+            },
+            "TVD_CLAMP_AGC1": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "TVD CLAMP And AGC CONTROL Register1"
+            },
+            "TVD_CLAMP_AGC2": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "TVD CLAMP And AGC CONTROL Register2"
+            },
+            "TVD_HLOCK1": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "TVD HLOCK CONTROL Register1"
+            },
+            "TVD_HLOCK2": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "TVD HLOCK CONTROL Register2"
+            },
+            "TVD_HLOCK3": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "TVD HLOCK CONTROL Register3"
+            },
+            "TVD_HLOCK4": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "TVD HLOCK CONTROL Register4"
+            },
+            "TVD_HLOCK5": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "TVD HLOCK CONTROL Register5"
+            },
+            "TVD_VLOCK1": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "TVD VLOCK CONTROL Register1"
+            },
+            "TVD_VLOCK2": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "TVD VLOCK CONTROL Register2"
+            },
+            "TVD_CLOCK1": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "TVD CHROMA LOCK CONTROL Register1"
+            },
+            "TVD_CLOCK2": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "TVD CHROMA LOCK CONTROL Register2"
+            },
+            "TVD_YC_SEP1": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "TVD YC SEPERATION CONROL Register1"
+            },
+            "TVD_YC_SEP2": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "TVD YC SEPERATION CONROL Register2"
+            },
+            "TVD_ENHANCE1": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "TVD ENHANCEMENT CONTROL Register1"
+            },
+            "TVD_ENHANCE2": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "TVD ENHANCEMENT CONTROL Register2"
+            },
+            "TVD_ENHANCE3": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "TVD ENHANCEMENT CONTROL Register3"
+            },
+            "TVD_WB1": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "TVD WB DMA CONTROL Register1"
+            },
+            "TVD_WB2": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "TVD WB DMA CONTROL Register2"
+            },
+            "TVD_WB3": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "TVD WB DMA CONTROL Register3"
+            },
+            "TVD_WB4": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "TVD WB DMA CONTROL Register4"
+            },
+            "TVD_IRQ_CTL": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "TVD DMA Interrupt Control Register"
+            },
+            "TVD_IRQ_STATUS": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "TVD DMA Interrupt Status Register"
+            },
+            "TVD_DEBUG1": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "TVD DEBUG CONTROL Register1"
+            },
+            "TVD_STATUS1": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "TVD DEBUG STATUS Register1"
+            },
+            "TVD_STATUS2": {
+              "offset": "0x184",
+              "size": 32,
+              "description": "TVD DEBUG STATUS Register2"
+            },
+            "TVD_STATUS3": {
+              "offset": "0x188",
+              "size": 32,
+              "description": "TVD DEBUG STATUS Register3"
+            },
+            "TVD_STATUS4": {
+              "offset": "0x18C",
+              "size": 32,
+              "description": "TVD DEBUG STATUS Register4"
+            },
+            "TVD_STATUS5": {
+              "offset": "0x190",
+              "size": 32,
+              "description": "TVD DEBUG STATUS Register5"
+            },
+            "TVD_STATUS6": {
+              "offset": "0x194",
+              "size": 32,
+              "description": "TVD DEBUG STATUS Register6"
+            }
+          }
+        },
+        "SMHC": {
+          "instances": [
+            {
+              "name": "SMHC[%s]",
+              "base": "0x04020000",
+              "irq": 56
+            }
+          ],
+          "registers": {
+            "SMHC_CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Control Register"
+            },
+            "SMHC_CLKDIV": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Clock Control Register"
+            },
+            "SMHC_TMOUT": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Time Out Register"
+            },
+            "SMHC_CTYPE": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Bus Width Register"
+            },
+            "SMHC_BLKSIZ": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Block Size Register"
+            },
+            "SMHC_BYTCNT": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Byte Count Register"
+            },
+            "SMHC_CMD": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Command Register"
+            },
+            "SMHC_CMDARG": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Command Argument Register"
+            },
+            "SMHC_RESP0": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Response 0 Register"
+            },
+            "SMHC_RESP1": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Response 1 Register"
+            },
+            "SMHC_RESP2": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Response 2 Register"
+            },
+            "SMHC_RESP3": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Response 3 Register"
+            },
+            "SMHC_INTMASK": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Interrupt Mask Register"
+            },
+            "SMHC_MINTSTS": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Masked Interrupt Status Register"
+            },
+            "SMHC_RINTSTS": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Raw Interrupt Status Register"
+            },
+            "SMHC_STATUS": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Status Register"
+            },
+            "SMHC_FIFOTH": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "FIFO Water Level Register"
+            },
+            "SMHC_FUNS": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "FIFO Function Select Register"
+            },
+            "SMHC_TBC0": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Transferred Byte Count between Controller and Card"
+            },
+            "SMHC_TBC1": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Transferred Byte Count between Host Memory and Internal FIFO"
+            },
+            "SMHC_DBGC": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Current Debug Control Register"
+            },
+            "SMHC_CSDC": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "CRC Status Detect Control Registers"
+            },
+            "SMHC_A12A": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Auto Command 12 Argument Register"
+            },
+            "SMHC_NTSR": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "SD New Timing Set Register"
+            },
+            "SMHC_HWRST": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "Hardware Reset Register"
+            },
+            "SMHC_IDMAC": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "IDMAC Control Register"
+            },
+            "SMHC_DLBA": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "Descriptor List Base Address Register"
+            },
+            "SMHC_IDST": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "IDMAC Status Register"
+            },
+            "SMHC_IDIE": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "IDMAC Interrupt Enable Register"
+            },
+            "SMHC_THLD": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "Card Threshold Control Register"
+            },
+            "SMHC_SFC": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "Sample FIFO Control Register"
+            },
+            "SMHC_A23A": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "Auto Command 23 Argument Register"
+            },
+            "EMMC_DDR_SBIT_DET": {
+              "offset": "0x10C",
+              "size": 32,
+              "description": "eMMC4.5 DDR Start Bit Detection Control Register"
+            },
+            "SMHC_EXT_CMD": {
+              "offset": "0x138",
+              "size": 32,
+              "description": "Extended Command Register"
+            },
+            "SMHC_EXT_RESP": {
+              "offset": "0x13C",
+              "size": 32,
+              "description": "Extended Response Register"
+            },
+            "SMHC_DRV_DL": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "Drive Delay Control Register"
+            },
+            "SMHC_SMAP_DL": {
+              "offset": "0x144",
+              "size": 32,
+              "description": "Sample Delay Control Register"
+            },
+            "SMHC_DS_DL": {
+              "offset": "0x148",
+              "size": 32,
+              "description": "Data Strobe Delay Control Register"
+            },
+            "SMHC_HS400_DL": {
+              "offset": "0x14C",
+              "size": 32,
+              "description": "HS400 Delay Control Register"
+            },
+            "SMHC_FIFO": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "Read/Write FIFO"
+            }
+          }
+        },
+        "I2S": {
+          "instances": [
+            {
+              "name": "I2S_PCM[%s]",
+              "base": "0x02032000",
+              "irq": 42
+            }
+          ],
+          "registers": {
+            "I2S_PCM_CTL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "I2S/PCM Control Register"
+            },
+            "I2S_PCM_FMT0": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "I2S/PCM Format Register 0"
+            },
+            "I2S_PCM_FMT1": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "I2S/PCM Format Register 1"
+            },
+            "I2S_PCM_ISTA": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "I2S/PCM Interrupt Status Register"
+            },
+            "I2S_PCM_RXFIFO": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "I2S/PCM RXFIFO Register"
+            },
+            "I2S_PCM_FCTL": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "I2S/PCM FIFO Control Register"
+            },
+            "I2S_PCM_FSTA": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "I2S/PCM FIFO Status Register"
+            },
+            "I2S_PCM_INT": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "I2S/PCM DMA and Interrupt Control Register"
+            },
+            "I2S_PCM_TXFIFO": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "I2S/PCM TXFIFO Register"
+            },
+            "I2S_PCM_CLKD": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "I2S/PCM Clock Divide Register"
+            },
+            "I2S_PCM_TXCNT": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "I2S/PCM TX Sample Counter Register"
+            },
+            "I2S_PCM_RXCNT": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "I2S/PCM RX Sample Counter Register"
+            },
+            "I2S_PCM_CHCFG": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "I2S/PCM Channel Configuration Register"
+            },
+            "I2S_PCM_TX0CHSEL": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "I2S/PCM TX0 Channel Select Register"
+            },
+            "I2S_PCM_TX1CHSEL": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "I2S/PCM TX1 Channel Select Register"
+            },
+            "I2S_PCM_TX2CHSEL": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "I2S/PCM TX2 Channel Select Register"
+            },
+            "I2S_PCM_TX3CHSEL": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "I2S/PCM TX3 Channel Select Register"
+            },
+            "I2S_PCM_TX0CHMAP0": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "I2S/PCM TX0 Channel Mapping Register0"
+            },
+            "I2S_PCM_TX0CHMAP1": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "I2S/PCM TX0 Channel Mapping Register1"
+            },
+            "I2S_PCM_TX1CHMAP0": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "I2S/PCM TX1 Channel Mapping Register0"
+            },
+            "I2S_PCM_TX1CHMAP1": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "I2S/PCM TX1 Channel Mapping Register1"
+            },
+            "I2S_PCM_TX2CHMAP0": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "I2S/PCM TX2 Channel Mapping Register0"
+            },
+            "I2S_PCM_TX2CHMAP1": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "I2S/PCM TX2 Channel Mapping Register1"
+            },
+            "I2S_PCM_TX3CHMAP0": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "I2S/PCM TX3 Channel Mapping Register0"
+            },
+            "I2S_PCM_TX3CHMAP1": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "I2S/PCM TX3 Channel Mapping Register1"
+            },
+            "I2S_PCM_RXCHSEL": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "I2S/PCM RX Channel Select Register"
+            },
+            "I2S_PCM_RXCHMAP0": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "I2S/PCM RX Channel Mapping Register0"
+            },
+            "I2S_PCM_RXCHMAP1": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "I2S/PCM RX Channel Mapping Register1"
+            },
+            "I2S_PCM_RXCHMAP2": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "I2S/PCM RX Channel Mapping Register2"
+            },
+            "I2S_PCM_RXCHMAP3": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "I2S/PCM RX Channel Mapping Register3"
+            },
+            "MCLKCFG": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "ASRC MCLK Configuration Register"
+            },
+            "FsoutCFG": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "ASRC Out Sample Rate Configuration Register"
+            },
+            "FsinEXTCFG": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "ASRC Input Sample Pulse Extend Configuration Register"
+            },
+            "ASRCCFG": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "ASRC Enable Register"
+            },
+            "ASRCMANCFG": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "ASRC Manual Ratio Configuration Register"
+            },
+            "ASRCRATIOSTAT": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "ASRC Status Register"
+            },
+            "ASRCFIFOSTAT": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "ASRC FIFO Level Status Register"
+            },
+            "ASRCMBISTCFG": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "ASRC MBIST Test Configuration Register"
+            },
+            "ASRCMBISTSTAT": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "ASRC MBIST Test Status Register"
+            }
+          }
+        },
+        "DMIC": {
+          "instances": [
+            {
+              "name": "DMIC",
+              "base": "0x02031000",
+              "irq": 40
+            }
+          ],
+          "registers": {
+            "DMIC_EN": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "DMIC Enable Control Register"
+            },
+            "DMIC_SR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "DMIC Sample Rate Register"
+            },
+            "DMIC_CTR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "DMIC Control Register"
+            },
+            "DMIC_DATA": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "DMIC Data Register"
+            },
+            "DMIC_INTC": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "DMIC Interrupt Control Register"
+            },
+            "DMIC_INTS": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "DMIC Interrupt Status Register"
+            },
+            "DMIC_RXFIFO_CTR": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "DMIC RXFIFO Control Register"
+            },
+            "DMIC_RXFIFO_STA": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "DMIC RXFIFO Status Register"
+            },
+            "DMIC_CH_NUM": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "DMIC Channel Numbers Register"
+            },
+            "DMIC_CH_MAP": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "DMIC Channel Mapping Register"
+            },
+            "DMIC_CNT": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "DMIC Counter Register"
+            },
+            "DATA0_DATA1_VOL_CTR": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Data0 and Data1 Volume Control Register"
+            },
+            "DATA2_DATA3_VOL_CTR": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Data2 And Data3 Volume Control Register"
+            },
+            "HPF_EN_CTR": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "High Pass Filter Enable Control Register"
+            },
+            "HPF_COEF_REG": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "High Pass Filter Coefficient Register"
+            },
+            "HPF_GAIN_REG": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "High Pass Filter Gain Register"
+            }
+          }
+        },
+        "OWA": {
+          "instances": [
+            {
+              "name": "OWA",
+              "base": "0x02036000",
+              "irq": 39
+            }
+          ],
+          "registers": {
+            "OWA_GEN_CTL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "OWA General Control Register"
+            },
+            "OWA_TX_CFIG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "OWA TX Configuration Register"
+            },
+            "OWA_RX_CFIG": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "OWA RX Configuration Register"
+            },
+            "OWA_ISTA": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "OWA Interrupt Status Register"
+            },
+            "OWA_RXFIFO": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "OWA RXFIFO Register"
+            },
+            "OWA_FCTL": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "OWA FIFO Control Register"
+            },
+            "OWA_FSTA": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "OWA FIFO Status Register"
+            },
+            "OWA_INT": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "OWA Interrupt Control Register"
+            },
+            "OWA_TX_FIFO": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "OWA TX FIFO Register"
+            },
+            "OWA_TX_CNT": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "OWA TX Counter Register"
+            },
+            "OWA_RX_CNT": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "OWA RX Counter Register"
+            },
+            "OWA_TX_CHSTA0": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "OWA TX Channel Status Register0"
+            },
+            "OWA_TX_CHSTA1": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "OWA TX Channel Status Register1"
+            },
+            "OWA_RXCHSTA0": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "OWA RX Channel Status Register0"
+            },
+            "OWA_RXCHSTA1": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "OWA RX Channel Status Register1"
+            },
+            "OWA_EXP_CTL": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "OWA Expand Control Register"
+            },
+            "OWA_EXP_ISTA": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "OWA Expand Interrupt Status Register"
+            },
+            "OWA_EXP_INFO_0": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "OWA Expand Infomation Register0"
+            },
+            "OWA_EXP_INFO_1": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "OWA Expand Infomation Register1"
+            },
+            "OWA_EXP_DBG_0": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "OWA Expand Debug Register0"
+            },
+            "OWA_EXP_DBG_1": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "OWA Expand Debug Register1"
+            }
+          }
+        },
+        "AudioCodec": {
+          "instances": [
+            {
+              "name": "AudioCodec",
+              "base": "0x02030000",
+              "irq": 41
+            }
+          ],
+          "registers": {
+            "AC_DAC_DPC": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "DAC Digital Part Control Register"
+            },
+            "DAC_VOL_CTRL": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "DAC Volume Control Register"
+            },
+            "AC_DAC_FIFOC": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "DAC FIFO Control Register"
+            },
+            "AC_DAC_FIFOS": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "DAC FIFO Status Register"
+            },
+            "AC_DAC_TXDATA": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "DAC TX DATA Register"
+            },
+            "AC_DAC_CNT": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "DAC TX FIFO Counter Register"
+            },
+            "AC_DAC_DG": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "DAC Debug Register"
+            },
+            "AC_ADC_FIFOC": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "ADC FIFO Control Register"
+            },
+            "ADC_VOL_CTRL1": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "ADC Volume Control1 Register"
+            },
+            "AC_ADC_FIFOS": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "ADC FIFO Status Register"
+            },
+            "AC_ADC_RXDATA": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "ADC RX Data Register"
+            },
+            "AC_ADC_CNT": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "ADC RX Counter Register"
+            },
+            "AC_ADC_DG": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "ADC Debug Register"
+            },
+            "ADC_DIG_CTRL": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "ADC Digtial Control Register"
+            },
+            "VRA1SPEEDUP_DOWN_CTRL": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "VRA1 Speedup Down Control Register"
+            },
+            "AC_DAC_DAP_CTRL": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "DAC DAP Control Register"
+            },
+            "AC_ADC_DAP_CTR": {
+              "offset": "0xF8",
+              "size": 32,
+              "description": "ADC DAP Control Register"
+            },
+            "AC_DAC_DRC_HHPFC": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "DAC DRC High HPF Coef Register"
+            },
+            "AC_DAC_DRC_LHPFC": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "DAC DRC Low HPF Coef Register"
+            },
+            "AC_DAC_DRC_CTRL": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "DAC DRC Control Register"
+            },
+            "AC_DAC_DRC_LPFHAT": {
+              "offset": "0x10C",
+              "size": 32,
+              "description": "DAC DRC Left Peak Filter High Attack Time Coef Register"
+            },
+            "AC_DAC_DRC_LPFLAT": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "DAC DRC Left Peak Filter Low Attack Time Coef Register"
+            },
+            "AC_DAC_DRC_RPFHAT": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "DAC DRC Right Peak Filter High Attack Time Coef Register"
+            },
+            "AC_DAC_DRC_RPFLAT": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "DAC DRC Peak Filter Low Attack Time Coef Register"
+            },
+            "AC_DAC_DRC_LPFHRT": {
+              "offset": "0x11C",
+              "size": 32,
+              "description": "DAC DRC Left Peak Filter High Release Time Coef Register"
+            },
+            "AC_DAC_DRC_LPFLRT": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "DAC DRC Left Peak Filter Low Release Time Coef Register"
+            },
+            "AC_DAC_DRC_RPFHRT": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "DAC DRC Right Peak filter High Release Time Coef Register"
+            },
+            "AC_DAC_DRC_RPFLRT": {
+              "offset": "0x128",
+              "size": 32,
+              "description": "DAC DRC Right Peak filter Low Release Time Coef Register"
+            },
+            "AC_DAC_DRC_LRMSHAT": {
+              "offset": "0x12C",
+              "size": 32,
+              "description": "DAC DRC Left RMS Filter High Coef Register"
+            },
+            "AC_DAC_DRC_LRMSLAT": {
+              "offset": "0x130",
+              "size": 32,
+              "description": "DAC DRC Left RMS Filter Low Coef Register"
+            },
+            "AC_DAC_DRC_RRMSHAT": {
+              "offset": "0x134",
+              "size": 32,
+              "description": "DAC DRC Right RMS Filter High Coef Register"
+            },
+            "AC_DAC_DRC_RRMSLAT": {
+              "offset": "0x138",
+              "size": 32,
+              "description": "DAC DRC Right RMS Filter Low Coef Register"
+            },
+            "AC_DAC_DRC_HCT": {
+              "offset": "0x13C",
+              "size": 32,
+              "description": "DAC DRC Compressor Threshold High Setting Register"
+            },
+            "AC_DAC_DRC_LCT": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "DAC DRC Compressor Slope High Setting Register"
+            },
+            "AC_DAC_DRC_HKC": {
+              "offset": "0x144",
+              "size": 32,
+              "description": "DAC DRC Compressor Slope High Setting Register"
+            },
+            "AC_DAC_DRC_LKC": {
+              "offset": "0x148",
+              "size": 32,
+              "description": "DAC DRC Compressor Slope Low Setting Register"
+            },
+            "AC_DAC_DRC_HOPC": {
+              "offset": "0x14C",
+              "size": 32,
+              "description": "DAC DRC Compressor High Output at Compressor Threshold Register"
+            },
+            "AC_DAC_DRC_LOPC": {
+              "offset": "0x150",
+              "size": 32,
+              "description": "DAC DRC Compressor Low Output at Compressor Threshold Register"
+            },
+            "AC_DAC_DRC_HLT": {
+              "offset": "0x154",
+              "size": 32,
+              "description": "DAC DRC Limiter Threshold High Setting Register"
+            },
+            "AC_DAC_DRC_LLT": {
+              "offset": "0x158",
+              "size": 32,
+              "description": "DAC DRC Limiter Threshold Low Setting Register"
+            },
+            "AC_DAC_DRC_HKl": {
+              "offset": "0x15C",
+              "size": 32,
+              "description": "DAC DRC Limiter Slope High Setting Register"
+            },
+            "AC_DAC_DRC_LKl": {
+              "offset": "0x160",
+              "size": 32,
+              "description": "DAC DRC Limiter Slope Low Setting Register"
+            },
+            "AC_DAC_DRC_HOPL": {
+              "offset": "0x164",
+              "size": 32,
+              "description": "DAC DRC Limiter High Output at Limiter Threshold"
+            },
+            "AC_DAC_DRC_LOPL": {
+              "offset": "0x168",
+              "size": 32,
+              "description": "DAC DRC Limiter Low Output at Limiter Threshold"
+            },
+            "AC_DAC_DRC_HET": {
+              "offset": "0x16C",
+              "size": 32,
+              "description": "DAC DRC Expander Threshold High Setting Register"
+            },
+            "AC_DAC_DRC_LET": {
+              "offset": "0x170",
+              "size": 32,
+              "description": "DAC DRC Expander Threshold Low Setting Register"
+            },
+            "AC_DAC_DRC_HKE": {
+              "offset": "0x174",
+              "size": 32,
+              "description": "DAC DRC Expander Slope High Setting Register"
+            },
+            "AC_DAC_DRC_LKE": {
+              "offset": "0x178",
+              "size": 32,
+              "description": "DAC DRC Expander Slope Low Setting Register"
+            },
+            "AC_DAC_DRC_HOPE": {
+              "offset": "0x17C",
+              "size": 32,
+              "description": "DAC DRC Expander High Output at Expander Threshold"
+            },
+            "AC_DAC_DRC_LOPE": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "DAC DRC Expander Low Output at Expander Threshold"
+            },
+            "AC_DAC_DRC_HKN": {
+              "offset": "0x184",
+              "size": 32,
+              "description": "DAC DRC Linear Slope High Setting Register"
+            },
+            "AC_DAC_DRC_LKN": {
+              "offset": "0x188",
+              "size": 32,
+              "description": "DAC DRC Linear Slope Low Setting Register"
+            },
+            "AC_DAC_DRC_SFHAT": {
+              "offset": "0x18C",
+              "size": 32,
+              "description": "DAC DRC Smooth filter Gain High Attack Time Coef Register"
+            },
+            "AC_DAC_DRC_SFLAT": {
+              "offset": "0x190",
+              "size": 32,
+              "description": "DAC DRC Smooth filter Gain Low Attack Time Coef Register"
+            },
+            "AC_DAC_DRC_SFHRT": {
+              "offset": "0x194",
+              "size": 32,
+              "description": "DAC DRC Smooth filter Gain High Release Time Coef Register"
+            },
+            "AC_DAC_DRC_SFLRT": {
+              "offset": "0x198",
+              "size": 32,
+              "description": "DAC DRC Smooth filter Gain Low Release Time Coef Register"
+            },
+            "AC_DAC_DRC_MXGHS": {
+              "offset": "0x19C",
+              "size": 32,
+              "description": "DAC DRC MAX Gain High Setting Register"
+            },
+            "AC_DAC_DRC_MXGLS": {
+              "offset": "0x1A0",
+              "size": 32,
+              "description": "DAC DRC MAX Gain Low Setting Register"
+            },
+            "AC_DAC_DRC_MNGHS": {
+              "offset": "0x1A4",
+              "size": 32,
+              "description": "DAC DRC MIN Gain High Setting Register"
+            },
+            "AC_DAC_DRC_MNGLS": {
+              "offset": "0x1A8",
+              "size": 32,
+              "description": "DAC DRC MIN Gain Low Setting Register"
+            },
+            "AC_DAC_DRC_EPSHC": {
+              "offset": "0x1AC",
+              "size": 32,
+              "description": "DAC DRC Expander Smooth Time High Coef Register"
+            },
+            "AC_DAC_DRC_EPSLC": {
+              "offset": "0x1B0",
+              "size": 32,
+              "description": "DAC DRC Expander Smooth Time Low Coef Register"
+            },
+            "AC_DAC_DRC_HPFHGAIN": {
+              "offset": "0x1B8",
+              "size": 32,
+              "description": "DAC DRC HPF Gain High Coef Register"
+            },
+            "AC_DAC_DRC_HPFLGAIN": {
+              "offset": "0x1BC",
+              "size": 32,
+              "description": "DAC DRC HPF Gain Low Coef Register"
+            },
+            "AC_ADC_DRC_HHPFC": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "ADC DRC High HPF Coef Register"
+            },
+            "AC_ADC_DRC_LHPFC": {
+              "offset": "0x204",
+              "size": 32,
+              "description": "ADC DRC Low HPF Coef Register"
+            },
+            "AC_ADC_DRC_CTRL": {
+              "offset": "0x208",
+              "size": 32,
+              "description": "ADC DRC Control Register"
+            },
+            "AC_ADC_DRC_LPFHAT": {
+              "offset": "0x20C",
+              "size": 32,
+              "description": "ADC DRC Left Peak Filter High Attack Time Coef Register"
+            },
+            "AC_ADC_DRC_LPFLAT": {
+              "offset": "0x210",
+              "size": 32,
+              "description": "ADC DRC Left Peak Filter Low Attack Time Coef Register"
+            },
+            "AC_ADC_DRC_RPFHAT": {
+              "offset": "0x214",
+              "size": 32,
+              "description": "ADC DRC Right Peak Filter High Attack Time Coef Register"
+            },
+            "AC_ADC_DRC_RPFLAT": {
+              "offset": "0x218",
+              "size": 32,
+              "description": "ADC DRC Right Peak Filter Low Attack Time Coef Register"
+            },
+            "AC_ADC_DRC_LPFHRT": {
+              "offset": "0x21C",
+              "size": 32,
+              "description": "ADC DRC Left Peak Filter High Release Time Coef Register"
+            },
+            "AC_ADC_DRC_LPFLRT": {
+              "offset": "0x220",
+              "size": 32,
+              "description": "ADC DRC Left Peak Filter Low Release Time Coef Register"
+            },
+            "AC_ADC_DRC_RPFHRT": {
+              "offset": "0x224",
+              "size": 32,
+              "description": "ADC DRC Right Peak Filter High Release Time Coef Register"
+            },
+            "AC_ADC_DRC_RPFLRT": {
+              "offset": "0x228",
+              "size": 32,
+              "description": "ADC DRC Right Peak Filter Low Release Time Coef Register"
+            },
+            "AC_ADC_DRC_LRMSHAT": {
+              "offset": "0x22C",
+              "size": 32,
+              "description": "ADC DRC Left RMS Filter High Coef Register"
+            },
+            "AC_ADC_DRC_LRMSLAT": {
+              "offset": "0x230",
+              "size": 32,
+              "description": "ADC DRC Left RMS Filter Low Coef Register"
+            },
+            "AC_ADC_DRC_RRMSHAT": {
+              "offset": "0x234",
+              "size": 32,
+              "description": "ADC DRC Right RMS Filter High Coef Register"
+            },
+            "AC_ADC_DRC_RRMSLAT": {
+              "offset": "0x238",
+              "size": 32,
+              "description": "ADC DRC Right RMS Filter Low Coef Register"
+            },
+            "AC_ADC_DRC_HCT": {
+              "offset": "0x23C",
+              "size": 32,
+              "description": "ADC DRC Compressor Threshold High Setting Register"
+            },
+            "AC_ADC_DRC_LCT": {
+              "offset": "0x240",
+              "size": 32,
+              "description": "ADC DRC Compressor Slope High Setting Register"
+            },
+            "AC_ADC_DRC_HKC": {
+              "offset": "0x244",
+              "size": 32,
+              "description": "ADC DRC Compressor Slope High Setting Register"
+            },
+            "AC_ADC_DRC_LKC": {
+              "offset": "0x248",
+              "size": 32,
+              "description": "ADC DRC Compressor Slope Low Setting Register"
+            },
+            "AC_ADC_DRC_HOPC": {
+              "offset": "0x24C",
+              "size": 32,
+              "description": "ADC DRC Compressor High Output at Compressor Threshold Register"
+            },
+            "AC_ADC_DRC_LOPC": {
+              "offset": "0x250",
+              "size": 32,
+              "description": "ADC DRC Compressor Low Output at Compressor Threshold Register"
+            },
+            "AC_ADC_DRC_HLT": {
+              "offset": "0x254",
+              "size": 32,
+              "description": "ADC DRC Limiter Threshold High Setting Register"
+            },
+            "AC_ADC_DRC_LLT": {
+              "offset": "0x258",
+              "size": 32,
+              "description": "ADC DRC Limiter Threshold Low Setting Register"
+            },
+            "AC_ADC_DRC_HKl": {
+              "offset": "0x25C",
+              "size": 32,
+              "description": "ADC DRC Limiter Slope High Setting Register"
+            },
+            "AC_ADC_DRC_LKl": {
+              "offset": "0x260",
+              "size": 32,
+              "description": "ADC DRC Limiter Slope Low Setting Register"
+            },
+            "AC_ADC_DRC_HOPL": {
+              "offset": "0x264",
+              "size": 32,
+              "description": "ADC DRC Limiter High Output at Limiter Threshold"
+            },
+            "AC_ADC_DRC_LOPL": {
+              "offset": "0x268",
+              "size": 32,
+              "description": "ADC DRC Limiter Low Output at Limiter Threshold"
+            },
+            "AC_ADC_DRC_HET": {
+              "offset": "0x26C",
+              "size": 32,
+              "description": "ADC DRC Expander Threshold High Setting Register"
+            },
+            "AC_ADC_DRC_LET": {
+              "offset": "0x270",
+              "size": 32,
+              "description": "ADC DRC Expander Threshold Low Setting Register"
+            },
+            "AC_ADC_DRC_HKE": {
+              "offset": "0x274",
+              "size": 32,
+              "description": "ADC DRC Expander Slope High Setting Register"
+            },
+            "AC_ADC_DRC_LKE": {
+              "offset": "0x278",
+              "size": 32,
+              "description": "ADC DRC Expander Slope Low Setting Register"
+            },
+            "AC_ADC_DRC_HOPE": {
+              "offset": "0x27C",
+              "size": 32,
+              "description": "ADC DRC Expander High Output at Expander Threshold"
+            },
+            "AC_ADC_DRC_LOPE": {
+              "offset": "0x280",
+              "size": 32,
+              "description": "ADC DRC Expander Low Output at Expander Threshold"
+            },
+            "AC_ADC_DRC_HKN": {
+              "offset": "0x284",
+              "size": 32,
+              "description": "ADC DRC Linear Slope High Setting Register"
+            },
+            "AC_ADC_DRC_LKN": {
+              "offset": "0x288",
+              "size": 32,
+              "description": "ADC DRC Linear Slope Low Setting Register"
+            },
+            "AC_ADC_DRC_SFHAT": {
+              "offset": "0x28C",
+              "size": 32,
+              "description": "ADC DRC Smooth filter Gain High Attack Time Coef Register"
+            },
+            "AC_ADC_DRC_SFLAT": {
+              "offset": "0x290",
+              "size": 32,
+              "description": "ADC DRC Smooth filter Gain Low Attack Time Coef Register"
+            },
+            "AC_ADC_DRC_SFHRT": {
+              "offset": "0x294",
+              "size": 32,
+              "description": "ADC DRC Smooth filter Gain High Release Time Coef Register"
+            },
+            "AC_ADC_DRC_SFLRT": {
+              "offset": "0x298",
+              "size": 32,
+              "description": "ADC DRC Smooth filter Gain Low Release Time Coef Register"
+            },
+            "AC_ADC_DRC_MXGHS": {
+              "offset": "0x29C",
+              "size": 32,
+              "description": "ADC DRC MAX Gain High Setting Register"
+            },
+            "AC_ADC_DRC_MXGLS": {
+              "offset": "0x2A0",
+              "size": 32,
+              "description": "ADC DRC MAX Gain Low Setting Register"
+            },
+            "AC_ADC_DRC_MNGHS": {
+              "offset": "0x2A4",
+              "size": 32,
+              "description": "ADC DRC MIN Gain High Setting Register"
+            },
+            "AC_ADC_DRC_MNGLS": {
+              "offset": "0x2A8",
+              "size": 32,
+              "description": "ADC DRC MIN Gain Low Setting Register"
+            },
+            "AC_ADC_DRC_EPSHC": {
+              "offset": "0x2AC",
+              "size": 32,
+              "description": "ADC DRC Expander Smooth Time High Coef Register"
+            },
+            "AC_ADC_DRC_EPSLC": {
+              "offset": "0x2B0",
+              "size": 32,
+              "description": "ADC DRC Expander Smooth Time Low Coef Register"
+            },
+            "AC_ADC_DRC_HPFHGAIN": {
+              "offset": "0x2B8",
+              "size": 32,
+              "description": "ADC DRC HPF Gain High Coef Register"
+            },
+            "AC_ADC_DRC_HPFLGAIN": {
+              "offset": "0x2BC",
+              "size": 32,
+              "description": "ADC DRC HPF Gain Low Coef Register"
+            },
+            "ADC1_REG": {
+              "offset": "0x300",
+              "size": 32,
+              "description": "ADC1 Analog Control Register"
+            },
+            "ADC2_REG": {
+              "offset": "0x304",
+              "size": 32,
+              "description": "ADC2 Analog Control Register"
+            },
+            "ADC3_REG": {
+              "offset": "0x308",
+              "size": 32,
+              "description": "ADC3 Analog Control Register"
+            },
+            "DAC_REG": {
+              "offset": "0x310",
+              "size": 32,
+              "description": "DAC Analog Control Register"
+            },
+            "MICBIAS_REG": {
+              "offset": "0x318",
+              "size": 32,
+              "description": "MICBIAS Analog Control Register"
+            },
+            "RAMP_REG": {
+              "offset": "0x31C",
+              "size": 32,
+              "description": "BIAS Analog Control Register"
+            },
+            "BIAS_REG": {
+              "offset": "0x320",
+              "size": 32,
+              "description": "BIAS Analog Control Register"
+            },
+            "ADC5_REG": {
+              "offset": "0x330",
+              "size": 32,
+              "description": "ADC5 Analog Control Register"
+            }
+          }
+        },
+        "I2C": {
+          "instances": [
+            {
+              "name": "TWI[%s]",
+              "base": "0x02502000",
+              "irq": 25
+            }
+          ],
+          "registers": {
+            "TWI_ADDR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "TWI Slave Address Register"
+            },
+            "TWI_XADDR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "TWI Extended Slave Address Register"
+            },
+            "TWI_DATA": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "TWI Data Byte Register"
+            },
+            "TWI_CNTR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "TWI Control Register"
+            },
+            "TWI_STAT": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "TWI Status Register"
+            },
+            "TWI_CCR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "TWI Clock Control Register"
+            },
+            "TWI_SRST": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "TWI Software Reset Register"
+            },
+            "TWI_EFR": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "TWI Enhance Feature Register"
+            },
+            "TWI_LCR": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "TWI Line Control Register"
+            },
+            "TWI_DRV_CTRL": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "TWI_DRV Control Register"
+            },
+            "TWI_DRV_CFG": {
+              "offset": "0x204",
+              "size": 32,
+              "description": "TWI_DRV Transmission Configuration Register"
+            },
+            "TWI_DRV_SLV": {
+              "offset": "0x208",
+              "size": 32,
+              "description": "TWI_DRV Slave ID Register"
+            },
+            "TWI_DRV_FMT": {
+              "offset": "0x20C",
+              "size": 32,
+              "description": "TWI_DRV Packet Format Register"
+            },
+            "TWI_DRV_BUS_CTRL": {
+              "offset": "0x210",
+              "size": 32,
+              "description": "TWI_DRV Bus Control Register"
+            },
+            "TWI_DRV_INT_CTRL": {
+              "offset": "0x214",
+              "size": 32,
+              "description": "TWI_DRV Interrupt Control Register"
+            },
+            "TWI_DRV_DMA_CFG": {
+              "offset": "0x218",
+              "size": 32,
+              "description": "TWI_DRV DMA Configure Register"
+            },
+            "TWI_DRV_FIFO_CON": {
+              "offset": "0x21C",
+              "size": 32,
+              "description": "TWI_DRV FIFO Content Register"
+            },
+            "TWI_DRV_SEND_FIFO_ACC": {
+              "offset": "0x300",
+              "size": 32,
+              "description": "TWI_DRV Send Data FIFO Access Register"
+            },
+            "TWI_DRV_RECV_FIFO_ACC": {
+              "offset": "0x304",
+              "size": 32,
+              "description": "TWI_DRV Receive Data FIFO Access Register"
+            }
+          }
+        },
+        "USART": {
+          "instances": [
+            {
+              "name": "UART[%s]",
+              "base": "0x02500000",
+              "irq": 18
+            }
+          ],
+          "registers": {
+            "RBR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "UART Receive Buffer Register"
+            },
+            "THR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "UART Transmit Holding Register"
+            },
+            "DLL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "UART Divisor Latch Low Register"
+            },
+            "DLH": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "UART Divisor Latch High Register"
+            },
+            "IER": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "UART Interrupt Enable Register"
+            },
+            "IIR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "UART Interrupt Identity Register"
+            },
+            "FCR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "UART FIFO Control Register"
+            },
+            "LCR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "UART Line Control Register"
+            },
+            "MCR": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "UART Modem Control Register"
+            },
+            "LSR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "UART Line Status Register"
+            },
+            "MSR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "UART Modem Status Register"
+            },
+            "SCH": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "UART Scratch Register"
+            },
+            "USR": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "UART Status Register"
+            },
+            "TFL": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "UART Transmit FIFO Level Register"
+            },
+            "RFL": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "UART Receive FIFO Level Register"
+            },
+            "HSK": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "UART DMA Handshake Configuration Register"
+            },
+            "DMA_REQ_EN": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "UART DMA Request Enable Register"
+            },
+            "HALT": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "UART Halt TX Register"
+            },
+            "DBG_DLL": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "UART Debug DLL Register"
+            },
+            "DBG_DLH": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "UART Debug DLH Register"
+            },
+            "FCC": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "UART FIFO Clock Control Register"
+            },
+            "RXDMA_CTRL": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "UART RXDMA Control Register"
+            },
+            "RXDMA_STR": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "UART RXDMA Start Register"
+            },
+            "RXDMA_STA": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "UART RXDMA Status Register"
+            },
+            "RXDMA_LMT": {
+              "offset": "0x10C",
+              "size": 32,
+              "description": "UART RXDMA Limit Register"
+            },
+            "RXDMA_SADDRL": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "UART RXDMA Buffer Start Address Low Register"
+            },
+            "RXDMA_SADDRH": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "UART RXDMA Buffer Start Address High Register"
+            },
+            "RXDMA_BL": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "UART RXDMA Buffer Length Register"
+            },
+            "RXDMA_IE": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "UART RXDMA Interrupt Enable Register"
+            },
+            "RXDMA_IS": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "UART RXDMA Interrupt Status Register"
+            },
+            "RXDMA_WADDRL": {
+              "offset": "0x128",
+              "size": 32,
+              "description": "UART RXDMA Write Address Low Register"
+            },
+            "RXDMA_WADDRH": {
+              "offset": "0x12C",
+              "size": 32,
+              "description": "UART RXDMA Write Address High Register"
+            },
+            "RXDMA_RADDRL": {
+              "offset": "0x130",
+              "size": 32,
+              "description": "UART RXDMA Read Address Low Register"
+            },
+            "RXDMA_RADDRH": {
+              "offset": "0x134",
+              "size": 32,
+              "description": "UART RXDMA Read Address High Register"
+            },
+            "RXDMA_DCNT": {
+              "offset": "0x138",
+              "size": 32,
+              "description": "UART RXDMA Data Count Register"
+            }
+          }
+        },
+        "USB": {
+          "instances": [
+            {
+              "name": "USB0",
+              "base": "0x04100000",
+              "irq": 45
+            },
+            {
+              "name": "USB1",
+              "base": "0x04200000",
+              "irq": 49
+            }
+          ],
+          "registers": {
+            "E_CAPLENGTH": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "EHCI Capability Register Length Register"
+            },
+            "E_HCIVERSION": {
+              "offset": "0x02",
+              "size": 32,
+              "description": "EHCI Host Interface Version Number Register"
+            },
+            "E_HCSPARAMS": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "EHCI Host Control Structural Parameter Register"
+            },
+            "E_HCCPARAMS": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "EHCI Host Control Capability Parameter Register"
+            },
+            "E_HCSPPORTROUTE": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "EHCI Companion Port Route Description"
+            },
+            "E_USBCMD": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "EHCI USB Command Register"
+            },
+            "E_USBSTS": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "EHCI USB Status Register"
+            },
+            "E_USBINTR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "EHCI USB Interrupt Enable Register"
+            },
+            "E_FRINDEX": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "EHCI USB Frame Index Register"
+            },
+            "E_CTRLDSSEGMENT": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "EHCI 4G Segment Selector Register"
+            },
+            "E_PERIODICLISTBASE": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "EHCI Frame List Base Address Register"
+            },
+            "E_ASYNCLISTADDR": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "EHCI Next Asynchronous List Address Register"
+            },
+            "E_CONFIGFLAG": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "EHCI Configured Flag Register"
+            },
+            "E_PORTSC": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "EHCI Port Status/Control Register"
+            },
+            "O_HcControl": {
+              "offset": "0x404",
+              "size": 32,
+              "description": "OHCI Control Register"
+            },
+            "O_HcCommandStatus": {
+              "offset": "0x408",
+              "size": 32,
+              "description": "OHCI Command Status Register"
+            },
+            "O_HcInterruptStatus": {
+              "offset": "0x40C",
+              "size": 32,
+              "description": "OHCI Interrupt Status Register"
+            },
+            "O_HcInterruptEnable": {
+              "offset": "0x410",
+              "size": 32,
+              "description": "OHCI Interrupt Enable Register"
+            },
+            "O_HcInterruptDisable": {
+              "offset": "0x414",
+              "size": 32,
+              "description": "OHCI Interrupt Disable Register"
+            },
+            "O_HcHCCA": {
+              "offset": "0x418",
+              "size": 32,
+              "description": "OHCI HCCA Base"
+            },
+            "O_HcPeriodCurrentED": {
+              "offset": "0x41C",
+              "size": 32,
+              "description": "OHCI Period Current ED Base"
+            },
+            "O_HcControlHeadED": {
+              "offset": "0x420",
+              "size": 32,
+              "description": "OHCI Control Head ED Base"
+            },
+            "O_HcControlCurrentED": {
+              "offset": "0x424",
+              "size": 32,
+              "description": "OHCI Control Current ED Base"
+            },
+            "O_HcBulkHeadED": {
+              "offset": "0x428",
+              "size": 32,
+              "description": "OHCI Bulk Head ED Base"
+            },
+            "O_HcBulkCurrentED": {
+              "offset": "0x42C",
+              "size": 32,
+              "description": "OHCI Bulk Current ED Base"
+            },
+            "O_HcDoneHead": {
+              "offset": "0x430",
+              "size": 32,
+              "description": "OHCI Done Head Base"
+            },
+            "O_HcFmInterval": {
+              "offset": "0x434",
+              "size": 32,
+              "description": "OHCI Frame Interval Register"
+            },
+            "O_HcFmRemaining": {
+              "offset": "0x438",
+              "size": 32,
+              "description": "OHCI Frame Remaining Register"
+            },
+            "O_HcFmNumber": {
+              "offset": "0x43C",
+              "size": 32,
+              "description": "OHCI Frame Number Register"
+            },
+            "O_HcPerioddicStart": {
+              "offset": "0x440",
+              "size": 32,
+              "description": "OHCI Periodic Start Register"
+            },
+            "O_HcLSThreshold": {
+              "offset": "0x444",
+              "size": 32,
+              "description": "OHCI LS Threshold Register"
+            },
+            "O_HcRhDescriptorA": {
+              "offset": "0x448",
+              "size": 32,
+              "description": "OHCI Root Hub Descriptor Register A"
+            },
+            "O_HcRhDesriptorB": {
+              "offset": "0x44C",
+              "size": 32,
+              "description": "OHCI Root Hub Descriptor Register B"
+            },
+            "O_HcRhStatus": {
+              "offset": "0x450",
+              "size": 32,
+              "description": "OHCI Root Hub Status Register"
+            },
+            "O_HcRhPortStatus": {
+              "offset": "0x454",
+              "size": 32,
+              "description": "OHCI Root Hub Port Status Register"
+            },
+            "HCI_Interface": {
+              "offset": "0x800",
+              "size": 32,
+              "description": "HCI Interface Register"
+            },
+            "HCI_CTRL3": {
+              "offset": "0x808",
+              "size": 32,
+              "description": "HCI Control Register"
+            },
+            "PHY_Control": {
+              "offset": "0x810",
+              "size": 32,
+              "description": "PHY Control Register"
+            },
+            "PHY_STATUS": {
+              "offset": "0x824",
+              "size": 32,
+              "description": "PHY Status Register"
+            },
+            "HCI_SIE_PORT_DISABLE_CONTROL": {
+              "offset": "0x828",
+              "size": 32,
+              "description": "HCI SIE Port Disable Control Register"
+            }
+          }
+        },
+        "GPIO": {
+          "instances": [
+            {
+              "name": "GPIO",
+              "base": "0x02000000",
+              "irq": 85
+            }
+          ],
+          "registers": {
+            "pb_cfg0": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "PB Configure Register 0"
+            },
+            "pb_cfg1": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "PB Configure Register 1"
+            },
+            "pb_dat": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "PB Data Register"
+            },
+            "pb_drv0": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "PB Multi_Driving Register 0"
+            },
+            "pb_drv1": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "PB Multi_Driving Register 1"
+            },
+            "pb_pull0": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "PB Pull Register 0"
+            },
+            "pc_cfg0": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "PC Configure Register 0"
+            },
+            "pc_dat": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "PC Data Register"
+            },
+            "pc_drv0": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "PC Multi_Driving Register 0"
+            },
+            "pc_pull0": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "PC Pull Register 0"
+            },
+            "pd_cfg0": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "PD Configure Register 0"
+            },
+            "pd_cfg1": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "PD Configure Register 1"
+            },
+            "pd_cfg2": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "PD Configure Register 2"
+            },
+            "pd_dat": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "PD Data Register"
+            },
+            "pd_drv0": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "PD Multi_Driving Register 0"
+            },
+            "pd_drv1": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "PD Multi_Driving Register 1"
+            },
+            "pd_drv2": {
+              "offset": "0xAC",
+              "size": 32,
+              "description": "PD Multi_Driving Register 2"
+            },
+            "pd_pull0": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "PD Pull Register 0"
+            },
+            "pd_pull1": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "PD Pull Register 1"
+            },
+            "pe_cfg0": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "PE Configure Register 0"
+            },
+            "pe_cfg1": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "PE Configure Register 1"
+            },
+            "pe_cfg2": {
+              "offset": "0xC8",
+              "size": 32,
+              "description": "PE Configure Register 2"
+            },
+            "pe_dat": {
+              "offset": "0xD0",
+              "size": 32,
+              "description": "PE Data Register"
+            },
+            "pe_drv0": {
+              "offset": "0xD4",
+              "size": 32,
+              "description": "PE Multi_Driving Register 0"
+            },
+            "pe_drv1": {
+              "offset": "0xD8",
+              "size": 32,
+              "description": "PE Multi_Driving Register 1"
+            },
+            "pe_drv2": {
+              "offset": "0xDC",
+              "size": 32,
+              "description": "PE Multi_Driving Register 2"
+            },
+            "pe_pull0": {
+              "offset": "0xE4",
+              "size": 32,
+              "description": "PE Pull Register 0"
+            },
+            "pe_pull1": {
+              "offset": "0xE8",
+              "size": 32,
+              "description": "PE Pull Register 1"
+            },
+            "pf_cfg0": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "PF Configure Register 0"
+            },
+            "pf_dat": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "PF Data Register"
+            },
+            "pf_drv0": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "PF Multi_Driving Register 0"
+            },
+            "pf_pull0": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "PF Pull Register 0"
+            },
+            "pg_cfg0": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "PG Configure Register 0"
+            },
+            "pg_cfg1": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "PG Configure Register 1"
+            },
+            "pg_cfg2": {
+              "offset": "0x128",
+              "size": 32,
+              "description": "PG Configure Register 2"
+            },
+            "pg_dat": {
+              "offset": "0x130",
+              "size": 32,
+              "description": "PG Data Register"
+            },
+            "pg_drv0": {
+              "offset": "0x134",
+              "size": 32,
+              "description": "PG Multi_Driving Register 0"
+            },
+            "pg_drv1": {
+              "offset": "0x138",
+              "size": 32,
+              "description": "PG Multi_Driving Register 1"
+            },
+            "pg_drv2": {
+              "offset": "0x13C",
+              "size": 32,
+              "description": "PG Multi_Driving Register 2"
+            },
+            "pg_pull0": {
+              "offset": "0x144",
+              "size": 32,
+              "description": "PG Pull Register 0"
+            },
+            "pg_pull1": {
+              "offset": "0x148",
+              "size": 32,
+              "description": "PG Pull Register 1"
+            },
+            "pb_eint_cfg0": {
+              "offset": "0x220",
+              "size": 32,
+              "description": "PB External Interrupt Configure Register 0"
+            },
+            "pb_eint_cfg1": {
+              "offset": "0x224",
+              "size": 32,
+              "description": "PB External Interrupt Configure Register 1"
+            },
+            "pb_eint_ctl": {
+              "offset": "0x230",
+              "size": 32,
+              "description": "PB External Interrupt Control Register"
+            },
+            "pb_eint_status": {
+              "offset": "0x234",
+              "size": 32,
+              "description": "PB External Interrupt Status Register"
+            },
+            "pb_eint_deb": {
+              "offset": "0x238",
+              "size": 32,
+              "description": "PB External Interrupt Debounce Register"
+            },
+            "pc_eint_cfg0": {
+              "offset": "0x240",
+              "size": 32,
+              "description": "PC External Interrupt Configure Register 0"
+            },
+            "pc_eint_ctl": {
+              "offset": "0x250",
+              "size": 32,
+              "description": "PC External Interrupt Control Register"
+            },
+            "pc_eint_status": {
+              "offset": "0x254",
+              "size": 32,
+              "description": "PC External Interrupt Status Register"
+            },
+            "pc_eint_deb": {
+              "offset": "0x258",
+              "size": 32,
+              "description": "PC External Interrupt Debounce Register"
+            },
+            "pd_eint_cfg0": {
+              "offset": "0x260",
+              "size": 32,
+              "description": "PD External Interrupt Configure Register 0"
+            },
+            "pd_eint_cfg1": {
+              "offset": "0x264",
+              "size": 32,
+              "description": "PD External Interrupt Configure Register 1"
+            },
+            "pd_eint_cfg2": {
+              "offset": "0x268",
+              "size": 32,
+              "description": "PD External Interrupt Configure Register 2"
+            },
+            "pd_eint_ctl": {
+              "offset": "0x270",
+              "size": 32,
+              "description": "PD External Interrupt Control Register"
+            },
+            "pd_eint_status": {
+              "offset": "0x274",
+              "size": 32,
+              "description": "PD External Interrupt Status Register"
+            },
+            "pd_eint_deb": {
+              "offset": "0x278",
+              "size": 32,
+              "description": "PD External Interrupt Debounce Register"
+            },
+            "pe_eint_cfg0": {
+              "offset": "0x280",
+              "size": 32,
+              "description": "PE External Interrupt Configure Register 0"
+            },
+            "pe_eint_cfg1": {
+              "offset": "0x284",
+              "size": 32,
+              "description": "PE External Interrupt Configure Register 1"
+            },
+            "pe_eint_cfg2": {
+              "offset": "0x288",
+              "size": 32,
+              "description": "PE External Interrupt Configure Register 2"
+            },
+            "pe_eint_ctl": {
+              "offset": "0x290",
+              "size": 32,
+              "description": "PE External Interrupt Control Register"
+            },
+            "pe_eint_status": {
+              "offset": "0x294",
+              "size": 32,
+              "description": "PE External Interrupt Status Register"
+            },
+            "pe_eint_deb": {
+              "offset": "0x298",
+              "size": 32,
+              "description": "PE External Interrupt Debounce Register"
+            },
+            "pf_eint_cfg0": {
+              "offset": "0x2A0",
+              "size": 32,
+              "description": "PF External Interrupt Configure Register 0"
+            },
+            "pf_eint_ctl": {
+              "offset": "0x2B0",
+              "size": 32,
+              "description": "PF External Interrupt Control Register"
+            },
+            "pf_eint_status": {
+              "offset": "0x2B4",
+              "size": 32,
+              "description": "PF External Interrupt Status Register"
+            },
+            "pf_eint_deb": {
+              "offset": "0x2B8",
+              "size": 32,
+              "description": "PF External Interrupt Debounce Register"
+            },
+            "pg_eint_cfg0": {
+              "offset": "0x2C0",
+              "size": 32,
+              "description": "PG External Interrupt Configure Register 0"
+            },
+            "pg_eint_cfg1": {
+              "offset": "0x2C4",
+              "size": 32,
+              "description": "PG External Interrupt Configure Register 1"
+            },
+            "pg_eint_cfg2": {
+              "offset": "0x2C8",
+              "size": 32,
+              "description": "PG External Interrupt Configure Register 2"
+            },
+            "pg_eint_ctl": {
+              "offset": "0x2D0",
+              "size": 32,
+              "description": "PG External Interrupt Control Register"
+            },
+            "pg_eint_status": {
+              "offset": "0x2D4",
+              "size": 32,
+              "description": "PG External Interrupt Status Register"
+            },
+            "pg_eint_deb": {
+              "offset": "0x2D8",
+              "size": 32,
+              "description": "PG External Interrupt Debounce Register"
+            },
+            "pio_pow_mod_sel": {
+              "offset": "0x340",
+              "size": 32,
+              "description": "PIO Group Withstand Voltage Mode Select Register"
+            },
+            "pio_pow_ms_ctl": {
+              "offset": "0x344",
+              "size": 32,
+              "description": "PIO Group Withstand Voltage Mode Select Control Register"
+            },
+            "pio_pow_val": {
+              "offset": "0x348",
+              "size": 32,
+              "description": "PIO Group Power Value Register"
+            },
+            "pio_pow_vol_sel_ctl": {
+              "offset": "0x350",
+              "size": 32,
+              "description": "PIO Group Power Voltage Select Control Register"
+            }
+          }
+        },
+        "ADC": {
+          "instances": [
+            {
+              "name": "GPADC",
+              "base": "0x02009000",
+              "irq": 73
+            },
+            {
+              "name": "TPADC",
+              "base": "0x02009C00",
+              "irq": 78
+            },
+            {
+              "name": "LRADC",
+              "base": "0x02009800",
+              "irq": 77
+            }
+          ],
+          "registers": {
+            "GP_SR_CON": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "GPADC Sample Rate Configure Register"
+            },
+            "GP_CTRL": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "GPADC Control Register"
+            },
+            "GP_CS_EN": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "GPADC Compare and Select Enable Register"
+            },
+            "GP_FIFO_INTC": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "GPADC FIFO Interrupt Control Register"
+            },
+            "GP_FIFO_INTS": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "GPADC FIFO Interrupt Status Register"
+            },
+            "GP_FIFO_DATA": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "GPADC FIFO Data Register"
+            },
+            "GP_CDATA": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "GPADC Calibration Data Register"
+            },
+            "GP_DATAL_INTC": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "GPADC Data Low Interrupt Configure Register"
+            },
+            "GP_DATAH_INTC": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "GPADC Data High Interrupt Configure Register"
+            },
+            "GP_DATA_INTC": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "GPADC Data Interrupt Configure Register"
+            },
+            "GP_DATAL_INTS": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "GPADC Data Low Interrupt Status Register"
+            },
+            "GP_DATAH_INTS": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "GPADC Data High Interrupt Status Register"
+            },
+            "GP_DATA_INTS": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "GPADC Data Interrupt Status Register"
+            },
+            "GP_CH0_CMP_DATA": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "GPADC CH0 Compare Data Register"
+            },
+            "GP_CH1_CMP_DATA": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "GPADC CH1 Compare Data Register"
+            },
+            "GP_CH0_DATA": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "GPADC CH0 Data Register"
+            },
+            "GP_CH1_DATA": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "GPADC CH1 Data Register"
+            }
+          }
+        },
+        "PWM": {
+          "instances": [
+            {
+              "name": "PWM",
+              "base": "0x02000C00",
+              "irq": 34
+            },
+            {
+              "name": "LEDC",
+              "base": "0x02008000",
+              "irq": 36
+            }
+          ],
+          "registers": {
+            "PIER": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "PWM IRQ Enable Register"
+            },
+            "PISR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "PWM IRQ Status Register"
+            },
+            "CIER": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Capture IRQ Enable Register"
+            },
+            "CISR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Capture IRQ Status Register"
+            },
+            "PCCR01": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "PWM01 Clock Configuration Register"
+            },
+            "PCCR23": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "PWM23 Clock Configuration Register"
+            },
+            "PCCR45": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "PWM45 Clock Configuration Register"
+            },
+            "PCCR67": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "PWM67 Clock Configuration Register"
+            },
+            "PCGR": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "PWM Clock Gating Register"
+            },
+            "PDZCR01": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "PWM01 Dead Zone Control Register"
+            },
+            "PDZCR23": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "PWM23 Dead Zone Control Register"
+            },
+            "PDZCR45": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "PWM45 Dead Zone Control Register"
+            },
+            "PDZCR67": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "PWM67 Dead Zone Control Register"
+            },
+            "PER": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "PWM Enable Register"
+            },
+            "PGR0": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "PWM Group0 Register"
+            },
+            "PGR1": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "PWM Group1 Register"
+            },
+            "PGR2": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "PWM Group2 Register"
+            },
+            "PGR3": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "PWM Group3 Register"
+            },
+            "CER": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "Capture Enable Register"
+            },
+            "pcr%s": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "PWM Control Register"
+            },
+            "ppr%s": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "PWM Period Register"
+            },
+            "pcntr%s": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "PWM Count Register"
+            },
+            "ppcntr%s": {
+              "offset": "0x10C",
+              "size": 32,
+              "description": "PWM Pulse Count Register"
+            },
+            "ccr%s": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "Capture Control Register"
+            },
+            "crlr%s": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "Capture Rise Lock Register"
+            },
+            "cflr%s": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "Capture Fall Lock Register"
+            }
+          }
+        },
+        "ETH": {
+          "instances": [
+            {
+              "name": "EMAC",
+              "base": "0x04500000",
+              "irq": 62
+            }
+          ],
+          "registers": {
+            "EMAC_BASIC_CTL0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "EMAC Basic Control Register0"
+            },
+            "EMAC_BASIC_CTL1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "EMAC Basic Control Register1"
+            },
+            "EMAC_INT_STA": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "EMAC Interrupt Status Register"
+            },
+            "EMAC_INT_EN": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "EMAC Interrupt Enable Register"
+            },
+            "EMAC_TX_CTL0": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "EMAC Transmit Control Register0"
+            },
+            "EMAC_TX_CTL1": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "EMAC Transmit Control Register1"
+            },
+            "EMAC_TX_FLOW_CTL": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "EMAC Transmit Flow Control Register"
+            },
+            "EMAC_TX_DMA_DESC_LIST": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "EMAC Transmit Descriptor List Address Register"
+            },
+            "EMAC_RX_CTL0": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "EMAC Receive Control Register0"
+            },
+            "EMAC_RX_CTL1": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "EMAC Receive Control Register1"
+            },
+            "EMAC_RX_DMA_DESC_LIST": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "EMAC Receive Descriptor List Address Register"
+            },
+            "EMAC_RX_FRM_FLT": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "EMAC Receive Frame Filter Register"
+            },
+            "EMAC_RX_HASH0": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "EMAC Hash Table Register0"
+            },
+            "EMAC_RX_HASH1": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "EMAC Hash Table Register1"
+            },
+            "EMAC_MII_CMD": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "EMAC Management Interface Command Register"
+            },
+            "EMAC_MII_DATA": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "EMAC Management Interface Data Register"
+            },
+            "EMAC_ADDR_HIGH0": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "EMAC MAC Address High Register"
+            },
+            "EMAC_ADDR_HIGH%s": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "EMAC MAC Address High Register"
+            },
+            "EMAC_ADDR_LOW%s": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "EMAC MAC Address Low Register"
+            },
+            "EMAC_TX_DMA_STA": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "EMAC Transmit DMA Status Register"
+            },
+            "EMAC_TX_CUR_DESC": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "EMAC Current Transmit Descriptor Register"
+            },
+            "EMAC_TX_CUR_BUF": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "EMAC Current Transmit Buffer Address Register"
+            },
+            "EMAC_RX_DMA_STA": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "EMAC Receive DMA Status Register"
+            },
+            "EMAC_RX_CUR_DESC": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "EMAC Current Receive Descriptor Register"
+            },
+            "EMAC_RX_CUR_BUF": {
+              "offset": "0xC8",
+              "size": 32,
+              "description": "EMAC Current Receive Buffer Address Register"
+            },
+            "EMAC_RGMII_STA": {
+              "offset": "0xD0",
+              "size": 32,
+              "description": "EMAC RGMII Status Register"
+            }
+          }
+        },
+        "CIR": {
+          "instances": [
+            {
+              "name": "CIR_RX",
+              "base": "0x07040000",
+              "irq": 167
+            },
+            {
+              "name": "CIR_TX",
+              "base": "0x02003000",
+              "irq": 35
+            }
+          ],
+          "registers": {
+            "CIR_CTL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "CIR Control Register"
+            },
+            "CIR_RXPCFG": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "CIR Receiver Pulse Configure Register"
+            },
+            "CIR_RXFIFO": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "CIR Receiver FIFO Register"
+            },
+            "CIR_RXINT": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "CIR Receiver Interrupt Control Register"
+            },
+            "CIR_RXSTA": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "CIR Receiver Status Register"
+            },
+            "CIR_RXCFG": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "CIR Receiver Configure Register"
+            }
+          }
+        },
+        "CE": {
+          "instances": [
+            {
+              "name": "CE_NS",
+              "base": "0x03040000",
+              "irq": 68
+            }
+          ],
+          "registers": {
+            "CE_TDA": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Task Descriptor Address"
+            },
+            "CE_ICR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Interrupt Control Register"
+            },
+            "CE_ISR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "CE_TLR": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Task Load Register"
+            },
+            "CE_TSR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Task Status Register"
+            },
+            "CE_ESR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Error Status Register"
+            },
+            "CE_CSA": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "DMA Current Source Address"
+            },
+            "CE_CDA": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "DMA Current Destination Address"
+            },
+            "CE_TPR": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Throughput Register"
+            }
+          }
+        }
+      },
+      "interrupts": {
+        "count": 184,
+        "vectors": [
+          {
+            "number": 0,
+            "name": "Initial_SP"
+          },
+          {
+            "number": 1,
+            "name": "Reset_Handler"
+          },
+          {
+            "number": 2,
+            "name": "NMI_Handler"
+          },
+          {
+            "number": 3,
+            "name": "HardFault_Handler"
+          },
+          {
+            "number": 4,
+            "name": "MemManage_Handler"
+          },
+          {
+            "number": 5,
+            "name": "BusFault_Handler"
+          },
+          {
+            "number": 6,
+            "name": "UsageFault_Handler"
+          },
+          {
+            "number": 11,
+            "name": "SVC_Handler"
+          },
+          {
+            "number": 12,
+            "name": "DebugMon_Handler"
+          },
+          {
+            "number": 14,
+            "name": "PendSV_Handler"
+          },
+          {
+            "number": 15,
+            "name": "SysTick_Handler"
+          },
+          {
+            "number": 34,
+            "name": "UART0_IRQHandler"
+          },
+          {
+            "number": 35,
+            "name": "UART1_IRQHandler"
+          },
+          {
+            "number": 36,
+            "name": "UART2_IRQHandler"
+          },
+          {
+            "number": 37,
+            "name": "UART3_IRQHandler"
+          },
+          {
+            "number": 38,
+            "name": "UART4_IRQHandler"
+          },
+          {
+            "number": 39,
+            "name": "UART5_IRQHandler"
+          },
+          {
+            "number": 41,
+            "name": "TWI0_IRQHandler"
+          },
+          {
+            "number": 42,
+            "name": "TWI1_IRQHandler"
+          },
+          {
+            "number": 43,
+            "name": "TWI2_IRQHandler"
+          },
+          {
+            "number": 44,
+            "name": "TWI3_IRQHandler"
+          },
+          {
+            "number": 47,
+            "name": "SPI0_IRQHandler"
+          },
+          {
+            "number": 48,
+            "name": "SPI1_IRQHandler"
+          },
+          {
+            "number": 50,
+            "name": "PWM_IRQHandler"
+          },
+          {
+            "number": 51,
+            "name": "IR_TX_IRQHandler"
+          },
+          {
+            "number": 52,
+            "name": "LEDC_IRQHandler"
+          },
+          {
+            "number": 55,
+            "name": "OWA_IRQHandler"
+          },
+          {
+            "number": 56,
+            "name": "DMIC_IRQHandler"
+          },
+          {
+            "number": 57,
+            "name": "AUDIO_CODEC_IRQHandler"
+          },
+          {
+            "number": 58,
+            "name": "I2S_PCM0_IRQHandler"
+          },
+          {
+            "number": 59,
+            "name": "I2S_PCM1_IRQHandler"
+          },
+          {
+            "number": 60,
+            "name": "I2S_PCM2_IRQHandler"
+          },
+          {
+            "number": 61,
+            "name": "USB0_DEVICE_IRQHandler"
+          },
+          {
+            "number": 62,
+            "name": "USB0_EHCI_IRQHandler"
+          },
+          {
+            "number": 63,
+            "name": "USB0_OHCI_IRQHandler"
+          },
+          {
+            "number": 65,
+            "name": "USB1_EHCI_IRQHandler"
+          },
+          {
+            "number": 66,
+            "name": "USB1_OHCI_IRQHandler"
+          },
+          {
+            "number": 72,
+            "name": "SMHC0_IRQHandler"
+          },
+          {
+            "number": 73,
+            "name": "SMHC1_IRQHandler"
+          },
+          {
+            "number": 74,
+            "name": "SMHC2_IRQHandler"
+          },
+          {
+            "number": 78,
+            "name": "EMAC_IRQHandler"
+          },
+          {
+            "number": 82,
+            "name": "DMAC_NS_IRQHandler"
+          },
+          {
+            "number": 84,
+            "name": "CE_NS_IRQHandler"
+          },
+          {
+            "number": 86,
+            "name": "SPINLOCK_IRQHandler"
+          },
+          {
+            "number": 87,
+            "name": "HSTIMER0_IRQHandler"
+          },
+          {
+            "number": 88,
+            "name": "HSTIMER1_IRQHandler"
+          },
+          {
+            "number": 89,
+            "name": "GPADC_IRQHandler"
+          },
+          {
+            "number": 90,
+            "name": "THS_IRQHandler"
+          },
+          {
+            "number": 91,
+            "name": "TIMER0_IRQHandler"
+          },
+          {
+            "number": 92,
+            "name": "TIMER1_IRQHandler"
+          },
+          {
+            "number": 93,
+            "name": "LRADC_IRQHandler"
+          },
+          {
+            "number": 94,
+            "name": "TPADC_IRQHandler"
+          },
+          {
+            "number": 95,
+            "name": "WATCHDOG_IRQHandler"
+          },
+          {
+            "number": 96,
+            "name": "IOMMU_IRQHandler"
+          },
+          {
+            "number": 101,
+            "name": "GPIOB_NS_IRQHandler"
+          },
+          {
+            "number": 103,
+            "name": "GPIOC_NS_IRQHandler"
+          },
+          {
+            "number": 105,
+            "name": "GPIOD_NS_IRQHandler"
+          },
+          {
+            "number": 107,
+            "name": "GPIOE_NS_IRQHandler"
+          },
+          {
+            "number": 109,
+            "name": "GPIOF_NS_IRQHandler"
+          },
+          {
+            "number": 127,
+            "name": "CSI_DMA0_IRQHandler"
+          },
+          {
+            "number": 128,
+            "name": "CSI_DMA1_IRQHandler"
+          },
+          {
+            "number": 138,
+            "name": "CSI_TOP_PKT_IRQHandler"
+          },
+          {
+            "number": 139,
+            "name": "TVD_IRQHandler"
+          },
+          {
+            "number": 160,
+            "name": "RISC-V_MBOX_RISC-V_IRQHandler"
+          },
+          {
+            "number": 161,
+            "name": "RISC-V_MBOX_DSP_IRQHandler"
+          },
+          {
+            "number": 183,
+            "name": "IR_RX_IRQHandler"
+          }
+        ]
+      }
+    }
+  }
+}

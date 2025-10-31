@@ -3,7 +3,7 @@
 /// Source: infineon_xmc1100.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:44
+/// Generated: 2025-10-31 12:00:46
 #ifndef ALLOY_GENERATED_XMC1100_PERIPHERALS_HPP
 #define ALLOY_GENERATED_XMC1100_PERIPHERALS_HPP
 
@@ -17,6 +17,114 @@ namespace memory {
     constexpr uint32_t FLASH_SIZE = 64 * 1024;
     constexpr uint32_t RAM_BASE   = 0x20000000;
     constexpr uint32_t RAM_SIZE   = 20 * 1024;
+}
+
+// ============================================================================
+// MCU Resource Metadata
+// ============================================================================
+
+/// MCU capabilities and resource availability
+namespace traits {
+    // Flash and RAM
+    constexpr uint32_t flash_size_kb = 64;
+    constexpr uint32_t ram_size_kb = 20;
+
+    // Peripheral availability
+    constexpr bool has_ppb = true;
+    constexpr uint32_t num_ppb_instances = 1;
+    constexpr bool has_eru0 = true;
+    constexpr uint32_t num_eru0_instances = 1;
+    constexpr bool has_pau = true;
+    constexpr uint32_t num_pau_instances = 1;
+    constexpr bool has_nvm = true;
+    constexpr uint32_t num_nvm_instances = 1;
+    constexpr bool has_wdg = true;
+    constexpr uint32_t num_wdg_instances = 1;
+    constexpr bool has_rtc = true;
+    constexpr uint32_t num_rtc_instances = 1;
+    constexpr bool has_rng = true;
+    constexpr uint32_t num_rng_instances = 1;
+    constexpr bool has_usic0 = true;
+    constexpr uint32_t num_usic0_instances = 3;
+    constexpr bool has_scu = true;
+    constexpr uint32_t num_scu_instances = 5;
+    constexpr bool has_pwr = true;
+    constexpr uint32_t num_pwr_instances = 1;
+    constexpr bool has_ccu40 = true;
+    constexpr uint32_t num_ccu40_instances = 5;
+    constexpr bool has_adc = true;
+    constexpr uint32_t num_adc_instances = 1;
+    constexpr bool has_shs0 = true;
+    constexpr uint32_t num_shs0_instances = 1;
+    constexpr bool has_gpio = true;
+    constexpr uint32_t num_gpio_instances = 3;
+
+    // Helper templates for compile-time validation
+    template<typename T>
+    struct peripheral_count;
+
+    template<>
+    struct peripheral_count<struct ppb_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct eru0_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct pau_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct nvm_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct wdg_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct rtc_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct rng_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct usic0_tag> {
+        static constexpr uint32_t value = 3;
+    };
+    template<>
+    struct peripheral_count<struct scu_tag> {
+        static constexpr uint32_t value = 5;
+    };
+    template<>
+    struct peripheral_count<struct pwr_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct ccu40_tag> {
+        static constexpr uint32_t value = 5;
+    };
+    template<>
+    struct peripheral_count<struct adc_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct shs0_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpio_tag> {
+        static constexpr uint32_t value = 3;
+    };
+
+    // GPIO-specific traits
+    constexpr uint32_t num_gpio_ports = 3;
+    constexpr uint32_t max_gpio_pins = 48;  // 16 pins per port
+
+    // USART-specific traits
 }
 
 // ============================================================================

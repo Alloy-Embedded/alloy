@@ -1,0 +1,543 @@
+{
+  "family": "CMSDK_CM3",
+  "architecture": "arm-cortex-m3",
+  "vendor": "ARM Ltd.",
+  "mcus": {
+    "CMSDK_CM3": {
+      "flash": {
+        "size_kb": 64,
+        "base_address": "0x08000000",
+        "page_size_kb": 1
+      },
+      "ram": {
+        "size_kb": 20,
+        "base_address": "0x20000000"
+      },
+      "peripherals": {
+        "TIM": {
+          "instances": [
+            {
+              "name": "TIMER0",
+              "base": "0x40000000",
+              "irq": 8
+            },
+            {
+              "name": "TIMER1",
+              "base": "0x40001000",
+              "irq": 9
+            },
+            {
+              "name": "DUALTIMER",
+              "base": "0x40002000",
+              "irq": 10
+            }
+          ],
+          "registers": {
+            "CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Control Register"
+            },
+            "VALUE": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Current Timer Counter Value"
+            },
+            "RELOAD": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Counter Reload Value"
+            },
+            "INTSTATUS": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Timer Interrupt status register"
+            },
+            "INTCLEAR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Timer Interrupt clear register"
+            }
+          }
+        },
+        "USART": {
+          "instances": [
+            {
+              "name": "UART0",
+              "base": "0x40004000",
+              "irq": 0
+            },
+            {
+              "name": "UART1",
+              "base": "0x40005000",
+              "irq": 2
+            },
+            {
+              "name": "UART2",
+              "base": "0x40006000",
+              "irq": 4
+            },
+            {
+              "name": "UART3",
+              "base": "0x40007000",
+              "irq": 18
+            },
+            {
+              "name": "UART4",
+              "base": "0x40009000",
+              "irq": 20
+            }
+          ],
+          "registers": {
+            "DATA": {
+              "offset": "0x00",
+              "size": 8,
+              "description": "Recieve and Transmit Data Value"
+            },
+            "STATE": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "UART Status Register"
+            },
+            "CTRL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "UART Control Register"
+            },
+            "INTSTATUS": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "UART Interrupt Status Register"
+            },
+            "INTCLEAR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "UART Interrupt CLEAR Register"
+            },
+            "BAUDDIV": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Baudrate Divider"
+            }
+          }
+        },
+        "GPIO": {
+          "instances": [
+            {
+              "name": "GPIO0",
+              "base": "0x40010000",
+              "irq": 6
+            },
+            {
+              "name": "GPIO1",
+              "base": "0x40011000",
+              "irq": 7
+            }
+          ],
+          "registers": {
+            "DATA": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Data Register"
+            },
+            "DATAOUT": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Data Output Register"
+            },
+            "OUTENSET": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Ouptut enable set Register"
+            },
+            "OUTENCLR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Ouptut enable clear Register"
+            },
+            "ALTFUNCSET": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Alternate function set Register"
+            },
+            "ALTFUNCCLR": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Alternate function clear Register"
+            },
+            "INTENSET": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Interrupt enable set Register"
+            },
+            "INTENCLR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Interrupt enable clear Register"
+            },
+            "INTTYPESET": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Interrupt type set Register"
+            },
+            "INTTYPECLR": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Interrupt type clear Register"
+            },
+            "INTPOLSET": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Polarity-level, edge interrupt configuration set Register"
+            },
+            "INTPOLCLR": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Polarity-level, edge interrupt configuration clear Register"
+            },
+            "INTSTATUS": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "INTCLEAR": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Interrupt CLEAR Register"
+            }
+          }
+        },
+        "SPI": {
+          "instances": [
+            {
+              "name": "SPI",
+              "base": "0x40027000",
+              "irq": 11
+            }
+          ],
+          "registers": {
+            "SPSTAT": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "SPI Status"
+            },
+            "SPDAT": {
+              "offset": "0x02",
+              "size": 32,
+              "description": "SPI Data"
+            },
+            "SPCLK": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "SPI Clock Configuration"
+            },
+            "SPCON": {
+              "offset": "0x06",
+              "size": 32,
+              "description": "SPI Configuration"
+            }
+          }
+        },
+        "WDG": {
+          "instances": [
+            {
+              "name": "WDT",
+              "base": "0x40008000",
+              "irq": 0
+            }
+          ],
+          "registers": {
+            "WDOGLOAD": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Watchdog Load Register"
+            },
+            "WDOGVALUE": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Watchdog Value Register"
+            },
+            "WDOGCONTROL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Watchdog Control Register"
+            },
+            "WDOGINTCLR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Watchdog Interrupt Clear Register"
+            },
+            "WDOGRIS": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Watchdog Raw Interrupt Status Register"
+            },
+            "WDOGMIS": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Watchdog Mask Interrupt Status Register"
+            },
+            "WDOGLOCK": {
+              "offset": "0xC00",
+              "size": 32,
+              "description": "Watchdog Lock Register"
+            }
+          },
+          "bits": {
+            "WDOGCONTROL": {
+              "INTEN": {
+                "bit": 0,
+                "description": "Enable the interrupt event"
+              },
+              "RESEN": {
+                "bit": 1,
+                "description": "Enable watchdog reset output"
+              }
+            },
+            "WDOGINTCLR": {
+              "INT": {
+                "bit": 0,
+                "description": "Interrupt"
+              }
+            },
+            "WDOGRIS": {
+              "RIS": {
+                "bit": 0,
+                "description": "Raw watchdog Interrupt"
+              }
+            },
+            "WDOGMIS": {
+              "MIS": {
+                "bit": 0,
+                "description": "Masked Watchdog Interrupt"
+              }
+            }
+          }
+        },
+        "FPGAIO": {
+          "instances": [
+            {
+              "name": "FPGAIO",
+              "base": "0x40028000"
+            }
+          ],
+          "registers": {
+            "LED": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "LED Connections"
+            },
+            "BUTTON": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Button Connections"
+            },
+            "CLK1HZ": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "1Hz Up Counter"
+            },
+            "CLK100HZ": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "100Hz Up Counter"
+            },
+            "COUNTER": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Cycle up counter"
+            },
+            "PRESCALER": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Reload value for prescaler counter"
+            },
+            "PSCNTR": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Prescale Counter"
+            },
+            "MISC": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Misc. Control"
+            }
+          }
+        },
+        "SCC": {
+          "instances": [
+            {
+              "name": "SCC",
+              "base": "0x4002F000"
+            }
+          ],
+          "registers": {
+            "CFG_REG0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "1 = REMAP Block RAM to ZBT"
+            },
+            "CFG_REG1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "MCC LEDs: 0 = OFF 1 = ON"
+            },
+            "CFG_REG2": {
+              "offset": "0x08",
+              "size": 32
+            },
+            "CFG_REG3": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "MCC SWITCHES: 0 = OFF 1 = ON"
+            },
+            "CFG_REG4": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Board Revision"
+            },
+            "CFG_REG5": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Debug: 0 = Serial Wire Debug 1 = JTAG"
+            },
+            "CFG_REG6": {
+              "offset": "0x18",
+              "size": 32
+            },
+            "CFG_REG7": {
+              "offset": "0x1C",
+              "size": 32
+            },
+            "SYS_CFGDATA_RTN": {
+              "offset": "0xA0",
+              "size": 32
+            },
+            "SYS_CFGDATA_OUT": {
+              "offset": "0xA4",
+              "size": 32
+            },
+            "SYS_CFGCTRL": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "Start: generates interrupt on write to this bit"
+            },
+            "SYS_CFGSTAT": {
+              "offset": "0xAC",
+              "size": 32,
+              "description": "Error Flag"
+            },
+            "DLL": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "DLL Lock Register"
+            },
+            "AID": {
+              "offset": "0xFF8",
+              "size": 32,
+              "description": "FPGA Build Number"
+            },
+            "ID": {
+              "offset": "0xFFC",
+              "size": 32,
+              "description": "Implementer ID: 0x41 = ARM"
+            }
+          }
+        }
+      },
+      "interrupts": {
+        "count": 37,
+        "vectors": [
+          {
+            "number": 0,
+            "name": "Initial_SP"
+          },
+          {
+            "number": 1,
+            "name": "Reset_Handler"
+          },
+          {
+            "number": 2,
+            "name": "NMI_Handler"
+          },
+          {
+            "number": 3,
+            "name": "HardFault_Handler"
+          },
+          {
+            "number": 4,
+            "name": "MemManage_Handler"
+          },
+          {
+            "number": 5,
+            "name": "BusFault_Handler"
+          },
+          {
+            "number": 6,
+            "name": "UsageFault_Handler"
+          },
+          {
+            "number": 11,
+            "name": "SVC_Handler"
+          },
+          {
+            "number": 12,
+            "name": "DebugMon_Handler"
+          },
+          {
+            "number": 14,
+            "name": "PendSV_Handler"
+          },
+          {
+            "number": 15,
+            "name": "SysTick_Handler"
+          },
+          {
+            "number": 16,
+            "name": "UART0_RX_IRQHandler"
+          },
+          {
+            "number": 18,
+            "name": "UART1_RX_IRQHandler"
+          },
+          {
+            "number": 20,
+            "name": "UART2_RX_IRQHandler"
+          },
+          {
+            "number": 22,
+            "name": "GPIO0_IRQHandler"
+          },
+          {
+            "number": 23,
+            "name": "GPIO1_IRQHandler"
+          },
+          {
+            "number": 24,
+            "name": "TIMER0_IRQHandler"
+          },
+          {
+            "number": 25,
+            "name": "TIMER1_IRQHandler"
+          },
+          {
+            "number": 26,
+            "name": "DUALTIMER_IRQHandler"
+          },
+          {
+            "number": 27,
+            "name": "SPI_IRQHandler"
+          },
+          {
+            "number": 34,
+            "name": "UART3_RX_IRQHandler"
+          },
+          {
+            "number": 36,
+            "name": "UART4_RX_IRQHandler"
+          }
+        ]
+      }
+    }
+  }
+}

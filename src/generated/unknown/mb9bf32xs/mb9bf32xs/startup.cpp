@@ -3,7 +3,7 @@
 /// Source: fujitsu_mb9bf32xs.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:22:04
+/// Generated: 2025-10-31 12:01:13
 #include <cstdint>
 #include <cstring>
 

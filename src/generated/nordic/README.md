@@ -1,18 +1,50 @@
 # NORDIC Generated Code
 
-**MCUs Supported**: 2
-**Families**: nrf52820, nrf52840
+**MCUs Supported**: 10
+**Families**: nrf51, nrf52, nrf52805, nrf52810, nrf52811, nrf52820, nrf52833, nrf52840, nrf5340_network, nrf9160
 
 ## Structure
 
 ```
 nordic/
+├── nrf51/
+│   ├── NRF51/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── nrf52/
+│   ├── NRF52/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── nrf52805/
+│   ├── NRF52805/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── nrf52810/
+│   ├── NRF52810/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── nrf52811/
+│   ├── NRF52811/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
 ├── nrf52820/
 │   ├── NRF52820/
 │   │   ├── startup.cpp
 │   │   └── peripherals.hpp
+├── nrf52833/
+│   ├── NRF52833/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
 ├── nrf52840/
 │   ├── NRF52840/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── nrf5340_network/
+│   ├── NRF5340_NETWORK/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── nrf9160/
+│   ├── NRF9160/
 │   │   ├── startup.cpp
 │   │   └── peripherals.hpp
 ```

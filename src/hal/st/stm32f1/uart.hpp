@@ -82,10 +82,23 @@ constexpr inline uint32_t get_usart_enable_bit(UsartId id) {
 /// Default clock frequencies:
 /// - APB2 (USART1): 72 MHz (max)
 /// - APB1 (USART2/3): 36 MHz (max)
+///
+/// @note Compile-time validation ensures the USART exists on the target MCU
 template<UsartId ID>
 class UartDevice {
 public:
     static constexpr UsartId usart_id = ID;
+
+    // Compile-time validation: USART peripheral must exist on this MCU
+    static_assert(ALLOY_GENERATED_NAMESPACE::traits::has_usart,
+                  "USART peripheral not available on this MCU");
+
+    // Validate specific USART instance exists
+    static_assert(
+        (ID == UsartId::USART1 && ALLOY_GENERATED_NAMESPACE::traits::has_usart1) ||
+        (ID == UsartId::USART2 && ALLOY_GENERATED_NAMESPACE::traits::has_usart2) ||
+        (ID == UsartId::USART3 && ALLOY_GENERATED_NAMESPACE::traits::has_usart3),
+        "This USART instance is not available on the target MCU - check your MCU datasheet");
 
     /// Constructor - initializes USART peripheral
     UartDevice();

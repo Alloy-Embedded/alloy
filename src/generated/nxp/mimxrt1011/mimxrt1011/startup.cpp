@@ -3,7 +3,7 @@
 /// Source: nxp_mimxrt1011.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:30:11
+/// Generated: 2025-10-31 12:00:28
 #include <cstdint>
 #include <cstring>
 

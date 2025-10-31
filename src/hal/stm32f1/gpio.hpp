@@ -1,0 +1,115 @@
+#ifndef ALLOY_HAL_STM32F1_GPIO_HPP
+#define ALLOY_HAL_STM32F1_GPIO_HPP
+
+#include "../interface/gpio.hpp"
+#include <cstdint>
+
+namespace alloy::hal::stm32f1 {
+
+// All peripheral definitions come from generated code
+#include "peripherals.hpp"
+
+// Import generated definitions into local namespace
+using GpioPort = alloy::generated::stm32f103c8::gpio::Registers;
+using RccRegs = alloy::generated::stm32f103c8::rcc::Registers;
+
+namespace gpio_ports {
+    using namespace alloy::generated::stm32f103c8::gpio;
+}
+
+namespace rcc {
+    using namespace alloy::generated::stm32f103c8::rcc;
+}
+
+/// GPIO port identifiers
+enum class Port : uint8_t {
+    A = 0,
+    B = 1,
+    C = 2,
+    D = 3,
+    E = 4
+};
+
+/// Get GPIO port base address from port enum
+constexpr inline uint32_t get_port_address(Port port) {
+    switch (port) {
+        case Port::A: return gpio_ports::GPIOA_BASE;
+        case Port::B: return gpio_ports::GPIOB_BASE;
+        case Port::C: return gpio_ports::GPIOC_BASE;
+        case Port::D: return gpio_ports::GPIOD_BASE;
+        case Port::E: return gpio_ports::GPIOE_BASE;
+    }
+    return 0;
+}
+
+/// Get GPIO port enable bit in RCC_APB2ENR
+constexpr inline uint32_t get_port_enable_bit(Port port) {
+    // GPIOA=bit 2, GPIOB=bit 3, GPIOC=bit 4, etc.
+    return 2 + static_cast<uint8_t>(port);
+}
+
+/// Extract port and pin from pin number
+/// STM32F1 uses format: Port * 16 + Pin
+/// PA0=0, PA1=1, ..., PA15=15, PB0=16, PB1=17, ..., PC13=45, etc.
+constexpr inline Port get_port(uint8_t pin) {
+    return static_cast<Port>(pin / 16);
+}
+
+constexpr inline uint8_t get_pin_number(uint8_t pin) {
+    return pin % 16;
+}
+
+/// STM32F1 GPIO pin implementation
+///
+/// Implements GPIO operations using STM32F1-specific CRL/CRH registers.
+/// Unlike STM32F4 which uses MODER, STM32F1 uses separate configuration
+/// registers for low (0-7) and high (8-15) pins.
+///
+/// Pin numbering: PA0=0, PA1=1, ..., PC13=45, etc.
+template<uint8_t PIN>
+class GpioPin {
+public:
+    static constexpr uint8_t pin_number = PIN;
+    static constexpr Port port = get_port(PIN);
+    static constexpr uint8_t pin_bit = get_pin_number(PIN);
+
+    /// Constructor - initializes pin clock
+    GpioPin() {
+        enable_port_clock();
+    }
+
+    /// Configure pin mode
+    /// @param mode Desired pin mode (Input, Output, etc)
+    void configure(PinMode mode);
+
+    /// Set pin output to HIGH
+    void set_high();
+
+    /// Set pin output to LOW
+    void set_low();
+
+    /// Toggle pin output state
+    void toggle();
+
+    /// Read current pin state
+    /// @return true if pin is HIGH, false if LOW
+    bool read() const;
+
+private:
+    /// Enable GPIO port clock
+    static void enable_port_clock();
+
+    /// Get pointer to GPIO port registers
+    static GpioPort* get_port_registers();
+
+    /// Get pointer to RCC registers
+    static RccRegs* get_rcc_registers();
+};
+
+// Static assertion to verify concept compliance
+static_assert(alloy::hal::GpioPin<GpioPin<0>>,
+              "stm32f1::GpioPin must satisfy GpioPin concept");
+
+} // namespace alloy::hal::stm32f1
+
+#endif // ALLOY_HAL_STM32F1_GPIO_HPP

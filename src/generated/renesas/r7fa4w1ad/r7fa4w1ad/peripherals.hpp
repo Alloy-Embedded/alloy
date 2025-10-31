@@ -3,7 +3,7 @@
 /// Source: renesas_r7fa4w1ad.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:56
+/// Generated: 2025-10-31 12:01:01
 #ifndef ALLOY_GENERATED_R7FA4W1AD_PERIPHERALS_HPP
 #define ALLOY_GENERATED_R7FA4W1AD_PERIPHERALS_HPP
 
@@ -17,6 +17,366 @@ namespace memory {
     constexpr uint32_t FLASH_SIZE = 64 * 1024;
     constexpr uint32_t RAM_BASE   = 0x20000000;
     constexpr uint32_t RAM_SIZE   = 20 * 1024;
+}
+
+// ============================================================================
+// MCU Resource Metadata
+// ============================================================================
+
+/// MCU capabilities and resource availability
+namespace traits {
+    // Flash and RAM
+    constexpr uint32_t flash_size_kb = 64;
+    constexpr uint32_t ram_size_kb = 20;
+
+    // Peripheral availability
+    constexpr bool has_poeg = true;
+    constexpr uint32_t num_poeg_instances = 1;
+    constexpr bool has_gpt320 = true;
+    constexpr uint32_t num_gpt320_instances = 1;
+    constexpr bool has_gpt321 = true;
+    constexpr uint32_t num_gpt321_instances = 1;
+    constexpr bool has_gpt322 = true;
+    constexpr uint32_t num_gpt322_instances = 1;
+    constexpr bool has_gpt323 = true;
+    constexpr uint32_t num_gpt323_instances = 1;
+    constexpr bool has_gpt164 = true;
+    constexpr uint32_t num_gpt164_instances = 1;
+    constexpr bool has_gpt165 = true;
+    constexpr uint32_t num_gpt165_instances = 1;
+    constexpr bool has_gpt166 = true;
+    constexpr uint32_t num_gpt166_instances = 1;
+    constexpr bool has_gpt167 = true;
+    constexpr uint32_t num_gpt167_instances = 1;
+    constexpr bool has_gpt168 = true;
+    constexpr uint32_t num_gpt168_instances = 1;
+    constexpr bool has_gpt169 = true;
+    constexpr uint32_t num_gpt169_instances = 1;
+    constexpr bool has_gpt = true;
+    constexpr uint32_t num_gpt_instances = 1;
+    constexpr bool has_agt0 = true;
+    constexpr uint32_t num_agt0_instances = 1;
+    constexpr bool has_agt1 = true;
+    constexpr uint32_t num_agt1_instances = 1;
+    constexpr bool has_rtc = true;
+    constexpr uint32_t num_rtc_instances = 1;
+    constexpr bool has_system = true;
+    constexpr uint32_t num_system_instances = 1;
+    constexpr bool has_mstp = true;
+    constexpr uint32_t num_mstp_instances = 1;
+    constexpr bool has_fcache = true;
+    constexpr uint32_t num_fcache_instances = 1;
+    constexpr bool has_icu = true;
+    constexpr uint32_t num_icu_instances = 1;
+    constexpr bool has_dma = true;
+    constexpr uint32_t num_dma_instances = 5;
+    constexpr bool has_dbg = true;
+    constexpr uint32_t num_dbg_instances = 1;
+    constexpr bool has_bus = true;
+    constexpr uint32_t num_bus_instances = 1;
+    constexpr bool has_sram = true;
+    constexpr uint32_t num_sram_instances = 1;
+    constexpr bool has_mmpu = true;
+    constexpr uint32_t num_mmpu_instances = 1;
+    constexpr bool has_smpu = true;
+    constexpr uint32_t num_smpu_instances = 1;
+    constexpr bool has_spmon = true;
+    constexpr uint32_t num_spmon_instances = 1;
+    constexpr bool has_mmf = true;
+    constexpr uint32_t num_mmf_instances = 1;
+    constexpr bool has_spi = true;
+    constexpr uint32_t num_spi_instances = 2;
+    constexpr bool has_sci0 = true;
+    constexpr uint32_t num_sci0_instances = 1;
+    constexpr bool has_sci1 = true;
+    constexpr uint32_t num_sci1_instances = 1;
+    constexpr bool has_sci2 = true;
+    constexpr uint32_t num_sci2_instances = 1;
+    constexpr bool has_sci3 = true;
+    constexpr uint32_t num_sci3_instances = 1;
+    constexpr bool has_sci4 = true;
+    constexpr uint32_t num_sci4_instances = 1;
+    constexpr bool has_sci9 = true;
+    constexpr uint32_t num_sci9_instances = 1;
+    constexpr bool has_iic0 = true;
+    constexpr uint32_t num_iic0_instances = 1;
+    constexpr bool has_iic1 = true;
+    constexpr uint32_t num_iic1_instances = 1;
+    constexpr bool has_iic2 = true;
+    constexpr uint32_t num_iic2_instances = 1;
+    constexpr bool has_can = true;
+    constexpr uint32_t num_can_instances = 1;
+    constexpr bool has_wdg = true;
+    constexpr uint32_t num_wdg_instances = 2;
+    constexpr bool has_usb = true;
+    constexpr uint32_t num_usb_instances = 1;
+    constexpr bool has_gpio = true;
+    constexpr uint32_t num_gpio_instances = 10;
+    constexpr bool has_pfs = true;
+    constexpr uint32_t num_pfs_instances = 1;
+    constexpr bool has_pmisc = true;
+    constexpr uint32_t num_pmisc_instances = 1;
+    constexpr bool has_elc = true;
+    constexpr uint32_t num_elc_instances = 1;
+    constexpr bool has_doc = true;
+    constexpr uint32_t num_doc_instances = 1;
+    constexpr bool has_crc = true;
+    constexpr uint32_t num_crc_instances = 1;
+    constexpr bool has_cac = true;
+    constexpr uint32_t num_cac_instances = 1;
+    constexpr bool has_dac = true;
+    constexpr uint32_t num_dac_instances = 2;
+    constexpr bool has_ctsu = true;
+    constexpr uint32_t num_ctsu_instances = 1;
+    constexpr bool has_adc = true;
+    constexpr uint32_t num_adc_instances = 1;
+    constexpr bool has_acmplp = true;
+    constexpr uint32_t num_acmplp_instances = 1;
+    constexpr bool has_tsn = true;
+    constexpr uint32_t num_tsn_instances = 1;
+    constexpr bool has_slcdc = true;
+    constexpr uint32_t num_slcdc_instances = 1;
+    constexpr bool has_opamp = true;
+    constexpr uint32_t num_opamp_instances = 1;
+    constexpr bool has_dtc = true;
+    constexpr uint32_t num_dtc_instances = 1;
+    constexpr bool has_kint = true;
+    constexpr uint32_t num_kint_instances = 1;
+
+    // Helper templates for compile-time validation
+    template<typename T>
+    struct peripheral_count;
+
+    template<>
+    struct peripheral_count<struct poeg_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpt320_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpt321_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpt322_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpt323_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpt164_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpt165_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpt166_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpt167_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpt168_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpt169_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpt_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct agt0_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct agt1_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct rtc_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct system_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct mstp_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct fcache_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct icu_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct dma_tag> {
+        static constexpr uint32_t value = 5;
+    };
+    template<>
+    struct peripheral_count<struct dbg_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct bus_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct sram_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct mmpu_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct smpu_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct spmon_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct mmf_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct spi_tag> {
+        static constexpr uint32_t value = 2;
+    };
+    template<>
+    struct peripheral_count<struct sci0_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct sci1_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct sci2_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct sci3_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct sci4_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct sci9_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct iic0_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct iic1_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct iic2_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct can_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct wdg_tag> {
+        static constexpr uint32_t value = 2;
+    };
+    template<>
+    struct peripheral_count<struct usb_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct gpio_tag> {
+        static constexpr uint32_t value = 10;
+    };
+    template<>
+    struct peripheral_count<struct pfs_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct pmisc_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct elc_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct doc_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct crc_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct cac_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct dac_tag> {
+        static constexpr uint32_t value = 2;
+    };
+    template<>
+    struct peripheral_count<struct ctsu_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct adc_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct acmplp_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct tsn_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct slcdc_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct opamp_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct dtc_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct kint_tag> {
+        static constexpr uint32_t value = 1;
+    };
+
+    // GPIO-specific traits
+    constexpr uint32_t num_gpio_ports = 10;
+    constexpr uint32_t max_gpio_pins = 160;  // 16 pins per port
+
+    // USART-specific traits
 }
 
 // ============================================================================

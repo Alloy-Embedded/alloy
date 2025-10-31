@@ -15,6 +15,49 @@ namespace memory {
     constexpr uint32_t RAM_SIZE   = {{ mcu.ram.size_kb }} * 1024;
 }
 
+// ============================================================================
+// MCU Resource Metadata
+// ============================================================================
+
+/// MCU capabilities and resource availability
+namespace traits {
+    // Flash and RAM
+    constexpr uint32_t flash_size_kb = {{ mcu.flash.size_kb }};
+    constexpr uint32_t ram_size_kb = {{ mcu.ram.size_kb }};
+
+    // Peripheral availability
+    {% for periph_type, periph in mcu.peripherals.items() %}
+    constexpr bool has_{{ periph_type | lower }} = true;
+    constexpr uint32_t num_{{ periph_type | lower }}_instances = {{ periph.instances | length }};
+    {% endfor %}
+
+    // Helper templates for compile-time validation
+    template<typename T>
+    struct peripheral_count;
+
+    {% for periph_type, periph in mcu.peripherals.items() %}
+    template<>
+    struct peripheral_count<struct {{ periph_type | lower }}_tag> {
+        static constexpr uint32_t value = {{ periph.instances | length }};
+    };
+    {% endfor %}
+
+    // GPIO-specific traits
+    {% if mcu.peripherals.GPIO is defined %}
+    {% set gpio_ports = mcu.peripherals.GPIO.instances | length %}
+    constexpr uint32_t num_gpio_ports = {{ gpio_ports }};
+    constexpr uint32_t max_gpio_pins = {{ gpio_ports * 16 }};  // 16 pins per port
+    {% endif %}
+
+    // USART-specific traits
+    {% if mcu.peripherals.USART is defined %}
+    {% set usart_instances = mcu.peripherals.USART.instances %}
+    {% for instance in usart_instances %}
+    constexpr bool has_{{ instance.name | lower }} = true;
+    {% endfor %}
+    {% endif %}
+}
+
 {% for periph_type, periph in mcu.peripherals.items() %}
 // ============================================================================
 // {{ periph_type }} Peripheral

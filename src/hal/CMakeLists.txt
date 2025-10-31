@@ -110,14 +110,11 @@ message(STATUS "  ✓ Generated code found")
 # Create HAL library
 add_library(alloy_hal STATIC)
 
-# Add interface headers (always included)
+# Add include directories
 target_include_directories(alloy_hal PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
-# Add generated code
-target_include_directories(alloy_hal PUBLIC
-    ${ALLOY_GENERATED_DIR}  # For <peripherals.hpp>
+    ${CMAKE_SOURCE_DIR}/include        # For alloy/hal/*.hpp (generic headers)
+    ${CMAKE_CURRENT_SOURCE_DIR}        # For hal/vendor/family/*.hpp (implementations)
+    ${ALLOY_GENERATED_DIR}             # For <peripherals.hpp>
 )
 
 target_sources(alloy_hal PRIVATE
@@ -130,6 +127,23 @@ target_sources(alloy_hal PRIVATE
 target_compile_definitions(alloy_hal PUBLIC
     ALLOY_GENERATED_NAMESPACE=alloy::generated::${MCU_LOWER}
 )
+
+# Define paths for generic header redirects
+# This allows applications to use #include "alloy/hal/gpio.hpp" regardless of vendor
+set(HAL_IMPL_GPIO_PATH "hal/${MCU_VENDOR}/${MCU_FAMILY}/gpio.hpp")
+set(HAL_IMPL_UART_PATH "hal/${MCU_VENDOR}/${MCU_FAMILY}/uart.hpp")
+set(HAL_VENDOR_NS "alloy::hal::${MCU_VENDOR}::${MCU_FAMILY}")
+
+target_compile_definitions(alloy_hal PUBLIC
+    ALLOY_HAL_IMPL_GPIO="${HAL_IMPL_GPIO_PATH}"
+    ALLOY_HAL_IMPL_UART="${HAL_IMPL_UART_PATH}"
+    ALLOY_HAL_VENDOR_NAMESPACE=${HAL_VENDOR_NS}
+)
+
+message(STATUS "  Generic header redirects:")
+message(STATUS "    alloy/hal/gpio.hpp -> ${HAL_IMPL_GPIO_PATH}")
+message(STATUS "    alloy/hal/uart.hpp -> ${HAL_IMPL_UART_PATH}")
+message(STATUS "    Vendor namespace:     ${HAL_VENDOR_NS}")
 
 # Add HAL implementation if it exists
 if(HAL_EXISTS)

@@ -3,7 +3,7 @@
 /// Source: sifive-community_fu540.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:43
+/// Generated: 2025-10-31 12:00:44
 #ifndef ALLOY_GENERATED_FU540_PERIPHERALS_HPP
 #define ALLOY_GENERATED_FU540_PERIPHERALS_HPP
 
@@ -17,6 +17,48 @@ namespace memory {
     constexpr uint32_t FLASH_SIZE = 64 * 1024;
     constexpr uint32_t RAM_BASE   = 0x20000000;
     constexpr uint32_t RAM_SIZE   = 20 * 1024;
+}
+
+// ============================================================================
+// MCU Resource Metadata
+// ============================================================================
+
+/// MCU capabilities and resource availability
+namespace traits {
+    // Flash and RAM
+    constexpr uint32_t flash_size_kb = 64;
+    constexpr uint32_t ram_size_kb = 20;
+
+    // Peripheral availability
+    constexpr bool has_msel = true;
+    constexpr uint32_t num_msel_instances = 1;
+    constexpr bool has_prci = true;
+    constexpr uint32_t num_prci_instances = 1;
+    constexpr bool has_usart = true;
+    constexpr uint32_t num_usart_instances = 2;
+
+    // Helper templates for compile-time validation
+    template<typename T>
+    struct peripheral_count;
+
+    template<>
+    struct peripheral_count<struct msel_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct prci_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct usart_tag> {
+        static constexpr uint32_t value = 2;
+    };
+
+    // GPIO-specific traits
+
+    // USART-specific traits
+    constexpr bool has_uart0 = true;
+    constexpr bool has_uart1 = true;
 }
 
 // ============================================================================

@@ -75,12 +75,22 @@ constexpr inline uint8_t get_pin_number(uint8_t pin) {
 /// registers for low (0-7) and high (8-15) pins.
 ///
 /// Pin numbering: PA0=0, PA1=1, ..., PC13=45, etc.
+///
+/// @note Compile-time validation ensures the pin exists on the target MCU
 template<uint8_t PIN>
 class GpioPin {
 public:
     static constexpr uint8_t pin_number = PIN;
     static constexpr Port port = get_port(PIN);
     static constexpr uint8_t pin_bit = get_pin_number(PIN);
+
+    // Compile-time validation: Pin must exist on this MCU
+    static_assert(PIN < ALLOY_GENERATED_NAMESPACE::traits::max_gpio_pins,
+                  "GPIO pin not available on this MCU - check your pin number");
+
+    // Compile-time validation: Port must exist on this MCU
+    static_assert(static_cast<uint8_t>(port) < ALLOY_GENERATED_NAMESPACE::traits::num_gpio_ports,
+                  "GPIO port not available on this MCU - this port doesn't exist");
 
     /// Constructor - initializes pin clock
     GpioPin() {

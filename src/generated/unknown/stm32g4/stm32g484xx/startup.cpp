@@ -3,7 +3,7 @@
 /// Source: st_stm32g484.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:30:18
+/// Generated: 2025-10-31 12:00:38
 #include <cstdint>
 #include <cstring>
 

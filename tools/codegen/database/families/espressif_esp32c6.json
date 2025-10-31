@@ -1,0 +1,2697 @@
+{
+  "family": "ESP32-C6-LP",
+  "architecture": "arm-cortex-m3",
+  "vendor": "ESPRESSIF SYSTEMS (SHANGHAI) CO., LTD.",
+  "mcus": {
+    "ESP32-C6-LP": {
+      "flash": {
+        "size_kb": 64,
+        "base_address": "0x08000000",
+        "page_size_kb": 1
+      },
+      "ram": {
+        "size_kb": 20,
+        "base_address": "0x20000000"
+      },
+      "peripherals": {
+        "I2C": {
+          "instances": [
+            {
+              "name": "LP_I2C",
+              "base": "0x600B1800",
+              "irq": 17
+            },
+            {
+              "name": "LP_I2C_ANA_MST",
+              "base": "0x600B2400"
+            }
+          ],
+          "registers": {
+            "SCL_LOW_PERIOD": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Configures the low level width of the SCL\nClock"
+            },
+            "CTR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Transmission setting"
+            },
+            "SR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Describe I2C work status."
+            },
+            "TO": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Setting time out control for receiving data."
+            },
+            "FIFO_ST": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "FIFO status register."
+            },
+            "FIFO_CONF": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "FIFO configuration register."
+            },
+            "DATA": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Rx FIFO read data."
+            },
+            "INT_RAW": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Raw interrupt status"
+            },
+            "INT_CLR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Interrupt clear bits"
+            },
+            "INT_ENA": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Interrupt enable bits"
+            },
+            "INT_STATUS": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Status of captured I2C communication events"
+            },
+            "SDA_HOLD": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Configures the hold time after a negative SCL edge."
+            },
+            "SDA_SAMPLE": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Configures the sample time after a positive SCL edge."
+            },
+            "SCL_HIGH_PERIOD": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Configures the high level width of SCL"
+            },
+            "SCL_START_HOLD": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Configures the delay between the SDA and SCL negative edge for a start condition"
+            },
+            "SCL_RSTART_SETUP": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Configures the delay between the positive\nedge of SCL and the negative edge of SDA"
+            },
+            "SCL_STOP_HOLD": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Configures the delay after the SCL clock\nedge for a stop condition"
+            },
+            "SCL_STOP_SETUP": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Configures the delay between the SDA and\nSCL positive edge for a stop condition"
+            },
+            "FILTER_CFG": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "SCL and SDA filter configuration register"
+            },
+            "CLK_CONF": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "I2C CLK configuration register"
+            },
+            "COMD0": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "I2C command register 0"
+            },
+            "COMD1": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "I2C command register 1"
+            },
+            "COMD2": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "I2C command register 2"
+            },
+            "COMD3": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "I2C command register 3"
+            },
+            "COMD4": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "I2C command register 4"
+            },
+            "COMD5": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "I2C command register 5"
+            },
+            "COMD6": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "I2C command register 6"
+            },
+            "COMD7": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "I2C command register 7"
+            },
+            "SCL_ST_TIME_OUT": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "SCL status time out register"
+            },
+            "SCL_MAIN_ST_TIME_OUT": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "SCL main status time out register"
+            },
+            "SCL_SP_CONF": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Power configuration register"
+            },
+            "DATE": {
+              "offset": "0xF8",
+              "size": 32,
+              "description": "Version register"
+            },
+            "TXFIFO_START_ADDR": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "I2C TXFIFO base address register"
+            },
+            "RXFIFO_START_ADDR": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "I2C RXFIFO base address register"
+            }
+          },
+          "bits": {
+            "SCL_LOW_PERIOD": {
+              "SCL_LOW_PERIOD": {
+                "bit": 0,
+                "description": "This register is used to configure for how long SCL remains low in master mode, in I2C module clock cycles.",
+                "width": 9
+              }
+            },
+            "CTR": {
+              "SDA_FORCE_OUT": {
+                "bit": 0,
+                "description": "1: direct output, 0: open drain output."
+              },
+              "SCL_FORCE_OUT": {
+                "bit": 1,
+                "description": "1: direct output, 0: open drain output."
+              },
+              "SAMPLE_SCL_LEVEL": {
+                "bit": 2,
+                "description": "This register is used to select the sample mode.\n1: sample SDA data on the SCL low level.\n0: sample SDA data on the SCL high level."
+              },
+              "RX_FULL_ACK_LEVEL": {
+                "bit": 3,
+                "description": "This register is used to configure the ACK value that need to sent by master when the rx_fifo_cnt has reached the threshold."
+              },
+              "TRANS_START": {
+                "bit": 5,
+                "description": "Set this bit to start sending the data in txfifo."
+              },
+              "TX_LSB_FIRST": {
+                "bit": 6,
+                "description": "This bit is used to control the sending mode for data needing to be sent. \n1: send data from the least significant bit,\n0: send data from the most significant bit."
+              },
+              "RX_LSB_FIRST": {
+                "bit": 7,
+                "description": "This bit is used to control the storage mode for received data.\n1: receive data from the least significant bit,\n0: receive data from the most significant bit."
+              },
+              "CLK_EN": {
+                "bit": 8,
+                "description": "Reserved"
+              },
+              "ARBITRATION_EN": {
+                "bit": 9,
+                "description": "This is the enable bit for arbitration_lost."
+              },
+              "FSM_RST": {
+                "bit": 10,
+                "description": "This register is used to reset the scl FMS."
+              },
+              "CONF_UPGATE": {
+                "bit": 11,
+                "description": "synchronization bit"
+              }
+            },
+            "SR": {
+              "RESP_REC": {
+                "bit": 0,
+                "description": "The received ACK value in master mode or slave mode. 0: ACK, 1: NACK."
+              },
+              "ARB_LOST": {
+                "bit": 3,
+                "description": "When the I2C controller loses control of SCL line, this register changes to 1."
+              },
+              "BUS_BUSY": {
+                "bit": 4,
+                "description": "1: the I2C bus is busy transferring data, 0: the I2C bus is in idle state."
+              },
+              "RXFIFO_CNT": {
+                "bit": 8,
+                "description": "This field represents the amount of data needed to be sent.",
+                "width": 5
+              },
+              "TXFIFO_CNT": {
+                "bit": 18,
+                "description": "This field stores the amount of received data in RAM.",
+                "width": 5
+              },
+              "SCL_MAIN_STATE_LAST": {
+                "bit": 24,
+                "description": "This field indicates the states of the I2C module state machine. \n0: Idle, 1: Address shift, 2: ACK address, 3: Rx data, 4: Tx data, 5: Send ACK, 6: Wait ACK",
+                "width": 3
+              },
+              "SCL_STATE_LAST": {
+                "bit": 28,
+                "description": "This field indicates the states of the state machine used to produce SCL.\n0: Idle, 1: Start, 2: Negative edge, 3: Low, 4: Positive edge, 5: High, 6: Stop",
+                "width": 3
+              }
+            },
+            "TO": {
+              "TIME_OUT_VALUE": {
+                "bit": 0,
+                "description": "This register is used to configure the timeout for receiving a data bit in APB\nclock cycles.",
+                "width": 5
+              },
+              "TIME_OUT_EN": {
+                "bit": 5,
+                "description": "This is the enable bit for time out control."
+              }
+            },
+            "FIFO_ST": {
+              "RXFIFO_RADDR": {
+                "bit": 0,
+                "description": "This is the offset address of the APB reading from rxfifo",
+                "width": 4
+              },
+              "RXFIFO_WADDR": {
+                "bit": 5,
+                "description": "This is the offset address of i2c module receiving data and writing to rxfifo.",
+                "width": 4
+              },
+              "TXFIFO_RADDR": {
+                "bit": 10,
+                "description": "This is the offset address of i2c module reading from txfifo.",
+                "width": 4
+              },
+              "TXFIFO_WADDR": {
+                "bit": 15,
+                "description": "This is the offset address of APB bus writing to txfifo.",
+                "width": 4
+              }
+            },
+            "FIFO_CONF": {
+              "RXFIFO_WM_THRHD": {
+                "bit": 0,
+                "description": "The water mark threshold of rx FIFO in nonfifo access mode. When reg_reg_fifo_prt_en is 1 and rx FIFO counter is bigger than reg_rxfifo_wm_thrhd[3:0], reg_rxfifo_wm_int_raw bit will be valid.",
+                "width": 4
+              },
+              "TXFIFO_WM_THRHD": {
+                "bit": 5,
+                "description": "The water mark threshold of tx FIFO in nonfifo access mode. When reg_reg_fifo_prt_en is 1 and tx FIFO counter is smaller than reg_txfifo_wm_thrhd[3:0], reg_txfifo_wm_int_raw bit will be valid.",
+                "width": 4
+              },
+              "NONFIFO_EN": {
+                "bit": 10,
+                "description": "Set this bit to enable APB nonfifo access."
+              },
+              "RX_FIFO_RST": {
+                "bit": 12,
+                "description": "Set this bit to reset rx-fifo."
+              },
+              "TX_FIFO_RST": {
+                "bit": 13,
+                "description": "Set this bit to reset tx-fifo."
+              },
+              "FIFO_PRT_EN": {
+                "bit": 14,
+                "description": "The control enable bit of FIFO pointer in non-fifo access mode. This bit controls the valid bits and the interrupts of tx/rx_fifo overflow, underflow, full and empty."
+              }
+            },
+            "DATA": {
+              "FIFO_RDATA": {
+                "bit": 0,
+                "description": "The value of rx FIFO read data.",
+                "width": 8
+              }
+            },
+            "INT_RAW": {
+              "RXFIFO_WM_INT_RAW": {
+                "bit": 0,
+                "description": "The raw interrupt bit for I2C_RXFIFO_WM_INT interrupt."
+              },
+              "TXFIFO_WM_INT_RAW": {
+                "bit": 1,
+                "description": "The raw interrupt bit for I2C_TXFIFO_WM_INT interrupt."
+              },
+              "RXFIFO_OVF_INT_RAW": {
+                "bit": 2,
+                "description": "The raw interrupt bit for I2C_RXFIFO_OVF_INT interrupt."
+              },
+              "END_DETECT_INT_RAW": {
+                "bit": 3,
+                "description": "The raw interrupt bit for the I2C_END_DETECT_INT interrupt."
+              },
+              "BYTE_TRANS_DONE_INT_RAW": {
+                "bit": 4,
+                "description": "The raw interrupt bit for the I2C_END_DETECT_INT interrupt."
+              },
+              "ARBITRATION_LOST_INT_RAW": {
+                "bit": 5,
+                "description": "The raw interrupt bit for the I2C_ARBITRATION_LOST_INT interrupt."
+              },
+              "MST_TXFIFO_UDF_INT_RAW": {
+                "bit": 6,
+                "description": "The raw interrupt bit for I2C_TRANS_COMPLETE_INT interrupt."
+              },
+              "TRANS_COMPLETE_INT_RAW": {
+                "bit": 7,
+                "description": "The raw interrupt bit for the I2C_TRANS_COMPLETE_INT interrupt."
+              },
+              "TIME_OUT_INT_RAW": {
+                "bit": 8,
+                "description": "The raw interrupt bit for the I2C_TIME_OUT_INT interrupt."
+              },
+              "TRANS_START_INT_RAW": {
+                "bit": 9,
+                "description": "The raw interrupt bit for the I2C_TRANS_START_INT interrupt."
+              },
+              "NACK_INT_RAW": {
+                "bit": 10,
+                "description": "The raw interrupt bit for I2C_SLAVE_STRETCH_INT interrupt."
+              },
+              "TXFIFO_OVF_INT_RAW": {
+                "bit": 11,
+                "description": "The raw interrupt bit for I2C_TXFIFO_OVF_INT interrupt."
+              },
+              "RXFIFO_UDF_INT_RAW": {
+                "bit": 12,
+                "description": "The raw interrupt bit for I2C_RXFIFO_UDF_INT  interrupt."
+              },
+              "SCL_ST_TO_INT_RAW": {
+                "bit": 13,
+                "description": "The raw interrupt bit for I2C_SCL_ST_TO_INT interrupt."
+              },
+              "SCL_MAIN_ST_TO_INT_RAW": {
+                "bit": 14,
+                "description": "The raw interrupt bit for I2C_SCL_MAIN_ST_TO_INT interrupt."
+              },
+              "DET_START_INT_RAW": {
+                "bit": 15,
+                "description": "The raw interrupt bit for I2C_DET_START_INT interrupt."
+              }
+            },
+            "INT_CLR": {
+              "RXFIFO_WM_INT_CLR": {
+                "bit": 0,
+                "description": "Set this bit to clear I2C_RXFIFO_WM_INT interrupt."
+              },
+              "TXFIFO_WM_INT_CLR": {
+                "bit": 1,
+                "description": "Set this bit to clear I2C_TXFIFO_WM_INT interrupt."
+              },
+              "RXFIFO_OVF_INT_CLR": {
+                "bit": 2,
+                "description": "Set this bit to clear I2C_RXFIFO_OVF_INT interrupt."
+              },
+              "END_DETECT_INT_CLR": {
+                "bit": 3,
+                "description": "Set this bit to clear the I2C_END_DETECT_INT interrupt."
+              },
+              "BYTE_TRANS_DONE_INT_CLR": {
+                "bit": 4,
+                "description": "Set this bit to clear the I2C_END_DETECT_INT interrupt."
+              },
+              "ARBITRATION_LOST_INT_CLR": {
+                "bit": 5,
+                "description": "Set this bit to clear the I2C_ARBITRATION_LOST_INT interrupt."
+              },
+              "MST_TXFIFO_UDF_INT_CLR": {
+                "bit": 6,
+                "description": "Set this bit to clear I2C_TRANS_COMPLETE_INT interrupt."
+              },
+              "TRANS_COMPLETE_INT_CLR": {
+                "bit": 7,
+                "description": "Set this bit to clear the I2C_TRANS_COMPLETE_INT interrupt."
+              },
+              "TIME_OUT_INT_CLR": {
+                "bit": 8,
+                "description": "Set this bit to clear the I2C_TIME_OUT_INT interrupt."
+              },
+              "TRANS_START_INT_CLR": {
+                "bit": 9,
+                "description": "Set this bit to clear the I2C_TRANS_START_INT interrupt."
+              },
+              "NACK_INT_CLR": {
+                "bit": 10,
+                "description": "Set this bit to clear I2C_SLAVE_STRETCH_INT interrupt."
+              },
+              "TXFIFO_OVF_INT_CLR": {
+                "bit": 11,
+                "description": "Set this bit to clear I2C_TXFIFO_OVF_INT interrupt."
+              },
+              "RXFIFO_UDF_INT_CLR": {
+                "bit": 12,
+                "description": "Set this bit to clear I2C_RXFIFO_UDF_INT  interrupt."
+              },
+              "SCL_ST_TO_INT_CLR": {
+                "bit": 13,
+                "description": "Set this bit to clear I2C_SCL_ST_TO_INT interrupt."
+              },
+              "SCL_MAIN_ST_TO_INT_CLR": {
+                "bit": 14,
+                "description": "Set this bit to clear I2C_SCL_MAIN_ST_TO_INT interrupt."
+              },
+              "DET_START_INT_CLR": {
+                "bit": 15,
+                "description": "Set this bit to clear I2C_DET_START_INT interrupt."
+              }
+            },
+            "INT_ENA": {
+              "RXFIFO_WM_INT_ENA": {
+                "bit": 0,
+                "description": "The interrupt enable bit for I2C_RXFIFO_WM_INT interrupt."
+              },
+              "TXFIFO_WM_INT_ENA": {
+                "bit": 1,
+                "description": "The interrupt enable bit for I2C_TXFIFO_WM_INT interrupt."
+              },
+              "RXFIFO_OVF_INT_ENA": {
+                "bit": 2,
+                "description": "The interrupt enable bit for I2C_RXFIFO_OVF_INT interrupt."
+              },
+              "END_DETECT_INT_ENA": {
+                "bit": 3,
+                "description": "The interrupt enable bit for the I2C_END_DETECT_INT interrupt."
+              },
+              "BYTE_TRANS_DONE_INT_ENA": {
+                "bit": 4,
+                "description": "The interrupt enable bit for the I2C_END_DETECT_INT interrupt."
+              },
+              "ARBITRATION_LOST_INT_ENA": {
+                "bit": 5,
+                "description": "The interrupt enable bit for the I2C_ARBITRATION_LOST_INT interrupt."
+              },
+              "MST_TXFIFO_UDF_INT_ENA": {
+                "bit": 6,
+                "description": "The interrupt enable bit for I2C_TRANS_COMPLETE_INT interrupt."
+              },
+              "TRANS_COMPLETE_INT_ENA": {
+                "bit": 7,
+                "description": "The interrupt enable bit for the I2C_TRANS_COMPLETE_INT interrupt."
+              },
+              "TIME_OUT_INT_ENA": {
+                "bit": 8,
+                "description": "The interrupt enable bit for the I2C_TIME_OUT_INT interrupt."
+              },
+              "TRANS_START_INT_ENA": {
+                "bit": 9,
+                "description": "The interrupt enable bit for the I2C_TRANS_START_INT interrupt."
+              },
+              "NACK_INT_ENA": {
+                "bit": 10,
+                "description": "The interrupt enable bit for I2C_SLAVE_STRETCH_INT interrupt."
+              },
+              "TXFIFO_OVF_INT_ENA": {
+                "bit": 11,
+                "description": "The interrupt enable bit for I2C_TXFIFO_OVF_INT interrupt."
+              },
+              "RXFIFO_UDF_INT_ENA": {
+                "bit": 12,
+                "description": "The interrupt enable bit for I2C_RXFIFO_UDF_INT  interrupt."
+              },
+              "SCL_ST_TO_INT_ENA": {
+                "bit": 13,
+                "description": "The interrupt enable bit for I2C_SCL_ST_TO_INT interrupt."
+              },
+              "SCL_MAIN_ST_TO_INT_ENA": {
+                "bit": 14,
+                "description": "The interrupt enable bit for I2C_SCL_MAIN_ST_TO_INT interrupt."
+              },
+              "DET_START_INT_ENA": {
+                "bit": 15,
+                "description": "The interrupt enable bit for I2C_DET_START_INT interrupt."
+              }
+            },
+            "INT_STATUS": {
+              "RXFIFO_WM_INT_ST": {
+                "bit": 0,
+                "description": "The masked interrupt status bit for I2C_RXFIFO_WM_INT interrupt."
+              },
+              "TXFIFO_WM_INT_ST": {
+                "bit": 1,
+                "description": "The masked interrupt status bit for I2C_TXFIFO_WM_INT interrupt."
+              },
+              "RXFIFO_OVF_INT_ST": {
+                "bit": 2,
+                "description": "The masked interrupt status bit for I2C_RXFIFO_OVF_INT interrupt."
+              },
+              "END_DETECT_INT_ST": {
+                "bit": 3,
+                "description": "The masked interrupt status bit for the I2C_END_DETECT_INT interrupt."
+              },
+              "BYTE_TRANS_DONE_INT_ST": {
+                "bit": 4,
+                "description": "The masked interrupt status bit for the I2C_END_DETECT_INT interrupt."
+              },
+              "ARBITRATION_LOST_INT_ST": {
+                "bit": 5,
+                "description": "The masked interrupt status bit for the I2C_ARBITRATION_LOST_INT interrupt."
+              },
+              "MST_TXFIFO_UDF_INT_ST": {
+                "bit": 6,
+                "description": "The masked interrupt status bit for I2C_TRANS_COMPLETE_INT interrupt."
+              },
+              "TRANS_COMPLETE_INT_ST": {
+                "bit": 7,
+                "description": "The masked interrupt status bit for the I2C_TRANS_COMPLETE_INT interrupt."
+              },
+              "TIME_OUT_INT_ST": {
+                "bit": 8,
+                "description": "The masked interrupt status bit for the I2C_TIME_OUT_INT interrupt."
+              },
+              "TRANS_START_INT_ST": {
+                "bit": 9,
+                "description": "The masked interrupt status bit for the I2C_TRANS_START_INT interrupt."
+              },
+              "NACK_INT_ST": {
+                "bit": 10,
+                "description": "The masked interrupt status bit for I2C_SLAVE_STRETCH_INT interrupt."
+              },
+              "TXFIFO_OVF_INT_ST": {
+                "bit": 11,
+                "description": "The masked interrupt status bit for I2C_TXFIFO_OVF_INT interrupt."
+              },
+              "RXFIFO_UDF_INT_ST": {
+                "bit": 12,
+                "description": "The masked interrupt status bit for I2C_RXFIFO_UDF_INT  interrupt."
+              },
+              "SCL_ST_TO_INT_ST": {
+                "bit": 13,
+                "description": "The masked interrupt status bit for I2C_SCL_ST_TO_INT interrupt."
+              },
+              "SCL_MAIN_ST_TO_INT_ST": {
+                "bit": 14,
+                "description": "The masked interrupt status bit for I2C_SCL_MAIN_ST_TO_INT interrupt."
+              },
+              "DET_START_INT_ST": {
+                "bit": 15,
+                "description": "The masked interrupt status bit for I2C_DET_START_INT interrupt."
+              }
+            },
+            "SDA_HOLD": {
+              "TIME": {
+                "bit": 0,
+                "description": "This register is used to configure the time to hold the data after the negative\nedge of SCL, in I2C module clock cycles.",
+                "width": 9
+              }
+            },
+            "SDA_SAMPLE": {
+              "TIME": {
+                "bit": 0,
+                "description": "This register is used to configure for how long SDA is sampled, in I2C module clock cycles.",
+                "width": 9
+              }
+            },
+            "SCL_HIGH_PERIOD": {
+              "SCL_HIGH_PERIOD": {
+                "bit": 0,
+                "description": "This register is used to configure for how long SCL setup to high level and remains high in master mode, in I2C module clock cycles.",
+                "width": 9
+              },
+              "SCL_WAIT_HIGH_PERIOD": {
+                "bit": 9,
+                "description": "This register is used to configure for the SCL_FSM's waiting period for SCL high level in master mode, in I2C module clock cycles.",
+                "width": 7
+              }
+            },
+            "SCL_START_HOLD": {
+              "TIME": {
+                "bit": 0,
+                "description": "This register is used to configure the time between the negative edge\nof SDA and the negative edge of SCL for a START condition, in I2C module clock cycles.",
+                "width": 9
+              }
+            },
+            "SCL_RSTART_SETUP": {
+              "TIME": {
+                "bit": 0,
+                "description": "This register is used to configure the time between the positive\nedge of SCL and the negative edge of SDA for a RESTART condition, in I2C module clock cycles.",
+                "width": 9
+              }
+            },
+            "SCL_STOP_HOLD": {
+              "TIME": {
+                "bit": 0,
+                "description": "This register is used to configure the delay after the STOP condition,\nin I2C module clock cycles.",
+                "width": 9
+              }
+            },
+            "SCL_STOP_SETUP": {
+              "TIME": {
+                "bit": 0,
+                "description": "This register is used to configure the time between the positive edge\nof SCL and the positive edge of SDA, in I2C module clock cycles.",
+                "width": 9
+              }
+            },
+            "FILTER_CFG": {
+              "SCL_FILTER_THRES": {
+                "bit": 0,
+                "description": "When a pulse on the SCL input has smaller width than this register value\nin I2C module clock cycles, the I2C controller will ignore that pulse.",
+                "width": 4
+              },
+              "SDA_FILTER_THRES": {
+                "bit": 4,
+                "description": "When a pulse on the SDA input has smaller width than this register value\nin I2C module clock cycles, the I2C controller will ignore that pulse.",
+                "width": 4
+              },
+              "SCL_FILTER_EN": {
+                "bit": 8,
+                "description": "This is the filter enable bit for SCL."
+              },
+              "SDA_FILTER_EN": {
+                "bit": 9,
+                "description": "This is the filter enable bit for SDA."
+              }
+            },
+            "CLK_CONF": {
+              "SCLK_DIV_NUM": {
+                "bit": 0,
+                "description": "the integral part of the fractional divisor for i2c module",
+                "width": 8
+              },
+              "SCLK_DIV_A": {
+                "bit": 8,
+                "description": "the numerator of the fractional part of the fractional divisor for i2c module",
+                "width": 6
+              },
+              "SCLK_DIV_B": {
+                "bit": 14,
+                "description": "the denominator of the fractional part of the fractional divisor for i2c module",
+                "width": 6
+              },
+              "SCLK_SEL": {
+                "bit": 20,
+                "description": "The clock selection for i2c module:0-XTAL,1-CLK_8MHz."
+              },
+              "SCLK_ACTIVE": {
+                "bit": 21,
+                "description": "The clock switch for i2c module"
+              }
+            },
+            "COMD0": {
+              "COMMAND0": {
+                "bit": 0,
+                "description": "This is the content of command 0. It consists of three parts: \nop_code is the command, 0: RSTART, 1: WRITE, 2: READ, 3: STOP, 4: END.\nByte_num represents the number of bytes that need to be sent or received.\nack_check_en, ack_exp and ack are used to control the ACK bit. See I2C cmd structure for more\nInformation.",
+                "width": 14
+              },
+              "COMMAND0_DONE": {
+                "bit": 31,
+                "description": "When command 0 is done in I2C Master mode, this bit changes to high\nlevel."
+              }
+            },
+            "COMD1": {
+              "COMMAND1": {
+                "bit": 0,
+                "description": "This is the content of command 1. It consists of three parts: \nop_code is the command, 0: RSTART, 1: WRITE, 2: READ, 3: STOP, 4: END.\nByte_num represents the number of bytes that need to be sent or received.\nack_check_en, ack_exp and ack are used to control the ACK bit. See I2C cmd structure for more\nInformation.",
+                "width": 14
+              },
+              "COMMAND1_DONE": {
+                "bit": 31,
+                "description": "When command 1 is done in I2C Master mode, this bit changes to high\nlevel."
+              }
+            },
+            "COMD2": {
+              "COMMAND2": {
+                "bit": 0,
+                "description": "This is the content of command 2. It consists of three parts: \nop_code is the command, 0: RSTART, 1: WRITE, 2: READ, 3: STOP, 4: END.\nByte_num represents the number of bytes that need to be sent or received.\nack_check_en, ack_exp and ack are used to control the ACK bit. See I2C cmd structure for more\nInformation.",
+                "width": 14
+              },
+              "COMMAND2_DONE": {
+                "bit": 31,
+                "description": "When command 2 is done in I2C Master mode, this bit changes to high\nLevel."
+              }
+            },
+            "COMD3": {
+              "COMMAND3": {
+                "bit": 0,
+                "description": "This is the content of command 3. It consists of three parts: \nop_code is the command, 0: RSTART, 1: WRITE, 2: READ, 3: STOP, 4: END.\nByte_num represents the number of bytes that need to be sent or received.\nack_check_en, ack_exp and ack are used to control the ACK bit. See I2C cmd structure for more\nInformation.",
+                "width": 14
+              },
+              "COMMAND3_DONE": {
+                "bit": 31,
+                "description": "When command 3 is done in I2C Master mode, this bit changes to high\nlevel."
+              }
+            },
+            "COMD4": {
+              "COMMAND4": {
+                "bit": 0,
+                "description": "This is the content of command 4. It consists of three parts: \nop_code is the command, 0: RSTART, 1: WRITE, 2: READ, 3: STOP, 4: END.\nByte_num represents the number of bytes that need to be sent or received.\nack_check_en, ack_exp and ack are used to control the ACK bit. See I2C cmd structure for more\nInformation.",
+                "width": 14
+              },
+              "COMMAND4_DONE": {
+                "bit": 31,
+                "description": "When command 4 is done in I2C Master mode, this bit changes to high\nlevel."
+              }
+            },
+            "COMD5": {
+              "COMMAND5": {
+                "bit": 0,
+                "description": "This is the content of command 5. It consists of three parts:\nop_code is the command, 0: RSTART, 1: WRITE, 2: READ, 3: STOP, 4: END.\nByte_num represents the number of bytes that need to be sent or received.\nack_check_en, ack_exp and ack are used to control the ACK bit. See I2C cmd structure for more\nInformation.",
+                "width": 14
+              },
+              "COMMAND5_DONE": {
+                "bit": 31,
+                "description": "When command 5 is done in I2C Master mode, this bit changes to high level."
+              }
+            },
+            "COMD6": {
+              "COMMAND6": {
+                "bit": 0,
+                "description": "This is the content of command 6. It consists of three parts: \nop_code is the command, 0: RSTART, 1: WRITE, 2: READ, 3: STOP, 4: END.\nByte_num represents the number of bytes that need to be sent or received.\nack_check_en, ack_exp and ack are used to control the ACK bit. See I2C cmd structure for more\nInformation.",
+                "width": 14
+              },
+              "COMMAND6_DONE": {
+                "bit": 31,
+                "description": "When command 6 is done in I2C Master mode, this bit changes to high level."
+              }
+            },
+            "COMD7": {
+              "COMMAND7": {
+                "bit": 0,
+                "description": "This is the content of command 7. It consists of three parts: \nop_code is the command, 0: RSTART, 1: WRITE, 2: READ, 3: STOP, 4: END.\nByte_num represents the number of bytes that need to be sent or received.\nack_check_en, ack_exp and ack are used to control the ACK bit. See I2C cmd structure for more\nInformation.",
+                "width": 14
+              },
+              "COMMAND7_DONE": {
+                "bit": 31,
+                "description": "When command 7 is done in I2C Master mode, this bit changes to high level."
+              }
+            },
+            "SCL_ST_TIME_OUT": {
+              "SCL_ST_TO_I2C": {
+                "bit": 0,
+                "description": "The threshold value of SCL_FSM state unchanged period. It should be o more than 23",
+                "width": 5
+              }
+            },
+            "SCL_MAIN_ST_TIME_OUT": {
+              "SCL_MAIN_ST_TO_I2C": {
+                "bit": 0,
+                "description": "The threshold value of SCL_MAIN_FSM state unchanged period.nIt should be o more than 23",
+                "width": 5
+              }
+            },
+            "SCL_SP_CONF": {
+              "SCL_RST_SLV_EN": {
+                "bit": 0,
+                "description": "When I2C master is IDLE, set this bit to send out SCL pulses. The number of pulses equals to reg_scl_rst_slv_num[4:0]."
+              },
+              "SCL_RST_SLV_NUM": {
+                "bit": 1,
+                "description": "Configure the pulses of SCL generated in I2C master mode. Valid when reg_scl_rst_slv_en is 1.",
+                "width": 5
+              },
+              "SCL_PD_EN": {
+                "bit": 6,
+                "description": "The power down enable bit for the I2C output SCL line. 1: Power down. 0: Not power down. Set reg_scl_force_out and reg_scl_pd_en to 1 to stretch SCL low."
+              },
+              "SDA_PD_EN": {
+                "bit": 7,
+                "description": "The power down enable bit for the I2C output SDA line. 1: Power down. 0: Not power down. Set reg_sda_force_out and reg_sda_pd_en to 1 to stretch SDA low."
+              }
+            },
+            "DATE": {
+              "DATE": {
+                "bit": 0,
+                "description": "This is the the version register.",
+                "width": 32
+              }
+            },
+            "TXFIFO_START_ADDR": {
+              "TXFIFO_START_ADDR": {
+                "bit": 0,
+                "description": "This is the I2C txfifo first address.",
+                "width": 32
+              }
+            },
+            "RXFIFO_START_ADDR": {
+              "RXFIFO_START_ADDR": {
+                "bit": 0,
+                "description": "This is the I2C rxfifo first address.",
+                "width": 32
+              }
+            }
+          }
+        },
+        "LP": {
+          "instances": [
+            {
+              "name": "LP_PERI",
+              "base": "0x600B2800",
+              "irq": 19
+            },
+            {
+              "name": "LP_ANA_PERI",
+              "base": "0x600B2C00"
+            },
+            {
+              "name": "LP_AON",
+              "base": "0x600B1000"
+            },
+            {
+              "name": "LP_APM",
+              "base": "0x600B3800",
+              "irq": 20
+            },
+            {
+              "name": "LP_CLKRST",
+              "base": "0x600B0400"
+            },
+            {
+              "name": "LP_IO_MUX",
+              "base": "0x600B2000"
+            },
+            {
+              "name": "LP_TEE",
+              "base": "0x600B3400"
+            }
+          ],
+          "registers": {
+            "CLK_EN": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "need_des"
+            },
+            "RESET_EN": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "need_des"
+            },
+            "RNG_DATA": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "need_des"
+            },
+            "CPU": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "need_des"
+            },
+            "BUS_TIMEOUT": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "need_des"
+            },
+            "BUS_TIMEOUT_ADDR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "need_des"
+            },
+            "BUS_TIMEOUT_UID": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "need_des"
+            },
+            "MEM_CTRL": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "need_des"
+            },
+            "INTERRUPT_SOURCE": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "need_des"
+            },
+            "DATE": {
+              "offset": "0x3FC",
+              "size": 32,
+              "description": "need_des"
+            }
+          },
+          "bits": {
+            "CLK_EN": {
+              "LP_TOUCH_CK_EN": {
+                "bit": 23,
+                "description": "need_des"
+              },
+              "RNG_CK_EN": {
+                "bit": 24,
+                "description": "need_des"
+              },
+              "OTP_DBG_CK_EN": {
+                "bit": 25,
+                "description": "need_des"
+              },
+              "LP_UART_CK_EN": {
+                "bit": 26,
+                "description": "need_des"
+              },
+              "LP_IO_CK_EN": {
+                "bit": 27,
+                "description": "need_des"
+              },
+              "LP_EXT_I2C_CK_EN": {
+                "bit": 28,
+                "description": "need_des"
+              },
+              "LP_ANA_I2C_CK_EN": {
+                "bit": 29,
+                "description": "need_des"
+              },
+              "EFUSE_CK_EN": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "LP_CPU_CK_EN": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "RESET_EN": {
+              "BUS_RESET_EN": {
+                "bit": 23,
+                "description": "need_des"
+              },
+              "LP_TOUCH_RESET_EN": {
+                "bit": 24,
+                "description": "need_des"
+              },
+              "OTP_DBG_RESET_EN": {
+                "bit": 25,
+                "description": "need_des"
+              },
+              "LP_UART_RESET_EN": {
+                "bit": 26,
+                "description": "need_des"
+              },
+              "LP_IO_RESET_EN": {
+                "bit": 27,
+                "description": "need_des"
+              },
+              "LP_EXT_I2C_RESET_EN": {
+                "bit": 28,
+                "description": "need_des"
+              },
+              "LP_ANA_I2C_RESET_EN": {
+                "bit": 29,
+                "description": "need_des"
+              },
+              "EFUSE_RESET_EN": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "LP_CPU_RESET_EN": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "RNG_DATA": {
+              "RND_DATA": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 32
+              }
+            },
+            "CPU": {
+              "LPCORE_DBGM_UNAVALIABLE": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "BUS_TIMEOUT": {
+              "LP_PERI_TIMEOUT_THRES": {
+                "bit": 14,
+                "description": "need_des",
+                "width": 16
+              },
+              "LP_PERI_TIMEOUT_INT_CLEAR": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "LP_PERI_TIMEOUT_PROTECT_EN": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "BUS_TIMEOUT_ADDR": {
+              "LP_PERI_TIMEOUT_ADDR": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 32
+              }
+            },
+            "BUS_TIMEOUT_UID": {
+              "LP_PERI_TIMEOUT_UID": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 7
+              }
+            },
+            "MEM_CTRL": {
+              "UART_WAKEUP_FLAG_CLR": {
+                "bit": 0,
+                "description": "need_des"
+              },
+              "UART_WAKEUP_FLAG": {
+                "bit": 1,
+                "description": "need_des"
+              },
+              "UART_WAKEUP_EN": {
+                "bit": 29,
+                "description": "need_des"
+              },
+              "UART_MEM_FORCE_PD": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "UART_MEM_FORCE_PU": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "INTERRUPT_SOURCE": {
+              "LP_INTERRUPT_SOURCE": {
+                "bit": 0,
+                "description": "BIT5~BIT0: pmu_lp_int, modem_lp_int, lp_timer_lp_int, lp_uart_int, lp_i2c_int, lp_io_int",
+                "width": 6
+              }
+            },
+            "DATE": {
+              "LPPERI_DATE": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 31
+              },
+              "CLK_EN": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            }
+          }
+        },
+        "TIM": {
+          "instances": [
+            {
+              "name": "LP_TIMER",
+              "base": "0x600B0C00",
+              "irq": 7
+            }
+          ],
+          "registers": {
+            "TAR0_LOW": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "need_des"
+            },
+            "TAR0_HIGH": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "need_des"
+            },
+            "TAR1_LOW": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "need_des"
+            },
+            "TAR1_HIGH": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "need_des"
+            },
+            "UPDATE": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "need_des"
+            },
+            "MAIN_BUF0_LOW": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "need_des"
+            },
+            "MAIN_BUF0_HIGH": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "need_des"
+            },
+            "MAIN_BUF1_LOW": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "need_des"
+            },
+            "MAIN_BUF1_HIGH": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "need_des"
+            },
+            "MAIN_OVERFLOW": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "need_des"
+            },
+            "INT_RAW": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "need_des"
+            },
+            "INT_ST": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "need_des"
+            },
+            "INT_ENA": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "need_des"
+            },
+            "INT_CLR": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "need_des"
+            },
+            "LP_INT_RAW": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "need_des"
+            },
+            "LP_INT_ST": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "need_des"
+            },
+            "LP_INT_ENA": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "need_des"
+            },
+            "LP_INT_CLR": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "need_des"
+            },
+            "DATE": {
+              "offset": "0x3FC",
+              "size": 32,
+              "description": "need_des"
+            }
+          },
+          "bits": {
+            "TAR0_LOW": {
+              "MAIN_TIMER_TAR_LOW0": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 32
+              }
+            },
+            "TAR0_HIGH": {
+              "MAIN_TIMER_TAR_HIGH0": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 16
+              },
+              "MAIN_TIMER_TAR_EN0": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "TAR1_LOW": {
+              "MAIN_TIMER_TAR_LOW1": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 32
+              }
+            },
+            "TAR1_HIGH": {
+              "MAIN_TIMER_TAR_HIGH1": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 16
+              },
+              "MAIN_TIMER_TAR_EN1": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "UPDATE": {
+              "MAIN_TIMER_UPDATE": {
+                "bit": 28,
+                "description": "need_des"
+              },
+              "MAIN_TIMER_XTAL_OFF": {
+                "bit": 29,
+                "description": "need_des"
+              },
+              "MAIN_TIMER_SYS_STALL": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "MAIN_TIMER_SYS_RST": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "MAIN_BUF0_LOW": {
+              "MAIN_TIMER_BUF0_LOW": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 32
+              }
+            },
+            "MAIN_BUF0_HIGH": {
+              "MAIN_TIMER_BUF0_HIGH": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 16
+              }
+            },
+            "MAIN_BUF1_LOW": {
+              "MAIN_TIMER_BUF1_LOW": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 32
+              }
+            },
+            "MAIN_BUF1_HIGH": {
+              "MAIN_TIMER_BUF1_HIGH": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 16
+              }
+            },
+            "MAIN_OVERFLOW": {
+              "MAIN_TIMER_ALARM_LOAD": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "INT_RAW": {
+              "OVERFLOW_RAW": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "SOC_WAKEUP_INT_RAW": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "INT_ST": {
+              "OVERFLOW_ST": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "SOC_WAKEUP_INT_ST": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "INT_ENA": {
+              "OVERFLOW_ENA": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "SOC_WAKEUP_INT_ENA": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "INT_CLR": {
+              "OVERFLOW_CLR": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "SOC_WAKEUP_INT_CLR": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "LP_INT_RAW": {
+              "MAIN_TIMER_OVERFLOW_LP_INT_RAW": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "MAIN_TIMER_LP_INT_RAW": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "LP_INT_ST": {
+              "MAIN_TIMER_OVERFLOW_LP_INT_ST": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "MAIN_TIMER_LP_INT_ST": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "LP_INT_ENA": {
+              "MAIN_TIMER_OVERFLOW_LP_INT_ENA": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "MAIN_TIMER_LP_INT_ENA": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "LP_INT_CLR": {
+              "MAIN_TIMER_OVERFLOW_LP_INT_CLR": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "MAIN_TIMER_LP_INT_CLR": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "DATE": {
+              "DATE": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 31
+              },
+              "CLK_EN": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            }
+          }
+        },
+        "USART": {
+          "instances": [
+            {
+              "name": "LP_UART",
+              "base": "0x600B1400",
+              "irq": 16
+            }
+          ],
+          "registers": {
+            "FIFO": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "FIFO data register"
+            },
+            "INT_RAW": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Raw interrupt status"
+            },
+            "INT_ST": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Masked interrupt status"
+            },
+            "INT_ENA": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Interrupt enable bits"
+            },
+            "INT_CLR": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Interrupt clear bits"
+            },
+            "CLKDIV_SYNC": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Clock divider configuration"
+            },
+            "RX_FILT": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Rx Filter configuration"
+            },
+            "STATUS": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "UART status register"
+            },
+            "CONF0_SYNC": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Configuration register 0"
+            },
+            "CONF1": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Configuration register 1"
+            },
+            "HWFC_CONF_SYNC": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Hardware flow-control configuration"
+            },
+            "SLEEP_CONF0": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "UART sleep configure register 0"
+            },
+            "SLEEP_CONF1": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "UART sleep configure register 1"
+            },
+            "SLEEP_CONF2": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "UART sleep configure register 2"
+            },
+            "SWFC_CONF0_SYNC": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Software flow-control character configuration"
+            },
+            "SWFC_CONF1": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Software flow-control character configuration"
+            },
+            "TXBRK_CONF_SYNC": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Tx Break character configuration"
+            },
+            "IDLE_CONF_SYNC": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Frame-end idle configuration"
+            },
+            "RS485_CONF_SYNC": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "RS485 mode configuration"
+            },
+            "AT_CMD_PRECNT_SYNC": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Pre-sequence timing configuration"
+            },
+            "AT_CMD_POSTCNT_SYNC": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Post-sequence timing configuration"
+            },
+            "AT_CMD_GAPTOUT_SYNC": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Timeout configuration"
+            },
+            "AT_CMD_CHAR_SYNC": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "AT escape sequence detection configuration"
+            },
+            "MEM_CONF": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "UART memory power configuration"
+            },
+            "TOUT_CONF_SYNC": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "UART threshold and allocation configuration"
+            },
+            "MEM_TX_STATUS": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Tx-SRAM write and read offset address."
+            },
+            "MEM_RX_STATUS": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "Rx-SRAM write and read offset address."
+            },
+            "FSM_STATUS": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "UART transmit and receive status."
+            },
+            "CLK_CONF": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "UART core clock configuration"
+            },
+            "DATE": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "UART Version register"
+            },
+            "AFIFO_STATUS": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "UART AFIFO Status"
+            },
+            "REG_UPDATE": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "UART Registers Configuration Update register"
+            },
+            "ID": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "UART ID register"
+            }
+          },
+          "bits": {
+            "FIFO": {
+              "RXFIFO_RD_BYTE": {
+                "bit": 0,
+                "description": "UART 0 accesses FIFO via this register.",
+                "width": 8
+              }
+            },
+            "INT_RAW": {
+              "RXFIFO_FULL_INT_RAW": {
+                "bit": 0,
+                "description": "This interrupt raw bit turns to high level when receiver receives more data than what rxfifo_full_thrhd specifies."
+              },
+              "TXFIFO_EMPTY_INT_RAW": {
+                "bit": 1,
+                "description": "This interrupt raw bit turns to high level when the amount of data in Tx-FIFO is less than what txfifo_empty_thrhd specifies ."
+              },
+              "PARITY_ERR_INT_RAW": {
+                "bit": 2,
+                "description": "This interrupt raw bit turns to high level when receiver detects a parity error in the data."
+              },
+              "FRM_ERR_INT_RAW": {
+                "bit": 3,
+                "description": "This interrupt raw bit turns to high level when receiver detects a data frame error ."
+              },
+              "RXFIFO_OVF_INT_RAW": {
+                "bit": 4,
+                "description": "This interrupt raw bit turns to high level when receiver receives more data than the FIFO can store."
+              },
+              "DSR_CHG_INT_RAW": {
+                "bit": 5,
+                "description": "This interrupt raw bit turns to high level when receiver detects the edge change of DSRn signal."
+              },
+              "CTS_CHG_INT_RAW": {
+                "bit": 6,
+                "description": "This interrupt raw bit turns to high level when receiver detects the edge change of CTSn signal."
+              },
+              "BRK_DET_INT_RAW": {
+                "bit": 7,
+                "description": "This interrupt raw bit turns to high level when receiver detects a 0 after the stop bit."
+              },
+              "RXFIFO_TOUT_INT_RAW": {
+                "bit": 8,
+                "description": "This interrupt raw bit turns to high level when receiver takes more time than rx_tout_thrhd to receive a byte."
+              },
+              "SW_XON_INT_RAW": {
+                "bit": 9,
+                "description": "This interrupt raw bit turns to high level when receiver recevies Xon char when uart_sw_flow_con_en is set to 1."
+              },
+              "SW_XOFF_INT_RAW": {
+                "bit": 10,
+                "description": "This interrupt raw bit turns to high level when receiver receives Xoff char when uart_sw_flow_con_en is set to 1."
+              },
+              "GLITCH_DET_INT_RAW": {
+                "bit": 11,
+                "description": "This interrupt raw bit turns to high level when receiver detects a glitch in the middle of a start bit."
+              },
+              "TX_BRK_DONE_INT_RAW": {
+                "bit": 12,
+                "description": "This interrupt raw bit turns to high level when transmitter completes  sending  NULL characters after all data in Tx-FIFO are sent."
+              },
+              "TX_BRK_IDLE_DONE_INT_RAW": {
+                "bit": 13,
+                "description": "This interrupt raw bit turns to high level when transmitter has kept the shortest duration after sending the  last data."
+              },
+              "TX_DONE_INT_RAW": {
+                "bit": 14,
+                "description": "This interrupt raw bit turns to high level when transmitter has send out all data in FIFO."
+              },
+              "AT_CMD_CHAR_DET_INT_RAW": {
+                "bit": 18,
+                "description": "This interrupt raw bit turns to high level when receiver detects the configured at_cmd char."
+              },
+              "WAKEUP_INT_RAW": {
+                "bit": 19,
+                "description": "This interrupt raw bit turns to high level when input rxd edge changes more times than what reg_active_threshold specifies in light sleeping mode."
+              }
+            },
+            "INT_ST": {
+              "RXFIFO_FULL_INT_ST": {
+                "bit": 0,
+                "description": "This is the status bit for rxfifo_full_int_raw when rxfifo_full_int_ena is set to 1."
+              },
+              "TXFIFO_EMPTY_INT_ST": {
+                "bit": 1,
+                "description": "This is the status bit for  txfifo_empty_int_raw  when txfifo_empty_int_ena is set to 1."
+              },
+              "PARITY_ERR_INT_ST": {
+                "bit": 2,
+                "description": "This is the status bit for parity_err_int_raw when parity_err_int_ena is set to 1."
+              },
+              "FRM_ERR_INT_ST": {
+                "bit": 3,
+                "description": "This is the status bit for frm_err_int_raw when frm_err_int_ena is set to 1."
+              },
+              "RXFIFO_OVF_INT_ST": {
+                "bit": 4,
+                "description": "This is the status bit for rxfifo_ovf_int_raw when rxfifo_ovf_int_ena is set to 1."
+              },
+              "DSR_CHG_INT_ST": {
+                "bit": 5,
+                "description": "This is the status bit for dsr_chg_int_raw when dsr_chg_int_ena is set to 1."
+              },
+              "CTS_CHG_INT_ST": {
+                "bit": 6,
+                "description": "This is the status bit for cts_chg_int_raw when cts_chg_int_ena is set to 1."
+              },
+              "BRK_DET_INT_ST": {
+                "bit": 7,
+                "description": "This is the status bit for brk_det_int_raw when brk_det_int_ena is set to 1."
+              },
+              "RXFIFO_TOUT_INT_ST": {
+                "bit": 8,
+                "description": "This is the status bit for rxfifo_tout_int_raw when rxfifo_tout_int_ena is set to 1."
+              },
+              "SW_XON_INT_ST": {
+                "bit": 9,
+                "description": "This is the status bit for sw_xon_int_raw when sw_xon_int_ena is set to 1."
+              },
+              "SW_XOFF_INT_ST": {
+                "bit": 10,
+                "description": "This is the status bit for sw_xoff_int_raw when sw_xoff_int_ena is set to 1."
+              },
+              "GLITCH_DET_INT_ST": {
+                "bit": 11,
+                "description": "This is the status bit for glitch_det_int_raw when glitch_det_int_ena is set to 1."
+              },
+              "TX_BRK_DONE_INT_ST": {
+                "bit": 12,
+                "description": "This is the status bit for tx_brk_done_int_raw when tx_brk_done_int_ena is set to 1."
+              },
+              "TX_BRK_IDLE_DONE_INT_ST": {
+                "bit": 13,
+                "description": "This is the stauts bit for tx_brk_idle_done_int_raw when tx_brk_idle_done_int_ena is set to 1."
+              },
+              "TX_DONE_INT_ST": {
+                "bit": 14,
+                "description": "This is the status bit for tx_done_int_raw when tx_done_int_ena is set to 1."
+              },
+              "AT_CMD_CHAR_DET_INT_ST": {
+                "bit": 18,
+                "description": "This is the status bit for at_cmd_det_int_raw when at_cmd_char_det_int_ena is set to 1."
+              },
+              "WAKEUP_INT_ST": {
+                "bit": 19,
+                "description": "This is the status bit for uart_wakeup_int_raw when uart_wakeup_int_ena is set to 1."
+              }
+            },
+            "INT_ENA": {
+              "RXFIFO_FULL_INT_ENA": {
+                "bit": 0,
+                "description": "This is the enable bit for rxfifo_full_int_st register."
+              },
+              "TXFIFO_EMPTY_INT_ENA": {
+                "bit": 1,
+                "description": "This is the enable bit for txfifo_empty_int_st register."
+              },
+              "PARITY_ERR_INT_ENA": {
+                "bit": 2,
+                "description": "This is the enable bit for parity_err_int_st register."
+              },
+              "FRM_ERR_INT_ENA": {
+                "bit": 3,
+                "description": "This is the enable bit for frm_err_int_st register."
+              },
+              "RXFIFO_OVF_INT_ENA": {
+                "bit": 4,
+                "description": "This is the enable bit for rxfifo_ovf_int_st register."
+              },
+              "DSR_CHG_INT_ENA": {
+                "bit": 5,
+                "description": "This is the enable bit for dsr_chg_int_st register."
+              },
+              "CTS_CHG_INT_ENA": {
+                "bit": 6,
+                "description": "This is the enable bit for cts_chg_int_st register."
+              },
+              "BRK_DET_INT_ENA": {
+                "bit": 7,
+                "description": "This is the enable bit for brk_det_int_st register."
+              },
+              "RXFIFO_TOUT_INT_ENA": {
+                "bit": 8,
+                "description": "This is the enable bit for rxfifo_tout_int_st register."
+              },
+              "SW_XON_INT_ENA": {
+                "bit": 9,
+                "description": "This is the enable bit for sw_xon_int_st register."
+              },
+              "SW_XOFF_INT_ENA": {
+                "bit": 10,
+                "description": "This is the enable bit for sw_xoff_int_st register."
+              },
+              "GLITCH_DET_INT_ENA": {
+                "bit": 11,
+                "description": "This is the enable bit for glitch_det_int_st register."
+              },
+              "TX_BRK_DONE_INT_ENA": {
+                "bit": 12,
+                "description": "This is the enable bit for tx_brk_done_int_st register."
+              },
+              "TX_BRK_IDLE_DONE_INT_ENA": {
+                "bit": 13,
+                "description": "This is the enable bit for tx_brk_idle_done_int_st register."
+              },
+              "TX_DONE_INT_ENA": {
+                "bit": 14,
+                "description": "This is the enable bit for tx_done_int_st register."
+              },
+              "AT_CMD_CHAR_DET_INT_ENA": {
+                "bit": 18,
+                "description": "This is the enable bit for at_cmd_char_det_int_st register."
+              },
+              "WAKEUP_INT_ENA": {
+                "bit": 19,
+                "description": "This is the enable bit for uart_wakeup_int_st register."
+              }
+            },
+            "INT_CLR": {
+              "RXFIFO_FULL_INT_CLR": {
+                "bit": 0,
+                "description": "Set this bit to clear the rxfifo_full_int_raw interrupt."
+              },
+              "TXFIFO_EMPTY_INT_CLR": {
+                "bit": 1,
+                "description": "Set this bit to clear txfifo_empty_int_raw interrupt."
+              },
+              "PARITY_ERR_INT_CLR": {
+                "bit": 2,
+                "description": "Set this bit to clear parity_err_int_raw interrupt."
+              },
+              "FRM_ERR_INT_CLR": {
+                "bit": 3,
+                "description": "Set this bit to clear frm_err_int_raw interrupt."
+              },
+              "RXFIFO_OVF_INT_CLR": {
+                "bit": 4,
+                "description": "Set this bit to clear rxfifo_ovf_int_raw interrupt."
+              },
+              "DSR_CHG_INT_CLR": {
+                "bit": 5,
+                "description": "Set this bit to clear the dsr_chg_int_raw interrupt."
+              },
+              "CTS_CHG_INT_CLR": {
+                "bit": 6,
+                "description": "Set this bit to clear the cts_chg_int_raw interrupt."
+              },
+              "BRK_DET_INT_CLR": {
+                "bit": 7,
+                "description": "Set this bit to clear the brk_det_int_raw interrupt."
+              },
+              "RXFIFO_TOUT_INT_CLR": {
+                "bit": 8,
+                "description": "Set this bit to clear the rxfifo_tout_int_raw interrupt."
+              },
+              "SW_XON_INT_CLR": {
+                "bit": 9,
+                "description": "Set this bit to clear the sw_xon_int_raw interrupt."
+              },
+              "SW_XOFF_INT_CLR": {
+                "bit": 10,
+                "description": "Set this bit to clear the sw_xoff_int_raw interrupt."
+              },
+              "GLITCH_DET_INT_CLR": {
+                "bit": 11,
+                "description": "Set this bit to clear the glitch_det_int_raw interrupt."
+              },
+              "TX_BRK_DONE_INT_CLR": {
+                "bit": 12,
+                "description": "Set this bit to clear the tx_brk_done_int_raw interrupt.."
+              },
+              "TX_BRK_IDLE_DONE_INT_CLR": {
+                "bit": 13,
+                "description": "Set this bit to clear the tx_brk_idle_done_int_raw interrupt."
+              },
+              "TX_DONE_INT_CLR": {
+                "bit": 14,
+                "description": "Set this bit to clear the tx_done_int_raw interrupt."
+              },
+              "AT_CMD_CHAR_DET_INT_CLR": {
+                "bit": 18,
+                "description": "Set this bit to clear the at_cmd_char_det_int_raw interrupt."
+              },
+              "WAKEUP_INT_CLR": {
+                "bit": 19,
+                "description": "Set this bit to clear the uart_wakeup_int_raw interrupt."
+              }
+            },
+            "CLKDIV_SYNC": {
+              "CLKDIV": {
+                "bit": 0,
+                "description": "The integral part of the frequency divider factor.",
+                "width": 12
+              },
+              "CLKDIV_FRAG": {
+                "bit": 20,
+                "description": "The decimal part of the frequency divider factor.",
+                "width": 4
+              }
+            },
+            "RX_FILT": {
+              "GLITCH_FILT": {
+                "bit": 0,
+                "description": "when input pulse width is lower than this value the pulse is ignored.",
+                "width": 8
+              },
+              "GLITCH_FILT_EN": {
+                "bit": 8,
+                "description": "Set this bit to enable Rx signal filter."
+              }
+            },
+            "STATUS": {
+              "RXFIFO_CNT": {
+                "bit": 3,
+                "description": "Stores the byte number of valid data in Rx-FIFO.",
+                "width": 5
+              },
+              "DSRN": {
+                "bit": 13,
+                "description": "The register represent the level value of the internal uart dsr signal."
+              },
+              "CTSN": {
+                "bit": 14,
+                "description": "This register represent the level value of the internal uart cts signal."
+              },
+              "RXD": {
+                "bit": 15,
+                "description": "This register represent the  level value of the internal uart rxd signal."
+              },
+              "TXFIFO_CNT": {
+                "bit": 19,
+                "description": "Stores the byte number of data in Tx-FIFO.",
+                "width": 5
+              },
+              "DTRN": {
+                "bit": 29,
+                "description": "This bit represents the level of the internal uart dtr signal."
+              },
+              "RTSN": {
+                "bit": 30,
+                "description": "This bit represents the level of the internal uart rts signal."
+              },
+              "TXD": {
+                "bit": 31,
+                "description": "This bit represents the  level of the internal uart txd signal."
+              }
+            },
+            "CONF0_SYNC": {
+              "PARITY": {
+                "bit": 0,
+                "description": "This register is used to configure the parity check mode."
+              },
+              "PARITY_EN": {
+                "bit": 1,
+                "description": "Set this bit to enable uart parity check."
+              },
+              "BIT_NUM": {
+                "bit": 2,
+                "description": "This register is used to set the length of data.",
+                "width": 2
+              },
+              "STOP_BIT_NUM": {
+                "bit": 4,
+                "description": "This register is used to set the length of  stop bit.",
+                "width": 2
+              },
+              "TXD_BRK": {
+                "bit": 6,
+                "description": "Set this bit to enbale transmitter to  send NULL when the process of sending data is done."
+              },
+              "LOOPBACK": {
+                "bit": 12,
+                "description": "Set this bit to enable uart loopback test mode."
+              },
+              "TX_FLOW_EN": {
+                "bit": 13,
+                "description": "Set this bit to enable flow control function for transmitter."
+              },
+              "RXD_INV": {
+                "bit": 15,
+                "description": "Set this bit to inverse the level value of uart rxd signal."
+              },
+              "TXD_INV": {
+                "bit": 16,
+                "description": "Set this bit to inverse the level value of uart txd signal."
+              },
+              "DIS_RX_DAT_OVF": {
+                "bit": 17,
+                "description": "Disable UART Rx data overflow detect."
+              },
+              "ERR_WR_MASK": {
+                "bit": 18,
+                "description": "1'h1: Receiver stops storing data into FIFO when data is wrong. 1'h0: Receiver stores the data even if the  received data is wrong."
+              },
+              "MEM_CLK_EN": {
+                "bit": 20,
+                "description": "UART memory clock gate enable signal."
+              },
+              "SW_RTS": {
+                "bit": 21,
+                "description": "This register is used to configure the software rts signal which is used in software flow control."
+              },
+              "RXFIFO_RST": {
+                "bit": 22,
+                "description": "Set this bit to reset the uart receive-FIFO."
+              },
+              "TXFIFO_RST": {
+                "bit": 23,
+                "description": "Set this bit to reset the uart transmit-FIFO."
+              }
+            },
+            "CONF1": {
+              "RXFIFO_FULL_THRHD": {
+                "bit": 3,
+                "description": "It will produce rxfifo_full_int interrupt when receiver receives more data than this register value.",
+                "width": 5
+              },
+              "TXFIFO_EMPTY_THRHD": {
+                "bit": 11,
+                "description": "It will produce txfifo_empty_int interrupt when the data amount in Tx-FIFO is less than this register value.",
+                "width": 5
+              },
+              "CTS_INV": {
+                "bit": 16,
+                "description": "Set this bit to inverse the level value of uart cts signal."
+              },
+              "DSR_INV": {
+                "bit": 17,
+                "description": "Set this bit to inverse the level value of uart dsr signal."
+              },
+              "RTS_INV": {
+                "bit": 18,
+                "description": "Set this bit to inverse the level value of uart rts signal."
+              },
+              "DTR_INV": {
+                "bit": 19,
+                "description": "Set this bit to inverse the level value of uart dtr signal."
+              },
+              "SW_DTR": {
+                "bit": 20,
+                "description": "This register is used to configure the software dtr signal which is used in software flow control."
+              },
+              "CLK_EN": {
+                "bit": 21,
+                "description": "1'h1: Force clock on for register. 1'h0: Support clock only when application writes registers."
+              }
+            },
+            "HWFC_CONF_SYNC": {
+              "RX_FLOW_THRHD": {
+                "bit": 3,
+                "description": "This register is used to configure the maximum amount of data that can be received  when hardware flow control works.",
+                "width": 5
+              },
+              "RX_FLOW_EN": {
+                "bit": 8,
+                "description": "This is the flow enable bit for UART receiver."
+              }
+            },
+            "SLEEP_CONF0": {
+              "WK_CHAR1": {
+                "bit": 0,
+                "description": "This register restores the specified wake up char1 to wake up",
+                "width": 8
+              },
+              "WK_CHAR2": {
+                "bit": 8,
+                "description": "This register restores the specified wake up char2 to wake up",
+                "width": 8
+              },
+              "WK_CHAR3": {
+                "bit": 16,
+                "description": "This register restores the specified wake up char3 to wake up",
+                "width": 8
+              },
+              "WK_CHAR4": {
+                "bit": 24,
+                "description": "This register restores the specified wake up char4 to wake up",
+                "width": 8
+              }
+            },
+            "SLEEP_CONF1": {
+              "WK_CHAR0": {
+                "bit": 0,
+                "description": "This register restores the specified char0 to wake up",
+                "width": 8
+              }
+            },
+            "SLEEP_CONF2": {
+              "ACTIVE_THRESHOLD": {
+                "bit": 0,
+                "description": "The uart is activated from light sleeping mode when the input rxd edge changes more times than this register value.",
+                "width": 10
+              },
+              "RX_WAKE_UP_THRHD": {
+                "bit": 13,
+                "description": "In wake up mode 1 this field is used to set the received data number threshold to wake up chip.",
+                "width": 5
+              },
+              "WK_CHAR_NUM": {
+                "bit": 18,
+                "description": "This register is used to select number of wake up char.",
+                "width": 3
+              },
+              "WK_CHAR_MASK": {
+                "bit": 21,
+                "description": "This register is used to mask  wake up char.",
+                "width": 5
+              },
+              "WK_MODE_SEL": {
+                "bit": 26,
+                "description": "This register is used to select wake up mode. 0: RXD toggling to wake up. 1: received data number larger than",
+                "width": 2
+              }
+            },
+            "SWFC_CONF0_SYNC": {
+              "XON_CHAR": {
+                "bit": 0,
+                "description": "This register stores the Xon flow control char.",
+                "width": 8
+              },
+              "XOFF_CHAR": {
+                "bit": 8,
+                "description": "This register stores the Xoff flow control char.",
+                "width": 8
+              },
+              "XON_XOFF_STILL_SEND": {
+                "bit": 16,
+                "description": "In software flow control mode, UART Tx is disabled once UART Rx receives XOFF. In this status, UART Tx can not transmit XOFF even the received data number is larger than UART_XOFF_THRESHOLD. Set this bit to enable UART Tx can transmit XON/XOFF when UART Tx is disabled."
+              },
+              "SW_FLOW_CON_EN": {
+                "bit": 17,
+                "description": "Set this bit to enable software flow control. It is used with register sw_xon or sw_xoff."
+              },
+              "XONOFF_DEL": {
+                "bit": 18,
+                "description": "Set this bit to remove flow control char from the received data."
+              },
+              "FORCE_XON": {
+                "bit": 19,
+                "description": "Set this bit to enable the transmitter to go on sending data."
+              },
+              "FORCE_XOFF": {
+                "bit": 20,
+                "description": "Set this bit to stop the  transmitter from sending data."
+              },
+              "SEND_XON": {
+                "bit": 21,
+                "description": "Set this bit to send Xon char. It is cleared by hardware automatically."
+              },
+              "SEND_XOFF": {
+                "bit": 22,
+                "description": "Set this bit to send Xoff char. It is cleared by hardware automatically."
+              }
+            },
+            "SWFC_CONF1": {
+              "XON_THRESHOLD": {
+                "bit": 3,
+                "description": "When the data amount in Rx-FIFO is less than this register value with uart_sw_flow_con_en set to 1  it will send a Xon char.",
+                "width": 5
+              },
+              "XOFF_THRESHOLD": {
+                "bit": 11,
+                "description": "When the data amount in Rx-FIFO is more than this register value with uart_sw_flow_con_en set to 1  it will send a Xoff char.",
+                "width": 5
+              }
+            },
+            "TXBRK_CONF_SYNC": {
+              "TX_BRK_NUM": {
+                "bit": 0,
+                "description": "This register is used to configure the number of 0 to be sent after the process of sending data is done. It is active when txd_brk is set to 1.",
+                "width": 8
+              }
+            },
+            "IDLE_CONF_SYNC": {
+              "RX_IDLE_THRHD": {
+                "bit": 0,
+                "description": "It will produce frame end signal when receiver takes more time to receive one byte data than this register value.",
+                "width": 10
+              },
+              "TX_IDLE_NUM": {
+                "bit": 10,
+                "description": "This register is used to configure the duration time between transfers.",
+                "width": 10
+              }
+            },
+            "RS485_CONF_SYNC": {
+              "DL0_EN": {
+                "bit": 1,
+                "description": "Set this bit to delay the stop bit by 1 bit."
+              },
+              "DL1_EN": {
+                "bit": 2,
+                "description": "Set this bit to delay the stop bit by 1 bit."
+              }
+            },
+            "AT_CMD_PRECNT_SYNC": {
+              "PRE_IDLE_NUM": {
+                "bit": 0,
+                "description": "This register is used to configure the idle duration time before the first at_cmd is received by receiver.",
+                "width": 16
+              }
+            },
+            "AT_CMD_POSTCNT_SYNC": {
+              "POST_IDLE_NUM": {
+                "bit": 0,
+                "description": "This register is used to configure the duration time between the last at_cmd and the next data.",
+                "width": 16
+              }
+            },
+            "AT_CMD_GAPTOUT_SYNC": {
+              "RX_GAP_TOUT": {
+                "bit": 0,
+                "description": "This register is used to configure the duration time between the at_cmd chars.",
+                "width": 16
+              }
+            },
+            "AT_CMD_CHAR_SYNC": {
+              "AT_CMD_CHAR": {
+                "bit": 0,
+                "description": "This register is used to configure the content of at_cmd char.",
+                "width": 8
+              },
+              "CHAR_NUM": {
+                "bit": 8,
+                "description": "This register is used to configure the num of continuous at_cmd chars received by receiver.",
+                "width": 8
+              }
+            },
+            "MEM_CONF": {
+              "MEM_FORCE_PD": {
+                "bit": 25,
+                "description": "Set this bit to force power down UART memory."
+              },
+              "MEM_FORCE_PU": {
+                "bit": 26,
+                "description": "Set this bit to force power up UART memory."
+              }
+            },
+            "TOUT_CONF_SYNC": {
+              "RX_TOUT_EN": {
+                "bit": 0,
+                "description": "This is the enble bit for uart receiver's timeout function."
+              },
+              "RX_TOUT_FLOW_DIS": {
+                "bit": 1,
+                "description": "Set this bit to stop accumulating idle_cnt when hardware flow control works."
+              },
+              "RX_TOUT_THRHD": {
+                "bit": 2,
+                "description": "This register is used to configure the threshold time that receiver takes to receive one byte. The rxfifo_tout_int interrupt will be trigger when the receiver takes more time to receive one byte with rx_tout_en set to 1.",
+                "width": 10
+              }
+            },
+            "MEM_TX_STATUS": {
+              "TX_SRAM_WADDR": {
+                "bit": 3,
+                "description": "This register stores the offset write address in Tx-SRAM.",
+                "width": 5
+              },
+              "TX_SRAM_RADDR": {
+                "bit": 12,
+                "description": "This register stores the offset read address in Tx-SRAM.",
+                "width": 5
+              }
+            },
+            "MEM_RX_STATUS": {
+              "RX_SRAM_RADDR": {
+                "bit": 3,
+                "description": "This register stores the offset read address in RX-SRAM.",
+                "width": 5
+              },
+              "RX_SRAM_WADDR": {
+                "bit": 12,
+                "description": "This register stores the offset write address in Rx-SRAM.",
+                "width": 5
+              }
+            },
+            "FSM_STATUS": {
+              "ST_URX_OUT": {
+                "bit": 0,
+                "description": "This is the status register of receiver.",
+                "width": 4
+              },
+              "ST_UTX_OUT": {
+                "bit": 4,
+                "description": "This is the status register of transmitter.",
+                "width": 4
+              }
+            },
+            "CLK_CONF": {
+              "SCLK_DIV_B": {
+                "bit": 0,
+                "description": "The  denominator of the frequency divider factor.",
+                "width": 6
+              },
+              "SCLK_DIV_A": {
+                "bit": 6,
+                "description": "The numerator of the frequency divider factor.",
+                "width": 6
+              },
+              "SCLK_DIV_NUM": {
+                "bit": 12,
+                "description": "The integral part of the frequency divider factor.",
+                "width": 8
+              },
+              "SCLK_SEL": {
+                "bit": 20,
+                "description": "UART clock source select. 1: 80Mhz.  2: 8Mhz.  3: XTAL.",
+                "width": 2
+              },
+              "SCLK_EN": {
+                "bit": 22,
+                "description": "Set this bit to enable UART Tx/Rx clock."
+              },
+              "RST_CORE": {
+                "bit": 23,
+                "description": "Write 1 then write 0 to this bit to reset UART Tx/Rx."
+              },
+              "TX_SCLK_EN": {
+                "bit": 24,
+                "description": "Set this bit to enable UART Tx clock."
+              },
+              "RX_SCLK_EN": {
+                "bit": 25,
+                "description": "Set this bit to enable UART Rx clock."
+              },
+              "TX_RST_CORE": {
+                "bit": 26,
+                "description": "Write 1 then write 0 to this bit to reset UART Tx."
+              },
+              "RX_RST_CORE": {
+                "bit": 27,
+                "description": "Write 1 then write 0 to this bit to reset UART Rx."
+              }
+            },
+            "DATE": {
+              "DATE": {
+                "bit": 0,
+                "description": "This is the version register.",
+                "width": 32
+              }
+            },
+            "AFIFO_STATUS": {
+              "TX_AFIFO_FULL": {
+                "bit": 0,
+                "description": "Full signal of APB TX AFIFO."
+              },
+              "TX_AFIFO_EMPTY": {
+                "bit": 1,
+                "description": "Empty signal of APB TX AFIFO."
+              },
+              "RX_AFIFO_FULL": {
+                "bit": 2,
+                "description": "Full signal of APB RX AFIFO."
+              },
+              "RX_AFIFO_EMPTY": {
+                "bit": 3,
+                "description": "Empty signal of APB RX AFIFO."
+              }
+            },
+            "REG_UPDATE": {
+              "REG_UPDATE": {
+                "bit": 0,
+                "description": "Software write 1 would synchronize registers into UART Core clock domain and would be cleared by hardware after synchronization is done."
+              }
+            },
+            "ID": {
+              "ID": {
+                "bit": 0,
+                "description": "This register is used to configure the uart_id.",
+                "width": 32
+              }
+            }
+          }
+        },
+        "WDG": {
+          "instances": [
+            {
+              "name": "LP_WDT",
+              "base": "0x600B1C00",
+              "irq": 18
+            }
+          ],
+          "registers": {
+            "CONFIG0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "need_des"
+            },
+            "CONFIG1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "need_des"
+            },
+            "CONFIG2": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "need_des"
+            },
+            "CONFIG3": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "need_des"
+            },
+            "CONFIG4": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "need_des"
+            },
+            "FEED": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "need_des"
+            },
+            "WPROTECT": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "need_des"
+            },
+            "SWD_CONFIG": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "need_des"
+            },
+            "SWD_WPROTECT": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "need_des"
+            },
+            "INT_RAW": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "need_des"
+            },
+            "INT_ST": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "need_des"
+            },
+            "INT_ENA": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "need_des"
+            },
+            "INT_CLR": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "need_des"
+            },
+            "DATE": {
+              "offset": "0x3FC",
+              "size": 32,
+              "description": "need_des"
+            }
+          },
+          "bits": {
+            "CONFIG0": {
+              "WDT_CHIP_RESET_WIDTH": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 8
+              },
+              "WDT_CHIP_RESET_EN": {
+                "bit": 8,
+                "description": "need_des"
+              },
+              "WDT_PAUSE_IN_SLP": {
+                "bit": 9,
+                "description": "need_des"
+              },
+              "WDT_APPCPU_RESET_EN": {
+                "bit": 10,
+                "description": "need_des"
+              },
+              "WDT_PROCPU_RESET_EN": {
+                "bit": 11,
+                "description": "need_des"
+              },
+              "WDT_FLASHBOOT_MOD_EN": {
+                "bit": 12,
+                "description": "need_des"
+              },
+              "WDT_SYS_RESET_LENGTH": {
+                "bit": 13,
+                "description": "need_des",
+                "width": 3
+              },
+              "WDT_CPU_RESET_LENGTH": {
+                "bit": 16,
+                "description": "need_des",
+                "width": 3
+              },
+              "WDT_STG3": {
+                "bit": 19,
+                "description": "need_des",
+                "width": 3
+              },
+              "WDT_STG2": {
+                "bit": 22,
+                "description": "need_des",
+                "width": 3
+              },
+              "WDT_STG1": {
+                "bit": 25,
+                "description": "need_des",
+                "width": 3
+              },
+              "WDT_STG0": {
+                "bit": 28,
+                "description": "need_des",
+                "width": 3
+              },
+              "WDT_EN": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "CONFIG1": {
+              "WDT_STG0_HOLD": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 32
+              }
+            },
+            "CONFIG2": {
+              "WDT_STG1_HOLD": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 32
+              }
+            },
+            "CONFIG3": {
+              "WDT_STG2_HOLD": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 32
+              }
+            },
+            "CONFIG4": {
+              "WDT_STG3_HOLD": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 32
+              }
+            },
+            "FEED": {
+              "RTC_WDT_FEED": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "WPROTECT": {
+              "WDT_WKEY": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 32
+              }
+            },
+            "SWD_CONFIG": {
+              "SWD_RESET_FLAG": {
+                "bit": 0,
+                "description": "need_des"
+              },
+              "SWD_AUTO_FEED_EN": {
+                "bit": 18,
+                "description": "need_des"
+              },
+              "SWD_RST_FLAG_CLR": {
+                "bit": 19,
+                "description": "need_des"
+              },
+              "SWD_SIGNAL_WIDTH": {
+                "bit": 20,
+                "description": "need_des",
+                "width": 10
+              },
+              "SWD_DISABLE": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "SWD_FEED": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "SWD_WPROTECT": {
+              "SWD_WKEY": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 32
+              }
+            },
+            "INT_RAW": {
+              "SUPER_WDT_INT_RAW": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "LP_WDT_INT_RAW": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "INT_ST": {
+              "SUPER_WDT_INT_ST": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "LP_WDT_INT_ST": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "INT_ENA": {
+              "SUPER_WDT_INT_ENA": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "LP_WDT_INT_ENA": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "INT_CLR": {
+              "SUPER_WDT_INT_CLR": {
+                "bit": 30,
+                "description": "need_des"
+              },
+              "LP_WDT_INT_CLR": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            },
+            "DATE": {
+              "LP_WDT_DATE": {
+                "bit": 0,
+                "description": "need_des",
+                "width": 31
+              },
+              "CLK_EN": {
+                "bit": 31,
+                "description": "need_des"
+              }
+            }
+          }
+        }
+      },
+      "interrupts": {
+        "count": 38,
+        "vectors": [
+          {
+            "number": 0,
+            "name": "Initial_SP"
+          },
+          {
+            "number": 1,
+            "name": "Reset_Handler"
+          },
+          {
+            "number": 2,
+            "name": "NMI_Handler"
+          },
+          {
+            "number": 3,
+            "name": "HardFault_Handler"
+          },
+          {
+            "number": 4,
+            "name": "MemManage_Handler"
+          },
+          {
+            "number": 5,
+            "name": "BusFault_Handler"
+          },
+          {
+            "number": 6,
+            "name": "UsageFault_Handler"
+          },
+          {
+            "number": 11,
+            "name": "SVC_Handler"
+          },
+          {
+            "number": 12,
+            "name": "DebugMon_Handler"
+          },
+          {
+            "number": 14,
+            "name": "PendSV_Handler"
+          },
+          {
+            "number": 15,
+            "name": "SysTick_Handler"
+          },
+          {
+            "number": 23,
+            "name": "LP_TIMER_IRQHandler"
+          },
+          {
+            "number": 32,
+            "name": "LP_UART_IRQHandler"
+          },
+          {
+            "number": 33,
+            "name": "LP_I2C_IRQHandler"
+          },
+          {
+            "number": 34,
+            "name": "LP_WDT_IRQHandler"
+          },
+          {
+            "number": 35,
+            "name": "LP_PERI_TIMEOUT_IRQHandler"
+          },
+          {
+            "number": 36,
+            "name": "LP_APM_M0_IRQHandler"
+          },
+          {
+            "number": 37,
+            "name": "LP_APM_M1_IRQHandler"
+          }
+        ]
+      }
+    }
+  }
+}

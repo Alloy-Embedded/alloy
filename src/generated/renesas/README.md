@@ -1,7 +1,7 @@
 # RENESAS Generated Code
 
-**MCUs Supported**: 11
-**Families**: r7fa2a1ab, r7fa2e1a9, r7fa2e2a7, r7fa2l1ab, r7fa4m1ab, r7fa4w1ad, r7fa6e2bb, r7fa6m1ad, r7fa6m2af, r7fa6m3ah, r7fa6t1ad
+**MCUs Supported**: 21
+**Families**: r7fa2a1ab, r7fa2e1a9, r7fa2e2a7, r7fa2l1ab, r7fa4e10d, r7fa4e2b9, r7fa4m1ab, r7fa4m2ad, r7fa4m3af, r7fa4t1bb, r7fa4w1ad, r7fa6e10f, r7fa6e2bb, r7fa6m1ad, r7fa6m2af, r7fa6m3ah, r7fa6m4af, r7fa6m5bh, r7fa6t1ad, r7fa6t2bd, r7fa6t3bb
 
 ## Structure
 
@@ -23,12 +23,36 @@ renesas/
 │   ├── R7FA2L1AB/
 │   │   ├── startup.cpp
 │   │   └── peripherals.hpp
+├── r7fa4e10d/
+│   ├── R7FA4E10D/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── r7fa4e2b9/
+│   ├── R7FA4E2B9/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
 ├── r7fa4m1ab/
 │   ├── R7FA4M1AB/
 │   │   ├── startup.cpp
 │   │   └── peripherals.hpp
+├── r7fa4m2ad/
+│   ├── R7FA4M2AD/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── r7fa4m3af/
+│   ├── R7FA4M3AF/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── r7fa4t1bb/
+│   ├── R7FA4T1BB/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
 ├── r7fa4w1ad/
 │   ├── R7FA4W1AD/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── r7fa6e10f/
+│   ├── R7FA6E10F/
 │   │   ├── startup.cpp
 │   │   └── peripherals.hpp
 ├── r7fa6e2bb/
@@ -47,8 +71,24 @@ renesas/
 │   ├── R7FA6M3AH/
 │   │   ├── startup.cpp
 │   │   └── peripherals.hpp
+├── r7fa6m4af/
+│   ├── R7FA6M4AF/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── r7fa6m5bh/
+│   ├── R7FA6M5BH/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
 ├── r7fa6t1ad/
 │   ├── R7FA6T1AD/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── r7fa6t2bd/
+│   ├── R7FA6T2BD/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── r7fa6t3bb/
+│   ├── R7FA6T3BB/
 │   │   ├── startup.cpp
 │   │   └── peripherals.hpp
 ```

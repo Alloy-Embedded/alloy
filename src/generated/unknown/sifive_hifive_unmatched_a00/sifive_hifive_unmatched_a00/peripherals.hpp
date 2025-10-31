@@ -3,7 +3,7 @@
 /// Source: sifive-community_fu740.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:46
+/// Generated: 2025-10-31 12:00:48
 #ifndef ALLOY_GENERATED_SIFIVE_HIFIVE_UNMATCHED_A00_PERIPHERALS_HPP
 #define ALLOY_GENERATED_SIFIVE_HIFIVE_UNMATCHED_A00_PERIPHERALS_HPP
 
@@ -17,6 +17,74 @@ namespace memory {
     constexpr uint32_t FLASH_SIZE = 64 * 1024;
     constexpr uint32_t RAM_BASE   = 0x20000000;
     constexpr uint32_t RAM_SIZE   = 20 * 1024;
+}
+
+// ============================================================================
+// MCU Resource Metadata
+// ============================================================================
+
+/// MCU capabilities and resource availability
+namespace traits {
+    // Flash and RAM
+    constexpr uint32_t flash_size_kb = 64;
+    constexpr uint32_t ram_size_kb = 20;
+
+    // Peripheral availability
+    constexpr bool has_sifive = true;
+    constexpr uint32_t num_sifive_instances = 2;
+    constexpr bool has_riscv = true;
+    constexpr uint32_t num_riscv_instances = 2;
+    constexpr bool has_gpio = true;
+    constexpr uint32_t num_gpio_instances = 1;
+    constexpr bool has_i2c = true;
+    constexpr uint32_t num_i2c_instances = 2;
+    constexpr bool has_pwm = true;
+    constexpr uint32_t num_pwm_instances = 2;
+    constexpr bool has_usart = true;
+    constexpr uint32_t num_usart_instances = 2;
+    constexpr bool has_spi = true;
+    constexpr uint32_t num_spi_instances = 3;
+
+    // Helper templates for compile-time validation
+    template<typename T>
+    struct peripheral_count;
+
+    template<>
+    struct peripheral_count<struct sifive_tag> {
+        static constexpr uint32_t value = 2;
+    };
+    template<>
+    struct peripheral_count<struct riscv_tag> {
+        static constexpr uint32_t value = 2;
+    };
+    template<>
+    struct peripheral_count<struct gpio_tag> {
+        static constexpr uint32_t value = 1;
+    };
+    template<>
+    struct peripheral_count<struct i2c_tag> {
+        static constexpr uint32_t value = 2;
+    };
+    template<>
+    struct peripheral_count<struct pwm_tag> {
+        static constexpr uint32_t value = 2;
+    };
+    template<>
+    struct peripheral_count<struct usart_tag> {
+        static constexpr uint32_t value = 2;
+    };
+    template<>
+    struct peripheral_count<struct spi_tag> {
+        static constexpr uint32_t value = 3;
+    };
+
+    // GPIO-specific traits
+    constexpr uint32_t num_gpio_ports = 1;
+    constexpr uint32_t max_gpio_pins = 16;  // 16 pins per port
+
+    // USART-specific traits
+    constexpr bool has_sifive_uart0_0 = true;
+    constexpr bool has_sifive_uart0_1 = true;
 }
 
 // ============================================================================

@@ -1,0 +1,3769 @@
+{
+  "family": "FE310",
+  "architecture": "arm-cortex-m3",
+  "vendor": "SiFive",
+  "mcus": {
+    "FE310": {
+      "flash": {
+        "size_kb": 64,
+        "base_address": "0x08000000",
+        "page_size_kb": 1
+      },
+      "ram": {
+        "size_kb": 20,
+        "base_address": "0x20000000"
+      },
+      "peripherals": {
+        "CLINT": {
+          "instances": [
+            {
+              "name": "CLINT",
+              "base": "0x02000000"
+            }
+          ],
+          "registers": {
+            "msip": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Hart 0 software interrupt register"
+            },
+            "mtimecmp": {
+              "offset": "0x4000",
+              "size": 32,
+              "description": "Hart 0 time comparator register"
+            },
+            "mtimecmph": {
+              "offset": "0x4004",
+              "size": 32,
+              "description": "Hart 0 time comparator register"
+            },
+            "mtime": {
+              "offset": "0xBFF8",
+              "size": 32,
+              "description": "Timer register"
+            },
+            "mtimeh": {
+              "offset": "0xBFFC",
+              "size": 32,
+              "description": "Timer register"
+            }
+          }
+        },
+        "PLIC": {
+          "instances": [
+            {
+              "name": "PLIC",
+              "base": "0x0C000000"
+            }
+          ],
+          "registers": {
+            "priority[%s]": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Interrupt Priority Register"
+            },
+            "pending[%s]": {
+              "offset": "0x1000",
+              "size": 32,
+              "description": "Interrupt Pending Register"
+            },
+            "enable[%s]": {
+              "offset": "0x2000",
+              "size": 32,
+              "description": "Interrupt Enable Register"
+            },
+            "threshold": {
+              "offset": "0x200000",
+              "size": 32,
+              "description": "Priority Threshold Register"
+            },
+            "claim": {
+              "offset": "0x200004",
+              "size": 32,
+              "description": "Claim/Complete Register"
+            }
+          },
+          "bits": {
+            "threshold": {
+              "priority": {
+                "bit": 0,
+                "description": "Never interrupt",
+                "width": 3
+              }
+            }
+          }
+        },
+        "WDOG": {
+          "instances": [
+            {
+              "name": "WDOG",
+              "base": "0x10000000",
+              "irq": 1
+            }
+          ],
+          "registers": {
+            "wdogcfg": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Watchdog Configuration Register"
+            },
+            "wdogcount": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Watchdog Counter Register"
+            },
+            "wdogs": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Watchdog Scaled Counter Register"
+            },
+            "wdogfeed": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Watchdog Feed Register"
+            },
+            "wdogkey": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Watchdog Key Register"
+            },
+            "wdogcmp": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Watchdog Compare Register"
+            }
+          },
+          "bits": {
+            "wdogcfg": {
+              "cmpip": {
+                "bit": 28,
+                "description": "cmpip"
+              },
+              "encoreawake": {
+                "bit": 13,
+                "description": "encoreawake"
+              },
+              "enalways": {
+                "bit": 12,
+                "description": "enalways"
+              },
+              "zerocmp": {
+                "bit": 9,
+                "description": "zerocmp"
+              },
+              "rsten": {
+                "bit": 8,
+                "description": "rsten"
+              },
+              "scale": {
+                "bit": 0,
+                "description": "scale",
+                "width": 4
+              }
+            },
+            "wdogcmp": {
+              "value": {
+                "bit": 0,
+                "description": "value",
+                "width": 16
+              }
+            }
+          }
+        },
+        "RTC": {
+          "instances": [
+            {
+              "name": "RTC",
+              "base": "0x10000000",
+              "irq": 2
+            }
+          ],
+          "registers": {
+            "rtccfg": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "RTC Configuration Register"
+            },
+            "rtclo": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "RTC Counter Low Register"
+            },
+            "rtchi": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "RTC Counter High Register"
+            },
+            "rtcs": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "RTC Scaled Counter Register"
+            },
+            "rtccmp": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "RTC Compare Register"
+            }
+          },
+          "bits": {
+            "rtccfg": {
+              "cmpip": {
+                "bit": 28,
+                "description": "cmpip"
+              },
+              "enalways": {
+                "bit": 12,
+                "description": "enalways"
+              },
+              "scale": {
+                "bit": 0,
+                "description": "scale",
+                "width": 4
+              }
+            },
+            "rtchi": {
+              "value": {
+                "bit": 0,
+                "description": "value",
+                "width": 16
+              }
+            }
+          }
+        },
+        "AONCLK": {
+          "instances": [
+            {
+              "name": "AONCLK",
+              "base": "0x10000000"
+            }
+          ],
+          "registers": {
+            "lfrosccfg": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "AON Clock Configuration Register"
+            }
+          },
+          "bits": {
+            "lfrosccfg": {
+              "ready": {
+                "bit": 31,
+                "description": "ready"
+              },
+              "enable": {
+                "bit": 30,
+                "description": "enable"
+              },
+              "div": {
+                "bit": 0,
+                "description": "div",
+                "width": 6
+              }
+            }
+          }
+        },
+        "BACKUP": {
+          "instances": [
+            {
+              "name": "BACKUP",
+              "base": "0x10000000"
+            }
+          ],
+          "registers": {
+            "backup[%s]": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Backup Register"
+            }
+          }
+        },
+        "PMU": {
+          "instances": [
+            {
+              "name": "PMU",
+              "base": "0x10000000"
+            }
+          ],
+          "registers": {
+            "pmuwakepm[%s]": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "PMU Wake Program Memory"
+            },
+            "pmusleeppm[%s]": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "PMU Sleep Program Memory"
+            },
+            "pmuie": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "PMU Interrupt Enable Register"
+            },
+            "pmucause": {
+              "offset": "0x144",
+              "size": 32,
+              "description": "PMU Cause Register"
+            },
+            "pmusleep": {
+              "offset": "0x148",
+              "size": 32,
+              "description": "PMU Sleep Register"
+            },
+            "pmukey": {
+              "offset": "0x14C",
+              "size": 32,
+              "description": "PMU Key Register"
+            }
+          },
+          "bits": {
+            "pmuwakepm[%s]": {
+              "isolate": {
+                "bit": 9,
+                "description": "isolate"
+              },
+              "hfclkrst": {
+                "bit": 8,
+                "description": "hfclkrst"
+              },
+              "corerst": {
+                "bit": 7,
+                "description": "corerst"
+              },
+              "pmu_out_1_en": {
+                "bit": 5,
+                "description": "pmu_out_1_en"
+              },
+              "pmu_out_0_en": {
+                "bit": 4,
+                "description": "pmu_out_0_en"
+              },
+              "delay": {
+                "bit": 0,
+                "description": "delay",
+                "width": 4
+              }
+            },
+            "pmusleeppm[%s]": {
+              "isolate": {
+                "bit": 9,
+                "description": "isolate"
+              },
+              "hfclkrst": {
+                "bit": 8,
+                "description": "hfclkrst"
+              },
+              "corerst": {
+                "bit": 7,
+                "description": "corerst"
+              },
+              "pmu_out_1_en": {
+                "bit": 5,
+                "description": "pmu_out_1_en"
+              },
+              "pmu_out_0_en": {
+                "bit": 4,
+                "description": "pmu_out_0_en"
+              },
+              "delay": {
+                "bit": 0,
+                "description": "delay",
+                "width": 4
+              }
+            },
+            "pmuie": {
+              "awakeup": {
+                "bit": 3,
+                "description": "awakeup"
+              },
+              "dwakeup": {
+                "bit": 2,
+                "description": "dwakeup"
+              },
+              "rtc": {
+                "bit": 1,
+                "description": "rtc"
+              }
+            },
+            "pmucause": {
+              "resetcause": {
+                "bit": 8,
+                "description": "Power-on reset",
+                "width": 2
+              },
+              "wakeupcause": {
+                "bit": 0,
+                "description": "Reset wakeup",
+                "width": 2
+              }
+            },
+            "pmusleep": {
+              "sleep": {
+                "bit": 0,
+                "description": "sleep"
+              }
+            }
+          }
+        },
+        "PRCI": {
+          "instances": [
+            {
+              "name": "PRCI",
+              "base": "0x10008000"
+            }
+          ],
+          "registers": {
+            "hfrosccfg": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Clock Configuration Register"
+            },
+            "hfxosccfg": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Clock Configuration Register"
+            },
+            "pllcfg": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "PLL Configuration Register"
+            },
+            "plloutdiv": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "PLL Divider Register"
+            },
+            "coreclkcfg": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Clock Configuration Register"
+            }
+          },
+          "bits": {
+            "hfrosccfg": {
+              "ready": {
+                "bit": 31,
+                "description": "ready"
+              },
+              "enable": {
+                "bit": 30,
+                "description": "enable"
+              },
+              "trim": {
+                "bit": 16,
+                "description": "trim",
+                "width": 5
+              },
+              "div": {
+                "bit": 0,
+                "description": "div",
+                "width": 6
+              }
+            },
+            "hfxosccfg": {
+              "ready": {
+                "bit": 31,
+                "description": "ready"
+              },
+              "enable": {
+                "bit": 30,
+                "description": "enable"
+              }
+            },
+            "pllcfg": {
+              "lock": {
+                "bit": 31,
+                "description": "lock"
+              },
+              "bypass": {
+                "bit": 18,
+                "description": "bypass"
+              },
+              "refsel": {
+                "bit": 17,
+                "description": "refsel"
+              },
+              "sel": {
+                "bit": 16,
+                "description": "sel"
+              },
+              "pllq": {
+                "bit": 10,
+                "description": "pllq",
+                "width": 2
+              },
+              "pllf": {
+                "bit": 4,
+                "description": "pllf",
+                "width": 6
+              },
+              "pllr": {
+                "bit": 0,
+                "description": "pllr",
+                "width": 3
+              }
+            },
+            "plloutdiv": {
+              "divby1": {
+                "bit": 8,
+                "description": "divby1"
+              },
+              "div": {
+                "bit": 0,
+                "description": "div",
+                "width": 6
+              }
+            }
+          }
+        },
+        "OTP": {
+          "instances": [
+            {
+              "name": "OTP",
+              "base": "0x10010000"
+            }
+          ],
+          "registers": {
+            "lock": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Programmed-I/O lock register"
+            },
+            "clock": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "OTP device clock signal"
+            },
+            "output_en": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "OTP device output-enable signal"
+            },
+            "select": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "OTP device chip-select signal"
+            },
+            "write_en": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "OTP device write-enable signal"
+            },
+            "mode": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "OTP device mode register"
+            },
+            "mrr": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "OTP read-voltage regulator control"
+            },
+            "mpp": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "OTP write-voltage charge pump control"
+            },
+            "vrren": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "OTP read-voltage enable"
+            },
+            "vppen": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "OTP write-voltage enable"
+            },
+            "addr": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "OTP device address"
+            },
+            "data_in": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "OTP device data input"
+            },
+            "data_out": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "OTP device data output"
+            },
+            "rsctrl": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "OTP read sequencer control"
+            }
+          }
+        },
+        "GPIO": {
+          "instances": [
+            {
+              "name": "GPIO0",
+              "base": "0x10012000",
+              "irq": 8
+            }
+          ],
+          "registers": {
+            "value": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Pin value."
+            },
+            "input_en": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Pin Input Enable Register"
+            },
+            "output_en": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Pin Output Enable Register"
+            },
+            "port": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Output Port Value Register"
+            },
+            "pullup": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Internal Pull-Up Enable Register"
+            },
+            "drive": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Drive Strength Register"
+            },
+            "rise_ie": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Rise Interrupt Enable Register"
+            },
+            "rise_ip": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Rise Interrupt Pending Register"
+            },
+            "fall_ie": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Fall Interrupt Enable Register"
+            },
+            "fall_ip": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Fall Interrupt Pending Register"
+            },
+            "high_ie": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "High Interrupt Enable Register"
+            },
+            "high_ip": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "High Interrupt Pending Register"
+            },
+            "low_ie": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Low Interrupt Enable Register"
+            },
+            "low_ip": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Low Interrupt Pending Register"
+            },
+            "iof_en": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "HW I/O Function Enable Register"
+            },
+            "iof_sel": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "HW I/O Function Select Register"
+            },
+            "out_xor": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Output XOR (invert) Register"
+            }
+          },
+          "bits": {
+            "value": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "input_en": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "output_en": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "port": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "pullup": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "drive": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "rise_ie": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "rise_ip": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "fall_ie": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "fall_ip": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "high_ie": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "high_ip": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "low_ie": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "low_ip": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "iof_en": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "iof_sel": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            },
+            "out_xor": {
+              "pin0": {
+                "bit": 0,
+                "description": "pin0"
+              },
+              "pin1": {
+                "bit": 1,
+                "description": "pin1"
+              },
+              "pin2": {
+                "bit": 2,
+                "description": "pin2"
+              },
+              "pin3": {
+                "bit": 3,
+                "description": "pin3"
+              },
+              "pin4": {
+                "bit": 4,
+                "description": "pin4"
+              },
+              "pin5": {
+                "bit": 5,
+                "description": "pin5"
+              },
+              "pin6": {
+                "bit": 6,
+                "description": "pin6"
+              },
+              "pin7": {
+                "bit": 7,
+                "description": "pin7"
+              },
+              "pin8": {
+                "bit": 8,
+                "description": "pin8"
+              },
+              "pin9": {
+                "bit": 9,
+                "description": "pin9"
+              },
+              "pin10": {
+                "bit": 10,
+                "description": "pin10"
+              },
+              "pin11": {
+                "bit": 11,
+                "description": "pin11"
+              },
+              "pin12": {
+                "bit": 12,
+                "description": "pin12"
+              },
+              "pin13": {
+                "bit": 13,
+                "description": "pin13"
+              },
+              "pin14": {
+                "bit": 14,
+                "description": "pin14"
+              },
+              "pin15": {
+                "bit": 15,
+                "description": "pin15"
+              },
+              "pin16": {
+                "bit": 16,
+                "description": "pin16"
+              },
+              "pin17": {
+                "bit": 17,
+                "description": "pin17"
+              },
+              "pin18": {
+                "bit": 18,
+                "description": "pin18"
+              },
+              "pin19": {
+                "bit": 19,
+                "description": "pin19"
+              },
+              "pin20": {
+                "bit": 20,
+                "description": "pin20"
+              },
+              "pin21": {
+                "bit": 21,
+                "description": "pin21"
+              },
+              "pin22": {
+                "bit": 22,
+                "description": "pin22"
+              },
+              "pin23": {
+                "bit": 23,
+                "description": "pin23"
+              },
+              "pin24": {
+                "bit": 24,
+                "description": "pin24"
+              },
+              "pin25": {
+                "bit": 25,
+                "description": "pin25"
+              },
+              "pin26": {
+                "bit": 26,
+                "description": "pin26"
+              },
+              "pin27": {
+                "bit": 27,
+                "description": "pin27"
+              },
+              "pin28": {
+                "bit": 28,
+                "description": "pin28"
+              },
+              "pin29": {
+                "bit": 29,
+                "description": "pin29"
+              },
+              "pin30": {
+                "bit": 30,
+                "description": "pin30"
+              },
+              "pin31": {
+                "bit": 31,
+                "description": "pin31"
+              }
+            }
+          }
+        },
+        "USART": {
+          "instances": [
+            {
+              "name": "UART0",
+              "base": "0x10013000",
+              "irq": 3
+            },
+            {
+              "name": "UART1",
+              "base": "0x10023000",
+              "irq": 4
+            }
+          ],
+          "registers": {
+            "txdata": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Transmit Data Register"
+            },
+            "rxdata": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Receive Data Register"
+            },
+            "txctrl": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Transmit Control Register"
+            },
+            "rxctrl": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Receive Control Register"
+            },
+            "ie": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Interrupt Enable Register"
+            },
+            "ip": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Interrupt Pending Register"
+            },
+            "div": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Baud Rate Divisor Register"
+            }
+          },
+          "bits": {
+            "txdata": {
+              "full": {
+                "bit": 31,
+                "description": "full"
+              },
+              "data": {
+                "bit": 0,
+                "description": "data",
+                "width": 8
+              }
+            },
+            "rxdata": {
+              "empty": {
+                "bit": 31,
+                "description": "empty"
+              },
+              "data": {
+                "bit": 0,
+                "description": "data",
+                "width": 8
+              }
+            },
+            "txctrl": {
+              "counter": {
+                "bit": 16,
+                "description": "counter",
+                "width": 3
+              },
+              "nstop": {
+                "bit": 1,
+                "description": "nstop"
+              },
+              "enable": {
+                "bit": 0,
+                "description": "enable"
+              }
+            },
+            "rxctrl": {
+              "counter": {
+                "bit": 16,
+                "description": "counter",
+                "width": 3
+              },
+              "enable": {
+                "bit": 0,
+                "description": "enable"
+              }
+            },
+            "ie": {
+              "rxwm": {
+                "bit": 1,
+                "description": "rxwm"
+              },
+              "txwm": {
+                "bit": 0,
+                "description": "txwm"
+              }
+            },
+            "ip": {
+              "rxwm": {
+                "bit": 1,
+                "description": "rxwm"
+              },
+              "txwm": {
+                "bit": 0,
+                "description": "txwm"
+              }
+            },
+            "div": {
+              "value": {
+                "bit": 0,
+                "description": "value",
+                "width": 16
+              }
+            }
+          }
+        },
+        "SPI": {
+          "instances": [
+            {
+              "name": "QSPI0",
+              "base": "0x10014000",
+              "irq": 5
+            },
+            {
+              "name": "QSPI1",
+              "base": "0x10024000",
+              "irq": 6
+            },
+            {
+              "name": "QSPI2",
+              "base": "0x10034000",
+              "irq": 7
+            }
+          ],
+          "registers": {
+            "div": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Serial Clock Divisor Register"
+            },
+            "mode": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Serial Clock Mode Register"
+            },
+            "csid": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Chip Select ID Register"
+            },
+            "csdef": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Chip Select Default Register"
+            },
+            "csmode": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Chip Select Mode Register"
+            },
+            "delay0": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Delay Control 0 Register"
+            },
+            "delay1": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Delay Control 1 Register"
+            },
+            "fmt": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Frame Format Register"
+            },
+            "txdata": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Transmit Data Register"
+            },
+            "rxdata": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Receive Data Register"
+            },
+            "txmark": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Transmit Watermark Register"
+            },
+            "rxmark": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Receive Watermark Register"
+            },
+            "fctrl": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "SPI Flash Interface Control Register"
+            },
+            "ffmt": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "SPI Flash Instruction Format Register"
+            },
+            "ie": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "SPI Interrupt Enable Register"
+            },
+            "ip": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "SPI Interrupt Pending Register"
+            }
+          },
+          "bits": {
+            "div": {
+              "value": {
+                "bit": 0,
+                "description": "value",
+                "width": 12
+              }
+            },
+            "mode": {
+              "polarity": {
+                "bit": 1,
+                "description": "polarity"
+              },
+              "phase": {
+                "bit": 0,
+                "description": "phase"
+              }
+            },
+            "delay0": {
+              "sckcs": {
+                "bit": 16,
+                "description": "sckcs",
+                "width": 8
+              },
+              "cssck": {
+                "bit": 0,
+                "description": "cssck",
+                "width": 8
+              }
+            },
+            "delay1": {
+              "interxfr": {
+                "bit": 16,
+                "description": "interxfr",
+                "width": 8
+              },
+              "intercs": {
+                "bit": 0,
+                "description": "intercs",
+                "width": 8
+              }
+            },
+            "fmt": {
+              "length": {
+                "bit": 16,
+                "description": "length",
+                "width": 4
+              },
+              "direction": {
+                "bit": 3,
+                "description": "For dual and quad protocols, the DQ pins are tri-stated. For\n                    the single protocol, the DQ0 pin is driven with the transmit\n                    data as normal."
+              },
+              "endian": {
+                "bit": 2,
+                "description": "Transmit MSB first."
+              },
+              "protocol": {
+                "bit": 0,
+                "description": "DQ0 (MOSI), DQ1 (MISO)",
+                "width": 2
+              }
+            },
+            "txdata": {
+              "full": {
+                "bit": 31,
+                "description": "full"
+              },
+              "data": {
+                "bit": 0,
+                "description": "data",
+                "width": 8
+              }
+            },
+            "rxdata": {
+              "empty": {
+                "bit": 31,
+                "description": "empty"
+              },
+              "data": {
+                "bit": 0,
+                "description": "data",
+                "width": 8
+              }
+            },
+            "txmark": {
+              "value": {
+                "bit": 0,
+                "description": "value",
+                "width": 3
+              }
+            },
+            "rxmark": {
+              "value": {
+                "bit": 0,
+                "description": "value",
+                "width": 3
+              }
+            },
+            "fctrl": {
+              "enable": {
+                "bit": 0,
+                "description": "enable"
+              }
+            },
+            "ffmt": {
+              "pad_code": {
+                "bit": 24,
+                "description": "First 8 bits to transmit during dummy cycles",
+                "width": 8
+              },
+              "cmd_code": {
+                "bit": 16,
+                "description": "Value of command byte",
+                "width": 8
+              },
+              "data_proto": {
+                "bit": 12,
+                "description": "Protocol for receiving data bytes",
+                "width": 2
+              },
+              "addr_proto": {
+                "bit": 10,
+                "description": "Protocol for transmitting address and padding",
+                "width": 2
+              },
+              "cmd_proto": {
+                "bit": 8,
+                "description": "Protocol for transmitting command",
+                "width": 2
+              },
+              "pad_cnt": {
+                "bit": 0,
+                "description": "Number of dummy cycles"
+              },
+              "addr_len": {
+                "bit": 1,
+                "description": "Number of address bytes (0 to 4)",
+                "width": 3
+              },
+              "cmd_en": {
+                "bit": 0,
+                "description": "Enable sending of command"
+              }
+            },
+            "ie": {
+              "rxwm": {
+                "bit": 1,
+                "description": "rxwm"
+              },
+              "txwm": {
+                "bit": 0,
+                "description": "txwm"
+              }
+            },
+            "ip": {
+              "rxwm": {
+                "bit": 1,
+                "description": "rxwm"
+              },
+              "txwm": {
+                "bit": 0,
+                "description": "txwm"
+              }
+            }
+          }
+        },
+        "PWM": {
+          "instances": [
+            {
+              "name": "PWM0",
+              "base": "0x10015000",
+              "irq": 40
+            },
+            {
+              "name": "PWM1",
+              "base": "0x10025000",
+              "irq": 44
+            },
+            {
+              "name": "PWM2",
+              "base": "0x10035000",
+              "irq": 48
+            }
+          ],
+          "registers": {
+            "cfg": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "PWM Configuration Register"
+            },
+            "count": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Counter Register"
+            },
+            "pwms": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Scaled Halfword Counter Register"
+            },
+            "cmp0": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Compare Register"
+            },
+            "cmp1": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Compare Register"
+            },
+            "cmp2": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Compare Register"
+            },
+            "cmp3": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Compare Register"
+            }
+          },
+          "bits": {
+            "cfg": {
+              "cmp3ip": {
+                "bit": 31,
+                "description": "cmp3ip"
+              },
+              "cmp2ip": {
+                "bit": 30,
+                "description": "cmp2ip"
+              },
+              "cmp1ip": {
+                "bit": 29,
+                "description": "cmp1ip"
+              },
+              "cmp0ip": {
+                "bit": 28,
+                "description": "cmp0ip"
+              },
+              "cmp3gang": {
+                "bit": 27,
+                "description": "cmp3gang"
+              },
+              "cmp2gang": {
+                "bit": 26,
+                "description": "cmp2gang",
+                "width": 11
+              },
+              "cmp1gang": {
+                "bit": 25,
+                "description": "cmp1gang"
+              },
+              "cmp0gang": {
+                "bit": 24,
+                "description": "cmp0gang"
+              },
+              "cmp3center": {
+                "bit": 19,
+                "description": "cmp3center"
+              },
+              "cmp2center": {
+                "bit": 18,
+                "description": "cmp2center"
+              },
+              "cmp1center": {
+                "bit": 17,
+                "description": "cmp1center"
+              },
+              "cmp0center": {
+                "bit": 16,
+                "description": "cmp0center"
+              },
+              "enoneshot": {
+                "bit": 13,
+                "description": "enoneshot"
+              },
+              "enalways": {
+                "bit": 12,
+                "description": "enalways"
+              },
+              "deglitch": {
+                "bit": 10,
+                "description": "deglitch"
+              },
+              "zerocmp": {
+                "bit": 9,
+                "description": "zerocmp"
+              },
+              "sticky": {
+                "bit": 8,
+                "description": "sticky"
+              },
+              "scale": {
+                "bit": 0,
+                "description": "scale",
+                "width": 4
+              }
+            },
+            "cmp0": {
+              "value": {
+                "bit": 0,
+                "description": "value",
+                "width": 16
+              }
+            },
+            "cmp1": {
+              "value": {
+                "bit": 0,
+                "description": "value",
+                "width": 16
+              }
+            },
+            "cmp2": {
+              "value": {
+                "bit": 0,
+                "description": "value",
+                "width": 16
+              }
+            },
+            "cmp3": {
+              "value": {
+                "bit": 0,
+                "description": "value",
+                "width": 16
+              }
+            }
+          }
+        },
+        "I2C": {
+          "instances": [
+            {
+              "name": "I2C0",
+              "base": "0x10016000",
+              "irq": 52
+            }
+          ],
+          "registers": {
+            "prer_lo": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Clock Prescale register lo-byte"
+            },
+            "prer_hi": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Clock Prescale register hi-byte"
+            },
+            "ctr": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Control register"
+            },
+            "txr_rxr": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Transmit register / Receive register"
+            },
+            "cr_sr": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Command register / Status register"
+            },
+            "cr": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Command register"
+            },
+            "sr": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Status register"
+            }
+          }
+        }
+      },
+      "interrupts": {
+        "count": 69,
+        "vectors": [
+          {
+            "number": 0,
+            "name": "Initial_SP"
+          },
+          {
+            "number": 1,
+            "name": "Reset_Handler"
+          },
+          {
+            "number": 2,
+            "name": "NMI_Handler"
+          },
+          {
+            "number": 3,
+            "name": "HardFault_Handler"
+          },
+          {
+            "number": 4,
+            "name": "MemManage_Handler"
+          },
+          {
+            "number": 5,
+            "name": "BusFault_Handler"
+          },
+          {
+            "number": 6,
+            "name": "UsageFault_Handler"
+          },
+          {
+            "number": 11,
+            "name": "SVC_Handler"
+          },
+          {
+            "number": 12,
+            "name": "DebugMon_Handler"
+          },
+          {
+            "number": 14,
+            "name": "PendSV_Handler"
+          },
+          {
+            "number": 15,
+            "name": "SysTick_Handler"
+          },
+          {
+            "number": 17,
+            "name": "WATCHDOG_IRQHandler"
+          },
+          {
+            "number": 18,
+            "name": "RTC_IRQHandler"
+          },
+          {
+            "number": 19,
+            "name": "UART0_IRQHandler"
+          },
+          {
+            "number": 20,
+            "name": "UART1_IRQHandler"
+          },
+          {
+            "number": 21,
+            "name": "QSPI0_IRQHandler"
+          },
+          {
+            "number": 22,
+            "name": "QSPI1_IRQHandler"
+          },
+          {
+            "number": 23,
+            "name": "QSPI2_IRQHandler"
+          },
+          {
+            "number": 24,
+            "name": "GPIO0_IRQHandler"
+          },
+          {
+            "number": 25,
+            "name": "GPIO1_IRQHandler"
+          },
+          {
+            "number": 26,
+            "name": "GPIO2_IRQHandler"
+          },
+          {
+            "number": 27,
+            "name": "GPIO3_IRQHandler"
+          },
+          {
+            "number": 28,
+            "name": "GPIO4_IRQHandler"
+          },
+          {
+            "number": 29,
+            "name": "GPIO5_IRQHandler"
+          },
+          {
+            "number": 30,
+            "name": "GPIO6_IRQHandler"
+          },
+          {
+            "number": 31,
+            "name": "GPIO7_IRQHandler"
+          },
+          {
+            "number": 32,
+            "name": "GPIO8_IRQHandler"
+          },
+          {
+            "number": 33,
+            "name": "GPIO9_IRQHandler"
+          },
+          {
+            "number": 34,
+            "name": "GPIO10_IRQHandler"
+          },
+          {
+            "number": 35,
+            "name": "GPIO11_IRQHandler"
+          },
+          {
+            "number": 36,
+            "name": "GPIO12_IRQHandler"
+          },
+          {
+            "number": 37,
+            "name": "GPIO13_IRQHandler"
+          },
+          {
+            "number": 38,
+            "name": "GPIO14_IRQHandler"
+          },
+          {
+            "number": 39,
+            "name": "GPIO15_IRQHandler"
+          },
+          {
+            "number": 40,
+            "name": "GPIO16_IRQHandler"
+          },
+          {
+            "number": 41,
+            "name": "GPIO17_IRQHandler"
+          },
+          {
+            "number": 42,
+            "name": "GPIO18_IRQHandler"
+          },
+          {
+            "number": 43,
+            "name": "GPIO19_IRQHandler"
+          },
+          {
+            "number": 44,
+            "name": "GPIO20_IRQHandler"
+          },
+          {
+            "number": 45,
+            "name": "GPIO21_IRQHandler"
+          },
+          {
+            "number": 46,
+            "name": "GPIO22_IRQHandler"
+          },
+          {
+            "number": 47,
+            "name": "GPIO23_IRQHandler"
+          },
+          {
+            "number": 48,
+            "name": "GPIO24_IRQHandler"
+          },
+          {
+            "number": 49,
+            "name": "GPIO25_IRQHandler"
+          },
+          {
+            "number": 50,
+            "name": "GPIO26_IRQHandler"
+          },
+          {
+            "number": 51,
+            "name": "GPIO27_IRQHandler"
+          },
+          {
+            "number": 52,
+            "name": "GPIO28_IRQHandler"
+          },
+          {
+            "number": 53,
+            "name": "GPIO29_IRQHandler"
+          },
+          {
+            "number": 54,
+            "name": "GPIO30_IRQHandler"
+          },
+          {
+            "number": 55,
+            "name": "GPIO31_IRQHandler"
+          },
+          {
+            "number": 56,
+            "name": "PWM0CMP0_IRQHandler"
+          },
+          {
+            "number": 57,
+            "name": "PWM0CMP1_IRQHandler"
+          },
+          {
+            "number": 58,
+            "name": "PWM0CMP2_IRQHandler"
+          },
+          {
+            "number": 59,
+            "name": "PWM0CMP3_IRQHandler"
+          },
+          {
+            "number": 60,
+            "name": "PWM1CMP0_IRQHandler"
+          },
+          {
+            "number": 61,
+            "name": "PWM1CMP1_IRQHandler"
+          },
+          {
+            "number": 62,
+            "name": "PWM1CMP2_IRQHandler"
+          },
+          {
+            "number": 63,
+            "name": "PWM1CMP3_IRQHandler"
+          },
+          {
+            "number": 64,
+            "name": "PWM2CMP0_IRQHandler"
+          },
+          {
+            "number": 65,
+            "name": "PWM2CMP1_IRQHandler"
+          },
+          {
+            "number": 66,
+            "name": "PWM2CMP2_IRQHandler"
+          },
+          {
+            "number": 67,
+            "name": "PWM2CMP3_IRQHandler"
+          },
+          {
+            "number": 68,
+            "name": "I2C0_IRQHandler"
+          }
+        ]
+      }
+    }
+  }
+}

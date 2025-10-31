@@ -1,7 +1,7 @@
 # RASPBERRYPI Generated Code
 
-**MCUs Supported**: 1
-**Families**: rp2040
+**MCUs Supported**: 2
+**Families**: rp2040, rp2350
 
 ## Structure
 
@@ -9,6 +9,10 @@
 raspberrypi/
 ├── rp2040/
 │   ├── RP2040/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── rp2350/
+│   ├── RP2350/
 │   │   ├── startup.cpp
 │   │   └── peripherals.hpp
 ```

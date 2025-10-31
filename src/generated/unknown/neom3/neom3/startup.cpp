@@ -3,7 +3,7 @@
 /// Source: nxp_lpc178x.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:21:48
+/// Generated: 2025-10-31 12:00:50
 #include <cstdint>
 #include <cstring>
 

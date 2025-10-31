@@ -3,7 +3,7 @@
 /// Source: st_stm32f107.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:22:05
+/// Generated: 2025-10-31 12:01:14
 #include <cstdint>
 #include <cstring>
 

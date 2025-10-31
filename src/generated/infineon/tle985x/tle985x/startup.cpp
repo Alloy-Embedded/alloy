@@ -3,7 +3,7 @@
 /// Source: infineon_tle985x.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:30:15
+/// Generated: 2025-10-31 12:00:35
 #include <cstdint>
 #include <cstring>
 

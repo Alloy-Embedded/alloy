@@ -1,7 +1,7 @@
 # NXP Generated Code
 
-**MCUs Supported**: 2
-**Families**: mimxrt1011, qn908xc
+**MCUs Supported**: 12
+**Families**: mimxrt1011, mimxrt1021, mimxrt1052, mimxrt1062, mimxrt1064, mk22f51212, mk64f12, mk65f18, mk66f18, mkl26z4, mkw41z4, qn908xc
 
 ## Structure
 
@@ -9,6 +9,46 @@
 nxp/
 ├── mimxrt1011/
 │   ├── MIMXRT1011/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── mimxrt1021/
+│   ├── MIMXRT1021/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── mimxrt1052/
+│   ├── MIMXRT1052/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── mimxrt1062/
+│   ├── MIMXRT1062/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── mimxrt1064/
+│   ├── MIMXRT1064/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── mk22f51212/
+│   ├── MK22F51212/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── mk64f12/
+│   ├── MK64F12/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── mk65f18/
+│   ├── MK65F18/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── mk66f18/
+│   ├── MK66F18/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── mkl26z4/
+│   ├── MKL26Z4/
+│   │   ├── startup.cpp
+│   │   └── peripherals.hpp
+├── mkw41z4/
+│   ├── MKW41Z4/
 │   │   ├── startup.cpp
 │   │   └── peripherals.hpp
 ├── qn908xc/

@@ -1,0 +1,6099 @@
+{
+  "family": "AE101F4071542LH_CM55_HE_View",
+  "architecture": "arm-cortex-m3",
+  "vendor": "Alif Semiconductor",
+  "mcus": {
+    "AE101F4071542LH_CM55_HE_View": {
+      "flash": {
+        "size_kb": 64,
+        "base_address": "0x08000000",
+        "page_size_kb": 1
+      },
+      "ram": {
+        "size_kb": 20,
+        "base_address": "0x20000000"
+      },
+      "peripherals": {
+        "CLKCTL": {
+          "instances": [
+            {
+              "name": "CLKCTL_SYS",
+              "base": "0x1A010000"
+            },
+            {
+              "name": "CLKCTL_PER_SLV",
+              "base": "0x4902F000"
+            },
+            {
+              "name": "CLKCTL_PER_MST",
+              "base": "0x4903F000"
+            }
+          ],
+          "registers": {
+            "SYS_LCTRL_ST": {
+              "offset": "0x500",
+              "size": 32,
+              "description": "System Lock Control Status Register"
+            },
+            "SYS_LCTRL_SET": {
+              "offset": "0x504",
+              "size": 32,
+              "description": "System Lock Control Set Register"
+            },
+            "SYS_LCTRL_CLR": {
+              "offset": "0x508",
+              "size": 32,
+              "description": "System Lock Control Clear Register"
+            },
+            "ACLK_CTRL": {
+              "offset": "0x820",
+              "size": 32,
+              "description": "SYST_ACLK Clock Control Register"
+            },
+            "ACLK_DIV0": {
+              "offset": "0x824",
+              "size": 32,
+              "description": "SYST_ACLK Clock Divider 0 Register"
+            }
+          }
+        },
+        "IRQRTR": {
+          "instances": [
+            {
+              "name": "IRQRTR",
+              "base": "0x1A500000"
+            }
+          ],
+          "registers": {
+            "IRQRTR_CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "IRQRTR Control Register"
+            },
+            "IRQRTR_LD_CTRL": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "IRQRTR Lockdown Control Register"
+            },
+            "IRQRTR_SHD_INT_INFO": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "IRQRTR Shared Interrupt Information Register"
+            },
+            "IRQRTR_SHD_INT_CFG": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "IRQRTR Shared Interrupt Configuration Register"
+            },
+            "IRQRTR_SHD_INT_LCTRL": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "IRQRTR Shared Interrupt Lock Control Register"
+            },
+            "IRQRTR_SHD_INT_SEL": {
+              "offset": "0x10C",
+              "size": 32,
+              "description": "IRQRTR Shared Interrupt Select Register"
+            },
+            "IRQRTR_TMP_ST": {
+              "offset": "0xE90",
+              "size": 32,
+              "description": "IRQRTR Tamper Status Register"
+            },
+            "IRQRTR_CAP": {
+              "offset": "0xFA0",
+              "size": 32,
+              "description": "IRQRTR Capability Register"
+            },
+            "IRQRTR_CFG": {
+              "offset": "0xFB0",
+              "size": 32,
+              "description": "IRQRTR Configuration Register"
+            }
+          }
+        },
+        "CGU": {
+          "instances": [
+            {
+              "name": "CGU",
+              "base": "0x1A602000"
+            }
+          ],
+          "registers": {
+            "OSC_CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Oscillator Control Register"
+            },
+            "PLL_LOCK_CTRL": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "PLL Lock Control Register"
+            },
+            "PLL_CLK_SEL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "PLL Clock Select Register"
+            },
+            "ESCLK_SEL": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Clock Select Register for M55-HE"
+            },
+            "CLK_ENA": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Clock Enable Register"
+            },
+            "CGU_IRQ": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "CGU Interrupt Status Register"
+            }
+          }
+        },
+        "PINMUX": {
+          "instances": [
+            {
+              "name": "PINMUX",
+              "base": "0x1A603000"
+            }
+          ],
+          "registers": {
+            "P_0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Control Register for Port n, Pin 0"
+            },
+            "P_1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Control Register for Port n, Pin 1"
+            },
+            "P_2": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Control Register for Port n, Pin 2"
+            },
+            "P_3": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Control Register for Port n, Pin 3"
+            },
+            "P_4": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Control Register for Port n, Pin 4"
+            },
+            "P_5": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Control Register for Port n, Pin 5"
+            },
+            "P_6": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Control Register for Port n, Pin 6"
+            },
+            "P_7": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Control Register for Port n, Pin 7"
+            }
+          }
+        },
+        "AON": {
+          "instances": [
+            {
+              "name": "AON",
+              "base": "0x1A604000"
+            }
+          ],
+          "registers": {
+            "RTSS_HE_CTRL": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "M55-HE Control Register"
+            },
+            "RTSS_HE_RESET": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "M55-HE Reset Status Register"
+            },
+            "RTSS_HE_LPUART_CKEN": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "LPUART Clock Enable Register"
+            },
+            "SYSTOP_CLK_DIV": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "System Bus Clock Divider Control Register"
+            },
+            "MISC_REG1": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "HFXO Divider Control Register"
+            },
+            "PMU_PERIPH": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "ADC Control Register"
+            }
+          }
+        },
+        "VBAT": {
+          "instances": [
+            {
+              "name": "VBAT",
+              "base": "0x1A609000"
+            }
+          ],
+          "registers": {
+            "GPIO_CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "GPIO 1.8 V / 3.3 V Power Control Register"
+            },
+            "TIMER_CLKSEL": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "LPTIMER Clock Select Register"
+            },
+            "PWR_CTRL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Power Control Register"
+            },
+            "RET_CTRL": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Memory Retention Control Register"
+            },
+            "RTC_CLK_EN": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "LPRTC Clock Enable Register"
+            }
+          }
+        },
+        "ANA": {
+          "instances": [
+            {
+              "name": "ANA",
+              "base": "0x1A60A000"
+            }
+          ],
+          "registers": {
+            "MISC_CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "VBAT Misc Control Register"
+            },
+            "WKUP_CTRL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "VBAT Wake-up Source Control Register"
+            },
+            "DCDC_REG1": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "DC/DC Control Register 1"
+            },
+            "DCDC_REG2": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "DC/DC Control Register 2"
+            },
+            "VBAT_ANA_REG1": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "VBAT Analog Control Register 1"
+            },
+            "VBAT_ANA_REG2": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "VBAT Analog Control Register 2"
+            },
+            "VBAT_ANA_REG3": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "VBAT Analog Control Register 3"
+            }
+          }
+        },
+        "STOP": {
+          "instances": [
+            {
+              "name": "STOP_MODE",
+              "base": "0x1A60F000"
+            }
+          ],
+          "registers": {
+            "VBAT_STOP_MODE_REG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "VBAT Stop Mode Control and Status Register"
+            }
+          }
+        },
+        "MHU": {
+          "instances": [
+            {
+              "name": "MHU_SECPU_M55HE_0_RX",
+              "base": "0x40040000",
+              "irq": 37
+            },
+            {
+              "name": "MHU_M55HE_SECPU_0_TX",
+              "base": "0x40050000",
+              "irq": 38
+            },
+            {
+              "name": "MHU_SECPU_M55HE_1_RX",
+              "base": "0x40060000",
+              "irq": 39
+            },
+            {
+              "name": "MHU_M55HE_SECPU_1_TX",
+              "base": "0x40070000",
+              "irq": 40
+            }
+          ],
+          "registers": {
+            "MHU_CH_ST": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Channel (n) Status Register"
+            },
+            "MHU_CH_ST_MSK": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Channel (n) Status Masked Register"
+            },
+            "MHU_CH_CLR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Channel Clear Register"
+            },
+            "MHU_CH_MSK_ST": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Channel (n) Mask Status Register"
+            },
+            "MHU_CH_MSK_SET": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Channel (n) Mask Set Register"
+            },
+            "MHU_CH_MSK_CLR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Channel (n) Mask Clear Register"
+            },
+            "MHU_CFG": {
+              "offset": "0xF80",
+              "size": 32,
+              "description": "Module Configuration Register"
+            },
+            "MHU_INT_ST": {
+              "offset": "0xF90",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "MHU_INT_CLR": {
+              "offset": "0xF94",
+              "size": 32,
+              "description": "Interrupt Clear Register"
+            },
+            "MHU_INT_EN": {
+              "offset": "0xF98",
+              "size": 32,
+              "description": "Interrupt Enable Register"
+            },
+            "MHU_CHCOMB_INT_ST0": {
+              "offset": "0xFA0",
+              "size": 32,
+              "description": "Channel Combined Interrupt Status Register for Channels 0-31"
+            },
+            "MHU_CHCOMB_INT_ST1": {
+              "offset": "0xFA4",
+              "size": 32,
+              "description": "Channel Combined Interrupt Status Register for Channels 32-63"
+            },
+            "MHU_CHCOMB_INT_ST2": {
+              "offset": "0xFA8",
+              "size": 32,
+              "description": "Channel Combined Interrupt Status Register for Channels 64-95"
+            },
+            "MHU_CHCOMB_INT_ST3": {
+              "offset": "0xFAC",
+              "size": 32,
+              "description": "Channel Combined Interrupt Status Register for Channels 96-123"
+            },
+            "MHU_IIDR": {
+              "offset": "0xFC8",
+              "size": 32,
+              "description": "Implementer Identification Register"
+            },
+            "MHU_AIDR": {
+              "offset": "0xFCC",
+              "size": 32,
+              "description": "Architecture Identification Register"
+            },
+            "MHU_PID4": {
+              "offset": "0xFD0",
+              "size": 32,
+              "description": "Peripheral ID 4 Register"
+            },
+            "MHU_PID0": {
+              "offset": "0xFE0",
+              "size": 32,
+              "description": "Peripheral ID 0 Register"
+            },
+            "MHU_PID1": {
+              "offset": "0xFE4",
+              "size": 32,
+              "description": "Peripheral ID 1 Register"
+            },
+            "MHU_PID2": {
+              "offset": "0xFE8",
+              "size": 32,
+              "description": "Peripheral ID 2 Register"
+            },
+            "MHU_PID3": {
+              "offset": "0xFEC",
+              "size": 32,
+              "description": "Peripheral ID 3 Register"
+            },
+            "MHU_CID0": {
+              "offset": "0xFF0",
+              "size": 32,
+              "description": "Component ID 0 Register"
+            },
+            "MHU_CID1": {
+              "offset": "0xFF4",
+              "size": 32,
+              "description": "Component ID 1 Register"
+            },
+            "MHU_CID2": {
+              "offset": "0xFF8",
+              "size": 32,
+              "description": "Component ID 2 Register"
+            },
+            "MHU_CID3": {
+              "offset": "0xFFC",
+              "size": 32,
+              "description": "Component ID 3 Register"
+            }
+          }
+        },
+        "DMA": {
+          "instances": [
+            {
+              "name": "DMA2_SEC",
+              "base": "0x400C0000",
+              "irq": 0
+            },
+            {
+              "name": "DMA2_NS",
+              "base": "0x400E0000",
+              "irq": 0
+            },
+            {
+              "name": "DMA0_SEC",
+              "base": "0x49080000",
+              "irq": 299
+            },
+            {
+              "name": "DMA0_NS",
+              "base": "0x490A0000",
+              "irq": 299
+            }
+          ],
+          "registers": {
+            "DMA_DSR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "DMA Manager Status Register"
+            },
+            "DMA_DPC": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "DMA Program Counter Register"
+            },
+            "DMA_INTEN": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Interrupt Enable Register"
+            },
+            "DMA_INT_EVENT_RIS": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Event-Interrupt Raw Status Register"
+            },
+            "DMA_INTMIS": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "DMA_INTCLR": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Interrupt Clear Register"
+            },
+            "DMA_FSRD": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Fault Status DMA Manager Register"
+            },
+            "DMA_FSRC": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Fault Status DMA Channel Register"
+            },
+            "DMA_FTRD": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Fault Type DMA Manager Register"
+            },
+            "DMA_FTR[%s]": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Fault Type for DMA Channel (n) Register"
+            },
+            "DMA_CSR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Channel Status for DMA Channel (n) Register"
+            },
+            "DMA_CPC": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Channel PC for DMA Channel (n) Register"
+            },
+            "DMA_SAR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Source Address for DMA Channel (n) Register"
+            },
+            "DMA_DAR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Destination Address for DMA Channel (n) Register"
+            },
+            "DMA_CCR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Channel Control for DMA Channel (n) Register"
+            },
+            "DMA_LC0": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Loop Counter 0 for DMA Channel (n) Register"
+            },
+            "DMA_LC1": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Loop Counter 1 for DMA Channel (n) Register"
+            },
+            "DMA_DBGSTATUS": {
+              "offset": "0xD00",
+              "size": 32,
+              "description": "Debug Status Register"
+            },
+            "DMA_DBGCMD": {
+              "offset": "0xD04",
+              "size": 32,
+              "description": "Debug Command Register"
+            },
+            "DMA_DBGINST0": {
+              "offset": "0xD08",
+              "size": 32,
+              "description": "Debug Instruction Register 0"
+            },
+            "DMA_DBGINST1": {
+              "offset": "0xD0C",
+              "size": 32,
+              "description": "Debug Instruction Register 1"
+            },
+            "DMA_CR0": {
+              "offset": "0xE00",
+              "size": 32,
+              "description": "Configuration Register 0"
+            },
+            "DMA_CR1": {
+              "offset": "0xE04",
+              "size": 32,
+              "description": "Configuration Register 1"
+            },
+            "DMA_CR2": {
+              "offset": "0xE08",
+              "size": 32,
+              "description": "Configuration Register 2"
+            },
+            "DMA_CR3": {
+              "offset": "0xE0C",
+              "size": 32,
+              "description": "Configuration Register 3"
+            },
+            "DMA_CR4": {
+              "offset": "0xE10",
+              "size": 32,
+              "description": "Configuration Register 4"
+            },
+            "DMA_CRD": {
+              "offset": "0xE14",
+              "size": 32,
+              "description": "DMA Configuration Register"
+            },
+            "DMA_WD": {
+              "offset": "0xE80",
+              "size": 32,
+              "description": "Watchdog Register"
+            },
+            "DMA_PERIPH_ID_0": {
+              "offset": "0xFE0",
+              "size": 32,
+              "description": "Peripheral ID Register 0"
+            },
+            "DMA_PERIPH_ID_1": {
+              "offset": "0xFE4",
+              "size": 32,
+              "description": "Peripheral ID Register 1"
+            },
+            "DMA_PERIPH_ID_2": {
+              "offset": "0xFE8",
+              "size": 32,
+              "description": "Peripheral ID Register 2"
+            },
+            "DMA_PERIPH_ID_3": {
+              "offset": "0xFEC",
+              "size": 32,
+              "description": "Peripheral ID Register 3"
+            },
+            "DMA_PCELL_ID_0": {
+              "offset": "0xFF0",
+              "size": 32,
+              "description": "Component Identification Register 0"
+            },
+            "DMA_PCELL_ID_1": {
+              "offset": "0xFF4",
+              "size": 32,
+              "description": "Component Identification Register 1"
+            },
+            "DMA_PCELL_ID_2": {
+              "offset": "0xFF8",
+              "size": 32,
+              "description": "Component Identification Register 2"
+            },
+            "DMA_PCELL_ID_3": {
+              "offset": "0xFFC",
+              "size": 32,
+              "description": "Component Identification Register 3"
+            }
+          }
+        },
+        "NPU": {
+          "instances": [
+            {
+              "name": "NPU_HE",
+              "base": "0x400E1000"
+            }
+          ],
+          "registers": {
+            "NPUHE_ID": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "ID Register"
+            },
+            "NPUHE_STATUS": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Status Register"
+            },
+            "NPUHE_CMD": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Command Register"
+            },
+            "NPUHE_RESET": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Reset Register"
+            },
+            "NPUHE_QBASE0": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Queue Base Register 0"
+            },
+            "NPUHE_QBASE1": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Queue Base Register 1"
+            },
+            "NPUHE_QREAD": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Queue Read Register"
+            },
+            "NPUHE_QCONFIG": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Queue Configuration Register"
+            },
+            "NPUHE_QSIZE": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Queue Size Register"
+            },
+            "NPUHE_PROT": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Protection Register"
+            },
+            "NPUHE_CONFIG": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Module Configuration Register"
+            },
+            "NPUHE_LOCK": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Lock Register"
+            },
+            "NPUHE_REGIONCFG": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Region Configuration Register"
+            },
+            "NPUHE_AXI_LIMIT0": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "AXI Limit Register 0"
+            },
+            "NPUHE_AXI_LIMIT1": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "AXI Limit Register 1"
+            },
+            "NPUHE_AXI_LIMIT2": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "AXI Limit Register 2"
+            },
+            "NPUHE_AXI_LIMIT3": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "AXI Limit Register 3"
+            },
+            "NPUHE_BASEP0": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Base Pointer Register 0"
+            },
+            "NPUHE_BASEP1": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "Base Pointer Register 1"
+            },
+            "NPUHE_BASEP2": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "Base Pointer Register 2"
+            },
+            "NPUHE_BASEP3": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "Base Pointer Register 3"
+            },
+            "NPUHE_BASEP4": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "Base Pointer Register 4"
+            },
+            "NPUHE_BASEP5": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "Base Pointer Register 5"
+            },
+            "NPUHE_BASEP6": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "Base Pointer Register 6"
+            },
+            "NPUHE_BASEP7": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "Base Pointer Register 7"
+            },
+            "NPUHE_BASEP8": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "Base Pointer Register 8"
+            },
+            "NPUHE_BASEP9": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "Base Pointer Register 9"
+            },
+            "NPUHE_BASEP10": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "Base Pointer Register 10"
+            },
+            "NPUHE_BASEP11": {
+              "offset": "0xAC",
+              "size": 32,
+              "description": "Base Pointer Register 11"
+            },
+            "NPUHE_BASEP12": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "Base Pointer Register 12"
+            },
+            "NPUHE_BASEP13": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "Base Pointer Register 13"
+            },
+            "NPUHE_BASEP14": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "Base Pointer Register 14"
+            },
+            "NPUHE_BASEP15": {
+              "offset": "0xBC",
+              "size": 32,
+              "description": "Base Pointer Register 15"
+            },
+            "NPUHE_PMCR": {
+              "offset": "0x180",
+              "size": 32,
+              "description": "Performance Monitor Control Register"
+            },
+            "NPUHE_PMCNTENSET": {
+              "offset": "0x184",
+              "size": 32,
+              "description": "Performance Monitor Count Enable Set Register"
+            },
+            "NPUHE_PMCNTENCLR": {
+              "offset": "0x188",
+              "size": 32,
+              "description": "Performance Monitor Count Enable Clear Register"
+            },
+            "NPUHE_PMOVSSET": {
+              "offset": "0x18C",
+              "size": 32,
+              "description": "Performance Monitor Overflow Status Set Register"
+            },
+            "NPUHE_PMOVSCLR": {
+              "offset": "0x190",
+              "size": 32,
+              "description": "Performance Monitor Overflow Status Clear Register"
+            },
+            "NPUHE_PMINTSET": {
+              "offset": "0x194",
+              "size": 32,
+              "description": "Performance Monitor Interrupt Set Register"
+            },
+            "NPUHE_PMINTCLR": {
+              "offset": "0x198",
+              "size": 32,
+              "description": "Performance Monitor Interrupt Clear Register"
+            },
+            "NPUHE_PMCCNTR_LO": {
+              "offset": "0x1A0",
+              "size": 32,
+              "description": "Performance Monitor Cycle Count Low Register"
+            },
+            "NPUHE_PMCCNTR_HI": {
+              "offset": "0x1A4",
+              "size": 32,
+              "description": "Performance Monitor Cycle Count High Register"
+            },
+            "NPUHE_PMCAXI_CHAN": {
+              "offset": "0x1AC",
+              "size": 32,
+              "description": "Performance Monitor AXI Channel Select Register"
+            },
+            "NPUHE_PMEVCNTR0": {
+              "offset": "0x300",
+              "size": 32,
+              "description": "Performance Monitor Event Count Register 0"
+            },
+            "NPUHE_PMEVCNTR1": {
+              "offset": "0x304",
+              "size": 32,
+              "description": "Performance Monitor Event Count Register 1"
+            },
+            "NPUHE_PMEVCNTR2": {
+              "offset": "0x308",
+              "size": 32,
+              "description": "Performance Monitor Event Count Register 2"
+            },
+            "NPUHE_PMEVCNTR3": {
+              "offset": "0x30C",
+              "size": 32,
+              "description": "Performance Monitor Event Count Register 3"
+            },
+            "NPUHE_PMEVTYPER0": {
+              "offset": "0x380",
+              "size": 32,
+              "description": "Performance Monitor Event Type Register 0"
+            },
+            "NPUHE_PMEVTYPER1": {
+              "offset": "0x384",
+              "size": 32,
+              "description": "Performance Monitor Event Type Register 1"
+            },
+            "NPUHE_PMEVTYPER2": {
+              "offset": "0x388",
+              "size": 32,
+              "description": "Performance Monitor Event Type Register 2"
+            },
+            "NPUHE_PMEVTYPER3": {
+              "offset": "0x38C",
+              "size": 32,
+              "description": "Performance Monitor Event Type Register 3"
+            },
+            "NPUHE_PID4": {
+              "offset": "0xFD0",
+              "size": 32,
+              "description": "Peripheral ID Register 4"
+            },
+            "NPUHE_PID5": {
+              "offset": "0xFD4",
+              "size": 32,
+              "description": "Peripheral ID Register 5"
+            },
+            "NPUHE_PID6": {
+              "offset": "0xFD8",
+              "size": 32,
+              "description": "Peripheral ID Register 6"
+            },
+            "NPUHE_PID7": {
+              "offset": "0xFDC",
+              "size": 32,
+              "description": "Peripheral ID Register 7"
+            },
+            "NPUHE_PID0": {
+              "offset": "0xFE0",
+              "size": 32,
+              "description": "Peripheral ID Register 0"
+            },
+            "NPUHE_PID1": {
+              "offset": "0xFE4",
+              "size": 32,
+              "description": "Peripheral ID Register 1"
+            },
+            "NPUHE_PID2": {
+              "offset": "0xFE8",
+              "size": 32,
+              "description": "Peripheral ID Register 2"
+            },
+            "NPUHE_PID3": {
+              "offset": "0xFEC",
+              "size": 32,
+              "description": "Peripheral ID Register 3"
+            },
+            "NPUHE_CID0": {
+              "offset": "0xFF0",
+              "size": 32,
+              "description": "Component ID Register 0"
+            },
+            "NPUHE_CID1": {
+              "offset": "0xFF4",
+              "size": 32,
+              "description": "Component ID Register 1"
+            },
+            "NPUHE_CID2": {
+              "offset": "0xFF8",
+              "size": 32,
+              "description": "Component ID Register 2"
+            },
+            "NPUHE_CID3": {
+              "offset": "0xFFC",
+              "size": 32,
+              "description": "Component ID Register 3"
+            }
+          }
+        },
+        "EVTRTR2": {
+          "instances": [
+            {
+              "name": "EVTRTR2",
+              "base": "0x400E2000"
+            }
+          ],
+          "registers": {
+            "DMA_CTRL[%s]": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "DMA/Event Router Control and Status Register (n)"
+            },
+            "DMA_REQ_CTRL": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "DMA REQ Control Register"
+            },
+            "DMA_ACK_TYPE0": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "DMA Handshake Type Register 0"
+            },
+            "DMA_ACK_TYPE1": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "DMA Handshake Type Register 1"
+            },
+            "DMA_ACK_TYPE2": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "DMA Handshake Type Register 2"
+            },
+            "DMA_ACK_TYPE3": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "DMA Handshake Type Register 3"
+            }
+          }
+        },
+        "WDG": {
+          "instances": [
+            {
+              "name": "WDT_HE_CTRL",
+              "base": "0x40100000"
+            },
+            {
+              "name": "WDT_HE_REFRESH",
+              "base": "0x40101000"
+            }
+          ],
+          "registers": {
+            "WDT_WDOGLOAD": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Watchdog Load Register"
+            },
+            "WDT_WDOGVALUE": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Watchdog Value Register"
+            },
+            "WDT_WDOGCONTROL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Watchdog Control Register"
+            },
+            "WDT_WDOGINTCLR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Watchdog Clear Interrupt Register"
+            },
+            "WDT_WDOGRIS": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Watchdog Raw Interrupt Status Register"
+            },
+            "WDT_WDOGMIS": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Watchdog Interrupt Status Register"
+            },
+            "WDT_WDOGLOCK": {
+              "offset": "0xC00",
+              "size": 32,
+              "description": "Watchdog Lock Register"
+            },
+            "WDT_WDOGPERIPHID4": {
+              "offset": "0xFD0",
+              "size": 32,
+              "description": "Peripheral ID Register 4"
+            },
+            "WDT_WDOGPERIPHID0": {
+              "offset": "0xFE0",
+              "size": 32,
+              "description": "Peripheral ID Register 0"
+            },
+            "WDT_WDOGPERIPHID1": {
+              "offset": "0xFE4",
+              "size": 32,
+              "description": "Peripheral ID Register 1"
+            },
+            "WDT_WDOGPERIPHID2": {
+              "offset": "0xFE8",
+              "size": 32,
+              "description": "Peripheral ID Register 2"
+            },
+            "WDT_WDOGPERIPHID3": {
+              "offset": "0xFEC",
+              "size": 32,
+              "description": "Peripheral ID Register 3"
+            },
+            "WDT_WDOGPCELLID0": {
+              "offset": "0xFF0",
+              "size": 32,
+              "description": "Component ID Register 0"
+            },
+            "WDT_WDOGPCELLID1": {
+              "offset": "0xFF4",
+              "size": 32,
+              "description": "Component ID Register 1"
+            },
+            "WDT_WDOGPCELLID2": {
+              "offset": "0xFF8",
+              "size": 32,
+              "description": "Component ID Register 2"
+            },
+            "WDT_WDOGPCELLID3": {
+              "offset": "0xFFC",
+              "size": 32,
+              "description": "Component ID Register 3"
+            }
+          }
+        },
+        "RTC": {
+          "instances": [
+            {
+              "name": "LPRTC",
+              "base": "0x42000000",
+              "irq": 350
+            }
+          ],
+          "registers": {
+            "LPRTC_CCVR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Current Counter Value Register"
+            },
+            "LPRTC_CMR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Counter Match Register"
+            },
+            "LPRTC_CLR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Counter Load Register"
+            },
+            "LPRTC_CCR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Counter Control Register"
+            },
+            "LPRTC_STAT": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "LPRTC_RSTAT": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Interrupt Raw Status Register"
+            },
+            "LPRTC_EOI": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "End-of-Interrupt Register"
+            },
+            "LPRTC_COMP_VERSION": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "LPRTC Component Version Register"
+            },
+            "LPRTC_CPSR": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Counter Prescaler Register"
+            },
+            "LPRTC_CPCVR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Current Prescaler Counter Value Register"
+            }
+          }
+        },
+        "TIM": {
+          "instances": [
+            {
+              "name": "LPTIMER",
+              "base": "0x42001000",
+              "irq": 346
+            },
+            {
+              "name": "UTIMER",
+              "base": "0x48000000",
+              "irq": 377
+            }
+          ],
+          "registers": {
+            "LPTIMER_LOADCOUNT": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Timer (n) Load Count Register"
+            },
+            "LPTIMER_CURRENTVAL": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Timer (n) Current Value Register"
+            },
+            "LPTIMER_CONTROLREG": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Timer (n) Control Register"
+            },
+            "LPTIMER_EOI": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Timer (n) End-of-Interrupt Register"
+            },
+            "LPTIMER_INTSTAT": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Timer (n) Interrupt Status Register"
+            },
+            "LPTIMERS_INTSTATUS": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "Timers Interrupt Status Register"
+            },
+            "LPTIMERS_EOI": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "Timers End-of-Interrupt Register"
+            },
+            "LPTIMERS_RAWINTSTATUS": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "Timers Raw Interrupt Status Register"
+            },
+            "LPTIMERS_COMP_VERSION": {
+              "offset": "0xAC",
+              "size": 32,
+              "description": "LPTIMER Component Version"
+            }
+          }
+        },
+        "GPIO": {
+          "instances": [
+            {
+              "name": "LPGPIO",
+              "base": "0x42002000",
+              "irq": 57
+            },
+            {
+              "name": "LPGPIO_CTRL",
+              "base": "0x42007000"
+            },
+            {
+              "name": "GPIO0",
+              "base": "0x49000000",
+              "irq": 179
+            },
+            {
+              "name": "GPIO1",
+              "base": "0x49001000",
+              "irq": 187
+            },
+            {
+              "name": "GPIO2",
+              "base": "0x49002000",
+              "irq": 195
+            },
+            {
+              "name": "GPIO3",
+              "base": "0x49003000",
+              "irq": 203
+            },
+            {
+              "name": "GPIO4",
+              "base": "0x49004000",
+              "irq": 211
+            },
+            {
+              "name": "GPIO5",
+              "base": "0x49005000",
+              "irq": 219
+            },
+            {
+              "name": "GPIO6",
+              "base": "0x49006000",
+              "irq": 227
+            },
+            {
+              "name": "GPIO7",
+              "base": "0x49007000",
+              "irq": 235
+            },
+            {
+              "name": "GPIO8",
+              "base": "0x49008000",
+              "irq": 243
+            },
+            {
+              "name": "GPIO9",
+              "base": "0x49009000",
+              "irq": 251
+            },
+            {
+              "name": "GPIO10",
+              "base": "0x4900A000",
+              "irq": 259
+            },
+            {
+              "name": "GPIO11",
+              "base": "0x4900B000",
+              "irq": 267
+            },
+            {
+              "name": "GPIO12",
+              "base": "0x4900C000",
+              "irq": 275
+            },
+            {
+              "name": "GPIO13",
+              "base": "0x4900D000",
+              "irq": 283
+            },
+            {
+              "name": "GPIO14",
+              "base": "0x4900E000",
+              "irq": 291
+            }
+          ],
+          "registers": {
+            "GPIO_SWPORTA_DR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "GPIO Port Data Register"
+            },
+            "GPIO_SWPORTA_DDR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "GPIO Port Data Direction Register"
+            },
+            "GPIO_SWPORTA_CTL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "GPIO Port Data Source Register"
+            },
+            "GPIO_INTEN": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "GPIO Port Interrupt Enable Register"
+            },
+            "GPIO_INTMASK": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "GPIO Port Interrupt Mask Register"
+            },
+            "GPIO_INTTYPE_LEVEL": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "GPIO Port Interrupt Level Register"
+            },
+            "GPIO_INT_POLARITY": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "GPIO Port Interrupt Polarity Register"
+            },
+            "GPIO_INTSTATUS": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "GPIO Port Interrupt Status Register"
+            },
+            "GPIO_RAW_INTSTATUS": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "GPIO Port Raw Interrupt Status Register"
+            },
+            "GPIO_DEBOUNCE": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "GPIO Port Debounce Enable Register"
+            },
+            "GPIO_PORTA_EOI": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "GPIO Port End Of Interrupt Register"
+            },
+            "GPIO_EXT_PORTA": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "GPIO External Port Read Register"
+            },
+            "GPIO_LS_SYNC": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Synchronization Level Register"
+            },
+            "GPIO_INT_BOTHEDGE": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "GPIO Port Interrupt Both Edge Type Register"
+            },
+            "GPIO_VER_ID_CODE": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "GPIO Version ID Register"
+            },
+            "GPIO_CONFIG_REG2": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Module Configuration Register 2"
+            },
+            "GPIO_CONFIG_REG1": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Module Configuration Register 1"
+            }
+          }
+        },
+        "SPI": {
+          "instances": [
+            {
+              "name": "LPSPI",
+              "base": "0x43000000",
+              "irq": 46
+            },
+            {
+              "name": "SPI0",
+              "base": "0x48103000",
+              "irq": 137
+            },
+            {
+              "name": "SPI1",
+              "base": "0x48104000",
+              "irq": 138
+            },
+            {
+              "name": "SPI2",
+              "base": "0x48105000",
+              "irq": 139
+            },
+            {
+              "name": "SPI3",
+              "base": "0x48106000",
+              "irq": 140
+            },
+            {
+              "name": "OSPI",
+              "base": "0x83000000",
+              "irq": 96
+            }
+          ],
+          "registers": {
+            "SPI_CTRLR0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Control Register 0"
+            },
+            "SPI_CTRLR1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Control Register 1"
+            },
+            "SPI_ENR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "SPI Enable Register"
+            },
+            "SPI_MWCR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Microwire Control Register"
+            },
+            "SPI_SER": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Slave Enable Register"
+            },
+            "SPI_BAUDR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Baud Rate Select Register"
+            },
+            "SPI_TXFTLR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Transmit FIFO Threshold Level Register"
+            },
+            "SPI_RXFTLR": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Receive FIFO Threshold Level Register"
+            },
+            "SPI_TXFLR": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Transmit FIFO Level Register"
+            },
+            "SPI_RXFLR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Receive FIFO Level Register"
+            },
+            "SPI_SR": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Status Register"
+            },
+            "SPI_IMR": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Interrupt Mask Register"
+            },
+            "SPI_ISR": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "SPI_RISR": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Raw Interrupt Status Register"
+            },
+            "SPI_TXOICR": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Transmit FIFO Overflow Interrupt Clear Register"
+            },
+            "SPI_RXOICR": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Receive FIFO Overflow Interrupt Clear Register"
+            },
+            "SPI_RXUICR": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Receive FIFO Underflow Interrupt Clear Register"
+            },
+            "SPI_MSTICR": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Multi-Master Interrupt Clear Register"
+            },
+            "SPI_ICR": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Interrupt Clear Register"
+            },
+            "SPI_DMACR": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "DMA Control Register"
+            },
+            "SPI_DMATDLR": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "DMA Transmit Data Level Register"
+            },
+            "SPI_DMARDLR": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "DMA Receive Data Level Register"
+            },
+            "SPI_IDR": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Reserved"
+            },
+            "SPI_VERSION_ID": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Reserved"
+            },
+            "SPI_DR[%s]": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "SPI Data Register (n)"
+            },
+            "SPI_RX_SAMPLE_DELAY": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "RX Sample Delay Register"
+            }
+          }
+        },
+        "I2S": {
+          "instances": [
+            {
+              "name": "LPI2S",
+              "base": "0x43001000",
+              "irq": 48
+            },
+            {
+              "name": "I2S0",
+              "base": "0x49014000",
+              "irq": 141
+            },
+            {
+              "name": "I2S1",
+              "base": "0x49015000",
+              "irq": 142
+            }
+          ],
+          "registers": {
+            "I2S_IER": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "I2S Enable Register"
+            },
+            "I2S_IRER": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "I2S Receiver Block Enable Register"
+            },
+            "I2S_ITER": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "I2S Transmitter Block Enable Register"
+            },
+            "I2S_CER": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Clock Enable Register"
+            },
+            "I2S_CCR": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Clock Configuration Register"
+            },
+            "I2S_RXFFR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Receiver Block FIFO Reset Register"
+            },
+            "I2S_TXFFR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Transmitter Block FIFO Reset Register"
+            },
+            "I2S_LRBR0": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Left Receive Buffer Register 0"
+            },
+            "I2S_LTHR0": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Left Transmit Holding Register 0"
+            },
+            "I2S_RRBR0": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Right Transmit Holding Register 0"
+            },
+            "I2S_RTHR0": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Specifies the Right Transmit Holding Register"
+            },
+            "I2S_RER0": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Receive Enable Register 0"
+            },
+            "I2S_TER0": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Transmit Enable Register 0"
+            },
+            "I2S_RCR0": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Receive Configuration Register 0"
+            },
+            "I2S_TCR0": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Transmit Configuration Register 0"
+            },
+            "I2S_ISR0": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Interrupt Status Register 0"
+            },
+            "I2S_IMR0": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Interrupt Mask Register 0"
+            },
+            "I2S_ROR0": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Receive Overrun Register 0"
+            },
+            "I2S_TOR0": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Transmit Overrun Register 0"
+            },
+            "I2S_RFCR0": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Receive FIFO Configuration Register 0"
+            },
+            "I2S_TFCR0": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Transmit FIFO Configuration Register 0"
+            },
+            "I2S_RFF0": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Receive FIFO Flush Register 0"
+            },
+            "I2S_TFF0": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Transmit FIFO Flush Register 0"
+            },
+            "I2S_RXDMA": {
+              "offset": "0x1C0",
+              "size": 32,
+              "description": "Receiver Block DMA Register"
+            },
+            "I2S_TXDMA": {
+              "offset": "0x1C8",
+              "size": 32,
+              "description": "Transmitter Block DMA Register"
+            },
+            "I2S_COMP_PARAM_2": {
+              "offset": "0x1F0",
+              "size": 32,
+              "description": "Module Configuration Register 2"
+            },
+            "I2S_COMP_PARAM_1": {
+              "offset": "0x1F4",
+              "size": 32,
+              "description": "Module Configuration Register 1"
+            },
+            "I2S_COMP_VERSION": {
+              "offset": "0x1F8",
+              "size": 32,
+              "description": "Component Parameter Register"
+            },
+            "I2S_COMP_TYPE": {
+              "offset": "0x1FC",
+              "size": 32,
+              "description": "Component Type Register"
+            },
+            "I2S_DMACR": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "DMA Control Register"
+            }
+          }
+        },
+        "LPPDM": {
+          "instances": [
+            {
+              "name": "LPPDM",
+              "base": "0x43002000",
+              "irq": 49
+            }
+          ],
+          "registers": {
+            "PDM_CTL0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "PDM Audio Control Register 0"
+            },
+            "PDM_CTL1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "PDM Audio Control Register 1"
+            },
+            "PDM_FIFO_WATERMARK_H": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "FIFO Watermark Register"
+            },
+            "PDM_FIFO_STAT": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "FIFO Status Register"
+            },
+            "PDM_ERROR_IRQ": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "FIFO Error Interrupt Status Register"
+            },
+            "PDM_WARN_IRQ": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "FIFO Warning Interrupt Status Register"
+            },
+            "PDM_AUDIO_DETECT_IRQ": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Audio Detection Interrupt Status Register"
+            },
+            "PDM_IRQ_ENABLE": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Interrupt Enable Register"
+            },
+            "PDM_CH0_CH1_AUDIO_OUT": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Channels 0 and 1 Audio Output Register"
+            },
+            "PDM_CH2_CH3_AUDIO_OUT": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Channels 2 and 3 Audio Output Register"
+            },
+            "PDM_CH4_CH5_AUDIO_OUT": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Channels 4 and 5 Audio Output Register"
+            },
+            "PDM_CH6_CH7_AUDIO_OUT": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Channels 6 and 7 Audio Output Register"
+            },
+            "PDM_CH_FIR_COEF_0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 0 Register"
+            },
+            "PDM_CH_FIR_COEF_1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 1 Register"
+            },
+            "PDM_CH_FIR_COEF_2": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 2 Register"
+            },
+            "PDM_CH_FIR_COEF_3": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 3 Register"
+            },
+            "PDM_CH_FIR_COEF_4": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 4 Register"
+            },
+            "PDM_CH_FIR_COEF_5": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 5 Register"
+            },
+            "PDM_CH_FIR_COEF_6": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 6 Register"
+            },
+            "PDM_CH_FIR_COEF_7": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 7 Register"
+            },
+            "PDM_CH_FIR_COEF_8": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 8 Register"
+            },
+            "PDM_CH_FIR_COEF_9": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 9 Register"
+            },
+            "PDM_CH_FIR_COEF_10": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 10 Register"
+            },
+            "PDM_CH_FIR_COEF_11": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 11 Register"
+            },
+            "PDM_CH_FIR_COEF_12": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 12 Register"
+            },
+            "PDM_CH_FIR_COEF_13": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 13 Register"
+            },
+            "PDM_CH_FIR_COEF_14": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 14 Register"
+            },
+            "PDM_CH_FIR_COEF_15": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 15 Register"
+            },
+            "PDM_CH_FIR_COEF_16": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 16 Register"
+            },
+            "PDM_CH_FIR_COEF_17": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Channel (n) FIR Filter Coefficient 17 Register"
+            },
+            "PDM_CH_IIR_COEF_SEL": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Channel (n) IIR Filter Coefficient Selection Register"
+            },
+            "PDM_CH_PHASE": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "Channel (n) Phase Control Register"
+            },
+            "PDM_CH_GAIN": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "Channel (n) Gain Control Register"
+            },
+            "PDM_CH_PKDET_TH": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "Channel (n) Peak Detector Threshold Register"
+            },
+            "PDM_CH_PKDET_ITV": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "Channel (n) Peak Detector Interval Register"
+            },
+            "PDM_CH_PKDET_STAT": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "Channel (n) Peak Detector Status Register"
+            }
+          }
+        },
+        "LPCPI": {
+          "instances": [
+            {
+              "name": "LPCPI",
+              "base": "0x43003000",
+              "irq": 54
+            }
+          ],
+          "registers": {
+            "CAM_CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Camera Control Register"
+            },
+            "CAM_INTR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Camera Interrupt Status Register"
+            },
+            "CAM_INTR_ENA": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Camera Interrupt Enable Register"
+            },
+            "CAM_CFG": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Camera Configuration Register"
+            },
+            "CAM_FIFO_CTRL": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Camera FIFO Control Register"
+            },
+            "CAM_AXI_ERR_STAT": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Camera AXI Error Status Register"
+            },
+            "CAM_VIDEO_FCFG": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Camera Video Frame Configuration Register"
+            },
+            "CAM_FRAME_ADDR": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Camera Video Frame Start Address Register"
+            }
+          }
+        },
+        "M55HE": {
+          "instances": [
+            {
+              "name": "M55HE_CFG",
+              "base": "0x43007000"
+            },
+            {
+              "name": "M55HE_NVIC_S",
+              "base": "0xE000E100"
+            },
+            {
+              "name": "M55HE_NVIC_NS",
+              "base": "0xE002E100"
+            }
+          ],
+          "registers": {
+            "HE_DMA_CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "DMA2 Boot Control Register"
+            },
+            "HE_DMA_IRQ": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "DMA2 Boot IRQ Non-Secure Register"
+            },
+            "HE_DMA_PERIPH": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "DMA2 Boot Peripheral Non-Secure Register"
+            },
+            "HE_DMA_SEL": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "DMA2 Select Register"
+            },
+            "HE_CLK_ENA": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Peripheral Clock Enable Register"
+            },
+            "HE_I2S_CTRL": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "LPI2S Control Register"
+            },
+            "HE_CAMERA_PIXCLK": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "LPCPI Pixel Clock Control Register"
+            }
+          }
+        },
+        "USART": {
+          "instances": [
+            {
+              "name": "LPUART",
+              "base": "0x43008000",
+              "irq": 45
+            },
+            {
+              "name": "UART0",
+              "base": "0x49018000",
+              "irq": 124
+            },
+            {
+              "name": "UART1",
+              "base": "0x49019000",
+              "irq": 125
+            },
+            {
+              "name": "UART2",
+              "base": "0x4901A000",
+              "irq": 126
+            },
+            {
+              "name": "UART3",
+              "base": "0x4901B000",
+              "irq": 127
+            },
+            {
+              "name": "UART4",
+              "base": "0x4901C000",
+              "irq": 128
+            },
+            {
+              "name": "UART5",
+              "base": "0x4901D000",
+              "irq": 129
+            }
+          ],
+          "registers": {
+            "UART_RBR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Receive Buffer Register"
+            },
+            "UART_DLL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Divisor Latch Low Register"
+            },
+            "UART_THR": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Transmit Holding Register"
+            },
+            "UART_DLH": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Divisor Latch High Register"
+            },
+            "UART_IER": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Interrupt Enable Register"
+            },
+            "UART_FCR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "FIFO Control Register"
+            },
+            "UART_IIR": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Interrupt Identification Register"
+            },
+            "UART_LCR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Line Control Register"
+            },
+            "UART_MCR": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Modem Control Register"
+            },
+            "UART_LSR": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Line Status Register"
+            },
+            "UART_MSR": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Modem Status Register"
+            },
+            "UART_SCR": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Scratchpad Register"
+            },
+            "UART_SRBR[%s]": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Shadow Receive Buffer Register (n)"
+            },
+            "UART_STHR[%s]": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Shadow Transmit Holding Register (n)"
+            },
+            "UART_FAR": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "FIFO Access Register"
+            },
+            "UART_TFR": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Tx FIFO Read Register"
+            },
+            "UART_RFW": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "Rx FIFO Write Register"
+            },
+            "UART_USR": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "UART Status Register"
+            },
+            "UART_TFL": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Tx FIFO Level Register"
+            },
+            "UART_RFL": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "Rx FIFO Level Register"
+            },
+            "UART_SRR": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "Software Reset Register"
+            },
+            "UART_SRTS": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "Shadow Request to Send Register"
+            },
+            "UART_SBCR": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "Shadow Break Control Register"
+            },
+            "UART_SDMAM": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "Shadow DMA Mode Register"
+            },
+            "UART_SFE": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "Shadow FIFO Enable Register"
+            },
+            "UART_SRT": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "Shadow RCVR Trigger Register"
+            },
+            "UART_STET": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "Shadow Tx Empty Trigger Register"
+            },
+            "UART_HTX": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "Halt Tx Register"
+            },
+            "UART_DMASA": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "DMA Software Acknowledge Register"
+            },
+            "UART_TCR": {
+              "offset": "0xAC",
+              "size": 32,
+              "description": "Transceiver Control Register"
+            },
+            "UART_DE_EN": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "Driver Output Enable Register"
+            },
+            "UART_RE_EN": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "Receiver Output Enable Register"
+            },
+            "UART_DET": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "Driver Output Enable Timing Register"
+            },
+            "UART_TAT": {
+              "offset": "0xBC",
+              "size": 32,
+              "description": "Turnaround Timing Register"
+            },
+            "UART_DLF": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "Divisor Latch Fraction Register"
+            },
+            "UART_RAR": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "Receive Address Register"
+            },
+            "UART_TAR": {
+              "offset": "0xC8",
+              "size": 32,
+              "description": "Transmit Address Register"
+            },
+            "UART_LCR_EXT": {
+              "offset": "0xCC",
+              "size": 32,
+              "description": "Line Extended Control Register"
+            },
+            "UART_REG_TIMEOUT_RST": {
+              "offset": "0xD4",
+              "size": 32,
+              "description": "Timeout Counter Reset Value Register"
+            },
+            "UART_CPR": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "Module Configuration Register"
+            },
+            "UART_UCV": {
+              "offset": "0xF8",
+              "size": 32,
+              "description": "Reserved"
+            },
+            "UART_CTR": {
+              "offset": "0xFC",
+              "size": 32,
+              "description": "Reserved"
+            }
+          }
+        },
+        "I2C": {
+          "instances": [
+            {
+              "name": "LPI2C",
+              "base": "0x43009000",
+              "irq": 47
+            },
+            {
+              "name": "I2C0",
+              "base": "0x49010000",
+              "irq": 132
+            },
+            {
+              "name": "I2C1",
+              "base": "0x49011000",
+              "irq": 133
+            },
+            {
+              "name": "I2C2",
+              "base": "0x49012000",
+              "irq": 134
+            },
+            {
+              "name": "I2C3",
+              "base": "0x49013000",
+              "irq": 135
+            }
+          ],
+          "registers": {
+            "LPI2C_READWRITE_DATA": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Read/Write Data Register"
+            },
+            "LPI2C_INFIFO_STATUS": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Inbound FIFO Status Register"
+            },
+            "LPI2C_OUTFIFO_STATUS": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Outbound FIFO Status Register"
+            }
+          }
+        },
+        "SDIO": {
+          "instances": [
+            {
+              "name": "SDMMC",
+              "base": "0x48102000",
+              "irq": 102
+            }
+          ],
+          "registers": {
+            "SDMMC_SDMASA_R": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "SDMA System Address Register"
+            },
+            "SDMMC_BLOCKSIZE_R": {
+              "offset": "0x04",
+              "size": 16,
+              "description": "Block Size Register"
+            },
+            "SDMMC_BLOCKCOUNT_R": {
+              "offset": "0x06",
+              "size": 16,
+              "description": "16-bit Block Count Register"
+            },
+            "SDMMC_ARGUMENT_R": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Argument Register"
+            },
+            "SDMMC_XFER_MODE_R": {
+              "offset": "0x0C",
+              "size": 16,
+              "description": "Transfer Mode Register"
+            },
+            "SDMMC_CMD_R": {
+              "offset": "0x0E",
+              "size": 16,
+              "description": "Command Register"
+            },
+            "SDMMC_RESP01_R": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Response Register 0/1"
+            },
+            "SDMMC_RESP23_R": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Response Register 2/3"
+            },
+            "SDMMC_RESP45_R": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Response Register 4/5"
+            },
+            "SDMMC_RESP67_R": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Response Register 6/7"
+            },
+            "SDMMC_BUF_DATA_R": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Buffer Data Port Register"
+            },
+            "SDMMC_PSTATE_REG": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Present State Register"
+            },
+            "SDMMC_HOST_CTRL1_R": {
+              "offset": "0x28",
+              "size": 8,
+              "description": "Host Control 1 Register"
+            },
+            "SDMMC_PWR_CTRL_R": {
+              "offset": "0x29",
+              "size": 8,
+              "description": "Power Control Register"
+            },
+            "SDMMC_BGAP_CTRL_R": {
+              "offset": "0x2A",
+              "size": 8,
+              "description": "Block Gap Control Register"
+            },
+            "SDMMC_WUP_CTRL_R": {
+              "offset": "0x2B",
+              "size": 8,
+              "description": "Wakeup Control Register"
+            },
+            "SDMMC_CLK_CTRL_R": {
+              "offset": "0x2C",
+              "size": 16,
+              "description": "Clock Control Register"
+            },
+            "SDMMC_TOUT_CTRL_R": {
+              "offset": "0x2E",
+              "size": 8,
+              "description": "Timeout Control Register"
+            },
+            "SDMMC_SW_RST_R": {
+              "offset": "0x2F",
+              "size": 8,
+              "description": "Software Reset Register"
+            },
+            "SDMMC_NORMAL_INT_STAT_R": {
+              "offset": "0x30",
+              "size": 16,
+              "description": "Normal Interrupt Status Register"
+            },
+            "SDMMC_ERROR_INT_STAT_R": {
+              "offset": "0x32",
+              "size": 16,
+              "description": "Error Interrupt Status Register"
+            },
+            "SDMMC_NORMAL_INT_STAT_EN_R": {
+              "offset": "0x34",
+              "size": 16,
+              "description": "Normal Interrupt Status Enable Register"
+            },
+            "SDMMC_ERROR_INT_STAT_EN_R": {
+              "offset": "0x36",
+              "size": 16,
+              "description": "Error Interrupt Status Enable Register"
+            },
+            "SDMMC_NORMAL_INT_SIGNAL_EN_R": {
+              "offset": "0x38",
+              "size": 16,
+              "description": "Normal Interrupt Signal Enable Register"
+            },
+            "SDMMC_ERROR_INT_SIGNAL_EN_R": {
+              "offset": "0x3A",
+              "size": 16,
+              "description": "Error Interrupt Signal Enable Register"
+            },
+            "SDMMC_AUTO_CMD_STAT_R": {
+              "offset": "0x3C",
+              "size": 16,
+              "description": "Auto CMD Status Register"
+            },
+            "SDMMC_HOST_CTRL2_R": {
+              "offset": "0x3E",
+              "size": 16,
+              "description": "Host Control 2 Register"
+            },
+            "SDMMC_CAPABILITIES1_R": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Capabilities 1 Register (0 to 31)"
+            },
+            "SDMMC_CAPABILITIES2_R": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Capabilities 2 Register (32 to 63)"
+            },
+            "SDMMC_CURR_CAPABILITIES1_R": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Maximum Current Capabilities 1 Register (0 to 31)"
+            },
+            "SDMMC_FORCE_AUTO_CMD_STAT_R": {
+              "offset": "0x50",
+              "size": 16,
+              "description": "Force Event Register for Auto CMD Error Status"
+            },
+            "SDMMC_FORCE_ERROR_INT_STAT_R": {
+              "offset": "0x52",
+              "size": 16,
+              "description": "Force Event Register for Error Interrupt Status"
+            },
+            "SDMMC_ADMA_ERR_STAT_R": {
+              "offset": "0x54",
+              "size": 8,
+              "description": "ADMA Error Status Register"
+            },
+            "SDMMC_ADMA_SA_LOW_R": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "ADMA System Address Register (Low)"
+            },
+            "SDMMC_PRESET_INIT_R": {
+              "offset": "0x60",
+              "size": 16,
+              "description": "Register with Preset Value for Initialization"
+            },
+            "SDMMC_PRESET_DS_R": {
+              "offset": "0x62",
+              "size": 16,
+              "description": "Register with Preset Value for Default Speed"
+            },
+            "SDMMC_PRESET_HS_R": {
+              "offset": "0x64",
+              "size": 16,
+              "description": "Register with Preset Value for High Speed"
+            },
+            "SDMMC_PRESET_SDR12_R": {
+              "offset": "0x66",
+              "size": 16,
+              "description": "Register with Preset Value for SDR12"
+            },
+            "SDMMC_PRESET_SDR25_R": {
+              "offset": "0x68",
+              "size": 16,
+              "description": "Register with Preset Value for SDR25"
+            },
+            "SDMMC_PRESET_SDR50_R": {
+              "offset": "0x6A",
+              "size": 16,
+              "description": "Register with Preset Value for SDR50"
+            },
+            "SDMMC_ADMA_ID_LOW_R": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "ADMA3 Integrated Descriptor Address Register (Low)"
+            },
+            "SDMMC_P_VENDOR_SPECIFIC_AREA": {
+              "offset": "0xE8",
+              "size": 16,
+              "description": "Pointer for Vendor Specific Area 1"
+            },
+            "SDMMC_SLOT_INTR_STATUS_R": {
+              "offset": "0xFC",
+              "size": 16,
+              "description": "Slot Interrupt Status Register"
+            },
+            "SDMMC_HOST_CNTRL_VERS_R": {
+              "offset": "0xFE",
+              "size": 16,
+              "description": "Host Controller Version Register"
+            },
+            "SDMMC_MSHC_VER_ID_R": {
+              "offset": "0x500",
+              "size": 32,
+              "description": "MSHC Version ID Register"
+            },
+            "SDMMC_MSHC_VER_TYPE_R": {
+              "offset": "0x504",
+              "size": 32,
+              "description": "MSHC Version Type Register"
+            },
+            "SDMMC_MSHC_CTRL_R": {
+              "offset": "0x508",
+              "size": 8,
+              "description": "SDMMC Host Controller Control Register"
+            },
+            "SDMMC_MBIU_CTRL_R": {
+              "offset": "0x510",
+              "size": 8,
+              "description": "Master Bus Interface Unit Control Register"
+            },
+            "SDMMC_EMMC_CTRL_R": {
+              "offset": "0x52C",
+              "size": 16,
+              "description": "eMMC Control Register"
+            },
+            "SDMMC_BOOT_CTRL_R": {
+              "offset": "0x52E",
+              "size": 16,
+              "description": "eMMC Boot Control Register"
+            },
+            "SDMMC_EMBEDDED_CTRL_R": {
+              "offset": "0xF6C",
+              "size": 32,
+              "description": "Embedded Control Register"
+            }
+          }
+        },
+        "CRC0": {
+          "instances": [
+            {
+              "name": "CRC0",
+              "base": "0x48107000"
+            }
+          ],
+          "registers": {
+            "CRC_CONTROL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "CRC Calculation Setup Register"
+            },
+            "CRC_SEED": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Seed Value Register"
+            },
+            "CRC_POLY_CUSTOM": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Custom Polynomial Register"
+            },
+            "CRC_OUT": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Accumulated CRC Register"
+            },
+            "CRC_DATA_IN_8_[%s]": {
+              "offset": "0x20",
+              "size": 8,
+              "description": "8-bit Values Register n"
+            },
+            "CRC_DATA_IN_32_[%s]": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "32-bit Values Register n"
+            }
+          }
+        },
+        "CRC1": {
+          "instances": [
+            {
+              "name": "CRC1",
+              "base": "0x48108000"
+            }
+          ],
+          "registers": {}
+        },
+        "USB": {
+          "instances": [
+            {
+              "name": "USB",
+              "base": "0x48200000",
+              "irq": 101
+            }
+          ],
+          "registers": {
+            "CAPLENGTH": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Capability Registers Length"
+            },
+            "HCSPARAMS1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Structural Parameters 1 Register"
+            },
+            "HCSPARAMS2": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Structural Parameters 2 Register"
+            },
+            "HCSPARAMS3": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Structural Parameters 3 Register"
+            },
+            "HCCPARAMS1": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Capability Parameters 1 Register"
+            },
+            "DBOFF": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Doorbell Offset"
+            },
+            "RTSOFF": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Run-time Register Space Offset"
+            },
+            "HCCPARAMS2": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Host Controller Capability Parameters 2"
+            },
+            "GSBUSCFG0": {
+              "offset": "0xC100",
+              "size": 32,
+              "description": "Global SoC Bus Configuration Register 0"
+            },
+            "GSBUSCFG1": {
+              "offset": "0xC104",
+              "size": 32,
+              "description": "Global SoC Bus Configuration Register 1"
+            },
+            "GCTL": {
+              "offset": "0xC110",
+              "size": 32,
+              "description": "Global Core Control Register"
+            },
+            "GSTS": {
+              "offset": "0xC118",
+              "size": 32,
+              "description": "Global Status Register"
+            },
+            "GUCTL1": {
+              "offset": "0xC11C",
+              "size": 32,
+              "description": "Global User Control Register 1"
+            },
+            "GSNPSID": {
+              "offset": "0xC120",
+              "size": 32,
+              "description": "Global Controller ID Register"
+            },
+            "GUID": {
+              "offset": "0xC128",
+              "size": 32,
+              "description": "Global User ID Register"
+            },
+            "GUCTL": {
+              "offset": "0xC12C",
+              "size": 32,
+              "description": "Global User Control Register"
+            },
+            "GBUSERRADDRLO": {
+              "offset": "0xC130",
+              "size": 32,
+              "description": "Global SoC Bus Error Address Register-Low"
+            },
+            "GBUSERRADDRHI": {
+              "offset": "0xC134",
+              "size": 32,
+              "description": "Global SoC Bus Error Address Register-High"
+            },
+            "GHWPARAMS0": {
+              "offset": "0xC140",
+              "size": 32,
+              "description": "Global Hardware Parameters Register 0"
+            },
+            "GHWPARAMS1": {
+              "offset": "0xC144",
+              "size": 32,
+              "description": "Global Hardware Parameters Register 1"
+            },
+            "GHWPARAMS2": {
+              "offset": "0xC148",
+              "size": 32,
+              "description": "Global Hardware Parameters Register 2"
+            },
+            "GHWPARAMS3": {
+              "offset": "0xC14C",
+              "size": 32,
+              "description": "Global Hardware Parameters Register 3"
+            },
+            "GHWPARAMS4": {
+              "offset": "0xC150",
+              "size": 32,
+              "description": "Global Hardware Parameters Register 4"
+            },
+            "GHWPARAMS5": {
+              "offset": "0xC154",
+              "size": 32,
+              "description": "Global Hardware Parameters Register 5"
+            },
+            "GHWPARAMS6": {
+              "offset": "0xC158",
+              "size": 32,
+              "description": "Global Hardware Parameters Register 6"
+            },
+            "GHWPARAMS7": {
+              "offset": "0xC15C",
+              "size": 32,
+              "description": "Global Hardware Parameters Register 7"
+            },
+            "GPRTBIMAP_HSLO": {
+              "offset": "0xC180",
+              "size": 32,
+              "description": "Global High-Speed Port to Bus Instance Mapping (Low)"
+            },
+            "GPRTBIMAP_HSHI": {
+              "offset": "0xC184",
+              "size": 32,
+              "description": "Global High-Speed Port to Bus Instance Mapping (High)"
+            },
+            "GPRTBIMAP_FSLO": {
+              "offset": "0xC188",
+              "size": 32,
+              "description": "Global Full-Speed Port to Bus Instance Mapping (Low)"
+            },
+            "GPRTBIMAP_FSHI": {
+              "offset": "0xC18C",
+              "size": 32,
+              "description": "Global Full-Speed Port to Bus Instance Mapping (High)"
+            },
+            "GUCTL2": {
+              "offset": "0xC19C",
+              "size": 32,
+              "description": "Global User Control Register 2"
+            },
+            "GUSB2PHYCFG0": {
+              "offset": "0xC200",
+              "size": 32,
+              "description": "Global USB2 PHY Configuration Register"
+            },
+            "GTXFIFOSIZ[%s]": {
+              "offset": "0xC300",
+              "size": 32,
+              "description": "Global Transmit FIFO Size Register n"
+            },
+            "GRXFIFOSIZ[%s]": {
+              "offset": "0xC380",
+              "size": 32,
+              "description": "Global Receive FIFO Size Register n"
+            },
+            "GEVNTADRLO0": {
+              "offset": "0xC400",
+              "size": 32,
+              "description": "Global Event Buffer Address (Low)"
+            },
+            "GEVNTADRHI0": {
+              "offset": "0xC404",
+              "size": 32,
+              "description": "Global Event Buffer Address (High)"
+            },
+            "GEVNTSIZ0": {
+              "offset": "0xC408",
+              "size": 32,
+              "description": "Global Event Buffer Size Register"
+            },
+            "GEVNTCOUNT0": {
+              "offset": "0xC40C",
+              "size": 32,
+              "description": "Global Event Buffer Count Register"
+            },
+            "GHWPARAMS8": {
+              "offset": "0xC600",
+              "size": 32,
+              "description": "Global Hardware Parameters Register 8"
+            },
+            "GTXFIFOPRIDEV": {
+              "offset": "0xC610",
+              "size": 32,
+              "description": "Global Device TX FIFO DMA Priority Register"
+            },
+            "GTXFIFOPRIHST": {
+              "offset": "0xC618",
+              "size": 32,
+              "description": "Global Host TX FIFO DMA Priority Register"
+            },
+            "GRXFIFOPRIHST": {
+              "offset": "0xC61C",
+              "size": 32,
+              "description": "Global Host RX FIFO DMA Priority Register"
+            },
+            "GFLADJ": {
+              "offset": "0xC630",
+              "size": 32,
+              "description": "Global Frame Length Adjustment Register"
+            },
+            "GUSB2RHBCTL0": {
+              "offset": "0xC640",
+              "size": 32,
+              "description": "Global USB 2.0 Root Hub Control Register"
+            },
+            "DCFG": {
+              "offset": "0xC700",
+              "size": 32,
+              "description": "Device Configuration Register"
+            },
+            "DCTL": {
+              "offset": "0xC704",
+              "size": 32,
+              "description": "Device Control Register"
+            },
+            "DEVTEN": {
+              "offset": "0xC708",
+              "size": 32,
+              "description": "Device Event Enable Register"
+            },
+            "DSTS": {
+              "offset": "0xC70C",
+              "size": 32,
+              "description": "Device Status Register"
+            },
+            "DGCMDPAR": {
+              "offset": "0xC710",
+              "size": 32,
+              "description": "Device Generic Command Parameter Register"
+            },
+            "DGCMD": {
+              "offset": "0xC714",
+              "size": 32,
+              "description": "Device Generic Command Register"
+            },
+            "DALEPENA": {
+              "offset": "0xC720",
+              "size": 32,
+              "description": "Device Active USB Endpoint Enable Register"
+            },
+            "DEPCMDPAR2": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Device Physical Endpoint-n Command Parameter 2 Register"
+            },
+            "DEPCMDPAR1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Device Physical Endpoint-n Command Parameter 1 Register"
+            },
+            "DEPCMDPAR0": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Device Physical Endpoint-n Command Parameter 0 Register"
+            },
+            "DEPCMD": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Device Physical Endpoint-n Command Register"
+            },
+            "DEV_IMOD0": {
+              "offset": "0xCA00",
+              "size": 32,
+              "description": "Device Interrupt Moderation Register"
+            }
+          }
+        },
+        "ADC": {
+          "instances": [
+            {
+              "name": "ADC120",
+              "base": "0x49020000",
+              "irq": 157
+            },
+            {
+              "name": "ADC121",
+              "base": "0x49021000",
+              "irq": 158
+            },
+            {
+              "name": "ADC24",
+              "base": "0x49027000",
+              "irq": 165
+            }
+          ],
+          "registers": {
+            "ADC_START_SRC": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "ADC Start-of-Conversion Source Register"
+            },
+            "ADC_COMP_THRESH_A": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "ADC Comparator Threshold A Register"
+            },
+            "ADC_COMP_THRESH_B": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "ADC Comparator Threshold B Register"
+            },
+            "ADC_CLK_DIVISOR": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "ADC Clock Divider Value Register"
+            },
+            "ADC_INTERRUPT": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "ADC Interrupt Status and Clear Register"
+            },
+            "ADC_INTERRUPT_MASK": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "ADC Interrupt Mask Register"
+            },
+            "ADC_SAMPLE_WIDTH": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "ADC Sampling Signal Duration Register"
+            },
+            "ADC_AVG_NUM": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "ADC Number of Samples for Averaging Register"
+            },
+            "ADC_SHIFT_CONTROL": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "ADC Data Shift Select Register"
+            },
+            "ADC_CONTROL": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "ADC Single-shot Conversion Start and Comparator Threshold Mode Register"
+            },
+            "ADC_SEQUENCER_CTRL": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "ADC Sequencer Control Register"
+            },
+            "ADC_REG1": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "ADC Analog Control Register for ADC12 Modules"
+            },
+            "ADC_SEL": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "ADC Sample Register Selected (read-only value of n)"
+            },
+            "ADC_SAMPLE_REG_[%s]": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "ADC Sampled Value From Input n Register"
+            }
+          }
+        },
+        "CMP0": {
+          "instances": [
+            {
+              "name": "CMP0",
+              "base": "0x49023000",
+              "irq": 167
+            }
+          ],
+          "registers": {
+            "CMP_COMP_REG1": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Comparator Register 1"
+            },
+            "CMP_COMP_REG2": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Comparator Register 2"
+            },
+            "CMP_POLARITY_CTRL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "CMP Polarity Control Register"
+            },
+            "CMP_WINDOW_CTRL": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "CMP Window Control Register"
+            },
+            "CMP_FILTER_CTRL": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "CMP Filter Control Register"
+            },
+            "CMP_PRESCALER_CTRL": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "CMP Prescaler Control Register"
+            },
+            "CMP_INTERRUPT_STATUS": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "CMP Interrupt Status and Clear Register"
+            },
+            "CMP_INTERRUPT_MASK": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "CMP Interrupt Mask Register"
+            }
+          }
+        },
+        "CMP1": {
+          "instances": [
+            {
+              "name": "CMP1",
+              "base": "0x49024000",
+              "irq": 168
+            }
+          ],
+          "registers": {}
+        },
+        "DAC": {
+          "instances": [
+            {
+              "name": "DAC12",
+              "base": "0x49028000"
+            }
+          ],
+          "registers": {
+            "DAC_REG1": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "REG1 DAC Control Register"
+            },
+            "DAC_IN": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "DAC Input Value Register"
+            }
+          }
+        },
+        "PDM": {
+          "instances": [
+            {
+              "name": "PDM",
+              "base": "0x4902D000",
+              "irq": 147
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM0": {
+          "instances": [
+            {
+              "name": "HWSEM0",
+              "base": "0x4902E000",
+              "irq": 105
+            }
+          ],
+          "registers": {
+            "HWSEM_REQ_REG": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Request register"
+            },
+            "HWSEM_REL_REG": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Release register"
+            },
+            "HWSEM_RST_REG": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Reset register"
+            }
+          }
+        },
+        "HWSEM1": {
+          "instances": [
+            {
+              "name": "HWSEM1",
+              "base": "0x4902E010",
+              "irq": 106
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM2": {
+          "instances": [
+            {
+              "name": "HWSEM2",
+              "base": "0x4902E020",
+              "irq": 107
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM3": {
+          "instances": [
+            {
+              "name": "HWSEM3",
+              "base": "0x4902E030",
+              "irq": 108
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM4": {
+          "instances": [
+            {
+              "name": "HWSEM4",
+              "base": "0x4902E040",
+              "irq": 109
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM5": {
+          "instances": [
+            {
+              "name": "HWSEM5",
+              "base": "0x4902E050",
+              "irq": 110
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM6": {
+          "instances": [
+            {
+              "name": "HWSEM6",
+              "base": "0x4902E060",
+              "irq": 111
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM7": {
+          "instances": [
+            {
+              "name": "HWSEM7",
+              "base": "0x4902E070",
+              "irq": 112
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM8": {
+          "instances": [
+            {
+              "name": "HWSEM8",
+              "base": "0x4902E080",
+              "irq": 113
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM9": {
+          "instances": [
+            {
+              "name": "HWSEM9",
+              "base": "0x4902E090",
+              "irq": 114
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM10": {
+          "instances": [
+            {
+              "name": "HWSEM10",
+              "base": "0x4902E0A0",
+              "irq": 115
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM11": {
+          "instances": [
+            {
+              "name": "HWSEM11",
+              "base": "0x4902E0B0",
+              "irq": 116
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM12": {
+          "instances": [
+            {
+              "name": "HWSEM12",
+              "base": "0x4902E0C0",
+              "irq": 117
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM13": {
+          "instances": [
+            {
+              "name": "HWSEM13",
+              "base": "0x4902E0D0",
+              "irq": 118
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM14": {
+          "instances": [
+            {
+              "name": "HWSEM14",
+              "base": "0x4902E0E0",
+              "irq": 119
+            }
+          ],
+          "registers": {}
+        },
+        "HWSEM15": {
+          "instances": [
+            {
+              "name": "HWSEM15",
+              "base": "0x4902E0F0",
+              "irq": 120
+            }
+          ],
+          "registers": {}
+        },
+        "CDC": {
+          "instances": [
+            {
+              "name": "CDC",
+              "base": "0x49031000",
+              "irq": 339
+            }
+          ],
+          "registers": {
+            "CDC_HW_VER": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "HW Version Register"
+            },
+            "CDC_LCNT": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Layer Count Register"
+            },
+            "CDC_SYNC_SIZE_CFG": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Sync Size Register"
+            },
+            "CDC_BP_CFG": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Back Porch Register"
+            },
+            "CDC_ACTW_CFG": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Active Width Register"
+            },
+            "CDC_TOTALW_CFG": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Total Width Register"
+            },
+            "CDC_GLB_CTRL": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Global Control Register"
+            },
+            "CDC_CFG1": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Global Configuration 1 Register"
+            },
+            "CDC_CFG2": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Global Configuration 2 Register"
+            },
+            "CDC_SRCTRL": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Shadow Reload Control Register"
+            },
+            "CDC_GAMMA_CORR": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Gamma Correction Register"
+            },
+            "CDC_BACKGND_COLOR": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Background Color Register"
+            },
+            "CDC_IRQ_MASK0": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "IRQ Enable 1 Register"
+            },
+            "CDC_IRQ_STATUS0": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "IRQ Status 1 Register"
+            },
+            "CDC_IRQ_CLEAR0": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "IRQ Clear Register"
+            },
+            "CDC_LINE_IRQ_POS": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Line Number IRQ Control Register"
+            },
+            "CDC_POS_STAT": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Position Status Register"
+            },
+            "CDC_SYNC_BLANK_STAT": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Sync/Blank Status Register"
+            },
+            "CDC_SLINE_IRQ_POS": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Secure Line IRQ Position Control Register"
+            },
+            "CDC_L_CFG1": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Layer (n) Configuration 1 Register"
+            },
+            "CDC_L_CFG2": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Layer (n) Configuration 2 Register"
+            },
+            "CDC_L_REL_CTRL": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Layer (n) Shadow Reload Control Register"
+            },
+            "CDC_L_CTRL": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Layer (n) Control Register"
+            },
+            "CDC_L_WIN_HPOS": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Layer (n) Window Horizontal Position Register"
+            },
+            "CDC_L_WIN_VPOS": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Layer (n) Window Vertical Position Register"
+            },
+            "CDC_L_CKEY": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Layer (n) Color Key Register"
+            },
+            "CDC_L_PIX_FORMAT": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Layer (n) Pixel Format Register"
+            },
+            "CDC_L_CONST_ALPHA": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Layer (n) Constant Alpha Register"
+            },
+            "CDC_L_DFLT_COLOR": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Layer (n) Default Color Register"
+            },
+            "CDC_L_BLEND_CFG": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Layer (n) Blending Factors Register"
+            },
+            "CDC_L_FB_BCTRL": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Layer (n) FB Bus Control Register"
+            },
+            "CDC_L_CFB_ADDR": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Layer (n) Color FB Address Register"
+            },
+            "CDC_L_CFB_LENGTH": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Layer (n) Color FB Length Register"
+            },
+            "CDC_L_CFB_LINES": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Layer (n) Color FB Lines Register"
+            },
+            "CDC_L_CLUT_WRACC": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Layer (n) CLUT Write Access Register"
+            }
+          }
+        },
+        "DSI": {
+          "instances": [
+            {
+              "name": "DSI",
+              "base": "0x49032000",
+              "irq": 343
+            }
+          ],
+          "registers": {
+            "DSI_VERSION": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "DSI Host Controller Version Register"
+            },
+            "DSI_PWR_UP": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Power-up Control Register"
+            },
+            "DSI_CLKMGR_CFG": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Clock Control Register"
+            },
+            "DSI_DPI_VCID": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "VC ID Configuration Register"
+            },
+            "DSI_DPI_COLOR_CODING": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "DPI Color Coding Register"
+            },
+            "DSI_DPI_CFG_POL": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "DPI Polarity Configuration Register"
+            },
+            "DSI_DPI_LP_CMD_TIM": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "DPI Low-Power Mode Configuration Register"
+            },
+            "DSI_PCKHDL_CFG": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Protocol Configuration Register"
+            },
+            "DSI_GEN_VCID": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Generic VC ID Configuration Register"
+            },
+            "DSI_MODE_CFG": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Mode Configuration Register"
+            },
+            "DSI_VID_MODE_CFG": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Video Mode Configuration Register"
+            },
+            "DSI_VID_PKT_SIZE": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Video Packet Size Register"
+            },
+            "DSI_VID_NUM_CHUNKS": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Video Chunks Configuration Register"
+            },
+            "DSI_VID_NULL_SIZE": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Video Null Packet Configuration Register"
+            },
+            "DSI_VID_HSA_TIME": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Video HSA Configuration Register"
+            },
+            "DSI_VID_HBP_TIME": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Video HBP Configuration Register"
+            },
+            "DSI_VID_HLINE_TIME": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Video Line Configuration Register"
+            },
+            "DSI_VID_VSA_LINES": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Video VSA Configuration Register"
+            },
+            "DSI_VID_VBP_LINES": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Video VBP Configuration Register"
+            },
+            "DSI_VID_VFP_LINES": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Video VFP Configuration Register"
+            },
+            "DSI_VID_VACTIVE_LINES": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Video VA Configuration Register"
+            },
+            "DSI_CMD_MODE_CFG": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Generic Packet Command Configuration Register"
+            },
+            "DSI_GEN_HDR": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "Generic Header Configuration Register"
+            },
+            "DSI_GEN_PLD_DATA": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Generic Payload Data Register"
+            },
+            "DSI_CMD_PKT_STATUS": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Generic Packet Status Register"
+            },
+            "DSI_TO_CNT_CFG": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "Timeout Counter Configuration Register"
+            },
+            "DSI_HS_RD_TO_CNT": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "HS Read Timeout Configuration Register"
+            },
+            "DSI_LP_RD_TO_CNT": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "LP Read Timeout Configuration Register"
+            },
+            "DSI_HS_WR_TO_CNT": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "HS Write Timeout Configuration Register"
+            },
+            "DSI_LP_WR_TO_CNT": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "LP Write Timeout Configuration Register"
+            },
+            "DSI_BTA_TO_CNT": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "BTA Timeout Configuration Register"
+            },
+            "DSI_SDF_3D": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "3D Control Register"
+            },
+            "DSI_LPCLK_CTRL": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "Clock Lane Power Control Register"
+            },
+            "DSI_PHY_TMR_LPCLK_CFG": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "Clock Lane Timer Configuration Register"
+            },
+            "DSI_PHY_TMR_CFG": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "Data Lane Timer Configuration Register"
+            },
+            "DSI_PHY_RSTZ": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "PHY Control Register"
+            },
+            "DSI_PHY_IF_CFG": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "PHY Configuration Register"
+            },
+            "DSI_PHY_ULPS_CTRL": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "PHY ULPS Control Register"
+            },
+            "DSI_PHY_TX_TRIGGERS": {
+              "offset": "0xAC",
+              "size": 32,
+              "description": "PHY TX Trigger Configuration Register"
+            },
+            "DSI_PHY_STATUS": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "PHY Status Register"
+            },
+            "DSI_PHY_TST_CTRL0": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "PHY Test Interface Control Register 0"
+            },
+            "DSI_PHY_TST_CTRL1": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "PHY Test Interface Control Register 1"
+            },
+            "DSI_INT_ST0": {
+              "offset": "0xBC",
+              "size": 32,
+              "description": "Interrupt Status Register 0"
+            },
+            "DSI_INT_ST1": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "Interrupt Status Register 1"
+            },
+            "DSI_INT_MSK0": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "Interrupt Mask Register 0"
+            },
+            "DSI_INT_MSK1": {
+              "offset": "0xC8",
+              "size": 32,
+              "description": "Interrupt Mask Register 1"
+            },
+            "DSI_PHY_CAL": {
+              "offset": "0xCC",
+              "size": 32,
+              "description": "PHY skew calibration control"
+            },
+            "DSI_INT_FORCE0": {
+              "offset": "0xD8",
+              "size": 32,
+              "description": "Force Interrupt Register 0"
+            },
+            "DSI_INT_FORCE1": {
+              "offset": "0xDC",
+              "size": 32,
+              "description": "Force Interrupt Register 1"
+            },
+            "DSI_PHY_TMR_RD_CFG": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "Data Lane Timer Read Configuration Register"
+            },
+            "DSI_VID_SHADOW_CTRL": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "Video Shadow Control Register"
+            },
+            "DSI_DPI_VCID_ACT": {
+              "offset": "0x10C",
+              "size": 32,
+              "description": "Current VC ID Register"
+            },
+            "DSI_DPI_COLOR_CODING_ACT": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "Current Color Coding Register"
+            },
+            "DSI_DPI_LP_CMD_TIM_ACT": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "Low-Power Mode Current Configuration Register"
+            },
+            "DSI_VID_MODE_CFG_ACT": {
+              "offset": "0x138",
+              "size": 32,
+              "description": "Video Mode Current Configuration Register"
+            },
+            "DSI_VID_PKT_SIZE_ACT": {
+              "offset": "0x13C",
+              "size": 32,
+              "description": "Video Packet Size Current Configuration Register"
+            },
+            "DSI_VID_NUM_CHUNKS_ACT": {
+              "offset": "0x140",
+              "size": 32,
+              "description": "Video Chunks Current Configuration Register"
+            },
+            "DSI_VID_NULL_SIZE_ACT": {
+              "offset": "0x144",
+              "size": 32,
+              "description": "Video Null Packet Size Current Configuration Register"
+            },
+            "DSI_VID_HSA_TIME_ACT": {
+              "offset": "0x148",
+              "size": 32,
+              "description": "Video HSA Current Configuration Register"
+            },
+            "DSI_VID_HBP_TIME_ACT": {
+              "offset": "0x14C",
+              "size": 32,
+              "description": "Video HBP Current Configuration Register"
+            },
+            "DSI_VID_HLINE_TIME_ACT": {
+              "offset": "0x150",
+              "size": 32,
+              "description": "Video Line Current Configuration Register"
+            },
+            "DSI_VID_VSA_LINES_ACT": {
+              "offset": "0x154",
+              "size": 32,
+              "description": "Video VSA Current Configuration Register"
+            },
+            "DSI_VID_VBP_LINES_ACT": {
+              "offset": "0x158",
+              "size": 32,
+              "description": "Video VBP Current Configuration Register"
+            },
+            "DSI_VID_VFP_LINES_ACT": {
+              "offset": "0x15C",
+              "size": 32,
+              "description": "Video VFP Current Configuration Register"
+            },
+            "DSI_VID_VACTIVE_LINES_ACT": {
+              "offset": "0x160",
+              "size": 32,
+              "description": "Video VA Current Configuration Register"
+            },
+            "DSI_VID_PKT_STATUS": {
+              "offset": "0x168",
+              "size": 32,
+              "description": "Video Packet Status Register"
+            },
+            "DSI_SDF_3D_ACT": {
+              "offset": "0x190",
+              "size": 32,
+              "description": "3D Current Configuration Register"
+            }
+          }
+        },
+        "I3C": {
+          "instances": [
+            {
+              "name": "I3C",
+              "base": "0x49034000",
+              "irq": 136
+            }
+          ],
+          "registers": {
+            "I3C_DEVICE_CTRL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Device Control Register"
+            },
+            "I3C_DEVICE_ADDR": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Device Address Register"
+            },
+            "I3C_HW_CAPABILITY": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Hardware Capability Register"
+            },
+            "I3C_COMMAND_QUEUE_PORT": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Command Queue Port Register"
+            },
+            "I3C_RESPONSE_QUEUE_PORT": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Response Queue Port Register"
+            },
+            "I3C_RX_DATA_PORT": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Receive Data Port Register"
+            },
+            "I3C_TX_DATA_PORT": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Transmit Data Port Register"
+            },
+            "I3C_IBI_QUEUE_DATA": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "In-Band Interrupt Queue Data Register"
+            },
+            "I3C_IBI_QUEUE_STATUS": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "In-Band Interrupt Queue Status Register"
+            },
+            "I3C_QUEUE_THLD_CTRL": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Queue Threshold Control Register"
+            },
+            "I3C_DATA_BUFFER_THLD_CTRL": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Data Buffer Threshold Control Register"
+            },
+            "I3C_IBI_QUEUE_CTRL": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "IBI Queue Control Register"
+            },
+            "I3C_IBI_MR_REQ_REJECT": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "IBI MR Request Rejection Control Register"
+            },
+            "I3C_IBI_SIR_REQ_REJECT": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "IBI SIR Request Rejection Control Register"
+            },
+            "I3C_RESET_CTRL": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Reset Control Register"
+            },
+            "I3C_SLV_EVENT_STATUS": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Slave Event Status Register"
+            },
+            "I3C_INTR_STATUS": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "I3C_INTR_STATUS_EN": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Interrupt Status Enable Register"
+            },
+            "I3C_INTR_SIGNAL_EN": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Interrupt Signal Enable Register"
+            },
+            "I3C_INTR_FORCE": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Interrupt Force Enable Register"
+            },
+            "I3C_QUEUE_STATUS_LEVEL": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Queue Status Level Register"
+            },
+            "I3C_DATA_BUFFER_STATUS_LEVEL": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Data Buffer Status Level Register"
+            },
+            "I3C_PRESENT_STATE": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Present State Register"
+            },
+            "I3C_CCC_DEVICE_STATUS": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Device Operating Status Register"
+            },
+            "I3C_DEVICE_ADDR_TABLE_POINTER": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Pointer for Device Address Table Registers"
+            },
+            "I3C_DEV_CHAR_TABLE_POINTER": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Pointer for Device Characteristics Table Register"
+            },
+            "I3C_VENDOR_SPECIFIC_REG_POINTER": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "Pointer for Vendor Specific Registers"
+            },
+            "I3C_SLV_MIPI_ID_VALUE": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Provisional ID Register"
+            },
+            "I3C_SLV_PID_VALUE": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Provisional ID Register"
+            },
+            "I3C_SLV_CHAR_CTRL": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "I3C Slave Characteristic Register"
+            },
+            "I3C_SLV_MAX_LEN": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "I3C Max Write/Read Length Register"
+            },
+            "I3C_MAX_READ_TURNAROUND": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "MXDS Maximum Read Turnaround Time Register"
+            },
+            "I3C_MAX_DATA_SPEED": {
+              "offset": "0x84",
+              "size": 32,
+              "description": "MXDS Maximum Data Speed Register"
+            },
+            "I3C_SLV_INTR_REQ": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "Slave Interrupt Request Register"
+            },
+            "I3C_DEVICE_CTRL_EXTENDED": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "Device Control Extended Register"
+            },
+            "I3C_SCL_I3C_OD_TIMING": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "SCL I3C Open Drain Timing Register"
+            },
+            "I3C_SCL_I3C_PP_TIMING": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "SCL I3C Push Pull Timing Register"
+            },
+            "I3C_SCL_I2C_FM_TIMING": {
+              "offset": "0xBC",
+              "size": 32,
+              "description": "SCL I2C Fast Mode Timing Register"
+            },
+            "I3C_SCL_I2C_FMP_TIMING": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "SCL I2C Fast Mode Plus Timing Register"
+            },
+            "I3C_SCL_EXT_LCNT_TIMING": {
+              "offset": "0xC8",
+              "size": 32,
+              "description": "SCL Extended Low Count Timing Register"
+            },
+            "I3C_SCL_EXT_TERMN_LCNT_TIMING": {
+              "offset": "0xCC",
+              "size": 32,
+              "description": "SCL Termination Bit Low Count Timing Register"
+            },
+            "I3C_SDA_HOLD_SWITCH_DLY_TIMING": {
+              "offset": "0xD0",
+              "size": 32,
+              "description": "SDA Hold and Mode Switch Delay Timing Register"
+            },
+            "I3C_BUS_FREE_AVAIL_TIMING": {
+              "offset": "0xD4",
+              "size": 32,
+              "description": "Bus Free Timing Register"
+            },
+            "I3C_BUS_IDLE_TIMING": {
+              "offset": "0xD8",
+              "size": 32,
+              "description": "Bus Idle Timing Register"
+            },
+            "I3C_SCL_LOW_MST_EXT_TIMEOUT": {
+              "offset": "0xDC",
+              "size": 32,
+              "description": "SCL Low Master Extended Timeout Register"
+            },
+            "I3C_VER_ID": {
+              "offset": "0xE0",
+              "size": 32,
+              "description": "Version ID Register"
+            },
+            "I3C_VER_TYPE": {
+              "offset": "0xE4",
+              "size": 32,
+              "description": "Version Type Register"
+            },
+            "I3C_QUEUE_SIZE_CAPABILITY": {
+              "offset": "0xE8",
+              "size": 32,
+              "description": "I3C Queue Size Capability Register"
+            },
+            "I3C_DEV_CHAR_TABLE1_LOC1": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "Device Characteristic Table Location 1 Register"
+            },
+            "I3C_SEC_DEV_CHAR_TABLE1": {
+              "offset": "0x200",
+              "size": 32,
+              "description": "Secondary Master Device Characteristic Table Location Register"
+            },
+            "I3C_DEV_CHAR_TABLE1_LOC2": {
+              "offset": "0x204",
+              "size": 32,
+              "description": "Device Characteristic Table Location 2 Register"
+            },
+            "I3C_DEV_CHAR_TABLE1_LOC3": {
+              "offset": "0x208",
+              "size": 32,
+              "description": "Device Characteristic Table Location 3 Register"
+            },
+            "I3C_DEV_CHAR_TABLE1_LOC4": {
+              "offset": "0x20C",
+              "size": 32,
+              "description": "Device Characteristic Table Location 4 Register"
+            },
+            "I3C_DEV_ADDR_TABLE_LOC1": {
+              "offset": "0x220",
+              "size": 32,
+              "description": "Device Address Table Location 1 Register"
+            }
+          }
+        },
+        "EVTRTR0": {
+          "instances": [
+            {
+              "name": "EVTRTR0",
+              "base": "0x49035000"
+            }
+          ],
+          "registers": {}
+        },
+        "CAN": {
+          "instances": [
+            {
+              "name": "CANFD",
+              "base": "0x49036000",
+              "irq": 104
+            },
+            {
+              "name": "CAN_CNT",
+              "base": "0x49037000"
+            }
+          ],
+          "registers": {
+            "CANFD_RBUF[%s]": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Receive Buffer Register"
+            },
+            "CANFD_TBUF[%s]": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Transmit Buffer Register"
+            },
+            "CANFD_TTS": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "Transmission Time Stamp Register"
+            },
+            "CANFD_CFG_STAT": {
+              "offset": "0xA0",
+              "size": 8,
+              "description": "Configuration and Status Register"
+            },
+            "CANFD_TCMD": {
+              "offset": "0xA1",
+              "size": 8,
+              "description": "Command Register"
+            },
+            "CANFD_TCTRL": {
+              "offset": "0xA2",
+              "size": 8,
+              "description": "Transmit Control Register"
+            },
+            "CANFD_RCTRL": {
+              "offset": "0xA3",
+              "size": 8,
+              "description": "Receive Control Register"
+            },
+            "CANFD_RTIE": {
+              "offset": "0xA4",
+              "size": 8,
+              "description": "Receive and Transmit Interrupt Enable Register"
+            },
+            "CANFD_RTIF": {
+              "offset": "0xA5",
+              "size": 8,
+              "description": "Receive and Transmit Interrupt Flag Register"
+            },
+            "CANFD_ERRINT": {
+              "offset": "0xA6",
+              "size": 8,
+              "description": "Error Interrupt Enable and Flag Register"
+            },
+            "CANFD_LIMIT": {
+              "offset": "0xA7",
+              "size": 8,
+              "description": "Warning Limits Register"
+            },
+            "CANFD_S_SEG_1": {
+              "offset": "0xA8",
+              "size": 8,
+              "description": "Slow Speed Bit Timing 1 Register (Segment 1)"
+            },
+            "CANFD_S_SEG_2": {
+              "offset": "0xA9",
+              "size": 8,
+              "description": "Slow Speed Bit Timing 2 Register (Segment 2)"
+            },
+            "CANFD_S_SJW": {
+              "offset": "0xAA",
+              "size": 8,
+              "description": "Slow Speed Bit Timing 3 Register (Synchronization Jump Width)"
+            },
+            "CANFD_S_PRESC": {
+              "offset": "0xAB",
+              "size": 8,
+              "description": "Slow Speed Prescaler Register"
+            },
+            "CANFD_F_SEG_1": {
+              "offset": "0xAC",
+              "size": 8,
+              "description": "Fast Speed Bit Timing 1 Register (Segment 1)"
+            },
+            "CANFD_F_SEG_2": {
+              "offset": "0xAD",
+              "size": 8,
+              "description": "Fast Speed Bit Timing 2 Register (Segment 2)"
+            },
+            "CANFD_F_SJW": {
+              "offset": "0xAE",
+              "size": 8,
+              "description": "Fast Speed Bit Timing 3 Register (Synchronization Jump Width)"
+            },
+            "CANFD_F_PRESC": {
+              "offset": "0xAF",
+              "size": 8,
+              "description": "Fast Speed Prescaler Register"
+            },
+            "CANFD_EALCAP": {
+              "offset": "0xB0",
+              "size": 8,
+              "description": "Error and Arbitration Lost Capture Register"
+            },
+            "CANFD_TDC": {
+              "offset": "0xB1",
+              "size": 8,
+              "description": "Transmitter Delay Compensation Register"
+            },
+            "CANFD_RECNT": {
+              "offset": "0xB2",
+              "size": 8,
+              "description": "Receive Error Counter Register"
+            },
+            "CANFD_TECNT": {
+              "offset": "0xB3",
+              "size": 8,
+              "description": "Transmit Error Counter Register"
+            },
+            "CANFD_ACFCTRL": {
+              "offset": "0xB4",
+              "size": 8,
+              "description": "Acceptance Filter Control Register"
+            },
+            "CANFD_TIMECFG": {
+              "offset": "0xB5",
+              "size": 8,
+              "description": "CiA 603 Time-Stamping Register"
+            },
+            "CANFD_ACF_EN_0": {
+              "offset": "0xB6",
+              "size": 8,
+              "description": "Acceptance Filter Enable 0 Register"
+            },
+            "CANFD_ACF_EN_1": {
+              "offset": "0xB7",
+              "size": 8,
+              "description": "Acceptance Filter Enable 1 Register"
+            },
+            "CANFD_ACF_0_3_CODE": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "Acceptance CODE Register"
+            },
+            "CANFD_ACF_0_3_MASK": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "Acceptance MASK Register"
+            },
+            "CANFD_VER_0": {
+              "offset": "0xBC",
+              "size": 8,
+              "description": "Version Information 0 Register"
+            },
+            "CANFD_VER_1": {
+              "offset": "0xBD",
+              "size": 8,
+              "description": "Version Information 1 Register"
+            },
+            "CANFD_MEM_PROT": {
+              "offset": "0xCA",
+              "size": 8,
+              "description": "Memory Protection Register"
+            },
+            "CANFD_MEM_STAT": {
+              "offset": "0xCB",
+              "size": 8,
+              "description": "Memory Status Register"
+            },
+            "CANFD_MEM_ES_0": {
+              "offset": "0xCC",
+              "size": 8,
+              "description": "Memory Error Stimulation 0 Register"
+            },
+            "CANFD_MEM_ES_1": {
+              "offset": "0xCD",
+              "size": 8,
+              "description": "Memory Error Stimulation 1 Register"
+            },
+            "CANFD_MEM_ES_2": {
+              "offset": "0xCE",
+              "size": 8,
+              "description": "Memory Error Stimulation 2 Register"
+            },
+            "CANFD_MEM_ES_3": {
+              "offset": "0xCF",
+              "size": 8,
+              "description": "Memory Error Stimulation 3 Register"
+            },
+            "CANFD_SRCFG": {
+              "offset": "0xD0",
+              "size": 8,
+              "description": "Spatial Redundancy Configuration Register"
+            }
+          }
+        },
+        "GPU2D": {
+          "instances": [
+            {
+              "name": "GPU2D",
+              "base": "0x49040000",
+              "irq": 332
+            }
+          ],
+          "registers": {
+            "GPU2D_CONTROL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Geometry Control Register"
+            },
+            "GPU2D_STATUS": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Status Control Register"
+            },
+            "GPU2D_CONTROL2": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Surface Control Register"
+            },
+            "GPU2D_HWREVISION": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Hardware Version and Feature Set ID Register"
+            },
+            "GPU2D_L1START": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L2START": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L3START": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L4START": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L5START": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L6START": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L1XADD": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L2XADD": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L3XADD": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L4XADD": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L5XADD": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L6XADD": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L1YADD": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L2YADD": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L3YADD": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L4YADD": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L5YADD": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L6YADD": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L1BAND": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_L2BAND": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Geometry Register"
+            },
+            "GPU2D_COLOR1": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Base Color Register"
+            },
+            "GPU2D_COLOR2": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "Secondary Color Register"
+            },
+            "GPU2D_PATTERN": {
+              "offset": "0x70",
+              "size": 8,
+              "description": "Pattern Register"
+            },
+            "GPU2D_SIZE": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "Bounding Box Dimension Register"
+            },
+            "GPU2D_PITCH": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "Framebuffer Pitch and Spanstore Delay Register"
+            },
+            "GPU2D_ORIGIN": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Address of the First Pixel in Framebuffer Register"
+            },
+            "GPU2D_LUSTART": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "Texture Mapping Register"
+            },
+            "GPU2D_LUXADD": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "Texture Mapping Register"
+            },
+            "GPU2D_LUYADD": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "Texture Mapping Register"
+            },
+            "GPU2D_LVSTARTI": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "Texture Mapping Register"
+            },
+            "GPU2D_LVSTARTF": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "Texture Mapping Register"
+            },
+            "GPU2D_LVXADDI": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "Texture Mapping Register"
+            },
+            "GPU2D_LVYADDI": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "Texture Mapping Register"
+            },
+            "GPU2D_LVYXADDF": {
+              "offset": "0xAC",
+              "size": 32,
+              "description": "Texture Mapping Register"
+            },
+            "GPU2D_TEXPITCH": {
+              "offset": "0xB4",
+              "size": 32,
+              "description": "Texels per Texture Line Register"
+            },
+            "GPU2D_TEXMASK": {
+              "offset": "0xB8",
+              "size": 32,
+              "description": "U/V Texture Mask Register"
+            },
+            "GPU2D_TEXORIGIN": {
+              "offset": "0xBC",
+              "size": 32,
+              "description": "Texture Base Address Register"
+            },
+            "GPU2D_IRQCTL": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "Interrupt Control Register"
+            },
+            "GPU2D_CACHECTL": {
+              "offset": "0xC4",
+              "size": 32,
+              "description": "Cache Control Register"
+            },
+            "GPU2D_DLISTSTART": {
+              "offset": "0xC8",
+              "size": 32,
+              "description": "Display List Start Address Register"
+            },
+            "GPU2D_PERFCOUNT1": {
+              "offset": "0xCC",
+              "size": 32,
+              "description": "Performance Counter 1 Register"
+            },
+            "GPU2D_PERFCOUNT2": {
+              "offset": "0xD0",
+              "size": 32,
+              "description": "Performance Counter 2 Register"
+            },
+            "GPU2D_PERFTRIGGER": {
+              "offset": "0xD4",
+              "size": 32,
+              "description": "Performance Counter Control Register"
+            },
+            "GPU2D_TEXCLUT": {
+              "offset": "0xD8",
+              "size": 32,
+              "description": "CLUT Index Texture Format Register"
+            },
+            "GPU2D_TEXCLUT_ADDR": {
+              "offset": "0xDC",
+              "size": 32,
+              "description": "CLUT Write Address Register"
+            },
+            "GPU2D_TEXCLUT_DATA": {
+              "offset": "0xE0",
+              "size": 32,
+              "description": "CLUT Write Data Register"
+            },
+            "GPU2D_TEXCLUT_OFFSET": {
+              "offset": "0xE4",
+              "size": 32,
+              "description": "CLUT Offset Access for Index of Texture Register"
+            },
+            "GPU2D_COLKEY": {
+              "offset": "0xE8",
+              "size": 32,
+              "description": "Color Keying Register"
+            }
+          }
+        },
+        "CRYPTO": {
+          "instances": [
+            {
+              "name": "AES",
+              "base": "0x83001000",
+              "irq": 98
+            }
+          ],
+          "registers": {
+            "AES_CONTROL": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "AES Control Register"
+            },
+            "AES_INTERRUPT": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "AES Interrupt Control Register"
+            },
+            "AES_INTERRUPT_MASK": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "AES Interrupt Mask Register"
+            },
+            "AES_RXDS_DELAY": {
+              "offset": "0x20",
+              "size": 8,
+              "description": "OSPI RXDS Delay Register"
+            }
+          }
+        }
+      },
+      "interrupts": {
+        "count": 457,
+        "vectors": [
+          {
+            "number": 0,
+            "name": "Initial_SP"
+          },
+          {
+            "number": 1,
+            "name": "Reset_Handler"
+          },
+          {
+            "number": 2,
+            "name": "NMI_Handler"
+          },
+          {
+            "number": 3,
+            "name": "HardFault_Handler"
+          },
+          {
+            "number": 4,
+            "name": "MemManage_Handler"
+          },
+          {
+            "number": 5,
+            "name": "BusFault_Handler"
+          },
+          {
+            "number": 6,
+            "name": "UsageFault_Handler"
+          },
+          {
+            "number": 11,
+            "name": "SVC_Handler"
+          },
+          {
+            "number": 12,
+            "name": "DebugMon_Handler"
+          },
+          {
+            "number": 14,
+            "name": "PendSV_Handler"
+          },
+          {
+            "number": 15,
+            "name": "SysTick_Handler"
+          },
+          {
+            "number": 16,
+            "name": "DMA2_IRQ0_IRQHandler"
+          },
+          {
+            "number": 17,
+            "name": "DMA2_IRQ1_IRQHandler"
+          },
+          {
+            "number": 18,
+            "name": "DMA2_IRQ2_IRQHandler"
+          },
+          {
+            "number": 19,
+            "name": "DMA2_IRQ3_IRQHandler"
+          },
+          {
+            "number": 20,
+            "name": "DMA2_IRQ4_IRQHandler"
+          },
+          {
+            "number": 21,
+            "name": "DMA2_IRQ5_IRQHandler"
+          },
+          {
+            "number": 22,
+            "name": "DMA2_IRQ6_IRQHandler"
+          },
+          {
+            "number": 23,
+            "name": "DMA2_IRQ7_IRQHandler"
+          },
+          {
+            "number": 24,
+            "name": "DMA2_IRQ8_IRQHandler"
+          },
+          {
+            "number": 25,
+            "name": "DMA2_IRQ9_IRQHandler"
+          },
+          {
+            "number": 26,
+            "name": "DMA2_IRQ10_IRQHandler"
+          },
+          {
+            "number": 27,
+            "name": "DMA2_IRQ11_IRQHandler"
+          },
+          {
+            "number": 28,
+            "name": "DMA2_IRQ12_IRQHandler"
+          },
+          {
+            "number": 29,
+            "name": "DMA2_IRQ13_IRQHandler"
+          },
+          {
+            "number": 30,
+            "name": "DMA2_IRQ14_IRQHandler"
+          },
+          {
+            "number": 31,
+            "name": "DMA2_IRQ15_IRQHandler"
+          },
+          {
+            "number": 32,
+            "name": "DMA2_IRQ16_IRQHandler"
+          },
+          {
+            "number": 33,
+            "name": "DMA2_IRQ17_IRQHandler"
+          },
+          {
+            "number": 34,
+            "name": "DMA2_IRQ18_IRQHandler"
+          },
+          {
+            "number": 35,
+            "name": "DMA2_IRQ19_IRQHandler"
+          },
+          {
+            "number": 36,
+            "name": "DMA2_IRQ20_IRQHandler"
+          },
+          {
+            "number": 37,
+            "name": "DMA2_IRQ21_IRQHandler"
+          },
+          {
+            "number": 38,
+            "name": "DMA2_IRQ22_IRQHandler"
+          },
+          {
+            "number": 39,
+            "name": "DMA2_IRQ23_IRQHandler"
+          },
+          {
+            "number": 40,
+            "name": "DMA2_IRQ24_IRQHandler"
+          },
+          {
+            "number": 41,
+            "name": "DMA2_IRQ25_IRQHandler"
+          },
+          {
+            "number": 42,
+            "name": "DMA2_IRQ26_IRQHandler"
+          },
+          {
+            "number": 43,
+            "name": "DMA2_IRQ27_IRQHandler"
+          },
+          {
+            "number": 44,
+            "name": "DMA2_IRQ28_IRQHandler"
+          },
+          {
+            "number": 45,
+            "name": "DMA2_IRQ29_IRQHandler"
+          },
+          {
+            "number": 46,
+            "name": "DMA2_IRQ30_IRQHandler"
+          },
+          {
+            "number": 47,
+            "name": "DMA2_IRQ31_IRQHandler"
+          },
+          {
+            "number": 48,
+            "name": "DMA2_IRQ_ABORT_IRQHandler"
+          },
+          {
+            "number": 53,
+            "name": "MHU_SECPU_M55HE_0_RX_IRQ_IRQHandler"
+          },
+          {
+            "number": 54,
+            "name": "MHU_M55HE_SECPU_0_TX_IRQ_IRQHandler"
+          },
+          {
+            "number": 55,
+            "name": "MHU_SECPU_M55HE_1_RX_IRQ_IRQHandler"
+          },
+          {
+            "number": 56,
+            "name": "MHU_M55HE_SECPU_1_TX_IRQ_IRQHandler"
+          },
+          {
+            "number": 61,
+            "name": "LPUART_IRQ_IRQHandler"
+          },
+          {
+            "number": 62,
+            "name": "LPSPI_IRQ_IRQHandler"
+          },
+          {
+            "number": 63,
+            "name": "LPI2C_IRQ_IRQHandler"
+          },
+          {
+            "number": 64,
+            "name": "LPI2S_IRQ_IRQHandler"
+          },
+          {
+            "number": 65,
+            "name": "LPPDM_IRQ_IRQHandler"
+          },
+          {
+            "number": 70,
+            "name": "LPCAM_IRQ_IRQHandler"
+          },
+          {
+            "number": 73,
+            "name": "LPGPIO_COMB_IRQ_IRQHandler"
+          },
+          {
+            "number": 112,
+            "name": "OSPI0_IRQ_IRQHandler"
+          },
+          {
+            "number": 114,
+            "name": "AES0_IRQ_IRQHandler"
+          },
+          {
+            "number": 117,
+            "name": "USB_IRQ_IRQHandler"
+          },
+          {
+            "number": 118,
+            "name": "SDMMC_IRQ_IRQHandler"
+          },
+          {
+            "number": 119,
+            "name": "SDMMC_WAKEUP_IRQ_IRQHandler"
+          },
+          {
+            "number": 120,
+            "name": "CANFD_IRQ_IRQHandler"
+          },
+          {
+            "number": 121,
+            "name": "HWSEM_IRQ0_IRQHandler"
+          },
+          {
+            "number": 122,
+            "name": "HWSEM_IRQ1_IRQHandler"
+          },
+          {
+            "number": 123,
+            "name": "HWSEM_IRQ2_IRQHandler"
+          },
+          {
+            "number": 124,
+            "name": "HWSEM_IRQ3_IRQHandler"
+          },
+          {
+            "number": 125,
+            "name": "HWSEM_IRQ4_IRQHandler"
+          },
+          {
+            "number": 126,
+            "name": "HWSEM_IRQ5_IRQHandler"
+          },
+          {
+            "number": 127,
+            "name": "HWSEM_IRQ6_IRQHandler"
+          },
+          {
+            "number": 128,
+            "name": "HWSEM_IRQ7_IRQHandler"
+          },
+          {
+            "number": 129,
+            "name": "HWSEM_IRQ8_IRQHandler"
+          },
+          {
+            "number": 130,
+            "name": "HWSEM_IRQ9_IRQHandler"
+          },
+          {
+            "number": 131,
+            "name": "HWSEM_IRQ10_IRQHandler"
+          },
+          {
+            "number": 132,
+            "name": "HWSEM_IRQ11_IRQHandler"
+          },
+          {
+            "number": 133,
+            "name": "HWSEM_IRQ12_IRQHandler"
+          },
+          {
+            "number": 134,
+            "name": "HWSEM_IRQ13_IRQHandler"
+          },
+          {
+            "number": 135,
+            "name": "HWSEM_IRQ14_IRQHandler"
+          },
+          {
+            "number": 136,
+            "name": "HWSEM_IRQ15_IRQHandler"
+          },
+          {
+            "number": 140,
+            "name": "UART0_IRQ_IRQHandler"
+          },
+          {
+            "number": 141,
+            "name": "UART1_IRQ_IRQHandler"
+          },
+          {
+            "number": 142,
+            "name": "UART2_IRQ_IRQHandler"
+          },
+          {
+            "number": 143,
+            "name": "UART3_IRQ_IRQHandler"
+          },
+          {
+            "number": 144,
+            "name": "UART4_IRQ_IRQHandler"
+          },
+          {
+            "number": 145,
+            "name": "UART5_IRQ_IRQHandler"
+          },
+          {
+            "number": 148,
+            "name": "I2C0_IRQ_IRQHandler"
+          },
+          {
+            "number": 149,
+            "name": "I2C1_IRQ_IRQHandler"
+          },
+          {
+            "number": 150,
+            "name": "I2C2_IRQ_IRQHandler"
+          },
+          {
+            "number": 151,
+            "name": "I2C3_IRQ_IRQHandler"
+          },
+          {
+            "number": 152,
+            "name": "I3C_IRQ_IRQHandler"
+          },
+          {
+            "number": 153,
+            "name": "SPI0_IRQ_IRQHandler"
+          },
+          {
+            "number": 154,
+            "name": "SPI1_IRQ_IRQHandler"
+          },
+          {
+            "number": 155,
+            "name": "SPI2_IRQ_IRQHandler"
+          },
+          {
+            "number": 156,
+            "name": "SPI3_IRQ_IRQHandler"
+          },
+          {
+            "number": 157,
+            "name": "I2S0_IRQ_IRQHandler"
+          },
+          {
+            "number": 158,
+            "name": "I2S1_IRQ_IRQHandler"
+          },
+          {
+            "number": 161,
+            "name": "PDM_WARN_IRQ_IRQHandler"
+          },
+          {
+            "number": 162,
+            "name": "PDM_ERROR_IRQ_IRQHandler"
+          },
+          {
+            "number": 163,
+            "name": "PDM_AUDIO_DET_IRQ_IRQHandler"
+          },
+          {
+            "number": 167,
+            "name": "ADC120_DONE0_IRQ_IRQHandler"
+          },
+          {
+            "number": 168,
+            "name": "ADC121_DONE0_IRQ_IRQHandler"
+          },
+          {
+            "number": 170,
+            "name": "ADC120_DONE1_IRQ_IRQHandler"
+          },
+          {
+            "number": 171,
+            "name": "ADC121_DONE1_IRQ_IRQHandler"
+          },
+          {
+            "number": 173,
+            "name": "ADC120_CMPA_IRQ_IRQHandler"
+          },
+          {
+            "number": 174,
+            "name": "ADC121_CMPA_IRQ_IRQHandler"
+          },
+          {
+            "number": 176,
+            "name": "ADC120_CMPB_IRQ_IRQHandler"
+          },
+          {
+            "number": 177,
+            "name": "ADC121_CMPB_IRQ_IRQHandler"
+          },
+          {
+            "number": 179,
+            "name": "ADC24_DONE0_IRQ_IRQHandler"
+          },
+          {
+            "number": 180,
+            "name": "ADC24_DONE1_IRQ_IRQHandler"
+          },
+          {
+            "number": 181,
+            "name": "ADC24_CMPA_IRQ_IRQHandler"
+          },
+          {
+            "number": 182,
+            "name": "ADC24_CMPB_IRQ_IRQHandler"
+          },
+          {
+            "number": 183,
+            "name": "CMP0_IRQ_IRQHandler"
+          },
+          {
+            "number": 184,
+            "name": "CMP1_IRQ_IRQHandler"
+          },
+          {
+            "number": 187,
+            "name": "LPGPIO_IRQ0_IRQHandler"
+          },
+          {
+            "number": 188,
+            "name": "LPGPIO_IRQ1_IRQHandler"
+          },
+          {
+            "number": 189,
+            "name": "LPGPIO_IRQ2_IRQHandler"
+          },
+          {
+            "number": 190,
+            "name": "LPGPIO_IRQ3_IRQHandler"
+          },
+          {
+            "number": 191,
+            "name": "LPGPIO_IRQ4_IRQHandler"
+          },
+          {
+            "number": 192,
+            "name": "LPGPIO_IRQ5_IRQHandler"
+          },
+          {
+            "number": 193,
+            "name": "LPGPIO_IRQ6_IRQHandler"
+          },
+          {
+            "number": 194,
+            "name": "LPGPIO_IRQ7_IRQHandler"
+          },
+          {
+            "number": 195,
+            "name": "GPIO0_IRQ0_IRQHandler"
+          },
+          {
+            "number": 196,
+            "name": "GPIO0_IRQ1_IRQHandler"
+          },
+          {
+            "number": 197,
+            "name": "GPIO0_IRQ2_IRQHandler"
+          },
+          {
+            "number": 198,
+            "name": "GPIO0_IRQ3_IRQHandler"
+          },
+          {
+            "number": 199,
+            "name": "GPIO0_IRQ4_IRQHandler"
+          },
+          {
+            "number": 200,
+            "name": "GPIO0_IRQ5_IRQHandler"
+          },
+          {
+            "number": 201,
+            "name": "GPIO0_IRQ6_IRQHandler"
+          },
+          {
+            "number": 202,
+            "name": "GPIO0_IRQ7_IRQHandler"
+          },
+          {
+            "number": 203,
+            "name": "GPIO1_IRQ0_IRQHandler"
+          },
+          {
+            "number": 204,
+            "name": "GPIO1_IRQ1_IRQHandler"
+          },
+          {
+            "number": 205,
+            "name": "GPIO1_IRQ2_IRQHandler"
+          },
+          {
+            "number": 206,
+            "name": "GPIO1_IRQ3_IRQHandler"
+          },
+          {
+            "number": 207,
+            "name": "GPIO1_IRQ4_IRQHandler"
+          },
+          {
+            "number": 208,
+            "name": "GPIO1_IRQ5_IRQHandler"
+          },
+          {
+            "number": 209,
+            "name": "GPIO1_IRQ6_IRQHandler"
+          },
+          {
+            "number": 210,
+            "name": "GPIO1_IRQ7_IRQHandler"
+          },
+          {
+            "number": 211,
+            "name": "GPIO2_IRQ0_IRQHandler"
+          },
+          {
+            "number": 212,
+            "name": "GPIO2_IRQ1_IRQHandler"
+          },
+          {
+            "number": 213,
+            "name": "GPIO2_IRQ2_IRQHandler"
+          },
+          {
+            "number": 214,
+            "name": "GPIO2_IRQ3_IRQHandler"
+          },
+          {
+            "number": 215,
+            "name": "GPIO2_IRQ4_IRQHandler"
+          },
+          {
+            "number": 216,
+            "name": "GPIO2_IRQ5_IRQHandler"
+          },
+          {
+            "number": 217,
+            "name": "GPIO2_IRQ6_IRQHandler"
+          },
+          {
+            "number": 218,
+            "name": "GPIO2_IRQ7_IRQHandler"
+          },
+          {
+            "number": 219,
+            "name": "GPIO3_IRQ0_IRQHandler"
+          },
+          {
+            "number": 220,
+            "name": "GPIO3_IRQ1_IRQHandler"
+          },
+          {
+            "number": 221,
+            "name": "GPIO3_IRQ2_IRQHandler"
+          },
+          {
+            "number": 222,
+            "name": "GPIO3_IRQ3_IRQHandler"
+          },
+          {
+            "number": 223,
+            "name": "GPIO3_IRQ4_IRQHandler"
+          },
+          {
+            "number": 224,
+            "name": "GPIO3_IRQ5_IRQHandler"
+          },
+          {
+            "number": 225,
+            "name": "GPIO3_IRQ6_IRQHandler"
+          },
+          {
+            "number": 226,
+            "name": "GPIO3_IRQ7_IRQHandler"
+          },
+          {
+            "number": 227,
+            "name": "GPIO4_IRQ0_IRQHandler"
+          },
+          {
+            "number": 228,
+            "name": "GPIO4_IRQ1_IRQHandler"
+          },
+          {
+            "number": 229,
+            "name": "GPIO4_IRQ2_IRQHandler"
+          },
+          {
+            "number": 230,
+            "name": "GPIO4_IRQ3_IRQHandler"
+          },
+          {
+            "number": 231,
+            "name": "GPIO4_IRQ4_IRQHandler"
+          },
+          {
+            "number": 232,
+            "name": "GPIO4_IRQ5_IRQHandler"
+          },
+          {
+            "number": 233,
+            "name": "GPIO4_IRQ6_IRQHandler"
+          },
+          {
+            "number": 234,
+            "name": "GPIO4_IRQ7_IRQHandler"
+          },
+          {
+            "number": 235,
+            "name": "GPIO5_IRQ0_IRQHandler"
+          },
+          {
+            "number": 236,
+            "name": "GPIO5_IRQ1_IRQHandler"
+          },
+          {
+            "number": 237,
+            "name": "GPIO5_IRQ2_IRQHandler"
+          },
+          {
+            "number": 238,
+            "name": "GPIO5_IRQ3_IRQHandler"
+          },
+          {
+            "number": 239,
+            "name": "GPIO5_IRQ4_IRQHandler"
+          },
+          {
+            "number": 240,
+            "name": "GPIO5_IRQ5_IRQHandler"
+          },
+          {
+            "number": 241,
+            "name": "GPIO5_IRQ6_IRQHandler"
+          },
+          {
+            "number": 242,
+            "name": "GPIO5_IRQ7_IRQHandler"
+          },
+          {
+            "number": 243,
+            "name": "GPIO6_IRQ0_IRQHandler"
+          },
+          {
+            "number": 244,
+            "name": "GPIO6_IRQ1_IRQHandler"
+          },
+          {
+            "number": 245,
+            "name": "GPIO6_IRQ2_IRQHandler"
+          },
+          {
+            "number": 246,
+            "name": "GPIO6_IRQ3_IRQHandler"
+          },
+          {
+            "number": 247,
+            "name": "GPIO6_IRQ4_IRQHandler"
+          },
+          {
+            "number": 248,
+            "name": "GPIO6_IRQ5_IRQHandler"
+          },
+          {
+            "number": 249,
+            "name": "GPIO6_IRQ6_IRQHandler"
+          },
+          {
+            "number": 250,
+            "name": "GPIO6_IRQ7_IRQHandler"
+          },
+          {
+            "number": 251,
+            "name": "GPIO7_IRQ0_IRQHandler"
+          },
+          {
+            "number": 252,
+            "name": "GPIO7_IRQ1_IRQHandler"
+          },
+          {
+            "number": 253,
+            "name": "GPIO7_IRQ2_IRQHandler"
+          },
+          {
+            "number": 254,
+            "name": "GPIO7_IRQ3_IRQHandler"
+          },
+          {
+            "number": 255,
+            "name": "GPIO7_IRQ4_IRQHandler"
+          },
+          {
+            "number": 256,
+            "name": "GPIO7_IRQ5_IRQHandler"
+          },
+          {
+            "number": 257,
+            "name": "GPIO7_IRQ6_IRQHandler"
+          },
+          {
+            "number": 258,
+            "name": "GPIO7_IRQ7_IRQHandler"
+          },
+          {
+            "number": 259,
+            "name": "GPIO8_IRQ0_IRQHandler"
+          },
+          {
+            "number": 260,
+            "name": "GPIO8_IRQ1_IRQHandler"
+          },
+          {
+            "number": 261,
+            "name": "GPIO8_IRQ2_IRQHandler"
+          },
+          {
+            "number": 262,
+            "name": "GPIO8_IRQ3_IRQHandler"
+          },
+          {
+            "number": 263,
+            "name": "GPIO8_IRQ4_IRQHandler"
+          },
+          {
+            "number": 264,
+            "name": "GPIO8_IRQ5_IRQHandler"
+          },
+          {
+            "number": 265,
+            "name": "GPIO8_IRQ6_IRQHandler"
+          },
+          {
+            "number": 266,
+            "name": "GPIO8_IRQ7_IRQHandler"
+          },
+          {
+            "number": 267,
+            "name": "GPIO9_IRQ0_IRQHandler"
+          },
+          {
+            "number": 268,
+            "name": "GPIO9_IRQ1_IRQHandler"
+          },
+          {
+            "number": 269,
+            "name": "GPIO9_IRQ2_IRQHandler"
+          },
+          {
+            "number": 270,
+            "name": "GPIO9_IRQ3_IRQHandler"
+          },
+          {
+            "number": 271,
+            "name": "GPIO9_IRQ4_IRQHandler"
+          },
+          {
+            "number": 272,
+            "name": "GPIO9_IRQ5_IRQHandler"
+          },
+          {
+            "number": 273,
+            "name": "GPIO9_IRQ6_IRQHandler"
+          },
+          {
+            "number": 274,
+            "name": "GPIO9_IRQ7_IRQHandler"
+          },
+          {
+            "number": 275,
+            "name": "GPIO10_IRQ0_IRQHandler"
+          },
+          {
+            "number": 276,
+            "name": "GPIO10_IRQ1_IRQHandler"
+          },
+          {
+            "number": 277,
+            "name": "GPIO10_IRQ2_IRQHandler"
+          },
+          {
+            "number": 278,
+            "name": "GPIO10_IRQ3_IRQHandler"
+          },
+          {
+            "number": 279,
+            "name": "GPIO10_IRQ4_IRQHandler"
+          },
+          {
+            "number": 280,
+            "name": "GPIO10_IRQ5_IRQHandler"
+          },
+          {
+            "number": 281,
+            "name": "GPIO10_IRQ6_IRQHandler"
+          },
+          {
+            "number": 282,
+            "name": "GPIO10_IRQ7_IRQHandler"
+          },
+          {
+            "number": 283,
+            "name": "GPIO11_IRQ0_IRQHandler"
+          },
+          {
+            "number": 284,
+            "name": "GPIO11_IRQ1_IRQHandler"
+          },
+          {
+            "number": 285,
+            "name": "GPIO11_IRQ2_IRQHandler"
+          },
+          {
+            "number": 286,
+            "name": "GPIO11_IRQ3_IRQHandler"
+          },
+          {
+            "number": 287,
+            "name": "GPIO11_IRQ4_IRQHandler"
+          },
+          {
+            "number": 288,
+            "name": "GPIO11_IRQ5_IRQHandler"
+          },
+          {
+            "number": 289,
+            "name": "GPIO11_IRQ6_IRQHandler"
+          },
+          {
+            "number": 290,
+            "name": "GPIO11_IRQ7_IRQHandler"
+          },
+          {
+            "number": 291,
+            "name": "GPIO12_IRQ0_IRQHandler"
+          },
+          {
+            "number": 292,
+            "name": "GPIO12_IRQ1_IRQHandler"
+          },
+          {
+            "number": 293,
+            "name": "GPIO12_IRQ2_IRQHandler"
+          },
+          {
+            "number": 294,
+            "name": "GPIO12_IRQ3_IRQHandler"
+          },
+          {
+            "number": 295,
+            "name": "GPIO12_IRQ4_IRQHandler"
+          },
+          {
+            "number": 296,
+            "name": "GPIO12_IRQ5_IRQHandler"
+          },
+          {
+            "number": 297,
+            "name": "GPIO12_IRQ6_IRQHandler"
+          },
+          {
+            "number": 298,
+            "name": "GPIO12_IRQ7_IRQHandler"
+          },
+          {
+            "number": 299,
+            "name": "GPIO13_IRQ0_IRQHandler"
+          },
+          {
+            "number": 300,
+            "name": "GPIO13_IRQ1_IRQHandler"
+          },
+          {
+            "number": 301,
+            "name": "GPIO13_IRQ2_IRQHandler"
+          },
+          {
+            "number": 302,
+            "name": "GPIO13_IRQ3_IRQHandler"
+          },
+          {
+            "number": 303,
+            "name": "GPIO13_IRQ4_IRQHandler"
+          },
+          {
+            "number": 304,
+            "name": "GPIO13_IRQ5_IRQHandler"
+          },
+          {
+            "number": 305,
+            "name": "GPIO13_IRQ6_IRQHandler"
+          },
+          {
+            "number": 306,
+            "name": "GPIO13_IRQ7_IRQHandler"
+          },
+          {
+            "number": 307,
+            "name": "GPIO14_IRQ0_IRQHandler"
+          },
+          {
+            "number": 308,
+            "name": "GPIO14_IRQ1_IRQHandler"
+          },
+          {
+            "number": 309,
+            "name": "GPIO14_IRQ2_IRQHandler"
+          },
+          {
+            "number": 310,
+            "name": "GPIO14_IRQ3_IRQHandler"
+          },
+          {
+            "number": 311,
+            "name": "GPIO14_IRQ4_IRQHandler"
+          },
+          {
+            "number": 312,
+            "name": "GPIO14_IRQ5_IRQHandler"
+          },
+          {
+            "number": 313,
+            "name": "GPIO14_IRQ6_IRQHandler"
+          },
+          {
+            "number": 314,
+            "name": "GPIO14_IRQ7_IRQHandler"
+          },
+          {
+            "number": 315,
+            "name": "DMA0_IRQ0_IRQHandler"
+          },
+          {
+            "number": 316,
+            "name": "DMA0_IRQ1_IRQHandler"
+          },
+          {
+            "number": 317,
+            "name": "DMA0_IRQ2_IRQHandler"
+          },
+          {
+            "number": 318,
+            "name": "DMA0_IRQ3_IRQHandler"
+          },
+          {
+            "number": 319,
+            "name": "DMA0_IRQ4_IRQHandler"
+          },
+          {
+            "number": 320,
+            "name": "DMA0_IRQ5_IRQHandler"
+          },
+          {
+            "number": 321,
+            "name": "DMA0_IRQ6_IRQHandler"
+          },
+          {
+            "number": 322,
+            "name": "DMA0_IRQ7_IRQHandler"
+          },
+          {
+            "number": 323,
+            "name": "DMA0_IRQ8_IRQHandler"
+          },
+          {
+            "number": 324,
+            "name": "DMA0_IRQ9_IRQHandler"
+          },
+          {
+            "number": 325,
+            "name": "DMA0_IRQ10_IRQHandler"
+          },
+          {
+            "number": 326,
+            "name": "DMA0_IRQ11_IRQHandler"
+          },
+          {
+            "number": 327,
+            "name": "DMA0_IRQ12_IRQHandler"
+          },
+          {
+            "number": 328,
+            "name": "DMA0_IRQ13_IRQHandler"
+          },
+          {
+            "number": 329,
+            "name": "DMA0_IRQ14_IRQHandler"
+          },
+          {
+            "number": 330,
+            "name": "DMA0_IRQ15_IRQHandler"
+          },
+          {
+            "number": 331,
+            "name": "DMA0_IRQ16_IRQHandler"
+          },
+          {
+            "number": 332,
+            "name": "DMA0_IRQ17_IRQHandler"
+          },
+          {
+            "number": 333,
+            "name": "DMA0_IRQ18_IRQHandler"
+          },
+          {
+            "number": 334,
+            "name": "DMA0_IRQ19_IRQHandler"
+          },
+          {
+            "number": 335,
+            "name": "DMA0_IRQ20_IRQHandler"
+          },
+          {
+            "number": 336,
+            "name": "DMA0_IRQ21_IRQHandler"
+          },
+          {
+            "number": 337,
+            "name": "DMA0_IRQ22_IRQHandler"
+          },
+          {
+            "number": 338,
+            "name": "DMA0_IRQ23_IRQHandler"
+          },
+          {
+            "number": 339,
+            "name": "DMA0_IRQ24_IRQHandler"
+          },
+          {
+            "number": 340,
+            "name": "DMA0_IRQ25_IRQHandler"
+          },
+          {
+            "number": 341,
+            "name": "DMA0_IRQ26_IRQHandler"
+          },
+          {
+            "number": 342,
+            "name": "DMA0_IRQ27_IRQHandler"
+          },
+          {
+            "number": 343,
+            "name": "DMA0_IRQ28_IRQHandler"
+          },
+          {
+            "number": 344,
+            "name": "DMA0_IRQ29_IRQHandler"
+          },
+          {
+            "number": 345,
+            "name": "DMA0_IRQ30_IRQHandler"
+          },
+          {
+            "number": 346,
+            "name": "DMA0_IRQ31_IRQHandler"
+          },
+          {
+            "number": 347,
+            "name": "DMA0_IRQ_ABORT_IRQHandler"
+          },
+          {
+            "number": 348,
+            "name": "GPU2D_IRQ_IRQHandler"
+          },
+          {
+            "number": 349,
+            "name": "CDC_SCANLINE0_IRQ_IRQHandler"
+          },
+          {
+            "number": 351,
+            "name": "CDC_FIFO_WARNING0_IRQ_IRQHandler"
+          },
+          {
+            "number": 353,
+            "name": "CDC_FIFO_UNDERRUN0_IRQ_IRQHandler"
+          },
+          {
+            "number": 355,
+            "name": "CDC_BUS_ERROR0_IRQ_IRQHandler"
+          },
+          {
+            "number": 357,
+            "name": "CDC_REG_RELOAD0_IRQ_IRQHandler"
+          },
+          {
+            "number": 359,
+            "name": "DSI_IRQ_IRQHandler"
+          },
+          {
+            "number": 362,
+            "name": "LPTIMER0_IRQ_IRQHandler"
+          },
+          {
+            "number": 363,
+            "name": "LPTIMER1_IRQ_IRQHandler"
+          },
+          {
+            "number": 366,
+            "name": "LPRTC_IRQ_IRQHandler"
+          },
+          {
+            "number": 385,
+            "name": "QEC0_CMPA_IRQ_IRQHandler"
+          },
+          {
+            "number": 386,
+            "name": "QEC0_CMPB_IRQ_IRQHandler"
+          },
+          {
+            "number": 387,
+            "name": "QEC1_CMPA_IRQ_IRQHandler"
+          },
+          {
+            "number": 388,
+            "name": "QEC1_CMPB_IRQ_IRQHandler"
+          },
+          {
+            "number": 389,
+            "name": "QEC2_CMPA_IRQ_IRQHandler"
+          },
+          {
+            "number": 390,
+            "name": "QEC2_CMPB_IRQ_IRQHandler"
+          },
+          {
+            "number": 391,
+            "name": "QEC3_CMPA_IRQ_IRQHandler"
+          },
+          {
+            "number": 392,
+            "name": "QEC3_CMPB_IRQ_IRQHandler"
+          },
+          {
+            "number": 393,
+            "name": "UTIMER_IRQ0_IRQHandler"
+          },
+          {
+            "number": 394,
+            "name": "UTIMER_IRQ1_IRQHandler"
+          },
+          {
+            "number": 395,
+            "name": "UTIMER_IRQ2_IRQHandler"
+          },
+          {
+            "number": 396,
+            "name": "UTIMER_IRQ3_IRQHandler"
+          },
+          {
+            "number": 397,
+            "name": "UTIMER_IRQ4_IRQHandler"
+          },
+          {
+            "number": 398,
+            "name": "UTIMER_IRQ5_IRQHandler"
+          },
+          {
+            "number": 399,
+            "name": "UTIMER_IRQ6_IRQHandler"
+          },
+          {
+            "number": 400,
+            "name": "UTIMER_IRQ7_IRQHandler"
+          },
+          {
+            "number": 401,
+            "name": "UTIMER_IRQ8_IRQHandler"
+          },
+          {
+            "number": 402,
+            "name": "UTIMER_IRQ9_IRQHandler"
+          },
+          {
+            "number": 403,
+            "name": "UTIMER_IRQ10_IRQHandler"
+          },
+          {
+            "number": 404,
+            "name": "UTIMER_IRQ11_IRQHandler"
+          },
+          {
+            "number": 405,
+            "name": "UTIMER_IRQ12_IRQHandler"
+          },
+          {
+            "number": 406,
+            "name": "UTIMER_IRQ13_IRQHandler"
+          },
+          {
+            "number": 407,
+            "name": "UTIMER_IRQ14_IRQHandler"
+          },
+          {
+            "number": 408,
+            "name": "UTIMER_IRQ15_IRQHandler"
+          },
+          {
+            "number": 409,
+            "name": "UTIMER_IRQ16_IRQHandler"
+          },
+          {
+            "number": 410,
+            "name": "UTIMER_IRQ17_IRQHandler"
+          },
+          {
+            "number": 411,
+            "name": "UTIMER_IRQ18_IRQHandler"
+          },
+          {
+            "number": 412,
+            "name": "UTIMER_IRQ19_IRQHandler"
+          },
+          {
+            "number": 413,
+            "name": "UTIMER_IRQ20_IRQHandler"
+          },
+          {
+            "number": 414,
+            "name": "UTIMER_IRQ21_IRQHandler"
+          },
+          {
+            "number": 415,
+            "name": "UTIMER_IRQ22_IRQHandler"
+          },
+          {
+            "number": 416,
+            "name": "UTIMER_IRQ23_IRQHandler"
+          },
+          {
+            "number": 417,
+            "name": "UTIMER_IRQ24_IRQHandler"
+          },
+          {
+            "number": 418,
+            "name": "UTIMER_IRQ25_IRQHandler"
+          },
+          {
+            "number": 419,
+            "name": "UTIMER_IRQ26_IRQHandler"
+          },
+          {
+            "number": 420,
+            "name": "UTIMER_IRQ27_IRQHandler"
+          },
+          {
+            "number": 421,
+            "name": "UTIMER_IRQ28_IRQHandler"
+          },
+          {
+            "number": 422,
+            "name": "UTIMER_IRQ29_IRQHandler"
+          },
+          {
+            "number": 423,
+            "name": "UTIMER_IRQ30_IRQHandler"
+          },
+          {
+            "number": 424,
+            "name": "UTIMER_IRQ31_IRQHandler"
+          },
+          {
+            "number": 425,
+            "name": "UTIMER_IRQ32_IRQHandler"
+          },
+          {
+            "number": 426,
+            "name": "UTIMER_IRQ33_IRQHandler"
+          },
+          {
+            "number": 427,
+            "name": "UTIMER_IRQ34_IRQHandler"
+          },
+          {
+            "number": 428,
+            "name": "UTIMER_IRQ35_IRQHandler"
+          },
+          {
+            "number": 429,
+            "name": "UTIMER_IRQ36_IRQHandler"
+          },
+          {
+            "number": 430,
+            "name": "UTIMER_IRQ37_IRQHandler"
+          },
+          {
+            "number": 431,
+            "name": "UTIMER_IRQ38_IRQHandler"
+          },
+          {
+            "number": 432,
+            "name": "UTIMER_IRQ39_IRQHandler"
+          },
+          {
+            "number": 433,
+            "name": "UTIMER_IRQ40_IRQHandler"
+          },
+          {
+            "number": 434,
+            "name": "UTIMER_IRQ41_IRQHandler"
+          },
+          {
+            "number": 435,
+            "name": "UTIMER_IRQ42_IRQHandler"
+          },
+          {
+            "number": 436,
+            "name": "UTIMER_IRQ43_IRQHandler"
+          },
+          {
+            "number": 437,
+            "name": "UTIMER_IRQ44_IRQHandler"
+          },
+          {
+            "number": 438,
+            "name": "UTIMER_IRQ45_IRQHandler"
+          },
+          {
+            "number": 439,
+            "name": "UTIMER_IRQ46_IRQHandler"
+          },
+          {
+            "number": 440,
+            "name": "UTIMER_IRQ47_IRQHandler"
+          },
+          {
+            "number": 441,
+            "name": "UTIMER_IRQ48_IRQHandler"
+          },
+          {
+            "number": 442,
+            "name": "UTIMER_IRQ49_IRQHandler"
+          },
+          {
+            "number": 443,
+            "name": "UTIMER_IRQ50_IRQHandler"
+          },
+          {
+            "number": 444,
+            "name": "UTIMER_IRQ51_IRQHandler"
+          },
+          {
+            "number": 445,
+            "name": "UTIMER_IRQ52_IRQHandler"
+          },
+          {
+            "number": 446,
+            "name": "UTIMER_IRQ53_IRQHandler"
+          },
+          {
+            "number": 447,
+            "name": "UTIMER_IRQ54_IRQHandler"
+          },
+          {
+            "number": 448,
+            "name": "UTIMER_IRQ55_IRQHandler"
+          },
+          {
+            "number": 449,
+            "name": "UTIMER_IRQ56_IRQHandler"
+          },
+          {
+            "number": 450,
+            "name": "UTIMER_IRQ57_IRQHandler"
+          },
+          {
+            "number": 451,
+            "name": "UTIMER_IRQ58_IRQHandler"
+          },
+          {
+            "number": 452,
+            "name": "UTIMER_IRQ59_IRQHandler"
+          },
+          {
+            "number": 453,
+            "name": "UTIMER_IRQ60_IRQHandler"
+          },
+          {
+            "number": 454,
+            "name": "UTIMER_IRQ61_IRQHandler"
+          },
+          {
+            "number": 455,
+            "name": "UTIMER_IRQ62_IRQHandler"
+          },
+          {
+            "number": 456,
+            "name": "UTIMER_IRQ63_IRQHandler"
+          }
+        ]
+      }
+    }
+  }
+}

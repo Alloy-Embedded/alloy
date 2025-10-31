@@ -1,0 +1,2073 @@
+{
+  "family": "K210",
+  "architecture": "arm-cortex-m3",
+  "vendor": "Canaan Inc.",
+  "mcus": {
+    "K210": {
+      "flash": {
+        "size_kb": 64,
+        "base_address": "0x08000000",
+        "page_size_kb": 1
+      },
+      "ram": {
+        "size_kb": 20,
+        "base_address": "0x20000000"
+      },
+      "peripherals": {
+        "CLINT": {
+          "instances": [
+            {
+              "name": "CLINT",
+              "base": "0x02000000"
+            }
+          ],
+          "registers": {
+            "msip[%s]": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Hart software interrupt register"
+            },
+            "mtimecmp[%s]": {
+              "offset": "0x4000",
+              "size": 64,
+              "description": "Hart time comparator register"
+            },
+            "mtime": {
+              "offset": "0xBFF8",
+              "size": 64,
+              "description": "Timer register"
+            }
+          }
+        },
+        "PLIC": {
+          "instances": [
+            {
+              "name": "PLIC",
+              "base": "0x0C000000"
+            }
+          ],
+          "registers": {
+            "priority[%s]": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Interrupt Source Priority Register"
+            },
+            "pending[%s]": {
+              "offset": "0x1000",
+              "size": 32,
+              "description": "Interrupt Pending Register"
+            },
+            "enable[%s]": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Interrupt Enable Register"
+            },
+            "threshold": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Priority Threshold Register"
+            },
+            "claim": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Claim/Complete Register"
+            },
+            "_reserved": {
+              "offset": "0xFFC",
+              "size": 32,
+              "description": "Padding to make sure targets is an array"
+            }
+          },
+          "bits": {
+            "threshold": {
+              "priority": {
+                "bit": 0,
+                "description": "Never interrupt",
+                "width": 3
+              }
+            }
+          }
+        },
+        "USART": {
+          "instances": [
+            {
+              "name": "UARTHS",
+              "base": "0x38000000",
+              "irq": 33
+            },
+            {
+              "name": "UART1",
+              "base": "0x50210000",
+              "irq": 11
+            },
+            {
+              "name": "UART2",
+              "base": "0x50220000",
+              "irq": 12
+            },
+            {
+              "name": "UART3",
+              "base": "0x50230000",
+              "irq": 13
+            }
+          ],
+          "registers": {
+            "txdata": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Transmit Data Register"
+            },
+            "rxdata": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Receive Data Register"
+            },
+            "txctrl": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Transmit Control Register"
+            },
+            "rxctrl": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Receive Control Register"
+            },
+            "ie": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Interrupt Enable Register"
+            },
+            "ip": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Interrupt Pending Register"
+            },
+            "div": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Baud Rate Divisor Register"
+            }
+          }
+        },
+        "GPIO": {
+          "instances": [
+            {
+              "name": "GPIOHS",
+              "base": "0x38001000",
+              "irq": 34
+            },
+            {
+              "name": "GPIO",
+              "base": "0x50200000",
+              "irq": 23
+            }
+          ],
+          "registers": {
+            "input_val": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Input Value Register"
+            },
+            "input_en": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Pin Input Enable Register"
+            },
+            "output_en": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Pin Output Enable Register"
+            },
+            "output_val": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Output Value Register"
+            },
+            "pullup_en": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Internal Pull-Up Enable Register"
+            },
+            "drive": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Drive Strength Register"
+            },
+            "rise_ie": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Rise Interrupt Enable Register"
+            },
+            "rise_ip": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Rise Interrupt Pending Register"
+            },
+            "fall_ie": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Fall Interrupt Enable Register"
+            },
+            "fall_ip": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Fall Interrupt Pending Register"
+            },
+            "high_ie": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "High Interrupt Enable Register"
+            },
+            "high_ip": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "High Interrupt Pending Register"
+            },
+            "low_ie": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Low Interrupt Enable Register"
+            },
+            "low_ip": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Low Interrupt Pending Register"
+            },
+            "iof_en": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "HW I/O Function Enable Register"
+            },
+            "iof_sel": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "HW I/O Function Select Register"
+            },
+            "output_xor": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Output XOR (invert) Register"
+            }
+          },
+          "bits": {
+            "input_val": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "input_en": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "output_en": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "output_val": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "pullup_en": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "drive": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "rise_ie": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "rise_ip": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "fall_ie": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "fall_ip": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "high_ie": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "high_ip": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "low_ie": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "low_ip": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "iof_en": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "iof_sel": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            },
+            "output_xor": {
+              "pin%s": {
+                "bit": 0,
+                "description": "pin%s"
+              }
+            }
+          }
+        },
+        "KPU": {
+          "instances": [
+            {
+              "name": "KPU",
+              "base": "0x40800000",
+              "irq": 25
+            }
+          ],
+          "registers": {
+            "layer_argument_fifo": {
+              "offset": "0x00",
+              "size": 64,
+              "description": "Layer arguments FIFO: each layer is defined by writing 12 successive argument values to this register"
+            },
+            "interrupt_status": {
+              "offset": "0x08",
+              "size": 64,
+              "description": "Interrupt status"
+            },
+            "interrupt_raw": {
+              "offset": "0x10",
+              "size": 64,
+              "description": "Interrupt raw"
+            },
+            "interrupt_mask": {
+              "offset": "0x18",
+              "size": 64,
+              "description": "Interrupt mask: 0 enables the interrupt, 1 masks the interrupt"
+            },
+            "interrupt_clear": {
+              "offset": "0x20",
+              "size": 64,
+              "description": "Interrupt clear: write 1 to a bit to clear interrupt"
+            },
+            "fifo_threshold": {
+              "offset": "0x28",
+              "size": 64,
+              "description": "FIFO threshold"
+            },
+            "fifo_data_out": {
+              "offset": "0x30",
+              "size": 64,
+              "description": "FIFO data output"
+            },
+            "fifo_ctrl": {
+              "offset": "0x38",
+              "size": 64,
+              "description": "FIFO control"
+            },
+            "eight_bit_mode": {
+              "offset": "0x40",
+              "size": 64,
+              "description": "Eight bit mode"
+            }
+          }
+        },
+        "FFT": {
+          "instances": [
+            {
+              "name": "FFT",
+              "base": "0x42000000",
+              "irq": 26
+            }
+          ],
+          "registers": {
+            "input_fifo": {
+              "offset": "0x00",
+              "size": 64,
+              "description": "FFT input data fifo"
+            },
+            "ctrl": {
+              "offset": "0x08",
+              "size": 64,
+              "description": "FFT control register"
+            },
+            "fifo_ctrl": {
+              "offset": "0x10",
+              "size": 64,
+              "description": "FIFO control"
+            },
+            "intr_mask": {
+              "offset": "0x18",
+              "size": 64,
+              "description": "interrupt mask"
+            },
+            "intr_clear": {
+              "offset": "0x20",
+              "size": 64,
+              "description": "Interrupt clear"
+            },
+            "status": {
+              "offset": "0x28",
+              "size": 64,
+              "description": "FFT status register"
+            },
+            "status_raw": {
+              "offset": "0x30",
+              "size": 64,
+              "description": "FFT status raw"
+            },
+            "output_fifo": {
+              "offset": "0x38",
+              "size": 64,
+              "description": "FFT output FIFO"
+            }
+          }
+        },
+        "DMA": {
+          "instances": [
+            {
+              "name": "DMAC",
+              "base": "0x50000000",
+              "irq": 27
+            }
+          ],
+          "registers": {
+            "id": {
+              "offset": "0x00",
+              "size": 64,
+              "description": "ID Register"
+            },
+            "compver": {
+              "offset": "0x08",
+              "size": 64,
+              "description": "COMPVER Register"
+            },
+            "cfg": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Configure Register"
+            },
+            "chen": {
+              "offset": "0x18",
+              "size": 64,
+              "description": "Channel Enable Register"
+            },
+            "intstatus": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "Channel Interrupt Status Register"
+            },
+            "com_intclear": {
+              "offset": "0x38",
+              "size": 64,
+              "description": "Common Interrupt Clear Register"
+            },
+            "com_intstatus_en": {
+              "offset": "0x40",
+              "size": 64,
+              "description": "Common Interrupt Status Enable Register"
+            },
+            "com_intsignal_en": {
+              "offset": "0x48",
+              "size": 64,
+              "description": "Common Interrupt Signal Enable Register"
+            },
+            "com_intstatus": {
+              "offset": "0x50",
+              "size": 64,
+              "description": "Common Interrupt Status"
+            },
+            "reset": {
+              "offset": "0x58",
+              "size": 64,
+              "description": "Reset register"
+            },
+            "sar": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "SAR Address Register"
+            },
+            "dar": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "DAR Address Register"
+            },
+            "block_ts": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Block Transfer Size Register"
+            },
+            "ctl": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Control Register"
+            },
+            "llp": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Linked List Pointer register"
+            },
+            "status": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Channel Status Register"
+            },
+            "swhssrc": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Channel Software handshake Source Register"
+            },
+            "swhsdst": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Channel Software handshake Destination Register"
+            },
+            "blk_tfr": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Channel Block Transfer Resume Request Register"
+            },
+            "axi_id": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Channel AXI ID Register"
+            },
+            "axi_qos": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "AXI QOS Register"
+            },
+            "intstatus_en": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Interrupt Status Enable Register"
+            },
+            "intsignal_en": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "Interrupt Signal Enable Register"
+            },
+            "intclear": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "Interrupt Clear Register"
+            },
+            "_reserved": {
+              "offset": "0xF8",
+              "size": 32,
+              "description": "Padding to make structure size 256 bytes so that channels[] is an array"
+            }
+          }
+        },
+        "SPI": {
+          "instances": [
+            {
+              "name": "SPI0",
+              "base": "0x52000000",
+              "irq": 1
+            },
+            {
+              "name": "SPI1",
+              "base": "0x53000000",
+              "irq": 2
+            },
+            {
+              "name": "SPI2",
+              "base": "0x50240000",
+              "irq": 3
+            },
+            {
+              "name": "SPI3",
+              "base": "0x54000000",
+              "irq": 4
+            }
+          ],
+          "registers": {
+            "ctrlr0": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Control Register 0"
+            },
+            "ctrlr1": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Control Register 1"
+            },
+            "ssienr": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Enable Register"
+            },
+            "mwcr": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Microwire Control Register"
+            },
+            "ser": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Slave Enable Register"
+            },
+            "baudr": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Baud Rate Select"
+            },
+            "txftlr": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Transmit FIFO Threshold Level"
+            },
+            "rxftlr": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Receive FIFO Threshold Level"
+            },
+            "txflr": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Transmit FIFO Level Register"
+            },
+            "rxflr": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Receive FIFO Level Register"
+            },
+            "sr": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Status Register"
+            },
+            "imr": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Interrupt Mask Register"
+            },
+            "isr": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "risr": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Raw Interrupt Status Register"
+            },
+            "txoicr": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Transmit FIFO Overflow Interrupt Clear Register"
+            },
+            "rxoicr": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Receive FIFO Overflow Interrupt Clear Register"
+            },
+            "rxuicr": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Receive FIFO Underflow Interrupt Clear Register"
+            },
+            "msticr": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Multi-Master Interrupt Clear Register"
+            },
+            "icr": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Interrupt Clear Register"
+            },
+            "dmacr": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "DMA Control Register"
+            },
+            "dmatdlr": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "DMA Transmit Data Level"
+            },
+            "dmardlr": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "DMA Receive Data Level"
+            },
+            "idr": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Identification Register"
+            },
+            "ssic_version_id": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "DWC_ssi component version"
+            },
+            "dr%s": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Data Register"
+            },
+            "rx_sample_delay": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "RX Sample Delay Register"
+            },
+            "spi_ctrlr0": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "SPI Control Register"
+            },
+            "xip_mode_bits": {
+              "offset": "0xFC",
+              "size": 32,
+              "description": "XIP Mode bits"
+            },
+            "xip_incr_inst": {
+              "offset": "0x100",
+              "size": 32,
+              "description": "XIP INCR transfer opcode"
+            },
+            "xip_wrap_inst": {
+              "offset": "0x104",
+              "size": 32,
+              "description": "XIP WRAP transfer opcode"
+            },
+            "xip_ctrl": {
+              "offset": "0x108",
+              "size": 32,
+              "description": "XIP Control Register"
+            },
+            "xip_ser": {
+              "offset": "0x10C",
+              "size": 32,
+              "description": "XIP Slave Enable Register"
+            },
+            "xrxoicr": {
+              "offset": "0x110",
+              "size": 32,
+              "description": "XIP Receive FIFO Overflow Interrupt Clear Register"
+            },
+            "xip_cnt_time_out": {
+              "offset": "0x114",
+              "size": 32,
+              "description": "XIP time out register for continuous transfers"
+            },
+            "endian": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "ENDIAN"
+            }
+          }
+        },
+        "I2S": {
+          "instances": [
+            {
+              "name": "I2S0",
+              "base": "0x50250000",
+              "irq": 5
+            },
+            {
+              "name": "I2S1",
+              "base": "0x50260000",
+              "irq": 6
+            },
+            {
+              "name": "I2S2",
+              "base": "0x50270000",
+              "irq": 7
+            }
+          ],
+          "registers": {
+            "ier": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Enable Register"
+            },
+            "irer": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Receiver Block Enable Register"
+            },
+            "iter": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Transmitter Block Enable Register"
+            },
+            "cer": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Clock Generation enable"
+            },
+            "ccr": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Clock Configuration Register"
+            },
+            "rxffr": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Receiver Block FIFO Reset Register"
+            },
+            "txffr": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Transmitter Block FIFO Reset Register"
+            },
+            "left_rxtx": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Left Receive or Left Transmit Register"
+            },
+            "right_rxtx": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Right Receive or Right Transmit Register"
+            },
+            "rer": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Receive Enable Register"
+            },
+            "ter": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Transmit Enable Register"
+            },
+            "rcr": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Receive Configuration Register"
+            },
+            "tcr": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Transmit Configuration Register"
+            },
+            "isr": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "imr": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Interrupt Mask Register"
+            },
+            "ror": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Receive Overrun Register"
+            },
+            "tor": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Transmit Overrun Register"
+            },
+            "rfcr": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Receive FIFO Configuration Register"
+            },
+            "tfcr": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Transmit FIFO Configuration Register"
+            },
+            "rff": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Receive FIFO Flush Register"
+            },
+            "tff": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Transmit FIFO Flush Register"
+            },
+            "_reserved%s": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "_RESERVED0"
+            },
+            "rxdma": {
+              "offset": "0x1C0",
+              "size": 32,
+              "description": "Receiver Block DMA Register"
+            },
+            "rrxdma": {
+              "offset": "0x1C4",
+              "size": 32,
+              "description": "Reset Receiver Block DMA Register"
+            },
+            "txdma": {
+              "offset": "0x1C8",
+              "size": 32,
+              "description": "Transmitter Block DMA Register"
+            },
+            "rtxdma": {
+              "offset": "0x1CC",
+              "size": 32,
+              "description": "Reset Transmitter Block DMA Register"
+            },
+            "i2s_comp_param_2": {
+              "offset": "0x1F0",
+              "size": 32,
+              "description": "Component Parameter Register 2"
+            },
+            "i2s_comp_param_1": {
+              "offset": "0x1F4",
+              "size": 32,
+              "description": "Component Parameter Register 1"
+            },
+            "i2s_comp_version_1": {
+              "offset": "0x1F8",
+              "size": 32,
+              "description": "Component Version Register"
+            },
+            "i2s_comp_type": {
+              "offset": "0x1FC",
+              "size": 32,
+              "description": "Component Type Register"
+            }
+          }
+        },
+        "APU": {
+          "instances": [
+            {
+              "name": "APU",
+              "base": "0x50250200"
+            }
+          ],
+          "registers": {
+            "ch_cfg": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Channel Config Register"
+            },
+            "ctl": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Control Register"
+            },
+            "dir_bidx[%s]": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Direction Sample Buffer Read Index Configure Register (16 directions * 2 values * 4 indices)"
+            },
+            "pre_fir0_coef[%s]": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "FIR0 pre-filter coefficients"
+            },
+            "post_fir0_coef[%s]": {
+              "offset": "0xAC",
+              "size": 32,
+              "description": "FIR0 post-filter coefficients"
+            },
+            "pre_fir1_coef[%s]": {
+              "offset": "0xD0",
+              "size": 32,
+              "description": "FIR1 pre-filter coeffecients"
+            },
+            "post_fir1_coef[%s]": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "FIR1 post-filter coefficients"
+            },
+            "dwsz_cfg": {
+              "offset": "0x118",
+              "size": 32,
+              "description": "Downsize Config Register"
+            },
+            "fft_cfg": {
+              "offset": "0x11C",
+              "size": 32,
+              "description": "FFT Config Register"
+            },
+            "sobuf_dma_rdata": {
+              "offset": "0x120",
+              "size": 32,
+              "description": "Read register for DMA to sample-out buffers"
+            },
+            "vobuf_dma_rdata": {
+              "offset": "0x124",
+              "size": 32,
+              "description": "Read register for DMA to voice-out buffers"
+            },
+            "int_stat": {
+              "offset": "0x128",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "int_mask": {
+              "offset": "0x12C",
+              "size": 32,
+              "description": "Interrupt Mask Register"
+            },
+            "sat_counter": {
+              "offset": "0x130",
+              "size": 32,
+              "description": "Saturation Counter"
+            },
+            "sat_limits": {
+              "offset": "0x134",
+              "size": 32,
+              "description": "Saturation Limits"
+            }
+          }
+        },
+        "I2C": {
+          "instances": [
+            {
+              "name": "I2C0",
+              "base": "0x50280000",
+              "irq": 8
+            },
+            {
+              "name": "I2C1",
+              "base": "0x50290000",
+              "irq": 9
+            },
+            {
+              "name": "I2C2",
+              "base": "0x502A0000",
+              "irq": 10
+            }
+          ],
+          "registers": {
+            "con": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Control Register"
+            },
+            "tar": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Target Address Register"
+            },
+            "sar": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Slave Address Register"
+            },
+            "data_cmd": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Data Buffer and Command Register"
+            },
+            "ss_scl_hcnt": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Standard Speed Clock SCL High Count Register"
+            },
+            "ss_scl_lcnt": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "Standard Speed Clock SCL Low Count Register"
+            },
+            "intr_stat": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "intr_mask": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Interrupt Mask Register"
+            },
+            "raw_intr_stat": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Raw Interrupt Status Register"
+            },
+            "rx_tl": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Receive FIFO Threshold Register"
+            },
+            "tx_tl": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Transmit FIFO Threshold Register"
+            },
+            "clr_intr": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Clear Combined and Individual Interrupt Register"
+            },
+            "clr_rx_under": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Clear RX_UNDER Interrupt Register"
+            },
+            "clr_rx_over": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Clear RX_OVER Interrupt Register"
+            },
+            "clr_tx_over": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Clear TX_OVER Interrupt Register"
+            },
+            "clr_rd_req": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Clear RD_REQ Interrupt Register"
+            },
+            "clr_tx_abrt": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Clear TX_ABRT Interrupt Register"
+            },
+            "clr_rx_done": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Clear RX_DONE Interrupt Register"
+            },
+            "clr_activity": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "Clear ACTIVITY Interrupt Register"
+            },
+            "clr_stop_det": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Clear STOP_DET Interrupt Register"
+            },
+            "clr_start_det": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "Clear START_DET Interrupt Register"
+            },
+            "clr_gen_call": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "I2C Clear GEN_CALL Interrupt Register"
+            },
+            "enable": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "Enable Register"
+            },
+            "status": {
+              "offset": "0x70",
+              "size": 32,
+              "description": "Status Register"
+            },
+            "txflr": {
+              "offset": "0x74",
+              "size": 32,
+              "description": "Transmit FIFO Level Register"
+            },
+            "rxflr": {
+              "offset": "0x78",
+              "size": 32,
+              "description": "Receive FIFO Level Register"
+            },
+            "sda_hold": {
+              "offset": "0x7C",
+              "size": 32,
+              "description": "SDA Hold Time Length Register"
+            },
+            "tx_abrt_source": {
+              "offset": "0x80",
+              "size": 32,
+              "description": "Transmit Abort Source Register"
+            },
+            "dma_cr": {
+              "offset": "0x88",
+              "size": 32,
+              "description": "I2C DMA Control Register"
+            },
+            "dma_tdlr": {
+              "offset": "0x8C",
+              "size": 32,
+              "description": "DMA Transmit Data Level Register"
+            },
+            "dma_rdlr": {
+              "offset": "0x90",
+              "size": 32,
+              "description": "DMA Receive Data Level Register"
+            },
+            "sda_setup": {
+              "offset": "0x94",
+              "size": 32,
+              "description": "SDA Setup Register"
+            },
+            "general_call": {
+              "offset": "0x98",
+              "size": 32,
+              "description": "ACK General Call Register"
+            },
+            "enable_status": {
+              "offset": "0x9C",
+              "size": 32,
+              "description": "Enable Status Register"
+            },
+            "fs_spklen": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "SS, FS or FM+ spike suppression limit"
+            },
+            "comp_param_1": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "Component Parameter Register 1"
+            },
+            "comp_version": {
+              "offset": "0xF8",
+              "size": 32,
+              "description": "Component Version Register"
+            },
+            "comp_type": {
+              "offset": "0xFC",
+              "size": 32,
+              "description": "Component Type Register"
+            }
+          }
+        },
+        "FPIOA": {
+          "instances": [
+            {
+              "name": "FPIOA",
+              "base": "0x502B0000"
+            }
+          ],
+          "registers": {
+            "io[%s]": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "FPIOA GPIO multiplexer io array"
+            },
+            "tie_en[%s]": {
+              "offset": "0xC0",
+              "size": 32,
+              "description": "FPIOA GPIO multiplexer tie enable array"
+            },
+            "tie_val[%s]": {
+              "offset": "0xE0",
+              "size": 32,
+              "description": "FPIOA GPIO multiplexer tie value array"
+            }
+          }
+        },
+        "CRYPTO": {
+          "instances": [
+            {
+              "name": "SHA256",
+              "base": "0x502C0000"
+            },
+            {
+              "name": "AES",
+              "base": "0x50450000"
+            }
+          ],
+          "registers": {
+            "result[%s]": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Calculated SHA256 return value"
+            },
+            "data_in": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "SHA256 input data is written to this register"
+            },
+            "num_reg": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Counters register"
+            },
+            "function_reg_0": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Function configuration register 0"
+            },
+            "function_reg_1": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Function configuration register 1"
+            }
+          }
+        },
+        "TIM": {
+          "instances": [
+            {
+              "name": "TIMER0",
+              "base": "0x502D0000",
+              "irq": 14
+            },
+            {
+              "name": "TIMER1",
+              "base": "0x502E0000",
+              "irq": 16
+            },
+            {
+              "name": "TIMER2",
+              "base": "0x502F0000",
+              "irq": 18
+            }
+          ],
+          "registers": {
+            "load_count": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Load Count Register"
+            },
+            "current_value": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Current Value Register"
+            },
+            "control": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Control Register"
+            },
+            "eoi": {
+              "offset": "0xA4",
+              "size": 32,
+              "description": "Interrupt Clear Register"
+            },
+            "intr_stat": {
+              "offset": "0xA0",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "raw_intr_stat": {
+              "offset": "0xA8",
+              "size": 32,
+              "description": "Raw Interrupt Status Register"
+            },
+            "comp_version": {
+              "offset": "0xAC",
+              "size": 32,
+              "description": "Component Version Register"
+            },
+            "load_count2%s": {
+              "offset": "0xB0",
+              "size": 32,
+              "description": "Load Count2 Register"
+            }
+          }
+        },
+        "WDG": {
+          "instances": [
+            {
+              "name": "WDT0",
+              "base": "0x50400000",
+              "irq": 21
+            },
+            {
+              "name": "WDT1",
+              "base": "0x50410000",
+              "irq": 22
+            }
+          ],
+          "registers": {
+            "cr": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Control Register"
+            },
+            "torr": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Timeout Range Register"
+            },
+            "ccvr": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Current Counter Value Register"
+            },
+            "crr": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Counter Restart Register"
+            },
+            "stat": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Interrupt Status Register"
+            },
+            "eoi": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Interrupt Clear Register"
+            },
+            "prot_level": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "Protection level Register"
+            },
+            "comp_param_5": {
+              "offset": "0xE4",
+              "size": 32,
+              "description": "Component Parameters Register 5"
+            },
+            "comp_param_4": {
+              "offset": "0xE8",
+              "size": 32,
+              "description": "Component Parameters Register 4"
+            },
+            "comp_param_3": {
+              "offset": "0xEC",
+              "size": 32,
+              "description": "Component Parameters Register 3"
+            },
+            "comp_param_2": {
+              "offset": "0xF0",
+              "size": 32,
+              "description": "Component Parameters Register 2"
+            },
+            "comp_param_1": {
+              "offset": "0xF4",
+              "size": 32,
+              "description": "Component Parameters Register 1"
+            },
+            "comp_version": {
+              "offset": "0xF8",
+              "size": 32,
+              "description": "Component Version Register"
+            },
+            "comp_type": {
+              "offset": "0xFC",
+              "size": 32,
+              "description": "Component Type Register"
+            }
+          }
+        },
+        "OTP": {
+          "instances": [
+            {
+              "name": "OTP",
+              "base": "0x50420000"
+            }
+          ],
+          "registers": {
+            "dummy": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Dummy register: this peripheral is not implemented yet"
+            }
+          }
+        },
+        "DVP": {
+          "instances": [
+            {
+              "name": "DVP",
+              "base": "0x50430000",
+              "irq": 24
+            }
+          ],
+          "registers": {
+            "dvp_cfg": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Config Register"
+            },
+            "r_addr": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "R_ADDR"
+            },
+            "g_addr": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "G_ADDR"
+            },
+            "b_addr": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "B_ADDR"
+            },
+            "cmos_cfg": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "CMOS Config Register"
+            },
+            "sccb_cfg": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "SCCB Config Register"
+            },
+            "sccb_ctl": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "SCCB Control Register"
+            },
+            "axi": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "AXI Register"
+            },
+            "sts": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "STS Register"
+            },
+            "reverse": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "REVERSE"
+            },
+            "rgb_addr": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "RGB_ADDR"
+            }
+          }
+        },
+        "SYSCTL": {
+          "instances": [
+            {
+              "name": "SYSCTL",
+              "base": "0x50440000"
+            }
+          ],
+          "registers": {
+            "git_id": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Git short commit id"
+            },
+            "clk_freq": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "System clock base frequency"
+            },
+            "pll0": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "PLL0 controller"
+            },
+            "pll1": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "PLL1 controller"
+            },
+            "pll2": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "PLL2 controller"
+            },
+            "pll_lock": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "PLL lock tester"
+            },
+            "rom_error": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "AXI ROM detector"
+            },
+            "clk_sel0": {
+              "offset": "0x20",
+              "size": 32,
+              "description": "Clock select controller 0"
+            },
+            "clk_sel1": {
+              "offset": "0x24",
+              "size": 32,
+              "description": "Clock select controller 1"
+            },
+            "clk_en_cent": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Central clock enable"
+            },
+            "clk_en_peri": {
+              "offset": "0x2C",
+              "size": 32,
+              "description": "Peripheral clock enable"
+            },
+            "soft_reset": {
+              "offset": "0x30",
+              "size": 32,
+              "description": "Soft reset ctrl"
+            },
+            "peri_reset": {
+              "offset": "0x34",
+              "size": 32,
+              "description": "Peripheral reset controller"
+            },
+            "clk_th0": {
+              "offset": "0x38",
+              "size": 32,
+              "description": "Clock threshold controller 0"
+            },
+            "clk_th1": {
+              "offset": "0x3C",
+              "size": 32,
+              "description": "Clock threshold controller 1"
+            },
+            "clk_th2": {
+              "offset": "0x40",
+              "size": 32,
+              "description": "Clock threshold controller 2"
+            },
+            "clk_th3": {
+              "offset": "0x44",
+              "size": 32,
+              "description": "Clock threshold controller 3"
+            },
+            "clk_th4": {
+              "offset": "0x48",
+              "size": 32,
+              "description": "Clock threshold controller 4"
+            },
+            "clk_th5": {
+              "offset": "0x4C",
+              "size": 32,
+              "description": "Clock threshold controller 5"
+            },
+            "clk_th6": {
+              "offset": "0x50",
+              "size": 32,
+              "description": "Clock threshold controller 6"
+            },
+            "misc": {
+              "offset": "0x54",
+              "size": 32,
+              "description": "Miscellaneous controller"
+            },
+            "peri": {
+              "offset": "0x58",
+              "size": 32,
+              "description": "Peripheral controller"
+            },
+            "spi_sleep": {
+              "offset": "0x5C",
+              "size": 32,
+              "description": "SPI sleep controller"
+            },
+            "reset_status": {
+              "offset": "0x60",
+              "size": 32,
+              "description": "Reset source status"
+            },
+            "dma_sel0": {
+              "offset": "0x64",
+              "size": 32,
+              "description": "DMA handshake selector"
+            },
+            "dma_sel1": {
+              "offset": "0x68",
+              "size": 32,
+              "description": "DMA handshake selector"
+            },
+            "power_sel": {
+              "offset": "0x6C",
+              "size": 32,
+              "description": "IO Power Mode Select controller"
+            }
+          }
+        },
+        "RTC": {
+          "instances": [
+            {
+              "name": "RTC",
+              "base": "0x50460000",
+              "irq": 20
+            }
+          ],
+          "registers": {
+            "date": {
+              "offset": "0x00",
+              "size": 32,
+              "description": "Timer date information"
+            },
+            "time": {
+              "offset": "0x04",
+              "size": 32,
+              "description": "Timer time information"
+            },
+            "alarm_date": {
+              "offset": "0x08",
+              "size": 32,
+              "description": "Alarm date information"
+            },
+            "alarm_time": {
+              "offset": "0x0C",
+              "size": 32,
+              "description": "Alarm time information"
+            },
+            "initial_count": {
+              "offset": "0x10",
+              "size": 32,
+              "description": "Timer counter initial value"
+            },
+            "current_count": {
+              "offset": "0x14",
+              "size": 32,
+              "description": "Timer counter current value"
+            },
+            "interrupt_ctrl": {
+              "offset": "0x18",
+              "size": 32,
+              "description": "RTC interrupt settings"
+            },
+            "register_ctrl": {
+              "offset": "0x1C",
+              "size": 32,
+              "description": "RTC register settings"
+            },
+            "extended": {
+              "offset": "0x28",
+              "size": 32,
+              "description": "Timer extended information"
+            }
+          }
+        }
+      },
+      "interrupts": {
+        "count": 82,
+        "vectors": [
+          {
+            "number": 0,
+            "name": "Initial_SP"
+          },
+          {
+            "number": 1,
+            "name": "Reset_Handler"
+          },
+          {
+            "number": 2,
+            "name": "NMI_Handler"
+          },
+          {
+            "number": 3,
+            "name": "HardFault_Handler"
+          },
+          {
+            "number": 4,
+            "name": "MemManage_Handler"
+          },
+          {
+            "number": 5,
+            "name": "BusFault_Handler"
+          },
+          {
+            "number": 6,
+            "name": "UsageFault_Handler"
+          },
+          {
+            "number": 11,
+            "name": "SVC_Handler"
+          },
+          {
+            "number": 12,
+            "name": "DebugMon_Handler"
+          },
+          {
+            "number": 14,
+            "name": "PendSV_Handler"
+          },
+          {
+            "number": 15,
+            "name": "SysTick_Handler"
+          },
+          {
+            "number": 17,
+            "name": "SPI0_IRQHandler"
+          },
+          {
+            "number": 18,
+            "name": "SPI1_IRQHandler"
+          },
+          {
+            "number": 19,
+            "name": "SPI_SLAVE_IRQHandler"
+          },
+          {
+            "number": 20,
+            "name": "SPI3_IRQHandler"
+          },
+          {
+            "number": 21,
+            "name": "I2S0_IRQHandler"
+          },
+          {
+            "number": 22,
+            "name": "I2S1_IRQHandler"
+          },
+          {
+            "number": 23,
+            "name": "I2S2_IRQHandler"
+          },
+          {
+            "number": 24,
+            "name": "I2C0_IRQHandler"
+          },
+          {
+            "number": 25,
+            "name": "I2C1_IRQHandler"
+          },
+          {
+            "number": 26,
+            "name": "I2C2_IRQHandler"
+          },
+          {
+            "number": 27,
+            "name": "UART1_IRQHandler"
+          },
+          {
+            "number": 28,
+            "name": "UART2_IRQHandler"
+          },
+          {
+            "number": 29,
+            "name": "UART3_IRQHandler"
+          },
+          {
+            "number": 30,
+            "name": "TIMER0A_IRQHandler"
+          },
+          {
+            "number": 31,
+            "name": "TIMER0B_IRQHandler"
+          },
+          {
+            "number": 32,
+            "name": "TIMER1A_IRQHandler"
+          },
+          {
+            "number": 33,
+            "name": "TIMER1B_IRQHandler"
+          },
+          {
+            "number": 34,
+            "name": "TIMER2A_IRQHandler"
+          },
+          {
+            "number": 35,
+            "name": "TIMER2B_IRQHandler"
+          },
+          {
+            "number": 36,
+            "name": "RTC_IRQHandler"
+          },
+          {
+            "number": 37,
+            "name": "WDT0_IRQHandler"
+          },
+          {
+            "number": 38,
+            "name": "WDT1_IRQHandler"
+          },
+          {
+            "number": 39,
+            "name": "APB_GPIO_IRQHandler"
+          },
+          {
+            "number": 40,
+            "name": "DVP_IRQHandler"
+          },
+          {
+            "number": 41,
+            "name": "KPU_IRQHandler"
+          },
+          {
+            "number": 42,
+            "name": "FFT_IRQHandler"
+          },
+          {
+            "number": 43,
+            "name": "DMA0_IRQHandler"
+          },
+          {
+            "number": 44,
+            "name": "DMA1_IRQHandler"
+          },
+          {
+            "number": 45,
+            "name": "DMA2_IRQHandler"
+          },
+          {
+            "number": 46,
+            "name": "DMA3_IRQHandler"
+          },
+          {
+            "number": 47,
+            "name": "DMA4_IRQHandler"
+          },
+          {
+            "number": 48,
+            "name": "DMA5_IRQHandler"
+          },
+          {
+            "number": 49,
+            "name": "UARTHS_IRQHandler"
+          },
+          {
+            "number": 50,
+            "name": "GPIOHS0_IRQHandler"
+          },
+          {
+            "number": 51,
+            "name": "GPIOHS1_IRQHandler"
+          },
+          {
+            "number": 52,
+            "name": "GPIOHS2_IRQHandler"
+          },
+          {
+            "number": 53,
+            "name": "GPIOHS3_IRQHandler"
+          },
+          {
+            "number": 54,
+            "name": "GPIOHS4_IRQHandler"
+          },
+          {
+            "number": 55,
+            "name": "GPIOHS5_IRQHandler"
+          },
+          {
+            "number": 56,
+            "name": "GPIOHS6_IRQHandler"
+          },
+          {
+            "number": 57,
+            "name": "GPIOHS7_IRQHandler"
+          },
+          {
+            "number": 58,
+            "name": "GPIOHS8_IRQHandler"
+          },
+          {
+            "number": 59,
+            "name": "GPIOHS9_IRQHandler"
+          },
+          {
+            "number": 60,
+            "name": "GPIOHS10_IRQHandler"
+          },
+          {
+            "number": 61,
+            "name": "GPIOHS11_IRQHandler"
+          },
+          {
+            "number": 62,
+            "name": "GPIOHS12_IRQHandler"
+          },
+          {
+            "number": 63,
+            "name": "GPIOHS13_IRQHandler"
+          },
+          {
+            "number": 64,
+            "name": "GPIOHS14_IRQHandler"
+          },
+          {
+            "number": 65,
+            "name": "GPIOHS15_IRQHandler"
+          },
+          {
+            "number": 66,
+            "name": "GPIOHS16_IRQHandler"
+          },
+          {
+            "number": 67,
+            "name": "GPIOHS17_IRQHandler"
+          },
+          {
+            "number": 68,
+            "name": "GPIOHS18_IRQHandler"
+          },
+          {
+            "number": 69,
+            "name": "GPIOHS19_IRQHandler"
+          },
+          {
+            "number": 70,
+            "name": "GPIOHS20_IRQHandler"
+          },
+          {
+            "number": 71,
+            "name": "GPIOHS21_IRQHandler"
+          },
+          {
+            "number": 72,
+            "name": "GPIOHS22_IRQHandler"
+          },
+          {
+            "number": 73,
+            "name": "GPIOHS23_IRQHandler"
+          },
+          {
+            "number": 74,
+            "name": "GPIOHS24_IRQHandler"
+          },
+          {
+            "number": 75,
+            "name": "GPIOHS25_IRQHandler"
+          },
+          {
+            "number": 76,
+            "name": "GPIOHS26_IRQHandler"
+          },
+          {
+            "number": 77,
+            "name": "GPIOHS27_IRQHandler"
+          },
+          {
+            "number": 78,
+            "name": "GPIOHS28_IRQHandler"
+          },
+          {
+            "number": 79,
+            "name": "GPIOHS29_IRQHandler"
+          },
+          {
+            "number": 80,
+            "name": "GPIOHS30_IRQHandler"
+          },
+          {
+            "number": 81,
+            "name": "GPIOHS31_IRQHandler"
+          }
+        ]
+      }
+    }
+  }
+}

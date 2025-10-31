@@ -3,7 +3,7 @@
 /// Source: nuvoton_nuc100.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 2025-10-30 23:22:13
+/// Generated: 2025-10-31 12:01:25
 #include <cstdint>
 #include <cstring>
 

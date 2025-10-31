@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.25)
 
+# Export compile commands for IDE/LSP support
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Project definition
 project(alloy
     VERSION 0.1.0
@@ -78,6 +81,7 @@ endif()
 
 # Examples
 add_subdirectory(examples/blinky)
+# add_subdirectory(examples/portable_blinky)  # Portable example for all MCUs
 
 # Tests
 if(ALLOY_BUILD_TESTS)
