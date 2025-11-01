@@ -8,15 +8,15 @@
 **Deliverable**: `src/rtos/rtos.hpp`
 
 Create main RTOS interface:
-- [ ] Task<StackSize, Priority> class template
-- [ ] TaskControlBlock struct
-- [ ] TaskState enum
-- [ ] Priority enum (8 levels)
-- [ ] RTOS::start(), delay(), yield() functions
-- [ ] Concept definitions for type safety
-- [ ] Documentation
+- [x] Task<StackSize, Priority> class template
+- [x] TaskControlBlock struct
+- [x] TaskState enum
+- [x] Priority enum (8 levels)
+- [x] RTOS::start(), delay(), yield() functions
+- [x] Concept definitions for type safety
+- [x] Documentation
 
-**Files**: New `src/rtos/rtos.hpp`
+**Files**: New `src/rtos/rtos.hpp` ✅ COMPLETE
 
 ---
 
@@ -26,13 +26,13 @@ Create main RTOS interface:
 **Deliverable**: `src/rtos/scheduler.hpp`
 
 Implement O(1) priority-based ready queue:
-- [ ] Priority bitmap (uint8_t)
-- [ ] Array of task lists per priority
-- [ ] get_highest_priority() using CLZ
-- [ ] make_ready() / make_not_ready()
-- [ ] Unit tests for ready queue
+- [x] Priority bitmap (uint8_t)
+- [x] Array of task lists per priority
+- [x] get_highest_priority() using CLZ
+- [x] make_ready() / make_not_ready()
+- [ ] Unit tests for ready queue (deferred)
 
-**Files**: New `src/rtos/scheduler.hpp`
+**Files**: New `src/rtos/scheduler.hpp` ✅ COMPLETE
 
 ---
 
@@ -42,13 +42,13 @@ Implement O(1) priority-based ready queue:
 **Deliverable**: `src/rtos/platform/arm_context.hpp`
 
 Implement PendSV-based context switching:
-- [ ] PendSV_Handler in assembly
-- [ ] save_context() / restore_context()
-- [ ] Initialize task stack frames
-- [ ] SysTick_Handler integration
-- [ ] Test context switch on STM32F4
+- [x] PendSV_Handler in assembly
+- [x] save_context() / restore_context()
+- [x] Initialize task stack frames
+- [x] SysTick_Handler integration
+- [ ] Test context switch on STM32F4 (requires hardware)
 
-**Files**: New `src/rtos/platform/arm_context.hpp`
+**Files**: New `src/rtos/platform/arm_context.hpp` ✅ COMPLETE
 
 ---
 
@@ -58,15 +58,15 @@ Implement PendSV-based context switching:
 **Deliverable**: Updated `src/rtos/scheduler.hpp`
 
 Implement scheduler algorithm:
-- [ ] RTOS::tick() called from SysTick
-- [ ] wake_delayed_tasks()
-- [ ] Select next task
-- [ ] Trigger context switch if needed
-- [ ] RTOS::start() - initialize and run
-- [ ] RTOS::delay(ms) - task delay
-- [ ] RTOS::yield() - cooperative yield
+- [x] RTOS::tick() called from SysTick
+- [x] wake_delayed_tasks()
+- [x] Select next task
+- [x] Trigger context switch if needed
+- [x] RTOS::start() - initialize and run
+- [x] RTOS::delay(ms) - task delay
+- [x] RTOS::yield() - cooperative yield
 
-**Files**: Modified `src/rtos/scheduler.hpp`
+**Files**: Modified `src/rtos/scheduler.hpp` ✅ COMPLETE
 
 ---
 
