@@ -23,20 +23,32 @@
 ///
 /// Hardware: STM32F103C8 (Blue Pill)
 /// LED: PC13 (built-in LED, active LOW)
+///
+/// Updated: Now uses SysTick timer for precise timing!
 
 #include "stm32f103c8/board.hpp"
+#include "core/types.hpp"
 
 int main() {
+    // Initialize board (also initializes SysTick timer automatically)
+    Board::initialize();
+
     // Initialize LED
     Board::Led::init();
 
-    // Blink LED forever - ultra simple!
+    // Blink LED forever using precise SysTick timing
     while (true) {
+        alloy::core::u32 start = alloy::systick::micros();
+
         Board::Led::on();
-        Board::delay_ms(500);
+        // Wait precisely 500ms (500,000 microseconds)
+        while (!alloy::systick::is_timeout(start, 500000));
+
+        start = alloy::systick::micros();
 
         Board::Led::off();
-        Board::delay_ms(500);
+        // Wait precisely 500ms
+        while (!alloy::systick::is_timeout(start, 500000));
     }
 
     return 0;

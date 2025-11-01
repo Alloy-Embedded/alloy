@@ -12,6 +12,7 @@
 #include "hal/st/stm32f1/gpio.hpp"
 #include "hal/st/stm32f1/clock.hpp"
 #include "hal/st/stm32f1/delay.hpp"
+#include "hal/st/stm32f1/systick.hpp"
 #include <cstdint>
 
 namespace Board {
@@ -120,6 +121,9 @@ inline void initialize() {
         // Fallback to HSI if HSE fails
         clock.set_frequency(8'000'000);
     }
+
+    // Initialize SysTick for microsecond time tracking
+    SystemTick::init();
 
     // Enable GPIO clocks for all ports used on the board
     clock.enable_peripheral(Peripheral::GpioA);
