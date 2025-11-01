@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  corezero-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USERNAME: developer
+        USER_UID: 1000
+        USER_GID: 1000
+
+    image: corezero/dev:latest
+
+    container_name: corezero-dev
+
+    # Keep container running
+    tty: true
+    stdin_open: true
+
+    # Mount project directory
+    volumes:
+      - .:/workspace:cached
+      # Persist build artifacts
+      - corezero-build:/workspace/build
+      # Persist toolchains and downloads
+      - corezero-cache:/home/developer/.cache
+
+    # USB device passthrough for ESP32/Pico
+    # Automatically detect and mount all USB serial devices
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+
+    # Additional device mappings (uncomment as needed)
+    # For specific devices:
+    # - /dev/ttyUSB0:/dev/ttyUSB0  # ESP32 (CP2102)
+    # - /dev/ttyACM0:/dev/ttyACM0  # Pico
+    # - /dev/cu.usbserial-*:/dev/ttyUSB0  # macOS USB-Serial
+
+    # Privileged mode for USB access (required on some systems)
+    privileged: true
+
+    # Network mode
+    network_mode: bridge
+
+    # Environment variables
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
+      - CMAKE_GENERATOR=Ninja
+
+    # Working directory
+    working_dir: /workspace
+
+    # Resource limits (optional, adjust as needed)
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+        reservations:
+          cpus: '2'
+          memory: 2G
+
+# Named volumes for persistence
+volumes:
+  corezero-build:
+    driver: local
+  corezero-cache:
+    driver: local

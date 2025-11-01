@@ -63,6 +63,11 @@ if(ALLOY_BUILD_TESTS)
     FetchContent_MakeAvailable(googletest)
 endif()
 
+# ESP32 boards require ESP-IDF integration
+if(ALLOY_BOARD MATCHES "^esp32")
+    include(cmake/platform/esp32_integration.cmake)
+endif()
+
 # Load board configuration
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/boards/${ALLOY_BOARD}.cmake)
     message(STATUS "Loading board: ${ALLOY_BOARD}")
@@ -71,8 +76,10 @@ else()
     message(WARNING "Board '${ALLOY_BOARD}' not found, using defaults")
 endif()
 
-# Validate toolchain for selected board
-alloy_validate_toolchain()
+# Validate toolchain for selected board (skip for ESP32, handled by ESP-IDF)
+if(NOT ALLOY_BOARD MATCHES "^esp32")
+    alloy_validate_toolchain()
+endif()
 
 # Display configuration
 message(STATUS "========================================")
@@ -102,10 +109,12 @@ add_subdirectory(examples/blinky)
 # Board-specific blink examples
 if(ALLOY_BOARD STREQUAL "bluepill")
     add_subdirectory(examples/blink_stm32f103)
+    add_subdirectory(examples/rtos_blink)
 endif()
 
 if(ALLOY_BOARD STREQUAL "esp32_devkit")
     add_subdirectory(examples/blink_esp32)
+    add_subdirectory(examples/rtos_blink_esp32)
 endif()
 
 if(ALLOY_BOARD STREQUAL "stm32f407vg")
@@ -118,6 +127,7 @@ endif()
 
 if(ALLOY_BOARD STREQUAL "rp_pico")
     add_subdirectory(examples/blink_rp_pico)
+    add_subdirectory(examples/rtos_blink_pico)
 endif()
 
 # Tests

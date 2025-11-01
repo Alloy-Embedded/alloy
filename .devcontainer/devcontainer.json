@@ -1,0 +1,115 @@
+{
+  "name": "CoreZero RTOS Development",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "corezero-dev",
+  "workspaceFolder": "/workspace",
+
+  // Run when container starts
+  "postCreateCommand": "echo '✅ CoreZero development container ready!'",
+
+  // VS Code settings
+  "customizations": {
+    "vscode": {
+      // Extensions to install
+      "extensions": [
+        // C/C++ support
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.cmake-tools",
+
+        // Python support
+        "ms-python.python",
+
+        // Git
+        "eamodio.gitlens",
+
+        // EditorConfig
+        "editorconfig.editorconfig",
+
+        // Assembly
+        "13xforever.language-x86-64-assembly",
+
+        // Markdown
+        "yzhang.markdown-all-in-one",
+
+        // Hex editor (for binary files)
+        "ms-vscode.hexeditor",
+
+        // Serial monitor
+        "ms-vscode.vscode-serial-monitor"
+      ],
+
+      // VS Code settings
+      "settings": {
+        // C/C++ configuration
+        "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+        "C_Cpp.default.compilerPath": "/usr/bin/arm-none-eabi-gcc",
+        "C_Cpp.default.cStandard": "c17",
+        "C_Cpp.default.cppStandard": "c++20",
+        "C_Cpp.default.intelliSenseMode": "gcc-arm",
+
+        // CMake
+        "cmake.configureOnOpen": false,
+        "cmake.generator": "Ninja",
+
+        // Files
+        "files.associations": {
+          "*.ld": "ld",
+          "*.S": "arm",
+          "*.s": "arm",
+          "*.hpp": "cpp",
+          "*.h": "c"
+        },
+
+        // Editor
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+
+        // Terminal
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash",
+            "icon": "terminal-bash"
+          }
+        },
+
+        // Git
+        "git.autofetch": true,
+
+        // Serial Monitor
+        "vscode-serial-monitor.baudRate": 115200
+      }
+    }
+  },
+
+  // Forward ports (if needed for debugging/web servers)
+  "forwardPorts": [],
+
+  // Use 'postAttachCommand' to run commands after the container is running
+  "postAttachCommand": "",
+
+  // Set remote user
+  "remoteUser": "developer",
+
+  // Mount docker socket for nested docker (optional)
+  "mounts": [
+    // Uncomment to enable Docker-in-Docker:
+    // "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+
+  // Environment variables
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:/home/developer/.local/bin"
+  },
+
+  // Features to add (optional)
+  "features": {
+    // Git (already in base image, but ensures latest)
+    "ghcr.io/devcontainers/features/git:1": {},
+
+    // GitHub CLI (optional, useful for CI/CD)
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  }
+}

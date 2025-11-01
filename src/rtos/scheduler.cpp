@@ -72,14 +72,19 @@ void init() {
     if (g_scheduler.current_task == nullptr) {
         // No tasks to run - should never happen if idle task exists
         while (1) {
-            __asm volatile("wfi");  // Wait for interrupt
+#if defined(__ARM_ARCH)
+            __asm volatile("wfi");  // Wait for interrupt (ARM)
+#elif defined(ESP32)
+            __asm volatile("waiti 0");  // Wait for interrupt (Xtensa)
+#else
+            // Generic wait - just loop
+#endif
         }
     }
 
     g_scheduler.current_task->state = TaskState::Running;
 
     // Start first task (platform-specific)
-    extern void start_first_task();
     start_first_task();
 
     // Never reached

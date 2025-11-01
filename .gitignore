@@ -4,7 +4,8 @@ build-*/
 cmake-build-*/
 
 # External dependencies
-external/
+# External dependencies
+# (ESP-IDF is added as submodule, tracked separately)
 
 # Backup files
 *.bak
