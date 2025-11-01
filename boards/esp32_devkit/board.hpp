@@ -12,6 +12,7 @@
 #include "hal/espressif/esp32/gpio.hpp"
 #include "hal/espressif/esp32/clock.hpp"
 #include "hal/espressif/esp32/delay.hpp"
+#include "hal/espressif/esp32/systick.hpp"
 #include <cstdint>
 
 namespace Board {
@@ -193,6 +194,9 @@ inline void initialize() {
             clock.set_frequency(80'000'000);
         }
     }
+
+    // Initialize SysTick for microsecond time tracking
+    SystemTick::init();
 
     // ESP32 doesn't need manual peripheral clock enable (auto-enabled on use)
 }

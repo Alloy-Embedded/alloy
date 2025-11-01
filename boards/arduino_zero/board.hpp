@@ -19,6 +19,7 @@
 #include "hal/microchip/samd21/gpio.hpp"
 #include "hal/microchip/samd21/clock.hpp"
 #include "hal/microchip/samd21/delay.hpp"
+#include "hal/microchip/samd21/systick.hpp"
 #include <cstdint>
 
 namespace Board {
@@ -164,6 +165,9 @@ inline void initialize() {
         // Fallback to OSC8M if DFLL fails
         clock.set_frequency(8'000'000);
     }
+
+    // Initialize SysTick for microsecond time tracking
+    SystemTick::init();
 
     // Enable GPIO port clocks
     clock.enable_peripheral(Peripheral::GpioA);

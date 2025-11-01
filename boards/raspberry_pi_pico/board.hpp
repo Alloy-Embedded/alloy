@@ -12,6 +12,7 @@
 #include "hal/raspberry/rp2040/gpio.hpp"
 #include "hal/raspberrypi/rp2040/clock.hpp"
 #include "hal/raspberrypi/rp2040/delay.hpp"
+#include "hal/raspberrypi/rp2040/systick.hpp"
 #include <cstdint>
 
 namespace Board {
@@ -159,6 +160,9 @@ inline void initialize() {
         // Fallback to ROSC if XOSC/PLL fails
         clock.set_frequency(6'500'000);
     }
+
+    // Initialize SysTick (timer already running, just mark as initialized)
+    SystemTick::init();
 
     // RP2040 enables peripheral clocks automatically
 }

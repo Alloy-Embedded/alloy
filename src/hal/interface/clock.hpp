@@ -46,6 +46,7 @@ enum class Peripheral : core::u16 {
     Timer3  = 0x0202,
     Timer4  = 0x0203,
     Timer5  = 0x0204,
+    SysTick = 0x0210,  ///< System tick timer for microsecond time tracking
 
     // Analog peripherals
     Adc1    = 0x0300,

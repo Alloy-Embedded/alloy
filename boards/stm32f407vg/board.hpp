@@ -12,6 +12,7 @@
 #include "hal/st/stm32f4/gpio.hpp"
 #include "hal/st/stm32f4/clock.hpp"
 #include "hal/st/stm32f4/delay.hpp"
+#include "hal/st/stm32f4/systick.hpp"
 #include <cstdint>
 
 namespace Board {
@@ -172,6 +173,9 @@ inline void initialize() {
         // Fallback to HSI if HSE fails
         clock.set_frequency(16'000'000);
     }
+
+    // Initialize SysTick for microsecond time tracking
+    SystemTick::init();
 
     // Enable GPIO clocks for all ports used on the Discovery board
     clock.enable_peripheral(Peripheral::GpioA);
