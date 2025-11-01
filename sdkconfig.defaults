@@ -1,0 +1,82 @@
+# CoreZero ESP-IDF Default Configuration
+#
+# This file provides sensible defaults for CoreZero Framework when using ESP-IDF.
+# Users can override these settings by creating their own sdkconfig or sdkconfig.defaults
+# in their project directory.
+
+# ============================================================================
+# Compiler Optimizations
+# ============================================================================
+CONFIG_COMPILER_OPTIMIZATION_SIZE=y
+CONFIG_COMPILER_OPTIMIZATION_ASSERTIONS_SILENT=y
+
+# ============================================================================
+# FreeRTOS Configuration
+# ============================================================================
+# CoreZero can work with ESP-IDF's FreeRTOS or use its own RTOS
+# By default, we configure FreeRTOS for minimal overhead
+CONFIG_FREERTOS_HZ=1000
+CONFIG_FREERTOS_USE_TICKLESS_IDLE=y
+CONFIG_FREERTOS_IDLE_TASK_STACKSIZE=1024
+
+# ============================================================================
+# ESP System Configuration
+# ============================================================================
+CONFIG_ESP_SYSTEM_EVENT_QUEUE_SIZE=32
+CONFIG_ESP_SYSTEM_EVENT_TASK_STACK_SIZE=2304
+
+# ============================================================================
+# WiFi Configuration (when enabled)
+# ============================================================================
+CONFIG_ESP32_WIFI_STATIC_RX_BUFFER_NUM=4
+CONFIG_ESP32_WIFI_DYNAMIC_RX_BUFFER_NUM=8
+CONFIG_ESP32_WIFI_TX_BUFFER_TYPE=1
+CONFIG_ESP32_WIFI_DYNAMIC_TX_BUFFER_NUM=16
+
+# ============================================================================
+# Bluetooth Configuration (when enabled)
+# ============================================================================
+# Bluetooth Classic disabled by default (most users want BLE only)
+CONFIG_BT_CLASSIC_ENABLED=n
+CONFIG_BT_BLE_ENABLED=y
+
+# ============================================================================
+# Logging Configuration
+# ============================================================================
+# Default log level (can be changed at runtime)
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+CONFIG_LOG_COLORS=y
+
+# ============================================================================
+# Memory Configuration
+# ============================================================================
+# Optimize for CoreZero's memory usage patterns
+CONFIG_ESP32_WIFI_IRAM_OPT=y
+CONFIG_ESP32_WIFI_RX_IRAM_OPT=y
+
+# ============================================================================
+# Component Configuration
+# ============================================================================
+# Disable components not commonly used
+CONFIG_FATFS_LFN_NONE=y
+CONFIG_WL_SECTOR_SIZE_512=y
+
+# ============================================================================
+# Serial Console
+# ============================================================================
+CONFIG_ESP_CONSOLE_UART_DEFAULT=y
+CONFIG_ESP_CONSOLE_UART_NUM=0
+CONFIG_ESP_CONSOLE_UART_BAUDRATE=115200
+
+# ============================================================================
+# Partition Table
+# ============================================================================
+# Use default partition table (can be overridden)
+CONFIG_PARTITION_TABLE_SINGLE_APP=y
+
+# ============================================================================
+# Flash Configuration
+# ============================================================================
+CONFIG_ESPTOOLPY_FLASHMODE_DIO=y
+CONFIG_ESPTOOLPY_FLASHFREQ_40M=y
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y

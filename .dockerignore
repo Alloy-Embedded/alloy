@@ -1,0 +1,69 @@
+# Build artifacts
+build/
+*.o
+*.a
+*.so
+*.elf
+*.bin
+*.hex
+*.map
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.Python
+venv/
+env/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Don't ignore these important files
+!.devcontainer/
+!Dockerfile
+!docker-compose.yml
+!CMakeLists.txt
+!*.cmake

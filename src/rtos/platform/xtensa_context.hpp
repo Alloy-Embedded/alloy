@@ -66,7 +66,7 @@ extern "C" void context_switch_handler(void* arg);
 ///
 /// Called every 1ms from ESP32 timer.
 /// Calls RTOS scheduler tick.
-extern "C" void IRAM_ATTR timer_isr_handler(void* arg);
+extern "C" void timer_isr_handler(void* arg);
 
 // Xtensa-specific definitions
 namespace xtensa {
@@ -115,6 +115,12 @@ void init_xtensa_rtos();
 
 /// Setup timer interrupt for RTOS tick
 void setup_timer_interrupt();
+
+/// Initialize RTOS timer (hardware timer)
+void init_rtos_timer();
+
+/// Stop RTOS timer
+void stop_rtos_timer();
 
 } // namespace xtensa
 

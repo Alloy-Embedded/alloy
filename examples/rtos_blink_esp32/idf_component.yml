@@ -1,0 +1,6 @@
+## IDF Component Manager Manifest File
+## This tells ESP-IDF how to treat this example as a component
+
+dependencies:
+  idf:
+    version: ">=5.0"

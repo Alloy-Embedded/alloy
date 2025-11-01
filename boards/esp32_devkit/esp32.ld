@@ -220,4 +220,8 @@ SECTIONS
     {
         KEEP(*(.xt.lit .xt.lit.* .gnu.linkonce.p.*))
     }
+
+    /* Symbol for sbrk() heap management */
+    _end = .;
+    PROVIDE(end = .);
 }
