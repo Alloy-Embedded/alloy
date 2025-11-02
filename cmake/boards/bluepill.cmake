@@ -21,8 +21,10 @@ set(ALLOY_HAS_PWM ON)
 set(ALLOY_LED_PIN "PC13" CACHE STRING "On-board LED pin (PC13)")
 
 # Memory
-set(ALLOY_FLASH_SIZE "64KB" CACHE STRING "Flash size")
-set(ALLOY_RAM_SIZE "20KB" CACHE STRING "RAM size")
+set(ALLOY_FLASH_SIZE_STR "64KB" CACHE STRING "Flash size (human-readable)" FORCE)
+set(ALLOY_RAM_SIZE_STR "20KB" CACHE STRING "RAM size (human-readable)" FORCE)
+set(ALLOY_FLASH_SIZE 65536 CACHE STRING "Flash size in bytes" FORCE)
+set(ALLOY_RAM_SIZE 20480 CACHE STRING "RAM size in bytes" FORCE)
 
 # Toolchain
 set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/../toolchains/arm-none-eabi.cmake" CACHE FILEPATH "Toolchain file")
@@ -48,4 +50,4 @@ endif()
 
 message(STATUS "Board configured: ${ALLOY_BOARD_NAME}")
 message(STATUS "  MCU: ${ALLOY_MCU}")
-message(STATUS "  Flash: ${ALLOY_FLASH_SIZE}, RAM: ${ALLOY_RAM_SIZE}")
+message(STATUS "  Flash: ${ALLOY_FLASH_SIZE_STR}, RAM: ${ALLOY_RAM_SIZE_STR}")

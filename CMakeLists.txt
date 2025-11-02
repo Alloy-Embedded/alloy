@@ -44,9 +44,11 @@ include(compiler_options)
 include(toolchain_check)
 include(board_flags)
 include(flash_targets)
+include(memory_analysis)
 
-# Testing support
+# Build options
 option(ALLOY_BUILD_TESTS "Build unit tests" ON)
+option(ALLOY_MINIMAL_BUILD "Optimize for size (enables -Os, -flto, --gc-sections)" OFF)
 
 if(ALLOY_BUILD_TESTS)
     enable_testing()
