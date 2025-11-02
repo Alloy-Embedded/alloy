@@ -29,6 +29,8 @@ set_property(CACHE ALLOY_BOARD PROPERTY STRINGS
     "stm32f407vg"        # STM32F407VG Discovery
     "arduino_zero"       # ATSAMD21G18 Arduino Zero
     "rp_pico"            # RP2040 Raspberry Pi Pico
+    "rp2040_zero"        # Waveshare RP2040-Zero
+    "same70_xpld"        # Atmel SAME70 Xplained
 )
 
 # Build type
@@ -133,6 +135,12 @@ endif()
 if(ALLOY_BOARD STREQUAL "rp2040_zero")
     add_subdirectory(examples/blink_rp2040_zero)
     add_subdirectory(examples/blink_rp2040_zero_pio)
+endif()
+
+if(ALLOY_BOARD STREQUAL "same70_xpld")
+    add_subdirectory(examples/blink_same70)
+    add_subdirectory(examples/same70_blink_leds)
+    add_subdirectory(examples/same70_uart_hello)
 endif()
 
 # Tests
