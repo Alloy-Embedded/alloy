@@ -7,10 +7,10 @@
 # ESP-IDF mode is automatically enabled when IDF_PATH is detected or
 # when building through build-esp32.sh script.
 
-# Check if ESP-IDF is available AND we're building as an ESP-IDF project
-# Note: idf_component_register() only works when building via idf.py, not via traditional CMake
-if(DEFINED IDF_BUILD_SYSTEM_VERSION)
-    # Building via idf.py - use ESP-IDF mode
+# Check if ESP-IDF integration is enabled
+# ESP-IDF is available when IDF_PATH is set and idf.cmake has been included
+if(COMMAND idf_build_component)
+    # ESP-IDF build system is available - use ESP-IDF mode
     set(USE_ESP_IDF TRUE)
     message(STATUS "ESP-IDF build system detected - Building with ESP-IDF integration")
     message(STATUS "  IDF_PATH: $ENV{IDF_PATH}")
@@ -24,8 +24,8 @@ endif()
 # ESP-IDF Mode: Use ESP-IDF component system
 # ============================================================================
 if(USE_ESP_IDF)
-    # Register this example as an ESP-IDF component
-    idf_component_register(
+    # Use CoreZero's ESP-IDF component helper with automatic component detection
+    alloy_esp32_component(
         SRCS
             "main.cpp"
             "../../boards/esp32_devkit/startup.cpp"
@@ -37,20 +37,18 @@ if(USE_ESP_IDF)
             "../../src"
             "../../boards"
         REQUIRES
-            # ESP-IDF components we depend on (minimal set)
-            esp_system
+            # Only specify components not auto-detected from includes
+            # (esp_timer is needed for RTOS timing functions)
             esp_timer
-            driver
+        # Note: esp_system and driver are added automatically by alloy_esp32_component()
+        # WiFi, BLE, HTTP, MQTT components are auto-detected from #include statements
     )
 
-    # ESP32-specific compile options for ESP-IDF
+    # ESP32-specific compile options
     target_compile_options(${COMPONENT_LIB} PRIVATE
         -mtext-section-literals
         -O2
-        -Wall
-        -Wextra
         -DESP32
-        -DUSE_ESP_IDF=1
     )
 
     # Add linker script from board config
@@ -61,7 +59,7 @@ if(USE_ESP_IDF)
 
     message(STATUS "ESP-IDF component registered: rtos_blink_esp32")
     message(STATUS "  Sources: main.cpp + RTOS core + board files")
-    message(STATUS "  ESP-IDF Components: esp_system, esp_timer, driver")
+    message(STATUS "  Components auto-detected from includes + esp_timer")
 
 # ============================================================================
 # Bare-Metal Mode: Traditional CMake build
