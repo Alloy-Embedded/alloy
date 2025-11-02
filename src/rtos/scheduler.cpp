@@ -3,6 +3,24 @@
 #include "rtos/scheduler.hpp"
 #include "hal/interface/systick.hpp"
 
+// Include platform-specific systick implementation
+#if defined(__ARM_ARCH_6M__) || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__)
+    #if defined(STM32F103) || defined(STM32F1)
+        #include "hal/st/stm32f1/systick.hpp"
+    #elif defined(STM32F407) || defined(STM32F4)
+        #include "hal/st/stm32f4/systick.hpp"
+    #elif defined(SAMD21)
+        #include "hal/microchip/samd21/systick.hpp"
+    #elif defined(ATSAME70)
+        // SAME70 uses ARM SysTick (TODO: implement)
+    #endif
+#elif defined(ESP32) || defined(ESP_PLATFORM)
+    #include "hal/espressif/esp32/systick.hpp"
+#elif defined(__riscv)
+    // RISC-V platforms (RP2040, etc.)
+    #include "hal/raspberrypi/rp2040/systick.hpp"
+#endif
+
 namespace alloy::rtos {
 
 // Global scheduler state
