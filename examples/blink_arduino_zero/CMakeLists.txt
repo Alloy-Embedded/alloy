@@ -23,12 +23,18 @@ target_compile_options(blink_arduino_zero PRIVATE
 target_link_options(blink_arduino_zero PRIVATE
     -mcpu=cortex-m0plus
     -mthumb
-    -specs=nosys.specs
-    -specs=nano.specs
     -T${CMAKE_SOURCE_DIR}/boards/arduino_zero/ATSAMD21G18.ld
     -Wl,--gc-sections
     -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/blink_arduino_zero.map
     -Wl,--print-memory-usage
+)
+
+# Link required libraries explicitly (xPack ARM v14.2.1+ has nosys.specs conflicts)
+target_link_libraries(blink_arduino_zero PRIVATE
+    -lc_nano
+    -lnosys
+    -lgcc
+    -lm
 )
 
 # Generate additional output formats
