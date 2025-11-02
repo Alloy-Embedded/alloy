@@ -1,6 +1,6 @@
 # ESP32 WiFi Station Example
 
-Este exemplo demonstra como conectar o ESP32 a uma rede WiFi e fazer requisições HTTP usando o CoreZero com ESP-IDF.
+Este exemplo demonstra como conectar o ESP32 a uma rede WiFi e fazer requisições HTTP usando o Alloy com ESP-IDF.
 
 ## O Que Este Exemplo Faz
 
@@ -28,7 +28,7 @@ Esta estrutura permite que o ESP-IDF gerencie componentes automaticamente.
 
 ## Detecção Automática de Componentes
 
-O CoreZero detecta automaticamente os componentes ESP-IDF necessários baseado nos `#include`:
+O Alloy detecta automaticamente os componentes ESP-IDF necessários baseado nos `#include`:
 
 ```cpp
 #include <esp_wifi.h>         // → esp_wifi, esp_netif, nvs_flash
@@ -76,7 +76,7 @@ idf.py -p /dev/cu.usbserial-XXXX flash monitor
 
 ```
 I (1234) wifi_station: ========================================
-I (1234) wifi_station:   CoreZero ESP32 WiFi Station Example
+I (1234) wifi_station:   Alloy ESP32 WiFi Station Example
 I (1234) wifi_station: ========================================
 I (1234) wifi_station:
 I (1234) wifi_station: SSID: MyWiFiNetwork
@@ -167,7 +167,7 @@ config.url = "https://example.com";  // HTTPS funciona automaticamente
 2. **Inicialização WiFi** - Sequência completa de setup
 3. **Event handlers** - Como responder a eventos WiFi
 4. **HTTP client** - Como fazer requisições HTTP/HTTPS
-5. **Detecção automática** - Como o CoreZero detecta componentes
+5. **Detecção automática** - Como o Alloy detecta componentes
 
 ## Próximos Passos
 
@@ -206,5 +206,5 @@ Todos são detectados automaticamente pelos includes!
 
 - [ESP-IDF WiFi Documentation](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_wifi.html)
 - [ESP-IDF HTTP Client](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/protocols/esp_http_client.html)
-- [CoreZero ESP32 Automatic Components](../../docs/ESP32_AUTOMATIC_COMPONENTS.md)
+- [Alloy ESP32 Automatic Components](../../docs/ESP32_AUTOMATIC_COMPONENTS.md)
 - [ESP-IDF Build System](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html)

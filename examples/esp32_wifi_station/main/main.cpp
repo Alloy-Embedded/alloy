@@ -1,166 +1,62 @@
 /**
- * ESP32 WiFi Station Example
+ * ESP32 WiFi Station Example - Alloy Framework
  *
  * This example demonstrates:
- * - Connecting to a WiFi access point
- * - Handling WiFi events (connected, disconnected, got IP)
+ * - Using Alloy's WiFi Station abstraction
+ * - Clean C++ API with Result<T> error handling
+ * - Connection callbacks for event handling
  * - Making HTTP GET request after connection
- * - Automatic ESP-IDF component detection
+ * - Automatic reconnection handling
  *
  * Note: Update WIFI_SSID and WIFI_PASSWORD below with your credentials
  */
 
-#include <cstring>
-#include <string>
+#include "wifi/station.hpp"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "freertos/event_groups.h"
-#include "esp_system.h"
-#include "esp_wifi.h"
-#include "esp_event.h"
 #include "esp_log.h"
-#include "nvs_flash.h"
-#include "esp_netif.h"
 #include "esp_http_client.h"
 
 // WiFi Configuration - CHANGE THESE!
 #define WIFI_SSID      "YOUR_WIFI_SSID"
 #define WIFI_PASSWORD  "YOUR_WIFI_PASSWORD"
 
-// Maximum retry attempts
-#define MAX_RETRY_COUNT 5
+static const char *TAG = "wifi_example";
 
-static const char *TAG = "wifi_station";
+using alloy::wifi::Station;
+using alloy::wifi::ConnectionInfo;
+using alloy::core::Result;
 
-// Event group for WiFi status
-static EventGroupHandle_t s_wifi_event_group;
-
-// Event bits
-#define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT      BIT1
-
-// Retry counter
-static int s_retry_count = 0;
+// Global WiFi station instance
+static Station wifi;
 
 /**
- * WiFi Event Handler
+ * Connection Callback
  *
- * Handles WiFi and IP events:
- * - WIFI_EVENT_STA_START: WiFi started, begin connection
- * - WIFI_EVENT_STA_DISCONNECTED: Connection lost, retry
- * - IP_EVENT_STA_GOT_IP: Successfully obtained IP address
+ * Called when WiFi connection state changes
  */
-static void wifi_event_handler(void* arg, esp_event_base_t event_base,
-                                int32_t event_id, void* event_data)
-{
-    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
-        ESP_LOGI(TAG, "WiFi started, connecting to AP...");
-        esp_wifi_connect();
-    } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
-        if (s_retry_count < MAX_RETRY_COUNT) {
-            esp_wifi_connect();
-            s_retry_count++;
-            ESP_LOGI(TAG, "Retrying connection... (attempt %d/%d)", s_retry_count, MAX_RETRY_COUNT);
-        } else {
-            xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
-            ESP_LOGE(TAG, "Failed to connect after %d attempts", MAX_RETRY_COUNT);
-        }
-    } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
-        ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
-        ESP_LOGI(TAG, "Connected! IP Address: " IPSTR, IP2STR(&event->ip_info.ip));
-        s_retry_count = 0;
-        xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
-    }
-}
-
-/**
- * Initialize WiFi in Station Mode
- *
- * Sets up:
- * - NVS (required by WiFi)
- * - Network interface
- * - Event loop
- * - WiFi driver
- * - Station configuration
- */
-static bool wifi_init_sta(void)
-{
-    // Create event group
-    s_wifi_event_group = xEventGroupCreate();
-
-    // Initialize NVS (required for WiFi)
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        ESP_LOGW(TAG, "NVS partition was truncated, erasing...");
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK(ret);
-
-    // Initialize TCP/IP stack
-    ESP_ERROR_CHECK(esp_netif_init());
-
-    // Create default event loop
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-
-    // Create default WiFi station
-    esp_netif_create_default_wifi_sta();
-
-    // Initialize WiFi with default config
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-
-    // Register event handlers
-    esp_event_handler_instance_t instance_any_id;
-    esp_event_handler_instance_t instance_got_ip;
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT,
-                                                         ESP_EVENT_ANY_ID,
-                                                         &wifi_event_handler,
-                                                         NULL,
-                                                         &instance_any_id));
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT,
-                                                         IP_EVENT_STA_GOT_IP,
-                                                         &wifi_event_handler,
-                                                         NULL,
-                                                         &instance_got_ip));
-
-    // Configure WiFi connection
-    wifi_config_t wifi_config = {};
-    strncpy((char*)wifi_config.sta.ssid, WIFI_SSID, sizeof(wifi_config.sta.ssid) - 1);
-    strncpy((char*)wifi_config.sta.password, WIFI_PASSWORD, sizeof(wifi_config.sta.password) - 1);
-    wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
-    wifi_config.sta.pmf_cfg.capable = true;
-    wifi_config.sta.pmf_cfg.required = false;
-
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
-    ESP_ERROR_CHECK(esp_wifi_start());
-
-    ESP_LOGI(TAG, "WiFi initialization complete. Waiting for connection...");
-
-    // Wait for connection or failure
-    EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
-                                           WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
-                                           pdFALSE,
-                                           pdFALSE,
-                                           portMAX_DELAY);
-
-    // Check result
-    if (bits & WIFI_CONNECTED_BIT) {
-        ESP_LOGI(TAG, "Successfully connected to SSID: %s", WIFI_SSID);
-        return true;
-    } else if (bits & WIFI_FAIL_BIT) {
-        ESP_LOGE(TAG, "Failed to connect to SSID: %s", WIFI_SSID);
-        return false;
+void on_wifi_event(bool connected, const ConnectionInfo& info) {
+    if (connected) {
+        ESP_LOGI(TAG, "✓ WiFi Connected!");
+        ESP_LOGI(TAG, "  IP:      %d.%d.%d.%d",
+            info.ip.octet[0], info.ip.octet[1],
+            info.ip.octet[2], info.ip.octet[3]);
+        ESP_LOGI(TAG, "  Gateway: %d.%d.%d.%d",
+            info.gateway.octet[0], info.gateway.octet[1],
+            info.gateway.octet[2], info.gateway.octet[3]);
+        ESP_LOGI(TAG, "  Netmask: %d.%d.%d.%d",
+            info.netmask.octet[0], info.netmask.octet[1],
+            info.netmask.octet[2], info.netmask.octet[3]);
+        ESP_LOGI(TAG, "  MAC:     %02X:%02X:%02X:%02X:%02X:%02X",
+            info.mac.bytes[0], info.mac.bytes[1], info.mac.bytes[2],
+            info.mac.bytes[3], info.mac.bytes[4], info.mac.bytes[5]);
     } else {
-        ESP_LOGE(TAG, "Unexpected event");
-        return false;
+        ESP_LOGE(TAG, "✗ WiFi Disconnected!");
     }
 }
 
 /**
  * HTTP Event Handler
- * Handles HTTP client events (connected, data received, etc.)
  */
 static esp_err_t http_event_handler(esp_http_client_event_t *evt)
 {
@@ -168,37 +64,19 @@ static esp_err_t http_event_handler(esp_http_client_event_t *evt)
         case HTTP_EVENT_ERROR:
             ESP_LOGE(TAG, "HTTP_EVENT_ERROR");
             break;
-        case HTTP_EVENT_ON_CONNECTED:
-            ESP_LOGI(TAG, "HTTP_EVENT_ON_CONNECTED");
-            break;
-        case HTTP_EVENT_HEADER_SENT:
-            ESP_LOGI(TAG, "HTTP_EVENT_HEADER_SENT");
-            break;
-        case HTTP_EVENT_ON_HEADER:
-            ESP_LOGI(TAG, "HTTP_EVENT_ON_HEADER, key=%s, value=%s", evt->header_key, evt->header_value);
-            break;
-        case HTTP_EVENT_ON_HEADERS_COMPLETE:
-            ESP_LOGI(TAG, "HTTP_EVENT_ON_HEADERS_COMPLETE");
-            break;
-        case HTTP_EVENT_ON_STATUS_CODE:
-            ESP_LOGI(TAG, "HTTP_EVENT_ON_STATUS_CODE, status=%d", esp_http_client_get_status_code(evt->client));
-            break;
         case HTTP_EVENT_ON_DATA:
-            ESP_LOGI(TAG, "HTTP_EVENT_ON_DATA, len=%d", evt->data_len);
             if (!esp_http_client_is_chunked_response(evt->client)) {
                 // Print received data (limited to first 200 chars for brevity)
                 int len = evt->data_len > 200 ? 200 : evt->data_len;
-                printf("Received data: %.*s\n", len, (char*)evt->data);
+                printf("\n--- HTTP Response (first %d bytes) ---\n", len);
+                printf("%.*s\n", len, (char*)evt->data);
+                printf("--- End of Response ---\n\n");
             }
             break;
         case HTTP_EVENT_ON_FINISH:
-            ESP_LOGI(TAG, "HTTP_EVENT_ON_FINISH");
+            ESP_LOGI(TAG, "HTTP request completed");
             break;
-        case HTTP_EVENT_DISCONNECTED:
-            ESP_LOGI(TAG, "HTTP_EVENT_DISCONNECTED");
-            break;
-        case HTTP_EVENT_REDIRECT:
-            ESP_LOGI(TAG, "HTTP_EVENT_REDIRECT");
+        default:
             break;
     }
     return ESP_OK;
@@ -206,13 +84,11 @@ static esp_err_t http_event_handler(esp_http_client_event_t *evt)
 
 /**
  * Perform HTTP GET Request
- *
- * Makes a simple HTTP GET to example.com to demonstrate
- * that we have working internet connectivity
  */
-static void http_get_task(void)
+static void http_get_example(void)
 {
-    ESP_LOGI(TAG, "Starting HTTP GET request...");
+    ESP_LOGI(TAG, "");
+    ESP_LOGI(TAG, "Performing HTTP GET to example.com...");
 
     // Configure HTTP client
     esp_http_client_config_t config = {};
@@ -225,15 +101,40 @@ static void http_get_task(void)
     // Perform GET request
     esp_err_t err = esp_http_client_perform(client);
     if (err == ESP_OK) {
-        ESP_LOGI(TAG, "HTTP GET Status = %d, content_length = %lld",
+        ESP_LOGI(TAG, "HTTP Status = %d, Content-Length = %lld",
                 esp_http_client_get_status_code(client),
                 esp_http_client_get_content_length(client));
     } else {
-        ESP_LOGE(TAG, "HTTP GET request failed: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG, "HTTP GET failed: %s", esp_err_to_name(err));
     }
 
-    // Cleanup
     esp_http_client_cleanup(client);
+}
+
+/**
+ * Print WiFi Connection Info
+ */
+static void print_connection_info(void)
+{
+    auto info_result = wifi.connection_info();
+    if (info_result.is_ok()) {
+        const auto& info = info_result.value();
+
+        ESP_LOGI(TAG, "");
+        ESP_LOGI(TAG, "=== Current WiFi Status ===");
+        ESP_LOGI(TAG, "SSID:    %s", wifi.ssid());
+        ESP_LOGI(TAG, "IP:      %d.%d.%d.%d",
+            info.ip.octet[0], info.ip.octet[1],
+            info.ip.octet[2], info.ip.octet[3]);
+
+        // Get RSSI
+        auto rssi_result = wifi.rssi();
+        if (rssi_result.is_ok()) {
+            ESP_LOGI(TAG, "RSSI:    %d dBm", rssi_result.value());
+        }
+        ESP_LOGI(TAG, "==========================");
+        ESP_LOGI(TAG, "");
+    }
 }
 
 /**
@@ -242,38 +143,79 @@ static void http_get_task(void)
 extern "C" void app_main(void)
 {
     ESP_LOGI(TAG, "========================================");
-    ESP_LOGI(TAG, "  CoreZero ESP32 WiFi Station Example");
+    ESP_LOGI(TAG, "  Alloy WiFi Station Example");
+    ESP_LOGI(TAG, "  Using Alloy WiFi API");
     ESP_LOGI(TAG, "========================================");
     ESP_LOGI(TAG, "");
-    ESP_LOGI(TAG, "SSID: %s", WIFI_SSID);
+
+    // Step 1: Initialize WiFi
+    ESP_LOGI(TAG, "Initializing WiFi...");
+    auto init_result = wifi.init();
+    if (!init_result.is_ok()) {
+        ESP_LOGE(TAG, "Failed to initialize WiFi!");
+        return;
+    }
+    ESP_LOGI(TAG, "✓ WiFi initialized");
+
+    // Step 2: Set connection callback
+    wifi.set_connection_callback(on_wifi_event);
+
+    // Step 3: Connect to WiFi
     ESP_LOGI(TAG, "");
+    ESP_LOGI(TAG, "Connecting to WiFi...");
+    ESP_LOGI(TAG, "SSID: %s", WIFI_SSID);
 
-    // Initialize and connect to WiFi
-    if (wifi_init_sta()) {
-        ESP_LOGI(TAG, "");
-        ESP_LOGI(TAG, "WiFi connected successfully!");
-        ESP_LOGI(TAG, "Now performing HTTP GET request...");
-        ESP_LOGI(TAG, "");
+    auto connect_result = wifi.connect(WIFI_SSID, WIFI_PASSWORD, 15000);
 
-        // Wait a bit for connection to stabilize
-        vTaskDelay(pdMS_TO_TICKS(1000));
-
-        // Perform HTTP request
-        http_get_task();
-
-        ESP_LOGI(TAG, "");
-        ESP_LOGI(TAG, "Example complete! WiFi is connected and working.");
-        ESP_LOGI(TAG, "");
-    } else {
+    if (!connect_result.is_ok()) {
         ESP_LOGE(TAG, "");
-        ESP_LOGE(TAG, "Failed to connect to WiFi!");
-        ESP_LOGE(TAG, "Please check your SSID and password in main.cpp");
+        ESP_LOGE(TAG, "✗ Failed to connect to WiFi!");
+        ESP_LOGE(TAG, "  Please check:");
+        ESP_LOGE(TAG, "  - SSID is correct");
+        ESP_LOGE(TAG, "  - Password is correct");
+        ESP_LOGE(TAG, "  - WiFi is in range");
         ESP_LOGE(TAG, "");
+        return;
     }
 
-    // Main loop - just keep WiFi alive
+    ESP_LOGI(TAG, "");
+    ESP_LOGI(TAG, "✓ WiFi connected successfully!");
+
+    // Step 4: Print connection info
+    print_connection_info();
+
+    // Step 5: Perform HTTP request
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    http_get_example();
+
+    // Step 6: Main loop - monitor connection
+    ESP_LOGI(TAG, "");
+    ESP_LOGI(TAG, "Entering main loop...");
+    ESP_LOGI(TAG, "WiFi will automatically reconnect if connection is lost.");
+    ESP_LOGI(TAG, "");
+
+    int loop_count = 0;
     while (true) {
         vTaskDelay(pdMS_TO_TICKS(10000));
-        ESP_LOGI(TAG, "Still connected...");
+
+        if (wifi.is_connected()) {
+            loop_count++;
+            ESP_LOGI(TAG, "Still connected... (%d)", loop_count);
+
+            // Print detailed status every 30 seconds
+            if (loop_count % 3 == 0) {
+                print_connection_info();
+            }
+        } else {
+            ESP_LOGW(TAG, "WiFi disconnected! Attempting to reconnect...");
+
+            auto reconnect_result = wifi.connect(WIFI_SSID, WIFI_PASSWORD, 15000);
+            if (reconnect_result.is_ok()) {
+                ESP_LOGI(TAG, "✓ Reconnected to WiFi!");
+                print_connection_info();
+            } else {
+                ESP_LOGE(TAG, "✗ Reconnection failed, will retry...");
+            }
+        }
     }
 }

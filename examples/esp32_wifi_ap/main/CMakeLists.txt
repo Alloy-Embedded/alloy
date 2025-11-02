@@ -1,6 +1,6 @@
-# Main component for WiFi Station example
+# Main component for WiFi Access Point example
 #
-# This example demonstrates Alloy's WiFi abstraction layer
+# This example demonstrates Alloy's WiFi AP abstraction layer
 
 # Source files for this example
 set(SRCS
@@ -23,7 +23,6 @@ idf_component_register(
         esp_wifi
         esp_netif
         nvs_flash
-        esp_http_client
         esp_event
 )
 
