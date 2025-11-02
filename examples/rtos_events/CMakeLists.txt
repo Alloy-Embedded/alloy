@@ -46,3 +46,6 @@ add_custom_command(TARGET rtos_events POST_BUILD
     COMMAND ${CMAKE_SIZE} $<TARGET_FILE:rtos_events>
     COMMENT "Generating HEX and BIN files for RTOS Event Flags example"
 )
+
+# Add memory analysis reporting
+alloy_add_memory_analysis(rtos_events)

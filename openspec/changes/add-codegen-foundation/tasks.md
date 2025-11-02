@@ -135,7 +135,6 @@
 - [x] 12.7 Test complete workflow end-to-end
 - [x] 12.8 Measure generation time (should be < 5s)
 - [x] 12.9 Update IMPLEMENTATION_ROADMAP.md
-- [ ] 12.10 Create demo video/GIF of code generation (optional - deferred)
 
 ## Dependencies Between Tasks
 
