@@ -3,6 +3,7 @@
 add_executable(blink_rp_pico
     main.cpp
     ../../boards/raspberry_pi_pico/startup.cpp
+    ../../src/generated/raspberrypi/rp2040/boot2_w25q080.S
 )
 
 target_include_directories(blink_rp_pico PRIVATE

@@ -130,6 +130,11 @@ if(ALLOY_BOARD STREQUAL "rp_pico")
     add_subdirectory(examples/rtos_blink_pico)
 endif()
 
+if(ALLOY_BOARD STREQUAL "rp2040_zero")
+    add_subdirectory(examples/blink_rp2040_zero)
+    add_subdirectory(examples/blink_rp2040_zero_pio)
+endif()
+
 # Tests
 if(ALLOY_BUILD_TESTS)
     add_subdirectory(tests/unit)

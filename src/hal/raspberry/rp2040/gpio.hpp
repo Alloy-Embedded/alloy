@@ -39,6 +39,20 @@ inline mcu::sio::Registers* get_sio() {
     return mcu::sio::SIO_IRQ_PROC0;
 }
 
+/// Get IO_BANK0 base address for GPIO function selection
+inline volatile uint32_t* get_io_bank0_ctrl(uint8_t pin) {
+    constexpr uint32_t IO_BANK0_BASE = 0x40014000;
+    // Each GPIO has 8 bytes: STATUS (4 bytes) + CTRL (4 bytes)
+    return reinterpret_cast<volatile uint32_t*>(IO_BANK0_BASE + 0x004 + (pin * 8));
+}
+
+/// Get PADS_BANK0 register for pad configuration
+inline volatile uint32_t* get_pads_bank0(uint8_t pin) {
+    constexpr uint32_t PADS_BANK0_BASE = 0x4001C000;
+    // GPIO0-29: offset 0x04 + (pin * 4)
+    return reinterpret_cast<volatile uint32_t*>(PADS_BANK0_BASE + 0x04 + (pin * 4));
+}
+
 /// Modern C++20 GPIO Pin Implementation for RP2040
 ///
 /// This class template provides compile-time GPIO pin configuration
@@ -77,29 +91,50 @@ public:
 
     /// Configure pin mode
     /// @param mode Desired pin mode (Input, Output, InputPullUp, InputPullDown)
-    /// @note RP2040 GPIO configuration is simpler than STM32:
-    ///       - Output: Set GPIO_OE bit (output enable)
-    ///       - Input: Clear GPIO_OE bit
-    ///       - Pull resistors would require IO_BANK0 configuration (not implemented here)
+    /// @note RP2040 GPIO configuration requires:
+    ///       1. PAD configuration (drive strength, pulls)
+    ///       2. IO_BANK0 function select (SIO = function 5)
+    ///       3. SIO output enable
     inline void configure(PinMode mode) {
         auto* sio = get_sio();
         if (!sio) return;
+
+        // Get IO_BANK0 and PADS registers
+        volatile uint32_t* io_ctrl = get_io_bank0_ctrl(PIN);
+        volatile uint32_t* pads = get_pads_bank0(PIN);
+
+        // Configure PAD (enable output, set drive strength)
+        // IE=1 (input enable), OD=0 (not open-drain), SLEWFAST=0, DRIVE=0 (2mA)
+        *pads = (1 << 6); // IE bit
+
+        // Select SIO function (function 5) in IO_BANK0
+        *io_ctrl = 5; // FUNCSEL = 5 (SIO controlled GPIO)
 
         switch (mode) {
             case PinMode::Input:
                 // Clear output enable = input mode
                 sio->GPIO_OE_CLR = pin_mask;
+                // Clear pulls in PAD
+                *pads = (1 << 6) | (1 << 7); // IE=1, SCHMITT=1
                 break;
 
             case PinMode::InputPullUp:
+                // Clear output enable for input
+                sio->GPIO_OE_CLR = pin_mask;
+                // Enable pull-up
+                *pads = (1 << 6) | (1 << 7) | (1 << 3); // IE=1, SCHMITT=1, PUE=1
+                break;
+
             case PinMode::InputPullDown:
                 // Clear output enable for input
                 sio->GPIO_OE_CLR = pin_mask;
-                // TODO: Configure pull resistors via PADS_BANK0
-                // For now, just treat as floating input
+                // Enable pull-down
+                *pads = (1 << 6) | (1 << 7) | (1 << 2); // IE=1, SCHMITT=1, PDE=1
                 break;
 
             case PinMode::Output:
+                // Configure PAD for output
+                *pads = (1 << 6) | (1 << 7); // IE=1, SCHMITT=1
                 // Set output enable
                 sio->GPIO_OE_SET = pin_mask;
                 break;
@@ -107,13 +142,14 @@ public:
             case PinMode::Alternate:
                 // Clear output enable (alternate function controlled by IO_BANK0)
                 sio->GPIO_OE_CLR = pin_mask;
-                // TODO: Configure function via IO_BANK0
+                // Function selection would be done via io_ctrl with different FUNCSEL
                 break;
 
             case PinMode::Analog:
                 // Clear output enable
                 sio->GPIO_OE_CLR = pin_mask;
-                // TODO: Configure ADC if needed
+                // Set function to NULL (9) to disconnect digital path
+                *io_ctrl = 0x1f; // NULL function
                 break;
         }
     }

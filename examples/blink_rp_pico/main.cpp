@@ -27,6 +27,9 @@
 #include "raspberry_pi_pico/board.hpp"
 
 int main() {
+    // Initialize board (clock, peripherals, etc.)
+    Board::initialize();
+
     // Initialize LED
     Board::Led::init();
 
