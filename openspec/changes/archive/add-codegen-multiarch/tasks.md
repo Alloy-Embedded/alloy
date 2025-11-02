@@ -13,13 +13,15 @@
 - [x] 2.4 Generate JSON database from SVD
 - [x] 2.5 Test with STM32F103xB SVD file
 
-## 3. RL78 Database
+## 3. RL78 Database *(DEFERRED)*
 
-- [ ] 3.1 Create `tools/codegen/database/families/rl78.json` *(Not implemented - RL78 support deferred)*
-- [ ] 3.2 Manually define RL78 peripherals (no SVD available)
-- [ ] 3.3 Define port registers (P, PM, PU, etc.)
-- [ ] 3.4 Define SAU registers for UART
-- [ ] 3.5 Define interrupt vector table for RL78
+- [ ] 3.1 Create `tools/codegen/database/families/rl78.json` *(Deferred - RL78 requires different approach)*
+- [ ] 3.2 Manually define RL78 peripherals (no SVD available) *(Deferred)*
+- [ ] 3.3 Define port registers (P, PM, PU, etc.) *(Deferred)*
+- [ ] 3.4 Define SAU registers for UART *(Deferred)*
+- [ ] 3.5 Define interrupt vector table for RL78 *(Deferred)*
+
+**Note:** RL78 support deferred pending future requirements. Requires specialized tooling approach.
 
 ## 4. ESP32 Database
 
