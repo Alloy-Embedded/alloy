@@ -4,10 +4,10 @@
 # 1. ESP-IDF Mode: Uses ESP-IDF components and build system
 # 2. Bare-Metal Mode: Pure Alloy framework without ESP-IDF
 
-# Check if ESP-IDF is available AND we're building as an ESP-IDF project
-# Note: idf_component_register() only works when building via idf.py, not via traditional CMake
-if(DEFINED IDF_BUILD_SYSTEM_VERSION)
-    # Building via idf.py - use ESP-IDF mode
+# Check if ESP-IDF integration is enabled
+# ESP-IDF is available when IDF_PATH is set and idf.cmake has been included
+if(COMMAND idf_build_component)
+    # ESP-IDF build system is available - use ESP-IDF mode
     set(USE_ESP_IDF TRUE)
     message(STATUS "ESP-IDF build system detected - Building blink_esp32 with ESP-IDF")
 else()
@@ -20,7 +20,8 @@ endif()
 # ESP-IDF Mode
 # ============================================================================
 if(USE_ESP_IDF)
-    idf_component_register(
+    # Use CoreZero's ESP-IDF component helper with automatic component detection
+    alloy_esp32_component(
         SRCS
             "main.cpp"
             "../../boards/esp32_devkit/startup.cpp"
@@ -28,19 +29,17 @@ if(USE_ESP_IDF)
             "."
             "../../src"
             "../../boards"
-        REQUIRES
-            esp_system
-            driver
+        # REQUIRES is optional - alloy_esp32_component auto-detects components
+        # from #include statements in source files
     )
 
+    # ESP32-specific compile options
     target_compile_options(${COMPONENT_LIB} PRIVATE
         -mtext-section-literals
         -O2
-        -Wall
-        -Wextra
-        -DUSE_ESP_IDF=1
     )
 
+    # Add linker script from board config
     target_link_options(${COMPONENT_LIB} PRIVATE
         -mtext-section-literals
         -T ${CMAKE_SOURCE_DIR}/boards/esp32_devkit/esp32.ld
