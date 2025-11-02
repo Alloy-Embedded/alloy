@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include <utility>
 #include <cassert>
+#include <new>
 
 /// Error handling for Alloy framework
 ///

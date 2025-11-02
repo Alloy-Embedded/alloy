@@ -255,8 +255,7 @@ void Station::handle_wifi_event(int32_t event_id, void* event_data) {
             state_ = ConnectionState::Connected;
 
             // Get AP info for BSSID
-            wifi_event_sta_connected_t* event =
-                static_cast<wifi_event_sta_connected_t*>(event_data);
+            (void)event_data;  // Reserved for future use (BSSID extraction)
 
             // Note: We don't have IP yet, wait for IP_EVENT_STA_GOT_IP
             break;
