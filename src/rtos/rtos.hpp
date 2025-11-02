@@ -211,6 +211,9 @@ constexpr core::u32 INFINITE = 0xFFFFFFFF;
     #include "rtos/platform/arm_context.hpp"
 #elif defined(ESP32) || defined(ESP_PLATFORM)
     #include "rtos/platform/xtensa_context.hpp"
+#elif defined(__x86_64__) || defined(__aarch64__) || defined(_WIN64) || defined(__APPLE__)
+    // Host platform (x86-64, ARM64 macOS, Windows x64)
+    #include "rtos/platform/host_context.hpp"
 #else
     #error "Unsupported platform for RTOS"
 #endif

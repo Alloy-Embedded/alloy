@@ -1,6 +1,7 @@
 # Build artifacts
 build/
 build-*/
+build_tests/*
 cmake-build-*/
 
 # External dependencies

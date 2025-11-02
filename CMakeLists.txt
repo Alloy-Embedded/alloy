@@ -57,8 +57,8 @@ if(ALLOY_BUILD_TESTS)
     include(FetchContent)
     FetchContent_Declare(
         googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG v1.14.0
+        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
     )
 
     # For Windows: Prevent overriding the parent project's compiler/linker settings
@@ -149,9 +149,14 @@ if(ALLOY_BOARD STREQUAL "same70_xpld")
     add_subdirectory(examples/same70_uart_hello)
 endif()
 
+if(ALLOY_BOARD STREQUAL "host")
+    add_subdirectory(examples/systick_host_test)
+    add_subdirectory(examples/rtos_host_demo)
+endif()
+
 # Tests
-if(ALLOY_BUILD_TESTS)
-    add_subdirectory(tests/unit)
+if(ALLOY_BUILD_TESTS AND ALLOY_BOARD STREQUAL "host")
+    add_subdirectory(tests)
 endif()
 
 # Export compile commands for IDEs

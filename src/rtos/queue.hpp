@@ -54,6 +54,7 @@
 
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
+#include "rtos/platform/critical_section.hpp"
 #include "core/types.hpp"
 #include "core/error.hpp"
 #include <cstring>
@@ -228,22 +229,12 @@ public:
 private:
     /// Disable interrupts (critical section entry)
     static inline void disable_interrupts() {
-#if defined(__ARM_ARCH)
-        __asm volatile("cpsid i" ::: "memory");
-#elif defined(ESP32) || defined(ESP_PLATFORM)
-        // ESP32: Use portDISABLE_INTERRUPTS or taskDISABLE_INTERRUPTS
-        // For now, simple implementation
-        __asm volatile("rsil a15, 15" ::: "memory");
-#endif
+        platform::disable_interrupts();
     }
 
     /// Enable interrupts (critical section exit)
     static inline void enable_interrupts() {
-#if defined(__ARM_ARCH)
-        __asm volatile("cpsie i" ::: "memory");
-#elif defined(ESP32) || defined(ESP_PLATFORM)
-        __asm volatile("rsil a15, 0" ::: "memory");
-#endif
+        platform::enable_interrupts();
     }
 };
 
