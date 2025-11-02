@@ -1,32 +1,31 @@
-# Alloy Unit Tests
-# Tests for core functionality, HAL implementations, and utilities
+# Unit Tests for CoreZero Framework
+cmake_minimum_required(VERSION 3.16)
 
-# Test executable
-add_executable(alloy_unit_tests
-    test_error_handling.cpp
-    test_gpio_host.cpp
-    test_uart_host.cpp
+project(corezero_unit_tests CXX)
+
+# Set C++20 standard
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Enable testing
+enable_testing()
+
+# Include directories
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../..)
+
+# Test for Result<T> type
+add_executable(test_result test_result.cpp)
+add_test(NAME ResultTypeTest COMMAND test_result)
+
+# Test for Error handling (if we create it)
+# add_executable(test_error test_error.cpp)
+# add_test(NAME ErrorHandlingTest COMMAND test_error)
+
+# Add more tests here as needed
+
+# Custom target to run all tests
+add_custom_target(run_tests
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+    DEPENDS test_result
+    COMMENT "Running all unit tests..."
 )
-
-target_include_directories(alloy_unit_tests
-    PRIVATE
-        ${ALLOY_ROOT}/src
-)
-
-target_link_libraries(alloy_unit_tests
-    PRIVATE
-        GTest::gtest_main
-        alloy_hal_host
-)
-
-target_compile_features(alloy_unit_tests
-    PRIVATE
-        cxx_std_20
-)
-
-# Apply Alloy compiler options
-alloy_target_compile_options(alloy_unit_tests)
-
-# Register with CTest
-include(GoogleTest)
-gtest_discover_tests(alloy_unit_tests)

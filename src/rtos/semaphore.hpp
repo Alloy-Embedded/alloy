@@ -53,6 +53,7 @@
 #include "rtos/scheduler.hpp"
 #include "core/types.hpp"
 #include "hal/interface/systick.hpp"
+#include "rtos/platform/critical_section.hpp"
 
 namespace alloy::rtos {
 
@@ -162,20 +163,12 @@ public:
 private:
     /// Disable interrupts (critical section)
     static inline void disable_interrupts() {
-#if defined(__ARM_ARCH)
-        __asm volatile("cpsid i" ::: "memory");
-#elif defined(ESP32) || defined(ESP_PLATFORM)
-        __asm volatile("rsil a15, 15" ::: "memory");
-#endif
+platform::disable_interrupts();
     }
 
     /// Enable interrupts
     static inline void enable_interrupts() {
-#if defined(__ARM_ARCH)
-        __asm volatile("cpsie i" ::: "memory");
-#elif defined(ESP32) || defined(ESP_PLATFORM)
-        __asm volatile("rsil a15, 0" ::: "memory");
-#endif
+platform::enable_interrupts();
     }
 };
 
@@ -307,20 +300,12 @@ public:
 private:
     /// Disable interrupts (critical section)
     static inline void disable_interrupts() {
-#if defined(__ARM_ARCH)
-        __asm volatile("cpsid i" ::: "memory");
-#elif defined(ESP32) || defined(ESP_PLATFORM)
-        __asm volatile("rsil a15, 15" ::: "memory");
-#endif
+platform::disable_interrupts();
     }
 
     /// Enable interrupts
     static inline void enable_interrupts() {
-#if defined(__ARM_ARCH)
-        __asm volatile("cpsie i" ::: "memory");
-#elif defined(ESP32) || defined(ESP_PLATFORM)
-        __asm volatile("rsil a15, 0" ::: "memory");
-#endif
+platform::enable_interrupts();
     }
 };
 

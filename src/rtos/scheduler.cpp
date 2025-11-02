@@ -19,6 +19,8 @@
 #elif defined(__riscv)
     // RISC-V platforms (RP2040, etc.)
     #include "hal/raspberrypi/rp2040/systick.hpp"
+#elif defined(__x86_64__) || defined(__aarch64__) || defined(_WIN64) || defined(__APPLE__)
+    #include "hal/host/systick.hpp"
 #endif
 
 namespace alloy::rtos {
@@ -103,7 +105,7 @@ void init() {
     g_scheduler.current_task->state = TaskState::Running;
 
     // Start first task (platform-specific)
-    start_first_task();
+    platform::start_first_task();
 
     // Never reached
     while (1);
