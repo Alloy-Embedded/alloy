@@ -1,0 +1,116 @@
+# Alloy Framework - clang-format configuration
+# Modern C++20 embedded systems code style
+
+---
+Language: Cpp
+Standard: c++20
+
+# Base style
+BasedOnStyle: Google
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 100
+ContinuationIndentWidth: 4
+IndentCaseLabels: true
+IndentPPDirectives: BeforeHash
+IndentWrappedFunctionNames: false
+NamespaceIndentation: None
+
+# Alignment
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignConsecutiveMacros: true
+AlignEscapedNewlines: Left
+AlignOperands: Align
+AlignTrailingComments: true
+
+# Breaking
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: Inline
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: Yes
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Attach
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
+BreakStringLiterals: true
+
+# Constructor initializers
+ConstructorInitializerIndentWidth: 4
+PackConstructorInitializers: CurrentLine
+
+# Spacing
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceInEmptyParentheses: false
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+# Pointers and references
+DerivePointerAlignment: false
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# Includes
+IncludeBlocks: Regroup
+IncludeCategories:
+  # Standard library
+  - Regex: '^<[a-z_]+>$'
+    Priority: 1
+  # C++ standard library
+  - Regex: '^<[a-z_]+\.h>$'
+    Priority: 2
+  # Catch2
+  - Regex: '^<catch2/'
+    Priority: 3
+  # Project headers (hal)
+  - Regex: '^"hal/'
+    Priority: 4
+  # Project headers (rtos)
+  - Regex: '^"rtos/'
+    Priority: 5
+  # Project headers (core)
+  - Regex: '^"core/'
+    Priority: 6
+  # Other project headers
+  - Regex: '^"'
+    Priority: 7
+  # Everything else
+  - Regex: '.*'
+    Priority: 8
+SortIncludes: CaseSensitive
+
+# Comments
+ReflowComments: true
+CommentPragmas: '^ (NOLINT|TODO|FIXME|NOTE|XXX)'
+
+# Other
+BinPackArguments: true
+BinPackParameters: true
+Cpp11BracedListStyle: true
+FixNamespaceComments: true
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 2
+SortUsingDeclarations: true

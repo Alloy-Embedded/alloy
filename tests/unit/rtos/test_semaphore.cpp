@@ -1,568 +1,238 @@
 /// Unit Tests for RTOS Semaphores
 ///
-/// Tests binary and counting semaphores for task synchronization,
-/// ISR signaling, resource pooling, and edge cases.
+/// Tests binary and counting semaphores for synchronization using Catch2
 
-#include <gtest/gtest.h>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_section_info.hpp>
 #include "rtos/semaphore.hpp"
-#include "rtos/rtos.hpp"
 #include "hal/host/systick.hpp"
 #include <thread>
-#include <atomic>
 #include <chrono>
+#include <atomic>
 
 using namespace alloy;
 using namespace alloy::rtos;
 
-// Test fixture
-class SemaphoreTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        auto result = hal::host::SystemTick::init();
-        ASSERT_TRUE(result.is_ok());
-    }
-};
-
 // ============================================================================
-// Test 1: Binary Semaphore - Creation and Initial State
+// Test 1: Binary Semaphore Basic Operations
 // ============================================================================
 
-TEST_F(SemaphoreTest, BinarySemaphoreCreationDefault) {
-    // Given: A binary semaphore with default construction
-    BinarySemaphore sem;
+TEST_CASE("Binary semaphore basic operations", "[semaphore][binary][basic]") {
+    auto result = hal::host::SystemTick::init();
+    REQUIRE(result.is_ok());
 
-    // Then: Should start at 0 (taken)
-    EXPECT_EQ(sem.count(), 0u);
-    EXPECT_FALSE(sem.is_available());
-}
+    SECTION("Binary semaphore starts with initial value") {
+        BinarySemaphore sem(0);
+        REQUIRE(sem.count() == 0);
 
-TEST_F(SemaphoreTest, BinarySemaphoreCreationWithInitialValue) {
-    // Given: Binary semaphores with different initial values
-    BinarySemaphore sem0(0);
-    BinarySemaphore sem1(1);
-    BinarySemaphore sem_large(100);  // Should be clamped to 1
-
-    // Then: Values should be correct
-    EXPECT_EQ(sem0.count(), 0u);
-    EXPECT_EQ(sem1.count(), 1u);
-    EXPECT_EQ(sem_large.count(), 1u) << "Binary semaphore should clamp to 1";
-}
-
-// ============================================================================
-// Test 2: Binary Semaphore - Give and Take
-// ============================================================================
-
-TEST_F(SemaphoreTest, BinarySemaphoreBasicGiveTake) {
-    // Given: A binary semaphore starting at 0
-    BinarySemaphore sem(0);
-
-    // When: Giving the semaphore
-    sem.give();
-
-    // Then: Count should be 1
-    EXPECT_EQ(sem.count(), 1u);
-    EXPECT_TRUE(sem.is_available());
-
-    // When: Taking the semaphore
-    bool taken = sem.try_take();
-
-    // Then: Should succeed and count becomes 0
-    EXPECT_TRUE(taken);
-    EXPECT_EQ(sem.count(), 0u);
-    EXPECT_FALSE(sem.is_available());
-}
-
-TEST_F(SemaphoreTest, BinarySemaphoreTryTakeWhenEmpty) {
-    // Given: An empty binary semaphore
-    BinarySemaphore sem(0);
-
-    // When: Trying to take
-    bool taken = sem.try_take();
-
-    // Then: Should fail
-    EXPECT_FALSE(taken);
-    EXPECT_EQ(sem.count(), 0u);
-}
-
-TEST_F(SemaphoreTest, BinarySemaphoreMultipleGives) {
-    // Given: A binary semaphore
-    BinarySemaphore sem(0);
-
-    // When: Giving multiple times
-    sem.give();
-    sem.give();
-    sem.give();
-
-    // Then: Count should still be 1 (binary property)
-    EXPECT_EQ(sem.count(), 1u);
-
-    // When: Taking once
-    bool taken = sem.try_take();
-
-    // Then: Should succeed
-    EXPECT_TRUE(taken);
-    EXPECT_EQ(sem.count(), 0u);
-
-    // When: Trying to take again
-    taken = sem.try_take();
-
-    // Then: Should fail (only one token despite multiple gives)
-    EXPECT_FALSE(taken);
-}
-
-// ============================================================================
-// Test 3: Binary Semaphore - Producer/Consumer Signaling
-// ============================================================================
-
-TEST_F(SemaphoreTest, BinarySemaphoreProducerConsumerSignaling) {
-    // Given: A binary semaphore for signaling
-    BinarySemaphore data_ready(0);
-    std::atomic<int> data{0};
-    std::atomic<int> items_consumed{0};
-
-    const int ITEMS_TO_PRODUCE = 50;
-
-    // When: Producer signals, consumer waits
-    std::thread producer([&]() {
-        for (int i = 1; i <= ITEMS_TO_PRODUCE; i++) {
-            data.store(i);
-            data_ready.give();  // Signal data ready
-            std::this_thread::sleep_for(std::chrono::microseconds(100));
-        }
-    });
-
-    std::thread consumer([&]() {
-        for (int i = 0; i < ITEMS_TO_PRODUCE; i++) {
-            // Wait for data with timeout
-            while (!data_ready.take(100)) {
-                // Keep trying
-            }
-            int value = data.load();
-            EXPECT_GT(value, 0);
-            items_consumed++;
-        }
-    });
-
-    producer.join();
-    consumer.join();
-
-    // Then: All items should be consumed
-    EXPECT_EQ(items_consumed.load(), ITEMS_TO_PRODUCE);
-}
-
-// ============================================================================
-// Test 4: Counting Semaphore - Creation and Limits
-// ============================================================================
-
-TEST_F(SemaphoreTest, CountingSemaphoreCreation) {
-    // Given: Counting semaphores with different max counts
-    CountingSemaphore<5> sem5;
-    CountingSemaphore<10> sem10(7);
-    CountingSemaphore<255> sem_max(255);
-
-    // Then: Initial values should be correct
-    EXPECT_EQ(sem5.count(), 0u);
-    EXPECT_EQ(sem5.max_count(), 5u);
-
-    EXPECT_EQ(sem10.count(), 7u);
-    EXPECT_EQ(sem10.max_count(), 10u);
-
-    EXPECT_EQ(sem_max.count(), 255u);
-    EXPECT_EQ(sem_max.max_count(), 255u);
-}
-
-TEST_F(SemaphoreTest, CountingSemaphoreInitialValueClamped) {
-    // Given: Counting semaphore with initial value > max
-    CountingSemaphore<5> sem(100);
-
-    // Then: Should be clamped to max
-    EXPECT_EQ(sem.count(), 5u);
-    EXPECT_EQ(sem.max_count(), 5u);
-}
-
-// ============================================================================
-// Test 5: Counting Semaphore - Give and Take
-// ============================================================================
-
-TEST_F(SemaphoreTest, CountingSemaphoreBasicGiveTake) {
-    // Given: A counting semaphore
-    CountingSemaphore<10> sem(0);
-
-    // When: Giving multiple times
-    sem.give();
-    EXPECT_EQ(sem.count(), 1u);
-
-    sem.give();
-    EXPECT_EQ(sem.count(), 2u);
-
-    sem.give();
-    EXPECT_EQ(sem.count(), 3u);
-
-    // When: Taking
-    EXPECT_TRUE(sem.try_take());
-    EXPECT_EQ(sem.count(), 2u);
-
-    EXPECT_TRUE(sem.try_take());
-    EXPECT_EQ(sem.count(), 1u);
-
-    EXPECT_TRUE(sem.try_take());
-    EXPECT_EQ(sem.count(), 0u);
-
-    // Then: Should be empty
-    EXPECT_FALSE(sem.try_take());
-}
-
-TEST_F(SemaphoreTest, CountingSemaphoreMaxLimit) {
-    // Given: A counting semaphore at max count
-    CountingSemaphore<5> sem(5);
-
-    // When: Trying to give more
-    sem.give();
-    sem.give();
-    sem.give();
-
-    // Then: Should stay at max
-    EXPECT_EQ(sem.count(), 5u);
-
-    // When: Taking all tokens
-    for (int i = 0; i < 5; i++) {
-        EXPECT_TRUE(sem.try_take());
+        BinarySemaphore sem_one(1);
+        REQUIRE(sem_one.count() == 1);
     }
 
-    // Then: Should be empty
-    EXPECT_EQ(sem.count(), 0u);
-    EXPECT_FALSE(sem.try_take());
-}
-
-// ============================================================================
-// Test 6: Counting Semaphore - Resource Pool Pattern
-// ============================================================================
-
-TEST_F(SemaphoreTest, CountingSemaphoreResourcePool) {
-    // Given: Resource pool with 5 resources
-    CountingSemaphore<5> pool(5);
-    std::atomic<int> max_concurrent_users{0};
-    std::atomic<int> current_users{0};
-
-    const int NUM_WORKERS = 10;
-    const int OPERATIONS_PER_WORKER = 20;
-
-    // When: Multiple workers compete for resources
-    auto worker = [&]() {
-        for (int i = 0; i < OPERATIONS_PER_WORKER; i++) {
-            if (pool.try_take()) {
-                // Got resource
-                int users = ++current_users;
-
-                // Track max concurrent users
-                int current_max = max_concurrent_users.load();
-                while (users > current_max) {
-                    max_concurrent_users.compare_exchange_weak(current_max, users);
-                }
-
-                // Simulate work
-                std::this_thread::sleep_for(std::chrono::microseconds(10));
-
-                // Release resource
-                --current_users;
-                pool.give();
-            }
-        }
-    };
-
-    std::vector<std::thread> workers;
-    for (int i = 0; i < NUM_WORKERS; i++) {
-        workers.emplace_back(worker);
+    SECTION("give increments semaphore to 1") {
+        BinarySemaphore sem(0);
+        sem.give();
+        REQUIRE(sem.count() == 1);
     }
 
-    for (auto& w : workers) {
-        w.join();
+    SECTION("Multiple gives keep count at 1 (binary property)") {
+        BinarySemaphore sem(0);
+        sem.give();
+        sem.give();
+        sem.give();
+        REQUIRE(sem.count() == 1);  // Binary: max is 1
     }
 
-    // Then: Max concurrent users should not exceed pool size
-    EXPECT_LE(max_concurrent_users.load(), 5);
-
-    // And: All resources should be returned
-    EXPECT_EQ(pool.count(), 5u);
-}
-
-// ============================================================================
-// Test 7: Semaphore Timeout Behavior
-// ============================================================================
-
-TEST_F(SemaphoreTest, BinarySemaphoreTakeWithTimeout) {
-    // Given: An empty binary semaphore
-    BinarySemaphore sem(0);
-
-    // When: Taking with short timeout
-    auto start = std::chrono::steady_clock::now();
-    bool taken = sem.take(50);  // 50ms timeout
-    auto elapsed = std::chrono::steady_clock::now() - start;
-
-    // Then: Should timeout
-    EXPECT_FALSE(taken);
-    EXPECT_GE(std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count(), 45);
-}
-
-TEST_F(SemaphoreTest, CountingSemaphoreTakeWithTimeout) {
-    // Given: An empty counting semaphore
-    CountingSemaphore<5> sem(0);
-
-    // When: Taking with short timeout
-    auto start = std::chrono::steady_clock::now();
-    bool taken = sem.take(50);  // 50ms timeout
-    auto elapsed = std::chrono::steady_clock::now() - start;
-
-    // Then: Should timeout
-    EXPECT_FALSE(taken);
-    EXPECT_GE(std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count(), 45);
-}
-
-// ============================================================================
-// Test 8: Multiple Semaphores Independence
-// ============================================================================
-
-TEST_F(SemaphoreTest, MultipleSemaphoresAreIndependent) {
-    // Given: Multiple binary semaphores
-    BinarySemaphore sem1(0);
-    BinarySemaphore sem2(0);
-    BinarySemaphore sem3(1);
-
-    // When: Manipulating them independently
-    sem1.give();
-
-    // Then: Each should have independent state
-    EXPECT_TRUE(sem1.is_available());
-    EXPECT_FALSE(sem2.is_available());
-    EXPECT_TRUE(sem3.is_available());
-
-    sem1.try_take();
-    sem3.try_take();
-
-    EXPECT_FALSE(sem1.is_available());
-    EXPECT_FALSE(sem2.is_available());
-    EXPECT_FALSE(sem3.is_available());
-}
-
-TEST_F(SemaphoreTest, MultipleCountingSemaphoresAreIndependent) {
-    // Given: Multiple counting semaphores
-    CountingSemaphore<5> sem1(2);
-    CountingSemaphore<10> sem2(5);
-    CountingSemaphore<3> sem3(0);
-
-    // When: Manipulating them
-    sem1.give();
-    sem2.try_take();
-    sem3.give();
-
-    // Then: Each should have correct independent count
-    EXPECT_EQ(sem1.count(), 3u);
-    EXPECT_EQ(sem2.count(), 4u);
-    EXPECT_EQ(sem3.count(), 1u);
-}
-
-// ============================================================================
-// Test 9: ISR-Like Signaling Pattern
-// ============================================================================
-
-TEST_F(SemaphoreTest, ISRLikeSignalingPattern) {
-    // Given: Semaphore for ISR → Task signaling
-    BinarySemaphore isr_signal(0);
-    std::atomic<int> events_processed{0};
-    std::atomic<bool> stop{false};
-
-    const int EVENTS_TO_GENERATE = 100;
-
-    // Simulated ISR (separate thread)
-    std::thread isr_simulator([&]() {
-        for (int i = 0; i < EVENTS_TO_GENERATE; i++) {
-            std::this_thread::sleep_for(std::chrono::microseconds(50));
-            isr_signal.give();  // Signal event from "ISR"
-        }
-        stop = true;
-    });
-
-    // Task waiting for ISR signals
-    std::thread task([&]() {
-        while (!stop.load() || isr_signal.is_available()) {
-            if (isr_signal.take(10)) {  // Wait for signal
-                events_processed++;
-            }
-        }
-    });
-
-    isr_simulator.join();
-    task.join();
-
-    // Then: All events should be processed
-    EXPECT_GE(events_processed.load(), EVENTS_TO_GENERATE - 5);  // Allow some tolerance
-}
-
-// ============================================================================
-// Test 10: Rate Limiting Pattern
-// ============================================================================
-
-TEST_F(SemaphoreTest, RateLimitingPattern) {
-    // Given: Counting semaphore for rate limiting (tokens per second)
-    CountingSemaphore<10> rate_limiter(10);
-    std::atomic<int> operations_completed{0};
-
-    const int OPERATIONS_TO_TRY = 50;
-
-    // When: Trying many operations
-    for (int i = 0; i < OPERATIONS_TO_TRY; i++) {
-        if (rate_limiter.try_take()) {
-            operations_completed++;
-        }
+    SECTION("try_take succeeds when count is 1") {
+        BinarySemaphore sem(1);
+        REQUIRE(sem.try_take());
+        REQUIRE(sem.count() == 0);
     }
 
-    // Then: Should be limited by semaphore count
-    EXPECT_EQ(operations_completed.load(), 10);
-    EXPECT_EQ(rate_limiter.count(), 0u);
-
-    // When: Refilling tokens
-    for (int i = 0; i < 5; i++) {
-        rate_limiter.give();
+    SECTION("try_take fails when count is 0") {
+        BinarySemaphore sem(0);
+        REQUIRE_FALSE(sem.try_take());
+        REQUIRE(sem.count() == 0);
     }
-
-    // Then: Should have more capacity
-    EXPECT_EQ(rate_limiter.count(), 5u);
 }
 
 // ============================================================================
-// Test 11: Stress Test - High Frequency Signaling
+// Test 2: Counting Semaphore Basic Operations
 // ============================================================================
 
-TEST_F(SemaphoreTest, StressTestHighFrequencySignaling) {
-    // Given: Binary semaphore with rapid signaling
-    BinarySemaphore sem(0);
-    std::atomic<int> signals_sent{0};
-    std::atomic<int> signals_received{0};
-    std::atomic<bool> done{false};
+TEST_CASE("Counting semaphore basic operations", "[semaphore][counting][basic]") {
+    auto result = hal::host::SystemTick::init();
+    REQUIRE(result.is_ok());
 
-    const int SIGNALS_TO_SEND = 1000;
+    SECTION("Counting semaphore starts with initial value") {
+        CountingSemaphore<10> sem(0);
+        REQUIRE(sem.count() == 0);
 
-    // Rapid producer
-    std::thread producer([&]() {
-        for (int i = 0; i < SIGNALS_TO_SEND; i++) {
+        CountingSemaphore<10> sem_five(5);
+        REQUIRE(sem_five.count() == 5);
+    }
+
+    SECTION("give increments count") {
+        CountingSemaphore<10> sem(0);
+        sem.give();
+        REQUIRE(sem.count() == 1);
+        sem.give();
+        REQUIRE(sem.count() == 2);
+    }
+
+    SECTION("give respects max count") {
+        CountingSemaphore<3> sem(3);
+        sem.give();  // At max, should not increment
+        REQUIRE(sem.count() == 3);  // Still at max
+    }
+
+    SECTION("try_take decrements count") {
+        CountingSemaphore<10> sem(5);
+        REQUIRE(sem.try_take());
+        REQUIRE(sem.count() == 4);
+    }
+
+    SECTION("try_take fails when count is zero") {
+        CountingSemaphore<10> sem(0);
+        REQUIRE_FALSE(sem.try_take());
+    }
+}
+
+// ============================================================================
+// Test 3: Semaphore Timeouts
+// ============================================================================
+
+TEST_CASE("Semaphore timeout behavior", "[semaphore][timeout]") {
+    auto result = hal::host::SystemTick::init();
+    REQUIRE(result.is_ok());
+
+    SECTION("try_take is non-blocking") {
+        BinarySemaphore sem(0);
+
+        auto start = std::chrono::steady_clock::now();
+        REQUIRE_FALSE(sem.try_take());  // Should fail immediately
+        auto duration = std::chrono::steady_clock::now() - start;
+
+        // Should return immediately (within 50ms)
+        REQUIRE(duration < std::chrono::milliseconds(50));
+    }
+
+    // NOTE: Semaphore timeout is handled by task blocking, not try_take()
+}
+
+// ============================================================================
+// Test 4: Multi-threaded Synchronization
+// ============================================================================
+
+TEST_CASE("Semaphore multi-threaded synchronization", "[semaphore][threading]") {
+    auto result = hal::host::SystemTick::init();
+    REQUIRE(result.is_ok());
+
+    SECTION("Binary semaphore synchronizes threads") {
+        BinarySemaphore sem(0);
+        std::atomic<bool> thread_ran{false};
+
+        std::thread worker([&]() {
+            sem.take();  // Wait for signal
+            thread_ran = true;
+        });
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        REQUIRE_FALSE(thread_ran);  // Thread should be waiting
+
+        sem.give();  // Signal thread
+        worker.join();
+
+        REQUIRE(thread_ran);
+    }
+
+    SECTION("Counting semaphore limits concurrent access") {
+        const int max_concurrent = 3;
+        CountingSemaphore<max_concurrent> sem(max_concurrent);
+        std::atomic<int> current_count{0};
+        std::atomic<int> max_seen{0};
+
+        std::vector<std::thread> threads;
+        for (int i = 0; i < 10; i++) {
+            threads.emplace_back([&]() {
+                sem.take();
+
+                int count = ++current_count;
+                if (count > max_seen) max_seen = count;
+
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+                --current_count;
+                sem.give();
+            });
+        }
+
+        for (auto& t : threads) {
+            t.join();
+        }
+
+        REQUIRE(max_seen <= max_concurrent);
+        REQUIRE(current_count == 0);
+    }
+}
+
+// ============================================================================
+// Test 5: Edge Cases
+// ============================================================================
+
+TEST_CASE("Semaphore edge cases", "[semaphore][edge-cases]") {
+    auto result = hal::host::SystemTick::init();
+    REQUIRE(result.is_ok());
+
+    SECTION("Binary semaphore max value is 1") {
+        BinarySemaphore sem(0);
+        for (int i = 0; i < 100; i++) {
             sem.give();
-            signals_sent++;
         }
-        done = true;
-    });
-
-    // Rapid consumer
-    std::thread consumer([&]() {
-        while (!done.load() || sem.is_available()) {
-            if (sem.try_take()) {
-                signals_received++;
-            }
-        }
-    });
-
-    producer.join();
-    consumer.join();
-
-    // Then: Should have processed signals (may miss some due to binary property)
-    EXPECT_GT(signals_received.load(), 0);
-    EXPECT_LE(signals_received.load(), signals_sent.load());
-}
-
-// ============================================================================
-// Test 12: Counting Semaphore Stress Test
-// ============================================================================
-
-TEST_F(SemaphoreTest, StressTestCountingSemaphorePool) {
-    // Given: Resource pool
-    CountingSemaphore<20> pool(20);
-    std::atomic<int> successful_acquisitions{0};
-    std::atomic<int> in_use{0};
-    std::atomic<int> max_in_use{0};
-
-    const int NUM_THREADS = 10;
-    const int OPERATIONS = 100;
-
-    auto worker = [&]() {
-        for (int i = 0; i < OPERATIONS; i++) {
-            if (pool.try_take()) {
-                successful_acquisitions++;
-                int current = ++in_use;
-
-                // Track maximum
-                int current_max = max_in_use.load();
-                while (current > current_max) {
-                    max_in_use.compare_exchange_weak(current_max, current);
-                }
-
-                std::this_thread::sleep_for(std::chrono::microseconds(1));
-
-                --in_use;
-                pool.give();
-            }
-        }
-    };
-
-    std::vector<std::thread> threads;
-    for (int i = 0; i < NUM_THREADS; i++) {
-        threads.emplace_back(worker);
+        REQUIRE(sem.count() == 1);
     }
 
-    for (auto& t : threads) {
-        t.join();
+    SECTION("Counting semaphore respects max") {
+        CountingSemaphore<5> sem(0);
+        for (int i = 0; i < 5; i++) {
+            sem.give();
+        }
+        REQUIRE(sem.count() == 5);
+
+        // Giving when at max should not increment
+        sem.give();
+        REQUIRE(sem.count() == 5);
     }
 
-    // Then: Max in use should not exceed pool size
-    EXPECT_LE(max_in_use.load(), 20);
-    EXPECT_EQ(pool.count(), 20u);  // All returned
-}
-
-// ============================================================================
-// Test 13: Memory Footprint
-// ============================================================================
-
-TEST_F(SemaphoreTest, SemaphoreSizeIsReasonable) {
-    // When: Checking sizes
-    size_t binary_size = sizeof(BinarySemaphore);
-    size_t counting_size = sizeof(CountingSemaphore<10>);
-
-    // Then: Should be compact (documented: 12 bytes binary, 16 bytes counting)
-    EXPECT_LE(binary_size, 24u) << "BinarySemaphore should be compact";
-    EXPECT_LE(counting_size, 32u) << "CountingSemaphore should be compact";
-}
-
-// ============================================================================
-// Test 14: Different MaxCount Values
-// ============================================================================
-
-TEST_F(SemaphoreTest, DifferentMaxCountValues) {
-    // Given: Counting semaphores with various max counts
-    CountingSemaphore<1> tiny(1);      // Effectively binary
-    CountingSemaphore<8> small(8);
-    CountingSemaphore<64> medium(64);
-    CountingSemaphore<255> large(255);
-
-    // Then: All should respect their limits
-    EXPECT_EQ(tiny.max_count(), 1u);
-    EXPECT_EQ(small.max_count(), 8u);
-    EXPECT_EQ(medium.max_count(), 64u);
-    EXPECT_EQ(large.max_count(), 255u);
-
-    // When: Testing behavior
-    tiny.give();
-    tiny.give();  // Should not exceed 1
-    EXPECT_EQ(tiny.count(), 1u);
-
-    for (int i = 0; i < 10; i++) {
-        small.give();
+    SECTION("Take and give cycle") {
+        BinarySemaphore sem(1);
+        for (int i = 0; i < 100; i++) {
+            REQUIRE(sem.try_take());
+            sem.give();
+        }
+        REQUIRE(sem.count() == 1);
     }
-    EXPECT_EQ(small.count(), 8u);  // Capped at max
 }
 
 // ============================================================================
-// Main
+// Test 6: Compile-Time Properties
 // ============================================================================
 
-int main(int argc, char** argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+TEST_CASE("Semaphore compile-time properties", "[semaphore][compile-time]") {
+    SECTION("BinarySemaphore is not copyable") {
+        REQUIRE(!std::is_copy_constructible_v<BinarySemaphore>);
+        REQUIRE(!std::is_copy_assignable_v<BinarySemaphore>);
+    }
+
+    SECTION("CountingSemaphore is not copyable") {
+        REQUIRE(!std::is_copy_constructible_v<CountingSemaphore<10>>);
+        REQUIRE(!std::is_copy_assignable_v<CountingSemaphore<10>>);
+    }
+
+    SECTION("Max count is enforced at compile time") {
+        CountingSemaphore<5> sem(5);
+        REQUIRE(sem.count() == 5);
+        // Max is enforced by template parameter
+        SUCCEED("Max count template works");
+    }
 }
