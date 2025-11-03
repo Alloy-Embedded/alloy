@@ -1,0 +1,74 @@
+{
+  "version": "1.0",
+  "description": "SVD merge policy for combining upstream and custom SVD sources",
+
+  "priority": {
+    "description": "Higher priority sources override lower ones when duplicates are found",
+    "order": [
+      "custom-svd",
+      "upstream"
+    ]
+  },
+
+  "conflict_resolution": {
+    "duplicate_files": {
+      "action": "prefer_custom",
+      "description": "When same device exists in both sources, use custom-svd version"
+    },
+    "different_content": {
+      "action": "warn_and_use_custom",
+      "description": "Warn user if content differs significantly, then use custom"
+    },
+    "version_mismatch": {
+      "action": "use_newer_version",
+      "description": "If both have version info, use the newer version regardless of source"
+    },
+    "missing_version": {
+      "action": "prefer_custom",
+      "description": "If version info is missing, default to custom-svd"
+    }
+  },
+
+  "validation": {
+    "require_vendor_readme": {
+      "enabled": true,
+      "level": "warning",
+      "description": "Warn if vendor directory lacks README.md"
+    },
+    "require_valid_xml": {
+      "enabled": true,
+      "level": "error",
+      "description": "Reject SVD files with invalid XML syntax"
+    },
+    "require_device_name": {
+      "enabled": true,
+      "level": "error",
+      "description": "Reject SVD files without <device><name> element"
+    },
+    "warn_on_missing_peripherals": {
+      "enabled": true,
+      "level": "warning",
+      "description": "Warn if SVD has no peripheral definitions"
+    },
+    "check_file_size": {
+      "enabled": true,
+      "min_bytes": 1024,
+      "max_bytes": 10485760,
+      "level": "warning",
+      "description": "Warn if SVD file is suspiciously small (<1KB) or large (>10MB)"
+    }
+  },
+
+  "logging": {
+    "show_duplicate_warnings": true,
+    "show_version_info": true,
+    "show_source_path": true,
+    "verbose": false
+  },
+
+  "cache": {
+    "enabled": true,
+    "ttl_seconds": 3600,
+    "description": "Cache SVD discovery results for 1 hour"
+  }
+}
