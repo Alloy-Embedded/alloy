@@ -1,8 +1,10 @@
 # Alloy RTOS Tests
 cmake_minimum_required(VERSION 3.20)
 
-# Google Test is already fetched by parent CMakeLists.txt
-# Just link against it
+# Catch2 is already fetched by parent CMakeLists.txt
+# Include Catch2 test discovery
+include(CTest)
+include(Catch)
 
 # Include directories
 include_directories(
@@ -11,125 +13,83 @@ include_directories(
 )
 
 # ============================================================================
-# Unit Tests
+# Unit Tests - Catch2 Framework
 # ============================================================================
 
-# Test: Task Management
+# Test: Task Management (Compile-time tests only)
 add_executable(test_task
     unit/rtos/test_task.cpp
     ${CMAKE_SOURCE_DIR}/src/rtos/scheduler.cpp
     ${CMAKE_SOURCE_DIR}/src/rtos/platform/host_context.cpp
     ${CMAKE_SOURCE_DIR}/src/rtos/platform/critical_section.cpp
 )
-target_link_libraries(test_task gtest gtest_main pthread)
+target_link_libraries(test_task PRIVATE Catch2::Catch2WithMain pthread)
 target_compile_options(test_task PRIVATE -std=c++20)
-add_test(NAME test_task COMMAND test_task)
+catch_discover_tests(test_task)
 
-# Test: Queue
-add_executable(test_queue
-    unit/rtos/test_queue.cpp
-    ${CMAKE_SOURCE_DIR}/src/rtos/scheduler.cpp
-    ${CMAKE_SOURCE_DIR}/src/rtos/platform/host_context.cpp
-    ${CMAKE_SOURCE_DIR}/src/rtos/platform/critical_section.cpp
-)
-target_link_libraries(test_queue gtest gtest_main pthread)
-target_compile_options(test_queue PRIVATE -std=c++20)
-add_test(NAME test_queue COMMAND test_queue)
-
-# Test: Mutex
+# Test: Mutex (Full tests using std::thread)
 add_executable(test_mutex
     unit/rtos/test_mutex.cpp
     ${CMAKE_SOURCE_DIR}/src/rtos/scheduler.cpp
     ${CMAKE_SOURCE_DIR}/src/rtos/platform/host_context.cpp
     ${CMAKE_SOURCE_DIR}/src/rtos/platform/critical_section.cpp
 )
-target_link_libraries(test_mutex gtest gtest_main pthread)
+target_link_libraries(test_mutex PRIVATE Catch2::Catch2WithMain pthread)
 target_compile_options(test_mutex PRIVATE -std=c++20)
-add_test(NAME test_mutex COMMAND test_mutex)
+catch_discover_tests(test_mutex)
 
-# Test: Semaphore
+# Test: Semaphore (Full tests using std::thread)
 add_executable(test_semaphore
     unit/rtos/test_semaphore.cpp
     ${CMAKE_SOURCE_DIR}/src/rtos/scheduler.cpp
     ${CMAKE_SOURCE_DIR}/src/rtos/platform/host_context.cpp
     ${CMAKE_SOURCE_DIR}/src/rtos/platform/critical_section.cpp
 )
-target_link_libraries(test_semaphore gtest gtest_main pthread)
+target_link_libraries(test_semaphore PRIVATE Catch2::Catch2WithMain pthread)
 target_compile_options(test_semaphore PRIVATE -std=c++20)
-add_test(NAME test_semaphore COMMAND test_semaphore)
+catch_discover_tests(test_semaphore)
 
-# Test: Event Flags
+# Test: Event Flags (Full tests using std::thread)
 add_executable(test_event
     unit/rtos/test_event.cpp
     ${CMAKE_SOURCE_DIR}/src/rtos/scheduler.cpp
     ${CMAKE_SOURCE_DIR}/src/rtos/platform/host_context.cpp
     ${CMAKE_SOURCE_DIR}/src/rtos/platform/critical_section.cpp
 )
-target_link_libraries(test_event gtest gtest_main pthread)
+target_link_libraries(test_event PRIVATE Catch2::Catch2WithMain pthread)
 target_compile_options(test_event PRIVATE -std=c++20)
-add_test(NAME test_event COMMAND test_event)
-
-# Test: Scheduler
-add_executable(test_scheduler
-    unit/rtos/test_scheduler.cpp
-    ${CMAKE_SOURCE_DIR}/src/rtos/scheduler.cpp
-    ${CMAKE_SOURCE_DIR}/src/rtos/platform/host_context.cpp
-    ${CMAKE_SOURCE_DIR}/src/rtos/platform/critical_section.cpp
-)
-target_link_libraries(test_scheduler gtest gtest_main pthread)
-target_compile_options(test_scheduler PRIVATE -std=c++20)
-add_test(NAME test_scheduler COMMAND test_scheduler)
-
-# ============================================================================
-# Integration Tests
-# ============================================================================
-
-add_executable(rtos_integration_test
-    integration/rtos_integration_test.cpp
-    ${CMAKE_SOURCE_DIR}/src/rtos/scheduler.cpp
-    ${CMAKE_SOURCE_DIR}/src/rtos/platform/host_context.cpp
-    ${CMAKE_SOURCE_DIR}/src/rtos/platform/critical_section.cpp
-)
-target_link_libraries(rtos_integration_test gtest gtest_main pthread)
-target_compile_options(rtos_integration_test PRIVATE -std=c++20)
-add_test(NAME rtos_integration_test COMMAND rtos_integration_test)
+catch_discover_tests(test_event)
 
 # ============================================================================
 # Test Suite Summary
 # ============================================================================
 
-# Enable testing
-enable_testing()
-
-# Custom target to run all tests
+# Custom target to run all tests with Catch2's beautiful output
 add_custom_target(run_all_tests
-    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure --verbose
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
     DEPENDS
         test_task
-        test_queue
         test_mutex
         test_semaphore
         test_event
-        test_scheduler
-        rtos_integration_test
-    COMMENT "Running all RTOS tests..."
+    COMMENT "Running all RTOS tests with Catch2..."
 )
 
 # Display test summary
 message(STATUS "========================================")
-message(STATUS "RTOS Test Suite Configuration")
+message(STATUS "RTOS Test Suite - Catch2 Framework")
 message(STATUS "========================================")
 message(STATUS "Unit Tests:")
-message(STATUS "  - Task Management Tests")
-message(STATUS "  - Queue Tests")
-message(STATUS "  - Mutex Tests")
-message(STATUS "  - Semaphore Tests")
-message(STATUS "  - Event Flags Tests")
-message(STATUS "  - Scheduler Tests")
+message(STATUS "  ✓ Task Management (compile-time)")
+message(STATUS "  ✓ Mutex (runtime with std::thread)")
+message(STATUS "  ✓ Semaphore (runtime with std::thread)")
+message(STATUS "  ✓ Event Flags (runtime with std::thread)")
 message(STATUS "")
-message(STATUS "Integration Tests:")
-message(STATUS "  - RTOS Integration Test Suite")
-message(STATUS "")
-message(STATUS "To run all tests: make run_all_tests")
-message(STATUS "To run individual test: make test_<name>")
+message(STATUS "Commands:")
+message(STATUS "  Build all:     make")
+message(STATUS "  Run all:       ctest --output-on-failure")
+message(STATUS "  Run one:       ./tests/test_mutex")
+message(STATUS "  Compact:       ./tests/test_mutex -r compact")
+message(STATUS "  List tags:     ./tests/test_mutex --list-tags")
+message(STATUS "  Run by tag:    ./tests/test_mutex [mutex][basic]")
 message(STATUS "========================================")

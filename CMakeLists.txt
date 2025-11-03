@@ -53,18 +53,18 @@ option(ALLOY_MINIMAL_BUILD "Optimize for size (enables -Os, -flto, --gc-sections
 if(ALLOY_BUILD_TESTS)
     enable_testing()
 
-    # Fetch Google Test
+    # Fetch Catch2 v3
     include(FetchContent)
     FetchContent_Declare(
-        googletest
-        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+        Catch2
+        URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.0.zip
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE
     )
 
-    # For Windows: Prevent overriding the parent project's compiler/linker settings
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(Catch2)
 
-    FetchContent_MakeAvailable(googletest)
+    # Add Catch2 CMake modules to path
+    list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 endif()
 
 # ESP32 boards require ESP-IDF integration
