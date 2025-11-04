@@ -1,42 +1,34 @@
-/// Blink LED Example for Arduino Zero
+/// Blinky Example for Arduino Zero
 ///
-/// This example demonstrates the modern C++20 board API inspired by modm.
-/// The board pre-defines commonly used peripherals that users can access
-/// directly without needing to know pin numbers.
+/// This example demonstrates basic GPIO usage by blinking the onboard LED.
 ///
-/// Architecture:
-///   User Code (main.cpp)
-///     ↓ uses Board::LedControl
-///   Board API (board.hpp - pre-instantiated pins)
-///     ↓ type aliases to GpioPin<N>
-///   HAL Layer (gpio.hpp - templates + concepts)
-///     ↓ uses MCU namespace
-///   Generated Peripherals (peripherals.hpp)
-///     ↓ raw register access
-///   Hardware
+/// Hardware: Arduino Zero board (ATSAMD21G18A)
+/// - LED connected to PA17 (D13)
 ///
-/// This approach provides:
-/// - Zero-cost abstractions (everything inline/constexpr)
-/// - Type safety (compile-time validation)
-/// - Simple API (Board::LedControl::on())
-/// - Portable (same code works on different boards)
-///
-/// Hardware: Arduino Zero board (ATSAMD21G18)
-/// LED: PA17 (Yellow LED marked "L")
+/// Expected behavior:
+/// - LED blinks at 1 Hz (500ms on, 500ms off)
 
-#include "arduino_zero/board.hpp"
+#include "hal/vendors/atmel/samd21/atsamd21g18a/gpio.hpp"
+#include "platform/delay.hpp"
+
+using namespace alloy::hal::atmel::samd21::atsamd21g18a;
+using namespace alloy::platform;
 
 int main() {
-    // Initialize LED
-    Board::LedControl::init();
+    // Create GPIO pin for LED (PA17 = D13 on Arduino Zero)
+    // Port A = 0, Pin 17
+    GPIOPin<0, pins::PA17> led;
 
-    // Blink LED forever - ultra simple!
+    // Configure as output
+    led.configureOutput();
+
+    // Blink forever
     while (true) {
-        Board::LedControl::on();
-        Board::delay_ms(500);
+        led.set();          // Turn LED on
+        delay_ms(500);      // Wait 500ms
 
-        Board::LedControl::off();
-        Board::delay_ms(500);
+        led.clear();        // Turn LED off
+        delay_ms(500);      // Wait 500ms
     }
 
     return 0;

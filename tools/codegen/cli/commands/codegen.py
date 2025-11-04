@@ -101,16 +101,20 @@ def generate_st(args):
 def generate_atmel(args):
     """Generate code for Atmel/Microchip MCUs"""
     try:
+        from cli.vendors.atmel.generate_all_atmel import main as generate_atmel_main
+
         logger.info("Generating code for Atmel/Microchip...")
 
         if args.dry_run:
-            print_info("Would generate Atmel/Microchip MCU code")
+            print_info("Would generate Atmel/Microchip MCU code (SAME70, SAMV71, SAMD21)")
             return 0
 
-        # TODO: Implement Atmel generator
-        print_info("Atmel/Microchip code generation not yet implemented")
-        return 0
+        # Call the unified Atmel generator
+        return generate_atmel_main()
 
+    except ImportError as e:
+        print_error(f"Failed to import Atmel generator: {e}")
+        return 1
     except Exception as e:
         print_error(f"Atmel code generation failed: {e}")
         return 1

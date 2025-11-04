@@ -48,7 +48,7 @@ alloy_generate_code(
 # Use generated code if available
 if(ALLOY_CODEGEN_AVAILABLE)
     include_directories(${ALLOY_GENERATED_DIR})
-    add_compile_definitions(ALLOY_GENERATED_NAMESPACE=alloy::generated::same70)
+    add_compile_definitions(ALLOY_GENERATED_NAMESPACE=alloy::hal::atmel::same70::atsame70q21)
 endif()
 
 message(STATUS "Board configured: ${ALLOY_BOARD_NAME}")

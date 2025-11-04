@@ -74,39 +74,61 @@ Vendor-specific code generators organized by manufacturer:
 - **generate_stm32_pins.py**: STM32-specific pin generator
 - **stm32fX_pin_functions.py**: Pin function databases for each family
 
+#### vendors/atmel/ (Atmel/Microchip)
+- **generate_same70_pins.py**: Main entry point for SAME70 code generation
+- **same70_pin_functions.py**: Pin function database for SAME70 family
+- **pio_hal_template.hpp**: PIO HAL template for SAME70 architecture
+
 ## Adding New Vendors
 
-To add support for a new vendor (e.g., Atmel):
+To add support for a new vendor, follow the Atmel/Microchip example:
 
 1. **Create vendor directory**:
    ```bash
-   mkdir -p cli/vendors/atmel
-   touch cli/vendors/atmel/__init__.py
+   mkdir -p cli/vendors/<vendor_name>
+   touch cli/vendors/<vendor_name>/__init__.py
    ```
 
-2. **Create generator**:
+2. **Create pin function database**:
    ```python
-   # cli/vendors/atmel/generate_atmel_pins.py
+   # cli/vendors/<vendor_name>/<family>_pin_functions.py
+   from dataclasses import dataclass
+   from typing import Dict, List
+
+   @dataclass
+   class PinFunction:
+       function_name: str
+       peripheral_type: str
+       peripheral: str
+
+   PIN_FUNCTIONS: Dict[str, List[PinFunction]] = {
+       # Pin mappings here
+   }
+   ```
+
+3. **Create generator**:
+   ```python
+   # cli/vendors/<vendor_name>/generate_<family>_pins.py
    def main():
-       """Generate code for Atmel MCUs"""
+       """Generate code for <vendor> MCUs"""
        # Implementation here
        return 0
    ```
 
-3. **Update codegen command**:
+4. **Update codegen command**:
    ```python
    # cli/commands/codegen.py
-   def generate_atmel(args):
-       from cli.vendors.atmel.generate_atmel_pins import main
+   def generate_<vendor>(args):
+       from cli.vendors.<vendor>.generate_<family>_pins import main
        return main()
    ```
 
-4. **Update vendors list**:
+5. **Update vendors list**:
    ```python
    # cli/commands/vendors.py
    VENDORS = {
-       'atmel': {
-           'name': 'Atmel/Microchip',
+       '<vendor>': {
+           'name': 'Vendor Name',
            'status': '✅ Supported',
            'families': [...]
        }
@@ -176,6 +198,12 @@ Test the CLI after making changes:
 - Return 0 on success, non-zero on failure
 
 ## Version History
+
+- **v1.1.0** (2025-11-04) - Atmel/Microchip Support
+  - Added SAME70 family support
+  - PIO HAL implementation for SAME70 architecture
+  - 4 SAME70 variants (Q21B, Q21, Q20B, Q19B)
+  - Complete pin function database (116 pins)
 
 - **v1.0.0** (2025-11-03) - Initial CLI release
   - Unified command-line interface

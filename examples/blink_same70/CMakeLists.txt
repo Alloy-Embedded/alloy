@@ -1,13 +1,11 @@
-# Blink example for ATSAME70 Xplained
+# Blink example for SAME70 Xplained
 
 add_executable(blink_same70
     main.cpp
-    ${CMAKE_SOURCE_DIR}/src/generated/atmel/same70/atsame70q21/startup.cpp
 )
 
 target_include_directories(blink_same70 PRIVATE
     ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/src/generated/atmel/same70/atsame70q21
     ${CMAKE_SOURCE_DIR}/boards
 )
 
