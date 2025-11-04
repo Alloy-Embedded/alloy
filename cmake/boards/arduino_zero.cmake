@@ -30,20 +30,17 @@ set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/../toolchains/arm-none-eabi.
 # Include code generation module
 include(codegen)
 
-# Generate code for ATSAMD21G18
+# Generate code for ATSAMD21G18A
 alloy_generate_code(
-    MCU ATSAMD21J18A
-    VENDOR microchip_technology_inc
-    FAMILY atsamd21j18a
+    MCU ATSAMD21G18A
+    VENDOR atmel
+    FAMILY samd21
 )
 
 # Use generated code if available
 if(ALLOY_CODEGEN_AVAILABLE)
-    # Make generated directory available to targets
     include_directories(${ALLOY_GENERATED_DIR})
-
-    # Define namespace for generated code (full namespace path)
-    add_compile_definitions(ALLOY_GENERATED_NAMESPACE=alloy::generated::atsamd21j18a)
+    add_compile_definitions(ALLOY_GENERATED_NAMESPACE=alloy::hal::atmel::samd21::atsamd21g18a)
 endif()
 
 message(STATUS "Board configured: ${ALLOY_BOARD_NAME}")

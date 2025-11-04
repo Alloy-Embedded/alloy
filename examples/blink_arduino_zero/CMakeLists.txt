@@ -1,8 +1,7 @@
-# Blink example for Arduino Zero (ATSAMD21G18)
+# Blink example for Arduino Zero
 
 add_executable(blink_arduino_zero
     main.cpp
-    ../../boards/arduino_zero/startup.cpp
 )
 
 target_include_directories(blink_arduino_zero PRIVATE
@@ -10,37 +9,24 @@ target_include_directories(blink_arduino_zero PRIVATE
     ${CMAKE_SOURCE_DIR}/boards
 )
 
+# Apply board-specific flags and linker script
+alloy_target_board_settings(blink_arduino_zero)
+
+# Additional compile options
 target_compile_options(blink_arduino_zero PRIVATE
-    -mcpu=cortex-m0plus
-    -mthumb
     -O2
-    -ffunction-sections
-    -fdata-sections
     -Wall
     -Wextra
 )
 
+# Additional link options
 target_link_options(blink_arduino_zero PRIVATE
-    -mcpu=cortex-m0plus
-    -mthumb
-    -T${CMAKE_SOURCE_DIR}/boards/arduino_zero/ATSAMD21G18.ld
-    -Wl,--gc-sections
     -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/blink_arduino_zero.map
     -Wl,--print-memory-usage
 )
 
-# Link required libraries explicitly (xPack ARM v14.2.1+ has nosys.specs conflicts)
-target_link_libraries(blink_arduino_zero PRIVATE
-    -lc_nano
-    -lnosys
-    -lgcc
-    -lm
-)
+# Generate binary outputs (.bin, .hex) and print size
+alloy_add_binary_outputs(blink_arduino_zero)
 
-# Generate additional output formats
-add_custom_command(TARGET blink_arduino_zero POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:blink_arduino_zero> ${CMAKE_CURRENT_BINARY_DIR}/blink_arduino_zero.hex
-    COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:blink_arduino_zero> ${CMAKE_CURRENT_BINARY_DIR}/blink_arduino_zero.bin
-    COMMAND ${CMAKE_SIZE} $<TARGET_FILE:blink_arduino_zero>
-    COMMENT "Generating HEX and BIN files for Arduino Zero"
-)
+# Create flash target
+alloy_add_flash_target(blink_arduino_zero)

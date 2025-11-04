@@ -33,14 +33,14 @@ VENDORS = {
     },
     'atmel': {
         'name': 'Atmel/Microchip',
-        'status': '🚧 Planned',
+        'status': '✅ Supported',
         'families': [
-            'SAM3X - Cortex-M3 (Arduino Due)',
-            'SAM4S - Cortex-M4',
-            'SAMD21 - Cortex-M0+ (Arduino Zero)',
-            'SAMD51 - Cortex-M4F',
-            'SAME70 - Cortex-M7F',
-            'SAMV71 - Cortex-M7F',
+            'SAME70 - Cortex-M7F (High Performance)',
+            'SAMV71 - Cortex-M7F (Planned)',
+            'SAM3X - Cortex-M3 (Arduino Due) (Planned)',
+            'SAM4S - Cortex-M4 (Planned)',
+            'SAMD21 - Cortex-M0+ (Arduino Zero) (Planned)',
+            'SAMD51 - Cortex-M4F (Planned)',
         ]
     },
     'microchip': {
