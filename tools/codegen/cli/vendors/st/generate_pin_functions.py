@@ -10,7 +10,7 @@ from pathlib import Path
 import sys
 from typing import Dict, List, Callable, Any
 
-REPO_ROOT = Path(__file__).parent.parent.parent
+REPO_ROOT = Path(__file__).parent.parent.parent.parent
 OUTPUT_DIR = REPO_ROOT / "src" / "hal"
 
 
@@ -21,13 +21,13 @@ def load_pin_database(family: str):
 
     try:
         if family_lower.startswith("stm32f1"):
-            from stm32f1_pin_functions import get_pin_functions, PinFunction
+            from cli.vendors.st.stm32f1_pin_functions import get_pin_functions, PinFunction
             return get_pin_functions, PinFunction, "STM32F1"
         elif family_lower.startswith("stm32f4"):
-            from stm32f4_pin_functions import get_pin_functions, PinFunction
+            from cli.vendors.st.stm32f4_pin_functions import get_pin_functions, PinFunction
             return get_pin_functions, PinFunction, "STM32F4"
         elif family_lower.startswith("stm32f7"):
-            from stm32f7_pin_functions import get_pin_functions, PinFunction
+            from cli.vendors.st.stm32f7_pin_functions import get_pin_functions, PinFunction
             return get_pin_functions, PinFunction, "STM32F7"
         else:
             print(f"    ⚠️  Warning: No pin function database for family {family}, generating basic header")

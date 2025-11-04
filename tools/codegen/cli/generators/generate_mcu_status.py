@@ -8,10 +8,10 @@ implemented GPIO support to generate a comprehensive status report.
 
 from pathlib import Path
 from typing import Dict, Set, List
-from svd_discovery import discover_all_svds
+from cli.parsers.svd_discovery import discover_all_svds
 import sys
 
-REPO_ROOT = Path(__file__).parent.parent.parent
+REPO_ROOT = Path(__file__).parent.parent.parent.parent
 HAL_DIR = REPO_ROOT / "src" / "hal" / "vendors"
 OUTPUT_FILE = REPO_ROOT / "MCU_STATUS.md"
 

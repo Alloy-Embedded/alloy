@@ -1,0 +1,143 @@
+#!/usr/bin/env python3
+"""
+Alloy Code Generation CLI
+
+A unified command-line interface for generating HAL code for embedded systems.
+Supports multiple MCU vendors: STMicroelectronics, Atmel/Microchip, and more.
+
+Usage:
+    alloy codegen [options]         Generate HAL code for MCUs
+    alloy status                    Show implementation status
+    alloy vendors                   List supported vendors
+    alloy --help                    Show this help message
+    alloy --version                 Show version information
+
+Examples:
+    # Generate code for all STM32 families
+    alloy codegen --vendor st --all
+
+    # Generate code for specific family
+    alloy codegen --vendor st --family stm32f4
+
+    # Generate status report
+    alloy status --output MCU_STATUS.md
+
+    # List supported vendors
+    alloy vendors
+
+For more information, visit: https://github.com/your-org/corezero
+"""
+
+import sys
+import argparse
+from pathlib import Path
+
+# Add CLI modules to path
+CLI_DIR = Path(__file__).parent / "cli"
+sys.path.insert(0, str(CLI_DIR))
+
+from core.version import __version__
+from core.logger import setup_logger, logger
+from commands import codegen, status, vendors
+
+
+def create_parser():
+    """Create the main argument parser"""
+    parser = argparse.ArgumentParser(
+        prog='alloy',
+        description='Alloy Code Generation CLI - Generate HAL code for embedded systems',
+        epilog='Run "alloy <command> --help" for more information on a command.',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+
+    parser.add_argument(
+        '--version',
+        action='version',
+        version=f'Alloy v{__version__}'
+    )
+
+    parser.add_argument(
+        '-v', '--verbose',
+        action='store_true',
+        help='Enable verbose output'
+    )
+
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        help='Enable debug output'
+    )
+
+    # Subcommands
+    subparsers = parser.add_subparsers(
+        title='commands',
+        description='Available commands',
+        dest='command',
+        help='Command to execute'
+    )
+
+    # Codegen command
+    codegen_parser = subparsers.add_parser(
+        'codegen',
+        help='Generate HAL code for MCUs',
+        description='Generate Hardware Abstraction Layer (HAL) code from SVD files'
+    )
+    codegen.setup_parser(codegen_parser)
+
+    # Status command
+    status_parser = subparsers.add_parser(
+        'status',
+        help='Show implementation status',
+        description='Generate a comprehensive status report of implemented MCUs'
+    )
+    status.setup_parser(status_parser)
+
+    # Vendors command
+    vendors_parser = subparsers.add_parser(
+        'vendors',
+        help='List supported vendors',
+        description='Show all supported MCU vendors and their families'
+    )
+    vendors.setup_parser(vendors_parser)
+
+    return parser
+
+
+def main():
+    """Main entry point for the CLI"""
+    parser = create_parser()
+    args = parser.parse_args()
+
+    # Setup logging
+    log_level = 'DEBUG' if args.debug else ('INFO' if args.verbose else 'WARNING')
+    setup_logger(log_level)
+
+    # Check if a command was provided
+    if not args.command:
+        parser.print_help()
+        return 1
+
+    # Execute the appropriate command
+    try:
+        if args.command == 'codegen':
+            return codegen.execute(args)
+        elif args.command == 'status':
+            return status.execute(args)
+        elif args.command == 'vendors':
+            return vendors.execute(args)
+        else:
+            logger.error(f"Unknown command: {args.command}")
+            return 1
+    except KeyboardInterrupt:
+        logger.warning("\n\nInterrupted by user")
+        return 130
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        if args.debug:
+            import traceback
+            traceback.print_exc()
+        return 1
+
+
+if __name__ == '__main__':
+    sys.exit(main())

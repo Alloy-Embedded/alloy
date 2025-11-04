@@ -10,11 +10,11 @@ from pathlib import Path
 from typing import Dict, List
 import sys
 
-from svd_pin_extractor import extract_mcu_info_from_svd, MCUInfo, MCUPackageInfo
-from svd_discovery import discover_all_svds
+from cli.parsers.svd_pin_extractor import extract_mcu_info_from_svd, MCUInfo, MCUPackageInfo
+from cli.parsers.svd_discovery import discover_all_svds
 import xml.etree.ElementTree as ET
 
-REPO_ROOT = Path(__file__).parent.parent.parent
+REPO_ROOT = Path(__file__).parent.parent.parent.parent
 OUTPUT_DIR = REPO_ROOT / "src" / "hal"
 
 
