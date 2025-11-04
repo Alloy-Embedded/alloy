@@ -49,6 +49,9 @@ if(ALLOY_CODEGEN_AVAILABLE)
     add_compile_definitions(ALLOY_GENERATED_NAMESPACE=alloy::generated::stm32f407)
 endif()
 
+# Define MCU macro for universal GPIO header auto-detection
+add_compile_definitions(MCU_STM32F407VG)
+
 message(STATUS "Board configured: ${ALLOY_BOARD_NAME}")
 message(STATUS "  MCU: ${ALLOY_MCU}")
 message(STATUS "  Flash: ${ALLOY_FLASH_SIZE}, RAM: ${ALLOY_RAM_SIZE}")
