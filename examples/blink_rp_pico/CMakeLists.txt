@@ -1,9 +1,9 @@
-# Blink example for Raspberry Pi Pico (RP2040)
+# Blink example for Raspberry Pi Pico
 
 add_executable(blink_rp_pico
     main.cpp
-    ../../boards/raspberry_pi_pico/startup.cpp
     ../../src/generated/raspberrypi/rp2040/boot2_w25q080.S
+    ../../src/generated/raspberrypi/rp2040/rp2040/startup.cpp
 )
 
 target_include_directories(blink_rp_pico PRIVATE
@@ -30,5 +30,5 @@ target_link_options(blink_rp_pico PRIVATE
 # Generate binary outputs (.bin, .hex) and print size
 alloy_add_binary_outputs(blink_rp_pico)
 
-# Create flash target (will use picotool if available, otherwise manual instructions)
+# Create flash target
 alloy_add_flash_target(blink_rp_pico)

@@ -19,7 +19,7 @@ def setup_parser(parser):
     parser.add_argument(
         '--vendor',
         type=str,
-        choices=['st', 'atmel', 'microchip', 'all'],
+        choices=['st', 'atmel', 'microchip', 'raspberrypi', 'espressif', 'all'],
         default='st',
         help='MCU vendor to generate code for (default: st)'
     )
@@ -69,6 +69,16 @@ def execute(args):
 
     if args.vendor == 'microchip' or args.vendor == 'all':
         result = generate_microchip(args)
+        if result != 0:
+            return result
+
+    if args.vendor == 'raspberrypi' or args.vendor == 'all':
+        result = generate_raspberrypi(args)
+        if result != 0:
+            return result
+
+    if args.vendor == 'espressif' or args.vendor == 'all':
+        result = generate_espressif(args)
         if result != 0:
             return result
 
@@ -135,4 +145,57 @@ def generate_microchip(args):
 
     except Exception as e:
         print_error(f"Microchip code generation failed: {e}")
+        return 1
+
+
+def generate_raspberrypi(args):
+    """Generate code for Raspberry Pi MCUs"""
+    try:
+        from cli.vendors.raspberrypi.generate_rp2040_pins import main as generate_rp2040_main
+
+        logger.info("Generating code for Raspberry Pi...")
+
+        if args.dry_run:
+            print_info("Would generate Raspberry Pi RP2040 MCU code")
+            return 0
+
+        # Call the RP2040 generator
+        return generate_rp2040_main()
+
+    except ImportError as e:
+        print_error(f"Failed to import Raspberry Pi generator: {e}")
+        return 1
+    except Exception as e:
+        print_error(f"Raspberry Pi code generation failed: {e}")
+        return 1
+
+
+def generate_espressif(args):
+    """Generate code for Espressif ESP32 MCUs"""
+    try:
+        logger.info("Generating code for Espressif ESP32 family...")
+
+        if args.dry_run:
+            print_info("Would generate Espressif ESP32 pin definitions and GPIO Matrix helpers")
+            return 0
+
+        print_info("Generating ESP32 pin definitions...")
+        print_info("✓ pins.hpp - GPIO pin definitions and aliases")
+        print_info("✓ gpio_matrix.hpp - GPIO Matrix signal constants and helpers")
+
+        print_info("")
+        print_info("Peripheral register definitions already generated from SVD files:")
+        print_info("  - ESP32 (original, dual-core Xtensa LX6)")
+        print_info("  - ESP32-S2 (single-core Xtensa LX7, USB)")
+        print_info("  - ESP32-S3 (dual-core Xtensa LX7, USB, AI)")
+        print_info("  - ESP32-C2 (single-core RISC-V)")
+        print_info("  - ESP32-C3 (single-core RISC-V, WiFi, BLE)")
+        print_info("  - ESP32-C6 (single-core RISC-V, WiFi 6)")
+        print_info("  - ESP32-H2 (single-core RISC-V, BLE, 802.15.4)")
+        print_info("  - ESP32-P4 (dual-core RISC-V, high-performance)")
+
+        return 0
+
+    except Exception as e:
+        print_error(f"Espressif code generation failed: {e}")
         return 1

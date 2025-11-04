@@ -1,45 +1,33 @@
-/// Blink LED Example for Raspberry Pi Pico
+/// Blinky Example for Raspberry Pi Pico
 ///
-/// This example demonstrates the modern C++20 board API inspired by modm.
-/// The board pre-defines commonly used peripherals that users can access
-/// directly without needing to know pin numbers.
-///
-/// Architecture:
-///   User Code (main.cpp)
-///     ↓ uses Board::Led
-///   Board API (board.hpp - pre-instantiated pins)
-///     ↓ type aliases to GpioPin<N>
-///   HAL Layer (gpio.hpp - templates + concepts)
-///     ↓ uses MCU namespace
-///   Generated Peripherals (peripherals.hpp)
-///     ↓ raw register access
-///   Hardware
-///
-/// This approach provides:
-/// - Zero-cost abstractions (everything inline/constexpr)
-/// - Type safety (compile-time validation)
-/// - Simple API (Board::Led::on())
-/// - Portable (same code works on different boards)
+/// This example demonstrates basic GPIO usage by blinking the onboard LED.
 ///
 /// Hardware: Raspberry Pi Pico board (RP2040)
-/// LED: GPIO25 (Green onboard LED)
+/// - LED connected to GPIO25
+///
+/// Expected behavior:
+/// - LED blinks at 1 Hz (500ms on, 500ms off)
 
-#include "raspberry_pi_pico/board.hpp"
+#include "hal/vendors/raspberrypi/rp2040/gpio.hpp"
+#include "platform/delay.hpp"
+
+using namespace alloy::hal::raspberrypi::rp2040;
+using namespace alloy::platform;
 
 int main() {
-    // Initialize board (clock, peripherals, etc.)
-    Board::initialize();
+    // Create GPIO pin for LED (GPIO25 = on-board LED on Pico)
+    GPIOPin<pins::LED> led;
 
-    // Initialize LED
-    Board::Led::init();
+    // Configure as output
+    led.configureOutput();
 
-    // Blink LED forever - ultra simple!
+    // Blink forever
     while (true) {
-        Board::Led::on();
-        Board::delay_ms(500);
+        led.set();          // Turn LED on
+        delay_ms(500);      // Wait 500ms
 
-        Board::Led::off();
-        Board::delay_ms(500);
+        led.clear();        // Turn LED off
+        delay_ms(500);      // Wait 500ms
     }
 
     return 0;
