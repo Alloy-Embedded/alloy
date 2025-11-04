@@ -12,6 +12,7 @@ import sys
 
 from svd_pin_extractor import extract_mcu_info_from_svd, MCUInfo, MCUPackageInfo
 from svd_discovery import discover_all_svds
+import xml.etree.ElementTree as ET
 
 REPO_ROOT = Path(__file__).parent.parent.parent
 OUTPUT_DIR = REPO_ROOT / "src" / "hal"
@@ -188,6 +189,181 @@ constexpr size_t GPIO_PORT_COUNT = {len(package.available_ports)};  // {len(pack
     return content
 
 
+def extract_hardware_addresses(svd_file: Path) -> Dict[str, str]:
+    """Extract peripheral base addresses from SVD file"""
+    tree = ET.parse(svd_file)
+    root = tree.getroot()
+
+    addresses = {}
+
+    # Extract GPIO addresses
+    for peripheral in root.findall('.//peripheral'):
+        name_elem = peripheral.find('name')
+        base_elem = peripheral.find('baseAddress')
+
+        if name_elem is not None and base_elem is not None:
+            name = name_elem.text
+            if name.startswith('GPIO') or name == 'RCC' or name == 'AFIO':
+                addresses[name] = base_elem.text
+
+    return addresses
+
+
+def generate_hardware_header(mcu_info: MCUInfo, addresses: Dict[str, str]) -> str:
+    """Generate hardware.hpp with register addresses from SVD"""
+
+    # Detect architecture based on family
+    family_upper = mcu_info.family.upper()
+    uses_modern_gpio = (
+        "STM32F4" in family_upper or "STM32F2" in family_upper or
+        "STM32F7" in family_upper or "STM32L4" in family_upper or
+        "STM32G4" in family_upper or "STM32H7" in family_upper or
+        "STM32U5" in family_upper or "STM32L5" in family_upper
+    )
+
+    content = f"""#pragma once
+
+#include <cstdint>
+
+namespace alloy::hal::{mcu_info.family}::{mcu_info.device_name.lower()}::hardware {{
+
+// ============================================================================
+// Hardware Register Addresses for {mcu_info.device_name}
+// Auto-generated from SVD: {mcu_info.series}
+// ============================================================================
+
+"""
+
+    # Generate GPIO register structure based on architecture
+    if uses_modern_gpio:
+        # STM32F4/F2/F7/L4/G4/H7/U5 use MODER/OSPEEDR/etc
+        content += """// GPIO Registers structure (STM32F4/F2/F7/L4/G4/H7/U5 architecture)
+struct GPIO_Registers {
+    volatile uint32_t MODER;    // Mode register
+    volatile uint32_t OTYPER;   // Output type register
+    volatile uint32_t OSPEEDR;  // Output speed register
+    volatile uint32_t PUPDR;    // Pull-up/pull-down register
+    volatile uint32_t IDR;      // Input data register
+    volatile uint32_t ODR;      // Output data register
+    volatile uint32_t BSRR;     // Bit set/reset register
+    volatile uint32_t LCKR;     // Port configuration lock register
+    volatile uint32_t AFR[2];   // Alternate function registers (AFRL, AFRH)
+};
+
+// RCC Registers structure (STM32F4 architecture)
+struct RCC_Registers {
+    volatile uint32_t CR;
+    volatile uint32_t PLLCFGR;
+    volatile uint32_t CFGR;
+    volatile uint32_t CIR;
+    volatile uint32_t AHB1RSTR;
+    volatile uint32_t AHB2RSTR;
+    volatile uint32_t AHB3RSTR;
+    volatile uint32_t _reserved0;
+    volatile uint32_t APB1RSTR;
+    volatile uint32_t APB2RSTR;
+    volatile uint32_t _reserved1[2];
+    volatile uint32_t AHB1ENR;     // AHB1 peripheral clock enable register
+    volatile uint32_t AHB2ENR;
+    volatile uint32_t AHB3ENR;
+    volatile uint32_t _reserved2;
+    volatile uint32_t APB1ENR;
+    volatile uint32_t APB2ENR;
+};
+
+"""
+    else:
+        # STM32F1/F0 use CRL/CRH
+        content += """// GPIO Registers structure (STM32F1/F0 architecture)
+struct GPIO_Registers {
+    volatile uint32_t CRL;      // Port configuration register low (pins 0-7)
+    volatile uint32_t CRH;      // Port configuration register high (pins 8-15)
+    volatile uint32_t IDR;      // Input data register
+    volatile uint32_t ODR;      // Output data register
+    volatile uint32_t BSRR;     // Bit set/reset register
+    volatile uint32_t BRR;      // Bit reset register
+    volatile uint32_t LCKR;     // Port configuration lock register
+};
+
+// RCC Registers structure (STM32F1 architecture)
+struct RCC_Registers {
+    volatile uint32_t CR;
+    volatile uint32_t CFGR;
+    volatile uint32_t CIR;
+    volatile uint32_t APB2RSTR;
+    volatile uint32_t APB1RSTR;
+    volatile uint32_t AHBENR;
+    volatile uint32_t APB2ENR;      // APB2 peripheral clock enable register
+    volatile uint32_t APB1ENR;
+};
+
+"""
+
+    content += "// Base addresses from SVD\n"
+
+    # Add GPIO port addresses
+    for port_letter in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+        gpio_name = f"GPIO{port_letter}"
+        if gpio_name in addresses:
+            content += f"constexpr uintptr_t GPIO{port_letter}_BASE = {addresses[gpio_name]};\n"
+
+    content += "\n"
+
+    # Add RCC address
+    if 'RCC' in addresses:
+        content += f"constexpr uintptr_t RCC_BASE = {addresses['RCC']};\n\n"
+
+    # Add port instances
+    content += "// GPIO port instances\n"
+    for port_letter in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+        gpio_name = f"GPIO{port_letter}"
+        if gpio_name in addresses:
+            content += f"inline GPIO_Registers* const GPIO{port_letter} = reinterpret_cast<GPIO_Registers*>(GPIO{port_letter}_BASE);\n"
+
+    content += "\n// RCC instance\n"
+    content += "inline RCC_Registers* const RCC = reinterpret_cast<RCC_Registers*>(RCC_BASE);\n\n"
+
+    # Add RCC clock enable bits
+    content += """// RCC APB2ENR bits for GPIO clocks
+constexpr uint32_t RCC_APB2ENR_IOPAEN = (1U << 2);
+constexpr uint32_t RCC_APB2ENR_IOPBEN = (1U << 3);
+constexpr uint32_t RCC_APB2ENR_IOPCEN = (1U << 4);
+constexpr uint32_t RCC_APB2ENR_IOPDEN = (1U << 5);
+constexpr uint32_t RCC_APB2ENR_IOPEEN = (1U << 6);
+constexpr uint32_t RCC_APB2ENR_AFIOEN = (1U << 0);
+
+"""
+
+    # Add a Hardware struct that wraps the namespace for template use
+    content += f"""
+
+}}  // namespace alloy::hal::{mcu_info.family}::{mcu_info.device_name.lower()}::hardware
+
+// Hardware traits struct for template usage
+namespace alloy::hal::{mcu_info.family}::{mcu_info.device_name.lower()} {{
+
+struct Hardware {{
+    using GPIO_Registers = hardware::GPIO_Registers;
+    using RCC_Registers = hardware::RCC_Registers;
+
+    static inline GPIO_Registers* const GPIOA = hardware::GPIOA;
+    static inline GPIO_Registers* const GPIOB = hardware::GPIOB;
+    static inline GPIO_Registers* const GPIOC = hardware::GPIOC;
+    static inline GPIO_Registers* const GPIOD = hardware::GPIOD;
+    static inline GPIO_Registers* const GPIOE = hardware::GPIOE;
+    static inline GPIO_Registers* const GPIOF = hardware::GPIOF;
+    static inline GPIO_Registers* const GPIOG = hardware::GPIOG;
+    static inline RCC_Registers* const RCC = hardware::RCC;
+
+    static constexpr uint32_t RCC_APB2ENR_AFIOEN = hardware::RCC_APB2ENR_AFIOEN;
+}};
+
+}}  // namespace alloy::hal::{mcu_info.family}::{mcu_info.device_name.lower()}
+"""
+
+    return content
+
+
 def generate_traits_header(mcu_info: MCUInfo, package: MCUPackageInfo) -> str:
     """Generate traits.hpp content"""
 
@@ -257,6 +433,9 @@ def generate_for_variant(base_svd: Path, variant_name: str) -> bool:
         # Extract base info from SVD
         base_mcu = extract_mcu_info_from_svd(base_svd, verbose=False)
 
+        # Extract hardware addresses from SVD
+        hw_addresses = extract_hardware_addresses(base_svd)
+
         # Apply variant configuration
         mcu_info = apply_variant_config(base_mcu, variant_name)
 
@@ -282,23 +461,71 @@ def generate_for_variant(base_svd: Path, variant_name: str) -> bool:
         traits_file = device_dir / "traits.hpp"
         traits_file.write_text(traits_content)
 
+        # Generate hardware.hpp
+        hardware_content = generate_hardware_header(mcu_info, hw_addresses)
+        hardware_file = device_dir / "hardware.hpp"
+        hardware_file.write_text(hardware_content)
+
+        # Generate gpio.hpp (single include file)
+        gpio_content = f"""#pragma once
+
+// ============================================================================
+// Single-include GPIO header for {mcu_info.device_name}
+// Include this file to get all GPIO functionality
+//
+// Usage:
+//   #include "hal/st/stm32f103/generated/{mcu_info.device_name.lower()}/gpio.hpp"
+//
+//   using namespace gpio;
+//   using LED = GPIOPin<pins::PC13>;
+//   LED::configureOutput();
+//   LED::set();
+// ============================================================================
+
+#include "pins.hpp"
+#include "pin_functions.hpp"
+#include "traits.hpp"
+#include "hardware.hpp"
+#include "../../gpio_hal.hpp"
+
+namespace alloy::hal::{mcu_info.family}::{mcu_info.device_name.lower()} {{
+
+// Alias GPIO HAL template with this MCU's hardware
+template<uint8_t Pin>
+using GPIOPin = alloy::hal::{mcu_info.family}::GPIOPin<Hardware, Pin>;
+
+}}  // namespace alloy::hal::{mcu_info.family}::{mcu_info.device_name.lower()}
+
+// Convenience namespace alias
+namespace gpio = alloy::hal::{mcu_info.family}::{mcu_info.device_name.lower()};
+"""
+        gpio_file = device_dir / "gpio.hpp"
+        gpio_file.write_text(gpio_content)
+
         print(f"    ✓ Generated {package.get_gpio_pin_count()} pins for {package.package_name}")
         return True
 
     except Exception as e:
         print(f"    ✗ Error: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 
 def main():
     print("🔍 Generating pin headers from SVD files...\n")
 
+    # Discover all available SVDs
+    all_svds = discover_all_svds()
+
     # Find STM32F103 SVD
-    svd_file = Path("upstream/cmsis-svd-data/data/STMicro/STM32F103xx.svd")
-    if not svd_file.exists():
-        print(f"✗ SVD file not found: {svd_file}")
+    svd_key = "STM32F103xx"
+    if svd_key not in all_svds:
+        print(f"✗ SVD not found: {svd_key}")
+        print(f"Available ST SVDs: {[k for k in all_svds.keys() if k.startswith('STM32')][:10]}")
         return 1
 
+    svd_file = all_svds[svd_key].file_path
     print(f"📄 Using base SVD: {svd_file.name}\n")
 
     # Generate for all known variants

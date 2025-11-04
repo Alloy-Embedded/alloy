@@ -5,9 +5,12 @@ Generate All MCU Code
 Batch processes all SVD files and generates code for all MCUs.
 Output goes to src/generated/{vendor}/{family}/{mcu}/
 
+Also generates pin headers from SVD files to src/hal/{vendor}/{family}/generated/{mcu}/
+
 Usage:
     python3 generate_all.py --vendor STMicro
     python3 generate_all.py --all
+    python3 generate_all.py --pins-only    # Only generate pin headers
 """
 
 import argparse
@@ -256,6 +259,29 @@ python3 generate_all.py --vendor {vendor_name}
     print_success(f"  Generated {readme_path.relative_to(REPO_ROOT)}")
 
 
+def generate_pins_from_svd():
+    """Generate pin headers from SVD files"""
+
+    print_header("Generating Pin Headers from SVD")
+
+    # Run the SVD pin generator
+    cmd = [
+        sys.executable,
+        str(SCRIPT_DIR / "generate_pins_from_svd.py")
+    ]
+
+    result = subprocess.run(cmd, capture_output=True, text=True)
+
+    if result.returncode != 0:
+        print_error(f"Failed to generate pins from SVD: {result.stderr}")
+        return False
+
+    # Print output
+    print(result.stdout)
+    print_success("Pin generation complete")
+    return True
+
+
 def generate_index(output_dir: Path):
     """Generate master index of all MCUs"""
 
@@ -396,16 +422,23 @@ def main():
                         help='Generate only for specific vendor (e.g., STMicro)')
     parser.add_argument('--all', '-a', action='store_true',
                         help='Generate for all vendors')
+    parser.add_argument('--pins-only', action='store_true',
+                        help='Only generate pin headers from SVD (skip database generation)')
     parser.add_argument('--clean', action='store_true',
                         help='Clean output directory first')
 
     args = parser.parse_args()
 
-    if not args.vendor and not args.all:
+    if not args.vendor and not args.all and not args.pins_only:
         parser.print_help()
         sys.exit(1)
 
     print_header("Alloy MCU Code Generation - Batch Mode")
+
+    # If pins-only mode, just generate pins and exit
+    if args.pins_only:
+        success = generate_pins_from_svd()
+        sys.exit(0 if success else 1)
 
     # Clean if requested
     if args.clean and OUTPUT_DIR.exists():
@@ -452,6 +485,9 @@ def main():
 
     # Generate master index
     generate_index(OUTPUT_DIR)
+
+    # Generate pin headers from SVD
+    generate_pins_from_svd()
 
     print_header("Generation Complete!")
 

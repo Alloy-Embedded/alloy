@@ -79,11 +79,13 @@
 **Validation**: Traits compile and provide correct information (verified in test) ✅
 **Dependencies**: Task 3.2
 
-### Task 3.5: Build Pipeline Integration ⚠️ PARTIAL
-- [x] Created standalone script `generate_stm32_pins.py`
-- [ ] Integration with existing `generate_all.py` (future enhancement)
-- [ ] CMake option for pin generation (future enhancement)
-**Validation**: Script can be run manually: `python tools/codegen/generate_stm32_pins.py` ✅
+### Task 3.5: Build Pipeline Integration ✅ COMPLETED
+- [x] Created standalone script `generate_pins_from_svd.py`
+- [x] Integration with existing `generate_all.py` (--pins-only option)
+- [x] Makefile targets: `codegen`, `codegen-pins`, `codegen-matrix`, `list-svds`
+- [x] End-to-end integration test (test_generated_pins_integration.cpp)
+- [x] All Makefile targets tested and working
+**Validation**: `make codegen`, `make codegen-matrix`, `make list-svds` all work ✅
 **Dependencies**: Tasks 3.1-3.4
 
 ---
