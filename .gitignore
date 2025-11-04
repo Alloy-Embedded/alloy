@@ -3,6 +3,7 @@ build/
 build-*/
 build_tests/*
 cmake-build-*/
+build_*/
 
 # External dependencies
 # External dependencies

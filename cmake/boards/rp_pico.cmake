@@ -42,11 +42,8 @@ alloy_generate_code(
 
 # Use generated code if available
 if(ALLOY_CODEGEN_AVAILABLE)
-    # Make generated directory available to targets
     include_directories(${ALLOY_GENERATED_DIR})
-
-    # Define namespace for generated code (full namespace path)
-    add_compile_definitions(ALLOY_GENERATED_NAMESPACE=alloy::generated::rp2040)
+    add_compile_definitions(ALLOY_GENERATED_NAMESPACE=alloy::hal::raspberrypi::rp2040)
 endif()
 
 message(STATUS "Board configured: ${ALLOY_BOARD_NAME}")

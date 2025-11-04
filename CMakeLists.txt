@@ -135,7 +135,7 @@ endif()
 
 if(ALLOY_BOARD STREQUAL "rp_pico")
     add_subdirectory(examples/blink_rp_pico)
-    add_subdirectory(examples/rtos_blink_pico)
+    # add_subdirectory(examples/rtos_blink_pico)  # TODO: Needs systick.cpp implementation
 endif()
 
 if(ALLOY_BOARD STREQUAL "rp2040_zero")
