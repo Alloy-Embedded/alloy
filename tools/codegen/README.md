@@ -2,7 +2,37 @@
 
 Automated code generation from CMSIS-SVD files to C++ peripheral definitions for 24+ vendors and 800+ MCUs.
 
-## Quick Start
+## NEW: Alloy CLI 🚀
+
+The Alloy codegen tools now have a unified command-line interface! Instead of calling individual Python scripts, use the `alloy` CLI:
+
+```bash
+# List supported MCU vendors
+./alloy vendors
+
+# Generate HAL code for STMicroelectronics
+./alloy codegen --vendor st
+
+# Generate implementation status report
+./alloy status
+
+# View help
+./alloy --help
+```
+
+**Key Features:**
+- ✅ Single entry point for all code generation tasks
+- ✅ Colored output with helpful icons
+- ✅ Organized command structure (codegen, status, vendors)
+- ✅ Extensible architecture for adding new vendors
+- ✅ Dry-run mode for testing
+- ✅ Integrated help system
+
+See the [CLI Documentation](#cli-reference) section below for complete usage details.
+
+---
+
+## Quick Start (Legacy Scripts)
 
 ### One-Command Update for Any Vendor
 
@@ -367,6 +397,225 @@ Generated JSON databases follow this structure:
   }
 }
 ```
+
+## CLI Reference
+
+### Installation
+
+The Alloy CLI requires Python 3.7+ and is ready to use without additional installation.
+
+```bash
+cd tools/codegen
+chmod +x alloy
+./alloy --help
+```
+
+### Commands
+
+#### `alloy vendors` - List Supported Vendors
+
+Display information about all supported MCU vendors and their families.
+
+```bash
+# Basic listing
+./alloy vendors
+
+# Show detailed information including all MCU families
+./alloy vendors --detailed
+```
+
+**Output includes:**
+- Vendor name and implementation status
+- Supported MCU families with architecture info
+- Vendor ID for use in other commands
+
+**Currently Supported Vendors:**
+- ✅ **STMicroelectronics** - 26 MCU variants across 4 families (STM32F0/F1/F4/F7)
+- 🚧 **Atmel/Microchip** - Planned (SAMD, SAME, SAM3X, SAM4S, SAMV71)
+- 📋 **Microchip PIC/dsPIC** - Future (PIC32MX, PIC32MZ, dsPIC33)
+- 📋 **Nordic Semiconductor** - Future (nRF52, nRF53, nRF91)
+- 📋 **Espressif** - Future (ESP32, ESP32-S2, ESP32-C3)
+
+#### `alloy codegen` - Generate HAL Code
+
+Generate Hardware Abstraction Layer code from SVD files for MCUs.
+
+```bash
+# Generate for STMicroelectronics (default)
+./alloy codegen
+
+# Specify vendor explicitly
+./alloy codegen --vendor st
+
+# Dry-run mode (show what would be generated)
+./alloy codegen --vendor st --dry-run
+
+# Generate for specific family (future feature)
+./alloy codegen --vendor st --family stm32f4
+
+# Generate for all vendors (when available)
+./alloy codegen --vendor all
+```
+
+**Options:**
+- `--vendor {st,atmel,microchip,all}` - MCU vendor to generate for (default: st)
+- `--family FAMILY` - Specific MCU family (e.g., stm32f4, sam3x) [planned]
+- `--all` - Generate code for all available families [planned]
+- `--output PATH` - Output directory (default: src/hal/vendors)
+- `--dry-run` - Preview what would be generated
+
+**What it generates:**
+
+For STMicroelectronics, generates code in the structure:
+```
+src/hal/vendors/st/
+└── stm32f4/                    # Family folder
+    ├── gpio_hal.hpp            # Family-shared GPIO HAL
+    └── stm32f407vg/           # MCU-specific folder
+        ├── gpio.hpp           # Public GPIO API
+        ├── hardware.hpp       # Hardware register structures
+        ├── pins.hpp           # Compile-time pin definitions
+        └── pin_functions.hpp  # Pin alternate function mappings
+```
+
+**Current Implementation Status:**
+- **STM32F1**: 7 variants (F103C4/C6/C8/CB/R8/RB/T8)
+- **STM32F4**: 9 variants (F401CC/F407VG/F410RB/F411CE/F412CG/F427VI/F429ZI/F446RE/F469NI)
+- **STM32F0**: 2 variants (F030C6/C8)
+- **STM32F7**: 8 variants (F722RE/ZE, F745VG/ZG, F746VG/ZG, F765VI, F767ZI)
+
+#### `alloy status` - Generate Status Report
+
+Generate comprehensive implementation status reports showing which MCUs are implemented.
+
+```bash
+# Generate status report (default: MCU_STATUS.md)
+./alloy status
+
+# Custom output path
+./alloy status --output MY_STATUS.md
+
+# Show only specific vendor
+./alloy status --vendor st
+
+# Different output formats (future feature)
+./alloy status --format json
+```
+
+**Options:**
+- `--output PATH` - Output file path (default: MCU_STATUS.md)
+- `--vendor {st,atmel,microchip,all}` - Filter by vendor (default: all)
+- `--format {markdown,json,text}` - Output format [planned] (default: markdown)
+
+**Report Contents:**
+- Progress bars for each MCU family
+- Tables of implemented vs not-implemented variants
+- Total implementation statistics
+- Collapsible sections with detailed SVD file listings
+- 783 total MCUs scanned from SVD files
+
+**Example output:**
+```markdown
+# MCU Implementation Status
+
+## STMicroelectronics
+
+### STM32F4 Family
+**Progress:** 9/52 (17.3%)
+[█████░░░░░░░░░░░░░░░░░░░░░░░░] 17.3%
+
+| MCU | Status | SVD File |
+|-----|--------|----------|
+| STM32F407VG | ✅ | STM32F407.svd |
+| STM32F429ZI | ✅ | STM32F429.svd |
+| STM32F405RG | ❌ | STM32F405.svd |
+```
+
+### Global Options
+
+Available for all commands:
+
+```bash
+./alloy --version          # Show version information
+./alloy --help            # Show help
+./alloy <command> --help  # Show command-specific help
+```
+
+### CLI Architecture
+
+The CLI is organized into a modular structure:
+
+```
+tools/codegen/
+├── alloy                       # Main executable entry point
+├── cli/                        # CLI infrastructure
+│   ├── core/
+│   │   ├── version.py         # Version: 0.1.0
+│   │   └── logger.py          # Colored logging utilities
+│   ├── commands/
+│   │   ├── codegen.py        # Code generation command
+│   │   ├── status.py         # Status report command
+│   │   └── vendors.py        # Vendor listing command
+│   └── vendors/               # Vendor-specific modules (future)
+│       └── st/               # STMicroelectronics generators
+├── generate_all_st_pins.py   # ST family code generator
+├── generate_mcu_status.py    # Status report generator
+└── stm32fX_pin_functions.py  # Pin function databases
+```
+
+### Extending the CLI
+
+To add support for a new vendor:
+
+1. **Create vendor module** in `cli/vendors/`:
+```python
+# cli/vendors/atmel.py
+def generate_atmel_code(args):
+    """Generate code for Atmel/Microchip MCUs"""
+    # Implementation here
+    return 0
+```
+
+2. **Update codegen command** in `cli/commands/codegen.py`:
+```python
+def execute(args):
+    if args.vendor == 'atmel':
+        from cli.vendors.atmel import generate_atmel_code
+        return generate_atmel_code(args)
+```
+
+3. **Update vendor list** in `cli/commands/vendors.py`:
+```python
+VENDORS = {
+    'atmel': {
+        'name': 'Atmel/Microchip',
+        'status': '✅ Supported',  # Update status
+        'families': [...]
+    }
+}
+```
+
+### Output and Logging
+
+The CLI uses colored ANSI output with emojis for better readability:
+
+- ✅ **Success** (green) - Operations completed successfully
+- ❌ **Error** (red) - Errors and failures
+- ⚠️  **Warning** (yellow) - Warnings and cautions
+- ℹ️  **Info** (blue) - Informational messages
+- 🚀 **Headers** (cyan, bold) - Section titles
+
+Example:
+```
+🚀 Alloy Code Generation - ST
+═════════════════════════════════════════════════════
+
+ℹ️  Generating code for STMicroelectronics...
+✅ Generated: stm32f407vg (9 variants)
+✅ Code generation completed successfully!
+```
+
+---
 
 ## Requirements
 

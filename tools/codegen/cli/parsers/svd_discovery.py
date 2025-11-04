@@ -12,10 +12,10 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass
 import xml.etree.ElementTree as ET
 
-SCRIPT_DIR = Path(__file__).parent
-UPSTREAM_SVD_DIR = SCRIPT_DIR / "upstream" / "cmsis-svd-data" / "data"
-CUSTOM_SVD_DIR = SCRIPT_DIR / "custom-svd" / "vendors"
-MERGE_POLICY_FILE = SCRIPT_DIR / "custom-svd" / "merge_policy.json"
+CODEGEN_DIR = Path(__file__).parent.parent.parent
+UPSTREAM_SVD_DIR = CODEGEN_DIR / "upstream" / "cmsis-svd-data" / "data"
+CUSTOM_SVD_DIR = CODEGEN_DIR / "custom-svd" / "vendors"
+MERGE_POLICY_FILE = CODEGEN_DIR / "custom-svd" / "merge_policy.json"
 
 
 @dataclass

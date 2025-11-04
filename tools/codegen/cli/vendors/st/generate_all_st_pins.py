@@ -9,11 +9,13 @@ pin headers for all supported families.
 from pathlib import Path
 import sys
 from typing import Dict, List
-from svd_discovery import discover_all_svds
-from svd_pin_extractor import extract_mcu_info_from_svd
 
-# Import the existing pin generation functions
-from generate_pins_from_svd import (
+# Import from parsers
+from cli.parsers.svd_discovery import discover_all_svds
+from cli.parsers.svd_pin_extractor import extract_mcu_info_from_svd
+
+# Import the existing pin generation functions from same vendor folder
+from cli.vendors.st.generate_pins_from_svd import (
     generate_pins_header,
     generate_traits_header,
     generate_hardware_header,
@@ -23,8 +25,8 @@ from generate_pins_from_svd import (
     OUTPUT_DIR
 )
 
-# Import pin function generator
-from generate_pin_functions import (
+# Import pin function generator from same vendor folder
+from cli.vendors.st.generate_pin_functions import (
     generate_pin_functions_header,
     load_pin_database
 )
