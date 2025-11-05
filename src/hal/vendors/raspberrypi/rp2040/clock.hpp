@@ -15,7 +15,7 @@
 
 #include "hal/interface/clock.hpp"
 #include "core/types.hpp"
-#include "generated/raspberrypi/rp2040/rp2040/peripherals.hpp"
+#include "hal/vendors/raspberrypi/rp2040/peripherals.hpp"
 
 namespace alloy::hal::raspberrypi::rp2040 {
 

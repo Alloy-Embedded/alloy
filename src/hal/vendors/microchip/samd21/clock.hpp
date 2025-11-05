@@ -16,7 +16,7 @@
 
 #include "hal/interface/clock.hpp"
 #include "core/types.hpp"
-#include "generated/microchip_technology_inc/atsamd21j18a/atsamd21j18a/peripherals.hpp"
+#include "hal/vendors/microchip_technology_inc/atsamd21j18a/atsamd21j18a/peripherals.hpp"
 
 namespace alloy::hal::microchip::samd21 {
 

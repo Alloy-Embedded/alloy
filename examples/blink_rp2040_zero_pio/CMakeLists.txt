@@ -3,7 +3,7 @@
 add_executable(blink_rp2040_zero_pio
     main.c
     ../../boards/waveshare_rp2040_zero/startup.cpp
-    ../../src/generated/raspberrypi/rp2040/boot2_w25q080.S
+    ../../src/hal/vendors/raspberrypi/rp2040/boot2_w25q080.S
 )
 
 target_include_directories(blink_rp2040_zero_pio PRIVATE

@@ -14,7 +14,7 @@
 
 #include "hal/interface/clock.hpp"
 #include "core/types.hpp"
-#include "generated/unknown/esp32/esp32/peripherals.hpp"
+#include "hal/vendors/unknown/esp32/esp32/peripherals.hpp"
 
 namespace alloy::hal::espressif::esp32 {
 

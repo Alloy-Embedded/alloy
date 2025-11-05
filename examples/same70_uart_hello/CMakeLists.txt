@@ -3,12 +3,12 @@
 
 add_executable(same70_uart_hello
     main.cpp
-    ${CMAKE_SOURCE_DIR}/src/generated/atmel/same70/atsame70q21/startup.cpp
+    ${CMAKE_SOURCE_DIR}/src/hal/vendors/atmel/same70/atsame70q21/startup.cpp
 )
 
 target_include_directories(same70_uart_hello PRIVATE
     ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/src/generated/atmel/same70/atsame70q21
+    ${CMAKE_SOURCE_DIR}/src/hal/vendors/atmel/same70/atsame70q21
     ${CMAKE_SOURCE_DIR}/boards
 )
 
