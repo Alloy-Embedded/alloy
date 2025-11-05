@@ -1,146 +1,197 @@
 #pragma once
 
+#include "hal/interface/clock.hpp"
 #include "hal/vendors/atmel/same70/atsame70q21/peripherals.hpp"
-#include <cstdint>
+#include "core/error.hpp"
+#include "core/types.hpp"
 
-namespace alloy::hal::atmel::same70::clock {
+namespace alloy::hal::atmel::same70 {
 
+using namespace alloy::core;
 using namespace alloy::generated::atsame70q21;
 
-/// Clock configuration constants
-namespace config {
-    /// External crystal frequency (12 MHz on SAME70-XPLD)
-    constexpr uint32_t XTAL_FREQ_HZ = 12000000;
-
-    /// Target CPU frequency (300 MHz max for SAME70)
-    constexpr uint32_t TARGET_CPU_FREQ_HZ = 300000000;
-
-    /// PLL multiplier (MULA): 12MHz * 25 = 300MHz
-    constexpr uint32_t PLL_MUL = 25;
-
-    /// PLL divider (DIVA): divide by 1
-    constexpr uint32_t PLL_DIV = 1;
-
-    /// Master clock divider (MCK = CPU/2 = 150MHz)
-    constexpr uint32_t MASTER_CLK_DIV = 2;
-
-    /// Flash wait states for 300MHz @ 3.3V
-    /// SAME70 requires 6 wait states for 300MHz operation
-    constexpr uint32_t FLASH_WAIT_STATES = 6;
-}
-
-/// PMC register key for write protection
-constexpr uint32_t PMC_KEY = 0x37 << 16;
-
-/// Current clock frequencies (updated by init())
-namespace current {
-    inline uint32_t cpu_freq_hz = 0;
-    inline uint32_t master_freq_hz = 0;
-}
-
 /**
- * @brief Initialize system clocks to 300MHz CPU, 150MHz Master Clock
+ * SAME70 Clock Configuration
  *
- * Clock configuration:
- * - External Crystal: 12 MHz
- * - PLLA: 12 MHz / 1 * 25 = 300 MHz
- * - CPU Clock (HCLK): 300 MHz
- * - Master Clock (MCK): 150 MHz (CPU/2)
- * - Flash Wait States: 6 cycles
+ * Type-safe clock configuration for Atmel/Microchip SAME70 family.
+ * Supports up to 300 MHz with advanced PLL configuration.
+ *
+ * Usage:
+ *   using Clock = Same70Clock<12000000>;  // 12 MHz crystal
+ *   auto result = Clock::configure_300mhz();
  */
-inline void init() {
-    // 1. Enable main crystal oscillator (12MHz external crystal)
-    pmc::PMC->CKGR_MOR = PMC_KEY |
-                         pmc::ckgr_mor_bits::MOSCXTEN |    // Enable crystal
-                         pmc::ckgr_mor_bits::MOSCRCEN |    // Keep RC enabled during transition
-                         (0xFF << 8);                       // Startup time: 8ms * 12MHz / 8 = 0xFF
+template<u32 ExternalCrystalHz = 12000000>
+class Same70Clock {
+public:
+    static constexpr u32 MAINCK_FREQ_HZ = 12000000;  // Main clock (RC or XTAL)
+    static constexpr u32 HSE_FREQ_HZ = ExternalCrystalHz;
+    static constexpr u32 MAX_FREQ_HZ = 300000000;
+    static constexpr u32 PMC_KEY = 0x37 << 16;
 
-    // Wait for crystal to stabilize
-    while (!(pmc::PMC->SR & pmc::sr_bits::MOSCXTS));
+    /**
+     * Configure for maximum performance: 300 MHz CPU, 150 MHz Master Clock
+     *
+     * Configuration:
+     * - External Crystal: 12 MHz
+     * - PLLA: 12 MHz / 1 * 25 = 300 MHz
+     * - CPU Clock (HCLK): 300 MHz
+     * - Master Clock (MCK): 150 MHz (CPU/2)
+     * - Flash Wait States: 6 cycles
+     */
+    static Result<void> configure_300mhz() {
+        // Enable main crystal oscillator (12MHz)
+        pmc::PMC->CKGR_MOR = PMC_KEY |
+                            pmc::ckgr_mor_bits::MOSCXTEN |
+                            pmc::ckgr_mor_bits::MOSCRCEN |
+                            (0xFF << 8);  // Startup time
 
-    // 2. Switch main clock to crystal oscillator
-    pmc::PMC->CKGR_MOR = PMC_KEY |
-                         pmc::ckgr_mor_bits::MOSCXTEN |
-                         pmc::ckgr_mor_bits::MOSCRCEN |
-                         pmc::ckgr_mor_bits::MOSCSEL |     // Select crystal as main clock
-                         (0xFF << 8);
+        // Wait for crystal stabilization
+        u32 timeout = 100000;
+        while (!(pmc::PMC->SR & pmc::sr_bits::MOSCXTS) && timeout--) {}
+        if (timeout == 0) return Error(ErrorCode::ClockSourceNotReady);
 
-    // Wait for selection to complete
-    while (!(pmc::PMC->SR & pmc::sr_bits::MOSCSELS));
+        // Switch main clock to crystal
+        pmc::PMC->CKGR_MOR = PMC_KEY |
+                            pmc::ckgr_mor_bits::MOSCXTEN |
+                            pmc::ckgr_mor_bits::MOSCRCEN |
+                            pmc::ckgr_mor_bits::MOSCSEL |
+                            (0xFF << 8);
 
-    // 3. Set flash wait states BEFORE increasing frequency
-    // SAME70 @ 300MHz requires 6 wait states (FWS=6)
-    efc::EFC->EEFC_FMR = (config::FLASH_WAIT_STATES << 8);
+        timeout = 100000;
+        while (!(pmc::PMC->SR & pmc::sr_bits::MOSCSELS) && timeout--) {}
+        if (timeout == 0) return Error(ErrorCode::ClockSourceNotReady);
 
-    // 4. Configure PLLA: 12MHz / 1 * 25 = 300MHz
-    // DIVA = 1 (divide by 1)
-    // MULA = 24 (multiply by 25, MULA = MUL - 1)
-    // PLLACOUNT = 0x3F (startup time)
-    pmc::PMC->CKGR_PLLAR = (1U << 29) |                   // ONE bit (must be set)
-                           ((config::PLL_MUL - 1) << 16) | // MULA (25-1=24)
-                           (0x3F << 8) |                   // PLLACOUNT
-                           config::PLL_DIV;                // DIVA
+        // Set flash wait states BEFORE increasing frequency
+        efc::EFC->EEFC_FMR = (6 << 8);  // 6 wait states for 300 MHz
 
-    // Wait for PLLA to lock
-    while (!(pmc::PMC->SR & pmc::sr_bits::LOCKA));
+        // Configure PLLA: 12MHz / 1 * 25 = 300MHz
+        pmc::PMC->CKGR_PLLAR = (1U << 29) |      // ONE bit
+                              (24 << 16) |        // MULA (25-1)
+                              (0x3F << 8) |       // PLLACOUNT
+                              1;                  // DIVA
 
-    // 5. Switch master clock to PLLA with prescaler and divider
-    // First set prescaler (PRES=0, no prescale)
-    pmc::PMC->MCKR = (pmc::PMC->MCKR & ~(0x7 << 4)) | (0 << 4);
-    while (!(pmc::PMC->SR & pmc::sr_bits::MCKRDY));
+        // Wait for PLLA lock
+        timeout = 100000;
+        while (!(pmc::PMC->SR & pmc::sr_bits::LOCKA) && timeout--) {}
+        if (timeout == 0) return Error(ErrorCode::PllLockFailed);
 
-    // Set master clock divider (MDIV=2, MCK=PCK/2)
-    // This gives us MCK = 300MHz / 2 = 150MHz
-    pmc::PMC->MCKR = (pmc::PMC->MCKR & ~(0x3 << 8)) | (0x1 << 8);
-    while (!(pmc::PMC->SR & pmc::sr_bits::MCKRDY));
+        // Switch master clock to PLLA with divider
+        pmc::PMC->MCKR = (pmc::PMC->MCKR & ~(0x7 << 4)) | (0 << 4);  // PRES=0
+        timeout = 100000;
+        while (!(pmc::PMC->SR & pmc::sr_bits::MCKRDY) && timeout--) {}
 
-    // Finally switch to PLLA as clock source
-    pmc::PMC->MCKR = (pmc::PMC->MCKR & ~0x3) | 0x2;  // CSS=2 (PLLA)
-    while (!(pmc::PMC->SR & pmc::sr_bits::MCKRDY));
+        pmc::PMC->MCKR = (pmc::PMC->MCKR & ~(0x3 << 8)) | (0x1 << 8);  // MDIV=2
+        timeout = 100000;
+        while (!(pmc::PMC->SR & pmc::sr_bits::MCKRDY) && timeout--) {}
 
-    // Update current frequency globals
-    current::cpu_freq_hz = config::TARGET_CPU_FREQ_HZ;
-    current::master_freq_hz = config::TARGET_CPU_FREQ_HZ / config::MASTER_CLK_DIV;
-}
+        pmc::PMC->MCKR = (pmc::PMC->MCKR & ~0x3) | 0x2;  // CSS=PLLA
+        timeout = 100000;
+        while (!(pmc::PMC->SR & pmc::sr_bits::MCKRDY) && timeout--) {}
+        if (timeout == 0) return Error(ErrorCode::ClockSourceNotReady);
 
-/**
- * @brief Get current CPU clock frequency
- * @return CPU frequency in Hz
- */
-inline uint32_t get_cpu_freq() {
-    return current::cpu_freq_hz;
-}
+        // Update frequencies
+        current_frequencies_.system = 300000000;
+        current_frequencies_.ahb = 300000000;
+        current_frequencies_.apb1 = 150000000;
+        current_frequencies_.apb2 = 150000000;
 
-/**
- * @brief Get current master clock frequency
- * @return Master clock (MCK) frequency in Hz
- */
-inline uint32_t get_master_freq() {
-    return current::master_freq_hz;
-}
-
-/**
- * @brief Enable peripheral clock
- * @param pid Peripheral ID (0-63)
- */
-inline void enable_peripheral_clock(uint8_t pid) {
-    if (pid < 32) {
-        pmc::PMC->PCER0 = (1U << pid);
-    } else {
-        pmc::PMC->PCER1 = (1U << (pid - 32));
+        return Ok();
     }
-}
 
-/**
- * @brief Disable peripheral clock
- * @param pid Peripheral ID (0-63)
- */
-inline void disable_peripheral_clock(uint8_t pid) {
-    if (pid < 32) {
-        pmc::PMC->PCDR0 = (1U << pid);
-    } else {
-        pmc::PMC->PCDR1 = (1U << (pid - 32));
+    /**
+     * Configure for lower power: 150 MHz CPU, 75 MHz Master Clock
+     */
+    static Result<void> configure_150mhz() {
+        // Similar to 300MHz but with different multiplier
+        pmc::PMC->CKGR_MOR = PMC_KEY | pmc::ckgr_mor_bits::MOSCXTEN |
+                            pmc::ckgr_mor_bits::MOSCRCEN | (0xFF << 8);
+
+        u32 timeout = 100000;
+        while (!(pmc::PMC->SR & pmc::sr_bits::MOSCXTS) && timeout--) {}
+        if (timeout == 0) return Error(ErrorCode::ClockSourceNotReady);
+
+        pmc::PMC->CKGR_MOR = PMC_KEY | pmc::ckgr_mor_bits::MOSCXTEN |
+                            pmc::ckgr_mor_bits::MOSCRCEN |
+                            pmc::ckgr_mor_bits::MOSCSEL | (0xFF << 8);
+
+        timeout = 100000;
+        while (!(pmc::PMC->SR & pmc::sr_bits::MOSCSELS) && timeout--) {}
+
+        efc::EFC->EEFC_FMR = (3 << 8);  // 3 wait states for 150 MHz
+
+        // PLLA: 12MHz / 1 * 13 = 156 MHz (close to 150)
+        pmc::PMC->CKGR_PLLAR = (1U << 29) | (12 << 16) | (0x3F << 8) | 1;
+
+        timeout = 100000;
+        while (!(pmc::PMC->SR & pmc::sr_bits::LOCKA) && timeout--) {}
+        if (timeout == 0) return Error(ErrorCode::PllLockFailed);
+
+        pmc::PMC->MCKR = (pmc::PMC->MCKR & ~(0x7 << 4)) | (0 << 4);
+        timeout = 100000;
+        while (!(pmc::PMC->SR & pmc::sr_bits::MCKRDY) && timeout--) {}
+
+        pmc::PMC->MCKR = (pmc::PMC->MCKR & ~(0x3 << 8)) | (0x1 << 8);
+        timeout = 100000;
+        while (!(pmc::PMC->SR & pmc::sr_bits::MCKRDY) && timeout--) {}
+
+        pmc::PMC->MCKR = (pmc::PMC->MCKR & ~0x3) | 0x2;
+        timeout = 100000;
+        while (!(pmc::PMC->SR & pmc::sr_bits::MCKRDY) && timeout--) {}
+
+        current_frequencies_.system = 156000000;
+        current_frequencies_.ahb = 156000000;
+        current_frequencies_.apb1 = 78000000;
+        current_frequencies_.apb2 = 78000000;
+
+        return Ok();
     }
-}
 
-}  // namespace alloy::hal::atmel::same70::clock
+    static u32 get_frequency() { return current_frequencies_.system; }
+    static u32 get_ahb_frequency() { return current_frequencies_.ahb; }
+    static u32 get_apb1_frequency() { return current_frequencies_.apb1; }
+    static u32 get_apb2_frequency() { return current_frequencies_.apb2; }
+
+    /**
+     * Enable peripheral clock
+     */
+    static Result<void> enable_peripheral(hal::Peripheral peripheral) {
+        u16 pid = static_cast<u16>(peripheral) & 0xFF;
+
+        if (pid < 32) {
+            pmc::PMC->PCER0 = (1U << pid);
+        } else {
+            pmc::PMC->PCER1 = (1U << (pid - 32));
+        }
+
+        return Ok();
+    }
+
+    /**
+     * Disable peripheral clock
+     */
+    static Result<void> disable_peripheral(hal::Peripheral peripheral) {
+        u16 pid = static_cast<u16>(peripheral) & 0xFF;
+
+        if (pid < 32) {
+            pmc::PMC->PCDR0 = (1U << pid);
+        } else {
+            pmc::PMC->PCDR1 = (1U << (pid - 32));
+        }
+
+        return Ok();
+    }
+
+private:
+    struct Frequencies {
+        u32 system = MAINCK_FREQ_HZ;
+        u32 ahb = MAINCK_FREQ_HZ;
+        u32 apb1 = MAINCK_FREQ_HZ;
+        u32 apb2 = MAINCK_FREQ_HZ;
+    };
+
+    static inline Frequencies current_frequencies_;
+};
+
+using Same70Clock12MHz = Same70Clock<12000000>;
+
+} // namespace alloy::hal::atmel::same70
