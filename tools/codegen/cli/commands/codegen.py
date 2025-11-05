@@ -173,29 +173,34 @@ def generate_raspberrypi(args):
 def generate_espressif(args):
     """Generate code for Espressif ESP32 MCUs"""
     try:
+        from cli.vendors.espressif.generate_esp32_pins import main as generate_esp32_main
+
         logger.info("Generating code for Espressif ESP32 family...")
 
         if args.dry_run:
             print_info("Would generate Espressif ESP32 pin definitions and GPIO Matrix helpers")
             return 0
 
-        print_info("Generating ESP32 pin definitions...")
-        print_info("✓ pins.hpp - GPIO pin definitions and aliases")
-        print_info("✓ gpio_matrix.hpp - GPIO Matrix signal constants and helpers")
+        # Call the ESP32 generator
+        result = generate_esp32_main()
 
-        print_info("")
-        print_info("Peripheral register definitions already generated from SVD files:")
-        print_info("  - ESP32 (original, dual-core Xtensa LX6)")
-        print_info("  - ESP32-S2 (single-core Xtensa LX7, USB)")
-        print_info("  - ESP32-S3 (dual-core Xtensa LX7, USB, AI)")
-        print_info("  - ESP32-C2 (single-core RISC-V)")
-        print_info("  - ESP32-C3 (single-core RISC-V, WiFi, BLE)")
-        print_info("  - ESP32-C6 (single-core RISC-V, WiFi 6)")
-        print_info("  - ESP32-H2 (single-core RISC-V, BLE, 802.15.4)")
-        print_info("  - ESP32-P4 (dual-core RISC-V, high-performance)")
+        if result == 0:
+            print_info("")
+            print_info("Peripheral register definitions already generated from SVD files:")
+            print_info("  - ESP32 (original, dual-core Xtensa LX6)")
+            print_info("  - ESP32-S2 (single-core Xtensa LX7, USB)")
+            print_info("  - ESP32-S3 (dual-core Xtensa LX7, USB, AI)")
+            print_info("  - ESP32-C2 (single-core RISC-V)")
+            print_info("  - ESP32-C3 (single-core RISC-V, WiFi, BLE)")
+            print_info("  - ESP32-C6 (single-core RISC-V, WiFi 6)")
+            print_info("  - ESP32-H2 (single-core RISC-V, BLE, 802.15.4)")
+            print_info("  - ESP32-P4 (dual-core RISC-V, high-performance)")
 
-        return 0
+        return result
 
+    except ImportError as e:
+        print_error(f"Failed to import ESP32 generator: {e}")
+        return 1
     except Exception as e:
         print_error(f"Espressif code generation failed: {e}")
         return 1

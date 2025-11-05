@@ -3,9 +3,9 @@
 Generate All MCU Code
 
 Batch processes all SVD files and generates code for all MCUs.
-Output goes to src/generated/{vendor}/{family}/{mcu}/
+Output goes to src/hal/vendors/{vendor}/{family}/{mcu}/
 
-Also generates pin headers from SVD files to src/hal/{vendor}/{family}/generated/{mcu}/
+This generates startup.cpp and peripherals.hpp for each MCU.
 
 Usage:
     python3 generate_all.py --vendor STMicro
@@ -21,10 +21,10 @@ from typing import Dict, List
 import subprocess
 
 SCRIPT_DIR = Path(__file__).parent
-REPO_ROOT = SCRIPT_DIR.parent.parent
-SVD_DIR = SCRIPT_DIR / "upstream" / "cmsis-svd-data" / "data"
-OUTPUT_DIR = REPO_ROOT / "src" / "generated"
-DATABASE_DIR = SCRIPT_DIR / "database" / "families"
+REPO_ROOT = SCRIPT_DIR.parent.parent.parent.parent
+SVD_DIR = REPO_ROOT / "tools" / "codegen" / "upstream" / "cmsis-svd-data" / "data"
+OUTPUT_DIR = REPO_ROOT / "src" / "hal" / "vendors"
+DATABASE_DIR = REPO_ROOT / "tools" / "codegen" / "database" / "families"
 
 class Colors:
     OKGREEN = '\033[92m'
@@ -336,7 +336,7 @@ def generate_index(output_dir: Path):
 ## Directory Structure
 
 ```
-src/generated/
+src/hal/vendors/
 ├── {vendor}/
 │   ├── {family}/
 │   │   ├── {mcu}/

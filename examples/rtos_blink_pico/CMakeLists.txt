@@ -2,8 +2,8 @@
 
 add_executable(rtos_blink_pico
     main.cpp
-    ../../src/generated/raspberrypi/rp2040/boot2_w25q080.S
-    ../../src/generated/raspberrypi/rp2040/rp2040/startup.cpp
+    ../../src/hal/vendors/raspberrypi/rp2040/boot2_w25q080.S
+    ../../src/hal/vendors/raspberrypi/rp2040/startup.cpp
     ../../src/rtos/scheduler.cpp
     ../../src/rtos/platform/arm_context_m0.cpp  # M0+ specific context switching
     ../../src/rtos/platform/arm_systick_integration.cpp
