@@ -20,7 +20,7 @@ struct MATRIX_Registers {
 
     /// Master Configuration Register 0
     /// Offset: 0x0000
-    volatile uint32_t MCFG[%s];
+    volatile uint32_t MCFG[12];
 
     /// Priority Register A for Slave 0
     /// Offset: 0x0000
@@ -33,7 +33,7 @@ struct MATRIX_Registers {
 
     /// Slave Configuration Register 0
     /// Offset: 0x0040
-    volatile uint32_t SCFG[%s];
+    volatile uint32_t SCFG[9];
     uint8_t RESERVED_0044[188]; ///< Reserved
 
     /// Master Remap Control Register

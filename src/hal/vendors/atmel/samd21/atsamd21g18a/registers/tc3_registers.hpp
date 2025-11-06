@@ -181,15 +181,15 @@ struct TC3_Registers {
 
     /// COUNT8 Compare/Capture
     /// Offset: 0x0018
-    volatile uint8_t CC%s;
+    volatile uint8_t CC[2];
 
     /// COUNT16 Compare/Capture
     /// Offset: 0x0018
-    volatile uint16_t CC%s;
+    volatile uint16_t CC[2];
 
     /// COUNT32 Compare/Capture
     /// Offset: 0x0018
-    volatile uint32_t CC%s;
+    volatile uint32_t CC[2];
 };
 
 static_assert(sizeof(TC3_Registers) >= 28, "TC3_Registers size mismatch");

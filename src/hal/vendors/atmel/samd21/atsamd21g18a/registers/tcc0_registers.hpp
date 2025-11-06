@@ -126,19 +126,19 @@ struct TCC0_Registers {
 
     /// Compare and Capture
     /// Offset: 0x0044
-    volatile uint32_t CC%s;
+    volatile uint32_t CC[4];
 
     /// Compare and Capture
     /// Offset: 0x0044
-    volatile uint32_t CC%s_DITH4;
+    volatile uint32_t CC[4]_DITH4;
 
     /// Compare and Capture
     /// Offset: 0x0044
-    volatile uint32_t CC%s_DITH5;
+    volatile uint32_t CC[4]_DITH5;
 
     /// Compare and Capture
     /// Offset: 0x0044
-    volatile uint32_t CC%s_DITH6;
+    volatile uint32_t CC[4]_DITH6;
     uint8_t RESERVED_0048[28]; ///< Reserved
 
     /// Pattern Buffer
@@ -172,19 +172,19 @@ struct TCC0_Registers {
 
     /// Compare and Capture Buffer
     /// Offset: 0x0070
-    volatile uint32_t CCB%s;
+    volatile uint32_t CCB[4];
 
     /// Compare and Capture Buffer
     /// Offset: 0x0070
-    volatile uint32_t CCB%s_DITH4;
+    volatile uint32_t CCB[4]_DITH4;
 
     /// Compare and Capture Buffer
     /// Offset: 0x0070
-    volatile uint32_t CCB%s_DITH5;
+    volatile uint32_t CCB[4]_DITH5;
 
     /// Compare and Capture Buffer
     /// Offset: 0x0070
-    volatile uint32_t CCB%s_DITH6;
+    volatile uint32_t CCB[4]_DITH6;
 };
 
 static_assert(sizeof(TCC0_Registers) >= 116, "TCC0_Registers size mismatch");

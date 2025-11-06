@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::gmac {
 
@@ -2078,8 +2078,8 @@ namespace pefrn {
 
 }  // namespace pefrn
 
-/// ISRPQ[%s] - Interrupt Status Register Priority Queue (index = 1) 0
-namespace isrpq[%s] {
+/// ISRPQ[2] - Interrupt Status Register Priority Queue (index = 1) 0
+namespace isrpq[2] {
     /// Receive Complete
     /// Position: 1, Width: 1
     using RCOMP = BitField<1, 1>;
@@ -2122,37 +2122,37 @@ namespace isrpq[%s] {
     constexpr uint32_t HRESP_Pos = 11;
     constexpr uint32_t HRESP_Msk = HRESP::mask;
 
-}  // namespace isrpq[%s]
+}  // namespace isrpq[2]
 
-/// TBQBAPQ[%s] - Transmit Buffer Queue Base Address Register Priority Queue (index = 1) 0
-namespace tbqbapq[%s] {
+/// TBQBAPQ[2] - Transmit Buffer Queue Base Address Register Priority Queue (index = 1) 0
+namespace tbqbapq[2] {
     /// Transmit Buffer Queue Base Address
     /// Position: 2, Width: 30
     using TXBQBA = BitField<2, 30>;
     constexpr uint32_t TXBQBA_Pos = 2;
     constexpr uint32_t TXBQBA_Msk = TXBQBA::mask;
 
-}  // namespace tbqbapq[%s]
+}  // namespace tbqbapq[2]
 
-/// RBQBAPQ[%s] - Receive Buffer Queue Base Address Register Priority Queue (index = 1) 0
-namespace rbqbapq[%s] {
+/// RBQBAPQ[2] - Receive Buffer Queue Base Address Register Priority Queue (index = 1) 0
+namespace rbqbapq[2] {
     /// Receive Buffer Queue Base Address
     /// Position: 2, Width: 30
     using RXBQBA = BitField<2, 30>;
     constexpr uint32_t RXBQBA_Pos = 2;
     constexpr uint32_t RXBQBA_Msk = RXBQBA::mask;
 
-}  // namespace rbqbapq[%s]
+}  // namespace rbqbapq[2]
 
-/// RBSRPQ[%s] - Receive Buffer Size Register Priority Queue (index = 1) 0
-namespace rbsrpq[%s] {
+/// RBSRPQ[2] - Receive Buffer Size Register Priority Queue (index = 1) 0
+namespace rbsrpq[2] {
     /// Receive Buffer Size
     /// Position: 0, Width: 16
     using RBS = BitField<0, 16>;
     constexpr uint32_t RBS_Pos = 0;
     constexpr uint32_t RBS_Msk = RBS::mask;
 
-}  // namespace rbsrpq[%s]
+}  // namespace rbsrpq[2]
 
 /// CBSCR - Credit-Based Shaping Control Register
 namespace cbscr {
@@ -2190,8 +2190,8 @@ namespace cbsisqb {
 
 }  // namespace cbsisqb
 
-/// ST1RPQ[%s] - Screening Type 1 Register Priority Queue (index = 0) 0
-namespace st1rpq[%s] {
+/// ST1RPQ[4] - Screening Type 1 Register Priority Queue (index = 0) 0
+namespace st1rpq[4] {
     /// Queue Number (0-2)
     /// Position: 0, Width: 3
     using QNB = BitField<0, 3>;
@@ -2222,10 +2222,10 @@ namespace st1rpq[%s] {
     constexpr uint32_t UDPE_Pos = 29;
     constexpr uint32_t UDPE_Msk = UDPE::mask;
 
-}  // namespace st1rpq[%s]
+}  // namespace st1rpq[4]
 
-/// ST2RPQ[%s] - Screening Type 2 Register Priority Queue (index = 0) 0
-namespace st2rpq[%s] {
+/// ST2RPQ[8] - Screening Type 2 Register Priority Queue (index = 0) 0
+namespace st2rpq[8] {
     /// Queue Number (0-2)
     /// Position: 0, Width: 3
     using QNB = BitField<0, 3>;
@@ -2292,10 +2292,10 @@ namespace st2rpq[%s] {
     constexpr uint32_t COMPCE_Pos = 30;
     constexpr uint32_t COMPCE_Msk = COMPCE::mask;
 
-}  // namespace st2rpq[%s]
+}  // namespace st2rpq[8]
 
-/// IERPQ[%s] - Interrupt Enable Register Priority Queue (index = 1) 0
-namespace ierpq[%s] {
+/// IERPQ[2] - Interrupt Enable Register Priority Queue (index = 1) 0
+namespace ierpq[2] {
     /// Receive Complete
     /// Position: 1, Width: 1
     using RCOMP = BitField<1, 1>;
@@ -2338,10 +2338,10 @@ namespace ierpq[%s] {
     constexpr uint32_t HRESP_Pos = 11;
     constexpr uint32_t HRESP_Msk = HRESP::mask;
 
-}  // namespace ierpq[%s]
+}  // namespace ierpq[2]
 
-/// IDRPQ[%s] - Interrupt Disable Register Priority Queue (index = 1) 0
-namespace idrpq[%s] {
+/// IDRPQ[2] - Interrupt Disable Register Priority Queue (index = 1) 0
+namespace idrpq[2] {
     /// Receive Complete
     /// Position: 1, Width: 1
     using RCOMP = BitField<1, 1>;
@@ -2384,10 +2384,10 @@ namespace idrpq[%s] {
     constexpr uint32_t HRESP_Pos = 11;
     constexpr uint32_t HRESP_Msk = HRESP::mask;
 
-}  // namespace idrpq[%s]
+}  // namespace idrpq[2]
 
-/// IMRPQ[%s] - Interrupt Mask Register Priority Queue (index = 1) 0
-namespace imrpq[%s] {
+/// IMRPQ[2] - Interrupt Mask Register Priority Queue (index = 1) 0
+namespace imrpq[2] {
     /// Receive Complete
     /// Position: 1, Width: 1
     using RCOMP = BitField<1, 1>;
@@ -2430,17 +2430,17 @@ namespace imrpq[%s] {
     constexpr uint32_t HRESP_Pos = 11;
     constexpr uint32_t HRESP_Msk = HRESP::mask;
 
-}  // namespace imrpq[%s]
+}  // namespace imrpq[2]
 
-/// ST2ER[%s] - Screening Type 2 Ethertype Register (index = 0) 0
-namespace st2er[%s] {
+/// ST2ER[4] - Screening Type 2 Ethertype Register (index = 0) 0
+namespace st2er[4] {
     /// Ethertype Compare Value
     /// Position: 0, Width: 16
     using COMPVAL = BitField<0, 16>;
     constexpr uint32_t COMPVAL_Pos = 0;
     constexpr uint32_t COMPVAL_Msk = COMPVAL::mask;
 
-}  // namespace st2er[%s]
+}  // namespace st2er[4]
 
 /// ST2CW00 - Screening Type 2 Compare Word 0 Register (index = 0)
 namespace st2cw00 {

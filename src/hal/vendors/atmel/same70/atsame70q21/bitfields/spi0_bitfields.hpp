@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::same70::atsame70q21::spi0 {
 
@@ -355,8 +355,8 @@ namespace imr {
 
 }  // namespace imr
 
-/// CSR[%s] - Chip Select Register 0
-namespace csr[%s] {
+/// CSR[4] - Chip Select Register 0
+namespace csr[4] {
     /// Clock Polarity
     /// Position: 0, Width: 1
     using CPOL = BitField<0, 1>;
@@ -417,7 +417,7 @@ namespace csr[%s] {
     constexpr uint32_t DLYBCT_Pos = 24;
     constexpr uint32_t DLYBCT_Msk = DLYBCT::mask;
 
-}  // namespace csr[%s]
+}  // namespace csr[4]
 
 /// WPMR - Write Protection Mode Register
 namespace wpmr {

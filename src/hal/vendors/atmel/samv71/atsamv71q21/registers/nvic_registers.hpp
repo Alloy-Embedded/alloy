@@ -21,37 +21,37 @@ struct NVIC_Registers {
     /// Interrupt Set Enable Register n
     /// Offset: 0x0000
     /// Reset value: 0x00000000
-    volatile uint32_t ISER[%s];
+    volatile uint32_t ISER[8];
     uint8_t RESERVED_0004[124]; ///< Reserved
 
     /// Interrupt Clear Enable Register n
     /// Offset: 0x0080
     /// Reset value: 0x00000000
-    volatile uint32_t ICER[%s];
+    volatile uint32_t ICER[8];
     uint8_t RESERVED_0084[124]; ///< Reserved
 
     /// Interrupt Set Pending Register n
     /// Offset: 0x0100
     /// Reset value: 0x00000000
-    volatile uint32_t ISPR[%s];
+    volatile uint32_t ISPR[8];
     uint8_t RESERVED_0104[124]; ///< Reserved
 
     /// Interrupt Clear Pending Register n
     /// Offset: 0x0180
     /// Reset value: 0x00000000
-    volatile uint32_t ICPR[%s];
+    volatile uint32_t ICPR[8];
     uint8_t RESERVED_0184[124]; ///< Reserved
 
     /// Interrupt Active bit Register n
     /// Offset: 0x0200
     /// Reset value: 0x00000000
-    volatile uint32_t IABR[%s];
+    volatile uint32_t IABR[8];
     uint8_t RESERVED_0204[252]; ///< Reserved
 
     /// Interrupt Priority Register (8Bit wide) n
     /// Offset: 0x0300
     /// Reset value: 0x00000000
-    volatile uint8_t IP[%s];
+    volatile uint8_t IP[240];
     uint8_t RESERVED_0301[2815]; ///< Reserved
 
     /// Software Trigger Interrupt Register

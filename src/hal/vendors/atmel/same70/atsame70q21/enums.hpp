@@ -1050,9 +1050,9 @@ enum class ISI_WPMR_WPKEY : uint32_t {
 // ----------------------------------------------------------------------------
 
 /// Undefined Length Burst Type
-/// Register: MCFG[%s]
+/// Register: MCFG[12]
 /// Field: ULBT [0:2]
-enum class MATRIX_MCFG_ULBT : uint32_t {
+enum class MATRIX_MCFG_12_ULBT : uint32_t {
     UNLTD_LENGTH = 0x0,
     SINGLE_ACCESS = 0x1,
     VAL_4BEAT_BURST = 0x2,  // _4BEAT_BURST
@@ -1064,9 +1064,9 @@ enum class MATRIX_MCFG_ULBT : uint32_t {
 };
 
 /// Default Master Type
-/// Register: SCFG[%s]
+/// Register: SCFG[9]
 /// Field: DEFMSTR_TYPE [16:17]
-enum class MATRIX_SCFG_DEFMSTR_TYPE : uint32_t {
+enum class MATRIX_SCFG_9_DEFMSTR_TYPE : uint32_t {
     NONE = 0x0,
     LAST = 0x1,
     FIXED = 0x2,
@@ -1681,9 +1681,9 @@ enum class PMC_MCKR_MDIV : uint32_t {
 };
 
 /// Programmable Clock Source Selection
-/// Register: PCK[%s]
+/// Register: PCK[8]
 /// Field: CSS [0:2]
-enum class PMC_PCK_CSS : uint32_t {
+enum class PMC_PCK_8_CSS : uint32_t {
     SLOW_CLK = 0x0,
     MAIN_CLK = 0x1,
     PLLA_CLK = 0x2,
@@ -2755,9 +2755,9 @@ enum class SMC_WPMR_WPKEY : uint32_t {
 // ----------------------------------------------------------------------------
 
 /// Bits Per Transfer
-/// Register: CSR[%s]
+/// Register: CSR[4]
 /// Field: BITS [4:7]
-enum class SPI0_CSR_BITS : uint32_t {
+enum class SPI0_CSR_4_BITS : uint32_t {
     VAL_8_BIT = 0x0,  // _8_BIT
     VAL_9_BIT = 0x1,  // _9_BIT
     VAL_10_BIT = 0x2,  // _10_BIT
@@ -3856,18 +3856,18 @@ enum class USBHS_DEVCTRL_SPDCONF : uint32_t {
 };
 
 /// Endpoint Banks
-/// Register: DEVEPTCFG[%s]
+/// Register: DEVEPTCFG[10]
 /// Field: EPBK [2:3]
-enum class USBHS_DEVEPTCFG_EPBK : uint32_t {
+enum class USBHS_DEVEPTCFG_10_EPBK : uint32_t {
     VAL_1_BANK = 0x0,  // _1_BANK
     VAL_2_BANK = 0x1,  // _2_BANK
     VAL_3_BANK = 0x2,  // _3_BANK
 };
 
 /// Endpoint Size
-/// Register: DEVEPTCFG[%s]
+/// Register: DEVEPTCFG[10]
 /// Field: EPSIZE [4:6]
-enum class USBHS_DEVEPTCFG_EPSIZE : uint32_t {
+enum class USBHS_DEVEPTCFG_10_EPSIZE : uint32_t {
     VAL_8_BYTE = 0x0,  // _8_BYTE
     VAL_16_BYTE = 0x1,  // _16_BYTE
     VAL_32_BYTE = 0x2,  // _32_BYTE
@@ -3879,17 +3879,17 @@ enum class USBHS_DEVEPTCFG_EPSIZE : uint32_t {
 };
 
 /// Endpoint Direction
-/// Register: DEVEPTCFG[%s]
+/// Register: DEVEPTCFG[10]
 /// Field: EPDIR [8:8]
-enum class USBHS_DEVEPTCFG_EPDIR : uint32_t {
+enum class USBHS_DEVEPTCFG_10_EPDIR : uint32_t {
     OUT = 0x0,
     IN = 0x1,
 };
 
 /// Endpoint Type
-/// Register: DEVEPTCFG[%s]
+/// Register: DEVEPTCFG[10]
 /// Field: EPTYPE [11:12]
-enum class USBHS_DEVEPTCFG_EPTYPE : uint32_t {
+enum class USBHS_DEVEPTCFG_10_EPTYPE : uint32_t {
     CTRL = 0x0,
     ISO = 0x1,
     BLK = 0x2,
@@ -3897,9 +3897,9 @@ enum class USBHS_DEVEPTCFG_EPTYPE : uint32_t {
 };
 
 /// Number of transactions per microframe for isochronous endpoint
-/// Register: DEVEPTCFG[%s]
+/// Register: DEVEPTCFG[10]
 /// Field: NBTRANS [13:14]
-enum class USBHS_DEVEPTCFG_NBTRANS : uint32_t {
+enum class USBHS_DEVEPTCFG_10_NBTRANS : uint32_t {
     VAL_0_TRANS = 0x0,  // _0_TRANS
     VAL_1_TRANS = 0x1,  // _1_TRANS
     VAL_2_TRANS = 0x2,  // _2_TRANS
@@ -3907,9 +3907,9 @@ enum class USBHS_DEVEPTCFG_NBTRANS : uint32_t {
 };
 
 /// Data Toggle Sequence
-/// Register: DEVEPTISR[%s]
+/// Register: DEVEPTISR[10]
 /// Field: DTSEQ [8:9]
-enum class USBHS_DEVEPTISR_DTSEQ : uint32_t {
+enum class USBHS_DEVEPTISR_10_DTSEQ : uint32_t {
     DATA0 = 0x0,
     DATA1 = 0x1,
     DATA2 = 0x2,
@@ -3917,9 +3917,9 @@ enum class USBHS_DEVEPTISR_DTSEQ : uint32_t {
 };
 
 /// Number of Busy Banks
-/// Register: DEVEPTISR[%s]
+/// Register: DEVEPTISR[10]
 /// Field: NBUSYBK [12:13]
-enum class USBHS_DEVEPTISR_NBUSYBK : uint32_t {
+enum class USBHS_DEVEPTISR_10_NBUSYBK : uint32_t {
     VAL_0_BUSY = 0x0,  // _0_BUSY
     VAL_1_BUSY = 0x1,  // _1_BUSY
     VAL_2_BUSY = 0x2,  // _2_BUSY
@@ -3927,9 +3927,9 @@ enum class USBHS_DEVEPTISR_NBUSYBK : uint32_t {
 };
 
 /// Current Bank
-/// Register: DEVEPTISR[%s]
+/// Register: DEVEPTISR[10]
 /// Field: CURRBK [14:15]
-enum class USBHS_DEVEPTISR_CURRBK : uint32_t {
+enum class USBHS_DEVEPTISR_10_CURRBK : uint32_t {
     BANK0 = 0x0,
     BANK1 = 0x1,
     BANK2 = 0x2,
@@ -3944,18 +3944,18 @@ enum class USBHS_HSTCTRL_SPDCONF : uint32_t {
 };
 
 /// Pipe Banks
-/// Register: HSTPIPCFG[%s]
+/// Register: HSTPIPCFG[10]
 /// Field: PBK [2:3]
-enum class USBHS_HSTPIPCFG_PBK : uint32_t {
+enum class USBHS_HSTPIPCFG_10_PBK : uint32_t {
     VAL_1_BANK = 0x0,  // _1_BANK
     VAL_2_BANK = 0x1,  // _2_BANK
     VAL_3_BANK = 0x2,  // _3_BANK
 };
 
 /// Pipe Size
-/// Register: HSTPIPCFG[%s]
+/// Register: HSTPIPCFG[10]
 /// Field: PSIZE [4:6]
-enum class USBHS_HSTPIPCFG_PSIZE : uint32_t {
+enum class USBHS_HSTPIPCFG_10_PSIZE : uint32_t {
     VAL_8_BYTE = 0x0,  // _8_BYTE
     VAL_16_BYTE = 0x1,  // _16_BYTE
     VAL_32_BYTE = 0x2,  // _32_BYTE
@@ -3967,18 +3967,18 @@ enum class USBHS_HSTPIPCFG_PSIZE : uint32_t {
 };
 
 /// Pipe Token
-/// Register: HSTPIPCFG[%s]
+/// Register: HSTPIPCFG[10]
 /// Field: PTOKEN [8:9]
-enum class USBHS_HSTPIPCFG_PTOKEN : uint32_t {
+enum class USBHS_HSTPIPCFG_10_PTOKEN : uint32_t {
     SETUP = 0x0,
     IN = 0x1,
     OUT = 0x2,
 };
 
 /// Pipe Type
-/// Register: HSTPIPCFG[%s]
+/// Register: HSTPIPCFG[10]
 /// Field: PTYPE [12:13]
-enum class USBHS_HSTPIPCFG_PTYPE : uint32_t {
+enum class USBHS_HSTPIPCFG_10_PTYPE : uint32_t {
     CTRL = 0x0,
     ISO = 0x1,
     BLK = 0x2,
@@ -3986,17 +3986,17 @@ enum class USBHS_HSTPIPCFG_PTYPE : uint32_t {
 };
 
 /// Data Toggle Sequence
-/// Register: HSTPIPISR[%s]
+/// Register: HSTPIPISR[10]
 /// Field: DTSEQ [8:9]
-enum class USBHS_HSTPIPISR_DTSEQ : uint32_t {
+enum class USBHS_HSTPIPISR_10_DTSEQ : uint32_t {
     DATA0 = 0x0,
     DATA1 = 0x1,
 };
 
 /// Number of Busy Banks
-/// Register: HSTPIPISR[%s]
+/// Register: HSTPIPISR[10]
 /// Field: NBUSYBK [12:13]
-enum class USBHS_HSTPIPISR_NBUSYBK : uint32_t {
+enum class USBHS_HSTPIPISR_10_NBUSYBK : uint32_t {
     VAL_0_BUSY = 0x0,  // _0_BUSY
     VAL_1_BUSY = 0x1,  // _1_BUSY
     VAL_2_BUSY = 0x2,  // _2_BUSY
@@ -4004,9 +4004,9 @@ enum class USBHS_HSTPIPISR_NBUSYBK : uint32_t {
 };
 
 /// Current Bank
-/// Register: HSTPIPISR[%s]
+/// Register: HSTPIPISR[10]
 /// Field: CURRBK [14:15]
-enum class USBHS_HSTPIPISR_CURRBK : uint32_t {
+enum class USBHS_HSTPIPISR_10_CURRBK : uint32_t {
     BANK0 = 0x0,
     BANK1 = 0x1,
     BANK2 = 0x2,

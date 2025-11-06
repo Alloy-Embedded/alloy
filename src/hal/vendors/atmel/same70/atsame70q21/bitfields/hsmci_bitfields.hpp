@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::same70::atsame70q21::hsmci {
 
@@ -331,15 +331,15 @@ namespace cstor {
 
 }  // namespace cstor
 
-/// RSPR[%s] - Response Register 0
-namespace rspr[%s] {
+/// RSPR[4] - Response Register 0
+namespace rspr[4] {
     /// Response
     /// Position: 0, Width: 32
     using RSP = BitField<0, 32>;
     constexpr uint32_t RSP_Pos = 0;
     constexpr uint32_t RSP_Msk = RSP::mask;
 
-}  // namespace rspr[%s]
+}  // namespace rspr[4]
 
 /// RDR - Receive Data Register
 namespace rdr {
@@ -1041,14 +1041,14 @@ namespace wpsr {
 
 }  // namespace wpsr
 
-/// FIFO[%s] - FIFO Memory Aperture0 0
-namespace fifo[%s] {
+/// FIFO[256] - FIFO Memory Aperture0 0
+namespace fifo[256] {
     /// Data to Read or Data to Write
     /// Position: 0, Width: 32
     using DATA = BitField<0, 32>;
     constexpr uint32_t DATA_Pos = 0;
     constexpr uint32_t DATA_Msk = DATA::mask;
 
-}  // namespace fifo[%s]
+}  // namespace fifo[256]
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::hsmci

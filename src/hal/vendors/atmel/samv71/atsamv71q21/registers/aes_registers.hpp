@@ -51,25 +51,25 @@ struct AES_Registers {
     /// Key Word Register 0
     /// Offset: 0x0020
     /// Access: write-only
-    volatile uint32_t KEYWR[%s];
+    volatile uint32_t KEYWR[8];
     uint8_t RESERVED_0024[28]; ///< Reserved
 
     /// Input Data Register 0
     /// Offset: 0x0040
     /// Access: write-only
-    volatile uint32_t IDATAR[%s];
+    volatile uint32_t IDATAR[4];
     uint8_t RESERVED_0044[12]; ///< Reserved
 
     /// Output Data Register 0
     /// Offset: 0x0050
     /// Access: read-only
-    volatile uint32_t ODATAR[%s];
+    volatile uint32_t ODATAR[4];
     uint8_t RESERVED_0054[12]; ///< Reserved
 
     /// Initialization Vector Register 0
     /// Offset: 0x0060
     /// Access: write-only
-    volatile uint32_t IVR[%s];
+    volatile uint32_t IVR[4];
     uint8_t RESERVED_0064[12]; ///< Reserved
 
     /// Additional Authenticated Data Length Register
@@ -82,13 +82,13 @@ struct AES_Registers {
 
     /// GCM Intermediate Hash Word Register 0
     /// Offset: 0x0078
-    volatile uint32_t GHASHR[%s];
+    volatile uint32_t GHASHR[4];
     uint8_t RESERVED_007C[12]; ///< Reserved
 
     /// GCM Authentication Tag Word Register 0
     /// Offset: 0x0088
     /// Access: read-only
-    volatile uint32_t TAGR[%s];
+    volatile uint32_t TAGR[4];
     uint8_t RESERVED_008C[12]; ///< Reserved
 
     /// GCM Encryption Counter Value Register
@@ -98,7 +98,7 @@ struct AES_Registers {
 
     /// GCM H Word Register 0
     /// Offset: 0x009C
-    volatile uint32_t GCMHR[%s];
+    volatile uint32_t GCMHR[4];
     uint8_t RESERVED_00A0[92]; ///< Reserved
 
     /// Version Register

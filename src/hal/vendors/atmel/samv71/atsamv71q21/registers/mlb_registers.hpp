@@ -60,29 +60,29 @@ struct MLB_Registers {
 
     /// HBI Channel Mask 0 Register 0
     /// Offset: 0x0088
-    volatile uint32_t HCMR[%s];
+    volatile uint32_t HCMR[2];
     uint8_t RESERVED_008C[4]; ///< Reserved
 
     /// HBI Channel Error 0 Register 0
     /// Offset: 0x0090
     /// Access: read-only
-    volatile uint32_t HCER[%s];
+    volatile uint32_t HCER[2];
     uint8_t RESERVED_0094[4]; ///< Reserved
 
     /// HBI Channel Busy 0 Register 0
     /// Offset: 0x0098
     /// Access: read-only
-    volatile uint32_t HCBR[%s];
+    volatile uint32_t HCBR[2];
     uint8_t RESERVED_009C[36]; ///< Reserved
 
     /// MIF Data 0 Register 0
     /// Offset: 0x00C0
-    volatile uint32_t MDAT[%s];
+    volatile uint32_t MDAT[4];
     uint8_t RESERVED_00C4[12]; ///< Reserved
 
     /// MIF Data Write Enable 0 Register 0
     /// Offset: 0x00D0
-    volatile uint32_t MDWE[%s];
+    volatile uint32_t MDWE[4];
     uint8_t RESERVED_00D4[12]; ///< Reserved
 
     /// MIF Control Register
@@ -101,12 +101,12 @@ struct MLB_Registers {
 
     /// AHB Channel Status 0 Register 0
     /// Offset: 0x03D0
-    volatile uint32_t ACSR[%s];
+    volatile uint32_t ACSR[2];
     uint8_t RESERVED_03D4[4]; ///< Reserved
 
     /// AHB Channel Mask 0 Register 0
     /// Offset: 0x03D8
-    volatile uint32_t ACMR[%s];
+    volatile uint32_t ACMR[2];
 };
 
 static_assert(sizeof(MLB_Registers) >= 988, "MLB_Registers size mismatch");

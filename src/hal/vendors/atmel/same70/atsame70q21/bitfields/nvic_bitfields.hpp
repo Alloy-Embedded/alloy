@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::same70::atsame70q21::nvic {
 
@@ -17,65 +17,65 @@ using namespace alloy::hal::bitfields;
 // NVIC Bit Field Definitions
 // ============================================================================
 
-/// ISER[%s] - Interrupt Set Enable Register n
-namespace iser[%s] {
+/// ISER[8] - Interrupt Set Enable Register n
+namespace iser[8] {
     /// Interrupt set enable bits
     /// Position: 0, Width: 32
     using SETENA = BitField<0, 32>;
     constexpr uint32_t SETENA_Pos = 0;
     constexpr uint32_t SETENA_Msk = SETENA::mask;
 
-}  // namespace iser[%s]
+}  // namespace iser[8]
 
-/// ICER[%s] - Interrupt Clear Enable Register n
-namespace icer[%s] {
+/// ICER[8] - Interrupt Clear Enable Register n
+namespace icer[8] {
     /// Interrupt clear-enable bits
     /// Position: 0, Width: 32
     using CLRENA = BitField<0, 32>;
     constexpr uint32_t CLRENA_Pos = 0;
     constexpr uint32_t CLRENA_Msk = CLRENA::mask;
 
-}  // namespace icer[%s]
+}  // namespace icer[8]
 
-/// ISPR[%s] - Interrupt Set Pending Register n
-namespace ispr[%s] {
+/// ISPR[8] - Interrupt Set Pending Register n
+namespace ispr[8] {
     /// Interrupt set-pending bits
     /// Position: 0, Width: 32
     using SETPEND = BitField<0, 32>;
     constexpr uint32_t SETPEND_Pos = 0;
     constexpr uint32_t SETPEND_Msk = SETPEND::mask;
 
-}  // namespace ispr[%s]
+}  // namespace ispr[8]
 
-/// ICPR[%s] - Interrupt Clear Pending Register n
-namespace icpr[%s] {
+/// ICPR[8] - Interrupt Clear Pending Register n
+namespace icpr[8] {
     /// Interrupt clear-pending bits
     /// Position: 0, Width: 32
     using CLRPEND = BitField<0, 32>;
     constexpr uint32_t CLRPEND_Pos = 0;
     constexpr uint32_t CLRPEND_Msk = CLRPEND::mask;
 
-}  // namespace icpr[%s]
+}  // namespace icpr[8]
 
-/// IABR[%s] - Interrupt Active bit Register n
-namespace iabr[%s] {
+/// IABR[8] - Interrupt Active bit Register n
+namespace iabr[8] {
     /// Interrupt active flags
     /// Position: 0, Width: 32
     using ACTIVE = BitField<0, 32>;
     constexpr uint32_t ACTIVE_Pos = 0;
     constexpr uint32_t ACTIVE_Msk = ACTIVE::mask;
 
-}  // namespace iabr[%s]
+}  // namespace iabr[8]
 
-/// IP[%s] - Interrupt Priority Register (8Bit wide) n
-namespace ip[%s] {
+/// IP[240] - Interrupt Priority Register (8Bit wide) n
+namespace ip[240] {
     /// Priority of interrupt 0
     /// Position: 0, Width: 8
     using PRI0 = BitField<0, 8>;
     constexpr uint32_t PRI0_Pos = 0;
     constexpr uint32_t PRI0_Msk = PRI0::mask;
 
-}  // namespace ip[%s]
+}  // namespace ip[240]
 
 /// STIR - Software Trigger Interrupt Register
 namespace stir {

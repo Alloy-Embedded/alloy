@@ -67,12 +67,12 @@ struct AC_Registers {
 
     /// Comparator Control n
     /// Offset: 0x0010
-    volatile uint32_t COMPCTRL%s;
+    volatile uint32_t COMPCTRL[2];
     uint8_t RESERVED_0014[12]; ///< Reserved
 
     /// Scaler n
     /// Offset: 0x0020
-    volatile uint8_t SCALER%s;
+    volatile uint8_t SCALER[2];
 };
 
 static_assert(sizeof(AC_Registers) >= 33, "AC_Registers size mismatch");

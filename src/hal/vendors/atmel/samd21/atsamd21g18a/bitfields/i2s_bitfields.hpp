@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::i2s {
 
@@ -57,8 +57,8 @@ namespace ctrla {
 
 }  // namespace ctrla
 
-/// CLKCTRL%s - Clock Unit n Control
-namespace clkctrl%s {
+/// CLKCTRL[2] - Clock Unit n Control
+namespace clkctrl[2] {
     /// Slot Size
     /// Position: 0, Width: 2
     using SLOTSIZE = BitField<0, 2>;
@@ -177,7 +177,7 @@ namespace clkctrl%s {
     constexpr uint32_t MCKOUTINV_Pos = 31;
     constexpr uint32_t MCKOUTINV_Msk = MCKOUTINV::mask;
 
-}  // namespace clkctrl%s
+}  // namespace clkctrl[2]
 
 /// INTENCLR - Interrupt Enable Clear
 namespace intenclr {
@@ -387,8 +387,8 @@ namespace syncbusy {
 
 }  // namespace syncbusy
 
-/// SERCTRL%s - Serializer n Control
-namespace serctrl%s {
+/// SERCTRL[2] - Serializer n Control
+namespace serctrl[2] {
     /// Serializer Mode
     /// Position: 0, Width: 2
     using SERMODE = BitField<0, 2>;
@@ -574,16 +574,16 @@ namespace serctrl%s {
     constexpr uint32_t RXLOOP_Pos = 26;
     constexpr uint32_t RXLOOP_Msk = RXLOOP::mask;
 
-}  // namespace serctrl%s
+}  // namespace serctrl[2]
 
-/// DATA%s - Data n
-namespace data%s {
+/// DATA[2] - Data n
+namespace data[2] {
     /// Sample Data
     /// Position: 0, Width: 32
     using DATA = BitField<0, 32>;
     constexpr uint32_t DATA_Pos = 0;
     constexpr uint32_t DATA_Msk = DATA::mask;
 
-}  // namespace data%s
+}  // namespace data[2]
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::i2s

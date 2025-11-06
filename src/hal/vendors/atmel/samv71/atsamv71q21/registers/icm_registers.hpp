@@ -70,7 +70,7 @@ struct ICM_Registers {
     /// User Initial Hash Value 0 Register 0
     /// Offset: 0x0038
     /// Access: write-only
-    volatile uint32_t UIHVAL[%s];
+    volatile uint32_t UIHVAL[8];
 };
 
 static_assert(sizeof(ICM_Registers) >= 60, "ICM_Registers size mismatch");

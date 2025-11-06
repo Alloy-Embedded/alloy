@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::tcc0 {
 
@@ -1600,18 +1600,18 @@ namespace per_dith6 {
 
 }  // namespace per_dith6
 
-/// CC%s - Compare and Capture
-namespace cc%s {
+/// CC[4] - Compare and Capture
+namespace cc[4] {
     /// Channel Compare/Capture Value
     /// Position: 0, Width: 24
     using CC = BitField<0, 24>;
     constexpr uint32_t CC_Pos = 0;
     constexpr uint32_t CC_Msk = CC::mask;
 
-}  // namespace cc%s
+}  // namespace cc[4]
 
-/// CC%s_DITH4 - Compare and Capture
-namespace cc%s_dith4 {
+/// CC[4]_DITH4 - Compare and Capture
+namespace cc[4]_dith4 {
     /// Dithering Cycle Number
     /// Position: 0, Width: 4
     using DITHERCY = BitField<0, 4>;
@@ -1624,10 +1624,10 @@ namespace cc%s_dith4 {
     constexpr uint32_t CC_Pos = 4;
     constexpr uint32_t CC_Msk = CC::mask;
 
-}  // namespace cc%s_dith4
+}  // namespace cc[4]_dith4
 
-/// CC%s_DITH5 - Compare and Capture
-namespace cc%s_dith5 {
+/// CC[4]_DITH5 - Compare and Capture
+namespace cc[4]_dith5 {
     /// Dithering Cycle Number
     /// Position: 0, Width: 5
     using DITHERCY = BitField<0, 5>;
@@ -1640,10 +1640,10 @@ namespace cc%s_dith5 {
     constexpr uint32_t CC_Pos = 5;
     constexpr uint32_t CC_Msk = CC::mask;
 
-}  // namespace cc%s_dith5
+}  // namespace cc[4]_dith5
 
-/// CC%s_DITH6 - Compare and Capture
-namespace cc%s_dith6 {
+/// CC[4]_DITH6 - Compare and Capture
+namespace cc[4]_dith6 {
     /// Dithering Cycle Number
     /// Position: 0, Width: 6
     using DITHERCY = BitField<0, 6>;
@@ -1656,7 +1656,7 @@ namespace cc%s_dith6 {
     constexpr uint32_t CC_Pos = 6;
     constexpr uint32_t CC_Msk = CC::mask;
 
-}  // namespace cc%s_dith6
+}  // namespace cc[4]_dith6
 
 /// PATTB - Pattern Buffer
 namespace pattb {
@@ -1926,18 +1926,18 @@ namespace perb_dith6 {
 
 }  // namespace perb_dith6
 
-/// CCB%s - Compare and Capture Buffer
-namespace ccb%s {
+/// CCB[4] - Compare and Capture Buffer
+namespace ccb[4] {
     /// Channel Compare/Capture Buffer Value
     /// Position: 0, Width: 24
     using CCB = BitField<0, 24>;
     constexpr uint32_t CCB_Pos = 0;
     constexpr uint32_t CCB_Msk = CCB::mask;
 
-}  // namespace ccb%s
+}  // namespace ccb[4]
 
-/// CCB%s_DITH4 - Compare and Capture Buffer
-namespace ccb%s_dith4 {
+/// CCB[4]_DITH4 - Compare and Capture Buffer
+namespace ccb[4]_dith4 {
     /// Dithering Buffer Cycle Number
     /// Position: 0, Width: 4
     using DITHERCYB = BitField<0, 4>;
@@ -1950,10 +1950,10 @@ namespace ccb%s_dith4 {
     constexpr uint32_t CCB_Pos = 4;
     constexpr uint32_t CCB_Msk = CCB::mask;
 
-}  // namespace ccb%s_dith4
+}  // namespace ccb[4]_dith4
 
-/// CCB%s_DITH5 - Compare and Capture Buffer
-namespace ccb%s_dith5 {
+/// CCB[4]_DITH5 - Compare and Capture Buffer
+namespace ccb[4]_dith5 {
     /// Dithering Buffer Cycle Number
     /// Position: 0, Width: 5
     using DITHERCYB = BitField<0, 5>;
@@ -1966,10 +1966,10 @@ namespace ccb%s_dith5 {
     constexpr uint32_t CCB_Pos = 5;
     constexpr uint32_t CCB_Msk = CCB::mask;
 
-}  // namespace ccb%s_dith5
+}  // namespace ccb[4]_dith5
 
-/// CCB%s_DITH6 - Compare and Capture Buffer
-namespace ccb%s_dith6 {
+/// CCB[4]_DITH6 - Compare and Capture Buffer
+namespace ccb[4]_dith6 {
     /// Dithering Buffer Cycle Number
     /// Position: 0, Width: 6
     using DITHERCYB = BitField<0, 6>;
@@ -1982,6 +1982,6 @@ namespace ccb%s_dith6 {
     constexpr uint32_t CCB_Pos = 6;
     constexpr uint32_t CCB_Msk = CCB::mask;
 
-}  // namespace ccb%s_dith6
+}  // namespace ccb[4]_dith6
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::tcc0

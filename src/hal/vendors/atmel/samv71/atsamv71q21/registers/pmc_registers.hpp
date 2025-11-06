@@ -78,7 +78,7 @@ struct PMC_Registers {
 
     /// Programmable Clock Register (chid = 0) 0
     /// Offset: 0x0040
-    volatile uint32_t PCK[%s];
+    volatile uint32_t PCK[8];
     uint8_t RESERVED_0044[28]; ///< Reserved
 
     /// Interrupt Enable Register

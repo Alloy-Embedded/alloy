@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::same70::atsame70q21::pmc {
 
@@ -861,8 +861,8 @@ namespace usb {
 
 }  // namespace usb
 
-/// PCK[%s] - Programmable Clock Register
-namespace pck[%s] {
+/// PCK[8] - Programmable Clock Register
+namespace pck[8] {
     /// Programmable Clock Source Selection
     /// Position: 0, Width: 3
     using CSS = BitField<0, 3>;
@@ -883,7 +883,7 @@ namespace pck[%s] {
     constexpr uint32_t PRES_Pos = 4;
     constexpr uint32_t PRES_Msk = PRES::mask;
 
-}  // namespace pck[%s]
+}  // namespace pck[8]
 
 /// IER - Interrupt Enable Register
 namespace ier {

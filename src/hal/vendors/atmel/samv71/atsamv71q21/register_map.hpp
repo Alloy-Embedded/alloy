@@ -25,8 +25,6 @@
 // Core utilities
 // ============================================================================
 
-#include "bitfield_utils.hpp"
-
 // ============================================================================
 // Peripheral Register Structures
 // ============================================================================
@@ -169,7 +167,6 @@ namespace alloy::hal::atmel::samv71::atsamv71q21 {
 //   - 43 peripheral bit field definitions
 //   - Enumeration definitions
 //   - Pin alternate function mappings
-//   - BitField template utilities
 //
 // Total peripherals with registers: 43
 //

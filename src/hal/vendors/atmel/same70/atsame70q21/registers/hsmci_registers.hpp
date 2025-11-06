@@ -55,7 +55,7 @@ struct HSMCI_Registers {
     /// Response Register 0
     /// Offset: 0x0020
     /// Access: read-only
-    volatile uint32_t RSPR[%s];
+    volatile uint32_t RSPR[4];
     uint8_t RESERVED_0024[12]; ///< Reserved
 
     /// Receive Data Register
@@ -110,7 +110,7 @@ struct HSMCI_Registers {
 
     /// FIFO Memory Aperture0 0
     /// Offset: 0x0200
-    volatile uint32_t FIFO[%s];
+    volatile uint32_t FIFO[256];
 };
 
 static_assert(sizeof(HSMCI_Registers) >= 516, "HSMCI_Registers size mismatch");

@@ -25,7 +25,7 @@ struct I2S_Registers {
 
     /// Clock Unit n Control
     /// Offset: 0x0004
-    volatile uint32_t CLKCTRL%s;
+    volatile uint32_t CLKCTRL[2];
     uint8_t RESERVED_0008[4]; ///< Reserved
 
     /// Interrupt Enable Clear
@@ -51,12 +51,12 @@ struct I2S_Registers {
 
     /// Serializer n Control
     /// Offset: 0x0020
-    volatile uint32_t SERCTRL%s;
+    volatile uint32_t SERCTRL[2];
     uint8_t RESERVED_0024[12]; ///< Reserved
 
     /// Data n
     /// Offset: 0x0030
-    volatile uint32_t DATA%s;
+    volatile uint32_t DATA[2];
 };
 
 static_assert(sizeof(I2S_Registers) >= 52, "I2S_Registers size mismatch");

@@ -50,17 +50,17 @@ enum class AC_WINCTRL_WINTSEL0 : uint8_t {
 };
 
 /// Speed Selection
-/// Register: COMPCTRL%s
+/// Register: COMPCTRL[2]
 /// Field: SPEED [2:3]
-enum class AC_COMPCTRL_SPEED : uint32_t {
+enum class AC_COMPCTRL_2_SPEED : uint32_t {
     LOW = 0x0,
     HIGH = 0x1,
 };
 
 /// Interrupt Selection
-/// Register: COMPCTRL%s
+/// Register: COMPCTRL[2]
 /// Field: INTSEL [5:6]
-enum class AC_COMPCTRL_INTSEL : uint32_t {
+enum class AC_COMPCTRL_2_INTSEL : uint32_t {
     TOGGLE = 0x0,
     RISING = 0x1,
     FALLING = 0x2,
@@ -68,9 +68,9 @@ enum class AC_COMPCTRL_INTSEL : uint32_t {
 };
 
 /// Negative Input Mux Selection
-/// Register: COMPCTRL%s
+/// Register: COMPCTRL[2]
 /// Field: MUXNEG [8:10]
-enum class AC_COMPCTRL_MUXNEG : uint32_t {
+enum class AC_COMPCTRL_2_MUXNEG : uint32_t {
     PIN0 = 0x0,
     PIN1 = 0x1,
     PIN2 = 0x2,
@@ -82,9 +82,9 @@ enum class AC_COMPCTRL_MUXNEG : uint32_t {
 };
 
 /// Positive Input Mux Selection
-/// Register: COMPCTRL%s
+/// Register: COMPCTRL[2]
 /// Field: MUXPOS [12:13]
-enum class AC_COMPCTRL_MUXPOS : uint32_t {
+enum class AC_COMPCTRL_2_MUXPOS : uint32_t {
     PIN0 = 0x0,
     PIN1 = 0x1,
     PIN2 = 0x2,
@@ -92,18 +92,18 @@ enum class AC_COMPCTRL_MUXPOS : uint32_t {
 };
 
 /// Output
-/// Register: COMPCTRL%s
+/// Register: COMPCTRL[2]
 /// Field: OUT [16:17]
-enum class AC_COMPCTRL_OUT : uint32_t {
+enum class AC_COMPCTRL_2_OUT : uint32_t {
     OFF = 0x0,
     ASYNC = 0x1,
     SYNC = 0x2,
 };
 
 /// Filter Length
-/// Register: COMPCTRL%s
+/// Register: COMPCTRL[2]
 /// Field: FLEN [24:26]
-enum class AC_COMPCTRL_FLEN : uint32_t {
+enum class AC_COMPCTRL_2_FLEN : uint32_t {
     OFF = 0x0,
     MAJ3 = 0x1,
     MAJ5 = 0x2,
@@ -372,9 +372,9 @@ enum class EIC_NMICTRL_NMISENSE : uint8_t {
 };
 
 /// Input Sense 0 Configuration
-/// Register: CONFIG%s
+/// Register: CONFIG[2]
 /// Field: SENSE0 [0:2]
-enum class EIC_CONFIG_SENSE0 : uint32_t {
+enum class EIC_CONFIG_2_SENSE0 : uint32_t {
     NONE = 0x0,
     RISE = 0x1,
     FALL = 0x2,
@@ -384,9 +384,9 @@ enum class EIC_CONFIG_SENSE0 : uint32_t {
 };
 
 /// Input Sense 1 Configuration
-/// Register: CONFIG%s
+/// Register: CONFIG[2]
 /// Field: SENSE1 [4:6]
-enum class EIC_CONFIG_SENSE1 : uint32_t {
+enum class EIC_CONFIG_2_SENSE1 : uint32_t {
     NONE = 0x0,
     RISE = 0x1,
     FALL = 0x2,
@@ -396,9 +396,9 @@ enum class EIC_CONFIG_SENSE1 : uint32_t {
 };
 
 /// Input Sense 2 Configuration
-/// Register: CONFIG%s
+/// Register: CONFIG[2]
 /// Field: SENSE2 [8:10]
-enum class EIC_CONFIG_SENSE2 : uint32_t {
+enum class EIC_CONFIG_2_SENSE2 : uint32_t {
     NONE = 0x0,
     RISE = 0x1,
     FALL = 0x2,
@@ -408,9 +408,9 @@ enum class EIC_CONFIG_SENSE2 : uint32_t {
 };
 
 /// Input Sense 3 Configuration
-/// Register: CONFIG%s
+/// Register: CONFIG[2]
 /// Field: SENSE3 [12:14]
-enum class EIC_CONFIG_SENSE3 : uint32_t {
+enum class EIC_CONFIG_2_SENSE3 : uint32_t {
     NONE = 0x0,
     RISE = 0x1,
     FALL = 0x2,
@@ -420,9 +420,9 @@ enum class EIC_CONFIG_SENSE3 : uint32_t {
 };
 
 /// Input Sense 4 Configuration
-/// Register: CONFIG%s
+/// Register: CONFIG[2]
 /// Field: SENSE4 [16:18]
-enum class EIC_CONFIG_SENSE4 : uint32_t {
+enum class EIC_CONFIG_2_SENSE4 : uint32_t {
     NONE = 0x0,
     RISE = 0x1,
     FALL = 0x2,
@@ -432,9 +432,9 @@ enum class EIC_CONFIG_SENSE4 : uint32_t {
 };
 
 /// Input Sense 5 Configuration
-/// Register: CONFIG%s
+/// Register: CONFIG[2]
 /// Field: SENSE5 [20:22]
-enum class EIC_CONFIG_SENSE5 : uint32_t {
+enum class EIC_CONFIG_2_SENSE5 : uint32_t {
     NONE = 0x0,
     RISE = 0x1,
     FALL = 0x2,
@@ -444,9 +444,9 @@ enum class EIC_CONFIG_SENSE5 : uint32_t {
 };
 
 /// Input Sense 6 Configuration
-/// Register: CONFIG%s
+/// Register: CONFIG[2]
 /// Field: SENSE6 [24:26]
-enum class EIC_CONFIG_SENSE6 : uint32_t {
+enum class EIC_CONFIG_2_SENSE6 : uint32_t {
     NONE = 0x0,
     RISE = 0x1,
     FALL = 0x2,
@@ -456,9 +456,9 @@ enum class EIC_CONFIG_SENSE6 : uint32_t {
 };
 
 /// Input Sense 7 Configuration
-/// Register: CONFIG%s
+/// Register: CONFIG[2]
 /// Field: SENSE7 [28:30]
-enum class EIC_CONFIG_SENSE7 : uint32_t {
+enum class EIC_CONFIG_2_SENSE7 : uint32_t {
     NONE = 0x0,
     RISE = 0x1,
     FALL = 0x2,
@@ -578,9 +578,9 @@ enum class GCLK_GENCTRL_SRC : uint32_t {
 // ----------------------------------------------------------------------------
 
 /// Slot Size
-/// Register: CLKCTRL%s
+/// Register: CLKCTRL[2]
 /// Field: SLOTSIZE [0:1]
-enum class I2S_CLKCTRL_SLOTSIZE : uint32_t {
+enum class I2S_CLKCTRL_2_SLOTSIZE : uint32_t {
     VAL_8 = 0x0,  // 8
     VAL_16 = 0x1,  // 16
     VAL_24 = 0x2,  // 24
@@ -588,9 +588,9 @@ enum class I2S_CLKCTRL_SLOTSIZE : uint32_t {
 };
 
 /// Frame Sync Width
-/// Register: CLKCTRL%s
+/// Register: CLKCTRL[2]
 /// Field: FSWIDTH [5:6]
-enum class I2S_CLKCTRL_FSWIDTH : uint32_t {
+enum class I2S_CLKCTRL_2_FSWIDTH : uint32_t {
     SLOT = 0x0,
     HALF = 0x1,
     BIT = 0x2,
@@ -598,83 +598,83 @@ enum class I2S_CLKCTRL_FSWIDTH : uint32_t {
 };
 
 /// Data Delay from Frame Sync
-/// Register: CLKCTRL%s
+/// Register: CLKCTRL[2]
 /// Field: BITDELAY [7:7]
-enum class I2S_CLKCTRL_BITDELAY : uint32_t {
+enum class I2S_CLKCTRL_2_BITDELAY : uint32_t {
     LJ = 0x0,
     I2S = 0x1,
 };
 
 /// Frame Sync Select
-/// Register: CLKCTRL%s
+/// Register: CLKCTRL[2]
 /// Field: FSSEL [8:8]
-enum class I2S_CLKCTRL_FSSEL : uint32_t {
+enum class I2S_CLKCTRL_2_FSSEL : uint32_t {
     SCKDIV = 0x0,
     FSPIN = 0x1,
 };
 
 /// Serial Clock Select
-/// Register: CLKCTRL%s
+/// Register: CLKCTRL[2]
 /// Field: SCKSEL [12:12]
-enum class I2S_CLKCTRL_SCKSEL : uint32_t {
+enum class I2S_CLKCTRL_2_SCKSEL : uint32_t {
     MCKDIV = 0x0,
     SCKPIN = 0x1,
 };
 
 /// Master Clock Select
-/// Register: CLKCTRL%s
+/// Register: CLKCTRL[2]
 /// Field: MCKSEL [16:16]
-enum class I2S_CLKCTRL_MCKSEL : uint32_t {
+enum class I2S_CLKCTRL_2_MCKSEL : uint32_t {
     GCLK = 0x0,
     MCKPIN = 0x1,
 };
 
 /// Serializer Mode
-/// Register: SERCTRL%s
+/// Register: SERCTRL[2]
 /// Field: SERMODE [0:1]
-enum class I2S_SERCTRL_SERMODE : uint32_t {
+enum class I2S_SERCTRL_2_SERMODE : uint32_t {
     RX = 0x0,
     TX = 0x1,
     PDM2 = 0x2,
 };
 
 /// Line Default Line when Slot Disabled
-/// Register: SERCTRL%s
+/// Register: SERCTRL[2]
 /// Field: TXDEFAULT [2:3]
-enum class I2S_SERCTRL_TXDEFAULT : uint32_t {
+enum class I2S_SERCTRL_2_TXDEFAULT : uint32_t {
     ZERO = 0x0,
     ONE = 0x1,
     HIZ = 0x3,
 };
 
 /// Transmit Data when Underrun
-/// Register: SERCTRL%s
+/// Register: SERCTRL[2]
 /// Field: TXSAME [4:4]
-enum class I2S_SERCTRL_TXSAME : uint32_t {
+enum class I2S_SERCTRL_2_TXSAME : uint32_t {
     ZERO = 0x0,
     SAME = 0x1,
 };
 
 /// Clock Unit Selection
-/// Register: SERCTRL%s
+/// Register: SERCTRL[2]
 /// Field: CLKSEL [5:5]
-enum class I2S_SERCTRL_CLKSEL : uint32_t {
+enum class I2S_SERCTRL_2_CLKSEL : uint32_t {
     CLK0 = 0x0,
     CLK1 = 0x1,
 };
 
 /// Data Slot Formatting Adjust
-/// Register: SERCTRL%s
+/// Register: SERCTRL[2]
 /// Field: SLOTADJ [7:7]
-enum class I2S_SERCTRL_SLOTADJ : uint32_t {
+enum class I2S_SERCTRL_2_SLOTADJ : uint32_t {
     RIGHT = 0x0,
     LEFT = 0x1,
 };
 
 /// Data Word Size
-/// Register: SERCTRL%s
+/// Register: SERCTRL[2]
 /// Field: DATASIZE [8:10]
-enum class I2S_SERCTRL_DATASIZE : uint32_t {
+enum class I2S_SERCTRL_2_DATASIZE : uint32_t {
     VAL_32 = 0x0,  // 32
     VAL_24 = 0x1,  // 24
     VAL_20 = 0x2,  // 20
@@ -686,17 +686,17 @@ enum class I2S_SERCTRL_DATASIZE : uint32_t {
 };
 
 /// Data Word Formatting Adjust
-/// Register: SERCTRL%s
+/// Register: SERCTRL[2]
 /// Field: WORDADJ [12:12]
-enum class I2S_SERCTRL_WORDADJ : uint32_t {
+enum class I2S_SERCTRL_2_WORDADJ : uint32_t {
     RIGHT = 0x0,
     LEFT = 0x1,
 };
 
 /// Data Formatting Bit Extension
-/// Register: SERCTRL%s
+/// Register: SERCTRL[2]
 /// Field: EXTEND [13:14]
-enum class I2S_SERCTRL_EXTEND : uint32_t {
+enum class I2S_SERCTRL_2_EXTEND : uint32_t {
     ZERO = 0x0,
     ONE = 0x1,
     MSBIT = 0x2,
@@ -704,25 +704,25 @@ enum class I2S_SERCTRL_EXTEND : uint32_t {
 };
 
 /// Data Formatting Bit Reverse
-/// Register: SERCTRL%s
+/// Register: SERCTRL[2]
 /// Field: BITREV [15:15]
-enum class I2S_SERCTRL_BITREV : uint32_t {
+enum class I2S_SERCTRL_2_BITREV : uint32_t {
     MSBIT = 0x0,
     LSBIT = 0x1,
 };
 
 /// Mono Mode
-/// Register: SERCTRL%s
+/// Register: SERCTRL[2]
 /// Field: MONO [24:24]
-enum class I2S_SERCTRL_MONO : uint32_t {
+enum class I2S_SERCTRL_2_MONO : uint32_t {
     STEREO = 0x0,
     MONO = 0x1,
 };
 
 /// Single or Multiple DMA Channels
-/// Register: SERCTRL%s
+/// Register: SERCTRL[2]
 /// Field: DMA [25:25]
-enum class I2S_SERCTRL_DMA : uint32_t {
+enum class I2S_SERCTRL_2_DMA : uint32_t {
     SINGLE = 0x0,
     MULTIPLE = 0x1,
 };
@@ -872,9 +872,9 @@ enum class PM_APBCSEL_APBCDIV : uint8_t {
 // ----------------------------------------------------------------------------
 
 /// Peripheral Multiplexing Even
-/// Register: PMUX0_%s
+/// Register: PMUX0_[16]
 /// Field: PMUXE [0:3]
-enum class PORT_PMUX0_PMUXE : uint8_t {
+enum class PORT_PMUX0__16_PMUXE : uint8_t {
     A = 0x0,
     B = 0x1,
     C = 0x2,
@@ -886,9 +886,9 @@ enum class PORT_PMUX0_PMUXE : uint8_t {
 };
 
 /// Peripheral Multiplexing Odd
-/// Register: PMUX0_%s
+/// Register: PMUX0_[16]
 /// Field: PMUXO [4:7]
-enum class PORT_PMUX0_PMUXO : uint8_t {
+enum class PORT_PMUX0__16_PMUXO : uint8_t {
     A = 0x0,
     B = 0x1,
     C = 0x2,

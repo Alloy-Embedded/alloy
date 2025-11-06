@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::usb {
 
@@ -1019,8 +1019,8 @@ namespace padcal {
 
 }  // namespace padcal
 
-/// EPCFG%s - DEVICE End Point Configuration
-namespace epcfg%s {
+/// EPCFG[8] - DEVICE End Point Configuration
+namespace epcfg[8] {
     /// End Point Type0
     /// Position: 0, Width: 3
     using EPTYPE0 = BitField<0, 3>;
@@ -1039,10 +1039,10 @@ namespace epcfg%s {
     constexpr uint32_t NYETDIS_Pos = 7;
     constexpr uint32_t NYETDIS_Msk = NYETDIS::mask;
 
-}  // namespace epcfg%s
+}  // namespace epcfg[8]
 
-/// PCFG%s - HOST End Point Configuration
-namespace pcfg%s {
+/// PCFG[8] - HOST End Point Configuration
+namespace pcfg[8] {
     /// Pipe Token
     /// Position: 0, Width: 2
     using PTOKEN = BitField<0, 2>;
@@ -1061,20 +1061,20 @@ namespace pcfg%s {
     constexpr uint32_t PTYPE_Pos = 3;
     constexpr uint32_t PTYPE_Msk = PTYPE::mask;
 
-}  // namespace pcfg%s
+}  // namespace pcfg[8]
 
-/// BINTERVAL%s - HOST Bus Access Period of Pipe
-namespace binterval%s {
+/// BINTERVAL[8] - HOST Bus Access Period of Pipe
+namespace binterval[8] {
     /// Bit Interval
     /// Position: 0, Width: 8
     using BITINTERVAL = BitField<0, 8>;
     constexpr uint32_t BITINTERVAL_Pos = 0;
     constexpr uint32_t BITINTERVAL_Msk = BITINTERVAL::mask;
 
-}  // namespace binterval%s
+}  // namespace binterval[8]
 
-/// EPSTATUSCLR%s - DEVICE End Point Pipe Status Clear
-namespace epstatusclr%s {
+/// EPSTATUSCLR[8] - DEVICE End Point Pipe Status Clear
+namespace epstatusclr[8] {
     /// Data Toggle OUT Clear
     /// Position: 0, Width: 1
     /// Access: write-only
@@ -1124,10 +1124,10 @@ namespace epstatusclr%s {
     constexpr uint32_t BK1RDY_Pos = 7;
     constexpr uint32_t BK1RDY_Msk = BK1RDY::mask;
 
-}  // namespace epstatusclr%s
+}  // namespace epstatusclr[8]
 
-/// PSTATUSCLR%s - HOST End Point Pipe Status Clear
-namespace pstatusclr%s {
+/// PSTATUSCLR[8] - HOST End Point Pipe Status Clear
+namespace pstatusclr[8] {
     /// Data Toggle clear
     /// Position: 0, Width: 1
     /// Access: read-only
@@ -1163,10 +1163,10 @@ namespace pstatusclr%s {
     constexpr uint32_t BK1RDY_Pos = 7;
     constexpr uint32_t BK1RDY_Msk = BK1RDY::mask;
 
-}  // namespace pstatusclr%s
+}  // namespace pstatusclr[8]
 
-/// EPSTATUSSET%s - DEVICE End Point Pipe Status Set
-namespace epstatusset%s {
+/// EPSTATUSSET[8] - DEVICE End Point Pipe Status Set
+namespace epstatusset[8] {
     /// Data Toggle OUT Set
     /// Position: 0, Width: 1
     /// Access: write-only
@@ -1216,10 +1216,10 @@ namespace epstatusset%s {
     constexpr uint32_t BK1RDY_Pos = 7;
     constexpr uint32_t BK1RDY_Msk = BK1RDY::mask;
 
-}  // namespace epstatusset%s
+}  // namespace epstatusset[8]
 
-/// PSTATUSSET%s - HOST End Point Pipe Status Set
-namespace pstatusset%s {
+/// PSTATUSSET[8] - HOST End Point Pipe Status Set
+namespace pstatusset[8] {
     /// Data Toggle Set
     /// Position: 0, Width: 1
     /// Access: write-only
@@ -1255,10 +1255,10 @@ namespace pstatusset%s {
     constexpr uint32_t BK1RDY_Pos = 7;
     constexpr uint32_t BK1RDY_Msk = BK1RDY::mask;
 
-}  // namespace pstatusset%s
+}  // namespace pstatusset[8]
 
-/// EPSTATUS%s - DEVICE End Point Pipe Status
-namespace epstatus%s {
+/// EPSTATUS[8] - DEVICE End Point Pipe Status
+namespace epstatus[8] {
     /// Data Toggle Out
     /// Position: 0, Width: 1
     /// Access: read-only
@@ -1308,10 +1308,10 @@ namespace epstatus%s {
     constexpr uint32_t BK1RDY_Pos = 7;
     constexpr uint32_t BK1RDY_Msk = BK1RDY::mask;
 
-}  // namespace epstatus%s
+}  // namespace epstatus[8]
 
-/// PSTATUS%s - HOST End Point Pipe Status
-namespace pstatus%s {
+/// PSTATUS[8] - HOST End Point Pipe Status
+namespace pstatus[8] {
     /// Data Toggle
     /// Position: 0, Width: 1
     /// Access: read-only
@@ -1347,10 +1347,10 @@ namespace pstatus%s {
     constexpr uint32_t BK1RDY_Pos = 7;
     constexpr uint32_t BK1RDY_Msk = BK1RDY::mask;
 
-}  // namespace pstatus%s
+}  // namespace pstatus[8]
 
-/// EPINTFLAG%s - DEVICE End Point Interrupt Flag
-namespace epintflag%s {
+/// EPINTFLAG[8] - DEVICE End Point Interrupt Flag
+namespace epintflag[8] {
     /// Transfer Complete 0
     /// Position: 0, Width: 1
     using TRCPT0 = BitField<0, 1>;
@@ -1393,10 +1393,10 @@ namespace epintflag%s {
     constexpr uint32_t STALL1_Pos = 6;
     constexpr uint32_t STALL1_Msk = STALL1::mask;
 
-}  // namespace epintflag%s
+}  // namespace epintflag[8]
 
-/// PINTFLAG%s - HOST Pipe Interrupt Flag
-namespace pintflag%s {
+/// PINTFLAG[8] - HOST Pipe Interrupt Flag
+namespace pintflag[8] {
     /// Transfer Complete 0 Interrupt Flag
     /// Position: 0, Width: 1
     using TRCPT0 = BitField<0, 1>;
@@ -1433,10 +1433,10 @@ namespace pintflag%s {
     constexpr uint32_t STALL_Pos = 5;
     constexpr uint32_t STALL_Msk = STALL::mask;
 
-}  // namespace pintflag%s
+}  // namespace pintflag[8]
 
-/// EPINTENCLR%s - DEVICE End Point Interrupt Clear Flag
-namespace epintenclr%s {
+/// EPINTENCLR[8] - DEVICE End Point Interrupt Clear Flag
+namespace epintenclr[8] {
     /// Transfer Complete 0 Interrupt Disable
     /// Position: 0, Width: 1
     using TRCPT0 = BitField<0, 1>;
@@ -1479,10 +1479,10 @@ namespace epintenclr%s {
     constexpr uint32_t STALL1_Pos = 6;
     constexpr uint32_t STALL1_Msk = STALL1::mask;
 
-}  // namespace epintenclr%s
+}  // namespace epintenclr[8]
 
-/// PINTENCLR%s - HOST Pipe Interrupt Flag Clear
-namespace pintenclr%s {
+/// PINTENCLR[8] - HOST Pipe Interrupt Flag Clear
+namespace pintenclr[8] {
     /// Transfer Complete 0 Disable
     /// Position: 0, Width: 1
     using TRCPT0 = BitField<0, 1>;
@@ -1519,10 +1519,10 @@ namespace pintenclr%s {
     constexpr uint32_t STALL_Pos = 5;
     constexpr uint32_t STALL_Msk = STALL::mask;
 
-}  // namespace pintenclr%s
+}  // namespace pintenclr[8]
 
-/// EPINTENSET%s - DEVICE End Point Interrupt Set Flag
-namespace epintenset%s {
+/// EPINTENSET[8] - DEVICE End Point Interrupt Set Flag
+namespace epintenset[8] {
     /// Transfer Complete 0 Interrupt Enable
     /// Position: 0, Width: 1
     using TRCPT0 = BitField<0, 1>;
@@ -1565,10 +1565,10 @@ namespace epintenset%s {
     constexpr uint32_t STALL1_Pos = 6;
     constexpr uint32_t STALL1_Msk = STALL1::mask;
 
-}  // namespace epintenset%s
+}  // namespace epintenset[8]
 
-/// PINTENSET%s - HOST Pipe Interrupt Flag Set
-namespace pintenset%s {
+/// PINTENSET[8] - HOST Pipe Interrupt Flag Set
+namespace pintenset[8] {
     /// Transfer Complete 0 Interrupt Enable
     /// Position: 0, Width: 1
     using TRCPT0 = BitField<0, 1>;
@@ -1605,6 +1605,6 @@ namespace pintenset%s {
     constexpr uint32_t STALL_Pos = 5;
     constexpr uint32_t STALL_Msk = STALL::mask;
 
-}  // namespace pintenset%s
+}  // namespace pintenset[8]
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::usb

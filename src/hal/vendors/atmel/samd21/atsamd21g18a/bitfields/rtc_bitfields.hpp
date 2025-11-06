@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::rtc {
 
@@ -864,15 +864,15 @@ namespace comp%s {
 
 }  // namespace comp%s
 
-/// COMP%s - MODE1 Compare n Value
-namespace comp%s {
+/// COMP[2] - MODE1 Compare n Value
+namespace comp[2] {
     /// Compare Value
     /// Position: 0, Width: 16
     using COMP = BitField<0, 16>;
     constexpr uint32_t COMP_Pos = 0;
     constexpr uint32_t COMP_Msk = COMP::mask;
 
-}  // namespace comp%s
+}  // namespace comp[2]
 
 /// ALARM%s - MODE2 Alarm n Value
 namespace alarm%s {
