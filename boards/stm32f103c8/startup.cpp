@@ -1,23 +1,32 @@
-/// Startup code for STM32F103C8
+/// Startup code for STM32F103C8 (Cortex-M3)
 /// Uses Alloy common startup framework
 
 #include "../../src/startup/startup_common.hpp"
+#include "../../src/hal/vendors/st/stm32f1/system_stm32f1.hpp"
 
 // User application entry point
 extern "C" int main();
 
+// System initialization - called before main()
+// Override this in your application if you need custom clock configuration
+extern "C" __attribute__((weak)) void SystemInit() {
+    // Initialize STM32F1 system (Cortex-M3, no FPU, no cache)
+    // Uses default HSI clock (8 MHz)
+    alloy::hal::st::stm32f1::system_init_default();
+}
+
 // Reset Handler - Entry point after reset
 extern "C" [[noreturn]] void Reset_Handler() {
-    // Perform runtime initialization (data/bss/constructors)
-    alloy::startup::initialize_runtime();
-
-    // Call system initialization (clock setup, etc.)
+    // 1. Call system initialization (FPU, clock, flash latency, etc.)
     SystemInit();
 
-    // Call main
+    // 2. Perform runtime initialization (data/bss/constructors)
+    alloy::startup::initialize_runtime();
+
+    // 3. Call main
     main();
 
-    // If main returns, loop forever
+    // 4. If main returns, loop forever
     alloy::startup::infinite_loop();
 }
 

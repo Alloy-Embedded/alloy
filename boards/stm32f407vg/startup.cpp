@@ -1,7 +1,8 @@
-/// Startup code for STM32F407VG
+/// Startup code for STM32F407VG (Cortex-M4F)
 /// Uses Alloy common startup framework
 
 #include "../../src/startup/startup_common.hpp"
+#include "../../src/hal/vendors/st/stm32f4/system_stm32f4.hpp"
 #include <cstdint>
 
 // Linker script symbols
@@ -10,28 +11,41 @@ extern uint32_t _estack;  // End of stack
 // User application entry point
 extern "C" int main();
 
-// Weak default SystemInit - does nothing (STM32F407 FPU is enabled automatically)
-// Override this in board.hpp if custom clock configuration is needed
+// System initialization - called before main()
+// Override this in your application if you need custom clock configuration
 extern "C" __attribute__((weak)) void SystemInit() {
-    // STM32F407VG with default settings:
-    // - HSI 16MHz used as system clock (after reset)
-    // - FPU enabled automatically by hardware
-    // - No additional initialization needed for simple blink example
-    // For production use, configure PLL to reach 168MHz max frequency
+    // Initialize STM32F4 system (Cortex-M4F with FPU)
+    // This enables:
+    // - FPU (10-100x faster floating point)
+    // - Flash prefetch and caches
+    // - Voltage scaling
+    // - Uses default HSI clock (16 MHz)
+    //
+    // For production use, configure PLL to reach 168MHz:
+    //   ClockConfig config = {
+    //       .source = ClockSource::PLL,
+    //       .pll_source = PLLSource::HSE,
+    //       .pll_m = 8, .pll_n = 336, .pll_p = 2, .pll_q = 7,
+    //       .ahb_prescaler = AHBPrescaler::Div1,
+    //       .apb1_prescaler = APBPrescaler::Div4,
+    //       .apb2_prescaler = APBPrescaler::Div2
+    //   };
+    //   alloy::hal::st::stm32f4::system_init(&config);
+    alloy::hal::st::stm32f4::system_init_default();
 }
 
 // Reset Handler - Entry point after reset
 extern "C" [[noreturn]] void Reset_Handler() {
-    // Call system initialization (weak default from startup_common.hpp)
+    // 1. Call system initialization (FPU, clocks, flash latency, etc.)
     SystemInit();
 
-    // Perform runtime initialization (data/bss/constructors)
+    // 2. Perform runtime initialization (data/bss/constructors)
     alloy::startup::initialize_runtime();
 
-    // Call main
+    // 3. Call main
     main();
 
-    // If main returns, loop forever
+    // 4. If main returns, loop forever
     alloy::startup::infinite_loop();
 }
 
