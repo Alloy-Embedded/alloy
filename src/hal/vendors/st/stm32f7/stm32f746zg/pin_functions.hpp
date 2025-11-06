@@ -3,7 +3,7 @@
 #include <cstdint>
 #include "pins.hpp"
 
-namespace alloy::hal::stm32f745::stm32f746zg::pin_functions {
+namespace alloy::hal::stm32f7::stm32f746zg::pin_functions {
 
 // ============================================================================
 // Pin Alternate Functions for STM32F746ZG
@@ -741,4 +741,4 @@ namespace usb {
     constexpr uint8_t OTG_HS_ULPI_STP                = pins::PC0;
 
 }  // namespace usb
-}  // namespace alloy::hal::stm32f745::stm32f746zg::pin_functions
+}  // namespace alloy::hal::stm32f7::stm32f746zg::pin_functions

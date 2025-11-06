@@ -42,24 +42,55 @@ def setup_parser(parser):
 
 def execute(args):
     """Execute the status command"""
-    print_header("📊 Alloy Implementation Status", "=")
+    print_header("Code Generation Status")
 
     try:
-        from cli.generators.generate_mcu_status import generate_status_report
+        from cli.core.config import BOARD_MCUS, HAL_VENDORS_DIR
+        import json
 
-        logger.info(f"Generating status report: {args.output}")
+        # Show board MCUs
+        print(f"\n📋 Board MCUs: {len(BOARD_MCUS)}")
+        for mcu in BOARD_MCUS:
+            # Try to find the board name
+            if mcu == "ATSAMD21G18A":
+                print(f"  - {mcu} (arduino_zero)")
+            elif mcu == "STM32F103":
+                print(f"  - {mcu} (bluepill)")
+            elif mcu == "ESP32":
+                print(f"  - {mcu} (esp32_devkit)")
+            elif mcu == "RP2040":
+                print(f"  - {mcu} (rp_pico)")
+            elif mcu == "ATSAME70Q21":
+                print(f"  - {mcu} (same70_xpld)")
+            elif mcu == "ATSAMV71Q21":
+                print(f"  - {mcu} (samv71_xult)")
+            elif mcu == "STM32F407":
+                print(f"  - {mcu} (stm32f407vg)")
+            elif mcu == "STM32F746":
+                print(f"  - {mcu} (stm32f746disco)")
+            else:
+                print(f"  - {mcu}")
 
-        # Call the existing status generator
-        result = generate_status_report()
+        # Check manifest
+        manifest_path = HAL_VENDORS_DIR / ".generated_manifest.json"
 
-        if result == 0:
-            print_success(f"Status report generated: {args.output}")
+        if manifest_path.exists():
+            with open(manifest_path, 'r') as f:
+                manifest = json.load(f)
 
-        return result
+            total_files = len(manifest.get('files', {}))
+            last_updated = manifest.get('last_updated', 'Unknown')
 
-    except ImportError as e:
-        print_error(f"Failed to import status generator: {e}")
-        return 1
+            print(f"\n📝 Files generated: {total_files}")
+            print(f"📅 Last generation: {last_updated}")
+            print(f"\n💾 Manifest: {manifest_path}")
+        else:
+            print("\n⚠️  No manifest found. Run './codegen generate' to create it.")
+
+        return 0
+
     except Exception as e:
-        print_error(f"Status generation failed: {e}")
+        print_error(f"Status command failed: {e}")
+        import traceback
+        traceback.print_exc()
         return 1

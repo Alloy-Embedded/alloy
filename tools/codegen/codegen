@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#
+# Alloy Code Generator - Shell Wrapper
+#
+# This script wraps the Python CLI for easier execution.
+# You can use it directly without typing "python3 codegen.py"
+#
+# Usage:
+#   ./codegen generate
+#   ./codegen status
+#   ./codegen clean --dry-run
+#
+
+# Get script directory
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Run the Python CLI
+python3 "${SCRIPT_DIR}/codegen.py" "$@"

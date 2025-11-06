@@ -12,10 +12,8 @@ import sys
 
 from cli.parsers.svd_pin_extractor import extract_mcu_info_from_svd, MCUInfo, MCUPackageInfo
 from cli.parsers.svd_discovery import discover_all_svds
+from cli.core.paths import get_mcu_output_dir, get_family_dir, ensure_dir, HAL_VENDORS_DIR
 import xml.etree.ElementTree as ET
-
-REPO_ROOT = Path(__file__).parent.parent.parent.parent
-OUTPUT_DIR = REPO_ROOT / "src" / "hal"
 
 
 # Package configurations for known MCU variants
@@ -445,11 +443,9 @@ def generate_for_variant(base_svd: Path, variant_name: str) -> bool:
 
         package = mcu_info.packages[0]
 
-        # Create output directory
-        # Map full vendor name to short directory name
+        # Create output directory using centralized path management
         vendor_dir = 'st' if mcu_info.vendor == 'STMicroelectronics' else mcu_info.vendor.lower().replace(' ', '_')
-        device_dir = OUTPUT_DIR / vendor_dir / mcu_info.family / "generated" / mcu_info.device_name.lower()
-        device_dir.mkdir(parents=True, exist_ok=True)
+        device_dir = ensure_dir(get_mcu_output_dir(vendor_dir, mcu_info.family, mcu_info.device_name.lower()))
 
         # Generate pins.hpp
         pins_content = generate_pins_header(mcu_info, package)
