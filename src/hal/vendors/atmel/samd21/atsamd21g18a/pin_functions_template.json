@@ -1,0 +1,22 @@
+{
+  "mcu": "ATSAMD21G18A",
+  "vendor": "atmel",
+  "family": "samd21",
+  "pin_functions": [
+    {
+      "pin": "PA9",
+      "peripheral": "USART1",
+      "signal": "TX",
+      "af": 7,
+      "_comment": "Replace with actual pin functions from datasheet"
+    },
+    {
+      "pin": "PA10",
+      "peripheral": "USART1",
+      "signal": "RX",
+      "af": 7,
+      "_comment": "Add more pin functions as needed"
+    }
+  ],
+  "_instructions": "Fill this file with pin alternate function data from the MCU datasheet"
+}

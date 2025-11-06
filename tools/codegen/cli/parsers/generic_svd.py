@@ -51,6 +51,18 @@ class Interrupt:
 
 
 @dataclass
+class RegisterField:
+    """Represents a bit field within a register"""
+    name: str
+    description: Optional[str]
+    bit_offset: int
+    bit_width: int
+    access: Optional[str] = None  # "read-only", "write-only", "read-write"
+    enum_values: Optional[Dict[str, int]] = None
+    reset_value: Optional[int] = None
+
+
+@dataclass
 class Register:
     """Represents a peripheral register"""
     name: str
@@ -59,6 +71,7 @@ class Register:
     reset_value: Optional[int] = None
     description: Optional[str] = None
     access: Optional[str] = None  # read-only, write-only, read-write
+    fields: List['RegisterField'] = field(default_factory=list)
 
 
 @dataclass
@@ -367,6 +380,15 @@ class SVDParser:
         if offset is None:
             return None
 
+        # Parse bit fields within the register
+        fields = []
+        fields_container = reg_elem.find('fields')
+        if fields_container is not None:
+            for field_elem in fields_container.findall('field'):
+                field = self._parse_register_field(field_elem)
+                if field:
+                    fields.append(field)
+
         return Register(
             name=name,
             offset=offset,
@@ -374,6 +396,53 @@ class SVDParser:
             reset_value=self._get_int('resetValue', reg_elem),
             description=self._get_text('description', reg_elem),
             access=self._get_text('access', reg_elem),
+            fields=fields,
+        )
+
+    def _parse_register_field(self, field_elem: ET.Element) -> Optional[RegisterField]:
+        """Parse a single register bit field"""
+        name = self._get_text('name', field_elem)
+        if not name:
+            return None
+
+        # SVD supports two formats for bit positions:
+        # 1. bitOffset + bitWidth
+        # 2. lsb + msb (least/most significant bit)
+        bit_offset = self._get_int('bitOffset', field_elem)
+        bit_width = self._get_int('bitWidth', field_elem)
+
+        # If bitOffset/bitWidth not found, try lsb/msb
+        if bit_offset is None or bit_width is None:
+            lsb = self._get_int('lsb', field_elem)
+            msb = self._get_int('msb', field_elem)
+            if lsb is not None and msb is not None:
+                bit_offset = lsb
+                bit_width = msb - lsb + 1
+
+        # If we still don't have valid bit position, skip this field
+        if bit_offset is None or bit_width is None:
+            logger.debug(f"Field {name} missing bit position information")
+            return None
+
+        # Parse enumerated values if present
+        enum_values = None
+        enum_container = field_elem.find('enumeratedValues')
+        if enum_container is not None:
+            enum_values = {}
+            for enum_elem in enum_container.findall('enumeratedValue'):
+                enum_name = self._get_text('name', enum_elem)
+                enum_value = self._get_int('value', enum_elem)
+                if enum_name and enum_value is not None:
+                    enum_values[enum_name] = enum_value
+
+        return RegisterField(
+            name=name,
+            description=self._get_text('description', field_elem),
+            bit_offset=bit_offset,
+            bit_width=bit_width,
+            access=self._get_text('access', field_elem),
+            enum_values=enum_values if enum_values else None,
+            reset_value=self._get_int('resetValue', field_elem),
         )
 
     def _parse_interrupt(self, irq_elem: ET.Element) -> Optional[Interrupt]:
@@ -516,9 +585,26 @@ def main():
         print()
         print("Peripherals:")
         for name, periph in list(device.peripherals.items())[:10]:
-            print(f"    {name:20s} @ 0x{periph.base_address:08X}")
+            reg_count = len(periph.registers)
+            field_count = sum(len(reg.fields) for reg in periph.registers)
+            print(f"    {name:20s} @ 0x{periph.base_address:08X} ({reg_count} regs, {field_count} fields)")
         if len(device.peripherals) > 10:
             print(f"    ... and {len(device.peripherals) - 10} more")
+
+        # Show example register with fields
+        print()
+        print("Sample Register with Fields:")
+        for periph in device.peripherals.values():
+            for register in periph.registers[:1]:  # First register
+                if register.fields:
+                    print(f"  {periph.name}.{register.name} (offset: 0x{register.offset:04X})")
+                    for field in register.fields[:5]:  # First 5 fields
+                        print(f"    [{field.bit_offset:2d}:{field.bit_offset+field.bit_width-1:2d}] {field.name:20s} - {field.description or 'N/A'}")
+                    if len(register.fields) > 5:
+                        print(f"    ... and {len(register.fields) - 5} more fields")
+                    break
+            if any(len(reg.fields) > 0 for reg in periph.registers):
+                break
 
     return 0
 
