@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::ethernet_mac {
 
@@ -160,7 +160,8 @@ struct Ethernet_MAC_Registers {
 static_assert(sizeof(Ethernet_MAC_Registers) >= 96, "Ethernet_MAC_Registers size mismatch");
 
 /// Ethernet_MAC peripheral instance
-constexpr Ethernet_MAC_Registers* Ethernet_MAC = 
-    reinterpret_cast<Ethernet_MAC_Registers*>(0x40028000);
+inline Ethernet_MAC_Registers* Ethernet_MAC() {
+    return reinterpret_cast<Ethernet_MAC_Registers*>(0x40028000);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::ethernet_mac

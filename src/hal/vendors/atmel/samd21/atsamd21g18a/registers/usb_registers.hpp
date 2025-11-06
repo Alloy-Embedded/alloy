@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::usb {
 
@@ -161,76 +161,76 @@ struct USB_Registers {
 
     /// DEVICE End Point Configuration
     /// Offset: 0x0100
-    volatile uint8_t EPCFG[8];
+    volatile uint8_t EPCFG[8][8];
 
     /// HOST End Point Configuration
     /// Offset: 0x0100
-    volatile uint8_t PCFG[8];
-    uint8_t RESERVED_0101[2]; ///< Reserved
+    volatile uint8_t PCFG[8][8];
 
     /// HOST Bus Access Period of Pipe
     /// Offset: 0x0103
-    volatile uint8_t BINTERVAL[8];
+    volatile uint8_t BINTERVAL[8][8];
 
     /// DEVICE End Point Pipe Status Clear
     /// Offset: 0x0104
     /// Access: write-only
-    volatile uint8_t EPSTATUSCLR[8];
+    volatile uint8_t EPSTATUSCLR[8][8];
 
     /// HOST End Point Pipe Status Clear
     /// Offset: 0x0104
     /// Access: write-only
-    volatile uint8_t PSTATUSCLR[8];
+    volatile uint8_t PSTATUSCLR[8][8];
 
     /// DEVICE End Point Pipe Status Set
     /// Offset: 0x0105
     /// Access: write-only
-    volatile uint8_t EPSTATUSSET[8];
+    volatile uint8_t EPSTATUSSET[8][8];
 
     /// HOST End Point Pipe Status Set
     /// Offset: 0x0105
     /// Access: write-only
-    volatile uint8_t PSTATUSSET[8];
+    volatile uint8_t PSTATUSSET[8][8];
 
     /// DEVICE End Point Pipe Status
     /// Offset: 0x0106
     /// Access: read-only
-    volatile uint8_t EPSTATUS[8];
+    volatile uint8_t EPSTATUS[8][8];
 
     /// HOST End Point Pipe Status
     /// Offset: 0x0106
     /// Access: read-only
-    volatile uint8_t PSTATUS[8];
+    volatile uint8_t PSTATUS[8][8];
 
     /// DEVICE End Point Interrupt Flag
     /// Offset: 0x0107
-    volatile uint8_t EPINTFLAG[8];
+    volatile uint8_t EPINTFLAG[8][8];
 
     /// HOST Pipe Interrupt Flag
     /// Offset: 0x0107
-    volatile uint8_t PINTFLAG[8];
+    volatile uint8_t PINTFLAG[8][8];
 
     /// DEVICE End Point Interrupt Clear Flag
     /// Offset: 0x0108
-    volatile uint8_t EPINTENCLR[8];
+    volatile uint8_t EPINTENCLR[8][8];
 
     /// HOST Pipe Interrupt Flag Clear
     /// Offset: 0x0108
-    volatile uint8_t PINTENCLR[8];
+    volatile uint8_t PINTENCLR[8][8];
 
     /// DEVICE End Point Interrupt Set Flag
     /// Offset: 0x0109
-    volatile uint8_t EPINTENSET[8];
+    volatile uint8_t EPINTENSET[8][8];
 
     /// HOST Pipe Interrupt Flag Set
     /// Offset: 0x0109
-    volatile uint8_t PINTENSET[8];
+    volatile uint8_t PINTENSET[8][8];
 };
 
-static_assert(sizeof(USB_Registers) >= 266, "USB_Registers size mismatch");
+static_assert(sizeof(USB_Registers) >= 273, "USB_Registers size mismatch");
 
 /// USB peripheral instance
-constexpr USB_Registers* USB = 
-    reinterpret_cast<USB_Registers*>(0x41005000);
+inline USB_Registers* USB() {
+    return reinterpret_cast<USB_Registers*>(0x41005000);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::usb

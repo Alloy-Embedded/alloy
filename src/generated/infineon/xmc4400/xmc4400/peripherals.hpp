@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_XMC4400_PERIPHERALS_HPP
 #define ALLOY_GENERATED_XMC4400_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::xmc4400 {
 

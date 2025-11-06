@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::gpbr {
 
@@ -20,13 +20,14 @@ struct GPBR_Registers {
 
     /// General Purpose Backup Register 0
     /// Offset: 0x0000
-    volatile uint32_t SYS_GPBR[8];
+    volatile uint32_t SYS_GPBR[8][8];
 };
 
-static_assert(sizeof(GPBR_Registers) >= 4, "GPBR_Registers size mismatch");
+static_assert(sizeof(GPBR_Registers) >= 32, "GPBR_Registers size mismatch");
 
 /// GPBR peripheral instance
-constexpr GPBR_Registers* GPBR = 
-    reinterpret_cast<GPBR_Registers*>(0x400E1890);
+inline GPBR_Registers* GPBR() {
+    return reinterpret_cast<GPBR_Registers*>(0x400E1890);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::gpbr

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::timg0 {
 
@@ -211,7 +211,8 @@ struct TIMG0_Registers {
 static_assert(sizeof(TIMG0_Registers) >= 256, "TIMG0_Registers size mismatch");
 
 /// TIMG0 peripheral instance
-constexpr TIMG0_Registers* TIMG0 = 
-    reinterpret_cast<TIMG0_Registers*>(0x3FF5F000);
+inline TIMG0_Registers* TIMG0() {
+    return reinterpret_cast<TIMG0_Registers*>(0x3FF5F000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::timg0

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::same70::atsame70q21::pioa {
@@ -4526,7 +4526,7 @@ namespace pusr {
 }  // namespace pusr
 
 /// ABCDSR[2] - Peripheral ABCD Select Register 0
-namespace abcdsr[2] {
+namespace abcdsr {
     /// Peripheral Select
     /// Position: 0, Width: 1
     using P0 = BitField<0, 1>;
@@ -4719,7 +4719,7 @@ namespace abcdsr[2] {
     constexpr uint32_t P31_Pos = 31;
     constexpr uint32_t P31_Msk = P31::mask;
 
-}  // namespace abcdsr[2]
+}  // namespace abcdsr
 
 /// IFSCDR - Input Filter Slow Clock Disable Register
 namespace ifscdr {

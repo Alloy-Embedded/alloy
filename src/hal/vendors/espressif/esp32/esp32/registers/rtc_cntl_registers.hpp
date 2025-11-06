@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::rtc_cntl {
 
@@ -267,7 +267,8 @@ struct RTC_CNTL_Registers {
 static_assert(sizeof(RTC_CNTL_Registers) >= 320, "RTC_CNTL_Registers size mismatch");
 
 /// RTC_CNTL peripheral instance
-constexpr RTC_CNTL_Registers* RTC_CNTL = 
-    reinterpret_cast<RTC_CNTL_Registers*>(0x3FF48000);
+inline RTC_CNTL_Registers* RTC_CNTL() {
+    return reinterpret_cast<RTC_CNTL_Registers*>(0x3FF48000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::rtc_cntl

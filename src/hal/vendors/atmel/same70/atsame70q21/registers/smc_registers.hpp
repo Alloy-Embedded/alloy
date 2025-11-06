@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::same70::atsame70q21::smc {
 
@@ -63,7 +63,8 @@ struct SMC_Registers {
 static_assert(sizeof(SMC_Registers) >= 236, "SMC_Registers size mismatch");
 
 /// SMC peripheral instance
-constexpr SMC_Registers* SMC = 
-    reinterpret_cast<SMC_Registers*>(0x40080000);
+inline SMC_Registers* SMC() {
+    return reinterpret_cast<SMC_Registers*>(0x40080000);
+}
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::smc

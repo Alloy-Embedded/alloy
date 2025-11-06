@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::sysinfo {
 
@@ -39,7 +39,8 @@ struct SYSINFO_Registers {
 static_assert(sizeof(SYSINFO_Registers) >= 68, "SYSINFO_Registers size mismatch");
 
 /// SYSINFO peripheral instance
-constexpr SYSINFO_Registers* SYSINFO = 
-    reinterpret_cast<SYSINFO_Registers*>(0x40000000);
+inline SYSINFO_Registers* SYSINFO() {
+    return reinterpret_cast<SYSINFO_Registers*>(0x40000000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::sysinfo

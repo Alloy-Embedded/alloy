@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::mcpwm0 {
 
@@ -329,7 +329,8 @@ struct MCPWM0_Registers {
 static_assert(sizeof(MCPWM0_Registers) >= 296, "MCPWM0_Registers size mismatch");
 
 /// MCPWM0 peripheral instance
-constexpr MCPWM0_Registers* MCPWM0 = 
-    reinterpret_cast<MCPWM0_Registers*>(0x3FF5E000);
+inline MCPWM0_Registers* MCPWM0() {
+    return reinterpret_cast<MCPWM0_Registers*>(0x3FF5E000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::mcpwm0

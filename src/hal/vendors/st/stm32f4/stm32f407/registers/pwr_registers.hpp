@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::pwr {
 
@@ -33,7 +33,8 @@ struct PWR_Registers {
 static_assert(sizeof(PWR_Registers) >= 8, "PWR_Registers size mismatch");
 
 /// PWR peripheral instance
-constexpr PWR_Registers* PWR = 
-    reinterpret_cast<PWR_Registers*>(0x40007000);
+inline PWR_Registers* PWR() {
+    return reinterpret_cast<PWR_Registers*>(0x40007000);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::pwr

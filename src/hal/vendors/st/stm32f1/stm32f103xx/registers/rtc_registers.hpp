@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::rtc {
 
@@ -85,7 +85,8 @@ struct RTC_Registers {
 static_assert(sizeof(RTC_Registers) >= 40, "RTC_Registers size mismatch");
 
 /// RTC peripheral instance
-constexpr RTC_Registers* RTC = 
-    reinterpret_cast<RTC_Registers*>(0x40002800);
+inline RTC_Registers* RTC() {
+    return reinterpret_cast<RTC_Registers*>(0x40002800);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::rtc

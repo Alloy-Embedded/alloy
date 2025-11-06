@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::dacc {
 
@@ -50,8 +50,7 @@ struct DACC_Registers {
     /// Conversion Data Register 0
     /// Offset: 0x001C
     /// Access: write-only
-    volatile uint32_t CDR[2];
-    uint8_t RESERVED_0020[4]; ///< Reserved
+    volatile uint32_t CDR[2][2];
 
     /// Interrupt Enable Register
     /// Offset: 0x0024
@@ -98,7 +97,8 @@ struct DACC_Registers {
 static_assert(sizeof(DACC_Registers) >= 256, "DACC_Registers size mismatch");
 
 /// DACC peripheral instance
-constexpr DACC_Registers* DACC = 
-    reinterpret_cast<DACC_Registers*>(0x40040000);
+inline DACC_Registers* DACC() {
+    return reinterpret_cast<DACC_Registers*>(0x40040000);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::dacc

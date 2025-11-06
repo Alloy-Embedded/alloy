@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::pac0 {
 
@@ -30,7 +30,8 @@ struct PAC0_Registers {
 static_assert(sizeof(PAC0_Registers) >= 8, "PAC0_Registers size mismatch");
 
 /// PAC0 peripheral instance
-constexpr PAC0_Registers* PAC0 = 
-    reinterpret_cast<PAC0_Registers*>(0x40000000);
+inline PAC0_Registers* PAC0() {
+    return reinterpret_cast<PAC0_Registers*>(0x40000000);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::pac0

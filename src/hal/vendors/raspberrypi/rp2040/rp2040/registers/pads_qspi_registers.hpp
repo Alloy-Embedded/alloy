@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::pads_qspi {
 
@@ -57,7 +57,8 @@ struct PADS_QSPI_Registers {
 static_assert(sizeof(PADS_QSPI_Registers) >= 28, "PADS_QSPI_Registers size mismatch");
 
 /// PADS_QSPI peripheral instance
-constexpr PADS_QSPI_Registers* PADS_QSPI = 
-    reinterpret_cast<PADS_QSPI_Registers*>(0x40020000);
+inline PADS_QSPI_Registers* PADS_QSPI() {
+    return reinterpret_cast<PADS_QSPI_Registers*>(0x40020000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::pads_qspi

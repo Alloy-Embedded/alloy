@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::spi0 {
 
@@ -60,8 +60,8 @@ struct SPI0_Registers {
 
     /// Chip Select Register (CS_number = 0) 0
     /// Offset: 0x0030
-    volatile uint32_t CSR[4];
-    uint8_t RESERVED_0034[176]; ///< Reserved
+    volatile uint32_t CSR[4][4];
+    uint8_t RESERVED_0040[164]; ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4
@@ -82,7 +82,8 @@ struct SPI0_Registers {
 static_assert(sizeof(SPI0_Registers) >= 256, "SPI0_Registers size mismatch");
 
 /// SPI0 peripheral instance
-constexpr SPI0_Registers* SPI0 = 
-    reinterpret_cast<SPI0_Registers*>(0x40008000);
+inline SPI0_Registers* SPI0() {
+    return reinterpret_cast<SPI0_Registers*>(0x40008000);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::spi0

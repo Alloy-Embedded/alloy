@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::i2s {
@@ -58,7 +58,7 @@ namespace ctrla {
 }  // namespace ctrla
 
 /// CLKCTRL[2] - Clock Unit n Control
-namespace clkctrl[2] {
+namespace clkctrl {
     /// Slot Size
     /// Position: 0, Width: 2
     using SLOTSIZE = BitField<0, 2>;
@@ -177,7 +177,7 @@ namespace clkctrl[2] {
     constexpr uint32_t MCKOUTINV_Pos = 31;
     constexpr uint32_t MCKOUTINV_Msk = MCKOUTINV::mask;
 
-}  // namespace clkctrl[2]
+}  // namespace clkctrl
 
 /// INTENCLR - Interrupt Enable Clear
 namespace intenclr {
@@ -388,7 +388,7 @@ namespace syncbusy {
 }  // namespace syncbusy
 
 /// SERCTRL[2] - Serializer n Control
-namespace serctrl[2] {
+namespace serctrl {
     /// Serializer Mode
     /// Position: 0, Width: 2
     using SERMODE = BitField<0, 2>;
@@ -574,16 +574,16 @@ namespace serctrl[2] {
     constexpr uint32_t RXLOOP_Pos = 26;
     constexpr uint32_t RXLOOP_Msk = RXLOOP::mask;
 
-}  // namespace serctrl[2]
+}  // namespace serctrl
 
 /// DATA[2] - Data n
-namespace data[2] {
+namespace data {
     /// Sample Data
     /// Position: 0, Width: 32
     using DATA = BitField<0, 32>;
     constexpr uint32_t DATA_Pos = 0;
     constexpr uint32_t DATA_Msk = DATA::mask;
 
-}  // namespace data[2]
+}  // namespace data
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::i2s

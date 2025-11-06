@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::same70::atsame70q21::pmc {
 
@@ -78,8 +78,7 @@ struct PMC_Registers {
 
     /// Programmable Clock Register
     /// Offset: 0x0040
-    volatile uint32_t PCK[8];
-    uint8_t RESERVED_0044[28]; ///< Reserved
+    volatile uint32_t PCK[8][8];
 
     /// Interrupt Enable Register
     /// Offset: 0x0060
@@ -202,7 +201,8 @@ struct PMC_Registers {
 static_assert(sizeof(PMC_Registers) >= 328, "PMC_Registers size mismatch");
 
 /// PMC peripheral instance
-constexpr PMC_Registers* PMC = 
-    reinterpret_cast<PMC_Registers*>(0x400E0600);
+inline PMC_Registers* PMC() {
+    return reinterpret_cast<PMC_Registers*>(0x400E0600);
+}
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::pmc

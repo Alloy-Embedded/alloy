@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::xip_ssi {
 
@@ -188,7 +188,8 @@ struct XIP_SSI_Registers {
 static_assert(sizeof(XIP_SSI_Registers) >= 252, "XIP_SSI_Registers size mismatch");
 
 /// XIP_SSI peripheral instance
-constexpr XIP_SSI_Registers* XIP_SSI = 
-    reinterpret_cast<XIP_SSI_Registers*>(0x18000000);
+inline XIP_SSI_Registers* XIP_SSI() {
+    return reinterpret_cast<XIP_SSI_Registers*>(0x18000000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::xip_ssi

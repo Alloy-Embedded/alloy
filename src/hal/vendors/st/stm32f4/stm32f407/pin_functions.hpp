@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::pin_functions {
 

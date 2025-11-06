@@ -2,7 +2,7 @@
 #define ALLOY_HAL_HOST_GPIO_HPP
 
 #include "../interface/gpio.hpp"
-#include <cstdint>
+#include <stdint.h>
 #include <array>
 
 namespace alloy::hal::host {

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::usbctrl_regs {
 
@@ -213,7 +213,8 @@ struct USBCTRL_REGS_Registers {
 static_assert(sizeof(USBCTRL_REGS_Registers) >= 156, "USBCTRL_REGS_Registers size mismatch");
 
 /// USBCTRL_REGS peripheral instance
-constexpr USBCTRL_REGS_Registers* USBCTRL_REGS = 
-    reinterpret_cast<USBCTRL_REGS_Registers*>(0x50110000);
+inline USBCTRL_REGS_Registers* USBCTRL_REGS() {
+    return reinterpret_cast<USBCTRL_REGS_Registers*>(0x50110000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::usbctrl_regs

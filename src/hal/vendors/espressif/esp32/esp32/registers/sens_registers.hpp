@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::sens {
 
@@ -213,7 +213,8 @@ struct SENS_Registers {
 static_assert(sizeof(SENS_Registers) >= 256, "SENS_Registers size mismatch");
 
 /// SENS peripheral instance
-constexpr SENS_Registers* SENS = 
-    reinterpret_cast<SENS_Registers*>(0x3FF48800);
+inline SENS_Registers* SENS() {
+    return reinterpret_cast<SENS_Registers*>(0x3FF48800);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::sens

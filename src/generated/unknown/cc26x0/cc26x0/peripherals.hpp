@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_CC26X0_PERIPHERALS_HPP
 #define ALLOY_GENERATED_CC26X0_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::cc26x0 {
 

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::same70::atsame70q21::twihs0 {
 
@@ -98,7 +98,8 @@ struct TWIHS0_Registers {
 static_assert(sizeof(TWIHS0_Registers) >= 236, "TWIHS0_Registers size mismatch");
 
 /// TWIHS0 peripheral instance
-constexpr TWIHS0_Registers* TWIHS0 = 
-    reinterpret_cast<TWIHS0_Registers*>(0x40018000);
+inline TWIHS0_Registers* TWIHS0() {
+    return reinterpret_cast<TWIHS0_Registers*>(0x40018000);
+}
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::twihs0

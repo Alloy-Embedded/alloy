@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::stm32f407::tim11 {
 
@@ -232,7 +232,7 @@ namespace ccr1 {
 }  // namespace ccr1
 
 /// OR - option register
-namespace or {
+namespace or_ {
     /// Input 1 remapping
               capability
     /// Position: 0, Width: 2
@@ -240,6 +240,6 @@ namespace or {
     constexpr uint32_t RMP_Pos = 0;
     constexpr uint32_t RMP_Msk = RMP::mask;
 
-}  // namespace or
+}  // namespace or_
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::tim11

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::hash {
 
@@ -453,7 +453,8 @@ struct HASH_Registers {
 static_assert(sizeof(HASH_Registers) >= 816, "HASH_Registers size mismatch");
 
 /// HASH peripheral instance
-constexpr HASH_Registers* HASH = 
-    reinterpret_cast<HASH_Registers*>(0x50060400);
+inline HASH_Registers* HASH() {
+    return reinterpret_cast<HASH_Registers*>(0x50060400);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::hash

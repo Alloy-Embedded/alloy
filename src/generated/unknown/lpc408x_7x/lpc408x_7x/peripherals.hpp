@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_LPC408X_7X_PERIPHERALS_HPP
 #define ALLOY_GENERATED_LPC408X_7X_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::lpc408x_7x {
 

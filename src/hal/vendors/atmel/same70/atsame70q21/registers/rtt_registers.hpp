@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::same70::atsame70q21::rtt {
 
@@ -40,7 +40,8 @@ struct RTT_Registers {
 static_assert(sizeof(RTT_Registers) >= 16, "RTT_Registers size mismatch");
 
 /// RTT peripheral instance
-constexpr RTT_Registers* RTT = 
-    reinterpret_cast<RTT_Registers*>(0x400E1830);
+inline RTT_Registers* RTT() {
+    return reinterpret_cast<RTT_Registers*>(0x400E1830);
+}
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::rtt

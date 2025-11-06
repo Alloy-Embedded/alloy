@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_ATSAMA5D35_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ATSAMA5D35_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::atsama5d35 {
 

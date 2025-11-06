@@ -24,6 +24,61 @@ from cli.core.config import normalize_name, BOARD_MCUS
 from cli.core.paths import get_mcu_output_dir, ensure_dir, get_family_dir
 from cli.parsers.generic_svd import parse_svd, SVDDevice, Peripheral, Register, RegisterField
 from cli.core.progress import get_global_tracker
+import re
+
+
+def sanitize_namespace_name(name: str) -> str:
+    """
+    Sanitize a register or field name to be a valid C++ namespace identifier.
+
+    Handles register arrays by removing array syntax (e.g., "ABCDSR[2]" -> "abcdsr").
+    This is necessary because C++ namespaces cannot contain brackets.
+    Also sanitizes C++ reserved keywords by appending underscore.
+
+    Args:
+        name: Original register/field name from SVD (may contain array syntax)
+
+    Returns:
+        Valid C++ namespace identifier (lowercase, no array brackets, no reserved keywords)
+
+    Examples:
+        "ABCDSR[2]" -> "abcdsr"
+        "GPIO_PINn[16]" -> "gpio_pinn"
+        "NORMAL_REG" -> "normal_reg"
+        "ASM" -> "asm_"
+        "CLASS" -> "class_"
+    """
+    # C++ reserved keywords that cannot be used as identifiers
+    CPP_KEYWORDS = {
+        'alignas', 'alignof', 'and', 'and_eq', 'asm', 'auto', 'bitand', 'bitor',
+        'bool', 'break', 'case', 'catch', 'char', 'char8_t', 'char16_t', 'char32_t',
+        'class', 'compl', 'concept', 'const', 'consteval', 'constexpr', 'constinit',
+        'const_cast', 'continue', 'co_await', 'co_return', 'co_yield', 'decltype',
+        'default', 'delete', 'do', 'double', 'dynamic_cast', 'else', 'enum',
+        'explicit', 'export', 'extern', 'false', 'float', 'for', 'friend', 'goto',
+        'if', 'inline', 'int', 'long', 'mutable', 'namespace', 'new', 'noexcept',
+        'not', 'not_eq', 'nullptr', 'operator', 'or', 'or_eq', 'private', 'protected',
+        'public', 'register', 'reinterpret_cast', 'requires', 'return', 'short',
+        'signed', 'sizeof', 'static', 'static_assert', 'static_cast', 'struct',
+        'switch', 'template', 'this', 'thread_local', 'throw', 'true', 'try',
+        'typedef', 'typeid', 'typename', 'union', 'unsigned', 'using', 'virtual',
+        'void', 'volatile', 'wchar_t', 'while', 'xor', 'xor_eq'
+    }
+
+    # Remove array syntax: [2], [16], etc.
+    sanitized = re.sub(r'\[\d+\]', '', name)
+
+    # Remove any remaining bracket artifacts
+    sanitized = sanitized.replace('[', '').replace(']', '')
+
+    # Convert to lowercase for namespace convention
+    sanitized = sanitized.lower()
+
+    # Check if it's a reserved keyword and append underscore if so
+    if sanitized in CPP_KEYWORDS:
+        sanitized = sanitized + '_'
+
+    return sanitized
 
 
 def generate_register_struct(peripheral: Peripheral, device: SVDDevice) -> str:
@@ -51,7 +106,7 @@ def generate_register_struct(peripheral: Peripheral, device: SVDDevice) -> str:
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::{vendor_ns}::{family_ns}::{mcu_ns}::{periph_ns} {{
 
@@ -86,9 +141,14 @@ namespace alloy::hal::{vendor_ns}::{family_ns}::{mcu_ns}::{periph_ns} {{
 
             # Register member
             reg_type = f"uint{register.size}_t"
-            content += f"    volatile {reg_type} {register.name};\n"
-
-            current_offset = register.offset + (register.size // 8)
+            if register.dim and register.dim > 1:
+                # Register array (e.g., ABCDSR[2])
+                content += f"    volatile {reg_type} {register.name}[{register.dim}];\n"
+                current_offset = register.offset + (register.size // 8) * register.dim
+            else:
+                # Single register
+                content += f"    volatile {reg_type} {register.name};\n"
+                current_offset = register.offset + (register.size // 8)
 
         content += "};\n\n"
 
@@ -96,10 +156,12 @@ namespace alloy::hal::{vendor_ns}::{family_ns}::{mcu_ns}::{periph_ns} {{
         content += f"static_assert(sizeof({peripheral.name}_Registers) >= {current_offset}, "
         content += f"\"{peripheral.name}_Registers size mismatch\");\n\n"
 
-        # Global pointer instance
+        # Global pointer instance - use inline function instead of constexpr reinterpret_cast
+        # (reinterpret_cast is not allowed in constexpr context in C++17)
         content += f"/// {peripheral.name} peripheral instance\n"
-        content += f"constexpr {peripheral.name}_Registers* {peripheral.name} = \n"
-        content += f"    reinterpret_cast<{peripheral.name}_Registers*>(0x{peripheral.base_address:08X});\n\n"
+        content += f"inline {peripheral.name}_Registers* {peripheral.name}() {{\n"
+        content += f"    return reinterpret_cast<{peripheral.name}_Registers*>(0x{peripheral.base_address:08X});\n"
+        content += f"}}\n\n"
     else:
         content += f"// No registers defined for {peripheral.name}\n\n"
 
@@ -133,7 +195,7 @@ def generate_bitfield_definitions(peripheral: Peripheral, device: SVDDevice) -> 
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::{vendor_ns}::{family_ns}::{mcu_ns}::{periph_ns} {{
@@ -151,7 +213,8 @@ using namespace alloy::hal::bitfields;
         if not register.fields:
             continue
 
-        reg_name_lower = register.name.lower()
+        # Sanitize register name for namespace (removes array syntax like [2])
+        reg_name_lower = sanitize_namespace_name(register.name)
         content += f"/// {register.name} - {register.description or register.name}\n"
         content += f"namespace {reg_name_lower} {{\n"
 
@@ -172,8 +235,9 @@ using namespace alloy::hal::bitfields;
 
             # Enumerated values if present
             if field.enum_values:
+                field_name_sanitized = sanitize_namespace_name(field.name)
                 content += f"    /// Enumerated values for {field.name}\n"
-                content += f"    namespace {field.name.lower()} {{\n"
+                content += f"    namespace {field_name_sanitized} {{\n"
                 for enum_name, enum_value in field.enum_values.items():
                     content += f"        constexpr uint32_t {enum_name} = {enum_value};\n"
                 content += "    }\n"

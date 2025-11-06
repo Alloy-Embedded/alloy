@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::uart4 {
 
@@ -58,7 +58,8 @@ struct UART4_Registers {
 static_assert(sizeof(UART4_Registers) >= 24, "UART4_Registers size mismatch");
 
 /// UART4 peripheral instance
-constexpr UART4_Registers* UART4 = 
-    reinterpret_cast<UART4_Registers*>(0x40004C00);
+inline UART4_Registers* UART4() {
+    return reinterpret_cast<UART4_Registers*>(0x40004C00);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::uart4

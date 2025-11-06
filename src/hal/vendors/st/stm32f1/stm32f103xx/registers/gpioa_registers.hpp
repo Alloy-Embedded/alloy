@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::gpioa {
 
@@ -71,7 +71,8 @@ struct GPIOA_Registers {
 static_assert(sizeof(GPIOA_Registers) >= 28, "GPIOA_Registers size mismatch");
 
 /// GPIOA peripheral instance
-constexpr GPIOA_Registers* GPIOA = 
-    reinterpret_cast<GPIOA_Registers*>(0x40010800);
+inline GPIOA_Registers* GPIOA() {
+    return reinterpret_cast<GPIOA_Registers*>(0x40010800);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::gpioa

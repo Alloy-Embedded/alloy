@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::bkp {
 
@@ -295,7 +295,8 @@ struct BKP_Registers {
 static_assert(sizeof(BKP_Registers) >= 188, "BKP_Registers size mismatch");
 
 /// BKP peripheral instance
-constexpr BKP_Registers* BKP = 
-    reinterpret_cast<BKP_Registers*>(0x40006C04);
+inline BKP_Registers* BKP() {
+    return reinterpret_cast<BKP_Registers*>(0x40006C04);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::bkp

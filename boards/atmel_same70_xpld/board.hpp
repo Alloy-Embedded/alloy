@@ -15,10 +15,10 @@
 #ifndef ALLOY_BOARD_ATSAME70_XPLD_HPP
 #define ALLOY_BOARD_ATSAME70_XPLD_HPP
 
-#include "../../src/hal/vendors/atmel/same70/atsame70q21/gpio.hpp"
-#include "../../src/hal/vendors/atmel/same70/atsame70q21/pins.hpp"
-#include "../../src/hal/vendors/atmel/same70/atsame70q21/register_map.hpp"
-#include <cstdint>
+#include "../../src/hal/vendors/atmel/same70/atsame70q21b/gpio.hpp"
+#include "../../src/hal/vendors/atmel/same70/atsame70q21b/pins.hpp"
+#include "../../src/hal/vendors/atmel/same70/atsame70q21b/register_map.hpp"
+#include <stdint.h>
 
 namespace Board {
 
@@ -85,16 +85,14 @@ namespace detail {
 //
 
 namespace Led {
-    using namespace alloy::hal::atmel::same70::atsame70q21;
+    using namespace alloy::hal::atmel::same70::atsame70q21b;
 
     // User LED on PC8 (active LOW)
     using LedPin = GPIOPin<pins::PC8>;
 
     /// Initialize LED pin as output
     inline void init() {
-        // TODO: Enable PIOC clock via PMC
-        // For now, assuming clock is already enabled or will be handled by HAL
-
+        // Note: PIOC clock is enabled in Board::initialize()
         // Configure PC8 as output using generated GPIO abstraction
         LedPin::configureOutput();
 
@@ -123,16 +121,14 @@ namespace Led {
 //
 
 namespace Button {
-    using namespace alloy::hal::atmel::same70::atsame70q21;
+    using namespace alloy::hal::atmel::same70::atsame70q21b;
 
     // User button SW0 on PA9 (active LOW)
     using ButtonPin = GPIOPin<pins::PA9>;
 
     /// Initialize button pin as input with pull-up
     inline void init() {
-        // TODO: Enable PIOA clock via PMC
-        // For now, assuming clock is already enabled or will be handled by HAL
-
+        // Note: PIOA clock is enabled in Board::initialize()
         // Configure PA9 as input with pull-up using generated GPIO abstraction
         ButtonPin::configureInputPullUp();
     }
@@ -150,20 +146,52 @@ namespace Button {
 
 /// Initialize board (clocks, essential peripherals)
 inline void initialize() {
-    // For now, minimal initialization
-    // Full clock configuration will be added later
+    // Enable peripheral clocks for GPIO ports via PMC
+    // PMC (Power Management Controller) controls peripheral clocks
+    volatile uint32_t* PMC_PCER0 = reinterpret_cast<volatile uint32_t*>(0x400E0610);
+
+    // Enable clocks for all GPIO ports (PIOA, PIOB, PIOC, PIOD, PIOE)
+    constexpr uint32_t ID_PIOA = 10;
+    constexpr uint32_t ID_PIOB = 11;
+    constexpr uint32_t ID_PIOC = 12;
+    constexpr uint32_t ID_PIOD = 16;
+    constexpr uint32_t ID_PIOE = 17;
+
+    *PMC_PCER0 = (1U << ID_PIOA) | (1U << ID_PIOB) | (1U << ID_PIOC) |
+                 (1U << ID_PIOD) | (1U << ID_PIOE);
+
+    // Small delay to let clocks stabilize
+    for (volatile int i = 0; i < 10000; i++) {
+        __asm__ volatile("nop");
+    }
+
+    // Enable ODSR (Output Data Status Register) access for all ports
+    // This allows direct read/write to ODSR register
+    // OWER offset = 0x00A0 from PIO base
+    volatile uint32_t* PIOA_OWER = reinterpret_cast<volatile uint32_t*>(0x400E0EA0);
+    volatile uint32_t* PIOB_OWER = reinterpret_cast<volatile uint32_t*>(0x400E10A0);
+    volatile uint32_t* PIOC_OWER = reinterpret_cast<volatile uint32_t*>(0x400E12A0);
+    volatile uint32_t* PIOD_OWER = reinterpret_cast<volatile uint32_t*>(0x400E14A0);
+    volatile uint32_t* PIOE_OWER = reinterpret_cast<volatile uint32_t*>(0x400E16A0);
+
+    *PIOA_OWER = 0xFFFFFFFF;
+    *PIOB_OWER = 0xFFFFFFFF;
+    *PIOC_OWER = 0xFFFFFFFF;
+    *PIOD_OWER = 0xFFFFFFFF;
+    *PIOE_OWER = 0xFFFFFFFF;
 
     // TODO: Configure system clock to 300MHz using PLL
-    // TODO: Enable instruction and data cache
     // TODO: Configure flash wait states
 }
 
 /// Simple delay (busy wait - not accurate, for basic use only)
 /// @param ms Approximate milliseconds to delay
 inline void delay_ms(uint32_t ms) {
-    // At 300MHz, approximately 300,000 cycles per millisecond
+    // MCU starts with 12MHz RC oscillator (not 300MHz PLL!)
+    // At 12MHz, approximately 12,000 cycles per millisecond
     // Rough approximation: 3 cycles per loop iteration
-    volatile uint32_t count = ms * 100000;
+    // So: 12,000 / 3 = 4000 iterations per ms
+    volatile uint32_t count = ms * 4000;
     while (count--) {
         __asm__ volatile("nop");
     }
@@ -172,8 +200,10 @@ inline void delay_ms(uint32_t ms) {
 /// More accurate microsecond delay
 /// @param us Microseconds to delay
 inline void delay_us(uint32_t us) {
-    // At 300MHz, approximately 300 cycles per microsecond
-    volatile uint32_t count = us * 100;
+    // At 12MHz, approximately 12 cycles per microsecond
+    // Rough approximation: 3 cycles per loop iteration
+    // So: 12 / 3 = 4 iterations per us
+    volatile uint32_t count = us * 4;
     while (count--) {
         __asm__ volatile("nop");
     }

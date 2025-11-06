@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_NRF52833_PERIPHERALS_HPP
 #define ALLOY_GENERATED_NRF52833_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::nrf52833 {
 

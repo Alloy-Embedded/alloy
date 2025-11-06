@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::mpu {
 
@@ -68,7 +68,8 @@ struct MPU_Registers {
 static_assert(sizeof(MPU_Registers) >= 44, "MPU_Registers size mismatch");
 
 /// MPU peripheral instance
-constexpr MPU_Registers* MPU = 
-    reinterpret_cast<MPU_Registers*>(0xE000ED90);
+inline MPU_Registers* MPU() {
+    return reinterpret_cast<MPU_Registers*>(0xE000ED90);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::mpu

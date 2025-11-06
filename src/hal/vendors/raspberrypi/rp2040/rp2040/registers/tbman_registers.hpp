@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::tbman {
 
@@ -27,7 +27,8 @@ struct TBMAN_Registers {
 static_assert(sizeof(TBMAN_Registers) >= 4, "TBMAN_Registers size mismatch");
 
 /// TBMAN peripheral instance
-constexpr TBMAN_Registers* TBMAN = 
-    reinterpret_cast<TBMAN_Registers*>(0x4006C000);
+inline TBMAN_Registers* TBMAN() {
+    return reinterpret_cast<TBMAN_Registers*>(0x4006C000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::tbman

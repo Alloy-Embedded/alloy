@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::pll_sys {
 
@@ -49,7 +49,8 @@ struct PLL_SYS_Registers {
 static_assert(sizeof(PLL_SYS_Registers) >= 16, "PLL_SYS_Registers size mismatch");
 
 /// PLL_SYS peripheral instance
-constexpr PLL_SYS_Registers* PLL_SYS = 
-    reinterpret_cast<PLL_SYS_Registers*>(0x40028000);
+inline PLL_SYS_Registers* PLL_SYS() {
+    return reinterpret_cast<PLL_SYS_Registers*>(0x40028000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::pll_sys

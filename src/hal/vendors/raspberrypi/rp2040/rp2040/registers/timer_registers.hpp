@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::timer {
 
@@ -144,7 +144,8 @@ struct TIMER_Registers {
 static_assert(sizeof(TIMER_Registers) >= 68, "TIMER_Registers size mismatch");
 
 /// TIMER peripheral instance
-constexpr TIMER_Registers* TIMER = 
-    reinterpret_cast<TIMER_Registers*>(0x40054000);
+inline TIMER_Registers* TIMER() {
+    return reinterpret_cast<TIMER_Registers*>(0x40054000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::timer

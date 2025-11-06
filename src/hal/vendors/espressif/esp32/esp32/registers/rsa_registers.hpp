@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::rsa {
 
@@ -21,26 +21,26 @@ struct RSA_Registers {
     /// Represents M
     /// Offset: 0x0000
     /// Access: read-write
-    volatile uint8_t M_MEM[%s];
-    uint8_t RESERVED_0001[511]; ///< Reserved
+    volatile uint8_t M_MEM[128][128];
+    uint8_t RESERVED_0080[384]; ///< Reserved
 
     /// Represents Z
     /// Offset: 0x0200
     /// Access: read-write
-    volatile uint8_t Z_MEM[%s];
-    uint8_t RESERVED_0201[511]; ///< Reserved
+    volatile uint8_t Z_MEM[128][128];
+    uint8_t RESERVED_0280[384]; ///< Reserved
 
     /// Represents Y
     /// Offset: 0x0400
     /// Access: read-write
-    volatile uint8_t Y_MEM[%s];
-    uint8_t RESERVED_0401[511]; ///< Reserved
+    volatile uint8_t Y_MEM[128][128];
+    uint8_t RESERVED_0480[384]; ///< Reserved
 
     /// Represents X
     /// Offset: 0x0600
     /// Access: read-write
-    volatile uint8_t X_MEM[%s];
-    uint8_t RESERVED_0601[511]; ///< Reserved
+    volatile uint8_t X_MEM[128][128];
+    uint8_t RESERVED_0680[384]; ///< Reserved
 
     /// M_PRIME
     /// Offset: 0x0800
@@ -74,7 +74,8 @@ struct RSA_Registers {
 static_assert(sizeof(RSA_Registers) >= 2076, "RSA_Registers size mismatch");
 
 /// RSA peripheral instance
-constexpr RSA_Registers* RSA = 
-    reinterpret_cast<RSA_Registers*>(0x3FF02000);
+inline RSA_Registers* RSA() {
+    return reinterpret_cast<RSA_Registers*>(0x3FF02000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::rsa

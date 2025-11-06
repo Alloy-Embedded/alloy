@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::aes {
 
@@ -51,26 +51,22 @@ struct AES_Registers {
     /// Key Word Register 0
     /// Offset: 0x0020
     /// Access: write-only
-    volatile uint32_t KEYWR[8];
-    uint8_t RESERVED_0024[28]; ///< Reserved
+    volatile uint32_t KEYWR[8][8];
 
     /// Input Data Register 0
     /// Offset: 0x0040
     /// Access: write-only
-    volatile uint32_t IDATAR[4];
-    uint8_t RESERVED_0044[12]; ///< Reserved
+    volatile uint32_t IDATAR[4][4];
 
     /// Output Data Register 0
     /// Offset: 0x0050
     /// Access: read-only
-    volatile uint32_t ODATAR[4];
-    uint8_t RESERVED_0054[12]; ///< Reserved
+    volatile uint32_t ODATAR[4][4];
 
     /// Initialization Vector Register 0
     /// Offset: 0x0060
     /// Access: write-only
-    volatile uint32_t IVR[4];
-    uint8_t RESERVED_0064[12]; ///< Reserved
+    volatile uint32_t IVR[4][4];
 
     /// Additional Authenticated Data Length Register
     /// Offset: 0x0070
@@ -82,14 +78,12 @@ struct AES_Registers {
 
     /// GCM Intermediate Hash Word Register 0
     /// Offset: 0x0078
-    volatile uint32_t GHASHR[4];
-    uint8_t RESERVED_007C[12]; ///< Reserved
+    volatile uint32_t GHASHR[4][4];
 
     /// GCM Authentication Tag Word Register 0
     /// Offset: 0x0088
     /// Access: read-only
-    volatile uint32_t TAGR[4];
-    uint8_t RESERVED_008C[12]; ///< Reserved
+    volatile uint32_t TAGR[4][4];
 
     /// GCM Encryption Counter Value Register
     /// Offset: 0x0098
@@ -98,8 +92,8 @@ struct AES_Registers {
 
     /// GCM H Word Register 0
     /// Offset: 0x009C
-    volatile uint32_t GCMHR[4];
-    uint8_t RESERVED_00A0[92]; ///< Reserved
+    volatile uint32_t GCMHR[4][4];
+    uint8_t RESERVED_00AC[80]; ///< Reserved
 
     /// Version Register
     /// Offset: 0x00FC
@@ -110,7 +104,8 @@ struct AES_Registers {
 static_assert(sizeof(AES_Registers) >= 256, "AES_Registers size mismatch");
 
 /// AES peripheral instance
-constexpr AES_Registers* AES = 
-    reinterpret_cast<AES_Registers*>(0x4006C000);
+inline AES_Registers* AES() {
+    return reinterpret_cast<AES_Registers*>(0x4006C000);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::aes

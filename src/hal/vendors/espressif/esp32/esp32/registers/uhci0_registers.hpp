@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::uhci0 {
 
@@ -236,7 +236,8 @@ struct UHCI0_Registers {
 static_assert(sizeof(UHCI0_Registers) >= 256, "UHCI0_Registers size mismatch");
 
 /// UHCI0 peripheral instance
-constexpr UHCI0_Registers* UHCI0 = 
-    reinterpret_cast<UHCI0_Registers*>(0x3FF54000);
+inline UHCI0_Registers* UHCI0() {
+    return reinterpret_cast<UHCI0_Registers*>(0x3FF54000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::uhci0

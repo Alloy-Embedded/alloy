@@ -8,12 +8,26 @@ set(CMAKE_SYSTEM_PROCESSOR ARM)
 set(CMAKE_C_COMPILER_WORKS 1)
 set(CMAKE_CXX_COMPILER_WORKS 1)
 
-# Find ARM toolchain
-find_program(ARM_CC arm-none-eabi-gcc)
-find_program(ARM_CXX arm-none-eabi-g++)
-find_program(ARM_OBJCOPY arm-none-eabi-objcopy)
-find_program(ARM_SIZE arm-none-eabi-size)
-find_program(ARM_OBJDUMP arm-none-eabi-objdump)
+# xPack ARM GCC toolchain path (prefer over Homebrew)
+set(XPACK_ARM_GCC_BASE "$ENV{HOME}/Library/xPacks/@xpack-dev-tools/arm-none-eabi-gcc/14.2.1-1.1.1/.content/bin")
+
+# Use xPack toolchain if available, otherwise search PATH
+if(EXISTS "${XPACK_ARM_GCC_BASE}/arm-none-eabi-gcc")
+    set(ARM_CC "${XPACK_ARM_GCC_BASE}/arm-none-eabi-gcc")
+    set(ARM_CXX "${XPACK_ARM_GCC_BASE}/arm-none-eabi-g++")
+    set(ARM_OBJCOPY "${XPACK_ARM_GCC_BASE}/arm-none-eabi-objcopy")
+    set(ARM_SIZE "${XPACK_ARM_GCC_BASE}/arm-none-eabi-size")
+    set(ARM_OBJDUMP "${XPACK_ARM_GCC_BASE}/arm-none-eabi-objdump")
+    message(STATUS "Using xPack ARM GCC toolchain")
+else()
+    # Fallback to searching PATH
+    find_program(ARM_CC arm-none-eabi-gcc)
+    find_program(ARM_CXX arm-none-eabi-g++)
+    find_program(ARM_OBJCOPY arm-none-eabi-objcopy)
+    find_program(ARM_SIZE arm-none-eabi-size)
+    find_program(ARM_OBJDUMP arm-none-eabi-objdump)
+    message(STATUS "Using system ARM GCC toolchain")
+endif()
 
 if(NOT ARM_CC)
     message(FATAL_ERROR "arm-none-eabi-gcc not found! Please install ARM GCC toolchain.")

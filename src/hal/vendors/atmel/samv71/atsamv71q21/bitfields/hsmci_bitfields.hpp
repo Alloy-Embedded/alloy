@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::hsmci {
@@ -332,14 +332,14 @@ namespace cstor {
 }  // namespace cstor
 
 /// RSPR[4] - Response Register 0
-namespace rspr[4] {
+namespace rspr {
     /// Response
     /// Position: 0, Width: 32
     using RSP = BitField<0, 32>;
     constexpr uint32_t RSP_Pos = 0;
     constexpr uint32_t RSP_Msk = RSP::mask;
 
-}  // namespace rspr[4]
+}  // namespace rspr
 
 /// RDR - Receive Data Register
 namespace rdr {
@@ -1058,13 +1058,13 @@ namespace version {
 }  // namespace version
 
 /// FIFO[256] - FIFO Memory Aperture0 0
-namespace fifo[256] {
+namespace fifo {
     /// Data to Read or Data to Write
     /// Position: 0, Width: 32
     using DATA = BitField<0, 32>;
     constexpr uint32_t DATA_Pos = 0;
     constexpr uint32_t DATA_Msk = DATA::mask;
 
-}  // namespace fifo[256]
+}  // namespace fifo
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::hsmci

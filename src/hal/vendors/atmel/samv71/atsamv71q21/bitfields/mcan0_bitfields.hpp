@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::mcan0 {
@@ -208,7 +208,7 @@ namespace cccr {
     constexpr uint32_t ASM_Pos = 2;
     constexpr uint32_t ASM_Msk = ASM::mask;
     /// Enumerated values for ASM
-    namespace asm {
+    namespace asm_ {
         constexpr uint32_t NORMAL = 0;
         constexpr uint32_t RESTRICTED = 1;
     }

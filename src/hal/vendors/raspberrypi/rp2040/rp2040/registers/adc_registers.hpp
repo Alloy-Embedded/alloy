@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::adc {
 
@@ -70,7 +70,8 @@ struct ADC_Registers {
 static_assert(sizeof(ADC_Registers) >= 36, "ADC_Registers size mismatch");
 
 /// ADC peripheral instance
-constexpr ADC_Registers* ADC = 
-    reinterpret_cast<ADC_Registers*>(0x4004C000);
+inline ADC_Registers* ADC() {
+    return reinterpret_cast<ADC_Registers*>(0x4004C000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::adc

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::gpiob {
 
@@ -88,7 +88,8 @@ struct GPIOB_Registers {
 static_assert(sizeof(GPIOB_Registers) >= 40, "GPIOB_Registers size mismatch");
 
 /// GPIOB peripheral instance
-constexpr GPIOB_Registers* GPIOB = 
-    reinterpret_cast<GPIOB_Registers*>(0x40020400);
+inline GPIOB_Registers* GPIOB() {
+    return reinterpret_cast<GPIOB_Registers*>(0x40020400);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::gpiob

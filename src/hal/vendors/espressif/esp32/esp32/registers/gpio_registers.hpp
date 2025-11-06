@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::gpio {
 
@@ -151,10 +151,9 @@ struct GPIO_Registers {
     /// Offset: 0x0084
     volatile uint32_t CPUSDIO_INT1;
 
-    /// PIN%s
+    /// PIN[40]
     /// Offset: 0x0088
-    volatile uint32_t PIN%s;
-    uint8_t RESERVED_008C[156]; ///< Reserved
+    volatile uint32_t PIN[40][40];
 
     /// cali_conf
     /// Offset: 0x0128
@@ -164,20 +163,20 @@ struct GPIO_Registers {
     /// Offset: 0x012C
     volatile uint32_t cali_data;
 
-    /// FUNC%s_IN_SEL_CFG
+    /// FUNC[256]_IN_SEL_CFG
     /// Offset: 0x0130
-    volatile uint32_t FUNC%s_IN_SEL_CFG;
-    uint8_t RESERVED_0134[1020]; ///< Reserved
+    volatile uint32_t FUNC[256]_IN_SEL_CFG[256];
 
-    /// FUNC%s_OUT_SEL_CFG
+    /// FUNC[40]_OUT_SEL_CFG
     /// Offset: 0x0530
-    volatile uint32_t FUNC%s_OUT_SEL_CFG;
+    volatile uint32_t FUNC[40]_OUT_SEL_CFG[40];
 };
 
-static_assert(sizeof(GPIO_Registers) >= 1332, "GPIO_Registers size mismatch");
+static_assert(sizeof(GPIO_Registers) >= 1488, "GPIO_Registers size mismatch");
 
 /// GPIO peripheral instance
-constexpr GPIO_Registers* GPIO = 
-    reinterpret_cast<GPIO_Registers*>(0x3FF44000);
+inline GPIO_Registers* GPIO() {
+    return reinterpret_cast<GPIO_Registers*>(0x3FF44000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::gpio

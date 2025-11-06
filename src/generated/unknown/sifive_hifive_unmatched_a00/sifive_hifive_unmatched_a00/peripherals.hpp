@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_SIFIVE_HIFIVE_UNMATCHED_A00_PERIPHERALS_HPP
 #define ALLOY_GENERATED_SIFIVE_HIFIVE_UNMATCHED_A00_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::sifive_hifive_unmatched_a00 {
 

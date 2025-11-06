@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::sio {
 
@@ -754,7 +754,8 @@ struct SIO_Registers {
 static_assert(sizeof(SIO_Registers) >= 384, "SIO_Registers size mismatch");
 
 /// SIO peripheral instance
-constexpr SIO_Registers* SIO = 
-    reinterpret_cast<SIO_Registers*>(0xD0000000);
+inline SIO_Registers* SIO() {
+    return reinterpret_cast<SIO_Registers*>(0xD0000000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::sio

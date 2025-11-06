@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::pcnt {
 
@@ -18,24 +18,23 @@ namespace alloy::hal::espressif::esp32::esp32::pcnt {
 /// PCNT Register Structure
 struct PCNT_Registers {
 
-    /// U%s_CONF0
+    /// U[8]_CONF0
     /// Offset: 0x0000
     /// Reset value: 0x00003C10
-    volatile uint32_t U%s_CONF0;
+    volatile uint32_t U[8]_CONF0[8];
 
-    /// U%s_CONF1
+    /// U[8]_CONF1
     /// Offset: 0x0004
-    volatile uint32_t U%s_CONF1;
+    volatile uint32_t U[8]_CONF1[8];
 
-    /// U%s_CONF2
+    /// U[8]_CONF2
     /// Offset: 0x0008
-    volatile uint32_t U%s_CONF2;
-    uint8_t RESERVED_000C[84]; ///< Reserved
+    volatile uint32_t U[8]_CONF2[8];
+    uint8_t RESERVED_0028[56]; ///< Reserved
 
-    /// U%s_CNT
+    /// U[8]_CNT
     /// Offset: 0x0060
-    volatile uint32_t U%s_CNT;
-    uint8_t RESERVED_0064[28]; ///< Reserved
+    volatile uint32_t U[8]_CNT[8];
 
     /// INT_RAW
     /// Offset: 0x0080
@@ -53,10 +52,9 @@ struct PCNT_Registers {
     /// Offset: 0x008C
     volatile uint32_t INT_CLR;
 
-    /// U%s_STATUS
+    /// U[8]_STATUS
     /// Offset: 0x0090
-    volatile uint32_t U%s_STATUS;
-    uint8_t RESERVED_0094[28]; ///< Reserved
+    volatile uint32_t U[8]_STATUS[8];
 
     /// CTRL
     /// Offset: 0x00B0
@@ -73,7 +71,8 @@ struct PCNT_Registers {
 static_assert(sizeof(PCNT_Registers) >= 256, "PCNT_Registers size mismatch");
 
 /// PCNT peripheral instance
-constexpr PCNT_Registers* PCNT = 
-    reinterpret_cast<PCNT_Registers*>(0x3FF57000);
+inline PCNT_Registers* PCNT() {
+    return reinterpret_cast<PCNT_Registers*>(0x3FF57000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::pcnt

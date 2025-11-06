@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_ATSAM3S8C_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ATSAM3S8C_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::atsam3s8c {
 

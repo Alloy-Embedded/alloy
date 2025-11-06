@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_STM32G491XX_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32G491XX_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::stm32g491xx {
 

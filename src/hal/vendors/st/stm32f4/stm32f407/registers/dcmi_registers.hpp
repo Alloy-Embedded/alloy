@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::dcmi {
 
@@ -91,7 +91,8 @@ struct DCMI_Registers {
 static_assert(sizeof(DCMI_Registers) >= 44, "DCMI_Registers size mismatch");
 
 /// DCMI peripheral instance
-constexpr DCMI_Registers* DCMI = 
-    reinterpret_cast<DCMI_Registers*>(0x50050000);
+inline DCMI_Registers* DCMI() {
+    return reinterpret_cast<DCMI_Registers*>(0x50050000);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::dcmi

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::watchdog {
 
@@ -92,7 +92,8 @@ struct WATCHDOG_Registers {
 static_assert(sizeof(WATCHDOG_Registers) >= 48, "WATCHDOG_Registers size mismatch");
 
 /// WATCHDOG peripheral instance
-constexpr WATCHDOG_Registers* WATCHDOG = 
-    reinterpret_cast<WATCHDOG_Registers*>(0x40058000);
+inline WATCHDOG_Registers* WATCHDOG() {
+    return reinterpret_cast<WATCHDOG_Registers*>(0x40058000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::watchdog

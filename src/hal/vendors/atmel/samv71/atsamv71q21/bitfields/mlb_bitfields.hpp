@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::mlb {
@@ -306,54 +306,54 @@ namespace hctl {
 }  // namespace hctl
 
 /// HCMR[2] - HBI Channel Mask 0 Register 0
-namespace hcmr[2] {
+namespace hcmr {
     /// Bitwise Channel Mask Bit [31:0]
     /// Position: 0, Width: 32
     using CHM = BitField<0, 32>;
     constexpr uint32_t CHM_Pos = 0;
     constexpr uint32_t CHM_Msk = CHM::mask;
 
-}  // namespace hcmr[2]
+}  // namespace hcmr
 
 /// HCER[2] - HBI Channel Error 0 Register 0
-namespace hcer[2] {
+namespace hcer {
     /// Bitwise Channel Error Bit [31:0]
     /// Position: 0, Width: 32
     using CERR = BitField<0, 32>;
     constexpr uint32_t CERR_Pos = 0;
     constexpr uint32_t CERR_Msk = CERR::mask;
 
-}  // namespace hcer[2]
+}  // namespace hcer
 
 /// HCBR[2] - HBI Channel Busy 0 Register 0
-namespace hcbr[2] {
+namespace hcbr {
     /// Bitwise Channel Busy Bit [31:0]
     /// Position: 0, Width: 32
     using CHB = BitField<0, 32>;
     constexpr uint32_t CHB_Pos = 0;
     constexpr uint32_t CHB_Msk = CHB::mask;
 
-}  // namespace hcbr[2]
+}  // namespace hcbr
 
 /// MDAT[4] - MIF Data 0 Register 0
-namespace mdat[4] {
+namespace mdat {
     /// CRT or DBR Data
     /// Position: 0, Width: 32
     using DATA = BitField<0, 32>;
     constexpr uint32_t DATA_Pos = 0;
     constexpr uint32_t DATA_Msk = DATA::mask;
 
-}  // namespace mdat[4]
+}  // namespace mdat
 
 /// MDWE[4] - MIF Data Write Enable 0 Register 0
-namespace mdwe[4] {
+namespace mdwe {
     /// Bitwise Write Enable for CTR Data - bits[31:0]
     /// Position: 0, Width: 32
     using MASK = BitField<0, 32>;
     constexpr uint32_t MASK_Pos = 0;
     constexpr uint32_t MASK_Msk = MASK::mask;
 
-}  // namespace mdwe[4]
+}  // namespace mdwe
 
 /// MCTL - MIF Control Register
 namespace mctl {
@@ -426,23 +426,23 @@ namespace actl {
 }  // namespace actl
 
 /// ACSR[2] - AHB Channel Status 0 Register 0
-namespace acsr[2] {
+namespace acsr {
     /// Interrupt Status for Logical Channels [31:0] (cleared by writing a 1)
     /// Position: 0, Width: 32
     using CHS = BitField<0, 32>;
     constexpr uint32_t CHS_Pos = 0;
     constexpr uint32_t CHS_Msk = CHS::mask;
 
-}  // namespace acsr[2]
+}  // namespace acsr
 
 /// ACMR[2] - AHB Channel Mask 0 Register 0
-namespace acmr[2] {
+namespace acmr {
     /// Bitwise Channel Mask Bits 31 to 0
     /// Position: 0, Width: 32
     using CHM = BitField<0, 32>;
     constexpr uint32_t CHM_Pos = 0;
     constexpr uint32_t CHM_Msk = CHM::mask;
 
-}  // namespace acmr[2]
+}  // namespace acmr
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::mlb

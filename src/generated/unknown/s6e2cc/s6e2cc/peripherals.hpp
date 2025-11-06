@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_S6E2CC_PERIPHERALS_HPP
 #define ALLOY_GENERATED_S6E2CC_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::s6e2cc {
 

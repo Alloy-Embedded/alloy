@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_TM4C1231D5PZ_PERIPHERALS_HPP
 #define ALLOY_GENERATED_TM4C1231D5PZ_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::tm4c1231d5pz {
 

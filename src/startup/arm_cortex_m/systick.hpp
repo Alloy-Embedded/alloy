@@ -17,7 +17,7 @@
 #pragma once
 
 #include "core_common.hpp"
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::arm::cortex_m::systick {
 
@@ -35,13 +35,13 @@ inline bool configure(uint32_t ticks, bool enable_interrupt = true) {
     }
 
     // Disable SysTick during configuration
-    SYSTICK->CTRL = 0;
+    SYSTICK()->CTRL = 0;
 
     // Set reload value (counts from this value down to 0)
-    SYSTICK->LOAD = ticks - 1;
+    SYSTICK()->LOAD = ticks - 1;
 
     // Reset current value to 0
-    SYSTICK->VAL = 0;
+    SYSTICK()->VAL = 0;
 
     // Configure and enable:
     // - Use processor clock
@@ -52,39 +52,39 @@ inline bool configure(uint32_t ticks, bool enable_interrupt = true) {
         ctrl |= systick_ctrl::TICKINT;
     }
 
-    SYSTICK->CTRL = ctrl;
+    SYSTICK()->CTRL = ctrl;
 
     return true;
 }
 
 /// Disable SysTick timer
 inline void disable() {
-    SYSTICK->CTRL = 0;
+    SYSTICK()->CTRL = 0;
 }
 
 /// Get current SysTick counter value
 /// @return Current counter value (0 to reload value)
 inline uint32_t get_value() {
-    return SYSTICK->VAL;
+    return SYSTICK()->VAL;
 }
 
 /// Get SysTick reload value
 /// @return Reload value
 inline uint32_t get_reload() {
-    return SYSTICK->LOAD;
+    return SYSTICK()->LOAD;
 }
 
 /// Check if SysTick has counted to zero since last check
 /// @return true if counter reached zero
 /// Note: This bit is cleared on read
 inline bool has_counted_to_zero() {
-    return (SYSTICK->CTRL & systick_ctrl::COUNTFLAG) != 0;
+    return (SYSTICK()->CTRL & systick_ctrl::COUNTFLAG) != 0;
 }
 
 /// Check if SysTick is enabled
 /// @return true if SysTick is enabled
 inline bool is_enabled() {
-    return (SYSTICK->CTRL & systick_ctrl::ENABLE) != 0;
+    return (SYSTICK()->CTRL & systick_ctrl::ENABLE) != 0;
 }
 
 /// Configure SysTick for millisecond timing

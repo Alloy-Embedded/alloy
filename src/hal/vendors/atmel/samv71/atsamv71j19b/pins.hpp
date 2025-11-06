@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71j19b::pins {
 
@@ -36,56 +36,56 @@ constexpr uint8_t PA22 = 22;  // A22
 constexpr uint8_t PA23 = 23;  // A23
 
 // Port B pins
-constexpr uint8_t PB0 = 0;  // B0
-constexpr uint8_t PB1 = 1;  // B1
-constexpr uint8_t PB2 = 2;  // B2
-constexpr uint8_t PB3 = 3;  // B3
+constexpr uint8_t PB0 = 32;  // B0
+constexpr uint8_t PB1 = 33;  // B1
+constexpr uint8_t PB2 = 34;  // B2
+constexpr uint8_t PB3 = 35;  // B3
 
 // Port C pins
-constexpr uint8_t PC0 = 0;  // C0
-constexpr uint8_t PC1 = 1;  // C1
-constexpr uint8_t PC2 = 2;  // C2
-constexpr uint8_t PC3 = 3;  // C3
-constexpr uint8_t PC4 = 4;  // C4
-constexpr uint8_t PC5 = 5;  // C5
-constexpr uint8_t PC6 = 6;  // C6
-constexpr uint8_t PC7 = 7;  // C7
-constexpr uint8_t PC8 = 8;  // C8
-constexpr uint8_t PC9 = 9;  // C9
-constexpr uint8_t PC10 = 10;  // C10
-constexpr uint8_t PC11 = 11;  // C11
-constexpr uint8_t PC12 = 12;  // C12
-constexpr uint8_t PC13 = 13;  // C13
-constexpr uint8_t PC14 = 14;  // C14
-constexpr uint8_t PC15 = 15;  // C15
-constexpr uint8_t PC16 = 16;  // C16
-constexpr uint8_t PC17 = 17;  // C17
-constexpr uint8_t PC18 = 18;  // C18
-constexpr uint8_t PC19 = 19;  // C19
+constexpr uint8_t PC0 = 64;  // C0
+constexpr uint8_t PC1 = 65;  // C1
+constexpr uint8_t PC2 = 66;  // C2
+constexpr uint8_t PC3 = 67;  // C3
+constexpr uint8_t PC4 = 68;  // C4
+constexpr uint8_t PC5 = 69;  // C5
+constexpr uint8_t PC6 = 70;  // C6
+constexpr uint8_t PC7 = 71;  // C7
+constexpr uint8_t PC8 = 72;  // C8
+constexpr uint8_t PC9 = 73;  // C9
+constexpr uint8_t PC10 = 74;  // C10
+constexpr uint8_t PC11 = 75;  // C11
+constexpr uint8_t PC12 = 76;  // C12
+constexpr uint8_t PC13 = 77;  // C13
+constexpr uint8_t PC14 = 78;  // C14
+constexpr uint8_t PC15 = 79;  // C15
+constexpr uint8_t PC16 = 80;  // C16
+constexpr uint8_t PC17 = 81;  // C17
+constexpr uint8_t PC18 = 82;  // C18
+constexpr uint8_t PC19 = 83;  // C19
 
 // Port D pins
-constexpr uint8_t PD0 = 0;  // D0
-constexpr uint8_t PD1 = 1;  // D1
-constexpr uint8_t PD2 = 2;  // D2
-constexpr uint8_t PD3 = 3;  // D3
-constexpr uint8_t PD4 = 4;  // D4
-constexpr uint8_t PD5 = 5;  // D5
-constexpr uint8_t PD6 = 6;  // D6
-constexpr uint8_t PD7 = 7;  // D7
-constexpr uint8_t PD8 = 8;  // D8
-constexpr uint8_t PD9 = 9;  // D9
-constexpr uint8_t PD10 = 10;  // D10
-constexpr uint8_t PD11 = 11;  // D11
-constexpr uint8_t PD12 = 12;  // D12
-constexpr uint8_t PD13 = 13;  // D13
-constexpr uint8_t PD14 = 14;  // D14
-constexpr uint8_t PD15 = 15;  // D15
-constexpr uint8_t PD16 = 16;  // D16
-constexpr uint8_t PD17 = 17;  // D17
-constexpr uint8_t PD18 = 18;  // D18
-constexpr uint8_t PD19 = 19;  // D19
-constexpr uint8_t PD20 = 20;  // D20
-constexpr uint8_t PD21 = 21;  // D21
+constexpr uint8_t PD0 = 96;  // D0
+constexpr uint8_t PD1 = 97;  // D1
+constexpr uint8_t PD2 = 98;  // D2
+constexpr uint8_t PD3 = 99;  // D3
+constexpr uint8_t PD4 = 100;  // D4
+constexpr uint8_t PD5 = 101;  // D5
+constexpr uint8_t PD6 = 102;  // D6
+constexpr uint8_t PD7 = 103;  // D7
+constexpr uint8_t PD8 = 104;  // D8
+constexpr uint8_t PD9 = 105;  // D9
+constexpr uint8_t PD10 = 106;  // D10
+constexpr uint8_t PD11 = 107;  // D11
+constexpr uint8_t PD12 = 108;  // D12
+constexpr uint8_t PD13 = 109;  // D13
+constexpr uint8_t PD14 = 110;  // D14
+constexpr uint8_t PD15 = 111;  // D15
+constexpr uint8_t PD16 = 112;  // D16
+constexpr uint8_t PD17 = 113;  // D17
+constexpr uint8_t PD18 = 114;  // D18
+constexpr uint8_t PD19 = 115;  // D19
+constexpr uint8_t PD20 = 116;  // D20
+constexpr uint8_t PD21 = 117;  // D21
 
 
 // Port base indices for pin addressing

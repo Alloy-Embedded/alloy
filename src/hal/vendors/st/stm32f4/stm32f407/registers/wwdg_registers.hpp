@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::wwdg {
 
@@ -40,7 +40,8 @@ struct WWDG_Registers {
 static_assert(sizeof(WWDG_Registers) >= 12, "WWDG_Registers size mismatch");
 
 /// WWDG peripheral instance
-constexpr WWDG_Registers* WWDG = 
-    reinterpret_cast<WWDG_Registers*>(0x40002C00);
+inline WWDG_Registers* WWDG() {
+    return reinterpret_cast<WWDG_Registers*>(0x40002C00);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::wwdg

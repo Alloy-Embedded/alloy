@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::same70::atsame70q21::pwm0 {
 
@@ -206,8 +206,8 @@ struct PWM0_Registers {
 
     /// PWM Event Line 0 Mode Register 0
     /// Offset: 0x007C
-    volatile uint32_t ELMR[2];
-    uint8_t RESERVED_0080[32]; ///< Reserved
+    volatile uint32_t ELMR[2][2];
+    uint8_t RESERVED_0084[28]; ///< Reserved
 
     /// PWM Spread Spectrum Register
     /// Offset: 0x00A0
@@ -285,7 +285,8 @@ struct PWM0_Registers {
 static_assert(sizeof(PWM0_Registers) >= 1124, "PWM0_Registers size mismatch");
 
 /// PWM0 peripheral instance
-constexpr PWM0_Registers* PWM0 = 
-    reinterpret_cast<PWM0_Registers*>(0x40020000);
+inline PWM0_Registers* PWM0() {
+    return reinterpret_cast<PWM0_Registers*>(0x40020000);
+}
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::pwm0

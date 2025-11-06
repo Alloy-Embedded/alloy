@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::esp32::sha {
 
@@ -17,8 +17,8 @@ using namespace alloy::hal::bitfields;
 // SHA Bit Field Definitions
 // ============================================================================
 
-/// TEXT%s - TEXT%s
-namespace text%s {
+/// TEXT[32] - TEXT[32]
+namespace text {
     /// SHA Message block and hash result register.
     /// Position: 0, Width: 32
     /// Access: read-write
@@ -26,7 +26,7 @@ namespace text%s {
     constexpr uint32_t TEXT_Pos = 0;
     constexpr uint32_t TEXT_Msk = TEXT::mask;
 
-}  // namespace text%s
+}  // namespace text
 
 /// SHA1_START - SHA1_START
 namespace sha1_start {

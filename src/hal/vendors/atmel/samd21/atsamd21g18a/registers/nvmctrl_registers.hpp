@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::nvmctrl {
 
@@ -63,7 +63,8 @@ struct NVMCTRL_Registers {
 static_assert(sizeof(NVMCTRL_Registers) >= 34, "NVMCTRL_Registers size mismatch");
 
 /// NVMCTRL peripheral instance
-constexpr NVMCTRL_Registers* NVMCTRL = 
-    reinterpret_cast<NVMCTRL_Registers*>(0x41004000);
+inline NVMCTRL_Registers* NVMCTRL() {
+    return reinterpret_cast<NVMCTRL_Registers*>(0x41004000);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::nvmctrl

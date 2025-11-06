@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::ltdc {
 
@@ -282,7 +282,8 @@ struct LTDC_Registers {
 static_assert(sizeof(LTDC_Registers) >= 328, "LTDC_Registers size mismatch");
 
 /// LTDC peripheral instance
-constexpr LTDC_Registers* LTDC = 
-    reinterpret_cast<LTDC_Registers*>(0x40016800);
+inline LTDC_Registers* LTDC() {
+    return reinterpret_cast<LTDC_Registers*>(0x40016800);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::ltdc

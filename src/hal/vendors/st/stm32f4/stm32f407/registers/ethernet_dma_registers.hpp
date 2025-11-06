@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::ethernet_dma {
 
@@ -118,7 +118,8 @@ struct Ethernet_DMA_Registers {
 static_assert(sizeof(Ethernet_DMA_Registers) >= 88, "Ethernet_DMA_Registers size mismatch");
 
 /// Ethernet_DMA peripheral instance
-constexpr Ethernet_DMA_Registers* Ethernet_DMA = 
-    reinterpret_cast<Ethernet_DMA_Registers*>(0x40029000);
+inline Ethernet_DMA_Registers* Ethernet_DMA() {
+    return reinterpret_cast<Ethernet_DMA_Registers*>(0x40029000);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::ethernet_dma

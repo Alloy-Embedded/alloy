@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::rcc {
 
@@ -173,7 +173,8 @@ struct RCC_Registers {
 static_assert(sizeof(RCC_Registers) >= 136, "RCC_Registers size mismatch");
 
 /// RCC peripheral instance
-constexpr RCC_Registers* RCC = 
-    reinterpret_cast<RCC_Registers*>(0x40023800);
+inline RCC_Registers* RCC() {
+    return reinterpret_cast<RCC_Registers*>(0x40023800);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::rcc

@@ -10,8 +10,7 @@
 
 #pragma once
 
-#include <cstdint>
-#include <cstring>
+#include <stdint.h>
 
 namespace alloy::startup {
 

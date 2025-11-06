@@ -25,8 +25,6 @@
 // Core utilities
 // ============================================================================
 
-#include "bitfield_utils.hpp"
-
 // ============================================================================
 // Peripheral Register Structures
 // ============================================================================
@@ -145,7 +143,6 @@ namespace alloy::hal::st::stm32f1::stm32f103xx {
 //   - 31 peripheral bit field definitions
 //   - Enumeration definitions
 //   - Pin alternate function mappings
-//   - BitField template utilities
 //
 // Total peripherals with registers: 31
 //

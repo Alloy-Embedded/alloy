@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::nvic {
 
@@ -244,7 +244,8 @@ struct NVIC_Registers {
 static_assert(sizeof(NVIC_Registers) >= 848, "NVIC_Registers size mismatch");
 
 /// NVIC peripheral instance
-constexpr NVIC_Registers* NVIC = 
-    reinterpret_cast<NVIC_Registers*>(0xE000E100);
+inline NVIC_Registers* NVIC() {
+    return reinterpret_cast<NVIC_Registers*>(0xE000E100);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::nvic

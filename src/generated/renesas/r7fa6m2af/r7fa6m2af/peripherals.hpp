@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_R7FA6M2AF_PERIPHERALS_HPP
 #define ALLOY_GENERATED_R7FA6M2AF_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::r7fa6m2af {
 

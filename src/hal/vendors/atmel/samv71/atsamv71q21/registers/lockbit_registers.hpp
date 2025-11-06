@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::lockbit {
 
@@ -38,7 +38,8 @@ struct LOCKBIT_Registers {
 static_assert(sizeof(LOCKBIT_Registers) >= 16, "LOCKBIT_Registers size mismatch");
 
 /// LOCKBIT peripheral instance
-constexpr LOCKBIT_Registers* LOCKBIT = 
-    reinterpret_cast<LOCKBIT_Registers*>(0x00000000);
+inline LOCKBIT_Registers* LOCKBIT() {
+    return reinterpret_cast<LOCKBIT_Registers*>(0x00000000);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::lockbit

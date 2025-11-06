@@ -14,7 +14,7 @@
 #pragma once
 
 #include "../arm_cortex_m/core_common.hpp"
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::arm::cortex_m4::fpu {
 

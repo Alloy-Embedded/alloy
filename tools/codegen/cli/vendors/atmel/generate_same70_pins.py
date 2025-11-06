@@ -285,117 +285,75 @@ def get_family_name(device_name: str) -> str:
 
 
 def generate_hardware_header(device_name: str, variant_config: Dict) -> str:
-    """Generate hardware.hpp with PIO register definitions"""
+    """
+    Generate hardware.hpp as thin adapter to generated register files.
+
+    This replaces the old hand-written PIO_Registers with references to
+    auto-generated register structures from SVD files.
+
+    Benefits:
+    - Uses auto-generated registers (always correct)
+    - Eliminates ~100 lines of duplicated code per MCU
+    - Maintains backward compatibility
+    - Zero overhead (compile-time aliases)
+    """
 
     family = get_family_name(device_name)
 
+    # Determine which ports this variant has
+    ports = variant_config.get('ports', {})
+    port_includes = []
+    port_exports = []
+
+    for port_name in sorted(ports.keys()):
+        port_lower = f"pio{port_name.lower()}"
+        port_upper = f"PIO{port_name.upper()}"
+        port_includes.append(f'#include "registers/{port_lower}_registers.hpp"')
+        port_exports.append(f"using {port_lower}::{port_upper};")
+
+    includes_str = '\n'.join(port_includes)
+    exports_str = '\n'.join(port_exports)
+
     content = f"""#pragma once
 
-#include <cstdint>
+#include <stdint.h>
+
+// Include auto-generated register definitions from SVD
+{includes_str}
 
 namespace alloy::hal::atmel::{family}::{device_name.lower()}::hardware {{
 
 // ============================================================================
-// Hardware Register Definitions for {device_name.upper()}
-// Based on SAME70 PIO (Parallel I/O) Controller Architecture
+// Hardware Adapter for {device_name.upper()}
+//
+// This file provides backward compatibility by re-exporting auto-generated
+// register definitions. The actual register structures are generated from
+// CMSIS-SVD files and are always correct.
 // ============================================================================
 
-// Memory map
+// Memory map (not available in register files)
 constexpr uint32_t FLASH_BASE = 0x00400000;
 constexpr uint32_t FLASH_SIZE = {variant_config['flash_kb']}U * 1024U;
 constexpr uint32_t SRAM_BASE  = 0x20000000;
 constexpr uint32_t SRAM_SIZE  = {variant_config['ram_kb']}U * 1024U;
 
-// PIO Controller base addresses
-constexpr uint32_t PIOA_BASE = 0x400E0E00;
-constexpr uint32_t PIOB_BASE = 0x400E1000;
-constexpr uint32_t PIOC_BASE = 0x400E1200;
-constexpr uint32_t PIOD_BASE = 0x400E1400;
-constexpr uint32_t PIOE_BASE = 0x400E1600;
-
 // ============================================================================
-// PIO Register Structure (SAME70 Architecture)
+// Type Alias for PIO Registers
+//
+// Uses auto-generated type from pioa_registers.hpp
+// All PIO ports (A, B, C, D, E) share the same register structure
 // ============================================================================
 
-struct PIO_Registers {{
-    volatile uint32_t PER;         // 0x00: PIO Enable Register
-    volatile uint32_t PDR;         // 0x04: PIO Disable Register
-    volatile uint32_t PSR;         // 0x08: PIO Status Register
-    uint32_t RESERVED1;            // 0x0C: Reserved
-    volatile uint32_t OER;         // 0x10: Output Enable Register
-    volatile uint32_t ODR;         // 0x14: Output Disable Register
-    volatile uint32_t OSR;         // 0x18: Output Status Register
-    uint32_t RESERVED2;            // 0x1C: Reserved
-    volatile uint32_t IFER;        // 0x20: Glitch Input Filter Enable
-    volatile uint32_t IFDR;        // 0x24: Glitch Input Filter Disable
-    volatile uint32_t IFSR;        // 0x28: Glitch Input Filter Status
-    uint32_t RESERVED3;            // 0x2C: Reserved
-    volatile uint32_t SODR;        // 0x30: Set Output Data Register
-    volatile uint32_t CODR;        // 0x34: Clear Output Data Register
-    volatile uint32_t ODSR;        // 0x38: Output Data Status Register
-    volatile uint32_t PDSR;        // 0x3C: Pin Data Status Register
-    volatile uint32_t IER;         // 0x40: Interrupt Enable Register
-    volatile uint32_t IDR;         // 0x44: Interrupt Disable Register
-    volatile uint32_t IMR;         // 0x48: Interrupt Mask Register
-    volatile uint32_t ISR;         // 0x4C: Interrupt Status Register
-    volatile uint32_t MDER;        // 0x50: Multi-driver Enable Register
-    volatile uint32_t MDDR;        // 0x54: Multi-driver Disable Register
-    volatile uint32_t MDSR;        // 0x58: Multi-driver Status Register
-    uint32_t RESERVED4;            // 0x5C: Reserved
-    volatile uint32_t PUDR;        // 0x60: Pull-up Disable Register
-    volatile uint32_t PUER;        // 0x64: Pull-up Enable Register
-    volatile uint32_t PUSR;        // 0x68: Pull-up Status Register
-    uint32_t RESERVED5;            // 0x6C: Reserved
-    volatile uint32_t ABCDSR[2];   // 0x70-0x74: Peripheral ABCD Select Register
-    uint32_t RESERVED6[2];         // 0x78-0x7C: Reserved
-    volatile uint32_t IFSCDR;      // 0x80: Input Filter Slow Clock Disable
-    volatile uint32_t IFSCER;      // 0x84: Input Filter Slow Clock Enable
-    volatile uint32_t IFSCSR;      // 0x88: Input Filter Slow Clock Status
-    volatile uint32_t SCDR;        // 0x8C: Slow Clock Divider Debouncing
-    volatile uint32_t PPDDR;       // 0x90: Pad Pull-down Disable Register
-    volatile uint32_t PPDER;       // 0x94: Pad Pull-down Enable Register
-    volatile uint32_t PPDSR;       // 0x98: Pad Pull-down Status Register
-    uint32_t RESERVED7;            // 0x9C: Reserved
-    volatile uint32_t OWER;        // 0xA0: Output Write Enable
-    volatile uint32_t OWDR;        // 0xA4: Output Write Disable
-    volatile uint32_t OWSR;        // 0xA8: Output Write Status Register
-    uint32_t RESERVED8;            // 0xAC: Reserved
-    volatile uint32_t AIMER;       // 0xB0: Additional Interrupt Modes Enable
-    volatile uint32_t AIMDR;       // 0xB4: Additional Interrupt Modes Disable
-    volatile uint32_t AIMMR;       // 0xB8: Additional Interrupt Modes Mask
-    uint32_t RESERVED9;            // 0xBC: Reserved
-    volatile uint32_t ESR;         // 0xC0: Edge Select Register
-    volatile uint32_t LSR;         // 0xC4: Level Select Register
-    volatile uint32_t ELSR;        // 0xC8: Edge/Level Status Register
-    uint32_t RESERVED10;           // 0xCC: Reserved
-    volatile uint32_t FELLSR;      // 0xD0: Falling Edge/Low-Level Select
-    volatile uint32_t REHLSR;      // 0xD4: Rising Edge/High-Level Select
-    volatile uint32_t FRLHSR;      // 0xD8: Fall/Rise - Low/High Status
-    uint32_t RESERVED11;           // 0xDC: Reserved
-    volatile uint32_t LOCKSR;      // 0xE0: Lock Status
-    volatile uint32_t WPMR;        // 0xE4: Write Protection Mode Register
-    volatile uint32_t WPSR;        // 0xE8: Write Protection Status Register
-    uint32_t RESERVED12[5];        // 0xEC-0xFC: Reserved
-    volatile uint32_t SCHMITT;     // 0x100: Schmitt Trigger Register
-    uint32_t RESERVED13[5];        // 0x104-0x114: Reserved
-    volatile uint32_t DRIVER;      // 0x118: I/O Drive Register
-    uint32_t RESERVED14[13];       // 0x11C-0x14C: Reserved
-    volatile uint32_t PCMR;        // 0x150: Parallel Capture Mode Register
-    volatile uint32_t PCIER;       // 0x154: Parallel Capture Interrupt Enable
-    volatile uint32_t PCIDR;       // 0x158: Parallel Capture Interrupt Disable
-    volatile uint32_t PCIMR;       // 0x15C: Parallel Capture Interrupt Mask
-    volatile uint32_t PCISR;       // 0x160: Parallel Capture Interrupt Status
-    volatile uint32_t PCRHR;       // 0x164: Parallel Capture Reception Holding
-}};
+using PIO_Registers = pioa::PIOA_Registers;
 
-// PIO port instances
-static_assert(sizeof(PIO_Registers) >= 0x164, "PIO_Registers size mismatch");
+// ============================================================================
+// PIO Port Instances
+//
+// Re-export auto-generated peripheral instances from register files
+// These are constexpr pointers with correct base addresses from SVD
+// ============================================================================
 
-inline PIO_Registers* PIOA = reinterpret_cast<PIO_Registers*>(PIOA_BASE);
-inline PIO_Registers* PIOB = reinterpret_cast<PIO_Registers*>(PIOB_BASE);
-inline PIO_Registers* PIOC = reinterpret_cast<PIO_Registers*>(PIOC_BASE);
-inline PIO_Registers* PIOD = reinterpret_cast<PIO_Registers*>(PIOD_BASE);
-inline PIO_Registers* PIOE = reinterpret_cast<PIO_Registers*>(PIOE_BASE);
+{exports_str}
 
 }}  // namespace alloy::hal::atmel::{family}::{device_name.lower()}::hardware
 """
@@ -410,7 +368,7 @@ def generate_pins_header(device_name: str, variant_config: Dict) -> str:
 
     content = f"""#pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::{family}::{device_name.lower()}::pins {{
 
@@ -422,11 +380,17 @@ namespace alloy::hal::atmel::{family}::{device_name.lower()}::pins {{
 """
 
     # Generate pin numbers for each port
+    # Port numbering scheme: GlobalPin = (Port * 32) + Pin
+    # Port A: 0-31, Port B: 32-63, Port C: 64-95, Port D: 96-127, Port E: 128-159
+    port_base = {'A': 0, 'B': 32, 'C': 64, 'D': 96, 'E': 128}
+
     for port_name, pin_numbers in variant_config['ports'].items():
         content += f"// Port {port_name} pins\n"
+        base = port_base.get(port_name, 0)
         for pin_num in pin_numbers:
             pin_name = f"P{port_name}{pin_num}"
-            content += f"constexpr uint8_t {pin_name} = {pin_num};  // {port_name}{pin_num}\n"
+            global_pin = base + pin_num  # Global pin number
+            content += f"constexpr uint8_t {pin_name} = {global_pin};  // {port_name}{pin_num}\n"
         content += "\n"
 
     content += f"""
@@ -527,28 +491,303 @@ enum class PeripheralFunction : uint8_t {{
     return content
 
 
-def generate_gpio_header(device_name: str) -> str:
-    """Generate main gpio.hpp that includes all pin headers"""
+def generate_gpio_header(device_name: str, variant_config: Dict) -> str:
+    """
+    Generate type-safe, zero-overhead GPIO abstraction using generated registers.
+
+    This creates a GPIOPin template that:
+    - Uses auto-generated register types from SVD
+    - Is fully type-safe (compile-time checks)
+    - Has zero runtime overhead (all constexpr)
+    - Provides clean, high-level API
+    """
 
     family = get_family_name(device_name)
 
+    # Determine which ports this variant has
+    ports = variant_config.get('ports', {})
+    port_includes = []
+
+    for port_name in sorted(ports.keys()):
+        port_lower = f"pio{port_name.lower()}"
+        port_includes.append(f'#include "registers/{port_lower}_registers.hpp"')
+
+    includes_str = '\n'.join(port_includes)
+
+    # Generate port mapping cases
+    port_count = len(ports)
+    port_cases = []
+    for idx, port_name in enumerate(sorted(ports.keys())):
+        port_lower = f"pio{port_name.lower()}"
+        port_upper = f"PIO{port_name.upper()}"
+        port_cases.append(f"    if constexpr (Port == {idx}) return {port_lower}::{port_upper};")
+
+    port_mapping = '\n'.join(port_cases)
+
     content = f"""#pragma once
+
+#include <stdint.h>
+
+// Include auto-generated register definitions
+{includes_str}
 
 #include "hardware.hpp"
 #include "pins.hpp"
 #include "pin_functions.hpp"
-#include "../pio_hal.hpp"
 
 namespace alloy::hal::atmel::{family}::{device_name.lower()} {{
 
+// ============================================================================
+// Port Register Mapping (Compile-Time)
+//
+// Maps port index to actual PIO register instance from generated files
+// This is fully resolved at compile time with zero runtime overhead
+// ============================================================================
+
+template<uint8_t Port>
+constexpr auto getPortRegister() {{
+{port_mapping}
+    else static_assert(Port < {port_count}, "Invalid port index");
+}}
+
+// ============================================================================
+// Type-Safe GPIO Pin Abstraction
+//
+// Template-based GPIO abstraction using auto-generated register types.
+// All operations are constexpr and inline, resulting in assembly identical
+// to direct register manipulation.
+//
+// Features:
+// - Type-safe at compile time
+// - Zero runtime overhead
+// - Uses auto-generated register definitions
+// - Clean, high-level API
+//
+// Usage:
+//   using Led = GPIOPin<pins::PC8>;
+//   Led::configureOutput();
+//   Led::set();
+//   Led::toggle();
+// ============================================================================
+
+template<uint8_t GlobalPin>
+class GPIOPin {{
+public:
+    // Compile-time port/pin calculation
+    static constexpr uint8_t PORT = GlobalPin / 32;
+    static constexpr uint8_t PIN = GlobalPin % 32;
+    static constexpr uint32_t MASK = (1U << PIN);
+
+    // Get port register at compile-time
+    using PortRegType = decltype(getPortRegister<PORT>());
+    static constexpr PortRegType PORT_REG = getPortRegister<PORT>();
+
+    // ========================================================================
+    // Pin Mode Configuration
+    // ========================================================================
+
+    /// Configure pin as GPIO output
+    static inline void configureOutput() {{
+        PORT_REG->PER = MASK;    // Enable PIO control
+        PORT_REG->OER = MASK;    // Enable output
+        PORT_REG->PUDR = MASK;   // Disable pull-up
+        PORT_REG->PPDDR = MASK;  // Disable pull-down
+    }}
+
+    /// Configure pin as GPIO input
+    static inline void configureInput() {{
+        PORT_REG->PER = MASK;    // Enable PIO control
+        PORT_REG->ODR = MASK;    // Disable output (input mode)
+        PORT_REG->PUDR = MASK;   // Disable pull-up
+        PORT_REG->PPDDR = MASK;  // Disable pull-down
+    }}
+
+    /// Configure pin as input with pull-up
+    static inline void configureInputPullUp() {{
+        PORT_REG->PER = MASK;    // Enable PIO control
+        PORT_REG->ODR = MASK;    // Disable output
+        PORT_REG->PUER = MASK;   // Enable pull-up
+        PORT_REG->PPDDR = MASK;  // Disable pull-down
+    }}
+
+    /// Configure pin as input with pull-down
+    static inline void configureInputPullDown() {{
+        PORT_REG->PER = MASK;    // Enable PIO control
+        PORT_REG->ODR = MASK;    // Disable output
+        PORT_REG->PUDR = MASK;   // Disable pull-up
+        PORT_REG->PPDER = MASK;  // Enable pull-down
+    }}
+
+    /// Configure pin as input with glitch filter
+    static inline void configureInputFiltered() {{
+        configureInput();
+        PORT_REG->IFER = MASK;   // Enable glitch filter
+    }}
+
+    // ========================================================================
+    // Digital I/O Operations
+    // ========================================================================
+
+    /// Set pin high
+    static inline void set() {{
+        PORT_REG->SODR = MASK;   // Set Output Data Register
+    }}
+
+    /// Set pin low
+    static inline void clear() {{
+        PORT_REG->CODR = MASK;   // Clear Output Data Register
+    }}
+
+    /// Toggle pin state
+    static inline void toggle() {{
+        if (PORT_REG->ODSR & MASK) {{
+            clear();
+        }} else {{
+            set();
+        }}
+    }}
+
+    /// Write boolean value to pin
+    static inline void write(bool value) {{
+        if (value) {{
+            set();
+        }} else {{
+            clear();
+        }}
+    }}
+
+    /// Read pin state
+    [[nodiscard]] static inline bool read() {{
+        return (PORT_REG->PDSR & MASK) != 0;
+    }}
+
+    // ========================================================================
+    // Peripheral Function Configuration
+    // ========================================================================
+
+    enum class PeripheralFunction : uint8_t {{
+        PIO = 0,  // GPIO mode
+        A = 1,    // Peripheral A
+        B = 2,    // Peripheral B
+        C = 3,    // Peripheral C
+        D = 4,    // Peripheral D
+    }};
+
+    /// Configure pin for peripheral function (A, B, C, D)
+    static inline void configurePeripheral(PeripheralFunction func) {{
+        if (func == PeripheralFunction::PIO) {{
+            PORT_REG->PER = MASK;  // Enable PIO control
+            return;
+        }}
+
+        // Disable PIO control (enable peripheral)
+        PORT_REG->PDR = MASK;
+
+        // Set peripheral function using ABCDSR registers
+        // ABCDSR[0] = bit 0, ABCDSR[1] = bit 1
+        // 00 = A, 01 = B, 10 = C, 11 = D
+        uint8_t periph_val = static_cast<uint8_t>(func) - 1;
+
+        if (periph_val & 0x01) {{
+            PORT_REG->ABCDSR[0] |= MASK;
+        }} else {{
+            PORT_REG->ABCDSR[0] &= ~MASK;
+        }}
+
+        if (periph_val & 0x02) {{
+            PORT_REG->ABCDSR[1] |= MASK;
+        }} else {{
+            PORT_REG->ABCDSR[1] &= ~MASK;
+        }}
+    }}
+
+    // ========================================================================
+    // Advanced Features
+    // ========================================================================
+
+    /// Enable multi-driver (open-drain) mode
+    static inline void enableMultiDriver() {{
+        PORT_REG->MDER = MASK;
+    }}
+
+    /// Disable multi-driver mode
+    static inline void disableMultiDriver() {{
+        PORT_REG->MDDR = MASK;
+    }}
+
+    /// Enable Schmitt trigger
+    static inline void enableSchmitt() {{
+        PORT_REG->SCHMITT |= MASK;
+    }}
+
+    /// Disable Schmitt trigger
+    static inline void disableSchmitt() {{
+        PORT_REG->SCHMITT &= ~MASK;
+    }}
+
+    // ========================================================================
+    // Interrupt Configuration
+    // ========================================================================
+
+    enum class InterruptMode : uint8_t {{
+        Disabled = 0,
+        RisingEdge = 1,
+        FallingEdge = 2,
+        BothEdges = 3,
+        LowLevel = 4,
+        HighLevel = 5,
+    }};
+
+    /// Configure interrupt mode
+    static inline void configureInterrupt(InterruptMode mode) {{
+        if (mode == InterruptMode::Disabled) {{
+            PORT_REG->IDR = MASK;
+            return;
+        }}
+
+        PORT_REG->AIMER = MASK;  // Enable additional interrupt modes
+
+        switch (mode) {{
+            case InterruptMode::RisingEdge:
+                PORT_REG->ESR = MASK;      // Edge select
+                PORT_REG->REHLSR = MASK;   // Rising edge
+                break;
+
+            case InterruptMode::FallingEdge:
+                PORT_REG->ESR = MASK;      // Edge select
+                PORT_REG->FELLSR = MASK;   // Falling edge
+                break;
+
+            case InterruptMode::BothEdges:
+                PORT_REG->ESR = MASK;      // Edge select
+                break;
+
+            case InterruptMode::LowLevel:
+                PORT_REG->LSR = MASK;      // Level select
+                PORT_REG->FELLSR = MASK;   // Low level
+                break;
+
+            case InterruptMode::HighLevel:
+                PORT_REG->LSR = MASK;      // Level select
+                PORT_REG->REHLSR = MASK;   // High level
+                break;
+
+            default:
+                break;
+        }}
+
+        PORT_REG->IER = MASK;  // Enable interrupt
+    }}
+
+    /// Check if interrupt is pending
+    [[nodiscard]] static inline bool isInterruptPending() {{
+        return (PORT_REG->ISR & MASK) != 0;
+    }}
+}};
+
 // Re-export from sub-namespaces for convenience
-using namespace hardware;
 using namespace pins;
 using namespace pin_functions;
-
-// Use the {family.upper()} PIO HAL
-template<uint8_t Pin>
-using GPIOPin = {family}::PIOPin<hardware::PIO_Registers, Pin>;
 
 }}  // namespace alloy::hal::atmel::{family}::{device_name.lower()}
 """
@@ -580,7 +819,7 @@ def generate_variant(device_name: str, variant_config: Dict) -> None:
         "hardware.hpp": generate_hardware_header(device_name, variant_config),
         "pins.hpp": generate_pins_header(device_name, variant_config),
         "pin_functions.hpp": generate_pin_functions_header(device_name, variant_config),
-        "gpio.hpp": generate_gpio_header(device_name),
+        "gpio.hpp": generate_gpio_header(device_name, variant_config),
     }
 
     success = True

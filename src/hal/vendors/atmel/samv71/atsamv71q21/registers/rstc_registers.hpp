@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::rstc {
 
@@ -36,7 +36,8 @@ struct RSTC_Registers {
 static_assert(sizeof(RSTC_Registers) >= 12, "RSTC_Registers size mismatch");
 
 /// RSTC peripheral instance
-constexpr RSTC_Registers* RSTC = 
-    reinterpret_cast<RSTC_Registers*>(0x400E1800);
+inline RSTC_Registers* RSTC() {
+    return reinterpret_cast<RSTC_Registers*>(0x400E1800);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::rstc

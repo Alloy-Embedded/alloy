@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::same70::atsame70q21::chipid {
 
@@ -32,7 +32,8 @@ struct CHIPID_Registers {
 static_assert(sizeof(CHIPID_Registers) >= 8, "CHIPID_Registers size mismatch");
 
 /// CHIPID peripheral instance
-constexpr CHIPID_Registers* CHIPID = 
-    reinterpret_cast<CHIPID_Registers*>(0x400E0940);
+inline CHIPID_Registers* CHIPID() {
+    return reinterpret_cast<CHIPID_Registers*>(0x400E0940);
+}
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::chipid

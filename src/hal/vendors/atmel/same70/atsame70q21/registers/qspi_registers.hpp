@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::same70::atsame70q21::qspi {
 
@@ -98,7 +98,8 @@ struct QSPI_Registers {
 static_assert(sizeof(QSPI_Registers) >= 236, "QSPI_Registers size mismatch");
 
 /// QSPI peripheral instance
-constexpr QSPI_Registers* QSPI = 
-    reinterpret_cast<QSPI_Registers*>(0x4007C000);
+inline QSPI_Registers* QSPI() {
+    return reinterpret_cast<QSPI_Registers*>(0x4007C000);
+}
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::qspi

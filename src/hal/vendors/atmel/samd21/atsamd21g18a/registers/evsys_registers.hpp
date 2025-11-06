@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::evsys {
 
@@ -55,7 +55,8 @@ struct EVSYS_Registers {
 static_assert(sizeof(EVSYS_Registers) >= 28, "EVSYS_Registers size mismatch");
 
 /// EVSYS peripheral instance
-constexpr EVSYS_Registers* EVSYS = 
-    reinterpret_cast<EVSYS_Registers*>(0x42000400);
+inline EVSYS_Registers* EVSYS() {
+    return reinterpret_cast<EVSYS_Registers*>(0x42000400);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::evsys

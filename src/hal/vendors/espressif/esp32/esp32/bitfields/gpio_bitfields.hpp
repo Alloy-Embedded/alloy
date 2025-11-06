@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::esp32::gpio {
 
@@ -410,8 +410,8 @@ namespace cpusdio_int1 {
 
 }  // namespace cpusdio_int1
 
-/// PIN%s - PIN%s
-namespace pin%s {
+/// PIN[40] - PIN[40]
+namespace pin {
     /// if set to 0: normal output  if set to 1: open drain
     /// Position: 2, Width: 1
     /// Access: read-write
@@ -447,7 +447,7 @@ namespace pin%s {
     constexpr uint32_t INT_ENA_Pos = 13;
     constexpr uint32_t INT_ENA_Msk = INT_ENA::mask;
 
-}  // namespace pin%s
+}  // namespace pin
 
 /// cali_conf - cali_conf
 namespace cali_conf {
@@ -487,8 +487,8 @@ namespace cali_data {
 
 }  // namespace cali_data
 
-/// FUNC%s_IN_SEL_CFG - FUNC%s_IN_SEL_CFG
-namespace func%s_in_sel_cfg {
+/// FUNC[256]_IN_SEL_CFG - FUNC[256]_IN_SEL_CFG
+namespace func_in_sel_cfg {
     /// select one of the 256 inputs
     /// Position: 0, Width: 6
     /// Access: read-write
@@ -510,10 +510,10 @@ namespace func%s_in_sel_cfg {
     constexpr uint32_t SEL_Pos = 7;
     constexpr uint32_t SEL_Msk = SEL::mask;
 
-}  // namespace func%s_in_sel_cfg
+}  // namespace func_in_sel_cfg
 
-/// FUNC%s_OUT_SEL_CFG - FUNC%s_OUT_SEL_CFG
-namespace func%s_out_sel_cfg {
+/// FUNC[40]_OUT_SEL_CFG - FUNC[40]_OUT_SEL_CFG
+namespace func_out_sel_cfg {
     /// select one of the 256 output to 40 GPIO
     /// Position: 0, Width: 9
     /// Access: read-write
@@ -542,6 +542,6 @@ namespace func%s_out_sel_cfg {
     constexpr uint32_t OEN_INV_SEL_Pos = 11;
     constexpr uint32_t OEN_INV_SEL_Msk = OEN_INV_SEL::mask;
 
-}  // namespace func%s_out_sel_cfg
+}  // namespace func_out_sel_cfg
 
 }  // namespace alloy::hal::espressif::esp32::esp32::gpio

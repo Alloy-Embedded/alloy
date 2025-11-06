@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::same70::atsame70q21::hsmci {
 
@@ -55,8 +55,7 @@ struct HSMCI_Registers {
     /// Response Register 0
     /// Offset: 0x0020
     /// Access: read-only
-    volatile uint32_t RSPR[4];
-    uint8_t RESERVED_0024[12]; ///< Reserved
+    volatile uint32_t RSPR[4][4];
 
     /// Receive Data Register
     /// Offset: 0x0030
@@ -110,13 +109,14 @@ struct HSMCI_Registers {
 
     /// FIFO Memory Aperture0 0
     /// Offset: 0x0200
-    volatile uint32_t FIFO[256];
+    volatile uint32_t FIFO[256][256];
 };
 
-static_assert(sizeof(HSMCI_Registers) >= 516, "HSMCI_Registers size mismatch");
+static_assert(sizeof(HSMCI_Registers) >= 1536, "HSMCI_Registers size mismatch");
 
 /// HSMCI peripheral instance
-constexpr HSMCI_Registers* HSMCI = 
-    reinterpret_cast<HSMCI_Registers*>(0x40000000);
+inline HSMCI_Registers* HSMCI() {
+    return reinterpret_cast<HSMCI_Registers*>(0x40000000);
+}
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::hsmci

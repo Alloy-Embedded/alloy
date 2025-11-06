@@ -11,8 +11,8 @@ import shutil
 CODEGEN_DIR = Path(__file__).parent.parent
 sys.path.insert(0, str(CODEGEN_DIR))
 
-from svd_parser import SVDParser
-from generator import CodeGenerator
+from cli.parsers.generic_svd import SVDParser
+from cli.generators.generate_registers import generate_register_struct
 
 
 @pytest.fixture

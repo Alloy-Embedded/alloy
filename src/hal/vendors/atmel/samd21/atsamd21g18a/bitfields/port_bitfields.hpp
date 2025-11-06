@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::port {
@@ -18,97 +18,97 @@ using namespace alloy::hal::bitfields;
 // ============================================================================
 
 /// DIR[2] - Data Direction
-namespace dir[2] {
+namespace dir {
     /// Port Data Direction
     /// Position: 0, Width: 32
     using DIR = BitField<0, 32>;
     constexpr uint32_t DIR_Pos = 0;
     constexpr uint32_t DIR_Msk = DIR::mask;
 
-}  // namespace dir[2]
+}  // namespace dir
 
 /// DIRCLR[2] - Data Direction Clear
-namespace dirclr[2] {
+namespace dirclr {
     /// Port Data Direction Clear
     /// Position: 0, Width: 32
     using DIRCLR = BitField<0, 32>;
     constexpr uint32_t DIRCLR_Pos = 0;
     constexpr uint32_t DIRCLR_Msk = DIRCLR::mask;
 
-}  // namespace dirclr[2]
+}  // namespace dirclr
 
 /// DIRSET[2] - Data Direction Set
-namespace dirset[2] {
+namespace dirset {
     /// Port Data Direction Set
     /// Position: 0, Width: 32
     using DIRSET = BitField<0, 32>;
     constexpr uint32_t DIRSET_Pos = 0;
     constexpr uint32_t DIRSET_Msk = DIRSET::mask;
 
-}  // namespace dirset[2]
+}  // namespace dirset
 
 /// DIRTGL[2] - Data Direction Toggle
-namespace dirtgl[2] {
+namespace dirtgl {
     /// Port Data Direction Toggle
     /// Position: 0, Width: 32
     using DIRTGL = BitField<0, 32>;
     constexpr uint32_t DIRTGL_Pos = 0;
     constexpr uint32_t DIRTGL_Msk = DIRTGL::mask;
 
-}  // namespace dirtgl[2]
+}  // namespace dirtgl
 
 /// OUT[2] - Data Output Value
-namespace out[2] {
+namespace out {
     /// Port Data Output Value
     /// Position: 0, Width: 32
     using OUT = BitField<0, 32>;
     constexpr uint32_t OUT_Pos = 0;
     constexpr uint32_t OUT_Msk = OUT::mask;
 
-}  // namespace out[2]
+}  // namespace out
 
 /// OUTCLR[2] - Data Output Value Clear
-namespace outclr[2] {
+namespace outclr {
     /// Port Data Output Value Clear
     /// Position: 0, Width: 32
     using OUTCLR = BitField<0, 32>;
     constexpr uint32_t OUTCLR_Pos = 0;
     constexpr uint32_t OUTCLR_Msk = OUTCLR::mask;
 
-}  // namespace outclr[2]
+}  // namespace outclr
 
 /// OUTSET[2] - Data Output Value Set
-namespace outset[2] {
+namespace outset {
     /// Port Data Output Value Set
     /// Position: 0, Width: 32
     using OUTSET = BitField<0, 32>;
     constexpr uint32_t OUTSET_Pos = 0;
     constexpr uint32_t OUTSET_Msk = OUTSET::mask;
 
-}  // namespace outset[2]
+}  // namespace outset
 
 /// OUTTGL[2] - Data Output Value Toggle
-namespace outtgl[2] {
+namespace outtgl {
     /// Port Data Output Value Toggle
     /// Position: 0, Width: 32
     using OUTTGL = BitField<0, 32>;
     constexpr uint32_t OUTTGL_Pos = 0;
     constexpr uint32_t OUTTGL_Msk = OUTTGL::mask;
 
-}  // namespace outtgl[2]
+}  // namespace outtgl
 
 /// IN[2] - Data Input Value
-namespace in[2] {
+namespace in {
     /// Port Data Input Value
     /// Position: 0, Width: 32
     using IN = BitField<0, 32>;
     constexpr uint32_t IN_Pos = 0;
     constexpr uint32_t IN_Msk = IN::mask;
 
-}  // namespace in[2]
+}  // namespace in
 
 /// CTRL[2] - Control
-namespace ctrl[2] {
+namespace ctrl {
     /// Input Sampling Mode
     /// Position: 0, Width: 32
     /// Access: write-only
@@ -116,10 +116,10 @@ namespace ctrl[2] {
     constexpr uint32_t SAMPLING_Pos = 0;
     constexpr uint32_t SAMPLING_Msk = SAMPLING::mask;
 
-}  // namespace ctrl[2]
+}  // namespace ctrl
 
 /// WRCONFIG[2] - Write Configuration
-namespace wrconfig[2] {
+namespace wrconfig {
     /// Pin Mask for Multiple Pin Configuration
     /// Position: 0, Width: 16
     using PINMASK = BitField<0, 16>;
@@ -174,10 +174,10 @@ namespace wrconfig[2] {
     constexpr uint32_t HWSEL_Pos = 31;
     constexpr uint32_t HWSEL_Msk = HWSEL::mask;
 
-}  // namespace wrconfig[2]
+}  // namespace wrconfig
 
 /// PMUX0_[16] - Peripheral Multiplexing n - Group 0
-namespace pmux0_[16] {
+namespace pmux0_ {
     /// Peripheral Multiplexing Even
     /// Position: 0, Width: 4
     using PMUXE = BitField<0, 4>;
@@ -212,10 +212,10 @@ namespace pmux0_[16] {
         constexpr uint32_t H = 7;
     }
 
-}  // namespace pmux0_[16]
+}  // namespace pmux0_
 
 /// PINCFG0_[32] - Pin Configuration n - Group 0
-namespace pincfg0_[32] {
+namespace pincfg0_ {
     /// Peripheral Multiplexer Enable
     /// Position: 0, Width: 1
     using PMUXEN = BitField<0, 1>;
@@ -241,6 +241,6 @@ namespace pincfg0_[32] {
     constexpr uint32_t DRVSTR_Pos = 6;
     constexpr uint32_t DRVSTR_Msk = DRVSTR::mask;
 
-}  // namespace pincfg0_[32]
+}  // namespace pincfg0_
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::port

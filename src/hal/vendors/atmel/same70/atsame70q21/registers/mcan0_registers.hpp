@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::same70::atsame70q21::mcan0 {
 
@@ -214,7 +214,8 @@ struct MCAN0_Registers {
 static_assert(sizeof(MCAN0_Registers) >= 252, "MCAN0_Registers size mismatch");
 
 /// MCAN0 peripheral instance
-constexpr MCAN0_Registers* MCAN0 = 
-    reinterpret_cast<MCAN0_Registers*>(0x40030000);
+inline MCAN0_Registers* MCAN0() {
+    return reinterpret_cast<MCAN0_Registers*>(0x40030000);
+}
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::mcan0

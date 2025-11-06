@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_MB9AF15XR_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MB9AF15XR_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::mb9af15xr {
 

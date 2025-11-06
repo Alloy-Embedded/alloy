@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::ppb {
 
@@ -185,7 +185,8 @@ struct PPB_Registers {
 static_assert(sizeof(PPB_Registers) >= 60836, "PPB_Registers size mismatch");
 
 /// PPB peripheral instance
-constexpr PPB_Registers* PPB = 
-    reinterpret_cast<PPB_Registers*>(0xE0000000);
+inline PPB_Registers* PPB() {
+    return reinterpret_cast<PPB_Registers*>(0xE0000000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::ppb

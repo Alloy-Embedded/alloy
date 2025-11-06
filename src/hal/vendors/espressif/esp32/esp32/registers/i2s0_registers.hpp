@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::i2s0 {
 
@@ -224,7 +224,8 @@ struct I2S0_Registers {
 static_assert(sizeof(I2S0_Registers) >= 256, "I2S0_Registers size mismatch");
 
 /// I2S0 peripheral instance
-constexpr I2S0_Registers* I2S0 = 
-    reinterpret_cast<I2S0_Registers*>(0x3FF4F000);
+inline I2S0_Registers* I2S0() {
+    return reinterpret_cast<I2S0_Registers*>(0x3FF4F000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::i2s0

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::slc {
 
@@ -369,7 +369,8 @@ struct SLC_Registers {
 static_assert(sizeof(SLC_Registers) >= 512, "SLC_Registers size mismatch");
 
 /// SLC peripheral instance
-constexpr SLC_Registers* SLC = 
-    reinterpret_cast<SLC_Registers*>(0x3FF58000);
+inline SLC_Registers* SLC() {
+    return reinterpret_cast<SLC_Registers*>(0x3FF58000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::slc

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::efuse {
 
@@ -319,7 +319,8 @@ struct EFUSE_Registers {
 static_assert(sizeof(EFUSE_Registers) >= 512, "EFUSE_Registers size mismatch");
 
 /// EFUSE peripheral instance
-constexpr EFUSE_Registers* EFUSE = 
-    reinterpret_cast<EFUSE_Registers*>(0x3FF5A000);
+inline EFUSE_Registers* EFUSE() {
+    return reinterpret_cast<EFUSE_Registers*>(0x3FF5A000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::efuse

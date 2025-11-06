@@ -4,7 +4,7 @@
 /// - Board-level abstraction
 /// - LED control
 /// - Delay functions
-/// - Cortex-M7 initialization (FPU + Cache)
+/// - Cortex-M7 initialization (FPU, no cache yet)
 ///
 /// Hardware:
 /// - Board: ATSAME70 Xplained
@@ -17,7 +17,7 @@
 #include "../../boards/atmel_same70_xpld/board.hpp"
 
 int main() {
-    // Initialize board (minimal initialization for now)
+    // Initialize board (clocks, peripherals)
     Board::initialize();
 
     // Initialize LED

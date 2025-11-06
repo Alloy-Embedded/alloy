@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::arm::cortex_m {
 
@@ -47,7 +47,9 @@ struct SCB_Registers {
     volatile uint32_t CPACR;     // Offset: 0x088 (R/W)  Coprocessor Access Control Register
 };
 
-constexpr SCB_Registers* SCB = reinterpret_cast<SCB_Registers*>(0xE000ED00);
+inline SCB_Registers* SCB() {
+    return reinterpret_cast<SCB_Registers*>(0xE000ED00);
+}
 
 // CPACR (Coprocessor Access Control Register) bit definitions
 namespace cpacr {
@@ -99,7 +101,9 @@ struct Cache_Registers {
     volatile uint32_t DCCISW;    // Offset: 0x024 ( /W)  D-Cache Clean and Invalidate by Set-way
 };
 
-constexpr Cache_Registers* CACHE = reinterpret_cast<Cache_Registers*>(0xE000EF50);
+inline Cache_Registers* CACHE() {
+    return reinterpret_cast<Cache_Registers*>(0xE000EF50);
+}
 
 // ============================================================================
 // Nested Vectored Interrupt Controller (NVIC) Registers
@@ -122,7 +126,9 @@ struct NVIC_Registers {
     volatile uint32_t STIR;      // Offset: 0xE00 ( /W)  Software Trigger Interrupt Register
 };
 
-constexpr NVIC_Registers* NVIC = reinterpret_cast<NVIC_Registers*>(0xE000E100);
+inline NVIC_Registers* NVIC() {
+    return reinterpret_cast<NVIC_Registers*>(0xE000E100);
+}
 
 // ============================================================================
 // SysTick Timer Registers
@@ -136,7 +142,9 @@ struct SysTick_Registers {
     volatile uint32_t CALIB;     // Offset: 0x00C (R/ )  SysTick Calibration Register
 };
 
-constexpr SysTick_Registers* SYSTICK = reinterpret_cast<SysTick_Registers*>(0xE000E010);
+inline SysTick_Registers* SYSTICK() {
+    return reinterpret_cast<SysTick_Registers*>(0xE000E010);
+}
 
 // SysTick CTRL bit definitions
 namespace systick_ctrl {
@@ -250,7 +258,7 @@ namespace systick_ctrl {
 [[gnu::always_inline, noreturn]] inline void system_reset() {
     dsb();  // Ensure all outstanding memory accesses included buffered writes are completed
 
-    SCB->AIRCR = aircr::VECTKEY | (SCB->AIRCR & aircr::PRIGROUP_Msk) | (1UL << 2);  // SYSRESETREQ
+    SCB()->AIRCR = aircr::VECTKEY | (SCB()->AIRCR & aircr::PRIGROUP_Msk) | (1UL << 2);  // SYSRESETREQ
 
     dsb();  // Ensure completion of memory access
 

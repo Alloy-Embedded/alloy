@@ -14,9 +14,12 @@
 #pragma once
 
 #include "../arm_cortex_m/core_common.hpp"
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::arm::cortex_m7::fpu {
+
+// Import from parent namespace
+using namespace alloy::arm::cortex_m;
 
 // ============================================================================
 // FPU Context Control Register (FPCCR)
@@ -33,7 +36,9 @@ struct FPU_Registers {
     volatile uint32_t MVFR2;     // Offset: 0x018 (R/ )  Media and FP Feature Register 2 (M7 only)
 };
 
-constexpr FPU_Registers* FPU = reinterpret_cast<FPU_Registers*>(0xE000EF30);
+inline FPU_Registers* FPU() {
+    return reinterpret_cast<FPU_Registers*>(0xE000EF30);
+}
 
 // FPCCR (Floating-Point Context Control Register) bit definitions
 namespace fpccr {
@@ -66,7 +71,7 @@ inline constexpr bool is_fpu_present() {
 /// @return true if FPU is currently enabled
 inline bool is_fpu_enabled() {
     // Check if CP10 and CP11 coprocessors are enabled
-    uint32_t cpacr = SCB->CPACR;
+    uint32_t cpacr = SCB()->CPACR;
     uint32_t cp10 = (cpacr & cpacr::CP10_Msk) >> cpacr::CP10_Pos;
     uint32_t cp11 = (cpacr & cpacr::CP11_Msk) >> cpacr::CP11_Pos;
 
@@ -90,8 +95,8 @@ inline void enable_fpu() {
     #if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
         // Enable CP10 and CP11 coprocessors (FPU)
         // Set bits 20-23 to enable full access
-        SCB->CPACR |= (cpacr::Access_Full << cpacr::CP10_Pos) |
-                      (cpacr::Access_Full << cpacr::CP11_Pos);
+        SCB()->CPACR |= (cpacr::Access_Full << cpacr::CP10_Pos) |
+                        (cpacr::Access_Full << cpacr::CP11_Pos);
 
         // Memory barrier to ensure FPU is enabled before FPU instructions execute
         dsb();
@@ -105,7 +110,7 @@ inline void enable_fpu() {
 inline void disable_fpu() {
     #if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
         // Clear CP10 and CP11 enable bits
-        SCB->CPACR &= ~(cpacr::CP10_Msk | cpacr::CP11_Msk);
+        SCB()->CPACR &= ~(cpacr::CP10_Msk | cpacr::CP11_Msk);
 
         dsb();
         isb();
@@ -131,10 +136,10 @@ inline void configure_lazy_stacking(bool enable_lazy = true) {
     #if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
         if (enable_lazy) {
             // Enable automatic and lazy state preservation
-            FPU->FPCCR |= (fpccr::ASPEN | fpccr::LSPEN);
+            FPU()->FPCCR |= (fpccr::ASPEN | fpccr::LSPEN);
         } else {
             // Disable lazy state preservation (always save FPU context)
-            FPU->FPCCR &= ~fpccr::LSPEN;
+            FPU()->FPCCR &= ~fpccr::LSPEN;
         }
     #endif
 }

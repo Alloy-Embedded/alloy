@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_ATSAMD21J18A_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ATSAMD21J18A_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::atsamd21j18a {
 

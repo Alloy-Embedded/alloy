@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::rtc_io {
 
@@ -58,10 +58,9 @@ struct RTC_IO_Registers {
     /// Offset: 0x0024
     volatile uint32_t IN;
 
-    /// PIN%s
+    /// PIN[18]
     /// Offset: 0x0028
-    volatile uint32_t PIN%s;
-    uint8_t RESERVED_002C[68]; ///< Reserved
+    volatile uint32_t PIN[18][18];
 
     /// RTC_DEBUG_SEL
     /// Offset: 0x0070
@@ -174,7 +173,8 @@ struct RTC_IO_Registers {
 static_assert(sizeof(RTC_IO_Registers) >= 204, "RTC_IO_Registers size mismatch");
 
 /// RTC_IO peripheral instance
-constexpr RTC_IO_Registers* RTC_IO = 
-    reinterpret_cast<RTC_IO_Registers*>(0x3FF48400);
+inline RTC_IO_Registers* RTC_IO() {
+    return reinterpret_cast<RTC_IO_Registers*>(0x3FF48400);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::rtc_io

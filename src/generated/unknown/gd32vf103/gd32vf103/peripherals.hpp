@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_GD32VF103_PERIPHERALS_HPP
 #define ALLOY_GENERATED_GD32VF103_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::gd32vf103 {
 

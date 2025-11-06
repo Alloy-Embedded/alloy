@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::i2c0 {
 
@@ -109,10 +109,10 @@ struct I2C0_Registers {
     /// Reset value: 0x00000008
     volatile uint32_t SDA_FILTER_CFG;
 
-    /// COMD%s
+    /// COMD[16]
     /// Offset: 0x0058
-    volatile uint32_t COMD%s;
-    uint8_t RESERVED_005C[156]; ///< Reserved
+    volatile uint32_t COMD[16][16];
+    uint8_t RESERVED_0098[96]; ///< Reserved
 
     /// DATE
     /// Offset: 0x00F8
@@ -128,7 +128,8 @@ struct I2C0_Registers {
 static_assert(sizeof(I2C0_Registers) >= 260, "I2C0_Registers size mismatch");
 
 /// I2C0 peripheral instance
-constexpr I2C0_Registers* I2C0 = 
-    reinterpret_cast<I2C0_Registers*>(0x3FF53000);
+inline I2C0_Registers* I2C0() {
+    return reinterpret_cast<I2C0_Registers*>(0x3FF53000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::i2c0

@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_AT91SAM9N12_PERIPHERALS_HPP
 #define ALLOY_GENERATED_AT91SAM9N12_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::at91sam9n12 {
 

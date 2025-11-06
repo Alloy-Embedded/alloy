@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::same70::atsame70q21::usbhs {
@@ -1243,7 +1243,7 @@ namespace devfnum {
 }  // namespace devfnum
 
 /// DEVEPTCFG[10] - Device Endpoint Configuration Register (n = 0) 0
-namespace deveptcfg[10] {
+namespace deveptcfg {
     /// Endpoint Memory Allocate
     /// Position: 1, Width: 1
     using ALLOC = BitField<1, 1>;
@@ -1322,10 +1322,10 @@ namespace deveptcfg[10] {
         constexpr uint32_t _3_TRANS = 3;
     }
 
-}  // namespace deveptcfg[10]
+}  // namespace deveptcfg
 
 /// DEVEPTISR[10] - Device Endpoint Status Register (n = 0) 0
-namespace deveptisr[10] {
+namespace deveptisr {
     /// Transmitted IN Data Interrupt
     /// Position: 0, Width: 1
     using TXINI = BitField<0, 1>;
@@ -1436,10 +1436,10 @@ namespace deveptisr[10] {
     constexpr uint32_t BYCT_Pos = 20;
     constexpr uint32_t BYCT_Msk = BYCT::mask;
 
-}  // namespace deveptisr[10]
+}  // namespace deveptisr
 
 /// DEVEPTICR[10] - Device Endpoint Clear Register (n = 0) 0
-namespace devepticr[10] {
+namespace devepticr {
     /// Transmitted IN Data Interrupt Clear
     /// Position: 0, Width: 1
     using TXINIC = BitField<0, 1>;
@@ -1488,10 +1488,10 @@ namespace devepticr[10] {
     constexpr uint32_t SHORTPACKETC_Pos = 7;
     constexpr uint32_t SHORTPACKETC_Msk = SHORTPACKETC::mask;
 
-}  // namespace devepticr[10]
+}  // namespace devepticr
 
 /// DEVEPTIFR[10] - Device Endpoint Set Register (n = 0) 0
-namespace deveptifr[10] {
+namespace deveptifr {
     /// Transmitted IN Data Interrupt Set
     /// Position: 0, Width: 1
     using TXINIS = BitField<0, 1>;
@@ -1546,10 +1546,10 @@ namespace deveptifr[10] {
     constexpr uint32_t NBUSYBKS_Pos = 12;
     constexpr uint32_t NBUSYBKS_Msk = NBUSYBKS::mask;
 
-}  // namespace deveptifr[10]
+}  // namespace deveptifr
 
 /// DEVEPTIMR[10] - Device Endpoint Mask Register (n = 0) 0
-namespace deveptimr[10] {
+namespace deveptimr {
     /// Transmitted IN Data Interrupt
     /// Position: 0, Width: 1
     using TXINE = BitField<0, 1>;
@@ -1640,10 +1640,10 @@ namespace deveptimr[10] {
     constexpr uint32_t STALLRQ_Pos = 19;
     constexpr uint32_t STALLRQ_Msk = STALLRQ::mask;
 
-}  // namespace deveptimr[10]
+}  // namespace deveptimr
 
 /// DEVEPTIER[10] - Device Endpoint Enable Register (n = 0) 0
-namespace deveptier[10] {
+namespace deveptier {
     /// Transmitted IN Data Interrupt Enable
     /// Position: 0, Width: 1
     using TXINES = BitField<0, 1>;
@@ -1734,10 +1734,10 @@ namespace deveptier[10] {
     constexpr uint32_t STALLRQS_Pos = 19;
     constexpr uint32_t STALLRQS_Msk = STALLRQS::mask;
 
-}  // namespace deveptier[10]
+}  // namespace deveptier
 
 /// DEVEPTIDR[10] - Device Endpoint Disable Register (n = 0) 0
-namespace deveptidr[10] {
+namespace deveptidr {
     /// Transmitted IN Interrupt Clear
     /// Position: 0, Width: 1
     using TXINEC = BitField<0, 1>;
@@ -1816,7 +1816,7 @@ namespace deveptidr[10] {
     constexpr uint32_t STALLRQC_Pos = 19;
     constexpr uint32_t STALLRQC_Msk = STALLRQC::mask;
 
-}  // namespace deveptidr[10]
+}  // namespace deveptidr
 
 /// HSTCTRL - Host General Control Register
 namespace hstctrl {
@@ -2832,7 +2832,7 @@ namespace hstaddr3 {
 }  // namespace hstaddr3
 
 /// HSTPIPCFG[10] - Host Pipe Configuration Register (n = 0) 0
-namespace hstpipcfg[10] {
+namespace hstpipcfg {
     /// Pipe Memory Allocate
     /// Position: 1, Width: 1
     using ALLOC = BitField<1, 1>;
@@ -2911,10 +2911,10 @@ namespace hstpipcfg[10] {
     constexpr uint32_t INTFRQ_Pos = 24;
     constexpr uint32_t INTFRQ_Msk = INTFRQ::mask;
 
-}  // namespace hstpipcfg[10]
+}  // namespace hstpipcfg
 
 /// HSTPIPISR[10] - Host Pipe Status Register (n = 0) 0
-namespace hstpipisr[10] {
+namespace hstpipisr {
     /// Received IN Data Interrupt
     /// Position: 0, Width: 1
     using RXINI = BitField<0, 1>;
@@ -3017,10 +3017,10 @@ namespace hstpipisr[10] {
     constexpr uint32_t PBYCT_Pos = 20;
     constexpr uint32_t PBYCT_Msk = PBYCT::mask;
 
-}  // namespace hstpipisr[10]
+}  // namespace hstpipisr
 
 /// HSTPIPICR[10] - Host Pipe Clear Register (n = 0) 0
-namespace hstpipicr[10] {
+namespace hstpipicr {
     /// Received IN Data Interrupt Clear
     /// Position: 0, Width: 1
     using RXINIC = BitField<0, 1>;
@@ -3063,10 +3063,10 @@ namespace hstpipicr[10] {
     constexpr uint32_t SHORTPACKETIC_Pos = 7;
     constexpr uint32_t SHORTPACKETIC_Msk = SHORTPACKETIC::mask;
 
-}  // namespace hstpipicr[10]
+}  // namespace hstpipicr
 
 /// HSTPIPIFR[10] - Host Pipe Set Register (n = 0) 0
-namespace hstpipifr[10] {
+namespace hstpipifr {
     /// Received IN Data Interrupt Set
     /// Position: 0, Width: 1
     using RXINIS = BitField<0, 1>;
@@ -3121,10 +3121,10 @@ namespace hstpipifr[10] {
     constexpr uint32_t NBUSYBKS_Pos = 12;
     constexpr uint32_t NBUSYBKS_Msk = NBUSYBKS::mask;
 
-}  // namespace hstpipifr[10]
+}  // namespace hstpipifr
 
 /// HSTPIPIMR[10] - Host Pipe Mask Register (n = 0) 0
-namespace hstpipimr[10] {
+namespace hstpipimr {
     /// Received IN Data Interrupt Enable
     /// Position: 0, Width: 1
     using RXINE = BitField<0, 1>;
@@ -3203,10 +3203,10 @@ namespace hstpipimr[10] {
     constexpr uint32_t RSTDT_Pos = 18;
     constexpr uint32_t RSTDT_Msk = RSTDT::mask;
 
-}  // namespace hstpipimr[10]
+}  // namespace hstpipimr
 
 /// HSTPIPIER[10] - Host Pipe Enable Register (n = 0) 0
-namespace hstpipier[10] {
+namespace hstpipier {
     /// Received IN Data Interrupt Enable
     /// Position: 0, Width: 1
     using RXINES = BitField<0, 1>;
@@ -3279,10 +3279,10 @@ namespace hstpipier[10] {
     constexpr uint32_t RSTDTS_Pos = 18;
     constexpr uint32_t RSTDTS_Msk = RSTDTS::mask;
 
-}  // namespace hstpipier[10]
+}  // namespace hstpipier
 
 /// HSTPIPIDR[10] - Host Pipe Disable Register (n = 0) 0
-namespace hstpipidr[10] {
+namespace hstpipidr {
     /// Received IN Data Interrupt Disable
     /// Position: 0, Width: 1
     using RXINEC = BitField<0, 1>;
@@ -3355,10 +3355,10 @@ namespace hstpipidr[10] {
     constexpr uint32_t PFREEZEC_Pos = 17;
     constexpr uint32_t PFREEZEC_Msk = PFREEZEC::mask;
 
-}  // namespace hstpipidr[10]
+}  // namespace hstpipidr
 
 /// HSTPIPINRQ[10] - Host Pipe IN Request Register (n = 0) 0
-namespace hstpipinrq[10] {
+namespace hstpipinrq {
     /// IN Request Number before Freeze
     /// Position: 0, Width: 8
     using INRQ = BitField<0, 8>;
@@ -3371,10 +3371,10 @@ namespace hstpipinrq[10] {
     constexpr uint32_t INMODE_Pos = 8;
     constexpr uint32_t INMODE_Msk = INMODE::mask;
 
-}  // namespace hstpipinrq[10]
+}  // namespace hstpipinrq
 
 /// HSTPIPERR[10] - Host Pipe Error Register (n = 0) 0
-namespace hstpiperr[10] {
+namespace hstpiperr {
     /// Data Toggle Error
     /// Position: 0, Width: 1
     using DATATGL = BitField<0, 1>;
@@ -3411,7 +3411,7 @@ namespace hstpiperr[10] {
     constexpr uint32_t COUNTER_Pos = 5;
     constexpr uint32_t COUNTER_Msk = COUNTER::mask;
 
-}  // namespace hstpiperr[10]
+}  // namespace hstpiperr
 
 /// CTRL - General Control Register
 namespace ctrl {

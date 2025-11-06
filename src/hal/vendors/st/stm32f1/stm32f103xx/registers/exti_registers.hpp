@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::exti {
 
@@ -62,7 +62,8 @@ struct EXTI_Registers {
 static_assert(sizeof(EXTI_Registers) >= 24, "EXTI_Registers size mismatch");
 
 /// EXTI peripheral instance
-constexpr EXTI_Registers* EXTI = 
-    reinterpret_cast<EXTI_Registers*>(0x40010400);
+inline EXTI_Registers* EXTI() {
+    return reinterpret_cast<EXTI_Registers*>(0x40010400);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::exti

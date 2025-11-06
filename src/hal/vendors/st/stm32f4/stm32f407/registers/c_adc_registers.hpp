@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::c_adc {
 
@@ -41,7 +41,8 @@ struct C_ADC_Registers {
 static_assert(sizeof(C_ADC_Registers) >= 12, "C_ADC_Registers size mismatch");
 
 /// C_ADC peripheral instance
-constexpr C_ADC_Registers* C_ADC = 
-    reinterpret_cast<C_ADC_Registers*>(0x40012300);
+inline C_ADC_Registers* C_ADC() {
+    return reinterpret_cast<C_ADC_Registers*>(0x40012300);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::c_adc

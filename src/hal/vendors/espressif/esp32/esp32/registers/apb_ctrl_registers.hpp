@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::apb_ctrl {
 
@@ -53,17 +53,15 @@ struct APB_CTRL_Registers {
     /// Reset value: 0x0208FF08
     volatile uint32_t APB_SARADC_FSM;
 
-    /// APB_SARADC_SAR1_PATT_TAB%s
+    /// APB_SARADC_SAR1_PATT_TAB[4]
     /// Offset: 0x001C
     /// Reset value: 0x0F0F0F0F
-    volatile uint32_t APB_SARADC_SAR1_PATT_TAB%s;
-    uint8_t RESERVED_0020[12]; ///< Reserved
+    volatile uint32_t APB_SARADC_SAR1_PATT_TAB[4][4];
 
-    /// APB_SARADC_SAR2_PATT_TAB%s
+    /// APB_SARADC_SAR2_PATT_TAB[4]
     /// Offset: 0x002C
     /// Reset value: 0x0F0F0F0F
-    volatile uint32_t APB_SARADC_SAR2_PATT_TAB%s;
-    uint8_t RESERVED_0030[12]; ///< Reserved
+    volatile uint32_t APB_SARADC_SAR2_PATT_TAB[4][4];
 
     /// APLL_TICK_CONF
     /// Offset: 0x003C
@@ -80,7 +78,8 @@ struct APB_CTRL_Registers {
 static_assert(sizeof(APB_CTRL_Registers) >= 128, "APB_CTRL_Registers size mismatch");
 
 /// APB_CTRL peripheral instance
-constexpr APB_CTRL_Registers* APB_CTRL = 
-    reinterpret_cast<APB_CTRL_Registers*>(0x3FF66000);
+inline APB_CTRL_Registers* APB_CTRL() {
+    return reinterpret_cast<APB_CTRL_Registers*>(0x3FF66000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::apb_ctrl

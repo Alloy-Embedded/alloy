@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::matrix {
 
@@ -20,7 +20,7 @@ struct MATRIX_Registers {
 
     /// Master Configuration Register 0
     /// Offset: 0x0000
-    volatile uint32_t MCFG[12];
+    volatile uint32_t MCFG[12][12];
 
     /// Priority Register A for Slave 0
     /// Offset: 0x0000
@@ -33,8 +33,8 @@ struct MATRIX_Registers {
 
     /// Slave Configuration Register 0
     /// Offset: 0x0040
-    volatile uint32_t SCFG[9];
-    uint8_t RESERVED_0044[188]; ///< Reserved
+    volatile uint32_t SCFG[9][9];
+    uint8_t RESERVED_0064[156]; ///< Reserved
 
     /// Master Remap Control Register
     /// Offset: 0x0100
@@ -74,7 +74,8 @@ struct MATRIX_Registers {
 static_assert(sizeof(MATRIX_Registers) >= 512, "MATRIX_Registers size mismatch");
 
 /// MATRIX peripheral instance
-constexpr MATRIX_Registers* MATRIX = 
-    reinterpret_cast<MATRIX_Registers*>(0x40088000);
+inline MATRIX_Registers* MATRIX() {
+    return reinterpret_cast<MATRIX_Registers*>(0x40088000);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::matrix

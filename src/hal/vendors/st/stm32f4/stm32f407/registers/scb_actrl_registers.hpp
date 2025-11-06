@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::scb_actrl {
 
@@ -28,7 +28,8 @@ struct SCB_ACTRL_Registers {
 static_assert(sizeof(SCB_ACTRL_Registers) >= 4, "SCB_ACTRL_Registers size mismatch");
 
 /// SCB_ACTRL peripheral instance
-constexpr SCB_ACTRL_Registers* SCB_ACTRL = 
-    reinterpret_cast<SCB_ACTRL_Registers*>(0xE000E008);
+inline SCB_ACTRL_Registers* SCB_ACTRL() {
+    return reinterpret_cast<SCB_ACTRL_Registers*>(0xE000E008);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::scb_actrl

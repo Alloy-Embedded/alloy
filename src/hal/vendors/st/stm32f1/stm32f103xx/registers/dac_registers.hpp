@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::dac {
 
@@ -114,7 +114,8 @@ struct DAC_Registers {
 static_assert(sizeof(DAC_Registers) >= 52, "DAC_Registers size mismatch");
 
 /// DAC peripheral instance
-constexpr DAC_Registers* DAC = 
-    reinterpret_cast<DAC_Registers*>(0x40007400);
+inline DAC_Registers* DAC() {
+    return reinterpret_cast<DAC_Registers*>(0x40007400);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::dac

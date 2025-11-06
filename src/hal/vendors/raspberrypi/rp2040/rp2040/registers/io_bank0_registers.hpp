@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::io_bank0 {
 
@@ -522,7 +522,8 @@ struct IO_BANK0_Registers {
 static_assert(sizeof(IO_BANK0_Registers) >= 400, "IO_BANK0_Registers size mismatch");
 
 /// IO_BANK0 peripheral instance
-constexpr IO_BANK0_Registers* IO_BANK0 = 
-    reinterpret_cast<IO_BANK0_Registers*>(0x40014000);
+inline IO_BANK0_Registers* IO_BANK0() {
+    return reinterpret_cast<IO_BANK0_Registers*>(0x40014000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::io_bank0

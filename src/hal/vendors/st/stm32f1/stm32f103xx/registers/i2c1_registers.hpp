@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::i2c1 {
 
@@ -75,7 +75,8 @@ struct I2C1_Registers {
 static_assert(sizeof(I2C1_Registers) >= 36, "I2C1_Registers size mismatch");
 
 /// I2C1 peripheral instance
-constexpr I2C1_Registers* I2C1 = 
-    reinterpret_cast<I2C1_Registers*>(0x40005400);
+inline I2C1_Registers* I2C1() {
+    return reinterpret_cast<I2C1_Registers*>(0x40005400);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::i2c1

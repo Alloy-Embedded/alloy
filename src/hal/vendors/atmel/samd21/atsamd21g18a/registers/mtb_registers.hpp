@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::mtb {
 
@@ -144,7 +144,8 @@ struct MTB_Registers {
 static_assert(sizeof(MTB_Registers) >= 4096, "MTB_Registers size mismatch");
 
 /// MTB peripheral instance
-constexpr MTB_Registers* MTB = 
-    reinterpret_cast<MTB_Registers*>(0x41006000);
+inline MTB_Registers* MTB() {
+    return reinterpret_cast<MTB_Registers*>(0x41006000);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::mtb

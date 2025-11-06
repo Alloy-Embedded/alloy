@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::hinf {
 
@@ -89,7 +89,8 @@ struct HINF_Registers {
 static_assert(sizeof(HINF_Registers) >= 256, "HINF_Registers size mismatch");
 
 /// HINF peripheral instance
-constexpr HINF_Registers* HINF = 
-    reinterpret_cast<HINF_Registers*>(0x3FF4B000);
+inline HINF_Registers* HINF() {
+    return reinterpret_cast<HINF_Registers*>(0x3FF4B000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::hinf

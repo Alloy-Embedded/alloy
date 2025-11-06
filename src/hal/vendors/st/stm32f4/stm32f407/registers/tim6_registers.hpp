@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::tim6 {
 
@@ -72,7 +72,8 @@ struct TIM6_Registers {
 static_assert(sizeof(TIM6_Registers) >= 48, "TIM6_Registers size mismatch");
 
 /// TIM6 peripheral instance
-constexpr TIM6_Registers* TIM6 = 
-    reinterpret_cast<TIM6_Registers*>(0x40001000);
+inline TIM6_Registers* TIM6() {
+    return reinterpret_cast<TIM6_Registers*>(0x40001000);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::tim6
