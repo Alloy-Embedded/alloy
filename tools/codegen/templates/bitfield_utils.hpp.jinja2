@@ -1,0 +1,168 @@
+// Alloy Framework - Bit Field Template Utilities
+// Auto-generated - DO NOT EDIT MANUALLY
+//
+// This file provides zero-overhead compile-time bit field manipulation templates
+// for type-safe register access. All operations are constexpr and inline,
+// resulting in identical assembly to manual bit manipulation.
+//
+// Usage Example:
+//   using TXE = BitField<7, 1>;  // Bit 7, width 1
+//   if (TXE::test(USART1->SR)) { /* transmit empty */ }
+//   USART1->CR1 = UE::set(USART1->CR1);  // Set bit
+
+#pragma once
+
+#include <cstdint>
+#include <concepts>
+#include <type_traits>
+
+namespace alloy::hal::bitfields {
+
+// ============================================================================
+// Core Bit Field Template
+// ============================================================================
+
+/// Bit field template for compile-time safe bit manipulation
+/// @tparam Position: Bit position (0-31)
+/// @tparam Width: Bit width (1-32)
+///
+/// Provides zero-overhead bit field operations:
+/// - read(): Extract bit field value from register
+/// - write(): Write value to bit field (returns modified register value)
+/// - set(): Set all bits in field (returns modified register value)
+/// - clear(): Clear all bits in field (returns modified register value)
+/// - test(): Test if any bit in field is set
+///
+/// All methods are constexpr and will be optimized away by the compiler.
+template<uint32_t Position, uint32_t Width>
+struct BitField {
+    // Compile-time validation
+    static_assert(Position < 32, "Bit position must be less than 32");
+    static_assert(Width > 0, "Bit width must be greater than 0");
+    static_assert(Width <= 32, "Bit width must be at most 32");
+    static_assert(Position + Width <= 32, "Bit field exceeds 32-bit boundary");
+
+    // Compile-time constants
+    static constexpr uint32_t position = Position;
+    static constexpr uint32_t width = Width;
+    static constexpr uint32_t mask = ((1UL << Width) - 1) << Position;
+
+    /// Read bit field value from register
+    /// @param reg: Register value to read from
+    /// @return Extracted bit field value (right-aligned)
+    ///
+    /// Example: uint32_t baud_div = BRR_DIV::read(USART1->BRR);
+    [[nodiscard]] static constexpr uint32_t read(uint32_t reg) noexcept {
+        return (reg & mask) >> position;
+    }
+
+    /// Write value to bit field in register
+    /// @param reg: Current register value
+    /// @param value: Value to write (will be masked to fit width)
+    /// @return Modified register value with bit field updated
+    ///
+    /// Example: USART1->BRR = BRR_DIV::write(USART1->BRR, 0x1D4C);
+    [[nodiscard]] static constexpr uint32_t write(uint32_t reg, uint32_t value) noexcept {
+        return (reg & ~mask) | ((value << position) & mask);
+    }
+
+    /// Set all bits in the bit field
+    /// @param reg: Current register value
+    /// @return Modified register value with all bits in field set to 1
+    ///
+    /// Example: USART1->CR1 = UE::set(USART1->CR1);
+    [[nodiscard]] static constexpr uint32_t set(uint32_t reg) noexcept {
+        return reg | mask;
+    }
+
+    /// Clear all bits in the bit field
+    /// @param reg: Current register value
+    /// @return Modified register value with all bits in field cleared to 0
+    ///
+    /// Example: USART1->CR1 = PCE::clear(USART1->CR1);
+    [[nodiscard]] static constexpr uint32_t clear(uint32_t reg) noexcept {
+        return reg & ~mask;
+    }
+
+    /// Test if any bit in the field is set
+    /// @param reg: Register value to test
+    /// @return true if any bit in field is 1, false if all bits are 0
+    ///
+    /// Example: if (TXE::test(USART1->SR)) { /* ready */ }
+    [[nodiscard]] static constexpr bool test(uint32_t reg) noexcept {
+        return (reg & mask) != 0;
+    }
+
+    /// Modify register value using a lambda/function
+    /// @param reg: Current register value
+    /// @param modifier: Function taking current field value, returning new value
+    /// @return Modified register value
+    ///
+    /// Example: reg = FIELD::modify(reg, [](uint32_t val) { return val + 1; });
+    template<typename F>
+    [[nodiscard]] static constexpr uint32_t modify(uint32_t reg, F&& modifier) noexcept {
+        uint32_t current = read(reg);
+        uint32_t new_value = modifier(current);
+        return write(reg, new_value);
+    }
+};
+
+// ============================================================================
+// Convenience Aliases
+// ============================================================================
+
+/// Single-bit field (most common case)
+/// @tparam Position: Bit position (0-31)
+///
+/// Example: using TXE = Bit<7>;  // Single bit at position 7
+template<uint32_t Position>
+using Bit = BitField<Position, 1>;
+
+// ============================================================================
+// Multi-Register Operations
+// ============================================================================
+
+/// Apply multiple bit field operations atomically
+/// Useful for setting multiple fields in one register update
+///
+/// Example:
+///   USART1->CR1 = apply_fields(USART1->CR1,
+///                               UE::set,
+///                               TE::set,
+///                               RE::set);
+template<typename... Operations>
+[[nodiscard]] constexpr uint32_t apply_fields(uint32_t reg, Operations&&... ops) noexcept {
+    return (ops(reg), ...);  // Fold expression
+}
+
+// ============================================================================
+// Register Access Concepts (C++20)
+// ============================================================================
+
+/// Concept for valid register types
+template<typename T>
+concept RegisterType = std::is_integral_v<T> && (sizeof(T) == 1 || sizeof(T) == 2 || sizeof(T) == 4);
+
+/// Concept for valid bit field position
+template<uint32_t Pos>
+concept ValidPosition = Pos < 32;
+
+/// Concept for valid bit field width
+template<uint32_t Width>
+concept ValidWidth = Width > 0 && Width <= 32;
+
+// ============================================================================
+// CMSIS-Style Compatibility Macros (optional)
+// ============================================================================
+
+/// Generate CMSIS-style position and mask constants
+/// Use this if you need compatibility with existing CMSIS code
+///
+/// Example:
+///   BITFIELD_CONSTANTS(TXE, 7, 1);
+///   // Generates: TXE_Pos = 7, TXE_Msk = 0x80
+#define BITFIELD_CONSTANTS(name, pos, width) \
+    constexpr uint32_t name##_Pos = pos; \
+    constexpr uint32_t name##_Msk = ((1UL << width) - 1) << pos
+
+} // namespace alloy::hal::bitfields

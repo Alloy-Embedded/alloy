@@ -7,7 +7,7 @@ Sistema de geração automática de código para MCUs a partir de arquivos CMSIS
 ```bash
 cd tools/codegen
 
-# Gerar tudo (startup + pins)
+# Gerar tudo (startup + registers + enums + pins)
 ./codegen generate
 
 # Ver status
@@ -17,7 +17,7 @@ cd tools/codegen
 ./codegen --help
 ```
 
-**Novo!** CLI unificada com um único comando para tudo. Ver [CLI_GUIDE.md](CLI_GUIDE.md) para detalhes.
+**Novo!** CLI unificada com geração completa de registros, bit fields e enumerações. Ver [CLI_GUIDE.md](CLI_GUIDE.md) para detalhes.
 
 ## Estrutura
 
@@ -49,11 +49,17 @@ tools/codegen/
 ### 1. Gerar Código
 
 ```bash
-# Gerar tudo (startup + pins para todos vendors)
+# Gerar tudo (startup + registers + enums + pins para todos vendors)
 ./codegen generate
 
 # Apenas startup
 ./codegen generate --startup
+
+# Apenas registros e bitfields
+./codegen generate --registers
+
+# Apenas enumerações
+./codegen generate --enums
 
 # Apenas pins
 ./codegen generate --pins
@@ -63,6 +69,9 @@ tools/codegen/
 
 # Com verbose
 ./codegen generate --verbose
+
+# Modo quiet (mais rápido)
+./codegen generate --quiet
 ```
 
 Aliases: `gen`, `g`

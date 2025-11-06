@@ -72,6 +72,38 @@ def cmd_generate(args):
             if result != 0:
                 success = False
 
+        # Generate registers if requested
+        if args.all or args.registers:
+            print_header("Generating Register Structures")
+            from cli.generators.generate_registers import generate_for_board_mcus as gen_regs
+            result = gen_regs(args.verbose, tracker)
+            if result != 0:
+                success = False
+
+        # Generate enumerations if requested
+        if args.all or args.enums:
+            print_header("Generating Enumeration Definitions")
+            from cli.generators.generate_enums import generate_for_board_mcus as gen_enums
+            result = gen_enums(args.verbose, tracker)
+            if result != 0:
+                success = False
+
+        # Generate pin alternate functions if requested
+        if args.all or args.pin_functions:
+            print_header("Generating Pin Alternate Function Mappings")
+            from cli.generators.generate_pin_functions import generate_for_board_mcus as gen_pin_funcs
+            result = gen_pin_funcs(args.verbose, tracker)
+            if result != 0:
+                success = False
+
+        # Generate complete register map if requested
+        if args.all or args.register_map:
+            print_header("Generating Complete Register Maps")
+            from cli.generators.generate_register_map import generate_for_board_mcus as gen_map
+            result = gen_map(args.verbose, tracker)
+            if result != 0:
+                success = False
+
         # Generate pins if requested
         if args.all or args.pins:
             # ST
@@ -326,13 +358,37 @@ For more help on a command:
         '--all',
         action='store_true',
         default=True,
-        help='Generate everything (startup + pins) [default]'
+        help='Generate everything (startup + registers + enums + pins) [default]'
     )
 
     gen_parser.add_argument(
         '--startup',
         action='store_true',
         help='Generate only startup code'
+    )
+
+    gen_parser.add_argument(
+        '--registers',
+        action='store_true',
+        help='Generate only register structures and bitfields'
+    )
+
+    gen_parser.add_argument(
+        '--enums',
+        action='store_true',
+        help='Generate only enumeration definitions'
+    )
+
+    gen_parser.add_argument(
+        '--pin-functions',
+        action='store_true',
+        help='Generate only pin alternate function mappings'
+    )
+
+    gen_parser.add_argument(
+        '--register-map',
+        action='store_true',
+        help='Generate only complete register map (single include)'
     )
 
     gen_parser.add_argument(
@@ -471,10 +527,18 @@ For more help on a command:
             # Handle generate flags
             if args.startup:
                 args.all = False
+            if args.registers:
+                args.all = False
+            if args.enums:
+                args.all = False
+            if args.pin_functions:
+                args.all = False
+            if args.register_map:
+                args.all = False
             if args.pins:
                 args.all = False
-            # If neither specified, generate all
-            if not args.startup and not args.pins:
+            # If none specified, generate all
+            if not args.startup and not args.registers and not args.enums and not args.pin_functions and not args.register_map and not args.pins:
                 args.all = True
             return cmd_generate(args)
         elif args.command in ['status', 'st']:
