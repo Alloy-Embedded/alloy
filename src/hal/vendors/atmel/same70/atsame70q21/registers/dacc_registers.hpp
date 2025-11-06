@@ -50,7 +50,7 @@ struct DACC_Registers {
     /// Conversion Data Register 0
     /// Offset: 0x001C
     /// Access: write-only
-    volatile uint32_t CDR[%s];
+    volatile uint32_t CDR[2];
     uint8_t RESERVED_0020[4]; ///< Reserved
 
     /// Interrupt Enable Register

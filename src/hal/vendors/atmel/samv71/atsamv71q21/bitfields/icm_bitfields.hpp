@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::icm {
 
@@ -371,14 +371,14 @@ namespace hash {
 
 }  // namespace hash
 
-/// UIHVAL[%s] - User Initial Hash Value 0 Register 0
-namespace uihval[%s] {
+/// UIHVAL[8] - User Initial Hash Value 0 Register 0
+namespace uihval[8] {
     /// Initial Hash Value
     /// Position: 0, Width: 32
     using VAL = BitField<0, 32>;
     constexpr uint32_t VAL_Pos = 0;
     constexpr uint32_t VAL_Msk = VAL::mask;
 
-}  // namespace uihval[%s]
+}  // namespace uihval[8]
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::icm

@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::same70::atsame70q21::pwm0 {
 
@@ -1629,8 +1629,8 @@ namespace fpe {
 
 }  // namespace fpe
 
-/// ELMR[%s] - PWM Event Line 0 Mode Register 0
-namespace elmr[%s] {
+/// ELMR[2] - PWM Event Line 0 Mode Register 0
+namespace elmr[2] {
     /// Comparison 0 Selection
     /// Position: 0, Width: 1
     using CSEL0 = BitField<0, 1>;
@@ -1679,7 +1679,7 @@ namespace elmr[%s] {
     constexpr uint32_t CSEL7_Pos = 7;
     constexpr uint32_t CSEL7_Msk = CSEL7::mask;
 
-}  // namespace elmr[%s]
+}  // namespace elmr[2]
 
 /// SSPR - PWM Spread Spectrum Register
 namespace sspr {

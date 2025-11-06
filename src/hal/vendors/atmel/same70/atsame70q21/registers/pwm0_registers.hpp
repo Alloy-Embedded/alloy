@@ -206,7 +206,7 @@ struct PWM0_Registers {
 
     /// PWM Event Line 0 Mode Register 0
     /// Offset: 0x007C
-    volatile uint32_t ELMR[%s];
+    volatile uint32_t ELMR[2];
     uint8_t RESERVED_0080[32]; ///< Reserved
 
     /// PWM Spread Spectrum Register

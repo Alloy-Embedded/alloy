@@ -134,7 +134,7 @@ def generate_bitfield_definitions(peripheral: Peripheral, device: SVDDevice) -> 
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::{vendor_ns}::{family_ns}::{mcu_ns}::{periph_ns} {{
 
@@ -236,30 +236,6 @@ def generate_for_peripheral(peripheral: Peripheral, device: SVDDevice,
     return success
 
 
-def generate_bitfield_utils(output_dir: Path) -> bool:
-    """
-    Copy bitfield_utils.hpp template to output directory.
-
-    Args:
-        output_dir: Output directory
-
-    Returns:
-        True if successful
-    """
-    import shutil
-
-    template_path = CODEGEN_DIR / "templates" / "bitfield_utils.hpp"
-    output_path = output_dir / "bitfield_utils.hpp"
-
-    try:
-        shutil.copy(template_path, output_path)
-        logger.debug(f"Copied bitfield_utils.hpp to {output_path}")
-        return True
-    except Exception as e:
-        logger.error(f"Failed to copy bitfield_utils.hpp: {e}")
-        return False
-
-
 def generate_for_device(svd_path: Path, tracker=None) -> bool:
     """
     Generate register and bitfield headers for a device.
@@ -287,9 +263,8 @@ def generate_for_device(svd_path: Path, tracker=None) -> bool:
 
     logger.info(f"Generating registers for {device.name} -> {output_dir}")
 
-    # Copy bitfield_utils.hpp template
-    if not generate_bitfield_utils(output_dir):
-        logger.warning("Failed to copy bitfield_utils.hpp, but continuing...")
+    # Note: bitfield_utils.hpp is now shared at src/hal/utils/bitfield.hpp
+    # No need to copy per-MCU anymore
 
     # Generate for each peripheral
     success_count = 0

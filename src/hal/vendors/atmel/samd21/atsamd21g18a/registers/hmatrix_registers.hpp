@@ -21,16 +21,16 @@ struct HMATRIX_Registers {
 
     /// Priority A for Slave
     /// Offset: 0x0080
-    volatile uint32_t PRAS%s;
+    volatile uint32_t PRAS[16];
 
     /// Priority B for Slave
     /// Offset: 0x0084
-    volatile uint32_t PRBS%s;
+    volatile uint32_t PRBS[16];
     uint8_t RESERVED_0088[136]; ///< Reserved
 
     /// Special Function
     /// Offset: 0x0110
-    volatile uint32_t SFR%s;
+    volatile uint32_t SFR[16];
 };
 
 static_assert(sizeof(HMATRIX_Registers) >= 276, "HMATRIX_Registers size mismatch");

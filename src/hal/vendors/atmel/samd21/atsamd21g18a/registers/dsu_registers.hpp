@@ -48,7 +48,7 @@ struct DSU_Registers {
 
     /// Debug Communication Channel n
     /// Offset: 0x0010
-    volatile uint32_t DCC%s;
+    volatile uint32_t DCC[2];
     uint8_t RESERVED_0014[4]; ///< Reserved
 
     /// Device Identification

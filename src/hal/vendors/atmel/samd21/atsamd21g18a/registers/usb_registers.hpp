@@ -161,70 +161,70 @@ struct USB_Registers {
 
     /// DEVICE End Point Configuration
     /// Offset: 0x0100
-    volatile uint8_t EPCFG%s;
+    volatile uint8_t EPCFG[8];
 
     /// HOST End Point Configuration
     /// Offset: 0x0100
-    volatile uint8_t PCFG%s;
+    volatile uint8_t PCFG[8];
     uint8_t RESERVED_0101[2]; ///< Reserved
 
     /// HOST Bus Access Period of Pipe
     /// Offset: 0x0103
-    volatile uint8_t BINTERVAL%s;
+    volatile uint8_t BINTERVAL[8];
 
     /// DEVICE End Point Pipe Status Clear
     /// Offset: 0x0104
     /// Access: write-only
-    volatile uint8_t EPSTATUSCLR%s;
+    volatile uint8_t EPSTATUSCLR[8];
 
     /// HOST End Point Pipe Status Clear
     /// Offset: 0x0104
     /// Access: write-only
-    volatile uint8_t PSTATUSCLR%s;
+    volatile uint8_t PSTATUSCLR[8];
 
     /// DEVICE End Point Pipe Status Set
     /// Offset: 0x0105
     /// Access: write-only
-    volatile uint8_t EPSTATUSSET%s;
+    volatile uint8_t EPSTATUSSET[8];
 
     /// HOST End Point Pipe Status Set
     /// Offset: 0x0105
     /// Access: write-only
-    volatile uint8_t PSTATUSSET%s;
+    volatile uint8_t PSTATUSSET[8];
 
     /// DEVICE End Point Pipe Status
     /// Offset: 0x0106
     /// Access: read-only
-    volatile uint8_t EPSTATUS%s;
+    volatile uint8_t EPSTATUS[8];
 
     /// HOST End Point Pipe Status
     /// Offset: 0x0106
     /// Access: read-only
-    volatile uint8_t PSTATUS%s;
+    volatile uint8_t PSTATUS[8];
 
     /// DEVICE End Point Interrupt Flag
     /// Offset: 0x0107
-    volatile uint8_t EPINTFLAG%s;
+    volatile uint8_t EPINTFLAG[8];
 
     /// HOST Pipe Interrupt Flag
     /// Offset: 0x0107
-    volatile uint8_t PINTFLAG%s;
+    volatile uint8_t PINTFLAG[8];
 
     /// DEVICE End Point Interrupt Clear Flag
     /// Offset: 0x0108
-    volatile uint8_t EPINTENCLR%s;
+    volatile uint8_t EPINTENCLR[8];
 
     /// HOST Pipe Interrupt Flag Clear
     /// Offset: 0x0108
-    volatile uint8_t PINTENCLR%s;
+    volatile uint8_t PINTENCLR[8];
 
     /// DEVICE End Point Interrupt Set Flag
     /// Offset: 0x0109
-    volatile uint8_t EPINTENSET%s;
+    volatile uint8_t EPINTENSET[8];
 
     /// HOST Pipe Interrupt Flag Set
     /// Offset: 0x0109
-    volatile uint8_t PINTENSET%s;
+    volatile uint8_t PINTENSET[8];
 };
 
 static_assert(sizeof(USB_Registers) >= 266, "USB_Registers size mismatch");

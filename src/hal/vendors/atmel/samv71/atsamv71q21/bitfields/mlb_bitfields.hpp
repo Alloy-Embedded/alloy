@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::mlb {
 
@@ -305,55 +305,55 @@ namespace hctl {
 
 }  // namespace hctl
 
-/// HCMR[%s] - HBI Channel Mask 0 Register 0
-namespace hcmr[%s] {
+/// HCMR[2] - HBI Channel Mask 0 Register 0
+namespace hcmr[2] {
     /// Bitwise Channel Mask Bit [31:0]
     /// Position: 0, Width: 32
     using CHM = BitField<0, 32>;
     constexpr uint32_t CHM_Pos = 0;
     constexpr uint32_t CHM_Msk = CHM::mask;
 
-}  // namespace hcmr[%s]
+}  // namespace hcmr[2]
 
-/// HCER[%s] - HBI Channel Error 0 Register 0
-namespace hcer[%s] {
+/// HCER[2] - HBI Channel Error 0 Register 0
+namespace hcer[2] {
     /// Bitwise Channel Error Bit [31:0]
     /// Position: 0, Width: 32
     using CERR = BitField<0, 32>;
     constexpr uint32_t CERR_Pos = 0;
     constexpr uint32_t CERR_Msk = CERR::mask;
 
-}  // namespace hcer[%s]
+}  // namespace hcer[2]
 
-/// HCBR[%s] - HBI Channel Busy 0 Register 0
-namespace hcbr[%s] {
+/// HCBR[2] - HBI Channel Busy 0 Register 0
+namespace hcbr[2] {
     /// Bitwise Channel Busy Bit [31:0]
     /// Position: 0, Width: 32
     using CHB = BitField<0, 32>;
     constexpr uint32_t CHB_Pos = 0;
     constexpr uint32_t CHB_Msk = CHB::mask;
 
-}  // namespace hcbr[%s]
+}  // namespace hcbr[2]
 
-/// MDAT[%s] - MIF Data 0 Register 0
-namespace mdat[%s] {
+/// MDAT[4] - MIF Data 0 Register 0
+namespace mdat[4] {
     /// CRT or DBR Data
     /// Position: 0, Width: 32
     using DATA = BitField<0, 32>;
     constexpr uint32_t DATA_Pos = 0;
     constexpr uint32_t DATA_Msk = DATA::mask;
 
-}  // namespace mdat[%s]
+}  // namespace mdat[4]
 
-/// MDWE[%s] - MIF Data Write Enable 0 Register 0
-namespace mdwe[%s] {
+/// MDWE[4] - MIF Data Write Enable 0 Register 0
+namespace mdwe[4] {
     /// Bitwise Write Enable for CTR Data - bits[31:0]
     /// Position: 0, Width: 32
     using MASK = BitField<0, 32>;
     constexpr uint32_t MASK_Pos = 0;
     constexpr uint32_t MASK_Msk = MASK::mask;
 
-}  // namespace mdwe[%s]
+}  // namespace mdwe[4]
 
 /// MCTL - MIF Control Register
 namespace mctl {
@@ -425,24 +425,24 @@ namespace actl {
 
 }  // namespace actl
 
-/// ACSR[%s] - AHB Channel Status 0 Register 0
-namespace acsr[%s] {
+/// ACSR[2] - AHB Channel Status 0 Register 0
+namespace acsr[2] {
     /// Interrupt Status for Logical Channels [31:0] (cleared by writing a 1)
     /// Position: 0, Width: 32
     using CHS = BitField<0, 32>;
     constexpr uint32_t CHS_Pos = 0;
     constexpr uint32_t CHS_Msk = CHS::mask;
 
-}  // namespace acsr[%s]
+}  // namespace acsr[2]
 
-/// ACMR[%s] - AHB Channel Mask 0 Register 0
-namespace acmr[%s] {
+/// ACMR[2] - AHB Channel Mask 0 Register 0
+namespace acmr[2] {
     /// Bitwise Channel Mask Bits 31 to 0
     /// Position: 0, Width: 32
     using CHM = BitField<0, 32>;
     constexpr uint32_t CHM_Pos = 0;
     constexpr uint32_t CHM_Msk = CHM::mask;
 
-}  // namespace acmr[%s]
+}  // namespace acmr[2]
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::mlb

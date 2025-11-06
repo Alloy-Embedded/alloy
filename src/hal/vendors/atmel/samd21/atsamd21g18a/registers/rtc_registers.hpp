@@ -154,7 +154,7 @@ struct RTC_Registers {
 
     /// MODE1 Compare n Value
     /// Offset: 0x0018
-    volatile uint16_t COMP%s;
+    volatile uint16_t COMP[2];
 
     /// MODE2 Alarm n Value
     /// Offset: 0x0018

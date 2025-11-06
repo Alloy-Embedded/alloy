@@ -20,7 +20,7 @@ struct GPBR_Registers {
 
     /// General Purpose Backup Register 0
     /// Offset: 0x0000
-    volatile uint32_t SYS_GPBR[%s];
+    volatile uint32_t SYS_GPBR[8];
 };
 
 static_assert(sizeof(GPBR_Registers) >= 4, "GPBR_Registers size mismatch");

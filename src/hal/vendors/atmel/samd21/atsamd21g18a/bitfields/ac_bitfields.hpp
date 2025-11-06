@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::ac {
 
@@ -265,8 +265,8 @@ namespace winctrl {
 
 }  // namespace winctrl
 
-/// COMPCTRL%s - Comparator Control n
-namespace compctrl%s {
+/// COMPCTRL[2] - Comparator Control n
+namespace compctrl[2] {
     /// Enable
     /// Position: 0, Width: 1
     using ENABLE = BitField<0, 1>;
@@ -369,16 +369,16 @@ namespace compctrl%s {
         constexpr uint32_t MAJ5 = 2;
     }
 
-}  // namespace compctrl%s
+}  // namespace compctrl[2]
 
-/// SCALER%s - Scaler n
-namespace scaler%s {
+/// SCALER[2] - Scaler n
+namespace scaler[2] {
     /// Scaler Value
     /// Position: 0, Width: 6
     using VALUE = BitField<0, 6>;
     constexpr uint32_t VALUE_Pos = 0;
     constexpr uint32_t VALUE_Msk = VALUE::mask;
 
-}  // namespace scaler%s
+}  // namespace scaler[2]
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::ac

@@ -380,6 +380,22 @@ class SVDParser:
         if offset is None:
             return None
 
+        # Handle register arrays (dim/dimIncrement)
+        # SVD spec: <dim> specifies array size, <dimIncrement> specifies offset between elements
+        # Example: <name>ABCDSR[%s]</name> with <dim>2</dim> becomes ABCDSR[2]
+        dim = self._get_int('dim', reg_elem)
+        if dim is not None and dim > 1:
+            # Replace placeholder patterns with actual array size
+            # Common patterns: [%s], %s, [s], etc.
+            name = name.replace('[%s]', f'[{dim}]')
+            name = name.replace('%s', f'[{dim}]')
+            name = name.replace('[s]', f'[{dim}]')
+            name = name.replace('[S]', f'[{dim}]')
+
+            # If no placeholder found, add array syntax
+            if '[' not in name:
+                name = f'{name}[{dim}]'
+
         # Parse bit fields within the register
         fields = []
         fields_container = reg_elem.find('fields')

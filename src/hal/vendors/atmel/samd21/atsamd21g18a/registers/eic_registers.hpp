@@ -57,7 +57,7 @@ struct EIC_Registers {
 
     /// Configuration n
     /// Offset: 0x0018
-    volatile uint32_t CONFIG%s;
+    volatile uint32_t CONFIG[2];
 };
 
 static_assert(sizeof(EIC_Registers) >= 28, "EIC_Registers size mismatch");

@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::tc3 {
 
@@ -1164,34 +1164,34 @@ namespace per {
 
 }  // namespace per
 
-/// CC%s - COUNT8 Compare/Capture
-namespace cc%s {
+/// CC[2] - COUNT8 Compare/Capture
+namespace cc[2] {
     /// Compare/Capture Value
     /// Position: 0, Width: 8
     using CC = BitField<0, 8>;
     constexpr uint32_t CC_Pos = 0;
     constexpr uint32_t CC_Msk = CC::mask;
 
-}  // namespace cc%s
+}  // namespace cc[2]
 
-/// CC%s - COUNT16 Compare/Capture
-namespace cc%s {
+/// CC[2] - COUNT16 Compare/Capture
+namespace cc[2] {
     /// Compare/Capture Value
     /// Position: 0, Width: 16
     using CC = BitField<0, 16>;
     constexpr uint32_t CC_Pos = 0;
     constexpr uint32_t CC_Msk = CC::mask;
 
-}  // namespace cc%s
+}  // namespace cc[2]
 
-/// CC%s - COUNT32 Compare/Capture
-namespace cc%s {
+/// CC[2] - COUNT32 Compare/Capture
+namespace cc[2] {
     /// Compare/Capture Value
     /// Position: 0, Width: 32
     using CC = BitField<0, 32>;
     constexpr uint32_t CC_Pos = 0;
     constexpr uint32_t CC_Msk = CC::mask;
 
-}  // namespace cc%s
+}  // namespace cc[2]
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::tc3

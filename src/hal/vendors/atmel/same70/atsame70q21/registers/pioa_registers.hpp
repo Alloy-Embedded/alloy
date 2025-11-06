@@ -139,7 +139,7 @@ struct PIOA_Registers {
 
     /// Peripheral ABCD Select Register 0
     /// Offset: 0x0070
-    volatile uint32_t ABCDSR[%s];
+    volatile uint32_t ABCDSR[2];
     uint8_t RESERVED_0074[12]; ///< Reserved
 
     /// Input Filter Slow Clock Disable Register

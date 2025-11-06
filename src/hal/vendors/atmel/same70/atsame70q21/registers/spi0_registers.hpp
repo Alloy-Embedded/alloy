@@ -60,7 +60,7 @@ struct SPI0_Registers {
 
     /// Chip Select Register 0
     /// Offset: 0x0030
-    volatile uint32_t CSR[%s];
+    volatile uint32_t CSR[4];
     uint8_t RESERVED_0034[176]; ///< Reserved
 
     /// Write Protection Mode Register

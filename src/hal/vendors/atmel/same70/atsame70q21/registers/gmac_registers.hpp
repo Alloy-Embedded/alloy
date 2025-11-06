@@ -487,22 +487,22 @@ struct GMAC_Registers {
     /// Interrupt Status Register Priority Queue (index = 1) 0
     /// Offset: 0x03FC
     /// Access: read-only
-    volatile uint32_t ISRPQ[%s];
+    volatile uint32_t ISRPQ[2];
     uint8_t RESERVED_0400[60]; ///< Reserved
 
     /// Transmit Buffer Queue Base Address Register Priority Queue (index = 1) 0
     /// Offset: 0x043C
-    volatile uint32_t TBQBAPQ[%s];
+    volatile uint32_t TBQBAPQ[2];
     uint8_t RESERVED_0440[60]; ///< Reserved
 
     /// Receive Buffer Queue Base Address Register Priority Queue (index = 1) 0
     /// Offset: 0x047C
-    volatile uint32_t RBQBAPQ[%s];
+    volatile uint32_t RBQBAPQ[2];
     uint8_t RESERVED_0480[28]; ///< Reserved
 
     /// Receive Buffer Size Register Priority Queue (index = 1) 0
     /// Offset: 0x049C
-    volatile uint32_t RBSRPQ[%s];
+    volatile uint32_t RBSRPQ[2];
     uint8_t RESERVED_04A0[28]; ///< Reserved
 
     /// Credit-Based Shaping Control Register
@@ -520,34 +520,34 @@ struct GMAC_Registers {
 
     /// Screening Type 1 Register Priority Queue (index = 0) 0
     /// Offset: 0x0500
-    volatile uint32_t ST1RPQ[%s];
+    volatile uint32_t ST1RPQ[4];
     uint8_t RESERVED_0504[60]; ///< Reserved
 
     /// Screening Type 2 Register Priority Queue (index = 0) 0
     /// Offset: 0x0540
-    volatile uint32_t ST2RPQ[%s];
+    volatile uint32_t ST2RPQ[8];
     uint8_t RESERVED_0544[184]; ///< Reserved
 
     /// Interrupt Enable Register Priority Queue (index = 1) 0
     /// Offset: 0x05FC
     /// Access: write-only
-    volatile uint32_t IERPQ[%s];
+    volatile uint32_t IERPQ[2];
     uint8_t RESERVED_0600[28]; ///< Reserved
 
     /// Interrupt Disable Register Priority Queue (index = 1) 0
     /// Offset: 0x061C
     /// Access: write-only
-    volatile uint32_t IDRPQ[%s];
+    volatile uint32_t IDRPQ[2];
     uint8_t RESERVED_0620[28]; ///< Reserved
 
     /// Interrupt Mask Register Priority Queue (index = 1) 0
     /// Offset: 0x063C
-    volatile uint32_t IMRPQ[%s];
+    volatile uint32_t IMRPQ[2];
     uint8_t RESERVED_0640[160]; ///< Reserved
 
     /// Screening Type 2 Ethertype Register (index = 0) 0
     /// Offset: 0x06E0
-    volatile uint32_t ST2ER[%s];
+    volatile uint32_t ST2ER[4];
     uint8_t RESERVED_06E4[28]; ///< Reserved
 
     /// Screening Type 2 Compare Word 0 Register (index = 0)

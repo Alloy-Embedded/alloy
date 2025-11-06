@@ -96,43 +96,43 @@ struct USBHS_Registers {
 
     /// Device Endpoint Configuration Register (n = 0) 0
     /// Offset: 0x0100
-    volatile uint32_t DEVEPTCFG[%s];
+    volatile uint32_t DEVEPTCFG[10];
     uint8_t RESERVED_0104[44]; ///< Reserved
 
     /// Device Endpoint Status Register (n = 0) 0
     /// Offset: 0x0130
     /// Access: read-only
-    volatile uint32_t DEVEPTISR[%s];
+    volatile uint32_t DEVEPTISR[10];
     uint8_t RESERVED_0134[44]; ///< Reserved
 
     /// Device Endpoint Clear Register (n = 0) 0
     /// Offset: 0x0160
     /// Access: write-only
-    volatile uint32_t DEVEPTICR[%s];
+    volatile uint32_t DEVEPTICR[10];
     uint8_t RESERVED_0164[44]; ///< Reserved
 
     /// Device Endpoint Set Register (n = 0) 0
     /// Offset: 0x0190
     /// Access: write-only
-    volatile uint32_t DEVEPTIFR[%s];
+    volatile uint32_t DEVEPTIFR[10];
     uint8_t RESERVED_0194[44]; ///< Reserved
 
     /// Device Endpoint Mask Register (n = 0) 0
     /// Offset: 0x01C0
     /// Access: read-only
-    volatile uint32_t DEVEPTIMR[%s];
+    volatile uint32_t DEVEPTIMR[10];
     uint8_t RESERVED_01C4[44]; ///< Reserved
 
     /// Device Endpoint Enable Register (n = 0) 0
     /// Offset: 0x01F0
     /// Access: write-only
-    volatile uint32_t DEVEPTIER[%s];
+    volatile uint32_t DEVEPTIER[10];
     uint8_t RESERVED_01F4[44]; ///< Reserved
 
     /// Device Endpoint Disable Register (n = 0) 0
     /// Offset: 0x0220
     /// Access: write-only
-    volatile uint32_t DEVEPTIDR[%s];
+    volatile uint32_t DEVEPTIDR[10];
     uint8_t RESERVED_0224[476]; ///< Reserved
 
     /// Host General Control Register
@@ -192,53 +192,53 @@ struct USBHS_Registers {
 
     /// Host Pipe Configuration Register (n = 0) 0
     /// Offset: 0x0500
-    volatile uint32_t HSTPIPCFG[%s];
+    volatile uint32_t HSTPIPCFG[10];
     uint8_t RESERVED_0504[44]; ///< Reserved
 
     /// Host Pipe Status Register (n = 0) 0
     /// Offset: 0x0530
     /// Access: read-only
-    volatile uint32_t HSTPIPISR[%s];
+    volatile uint32_t HSTPIPISR[10];
     uint8_t RESERVED_0534[44]; ///< Reserved
 
     /// Host Pipe Clear Register (n = 0) 0
     /// Offset: 0x0560
     /// Access: write-only
-    volatile uint32_t HSTPIPICR[%s];
+    volatile uint32_t HSTPIPICR[10];
     uint8_t RESERVED_0564[44]; ///< Reserved
 
     /// Host Pipe Set Register (n = 0) 0
     /// Offset: 0x0590
     /// Access: write-only
-    volatile uint32_t HSTPIPIFR[%s];
+    volatile uint32_t HSTPIPIFR[10];
     uint8_t RESERVED_0594[44]; ///< Reserved
 
     /// Host Pipe Mask Register (n = 0) 0
     /// Offset: 0x05C0
     /// Access: read-only
-    volatile uint32_t HSTPIPIMR[%s];
+    volatile uint32_t HSTPIPIMR[10];
     uint8_t RESERVED_05C4[44]; ///< Reserved
 
     /// Host Pipe Enable Register (n = 0) 0
     /// Offset: 0x05F0
     /// Access: write-only
-    volatile uint32_t HSTPIPIER[%s];
+    volatile uint32_t HSTPIPIER[10];
     uint8_t RESERVED_05F4[44]; ///< Reserved
 
     /// Host Pipe Disable Register (n = 0) 0
     /// Offset: 0x0620
     /// Access: write-only
-    volatile uint32_t HSTPIPIDR[%s];
+    volatile uint32_t HSTPIPIDR[10];
     uint8_t RESERVED_0624[44]; ///< Reserved
 
     /// Host Pipe IN Request Register (n = 0) 0
     /// Offset: 0x0650
-    volatile uint32_t HSTPIPINRQ[%s];
+    volatile uint32_t HSTPIPINRQ[10];
     uint8_t RESERVED_0654[44]; ///< Reserved
 
     /// Host Pipe Error Register (n = 0) 0
     /// Offset: 0x0680
-    volatile uint32_t HSTPIPERR[%s];
+    volatile uint32_t HSTPIPERR[10];
     uint8_t RESERVED_0684[380]; ///< Reserved
 
     /// General Control Register

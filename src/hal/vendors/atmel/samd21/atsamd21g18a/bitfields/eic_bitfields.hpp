@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::eic {
 
@@ -579,8 +579,8 @@ namespace wakeup {
 
 }  // namespace wakeup
 
-/// CONFIG%s - Configuration n
-namespace config%s {
+/// CONFIG[2] - Configuration n
+namespace config[2] {
     /// Input Sense 0 Configuration
     /// Position: 0, Width: 3
     using SENSE0 = BitField<0, 3>;
@@ -749,6 +749,6 @@ namespace config%s {
     constexpr uint32_t FILTEN7_Pos = 31;
     constexpr uint32_t FILTEN7_Msk = FILTEN7::mask;
 
-}  // namespace config%s
+}  // namespace config[2]
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::eic

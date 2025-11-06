@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::same70::atsame70q21::aes {
 
@@ -238,45 +238,45 @@ namespace isr {
 
 }  // namespace isr
 
-/// KEYWR[%s] - Key Word Register 0
-namespace keywr[%s] {
+/// KEYWR[8] - Key Word Register 0
+namespace keywr[8] {
     /// Key Word
     /// Position: 0, Width: 32
     using KEYW = BitField<0, 32>;
     constexpr uint32_t KEYW_Pos = 0;
     constexpr uint32_t KEYW_Msk = KEYW::mask;
 
-}  // namespace keywr[%s]
+}  // namespace keywr[8]
 
-/// IDATAR[%s] - Input Data Register 0
-namespace idatar[%s] {
+/// IDATAR[4] - Input Data Register 0
+namespace idatar[4] {
     /// Input Data Word
     /// Position: 0, Width: 32
     using IDATA = BitField<0, 32>;
     constexpr uint32_t IDATA_Pos = 0;
     constexpr uint32_t IDATA_Msk = IDATA::mask;
 
-}  // namespace idatar[%s]
+}  // namespace idatar[4]
 
-/// ODATAR[%s] - Output Data Register 0
-namespace odatar[%s] {
+/// ODATAR[4] - Output Data Register 0
+namespace odatar[4] {
     /// Output Data
     /// Position: 0, Width: 32
     using ODATA = BitField<0, 32>;
     constexpr uint32_t ODATA_Pos = 0;
     constexpr uint32_t ODATA_Msk = ODATA::mask;
 
-}  // namespace odatar[%s]
+}  // namespace odatar[4]
 
-/// IVR[%s] - Initialization Vector Register 0
-namespace ivr[%s] {
+/// IVR[4] - Initialization Vector Register 0
+namespace ivr[4] {
     /// Initialization Vector
     /// Position: 0, Width: 32
     using IV = BitField<0, 32>;
     constexpr uint32_t IV_Pos = 0;
     constexpr uint32_t IV_Msk = IV::mask;
 
-}  // namespace ivr[%s]
+}  // namespace ivr[4]
 
 /// AADLENR - Additional Authenticated Data Length Register
 namespace aadlenr {
@@ -298,25 +298,25 @@ namespace clenr {
 
 }  // namespace clenr
 
-/// GHASHR[%s] - GCM Intermediate Hash Word Register 0
-namespace ghashr[%s] {
+/// GHASHR[4] - GCM Intermediate Hash Word Register 0
+namespace ghashr[4] {
     /// Intermediate GCM Hash Word x
     /// Position: 0, Width: 32
     using GHASH = BitField<0, 32>;
     constexpr uint32_t GHASH_Pos = 0;
     constexpr uint32_t GHASH_Msk = GHASH::mask;
 
-}  // namespace ghashr[%s]
+}  // namespace ghashr[4]
 
-/// TAGR[%s] - GCM Authentication Tag Word Register 0
-namespace tagr[%s] {
+/// TAGR[4] - GCM Authentication Tag Word Register 0
+namespace tagr[4] {
     /// GCM Authentication Tag x
     /// Position: 0, Width: 32
     using TAG = BitField<0, 32>;
     constexpr uint32_t TAG_Pos = 0;
     constexpr uint32_t TAG_Msk = TAG::mask;
 
-}  // namespace tagr[%s]
+}  // namespace tagr[4]
 
 /// CTRR - GCM Encryption Counter Value Register
 namespace ctrr {
@@ -328,14 +328,14 @@ namespace ctrr {
 
 }  // namespace ctrr
 
-/// GCMHR[%s] - GCM H Word Register 0
-namespace gcmhr[%s] {
+/// GCMHR[4] - GCM H Word Register 0
+namespace gcmhr[4] {
     /// GCM H Word x
     /// Position: 0, Width: 32
     using H = BitField<0, 32>;
     constexpr uint32_t H_Pos = 0;
     constexpr uint32_t H_Msk = H::mask;
 
-}  // namespace gcmhr[%s]
+}  // namespace gcmhr[4]
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::aes

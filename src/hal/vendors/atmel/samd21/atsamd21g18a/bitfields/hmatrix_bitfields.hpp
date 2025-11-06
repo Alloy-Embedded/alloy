@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include "bitfield_utils.hpp"
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::hmatrix {
 
@@ -17,14 +17,14 @@ using namespace alloy::hal::bitfields;
 // HMATRIX Bit Field Definitions
 // ============================================================================
 
-/// SFR%s - Special Function
-namespace sfr%s {
+/// SFR[16] - Special Function
+namespace sfr[16] {
     /// Special Function Register
     /// Position: 0, Width: 32
     using SFR = BitField<0, 32>;
     constexpr uint32_t SFR_Pos = 0;
     constexpr uint32_t SFR_Msk = SFR::mask;
 
-}  // namespace sfr%s
+}  // namespace sfr[16]
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::hmatrix
