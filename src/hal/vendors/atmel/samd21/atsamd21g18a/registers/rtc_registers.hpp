@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::rtc {
 
@@ -154,7 +154,7 @@ struct RTC_Registers {
 
     /// MODE1 Compare n Value
     /// Offset: 0x0018
-    volatile uint16_t COMP[2];
+    volatile uint16_t COMP[2][2];
 
     /// MODE2 Alarm n Value
     /// Offset: 0x0018
@@ -168,7 +168,8 @@ struct RTC_Registers {
 static_assert(sizeof(RTC_Registers) >= 29, "RTC_Registers size mismatch");
 
 /// RTC peripheral instance
-constexpr RTC_Registers* RTC = 
-    reinterpret_cast<RTC_Registers*>(0x40001400);
+inline RTC_Registers* RTC() {
+    return reinterpret_cast<RTC_Registers*>(0x40001400);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::rtc

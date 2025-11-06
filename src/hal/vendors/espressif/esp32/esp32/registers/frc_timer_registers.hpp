@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::frc_timer {
 
@@ -42,7 +42,8 @@ struct FRC_TIMER_Registers {
 static_assert(sizeof(FRC_TIMER_Registers) >= 20, "FRC_TIMER_Registers size mismatch");
 
 /// FRC_TIMER peripheral instance
-constexpr FRC_TIMER_Registers* FRC_TIMER = 
-    reinterpret_cast<FRC_TIMER_Registers*>(0x3FF47000);
+inline FRC_TIMER_Registers* FRC_TIMER() {
+    return reinterpret_cast<FRC_TIMER_Registers*>(0x3FF47000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::frc_timer

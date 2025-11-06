@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::tc3 {
 
@@ -181,21 +181,22 @@ struct TC3_Registers {
 
     /// COUNT8 Compare/Capture
     /// Offset: 0x0018
-    volatile uint8_t CC[2];
+    volatile uint8_t CC[2][2];
 
     /// COUNT16 Compare/Capture
     /// Offset: 0x0018
-    volatile uint16_t CC[2];
+    volatile uint16_t CC[2][2];
 
     /// COUNT32 Compare/Capture
     /// Offset: 0x0018
-    volatile uint32_t CC[2];
+    volatile uint32_t CC[2][2];
 };
 
-static_assert(sizeof(TC3_Registers) >= 28, "TC3_Registers size mismatch");
+static_assert(sizeof(TC3_Registers) >= 32, "TC3_Registers size mismatch");
 
 /// TC3 peripheral instance
-constexpr TC3_Registers* TC3 = 
-    reinterpret_cast<TC3_Registers*>(0x42002C00);
+inline TC3_Registers* TC3() {
+    return reinterpret_cast<TC3_Registers*>(0x42002C00);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::tc3

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::clocks {
 
@@ -281,7 +281,8 @@ struct CLOCKS_Registers {
 static_assert(sizeof(CLOCKS_Registers) >= 200, "CLOCKS_Registers size mismatch");
 
 /// CLOCKS peripheral instance
-constexpr CLOCKS_Registers* CLOCKS = 
-    reinterpret_cast<CLOCKS_Registers*>(0x40008000);
+inline CLOCKS_Registers* CLOCKS() {
+    return reinterpret_cast<CLOCKS_Registers*>(0x40008000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::clocks

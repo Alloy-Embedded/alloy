@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::rng {
 
@@ -39,7 +39,8 @@ struct RNG_Registers {
 static_assert(sizeof(RNG_Registers) >= 12, "RNG_Registers size mismatch");
 
 /// RNG peripheral instance
-constexpr RNG_Registers* RNG = 
-    reinterpret_cast<RNG_Registers*>(0x50060800);
+inline RNG_Registers* RNG() {
+    return reinterpret_cast<RNG_Registers*>(0x50060800);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::rng

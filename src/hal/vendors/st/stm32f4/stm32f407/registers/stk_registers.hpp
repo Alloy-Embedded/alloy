@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::stk {
 
@@ -48,7 +48,8 @@ struct STK_Registers {
 static_assert(sizeof(STK_Registers) >= 16, "STK_Registers size mismatch");
 
 /// STK peripheral instance
-constexpr STK_Registers* STK = 
-    reinterpret_cast<STK_Registers*>(0xE000E010);
+inline STK_Registers* STK() {
+    return reinterpret_cast<STK_Registers*>(0xE000E010);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::stk

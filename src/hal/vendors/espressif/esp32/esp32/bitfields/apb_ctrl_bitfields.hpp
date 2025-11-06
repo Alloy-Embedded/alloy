@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::esp32::apb_ctrl {
 
@@ -233,8 +233,8 @@ namespace apb_saradc_fsm {
 
 }  // namespace apb_saradc_fsm
 
-/// APB_SARADC_SAR1_PATT_TAB%s - APB_SARADC_SAR1_PATT_TAB%s
-namespace apb_saradc_sar1_patt_tab%s {
+/// APB_SARADC_SAR1_PATT_TAB[4] - APB_SARADC_SAR1_PATT_TAB[4]
+namespace apb_saradc_sar1_patt_tab {
     /// item 0 ~ 3 for pattern table 1 (each item one byte)
     /// Position: 0, Width: 32
     /// Access: read-write
@@ -242,10 +242,10 @@ namespace apb_saradc_sar1_patt_tab%s {
     constexpr uint32_t SARADC_SAR1_PATT_TAB1_Pos = 0;
     constexpr uint32_t SARADC_SAR1_PATT_TAB1_Msk = SARADC_SAR1_PATT_TAB1::mask;
 
-}  // namespace apb_saradc_sar1_patt_tab%s
+}  // namespace apb_saradc_sar1_patt_tab
 
-/// APB_SARADC_SAR2_PATT_TAB%s - APB_SARADC_SAR2_PATT_TAB%s
-namespace apb_saradc_sar2_patt_tab%s {
+/// APB_SARADC_SAR2_PATT_TAB[4] - APB_SARADC_SAR2_PATT_TAB[4]
+namespace apb_saradc_sar2_patt_tab {
     /// item 0 ~ 3 for pattern table 2 (each item one byte)
     /// Position: 0, Width: 32
     /// Access: read-write
@@ -253,7 +253,7 @@ namespace apb_saradc_sar2_patt_tab%s {
     constexpr uint32_t SARADC_SAR2_PATT_TAB1_Pos = 0;
     constexpr uint32_t SARADC_SAR2_PATT_TAB1_Msk = SARADC_SAR2_PATT_TAB1::mask;
 
-}  // namespace apb_saradc_sar2_patt_tab%s
+}  // namespace apb_saradc_sar2_patt_tab
 
 /// APLL_TICK_CONF - APLL_TICK_CONF
 namespace apll_tick_conf {

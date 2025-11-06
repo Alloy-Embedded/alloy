@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_CMSDK_CM3_PERIPHERALS_HPP
 #define ALLOY_GENERATED_CMSDK_CM3_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::cmsdk_cm3 {
 

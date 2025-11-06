@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::iwdg {
 
@@ -46,7 +46,8 @@ struct IWDG_Registers {
 static_assert(sizeof(IWDG_Registers) >= 16, "IWDG_Registers size mismatch");
 
 /// IWDG peripheral instance
-constexpr IWDG_Registers* IWDG = 
-    reinterpret_cast<IWDG_Registers*>(0x40003000);
+inline IWDG_Registers* IWDG() {
+    return reinterpret_cast<IWDG_Registers*>(0x40003000);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::iwdg

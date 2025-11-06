@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::pioa {
 
@@ -139,8 +139,8 @@ struct PIOA_Registers {
 
     /// Peripheral ABCD Select Register 0
     /// Offset: 0x0070
-    volatile uint32_t ABCDSR[2];
-    uint8_t RESERVED_0074[12]; ///< Reserved
+    volatile uint32_t ABCDSR[2][2];
+    uint8_t RESERVED_0078[8]; ///< Reserved
 
     /// Input Filter Slow Clock Disable Register
     /// Offset: 0x0080
@@ -304,7 +304,8 @@ struct PIOA_Registers {
 static_assert(sizeof(PIOA_Registers) >= 360, "PIOA_Registers size mismatch");
 
 /// PIOA peripheral instance
-constexpr PIOA_Registers* PIOA = 
-    reinterpret_cast<PIOA_Registers*>(0x400E0E00);
+inline PIOA_Registers* PIOA() {
+    return reinterpret_cast<PIOA_Registers*>(0x400E0E00);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::pioa

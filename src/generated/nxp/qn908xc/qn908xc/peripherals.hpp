@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_QN908XC_PERIPHERALS_HPP
 #define ALLOY_GENERATED_QN908XC_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::qn908xc {
 

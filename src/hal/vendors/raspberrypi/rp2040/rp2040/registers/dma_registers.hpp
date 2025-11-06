@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::dma {
 
@@ -1533,7 +1533,8 @@ struct DMA_Registers {
 static_assert(sizeof(DMA_Registers) >= 2760, "DMA_Registers size mismatch");
 
 /// DMA peripheral instance
-constexpr DMA_Registers* DMA = 
-    reinterpret_cast<DMA_Registers*>(0x50000000);
+inline DMA_Registers* DMA() {
+    return reinterpret_cast<DMA_Registers*>(0x50000000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::dma

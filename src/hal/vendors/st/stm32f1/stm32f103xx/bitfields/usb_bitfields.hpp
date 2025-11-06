@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::usb {
 

@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::esp32::pcnt {
 
@@ -17,8 +17,8 @@ using namespace alloy::hal::bitfields;
 // PCNT Bit Field Definitions
 // ============================================================================
 
-/// U%s_CONF0 - U%s_CONF0
-namespace u%s_conf0 {
+/// U[8]_CONF0 - U[8]_CONF0
+namespace u_conf0 {
     /// This register is used to filter pluse whose width is smaller than this value for unit0.
     /// Position: 0, Width: 10
     /// Access: read-write
@@ -124,10 +124,10 @@ namespace u%s_conf0 {
     constexpr uint32_t CH1_LCTRL_MODE_Pos = 30;
     constexpr uint32_t CH1_LCTRL_MODE_Msk = CH1_LCTRL_MODE::mask;
 
-}  // namespace u%s_conf0
+}  // namespace u_conf0
 
-/// U%s_CONF1 - U%s_CONF1
-namespace u%s_conf1 {
+/// U[8]_CONF1 - U[8]_CONF1
+namespace u_conf1 {
     /// This register is used to configure thres0 value for unit0.
     /// Position: 0, Width: 16
     /// Access: read-write
@@ -142,10 +142,10 @@ namespace u%s_conf1 {
     constexpr uint32_t CNT_THRES1_Pos = 16;
     constexpr uint32_t CNT_THRES1_Msk = CNT_THRES1::mask;
 
-}  // namespace u%s_conf1
+}  // namespace u_conf1
 
-/// U%s_CONF2 - U%s_CONF2
-namespace u%s_conf2 {
+/// U[8]_CONF2 - U[8]_CONF2
+namespace u_conf2 {
     /// This register is used to configure thr_h_lim value for unit0.
     /// Position: 0, Width: 16
     /// Access: read-write
@@ -160,10 +160,10 @@ namespace u%s_conf2 {
     constexpr uint32_t CNT_L_LIM_Pos = 16;
     constexpr uint32_t CNT_L_LIM_Msk = CNT_L_LIM::mask;
 
-}  // namespace u%s_conf2
+}  // namespace u_conf2
 
-/// U%s_CNT - U%s_CNT
-namespace u%s_cnt {
+/// U[8]_CNT - U[8]_CNT
+namespace u_cnt {
     /// This register stores the current pulse count value for unit0.
     /// Position: 0, Width: 16
     /// Access: read-only
@@ -171,7 +171,7 @@ namespace u%s_cnt {
     constexpr uint32_t CNT_Pos = 0;
     constexpr uint32_t CNT_Msk = CNT::mask;
 
-}  // namespace u%s_cnt
+}  // namespace u_cnt
 
 /// INT_RAW - INT_RAW
 namespace int_raw {
@@ -413,8 +413,8 @@ namespace int_clr {
 
 }  // namespace int_clr
 
-/// U%s_STATUS - U%s_STATUS
-namespace u%s_status {
+/// U[8]_STATUS - U[8]_STATUS
+namespace u_status {
     /// Position: 0, Width: 32
     /// Access: read-only
     using CORE_STATUS_U0 = BitField<0, 32>;
@@ -457,7 +457,7 @@ namespace u%s_status {
     constexpr uint32_t ZERO_Pos = 6;
     constexpr uint32_t ZERO_Msk = ZERO::mask;
 
-}  // namespace u%s_status
+}  // namespace u_status
 
 /// CTRL - CTRL
 namespace ctrl {

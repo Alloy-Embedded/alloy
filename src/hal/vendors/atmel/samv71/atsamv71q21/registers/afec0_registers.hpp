@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::afec0 {
 
@@ -162,7 +162,8 @@ struct AFEC0_Registers {
 static_assert(sizeof(AFEC0_Registers) >= 256, "AFEC0_Registers size mismatch");
 
 /// AFEC0 peripheral instance
-constexpr AFEC0_Registers* AFEC0 = 
-    reinterpret_cast<AFEC0_Registers*>(0x4003C000);
+inline AFEC0_Registers* AFEC0() {
+    return reinterpret_cast<AFEC0_Registers*>(0x4003C000);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::afec0

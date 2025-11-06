@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::adc {
 
@@ -110,7 +110,8 @@ struct ADC_Registers {
 static_assert(sizeof(ADC_Registers) >= 43, "ADC_Registers size mismatch");
 
 /// ADC peripheral instance
-constexpr ADC_Registers* ADC = 
-    reinterpret_cast<ADC_Registers*>(0x42004000);
+inline ADC_Registers* ADC() {
+    return reinterpret_cast<ADC_Registers*>(0x42004000);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::adc

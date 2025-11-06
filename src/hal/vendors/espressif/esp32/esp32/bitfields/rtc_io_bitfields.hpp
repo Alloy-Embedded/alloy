@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::esp32::rtc_io {
 
@@ -127,8 +127,8 @@ namespace in {
 
 }  // namespace in
 
-/// PIN%s - PIN%s
-namespace pin%s {
+/// PIN[18] - PIN[18]
+namespace pin {
     /// if set to 0: normal output  if set to 1: open drain
     /// Position: 2, Width: 1
     /// Access: read-write
@@ -150,7 +150,7 @@ namespace pin%s {
     constexpr uint32_t WAKEUP_ENABLE_Pos = 10;
     constexpr uint32_t WAKEUP_ENABLE_Msk = WAKEUP_ENABLE::mask;
 
-}  // namespace pin%s
+}  // namespace pin
 
 /// RTC_DEBUG_SEL - RTC_DEBUG_SEL
 namespace rtc_debug_sel {

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::fpu_cpacr {
 
@@ -29,7 +29,8 @@ struct FPU_CPACR_Registers {
 static_assert(sizeof(FPU_CPACR_Registers) >= 4, "FPU_CPACR_Registers size mismatch");
 
 /// FPU_CPACR peripheral instance
-constexpr FPU_CPACR_Registers* FPU_CPACR = 
-    reinterpret_cast<FPU_CPACR_Registers*>(0xE000ED88);
+inline FPU_CPACR_Registers* FPU_CPACR() {
+    return reinterpret_cast<FPU_CPACR_Registers*>(0xE000ED88);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::fpu_cpacr

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::dbg {
 
@@ -46,7 +46,8 @@ struct DBG_Registers {
 static_assert(sizeof(DBG_Registers) >= 16, "DBG_Registers size mismatch");
 
 /// DBG peripheral instance
-constexpr DBG_Registers* DBG = 
-    reinterpret_cast<DBG_Registers*>(0xE0042000);
+inline DBG_Registers* DBG() {
+    return reinterpret_cast<DBG_Registers*>(0xE0042000);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::dbg

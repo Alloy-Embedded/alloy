@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::wdt {
 
@@ -59,7 +59,8 @@ struct WDT_Registers {
 static_assert(sizeof(WDT_Registers) >= 9, "WDT_Registers size mismatch");
 
 /// WDT peripheral instance
-constexpr WDT_Registers* WDT = 
-    reinterpret_cast<WDT_Registers*>(0x40001000);
+inline WDT_Registers* WDT() {
+    return reinterpret_cast<WDT_Registers*>(0x40001000);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::wdt

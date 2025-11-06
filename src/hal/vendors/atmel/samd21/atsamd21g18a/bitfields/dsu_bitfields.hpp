@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::dsu {
@@ -148,14 +148,14 @@ namespace data {
 }  // namespace data
 
 /// DCC[2] - Debug Communication Channel n
-namespace dcc[2] {
+namespace dcc {
     /// Data
     /// Position: 0, Width: 32
     using DATA = BitField<0, 32>;
     constexpr uint32_t DATA_Pos = 0;
     constexpr uint32_t DATA_Msk = DATA::mask;
 
-}  // namespace dcc[2]
+}  // namespace dcc
 
 /// DID - Device Identification
 namespace did {

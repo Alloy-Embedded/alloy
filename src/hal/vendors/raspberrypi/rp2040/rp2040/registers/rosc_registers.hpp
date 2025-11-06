@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::rosc {
 
@@ -80,7 +80,8 @@ struct ROSC_Registers {
 static_assert(sizeof(ROSC_Registers) >= 36, "ROSC_Registers size mismatch");
 
 /// ROSC peripheral instance
-constexpr ROSC_Registers* ROSC = 
-    reinterpret_cast<ROSC_Registers*>(0x40060000);
+inline ROSC_Registers* ROSC() {
+    return reinterpret_cast<ROSC_Registers*>(0x40060000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::rosc

@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_AT32F413XX_V2_PERIPHERALS_HPP
 #define ALLOY_GENERATED_AT32F413XX_V2_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::at32f413xx_v2 {
 

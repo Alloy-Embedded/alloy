@@ -24,6 +24,9 @@
 
 namespace alloy::arm::cortex_m7 {
 
+// Import from parent namespace
+using namespace alloy::arm::cortex_m;
+
 /// Initialize Cortex-M7 core features
 /// @param enable_fpu: Enable FPU if present (default: true)
 /// @param enable_lazy_fpu_stacking: Enable lazy FPU context switching (default: true)

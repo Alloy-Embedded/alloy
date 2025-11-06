@@ -25,8 +25,6 @@
 // Core utilities
 // ============================================================================
 
-#include "bitfield_utils.hpp"
-
 // ============================================================================
 // Peripheral Register Structures
 // ============================================================================
@@ -143,7 +141,6 @@ namespace alloy::hal::raspberrypi::rp2040::rp2040 {
 //   - 30 peripheral bit field definitions
 //   - Enumeration definitions
 //   - Pin alternate function mappings
-//   - BitField template utilities
 //
 // Total peripherals with registers: 30
 //

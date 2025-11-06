@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::ethernet_ptp {
 
@@ -100,7 +100,8 @@ struct Ethernet_PTP_Registers {
 static_assert(sizeof(Ethernet_PTP_Registers) >= 48, "Ethernet_PTP_Registers size mismatch");
 
 /// Ethernet_PTP peripheral instance
-constexpr Ethernet_PTP_Registers* Ethernet_PTP = 
-    reinterpret_cast<Ethernet_PTP_Registers*>(0x40028700);
+inline Ethernet_PTP_Registers* Ethernet_PTP() {
+    return reinterpret_cast<Ethernet_PTP_Registers*>(0x40028700);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::ethernet_ptp

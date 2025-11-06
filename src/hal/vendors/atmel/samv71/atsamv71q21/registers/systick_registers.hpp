@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::systick {
 
@@ -43,7 +43,8 @@ struct SysTick_Registers {
 static_assert(sizeof(SysTick_Registers) >= 16, "SysTick_Registers size mismatch");
 
 /// SysTick peripheral instance
-constexpr SysTick_Registers* SysTick = 
-    reinterpret_cast<SysTick_Registers*>(0xE000E010);
+inline SysTick_Registers* SysTick() {
+    return reinterpret_cast<SysTick_Registers*>(0xE000E010);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::systick

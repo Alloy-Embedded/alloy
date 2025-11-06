@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_MK02F12810_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MK02F12810_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::mk02f12810 {
 

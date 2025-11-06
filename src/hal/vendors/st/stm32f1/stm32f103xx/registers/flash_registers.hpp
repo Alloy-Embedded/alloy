@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::flash {
 
@@ -69,7 +69,8 @@ struct FLASH_Registers {
 static_assert(sizeof(FLASH_Registers) >= 36, "FLASH_Registers size mismatch");
 
 /// FLASH peripheral instance
-constexpr FLASH_Registers* FLASH = 
-    reinterpret_cast<FLASH_Registers*>(0x40022000);
+inline FLASH_Registers* FLASH() {
+    return reinterpret_cast<FLASH_Registers*>(0x40022000);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::flash

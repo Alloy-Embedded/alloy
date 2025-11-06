@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_ATSAME53N19A_PERIPHERALS_HPP
 #define ALLOY_GENERATED_ATSAME53N19A_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::atsame53n19a {
 

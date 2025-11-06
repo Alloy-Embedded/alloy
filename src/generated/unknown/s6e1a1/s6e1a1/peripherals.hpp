@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_S6E1A1_PERIPHERALS_HPP
 #define ALLOY_GENERATED_S6E1A1_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::s6e1a1 {
 

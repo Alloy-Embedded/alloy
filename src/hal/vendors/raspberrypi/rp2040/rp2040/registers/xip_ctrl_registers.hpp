@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::xip_ctrl {
 
@@ -74,7 +74,8 @@ struct XIP_CTRL_Registers {
 static_assert(sizeof(XIP_CTRL_Registers) >= 32, "XIP_CTRL_Registers size mismatch");
 
 /// XIP_CTRL peripheral instance
-constexpr XIP_CTRL_Registers* XIP_CTRL = 
-    reinterpret_cast<XIP_CTRL_Registers*>(0x14000000);
+inline XIP_CTRL_Registers* XIP_CTRL() {
+    return reinterpret_cast<XIP_CTRL_Registers*>(0x14000000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::xip_ctrl

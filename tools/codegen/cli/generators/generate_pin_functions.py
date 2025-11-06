@@ -170,7 +170,7 @@ def generate_pin_functions_header(db: PinFunctionDatabase, device: SVDDevice) ->
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::{vendor_ns}::{family_ns}::{mcu_ns}::pin_functions {{
 

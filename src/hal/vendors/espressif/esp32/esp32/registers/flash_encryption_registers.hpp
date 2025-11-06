@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::flash_encryption {
 
@@ -18,10 +18,9 @@ namespace alloy::hal::espressif::esp32::esp32::flash_encryption {
 /// FLASH_ENCRYPTION Register Structure
 struct FLASH_ENCRYPTION_Registers {
 
-    /// BUFFER_%s
+    /// BUFFER_[8]
     /// Offset: 0x0000
-    volatile uint32_t BUFFER_%s;
-    uint8_t RESERVED_0004[28]; ///< Reserved
+    volatile uint32_t BUFFER_[8][8];
 
     /// START
     /// Offset: 0x0020
@@ -39,7 +38,8 @@ struct FLASH_ENCRYPTION_Registers {
 static_assert(sizeof(FLASH_ENCRYPTION_Registers) >= 44, "FLASH_ENCRYPTION_Registers size mismatch");
 
 /// FLASH_ENCRYPTION peripheral instance
-constexpr FLASH_ENCRYPTION_Registers* FLASH_ENCRYPTION = 
-    reinterpret_cast<FLASH_ENCRYPTION_Registers*>(0x3FF46000);
+inline FLASH_ENCRYPTION_Registers* FLASH_ENCRYPTION() {
+    return reinterpret_cast<FLASH_ENCRYPTION_Registers*>(0x3FF46000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::flash_encryption

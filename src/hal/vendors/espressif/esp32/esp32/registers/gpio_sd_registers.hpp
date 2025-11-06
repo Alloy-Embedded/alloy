@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::gpio_sd {
 
@@ -18,11 +18,10 @@ namespace alloy::hal::espressif::esp32::esp32::gpio_sd {
 /// GPIO_SD Register Structure
 struct GPIO_SD_Registers {
 
-    /// SIGMADELTA%s
+    /// SIGMADELTA[8]
     /// Offset: 0x0000
     /// Reset value: 0x0000FF00
-    volatile uint32_t SIGMADELTA%s;
-    uint8_t RESERVED_0004[28]; ///< Reserved
+    volatile uint32_t SIGMADELTA[8][8];
 
     /// CG
     /// Offset: 0x0020
@@ -41,7 +40,8 @@ struct GPIO_SD_Registers {
 static_assert(sizeof(GPIO_SD_Registers) >= 44, "GPIO_SD_Registers size mismatch");
 
 /// GPIO_SD peripheral instance
-constexpr GPIO_SD_Registers* GPIO_SD = 
-    reinterpret_cast<GPIO_SD_Registers*>(0x3FF44F00);
+inline GPIO_SD_Registers* GPIO_SD() {
+    return reinterpret_cast<GPIO_SD_Registers*>(0x3FF44F00);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::gpio_sd

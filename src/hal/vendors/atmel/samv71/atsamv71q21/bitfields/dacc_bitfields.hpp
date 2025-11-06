@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::dacc {
@@ -238,7 +238,7 @@ namespace chsr {
 }  // namespace chsr
 
 /// CDR[2] - Conversion Data Register 0
-namespace cdr[2] {
+namespace cdr {
     /// Data to Convert for channel 0
     /// Position: 0, Width: 16
     using DATA0 = BitField<0, 16>;
@@ -251,7 +251,7 @@ namespace cdr[2] {
     constexpr uint32_t DATA1_Pos = 16;
     constexpr uint32_t DATA1_Msk = DATA1::mask;
 
-}  // namespace cdr[2]
+}  // namespace cdr
 
 /// IER - Interrupt Enable Register
 namespace ier {

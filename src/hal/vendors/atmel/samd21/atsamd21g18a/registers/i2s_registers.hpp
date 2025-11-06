@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::i2s {
 
@@ -25,8 +25,7 @@ struct I2S_Registers {
 
     /// Clock Unit n Control
     /// Offset: 0x0004
-    volatile uint32_t CLKCTRL[2];
-    uint8_t RESERVED_0008[4]; ///< Reserved
+    volatile uint32_t CLKCTRL[2][2];
 
     /// Interrupt Enable Clear
     /// Offset: 0x000C
@@ -51,18 +50,19 @@ struct I2S_Registers {
 
     /// Serializer n Control
     /// Offset: 0x0020
-    volatile uint32_t SERCTRL[2];
-    uint8_t RESERVED_0024[12]; ///< Reserved
+    volatile uint32_t SERCTRL[2][2];
+    uint8_t RESERVED_0028[8]; ///< Reserved
 
     /// Data n
     /// Offset: 0x0030
-    volatile uint32_t DATA[2];
+    volatile uint32_t DATA[2][2];
 };
 
-static_assert(sizeof(I2S_Registers) >= 52, "I2S_Registers size mismatch");
+static_assert(sizeof(I2S_Registers) >= 56, "I2S_Registers size mismatch");
 
 /// I2S peripheral instance
-constexpr I2S_Registers* I2S = 
-    reinterpret_cast<I2S_Registers*>(0x42005000);
+inline I2S_Registers* I2S() {
+    return reinterpret_cast<I2S_Registers*>(0x42005000);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::i2s

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::dsu {
 
@@ -48,8 +48,7 @@ struct DSU_Registers {
 
     /// Debug Communication Channel n
     /// Offset: 0x0010
-    volatile uint32_t DCC[2];
-    uint8_t RESERVED_0014[4]; ///< Reserved
+    volatile uint32_t DCC[2][2];
 
     /// Device Identification
     /// Offset: 0x0018
@@ -138,7 +137,8 @@ struct DSU_Registers {
 static_assert(sizeof(DSU_Registers) >= 8192, "DSU_Registers size mismatch");
 
 /// DSU peripheral instance
-constexpr DSU_Registers* DSU = 
-    reinterpret_cast<DSU_Registers*>(0x41002000);
+inline DSU_Registers* DSU() {
+    return reinterpret_cast<DSU_Registers*>(0x41002000);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::dsu

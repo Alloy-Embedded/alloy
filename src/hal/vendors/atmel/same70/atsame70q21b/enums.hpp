@@ -1,5 +1,5 @@
 /// Auto-generated enumeration definitions
-/// Device: ATSAME70Q21B
+/// Device: ATSAME70Q21
 /// Vendor: Microchip Technology
 ///
 /// This file contains type-safe enum classes for all register field
@@ -591,9 +591,239 @@ enum class GMAC_DCFGR_RXBMS : uint32_t {
 };
 
 /// Ethernet Frame Offset Start
-/// Register: ST2CW1
+/// Register: ST2CW10
 /// Field: OFFSSTRT [7:8]
-enum class GMAC_ST2CW1_OFFSSTRT : uint32_t {
+enum class GMAC_ST2CW10_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW11
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW11_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW12
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW12_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW13
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW13_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW14
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW14_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW15
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW15_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW16
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW16_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW17
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW17_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW18
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW18_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW19
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW19_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW110
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW110_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW111
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW111_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW112
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW112_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW113
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW113_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW114
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW114_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW115
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW115_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW116
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW116_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW117
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW117_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW118
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW118_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW119
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW119_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW120
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW120_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW121
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW121_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW122
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW122_OFFSSTRT : uint32_t {
+    FRAMESTART = 0x0,
+    ETHERTYPE = 0x1,
+    IP = 0x2,
+    TCP_UDP = 0x3,
+};
+
+/// Ethernet Frame Offset Start
+/// Register: ST2CW123
+/// Field: OFFSSTRT [7:8]
+enum class GMAC_ST2CW123_OFFSSTRT : uint32_t {
     FRAMESTART = 0x0,
     ETHERTYPE = 0x1,
     IP = 0x2,
@@ -752,50 +982,6 @@ enum class HSMCI_WPMR_WPKEY : uint32_t {
 };
 
 // ----------------------------------------------------------------------------
-// I2SC0 - Inter-IC Sound Controller
-// ----------------------------------------------------------------------------
-
-/// Inter-IC Sound Controller Mode
-/// Register: MR
-/// Field: MODE [0:0]
-enum class I2SC0_MR_MODE : uint32_t {
-    SLAVE = 0x0,
-    MASTER = 0x1,
-};
-
-/// Data Word Length
-/// Register: MR
-/// Field: DATALENGTH [2:4]
-enum class I2SC0_MR_DATALENGTH : uint32_t {
-    VAL_32_BITS = 0x0,  // _32_BITS
-    VAL_24_BITS = 0x1,  // _24_BITS
-    VAL_20_BITS = 0x2,  // _20_BITS
-    VAL_18_BITS = 0x3,  // _18_BITS
-    VAL_16_BITS = 0x4,  // _16_BITS
-    VAL_16_BITS_COMPACT = 0x5,  // _16_BITS_COMPACT
-    VAL_8_BITS = 0x6,  // _8_BITS
-    VAL_8_BITS_COMPACT = 0x7,  // _8_BITS_COMPACT
-};
-
-/// Master Clock to fs Ratio
-/// Register: MR
-/// Field: IMCKFS [24:29]
-enum class I2SC0_MR_IMCKFS : uint32_t {
-    M2SF32 = 0x0,
-    M2SF64 = 0x1,
-    M2SF96 = 0x2,
-    M2SF128 = 0x3,
-    M2SF192 = 0x5,
-    M2SF256 = 0x7,
-    M2SF384 = 0xB,
-    M2SF512 = 0xF,
-    M2SF768 = 0x17,
-    M2SF1024 = 0x1F,
-    M2SF1536 = 0x2F,
-    M2SF2048 = 0x3F,
-};
-
-// ----------------------------------------------------------------------------
 // ICM - Integrity Check Monitor
 // ----------------------------------------------------------------------------
 
@@ -864,9 +1050,9 @@ enum class ISI_WPMR_WPKEY : uint32_t {
 // ----------------------------------------------------------------------------
 
 /// Undefined Length Burst Type
-/// Register: MCFG[13]
+/// Register: MCFG[12]
 /// Field: ULBT [0:2]
-enum class MATRIX_MCFG_13_ULBT : uint32_t {
+enum class MATRIX_MCFG_12_ULBT : uint32_t {
     UNLTD_LENGTH = 0x0,
     SINGLE_ACCESS = 0x1,
     VAL_4BEAT_BURST = 0x2,  // _4BEAT_BURST
@@ -897,10 +1083,10 @@ enum class MATRIX_WPMR_WPKEY : uint32_t {
 // MCAN0 - Controller Area Network
 // ----------------------------------------------------------------------------
 
-/// Transmitter Delay Compensation
-/// Register: DBTP
+/// Transceiver Delay Compensation
+/// Register: FBTP
 /// Field: TDC [23:23]
-enum class MCAN0_DBTP_TDC : uint32_t {
+enum class MCAN0_FBTP_TDC : uint32_t {
     DISABLED = 0x0,
     ENABLED = 0x1,
 };
@@ -979,20 +1165,22 @@ enum class MCAN0_CCCR_TEST : uint32_t {
     ENABLED = 0x1,
 };
 
-/// CAN FD Operation Enable (read/write, write protection)
+/// CAN Mode Enable (read/write, write protection)
 /// Register: CCCR
-/// Field: FDOE [8:8]
-enum class MCAN0_CCCR_FDOE : uint32_t {
-    DISABLED = 0x0,
-    ENABLED = 0x1,
+/// Field: CME [8:9]
+enum class MCAN0_CCCR_CME : uint32_t {
+    ISO11898_1 = 0x0,
+    FD = 0x1,
 };
 
-/// Bit Rate Switching Enable (read/write, write protection)
+/// CAN Mode Request (read/write)
 /// Register: CCCR
-/// Field: BRSE [9:9]
-enum class MCAN0_CCCR_BRSE : uint32_t {
-    DISABLED = 0x0,
-    ENABLED = 0x1,
+/// Field: CMR [10:11]
+enum class MCAN0_CCCR_CMR : uint32_t {
+    NO_CHANGE = 0x0,
+    FD = 0x1,
+    FD_BITRATE_SWITCH = 0x2,
+    ISO11898_1 = 0x3,
 };
 
 /// Timestamp Select
@@ -1609,14 +1797,6 @@ enum class PWM0_WPCR_WPKEY : uint32_t {
     PASSWD = 0x50574D,
 };
 
-/// Comparison x Value Mode
-/// Register: CMPV
-/// Field: CVM [24:24]
-enum class PWM0_CMPV_CVM : uint32_t {
-    COMPARE_AT_INCREMENT = 0x0,
-    COMPARE_AT_DECREMENT = 0x1,
-};
-
 /// Channel Pre-scaler
 /// Register: CMR
 /// Field: CPRE [0:3]
@@ -1634,38 +1814,6 @@ enum class PWM0_CMR_CPRE : uint32_t {
     MCK_DIV_1024 = 0xA,
     CLKA = 0xB,
     CLKB = 0xC,
-};
-
-/// Channel Alignment
-/// Register: CMR
-/// Field: CALG [8:8]
-enum class PWM0_CMR_CALG : uint32_t {
-    LEFT_ALIGNED = 0x0,
-    CENTER_ALIGNED = 0x1,
-};
-
-/// Channel Polarity
-/// Register: CMR
-/// Field: CPOL [9:9]
-enum class PWM0_CMR_CPOL : uint32_t {
-    LOW_POLARITY = 0x0,
-    HIGH_POLARITY = 0x1,
-};
-
-/// Counter Event Selection
-/// Register: CMR
-/// Field: CES [10:10]
-enum class PWM0_CMR_CES : uint32_t {
-    SINGLE_EVENT = 0x0,
-    DOUBLE_EVENT = 0x1,
-};
-
-/// Update Selection
-/// Register: CMR
-/// Field: UPDS [11:11]
-enum class PWM0_CMR_UPDS : uint32_t {
-    UPDATE_AT_PERIOD = 0x0,
-    UPDATE_AT_HALF_PERIOD = 0x1,
 };
 
 /// External Trigger Mode
@@ -2606,50 +2754,6 @@ enum class SMC_WPMR_WPKEY : uint32_t {
 // SPI0 - Serial Peripheral Interface
 // ----------------------------------------------------------------------------
 
-/// Master/Slave Mode
-/// Register: MR
-/// Field: MSTR [0:0]
-enum class SPI0_MR_MSTR : uint32_t {
-    SLAVE = 0x0,
-    MASTER = 0x1,
-};
-
-/// Peripheral Chip Select
-/// Register: MR
-/// Field: PCS [16:19]
-enum class SPI0_MR_PCS : uint32_t {
-    NPCS3 = 0x7,
-    NPCS2 = 0xB,
-    NPCS1 = 0xD,
-    NPCS0 = 0xE,
-};
-
-/// Peripheral Chip Select
-/// Register: TDR
-/// Field: PCS [16:19]
-enum class SPI0_TDR_PCS : uint32_t {
-    NPCS3 = 0x7,
-    NPCS2 = 0xB,
-    NPCS1 = 0xD,
-    NPCS0 = 0xE,
-};
-
-/// Clock Polarity
-/// Register: CSR[4]
-/// Field: CPOL [0:0]
-enum class SPI0_CSR_4_CPOL : uint32_t {
-    IDLE_LOW = 0x0,
-    IDLE_HIGH = 0x1,
-};
-
-/// Clock Phase
-/// Register: CSR[4]
-/// Field: NCPHA [1:1]
-enum class SPI0_CSR_4_NCPHA : uint32_t {
-    VALID_TRAILING_EDGE = 0x0,
-    VALID_LEADING_EDGE = 0x1,
-};
-
 /// Bits Per Transfer
 /// Register: CSR[4]
 /// Field: BITS [4:7]
@@ -3381,13 +3485,6 @@ enum class SUPC_SR_WKUPIS13 : uint32_t {
     EN = 0x1,
 };
 
-/// Write Protection Key
-/// Register: SYSC_WPMR
-/// Field: WPKEY [8:31]
-enum class SUPC_SYSC_WPMR_WPKEY : uint32_t {
-    PASSWD = 0x525443,
-};
-
 // ----------------------------------------------------------------------------
 // SysTick - System timer
 // ----------------------------------------------------------------------------
@@ -3437,9 +3534,9 @@ enum class SYSTICK_CALIB_NOREF : uint32_t {
 // ----------------------------------------------------------------------------
 
 /// Clock Selection
-/// Register: CMR_CAPTURE_MODE
+/// Register: CMR
 /// Field: TCCLKS [0:2]
-enum class TC0_CMR_CAPTURE_MODE_TCCLKS : uint32_t {
+enum class TC0_CMR_TCCLKS : uint32_t {
     TIMER_CLOCK1 = 0x0,
     TIMER_CLOCK2 = 0x1,
     TIMER_CLOCK3 = 0x2,
@@ -3451,9 +3548,9 @@ enum class TC0_CMR_CAPTURE_MODE_TCCLKS : uint32_t {
 };
 
 /// Burst Signal Selection
-/// Register: CMR_CAPTURE_MODE
+/// Register: CMR
 /// Field: BURST [4:5]
-enum class TC0_CMR_CAPTURE_MODE_BURST : uint32_t {
+enum class TC0_CMR_BURST : uint32_t {
     NONE = 0x0,
     XC0 = 0x1,
     XC1 = 0x2,
@@ -3461,9 +3558,9 @@ enum class TC0_CMR_CAPTURE_MODE_BURST : uint32_t {
 };
 
 /// External Trigger Edge Selection
-/// Register: CMR_CAPTURE_MODE
+/// Register: CMR
 /// Field: ETRGEDG [8:9]
-enum class TC0_CMR_CAPTURE_MODE_ETRGEDG : uint32_t {
+enum class TC0_CMR_ETRGEDG : uint32_t {
     NONE = 0x0,
     RISING = 0x1,
     FALLING = 0x2,
@@ -3471,9 +3568,9 @@ enum class TC0_CMR_CAPTURE_MODE_ETRGEDG : uint32_t {
 };
 
 /// RA Loading Edge Selection
-/// Register: CMR_CAPTURE_MODE
+/// Register: CMR
 /// Field: LDRA [16:17]
-enum class TC0_CMR_CAPTURE_MODE_LDRA : uint32_t {
+enum class TC0_CMR_LDRA : uint32_t {
     NONE = 0x0,
     RISING = 0x1,
     FALLING = 0x2,
@@ -3481,9 +3578,9 @@ enum class TC0_CMR_CAPTURE_MODE_LDRA : uint32_t {
 };
 
 /// RB Loading Edge Selection
-/// Register: CMR_CAPTURE_MODE
+/// Register: CMR
 /// Field: LDRB [18:19]
-enum class TC0_CMR_CAPTURE_MODE_LDRB : uint32_t {
+enum class TC0_CMR_LDRB : uint32_t {
     NONE = 0x0,
     RISING = 0x1,
     FALLING = 0x2,
@@ -3491,148 +3588,14 @@ enum class TC0_CMR_CAPTURE_MODE_LDRB : uint32_t {
 };
 
 /// Loading Edge Subsampling Ratio
-/// Register: CMR_CAPTURE_MODE
+/// Register: CMR
 /// Field: SBSMPLR [20:22]
-enum class TC0_CMR_CAPTURE_MODE_SBSMPLR : uint32_t {
+enum class TC0_CMR_SBSMPLR : uint32_t {
     ONE = 0x0,
     HALF = 0x1,
     FOURTH = 0x2,
     EIGHTH = 0x3,
     SIXTEENTH = 0x4,
-};
-
-/// Clock Selection
-/// Register: CMR_WAVEFORM_MODE
-/// Field: TCCLKS [0:2]
-enum class TC0_CMR_WAVEFORM_MODE_TCCLKS : uint32_t {
-    TIMER_CLOCK1 = 0x0,
-    TIMER_CLOCK2 = 0x1,
-    TIMER_CLOCK3 = 0x2,
-    TIMER_CLOCK4 = 0x3,
-    TIMER_CLOCK5 = 0x4,
-    XC0 = 0x5,
-    XC1 = 0x6,
-    XC2 = 0x7,
-};
-
-/// Burst Signal Selection
-/// Register: CMR_WAVEFORM_MODE
-/// Field: BURST [4:5]
-enum class TC0_CMR_WAVEFORM_MODE_BURST : uint32_t {
-    NONE = 0x0,
-    XC0 = 0x1,
-    XC1 = 0x2,
-    XC2 = 0x3,
-};
-
-/// External Event Edge Selection
-/// Register: CMR_WAVEFORM_MODE
-/// Field: EEVTEDG [8:9]
-enum class TC0_CMR_WAVEFORM_MODE_EEVTEDG : uint32_t {
-    NONE = 0x0,
-    RISING = 0x1,
-    FALLING = 0x2,
-    EDGE = 0x3,
-};
-
-/// External Event Selection
-/// Register: CMR_WAVEFORM_MODE
-/// Field: EEVT [10:11]
-enum class TC0_CMR_WAVEFORM_MODE_EEVT : uint32_t {
-    TIOB = 0x0,
-    XC0 = 0x1,
-    XC1 = 0x2,
-    XC2 = 0x3,
-};
-
-/// Waveform Selection
-/// Register: CMR_WAVEFORM_MODE
-/// Field: WAVSEL [13:14]
-enum class TC0_CMR_WAVEFORM_MODE_WAVSEL : uint32_t {
-    UP = 0x0,
-    UPDOWN = 0x1,
-    UP_RC = 0x2,
-    UPDOWN_RC = 0x3,
-};
-
-/// RA Compare Effect on TIOAx
-/// Register: CMR_WAVEFORM_MODE
-/// Field: ACPA [16:17]
-enum class TC0_CMR_WAVEFORM_MODE_ACPA : uint32_t {
-    NONE = 0x0,
-    SET = 0x1,
-    CLEAR = 0x2,
-    TOGGLE = 0x3,
-};
-
-/// RC Compare Effect on TIOAx
-/// Register: CMR_WAVEFORM_MODE
-/// Field: ACPC [18:19]
-enum class TC0_CMR_WAVEFORM_MODE_ACPC : uint32_t {
-    NONE = 0x0,
-    SET = 0x1,
-    CLEAR = 0x2,
-    TOGGLE = 0x3,
-};
-
-/// External Event Effect on TIOAx
-/// Register: CMR_WAVEFORM_MODE
-/// Field: AEEVT [20:21]
-enum class TC0_CMR_WAVEFORM_MODE_AEEVT : uint32_t {
-    NONE = 0x0,
-    SET = 0x1,
-    CLEAR = 0x2,
-    TOGGLE = 0x3,
-};
-
-/// Software Trigger Effect on TIOAx
-/// Register: CMR_WAVEFORM_MODE
-/// Field: ASWTRG [22:23]
-enum class TC0_CMR_WAVEFORM_MODE_ASWTRG : uint32_t {
-    NONE = 0x0,
-    SET = 0x1,
-    CLEAR = 0x2,
-    TOGGLE = 0x3,
-};
-
-/// RB Compare Effect on TIOBx
-/// Register: CMR_WAVEFORM_MODE
-/// Field: BCPB [24:25]
-enum class TC0_CMR_WAVEFORM_MODE_BCPB : uint32_t {
-    NONE = 0x0,
-    SET = 0x1,
-    CLEAR = 0x2,
-    TOGGLE = 0x3,
-};
-
-/// RC Compare Effect on TIOBx
-/// Register: CMR_WAVEFORM_MODE
-/// Field: BCPC [26:27]
-enum class TC0_CMR_WAVEFORM_MODE_BCPC : uint32_t {
-    NONE = 0x0,
-    SET = 0x1,
-    CLEAR = 0x2,
-    TOGGLE = 0x3,
-};
-
-/// External Event Effect on TIOBx
-/// Register: CMR_WAVEFORM_MODE
-/// Field: BEEVT [28:29]
-enum class TC0_CMR_WAVEFORM_MODE_BEEVT : uint32_t {
-    NONE = 0x0,
-    SET = 0x1,
-    CLEAR = 0x2,
-    TOGGLE = 0x3,
-};
-
-/// Software Trigger Effect on TIOBx
-/// Register: CMR_WAVEFORM_MODE
-/// Field: BSWTRG [30:31]
-enum class TC0_CMR_WAVEFORM_MODE_BSWTRG : uint32_t {
-    NONE = 0x0,
-    SET = 0x1,
-    CLEAR = 0x2,
-    TOGGLE = 0x3,
 };
 
 /// Trigger Source for Input A
@@ -3778,9 +3741,9 @@ enum class UART0_WPMR_WPKEY : uint32_t {
 // ----------------------------------------------------------------------------
 
 /// USART Mode of Operation
-/// Register: US_MR_USART_MODE
+/// Register: US_MR
 /// Field: USART_MODE [0:3]
-enum class USART0_US_MR_USART_MODE_USART_MODE : uint32_t {
+enum class USART0_US_MR_USART_MODE : uint32_t {
     NORMAL = 0x0,
     RS485 = 0x1,
     HW_HANDSHAKING = 0x2,
@@ -3789,16 +3752,14 @@ enum class USART0_US_MR_USART_MODE_USART_MODE : uint32_t {
     IS07816_T_1 = 0x6,
     IRDA = 0x8,
     LON = 0x9,
-    LIN_MASTER = 0xA,
-    LIN_SLAVE = 0xB,
     SPI_MASTER = 0xE,
     SPI_SLAVE = 0xF,
 };
 
 /// Clock Selection
-/// Register: US_MR_USART_MODE
+/// Register: US_MR
 /// Field: USCLKS [4:5]
-enum class USART0_US_MR_USART_MODE_USCLKS : uint32_t {
+enum class USART0_US_MR_USCLKS : uint32_t {
     MCK = 0x0,
     DIV = 0x1,
     PCK = 0x2,
@@ -3806,9 +3767,9 @@ enum class USART0_US_MR_USART_MODE_USCLKS : uint32_t {
 };
 
 /// Character Length
-/// Register: US_MR_USART_MODE
+/// Register: US_MR
 /// Field: CHRL [6:7]
-enum class USART0_US_MR_USART_MODE_CHRL : uint32_t {
+enum class USART0_US_MR_CHRL : uint32_t {
     VAL_5_BIT = 0x0,  // _5_BIT
     VAL_6_BIT = 0x1,  // _6_BIT
     VAL_7_BIT = 0x2,  // _7_BIT
@@ -3816,9 +3777,9 @@ enum class USART0_US_MR_USART_MODE_CHRL : uint32_t {
 };
 
 /// Parity Type
-/// Register: US_MR_USART_MODE
+/// Register: US_MR
 /// Field: PAR [9:11]
-enum class USART0_US_MR_USART_MODE_PAR : uint32_t {
+enum class USART0_US_MR_PAR : uint32_t {
     EVEN = 0x0,
     ODD = 0x1,
     SPACE = 0x2,
@@ -3828,60 +3789,22 @@ enum class USART0_US_MR_USART_MODE_PAR : uint32_t {
 };
 
 /// Number of Stop Bits
-/// Register: US_MR_USART_MODE
+/// Register: US_MR
 /// Field: NBSTOP [12:13]
-enum class USART0_US_MR_USART_MODE_NBSTOP : uint32_t {
+enum class USART0_US_MR_NBSTOP : uint32_t {
     VAL_1_BIT = 0x0,  // _1_BIT
     VAL_1_5_BIT = 0x1,  // _1_5_BIT
     VAL_2_BIT = 0x2,  // _2_BIT
 };
 
 /// Channel Mode
-/// Register: US_MR_USART_MODE
+/// Register: US_MR
 /// Field: CHMODE [14:15]
-enum class USART0_US_MR_USART_MODE_CHMODE : uint32_t {
+enum class USART0_US_MR_CHMODE : uint32_t {
     NORMAL = 0x0,
     AUTOMATIC = 0x1,
     LOCAL_LOOPBACK = 0x2,
     REMOTE_LOOPBACK = 0x3,
-};
-
-/// USART Mode of Operation
-/// Register: US_MR_SPI_MODE
-/// Field: USART_MODE [0:3]
-enum class USART0_US_MR_SPI_MODE_USART_MODE : uint32_t {
-    NORMAL = 0x0,
-    RS485 = 0x1,
-    HW_HANDSHAKING = 0x2,
-    MODEM = 0x3,
-    IS07816_T_0 = 0x4,
-    IS07816_T_1 = 0x6,
-    IRDA = 0x8,
-    LON = 0x9,
-    LIN_MASTER = 0xA,
-    LIN_SLAVE = 0xB,
-    SPI_MASTER = 0xE,
-    SPI_SLAVE = 0xF,
-};
-
-/// Clock Selection
-/// Register: US_MR_SPI_MODE
-/// Field: USCLKS [4:5]
-enum class USART0_US_MR_SPI_MODE_USCLKS : uint32_t {
-    MCK = 0x0,
-    DIV = 0x1,
-    PCK = 0x2,
-    SCK = 0x3,
-};
-
-/// Character Length
-/// Register: US_MR_SPI_MODE
-/// Field: CHRL [6:7]
-enum class USART0_US_MR_SPI_MODE_CHRL : uint32_t {
-    VAL_5_BIT = 0x0,  // _5_BIT
-    VAL_6_BIT = 0x1,  // _6_BIT
-    VAL_7_BIT = 0x2,  // _7_BIT
-    VAL_8_BIT = 0x3,  // _8_BIT
 };
 
 /// Transmitter Preamble Pattern
@@ -3930,31 +3853,29 @@ enum class USART0_US_WPMR_WPKEY : uint32_t {
 enum class USBHS_DEVCTRL_SPDCONF : uint32_t {
     NORMAL = 0x0,
     LOW_POWER = 0x1,
-    HIGH_SPEED = 0x2,
-    FORCED_FS = 0x3,
 };
 
 /// Endpoint Banks
 /// Register: DEVEPTCFG[10]
 /// Field: EPBK [2:3]
 enum class USBHS_DEVEPTCFG_10_EPBK : uint32_t {
-    VAL_1_BANK = 0x0,  // 1_BANK
-    VAL_2_BANK = 0x1,  // 2_BANK
-    VAL_3_BANK = 0x2,  // 3_BANK
+    VAL_1_BANK = 0x0,  // _1_BANK
+    VAL_2_BANK = 0x1,  // _2_BANK
+    VAL_3_BANK = 0x2,  // _3_BANK
 };
 
 /// Endpoint Size
 /// Register: DEVEPTCFG[10]
 /// Field: EPSIZE [4:6]
 enum class USBHS_DEVEPTCFG_10_EPSIZE : uint32_t {
-    VAL_8_BYTE = 0x0,  // 8_BYTE
-    VAL_16_BYTE = 0x1,  // 16_BYTE
-    VAL_32_BYTE = 0x2,  // 32_BYTE
-    VAL_64_BYTE = 0x3,  // 64_BYTE
-    VAL_128_BYTE = 0x4,  // 128_BYTE
-    VAL_256_BYTE = 0x5,  // 256_BYTE
-    VAL_512_BYTE = 0x6,  // 512_BYTE
-    VAL_1024_BYTE = 0x7,  // 1024_BYTE
+    VAL_8_BYTE = 0x0,  // _8_BYTE
+    VAL_16_BYTE = 0x1,  // _16_BYTE
+    VAL_32_BYTE = 0x2,  // _32_BYTE
+    VAL_64_BYTE = 0x3,  // _64_BYTE
+    VAL_128_BYTE = 0x4,  // _128_BYTE
+    VAL_256_BYTE = 0x5,  // _256_BYTE
+    VAL_512_BYTE = 0x6,  // _512_BYTE
+    VAL_1024_BYTE = 0x7,  // _1024_BYTE
 };
 
 /// Endpoint Direction
@@ -3986,9 +3907,9 @@ enum class USBHS_DEVEPTCFG_10_NBTRANS : uint32_t {
 };
 
 /// Data Toggle Sequence
-/// Register: DEVEPTISR_CTRL_MODE[10]
+/// Register: DEVEPTISR[10]
 /// Field: DTSEQ [8:9]
-enum class USBHS_DEVEPTISR_CTRL_MODE_10_DTSEQ : uint32_t {
+enum class USBHS_DEVEPTISR_10_DTSEQ : uint32_t {
     DATA0 = 0x0,
     DATA1 = 0x1,
     DATA2 = 0x2,
@@ -3996,9 +3917,9 @@ enum class USBHS_DEVEPTISR_CTRL_MODE_10_DTSEQ : uint32_t {
 };
 
 /// Number of Busy Banks
-/// Register: DEVEPTISR_CTRL_MODE[10]
+/// Register: DEVEPTISR[10]
 /// Field: NBUSYBK [12:13]
-enum class USBHS_DEVEPTISR_CTRL_MODE_10_NBUSYBK : uint32_t {
+enum class USBHS_DEVEPTISR_10_NBUSYBK : uint32_t {
     VAL_0_BUSY = 0x0,  // _0_BUSY
     VAL_1_BUSY = 0x1,  // _1_BUSY
     VAL_2_BUSY = 0x2,  // _2_BUSY
@@ -4006,96 +3927,9 @@ enum class USBHS_DEVEPTISR_CTRL_MODE_10_NBUSYBK : uint32_t {
 };
 
 /// Current Bank
-/// Register: DEVEPTISR_CTRL_MODE[10]
+/// Register: DEVEPTISR[10]
 /// Field: CURRBK [14:15]
-enum class USBHS_DEVEPTISR_CTRL_MODE_10_CURRBK : uint32_t {
-    BANK0 = 0x0,
-    BANK1 = 0x1,
-    BANK2 = 0x2,
-};
-
-/// Data Toggle Sequence
-/// Register: DEVEPTISR_ISO_MODE[10]
-/// Field: DTSEQ [8:9]
-enum class USBHS_DEVEPTISR_ISO_MODE_10_DTSEQ : uint32_t {
-    DATA0 = 0x0,
-    DATA1 = 0x1,
-    DATA2 = 0x2,
-    MDATA = 0x3,
-};
-
-/// Number of Busy Banks
-/// Register: DEVEPTISR_ISO_MODE[10]
-/// Field: NBUSYBK [12:13]
-enum class USBHS_DEVEPTISR_ISO_MODE_10_NBUSYBK : uint32_t {
-    VAL_0_BUSY = 0x0,  // _0_BUSY
-    VAL_1_BUSY = 0x1,  // _1_BUSY
-    VAL_2_BUSY = 0x2,  // _2_BUSY
-    VAL_3_BUSY = 0x3,  // _3_BUSY
-};
-
-/// Current Bank
-/// Register: DEVEPTISR_ISO_MODE[10]
-/// Field: CURRBK [14:15]
-enum class USBHS_DEVEPTISR_ISO_MODE_10_CURRBK : uint32_t {
-    BANK0 = 0x0,
-    BANK1 = 0x1,
-    BANK2 = 0x2,
-};
-
-/// Data Toggle Sequence
-/// Register: DEVEPTISR_BLK_MODE[10]
-/// Field: DTSEQ [8:9]
-enum class USBHS_DEVEPTISR_BLK_MODE_10_DTSEQ : uint32_t {
-    DATA0 = 0x0,
-    DATA1 = 0x1,
-    DATA2 = 0x2,
-    MDATA = 0x3,
-};
-
-/// Number of Busy Banks
-/// Register: DEVEPTISR_BLK_MODE[10]
-/// Field: NBUSYBK [12:13]
-enum class USBHS_DEVEPTISR_BLK_MODE_10_NBUSYBK : uint32_t {
-    VAL_0_BUSY = 0x0,  // _0_BUSY
-    VAL_1_BUSY = 0x1,  // _1_BUSY
-    VAL_2_BUSY = 0x2,  // _2_BUSY
-    VAL_3_BUSY = 0x3,  // _3_BUSY
-};
-
-/// Current Bank
-/// Register: DEVEPTISR_BLK_MODE[10]
-/// Field: CURRBK [14:15]
-enum class USBHS_DEVEPTISR_BLK_MODE_10_CURRBK : uint32_t {
-    BANK0 = 0x0,
-    BANK1 = 0x1,
-    BANK2 = 0x2,
-};
-
-/// Data Toggle Sequence
-/// Register: DEVEPTISR_INTRPT_MODE[10]
-/// Field: DTSEQ [8:9]
-enum class USBHS_DEVEPTISR_INTRPT_MODE_10_DTSEQ : uint32_t {
-    DATA0 = 0x0,
-    DATA1 = 0x1,
-    DATA2 = 0x2,
-    MDATA = 0x3,
-};
-
-/// Number of Busy Banks
-/// Register: DEVEPTISR_INTRPT_MODE[10]
-/// Field: NBUSYBK [12:13]
-enum class USBHS_DEVEPTISR_INTRPT_MODE_10_NBUSYBK : uint32_t {
-    VAL_0_BUSY = 0x0,  // _0_BUSY
-    VAL_1_BUSY = 0x1,  // _1_BUSY
-    VAL_2_BUSY = 0x2,  // _2_BUSY
-    VAL_3_BUSY = 0x3,  // _3_BUSY
-};
-
-/// Current Bank
-/// Register: DEVEPTISR_INTRPT_MODE[10]
-/// Field: CURRBK [14:15]
-enum class USBHS_DEVEPTISR_INTRPT_MODE_10_CURRBK : uint32_t {
+enum class USBHS_DEVEPTISR_10_CURRBK : uint32_t {
     BANK0 = 0x0,
     BANK1 = 0x1,
     BANK2 = 0x2,
@@ -4107,8 +3941,6 @@ enum class USBHS_DEVEPTISR_INTRPT_MODE_10_CURRBK : uint32_t {
 enum class USBHS_HSTCTRL_SPDCONF : uint32_t {
     NORMAL = 0x0,
     LOW_POWER = 0x1,
-    HIGH_SPEED = 0x2,
-    FORCED_FS = 0x3,
 };
 
 /// Pipe Banks
@@ -4153,60 +3985,18 @@ enum class USBHS_HSTPIPCFG_10_PTYPE : uint32_t {
     INTRPT = 0x3,
 };
 
-/// Pipe Banks
-/// Register: HSTPIPCFG_CTRL_BULK_MODE[10]
-/// Field: PBK [2:3]
-enum class USBHS_HSTPIPCFG_CTRL_BULK_MODE_10_PBK : uint32_t {
-    VAL_1_BANK = 0x0,  // _1_BANK
-    VAL_2_BANK = 0x1,  // _2_BANK
-    VAL_3_BANK = 0x2,  // _3_BANK
-};
-
-/// Pipe Size
-/// Register: HSTPIPCFG_CTRL_BULK_MODE[10]
-/// Field: PSIZE [4:6]
-enum class USBHS_HSTPIPCFG_CTRL_BULK_MODE_10_PSIZE : uint32_t {
-    VAL_8_BYTE = 0x0,  // _8_BYTE
-    VAL_16_BYTE = 0x1,  // _16_BYTE
-    VAL_32_BYTE = 0x2,  // _32_BYTE
-    VAL_64_BYTE = 0x3,  // _64_BYTE
-    VAL_128_BYTE = 0x4,  // _128_BYTE
-    VAL_256_BYTE = 0x5,  // _256_BYTE
-    VAL_512_BYTE = 0x6,  // _512_BYTE
-    VAL_1024_BYTE = 0x7,  // _1024_BYTE
-};
-
-/// Pipe Token
-/// Register: HSTPIPCFG_CTRL_BULK_MODE[10]
-/// Field: PTOKEN [8:9]
-enum class USBHS_HSTPIPCFG_CTRL_BULK_MODE_10_PTOKEN : uint32_t {
-    SETUP = 0x0,
-    IN = 0x1,
-    OUT = 0x2,
-};
-
-/// Pipe Type
-/// Register: HSTPIPCFG_CTRL_BULK_MODE[10]
-/// Field: PTYPE [12:13]
-enum class USBHS_HSTPIPCFG_CTRL_BULK_MODE_10_PTYPE : uint32_t {
-    CTRL = 0x0,
-    ISO = 0x1,
-    BLK = 0x2,
-    INTRPT = 0x3,
-};
-
 /// Data Toggle Sequence
-/// Register: HSTPIPISR_CTRL_MODE[10]
+/// Register: HSTPIPISR[10]
 /// Field: DTSEQ [8:9]
-enum class USBHS_HSTPIPISR_CTRL_MODE_10_DTSEQ : uint32_t {
+enum class USBHS_HSTPIPISR_10_DTSEQ : uint32_t {
     DATA0 = 0x0,
     DATA1 = 0x1,
 };
 
 /// Number of Busy Banks
-/// Register: HSTPIPISR_CTRL_MODE[10]
+/// Register: HSTPIPISR[10]
 /// Field: NBUSYBK [12:13]
-enum class USBHS_HSTPIPISR_CTRL_MODE_10_NBUSYBK : uint32_t {
+enum class USBHS_HSTPIPISR_10_NBUSYBK : uint32_t {
     VAL_0_BUSY = 0x0,  // _0_BUSY
     VAL_1_BUSY = 0x1,  // _1_BUSY
     VAL_2_BUSY = 0x2,  // _2_BUSY
@@ -4214,90 +4004,9 @@ enum class USBHS_HSTPIPISR_CTRL_MODE_10_NBUSYBK : uint32_t {
 };
 
 /// Current Bank
-/// Register: HSTPIPISR_CTRL_MODE[10]
+/// Register: HSTPIPISR[10]
 /// Field: CURRBK [14:15]
-enum class USBHS_HSTPIPISR_CTRL_MODE_10_CURRBK : uint32_t {
-    BANK0 = 0x0,
-    BANK1 = 0x1,
-    BANK2 = 0x2,
-};
-
-/// Data Toggle Sequence
-/// Register: HSTPIPISR_ISO_MODE[10]
-/// Field: DTSEQ [8:9]
-enum class USBHS_HSTPIPISR_ISO_MODE_10_DTSEQ : uint32_t {
-    DATA0 = 0x0,
-    DATA1 = 0x1,
-};
-
-/// Number of Busy Banks
-/// Register: HSTPIPISR_ISO_MODE[10]
-/// Field: NBUSYBK [12:13]
-enum class USBHS_HSTPIPISR_ISO_MODE_10_NBUSYBK : uint32_t {
-    VAL_0_BUSY = 0x0,  // _0_BUSY
-    VAL_1_BUSY = 0x1,  // _1_BUSY
-    VAL_2_BUSY = 0x2,  // _2_BUSY
-    VAL_3_BUSY = 0x3,  // _3_BUSY
-};
-
-/// Current Bank
-/// Register: HSTPIPISR_ISO_MODE[10]
-/// Field: CURRBK [14:15]
-enum class USBHS_HSTPIPISR_ISO_MODE_10_CURRBK : uint32_t {
-    BANK0 = 0x0,
-    BANK1 = 0x1,
-    BANK2 = 0x2,
-};
-
-/// Data Toggle Sequence
-/// Register: HSTPIPISR_BLK_MODE[10]
-/// Field: DTSEQ [8:9]
-enum class USBHS_HSTPIPISR_BLK_MODE_10_DTSEQ : uint32_t {
-    DATA0 = 0x0,
-    DATA1 = 0x1,
-};
-
-/// Number of Busy Banks
-/// Register: HSTPIPISR_BLK_MODE[10]
-/// Field: NBUSYBK [12:13]
-enum class USBHS_HSTPIPISR_BLK_MODE_10_NBUSYBK : uint32_t {
-    VAL_0_BUSY = 0x0,  // _0_BUSY
-    VAL_1_BUSY = 0x1,  // _1_BUSY
-    VAL_2_BUSY = 0x2,  // _2_BUSY
-    VAL_3_BUSY = 0x3,  // _3_BUSY
-};
-
-/// Current Bank
-/// Register: HSTPIPISR_BLK_MODE[10]
-/// Field: CURRBK [14:15]
-enum class USBHS_HSTPIPISR_BLK_MODE_10_CURRBK : uint32_t {
-    BANK0 = 0x0,
-    BANK1 = 0x1,
-    BANK2 = 0x2,
-};
-
-/// Data Toggle Sequence
-/// Register: HSTPIPISR_INTRPT_MODE[10]
-/// Field: DTSEQ [8:9]
-enum class USBHS_HSTPIPISR_INTRPT_MODE_10_DTSEQ : uint32_t {
-    DATA0 = 0x0,
-    DATA1 = 0x1,
-};
-
-/// Number of Busy Banks
-/// Register: HSTPIPISR_INTRPT_MODE[10]
-/// Field: NBUSYBK [12:13]
-enum class USBHS_HSTPIPISR_INTRPT_MODE_10_NBUSYBK : uint32_t {
-    VAL_0_BUSY = 0x0,  // _0_BUSY
-    VAL_1_BUSY = 0x1,  // _1_BUSY
-    VAL_2_BUSY = 0x2,  // _2_BUSY
-    VAL_3_BUSY = 0x3,  // _3_BUSY
-};
-
-/// Current Bank
-/// Register: HSTPIPISR_INTRPT_MODE[10]
-/// Field: CURRBK [14:15]
-enum class USBHS_HSTPIPISR_INTRPT_MODE_10_CURRBK : uint32_t {
+enum class USBHS_HSTPIPISR_10_CURRBK : uint32_t {
     BANK0 = 0x0,
     BANK1 = 0x1,
     BANK2 = 0x2,
@@ -4503,64 +4212,6 @@ enum class XDMAC_CC_WRIP : uint32_t {
     IN_PROGRESS = 0x1,
 };
 
-/// Channel x Peripheral Hardware Request Line Identifier
-/// Register: CC
-/// Field: PERID [24:30]
-enum class XDMAC_CC_PERID : uint32_t {
-    HSMCI = 0x0,
-    SPI0_TX = 0x1,
-    SPI0_RX = 0x2,
-    SPI1_TX = 0x3,
-    SPI1_RX = 0x4,
-    QSPI_TX = 0x5,
-    QSPI_RX = 0x6,
-    USART0_TX = 0x7,
-    USART0_RX = 0x8,
-    USART1_TX = 0x9,
-    USART1_RX = 0xA,
-    USART2_TX = 0xB,
-    USART2_RX = 0xC,
-    PWM0 = 0xD,
-    TWIHS0_TX = 0xE,
-    TWIHS0_RX = 0xF,
-    TWIHS1_TX = 0x10,
-    TWIHS1_RX = 0x11,
-    TWIHS2_TX = 0x12,
-    TWIHS2_RX = 0x13,
-    UART0_TX = 0x14,
-    UART0_RX = 0x15,
-    UART1_TX = 0x16,
-    UART1_RX = 0x17,
-    UART2_TX = 0x18,
-    UART2_RX = 0x19,
-    UART3_TX = 0x1A,
-    UART3_RX = 0x1B,
-    UART4_TX = 0x1C,
-    UART4_RX = 0x1D,
-    DACC0 = 0x1E,
-    DACC1 = 0x1F,
-    SSC_TX = 0x20,
-    SSC_RX = 0x21,
-    PIOA = 0x22,
-    AFEC0 = 0x23,
-    AFEC1 = 0x24,
-    AES_TX = 0x25,
-    AES_RX = 0x26,
-    PWM1 = 0x27,
-    TC0 = 0x28,
-    TC3 = 0x29,
-    TC6 = 0x2A,
-    TC9 = 0x2B,
-    I2SC0_TX_LEFT = 0x2C,
-    I2SC0_RX_LEFT = 0x2D,
-    I2SC1_TX_LEFT = 0x2E,
-    I2SC1_RX_LEFT = 0x2F,
-    I2SC0_TX_RIGHT = 0x30,
-    I2SC0_RX_RIGHT = 0x31,
-    I2SC1_TX_RIGHT = 0x32,
-    I2SC1_RX_RIGHT = 0x33,
-};
-
-/// Total enumerated types: 475
+/// Total enumerated types: 445
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21b::enums

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::resets {
 
@@ -37,7 +37,8 @@ struct RESETS_Registers {
 static_assert(sizeof(RESETS_Registers) >= 12, "RESETS_Registers size mismatch");
 
 /// RESETS peripheral instance
-constexpr RESETS_Registers* RESETS = 
-    reinterpret_cast<RESETS_Registers*>(0x4000C000);
+inline RESETS_Registers* RESETS() {
+    return reinterpret_cast<RESETS_Registers*>(0x4000C000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::resets

@@ -13,7 +13,7 @@
 #ifndef ALLOY_HAL_HOST_DELAY_HPP
 #define ALLOY_HAL_HOST_DELAY_HPP
 
-#include <cstdint>
+#include <stdint.h>
 #include <thread>
 #include <chrono>
 

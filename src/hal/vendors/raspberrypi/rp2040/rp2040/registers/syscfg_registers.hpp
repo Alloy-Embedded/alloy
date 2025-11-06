@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::syscfg {
 
@@ -70,7 +70,8 @@ struct SYSCFG_Registers {
 static_assert(sizeof(SYSCFG_Registers) >= 28, "SYSCFG_Registers size mismatch");
 
 /// SYSCFG peripheral instance
-constexpr SYSCFG_Registers* SYSCFG = 
-    reinterpret_cast<SYSCFG_Registers*>(0x40004000);
+inline SYSCFG_Registers* SYSCFG() {
+    return reinterpret_cast<SYSCFG_Registers*>(0x40004000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::syscfg

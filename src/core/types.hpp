@@ -1,7 +1,7 @@
 #ifndef ALLOY_CORE_TYPES_HPP
 #define ALLOY_CORE_TYPES_HPP
 
-#include <cstdint>
+#include <stdint.h>
 #include <cstddef>
 
 /// Core types for Alloy framework

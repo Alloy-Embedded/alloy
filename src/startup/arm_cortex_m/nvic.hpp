@@ -12,7 +12,7 @@
 #pragma once
 
 #include "core_common.hpp"
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::arm::cortex_m::nvic {
 
@@ -20,7 +20,7 @@ namespace alloy::arm::cortex_m::nvic {
 /// @param irqn: Interrupt number (0-239)
 inline void enable_irq(uint8_t irqn) {
     if (irqn < 240) {
-        NVIC->ISER[irqn >> 5] = (1UL << (irqn & 0x1F));
+        NVIC()->ISER[irqn >> 5] = (1UL << (irqn & 0x1F));
     }
 }
 
@@ -28,7 +28,7 @@ inline void enable_irq(uint8_t irqn) {
 /// @param irqn: Interrupt number (0-239)
 inline void disable_irq(uint8_t irqn) {
     if (irqn < 240) {
-        NVIC->ICER[irqn >> 5] = (1UL << (irqn & 0x1F));
+        NVIC()->ICER[irqn >> 5] = (1UL << (irqn & 0x1F));
     }
 }
 
@@ -37,7 +37,7 @@ inline void disable_irq(uint8_t irqn) {
 /// @return true if interrupt is pending
 inline bool get_pending_irq(uint8_t irqn) {
     if (irqn < 240) {
-        return (NVIC->ISPR[irqn >> 5] & (1UL << (irqn & 0x1F))) != 0;
+        return (NVIC()->ISPR[irqn >> 5] & (1UL << (irqn & 0x1F))) != 0;
     }
     return false;
 }
@@ -46,7 +46,7 @@ inline bool get_pending_irq(uint8_t irqn) {
 /// @param irqn: Interrupt number (0-239)
 inline void set_pending_irq(uint8_t irqn) {
     if (irqn < 240) {
-        NVIC->ISPR[irqn >> 5] = (1UL << (irqn & 0x1F));
+        NVIC()->ISPR[irqn >> 5] = (1UL << (irqn & 0x1F));
     }
 }
 
@@ -54,7 +54,7 @@ inline void set_pending_irq(uint8_t irqn) {
 /// @param irqn: Interrupt number (0-239)
 inline void clear_pending_irq(uint8_t irqn) {
     if (irqn < 240) {
-        NVIC->ICPR[irqn >> 5] = (1UL << (irqn & 0x1F));
+        NVIC()->ICPR[irqn >> 5] = (1UL << (irqn & 0x1F));
     }
 }
 
@@ -63,7 +63,7 @@ inline void clear_pending_irq(uint8_t irqn) {
 /// @return true if interrupt is active (currently being serviced)
 inline bool get_active(uint8_t irqn) {
     if (irqn < 240) {
-        return (NVIC->IABR[irqn >> 5] & (1UL << (irqn & 0x1F))) != 0;
+        return (NVIC()->IABR[irqn >> 5] & (1UL << (irqn & 0x1F))) != 0;
     }
     return false;
 }
@@ -75,7 +75,7 @@ inline bool get_active(uint8_t irqn) {
 ///                  (e.g., 4 bits = 16 priority levels: 0x00, 0x10, 0x20, ..., 0xF0)
 inline void set_priority(uint8_t irqn, uint8_t priority) {
     if (irqn < 240) {
-        NVIC->IP[irqn] = priority;
+        NVIC()->IP[irqn] = priority;
     }
 }
 
@@ -84,7 +84,7 @@ inline void set_priority(uint8_t irqn, uint8_t priority) {
 /// @return Priority value (0 = highest priority)
 inline uint8_t get_priority(uint8_t irqn) {
     if (irqn < 240) {
-        return NVIC->IP[irqn];
+        return NVIC()->IP[irqn];
     }
     return 0;
 }
@@ -94,7 +94,7 @@ inline uint8_t get_priority(uint8_t irqn) {
 /// @return true if interrupt is enabled
 inline bool is_enabled(uint8_t irqn) {
     if (irqn < 240) {
-        return (NVIC->ISER[irqn >> 5] & (1UL << (irqn & 0x1F))) != 0;
+        return (NVIC()->ISER[irqn >> 5] & (1UL << (irqn & 0x1F))) != 0;
     }
     return false;
 }
@@ -114,17 +114,17 @@ inline void set_priority_grouping(uint32_t priority_group) {
     uint32_t reg_value;
     uint32_t prigroup = (priority_group & 0x07UL);
 
-    reg_value  = SCB->AIRCR;
+    reg_value  = SCB()->AIRCR;
     reg_value &= ~(aircr::VECTKEY | aircr::PRIGROUP_Msk);
     reg_value  = (reg_value | aircr::VECTKEY | (prigroup << aircr::PRIGROUP_Pos));
 
-    SCB->AIRCR = reg_value;
+    SCB()->AIRCR = reg_value;
 }
 
 /// Get priority grouping
 /// @return Priority grouping value (0-7)
 inline uint32_t get_priority_grouping() {
-    return (SCB->AIRCR & aircr::PRIGROUP_Msk) >> aircr::PRIGROUP_Pos;
+    return (SCB()->AIRCR & aircr::PRIGROUP_Msk) >> aircr::PRIGROUP_Pos;
 }
 
 /// Encode priority value considering priority grouping

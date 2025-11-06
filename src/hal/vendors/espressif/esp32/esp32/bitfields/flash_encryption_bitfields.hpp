@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::esp32::flash_encryption {
 
@@ -17,8 +17,8 @@ using namespace alloy::hal::bitfields;
 // FLASH_ENCRYPTION Bit Field Definitions
 // ============================================================================
 
-/// BUFFER_%s - BUFFER_%s
-namespace buffer_%s {
+/// BUFFER_[8] - BUFFER_[8]
+namespace buffer_ {
     /// Data buffers for encryption.
     /// Position: 0, Width: 8
     /// Access: write-only
@@ -26,7 +26,7 @@ namespace buffer_%s {
     constexpr uint32_t BUFFER_Pos = 0;
     constexpr uint32_t BUFFER_Msk = BUFFER::mask;
 
-}  // namespace buffer_%s
+}  // namespace buffer_
 
 /// START - START
 namespace start {

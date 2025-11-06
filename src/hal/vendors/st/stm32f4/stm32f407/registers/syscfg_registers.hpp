@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::syscfg {
 
@@ -71,7 +71,8 @@ struct SYSCFG_Registers {
 static_assert(sizeof(SYSCFG_Registers) >= 36, "SYSCFG_Registers size mismatch");
 
 /// SYSCFG peripheral instance
-constexpr SYSCFG_Registers* SYSCFG = 
-    reinterpret_cast<SYSCFG_Registers*>(0x40013800);
+inline SYSCFG_Registers* SYSCFG() {
+    return reinterpret_cast<SYSCFG_Registers*>(0x40013800);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::syscfg

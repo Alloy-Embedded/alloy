@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::xdmac {
 
@@ -168,7 +168,8 @@ struct XDMAC_Registers {
 static_assert(sizeof(XDMAC_Registers) >= 4096, "XDMAC_Registers size mismatch");
 
 /// XDMAC peripheral instance
-constexpr XDMAC_Registers* XDMAC = 
-    reinterpret_cast<XDMAC_Registers*>(0x40078000);
+inline XDMAC_Registers* XDMAC() {
+    return reinterpret_cast<XDMAC_Registers*>(0x40078000);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::xdmac

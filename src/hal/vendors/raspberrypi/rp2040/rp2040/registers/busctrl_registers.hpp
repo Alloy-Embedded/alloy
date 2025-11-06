@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::busctrl {
 
@@ -72,7 +72,8 @@ struct BUSCTRL_Registers {
 static_assert(sizeof(BUSCTRL_Registers) >= 40, "BUSCTRL_Registers size mismatch");
 
 /// BUSCTRL peripheral instance
-constexpr BUSCTRL_Registers* BUSCTRL = 
-    reinterpret_cast<BUSCTRL_Registers*>(0x40030000);
+inline BUSCTRL_Registers* BUSCTRL() {
+    return reinterpret_cast<BUSCTRL_Registers*>(0x40030000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::busctrl

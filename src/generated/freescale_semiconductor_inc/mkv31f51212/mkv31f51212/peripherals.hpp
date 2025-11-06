@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_MKV31F51212_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MKV31F51212_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::mkv31f51212 {
 

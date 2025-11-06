@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::i2c0 {
 
@@ -267,7 +267,8 @@ struct I2C0_Registers {
 static_assert(sizeof(I2C0_Registers) >= 256, "I2C0_Registers size mismatch");
 
 /// I2C0 peripheral instance
-constexpr I2C0_Registers* I2C0 = 
-    reinterpret_cast<I2C0_Registers*>(0x40044000);
+inline I2C0_Registers* I2C0() {
+    return reinterpret_cast<I2C0_Registers*>(0x40044000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::i2c0

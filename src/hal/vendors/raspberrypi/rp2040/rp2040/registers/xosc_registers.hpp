@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::xosc {
 
@@ -56,7 +56,8 @@ struct XOSC_Registers {
 static_assert(sizeof(XOSC_Registers) >= 32, "XOSC_Registers size mismatch");
 
 /// XOSC peripheral instance
-constexpr XOSC_Registers* XOSC = 
-    reinterpret_cast<XOSC_Registers*>(0x40024000);
+inline XOSC_Registers* XOSC() {
+    return reinterpret_cast<XOSC_Registers*>(0x40024000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::xosc

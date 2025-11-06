@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::scnscb {
 
@@ -34,7 +34,8 @@ struct SCnSCB_Registers {
 static_assert(sizeof(SCnSCB_Registers) >= 12, "SCnSCB_Registers size mismatch");
 
 /// SCnSCB peripheral instance
-constexpr SCnSCB_Registers* SCnSCB = 
-    reinterpret_cast<SCnSCB_Registers*>(0xE000E000);
+inline SCnSCB_Registers* SCnSCB() {
+    return reinterpret_cast<SCnSCB_Registers*>(0xE000E000);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::scnscb

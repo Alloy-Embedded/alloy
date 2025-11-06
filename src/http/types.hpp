@@ -8,7 +8,7 @@
 #pragma once
 
 #include "core/types.hpp"
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::http {
 

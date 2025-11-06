@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_MKL28T7_CORE0_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MKL28T7_CORE0_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::mkl28t7_core0 {
 

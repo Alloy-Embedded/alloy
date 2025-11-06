@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::fsmc {
 
@@ -214,7 +214,8 @@ struct FSMC_Registers {
 static_assert(sizeof(FSMC_Registers) >= 288, "FSMC_Registers size mismatch");
 
 /// FSMC peripheral instance
-constexpr FSMC_Registers* FSMC = 
-    reinterpret_cast<FSMC_Registers*>(0xA0000000);
+inline FSMC_Registers* FSMC() {
+    return reinterpret_cast<FSMC_Registers*>(0xA0000000);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::fsmc

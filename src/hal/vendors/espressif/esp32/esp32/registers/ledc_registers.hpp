@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::ledc {
 
@@ -18,70 +18,70 @@ namespace alloy::hal::espressif::esp32::esp32::ledc {
 /// LEDC Register Structure
 struct LEDC_Registers {
 
-    /// HSCH%s_CONF0
+    /// HSCH[8]_CONF0
     /// Offset: 0x0000
-    volatile uint32_t HSCH%s_CONF0;
+    volatile uint32_t HSCH[8]_CONF0[8];
 
-    /// HSCH%s_HPOINT
+    /// HSCH[8]_HPOINT
     /// Offset: 0x0004
-    volatile uint32_t HSCH%s_HPOINT;
+    volatile uint32_t HSCH[8]_HPOINT[8];
 
-    /// HSCH%s_DUTY
+    /// HSCH[8]_DUTY
     /// Offset: 0x0008
-    volatile uint32_t HSCH%s_DUTY;
+    volatile uint32_t HSCH[8]_DUTY[8];
 
-    /// HSCH%s_CONF1
+    /// HSCH[8]_CONF1
     /// Offset: 0x000C
     /// Reset value: 0x40000000
-    volatile uint32_t HSCH%s_CONF1;
+    volatile uint32_t HSCH[8]_CONF1[8];
 
-    /// HSCH%s_DUTY_R
+    /// HSCH[8]_DUTY_R
     /// Offset: 0x0010
-    volatile uint32_t HSCH%s_DUTY_R;
-    uint8_t RESERVED_0014[140]; ///< Reserved
+    volatile uint32_t HSCH[8]_DUTY_R[8];
+    uint8_t RESERVED_0030[112]; ///< Reserved
 
-    /// LSCH%s_CONF0
+    /// LSCH[8]_CONF0
     /// Offset: 0x00A0
-    volatile uint32_t LSCH%s_CONF0;
+    volatile uint32_t LSCH[8]_CONF0[8];
 
-    /// LSCH%s_HPOINT
+    /// LSCH[8]_HPOINT
     /// Offset: 0x00A4
-    volatile uint32_t LSCH%s_HPOINT;
+    volatile uint32_t LSCH[8]_HPOINT[8];
 
-    /// LSCH%s_DUTY
+    /// LSCH[8]_DUTY
     /// Offset: 0x00A8
     /// Access: read-write
-    volatile uint32_t LSCH%s_DUTY;
+    volatile uint32_t LSCH[8]_DUTY[8];
 
-    /// LSCH%s_CONF1
+    /// LSCH[8]_CONF1
     /// Offset: 0x00AC
     /// Reset value: 0x40000000
-    volatile uint32_t LSCH%s_CONF1;
+    volatile uint32_t LSCH[8]_CONF1[8];
 
-    /// LSCH%s_DUTY_R
+    /// LSCH[8]_DUTY_R
     /// Offset: 0x00B0
-    volatile uint32_t LSCH%s_DUTY_R;
-    uint8_t RESERVED_00B4[140]; ///< Reserved
+    volatile uint32_t LSCH[8]_DUTY_R[8];
+    uint8_t RESERVED_00D0[112]; ///< Reserved
 
-    /// HSTIMER%s_CONF
+    /// HSTIMER[4]_CONF
     /// Offset: 0x0140
     /// Reset value: 0x01000000
-    volatile uint32_t HSTIMER%s_CONF;
+    volatile uint32_t HSTIMER[4]_CONF[4];
 
-    /// HSTIMER%s_VALUE
+    /// HSTIMER[4]_VALUE
     /// Offset: 0x0144
-    volatile uint32_t HSTIMER%s_VALUE;
-    uint8_t RESERVED_0148[24]; ///< Reserved
+    volatile uint32_t HSTIMER[4]_VALUE[4];
+    uint8_t RESERVED_0154[12]; ///< Reserved
 
-    /// LSTIMER%s_CONF
+    /// LSTIMER[4]_CONF
     /// Offset: 0x0160
     /// Reset value: 0x01000000
-    volatile uint32_t LSTIMER%s_CONF;
+    volatile uint32_t LSTIMER[4]_CONF[4];
 
-    /// LSTIMER%s_VALUE
+    /// LSTIMER[4]_VALUE
     /// Offset: 0x0164
-    volatile uint32_t LSTIMER%s_VALUE;
-    uint8_t RESERVED_0168[24]; ///< Reserved
+    volatile uint32_t LSTIMER[4]_VALUE[4];
+    uint8_t RESERVED_0174[12]; ///< Reserved
 
     /// INT_RAW
     /// Offset: 0x0180
@@ -113,7 +113,8 @@ struct LEDC_Registers {
 static_assert(sizeof(LEDC_Registers) >= 512, "LEDC_Registers size mismatch");
 
 /// LEDC peripheral instance
-constexpr LEDC_Registers* LEDC = 
-    reinterpret_cast<LEDC_Registers*>(0x3FF59000);
+inline LEDC_Registers* LEDC() {
+    return reinterpret_cast<LEDC_Registers*>(0x3FF59000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::ledc

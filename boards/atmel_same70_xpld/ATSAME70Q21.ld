@@ -24,7 +24,7 @@ ENTRY(Reset_Handler)
 MEMORY
 {
     FLASH (rx)  : ORIGIN = 0x00400000, LENGTH = 2048K
-    RAM (rwx)   : ORIGIN = 0x20000000, LENGTH = 384K
+    RAM (rwx)   : ORIGIN = 0x20400000, LENGTH = 384K  /* SAME70 RAM starts at 0x20400000! */
 }
 
 /* Highest address of the user mode stack */

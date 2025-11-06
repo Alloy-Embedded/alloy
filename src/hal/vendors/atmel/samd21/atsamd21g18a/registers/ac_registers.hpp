@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::ac {
 
@@ -67,18 +67,19 @@ struct AC_Registers {
 
     /// Comparator Control n
     /// Offset: 0x0010
-    volatile uint32_t COMPCTRL[2];
-    uint8_t RESERVED_0014[12]; ///< Reserved
+    volatile uint32_t COMPCTRL[2][2];
+    uint8_t RESERVED_0018[8]; ///< Reserved
 
     /// Scaler n
     /// Offset: 0x0020
-    volatile uint8_t SCALER[2];
+    volatile uint8_t SCALER[2][2];
 };
 
-static_assert(sizeof(AC_Registers) >= 33, "AC_Registers size mismatch");
+static_assert(sizeof(AC_Registers) >= 34, "AC_Registers size mismatch");
 
 /// AC peripheral instance
-constexpr AC_Registers* AC = 
-    reinterpret_cast<AC_Registers*>(0x42004400);
+inline AC_Registers* AC() {
+    return reinterpret_cast<AC_Registers*>(0x42004400);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::ac

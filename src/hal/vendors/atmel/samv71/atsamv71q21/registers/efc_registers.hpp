@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::efc {
 
@@ -52,7 +52,8 @@ struct EFC_Registers {
 static_assert(sizeof(EFC_Registers) >= 232, "EFC_Registers size mismatch");
 
 /// EFC peripheral instance
-constexpr EFC_Registers* EFC = 
-    reinterpret_cast<EFC_Registers*>(0x400E0C00);
+inline EFC_Registers* EFC() {
+    return reinterpret_cast<EFC_Registers*>(0x400E0C00);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::efc

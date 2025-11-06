@@ -29,6 +29,7 @@ set(CPU_FLAGS
 # Compiler flags
 set(COMMON_FLAGS
     ${CPU_FLAGS}
+    -std=c++20               # Explicitly set C++20
     -Wall
     -Wextra
     -Wpedantic
@@ -36,6 +37,8 @@ set(COMMON_FLAGS
     -fdata-sections
     -fno-exceptions
     -fno-rtti
+    -ffreestanding           # Freestanding environment (no hosted C library)
+    -D__STDC_HOSTED__=0      # Tell stdint.h we're in freestanding mode
     # Note: --specs=nano.specs removed (not available in all toolchains)
 )
 
@@ -44,13 +47,13 @@ set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 # Linker flags
-set(CMAKE_EXE_LINKER_FLAGS
-    "${CPU_FLAGS} \
-    -T${CMAKE_SOURCE_DIR}/../../boards/atmel_same70_xpld/ATSAME70Q21.ld \
-    -Wl,--gc-sections \
-    -Wl,--print-memory-usage \
-    -nostartfiles \
-    -Wl,-Map=${PROJECT_NAME}.map"
+set(LINKER_FLAGS
+    ${CPU_FLAGS}
+    -T${CMAKE_SOURCE_DIR}/../../boards/atmel_same70_xpld/ATSAME70Q21.ld
+    -Wl,--gc-sections
+    -Wl,--print-memory-usage
+    -nostartfiles
+    -Wl,-Map=${PROJECT_NAME}.map
 )
 
 # Include directories
@@ -70,8 +73,9 @@ set(SOURCES
 # Create executable
 add_executable(${PROJECT_NAME}.elf ${SOURCES})
 
-# Apply compiler flags
+# Apply compiler and linker flags
 target_compile_options(${PROJECT_NAME}.elf PRIVATE ${COMMON_FLAGS})
+target_link_options(${PROJECT_NAME}.elf PRIVATE ${LINKER_FLAGS})
 
 # Generate additional output files
 add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD

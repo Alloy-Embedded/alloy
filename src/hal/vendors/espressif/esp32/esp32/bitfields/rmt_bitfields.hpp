@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::esp32::rmt {
 
@@ -17,8 +17,8 @@ using namespace alloy::hal::bitfields;
 // RMT Bit Field Definitions
 // ============================================================================
 
-/// CH%sCONF0 - CH%sCONF0
-namespace ch%sconf0 {
+/// CH[8]CONF0 - CH[8]CONF0
+namespace chconf0 {
     /// This register is used to configure the  frequency divider's factor in channel0.
     /// Position: 0, Width: 8
     /// Access: read-write
@@ -68,10 +68,10 @@ namespace ch%sconf0 {
     constexpr uint32_t CLK_EN_Pos = 31;
     constexpr uint32_t CLK_EN_Msk = CLK_EN::mask;
 
-}  // namespace ch%sconf0
+}  // namespace chconf0
 
-/// CH%sCONF1 - CH%sCONF1
-namespace ch%sconf1 {
+/// CH[8]CONF1 - CH[8]CONF1
+namespace chconf1 {
     /// Set this bit to start sending data for channel0.
     /// Position: 0, Width: 1
     /// Access: read-write
@@ -163,10 +163,10 @@ namespace ch%sconf1 {
     constexpr uint32_t IDLE_OUT_EN_Pos = 19;
     constexpr uint32_t IDLE_OUT_EN_Msk = IDLE_OUT_EN::mask;
 
-}  // namespace ch%sconf1
+}  // namespace chconf1
 
-/// CH%sSTATUS - CH%sSTATUS
-namespace ch%sstatus {
+/// CH[8]STATUS - CH[8]STATUS
+namespace chstatus {
     /// The status for channel0
     /// Position: 0, Width: 32
     /// Access: read-only
@@ -230,10 +230,10 @@ namespace ch%sstatus {
     constexpr uint32_t APB_MEM_RD_ERR_Pos = 31;
     constexpr uint32_t APB_MEM_RD_ERR_Msk = APB_MEM_RD_ERR::mask;
 
-}  // namespace ch%sstatus
+}  // namespace chstatus
 
-/// CH%sADDR - CH%sADDR
-namespace ch%saddr {
+/// CH[8]ADDR - CH[8]ADDR
+namespace chaddr {
     /// The ram relative address in channel0 by apb fifo access
     /// Position: 0, Width: 32
     /// Access: read-only
@@ -241,7 +241,7 @@ namespace ch%saddr {
     constexpr uint32_t APB_MEM_ADDR_Pos = 0;
     constexpr uint32_t APB_MEM_ADDR_Msk = APB_MEM_ADDR::mask;
 
-}  // namespace ch%saddr
+}  // namespace chaddr
 
 /// INT_RAW - INT_RAW
 namespace int_raw {
@@ -371,8 +371,8 @@ namespace int_clr {
 
 }  // namespace int_clr
 
-/// CH%sCARRIER_DUTY - CH%sCARRIER_DUTY
-namespace ch%scarrier_duty {
+/// CH[8]CARRIER_DUTY - CH[8]CARRIER_DUTY
+namespace chcarrier_duty {
     /// This register is used to configure carrier wave's low level value for channel0.
     /// Position: 0, Width: 16
     /// Access: read-write
@@ -387,10 +387,10 @@ namespace ch%scarrier_duty {
     constexpr uint32_t CARRIER_HIGH_Pos = 16;
     constexpr uint32_t CARRIER_HIGH_Msk = CARRIER_HIGH::mask;
 
-}  // namespace ch%scarrier_duty
+}  // namespace chcarrier_duty
 
-/// CH%s_TX_LIM - CH%s_TX_LIM
-namespace ch%s_tx_lim {
+/// CH[8]_TX_LIM - CH[8]_TX_LIM
+namespace ch_tx_lim {
     /// When channel0 sends more than reg_rmt_tx_lim_ch0 datas then channel0 produce the relative interrupt.
     /// Position: 0, Width: 9
     /// Access: read-write
@@ -398,7 +398,7 @@ namespace ch%s_tx_lim {
     constexpr uint32_t TX_LIM_Pos = 0;
     constexpr uint32_t TX_LIM_Msk = TX_LIM::mask;
 
-}  // namespace ch%s_tx_lim
+}  // namespace ch_tx_lim
 
 /// APB_CONF - APB_CONF
 namespace apb_conf {

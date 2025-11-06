@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_STM32GBK1CBT6_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32GBK1CBT6_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::stm32gbk1cbt6 {
 

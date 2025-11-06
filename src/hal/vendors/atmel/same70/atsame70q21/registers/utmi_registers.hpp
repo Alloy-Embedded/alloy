@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::same70::atsame70q21::utmi {
 
@@ -32,7 +32,8 @@ struct UTMI_Registers {
 static_assert(sizeof(UTMI_Registers) >= 52, "UTMI_Registers size mismatch");
 
 /// UTMI peripheral instance
-constexpr UTMI_Registers* UTMI = 
-    reinterpret_cast<UTMI_Registers*>(0x400E0400);
+inline UTMI_Registers* UTMI() {
+    return reinterpret_cast<UTMI_Registers*>(0x400E0400);
+}
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::utmi

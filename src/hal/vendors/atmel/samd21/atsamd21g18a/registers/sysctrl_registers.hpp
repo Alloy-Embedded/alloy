@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::sysctrl {
 
@@ -119,7 +119,8 @@ struct SYSCTRL_Registers {
 static_assert(sizeof(SYSCTRL_Registers) >= 81, "SYSCTRL_Registers size mismatch");
 
 /// SYSCTRL peripheral instance
-constexpr SYSCTRL_Registers* SYSCTRL = 
-    reinterpret_cast<SYSCTRL_Registers*>(0x40000800);
+inline SYSCTRL_Registers* SYSCTRL() {
+    return reinterpret_cast<SYSCTRL_Registers*>(0x40000800);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::sysctrl

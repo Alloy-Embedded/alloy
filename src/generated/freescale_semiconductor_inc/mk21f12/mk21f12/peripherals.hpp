@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_MK21F12_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MK21F12_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::mk21f12 {
 

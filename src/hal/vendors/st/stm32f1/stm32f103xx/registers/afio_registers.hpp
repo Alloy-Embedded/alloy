@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::afio {
 
@@ -71,7 +71,8 @@ struct AFIO_Registers {
 static_assert(sizeof(AFIO_Registers) >= 32, "AFIO_Registers size mismatch");
 
 /// AFIO peripheral instance
-constexpr AFIO_Registers* AFIO = 
-    reinterpret_cast<AFIO_Registers*>(0x40010000);
+inline AFIO_Registers* AFIO() {
+    return reinterpret_cast<AFIO_Registers*>(0x40010000);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::afio

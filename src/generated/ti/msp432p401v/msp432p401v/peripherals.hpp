@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_MSP432P401V_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MSP432P401V_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::msp432p401v {
 

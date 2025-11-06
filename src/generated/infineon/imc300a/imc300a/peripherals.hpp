@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_IMC300A_PERIPHERALS_HPP
 #define ALLOY_GENERATED_IMC300A_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::imc300a {
 

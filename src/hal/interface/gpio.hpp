@@ -2,7 +2,7 @@
 #define ALLOY_HAL_INTERFACE_GPIO_HPP
 
 #include <concepts>
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal {
 

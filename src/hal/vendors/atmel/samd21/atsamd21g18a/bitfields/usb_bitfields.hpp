@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::usb {
@@ -1020,7 +1020,7 @@ namespace padcal {
 }  // namespace padcal
 
 /// EPCFG[8] - DEVICE End Point Configuration
-namespace epcfg[8] {
+namespace epcfg {
     /// End Point Type0
     /// Position: 0, Width: 3
     using EPTYPE0 = BitField<0, 3>;
@@ -1039,10 +1039,10 @@ namespace epcfg[8] {
     constexpr uint32_t NYETDIS_Pos = 7;
     constexpr uint32_t NYETDIS_Msk = NYETDIS::mask;
 
-}  // namespace epcfg[8]
+}  // namespace epcfg
 
 /// PCFG[8] - HOST End Point Configuration
-namespace pcfg[8] {
+namespace pcfg {
     /// Pipe Token
     /// Position: 0, Width: 2
     using PTOKEN = BitField<0, 2>;
@@ -1061,20 +1061,20 @@ namespace pcfg[8] {
     constexpr uint32_t PTYPE_Pos = 3;
     constexpr uint32_t PTYPE_Msk = PTYPE::mask;
 
-}  // namespace pcfg[8]
+}  // namespace pcfg
 
 /// BINTERVAL[8] - HOST Bus Access Period of Pipe
-namespace binterval[8] {
+namespace binterval {
     /// Bit Interval
     /// Position: 0, Width: 8
     using BITINTERVAL = BitField<0, 8>;
     constexpr uint32_t BITINTERVAL_Pos = 0;
     constexpr uint32_t BITINTERVAL_Msk = BITINTERVAL::mask;
 
-}  // namespace binterval[8]
+}  // namespace binterval
 
 /// EPSTATUSCLR[8] - DEVICE End Point Pipe Status Clear
-namespace epstatusclr[8] {
+namespace epstatusclr {
     /// Data Toggle OUT Clear
     /// Position: 0, Width: 1
     /// Access: write-only
@@ -1124,10 +1124,10 @@ namespace epstatusclr[8] {
     constexpr uint32_t BK1RDY_Pos = 7;
     constexpr uint32_t BK1RDY_Msk = BK1RDY::mask;
 
-}  // namespace epstatusclr[8]
+}  // namespace epstatusclr
 
 /// PSTATUSCLR[8] - HOST End Point Pipe Status Clear
-namespace pstatusclr[8] {
+namespace pstatusclr {
     /// Data Toggle clear
     /// Position: 0, Width: 1
     /// Access: read-only
@@ -1163,10 +1163,10 @@ namespace pstatusclr[8] {
     constexpr uint32_t BK1RDY_Pos = 7;
     constexpr uint32_t BK1RDY_Msk = BK1RDY::mask;
 
-}  // namespace pstatusclr[8]
+}  // namespace pstatusclr
 
 /// EPSTATUSSET[8] - DEVICE End Point Pipe Status Set
-namespace epstatusset[8] {
+namespace epstatusset {
     /// Data Toggle OUT Set
     /// Position: 0, Width: 1
     /// Access: write-only
@@ -1216,10 +1216,10 @@ namespace epstatusset[8] {
     constexpr uint32_t BK1RDY_Pos = 7;
     constexpr uint32_t BK1RDY_Msk = BK1RDY::mask;
 
-}  // namespace epstatusset[8]
+}  // namespace epstatusset
 
 /// PSTATUSSET[8] - HOST End Point Pipe Status Set
-namespace pstatusset[8] {
+namespace pstatusset {
     /// Data Toggle Set
     /// Position: 0, Width: 1
     /// Access: write-only
@@ -1255,10 +1255,10 @@ namespace pstatusset[8] {
     constexpr uint32_t BK1RDY_Pos = 7;
     constexpr uint32_t BK1RDY_Msk = BK1RDY::mask;
 
-}  // namespace pstatusset[8]
+}  // namespace pstatusset
 
 /// EPSTATUS[8] - DEVICE End Point Pipe Status
-namespace epstatus[8] {
+namespace epstatus {
     /// Data Toggle Out
     /// Position: 0, Width: 1
     /// Access: read-only
@@ -1308,10 +1308,10 @@ namespace epstatus[8] {
     constexpr uint32_t BK1RDY_Pos = 7;
     constexpr uint32_t BK1RDY_Msk = BK1RDY::mask;
 
-}  // namespace epstatus[8]
+}  // namespace epstatus
 
 /// PSTATUS[8] - HOST End Point Pipe Status
-namespace pstatus[8] {
+namespace pstatus {
     /// Data Toggle
     /// Position: 0, Width: 1
     /// Access: read-only
@@ -1347,10 +1347,10 @@ namespace pstatus[8] {
     constexpr uint32_t BK1RDY_Pos = 7;
     constexpr uint32_t BK1RDY_Msk = BK1RDY::mask;
 
-}  // namespace pstatus[8]
+}  // namespace pstatus
 
 /// EPINTFLAG[8] - DEVICE End Point Interrupt Flag
-namespace epintflag[8] {
+namespace epintflag {
     /// Transfer Complete 0
     /// Position: 0, Width: 1
     using TRCPT0 = BitField<0, 1>;
@@ -1393,10 +1393,10 @@ namespace epintflag[8] {
     constexpr uint32_t STALL1_Pos = 6;
     constexpr uint32_t STALL1_Msk = STALL1::mask;
 
-}  // namespace epintflag[8]
+}  // namespace epintflag
 
 /// PINTFLAG[8] - HOST Pipe Interrupt Flag
-namespace pintflag[8] {
+namespace pintflag {
     /// Transfer Complete 0 Interrupt Flag
     /// Position: 0, Width: 1
     using TRCPT0 = BitField<0, 1>;
@@ -1433,10 +1433,10 @@ namespace pintflag[8] {
     constexpr uint32_t STALL_Pos = 5;
     constexpr uint32_t STALL_Msk = STALL::mask;
 
-}  // namespace pintflag[8]
+}  // namespace pintflag
 
 /// EPINTENCLR[8] - DEVICE End Point Interrupt Clear Flag
-namespace epintenclr[8] {
+namespace epintenclr {
     /// Transfer Complete 0 Interrupt Disable
     /// Position: 0, Width: 1
     using TRCPT0 = BitField<0, 1>;
@@ -1479,10 +1479,10 @@ namespace epintenclr[8] {
     constexpr uint32_t STALL1_Pos = 6;
     constexpr uint32_t STALL1_Msk = STALL1::mask;
 
-}  // namespace epintenclr[8]
+}  // namespace epintenclr
 
 /// PINTENCLR[8] - HOST Pipe Interrupt Flag Clear
-namespace pintenclr[8] {
+namespace pintenclr {
     /// Transfer Complete 0 Disable
     /// Position: 0, Width: 1
     using TRCPT0 = BitField<0, 1>;
@@ -1519,10 +1519,10 @@ namespace pintenclr[8] {
     constexpr uint32_t STALL_Pos = 5;
     constexpr uint32_t STALL_Msk = STALL::mask;
 
-}  // namespace pintenclr[8]
+}  // namespace pintenclr
 
 /// EPINTENSET[8] - DEVICE End Point Interrupt Set Flag
-namespace epintenset[8] {
+namespace epintenset {
     /// Transfer Complete 0 Interrupt Enable
     /// Position: 0, Width: 1
     using TRCPT0 = BitField<0, 1>;
@@ -1565,10 +1565,10 @@ namespace epintenset[8] {
     constexpr uint32_t STALL1_Pos = 6;
     constexpr uint32_t STALL1_Msk = STALL1::mask;
 
-}  // namespace epintenset[8]
+}  // namespace epintenset
 
 /// PINTENSET[8] - HOST Pipe Interrupt Flag Set
-namespace pintenset[8] {
+namespace pintenset {
     /// Transfer Complete 0 Interrupt Enable
     /// Position: 0, Width: 1
     using TRCPT0 = BitField<0, 1>;
@@ -1605,6 +1605,6 @@ namespace pintenset[8] {
     constexpr uint32_t STALL_Pos = 5;
     constexpr uint32_t STALL_Msk = STALL::mask;
 
-}  // namespace pintenset[8]
+}  // namespace pintenset
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::usb

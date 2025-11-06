@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::pwm {
 
@@ -267,7 +267,8 @@ struct PWM_Registers {
 static_assert(sizeof(PWM_Registers) >= 180, "PWM_Registers size mismatch");
 
 /// PWM peripheral instance
-constexpr PWM_Registers* PWM = 
-    reinterpret_cast<PWM_Registers*>(0x40050000);
+inline PWM_Registers* PWM() {
+    return reinterpret_cast<PWM_Registers*>(0x40050000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::pwm

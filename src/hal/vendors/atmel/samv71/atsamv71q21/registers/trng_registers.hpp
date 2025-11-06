@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::trng {
 
@@ -60,7 +60,8 @@ struct TRNG_Registers {
 static_assert(sizeof(TRNG_Registers) >= 256, "TRNG_Registers size mismatch");
 
 /// TRNG peripheral instance
-constexpr TRNG_Registers* TRNG = 
-    reinterpret_cast<TRNG_Registers*>(0x40070000);
+inline TRNG_Registers* TRNG() {
+    return reinterpret_cast<TRNG_Registers*>(0x40070000);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::trng

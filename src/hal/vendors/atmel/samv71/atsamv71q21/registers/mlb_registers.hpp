@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::mlb {
 
@@ -60,30 +60,26 @@ struct MLB_Registers {
 
     /// HBI Channel Mask 0 Register 0
     /// Offset: 0x0088
-    volatile uint32_t HCMR[2];
-    uint8_t RESERVED_008C[4]; ///< Reserved
+    volatile uint32_t HCMR[2][2];
 
     /// HBI Channel Error 0 Register 0
     /// Offset: 0x0090
     /// Access: read-only
-    volatile uint32_t HCER[2];
-    uint8_t RESERVED_0094[4]; ///< Reserved
+    volatile uint32_t HCER[2][2];
 
     /// HBI Channel Busy 0 Register 0
     /// Offset: 0x0098
     /// Access: read-only
-    volatile uint32_t HCBR[2];
-    uint8_t RESERVED_009C[36]; ///< Reserved
+    volatile uint32_t HCBR[2][2];
+    uint8_t RESERVED_00A0[32]; ///< Reserved
 
     /// MIF Data 0 Register 0
     /// Offset: 0x00C0
-    volatile uint32_t MDAT[4];
-    uint8_t RESERVED_00C4[12]; ///< Reserved
+    volatile uint32_t MDAT[4][4];
 
     /// MIF Data Write Enable 0 Register 0
     /// Offset: 0x00D0
-    volatile uint32_t MDWE[4];
-    uint8_t RESERVED_00D4[12]; ///< Reserved
+    volatile uint32_t MDWE[4][4];
 
     /// MIF Control Register
     /// Offset: 0x00E0
@@ -101,18 +97,18 @@ struct MLB_Registers {
 
     /// AHB Channel Status 0 Register 0
     /// Offset: 0x03D0
-    volatile uint32_t ACSR[2];
-    uint8_t RESERVED_03D4[4]; ///< Reserved
+    volatile uint32_t ACSR[2][2];
 
     /// AHB Channel Mask 0 Register 0
     /// Offset: 0x03D8
-    volatile uint32_t ACMR[2];
+    volatile uint32_t ACMR[2][2];
 };
 
-static_assert(sizeof(MLB_Registers) >= 988, "MLB_Registers size mismatch");
+static_assert(sizeof(MLB_Registers) >= 992, "MLB_Registers size mismatch");
 
 /// MLB peripheral instance
-constexpr MLB_Registers* MLB = 
-    reinterpret_cast<MLB_Registers*>(0x40068000);
+inline MLB_Registers* MLB() {
+    return reinterpret_cast<MLB_Registers*>(0x40068000);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::mlb

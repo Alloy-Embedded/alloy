@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::sdio {
 
@@ -145,7 +145,8 @@ struct SDIO_Registers {
 static_assert(sizeof(SDIO_Registers) >= 132, "SDIO_Registers size mismatch");
 
 /// SDIO peripheral instance
-constexpr SDIO_Registers* SDIO = 
-    reinterpret_cast<SDIO_Registers*>(0x40018000);
+inline SDIO_Registers* SDIO() {
+    return reinterpret_cast<SDIO_Registers*>(0x40018000);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::sdio

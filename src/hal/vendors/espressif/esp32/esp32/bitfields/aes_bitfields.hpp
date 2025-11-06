@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::esp32::aes {
 
@@ -50,8 +50,8 @@ namespace mode {
 
 }  // namespace mode
 
-/// KEY_%s - KEY_%s
-namespace key_%s {
+/// KEY_[8] - KEY_[8]
+namespace key_ {
     /// AES key material register.
     /// Position: 0, Width: 8
     /// Access: read-write
@@ -59,10 +59,10 @@ namespace key_%s {
     constexpr uint32_t KEY_Pos = 0;
     constexpr uint32_t KEY_Msk = KEY::mask;
 
-}  // namespace key_%s
+}  // namespace key_
 
-/// TEXT_%s - TEXT_%s
-namespace text_%s {
+/// TEXT_[4] - TEXT_[4]
+namespace text_ {
     /// Plaintext and ciphertext register.
     /// Position: 0, Width: 8
     /// Access: read-write
@@ -70,7 +70,7 @@ namespace text_%s {
     constexpr uint32_t TEXT_Pos = 0;
     constexpr uint32_t TEXT_Msk = TEXT::mask;
 
-}  // namespace text_%s
+}  // namespace text_
 
 /// ENDIAN - ENDIAN
 namespace endian {

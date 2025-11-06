@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_STM32U595_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32U595_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::stm32u595 {
 

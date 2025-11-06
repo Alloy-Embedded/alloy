@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::psm {
 
@@ -42,7 +42,8 @@ struct PSM_Registers {
 static_assert(sizeof(PSM_Registers) >= 16, "PSM_Registers size mismatch");
 
 /// PSM peripheral instance
-constexpr PSM_Registers* PSM = 
-    reinterpret_cast<PSM_Registers*>(0x40010000);
+inline PSM_Registers* PSM() {
+    return reinterpret_cast<PSM_Registers*>(0x40010000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::psm

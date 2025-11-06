@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::stm32f407::tim2 {
 
@@ -782,13 +782,13 @@ namespace dmar {
 }  // namespace dmar
 
 /// OR - TIM5 option register
-namespace or {
+namespace or_ {
     /// Timer Input 4 remap
     /// Position: 10, Width: 2
     using ITR1_RMP = BitField<10, 2>;
     constexpr uint32_t ITR1_RMP_Pos = 10;
     constexpr uint32_t ITR1_RMP_Msk = ITR1_RMP::mask;
 
-}  // namespace or
+}  // namespace or_
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::tim2

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::gclk {
 
@@ -43,7 +43,8 @@ struct GCLK_Registers {
 static_assert(sizeof(GCLK_Registers) >= 12, "GCLK_Registers size mismatch");
 
 /// GCLK peripheral instance
-constexpr GCLK_Registers* GCLK = 
-    reinterpret_cast<GCLK_Registers*>(0x40000C00);
+inline GCLK_Registers* GCLK() {
+    return reinterpret_cast<GCLK_Registers*>(0x40000C00);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::gclk

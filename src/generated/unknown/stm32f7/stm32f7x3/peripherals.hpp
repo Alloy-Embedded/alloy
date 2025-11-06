@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_STM32F7X3_PERIPHERALS_HPP
 #define ALLOY_GENERATED_STM32F7X3_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::stm32f7x3 {
 

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::otg_hs_device {
 
@@ -497,7 +497,8 @@ struct OTG_HS_DEVICE_Registers {
 static_assert(sizeof(OTG_HS_DEVICE_Registers) >= 1004, "OTG_HS_DEVICE_Registers size mismatch");
 
 /// OTG_HS_DEVICE peripheral instance
-constexpr OTG_HS_DEVICE_Registers* OTG_HS_DEVICE = 
-    reinterpret_cast<OTG_HS_DEVICE_Registers*>(0x40040800);
+inline OTG_HS_DEVICE_Registers* OTG_HS_DEVICE() {
+    return reinterpret_cast<OTG_HS_DEVICE_Registers*>(0x40040800);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::otg_hs_device

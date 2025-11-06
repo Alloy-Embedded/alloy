@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::esp32::gpio_sd {
 
@@ -17,8 +17,8 @@ using namespace alloy::hal::bitfields;
 // GPIO_SD Bit Field Definitions
 // ============================================================================
 
-/// SIGMADELTA%s - SIGMADELTA%s
-namespace sigmadelta%s {
+/// SIGMADELTA[8] - SIGMADELTA[8]
+namespace sigmadelta {
     /// Position: 0, Width: 8
     /// Access: read-write
     using SD0_IN = BitField<0, 8>;
@@ -31,7 +31,7 @@ namespace sigmadelta%s {
     constexpr uint32_t SD0_PRESCALE_Pos = 8;
     constexpr uint32_t SD0_PRESCALE_Msk = SD0_PRESCALE::mask;
 
-}  // namespace sigmadelta%s
+}  // namespace sigmadelta
 
 /// CG - CG
 namespace cg {

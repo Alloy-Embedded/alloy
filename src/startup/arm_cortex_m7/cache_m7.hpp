@@ -19,9 +19,12 @@
 #pragma once
 
 #include "../arm_cortex_m/core_common.hpp"
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::arm::cortex_m7::cache {
+
+// Import from parent namespace
+using namespace alloy::arm::cortex_m;
 
 // ============================================================================
 // Cache Control Functions
@@ -60,7 +63,7 @@ inline void invalidate_icache() {
         dsb();  // Ensure all memory transactions are complete
         isb();  // Ensure instruction fetch before invalidate
 
-        CACHE->ICIALLU = 0;  // Invalidate all I-Cache
+        CACHE()->ICIALLU = 0;  // Invalidate all I-Cache
 
         dsb();  // Ensure invalidation is complete
         isb();  // Refetch instructions
@@ -75,7 +78,7 @@ inline void enable_icache() {
         invalidate_icache();
 
         // Enable I-Cache via CCR register
-        SCB->CCR |= ccr::IC_Msk;
+        SCB()->CCR |= ccr::IC_Msk;
 
         dsb();
         isb();
@@ -89,7 +92,7 @@ inline void disable_icache() {
         isb();
 
         // Disable I-Cache
-        SCB->CCR &= ~ccr::IC_Msk;
+        SCB()->CCR &= ~ccr::IC_Msk;
 
         // Invalidate I-Cache after disabling
         invalidate_icache();
@@ -99,7 +102,7 @@ inline void disable_icache() {
 /// Check if I-Cache is enabled
 /// @return true if I-Cache is currently enabled
 inline bool is_icache_enabled() {
-    return (SCB->CCR & ccr::IC_Msk) != 0;
+    return (SCB()->CCR & ccr::IC_Msk) != 0;
 }
 
 // ============================================================================
@@ -118,7 +121,7 @@ inline void invalidate_dcache() {
             for (uint32_t way = 0; way < 4; ++way) {
                 // Format: [way:31-30] [set:12-5]
                 uint32_t value = (way << 30) | (set << 5);
-                CACHE->DCISW = value;
+                CACHE()->DCISW = value;
             }
         }
 
@@ -137,7 +140,7 @@ inline void clean_dcache() {
             for (uint32_t way = 0; way < 4; ++way) {
                 // Format: [way:31-30] [set:12-5]
                 uint32_t value = (way << 30) | (set << 5);
-                CACHE->DCCSW = value;
+                CACHE()->DCCSW = value;
             }
         }
 
@@ -156,7 +159,7 @@ inline void clean_invalidate_dcache() {
             for (uint32_t way = 0; way < 4; ++way) {
                 // Format: [way:31-30] [set:12-5]
                 uint32_t value = (way << 30) | (set << 5);
-                CACHE->DCCISW = value;
+                CACHE()->DCCISW = value;
             }
         }
 
@@ -172,7 +175,7 @@ inline void enable_dcache() {
         invalidate_dcache();
 
         // Enable D-Cache via CCR register
-        SCB->CCR |= ccr::DC_Msk;
+        SCB()->CCR |= ccr::DC_Msk;
 
         dsb();
         isb();
@@ -186,7 +189,7 @@ inline void disable_dcache() {
         clean_invalidate_dcache();
 
         // Disable D-Cache
-        SCB->CCR &= ~ccr::DC_Msk;
+        SCB()->CCR &= ~ccr::DC_Msk;
 
         dsb();
         isb();
@@ -196,7 +199,7 @@ inline void disable_dcache() {
 /// Check if D-Cache is enabled
 /// @return true if D-Cache is currently enabled
 inline bool is_dcache_enabled() {
-    return (SCB->CCR & ccr::DC_Msk) != 0;
+    return (SCB()->CCR & ccr::DC_Msk) != 0;
 }
 
 // ============================================================================
@@ -225,7 +228,7 @@ inline void invalidate_dcache_by_addr(void* addr, uint32_t size) {
 
         // Invalidate each cache line
         for (uint32_t addr_val = start_addr; addr_val < end_addr; addr_val += 32) {
-            CACHE->DCIMVAC = addr_val;
+            CACHE()->DCIMVAC = addr_val;
         }
 
         dsb();
@@ -259,7 +262,7 @@ inline void clean_dcache_by_addr(const void* addr, uint32_t size) {
 
         // Clean each cache line
         for (uint32_t addr_val = start_addr; addr_val < end_addr; addr_val += 32) {
-            CACHE->DCCMVAC = addr_val;
+            CACHE()->DCCMVAC = addr_val;
         }
 
         dsb();
@@ -287,7 +290,7 @@ inline void clean_invalidate_dcache_by_addr(void* addr, uint32_t size) {
 
         // Clean and invalidate each cache line
         for (uint32_t addr_val = start_addr; addr_val < end_addr; addr_val += 32) {
-            CACHE->DCCIMVAC = addr_val;
+            CACHE()->DCCIMVAC = addr_val;
         }
 
         dsb();

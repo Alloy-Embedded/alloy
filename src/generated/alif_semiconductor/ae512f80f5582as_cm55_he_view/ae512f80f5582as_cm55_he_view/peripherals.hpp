@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_AE512F80F5582AS_CM55_HE_VIEW_PERIPHERALS_HPP
 #define ALLOY_GENERATED_AE512F80F5582AS_CM55_HE_VIEW_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::ae512f80f5582as_cm55_he_view {
 

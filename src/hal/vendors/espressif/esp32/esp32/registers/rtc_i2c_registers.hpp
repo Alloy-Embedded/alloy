@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::rtc_i2c {
 
@@ -85,7 +85,8 @@ struct RTC_I2C_Registers {
 static_assert(sizeof(RTC_I2C_Registers) >= 76, "RTC_I2C_Registers size mismatch");
 
 /// RTC_I2C peripheral instance
-constexpr RTC_I2C_Registers* RTC_I2C = 
-    reinterpret_cast<RTC_I2C_Registers*>(0x3FF48C00);
+inline RTC_I2C_Registers* RTC_I2C() {
+    return reinterpret_cast<RTC_I2C_Registers*>(0x3FF48C00);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::rtc_i2c

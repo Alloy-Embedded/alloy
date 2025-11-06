@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::rmt {
 
@@ -18,31 +18,28 @@ namespace alloy::hal::espressif::esp32::esp32::rmt {
 /// RMT Register Structure
 struct RMT_Registers {
 
-    /// CH%sDATA
+    /// CH[8]DATA
     /// Offset: 0x0000
-    volatile uint32_t CH%sDATA;
-    uint8_t RESERVED_0004[28]; ///< Reserved
+    volatile uint32_t CH[8]DATA[8];
 
-    /// CH%sCONF0
+    /// CH[8]CONF0
     /// Offset: 0x0020
     /// Reset value: 0x31100002
-    volatile uint32_t CH%sCONF0;
+    volatile uint32_t CH[8]CONF0[8];
 
-    /// CH%sCONF1
+    /// CH[8]CONF1
     /// Offset: 0x0024
     /// Reset value: 0x00000F20
-    volatile uint32_t CH%sCONF1;
-    uint8_t RESERVED_0028[56]; ///< Reserved
+    volatile uint32_t CH[8]CONF1[8];
+    uint8_t RESERVED_0044[28]; ///< Reserved
 
-    /// CH%sSTATUS
+    /// CH[8]STATUS
     /// Offset: 0x0060
-    volatile uint32_t CH%sSTATUS;
-    uint8_t RESERVED_0064[28]; ///< Reserved
+    volatile uint32_t CH[8]STATUS[8];
 
-    /// CH%sADDR
+    /// CH[8]ADDR
     /// Offset: 0x0080
-    volatile uint32_t CH%sADDR;
-    uint8_t RESERVED_0084[28]; ///< Reserved
+    volatile uint32_t CH[8]ADDR[8];
 
     /// INT_RAW
     /// Offset: 0x00A0
@@ -60,17 +57,15 @@ struct RMT_Registers {
     /// Offset: 0x00AC
     volatile uint32_t INT_CLR;
 
-    /// CH%sCARRIER_DUTY
+    /// CH[8]CARRIER_DUTY
     /// Offset: 0x00B0
     /// Reset value: 0x00400040
-    volatile uint32_t CH%sCARRIER_DUTY;
-    uint8_t RESERVED_00B4[28]; ///< Reserved
+    volatile uint32_t CH[8]CARRIER_DUTY[8];
 
-    /// CH%s_TX_LIM
+    /// CH[8]_TX_LIM
     /// Offset: 0x00D0
     /// Reset value: 0x00000080
-    volatile uint32_t CH%s_TX_LIM;
-    uint8_t RESERVED_00D4[28]; ///< Reserved
+    volatile uint32_t CH[8]_TX_LIM[8];
 
     /// APB_CONF
     /// Offset: 0x00F0
@@ -86,7 +81,8 @@ struct RMT_Registers {
 static_assert(sizeof(RMT_Registers) >= 256, "RMT_Registers size mismatch");
 
 /// RMT peripheral instance
-constexpr RMT_Registers* RMT = 
-    reinterpret_cast<RMT_Registers*>(0x3FF56000);
+inline RMT_Registers* RMT() {
+    return reinterpret_cast<RMT_Registers*>(0x3FF56000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::rmt

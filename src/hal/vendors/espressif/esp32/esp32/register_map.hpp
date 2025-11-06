@@ -25,8 +25,6 @@
 // Core utilities
 // ============================================================================
 
-#include "bitfield_utils.hpp"
-
 // ============================================================================
 // Peripheral Register Structures
 // ============================================================================
@@ -155,7 +153,6 @@ namespace alloy::hal::espressif::esp32::esp32 {
 //   - 36 peripheral bit field definitions
 //   - Enumeration definitions
 //   - Pin alternate function mappings
-//   - BitField template utilities
 //
 // Total peripherals with registers: 36
 //

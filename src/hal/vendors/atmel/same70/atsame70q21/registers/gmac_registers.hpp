@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::same70::atsame70q21::gmac {
 
@@ -487,23 +487,23 @@ struct GMAC_Registers {
     /// Interrupt Status Register Priority Queue (index = 1) 0
     /// Offset: 0x03FC
     /// Access: read-only
-    volatile uint32_t ISRPQ[2];
-    uint8_t RESERVED_0400[60]; ///< Reserved
+    volatile uint32_t ISRPQ[2][2];
+    uint8_t RESERVED_0404[56]; ///< Reserved
 
     /// Transmit Buffer Queue Base Address Register Priority Queue (index = 1) 0
     /// Offset: 0x043C
-    volatile uint32_t TBQBAPQ[2];
-    uint8_t RESERVED_0440[60]; ///< Reserved
+    volatile uint32_t TBQBAPQ[2][2];
+    uint8_t RESERVED_0444[56]; ///< Reserved
 
     /// Receive Buffer Queue Base Address Register Priority Queue (index = 1) 0
     /// Offset: 0x047C
-    volatile uint32_t RBQBAPQ[2];
-    uint8_t RESERVED_0480[28]; ///< Reserved
+    volatile uint32_t RBQBAPQ[2][2];
+    uint8_t RESERVED_0484[24]; ///< Reserved
 
     /// Receive Buffer Size Register Priority Queue (index = 1) 0
     /// Offset: 0x049C
-    volatile uint32_t RBSRPQ[2];
-    uint8_t RESERVED_04A0[28]; ///< Reserved
+    volatile uint32_t RBSRPQ[2][2];
+    uint8_t RESERVED_04A4[24]; ///< Reserved
 
     /// Credit-Based Shaping Control Register
     /// Offset: 0x04BC
@@ -520,35 +520,35 @@ struct GMAC_Registers {
 
     /// Screening Type 1 Register Priority Queue (index = 0) 0
     /// Offset: 0x0500
-    volatile uint32_t ST1RPQ[4];
-    uint8_t RESERVED_0504[60]; ///< Reserved
+    volatile uint32_t ST1RPQ[4][4];
+    uint8_t RESERVED_0510[48]; ///< Reserved
 
     /// Screening Type 2 Register Priority Queue (index = 0) 0
     /// Offset: 0x0540
-    volatile uint32_t ST2RPQ[8];
-    uint8_t RESERVED_0544[184]; ///< Reserved
+    volatile uint32_t ST2RPQ[8][8];
+    uint8_t RESERVED_0560[156]; ///< Reserved
 
     /// Interrupt Enable Register Priority Queue (index = 1) 0
     /// Offset: 0x05FC
     /// Access: write-only
-    volatile uint32_t IERPQ[2];
-    uint8_t RESERVED_0600[28]; ///< Reserved
+    volatile uint32_t IERPQ[2][2];
+    uint8_t RESERVED_0604[24]; ///< Reserved
 
     /// Interrupt Disable Register Priority Queue (index = 1) 0
     /// Offset: 0x061C
     /// Access: write-only
-    volatile uint32_t IDRPQ[2];
-    uint8_t RESERVED_0620[28]; ///< Reserved
+    volatile uint32_t IDRPQ[2][2];
+    uint8_t RESERVED_0624[24]; ///< Reserved
 
     /// Interrupt Mask Register Priority Queue (index = 1) 0
     /// Offset: 0x063C
-    volatile uint32_t IMRPQ[2];
-    uint8_t RESERVED_0640[160]; ///< Reserved
+    volatile uint32_t IMRPQ[2][2];
+    uint8_t RESERVED_0644[156]; ///< Reserved
 
     /// Screening Type 2 Ethertype Register (index = 0) 0
     /// Offset: 0x06E0
-    volatile uint32_t ST2ER[4];
-    uint8_t RESERVED_06E4[28]; ///< Reserved
+    volatile uint32_t ST2ER[4][4];
+    uint8_t RESERVED_06F0[16]; ///< Reserved
 
     /// Screening Type 2 Compare Word 0 Register (index = 0)
     /// Offset: 0x0700
@@ -746,7 +746,8 @@ struct GMAC_Registers {
 static_assert(sizeof(GMAC_Registers) >= 1984, "GMAC_Registers size mismatch");
 
 /// GMAC peripheral instance
-constexpr GMAC_Registers* GMAC = 
-    reinterpret_cast<GMAC_Registers*>(0x40050000);
+inline GMAC_Registers* GMAC() {
+    return reinterpret_cast<GMAC_Registers*>(0x40050000);
+}
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::gmac

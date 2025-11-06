@@ -3,7 +3,7 @@
 
 #include "../../src/startup/startup_common.hpp"
 #include "../../src/startup/arm_cortex_m7/cortex_m7_init.hpp"
-#include <cstdint>
+#include <stdint.h>
 
 // Linker script symbols
 extern uint32_t _estack;  // End of stack
@@ -14,17 +14,36 @@ extern "C" int main();
 // System initialization - called before main()
 // Users can override this for custom clock/peripheral configuration
 extern "C" __attribute__((weak)) void SystemInit() {
+    // CRITICAL: Disable BOTH watchdog timers FIRST!
+    // SAME70 has two watchdogs that must be disabled:
+    // 1. WDT (Watchdog Timer) at 0x400E1854
+    // 2. RSWDT (Reinforced Watchdog Timer) at 0x400E1D54
+    //
+    // If not disabled, RSWDT will reset the MCU periodically!
+
+    volatile uint32_t* WDT_MR = reinterpret_cast<volatile uint32_t*>(0x400E1854);
+    volatile uint32_t* RSWDT_MR = reinterpret_cast<volatile uint32_t*>(0x400E1D54);
+    constexpr uint32_t WDDIS = (1U << 15);
+
+    *WDT_MR = WDDIS;      // Disable normal watchdog
+    *RSWDT_MR = WDDIS;    // Disable reinforced watchdog
+
+    // Small delay to ensure watchdogs are disabled
+    for (volatile int i = 0; i < 1000; i++) {
+        __asm__ volatile("nop");
+    }
+
     // Initialize Cortex-M7 features:
     // - FPU (double precision) for hardware floating point
-    // - I-Cache for faster code execution (2-3x improvement)
-    // - D-Cache for faster data access (2-3x improvement)
+    // - I-Cache and D-Cache: DISABLED for now (needs proper cache invalidation)
     //
-    // This provides 3-10x overall system performance improvement
+    // TODO: Fix cache initialization - currently causes system hang
+    // The cache invalidation code needs to be updated for SAME70's cache geometry
     alloy::arm::cortex_m7::initialize(
-        true,  // Enable FPU
-        true,  // Enable lazy FPU stacking
-        true,  // Enable I-Cache
-        true   // Enable D-Cache
+        true,   // Enable FPU
+        true,   // Enable lazy FPU stacking
+        false,  // Disable I-Cache (TODO: fix cache initialization)
+        false   // Disable D-Cache (TODO: fix cache initialization)
     );
 
     // TODO: Configure system clock to 300MHz using PLL
@@ -41,11 +60,20 @@ extern "C" __attribute__((weak)) void SystemInit() {
 
 // Reset Handler - Entry point after reset
 extern "C" [[noreturn]] void Reset_Handler() {
-    // 1. Call system initialization (FPU, caches, clocks, flash, etc.)
-    SystemInit();
+    // TEMPORARY: Disable watchdogs manually here for testing
+    volatile uint32_t* WDT_MR = reinterpret_cast<volatile uint32_t*>(0x400E1854);
+    volatile uint32_t* RSWDT_MR = reinterpret_cast<volatile uint32_t*>(0x400E1D54);
+    *WDT_MR = (1U << 15);     // WDDIS
+    *RSWDT_MR = (1U << 15);   // WDDIS
 
-    // 2. Perform runtime initialization (data/bss/constructors)
-    alloy::startup::initialize_runtime();
+    // Small delay
+    for (volatile int i = 0; i < 1000; i++) {
+        __asm__ volatile("nop");
+    }
+
+    // TEMPORARY: Skip SystemInit() and initialize_runtime() for testing
+    // SystemInit();
+    // alloy::startup::initialize_runtime();
 
     // 3. Call main
     main();

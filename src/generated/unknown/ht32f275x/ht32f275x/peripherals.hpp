@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_HT32F275X_PERIPHERALS_HPP
 #define ALLOY_GENERATED_HT32F275X_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::ht32f275x {
 

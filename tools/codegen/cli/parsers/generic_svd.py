@@ -72,6 +72,7 @@ class Register:
     description: Optional[str] = None
     access: Optional[str] = None  # read-only, write-only, read-write
     fields: List['RegisterField'] = field(default_factory=list)
+    dim: Optional[int] = None  # Array size (e.g., 2 for ABCDSR[2])
 
 
 @dataclass
@@ -413,6 +414,7 @@ class SVDParser:
             description=self._get_text('description', reg_elem),
             access=self._get_text('access', reg_elem),
             fields=fields,
+            dim=self._get_int('dim', reg_elem),  # Array size (e.g., 2 for ABCDSR[2])
         )
 
     def _parse_register_field(self, field_elem: ET.Element) -> Optional[RegisterField]:

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::same70::atsame70q21::matrix {
@@ -18,7 +18,7 @@ using namespace alloy::hal::bitfields;
 // ============================================================================
 
 /// MCFG[12] - Master Configuration Register 0
-namespace mcfg[12] {
+namespace mcfg {
     /// Undefined Length Burst Type
     /// Position: 0, Width: 3
     using ULBT = BitField<0, 3>;
@@ -36,7 +36,7 @@ namespace mcfg[12] {
         constexpr uint32_t _128BEAT_BURST = 7;
     }
 
-}  // namespace mcfg[12]
+}  // namespace mcfg
 
 /// PRAS - Priority Register A for Slave 0
 namespace pras {
@@ -113,7 +113,7 @@ namespace prbs {
 }  // namespace prbs
 
 /// SCFG[9] - Slave Configuration Register 0
-namespace scfg[9] {
+namespace scfg {
     /// Maximum Bus Grant Duration for Masters
     /// Position: 0, Width: 9
     using SLOT_CYCLE = BitField<0, 9>;
@@ -138,7 +138,7 @@ namespace scfg[9] {
     constexpr uint32_t FIXED_DEFMSTR_Pos = 18;
     constexpr uint32_t FIXED_DEFMSTR_Msk = FIXED_DEFMSTR::mask;
 
-}  // namespace scfg[9]
+}  // namespace scfg
 
 /// MRCR - Master Remap Control Register
 namespace mrcr {

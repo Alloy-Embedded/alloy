@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::icm {
 
@@ -70,13 +70,14 @@ struct ICM_Registers {
     /// User Initial Hash Value 0 Register 0
     /// Offset: 0x0038
     /// Access: write-only
-    volatile uint32_t UIHVAL[8];
+    volatile uint32_t UIHVAL[8][8];
 };
 
-static_assert(sizeof(ICM_Registers) >= 60, "ICM_Registers size mismatch");
+static_assert(sizeof(ICM_Registers) >= 88, "ICM_Registers size mismatch");
 
 /// ICM peripheral instance
-constexpr ICM_Registers* ICM = 
-    reinterpret_cast<ICM_Registers*>(0x40048000);
+inline ICM_Registers* ICM() {
+    return reinterpret_cast<ICM_Registers*>(0x40048000);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::icm

@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_MKW24D5_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MKW24D5_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::mkw24d5 {
 

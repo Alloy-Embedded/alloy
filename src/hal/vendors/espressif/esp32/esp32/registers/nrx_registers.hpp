@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::nrx {
 
@@ -27,7 +27,8 @@ struct NRX_Registers {
 static_assert(sizeof(NRX_Registers) >= 216, "NRX_Registers size mismatch");
 
 /// NRX peripheral instance
-constexpr NRX_Registers* NRX = 
-    reinterpret_cast<NRX_Registers*>(0x3FF5CC00);
+inline NRX_Registers* NRX() {
+    return reinterpret_cast<NRX_Registers*>(0x3FF5CC00);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::nrx

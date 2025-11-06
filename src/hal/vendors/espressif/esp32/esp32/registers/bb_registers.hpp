@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::bb {
 
@@ -27,7 +27,8 @@ struct BB_Registers {
 static_assert(sizeof(BB_Registers) >= 88, "BB_Registers size mismatch");
 
 /// BB peripheral instance
-constexpr BB_Registers* BB = 
-    reinterpret_cast<BB_Registers*>(0x3FF5D000);
+inline BB_Registers* BB() {
+    return reinterpret_cast<BB_Registers*>(0x3FF5D000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::bb

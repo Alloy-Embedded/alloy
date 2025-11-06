@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::twai0 {
 
@@ -135,7 +135,8 @@ struct TWAI0_Registers {
 static_assert(sizeof(TWAI0_Registers) >= 128, "TWAI0_Registers size mismatch");
 
 /// TWAI0 peripheral instance
-constexpr TWAI0_Registers* TWAI0 = 
-    reinterpret_cast<TWAI0_Registers*>(0x3FF6B000);
+inline TWAI0_Registers* TWAI0() {
+    return reinterpret_cast<TWAI0_Registers*>(0x3FF6B000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::twai0

@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::esp32::ledc {
 
@@ -17,8 +17,8 @@ using namespace alloy::hal::bitfields;
 // LEDC Bit Field Definitions
 // ============================================================================
 
-/// HSCH%s_CONF0 - HSCH%s_CONF0
-namespace hsch%s_conf0 {
+/// HSCH[8]_CONF0 - HSCH[8]_CONF0
+namespace hsch_conf0 {
     /// There are four high speed timers  the two bits are used to select one of them for high speed channel0.  2'b00: seletc hstimer0.   2'b01: select hstimer1.  2'b10: select hstimer2.    2'b11: select hstimer3.
     /// Position: 0, Width: 2
     /// Access: read-write
@@ -40,10 +40,10 @@ namespace hsch%s_conf0 {
     constexpr uint32_t IDLE_LV_Pos = 3;
     constexpr uint32_t IDLE_LV_Msk = IDLE_LV::mask;
 
-}  // namespace hsch%s_conf0
+}  // namespace hsch_conf0
 
-/// HSCH%s_HPOINT - HSCH%s_HPOINT
-namespace hsch%s_hpoint {
+/// HSCH[8]_HPOINT - HSCH[8]_HPOINT
+namespace hsch_hpoint {
     /// The output value changes to high when htimerx(x=[0 3]) selected by high speed channel0 has reached reg_hpoint_hsch0[19:0]
     /// Position: 0, Width: 20
     /// Access: read-write
@@ -51,10 +51,10 @@ namespace hsch%s_hpoint {
     constexpr uint32_t HPOINT_Pos = 0;
     constexpr uint32_t HPOINT_Msk = HPOINT::mask;
 
-}  // namespace hsch%s_hpoint
+}  // namespace hsch_hpoint
 
-/// HSCH%s_DUTY - HSCH%s_DUTY
-namespace hsch%s_duty {
+/// HSCH[8]_DUTY - HSCH[8]_DUTY
+namespace hsch_duty {
     /// This register represents the current duty of the output signal for high speed channel0.
     /// Position: 0, Width: 25
     /// Access: read-write
@@ -62,10 +62,10 @@ namespace hsch%s_duty {
     constexpr uint32_t DUTY_Pos = 0;
     constexpr uint32_t DUTY_Msk = DUTY::mask;
 
-}  // namespace hsch%s_duty
+}  // namespace hsch_duty
 
-/// HSCH%s_CONF1 - HSCH%s_CONF1
-namespace hsch%s_conf1 {
+/// HSCH[8]_CONF1 - HSCH[8]_CONF1
+namespace hsch_conf1 {
     /// This register controls the increase or decrease step scale for high speed channel0.
     /// Position: 0, Width: 10
     /// Access: read-write
@@ -101,10 +101,10 @@ namespace hsch%s_conf1 {
     constexpr uint32_t DUTY_START_Pos = 31;
     constexpr uint32_t DUTY_START_Msk = DUTY_START::mask;
 
-}  // namespace hsch%s_conf1
+}  // namespace hsch_conf1
 
-/// HSCH%s_DUTY_R - HSCH%s_DUTY_R
-namespace hsch%s_duty_r {
+/// HSCH[8]_DUTY_R - HSCH[8]_DUTY_R
+namespace hsch_duty_r {
     /// This register represents the current duty cycle of the output signal for high-speed channel %s
     /// Position: 0, Width: 25
     /// Access: read-only
@@ -112,10 +112,10 @@ namespace hsch%s_duty_r {
     constexpr uint32_t DUTY_R_Pos = 0;
     constexpr uint32_t DUTY_R_Msk = DUTY_R::mask;
 
-}  // namespace hsch%s_duty_r
+}  // namespace hsch_duty_r
 
-/// LSCH%s_CONF0 - LSCH%s_CONF0
-namespace lsch%s_conf0 {
+/// LSCH[8]_CONF0 - LSCH[8]_CONF0
+namespace lsch_conf0 {
     /// There are four low speed timers  the two bits are used to select one of them for low speed channel0.  2'b00: seletc lstimer0.   2'b01: select lstimer1.  2'b10: select lstimer2.    2'b11: select lstimer3.
     /// Position: 0, Width: 2
     /// Access: read-write
@@ -144,10 +144,10 @@ namespace lsch%s_conf0 {
     constexpr uint32_t PARA_UP_Pos = 4;
     constexpr uint32_t PARA_UP_Msk = PARA_UP::mask;
 
-}  // namespace lsch%s_conf0
+}  // namespace lsch_conf0
 
-/// LSCH%s_HPOINT - LSCH%s_HPOINT
-namespace lsch%s_hpoint {
+/// LSCH[8]_HPOINT - LSCH[8]_HPOINT
+namespace lsch_hpoint {
     /// The output value changes to high when lstimerx(x=[0 3]) selected by low speed channel0 has reached reg_hpoint_lsch0[19:0]
     /// Position: 0, Width: 20
     /// Access: read-write
@@ -155,10 +155,10 @@ namespace lsch%s_hpoint {
     constexpr uint32_t HPOINT_Pos = 0;
     constexpr uint32_t HPOINT_Msk = HPOINT::mask;
 
-}  // namespace lsch%s_hpoint
+}  // namespace lsch_hpoint
 
-/// LSCH%s_DUTY - LSCH%s_DUTY
-namespace lsch%s_duty {
+/// LSCH[8]_DUTY - LSCH[8]_DUTY
+namespace lsch_duty {
     /// This register represents the current duty of the output signal for low speed channel0.
     /// Position: 0, Width: 25
     /// Access: read-write
@@ -166,10 +166,10 @@ namespace lsch%s_duty {
     constexpr uint32_t DUTY_Pos = 0;
     constexpr uint32_t DUTY_Msk = DUTY::mask;
 
-}  // namespace lsch%s_duty
+}  // namespace lsch_duty
 
-/// LSCH%s_CONF1 - LSCH%s_CONF1
-namespace lsch%s_conf1 {
+/// LSCH[8]_CONF1 - LSCH[8]_CONF1
+namespace lsch_conf1 {
     /// This register controls the increase or decrease step scale for low speed channel0.
     /// Position: 0, Width: 10
     /// Access: read-write
@@ -205,10 +205,10 @@ namespace lsch%s_conf1 {
     constexpr uint32_t DUTY_START_Pos = 31;
     constexpr uint32_t DUTY_START_Msk = DUTY_START::mask;
 
-}  // namespace lsch%s_conf1
+}  // namespace lsch_conf1
 
-/// LSCH%s_DUTY_R - LSCH%s_DUTY_R
-namespace lsch%s_duty_r {
+/// LSCH[8]_DUTY_R - LSCH[8]_DUTY_R
+namespace lsch_duty_r {
     /// This register represents the current duty cycle of the output signal for low-speed channel %s
     /// Position: 0, Width: 25
     /// Access: read-only
@@ -216,10 +216,10 @@ namespace lsch%s_duty_r {
     constexpr uint32_t DUTY_R_Pos = 0;
     constexpr uint32_t DUTY_R_Msk = DUTY_R::mask;
 
-}  // namespace lsch%s_duty_r
+}  // namespace lsch_duty_r
 
-/// HSTIMER%s_CONF - HSTIMER%s_CONF
-namespace hstimer%s_conf {
+/// HSTIMER[4]_CONF - HSTIMER[4]_CONF
+namespace hstimer_conf {
     /// This register controls the range of the counter in high speed timer0. the counter range is [0 2**reg_hstimer0_lim] the max bit width for counter is 20.
     /// Position: 0, Width: 5
     /// Access: read-write
@@ -255,10 +255,10 @@ namespace hstimer%s_conf {
     constexpr uint32_t TICK_SEL_Pos = 25;
     constexpr uint32_t TICK_SEL_Msk = TICK_SEL::mask;
 
-}  // namespace hstimer%s_conf
+}  // namespace hstimer_conf
 
-/// HSTIMER%s_VALUE - HSTIMER%s_VALUE
-namespace hstimer%s_value {
+/// HSTIMER[4]_VALUE - HSTIMER[4]_VALUE
+namespace hstimer_value {
     /// software can read this register to get the current counter value in high speed timer0
     /// Position: 0, Width: 20
     /// Access: read-only
@@ -266,10 +266,10 @@ namespace hstimer%s_value {
     constexpr uint32_t CNT_Pos = 0;
     constexpr uint32_t CNT_Msk = CNT::mask;
 
-}  // namespace hstimer%s_value
+}  // namespace hstimer_value
 
-/// LSTIMER%s_CONF - LSTIMER%s_CONF
-namespace lstimer%s_conf {
+/// LSTIMER[4]_CONF - LSTIMER[4]_CONF
+namespace lstimer_conf {
     /// This register controls the range of the counter in low speed timer0. the counter range is [0 2**reg_lstimer0_lim] the max bit width for counter is 20.
     /// Position: 0, Width: 5
     /// Access: read-write
@@ -312,10 +312,10 @@ namespace lstimer%s_conf {
     constexpr uint32_t PARA_UP_Pos = 26;
     constexpr uint32_t PARA_UP_Msk = PARA_UP::mask;
 
-}  // namespace lstimer%s_conf
+}  // namespace lstimer_conf
 
-/// LSTIMER%s_VALUE - LSTIMER%s_VALUE
-namespace lstimer%s_value {
+/// LSTIMER[4]_VALUE - LSTIMER[4]_VALUE
+namespace lstimer_value {
     /// software can read this register to get the current counter value in low speed timer0.
     /// Position: 0, Width: 20
     /// Access: read-only
@@ -323,7 +323,7 @@ namespace lstimer%s_value {
     constexpr uint32_t CNT_Pos = 0;
     constexpr uint32_t CNT_Msk = CNT::mask;
 
-}  // namespace lstimer%s_value
+}  // namespace lstimer_value
 
 /// INT_RAW - INT_RAW
 namespace int_raw {

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::dport {
 
@@ -1713,7 +1713,8 @@ struct DPORT_Registers {
 static_assert(sizeof(DPORT_Registers) >= 4096, "DPORT_Registers size mismatch");
 
 /// DPORT peripheral instance
-constexpr DPORT_Registers* DPORT = 
-    reinterpret_cast<DPORT_Registers*>(0x3FF00000);
+inline DPORT_Registers* DPORT() {
+    return reinterpret_cast<DPORT_Registers*>(0x3FF00000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::dport

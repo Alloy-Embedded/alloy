@@ -1,7 +1,7 @@
 #ifndef ALLOY_PLATFORM_DELAY_HPP
 #define ALLOY_PLATFORM_DELAY_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 #ifdef __cplusplus
 #include <thread>

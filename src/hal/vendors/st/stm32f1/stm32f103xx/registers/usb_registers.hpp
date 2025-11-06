@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f1::stm32f103xx::usb {
 
@@ -102,7 +102,8 @@ struct USB_Registers {
 static_assert(sizeof(USB_Registers) >= 84, "USB_Registers size mismatch");
 
 /// USB peripheral instance
-constexpr USB_Registers* USB = 
-    reinterpret_cast<USB_Registers*>(0x40005C00);
+inline USB_Registers* USB() {
+    return reinterpret_cast<USB_Registers*>(0x40005C00);
+}
 
 }  // namespace alloy::hal::st::stm32f1::stm32f103xx::usb

@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_TLE9868_PERIPHERALS_HPP
 #define ALLOY_GENERATED_TLE9868_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::tle9868 {
 

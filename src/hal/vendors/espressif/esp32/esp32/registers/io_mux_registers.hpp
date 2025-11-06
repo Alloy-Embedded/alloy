@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::io_mux {
 
@@ -170,7 +170,8 @@ struct IO_MUX_Registers {
 static_assert(sizeof(IO_MUX_Registers) >= 148, "IO_MUX_Registers size mismatch");
 
 /// IO_MUX peripheral instance
-constexpr IO_MUX_Registers* IO_MUX = 
-    reinterpret_cast<IO_MUX_Registers*>(0x3FF49000);
+inline IO_MUX_Registers* IO_MUX() {
+    return reinterpret_cast<IO_MUX_Registers*>(0x3FF49000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::io_mux

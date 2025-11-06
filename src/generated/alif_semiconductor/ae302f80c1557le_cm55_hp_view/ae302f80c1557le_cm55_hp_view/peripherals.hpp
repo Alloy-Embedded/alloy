@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_AE302F80C1557LE_CM55_HP_VIEW_PERIPHERALS_HPP
 #define ALLOY_GENERATED_AE302F80C1557LE_CM55_HP_VIEW_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::ae302f80c1557le_cm55_hp_view {
 

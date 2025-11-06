@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::pm {
 
@@ -88,7 +88,8 @@ struct PM_Registers {
 static_assert(sizeof(PM_Registers) >= 57, "PM_Registers size mismatch");
 
 /// PM peripheral instance
-constexpr PM_Registers* PM = 
-    reinterpret_cast<PM_Registers*>(0x40000400);
+inline PM_Registers* PM() {
+    return reinterpret_cast<PM_Registers*>(0x40000400);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::pm

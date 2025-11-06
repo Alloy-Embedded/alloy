@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::hmatrix {
 
@@ -21,22 +21,23 @@ struct HMATRIX_Registers {
 
     /// Priority A for Slave
     /// Offset: 0x0080
-    volatile uint32_t PRAS[16];
+    volatile uint32_t PRAS[16][16];
 
     /// Priority B for Slave
     /// Offset: 0x0084
-    volatile uint32_t PRBS[16];
-    uint8_t RESERVED_0088[136]; ///< Reserved
+    volatile uint32_t PRBS[16][16];
+    uint8_t RESERVED_00C4[76]; ///< Reserved
 
     /// Special Function
     /// Offset: 0x0110
-    volatile uint32_t SFR[16];
+    volatile uint32_t SFR[16][16];
 };
 
-static_assert(sizeof(HMATRIX_Registers) >= 276, "HMATRIX_Registers size mismatch");
+static_assert(sizeof(HMATRIX_Registers) >= 336, "HMATRIX_Registers size mismatch");
 
 /// HMATRIX peripheral instance
-constexpr HMATRIX_Registers* HMATRIX = 
-    reinterpret_cast<HMATRIX_Registers*>(0x41007000);
+inline HMATRIX_Registers* HMATRIX() {
+    return reinterpret_cast<HMATRIX_Registers*>(0x41007000);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::hmatrix

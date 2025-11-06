@@ -9,7 +9,7 @@
 
 #include "core/types.hpp"
 #include <array>
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::wifi {
 

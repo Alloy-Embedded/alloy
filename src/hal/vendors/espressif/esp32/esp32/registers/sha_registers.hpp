@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::sha {
 
@@ -18,10 +18,9 @@ namespace alloy::hal::espressif::esp32::esp32::sha {
 /// SHA Register Structure
 struct SHA_Registers {
 
-    /// TEXT%s
+    /// TEXT[32]
     /// Offset: 0x0000
-    volatile uint32_t TEXT%s;
-    uint8_t RESERVED_0004[124]; ///< Reserved
+    volatile uint32_t TEXT[32][32];
 
     /// SHA1_START
     /// Offset: 0x0080
@@ -91,7 +90,8 @@ struct SHA_Registers {
 static_assert(sizeof(SHA_Registers) >= 192, "SHA_Registers size mismatch");
 
 /// SHA peripheral instance
-constexpr SHA_Registers* SHA = 
-    reinterpret_cast<SHA_Registers*>(0x3FF03000);
+inline SHA_Registers* SHA() {
+    return reinterpret_cast<SHA_Registers*>(0x3FF03000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::sha

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::vreg_and_chip_reset {
 
@@ -37,7 +37,8 @@ struct VREG_AND_CHIP_RESET_Registers {
 static_assert(sizeof(VREG_AND_CHIP_RESET_Registers) >= 12, "VREG_AND_CHIP_RESET_Registers size mismatch");
 
 /// VREG_AND_CHIP_RESET peripheral instance
-constexpr VREG_AND_CHIP_RESET_Registers* VREG_AND_CHIP_RESET = 
-    reinterpret_cast<VREG_AND_CHIP_RESET_Registers*>(0x40064000);
+inline VREG_AND_CHIP_RESET_Registers* VREG_AND_CHIP_RESET() {
+    return reinterpret_cast<VREG_AND_CHIP_RESET_Registers*>(0x40064000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::vreg_and_chip_reset

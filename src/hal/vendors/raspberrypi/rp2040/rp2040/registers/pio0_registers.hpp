@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::pio0 {
 
@@ -456,7 +456,8 @@ struct PIO0_Registers {
 static_assert(sizeof(PIO0_Registers) >= 324, "PIO0_Registers size mismatch");
 
 /// PIO0 peripheral instance
-constexpr PIO0_Registers* PIO0 = 
-    reinterpret_cast<PIO0_Registers*>(0x50200000);
+inline PIO0_Registers* PIO0() {
+    return reinterpret_cast<PIO0_Registers*>(0x50200000);
+}
 
 }  // namespace alloy::hal::raspberrypi::rp2040::rp2040::pio0

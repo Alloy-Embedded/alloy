@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::aes {
 
@@ -31,15 +31,13 @@ struct AES_Registers {
     volatile uint32_t MODE;
     uint8_t RESERVED_000C[4]; ///< Reserved
 
-    /// KEY_%s
+    /// KEY_[8]
     /// Offset: 0x0010
-    volatile uint32_t KEY_%s;
-    uint8_t RESERVED_0014[28]; ///< Reserved
+    volatile uint32_t KEY_[8][8];
 
-    /// TEXT_%s
+    /// TEXT_[4]
     /// Offset: 0x0030
-    volatile uint32_t TEXT_%s;
-    uint8_t RESERVED_0034[12]; ///< Reserved
+    volatile uint32_t TEXT_[4][4];
 
     /// ENDIAN
     /// Offset: 0x0040
@@ -49,7 +47,8 @@ struct AES_Registers {
 static_assert(sizeof(AES_Registers) >= 68, "AES_Registers size mismatch");
 
 /// AES peripheral instance
-constexpr AES_Registers* AES = 
-    reinterpret_cast<AES_Registers*>(0x3FF01000);
+inline AES_Registers* AES() {
+    return reinterpret_cast<AES_Registers*>(0x3FF01000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::aes

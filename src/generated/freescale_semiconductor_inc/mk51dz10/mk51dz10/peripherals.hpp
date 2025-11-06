@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_MK51DZ10_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MK51DZ10_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::mk51dz10 {
 

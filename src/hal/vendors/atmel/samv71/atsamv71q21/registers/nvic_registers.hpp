@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::nvic {
 
@@ -21,38 +21,38 @@ struct NVIC_Registers {
     /// Interrupt Set Enable Register n
     /// Offset: 0x0000
     /// Reset value: 0x00000000
-    volatile uint32_t ISER[8];
-    uint8_t RESERVED_0004[124]; ///< Reserved
+    volatile uint32_t ISER[8][8];
+    uint8_t RESERVED_0020[96]; ///< Reserved
 
     /// Interrupt Clear Enable Register n
     /// Offset: 0x0080
     /// Reset value: 0x00000000
-    volatile uint32_t ICER[8];
-    uint8_t RESERVED_0084[124]; ///< Reserved
+    volatile uint32_t ICER[8][8];
+    uint8_t RESERVED_00A0[96]; ///< Reserved
 
     /// Interrupt Set Pending Register n
     /// Offset: 0x0100
     /// Reset value: 0x00000000
-    volatile uint32_t ISPR[8];
-    uint8_t RESERVED_0104[124]; ///< Reserved
+    volatile uint32_t ISPR[8][8];
+    uint8_t RESERVED_0120[96]; ///< Reserved
 
     /// Interrupt Clear Pending Register n
     /// Offset: 0x0180
     /// Reset value: 0x00000000
-    volatile uint32_t ICPR[8];
-    uint8_t RESERVED_0184[124]; ///< Reserved
+    volatile uint32_t ICPR[8][8];
+    uint8_t RESERVED_01A0[96]; ///< Reserved
 
     /// Interrupt Active bit Register n
     /// Offset: 0x0200
     /// Reset value: 0x00000000
-    volatile uint32_t IABR[8];
-    uint8_t RESERVED_0204[252]; ///< Reserved
+    volatile uint32_t IABR[8][8];
+    uint8_t RESERVED_0220[224]; ///< Reserved
 
     /// Interrupt Priority Register (8Bit wide) n
     /// Offset: 0x0300
     /// Reset value: 0x00000000
-    volatile uint8_t IP[240];
-    uint8_t RESERVED_0301[2815]; ///< Reserved
+    volatile uint8_t IP[240][240];
+    uint8_t RESERVED_03F0[2576]; ///< Reserved
 
     /// Software Trigger Interrupt Register
     /// Offset: 0x0E00
@@ -64,7 +64,8 @@ struct NVIC_Registers {
 static_assert(sizeof(NVIC_Registers) >= 3588, "NVIC_Registers size mismatch");
 
 /// NVIC peripheral instance
-constexpr NVIC_Registers* NVIC = 
-    reinterpret_cast<NVIC_Registers*>(0xE000E100);
+inline NVIC_Registers* NVIC() {
+    return reinterpret_cast<NVIC_Registers*>(0xE000E100);
+}
 
 }  // namespace alloy::hal::atmel::samv71::atsamv71q21::nvic

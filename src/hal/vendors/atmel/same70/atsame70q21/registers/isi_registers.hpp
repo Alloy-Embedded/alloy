@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::same70::atsame70q21::isi {
 
@@ -132,7 +132,8 @@ struct ISI_Registers {
 static_assert(sizeof(ISI_Registers) >= 236, "ISI_Registers size mismatch");
 
 /// ISI peripheral instance
-constexpr ISI_Registers* ISI = 
-    reinterpret_cast<ISI_Registers*>(0x4004C000);
+inline ISI_Registers* ISI() {
+    return reinterpret_cast<ISI_Registers*>(0x4004C000);
+}
 
 }  // namespace alloy::hal::atmel::same70::atsame70q21::isi

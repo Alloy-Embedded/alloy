@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::tcc0 {
 
@@ -126,20 +126,20 @@ struct TCC0_Registers {
 
     /// Compare and Capture
     /// Offset: 0x0044
-    volatile uint32_t CC[4];
+    volatile uint32_t CC[4][4];
 
     /// Compare and Capture
     /// Offset: 0x0044
-    volatile uint32_t CC[4]_DITH4;
+    volatile uint32_t CC[4]_DITH4[4];
 
     /// Compare and Capture
     /// Offset: 0x0044
-    volatile uint32_t CC[4]_DITH5;
+    volatile uint32_t CC[4]_DITH5[4];
 
     /// Compare and Capture
     /// Offset: 0x0044
-    volatile uint32_t CC[4]_DITH6;
-    uint8_t RESERVED_0048[28]; ///< Reserved
+    volatile uint32_t CC[4]_DITH6[4];
+    uint8_t RESERVED_0054[16]; ///< Reserved
 
     /// Pattern Buffer
     /// Offset: 0x0064
@@ -172,25 +172,26 @@ struct TCC0_Registers {
 
     /// Compare and Capture Buffer
     /// Offset: 0x0070
-    volatile uint32_t CCB[4];
+    volatile uint32_t CCB[4][4];
 
     /// Compare and Capture Buffer
     /// Offset: 0x0070
-    volatile uint32_t CCB[4]_DITH4;
+    volatile uint32_t CCB[4]_DITH4[4];
 
     /// Compare and Capture Buffer
     /// Offset: 0x0070
-    volatile uint32_t CCB[4]_DITH5;
+    volatile uint32_t CCB[4]_DITH5[4];
 
     /// Compare and Capture Buffer
     /// Offset: 0x0070
-    volatile uint32_t CCB[4]_DITH6;
+    volatile uint32_t CCB[4]_DITH6[4];
 };
 
-static_assert(sizeof(TCC0_Registers) >= 116, "TCC0_Registers size mismatch");
+static_assert(sizeof(TCC0_Registers) >= 128, "TCC0_Registers size mismatch");
 
 /// TCC0 peripheral instance
-constexpr TCC0_Registers* TCC0 = 
-    reinterpret_cast<TCC0_Registers*>(0x42002000);
+inline TCC0_Registers* TCC0() {
+    return reinterpret_cast<TCC0_Registers*>(0x42002000);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::tcc0

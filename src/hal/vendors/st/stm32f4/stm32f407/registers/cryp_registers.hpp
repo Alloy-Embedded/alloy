@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::cryp {
 
@@ -243,7 +243,8 @@ struct CRYP_Registers {
 static_assert(sizeof(CRYP_Registers) >= 144, "CRYP_Registers size mismatch");
 
 /// CRYP peripheral instance
-constexpr CRYP_Registers* CRYP = 
-    reinterpret_cast<CRYP_Registers*>(0x50060000);
+inline CRYP_Registers* CRYP() {
+    return reinterpret_cast<CRYP_Registers*>(0x50060000);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::cryp

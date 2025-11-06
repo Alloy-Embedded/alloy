@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "bitfield_utils.hpp"
+#include <stdint.h>
+#include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::esp32::i2c0 {
 
@@ -793,8 +793,8 @@ namespace sda_filter_cfg {
 
 }  // namespace sda_filter_cfg
 
-/// COMD%s - COMD%s
-namespace comd%s {
+/// COMD[16] - COMD[16]
+namespace comd {
     /// This is the content of command0. It consists of three part. op_code is the command  0: RSTART   1: WRITE  2: READ  3: STOP . 4:END.  Byte_num represent the number of data need to be send or data need to be received. ack_check_en  ack_exp and ack value are used to control  the ack bit.
     /// Position: 0, Width: 14
     /// Access: read-write
@@ -809,7 +809,7 @@ namespace comd%s {
     constexpr uint32_t COMMAND_DONE_Pos = 31;
     constexpr uint32_t COMMAND_DONE_Msk = COMMAND_DONE::mask;
 
-}  // namespace comd%s
+}  // namespace comd
 
 /// DATE - DATE
 namespace date {

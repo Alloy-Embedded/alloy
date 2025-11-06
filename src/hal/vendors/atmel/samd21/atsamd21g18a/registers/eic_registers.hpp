@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::eic {
 
@@ -57,13 +57,14 @@ struct EIC_Registers {
 
     /// Configuration n
     /// Offset: 0x0018
-    volatile uint32_t CONFIG[2];
+    volatile uint32_t CONFIG[2][2];
 };
 
-static_assert(sizeof(EIC_Registers) >= 28, "EIC_Registers size mismatch");
+static_assert(sizeof(EIC_Registers) >= 32, "EIC_Registers size mismatch");
 
 /// EIC peripheral instance
-constexpr EIC_Registers* EIC = 
-    reinterpret_cast<EIC_Registers*>(0x40001800);
+inline EIC_Registers* EIC() {
+    return reinterpret_cast<EIC_Registers*>(0x40001800);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::eic

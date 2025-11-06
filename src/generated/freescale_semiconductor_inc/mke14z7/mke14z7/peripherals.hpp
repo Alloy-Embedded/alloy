@@ -7,7 +7,7 @@
 #ifndef ALLOY_GENERATED_MKE14Z7_PERIPHERALS_HPP
 #define ALLOY_GENERATED_MKE14Z7_PERIPHERALS_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::generated::mke14z7 {
 

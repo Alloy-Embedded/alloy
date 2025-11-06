@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::st::stm32f4::stm32f407::dma2 {
 
@@ -368,7 +368,8 @@ struct DMA2_Registers {
 static_assert(sizeof(DMA2_Registers) >= 208, "DMA2_Registers size mismatch");
 
 /// DMA2 peripheral instance
-constexpr DMA2_Registers* DMA2 = 
-    reinterpret_cast<DMA2_Registers*>(0x40026400);
+inline DMA2_Registers* DMA2() {
+    return reinterpret_cast<DMA2_Registers*>(0x40026400);
+}
 
 }  // namespace alloy::hal::st::stm32f4::stm32f407::dma2

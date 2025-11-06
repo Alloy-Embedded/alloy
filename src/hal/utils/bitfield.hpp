@@ -9,9 +9,11 @@
 
 #pragma once
 
-#include <cstdint>
-#include <concepts>
-#include <type_traits>
+#include <stdint.h>
+
+// Note: C++ standard library headers (<concepts>, <type_traits>, etc.)
+// are not available in bare-metal ARM GCC toolchain from Homebrew.
+// Using pure C++17 features only.
 
 namespace alloy::hal::bitfields {
 
@@ -43,7 +45,8 @@ struct BitField {
     // Constants
     static constexpr uint32_t position = Pos;
     static constexpr uint32_t width = Width;
-    static constexpr uint32_t mask = ((1U << Width) - 1) << Pos;
+    // Handle Width==32 case to avoid undefined behavior (1U << 32)
+    static constexpr uint32_t mask = (Width == 32) ? 0xFFFFFFFFU : (((1U << Width) - 1) << Pos);
 
     /// Read bit field value from register
     ///
@@ -157,11 +160,23 @@ template<typename... BitFields>
 // REGISTER ACCESS CONCEPTS (C++20)
 // ============================================================================
 
-/// Concept for register size validation
+/// Simple type trait for register size validation (bare-metal compatible)
+/// Note: Not using std::is_same_v because it requires <type_traits>
+template<typename T, typename U>
+struct is_same { static constexpr bool value = false; };
+
 template<typename T>
-concept RegisterSize = std::is_same_v<T, uint8_t> ||
-                       std::is_same_v<T, uint16_t> ||
-                       std::is_same_v<T, uint32_t>;
+struct is_same<T, T> { static constexpr bool value = true; };
+
+template<typename T>
+struct is_register_size {
+    static constexpr bool value = is_same<T, uint8_t>::value ||
+                                  is_same<T, uint16_t>::value ||
+                                  is_same<T, uint32_t>::value;
+};
+
+template<typename T>
+inline constexpr bool is_register_size_v = is_register_size<T>::value;
 
 // ============================================================================
 // 16-BIT REGISTER SUPPORT
@@ -176,7 +191,8 @@ struct BitField16 {
 
     static constexpr uint16_t position = Pos;
     static constexpr uint16_t width = Width;
-    static constexpr uint16_t mask = ((1U << Width) - 1) << Pos;
+    // Handle Width==16 case to avoid undefined behavior (1U << 16 in 16-bit context)
+    static constexpr uint16_t mask = (Width == 16) ? 0xFFFFU : (((1U << Width) - 1) << Pos);
 
     [[nodiscard]] static constexpr uint16_t read(uint16_t reg) noexcept {
         return (reg & mask) >> position;
@@ -220,7 +236,8 @@ struct BitField8 {
 
     static constexpr uint8_t position = Pos;
     static constexpr uint8_t width = Width;
-    static constexpr uint8_t mask = ((1U << Width) - 1) << Pos;
+    // Handle Width==8 case to avoid undefined behavior (1U << 8 in 8-bit context)
+    static constexpr uint8_t mask = (Width == 8) ? 0xFFU : (((1U << Width) - 1) << Pos);
 
     [[nodiscard]] static constexpr uint8_t read(uint8_t reg) noexcept {
         return (reg & mask) >> position;

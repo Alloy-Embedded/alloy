@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::espressif::esp32::esp32::emac_dma {
 
@@ -85,7 +85,8 @@ struct EMAC_DMA_Registers {
 static_assert(sizeof(EMAC_DMA_Registers) >= 88, "EMAC_DMA_Registers size mismatch");
 
 /// EMAC_DMA peripheral instance
-constexpr EMAC_DMA_Registers* EMAC_DMA = 
-    reinterpret_cast<EMAC_DMA_Registers*>(0x3FF69000);
+inline EMAC_DMA_Registers* EMAC_DMA() {
+    return reinterpret_cast<EMAC_DMA_Registers*>(0x3FF69000);
+}
 
 }  // namespace alloy::hal::espressif::esp32::esp32::emac_dma

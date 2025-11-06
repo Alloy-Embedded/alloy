@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace alloy::hal::atmel::samd21::atsamd21g18a::dmac {
 
@@ -126,7 +126,8 @@ struct DMAC_Registers {
 static_assert(sizeof(DMAC_Registers) >= 80, "DMAC_Registers size mismatch");
 
 /// DMAC peripheral instance
-constexpr DMAC_Registers* DMAC = 
-    reinterpret_cast<DMAC_Registers*>(0x41004800);
+inline DMAC_Registers* DMAC() {
+    return reinterpret_cast<DMAC_Registers*>(0x41004800);
+}
 
 }  // namespace alloy::hal::atmel::samd21::atsamd21g18a::dmac
