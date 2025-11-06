@@ -29,8 +29,12 @@ except ModuleNotFoundError:
         PinFunction
     )
 
-REPO_ROOT = Path(__file__).parent.parent.parent.parent.parent.parent
-OUTPUT_DIR = REPO_ROOT / "src" / "hal" / "vendors"
+# Import centralized path utilities and config
+from cli.core.paths import get_mcu_output_dir, ensure_dir
+from cli.core.config import normalize_vendor, detect_family
+
+# Import progress tracking
+from cli.core.progress import get_global_tracker
 
 
 # SAME70 MCU variants and their configurations
@@ -558,9 +562,18 @@ def generate_variant(device_name: str, variant_config: Dict) -> None:
     family = get_family_name(device_name)
     print(f"\n🔧 Generating {device_name} ({family.upper()})...")
 
-    # Create output directory (organize by family)
-    device_dir = OUTPUT_DIR / "atmel" / family / device_name.lower()
-    device_dir.mkdir(parents=True, exist_ok=True)
+    # Create output directory using centralized path management
+    device_dir = ensure_dir(get_mcu_output_dir("atmel", family, device_name.lower()))
+
+    # Get tracker
+    tracker = get_global_tracker()
+    vendor = "atmel"
+
+    # Add MCU task to tracker
+    expected_files = ["hardware.hpp", "pins.hpp", "pin_functions.hpp", "gpio.hpp"]
+    if tracker:
+        tracker.add_mcu_task(vendor, family, device_name.lower(), expected_files)
+        tracker.mark_mcu_generating(vendor, family, device_name.lower())
 
     # Generate headers
     headers = {
@@ -570,10 +583,26 @@ def generate_variant(device_name: str, variant_config: Dict) -> None:
         "gpio.hpp": generate_gpio_header(device_name),
     }
 
+    success = True
     for filename, content in headers.items():
-        file_path = device_dir / filename
-        file_path.write_text(content)
-        print(f"  ✅ {filename}")
+        try:
+            if tracker:
+                tracker.mark_file_generating(vendor, family, device_name.lower(), filename)
+
+            file_path = device_dir / filename
+            file_path.write_text(content)
+            print(f"  ✅ {filename}")
+
+            if tracker:
+                tracker.mark_file_success(vendor, family, device_name.lower(), filename, file_path)
+        except Exception as e:
+            print(f"  ❌ {filename}: {e}")
+            if tracker:
+                tracker.mark_file_failed(vendor, family, device_name.lower(), filename, str(e))
+            success = False
+
+    if tracker:
+        tracker.complete_mcu_generation(vendor, family, device_name.lower(), success)
 
     print(f"  📦 Package: {variant_config['package']}")
     print(f"  💾 Flash: {variant_config['flash_kb']} KB")
@@ -590,6 +619,12 @@ def main_same70():
     print("🚀 Alloy SAME70/SAMV71 Pin Header Generator")
     print("=" * 80)
 
+    # Set generator ID for manifest tracking
+    from cli.core.progress import get_global_tracker
+    tracker = get_global_tracker()
+    if tracker:
+        tracker.set_generator("same70_pins")
+
     # Generate for all variants
     families_generated = set()
     for device_name, variant_config in SAME70_VARIANTS.items():
@@ -600,8 +635,9 @@ def main_same70():
     pio_hal_template = Path(__file__).parent / "pio_hal_template.hpp"
     if pio_hal_template.exists():
         import shutil
+        from cli.core.paths import get_family_dir
         for family in families_generated:
-            family_dir = OUTPUT_DIR / "atmel" / family
+            family_dir = get_family_dir("microchip", family)
             pio_hal_dest = family_dir / "pio_hal.hpp"
             shutil.copy(pio_hal_template, pio_hal_dest)
             print(f"\n📋 Copied PIO HAL template to {pio_hal_dest}")
@@ -613,7 +649,8 @@ def main_same70():
     print(f"\n✅ Generated {len(SAME70_VARIANTS)} total variants:")
     print(f"   • SAME70: {same70_count} variants")
     print(f"   • SAMV71: {samv71_count} variants")
-    print(f"📁 Output: {OUTPUT_DIR / 'atmel'}")
+    from cli.core.paths import get_vendor_dir
+    print(f"📁 Output: {get_vendor_dir('microchip')}")
     print()
 
     return 0

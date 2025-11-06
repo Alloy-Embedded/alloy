@@ -28,8 +28,12 @@ except ModuleNotFoundError:
         PinFunction
     )
 
-REPO_ROOT = Path(__file__).parent.parent.parent.parent.parent.parent
-OUTPUT_DIR = REPO_ROOT / "src" / "hal" / "vendors"
+# Import centralized path utilities and config
+from cli.core.paths import get_mcu_output_dir, ensure_dir
+from cli.core.config import normalize_vendor, detect_family
+
+# Import progress tracking
+from cli.core.progress import get_global_tracker
 
 
 # SAMD21 MCU variants and their configurations
@@ -198,9 +202,20 @@ def generate_variant(device_name: str, variant_config: Dict) -> None:
 
     print(f"\n🔧 Generating {device_name} (SAMD21)...")
 
-    # Create output directory
-    device_dir = OUTPUT_DIR / "atmel" / "samd21" / device_name.lower()
-    device_dir.mkdir(parents=True, exist_ok=True)
+    # Use centralized config
+    vendor = normalize_vendor("Atmel")
+    family = detect_family(device_name, vendor)
+
+    # Create output directory using centralized path management
+    device_dir = ensure_dir(get_mcu_output_dir(vendor, family, device_name.lower()))
+
+    # Get progress tracker
+    tracker = get_global_tracker()
+    expected_files = ["hardware.hpp", "pins.hpp", "gpio.hpp"]
+
+    if tracker:
+        tracker.add_mcu_task(vendor, family, device_name.lower(), expected_files)
+        tracker.mark_mcu_generating(vendor, family, device_name.lower())
 
     # Generate headers
     headers = {
@@ -209,10 +224,26 @@ def generate_variant(device_name: str, variant_config: Dict) -> None:
         "gpio.hpp": generate_gpio_header(device_name),
     }
 
+    success = True
     for filename, content in headers.items():
-        file_path = device_dir / filename
-        file_path.write_text(content)
-        print(f"  ✅ {filename}")
+        try:
+            if tracker:
+                tracker.mark_file_generating(vendor, family, device_name.lower(), filename)
+
+            file_path = device_dir / filename
+            file_path.write_text(content)
+            print(f"  ✅ {filename}")
+
+            if tracker:
+                tracker.mark_file_success(vendor, family, device_name.lower(), filename, file_path)
+        except Exception as e:
+            print(f"  ❌ {filename}: {e}")
+            if tracker:
+                tracker.mark_file_failed(vendor, family, device_name.lower(), filename, str(e))
+            success = False
+
+    if tracker:
+        tracker.complete_mcu_generation(vendor, family, device_name.lower(), success)
 
     print(f"  📦 Package: {variant_config['package']}")
     print(f"  💾 Flash: {variant_config['flash_kb']} KB")
@@ -229,12 +260,19 @@ def main():
     print("🚀 Alloy SAMD21 Pin Header Generator")
     print("=" * 80)
 
+    # Set generator ID for manifest tracking
+    from cli.core.progress import get_global_tracker
+    tracker = get_global_tracker()
+    if tracker:
+        tracker.set_generator("samd21_pins")
+
     # Generate for all variants
     for device_name, variant_config in SAMD21_VARIANTS.items():
         generate_variant(device_name, variant_config)
 
     # Copy the PORT HAL template to the SAMD21 directory
-    samd21_dir = OUTPUT_DIR / "atmel" / "samd21"
+    from cli.core.paths import get_family_dir
+    samd21_dir = get_family_dir("microchip", "samd21")
     port_hal_template = Path(__file__).parent / "port_hal_template.hpp"
     port_hal_dest = samd21_dir / "port_hal.hpp"
 
@@ -244,7 +282,7 @@ def main():
         print(f"\n📋 Copied PORT HAL template to {port_hal_dest}")
 
     print(f"\n✅ Generated {len(SAMD21_VARIANTS)} SAMD21 variants")
-    print(f"📁 Output: {OUTPUT_DIR / 'atmel' / 'samd21'}")
+    print(f"📁 Output: {samd21_dir}")
     print()
 
     return 0

@@ -93,7 +93,8 @@ def execute(args):
         print(f"  Status: {status_color}{vendor_info['status']}{COLORS['RESET']}")
         print(f"  ID: {vendor_id}")
 
-        if args.detailed or '✅' in vendor_info['status']:
+        # Show families for supported vendors
+        if '✅' in vendor_info['status']:
             print(f"\n  {COLORS['BOLD']}Families:{COLORS['RESET']}")
             for family in vendor_info['families']:
                 print(f"    • {family}")

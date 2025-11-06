@@ -2,7 +2,6 @@
 #pragma once
 
 #include <cstdint>
-#include "rp2040/hardware.hpp"
 
 namespace alloy::hal::raspberrypi::rp2040 {
 
@@ -15,7 +14,7 @@ namespace alloy::hal::raspberrypi::rp2040 {
 // - Pad configuration via PADS_BANK0
 // ============================================================================
 
-template<uint8_t Pin>
+template<typename Hardware, uint8_t Pin>
 class SIOPin {
 public:
     static_assert(Pin < 30, "Pin number must be 0-29");
@@ -33,10 +32,10 @@ public:
         setFunction(5);  // FUNCSEL_SIO
 
         // Enable output
-        hardware::SIO->GPIO_OE_SET = PIN_MASK;
+        Hardware::SIO->GPIO_OE_SET = PIN_MASK;
 
         // Configure pad: enable output, disable input to save power
-        configurePad(hardware::PADS_IE);
+        configurePad(Hardware::PADS_IE);
     }
 
     // Configure pin as GPIO input
@@ -45,10 +44,10 @@ public:
         setFunction(5);  // FUNCSEL_SIO
 
         // Disable output
-        hardware::SIO->GPIO_OE_CLR = PIN_MASK;
+        Hardware::SIO->GPIO_OE_CLR = PIN_MASK;
 
         // Configure pad: enable input, no pulls
-        configurePad(hardware::PADS_IE);
+        configurePad(Hardware::PADS_IE);
     }
 
     // Configure pin as input with pull-up
@@ -57,10 +56,10 @@ public:
         setFunction(5);  // FUNCSEL_SIO
 
         // Disable output
-        hardware::SIO->GPIO_OE_CLR = PIN_MASK;
+        Hardware::SIO->GPIO_OE_CLR = PIN_MASK;
 
         // Configure pad: enable input and pull-up
-        configurePad(hardware::PADS_IE | hardware::PADS_PUE);
+        configurePad(Hardware::PADS_IE | Hardware::PADS_PUE);
     }
 
     // Configure pin as input with pull-down
@@ -69,10 +68,10 @@ public:
         setFunction(5);  // FUNCSEL_SIO
 
         // Disable output
-        hardware::SIO->GPIO_OE_CLR = PIN_MASK;
+        Hardware::SIO->GPIO_OE_CLR = PIN_MASK;
 
         // Configure pad: enable input and pull-down
-        configurePad(hardware::PADS_IE | hardware::PADS_PDE);
+        configurePad(Hardware::PADS_IE | Hardware::PADS_PDE);
     }
 
     // ========================================================================
@@ -97,8 +96,8 @@ public:
         setFunction(static_cast<uint8_t>(func));
 
         // For most peripherals, enable input in pad
-        if (func != PeripheralFunction::GPIO) {
-            configurePad(hardware::PADS_IE);
+        if (func \!= PeripheralFunction::GPIO) {
+            configurePad(Hardware::PADS_IE);
         }
     }
 
@@ -108,17 +107,17 @@ public:
 
     // Set pin high
     static void set() {
-        hardware::SIO->GPIO_OUT_SET = PIN_MASK;
+        Hardware::SIO->GPIO_OUT_SET = PIN_MASK;
     }
 
     // Set pin low
     static void clear() {
-        hardware::SIO->GPIO_OUT_CLR = PIN_MASK;
+        Hardware::SIO->GPIO_OUT_CLR = PIN_MASK;
     }
 
     // Toggle pin
     static void toggle() {
-        hardware::SIO->GPIO_OUT_XOR = PIN_MASK;
+        Hardware::SIO->GPIO_OUT_XOR = PIN_MASK;
     }
 
     // Write value to pin
@@ -132,7 +131,7 @@ public:
 
     // Read pin state
     static bool read() {
-        return (hardware::SIO->GPIO_IN & PIN_MASK) != 0;
+        return (Hardware::SIO->GPIO_IN & PIN_MASK) \!= 0;
     }
 
     // ========================================================================
@@ -148,40 +147,40 @@ public:
     };
 
     static void setDriveStrength(DriveStrength strength) {
-        uint32_t pad = hardware::PADS_BANK0->GPIO[Pin];
+        uint32_t pad = Hardware::PADS_BANK0->GPIO[Pin];
         pad &= ~(3 << 4);  // Clear drive bits
         pad |= (static_cast<uint32_t>(strength) << 4);
-        hardware::PADS_BANK0->GPIO[Pin] = pad;
+        Hardware::PADS_BANK0->GPIO[Pin] = pad;
     }
 
     // Enable/disable slew rate limiting
     static void setSlewFast(bool fast) {
         if (fast) {
-            hardware::PADS_BANK0->GPIO[Pin] |= hardware::PADS_SLEWFAST;
+            Hardware::PADS_BANK0->GPIO[Pin] |= Hardware::PADS_SLEWFAST;
         } else {
-            hardware::PADS_BANK0->GPIO[Pin] &= ~hardware::PADS_SLEWFAST;
+            Hardware::PADS_BANK0->GPIO[Pin] &= ~Hardware::PADS_SLEWFAST;
         }
     }
 
     // Enable/disable Schmitt trigger
     static void setSchmitt(bool enable) {
         if (enable) {
-            hardware::PADS_BANK0->GPIO[Pin] |= hardware::PADS_SCHMITT;
+            Hardware::PADS_BANK0->GPIO[Pin] |= Hardware::PADS_SCHMITT;
         } else {
-            hardware::PADS_BANK0->GPIO[Pin] &= ~hardware::PADS_SCHMITT;
+            Hardware::PADS_BANK0->GPIO[Pin] &= ~Hardware::PADS_SCHMITT;
         }
     }
 
 private:
     // Set GPIO function via IO_BANK0
     static void setFunction(uint8_t funcsel) {
-        hardware::IO_BANK0->GPIO[Pin].CTRL = funcsel & 0x1F;
+        Hardware::IO_BANK0->GPIO[Pin].CTRL = funcsel & 0x1F;
     }
 
     // Configure pad settings
     static void configurePad(uint32_t config) {
         // Set pad configuration (input enable, pulls, drive, etc.)
-        hardware::PADS_BANK0->GPIO[Pin] = config;
+        Hardware::PADS_BANK0->GPIO[Pin] = config;
     }
 };
 

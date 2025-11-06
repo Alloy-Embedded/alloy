@@ -12,6 +12,6 @@ using namespace pins;
 
 // Use the RP2040 SIO HAL
 template<uint8_t Pin>
-using GPIOPin = SIOPin<Pin>;
+using GPIOPin = rp2040::SIOPin<hardware::SIO_Registers, Pin>;
 
 }  // namespace alloy::hal::raspberrypi::rp2040

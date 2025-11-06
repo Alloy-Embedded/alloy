@@ -14,6 +14,13 @@ from typing import Dict, List
 from cli.parsers.svd_discovery import discover_all_svds
 from cli.parsers.svd_pin_extractor import extract_mcu_info_from_svd
 
+# Import path utilities and config
+from cli.core.paths import get_mcu_output_dir, ensure_dir
+from cli.core.config import detect_family, normalize_vendor
+
+# Import progress tracking
+from cli.core.progress import get_global_tracker
+
 # Import the existing pin generation functions from same vendor folder
 from cli.vendors.st.generate_pins_from_svd import (
     generate_pins_header,
@@ -21,8 +28,7 @@ from cli.vendors.st.generate_pins_from_svd import (
     generate_hardware_header,
     extract_hardware_addresses,
     MCUInfo,
-    MCUPackageInfo,
-    OUTPUT_DIR
+    MCUPackageInfo
 )
 
 # Import pin function generator from same vendor folder
@@ -141,55 +147,47 @@ def generate_family(family_name: str, family_config: dict, svd_file: Path) -> tu
             addresses = extract_hardware_addresses(svd_file)
 
             # Create output directory
-            # New structure: hal/vendors/st/stm32f4/stm32f407vg (MCUs inside family folder)
-            family_lower = family_name.lower().replace("xx", "")
-            # Map family SVD names to consistent family folders
-            # STM32F7x2 -> stm32f7, STM32F745 -> stm32f7, STM32F407 -> stm32f4, STM32F103 -> stm32f1
-            if family_lower.startswith("stm32f0"):
-                family_folder = "stm32f0"
-            elif family_lower.startswith("stm32f1"):
-                family_folder = "stm32f1"
-            elif family_lower.startswith("stm32f2"):
-                family_folder = "stm32f2"
-            elif family_lower.startswith("stm32f3"):
-                family_folder = "stm32f3"
-            elif family_lower.startswith("stm32f4"):
-                family_folder = "stm32f4"
-            elif family_lower.startswith("stm32f7"):
-                family_folder = "stm32f7"
-            elif family_lower.startswith("stm32g0"):
-                family_folder = "stm32g0"
-            elif family_lower.startswith("stm32g4"):
-                family_folder = "stm32g4"
-            elif family_lower.startswith("stm32h7"):
-                family_folder = "stm32h7"
-            elif family_lower.startswith("stm32l0"):
-                family_folder = "stm32l0"
-            elif family_lower.startswith("stm32l1"):
-                family_folder = "stm32l1"
-            elif family_lower.startswith("stm32l4"):
-                family_folder = "stm32l4"
-            elif family_lower.startswith("stm32l5"):
-                family_folder = "stm32l5"
-            elif family_lower.startswith("stm32u5"):
-                family_folder = "stm32u5"
-            else:
-                family_folder = family_lower
+            # Use centralized family detection from config.py
+            family_folder = detect_family(variant_name, "st")
+            vendor = normalize_vendor("STMicroelectronics")
 
-            device_dir = OUTPUT_DIR / "vendors" / "st" / family_folder / variant_name.lower()
-            device_dir.mkdir(parents=True, exist_ok=True)
+            # Use centralized path management
+            device_dir = ensure_dir(get_mcu_output_dir(vendor, family_folder, variant_name.lower()))
+
+            # Get progress tracker if available
+            tracker = get_global_tracker()
+            if tracker:
+                # Register all files we'll generate for this MCU
+                expected_files = ["pins.hpp", "gpio.hpp", "hardware.hpp", "traits.hpp", "pin_functions.hpp"]
+                tracker.add_mcu_task(vendor, family_folder, variant_name.lower(), expected_files)
+                tracker.mark_mcu_generating(vendor, family_folder, variant_name.lower())
 
             # Generate pins.hpp
+            if tracker:
+                tracker.mark_file_generating(vendor, family_folder, variant_name.lower(), "pins.hpp")
             pins_content = generate_pins_header(base_mcu, package)
-            (device_dir / "pins.hpp").write_text(pins_content)
+            pins_path = device_dir / "pins.hpp"
+            pins_path.write_text(pins_content)
+            if tracker:
+                tracker.mark_file_success(vendor, family_folder, variant_name.lower(), "pins.hpp", pins_path)
 
             # Generate traits.hpp
+            if tracker:
+                tracker.mark_file_generating(vendor, family_folder, variant_name.lower(), "traits.hpp")
             traits_content = generate_traits_header(base_mcu, package)
-            (device_dir / "traits.hpp").write_text(traits_content)
+            traits_path = device_dir / "traits.hpp"
+            traits_path.write_text(traits_content)
+            if tracker:
+                tracker.mark_file_success(vendor, family_folder, variant_name.lower(), "traits.hpp", traits_path)
 
             # Generate hardware.hpp
+            if tracker:
+                tracker.mark_file_generating(vendor, family_folder, variant_name.lower(), "hardware.hpp")
             hardware_content = generate_hardware_header(base_mcu, addresses)
-            (device_dir / "hardware.hpp").write_text(hardware_content)
+            hardware_path = device_dir / "hardware.hpp"
+            hardware_path.write_text(hardware_content)
+            if tracker:
+                tracker.mark_file_success(vendor, family_folder, variant_name.lower(), "hardware.hpp", hardware_path)
 
             # Generate pin_functions.hpp
             get_pin_funcs_fn, _, family_arch = load_pin_database(family_name)
@@ -198,11 +196,16 @@ def generate_family(family_name: str, family_config: dict, svd_file: Path) -> tu
                 for pin_num in var_config['ports'][port_letter]:
                     available_pins.append(f"P{port_letter}{pin_num}")
 
+            if tracker:
+                tracker.mark_file_generating(vendor, family_folder, variant_name.lower(), "pin_functions.hpp")
             pin_funcs_content = generate_pin_functions_header(
-                variant_name, family_lower, available_pins,
+                variant_name, family_folder, available_pins,
                 get_pin_funcs_fn, family_arch
             )
-            (device_dir / "pin_functions.hpp").write_text(pin_funcs_content)
+            pin_funcs_path = device_dir / "pin_functions.hpp"
+            pin_funcs_path.write_text(pin_funcs_content)
+            if tracker:
+                tracker.mark_file_success(vendor, family_folder, variant_name.lower(), "pin_functions.hpp", pin_funcs_path)
 
             # Determine GPIO HAL path based on family architecture
             # New structure: MCUs are inside family folder, so gpio_hal.hpp is always ../gpio_hal.hpp
@@ -218,6 +221,8 @@ def generate_family(family_name: str, family_config: dict, svd_file: Path) -> tu
                 gpio_namespace = family_folder
 
             # Generate gpio.hpp (single-include)
+            if tracker:
+                tracker.mark_file_generating(vendor, family_folder, variant_name.lower(), "gpio.hpp")
             gpio_content = f"""#pragma once
 
 // ============================================================================
@@ -250,7 +255,11 @@ using GPIOPin = alloy::hal::{gpio_namespace}::GPIOPin<Hardware, Pin>;
 // Convenience namespace alias
 namespace gpio = alloy::hal::{family_folder}::{variant_name.lower()};
 """
-            (device_dir / "gpio.hpp").write_text(gpio_content)
+            gpio_path = device_dir / "gpio.hpp"
+            gpio_path.write_text(gpio_content)
+            if tracker:
+                tracker.mark_file_success(vendor, family_folder, variant_name.lower(), "gpio.hpp", gpio_path)
+                tracker.complete_mcu_generation(vendor, family_folder, variant_name.lower(), True)
 
             print(f"     ✓ Generated {package.get_gpio_pin_count()} GPIO pins")
             success_count += 1
@@ -259,6 +268,12 @@ namespace gpio = alloy::hal::{family_folder}::{variant_name.lower()};
             print(f"     ✗ Error: {e}")
             import traceback
             traceback.print_exc()
+
+            # Mark as failed in tracker
+            tracker = get_global_tracker()
+            if tracker:
+                tracker.complete_mcu_generation(vendor, family_folder, variant_name.lower(), False)
+
             fail_count += 1
 
     return success_count, fail_count
@@ -269,6 +284,11 @@ def main():
     print("🚀 STM32 Multi-Family Pin Generator")
     print("="*80)
     print("Generating pin headers for all ST microcontroller families...\n")
+
+    # Set generator ID for manifest tracking
+    tracker = get_global_tracker()
+    if tracker:
+        tracker.set_generator("st_pins")
 
     # Discover all available SVDs
     all_svds = discover_all_svds()

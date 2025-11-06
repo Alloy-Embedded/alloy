@@ -3,7 +3,7 @@
 #include <cstdint>
 #include "pins.hpp"
 
-namespace alloy::hal::stm32f765::stm32f765vi::pin_functions {
+namespace alloy::hal::stm32f7::stm32f765vi::pin_functions {
 
 // ============================================================================
 // Pin Alternate Functions for STM32F765VI
@@ -627,4 +627,4 @@ namespace usb {
     constexpr uint8_t OTG_HS_ULPI_STP                = pins::PC0;
 
 }  // namespace usb
-}  // namespace alloy::hal::stm32f765::stm32f765vi::pin_functions
+}  // namespace alloy::hal::stm32f7::stm32f765vi::pin_functions

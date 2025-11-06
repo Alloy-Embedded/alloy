@@ -3,7 +3,7 @@
 #include <cstdint>
 #include "pins.hpp"
 
-namespace alloy::hal::stm32f103::stm32f103c8::pin_functions {
+namespace alloy::hal::stm32f1::stm32f103c8::pin_functions {
 
 // ============================================================================
 // Pin Alternate Functions for STM32F103C8
@@ -270,4 +270,4 @@ struct SPISCKPinConfig {
     static constexpr PinConfig config = PinConfig::AltFunctionPushPull;
 };
 
-}  // namespace alloy::hal::stm32f103::stm32f103c8::pin_functions
+}  // namespace alloy::hal::stm32f1::stm32f103c8::pin_functions
