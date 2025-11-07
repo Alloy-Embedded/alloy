@@ -21,6 +21,11 @@ set(ALLOY_BOARD "host" CACHE STRING "Target board (host, bluepill, esp32_devkit,
 set(ALLOY_MCU "" CACHE STRING "Target MCU (set by board configuration)")
 set(ALLOY_ARCH "" CACHE STRING "Target architecture (set by board configuration)")
 
+# Platform abstraction configuration (new system)
+# ALLOY_PLATFORM is the HAL platform (same70, linux, esp32, stm32f4, etc.)
+# It will be auto-detected from ALLOY_BOARD if not explicitly set
+set(ALLOY_PLATFORM "" CACHE STRING "HAL platform (same70, linux, esp32, stm32f4, nrf52)")
+
 # Board options
 set_property(CACHE ALLOY_BOARD PROPERTY STRINGS
     "host"
@@ -72,12 +77,49 @@ if(ALLOY_BOARD MATCHES "^esp32")
     include(cmake/platform/esp32_integration.cmake)
 endif()
 
-# Load board configuration
+# Auto-detect platform from board if not explicitly set
+if(NOT ALLOY_PLATFORM)
+    if(ALLOY_BOARD STREQUAL "same70_xpld")
+        set(ALLOY_PLATFORM "same70")
+    elseif(ALLOY_BOARD STREQUAL "host")
+        set(ALLOY_PLATFORM "linux")
+    elseif(ALLOY_BOARD MATCHES "^esp32")
+        set(ALLOY_PLATFORM "esp32")
+    elseif(ALLOY_BOARD MATCHES "^stm32f4" OR ALLOY_BOARD STREQUAL "stm32f407vg")
+        set(ALLOY_PLATFORM "stm32f4")
+    elseif(ALLOY_BOARD MATCHES "^stm32f1" OR ALLOY_BOARD STREQUAL "bluepill")
+        set(ALLOY_PLATFORM "stm32f1")
+    elseif(ALLOY_BOARD MATCHES "samd21" OR ALLOY_BOARD STREQUAL "arduino_zero")
+        set(ALLOY_PLATFORM "samd21")
+    elseif(ALLOY_BOARD MATCHES "rp2040" OR ALLOY_BOARD MATCHES "rp_pico")
+        set(ALLOY_PLATFORM "rp2040")
+    else()
+        message(WARNING "Could not auto-detect ALLOY_PLATFORM from ALLOY_BOARD='${ALLOY_BOARD}'. Using 'linux' as fallback.")
+        set(ALLOY_PLATFORM "linux")
+    endif()
+    message(STATUS "Auto-detected platform: ${ALLOY_PLATFORM} (from board: ${ALLOY_BOARD})")
+endif()
+
+# Include platform selection module (new HAL abstraction system)
+# This must come before board configuration
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform_selection.cmake)
+    include(cmake/platform_selection.cmake)
+endif()
+
+# Include board selection module (new HAL abstraction system)
+# This creates board-specific type aliases and peripheral mappings
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/board_selection.cmake)
+    include(cmake/board_selection.cmake)
+endif()
+
+# Load legacy board configuration (for backwards compatibility)
+# TODO: Migrate legacy board configs to new board_selection system
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/boards/${ALLOY_BOARD}.cmake)
-    message(STATUS "Loading board: ${ALLOY_BOARD}")
+    message(STATUS "Loading legacy board config: ${ALLOY_BOARD}")
     include(cmake/boards/${ALLOY_BOARD}.cmake)
 else()
-    message(WARNING "Board '${ALLOY_BOARD}' not found, using defaults")
+    # Board config not found in legacy location, that's OK
+    # Board may use new system (boards/<board>/board.cmake)
 endif()
 
 # Validate toolchain for selected board (skip for ESP32, handled by ESP-IDF)
@@ -90,6 +132,7 @@ message(STATUS "========================================")
 message(STATUS "Alloy Framework Configuration")
 message(STATUS "========================================")
 message(STATUS "  Board       : ${ALLOY_BOARD}")
+message(STATUS "  Platform    : ${ALLOY_PLATFORM}")
 message(STATUS "  MCU         : ${ALLOY_MCU}")
 message(STATUS "  Architecture: ${ALLOY_ARCH}")
 message(STATUS "  Build Type  : ${CMAKE_BUILD_TYPE}")
@@ -99,8 +142,65 @@ message(STATUS "========================================")
 # Add subdirectories
 # add_subdirectory(src/core)
 
+# ==============================================================================
+# HAL Library (Platform Abstraction Layer)
+# ==============================================================================
+
+# Create HAL library with platform-specific sources
+# Sources are collected by platform_selection.cmake
+
+# Collect common HAL sources (platform-independent)
+file(GLOB_RECURSE ALLOY_HAL_COMMON_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/concepts/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/types.hpp
+)
+
+# Collect core sources (Result, Error, etc.)
+file(GLOB_RECURSE ALLOY_CORE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/*.hpp
+)
+
+# Create HAL library (INTERFACE for header-only, or STATIC if platform has .cpp files)
+if(ALLOY_PLATFORM_SOURCES)
+    # Platform has .cpp files - create STATIC library
+    add_library(alloy-hal STATIC
+        ${ALLOY_PLATFORM_SOURCES}
+        ${ALLOY_CORE_SOURCES}
+    )
+
+    message(STATUS "Created STATIC alloy-hal library with platform sources")
+else()
+    # Platform is header-only (templates) - create INTERFACE library
+    add_library(alloy-hal INTERFACE)
+
+    message(STATUS "Created INTERFACE alloy-hal library (header-only platform)")
+endif()
+
+# Set include directories for HAL library
+if(ALLOY_PLATFORM_SOURCES)
+    # STATIC library - use PUBLIC
+    target_include_directories(alloy-hal
+        PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/src
+            ${ALLOY_PLATFORM_DIR}
+    )
+    target_compile_features(alloy-hal PUBLIC cxx_std_20)
+else()
+    # INTERFACE library - use INTERFACE
+    target_include_directories(alloy-hal
+        INTERFACE
+            ${CMAKE_CURRENT_SOURCE_DIR}/src
+            ${ALLOY_PLATFORM_DIR}
+    )
+    target_compile_features(alloy-hal INTERFACE cxx_std_20)
+endif()
+
+# Export HAL library for use by examples and tests
+set(ALLOY_HAL_LIBRARY alloy-hal CACHE INTERNAL "Alloy HAL library target")
+
 # HAL subdirectories (conditional based on board)
-if(ALLOY_BOARD STREQUAL "host")
+if(ALLOY_BOARD STREQUAL "host" AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/host/CMakeLists.txt)
     add_subdirectory(src/hal/host)
 endif()
 
@@ -150,8 +250,9 @@ if(ALLOY_BOARD STREQUAL "same70_xpld")
 endif()
 
 if(ALLOY_BOARD STREQUAL "host")
-    add_subdirectory(examples/systick_host_test)
-    add_subdirectory(examples/rtos_host_demo)
+    # Temporarily disabled due to gpio.cpp path issues
+    # add_subdirectory(examples/systick_host_test)
+    # add_subdirectory(examples/rtos_host_demo)
 endif()
 
 # Tests

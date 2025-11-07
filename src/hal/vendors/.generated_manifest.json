@@ -1,697 +1,697 @@
 {
   "files": {
     "atmel/samd21/atsamd21e18a/gpio.hpp": {
-      "checksum": "e9648248778cc8b0a0640f5deef1df3db8c0063f0f07b653153b981ef25dfaf6",
+      "checksum": "429dd3b8cb54102beb9b319c8e99204629321c6d542d40603332626fa77e0b13",
       "generator": "samd21_pins",
       "path": "atmel/samd21/atsamd21e18a/gpio.hpp",
-      "size": 437,
-      "timestamp": "2025-11-05T22:13:36.204006"
+      "size": 6098,
+      "timestamp": "2025-11-07T08:50:30.810278"
     },
     "atmel/samd21/atsamd21e18a/hardware.hpp": {
-      "checksum": "4fb1ad928396207286d5acc8488041f584dfa8f1b2ba5e8d22ad007e296d1aef",
+      "checksum": "0d8c6eac25096295f983df84f4d46c5e9c4b6f6b25e93d700ae6acd1aaf71e11",
       "generator": "samd21_pins",
       "path": "atmel/samd21/atsamd21e18a/hardware.hpp",
-      "size": 2565,
-      "timestamp": "2025-11-05T22:13:36.202577"
+      "size": 2566,
+      "timestamp": "2025-11-07T08:50:30.810008"
     },
     "atmel/samd21/atsamd21e18a/pins.hpp": {
-      "checksum": "3f38cc01f05561898f212421926c83eeeb734e842a192a4fbc0fa4fe8d375be2",
+      "checksum": "561fa14b7872e7695e5020337e596130ccdf9db9d5fa460a2a36f3b82f663d94",
       "generator": "samd21_pins",
       "path": "atmel/samd21/atsamd21e18a/pins.hpp",
-      "size": 1182,
-      "timestamp": "2025-11-05T22:13:36.203286"
+      "size": 1183,
+      "timestamp": "2025-11-07T08:50:30.810151"
     },
     "atmel/samd21/atsamd21g18a/gpio.hpp": {
-      "checksum": "fb071421b4ee6391590f33e9180ae94671ca2dceb0aba78421a51eda04350886",
+      "checksum": "d24c51f23461e4d695b42b39580bbe2c3df81839408e27f751d68b3ee9ebb424",
       "generator": "samd21_pins",
       "path": "atmel/samd21/atsamd21g18a/gpio.hpp",
-      "size": 437,
-      "timestamp": "2025-11-05T22:13:36.201639"
+      "size": 6098,
+      "timestamp": "2025-11-07T08:50:30.809758"
     },
     "atmel/samd21/atsamd21g18a/hardware.hpp": {
-      "checksum": "df40003f7ee5ac4107dceddb4557c8799c647d866e51402909fdd190e0e6cb68",
+      "checksum": "43ff23c2eaa609698baf2c187e89a04d833201e6154be7d89b7b28f3e8a8571e",
       "generator": "samd21_pins",
       "path": "atmel/samd21/atsamd21g18a/hardware.hpp",
-      "size": 2565,
-      "timestamp": "2025-11-05T22:13:36.198948"
+      "size": 2566,
+      "timestamp": "2025-11-07T08:50:30.808681"
     },
     "atmel/samd21/atsamd21g18a/peripherals.hpp": {
       "checksum": "1c9df8c8937dfa472b3f9b77b36da56973719c2c6cbd29e24abdeca88d68528c",
       "generator": "startup",
       "path": "atmel/samd21/atsamd21g18a/peripherals.hpp",
       "size": 4008,
-      "timestamp": "2025-11-05T22:09:09.629433"
+      "timestamp": "2025-11-07T08:47:49.015156"
     },
     "atmel/samd21/atsamd21g18a/pins.hpp": {
-      "checksum": "4c5e594530ac5c5e636e07632fec0462778c1e63317d7681a4e190a269fa3ee8",
+      "checksum": "937423c4b1eaf82b61a20219056e6e7f4985578cade03fa74be4cc0184402619",
       "generator": "samd21_pins",
       "path": "atmel/samd21/atsamd21g18a/pins.hpp",
-      "size": 1704,
-      "timestamp": "2025-11-05T22:13:36.201024"
+      "size": 1705,
+      "timestamp": "2025-11-07T08:50:30.809298"
     },
     "atmel/samd21/atsamd21g18a/startup.cpp": {
       "checksum": "bd649f58218803a1ca1a8a008ca0617a0a47486aabfcf73de3d4a225dcfce9f4",
       "generator": "startup",
       "path": "atmel/samd21/atsamd21g18a/startup.cpp",
       "size": 6344,
-      "timestamp": "2025-11-05T22:09:09.628726"
+      "timestamp": "2025-11-07T08:47:49.014760"
     },
     "atmel/samd21/atsamd21j18a/gpio.hpp": {
-      "checksum": "094ddc58f4aa714b8ec66d40f1264255d3570e87203f21ca61a557da2f1a9588",
+      "checksum": "af25e0b6bfd2e8ae2916b371f245e87f75e18098526df5b8b5d587291ce17a53",
       "generator": "samd21_pins",
       "path": "atmel/samd21/atsamd21j18a/gpio.hpp",
-      "size": 437,
-      "timestamp": "2025-11-05T22:13:36.205744"
+      "size": 6098,
+      "timestamp": "2025-11-07T08:50:30.810840"
     },
     "atmel/samd21/atsamd21j18a/hardware.hpp": {
-      "checksum": "d1196144a0b5fa3e46e3e2b5af6f6bfe9cdee0580eeb0ccbbe9d5f208ac6bd99",
+      "checksum": "529b2f185a2b0dafaec18e68cbbe6eafaf490eef7f34c1a2851c92ffaffe31e1",
       "generator": "samd21_pins",
       "path": "atmel/samd21/atsamd21j18a/hardware.hpp",
-      "size": 2565,
-      "timestamp": "2025-11-05T22:13:36.204810"
+      "size": 2566,
+      "timestamp": "2025-11-07T08:50:30.810507"
     },
     "atmel/samd21/atsamd21j18a/pins.hpp": {
-      "checksum": "8170c1cc829ed1b147e08ff3c1a557f4b6f8bc13ee9f189331be51c861a4738f",
+      "checksum": "961045f37c180c9ea49c6031650a3851a9163c57580787a866576637fd734088",
       "generator": "samd21_pins",
       "path": "atmel/samd21/atsamd21j18a/pins.hpp",
-      "size": 2802,
-      "timestamp": "2025-11-05T22:13:36.205321"
+      "size": 2803,
+      "timestamp": "2025-11-07T08:50:30.810628"
     },
     "atmel/same70/atsame70j19b/gpio.hpp": {
-      "checksum": "9f396c399c12f6bc4ea418e5ef509b91b8751321d9ec5063bc259d0c281923dd",
+      "checksum": "b6c56c5e3973cd14068a576b8e5c2fab459dfcd7c9f0e163d9525569674afb96",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j19b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.267756"
+      "size": 8501,
+      "timestamp": "2025-11-07T08:50:30.921193"
     },
     "atmel/same70/atsame70j19b/hardware.hpp": {
-      "checksum": "6f41525402bee810c0670c064e193a5aa9794e16085e2a80efa2ec4a921e119e",
+      "checksum": "8b7a25882528403635e427d9dfac55547acbf62b887472218a2a4ec926e80354",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j19b/hardware.hpp",
-      "size": 6222,
-      "timestamp": "2025-11-05T22:13:36.266036"
+      "size": 1762,
+      "timestamp": "2025-11-07T08:50:30.920586"
     },
     "atmel/same70/atsame70j19b/pin_functions.hpp": {
       "checksum": "fbc983e4360239f4f2ef7e4824d2ee5b2363cd7269f69b422541de3e5c5cae10",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j19b/pin_functions.hpp",
       "size": 33453,
-      "timestamp": "2025-11-05T22:13:36.267210"
+      "timestamp": "2025-11-07T08:50:30.920991"
     },
     "atmel/same70/atsame70j19b/pins.hpp": {
-      "checksum": "6e6ee0aeaac7eb64474b796295a7f146b87a59891de1ab18fd036f58fc3325d1",
+      "checksum": "7254cf9bf2f383ed9f063f1aedd9f80cbd46f7e2e5288d36fcfae3b8eea33411",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j19b/pins.hpp",
-      "size": 3437,
-      "timestamp": "2025-11-05T22:13:36.266611"
+      "size": 3480,
+      "timestamp": "2025-11-07T08:50:30.920798"
     },
     "atmel/same70/atsame70j20b/gpio.hpp": {
-      "checksum": "ee87a2daf0b75e870fb6ac2aa1fd2f3c644e11cc3c46c324231cffb1f369edbc",
+      "checksum": "94538061b5f037754751d13c638d8ed8aae37fb9bec2fabe9273326dbd9b3dd1",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j20b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.265286"
+      "size": 8501,
+      "timestamp": "2025-11-07T08:50:30.920139"
     },
     "atmel/same70/atsame70j20b/hardware.hpp": {
-      "checksum": "cc57e83f22d484174a7650913e5d142558c57477882bd5889e1e9e58b6395630",
+      "checksum": "eb5e964ac84202a835068e05890052704cbf6fcf3893bf95ff186c2d695b2883",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j20b/hardware.hpp",
-      "size": 6223,
-      "timestamp": "2025-11-05T22:13:36.263557"
+      "size": 1763,
+      "timestamp": "2025-11-07T08:50:30.919647"
     },
     "atmel/same70/atsame70j20b/pin_functions.hpp": {
       "checksum": "1d06eeb505fb0271cbecd91ece1469b1138b9418e12ab88fdef8b42258a2e521",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j20b/pin_functions.hpp",
       "size": 33453,
-      "timestamp": "2025-11-05T22:13:36.264788"
+      "timestamp": "2025-11-07T08:50:30.919957"
     },
     "atmel/same70/atsame70j20b/pins.hpp": {
-      "checksum": "7b51e49df77687110cf5e1bf1955ecd9a8dc757505c840c0a1c989bd62ee3212",
+      "checksum": "8bf3e288161dd315bfbdff7ef4ed5c2e6f3798d92b320cd626edbc30c6c17e83",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j20b/pins.hpp",
-      "size": 3437,
-      "timestamp": "2025-11-05T22:13:36.264088"
+      "size": 3480,
+      "timestamp": "2025-11-07T08:50:30.919760"
     },
     "atmel/same70/atsame70j21b/gpio.hpp": {
-      "checksum": "8115ccf1d2759677f6f28029351b5916f771bc65b03191e0812acad77cd54b8d",
+      "checksum": "b5e87e3f91ad92b530e362d03b350e4c78babdd386c17a39061881996e193f6b",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j21b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.262658"
+      "size": 8501,
+      "timestamp": "2025-11-07T08:50:30.919367"
     },
     "atmel/same70/atsame70j21b/hardware.hpp": {
-      "checksum": "03ed177cf28b69e42fa4d395be15adf74dd85ebb9524a1a4c08acbefc74cdb2b",
+      "checksum": "53d143020364e906eebbc3ac531a552e4aa61f5691eec450f2e1910f8fb214ff",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j21b/hardware.hpp",
-      "size": 6223,
-      "timestamp": "2025-11-05T22:13:36.260142"
+      "size": 1763,
+      "timestamp": "2025-11-07T08:50:30.918846"
     },
     "atmel/same70/atsame70j21b/pin_functions.hpp": {
       "checksum": "062fe0aa0efbd83d037f2a011ddedc8ed39d124ac582caacd5b496230634160d",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j21b/pin_functions.hpp",
       "size": 33453,
-      "timestamp": "2025-11-05T22:13:36.261917"
+      "timestamp": "2025-11-07T08:50:30.919213"
     },
     "atmel/same70/atsame70j21b/pins.hpp": {
-      "checksum": "78e00210f64a205337a3f5363a58ff678db049f749fcc4d8aeeaa205521be218",
+      "checksum": "a28c70876307742f1486c21ac348b1e140dd1eb8cddd358dc252096fdc0d5ac6",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j21b/pins.hpp",
-      "size": 3437,
-      "timestamp": "2025-11-05T22:13:36.260797"
+      "size": 3480,
+      "timestamp": "2025-11-07T08:50:30.919071"
     },
     "atmel/same70/atsame70n19b/gpio.hpp": {
-      "checksum": "e0abed742bf002a153a9c31024fcbda128c46ac0ba55cffce5c823c3e80ce1d2",
+      "checksum": "9aea2bd1a82832f15f0a854d48062cf6d75bea7d4bb192ba9ab39391b9bf1665",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n19b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.242354"
+      "size": 8501,
+      "timestamp": "2025-11-07T08:50:30.915996"
     },
     "atmel/same70/atsame70n19b/hardware.hpp": {
-      "checksum": "a78a40cec85eaf94c9a292fa166ce8286db9a212ad6791cfe165cfa5a54c9471",
+      "checksum": "22b65b1793c27717700e7fc5b9c95672afd52a25b189087be6fa8bd730e8ab91",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n19b/hardware.hpp",
-      "size": 6222,
-      "timestamp": "2025-11-05T22:13:36.240279"
+      "size": 1762,
+      "timestamp": "2025-11-07T08:50:30.915395"
     },
     "atmel/same70/atsame70n19b/pin_functions.hpp": {
       "checksum": "5d17fb40bc9f8c1a98ff02868b25a6b2ce2b479e5a2240876f2a03a0d1f2a3c6",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n19b/pin_functions.hpp",
       "size": 45698,
-      "timestamp": "2025-11-05T22:13:36.241793"
+      "timestamp": "2025-11-07T08:50:30.915820"
     },
     "atmel/same70/atsame70n19b/pins.hpp": {
-      "checksum": "ccb3a0fe07bc581050228a10d71243cba8f5f271f859cf5b67fb65f68a5711ab",
+      "checksum": "9fe9178312695d0ce5b806927d2ad730b6a518258a9e53cb9bc729c8727ca5b6",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n19b/pins.hpp",
-      "size": 4493,
-      "timestamp": "2025-11-05T22:13:36.240862"
+      "size": 4548,
+      "timestamp": "2025-11-07T08:50:30.915630"
     },
     "atmel/same70/atsame70n20b/gpio.hpp": {
-      "checksum": "dd598a663ad1c76f9e67fd89f0f4d44b42a02c60d12805a21ac345f19d10dd7f",
+      "checksum": "4be823099bcf97c43125b7be09d775b15aaded87db3f2d0cc6bc2fcfca81f20f",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n20b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.238930"
+      "size": 8501,
+      "timestamp": "2025-11-07T08:50:30.914560"
     },
     "atmel/same70/atsame70n20b/hardware.hpp": {
-      "checksum": "7d66388740a126a2582d6524fdcd0c26d8c075afadff130b90fb01abedf1c6a7",
+      "checksum": "481b8b3371a9c81643e8c2e2a5005229e36b383145651345c6bb0592c920d19e",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n20b/hardware.hpp",
-      "size": 6223,
-      "timestamp": "2025-11-05T22:13:36.236531"
+      "size": 1763,
+      "timestamp": "2025-11-07T08:50:30.913792"
     },
     "atmel/same70/atsame70n20b/pin_functions.hpp": {
       "checksum": "b4e92cfbb5459cd385175ab8548b833ff525f166e6e0f5ef9f159b51e879e36f",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n20b/pin_functions.hpp",
       "size": 45698,
-      "timestamp": "2025-11-05T22:13:36.237968"
+      "timestamp": "2025-11-07T08:50:30.914339"
     },
     "atmel/same70/atsame70n20b/pins.hpp": {
-      "checksum": "83ad330718484e08d2eb20a2e4971e9010749d45d2763b4993ed1e756d0988ce",
+      "checksum": "8697f07fe5f73fa257d6885a6db29c4a6f70444dd3ca5a895840ba2f2d944a94",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n20b/pins.hpp",
-      "size": 4493,
-      "timestamp": "2025-11-05T22:13:36.237250"
+      "size": 4548,
+      "timestamp": "2025-11-07T08:50:30.914142"
     },
     "atmel/same70/atsame70n21b/gpio.hpp": {
-      "checksum": "e212a6d4c0c56486e883fe8c95e120f0f56e0643a9c1fb434d2597d55db5ab71",
+      "checksum": "56eb8150b9c7fdaac7671622e1247bddf96afd67658209cb91176fd81971be12",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n21b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.235110"
+      "size": 8501,
+      "timestamp": "2025-11-07T08:50:30.912836"
     },
     "atmel/same70/atsame70n21b/hardware.hpp": {
-      "checksum": "3b84527836ef4ca239371d448f940ff1ed9d29da66a98005dfc08d7691eb7bab",
+      "checksum": "37412ea12715ed3ae5aa2778449ae63f3dd76f98d8acc9a9c9504b814b732587",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n21b/hardware.hpp",
-      "size": 6223,
-      "timestamp": "2025-11-05T22:13:36.233549"
+      "size": 1763,
+      "timestamp": "2025-11-07T08:50:30.911653"
     },
     "atmel/same70/atsame70n21b/pin_functions.hpp": {
       "checksum": "6862bda86da2c42bd3566f6a51fd3d67f56a35a20a5247a5522d9d1b817d74dc",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n21b/pin_functions.hpp",
       "size": 45698,
-      "timestamp": "2025-11-05T22:13:36.234682"
+      "timestamp": "2025-11-07T08:50:30.912193"
     },
     "atmel/same70/atsame70n21b/pins.hpp": {
-      "checksum": "d4432e2a0021c723664056da357657ba93f5ba49d0b2b94c2698f162d0107ff6",
+      "checksum": "301e1ad85762cf5aabea169718ba2802bab328fc40bb5152ba7a5a36d696117e",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n21b/pins.hpp",
-      "size": 4493,
-      "timestamp": "2025-11-05T22:13:36.234061"
+      "size": 4548,
+      "timestamp": "2025-11-07T08:50:30.911927"
     },
     "atmel/same70/atsame70q19b/gpio.hpp": {
-      "checksum": "d4045fb90d6fa314fe774cd5eb0479a7e6e2f3dcbc32d27ed057b683d4e1180f",
+      "checksum": "766c89105611b0c7b06b7d834cad9966692741f4ee07dd0b12198d2f92d2341f",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q19b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.218277"
+      "size": 8589,
+      "timestamp": "2025-11-07T08:50:30.817374"
     },
     "atmel/same70/atsame70q19b/hardware.hpp": {
-      "checksum": "2c36f387437fb4964c64010c1b3ab614be1eac13d7c0aa95606a6ffeb564eeff",
+      "checksum": "00765568fb3013a8f81b4bbd019e482b1f90a7241021e06a03d7ddb6cea311d4",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q19b/hardware.hpp",
-      "size": 6222,
-      "timestamp": "2025-11-05T22:13:36.216496"
+      "size": 1820,
+      "timestamp": "2025-11-07T08:50:30.816521"
     },
     "atmel/same70/atsame70q19b/pin_functions.hpp": {
       "checksum": "b81c39ed2d7ce9f35cbbb5ea9f907e0bf83caeda0cf0e8480354de85097b89b1",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q19b/pin_functions.hpp",
       "size": 52955,
-      "timestamp": "2025-11-05T22:13:36.217647"
+      "timestamp": "2025-11-07T08:50:30.817183"
     },
     "atmel/same70/atsame70q19b/pins.hpp": {
-      "checksum": "699ac54bca8ba066902e10fc2c3542cc1a2bac5ddaabc7f025642f5704aebcac",
+      "checksum": "0142cbcbc2bf1cfbfb6ec14499dd3d5b6828b4019b4a634af43c2e80cd2bc280",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q19b/pins.hpp",
-      "size": 5171,
-      "timestamp": "2025-11-05T22:13:36.217026"
+      "size": 5242,
+      "timestamp": "2025-11-07T08:50:30.816918"
     },
     "atmel/same70/atsame70q20b/gpio.hpp": {
-      "checksum": "6246f40b5535abf6fdc9f80557e7cac37e7c70463dcd067587bf0c0f7f68b186",
+      "checksum": "fe83249b59f732ca3de7465607fed0ef96bfee22db601a19a678d8385bae1084",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q20b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.215144"
+      "size": 8589,
+      "timestamp": "2025-11-07T08:50:30.815319"
     },
     "atmel/same70/atsame70q20b/hardware.hpp": {
-      "checksum": "2fb881f607f0bd0b5f9b6149dc46d8515cef6c63d1b9a5894cb35a8c57acd13a",
+      "checksum": "55d6b4e230306e12a59321182be7246ec5b5bc63bc95653cfa6ac5fdf77a757b",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q20b/hardware.hpp",
-      "size": 6223,
-      "timestamp": "2025-11-05T22:13:36.213264"
+      "size": 1821,
+      "timestamp": "2025-11-07T08:50:30.814704"
     },
     "atmel/same70/atsame70q20b/pin_functions.hpp": {
       "checksum": "082b5ec757092d302660c8be1f6cf23c99b7da841c6388d033be7a605d4ef33e",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q20b/pin_functions.hpp",
       "size": 52955,
-      "timestamp": "2025-11-05T22:13:36.214491"
+      "timestamp": "2025-11-07T08:50:30.815079"
     },
     "atmel/same70/atsame70q20b/pins.hpp": {
-      "checksum": "94138206490130fb5c76266bffb561c0d1f58af0e1958eed185a3238a9cf289d",
+      "checksum": "79aec3fda2416768a71fc150d00eb9a8ae91e7a54337a64497217cd028636eea",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q20b/pins.hpp",
-      "size": 5171,
-      "timestamp": "2025-11-05T22:13:36.213903"
+      "size": 5242,
+      "timestamp": "2025-11-07T08:50:30.814860"
     },
     "atmel/same70/atsame70q21/gpio.hpp": {
-      "checksum": "0ad32f2b3be45b36cfe0a5b84703b4775451aa90790fb9b35e1f40d933a22470",
+      "checksum": "6c0385456173c321add3acddc763d576e0c570189ea00193eca02c9a1d2dd232",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q21/gpio.hpp",
-      "size": 461,
-      "timestamp": "2025-11-05T22:13:36.211698"
+      "size": 8587,
+      "timestamp": "2025-11-07T08:50:30.814067"
     },
     "atmel/same70/atsame70q21/hardware.hpp": {
-      "checksum": "fecc7d141d21dd4d33708dd662db74017047095d729eaf5e2eaa6a15ea2f31c6",
+      "checksum": "93d59513a534ee94e80b16f7fce8ad788583c38badd7a2582749b01a8f69e5d6",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q21/hardware.hpp",
-      "size": 6220,
-      "timestamp": "2025-11-05T22:13:36.210028"
+      "size": 1818,
+      "timestamp": "2025-11-07T08:50:30.813113"
     },
     "atmel/same70/atsame70q21/peripherals.hpp": {
       "checksum": "c3cbe2b4c2120a925ffd636191d3a5eb736b81b85c5b29058fd74dd38eaf5f11",
       "generator": "startup",
       "path": "atmel/same70/atsame70q21/peripherals.hpp",
       "size": 5883,
-      "timestamp": "2025-11-05T22:09:09.858957"
+      "timestamp": "2025-11-07T08:47:49.204902"
     },
     "atmel/same70/atsame70q21/pin_functions.hpp": {
       "checksum": "69fa79276f8c2be9b94d8eaa51e38507f5bd7a2efc2c2cc49e0c7f95139bc941",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q21/pin_functions.hpp",
       "size": 52952,
-      "timestamp": "2025-11-05T22:13:36.211057"
+      "timestamp": "2025-11-07T08:50:30.813832"
     },
     "atmel/same70/atsame70q21/pins.hpp": {
-      "checksum": "a09a4fff47c09115aea6f12ad1a8d5f5f692530b78ce48092fc838bfd945c890",
+      "checksum": "67184681050baafb9031dd4462a84644c7d791aef97ec475c56ac555fdf89ba3",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q21/pins.hpp",
-      "size": 5168,
-      "timestamp": "2025-11-05T22:13:36.210486"
+      "size": 5239,
+      "timestamp": "2025-11-07T08:50:30.813572"
     },
     "atmel/same70/atsame70q21/startup.cpp": {
       "checksum": "594b85abc3ee10a17a4325e7183a2aed0d960278edd55702fc8d4aadc94e6cf2",
       "generator": "startup",
       "path": "atmel/same70/atsame70q21/startup.cpp",
       "size": 11359,
-      "timestamp": "2025-11-05T22:09:09.858513"
+      "timestamp": "2025-11-07T08:47:49.204355"
     },
     "atmel/same70/atsame70q21b/gpio.hpp": {
-      "checksum": "938b237224d74fc1895ce2c9e27240cdb3f75f09f5eba522bc339744b24905b2",
+      "checksum": "5ecac13fef0f1765f8ae9c11ebb2b1101795c0e28411c52d62b497a1a6fe1806",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q21b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.209195"
+      "size": 8589,
+      "timestamp": "2025-11-07T08:50:30.812253"
     },
     "atmel/same70/atsame70q21b/hardware.hpp": {
-      "checksum": "a6fbde9ea14a576466de3dcc83b13415c16612283ad90dcd8b0e9bddb0028b8c",
+      "checksum": "b0354547503793ecac4861d18aa4c8562a484833ec7745517009ba3ca9527d7f",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q21b/hardware.hpp",
-      "size": 6223,
-      "timestamp": "2025-11-05T22:13:36.207628"
+      "size": 1821,
+      "timestamp": "2025-11-07T08:50:30.811458"
     },
     "atmel/same70/atsame70q21b/pin_functions.hpp": {
       "checksum": "7f207d0cf4a0649d642c8f03735b38691ba1deab67a411efeacb24bc74f28186",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q21b/pin_functions.hpp",
       "size": 52955,
-      "timestamp": "2025-11-05T22:13:36.208668"
+      "timestamp": "2025-11-07T08:50:30.811991"
     },
     "atmel/same70/atsame70q21b/pins.hpp": {
-      "checksum": "81505ec8dfcdd9a6773c28aa0b3b048d84cab5f2a2604a17782f86ced01a586f",
+      "checksum": "5b0b368855dd9c29adf1b117e305b7ca252536266a4118abf829370926c4881d",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q21b/pins.hpp",
-      "size": 5171,
-      "timestamp": "2025-11-05T22:13:36.208186"
+      "size": 5242,
+      "timestamp": "2025-11-07T08:50:30.811771"
     },
     "atmel/samv71/atsamv71j19b/gpio.hpp": {
-      "checksum": "5adc2036635720934e0404b1a66c1beaeb84d3a54efc700f25f51f6a5ac72bc7",
+      "checksum": "c19a939dc584583dffcc75d0a82978e698631091612c01371a657127f4554fdc",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j19b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.275061"
+      "size": 8501,
+      "timestamp": "2025-11-07T08:50:30.924258"
     },
     "atmel/samv71/atsamv71j19b/hardware.hpp": {
-      "checksum": "6e77432356b0297b9406ad89d37ee5207727c5c55240d08e7c71a41defab425b",
+      "checksum": "f35d8174083fc9832957a35630f3780be0f00b8642757541e9e1cebd6f981604",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j19b/hardware.hpp",
-      "size": 6222,
-      "timestamp": "2025-11-05T22:13:36.273689"
+      "size": 1762,
+      "timestamp": "2025-11-07T08:50:30.923401"
     },
     "atmel/samv71/atsamv71j19b/pin_functions.hpp": {
       "checksum": "0c6d1d2e04d50e1df35a12aa5711a85f09727a10e2eb5fdab1378d6d1206bc7f",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j19b/pin_functions.hpp",
       "size": 33453,
-      "timestamp": "2025-11-05T22:13:36.274675"
+      "timestamp": "2025-11-07T08:50:30.924044"
     },
     "atmel/samv71/atsamv71j19b/pins.hpp": {
-      "checksum": "32a8dbe7c0f0cedd2d33a7dec9a358439920e81e70691f09b8ce191857aeb661",
+      "checksum": "65fbb677467b6ccf33a351f980a4eeff7066196ebd0f689fff4484d17ef69c4b",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j19b/pins.hpp",
-      "size": 3437,
-      "timestamp": "2025-11-05T22:13:36.274112"
+      "size": 3480,
+      "timestamp": "2025-11-07T08:50:30.923747"
     },
     "atmel/samv71/atsamv71j20b/gpio.hpp": {
-      "checksum": "e2e9b040620f9610ef0ab3cfe9fd04d0a15ff45718a04de95d25c8f8d0b92a88",
+      "checksum": "8d2faf1d1c11845f4cf0b034dc2ccc043903ebe259d297ef2f6a97a0cfb16ced",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j20b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.272850"
+      "size": 8501,
+      "timestamp": "2025-11-07T08:50:30.923037"
     },
     "atmel/samv71/atsamv71j20b/hardware.hpp": {
-      "checksum": "f17adec5284f088c6d698dc6e21727c2f6d0f0223adc4b280e505eeac3ee5f05",
+      "checksum": "a7b1e12f73d6230839351b64213abf50d28c3487e4b1b9fcf100a618b5cec5bb",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j20b/hardware.hpp",
-      "size": 6223,
-      "timestamp": "2025-11-05T22:13:36.271435"
+      "size": 1763,
+      "timestamp": "2025-11-07T08:50:30.922572"
     },
     "atmel/samv71/atsamv71j20b/pin_functions.hpp": {
       "checksum": "9d8a961412f6ee5f4a9d2aced1200bbfe400d1f8d373c063cab1379c4e3f637c",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j20b/pin_functions.hpp",
       "size": 33453,
-      "timestamp": "2025-11-05T22:13:36.272337"
+      "timestamp": "2025-11-07T08:50:30.922858"
     },
     "atmel/samv71/atsamv71j20b/pins.hpp": {
-      "checksum": "b435cbfd64969943a40ccf8569f65b44af071324a0f704789e6f68309a5b25d6",
+      "checksum": "0cb0f1e84db0473db006a50dac6272b8218d00cded2c4ba5eafa2ab6ae1388b3",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j20b/pins.hpp",
-      "size": 3437,
-      "timestamp": "2025-11-05T22:13:36.271920"
+      "size": 3480,
+      "timestamp": "2025-11-07T08:50:30.922689"
     },
     "atmel/samv71/atsamv71j21b/gpio.hpp": {
-      "checksum": "22bf8d746856249a16373bf98925a7f88a764be482fe5fd8c1e9ccb4d850a8b1",
+      "checksum": "ba41c0121ae4273234f6dd3f632b419b0eecf8144ff6783b69e1d9c68a748a17",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j21b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.270569"
+      "size": 8501,
+      "timestamp": "2025-11-07T08:50:30.922226"
     },
     "atmel/samv71/atsamv71j21b/hardware.hpp": {
-      "checksum": "706fa8ca7ab04b8241824b7aea25a80714142ab1ef29081948bdd52357c80643",
+      "checksum": "b58c0726d7c1807d8218675da6021840229478a22220787d84e9c0ba905c9595",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j21b/hardware.hpp",
-      "size": 6223,
-      "timestamp": "2025-11-05T22:13:36.268330"
+      "size": 1763,
+      "timestamp": "2025-11-07T08:50:30.921715"
     },
     "atmel/samv71/atsamv71j21b/pin_functions.hpp": {
       "checksum": "65675c28f9f1656e9c1c44c09dc759f50e4db3b526fe618440c95eaac27fafd7",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j21b/pin_functions.hpp",
       "size": 33453,
-      "timestamp": "2025-11-05T22:13:36.269694"
+      "timestamp": "2025-11-07T08:50:30.922063"
     },
     "atmel/samv71/atsamv71j21b/pins.hpp": {
-      "checksum": "0c8b1cee8c3ab0e376028d2cc142ee4a109c7c2d53715949df502c193a7cdc93",
+      "checksum": "a4cf7bd63e0b243a0a7191e1d353931092e0b162c027257b4182501d034eb851",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j21b/pins.hpp",
-      "size": 3437,
-      "timestamp": "2025-11-05T22:13:36.268762"
+      "size": 3480,
+      "timestamp": "2025-11-07T08:50:30.921874"
     },
     "atmel/samv71/atsamv71n19b/gpio.hpp": {
-      "checksum": "443184b68fdc004ef4197c27c61179cb89363304dd94be208a93a51c13eccf81",
+      "checksum": "3c01dbda27382bc113487fae0664be1d34f611636844918b87e5d8269b519cb8",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n19b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.259337"
+      "size": 8501,
+      "timestamp": "2025-11-07T08:50:30.918562"
     },
     "atmel/samv71/atsamv71n19b/hardware.hpp": {
-      "checksum": "b39ccda601d65e1df048c32883a90193195941b8af264d88becbdc6916c2523b",
+      "checksum": "1ee2d7bce4f613f3ccc2b131c3b4ea833a009f5998dd9aedd352407b0600b823",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n19b/hardware.hpp",
-      "size": 6222,
-      "timestamp": "2025-11-05T22:13:36.257487"
+      "size": 1762,
+      "timestamp": "2025-11-07T08:50:30.918052"
     },
     "atmel/samv71/atsamv71n19b/pin_functions.hpp": {
       "checksum": "8246b2bed0ac7f1281deac2de84063d02781e09e795623335f8eb3baed5634ba",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n19b/pin_functions.hpp",
       "size": 45698,
-      "timestamp": "2025-11-05T22:13:36.258942"
+      "timestamp": "2025-11-07T08:50:30.918366"
     },
     "atmel/samv71/atsamv71n19b/pins.hpp": {
-      "checksum": "ef32a72a2a89d75c9fe812a71144fe5914ee28216be1c5353b569146498dd471",
+      "checksum": "2de29c16558bfd14ee1bbdef37c2d55a8c59b5ac57649237fab5716af2cdaf03",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n19b/pins.hpp",
-      "size": 4493,
-      "timestamp": "2025-11-05T22:13:36.258083"
+      "size": 4548,
+      "timestamp": "2025-11-07T08:50:30.918177"
     },
     "atmel/samv71/atsamv71n20b/gpio.hpp": {
-      "checksum": "05e5e4011fa1117736e8d17e542c5202441df14c0b2f512b1f3c1d4d1cf1127b",
+      "checksum": "359311927a77d63b54cd63a7d0b7dcf449fa3f62e41c34333b4aca1c54745236",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n20b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.256646"
+      "size": 8501,
+      "timestamp": "2025-11-07T08:50:30.917700"
     },
     "atmel/samv71/atsamv71n20b/hardware.hpp": {
-      "checksum": "8a62edb6c2fc0a3122f972998108129c09f4120aba3ca9c67739eb07dda0c1e7",
+      "checksum": "f876cf22d68a2b3eb8bacf005c0500bc5d66d109d52c961b3edb42fce6892ab0",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n20b/hardware.hpp",
-      "size": 6223,
-      "timestamp": "2025-11-05T22:13:36.252868"
+      "size": 1763,
+      "timestamp": "2025-11-07T08:50:30.917209"
     },
     "atmel/samv71/atsamv71n20b/pin_functions.hpp": {
       "checksum": "324111455566eef5911d4ac4d4329507308c5d4ff50e73d4ed8ce92f6a0f92cc",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n20b/pin_functions.hpp",
       "size": 45698,
-      "timestamp": "2025-11-05T22:13:36.255512"
+      "timestamp": "2025-11-07T08:50:30.917534"
     },
     "atmel/samv71/atsamv71n20b/pins.hpp": {
-      "checksum": "0b5d0bba92423e288a66a50014f6a9a6aef6da86d7eee40dc90b29add8b8d287",
+      "checksum": "9c56daa253cdaf5f49f80436c9854cfd83afb15d74759b36e7f47b4bef36ae04",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n20b/pins.hpp",
-      "size": 4493,
-      "timestamp": "2025-11-05T22:13:36.253326"
+      "size": 4548,
+      "timestamp": "2025-11-07T08:50:30.917339"
     },
     "atmel/samv71/atsamv71n21b/gpio.hpp": {
-      "checksum": "34bdb2abcbdfde21368fb154160ce0b1e475916f70ed95571ba95ef54ff35fde",
+      "checksum": "8c3dfa7242eb1b78aff8a5823a144fc8905dca5cdfc9c8255bf25c0b8008bb44",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n21b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.251901"
+      "size": 8501,
+      "timestamp": "2025-11-07T08:50:30.916897"
     },
     "atmel/samv71/atsamv71n21b/hardware.hpp": {
-      "checksum": "dab4457b0119c2d9e359024063c21ef1af155e187f71da608b30de3cb5b47d31",
+      "checksum": "37e74294118e40896bfd5d25990328724b255435cb9a5ded407f995c02a48ce2",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n21b/hardware.hpp",
-      "size": 6223,
-      "timestamp": "2025-11-05T22:13:36.243416"
+      "size": 1763,
+      "timestamp": "2025-11-07T08:50:30.916375"
     },
     "atmel/samv71/atsamv71n21b/pin_functions.hpp": {
       "checksum": "e2b309e6bd73573adabac8fa343101611f73bbb1370300d7646e11e45cce73d8",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n21b/pin_functions.hpp",
       "size": 45698,
-      "timestamp": "2025-11-05T22:13:36.245515"
+      "timestamp": "2025-11-07T08:50:30.916720"
     },
     "atmel/samv71/atsamv71n21b/pins.hpp": {
-      "checksum": "26fd925b3222b21032980c4c2867e91b0b26c863093e3508b1d19240a31dd58c",
+      "checksum": "a827f48fd37695b9313e237cdf8b8761272e4824a12411ccbe654e690d317e20",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n21b/pins.hpp",
-      "size": 4493,
-      "timestamp": "2025-11-05T22:13:36.244046"
+      "size": 4548,
+      "timestamp": "2025-11-07T08:50:30.916512"
     },
     "atmel/samv71/atsamv71q19b/gpio.hpp": {
-      "checksum": "69ca622bbceb44be662770fb13039e49c7b43539b9f81e1c6bb3cb0325b5584d",
+      "checksum": "6f38e75c08828639f89751ea33e70b417d07acc985f290daf59ca6f13f8edc57",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q19b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.232480"
+      "size": 8589,
+      "timestamp": "2025-11-07T08:50:30.911112"
     },
     "atmel/samv71/atsamv71q19b/hardware.hpp": {
-      "checksum": "658ffb60a71c9a63c35b93929f6cf19c2e2720f7600e75c1aae2dc29fa2a0b1e",
+      "checksum": "8f8f43cce26ea982389eb42c5caf6eae3a2a16042d13bb536465aed7170629ec",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q19b/hardware.hpp",
-      "size": 6222,
-      "timestamp": "2025-11-05T22:13:36.230791"
+      "size": 1820,
+      "timestamp": "2025-11-07T08:50:30.910550"
     },
     "atmel/samv71/atsamv71q19b/pin_functions.hpp": {
       "checksum": "23c68b95e60da1d5cba04331b02e3d99c256f35a59ec9fe41a21fc8833fd0bea",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q19b/pin_functions.hpp",
       "size": 52955,
-      "timestamp": "2025-11-05T22:13:36.231535"
+      "timestamp": "2025-11-07T08:50:30.910925"
     },
     "atmel/samv71/atsamv71q19b/pins.hpp": {
-      "checksum": "69b55efbba5a340dee7f84e2dcc52a74acfccd1c2c2e905a816cedf54271ce54",
+      "checksum": "448843af8863fdd2d8df843a0fd07a2a0babc7c3500d06dd6ea289a22ec8b693",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q19b/pins.hpp",
-      "size": 5171,
-      "timestamp": "2025-11-05T22:13:36.231155"
+      "size": 5242,
+      "timestamp": "2025-11-07T08:50:30.910699"
     },
     "atmel/samv71/atsamv71q20b/gpio.hpp": {
-      "checksum": "0d9001f1610746af1b7038a9cb37890b9c5303bee0dea3726e28ed80e09dba6b",
+      "checksum": "8e754f397c9cd7652ac9c78a7a7bc6b70f29b1512eec652cb25373e4e53da11e",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q20b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.229775"
+      "size": 8589,
+      "timestamp": "2025-11-07T08:50:30.910032"
     },
     "atmel/samv71/atsamv71q20b/hardware.hpp": {
-      "checksum": "29d46ec2170322ba8e4d985f1e0f386cb98fdd74bb7067b6811807007ee0b60f",
+      "checksum": "51e96925e8bbb5a5b3f2299d27ecfc0de01d162aaacd281d98863ccdf0758455",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q20b/hardware.hpp",
-      "size": 6223,
-      "timestamp": "2025-11-05T22:13:36.226798"
+      "size": 1821,
+      "timestamp": "2025-11-07T08:50:30.908898"
     },
     "atmel/samv71/atsamv71q20b/pin_functions.hpp": {
       "checksum": "6d1ff421fac30363e787e85ba58644ad3628dac5e987f7cdbaca7a0a600bd4d2",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q20b/pin_functions.hpp",
       "size": 52955,
-      "timestamp": "2025-11-05T22:13:36.228317"
+      "timestamp": "2025-11-07T08:50:30.909675"
     },
     "atmel/samv71/atsamv71q20b/pins.hpp": {
-      "checksum": "d73839d186f14e9977fa8b0ae3c19b7a1d5467863135dcb0489794abb25c8f39",
+      "checksum": "adb2c0d54bd31dfdd5c9057ac69c36db438e1ba8ca246b78308564280e2dd636",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q20b/pins.hpp",
-      "size": 5171,
-      "timestamp": "2025-11-05T22:13:36.227329"
+      "size": 5242,
+      "timestamp": "2025-11-07T08:50:30.909263"
     },
     "atmel/samv71/atsamv71q21/gpio.hpp": {
-      "checksum": "6486c50a40922b6c74a1712d2bfbb7eeefd575a175aeb7090fb8260637897596",
+      "checksum": "82a943b56e4ba4d0a1e38b0fc504f9929c1e6bd54f806a047faed1fb67b5ae99",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q21/gpio.hpp",
-      "size": 461,
-      "timestamp": "2025-11-05T22:13:36.225660"
+      "size": 8587,
+      "timestamp": "2025-11-07T08:50:30.819165"
     },
     "atmel/samv71/atsamv71q21/hardware.hpp": {
-      "checksum": "99a82657098192c16ddd357e11ae3e31bf5adb160b2154231400ab8bf8948149",
+      "checksum": "f260997322f7313ec3d71c41e970d258b5bf16af9fc999c55170c0e8a454c7ba",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q21/hardware.hpp",
-      "size": 6220,
-      "timestamp": "2025-11-05T22:13:36.223379"
+      "size": 1818,
+      "timestamp": "2025-11-07T08:50:30.818721"
     },
     "atmel/samv71/atsamv71q21/peripherals.hpp": {
       "checksum": "7f740f3b68fec5044fb9982bfaa72e8919b83cda20eb31b33cdf0905d28ca69b",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71q21/peripherals.hpp",
       "size": 5954,
-      "timestamp": "2025-11-05T22:09:09.943965"
+      "timestamp": "2025-11-07T08:47:49.261643"
     },
     "atmel/samv71/atsamv71q21/pin_functions.hpp": {
       "checksum": "cac19a6fc97f5506dad07d1b06c404c49ce891dc3156c1ccac6d1f5aca4c8f9a",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q21/pin_functions.hpp",
       "size": 52952,
-      "timestamp": "2025-11-05T22:13:36.224999"
+      "timestamp": "2025-11-07T08:50:30.819018"
     },
     "atmel/samv71/atsamv71q21/pins.hpp": {
-      "checksum": "c78a2999b236f0b3284d8cdd40acb249ec76faaee1ef592c2bdaaa888a7eaa00",
+      "checksum": "20a9146f12226779d91ea5ee56117c6142cb4b5fa638c58fc74505ec5c4f960c",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q21/pins.hpp",
-      "size": 5168,
-      "timestamp": "2025-11-05T22:13:36.224534"
+      "size": 5239,
+      "timestamp": "2025-11-07T08:50:30.818844"
     },
     "atmel/samv71/atsamv71q21/startup.cpp": {
       "checksum": "cfe54d8ae71d3921ff3c42986a0b2ae33c175a0eee143d9374f0822fd248b2d5",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71q21/startup.cpp",
       "size": 11488,
-      "timestamp": "2025-11-05T22:09:09.943382"
+      "timestamp": "2025-11-07T08:47:49.261390"
     },
     "atmel/samv71/atsamv71q21b/gpio.hpp": {
-      "checksum": "d698c8e71a4a78d9fc45fec060a1c87f5103e1dc6a3597ec55254ab3cf076fac",
+      "checksum": "3bebf8f8cf78be87940482f365e295e19705928ac9673b25a23c6d9b66da3b5e",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q21b/gpio.hpp",
-      "size": 463,
-      "timestamp": "2025-11-05T22:13:36.222152"
+      "size": 8589,
+      "timestamp": "2025-11-07T08:50:30.818341"
     },
     "atmel/samv71/atsamv71q21b/hardware.hpp": {
-      "checksum": "2ad9ce03bb8c32806f9a3660c4b7d51928c68e148a615491f61f2d2e4d217435",
+      "checksum": "e60c4b1258718d0679d5ad9e0af757be3214cf7829cc910ca242df9872773d79",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q21b/hardware.hpp",
-      "size": 6223,
-      "timestamp": "2025-11-05T22:13:36.219312"
+      "size": 1821,
+      "timestamp": "2025-11-07T08:50:30.817818"
     },
     "atmel/samv71/atsamv71q21b/pin_functions.hpp": {
       "checksum": "2d3c8d064157658bbc910468caa4fe810ba158e6c6d320b6e1da74522746f339",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q21b/pin_functions.hpp",
       "size": 52955,
-      "timestamp": "2025-11-05T22:13:36.221269"
+      "timestamp": "2025-11-07T08:50:30.818182"
     },
     "atmel/samv71/atsamv71q21b/pins.hpp": {
-      "checksum": "a584b51c3ab40afd98016ade246d14593a58b2cbcbed2bc88129af6699fae30d",
+      "checksum": "8847a381b372936e0ef54eec749faf7b5c52f3e3c09e09e2ce6a6f8afacc5a31",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q21b/pins.hpp",
-      "size": 5171,
-      "timestamp": "2025-11-05T22:13:36.220560"
+      "size": 5242,
+      "timestamp": "2025-11-07T08:50:30.817982"
     },
     "espressif/esp32/esp32/peripherals.hpp": {
       "checksum": "ff7d7681dc29cfc89a2eddec71c1d4b608627fa4ae3d53696392fd9682ddfba9",
       "generator": "startup",
       "path": "espressif/esp32/esp32/peripherals.hpp",
       "size": 5468,
-      "timestamp": "2025-11-05T22:09:09.728783"
+      "timestamp": "2025-11-07T08:47:49.088488"
     },
     "espressif/esp32/esp32/startup.cpp": {
       "checksum": "a724bdacc6889ee7feab47c8520f28cf7f8c1ed15329c78f34b6832c22bba046",
       "generator": "startup",
       "path": "espressif/esp32/esp32/startup.cpp",
       "size": 12350,
-      "timestamp": "2025-11-05T22:09:09.728192"
+      "timestamp": "2025-11-07T08:47:49.088218"
     },
     "raspberrypi/rp2040/rp2040/peripherals.hpp": {
       "checksum": "763d3293b0bc472c43c38935a1b86c3c03a234d6796a6335436c590cb08ebd07",
       "generator": "startup",
       "path": "raspberrypi/rp2040/rp2040/peripherals.hpp",
       "size": 7601,
-      "timestamp": "2025-11-05T22:09:09.779245"
+      "timestamp": "2025-11-07T08:47:49.134467"
     },
     "raspberrypi/rp2040/rp2040/startup.cpp": {
       "checksum": "61e198ceb01ba5fdc3d2fa2eedb2e292268ded887bd29b91497d1626fd9ad833",
       "generator": "startup",
       "path": "raspberrypi/rp2040/rp2040/startup.cpp",
       "size": 6743,
-      "timestamp": "2025-11-05T22:09:09.778735"
+      "timestamp": "2025-11-07T08:47:49.134178"
     },
     "st/stm32f0/stm32f030c6/gpio.hpp": {
       "checksum": "a333c55082b31cbdd659512d5b7e9e0039d3672e213bcbced1f751285d634e5e",
@@ -1013,14 +1013,14 @@
       "generator": "startup",
       "path": "st/stm32f1/stm32f103xx/peripherals.hpp",
       "size": 5076,
-      "timestamp": "2025-11-05T22:09:09.664349"
+      "timestamp": "2025-11-07T08:47:49.040928"
     },
     "st/stm32f1/stm32f103xx/startup.cpp": {
       "checksum": "26e135a0080a2907ae5e2d7a98f2c6c1a6b34590e1d296b380a7a096cd7a69df",
       "generator": "startup",
       "path": "st/stm32f1/stm32f103xx/startup.cpp",
       "size": 13261,
-      "timestamp": "2025-11-05T22:09:09.663631"
+      "timestamp": "2025-11-07T08:47:49.040630"
     },
     "st/stm32f4/stm32f401cc/gpio.hpp": {
       "checksum": "8ff5b23fb716fae216022da22bccb53d05909173d20d0668ffd8812d9082515c",
@@ -1132,14 +1132,14 @@
       "generator": "startup",
       "path": "st/stm32f4/stm32f407/peripherals.hpp",
       "size": 8110,
-      "timestamp": "2025-11-05T22:09:10.028995"
+      "timestamp": "2025-11-07T08:47:49.336104"
     },
     "st/stm32f4/stm32f407/startup.cpp": {
       "checksum": "6c0dc3c15c029d6f06c837e8ccf36219ef6c3b74913e7be7bfb15ea6fcbb9d7e",
       "generator": "startup",
       "path": "st/stm32f4/stm32f407/startup.cpp",
       "size": 17353,
-      "timestamp": "2025-11-05T22:09:10.028429"
+      "timestamp": "2025-11-07T08:47:49.335775"
     },
     "st/stm32f4/stm32f407ve/gpio.hpp": {
       "checksum": "244f7fef71e556021a3eece93a9760cd0282f7d6360e6ea46b19e58b6a07897c",
@@ -1635,11 +1635,11 @@
   "generators": {
     "samd21_pins": {
       "count": 9,
-      "last_run": "2025-11-05T22:13:36.205744"
+      "last_run": "2025-11-07T08:50:30.810840"
     },
     "same70_pins": {
       "count": 80,
-      "last_run": "2025-11-05T22:13:36.275061"
+      "last_run": "2025-11-07T08:50:30.924258"
     },
     "st_pins": {
       "count": 130,
@@ -1647,9 +1647,9 @@
     },
     "startup": {
       "count": 14,
-      "last_run": "2025-11-05T22:09:10.028995"
+      "last_run": "2025-11-07T08:47:49.336104"
     }
   },
-  "last_updated": "2025-11-05T22:13:36.276792",
+  "last_updated": "2025-11-07T08:50:30.924710",
   "version": "1.0"
 }

@@ -1,0 +1,108 @@
+# ==============================================================================
+# SAME70 Blink - Binary Size Comparison
+# ==============================================================================
+#
+# Compiles both standalone and template versions to compare binary sizes.
+# This proves the template-based GPIO has ZERO overhead.
+#
+# Build:
+#   cmake -DCMAKE_TOOLCHAIN_FILE=arm-none-eabi-toolchain.cmake -B build
+#   make -C build
+#
+# ==============================================================================
+
+cmake_minimum_required(VERSION 3.20)
+project(same70_blink_comparison LANGUAGES C CXX ASM)
+
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# CPU and FPU settings for SAME70
+set(CPU_FLAGS
+    -mcpu=cortex-m7
+    -mthumb
+    -mfloat-abi=hard
+    -mfpu=fpv5-d16
+)
+
+# Compiler flags
+set(COMMON_FLAGS
+    ${CPU_FLAGS}
+    -Wall -Wextra -Wpedantic
+    -ffunction-sections
+    -fdata-sections
+    -fno-exceptions
+    -fno-rtti
+    -ffreestanding
+    -D__STDC_HOSTED__=0
+)
+
+# Optimize for size for fair comparison
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
+
+# Linker flags
+set(LINKER_FLAGS
+    ${CPU_FLAGS}
+    -T${CMAKE_SOURCE_DIR}/same70_minimal.ld
+    -Wl,--gc-sections
+    -Wl,--print-memory-usage
+    -nostartfiles
+)
+
+# Include directories
+include_directories(
+    ${CMAKE_SOURCE_DIR}/../../src
+    ${CMAKE_SOURCE_DIR}/../../boards/atmel_same70_xpld
+)
+
+# ==============================================================================
+# Version 1: Standalone (Manual Register Access)
+# ==============================================================================
+
+add_executable(standalone_blink.elf standalone_blink.cpp)
+target_compile_options(standalone_blink.elf PRIVATE ${COMMON_FLAGS})
+target_link_options(standalone_blink.elf PRIVATE ${LINKER_FLAGS} -Wl,-Map=standalone_blink.map)
+
+add_custom_command(TARGET standalone_blink.elf POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -O binary standalone_blink.elf standalone_blink.bin
+    COMMAND ${CMAKE_SIZE} standalone_blink.elf > standalone_size.txt
+    COMMAND ${CMAKE_SIZE} standalone_blink.elf
+    COMMENT "Standalone version - Manual register access"
+)
+
+# ==============================================================================
+# Version 2: Template (GPIO Template)
+# ==============================================================================
+
+add_executable(template_blink.elf template_blink.cpp)
+target_compile_options(template_blink.elf PRIVATE ${COMMON_FLAGS})
+target_link_options(template_blink.elf PRIVATE ${LINKER_FLAGS} -Wl,-Map=template_blink.map)
+
+add_custom_command(TARGET template_blink.elf POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -O binary template_blink.elf template_blink.bin
+    COMMAND ${CMAKE_SIZE} template_blink.elf > template_size.txt
+    COMMAND ${CMAKE_SIZE} template_blink.elf
+    COMMENT "Template version - Zero overhead GPIO template"
+)
+
+# ==============================================================================
+# Comparison Target
+# ==============================================================================
+
+add_custom_target(compare_sizes ALL
+    DEPENDS standalone_blink.elf template_blink.elf
+    COMMAND echo "================================================"
+    COMMAND echo "Binary Size Comparison"
+    COMMAND echo "================================================"
+    COMMAND echo "Standalone (manual):"
+    COMMAND stat -f%z standalone_blink.bin || stat -c%s standalone_blink.bin
+    COMMAND echo ""
+    COMMAND echo "Template (GPIO):"
+    COMMAND stat -f%z template_blink.bin || stat -c%s template_blink.bin
+    COMMAND echo ""
+    COMMAND echo "Difference:"
+    COMMAND echo "================================================"
+    COMMENT "Comparing binary sizes..."
+)

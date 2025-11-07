@@ -61,6 +61,15 @@ target_compile_options(test_event PRIVATE -std=c++20)
 catch_discover_tests(test_event)
 
 # ============================================================================
+# Unit Tests (non-RTOS)
+# ============================================================================
+
+# Include unit test subdirectory
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/unit/CMakeLists.txt)
+    add_subdirectory(unit)
+endif()
+
+# ============================================================================
 # Test Suite Summary
 # ============================================================================
 
