@@ -254,12 +254,12 @@ def discover_mcus_with_pins() -> List[str]:
     Returns:
         List of MCU names that have pin functions
     """
-    from cli.core.paths import OUTPUT_DIR
+    from cli.core.config import HAL_VENDORS_DIR
 
     mcus_with_pins = []
 
     # Find all pin_functions.hpp files
-    pin_files = OUTPUT_DIR.rglob("**/pin_functions.hpp")
+    pin_files = HAL_VENDORS_DIR.rglob("**/pin_functions.hpp")
 
     for pin_file in pin_files:
         # Extract MCU name from path
