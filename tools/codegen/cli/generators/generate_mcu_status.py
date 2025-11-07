@@ -8,10 +8,15 @@ implemented GPIO support to generate a comprehensive status report.
 
 from pathlib import Path
 from typing import Dict, Set, List
-from cli.parsers.svd_discovery import discover_all_svds
 import sys
 
-REPO_ROOT = Path(__file__).parent.parent.parent.parent
+# Add codegen directory to path
+CODEGEN_DIR = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(CODEGEN_DIR))
+
+from cli.parsers.svd_discovery import discover_all_svds
+
+REPO_ROOT = CODEGEN_DIR.parent.parent
 HAL_DIR = REPO_ROOT / "src" / "hal" / "vendors"
 OUTPUT_FILE = REPO_ROOT / "MCU_STATUS.md"
 
@@ -31,7 +36,18 @@ def get_implemented_mcus() -> Dict[str, Set[str]]:
         if not vendor_dir.is_dir() or vendor_dir.name.startswith('.'):
             continue
 
+        # Normalize vendor name to match SVD vendor names
         vendor_name = vendor_dir.name.upper()
+        
+        # Map directory names to SVD vendor names
+        if vendor_name == "ST":
+            vendor_name = "STMICRO"
+        elif vendor_name == "RASPBERRYPI":
+            vendor_name = "RASPBERRYPI"
+        elif vendor_name == "ESPRESSIF":
+            vendor_name = "ESPRESSIF"
+        # ATMEL remains ATMEL
+        
         if vendor_name not in implemented:
             implemented[vendor_name] = set()
 
@@ -61,19 +77,17 @@ def organize_svds_by_family(svds: Dict) -> Dict[str, Dict[str, List]]:
     organized = {}
 
     for svd_name, svd_info in sorted(svds.items()):
-        # Extract vendor and family from SVD name
-        # Examples: STM32F103xx -> ST, STM32F1
-        #           STM32F407 -> ST, STM32F4
-
-        # Assume ST vendor for now (can be extended)
-        vendor = "ST"
-
-        # Extract family pattern
-        # STM32F103xx -> STM32F1
-        # STM32F407 -> STM32F4
-        # STM32F7x2 -> STM32F7
+        # Get vendor from SVD info
+        vendor = svd_info.vendor if hasattr(svd_info, 'vendor') and svd_info.vendor else "Unknown"
+        
+        # Normalize vendor name (vendors come from directory names in upstream/cmsis-svd-data/data/)
+        # Keep the original casing but convert to uppercase for consistency
+        vendor = vendor.upper()
+        
+        # Extract family pattern based on device name and vendor
         family = None
 
+        # STMicroelectronics families
         if svd_name.startswith("STM32F0"):
             family = "STM32F0"
         elif svd_name.startswith("STM32F1"):
@@ -106,8 +120,163 @@ def organize_svds_by_family(svds: Dict) -> Dict[str, Dict[str, List]]:
             family = "STM32WB"
         elif svd_name.startswith("STM32WL"):
             family = "STM32WL"
+        # Atmel/Microchip SAM families
+        elif svd_name.startswith("ATSAM"):
+            # ATSAMD21, ATSAME70, ATSAMV71, etc.
+            if svd_name.startswith("ATSAMD2"):
+                family = "SAMD2x"
+            elif svd_name.startswith("ATSAMD5") or svd_name.startswith("ATSAME5"):
+                family = "SAMD5x/E5x"
+            elif svd_name.startswith("ATSAME7"):
+                family = "SAME70"
+            elif svd_name.startswith("ATSAMV7"):
+                family = "SAMV71"
+            elif svd_name.startswith("ATSAMS7"):
+                family = "SAMS70"
+            elif svd_name.startswith("ATSAML"):
+                family = "SAML"
+            elif svd_name.startswith("ATSAMC"):
+                family = "SAMC"
+            else:
+                family = "SAM Other"
+        # Raspberry Pi RP2040
+        elif svd_name.startswith("RP2040") or svd_name == "rp2040":
+            family = "RP2040"
+        # ESP32 families
+        elif svd_name.startswith("ESP32"):
+            if "S2" in svd_name.upper():
+                family = "ESP32-S2"
+            elif "S3" in svd_name.upper():
+                family = "ESP32-S3"
+            elif "C3" in svd_name.upper():
+                family = "ESP32-C3"
+            elif "C6" in svd_name.upper():
+                family = "ESP32-C6"
+            elif "H2" in svd_name.upper():
+                family = "ESP32-H2"
+            else:
+                family = "ESP32"
+        # Nordic nRF families
+        elif svd_name.startswith("nRF52") or svd_name.startswith("NRF52") or svd_name.startswith("nrf52"):
+            family = "nRF52"
+        elif svd_name.startswith("nRF53") or svd_name.startswith("NRF53") or svd_name.startswith("nrf53"):
+            family = "nRF53"
+        elif svd_name.startswith("nRF51") or svd_name.startswith("NRF51") or svd_name.startswith("nrf51"):
+            family = "nRF51"
+        elif svd_name.startswith("nRF91") or svd_name.startswith("NRF91") or svd_name.startswith("nrf91"):
+            family = "nRF91"
+        # NXP LPC families
+        elif svd_name.startswith("LPC1"):
+            if svd_name.startswith("LPC11"):
+                family = "LPC11xx"
+            elif svd_name.startswith("LPC13"):
+                family = "LPC13xx"
+            elif svd_name.startswith("LPC15"):
+                family = "LPC15xx"
+            elif svd_name.startswith("LPC17"):
+                family = "LPC17xx"
+            elif svd_name.startswith("LPC18"):
+                family = "LPC18xx"
+            else:
+                family = "LPC Other"
+        elif svd_name.startswith("LPC2"):
+            family = "LPC2xxx"
+        elif svd_name.startswith("LPC4"):
+            family = "LPC4xxx"
+        elif svd_name.startswith("LPC5"):
+            family = "LPC5xxx"
+        # NXP Kinetis families
+        elif svd_name.startswith("MK"):
+            family = "Kinetis"
+        # NXP i.MX RT families
+        elif svd_name.startswith("MIMXRT"):
+            family = "i.MX RT"
+        # GigaDevice GD32 families
+        elif svd_name.startswith("GD32"):
+            if svd_name.startswith("GD32VF"):
+                family = "GD32VF (RISC-V)"
+            elif svd_name.startswith("GD32F1"):
+                family = "GD32F1xx"
+            elif svd_name.startswith("GD32F2"):
+                family = "GD32F2xx"
+            elif svd_name.startswith("GD32F3"):
+                family = "GD32F3xx"
+            elif svd_name.startswith("GD32F4"):
+                family = "GD32F4xx"
+            else:
+                family = "GD32 Other"
+        # Infineon XMC families
+        elif svd_name.startswith("XMC"):
+            if svd_name.startswith("XMC1"):
+                family = "XMC1000"
+            elif svd_name.startswith("XMC4"):
+                family = "XMC4000"
+            else:
+                family = "XMC Other"
+        # Infineon TLE families
+        elif svd_name.startswith("TLE"):
+            family = "TLE (Automotive)"
+        # Infineon IMC/IMM families
+        elif svd_name.startswith("IM"):
+            family = "IMC/IMM (Motor Control)"
+        # Renesas RA families
+        elif svd_name.startswith("RA"):
+            family = "RA Family"
+        # Renesas RZ families
+        elif svd_name.startswith("RZ"):
+            family = "RZ Family"
+        # Cypress PSoC families
+        elif svd_name.startswith("CY8C"):
+            family = "PSoC"
+        # ArteryTek AT32 families
+        elif svd_name.startswith("AT32"):
+            if svd_name.startswith("AT32F4"):
+                family = "AT32F4"
+            elif svd_name.startswith("AT32F2"):
+                family = "AT32F2"
+            elif svd_name.startswith("AT32A4"):
+                family = "AT32A4"
+            else:
+                family = "AT32 Other"
+        # Texas Instruments families
+        elif svd_name.startswith("TM4C"):
+            family = "Tiva C (TM4C)"
+        elif svd_name.startswith("MSP432"):
+            family = "MSP432"
+        elif svd_name.startswith("CC"):
+            family = "SimpleLink CC"
+        # Nuvoton families
+        elif svd_name.startswith("M"):
+            if svd_name.startswith("M0"):
+                family = "M0 Series"
+            elif svd_name.startswith("M2"):
+                family = "M2 Series"
+            elif svd_name.startswith("M4"):
+                family = "M4 Series"
+            elif svd_name.startswith("M48"):
+                family = "M480 Series"
+            else:
+                # Only set as Nuvoton family if vendor is Nuvoton
+                if vendor == "NUVOTON":
+                    family = "M Series"
+                else:
+                    family = svd_name  # Use device name as family
+        # Holtek families
+        elif svd_name.startswith("HT32"):
+            family = "HT32"
+        # Freescale/NXP MCF families
+        elif svd_name.startswith("MCF"):
+            family = "ColdFire"
+        # Default: use the device name as family if not "Other"
         else:
-            family = "Other"
+            # For unknown devices, try to extract a meaningful family name
+            # by taking the first alphabetic prefix
+            import re
+            match = re.match(r'^([A-Za-z]+\d+)', svd_name)
+            if match:
+                family = match.group(1)
+            else:
+                family = svd_name  # Use full name if can't extract prefix
 
         if vendor not in organized:
             organized[vendor] = {}
@@ -285,6 +454,66 @@ def get_common_variants_for_family(family: str) -> List[str]:
             "STM32WLE5CB", "STM32WLE5CC", "STM32WLE5J8", "STM32WLE5JB",
             "STM32WLE5JC",
         ],
+        # Atmel/Microchip SAM families
+        "SAMD2x": [
+            "ATSAMD21E15", "ATSAMD21E16", "ATSAMD21E17", "ATSAMD21E18",
+            "ATSAMD21G15", "ATSAMD21G16", "ATSAMD21G17", "ATSAMD21G18",
+            "ATSAMD21J15", "ATSAMD21J16", "ATSAMD21J17", "ATSAMD21J18",
+        ],
+        "SAMD5x/E5x": [
+            "ATSAMD51G19", "ATSAMD51J18", "ATSAMD51J19", "ATSAMD51J20",
+            "ATSAMD51N19", "ATSAMD51N20", "ATSAMD51P19", "ATSAMD51P20",
+            "ATSAME51G19", "ATSAME51J18", "ATSAME51J19", "ATSAME51J20",
+            "ATSAME51N19", "ATSAME51N20",
+        ],
+        "SAME70": [
+            "ATSAME70J19", "ATSAME70J20", "ATSAME70J21",
+            "ATSAME70N19", "ATSAME70N20", "ATSAME70N21",
+            "ATSAME70Q19", "ATSAME70Q20", "ATSAME70Q21",
+        ],
+        "SAMV71": [
+            "ATSAMV71J19", "ATSAMV71J20", "ATSAMV71J21",
+            "ATSAMV71N19", "ATSAMV71N20", "ATSAMV71N21",
+            "ATSAMV71Q19", "ATSAMV71Q20", "ATSAMV71Q21",
+        ],
+        "SAMS70": [
+            "ATSAMS70J19", "ATSAMS70J20", "ATSAMS70J21",
+            "ATSAMS70N19", "ATSAMS70N20", "ATSAMS70N21",
+            "ATSAMS70Q19", "ATSAMS70Q20", "ATSAMS70Q21",
+        ],
+        # Raspberry Pi
+        "RP2040": [
+            "RP2040",
+        ],
+        # ESP32 families
+        "ESP32": [
+            "ESP32",
+        ],
+        "ESP32-S2": [
+            "ESP32-S2",
+        ],
+        "ESP32-S3": [
+            "ESP32-S3",
+        ],
+        "ESP32-C3": [
+            "ESP32-C3",
+        ],
+        "ESP32-C6": [
+            "ESP32-C6",
+        ],
+        "ESP32-H2": [
+            "ESP32-H2",
+        ],
+        # Nordic nRF families
+        "nRF52": [
+            "nRF52805", "nRF52810", "nRF52811", "nRF52820", "nRF52832", "nRF52833", "nRF52840",
+        ],
+        "nRF53": [
+            "nRF5340",
+        ],
+        "nRF91": [
+            "nRF9160",
+        ],
     }
 
     return variants.get(family, [])
@@ -327,7 +556,38 @@ def generate_status_report():
 
         # Process each vendor
         for vendor in sorted(organized.keys()):
-            f.write(f"## {vendor} (STMicroelectronics)\n\n")
+            # Get vendor display name
+            vendor_display = vendor
+            if vendor == "STMICRO":
+                vendor_display = "STMicroelectronics"
+            elif vendor == "ATMEL":
+                vendor_display = "Atmel (Microchip)"
+            elif vendor == "RASPBERRYPI":
+                vendor_display = "Raspberry Pi"
+            elif vendor == "ESPRESSIF" or vendor == "ESPRESSIF-COMMUNITY":
+                vendor_display = "Espressif Systems"
+            elif vendor == "NORDIC":
+                vendor_display = "Nordic Semiconductor"
+            elif vendor == "NXP":
+                vendor_display = "NXP Semiconductors"
+            elif vendor == "CYPRESS":
+                vendor_display = "Cypress (Infineon)"
+            elif vendor == "INFINEON":
+                vendor_display = "Infineon Technologies"
+            elif vendor == "RENESAS":
+                vendor_display = "Renesas Electronics"
+            elif vendor == "TEXASINSTRUMENTS":
+                vendor_display = "Texas Instruments"
+            elif vendor == "NUVOTON":
+                vendor_display = "Nuvoton Technology"
+            elif vendor == "GIGADEVICE":
+                vendor_display = "GigaDevice Semiconductor"
+            elif vendor == "ARTERYTEK":
+                vendor_display = "ArteryTek"
+            elif vendor == "ALIFSEMI":
+                vendor_display = "Alif Semiconductor"
+            
+            f.write(f"## {vendor_display}\n\n")
 
             vendor_impl = implemented.get(vendor, set())
 

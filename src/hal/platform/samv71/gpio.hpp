@@ -1,6 +1,6 @@
 /**
  * @file gpio.hpp
- * @brief Template-based GPIO implementation for SAME70 (Platform Layer)
+ * @brief Template-based GPIO implementation for SAMV71 (Platform Layer)
  *
  * This file implements GPIO peripheral using templates with ZERO virtual
  * functions and ZERO runtime overhead. It automatically includes all
@@ -14,7 +14,7 @@
  * - Error handling: Uses Result<T> for robust error handling
  * - Testable: Includes test hooks for unit testing
  *
- * Auto-generated from: atsame70q21b
+ * Auto-generated from: atsamv71n19b
  * Generator: generate_platform_gpio.py
  *
  * @note Part of Alloy HAL Platform Abstraction Layer
@@ -36,25 +36,25 @@
 // ============================================================================
 
 // Register definitions from vendor
-#include "hal/vendors/atmel/same70/atsame70q21b/registers/pioa_registers.hpp"
+#include "hal/vendors/atmel/samv71/atsamv71n19b/registers/pioa_registers.hpp"
 
 // Hardware definitions (port bases, etc)
-#include "hal/vendors/atmel/same70/atsame70q21b/hardware.hpp"
+#include "hal/vendors/atmel/samv71/atsamv71n19b/hardware.hpp"
 
 // Pin definitions and functions
-#include "hal/vendors/atmel/same70/atsame70q21b/pins.hpp"
-#include "hal/vendors/atmel/same70/atsame70q21b/pin_functions.hpp"
+#include "hal/vendors/atmel/samv71/atsamv71n19b/pins.hpp"
+#include "hal/vendors/atmel/samv71/atsamv71n19b/pin_functions.hpp"
 
 // Bitfields (if available)
-// #include "hal/vendors/atmel/same70/atsame70q21b/bitfields/pioa_bitfields.hpp"
+// #include "hal/vendors/atmel/samv71/atsamv71n19b/bitfields/pioa_bitfields.hpp"
 
-namespace alloy::hal::same70 {
+namespace alloy::hal::samv71 {
 
 using namespace alloy::core;
 using namespace alloy::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::atmel::same70::atsame70q21b;
+using namespace alloy::hal::atmel::samv71::atsamv71n19b;
 
 /**
  * @brief GPIO pin modes
@@ -75,7 +75,7 @@ enum class GpioPull {
 };
 
 /**
- * @brief Template-based GPIO pin for SAME70
+ * @brief Template-based GPIO pin for SAMV71
  *
  * This class provides a template-based GPIO implementation with ZERO runtime
  * overhead. All pin masks and operations are resolved at compile-time.
@@ -268,7 +268,7 @@ public:
     /**
      * @brief Configure pull resistor
      *
-     * Note: SAME70 PIO has built-in pull-up resistors.
+     * Note: SAMV71 PIO has built-in pull-up resistors.
      * Pull-down support depends on hardware.
      *
      * @param pull Pull resistor configuration
@@ -295,7 +295,7 @@ public:
                 break;
 
             case GpioPull::Down:
-                // Pull-down not supported in SAME70 hardware
+                // Pull-down not supported in SAMV71 hardware
                 return Result<void>::error(ErrorCode::NotSupported);
         }
 
@@ -347,10 +347,6 @@ public:
 // ==============================================================================
 
 constexpr uint32_t PIOA_BASE = 0x400E0E00;
-constexpr uint32_t PIOB_BASE = 0x400E1000;
-constexpr uint32_t PIOC_BASE = 0x400E1200;
-constexpr uint32_t PIOD_BASE = 0x400E1400;
-constexpr uint32_t PIOE_BASE = 0x400E1600;
 
 // ==============================================================================
 // Common Pin Type Aliases
@@ -361,4 +357,4 @@ constexpr uint32_t PIOE_BASE = 0x400E1600;
 // using LedGreen = GpioPin<PIOC_BASE, 8>;
 // using Button0 = GpioPin<PIOA_BASE, 11>;
 
-} // namespace alloy::hal::same70
+} // namespace alloy::hal::samv71

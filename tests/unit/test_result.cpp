@@ -12,7 +12,7 @@
 #include <string>
 #include <iostream>
 
-using namespace core;
+using namespace alloy::core;
 
 // Test counter
 static int tests_run = 0;
@@ -47,29 +47,30 @@ static int tests_passed = 0;
 // =============================================================================
 
 TEST(result_ok_construction) {
-    auto result = Result<int, ErrorCode>::ok(42);
-    ASSERT(result.is_ok());
-    ASSERT(!result.is_error());
-    ASSERT(result.value() == 42);
+    auto result = Ok(42);
+    Result<int, ErrorCode> res = result;
+    ASSERT(res.is_ok());
+    ASSERT(!res.is_err());
+    ASSERT(res.unwrap() == 42);
 }
 
 TEST(result_error_construction) {
-    auto result = Result<int, ErrorCode>::error(ErrorCode::Generic);
+    auto result = Result<int, ErrorCode>(Err(ErrorCode::InvalidParameter));
     ASSERT(!result.is_ok());
-    ASSERT(result.is_error());
-    ASSERT(result.error() == ErrorCode::Generic);
+    ASSERT(result.is_err());
+    ASSERT(result.error() == ErrorCode::InvalidParameter);
 }
 
 TEST(result_void_ok) {
-    auto result = Result<void, ErrorCode>::ok();
+    auto result = Result<void, ErrorCode>(Ok());
     ASSERT(result.is_ok());
-    ASSERT(!result.is_error());
+    ASSERT(!result.is_err());
 }
 
 TEST(result_void_error) {
-    auto result = Result<void, ErrorCode>::error(ErrorCode::Timeout);
+    auto result = Result<void, ErrorCode>(Err(ErrorCode::Timeout));
     ASSERT(!result.is_ok());
-    ASSERT(result.is_error());
+    ASSERT(result.is_err());
     ASSERT(result.error() == ErrorCode::Timeout);
 }
 
@@ -78,21 +79,21 @@ TEST(result_void_error) {
 // =============================================================================
 
 TEST(result_value_access) {
-    auto result = Result<int, ErrorCode>::ok(123);
-    ASSERT(result.value() == 123);
+    auto result = Result<int, ErrorCode>(Ok(123));
+    ASSERT(result.unwrap() == 123);
 }
 
 TEST(result_value_or) {
-    auto ok_result = Result<int, ErrorCode>::ok(42);
-    ASSERT(ok_result.value_or(999) == 42);
+    auto ok_result = Result<int, ErrorCode>(Ok(42));
+    ASSERT(ok_result.unwrap_or(999) == 42);
 
-    auto err_result = Result<int, ErrorCode>::error(ErrorCode::Generic);
-    ASSERT(err_result.value_or(999) == 999);
+    auto err_result = Result<int, ErrorCode>(Err(ErrorCode::InvalidParameter));
+    ASSERT(err_result.unwrap_or(999) == 999);
 }
 
 TEST(result_error_access) {
-    auto result = Result<int, ErrorCode>::error(ErrorCode::Hardware);
-    ASSERT(result.error() == ErrorCode::Hardware);
+    auto result = Result<int, ErrorCode>(Err(ErrorCode::HardwareErrorError));
+    ASSERT(result.error() == ErrorCode::HardwareErrorError);
 }
 
 // =============================================================================
@@ -100,18 +101,18 @@ TEST(result_error_access) {
 // =============================================================================
 
 TEST(result_move_construction) {
-    auto result1 = Result<std::string, ErrorCode>::ok("hello");
+    auto result1 = Result<std::string, ErrorCode>(Ok("hello"));
     auto result2 = std::move(result1);
     ASSERT(result2.is_ok());
-    ASSERT(result2.value() == "hello");
+    ASSERT(result2.unwrap() == "hello");
 }
 
 TEST(result_move_assignment) {
-    auto result1 = Result<std::string, ErrorCode>::ok("world");
-    Result<std::string, ErrorCode> result2 = Result<std::string, ErrorCode>::error(ErrorCode::Generic);
+    auto result1 = Result<std::string, ErrorCode>(Ok("world"));
+    Result<std::string, ErrorCode> result2 = Result<std::string, ErrorCode>(Err(ErrorCode::InvalidParameter));
     result2 = std::move(result1);
     ASSERT(result2.is_ok());
-    ASSERT(result2.value() == "world");
+    ASSERT(result2.unwrap() == "world");
 }
 
 // =============================================================================
@@ -119,62 +120,62 @@ TEST(result_move_assignment) {
 // =============================================================================
 
 TEST(result_map_ok) {
-    auto result = Result<int, ErrorCode>::ok(5);
+    auto result = Result<int, ErrorCode>(Ok(5));
     auto mapped = result.map([](int x) { return x * 2; });
     ASSERT(mapped.is_ok());
-    ASSERT(mapped.value() == 10);
+    ASSERT(mapped.unwrap() == 10);
 }
 
 TEST(result_map_error) {
-    auto result = Result<int, ErrorCode>::error(ErrorCode::Generic);
+    auto result = Result<int, ErrorCode>(Err(ErrorCode::InvalidParameter));
     auto mapped = result.map([](int x) { return x * 2; });
-    ASSERT(mapped.is_error());
-    ASSERT(mapped.error() == ErrorCode::Generic);
+    ASSERT(mapped.is_err());
+    ASSERT(mapped.error() == ErrorCode::InvalidParameter);
 }
 
 TEST(result_and_then_ok) {
-    auto result = Result<int, ErrorCode>::ok(5);
+    auto result = Result<int, ErrorCode>(Ok(5));
     auto chained = result.and_then([](int x) {
-        return Result<int, ErrorCode>::ok(x * 3);
+        return Result<int, ErrorCode>(Ok(x * 3));
     });
     ASSERT(chained.is_ok());
-    ASSERT(chained.value() == 15);
+    ASSERT(chained.unwrap() == 15);
 }
 
 TEST(result_and_then_error) {
-    auto result = Result<int, ErrorCode>::error(ErrorCode::Timeout);
+    auto result = Result<int, ErrorCode>(Err(ErrorCode::Timeout));
     auto chained = result.and_then([](int x) {
-        return Result<int, ErrorCode>::ok(x * 3);
+        return Result<int, ErrorCode>(Ok(x * 3));
     });
-    ASSERT(chained.is_error());
+    ASSERT(chained.is_err());
     ASSERT(chained.error() == ErrorCode::Timeout);
 }
 
 TEST(result_and_then_chain_error) {
-    auto result = Result<int, ErrorCode>::ok(5);
+    auto result = Result<int, ErrorCode>(Ok(5));
     auto chained = result.and_then([](int x) {
-        return Result<int, ErrorCode>::error(ErrorCode::Hardware);
+        return Result<int, ErrorCode>(Err(ErrorCode::HardwareError));
     });
-    ASSERT(chained.is_error());
-    ASSERT(chained.error() == ErrorCode::Hardware);
+    ASSERT(chained.is_err());
+    ASSERT(chained.error() == ErrorCode::HardwareError);
 }
 
 TEST(result_or_else_ok) {
-    auto result = Result<int, ErrorCode>::ok(42);
+    auto result = Result<int, ErrorCode>(Ok(42));
     auto recovered = result.or_else([](ErrorCode) {
-        return Result<int, ErrorCode>::ok(999);
+        return Result<int, ErrorCode>(Ok(999));
     });
     ASSERT(recovered.is_ok());
-    ASSERT(recovered.value() == 42);
+    ASSERT(recovered.unwrap() == 42);
 }
 
 TEST(result_or_else_error) {
-    auto result = Result<int, ErrorCode>::error(ErrorCode::Generic);
+    auto result = Result<int, ErrorCode>(Err(ErrorCode::InvalidParameter));
     auto recovered = result.or_else([](ErrorCode err) {
-        return Result<int, ErrorCode>::ok(999);
+        return Result<int, ErrorCode>(Ok(999));
     });
     ASSERT(recovered.is_ok());
-    ASSERT(recovered.value() == 999);
+    ASSERT(recovered.unwrap() == 999);
 }
 
 // =============================================================================
@@ -182,25 +183,25 @@ TEST(result_or_else_error) {
 // =============================================================================
 
 TEST(result_complex_chain) {
-    auto result = Result<int, ErrorCode>::ok(10)
+    auto result = Result<int, ErrorCode>(Ok(10))
         .map([](int x) { return x + 5; })
-        .and_then([](int x) { return Result<int, ErrorCode>::ok(x * 2); })
+        .and_then([](int x) { return Result<int, ErrorCode>(Ok(x * 2)); })
         .map([](int x) { return x - 10; });
 
     ASSERT(result.is_ok());
-    ASSERT(result.value() == 20);  // (10 + 5) * 2 - 10 = 20
+    ASSERT(result.unwrap() == 20);  // (10 + 5) * 2 - 10 = 20
 }
 
 TEST(result_chain_with_error) {
-    auto result = Result<int, ErrorCode>::ok(10)
+    auto result = Result<int, ErrorCode>(Ok(10))
         .map([](int x) { return x + 5; })
         .and_then([](int x) {
-            return Result<int, ErrorCode>::error(ErrorCode::Communication);
+            return Result<int, ErrorCode>(Err(ErrorCode::Timeout));
         })
         .map([](int x) { return x - 10; });  // This shouldn't execute
 
-    ASSERT(result.is_error());
-    ASSERT(result.error() == ErrorCode::Communication);
+    ASSERT(result.is_err());
+    ASSERT(result.error() == ErrorCode::Timeout);
 }
 
 // =============================================================================
@@ -209,9 +210,9 @@ TEST(result_chain_with_error) {
 
 TEST(result_with_pointer) {
     int value = 42;
-    auto result = Result<int*, ErrorCode>::ok(&value);
+    auto result = Result<int*, ErrorCode>(Ok(&value));
     ASSERT(result.is_ok());
-    ASSERT(*result.value() == 42);
+    ASSERT(*result.unwrap() == 42);
 }
 
 TEST(result_with_struct) {
@@ -221,10 +222,10 @@ TEST(result_with_struct) {
     };
 
     TestStruct ts{123, "test"};
-    auto result = Result<TestStruct, ErrorCode>::ok(ts);
+    auto result = Result<TestStruct, ErrorCode>(Ok(ts));
     ASSERT(result.is_ok());
-    ASSERT(result.value().x == 123);
-    ASSERT(result.value().s == "test");
+    ASSERT(result.unwrap().x == 123);
+    ASSERT(result.unwrap().s == "test");
 }
 
 // =============================================================================

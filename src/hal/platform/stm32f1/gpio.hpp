@@ -1,6 +1,6 @@
 /**
  * @file gpio.hpp
- * @brief Template-based GPIO implementation for SAME70 (Platform Layer)
+ * @brief Template-based GPIO implementation for STM32F1 (Platform Layer)
  *
  * This file implements GPIO peripheral using templates with ZERO virtual
  * functions and ZERO runtime overhead. It automatically includes all
@@ -14,7 +14,7 @@
  * - Error handling: Uses Result<T> for robust error handling
  * - Testable: Includes test hooks for unit testing
  *
- * Auto-generated from: atsame70q21b
+ * Auto-generated from: stm32f103xx
  * Generator: generate_platform_gpio.py
  *
  * @note Part of Alloy HAL Platform Abstraction Layer
@@ -36,25 +36,21 @@
 // ============================================================================
 
 // Register definitions from vendor
-#include "hal/vendors/atmel/same70/atsame70q21b/registers/pioa_registers.hpp"
+#include "hal/vendors/st/stm32f1/stm32f103xx/registers/gpioa_registers.hpp"
 
-// Hardware definitions (port bases, etc)
-#include "hal/vendors/atmel/same70/atsame70q21b/hardware.hpp"
+// Hardware definitions (if available)
+// #include "hal/vendors/st/stm32f1/stm32f103xx/hardware.hpp"
 
-// Pin definitions and functions
-#include "hal/vendors/atmel/same70/atsame70q21b/pins.hpp"
-#include "hal/vendors/atmel/same70/atsame70q21b/pin_functions.hpp"
+// Pin definitions (if available)
+// #include "hal/vendors/st/stm32f1/stm32f103xx/pins.hpp"
 
-// Bitfields (if available)
-// #include "hal/vendors/atmel/same70/atsame70q21b/bitfields/pioa_bitfields.hpp"
-
-namespace alloy::hal::same70 {
+namespace alloy::hal::stm32f1 {
 
 using namespace alloy::core;
 using namespace alloy::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::atmel::same70::atsame70q21b;
+using namespace alloy::hal::st::stm32f1::stm32f103xx;
 
 /**
  * @brief GPIO pin modes
@@ -62,32 +58,44 @@ using namespace alloy::hal::atmel::same70::atsame70q21b;
 enum class GpioMode {
     Input,           ///< Input mode
     Output,          ///< Output mode (push-pull)
-    OutputOpenDrain  ///< Output mode with open-drain
+    OutputOpenDrain, ///< Output mode with open-drain
+    Alternate,       ///< Alternate function mode
+    Analog           ///< Analog mode
 };
 
 /**
  * @brief GPIO pull resistor configuration
  */
 enum class GpioPull {
-    None,      ///< No pull resistor
+    None,      ///< No pull resistor (floating)
     Up,        ///< Pull-up resistor enabled
-    Down       ///< Pull-down resistor enabled (if supported)
+    Down       ///< Pull-down resistor enabled
 };
 
 /**
- * @brief Template-based GPIO pin for SAME70
+ * @brief GPIO output speed
+ */
+enum class GpioSpeed {
+    Low,       ///< Low speed
+    Medium,    ///< Medium speed
+    High,      ///< High speed (fast)
+    VeryHigh   ///< Very high speed
+};
+
+/**
+ * @brief Template-based GPIO pin for STM32F1
  *
  * This class provides a template-based GPIO implementation with ZERO runtime
  * overhead. All pin masks and operations are resolved at compile-time.
  *
  * Template Parameters:
- * - PORT_BASE: PIO port base address (compile-time constant)
- * - PIN_NUM: Pin number within port (0-31)
+ * - PORT_BASE: GPIO port base address (compile-time constant)
+ * - PIN_NUM: Pin number within port (0-15)
  *
  * Example usage:
  * @code
- * // Define LED pin (PIOC pin 8)
- * using LedGreen = GpioPin<PIOC_BASE, 8>;
+ * // Define LED pin (GPIOC pin 13)
+ * using LedGreen = GpioPin<GPIOC_BASE, 13>;
  *
  * // Use it
  * auto led = LedGreen{};
@@ -99,8 +107,8 @@ enum class GpioPull {
  * }
  * @endcode
  *
- * @tparam PORT_BASE PIO port base address
- * @tparam PIN_NUM Pin number (0-31)
+ * @tparam PORT_BASE GPIO port base address
+ * @tparam PIN_NUM Pin number (0-15)
  */
 template <uint32_t PORT_BASE, uint8_t PIN_NUM>
 class GpioPin {
@@ -109,29 +117,30 @@ public:
     static constexpr uint32_t port_base = PORT_BASE;
     static constexpr uint8_t pin_number = PIN_NUM;
     static constexpr uint32_t pin_mask = (1u << PIN_NUM);
+    static constexpr uint8_t pin_pos = PIN_NUM;
 
     // Validate pin number at compile-time
-    static_assert(PIN_NUM < 32, "Pin number must be 0-31");
+    static_assert(PIN_NUM < 16, "STM32 GPIO pin number must be 0-15");
 
     /**
-     * @brief Get PIO port registers
+     * @brief Get GPIO port registers
      *
-     * Returns pointer to PIO registers. Uses conditional compilation
+     * Returns pointer to GPIO registers. Uses conditional compilation
      * for test hook injection.
      */
-    static inline volatile pioa::PIOA_Registers* get_port() {
+    static inline volatile gpioa::GPIOA_Registers* get_port() {
 #ifdef ALLOY_GPIO_MOCK_PORT
         // In tests, use the mock port pointer
         return ALLOY_GPIO_MOCK_PORT();
 #else
-        return reinterpret_cast<volatile pioa::PIOA_Registers*>(PORT_BASE);
+        return reinterpret_cast<volatile gpioa::GPIOA_Registers*>(PORT_BASE);
 #endif
     }
 
     /**
      * @brief Set GPIO pin mode
      *
-     * Configures pin as input or output with optional open-drain.
+     * Configures pin as input, output, alternate function, or analog.
      *
      * @param mode Desired pin mode
      * @return Result<void> Ok() if successful
@@ -139,45 +148,51 @@ public:
     Result<void> setMode(GpioMode mode) {
         auto* port = get_port();
 
-        // Enable PIO control (disable peripheral function)
-        port->PER = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_PER
-        ALLOY_GPIO_TEST_HOOK_PER();
-#endif
+        // Clear mode bits for this pin (2 bits per pin)
+        uint32_t moder = port->MODER;
+        moder &= ~(0x3u << (pin_pos * 2));
 
+        // Set new mode
         switch (mode) {
             case GpioMode::Input:
-                // Configure as input
-                port->ODR = pin_mask;  // Disable output
-#ifdef ALLOY_GPIO_TEST_HOOK_ODR
-                ALLOY_GPIO_TEST_HOOK_ODR();
-#endif
+                // 00: Input mode
                 break;
 
             case GpioMode::Output:
-                // Configure as output (push-pull)
-                port->OER = pin_mask;   // Enable output
-#ifdef ALLOY_GPIO_TEST_HOOK_OER
-                ALLOY_GPIO_TEST_HOOK_OER();
-#endif
-                port->MDDR = pin_mask;  // Disable multi-driver (open-drain)
-#ifdef ALLOY_GPIO_TEST_HOOK_MDDR
-                ALLOY_GPIO_TEST_HOOK_MDDR();
+                // 01: General purpose output mode
+                moder |= (0x1u << (pin_pos * 2));
+                // Set to push-pull by default
+                port->OTYPER &= ~pin_mask;
+#ifdef ALLOY_GPIO_TEST_HOOK_OTYPER
+                ALLOY_GPIO_TEST_HOOK_OTYPER();
 #endif
                 break;
 
             case GpioMode::OutputOpenDrain:
-                // Configure as output with open-drain
-                port->OER = pin_mask;   // Enable output
-#ifdef ALLOY_GPIO_TEST_HOOK_OER
-                ALLOY_GPIO_TEST_HOOK_OER();
-#endif
-                port->MDER = pin_mask;  // Enable multi-driver (open-drain)
-#ifdef ALLOY_GPIO_TEST_HOOK_MDER
-                ALLOY_GPIO_TEST_HOOK_MDER();
+                // 01: General purpose output mode
+                moder |= (0x1u << (pin_pos * 2));
+                // Set to open-drain
+                port->OTYPER |= pin_mask;
+#ifdef ALLOY_GPIO_TEST_HOOK_OTYPER
+                ALLOY_GPIO_TEST_HOOK_OTYPER();
 #endif
                 break;
+
+            case GpioMode::Alternate:
+                // 10: Alternate function mode
+                moder |= (0x2u << (pin_pos * 2));
+                break;
+
+            case GpioMode::Analog:
+                // 11: Analog mode
+                moder |= (0x3u << (pin_pos * 2));
+                break;
         }
+
+        port->MODER = moder;
+#ifdef ALLOY_GPIO_TEST_HOOK_MODER
+        ALLOY_GPIO_TEST_HOOK_MODER();
+#endif
 
         return Result<void>::ok();
     }
@@ -185,16 +200,16 @@ public:
     /**
      * @brief Set pin HIGH (output = 1)
      *
-     * Single instruction: writes pin mask to SODR register.
-     * Only affects this specific pin.
+     * Single instruction: writes pin mask to BSRR register.
+     * Only affects this specific pin atomically.
      *
      * @return Result<void> Always Ok()
      */
     Result<void> set() {
         auto* port = get_port();
-        port->SODR = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_SODR
-        ALLOY_GPIO_TEST_HOOK_SODR();
+        port->BSRR = pin_mask;  // Set bit (lower 16 bits)
+#ifdef ALLOY_GPIO_TEST_HOOK_BSRR
+        ALLOY_GPIO_TEST_HOOK_BSRR();
 #endif
         return Result<void>::ok();
     }
@@ -202,16 +217,16 @@ public:
     /**
      * @brief Set pin LOW (output = 0)
      *
-     * Single instruction: writes pin mask to CODR register.
-     * Only affects this specific pin.
+     * Single instruction: writes pin mask to BSRR register (upper 16 bits).
+     * Only affects this specific pin atomically.
      *
      * @return Result<void> Always Ok()
      */
     Result<void> clear() {
         auto* port = get_port();
-        port->CODR = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_CODR
-        ALLOY_GPIO_TEST_HOOK_CODR();
+        port->BSRR = (pin_mask << 16);  // Reset bit (upper 16 bits)
+#ifdef ALLOY_GPIO_TEST_HOOK_BSRR
+        ALLOY_GPIO_TEST_HOOK_BSRR();
 #endif
         return Result<void>::ok();
     }
@@ -226,13 +241,13 @@ public:
     Result<void> toggle() {
         auto* port = get_port();
 
-        // Read current output data status
-        if (port->ODSR & pin_mask) {
+        // Read current output data register
+        if (port->ODR & pin_mask) {
             // Pin is HIGH, set it LOW
-            port->CODR = pin_mask;
+            port->BSRR = (pin_mask << 16);
         } else {
             // Pin is LOW, set it HIGH
-            port->SODR = pin_mask;
+            port->BSRR = pin_mask;
         }
 
         return Result<void>::ok();
@@ -255,78 +270,76 @@ public:
     /**
      * @brief Read pin input value
      *
-     * Reads the actual pin state from PDSR register.
+     * Reads the actual pin state from IDR register.
      *
      * @return Result<bool> Pin state (true = HIGH, false = LOW)
      */
     Result<bool> read() const {
         auto* port = get_port();
-        bool value = (port->PDSR & pin_mask) != 0;
+        bool value = (port->IDR & pin_mask) != 0;
         return Result<bool>::ok(value);
     }
 
     /**
      * @brief Configure pull resistor
      *
-     * Note: SAME70 PIO has built-in pull-up resistors.
-     * Pull-down support depends on hardware.
+     * STM32 GPIO supports both pull-up and pull-down.
      *
      * @param pull Pull resistor configuration
-     * @return Result<void> Ok() if successful, Err() if not supported
+     * @return Result<void> Ok() if successful
      */
     Result<void> setPull(GpioPull pull) {
         auto* port = get_port();
 
+        // Clear pull bits for this pin (2 bits per pin)
+        uint32_t pupdr = port->PUPDR;
+        pupdr &= ~(0x3u << (pin_pos * 2));
+
         switch (pull) {
             case GpioPull::None:
-                // Disable pull-up
-                port->PUDR = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_PUDR
-                ALLOY_GPIO_TEST_HOOK_PUDR();
-#endif
+                // 00: No pull-up, pull-down
                 break;
 
             case GpioPull::Up:
-                // Enable pull-up
-                port->PUER = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_PUER
-                ALLOY_GPIO_TEST_HOOK_PUER();
-#endif
+                // 01: Pull-up
+                pupdr |= (0x1u << (pin_pos * 2));
                 break;
 
             case GpioPull::Down:
-                // Pull-down not supported in SAME70 hardware
-                return Result<void>::error(ErrorCode::NotSupported);
+                // 10: Pull-down
+                pupdr |= (0x2u << (pin_pos * 2));
+                break;
         }
 
+        port->PUPDR = pupdr;
+#ifdef ALLOY_GPIO_TEST_HOOK_PUPDR
+        ALLOY_GPIO_TEST_HOOK_PUPDR();
+#endif
+
         return Result<void>::ok();
     }
 
     /**
-     * @brief Enable input glitch filter
+     * @brief Set output speed
      *
+     * @param speed Desired output speed
      * @return Result<void> Always Ok()
      */
-    Result<void> enableFilter() {
+    Result<void> setSpeed(GpioSpeed speed) {
         auto* port = get_port();
-        port->IFER = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_IFER
-        ALLOY_GPIO_TEST_HOOK_IFER();
-#endif
-        return Result<void>::ok();
-    }
 
-    /**
-     * @brief Disable input glitch filter
-     *
-     * @return Result<void> Always Ok()
-     */
-    Result<void> disableFilter() {
-        auto* port = get_port();
-        port->IFDR = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_IFDR
-        ALLOY_GPIO_TEST_HOOK_IFDR();
+        // Clear speed bits for this pin (2 bits per pin)
+        uint32_t ospeedr = port->OSPEEDR;
+        ospeedr &= ~(0x3u << (pin_pos * 2));
+
+        uint8_t speed_val = static_cast<uint8_t>(speed);
+        ospeedr |= (speed_val << (pin_pos * 2));
+
+        port->OSPEEDR = ospeedr;
+#ifdef ALLOY_GPIO_TEST_HOOK_OSPEEDR
+        ALLOY_GPIO_TEST_HOOK_OSPEEDR();
 #endif
+
         return Result<void>::ok();
     }
 
@@ -337,7 +350,9 @@ public:
      */
     Result<bool> isOutput() const {
         auto* port = get_port();
-        bool is_output = (port->OSR & pin_mask) != 0;
+        uint32_t mode = (port->MODER >> (pin_pos * 2)) & 0x3;
+        // Mode 01 = output
+        bool is_output = (mode == 0x1);
         return Result<bool>::ok(is_output);
     }
 };
@@ -346,11 +361,7 @@ public:
 // Port Base Address Constants
 // ==============================================================================
 
-constexpr uint32_t PIOA_BASE = 0x400E0E00;
-constexpr uint32_t PIOB_BASE = 0x400E1000;
-constexpr uint32_t PIOC_BASE = 0x400E1200;
-constexpr uint32_t PIOD_BASE = 0x400E1400;
-constexpr uint32_t PIOE_BASE = 0x400E1600;
+constexpr uint32_t GPIOA_BASE = 0x40010800;
 
 // ==============================================================================
 // Common Pin Type Aliases
@@ -358,7 +369,7 @@ constexpr uint32_t PIOE_BASE = 0x400E1600;
 
 // Board-specific pin definitions should be in board.hpp
 // Example:
-// using LedGreen = GpioPin<PIOC_BASE, 8>;
-// using Button0 = GpioPin<PIOA_BASE, 11>;
+// using LedGreen = GpioPin<GPIOC_BASE, 13>;
+// using Button0 = GpioPin<GPIOA_BASE, 0>;
 
-} // namespace alloy::hal::same70
+} // namespace alloy::hal::stm32f1
