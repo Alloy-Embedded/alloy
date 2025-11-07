@@ -13,7 +13,7 @@ Key improvements over previous version:
 
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 # Add parent to path
 CODEGEN_DIR = Path(__file__).parent.parent.parent
@@ -330,9 +330,36 @@ def generate_for_device(svd_path: Path, tracker=None) -> bool:
     return success
 
 
+def discover_mcus_with_pins() -> List[str]:
+    """
+    Discover MCUs that have pin_functions.hpp generated.
+
+    Returns:
+        List of MCU names that have pin functions
+    """
+    from cli.core.paths import OUTPUT_DIR
+
+    mcus_with_pins = []
+
+    # Find all pin_functions.hpp files
+    pin_files = OUTPUT_DIR.rglob("**/pin_functions.hpp")
+
+    for pin_file in pin_files:
+        # Extract MCU name from path
+        # Path structure: src/hal/vendors/{vendor}/{family}/{mcu}/pin_functions.hpp
+        mcu_name = pin_file.parent.name
+        if mcu_name not in mcus_with_pins:
+            mcus_with_pins.append(mcu_name)
+
+    return sorted(mcus_with_pins)
+
+
 def generate_for_board_mcus(verbose: bool = False, tracker=None) -> int:
     """
-    Generate startup and peripheral files for all board MCUs.
+    Generate startup and peripheral files for all MCUs with pin functions.
+
+    This ensures startup.cpp and register_map.hpp are generated for every
+    MCU that has pin_functions.hpp, not just board MCUs.
 
     Args:
         verbose: Enable verbose output
@@ -341,27 +368,42 @@ def generate_for_board_mcus(verbose: bool = False, tracker=None) -> int:
     Returns:
         Exit code (0 for success)
     """
-    print_header("Generating Startup Code for Board MCUs")
+    print_header("Generating Startup Code for MCUs with Pin Functions")
 
     # Set generator ID for manifest tracking
     if tracker:
         tracker.set_generator("startup")
 
+    # Discover MCUs that have pin functions
+    mcus_with_pins = discover_mcus_with_pins()
+
+    if not mcus_with_pins:
+        print_error("No MCUs with pin_functions.hpp found!")
+        print_info("Run pin generation first: python3 codegen.py generate --pins")
+        return 1
+
+    print_info(f"Found {len(mcus_with_pins)} MCU(s) with pin functions:")
+    if verbose:
+        for mcu in mcus_with_pins:
+            print_info(f"  • {mcu}")
+
     # Optimization: Instead of parsing ALL SVD files, use the discovery system
     # which caches SVD locations and names
     from cli.parsers.svd_discovery import discover_all_svds
 
-    print_info(f"Discovering SVD files for {len(BOARD_MCUS)} board MCUs...")
+    print_info(f"Discovering SVD files...")
     all_svds = discover_all_svds()
 
-    # Find SVD files for board MCUs by matching names
+    # Find SVD files for MCUs with pins by matching names
     matching_files = []
-    for board_mcu in BOARD_MCUS:
+    for mcu_name in mcus_with_pins:
         # Try common SVD naming patterns
-        mcu_normalized = normalize_name(board_mcu)
+        mcu_upper = mcu_name.upper()
+        mcu_normalized = normalize_name(mcu_name)
         possible_names = [
-            board_mcu,
-            f"{board_mcu}xx",
+            mcu_name,
+            mcu_upper,
+            f"{mcu_upper}xx",
             mcu_normalized,
             f"{mcu_normalized}xx",
         ]
@@ -371,14 +413,16 @@ def generate_for_board_mcus(verbose: bool = False, tracker=None) -> int:
             if possible_name in all_svds:
                 matching_files.append(all_svds[possible_name].file_path)
                 if verbose:
-                    print_info(f"  ✓ {board_mcu} → {all_svds[possible_name].file_path.name}")
+                    print_info(f"  ✓ {mcu_name} → {all_svds[possible_name].file_path.name}")
                 found = True
                 break
 
-        if not found and verbose:
-            print_info(f"  ✗ {board_mcu} (no SVD found)")
+        if not found:
+            if verbose:
+                print_info(f"  ✗ {mcu_name} (no SVD found)")
+            logger.warning(f"No SVD found for MCU with pins: {mcu_name}")
 
-    print_info(f"Found SVD files for {len(matching_files)}/{len(BOARD_MCUS)} board MCU(s)")
+    print_info(f"Found SVD files for {len(matching_files)}/{len(mcus_with_pins)} MCU(s)")
 
     if not matching_files:
         print_error("No board MCUs found!")

@@ -23,6 +23,11 @@ add_test(NAME ResultTypeTest COMMAND test_result)
 
 # Add more tests here as needed
 
+# HAL unit tests (platform-specific)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/hal/same70/CMakeLists.txt)
+    add_subdirectory(hal/same70)
+endif()
+
 # Custom target to run all tests
 add_custom_target(run_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
