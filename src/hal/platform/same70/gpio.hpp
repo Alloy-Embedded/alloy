@@ -14,7 +14,7 @@
  * - Error handling: Uses Result<T> for robust error handling
  * - Testable: Includes test hooks for unit testing
  *
- * Auto-generated from: atsame70q21b
+ * Auto-generated from: atsame70q19b
  * Generator: generate_platform_gpio.py
  *
  * @note Part of Alloy HAL Platform Abstraction Layer
@@ -35,44 +35,32 @@
 // Vendor-Specific Includes (Auto-Generated)
 // ============================================================================
 
-// Register definitions from vendor
-#include "hal/vendors/atmel/same70/atsame70q21b/registers/pioa_registers.hpp"
+// Register definitions from vendor (family-level)
+#include "hal/vendors/atmel/same70/registers/pioa_registers.hpp"
 
-// Hardware definitions (port bases, etc)
-#include "hal/vendors/atmel/same70/atsame70q21b/hardware.hpp"
+// Bitfields (family-level, if available)
+// #include "hal/vendors/atmel/same70/bitfields/pioa_bitfields.hpp"
 
-// Pin definitions and functions
-#include "hal/vendors/atmel/same70/atsame70q21b/pins.hpp"
-#include "hal/vendors/atmel/same70/atsame70q21b/pin_functions.hpp"
+// Hardware definitions (MCU-specific - port bases, etc)
+// Note: Board files should include hardware.hpp from specific MCU if needed
+// #include "hal/vendors/atmel/same70/atsame70q19b/hardware.hpp"
 
-// Bitfields (if available)
-// #include "hal/vendors/atmel/same70/atsame70q21b/bitfields/pioa_bitfields.hpp"
+// Pin definitions and functions (MCU-specific)
+// Note: These should be included by board files as they're MCU-specific
+// Example: #include "hal/vendors/atmel/same70/stm32f407vg/pins.hpp"
 
 namespace alloy::hal::same70 {
 
 using namespace alloy::core;
 using namespace alloy::hal;
 
-// Import vendor-specific register types
-using namespace alloy::hal::atmel::same70::atsame70q21b;
+// Import vendor-specific register types (now from family-level namespace)
+using namespace alloy::hal::atmel::same70;
 
-/**
- * @brief GPIO pin modes
- */
-enum class GpioMode {
-    Input,           ///< Input mode
-    Output,          ///< Output mode (push-pull)
-    OutputOpenDrain  ///< Output mode with open-drain
-};
-
-/**
- * @brief GPIO pull resistor configuration
- */
-enum class GpioPull {
-    None,      ///< No pull resistor
-    Up,        ///< Pull-up resistor enabled
-    Down       ///< Pull-down resistor enabled (if supported)
-};
+// Note: GPIO configuration uses common HAL types from hal/types.hpp:
+// - PinDirection (Input, Output)
+// - PinPull (None, PullUp, PullDown)
+// - PinDrive (PushPull, OpenDrain)
 
 /**
  * @brief Template-based GPIO pin for SAME70
@@ -129,14 +117,15 @@ public:
     }
 
     /**
-     * @brief Set GPIO pin mode
+     * @brief Set GPIO pin direction
      *
-     * Configures pin as input or output with optional open-drain.
+     * Configures pin as input or output.
+     * Uses common HAL type PinDirection from hal/types.hpp.
      *
-     * @param mode Desired pin mode
+     * @param direction Pin direction (Input or Output)
      * @return Result<void> Ok() if successful
      */
-    Result<void> setMode(GpioMode mode) {
+    Result<void> setDirection(PinDirection direction) {
         auto* port = get_port();
 
         // Enable PIO control (disable peripheral function)
@@ -145,38 +134,47 @@ public:
         ALLOY_GPIO_TEST_HOOK_PER();
 #endif
 
-        switch (mode) {
-            case GpioMode::Input:
-                // Configure as input
-                port->ODR = pin_mask;  // Disable output
+        if (direction == PinDirection::Input) {
+            // Configure as input
+            port->ODR = pin_mask;  // Disable output
 #ifdef ALLOY_GPIO_TEST_HOOK_ODR
-                ALLOY_GPIO_TEST_HOOK_ODR();
+            ALLOY_GPIO_TEST_HOOK_ODR();
 #endif
-                break;
-
-            case GpioMode::Output:
-                // Configure as output (push-pull)
-                port->OER = pin_mask;   // Enable output
+        } else {
+            // Configure as output
+            port->OER = pin_mask;   // Enable output
 #ifdef ALLOY_GPIO_TEST_HOOK_OER
-                ALLOY_GPIO_TEST_HOOK_OER();
+            ALLOY_GPIO_TEST_HOOK_OER();
 #endif
-                port->MDDR = pin_mask;  // Disable multi-driver (open-drain)
-#ifdef ALLOY_GPIO_TEST_HOOK_MDDR
-                ALLOY_GPIO_TEST_HOOK_MDDR();
-#endif
-                break;
+        }
 
-            case GpioMode::OutputOpenDrain:
-                // Configure as output with open-drain
-                port->OER = pin_mask;   // Enable output
-#ifdef ALLOY_GPIO_TEST_HOOK_OER
-                ALLOY_GPIO_TEST_HOOK_OER();
-#endif
-                port->MDER = pin_mask;  // Enable multi-driver (open-drain)
+        return Result<void>::ok();
+    }
+
+    /**
+     * @brief Set GPIO pin drive mode
+     *
+     * Configures output drive mode (push-pull or open-drain).
+     * Uses common HAL type PinDrive from hal/types.hpp.
+     *
+     * @param drive Drive mode (PushPull or OpenDrain)
+     * @return Result<void> Ok() if successful
+     */
+    Result<void> setDrive(PinDrive drive) {
+        auto* port = get_port();
+
+        if (drive == PinDrive::OpenDrain) {
+            // Enable multi-driver (open-drain)
+            port->MDER = pin_mask;
 #ifdef ALLOY_GPIO_TEST_HOOK_MDER
-                ALLOY_GPIO_TEST_HOOK_MDER();
+            ALLOY_GPIO_TEST_HOOK_MDER();
 #endif
-                break;
+        } else {
+            // Disable multi-driver (push-pull)
+            port->MDDR = pin_mask;
+#ifdef ALLOY_GPIO_TEST_HOOK_MDDR
+            ALLOY_GPIO_TEST_HOOK_MDDR();
+#endif
         }
 
         return Result<void>::ok();
@@ -271,14 +269,19 @@ public:
      * Note: SAME70 PIO has built-in pull-up resistors.
      * Pull-down support depends on hardware.
      *
+     * Uses common HAL type PinPull from hal/types.hpp.
+     *
      * @param pull Pull resistor configuration
      * @return Result<void> Ok() if successful, Err() if not supported
+     *
+     * @note SAME70 only supports pull-up, not pull-down.
+     *       PullDown will return ErrorCode::NotSupported.
      */
-    Result<void> setPull(GpioPull pull) {
+    Result<void> setPull(PinPull pull) {
         auto* port = get_port();
 
         switch (pull) {
-            case GpioPull::None:
+            case PinPull::None:
                 // Disable pull-up
                 port->PUDR = pin_mask;
 #ifdef ALLOY_GPIO_TEST_HOOK_PUDR
@@ -286,7 +289,7 @@ public:
 #endif
                 break;
 
-            case GpioPull::Up:
+            case PinPull::PullUp:
                 // Enable pull-up
                 port->PUER = pin_mask;
 #ifdef ALLOY_GPIO_TEST_HOOK_PUER
@@ -294,7 +297,7 @@ public:
 #endif
                 break;
 
-            case GpioPull::Down:
+            case PinPull::PullDown:
                 // Pull-down not supported in SAME70 hardware
                 return Result<void>::error(ErrorCode::NotSupported);
         }
@@ -347,10 +350,6 @@ public:
 // ==============================================================================
 
 constexpr uint32_t PIOA_BASE = 0x400E0E00;
-constexpr uint32_t PIOB_BASE = 0x400E1000;
-constexpr uint32_t PIOC_BASE = 0x400E1200;
-constexpr uint32_t PIOD_BASE = 0x400E1400;
-constexpr uint32_t PIOE_BASE = 0x400E1600;
 
 // ==============================================================================
 // Common Pin Type Aliases

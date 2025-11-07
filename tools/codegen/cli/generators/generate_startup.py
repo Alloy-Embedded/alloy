@@ -395,29 +395,18 @@ def generate_for_board_mcus(verbose: bool = False, tracker=None) -> int:
     all_svds = discover_all_svds()
 
     # Find SVD files for MCUs with pins by matching names
+    from cli.parsers.svd_discovery import find_svd_for_mcu
+
     matching_files = []
     for mcu_name in mcus_with_pins:
-        # Try common SVD naming patterns
-        mcu_upper = mcu_name.upper()
-        mcu_normalized = normalize_name(mcu_name)
-        possible_names = [
-            mcu_name,
-            mcu_upper,
-            f"{mcu_upper}xx",
-            mcu_normalized,
-            f"{mcu_normalized}xx",
-        ]
+        # Use smart matching helper
+        svd_file = find_svd_for_mcu(mcu_name, all_svds)
 
-        found = False
-        for possible_name in possible_names:
-            if possible_name in all_svds:
-                matching_files.append(all_svds[possible_name].file_path)
-                if verbose:
-                    print_info(f"  ✓ {mcu_name} → {all_svds[possible_name].file_path.name}")
-                found = True
-                break
-
-        if not found:
+        if svd_file:
+            matching_files.append(svd_file.file_path)
+            if verbose:
+                print_info(f"  ✓ {mcu_name} → {svd_file.file_path.name}")
+        else:
             if verbose:
                 print_info(f"  ✗ {mcu_name} (no SVD found)")
             logger.warning(f"No SVD found for MCU with pins: {mcu_name}")

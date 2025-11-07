@@ -28,6 +28,22 @@
 #include <sys/ioctl.h>  // ioctl()
 #include <cstring>      // memset
 
+// macOS compatibility (doesn't have CRTSCTS in termios.h)
+#ifndef CRTSCTS
+#define CRTSCTS 0  // Hardware flow control not available on macOS via POSIX API
+#endif
+
+// macOS uses numeric baudrate values directly
+#ifndef B57600
+#define B57600 57600
+#endif
+#ifndef B115200
+#define B115200 115200
+#endif
+#ifndef B230400
+#define B230400 230400
+#endif
+
 namespace alloy::hal::linux {
 
 // Import types from core and hal namespaces

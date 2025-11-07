@@ -287,6 +287,32 @@ public:
     // Error access methods
 
     /**
+     * @brief Get the error value (alias for unwrap_err)
+     * @return Reference to the contained error
+     * @note Calls abort() if result is Ok. Use only when you're certain result is Err.
+     */
+    E& err() & {
+        if (is_ok_) {
+            std::abort();
+        }
+        return storage_.error;
+    }
+
+    const E& err() const & {
+        if (is_ok_) {
+            std::abort();
+        }
+        return storage_.error;
+    }
+
+    E&& err() && {
+        if (is_ok_) {
+            std::abort();
+        }
+        return std::move(storage_.error);
+    }
+
+    /**
      * @brief Unwrap the error, aborting if Ok
      * @return Reference to the contained error
      */
@@ -331,7 +357,7 @@ public:
         if (is_ok_) {
             return Ok(fn(storage_.value));
         } else {
-            return Err(storage_.error);
+            return Result<U, E>(Err(E(storage_.error)));
         }
     }
 
@@ -341,7 +367,7 @@ public:
         if (is_ok_) {
             return Ok(fn(std::move(storage_.value)));
         } else {
-            return Err(std::move(storage_.error));
+            return Result<U, E>(Err(std::move(storage_.error)));
         }
     }
 
@@ -363,45 +389,56 @@ public:
      */
     template<typename F>
     auto and_then(F&& fn) const & -> decltype(fn(std::declval<T>())) {
+        using ResultType = decltype(fn(std::declval<T>()));
         if (is_ok_) {
             return fn(storage_.value);
         } else {
-            return Err(storage_.error);
+            return ResultType(Err(E(storage_.error)));
         }
     }
 
     template<typename F>
     auto and_then(F&& fn) && -> decltype(fn(std::declval<T>())) {
+        using ResultType = decltype(fn(std::declval<T>()));
         if (is_ok_) {
             return fn(std::move(storage_.value));
         } else {
-            return Err(std::move(storage_.error));
+            return ResultType(Err(std::move(storage_.error)));
         }
     }
 
     /**
-     * @brief Map the error if Err
-     * @tparam F Function type E -> F
-     * @param fn Function to apply to the error
-     * @return Result<T, F> with original value or mapped error
+     * @brief Recover from error by applying a function
+     * @tparam F Function type E -> Result<T, F>
+     * @param fn Function to apply to the error, must return Result<T, F>
+     * @return Result<T, F> from function or original value
+     *
+     * Example:
+     * @code
+     * Result<int, Error> r = Err(Error::timeout());
+     * auto r2 = r.or_else([](Error e) {
+     *     // Try to recover from error
+     *     return Ok(default_value);
+     * });
+     * @endcode
      */
     template<typename F>
-    auto or_else(F&& fn) const & -> Result<T, decltype(fn(std::declval<E>()))> {
-        using F_type = decltype(fn(std::declval<E>()));
+    auto or_else(F&& fn) const & -> decltype(fn(std::declval<E>())) {
+        using ResultType = decltype(fn(std::declval<E>()));
         if (is_ok_) {
-            return Ok(storage_.value);
+            return ResultType(Ok(T(storage_.value)));
         } else {
-            return Err(fn(storage_.error));
+            return fn(storage_.error);
         }
     }
 
     template<typename F>
-    auto or_else(F&& fn) && -> Result<T, decltype(fn(std::declval<E>()))> {
-        using F_type = decltype(fn(std::declval<E>()));
+    auto or_else(F&& fn) && -> decltype(fn(std::declval<E>())) {
+        using ResultType = decltype(fn(std::declval<E>()));
         if (is_ok_) {
-            return Ok(std::move(storage_.value));
+            return ResultType(Ok(std::move(storage_.value)));
         } else {
-            return Err(fn(std::move(storage_.error)));
+            return fn(std::move(storage_.error));
         }
     }
 
@@ -448,7 +485,7 @@ public:
 
     // Constructors
     Result(const detail::OkTag<void>&) : is_ok_(true), error_() {}
-    Result(const detail::ErrTag<E>& err) : is_ok_(false), error_(err.value) {}
+    Result(const detail::ErrTag<E>& err) : is_ok_(false), error_(err.error) {}
 
     // No copy/move as we're keeping it simple for void type
     Result(const Result&) = default;
@@ -473,7 +510,27 @@ public:
     }
 
     /**
-     * @brief Get the error value
+     * @brief Get the error value (short alias)
+     * @return Reference to the error
+     * @pre is_err() must be true
+     */
+    [[nodiscard]] const E& err() const & {
+        assert(!is_ok_ && "Cannot access err() on success Result");
+        return error_;
+    }
+
+    /**
+     * @brief Get the error value (move, short alias)
+     * @return Error value
+     * @pre is_err() must be true
+     */
+    [[nodiscard]] E&& err() && {
+        assert(!is_ok_ && "Cannot access err() on success Result");
+        return static_cast<E&&>(error_);
+    }
+
+    /**
+     * @brief Get the error value (legacy alias for err)
      * @return Reference to the error
      * @pre is_err() must be true
      */
@@ -483,7 +540,7 @@ public:
     }
 
     /**
-     * @brief Get the error value (move)
+     * @brief Get the error value (move, legacy alias)
      * @return Error value
      * @pre is_err() must be true
      */

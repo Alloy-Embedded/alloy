@@ -35,26 +35,27 @@
 // Vendor-Specific Includes (Auto-Generated)
 // ============================================================================
 
-// Register definitions from vendor
-#include "hal/vendors/atmel/samv71/atsamv71n19b/registers/pioa_registers.hpp"
+// Register definitions from vendor (family-level)
+#include "hal/vendors/atmel/samv71/registers/pioa_registers.hpp"
 
-// Hardware definitions (port bases, etc)
-#include "hal/vendors/atmel/samv71/atsamv71n19b/hardware.hpp"
+// Bitfields (family-level, if available)
+// #include "hal/vendors/atmel/samv71/bitfields/pioa_bitfields.hpp"
 
-// Pin definitions and functions
-#include "hal/vendors/atmel/samv71/atsamv71n19b/pins.hpp"
-#include "hal/vendors/atmel/samv71/atsamv71n19b/pin_functions.hpp"
+// Hardware definitions (MCU-specific - port bases, etc)
+// Note: Board files should include hardware.hpp from specific MCU if needed
+// #include "hal/vendors/atmel/samv71/atsamv71n19b/hardware.hpp"
 
-// Bitfields (if available)
-// #include "hal/vendors/atmel/samv71/atsamv71n19b/bitfields/pioa_bitfields.hpp"
+// Pin definitions and functions (MCU-specific)
+// Note: These should be included by board files as they're MCU-specific
+// Example: #include "hal/vendors/atmel/samv71/stm32f407vg/pins.hpp"
 
 namespace alloy::hal::samv71 {
 
 using namespace alloy::core;
 using namespace alloy::hal;
 
-// Import vendor-specific register types
-using namespace alloy::hal::atmel::samv71::atsamv71n19b;
+// Import vendor-specific register types (now from family-level namespace)
+using namespace alloy::hal::atmel::samv71;
 
 /**
  * @brief GPIO pin modes

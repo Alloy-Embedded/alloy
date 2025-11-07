@@ -26,13 +26,19 @@ from cli.core.progress import get_global_tracker
 
 def get_generated_peripheral_files(output_dir: Path) -> tuple[List[str], List[str]]:
     """
-    Scan output directory for generated peripheral files.
+    Scan family directory for generated peripheral files.
+
+    With family-level architecture, registers and bitfields are stored at
+    the family level, not the MCU level. This function looks for them in
+    the parent directory (family level).
 
     Returns:
         Tuple of (register_files, bitfield_files) lists with peripheral names
     """
-    registers_dir = output_dir / "registers"
-    bitfields_dir = output_dir / "bitfields"
+    # Look for registers/bitfields at family level (parent directory)
+    family_dir = output_dir.parent
+    registers_dir = family_dir / "registers"
+    bitfields_dir = family_dir / "bitfields"
 
     register_files = []
     bitfield_files = []
@@ -109,24 +115,24 @@ def generate_register_map_header(device: SVDDevice, output_dir: Path) -> str:
     if has_bitfield_utils:
         content += '#include "bitfield_utils.hpp"\n\n'
 
-    # Include all peripheral registers
+    # Include all peripheral registers (at family level)
     if register_files:
         content += "// ============================================================================\n"
-        content += "// Peripheral Register Structures\n"
+        content += "// Peripheral Register Structures (Family Level)\n"
         content += "// ============================================================================\n\n"
 
         for periph in register_files:
-            content += f'#include "registers/{periph}_registers.hpp"\n'
+            content += f'#include "../registers/{periph}_registers.hpp"\n'
         content += "\n"
 
-    # Include all peripheral bitfields
+    # Include all peripheral bitfields (at family level)
     if bitfield_files:
         content += "// ============================================================================\n"
-        content += "// Peripheral Bit Field Definitions\n"
+        content += "// Peripheral Bit Field Definitions (Family Level)\n"
         content += "// ============================================================================\n\n"
 
         for periph in bitfield_files:
-            content += f'#include "bitfields/{periph}_bitfields.hpp"\n'
+            content += f'#include "../bitfields/{periph}_bitfields.hpp"\n'
         content += "\n"
 
     # Include enumerations
@@ -310,29 +316,18 @@ def generate_for_board_mcus(verbose: bool = False, tracker=None) -> int:
     all_svds = discover_all_svds()
 
     # Find SVD files for MCUs with pins by matching names
+    from cli.parsers.svd_discovery import find_svd_for_mcu
+
     matching_files = []
     for mcu_name in mcus_with_pins:
-        # Try common SVD naming patterns
-        mcu_upper = mcu_name.upper()
-        mcu_normalized = normalize_name(mcu_name)
-        possible_names = [
-            mcu_name,
-            mcu_upper,
-            f"{mcu_upper}xx",
-            mcu_normalized,
-            f"{mcu_normalized}xx",
-        ]
+        # Use smart matching helper
+        svd_file = find_svd_for_mcu(mcu_name, all_svds)
 
-        found = False
-        for possible_name in possible_names:
-            if possible_name in all_svds:
-                matching_files.append(all_svds[possible_name].file_path)
-                if verbose:
-                    print_info(f"  ✓ {mcu_name} → {all_svds[possible_name].file_path.name}")
-                found = True
-                break
-
-        if not found:
+        if svd_file:
+            matching_files.append(svd_file.file_path)
+            if verbose:
+                print_info(f"  ✓ {mcu_name} → {svd_file.file_path.name}")
+        else:
             if verbose:
                 print_info(f"  ✗ {mcu_name} (no SVD found)")
             logger.warning(f"No SVD found for MCU with pins: {mcu_name}")

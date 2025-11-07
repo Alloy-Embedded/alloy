@@ -14,7 +14,7 @@
  * - Error handling: Uses Result<T> for robust error handling
  * - Testable: Includes test hooks for unit testing
  *
- * Auto-generated from: stm32f103xx
+ * Auto-generated from: stm32f103re
  * Generator: generate_platform_gpio.py
  *
  * @note Part of Alloy HAL Platform Abstraction Layer
@@ -35,22 +35,27 @@
 // Vendor-Specific Includes (Auto-Generated)
 // ============================================================================
 
-// Register definitions from vendor
-#include "hal/vendors/st/stm32f1/stm32f103xx/registers/gpioa_registers.hpp"
+// Register definitions from vendor (family-level)
+#include "hal/vendors/st/stm32f1/registers/gpioa_registers.hpp"
 
-// Hardware definitions (if available)
-// #include "hal/vendors/st/stm32f1/stm32f103xx/hardware.hpp"
+// Bitfields (family-level, if available)
+// #include "hal/vendors/st/stm32f1/bitfields/gpioa_bitfields.hpp"
 
-// Pin definitions (if available)
-// #include "hal/vendors/st/stm32f1/stm32f103xx/pins.hpp"
+// Hardware definitions (MCU-specific - if available)
+// Note: Board files should include hardware.hpp from specific MCU if needed
+// #include "hal/vendors/st/stm32f1/{mcu}/hardware.hpp"
+
+// Pin definitions (MCU-specific - if available)
+// Note: These should be included by board files as they're MCU-specific
+// Example: #include "hal/vendors/st/stm32f1/stm32f407vg/pins.hpp"
 
 namespace alloy::hal::stm32f1 {
 
 using namespace alloy::core;
 using namespace alloy::hal;
 
-// Import vendor-specific register types
-using namespace alloy::hal::st::stm32f1::stm32f103xx;
+// Import vendor-specific register types (now from family-level namespace)
+using namespace alloy::hal::st::stm32f1;
 
 /**
  * @brief GPIO pin modes

@@ -40,8 +40,13 @@ class TestPeripheralFileScanning(unittest.TestCase):
     def test_scan_register_files(self):
         """Test scanning for register files"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
-            registers_dir = output_dir / "registers"
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
+
+            # Registers are at family level (parent of MCU)
+            registers_dir = family_dir / "registers"
             registers_dir.mkdir()
 
             # Create dummy register files
@@ -49,7 +54,7 @@ class TestPeripheralFileScanning(unittest.TestCase):
             (registers_dir / "gpio_registers.hpp").touch()
             (registers_dir / "usart_registers.hpp").touch()
 
-            register_files, bitfield_files = get_generated_peripheral_files(output_dir)
+            register_files, bitfield_files = get_generated_peripheral_files(mcu_dir)
 
             self.assertEqual(len(register_files), 3)
             self.assertIn("rcc", register_files)
@@ -59,15 +64,20 @@ class TestPeripheralFileScanning(unittest.TestCase):
     def test_scan_bitfield_files(self):
         """Test scanning for bitfield files"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
-            bitfields_dir = output_dir / "bitfields"
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
+
+            # Bitfields are at family level (parent of MCU)
+            bitfields_dir = family_dir / "bitfields"
             bitfields_dir.mkdir()
 
             # Create dummy bitfield files
             (bitfields_dir / "rcc_bitfields.hpp").touch()
             (bitfields_dir / "spi_bitfields.hpp").touch()
 
-            register_files, bitfield_files = get_generated_peripheral_files(output_dir)
+            register_files, bitfield_files = get_generated_peripheral_files(mcu_dir)
 
             self.assertEqual(len(bitfield_files), 2)
             self.assertIn("rcc", bitfield_files)
@@ -76,19 +86,23 @@ class TestPeripheralFileScanning(unittest.TestCase):
     def test_scan_both_registers_and_bitfields(self):
         """Test scanning for both register and bitfield files"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
 
-            registers_dir = output_dir / "registers"
+            # Registers and bitfields are at family level (parent of MCU)
+            registers_dir = family_dir / "registers"
             registers_dir.mkdir()
             (registers_dir / "rcc_registers.hpp").touch()
             (registers_dir / "gpio_registers.hpp").touch()
 
-            bitfields_dir = output_dir / "bitfields"
+            bitfields_dir = family_dir / "bitfields"
             bitfields_dir.mkdir()
             (bitfields_dir / "rcc_bitfields.hpp").touch()
             (bitfields_dir / "gpio_bitfields.hpp").touch()
 
-            register_files, bitfield_files = get_generated_peripheral_files(output_dir)
+            register_files, bitfield_files = get_generated_peripheral_files(mcu_dir)
 
             self.assertEqual(len(register_files), 2)
             self.assertEqual(len(bitfield_files), 2)
@@ -97,8 +111,13 @@ class TestPeripheralFileScanning(unittest.TestCase):
     def test_files_sorted_alphabetically(self):
         """Test that files are returned in alphabetical order"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
-            registers_dir = output_dir / "registers"
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
+
+            # Registers are at family level (parent of MCU)
+            registers_dir = family_dir / "registers"
             registers_dir.mkdir()
 
             # Create files in non-alphabetical order
@@ -106,7 +125,7 @@ class TestPeripheralFileScanning(unittest.TestCase):
             (registers_dir / "aa_registers.hpp").touch()
             (registers_dir / "mm_registers.hpp").touch()
 
-            register_files, _ = get_generated_peripheral_files(output_dir)
+            register_files, _ = get_generated_peripheral_files(mcu_dir)
 
             self.assertEqual(register_files, ["aa", "mm", "zz"])
 
@@ -117,15 +136,18 @@ class TestRegisterMapGeneration(unittest.TestCase):
     def test_simple_register_map(self):
         """Test generation of basic register map"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
 
-            # Create dummy files
-            registers_dir = output_dir / "registers"
+            # Registers are at family level (parent of MCU)
+            registers_dir = family_dir / "registers"
             registers_dir.mkdir()
             (registers_dir / "rcc_registers.hpp").touch()
 
             device = create_test_device()
-            content = generate_register_map_header(device, output_dir)
+            content = generate_register_map_header(device, mcu_dir)
 
             # Should have basic structure
             AssertHelpers.assert_contains_all(
@@ -139,8 +161,13 @@ class TestRegisterMapGeneration(unittest.TestCase):
     def test_includes_all_register_files(self):
         """Test that all register files are included"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
-            registers_dir = output_dir / "registers"
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
+
+            # Registers are at family level (parent of MCU)
+            registers_dir = family_dir / "registers"
             registers_dir.mkdir()
 
             peripherals = ["rcc", "gpio", "spi", "i2c", "usart"]
@@ -148,17 +175,22 @@ class TestRegisterMapGeneration(unittest.TestCase):
                 (registers_dir / f"{periph}_registers.hpp").touch()
 
             device = create_test_device()
-            content = generate_register_map_header(device, output_dir)
+            content = generate_register_map_header(device, mcu_dir)
 
-            # Should include all peripherals
+            # Should include all peripherals with family-level path
             for periph in peripherals:
-                self.assertIn(f"{periph}_registers.hpp", content)
+                self.assertIn(f"../registers/{periph}_registers.hpp", content)
 
     def test_includes_all_bitfield_files(self):
         """Test that all bitfield files are included"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
-            bitfields_dir = output_dir / "bitfields"
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
+
+            # Bitfields are at family level (parent of MCU)
+            bitfields_dir = family_dir / "bitfields"
             bitfields_dir.mkdir()
 
             peripherals = ["rcc", "gpio"]
@@ -166,11 +198,11 @@ class TestRegisterMapGeneration(unittest.TestCase):
                 (bitfields_dir / f"{periph}_bitfields.hpp").touch()
 
             device = create_test_device()
-            content = generate_register_map_header(device, output_dir)
+            content = generate_register_map_header(device, mcu_dir)
 
-            # Should include all bitfields
+            # Should include all bitfields with family-level path
             for periph in peripherals:
-                self.assertIn(f"{periph}_bitfields.hpp", content)
+                self.assertIn(f"../bitfields/{periph}_bitfields.hpp", content)
 
     def test_includes_optional_files_when_present(self):
         """Test that optional files are included when they exist"""
@@ -263,8 +295,13 @@ class TestEdgeCases(unittest.TestCase):
     def test_many_peripherals(self):
         """Test register map with many peripherals (50+)"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
-            registers_dir = output_dir / "registers"
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
+
+            # Registers are at family level (parent of MCU)
+            registers_dir = family_dir / "registers"
             registers_dir.mkdir()
 
             # Create 50 peripheral files
@@ -272,17 +309,22 @@ class TestEdgeCases(unittest.TestCase):
                 (registers_dir / f"periph{i}_registers.hpp").touch()
 
             device = create_test_device()
-            content = generate_register_map_header(device, output_dir)
+            content = generate_register_map_header(device, mcu_dir)
 
-            # Should include all peripherals
-            self.assertIn("periph0_registers.hpp", content)
-            self.assertIn("periph49_registers.hpp", content)
+            # Should include all peripherals with family-level path
+            self.assertIn("../registers/periph0_registers.hpp", content)
+            self.assertIn("../registers/periph49_registers.hpp", content)
 
     def test_peripheral_with_numbers(self):
         """Test peripherals with numbers in name"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
-            registers_dir = output_dir / "registers"
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
+
+            # Registers are at family level (parent of MCU)
+            registers_dir = family_dir / "registers"
             registers_dir.mkdir()
 
             (registers_dir / "usart1_registers.hpp").touch()
@@ -290,27 +332,32 @@ class TestEdgeCases(unittest.TestCase):
             (registers_dir / "spi3_registers.hpp").touch()
 
             device = create_test_device()
-            content = generate_register_map_header(device, output_dir)
+            content = generate_register_map_header(device, mcu_dir)
 
-            self.assertIn("usart1_registers.hpp", content)
-            self.assertIn("timer2_registers.hpp", content)
-            self.assertIn("spi3_registers.hpp", content)
+            self.assertIn("../registers/usart1_registers.hpp", content)
+            self.assertIn("../registers/timer2_registers.hpp", content)
+            self.assertIn("../registers/spi3_registers.hpp", content)
 
     def test_peripheral_with_underscores(self):
         """Test peripherals with underscores in name"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
-            registers_dir = output_dir / "registers"
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
+
+            # Registers are at family level (parent of MCU)
+            registers_dir = family_dir / "registers"
             registers_dir.mkdir()
 
             (registers_dir / "system_ctrl_registers.hpp").touch()
             (registers_dir / "power_mgmt_registers.hpp").touch()
 
             device = create_test_device()
-            content = generate_register_map_header(device, output_dir)
+            content = generate_register_map_header(device, mcu_dir)
 
-            self.assertIn("system_ctrl_registers.hpp", content)
-            self.assertIn("power_mgmt_registers.hpp", content)
+            self.assertIn("../registers/system_ctrl_registers.hpp", content)
+            self.assertIn("../registers/power_mgmt_registers.hpp", content)
 
     def test_device_with_long_name(self):
         """Test device with very long name"""
@@ -330,29 +377,33 @@ class TestEdgeCases(unittest.TestCase):
     def test_mixed_register_and_bitfield_files(self):
         """Test when some peripherals have bitfields and others don't"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
 
-            registers_dir = output_dir / "registers"
+            # Registers and bitfields are at family level (parent of MCU)
+            registers_dir = family_dir / "registers"
             registers_dir.mkdir()
             (registers_dir / "rcc_registers.hpp").touch()
             (registers_dir / "gpio_registers.hpp").touch()
             (registers_dir / "spi_registers.hpp").touch()
 
-            bitfields_dir = output_dir / "bitfields"
+            bitfields_dir = family_dir / "bitfields"
             bitfields_dir.mkdir()
             (bitfields_dir / "rcc_bitfields.hpp").touch()
             # gpio has no bitfields
             (bitfields_dir / "spi_bitfields.hpp").touch()
 
             device = create_test_device()
-            content = generate_register_map_header(device, output_dir)
+            content = generate_register_map_header(device, mcu_dir)
 
-            # Should include all available files
-            self.assertIn("rcc_registers.hpp", content)
-            self.assertIn("gpio_registers.hpp", content)
-            self.assertIn("spi_registers.hpp", content)
-            self.assertIn("rcc_bitfields.hpp", content)
-            self.assertIn("spi_bitfields.hpp", content)
+            # Should include all available files with family-level path
+            self.assertIn("../registers/rcc_registers.hpp", content)
+            self.assertIn("../registers/gpio_registers.hpp", content)
+            self.assertIn("../registers/spi_registers.hpp", content)
+            self.assertIn("../bitfields/rcc_bitfields.hpp", content)
+            self.assertIn("../bitfields/spi_bitfields.hpp", content)
 
 
 if __name__ == "__main__":

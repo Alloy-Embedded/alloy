@@ -293,3 +293,53 @@ if __name__ == "__main__":
     for i, device_name in enumerate(sorted(svds.keys())[:10]):
         svd = svds[device_name]
         print(f"  {i+1}. {device_name} ({svd.source}, vendor={svd.vendor})")
+
+
+def find_svd_for_mcu(mcu_name: str, all_svds: Dict[str, SVDFile]) -> Optional[SVDFile]:
+    """
+    Find SVD file for a given MCU name with smart matching.
+
+    Tries multiple naming patterns to match MCU names to SVD files.
+    This is especially useful for STM32 where MCU names like "stm32f405rg"
+    need to match SVD files like "STM32F405".
+
+    Args:
+        mcu_name: MCU name (e.g., "stm32f405rg", "atsame70q21b")
+        all_svds: Dictionary of all discovered SVD files
+
+    Returns:
+        SVDFile if found, None otherwise
+    """
+    import re
+    from cli.core.config import normalize_name
+
+    mcu_upper = mcu_name.upper()
+    mcu_normalized = normalize_name(mcu_name)
+
+    # For STM32, try base name without package suffix
+    # e.g., stm32f405rg -> STM32F405, stm32f103re -> STM32F103
+    base_stm32_match = re.match(r'(STM32[A-Z]\d+)[A-Z]*\d*', mcu_upper)
+    base_stm32 = base_stm32_match.group(1) if base_stm32_match else None
+
+    possible_names = [
+        mcu_name,
+        mcu_upper,
+        f"{mcu_upper}xx",
+        mcu_normalized,
+        f"{mcu_normalized}xx",
+    ]
+
+    # Add STM32 base patterns
+    if base_stm32:
+        possible_names.extend([
+            base_stm32,
+            f"{base_stm32}xx",
+            base_stm32.lower(),
+        ])
+
+    # Try each possible name
+    for possible_name in possible_names:
+        if possible_name in all_svds:
+            return all_svds[possible_name]
+
+    return None

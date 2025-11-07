@@ -207,7 +207,7 @@ endif()
 # add_subdirectory(src/drivers)
 
 # Examples
-add_subdirectory(examples/blinky)
+# add_subdirectory(examples/blinky)  # Not exists yet
 # add_subdirectory(examples/portable_blinky)  # Portable example for all MCUs
 
 # Board-specific blink examples

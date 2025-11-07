@@ -5,7 +5,7 @@
 #ifndef ALLOY_CORE_UNITS_HPP
 #define ALLOY_CORE_UNITS_HPP
 
-#include "core/types.hpp"
+#include "types.hpp"
 
 namespace alloy::core {
 

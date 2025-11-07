@@ -59,8 +59,8 @@ class TestRegisterCompilation(unittest.TestCase):
 {header_code}
 
 int main() {{
-    // Test that we can create an instance
-    alloy::hal::testvendor::testfamily::test_mcu::test::TEST_Registers regs;
+    // Test that we can create an instance (now uses family-level namespace)
+    alloy::hal::testvendor::testfamily::test::TEST_Registers regs;
 
     // Test that we can access members
     regs.REG1 = 0x12345678;
@@ -94,7 +94,7 @@ int main() {{
 {header_code}
 
 int main() {{
-    alloy::hal::testvendor::testfamily::test_mcu::test::TEST_Registers regs;
+    alloy::hal::testvendor::testfamily::test::TEST_Registers regs;
 
     // Test array access
     for (int i = 0; i < 4; i++) {{
@@ -121,7 +121,8 @@ int main() {{
 {header_code}
 
 int main() {{
-    using namespace alloy::hal::atmel::same70::atsame70q21b::pioa;
+    // Now uses family-level namespace
+    using namespace alloy::hal::atmel::same70::pioa;
 
     PIOA_Registers* pioa = PIOA();
 
@@ -158,7 +159,7 @@ int main() {{
 #include <cstdint>
 
 int main() {{
-    alloy::hal::testvendor::testfamily::test_mcu::test::TEST_Registers regs;
+    alloy::hal::testvendor::testfamily::test::TEST_Registers regs;
 
     // Test type sizes
     static_assert(sizeof(regs.REG8) == 1, "REG8 should be 1 byte");
@@ -341,13 +342,15 @@ class TestIntegratedCompilation(unittest.TestCase):
 {register_code}
 
 int main() {{
+    // Enums are at MCU level, registers at family level
     using namespace alloy::hal::testvendor::testfamily::test_mcu;
+    namespace gpio = alloy::hal::testvendor::testfamily::gpio;
 
-    // Get pointer to GPIO registers
-    gpio::GPIO_Registers* gpio = gpio::GPIO();
+    // Get pointer to GPIO registers (family-level)
+    gpio::GPIO_Registers* gpio_regs = gpio::GPIO();
 
-    // Use enum to set mode
-    gpio->CFGR = static_cast<uint32_t>(enums::GPIO_CFGR_MODE::OUTPUT);
+    // Use enum to set mode (MCU-level)
+    gpio_regs->CFGR = static_cast<uint32_t>(enums::GPIO_CFGR_MODE::OUTPUT);
 
     return 0;
 }}

@@ -809,17 +809,16 @@ def generate_variant(device_name: str, variant_config: Dict) -> None:
     vendor = "atmel"
 
     # Add MCU task to tracker
-    expected_files = ["hardware.hpp", "pins.hpp", "pin_functions.hpp", "gpio.hpp"]
+    # Note: Removed gpio.hpp, hardware.hpp, peripherals.hpp - no longer needed with family-level architecture
+    expected_files = ["pins.hpp", "pin_functions.hpp"]
     if tracker:
         tracker.add_mcu_task(vendor, family, device_name.lower(), expected_files)
         tracker.mark_mcu_generating(vendor, family, device_name.lower())
 
-    # Generate headers
+    # Generate headers (only MCU-specific files)
     headers = {
-        "hardware.hpp": generate_hardware_header(device_name, variant_config),
         "pins.hpp": generate_pins_header(device_name, variant_config),
         "pin_functions.hpp": generate_pin_functions_header(device_name, variant_config),
-        "gpio.hpp": generate_gpio_header(device_name, variant_config),
     }
 
     success = True

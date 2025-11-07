@@ -90,13 +90,16 @@ class TestFullPipeline(unittest.TestCase):
     def test_register_map_includes_all_generated_files(self):
         """Test that register_map includes all generated peripheral files"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
 
-            # Create directory structure
-            registers_dir = output_dir / "registers"
+            # Registers and bitfields are at family level (parent of MCU)
+            registers_dir = family_dir / "registers"
             registers_dir.mkdir()
 
-            bitfields_dir = output_dir / "bitfields"
+            bitfields_dir = family_dir / "bitfields"
             bitfields_dir.mkdir()
 
             # Create peripheral files
@@ -105,25 +108,25 @@ class TestFullPipeline(unittest.TestCase):
                 (registers_dir / f"{periph}_registers.hpp").touch()
                 (bitfields_dir / f"{periph}_bitfields.hpp").touch()
 
-            # Create optional files
-            (output_dir / "enums.hpp").touch()
-            (output_dir / "pin_functions.hpp").touch()
+            # Create optional files (MCU-level)
+            (mcu_dir / "enums.hpp").touch()
+            (mcu_dir / "pin_functions.hpp").touch()
 
             # Generate register map
             device = create_test_device()
-            register_map = generate_register_map_header(device, output_dir)
+            register_map = generate_register_map_header(device, mcu_dir)
 
-            # Should include all peripherals
+            # Should include all peripherals with family-level path
             for periph in peripherals:
-                self.assertIn(f"{periph}_registers.hpp", register_map)
-                self.assertIn(f"{periph}_bitfields.hpp", register_map)
+                self.assertIn(f"../registers/{periph}_registers.hpp", register_map)
+                self.assertIn(f"../bitfields/{periph}_bitfields.hpp", register_map)
 
-            # Should include optional files
+            # Should include optional files (MCU-level)
             self.assertIn("enums.hpp", register_map)
             self.assertIn("pin_functions.hpp", register_map)
 
     def test_namespace_consistency_across_generators(self):
-        """Test that all generators use consistent namespaces"""
+        """Test that all generators use consistent namespaces (family-level for registers)"""
         device = create_test_device(
             name="STM32F103C8",
             vendor="ST",
@@ -139,8 +142,9 @@ class TestFullPipeline(unittest.TestCase):
         register_code = generate_register_struct(peripheral, device)
         enum_code = generate_enums_header(device)
 
-        # Both should use same namespace structure
-        self.assertIn("namespace alloy::hal::st::stm32f1::stm32f103c8", register_code)
+        # Registers now use family-level namespace (no MCU name)
+        self.assertIn("namespace alloy::hal::st::stm32f1::rcc", register_code)
+        # Enums remain MCU-specific (MCU-level namespace)
         self.assertIn("namespace alloy::hal::st::stm32f1::stm32f103c8", enum_code)
 
 
@@ -171,22 +175,28 @@ class TestEndToEndWorkflow(unittest.TestCase):
         enum_code = generate_enums_header(device)
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
-            registers_dir = output_dir / "registers"
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
+
+            # Registers are at family level (parent of MCU)
+            registers_dir = family_dir / "registers"
             registers_dir.mkdir()
             (registers_dir / "periph_registers.hpp").touch()
 
-            (output_dir / "enums.hpp").touch()
+            # Enums are at MCU level
+            (mcu_dir / "enums.hpp").touch()
 
-            register_map = generate_register_map_header(device, output_dir)
+            register_map = generate_register_map_header(device, mcu_dir)
 
             # All components should be generated
             self.assertIsInstance(register_code, str)
             self.assertIsInstance(enum_code, str)
             self.assertIsInstance(register_map, str)
 
-            # Register map should reference generated files
-            self.assertIn("periph_registers.hpp", register_map)
+            # Register map should reference generated files with correct paths
+            self.assertIn("../registers/periph_registers.hpp", register_map)
             self.assertIn("enums.hpp", register_map)
 
     def test_peripheral_with_all_features(self):
@@ -259,30 +269,33 @@ class TestCrossDependencies(unittest.TestCase):
     def test_register_map_aggregates_all(self):
         """Test that register_map properly aggregates all components"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_dir = Path(tmpdir)
+            # Create family-level structure: family/mcu_name/
+            family_dir = Path(tmpdir) / "family"
+            mcu_dir = family_dir / "mcu_name"
+            mcu_dir.mkdir(parents=True)
 
-            # Create full directory structure
+            # Create full directory structure at family level
             for subdir in ["registers", "bitfields"]:
-                (output_dir / subdir).mkdir()
+                (family_dir / subdir).mkdir()
 
-            # Create various peripheral files
+            # Create various peripheral files at family level
             peripherals = ["gpio", "usart", "spi", "i2c", "timer"]
             for periph in peripherals:
-                (output_dir / "registers" / f"{periph}_registers.hpp").touch()
-                (output_dir / "bitfields" / f"{periph}_bitfields.hpp").touch()
+                (family_dir / "registers" / f"{periph}_registers.hpp").touch()
+                (family_dir / "bitfields" / f"{periph}_bitfields.hpp").touch()
 
-            # Create all optional files
-            (output_dir / "enums.hpp").touch()
-            (output_dir / "pin_functions.hpp").touch()
-            (output_dir / "bitfield_utils.hpp").touch()
+            # Create all optional files at MCU level
+            (mcu_dir / "enums.hpp").touch()
+            (mcu_dir / "pin_functions.hpp").touch()
+            (mcu_dir / "bitfield_utils.hpp").touch()
 
             device = create_test_device()
-            register_map = generate_register_map_header(device, output_dir)
+            register_map = generate_register_map_header(device, mcu_dir)
 
-            # Should include everything
+            # Should include everything with correct paths
             for periph in peripherals:
-                self.assertIn(f"{periph}_registers.hpp", register_map)
-                self.assertIn(f"{periph}_bitfields.hpp", register_map)
+                self.assertIn(f"../registers/{periph}_registers.hpp", register_map)
+                self.assertIn(f"../bitfields/{periph}_bitfields.hpp", register_map)
 
             self.assertIn("enums.hpp", register_map)
             self.assertIn("pin_functions.hpp", register_map)
