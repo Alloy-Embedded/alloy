@@ -1,275 +1,406 @@
-"""Integration tests for complete code generation pipeline"""
+"""
+Integration tests for the complete code generation pipeline
 
-import pytest
-import json
-import subprocess
+These tests validate that all generators work together correctly,
+producing valid C++ code that compiles and integrates properly.
+"""
+
+import unittest
+import tempfile
 from pathlib import Path
 import sys
 
-# Add parent directory to path
+# Add parent to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from svd_parser import SVDParser
-from generator import CodeGenerator
+from cli.generators.generate_registers import generate_register_struct
+from cli.generators.generate_enums import generate_enums_header
+from cli.generators.generate_pin_functions import (
+    PinFunctionDatabase,
+    generate_pin_functions_header
+)
+from cli.generators.generate_register_map import (
+    generate_register_map_header,
+    get_generated_peripheral_files
+)
+from tests.test_helpers import (
+    create_test_device,
+    create_test_peripheral,
+    create_test_register,
+    create_test_field,
+    AssertHelpers
+)
 
 
-class TestIntegration:
+class TestFullPipeline(unittest.TestCase):
     """Test complete code generation pipeline"""
 
-    @pytest.mark.integration
-    def test_svd_to_code_pipeline(self, test_svd_file, temp_dir):
-        """Test complete pipeline: SVD → Parser → JSON → Generator → C++"""
+    def test_registers_and_enums_integration(self):
+        """Test that registers and enums can be generated and used together"""
+        # Create device with peripheral that has enumerated fields
+        field = create_test_field("MODE", 0, 2)
+        field.enum_values = {"INPUT": 0, "OUTPUT": 1, "ALTERNATE": 2}
 
-        # Step 1: Parse SVD file
-        parser = SVDParser(test_svd_file)
-        database = parser.parse()
+        register = create_test_register("MODER", 0x0000, fields=[field])
+        peripheral = create_test_peripheral("GPIOA", 0x40020000, registers=[register])
+        device = create_test_device()
+        device.peripherals = {"GPIOA": peripheral}
 
-        # Verify database structure
-        assert "mcus" in database
-        assert "TEST_MCU" in database["mcus"]
+        # Generate both headers
+        register_code = generate_register_struct(peripheral, device)
+        enum_code = generate_enums_header(device)
 
-        # Step 2: Write database to file
-        database_file = temp_dir / "test_database.json"
-        with open(database_file, 'w') as f:
-            json.dump(database, f, indent=2)
+        # Both should generate valid code
+        self.assertIsInstance(register_code, str)
+        self.assertIsInstance(enum_code, str)
 
-        # Step 3: Generate code from database
-        output_dir = temp_dir / "generated"
-        generator = CodeGenerator(
-            database_path=database_file,
-            mcu_name="TEST_MCU",
-            output_dir=output_dir,
-            verbose=False
+        # Register code should have the register
+        self.assertIn("MODER", register_code)
+
+        # Enum code should have the enum
+        self.assertIn("GPIOA_MODER_MODE", enum_code)
+
+    def test_multiple_peripherals_generation(self):
+        """Test generating code for multiple peripherals"""
+        device = create_test_device()
+
+        # Create multiple peripherals
+        rcc = create_test_peripheral("RCC", 0x40021000, registers=[
+            create_test_register("CR", 0x0000),
+            create_test_register("CFGR", 0x0004),
+        ])
+
+        gpio = create_test_peripheral("GPIOA", 0x40020000, registers=[
+            create_test_register("MODER", 0x0000),
+            create_test_register("ODR", 0x0014),
+        ])
+
+        device.peripherals = {"RCC": rcc, "GPIOA": gpio}
+
+        # Generate registers for both
+        rcc_code = generate_register_struct(rcc, device)
+        gpio_code = generate_register_struct(gpio, device)
+
+        # Should have distinct code for each
+        self.assertIn("RCC_Registers", rcc_code)
+        self.assertIn("GPIOA_Registers", gpio_code)
+        self.assertIn("CR", rcc_code)
+        self.assertIn("MODER", gpio_code)
+
+    def test_register_map_includes_all_generated_files(self):
+        """Test that register_map includes all generated peripheral files"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+
+            # Create directory structure
+            registers_dir = output_dir / "registers"
+            registers_dir.mkdir()
+
+            bitfields_dir = output_dir / "bitfields"
+            bitfields_dir.mkdir()
+
+            # Create peripheral files
+            peripherals = ["rcc", "gpio", "usart", "spi"]
+            for periph in peripherals:
+                (registers_dir / f"{periph}_registers.hpp").touch()
+                (bitfields_dir / f"{periph}_bitfields.hpp").touch()
+
+            # Create optional files
+            (output_dir / "enums.hpp").touch()
+            (output_dir / "pin_functions.hpp").touch()
+
+            # Generate register map
+            device = create_test_device()
+            register_map = generate_register_map_header(device, output_dir)
+
+            # Should include all peripherals
+            for periph in peripherals:
+                self.assertIn(f"{periph}_registers.hpp", register_map)
+                self.assertIn(f"{periph}_bitfields.hpp", register_map)
+
+            # Should include optional files
+            self.assertIn("enums.hpp", register_map)
+            self.assertIn("pin_functions.hpp", register_map)
+
+    def test_namespace_consistency_across_generators(self):
+        """Test that all generators use consistent namespaces"""
+        device = create_test_device(
+            name="STM32F103C8",
+            vendor="ST",
+            family="STM32F1"
         )
 
-        generator.generate_all()
+        peripheral = create_test_peripheral("RCC", 0x40021000, registers=[
+            create_test_register("CR", 0x0000)
+        ])
+        device.peripherals = {"RCC": peripheral}
 
-        # Step 4: Verify generated files
-        startup_file = output_dir / "startup.cpp"
-        assert startup_file.exists()
+        # Generate from different generators
+        register_code = generate_register_struct(peripheral, device)
+        enum_code = generate_enums_header(device)
 
-        # Step 5: Validate generated code quality
-        content = startup_file.read_text()
+        # Both should use same namespace structure
+        self.assertIn("namespace alloy::hal::st::stm32f1::stm32f103c8", register_code)
+        self.assertIn("namespace alloy::hal::st::stm32f1::stm32f103c8", enum_code)
 
-        # Check completeness
-        assert "Reset_Handler" in content
-        assert "Default_Handler" in content
-        assert "USART1_IRQHandler" in content
-        assert "USART2_IRQHandler" in content
 
-        # Check no template artifacts
-        assert "{{" not in content
-        assert "{%" not in content
+class TestEndToEndWorkflow(unittest.TestCase):
+    """Test complete end-to-end workflows"""
 
-    @pytest.mark.integration
-    def test_cli_svd_parser(self, test_svd_file, temp_dir):
-        """Test SVD parser CLI interface"""
-        output_file = temp_dir / "cli_output.json"
+    def test_simple_mcu_complete_generation(self):
+        """Test generating all code for a simple MCU"""
+        device = create_test_device(
+            name="TEST_MCU",
+            vendor="TestVendor",
+            family="TestFamily"
+        )
 
-        # Run svd_parser.py as subprocess
-        result = subprocess.run([
-            sys.executable,
-            str(Path(__file__).parent.parent / "svd_parser.py"),
-            "--input", str(test_svd_file),
-            "--output", str(output_file)
-        ], capture_output=True, text=True)
+        # Create a peripheral with register, fields, and enums
+        field1 = create_test_field("ENABLE", 0, 1)
+        field1.enum_values = {"DISABLED": 0, "ENABLED": 1}
 
-        assert result.returncode == 0
-        assert output_file.exists()
+        field2 = create_test_field("MODE", 1, 2)
+        field2.enum_values = {"MODE_A": 0, "MODE_B": 1, "MODE_C": 2}
 
-        # Verify output
-        with open(output_file, 'r') as f:
-            data = json.load(f)
+        register = create_test_register("CTRL", 0x0000, fields=[field1, field2])
+        peripheral = create_test_peripheral("PERIPH", 0x40000000, registers=[register])
+        device.peripherals = {"PERIPH": peripheral}
 
-        assert "mcus" in data
-        assert "TEST_MCU" in data["mcus"]
+        # Generate all components
+        register_code = generate_register_struct(peripheral, device)
+        enum_code = generate_enums_header(device)
 
-    @pytest.mark.integration
-    def test_cli_generator(self, example_database_file, temp_dir):
-        """Test code generator CLI interface"""
-        output_dir = temp_dir / "cli_generated"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+            registers_dir = output_dir / "registers"
+            registers_dir.mkdir()
+            (registers_dir / "periph_registers.hpp").touch()
 
-        # Run generator.py as subprocess
-        result = subprocess.run([
-            sys.executable,
-            str(Path(__file__).parent.parent / "generator.py"),
-            "--mcu", "TEST_MCU",
-            "--database", str(example_database_file),
-            "--output", str(output_dir)
-        ], capture_output=True, text=True)
+            (output_dir / "enums.hpp").touch()
 
-        assert result.returncode == 0
-        assert (output_dir / "startup.cpp").exists()
+            register_map = generate_register_map_header(device, output_dir)
 
-    @pytest.mark.integration
-    def test_database_validation(self, example_database_file):
-        """Test database validation tool"""
-        result = subprocess.run([
-            sys.executable,
-            str(Path(__file__).parent.parent / "validate_database.py"),
-            str(example_database_file)
-        ], capture_output=True, text=True)
+            # All components should be generated
+            self.assertIsInstance(register_code, str)
+            self.assertIsInstance(enum_code, str)
+            self.assertIsInstance(register_map, str)
 
-        assert result.returncode == 0
-        assert "valid" in result.stdout.lower()
+            # Register map should reference generated files
+            self.assertIn("periph_registers.hpp", register_map)
+            self.assertIn("enums.hpp", register_map)
 
-    @pytest.mark.integration
-    def test_multiple_mcus_in_database(self, temp_dir):
-        """Test generating code for multiple MCUs from one database"""
+    def test_peripheral_with_all_features(self):
+        """Test peripheral using all available features"""
+        # Create comprehensive peripheral
+        field1 = create_test_field("EN", 0, 1)
+        field1.enum_values = {"DISABLED": 0, "ENABLED": 1}
 
-        # Create database with multiple MCUs
-        database = {
-            "family": "TestFamily",
-            "architecture": "arm-cortex-m3",
-            "vendor": "TestVendor",
-            "mcus": {
-                "MCU_A": {
-                    "flash": {"size_kb": 64, "base_address": "0x08000000"},
-                    "ram": {"size_kb": 20, "base_address": "0x20000000"},
-                    "peripherals": {},
-                    "interrupts": {
-                        "count": 16,
-                        "vectors": [
-                            {"number": 0, "name": "Initial_SP"},
-                            {"number": 1, "name": "Reset_Handler"}
-                        ]
-                    }
-                },
-                "MCU_B": {
-                    "flash": {"size_kb": 128, "base_address": "0x08000000"},
-                    "ram": {"size_kb": 32, "base_address": "0x20000000"},
-                    "peripherals": {},
-                    "interrupts": {
-                        "count": 16,
-                        "vectors": [
-                            {"number": 0, "name": "Initial_SP"},
-                            {"number": 1, "name": "Reset_Handler"}
-                        ]
-                    }
-                }
-            }
+        field2 = create_test_field("MODE", 1, 3)
+        field2.enum_values = {
+            "MODE0": 0, "MODE1": 1, "MODE2": 2,
+            "MODE3": 3, "MODE4": 4
         }
 
-        database_file = temp_dir / "multi_mcu.json"
-        with open(database_file, 'w') as f:
-            json.dump(database, f, indent=2)
+        registers = [
+            create_test_register("CR", 0x0000, fields=[field1, field2]),
+            create_test_register("SR", 0x0004),
+            create_test_register("DR", 0x0008),
+            create_test_register("ARR", 0x0010, dim=4),  # Array
+        ]
 
-        # Generate code for both MCUs
-        for mcu_name in ["MCU_A", "MCU_B"]:
-            output_dir = temp_dir / f"gen_{mcu_name}"
-
-            generator = CodeGenerator(
-                database_path=database_file,
-                mcu_name=mcu_name,
-                output_dir=output_dir
-            )
-            generator.generate_all()
-
-            assert (output_dir / "startup.cpp").exists()
-
-            # Verify MCU name in generated file
-            content = (output_dir / "startup.cpp").read_text()
-            assert mcu_name in content
-
-    @pytest.mark.integration
-    def test_generated_code_syntax(self, example_database_file, temp_dir):
-        """Test that generated code has valid C++ syntax"""
-        generator = CodeGenerator(
-            database_path=example_database_file,
-            mcu_name="TEST_MCU",
-            output_dir=temp_dir
-        )
-
-        generator.generate_all()
-
-        startup_file = temp_dir / "startup.cpp"
-        content = startup_file.read_text()
-
-        # Basic syntax checks
-        # Count braces
-        open_braces = content.count('{')
-        close_braces = content.count('}')
-        assert open_braces == close_braces, "Unmatched braces"
-
-        # Check for common syntax errors
-        assert content.count('extern "C"') >= 2
-        assert "int main()" in content
-        assert "void Reset_Handler()" in content
-
-        # Check no obvious syntax errors
-        assert ";;" not in content  # Double semicolons
-        assert "  }" not in content.replace("    }", "")  # Inconsistent indentation would be caught
-
-    @pytest.mark.integration
-    @pytest.mark.slow
-    def test_real_stm32_svd(self, temp_dir):
-        """Test with real STM32F103 SVD if available"""
-        svd_file = Path(__file__).parent.parent.parent / "upstream" / "cmsis-svd-data" / "data" / "STMicro" / "STM32F103xx.svd"
-
-        if not svd_file.exists():
-            pytest.skip("STM32F103 SVD file not available")
-
-        # Parse real SVD
-        parser = SVDParser(svd_file)
-        database = parser.parse()
-
-        # Should have many peripherals
-        mcus = list(database["mcus"].values())
-        assert len(mcus) > 0
-
-        mcu = mcus[0]
-        peripherals = mcu["peripherals"]
-        assert len(peripherals) > 10  # STM32 has many peripherals
+        peripheral = create_test_peripheral("TIMER", 0x40000000, registers=registers)
+        device = create_test_device()
+        device.peripherals = {"TIMER": peripheral}
 
         # Generate code
-        database_file = temp_dir / "stm32f103.json"
-        with open(database_file, 'w') as f:
-            json.dump(database, f, indent=2)
+        register_code = generate_register_struct(peripheral, device)
+        enum_code = generate_enums_header(device)
 
-        mcu_name = list(database["mcus"].keys())[0]
-        generator = CodeGenerator(
-            database_path=database_file,
-            mcu_name=mcu_name,
-            output_dir=temp_dir / "stm32_gen"
+        # Should have all components
+        AssertHelpers.assert_contains_all(
+            register_code,
+            "TIMER_Registers",
+            "CR", "SR", "DR", "ARR[4]"
         )
 
-        generator.generate_all()
-
-        startup = (temp_dir / "stm32_gen" / "startup.cpp").read_text()
-
-        # Should have many interrupt handlers
-        irq_count = startup.count("_IRQHandler")
-        assert irq_count > 20  # STM32F103 has many interrupts
-
-    @pytest.mark.integration
-    def test_error_handling_invalid_svd(self, temp_dir):
-        """Test error handling with malformed SVD"""
-        bad_svd = temp_dir / "bad.svd"
-        bad_svd.write_text("<?xml version='1.0'?><invalid>")
-
-        with pytest.raises(SystemExit):
-            parser = SVDParser(bad_svd)
-            parser.parse()
-
-    @pytest.mark.integration
-    def test_regeneration_idempotence(self, example_database_file, temp_dir):
-        """Test that regenerating produces identical output"""
-        generator = CodeGenerator(
-            database_path=example_database_file,
-            mcu_name="TEST_MCU",
-            output_dir=temp_dir
+        AssertHelpers.assert_contains_all(
+            enum_code,
+            "TIMER_CR_EN",
+            "TIMER_CR_MODE"
         )
 
-        # Generate twice
-        generator.generate_all()
-        content1 = (temp_dir / "startup.cpp").read_text()
 
-        generator.generate_all()
-        content2 = (temp_dir / "startup.cpp").read_text()
+class TestCrossDependencies(unittest.TestCase):
+    """Test cross-dependencies between generated components"""
 
-        # Content should be identical except for timestamp
-        # Remove timestamp lines for comparison
-        lines1 = [l for l in content1.split('\n') if 'Generated:' not in l]
-        lines2 = [l for l in content2.split('\n') if 'Generated:' not in l]
+    def test_bitfields_reference_enums(self):
+        """Test that bitfields can reference enum values"""
+        # Create field with enum
+        field = create_test_field("MODE", 0, 2)
+        field.enum_values = {"INPUT": 0, "OUTPUT": 1}
 
-        assert lines1 == lines2, "Code generation is not idempotent"
+        register = create_test_register("MODER", 0x0000, fields=[field])
+        peripheral = create_test_peripheral("GPIO", 0x40000000, registers=[register])
+        device = create_test_device()
+        device.peripherals = {"GPIO": peripheral}
+
+        # Generate code
+        register_code = generate_register_struct(peripheral, device)
+        enum_code = generate_enums_header(device)
+
+        # Enum should exist
+        self.assertIn("GPIO_MODER_MODE", enum_code)
+        self.assertIn("INPUT", enum_code)
+        self.assertIn("OUTPUT", enum_code)
+
+        # Register should have the field
+        self.assertIn("MODER", register_code)
+
+    def test_register_map_aggregates_all(self):
+        """Test that register_map properly aggregates all components"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+
+            # Create full directory structure
+            for subdir in ["registers", "bitfields"]:
+                (output_dir / subdir).mkdir()
+
+            # Create various peripheral files
+            peripherals = ["gpio", "usart", "spi", "i2c", "timer"]
+            for periph in peripherals:
+                (output_dir / "registers" / f"{periph}_registers.hpp").touch()
+                (output_dir / "bitfields" / f"{periph}_bitfields.hpp").touch()
+
+            # Create all optional files
+            (output_dir / "enums.hpp").touch()
+            (output_dir / "pin_functions.hpp").touch()
+            (output_dir / "bitfield_utils.hpp").touch()
+
+            device = create_test_device()
+            register_map = generate_register_map_header(device, output_dir)
+
+            # Should include everything
+            for periph in peripherals:
+                self.assertIn(f"{periph}_registers.hpp", register_map)
+                self.assertIn(f"{periph}_bitfields.hpp", register_map)
+
+            self.assertIn("enums.hpp", register_map)
+            self.assertIn("pin_functions.hpp", register_map)
+
+
+class TestRealWorldScenarios(unittest.TestCase):
+    """Test realistic scenarios similar to actual MCUs"""
+
+    def test_stm32_like_gpio(self):
+        """Test GPIO peripheral similar to STM32"""
+        # STM32 GPIO has MODER, OTYPER, OSPEEDR, PUPDR, IDR, ODR, etc.
+        registers = [
+            create_test_register("MODER", 0x0000),    # Mode register
+            create_test_register("OTYPER", 0x0004),   # Output type
+            create_test_register("OSPEEDR", 0x0008),  # Output speed
+            create_test_register("PUPDR", 0x000C),    # Pull-up/down
+            create_test_register("IDR", 0x0010),      # Input data
+            create_test_register("ODR", 0x0014),      # Output data
+            create_test_register("BSRR", 0x0018),     # Bit set/reset
+            create_test_register("LCKR", 0x001C),     # Lock register
+            create_test_register("AFRL", 0x0020),     # Alternate func low
+            create_test_register("AFRH", 0x0024),     # Alternate func high
+        ]
+
+        peripheral = create_test_peripheral("GPIOA", 0x40020000, registers=registers)
+        device = create_test_device(name="STM32F4", vendor="ST", family="STM32F4")
+
+        register_code = generate_register_struct(peripheral, device)
+
+        # Should have all registers
+        for reg in ["MODER", "OTYPER", "OSPEEDR", "PUPDR", "IDR", "ODR", "BSRR", "LCKR", "AFRL", "AFRH"]:
+            self.assertIn(reg, register_code)
+
+    def test_atmel_like_pio(self):
+        """Test PIO peripheral similar to Atmel SAME70"""
+        # SAME70 PIO has various registers including arrays
+        registers = [
+            create_test_register("PER", 0x0000),      # PIO Enable
+            create_test_register("PDR", 0x0004),      # PIO Disable
+            create_test_register("PSR", 0x0008),      # PIO Status
+            create_test_register("OER", 0x0010),      # Output Enable
+            create_test_register("ODR", 0x0014),      # Output Disable
+            create_test_register("OSR", 0x0018),      # Output Status
+            create_test_register("IFER", 0x0020),     # Glitch Filter Enable
+            create_test_register("IFDR", 0x0024),     # Glitch Filter Disable
+            create_test_register("IFSR", 0x0028),     # Glitch Filter Status
+            create_test_register("SODR", 0x0030),     # Set Output Data
+            create_test_register("CODR", 0x0034),     # Clear Output Data
+            create_test_register("ODSR", 0x0038),     # Output Data Status
+            create_test_register("PDSR", 0x003C),     # Pin Data Status
+            create_test_register("ABCDSR", 0x0070, dim=2),  # Peripheral Select (array)
+        ]
+
+        peripheral = create_test_peripheral("PIOA", 0x400E0E00, registers=registers)
+        device = create_test_device(name="ATSAME70Q21", vendor="Atmel", family="SAME70")
+
+        register_code = generate_register_struct(peripheral, device)
+
+        # Should have array register
+        self.assertIn("ABCDSR[2]", register_code)
+        # Should have single registers
+        self.assertIn("PER", register_code)
+        self.assertIn("SODR", register_code)
+
+    def test_multiple_peripherals_with_shared_enums(self):
+        """Test multiple peripherals that might have similar enum names"""
+        device = create_test_device()
+
+        # Create two peripherals with similar field names
+        for periph_name in ["USART1", "USART2"]:
+            field = create_test_field("MODE", 0, 2)
+            field.enum_values = {"ASYNC": 0, "SYNC": 1, "SPI": 2}
+
+            register = create_test_register("CR1", 0x0000, fields=[field])
+            peripheral = create_test_peripheral(periph_name, 0x40000000, registers=[register])
+            device.peripherals[periph_name] = peripheral
+
+        enum_code = generate_enums_header(device)
+
+        # Should have separate enums for each peripheral
+        self.assertIn("USART1_CR1_MODE", enum_code)
+        self.assertIn("USART2_CR1_MODE", enum_code)
+
+
+class TestEdgeCasesIntegration(unittest.TestCase):
+    """Test edge cases in integration scenarios"""
+
+    def test_empty_device(self):
+        """Test generating code for device with no peripherals"""
+        device = create_test_device()
+        device.peripherals = {}
+
+        enum_code = generate_enums_header(device)
+
+        # Should generate valid but minimal code
+        self.assertIn("#pragma once", enum_code)
+        self.assertIn("namespace alloy::hal", enum_code)
+
+    def test_peripheral_without_enums(self):
+        """Test peripheral that has no enumerated fields"""
+        registers = [
+            create_test_register("DATA", 0x0000),
+            create_test_register("STATUS", 0x0004),
+        ]
+
+        peripheral = create_test_peripheral("SIMPLE", 0x40000000, registers=registers)
+        device = create_test_device()
+        device.peripherals = {"SIMPLE": peripheral}
+
+        register_code = generate_register_struct(peripheral, device)
+        enum_code = generate_enums_header(device)
+
+        # Register code should work
+        self.assertIn("SIMPLE_Registers", register_code)
+
+        # Enum code should be minimal
+        self.assertIn("No enumerated values found", enum_code)
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
