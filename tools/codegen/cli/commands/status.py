@@ -45,6 +45,12 @@ def execute(args):
     print_header("Code Generation Status")
 
     try:
+        # If format is markdown (default), generate the full MCU status report
+        if args.format == 'markdown':
+            from cli.generators.generate_mcu_status import generate_status_report
+            return generate_status_report()
+        
+        # Otherwise, show simple terminal status
         from cli.core.config import BOARD_MCUS, HAL_VENDORS_DIR
         import json
 

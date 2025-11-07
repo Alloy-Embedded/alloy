@@ -27,6 +27,7 @@
 #include <utility>      // std::move, std::forward
 #include <type_traits>  // std::enable_if, std::is_same
 #include <cstdlib>      // std::abort
+#include <cassert>      // assert
 
 namespace alloy {
 namespace core {
@@ -43,6 +44,12 @@ namespace detail {
 
         explicit OkTag(T&& v) : value(std::forward<T>(v)) {}
         explicit OkTag(const T& v) : value(v) {}
+    };
+
+    // Specialization for void
+    template<>
+    struct OkTag<void> {
+        OkTag() = default;
     };
 
     template<typename E>
@@ -63,6 +70,14 @@ namespace detail {
 template<typename T>
 constexpr detail::OkTag<T> Ok(T&& value) {
     return detail::OkTag<T>(std::forward<T>(value));
+}
+
+/**
+ * @brief Factory function to create an Ok result for void type
+ * @return OkTag for void
+ */
+inline constexpr detail::OkTag<void> Ok() {
+    return detail::OkTag<void>();
 }
 
 /**
@@ -408,6 +423,98 @@ private:
     } storage_;
 
     bool is_ok_;
+};
+
+/**
+ * @brief Specialization of Result for void success type
+ * @tparam E The error type
+ *
+ * This specialization handles operations that can fail but don't return a value on success.
+ *
+ * Example:
+ * @code
+ * Result<void, ErrorCode> initialize() {
+ *     if (hardware_init_success()) {
+ *         return Ok();
+ *     }
+ *     return Err(ErrorCode::HardwareError);
+ * }
+ * @endcode
+ */
+template<typename E>
+class Result<void, E> {
+public:
+    using error_type = E;
+
+    // Constructors
+    Result(const detail::OkTag<void>&) : is_ok_(true), error_() {}
+    Result(const detail::ErrTag<E>& err) : is_ok_(false), error_(err.value) {}
+
+    // No copy/move as we're keeping it simple for void type
+    Result(const Result&) = default;
+    Result& operator=(const Result&) = default;
+    Result(Result&&) = default;
+    Result& operator=(Result&&) = default;
+
+    /**
+     * @brief Check if the result is success
+     * @return true if success, false if error
+     */
+    [[nodiscard]] constexpr bool is_ok() const noexcept {
+        return is_ok_;
+    }
+
+    /**
+     * @brief Check if the result is error
+     * @return true if error, false if success
+     */
+    [[nodiscard]] constexpr bool is_err() const noexcept {
+        return !is_ok_;
+    }
+
+    /**
+     * @brief Get the error value
+     * @return Reference to the error
+     * @pre is_err() must be true
+     */
+    [[nodiscard]] const E& error() const & {
+        assert(!is_ok_ && "Cannot access error() on success Result");
+        return error_;
+    }
+
+    /**
+     * @brief Get the error value (move)
+     * @return Error value
+     * @pre is_err() must be true
+     */
+    [[nodiscard]] E&& error() && {
+        assert(!is_ok_ && "Cannot access error() on success Result");
+        return static_cast<E&&>(error_);
+    }
+
+    /**
+     * @brief Assert that the result is Ok
+     * @param msg Message to display if assertion fails
+     * @pre is_ok() must be true
+     */
+    void expect(const char* msg) const {
+        if (!is_ok_) {
+            // In a real implementation, this would trigger a panic/assert
+            assert(false && msg);
+        }
+    }
+
+    /**
+     * @brief Unwrap the result (asserts if error)
+     * @pre is_ok() must be true
+     */
+    void unwrap() const {
+        assert(is_ok_ && "Cannot unwrap error Result");
+    }
+
+private:
+    bool is_ok_;
+    E error_;  // Only valid when is_ok_ == false
 };
 
 } // namespace core

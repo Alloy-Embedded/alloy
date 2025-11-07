@@ -431,6 +431,29 @@ For more help on a command:
         description='Show status of code generation and available MCUs'
     )
 
+    status_parser.add_argument(
+        '--output',
+        type=Path,
+        default=Path('MCU_STATUS.md'),
+        help='Output file path (default: MCU_STATUS.md)'
+    )
+
+    status_parser.add_argument(
+        '--vendor',
+        type=str,
+        choices=['st', 'atmel', 'microchip', 'all'],
+        default='all',
+        help='Show status for specific vendor (default: all)'
+    )
+
+    status_parser.add_argument(
+        '--format',
+        type=str,
+        choices=['markdown', 'json', 'text'],
+        default='markdown',
+        help='Output format (default: markdown)'
+    )
+
     # ========================================================================
     # COMMAND: clean
     # ========================================================================

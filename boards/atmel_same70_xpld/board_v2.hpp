@@ -25,7 +25,6 @@
 #include <stdint.h>
 #include "hal/platform/same70/gpio.hpp"
 #include "hal/platform/same70/uart.hpp"
-#include "core/result.hpp"
 
 namespace board {
 
@@ -107,8 +106,9 @@ inline Result<void> initialize() {
                  (1U << ID_PIOD) | (1U << ID_PIOE);
 
     // Small delay to let clocks stabilize
-    for (volatile int i = 0; i < 10000; i++) {
+    for (volatile int i = 0; i < 10000; ) {
         __asm__ volatile("nop");
+        i = i + 1;
     }
 
     // TODO: Configure system clock to 300MHz using PLL
@@ -235,7 +235,7 @@ inline void delay_ms(uint32_t ms) {
     // So: 12,000 / 3 = 4000 iterations per ms
     volatile uint32_t count = ms * 4000;
     while (count > 0) {
-        count--;
+        count = count - 1;
         __asm__ volatile("nop");
     }
 }
@@ -252,7 +252,7 @@ inline void delay_us(uint32_t us) {
     // So: 12 / 3 = 4 iterations per us
     volatile uint32_t count = us * 4;
     while (count > 0) {
-        count--;
+        count = count - 1;
         __asm__ volatile("nop");
     }
 }
