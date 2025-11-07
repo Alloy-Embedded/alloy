@@ -19,6 +19,11 @@ enum class PeripheralFunction : uint8_t {
     D = 4,       // Peripheral D
 };
 
+// Forward declaration - base template for pin function mappings
+// Note: Pin is a non-type template parameter (uint8_t value from pins namespace)
+template<uint8_t Pin, PeripheralFunction Func>
+struct PinFunction;
+
 // ============================================================================
 // ADC Peripheral Functions
 // ============================================================================

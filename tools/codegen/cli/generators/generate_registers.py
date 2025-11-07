@@ -27,6 +27,66 @@ from cli.core.progress import get_global_tracker
 import re
 
 
+def sanitize_description(description: str) -> str:
+    """
+    Sanitize a description string to be safe for C++ comments.
+
+    Removes problematic newlines, extra whitespace, and ensures
+    descriptions don't break out of comment blocks.
+
+    Args:
+        description: Original description from SVD
+
+    Returns:
+        Cleaned description suitable for C++ comments
+    """
+    if not description:
+        return ""
+
+    # Replace newlines and multiple spaces with single space
+    cleaned = re.sub(r'\s+', ' ', description)
+
+    # Remove leading/trailing whitespace
+    cleaned = cleaned.strip()
+
+    # Remove any comment-breaking sequences (*/,  /*)
+    cleaned = cleaned.replace('*/', '').replace('/*', '')
+
+    return cleaned
+
+
+def sanitize_identifier(name: str) -> str:
+    """
+    Sanitize a name to be a valid C++ identifier.
+
+    C++ identifiers cannot start with a digit, so we prefix with an underscore
+    if needed. Also handles other invalid characters.
+
+    Args:
+        name: Original identifier name
+
+    Returns:
+        Valid C++ identifier
+
+    Examples:
+        "1_BANK" -> "_1_BANK"
+        "8_BYTE" -> "_8_BYTE"
+        "NORMAL" -> "NORMAL"
+    """
+    if not name:
+        return "INVALID"
+
+    # If starts with a digit, prefix with underscore
+    if name[0].isdigit():
+        name = '_' + name
+
+    # Replace any remaining invalid characters with underscore
+    # C++ identifiers can only contain: a-z, A-Z, 0-9, _
+    name = re.sub(r'[^a-zA-Z0-9_]', '_', name)
+
+    return name
+
+
 def sanitize_namespace_name(name: str) -> str:
     """
     Sanitize a register or field name to be a valid C++ namespace identifier.
@@ -107,6 +167,7 @@ def generate_register_struct(peripheral: Peripheral, device: SVDDevice, family_l
         device_comment = f"Device: {device.name}"
 
     # Header
+    periph_desc = sanitize_description(peripheral.description) if peripheral.description else 'Peripheral Registers'
     content = f"""/// Auto-generated register definitions for {peripheral.name}
 /// {device_comment}
 /// Vendor: {device.vendor}
@@ -120,7 +181,7 @@ def generate_register_struct(peripheral: Peripheral, device: SVDDevice, family_l
 namespace {namespace} {{
 
 // ============================================================================
-// {peripheral.name} - {peripheral.description or 'Peripheral Registers'}
+// {peripheral.name} - {periph_desc}
 // Base Address: 0x{peripheral.base_address:08X}
 // ============================================================================
 
@@ -140,7 +201,7 @@ namespace {namespace} {{
                 content += f"    uint8_t {padding_name}[{padding_bytes}]; ///< Reserved\n"
 
             # Register comment
-            desc = register.description or register.name
+            desc = sanitize_description(register.description) if register.description else register.name
             content += f"\n    /// {desc}\n"
             content += f"    /// Offset: 0x{register.offset:04X}\n"
             if register.reset_value is not None:
@@ -234,13 +295,15 @@ using namespace alloy::hal::bitfields;
 
         # Sanitize register name for namespace (removes array syntax like [2])
         reg_name_lower = sanitize_namespace_name(register.name)
-        content += f"/// {register.name} - {register.description or register.name}\n"
+        reg_desc = sanitize_description(register.description) if register.description else register.name
+        content += f"/// {register.name} - {reg_desc}\n"
         content += f"namespace {reg_name_lower} {{\n"
 
         for field in sorted(register.fields, key=lambda f: f.bit_offset):
             # Field comment
             if field.description:
-                content += f"    /// {field.description}\n"
+                desc = sanitize_description(field.description)
+                content += f"    /// {desc}\n"
             content += f"    /// Position: {field.bit_offset}, Width: {field.bit_width}\n"
             if field.access:
                 content += f"    /// Access: {field.access}\n"
@@ -258,7 +321,8 @@ using namespace alloy::hal::bitfields;
                 content += f"    /// Enumerated values for {field.name}\n"
                 content += f"    namespace {field_name_sanitized} {{\n"
                 for enum_name, enum_value in field.enum_values.items():
-                    content += f"        constexpr uint32_t {enum_name} = {enum_value};\n"
+                    enum_name_sanitized = sanitize_identifier(enum_name)
+                    content += f"        constexpr uint32_t {enum_name_sanitized} = {enum_value};\n"
                 content += "    }\n"
 
             content += "\n"
@@ -458,6 +522,13 @@ def generate_for_board_mcus(verbose: bool = False, tracker=None) -> int:
         # Try common SVD naming patterns
         mcu_upper = mcu_name.upper()
         mcu_normalized = normalize_name(mcu_name)
+
+        # For STM32, try base name without package suffix
+        # e.g., stm32f405rg -> STM32F405, stm32f103re -> STM32F103
+        import re
+        base_stm32_match = re.match(r'(STM32[A-Z]\d+)[A-Z]*\d*', mcu_upper)
+        base_stm32 = base_stm32_match.group(1) if base_stm32_match else None
+
         possible_names = [
             mcu_name,
             mcu_upper,
@@ -465,6 +536,14 @@ def generate_for_board_mcus(verbose: bool = False, tracker=None) -> int:
             mcu_normalized,
             f"{mcu_normalized}xx",
         ]
+
+        # Add STM32 base patterns
+        if base_stm32:
+            possible_names.extend([
+                base_stm32,
+                f"{base_stm32}xx",
+                base_stm32.lower(),
+            ])
 
         found = False
         for possible_name in possible_names:

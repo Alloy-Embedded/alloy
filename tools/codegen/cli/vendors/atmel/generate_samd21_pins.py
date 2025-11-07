@@ -378,17 +378,16 @@ def generate_variant(device_name: str, variant_config: Dict) -> None:
 
     # Get progress tracker
     tracker = get_global_tracker()
-    expected_files = ["hardware.hpp", "pins.hpp", "gpio.hpp"]
+    # Note: Removed gpio.hpp, hardware.hpp - no longer needed with family-level architecture
+    expected_files = ["pins.hpp"]
 
     if tracker:
         tracker.add_mcu_task(vendor, family, device_name.lower(), expected_files)
         tracker.mark_mcu_generating(vendor, family, device_name.lower())
 
-    # Generate headers
+    # Generate headers (only MCU-specific files)
     headers = {
-        "hardware.hpp": generate_hardware_header(device_name, variant_config),
         "pins.hpp": generate_pins_header(device_name, variant_config),
-        "gpio.hpp": generate_gpio_header(device_name, variant_config),
     }
 
     success = True

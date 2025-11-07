@@ -220,7 +220,7 @@ class TestNamespaceGeneration(unittest.TestCase):
     """Test namespace generation"""
 
     def test_namespace_from_device_info(self):
-        """Test that namespaces are generated from device info"""
+        """Test that namespaces are generated from device info (family-level)"""
         peripheral = create_test_peripheral("TEST", 0x40000000)
         device = create_test_device(
             name="ATSAME70Q21B",
@@ -230,9 +230,10 @@ class TestNamespaceGeneration(unittest.TestCase):
 
         output = generate_register_struct(peripheral, device)
 
+        # Now generates family-level namespace (no MCU name)
         AssertHelpers.assert_contains_all(
             output,
-            "namespace alloy::hal::atmel::same70::atsame70q21b::test"
+            "namespace alloy::hal::atmel::same70::test"
         )
 
     def test_namespace_normalization(self):

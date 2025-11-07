@@ -65,13 +65,24 @@ def detect_gpio_architecture(mcu_path: Path) -> str:
     """
     Detect which GPIO architecture the MCU uses.
 
+    Now checks FAMILY-LEVEL registers first, falling back to MCU-level.
+
     Returns:
         'pio' for Atmel SAME70/SAMV71 (PIOx)
         'gpio' for STM32 (GPIOx)
         'port' for Atmel SAMD21 (PORT)
         'unknown' if cannot detect
     """
-    registers_dir = mcu_path / "registers"
+    # Try family-level registers first (NEW)
+    family_path = mcu_path.parent
+    family_registers_dir = family_path / "registers"
+
+    # Fall back to MCU-level registers (OLD)
+    mcu_registers_dir = mcu_path / "registers"
+
+    # Use whichever exists
+    registers_dir = family_registers_dir if family_registers_dir.exists() else mcu_registers_dir
+
     if not registers_dir.exists():
         return 'unknown'
 
@@ -92,7 +103,10 @@ def detect_gpio_architecture(mcu_path: Path) -> str:
 
 def get_port_info_from_mcu(mcu_path: Path) -> Dict[str, any]:
     """
-    Extract port information from generated MCU files.
+    Extract port information from generated register files.
+
+    Now looks at FAMILY-LEVEL registers first (new architecture),
+    falling back to MCU-level for backward compatibility.
 
     Args:
         mcu_path: Path to MCU vendor directory
@@ -107,14 +121,23 @@ def get_port_info_from_mcu(mcu_path: Path) -> Dict[str, any]:
     """
     import re
 
-    # Detect architecture
+    # Detect architecture from MCU path (still works)
     arch = detect_gpio_architecture(mcu_path)
 
     ports = []
     port_bases = {}
     port_registers = {}
 
-    registers_dir = mcu_path / "registers"
+    # Try family-level registers first (NEW: vendors/{vendor}/{family}/registers/)
+    family_path = mcu_path.parent  # Go up one level from MCU to family
+    family_registers_dir = family_path / "registers"
+
+    # Fall back to MCU-level registers (OLD: vendors/{vendor}/{family}/{mcu}/registers/)
+    mcu_registers_dir = mcu_path / "registers"
+
+    # Prefer family-level, but support MCU-level for backward compatibility
+    registers_dir = family_registers_dir if family_registers_dir.exists() else mcu_registers_dir
+
     if not registers_dir.exists():
         return {
             'architecture': arch,
@@ -680,22 +703,27 @@ def generate_stm32_gpio_header(mcu_name: str, family: str, vendor: str, port_inf
 // Vendor-Specific Includes (Auto-Generated)
 // ============================================================================
 
-// Register definitions from vendor
-#include "hal/vendors/{vendor_lower}/{family_lower}/{mcu_lower}/registers/{primary_port_lower}_registers.hpp"
+// Register definitions from vendor (family-level)
+#include "hal/vendors/{vendor_lower}/{family_lower}/registers/{primary_port_lower}_registers.hpp"
 
-// Hardware definitions (if available)
-// #include "hal/vendors/{vendor_lower}/{family_lower}/{mcu_lower}/hardware.hpp"
+// Bitfields (family-level, if available)
+// #include "hal/vendors/{vendor_lower}/{family_lower}/bitfields/{primary_port_lower}_bitfields.hpp"
 
-// Pin definitions (if available)
-// #include "hal/vendors/{vendor_lower}/{family_lower}/{mcu_lower}/pins.hpp"
+// Hardware definitions (MCU-specific - if available)
+// Note: Board files should include hardware.hpp from specific MCU if needed
+// #include "hal/vendors/{vendor_lower}/{family_lower}/{{mcu}}/hardware.hpp"
+
+// Pin definitions (MCU-specific - if available)
+// Note: These should be included by board files as they're MCU-specific
+// Example: #include "hal/vendors/{vendor_lower}/{family_lower}/stm32f407vg/pins.hpp"
 
 namespace alloy::hal::{family_lower} {{
 
 using namespace alloy::core;
 using namespace alloy::hal;
 
-// Import vendor-specific register types
-using namespace alloy::hal::{vendor_lower}::{family_lower}::{mcu_lower};
+// Import vendor-specific register types (now from family-level namespace)
+using namespace alloy::hal::{vendor_lower}::{family_lower};
 
 /**
  * @brief GPIO pin modes
@@ -1105,9 +1133,13 @@ def generate_for_all_mcus(verbose: bool = False) -> int:
         max_ports = 0
 
         for mcu_info in mcu_list:
-            # Skip MCUs without registers directory
-            registers_dir = mcu_info['path'] / "registers"
-            if not registers_dir.exists():
+            # Check for registers at either family-level or MCU-level
+            family_path = mcu_info['path'].parent
+            family_registers = family_path / "registers"
+            mcu_registers = mcu_info['path'] / "registers"
+
+            # Skip if no registers exist at either level
+            if not family_registers.exists() and not mcu_registers.exists():
                 continue
 
             port_info_temp = get_port_info_from_mcu(mcu_info['path'])

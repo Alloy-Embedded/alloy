@@ -158,7 +158,8 @@ def generate_family(family_name: str, family_config: dict, svd_file: Path) -> tu
             tracker = get_global_tracker()
             if tracker:
                 # Register all files we'll generate for this MCU
-                expected_files = ["pins.hpp", "gpio.hpp", "hardware.hpp", "traits.hpp", "pin_functions.hpp"]
+                # Note: Removed gpio.hpp, hardware.hpp, traits.hpp - no longer needed with family-level architecture
+                expected_files = ["pins.hpp", "pin_functions.hpp"]
                 tracker.add_mcu_task(vendor, family_folder, variant_name.lower(), expected_files)
                 tracker.mark_mcu_generating(vendor, family_folder, variant_name.lower())
 
@@ -170,24 +171,6 @@ def generate_family(family_name: str, family_config: dict, svd_file: Path) -> tu
             pins_path.write_text(pins_content)
             if tracker:
                 tracker.mark_file_success(vendor, family_folder, variant_name.lower(), "pins.hpp", pins_path)
-
-            # Generate traits.hpp
-            if tracker:
-                tracker.mark_file_generating(vendor, family_folder, variant_name.lower(), "traits.hpp")
-            traits_content = generate_traits_header(base_mcu, package)
-            traits_path = device_dir / "traits.hpp"
-            traits_path.write_text(traits_content)
-            if tracker:
-                tracker.mark_file_success(vendor, family_folder, variant_name.lower(), "traits.hpp", traits_path)
-
-            # Generate hardware.hpp
-            if tracker:
-                tracker.mark_file_generating(vendor, family_folder, variant_name.lower(), "hardware.hpp")
-            hardware_content = generate_hardware_header(base_mcu, addresses)
-            hardware_path = device_dir / "hardware.hpp"
-            hardware_path.write_text(hardware_content)
-            if tracker:
-                tracker.mark_file_success(vendor, family_folder, variant_name.lower(), "hardware.hpp", hardware_path)
 
             # Generate pin_functions.hpp
             get_pin_funcs_fn, _, family_arch = load_pin_database(family_name)
@@ -206,59 +189,6 @@ def generate_family(family_name: str, family_config: dict, svd_file: Path) -> tu
             pin_funcs_path.write_text(pin_funcs_content)
             if tracker:
                 tracker.mark_file_success(vendor, family_folder, variant_name.lower(), "pin_functions.hpp", pin_funcs_path)
-
-            # Determine GPIO HAL path based on family architecture
-            # New structure: MCUs are inside family folder, so gpio_hal.hpp is always ../gpio_hal.hpp
-            # STM32F1/F0 use CRL/CRH registers -> have their own gpio_hal.hpp
-            # STM32F4/F2/F7/L4/G4/H7/U5 use MODER/OSPEEDR registers -> can share gpio_hal.hpp
-            if family_name.startswith("STM32F1") or family_name.startswith("STM32F0") or family_name.startswith("STM32F10"):
-                gpio_hal_include = "../gpio_hal.hpp"
-                gpio_namespace = family_folder
-            else:
-                # Use STM32F4 HAL for modern families (F4, F2, F7, L4, G4, H7, U5)
-                # All are inside their family folders now, so always ../gpio_hal.hpp
-                gpio_hal_include = "../gpio_hal.hpp"
-                gpio_namespace = family_folder
-
-            # Generate gpio.hpp (single-include)
-            if tracker:
-                tracker.mark_file_generating(vendor, family_folder, variant_name.lower(), "gpio.hpp")
-            gpio_content = f"""#pragma once
-
-// ============================================================================
-// Single-include GPIO header for {variant_name}
-// Include this file to get all GPIO functionality
-//
-// Usage:
-//   #include \"hal/vendors/st/{family_folder}/{variant_name.lower()}/gpio.hpp\"
-//
-//   using namespace gpio;
-//   using LED = GPIOPin<pins::PC13>;
-//   LED::configureOutput();
-//   LED::set();
-// ============================================================================
-
-#include "pins.hpp"
-#include "pin_functions.hpp"
-#include "traits.hpp"
-#include "hardware.hpp"
-#include "{gpio_hal_include}"
-
-namespace alloy::hal::{family_folder}::{variant_name.lower()} {{
-
-// Alias GPIO HAL template with this MCU's hardware
-template<uint8_t Pin>
-using GPIOPin = alloy::hal::{gpio_namespace}::GPIOPin<Hardware, Pin>;
-
-}}  // namespace alloy::hal::{family_folder}::{variant_name.lower()}
-
-// Convenience namespace alias
-namespace gpio = alloy::hal::{family_folder}::{variant_name.lower()};
-"""
-            gpio_path = device_dir / "gpio.hpp"
-            gpio_path.write_text(gpio_content)
-            if tracker:
-                tracker.mark_file_success(vendor, family_folder, variant_name.lower(), "gpio.hpp", gpio_path)
                 tracker.complete_mcu_generation(vendor, family_folder, variant_name.lower(), True)
 
             print(f"     ✓ Generated {package.get_gpio_pin_count()} GPIO pins")

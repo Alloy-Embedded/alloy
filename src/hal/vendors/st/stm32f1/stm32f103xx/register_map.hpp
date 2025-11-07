@@ -26,88 +26,82 @@
 // ============================================================================
 
 // ============================================================================
-// Peripheral Register Structures
+// Peripheral Register Structures (Family Level)
 // ============================================================================
 
-#include "registers/adc1_registers.hpp"
-#include "registers/adc2_registers.hpp"
-#include "registers/afio_registers.hpp"
-#include "registers/bkp_registers.hpp"
-#include "registers/can_registers.hpp"
-#include "registers/crc_registers.hpp"
-#include "registers/dac_registers.hpp"
-#include "registers/dbg_registers.hpp"
-#include "registers/dma1_registers.hpp"
-#include "registers/exti_registers.hpp"
-#include "registers/flash_registers.hpp"
-#include "registers/fsmc_registers.hpp"
-#include "registers/gpioa_registers.hpp"
-#include "registers/i2c1_registers.hpp"
-#include "registers/iwdg_registers.hpp"
-#include "registers/nvic_registers.hpp"
-#include "registers/pwr_registers.hpp"
-#include "registers/rcc_registers.hpp"
-#include "registers/rtc_registers.hpp"
-#include "registers/sdio_registers.hpp"
-#include "registers/spi1_registers.hpp"
-#include "registers/tim10_registers.hpp"
-#include "registers/tim1_registers.hpp"
-#include "registers/tim2_registers.hpp"
-#include "registers/tim6_registers.hpp"
-#include "registers/tim9_registers.hpp"
-#include "registers/uart4_registers.hpp"
-#include "registers/uart5_registers.hpp"
-#include "registers/usart1_registers.hpp"
-#include "registers/usb_registers.hpp"
-#include "registers/wwdg_registers.hpp"
+#include "../registers/adc1_registers.hpp"
+#include "../registers/adc2_registers.hpp"
+#include "../registers/afio_registers.hpp"
+#include "../registers/bkp_registers.hpp"
+#include "../registers/can_registers.hpp"
+#include "../registers/crc_registers.hpp"
+#include "../registers/dac_registers.hpp"
+#include "../registers/dbg_registers.hpp"
+#include "../registers/dma1_registers.hpp"
+#include "../registers/exti_registers.hpp"
+#include "../registers/flash_registers.hpp"
+#include "../registers/fsmc_registers.hpp"
+#include "../registers/gpioa_registers.hpp"
+#include "../registers/i2c1_registers.hpp"
+#include "../registers/iwdg_registers.hpp"
+#include "../registers/nvic_registers.hpp"
+#include "../registers/pwr_registers.hpp"
+#include "../registers/rcc_registers.hpp"
+#include "../registers/rtc_registers.hpp"
+#include "../registers/sdio_registers.hpp"
+#include "../registers/spi1_registers.hpp"
+#include "../registers/tim10_registers.hpp"
+#include "../registers/tim1_registers.hpp"
+#include "../registers/tim2_registers.hpp"
+#include "../registers/tim6_registers.hpp"
+#include "../registers/tim9_registers.hpp"
+#include "../registers/uart4_registers.hpp"
+#include "../registers/uart5_registers.hpp"
+#include "../registers/usart1_registers.hpp"
+#include "../registers/usb_registers.hpp"
+#include "../registers/wwdg_registers.hpp"
 
 // ============================================================================
-// Peripheral Bit Field Definitions
+// Peripheral Bit Field Definitions (Family Level)
 // ============================================================================
 
-#include "bitfields/adc1_bitfields.hpp"
-#include "bitfields/adc2_bitfields.hpp"
-#include "bitfields/afio_bitfields.hpp"
-#include "bitfields/bkp_bitfields.hpp"
-#include "bitfields/can_bitfields.hpp"
-#include "bitfields/crc_bitfields.hpp"
-#include "bitfields/dac_bitfields.hpp"
-#include "bitfields/dbg_bitfields.hpp"
-#include "bitfields/dma1_bitfields.hpp"
-#include "bitfields/exti_bitfields.hpp"
-#include "bitfields/flash_bitfields.hpp"
-#include "bitfields/fsmc_bitfields.hpp"
-#include "bitfields/gpioa_bitfields.hpp"
-#include "bitfields/i2c1_bitfields.hpp"
-#include "bitfields/iwdg_bitfields.hpp"
-#include "bitfields/nvic_bitfields.hpp"
-#include "bitfields/pwr_bitfields.hpp"
-#include "bitfields/rcc_bitfields.hpp"
-#include "bitfields/rtc_bitfields.hpp"
-#include "bitfields/sdio_bitfields.hpp"
-#include "bitfields/spi1_bitfields.hpp"
-#include "bitfields/tim10_bitfields.hpp"
-#include "bitfields/tim1_bitfields.hpp"
-#include "bitfields/tim2_bitfields.hpp"
-#include "bitfields/tim6_bitfields.hpp"
-#include "bitfields/tim9_bitfields.hpp"
-#include "bitfields/uart4_bitfields.hpp"
-#include "bitfields/uart5_bitfields.hpp"
-#include "bitfields/usart1_bitfields.hpp"
-#include "bitfields/usb_bitfields.hpp"
-#include "bitfields/wwdg_bitfields.hpp"
+#include "../bitfields/adc1_bitfields.hpp"
+#include "../bitfields/adc2_bitfields.hpp"
+#include "../bitfields/afio_bitfields.hpp"
+#include "../bitfields/bkp_bitfields.hpp"
+#include "../bitfields/can_bitfields.hpp"
+#include "../bitfields/crc_bitfields.hpp"
+#include "../bitfields/dac_bitfields.hpp"
+#include "../bitfields/dbg_bitfields.hpp"
+#include "../bitfields/dma1_bitfields.hpp"
+#include "../bitfields/exti_bitfields.hpp"
+#include "../bitfields/flash_bitfields.hpp"
+#include "../bitfields/fsmc_bitfields.hpp"
+#include "../bitfields/gpioa_bitfields.hpp"
+#include "../bitfields/i2c1_bitfields.hpp"
+#include "../bitfields/iwdg_bitfields.hpp"
+#include "../bitfields/nvic_bitfields.hpp"
+#include "../bitfields/pwr_bitfields.hpp"
+#include "../bitfields/rcc_bitfields.hpp"
+#include "../bitfields/rtc_bitfields.hpp"
+#include "../bitfields/sdio_bitfields.hpp"
+#include "../bitfields/spi1_bitfields.hpp"
+#include "../bitfields/tim10_bitfields.hpp"
+#include "../bitfields/tim1_bitfields.hpp"
+#include "../bitfields/tim2_bitfields.hpp"
+#include "../bitfields/tim6_bitfields.hpp"
+#include "../bitfields/tim9_bitfields.hpp"
+#include "../bitfields/uart4_bitfields.hpp"
+#include "../bitfields/uart5_bitfields.hpp"
+#include "../bitfields/usart1_bitfields.hpp"
+#include "../bitfields/usb_bitfields.hpp"
+#include "../bitfields/wwdg_bitfields.hpp"
 
 // ============================================================================
 // Enumerated Value Definitions
 // ============================================================================
 
 #include "enums.hpp"
-
-// ============================================================================
-// Pin Alternate Function Mappings
-// ============================================================================
-
-#include "pin_functions.hpp"
 
 // ============================================================================
 // Namespace Convenience Aliases
@@ -142,7 +136,6 @@ namespace alloy::hal::st::stm32f1::stm32f103xx {
 //   - 31 peripheral register structures
 //   - 31 peripheral bit field definitions
 //   - Enumeration definitions
-//   - Pin alternate function mappings
 //
 // Total peripherals with registers: 31
 //
