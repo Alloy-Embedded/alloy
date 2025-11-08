@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace alloy::hal::atmel::samv71::atsamv71q21::pin_functions {
 

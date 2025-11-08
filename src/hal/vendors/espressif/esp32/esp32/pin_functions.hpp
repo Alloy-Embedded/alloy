@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace alloy::hal::espressif::esp32::esp32::pin_functions {
 

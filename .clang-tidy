@@ -6,22 +6,33 @@ Checks: >
   -*,
   bugprone-*,
   -bugprone-easily-swappable-parameters,
+  -bugprone-reserved-identifier,
   cert-*,
+  -cert-dcl37-c,
+  -cert-dcl51-cpp,
   clang-analyzer-*,
+  -clang-diagnostic-main,
+  -clang-diagnostic-error,
   concurrency-*,
   cppcoreguidelines-*,
   -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-avoid-non-const-global-variables,
   -cppcoreguidelines-pro-bounds-pointer-arithmetic,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  -cppcoreguidelines-interfaces-global-init,
   google-*,
   -google-runtime-references,
   hicpp-*,
   -hicpp-no-array-decay,
   -hicpp-avoid-c-arrays,
   -hicpp-vararg,
+  -hicpp-no-assembler,
   misc-*,
   -misc-non-private-member-variables-in-classes,
+  -misc-const-correctness,
   modernize-*,
   -modernize-use-trailing-return-type,
   -modernize-avoid-c-arrays,
@@ -30,7 +41,8 @@ Checks: >
   readability-*,
   -readability-magic-numbers,
   -readability-function-cognitive-complexity,
-  -readability-identifier-length
+  -readability-identifier-length,
+  -readability-identifier-naming
 
 WarningsAsErrors: ''
 
@@ -75,5 +87,4 @@ CheckOptions:
     value: '8'
 
 HeaderFilterRegex: '.*/(src|tests)/.*\.(h|hpp)$'
-AnalyzeTemporaryDtors: true
 FormatStyle: file

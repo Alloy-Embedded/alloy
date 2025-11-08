@@ -75,19 +75,18 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    TIM1_IRQ_Handler,  // IRQ 0: TIM1_IRQ
-    TIM2_IRQ_Handler,  // IRQ 1: TIM2_IRQ
-    SLPTIM_IRQ_Handler,  // IRQ 4: SLPTIM_IRQ
-    SC1_IRQ_Handler,  // IRQ 5: SC1_IRQ
-    SC2_IRQ_Handler,  // IRQ 6: SC2_IRQ
-    MAC_TIM_IRQ_Handler,  // IRQ 8: MAC_TIM_IRQ
-    ADC_IRQ_Handler,  // IRQ 11: ADC_IRQ
-    EXTIA_IRQ_Handler,  // IRQ 12: EXTIA_IRQ
-    EXTIB_IRQ_Handler,  // IRQ 13: EXTIB_IRQ
-    EXTIC_IRQ_Handler,  // IRQ 14: EXTIC_IRQ
-    EXTID_IRQ_Handler,  // IRQ 15: EXTID_IRQ
+    Reset_Handler,                           // Reset handler
+    TIM1_IRQ_Handler,                        // IRQ 0: TIM1_IRQ
+    TIM2_IRQ_Handler,                        // IRQ 1: TIM2_IRQ
+    SLPTIM_IRQ_Handler,                      // IRQ 4: SLPTIM_IRQ
+    SC1_IRQ_Handler,                         // IRQ 5: SC1_IRQ
+    SC2_IRQ_Handler,                         // IRQ 6: SC2_IRQ
+    MAC_TIM_IRQ_Handler,                     // IRQ 8: MAC_TIM_IRQ
+    ADC_IRQ_Handler,                         // IRQ 11: ADC_IRQ
+    EXTIA_IRQ_Handler,                       // IRQ 12: EXTIA_IRQ
+    EXTIB_IRQ_Handler,                       // IRQ 13: EXTIB_IRQ
+    EXTIC_IRQ_Handler,                       // IRQ 14: EXTIC_IRQ
+    EXTID_IRQ_Handler,                       // IRQ 15: EXTID_IRQ
 };

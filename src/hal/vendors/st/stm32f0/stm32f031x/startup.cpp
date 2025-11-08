@@ -88,32 +88,31 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    WWDG_IRQ_Handler,  // IRQ 0: WWDG_IRQ
-    PVD_IRQ_Handler,  // IRQ 1: PVD_IRQ
-    RTC_IRQ_Handler,  // IRQ 2: RTC_IRQ
-    FLASH_IRQ_Handler,  // IRQ 3: FLASH_IRQ
-    RCC_IRQ_Handler,  // IRQ 4: RCC_IRQ
-    EXTI0_1_IRQ_Handler,  // IRQ 5: EXTI0_1_IRQ
-    EXTI2_3_IRQ_Handler,  // IRQ 6: EXTI2_3_IRQ
-    EXTI4_15_IRQ_Handler,  // IRQ 7: EXTI4_15_IRQ
-    TSC_IRQ_Handler,  // IRQ 8: TSC_IRQ
-    DMA_CH1_IRQ_Handler,  // IRQ 9: DMA_CH1_IRQ
-    DMA_CH2_3_IRQ_Handler,  // IRQ 10: DMA_CH2_3_IRQ
-    DMA_CH4_5_IRQ_Handler,  // IRQ 11: DMA_CH4_5_IRQ
-    ADC_COMP_IRQ_Handler,  // IRQ 12: ADC_COMP_IRQ
-    TIM1_BRK_UP_IRQ_Handler,  // IRQ 13: TIM1_BRK_UP_IRQ
-    TIM1_CC_IRQ_Handler,  // IRQ 14: TIM1_CC_IRQ
-    TIM2_IRQ_Handler,  // IRQ 15: TIM2_IRQ
-    TIM3_IRQ_Handler,  // IRQ 16: TIM3_IRQ
-    TIM14_IRQ_Handler,  // IRQ 19: TIM14_IRQ
-    TIM16_IRQ_Handler,  // IRQ 21: TIM16_IRQ
-    TIM17_IRQ_Handler,  // IRQ 22: TIM17_IRQ
-    I2C1_IRQ_Handler,  // IRQ 23: I2C1_IRQ
-    SPI1_IRQ_Handler,  // IRQ 25: SPI1_IRQ
-    USART1_IRQ_Handler,  // IRQ 27: USART1_IRQ
-    CEC_IRQ_Handler,  // IRQ 30: CEC_IRQ
+    Reset_Handler,                           // Reset handler
+    WWDG_IRQ_Handler,                        // IRQ 0: WWDG_IRQ
+    PVD_IRQ_Handler,                         // IRQ 1: PVD_IRQ
+    RTC_IRQ_Handler,                         // IRQ 2: RTC_IRQ
+    FLASH_IRQ_Handler,                       // IRQ 3: FLASH_IRQ
+    RCC_IRQ_Handler,                         // IRQ 4: RCC_IRQ
+    EXTI0_1_IRQ_Handler,                     // IRQ 5: EXTI0_1_IRQ
+    EXTI2_3_IRQ_Handler,                     // IRQ 6: EXTI2_3_IRQ
+    EXTI4_15_IRQ_Handler,                    // IRQ 7: EXTI4_15_IRQ
+    TSC_IRQ_Handler,                         // IRQ 8: TSC_IRQ
+    DMA_CH1_IRQ_Handler,                     // IRQ 9: DMA_CH1_IRQ
+    DMA_CH2_3_IRQ_Handler,                   // IRQ 10: DMA_CH2_3_IRQ
+    DMA_CH4_5_IRQ_Handler,                   // IRQ 11: DMA_CH4_5_IRQ
+    ADC_COMP_IRQ_Handler,                    // IRQ 12: ADC_COMP_IRQ
+    TIM1_BRK_UP_IRQ_Handler,                 // IRQ 13: TIM1_BRK_UP_IRQ
+    TIM1_CC_IRQ_Handler,                     // IRQ 14: TIM1_CC_IRQ
+    TIM2_IRQ_Handler,                        // IRQ 15: TIM2_IRQ
+    TIM3_IRQ_Handler,                        // IRQ 16: TIM3_IRQ
+    TIM14_IRQ_Handler,                       // IRQ 19: TIM14_IRQ
+    TIM16_IRQ_Handler,                       // IRQ 21: TIM16_IRQ
+    TIM17_IRQ_Handler,                       // IRQ 22: TIM17_IRQ
+    I2C1_IRQ_Handler,                        // IRQ 23: I2C1_IRQ
+    SPI1_IRQ_Handler,                        // IRQ 25: SPI1_IRQ
+    USART1_IRQ_Handler,                      // IRQ 27: USART1_IRQ
+    CEC_IRQ_Handler,                         // IRQ 30: CEC_IRQ
 };

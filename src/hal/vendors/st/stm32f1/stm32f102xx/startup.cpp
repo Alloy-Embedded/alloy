@@ -97,41 +97,40 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    WWDG_IRQ_Handler,  // IRQ 0: WWDG_IRQ
-    PVD_IRQ_Handler,  // IRQ 1: PVD_IRQ
-    TAMPER_IRQ_Handler,  // IRQ 2: TAMPER_IRQ
-    RTC_IRQ_Handler,  // IRQ 3: RTC_IRQ
-    FLASH_IRQ_Handler,  // IRQ 4: FLASH_IRQ
-    RCC_IRQ_Handler,  // IRQ 5: RCC_IRQ
-    EXTI0_IRQ_Handler,  // IRQ 6: EXTI0_IRQ
-    EXTI1_IRQ_Handler,  // IRQ 7: EXTI1_IRQ
-    EXTI2_IRQ_Handler,  // IRQ 8: EXTI2_IRQ
-    EXTI3_IRQ_Handler,  // IRQ 9: EXTI3_IRQ
-    EXTI4_IRQ_Handler,  // IRQ 10: EXTI4_IRQ
-    DMA1_Channel1_IRQ_Handler,  // IRQ 11: DMA1_Channel1_IRQ
-    DMA1_Channel2_IRQ_Handler,  // IRQ 12: DMA1_Channel2_IRQ
-    DMA1_Channel3_IRQ_Handler,  // IRQ 13: DMA1_Channel3_IRQ
-    DMA1_Channel4_IRQ_Handler,  // IRQ 14: DMA1_Channel4_IRQ
-    DMA1_Channel5_IRQ_Handler,  // IRQ 15: DMA1_Channel5_IRQ
-    DMA1_Channel6_IRQ_Handler,  // IRQ 16: DMA1_Channel6_IRQ
-    DMA1_Channel7_IRQ_Handler,  // IRQ 17: DMA1_Channel7_IRQ
-    ADC_IRQ_Handler,  // IRQ 18: ADC_IRQ
-    EXTI9_5_IRQ_Handler,  // IRQ 23: EXTI9_5_IRQ
-    TIM2_IRQ_Handler,  // IRQ 28: TIM2_IRQ
-    TIM3_IRQ_Handler,  // IRQ 29: TIM3_IRQ
-    I2C_EV_IRQ_Handler,  // IRQ 31: I2C_EV_IRQ
-    I2C_ER_IRQ_Handler,  // IRQ 32: I2C_ER_IRQ
-    SPI_IRQ_Handler,  // IRQ 35: SPI_IRQ
-    USART1_IRQ_Handler,  // IRQ 37: USART1_IRQ
-    USART2_IRQ_Handler,  // IRQ 38: USART2_IRQ
-    EXTI15_10_IRQ_Handler,  // IRQ 40: EXTI15_10_IRQ
-    RTCAlarm_IRQ_Handler,  // IRQ 41: RTCAlarm_IRQ
-    DMA2_Channel1_IRQ_Handler,  // IRQ 56: DMA2_Channel1_IRQ
-    DMA2_Channel2_IRQ_Handler,  // IRQ 57: DMA2_Channel2_IRQ
-    DMA2_Channel3_IRQ_Handler,  // IRQ 58: DMA2_Channel3_IRQ
-    DMA2_Channel4_5_IRQ_Handler,  // IRQ 59: DMA2_Channel4_5_IRQ
+    Reset_Handler,                           // Reset handler
+    WWDG_IRQ_Handler,                        // IRQ 0: WWDG_IRQ
+    PVD_IRQ_Handler,                         // IRQ 1: PVD_IRQ
+    TAMPER_IRQ_Handler,                      // IRQ 2: TAMPER_IRQ
+    RTC_IRQ_Handler,                         // IRQ 3: RTC_IRQ
+    FLASH_IRQ_Handler,                       // IRQ 4: FLASH_IRQ
+    RCC_IRQ_Handler,                         // IRQ 5: RCC_IRQ
+    EXTI0_IRQ_Handler,                       // IRQ 6: EXTI0_IRQ
+    EXTI1_IRQ_Handler,                       // IRQ 7: EXTI1_IRQ
+    EXTI2_IRQ_Handler,                       // IRQ 8: EXTI2_IRQ
+    EXTI3_IRQ_Handler,                       // IRQ 9: EXTI3_IRQ
+    EXTI4_IRQ_Handler,                       // IRQ 10: EXTI4_IRQ
+    DMA1_Channel1_IRQ_Handler,               // IRQ 11: DMA1_Channel1_IRQ
+    DMA1_Channel2_IRQ_Handler,               // IRQ 12: DMA1_Channel2_IRQ
+    DMA1_Channel3_IRQ_Handler,               // IRQ 13: DMA1_Channel3_IRQ
+    DMA1_Channel4_IRQ_Handler,               // IRQ 14: DMA1_Channel4_IRQ
+    DMA1_Channel5_IRQ_Handler,               // IRQ 15: DMA1_Channel5_IRQ
+    DMA1_Channel6_IRQ_Handler,               // IRQ 16: DMA1_Channel6_IRQ
+    DMA1_Channel7_IRQ_Handler,               // IRQ 17: DMA1_Channel7_IRQ
+    ADC_IRQ_Handler,                         // IRQ 18: ADC_IRQ
+    EXTI9_5_IRQ_Handler,                     // IRQ 23: EXTI9_5_IRQ
+    TIM2_IRQ_Handler,                        // IRQ 28: TIM2_IRQ
+    TIM3_IRQ_Handler,                        // IRQ 29: TIM3_IRQ
+    I2C_EV_IRQ_Handler,                      // IRQ 31: I2C_EV_IRQ
+    I2C_ER_IRQ_Handler,                      // IRQ 32: I2C_ER_IRQ
+    SPI_IRQ_Handler,                         // IRQ 35: SPI_IRQ
+    USART1_IRQ_Handler,                      // IRQ 37: USART1_IRQ
+    USART2_IRQ_Handler,                      // IRQ 38: USART2_IRQ
+    EXTI15_10_IRQ_Handler,                   // IRQ 40: EXTI15_10_IRQ
+    RTCAlarm_IRQ_Handler,                    // IRQ 41: RTCAlarm_IRQ
+    DMA2_Channel1_IRQ_Handler,               // IRQ 56: DMA2_Channel1_IRQ
+    DMA2_Channel2_IRQ_Handler,               // IRQ 57: DMA2_Channel2_IRQ
+    DMA2_Channel3_IRQ_Handler,               // IRQ 58: DMA2_Channel3_IRQ
+    DMA2_Channel4_5_IRQ_Handler,             // IRQ 59: DMA2_Channel4_5_IRQ
 };

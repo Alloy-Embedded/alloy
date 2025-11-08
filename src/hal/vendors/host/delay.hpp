@@ -14,9 +14,8 @@
 #define ALLOY_HAL_HOST_DELAY_HPP
 
 #include <chrono>
+#include <cstdint>
 #include <thread>
-
-#include <stdint.h>
 
 namespace alloy::hal::host {
 

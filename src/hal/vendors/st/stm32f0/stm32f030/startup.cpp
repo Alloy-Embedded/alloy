@@ -45,30 +45,78 @@ extern "C" [[noreturn]] void Default_Handler() {
 }
 
 // All interrupt handlers (weak, can be overridden by user)
-extern "C" void WWDG_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PVD_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RCC_CRS_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EXTI0_1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EXTI2_3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EXTI4_15_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void DMA_CH1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void DMA_CH2_3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void DMA_CH4_5_6_7_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void ADC_COMP_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM1_BRK_UP_TRG_COM_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM1_CC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM6_DAC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM7_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM14_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2C1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2C2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void USART1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void USART2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void USART3_4_Handler() __attribute__((weak, alias("Default_Handler")));
+extern "C" __attribute__((weak)) void WWDG_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PVD_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RCC_CRS_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EXTI0_1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EXTI2_3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EXTI4_15_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void DMA_CH1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void DMA_CH2_3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void DMA_CH4_5_6_7_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void ADC_COMP_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM1_BRK_UP_TRG_COM_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM1_CC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM6_DAC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM7_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM14_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2C1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2C2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void USART1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void USART2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void USART3_4_Handler() {
+    Default_Handler();
+}
 
 // ============================================================================
 // RESET HANDLER
@@ -76,7 +124,7 @@ extern "C" void USART3_4_Handler() __attribute__((weak, alias("Default_Handler")
 
 extern "C" [[noreturn]] void Reset_Handler() {
     // 1. Copy initialized data from Flash to RAM (.data section)
-    uint32_t* src = &_sidata;
+    const uint32_t* src = &_sidata;
     uint32_t* dest = &_sdata;
     while (dest < &_edata) {
         *dest++ = *src++;
@@ -94,7 +142,7 @@ extern "C" [[noreturn]] void Reset_Handler() {
     // 4. Call C++ static constructors
     extern void (*__init_array_start[])();
     extern void (*__init_array_end[])();
-    for (auto ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
+    for (auto* ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
         (*ctor)();
     }
 
@@ -114,35 +162,35 @@ extern "C" [[noreturn]] void Reset_Handler() {
 __attribute__((section(".isr_vector"), used))
 void (* const vector_table[])() = {
     // Core system handlers
-    reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    WWDG_Handler,                  // IRQ 0: WWDG - Window Watchdog interrupt
-    PVD_Handler,                   // IRQ 1: PVD - PVD and VDDIO2 supply comparator
+    reinterpret_cast<void (*)()>(&_estack), // Initial stack pointer
+    Reset_Handler, // Reset handler
+    WWDG_Handler, // IRQ 0: WWDG - Window Watchdog interrupt
+    PVD_Handler, // IRQ 1: PVD - PVD and VDDIO2 supply comparator
         interrupt
-    RCC_CRS_Handler,               // IRQ 4: RCC_CRS - RCC and CRS global interrupts
-    EXTI0_1_Handler,               // IRQ 5: EXTI0_1 - EXTI Line[1:0] interrupts
-    EXTI2_3_Handler,               // IRQ 6: EXTI2_3 - EXTI Line[3:2] interrupts
-    EXTI4_15_Handler,              // IRQ 7: EXTI4_15 - EXTI Line15 and EXTI4 interrupts
-    DMA_CH1_Handler,               // IRQ 9: DMA_CH1 - DMA channel 1 interrupt
-    DMA_CH2_3_Handler,             // IRQ 10: DMA_CH2_3 - DMA channel 2 and 3 interrupts
-    DMA_CH4_5_6_7_Handler,         // IRQ 11: DMA_CH4_5_6_7 - DMA channel 4, 5, 6 and 7
+    RCC_CRS_Handler, // IRQ 4: RCC_CRS - RCC and CRS global interrupts
+    EXTI0_1_Handler, // IRQ 5: EXTI0_1 - EXTI Line[1:0] interrupts
+    EXTI2_3_Handler, // IRQ 6: EXTI2_3 - EXTI Line[3:2] interrupts
+    EXTI4_15_Handler, // IRQ 7: EXTI4_15 - EXTI Line15 and EXTI4 interrupts
+    DMA_CH1_Handler, // IRQ 9: DMA_CH1 - DMA channel 1 interrupt
+    DMA_CH2_3_Handler, // IRQ 10: DMA_CH2_3 - DMA channel 2 and 3 interrupts
+    DMA_CH4_5_6_7_Handler, // IRQ 11: DMA_CH4_5_6_7 - DMA channel 4, 5, 6 and 7
         interrupts
-    ADC_COMP_Handler,              // IRQ 12: ADC_COMP - ADC and comparator interrupts
-    TIM1_BRK_UP_TRG_COM_Handler,   // IRQ 13: TIM1_BRK_UP_TRG_COM - TIM1 break, update, trigger and commutation
+    ADC_COMP_Handler, // IRQ 12: ADC_COMP - ADC and comparator interrupts
+    TIM1_BRK_UP_TRG_COM_Handler, // IRQ 13: TIM1_BRK_UP_TRG_COM - TIM1 break, update, trigger and commutation
         interrupt
-    TIM1_CC_Handler,               // IRQ 14: TIM1_CC - TIM1 Capture Compare interrupt
-    TIM2_Handler,                  // IRQ 15: TIM2 - TIM2 global interrupt
-    TIM3_Handler,                  // IRQ 16: TIM3 - TIM3 global interrupt
-    TIM6_DAC_Handler,              // IRQ 17: TIM6_DAC - TIM6 global interrupt and DAC underrun
+    TIM1_CC_Handler, // IRQ 14: TIM1_CC - TIM1 Capture Compare interrupt
+    TIM2_Handler, // IRQ 15: TIM2 - TIM2 global interrupt
+    TIM3_Handler, // IRQ 16: TIM3 - TIM3 global interrupt
+    TIM6_DAC_Handler, // IRQ 17: TIM6_DAC - TIM6 global interrupt and DAC underrun
         interrupt
-    TIM7_Handler,                  // IRQ 18: TIM7 - TIM7 global interrupt
-    TIM14_Handler,                 // IRQ 19: TIM14 - TIM14 global interrupt
-    I2C1_Handler,                  // IRQ 23: I2C1 - I2C1 global interrupt
-    I2C2_Handler,                  // IRQ 24: I2C2 - I2C2 global interrupt
-    SPI1_Handler,                  // IRQ 25: SPI1 - SPI1_global_interrupt
-    SPI2_Handler,                  // IRQ 26: SPI2 - SPI2 global interrupt
-    USART1_Handler,                // IRQ 27: USART1 - USART1 global interrupt
-    USART2_Handler,                // IRQ 28: USART2 - USART2 global interrupt
-    USART3_4_Handler,              // IRQ 29: USART3_4 - USART3 and USART4 global
+    TIM7_Handler, // IRQ 18: TIM7 - TIM7 global interrupt
+    TIM14_Handler, // IRQ 19: TIM14 - TIM14 global interrupt
+    I2C1_Handler, // IRQ 23: I2C1 - I2C1 global interrupt
+    I2C2_Handler, // IRQ 24: I2C2 - I2C2 global interrupt
+    SPI1_Handler, // IRQ 25: SPI1 - SPI1_global_interrupt
+    SPI2_Handler, // IRQ 26: SPI2 - SPI2 global interrupt
+    USART1_Handler, // IRQ 27: USART1 - USART1 global interrupt
+    USART2_Handler, // IRQ 28: USART2 - USART2 global interrupt
+    USART3_4_Handler, // IRQ 29: USART3_4 - USART3 and USART4 global
         interrupt
 };

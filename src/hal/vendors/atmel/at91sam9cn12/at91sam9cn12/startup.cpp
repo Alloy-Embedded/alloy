@@ -91,35 +91,34 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    FIQ_Handler,  // IRQ 0: FIQ
-    DBGU_Handler,  // IRQ 1: DBGU
-    PIOA_Handler,  // IRQ 2: PIOA
-    PIOC_Handler,  // IRQ 3: PIOC
-    FUSE_Handler,  // IRQ 4: FUSE
-    USART0_Handler,  // IRQ 5: USART0
-    USART1_Handler,  // IRQ 6: USART1
-    USART2_Handler,  // IRQ 7: USART2
-    USART3_Handler,  // IRQ 8: USART3
-    TWI0_Handler,  // IRQ 9: TWI0
-    TWI1_Handler,  // IRQ 10: TWI1
-    HSMCI_Handler,  // IRQ 12: HSMCI
-    SPI0_Handler,  // IRQ 13: SPI0
-    SPI1_Handler,  // IRQ 14: SPI1
-    UART0_Handler,  // IRQ 15: UART0
-    UART1_Handler,  // IRQ 16: UART1
-    TC0_Handler,  // IRQ 17: TC0
-    PWM_Handler,  // IRQ 18: PWM
-    ADC_Handler,  // IRQ 19: ADC
-    DMAC_Handler,  // IRQ 20: DMAC
-    UDP_Handler,  // IRQ 23: UDP
-    LCDC_Handler,  // IRQ 25: LCDC
-    SHA_Handler,  // IRQ 27: SHA
-    SSC_Handler,  // IRQ 28: SSC
-    AES_Handler,  // IRQ 29: AES
-    TRNG_Handler,  // IRQ 30: TRNG
-    IRQ_Handler,  // IRQ 31: IRQ
+    Reset_Handler,                           // Reset handler
+    FIQ_Handler,                             // IRQ 0: FIQ
+    DBGU_Handler,                            // IRQ 1: DBGU
+    PIOA_Handler,                            // IRQ 2: PIOA
+    PIOC_Handler,                            // IRQ 3: PIOC
+    FUSE_Handler,                            // IRQ 4: FUSE
+    USART0_Handler,                          // IRQ 5: USART0
+    USART1_Handler,                          // IRQ 6: USART1
+    USART2_Handler,                          // IRQ 7: USART2
+    USART3_Handler,                          // IRQ 8: USART3
+    TWI0_Handler,                            // IRQ 9: TWI0
+    TWI1_Handler,                            // IRQ 10: TWI1
+    HSMCI_Handler,                           // IRQ 12: HSMCI
+    SPI0_Handler,                            // IRQ 13: SPI0
+    SPI1_Handler,                            // IRQ 14: SPI1
+    UART0_Handler,                           // IRQ 15: UART0
+    UART1_Handler,                           // IRQ 16: UART1
+    TC0_Handler,                             // IRQ 17: TC0
+    PWM_Handler,                             // IRQ 18: PWM
+    ADC_Handler,                             // IRQ 19: ADC
+    DMAC_Handler,                            // IRQ 20: DMAC
+    UDP_Handler,                             // IRQ 23: UDP
+    LCDC_Handler,                            // IRQ 25: LCDC
+    SHA_Handler,                             // IRQ 27: SHA
+    SSC_Handler,                             // IRQ 28: SSC
+    AES_Handler,                             // IRQ 29: AES
+    TRNG_Handler,                            // IRQ 30: TRNG
+    IRQ_Handler,                             // IRQ 31: IRQ
 };

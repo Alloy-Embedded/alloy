@@ -19,9 +19,49 @@ on:
       - '.github/workflows/ci.yml'
 
 jobs:
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-format-14 clang-tidy-14
+
+    - name: Check clang-format
+      run: |
+        echo "🔍 Checking code formatting with clang-format..."
+        FAILED=0
+        while IFS= read -r file; do
+          if ! clang-format-14 --dry-run -Werror "$file" 2>&1; then
+            echo "❌ Format error in: $file"
+            FAILED=1
+          fi
+        done < <(find src tests -name "*.cpp" -o -name "*.hpp")
+
+        if [ $FAILED -eq 1 ]; then
+          echo ""
+          echo "❌ Code formatting check failed!"
+          echo "Run: clang-format -i <file> to fix"
+          exit 1
+        fi
+        echo "✅ All files are properly formatted"
+
+    - name: Check clang-tidy (Generated startup files)
+      run: |
+        chmod +x tools/codegen/scripts/validate_clang_tidy.sh
+        bash tools/codegen/scripts/validate_clang_tidy.sh
+
   test:
     name: Build and Test (${{ matrix.os }}, ${{ matrix.compiler }})
     runs-on: ${{ matrix.os }}
+    needs: code-quality
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]

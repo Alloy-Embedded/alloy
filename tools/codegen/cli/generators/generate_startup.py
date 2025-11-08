@@ -56,7 +56,7 @@ def generate_startup_cpp(device: SVDDevice, output_path: Path) -> bool:
             comment = f"// IRQ {irq.value}: {irq.name}"
             if irq.description:
                 comment += f" - {irq.description}"
-            vector_table.append(f"    {handler_name},{' ' * (30 - len(handler_name))}{comment}")
+            vector_table.append(f"    {handler_name}, {comment}")
 
         # Generate file content
         content = f'''/// Auto-generated startup code for {device.name}
@@ -108,9 +108,12 @@ extern "C" [[noreturn]] void Default_Handler() {{
 // All interrupt handlers (weak, can be overridden by user)
 '''
 
-        # Add weak handler declarations
+        # Add weak handler implementations (not using alias, for macOS compatibility)
         for handler in handlers:
-            content += f'extern "C" void {handler}() __attribute__((weak, alias("Default_Handler")));\n'
+            content += f'''extern "C" __attribute__((weak)) void {handler}() {{
+    Default_Handler();
+}}
+'''
 
         content += '''
 // ============================================================================
@@ -119,7 +122,7 @@ extern "C" [[noreturn]] void Default_Handler() {{
 
 extern "C" [[noreturn]] void Reset_Handler() {
     // 1. Copy initialized data from Flash to RAM (.data section)
-    uint32_t* src = &_sidata;
+    const uint32_t* src = &_sidata;
     uint32_t* dest = &_sdata;
     while (dest < &_edata) {
         *dest++ = *src++;
@@ -137,7 +140,7 @@ extern "C" [[noreturn]] void Reset_Handler() {
     // 4. Call C++ static constructors
     extern void (*__init_array_start[])();
     extern void (*__init_array_end[])();
-    for (auto ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
+    for (auto* ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
         (*ctor)();
     }
 
@@ -157,8 +160,8 @@ extern "C" [[noreturn]] void Reset_Handler() {
 __attribute__((section(".isr_vector"), used))
 void (* const vector_table[])() = {
     // Core system handlers
-    reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
+    reinterpret_cast<void (*)()>(&_estack), // Initial stack pointer
+    Reset_Handler, // Reset handler
 '''
 
         # Add all interrupt vectors

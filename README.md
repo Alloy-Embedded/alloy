@@ -6,6 +6,16 @@
 ![C++20](https://img.shields.io/badge/C%2B%2B-20-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+**Quick Links:**
+[Quick Start](#-quick-start) •
+[Code Generation](#-code-generation) •
+[Generation Commands](#code-generation-commands) •
+[Supported Hardware](#️-supported-hardware) •
+[Documentation](#-documentation) •
+[Contributing](#-contributing) •
+[Coding Style](CODING_STYLE.md) •
+[Code Quality](CODE_QUALITY_SETUP.md)
+
 ---
 
 ## 🎯 Vision
@@ -117,6 +127,153 @@ Or let CMake handle it automatically:
 ```cmake
 include(codegen)
 alloy_generate_code(MCU STM32F103C8)
+```
+
+### Code Generation Commands
+
+The code generator supports generating different types of code from CMSIS-SVD files. All commands should be run from the project root directory.
+
+#### Generate Everything (Recommended)
+
+Generate all code for all supported MCUs:
+
+```bash
+cd tools/codegen
+python3 codegen.py generate --all
+```
+
+This will generate:
+- **Startup code** (vector tables, initialization)
+- **Register structures** (peripheral register layouts)
+- **Bitfield definitions** (register bit masks and positions)
+- **Enumerations** (peripheral-specific enums)
+- **Pin functions** (alternate function mappings)
+- **Complete register maps** (single-file includes)
+
+#### Generate Specific Components
+
+Generate only startup code for all MCUs:
+```bash
+python3 codegen.py generate --startup
+```
+
+Generate only register structures and bitfields:
+```bash
+python3 codegen.py generate --registers
+```
+
+Generate only pin alternate functions:
+```bash
+python3 codegen.py generate --pin-functions
+```
+
+Generate only peripheral enumerations:
+```bash
+python3 codegen.py generate --enums
+```
+
+#### Generate for Specific Vendor
+
+Generate pin headers for ST Microelectronics only:
+```bash
+python3 codegen.py generate --pins --vendor st
+```
+
+Generate everything for Atmel only:
+```bash
+python3 codegen.py generate --all --vendor atmel
+```
+
+Supported vendors: `st`, `atmel`, `microchip`
+
+#### Platform-Specific HAL Generation
+
+Generate all platform HAL implementations (GPIO, UART, I2C, SPI, etc.):
+```bash
+python3 cli/generators/unified_generator.py
+```
+
+Generate specific peripheral for specific platform:
+```bash
+# GPIO for STM32F4
+python3 cli/generators/platform/generate_gpio.py
+
+# UART for SAME70
+python3 cli/generators/platform/generate_uart.py
+```
+
+#### Utility Commands
+
+Check generation status:
+```bash
+python3 codegen.py status
+```
+
+Show vendor information:
+```bash
+python3 codegen.py vendors
+```
+
+Show current configuration:
+```bash
+python3 codegen.py config
+```
+
+Clean generated files (dry-run):
+```bash
+python3 codegen.py clean --dry-run
+```
+
+Test SVD parser on specific file:
+```bash
+python3 codegen.py test-parser STMicro/STM32F103.svd --verbose
+```
+
+#### Complete Generation (Recommended)
+
+**NEW**: Single command to generate everything, format, and validate:
+
+```bash
+cd tools/codegen
+python3 codegen.py generate-complete
+```
+
+This will automatically:
+1. Generate all vendor code (pins, startup, registers, enums)
+2. Generate all platform HAL implementations
+3. Format all generated code with clang-format
+4. Validate startup files with clang-tidy
+
+**Options**:
+```bash
+# Skip formatting step
+python3 codegen.py generate-complete --skip-format
+
+# Skip validation step
+python3 codegen.py generate-complete --skip-validate
+
+# Continue even if a step fails
+python3 codegen.py generate-complete --continue-on-error
+```
+
+#### Manual Generation Sequence (Alternative)
+
+If you prefer to run each step manually:
+
+```bash
+cd tools/codegen
+
+# 1. Generate vendor code (registers, startup, pins)
+python3 codegen.py generate --all
+
+# 2. Generate platform HAL implementations
+python3 cli/generators/unified_generator.py
+
+# 3. Format all generated code
+bash scripts/format_generated_code.sh
+
+# 4. Validate with clang-tidy
+bash scripts/validate_clang_tidy.sh
 ```
 
 ### Documentation

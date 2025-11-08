@@ -2,8 +2,7 @@
 #define ALLOY_HAL_HOST_GPIO_HPP
 
 #include <array>
-
-#include <stdint.h>
+#include <cstdint>
 
 #include "../interface/gpio.hpp"
 

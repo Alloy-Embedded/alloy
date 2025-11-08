@@ -72,7 +72,7 @@ def generate_hardware_header(device_name: str, variant_config: Dict) -> str:
 
     content = f"""#pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace alloy::hal::atmel::samd21::{device_name.lower()}::hardware {{
 
@@ -140,7 +140,7 @@ def generate_pins_header(device_name: str, variant_config: Dict) -> str:
 
     content = f"""#pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace alloy::hal::atmel::samd21::{device_name.lower()}::pins {{
 
@@ -185,7 +185,7 @@ def generate_gpio_header(device_name: str, variant_config: Dict) -> str:
 
     content = f"""#pragma once
 
-#include <stdint.h>
+#include <cstdint>
 #include "hardware.hpp"
 #include "pins.hpp"
 

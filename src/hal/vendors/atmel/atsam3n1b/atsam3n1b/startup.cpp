@@ -81,25 +81,24 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    PMC_Handler,  // IRQ 5: PMC
-    EFC_Handler,  // IRQ 6: EFC
-    UART0_Handler,  // IRQ 8: UART0
-    UART1_Handler,  // IRQ 9: UART1
-    PIOA_Handler,  // IRQ 11: PIOA
-    PIOB_Handler,  // IRQ 12: PIOB
-    USART0_Handler,  // IRQ 14: USART0
-    USART1_Handler,  // IRQ 15: USART1
-    TWI0_Handler,  // IRQ 19: TWI0
-    TWI1_Handler,  // IRQ 20: TWI1
-    SPI_Handler,  // IRQ 21: SPI
-    TC0_Handler,  // IRQ 23: TC0
-    TC1_Handler,  // IRQ 24: TC1
-    TC2_Handler,  // IRQ 25: TC2
-    ADC_Handler,  // IRQ 29: ADC
-    DACC_Handler,  // IRQ 30: DACC
-    PWM_Handler,  // IRQ 31: PWM
+    Reset_Handler,                           // Reset handler
+    PMC_Handler,                             // IRQ 5: PMC
+    EFC_Handler,                             // IRQ 6: EFC
+    UART0_Handler,                           // IRQ 8: UART0
+    UART1_Handler,                           // IRQ 9: UART1
+    PIOA_Handler,                            // IRQ 11: PIOA
+    PIOB_Handler,                            // IRQ 12: PIOB
+    USART0_Handler,                          // IRQ 14: USART0
+    USART1_Handler,                          // IRQ 15: USART1
+    TWI0_Handler,                            // IRQ 19: TWI0
+    TWI1_Handler,                            // IRQ 20: TWI1
+    SPI_Handler,                             // IRQ 21: SPI
+    TC0_Handler,                             // IRQ 23: TC0
+    TC1_Handler,                             // IRQ 24: TC1
+    TC2_Handler,                             // IRQ 25: TC2
+    ADC_Handler,                             // IRQ 29: ADC
+    DACC_Handler,                            // IRQ 30: DACC
+    PWM_Handler,                             // IRQ 31: PWM
 };
