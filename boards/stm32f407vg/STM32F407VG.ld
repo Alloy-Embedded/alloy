@@ -3,15 +3,22 @@
  *
  * Memory layout:
  *   FLASH: 1024KB (1MB) at 0x08000000
- *   RAM:   128KB at 0x20000000 (main SRAM)
- *   CCM:   64KB at 0x10000000 (Core Coupled Memory - fast, no DMA)
+ *   RAM: 128KB (main SRAM) at 0x20000000
+ *   CCM: 64KB (Core Coupled Memory - fast, no DMA) at 0x10000000
  *
- * STM32F407 has 192KB total RAM:
- * - 128KB main SRAM (0x20000000)
- * - 64KB CCM RAM (0x10000000) - faster, but no DMA access
+ * STM32F407VG features:
+ * - ARM Cortex-M4F @ 168MHz
+ * - 1MB Flash
+ * - 192KB total RAM (128KB main + 64KB CCM)
+ * - FPU (single precision)
+ * - DSP instructions
  *
  * Stack grows downward from end of RAM
  * Heap grows upward from end of .bss
+ *
+ * Auto-generated from: stm32f4
+ * Generator: generate_linker.py
+ * Generated: 2025-11-07 18:28:51
  */
 
 /* Entry point */
@@ -21,8 +28,8 @@ ENTRY(Reset_Handler)
 MEMORY
 {
     FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 1024K
-    RAM (rwx)   : ORIGIN = 0x20000000, LENGTH = 128K
-    CCM (rwx)   : ORIGIN = 0x10000000, LENGTH = 64K
+    RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 128K
+    CCM (rwx)  : ORIGIN = 0x10000000, LENGTH = 64K
 }
 
 /* Highest address of the user mode stack */
@@ -137,7 +144,6 @@ SECTIONS
     } >RAM
 
     /* CCM RAM (Core Coupled Memory) - fast memory, no DMA access */
-    /* Can be used for stack or time-critical variables */
     .ccm (NOLOAD) :
     {
         . = ALIGN(4);
@@ -147,6 +153,7 @@ SECTIONS
         . = ALIGN(4);
         _eccm = .;
     } >CCM
+
 
     /* Heap (grows upward) */
     ._user_heap_stack :

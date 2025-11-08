@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://alloy-embedded.com/schemas/codegen/vendor.schema.json",
+  "title": "Vendor Metadata Schema",
+  "description": "Schema for vendor-level code generation metadata",
+  "type": "object",
+  "required": [
+    "vendor",
+    "architecture",
+    "common",
+    "families"
+  ],
+  "properties": {
+    "vendor": {
+      "type": "string",
+      "description": "Vendor name (e.g., 'Atmel', 'STMicroelectronics')",
+      "minLength": 1
+    },
+    "architecture": {
+      "type": "string",
+      "description": "Primary architecture family",
+      "enum": [
+        "arm_cortex_m",
+        "arm_cortex_a",
+        "risc_v",
+        "rl78",
+        "xtensa",
+        "avr",
+        "mips"
+      ]
+    },
+    "common": {
+      "type": "object",
+      "description": "Common settings for all families under this vendor",
+      "required": [
+        "endianness",
+        "pointer_size"
+      ],
+      "properties": {
+        "endianness": {
+          "type": "string",
+          "enum": ["little", "big"]
+        },
+        "pointer_size": {
+          "type": "integer",
+          "enum": [16, 32, 64],
+          "description": "Pointer size in bits"
+        },
+        "fpu": {
+          "type": "boolean",
+          "description": "Default FPU availability"
+        },
+        "naming": {
+          "type": "object",
+          "description": "Naming conventions",
+          "properties": {
+            "register_case": {
+              "type": "string",
+              "enum": ["UPPER", "lower", "PascalCase", "camelCase", "snake_case", "UPPER_SNAKE"],
+              "default": "UPPER"
+            },
+            "field_case": {
+              "type": "string",
+              "enum": ["UPPER", "lower", "PascalCase", "camelCase", "snake_case", "UPPER_SNAKE"],
+              "default": "UPPER_SNAKE"
+            },
+            "enum_case": {
+              "type": "string",
+              "enum": ["UPPER", "lower", "PascalCase", "camelCase", "snake_case", "UPPER_SNAKE"],
+              "default": "PascalCase"
+            }
+          }
+        },
+        "svd_quirks": {
+          "type": "object",
+          "description": "Known SVD file issues and fixes",
+          "properties": {
+            "known_bugs": {
+              "type": "array",
+              "description": "List of known SVD bugs",
+              "items": {
+                "type": "object",
+                "required": ["description", "fix"],
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "description": "Regex pattern matching the bug"
+                  },
+                  "fix": {
+                    "type": "string",
+                    "description": "How to fix this bug"
+                  }
+                }
+              }
+            },
+            "array_dimension_fixes": {
+              "type": "object",
+              "description": "Corrections for incorrect SVD dimensions",
+              "additionalProperties": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "code_style": {
+          "type": "object",
+          "description": "Code generation style preferences",
+          "properties": {
+            "include_guards": {
+              "type": "string",
+              "enum": ["pragma_once", "ifndef"],
+              "default": "pragma_once"
+            },
+            "namespace_style": {
+              "type": "string",
+              "enum": ["nested", "flat", "inline"],
+              "default": "nested"
+            },
+            "documentation_style": {
+              "type": "string",
+              "enum": ["doxygen", "inline", "none"],
+              "default": "doxygen"
+            },
+            "constexpr_preference": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    },
+    "families": {
+      "type": "array",
+      "description": "List of MCU families under this vendor",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "description"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Family name (e.g., 'SAME70', 'STM32F1')"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description"
+          },
+          "core": {
+            "type": "string",
+            "description": "Specific core (e.g., 'Cortex-M7', 'Cortex-M3')"
+          },
+          "metadata_file": {
+            "type": "string",
+            "description": "Path to family metadata JSON (relative to metadata/families/)",
+            "pattern": "^[a-z0-9_-]+\\.json$"
+          }
+        }
+      }
+    },
+    "peripheral_mappings": {
+      "type": "object",
+      "description": "Vendor-specific peripheral name mappings to standard names",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}

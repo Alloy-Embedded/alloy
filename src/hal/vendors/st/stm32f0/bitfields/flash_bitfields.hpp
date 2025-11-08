@@ -150,8 +150,7 @@ namespace cr {
     constexpr uint32_t ERRIE_Pos = 10;
     constexpr uint32_t ERRIE_Msk = ERRIE::mask;
 
-    /// End of operation interrupt
-              enable
+    /// End of operation interrupt enable
     /// Position: 12, Width: 1
     using EOPIE = BitField<12, 1>;
     constexpr uint32_t EOPIE_Pos = 12;

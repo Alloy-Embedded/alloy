@@ -1,315 +1,420 @@
 /**
- * @file i2c.hpp
- * @brief Template-based I2C (TWIHS) implementation for SAME70 (ARM Cortex-M7)
+ * @file twihs.hpp
+ * @brief Template-based I2C implementation for SAME70 (Platform Layer)
  *
- * This file implements the I2C peripheral for SAME70 using templates
- * with ZERO virtual functions and ZERO runtime overhead.
+ * This file implements I2C peripheral using templates with ZERO virtual
+ * functions and ZERO runtime overhead.
  *
  * Design Principles:
  * - Template-based: Peripheral address and IRQ resolved at compile-time
  * - Zero overhead: Fully inlined, identical assembly to manual register access
  * - Type-safe: Strong typing prevents errors
+ * - Error handling: Uses Result<T, ErrorCode> for robust error handling
  * - Master mode only (for simplicity)
+ * - Testable: Includes test hooks for unit testing
+ *
+ * Auto-generated from: same70
+ * Generator: generate_platform_twihs.py
+ * Generated: 2025-11-07 17:32:32
  *
  * @note Part of Alloy HAL Platform Abstraction Layer
- * @note SAME70 uses TWIHS (Two Wire Interface High Speed) which is I2C compatible
  */
 
 #pragma once
 
+// ============================================================================
+// Core Types
+// ============================================================================
+
 #include "core/error.hpp"
+#include "core/error_code.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 #include "hal/types.hpp"
 
-// Include SAME70 register definitions
+// ============================================================================
+// Vendor-Specific Includes (Auto-Generated)
+// ============================================================================
+
+// Register definitions from vendor (family-level)
 #include "hal/vendors/atmel/same70/registers/twihs0_registers.hpp"
+
+// Bitfields (family-level)
 #include "hal/vendors/atmel/same70/bitfields/twihs0_bitfields.hpp"
-#include "hal/platform/same70/clock.hpp"
+
 
 namespace alloy::hal::same70 {
 
 using namespace alloy::core;
 using namespace alloy::hal;
-namespace twihs = alloy::hal::atmel::same70::twihs0;  // Alias for easier bitfield access
 
-// Use common I2cSpeed from hal/types.hpp
+// Import vendor-specific register types
+using namespace alloy::hal::atmel::same70;
+
+// Namespace alias for bitfield access
+namespace twihs = alloy::hal::atmel::same70::twihs0;
+
+// Note: I2C uses common I2cMode from hal/types.hpp:
+// - Mode0: CPOL=0, CPHA=0
+// - Mode1: CPOL=0, CPHA=1
+// - Mode2: CPOL=1, CPHA=0
+// - Mode3: CPOL=1, CPHA=1
+
 
 /**
  * @brief Template-based I2C peripheral for SAME70
+ *
+ * This class provides a template-based I2C implementation with ZERO runtime
+ * overhead. All peripheral configuration is resolved at compile-time.
+ *
+ * Template Parameters:
+ * - BASE_ADDR: I2C peripheral base address
+ * - IRQ_ID: I2C interrupt ID for clock enable
+ *
+ * Example usage:
+ * @code
+ * // Basic I2C usage example
+ * using MyI2c = I2c<TWIHS0_BASE, TWIHS0_IRQ>;
+ * auto i2c = MyI2c{};
+ * i2c.open();
+ * i2c.setSpeed(I2cSpeed::Standard100kHz);
+ * uint8_t data[] = {0x01, 0x02, 0x03};
+ * i2c.write(0x50, data, 3);
+ * i2c.close();
+ * @endcode
+ *
+ * @tparam BASE_ADDR I2C peripheral base address
+ * @tparam IRQ_ID I2C interrupt ID for clock enable
  */
 template <uint32_t BASE_ADDR, uint32_t IRQ_ID>
 class I2c {
 public:
-    static constexpr uint32_t base_address = BASE_ADDR;
+    // Compile-time constants
+    static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t irq_id = IRQ_ID;
 
-    static inline volatile atmel::same70::twihs0::TWIHS0_Registers* get_hw() {
+    // Configuration constants
+    static constexpr uint32_t I2C_TIMEOUT = 100000;  ///< I2C timeout in loop iterations (~10ms at 150MHz)
+
+    /**
+     * @brief Get TWIHS peripheral registers
+     *
+     * Returns pointer to TWIHS registers. Uses conditional compilation
+     * for test hook injection.
+     */
+    static inline volatile alloy::hal::atmel::same70::twihs0::TWIHS0_Registers* get_hw() {
 #ifdef ALLOY_I2C_MOCK_HW
+        // In tests, use the mock hardware pointer
         return ALLOY_I2C_MOCK_HW();
 #else
-        return reinterpret_cast<volatile atmel::same70::twihs0::TWIHS0_Registers*>(BASE_ADDR);
+        return reinterpret_cast<volatile alloy::hal::atmel::same70::twihs0::TWIHS0_Registers*>(BASE_ADDR);
 #endif
     }
 
     constexpr I2c() = default;
 
-    // I2C timeout (in loop iterations, ~10000 = ~1ms at 150MHz)
-    static constexpr uint32_t I2C_TIMEOUT = 100000;  // ~10ms timeout
-
-    Result<void> open() {
-        if (m_opened) {
-            return Result<void>::error(ErrorCode::AlreadyInitialized);
-        }
-
+    /**
+     * @brief Initialize I2C peripheral
+     *
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> open() {
         auto* hw = get_hw();
 
-        // Enable peripheral clock using Clock class
-        auto clock_result = Clock::enablePeripheralClock(IRQ_ID);
-        if (!clock_result.is_ok()) {
-            return Result<void>::error(clock_result.error());
+        if (m_opened) {
+            return Err(ErrorCode::AlreadyInitialized);
         }
-        hw->CR = atmel::same70::twihs0::cr::SWRST::mask;
-        hw->CR = atmel::same70::twihs0::cr::MSDIS::mask | atmel::same70::twihs0::cr::SVDIS::mask;
-        hw->CR = atmel::same70::twihs0::cr::MSEN::mask;
+
+        // Enable peripheral clock (PMC)
+        // TODO: Enable peripheral clock via PMC
+
+        // Reset and configure I2C master mode
+        hw->CR = twihs::cr::SWRST::mask;
+        hw->CR = twihs::cr::MSDIS::mask | twihs::cr::SVDIS::mask;
+        hw->CR = twihs::cr::MSEN::mask;
 
         m_opened = true;
-        return Result<void>::ok();
+
+        return Ok();
     }
 
-    Result<void> close() {
+    /**
+     * @brief Close I2C peripheral
+     *
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> close() {
+        auto* hw = get_hw();
+
         if (!m_opened) {
-            return Result<void>::error(ErrorCode::NotInitialized);
+            return Err(ErrorCode::NotInitialized);
         }
 
-        auto* hw = get_hw();
-        hw->CR = atmel::same70::twihs0::cr::MSDIS::mask;
+        // Disable I2C master
+        hw->CR = twihs::cr::MSDIS::mask;
 
         m_opened = false;
-        return Result<void>::ok();
+
+        return Ok();
     }
 
-    Result<void> setSpeed(I2cSpeed speed) {
-        if (!m_opened) {
-            return Result<void>::error(ErrorCode::NotInitialized);
-        }
-
+    /**
+     * @brief Set I2C bus speed
+     *
+     * @param speed I2C bus speed (Standard 100kHz, Fast 400kHz, etc)
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> setSpeed(I2cSpeed speed) {
         auto* hw = get_hw();
-        uint32_t speed_hz = static_cast<uint32_t>(speed);
-        uint32_t mck = Clock::getMasterClockFrequency();
-        uint32_t div = (mck / (2 * speed_hz)) - 4;
 
-        if (div > 255) {
-            return Result<void>::error(ErrorCode::InvalidParameter);
+        if (!m_opened) {
+            return Err(ErrorCode::NotInitialized);
         }
 
-        // Configure clock waveform generator using type-safe bitfields
+        // Calculate clock divider based on master clock frequency
+        uint32_t speed_hz = static_cast<uint32_t>(speed);
+        // Assuming 150MHz master clock for SAME70
+        constexpr uint32_t MCK = 150000000;
+        uint32_t div = (MCK / (2 * speed_hz)) - 4;
+        
+        if (div > 255) {
+            return Err(ErrorCode::InvalidParameter);
+        }
+        
+        // Configure clock waveform generator
         uint32_t cwgr = 0;
         cwgr = twihs::cwgr::CLDIV::write(cwgr, div);
         cwgr = twihs::cwgr::CHDIV::write(cwgr, div);
         cwgr = twihs::cwgr::CKDIV::write(cwgr, 0);
         hw->CWGR = cwgr;
 
-        return Result<void>::ok();
+        return Ok();
     }
 
-    Result<size_t> write(uint8_t device_addr, const uint8_t* data, size_t size) {
+    /**
+     * @brief Write data to I2C device
+     *
+     * @param device_addr 7-bit I2C device address
+     * @param data Data buffer to write
+     * @param size Number of bytes to write
+     * @return Result<size_t, ErrorCode> Write data to I2C device     */
+    Result<size_t, ErrorCode> write(uint8_t device_addr, const uint8_t* data, size_t size) {
+        auto* hw = get_hw();
+
         if (!m_opened) {
-            return Result<size_t>::error(ErrorCode::NotInitialized);
+            return Err(ErrorCode::NotInitialized);
         }
 
         if (data == nullptr || size == 0) {
-            return Result<size_t>::error(ErrorCode::InvalidParameter);
+            return Err(ErrorCode::InvalidParameter);
         }
 
-        auto* hw = get_hw();
-
-        // Configure Master Mode Register for write using type-safe bitfields
+        // Configure master mode for write and transmit data
         uint32_t mmr = 0;
         mmr = twihs::mmr::DADR::write(mmr, device_addr);
-        // MREAD = 0 (write), IADRSZ = 0 (no internal address)
         hw->MMR = mmr;
-
+        
         for (size_t i = 0; i < size; ++i) {
             hw->THR = data[i];
-
+            
             uint32_t timeout = 0;
-            while (!(hw->SR & atmel::same70::twihs0::sr::TXRDY::mask)) {
-                if (hw->SR & atmel::same70::twihs0::sr::NACK::mask) {
-                    return Result<size_t>::error(ErrorCode::CommunicationError);
+            while (!(hw->SR & twihs::sr::TXRDY::mask)) {
+                if (hw->SR & twihs::sr::NACK::mask) {
+                    return Err(ErrorCode::CommunicationError);
                 }
                 if (++timeout > I2C_TIMEOUT) {
-                    return Result<size_t>::error(ErrorCode::Timeout);
+                    return Err(ErrorCode::Timeout);
                 }
             }
         }
-
-        hw->CR = atmel::same70::twihs0::cr::STOP::mask;
-
+        
+        hw->CR = twihs::cr::STOP::mask;
+        
         uint32_t timeout = 0;
-        while (!(hw->SR & atmel::same70::twihs0::sr::TXCOMP::mask)) {
+        while (!(hw->SR & twihs::sr::TXCOMP::mask)) {
             if (++timeout > I2C_TIMEOUT) {
-                return Result<size_t>::error(ErrorCode::Timeout);
+                return Err(ErrorCode::Timeout);
             }
         }
 
-        return Result<size_t>::ok(size);
+        return Ok(size_t(size));
     }
 
-    Result<size_t> read(uint8_t device_addr, uint8_t* data, size_t size) {
+    /**
+     * @brief Read data from I2C device
+     *
+     * @param device_addr 7-bit I2C device address
+     * @param data Buffer for received data
+     * @param size Number of bytes to read
+     * @return Result<size_t, ErrorCode> Read data from I2C device     */
+    Result<size_t, ErrorCode> read(uint8_t device_addr, uint8_t* data, size_t size) {
+        auto* hw = get_hw();
+
         if (!m_opened) {
-            return Result<size_t>::error(ErrorCode::NotInitialized);
+            return Err(ErrorCode::NotInitialized);
         }
 
         if (data == nullptr || size == 0) {
-            return Result<size_t>::error(ErrorCode::InvalidParameter);
+            return Err(ErrorCode::InvalidParameter);
         }
 
-        auto* hw = get_hw();
-
-        // Configure Master Mode Register for read using type-safe bitfields
+        // Configure master mode for read and receive data
         uint32_t mmr = 0;
         mmr = twihs::mmr::DADR::write(mmr, device_addr);
-        mmr = twihs::mmr::MREAD::set(mmr);  // Read mode
-        // IADRSZ = 0 (no internal address)
+        mmr = twihs::mmr::MREAD::set(mmr);
         hw->MMR = mmr;
-
+        
         if (size == 1) {
-            hw->CR = atmel::same70::twihs0::cr::START::mask | atmel::same70::twihs0::cr::STOP::mask;
+            hw->CR = twihs::cr::START::mask | twihs::cr::STOP::mask;
         } else {
-            hw->CR = atmel::same70::twihs0::cr::START::mask;
+            hw->CR = twihs::cr::START::mask;
         }
-
+        
         for (size_t i = 0; i < size; ++i) {
             if (i == size - 1 && size > 1) {
-                hw->CR = atmel::same70::twihs0::cr::STOP::mask;
+                hw->CR = twihs::cr::STOP::mask;
             }
-
+            
             uint32_t timeout = 0;
-            while (!(hw->SR & atmel::same70::twihs0::sr::RXRDY::mask)) {
-                if (hw->SR & atmel::same70::twihs0::sr::NACK::mask) {
-                    return Result<size_t>::error(ErrorCode::CommunicationError);
+            while (!(hw->SR & twihs::sr::RXRDY::mask)) {
+                if (hw->SR & twihs::sr::NACK::mask) {
+                    return Err(ErrorCode::CommunicationError);
                 }
                 if (++timeout > I2C_TIMEOUT) {
-                    return Result<size_t>::error(ErrorCode::Timeout);
+                    return Err(ErrorCode::Timeout);
                 }
             }
-
+            
             data[i] = static_cast<uint8_t>(hw->RHR);
         }
-
+        
         uint32_t timeout = 0;
-        while (!(hw->SR & atmel::same70::twihs0::sr::TXCOMP::mask)) {
+        while (!(hw->SR & twihs::sr::TXCOMP::mask)) {
             if (++timeout > I2C_TIMEOUT) {
-                return Result<size_t>::error(ErrorCode::Timeout);
+                return Err(ErrorCode::Timeout);
             }
         }
 
-        return Result<size_t>::ok(size);
+        return Ok(size_t(size));
     }
 
-    Result<void> writeRegister(uint8_t device_addr, uint8_t reg_addr, uint8_t value) {
-        if (!m_opened) {
-            return Result<void>::error(ErrorCode::NotInitialized);
-        }
-
+    /**
+     * @brief Write single byte to device register
+     *
+     * @param device_addr 7-bit I2C device address
+     * @param reg_addr Register address
+     * @param value Value to write
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> writeRegister(uint8_t device_addr, uint8_t reg_addr, uint8_t value) {
         auto* hw = get_hw();
 
-        // Configure Master Mode Register for write with internal address
+        if (!m_opened) {
+            return Err(ErrorCode::NotInitialized);
+        }
+
+        // Write to device register using internal address
         uint32_t mmr = 0;
         mmr = twihs::mmr::DADR::write(mmr, device_addr);
         mmr = twihs::mmr::IADRSZ::write(mmr, twihs::mmr::iadrsz::_1_BYTE);
-        // MREAD = 0 (write)
         hw->MMR = mmr;
         hw->IADR = reg_addr;
         hw->THR = value;
-
+        
         uint32_t timeout = 0;
-        while (!(hw->SR & atmel::same70::twihs0::sr::TXRDY::mask)) {
-            if (hw->SR & atmel::same70::twihs0::sr::NACK::mask) {
-                return Result<void>::error(ErrorCode::CommunicationError);
+        while (!(hw->SR & twihs::sr::TXRDY::mask)) {
+            if (hw->SR & twihs::sr::NACK::mask) {
+                return Err(ErrorCode::CommunicationError);
             }
             if (++timeout > I2C_TIMEOUT) {
-                return Result<void>::error(ErrorCode::Timeout);
+                return Err(ErrorCode::Timeout);
             }
         }
-
-        hw->CR = atmel::same70::twihs0::cr::STOP::mask;
-
+        
+        hw->CR = twihs::cr::STOP::mask;
+        
         timeout = 0;
-        while (!(hw->SR & atmel::same70::twihs0::sr::TXCOMP::mask)) {
+        while (!(hw->SR & twihs::sr::TXCOMP::mask)) {
             if (++timeout > I2C_TIMEOUT) {
-                return Result<void>::error(ErrorCode::Timeout);
+                return Err(ErrorCode::Timeout);
             }
         }
 
-        return Result<void>::ok();
+        return Ok();
     }
 
-    Result<void> readRegister(uint8_t device_addr, uint8_t reg_addr, uint8_t* value) {
+    /**
+     * @brief Read single byte from device register
+     *
+     * @param device_addr 7-bit I2C device address
+     * @param reg_addr Register address
+     * @param value Pointer to store read value
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> readRegister(uint8_t device_addr, uint8_t reg_addr, uint8_t* value) {
+        auto* hw = get_hw();
+
         if (!m_opened) {
-            return Result<void>::error(ErrorCode::NotInitialized);
+            return Err(ErrorCode::NotInitialized);
         }
 
         if (value == nullptr) {
-            return Result<void>::error(ErrorCode::InvalidParameter);
+            return Err(ErrorCode::InvalidParameter);
         }
 
-        auto* hw = get_hw();
-
-        // Configure Master Mode Register for read with internal address
+        // Read from device register using internal address
         uint32_t mmr = 0;
         mmr = twihs::mmr::DADR::write(mmr, device_addr);
         mmr = twihs::mmr::IADRSZ::write(mmr, twihs::mmr::iadrsz::_1_BYTE);
-        mmr = twihs::mmr::MREAD::set(mmr);  // Read mode
+        mmr = twihs::mmr::MREAD::set(mmr);
         hw->MMR = mmr;
         hw->IADR = reg_addr;
-        hw->CR = atmel::same70::twihs0::cr::START::mask | atmel::same70::twihs0::cr::STOP::mask;
-
+        hw->CR = twihs::cr::START::mask | twihs::cr::STOP::mask;
+        
         uint32_t timeout = 0;
-        while (!(hw->SR & atmel::same70::twihs0::sr::RXRDY::mask)) {
-            if (hw->SR & atmel::same70::twihs0::sr::NACK::mask) {
-                return Result<void>::error(ErrorCode::CommunicationError);
+        while (!(hw->SR & twihs::sr::RXRDY::mask)) {
+            if (hw->SR & twihs::sr::NACK::mask) {
+                return Err(ErrorCode::CommunicationError);
             }
             if (++timeout > I2C_TIMEOUT) {
-                return Result<void>::error(ErrorCode::Timeout);
+                return Err(ErrorCode::Timeout);
             }
         }
-
+        
         *value = static_cast<uint8_t>(hw->RHR);
-
+        
         timeout = 0;
-        while (!(hw->SR & atmel::same70::twihs0::sr::TXCOMP::mask)) {
+        while (!(hw->SR & twihs::sr::TXCOMP::mask)) {
             if (++timeout > I2C_TIMEOUT) {
-                return Result<void>::error(ErrorCode::Timeout);
+                return Err(ErrorCode::Timeout);
             }
         }
 
-        return Result<void>::ok();
+        return Ok();
     }
 
+    /**
+     * @brief Check if I2C peripheral is open
+     *
+     * @return bool Check if I2C peripheral is open     */
     bool isOpen() const {
         return m_opened;
     }
 
 private:
-    bool m_opened = false;
+    bool m_opened = false;  ///< Tracks if peripheral is initialized
 };
 
-// ============================================================================
-// Predefined I2C instances for SAME70
-// ============================================================================
+// ==============================================================================
+// Predefined I2C Instances
+// ==============================================================================
 
-constexpr uint32_t TWIHS0_BASE = 0x40018000;
-constexpr uint32_t TWIHS0_IRQ = 19;
+constexpr uint32_t I2C0_BASE = 0x40018000;
+constexpr uint32_t I2C0_IRQ = 19;
 
-constexpr uint32_t TWIHS1_BASE = 0x4001C000;
-constexpr uint32_t TWIHS1_IRQ = 20;
+constexpr uint32_t I2C1_BASE = 0x4001C000;
+constexpr uint32_t I2C1_IRQ = 20;
 
-constexpr uint32_t TWIHS2_BASE = 0x40060000;
-constexpr uint32_t TWIHS2_IRQ = 41;
+constexpr uint32_t I2C2_BASE = 0x40060000;
+constexpr uint32_t I2C2_IRQ = 41;
 
-using I2c0 = I2c<TWIHS0_BASE, TWIHS0_IRQ>;
-using I2c1 = I2c<TWIHS1_BASE, TWIHS1_IRQ>;
-using I2c2 = I2c<TWIHS2_BASE, TWIHS2_IRQ>;
+using I2c0 = I2c<I2C0_BASE, I2C0_IRQ>;  ///< TWIHS0 instance (I2C0)
+using I2c1 = I2c<I2C1_BASE, I2C1_IRQ>;  ///< TWIHS1 instance (I2C1)
+using I2c2 = I2c<I2C2_BASE, I2C2_IRQ>;  ///< TWIHS2 instance (I2C2)
 
 } // namespace alloy::hal::same70

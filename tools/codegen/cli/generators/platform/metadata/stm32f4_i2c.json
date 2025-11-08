@@ -1,0 +1,237 @@
+{
+  "family": "stm32f4",
+  "vendor": "st",
+  "peripheral_name": "I2C",
+  "register_include": "hal/vendors/st/stm32f4/registers/i2c3_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32f4/bitfields/i2c3_bitfields.hpp",
+  "register_namespace": "alloy::hal::st::stm32f4::i2c3",
+  "register_type": "I2C3_Registers",
+  "platform_namespace": "alloy::hal::stm32f4",
+  "vendor_namespace": "alloy::hal::st::stm32f4",
+  "namespace_alias": "i2c",
+  "requires_clock": false,
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "I2C peripheral base address"
+    },
+    {
+      "name": "IRQ_ID",
+      "type": "uint32_t",
+      "description": "I2C interrupt ID for clock enable"
+    }
+  ],
+
+  "additional_enums": [],
+
+  "constants": [
+    {
+      "name": "I2C_TIMEOUT",
+      "type": "uint32_t",
+      "value": "100000",
+      "description": "I2C timeout in loop iterations (~10ms at 168MHz)"
+    }
+  ],
+
+  "registers": {
+    "control1": {"name": "CR1", "description": "Control Register 1"},
+    "control2": {"name": "CR2", "description": "Control Register 2"},
+    "status1": {"name": "SR1", "description": "Status Register 1"},
+    "status2": {"name": "SR2", "description": "Status Register 2"},
+    "data": {"name": "DR", "description": "Data Register"},
+    "clock_control": {"name": "CCR", "description": "Clock Control Register"},
+    "trise": {"name": "TRISE", "description": "Rise Time Register"}
+  },
+
+  "operations": {
+    "open": {
+      "description": "Initialize I2C peripheral",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (m_opened)",
+          "return_error": "ErrorCode::AlreadyInitialized"
+        },
+        {
+          "comment": "Enable peripheral clock (RCC)",
+          "custom_code": "// TODO: Enable peripheral clock via RCC"
+        },
+        {
+          "comment": "Reset and enable I2C peripheral",
+          "custom_code": "hw->CR1 = i2c::cr1::SWRST::mask;\n        hw->CR1 = 0;\n        hw->CR1 = i2c::cr1::PE::mask;"
+        },
+        {
+          "set_state": "m_opened = true"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "close": {
+      "description": "Close I2C peripheral",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable I2C peripheral",
+          "custom_code": "hw->CR1 &= ~i2c::cr1::PE::mask;"
+        },
+        {
+          "set_state": "m_opened = false"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "setSpeed": {
+      "description": "Set I2C bus speed",
+      "parameters": [
+        {"name": "speed", "type": "I2cSpeed", "description": "I2C bus speed (Standard 100kHz, Fast 400kHz)"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Configure I2C clock based on APB1 frequency",
+          "custom_code": "uint32_t speed_hz = static_cast<uint32_t>(speed);\n        // Assuming 42MHz APB1 clock for STM32F4\n        constexpr uint32_t PCLK1 = 42000000;\n        \n        // Disable peripheral during configuration\n        hw->CR1 &= ~i2c::cr1::PE::mask;\n        \n        // Configure frequency (APB1 freq in MHz)\n        uint32_t cr2 = hw->CR2 & ~i2c::cr2::FREQ::mask;\n        cr2 = i2c::cr2::FREQ::write(cr2, PCLK1 / 1000000);\n        hw->CR2 = cr2;\n        \n        // Configure CCR\n        uint32_t ccr = 0;\n        if (speed_hz <= 100000) {\n            // Standard mode (100kHz)\n            uint32_t ccr_value = PCLK1 / (speed_hz * 2);\n            ccr = i2c::ccr::CCR::write(ccr, ccr_value);\n            hw->TRISE = (PCLK1 / 1000000) + 1;\n        } else {\n            // Fast mode (400kHz)\n            uint32_t ccr_value = PCLK1 / (speed_hz * 3);\n            ccr = i2c::ccr::F_S::set(ccr);\n            ccr = i2c::ccr::CCR::write(ccr, ccr_value);\n            hw->TRISE = ((PCLK1 / 1000000) * 300) / 1000 + 1;\n        }\n        hw->CCR = ccr;\n        \n        // Re-enable peripheral\n        hw->CR1 |= i2c::cr1::PE::mask;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "write": {
+      "description": "Write data to I2C device",
+      "parameters": [
+        {"name": "device_addr", "type": "uint8_t", "description": "7-bit I2C device address"},
+        {"name": "data", "type": "const uint8_t*", "description": "Data buffer to write"},
+        {"name": "size", "type": "size_t", "description": "Number of bytes to write"}
+      ],
+      "return_type": "Result<size_t, ErrorCode>",
+      "returns": "size",
+      "returns_type": "size_t",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (data == nullptr || size == 0)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "comment": "Generate START condition and send address",
+          "custom_code": "hw->CR1 |= i2c::cr1::START::mask;\n        \n        uint32_t timeout = 0;\n        while (!(hw->SR1 & i2c::sr1::SB::mask)) {\n            if (++timeout > I2C_TIMEOUT) {\n                return Err(ErrorCode::Timeout);\n            }\n        }\n        \n        hw->DR = device_addr << 1;\n        \n        timeout = 0;\n        while (!(hw->SR1 & i2c::sr1::ADDR::mask)) {\n            if (hw->SR1 & i2c::sr1::AF::mask) {\n                hw->CR1 |= i2c::cr1::STOP::mask;\n                return Err(ErrorCode::CommunicationError);\n            }\n            if (++timeout > I2C_TIMEOUT) {\n                hw->CR1 |= i2c::cr1::STOP::mask;\n                return Err(ErrorCode::Timeout);\n            }\n        }\n        \n        // Clear ADDR flag by reading SR1 and SR2\n        (void)hw->SR1;\n        (void)hw->SR2;\n        \n        // Send data bytes\n        for (size_t i = 0; i < size; ++i) {\n            hw->DR = data[i];\n            \n            timeout = 0;\n            while (!(hw->SR1 & i2c::sr1::TxE::mask)) {\n                if (++timeout > I2C_TIMEOUT) {\n                    hw->CR1 |= i2c::cr1::STOP::mask;\n                    return Err(ErrorCode::Timeout);\n                }\n            }\n        }\n        \n        // Wait for byte transfer finished\n        timeout = 0;\n        while (!(hw->SR1 & i2c::sr1::BTF::mask)) {\n            if (++timeout > I2C_TIMEOUT) {\n                hw->CR1 |= i2c::cr1::STOP::mask;\n                return Err(ErrorCode::Timeout);\n            }\n        }\n        \n        // Generate STOP condition\n        hw->CR1 |= i2c::cr1::STOP::mask;"
+        }
+      ]
+    },
+
+    "read": {
+      "description": "Read data from I2C device",
+      "parameters": [
+        {"name": "device_addr", "type": "uint8_t", "description": "7-bit I2C device address"},
+        {"name": "data", "type": "uint8_t*", "description": "Buffer for received data"},
+        {"name": "size", "type": "size_t", "description": "Number of bytes to read"}
+      ],
+      "return_type": "Result<size_t, ErrorCode>",
+      "returns": "size",
+      "returns_type": "size_t",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (data == nullptr || size == 0)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "comment": "Generate START condition and send address with read bit",
+          "custom_code": "hw->CR1 |= i2c::cr1::ACK::mask;\n        hw->CR1 |= i2c::cr1::START::mask;\n        \n        uint32_t timeout = 0;\n        while (!(hw->SR1 & i2c::sr1::SB::mask)) {\n            if (++timeout > I2C_TIMEOUT) {\n                return Err(ErrorCode::Timeout);\n            }\n        }\n        \n        hw->DR = (device_addr << 1) | 0x01;\n        \n        timeout = 0;\n        while (!(hw->SR1 & i2c::sr1::ADDR::mask)) {\n            if (hw->SR1 & i2c::sr1::AF::mask) {\n                hw->CR1 |= i2c::cr1::STOP::mask;\n                return Err(ErrorCode::CommunicationError);\n            }\n            if (++timeout > I2C_TIMEOUT) {\n                hw->CR1 |= i2c::cr1::STOP::mask;\n                return Err(ErrorCode::Timeout);\n            }\n        }\n        \n        // Clear ADDR flag\n        (void)hw->SR1;\n        (void)hw->SR2;\n        \n        // Read data bytes\n        for (size_t i = 0; i < size; ++i) {\n            if (i == size - 1) {\n                // Last byte - NACK and STOP\n                hw->CR1 &= ~i2c::cr1::ACK::mask;\n                hw->CR1 |= i2c::cr1::STOP::mask;\n            }\n            \n            timeout = 0;\n            while (!(hw->SR1 & i2c::sr1::RxNE::mask)) {\n                if (++timeout > I2C_TIMEOUT) {\n                    hw->CR1 |= i2c::cr1::STOP::mask;\n                    return Err(ErrorCode::Timeout);\n                }\n            }\n            \n            data[i] = static_cast<uint8_t>(hw->DR);\n        }"
+        }
+      ]
+    },
+
+    "writeRegister": {
+      "description": "Write single byte to device register",
+      "parameters": [
+        {"name": "device_addr", "type": "uint8_t", "description": "7-bit I2C device address"},
+        {"name": "reg_addr", "type": "uint8_t", "description": "Register address"},
+        {"name": "value", "type": "uint8_t", "description": "Value to write"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Write register address and value",
+          "custom_code": "uint8_t buffer[2] = {reg_addr, value};\n        auto result = write(device_addr, buffer, 2);\n        if (!result.is_ok()) {\n            return Err(result.err());\n        }"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "readRegister": {
+      "description": "Read single byte from device register",
+      "parameters": [
+        {"name": "device_addr", "type": "uint8_t", "description": "7-bit I2C device address"},
+        {"name": "reg_addr", "type": "uint8_t", "description": "Register address"},
+        {"name": "value", "type": "uint8_t*", "description": "Pointer to store read value"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (value == nullptr)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "comment": "Write register address then read value",
+          "custom_code": "auto write_result = write(device_addr, &reg_addr, 1);\n        if (!write_result.is_ok()) {\n            return Err(write_result.err());\n        }\n        \n        auto read_result = read(device_addr, value, 1);\n        if (!read_result.is_ok()) {\n            return Err(read_result.err());\n        }"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "isOpen": {
+      "description": "Check if I2C peripheral is open",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "returns": "m_opened",
+      "returns_type": "bool",
+      "steps": []
+    }
+  },
+
+  "state_variables": [
+    {"name": "m_opened", "type": "bool", "initial_value": "false", "description": "Tracks if peripheral is initialized"}
+  ],
+
+  "instances": [
+    {"name": "I2c1", "base": "0x40005400", "irq": "31", "description": "I2C1 instance"},
+    {"name": "I2c2", "base": "0x40005800", "irq": "33", "description": "I2C2 instance"},
+    {"name": "I2c3", "base": "0x40005C00", "irq": "72", "description": "I2C3 instance"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic I2C usage example",
+      "code": "using MyI2c = I2c<I2C1_BASE, I2C1_IRQ>;\nauto i2c = MyI2c{};\ni2c.open();\ni2c.setSpeed(I2cSpeed::Standard100kHz);\nuint8_t data[] = {0x01, 0x02, 0x03};\ni2c.write(0x50, data, 3);\ni2c.close();"
+    }
+  }
+}

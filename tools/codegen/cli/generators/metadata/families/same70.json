@@ -1,0 +1,150 @@
+{
+  "family": "SAME70",
+  "vendor": "Atmel",
+  "architecture": "arm_cortex_m",
+  "core": "Cortex-M7",
+  "register_generation": {
+    "namespace_format": "alloy::platform::{family}",
+    "struct_name_format": "{peripheral}Registers",
+    "type_mappings": {
+      "8": "uint8_t",
+      "16": "uint16_t",
+      "32": "uint32_t",
+      "64": "uint64_t"
+    },
+    "handle_overlaps": "union",
+    "generate_padding": true,
+    "padding_name_format": "_reserved{n}",
+    "array_handling": "array"
+  },
+  "bitfield_generation": {
+    "enum_style": "enum_class",
+    "value_format": "hex",
+    "generate_masks": true,
+    "mask_suffix": "_MASK",
+    "shift_suffix": "_SHIFT",
+    "generate_helpers": true
+  },
+  "svd_fixes": {
+    "dimension_fixes": {
+      "PIO_ABCDSR": 2
+    }
+  },
+  "peripherals": {
+    "PIO": {
+      "enabled": true,
+      "operations": [
+        {
+          "name": "set",
+          "description": "Set pin high",
+          "registers": ["PIO_SODR"]
+        },
+        {
+          "name": "clear",
+          "description": "Set pin low",
+          "registers": ["PIO_CODR"]
+        },
+        {
+          "name": "toggle",
+          "description": "Toggle pin state",
+          "registers": ["PIO_ODSR"]
+        },
+        {
+          "name": "read",
+          "description": "Read pin state",
+          "registers": ["PIO_PDSR"]
+        },
+        {
+          "name": "setPeripheralFunction",
+          "description": "Configure peripheral function (A/B/C/D)",
+          "registers": ["PIO_ABCDSR"]
+        },
+        {
+          "name": "enableInterrupt",
+          "description": "Enable interrupt on pin",
+          "registers": ["PIO_IER"]
+        }
+      ]
+    },
+    "UART": {
+      "enabled": true
+    },
+    "SPI": {
+      "enabled": true
+    },
+    "TWI": {
+      "enabled": true
+    }
+  },
+  "platform": {
+    "gpio": {
+      "num_ports": 5,
+      "pins_per_port": 32,
+      "peripheral_functions": ["A", "B", "C", "D"],
+      "supports_interrupts": true
+    },
+    "uart": {
+      "num_ports": 5,
+      "max_baud": 115200,
+      "supports_dma": true
+    },
+    "spi": {
+      "num_ports": 2,
+      "max_frequency": 150000000,
+      "supports_dma": true
+    },
+    "i2c": {
+      "num_ports": 3,
+      "max_speed": 400000,
+      "supports_multi_master": false
+    }
+  },
+  "memory_layout": {
+    "flash": {
+      "base": "0x00400000",
+      "size": "1M"
+    },
+    "ram": {
+      "base": "0x20400000",
+      "size": "384K"
+    },
+    "dtcm": {
+      "base": "0x20000000",
+      "size": "128K"
+    }
+  },
+  "startup": {
+    "stack_size": 16384,
+    "heap_size": 32768,
+    "enable_fpu": true,
+    "enable_cache": true,
+    "enable_mpu": false,
+    "vector_table_location": "flash"
+  },
+  "mcus": {
+    "ATSAME70Q19B": {
+      "description": "144-pin LQFP, 512KB Flash, 384KB RAM",
+      "flash": {
+        "size_kb": 512,
+        "base_address": "0x00400000"
+      },
+      "ram": {
+        "size_kb": 384,
+        "base_address": "0x20400000"
+      },
+      "package": "LQFP144"
+    },
+    "ATSAME70Q21B": {
+      "description": "144-pin LQFP, 2MB Flash, 384KB RAM",
+      "flash": {
+        "size_kb": 2048,
+        "base_address": "0x00400000"
+      },
+      "ram": {
+        "size_kb": 384,
+        "base_address": "0x20400000"
+      },
+      "package": "LQFP144"
+    }
+  }
+}

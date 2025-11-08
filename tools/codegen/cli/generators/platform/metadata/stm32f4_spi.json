@@ -1,0 +1,234 @@
+{
+  "family": "stm32f4",
+  "vendor": "st",
+  "peripheral_name": "SPI",
+  "register_include": "hal/vendors/st/stm32f4/registers/spi1_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32f4/bitfields/spi1_bitfields.hpp",
+  "register_namespace": "alloy::hal::st::stm32f4::spi1",
+  "register_type": "SPI1_Registers",
+  "platform_namespace": "alloy::hal::stm32f4",
+  "vendor_namespace": "alloy::hal::st::stm32f4",
+  "requires_clock": false,
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "SPI peripheral base address"
+    },
+    {
+      "name": "IRQ_ID",
+      "type": "uint32_t",
+      "description": "SPI interrupt ID for clock enable"
+    }
+  ],
+
+  "additional_enums": [],
+
+  "constants": [
+    {
+      "name": "SPI_TIMEOUT",
+      "type": "uint32_t",
+      "value": "100000",
+      "description": "SPI timeout in loop iterations (~10ms at 168MHz)"
+    },
+    {
+      "name": "STACK_BUFFER_SIZE",
+      "type": "size_t",
+      "value": "256",
+      "description": "Stack buffer size for dummy data in write/read operations"
+    }
+  ],
+
+  "registers": {
+    "control1": {"name": "CR1", "description": "Control Register 1"},
+    "control2": {"name": "CR2", "description": "Control Register 2"},
+    "status": {"name": "SR", "description": "Status Register"},
+    "data": {"name": "DR", "description": "Data Register"}
+  },
+
+  "operations": {
+    "open": {
+      "description": "Initialize SPI peripheral",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (m_opened)",
+          "return_error": "ErrorCode::AlreadyInitialized"
+        },
+        {
+          "comment": "Enable peripheral clock (RCC)",
+          "custom_code": "// TODO: Enable peripheral clock via RCC"
+        },
+        {
+          "comment": "Configure CR1 for master mode",
+          "custom_code": "uint32_t cr1 = 0;\n        cr1 = spi::cr1::MSTR::set(cr1);  // Master mode\n        cr1 = spi::cr1::SSM::set(cr1);   // Software slave management\n        cr1 = spi::cr1::SSI::set(cr1);   // Internal slave select\n        cr1 = spi::cr1::BR::write(cr1, 0x3);  // Default baud rate = f_PCLK/16\n        hw->CR1 = cr1;"
+        },
+        {
+          "comment": "Enable SPI",
+          "custom_code": "hw->CR1 |= spi::cr1::SPE::mask;"
+        },
+        {
+          "set_state": "m_opened = true"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "close": {
+      "description": "Close SPI peripheral",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable SPI",
+          "custom_code": "hw->CR1 &= ~spi::cr1::SPE::mask;"
+        },
+        {
+          "set_state": "m_opened = false"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "configure": {
+      "description": "Configure SPI mode and baud rate",
+      "parameters": [
+        {"name": "mode", "type": "SpiMode", "description": "SPI mode (polarity and phase)"},
+        {"name": "baud_rate_div", "type": "uint8_t", "description": "Baud rate divider (0-7: /2, /4, /8, /16, /32, /64, /128, /256)"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (baud_rate_div > 7)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "comment": "Disable SPI before configuration",
+          "custom_code": "hw->CR1 &= ~spi::cr1::SPE::mask;"
+        },
+        {
+          "comment": "Configure mode and baud rate",
+          "custom_code": "uint32_t cr1 = hw->CR1;\n        \n        // Configure SPI mode (CPOL and CPHA)\n        uint8_t mode_val = static_cast<uint8_t>(mode);\n        if (mode_val & 0x02) {  // CPOL bit\n            cr1 = spi::cr1::CPOL::set(cr1);\n        } else {\n            cr1 = spi::cr1::CPOL::clear(cr1);\n        }\n        if (mode_val & 0x01) {  // CPHA bit\n            cr1 = spi::cr1::CPHA::set(cr1);\n        } else {\n            cr1 = spi::cr1::CPHA::clear(cr1);\n        }\n        \n        // Configure baud rate\n        cr1 = spi::cr1::BR::write(cr1, baud_rate_div);\n        \n        hw->CR1 = cr1;"
+        },
+        {
+          "comment": "Re-enable SPI",
+          "custom_code": "hw->CR1 |= spi::cr1::SPE::mask;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "transfer": {
+      "description": "Full-duplex SPI transfer (send and receive simultaneously)",
+      "parameters": [
+        {"name": "tx_data", "type": "const uint8_t*", "description": "Transmit data buffer"},
+        {"name": "rx_data", "type": "uint8_t*", "description": "Receive data buffer"},
+        {"name": "size", "type": "size_t", "description": "Number of bytes to transfer"}
+      ],
+      "return_type": "Result<size_t, ErrorCode>",
+      "returns": "size",
+      "returns_type": "size_t",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (tx_data == nullptr || rx_data == nullptr)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "comment": "Transfer data byte by byte with timeout",
+          "custom_code": "for (size_t i = 0; i < size; ++i) {\n            // Wait for transmit buffer empty\n            uint32_t timeout = 0;\n            while (!(hw->SR & spi::sr::TXE::mask)) {\n                if (++timeout > SPI_TIMEOUT) {\n                    return Err(ErrorCode::Timeout);\n                }\n            }\n            \n            // Write data to DR\n            hw->DR = tx_data[i];\n            \n            // Wait for receive buffer not empty\n            timeout = 0;\n            while (!(hw->SR & spi::sr::RXNE::mask)) {\n                if (++timeout > SPI_TIMEOUT) {\n                    return Err(ErrorCode::Timeout);\n                }\n            }\n            \n            // Read received data from DR\n            rx_data[i] = static_cast<uint8_t>(hw->DR);\n        }"
+        }
+      ]
+    },
+
+    "write": {
+      "description": "Write data to SPI (discard received data)",
+      "parameters": [
+        {"name": "data", "type": "const uint8_t*", "description": "Data to write"},
+        {"name": "size", "type": "size_t", "description": "Number of bytes to write"}
+      ],
+      "return_type": "Result<size_t, ErrorCode>",
+      "returns": "size",
+      "returns_type": "size_t",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (data == nullptr)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "comment": "Use stack buffer for dummy RX data, or transfer byte-by-byte for large transfers",
+          "custom_code": "uint8_t stack_buffer[STACK_BUFFER_SIZE];\n        uint8_t* dummy = stack_buffer;\n        \n        if (size > STACK_BUFFER_SIZE) {\n            // For large transfers, transfer byte-by-byte to avoid allocation\n            for (size_t i = 0; i < size; ++i) {\n                uint8_t rx_dummy;\n                auto result = transfer(&data[i], &rx_dummy, 1);\n                if (!result.is_ok()) {\n                    return Err(result.err());\n                }\n            }\n            return Ok(size_t(size));\n        }\n        \n        auto result = transfer(data, dummy, size);\n        if (!result.is_ok()) {\n            return Err(result.err());\n        }"
+        }
+      ]
+    },
+
+    "read": {
+      "description": "Read data from SPI (send 0xFF dummy bytes)",
+      "parameters": [
+        {"name": "data", "type": "uint8_t*", "description": "Buffer for received data"},
+        {"name": "size", "type": "size_t", "description": "Number of bytes to read"}
+      ],
+      "return_type": "Result<size_t, ErrorCode>",
+      "returns": "size",
+      "returns_type": "size_t",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (data == nullptr)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "comment": "Use stack buffer for dummy TX data (0xFF), or transfer byte-by-byte for large transfers",
+          "custom_code": "uint8_t stack_buffer[STACK_BUFFER_SIZE];\n        uint8_t* dummy = stack_buffer;\n        \n        if (size > STACK_BUFFER_SIZE) {\n            // For large transfers, transfer byte-by-byte\n            for (size_t i = 0; i < size; ++i) {\n                uint8_t tx_dummy = 0xFF;\n                auto result = transfer(&tx_dummy, &data[i], 1);\n                if (!result.is_ok()) {\n                    return Err(result.err());\n                }\n            }\n            return Ok(size_t(size));\n        }\n        \n        // Initialize dummy buffer with 0xFF for read\n        for (size_t i = 0; i < size; ++i) {\n            dummy[i] = 0xFF;\n        }\n        \n        auto result = transfer(dummy, data, size);\n        if (!result.is_ok()) {\n            return Err(result.err());\n        }"
+        }
+      ]
+    },
+
+    "isOpen": {
+      "description": "Check if SPI peripheral is open",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "returns": "m_opened",
+      "returns_type": "bool",
+      "steps": []
+    }
+  },
+
+  "state_variables": [
+    {"name": "m_opened", "type": "bool", "initial_value": "false", "description": "Tracks if peripheral is initialized"}
+  ],
+
+  "instances": [
+    {"name": "Spi1", "base": "0x40013000", "irq": "35", "description": "SPI1 instance"},
+    {"name": "Spi2", "base": "0x40003800", "irq": "36", "description": "SPI2 instance"},
+    {"name": "Spi3", "base": "0x40003C00", "irq": "51", "description": "SPI3 instance"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic SPI usage example",
+      "code": "using MySpi = Spi<SPI1_BASE, SPI1_IRQ>;\nauto spi = MySpi{};\nspi.open();\nspi.configure(SpiMode::Mode0, 3);\nuint8_t tx[] = {0x01, 0x02, 0x03};\nuint8_t rx[3];\nspi.transfer(tx, rx, 3);\nspi.close();"
+    }
+  }
+}

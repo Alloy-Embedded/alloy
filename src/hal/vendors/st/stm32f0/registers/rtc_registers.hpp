@@ -35,8 +35,7 @@ struct RTC_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t CR;
 
-    /// initialization and status
-          register
+    /// initialization and status register
     /// Offset: 0x000C
     /// Reset value: 0x00000007
     volatile uint32_t ISR;
@@ -97,8 +96,7 @@ struct RTC_Registers {
     /// Access: read-write
     volatile uint32_t CALR;
 
-    /// tamper and alternate function configuration
-          register
+    /// tamper and alternate function configuration register
     /// Offset: 0x0040
     /// Reset value: 0x00000000
     /// Access: read-write

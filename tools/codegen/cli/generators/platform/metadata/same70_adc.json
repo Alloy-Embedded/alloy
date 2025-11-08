@@ -1,0 +1,328 @@
+{
+  "family": "same70",
+  "vendor": "atmel",
+  "peripheral_name": "AFEC",
+  "register_include": "hal/vendors/atmel/same70/registers/afec0_registers.hpp",
+  "bitfield_include": "hal/vendors/atmel/same70/bitfields/afec0_bitfields.hpp",
+  "register_namespace": "alloy::hal::atmel::same70::afec0",
+  "register_type": "AFEC0_Registers",
+  "platform_namespace": "alloy::hal::same70",
+  "vendor_namespace": "alloy::hal::atmel::same70",
+  "namespace_alias": "afec",
+  "requires_clock": false,
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "AFEC peripheral base address"
+    },
+    {
+      "name": "IRQ_ID",
+      "type": "uint32_t",
+      "description": "AFEC IRQ ID"
+    }
+  ],
+
+  "additional_enums": [
+    {
+      "name": "AdcResolution",
+      "type": "uint8_t",
+      "description": "ADC Resolution",
+      "values": [
+        {"name": "Bits12", "value": 0, "description": "12-bit resolution (default)"},
+        {"name": "Bits13", "value": 1, "description": "13-bit with oversampling"}
+      ]
+    },
+    {
+      "name": "AdcTrigger",
+      "type": "uint8_t",
+      "description": "ADC Trigger Source",
+      "values": [
+        {"name": "Software", "value": 0, "description": "Software trigger (manual)"},
+        {"name": "External", "value": 1, "description": "External trigger pin"},
+        {"name": "Timer", "value": 2, "description": "Timer/Counter trigger"},
+        {"name": "PwmEvent", "value": 3, "description": "PWM event trigger"},
+        {"name": "Continuous", "value": 4, "description": "Free-running mode"}
+      ]
+    },
+    {
+      "name": "AdcChannel",
+      "type": "uint8_t",
+      "description": "ADC Channel Number",
+      "values": [
+        {"name": "CH0", "value": 0, "description": "Channel 0"},
+        {"name": "CH1", "value": 1, "description": "Channel 1"},
+        {"name": "CH2", "value": 2, "description": "Channel 2"},
+        {"name": "CH3", "value": 3, "description": "Channel 3"},
+        {"name": "CH4", "value": 4, "description": "Channel 4"},
+        {"name": "CH5", "value": 5, "description": "Channel 5"},
+        {"name": "CH6", "value": 6, "description": "Channel 6"},
+        {"name": "CH7", "value": 7, "description": "Channel 7"},
+        {"name": "CH8", "value": 8, "description": "Channel 8"},
+        {"name": "CH9", "value": 9, "description": "Channel 9"},
+        {"name": "CH10", "value": 10, "description": "Channel 10"},
+        {"name": "CH11", "value": 11, "description": "Channel 11"}
+      ]
+    }
+  ],
+
+  "config_struct": {
+    "name": "AdcConfig",
+    "description": "ADC configuration structure",
+    "fields": [
+      {"name": "resolution", "type": "AdcResolution", "default": "AdcResolution::Bits12", "description": "ADC resolution"},
+      {"name": "trigger", "type": "AdcTrigger", "default": "AdcTrigger::Software", "description": "Trigger source"},
+      {"name": "sample_rate", "type": "uint32_t", "default": "1000000", "description": "Target sample rate in Hz (up to 2 MHz)"},
+      {"name": "use_dma", "type": "bool", "default": "false", "description": "Enable DMA transfers"},
+      {"name": "channels", "type": "uint8_t", "default": "1", "description": "Number of channels to scan"}
+    ]
+  },
+
+  "registers": {
+    "control": {"name": "CR", "description": "Control Register"},
+    "mode": {"name": "MR", "description": "Mode Register"},
+    "extended_mode": {"name": "EMR", "description": "Extended Mode Register"},
+    "channel_enable": {"name": "CHER", "description": "Channel Enable Register"},
+    "channel_disable": {"name": "CHDR", "description": "Channel Disable Register"},
+    "interrupt_status": {"name": "ISR", "description": "Interrupt Status Register"},
+    "interrupt_enable": {"name": "IER", "description": "Interrupt Enable Register"},
+    "last_converted_data": {"name": "LCDR", "description": "Last Converted Data Register"}
+  },
+
+  "operations": {
+    "open": {
+      "description": "Initialize ADC peripheral",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (m_opened)",
+          "return_error": "ErrorCode::AlreadyInitialized"
+        },
+        {
+          "comment": "Enable AFEC clock",
+          "custom_code": "// TODO: Enable peripheral clock via PMC"
+        },
+        {
+          "comment": "Reset AFEC",
+          "custom_code": "hw->CR = afec::cr::SWRST::mask;"
+        },
+        {
+          "comment": "Configure mode register",
+          "custom_code": "// ADC_CLK = MCK / ((PRESCAL+1) * 2)\n        // Target 1 MHz ADC clock (assuming 150 MHz MCK)\n        uint32_t prescal = 74;  // (150MHz / (2 * 1MHz)) - 1 = 74\n        \n        uint32_t mr = 0;\n        mr = afec::mr::PRESCAL::write(mr, prescal);\n        mr = afec::mr::STARTUP::write(mr, afec::mr::startup::SUT0);  // Fastest startup\n        mr = afec::mr::TRACKTIM::write(mr, 0);  // Fastest tracking\n        mr = afec::mr::TRANSFER::write(mr, 0);\n        mr = afec::mr::USEQ::write(mr, afec::mr::useq::NUM_ORDER);  // Channel order CH0-CH11\n        mr = afec::mr::ONE::set(mr);  // Must be set to 1 (ONE bit)\n        \n        hw->MR = mr;"
+        },
+        {
+          "set_state": "m_opened = true"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "close": {
+      "description": "Close ADC peripheral",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable all channels",
+          "custom_code": "hw->CHDR = 0xFFFFFFFF;"
+        },
+        {
+          "set_state": "m_opened = false"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "configure": {
+      "description": "Configure ADC",
+      "parameters": [
+        {"name": "config", "type": "const AdcConfig&", "description": "ADC configuration"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Configure extended mode register (resolution)",
+          "custom_code": "uint32_t emr = 0;\n        uint32_t res_value = afec::emr::res::NO_AVERAGE;  // 12-bit default\n        if (config.resolution == AdcResolution::Bits13) {\n            res_value = afec::emr::res::OSR4;  // 13-bit with oversampling\n        }\n        emr = afec::emr::RES::write(emr, res_value);\n        emr = afec::emr::TAG::write(emr, 0);  // No tag\n        emr = afec::emr::CMPMODE::write(emr, afec::emr::cmpmode::LOW);  // No comparison\n        hw->EMR = emr;"
+        },
+        {
+          "comment": "Configure trigger mode",
+          "custom_code": "uint32_t mr = hw->MR;\n        if (config.trigger == AdcTrigger::Software) {\n            mr = afec::mr::TRGEN::write(mr, afec::mr::trgen::DIS);  // Software trigger\n        } else {\n            mr = afec::mr::TRGEN::write(mr, afec::mr::trgen::EN);  // Hardware trigger\n            mr = afec::mr::TRGSEL::write(mr, static_cast<uint32_t>(config.trigger));\n        }\n        hw->MR = mr;"
+        },
+        {
+          "custom_code": "m_config = config;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "enableChannel": {
+      "description": "Enable ADC channel",
+      "parameters": [
+        {"name": "channel", "type": "AdcChannel", "description": "Channel to enable"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "hw->CHER = (1u << static_cast<uint8_t>(channel));"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "disableChannel": {
+      "description": "Disable ADC channel",
+      "parameters": [
+        {"name": "channel", "type": "AdcChannel", "description": "Channel to disable"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "hw->CHDR = (1u << static_cast<uint8_t>(channel));"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "startConversion": {
+      "description": "Start ADC conversion (software trigger)",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Start conversion",
+          "custom_code": "hw->CR = afec::cr::START::mask;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "read": {
+      "description": "Read converted value from channel",
+      "parameters": [
+        {"name": "channel", "type": "AdcChannel", "description": "Channel to read"}
+      ],
+      "return_type": "Result<uint16_t, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "uint8_t ch = static_cast<uint8_t>(channel);\n        \n        // Wait for conversion complete on this channel\n        uint32_t timeout = 100000;\n        while ((hw->ISR & (1u << ch)) == 0 && timeout > 0) {\n            --timeout;\n        }\n        \n        if (timeout == 0) {\n            return Err(ErrorCode::Timeout);\n        }\n        \n        // Read converted data register (CDR) for the channel\n        // CDR registers are at offset 0x50 + (channel * 4)\n        volatile uint32_t* cdr = reinterpret_cast<volatile uint32_t*>(\n            reinterpret_cast<uintptr_t>(hw) + 0x50 + (ch * 4)\n        );\n        \n        uint16_t value = static_cast<uint16_t>(*cdr & 0xFFF);  // 12-bit value"
+        }
+      ],
+      "returns": "value",
+      "returns_type": "uint16_t"
+    },
+
+    "readSingle": {
+      "description": "Read single channel (enable, start, read, disable)",
+      "parameters": [
+        {"name": "channel", "type": "AdcChannel", "description": "Channel to read"}
+      ],
+      "return_type": "Result<uint16_t, ErrorCode>",
+      "note": "Convenience method for one-shot readings",
+      "steps": [
+        {
+          "custom_code": "auto enable_result = enableChannel(channel);\n        if (!enable_result.is_ok()) {\n            return Err(enable_result.err());\n        }\n        \n        auto start_result = startConversion();\n        if (!start_result.is_ok()) {\n            return Err(start_result.err());\n        }\n        \n        auto read_result = read(channel);\n        \n        disableChannel(channel);\n        \n        return read_result;"
+        }
+      ]
+    },
+
+    "enableDma": {
+      "description": "Enable DMA mode",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "note": "In DMA mode, converted values are automatically transferred to memory by the DMA controller without CPU intervention",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Enable data ready interrupt for DMA",
+          "custom_code": "hw->IER = afec::ier::DRDY::mask;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "getDmaSourceAddress": {
+      "description": "Get data register address for DMA",
+      "parameters": [],
+      "return_type": "const volatile void*",
+      "const": true,
+      "note": "The DMA controller needs to know the address of the last converted data register (LCDR) to read from",
+      "steps": [
+        {
+          "custom_code": "return &hw->LCDR;"
+        }
+      ],
+      "returns": "&hw->LCDR",
+      "returns_type": "const volatile void*"
+    },
+
+    "isOpen": {
+      "description": "Check if ADC is open",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "returns": "m_opened",
+      "returns_type": "bool",
+      "steps": []
+    }
+  },
+
+  "state_variables": [
+    {"name": "m_opened", "type": "bool", "initial_value": "false", "description": "Tracks if peripheral is initialized"},
+    {"name": "m_config", "type": "AdcConfig", "initial_value": "{}", "description": "Current configuration"}
+  ],
+
+  "static_methods": [
+    {
+      "name": "toVoltage",
+      "description": "Convert ADC value to voltage",
+      "parameters": [
+        {"name": "adc_value", "type": "uint16_t", "description": "12-bit ADC reading (0-4095)"},
+        {"name": "vref_mv", "type": "uint32_t", "default": "3300", "description": "Reference voltage in millivolts"}
+      ],
+      "return_type": "uint32_t",
+      "constexpr": true,
+      "body": "return (static_cast<uint32_t>(adc_value) * vref_mv) / 4095;"
+    }
+  ],
+
+  "instances": [
+    {"name": "Adc0", "base": "0x4003C000", "irq": "29", "description": "AFEC0 - 12 channels (CH0-CH11)"},
+    {"name": "Adc1", "base": "0x40064000", "irq": "40", "description": "AFEC1 - 8 channels (CH0-CH7)"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic ADC usage",
+      "code": "using MyAdc = Adc<AFEC0_BASE, AFEC0_IRQ>;\nauto adc = MyAdc{};\nAdcConfig config;\nadc.open();\nadc.configure(config);\nauto result = adc.readSingle(AdcChannel::CH0);\nif (result.is_ok()) {\n    uint16_t value = result.ok();\n    uint32_t voltage_mv = MyAdc::toVoltage(value);\n}"
+    }
+  }
+}

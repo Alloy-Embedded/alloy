@@ -1,0 +1,59 @@
+{
+  "family": "stm32f4",
+  "vendor": "st",
+  "mcu_name": "STM32F407VG",
+  "board_name": "Discovery Board",
+  "core": "cortex-m4",
+  "entry_point": "Reset_Handler",
+
+  "features": [
+    "ARM Cortex-M4F @ 168MHz",
+    "1MB Flash",
+    "192KB total RAM (128KB main + 64KB CCM)",
+    "FPU (single precision)",
+    "DSP instructions"
+  ],
+
+  "memory_regions": [
+    {
+      "name": "FLASH",
+      "permissions": "rx",
+      "origin": "0x08000000",
+      "size_kb": 1024,
+      "description": "1MB"
+    },
+    {
+      "name": "RAM",
+      "permissions": "rwx",
+      "origin": "0x20000000",
+      "size_kb": 128,
+      "description": "main SRAM"
+    },
+    {
+      "name": "CCM",
+      "permissions": "rwx",
+      "origin": "0x10000000",
+      "size_kb": 64,
+      "description": "Core Coupled Memory - fast, no DMA"
+    }
+  ],
+
+  "flash_region": "FLASH",
+  "ram_region": "RAM",
+  "stack_region": "RAM",
+
+  "min_heap_size": "0x400",
+  "min_stack_size": "0x800",
+
+  "support_cpp": true,
+  "support_exceptions": true,
+  "ram_functions": false,
+
+  "additional_ram_regions": [
+    {
+      "name": "CCM",
+      "section_name": "ccm",
+      "description": "CCM RAM (Core Coupled Memory) - fast memory, no DMA access"
+    }
+  ]
+}

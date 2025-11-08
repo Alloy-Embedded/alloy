@@ -11,8 +11,7 @@
 namespace alloy::hal::st::stm32f0::nvic {
 
 // ============================================================================
-// NVIC - Nested Vectored Interrupt
-      Controller
+// NVIC - Nested Vectored Interrupt Controller
 // Base Address: 0xE000E100
 // ============================================================================
 
@@ -26,8 +25,7 @@ struct NVIC_Registers {
     volatile uint32_t ISER;
     uint8_t RESERVED_0004[124]; ///< Reserved
 
-    /// Interrupt Clear Enable
-          Register
+    /// Interrupt Clear Enable Register
     /// Offset: 0x0080
     /// Reset value: 0x00000000
     /// Access: read-write
@@ -41,8 +39,7 @@ struct NVIC_Registers {
     volatile uint32_t ISPR;
     uint8_t RESERVED_0104[124]; ///< Reserved
 
-    /// Interrupt Clear-Pending
-          Register
+    /// Interrupt Clear-Pending Register
     /// Offset: 0x0180
     /// Reset value: 0x00000000
     /// Access: read-write

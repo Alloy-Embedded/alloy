@@ -4,7 +4,7 @@
 /// in realistic multi-task scenarios. Tests complex interactions
 /// between Task, Queue, Mutex, Semaphore, EventFlags, and Scheduler.
 
-#include <gtest/gtest.h>
+#include <catch2/catch_test_macros.hpp>
 #include "rtos/rtos.hpp"
 #include "rtos/queue.hpp"
 #include "rtos/mutex.hpp"
@@ -18,20 +18,14 @@
 using namespace alloy;
 using namespace alloy::rtos;
 
-// Test fixture
-class RTOSIntegrationTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        auto result = hal::host::SystemTick::init();
-        ASSERT_TRUE(result.is_ok());
-    }
-};
-
 // ============================================================================
 // Integration Test 1: Producer-Consumer with Multiple IPC Primitives
 // ============================================================================
 
-TEST_F(RTOSIntegrationTest, ProducerConsumerWithAllIPCPrimitives) {
+TEST_CASE("ProducerConsumerWithAllIPCPrimitives", "[rtos][integration]") {
+    auto systick_result = hal::host::SystemTick::init();
+    REQUIRE(systick_result.is_ok());
+
     // Given: Complete producer-consumer system with all IPC types
     struct SensorData {
         core::u32 timestamp;
@@ -111,16 +105,19 @@ TEST_F(RTOSIntegrationTest, ProducerConsumerWithAllIPCPrimitives) {
     core::u32 done = system_events.wait_any(EVENT_PROCESSING_DONE, 5000);
 
     // Then: All items should be produced and consumed
-    EXPECT_EQ(items_produced.load(), ITEMS_TO_PRODUCE);
-    EXPECT_EQ(items_consumed.load(), ITEMS_TO_PRODUCE);
-    EXPECT_NE(done, 0u) << "Processing should complete";
+    REQUIRE(items_produced.load(), ITEMS_TO_PRODUCE);
+    REQUIRE(items_consumed.load(), ITEMS_TO_PRODUCE);
+    REQUIRE(done, 0u) << "Processing should complete";
 }
 
 // ============================================================================
 // Integration Test 2: Multi-Task Synchronization
 // ============================================================================
 
-TEST_F(RTOSIntegrationTest, MultiTaskSynchronizationWithEventFlags) {
+TEST_CASE("MultiTaskSynchronizationWithEventFlags", "[rtos][integration]") {
+    auto systick_result = hal::host::SystemTick::init();
+    REQUIRE(systick_result.is_ok());
+
     // Given: Multiple tasks coordinating with event flags
     EventFlags sync_events;
 
@@ -181,17 +178,20 @@ TEST_F(RTOSIntegrationTest, MultiTaskSynchronizationWithEventFlags) {
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
     // Then: All tasks should have synchronized
-    EXPECT_GT(synchronized_executions.load(), 0);
-    EXPECT_GT(task1_count.load(), 0);
-    EXPECT_GT(task2_count.load(), 0);
-    EXPECT_GT(task3_count.load(), 0);
+    REQUIRE(synchronized_executions.load(), 0);
+    REQUIRE(task1_count.load(), 0);
+    REQUIRE(task2_count.load(), 0);
+    REQUIRE(task3_count.load(), 0);
 }
 
 // ============================================================================
 // Integration Test 3: Resource Pool Management
 // ============================================================================
 
-TEST_F(RTOSIntegrationTest, ResourcePoolWithSemaphoreAndMutex) {
+TEST_CASE("ResourcePoolWithSemaphoreAndMutex", "[rtos][integration]") {
+    auto systick_result = hal::host::SystemTick::init();
+    REQUIRE(systick_result.is_ok());
+
     // Given: Resource pool managed by semaphore, access protected by mutex
     CountingSemaphore<5> pool(5);
     Mutex resource_mutex;
@@ -246,16 +246,19 @@ TEST_F(RTOSIntegrationTest, ResourcePoolWithSemaphoreAndMutex) {
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
     // Then: Concurrency should not exceed pool size
-    EXPECT_LE(max_concurrent.load(), 5);
-    EXPECT_GT(successful_uses.load(), 0);
-    EXPECT_EQ(current_active.load(), 0); // All resources returned
+    REQUIRE(max_concurrent.load(), 5);
+    REQUIRE(successful_uses.load(), 0);
+    REQUIRE(current_active.load(), 0); // All resources returned
 }
 
 // ============================================================================
 // Integration Test 4: Priority Inversion Prevention
 // ============================================================================
 
-TEST_F(RTOSIntegrationTest, PriorityInheritancePreventsInversion) {
+TEST_CASE("PriorityInheritancePreventsInversion", "[rtos][integration]") {
+    auto systick_result = hal::host::SystemTick::init();
+    REQUIRE(systick_result.is_ok());
+
     // Given: Mutex with priority inheritance
     Mutex shared_mutex;
     std::atomic<int> execution_order{0};
@@ -290,18 +293,21 @@ TEST_F(RTOSIntegrationTest, PriorityInheritancePreventsInversion) {
     std::this_thread::sleep_for(std::chrono::milliseconds(300));
 
     // Then: Both tasks should eventually get the lock
-    EXPECT_GT(low_priority_got_lock.load(), 0);
-    EXPECT_GT(high_priority_got_lock.load(), 0);
+    REQUIRE(low_priority_got_lock.load(), 0);
+    REQUIRE(high_priority_got_lock.load(), 0);
 
     // Low priority should get lock first (it started first)
-    EXPECT_LT(low_priority_got_lock.load(), high_priority_got_lock.load());
+    REQUIRE(low_priority_got_lock.load(), high_priority_got_lock.load());
 }
 
 // ============================================================================
 // Integration Test 5: Complex Data Flow Pipeline
 // ============================================================================
 
-TEST_F(RTOSIntegrationTest, DataProcessingPipeline) {
+TEST_CASE("DataProcessingPipeline", "[rtos][integration]") {
+    auto systick_result = hal::host::SystemTick::init();
+    REQUIRE(systick_result.is_ok());
+
     // Given: Multi-stage data processing pipeline
     Queue<core::u32, 8> stage1_to_stage2;
     Queue<core::u32, 8> stage2_to_stage3;
@@ -367,15 +373,18 @@ TEST_F(RTOSIntegrationTest, DataProcessingPipeline) {
     );
 
     // Then: All data should flow through pipeline
-    EXPECT_NE(result, 0u) << "Pipeline should complete";
-    EXPECT_EQ(stage3_processed.load(), DATA_ITEMS);
+    REQUIRE(result, 0u) << "Pipeline should complete";
+    REQUIRE(stage3_processed.load(), DATA_ITEMS);
 }
 
 // ============================================================================
 // Integration Test 6: Stress Test - All Primitives Under Load
 // ============================================================================
 
-TEST_F(RTOSIntegrationTest, StressTestAllPrimitivesUnderLoad) {
+TEST_CASE("StressTestAllPrimitivesUnderLoad", "[rtos][integration]") {
+    auto systick_result = hal::host::SystemTick::init();
+    REQUIRE(systick_result.is_ok());
+
     // Given: System using all RTOS primitives simultaneously
     Queue<core::u32, 16> shared_queue;
     Mutex shared_mutex;
@@ -439,16 +448,19 @@ TEST_F(RTOSIntegrationTest, StressTestAllPrimitivesUnderLoad) {
     stress_complete = true;
 
     // Then: All operations should have executed
-    EXPECT_GT(queue_ops.load(), 0);
-    EXPECT_GT(mutex_locks.load(), 0);
-    EXPECT_GT(semaphore_takes.load(), 0);
+    REQUIRE(queue_ops.load(), 0);
+    REQUIRE(mutex_locks.load(), 0);
+    REQUIRE(semaphore_takes.load(), 0);
 }
 
 // ============================================================================
 // Integration Test 7: Deadlock Avoidance
 // ============================================================================
 
-TEST_F(RTOSIntegrationTest, TimeoutsPreventDeadlocks) {
+TEST_CASE("TimeoutsPreventDeadlocks", "[rtos][integration]") {
+    auto systick_result = hal::host::SystemTick::init();
+    REQUIRE(systick_result.is_ok());
+
     // Given: Two mutexes that could cause deadlock without timeouts
     Mutex mutex_a;
     Mutex mutex_b;
@@ -501,15 +513,12 @@ TEST_F(RTOSIntegrationTest, TimeoutsPreventDeadlocks) {
 
     // Then: Timeouts should prevent deadlock
     // Some operations should succeed, some should timeout (no deadlock)
-    EXPECT_GT(successful_dual_locks.load(), 0) << "Some should succeed";
-    EXPECT_GT(task1_timeouts.load() + task2_timeouts.load(), 0) << "Some should timeout";
+    REQUIRE(successful_dual_locks.load(), 0) << "Some should succeed";
+    REQUIRE(task1_timeouts.load() + task2_timeouts.load(), 0) << "Some should timeout";
 }
 
 // ============================================================================
 // Main
 // ============================================================================
 
-int main(int argc, char** argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
+

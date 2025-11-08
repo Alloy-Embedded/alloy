@@ -24,8 +24,7 @@ struct DBGMCU_Registers {
     /// Access: read-only
     volatile uint32_t IDCODE;
 
-    /// Debug MCU Configuration
-          Register
+    /// Debug MCU Configuration Register
     /// Offset: 0x0004
     /// Reset value: 0x00000000
     /// Access: read-write

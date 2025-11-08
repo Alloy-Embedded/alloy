@@ -65,22 +65,19 @@ namespace ier {
     constexpr uint32_t ADRDYIE_Pos = 0;
     constexpr uint32_t ADRDYIE_Msk = ADRDYIE::mask;
 
-    /// End of sampling flag interrupt
-              enable
+    /// End of sampling flag interrupt enable
     /// Position: 1, Width: 1
     using EOSMPIE = BitField<1, 1>;
     constexpr uint32_t EOSMPIE_Pos = 1;
     constexpr uint32_t EOSMPIE_Msk = EOSMPIE::mask;
 
-    /// End of conversion interrupt
-              enable
+    /// End of conversion interrupt enable
     /// Position: 2, Width: 1
     using EOCIE = BitField<2, 1>;
     constexpr uint32_t EOCIE_Pos = 2;
     constexpr uint32_t EOCIE_Msk = EOCIE::mask;
 
-    /// End of conversion sequence interrupt
-              enable
+    /// End of conversion sequence interrupt enable
     /// Position: 3, Width: 1
     using EOSIE = BitField<3, 1>;
     constexpr uint32_t EOSIE_Pos = 3;
@@ -92,8 +89,7 @@ namespace ier {
     constexpr uint32_t OVRIE_Pos = 4;
     constexpr uint32_t OVRIE_Msk = OVRIE::mask;
 
-    /// Analog watchdog interrupt
-              enable
+    /// Analog watchdog interrupt enable
     /// Position: 7, Width: 1
     using AWDIE = BitField<7, 1>;
     constexpr uint32_t AWDIE_Pos = 7;
@@ -115,15 +111,13 @@ namespace cr {
     constexpr uint32_t ADDIS_Pos = 1;
     constexpr uint32_t ADDIS_Msk = ADDIS::mask;
 
-    /// ADC start conversion
-              command
+    /// ADC start conversion command
     /// Position: 2, Width: 1
     using ADSTART = BitField<2, 1>;
     constexpr uint32_t ADSTART_Pos = 2;
     constexpr uint32_t ADSTART_Msk = ADSTART::mask;
 
-    /// ADC stop conversion
-              command
+    /// ADC stop conversion command
     /// Position: 4, Width: 1
     using ADSTP = BitField<4, 1>;
     constexpr uint32_t ADSTP_Pos = 4;
@@ -139,15 +133,13 @@ namespace cr {
 
 /// CFGR1 - configuration register 1
 namespace cfgr1 {
-    /// Direct memory access
-              enable
+    /// Direct memory access enable
     /// Position: 0, Width: 1
     using DMAEN = BitField<0, 1>;
     constexpr uint32_t DMAEN_Pos = 0;
     constexpr uint32_t DMAEN_Msk = DMAEN::mask;
 
-    /// Direct memery access
-              configuration
+    /// Direct memery access configuration
     /// Position: 1, Width: 1
     using DMACFG = BitField<1, 1>;
     constexpr uint32_t DMACFG_Pos = 1;
@@ -177,8 +169,7 @@ namespace cfgr1 {
     constexpr uint32_t EXTSEL_Pos = 6;
     constexpr uint32_t EXTSEL_Msk = EXTSEL::mask;
 
-    /// External trigger enable and polarity
-              selection
+    /// External trigger enable and polarity selection
     /// Position: 10, Width: 2
     using EXTEN = BitField<10, 2>;
     constexpr uint32_t EXTEN_Pos = 10;
@@ -190,15 +181,13 @@ namespace cfgr1 {
     constexpr uint32_t OVRMOD_Pos = 12;
     constexpr uint32_t OVRMOD_Msk = OVRMOD::mask;
 
-    /// Single / continuous conversion
-              mode
+    /// Single / continuous conversion mode
     /// Position: 13, Width: 1
     using CONT = BitField<13, 1>;
     constexpr uint32_t CONT_Pos = 13;
     constexpr uint32_t CONT_Msk = CONT::mask;
 
-    /// Auto-delayed conversion
-              mode
+    /// Auto-delayed conversion mode
     /// Position: 14, Width: 1
     using AUTDLY = BitField<14, 1>;
     constexpr uint32_t AUTDLY_Pos = 14;
@@ -216,8 +205,7 @@ namespace cfgr1 {
     constexpr uint32_t DISCEN_Pos = 16;
     constexpr uint32_t DISCEN_Msk = DISCEN::mask;
 
-    /// Enable the watchdog on a single channel
-              or on all channels
+    /// Enable the watchdog on a single channel or on all channels
     /// Position: 22, Width: 1
     using AWDSGL = BitField<22, 1>;
     constexpr uint32_t AWDSGL_Pos = 22;
@@ -229,8 +217,7 @@ namespace cfgr1 {
     constexpr uint32_t AWDEN_Pos = 23;
     constexpr uint32_t AWDEN_Msk = AWDEN::mask;
 
-    /// Analog watchdog channel
-              selection
+    /// Analog watchdog channel selection
     /// Position: 26, Width: 5
     using AWDCH = BitField<26, 5>;
     constexpr uint32_t AWDCH_Pos = 26;
@@ -266,15 +253,13 @@ namespace smpr {
 
 /// TR - watchdog threshold register
 namespace tr {
-    /// Analog watchdog lower
-              threshold
+    /// Analog watchdog lower threshold
     /// Position: 0, Width: 12
     using LT = BitField<0, 12>;
     constexpr uint32_t LT_Pos = 0;
     constexpr uint32_t LT_Msk = LT::mask;
 
-    /// Analog watchdog higher
-              threshold
+    /// Analog watchdog higher threshold
     /// Position: 16, Width: 12
     using HT = BitField<16, 12>;
     constexpr uint32_t HT_Pos = 16;
@@ -412,8 +397,7 @@ namespace dr {
 
 /// CCR - common configuration register
 namespace ccr {
-    /// Temperature sensor and VREFINT
-              enable
+    /// Temperature sensor and VREFINT enable
     /// Position: 22, Width: 1
     using VREFEN = BitField<22, 1>;
     constexpr uint32_t VREFEN_Pos = 22;

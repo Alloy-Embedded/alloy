@@ -29,8 +29,7 @@ namespace dr {
 
 /// IDR - Independent data register
 namespace idr {
-    /// General-purpose 8-bit data register
-              bits
+    /// General-purpose 8-bit data register bits
     /// Position: 0, Width: 8
     using IDR = BitField<0, 8>;
     constexpr uint32_t IDR_Pos = 0;
@@ -62,8 +61,7 @@ namespace cr {
 
 /// INIT - Initial CRC value
 namespace init {
-    /// Programmable initial CRC
-              value
+    /// Programmable initial CRC value
     /// Position: 0, Width: 32
     using INIT = BitField<0, 32>;
     constexpr uint32_t INIT_Pos = 0;

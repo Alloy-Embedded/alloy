@@ -59,8 +59,7 @@ namespace dier {
     constexpr uint32_t UIE_Pos = 0;
     constexpr uint32_t UIE_Msk = UIE::mask;
 
-    /// Capture/Compare 1 interrupt
-              enable
+    /// Capture/Compare 1 interrupt enable
     /// Position: 1, Width: 1
     using CC1IE = BitField<1, 1>;
     constexpr uint32_t CC1IE_Pos = 1;
@@ -76,15 +75,13 @@ namespace sr {
     constexpr uint32_t UIF_Pos = 0;
     constexpr uint32_t UIF_Msk = UIF::mask;
 
-    /// Capture/compare 1 interrupt
-              flag
+    /// Capture/compare 1 interrupt flag
     /// Position: 1, Width: 1
     using CC1IF = BitField<1, 1>;
     constexpr uint32_t CC1IF_Pos = 1;
     constexpr uint32_t CC1IF_Msk = CC1IF::mask;
 
-    /// Capture/Compare 1 overcapture
-              flag
+    /// Capture/Compare 1 overcapture flag
     /// Position: 9, Width: 1
     using CC1OF = BitField<9, 1>;
     constexpr uint32_t CC1OF_Pos = 9;
@@ -100,8 +97,7 @@ namespace egr {
     constexpr uint32_t UG_Pos = 0;
     constexpr uint32_t UG_Msk = UG::mask;
 
-    /// Capture/compare 1
-              generation
+    /// Capture/compare 1 generation
     /// Position: 1, Width: 1
     using CC1G = BitField<1, 1>;
     constexpr uint32_t CC1G_Pos = 1;
@@ -109,25 +105,21 @@ namespace egr {
 
 }  // namespace egr
 
-/// CCMR1_Output - capture/compare mode register (output
-          mode)
+/// CCMR1_Output - capture/compare mode register (output mode)
 namespace ccmr1_output {
-    /// Capture/Compare 1
-              selection
+    /// Capture/Compare 1 selection
     /// Position: 0, Width: 2
     using CC1S = BitField<0, 2>;
     constexpr uint32_t CC1S_Pos = 0;
     constexpr uint32_t CC1S_Msk = CC1S::mask;
 
-    /// Output compare 1 fast
-              enable
+    /// Output compare 1 fast enable
     /// Position: 2, Width: 1
     using OC1FE = BitField<2, 1>;
     constexpr uint32_t OC1FE_Pos = 2;
     constexpr uint32_t OC1FE_Msk = OC1FE::mask;
 
-    /// Output Compare 1 preload
-              enable
+    /// Output Compare 1 preload enable
     /// Position: 3, Width: 1
     using OC1PE = BitField<3, 1>;
     constexpr uint32_t OC1PE_Pos = 3;
@@ -141,11 +133,9 @@ namespace ccmr1_output {
 
 }  // namespace ccmr1_output
 
-/// CCMR1_Input - capture/compare mode register (input
-          mode)
+/// CCMR1_Input - capture/compare mode register (input mode)
 namespace ccmr1_input {
-    /// Capture/Compare 1
-              selection
+    /// Capture/Compare 1 selection
     /// Position: 0, Width: 2
     using CC1S = BitField<0, 2>;
     constexpr uint32_t CC1S_Pos = 0;
@@ -165,25 +155,21 @@ namespace ccmr1_input {
 
 }  // namespace ccmr1_input
 
-/// CCER - capture/compare enable
-          register
+/// CCER - capture/compare enable register
 namespace ccer {
-    /// Capture/Compare 1 output
-              enable
+    /// Capture/Compare 1 output enable
     /// Position: 0, Width: 1
     using CC1E = BitField<0, 1>;
     constexpr uint32_t CC1E_Pos = 0;
     constexpr uint32_t CC1E_Msk = CC1E::mask;
 
-    /// Capture/Compare 1 output
-              Polarity
+    /// Capture/Compare 1 output Polarity
     /// Position: 1, Width: 1
     using CC1P = BitField<1, 1>;
     constexpr uint32_t CC1P_Pos = 1;
     constexpr uint32_t CC1P_Msk = CC1P::mask;
 
-    /// Capture/Compare 1 output
-              Polarity
+    /// Capture/Compare 1 output Polarity
     /// Position: 3, Width: 1
     using CC1NP = BitField<3, 1>;
     constexpr uint32_t CC1NP_Pos = 3;

@@ -1,0 +1,215 @@
+/**
+ * @file startup.cpp
+ * @brief Startup code for {{ family }} ({{ mcu }})
+ *
+ * Vector table, reset handler, and system initialization.
+ * Auto-generated from metadata using Unified Code Generation System.
+ *
+ * Family: {{ family }}
+ * Vendor: {{ vendor }}
+ * Core: {{ core }}
+ * MCU: {{ mcu }}
+ * Generated: {{ generation_date }}
+ */
+
+#include <cstdint>
+#include <cstring>
+
+// External symbols defined by linker script
+extern uint32_t _etext;      // End of .text in flash
+extern uint32_t _sdata;      // Start of .data in RAM
+extern uint32_t _edata;      // End of .data in RAM
+extern uint32_t _sbss;       // Start of .bss in RAM
+extern uint32_t _ebss;       // End of .bss in RAM
+extern uint32_t _estack;     // End of stack (top of RAM)
+
+// Entry point defined in main
+extern "C" int main();
+
+// Exception handlers
+extern "C" {
+    void Reset_Handler() __attribute__((noreturn));
+    void Default_Handler() __attribute__((weak, alias("Infinite_Loop")));
+    
+    // Core exceptions
+    void NMI_Handler() __attribute__((weak, alias("Default_Handler")));
+    void HardFault_Handler() __attribute__((weak, alias("Default_Handler")));
+    void MemManage_Handler() __attribute__((weak, alias("Default_Handler")));
+    void BusFault_Handler() __attribute__((weak, alias("Default_Handler")));
+    void UsageFault_Handler() __attribute__((weak, alias("Default_Handler")));
+    void SVC_Handler() __attribute__((weak, alias("Default_Handler")));
+    void DebugMon_Handler() __attribute__((weak, alias("Default_Handler")));
+    void PendSV_Handler() __attribute__((weak, alias("Default_Handler")));
+    void SysTick_Handler() __attribute__((weak, alias("Default_Handler")));
+    
+{%- if interrupts %}
+    
+    // Peripheral interrupts
+{%- for irq in interrupts %}
+    void {{ irq.name }}_Handler() __attribute__((weak, alias("Default_Handler")));
+{%- endfor %}
+{%- endif %}
+}
+
+/**
+ * @brief Infinite loop for unhandled exceptions
+ */
+extern "C" void Infinite_Loop() {
+    while (1) {
+        __asm volatile("nop");
+    }
+}
+
+/**
+ * @brief Vector table
+ * 
+ * Located at {{ startup.vector_table_location }} start address.
+ * Contains initial stack pointer and all exception/interrupt handlers.
+ */
+__attribute__((section(".isr_vector")))
+const void* vector_table[] = {
+    // Stack pointer
+    reinterpret_cast<void*>(&_estack),
+    
+    // Core exceptions
+    reinterpret_cast<void*>(Reset_Handler),           // Reset
+    reinterpret_cast<void*>(NMI_Handler),             // NMI
+    reinterpret_cast<void*>(HardFault_Handler),       // Hard Fault
+    reinterpret_cast<void*>(MemManage_Handler),       // Memory Management
+    reinterpret_cast<void*>(BusFault_Handler),        // Bus Fault
+    reinterpret_cast<void*>(UsageFault_Handler),      // Usage Fault
+    nullptr,                                          // Reserved
+    nullptr,                                          // Reserved
+    nullptr,                                          // Reserved
+    nullptr,                                          // Reserved
+    reinterpret_cast<void*>(SVC_Handler),             // SVCall
+    reinterpret_cast<void*>(DebugMon_Handler),        // Debug Monitor
+    nullptr,                                          // Reserved
+    reinterpret_cast<void*>(PendSV_Handler),          // PendSV
+    reinterpret_cast<void*>(SysTick_Handler),         // SysTick
+    
+{%- if interrupts %}
+    // Peripheral interrupts
+{%- for irq in interrupts %}
+    reinterpret_cast<void*>({{ irq.name }}_Handler),  // {{ irq.description }}
+{%- endfor %}
+{%- endif %}
+};
+
+{%- if startup.enable_fpu %}
+
+/**
+ * @brief Enable Floating Point Unit (FPU)
+ * 
+ * Enables CP10 and CP11 coprocessors for hardware floating point.
+ */
+static inline void enable_fpu() {
+    // Enable CP10 and CP11 full access
+    constexpr uint32_t CPACR = 0xE000ED88;
+    *reinterpret_cast<volatile uint32_t*>(CPACR) |= (0xF << 20);
+    
+    // Ensure all instructions complete
+    __asm volatile("dsb");
+    __asm volatile("isb");
+}
+{%- endif %}
+
+{%- if startup.enable_cache %}
+
+/**
+ * @brief Enable instruction and data caches
+ * 
+ * Enables I-Cache and D-Cache for improved performance.
+ */
+static inline void enable_cache() {
+    // SCB->CCR |= SCB_CCR_IC_Msk | SCB_CCR_DC_Msk
+    constexpr uint32_t SCB_CCR = 0xE000ED14;
+    constexpr uint32_t SCB_CCR_IC_Msk = (1UL << 17);
+    constexpr uint32_t SCB_CCR_DC_Msk = (1UL << 16);
+    
+    *reinterpret_cast<volatile uint32_t*>(SCB_CCR) |= 
+        (SCB_CCR_IC_Msk | SCB_CCR_DC_Msk);
+}
+{%- endif %}
+
+/**
+ * @brief System initialization
+ * 
+ * Called before main() to initialize system clocks and peripherals.
+ * Weak implementation - can be overridden by user code.
+ */
+extern "C" __attribute__((weak)) void SystemInit() {
+{%- if startup.enable_fpu %}
+    // Enable FPU
+    enable_fpu();
+{%- endif %}
+
+{%- if startup.enable_cache %}
+    // Enable caches
+    enable_cache();
+{%- endif %}
+
+    // TODO: Configure system clocks
+    // TODO: Configure flash wait states
+    // TODO: Initialize PMC (Power Management Controller)
+}
+
+/**
+ * @brief Reset handler
+ * 
+ * Entry point after reset. Initializes memory and calls main().
+ */
+extern "C" void Reset_Handler() {
+    // Copy .data section from flash to RAM
+    uint32_t* src = &_etext;
+    uint32_t* dst = &_sdata;
+    while (dst < &_edata) {
+        *dst++ = *src++;
+    }
+    
+    // Zero-initialize .bss section
+    dst = &_sbss;
+    while (dst < &_ebss) {
+        *dst++ = 0;
+    }
+    
+    // Call system initialization
+    SystemInit();
+    
+    // Call global constructors (C++)
+    extern void (*__init_array_start[])();
+    extern void (*__init_array_end[])();
+    for (auto ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
+        (*ctor)();
+    }
+    
+    // Call main
+    main();
+    
+    // If main returns, loop forever
+    while (1) {
+        __asm volatile("nop");
+    }
+}
+
+/**
+ * Configuration Summary:
+ * 
+ * - Family: {{ family }}
+ * - MCU: {{ mcu }}
+ * - Core: {{ core }}
+ * - Stack Size: {{ startup.stack_size }} bytes ({{ (startup.stack_size / 1024) | int }}KB)
+ * - Heap Size: {{ startup.heap_size }} bytes ({{ (startup.heap_size / 1024) | int }}KB)
+ * - FPU: {{ 'Enabled' if startup.enable_fpu else 'Disabled' }}
+ * - Cache: {{ 'Enabled' if startup.enable_cache else 'Disabled' }}
+ * - MPU: {{ 'Enabled' if startup.enable_mpu else 'Disabled' }}
+ * - Vector Table: {{ startup.vector_table_location }}
+{%- if interrupts %}
+ * - Interrupts: {{ interrupts | length }} peripheral interrupts
+{%- endif %}
+ * 
+ * Memory Map:
+{%- for region_name, region in memory_layout.items() %}
+ * - {{ region_name | upper }}: {{ region.base }} - {{ region.base | int(base=16) + (region.size | parse_size) - 1 | format_hex }} ({{ region.size }})
+{%- endfor %}
+ */

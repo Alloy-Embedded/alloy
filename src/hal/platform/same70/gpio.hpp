@@ -11,11 +11,12 @@
  * - Zero overhead: Fully inlined, single instruction for read/write
  * - Compile-time masks: Pin masks computed at compile-time
  * - Type-safe: Strong typing prevents pin conflicts
- * - Error handling: Uses Result<T> for robust error handling
+ * - Error handling: Uses Result<T, E> for robust error handling
  * - Testable: Includes test hooks for unit testing
  *
- * Auto-generated from: atsame70q19b
+ * Auto-generated from: same70
  * Generator: generate_platform_gpio.py
+ * Generated: 2025-11-07 17:18:08
  *
  * @note Part of Alloy HAL Platform Abstraction Layer
  */
@@ -41,14 +42,6 @@
 // Bitfields (family-level, if available)
 // #include "hal/vendors/atmel/same70/bitfields/pioa_bitfields.hpp"
 
-// Hardware definitions (MCU-specific - port bases, etc)
-// Note: Board files should include hardware.hpp from specific MCU if needed
-// #include "hal/vendors/atmel/same70/atsame70q19b/hardware.hpp"
-
-// Pin definitions and functions (MCU-specific)
-// Note: These should be included by board files as they're MCU-specific
-// Example: #include "hal/vendors/atmel/same70/stm32f407vg/pins.hpp"
-
 namespace alloy::hal::same70 {
 
 using namespace alloy::core;
@@ -61,6 +54,7 @@ using namespace alloy::hal::atmel::same70;
 // - PinDirection (Input, Output)
 // - PinPull (None, PullUp, PullDown)
 // - PinDrive (PushPull, OpenDrain)
+
 
 /**
  * @brief Template-based GPIO pin for SAME70
@@ -76,15 +70,16 @@ using namespace alloy::hal::atmel::same70;
  * @code
  * // Define LED pin (PIOC pin 8)
  * using LedGreen = GpioPin<PIOC_BASE, 8>;
- *
- * // Use it
+ * // Define button pin (PIOA pin 11)
+ * using Button0 = GpioPin<PIOA_BASE, 11>;
+ * // Use GPIO pin
  * auto led = LedGreen{};
- * auto result = led.setMode(GpioMode::Output);
- * if (result.isOk()) {
- *     led.set();     // Turn on
- *     led.clear();   // Turn off
- *     led.toggle();  // Toggle state
- * }
+auto result = led.setDirection(PinDirection::Output);
+if (result.is_ok()) {
+    led.set();     // Turn on
+    led.clear();   // Turn off
+    led.toggle();  // Toggle state
+}
  * @endcode
  *
  * @tparam PORT_BASE PIO port base address
@@ -117,232 +112,185 @@ public:
     }
 
     /**
-     * @brief Set GPIO pin direction
-     *
-     * Configures pin as input or output.
-     * Uses common HAL type PinDirection from hal/types.hpp.
-     *
-     * @param direction Pin direction (Input or Output)
-     * @return Result<void> Ok() if successful
-     */
-    Result<void> setDirection(PinDirection direction) {
-        auto* port = get_port();
-
-        // Enable PIO control (disable peripheral function)
-        port->PER = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_PER
-        ALLOY_GPIO_TEST_HOOK_PER();
-#endif
-
-        if (direction == PinDirection::Input) {
-            // Configure as input
-            port->ODR = pin_mask;  // Disable output
-#ifdef ALLOY_GPIO_TEST_HOOK_ODR
-            ALLOY_GPIO_TEST_HOOK_ODR();
-#endif
-        } else {
-            // Configure as output
-            port->OER = pin_mask;   // Enable output
-#ifdef ALLOY_GPIO_TEST_HOOK_OER
-            ALLOY_GPIO_TEST_HOOK_OER();
-#endif
-        }
-
-        return Result<void>::ok();
-    }
-
-    /**
-     * @brief Set GPIO pin drive mode
-     *
-     * Configures output drive mode (push-pull or open-drain).
-     * Uses common HAL type PinDrive from hal/types.hpp.
-     *
-     * @param drive Drive mode (PushPull or OpenDrain)
-     * @return Result<void> Ok() if successful
-     */
-    Result<void> setDrive(PinDrive drive) {
-        auto* port = get_port();
-
-        if (drive == PinDrive::OpenDrain) {
-            // Enable multi-driver (open-drain)
-            port->MDER = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_MDER
-            ALLOY_GPIO_TEST_HOOK_MDER();
-#endif
-        } else {
-            // Disable multi-driver (push-pull)
-            port->MDDR = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_MDDR
-            ALLOY_GPIO_TEST_HOOK_MDDR();
-#endif
-        }
-
-        return Result<void>::ok();
-    }
-
-    /**
      * @brief Set pin HIGH (output = 1)
      *
-     * Single instruction: writes pin mask to SODR register.
-     * Only affects this specific pin.
-     *
-     * @return Result<void> Always Ok()
-     */
-    Result<void> set() {
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> set() {
         auto* port = get_port();
-        port->SODR = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_SODR
-        ALLOY_GPIO_TEST_HOOK_SODR();
-#endif
-        return Result<void>::ok();
+
+
+        return Ok();
     }
 
     /**
      * @brief Set pin LOW (output = 0)
      *
-     * Single instruction: writes pin mask to CODR register.
-     * Only affects this specific pin.
-     *
-     * @return Result<void> Always Ok()
-     */
-    Result<void> clear() {
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> clear() {
         auto* port = get_port();
-        port->CODR = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_CODR
-        ALLOY_GPIO_TEST_HOOK_CODR();
-#endif
-        return Result<void>::ok();
+
+
+        return Ok();
     }
 
     /**
      * @brief Toggle pin state
      *
-     * Reads current output state and inverts it.
-     *
-     * @return Result<void> Always Ok()
-     */
-    Result<void> toggle() {
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> toggle() {
         auto* port = get_port();
 
-        // Read current output data status
-        if (port->ODSR & pin_mask) {
-            // Pin is HIGH, set it LOW
-            port->CODR = pin_mask;
-        } else {
-            // Pin is LOW, set it HIGH
-            port->SODR = pin_mask;
-        }
+        uint32_t current_state = port->ODSR;  // Read current output data status
 
-        return Result<void>::ok();
+        if (current_state & pin_mask) {
+            port->CODR = pin_mask;  // Pin is HIGH, set it LOW
+        } else {
+            port->SODR = pin_mask;  // Pin is LOW, set it HIGH
+        }
+        return Ok();
     }
 
     /**
      * @brief Write pin value
      *
      * @param value true for HIGH, false for LOW
-     * @return Result<void> Always Ok()
-     */
-    Result<void> write(bool value) {
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> write(bool value) {
+        auto* port = get_port();
+
         if (value) {
-            return set();
-        } else {
-            return clear();
         }
+        return Ok();
     }
 
     /**
      * @brief Read pin input value
      *
-     * Reads the actual pin state from PDSR register.
-     *
-     * @return Result<bool> Pin state (true = HIGH, false = LOW)
-     */
-    Result<bool> read() const {
+     * @return Result<bool, ErrorCode>     */
+    Result<bool, ErrorCode> read() const {
         auto* port = get_port();
-        bool value = (port->PDSR & pin_mask) != 0;
-        return Result<bool>::ok(value);
+
+        uint32_t pin_state = port->PDSR;  // Reads the actual pin state from PDSR register
+
+        bool value = (pin_state & pin_mask) != 0;
+
+        return Ok(bool(value));
+    }
+
+    /**
+     * @brief Set GPIO pin direction
+     *
+     * @param direction Pin direction (Input or Output)
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> setDirection(PinDirection direction) {
+        auto* port = get_port();
+
+
+        if (direction == PinDirection::Input) {
+            port->ODR = pin_mask;  // Configure as input
+#ifdef ALLOY_GPIO_TEST_HOOK_ODR
+            ALLOY_GPIO_TEST_HOOK_ODR();
+#endif
+        } else {
+            port->OER = pin_mask;  // Configure as output
+#ifdef ALLOY_GPIO_TEST_HOOK_OER
+            ALLOY_GPIO_TEST_HOOK_OER();
+#endif
+        }
+        return Ok();
+    }
+
+    /**
+     * @brief Set GPIO pin drive mode
+     *
+     * @param drive Drive mode (PushPull or OpenDrain)
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> setDrive(PinDrive drive) {
+        auto* port = get_port();
+
+        if (drive == PinDrive::OpenDrain) {
+            port->MDER = pin_mask;  // Enable multi-driver (open-drain)
+#ifdef ALLOY_GPIO_TEST_HOOK_MDER
+            ALLOY_GPIO_TEST_HOOK_MDER();
+#endif
+        } else {
+            port->MDDR = pin_mask;  // Disable multi-driver (push-pull)
+#ifdef ALLOY_GPIO_TEST_HOOK_MDDR
+            ALLOY_GPIO_TEST_HOOK_MDDR();
+#endif
+        }
+        return Ok();
     }
 
     /**
      * @brief Configure pull resistor
      *
-     * Note: SAME70 PIO has built-in pull-up resistors.
-     * Pull-down support depends on hardware.
-     *
-     * Uses common HAL type PinPull from hal/types.hpp.
-     *
      * @param pull Pull resistor configuration
-     * @return Result<void> Ok() if successful, Err() if not supported
-     *
-     * @note SAME70 only supports pull-up, not pull-down.
-     *       PullDown will return ErrorCode::NotSupported.
+     * @return Result<void, ErrorCode> SAME70 only supports pull-up, not pull-down. PullDown will return ErrorCode::NotSupported.     *
+     * @note SAME70 only supports pull-up, not pull-down. PullDown will return ErrorCode::NotSupported.
      */
-    Result<void> setPull(PinPull pull) {
+    Result<void, ErrorCode> setPull(PinPull pull) {
         auto* port = get_port();
 
         switch (pull) {
             case PinPull::None:
-                // Disable pull-up
-                port->PUDR = pin_mask;
+                port->PUDR = pin_mask;  // Disable pull-up
 #ifdef ALLOY_GPIO_TEST_HOOK_PUDR
                 ALLOY_GPIO_TEST_HOOK_PUDR();
 #endif
                 break;
 
             case PinPull::PullUp:
-                // Enable pull-up
-                port->PUER = pin_mask;
+                port->PUER = pin_mask;  // Enable pull-up
 #ifdef ALLOY_GPIO_TEST_HOOK_PUER
                 ALLOY_GPIO_TEST_HOOK_PUER();
 #endif
                 break;
 
             case PinPull::PullDown:
-                // Pull-down not supported in SAME70 hardware
-                return Result<void>::error(ErrorCode::NotSupported);
+                return Err(ErrorCode::NotSupported);
+                break;
+
         }
 
-        return Result<void>::ok();
     }
 
     /**
      * @brief Enable input glitch filter
      *
-     * @return Result<void> Always Ok()
-     */
-    Result<void> enableFilter() {
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> enableFilter() {
         auto* port = get_port();
-        port->IFER = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_IFER
-        ALLOY_GPIO_TEST_HOOK_IFER();
-#endif
-        return Result<void>::ok();
+
+
+        return Ok();
     }
 
     /**
      * @brief Disable input glitch filter
      *
-     * @return Result<void> Always Ok()
-     */
-    Result<void> disableFilter() {
+     * @return Result<void, ErrorCode>     */
+    Result<void, ErrorCode> disableFilter() {
         auto* port = get_port();
-        port->IFDR = pin_mask;
-#ifdef ALLOY_GPIO_TEST_HOOK_IFDR
-        ALLOY_GPIO_TEST_HOOK_IFDR();
-#endif
-        return Result<void>::ok();
+
+
+        return Ok();
     }
 
     /**
      * @brief Check if pin is configured as output
      *
-     * @return Result<bool> true if output, false if input
-     */
-    Result<bool> isOutput() const {
+     * @return Result<bool, ErrorCode>     */
+    Result<bool, ErrorCode> isOutput() const {
         auto* port = get_port();
-        bool is_output = (port->OSR & pin_mask) != 0;
-        return Result<bool>::ok(is_output);
+
+        uint32_t status = port->OSR;  // 
+
+        bool is_output = (status & pin_mask) != 0;
+
+        return Ok(bool(is_output));
     }
+
 };
 
 // ==============================================================================
@@ -350,6 +298,10 @@ public:
 // ==============================================================================
 
 constexpr uint32_t PIOA_BASE = 0x400E0E00;
+constexpr uint32_t PIOB_BASE = 0x400E1000;
+constexpr uint32_t PIOC_BASE = 0x400E1200;
+constexpr uint32_t PIOD_BASE = 0x400E1400;
+constexpr uint32_t PIOE_BASE = 0x400E1600;
 
 // ==============================================================================
 // Common Pin Type Aliases
@@ -359,5 +311,12 @@ constexpr uint32_t PIOA_BASE = 0x400E0E00;
 // Example:
 // using LedGreen = GpioPin<PIOC_BASE, 8>;
 // using Button0 = GpioPin<PIOA_BASE, 11>;
+// auto led = LedGreen{};
+// auto result = led.setDirection(PinDirection::Output);
+// if (result.is_ok()) {
+//     led.set();     // Turn on
+//     led.clear();   // Turn off
+//     led.toggle();  // Toggle state
+// }
 
 } // namespace alloy::hal::same70

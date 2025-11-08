@@ -137,30 +137,172 @@ For each change:
 
 ## Testing
 
-### Unit Tests
+Alloy uses **Catch2 v3** as the testing framework for C++ unit tests. All tests run automatically in CI on every push and pull request.
 
-- Use Google Test for unit tests
-- Place tests in `tests/unit/test_<component>.cpp`
-- Test naming: `TEST(ComponentName, TestCase)`
+### Running Tests Locally
+
+```bash
+# Configure with tests enabled (host platform)
+cmake -S . -B build-host -DALLOY_BOARD=host -DALLOY_BUILD_TESTS=ON
+
+# Build tests
+cmake --build build-host
+
+# Run all tests with CTest
+cd build-host && ctest --output-on-failure
+
+# Run specific test executable
+./build-host/tests/test_result
+
+# Run tests with Catch2 filters
+./build-host/tests/test_result "[error][result]"
+
+# List all test cases
+./build-host/tests/test_result --list-tests
+
+# List all tags
+./build-host/tests/test_result --list-tags
+```
+
+### Writing Unit Tests
+
+Alloy uses **Catch2 v3** for all new tests. Tests should be placed in `tests/unit/test_<component>.cpp`.
+
+#### Basic Test Structure
 
 ```cpp
 // tests/unit/test_gpio_host.cpp
 #include "hal/host/gpio.hpp"
-#include <gtest/gtest.h>
+#include <catch2/catch_test_macros.hpp>
 
-TEST(GpioHost, SetHighChangesState) {
+TEST_CASE("GPIO set_high changes state", "[gpio][host]") {
+    // Given: A GPIO pin
     alloy::hal::host::GpioPin<25> pin;
 
+    // When: Setting pin HIGH
     pin.set_high();
-    EXPECT_TRUE(pin.read());
+
+    // Then: State should be HIGH
+    REQUIRE(pin.read());
 }
 ```
 
+#### Using Sections
+
+```cpp
+TEST_CASE("GPIO multiple modes", "[gpio][mode]") {
+    alloy::hal::host::GpioPin<13> pin;
+
+    SECTION("Input mode") {
+        pin.configure(alloy::hal::PinMode::Input);
+        REQUIRE(pin.get_mode() == alloy::hal::PinMode::Input);
+    }
+
+    SECTION("Output mode") {
+        pin.configure(alloy::hal::PinMode::Output);
+        REQUIRE(pin.get_mode() == alloy::hal::PinMode::Output);
+    }
+}
+```
+
+#### Testing with Tags
+
+Use tags to organize and filter tests:
+
+```cpp
+TEST_CASE("Fast unit test", "[core][fast]") {
+    // Quick test
+}
+
+TEST_CASE("Slow integration test", "[hal][slow][integration]") {
+    // Longer test
+}
+
+// Run only fast tests:
+// ./test_executable "[fast]"
+
+// Run only core tests:
+// ./test_executable "[core]"
+```
+
+#### Common Assertions
+
+```cpp
+// Boolean checks
+REQUIRE(condition);           // Must be true
+REQUIRE_FALSE(condition);     // Must be false
+
+// Equality
+REQUIRE(a == b);
+REQUIRE(a != b);
+
+// Comparisons
+REQUIRE(value > 0);
+REQUIRE(value <= 100);
+
+// Result<T, E> testing
+auto result = some_function();
+REQUIRE(result.is_ok());
+REQUIRE(result.value() == expected);
+
+// Error cases
+REQUIRE(result.is_error());
+REQUIRE(result.error() == ErrorCode::Timeout);
+```
+
+#### Testing Best Practices
+
+1. **Use Given-When-Then structure** for clarity:
+   ```cpp
+   TEST_CASE("Example test", "[component]") {
+       // Given: Initial state
+       Component comp;
+
+       // When: Action performed
+       auto result = comp.do_something();
+
+       // Then: Expected outcome
+       REQUIRE(result.is_ok());
+   }
+   ```
+
+2. **Test one thing per test case** - Keep tests focused and simple
+
+3. **Use descriptive names** - Test names should explain what is being tested
+
+4. **Tag appropriately** - Use tags like `[core]`, `[hal]`, `[fast]`, `[slow]`, `[integration]`
+
+5. **Test error paths** - Don't just test success cases:
+   ```cpp
+   TEST_CASE("Function rejects invalid input", "[validation]") {
+       auto result = function_under_test(invalid_input);
+       REQUIRE(result.is_error());
+       REQUIRE(result.error() == ErrorCode::InvalidParameter);
+   }
+   ```
+
+### Test Coverage
+
+We aim for high test coverage on:
+- **Core library** (`src/core/`) - 90%+ coverage
+- **HAL interfaces** (`src/hal/interface/`) - 80%+ coverage
+- **Platform implementations** (`src/hal/platform/`) - 70%+ coverage (hardware-dependent)
+
+### Continuous Integration
+
+Tests run automatically on GitHub Actions:
+- **Ubuntu** + **macOS**
+- **GCC** and **Clang** compilers
+- **AddressSanitizer + UBSan** for memory safety
+- All tests must pass before merging
+
 ### Integration Tests
 
-- For hardware tests, place in `tests/integration/`
+For hardware-dependent tests:
+- Place in `tests/integration/`
 - Document required hardware setup
-- These will run in CI with hardware runners (future)
+- Mark with `[integration]` tag
+- These may be skipped in CI (run manually on hardware)
 
 ## Building
 

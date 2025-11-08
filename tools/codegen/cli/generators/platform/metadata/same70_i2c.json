@@ -1,0 +1,237 @@
+{
+  "family": "same70",
+  "vendor": "atmel",
+  "peripheral_name": "TWIHS",
+  "register_include": "hal/vendors/atmel/same70/registers/twihs0_registers.hpp",
+  "bitfield_include": "hal/vendors/atmel/same70/bitfields/twihs0_bitfields.hpp",
+  "register_namespace": "alloy::hal::atmel::same70::twihs0",
+  "register_type": "TWIHS0_Registers",
+  "platform_namespace": "alloy::hal::same70",
+  "vendor_namespace": "alloy::hal::atmel::same70",
+  "namespace_alias": "twihs",
+  "requires_clock": false,
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "I2C peripheral base address"
+    },
+    {
+      "name": "IRQ_ID",
+      "type": "uint32_t",
+      "description": "I2C interrupt ID for clock enable"
+    }
+  ],
+
+  "additional_enums": [],
+
+  "constants": [
+    {
+      "name": "I2C_TIMEOUT",
+      "type": "uint32_t",
+      "value": "100000",
+      "description": "I2C timeout in loop iterations (~10ms at 150MHz)"
+    }
+  ],
+
+  "registers": {
+    "control": {"name": "CR", "description": "Control Register"},
+    "mode": {"name": "MMR", "description": "Master Mode Register"},
+    "status": {"name": "SR", "description": "Status Register"},
+    "internal_addr": {"name": "IADR", "description": "Internal Address Register"},
+    "clock_waveform": {"name": "CWGR", "description": "Clock Waveform Generator Register"},
+    "transmit_holding": {"name": "THR", "description": "Transmit Holding Register"},
+    "receive_holding": {"name": "RHR", "description": "Receive Holding Register"}
+  },
+
+  "operations": {
+    "open": {
+      "description": "Initialize I2C peripheral",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (m_opened)",
+          "return_error": "ErrorCode::AlreadyInitialized"
+        },
+        {
+          "comment": "Enable peripheral clock (PMC)",
+          "custom_code": "// TODO: Enable peripheral clock via PMC"
+        },
+        {
+          "comment": "Reset and configure I2C master mode",
+          "custom_code": "hw->CR = twihs::cr::SWRST::mask;\n        hw->CR = twihs::cr::MSDIS::mask | twihs::cr::SVDIS::mask;\n        hw->CR = twihs::cr::MSEN::mask;"
+        },
+        {
+          "set_state": "m_opened = true"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "close": {
+      "description": "Close I2C peripheral",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable I2C master",
+          "custom_code": "hw->CR = twihs::cr::MSDIS::mask;"
+        },
+        {
+          "set_state": "m_opened = false"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "setSpeed": {
+      "description": "Set I2C bus speed",
+      "parameters": [
+        {"name": "speed", "type": "I2cSpeed", "description": "I2C bus speed (Standard 100kHz, Fast 400kHz, etc)"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Calculate clock divider based on master clock frequency",
+          "custom_code": "uint32_t speed_hz = static_cast<uint32_t>(speed);\n        // Assuming 150MHz master clock for SAME70\n        constexpr uint32_t MCK = 150000000;\n        uint32_t div = (MCK / (2 * speed_hz)) - 4;\n        \n        if (div > 255) {\n            return Err(ErrorCode::InvalidParameter);\n        }\n        \n        // Configure clock waveform generator\n        uint32_t cwgr = 0;\n        cwgr = twihs::cwgr::CLDIV::write(cwgr, div);\n        cwgr = twihs::cwgr::CHDIV::write(cwgr, div);\n        cwgr = twihs::cwgr::CKDIV::write(cwgr, 0);\n        hw->CWGR = cwgr;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "write": {
+      "description": "Write data to I2C device",
+      "parameters": [
+        {"name": "device_addr", "type": "uint8_t", "description": "7-bit I2C device address"},
+        {"name": "data", "type": "const uint8_t*", "description": "Data buffer to write"},
+        {"name": "size", "type": "size_t", "description": "Number of bytes to write"}
+      ],
+      "return_type": "Result<size_t, ErrorCode>",
+      "returns": "size",
+      "returns_type": "size_t",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (data == nullptr || size == 0)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "comment": "Configure master mode for write and transmit data",
+          "custom_code": "uint32_t mmr = 0;\n        mmr = twihs::mmr::DADR::write(mmr, device_addr);\n        hw->MMR = mmr;\n        \n        for (size_t i = 0; i < size; ++i) {\n            hw->THR = data[i];\n            \n            uint32_t timeout = 0;\n            while (!(hw->SR & twihs::sr::TXRDY::mask)) {\n                if (hw->SR & twihs::sr::NACK::mask) {\n                    return Err(ErrorCode::CommunicationError);\n                }\n                if (++timeout > I2C_TIMEOUT) {\n                    return Err(ErrorCode::Timeout);\n                }\n            }\n        }\n        \n        hw->CR = twihs::cr::STOP::mask;\n        \n        uint32_t timeout = 0;\n        while (!(hw->SR & twihs::sr::TXCOMP::mask)) {\n            if (++timeout > I2C_TIMEOUT) {\n                return Err(ErrorCode::Timeout);\n            }\n        }"
+        }
+      ]
+    },
+
+    "read": {
+      "description": "Read data from I2C device",
+      "parameters": [
+        {"name": "device_addr", "type": "uint8_t", "description": "7-bit I2C device address"},
+        {"name": "data", "type": "uint8_t*", "description": "Buffer for received data"},
+        {"name": "size", "type": "size_t", "description": "Number of bytes to read"}
+      ],
+      "return_type": "Result<size_t, ErrorCode>",
+      "returns": "size",
+      "returns_type": "size_t",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (data == nullptr || size == 0)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "comment": "Configure master mode for read and receive data",
+          "custom_code": "uint32_t mmr = 0;\n        mmr = twihs::mmr::DADR::write(mmr, device_addr);\n        mmr = twihs::mmr::MREAD::set(mmr);\n        hw->MMR = mmr;\n        \n        if (size == 1) {\n            hw->CR = twihs::cr::START::mask | twihs::cr::STOP::mask;\n        } else {\n            hw->CR = twihs::cr::START::mask;\n        }\n        \n        for (size_t i = 0; i < size; ++i) {\n            if (i == size - 1 && size > 1) {\n                hw->CR = twihs::cr::STOP::mask;\n            }\n            \n            uint32_t timeout = 0;\n            while (!(hw->SR & twihs::sr::RXRDY::mask)) {\n                if (hw->SR & twihs::sr::NACK::mask) {\n                    return Err(ErrorCode::CommunicationError);\n                }\n                if (++timeout > I2C_TIMEOUT) {\n                    return Err(ErrorCode::Timeout);\n                }\n            }\n            \n            data[i] = static_cast<uint8_t>(hw->RHR);\n        }\n        \n        uint32_t timeout = 0;\n        while (!(hw->SR & twihs::sr::TXCOMP::mask)) {\n            if (++timeout > I2C_TIMEOUT) {\n                return Err(ErrorCode::Timeout);\n            }\n        }"
+        }
+      ]
+    },
+
+    "writeRegister": {
+      "description": "Write single byte to device register",
+      "parameters": [
+        {"name": "device_addr", "type": "uint8_t", "description": "7-bit I2C device address"},
+        {"name": "reg_addr", "type": "uint8_t", "description": "Register address"},
+        {"name": "value", "type": "uint8_t", "description": "Value to write"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Write to device register using internal address",
+          "custom_code": "uint32_t mmr = 0;\n        mmr = twihs::mmr::DADR::write(mmr, device_addr);\n        mmr = twihs::mmr::IADRSZ::write(mmr, twihs::mmr::iadrsz::_1_BYTE);\n        hw->MMR = mmr;\n        hw->IADR = reg_addr;\n        hw->THR = value;\n        \n        uint32_t timeout = 0;\n        while (!(hw->SR & twihs::sr::TXRDY::mask)) {\n            if (hw->SR & twihs::sr::NACK::mask) {\n                return Err(ErrorCode::CommunicationError);\n            }\n            if (++timeout > I2C_TIMEOUT) {\n                return Err(ErrorCode::Timeout);\n            }\n        }\n        \n        hw->CR = twihs::cr::STOP::mask;\n        \n        timeout = 0;\n        while (!(hw->SR & twihs::sr::TXCOMP::mask)) {\n            if (++timeout > I2C_TIMEOUT) {\n                return Err(ErrorCode::Timeout);\n            }\n        }"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "readRegister": {
+      "description": "Read single byte from device register",
+      "parameters": [
+        {"name": "device_addr", "type": "uint8_t", "description": "7-bit I2C device address"},
+        {"name": "reg_addr", "type": "uint8_t", "description": "Register address"},
+        {"name": "value", "type": "uint8_t*", "description": "Pointer to store read value"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (value == nullptr)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "comment": "Read from device register using internal address",
+          "custom_code": "uint32_t mmr = 0;\n        mmr = twihs::mmr::DADR::write(mmr, device_addr);\n        mmr = twihs::mmr::IADRSZ::write(mmr, twihs::mmr::iadrsz::_1_BYTE);\n        mmr = twihs::mmr::MREAD::set(mmr);\n        hw->MMR = mmr;\n        hw->IADR = reg_addr;\n        hw->CR = twihs::cr::START::mask | twihs::cr::STOP::mask;\n        \n        uint32_t timeout = 0;\n        while (!(hw->SR & twihs::sr::RXRDY::mask)) {\n            if (hw->SR & twihs::sr::NACK::mask) {\n                return Err(ErrorCode::CommunicationError);\n            }\n            if (++timeout > I2C_TIMEOUT) {\n                return Err(ErrorCode::Timeout);\n            }\n        }\n        \n        *value = static_cast<uint8_t>(hw->RHR);\n        \n        timeout = 0;\n        while (!(hw->SR & twihs::sr::TXCOMP::mask)) {\n            if (++timeout > I2C_TIMEOUT) {\n                return Err(ErrorCode::Timeout);\n            }\n        }"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "isOpen": {
+      "description": "Check if I2C peripheral is open",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "returns": "m_opened",
+      "returns_type": "bool",
+      "steps": []
+    }
+  },
+
+  "state_variables": [
+    {"name": "m_opened", "type": "bool", "initial_value": "false", "description": "Tracks if peripheral is initialized"}
+  ],
+
+  "instances": [
+    {"name": "I2c0", "base": "0x40018000", "irq": "19", "description": "TWIHS0 instance (I2C0)"},
+    {"name": "I2c1", "base": "0x4001C000", "irq": "20", "description": "TWIHS1 instance (I2C1)"},
+    {"name": "I2c2", "base": "0x40060000", "irq": "41", "description": "TWIHS2 instance (I2C2)"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic I2C usage example",
+      "code": "using MyI2c = I2c<TWIHS0_BASE, TWIHS0_IRQ>;\nauto i2c = MyI2c{};\ni2c.open();\ni2c.setSpeed(I2cSpeed::Standard100kHz);\nuint8_t data[] = {0x01, 0x02, 0x03};\ni2c.write(0x50, data, 3);\ni2c.close();"
+    }
+  }
+}

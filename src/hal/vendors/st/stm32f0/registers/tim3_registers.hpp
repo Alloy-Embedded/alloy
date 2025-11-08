@@ -54,36 +54,31 @@ struct TIM3_Registers {
     /// Access: write-only
     volatile uint32_t EGR;
 
-    /// capture/compare mode register 1 (output
-          mode)
+    /// capture/compare mode register 1 (output mode)
     /// Offset: 0x0018
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCMR1_Output;
 
-    /// capture/compare mode register 1 (input
-          mode)
+    /// capture/compare mode register 1 (input mode)
     /// Offset: 0x0018
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCMR1_Input;
 
-    /// capture/compare mode register 2 (output
-          mode)
+    /// capture/compare mode register 2 (output mode)
     /// Offset: 0x001C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCMR2_Output;
 
-    /// capture/compare mode register 2 (input
-          mode)
+    /// capture/compare mode register 2 (input mode)
     /// Offset: 0x001C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCMR2_Input;
 
-    /// capture/compare enable
-          register
+    /// capture/compare enable register
     /// Offset: 0x0020
     /// Reset value: 0x00000000
     /// Access: read-write

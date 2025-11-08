@@ -111,24 +111,21 @@ namespace dr {
 
 /// CR - control register
 namespace cr {
-    /// Time-stamp event active
-              edge
+    /// Time-stamp event active edge
     /// Position: 3, Width: 1
     /// Access: read-write
     using TSEDGE = BitField<3, 1>;
     constexpr uint32_t TSEDGE_Pos = 3;
     constexpr uint32_t TSEDGE_Msk = TSEDGE::mask;
 
-    /// RTC_REFIN reference clock detection
-              enable (50 or 60 Hz)
+    /// RTC_REFIN reference clock detection enable (50 or 60 Hz)
     /// Position: 4, Width: 1
     /// Access: read-write
     using REFCKON = BitField<4, 1>;
     constexpr uint32_t REFCKON_Pos = 4;
     constexpr uint32_t REFCKON_Msk = REFCKON::mask;
 
-    /// Bypass the shadow
-              registers
+    /// Bypass the shadow registers
     /// Position: 5, Width: 1
     /// Access: read-write
     using BYPSHAD = BitField<5, 1>;
@@ -163,24 +160,21 @@ namespace cr {
     constexpr uint32_t ALRAIE_Pos = 12;
     constexpr uint32_t ALRAIE_Msk = ALRAIE::mask;
 
-    /// Time-stamp interrupt
-              enable
+    /// Time-stamp interrupt enable
     /// Position: 15, Width: 1
     /// Access: read-write
     using TSIE = BitField<15, 1>;
     constexpr uint32_t TSIE_Pos = 15;
     constexpr uint32_t TSIE_Msk = TSIE::mask;
 
-    /// Add 1 hour (summer time
-              change)
+    /// Add 1 hour (summer time change)
     /// Position: 16, Width: 1
     /// Access: write-only
     using ADD1H = BitField<16, 1>;
     constexpr uint32_t ADD1H_Pos = 16;
     constexpr uint32_t ADD1H_Msk = ADD1H::mask;
 
-    /// Subtract 1 hour (winter time
-              change)
+    /// Subtract 1 hour (winter time change)
     /// Position: 17, Width: 1
     /// Access: write-only
     using SUB1H = BitField<17, 1>;
@@ -194,8 +188,7 @@ namespace cr {
     constexpr uint32_t BKP_Pos = 18;
     constexpr uint32_t BKP_Msk = BKP::mask;
 
-    /// Calibration output
-              selection
+    /// Calibration output selection
     /// Position: 19, Width: 1
     /// Access: read-write
     using COSEL = BitField<19, 1>;
@@ -225,8 +218,7 @@ namespace cr {
 
 }  // namespace cr
 
-/// ISR - initialization and status
-          register
+/// ISR - initialization and status register
 namespace isr {
     /// Alarm A write flag
     /// Position: 0, Width: 1
@@ -249,8 +241,7 @@ namespace isr {
     constexpr uint32_t INITS_Pos = 4;
     constexpr uint32_t INITS_Msk = INITS::mask;
 
-    /// Registers synchronization
-              flag
+    /// Registers synchronization flag
     /// Position: 5, Width: 1
     /// Access: read-write
     using RSF = BitField<5, 1>;
@@ -317,15 +308,13 @@ namespace isr {
 
 /// PRER - prescaler register
 namespace prer {
-    /// Synchronous prescaler
-              factor
+    /// Synchronous prescaler factor
     /// Position: 0, Width: 15
     using PREDIV_S = BitField<0, 15>;
     constexpr uint32_t PREDIV_S_Pos = 0;
     constexpr uint32_t PREDIV_S_Msk = PREDIV_S::mask;
 
-    /// Asynchronous prescaler
-              factor
+    /// Asynchronous prescaler factor
     /// Position: 16, Width: 7
     using PREDIV_A = BitField<16, 7>;
     constexpr uint32_t PREDIV_A_Pos = 16;
@@ -335,8 +324,7 @@ namespace prer {
 
 /// ALRMAR - alarm A register
 namespace alrmar {
-    /// Second units in BCD
-              format.
+    /// Second units in BCD format.
     /// Position: 0, Width: 4
     using SU = BitField<0, 4>;
     constexpr uint32_t SU_Pos = 0;
@@ -354,8 +342,7 @@ namespace alrmar {
     constexpr uint32_t MSK1_Pos = 7;
     constexpr uint32_t MSK1_Msk = MSK1::mask;
 
-    /// Minute units in BCD
-              format.
+    /// Minute units in BCD format.
     /// Position: 8, Width: 4
     using MNU = BitField<8, 4>;
     constexpr uint32_t MNU_Pos = 8;
@@ -397,8 +384,7 @@ namespace alrmar {
     constexpr uint32_t MSK3_Pos = 23;
     constexpr uint32_t MSK3_Msk = MSK3::mask;
 
-    /// Date units or day in BCD
-              format.
+    /// Date units or day in BCD format.
     /// Position: 24, Width: 4
     using DU = BitField<24, 4>;
     constexpr uint32_t DU_Pos = 24;
@@ -446,8 +432,7 @@ namespace ssr {
 
 /// SHIFTR - shift control register
 namespace shiftr {
-    /// Subtract a fraction of a
-              second
+    /// Subtract a fraction of a second
     /// Position: 0, Width: 15
     using SUBFS = BitField<0, 15>;
     constexpr uint32_t SUBFS_Pos = 0;
@@ -463,8 +448,7 @@ namespace shiftr {
 
 /// TSTR - timestamp time register
 namespace tstr {
-    /// Second units in BCD
-              format.
+    /// Second units in BCD format.
     /// Position: 0, Width: 4
     using SU = BitField<0, 4>;
     constexpr uint32_t SU_Pos = 0;
@@ -476,8 +460,7 @@ namespace tstr {
     constexpr uint32_t ST_Pos = 4;
     constexpr uint32_t ST_Msk = ST::mask;
 
-    /// Minute units in BCD
-              format.
+    /// Minute units in BCD format.
     /// Position: 8, Width: 4
     using MNU = BitField<8, 4>;
     constexpr uint32_t MNU_Pos = 8;
@@ -567,15 +550,13 @@ namespace calr {
     constexpr uint32_t CALW16_Pos = 13;
     constexpr uint32_t CALW16_Msk = CALW16::mask;
 
-    /// Use a 16-second calibration cycle
-              period
+    /// Use a 16-second calibration cycle period
     /// Position: 14, Width: 1
     using CALW8 = BitField<14, 1>;
     constexpr uint32_t CALW8_Pos = 14;
     constexpr uint32_t CALW8_Msk = CALW8::mask;
 
-    /// Use an 8-second calibration cycle
-              period
+    /// Use an 8-second calibration cycle period
     /// Position: 15, Width: 1
     using CALP = BitField<15, 1>;
     constexpr uint32_t CALP_Pos = 15;
@@ -583,18 +564,15 @@ namespace calr {
 
 }  // namespace calr
 
-/// TAFCR - tamper and alternate function configuration
-          register
+/// TAFCR - tamper and alternate function configuration register
 namespace tafcr {
-    /// RTC_TAMP1 input detection
-              enable
+    /// RTC_TAMP1 input detection enable
     /// Position: 0, Width: 1
     using TAMP1E = BitField<0, 1>;
     constexpr uint32_t TAMP1E_Pos = 0;
     constexpr uint32_t TAMP1E_Msk = TAMP1E::mask;
 
-    /// Active level for RTC_TAMP1
-              input
+    /// Active level for RTC_TAMP1 input
     /// Position: 1, Width: 1
     using TAMP1TRG = BitField<1, 1>;
     constexpr uint32_t TAMP1TRG_Pos = 1;
@@ -606,22 +584,19 @@ namespace tafcr {
     constexpr uint32_t TAMPIE_Pos = 2;
     constexpr uint32_t TAMPIE_Msk = TAMPIE::mask;
 
-    /// RTC_TAMP2 input detection
-              enable
+    /// RTC_TAMP2 input detection enable
     /// Position: 3, Width: 1
     using TAMP2E = BitField<3, 1>;
     constexpr uint32_t TAMP2E_Pos = 3;
     constexpr uint32_t TAMP2E_Msk = TAMP2E::mask;
 
-    /// Active level for RTC_TAMP2
-              input
+    /// Active level for RTC_TAMP2 input
     /// Position: 4, Width: 1
     using TAMP2_TRG = BitField<4, 1>;
     constexpr uint32_t TAMP2_TRG_Pos = 4;
     constexpr uint32_t TAMP2_TRG_Msk = TAMP2_TRG::mask;
 
-    /// Activate timestamp on tamper detection
-              event
+    /// Activate timestamp on tamper detection event
     /// Position: 7, Width: 1
     using TAMPTS = BitField<7, 1>;
     constexpr uint32_t TAMPTS_Pos = 7;
@@ -639,8 +614,7 @@ namespace tafcr {
     constexpr uint32_t TAMPFLT_Pos = 11;
     constexpr uint32_t TAMPFLT_Msk = TAMPFLT::mask;
 
-    /// RTC_TAMPx precharge
-              duration
+    /// RTC_TAMPx precharge duration
     /// Position: 13, Width: 2
     using TAMP_PRCH = BitField<13, 2>;
     constexpr uint32_t TAMP_PRCH_Pos = 13;
@@ -652,8 +626,7 @@ namespace tafcr {
     constexpr uint32_t TAMP_PUDIS_Pos = 15;
     constexpr uint32_t TAMP_PUDIS_Msk = TAMP_PUDIS::mask;
 
-    /// RTC_ALARM output type/PC13
-              value
+    /// RTC_ALARM output type/PC13 value
     /// Position: 18, Width: 1
     using PC13VALUE = BitField<18, 1>;
     constexpr uint32_t PC13VALUE_Pos = 18;
@@ -699,8 +672,7 @@ namespace alrmassr {
     constexpr uint32_t SS_Pos = 0;
     constexpr uint32_t SS_Msk = SS::mask;
 
-    /// Mask the most-significant bits starting
-              at this bit
+    /// Mask the most-significant bits starting at this bit
     /// Position: 24, Width: 4
     using MASKSS = BitField<24, 4>;
     constexpr uint32_t MASKSS_Pos = 24;

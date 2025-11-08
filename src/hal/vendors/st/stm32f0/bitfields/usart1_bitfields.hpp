@@ -55,8 +55,7 @@ namespace cr1 {
     constexpr uint32_t RXNEIE_Pos = 5;
     constexpr uint32_t RXNEIE_Msk = RXNEIE::mask;
 
-    /// Transmission complete interrupt
-              enable
+    /// Transmission complete interrupt enable
     /// Position: 6, Width: 1
     using TCIE = BitField<6, 1>;
     constexpr uint32_t TCIE_Pos = 6;
@@ -104,8 +103,7 @@ namespace cr1 {
     constexpr uint32_t MME_Pos = 13;
     constexpr uint32_t MME_Msk = MME::mask;
 
-    /// Character match interrupt
-              enable
+    /// Character match interrupt enable
     /// Position: 14, Width: 1
     using CMIE = BitField<14, 1>;
     constexpr uint32_t CMIE_Pos = 14;
@@ -117,29 +115,25 @@ namespace cr1 {
     constexpr uint32_t OVER8_Pos = 15;
     constexpr uint32_t OVER8_Msk = OVER8::mask;
 
-    /// Driver Enable deassertion
-              time
+    /// Driver Enable deassertion time
     /// Position: 16, Width: 5
     using DEDT = BitField<16, 5>;
     constexpr uint32_t DEDT_Pos = 16;
     constexpr uint32_t DEDT_Msk = DEDT::mask;
 
-    /// Driver Enable assertion
-              time
+    /// Driver Enable assertion time
     /// Position: 21, Width: 5
     using DEAT = BitField<21, 5>;
     constexpr uint32_t DEAT_Pos = 21;
     constexpr uint32_t DEAT_Msk = DEAT::mask;
 
-    /// Receiver timeout interrupt
-              enable
+    /// Receiver timeout interrupt enable
     /// Position: 26, Width: 1
     using RTOIE = BitField<26, 1>;
     constexpr uint32_t RTOIE_Pos = 26;
     constexpr uint32_t RTOIE_Msk = RTOIE::mask;
 
-    /// End of Block interrupt
-              enable
+    /// End of Block interrupt enable
     /// Position: 27, Width: 1
     using EOBIE = BitField<27, 1>;
     constexpr uint32_t EOBIE_Pos = 27;
@@ -155,8 +149,7 @@ namespace cr1 {
 
 /// CR2 - Control register 2
 namespace cr2 {
-    /// 7-bit Address Detection/4-bit Address
-              Detection
+    /// 7-bit Address Detection/4-bit Address Detection
     /// Position: 4, Width: 1
     using ADDM7 = BitField<4, 1>;
     constexpr uint32_t ADDM7_Pos = 4;
@@ -168,8 +161,7 @@ namespace cr2 {
     constexpr uint32_t LBDL_Pos = 5;
     constexpr uint32_t LBDL_Msk = LBDL::mask;
 
-    /// LIN break detection interrupt
-              enable
+    /// LIN break detection interrupt enable
     /// Position: 6, Width: 1
     using LBDIE = BitField<6, 1>;
     constexpr uint32_t LBDIE_Pos = 6;
@@ -217,15 +209,13 @@ namespace cr2 {
     constexpr uint32_t SWAP_Pos = 15;
     constexpr uint32_t SWAP_Msk = SWAP::mask;
 
-    /// RX pin active level
-              inversion
+    /// RX pin active level inversion
     /// Position: 16, Width: 1
     using RXINV = BitField<16, 1>;
     constexpr uint32_t RXINV_Pos = 16;
     constexpr uint32_t RXINV_Msk = RXINV::mask;
 
-    /// TX pin active level
-              inversion
+    /// TX pin active level inversion
     /// Position: 17, Width: 1
     using TXINV = BitField<17, 1>;
     constexpr uint32_t TXINV_Pos = 17;
@@ -343,8 +333,7 @@ namespace cr3 {
     constexpr uint32_t CTSIE_Pos = 10;
     constexpr uint32_t CTSIE_Msk = CTSIE::mask;
 
-    /// One sample bit method
-              enable
+    /// One sample bit method enable
     /// Position: 11, Width: 1
     using ONEBIT = BitField<11, 1>;
     constexpr uint32_t ONEBIT_Pos = 11;
@@ -356,8 +345,7 @@ namespace cr3 {
     constexpr uint32_t OVRDIS_Pos = 12;
     constexpr uint32_t OVRDIS_Msk = OVRDIS::mask;
 
-    /// DMA Disable on Reception
-              Error
+    /// DMA Disable on Reception Error
     /// Position: 13, Width: 1
     using DDRE = BitField<13, 1>;
     constexpr uint32_t DDRE_Pos = 13;
@@ -369,8 +357,7 @@ namespace cr3 {
     constexpr uint32_t DEM_Pos = 14;
     constexpr uint32_t DEM_Msk = DEM::mask;
 
-    /// Driver enable polarity
-              selection
+    /// Driver enable polarity selection
     /// Position: 15, Width: 1
     using DEP = BitField<15, 1>;
     constexpr uint32_t DEP_Pos = 15;
@@ -382,15 +369,13 @@ namespace cr3 {
     constexpr uint32_t SCARCNT_Pos = 17;
     constexpr uint32_t SCARCNT_Msk = SCARCNT::mask;
 
-    /// Wakeup from Stop mode interrupt flag
-              selection
+    /// Wakeup from Stop mode interrupt flag selection
     /// Position: 20, Width: 2
     using WUS = BitField<20, 2>;
     constexpr uint32_t WUS_Pos = 20;
     constexpr uint32_t WUS_Msk = WUS::mask;
 
-    /// Wakeup from Stop mode interrupt
-              enable
+    /// Wakeup from Stop mode interrupt enable
     /// Position: 22, Width: 1
     using WUFIE = BitField<22, 1>;
     constexpr uint32_t WUFIE_Pos = 22;
@@ -414,8 +399,7 @@ namespace brr {
 
 }  // namespace brr
 
-/// GTPR - Guard time and prescaler
-          register
+/// GTPR - Guard time and prescaler register
 namespace gtpr {
     /// Prescaler value
     /// Position: 0, Width: 8
@@ -473,8 +457,7 @@ namespace rqr {
     constexpr uint32_t RXFRQ_Pos = 3;
     constexpr uint32_t RXFRQ_Msk = RXFRQ::mask;
 
-    /// Transmit data flush
-              request
+    /// Transmit data flush request
     /// Position: 4, Width: 1
     using TXFRQ = BitField<4, 1>;
     constexpr uint32_t TXFRQ_Pos = 4;
@@ -482,8 +465,7 @@ namespace rqr {
 
 }  // namespace rqr
 
-/// ISR - Interrupt & status
-          register
+/// ISR - Interrupt & status register
 namespace isr {
     /// Parity error
     /// Position: 0, Width: 1
@@ -515,8 +497,7 @@ namespace isr {
     constexpr uint32_t IDLE_Pos = 4;
     constexpr uint32_t IDLE_Msk = IDLE::mask;
 
-    /// Read data register not
-              empty
+    /// Read data register not empty
     /// Position: 5, Width: 1
     using RXNE = BitField<5, 1>;
     constexpr uint32_t RXNE_Pos = 5;
@@ -528,8 +509,7 @@ namespace isr {
     constexpr uint32_t TC_Pos = 6;
     constexpr uint32_t TC_Msk = TC::mask;
 
-    /// Transmit data register
-              empty
+    /// Transmit data register empty
     /// Position: 7, Width: 1
     using TXE = BitField<7, 1>;
     constexpr uint32_t TXE_Pos = 7;
@@ -595,8 +575,7 @@ namespace isr {
     constexpr uint32_t SBKF_Pos = 18;
     constexpr uint32_t SBKF_Msk = SBKF::mask;
 
-    /// Receiver wakeup from Mute
-              mode
+    /// Receiver wakeup from Mute mode
     /// Position: 19, Width: 1
     using RWU = BitField<19, 1>;
     constexpr uint32_t RWU_Pos = 19;
@@ -608,15 +587,13 @@ namespace isr {
     constexpr uint32_t WUF_Pos = 20;
     constexpr uint32_t WUF_Msk = WUF::mask;
 
-    /// Transmit enable acknowledge
-              flag
+    /// Transmit enable acknowledge flag
     /// Position: 21, Width: 1
     using TEACK = BitField<21, 1>;
     constexpr uint32_t TEACK_Pos = 21;
     constexpr uint32_t TEACK_Msk = TEACK::mask;
 
-    /// Receive enable acknowledge
-              flag
+    /// Receive enable acknowledge flag
     /// Position: 22, Width: 1
     using REACK = BitField<22, 1>;
     constexpr uint32_t REACK_Pos = 22;
@@ -650,22 +627,19 @@ namespace icr {
     constexpr uint32_t ORECF_Pos = 3;
     constexpr uint32_t ORECF_Msk = ORECF::mask;
 
-    /// Idle line detected clear
-              flag
+    /// Idle line detected clear flag
     /// Position: 4, Width: 1
     using IDLECF = BitField<4, 1>;
     constexpr uint32_t IDLECF_Pos = 4;
     constexpr uint32_t IDLECF_Msk = IDLECF::mask;
 
-    /// Transmission complete clear
-              flag
+    /// Transmission complete clear flag
     /// Position: 6, Width: 1
     using TCCF = BitField<6, 1>;
     constexpr uint32_t TCCF_Pos = 6;
     constexpr uint32_t TCCF_Msk = TCCF::mask;
 
-    /// LIN break detection clear
-              flag
+    /// LIN break detection clear flag
     /// Position: 8, Width: 1
     using LBDCF = BitField<8, 1>;
     constexpr uint32_t LBDCF_Pos = 8;
@@ -677,8 +651,7 @@ namespace icr {
     constexpr uint32_t CTSCF_Pos = 9;
     constexpr uint32_t CTSCF_Msk = CTSCF::mask;
 
-    /// Receiver timeout clear
-              flag
+    /// Receiver timeout clear flag
     /// Position: 11, Width: 1
     using RTOCF = BitField<11, 1>;
     constexpr uint32_t RTOCF_Pos = 11;
@@ -696,8 +669,7 @@ namespace icr {
     constexpr uint32_t CMCF_Pos = 17;
     constexpr uint32_t CMCF_Msk = CMCF::mask;
 
-    /// Wakeup from Stop mode clear
-              flag
+    /// Wakeup from Stop mode clear flag
     /// Position: 20, Width: 1
     using WUCF = BitField<20, 1>;
     constexpr uint32_t WUCF_Pos = 20;

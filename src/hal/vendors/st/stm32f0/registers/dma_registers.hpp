@@ -18,217 +18,187 @@ namespace alloy::hal::st::stm32f0::dma {
 /// DMA Register Structure
 struct DMA_Registers {
 
-    /// DMA interrupt status register
-          (DMA_ISR)
+    /// DMA interrupt status register (DMA_ISR)
     /// Offset: 0x0000
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t ISR;
 
-    /// DMA interrupt flag clear register
-          (DMA_IFCR)
+    /// DMA interrupt flag clear register (DMA_IFCR)
     /// Offset: 0x0004
     /// Reset value: 0x00000000
     /// Access: write-only
     volatile uint32_t IFCR;
 
-    /// DMA channel configuration register
-          (DMA_CCR)
+    /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x0008
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCR1;
 
-    /// DMA channel 1 number of data
-          register
+    /// DMA channel 1 number of data register
     /// Offset: 0x000C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CNDTR1;
 
-    /// DMA channel 1 peripheral address
-          register
+    /// DMA channel 1 peripheral address register
     /// Offset: 0x0010
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CPAR1;
 
-    /// DMA channel 1 memory address
-          register
+    /// DMA channel 1 memory address register
     /// Offset: 0x0014
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CMAR1;
     uint8_t RESERVED_0018[4]; ///< Reserved
 
-    /// DMA channel configuration register
-          (DMA_CCR)
+    /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x001C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCR2;
 
-    /// DMA channel 2 number of data
-          register
+    /// DMA channel 2 number of data register
     /// Offset: 0x0020
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CNDTR2;
 
-    /// DMA channel 2 peripheral address
-          register
+    /// DMA channel 2 peripheral address register
     /// Offset: 0x0024
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CPAR2;
 
-    /// DMA channel 2 memory address
-          register
+    /// DMA channel 2 memory address register
     /// Offset: 0x0028
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CMAR2;
     uint8_t RESERVED_002C[4]; ///< Reserved
 
-    /// DMA channel configuration register
-          (DMA_CCR)
+    /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x0030
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCR3;
 
-    /// DMA channel 3 number of data
-          register
+    /// DMA channel 3 number of data register
     /// Offset: 0x0034
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CNDTR3;
 
-    /// DMA channel 3 peripheral address
-          register
+    /// DMA channel 3 peripheral address register
     /// Offset: 0x0038
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CPAR3;
 
-    /// DMA channel 3 memory address
-          register
+    /// DMA channel 3 memory address register
     /// Offset: 0x003C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CMAR3;
     uint8_t RESERVED_0040[4]; ///< Reserved
 
-    /// DMA channel configuration register
-          (DMA_CCR)
+    /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x0044
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCR4;
 
-    /// DMA channel 4 number of data
-          register
+    /// DMA channel 4 number of data register
     /// Offset: 0x0048
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CNDTR4;
 
-    /// DMA channel 4 peripheral address
-          register
+    /// DMA channel 4 peripheral address register
     /// Offset: 0x004C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CPAR4;
 
-    /// DMA channel 4 memory address
-          register
+    /// DMA channel 4 memory address register
     /// Offset: 0x0050
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CMAR4;
     uint8_t RESERVED_0054[4]; ///< Reserved
 
-    /// DMA channel configuration register
-          (DMA_CCR)
+    /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x0058
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCR5;
 
-    /// DMA channel 5 number of data
-          register
+    /// DMA channel 5 number of data register
     /// Offset: 0x005C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CNDTR5;
 
-    /// DMA channel 5 peripheral address
-          register
+    /// DMA channel 5 peripheral address register
     /// Offset: 0x0060
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CPAR5;
 
-    /// DMA channel 5 memory address
-          register
+    /// DMA channel 5 memory address register
     /// Offset: 0x0064
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CMAR5;
     uint8_t RESERVED_0068[4]; ///< Reserved
 
-    /// DMA channel configuration register
-          (DMA_CCR)
+    /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x006C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCR6;
 
-    /// DMA channel 6 number of data
-          register
+    /// DMA channel 6 number of data register
     /// Offset: 0x0070
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CNDTR6;
 
-    /// DMA channel 6 peripheral address
-          register
+    /// DMA channel 6 peripheral address register
     /// Offset: 0x0074
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CPAR6;
 
-    /// DMA channel 6 memory address
-          register
+    /// DMA channel 6 memory address register
     /// Offset: 0x0078
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CMAR6;
     uint8_t RESERVED_007C[4]; ///< Reserved
 
-    /// DMA channel configuration register
-          (DMA_CCR)
+    /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x0080
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCR7;
 
-    /// DMA channel 7 number of data
-          register
+    /// DMA channel 7 number of data register
     /// Offset: 0x0084
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CNDTR7;
 
-    /// DMA channel 7 peripheral address
-          register
+    /// DMA channel 7 peripheral address register
     /// Offset: 0x0088
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CPAR7;
 
-    /// DMA channel 7 memory address
-          register
+    /// DMA channel 7 memory address register
     /// Offset: 0x008C
     /// Reset value: 0x00000000
     /// Access: read-write

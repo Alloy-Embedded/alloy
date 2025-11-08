@@ -1,0 +1,136 @@
+{
+  "family": "STM32F4",
+  "vendor": "ST",
+  "architecture": "arm_cortex_m",
+  "core": "Cortex-M4",
+  "register_generation": {
+    "namespace_format": "alloy::platform::{family}",
+    "struct_name_format": "{peripheral}Registers",
+    "type_mappings": {
+      "8": "uint8_t",
+      "16": "uint16_t",
+      "32": "uint32_t",
+      "64": "uint64_t"
+    },
+    "handle_overlaps": "union",
+    "generate_padding": true,
+    "padding_name_format": "_reserved{n}",
+    "array_handling": "array"
+  },
+  "bitfield_generation": {
+    "enum_style": "enum_class",
+    "value_format": "hex",
+    "generate_masks": true,
+    "mask_suffix": "_MASK",
+    "shift_suffix": "_SHIFT",
+    "generate_helpers": true
+  },
+  "svd_fixes": {},
+  "peripherals": {
+    "GPIO": {
+      "enabled": true,
+      "operations": [
+        {
+          "name": "set",
+          "description": "Set pin high",
+          "registers": ["GPIO_BSRR"]
+        },
+        {
+          "name": "clear",
+          "description": "Set pin low",
+          "registers": ["GPIO_BSRR"]
+        },
+        {
+          "name": "toggle",
+          "description": "Toggle pin state",
+          "registers": ["GPIO_ODR"]
+        },
+        {
+          "name": "read",
+          "description": "Read pin state",
+          "registers": ["GPIO_IDR"]
+        }
+      ]
+    },
+    "UART": {
+      "enabled": true
+    },
+    "SPI": {
+      "enabled": true
+    },
+    "I2C": {
+      "enabled": true
+    }
+  },
+  "platform": {
+    "gpio": {
+      "num_ports": 9,
+      "pins_per_port": 16,
+      "peripheral_functions": ["AF0", "AF1", "AF2", "AF3", "AF4", "AF5", "AF6", "AF7", "AF8", "AF9", "AF10", "AF11", "AF12", "AF13", "AF14", "AF15"],
+      "supports_interrupts": true
+    },
+    "uart": {
+      "num_ports": 6,
+      "max_baud": 115200,
+      "supports_dma": true
+    },
+    "spi": {
+      "num_ports": 6,
+      "max_frequency": 84000000,
+      "supports_dma": true
+    },
+    "i2c": {
+      "num_ports": 3,
+      "max_speed": 400000,
+      "supports_multi_master": true
+    }
+  },
+  "memory_layout": {
+    "flash": {
+      "base": "0x08000000",
+      "size": "1M"
+    },
+    "ram": {
+      "base": "0x20000000",
+      "size": "192K"
+    },
+    "ccm": {
+      "base": "0x10000000",
+      "size": "64K"
+    }
+  },
+  "startup": {
+    "stack_size": 16384,
+    "heap_size": 32768,
+    "enable_fpu": true,
+    "enable_cache": false,
+    "enable_mpu": false,
+    "vector_table_location": "flash"
+  },
+  "mcus": {
+    "STM32F407VG": {
+      "description": "100-pin LQFP, 1MB Flash, 192KB RAM",
+      "flash": {
+        "size_kb": 1024,
+        "base_address": "0x08000000"
+      },
+      "ram": {
+        "size_kb": 192,
+        "base_address": "0x20000000"
+      },
+      "package": "LQFP100"
+    },
+    "STM32F429ZI": {
+      "description": "144-pin LQFP, 2MB Flash, 256KB RAM",
+      "flash": {
+        "size_kb": 2048,
+        "base_address": "0x08000000"
+      },
+      "ram": {
+        "size_kb": 256,
+        "base_address": "0x20000000"
+      },
+      "package": "LQFP144"
+    }
+  }
+}

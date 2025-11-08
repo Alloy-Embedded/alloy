@@ -64,46 +64,7 @@ def cmd_generate(args):
     success = True
 
     try:
-        # Generate startup if requested
-        if args.all or args.startup:
-            print_header("Generating Startup Code")
-            from cli.generators.generate_startup import generate_for_board_mcus
-            result = generate_for_board_mcus(args.verbose, tracker)
-            if result != 0:
-                success = False
-
-        # Generate registers if requested
-        if args.all or args.registers:
-            print_header("Generating Register Structures")
-            from cli.generators.generate_registers import generate_for_board_mcus as gen_regs
-            result = gen_regs(args.verbose, tracker)
-            if result != 0:
-                success = False
-
-        # Generate enumerations if requested
-        if args.all or args.enums:
-            print_header("Generating Enumeration Definitions")
-            from cli.generators.generate_enums import generate_for_board_mcus as gen_enums
-            result = gen_enums(args.verbose, tracker)
-            if result != 0:
-                success = False
-
-        # Generate pin alternate functions if requested
-        if args.all or args.pin_functions:
-            print_header("Generating Pin Alternate Function Mappings")
-            from cli.generators.generate_pin_functions import generate_for_board_mcus as gen_pin_funcs
-            result = gen_pin_funcs(args.verbose, tracker)
-            if result != 0:
-                success = False
-
-        # Generate complete register map if requested
-        if args.all or args.register_map:
-            print_header("Generating Complete Register Maps")
-            from cli.generators.generate_register_map import generate_for_board_mcus as gen_map
-            result = gen_map(args.verbose, tracker)
-            if result != 0:
-                success = False
-
+        # IMPORTANT: Generate pins FIRST because other generators depend on pin_functions.hpp
         # Generate pins if requested
         if args.all or args.pins:
             # ST
@@ -133,6 +94,46 @@ def cmd_generate(args):
                         import traceback
                         traceback.print_exc()
                     success = False
+
+        # Generate pin alternate functions if requested
+        if args.all or args.pin_functions:
+            print_header("Generating Pin Alternate Function Mappings")
+            from cli.generators.generate_pin_functions import generate_for_board_mcus as gen_pin_funcs
+            result = gen_pin_funcs(args.verbose, tracker)
+            if result != 0:
+                success = False
+
+        # Generate registers if requested (needs pin_functions.hpp)
+        if args.all or args.registers:
+            print_header("Generating Register Structures")
+            from cli.generators.generate_registers import generate_for_board_mcus as gen_regs
+            result = gen_regs(args.verbose, tracker)
+            if result != 0:
+                success = False
+
+        # Generate startup if requested (needs pin_functions.hpp)
+        if args.all or args.startup:
+            print_header("Generating Startup Code")
+            from cli.generators.generate_startup import generate_for_board_mcus
+            result = generate_for_board_mcus(args.verbose, tracker)
+            if result != 0:
+                success = False
+
+        # Generate enumerations if requested (needs pin_functions.hpp)
+        if args.all or args.enums:
+            print_header("Generating Enumeration Definitions")
+            from cli.generators.generate_enums import generate_for_board_mcus as gen_enums
+            result = gen_enums(args.verbose, tracker)
+            if result != 0:
+                success = False
+
+        # Generate complete register map if requested
+        if args.all or args.register_map:
+            print_header("Generating Complete Register Maps")
+            from cli.generators.generate_register_map import generate_for_board_mcus as gen_map
+            result = gen_map(args.verbose, tracker)
+            if result != 0:
+                success = False
 
         # Show summary
         tracker.complete_generation()
