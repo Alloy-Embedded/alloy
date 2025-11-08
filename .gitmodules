@@ -1,4 +1,4 @@
 [submodule "tools/codegen/upstream/cmsis-svd-data"]
-	path = tools/codegen/upstream/cmsis-svd-data
+	path = tools/codegen/svd/upstream/cmsis-svd-data
 	url = https://github.com/cmsis-svd/cmsis-svd-data.git
 	shallow = true
