@@ -45,40 +45,108 @@ extern "C" [[noreturn]] void Default_Handler() {
 }
 
 // All interrupt handlers (weak, can be overridden by user)
-extern "C" void PVD_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TAMP_STAMP_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RTC_WKUP_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void FLASH_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RCC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EXTI0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EXTI1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EXTI2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EXTI3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EXTI4_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void ADC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EXTI9_5_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM1_BRK_TIM9_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM1_UP_TIM10_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM1_TRG_COM_TIM11_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM1_CC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIM3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2C1_EV_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2C1_ER_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2C2_EV_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2C2_ER_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EXTI15_10_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RTC_Alarm_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void OTG_FS_WKUP_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SDIO_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void OTG_FS_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2C3_EV_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2C3_ER_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void FPU_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI4_Handler() __attribute__((weak, alias("Default_Handler")));
+extern "C" __attribute__((weak)) void PVD_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TAMP_STAMP_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RTC_WKUP_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void FLASH_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RCC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EXTI0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EXTI1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EXTI2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EXTI3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EXTI4_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void ADC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EXTI9_5_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM1_BRK_TIM9_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM1_UP_TIM10_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM1_TRG_COM_TIM11_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM1_CC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIM3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2C1_EV_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2C1_ER_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2C2_EV_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2C2_ER_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EXTI15_10_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RTC_Alarm_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void OTG_FS_WKUP_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SDIO_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void OTG_FS_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2C3_EV_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2C3_ER_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void FPU_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI4_Handler() {
+    Default_Handler();
+}
 
 // ============================================================================
 // RESET HANDLER
@@ -86,7 +154,7 @@ extern "C" void SPI4_Handler() __attribute__((weak, alias("Default_Handler")));
 
 extern "C" [[noreturn]] void Reset_Handler() {
     // 1. Copy initialized data from Flash to RAM (.data section)
-    uint32_t* src = &_sidata;
+    const uint32_t* src = &_sidata;
     uint32_t* dest = &_sdata;
     while (dest < &_edata) {
         *dest++ = *src++;
@@ -104,7 +172,7 @@ extern "C" [[noreturn]] void Reset_Handler() {
     // 4. Call C++ static constructors
     extern void (*__init_array_start[])();
     extern void (*__init_array_end[])();
-    for (auto ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
+    for (auto* ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
         (*ctor)();
     }
 
@@ -124,49 +192,49 @@ extern "C" [[noreturn]] void Reset_Handler() {
 __attribute__((section(".isr_vector"), used))
 void (* const vector_table[])() = {
     // Core system handlers
-    reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    PVD_Handler,                   // IRQ 1: PVD - PVD through EXTI line detection
+    reinterpret_cast<void (*)()>(&_estack), // Initial stack pointer
+    Reset_Handler, // Reset handler
+    PVD_Handler, // IRQ 1: PVD - PVD through EXTI line detection
         interrupt
-    TAMP_STAMP_Handler,            // IRQ 2: TAMP_STAMP - Tamper and TimeStamp interrupts through the
+    TAMP_STAMP_Handler, // IRQ 2: TAMP_STAMP - Tamper and TimeStamp interrupts through the
         EXTI line
-    RTC_WKUP_Handler,              // IRQ 3: RTC_WKUP - RTC Wakeup interrupt through the EXTI
+    RTC_WKUP_Handler, // IRQ 3: RTC_WKUP - RTC Wakeup interrupt through the EXTI
         line
-    FLASH_Handler,                 // IRQ 4: FLASH - FLASH global interrupt
-    RCC_Handler,                   // IRQ 5: RCC - RCC global interrupt
-    EXTI0_Handler,                 // IRQ 6: EXTI0 - EXTI Line0 interrupt
-    EXTI1_Handler,                 // IRQ 7: EXTI1 - EXTI Line1 interrupt
-    EXTI2_Handler,                 // IRQ 8: EXTI2 - EXTI Line2 interrupt
-    EXTI3_Handler,                 // IRQ 9: EXTI3 - EXTI Line3 interrupt
-    EXTI4_Handler,                 // IRQ 10: EXTI4 - EXTI Line4 interrupt
-    ADC_Handler,                   // IRQ 18: ADC - ADC1 global interrupt
-    EXTI9_5_Handler,               // IRQ 23: EXTI9_5 - EXTI Line[9:5] interrupts
-    TIM1_BRK_TIM9_Handler,         // IRQ 24: TIM1_BRK_TIM9 - TIM1 Break interrupt and TIM9 global
+    FLASH_Handler, // IRQ 4: FLASH - FLASH global interrupt
+    RCC_Handler, // IRQ 5: RCC - RCC global interrupt
+    EXTI0_Handler, // IRQ 6: EXTI0 - EXTI Line0 interrupt
+    EXTI1_Handler, // IRQ 7: EXTI1 - EXTI Line1 interrupt
+    EXTI2_Handler, // IRQ 8: EXTI2 - EXTI Line2 interrupt
+    EXTI3_Handler, // IRQ 9: EXTI3 - EXTI Line3 interrupt
+    EXTI4_Handler, // IRQ 10: EXTI4 - EXTI Line4 interrupt
+    ADC_Handler, // IRQ 18: ADC - ADC1 global interrupt
+    EXTI9_5_Handler, // IRQ 23: EXTI9_5 - EXTI Line[9:5] interrupts
+    TIM1_BRK_TIM9_Handler, // IRQ 24: TIM1_BRK_TIM9 - TIM1 Break interrupt and TIM9 global
         interrupt
-    TIM1_UP_TIM10_Handler,         // IRQ 25: TIM1_UP_TIM10 - TIM1 Update interrupt and TIM10 global
+    TIM1_UP_TIM10_Handler, // IRQ 25: TIM1_UP_TIM10 - TIM1 Update interrupt and TIM10 global
         interrupt
-    TIM1_TRG_COM_TIM11_Handler,    // IRQ 26: TIM1_TRG_COM_TIM11 - TIM1 Trigger and Commutation interrupts and
+    TIM1_TRG_COM_TIM11_Handler, // IRQ 26: TIM1_TRG_COM_TIM11 - TIM1 Trigger and Commutation interrupts and
         TIM11 global interrupt
-    TIM1_CC_Handler,               // IRQ 27: TIM1_CC - TIM1 Capture Compare interrupt
-    TIM2_Handler,                  // IRQ 28: TIM2 - TIM2 global interrupt
-    TIM3_Handler,                  // IRQ 29: TIM3 - TIM3 global interrupt
-    I2C1_EV_Handler,               // IRQ 31: I2C1_EV - I2C1 event interrupt
-    I2C1_ER_Handler,               // IRQ 32: I2C1_ER - I2C1 error interrupt
-    I2C2_EV_Handler,               // IRQ 33: I2C2_EV - I2C2 event interrupt
-    I2C2_ER_Handler,               // IRQ 34: I2C2_ER - I2C2 error interrupt
-    SPI1_Handler,                  // IRQ 35: SPI1 - SPI1 global interrupt
-    SPI2_Handler,                  // IRQ 36: SPI2 - SPI2 global interrupt
-    EXTI15_10_Handler,             // IRQ 40: EXTI15_10 - EXTI Line[15:10] interrupts
-    RTC_Alarm_Handler,             // IRQ 41: RTC_Alarm - RTC Alarms (A and B) through EXTI line
+    TIM1_CC_Handler, // IRQ 27: TIM1_CC - TIM1 Capture Compare interrupt
+    TIM2_Handler, // IRQ 28: TIM2 - TIM2 global interrupt
+    TIM3_Handler, // IRQ 29: TIM3 - TIM3 global interrupt
+    I2C1_EV_Handler, // IRQ 31: I2C1_EV - I2C1 event interrupt
+    I2C1_ER_Handler, // IRQ 32: I2C1_ER - I2C1 error interrupt
+    I2C2_EV_Handler, // IRQ 33: I2C2_EV - I2C2 event interrupt
+    I2C2_ER_Handler, // IRQ 34: I2C2_ER - I2C2 error interrupt
+    SPI1_Handler, // IRQ 35: SPI1 - SPI1 global interrupt
+    SPI2_Handler, // IRQ 36: SPI2 - SPI2 global interrupt
+    EXTI15_10_Handler, // IRQ 40: EXTI15_10 - EXTI Line[15:10] interrupts
+    RTC_Alarm_Handler, // IRQ 41: RTC_Alarm - RTC Alarms (A and B) through EXTI line
         interrupt
-    OTG_FS_WKUP_Handler,           // IRQ 42: OTG_FS_WKUP - USB On-The-Go FS Wakeup through EXTI line
+    OTG_FS_WKUP_Handler, // IRQ 42: OTG_FS_WKUP - USB On-The-Go FS Wakeup through EXTI line
         interrupt
-    SDIO_Handler,                  // IRQ 49: SDIO - SDIO global interrupt
-    SPI3_Handler,                  // IRQ 51: SPI3 - SPI3 global interrupt
-    OTG_FS_Handler,                // IRQ 67: OTG_FS - USB On The Go FS global
+    SDIO_Handler, // IRQ 49: SDIO - SDIO global interrupt
+    SPI3_Handler, // IRQ 51: SPI3 - SPI3 global interrupt
+    OTG_FS_Handler, // IRQ 67: OTG_FS - USB On The Go FS global
         interrupt
-    I2C3_EV_Handler,               // IRQ 72: I2C3_EV - I2C3 event interrupt
-    I2C3_ER_Handler,               // IRQ 73: I2C3_ER - I2C3 error interrupt
-    FPU_Handler,                   // IRQ 81: FPU - FPU interrupt
-    SPI4_Handler,                  // IRQ 84: SPI4 - SPI4 global interrupt
+    I2C3_EV_Handler, // IRQ 72: I2C3_EV - I2C3 event interrupt
+    I2C3_ER_Handler, // IRQ 73: I2C3_ER - I2C3 error interrupt
+    FPU_Handler, // IRQ 81: FPU - FPU interrupt
+    SPI4_Handler, // IRQ 84: SPI4 - SPI4 global interrupt
 };

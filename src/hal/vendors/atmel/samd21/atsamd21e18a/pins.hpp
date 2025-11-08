@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace alloy::hal::atmel::samd21::atsamd21e18a::pins {
 

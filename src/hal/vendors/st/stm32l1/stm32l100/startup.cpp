@@ -102,46 +102,45 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    WWDG_Handler,  // IRQ 0: WWDG
-    PVD_Handler,  // IRQ 1: PVD
-    TAMPER_STAMP_Handler,  // IRQ 2: TAMPER_STAMP
-    RTC_WKUP_Handler,  // IRQ 3: RTC_WKUP
-    FLASH_Handler,  // IRQ 4: FLASH
-    RCC_Handler,  // IRQ 5: RCC
-    EXTI0_Handler,  // IRQ 6: EXTI0
-    EXTI1_Handler,  // IRQ 7: EXTI1
-    EXTI2_Handler,  // IRQ 8: EXTI2
-    EXTI3_Handler,  // IRQ 9: EXTI3
-    EXTI4_Handler,  // IRQ 10: EXTI4
-    ADC1_Handler,  // IRQ 18: ADC1
-    USB_HP_Handler,  // IRQ 19: USB_HP
-    USB_LP_Handler,  // IRQ 20: USB_LP
-    DAC_Handler,  // IRQ 21: DAC
-    COMP_CA_Handler,  // IRQ 22: COMP_CA
-    EXTI9_5_Handler,  // IRQ 23: EXTI9_5
-    LCD_Handler,  // IRQ 24: LCD
-    TIM9_Handler,  // IRQ 25: TIM9
-    TIM10_Handler,  // IRQ 26: TIM10
-    TIM11_Handler,  // IRQ 27: TIM11
-    TIM2_Handler,  // IRQ 28: TIM2
-    TIM3_Handler,  // IRQ 29: TIM3
-    TIM4_Handler,  // IRQ 30: TIM4
-    I2C1_EV_Handler,  // IRQ 31: I2C1_EV
-    I2C1_ER_Handler,  // IRQ 32: I2C1_ER
-    I2C2_EV_Handler,  // IRQ 33: I2C2_EV
-    I2C2_ER_Handler,  // IRQ 34: I2C2_ER
-    SPI1_Handler,  // IRQ 35: SPI1
-    SPI2_Handler,  // IRQ 36: SPI2
-    USART1_Handler,  // IRQ 37: USART1
-    USART2_Handler,  // IRQ 38: USART2
-    USART3_Handler,  // IRQ 39: USART3
-    EXTI15_10_Handler,  // IRQ 40: EXTI15_10
-    RTC_Alarm_Handler,  // IRQ 41: RTC_Alarm
-    USB_FS_WKUP_Handler,  // IRQ 42: USB_FS_WKUP
-    TIM6_Handler,  // IRQ 43: TIM6
-    TIM7_Handler,  // IRQ 44: TIM7
+    Reset_Handler,                           // Reset handler
+    WWDG_Handler,                            // IRQ 0: WWDG
+    PVD_Handler,                             // IRQ 1: PVD
+    TAMPER_STAMP_Handler,                    // IRQ 2: TAMPER_STAMP
+    RTC_WKUP_Handler,                        // IRQ 3: RTC_WKUP
+    FLASH_Handler,                           // IRQ 4: FLASH
+    RCC_Handler,                             // IRQ 5: RCC
+    EXTI0_Handler,                           // IRQ 6: EXTI0
+    EXTI1_Handler,                           // IRQ 7: EXTI1
+    EXTI2_Handler,                           // IRQ 8: EXTI2
+    EXTI3_Handler,                           // IRQ 9: EXTI3
+    EXTI4_Handler,                           // IRQ 10: EXTI4
+    ADC1_Handler,                            // IRQ 18: ADC1
+    USB_HP_Handler,                          // IRQ 19: USB_HP
+    USB_LP_Handler,                          // IRQ 20: USB_LP
+    DAC_Handler,                             // IRQ 21: DAC
+    COMP_CA_Handler,                         // IRQ 22: COMP_CA
+    EXTI9_5_Handler,                         // IRQ 23: EXTI9_5
+    LCD_Handler,                             // IRQ 24: LCD
+    TIM9_Handler,                            // IRQ 25: TIM9
+    TIM10_Handler,                           // IRQ 26: TIM10
+    TIM11_Handler,                           // IRQ 27: TIM11
+    TIM2_Handler,                            // IRQ 28: TIM2
+    TIM3_Handler,                            // IRQ 29: TIM3
+    TIM4_Handler,                            // IRQ 30: TIM4
+    I2C1_EV_Handler,                         // IRQ 31: I2C1_EV
+    I2C1_ER_Handler,                         // IRQ 32: I2C1_ER
+    I2C2_EV_Handler,                         // IRQ 33: I2C2_EV
+    I2C2_ER_Handler,                         // IRQ 34: I2C2_ER
+    SPI1_Handler,                            // IRQ 35: SPI1
+    SPI2_Handler,                            // IRQ 36: SPI2
+    USART1_Handler,                          // IRQ 37: USART1
+    USART2_Handler,                          // IRQ 38: USART2
+    USART3_Handler,                          // IRQ 39: USART3
+    EXTI15_10_Handler,                       // IRQ 40: EXTI15_10
+    RTC_Alarm_Handler,                       // IRQ 41: RTC_Alarm
+    USB_FS_WKUP_Handler,                     // IRQ 42: USB_FS_WKUP
+    TIM6_Handler,                            // IRQ 43: TIM6
+    TIM7_Handler,                            // IRQ 44: TIM7
 };

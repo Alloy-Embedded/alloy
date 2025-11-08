@@ -35,7 +35,8 @@ extern "C" void RTC_TAMP_Handler() __attribute__((weak, alias("Default_Handler")
 extern "C" void FLASH_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void DMA1_Channel1_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void DMA1_Channel2_3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void DMA1_Channel4_5_6_7_DMAMUX_Handler() __attribute__((weak, alias("Default_Handler")));
+extern "C" void DMA1_Channel4_5_6_7_DMAMUX_Handler()
+    __attribute__((weak, alias("Default_Handler")));
 extern "C" void DMA_Channel4_5_6_7_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void ADC_COMP_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void TIM1_BRK_UP_TRG_COM_Handler() __attribute__((weak, alias("Default_Handler")));
@@ -90,34 +91,33 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    WWDG_Handler,  // IRQ 0: WWDG
-    RTC_TAMP_Handler,  // IRQ 2: RTC_TAMP
-    FLASH_Handler,  // IRQ 3: FLASH
-    DMA1_Channel1_Handler,  // IRQ 9: DMA1_Channel1
-    DMA1_Channel2_3_Handler,  // IRQ 10: DMA1_Channel2_3
-    DMA1_Channel4_5_6_7_DMAMUX_Handler,  // IRQ 11: DMA1_Channel4_5_6_7_DMAMUX
-    DMA_Channel4_5_6_7_Handler,  // IRQ 11: DMA_Channel4_5_6_7
-    ADC_COMP_Handler,  // IRQ 12: ADC_COMP
-    TIM1_BRK_UP_TRG_COM_Handler,  // IRQ 13: TIM1_BRK_UP_TRG_COM
-    TIM1_CC_Handler,  // IRQ 14: TIM1_CC
-    TIM2_Handler,  // IRQ 15: TIM2
-    TIM3_Handler,  // IRQ 16: TIM3
-    TIM6_DAC_LPTIM1_Handler,  // IRQ 17: TIM6_DAC_LPTIM1
-    TIM6_DAC_Handler,  // IRQ 17: TIM6_DAC
-    TIM7_Handler,  // IRQ 18: TIM7
-    TIM14_Handler,  // IRQ 19: TIM14
-    TIM15_Handler,  // IRQ 20: TIM15
-    TIM16_Handler,  // IRQ 21: TIM16
-    TIM17_Handler,  // IRQ 22: TIM17
-    I2C1_Handler,  // IRQ 23: I2C1
-    I2C2_Handler,  // IRQ 24: I2C2
-    SPI1_Handler,  // IRQ 25: SPI1
-    SPI2_SPI3_Handler,  // IRQ 26: SPI2_SPI3
-    USART1_Handler,  // IRQ 27: USART1
-    USART2_Handler,  // IRQ 28: USART2
-    CEC_Handler,  // IRQ 30: CEC
+    Reset_Handler,                           // Reset handler
+    WWDG_Handler,                            // IRQ 0: WWDG
+    RTC_TAMP_Handler,                        // IRQ 2: RTC_TAMP
+    FLASH_Handler,                           // IRQ 3: FLASH
+    DMA1_Channel1_Handler,                   // IRQ 9: DMA1_Channel1
+    DMA1_Channel2_3_Handler,                 // IRQ 10: DMA1_Channel2_3
+    DMA1_Channel4_5_6_7_DMAMUX_Handler,      // IRQ 11: DMA1_Channel4_5_6_7_DMAMUX
+    DMA_Channel4_5_6_7_Handler,              // IRQ 11: DMA_Channel4_5_6_7
+    ADC_COMP_Handler,                        // IRQ 12: ADC_COMP
+    TIM1_BRK_UP_TRG_COM_Handler,             // IRQ 13: TIM1_BRK_UP_TRG_COM
+    TIM1_CC_Handler,                         // IRQ 14: TIM1_CC
+    TIM2_Handler,                            // IRQ 15: TIM2
+    TIM3_Handler,                            // IRQ 16: TIM3
+    TIM6_DAC_LPTIM1_Handler,                 // IRQ 17: TIM6_DAC_LPTIM1
+    TIM6_DAC_Handler,                        // IRQ 17: TIM6_DAC
+    TIM7_Handler,                            // IRQ 18: TIM7
+    TIM14_Handler,                           // IRQ 19: TIM14
+    TIM15_Handler,                           // IRQ 20: TIM15
+    TIM16_Handler,                           // IRQ 21: TIM16
+    TIM17_Handler,                           // IRQ 22: TIM17
+    I2C1_Handler,                            // IRQ 23: I2C1
+    I2C2_Handler,                            // IRQ 24: I2C2
+    SPI1_Handler,                            // IRQ 25: SPI1
+    SPI2_SPI3_Handler,                       // IRQ 26: SPI2_SPI3
+    USART1_Handler,                          // IRQ 27: USART1
+    USART2_Handler,                          // IRQ 28: USART2
+    CEC_Handler,                             // IRQ 30: CEC
 };

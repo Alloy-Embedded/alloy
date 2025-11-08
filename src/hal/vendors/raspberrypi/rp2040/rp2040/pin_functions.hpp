@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace alloy::hal::raspberrypi::rp2040::rp2040::pin_functions {
 

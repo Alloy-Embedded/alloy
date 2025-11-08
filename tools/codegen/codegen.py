@@ -6,13 +6,17 @@ Single entry point for all code generation commands.
 
 Usage:
     python3 codegen.py generate [OPTIONS]
+    python3 codegen.py generate-complete [OPTIONS]  # RECOMMENDED
     python3 codegen.py status
     python3 codegen.py clean [OPTIONS]
     python3 codegen.py vendors
     python3 codegen.py test-parser <svd_file>
 
 Examples:
-    # Generate everything
+    # Generate everything + format + validate (RECOMMENDED)
+    python3 codegen.py generate-complete
+
+    # Generate everything (no format/validate)
     python3 codegen.py generate
 
     # Generate only startup
@@ -253,6 +257,175 @@ def cmd_test_parser(args):
 
 
 # ============================================================================
+# COMMAND: generate-complete
+# ============================================================================
+
+def cmd_generate_complete(args):
+    """
+    Generate everything in the correct sequence, then format and validate.
+
+    This is the recommended way to regenerate all code from scratch.
+
+    Sequence:
+      1. Generate vendor code (pins, startup, registers, enums)
+      2. Generate platform HAL implementations
+      3. Format all generated code (clang-format)
+      4. Validate with clang-tidy (startup files)
+    """
+    import subprocess
+    import time
+
+    print_header("Complete Code Generation Pipeline")
+    print()
+    print("This will:")
+    print("  1. Generate all vendor code (pins, startup, registers, enums)")
+    print("  2. Generate all platform HAL implementations")
+    print("  3. Format all generated code with clang-format")
+    print("  4. Validate startup files with clang-tidy")
+    print()
+
+    start_time = time.time()
+    repo_root = CODEGEN_DIR.parent.parent
+
+    # ========================================================================
+    # STEP 1: Generate vendor code
+    # ========================================================================
+    print_header("Step 1/4: Generating Vendor Code")
+    print()
+
+    result = subprocess.run(
+        [sys.executable, str(CODEGEN_DIR / "codegen.py"), "generate", "--all"],
+        cwd=CODEGEN_DIR
+    )
+
+    if result.returncode != 0:
+        print_error("❌ Vendor code generation failed!")
+        return 1
+
+    print_success("✅ Vendor code generation complete")
+    print()
+
+    # ========================================================================
+    # STEP 2: Generate platform HAL
+    # ========================================================================
+    print_header("Step 2/4: Generating Platform HAL")
+    print()
+
+    unified_gen = CODEGEN_DIR / "cli" / "generators" / "unified_generator.py"
+    if unified_gen.exists():
+        result = subprocess.run(
+            [sys.executable, str(unified_gen)],
+            cwd=CODEGEN_DIR
+        )
+
+        if result.returncode != 0:
+            print_error("❌ Platform HAL generation failed!")
+            if not args.continue_on_error:
+                return 1
+        else:
+            print_success("✅ Platform HAL generation complete")
+    else:
+        print_info("⚠️  Unified generator not found, skipping platform HAL")
+
+    # Generate universal HAL wrappers
+    print()
+    print_info("Generating universal HAL wrappers...")
+    hal_wrapper_gen = CODEGEN_DIR / "cli" / "generators" / "generate_hal_wrappers.py"
+    if hal_wrapper_gen.exists():
+        result = subprocess.run(
+            [sys.executable, str(hal_wrapper_gen)],
+            cwd=CODEGEN_DIR
+        )
+
+        if result.returncode != 0:
+            print_error("❌ HAL wrapper generation failed!")
+            if not args.continue_on_error:
+                return 1
+        else:
+            print_success("✅ HAL wrapper generation complete")
+    else:
+        print_info("⚠️  HAL wrapper generator not found, skipping")
+
+    print()
+
+    # ========================================================================
+    # STEP 3: Format generated code
+    # ========================================================================
+    if not args.skip_format:
+        print_header("Step 3/4: Formatting Generated Code")
+        print()
+
+        format_script = CODEGEN_DIR / "scripts" / "format_generated_code.sh"
+        if format_script.exists():
+            result = subprocess.run(
+                ["bash", str(format_script)],
+                cwd=repo_root
+            )
+
+            if result.returncode != 0:
+                print_error("❌ Code formatting failed!")
+                if not args.continue_on_error:
+                    return 1
+            else:
+                print_success("✅ Code formatting complete")
+        else:
+            print_info("⚠️  Format script not found, skipping formatting")
+
+        print()
+    else:
+        print_info("⏭️  Skipping code formatting (--skip-format)")
+        print()
+
+    # ========================================================================
+    # STEP 4: Validate with clang-tidy
+    # ========================================================================
+    if not args.skip_validate:
+        print_header("Step 4/4: Validating with clang-tidy")
+        print()
+
+        validate_script = CODEGEN_DIR / "scripts" / "validate_clang_tidy.sh"
+        if validate_script.exists():
+            result = subprocess.run(
+                ["bash", str(validate_script)],
+                cwd=repo_root
+            )
+
+            if result.returncode != 0:
+                print_error("❌ Validation failed!")
+                print_info("   Some files may have clang-tidy warnings")
+                print_info("   Run manually: bash tools/codegen/scripts/validate_clang_tidy.sh")
+                if not args.continue_on_error:
+                    return 1
+            else:
+                print_success("✅ Validation complete")
+        else:
+            print_info("⚠️  Validation script not found, skipping validation")
+
+        print()
+    else:
+        print_info("⏭️  Skipping validation (--skip-validate)")
+        print()
+
+    # ========================================================================
+    # SUMMARY
+    # ========================================================================
+    elapsed = time.time() - start_time
+    print_header("Generation Complete!")
+    print()
+    print(f"  ⏱️  Total time: {elapsed:.1f}s")
+    print()
+    print_success("✅ All steps completed successfully!")
+    print()
+    print("Next steps:")
+    print("  1. Review generated files: src/hal/vendors/")
+    print("  2. Review platform HAL: src/hal/platform/")
+    print("  3. Build and test: cmake --build build")
+    print()
+
+    return 0
+
+
+# ============================================================================
 # COMMAND: config
 # ============================================================================
 
@@ -311,7 +484,13 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Generate everything
+  # Generate everything + format + validate (RECOMMENDED)
+  python3 codegen.py generate-complete
+
+  # Skip validation
+  python3 codegen.py generate-complete --skip-validate
+
+  # Generate everything (no format/validate)
   python3 codegen.py generate
 
   # Generate only startup
@@ -517,6 +696,34 @@ For more help on a command:
     )
 
     # ========================================================================
+    # COMMAND: generate-complete
+    # ========================================================================
+    complete_parser = subparsers.add_parser(
+        'generate-complete',
+        aliases=['genall', 'full'],
+        help='Generate everything + format + validate',
+        description='Generate all code, format with clang-format, and validate with clang-tidy'
+    )
+
+    complete_parser.add_argument(
+        '--skip-format',
+        action='store_true',
+        help='Skip clang-format step'
+    )
+
+    complete_parser.add_argument(
+        '--skip-validate',
+        action='store_true',
+        help='Skip clang-tidy validation step'
+    )
+
+    complete_parser.add_argument(
+        '--continue-on-error',
+        action='store_true',
+        help='Continue even if a step fails'
+    )
+
+    # ========================================================================
     # COMMAND: config
     # ========================================================================
     config_parser = subparsers.add_parser(
@@ -565,6 +772,8 @@ For more help on a command:
             if not args.startup and not args.registers and not args.enums and not args.pin_functions and not args.register_map and not args.pins:
                 args.all = True
             return cmd_generate(args)
+        elif args.command in ['generate-complete', 'genall', 'full']:
+            return cmd_generate_complete(args)
         elif args.command in ['status', 'st']:
             return cmd_status(args)
         elif args.command == 'clean':

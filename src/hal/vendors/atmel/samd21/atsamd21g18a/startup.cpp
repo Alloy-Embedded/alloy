@@ -45,31 +45,81 @@ extern "C" [[noreturn]] void Default_Handler() {
 }
 
 // All interrupt handlers (weak, can be overridden by user)
-extern "C" void PM_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SYSCTRL_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void WDT_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RTC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EIC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void NVMCTRL_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void DMAC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void USB_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EVSYS_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SERCOM0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SERCOM1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SERCOM2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SERCOM3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SERCOM4_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SERCOM5_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TCC0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TCC1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TCC2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC4_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC5_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void ADC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void AC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void DAC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2S_Handler() __attribute__((weak, alias("Default_Handler")));
+extern "C" __attribute__((weak)) void PM_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SYSCTRL_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void WDT_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RTC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EIC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void NVMCTRL_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void DMAC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void USB_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EVSYS_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SERCOM0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SERCOM1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SERCOM2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SERCOM3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SERCOM4_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SERCOM5_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TCC0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TCC1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TCC2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC4_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC5_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void ADC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void AC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void DAC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2S_Handler() {
+    Default_Handler();
+}
 
 // ============================================================================
 // RESET HANDLER
@@ -77,7 +127,7 @@ extern "C" void I2S_Handler() __attribute__((weak, alias("Default_Handler")));
 
 extern "C" [[noreturn]] void Reset_Handler() {
     // 1. Copy initialized data from Flash to RAM (.data section)
-    uint32_t* src = &_sidata;
+    const uint32_t* src = &_sidata;
     uint32_t* dest = &_sdata;
     while (dest < &_edata) {
         *dest++ = *src++;
@@ -95,7 +145,7 @@ extern "C" [[noreturn]] void Reset_Handler() {
     // 4. Call C++ static constructors
     extern void (*__init_array_start[])();
     extern void (*__init_array_end[])();
-    for (auto ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
+    for (auto* ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
         (*ctor)();
     }
 
@@ -115,31 +165,31 @@ extern "C" [[noreturn]] void Reset_Handler() {
 __attribute__((section(".isr_vector"), used))
 void (* const vector_table[])() = {
     // Core system handlers
-    reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    PM_Handler,                    // IRQ 0: PM
-    SYSCTRL_Handler,               // IRQ 1: SYSCTRL
-    WDT_Handler,                   // IRQ 2: WDT
-    RTC_Handler,                   // IRQ 3: RTC
-    EIC_Handler,                   // IRQ 4: EIC
-    NVMCTRL_Handler,               // IRQ 5: NVMCTRL
-    DMAC_Handler,                  // IRQ 6: DMAC
-    USB_Handler,                   // IRQ 7: USB
-    EVSYS_Handler,                 // IRQ 8: EVSYS
-    SERCOM0_Handler,               // IRQ 9: SERCOM0
-    SERCOM1_Handler,               // IRQ 10: SERCOM1
-    SERCOM2_Handler,               // IRQ 11: SERCOM2
-    SERCOM3_Handler,               // IRQ 12: SERCOM3
-    SERCOM4_Handler,               // IRQ 13: SERCOM4
-    SERCOM5_Handler,               // IRQ 14: SERCOM5
-    TCC0_Handler,                  // IRQ 15: TCC0
-    TCC1_Handler,                  // IRQ 16: TCC1
-    TCC2_Handler,                  // IRQ 17: TCC2
-    TC3_Handler,                   // IRQ 18: TC3
-    TC4_Handler,                   // IRQ 19: TC4
-    TC5_Handler,                   // IRQ 20: TC5
-    ADC_Handler,                   // IRQ 23: ADC
-    AC_Handler,                    // IRQ 24: AC
-    DAC_Handler,                   // IRQ 25: DAC
-    I2S_Handler,                   // IRQ 27: I2S
+    reinterpret_cast<void (*)()>(&_estack), // Initial stack pointer
+    Reset_Handler, // Reset handler
+    PM_Handler, // IRQ 0: PM
+    SYSCTRL_Handler, // IRQ 1: SYSCTRL
+    WDT_Handler, // IRQ 2: WDT
+    RTC_Handler, // IRQ 3: RTC
+    EIC_Handler, // IRQ 4: EIC
+    NVMCTRL_Handler, // IRQ 5: NVMCTRL
+    DMAC_Handler, // IRQ 6: DMAC
+    USB_Handler, // IRQ 7: USB
+    EVSYS_Handler, // IRQ 8: EVSYS
+    SERCOM0_Handler, // IRQ 9: SERCOM0
+    SERCOM1_Handler, // IRQ 10: SERCOM1
+    SERCOM2_Handler, // IRQ 11: SERCOM2
+    SERCOM3_Handler, // IRQ 12: SERCOM3
+    SERCOM4_Handler, // IRQ 13: SERCOM4
+    SERCOM5_Handler, // IRQ 14: SERCOM5
+    TCC0_Handler, // IRQ 15: TCC0
+    TCC1_Handler, // IRQ 16: TCC1
+    TCC2_Handler, // IRQ 17: TCC2
+    TC3_Handler, // IRQ 18: TC3
+    TC4_Handler, // IRQ 19: TC4
+    TC5_Handler, // IRQ 20: TC5
+    ADC_Handler, // IRQ 23: ADC
+    AC_Handler, // IRQ 24: AC
+    DAC_Handler, // IRQ 25: DAC
+    I2S_Handler, // IRQ 27: I2S
 };

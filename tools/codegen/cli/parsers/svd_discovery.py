@@ -13,9 +13,9 @@ from dataclasses import dataclass
 import xml.etree.ElementTree as ET
 
 CODEGEN_DIR = Path(__file__).parent.parent.parent
-UPSTREAM_SVD_DIR = CODEGEN_DIR / "upstream" / "cmsis-svd-data" / "data"
-CUSTOM_SVD_DIR = CODEGEN_DIR / "custom-svd" / "vendors"
-MERGE_POLICY_FILE = CODEGEN_DIR / "custom-svd" / "merge_policy.json"
+UPSTREAM_SVD_DIR = CODEGEN_DIR / "svd" / "upstream" / "cmsis-svd-data" / "data"
+CUSTOM_SVD_DIR = CODEGEN_DIR / "svd" / "custom" / "vendors"
+MERGE_POLICY_FILE = CODEGEN_DIR / "svd" / "custom" / "merge_policy.json"
 
 
 @dataclass
@@ -231,8 +231,8 @@ def merge_svd_lists(upstream: List[SVDFile], custom: List[SVDFile], policy: dict
 
             if show_warnings:
                 print(f"\n{Colors.WARNING}⚠  WARNING: Duplicate SVD detected for {svd.device_name}{Colors.ENDC}")
-                print(f"   - Upstream: {upstream_svd.file_path.relative_to(SCRIPT_DIR)}")
-                print(f"   - Custom:   {svd.file_path.relative_to(SCRIPT_DIR)}")
+                print(f"   - Upstream: {upstream_svd.file_path.relative_to(CODEGEN_DIR)}")
+                print(f"   - Custom:   {svd.file_path.relative_to(CODEGEN_DIR)}")
                 print(f"   Using: {selected_svd.source} (priority={selected_svd.priority})\n")
 
             merged[svd.device_name] = selected_svd
@@ -321,6 +321,19 @@ def find_svd_for_mcu(mcu_name: str, all_svds: Dict[str, SVDFile]) -> Optional[SV
     base_stm32_match = re.match(r'(STM32[A-Z]\d+)[A-Z]*\d*', mcu_upper)
     base_stm32 = base_stm32_match.group(1) if base_stm32_match else None
 
+    # For STM32F7, also try the family pattern (e.g., stm32f746vg -> STM32F7x6)
+    stm32f7_match = re.match(r'STM32(F7)(\d)(\d)[A-Z]*', mcu_upper)
+    stm32f7_family = None
+    if stm32f7_match:
+        # e.g., STM32F746 -> STM32F7x6
+        stm32f7_family = f"STM32{stm32f7_match.group(1)}x{stm32f7_match.group(3)}"
+
+    # For STM32F7x2 specifically (e.g., stm32f722re -> STM32F7x2)
+    stm32f72_match = re.match(r'STM32(F72)(\d)[A-Z]*', mcu_upper)
+    stm32f72_family = None
+    if stm32f72_match:
+        stm32f72_family = f"STM32{stm32f72_match.group(1)[:2]}x{stm32f72_match.group(2)}"
+
     possible_names = [
         mcu_name,
         mcu_upper,
@@ -335,6 +348,20 @@ def find_svd_for_mcu(mcu_name: str, all_svds: Dict[str, SVDFile]) -> Optional[SV
             base_stm32,
             f"{base_stm32}xx",
             base_stm32.lower(),
+        ])
+
+    # Add STM32F7 family patterns
+    if stm32f7_family:
+        possible_names.extend([
+            stm32f7_family,
+            stm32f7_family.lower(),
+        ])
+
+    # Add STM32F72 family patterns
+    if stm32f72_family:
+        possible_names.extend([
+            stm32f72_family,
+            stm32f72_family.lower(),
         ])
 
     # Try each possible name

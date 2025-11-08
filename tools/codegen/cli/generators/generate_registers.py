@@ -176,7 +176,7 @@ def generate_register_struct(peripheral: Peripheral, device: SVDDevice, family_l
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace {namespace} {{
 
@@ -275,7 +275,7 @@ def generate_bitfield_definitions(peripheral: Peripheral, device: SVDDevice, fam
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
 namespace {namespace} {{

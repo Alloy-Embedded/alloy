@@ -45,32 +45,84 @@ extern "C" [[noreturn]] void Default_Handler() {
 }
 
 // All interrupt handlers (weak, can be overridden by user)
-extern "C" void TIMER_IRQ_0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIMER_IRQ_1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIMER_IRQ_2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIMER_IRQ_3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PWM_IRQ_WRAP_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void USBCTRL_IRQ_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void XIP_IRQ_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PIO0_IRQ_0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PIO0_IRQ_1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PIO1_IRQ_0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PIO1_IRQ_1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void DMA_IRQ_0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void DMA_IRQ_1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void IO_IRQ_BANK0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void IO_IRQ_QSPI_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SIO_IRQ_PROC0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SIO_IRQ_PROC1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void CLOCKS_IRQ_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI0_IRQ_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI1_IRQ_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void UART0_IRQ_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void UART1_IRQ_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void ADC_IRQ_FIFO_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2C0_IRQ_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2C1_IRQ_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RTC_IRQ_Handler() __attribute__((weak, alias("Default_Handler")));
+extern "C" __attribute__((weak)) void TIMER_IRQ_0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIMER_IRQ_1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIMER_IRQ_2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIMER_IRQ_3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PWM_IRQ_WRAP_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void USBCTRL_IRQ_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void XIP_IRQ_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PIO0_IRQ_0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PIO0_IRQ_1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PIO1_IRQ_0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PIO1_IRQ_1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void DMA_IRQ_0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void DMA_IRQ_1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void IO_IRQ_BANK0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void IO_IRQ_QSPI_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SIO_IRQ_PROC0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SIO_IRQ_PROC1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void CLOCKS_IRQ_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI0_IRQ_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI1_IRQ_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void UART0_IRQ_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void UART1_IRQ_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void ADC_IRQ_FIFO_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2C0_IRQ_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2C1_IRQ_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RTC_IRQ_Handler() {
+    Default_Handler();
+}
 
 // ============================================================================
 // RESET HANDLER
@@ -78,7 +130,7 @@ extern "C" void RTC_IRQ_Handler() __attribute__((weak, alias("Default_Handler"))
 
 extern "C" [[noreturn]] void Reset_Handler() {
     // 1. Copy initialized data from Flash to RAM (.data section)
-    uint32_t* src = &_sidata;
+    const uint32_t* src = &_sidata;
     uint32_t* dest = &_sdata;
     while (dest < &_edata) {
         *dest++ = *src++;
@@ -96,7 +148,7 @@ extern "C" [[noreturn]] void Reset_Handler() {
     // 4. Call C++ static constructors
     extern void (*__init_array_start[])();
     extern void (*__init_array_end[])();
-    for (auto ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
+    for (auto* ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
         (*ctor)();
     }
 
@@ -116,32 +168,32 @@ extern "C" [[noreturn]] void Reset_Handler() {
 __attribute__((section(".isr_vector"), used))
 void (* const vector_table[])() = {
     // Core system handlers
-    reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    TIMER_IRQ_0_Handler,           // IRQ 0: TIMER_IRQ_0
-    TIMER_IRQ_1_Handler,           // IRQ 1: TIMER_IRQ_1
-    TIMER_IRQ_2_Handler,           // IRQ 2: TIMER_IRQ_2
-    TIMER_IRQ_3_Handler,           // IRQ 3: TIMER_IRQ_3
-    PWM_IRQ_WRAP_Handler,          // IRQ 4: PWM_IRQ_WRAP
-    USBCTRL_IRQ_Handler,           // IRQ 5: USBCTRL_IRQ
-    XIP_IRQ_Handler,               // IRQ 6: XIP_IRQ
-    PIO0_IRQ_0_Handler,            // IRQ 7: PIO0_IRQ_0
-    PIO0_IRQ_1_Handler,            // IRQ 8: PIO0_IRQ_1
-    PIO1_IRQ_0_Handler,            // IRQ 9: PIO1_IRQ_0
-    PIO1_IRQ_1_Handler,            // IRQ 10: PIO1_IRQ_1
-    DMA_IRQ_0_Handler,             // IRQ 11: DMA_IRQ_0
-    DMA_IRQ_1_Handler,             // IRQ 12: DMA_IRQ_1
-    IO_IRQ_BANK0_Handler,          // IRQ 13: IO_IRQ_BANK0
-    IO_IRQ_QSPI_Handler,           // IRQ 14: IO_IRQ_QSPI
-    SIO_IRQ_PROC0_Handler,         // IRQ 15: SIO_IRQ_PROC0
-    SIO_IRQ_PROC1_Handler,         // IRQ 16: SIO_IRQ_PROC1
-    CLOCKS_IRQ_Handler,            // IRQ 17: CLOCKS_IRQ
-    SPI0_IRQ_Handler,              // IRQ 18: SPI0_IRQ
-    SPI1_IRQ_Handler,              // IRQ 19: SPI1_IRQ
-    UART0_IRQ_Handler,             // IRQ 20: UART0_IRQ
-    UART1_IRQ_Handler,             // IRQ 21: UART1_IRQ
-    ADC_IRQ_FIFO_Handler,          // IRQ 22: ADC_IRQ_FIFO
-    I2C0_IRQ_Handler,              // IRQ 23: I2C0_IRQ
-    I2C1_IRQ_Handler,              // IRQ 24: I2C1_IRQ
-    RTC_IRQ_Handler,               // IRQ 25: RTC_IRQ
+    reinterpret_cast<void (*)()>(&_estack), // Initial stack pointer
+    Reset_Handler, // Reset handler
+    TIMER_IRQ_0_Handler, // IRQ 0: TIMER_IRQ_0
+    TIMER_IRQ_1_Handler, // IRQ 1: TIMER_IRQ_1
+    TIMER_IRQ_2_Handler, // IRQ 2: TIMER_IRQ_2
+    TIMER_IRQ_3_Handler, // IRQ 3: TIMER_IRQ_3
+    PWM_IRQ_WRAP_Handler, // IRQ 4: PWM_IRQ_WRAP
+    USBCTRL_IRQ_Handler, // IRQ 5: USBCTRL_IRQ
+    XIP_IRQ_Handler, // IRQ 6: XIP_IRQ
+    PIO0_IRQ_0_Handler, // IRQ 7: PIO0_IRQ_0
+    PIO0_IRQ_1_Handler, // IRQ 8: PIO0_IRQ_1
+    PIO1_IRQ_0_Handler, // IRQ 9: PIO1_IRQ_0
+    PIO1_IRQ_1_Handler, // IRQ 10: PIO1_IRQ_1
+    DMA_IRQ_0_Handler, // IRQ 11: DMA_IRQ_0
+    DMA_IRQ_1_Handler, // IRQ 12: DMA_IRQ_1
+    IO_IRQ_BANK0_Handler, // IRQ 13: IO_IRQ_BANK0
+    IO_IRQ_QSPI_Handler, // IRQ 14: IO_IRQ_QSPI
+    SIO_IRQ_PROC0_Handler, // IRQ 15: SIO_IRQ_PROC0
+    SIO_IRQ_PROC1_Handler, // IRQ 16: SIO_IRQ_PROC1
+    CLOCKS_IRQ_Handler, // IRQ 17: CLOCKS_IRQ
+    SPI0_IRQ_Handler, // IRQ 18: SPI0_IRQ
+    SPI1_IRQ_Handler, // IRQ 19: SPI1_IRQ
+    UART0_IRQ_Handler, // IRQ 20: UART0_IRQ
+    UART1_IRQ_Handler, // IRQ 21: UART1_IRQ
+    ADC_IRQ_FIFO_Handler, // IRQ 22: ADC_IRQ_FIFO
+    I2C0_IRQ_Handler, // IRQ 23: I2C0_IRQ
+    I2C1_IRQ_Handler, // IRQ 24: I2C1_IRQ
+    RTC_IRQ_Handler, // IRQ 25: RTC_IRQ
 };

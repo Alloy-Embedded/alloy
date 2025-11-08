@@ -96,40 +96,39 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    WWDG_Handler,  // IRQ 0: WWDG
-    PVD_PVM_Handler,  // IRQ 1: PVD_PVM
-    RTC_TAMP_Handler,  // IRQ 2: RTC_TAMP
-    FLASH_Handler,  // IRQ 3: FLASH
-    RCC_CRS_Handler,  // IRQ 4: RCC_CRS
-    EXTI0_1_Handler,  // IRQ 5: EXTI0_1
-    EXTI2_3_Handler,  // IRQ 6: EXTI2_3
-    EXTI4_15_Handler,  // IRQ 7: EXTI4_15
-    USB_Handler,  // IRQ 8: USB
-    DMA1_CHannel1_Handler,  // IRQ 9: DMA1_CHannel1
-    DMA1_Channel2_3_Handler,  // IRQ 10: DMA1_Channel2_3
-    DMA1_Channel4_5_6_7_Handler,  // IRQ 11: DMA1_Channel4_5_6_7
-    ADC_COMP_Handler,  // IRQ 12: ADC_COMP
-    TIM1_BRK_UP_TRG_COM_Handler,  // IRQ 13: TIM1_BRK_UP_TRG_COM
-    TIM1_CC_Handler,  // IRQ 14: TIM1_CC
-    TIM2_Handler,  // IRQ 15: TIM2
-    TIM3_Handler,  // IRQ 16: TIM3
-    TIM6_DAC_LPTIM1_Handler,  // IRQ 17: TIM6_DAC_LPTIM1
-    TIM7_LPTIM2_Handler,  // IRQ 18: TIM7_LPTIM2
-    TIM15_LPTIM3_Handler,  // IRQ 19: TIM15_LPTIM3
-    TIM16_Handler,  // IRQ 20: TIM16
-    TSC_Handler,  // IRQ 21: TSC
-    LCD_Handler,  // IRQ 22: LCD
-    I2C1_Handler,  // IRQ 23: I2C1
-    I2C2_I2C3_I2C4_Handler,  // IRQ 24: I2C2_I2C3_I2C4
-    SPI1_Handler,  // IRQ 25: SPI1
-    SPI2_SPI3_Handler,  // IRQ 26: SPI2_SPI3
-    USART1_Handler,  // IRQ 27: USART1
-    USART2_LPUART2_Handler,  // IRQ 28: USART2_LPUART2
-    USART3_LPUART1_Handler,  // IRQ 29: USART3_LPUART1
-    USART4_LPUART3_Handler,  // IRQ 30: USART4_LPUART3
-    AES_RNG_Handler,  // IRQ 31: AES_RNG
+    Reset_Handler,                           // Reset handler
+    WWDG_Handler,                            // IRQ 0: WWDG
+    PVD_PVM_Handler,                         // IRQ 1: PVD_PVM
+    RTC_TAMP_Handler,                        // IRQ 2: RTC_TAMP
+    FLASH_Handler,                           // IRQ 3: FLASH
+    RCC_CRS_Handler,                         // IRQ 4: RCC_CRS
+    EXTI0_1_Handler,                         // IRQ 5: EXTI0_1
+    EXTI2_3_Handler,                         // IRQ 6: EXTI2_3
+    EXTI4_15_Handler,                        // IRQ 7: EXTI4_15
+    USB_Handler,                             // IRQ 8: USB
+    DMA1_CHannel1_Handler,                   // IRQ 9: DMA1_CHannel1
+    DMA1_Channel2_3_Handler,                 // IRQ 10: DMA1_Channel2_3
+    DMA1_Channel4_5_6_7_Handler,             // IRQ 11: DMA1_Channel4_5_6_7
+    ADC_COMP_Handler,                        // IRQ 12: ADC_COMP
+    TIM1_BRK_UP_TRG_COM_Handler,             // IRQ 13: TIM1_BRK_UP_TRG_COM
+    TIM1_CC_Handler,                         // IRQ 14: TIM1_CC
+    TIM2_Handler,                            // IRQ 15: TIM2
+    TIM3_Handler,                            // IRQ 16: TIM3
+    TIM6_DAC_LPTIM1_Handler,                 // IRQ 17: TIM6_DAC_LPTIM1
+    TIM7_LPTIM2_Handler,                     // IRQ 18: TIM7_LPTIM2
+    TIM15_LPTIM3_Handler,                    // IRQ 19: TIM15_LPTIM3
+    TIM16_Handler,                           // IRQ 20: TIM16
+    TSC_Handler,                             // IRQ 21: TSC
+    LCD_Handler,                             // IRQ 22: LCD
+    I2C1_Handler,                            // IRQ 23: I2C1
+    I2C2_I2C3_I2C4_Handler,                  // IRQ 24: I2C2_I2C3_I2C4
+    SPI1_Handler,                            // IRQ 25: SPI1
+    SPI2_SPI3_Handler,                       // IRQ 26: SPI2_SPI3
+    USART1_Handler,                          // IRQ 27: USART1
+    USART2_LPUART2_Handler,                  // IRQ 28: USART2_LPUART2
+    USART3_LPUART1_Handler,                  // IRQ 29: USART3_LPUART1
+    USART4_LPUART3_Handler,                  // IRQ 30: USART4_LPUART3
+    AES_RNG_Handler,                         // IRQ 31: AES_RNG
 };

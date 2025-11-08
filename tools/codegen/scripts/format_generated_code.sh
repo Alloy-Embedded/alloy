@@ -51,7 +51,8 @@ done
 
 # Get script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+CODEGEN_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROJECT_ROOT="$(cd "$CODEGEN_DIR/../.." && pwd)"
 
 # Check if clang-format is available
 if ! command -v clang-format &> /dev/null; then
@@ -81,7 +82,7 @@ cd "$PROJECT_ROOT"
 
 # Format platform HAL files
 echo "Formatting platform HAL files..."
-python3 "$SCRIPT_DIR/cli/generators/code_formatter.py" \
+python3 "$CODEGEN_DIR/cli/generators/code_formatter.py" \
     $([ "$CHECK_MODE" = true ] && echo "--dry-run") \
     $([ "$VERBOSE" = true ] && echo "--verbose") \
     "src/hal/platform" \
@@ -90,7 +91,7 @@ PLATFORM_STATUS=$?
 
 # Format vendor register/bitfield files
 echo "Formatting vendor register/bitfield files..."
-python3 "$SCRIPT_DIR/cli/generators/code_formatter.py" \
+python3 "$CODEGEN_DIR/cli/generators/code_formatter.py" \
     $([ "$CHECK_MODE" = true ] && echo "--dry-run") \
     $([ "$VERBOSE" = true ] && echo "--verbose") \
     "src/hal/vendors" \

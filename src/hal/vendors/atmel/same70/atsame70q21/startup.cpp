@@ -45,69 +45,195 @@ extern "C" [[noreturn]] void Default_Handler() {
 }
 
 // All interrupt handlers (weak, can be overridden by user)
-extern "C" void SUPC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RSTC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RTC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RTT_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void WDT_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PMC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EFC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void UART0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void UART1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PIOA_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PIOB_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PIOC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void USART0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void USART1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void USART2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PIOD_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PIOE_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void HSMCI_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TWIHS0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TWIHS1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SSC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC4_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC5_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void AFEC0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void DACC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PWM0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void ICM_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void ACC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void USBHS_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void MCAN0_INT0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void MCAN0_INT1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void MCAN1_INT0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void MCAN1_INT1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void GMAC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void AFEC1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TWIHS2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void QSPI_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void UART2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void UART3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void UART4_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC6_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC7_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC8_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC9_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC10_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TC11_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void AES_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TRNG_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void XDMAC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void ISI_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PWM1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void FPU_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SDRAMC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RSWDT_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void GMAC_Q1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void GMAC_Q2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void IXC_Handler() __attribute__((weak, alias("Default_Handler")));
+extern "C" __attribute__((weak)) void SUPC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RSTC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RTC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RTT_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void WDT_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PMC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EFC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void UART0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void UART1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PIOA_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PIOB_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PIOC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void USART0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void USART1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void USART2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PIOD_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PIOE_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void HSMCI_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TWIHS0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TWIHS1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SSC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC4_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC5_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void AFEC0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void DACC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PWM0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void ICM_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void ACC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void USBHS_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void MCAN0_INT0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void MCAN0_INT1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void MCAN1_INT0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void MCAN1_INT1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void GMAC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void AFEC1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TWIHS2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void QSPI_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void UART2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void UART3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void UART4_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC6_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC7_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC8_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC9_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC10_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TC11_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void AES_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TRNG_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void XDMAC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void ISI_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PWM1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void FPU_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SDRAMC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RSWDT_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void GMAC_Q1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void GMAC_Q2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void IXC_Handler() {
+    Default_Handler();
+}
 
 // ============================================================================
 // RESET HANDLER
@@ -115,7 +241,7 @@ extern "C" void IXC_Handler() __attribute__((weak, alias("Default_Handler")));
 
 extern "C" [[noreturn]] void Reset_Handler() {
     // 1. Copy initialized data from Flash to RAM (.data section)
-    uint32_t* src = &_sidata;
+    const uint32_t* src = &_sidata;
     uint32_t* dest = &_sdata;
     while (dest < &_edata) {
         *dest++ = *src++;
@@ -133,7 +259,7 @@ extern "C" [[noreturn]] void Reset_Handler() {
     // 4. Call C++ static constructors
     extern void (*__init_array_start[])();
     extern void (*__init_array_end[])();
-    for (auto ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
+    for (auto* ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
         (*ctor)();
     }
 
@@ -153,69 +279,69 @@ extern "C" [[noreturn]] void Reset_Handler() {
 __attribute__((section(".isr_vector"), used))
 void (* const vector_table[])() = {
     // Core system handlers
-    reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    SUPC_Handler,                  // IRQ 0: SUPC
-    RSTC_Handler,                  // IRQ 1: RSTC
-    RTC_Handler,                   // IRQ 2: RTC
-    RTT_Handler,                   // IRQ 3: RTT
-    WDT_Handler,                   // IRQ 4: WDT
-    PMC_Handler,                   // IRQ 5: PMC
-    EFC_Handler,                   // IRQ 6: EFC
-    UART0_Handler,                 // IRQ 7: UART0
-    UART1_Handler,                 // IRQ 8: UART1
-    PIOA_Handler,                  // IRQ 10: PIOA
-    PIOB_Handler,                  // IRQ 11: PIOB
-    PIOC_Handler,                  // IRQ 12: PIOC
-    USART0_Handler,                // IRQ 13: USART0
-    USART1_Handler,                // IRQ 14: USART1
-    USART2_Handler,                // IRQ 15: USART2
-    PIOD_Handler,                  // IRQ 16: PIOD
-    PIOE_Handler,                  // IRQ 17: PIOE
-    HSMCI_Handler,                 // IRQ 18: HSMCI
-    TWIHS0_Handler,                // IRQ 19: TWIHS0
-    TWIHS1_Handler,                // IRQ 20: TWIHS1
-    SPI0_Handler,                  // IRQ 21: SPI0
-    SSC_Handler,                   // IRQ 22: SSC
-    TC0_Handler,                   // IRQ 23: TC0
-    TC1_Handler,                   // IRQ 24: TC1
-    TC2_Handler,                   // IRQ 25: TC2
-    TC3_Handler,                   // IRQ 26: TC3
-    TC4_Handler,                   // IRQ 27: TC4
-    TC5_Handler,                   // IRQ 28: TC5
-    AFEC0_Handler,                 // IRQ 29: AFEC0
-    DACC_Handler,                  // IRQ 30: DACC
-    PWM0_Handler,                  // IRQ 31: PWM0
-    ICM_Handler,                   // IRQ 32: ICM
-    ACC_Handler,                   // IRQ 33: ACC
-    USBHS_Handler,                 // IRQ 34: USBHS
-    MCAN0_INT0_Handler,            // IRQ 35: MCAN0_INT0
-    MCAN0_INT1_Handler,            // IRQ 36: MCAN0_INT1
-    MCAN1_INT0_Handler,            // IRQ 37: MCAN1_INT0
-    MCAN1_INT1_Handler,            // IRQ 38: MCAN1_INT1
-    GMAC_Handler,                  // IRQ 39: GMAC
-    AFEC1_Handler,                 // IRQ 40: AFEC1
-    TWIHS2_Handler,                // IRQ 41: TWIHS2
-    SPI1_Handler,                  // IRQ 42: SPI1
-    QSPI_Handler,                  // IRQ 43: QSPI
-    UART2_Handler,                 // IRQ 44: UART2
-    UART3_Handler,                 // IRQ 45: UART3
-    UART4_Handler,                 // IRQ 46: UART4
-    TC6_Handler,                   // IRQ 47: TC6
-    TC7_Handler,                   // IRQ 48: TC7
-    TC8_Handler,                   // IRQ 49: TC8
-    TC9_Handler,                   // IRQ 50: TC9
-    TC10_Handler,                  // IRQ 51: TC10
-    TC11_Handler,                  // IRQ 52: TC11
-    AES_Handler,                   // IRQ 56: AES
-    TRNG_Handler,                  // IRQ 57: TRNG
-    XDMAC_Handler,                 // IRQ 58: XDMAC
-    ISI_Handler,                   // IRQ 59: ISI
-    PWM1_Handler,                  // IRQ 60: PWM1
-    FPU_Handler,                   // IRQ 61: FPU
-    SDRAMC_Handler,                // IRQ 62: SDRAMC
-    RSWDT_Handler,                 // IRQ 63: RSWDT
-    GMAC_Q1_Handler,               // IRQ 66: GMAC_Q1
-    GMAC_Q2_Handler,               // IRQ 67: GMAC_Q2
-    IXC_Handler,                   // IRQ 68: IXC
+    reinterpret_cast<void (*)()>(&_estack), // Initial stack pointer
+    Reset_Handler, // Reset handler
+    SUPC_Handler, // IRQ 0: SUPC
+    RSTC_Handler, // IRQ 1: RSTC
+    RTC_Handler, // IRQ 2: RTC
+    RTT_Handler, // IRQ 3: RTT
+    WDT_Handler, // IRQ 4: WDT
+    PMC_Handler, // IRQ 5: PMC
+    EFC_Handler, // IRQ 6: EFC
+    UART0_Handler, // IRQ 7: UART0
+    UART1_Handler, // IRQ 8: UART1
+    PIOA_Handler, // IRQ 10: PIOA
+    PIOB_Handler, // IRQ 11: PIOB
+    PIOC_Handler, // IRQ 12: PIOC
+    USART0_Handler, // IRQ 13: USART0
+    USART1_Handler, // IRQ 14: USART1
+    USART2_Handler, // IRQ 15: USART2
+    PIOD_Handler, // IRQ 16: PIOD
+    PIOE_Handler, // IRQ 17: PIOE
+    HSMCI_Handler, // IRQ 18: HSMCI
+    TWIHS0_Handler, // IRQ 19: TWIHS0
+    TWIHS1_Handler, // IRQ 20: TWIHS1
+    SPI0_Handler, // IRQ 21: SPI0
+    SSC_Handler, // IRQ 22: SSC
+    TC0_Handler, // IRQ 23: TC0
+    TC1_Handler, // IRQ 24: TC1
+    TC2_Handler, // IRQ 25: TC2
+    TC3_Handler, // IRQ 26: TC3
+    TC4_Handler, // IRQ 27: TC4
+    TC5_Handler, // IRQ 28: TC5
+    AFEC0_Handler, // IRQ 29: AFEC0
+    DACC_Handler, // IRQ 30: DACC
+    PWM0_Handler, // IRQ 31: PWM0
+    ICM_Handler, // IRQ 32: ICM
+    ACC_Handler, // IRQ 33: ACC
+    USBHS_Handler, // IRQ 34: USBHS
+    MCAN0_INT0_Handler, // IRQ 35: MCAN0_INT0
+    MCAN0_INT1_Handler, // IRQ 36: MCAN0_INT1
+    MCAN1_INT0_Handler, // IRQ 37: MCAN1_INT0
+    MCAN1_INT1_Handler, // IRQ 38: MCAN1_INT1
+    GMAC_Handler, // IRQ 39: GMAC
+    AFEC1_Handler, // IRQ 40: AFEC1
+    TWIHS2_Handler, // IRQ 41: TWIHS2
+    SPI1_Handler, // IRQ 42: SPI1
+    QSPI_Handler, // IRQ 43: QSPI
+    UART2_Handler, // IRQ 44: UART2
+    UART3_Handler, // IRQ 45: UART3
+    UART4_Handler, // IRQ 46: UART4
+    TC6_Handler, // IRQ 47: TC6
+    TC7_Handler, // IRQ 48: TC7
+    TC8_Handler, // IRQ 49: TC8
+    TC9_Handler, // IRQ 50: TC9
+    TC10_Handler, // IRQ 51: TC10
+    TC11_Handler, // IRQ 52: TC11
+    AES_Handler, // IRQ 56: AES
+    TRNG_Handler, // IRQ 57: TRNG
+    XDMAC_Handler, // IRQ 58: XDMAC
+    ISI_Handler, // IRQ 59: ISI
+    PWM1_Handler, // IRQ 60: PWM1
+    FPU_Handler, // IRQ 61: FPU
+    SDRAMC_Handler, // IRQ 62: SDRAMC
+    RSWDT_Handler, // IRQ 63: RSWDT
+    GMAC_Q1_Handler, // IRQ 66: GMAC_Q1
+    GMAC_Q2_Handler, // IRQ 67: GMAC_Q2
+    IXC_Handler, // IRQ 68: IXC
 };

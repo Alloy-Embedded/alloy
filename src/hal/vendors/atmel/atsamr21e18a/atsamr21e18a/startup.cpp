@@ -90,34 +90,33 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    PM_INTREQ_Handler,  // IRQ 0: PM_INTREQ
-    SYSCTRL_INTREQ_Handler,  // IRQ 1: SYSCTRL_INTREQ
-    WDT_INTREQ_Handler,  // IRQ 2: WDT_INTREQ
-    RTC_INTREQ_Handler,  // IRQ 3: RTC_INTREQ
-    EIC_INTREQ_Handler,  // IRQ 4: EIC_INTREQ
-    NVMCTRL_INTREQ_Handler,  // IRQ 5: NVMCTRL_INTREQ
-    DMAC_INTREQ_Handler,  // IRQ 6: DMAC_INTREQ
-    USB_INTREQ_Handler,  // IRQ 7: USB_INTREQ
-    EVSYS_INTREQ_Handler,  // IRQ 8: EVSYS_INTREQ
-    SERCOM0_INTREQ_Handler,  // IRQ 9: SERCOM0_INTREQ
-    SERCOM1_INTREQ_Handler,  // IRQ 10: SERCOM1_INTREQ
-    SERCOM2_INTREQ_Handler,  // IRQ 11: SERCOM2_INTREQ
-    SERCOM3_INTREQ_Handler,  // IRQ 12: SERCOM3_INTREQ
-    SERCOM4_INTREQ_Handler,  // IRQ 13: SERCOM4_INTREQ
-    SERCOM5_INTREQ_Handler,  // IRQ 14: SERCOM5_INTREQ
-    TCC0_INTREQ_Handler,  // IRQ 15: TCC0_INTREQ
-    TCC1_INTREQ_Handler,  // IRQ 16: TCC1_INTREQ
-    TCC2_INTREQ_Handler,  // IRQ 17: TCC2_INTREQ
-    TC3_INTREQ_Handler,  // IRQ 18: TC3_INTREQ
-    TC4_INTREQ_Handler,  // IRQ 19: TC4_INTREQ
-    TC5_INTREQ_Handler,  // IRQ 20: TC5_INTREQ
-    TC6_INTREQ_Handler,  // IRQ 21: TC6_INTREQ
-    TC7_INTREQ_Handler,  // IRQ 22: TC7_INTREQ
-    ADC_INTREQ_Handler,  // IRQ 23: ADC_INTREQ
-    AC_INTREQ_Handler,  // IRQ 24: AC_INTREQ
-    DAC_INTREQ_Handler,  // IRQ 25: DAC_INTREQ
+    Reset_Handler,                           // Reset handler
+    PM_INTREQ_Handler,                       // IRQ 0: PM_INTREQ
+    SYSCTRL_INTREQ_Handler,                  // IRQ 1: SYSCTRL_INTREQ
+    WDT_INTREQ_Handler,                      // IRQ 2: WDT_INTREQ
+    RTC_INTREQ_Handler,                      // IRQ 3: RTC_INTREQ
+    EIC_INTREQ_Handler,                      // IRQ 4: EIC_INTREQ
+    NVMCTRL_INTREQ_Handler,                  // IRQ 5: NVMCTRL_INTREQ
+    DMAC_INTREQ_Handler,                     // IRQ 6: DMAC_INTREQ
+    USB_INTREQ_Handler,                      // IRQ 7: USB_INTREQ
+    EVSYS_INTREQ_Handler,                    // IRQ 8: EVSYS_INTREQ
+    SERCOM0_INTREQ_Handler,                  // IRQ 9: SERCOM0_INTREQ
+    SERCOM1_INTREQ_Handler,                  // IRQ 10: SERCOM1_INTREQ
+    SERCOM2_INTREQ_Handler,                  // IRQ 11: SERCOM2_INTREQ
+    SERCOM3_INTREQ_Handler,                  // IRQ 12: SERCOM3_INTREQ
+    SERCOM4_INTREQ_Handler,                  // IRQ 13: SERCOM4_INTREQ
+    SERCOM5_INTREQ_Handler,                  // IRQ 14: SERCOM5_INTREQ
+    TCC0_INTREQ_Handler,                     // IRQ 15: TCC0_INTREQ
+    TCC1_INTREQ_Handler,                     // IRQ 16: TCC1_INTREQ
+    TCC2_INTREQ_Handler,                     // IRQ 17: TCC2_INTREQ
+    TC3_INTREQ_Handler,                      // IRQ 18: TC3_INTREQ
+    TC4_INTREQ_Handler,                      // IRQ 19: TC4_INTREQ
+    TC5_INTREQ_Handler,                      // IRQ 20: TC5_INTREQ
+    TC6_INTREQ_Handler,                      // IRQ 21: TC6_INTREQ
+    TC7_INTREQ_Handler,                      // IRQ 22: TC7_INTREQ
+    ADC_INTREQ_Handler,                      // IRQ 23: ADC_INTREQ
+    AC_INTREQ_Handler,                       // IRQ 24: AC_INTREQ
+    DAC_INTREQ_Handler,                      // IRQ 25: DAC_INTREQ
 };

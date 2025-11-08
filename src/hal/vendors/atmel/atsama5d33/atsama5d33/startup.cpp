@@ -99,43 +99,42 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    FIQ_Handler,  // IRQ 0: FIQ
-    PMC_Handler,  // IRQ 1: PMC
-    DBGU_Handler,  // IRQ 2: DBGU
-    PIOA_Handler,  // IRQ 6: PIOA
-    PIOB_Handler,  // IRQ 7: PIOB
-    PIOC_Handler,  // IRQ 8: PIOC
-    PIOD_Handler,  // IRQ 9: PIOD
-    PIOE_Handler,  // IRQ 10: PIOE
-    SMD_Handler,  // IRQ 11: SMD
-    USART0_Handler,  // IRQ 12: USART0
-    USART1_Handler,  // IRQ 13: USART1
-    USART2_Handler,  // IRQ 14: USART2
-    USART3_Handler,  // IRQ 15: USART3
-    TWI0_Handler,  // IRQ 18: TWI0
-    TWI1_Handler,  // IRQ 19: TWI1
-    TWI2_Handler,  // IRQ 20: TWI2
-    HSMCI0_Handler,  // IRQ 21: HSMCI0
-    HSMCI1_Handler,  // IRQ 22: HSMCI1
-    SPI0_Handler,  // IRQ 24: SPI0
-    SPI1_Handler,  // IRQ 25: SPI1
-    TC0_Handler,  // IRQ 26: TC0
-    TC1_Handler,  // IRQ 27: TC1
-    PWM_Handler,  // IRQ 28: PWM
-    ADC_Handler,  // IRQ 29: ADC
-    DMAC0_Handler,  // IRQ 30: DMAC0
-    DMAC1_Handler,  // IRQ 31: DMAC1
-    UDPHS_Handler,  // IRQ 33: UDPHS
-    GMAC_Handler,  // IRQ 34: GMAC
-    LCDC_Handler,  // IRQ 36: LCDC
-    ISI_Handler,  // IRQ 37: ISI
-    SSC0_Handler,  // IRQ 38: SSC0
-    SSC1_Handler,  // IRQ 39: SSC1
-    TRNG_Handler,  // IRQ 45: TRNG
-    IRQ_Handler,  // IRQ 47: IRQ
-    FUSE_Handler,  // IRQ 48: FUSE
+    Reset_Handler,                           // Reset handler
+    FIQ_Handler,                             // IRQ 0: FIQ
+    PMC_Handler,                             // IRQ 1: PMC
+    DBGU_Handler,                            // IRQ 2: DBGU
+    PIOA_Handler,                            // IRQ 6: PIOA
+    PIOB_Handler,                            // IRQ 7: PIOB
+    PIOC_Handler,                            // IRQ 8: PIOC
+    PIOD_Handler,                            // IRQ 9: PIOD
+    PIOE_Handler,                            // IRQ 10: PIOE
+    SMD_Handler,                             // IRQ 11: SMD
+    USART0_Handler,                          // IRQ 12: USART0
+    USART1_Handler,                          // IRQ 13: USART1
+    USART2_Handler,                          // IRQ 14: USART2
+    USART3_Handler,                          // IRQ 15: USART3
+    TWI0_Handler,                            // IRQ 18: TWI0
+    TWI1_Handler,                            // IRQ 19: TWI1
+    TWI2_Handler,                            // IRQ 20: TWI2
+    HSMCI0_Handler,                          // IRQ 21: HSMCI0
+    HSMCI1_Handler,                          // IRQ 22: HSMCI1
+    SPI0_Handler,                            // IRQ 24: SPI0
+    SPI1_Handler,                            // IRQ 25: SPI1
+    TC0_Handler,                             // IRQ 26: TC0
+    TC1_Handler,                             // IRQ 27: TC1
+    PWM_Handler,                             // IRQ 28: PWM
+    ADC_Handler,                             // IRQ 29: ADC
+    DMAC0_Handler,                           // IRQ 30: DMAC0
+    DMAC1_Handler,                           // IRQ 31: DMAC1
+    UDPHS_Handler,                           // IRQ 33: UDPHS
+    GMAC_Handler,                            // IRQ 34: GMAC
+    LCDC_Handler,                            // IRQ 36: LCDC
+    ISI_Handler,                             // IRQ 37: ISI
+    SSC0_Handler,                            // IRQ 38: SSC0
+    SSC1_Handler,                            // IRQ 39: SSC1
+    TRNG_Handler,                            // IRQ 45: TRNG
+    IRQ_Handler,                             // IRQ 47: IRQ
+    FUSE_Handler,                            // IRQ 48: FUSE
 };

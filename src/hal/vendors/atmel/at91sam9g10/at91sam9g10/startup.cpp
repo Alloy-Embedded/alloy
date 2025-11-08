@@ -88,32 +88,31 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    FIQ_Handler,  // IRQ 0: FIQ
-    DBGU_Handler,  // IRQ 1: DBGU
-    PIOA_Handler,  // IRQ 2: PIOA
-    PIOB_Handler,  // IRQ 3: PIOB
-    PIOC_Handler,  // IRQ 4: PIOC
-    USART0_Handler,  // IRQ 6: USART0
-    USART1_Handler,  // IRQ 7: USART1
-    USART2_Handler,  // IRQ 8: USART2
-    MCI_Handler,  // IRQ 9: MCI
-    UDP_Handler,  // IRQ 10: UDP
-    TWI_Handler,  // IRQ 11: TWI
-    SPI0_Handler,  // IRQ 12: SPI0
-    SPI1_Handler,  // IRQ 13: SPI1
-    SSC0_Handler,  // IRQ 14: SSC0
-    SSC1_Handler,  // IRQ 15: SSC1
-    SSC2_Handler,  // IRQ 16: SSC2
-    TC0_Handler,  // IRQ 17: TC0
-    TC1_Handler,  // IRQ 18: TC1
-    TC2_Handler,  // IRQ 19: TC2
-    UHP_Handler,  // IRQ 20: UHP
-    LCDC_Handler,  // IRQ 21: LCDC
-    IRQ0_Handler,  // IRQ 29: IRQ0
-    IRQ1_Handler,  // IRQ 30: IRQ1
-    IRQ2_Handler,  // IRQ 31: IRQ2
+    Reset_Handler,                           // Reset handler
+    FIQ_Handler,                             // IRQ 0: FIQ
+    DBGU_Handler,                            // IRQ 1: DBGU
+    PIOA_Handler,                            // IRQ 2: PIOA
+    PIOB_Handler,                            // IRQ 3: PIOB
+    PIOC_Handler,                            // IRQ 4: PIOC
+    USART0_Handler,                          // IRQ 6: USART0
+    USART1_Handler,                          // IRQ 7: USART1
+    USART2_Handler,                          // IRQ 8: USART2
+    MCI_Handler,                             // IRQ 9: MCI
+    UDP_Handler,                             // IRQ 10: UDP
+    TWI_Handler,                             // IRQ 11: TWI
+    SPI0_Handler,                            // IRQ 12: SPI0
+    SPI1_Handler,                            // IRQ 13: SPI1
+    SSC0_Handler,                            // IRQ 14: SSC0
+    SSC1_Handler,                            // IRQ 15: SSC1
+    SSC2_Handler,                            // IRQ 16: SSC2
+    TC0_Handler,                             // IRQ 17: TC0
+    TC1_Handler,                             // IRQ 18: TC1
+    TC2_Handler,                             // IRQ 19: TC2
+    UHP_Handler,                             // IRQ 20: UHP
+    LCDC_Handler,                            // IRQ 21: LCDC
+    IRQ0_Handler,                            // IRQ 29: IRQ0
+    IRQ1_Handler,                            // IRQ 30: IRQ1
+    IRQ2_Handler,                            // IRQ 31: IRQ2
 };

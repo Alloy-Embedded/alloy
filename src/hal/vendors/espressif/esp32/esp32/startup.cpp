@@ -45,73 +45,207 @@ extern "C" [[noreturn]] void Default_Handler() {
 }
 
 // All interrupt handlers (weak, can be overridden by user)
-extern "C" void WIFI_MAC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void WIFI_NMI_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void WIFI_BB_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void BT_MAC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void BT_BB_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void BT_BB_NMI_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RWBT_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RWBLE_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RWBT_NMI_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RWBLE_NMI_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void UHCI0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void UHCI1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG0_T0_LEVEL_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG0_T1_LEVEL_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG0_WDT_LEVEL_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG0_LACT_LEVEL_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG1_T0_LEVEL_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG1_T1_LEVEL_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG1_WDT_LEVEL_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG1_LACT_LEVEL_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void GPIO_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void GPIO_NMI_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void FROM_CPU_INTR0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void FROM_CPU_INTR1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void FROM_CPU_INTR2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void FROM_CPU_INTR3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2S0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2S1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void UART0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void UART1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void UART2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SDIO_HOST_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void ETH_MAC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void MCPWM0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void MCPWM1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void MCPWM2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void MCPWM3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void LEDC_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void EFUSE_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TWAI0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RTC_CORE_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RMT_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void PCNT_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2C_EXT0_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void I2C_EXT1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void RSA_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI1_DMA_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI2_DMA_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void SPI3_DMA_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void WDT_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIMER1_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TIMER2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG0_T0_EDGE_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG0_T1_EDGE_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG0_WDT_EDGE_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG0_LACT_EDGE_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG1_T0_EDGE_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG1_T1_EDGE_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG1_WDT_EDGE_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void TG1_LACT_EDGE_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void MMU_IA_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void MPU_IA_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void CACHE_IA_Handler() __attribute__((weak, alias("Default_Handler")));
+extern "C" __attribute__((weak)) void WIFI_MAC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void WIFI_NMI_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void WIFI_BB_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void BT_MAC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void BT_BB_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void BT_BB_NMI_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RWBT_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RWBLE_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RWBT_NMI_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RWBLE_NMI_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void UHCI0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void UHCI1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG0_T0_LEVEL_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG0_T1_LEVEL_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG0_WDT_LEVEL_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG0_LACT_LEVEL_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG1_T0_LEVEL_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG1_T1_LEVEL_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG1_WDT_LEVEL_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG1_LACT_LEVEL_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void GPIO_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void GPIO_NMI_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void FROM_CPU_INTR0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void FROM_CPU_INTR1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void FROM_CPU_INTR2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void FROM_CPU_INTR3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2S0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2S1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void UART0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void UART1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void UART2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SDIO_HOST_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void ETH_MAC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void MCPWM0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void MCPWM1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void MCPWM2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void MCPWM3_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void LEDC_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void EFUSE_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TWAI0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RTC_CORE_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RMT_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void PCNT_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2C_EXT0_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void I2C_EXT1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void RSA_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI1_DMA_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI2_DMA_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void SPI3_DMA_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void WDT_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIMER1_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TIMER2_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG0_T0_EDGE_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG0_T1_EDGE_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG0_WDT_EDGE_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG0_LACT_EDGE_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG1_T0_EDGE_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG1_T1_EDGE_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG1_WDT_EDGE_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void TG1_LACT_EDGE_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void MMU_IA_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void MPU_IA_Handler() {
+    Default_Handler();
+}
+extern "C" __attribute__((weak)) void CACHE_IA_Handler() {
+    Default_Handler();
+}
 
 // ============================================================================
 // RESET HANDLER
@@ -119,7 +253,7 @@ extern "C" void CACHE_IA_Handler() __attribute__((weak, alias("Default_Handler")
 
 extern "C" [[noreturn]] void Reset_Handler() {
     // 1. Copy initialized data from Flash to RAM (.data section)
-    uint32_t* src = &_sidata;
+    const uint32_t* src = &_sidata;
     uint32_t* dest = &_sdata;
     while (dest < &_edata) {
         *dest++ = *src++;
@@ -137,7 +271,7 @@ extern "C" [[noreturn]] void Reset_Handler() {
     // 4. Call C++ static constructors
     extern void (*__init_array_start[])();
     extern void (*__init_array_end[])();
-    for (auto ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
+    for (auto* ctor = __init_array_start; ctor < __init_array_end; ++ctor) {
         (*ctor)();
     }
 
@@ -157,73 +291,73 @@ extern "C" [[noreturn]] void Reset_Handler() {
 __attribute__((section(".isr_vector"), used))
 void (* const vector_table[])() = {
     // Core system handlers
-    reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    WIFI_MAC_Handler,              // IRQ 0: WIFI_MAC
-    WIFI_NMI_Handler,              // IRQ 1: WIFI_NMI
-    WIFI_BB_Handler,               // IRQ 2: WIFI_BB
-    BT_MAC_Handler,                // IRQ 3: BT_MAC
-    BT_BB_Handler,                 // IRQ 4: BT_BB
-    BT_BB_NMI_Handler,             // IRQ 5: BT_BB_NMI
-    RWBT_Handler,                  // IRQ 6: RWBT
-    RWBLE_Handler,                 // IRQ 7: RWBLE
-    RWBT_NMI_Handler,              // IRQ 8: RWBT_NMI
-    RWBLE_NMI_Handler,             // IRQ 9: RWBLE_NMI
-    UHCI0_Handler,                 // IRQ 12: UHCI0
-    UHCI1_Handler,                 // IRQ 13: UHCI1
-    TG0_T0_LEVEL_Handler,          // IRQ 14: TG0_T0_LEVEL
-    TG0_T1_LEVEL_Handler,          // IRQ 15: TG0_T1_LEVEL
-    TG0_WDT_LEVEL_Handler,         // IRQ 16: TG0_WDT_LEVEL
-    TG0_LACT_LEVEL_Handler,        // IRQ 17: TG0_LACT_LEVEL
-    TG1_T0_LEVEL_Handler,          // IRQ 18: TG1_T0_LEVEL
-    TG1_T1_LEVEL_Handler,          // IRQ 19: TG1_T1_LEVEL
-    TG1_WDT_LEVEL_Handler,         // IRQ 20: TG1_WDT_LEVEL
-    TG1_LACT_LEVEL_Handler,        // IRQ 21: TG1_LACT_LEVEL
-    GPIO_Handler,                  // IRQ 22: GPIO
-    GPIO_NMI_Handler,              // IRQ 23: GPIO_NMI
-    FROM_CPU_INTR0_Handler,        // IRQ 24: FROM_CPU_INTR0
-    FROM_CPU_INTR1_Handler,        // IRQ 25: FROM_CPU_INTR1
-    FROM_CPU_INTR2_Handler,        // IRQ 26: FROM_CPU_INTR2
-    FROM_CPU_INTR3_Handler,        // IRQ 27: FROM_CPU_INTR3
-    SPI0_Handler,                  // IRQ 28: SPI0
-    SPI1_Handler,                  // IRQ 29: SPI1
-    SPI2_Handler,                  // IRQ 30: SPI2
-    SPI3_Handler,                  // IRQ 31: SPI3
-    I2S0_Handler,                  // IRQ 32: I2S0
-    I2S1_Handler,                  // IRQ 33: I2S1
-    UART0_Handler,                 // IRQ 34: UART0
-    UART1_Handler,                 // IRQ 35: UART1
-    UART2_Handler,                 // IRQ 36: UART2
-    SDIO_HOST_Handler,             // IRQ 37: SDIO_HOST
-    ETH_MAC_Handler,               // IRQ 38: ETH_MAC
-    MCPWM0_Handler,                // IRQ 39: MCPWM0
-    MCPWM1_Handler,                // IRQ 40: MCPWM1
-    MCPWM2_Handler,                // IRQ 41: MCPWM2
-    MCPWM3_Handler,                // IRQ 42: MCPWM3
-    LEDC_Handler,                  // IRQ 43: LEDC
-    EFUSE_Handler,                 // IRQ 44: EFUSE
-    TWAI0_Handler,                 // IRQ 45: TWAI0
-    RTC_CORE_Handler,              // IRQ 46: RTC_CORE
-    RMT_Handler,                   // IRQ 47: RMT
-    PCNT_Handler,                  // IRQ 48: PCNT
-    I2C_EXT0_Handler,              // IRQ 49: I2C_EXT0
-    I2C_EXT1_Handler,              // IRQ 50: I2C_EXT1
-    RSA_Handler,                   // IRQ 51: RSA
-    SPI1_DMA_Handler,              // IRQ 52: SPI1_DMA
-    SPI2_DMA_Handler,              // IRQ 53: SPI2_DMA
-    SPI3_DMA_Handler,              // IRQ 54: SPI3_DMA
-    WDT_Handler,                   // IRQ 55: WDT
-    TIMER1_Handler,                // IRQ 56: TIMER1
-    TIMER2_Handler,                // IRQ 57: TIMER2
-    TG0_T0_EDGE_Handler,           // IRQ 58: TG0_T0_EDGE
-    TG0_T1_EDGE_Handler,           // IRQ 59: TG0_T1_EDGE
-    TG0_WDT_EDGE_Handler,          // IRQ 60: TG0_WDT_EDGE
-    TG0_LACT_EDGE_Handler,         // IRQ 61: TG0_LACT_EDGE
-    TG1_T0_EDGE_Handler,           // IRQ 62: TG1_T0_EDGE
-    TG1_T1_EDGE_Handler,           // IRQ 63: TG1_T1_EDGE
-    TG1_WDT_EDGE_Handler,          // IRQ 64: TG1_WDT_EDGE
-    TG1_LACT_EDGE_Handler,         // IRQ 65: TG1_LACT_EDGE
-    MMU_IA_Handler,                // IRQ 66: MMU_IA
-    MPU_IA_Handler,                // IRQ 67: MPU_IA
-    CACHE_IA_Handler,              // IRQ 68: CACHE_IA
+    reinterpret_cast<void (*)()>(&_estack), // Initial stack pointer
+    Reset_Handler, // Reset handler
+    WIFI_MAC_Handler, // IRQ 0: WIFI_MAC
+    WIFI_NMI_Handler, // IRQ 1: WIFI_NMI
+    WIFI_BB_Handler, // IRQ 2: WIFI_BB
+    BT_MAC_Handler, // IRQ 3: BT_MAC
+    BT_BB_Handler, // IRQ 4: BT_BB
+    BT_BB_NMI_Handler, // IRQ 5: BT_BB_NMI
+    RWBT_Handler, // IRQ 6: RWBT
+    RWBLE_Handler, // IRQ 7: RWBLE
+    RWBT_NMI_Handler, // IRQ 8: RWBT_NMI
+    RWBLE_NMI_Handler, // IRQ 9: RWBLE_NMI
+    UHCI0_Handler, // IRQ 12: UHCI0
+    UHCI1_Handler, // IRQ 13: UHCI1
+    TG0_T0_LEVEL_Handler, // IRQ 14: TG0_T0_LEVEL
+    TG0_T1_LEVEL_Handler, // IRQ 15: TG0_T1_LEVEL
+    TG0_WDT_LEVEL_Handler, // IRQ 16: TG0_WDT_LEVEL
+    TG0_LACT_LEVEL_Handler, // IRQ 17: TG0_LACT_LEVEL
+    TG1_T0_LEVEL_Handler, // IRQ 18: TG1_T0_LEVEL
+    TG1_T1_LEVEL_Handler, // IRQ 19: TG1_T1_LEVEL
+    TG1_WDT_LEVEL_Handler, // IRQ 20: TG1_WDT_LEVEL
+    TG1_LACT_LEVEL_Handler, // IRQ 21: TG1_LACT_LEVEL
+    GPIO_Handler, // IRQ 22: GPIO
+    GPIO_NMI_Handler, // IRQ 23: GPIO_NMI
+    FROM_CPU_INTR0_Handler, // IRQ 24: FROM_CPU_INTR0
+    FROM_CPU_INTR1_Handler, // IRQ 25: FROM_CPU_INTR1
+    FROM_CPU_INTR2_Handler, // IRQ 26: FROM_CPU_INTR2
+    FROM_CPU_INTR3_Handler, // IRQ 27: FROM_CPU_INTR3
+    SPI0_Handler, // IRQ 28: SPI0
+    SPI1_Handler, // IRQ 29: SPI1
+    SPI2_Handler, // IRQ 30: SPI2
+    SPI3_Handler, // IRQ 31: SPI3
+    I2S0_Handler, // IRQ 32: I2S0
+    I2S1_Handler, // IRQ 33: I2S1
+    UART0_Handler, // IRQ 34: UART0
+    UART1_Handler, // IRQ 35: UART1
+    UART2_Handler, // IRQ 36: UART2
+    SDIO_HOST_Handler, // IRQ 37: SDIO_HOST
+    ETH_MAC_Handler, // IRQ 38: ETH_MAC
+    MCPWM0_Handler, // IRQ 39: MCPWM0
+    MCPWM1_Handler, // IRQ 40: MCPWM1
+    MCPWM2_Handler, // IRQ 41: MCPWM2
+    MCPWM3_Handler, // IRQ 42: MCPWM3
+    LEDC_Handler, // IRQ 43: LEDC
+    EFUSE_Handler, // IRQ 44: EFUSE
+    TWAI0_Handler, // IRQ 45: TWAI0
+    RTC_CORE_Handler, // IRQ 46: RTC_CORE
+    RMT_Handler, // IRQ 47: RMT
+    PCNT_Handler, // IRQ 48: PCNT
+    I2C_EXT0_Handler, // IRQ 49: I2C_EXT0
+    I2C_EXT1_Handler, // IRQ 50: I2C_EXT1
+    RSA_Handler, // IRQ 51: RSA
+    SPI1_DMA_Handler, // IRQ 52: SPI1_DMA
+    SPI2_DMA_Handler, // IRQ 53: SPI2_DMA
+    SPI3_DMA_Handler, // IRQ 54: SPI3_DMA
+    WDT_Handler, // IRQ 55: WDT
+    TIMER1_Handler, // IRQ 56: TIMER1
+    TIMER2_Handler, // IRQ 57: TIMER2
+    TG0_T0_EDGE_Handler, // IRQ 58: TG0_T0_EDGE
+    TG0_T1_EDGE_Handler, // IRQ 59: TG0_T1_EDGE
+    TG0_WDT_EDGE_Handler, // IRQ 60: TG0_WDT_EDGE
+    TG0_LACT_EDGE_Handler, // IRQ 61: TG0_LACT_EDGE
+    TG1_T0_EDGE_Handler, // IRQ 62: TG1_T0_EDGE
+    TG1_T1_EDGE_Handler, // IRQ 63: TG1_T1_EDGE
+    TG1_WDT_EDGE_Handler, // IRQ 64: TG1_WDT_EDGE
+    TG1_LACT_EDGE_Handler, // IRQ 65: TG1_LACT_EDGE
+    MMU_IA_Handler, // IRQ 66: MMU_IA
+    MPU_IA_Handler, // IRQ 67: MPU_IA
+    CACHE_IA_Handler, // IRQ 68: CACHE_IA
 };

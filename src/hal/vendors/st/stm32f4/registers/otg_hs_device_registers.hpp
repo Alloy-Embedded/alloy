@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace alloy::hal::st::stm32f4::otg_hs_device {
 

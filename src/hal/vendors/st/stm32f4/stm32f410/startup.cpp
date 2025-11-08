@@ -94,39 +94,38 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    PVD_Handler,  // IRQ 1: PVD
-    TAMP_STAMP_Handler,  // IRQ 2: TAMP_STAMP
-    RTC_WKUP_Handler,  // IRQ 3: RTC_WKUP
-    FLASH_Handler,  // IRQ 4: FLASH
-    RCC_Handler,  // IRQ 5: RCC
-    EXTI0_Handler,  // IRQ 6: EXTI0
-    EXTI1_Handler,  // IRQ 7: EXTI1
-    EXTI2_Handler,  // IRQ 8: EXTI2
-    EXTI3_Handler,  // IRQ 9: EXTI3
-    EXTI4_Handler,  // IRQ 10: EXTI4
-    ADC_Handler,  // IRQ 18: ADC
-    EXTI9_5_Handler,  // IRQ 23: EXTI9_5
-    TIM1_BRK_TIM9_Handler,  // IRQ 24: TIM1_BRK_TIM9
-    PWM1_UP_Handler,  // IRQ 25: PWM1_UP
-    TIM1_TRG_COM_TIM11_Handler,  // IRQ 26: TIM1_TRG_COM_TIM11
-    TIM1_CC_Handler,  // IRQ 27: TIM1_CC
-    I2C1_EV_Handler,  // IRQ 31: I2C1_EV
-    I2C1_ER_Handler,  // IRQ 32: I2C1_ER
-    I2C2_EV_Handler,  // IRQ 33: I2C2_EV
-    I2C2_ER_Handler,  // IRQ 34: I2C2_ER
-    SPI1_Handler,  // IRQ 35: SPI1
-    SPI2_Handler,  // IRQ 36: SPI2
-    EXTI15_10_Handler,  // IRQ 40: EXTI15_10
-    RTC_Alarm_Handler,  // IRQ 41: RTC_Alarm
-    TIM6_DAC1_Handler,  // IRQ 54: TIM6_DAC1
-    RNG_Handler,  // IRQ 80: RNG
-    FPU_Handler,  // IRQ 81: FPU
-    FPU_Handler,  // IRQ 81: FPU
-    I2C4_EV_Handler,  // IRQ 95: I2C4_EV
-    I2C4_ER_Handler,  // IRQ 96: I2C4_ER
-    LPTIM1_Handler,  // IRQ 97: LPTIM1
+    Reset_Handler,                           // Reset handler
+    PVD_Handler,                             // IRQ 1: PVD
+    TAMP_STAMP_Handler,                      // IRQ 2: TAMP_STAMP
+    RTC_WKUP_Handler,                        // IRQ 3: RTC_WKUP
+    FLASH_Handler,                           // IRQ 4: FLASH
+    RCC_Handler,                             // IRQ 5: RCC
+    EXTI0_Handler,                           // IRQ 6: EXTI0
+    EXTI1_Handler,                           // IRQ 7: EXTI1
+    EXTI2_Handler,                           // IRQ 8: EXTI2
+    EXTI3_Handler,                           // IRQ 9: EXTI3
+    EXTI4_Handler,                           // IRQ 10: EXTI4
+    ADC_Handler,                             // IRQ 18: ADC
+    EXTI9_5_Handler,                         // IRQ 23: EXTI9_5
+    TIM1_BRK_TIM9_Handler,                   // IRQ 24: TIM1_BRK_TIM9
+    PWM1_UP_Handler,                         // IRQ 25: PWM1_UP
+    TIM1_TRG_COM_TIM11_Handler,              // IRQ 26: TIM1_TRG_COM_TIM11
+    TIM1_CC_Handler,                         // IRQ 27: TIM1_CC
+    I2C1_EV_Handler,                         // IRQ 31: I2C1_EV
+    I2C1_ER_Handler,                         // IRQ 32: I2C1_ER
+    I2C2_EV_Handler,                         // IRQ 33: I2C2_EV
+    I2C2_ER_Handler,                         // IRQ 34: I2C2_ER
+    SPI1_Handler,                            // IRQ 35: SPI1
+    SPI2_Handler,                            // IRQ 36: SPI2
+    EXTI15_10_Handler,                       // IRQ 40: EXTI15_10
+    RTC_Alarm_Handler,                       // IRQ 41: RTC_Alarm
+    TIM6_DAC1_Handler,                       // IRQ 54: TIM6_DAC1
+    RNG_Handler,                             // IRQ 80: RNG
+    FPU_Handler,                             // IRQ 81: FPU
+    FPU_Handler,                             // IRQ 81: FPU
+    I2C4_EV_Handler,                         // IRQ 95: I2C4_EV
+    I2C4_ER_Handler,                         // IRQ 96: I2C4_ER
+    LPTIM1_Handler,                          // IRQ 97: LPTIM1
 };

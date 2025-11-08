@@ -3,7 +3,7 @@
 This document tracks the implementation status of GPIO support for all available microcontrollers.
 
 **Total SVD Files Available:** 783  
-**Total MCU Variants Implemented:** 49
+**Total MCU Variants Implemented:** 0
 
 ---
 
@@ -479,7 +479,7 @@ This document tracks the implementation status of GPIO support for all available
 | ATSAME70N21 | ⬜ Not Implemented |
 | ATSAME70Q19 | ⬜ Not Implemented |
 | ATSAME70Q20 | ⬜ Not Implemented |
-| ATSAME70Q21 | ✅ Implemented |
+| ATSAME70Q21 | ⬜ Not Implemented |
 
 </details>
 
@@ -618,7 +618,7 @@ This document tracks the implementation status of GPIO support for all available
 | ATSAMV71N21 | ⬜ Not Implemented |
 | ATSAMV71Q19 | ⬜ Not Implemented |
 | ATSAMV71Q20 | ⬜ Not Implemented |
-| ATSAMV71Q21 | ✅ Implemented |
+| ATSAMV71Q21 | ⬜ Not Implemented |
 
 </details>
 
@@ -3004,7 +3004,7 @@ This document tracks the implementation status of GPIO support for all available
 ### STM32
 
 **SVD Files:** 5  
-**Implemented:** 26/0 (0.0%)  
+**Implemented:** 0/0 (0.0%)  
 **Progress:** `░░░░░░░░░░░░░░░░░░░░`
 
 <details>
@@ -3018,45 +3018,13 @@ This document tracks the implementation status of GPIO support for all available
 
 </details>
 
-<details>
-<summary>✅ Implemented Variants (26)</summary>
-
-- ✅ STM32F030C6
-- ✅ STM32F030C8
-- ✅ STM32F103C4
-- ✅ STM32F103C6
-- ✅ STM32F103C8
-- ✅ STM32F103CB
-- ✅ STM32F103RB
-- ✅ STM32F103RC
-- ✅ STM32F103RE
-- ✅ STM32F401CC
-- ✅ STM32F401CE
-- ✅ STM32F405RG
-- ✅ STM32F407VE
-- ✅ STM32F407VG
-- ✅ STM32F407ZG
-- ✅ STM32F411CE
-- ✅ STM32F411RE
-- ✅ STM32F429ZI
-- ✅ STM32F722RE
-- ✅ STM32F722ZE
-- ✅ STM32F745VG
-- ✅ STM32F745ZG
-- ✅ STM32F746VG
-- ✅ STM32F746ZG
-- ✅ STM32F765VI
-- ✅ STM32F767ZI
-
-</details>
-
 ---
 
 ### STM32F0
 
 **SVD Files:** 6  
-**Implemented:** 2/12 (16.7%)  
-**Progress:** `███░░░░░░░░░░░░░░░░░`
+**Implemented:** 0/12 (0.0%)  
+**Progress:** `░░░░░░░░░░░░░░░░░░░░`
 
 <details>
 <summary>SVD Files (6)</summary>
@@ -3075,8 +3043,8 @@ This document tracks the implementation status of GPIO support for all available
 
 | MCU Variant | Status |
 |-------------|--------|
-| STM32F030C6 | ✅ Implemented |
-| STM32F030C8 | ✅ Implemented |
+| STM32F030C6 | ⬜ Not Implemented |
+| STM32F030C8 | ⬜ Not Implemented |
 | STM32F030F4 | ⬜ Not Implemented |
 | STM32F030K6 | ⬜ Not Implemented |
 | STM32F031C4 | ⬜ Not Implemented |
@@ -3090,21 +3058,13 @@ This document tracks the implementation status of GPIO support for all available
 
 </details>
 
-<details>
-<summary>✅ Implemented Variants (2)</summary>
-
-- ✅ STM32F030C6
-- ✅ STM32F030C8
-
-</details>
-
 ---
 
 ### STM32F1
 
 **SVD Files:** 6  
-**Implemented:** 7/23 (30.4%)  
-**Progress:** `██████░░░░░░░░░░░░░░`
+**Implemented:** 0/23 (0.0%)  
+**Progress:** `░░░░░░░░░░░░░░░░░░░░`
 
 <details>
 <summary>SVD Files (6)</summary>
@@ -3123,17 +3083,17 @@ This document tracks the implementation status of GPIO support for all available
 
 | MCU Variant | Status |
 |-------------|--------|
-| STM32F103C4 | ✅ Implemented |
-| STM32F103C6 | ✅ Implemented |
-| STM32F103C8 | ✅ Implemented |
-| STM32F103CB | ✅ Implemented |
+| STM32F103C4 | ⬜ Not Implemented |
+| STM32F103C6 | ⬜ Not Implemented |
+| STM32F103C8 | ⬜ Not Implemented |
+| STM32F103CB | ⬜ Not Implemented |
 | STM32F103R4 | ⬜ Not Implemented |
 | STM32F103R6 | ⬜ Not Implemented |
 | STM32F103R8 | ⬜ Not Implemented |
-| STM32F103RB | ✅ Implemented |
-| STM32F103RC | ✅ Implemented |
+| STM32F103RB | ⬜ Not Implemented |
+| STM32F103RC | ⬜ Not Implemented |
 | STM32F103RD | ⬜ Not Implemented |
-| STM32F103RE | ✅ Implemented |
+| STM32F103RE | ⬜ Not Implemented |
 | STM32F103T4 | ⬜ Not Implemented |
 | STM32F103T6 | ⬜ Not Implemented |
 | STM32F103T8 | ⬜ Not Implemented |
@@ -3146,19 +3106,6 @@ This document tracks the implementation status of GPIO support for all available
 | STM32F103ZC | ⬜ Not Implemented |
 | STM32F103ZD | ⬜ Not Implemented |
 | STM32F103ZE | ⬜ Not Implemented |
-
-</details>
-
-<details>
-<summary>✅ Implemented Variants (7)</summary>
-
-- ✅ STM32F103C4
-- ✅ STM32F103C6
-- ✅ STM32F103C8
-- ✅ STM32F103CB
-- ✅ STM32F103RB
-- ✅ STM32F103RC
-- ✅ STM32F103RE
 
 </details>
 
@@ -3255,8 +3202,8 @@ This document tracks the implementation status of GPIO support for all available
 ### STM32F4
 
 **SVD Files:** 11  
-**Implemented:** 9/52 (17.3%)  
-**Progress:** `███░░░░░░░░░░░░░░░░░`
+**Implemented:** 0/52 (0.0%)  
+**Progress:** `░░░░░░░░░░░░░░░░░░░░`
 
 <details>
 <summary>SVD Files (11)</summary>
@@ -3281,24 +3228,24 @@ This document tracks the implementation status of GPIO support for all available
 | MCU Variant | Status |
 |-------------|--------|
 | STM32F401CB | ⬜ Not Implemented |
-| STM32F401CC | ✅ Implemented |
+| STM32F401CC | ⬜ Not Implemented |
 | STM32F401CD | ⬜ Not Implemented |
-| STM32F401CE | ✅ Implemented |
+| STM32F401CE | ⬜ Not Implemented |
 | STM32F401RB | ⬜ Not Implemented |
 | STM32F401RC | ⬜ Not Implemented |
 | STM32F401RD | ⬜ Not Implemented |
 | STM32F401RE | ⬜ Not Implemented |
-| STM32F405RG | ✅ Implemented |
+| STM32F405RG | ⬜ Not Implemented |
 | STM32F405VG | ⬜ Not Implemented |
 | STM32F405ZG | ⬜ Not Implemented |
-| STM32F407VE | ✅ Implemented |
-| STM32F407VG | ✅ Implemented |
+| STM32F407VE | ⬜ Not Implemented |
+| STM32F407VG | ⬜ Not Implemented |
 | STM32F407ZE | ⬜ Not Implemented |
-| STM32F407ZG | ✅ Implemented |
+| STM32F407ZG | ⬜ Not Implemented |
 | STM32F411CC | ⬜ Not Implemented |
-| STM32F411CE | ✅ Implemented |
+| STM32F411CE | ⬜ Not Implemented |
 | STM32F411RC | ⬜ Not Implemented |
-| STM32F411RE | ✅ Implemented |
+| STM32F411RE | ⬜ Not Implemented |
 | STM32F412CE | ⬜ Not Implemented |
 | STM32F412CG | ⬜ Not Implemented |
 | STM32F412RE | ⬜ Not Implemented |
@@ -3323,7 +3270,7 @@ This document tracks the implementation status of GPIO support for all available
 | STM32F429VI | ⬜ Not Implemented |
 | STM32F429ZE | ⬜ Not Implemented |
 | STM32F429ZG | ⬜ Not Implemented |
-| STM32F429ZI | ✅ Implemented |
+| STM32F429ZI | ⬜ Not Implemented |
 | STM32F446MC | ⬜ Not Implemented |
 | STM32F446ME | ⬜ Not Implemented |
 | STM32F446RC | ⬜ Not Implemented |
@@ -3335,28 +3282,13 @@ This document tracks the implementation status of GPIO support for all available
 
 </details>
 
-<details>
-<summary>✅ Implemented Variants (9)</summary>
-
-- ✅ STM32F401CC
-- ✅ STM32F401CE
-- ✅ STM32F405RG
-- ✅ STM32F407VE
-- ✅ STM32F407VG
-- ✅ STM32F407ZG
-- ✅ STM32F411CE
-- ✅ STM32F411RE
-- ✅ STM32F429ZI
-
-</details>
-
 ---
 
 ### STM32F7
 
 **SVD Files:** 12  
-**Implemented:** 8/66 (12.1%)  
-**Progress:** `██░░░░░░░░░░░░░░░░░░`
+**Implemented:** 0/66 (0.0%)  
+**Progress:** `░░░░░░░░░░░░░░░░░░░░`
 
 <details>
 <summary>SVD Files (12)</summary>
@@ -3384,11 +3316,11 @@ This document tracks the implementation status of GPIO support for all available
 | STM32F722IC | ⬜ Not Implemented |
 | STM32F722IE | ⬜ Not Implemented |
 | STM32F722RC | ⬜ Not Implemented |
-| STM32F722RE | ✅ Implemented |
+| STM32F722RE | ⬜ Not Implemented |
 | STM32F722VC | ⬜ Not Implemented |
 | STM32F722VE | ⬜ Not Implemented |
 | STM32F722ZC | ⬜ Not Implemented |
-| STM32F722ZE | ✅ Implemented |
+| STM32F722ZE | ⬜ Not Implemented |
 | STM32F730I8 | ⬜ Not Implemented |
 | STM32F730R8 | ⬜ Not Implemented |
 | STM32F730V8 | ⬜ Not Implemented |
@@ -3398,9 +3330,9 @@ This document tracks the implementation status of GPIO support for all available
 | STM32F732VE | ⬜ Not Implemented |
 | STM32F732ZE | ⬜ Not Implemented |
 | STM32F745VE | ⬜ Not Implemented |
-| STM32F745VG | ✅ Implemented |
+| STM32F745VG | ⬜ Not Implemented |
 | STM32F745ZE | ⬜ Not Implemented |
-| STM32F745ZG | ✅ Implemented |
+| STM32F745ZG | ⬜ Not Implemented |
 | STM32F746BE | ⬜ Not Implemented |
 | STM32F746BG | ⬜ Not Implemented |
 | STM32F746IE | ⬜ Not Implemented |
@@ -3408,9 +3340,9 @@ This document tracks the implementation status of GPIO support for all available
 | STM32F746NE | ⬜ Not Implemented |
 | STM32F746NG | ⬜ Not Implemented |
 | STM32F746VE | ⬜ Not Implemented |
-| STM32F746VG | ✅ Implemented |
+| STM32F746VG | ⬜ Not Implemented |
 | STM32F746ZE | ⬜ Not Implemented |
-| STM32F746ZG | ✅ Implemented |
+| STM32F746ZG | ⬜ Not Implemented |
 | STM32F750N8 | ⬜ Not Implemented |
 | STM32F750V8 | ⬜ Not Implemented |
 | STM32F750Z8 | ⬜ Not Implemented |
@@ -3426,7 +3358,7 @@ This document tracks the implementation status of GPIO support for all available
 | STM32F765NG | ⬜ Not Implemented |
 | STM32F765NI | ⬜ Not Implemented |
 | STM32F765VG | ⬜ Not Implemented |
-| STM32F765VI | ✅ Implemented |
+| STM32F765VI | ⬜ Not Implemented |
 | STM32F765ZG | ⬜ Not Implemented |
 | STM32F765ZI | ⬜ Not Implemented |
 | STM32F767BG | ⬜ Not Implemented |
@@ -3438,7 +3370,7 @@ This document tracks the implementation status of GPIO support for all available
 | STM32F767VG | ⬜ Not Implemented |
 | STM32F767VI | ⬜ Not Implemented |
 | STM32F767ZG | ⬜ Not Implemented |
-| STM32F767ZI | ✅ Implemented |
+| STM32F767ZI | ⬜ Not Implemented |
 | STM32F769AG | ⬜ Not Implemented |
 | STM32F769AI | ⬜ Not Implemented |
 | STM32F769BG | ⬜ Not Implemented |
@@ -3447,20 +3379,6 @@ This document tracks the implementation status of GPIO support for all available
 | STM32F769II | ⬜ Not Implemented |
 | STM32F769NG | ⬜ Not Implemented |
 | STM32F769NI | ⬜ Not Implemented |
-
-</details>
-
-<details>
-<summary>✅ Implemented Variants (8)</summary>
-
-- ✅ STM32F722RE
-- ✅ STM32F722ZE
-- ✅ STM32F745VG
-- ✅ STM32F745ZG
-- ✅ STM32F746VG
-- ✅ STM32F746ZG
-- ✅ STM32F765VI
-- ✅ STM32F767ZI
 
 </details>
 
@@ -4289,13 +4207,13 @@ This document tracks the implementation status of GPIO support for all available
 | MB9BF61xT | 0 | 0 | `░░░░░░░░░░` 0% |
 | MB9BFD1xS | 0 | 0 | `░░░░░░░░░░` 0% |
 | MB9BFD1xT | 0 | 0 | `░░░░░░░░░░` 0% |
-| STM32 | 26 | 0 | `░░░░░░░░░░` 0% |
-| STM32F0 | 2 | 12 | `█░░░░░░░░░` 17% |
-| STM32F1 | 7 | 23 | `███░░░░░░░` 30% |
+| STM32 | 0 | 0 | `░░░░░░░░░░` 0% |
+| STM32F0 | 0 | 12 | `░░░░░░░░░░` 0% |
+| STM32F1 | 0 | 23 | `░░░░░░░░░░` 0% |
 | STM32F2 | 0 | 17 | `░░░░░░░░░░` 0% |
 | STM32F3 | 0 | 19 | `░░░░░░░░░░` 0% |
-| STM32F4 | 9 | 52 | `█░░░░░░░░░` 17% |
-| STM32F7 | 8 | 66 | `█░░░░░░░░░` 12% |
+| STM32F4 | 0 | 52 | `░░░░░░░░░░` 0% |
+| STM32F7 | 0 | 66 | `░░░░░░░░░░` 0% |
 | STM32G0 | 0 | 21 | `░░░░░░░░░░` 0% |
 | STM32G4 | 0 | 34 | `░░░░░░░░░░` 0% |
 | STM32H7 | 0 | 18 | `░░░░░░░░░░` 0% |

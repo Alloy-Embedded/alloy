@@ -87,31 +87,30 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
-    PM_Handler,  // IRQ 0: PM
-    SYSCTRL_Handler,  // IRQ 1: SYSCTRL
-    WDT_Handler,  // IRQ 2: WDT
-    RTC_Handler,  // IRQ 3: RTC
-    EIC_Handler,  // IRQ 4: EIC
-    NVMCTRL_Handler,  // IRQ 5: NVMCTRL
-    DMAC_Handler,  // IRQ 6: DMAC
-    EVSYS_Handler,  // IRQ 8: EVSYS
-    SERCOM0_Handler,  // IRQ 9: SERCOM0
-    SERCOM1_Handler,  // IRQ 10: SERCOM1
-    SERCOM2_Handler,  // IRQ 11: SERCOM2
-    SERCOM3_Handler,  // IRQ 12: SERCOM3
-    TCC0_Handler,  // IRQ 15: TCC0
-    TCC1_Handler,  // IRQ 16: TCC1
-    TCC2_Handler,  // IRQ 17: TCC2
-    TC3_Handler,  // IRQ 18: TC3
-    TC4_Handler,  // IRQ 19: TC4
-    TC5_Handler,  // IRQ 20: TC5
-    ADC_Handler,  // IRQ 23: ADC
-    AC_Handler,  // IRQ 24: AC
-    DAC_Handler,  // IRQ 25: DAC
-    AC1_Handler,  // IRQ 28: AC1
-    TCC3_Handler,  // IRQ 29: TCC3
+    Reset_Handler,                           // Reset handler
+    PM_Handler,                              // IRQ 0: PM
+    SYSCTRL_Handler,                         // IRQ 1: SYSCTRL
+    WDT_Handler,                             // IRQ 2: WDT
+    RTC_Handler,                             // IRQ 3: RTC
+    EIC_Handler,                             // IRQ 4: EIC
+    NVMCTRL_Handler,                         // IRQ 5: NVMCTRL
+    DMAC_Handler,                            // IRQ 6: DMAC
+    EVSYS_Handler,                           // IRQ 8: EVSYS
+    SERCOM0_Handler,                         // IRQ 9: SERCOM0
+    SERCOM1_Handler,                         // IRQ 10: SERCOM1
+    SERCOM2_Handler,                         // IRQ 11: SERCOM2
+    SERCOM3_Handler,                         // IRQ 12: SERCOM3
+    TCC0_Handler,                            // IRQ 15: TCC0
+    TCC1_Handler,                            // IRQ 16: TCC1
+    TCC2_Handler,                            // IRQ 17: TCC2
+    TC3_Handler,                             // IRQ 18: TC3
+    TC4_Handler,                             // IRQ 19: TC4
+    TC5_Handler,                             // IRQ 20: TC5
+    ADC_Handler,                             // IRQ 23: ADC
+    AC_Handler,                              // IRQ 24: AC
+    DAC_Handler,                             // IRQ 25: DAC
+    AC1_Handler,                             // IRQ 28: AC1
+    TCC3_Handler,                            // IRQ 29: TCC3
 };

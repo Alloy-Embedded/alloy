@@ -1,1137 +1,1179 @@
 {
   "files": {
     "atmel/samd21/atsamd21e18a/pins.hpp": {
-      "checksum": "561fa14b7872e7695e5020337e596130ccdf9db9d5fa460a2a36f3b82f663d94",
+      "checksum": "3f38cc01f05561898f212421926c83eeeb734e842a192a4fbc0fa4fe8d375be2",
       "generator": "samd21_pins",
       "path": "atmel/samd21/atsamd21e18a/pins.hpp",
-      "size": 1183,
-      "timestamp": "2025-11-07T19:03:14.468558"
+      "size": 1182,
+      "timestamp": "2025-11-08T18:45:46.388938"
     },
     "atmel/samd21/atsamd21g18a/peripherals.hpp": {
       "checksum": "1c9df8c8937dfa472b3f9b77b36da56973719c2c6cbd29e24abdeca88d68528c",
       "generator": "startup",
       "path": "atmel/samd21/atsamd21g18a/peripherals.hpp",
       "size": 4008,
-      "timestamp": "2025-11-07T19:05:58.469228"
+      "timestamp": "2025-11-08T18:48:28.291350"
     },
     "atmel/samd21/atsamd21g18a/pins.hpp": {
-      "checksum": "937423c4b1eaf82b61a20219056e6e7f4985578cade03fa74be4cc0184402619",
+      "checksum": "4c5e594530ac5c5e636e07632fec0462778c1e63317d7681a4e190a269fa3ee8",
       "generator": "samd21_pins",
       "path": "atmel/samd21/atsamd21g18a/pins.hpp",
-      "size": 1705,
-      "timestamp": "2025-11-07T19:03:14.468220"
+      "size": 1704,
+      "timestamp": "2025-11-08T18:45:46.388574"
     },
     "atmel/samd21/atsamd21g18a/startup.cpp": {
-      "checksum": "bd649f58218803a1ca1a8a008ca0617a0a47486aabfcf73de3d4a225dcfce9f4",
+      "checksum": "5ad3e30bb9e4870ee2dcbbc52727999339151fb9a0e2afb1f0d6d0ad6a06f9d2",
       "generator": "startup",
       "path": "atmel/samd21/atsamd21g18a/startup.cpp",
-      "size": 6344,
-      "timestamp": "2025-11-07T19:05:58.468821"
+      "size": 5909,
+      "timestamp": "2025-11-08T18:48:28.290865"
     },
     "atmel/samd21/atsamd21j18a/pins.hpp": {
-      "checksum": "961045f37c180c9ea49c6031650a3851a9163c57580787a866576637fd734088",
+      "checksum": "8170c1cc829ed1b147e08ff3c1a557f4b6f8bc13ee9f189331be51c861a4738f",
       "generator": "samd21_pins",
       "path": "atmel/samd21/atsamd21j18a/pins.hpp",
-      "size": 2803,
-      "timestamp": "2025-11-07T19:03:14.468879"
+      "size": 2802,
+      "timestamp": "2025-11-08T18:45:46.389209"
     },
     "atmel/same70/atsame70j19b/peripherals.hpp": {
       "checksum": "097890f8701e341cf2edcb25eae976178f7312d938c94804b9956fbdc82a849d",
       "generator": "startup",
       "path": "atmel/same70/atsame70j19b/peripherals.hpp",
       "size": 5041,
-      "timestamp": "2025-11-07T19:05:58.542668"
+      "timestamp": "2025-11-08T18:48:28.367901"
     },
     "atmel/same70/atsame70j19b/pin_functions.hpp": {
       "checksum": "fbc983e4360239f4f2ef7e4824d2ee5b2363cd7269f69b422541de3e5c5cae10",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j19b/pin_functions.hpp",
       "size": 33453,
-      "timestamp": "2025-11-07T19:03:14.486368"
+      "timestamp": "2025-11-08T18:45:46.439602"
     },
     "atmel/same70/atsame70j19b/pins.hpp": {
-      "checksum": "7254cf9bf2f383ed9f063f1aedd9f80cbd46f7e2e5288d36fcfae3b8eea33411",
+      "checksum": "0ab64303b1dae230f560f8690ba8cbc559f3977779b5f377a0242db621dbd15c",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j19b/pins.hpp",
-      "size": 3480,
-      "timestamp": "2025-11-07T19:03:14.486111"
+      "size": 3479,
+      "timestamp": "2025-11-08T18:45:46.438060"
     },
     "atmel/same70/atsame70j19b/startup.cpp": {
-      "checksum": "b6b561f095d7d30fe12003049a5380cad0d2cdfb511af1d8052cbc686683dd56",
+      "checksum": "1d5214ecd9a3066d0706911b424cc2a38ab07b095d5fb8198b2b03626fa328d4",
       "generator": "startup",
       "path": "atmel/same70/atsame70j19b/startup.cpp",
-      "size": 10416,
-      "timestamp": "2025-11-07T19:05:58.542192"
+      "size": 9462,
+      "timestamp": "2025-11-08T18:48:28.367495"
     },
     "atmel/same70/atsame70j20b/peripherals.hpp": {
       "checksum": "15d2a9f8bf9a6a61658a4736804e99b7330b12b8c47ad70c458040f38c42a0a2",
       "generator": "startup",
       "path": "atmel/same70/atsame70j20b/peripherals.hpp",
       "size": 5041,
-      "timestamp": "2025-11-07T19:05:58.625955"
+      "timestamp": "2025-11-08T18:48:28.447503"
     },
     "atmel/same70/atsame70j20b/pin_functions.hpp": {
       "checksum": "1d06eeb505fb0271cbecd91ece1469b1138b9418e12ab88fdef8b42258a2e521",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j20b/pin_functions.hpp",
       "size": 33453,
-      "timestamp": "2025-11-07T19:03:14.485570"
+      "timestamp": "2025-11-08T18:45:46.437073"
     },
     "atmel/same70/atsame70j20b/pins.hpp": {
-      "checksum": "8bf3e288161dd315bfbdff7ef4ed5c2e6f3798d92b320cd626edbc30c6c17e83",
+      "checksum": "13c9b36da6962a78b64a3fea8a0670b1b33629ea7251c2c11cbf408e611e59d3",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j20b/pins.hpp",
-      "size": 3480,
-      "timestamp": "2025-11-07T19:03:14.485334"
+      "size": 3479,
+      "timestamp": "2025-11-08T18:45:46.436388"
     },
     "atmel/same70/atsame70j20b/startup.cpp": {
-      "checksum": "127e6e12d31bc0809d773adf910978b66c1a94a5362e287adddf5ef4b98269e4",
+      "checksum": "085b25918a7ba3cb4b083d45f68c7ceeba3fb301422c6cd72127e423e44e9cfd",
       "generator": "startup",
       "path": "atmel/same70/atsame70j20b/startup.cpp",
-      "size": 10416,
-      "timestamp": "2025-11-07T19:05:58.625550"
+      "size": 9462,
+      "timestamp": "2025-11-08T18:48:28.446911"
     },
     "atmel/same70/atsame70j21b/peripherals.hpp": {
       "checksum": "4d5824bd6c8b99f85d7085162a0b04e09d509c4f9dd6f0579467219da796a946",
       "generator": "startup",
       "path": "atmel/same70/atsame70j21b/peripherals.hpp",
       "size": 5041,
-      "timestamp": "2025-11-07T19:05:58.703822"
+      "timestamp": "2025-11-08T18:48:28.526423"
     },
     "atmel/same70/atsame70j21b/pin_functions.hpp": {
       "checksum": "062fe0aa0efbd83d037f2a011ddedc8ed39d124ac582caacd5b496230634160d",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j21b/pin_functions.hpp",
       "size": 33453,
-      "timestamp": "2025-11-07T19:03:14.484536"
+      "timestamp": "2025-11-08T18:45:46.434785"
     },
     "atmel/same70/atsame70j21b/pins.hpp": {
-      "checksum": "a28c70876307742f1486c21ac348b1e140dd1eb8cddd358dc252096fdc0d5ac6",
+      "checksum": "dde2d3e39e30161db07e5c28d978d4fb0fae8dfc3e7452a00b69f9d0fb3772fa",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70j21b/pins.hpp",
-      "size": 3480,
-      "timestamp": "2025-11-07T19:03:14.484216"
+      "size": 3479,
+      "timestamp": "2025-11-08T18:45:46.433890"
     },
     "atmel/same70/atsame70j21b/startup.cpp": {
-      "checksum": "0c3c4157ec9a6b3584b6aeea001dd53bdc5e8098f0d2f412d9b4a82cbce7fe74",
+      "checksum": "57d18a61e3743cf0e9a7f49f733c522d1bdd8d70825dd2f32abb4c45bf196670",
       "generator": "startup",
       "path": "atmel/same70/atsame70j21b/startup.cpp",
-      "size": 10416,
-      "timestamp": "2025-11-07T19:05:58.703425"
+      "size": 9462,
+      "timestamp": "2025-11-08T18:48:28.525915"
     },
     "atmel/same70/atsame70n19b/peripherals.hpp": {
       "checksum": "0ca29703c7f1aa0978f2dfe08118a23495c2daf705e3163a23f03e1c88c26708",
       "generator": "startup",
       "path": "atmel/same70/atsame70n19b/peripherals.hpp",
       "size": 5616,
-      "timestamp": "2025-11-07T19:05:58.784287"
+      "timestamp": "2025-11-08T18:48:28.606835"
     },
     "atmel/same70/atsame70n19b/pin_functions.hpp": {
       "checksum": "5d17fb40bc9f8c1a98ff02868b25a6b2ce2b479e5a2240876f2a03a0d1f2a3c6",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n19b/pin_functions.hpp",
       "size": 45698,
-      "timestamp": "2025-11-07T19:03:14.480810"
+      "timestamp": "2025-11-08T18:45:46.401488"
     },
     "atmel/same70/atsame70n19b/pins.hpp": {
-      "checksum": "9fe9178312695d0ce5b806927d2ad730b6a518258a9e53cb9bc729c8727ca5b6",
+      "checksum": "933581df00b8a5e489f36364088563e9c33b1c3775025526f8acf43f1b63396b",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n19b/pins.hpp",
-      "size": 4548,
-      "timestamp": "2025-11-07T19:03:14.480426"
+      "size": 4547,
+      "timestamp": "2025-11-08T18:45:46.401236"
     },
     "atmel/same70/atsame70n19b/startup.cpp": {
-      "checksum": "d7cc029185ac46db2e1ea2e64fffb16f050940f2f90ab39b1231d434355f2529",
+      "checksum": "76760cae7b71c9342aa523c2bbf12a156abecd4819e9720e07c50a52d71b4c77",
       "generator": "startup",
       "path": "atmel/same70/atsame70n19b/startup.cpp",
-      "size": 11635,
-      "timestamp": "2025-11-07T19:05:58.783902"
+      "size": 10548,
+      "timestamp": "2025-11-08T18:48:28.606213"
     },
     "atmel/same70/atsame70n20b/peripherals.hpp": {
       "checksum": "454c560e1dc77769dc0262b380c83b5eaf73eef52efff7e0beda7f1c2624bd1e",
       "generator": "startup",
       "path": "atmel/same70/atsame70n20b/peripherals.hpp",
       "size": 5616,
-      "timestamp": "2025-11-07T19:05:58.863891"
+      "timestamp": "2025-11-08T18:48:28.687266"
     },
     "atmel/same70/atsame70n20b/pin_functions.hpp": {
       "checksum": "b4e92cfbb5459cd385175ab8548b833ff525f166e6e0f5ef9f159b51e879e36f",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n20b/pin_functions.hpp",
       "size": 45698,
-      "timestamp": "2025-11-07T19:03:14.479236"
+      "timestamp": "2025-11-08T18:45:46.400686"
     },
     "atmel/same70/atsame70n20b/pins.hpp": {
-      "checksum": "8697f07fe5f73fa257d6885a6db29c4a6f70444dd3ca5a895840ba2f2d944a94",
+      "checksum": "5d3ea8315ad3f7b669045c9b1754685026dbf5aa4450e7d45b64ea67a17fdba2",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n20b/pins.hpp",
-      "size": 4548,
-      "timestamp": "2025-11-07T19:03:14.478965"
+      "size": 4547,
+      "timestamp": "2025-11-08T18:45:46.400342"
     },
     "atmel/same70/atsame70n20b/startup.cpp": {
-      "checksum": "ec6615d8812c8a0fe7212e14aee97e9d30b507735668141a13a2384998cb1e81",
+      "checksum": "2533b7530d5991283f3b0cbd33f661f43cc55f3f1c6de9ab558d4eab4f36b86a",
       "generator": "startup",
       "path": "atmel/same70/atsame70n20b/startup.cpp",
-      "size": 11635,
-      "timestamp": "2025-11-07T19:05:58.863505"
+      "size": 10548,
+      "timestamp": "2025-11-08T18:48:28.686870"
     },
     "atmel/same70/atsame70n21b/peripherals.hpp": {
       "checksum": "7e15ca98a6e3923852f07ce378c70cfbf2531946dae169e1d793eaf92eeb135a",
       "generator": "startup",
       "path": "atmel/same70/atsame70n21b/peripherals.hpp",
       "size": 5616,
-      "timestamp": "2025-11-07T19:05:58.945132"
+      "timestamp": "2025-11-08T18:48:28.766008"
     },
     "atmel/same70/atsame70n21b/pin_functions.hpp": {
       "checksum": "6862bda86da2c42bd3566f6a51fd3d67f56a35a20a5247a5522d9d1b817d74dc",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n21b/pin_functions.hpp",
       "size": 45698,
-      "timestamp": "2025-11-07T19:03:14.478344"
+      "timestamp": "2025-11-08T18:45:46.399566"
     },
     "atmel/same70/atsame70n21b/pins.hpp": {
-      "checksum": "301e1ad85762cf5aabea169718ba2802bab328fc40bb5152ba7a5a36d696117e",
+      "checksum": "5193b95d55ae3c0ba57aeac3415eb24e77e86b39d274d440a6a8c0eff34ae8de",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70n21b/pins.hpp",
-      "size": 4548,
-      "timestamp": "2025-11-07T19:03:14.478091"
+      "size": 4547,
+      "timestamp": "2025-11-08T18:45:46.399201"
     },
     "atmel/same70/atsame70n21b/startup.cpp": {
-      "checksum": "8fbbb5c1c7c8922b5f1db25ff5b29c851866b5a99abac0359214c6d424d96eb3",
+      "checksum": "b31560f410d1005155ea185ca979a94daa4d8cecb5c5bfa9e7b7062dc7096eaa",
       "generator": "startup",
       "path": "atmel/same70/atsame70n21b/startup.cpp",
-      "size": 11635,
-      "timestamp": "2025-11-07T19:05:58.944743"
+      "size": 10548,
+      "timestamp": "2025-11-08T18:48:28.765637"
     },
     "atmel/same70/atsame70q19b/peripherals.hpp": {
       "checksum": "5061feac817a1286ffd4a2432fe02720f30bfa7b8c8491111dc98d4868b84990",
       "generator": "startup",
       "path": "atmel/same70/atsame70q19b/peripherals.hpp",
       "size": 6038,
-      "timestamp": "2025-11-07T19:05:59.033092"
+      "timestamp": "2025-11-08T18:48:28.855131"
     },
     "atmel/same70/atsame70q19b/pin_functions.hpp": {
       "checksum": "b81c39ed2d7ce9f35cbbb5ea9f907e0bf83caeda0cf0e8480354de85097b89b1",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q19b/pin_functions.hpp",
       "size": 52955,
-      "timestamp": "2025-11-07T19:03:14.473613"
+      "timestamp": "2025-11-08T18:45:46.393373"
     },
     "atmel/same70/atsame70q19b/pins.hpp": {
-      "checksum": "0142cbcbc2bf1cfbfb6ec14499dd3d5b6828b4019b4a634af43c2e80cd2bc280",
+      "checksum": "2075e173ed3add193af6dfab258242df71eeae178f51636861ecb0e6fa2c46bb",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q19b/pins.hpp",
-      "size": 5242,
-      "timestamp": "2025-11-07T19:03:14.473322"
+      "size": 5241,
+      "timestamp": "2025-11-08T18:45:46.392907"
     },
     "atmel/same70/atsame70q19b/startup.cpp": {
-      "checksum": "a0b0fff426526ccec711dc35a81efd5aa1d1e1a23531e842373a263e0f050c39",
+      "checksum": "04a5298bb8bdcb642f6e07331fc57a8712c205ef0a895bb54ac86972dfba5e66",
       "generator": "startup",
       "path": "atmel/same70/atsame70q19b/startup.cpp",
-      "size": 12296,
-      "timestamp": "2025-11-07T19:05:59.032708"
+      "size": 11127,
+      "timestamp": "2025-11-08T18:48:28.854496"
     },
     "atmel/same70/atsame70q20b/peripherals.hpp": {
       "checksum": "dfb8ab03d1a0ab48303ff981a42cb71b1691489f8ecbbf80220dc24ffa0fde6c",
       "generator": "startup",
       "path": "atmel/same70/atsame70q20b/peripherals.hpp",
       "size": 6038,
-      "timestamp": "2025-11-07T19:05:59.113918"
+      "timestamp": "2025-11-08T18:48:28.935991"
     },
     "atmel/same70/atsame70q20b/pin_functions.hpp": {
       "checksum": "082b5ec757092d302660c8be1f6cf23c99b7da841c6388d033be7a605d4ef33e",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q20b/pin_functions.hpp",
       "size": 52955,
-      "timestamp": "2025-11-07T19:03:14.472545"
+      "timestamp": "2025-11-08T18:45:46.392236"
     },
     "atmel/same70/atsame70q20b/pins.hpp": {
-      "checksum": "79aec3fda2416768a71fc150d00eb9a8ae91e7a54337a64497217cd028636eea",
+      "checksum": "aedd24bc4c99066f014a17510a49629466b04841a2c36383231493d9ebc08e89",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q20b/pins.hpp",
-      "size": 5242,
-      "timestamp": "2025-11-07T19:03:14.472124"
+      "size": 5241,
+      "timestamp": "2025-11-08T18:45:46.391960"
     },
     "atmel/same70/atsame70q20b/startup.cpp": {
-      "checksum": "059dfc6306d6f2efcff93013495d6fad4beed9c573aeaef28d723e0fe7915f64",
+      "checksum": "3acf68385db348c9c1966ae47f2f1afc29c4612e13b664ba6e22ef574b44cb28",
       "generator": "startup",
       "path": "atmel/same70/atsame70q20b/startup.cpp",
-      "size": 12296,
-      "timestamp": "2025-11-07T19:05:59.113535"
+      "size": 11127,
+      "timestamp": "2025-11-08T18:48:28.935632"
     },
     "atmel/same70/atsame70q21/peripherals.hpp": {
       "checksum": "c3cbe2b4c2120a925ffd636191d3a5eb736b81b85c5b29058fd74dd38eaf5f11",
       "generator": "startup",
       "path": "atmel/same70/atsame70q21/peripherals.hpp",
       "size": 5883,
-      "timestamp": "2025-11-07T19:05:59.197185"
+      "timestamp": "2025-11-08T18:48:29.015421"
     },
     "atmel/same70/atsame70q21/pin_functions.hpp": {
       "checksum": "69fa79276f8c2be9b94d8eaa51e38507f5bd7a2efc2c2cc49e0c7f95139bc941",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q21/pin_functions.hpp",
       "size": 52952,
-      "timestamp": "2025-11-07T19:03:14.471238"
+      "timestamp": "2025-11-08T18:45:46.391295"
     },
     "atmel/same70/atsame70q21/pins.hpp": {
-      "checksum": "67184681050baafb9031dd4462a84644c7d791aef97ec475c56ac555fdf89ba3",
+      "checksum": "a7aa919c2127a317f17a96ee328b42d4be1c2ba716131b65afcb7b97777afa9b",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q21/pins.hpp",
-      "size": 5239,
-      "timestamp": "2025-11-07T19:03:14.470804"
+      "size": 5238,
+      "timestamp": "2025-11-08T18:45:46.391019"
     },
     "atmel/same70/atsame70q21/startup.cpp": {
-      "checksum": "594b85abc3ee10a17a4325e7183a2aed0d960278edd55702fc8d4aadc94e6cf2",
+      "checksum": "c4197ba7cc47b615877e4de675af3f3606224d71b76b197ca78ee4b55ed4b576",
       "generator": "startup",
       "path": "atmel/same70/atsame70q21/startup.cpp",
-      "size": 11359,
-      "timestamp": "2025-11-07T19:05:59.196674"
+      "size": 10300,
+      "timestamp": "2025-11-08T18:48:29.015050"
     },
     "atmel/same70/atsame70q21b/peripherals.hpp": {
       "checksum": "116d913e408a5d8c535962c9cd8a8dcb55aac971d67ec59dd53806b90433a6f8",
       "generator": "startup",
       "path": "atmel/same70/atsame70q21b/peripherals.hpp",
       "size": 6038,
-      "timestamp": "2025-11-07T19:05:59.276773"
+      "timestamp": "2025-11-08T18:48:29.094774"
     },
     "atmel/same70/atsame70q21b/pin_functions.hpp": {
       "checksum": "7f207d0cf4a0649d642c8f03735b38691ba1deab67a411efeacb24bc74f28186",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q21b/pin_functions.hpp",
       "size": 52955,
-      "timestamp": "2025-11-07T19:03:14.470064"
+      "timestamp": "2025-11-08T18:45:46.390410"
     },
     "atmel/same70/atsame70q21b/pins.hpp": {
-      "checksum": "5b0b368855dd9c29adf1b117e305b7ca252536266a4118abf829370926c4881d",
+      "checksum": "8c46272e05a70f4d27e949d9e02bbfb608ae4faf8325a945d7a552e2ab9477d0",
       "generator": "same70_pins",
       "path": "atmel/same70/atsame70q21b/pins.hpp",
-      "size": 5242,
-      "timestamp": "2025-11-07T19:03:14.469761"
+      "size": 5241,
+      "timestamp": "2025-11-08T18:45:46.390071"
     },
     "atmel/same70/atsame70q21b/startup.cpp": {
-      "checksum": "dbf3d27e38f70abf622d064d266e62b67a2e96d16786b218300403076aeb605b",
+      "checksum": "c16884b3d7612b45c61c0c11119d6b021372ca5af44548915fc3709934f8e098",
       "generator": "startup",
       "path": "atmel/same70/atsame70q21b/startup.cpp",
-      "size": 12296,
-      "timestamp": "2025-11-07T19:05:59.276393"
+      "size": 11127,
+      "timestamp": "2025-11-08T18:48:29.094433"
     },
     "atmel/samv71/atsamv71j19b/peripherals.hpp": {
       "checksum": "cb1dbbde93170be1da52729041160993e44b7d42784edf6cba36d15608f7f05e",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71j19b/peripherals.hpp",
       "size": 5112,
-      "timestamp": "2025-11-07T19:05:59.353067"
+      "timestamp": "2025-11-08T18:48:29.169618"
     },
     "atmel/samv71/atsamv71j19b/pin_functions.hpp": {
       "checksum": "0c6d1d2e04d50e1df35a12aa5711a85f09727a10e2eb5fdab1378d6d1206bc7f",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j19b/pin_functions.hpp",
       "size": 33453,
-      "timestamp": "2025-11-07T19:03:14.488696"
+      "timestamp": "2025-11-08T18:45:46.443528"
     },
     "atmel/samv71/atsamv71j19b/pins.hpp": {
-      "checksum": "65fbb677467b6ccf33a351f980a4eeff7066196ebd0f689fff4484d17ef69c4b",
+      "checksum": "8296e1ec59a6ec40df6debf82bb3336804ee61141826d203bf22906401733ea5",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j19b/pins.hpp",
-      "size": 3480,
-      "timestamp": "2025-11-07T19:03:14.488452"
+      "size": 3479,
+      "timestamp": "2025-11-08T18:45:46.443131"
     },
     "atmel/samv71/atsamv71j19b/startup.cpp": {
-      "checksum": "7da1d179fcc9a94625ae0a158cd76d37af3619e5648b2e3170b812ee2dbcc185",
+      "checksum": "8076d24c27094229d599ce5e0235adcea75a045f763a4ec2d18807e38a4f09a4",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71j19b/startup.cpp",
-      "size": 10545,
-      "timestamp": "2025-11-07T19:05:59.352678"
+      "size": 9573,
+      "timestamp": "2025-11-08T18:48:29.169122"
     },
     "atmel/samv71/atsamv71j20b/peripherals.hpp": {
       "checksum": "c995aa32045d25f4c1bc9425fef7ca945b127e4fb717ee1a7a985dabd05e20af",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71j20b/peripherals.hpp",
       "size": 5112,
-      "timestamp": "2025-11-07T19:05:59.432187"
+      "timestamp": "2025-11-08T18:48:29.250690"
     },
     "atmel/samv71/atsamv71j20b/pin_functions.hpp": {
       "checksum": "9d8a961412f6ee5f4a9d2aced1200bbfe400d1f8d373c063cab1379c4e3f637c",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j20b/pin_functions.hpp",
       "size": 33453,
-      "timestamp": "2025-11-07T19:03:14.487909"
+      "timestamp": "2025-11-08T18:45:46.442558"
     },
     "atmel/samv71/atsamv71j20b/pins.hpp": {
-      "checksum": "0cb0f1e84db0473db006a50dac6272b8218d00cded2c4ba5eafa2ab6ae1388b3",
+      "checksum": "64c518a090c4183a08a7fcac2d2c80a223185b485d61b156cd3d154409f256de",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j20b/pins.hpp",
-      "size": 3480,
-      "timestamp": "2025-11-07T19:03:14.487629"
+      "size": 3479,
+      "timestamp": "2025-11-08T18:45:46.442106"
     },
     "atmel/samv71/atsamv71j20b/startup.cpp": {
-      "checksum": "2fb952429ce5e21f7a0e0a97b44d742ceef95771fb0688ba95ad0386e215d7bc",
+      "checksum": "da3ff05f0f5bcd4551a0a2cc1722e9818fd65687d45562bdcbe81a11cef9d20d",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71j20b/startup.cpp",
-      "size": 10545,
-      "timestamp": "2025-11-07T19:05:59.431816"
+      "size": 9573,
+      "timestamp": "2025-11-08T18:48:29.250127"
     },
     "atmel/samv71/atsamv71j21b/peripherals.hpp": {
       "checksum": "c3416635fc9c745f7122981302c75e7993663467c326d04504766e189ad9084a",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71j21b/peripherals.hpp",
       "size": 5112,
-      "timestamp": "2025-11-07T19:05:59.508134"
+      "timestamp": "2025-11-08T18:48:29.326974"
     },
     "atmel/samv71/atsamv71j21b/pin_functions.hpp": {
       "checksum": "65675c28f9f1656e9c1c44c09dc759f50e4db3b526fe618440c95eaac27fafd7",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j21b/pin_functions.hpp",
       "size": 33453,
-      "timestamp": "2025-11-07T19:03:14.487103"
+      "timestamp": "2025-11-08T18:45:46.441396"
     },
     "atmel/samv71/atsamv71j21b/pins.hpp": {
-      "checksum": "a4cf7bd63e0b243a0a7191e1d353931092e0b162c027257b4182501d034eb851",
+      "checksum": "e71c9de3dc7da1087c4f33493206005ede27729a1402d31834edbb33369cb6a9",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71j21b/pins.hpp",
-      "size": 3480,
-      "timestamp": "2025-11-07T19:03:14.486877"
+      "size": 3479,
+      "timestamp": "2025-11-08T18:45:46.441019"
     },
     "atmel/samv71/atsamv71j21b/startup.cpp": {
-      "checksum": "316b7d20e598498b018fc8563bcdc672dd36c10631925bab670c8c81cff2ed88",
+      "checksum": "868bf1d96e3566befd9b05542242fa7424c88d99d3130708d3ae2cb4f1d93c82",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71j21b/startup.cpp",
-      "size": 10545,
-      "timestamp": "2025-11-07T19:05:59.507775"
+      "size": 9573,
+      "timestamp": "2025-11-08T18:48:29.326554"
     },
     "atmel/samv71/atsamv71n19b/peripherals.hpp": {
       "checksum": "32ae2312940b921b6a95ec6a1d9963c2c4aecad34b6bcb7796ba8042a7082bce",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71n19b/peripherals.hpp",
       "size": 5687,
-      "timestamp": "2025-11-07T19:05:59.595082"
+      "timestamp": "2025-11-08T18:48:29.412873"
     },
     "atmel/samv71/atsamv71n19b/pin_functions.hpp": {
       "checksum": "8246b2bed0ac7f1281deac2de84063d02781e09e795623335f8eb3baed5634ba",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n19b/pin_functions.hpp",
       "size": 45698,
-      "timestamp": "2025-11-07T19:03:14.483647"
+      "timestamp": "2025-11-08T18:45:46.411055"
     },
     "atmel/samv71/atsamv71n19b/pins.hpp": {
-      "checksum": "2de29c16558bfd14ee1bbdef37c2d55a8c59b5ac57649237fab5716af2cdaf03",
+      "checksum": "8fd61f1e8f3a94bd4ae0ea69c7c43aa92f5c6438432345c33610ae3ad4777168",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n19b/pins.hpp",
-      "size": 4548,
-      "timestamp": "2025-11-07T19:03:14.483378"
+      "size": 4547,
+      "timestamp": "2025-11-08T18:45:46.410708"
     },
     "atmel/samv71/atsamv71n19b/startup.cpp": {
-      "checksum": "85e9dd6859a437e0c2552c812d581088858f9013f229a51f939c66e64ec87769",
+      "checksum": "1d278680900780971e8539a7e0151c9be2797b29645f0deec838f8612a89fa38",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71n19b/startup.cpp",
-      "size": 11764,
-      "timestamp": "2025-11-07T19:05:59.594683"
+      "size": 10659,
+      "timestamp": "2025-11-08T18:48:29.412475"
     },
     "atmel/samv71/atsamv71n20b/peripherals.hpp": {
       "checksum": "45250139390d02bf5042fb823cf229f1bc55f9311f8a62a9f07111d46368da0f",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71n20b/peripherals.hpp",
       "size": 5687,
-      "timestamp": "2025-11-07T19:05:59.676335"
+      "timestamp": "2025-11-08T18:48:29.492256"
     },
     "atmel/samv71/atsamv71n20b/pin_functions.hpp": {
       "checksum": "324111455566eef5911d4ac4d4329507308c5d4ff50e73d4ed8ce92f6a0f92cc",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n20b/pin_functions.hpp",
       "size": 45698,
-      "timestamp": "2025-11-07T19:03:14.482725"
+      "timestamp": "2025-11-08T18:45:46.403726"
     },
     "atmel/samv71/atsamv71n20b/pins.hpp": {
-      "checksum": "9c56daa253cdaf5f49f80436c9854cfd83afb15d74759b36e7f47b4bef36ae04",
+      "checksum": "177483830fc093313c4346f95dc3d47f9985b3ec00cd8c503463fc6b221b2c36",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n20b/pins.hpp",
-      "size": 4548,
-      "timestamp": "2025-11-07T19:03:14.482476"
+      "size": 4547,
+      "timestamp": "2025-11-08T18:45:46.403342"
     },
     "atmel/samv71/atsamv71n20b/startup.cpp": {
-      "checksum": "c301c1dc39eed2c1bbca7084da5a93e57389b7120ca73e6a4e353adcce21b8cc",
+      "checksum": "3586d0812e0f735f3a5f5443fa80201eef9f3c3f09a8bf8e552fa0e1f33658db",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71n20b/startup.cpp",
-      "size": 11764,
-      "timestamp": "2025-11-07T19:05:59.675938"
+      "size": 10659,
+      "timestamp": "2025-11-08T18:48:29.491875"
     },
     "atmel/samv71/atsamv71n21b/peripherals.hpp": {
       "checksum": "15898e9246c072687965f31edba618f1c0e419713d14409ac1e43f8ba49eec6f",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71n21b/peripherals.hpp",
       "size": 5687,
-      "timestamp": "2025-11-07T19:05:59.755899"
+      "timestamp": "2025-11-08T18:48:29.570812"
     },
     "atmel/samv71/atsamv71n21b/pin_functions.hpp": {
       "checksum": "e2b309e6bd73573adabac8fa343101611f73bbb1370300d7646e11e45cce73d8",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n21b/pin_functions.hpp",
       "size": 45698,
-      "timestamp": "2025-11-07T19:03:14.481819"
+      "timestamp": "2025-11-08T18:45:46.402562"
     },
     "atmel/samv71/atsamv71n21b/pins.hpp": {
-      "checksum": "a827f48fd37695b9313e237cdf8b8761272e4824a12411ccbe654e690d317e20",
+      "checksum": "f436c211f71d92e63ecf5bc879fa6b3b1cdd3a8dfee42da9b2f11d8756f1a566",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71n21b/pins.hpp",
-      "size": 4548,
-      "timestamp": "2025-11-07T19:03:14.481553"
+      "size": 4547,
+      "timestamp": "2025-11-08T18:45:46.402147"
     },
     "atmel/samv71/atsamv71n21b/startup.cpp": {
-      "checksum": "078a9960f9b609a6b91d25620a0f836719113ffda0958e60e9b50c1aeeff9b8a",
+      "checksum": "af78912683cb8f23d5a003bfbd48bf150ba6b87e041dfb574cf2d94c55b3f28f",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71n21b/startup.cpp",
-      "size": 11764,
-      "timestamp": "2025-11-07T19:05:59.755485"
+      "size": 10659,
+      "timestamp": "2025-11-08T18:48:29.570204"
     },
     "atmel/samv71/atsamv71q19b/peripherals.hpp": {
       "checksum": "59f6780d73f89fdafb47c628829ff28e1a33e1dd6a0af963d3b9a387da2688ea",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71q19b/peripherals.hpp",
       "size": 6109,
-      "timestamp": "2025-11-07T19:05:59.836853"
+      "timestamp": "2025-11-08T18:48:29.654058"
     },
     "atmel/samv71/atsamv71q19b/pin_functions.hpp": {
       "checksum": "23c68b95e60da1d5cba04331b02e3d99c256f35a59ec9fe41a21fc8833fd0bea",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q19b/pin_functions.hpp",
       "size": 52955,
-      "timestamp": "2025-11-07T19:03:14.477481"
+      "timestamp": "2025-11-08T18:45:46.398635"
     },
     "atmel/samv71/atsamv71q19b/pins.hpp": {
-      "checksum": "448843af8863fdd2d8df843a0fd07a2a0babc7c3500d06dd6ea289a22ec8b693",
+      "checksum": "df98efe3351a1626a2ae133cc1e6b892c02240286939206ec7bac44d6b1e7915",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q19b/pins.hpp",
-      "size": 5242,
-      "timestamp": "2025-11-07T19:03:14.477212"
+      "size": 5241,
+      "timestamp": "2025-11-08T18:45:46.398376"
     },
     "atmel/samv71/atsamv71q19b/startup.cpp": {
-      "checksum": "ed8df523c158e4aa0db1e8e4f65b99e3af82afea898f77799f2e0d188dda41f5",
+      "checksum": "4ad7b44407cd31dca9c94a4a1ae0cdd5d76aeea64dc40cb99350f94b7709c60d",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71q19b/startup.cpp",
-      "size": 12425,
-      "timestamp": "2025-11-07T19:05:59.836474"
+      "size": 11238,
+      "timestamp": "2025-11-08T18:48:29.653418"
     },
     "atmel/samv71/atsamv71q20b/peripherals.hpp": {
       "checksum": "28f968a758c17f5dbee7e290d9708fef39e6196af673dcc44a1ce1dddcfa38aa",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71q20b/peripherals.hpp",
       "size": 6109,
-      "timestamp": "2025-11-07T19:05:59.941714"
+      "timestamp": "2025-11-08T18:48:29.738450"
     },
     "atmel/samv71/atsamv71q20b/pin_functions.hpp": {
       "checksum": "6d1ff421fac30363e787e85ba58644ad3628dac5e987f7cdbaca7a0a600bd4d2",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q20b/pin_functions.hpp",
       "size": 52955,
-      "timestamp": "2025-11-07T19:03:14.476539"
+      "timestamp": "2025-11-08T18:45:46.397610"
     },
     "atmel/samv71/atsamv71q20b/pins.hpp": {
-      "checksum": "adb2c0d54bd31dfdd5c9057ac69c36db438e1ba8ca246b78308564280e2dd636",
+      "checksum": "88b7f15faca4272f377412407a24e947379c78332f7ff2224efb42393259a679",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q20b/pins.hpp",
-      "size": 5242,
-      "timestamp": "2025-11-07T19:03:14.476272"
+      "size": 5241,
+      "timestamp": "2025-11-08T18:45:46.397209"
     },
     "atmel/samv71/atsamv71q20b/startup.cpp": {
-      "checksum": "0c9444c2a1810bc27d132b506c8ee42059d5082ab551120f86a46aef1c8f87f8",
+      "checksum": "84d80ac331db18b852007e9013dc07d29166412b8d8873d662b70e4368e7a564",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71q20b/startup.cpp",
-      "size": 12425,
-      "timestamp": "2025-11-07T19:05:59.941272"
+      "size": 11238,
+      "timestamp": "2025-11-08T18:48:29.737989"
     },
     "atmel/samv71/atsamv71q21/peripherals.hpp": {
       "checksum": "7f740f3b68fec5044fb9982bfaa72e8919b83cda20eb31b33cdf0905d28ca69b",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71q21/peripherals.hpp",
       "size": 5954,
-      "timestamp": "2025-11-07T19:06:00.043024"
+      "timestamp": "2025-11-08T18:48:29.839712"
     },
     "atmel/samv71/atsamv71q21/pin_functions.hpp": {
       "checksum": "cac19a6fc97f5506dad07d1b06c404c49ce891dc3156c1ccac6d1f5aca4c8f9a",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q21/pin_functions.hpp",
       "size": 52952,
-      "timestamp": "2025-11-07T19:03:14.475614"
+      "timestamp": "2025-11-08T18:45:46.396526"
     },
     "atmel/samv71/atsamv71q21/pins.hpp": {
-      "checksum": "20a9146f12226779d91ea5ee56117c6142cb4b5fa638c58fc74505ec5c4f960c",
+      "checksum": "f17cb351322f3cb024a0809292ac1cc6350a8935b11b2ae6c8099bf8e1433e98",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q21/pins.hpp",
-      "size": 5239,
-      "timestamp": "2025-11-07T19:03:14.475352"
+      "size": 5238,
+      "timestamp": "2025-11-08T18:45:46.396099"
     },
     "atmel/samv71/atsamv71q21/startup.cpp": {
-      "checksum": "cfe54d8ae71d3921ff3c42986a0b2ae33c175a0eee143d9374f0822fd248b2d5",
+      "checksum": "d2ee4439bd2834a370e40ba96be25f71a463ddd1343ace226241a3640d705f2b",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71q21/startup.cpp",
-      "size": 11488,
-      "timestamp": "2025-11-07T19:06:00.042626"
+      "size": 10411,
+      "timestamp": "2025-11-08T18:48:29.839328"
     },
     "atmel/samv71/atsamv71q21b/peripherals.hpp": {
       "checksum": "74d9da7f9f3e76067059a67cdfd93e0c272d8e30b09b5b018c4dcb22ded89a01",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71q21b/peripherals.hpp",
       "size": 6109,
-      "timestamp": "2025-11-07T19:06:00.125923"
+      "timestamp": "2025-11-08T18:48:29.923046"
     },
     "atmel/samv71/atsamv71q21b/pin_functions.hpp": {
       "checksum": "2d3c8d064157658bbc910468caa4fe810ba158e6c6d320b6e1da74522746f339",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q21b/pin_functions.hpp",
       "size": 52955,
-      "timestamp": "2025-11-07T19:03:14.474695"
+      "timestamp": "2025-11-08T18:45:46.395364"
     },
     "atmel/samv71/atsamv71q21b/pins.hpp": {
-      "checksum": "8847a381b372936e0ef54eec749faf7b5c52f3e3c09e09e2ce6a6f8afacc5a31",
+      "checksum": "a63bc106cb752177713a6334eb30060be6ea15972875592dcbff6d116e2e9020",
       "generator": "same70_pins",
       "path": "atmel/samv71/atsamv71q21b/pins.hpp",
-      "size": 5242,
-      "timestamp": "2025-11-07T19:03:14.474417"
+      "size": 5241,
+      "timestamp": "2025-11-08T18:45:46.394442"
     },
     "atmel/samv71/atsamv71q21b/startup.cpp": {
-      "checksum": "1a4805b84fdf34ef5572f74fe86f73eb71f4b5c2354d02643ebfd4f9b5910d58",
+      "checksum": "20f0a0fdff144d5812c36e27849a45b395dfad7bafbb9ce7bdd630b2ca22f55e",
       "generator": "startup",
       "path": "atmel/samv71/atsamv71q21b/startup.cpp",
-      "size": 12425,
-      "timestamp": "2025-11-07T19:06:00.125542"
+      "size": 11238,
+      "timestamp": "2025-11-08T18:48:29.922589"
     },
     "espressif/esp32/esp32/peripherals.hpp": {
       "checksum": "ff7d7681dc29cfc89a2eddec71c1d4b608627fa4ae3d53696392fd9682ddfba9",
       "generator": "startup",
       "path": "espressif/esp32/esp32/peripherals.hpp",
       "size": 5468,
-      "timestamp": "2025-11-07T19:06:00.195597"
+      "timestamp": "2025-11-08T18:48:29.989882"
     },
     "espressif/esp32/esp32/startup.cpp": {
-      "checksum": "a724bdacc6889ee7feab47c8520f28cf7f8c1ed15329c78f34b6832c22bba046",
+      "checksum": "f67cf0117d09a8b63f7bf2b24118d7b3ecacd3246ccadf16db1d4a886d5ff0ce",
       "generator": "startup",
       "path": "espressif/esp32/esp32/startup.cpp",
-      "size": 12350,
-      "timestamp": "2025-11-07T19:06:00.195203"
+      "size": 11451,
+      "timestamp": "2025-11-08T18:48:29.989489"
     },
     "raspberrypi/rp2040/rp2040/peripherals.hpp": {
       "checksum": "763d3293b0bc472c43c38935a1b86c3c03a234d6796a6335436c590cb08ebd07",
       "generator": "startup",
       "path": "raspberrypi/rp2040/rp2040/peripherals.hpp",
       "size": 7601,
-      "timestamp": "2025-11-07T19:06:00.247060"
+      "timestamp": "2025-11-08T18:48:30.040288"
     },
     "raspberrypi/rp2040/rp2040/startup.cpp": {
-      "checksum": "61e198ceb01ba5fdc3d2fa2eedb2e292268ded887bd29b91497d1626fd9ad833",
+      "checksum": "b44172d9e380be913e508e59e422b9379119841dba00fa75350b14a2f59d9395",
       "generator": "startup",
       "path": "raspberrypi/rp2040/rp2040/startup.cpp",
-      "size": 6743,
-      "timestamp": "2025-11-07T19:06:00.246685"
+      "size": 6436,
+      "timestamp": "2025-11-08T18:48:30.039939"
     },
     "st/stm32f0/stm32f030/peripherals.hpp": {
       "checksum": "4821e450a4d763ef59dc702496a3f7ecd9143aa1ea82b5d132116d6f2ab1e23e",
       "generator": "startup",
       "path": "st/stm32f0/stm32f030/peripherals.hpp",
       "size": 3528,
-      "timestamp": "2025-11-07T19:06:00.287886"
+      "timestamp": "2025-11-08T18:48:30.081769"
     },
     "st/stm32f0/stm32f030/startup.cpp": {
-      "checksum": "3e0a052bd94a6338ceb821f2396626fec7df7fd244b10361cc06b6e88ec012aa",
+      "checksum": "4c138cb5b4bb66865dfd0a1fb354b7fdf27876ecc80c9755f8cfcb26aa2dfe7f",
       "generator": "startup",
       "path": "st/stm32f0/stm32f030/startup.cpp",
-      "size": 7090,
-      "timestamp": "2025-11-07T19:06:00.287573"
+      "size": 6725,
+      "timestamp": "2025-11-08T18:48:30.081459"
     },
     "st/stm32f0/stm32f030c6/pin_functions.hpp": {
       "checksum": "b4d56f23cd0d9dd3a8ab45758cc71fa1a074e7d3d4cceda6d75dbcb222202417",
       "generator": "st_pins",
       "path": "st/stm32f0/stm32f030c6/pin_functions.hpp",
       "size": 544,
-      "timestamp": "2025-11-07T19:03:12.939006"
+      "timestamp": "2025-11-08T18:45:44.427345"
     },
     "st/stm32f0/stm32f030c6/pins.hpp": {
       "checksum": "cf50414ca2c170be2c698bc1486f2e1730bfc34de428d24a80e3ccce66201672",
       "generator": "st_pins",
       "path": "st/stm32f0/stm32f030c6/pins.hpp",
       "size": 3027,
-      "timestamp": "2025-11-07T19:03:12.938707"
+      "timestamp": "2025-11-08T18:45:44.426412"
     },
     "st/stm32f0/stm32f030c8/pin_functions.hpp": {
       "checksum": "c47dd4ac28b9a8cc43e1762089fb521b86de490644c43d3e2ff40875654b7313",
       "generator": "st_pins",
       "path": "st/stm32f0/stm32f030c8/pin_functions.hpp",
       "size": 544,
-      "timestamp": "2025-11-07T19:03:12.956341"
+      "timestamp": "2025-11-08T18:45:44.446076"
     },
     "st/stm32f0/stm32f030c8/pins.hpp": {
       "checksum": "e7a5fd824173c485dfa8f054bbce6f1cc8acdc4320c75fbf3c44170ffcd7b433",
       "generator": "st_pins",
       "path": "st/stm32f0/stm32f030c8/pins.hpp",
       "size": 3027,
-      "timestamp": "2025-11-07T19:03:12.956101"
+      "timestamp": "2025-11-08T18:45:44.445808"
     },
     "st/stm32f1/stm32f103c4/pin_functions.hpp": {
       "checksum": "828b7de46d8151ebe598a9973ea5aecfde5a67e164c73d72ccaecdf9cfa1ff2f",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103c4/pin_functions.hpp",
       "size": 10908,
-      "timestamp": "2025-11-07T19:03:12.989300"
+      "timestamp": "2025-11-08T18:45:44.542071"
     },
     "st/stm32f1/stm32f103c4/pins.hpp": {
       "checksum": "8d586ade359db90511ac902879dc2b4b69af3c32eaae1fa0b1ddcc0a8b50fb1a",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103c4/pins.hpp",
       "size": 3122,
-      "timestamp": "2025-11-07T19:03:12.987394"
+      "timestamp": "2025-11-08T18:45:44.476473"
     },
     "st/stm32f1/stm32f103c6/pin_functions.hpp": {
       "checksum": "b6d731c6efcc2940c05104f534cc8bc86ee00448365c0162c293b3d75b407afa",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103c6/pin_functions.hpp",
       "size": 10908,
-      "timestamp": "2025-11-07T19:03:13.018987"
+      "timestamp": "2025-11-08T18:45:44.575660"
     },
     "st/stm32f1/stm32f103c6/pins.hpp": {
       "checksum": "1fd56f7a3bfbff1915828db47e937386c9a9d005da286ca7d8c39ab7cfcaf98a",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103c6/pins.hpp",
       "size": 3122,
-      "timestamp": "2025-11-07T19:03:13.018502"
+      "timestamp": "2025-11-08T18:45:44.574978"
     },
     "st/stm32f1/stm32f103c8/pin_functions.hpp": {
       "checksum": "f1356c86afc0d83645cf569316913964e8eb47b652527936ebe8aac7e4ee88b9",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103c8/pin_functions.hpp",
       "size": 10908,
-      "timestamp": "2025-11-07T19:03:13.049087"
+      "timestamp": "2025-11-08T18:45:44.609989"
     },
     "st/stm32f1/stm32f103c8/pins.hpp": {
       "checksum": "4fba26e9c5946461a42c38e75449c12644ba20e6f2d59743cb3927b037c34f7b",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103c8/pins.hpp",
       "size": 3122,
-      "timestamp": "2025-11-07T19:03:13.048610"
+      "timestamp": "2025-11-08T18:45:44.609494"
     },
     "st/stm32f1/stm32f103cb/pin_functions.hpp": {
       "checksum": "92fcc64c4cb36c0489a3c8e7e862ab3b1c0ee297966a585adfafa1361c42942f",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103cb/pin_functions.hpp",
       "size": 10908,
-      "timestamp": "2025-11-07T19:03:13.079603"
+      "timestamp": "2025-11-08T18:45:44.642412"
     },
     "st/stm32f1/stm32f103cb/pins.hpp": {
       "checksum": "291ecad05a2833ba06e14675d34aa40041d263cd597cd7e517b79ffae8250253",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103cb/pins.hpp",
       "size": 3122,
-      "timestamp": "2025-11-07T19:03:13.079086"
+      "timestamp": "2025-11-08T18:45:44.641924"
     },
     "st/stm32f1/stm32f103rb/pin_functions.hpp": {
       "checksum": "33dcf3163bc0b320abcee7c3ca4ad2cc20e20d2dac5537c33dc68decc590f112",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103rb/pin_functions.hpp",
       "size": 12103,
-      "timestamp": "2025-11-07T19:03:13.111196"
+      "timestamp": "2025-11-08T18:45:44.673501"
     },
     "st/stm32f1/stm32f103rb/pins.hpp": {
       "checksum": "a1c4adde1f7701ca5cddd21a0a03df7066164723218e5de54c6336da80134802",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103rb/pins.hpp",
       "size": 3613,
-      "timestamp": "2025-11-07T19:03:13.110653"
+      "timestamp": "2025-11-08T18:45:44.673063"
     },
     "st/stm32f1/stm32f103rc/pin_functions.hpp": {
       "checksum": "97c1b0089ce122f99c9ff711757bee8e0496fbe5beb5c91178d81d2c4e957ac7",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103rc/pin_functions.hpp",
       "size": 12103,
-      "timestamp": "2025-11-07T19:03:13.141353"
+      "timestamp": "2025-11-08T18:45:44.705270"
     },
     "st/stm32f1/stm32f103rc/pins.hpp": {
       "checksum": "3830d39a4fe0e22689cdb1465ca93127a89b1f4980c391ba91eb4b7a5722d06f",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103rc/pins.hpp",
       "size": 3613,
-      "timestamp": "2025-11-07T19:03:13.140819"
+      "timestamp": "2025-11-08T18:45:44.704729"
     },
     "st/stm32f1/stm32f103re/pin_functions.hpp": {
       "checksum": "01b6673549dfbd400ce1423a4afaceb9daad6d54a5514f2b905411bf228dac44",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103re/pin_functions.hpp",
       "size": 12103,
-      "timestamp": "2025-11-07T19:03:13.170816"
+      "timestamp": "2025-11-08T18:45:44.735800"
     },
     "st/stm32f1/stm32f103re/pins.hpp": {
       "checksum": "0c3087b3161d1a98827ae9336785337105ae557c23a8f51d71a72f0bb4062bce",
       "generator": "st_pins",
       "path": "st/stm32f1/stm32f103re/pins.hpp",
       "size": 4199,
-      "timestamp": "2025-11-07T19:03:13.170292"
+      "timestamp": "2025-11-08T18:45:44.735261"
     },
     "st/stm32f1/stm32f103xx/peripherals.hpp": {
       "checksum": "d1342f3dbdaf84e403245daab7f4d63efe5777dda3a3e239ee90553f4b157fdd",
       "generator": "startup",
       "path": "st/stm32f1/stm32f103xx/peripherals.hpp",
       "size": 5076,
-      "timestamp": "2025-11-07T19:06:00.559822"
+      "timestamp": "2025-11-08T18:48:30.355712"
     },
     "st/stm32f1/stm32f103xx/startup.cpp": {
-      "checksum": "26e135a0080a2907ae5e2d7a98f2c6c1a6b34590e1d296b380a7a096cd7a69df",
+      "checksum": "a1cad077d59a7d7a7b9e756df07d8f6a3796e23c5e9f58d26be04670240b0f7b",
       "generator": "startup",
       "path": "st/stm32f1/stm32f103xx/startup.cpp",
-      "size": 13261,
-      "timestamp": "2025-11-07T19:06:00.559477"
+      "size": 12450,
+      "timestamp": "2025-11-08T18:48:30.355386"
     },
     "st/stm32f4/stm32f401/peripherals.hpp": {
       "checksum": "8b8c7fb290bb6e63f92c25549b3b8dee5026df191f1ea8a6125bf51e65d3493b",
       "generator": "startup",
       "path": "st/stm32f4/stm32f401/peripherals.hpp",
       "size": 5314,
-      "timestamp": "2025-11-07T19:06:00.632221"
+      "timestamp": "2025-11-08T18:48:30.431372"
     },
     "st/stm32f4/stm32f401/startup.cpp": {
-      "checksum": "22e39effb3fea8fdf3448fba2d03ad702c080ccc09da4c6a319304c49a3aeb7c",
+      "checksum": "bc65a4adf6449b247630eae357b3247db4c5e24487d4af129fea408022546863",
       "generator": "startup",
       "path": "st/stm32f4/stm32f401/startup.cpp",
-      "size": 8779,
-      "timestamp": "2025-11-07T19:06:00.631844"
+      "size": 8267,
+      "timestamp": "2025-11-08T18:48:30.430969"
     },
     "st/stm32f4/stm32f401cc/pin_functions.hpp": {
       "checksum": "20a1b613731cbe3c8f8925a0d94f752005d909e91d0ad0ccde6c1b5e5b8bb063",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f401cc/pin_functions.hpp",
       "size": 15802,
-      "timestamp": "2025-11-07T19:03:13.206960"
+      "timestamp": "2025-11-08T18:45:44.906493"
     },
     "st/stm32f4/stm32f401cc/pins.hpp": {
       "checksum": "6b7dce63b1b202b51656216a7eaee066a50da64e4b20d58039b422ee3c2a206e",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f401cc/pins.hpp",
       "size": 3027,
-      "timestamp": "2025-11-07T19:03:13.205035"
+      "timestamp": "2025-11-08T18:45:44.768916"
     },
     "st/stm32f4/stm32f401ce/pin_functions.hpp": {
       "checksum": "c258950ff7f81e4ee856905d1fc5c3a53c3e2443669919c650f14cee3127df48",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f401ce/pin_functions.hpp",
       "size": 15802,
-      "timestamp": "2025-11-07T19:03:13.240549"
+      "timestamp": "2025-11-08T18:45:44.940973"
     },
     "st/stm32f4/stm32f401ce/pins.hpp": {
       "checksum": "4f83f3cfa16d978cef5e013ae7112fa3e5756fa8c282a9b55fb679fff1463ac3",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f401ce/pins.hpp",
       "size": 3027,
-      "timestamp": "2025-11-07T19:03:13.239971"
+      "timestamp": "2025-11-08T18:45:44.940278"
     },
     "st/stm32f4/stm32f405/peripherals.hpp": {
       "checksum": "73bf592370dcbcf9b13ed74ebcd629eebf9cee73ec6d107b25424c325b9b7b29",
       "generator": "startup",
       "path": "st/stm32f4/stm32f405/peripherals.hpp",
       "size": 8110,
-      "timestamp": "2025-11-07T19:06:00.733531"
+      "timestamp": "2025-11-08T18:48:30.525399"
     },
     "st/stm32f4/stm32f405/startup.cpp": {
-      "checksum": "52c5132bad305c0c46c51cf60c6a53e9d85bac4e3ee344c8f4d8946b481edf94",
+      "checksum": "d5ae2775f2f936b58fd689ce5dcaea29c9d6a46ccf210b351249988039190913",
       "generator": "startup",
       "path": "st/stm32f4/stm32f405/startup.cpp",
-      "size": 17353,
-      "timestamp": "2025-11-07T19:06:00.732956"
+      "size": 16258,
+      "timestamp": "2025-11-08T18:48:30.524151"
     },
     "st/stm32f4/stm32f405rg/pin_functions.hpp": {
       "checksum": "78e863a8cd15c104933c23f901d5f10a2e4ca057aaeb59bf98afcb211aecc9dc",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f405rg/pin_functions.hpp",
       "size": 21460,
-      "timestamp": "2025-11-07T19:03:13.320292"
+      "timestamp": "2025-11-08T18:45:45.018374"
     },
     "st/stm32f4/stm32f405rg/pins.hpp": {
       "checksum": "b4e201bd4355444ecce9c5dfe99e84c2bb36bc1d31c1ddbf66b8931683f619df",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f405rg/pins.hpp",
       "size": 3613,
-      "timestamp": "2025-11-07T19:03:13.319424"
+      "timestamp": "2025-11-08T18:45:45.017621"
     },
     "st/stm32f4/stm32f407/peripherals.hpp": {
       "checksum": "390d2246b517df2da1e23e8e12b1b2b1e281ba535e640ba3645cf35931282352",
       "generator": "startup",
       "path": "st/stm32f4/stm32f407/peripherals.hpp",
       "size": 8110,
-      "timestamp": "2025-11-07T19:06:01.100507"
+      "timestamp": "2025-11-08T18:48:30.878494"
     },
     "st/stm32f4/stm32f407/startup.cpp": {
-      "checksum": "6c0dc3c15c029d6f06c837e8ccf36219ef6c3b74913e7be7bfb15ea6fcbb9d7e",
+      "checksum": "3f91f23aa89ae8630a642eac5e8968d8842314786d83fd4c322c68ef2ca26c3b",
       "generator": "startup",
       "path": "st/stm32f4/stm32f407/startup.cpp",
-      "size": 17353,
-      "timestamp": "2025-11-07T19:06:01.100129"
+      "size": 16258,
+      "timestamp": "2025-11-08T18:48:30.878062"
     },
     "st/stm32f4/stm32f407ve/pin_functions.hpp": {
       "checksum": "864efc1d7c0dbdf09bffa683ebafa62af4937fc6f7070823fec7ebee98c9cfe1",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f407ve/pin_functions.hpp",
       "size": 28494,
-      "timestamp": "2025-11-07T19:03:13.405086"
+      "timestamp": "2025-11-08T18:45:45.099543"
     },
     "st/stm32f4/stm32f407ve/pins.hpp": {
       "checksum": "d61ea2e0ba61d0433702bb6580f02ebda7c661331cde7238a2981e1deb21b0b5",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f407ve/pins.hpp",
       "size": 4657,
-      "timestamp": "2025-11-07T19:03:13.404282"
+      "timestamp": "2025-11-08T18:45:45.098659"
     },
     "st/stm32f4/stm32f407vg/pin_functions.hpp": {
       "checksum": "9d0b38f1ea10f8252fc8a3503ae3559c525dfd0c342ca3480842164adc6ea8a3",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f407vg/pin_functions.hpp",
       "size": 28494,
-      "timestamp": "2025-11-07T19:03:13.481272"
+      "timestamp": "2025-11-08T18:45:45.175450"
     },
     "st/stm32f4/stm32f407vg/pins.hpp": {
       "checksum": "5e63ad073c180176d09f5f4f1d01cb2ae7434f1425959ba12f5c9cc9ed6a7fd1",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f407vg/pins.hpp",
       "size": 4657,
-      "timestamp": "2025-11-07T19:03:13.480447"
+      "timestamp": "2025-11-08T18:45:45.174622"
     },
     "st/stm32f4/stm32f407zg/pin_functions.hpp": {
       "checksum": "cdf70c1cecea18f0190010a1fe956a83924bda2702fa02f361a71860c2467850",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f407zg/pin_functions.hpp",
       "size": 28494,
-      "timestamp": "2025-11-07T19:03:13.555463"
+      "timestamp": "2025-11-08T18:45:45.251730"
     },
     "st/stm32f4/stm32f407zg/pins.hpp": {
       "checksum": "87a07f77041d4b0d335ad2a188f004c965923e1f36427a9709f82533020bf256",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f407zg/pins.hpp",
       "size": 5855,
-      "timestamp": "2025-11-07T19:03:13.554567"
+      "timestamp": "2025-11-08T18:45:45.250814"
     },
     "st/stm32f4/stm32f411/peripherals.hpp": {
       "checksum": "141969f8c4c37c1e4a304479da3c944457426858993f1950341f6a42224c06b8",
       "generator": "startup",
       "path": "st/stm32f4/stm32f411/peripherals.hpp",
       "size": 5373,
-      "timestamp": "2025-11-07T19:06:01.177798"
+      "timestamp": "2025-11-08T18:48:30.957733"
     },
     "st/stm32f4/stm32f411/startup.cpp": {
-      "checksum": "7788f217c4c178168d1d36d7f423530e416b04efb17ecece42a44e2d2d0f81ba",
+      "checksum": "b25736795f4daab9be854c88efedfdfd7b4a53e8eda545a366de45f8eece2a07",
       "generator": "startup",
       "path": "st/stm32f4/stm32f411/startup.cpp",
-      "size": 8779,
-      "timestamp": "2025-11-07T19:06:01.177468"
+      "size": 8267,
+      "timestamp": "2025-11-08T18:48:30.957007"
     },
     "st/stm32f4/stm32f411ce/pin_functions.hpp": {
       "checksum": "b955345283f649adae812e3c01636867ca702af14d8e906d569104599fff5823",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f411ce/pin_functions.hpp",
       "size": 15802,
-      "timestamp": "2025-11-07T19:03:13.588684"
+      "timestamp": "2025-11-08T18:45:45.285237"
     },
     "st/stm32f4/stm32f411ce/pins.hpp": {
       "checksum": "780b862c4ec5ce7b76c3b3b5d2872adda130cc4a17b40411c9e0f00b3cef6ac5",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f411ce/pins.hpp",
       "size": 3027,
-      "timestamp": "2025-11-07T19:03:13.588127"
+      "timestamp": "2025-11-08T18:45:45.284645"
     },
     "st/stm32f4/stm32f411re/pin_functions.hpp": {
       "checksum": "d9a10fef5b4561ce77c1a2c22148f5539ba65b1283cfa435b981fa6e66a9d7fc",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f411re/pin_functions.hpp",
       "size": 21460,
-      "timestamp": "2025-11-07T19:03:13.620088"
+      "timestamp": "2025-11-08T18:45:45.318231"
     },
     "st/stm32f4/stm32f411re/pins.hpp": {
       "checksum": "8c178fa10363e3f70c7d4ab37583be3bc031e9c5c045d0b536df275056b24861",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f411re/pins.hpp",
       "size": 3613,
-      "timestamp": "2025-11-07T19:03:13.619381"
+      "timestamp": "2025-11-08T18:45:45.317406"
     },
     "st/stm32f4/stm32f429/peripherals.hpp": {
       "checksum": "d937dcb572d0c7bc4ea7d495cf0d25d6bdee2576e7e2cf8fa41cfc1750d9e5ae",
       "generator": "startup",
       "path": "st/stm32f4/stm32f429/peripherals.hpp",
       "size": 8183,
-      "timestamp": "2025-11-07T19:06:01.273397"
+      "timestamp": "2025-11-08T18:48:31.056209"
     },
     "st/stm32f4/stm32f429/startup.cpp": {
-      "checksum": "3b32f325d508dc963db8f3ba0aaa65bbafaa2a4790936e70188ebb5a72da1b50",
+      "checksum": "1bcb1c0f60316d60c58186ba5afc783d2b35081bf14e98cb5fe028659f766a54",
       "generator": "startup",
       "path": "st/stm32f4/stm32f429/startup.cpp",
-      "size": 18607,
-      "timestamp": "2025-11-07T19:06:01.272963"
+      "size": 17379,
+      "timestamp": "2025-11-08T18:48:31.055673"
     },
     "st/stm32f4/stm32f429zi/pin_functions.hpp": {
       "checksum": "a07224ea6a7f2e531a5ec37942144e11beaf36abbf60c45119304c757a5a011e",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f429zi/pin_functions.hpp",
       "size": 28494,
-      "timestamp": "2025-11-07T19:03:13.700053"
+      "timestamp": "2025-11-08T18:45:45.397775"
     },
     "st/stm32f4/stm32f429zi/pins.hpp": {
       "checksum": "2cc0f3e0044626f5e976e0ff792ffbe6bcd085e764cb16f78ce175d546b8b2ea",
       "generator": "st_pins",
       "path": "st/stm32f4/stm32f429zi/pins.hpp",
       "size": 5855,
-      "timestamp": "2025-11-07T19:03:13.699242"
+      "timestamp": "2025-11-08T18:45:45.396980"
     },
     "st/stm32f7/stm32f722re/pin_functions.hpp": {
       "checksum": "5b8ac22fc9d7fa47c74825ebc46146606b2644db788237faa2ff7511b24423d2",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f722re/pin_functions.hpp",
       "size": 23063,
-      "timestamp": "2025-11-07T19:03:13.782340"
+      "timestamp": "2025-11-08T18:45:45.575512"
     },
     "st/stm32f7/stm32f722re/pins.hpp": {
       "checksum": "5563e467f44a5c124ebd16d21585d7fe27c2ecb2897a0b4e313984bc3771b863",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f722re/pins.hpp",
       "size": 3609,
-      "timestamp": "2025-11-07T19:03:13.780463"
+      "timestamp": "2025-11-08T18:45:45.479114"
     },
     "st/stm32f7/stm32f722ze/pin_functions.hpp": {
       "checksum": "5249564f5c30c7388be0147b4c529ed616f66cd17f1d982919b55bafabe4f9f0",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f722ze/pin_functions.hpp",
       "size": 39853,
-      "timestamp": "2025-11-07T19:03:13.862932"
+      "timestamp": "2025-11-08T18:45:45.657286"
     },
     "st/stm32f7/stm32f722ze/pins.hpp": {
       "checksum": "4fb5ec41e9e8f93ea789568b36956057045d2d4f85a8e5d7a603a739bf88bfe9",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f722ze/pins.hpp",
       "size": 5851,
-      "timestamp": "2025-11-07T19:03:13.861987"
+      "timestamp": "2025-11-08T18:45:45.654691"
     },
     "st/stm32f7/stm32f745/peripherals.hpp": {
       "checksum": "f3198888086920b633c06df17a21485e22d7bffbff946ec65c9835325fa7672e",
       "generator": "startup",
       "path": "st/stm32f7/stm32f745/peripherals.hpp",
       "size": 8639,
-      "timestamp": "2025-11-07T19:06:01.484671"
+      "timestamp": "2025-11-08T18:48:31.450089"
     },
     "st/stm32f7/stm32f745/startup.cpp": {
-      "checksum": "fed064c4670f78a6f9a2be4fd7ea71d854965666b2033e8bb957a24434130999",
+      "checksum": "6b2efecd7e73021d148db21c3164c5493c954804f98f3e3372267d11ea0788f5",
       "generator": "startup",
       "path": "st/stm32f7/stm32f745/startup.cpp",
-      "size": 19764,
-      "timestamp": "2025-11-07T19:06:01.484243"
+      "size": 18437,
+      "timestamp": "2025-11-08T18:48:31.449644"
     },
     "st/stm32f7/stm32f745vg/pin_functions.hpp": {
       "checksum": "6c78ae62c6c96dd73377eb7551d854598deb9ac5b4bd3e57e2c60d9e6227e889",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f745vg/pin_functions.hpp",
       "size": 32566,
-      "timestamp": "2025-11-07T19:03:13.953708"
+      "timestamp": "2025-11-08T18:45:45.749265"
     },
     "st/stm32f7/stm32f745vg/pins.hpp": {
       "checksum": "33e5b7071af004690b60118314d4fa7020205f98abadd6c8f11095e68b21d44e",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f745vg/pins.hpp",
       "size": 4657,
-      "timestamp": "2025-11-07T19:03:13.952863"
+      "timestamp": "2025-11-08T18:45:45.748351"
     },
     "st/stm32f7/stm32f745zg/pin_functions.hpp": {
       "checksum": "3cc07922805e3c643a75026c419ce7f42ac34ee12a3aa6bfdd79ce1246a8cdf8",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f745zg/pin_functions.hpp",
       "size": 39853,
-      "timestamp": "2025-11-07T19:03:14.046529"
+      "timestamp": "2025-11-08T18:45:45.841136"
     },
     "st/stm32f7/stm32f745zg/pins.hpp": {
       "checksum": "37bc1412f9a283fe74cb82a319f0b65afa39d439d089cf5518154c947d5c89b1",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f745zg/pins.hpp",
       "size": 5855,
-      "timestamp": "2025-11-07T19:03:14.045554"
+      "timestamp": "2025-11-08T18:45:45.840159"
     },
     "st/stm32f7/stm32f746vg/pin_functions.hpp": {
       "checksum": "0a9324ca8bc99103d63cb733a47c9a27b3f5dd5272272a2c0b7cb63691a5cd61",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f746vg/pin_functions.hpp",
       "size": 32566,
-      "timestamp": "2025-11-07T19:03:14.137385"
+      "timestamp": "2025-11-08T18:45:45.932219"
     },
     "st/stm32f7/stm32f746vg/pins.hpp": {
       "checksum": "1961479a085c369518f35448f1adb65a250209a47d1301aa01fb9779adea6825",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f746vg/pins.hpp",
       "size": 4657,
-      "timestamp": "2025-11-07T19:03:14.136526"
+      "timestamp": "2025-11-08T18:45:45.931318"
     },
     "st/stm32f7/stm32f746zg/pin_functions.hpp": {
       "checksum": "e806a9a858f3184f3e0d48ddc6bd81df3de0d75d45a26d3678217a8865dfdab8",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f746zg/pin_functions.hpp",
       "size": 39853,
-      "timestamp": "2025-11-07T19:03:14.230190"
+      "timestamp": "2025-11-08T18:45:46.023578"
     },
     "st/stm32f7/stm32f746zg/pins.hpp": {
       "checksum": "56a6b86e0dd0e92c13158d48bad6a76a1bbadefa873e9e50da94ed83938a5422",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f746zg/pins.hpp",
       "size": 5855,
-      "timestamp": "2025-11-07T19:03:14.229230"
+      "timestamp": "2025-11-08T18:45:46.022567"
     },
     "st/stm32f7/stm32f765/peripherals.hpp": {
       "checksum": "c23898b84e828540bf4ab437a7432c3125f4721ee2a9659a9d1d83053d00f6a7",
       "generator": "startup",
       "path": "st/stm32f7/stm32f765/peripherals.hpp",
       "size": 9112,
-      "timestamp": "2025-11-07T19:06:01.604477"
+      "timestamp": "2025-11-08T18:48:31.785530"
     },
     "st/stm32f7/stm32f765/startup.cpp": {
-      "checksum": "e3f78408d5c772e10826d7d2262674abcd1a94c5c5d49bcb322967b2d95fdbcd",
+      "checksum": "2f8a6663dda6110d03208943637c595245e61d68f76ce54ff242c5e987e2eb25",
       "generator": "startup",
       "path": "st/stm32f7/stm32f765/startup.cpp",
-      "size": 21488,
-      "timestamp": "2025-11-07T19:06:01.604007"
+      "size": 20020,
+      "timestamp": "2025-11-08T18:48:31.784793"
     },
     "st/stm32f7/stm32f765vi/pin_functions.hpp": {
       "checksum": "955cb9be4950af4d54042a8ce3f044c1dc4cbf74b80bd6bc79e7013e3f770b0e",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f765vi/pin_functions.hpp",
       "size": 32566,
-      "timestamp": "2025-11-07T19:03:14.347926"
+      "timestamp": "2025-11-08T18:45:46.141553"
     },
     "st/stm32f7/stm32f765vi/pins.hpp": {
       "checksum": "5a869cae577a629d6e0c8fa252caf503d219d6f99423906d9bd8a9035856bc72",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f765vi/pins.hpp",
       "size": 4657,
-      "timestamp": "2025-11-07T19:03:14.346962"
+      "timestamp": "2025-11-08T18:45:46.140637"
     },
     "st/stm32f7/stm32f767zi/pin_functions.hpp": {
       "checksum": "bf6db595dd989463170ac242ec442cf407962c9ea2dacbed6fa6c08a4e57626a",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f767zi/pin_functions.hpp",
       "size": 39985,
-      "timestamp": "2025-11-07T19:03:14.462917"
+      "timestamp": "2025-11-08T18:45:46.257290"
     },
     "st/stm32f7/stm32f767zi/pins.hpp": {
       "checksum": "e329822f99a06235cc2451f97876413a6718eea7a6d666f7c727a85f3ba189c4",
       "generator": "st_pins",
       "path": "st/stm32f7/stm32f767zi/pins.hpp",
       "size": 6023,
-      "timestamp": "2025-11-07T19:03:14.461911"
+      "timestamp": "2025-11-08T18:45:46.256283"
+    },
+    "st/stm32f7/stm32f7x2/peripherals.hpp": {
+      "checksum": "a5a01020c54f2baf2067c9b31f1a812a27e5c7fd26a3b14677ca759247c90510",
+      "generator": "startup",
+      "path": "st/stm32f7/stm32f7x2/peripherals.hpp",
+      "size": 7638,
+      "timestamp": "2025-11-08T18:48:31.240238"
+    },
+    "st/stm32f7/stm32f7x2/startup.cpp": {
+      "checksum": "499823641431c536c1e6d1d827f5eae4cf91af498a4aaa61e159a26f81f7b30c",
+      "generator": "startup",
+      "path": "st/stm32f7/stm32f7x2/startup.cpp",
+      "size": 16252,
+      "timestamp": "2025-11-08T18:48:31.239837"
+    },
+    "st/stm32f7/stm32f7x6/peripherals.hpp": {
+      "checksum": "814eabd4e0cc7c41e3979056963e66ab4b2f6a8bc202702c311c3a779d44ec7e",
+      "generator": "startup",
+      "path": "st/stm32f7/stm32f7x6/peripherals.hpp",
+      "size": 8607,
+      "timestamp": "2025-11-08T18:48:31.660052"
+    },
+    "st/stm32f7/stm32f7x6/startup.cpp": {
+      "checksum": "d127d3dfb2ab303247003c48f993f0bf0fcfcbf557c03cf79d1bf354c8068373",
+      "generator": "startup",
+      "path": "st/stm32f7/stm32f7x6/startup.cpp",
+      "size": 18420,
+      "timestamp": "2025-11-08T18:48:31.659618"
+    },
+    "st/stm32f7/stm32f7x7/peripherals.hpp": {
+      "checksum": "20819ac599413444117402c8ef197b81f0aed96219b218b0802d40acf48fcd90",
+      "generator": "startup",
+      "path": "st/stm32f7/stm32f7x7/peripherals.hpp",
+      "size": 8887,
+      "timestamp": "2025-11-08T18:48:31.922963"
+    },
+    "st/stm32f7/stm32f7x7/startup.cpp": {
+      "checksum": "8510dd67e0785e733610f670e57d9277e796dc1f2673ec8de42171aa3f2fde61",
+      "generator": "startup",
+      "path": "st/stm32f7/stm32f7x7/startup.cpp",
+      "size": 19952,
+      "timestamp": "2025-11-08T18:48:31.921541"
     }
   },
   "generators": {
     "samd21_pins": {
       "count": 3,
-      "last_run": "2025-11-07T19:03:14.468879"
+      "last_run": "2025-11-08T18:45:46.389209"
     },
     "same70_pins": {
       "count": 40,
-      "last_run": "2025-11-07T19:03:14.488696"
+      "last_run": "2025-11-08T18:45:46.443528"
     },
     "st_pins": {
       "count": 52,
-      "last_run": "2025-11-07T19:03:14.462917"
+      "last_run": "2025-11-08T18:45:46.257290"
     },
     "startup": {
-      "count": 64,
-      "last_run": "2025-11-07T19:06:01.604477"
+      "count": 70,
+      "last_run": "2025-11-08T18:48:31.922963"
     }
   },
-  "last_updated": "2025-11-07T19:07:57.620422",
+  "last_updated": "2025-11-08T18:50:28.670400",
   "version": "1.0"
 }
