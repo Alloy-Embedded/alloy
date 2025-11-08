@@ -17,21 +17,20 @@ namespace alloy::hal::atmel::samv71::mlb {
 
 /// MLB Register Structure
 struct MLB_Registers {
-
     /// MediaLB Control 0 Register
     /// Offset: 0x0000
     volatile uint32_t MLBC0;
-    uint8_t RESERVED_0004[8]; ///< Reserved
+    uint8_t RESERVED_0004[8];  ///< Reserved
 
     /// MediaLB Channel Status 0 Register
     /// Offset: 0x000C
     volatile uint32_t MS0;
-    uint8_t RESERVED_0010[4]; ///< Reserved
+    uint8_t RESERVED_0010[4];  ///< Reserved
 
     /// MediaLB Channel Status1 Register
     /// Offset: 0x0014
     volatile uint32_t MS1;
-    uint8_t RESERVED_0018[8]; ///< Reserved
+    uint8_t RESERVED_0018[8];  ///< Reserved
 
     /// MediaLB System Status Register
     /// Offset: 0x0020
@@ -41,22 +40,22 @@ struct MLB_Registers {
     /// Offset: 0x0024
     /// Access: read-only
     volatile uint32_t MSD;
-    uint8_t RESERVED_0028[4]; ///< Reserved
+    uint8_t RESERVED_0028[4];  ///< Reserved
 
     /// MediaLB Interrupt Enable Register
     /// Offset: 0x002C
     volatile uint32_t MIEN;
-    uint8_t RESERVED_0030[12]; ///< Reserved
+    uint8_t RESERVED_0030[12];  ///< Reserved
 
     /// MediaLB Control 1 Register
     /// Offset: 0x003C
     volatile uint32_t MLBC1;
-    uint8_t RESERVED_0040[64]; ///< Reserved
+    uint8_t RESERVED_0040[64];  ///< Reserved
 
     /// HBI Control Register
     /// Offset: 0x0080
     volatile uint32_t HCTL;
-    uint8_t RESERVED_0084[4]; ///< Reserved
+    uint8_t RESERVED_0084[4];  ///< Reserved
 
     /// HBI Channel Mask 0 Register 0
     /// Offset: 0x0088
@@ -71,7 +70,7 @@ struct MLB_Registers {
     /// Offset: 0x0098
     /// Access: read-only
     volatile uint32_t HCBR[2][2];
-    uint8_t RESERVED_00A0[32]; ///< Reserved
+    uint8_t RESERVED_00A0[32];  ///< Reserved
 
     /// MIF Data 0 Register 0
     /// Offset: 0x00C0
@@ -88,12 +87,12 @@ struct MLB_Registers {
     /// MIF Address Register
     /// Offset: 0x00E4
     volatile uint32_t MADR;
-    uint8_t RESERVED_00E8[728]; ///< Reserved
+    uint8_t RESERVED_00E8[728];  ///< Reserved
 
     /// AHB Control Register
     /// Offset: 0x03C0
     volatile uint32_t ACTL;
-    uint8_t RESERVED_03C4[12]; ///< Reserved
+    uint8_t RESERVED_03C4[12];  ///< Reserved
 
     /// AHB Channel Status 0 Register 0
     /// Offset: 0x03D0

@@ -1,11 +1,12 @@
 #ifndef ALLOY_BLE_CENTRAL_HPP
 #define ALLOY_BLE_CENTRAL_HPP
 
-#include "types.hpp"
 #include "core/error.hpp"
 
-using alloy::core::u8;
+#include "types.hpp"
+
 using alloy::core::u16;
+using alloy::core::u8;
 
 /// BLE Central (Client/Scanner) API for Alloy framework
 ///
@@ -19,24 +20,26 @@ using alloy::core::u16;
 
 namespace alloy::ble {
 
-using alloy::core::Result;
 using alloy::core::ErrorCode;
+using alloy::core::Result;
 
 /// BLE scan configuration
 struct ScanConfig {
-    ScanType type;              // Scan type (passive/active)
-    u16 interval;               // Scan interval (0.625ms units)
-    u16 window;                 // Scan window (0.625ms units)
-    u16 duration;               // Scan duration (ms, 0 = forever)
-    ScanFilterPolicy filter;    // Filter policy
+    ScanType type;            // Scan type (passive/active)
+    u16 interval;             // Scan interval (0.625ms units)
+    u16 window;               // Scan window (0.625ms units)
+    u16 duration;             // Scan duration (ms, 0 = forever)
+    ScanFilterPolicy filter;  // Filter policy
 
     ScanConfig()
-        : type(ScanType::Active)
-        , interval(80)          // 50ms
-        , window(48)            // 30ms
-        , duration(5000)        // 5s
-        , filter(ScanFilterPolicy::AcceptAll)
-    {}
+        : type(ScanType::Active),
+          interval(80)  // 50ms
+          ,
+          window(48)  // 30ms
+          ,
+          duration(5000)  // 5s
+          ,
+          filter(ScanFilterPolicy::AcceptAll) {}
 };
 
 /// BLE Central (GATT Client/Scanner)
@@ -54,7 +57,7 @@ struct ScanConfig {
 ///   }
 ///
 class Central {
-public:
+   public:
     /// Constructor
     Central();
 
@@ -150,11 +153,8 @@ public:
     /// @param params Connection parameters
     /// @param timeout_ms Connection timeout in milliseconds
     /// @return Result<ConnHandle> - Connection handle on success
-    Result<ConnHandle> connect(
-        const Address& address,
-        const ConnParams& params,
-        u16 timeout_ms = 10000
-    );
+    Result<ConnHandle> connect(const Address& address, const ConnParams& params,
+                               u16 timeout_ms = 10000);
 
     /// Disconnect from peripheral
     ///
@@ -189,10 +189,7 @@ public:
     /// @param conn_handle Connection handle
     /// @param service_uuid Service UUID to find
     /// @return Result<ServiceHandle> - Service handle on success
-    Result<ServiceHandle> discover_service(
-        ConnHandle conn_handle,
-        const UUID& service_uuid
-    );
+    Result<ServiceHandle> discover_service(ConnHandle conn_handle, const UUID& service_uuid);
 
     /// Get discovered services
     ///
@@ -200,11 +197,7 @@ public:
     /// @param services Buffer to store service handles
     /// @param max_services Maximum number of services
     /// @return Result<u8> - Number of services returned
-    Result<u8> get_services(
-        ConnHandle conn_handle,
-        ServiceHandle* services,
-        u8 max_services
-    ) const;
+    Result<u8> get_services(ConnHandle conn_handle, ServiceHandle* services, u8 max_services) const;
 
     // ========================================================================
     // Characteristic Discovery
@@ -215,10 +208,7 @@ public:
     /// @param conn_handle Connection handle
     /// @param service Service handle
     /// @return Result<u8> - Number of characteristics discovered
-    Result<u8> discover_characteristics(
-        ConnHandle conn_handle,
-        const ServiceHandle& service
-    );
+    Result<u8> discover_characteristics(ConnHandle conn_handle, const ServiceHandle& service);
 
     /// Discover characteristic by UUID
     ///
@@ -226,11 +216,8 @@ public:
     /// @param service Service handle
     /// @param char_uuid Characteristic UUID
     /// @return Result<CharHandle> - Characteristic handle on success
-    Result<CharHandle> discover_characteristic(
-        ConnHandle conn_handle,
-        const ServiceHandle& service,
-        const UUID& char_uuid
-    );
+    Result<CharHandle> discover_characteristic(ConnHandle conn_handle, const ServiceHandle& service,
+                                               const UUID& char_uuid);
 
     /// Get discovered characteristics
     ///
@@ -239,12 +226,8 @@ public:
     /// @param characteristics Buffer to store characteristic handles
     /// @param max_chars Maximum number of characteristics
     /// @return Result<u8> - Number of characteristics returned
-    Result<u8> get_characteristics(
-        ConnHandle conn_handle,
-        const ServiceHandle& service,
-        CharHandle* characteristics,
-        u8 max_chars
-    ) const;
+    Result<u8> get_characteristics(ConnHandle conn_handle, const ServiceHandle& service,
+                                   CharHandle* characteristics, u8 max_chars) const;
 
     // ========================================================================
     // Characteristic Operations
@@ -257,12 +240,8 @@ public:
     /// @param buffer Buffer to store value
     /// @param buffer_size Size of buffer
     /// @return Result<u16> - Number of bytes read on success
-    Result<u16> read_char(
-        ConnHandle conn_handle,
-        const CharHandle& characteristic,
-        u8* buffer,
-        u16 buffer_size
-    );
+    Result<u16> read_char(ConnHandle conn_handle, const CharHandle& characteristic, u8* buffer,
+                          u16 buffer_size);
 
     /// Write characteristic value
     ///
@@ -271,12 +250,8 @@ public:
     /// @param data Data to write
     /// @param length Data length
     /// @return Result<void> - Ok on success, error on failure
-    Result<void> write_char(
-        ConnHandle conn_handle,
-        const CharHandle& characteristic,
-        const u8* data,
-        u16 length
-    );
+    Result<void> write_char(ConnHandle conn_handle, const CharHandle& characteristic,
+                            const u8* data, u16 length);
 
     /// Write characteristic without response
     ///
@@ -285,32 +260,22 @@ public:
     /// @param data Data to write
     /// @param length Data length
     /// @return Result<void> - Ok on success, error on failure
-    Result<void> write_char_no_response(
-        ConnHandle conn_handle,
-        const CharHandle& characteristic,
-        const u8* data,
-        u16 length
-    );
+    Result<void> write_char_no_response(ConnHandle conn_handle, const CharHandle& characteristic,
+                                        const u8* data, u16 length);
 
     /// Subscribe to characteristic notifications
     ///
     /// @param conn_handle Connection handle
     /// @param characteristic Characteristic handle
     /// @return Result<void> - Ok on success, error on failure
-    Result<void> subscribe(
-        ConnHandle conn_handle,
-        const CharHandle& characteristic
-    );
+    Result<void> subscribe(ConnHandle conn_handle, const CharHandle& characteristic);
 
     /// Unsubscribe from characteristic notifications
     ///
     /// @param conn_handle Connection handle
     /// @param characteristic Characteristic handle
     /// @return Result<void> - Ok on success, error on failure
-    Result<void> unsubscribe(
-        ConnHandle conn_handle,
-        const CharHandle& characteristic
-    );
+    Result<void> unsubscribe(ConnHandle conn_handle, const CharHandle& characteristic);
 
     // ========================================================================
     // Callbacks
@@ -344,11 +309,11 @@ public:
     /// @param callback Notification callback function
     void set_notify_callback(WriteCallback callback);
 
-private:
+   private:
     struct Impl;
     Impl* impl_;
 };
 
-} // namespace alloy::ble
+}  // namespace alloy::ble
 
-#endif // ALLOY_BLE_CENTRAL_HPP
+#endif  // ALLOY_BLE_CENTRAL_HPP

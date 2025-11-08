@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::sdramc {
 
 /// SDRAMC Register Structure
 struct SDRAMC_Registers {
-
     /// SDRAMC Mode Register
     /// Offset: 0x0000
     volatile uint32_t MR;
@@ -29,7 +28,7 @@ struct SDRAMC_Registers {
     /// SDRAMC Configuration Register
     /// Offset: 0x0008
     volatile uint32_t CR;
-    uint8_t RESERVED_000C[4]; ///< Reserved
+    uint8_t RESERVED_000C[4];  ///< Reserved
 
     /// SDRAMC Low Power Register
     /// Offset: 0x0010

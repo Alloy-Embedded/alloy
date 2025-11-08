@@ -29,37 +29,37 @@
 
 #pragma once
 
-#include "types.hpp"
 #include "core/error.hpp"
 #include "core/esp_error.hpp"
 
+#include "types.hpp"
+
 #ifdef ESP_PLATFORM
-#include "esp_wifi.h"
-#include "esp_event.h"
+    #include "esp_event.h"
+    #include "esp_wifi.h"
 #endif
 
 namespace alloy::wifi {
 
-using core::Result;
 using core::ErrorCode;
+using core::Result;
 
 /**
  * @brief WiFi scan configuration
  */
 struct ScanConfig {
-    const char* ssid;           ///< Target SSID (nullptr for all networks)
-    const uint8_t* bssid;       ///< Target BSSID (nullptr for all)
-    uint8_t channel;            ///< Target channel (0 for all channels)
-    bool show_hidden;           ///< Include hidden networks
-    uint32_t timeout_ms;        ///< Scan timeout in milliseconds
+    const char* ssid;      ///< Target SSID (nullptr for all networks)
+    const uint8_t* bssid;  ///< Target BSSID (nullptr for all)
+    uint8_t channel;       ///< Target channel (0 for all channels)
+    bool show_hidden;      ///< Include hidden networks
+    uint32_t timeout_ms;   ///< Scan timeout in milliseconds
 
     ScanConfig()
-        : ssid(nullptr)
-        , bssid(nullptr)
-        , channel(0)
-        , show_hidden(false)
-        , timeout_ms(5000)
-    {}
+        : ssid(nullptr),
+          bssid(nullptr),
+          channel(0),
+          show_hidden(false),
+          timeout_ms(5000) {}
 };
 
 /**
@@ -71,7 +71,7 @@ struct ScanConfig {
  * Note: Scanning may temporarily interrupt WiFi connectivity in Station mode.
  */
 class Scanner {
-public:
+   public:
     /**
      * @brief Scan completion callback function type
      * @param success true if scan completed successfully
@@ -166,22 +166,18 @@ public:
      */
     void set_scan_callback(ScanCallback callback);
 
-private:
+   private:
     bool initialized_;
     bool scanning_;
     uint8_t result_count_;
     ScanCallback callback_;
 
 #ifdef ESP_PLATFORM
-    static void event_handler(
-        void* arg,
-        esp_event_base_t event_base,
-        int32_t event_id,
-        void* event_data
-    );
+    static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id,
+                              void* event_data);
 
     void handle_scan_done();
 #endif
 };
 
-} // namespace alloy::wifi
+}  // namespace alloy::wifi

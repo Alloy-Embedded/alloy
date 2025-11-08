@@ -14,6 +14,6 @@ namespace alloy::core {
 // ErrorCode enum is imported from error_code.hpp
 // No Result implementation here - use result.hpp instead
 
-} // namespace alloy::core
+}  // namespace alloy::core
 
-#endif // ALLOY_CORE_ERROR_HPP
+#endif  // ALLOY_CORE_ERROR_HPP

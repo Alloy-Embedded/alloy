@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::pioa {
 
 /// PIOA Register Structure
 struct PIOA_Registers {
-
     /// PIO Enable Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -32,7 +31,7 @@ struct PIOA_Registers {
     /// Offset: 0x0008
     /// Access: read-only
     volatile uint32_t PSR;
-    uint8_t RESERVED_000C[4]; ///< Reserved
+    uint8_t RESERVED_000C[4];  ///< Reserved
 
     /// Output Enable Register
     /// Offset: 0x0010
@@ -48,7 +47,7 @@ struct PIOA_Registers {
     /// Offset: 0x0018
     /// Access: read-only
     volatile uint32_t OSR;
-    uint8_t RESERVED_001C[4]; ///< Reserved
+    uint8_t RESERVED_001C[4];  ///< Reserved
 
     /// Glitch Input Filter Enable Register
     /// Offset: 0x0020
@@ -64,7 +63,7 @@ struct PIOA_Registers {
     /// Offset: 0x0028
     /// Access: read-only
     volatile uint32_t IFSR;
-    uint8_t RESERVED_002C[4]; ///< Reserved
+    uint8_t RESERVED_002C[4];  ///< Reserved
 
     /// Set Output Data Register
     /// Offset: 0x0030
@@ -119,7 +118,7 @@ struct PIOA_Registers {
     /// Offset: 0x0058
     /// Access: read-only
     volatile uint32_t MDSR;
-    uint8_t RESERVED_005C[4]; ///< Reserved
+    uint8_t RESERVED_005C[4];  ///< Reserved
 
     /// Pull-up Disable Register
     /// Offset: 0x0060
@@ -135,12 +134,12 @@ struct PIOA_Registers {
     /// Offset: 0x0068
     /// Access: read-only
     volatile uint32_t PUSR;
-    uint8_t RESERVED_006C[4]; ///< Reserved
+    uint8_t RESERVED_006C[4];  ///< Reserved
 
     /// Peripheral ABCD Select Register 0
     /// Offset: 0x0070
     volatile uint32_t ABCDSR[2][2];
-    uint8_t RESERVED_0078[8]; ///< Reserved
+    uint8_t RESERVED_0078[8];  ///< Reserved
 
     /// Input Filter Slow Clock Disable Register
     /// Offset: 0x0080
@@ -175,7 +174,7 @@ struct PIOA_Registers {
     /// Offset: 0x0098
     /// Access: read-only
     volatile uint32_t PPDSR;
-    uint8_t RESERVED_009C[4]; ///< Reserved
+    uint8_t RESERVED_009C[4];  ///< Reserved
 
     /// Output Write Enable
     /// Offset: 0x00A0
@@ -191,7 +190,7 @@ struct PIOA_Registers {
     /// Offset: 0x00A8
     /// Access: read-only
     volatile uint32_t OWSR;
-    uint8_t RESERVED_00AC[4]; ///< Reserved
+    uint8_t RESERVED_00AC[4];  ///< Reserved
 
     /// Additional Interrupt Modes Enable Register
     /// Offset: 0x00B0
@@ -207,7 +206,7 @@ struct PIOA_Registers {
     /// Offset: 0x00B8
     /// Access: read-only
     volatile uint32_t AIMMR;
-    uint8_t RESERVED_00BC[4]; ///< Reserved
+    uint8_t RESERVED_00BC[4];  ///< Reserved
 
     /// Edge Select Register
     /// Offset: 0x00C0
@@ -223,7 +222,7 @@ struct PIOA_Registers {
     /// Offset: 0x00C8
     /// Access: read-only
     volatile uint32_t ELSR;
-    uint8_t RESERVED_00CC[4]; ///< Reserved
+    uint8_t RESERVED_00CC[4];  ///< Reserved
 
     /// Falling Edge/Low-Level Select Register
     /// Offset: 0x00D0
@@ -239,7 +238,7 @@ struct PIOA_Registers {
     /// Offset: 0x00D8
     /// Access: read-only
     volatile uint32_t FRLHSR;
-    uint8_t RESERVED_00DC[4]; ///< Reserved
+    uint8_t RESERVED_00DC[4];  ///< Reserved
 
     /// Lock Status
     /// Offset: 0x00E0
@@ -254,17 +253,17 @@ struct PIOA_Registers {
     /// Offset: 0x00E8
     /// Access: read-only
     volatile uint32_t WPSR;
-    uint8_t RESERVED_00EC[20]; ///< Reserved
+    uint8_t RESERVED_00EC[20];  ///< Reserved
 
     /// Schmitt Trigger Register
     /// Offset: 0x0100
     volatile uint32_t SCHMITT;
-    uint8_t RESERVED_0104[20]; ///< Reserved
+    uint8_t RESERVED_0104[20];  ///< Reserved
 
     /// I/O Drive Register
     /// Offset: 0x0118
     volatile uint32_t DRIVER;
-    uint8_t RESERVED_011C[52]; ///< Reserved
+    uint8_t RESERVED_011C[52];  ///< Reserved
 
     /// Parallel Capture Mode Register
     /// Offset: 0x0150

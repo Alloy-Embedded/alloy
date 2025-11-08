@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::pwm0 {
 
 /// PWM0 Register Structure
 struct PWM0_Registers {
-
     /// PWM Clock Register
     /// Offset: 0x0000
     volatile uint32_t CLK;
@@ -202,12 +201,12 @@ struct PWM0_Registers {
     /// PWM Fault Protection Enable Register
     /// Offset: 0x006C
     volatile uint32_t FPE;
-    uint8_t RESERVED_0070[12]; ///< Reserved
+    uint8_t RESERVED_0070[12];  ///< Reserved
 
     /// PWM Event Line 0 Mode Register 0
     /// Offset: 0x007C
     volatile uint32_t ELMR[2][2];
-    uint8_t RESERVED_0084[28]; ///< Reserved
+    uint8_t RESERVED_0084[28];  ///< Reserved
 
     /// PWM Spread Spectrum Register
     /// Offset: 0x00A0
@@ -217,17 +216,17 @@ struct PWM0_Registers {
     /// Offset: 0x00A4
     /// Access: write-only
     volatile uint32_t SSPUP;
-    uint8_t RESERVED_00A8[8]; ///< Reserved
+    uint8_t RESERVED_00A8[8];  ///< Reserved
 
     /// PWM Stepper Motor Mode Register
     /// Offset: 0x00B0
     volatile uint32_t SMMR;
-    uint8_t RESERVED_00B4[12]; ///< Reserved
+    uint8_t RESERVED_00B4[12];  ///< Reserved
 
     /// PWM Fault Protection Value 2 Register
     /// Offset: 0x00C0
     volatile uint32_t FPV2;
-    uint8_t RESERVED_00C4[32]; ///< Reserved
+    uint8_t RESERVED_00C4[32];  ///< Reserved
 
     /// PWM Write Protection Control Register
     /// Offset: 0x00E4
@@ -238,19 +237,19 @@ struct PWM0_Registers {
     /// Offset: 0x00E8
     /// Access: read-only
     volatile uint32_t WPSR;
-    uint8_t RESERVED_00EC[788]; ///< Reserved
+    uint8_t RESERVED_00EC[788];  ///< Reserved
 
     /// PWM Channel Mode Update Register (ch_num = 0)
     /// Offset: 0x0400
     /// Access: write-only
     volatile uint32_t CMUPD0;
-    uint8_t RESERVED_0404[28]; ///< Reserved
+    uint8_t RESERVED_0404[28];  ///< Reserved
 
     /// PWM Channel Mode Update Register (ch_num = 1)
     /// Offset: 0x0420
     /// Access: write-only
     volatile uint32_t CMUPD1;
-    uint8_t RESERVED_0424[8]; ///< Reserved
+    uint8_t RESERVED_0424[8];  ///< Reserved
 
     /// PWM External Trigger Register (trg_num = 1)
     /// Offset: 0x042C
@@ -259,13 +258,13 @@ struct PWM0_Registers {
     /// PWM Leading-Edge Blanking Register (trg_num = 1)
     /// Offset: 0x0430
     volatile uint32_t LEBR1;
-    uint8_t RESERVED_0434[12]; ///< Reserved
+    uint8_t RESERVED_0434[12];  ///< Reserved
 
     /// PWM Channel Mode Update Register (ch_num = 2)
     /// Offset: 0x0440
     /// Access: write-only
     volatile uint32_t CMUPD2;
-    uint8_t RESERVED_0444[8]; ///< Reserved
+    uint8_t RESERVED_0444[8];  ///< Reserved
 
     /// PWM External Trigger Register (trg_num = 2)
     /// Offset: 0x044C
@@ -274,7 +273,7 @@ struct PWM0_Registers {
     /// PWM Leading-Edge Blanking Register (trg_num = 2)
     /// Offset: 0x0450
     volatile uint32_t LEBR2;
-    uint8_t RESERVED_0454[12]; ///< Reserved
+    uint8_t RESERVED_0454[12];  ///< Reserved
 
     /// PWM Channel Mode Update Register (ch_num = 3)
     /// Offset: 0x0460

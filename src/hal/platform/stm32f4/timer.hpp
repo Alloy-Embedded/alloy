@@ -26,11 +26,12 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -68,8 +69,8 @@ namespace tim = alloy::hal::st::stm32f4::tim2;
  * @brief Timer counting mode
  */
 enum class TimerMode : uint8_t {
-    Up = 0,  ///< Up counting mode
-    Down = 1,  ///< Down counting mode
+    Up = 0,              ///< Up counting mode
+    Down = 1,            ///< Down counting mode
     CenterAligned1 = 2,  ///< Center-aligned mode 1
     CenterAligned2 = 3,  ///< Center-aligned mode 2
     CenterAligned3 = 4,  ///< Center-aligned mode 3
@@ -99,9 +100,9 @@ enum class Channel : uint8_t {
  */
 struct TimerConfig {
     TimerMode mode = TimerMode::Up;  ///< Counting mode
-    uint16_t prescaler = 0;  ///< Prescaler value (0-65535)
-    uint32_t period = 1000;  ///< Auto-reload period
-    uint8_t clock_division = 0;  ///< Clock division (0=1x, 1=2x, 2=4x)
+    uint16_t prescaler = 0;          ///< Prescaler value (0-65535)
+    uint32_t period = 1000;          ///< Auto-reload period
+    uint8_t clock_division = 0;      ///< Clock division (0=1x, 1=2x, 2=4x)
 };
 
 /**
@@ -134,7 +135,7 @@ struct TimerConfig {
  */
 template <uint32_t BASE_ADDR, uint32_t IRQ_ID>
 class Timer {
-public:
+   public:
     // Compile-time constants
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t irq_id = IRQ_ID;
@@ -212,15 +213,16 @@ public:
 
         // Configure CR1: counting mode and clock division
         uint32_t cr1 = hw->CR1 & ~(tim::cr1::DIR::mask | tim::cr1::CMS::mask | tim::cr1::CKD::mask);
-        
+
         // Set counting direction/mode
         if (config.mode == TimerMode::Down) {
             cr1 = tim::cr1::DIR::set(cr1);
-        } else if (config.mode >= TimerMode::CenterAligned1 && config.mode <= TimerMode::CenterAligned3) {
+        } else if (config.mode >= TimerMode::CenterAligned1 &&
+                   config.mode <= TimerMode::CenterAligned3) {
             uint32_t cms_val = static_cast<uint32_t>(config.mode) - 2;
             cr1 = tim::cr1::CMS::write(cr1, cms_val);
         }
-        
+
         // Set clock division
         cr1 = tim::cr1::CKD::write(cr1, config.clock_division);
         hw->CR1 = cr1;
@@ -232,7 +234,7 @@ public:
         // Generate update event to load prescaler
         hw->EGR = tim::egr::UG::mask;
 
-        // 
+        //
         m_config = config;
 
         return Ok();
@@ -289,11 +291,11 @@ public:
         // Configure channel mode and duty
         uint8_t ch = static_cast<uint8_t>(channel);
         uint32_t mode_val = static_cast<uint32_t>(mode);
-        
+
         if (ch == 1 || ch == 2) {
             // Channel 1 or 2 - use CCMR1
             uint32_t ccmr1 = hw->CCMR1_Output;
-            
+
             if (ch == 1) {
                 // Configure CC1 as output
                 ccmr1 = tim::ccmr1_output::CC1S::write(ccmr1, 0);
@@ -307,12 +309,12 @@ public:
                 ccmr1 = tim::ccmr1_output::OC2PE::set(ccmr1);
                 hw->CCR2 = duty;
             }
-            
+
             hw->CCMR1_Output = ccmr1;
         } else {
             // Channel 3 or 4 - use CCMR2
             uint32_t ccmr2 = hw->CCMR2_Output;
-            
+
             if (ch == 3) {
                 ccmr2 = tim::ccmr2_output::CC3S::write(ccmr2, 0);
                 ccmr2 = tim::ccmr2_output::OC3M::write(ccmr2, mode_val);
@@ -324,10 +326,10 @@ public:
                 ccmr2 = tim::ccmr2_output::OC4PE::set(ccmr2);
                 hw->CCR4 = duty;
             }
-            
+
             hw->CCMR2_Output = ccmr2;
         }
-        
+
         // Enable the channel output
         uint32_t ccer = hw->CCER;
         ccer |= (tim::ccer::CC1E::mask << ((ch - 1) * 4));
@@ -349,14 +351,23 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         uint8_t ch = static_cast<uint8_t>(channel);
         switch (ch) {
-            case 1: hw->CCR1 = duty; break;
-            case 2: hw->CCR2 = duty; break;
-            case 3: hw->CCR3 = duty; break;
-            case 4: hw->CCR4 = duty; break;
-            default: return Err(ErrorCode::InvalidParameter);
+            case 1:
+                hw->CCR1 = duty;
+                break;
+            case 2:
+                hw->CCR2 = duty;
+                break;
+            case 3:
+                hw->CCR3 = duty;
+                break;
+            case 4:
+                hw->CCR4 = duty;
+                break;
+            default:
+                return Err(ErrorCode::InvalidParameter);
         }
 
         return Ok();
@@ -374,7 +385,7 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         hw->ARR = period;
         m_config.period = period;
 
@@ -407,7 +418,7 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         hw->DIER |= interrupt_mask;
 
         return Ok();
@@ -417,12 +428,10 @@ public:
      * @brief Check if timer is open
      *
      * @return bool Check if timer is open     */
-    bool isOpen() const {
-        return m_opened;
-    }
+    bool isOpen() const { return m_opened; }
 
-private:
-    bool m_opened = false;  ///< Tracks if peripheral is initialized
+   private:
+    bool m_opened = false;      ///< Tracks if peripheral is initialized
     TimerConfig m_config = {};  ///< Current configuration
 };
 
@@ -454,13 +463,13 @@ constexpr uint32_t TIMER10_IRQ = 25;
 constexpr uint32_t TIMER11_BASE = 0x40014800;
 constexpr uint32_t TIMER11_IRQ = 26;
 
-using Timer1 = Timer<TIMER1_BASE, TIMER1_IRQ>;  ///< Advanced-control timer TIM1
-using Timer2 = Timer<TIMER2_BASE, TIMER2_IRQ>;  ///< General-purpose timer TIM2
-using Timer3 = Timer<TIMER3_BASE, TIMER3_IRQ>;  ///< General-purpose timer TIM3
-using Timer4 = Timer<TIMER4_BASE, TIMER4_IRQ>;  ///< General-purpose timer TIM4
-using Timer5 = Timer<TIMER5_BASE, TIMER5_IRQ>;  ///< General-purpose timer TIM5
-using Timer9 = Timer<TIMER9_BASE, TIMER9_IRQ>;  ///< General-purpose timer TIM9
+using Timer1 = Timer<TIMER1_BASE, TIMER1_IRQ>;     ///< Advanced-control timer TIM1
+using Timer2 = Timer<TIMER2_BASE, TIMER2_IRQ>;     ///< General-purpose timer TIM2
+using Timer3 = Timer<TIMER3_BASE, TIMER3_IRQ>;     ///< General-purpose timer TIM3
+using Timer4 = Timer<TIMER4_BASE, TIMER4_IRQ>;     ///< General-purpose timer TIM4
+using Timer5 = Timer<TIMER5_BASE, TIMER5_IRQ>;     ///< General-purpose timer TIM5
+using Timer9 = Timer<TIMER9_BASE, TIMER9_IRQ>;     ///< General-purpose timer TIM9
 using Timer10 = Timer<TIMER10_BASE, TIMER10_IRQ>;  ///< General-purpose timer TIM10
 using Timer11 = Timer<TIMER11_BASE, TIMER11_IRQ>;  ///< General-purpose timer TIM11
 
-} // namespace alloy::hal::stm32f4
+}  // namespace alloy::hal::stm32f4

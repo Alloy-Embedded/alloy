@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::mpu {
 
 /// MPU Register Structure
 struct MPU_Registers {
-
     /// MPU Type Register
     /// Offset: 0x0000
     /// Reset value: 0x00001000

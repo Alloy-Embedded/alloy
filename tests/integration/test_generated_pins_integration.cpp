@@ -3,11 +3,11 @@
  * Tests that generated code integrates correctly with the build system
  */
 
-#include "../../src/hal/st/stm32f103/generated/stm32f103c8/pins.hpp"
-#include "../../src/hal/st/stm32f103/generated/stm32f103c8/traits.hpp"
-
 #include <cassert>
 #include <cstdio>
+
+#include "../../src/hal/st/stm32f103/generated/stm32f103c8/pins.hpp"
+#include "../../src/hal/st/stm32f103/generated/stm32f103c8/traits.hpp"
 
 int main() {
     using namespace alloy::hal::stm32f103::stm32f103c8;

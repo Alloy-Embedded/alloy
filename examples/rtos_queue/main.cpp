@@ -10,20 +10,22 @@
 /// Hardware: STM32F103 (Bluepill)
 /// - LED on PC13 blinks at rate determined by queue messages
 
-#include "stm32f103c8/board.hpp"
-#include "rtos/rtos.hpp"
 #include "rtos/queue.hpp"
+#include "rtos/rtos.hpp"
+
 #include "core/types.hpp"
+
+#include "stm32f103c8/board.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
 
 /// Message structure for sensor data
 struct SensorData {
-    core::u32 timestamp;      ///< Time when data was read (microseconds)
-    core::i16 value;          ///< Sensor value (simulated)
-    core::u8  sequence;       ///< Sequence number
-    core::u8  padding;        ///< Padding for alignment
+    core::u32 timestamp;  ///< Time when data was read (microseconds)
+    core::i16 value;      ///< Sensor value (simulated)
+    core::u8 sequence;    ///< Sequence number
+    core::u8 padding;     ///< Padding for alignment
 };
 
 // Create message queue with capacity for 4 messages
@@ -114,9 +116,9 @@ void idle_task_func() {
 }
 
 // Create tasks with different priorities
-Task<512, Priority::Normal>  producer_task(producer_task_func, "Producer");
-Task<512, Priority::High>    consumer_task(consumer_task_func, "Consumer");
-Task<256, Priority::Idle>    idle_task(idle_task_func, "Idle");
+Task<512, Priority::Normal> producer_task(producer_task_func, "Producer");
+Task<512, Priority::High> consumer_task(consumer_task_func, "Consumer");
+Task<256, Priority::Idle> idle_task(idle_task_func, "Idle");
 
 int main() {
     // Initialize board (includes SysTick)
@@ -133,7 +135,7 @@ int main() {
 
 // Weak symbols for startup code
 extern "C" {
-    void SystemInit() {
-        // Running on default HSI (8MHz)
-    }
+void SystemInit() {
+    // Running on default HSI (8MHz)
+}
 }

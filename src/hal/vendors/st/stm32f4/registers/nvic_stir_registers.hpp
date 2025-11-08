@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::nvic_stir {
 
 /// NVIC_STIR Register Structure
 struct NVIC_STIR_Registers {
-
     /// Software trigger interrupt register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

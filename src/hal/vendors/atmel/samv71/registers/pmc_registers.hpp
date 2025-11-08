@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samv71::pmc {
 
 /// PMC Register Structure
 struct PMC_Registers {
-
     /// System Clock Enable Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -32,7 +31,7 @@ struct PMC_Registers {
     /// Offset: 0x0008
     /// Access: read-only
     volatile uint32_t SCSR;
-    uint8_t RESERVED_000C[4]; ///< Reserved
+    uint8_t RESERVED_000C[4];  ///< Reserved
 
     /// Peripheral Clock Enable Register 0
     /// Offset: 0x0010
@@ -64,17 +63,17 @@ struct PMC_Registers {
     /// PLLA Register
     /// Offset: 0x0028
     volatile uint32_t CKGR_PLLAR;
-    uint8_t RESERVED_002C[4]; ///< Reserved
+    uint8_t RESERVED_002C[4];  ///< Reserved
 
     /// Master Clock Register
     /// Offset: 0x0030
     volatile uint32_t MCKR;
-    uint8_t RESERVED_0034[4]; ///< Reserved
+    uint8_t RESERVED_0034[4];  ///< Reserved
 
     /// USB Clock Register
     /// Offset: 0x0038
     volatile uint32_t USB;
-    uint8_t RESERVED_003C[4]; ///< Reserved
+    uint8_t RESERVED_003C[4];  ///< Reserved
 
     /// Programmable Clock Register
     /// Offset: 0x0040
@@ -112,7 +111,7 @@ struct PMC_Registers {
     /// Offset: 0x0078
     /// Access: write-only
     volatile uint32_t FOCR;
-    uint8_t RESERVED_007C[104]; ///< Reserved
+    uint8_t RESERVED_007C[104];  ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4
@@ -122,7 +121,7 @@ struct PMC_Registers {
     /// Offset: 0x00E8
     /// Access: read-only
     volatile uint32_t WPSR;
-    uint8_t RESERVED_00EC[20]; ///< Reserved
+    uint8_t RESERVED_00EC[20];  ///< Reserved
 
     /// Peripheral Clock Enable Register 1
     /// Offset: 0x0100
@@ -166,7 +165,7 @@ struct PMC_Registers {
     /// Offset: 0x0120
     /// Access: read-only
     volatile uint32_t SLPWK_ASR0;
-    uint8_t RESERVED_0124[12]; ///< Reserved
+    uint8_t RESERVED_0124[12];  ///< Reserved
 
     /// PLL Maximum Multiplier Value Register
     /// Offset: 0x0130

@@ -3,7 +3,7 @@
 #include "../sink.hpp"
 
 #ifdef ESP_PLATFORM
-#include "esp_log.h"
+    #include "esp_log.h"
 
 namespace alloy {
 namespace logger {
@@ -24,14 +24,13 @@ namespace logger {
  * Note: Only available on ESP32 platforms (requires ESP-IDF)
  */
 class EspLogSink : public Sink {
-public:
+   public:
     /**
      * Construct ESP-IDF log sink
      *
      * @param tag Log tag for ESP-IDF (shown in output)
      */
-    explicit EspLogSink(const char* tag = "CoreZero")
-        : tag_(tag) {}
+    explicit EspLogSink(const char* tag = "CoreZero") : tag_(tag) {}
 
     /**
      * Write log message to ESP-IDF logging system
@@ -65,7 +64,7 @@ public:
         // No explicit flush needed
     }
 
-private:
+   private:
     const char* tag_;
 };
 
@@ -80,9 +79,8 @@ private:
  *   Logger::add_sink(&esp_sink);
  */
 class EspLogSinkWithLevel : public Sink {
-public:
-    explicit EspLogSinkWithLevel(const char* tag = "CoreZero")
-        : tag_(tag) {}
+   public:
+    explicit EspLogSinkWithLevel(const char* tag = "CoreZero") : tag_(tag) {}
 
     void write(const char* data, size_t length) override {
         (void)length;
@@ -104,11 +102,11 @@ public:
         esp_log_write(esp_level, tag_, "%s", data);
     }
 
-private:
+   private:
     const char* tag_;
 };
 
-} // namespace logger
-} // namespace alloy
+}  // namespace logger
+}  // namespace alloy
 
-#endif // ESP_PLATFORM
+#endif  // ESP_PLATFORM

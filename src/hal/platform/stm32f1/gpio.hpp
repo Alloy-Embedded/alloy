@@ -26,10 +26,11 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -61,30 +62,30 @@ using namespace alloy::hal::st::stm32f1;
  * @brief GPIO pin modes
  */
 enum class GpioMode {
-    Input,           ///< Input mode
-    Output,          ///< Output mode (push-pull)
-    OutputOpenDrain, ///< Output mode with open-drain
-    Alternate,       ///< Alternate function mode
-    Analog           ///< Analog mode
+    Input,            ///< Input mode
+    Output,           ///< Output mode (push-pull)
+    OutputOpenDrain,  ///< Output mode with open-drain
+    Alternate,        ///< Alternate function mode
+    Analog            ///< Analog mode
 };
 
 /**
  * @brief GPIO pull resistor configuration
  */
 enum class GpioPull {
-    None,      ///< No pull resistor (floating)
-    Up,        ///< Pull-up resistor enabled
-    Down       ///< Pull-down resistor enabled
+    None,  ///< No pull resistor (floating)
+    Up,    ///< Pull-up resistor enabled
+    Down   ///< Pull-down resistor enabled
 };
 
 /**
  * @brief GPIO output speed
  */
 enum class GpioSpeed {
-    Low,       ///< Low speed
-    Medium,    ///< Medium speed
-    High,      ///< High speed (fast)
-    VeryHigh   ///< Very high speed
+    Low,      ///< Low speed
+    Medium,   ///< Medium speed
+    High,     ///< High speed (fast)
+    VeryHigh  ///< Very high speed
 };
 
 /**
@@ -117,7 +118,7 @@ enum class GpioSpeed {
  */
 template <uint32_t PORT_BASE, uint8_t PIN_NUM>
 class GpioPin {
-public:
+   public:
     // Compile-time constants
     static constexpr uint32_t port_base = PORT_BASE;
     static constexpr uint8_t pin_number = PIN_NUM;
@@ -377,4 +378,4 @@ constexpr uint32_t GPIOA_BASE = 0x40010800;
 // using LedGreen = GpioPin<GPIOC_BASE, 13>;
 // using Button0 = GpioPin<GPIOA_BASE, 0>;
 
-} // namespace alloy::hal::stm32f1
+}  // namespace alloy::hal::stm32f1

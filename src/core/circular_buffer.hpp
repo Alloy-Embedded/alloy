@@ -32,13 +32,14 @@
 
 #pragma once
 
-#include "core/error.hpp"
-#include "core/result.hpp"
-#include "core/types.hpp"
 #include <array>
 #include <atomic>
 #include <cstddef>
 #include <type_traits>
+
+#include "core/error.hpp"
+#include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace alloy::core {
 
@@ -76,7 +77,7 @@ namespace alloy::core {
  */
 template <typename T, size_t N, bool Atomic = false>
 class CircularBuffer {
-public:
+   public:
     static_assert(N > 1, "CircularBuffer capacity must be at least 2");
 
     using value_type = T;
@@ -92,11 +93,7 @@ public:
     /**
      * @brief Construct an empty circular buffer
      */
-    constexpr CircularBuffer() noexcept
-        : m_data{}
-        , m_head(0)
-        , m_tail(0) {
-    }
+    constexpr CircularBuffer() noexcept : m_data{}, m_head(0), m_tail(0) {}
 
     /**
      * @brief Push an element to the buffer
@@ -191,9 +188,7 @@ public:
      *
      * @return true if empty, false otherwise
      */
-    [[nodiscard]] bool empty() const noexcept {
-        return load_index(m_tail) == load_index(m_head);
-    }
+    [[nodiscard]] bool empty() const noexcept { return load_index(m_tail) == load_index(m_head); }
 
     /**
      * @brief Check if buffer is full
@@ -227,9 +222,7 @@ public:
      *
      * @return Number of elements that can be pushed
      */
-    [[nodiscard]] size_t available() const noexcept {
-        return (N - 1) - size();
-    }
+    [[nodiscard]] size_t available() const noexcept { return (N - 1) - size(); }
 
     /**
      * @brief Clear all elements from buffer
@@ -395,7 +388,7 @@ public:
      * Note: Iterator is invalidated if buffer is modified during iteration.
      */
     class iterator {
-    public:
+       public:
         using difference_type = std::ptrdiff_t;
         using value_type = T;
         using pointer = T*;
@@ -403,15 +396,13 @@ public:
         using iterator_category = std::forward_iterator_tag;
 
         iterator(CircularBuffer* buffer, size_t index, size_t count)
-            : m_buffer(buffer), m_index(index), m_remaining(count) {}
+            : m_buffer(buffer),
+              m_index(index),
+              m_remaining(count) {}
 
-        reference operator*() const {
-            return m_buffer->m_data[m_index];
-        }
+        reference operator*() const { return m_buffer->m_data[m_index]; }
 
-        pointer operator->() const {
-            return &m_buffer->m_data[m_index];
-        }
+        pointer operator->() const { return &m_buffer->m_data[m_index]; }
 
         iterator& operator++() {
             m_index = m_buffer->increment(m_index);
@@ -425,15 +416,11 @@ public:
             return tmp;
         }
 
-        bool operator==(const iterator& other) const {
-            return m_remaining == other.m_remaining;
-        }
+        bool operator==(const iterator& other) const { return m_remaining == other.m_remaining; }
 
-        bool operator!=(const iterator& other) const {
-            return !(*this == other);
-        }
+        bool operator!=(const iterator& other) const { return !(*this == other); }
 
-    private:
+       private:
         CircularBuffer* m_buffer;
         size_t m_index;
         size_t m_remaining;
@@ -443,7 +430,7 @@ public:
      * @brief Const iterator for CircularBuffer
      */
     class const_iterator {
-    public:
+       public:
         using difference_type = std::ptrdiff_t;
         using value_type = T;
         using pointer = const T*;
@@ -451,15 +438,13 @@ public:
         using iterator_category = std::forward_iterator_tag;
 
         const_iterator(const CircularBuffer* buffer, size_t index, size_t count)
-            : m_buffer(buffer), m_index(index), m_remaining(count) {}
+            : m_buffer(buffer),
+              m_index(index),
+              m_remaining(count) {}
 
-        reference operator*() const {
-            return m_buffer->m_data[m_index];
-        }
+        reference operator*() const { return m_buffer->m_data[m_index]; }
 
-        pointer operator->() const {
-            return &m_buffer->m_data[m_index];
-        }
+        pointer operator->() const { return &m_buffer->m_data[m_index]; }
 
         const_iterator& operator++() {
             m_index = m_buffer->increment(m_index);
@@ -477,11 +462,9 @@ public:
             return m_remaining == other.m_remaining;
         }
 
-        bool operator!=(const const_iterator& other) const {
-            return !(*this == other);
-        }
+        bool operator!=(const const_iterator& other) const { return !(*this == other); }
 
-    private:
+       private:
         const CircularBuffer* m_buffer;
         size_t m_index;
         size_t m_remaining;
@@ -490,46 +473,34 @@ public:
     /**
      * @brief Get iterator to first element
      */
-    iterator begin() {
-        return iterator(this, load_index(m_tail), size());
-    }
+    iterator begin() { return iterator(this, load_index(m_tail), size()); }
 
     /**
      * @brief Get iterator past last element
      */
-    iterator end() {
-        return iterator(this, load_index(m_head), 0);
-    }
+    iterator end() { return iterator(this, load_index(m_head), 0); }
 
     /**
      * @brief Get const iterator to first element
      */
-    const_iterator begin() const {
-        return const_iterator(this, load_index(m_tail), size());
-    }
+    const_iterator begin() const { return const_iterator(this, load_index(m_tail), size()); }
 
     /**
      * @brief Get const iterator past last element
      */
-    const_iterator end() const {
-        return const_iterator(this, load_index(m_head), 0);
-    }
+    const_iterator end() const { return const_iterator(this, load_index(m_head), 0); }
 
     /**
      * @brief Get const iterator to first element
      */
-    const_iterator cbegin() const {
-        return begin();
-    }
+    const_iterator cbegin() const { return begin(); }
 
     /**
      * @brief Get const iterator past last element
      */
-    const_iterator cend() const {
-        return end();
-    }
+    const_iterator cend() const { return end(); }
 
-private:
+   private:
     std::array<T, N> m_data;  ///< Internal storage
     index_type m_head;        ///< Write position (next slot to write)
     index_type m_tail;        ///< Read position (next slot to read)
@@ -567,4 +538,4 @@ private:
 // Note: Power-of-2 optimization can be added later with template specialization
 // For now, the modulo operator is used which modern compilers optimize well
 
-} // namespace alloy::core
+}  // namespace alloy::core

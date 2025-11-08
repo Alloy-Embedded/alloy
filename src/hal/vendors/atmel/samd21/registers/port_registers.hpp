@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samd21::port {
 
 /// PORT Register Structure
 struct PORT_Registers {
-
     /// Data Direction
     /// Offset: 0x0000
     volatile uint32_t DIR[2][2];
@@ -71,7 +70,7 @@ struct PORT_Registers {
     /// Pin Configuration n - Group 0
     /// Offset: 0x0040
     volatile uint8_t PINCFG0_[32][32];
-    uint8_t RESERVED_0060[80]; ///< Reserved
+    uint8_t RESERVED_0060[80];  ///< Reserved
 
     /// Peripheral Multiplexing n - Group 1
     /// Offset: 0x00B0

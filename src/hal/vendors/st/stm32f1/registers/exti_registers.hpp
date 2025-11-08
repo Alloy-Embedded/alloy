@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f1::exti {
 
 /// EXTI Register Structure
 struct EXTI_Registers {
-
     /// Interrupt mask register (EXTI_IMR)
     /// Offset: 0x0000
     /// Reset value: 0x00000000

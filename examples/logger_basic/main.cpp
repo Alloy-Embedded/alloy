@@ -15,12 +15,14 @@
 /// [timestamp] LEVEL [file:line] message
 /// Example: [0.123456] INFO  [main.cpp:42] Application started
 
-#include "stm32f103c8/board.hpp"
-#include "hal/st/stm32f1/uart.hpp"
 #include "hal/st/stm32f1/gpio.hpp"
+#include "hal/st/stm32f1/uart.hpp"
+
+#include "core/types.hpp"
+
 #include "logger/logger.hpp"
 #include "logger/platform/uart_sink.hpp"
-#include "core/types.hpp"
+#include "stm32f103c8/board.hpp"
 
 using namespace alloy;
 using namespace alloy::hal::stm32f1;
@@ -30,7 +32,7 @@ using Uart1 = UartDevice<UsartId::USART1>;
 
 // GPIO pins for USART1
 using UartTx = GpioPinOutput<GpioPort::PA, 9>;  // PA9 = USART1_TX
-using UartRx = GpioPinInput<GpioPort::PA, 10>; // PA10 = USART1_RX
+using UartRx = GpioPinInput<GpioPort::PA, 10>;  // PA10 = USART1_RX
 
 int main() {
     // Initialize board (also initializes SysTick timer automatically)
@@ -61,11 +63,7 @@ int main() {
 
     // Configure UART: 115200 baud, 8N1
     hal::UartConfig config{
-        .baud_rate = 115200,
-        .data_bits = 8,
-        .stop_bits = 1,
-        .parity = hal::Parity::None
-    };
+        .baud_rate = 115200, .data_bits = 8, .stop_bits = 1, .parity = hal::Parity::None};
 
     auto config_result = Uart1::configure(config);
     if (config_result.is_error()) {
@@ -135,7 +133,8 @@ int main() {
         counter++;
 
         // Wait 1 second (1,000,000 microseconds)
-        while (!alloy::systick::is_timeout(start, 1000000));
+        while (!alloy::systick::is_timeout(start, 1000000))
+            ;
     }
 
     return 0;
@@ -143,8 +142,8 @@ int main() {
 
 // Weak symbols for startup code
 extern "C" {
-    void SystemInit() {
-        // Optional: Configure clocks here
-        // For now, running on default HSI (8MHz)
-    }
+void SystemInit() {
+    // Optional: Configure clocks here
+    // For now, running on default HSI (8MHz)
+}
 }

@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::sdhost {
@@ -19,1026 +20,1098 @@ using namespace alloy::hal::bitfields;
 
 /// CTRL - Control register
 namespace ctrl {
-    /// To reset controller, firmware should set this bit. This bit is auto-cleared after two AHB and two sdhost_cclk_in clock cycles.
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using CONTROLLER_RESET = BitField<0, 1>;
-    constexpr uint32_t CONTROLLER_RESET_Pos = 0;
-    constexpr uint32_t CONTROLLER_RESET_Msk = CONTROLLER_RESET::mask;
+/// To reset controller, firmware should set this bit. This bit is auto-cleared after two AHB and
+/// two sdhost_cclk_in clock cycles. Position: 0, Width: 1 Access: read-write
+using CONTROLLER_RESET = BitField<0, 1>;
+constexpr uint32_t CONTROLLER_RESET_Pos = 0;
+constexpr uint32_t CONTROLLER_RESET_Msk = CONTROLLER_RESET::mask;
 
-    /// To reset FIFO, firmware should set bit to 1. This bit is auto-cleared after completion of reset operation. Note: FIFO pointers will be out of reset after 2 cycles of system clocks in addition to synchronization delay (2 cycles of card clock), after the fifo_reset is cleared.
-    /// Position: 1, Width: 1
-    /// Access: read-write
-    using FIFO_RESET = BitField<1, 1>;
-    constexpr uint32_t FIFO_RESET_Pos = 1;
-    constexpr uint32_t FIFO_RESET_Msk = FIFO_RESET::mask;
+/// To reset FIFO, firmware should set bit to 1. This bit is auto-cleared after completion of reset
+/// operation. Note: FIFO pointers will be out of reset after 2 cycles of system clocks in addition
+/// to synchronization delay (2 cycles of card clock), after the fifo_reset is cleared. Position: 1,
+/// Width: 1 Access: read-write
+using FIFO_RESET = BitField<1, 1>;
+constexpr uint32_t FIFO_RESET_Pos = 1;
+constexpr uint32_t FIFO_RESET_Msk = FIFO_RESET::mask;
 
-    /// To reset DMA interface, firmware should set bit to 1. This bit is auto-cleared after two AHB clocks.
-    /// Position: 2, Width: 1
-    /// Access: read-write
-    using DMA_RESET = BitField<2, 1>;
-    constexpr uint32_t DMA_RESET_Pos = 2;
-    constexpr uint32_t DMA_RESET_Msk = DMA_RESET::mask;
+/// To reset DMA interface, firmware should set bit to 1. This bit is auto-cleared after two AHB
+/// clocks. Position: 2, Width: 1 Access: read-write
+using DMA_RESET = BitField<2, 1>;
+constexpr uint32_t DMA_RESET_Pos = 2;
+constexpr uint32_t DMA_RESET_Msk = DMA_RESET::mask;
 
-    /// Global interrupt enable/disable bit. 0: Disable; 1: Enable.
-    /// Position: 4, Width: 1
-    /// Access: read-write
-    using INT_ENABLE = BitField<4, 1>;
-    constexpr uint32_t INT_ENABLE_Pos = 4;
-    constexpr uint32_t INT_ENABLE_Msk = INT_ENABLE::mask;
+/// Global interrupt enable/disable bit. 0: Disable; 1: Enable.
+/// Position: 4, Width: 1
+/// Access: read-write
+using INT_ENABLE = BitField<4, 1>;
+constexpr uint32_t INT_ENABLE_Pos = 4;
+constexpr uint32_t INT_ENABLE_Msk = INT_ENABLE::mask;
 
-    /// For sending read-wait to SDIO cards.
-    /// Position: 6, Width: 1
-    /// Access: read-write
-    using READ_WAIT = BitField<6, 1>;
-    constexpr uint32_t READ_WAIT_Pos = 6;
-    constexpr uint32_t READ_WAIT_Msk = READ_WAIT::mask;
+/// For sending read-wait to SDIO cards.
+/// Position: 6, Width: 1
+/// Access: read-write
+using READ_WAIT = BitField<6, 1>;
+constexpr uint32_t READ_WAIT_Pos = 6;
+constexpr uint32_t READ_WAIT_Msk = READ_WAIT::mask;
 
-    /// Bit automatically clears once response is sent. To wait for MMC card interrupts, host issues CMD40 and waits for interrupt response from MMC card(s). In the meantime, if host wants SD/MMC to exit waiting for interrupt state, it can set this bit, at which time SD/MMC command state-machine sends CMD40 response on bus and returns to idle state.
-    /// Position: 7, Width: 1
-    /// Access: read-write
-    using SEND_IRQ_RESPONSE = BitField<7, 1>;
-    constexpr uint32_t SEND_IRQ_RESPONSE_Pos = 7;
-    constexpr uint32_t SEND_IRQ_RESPONSE_Msk = SEND_IRQ_RESPONSE::mask;
+/// Bit automatically clears once response is sent. To wait for MMC card interrupts, host issues
+/// CMD40 and waits for interrupt response from MMC card(s). In the meantime, if host wants SD/MMC
+/// to exit waiting for interrupt state, it can set this bit, at which time SD/MMC command
+/// state-machine sends CMD40 response on bus and returns to idle state. Position: 7, Width: 1
+/// Access: read-write
+using SEND_IRQ_RESPONSE = BitField<7, 1>;
+constexpr uint32_t SEND_IRQ_RESPONSE_Pos = 7;
+constexpr uint32_t SEND_IRQ_RESPONSE_Msk = SEND_IRQ_RESPONSE::mask;
 
-    /// After a suspend-command is issued during a read-operation, software polls the card to find when the suspend-event occurred. Once the suspend-event has occurred, software sets the bit which will reset the data state machine that is waiting for the next block of data. This bit is automatically cleared once the data state machine is reset to idle.
-    /// Position: 8, Width: 1
-    /// Access: read-write
-    using ABORT_READ_DATA = BitField<8, 1>;
-    constexpr uint32_t ABORT_READ_DATA_Pos = 8;
-    constexpr uint32_t ABORT_READ_DATA_Msk = ABORT_READ_DATA::mask;
+/// After a suspend-command is issued during a read-operation, software polls the card to find when
+/// the suspend-event occurred. Once the suspend-event has occurred, software sets the bit which
+/// will reset the data state machine that is waiting for the next block of data. This bit is
+/// automatically cleared once the data state machine is reset to idle. Position: 8, Width: 1
+/// Access: read-write
+using ABORT_READ_DATA = BitField<8, 1>;
+constexpr uint32_t ABORT_READ_DATA_Pos = 8;
+constexpr uint32_t ABORT_READ_DATA_Msk = ABORT_READ_DATA::mask;
 
-    /// When set, SD/MMC sends CCSD to the CE-ATA device. Software sets this bit only if the current command is expecting CCS (that is, RW_BLK), and if interrupts are enabled for the CE-ATA device. Once the CCSD pattern is sent to the device, SD/MMC automatically clears the SDHOST_SEND_CCSD bit. It also sets the Command Done (CD) bit in the SDHOST_RINTSTS_REG register, and generates an interrupt for the host, in case the Command Done interrupt is not masked. NOTE: Once the SDHOST_SEND_CCSD bit is set, it takes two card clock cycles to drive the CCSD on the CMD line. Due to this, within the boundary conditions the CCSD may be sent to the CE-ATA device, even if the device has signalled CCS.
-    /// Position: 9, Width: 1
-    /// Access: read-write
-    using SEND_CCSD = BitField<9, 1>;
-    constexpr uint32_t SEND_CCSD_Pos = 9;
-    constexpr uint32_t SEND_CCSD_Msk = SEND_CCSD::mask;
+/// When set, SD/MMC sends CCSD to the CE-ATA device. Software sets this bit only if the current
+/// command is expecting CCS (that is, RW_BLK), and if interrupts are enabled for the CE-ATA device.
+/// Once the CCSD pattern is sent to the device, SD/MMC automatically clears the SDHOST_SEND_CCSD
+/// bit. It also sets the Command Done (CD) bit in the SDHOST_RINTSTS_REG register, and generates an
+/// interrupt for the host, in case the Command Done interrupt is not masked. NOTE: Once the
+/// SDHOST_SEND_CCSD bit is set, it takes two card clock cycles to drive the CCSD on the CMD line.
+/// Due to this, within the boundary conditions the CCSD may be sent to the CE-ATA device, even if
+/// the device has signalled CCS. Position: 9, Width: 1 Access: read-write
+using SEND_CCSD = BitField<9, 1>;
+constexpr uint32_t SEND_CCSD_Pos = 9;
+constexpr uint32_t SEND_CCSD_Msk = SEND_CCSD::mask;
 
-    /// Always Set SDHOST_SEND_AUTO_STOP_CCSD and SDHOST_SEND_CCSD bits together; SDHOST_SEND_AUTO_STOP_CCSD should not be set independently of send_ccsd. When set, SD/MMC automatically sends an internally-generated STOP command (CMD12) to the CE-ATA device. After sending this internally-generated STOP command, the Auto Command Done (ACD) bit in SDHOST_RINTSTS_REG is set and an interrupt is generated for the host, in case the ACD interrupt is not masked. After sending the Command Completion Signal Disable (CCSD), SD/MMC automatically clears the SDHOST_SEND_AUTO_STOP_CCSD bit.
-    /// Position: 10, Width: 1
-    /// Access: read-write
-    using SEND_AUTO_STOP_CCSD = BitField<10, 1>;
-    constexpr uint32_t SEND_AUTO_STOP_CCSD_Pos = 10;
-    constexpr uint32_t SEND_AUTO_STOP_CCSD_Msk = SEND_AUTO_STOP_CCSD::mask;
+/// Always Set SDHOST_SEND_AUTO_STOP_CCSD and SDHOST_SEND_CCSD bits together;
+/// SDHOST_SEND_AUTO_STOP_CCSD should not be set independently of send_ccsd. When set, SD/MMC
+/// automatically sends an internally-generated STOP command (CMD12) to the CE-ATA device. After
+/// sending this internally-generated STOP command, the Auto Command Done (ACD) bit in
+/// SDHOST_RINTSTS_REG is set and an interrupt is generated for the host, in case the ACD interrupt
+/// is not masked. After sending the Command Completion Signal Disable (CCSD), SD/MMC automatically
+/// clears the SDHOST_SEND_AUTO_STOP_CCSD bit. Position: 10, Width: 1 Access: read-write
+using SEND_AUTO_STOP_CCSD = BitField<10, 1>;
+constexpr uint32_t SEND_AUTO_STOP_CCSD_Pos = 10;
+constexpr uint32_t SEND_AUTO_STOP_CCSD_Msk = SEND_AUTO_STOP_CCSD::mask;
 
-    /// Software should appropriately write to this bit after the power-on reset or any other reset to the CE-ATA device. After reset, the CE-ATA device's interrupt is usually disabled (nIEN = 1). If the host enables the CE-ATA device's interrupt, then software should set this bit.
-    /// Position: 11, Width: 1
-    /// Access: read-write
-    using CEATA_DEVICE_INTERRUPT_STATUS = BitField<11, 1>;
-    constexpr uint32_t CEATA_DEVICE_INTERRUPT_STATUS_Pos = 11;
-    constexpr uint32_t CEATA_DEVICE_INTERRUPT_STATUS_Msk = CEATA_DEVICE_INTERRUPT_STATUS::mask;
+/// Software should appropriately write to this bit after the power-on reset or any other reset to
+/// the CE-ATA device. After reset, the CE-ATA device's interrupt is usually disabled (nIEN = 1). If
+/// the host enables the CE-ATA device's interrupt, then software should set this bit. Position: 11,
+/// Width: 1 Access: read-write
+using CEATA_DEVICE_INTERRUPT_STATUS = BitField<11, 1>;
+constexpr uint32_t CEATA_DEVICE_INTERRUPT_STATUS_Pos = 11;
+constexpr uint32_t CEATA_DEVICE_INTERRUPT_STATUS_Msk = CEATA_DEVICE_INTERRUPT_STATUS::mask;
 
 }  // namespace ctrl
 
 /// CLKDIV - Clock divider configuration register
 namespace clkdiv {
-    /// Clock divider0 value. Clock divisor is 2*n, where n = 0 bypasses the divider (divisor of 1). For example, a value of 1 means divided by 2*1 = 2, a value of 0xFF means divided by 2*255 = 510, and so on.
-    /// Position: 0, Width: 8
-    /// Access: read-write
-    using CLK_DIVIDER0 = BitField<0, 8>;
-    constexpr uint32_t CLK_DIVIDER0_Pos = 0;
-    constexpr uint32_t CLK_DIVIDER0_Msk = CLK_DIVIDER0::mask;
+/// Clock divider0 value. Clock divisor is 2*n, where n = 0 bypasses the divider (divisor of 1). For
+/// example, a value of 1 means divided by 2*1 = 2, a value of 0xFF means divided by 2*255 = 510,
+/// and so on. Position: 0, Width: 8 Access: read-write
+using CLK_DIVIDER0 = BitField<0, 8>;
+constexpr uint32_t CLK_DIVIDER0_Pos = 0;
+constexpr uint32_t CLK_DIVIDER0_Msk = CLK_DIVIDER0::mask;
 
-    /// Clock divider1 value. Clock divisor is 2*n, where n = 0 bypasses the divider (divisor of 1). For example, a value of 1 means divided by 2*1 = 2, a value of 0xFF means divided by 2*255 = 510, and so on.
-    /// Position: 8, Width: 8
-    /// Access: read-write
-    using CLK_DIVIDER1 = BitField<8, 8>;
-    constexpr uint32_t CLK_DIVIDER1_Pos = 8;
-    constexpr uint32_t CLK_DIVIDER1_Msk = CLK_DIVIDER1::mask;
+/// Clock divider1 value. Clock divisor is 2*n, where n = 0 bypasses the divider (divisor of 1). For
+/// example, a value of 1 means divided by 2*1 = 2, a value of 0xFF means divided by 2*255 = 510,
+/// and so on. Position: 8, Width: 8 Access: read-write
+using CLK_DIVIDER1 = BitField<8, 8>;
+constexpr uint32_t CLK_DIVIDER1_Pos = 8;
+constexpr uint32_t CLK_DIVIDER1_Msk = CLK_DIVIDER1::mask;
 
-    /// Clock divider2 value. Clock divisor is 2*n, where n = 0 bypasses the divider (divisor of 1). For example, a value of 1 means divided by 2*1 = 2, a value of 0xFF means divided by 2*255 = 510, and so on.
-    /// Position: 16, Width: 8
-    /// Access: read-write
-    using CLK_DIVIDER2 = BitField<16, 8>;
-    constexpr uint32_t CLK_DIVIDER2_Pos = 16;
-    constexpr uint32_t CLK_DIVIDER2_Msk = CLK_DIVIDER2::mask;
+/// Clock divider2 value. Clock divisor is 2*n, where n = 0 bypasses the divider (divisor of 1). For
+/// example, a value of 1 means divided by 2*1 = 2, a value of 0xFF means divided by 2*255 = 510,
+/// and so on. Position: 16, Width: 8 Access: read-write
+using CLK_DIVIDER2 = BitField<16, 8>;
+constexpr uint32_t CLK_DIVIDER2_Pos = 16;
+constexpr uint32_t CLK_DIVIDER2_Msk = CLK_DIVIDER2::mask;
 
-    /// Clock divider3 value. Clock divisor is 2*n, where n = 0 bypasses the divider (divisor of 1). For example, a value of 1 means divided by 2*1 = 2, a value of 0xFF means divided by 2*255 = 510, and so on.
-    /// Position: 24, Width: 8
-    /// Access: read-write
-    using CLK_DIVIDER3 = BitField<24, 8>;
-    constexpr uint32_t CLK_DIVIDER3_Pos = 24;
-    constexpr uint32_t CLK_DIVIDER3_Msk = CLK_DIVIDER3::mask;
+/// Clock divider3 value. Clock divisor is 2*n, where n = 0 bypasses the divider (divisor of 1). For
+/// example, a value of 1 means divided by 2*1 = 2, a value of 0xFF means divided by 2*255 = 510,
+/// and so on. Position: 24, Width: 8 Access: read-write
+using CLK_DIVIDER3 = BitField<24, 8>;
+constexpr uint32_t CLK_DIVIDER3_Pos = 24;
+constexpr uint32_t CLK_DIVIDER3_Msk = CLK_DIVIDER3::mask;
 
 }  // namespace clkdiv
 
 /// CLKSRC - Clock source selection register
 namespace clksrc {
-    /// Clock divider source for two SD cards is supported. Each card has two bits assigned to it. For example, bit[1:0] are assigned for card 0, bit[3:2] are assigned for card 1. Card 0 maps and internally routes clock divider[0:3] outputs to cclk_out[1:0] pins, depending on bit value. 00 : Clock divider 0; 01 : Clock divider 1; 10 : Clock divider 2; 11 : Clock divider 3.
-    /// Position: 0, Width: 4
-    /// Access: read-write
-    using CLKSRC = BitField<0, 4>;
-    constexpr uint32_t CLKSRC_Pos = 0;
-    constexpr uint32_t CLKSRC_Msk = CLKSRC::mask;
+/// Clock divider source for two SD cards is supported. Each card has two bits assigned to it. For
+/// example, bit[1:0] are assigned for card 0, bit[3:2] are assigned for card 1. Card 0 maps and
+/// internally routes clock divider[0:3] outputs to cclk_out[1:0] pins, depending on bit value. 00 :
+/// Clock divider 0; 01 : Clock divider 1; 10 : Clock divider 2; 11 : Clock divider 3. Position: 0,
+/// Width: 4 Access: read-write
+using CLKSRC = BitField<0, 4>;
+constexpr uint32_t CLKSRC_Pos = 0;
+constexpr uint32_t CLKSRC_Msk = CLKSRC::mask;
 
 }  // namespace clksrc
 
 /// CLKENA - Clock enable register
 namespace clkena {
-    /// Clock-enable control for two SD card clocks and one MMC card clock is supported. One bit per card. 0: Clock disabled; 1: Clock enabled.
-    /// Position: 0, Width: 2
-    /// Access: read-write
-    using CCLK_ENABLE = BitField<0, 2>;
-    constexpr uint32_t CCLK_ENABLE_Pos = 0;
-    constexpr uint32_t CCLK_ENABLE_Msk = CCLK_ENABLE::mask;
+/// Clock-enable control for two SD card clocks and one MMC card clock is supported. One bit per
+/// card. 0: Clock disabled; 1: Clock enabled. Position: 0, Width: 2 Access: read-write
+using CCLK_ENABLE = BitField<0, 2>;
+constexpr uint32_t CCLK_ENABLE_Pos = 0;
+constexpr uint32_t CCLK_ENABLE_Msk = CCLK_ENABLE::mask;
 
-    /// Disable clock when the card is in IDLE state. One bit per card. 0: clock disabled; 1: clock enabled.
-    /// Position: 16, Width: 2
-    /// Access: read-write
-    using LP_ENABLE = BitField<16, 2>;
-    constexpr uint32_t LP_ENABLE_Pos = 16;
-    constexpr uint32_t LP_ENABLE_Msk = LP_ENABLE::mask;
+/// Disable clock when the card is in IDLE state. One bit per card. 0: clock disabled; 1: clock
+/// enabled. Position: 16, Width: 2 Access: read-write
+using LP_ENABLE = BitField<16, 2>;
+constexpr uint32_t LP_ENABLE_Pos = 16;
+constexpr uint32_t LP_ENABLE_Msk = LP_ENABLE::mask;
 
 }  // namespace clkena
 
 /// TMOUT - Data and response timeout configuration register
 namespace tmout {
-    /// Response timeout value. Value is specified in terms of number of card output clocks, i.e., sdhost_cclk_out.
-    /// Position: 0, Width: 8
-    /// Access: read-write
-    using RESPONSE_TIMEOUT = BitField<0, 8>;
-    constexpr uint32_t RESPONSE_TIMEOUT_Pos = 0;
-    constexpr uint32_t RESPONSE_TIMEOUT_Msk = RESPONSE_TIMEOUT::mask;
+/// Response timeout value. Value is specified in terms of number of card output clocks, i.e.,
+/// sdhost_cclk_out. Position: 0, Width: 8 Access: read-write
+using RESPONSE_TIMEOUT = BitField<0, 8>;
+constexpr uint32_t RESPONSE_TIMEOUT_Pos = 0;
+constexpr uint32_t RESPONSE_TIMEOUT_Msk = RESPONSE_TIMEOUT::mask;
 
-    /// Value for card data read timeout. This value is also used for data starvation by host timeout. The timeout counter is started only after the card clock is stopped. This value is specified in number of card output clocks, i.e. sdhost_cclk_out of the selected card. NOTE: The software timer should be used if the timeout value is in the order of 100 ms. In this case, read data timeout interrupt needs to be disabled.
-    /// Position: 8, Width: 24
-    /// Access: read-write
-    using DATA_TIMEOUT = BitField<8, 24>;
-    constexpr uint32_t DATA_TIMEOUT_Pos = 8;
-    constexpr uint32_t DATA_TIMEOUT_Msk = DATA_TIMEOUT::mask;
+/// Value for card data read timeout. This value is also used for data starvation by host timeout.
+/// The timeout counter is started only after the card clock is stopped. This value is specified in
+/// number of card output clocks, i.e. sdhost_cclk_out of the selected card. NOTE: The software
+/// timer should be used if the timeout value is in the order of 100 ms. In this case, read data
+/// timeout interrupt needs to be disabled. Position: 8, Width: 24 Access: read-write
+using DATA_TIMEOUT = BitField<8, 24>;
+constexpr uint32_t DATA_TIMEOUT_Pos = 8;
+constexpr uint32_t DATA_TIMEOUT_Msk = DATA_TIMEOUT::mask;
 
 }  // namespace tmout
 
 /// CTYPE - Card bus width configuration register
 namespace ctype {
-    /// One bit per card indicates if card is 1-bit or 4-bit mode. 0: 1-bit mode; 1: 4-bit mode. Bit[1:0] correspond to card[1:0] respectively.
-    /// Position: 0, Width: 2
-    /// Access: read-write
-    using CARD_WIDTH4 = BitField<0, 2>;
-    constexpr uint32_t CARD_WIDTH4_Pos = 0;
-    constexpr uint32_t CARD_WIDTH4_Msk = CARD_WIDTH4::mask;
+/// One bit per card indicates if card is 1-bit or 4-bit mode. 0: 1-bit mode; 1: 4-bit mode.
+/// Bit[1:0] correspond to card[1:0] respectively. Position: 0, Width: 2 Access: read-write
+using CARD_WIDTH4 = BitField<0, 2>;
+constexpr uint32_t CARD_WIDTH4_Pos = 0;
+constexpr uint32_t CARD_WIDTH4_Msk = CARD_WIDTH4::mask;
 
-    /// One bit per card indicates if card is in 8-bit mode. 0: Non 8-bit mode; 1: 8-bit mode. Bit[17:16] correspond to card[1:0] respectively.
-    /// Position: 16, Width: 2
-    /// Access: read-write
-    using CARD_WIDTH8 = BitField<16, 2>;
-    constexpr uint32_t CARD_WIDTH8_Pos = 16;
-    constexpr uint32_t CARD_WIDTH8_Msk = CARD_WIDTH8::mask;
+/// One bit per card indicates if card is in 8-bit mode. 0: Non 8-bit mode; 1: 8-bit mode.
+/// Bit[17:16] correspond to card[1:0] respectively. Position: 16, Width: 2 Access: read-write
+using CARD_WIDTH8 = BitField<16, 2>;
+constexpr uint32_t CARD_WIDTH8_Pos = 16;
+constexpr uint32_t CARD_WIDTH8_Msk = CARD_WIDTH8::mask;
 
 }  // namespace ctype
 
 /// BLKSIZ - Card data block size configuration register
 namespace blksiz {
-    /// Block size.
-    /// Position: 0, Width: 16
-    /// Access: read-write
-    using BLOCK_SIZE = BitField<0, 16>;
-    constexpr uint32_t BLOCK_SIZE_Pos = 0;
-    constexpr uint32_t BLOCK_SIZE_Msk = BLOCK_SIZE::mask;
+/// Block size.
+/// Position: 0, Width: 16
+/// Access: read-write
+using BLOCK_SIZE = BitField<0, 16>;
+constexpr uint32_t BLOCK_SIZE_Pos = 0;
+constexpr uint32_t BLOCK_SIZE_Msk = BLOCK_SIZE::mask;
 
 }  // namespace blksiz
 
 /// BYTCNT - Data transfer length configuration register
 namespace bytcnt {
-    /// Number of bytes to be transferred, should be an integral multiple of Block Size for block transfers. For data transfers of undefined byte lengths, byte count should be set to 0. When byte count is set to 0, it is the responsibility of host to explicitly send stop/abort command to terminate data transfer.
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using BYTE_COUNT = BitField<0, 32>;
-    constexpr uint32_t BYTE_COUNT_Pos = 0;
-    constexpr uint32_t BYTE_COUNT_Msk = BYTE_COUNT::mask;
+/// Number of bytes to be transferred, should be an integral multiple of Block Size for block
+/// transfers. For data transfers of undefined byte lengths, byte count should be set to 0. When
+/// byte count is set to 0, it is the responsibility of host to explicitly send stop/abort command
+/// to terminate data transfer. Position: 0, Width: 32 Access: read-write
+using BYTE_COUNT = BitField<0, 32>;
+constexpr uint32_t BYTE_COUNT_Pos = 0;
+constexpr uint32_t BYTE_COUNT_Msk = BYTE_COUNT::mask;
 
 }  // namespace bytcnt
 
 /// INTMASK - SDIO interrupt mask register
 namespace intmask {
-    /// These bits used to mask unwanted interrupts. A value of 0 masks interrupt, and a value of 1 enables the interrupt. Bit 15 (EBE): End-bit error/no CRC error; Bit 14 (ACD): Auto command done; Bit 13 (SBE/BCI): Rx Start Bit Error; Bit 12 (HLE): Hardware locked write error; Bit 11 (FRUN): FIFO underrun/overrun error; Bit 10 (HTO): Data starvation-by-host timeout; Bit 9 (DRTO): Data read timeout; Bit 8 (RTO): Response timeout; Bit 7 (DCRC): Data CRC error; Bit 6 (RCRC): Response CRC error; Bit 5 (RXDR): Receive FIFO data request; Bit 4 (TXDR): Transmit FIFO data request; Bit 3 (DTO): Data transfer over; Bit 2 (CD): Command done; Bit 1 (RE): Response error; Bit 0 (CD): Card detect.
-    /// Position: 0, Width: 16
-    /// Access: read-write
-    using INT_MASK = BitField<0, 16>;
-    constexpr uint32_t INT_MASK_Pos = 0;
-    constexpr uint32_t INT_MASK_Msk = INT_MASK::mask;
+/// These bits used to mask unwanted interrupts. A value of 0 masks interrupt, and a value of 1
+/// enables the interrupt. Bit 15 (EBE): End-bit error/no CRC error; Bit 14 (ACD): Auto command
+/// done; Bit 13 (SBE/BCI): Rx Start Bit Error; Bit 12 (HLE): Hardware locked write error; Bit 11
+/// (FRUN): FIFO underrun/overrun error; Bit 10 (HTO): Data starvation-by-host timeout; Bit 9
+/// (DRTO): Data read timeout; Bit 8 (RTO): Response timeout; Bit 7 (DCRC): Data CRC error; Bit 6
+/// (RCRC): Response CRC error; Bit 5 (RXDR): Receive FIFO data request; Bit 4 (TXDR): Transmit FIFO
+/// data request; Bit 3 (DTO): Data transfer over; Bit 2 (CD): Command done; Bit 1 (RE): Response
+/// error; Bit 0 (CD): Card detect. Position: 0, Width: 16 Access: read-write
+using INT_MASK = BitField<0, 16>;
+constexpr uint32_t INT_MASK_Pos = 0;
+constexpr uint32_t INT_MASK_Msk = INT_MASK::mask;
 
-    /// SDIO interrupt mask, one bit for each card. Bit[17:16] correspond to card[15:0] respectively. When masked, SDIO interrupt detection for that card is disabled. 0 masks an interrupt, and 1 enables an interrupt.
-    /// Position: 16, Width: 2
-    /// Access: read-write
-    using SDIO_INT_MASK = BitField<16, 2>;
-    constexpr uint32_t SDIO_INT_MASK_Pos = 16;
-    constexpr uint32_t SDIO_INT_MASK_Msk = SDIO_INT_MASK::mask;
+/// SDIO interrupt mask, one bit for each card. Bit[17:16] correspond to card[15:0] respectively.
+/// When masked, SDIO interrupt detection for that card is disabled. 0 masks an interrupt, and 1
+/// enables an interrupt. Position: 16, Width: 2 Access: read-write
+using SDIO_INT_MASK = BitField<16, 2>;
+constexpr uint32_t SDIO_INT_MASK_Pos = 16;
+constexpr uint32_t SDIO_INT_MASK_Msk = SDIO_INT_MASK::mask;
 
 }  // namespace intmask
 
 /// CMDARG - Command argument data register
 namespace cmdarg {
-    /// Value indicates command argument to be passed to the card.
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using CMDARG = BitField<0, 32>;
-    constexpr uint32_t CMDARG_Pos = 0;
-    constexpr uint32_t CMDARG_Msk = CMDARG::mask;
+/// Value indicates command argument to be passed to the card.
+/// Position: 0, Width: 32
+/// Access: read-write
+using CMDARG = BitField<0, 32>;
+constexpr uint32_t CMDARG_Pos = 0;
+constexpr uint32_t CMDARG_Msk = CMDARG::mask;
 
 }  // namespace cmdarg
 
 /// CMD - Command and boot configuration register
 namespace cmd {
-    /// Command index.
-    /// Position: 0, Width: 6
-    /// Access: read-write
-    using INDEX = BitField<0, 6>;
-    constexpr uint32_t INDEX_Pos = 0;
-    constexpr uint32_t INDEX_Msk = INDEX::mask;
+/// Command index.
+/// Position: 0, Width: 6
+/// Access: read-write
+using INDEX = BitField<0, 6>;
+constexpr uint32_t INDEX_Pos = 0;
+constexpr uint32_t INDEX_Msk = INDEX::mask;
 
-    /// 0: No response expected from card; 1: Response expected from card.
-    /// Position: 6, Width: 1
-    /// Access: read-write
-    using RESPONSE_EXPECT = BitField<6, 1>;
-    constexpr uint32_t RESPONSE_EXPECT_Pos = 6;
-    constexpr uint32_t RESPONSE_EXPECT_Msk = RESPONSE_EXPECT::mask;
+/// 0: No response expected from card; 1: Response expected from card.
+/// Position: 6, Width: 1
+/// Access: read-write
+using RESPONSE_EXPECT = BitField<6, 1>;
+constexpr uint32_t RESPONSE_EXPECT_Pos = 6;
+constexpr uint32_t RESPONSE_EXPECT_Msk = RESPONSE_EXPECT::mask;
 
-    /// 0: Short response expected from card; 1: Long response expected from card.
-    /// Position: 7, Width: 1
-    /// Access: read-write
-    using RESPONSE_LENGTH = BitField<7, 1>;
-    constexpr uint32_t RESPONSE_LENGTH_Pos = 7;
-    constexpr uint32_t RESPONSE_LENGTH_Msk = RESPONSE_LENGTH::mask;
+/// 0: Short response expected from card; 1: Long response expected from card.
+/// Position: 7, Width: 1
+/// Access: read-write
+using RESPONSE_LENGTH = BitField<7, 1>;
+constexpr uint32_t RESPONSE_LENGTH_Pos = 7;
+constexpr uint32_t RESPONSE_LENGTH_Msk = RESPONSE_LENGTH::mask;
 
-    /// 0: Do not check; 1: Check response CRC. Some of command responses do not return valid CRC bits. Software should disable CRC checks for those commands in order to disable CRC checking by controller.
-    /// Position: 8, Width: 1
-    /// Access: read-write
-    using CHECK_RESPONSE_CRC = BitField<8, 1>;
-    constexpr uint32_t CHECK_RESPONSE_CRC_Pos = 8;
-    constexpr uint32_t CHECK_RESPONSE_CRC_Msk = CHECK_RESPONSE_CRC::mask;
+/// 0: Do not check; 1: Check response CRC. Some of command responses do not return valid CRC bits.
+/// Software should disable CRC checks for those commands in order to disable CRC checking by
+/// controller. Position: 8, Width: 1 Access: read-write
+using CHECK_RESPONSE_CRC = BitField<8, 1>;
+constexpr uint32_t CHECK_RESPONSE_CRC_Pos = 8;
+constexpr uint32_t CHECK_RESPONSE_CRC_Msk = CHECK_RESPONSE_CRC::mask;
 
-    /// 0: No data transfer expected; 1: Data transfer expected.
-    /// Position: 9, Width: 1
-    /// Access: read-write
-    using DATA_EXPECTED = BitField<9, 1>;
-    constexpr uint32_t DATA_EXPECTED_Pos = 9;
-    constexpr uint32_t DATA_EXPECTED_Msk = DATA_EXPECTED::mask;
+/// 0: No data transfer expected; 1: Data transfer expected.
+/// Position: 9, Width: 1
+/// Access: read-write
+using DATA_EXPECTED = BitField<9, 1>;
+constexpr uint32_t DATA_EXPECTED_Pos = 9;
+constexpr uint32_t DATA_EXPECTED_Msk = DATA_EXPECTED::mask;
 
-    /// 0: Read from card; 1: Write to card. Don't care if no data is expected from card.
-    /// Position: 10, Width: 1
-    /// Access: read-write
-    using READ_WRITE = BitField<10, 1>;
-    constexpr uint32_t READ_WRITE_Pos = 10;
-    constexpr uint32_t READ_WRITE_Msk = READ_WRITE::mask;
+/// 0: Read from card; 1: Write to card. Don't care if no data is expected from card.
+/// Position: 10, Width: 1
+/// Access: read-write
+using READ_WRITE = BitField<10, 1>;
+constexpr uint32_t READ_WRITE_Pos = 10;
+constexpr uint32_t READ_WRITE_Msk = READ_WRITE::mask;
 
-    /// Block data transfer command; 1: Stream data transfer command. Don't care if no data expected.
-    /// Position: 11, Width: 1
-    /// Access: read-write
-    using TRANSFER_MODE = BitField<11, 1>;
-    constexpr uint32_t TRANSFER_MODE_Pos = 11;
-    constexpr uint32_t TRANSFER_MODE_Msk = TRANSFER_MODE::mask;
+/// Block data transfer command; 1: Stream data transfer command. Don't care if no data expected.
+/// Position: 11, Width: 1
+/// Access: read-write
+using TRANSFER_MODE = BitField<11, 1>;
+constexpr uint32_t TRANSFER_MODE_Pos = 11;
+constexpr uint32_t TRANSFER_MODE_Msk = TRANSFER_MODE::mask;
 
-    /// 0: No stop command is sent at the end of data transfer; 1: Send stop command at the end of data transfer.
-    /// Position: 12, Width: 1
-    /// Access: read-write
-    using SEND_AUTO_STOP = BitField<12, 1>;
-    constexpr uint32_t SEND_AUTO_STOP_Pos = 12;
-    constexpr uint32_t SEND_AUTO_STOP_Msk = SEND_AUTO_STOP::mask;
+/// 0: No stop command is sent at the end of data transfer; 1: Send stop command at the end of data
+/// transfer. Position: 12, Width: 1 Access: read-write
+using SEND_AUTO_STOP = BitField<12, 1>;
+constexpr uint32_t SEND_AUTO_STOP_Pos = 12;
+constexpr uint32_t SEND_AUTO_STOP_Msk = SEND_AUTO_STOP::mask;
 
-    /// 0: Send command at once, even if previous data transfer has not completed; 1: Wait for previous data transfer to complete before sending Command. The SDHOST_WAIT_PRVDATA_COMPLETE] = 0 option is typically used to query status of card during data transfer or to stop current data transfer. SDHOST_CARD_NUMBERr should be same as in previous command.
-    /// Position: 13, Width: 1
-    /// Access: read-write
-    using WAIT_PRVDATA_COMPLETE = BitField<13, 1>;
-    constexpr uint32_t WAIT_PRVDATA_COMPLETE_Pos = 13;
-    constexpr uint32_t WAIT_PRVDATA_COMPLETE_Msk = WAIT_PRVDATA_COMPLETE::mask;
+/// 0: Send command at once, even if previous data transfer has not completed; 1: Wait for previous
+/// data transfer to complete before sending Command. The SDHOST_WAIT_PRVDATA_COMPLETE] = 0 option
+/// is typically used to query status of card during data transfer or to stop current data transfer.
+/// SDHOST_CARD_NUMBERr should be same as in previous command. Position: 13, Width: 1 Access:
+/// read-write
+using WAIT_PRVDATA_COMPLETE = BitField<13, 1>;
+constexpr uint32_t WAIT_PRVDATA_COMPLETE_Pos = 13;
+constexpr uint32_t WAIT_PRVDATA_COMPLETE_Msk = WAIT_PRVDATA_COMPLETE::mask;
 
-    /// 0: Neither stop nor abort command can stop current data transfer. If abort is sent to function-number currently selected or not in data-transfer mode, then bit should be set to 0; 1: Stop or abort command intended to stop current data transfer in progress. When open-ended or predefined data transfer is in progress, and host issues stop or abort command to stop data transfer, bit should be set so that command/data state-machines of CIU can return correctly to idle state.
-    /// Position: 14, Width: 1
-    /// Access: read-write
-    using STOP_ABORT_CMD = BitField<14, 1>;
-    constexpr uint32_t STOP_ABORT_CMD_Pos = 14;
-    constexpr uint32_t STOP_ABORT_CMD_Msk = STOP_ABORT_CMD::mask;
+/// 0: Neither stop nor abort command can stop current data transfer. If abort is sent to
+/// function-number currently selected or not in data-transfer mode, then bit should be set to 0; 1:
+/// Stop or abort command intended to stop current data transfer in progress. When open-ended or
+/// predefined data transfer is in progress, and host issues stop or abort command to stop data
+/// transfer, bit should be set so that command/data state-machines of CIU can return correctly to
+/// idle state. Position: 14, Width: 1 Access: read-write
+using STOP_ABORT_CMD = BitField<14, 1>;
+constexpr uint32_t STOP_ABORT_CMD_Pos = 14;
+constexpr uint32_t STOP_ABORT_CMD_Msk = STOP_ABORT_CMD::mask;
 
-    /// 0: Do not send initialization sequence (80 clocks of 1) before sending this command; 1: Send initialization sequence before sending this command. After powered on, 80 clocks must be sent to card for initialization before sending any commands to card. Bit should be set while sending first command to card so that controller will initialize clocks before sending command to card.
-    /// Position: 15, Width: 1
-    /// Access: read-write
-    using SEND_INITIALIZATION = BitField<15, 1>;
-    constexpr uint32_t SEND_INITIALIZATION_Pos = 15;
-    constexpr uint32_t SEND_INITIALIZATION_Msk = SEND_INITIALIZATION::mask;
+/// 0: Do not send initialization sequence (80 clocks of 1) before sending this command; 1: Send
+/// initialization sequence before sending this command. After powered on, 80 clocks must be sent to
+/// card for initialization before sending any commands to card. Bit should be set while sending
+/// first command to card so that controller will initialize clocks before sending command to card.
+/// Position: 15, Width: 1
+/// Access: read-write
+using SEND_INITIALIZATION = BitField<15, 1>;
+constexpr uint32_t SEND_INITIALIZATION_Pos = 15;
+constexpr uint32_t SEND_INITIALIZATION_Msk = SEND_INITIALIZATION::mask;
 
-    /// Card number in use. Represents physical slot number of card being accessed. In SD-only mode, up to two cards are supported.
-    /// Position: 16, Width: 5
-    /// Access: read-write
-    using CARD_NUMBER = BitField<16, 5>;
-    constexpr uint32_t CARD_NUMBER_Pos = 16;
-    constexpr uint32_t CARD_NUMBER_Msk = CARD_NUMBER::mask;
+/// Card number in use. Represents physical slot number of card being accessed. In SD-only mode, up
+/// to two cards are supported. Position: 16, Width: 5 Access: read-write
+using CARD_NUMBER = BitField<16, 5>;
+constexpr uint32_t CARD_NUMBER_Pos = 16;
+constexpr uint32_t CARD_NUMBER_Msk = CARD_NUMBER::mask;
 
-    /// 0: Normal command sequence; 1: Do not send commands, just update clock register value into card clock domain. Following register values are transferred into card clock domain: CLKDIV, CLRSRC, and CLKENA. Changes card clocks (change frequency, truncate off or on, and set low-frequency mode). This is provided in order to change clock frequency or stop clock without having to send command to cards. During normal command sequence, when sdhost_update_clock_registers_only = 0, following control registers are transferred from BIU to CIU: CMD, CMDARG, TMOUT, CTYPE, BLKSIZ, and BYTCNT. CIU uses new register values for new command sequence to card(s). When bit is set, there are no Command Done interrupts because no command is sent to SD_MMC_CEATA cards.
-    /// Position: 21, Width: 1
-    /// Access: read-write
-    using UPDATE_CLOCK_REGISTERS_ONLY = BitField<21, 1>;
-    constexpr uint32_t UPDATE_CLOCK_REGISTERS_ONLY_Pos = 21;
-    constexpr uint32_t UPDATE_CLOCK_REGISTERS_ONLY_Msk = UPDATE_CLOCK_REGISTERS_ONLY::mask;
+/// 0: Normal command sequence; 1: Do not send commands, just update clock register value into card
+/// clock domain. Following register values are transferred into card clock domain: CLKDIV, CLRSRC,
+/// and CLKENA. Changes card clocks (change frequency, truncate off or on, and set low-frequency
+/// mode). This is provided in order to change clock frequency or stop clock without having to send
+/// command to cards. During normal command sequence, when sdhost_update_clock_registers_only = 0,
+/// following control registers are transferred from BIU to CIU: CMD, CMDARG, TMOUT, CTYPE, BLKSIZ,
+/// and BYTCNT. CIU uses new register values for new command sequence to card(s). When bit is set,
+/// there are no Command Done interrupts because no command is sent to SD_MMC_CEATA cards. Position:
+/// 21, Width: 1 Access: read-write
+using UPDATE_CLOCK_REGISTERS_ONLY = BitField<21, 1>;
+constexpr uint32_t UPDATE_CLOCK_REGISTERS_ONLY_Pos = 21;
+constexpr uint32_t UPDATE_CLOCK_REGISTERS_ONLY_Msk = UPDATE_CLOCK_REGISTERS_ONLY::mask;
 
-    /// Read access flag. 0: Host is not performing read access (RW_REG or RW_BLK)towards CE-ATA device; 1: Host is performing read access (RW_REG or RW_BLK) towards CE-ATA device. Software should set this bit to indicate that CE-ATA device is being accessed for read transfer. This bit is used to disable read data timeout indication while performing CE-ATA read transfers. Maximum value of I/O transmission delay can be no less than 10 seconds. SD/MMC should not indicate read data timeout while waiting for data from CE-ATA device.
-    /// Position: 22, Width: 1
-    /// Access: read-write
-    using READ_CEATA_DEVICE = BitField<22, 1>;
-    constexpr uint32_t READ_CEATA_DEVICE_Pos = 22;
-    constexpr uint32_t READ_CEATA_DEVICE_Msk = READ_CEATA_DEVICE::mask;
+/// Read access flag. 0: Host is not performing read access (RW_REG or RW_BLK)towards CE-ATA device;
+/// 1: Host is performing read access (RW_REG or RW_BLK) towards CE-ATA device. Software should set
+/// this bit to indicate that CE-ATA device is being accessed for read transfer. This bit is used to
+/// disable read data timeout indication while performing CE-ATA read transfers. Maximum value of
+/// I/O transmission delay can be no less than 10 seconds. SD/MMC should not indicate read data
+/// timeout while waiting for data from CE-ATA device. Position: 22, Width: 1 Access: read-write
+using READ_CEATA_DEVICE = BitField<22, 1>;
+constexpr uint32_t READ_CEATA_DEVICE_Pos = 22;
+constexpr uint32_t READ_CEATA_DEVICE_Msk = READ_CEATA_DEVICE::mask;
 
-    /// Expected Command Completion Signal (CCS) configuration. 0: Interrupts are not enabled in CE-ATA device (nIEN = 1 in ATA control register), or command does not expect CCS from device; 1: Interrupts are enabled in CE-ATA device (nIEN = 0), and RW_BLK command expects command completion signal from CE-ATA device. If the command expects Command Completion Signal (CCS) from the CE-ATA device, the software should set this control bit. SD/MMC sets Data Transfer Over (DTO) bit in RINTSTS register and generates interrupt to host if Data Transfer Over interrupt is not masked.
-    /// Position: 23, Width: 1
-    /// Access: read-write
-    using CCS_EXPECTED = BitField<23, 1>;
-    constexpr uint32_t CCS_EXPECTED_Pos = 23;
-    constexpr uint32_t CCS_EXPECTED_Msk = CCS_EXPECTED::mask;
+/// Expected Command Completion Signal (CCS) configuration. 0: Interrupts are not enabled in CE-ATA
+/// device (nIEN = 1 in ATA control register), or command does not expect CCS from device; 1:
+/// Interrupts are enabled in CE-ATA device (nIEN = 0), and RW_BLK command expects command
+/// completion signal from CE-ATA device. If the command expects Command Completion Signal (CCS)
+/// from the CE-ATA device, the software should set this control bit. SD/MMC sets Data Transfer Over
+/// (DTO) bit in RINTSTS register and generates interrupt to host if Data Transfer Over interrupt is
+/// not masked. Position: 23, Width: 1 Access: read-write
+using CCS_EXPECTED = BitField<23, 1>;
+constexpr uint32_t CCS_EXPECTED_Pos = 23;
+constexpr uint32_t CCS_EXPECTED_Msk = CCS_EXPECTED::mask;
 
-    /// Use Hold Register. 0: CMD and DATA sent to card bypassing HOLD Register; 1: CMD and DATA sent to card through the HOLD Register.
-    /// Position: 29, Width: 1
-    /// Access: read-write
-    using USE_HOLE = BitField<29, 1>;
-    constexpr uint32_t USE_HOLE_Pos = 29;
-    constexpr uint32_t USE_HOLE_Msk = USE_HOLE::mask;
+/// Use Hold Register. 0: CMD and DATA sent to card bypassing HOLD Register; 1: CMD and DATA sent to
+/// card through the HOLD Register. Position: 29, Width: 1 Access: read-write
+using USE_HOLE = BitField<29, 1>;
+constexpr uint32_t USE_HOLE_Pos = 29;
+constexpr uint32_t USE_HOLE_Msk = USE_HOLE::mask;
 
-    /// Start command. Once command is served by the CIU, this bit is automatically cleared. When this bit is set, host should not attempt to write to any command registers. If a write is attempted, hardware lock error is set in raw interrupt register. Once command is sent and a response is received from SD_MMC_CEATA cards, Command Done bit is set in the raw interrupt Register.
-    /// Position: 31, Width: 1
-    /// Access: read-write
-    using START_CMD = BitField<31, 1>;
-    constexpr uint32_t START_CMD_Pos = 31;
-    constexpr uint32_t START_CMD_Msk = START_CMD::mask;
+/// Start command. Once command is served by the CIU, this bit is automatically cleared. When this
+/// bit is set, host should not attempt to write to any command registers. If a write is attempted,
+/// hardware lock error is set in raw interrupt register. Once command is sent and a response is
+/// received from SD_MMC_CEATA cards, Command Done bit is set in the raw interrupt Register.
+/// Position: 31, Width: 1
+/// Access: read-write
+using START_CMD = BitField<31, 1>;
+constexpr uint32_t START_CMD_Pos = 31;
+constexpr uint32_t START_CMD_Msk = START_CMD::mask;
 
 }  // namespace cmd
 
 /// RESP0 - Response data register
 namespace resp0 {
-    /// Bit[31:0] of response.
-    /// Position: 0, Width: 32
-    /// Access: read-only
-    using RESPONSE0 = BitField<0, 32>;
-    constexpr uint32_t RESPONSE0_Pos = 0;
-    constexpr uint32_t RESPONSE0_Msk = RESPONSE0::mask;
+/// Bit[31:0] of response.
+/// Position: 0, Width: 32
+/// Access: read-only
+using RESPONSE0 = BitField<0, 32>;
+constexpr uint32_t RESPONSE0_Pos = 0;
+constexpr uint32_t RESPONSE0_Msk = RESPONSE0::mask;
 
 }  // namespace resp0
 
 /// RESP1 - Long response data register
 namespace resp1 {
-    /// Bit[63:32] of long response.
-    /// Position: 0, Width: 32
-    /// Access: read-only
-    using RESPONSE1 = BitField<0, 32>;
-    constexpr uint32_t RESPONSE1_Pos = 0;
-    constexpr uint32_t RESPONSE1_Msk = RESPONSE1::mask;
+/// Bit[63:32] of long response.
+/// Position: 0, Width: 32
+/// Access: read-only
+using RESPONSE1 = BitField<0, 32>;
+constexpr uint32_t RESPONSE1_Pos = 0;
+constexpr uint32_t RESPONSE1_Msk = RESPONSE1::mask;
 
 }  // namespace resp1
 
 /// RESP2 - Long response data register
 namespace resp2 {
-    /// Bit[95:64] of long response.
-    /// Position: 0, Width: 32
-    /// Access: read-only
-    using RESPONSE2 = BitField<0, 32>;
-    constexpr uint32_t RESPONSE2_Pos = 0;
-    constexpr uint32_t RESPONSE2_Msk = RESPONSE2::mask;
+/// Bit[95:64] of long response.
+/// Position: 0, Width: 32
+/// Access: read-only
+using RESPONSE2 = BitField<0, 32>;
+constexpr uint32_t RESPONSE2_Pos = 0;
+constexpr uint32_t RESPONSE2_Msk = RESPONSE2::mask;
 
 }  // namespace resp2
 
 /// RESP3 - Long response data register
 namespace resp3 {
-    /// Bit[127:96] of long response.
-    /// Position: 0, Width: 32
-    /// Access: read-only
-    using RESPONSE3 = BitField<0, 32>;
-    constexpr uint32_t RESPONSE3_Pos = 0;
-    constexpr uint32_t RESPONSE3_Msk = RESPONSE3::mask;
+/// Bit[127:96] of long response.
+/// Position: 0, Width: 32
+/// Access: read-only
+using RESPONSE3 = BitField<0, 32>;
+constexpr uint32_t RESPONSE3_Pos = 0;
+constexpr uint32_t RESPONSE3_Msk = RESPONSE3::mask;
 
 }  // namespace resp3
 
 /// MINTSTS - Masked interrupt status register
 namespace mintsts {
-    /// Interrupt enabled only if corresponding bit in interrupt mask register is set. Bit 15 (EBE): End-bit error/no CRC error; Bit 14 (ACD): Auto command done; Bit 13 (SBE/BCI): RX Start Bit Error; Bit 12 (HLE): Hardware locked write error; Bit 11 (FRUN): FIFO underrun/overrun error; Bit 10 (HTO): Data starvation by host timeout (HTO); Bit 9 (DTRO): Data read timeout; Bit 8 (RTO): Response timeout; Bit 7 (DCRC): Data CRC error; Bit 6 (RCRC): Response CRC error; Bit 5 (RXDR): Receive FIFO data request; Bit 4 (TXDR): Transmit FIFO data request; Bit 3 (DTO): Data transfer over; Bit 2 (CD): Command done; Bit 1 (RE): Response error; Bit 0 (CD): Card detect.
-    /// Position: 0, Width: 16
-    /// Access: read-only
-    using INT_STATUS_MSK = BitField<0, 16>;
-    constexpr uint32_t INT_STATUS_MSK_Pos = 0;
-    constexpr uint32_t INT_STATUS_MSK_Msk = INT_STATUS_MSK::mask;
+/// Interrupt enabled only if corresponding bit in interrupt mask register is set. Bit 15 (EBE):
+/// End-bit error/no CRC error; Bit 14 (ACD): Auto command done; Bit 13 (SBE/BCI): RX Start Bit
+/// Error; Bit 12 (HLE): Hardware locked write error; Bit 11 (FRUN): FIFO underrun/overrun error;
+/// Bit 10 (HTO): Data starvation by host timeout (HTO); Bit 9 (DTRO): Data read timeout; Bit 8
+/// (RTO): Response timeout; Bit 7 (DCRC): Data CRC error; Bit 6 (RCRC): Response CRC error; Bit 5
+/// (RXDR): Receive FIFO data request; Bit 4 (TXDR): Transmit FIFO data request; Bit 3 (DTO): Data
+/// transfer over; Bit 2 (CD): Command done; Bit 1 (RE): Response error; Bit 0 (CD): Card detect.
+/// Position: 0, Width: 16
+/// Access: read-only
+using INT_STATUS_MSK = BitField<0, 16>;
+constexpr uint32_t INT_STATUS_MSK_Pos = 0;
+constexpr uint32_t INT_STATUS_MSK_Msk = INT_STATUS_MSK::mask;
 
-    /// Interrupt from SDIO card, one bit for each card. Bit[17:16] correspond to card1 and card0, respectively. SDIO interrupt for card is enabled only if corresponding sdhost_sdio_int_mask bit is set in Interrupt mask register (Setting mask bit enables interrupt).
-    /// Position: 16, Width: 2
-    /// Access: read-only
-    using SDIO_INTERRUPT_MSK = BitField<16, 2>;
-    constexpr uint32_t SDIO_INTERRUPT_MSK_Pos = 16;
-    constexpr uint32_t SDIO_INTERRUPT_MSK_Msk = SDIO_INTERRUPT_MSK::mask;
+/// Interrupt from SDIO card, one bit for each card. Bit[17:16] correspond to card1 and card0,
+/// respectively. SDIO interrupt for card is enabled only if corresponding sdhost_sdio_int_mask bit
+/// is set in Interrupt mask register (Setting mask bit enables interrupt). Position: 16, Width: 2
+/// Access: read-only
+using SDIO_INTERRUPT_MSK = BitField<16, 2>;
+constexpr uint32_t SDIO_INTERRUPT_MSK_Pos = 16;
+constexpr uint32_t SDIO_INTERRUPT_MSK_Msk = SDIO_INTERRUPT_MSK::mask;
 
 }  // namespace mintsts
 
 /// RINTSTS - Raw interrupt status register
 namespace rintsts {
-    /// Setting a bit clears the corresponding interrupt and writing 0 has no effect. Bits are logged regardless of interrupt mask status. Bit 15 (EBE): End-bit error/no CRC error; Bit 14 (ACD): Auto command done; Bit 13 (SBE/BCI): RX Start Bit Error; Bit 12 (HLE): Hardware locked write error; Bit 11 (FRUN): FIFO underrun/overrun error; Bit 10 (HTO): Data starvation by host timeout (HTO); Bit 9 (DTRO): Data read timeout; Bit 8 (RTO): Response timeout; Bit 7 (DCRC): Data CRC error; Bit 6 (RCRC): Response CRC error; Bit 5 (RXDR): Receive FIFO data request; Bit 4 (TXDR): Transmit FIFO data request; Bit 3 (DTO): Data transfer over; Bit 2 (CD): Command done; Bit 1 (RE): Response error; Bit 0 (CD): Card detect.
-    /// Position: 0, Width: 16
-    /// Access: read-write
-    using INT_STATUS_RAW = BitField<0, 16>;
-    constexpr uint32_t INT_STATUS_RAW_Pos = 0;
-    constexpr uint32_t INT_STATUS_RAW_Msk = INT_STATUS_RAW::mask;
+/// Setting a bit clears the corresponding interrupt and writing 0 has no effect. Bits are logged
+/// regardless of interrupt mask status. Bit 15 (EBE): End-bit error/no CRC error; Bit 14 (ACD):
+/// Auto command done; Bit 13 (SBE/BCI): RX Start Bit Error; Bit 12 (HLE): Hardware locked write
+/// error; Bit 11 (FRUN): FIFO underrun/overrun error; Bit 10 (HTO): Data starvation by host timeout
+/// (HTO); Bit 9 (DTRO): Data read timeout; Bit 8 (RTO): Response timeout; Bit 7 (DCRC): Data CRC
+/// error; Bit 6 (RCRC): Response CRC error; Bit 5 (RXDR): Receive FIFO data request; Bit 4 (TXDR):
+/// Transmit FIFO data request; Bit 3 (DTO): Data transfer over; Bit 2 (CD): Command done; Bit 1
+/// (RE): Response error; Bit 0 (CD): Card detect. Position: 0, Width: 16 Access: read-write
+using INT_STATUS_RAW = BitField<0, 16>;
+constexpr uint32_t INT_STATUS_RAW_Pos = 0;
+constexpr uint32_t INT_STATUS_RAW_Msk = INT_STATUS_RAW::mask;
 
-    /// Interrupt from SDIO card, one bit for each card. Bit[17:16] correspond to card1 and card0, respectively. Setting a bit clears the corresponding interrupt bit and writing 0 has no effect. 0: No SDIO interrupt from card; 1: SDIO interrupt from card.
-    /// Position: 16, Width: 2
-    /// Access: read-write
-    using SDIO_INTERRUPT_RAW = BitField<16, 2>;
-    constexpr uint32_t SDIO_INTERRUPT_RAW_Pos = 16;
-    constexpr uint32_t SDIO_INTERRUPT_RAW_Msk = SDIO_INTERRUPT_RAW::mask;
+/// Interrupt from SDIO card, one bit for each card. Bit[17:16] correspond to card1 and card0,
+/// respectively. Setting a bit clears the corresponding interrupt bit and writing 0 has no effect.
+/// 0: No SDIO interrupt from card; 1: SDIO interrupt from card. Position: 16, Width: 2 Access:
+/// read-write
+using SDIO_INTERRUPT_RAW = BitField<16, 2>;
+constexpr uint32_t SDIO_INTERRUPT_RAW_Pos = 16;
+constexpr uint32_t SDIO_INTERRUPT_RAW_Msk = SDIO_INTERRUPT_RAW::mask;
 
 }  // namespace rintsts
 
 /// STATUS - SD/MMC status register
 namespace status {
-    /// FIFO reached Receive watermark level, not qualified with data transfer.
-    /// Position: 0, Width: 1
-    /// Access: read-only
-    using FIFO_RX_WATERMARK = BitField<0, 1>;
-    constexpr uint32_t FIFO_RX_WATERMARK_Pos = 0;
-    constexpr uint32_t FIFO_RX_WATERMARK_Msk = FIFO_RX_WATERMARK::mask;
+/// FIFO reached Receive watermark level, not qualified with data transfer.
+/// Position: 0, Width: 1
+/// Access: read-only
+using FIFO_RX_WATERMARK = BitField<0, 1>;
+constexpr uint32_t FIFO_RX_WATERMARK_Pos = 0;
+constexpr uint32_t FIFO_RX_WATERMARK_Msk = FIFO_RX_WATERMARK::mask;
 
-    /// FIFO reached Transmit watermark level, not qualified with data transfer.
-    /// Position: 1, Width: 1
-    /// Access: read-only
-    using FIFO_TX_WATERMARK = BitField<1, 1>;
-    constexpr uint32_t FIFO_TX_WATERMARK_Pos = 1;
-    constexpr uint32_t FIFO_TX_WATERMARK_Msk = FIFO_TX_WATERMARK::mask;
+/// FIFO reached Transmit watermark level, not qualified with data transfer.
+/// Position: 1, Width: 1
+/// Access: read-only
+using FIFO_TX_WATERMARK = BitField<1, 1>;
+constexpr uint32_t FIFO_TX_WATERMARK_Pos = 1;
+constexpr uint32_t FIFO_TX_WATERMARK_Msk = FIFO_TX_WATERMARK::mask;
 
-    /// FIFO is empty status.
-    /// Position: 2, Width: 1
-    /// Access: read-only
-    using FIFO_EMPTY = BitField<2, 1>;
-    constexpr uint32_t FIFO_EMPTY_Pos = 2;
-    constexpr uint32_t FIFO_EMPTY_Msk = FIFO_EMPTY::mask;
+/// FIFO is empty status.
+/// Position: 2, Width: 1
+/// Access: read-only
+using FIFO_EMPTY = BitField<2, 1>;
+constexpr uint32_t FIFO_EMPTY_Pos = 2;
+constexpr uint32_t FIFO_EMPTY_Msk = FIFO_EMPTY::mask;
 
-    /// FIFO is full status.
-    /// Position: 3, Width: 1
-    /// Access: read-only
-    using FIFO_FULL = BitField<3, 1>;
-    constexpr uint32_t FIFO_FULL_Pos = 3;
-    constexpr uint32_t FIFO_FULL_Msk = FIFO_FULL::mask;
+/// FIFO is full status.
+/// Position: 3, Width: 1
+/// Access: read-only
+using FIFO_FULL = BitField<3, 1>;
+constexpr uint32_t FIFO_FULL_Pos = 3;
+constexpr uint32_t FIFO_FULL_Msk = FIFO_FULL::mask;
 
-    /// Command FSM states. 0: Idle; 1: Send init sequence; 2: Send cmd start bit; 3: Send cmd tx bit; 4: Send cmd index + arg; 5: Send cmd crc7; 6: Send cmd end bit; 7: Receive resp start bit; 8: Receive resp IRQ response; 9: Receive resp tx bit; 10: Receive resp cmd idx; 11: Receive resp data; 12: Receive resp crc7; 13: Receive resp end bit; 14: Cmd path wait NCC; 15: Wait, cmd-to-response turnaround.
-    /// Position: 4, Width: 4
-    /// Access: read-only
-    using COMMAND_FSM_STATES = BitField<4, 4>;
-    constexpr uint32_t COMMAND_FSM_STATES_Pos = 4;
-    constexpr uint32_t COMMAND_FSM_STATES_Msk = COMMAND_FSM_STATES::mask;
+/// Command FSM states. 0: Idle; 1: Send init sequence; 2: Send cmd start bit; 3: Send cmd tx bit;
+/// 4: Send cmd index + arg; 5: Send cmd crc7; 6: Send cmd end bit; 7: Receive resp start bit; 8:
+/// Receive resp IRQ response; 9: Receive resp tx bit; 10: Receive resp cmd idx; 11: Receive resp
+/// data; 12: Receive resp crc7; 13: Receive resp end bit; 14: Cmd path wait NCC; 15: Wait,
+/// cmd-to-response turnaround. Position: 4, Width: 4 Access: read-only
+using COMMAND_FSM_STATES = BitField<4, 4>;
+constexpr uint32_t COMMAND_FSM_STATES_Pos = 4;
+constexpr uint32_t COMMAND_FSM_STATES_Msk = COMMAND_FSM_STATES::mask;
 
-    /// Raw selected sdhost_card_data[3], checks whether card is present. 0: card not present; 1: card present.
-    /// Position: 8, Width: 1
-    /// Access: read-only
-    using DATA_3_STATUS = BitField<8, 1>;
-    constexpr uint32_t DATA_3_STATUS_Pos = 8;
-    constexpr uint32_t DATA_3_STATUS_Msk = DATA_3_STATUS::mask;
+/// Raw selected sdhost_card_data[3], checks whether card is present. 0: card not present; 1: card
+/// present. Position: 8, Width: 1 Access: read-only
+using DATA_3_STATUS = BitField<8, 1>;
+constexpr uint32_t DATA_3_STATUS_Pos = 8;
+constexpr uint32_t DATA_3_STATUS_Msk = DATA_3_STATUS::mask;
 
-    /// Inverted version of raw selected sdhost_card_data[0]. 0: Card data not busy; 1: Card data busy.
-    /// Position: 9, Width: 1
-    /// Access: read-only
-    using DATA_BUSY = BitField<9, 1>;
-    constexpr uint32_t DATA_BUSY_Pos = 9;
-    constexpr uint32_t DATA_BUSY_Msk = DATA_BUSY::mask;
+/// Inverted version of raw selected sdhost_card_data[0]. 0: Card data not busy; 1: Card data busy.
+/// Position: 9, Width: 1
+/// Access: read-only
+using DATA_BUSY = BitField<9, 1>;
+constexpr uint32_t DATA_BUSY_Pos = 9;
+constexpr uint32_t DATA_BUSY_Msk = DATA_BUSY::mask;
 
-    /// Data transmit or receive state-machine is busy.
-    /// Position: 10, Width: 1
-    /// Access: read-only
-    using DATA_STATE_MC_BUSY = BitField<10, 1>;
-    constexpr uint32_t DATA_STATE_MC_BUSY_Pos = 10;
-    constexpr uint32_t DATA_STATE_MC_BUSY_Msk = DATA_STATE_MC_BUSY::mask;
+/// Data transmit or receive state-machine is busy.
+/// Position: 10, Width: 1
+/// Access: read-only
+using DATA_STATE_MC_BUSY = BitField<10, 1>;
+constexpr uint32_t DATA_STATE_MC_BUSY_Pos = 10;
+constexpr uint32_t DATA_STATE_MC_BUSY_Msk = DATA_STATE_MC_BUSY::mask;
 
-    /// Index of previous response, including any auto-stop sent by core.
-    /// Position: 11, Width: 6
-    /// Access: read-only
-    using RESPONSE_INDEX = BitField<11, 6>;
-    constexpr uint32_t RESPONSE_INDEX_Pos = 11;
-    constexpr uint32_t RESPONSE_INDEX_Msk = RESPONSE_INDEX::mask;
+/// Index of previous response, including any auto-stop sent by core.
+/// Position: 11, Width: 6
+/// Access: read-only
+using RESPONSE_INDEX = BitField<11, 6>;
+constexpr uint32_t RESPONSE_INDEX_Pos = 11;
+constexpr uint32_t RESPONSE_INDEX_Msk = RESPONSE_INDEX::mask;
 
-    /// FIFO count, number of filled locations in FIFO.
-    /// Position: 17, Width: 13
-    /// Access: read-only
-    using FIFO_COUNT = BitField<17, 13>;
-    constexpr uint32_t FIFO_COUNT_Pos = 17;
-    constexpr uint32_t FIFO_COUNT_Msk = FIFO_COUNT::mask;
+/// FIFO count, number of filled locations in FIFO.
+/// Position: 17, Width: 13
+/// Access: read-only
+using FIFO_COUNT = BitField<17, 13>;
+constexpr uint32_t FIFO_COUNT_Pos = 17;
+constexpr uint32_t FIFO_COUNT_Msk = FIFO_COUNT::mask;
 
 }  // namespace status
 
 /// FIFOTH - FIFO configuration register
 namespace fifoth {
-    /// FIFO threshold watermark level when transmitting data to card. When FIFO data count is less than or equal to this number, DMA/FIFO request is raised. If Interrupt is enabled, then interrupt occurs. During end of packet, request or interrupt is generated, regardless of threshold programming.In non-DMA mode, when transmit FIFO threshold (TXDR) interrupt is enabled, then interrupt is generated instead of DMA request. During end of packet, on last interrupt, host is responsible for filling FIFO with only required remaining bytes (not before FIFO is full or after CIU completes data transfers, because FIFO may not be empty). In DMA mode, at end of packet, if last transfer is less than burst size, DMA controller does single cycles until required bytes are transferred.
-    /// Position: 0, Width: 12
-    /// Access: read-write
-    using TX_WMARK = BitField<0, 12>;
-    constexpr uint32_t TX_WMARK_Pos = 0;
-    constexpr uint32_t TX_WMARK_Msk = TX_WMARK::mask;
+/// FIFO threshold watermark level when transmitting data to card. When FIFO data count is less than
+/// or equal to this number, DMA/FIFO request is raised. If Interrupt is enabled, then interrupt
+/// occurs. During end of packet, request or interrupt is generated, regardless of threshold
+/// programming.In non-DMA mode, when transmit FIFO threshold (TXDR) interrupt is enabled, then
+/// interrupt is generated instead of DMA request. During end of packet, on last interrupt, host is
+/// responsible for filling FIFO with only required remaining bytes (not before FIFO is full or
+/// after CIU completes data transfers, because FIFO may not be empty). In DMA mode, at end of
+/// packet, if last transfer is less than burst size, DMA controller does single cycles until
+/// required bytes are transferred. Position: 0, Width: 12 Access: read-write
+using TX_WMARK = BitField<0, 12>;
+constexpr uint32_t TX_WMARK_Pos = 0;
+constexpr uint32_t TX_WMARK_Msk = TX_WMARK::mask;
 
-    /// FIFO threshold watermark level when receiving data to card.When FIFO data count reaches greater than this number , DMA/FIFO request is raised. During end of packet, request is generated regardless of threshold programming in order to complete any remaining data.In non-DMA mode, when receiver FIFO threshold (RXDR) interrupt is enabled, then interrupt is generated instead of DMA request.During end of packet, interrupt is not generated if threshold programming is larger than any remaining data. It is responsibility of host to read remaining bytes on seeing Data Transfer Done interrupt.In DMA mode, at end of packet, even if remaining bytes are less than threshold, DMA request does single transfers to flush out any remaining bytes before Data Transfer Done interrupt is set.
-    /// Position: 16, Width: 11
-    /// Access: read-write
-    using RX_WMARK = BitField<16, 11>;
-    constexpr uint32_t RX_WMARK_Pos = 16;
-    constexpr uint32_t RX_WMARK_Msk = RX_WMARK::mask;
+/// FIFO threshold watermark level when receiving data to card.When FIFO data count reaches greater
+/// than this number , DMA/FIFO request is raised. During end of packet, request is generated
+/// regardless of threshold programming in order to complete any remaining data.In non-DMA mode,
+/// when receiver FIFO threshold (RXDR) interrupt is enabled, then interrupt is generated instead of
+/// DMA request.During end of packet, interrupt is not generated if threshold programming is larger
+/// than any remaining data. It is responsibility of host to read remaining bytes on seeing Data
+/// Transfer Done interrupt.In DMA mode, at end of packet, even if remaining bytes are less than
+/// threshold, DMA request does single transfers to flush out any remaining bytes before Data
+/// Transfer Done interrupt is set. Position: 16, Width: 11 Access: read-write
+using RX_WMARK = BitField<16, 11>;
+constexpr uint32_t RX_WMARK_Pos = 16;
+constexpr uint32_t RX_WMARK_Msk = RX_WMARK::mask;
 
-    /// Burst size of multiple transaction, should be programmed same as DMA controller multiple-transaction-size SDHOST_SRC/DEST_MSIZE. 000: 1-byte transfer; 001: 4-byte transfer; 010: 8-byte transfer; 011: 16-byte transfer; 100: 32-byte transfer; 101: 64-byte transfer; 110: 128-byte transfer; 111: 256-byte transfer.
-    /// Position: 28, Width: 3
-    /// Access: read-write
-    using DMA_MULTIPLE_TRANSACTION_SIZE = BitField<28, 3>;
-    constexpr uint32_t DMA_MULTIPLE_TRANSACTION_SIZE_Pos = 28;
-    constexpr uint32_t DMA_MULTIPLE_TRANSACTION_SIZE_Msk = DMA_MULTIPLE_TRANSACTION_SIZE::mask;
+/// Burst size of multiple transaction, should be programmed same as DMA controller
+/// multiple-transaction-size SDHOST_SRC/DEST_MSIZE. 000: 1-byte transfer; 001: 4-byte transfer;
+/// 010: 8-byte transfer; 011: 16-byte transfer; 100: 32-byte transfer; 101: 64-byte transfer; 110:
+/// 128-byte transfer; 111: 256-byte transfer. Position: 28, Width: 3 Access: read-write
+using DMA_MULTIPLE_TRANSACTION_SIZE = BitField<28, 3>;
+constexpr uint32_t DMA_MULTIPLE_TRANSACTION_SIZE_Pos = 28;
+constexpr uint32_t DMA_MULTIPLE_TRANSACTION_SIZE_Msk = DMA_MULTIPLE_TRANSACTION_SIZE::mask;
 
 }  // namespace fifoth
 
 /// CDETECT - Card detect register
 namespace cdetect {
-    /// Value on sdhost_card_detect_n input ports (1 bit per card), read-only bits. 0 represents presence of card. Only NUM_CARDS number of bits are implemented.
-    /// Position: 0, Width: 2
-    /// Access: read-only
-    using CARD_DETECT_N = BitField<0, 2>;
-    constexpr uint32_t CARD_DETECT_N_Pos = 0;
-    constexpr uint32_t CARD_DETECT_N_Msk = CARD_DETECT_N::mask;
+/// Value on sdhost_card_detect_n input ports (1 bit per card), read-only bits. 0 represents
+/// presence of card. Only NUM_CARDS number of bits are implemented. Position: 0, Width: 2 Access:
+/// read-only
+using CARD_DETECT_N = BitField<0, 2>;
+constexpr uint32_t CARD_DETECT_N_Pos = 0;
+constexpr uint32_t CARD_DETECT_N_Msk = CARD_DETECT_N::mask;
 
 }  // namespace cdetect
 
 /// WRTPRT - Card write protection (WP) status register
 namespace wrtprt {
-    /// Value on sdhost_card_write_prt input ports (1 bit per card). 1 represents write protection. Only NUM_CARDS number of bits are implemented.
-    /// Position: 0, Width: 2
-    /// Access: read-only
-    using WRITE_PROTECT = BitField<0, 2>;
-    constexpr uint32_t WRITE_PROTECT_Pos = 0;
-    constexpr uint32_t WRITE_PROTECT_Msk = WRITE_PROTECT::mask;
+/// Value on sdhost_card_write_prt input ports (1 bit per card). 1 represents write protection. Only
+/// NUM_CARDS number of bits are implemented. Position: 0, Width: 2 Access: read-only
+using WRITE_PROTECT = BitField<0, 2>;
+constexpr uint32_t WRITE_PROTECT_Pos = 0;
+constexpr uint32_t WRITE_PROTECT_Msk = WRITE_PROTECT::mask;
 
 }  // namespace wrtprt
 
 /// TCBCNT - Transferred byte count register
 namespace tcbcnt {
-    /// Number of bytes transferred by CIU unit to card.
-    /// Position: 0, Width: 32
-    /// Access: read-only
-    using TCBCNT = BitField<0, 32>;
-    constexpr uint32_t TCBCNT_Pos = 0;
-    constexpr uint32_t TCBCNT_Msk = TCBCNT::mask;
+/// Number of bytes transferred by CIU unit to card.
+/// Position: 0, Width: 32
+/// Access: read-only
+using TCBCNT = BitField<0, 32>;
+constexpr uint32_t TCBCNT_Pos = 0;
+constexpr uint32_t TCBCNT_Msk = TCBCNT::mask;
 
 }  // namespace tcbcnt
 
 /// TBBCNT - Transferred byte count register
 namespace tbbcnt {
-    /// Number of bytes transferred between Host/DMA memory and BIU FIFO.
-    /// Position: 0, Width: 32
-    /// Access: read-only
-    using TBBCNT = BitField<0, 32>;
-    constexpr uint32_t TBBCNT_Pos = 0;
-    constexpr uint32_t TBBCNT_Msk = TBBCNT::mask;
+/// Number of bytes transferred between Host/DMA memory and BIU FIFO.
+/// Position: 0, Width: 32
+/// Access: read-only
+using TBBCNT = BitField<0, 32>;
+constexpr uint32_t TBBCNT_Pos = 0;
+constexpr uint32_t TBBCNT_Msk = TBBCNT::mask;
 
 }  // namespace tbbcnt
 
 /// DEBNCE - Debounce filter time configuration register
 namespace debnce {
-    /// Number of host clocks (clk) used by debounce filter logic. The typical debounce time is 5 \verb+~+ 25 ms to prevent the card instability when the card is inserted or removed.
-    /// Position: 0, Width: 24
-    /// Access: read-write
-    using DEBOUNCE_COUNT = BitField<0, 24>;
-    constexpr uint32_t DEBOUNCE_COUNT_Pos = 0;
-    constexpr uint32_t DEBOUNCE_COUNT_Msk = DEBOUNCE_COUNT::mask;
+/// Number of host clocks (clk) used by debounce filter logic. The typical debounce time is 5
+/// \verb+~+ 25 ms to prevent the card instability when the card is inserted or removed. Position:
+/// 0, Width: 24 Access: read-write
+using DEBOUNCE_COUNT = BitField<0, 24>;
+constexpr uint32_t DEBOUNCE_COUNT_Pos = 0;
+constexpr uint32_t DEBOUNCE_COUNT_Msk = DEBOUNCE_COUNT::mask;
 
 }  // namespace debnce
 
 /// USRID - User ID (scratchpad) register
 namespace usrid {
-    /// User identification register, value set by user. Can also be used as a scratchpad register by user.
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using USRID = BitField<0, 32>;
-    constexpr uint32_t USRID_Pos = 0;
-    constexpr uint32_t USRID_Msk = USRID::mask;
+/// User identification register, value set by user. Can also be used as a scratchpad register by
+/// user. Position: 0, Width: 32 Access: read-write
+using USRID = BitField<0, 32>;
+constexpr uint32_t USRID_Pos = 0;
+constexpr uint32_t USRID_Msk = USRID::mask;
 
 }  // namespace usrid
 
 /// VERID - Version ID (scratchpad) register
 namespace verid {
-    /// Hardware version register. Can also be read by fireware.
-    /// Position: 0, Width: 32
-    /// Access: read-only
-    using VERSIONID = BitField<0, 32>;
-    constexpr uint32_t VERSIONID_Pos = 0;
-    constexpr uint32_t VERSIONID_Msk = VERSIONID::mask;
+/// Hardware version register. Can also be read by fireware.
+/// Position: 0, Width: 32
+/// Access: read-only
+using VERSIONID = BitField<0, 32>;
+constexpr uint32_t VERSIONID_Pos = 0;
+constexpr uint32_t VERSIONID_Msk = VERSIONID::mask;
 
 }  // namespace verid
 
 /// HCON - Hardware feature register
 namespace hcon {
-    /// Hardware support SDIO and MMC.
-    /// Position: 0, Width: 1
-    /// Access: read-only
-    using CARD_TYPE = BitField<0, 1>;
-    constexpr uint32_t CARD_TYPE_Pos = 0;
-    constexpr uint32_t CARD_TYPE_Msk = CARD_TYPE::mask;
+/// Hardware support SDIO and MMC.
+/// Position: 0, Width: 1
+/// Access: read-only
+using CARD_TYPE = BitField<0, 1>;
+constexpr uint32_t CARD_TYPE_Pos = 0;
+constexpr uint32_t CARD_TYPE_Msk = CARD_TYPE::mask;
 
-    /// Support card number is 2.
-    /// Position: 1, Width: 5
-    /// Access: read-only
-    using CARD_NUM = BitField<1, 5>;
-    constexpr uint32_t CARD_NUM_Pos = 1;
-    constexpr uint32_t CARD_NUM_Msk = CARD_NUM::mask;
+/// Support card number is 2.
+/// Position: 1, Width: 5
+/// Access: read-only
+using CARD_NUM = BitField<1, 5>;
+constexpr uint32_t CARD_NUM_Pos = 1;
+constexpr uint32_t CARD_NUM_Msk = CARD_NUM::mask;
 
-    /// Register config is APB bus.
-    /// Position: 6, Width: 1
-    /// Access: read-only
-    using BUS_TYPE = BitField<6, 1>;
-    constexpr uint32_t BUS_TYPE_Pos = 6;
-    constexpr uint32_t BUS_TYPE_Msk = BUS_TYPE::mask;
+/// Register config is APB bus.
+/// Position: 6, Width: 1
+/// Access: read-only
+using BUS_TYPE = BitField<6, 1>;
+constexpr uint32_t BUS_TYPE_Pos = 6;
+constexpr uint32_t BUS_TYPE_Msk = BUS_TYPE::mask;
 
-    /// Regisger data widht is 32.
-    /// Position: 7, Width: 3
-    /// Access: read-only
-    using DATA_WIDTH = BitField<7, 3>;
-    constexpr uint32_t DATA_WIDTH_Pos = 7;
-    constexpr uint32_t DATA_WIDTH_Msk = DATA_WIDTH::mask;
+/// Regisger data widht is 32.
+/// Position: 7, Width: 3
+/// Access: read-only
+using DATA_WIDTH = BitField<7, 3>;
+constexpr uint32_t DATA_WIDTH_Pos = 7;
+constexpr uint32_t DATA_WIDTH_Msk = DATA_WIDTH::mask;
 
-    /// Register address width is 32.
-    /// Position: 10, Width: 6
-    /// Access: read-only
-    using ADDR_WIDTH = BitField<10, 6>;
-    constexpr uint32_t ADDR_WIDTH_Pos = 10;
-    constexpr uint32_t ADDR_WIDTH_Msk = ADDR_WIDTH::mask;
+/// Register address width is 32.
+/// Position: 10, Width: 6
+/// Access: read-only
+using ADDR_WIDTH = BitField<10, 6>;
+constexpr uint32_t ADDR_WIDTH_Pos = 10;
+constexpr uint32_t ADDR_WIDTH_Msk = ADDR_WIDTH::mask;
 
-    /// DMA data witdth is 32.
-    /// Position: 18, Width: 3
-    /// Access: read-only
-    using DMA_WIDTH = BitField<18, 3>;
-    constexpr uint32_t DMA_WIDTH_Pos = 18;
-    constexpr uint32_t DMA_WIDTH_Msk = DMA_WIDTH::mask;
+/// DMA data witdth is 32.
+/// Position: 18, Width: 3
+/// Access: read-only
+using DMA_WIDTH = BitField<18, 3>;
+constexpr uint32_t DMA_WIDTH_Pos = 18;
+constexpr uint32_t DMA_WIDTH_Msk = DMA_WIDTH::mask;
 
-    /// Inside RAM in SDMMC module.
-    /// Position: 21, Width: 1
-    /// Access: read-only
-    using RAM_INDISE = BitField<21, 1>;
-    constexpr uint32_t RAM_INDISE_Pos = 21;
-    constexpr uint32_t RAM_INDISE_Msk = RAM_INDISE::mask;
+/// Inside RAM in SDMMC module.
+/// Position: 21, Width: 1
+/// Access: read-only
+using RAM_INDISE = BitField<21, 1>;
+constexpr uint32_t RAM_INDISE_Pos = 21;
+constexpr uint32_t RAM_INDISE_Msk = RAM_INDISE::mask;
 
-    /// Have a hold regiser in data path .
-    /// Position: 22, Width: 1
-    /// Access: read-only
-    using HOLD = BitField<22, 1>;
-    constexpr uint32_t HOLD_Pos = 22;
-    constexpr uint32_t HOLD_Msk = HOLD::mask;
+/// Have a hold regiser in data path .
+/// Position: 22, Width: 1
+/// Access: read-only
+using HOLD = BitField<22, 1>;
+constexpr uint32_t HOLD_Pos = 22;
+constexpr uint32_t HOLD_Msk = HOLD::mask;
 
-    /// Have 4 clk divider in design .
-    /// Position: 24, Width: 2
-    /// Access: read-only
-    using NUM_CLK_DIV = BitField<24, 2>;
-    constexpr uint32_t NUM_CLK_DIV_Pos = 24;
-    constexpr uint32_t NUM_CLK_DIV_Msk = NUM_CLK_DIV::mask;
+/// Have 4 clk divider in design .
+/// Position: 24, Width: 2
+/// Access: read-only
+using NUM_CLK_DIV = BitField<24, 2>;
+constexpr uint32_t NUM_CLK_DIV_Pos = 24;
+constexpr uint32_t NUM_CLK_DIV_Msk = NUM_CLK_DIV::mask;
 
 }  // namespace hcon
 
 /// UHS - UHS-1 register
 namespace uhs {
-    /// DDR mode selecton,1 bit for each card. 0-Non-DDR mdoe. 1-DDR mdoe.
-    /// Position: 16, Width: 2
-    /// Access: read-write
-    using DDR = BitField<16, 2>;
-    constexpr uint32_t DDR_Pos = 16;
-    constexpr uint32_t DDR_Msk = DDR::mask;
+/// DDR mode selecton,1 bit for each card. 0-Non-DDR mdoe. 1-DDR mdoe.
+/// Position: 16, Width: 2
+/// Access: read-write
+using DDR = BitField<16, 2>;
+constexpr uint32_t DDR_Pos = 16;
+constexpr uint32_t DDR_Msk = DDR::mask;
 
 }  // namespace uhs
 
 /// RST_N - Card reset register
 namespace rst_n {
-    /// Hardware reset. 1: Active mode; 0: Reset. These bits cause the cards to enter pre-idle state, which requires them to be re-initialized. SDHOST_RST_CARD_RESET[0] should be set to 1'b0 to reset card0, SDHOST_RST_CARD_RESET[1] should be set to 1'b0 to reset card1.
-    /// Position: 0, Width: 2
-    /// Access: read-write
-    using CARD_RESET = BitField<0, 2>;
-    constexpr uint32_t CARD_RESET_Pos = 0;
-    constexpr uint32_t CARD_RESET_Msk = CARD_RESET::mask;
+/// Hardware reset. 1: Active mode; 0: Reset. These bits cause the cards to enter pre-idle state,
+/// which requires them to be re-initialized. SDHOST_RST_CARD_RESET[0] should be set to 1'b0 to
+/// reset card0, SDHOST_RST_CARD_RESET[1] should be set to 1'b0 to reset card1. Position: 0, Width:
+/// 2 Access: read-write
+using CARD_RESET = BitField<0, 2>;
+constexpr uint32_t CARD_RESET_Pos = 0;
+constexpr uint32_t CARD_RESET_Msk = CARD_RESET::mask;
 
 }  // namespace rst_n
 
 /// BMOD - Burst mode transfer configuration register
 namespace bmod {
-    /// Software Reset. When set, the DMA Controller resets all its internal registers. It is automatically cleared after one clock cycle.
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using SWR = BitField<0, 1>;
-    constexpr uint32_t SWR_Pos = 0;
-    constexpr uint32_t SWR_Msk = SWR::mask;
+/// Software Reset. When set, the DMA Controller resets all its internal registers. It is
+/// automatically cleared after one clock cycle. Position: 0, Width: 1 Access: read-write
+using SWR = BitField<0, 1>;
+constexpr uint32_t SWR_Pos = 0;
+constexpr uint32_t SWR_Msk = SWR::mask;
 
-    /// Fixed Burst. Controls whether the AHB Master interface performs fixed burst transfers or not. When set, the AHB will use only SINGLE, INCR4, INCR8 or INCR16 during start of normal burst transfers. When reset, the AHB will use SINGLE and INCR burst transfer operations.
-    /// Position: 1, Width: 1
-    /// Access: read-write
-    using FB = BitField<1, 1>;
-    constexpr uint32_t FB_Pos = 1;
-    constexpr uint32_t FB_Msk = FB::mask;
+/// Fixed Burst. Controls whether the AHB Master interface performs fixed burst transfers or not.
+/// When set, the AHB will use only SINGLE, INCR4, INCR8 or INCR16 during start of normal burst
+/// transfers. When reset, the AHB will use SINGLE and INCR burst transfer operations. Position: 1,
+/// Width: 1 Access: read-write
+using FB = BitField<1, 1>;
+constexpr uint32_t FB_Pos = 1;
+constexpr uint32_t FB_Msk = FB::mask;
 
-    /// IDMAC Enable. When set, the IDMAC is enabled.
-    /// Position: 7, Width: 1
-    /// Access: read-write
-    using DE = BitField<7, 1>;
-    constexpr uint32_t DE_Pos = 7;
-    constexpr uint32_t DE_Msk = DE::mask;
+/// IDMAC Enable. When set, the IDMAC is enabled.
+/// Position: 7, Width: 1
+/// Access: read-write
+using DE = BitField<7, 1>;
+constexpr uint32_t DE_Pos = 7;
+constexpr uint32_t DE_Msk = DE::mask;
 
-    /// Programmable Burst Length. These bits indicate the maximum number of beats to be performed in one IDMAC???Internal DMA Control???transaction. The IDMAC will always attempt to burst as specified in PBL each time it starts a burst transfer on the host bus. The permissible values are 1, 4, 8, 16, 32, 64, 128 and 256. This value is the mirror of MSIZE of FIFOTH register. In order to change this value, write the required value to FIFOTH register. This is an encode value as follows: 000: 1-byte transfer; 001: 4-byte transfer; 010: 8-byte transfer; 011: 16-byte transfer; 100: 32-byte transfer; 101: 64-byte transfer; 110: 128-byte transfer; 111: 256-byte transfer. PBL is a read-only value and is applicable only for data access, it does not apply to descriptor access.
-    /// Position: 8, Width: 3
-    /// Access: read-write
-    using PBL = BitField<8, 3>;
-    constexpr uint32_t PBL_Pos = 8;
-    constexpr uint32_t PBL_Msk = PBL::mask;
+/// Programmable Burst Length. These bits indicate the maximum number of beats to be performed in
+/// one IDMAC???Internal DMA Control???transaction. The IDMAC will always attempt to burst as
+/// specified in PBL each time it starts a burst transfer on the host bus. The permissible values
+/// are 1, 4, 8, 16, 32, 64, 128 and 256. This value is the mirror of MSIZE of FIFOTH register. In
+/// order to change this value, write the required value to FIFOTH register. This is an encode value
+/// as follows: 000: 1-byte transfer; 001: 4-byte transfer; 010: 8-byte transfer; 011: 16-byte
+/// transfer; 100: 32-byte transfer; 101: 64-byte transfer; 110: 128-byte transfer; 111: 256-byte
+/// transfer. PBL is a read-only value and is applicable only for data access, it does not apply to
+/// descriptor access. Position: 8, Width: 3 Access: read-write
+using PBL = BitField<8, 3>;
+constexpr uint32_t PBL_Pos = 8;
+constexpr uint32_t PBL_Msk = PBL::mask;
 
 }  // namespace bmod
 
 /// PLDMND - Poll demand configuration register
 namespace pldmnd {
-    /// Poll Demand. If the OWNER bit of a descriptor is not set, the FSM goes to the Suspend state. The host needs to write any value into this register for the IDMAC FSM to resume normal descriptor fetch operation. This is a write only .
-    /// Position: 0, Width: 32
-    /// Access: write-only
-    using PD = BitField<0, 32>;
-    constexpr uint32_t PD_Pos = 0;
-    constexpr uint32_t PD_Msk = PD::mask;
+/// Poll Demand. If the OWNER bit of a descriptor is not set, the FSM goes to the Suspend state. The
+/// host needs to write any value into this register for the IDMAC FSM to resume normal descriptor
+/// fetch operation. This is a write only . Position: 0, Width: 32 Access: write-only
+using PD = BitField<0, 32>;
+constexpr uint32_t PD_Pos = 0;
+constexpr uint32_t PD_Msk = PD::mask;
 
 }  // namespace pldmnd
 
 /// DBADDR - Descriptor base address register
 namespace dbaddr {
-    /// Start of Descriptor List. Contains the base address of the First Descriptor. The LSB bits [1:0] are ignored and taken as all-zero by the IDMAC internally. Hence these LSB bits may be treated as read-only.
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using DBADDR = BitField<0, 32>;
-    constexpr uint32_t DBADDR_Pos = 0;
-    constexpr uint32_t DBADDR_Msk = DBADDR::mask;
+/// Start of Descriptor List. Contains the base address of the First Descriptor. The LSB bits [1:0]
+/// are ignored and taken as all-zero by the IDMAC internally. Hence these LSB bits may be treated
+/// as read-only. Position: 0, Width: 32 Access: read-write
+using DBADDR = BitField<0, 32>;
+constexpr uint32_t DBADDR_Pos = 0;
+constexpr uint32_t DBADDR_Msk = DBADDR::mask;
 
 }  // namespace dbaddr
 
 /// IDSTS - IDMAC status register
 namespace idsts {
-    /// Transmit Interrupt. Indicates that data transmission is finished for a descriptor. Writing 1 clears this bit.
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using TI = BitField<0, 1>;
-    constexpr uint32_t TI_Pos = 0;
-    constexpr uint32_t TI_Msk = TI::mask;
+/// Transmit Interrupt. Indicates that data transmission is finished for a descriptor. Writing 1
+/// clears this bit. Position: 0, Width: 1 Access: read-write
+using TI = BitField<0, 1>;
+constexpr uint32_t TI_Pos = 0;
+constexpr uint32_t TI_Msk = TI::mask;
 
-    /// Receive Interrupt. Indicates the completion of data reception for a descriptor. Writing 1 clears this bit.
-    /// Position: 1, Width: 1
-    /// Access: read-write
-    using RI = BitField<1, 1>;
-    constexpr uint32_t RI_Pos = 1;
-    constexpr uint32_t RI_Msk = RI::mask;
+/// Receive Interrupt. Indicates the completion of data reception for a descriptor. Writing 1 clears
+/// this bit. Position: 1, Width: 1 Access: read-write
+using RI = BitField<1, 1>;
+constexpr uint32_t RI_Pos = 1;
+constexpr uint32_t RI_Msk = RI::mask;
 
-    /// Fatal Bus Error Interrupt. Indicates that a Bus Error occurred (IDSTS[12:10]) . When this bit is set, the DMA disables all its bus accesses. Writing 1 clears this bit.
-    /// Position: 2, Width: 1
-    /// Access: read-write
-    using FBE = BitField<2, 1>;
-    constexpr uint32_t FBE_Pos = 2;
-    constexpr uint32_t FBE_Msk = FBE::mask;
+/// Fatal Bus Error Interrupt. Indicates that a Bus Error occurred (IDSTS[12:10]) . When this bit is
+/// set, the DMA disables all its bus accesses. Writing 1 clears this bit. Position: 2, Width: 1
+/// Access: read-write
+using FBE = BitField<2, 1>;
+constexpr uint32_t FBE_Pos = 2;
+constexpr uint32_t FBE_Msk = FBE::mask;
 
-    /// Descriptor Unavailable Interrupt. This bit is set when the descriptor is unavailable due to OWNER bit = 0 (DES0[31] = 0). Writing 1 clears this bit.
-    /// Position: 4, Width: 1
-    /// Access: read-write
-    using DU = BitField<4, 1>;
-    constexpr uint32_t DU_Pos = 4;
-    constexpr uint32_t DU_Msk = DU::mask;
+/// Descriptor Unavailable Interrupt. This bit is set when the descriptor is unavailable due to
+/// OWNER bit = 0 (DES0[31] = 0). Writing 1 clears this bit. Position: 4, Width: 1 Access:
+/// read-write
+using DU = BitField<4, 1>;
+constexpr uint32_t DU_Pos = 4;
+constexpr uint32_t DU_Msk = DU::mask;
 
-    /// Card Error Summary. Indicates the status of the transaction to/from the card, also present in RINTSTS. Indicates the logical OR of the following bits: EBE : End Bit Error; RTO : Response Timeout/Boot Ack Timeout; RCRC : Response CRC; SBE : Start Bit Error; DRTO : Data Read Timeout/BDS timeout; DCRC : Data CRC for Receive; RE : Response Error. Writing 1 clears this bit. The abort condition of the IDMAC depends on the setting of this CES bit. If the CES bit is enabled, then the IDMAC aborts on a response error.
-    /// Position: 5, Width: 1
-    /// Access: read-write
-    using CES = BitField<5, 1>;
-    constexpr uint32_t CES_Pos = 5;
-    constexpr uint32_t CES_Msk = CES::mask;
+/// Card Error Summary. Indicates the status of the transaction to/from the card, also present in
+/// RINTSTS. Indicates the logical OR of the following bits: EBE : End Bit Error; RTO : Response
+/// Timeout/Boot Ack Timeout; RCRC : Response CRC; SBE : Start Bit Error; DRTO : Data Read
+/// Timeout/BDS timeout; DCRC : Data CRC for Receive; RE : Response Error. Writing 1 clears this
+/// bit. The abort condition of the IDMAC depends on the setting of this CES bit. If the CES bit is
+/// enabled, then the IDMAC aborts on a response error. Position: 5, Width: 1 Access: read-write
+using CES = BitField<5, 1>;
+constexpr uint32_t CES_Pos = 5;
+constexpr uint32_t CES_Msk = CES::mask;
 
-    /// Normal Interrupt Summary. Logical OR of the following: IDSTS[0] : Transmit Interrupt, IDSTS[1] : Receive Interrupt. Only unmasked bits affect this bit. This is a sticky bit and must be cleared each time a corresponding bit that causes NIS to be set is cleared. Writing 1 clears this bit.
-    /// Position: 8, Width: 1
-    /// Access: read-write
-    using NIS = BitField<8, 1>;
-    constexpr uint32_t NIS_Pos = 8;
-    constexpr uint32_t NIS_Msk = NIS::mask;
+/// Normal Interrupt Summary. Logical OR of the following: IDSTS[0] : Transmit Interrupt, IDSTS[1] :
+/// Receive Interrupt. Only unmasked bits affect this bit. This is a sticky bit and must be cleared
+/// each time a corresponding bit that causes NIS to be set is cleared. Writing 1 clears this bit.
+/// Position: 8, Width: 1
+/// Access: read-write
+using NIS = BitField<8, 1>;
+constexpr uint32_t NIS_Pos = 8;
+constexpr uint32_t NIS_Msk = NIS::mask;
 
-    /// Abnormal Interrupt Summary. Logical OR of the following: IDSTS[2] : Fatal Bus Interrupt, IDSTS[4] : DU bit Interrupt. Only unmasked bits affect this bit. This is a sticky bit and must be cleared each time a corresponding bit that causes AIS to be set is cleared. Writing 1 clears this bit.
-    /// Position: 9, Width: 1
-    /// Access: read-write
-    using AIS = BitField<9, 1>;
-    constexpr uint32_t AIS_Pos = 9;
-    constexpr uint32_t AIS_Msk = AIS::mask;
+/// Abnormal Interrupt Summary. Logical OR of the following: IDSTS[2] : Fatal Bus Interrupt,
+/// IDSTS[4] : DU bit Interrupt. Only unmasked bits affect this bit. This is a sticky bit and must
+/// be cleared each time a corresponding bit that causes AIS to be set is cleared. Writing 1 clears
+/// this bit. Position: 9, Width: 1 Access: read-write
+using AIS = BitField<9, 1>;
+constexpr uint32_t AIS_Pos = 9;
+constexpr uint32_t AIS_Msk = AIS::mask;
 
-    /// Fatal Bus Error Code. Indicates the type of error that caused a Bus Error. Valid only when the Fatal Bus Error bit IDSTS[2] is set. This field does not generate an interrupt. 001: Host Abort received during transmission; 010: Host Abort received during reception; Others: Reserved.
-    /// Position: 10, Width: 3
-    /// Access: read-write
-    using FBE_CODE = BitField<10, 3>;
-    constexpr uint32_t FBE_CODE_Pos = 10;
-    constexpr uint32_t FBE_CODE_Msk = FBE_CODE::mask;
+/// Fatal Bus Error Code. Indicates the type of error that caused a Bus Error. Valid only when the
+/// Fatal Bus Error bit IDSTS[2] is set. This field does not generate an interrupt. 001: Host Abort
+/// received during transmission; 010: Host Abort received during reception; Others: Reserved.
+/// Position: 10, Width: 3
+/// Access: read-write
+using FBE_CODE = BitField<10, 3>;
+constexpr uint32_t FBE_CODE_Pos = 10;
+constexpr uint32_t FBE_CODE_Msk = FBE_CODE::mask;
 
-    /// DMAC FSM present state. 0: DMA_IDLE (idle state); 1: DMA_SUSPEND (suspend state); 2: DESC_RD (descriptor reading state); 3: DESC_CHK (descriptor checking state); 4: DMA_RD_REQ_WAIT (read-data request waiting state); 5: DMA_WR_REQ_WAIT (write-data request waiting state); 6: DMA_RD (data-read state); 7: DMA_WR (data-write state); 8: DESC_CLOSE (descriptor close state).
-    /// Position: 13, Width: 4
-    /// Access: read-write
-    using FSM = BitField<13, 4>;
-    constexpr uint32_t FSM_Pos = 13;
-    constexpr uint32_t FSM_Msk = FSM::mask;
+/// DMAC FSM present state. 0: DMA_IDLE (idle state); 1: DMA_SUSPEND (suspend state); 2: DESC_RD
+/// (descriptor reading state); 3: DESC_CHK (descriptor checking state); 4: DMA_RD_REQ_WAIT
+/// (read-data request waiting state); 5: DMA_WR_REQ_WAIT (write-data request waiting state); 6:
+/// DMA_RD (data-read state); 7: DMA_WR (data-write state); 8: DESC_CLOSE (descriptor close state).
+/// Position: 13, Width: 4
+/// Access: read-write
+using FSM = BitField<13, 4>;
+constexpr uint32_t FSM_Pos = 13;
+constexpr uint32_t FSM_Msk = FSM::mask;
 
 }  // namespace idsts
 
 /// IDINTEN - IDMAC interrupt enable register
 namespace idinten {
-    /// Transmit Interrupt Enable. When set with Normal Interrupt Summary Enable, Transmit Interrupt is enabled. When reset, Transmit Interrupt is disabled.
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using TI = BitField<0, 1>;
-    constexpr uint32_t TI_Pos = 0;
-    constexpr uint32_t TI_Msk = TI::mask;
+/// Transmit Interrupt Enable. When set with Normal Interrupt Summary Enable, Transmit Interrupt is
+/// enabled. When reset, Transmit Interrupt is disabled. Position: 0, Width: 1 Access: read-write
+using TI = BitField<0, 1>;
+constexpr uint32_t TI_Pos = 0;
+constexpr uint32_t TI_Msk = TI::mask;
 
-    /// Receive Interrupt Enable. When set with Normal Interrupt Summary Enable, Receive Interrupt is enabled. When reset, Receive Interrupt is disabled.
-    /// Position: 1, Width: 1
-    /// Access: read-write
-    using RI = BitField<1, 1>;
-    constexpr uint32_t RI_Pos = 1;
-    constexpr uint32_t RI_Msk = RI::mask;
+/// Receive Interrupt Enable. When set with Normal Interrupt Summary Enable, Receive Interrupt is
+/// enabled. When reset, Receive Interrupt is disabled. Position: 1, Width: 1 Access: read-write
+using RI = BitField<1, 1>;
+constexpr uint32_t RI_Pos = 1;
+constexpr uint32_t RI_Msk = RI::mask;
 
-    /// Fatal Bus Error Enable. When set with Abnormal Interrupt Summary Enable, the Fatal Bus Error Interrupt is enabled. When reset, Fatal Bus Error Enable Interrupt is disabled.
-    /// Position: 2, Width: 1
-    /// Access: read-write
-    using FBE = BitField<2, 1>;
-    constexpr uint32_t FBE_Pos = 2;
-    constexpr uint32_t FBE_Msk = FBE::mask;
+/// Fatal Bus Error Enable. When set with Abnormal Interrupt Summary Enable, the Fatal Bus Error
+/// Interrupt is enabled. When reset, Fatal Bus Error Enable Interrupt is disabled. Position: 2,
+/// Width: 1 Access: read-write
+using FBE = BitField<2, 1>;
+constexpr uint32_t FBE_Pos = 2;
+constexpr uint32_t FBE_Msk = FBE::mask;
 
-    /// Descriptor Unavailable Interrupt. When set along with Abnormal Interrupt Summary Enable, the DU interrupt is enabled.
-    /// Position: 4, Width: 1
-    /// Access: read-write
-    using DU = BitField<4, 1>;
-    constexpr uint32_t DU_Pos = 4;
-    constexpr uint32_t DU_Msk = DU::mask;
+/// Descriptor Unavailable Interrupt. When set along with Abnormal Interrupt Summary Enable, the DU
+/// interrupt is enabled. Position: 4, Width: 1 Access: read-write
+using DU = BitField<4, 1>;
+constexpr uint32_t DU_Pos = 4;
+constexpr uint32_t DU_Msk = DU::mask;
 
-    /// Card Error summary Interrupt Enable. When set, it enables the Card Interrupt summary.
-    /// Position: 5, Width: 1
-    /// Access: read-write
-    using CES = BitField<5, 1>;
-    constexpr uint32_t CES_Pos = 5;
-    constexpr uint32_t CES_Msk = CES::mask;
+/// Card Error summary Interrupt Enable. When set, it enables the Card Interrupt summary.
+/// Position: 5, Width: 1
+/// Access: read-write
+using CES = BitField<5, 1>;
+constexpr uint32_t CES_Pos = 5;
+constexpr uint32_t CES_Msk = CES::mask;
 
-    /// Normal Interrupt Summary Enable. When set, a normal interrupt is enabled. When reset, a normal interrupt is disabled. This bit enables the following bits: IDINTEN[0]: Transmit Interrupt; IDINTEN[1]: Receive Interrupt.
-    /// Position: 8, Width: 1
-    /// Access: read-write
-    using NI = BitField<8, 1>;
-    constexpr uint32_t NI_Pos = 8;
-    constexpr uint32_t NI_Msk = NI::mask;
+/// Normal Interrupt Summary Enable. When set, a normal interrupt is enabled. When reset, a normal
+/// interrupt is disabled. This bit enables the following bits: IDINTEN[0]: Transmit Interrupt;
+/// IDINTEN[1]: Receive Interrupt. Position: 8, Width: 1 Access: read-write
+using NI = BitField<8, 1>;
+constexpr uint32_t NI_Pos = 8;
+constexpr uint32_t NI_Msk = NI::mask;
 
-    /// Abnormal Interrupt Summary Enable. When set, an abnormal interrupt is enabled. This bit enables the following bits: IDINTEN[2]: Fatal Bus Error Interrupt; IDINTEN[4]: DU Interrupt.
-    /// Position: 9, Width: 1
-    /// Access: read-write
-    using AI = BitField<9, 1>;
-    constexpr uint32_t AI_Pos = 9;
-    constexpr uint32_t AI_Msk = AI::mask;
+/// Abnormal Interrupt Summary Enable. When set, an abnormal interrupt is enabled. This bit enables
+/// the following bits: IDINTEN[2]: Fatal Bus Error Interrupt; IDINTEN[4]: DU Interrupt. Position:
+/// 9, Width: 1 Access: read-write
+using AI = BitField<9, 1>;
+constexpr uint32_t AI_Pos = 9;
+constexpr uint32_t AI_Msk = AI::mask;
 
 }  // namespace idinten
 
 /// DSCADDR - Host descriptor address pointer
 namespace dscaddr {
-    /// Host Descriptor Address Pointer, updated by IDMAC during operation and cleared on reset. This register points to the start address of the current descriptor read by the IDMAC.
-    /// Position: 0, Width: 32
-    /// Access: read-only
-    using DSCADDR = BitField<0, 32>;
-    constexpr uint32_t DSCADDR_Pos = 0;
-    constexpr uint32_t DSCADDR_Msk = DSCADDR::mask;
+/// Host Descriptor Address Pointer, updated by IDMAC during operation and cleared on reset. This
+/// register points to the start address of the current descriptor read by the IDMAC. Position: 0,
+/// Width: 32 Access: read-only
+using DSCADDR = BitField<0, 32>;
+constexpr uint32_t DSCADDR_Pos = 0;
+constexpr uint32_t DSCADDR_Msk = DSCADDR::mask;
 
 }  // namespace dscaddr
 
 /// BUFADDR - Host buffer address pointer register
 namespace bufaddr {
-    /// Host Buffer Address Pointer, updated by IDMAC during operation and cleared on reset. This register points to the current Data Buffer Address being accessed by the IDMAC.
-    /// Position: 0, Width: 32
-    /// Access: read-only
-    using BUFADDR = BitField<0, 32>;
-    constexpr uint32_t BUFADDR_Pos = 0;
-    constexpr uint32_t BUFADDR_Msk = BUFADDR::mask;
+/// Host Buffer Address Pointer, updated by IDMAC during operation and cleared on reset. This
+/// register points to the current Data Buffer Address being accessed by the IDMAC. Position: 0,
+/// Width: 32 Access: read-only
+using BUFADDR = BitField<0, 32>;
+constexpr uint32_t BUFADDR_Pos = 0;
+constexpr uint32_t BUFADDR_Msk = BUFADDR::mask;
 
 }  // namespace bufaddr
 
 /// CARDTHRCTL - Card Threshold Control register
 namespace cardthrctl {
-    /// Card read threshold enable. 1'b0-Card read threshold disabled. 1'b1-Card read threshold enabled.
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using CARDRDTHREN = BitField<0, 1>;
-    constexpr uint32_t CARDRDTHREN_Pos = 0;
-    constexpr uint32_t CARDRDTHREN_Msk = CARDRDTHREN::mask;
+/// Card read threshold enable. 1'b0-Card read threshold disabled. 1'b1-Card read threshold enabled.
+/// Position: 0, Width: 1
+/// Access: read-write
+using CARDRDTHREN = BitField<0, 1>;
+constexpr uint32_t CARDRDTHREN_Pos = 0;
+constexpr uint32_t CARDRDTHREN_Msk = CARDRDTHREN::mask;
 
-    /// Busy clear interrupt generation: 1'b0-Busy clear interrypt disabled. 1'b1-Busy clear interrypt enabled.
-    /// Position: 1, Width: 1
-    /// Access: read-write
-    using CARDCLRINTEN = BitField<1, 1>;
-    constexpr uint32_t CARDCLRINTEN_Pos = 1;
-    constexpr uint32_t CARDCLRINTEN_Msk = CARDCLRINTEN::mask;
+/// Busy clear interrupt generation: 1'b0-Busy clear interrypt disabled. 1'b1-Busy clear interrypt
+/// enabled. Position: 1, Width: 1 Access: read-write
+using CARDCLRINTEN = BitField<1, 1>;
+constexpr uint32_t CARDCLRINTEN_Pos = 1;
+constexpr uint32_t CARDCLRINTEN_Msk = CARDCLRINTEN::mask;
 
-    /// Applicable when HS400 mode is enabled. 1'b0-Card write Threshold disabled. 1'b1-Card write Threshold enabled.
-    /// Position: 2, Width: 1
-    /// Access: read-write
-    using CARDWRTHREN = BitField<2, 1>;
-    constexpr uint32_t CARDWRTHREN_Pos = 2;
-    constexpr uint32_t CARDWRTHREN_Msk = CARDWRTHREN::mask;
+/// Applicable when HS400 mode is enabled. 1'b0-Card write Threshold disabled. 1'b1-Card write
+/// Threshold enabled. Position: 2, Width: 1 Access: read-write
+using CARDWRTHREN = BitField<2, 1>;
+constexpr uint32_t CARDWRTHREN_Pos = 2;
+constexpr uint32_t CARDWRTHREN_Msk = CARDWRTHREN::mask;
 
-    /// The inside FIFO size is 512,This register is applicable when SDHOST_CARDERTHREN_REG is set to 1 or SDHOST_CARDRDTHREN_REG set to 1.
-    /// Position: 16, Width: 16
-    /// Access: read-write
-    using CARDTHRESHOLD = BitField<16, 16>;
-    constexpr uint32_t CARDTHRESHOLD_Pos = 16;
-    constexpr uint32_t CARDTHRESHOLD_Msk = CARDTHRESHOLD::mask;
+/// The inside FIFO size is 512,This register is applicable when SDHOST_CARDERTHREN_REG is set to 1
+/// or SDHOST_CARDRDTHREN_REG set to 1. Position: 16, Width: 16 Access: read-write
+using CARDTHRESHOLD = BitField<16, 16>;
+constexpr uint32_t CARDTHRESHOLD_Pos = 16;
+constexpr uint32_t CARDTHRESHOLD_Msk = CARDTHRESHOLD::mask;
 
 }  // namespace cardthrctl
 
 /// EMMCDDR - eMMC DDR register
 namespace emmcddr {
-    /// Control for start bit detection mechanism duration of start bit.Each bit refers to one slot.Set this bit to 1 for eMMC4.5 and above,set to 0 for SD applications.For eMMC4.5,start bit can be: 1'b0-Full cycle. 1'b1-less than one full cycle.
-    /// Position: 0, Width: 2
-    /// Access: read-write
-    using HALFSTARTBIT = BitField<0, 2>;
-    constexpr uint32_t HALFSTARTBIT_Pos = 0;
-    constexpr uint32_t HALFSTARTBIT_Msk = HALFSTARTBIT::mask;
+/// Control for start bit detection mechanism duration of start bit.Each bit refers to one slot.Set
+/// this bit to 1 for eMMC4.5 and above,set to 0 for SD applications.For eMMC4.5,start bit can be:
+/// 1'b0-Full cycle. 1'b1-less than one full cycle. Position: 0, Width: 2 Access: read-write
+using HALFSTARTBIT = BitField<0, 2>;
+constexpr uint32_t HALFSTARTBIT_Pos = 0;
+constexpr uint32_t HALFSTARTBIT_Msk = HALFSTARTBIT::mask;
 
-    /// Set 1 to enable HS400 mode.
-    /// Position: 31, Width: 1
-    /// Access: read-write
-    using HS400_MODE = BitField<31, 1>;
-    constexpr uint32_t HS400_MODE_Pos = 31;
-    constexpr uint32_t HS400_MODE_Msk = HS400_MODE::mask;
+/// Set 1 to enable HS400 mode.
+/// Position: 31, Width: 1
+/// Access: read-write
+using HS400_MODE = BitField<31, 1>;
+constexpr uint32_t HS400_MODE_Pos = 31;
+constexpr uint32_t HS400_MODE_Msk = HS400_MODE::mask;
 
 }  // namespace emmcddr
 
 /// ENSHIFT - Enable Phase Shift register
 namespace enshift {
-    /// Control for the amount of phase shift provided on the default enables in the design.Two bits assigned for each card. 2'b00-Default phase shift. 2'b01-Enables shifted to next immediate positive edge. 2'b10-Enables shifted to next immediate negative edge. 2'b11-Reserved.
-    /// Position: 0, Width: 4
-    /// Access: read-write
-    using ENABLE_SHIFT = BitField<0, 4>;
-    constexpr uint32_t ENABLE_SHIFT_Pos = 0;
-    constexpr uint32_t ENABLE_SHIFT_Msk = ENABLE_SHIFT::mask;
+/// Control for the amount of phase shift provided on the default enables in the design.Two bits
+/// assigned for each card. 2'b00-Default phase shift. 2'b01-Enables shifted to next immediate
+/// positive edge. 2'b10-Enables shifted to next immediate negative edge. 2'b11-Reserved. Position:
+/// 0, Width: 4 Access: read-write
+using ENABLE_SHIFT = BitField<0, 4>;
+constexpr uint32_t ENABLE_SHIFT_Pos = 0;
+constexpr uint32_t ENABLE_SHIFT_Msk = ENABLE_SHIFT::mask;
 
 }  // namespace enshift
 
 /// BUFFIFO - CPU write and read transmit data by FIFO
 namespace buffifo {
-    /// CPU write and read transmit data by FIFO. This register points to the current Data FIFO .
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using BUFFIFO = BitField<0, 32>;
-    constexpr uint32_t BUFFIFO_Pos = 0;
-    constexpr uint32_t BUFFIFO_Msk = BUFFIFO::mask;
+/// CPU write and read transmit data by FIFO. This register points to the current Data FIFO .
+/// Position: 0, Width: 32
+/// Access: read-write
+using BUFFIFO = BitField<0, 32>;
+constexpr uint32_t BUFFIFO_Pos = 0;
+constexpr uint32_t BUFFIFO_Msk = BUFFIFO::mask;
 
 }  // namespace buffifo
 
 /// CLK_EDGE_SEL - SDIO control register.
 namespace clk_edge_sel {
-    /// It's used to select the clock phase of the output signal from phase 0, phase 90, phase 180, phase 270.
-    /// Position: 0, Width: 3
-    /// Access: read-write
-    using CCLKIN_EDGE_DRV_SEL = BitField<0, 3>;
-    constexpr uint32_t CCLKIN_EDGE_DRV_SEL_Pos = 0;
-    constexpr uint32_t CCLKIN_EDGE_DRV_SEL_Msk = CCLKIN_EDGE_DRV_SEL::mask;
+/// It's used to select the clock phase of the output signal from phase 0, phase 90, phase 180,
+/// phase 270. Position: 0, Width: 3 Access: read-write
+using CCLKIN_EDGE_DRV_SEL = BitField<0, 3>;
+constexpr uint32_t CCLKIN_EDGE_DRV_SEL_Pos = 0;
+constexpr uint32_t CCLKIN_EDGE_DRV_SEL_Msk = CCLKIN_EDGE_DRV_SEL::mask;
 
-    /// It's used to select the clock phase of the input signal from phase 0, phase 90, phase 180, phase 270.
-    /// Position: 3, Width: 3
-    /// Access: read-write
-    using CCLKIN_EDGE_SAM_SEL = BitField<3, 3>;
-    constexpr uint32_t CCLKIN_EDGE_SAM_SEL_Pos = 3;
-    constexpr uint32_t CCLKIN_EDGE_SAM_SEL_Msk = CCLKIN_EDGE_SAM_SEL::mask;
+/// It's used to select the clock phase of the input signal from phase 0, phase 90, phase 180, phase
+/// 270. Position: 3, Width: 3 Access: read-write
+using CCLKIN_EDGE_SAM_SEL = BitField<3, 3>;
+constexpr uint32_t CCLKIN_EDGE_SAM_SEL_Pos = 3;
+constexpr uint32_t CCLKIN_EDGE_SAM_SEL_Msk = CCLKIN_EDGE_SAM_SEL::mask;
 
-    /// It's used to select the clock phase of the internal signal from phase 0, phase 90, phase 180, phase 270.
-    /// Position: 6, Width: 3
-    /// Access: read-write
-    using CCLKIN_EDGE_SLF_SEL = BitField<6, 3>;
-    constexpr uint32_t CCLKIN_EDGE_SLF_SEL_Pos = 6;
-    constexpr uint32_t CCLKIN_EDGE_SLF_SEL_Msk = CCLKIN_EDGE_SLF_SEL::mask;
+/// It's used to select the clock phase of the internal signal from phase 0, phase 90, phase 180,
+/// phase 270. Position: 6, Width: 3 Access: read-write
+using CCLKIN_EDGE_SLF_SEL = BitField<6, 3>;
+constexpr uint32_t CCLKIN_EDGE_SLF_SEL_Pos = 6;
+constexpr uint32_t CCLKIN_EDGE_SLF_SEL_Msk = CCLKIN_EDGE_SLF_SEL::mask;
 
-    /// The high level of the divider clock. The value should be smaller than CCLKIN_EDGE_L.
-    /// Position: 9, Width: 4
-    /// Access: read-write
-    using CCLLKIN_EDGE_H = BitField<9, 4>;
-    constexpr uint32_t CCLLKIN_EDGE_H_Pos = 9;
-    constexpr uint32_t CCLLKIN_EDGE_H_Msk = CCLLKIN_EDGE_H::mask;
+/// The high level of the divider clock. The value should be smaller than CCLKIN_EDGE_L.
+/// Position: 9, Width: 4
+/// Access: read-write
+using CCLLKIN_EDGE_H = BitField<9, 4>;
+constexpr uint32_t CCLLKIN_EDGE_H_Pos = 9;
+constexpr uint32_t CCLLKIN_EDGE_H_Msk = CCLLKIN_EDGE_H::mask;
 
-    /// The low level of the divider clock. The value should be larger than CCLKIN_EDGE_H.
-    /// Position: 13, Width: 4
-    /// Access: read-write
-    using CCLLKIN_EDGE_L = BitField<13, 4>;
-    constexpr uint32_t CCLLKIN_EDGE_L_Pos = 13;
-    constexpr uint32_t CCLLKIN_EDGE_L_Msk = CCLLKIN_EDGE_L::mask;
+/// The low level of the divider clock. The value should be larger than CCLKIN_EDGE_H.
+/// Position: 13, Width: 4
+/// Access: read-write
+using CCLLKIN_EDGE_L = BitField<13, 4>;
+constexpr uint32_t CCLLKIN_EDGE_L_Pos = 13;
+constexpr uint32_t CCLLKIN_EDGE_L_Msk = CCLLKIN_EDGE_L::mask;
 
-    /// The value should be equal to CCLKIN_EDGE_L.
-    /// Position: 17, Width: 4
-    /// Access: read-write
-    using CCLLKIN_EDGE_N = BitField<17, 4>;
-    constexpr uint32_t CCLLKIN_EDGE_N_Pos = 17;
-    constexpr uint32_t CCLLKIN_EDGE_N_Msk = CCLLKIN_EDGE_N::mask;
+/// The value should be equal to CCLKIN_EDGE_L.
+/// Position: 17, Width: 4
+/// Access: read-write
+using CCLLKIN_EDGE_N = BitField<17, 4>;
+constexpr uint32_t CCLLKIN_EDGE_N_Pos = 17;
+constexpr uint32_t CCLLKIN_EDGE_N_Msk = CCLLKIN_EDGE_N::mask;
 
-    /// Enable esdio mode.
-    /// Position: 21, Width: 1
-    /// Access: read-write
-    using ESDIO_MODE = BitField<21, 1>;
-    constexpr uint32_t ESDIO_MODE_Pos = 21;
-    constexpr uint32_t ESDIO_MODE_Msk = ESDIO_MODE::mask;
+/// Enable esdio mode.
+/// Position: 21, Width: 1
+/// Access: read-write
+using ESDIO_MODE = BitField<21, 1>;
+constexpr uint32_t ESDIO_MODE_Pos = 21;
+constexpr uint32_t ESDIO_MODE_Msk = ESDIO_MODE::mask;
 
-    /// Enable esd mode.
-    /// Position: 22, Width: 1
-    /// Access: read-write
-    using ESD_MODE = BitField<22, 1>;
-    constexpr uint32_t ESD_MODE_Pos = 22;
-    constexpr uint32_t ESD_MODE_Msk = ESD_MODE::mask;
+/// Enable esd mode.
+/// Position: 22, Width: 1
+/// Access: read-write
+using ESD_MODE = BitField<22, 1>;
+constexpr uint32_t ESD_MODE_Pos = 22;
+constexpr uint32_t ESD_MODE_Msk = ESD_MODE::mask;
 
-    /// Sdio clock enable
-    /// Position: 23, Width: 1
-    /// Access: read-write
-    using CCLK_EN = BitField<23, 1>;
-    constexpr uint32_t CCLK_EN_Pos = 23;
-    constexpr uint32_t CCLK_EN_Msk = CCLK_EN::mask;
+/// Sdio clock enable
+/// Position: 23, Width: 1
+/// Access: read-write
+using CCLK_EN = BitField<23, 1>;
+constexpr uint32_t CCLK_EN_Pos = 23;
+constexpr uint32_t CCLK_EN_Msk = CCLK_EN::mask;
 
 }  // namespace clk_edge_sel
 

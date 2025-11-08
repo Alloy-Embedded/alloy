@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f1::wwdg {
 
 /// WWDG Register Structure
 struct WWDG_Registers {
-
     /// Control register (WWDG_CR)
     /// Offset: 0x0000
     /// Reset value: 0x0000007F

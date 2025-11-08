@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::otg_hs_pwrclk {
@@ -19,23 +20,23 @@ using namespace alloy::hal::bitfields;
 
 /// OTG_HS_PCGCR - Power and clock gating control register
 namespace otg_hs_pcgcr {
-    /// Stop PHY clock
-    /// Position: 0, Width: 1
-    using STPPCLK = BitField<0, 1>;
-    constexpr uint32_t STPPCLK_Pos = 0;
-    constexpr uint32_t STPPCLK_Msk = STPPCLK::mask;
+/// Stop PHY clock
+/// Position: 0, Width: 1
+using STPPCLK = BitField<0, 1>;
+constexpr uint32_t STPPCLK_Pos = 0;
+constexpr uint32_t STPPCLK_Msk = STPPCLK::mask;
 
-    /// Gate HCLK
-    /// Position: 1, Width: 1
-    using GATEHCLK = BitField<1, 1>;
-    constexpr uint32_t GATEHCLK_Pos = 1;
-    constexpr uint32_t GATEHCLK_Msk = GATEHCLK::mask;
+/// Gate HCLK
+/// Position: 1, Width: 1
+using GATEHCLK = BitField<1, 1>;
+constexpr uint32_t GATEHCLK_Pos = 1;
+constexpr uint32_t GATEHCLK_Msk = GATEHCLK::mask;
 
-    /// PHY suspended
-    /// Position: 4, Width: 1
-    using PHYSUSP = BitField<4, 1>;
-    constexpr uint32_t PHYSUSP_Pos = 4;
-    constexpr uint32_t PHYSUSP_Msk = PHYSUSP::mask;
+/// PHY suspended
+/// Position: 4, Width: 1
+using PHYSUSP = BitField<4, 1>;
+constexpr uint32_t PHYSUSP_Pos = 4;
+constexpr uint32_t PHYSUSP_Msk = PHYSUSP::mask;
 
 }  // namespace otg_hs_pcgcr
 

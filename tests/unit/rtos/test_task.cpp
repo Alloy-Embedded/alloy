@@ -3,13 +3,16 @@
 /// Tests task creation, priorities, state transitions, and basic scheduling.
 /// These tests ensure tasks behave correctly across all platforms.
 
-#include <catch2/catch_test_macros.hpp>
-#include <catch2/catch_section_info.hpp>
-#include "rtos/rtos.hpp"
-#include "hal/host/systick.hpp"
-#include <thread>
-#include <chrono>
 #include <atomic>
+#include <chrono>
+#include <thread>
+
+#include <catch2/catch_section_info.hpp>
+#include <catch2/catch_test_macros.hpp>
+
+#include "hal/host/systick.hpp"
+
+#include "rtos/rtos.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
@@ -110,7 +113,7 @@ TEST_CASE("Task stack management", "[task][stack]") {
     SECTION("Stack is properly aligned") {
         INFO("Stack alignment can be verified statically");
         // Stack alignment is enforced by template at compile time
-        REQUIRE((512 % 8) == 0); // Common alignment requirement
+        REQUIRE((512 % 8) == 0);  // Common alignment requirement
     }
 
     SECTION("Stack size is configurable via template parameter") {

@@ -6,10 +6,11 @@
  * For full test suite, use CMake with Catch2.
  */
 
-#include "hal/platform/linux/uart.hpp"
+#include <cassert>
 #include <iostream>
 #include <string>
-#include <cassert>
+
+#include "hal/platform/linux/uart.hpp"
 
 using namespace alloy::hal::linux;
 using namespace alloy::core;
@@ -20,17 +21,17 @@ static int tests_passed = 0;
 static int tests_failed = 0;
 
 // Simple assertion macro
-#define TEST_ASSERT(condition, message) \
-    do { \
-        tests_run++; \
-        if (!(condition)) { \
+#define TEST_ASSERT(condition, message)                                            \
+    do {                                                                           \
+        tests_run++;                                                               \
+        if (!(condition)) {                                                        \
             std::cerr << "❌ FAIL: " << message << " (line " << __LINE__ << ")\n"; \
-            tests_failed++; \
-        } else { \
-            std::cout << "✓ PASS: " << message << "\n"; \
-            tests_passed++; \
-        } \
-    } while(0)
+            tests_failed++;                                                        \
+        } else {                                                                   \
+            std::cout << "✓ PASS: " << message << "\n";                            \
+            tests_passed++;                                                        \
+        }                                                                          \
+    } while (0)
 
 // Test device path
 inline constexpr const char nonexistent_device[] = "/dev/tty_does_not_exist_test";
@@ -76,7 +77,8 @@ void test_write_with_nullptr() {
 
     TEST_ASSERT(result.is_error(), "write() should fail with nullptr");
     // Note: Returns NotInitialized because UART is not open (checked first)
-    TEST_ASSERT(result.error() == ErrorCode::NotInitialized, "Error code should be NotInitialized (not open)");
+    TEST_ASSERT(result.error() == ErrorCode::NotInitialized,
+                "Error code should be NotInitialized (not open)");
 }
 
 void test_read_without_open() {
@@ -98,7 +100,8 @@ void test_read_with_nullptr() {
 
     TEST_ASSERT(result.is_error(), "read() should fail with nullptr");
     // Note: Returns NotInitialized because UART is not open (checked first)
-    TEST_ASSERT(result.error() == ErrorCode::NotInitialized, "Error code should be NotInitialized (not open)");
+    TEST_ASSERT(result.error() == ErrorCode::NotInitialized,
+                "Error code should be NotInitialized (not open)");
 }
 
 void test_baudrate_without_open() {

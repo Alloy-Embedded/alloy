@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::mtb {
@@ -19,85 +20,85 @@ using namespace alloy::hal::bitfields;
 
 /// POSITION - MTB Position
 namespace position {
-    /// Pointer Value Wraps
-    /// Position: 2, Width: 1
-    using WRAP = BitField<2, 1>;
-    constexpr uint32_t WRAP_Pos = 2;
-    constexpr uint32_t WRAP_Msk = WRAP::mask;
+/// Pointer Value Wraps
+/// Position: 2, Width: 1
+using WRAP = BitField<2, 1>;
+constexpr uint32_t WRAP_Pos = 2;
+constexpr uint32_t WRAP_Msk = WRAP::mask;
 
-    /// Trace Packet Location Pointer
-    /// Position: 3, Width: 29
-    using POINTER = BitField<3, 29>;
-    constexpr uint32_t POINTER_Pos = 3;
-    constexpr uint32_t POINTER_Msk = POINTER::mask;
+/// Trace Packet Location Pointer
+/// Position: 3, Width: 29
+using POINTER = BitField<3, 29>;
+constexpr uint32_t POINTER_Pos = 3;
+constexpr uint32_t POINTER_Msk = POINTER::mask;
 
 }  // namespace position
 
 /// MASTER - MTB Master
 namespace master {
-    /// Maximum Value of the Trace Buffer in SRAM
-    /// Position: 0, Width: 5
-    using MASK = BitField<0, 5>;
-    constexpr uint32_t MASK_Pos = 0;
-    constexpr uint32_t MASK_Msk = MASK::mask;
+/// Maximum Value of the Trace Buffer in SRAM
+/// Position: 0, Width: 5
+using MASK = BitField<0, 5>;
+constexpr uint32_t MASK_Pos = 0;
+constexpr uint32_t MASK_Msk = MASK::mask;
 
-    /// Trace Start Input Enable
-    /// Position: 5, Width: 1
-    using TSTARTEN = BitField<5, 1>;
-    constexpr uint32_t TSTARTEN_Pos = 5;
-    constexpr uint32_t TSTARTEN_Msk = TSTARTEN::mask;
+/// Trace Start Input Enable
+/// Position: 5, Width: 1
+using TSTARTEN = BitField<5, 1>;
+constexpr uint32_t TSTARTEN_Pos = 5;
+constexpr uint32_t TSTARTEN_Msk = TSTARTEN::mask;
 
-    /// Trace Stop Input Enable
-    /// Position: 6, Width: 1
-    using TSTOPEN = BitField<6, 1>;
-    constexpr uint32_t TSTOPEN_Pos = 6;
-    constexpr uint32_t TSTOPEN_Msk = TSTOPEN::mask;
+/// Trace Stop Input Enable
+/// Position: 6, Width: 1
+using TSTOPEN = BitField<6, 1>;
+constexpr uint32_t TSTOPEN_Pos = 6;
+constexpr uint32_t TSTOPEN_Msk = TSTOPEN::mask;
 
-    /// Special Function Register Write Privilege
-    /// Position: 7, Width: 1
-    using SFRWPRIV = BitField<7, 1>;
-    constexpr uint32_t SFRWPRIV_Pos = 7;
-    constexpr uint32_t SFRWPRIV_Msk = SFRWPRIV::mask;
+/// Special Function Register Write Privilege
+/// Position: 7, Width: 1
+using SFRWPRIV = BitField<7, 1>;
+constexpr uint32_t SFRWPRIV_Pos = 7;
+constexpr uint32_t SFRWPRIV_Msk = SFRWPRIV::mask;
 
-    /// SRAM Privilege
-    /// Position: 8, Width: 1
-    using RAMPRIV = BitField<8, 1>;
-    constexpr uint32_t RAMPRIV_Pos = 8;
-    constexpr uint32_t RAMPRIV_Msk = RAMPRIV::mask;
+/// SRAM Privilege
+/// Position: 8, Width: 1
+using RAMPRIV = BitField<8, 1>;
+constexpr uint32_t RAMPRIV_Pos = 8;
+constexpr uint32_t RAMPRIV_Msk = RAMPRIV::mask;
 
-    /// Halt Request
-    /// Position: 9, Width: 1
-    using HALTREQ = BitField<9, 1>;
-    constexpr uint32_t HALTREQ_Pos = 9;
-    constexpr uint32_t HALTREQ_Msk = HALTREQ::mask;
+/// Halt Request
+/// Position: 9, Width: 1
+using HALTREQ = BitField<9, 1>;
+constexpr uint32_t HALTREQ_Pos = 9;
+constexpr uint32_t HALTREQ_Msk = HALTREQ::mask;
 
-    /// Main Trace Enable
-    /// Position: 31, Width: 1
-    using EN = BitField<31, 1>;
-    constexpr uint32_t EN_Pos = 31;
-    constexpr uint32_t EN_Msk = EN::mask;
+/// Main Trace Enable
+/// Position: 31, Width: 1
+using EN = BitField<31, 1>;
+constexpr uint32_t EN_Pos = 31;
+constexpr uint32_t EN_Msk = EN::mask;
 
 }  // namespace master
 
 /// FLOW - MTB Flow
 namespace flow {
-    /// Auto Stop Tracing
-    /// Position: 0, Width: 1
-    using AUTOSTOP = BitField<0, 1>;
-    constexpr uint32_t AUTOSTOP_Pos = 0;
-    constexpr uint32_t AUTOSTOP_Msk = AUTOSTOP::mask;
+/// Auto Stop Tracing
+/// Position: 0, Width: 1
+using AUTOSTOP = BitField<0, 1>;
+constexpr uint32_t AUTOSTOP_Pos = 0;
+constexpr uint32_t AUTOSTOP_Msk = AUTOSTOP::mask;
 
-    /// Auto Halt Request
-    /// Position: 1, Width: 1
-    using AUTOHALT = BitField<1, 1>;
-    constexpr uint32_t AUTOHALT_Pos = 1;
-    constexpr uint32_t AUTOHALT_Msk = AUTOHALT::mask;
+/// Auto Halt Request
+/// Position: 1, Width: 1
+using AUTOHALT = BitField<1, 1>;
+constexpr uint32_t AUTOHALT_Pos = 1;
+constexpr uint32_t AUTOHALT_Msk = AUTOHALT::mask;
 
-    /// Watermark value
-    /// Position: 3, Width: 29
-    using WATERMARK = BitField<3, 29>;
-    constexpr uint32_t WATERMARK_Pos = 3;
-    constexpr uint32_t WATERMARK_Msk = WATERMARK::mask;
+/// Watermark value
+/// Position: 3, Width: 29
+using WATERMARK = BitField<3, 29>;
+constexpr uint32_t WATERMARK_Pos = 3;
+constexpr uint32_t WATERMARK_Msk = WATERMARK::mask;
 
 }  // namespace flow
 

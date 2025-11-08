@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::pac0 {
@@ -19,21 +20,21 @@ using namespace alloy::hal::bitfields;
 
 /// WPCLR - Write Protection Clear
 namespace wpclr {
-    /// Write Protection Clear
-    /// Position: 1, Width: 31
-    using WP = BitField<1, 31>;
-    constexpr uint32_t WP_Pos = 1;
-    constexpr uint32_t WP_Msk = WP::mask;
+/// Write Protection Clear
+/// Position: 1, Width: 31
+using WP = BitField<1, 31>;
+constexpr uint32_t WP_Pos = 1;
+constexpr uint32_t WP_Msk = WP::mask;
 
 }  // namespace wpclr
 
 /// WPSET - Write Protection Set
 namespace wpset {
-    /// Write Protection Set
-    /// Position: 1, Width: 31
-    using WP = BitField<1, 31>;
-    constexpr uint32_t WP_Pos = 1;
-    constexpr uint32_t WP_Msk = WP::mask;
+/// Write Protection Set
+/// Position: 1, Width: 31
+using WP = BitField<1, 31>;
+constexpr uint32_t WP_Pos = 1;
+constexpr uint32_t WP_Msk = WP::mask;
 
 }  // namespace wpset
 

@@ -13,32 +13,29 @@
 
 #if defined(__ARM_ARCH_6M__) || defined(__ARM_ARCH_8M_BASE__)
 
-#include "rtos/platform/arm_context.hpp"
-#include "rtos/scheduler.hpp"
+    #include "rtos/platform/arm_context.hpp"
+    #include "rtos/scheduler.hpp"
 
 namespace alloy::rtos {
 
 void init_task_stack(TaskControlBlock* tcb, void (*func)()) {
     // Get pointer to top of stack (stacks grow downward)
-    core::u32* sp = reinterpret_cast<core::u32*>(
-        static_cast<core::u8*>(tcb->stack_base) + tcb->stack_size
-    );
+    core::u32* sp =
+        reinterpret_cast<core::u32*>(static_cast<core::u8*>(tcb->stack_base) + tcb->stack_size);
 
     // Align to 8 bytes (AAPCS requirement)
-    sp = reinterpret_cast<core::u32*>(
-        reinterpret_cast<core::u32>(sp) & ~0x7
-    );
+    sp = reinterpret_cast<core::u32*>(reinterpret_cast<core::u32>(sp) & ~0x7);
 
     // Initialize stack frame as if task was interrupted
     // Hardware-pushed exception frame (done automatically by processor)
-    *(--sp) = 0x01000000;  // xPSR (Thumb bit set)
+    *(--sp) = 0x01000000;                         // xPSR (Thumb bit set)
     *(--sp) = reinterpret_cast<core::u32>(func);  // PC (task entry point)
-    *(--sp) = 0xFFFFFFFD;  // LR (return to thread mode, use PSP)
-    *(--sp) = 0x12121212;  // r12
-    *(--sp) = 0x03030303;  // r3
-    *(--sp) = 0x02020202;  // r2
-    *(--sp) = 0x01010101;  // r1
-    *(--sp) = 0x00000000;  // r0 (first argument)
+    *(--sp) = 0xFFFFFFFD;                         // LR (return to thread mode, use PSP)
+    *(--sp) = 0x12121212;                         // r12
+    *(--sp) = 0x03030303;                         // r3
+    *(--sp) = 0x02020202;                         // r2
+    *(--sp) = 0x01010101;                         // r1
+    *(--sp) = 0x00000000;                         // r0 (first argument)
 
     // Software-pushed registers (we need to save these manually)
     *(--sp) = 0x11111111;  // r11
@@ -53,11 +50,11 @@ void init_task_stack(TaskControlBlock* tcb, void (*func)()) {
     // Save initialized stack pointer in TCB
     tcb->stack_pointer = sp;
 
-#ifdef DEBUG
+    #ifdef DEBUG
     // Place stack canary at bottom for overflow detection
     constexpr core::u32 STACK_CANARY = 0xDEADBEEF;
     *reinterpret_cast<core::u32*>(tcb->stack_base) = STACK_CANARY;
-#endif
+    #endif
 }
 
 namespace scheduler {
@@ -80,12 +77,12 @@ void trigger_context_switch() {
     core::u32* sp = static_cast<core::u32*>(g_scheduler.current_task->stack_pointer);
 
     // Manually restore r4-r11 from stack
-    core::u32 r4  = sp[0];
-    core::u32 r5  = sp[1];
-    core::u32 r6  = sp[2];
-    core::u32 r7  = sp[3];
-    core::u32 r8  = sp[4];
-    core::u32 r9  = sp[5];
+    core::u32 r4 = sp[0];
+    core::u32 r5 = sp[1];
+    core::u32 r6 = sp[2];
+    core::u32 r7 = sp[3];
+    core::u32 r8 = sp[4];
+    core::u32 r9 = sp[5];
     core::u32 r10 = sp[6];
     core::u32 r11 = sp[7];
 
@@ -93,56 +90,45 @@ void trigger_context_switch() {
     sp += 8;
 
     // Set PSP to updated stack pointer
-    __asm volatile(
-        "msr psp, %0    \n"
-        :
-        : "r" (sp)
-    );
+    __asm volatile("msr psp, %0    \n" : : "r"(sp));
 
     // Set CONTROL register to use PSP
-    __asm volatile(
-        "movs r0, #2    \n"
-        "msr control, r0\n"
-        "isb            \n"
-        ::: "r0"
-    );
+    __asm volatile("movs r0, #2    \n"
+                   "msr control, r0\n"
+                   "isb            \n" ::
+                       : "r0");
 
     // Restore r4-r7 and r8-r11
-    __asm volatile(
-        "mov r4, %0     \n"
-        "mov r5, %1     \n"
-        "mov r6, %2     \n"
-        "mov r7, %3     \n"
-        :
-        : "r" (r4), "r" (r5), "r" (r6), "r" (r7)
-    );
+    __asm volatile("mov r4, %0     \n"
+                   "mov r5, %1     \n"
+                   "mov r6, %2     \n"
+                   "mov r7, %3     \n"
+                   :
+                   : "r"(r4), "r"(r5), "r"(r6), "r"(r7));
 
-    __asm volatile(
-        "mov r8, %0     \n"
-        "mov r9, %1     \n"
-        "mov r10, %2    \n"
-        "mov r11, %3    \n"
-        :
-        : "r" (r8), "r" (r9), "r" (r10), "r" (r11)
-    );
+    __asm volatile("mov r8, %0     \n"
+                   "mov r9, %1     \n"
+                   "mov r10, %2    \n"
+                   "mov r11, %3    \n"
+                   :
+                   : "r"(r8), "r"(r9), "r"(r10), "r"(r11));
 
     // Enable interrupts
     __asm volatile("cpsie i");
 
     // Exception return
-    __asm volatile(
-        "ldr r0, =0xFFFFFFFD\n"
-        "bx r0              \n"
-        ::: "r0"
-    );
+    __asm volatile("ldr r0, =0xFFFFFFFD\n"
+                   "bx r0              \n" ::
+                       : "r0");
 
     // Never reached
-    while (1);
+    while (1)
+        ;
 }
 
-} // namespace scheduler
+}  // namespace scheduler
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
 // PendSV Handler - Called when context switch is needed
 // This must be naked function (no prologue/epilogue)
@@ -191,8 +177,7 @@ extern "C" __attribute__((naked)) void PendSV_Handler() {
 
         // Exception return
         "ldr r0, =0xFFFFFFFD    \n"
-        "bx r0                  \n"
-    );
+        "bx r0                  \n");
 }
 
 // C function called by PendSV_Handler
@@ -218,4 +203,4 @@ extern "C" void* PendSV_Handler_C(void* current_psp) {
     return current_psp;
 }
 
-#endif // __ARM_ARCH_6M__ || __ARM_ARCH_8M_BASE__
+#endif  // __ARM_ARCH_6M__ || __ARM_ARCH_8M_BASE__

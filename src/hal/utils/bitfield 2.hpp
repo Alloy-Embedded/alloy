@@ -9,9 +9,10 @@
 
 #pragma once
 
-#include <stdint.h>
 #include <concepts>
 #include <type_traits>
+
+#include <stdint.h>
 
 namespace alloy::hal::bitfields {
 
@@ -33,7 +34,7 @@ namespace alloy::hal::bitfields {
 ///   reg = BRR::write(reg, 0x1D4C);    // Write 16-bit value
 ///   bool is_set = TXE::test(reg);     // Test if bit 7 is set
 ///
-template<uint32_t Pos, uint32_t Width>
+template <uint32_t Pos, uint32_t Width>
 struct BitField {
     // Compile-time validation
     static_assert(Pos < 32, "Bit position must be less than 32");
@@ -75,9 +76,7 @@ struct BitField {
     ///
     /// Example:
     ///   USART1->CR1 = UE::set(USART1->CR1);  // Enable USART
-    [[nodiscard]] static constexpr uint32_t set(uint32_t reg) noexcept {
-        return reg | mask;
-    }
+    [[nodiscard]] static constexpr uint32_t set(uint32_t reg) noexcept { return reg | mask; }
 
     /// Clear bit field (all bits to 0)
     ///
@@ -86,9 +85,7 @@ struct BitField {
     ///
     /// Example:
     ///   USART1->CR1 = UE::clear(USART1->CR1);  // Disable USART
-    [[nodiscard]] static constexpr uint32_t clear(uint32_t reg) noexcept {
-        return reg & ~mask;
-    }
+    [[nodiscard]] static constexpr uint32_t clear(uint32_t reg) noexcept { return reg & ~mask; }
 
     /// Test if any bit in field is set
     ///
@@ -97,9 +94,7 @@ struct BitField {
     ///
     /// Example:
     ///   while (!TXE::test(USART1->SR)) { /* wait */ }
-    [[nodiscard]] static constexpr bool test(uint32_t reg) noexcept {
-        return (reg & mask) != 0;
-    }
+    [[nodiscard]] static constexpr bool test(uint32_t reg) noexcept { return (reg & mask) != 0; }
 
     /// Test if bit field equals specific value
     ///
@@ -120,9 +115,7 @@ struct BitField {
     ///
     /// Example:
     ///   GPIOC->ODR = LED::toggle(GPIOC->ODR);
-    [[nodiscard]] static constexpr uint32_t toggle(uint32_t reg) noexcept {
-        return reg ^ mask;
-    }
+    [[nodiscard]] static constexpr uint32_t toggle(uint32_t reg) noexcept { return reg ^ mask; }
 };
 
 // ============================================================================
@@ -130,7 +123,7 @@ struct BitField {
 // ============================================================================
 
 /// Single-bit field specialization
-template<uint32_t Pos>
+template <uint32_t Pos>
 using Bit = BitField<Pos, 1>;
 
 // ============================================================================
@@ -142,13 +135,13 @@ using Bit = BitField<Pos, 1>;
 /// Example:
 ///   uint32_t cr1 = 0;
 ///   cr1 = UE::set(TE::set(RE::set(cr1)));  // Enable USART, TX, RX
-template<typename... BitFields>
+template <typename... BitFields>
 [[nodiscard]] constexpr uint32_t set_bits(uint32_t reg) noexcept {
     return ((reg | BitFields::mask) | ...);
 }
 
 /// Clear multiple bit fields atomically
-template<typename... BitFields>
+template <typename... BitFields>
 [[nodiscard]] constexpr uint32_t clear_bits(uint32_t reg) noexcept {
     return ((reg & ~BitFields::mask) & ...);
 }
@@ -158,17 +151,16 @@ template<typename... BitFields>
 // ============================================================================
 
 /// Concept for register size validation
-template<typename T>
-concept RegisterSize = std::is_same_v<T, uint8_t> ||
-                       std::is_same_v<T, uint16_t> ||
-                       std::is_same_v<T, uint32_t>;
+template <typename T>
+concept RegisterSize =
+    std::is_same_v<T, uint8_t> || std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>;
 
 // ============================================================================
 // 16-BIT REGISTER SUPPORT
 // ============================================================================
 
 /// BitField specialization for 16-bit registers
-template<uint32_t Pos, uint32_t Width>
+template <uint32_t Pos, uint32_t Width>
 struct BitField16 {
     static_assert(Pos < 16, "Bit position must be less than 16");
     static_assert(Width > 0 && Width <= 16, "Bit width must be between 1 and 16");
@@ -186,25 +178,17 @@ struct BitField16 {
         return (reg & ~mask) | ((value << position) & mask);
     }
 
-    [[nodiscard]] static constexpr uint16_t set(uint16_t reg) noexcept {
-        return reg | mask;
-    }
+    [[nodiscard]] static constexpr uint16_t set(uint16_t reg) noexcept { return reg | mask; }
 
-    [[nodiscard]] static constexpr uint16_t clear(uint16_t reg) noexcept {
-        return reg & ~mask;
-    }
+    [[nodiscard]] static constexpr uint16_t clear(uint16_t reg) noexcept { return reg & ~mask; }
 
-    [[nodiscard]] static constexpr bool test(uint16_t reg) noexcept {
-        return (reg & mask) != 0;
-    }
+    [[nodiscard]] static constexpr bool test(uint16_t reg) noexcept { return (reg & mask) != 0; }
 
     [[nodiscard]] static constexpr bool equals(uint16_t reg, uint16_t value) noexcept {
         return read(reg) == value;
     }
 
-    [[nodiscard]] static constexpr uint16_t toggle(uint16_t reg) noexcept {
-        return reg ^ mask;
-    }
+    [[nodiscard]] static constexpr uint16_t toggle(uint16_t reg) noexcept { return reg ^ mask; }
 };
 
 // ============================================================================
@@ -212,7 +196,7 @@ struct BitField16 {
 // ============================================================================
 
 /// BitField specialization for 8-bit registers
-template<uint32_t Pos, uint32_t Width>
+template <uint32_t Pos, uint32_t Width>
 struct BitField8 {
     static_assert(Pos < 8, "Bit position must be less than 8");
     static_assert(Width > 0 && Width <= 8, "Bit width must be between 1 and 8");
@@ -230,25 +214,17 @@ struct BitField8 {
         return (reg & ~mask) | ((value << position) & mask);
     }
 
-    [[nodiscard]] static constexpr uint8_t set(uint8_t reg) noexcept {
-        return reg | mask;
-    }
+    [[nodiscard]] static constexpr uint8_t set(uint8_t reg) noexcept { return reg | mask; }
 
-    [[nodiscard]] static constexpr uint8_t clear(uint8_t reg) noexcept {
-        return reg & ~mask;
-    }
+    [[nodiscard]] static constexpr uint8_t clear(uint8_t reg) noexcept { return reg & ~mask; }
 
-    [[nodiscard]] static constexpr bool test(uint8_t reg) noexcept {
-        return (reg & mask) != 0;
-    }
+    [[nodiscard]] static constexpr bool test(uint8_t reg) noexcept { return (reg & mask) != 0; }
 
     [[nodiscard]] static constexpr bool equals(uint8_t reg, uint8_t value) noexcept {
         return read(reg) == value;
     }
 
-    [[nodiscard]] static constexpr uint8_t toggle(uint8_t reg) noexcept {
-        return reg ^ mask;
-    }
+    [[nodiscard]] static constexpr uint8_t toggle(uint8_t reg) noexcept { return reg ^ mask; }
 };
 
 }  // namespace alloy::hal::bitfields

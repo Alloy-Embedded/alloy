@@ -16,8 +16,9 @@
  * Device: /dev/ttyUSB0 (USB-to-serial adapter)
  */
 
-#include "../../boards/linux_host/board.hpp"
 #include <iostream>
+
+#include "../../boards/linux_host/board.hpp"
 
 int main() {
     std::cout << "=== Linux Board Configuration Example ===\n\n";
@@ -109,10 +110,7 @@ int main() {
     std::cout << "Pattern 3: Direct UART access\n";
 
     const char* message = "Direct write test\n";
-    write_result = uart.write(
-        reinterpret_cast<const uint8_t*>(message),
-        __builtin_strlen(message)
-    );
+    write_result = uart.write(reinterpret_cast<const uint8_t*>(message), __builtin_strlen(message));
 
     if (write_result.is_ok()) {
         std::cout << "✓ Wrote " << write_result.value() << " bytes directly\n";

@@ -17,7 +17,7 @@ namespace alloy::hal::espressif::esp32::bb {
 
 /// BB Register Structure
 struct BB_Registers {
-    uint8_t RESERVED_0000[84]; ///< Reserved
+    uint8_t RESERVED_0000[84];  ///< Reserved
 
     /// Baseband control register
     /// Offset: 0x0054

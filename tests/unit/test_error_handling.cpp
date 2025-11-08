@@ -2,9 +2,11 @@
 ///
 /// Tests the Result<T, ErrorCode> type and error handling mechanisms.
 
-#include "core/error.hpp"
-#include <catch2/catch_test_macros.hpp>
 #include <string>
+
+#include <catch2/catch_test_macros.hpp>
+
+#include "core/error.hpp"
 
 using namespace alloy::core;
 

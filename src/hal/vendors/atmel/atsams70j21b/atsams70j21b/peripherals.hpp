@@ -11,10 +11,10 @@ namespace alloy::generated::atsams70j21b {
 
 /// Basic peripheral base addresses
 namespace peripherals {
-    // Peripheral addresses will be added here
-    // This is a minimal implementation
+// Peripheral addresses will be added here
+// This is a minimal implementation
 }
 
-} // namespace alloy::generated::atsams70j21b
+}  // namespace alloy::generated::atsams70j21b
 
-#endif // ALLOY_GENERATED_ATSAMS70J21B_PERIPHERALS_HPP
+#endif  // ALLOY_GENERATED_ATSAMS70J21B_PERIPHERALS_HPP

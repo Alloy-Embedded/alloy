@@ -14,6 +14,7 @@
  */
 
 #include "hal/platform/same70/gpio.hpp"
+
 #include "boards/atmel_same70_xpld/board.hpp"
 
 using namespace alloy::hal::same70;

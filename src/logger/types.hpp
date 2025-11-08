@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+
 #include <stdint.h>
 
 namespace alloy {
@@ -22,12 +23,18 @@ enum class Level : uint8_t {
  */
 inline const char* level_to_string(Level level) {
     switch (level) {
-        case Level::Trace: return "TRACE";
-        case Level::Debug: return "DEBUG";
-        case Level::Info:  return "INFO";
-        case Level::Warn:  return "WARN";
-        case Level::Error: return "ERROR";
-        default:           return "UNKNOWN";
+        case Level::Trace:
+            return "TRACE";
+        case Level::Debug:
+            return "DEBUG";
+        case Level::Info:
+            return "INFO";
+        case Level::Warn:
+            return "WARN";
+        case Level::Error:
+            return "ERROR";
+        default:
+            return "UNKNOWN";
     }
 }
 
@@ -36,12 +43,18 @@ inline const char* level_to_string(Level level) {
  */
 inline const char* level_to_short_string(Level level) {
     switch (level) {
-        case Level::Trace: return "TRACE";
-        case Level::Debug: return "DEBUG";
-        case Level::Info:  return "INFO ";
-        case Level::Warn:  return "WARN ";
-        case Level::Error: return "ERROR";
-        default:           return "?????";
+        case Level::Trace:
+            return "TRACE";
+        case Level::Debug:
+            return "DEBUG";
+        case Level::Info:
+            return "INFO ";
+        case Level::Warn:
+            return "WARN ";
+        case Level::Error:
+            return "ERROR";
+        default:
+            return "?????";
     }
 }
 
@@ -49,9 +62,9 @@ inline const char* level_to_short_string(Level level) {
  * Timestamp precision configuration
  */
 enum class TimestampPrecision : uint8_t {
-    Seconds,      // [s]
-    Milliseconds, // [s.mmm]
-    Microseconds, // [s.uuuuuu]
+    Seconds,       // [s]
+    Milliseconds,  // [s.mmm]
+    Microseconds,  // [s.uuuuuu]
 };
 
 /**
@@ -65,8 +78,8 @@ struct Config {
     TimestampPrecision timestamp_precision = TimestampPrecision::Microseconds;
 };
 
-} // namespace logger
-} // namespace alloy
+}  // namespace logger
+}  // namespace alloy
 
 // ============================================================================
 // Compile-Time Configuration Macros
@@ -80,7 +93,7 @@ struct Config {
  * #define LOG_MIN_LEVEL LOG_LEVEL_INFO
  */
 #ifndef LOG_MIN_LEVEL
-#define LOG_MIN_LEVEL LOG_LEVEL_INFO
+    #define LOG_MIN_LEVEL LOG_LEVEL_INFO
 #endif
 
 /**
@@ -98,14 +111,14 @@ struct Config {
  * Total buffer = prefix (128) + message (LOG_MAX_MESSAGE_SIZE)
  */
 #ifndef LOG_MAX_MESSAGE_SIZE
-#define LOG_MAX_MESSAGE_SIZE 256
+    #define LOG_MAX_MESSAGE_SIZE 256
 #endif
 
 /**
  * Maximum number of sinks that can be registered
  */
 #ifndef LOG_MAX_SINKS
-#define LOG_MAX_SINKS 4
+    #define LOG_MAX_SINKS 4
 #endif
 
 /**
@@ -113,7 +126,7 @@ struct Config {
  * Colors use ANSI escape codes
  */
 #ifndef LOG_ENABLE_COLORS
-#define LOG_ENABLE_COLORS 0
+    #define LOG_ENABLE_COLORS 0
 #endif
 
 /**
@@ -121,7 +134,7 @@ struct Config {
  * Disabling saves flash space
  */
 #ifndef LOG_ENABLE_SOURCE_LOCATION
-#define LOG_ENABLE_SOURCE_LOCATION 1
+    #define LOG_ENABLE_SOURCE_LOCATION 1
 #endif
 
 /**
@@ -129,7 +142,7 @@ struct Config {
  * Requires SysTick to be initialized
  */
 #ifndef LOG_ENABLE_TIMESTAMPS
-#define LOG_ENABLE_TIMESTAMPS 1
+    #define LOG_ENABLE_TIMESTAMPS 1
 #endif
 
 /**
@@ -137,5 +150,5 @@ struct Config {
  * 0 = seconds, 1 = milliseconds, 2 = microseconds
  */
 #ifndef LOG_TIMESTAMP_PRECISION
-#define LOG_TIMESTAMP_PRECISION 2
+    #define LOG_TIMESTAMP_PRECISION 2
 #endif

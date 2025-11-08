@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::smc {
 
 /// SMC Register Structure
 struct SMC_Registers {
-
     /// SMC Setup Register
     /// Offset: 0x0000
     volatile uint32_t SETUP;
@@ -33,7 +32,7 @@ struct SMC_Registers {
     /// SMC Mode Register
     /// Offset: 0x000C
     volatile uint32_t MODE;
-    uint8_t RESERVED_0010[112]; ///< Reserved
+    uint8_t RESERVED_0010[112];  ///< Reserved
 
     /// SMC Off-Chip Memory Scrambling Register
     /// Offset: 0x0080
@@ -48,7 +47,7 @@ struct SMC_Registers {
     /// Offset: 0x0088
     /// Access: write-only
     volatile uint32_t KEY2;
-    uint8_t RESERVED_008C[88]; ///< Reserved
+    uint8_t RESERVED_008C[88];  ///< Reserved
 
     /// SMC Write Protection Mode Register
     /// Offset: 0x00E4

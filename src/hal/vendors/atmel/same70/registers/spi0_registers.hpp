@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::spi0 {
 
 /// SPI0 Register Structure
 struct SPI0_Registers {
-
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -56,12 +55,12 @@ struct SPI0_Registers {
     /// Offset: 0x001C
     /// Access: read-only
     volatile uint32_t IMR;
-    uint8_t RESERVED_0020[16]; ///< Reserved
+    uint8_t RESERVED_0020[16];  ///< Reserved
 
     /// Chip Select Register
     /// Offset: 0x0030
     volatile uint32_t CSR[4][4];
-    uint8_t RESERVED_0040[164]; ///< Reserved
+    uint8_t RESERVED_0040[164];  ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4

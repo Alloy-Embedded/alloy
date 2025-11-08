@@ -23,9 +23,9 @@ namespace alloy::hal::platform::arm {
  *
  * @tparam SystemClockHz System clock frequency in Hz
  */
-template<uint32_t SystemClockHz>
+template <uint32_t SystemClockHz>
 class SysTickDelay {
-public:
+   public:
     /**
      * @brief Initialize SysTick for delay functionality
      *
@@ -63,7 +63,8 @@ public:
         if constexpr (TICKS_PER_US == 0) {
             // Clock too slow for microsecond delays - use cycle-based fallback
             volatile uint32_t count = us * (SystemClockHz / 4000000);
-            while (count--);
+            while (count--)
+                ;
         } else {
             for (uint32_t i = 0; i < us; i++) {
                 delay_ticks(TICKS_PER_US);
@@ -79,7 +80,8 @@ public:
      * (< 100 cycles), overhead may dominate.
      */
     static void delay_cycles(uint32_t cycles) {
-        if (cycles == 0) return;
+        if (cycles == 0)
+            return;
 
         // SysTick is a 24-bit down-counter
         constexpr uint32_t MAX_TICKS = 0x00FFFFFF;
@@ -94,7 +96,7 @@ public:
         }
     }
 
-private:
+   private:
     /**
      * @brief Delay for specified number of SysTick ticks
      * @param ticks Number of ticks to delay (max 0x00FFFFFF)
@@ -103,9 +105,9 @@ private:
      */
     static void delay_ticks(uint32_t ticks) {
         // SysTick registers (standard ARM Cortex-M addresses)
-        volatile uint32_t* const SYST_CSR   = reinterpret_cast<volatile uint32_t*>(0xE000E010);
-        volatile uint32_t* const SYST_RVR   = reinterpret_cast<volatile uint32_t*>(0xE000E014);
-        volatile uint32_t* const SYST_CVR   = reinterpret_cast<volatile uint32_t*>(0xE000E018);
+        volatile uint32_t* const SYST_CSR = reinterpret_cast<volatile uint32_t*>(0xE000E010);
+        volatile uint32_t* const SYST_RVR = reinterpret_cast<volatile uint32_t*>(0xE000E014);
+        volatile uint32_t* const SYST_CVR = reinterpret_cast<volatile uint32_t*>(0xE000E018);
 
         // Disable SysTick
         *SYST_CSR = 0;
@@ -121,7 +123,8 @@ private:
 
         // Wait for COUNTFLAG (bit 16) to be set
         // This indicates the counter has reached 0
-        while ((*SYST_CSR & (1U << 16)) == 0);
+        while ((*SYST_CSR & (1U << 16)) == 0)
+            ;
 
         // Disable SysTick
         *SYST_CSR = 0;

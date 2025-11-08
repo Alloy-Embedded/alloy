@@ -21,14 +21,15 @@
 
 // Vector table (minimal for this example)
 extern "C" {
-    extern uint32_t _estack;
-    void Reset_Handler() __attribute__((noreturn));
-    void Default_Handler() { while(1) {} }
+extern uint32_t _estack;
+void Reset_Handler() __attribute__((noreturn));
+void Default_Handler() {
+    while (1) {}
+}
 }
 
 // Vector table in .isr_vector section
-__attribute__((section(".isr_vector")))
-const void* vector_table[] = {
+__attribute__((section(".isr_vector"))) const void* vector_table[] = {
     &_estack,
     (void*)Reset_Handler,
 };
@@ -48,19 +49,19 @@ void Reset_Handler() {
 
     auto result = board::initialize();
     if (result.is_error()) {
-        while(1) {}  // Initialization failed
+        while (1) {}  // Initialization failed
     }
 
     // Initialize LED
     result = board::led::init();
     if (result.is_error()) {
-        while(1) {}  // LED init failed
+        while (1) {}  // LED init failed
     }
 
     // Initialize button
     result = board::button::init();
     if (result.is_error()) {
-        while(1) {}  // Button init failed
+        while (1) {}  // Button init failed
     }
 
     // ========================================================================
@@ -88,7 +89,7 @@ void Reset_Handler() {
     for (int i = 0; i < 3; i++) {
         green_led.clear();  // Active LOW - turn ON
         board::delay_ms(200);
-        green_led.set();    // Active LOW - turn OFF
+        green_led.set();  // Active LOW - turn OFF
         board::delay_ms(200);
     }
 

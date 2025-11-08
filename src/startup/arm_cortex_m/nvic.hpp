@@ -11,8 +11,9 @@
 
 #pragma once
 
-#include "core_common.hpp"
 #include <stdint.h>
+
+#include "core_common.hpp"
 
 namespace alloy::arm::cortex_m::nvic {
 
@@ -114,9 +115,9 @@ inline void set_priority_grouping(uint32_t priority_group) {
     uint32_t reg_value;
     uint32_t prigroup = (priority_group & 0x07UL);
 
-    reg_value  = SCB()->AIRCR;
+    reg_value = SCB()->AIRCR;
     reg_value &= ~(aircr::VECTKEY | aircr::PRIGROUP_Msk);
-    reg_value  = (reg_value | aircr::VECTKEY | (prigroup << aircr::PRIGROUP_Pos));
+    reg_value = (reg_value | aircr::VECTKEY | (prigroup << aircr::PRIGROUP_Pos));
 
     SCB()->AIRCR = reg_value;
 }
@@ -132,7 +133,8 @@ inline uint32_t get_priority_grouping() {
 /// @param preempt_priority: Pre-emption priority value
 /// @param sub_priority: Sub-priority value
 /// @return Encoded priority value for set_priority()
-inline uint8_t encode_priority(uint32_t priority_group, uint32_t preempt_priority, uint32_t sub_priority) {
+inline uint8_t encode_priority(uint32_t priority_group, uint32_t preempt_priority,
+                               uint32_t sub_priority) {
     uint32_t preempt_bits = 7 - priority_group;
     uint32_t sub_bits = priority_group;
 
@@ -143,4 +145,4 @@ inline uint8_t encode_priority(uint32_t priority_group, uint32_t preempt_priorit
     return static_cast<uint8_t>((preempt_priority << sub_bits) | sub_priority) << 4;
 }
 
-} // namespace alloy::arm::cortex_m::nvic
+}  // namespace alloy::arm::cortex_m::nvic

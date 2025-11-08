@@ -3,14 +3,17 @@
 /// Tests mutex locking, unlocking, recursive locking, priority inheritance,
 /// and RAII lock guards using Catch2 framework.
 
-#include <catch2/catch_test_macros.hpp>
-#include <catch2/catch_section_info.hpp>
-#include "rtos/mutex.hpp"
-#include "hal/host/systick.hpp"
-#include <thread>
-#include <chrono>
 #include <atomic>
+#include <chrono>
+#include <thread>
 #include <vector>
+
+#include <catch2/catch_section_info.hpp>
+#include <catch2/catch_test_macros.hpp>
+
+#include "hal/host/systick.hpp"
+
+#include "rtos/mutex.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;

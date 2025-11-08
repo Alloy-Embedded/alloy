@@ -28,7 +28,7 @@ struct SERCOM3_TX {};
 /// Template for alternate function mapping
 /// @tparam Pin Pin number constant
 /// @tparam Function Peripheral signal tag type
-template<uint8_t Pin, typename Function>
+template <uint8_t Pin, typename Function>
 struct AlternateFunction;
 
 // ============================================================================
@@ -36,13 +36,13 @@ struct AlternateFunction;
 // ============================================================================
 
 // PA22 alternate functions
-template<>
+template <>
 struct AlternateFunction<PA22, SERCOM3_TX> {
     static constexpr uint8_t af_number = 2;
 };
 
 // PA23 alternate functions
-template<>
+template <>
 struct AlternateFunction<PA23, SERCOM3_RX> {
     static constexpr uint8_t af_number = 2;
 };
@@ -57,7 +57,7 @@ struct AlternateFunction<PA23, SERCOM3_RX> {
 ///   constexpr uint8_t af = AF<PA9, USART1_TX>;  // Returns 7 (example)
 ///
 /// Compile-time error if combination is invalid.
-template<uint8_t Pin, typename Function>
+template <uint8_t Pin, typename Function>
 constexpr uint8_t AF = AlternateFunction<Pin, Function>::af_number;
 
 // ============================================================================
@@ -68,7 +68,7 @@ constexpr uint8_t AF = AlternateFunction<Pin, Function>::af_number;
 ///
 /// Usage:
 ///   static_assert(HasAF<PA9, USART1_TX>, "PA9 does not support USART1_TX");
-template<uint8_t Pin, typename Function>
+template <uint8_t Pin, typename Function>
 concept HasAF = requires {
     { AlternateFunction<Pin, Function>::af_number } -> std::same_as<const uint8_t&>;
 };

@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f0::tim15 {
 
 /// TIM15 Register Structure
 struct TIM15_Registers {
-
     /// control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -65,7 +64,7 @@ struct TIM15_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCMR1_Input;
-    uint8_t RESERVED_001C[4]; ///< Reserved
+    uint8_t RESERVED_001C[4];  ///< Reserved
 
     /// capture/compare enable register
     /// Offset: 0x0020
@@ -108,7 +107,7 @@ struct TIM15_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCR2;
-    uint8_t RESERVED_003C[8]; ///< Reserved
+    uint8_t RESERVED_003C[8];  ///< Reserved
 
     /// break and dead-time register
     /// Offset: 0x0044

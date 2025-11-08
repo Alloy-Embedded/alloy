@@ -17,12 +17,12 @@ namespace alloy::hal::atmel::samv71::utmi {
 
 /// UTMI Register Structure
 struct UTMI_Registers {
-    uint8_t RESERVED_0000[16]; ///< Reserved
+    uint8_t RESERVED_0000[16];  ///< Reserved
 
     /// OHCI Interrupt Configuration Register
     /// Offset: 0x0010
     volatile uint32_t OHCIICR;
-    uint8_t RESERVED_0014[28]; ///< Reserved
+    uint8_t RESERVED_0014[28];  ///< Reserved
 
     /// UTMI Clock Trimming Register
     /// Offset: 0x0030

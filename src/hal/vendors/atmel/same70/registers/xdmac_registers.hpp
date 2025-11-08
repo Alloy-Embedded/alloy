@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::xdmac {
 
 /// XDMAC Register Structure
 struct XDMAC_Registers {
-
     /// Global Type Register
     /// Offset: 0x0000
     /// Access: read-only

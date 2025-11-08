@@ -1,11 +1,12 @@
 #ifndef ALLOY_BLE_PERIPHERAL_HPP
 #define ALLOY_BLE_PERIPHERAL_HPP
 
-#include "types.hpp"
 #include "core/error.hpp"
 
-using alloy::core::u8;
+#include "types.hpp"
+
 using alloy::core::u16;
+using alloy::core::u8;
 
 /// BLE Peripheral (Server) API for Alloy framework
 ///
@@ -19,24 +20,26 @@ using alloy::core::u16;
 
 namespace alloy::ble {
 
-using alloy::core::Result;
 using alloy::core::ErrorCode;
+using alloy::core::Result;
 
 /// BLE Peripheral configuration
 struct PeripheralConfig {
-    char device_name[32];       // BLE device name
-    u16 appearance;             // Appearance value
-    u16 min_interval;           // Min connection interval (1.25ms units)
-    u16 max_interval;           // Max connection interval (1.25ms units)
-    u16 latency;                // Slave latency
-    u16 timeout;                // Supervision timeout (10ms units)
+    char device_name[32];  // BLE device name
+    u16 appearance;        // Appearance value
+    u16 min_interval;      // Min connection interval (1.25ms units)
+    u16 max_interval;      // Max connection interval (1.25ms units)
+    u16 latency;           // Slave latency
+    u16 timeout;           // Supervision timeout (10ms units)
 
     PeripheralConfig()
-        : appearance(0)
-        , min_interval(80)      // 100ms
-        , max_interval(100)     // 125ms
-        , latency(0)
-        , timeout(400)          // 4s
+        : appearance(0),
+          min_interval(80)  // 100ms
+          ,
+          max_interval(100)  // 125ms
+          ,
+          latency(0),
+          timeout(400)  // 4s
     {
         strcpy(device_name, "Alloy Device");
     }
@@ -54,7 +57,7 @@ struct PeripheralConfig {
 ///   peripheral.start_advertising();
 ///
 class Peripheral {
-public:
+   public:
     /// Constructor
     Peripheral();
 
@@ -150,13 +153,10 @@ public:
     /// @param properties Characteristic properties (bitmask of CharProperty)
     /// @param permissions Characteristic permissions (bitmask of CharPermission)
     /// @return Result<CharHandle> - Characteristic handle on success
-    Result<CharHandle> add_characteristic(
-        const ServiceHandle& service,
-        const UUID& uuid,
-        u8 properties,
-        u8 permissions = static_cast<u8>(CharPermission::Read) |
-                         static_cast<u8>(CharPermission::Write)
-    );
+    Result<CharHandle> add_characteristic(const ServiceHandle& service, const UUID& uuid,
+                                          u8 properties,
+                                          u8 permissions = static_cast<u8>(CharPermission::Read) |
+                                                           static_cast<u8>(CharPermission::Write));
 
     /// Set characteristic value
     ///
@@ -166,11 +166,7 @@ public:
     /// @param data Value data
     /// @param length Value length
     /// @return Result<void> - Ok on success, error on failure
-    Result<void> set_char_value(
-        const CharHandle& characteristic,
-        const u8* data,
-        u16 length
-    );
+    Result<void> set_char_value(const CharHandle& characteristic, const u8* data, u16 length);
 
     /// Get characteristic value
     ///
@@ -180,11 +176,7 @@ public:
     /// @param buffer Buffer to store value
     /// @param buffer_size Size of buffer
     /// @return Result<u16> - Number of bytes read on success
-    Result<u16> get_char_value(
-        const CharHandle& characteristic,
-        u8* buffer,
-        u16 buffer_size
-    ) const;
+    Result<u16> get_char_value(const CharHandle& characteristic, u8* buffer, u16 buffer_size) const;
 
     /// Send characteristic notification
     ///
@@ -195,11 +187,7 @@ public:
     /// @param data Notification data
     /// @param length Data length
     /// @return Result<void> - Ok on success, error on failure
-    Result<void> notify(
-        const CharHandle& characteristic,
-        const u8* data,
-        u16 length
-    );
+    Result<void> notify(const CharHandle& characteristic, const u8* data, u16 length);
 
     /// Send characteristic indication
     ///
@@ -210,11 +198,7 @@ public:
     /// @param data Indication data
     /// @param length Data length
     /// @return Result<void> - Ok on success, error on failure
-    Result<void> indicate(
-        const CharHandle& characteristic,
-        const u8* data,
-        u16 length
-    );
+    Result<void> indicate(const CharHandle& characteristic, const u8* data, u16 length);
 
     // ========================================================================
     // Connection Management
@@ -266,11 +250,11 @@ public:
     /// @param callback Write callback function
     void set_write_callback(WriteCallback callback);
 
-private:
+   private:
     struct Impl;
     Impl* impl_;
 };
 
-} // namespace alloy::ble
+}  // namespace alloy::ble
 
-#endif // ALLOY_BLE_PERIPHERAL_HPP
+#endif  // ALLOY_BLE_PERIPHERAL_HPP

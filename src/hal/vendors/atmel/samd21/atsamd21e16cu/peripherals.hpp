@@ -11,10 +11,10 @@ namespace alloy::generated::atsamd21e16cu {
 
 /// Basic peripheral base addresses
 namespace peripherals {
-    // Peripheral addresses will be added here
-    // This is a minimal implementation
+// Peripheral addresses will be added here
+// This is a minimal implementation
 }
 
-} // namespace alloy::generated::atsamd21e16cu
+}  // namespace alloy::generated::atsamd21e16cu
 
-#endif // ALLOY_GENERATED_ATSAMD21E16CU_PERIPHERALS_HPP
+#endif  // ALLOY_GENERATED_ATSAMD21E16CU_PERIPHERALS_HPP

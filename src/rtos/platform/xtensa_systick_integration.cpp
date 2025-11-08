@@ -7,9 +7,10 @@
 
 #ifdef ESP32
 
-#include "rtos/rtos.hpp"
-#include "rtos/platform/xtensa_context.hpp"
-#include "core/types.hpp"
+    #include "rtos/platform/xtensa_context.hpp"
+    #include "rtos/rtos.hpp"
+
+    #include "core/types.hpp"
 
 namespace alloy::rtos {
 
@@ -53,13 +54,14 @@ inline core::u32 read_timer_reg(core::u32 addr) {
 static bool g_timer_initialized = false;
 
 void init_rtos_timer() {
-    if (g_timer_initialized) return;
+    if (g_timer_initialized)
+        return;
 
     // ESP32 APB clock is typically 80MHz
     // We want 1ms tick, so we need to count to 80,000 cycles
     // Using divider of 80 gives us 1MHz clock, then count to 1000 for 1ms
     constexpr core::u32 TIMER_DIVIDER = 80;
-    constexpr core::u32 TIMER_ALARM_VALUE = 1000; // 1ms at 1MHz
+    constexpr core::u32 TIMER_ALARM_VALUE = 1000;  // 1ms at 1MHz
 
     // Disable timer first
     write_timer_reg(TIMG0_T0CONFIG_REG, 0);
@@ -72,8 +74,8 @@ void init_rtos_timer() {
     // - Enable alarm
     // - Enable edge interrupt
     core::u32 config = TIMG_T0_EN | TIMG_T0_INCREASE | TIMG_T0_AUTORELOAD |
-                       (TIMER_DIVIDER << TIMG_T0_DIVIDER_SHIFT) |
-                       TIMG_T0_ALARM_EN | TIMG_T0_EDGE_INT_EN;
+                       (TIMER_DIVIDER << TIMG_T0_DIVIDER_SHIFT) | TIMG_T0_ALARM_EN |
+                       TIMG_T0_EDGE_INT_EN;
 
     write_timer_reg(TIMG0_T0CONFIG_REG, config);
 
@@ -84,7 +86,7 @@ void init_rtos_timer() {
     // Set initial counter value to 0
     write_timer_reg(TIMG0_T0LOADLO_REG, 0);
     write_timer_reg(TIMG0_T0LOADHI_REG, 0);
-    write_timer_reg(TIMG0_T0LOAD_REG, 1); // Trigger reload
+    write_timer_reg(TIMG0_T0LOAD_REG, 1);  // Trigger reload
 
     // Enable timer interrupt
     write_timer_reg(TIMG0_INT_ENA_REG, TIMG_T0_INT_ENA);
@@ -109,19 +111,17 @@ void stop_rtos_timer() {
     }
 }
 
-} // namespace xtensa
+}  // namespace xtensa
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
 // Timer ISR handler - called every 1ms
 extern "C" void timer_isr_handler(void* arg) {
-    (void)arg; // Unused
+    (void)arg;  // Unused
 
     // Clear interrupt
-    alloy::rtos::xtensa::write_timer_reg(
-        alloy::rtos::xtensa::TIMG0_INT_CLR_REG,
-        alloy::rtos::xtensa::TIMG_T0_INT_ENA
-    );
+    alloy::rtos::xtensa::write_timer_reg(alloy::rtos::xtensa::TIMG0_INT_CLR_REG,
+                                         alloy::rtos::xtensa::TIMG_T0_INT_ENA);
 
     // Call RTOS scheduler tick
     alloy::rtos::RTOS::tick();
@@ -132,4 +132,4 @@ extern "C" void timer_isr_handler(void* arg) {
     }
 }
 
-#endif // ESP32
+#endif  // ESP32

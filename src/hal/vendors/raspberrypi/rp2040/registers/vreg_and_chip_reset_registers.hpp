@@ -11,13 +11,12 @@
 namespace alloy::hal::raspberrypi::rp2040::vreg_and_chip_reset {
 
 // ============================================================================
-// VREG_AND_CHIP_RESET - control and status for on-chip voltage regulator and chip level reset subsystem
-// Base Address: 0x40064000
+// VREG_AND_CHIP_RESET - control and status for on-chip voltage regulator and chip level reset
+// subsystem Base Address: 0x40064000
 // ============================================================================
 
 /// VREG_AND_CHIP_RESET Register Structure
 struct VREG_AND_CHIP_RESET_Registers {
-
     /// Voltage regulator control and status
     /// Offset: 0x0000
     /// Reset value: 0x000000B1
@@ -34,7 +33,8 @@ struct VREG_AND_CHIP_RESET_Registers {
     volatile uint32_t CHIP_RESET;
 };
 
-static_assert(sizeof(VREG_AND_CHIP_RESET_Registers) >= 12, "VREG_AND_CHIP_RESET_Registers size mismatch");
+static_assert(sizeof(VREG_AND_CHIP_RESET_Registers) >= 12,
+              "VREG_AND_CHIP_RESET_Registers size mismatch");
 
 /// VREG_AND_CHIP_RESET peripheral instance
 inline VREG_AND_CHIP_RESET_Registers* VREG_AND_CHIP_RESET() {

@@ -17,15 +17,14 @@ namespace alloy::hal::raspberrypi::rp2040::pwm {
 
 /// PWM Register Structure
 struct PWM_Registers {
-
     /// Control and status register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
     volatile uint32_t CH0_CSR;
 
-    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency divided by this number.\n Fractional division uses simple 1st-order sigma-delta.
-    /// Offset: 0x0004
-    /// Reset value: 0x00000010
+    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency
+    /// divided by this number.\n Fractional division uses simple 1st-order sigma-delta. Offset:
+    /// 0x0004 Reset value: 0x00000010
     volatile uint32_t CH0_DIV;
 
     /// Direct access to the PWM counter
@@ -48,9 +47,9 @@ struct PWM_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t CH1_CSR;
 
-    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency divided by this number.\n Fractional division uses simple 1st-order sigma-delta.
-    /// Offset: 0x0018
-    /// Reset value: 0x00000010
+    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency
+    /// divided by this number.\n Fractional division uses simple 1st-order sigma-delta. Offset:
+    /// 0x0018 Reset value: 0x00000010
     volatile uint32_t CH1_DIV;
 
     /// Direct access to the PWM counter
@@ -73,9 +72,9 @@ struct PWM_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t CH2_CSR;
 
-    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency divided by this number.\n Fractional division uses simple 1st-order sigma-delta.
-    /// Offset: 0x002C
-    /// Reset value: 0x00000010
+    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency
+    /// divided by this number.\n Fractional division uses simple 1st-order sigma-delta. Offset:
+    /// 0x002C Reset value: 0x00000010
     volatile uint32_t CH2_DIV;
 
     /// Direct access to the PWM counter
@@ -98,9 +97,9 @@ struct PWM_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t CH3_CSR;
 
-    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency divided by this number.\n Fractional division uses simple 1st-order sigma-delta.
-    /// Offset: 0x0040
-    /// Reset value: 0x00000010
+    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency
+    /// divided by this number.\n Fractional division uses simple 1st-order sigma-delta. Offset:
+    /// 0x0040 Reset value: 0x00000010
     volatile uint32_t CH3_DIV;
 
     /// Direct access to the PWM counter
@@ -123,9 +122,9 @@ struct PWM_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t CH4_CSR;
 
-    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency divided by this number.\n Fractional division uses simple 1st-order sigma-delta.
-    /// Offset: 0x0054
-    /// Reset value: 0x00000010
+    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency
+    /// divided by this number.\n Fractional division uses simple 1st-order sigma-delta. Offset:
+    /// 0x0054 Reset value: 0x00000010
     volatile uint32_t CH4_DIV;
 
     /// Direct access to the PWM counter
@@ -148,9 +147,9 @@ struct PWM_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t CH5_CSR;
 
-    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency divided by this number.\n Fractional division uses simple 1st-order sigma-delta.
-    /// Offset: 0x0068
-    /// Reset value: 0x00000010
+    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency
+    /// divided by this number.\n Fractional division uses simple 1st-order sigma-delta. Offset:
+    /// 0x0068 Reset value: 0x00000010
     volatile uint32_t CH5_DIV;
 
     /// Direct access to the PWM counter
@@ -173,9 +172,9 @@ struct PWM_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t CH6_CSR;
 
-    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency divided by this number.\n Fractional division uses simple 1st-order sigma-delta.
-    /// Offset: 0x007C
-    /// Reset value: 0x00000010
+    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency
+    /// divided by this number.\n Fractional division uses simple 1st-order sigma-delta. Offset:
+    /// 0x007C Reset value: 0x00000010
     volatile uint32_t CH6_DIV;
 
     /// Direct access to the PWM counter
@@ -198,9 +197,9 @@ struct PWM_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t CH7_CSR;
 
-    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency divided by this number.\n Fractional division uses simple 1st-order sigma-delta.
-    /// Offset: 0x0090
-    /// Reset value: 0x00000010
+    /// INT and FRAC form a fixed-point fractional number.\n Counting rate is system clock frequency
+    /// divided by this number.\n Fractional division uses simple 1st-order sigma-delta. Offset:
+    /// 0x0090 Reset value: 0x00000010
     volatile uint32_t CH7_DIV;
 
     /// Direct access to the PWM counter
@@ -218,9 +217,10 @@ struct PWM_Registers {
     /// Reset value: 0x0000FFFF
     volatile uint32_t CH7_TOP;
 
-    /// This register aliases the CSR_EN bits for all channels.\n Writing to this register allows multiple channels to be enabled\n or disabled simultaneously, so they can run in perfect sync.\n For each channel, there is only one physical EN register bit,\n which can be accessed through here or CHx_CSR.
-    /// Offset: 0x00A0
-    /// Reset value: 0x00000000
+    /// This register aliases the CSR_EN bits for all channels.\n Writing to this register allows
+    /// multiple channels to be enabled\n or disabled simultaneously, so they can run in perfect
+    /// sync.\n For each channel, there is only one physical EN register bit,\n which can be
+    /// accessed through here or CHx_CSR. Offset: 0x00A0 Reset value: 0x00000000
     volatile uint32_t EN;
 
     /// Raw Interrupts

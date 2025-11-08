@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samv71::icm {
 
 /// ICM Register Structure
 struct ICM_Registers {
-
     /// Configuration Register
     /// Offset: 0x0000
     volatile uint32_t CFG;
@@ -31,7 +30,7 @@ struct ICM_Registers {
     /// Offset: 0x0008
     /// Access: read-only
     volatile uint32_t SR;
-    uint8_t RESERVED_000C[4]; ///< Reserved
+    uint8_t RESERVED_000C[4];  ///< Reserved
 
     /// Interrupt Enable Register
     /// Offset: 0x0010
@@ -57,7 +56,7 @@ struct ICM_Registers {
     /// Offset: 0x0020
     /// Access: read-only
     volatile uint32_t UASR;
-    uint8_t RESERVED_0024[12]; ///< Reserved
+    uint8_t RESERVED_0024[12];  ///< Reserved
 
     /// Region Descriptor Area Start Address Register
     /// Offset: 0x0030

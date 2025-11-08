@@ -1,51 +1,57 @@
 #include "gpio.hpp"
-#include <iostream>
+
 #include <iomanip>
+#include <iostream>
 
 namespace alloy::hal::host {
 
 // Helper function to convert PinMode to string
 static const char* pin_mode_to_string(PinMode mode) {
     switch (mode) {
-        case PinMode::Input: return "Input";
-        case PinMode::Output: return "Output";
-        case PinMode::InputPullUp: return "InputPullUp";
-        case PinMode::InputPullDown: return "InputPullDown";
-        case PinMode::Alternate: return "Alternate";
-        case PinMode::Analog: return "Analog";
-        default: return "Unknown";
+        case PinMode::Input:
+            return "Input";
+        case PinMode::Output:
+            return "Output";
+        case PinMode::InputPullUp:
+            return "InputPullUp";
+        case PinMode::InputPullDown:
+            return "InputPullDown";
+        case PinMode::Alternate:
+            return "Alternate";
+        case PinMode::Analog:
+            return "Analog";
+        default:
+            return "Unknown";
     }
 }
 
 // Template method implementations
 // Note: These must be explicitly instantiated for each PIN value used
 
-template<uint8_t PIN>
+template <uint8_t PIN>
 void GpioPin<PIN>::configure(PinMode mode) {
     mode_ = mode;
-    std::cout << "[GPIO Mock] Pin " << static_cast<int>(PIN)
-              << " configured as " << pin_mode_to_string(mode) << std::endl;
+    std::cout << "[GPIO Mock] Pin " << static_cast<int>(PIN) << " configured as "
+              << pin_mode_to_string(mode) << std::endl;
 }
 
-template<uint8_t PIN>
+template <uint8_t PIN>
 void GpioPin<PIN>::set_high() {
     state_ = true;
-    std::cout << "[GPIO Mock] Pin " << static_cast<int>(PIN)
-              << " set HIGH" << std::endl;
+    std::cout << "[GPIO Mock] Pin " << static_cast<int>(PIN) << " set HIGH" << std::endl;
 }
 
-template<uint8_t PIN>
+template <uint8_t PIN>
 void GpioPin<PIN>::set_low() {
     state_ = false;
-    std::cout << "[GPIO Mock] Pin " << static_cast<int>(PIN)
-              << " set LOW" << std::endl;
+    std::cout << "[GPIO Mock] Pin " << static_cast<int>(PIN) << " set LOW" << std::endl;
 }
 
-template<uint8_t PIN>
+template <uint8_t PIN>
 void GpioPin<PIN>::toggle() {
     state_ = !state_;
-    std::cout << "[GPIO Mock] Pin " << static_cast<int>(PIN)
-              << " toggled to " << (state_ ? "HIGH" : "LOW") << std::endl;
+    std::cout << "[GPIO Mock] Pin " << static_cast<int>(PIN) << " toggled to "
+              << (state_ ? "HIGH" : "LOW") << std::endl;
 }
 
 // Explicit instantiations for commonly used pins
@@ -85,4 +91,4 @@ template class GpioPin<29>;
 template class GpioPin<30>;
 template class GpioPin<31>;
 
-} // namespace alloy::hal::host
+}  // namespace alloy::hal::host

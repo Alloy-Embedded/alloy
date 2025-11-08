@@ -17,11 +17,10 @@ namespace alloy::hal::atmel::samd21::nvmctrl {
 
 /// NVMCTRL Register Structure
 struct NVMCTRL_Registers {
-
     /// Control A
     /// Offset: 0x0000
     volatile uint16_t CTRLA;
-    uint8_t RESERVED_0002[2]; ///< Reserved
+    uint8_t RESERVED_0002[2];  ///< Reserved
 
     /// Control B
     /// Offset: 0x0004
@@ -34,22 +33,22 @@ struct NVMCTRL_Registers {
     /// Interrupt Enable Clear
     /// Offset: 0x000C
     volatile uint8_t INTENCLR;
-    uint8_t RESERVED_000D[3]; ///< Reserved
+    uint8_t RESERVED_000D[3];  ///< Reserved
 
     /// Interrupt Enable Set
     /// Offset: 0x0010
     volatile uint8_t INTENSET;
-    uint8_t RESERVED_0011[3]; ///< Reserved
+    uint8_t RESERVED_0011[3];  ///< Reserved
 
     /// Interrupt Flag Status and Clear
     /// Offset: 0x0014
     volatile uint8_t INTFLAG;
-    uint8_t RESERVED_0015[3]; ///< Reserved
+    uint8_t RESERVED_0015[3];  ///< Reserved
 
     /// Status
     /// Offset: 0x0018
     volatile uint16_t STATUS;
-    uint8_t RESERVED_001A[2]; ///< Reserved
+    uint8_t RESERVED_001A[2];  ///< Reserved
 
     /// Address
     /// Offset: 0x001C

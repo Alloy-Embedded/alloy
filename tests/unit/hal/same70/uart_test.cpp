@@ -15,14 +15,18 @@
  */
 
 #include <catch2/catch_test_macros.hpp>
+
 #include "uart_mock.hpp"
 
 // Define mock injection macros BEFORE including uart.hpp
-#define ALLOY_UART_MOCK_HW() (reinterpret_cast<volatile alloy::hal::atmel::same70::atsame70q21::uart0::UART0_Registers*>(alloy::hal::test::g_mock_uart))
+#define ALLOY_UART_MOCK_HW()                                                                     \
+    (reinterpret_cast<volatile alloy::hal::atmel::same70::atsame70q21::uart0::UART0_Registers*>( \
+        alloy::hal::test::g_mock_uart))
 #define ALLOY_UART_MOCK_PMC() (&alloy::hal::test::g_mock_pmc->PCER0)
 
 // Define test hooks for register access
-#define ALLOY_UART_TEST_HOOK_THR(hw, value) alloy::hal::test::g_mock_uart->transmitted_data.push_back(value)
+#define ALLOY_UART_TEST_HOOK_THR(hw, value) \
+    alloy::hal::test::g_mock_uart->transmitted_data.push_back(value)
 #define ALLOY_UART_TEST_HOOK_RHR(hw) alloy::hal::test::g_mock_uart->sync_rhr()
 
 #include "hal/platform/same70/uart.hpp"
@@ -42,7 +46,7 @@ using namespace alloy::hal::test;
  * Sets up mock environment for each test case.
  */
 class UartTestFixture {
-public:
+   public:
     UartTestFixture() {
         // Mock fixture sets up global mocks
     }
@@ -50,7 +54,7 @@ public:
     MockUartRegisters& uart_regs() { return mock.uart(); }
     MockPmc& pmc() { return mock.pmc(); }
 
-private:
+   private:
     MockUartFixture mock;
 };
 
@@ -263,8 +267,7 @@ TEST_CASE("UART read() receives data correctly", "[uart][read]") {
     SECTION("Read multiple bytes") {
         // Queue data
         const char* queued = "Test";
-        fixture.uart_regs().queue_receive_data(
-            reinterpret_cast<const uint8_t*>(queued), 4);
+        fixture.uart_regs().queue_receive_data(reinterpret_cast<const uint8_t*>(queued), 4);
 
         uint8_t received[4];
         auto result = uart.read(received, 4);

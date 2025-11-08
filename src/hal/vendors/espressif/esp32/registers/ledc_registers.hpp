@@ -17,71 +17,70 @@ namespace alloy::hal::espressif::esp32::ledc {
 
 /// LEDC Register Structure
 struct LEDC_Registers {
-
     /// HSCH[8]_CONF0
     /// Offset: 0x0000
-    volatile uint32_t HSCH[8]_CONF0[8];
+    volatile uint32_t HSCH[8] _CONF0[8];
 
     /// HSCH[8]_HPOINT
     /// Offset: 0x0004
-    volatile uint32_t HSCH[8]_HPOINT[8];
+    volatile uint32_t HSCH[8] _HPOINT[8];
 
     /// HSCH[8]_DUTY
     /// Offset: 0x0008
-    volatile uint32_t HSCH[8]_DUTY[8];
+    volatile uint32_t HSCH[8] _DUTY[8];
 
     /// HSCH[8]_CONF1
     /// Offset: 0x000C
     /// Reset value: 0x40000000
-    volatile uint32_t HSCH[8]_CONF1[8];
+    volatile uint32_t HSCH[8] _CONF1[8];
 
     /// HSCH[8]_DUTY_R
     /// Offset: 0x0010
-    volatile uint32_t HSCH[8]_DUTY_R[8];
-    uint8_t RESERVED_0030[112]; ///< Reserved
+    volatile uint32_t HSCH[8] _DUTY_R[8];
+    uint8_t RESERVED_0030[112];  ///< Reserved
 
     /// LSCH[8]_CONF0
     /// Offset: 0x00A0
-    volatile uint32_t LSCH[8]_CONF0[8];
+    volatile uint32_t LSCH[8] _CONF0[8];
 
     /// LSCH[8]_HPOINT
     /// Offset: 0x00A4
-    volatile uint32_t LSCH[8]_HPOINT[8];
+    volatile uint32_t LSCH[8] _HPOINT[8];
 
     /// LSCH[8]_DUTY
     /// Offset: 0x00A8
     /// Access: read-write
-    volatile uint32_t LSCH[8]_DUTY[8];
+    volatile uint32_t LSCH[8] _DUTY[8];
 
     /// LSCH[8]_CONF1
     /// Offset: 0x00AC
     /// Reset value: 0x40000000
-    volatile uint32_t LSCH[8]_CONF1[8];
+    volatile uint32_t LSCH[8] _CONF1[8];
 
     /// LSCH[8]_DUTY_R
     /// Offset: 0x00B0
-    volatile uint32_t LSCH[8]_DUTY_R[8];
-    uint8_t RESERVED_00D0[112]; ///< Reserved
+    volatile uint32_t LSCH[8] _DUTY_R[8];
+    uint8_t RESERVED_00D0[112];  ///< Reserved
 
     /// HSTIMER[4]_CONF
     /// Offset: 0x0140
     /// Reset value: 0x01000000
-    volatile uint32_t HSTIMER[4]_CONF[4];
+    volatile uint32_t HSTIMER[4] _CONF[4];
 
     /// HSTIMER[4]_VALUE
     /// Offset: 0x0144
-    volatile uint32_t HSTIMER[4]_VALUE[4];
-    uint8_t RESERVED_0154[12]; ///< Reserved
+    volatile uint32_t HSTIMER[4] _VALUE[4];
+    uint8_t RESERVED_0154[12];  ///< Reserved
 
     /// LSTIMER[4]_CONF
     /// Offset: 0x0160
     /// Reset value: 0x01000000
-    volatile uint32_t LSTIMER[4]_CONF[4];
+    volatile uint32_t LSTIMER[4] _CONF[4];
 
     /// LSTIMER[4]_VALUE
     /// Offset: 0x0164
-    volatile uint32_t LSTIMER[4]_VALUE[4];
-    uint8_t RESERVED_0174[12]; ///< Reserved
+    volatile uint32_t LSTIMER[4] _VALUE[4];
+    uint8_t RESERVED_0174[12];  ///< Reserved
 
     /// INT_RAW
     /// Offset: 0x0180
@@ -102,7 +101,7 @@ struct LEDC_Registers {
     /// CONF
     /// Offset: 0x0190
     volatile uint32_t CONF;
-    uint8_t RESERVED_0194[104]; ///< Reserved
+    uint8_t RESERVED_0194[104];  ///< Reserved
 
     /// DATE
     /// Offset: 0x01FC

@@ -3,13 +3,16 @@
 /// Tests priority-based preemptive scheduling, task state transitions,
 /// ready queue operations, delayed tasks, and context switching.
 
-#include <catch2/catch_test_macros.hpp>
-#include "rtos/scheduler.hpp"
-#include "rtos/rtos.hpp"
-#include "hal/host/systick.hpp"
-#include <thread>
 #include <atomic>
 #include <chrono>
+#include <thread>
+
+#include <catch2/catch_test_macros.hpp>
+
+#include "hal/host/systick.hpp"
+
+#include "rtos/rtos.hpp"
+#include "rtos/scheduler.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
@@ -32,14 +35,10 @@ TEST_CASE("PriorityEnumValuesAreCorrect", "[rtos][scheduler]") {
 
 TEST_CASE("PrioritiesAreOrdered", "[rtos][scheduler]") {
     // Then: Priorities should be in ascending order
-    REQUIRE(static_cast<core::u8>(Priority::Idle),
-              static_cast<core::u8>(Priority::Lowest));
-    REQUIRE(static_cast<core::u8>(Priority::Low),
-              static_cast<core::u8>(Priority::Normal));
-    REQUIRE(static_cast<core::u8>(Priority::Normal),
-              static_cast<core::u8>(Priority::High));
-    REQUIRE(static_cast<core::u8>(Priority::High),
-              static_cast<core::u8>(Priority::Critical));
+    REQUIRE(static_cast<core::u8>(Priority::Idle), static_cast<core::u8>(Priority::Lowest));
+    REQUIRE(static_cast<core::u8>(Priority::Low), static_cast<core::u8>(Priority::Normal));
+    REQUIRE(static_cast<core::u8>(Priority::Normal), static_cast<core::u8>(Priority::High));
+    REQUIRE(static_cast<core::u8>(Priority::High), static_cast<core::u8>(Priority::Critical));
 }
 
 // ============================================================================
@@ -264,7 +263,8 @@ TEST_CASE("TaskInitialStateIsReady", "[rtos][scheduler]") {
 
     auto task_func = [&ran]() {
         ran = true;
-        while (true) RTOS::delay(1000);
+        while (true)
+            RTOS::delay(1000);
     };
 
     Task<512, Priority::Normal> task(task_func, "StateTest");
@@ -477,5 +477,3 @@ TEST_CASE("InfiniteConstantIsMaxValue", "[rtos][scheduler]") {
 // ============================================================================
 // Main
 // ============================================================================
-
-

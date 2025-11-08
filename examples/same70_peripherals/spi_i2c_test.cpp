@@ -6,8 +6,8 @@
  * and have the expected API.
  */
 
-#include "hal/platform/same70/spi.hpp"
 #include "hal/platform/same70/i2c.hpp"
+#include "hal/platform/same70/spi.hpp"
 
 using namespace alloy::hal::same70;
 
@@ -18,26 +18,19 @@ int main() {
 
         // These calls will compile but not run (no hardware)
         [[maybe_unused]] auto open_result = spi.open();
-        [[maybe_unused]] auto config_result = spi.configureChipSelect(
-            SpiChipSelect::CS0,
-            8,  // Clock divider
-            SpiMode::Mode0
-        );
+        [[maybe_unused]] auto config_result = spi.configureChipSelect(SpiChipSelect::CS0,
+                                                                      8,  // Clock divider
+                                                                      SpiMode::Mode0);
 
         uint8_t tx_data[4] = {0x01, 0x02, 0x03, 0x04};
         uint8_t rx_data[4];
 
-        [[maybe_unused]] auto transfer_result = spi.transfer(
-            tx_data, rx_data, 4, SpiChipSelect::CS0
-        );
+        [[maybe_unused]] auto transfer_result =
+            spi.transfer(tx_data, rx_data, 4, SpiChipSelect::CS0);
 
-        [[maybe_unused]] auto write_result = spi.write(
-            tx_data, 4, SpiChipSelect::CS0
-        );
+        [[maybe_unused]] auto write_result = spi.write(tx_data, 4, SpiChipSelect::CS0);
 
-        [[maybe_unused]] auto read_result = spi.read(
-            rx_data, 4, SpiChipSelect::CS0
-        );
+        [[maybe_unused]] auto read_result = spi.read(rx_data, 4, SpiChipSelect::CS0);
 
         [[maybe_unused]] bool is_open = spi.isOpen();
 
@@ -61,13 +54,9 @@ int main() {
         uint8_t reg_addr = 0x00;
         uint8_t value = 0x42;
 
-        [[maybe_unused]] auto write_reg_result = i2c.writeRegister(
-            device_addr, reg_addr, value
-        );
+        [[maybe_unused]] auto write_reg_result = i2c.writeRegister(device_addr, reg_addr, value);
 
-        [[maybe_unused]] auto read_reg_result = i2c.readRegister(
-            device_addr, reg_addr, &value
-        );
+        [[maybe_unused]] auto read_reg_result = i2c.readRegister(device_addr, reg_addr, &value);
 
         [[maybe_unused]] bool is_open = i2c.isOpen();
 

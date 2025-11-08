@@ -14,17 +14,20 @@
  */
 
 #include <catch2/catch_test_macros.hpp>
+
 #include "gpio_mock.hpp"
 
 // Define mock injection macros BEFORE including gpio.hpp
-#define ALLOY_GPIO_MOCK_PORT() (reinterpret_cast<volatile alloy::hal::atmel::same70::atsame70q21::pioa::PIOA_Registers*>(alloy::hal::test::g_mock_gpio))
+#define ALLOY_GPIO_MOCK_PORT()                                                                 \
+    (reinterpret_cast<volatile alloy::hal::atmel::same70::atsame70q21::pioa::PIOA_Registers*>( \
+        alloy::hal::test::g_mock_gpio))
 
 // Define test hooks for register access
 #define ALLOY_GPIO_TEST_HOOK_SODR() alloy::hal::test::g_mock_gpio->sync_sodr()
 #define ALLOY_GPIO_TEST_HOOK_CODR() alloy::hal::test::g_mock_gpio->sync_codr()
-#define ALLOY_GPIO_TEST_HOOK_PER() alloy::hal::test::g_mock_gpio->sync_per()
-#define ALLOY_GPIO_TEST_HOOK_OER() alloy::hal::test::g_mock_gpio->sync_oer()
-#define ALLOY_GPIO_TEST_HOOK_ODR() alloy::hal::test::g_mock_gpio->sync_odr()
+#define ALLOY_GPIO_TEST_HOOK_PER()  alloy::hal::test::g_mock_gpio->sync_per()
+#define ALLOY_GPIO_TEST_HOOK_OER()  alloy::hal::test::g_mock_gpio->sync_oer()
+#define ALLOY_GPIO_TEST_HOOK_ODR()  alloy::hal::test::g_mock_gpio->sync_odr()
 #define ALLOY_GPIO_TEST_HOOK_MDER() alloy::hal::test::g_mock_gpio->sync_mder()
 #define ALLOY_GPIO_TEST_HOOK_MDDR() alloy::hal::test::g_mock_gpio->sync_mddr()
 #define ALLOY_GPIO_TEST_HOOK_PUER() alloy::hal::test::g_mock_gpio->sync_puer()
@@ -49,14 +52,14 @@ using namespace alloy::hal::test;
  * Sets up mock environment for each test case.
  */
 class GpioTestFixture {
-public:
+   public:
     GpioTestFixture() {
         // Mock fixture sets up global mocks
     }
 
     MockGpioRegisters& gpio_regs() { return mock.gpio(); }
 
-private:
+   private:
     MockGpioFixture mock;
 };
 

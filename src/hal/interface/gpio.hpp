@@ -2,18 +2,19 @@
 #define ALLOY_HAL_INTERFACE_GPIO_HPP
 
 #include <concepts>
+
 #include <stdint.h>
 
 namespace alloy::hal {
 
 /// Pin configuration mode
 enum class PinMode : uint8_t {
-    Input = 0,        ///< Digital input
-    Output,           ///< Digital output
-    InputPullUp,      ///< Input with pull-up resistor
-    InputPullDown,    ///< Input with pull-down resistor
-    Alternate,        ///< Alternate function (UART, SPI, etc)
-    Analog            ///< Analog input (ADC)
+    Input = 0,      ///< Digital input
+    Output,         ///< Digital output
+    InputPullUp,    ///< Input with pull-up resistor
+    InputPullDown,  ///< Input with pull-down resistor
+    Alternate,      ///< Alternate function (UART, SPI, etc)
+    Analog          ///< Analog input (ADC)
 };
 
 /// Concept defining the interface for GPIO pin implementations
@@ -32,7 +33,7 @@ enum class PinMode : uint8_t {
 /// };
 /// static_assert(GpioPin<MyGpioPin>);
 /// \endcode
-template<typename T>
+template <typename T>
 concept GpioPin = requires(T pin, const T const_pin) {
     // Output operations
     { pin.set_high() } -> std::same_as<void>;
@@ -70,41 +71,44 @@ concept GpioPin = requires(T pin, const T const_pin) {
 /// ConfiguredGpioPin<12, PinMode::InputPullUp> sensor;
 /// bool value = sensor.read();  // OK
 /// \endcode
-template<uint8_t PIN, PinMode MODE>
+template <uint8_t PIN, PinMode MODE>
 class ConfiguredGpioPin {
-public:
+   public:
     static constexpr uint8_t pin_number = PIN;
     static constexpr PinMode pin_mode = MODE;
 
     // Output operations - only available for Output mode
-    void set_high() requires (MODE == PinMode::Output) {
+    void set_high()
+        requires(MODE == PinMode::Output)
+    {
         // Implementation will be provided by platform-specific specialization
-        static_assert(MODE == PinMode::Output,
-            "set_high() is only available for Output pins");
+        static_assert(MODE == PinMode::Output, "set_high() is only available for Output pins");
     }
 
-    void set_low() requires (MODE == PinMode::Output) {
-        static_assert(MODE == PinMode::Output,
-            "set_low() is only available for Output pins");
+    void set_low()
+        requires(MODE == PinMode::Output)
+    {
+        static_assert(MODE == PinMode::Output, "set_low() is only available for Output pins");
     }
 
-    void toggle() requires (MODE == PinMode::Output) {
-        static_assert(MODE == PinMode::Output,
-            "toggle() is only available for Output pins");
+    void toggle()
+        requires(MODE == PinMode::Output)
+    {
+        static_assert(MODE == PinMode::Output, "toggle() is only available for Output pins");
     }
 
     // Input operation - available for Input modes
-    bool read() const requires (MODE == PinMode::Input ||
-                                MODE == PinMode::InputPullUp ||
-                                MODE == PinMode::InputPullDown) {
-        static_assert(MODE == PinMode::Input ||
-                     MODE == PinMode::InputPullUp ||
-                     MODE == PinMode::InputPullDown,
-            "read() is only available for Input, InputPullUp, or InputPullDown pins");
-        return false; // Platform-specific implementation needed
+    bool read() const
+        requires(MODE == PinMode::Input || MODE == PinMode::InputPullUp ||
+                 MODE == PinMode::InputPullDown)
+    {
+        static_assert(MODE == PinMode::Input || MODE == PinMode::InputPullUp ||
+                          MODE == PinMode::InputPullDown,
+                      "read() is only available for Input, InputPullUp, or InputPullDown pins");
+        return false;  // Platform-specific implementation needed
     }
 
-protected:
+   protected:
     ConfiguredGpioPin() = default;
 };
 
@@ -112,28 +116,28 @@ protected:
 
 /// Validate that a pin number is within valid range
 /// Usage: ALLOY_VALIDATE_PIN_NUMBER<25>();
-template<uint8_t PIN>
+template <uint8_t PIN>
 consteval void validate_pin_number() {
     // Platform-specific implementations will specialize this
     // Default: allow all pin numbers (validation happens at platform level)
 }
 
 /// Type alias for output pins
-template<uint8_t PIN>
+template <uint8_t PIN>
 using OutputPin = ConfiguredGpioPin<PIN, PinMode::Output>;
 
 /// Type alias for input pins
-template<uint8_t PIN>
+template <uint8_t PIN>
 using InputPin = ConfiguredGpioPin<PIN, PinMode::Input>;
 
 /// Type alias for input pins with pull-up
-template<uint8_t PIN>
+template <uint8_t PIN>
 using InputPinPullUp = ConfiguredGpioPin<PIN, PinMode::InputPullUp>;
 
 /// Type alias for input pins with pull-down
-template<uint8_t PIN>
+template <uint8_t PIN>
 using InputPinPullDown = ConfiguredGpioPin<PIN, PinMode::InputPullDown>;
 
-} // namespace alloy::hal
+}  // namespace alloy::hal
 
-#endif // ALLOY_HAL_INTERFACE_GPIO_HPP
+#endif  // ALLOY_HAL_INTERFACE_GPIO_HPP

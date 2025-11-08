@@ -54,7 +54,7 @@ namespace alloy::core {
  */
 template <typename SpiDevice, typename ChipSelect>
 class ScopedSpi {
-public:
+   public:
     /**
      * @brief Create a scoped SPI bus lock with chip select
      *
@@ -67,10 +67,7 @@ public:
      * @return Result containing ScopedSpi or error code
      */
     [[nodiscard]] static Result<ScopedSpi<SpiDevice, ChipSelect>, ErrorCode> create(
-        SpiDevice& device,
-        ChipSelect cs,
-        uint32_t timeout_ms = 100
-    ) {
+        SpiDevice& device, ChipSelect cs, uint32_t timeout_ms = 100) {
         // Check if device is open
         if (!device.isOpen()) {
             return Err(ErrorCode::NotInitialized);
@@ -104,57 +101,43 @@ public:
      * @brief Access the underlying SPI device via pointer semantics
      * @return Pointer to the SPI device
      */
-    [[nodiscard]] SpiDevice* operator->() noexcept {
-        return m_device;
-    }
+    [[nodiscard]] SpiDevice* operator->() noexcept { return m_device; }
 
     /**
      * @brief Access the underlying SPI device via pointer semantics (const)
      * @return Const pointer to the SPI device
      */
-    [[nodiscard]] const SpiDevice* operator->() const noexcept {
-        return m_device;
-    }
+    [[nodiscard]] const SpiDevice* operator->() const noexcept { return m_device; }
 
     /**
      * @brief Access the underlying SPI device via reference
      * @return Reference to the SPI device
      */
-    [[nodiscard]] SpiDevice& operator*() noexcept {
-        return *m_device;
-    }
+    [[nodiscard]] SpiDevice& operator*() noexcept { return *m_device; }
 
     /**
      * @brief Access the underlying SPI device via reference (const)
      * @return Const reference to the SPI device
      */
-    [[nodiscard]] const SpiDevice& operator*() const noexcept {
-        return *m_device;
-    }
+    [[nodiscard]] const SpiDevice& operator*() const noexcept { return *m_device; }
 
     /**
      * @brief Get raw pointer to the SPI device
      * @return Pointer to the SPI device
      */
-    [[nodiscard]] SpiDevice* get() noexcept {
-        return m_device;
-    }
+    [[nodiscard]] SpiDevice* get() noexcept { return m_device; }
 
     /**
      * @brief Get raw pointer to the SPI device (const)
      * @return Const pointer to the SPI device
      */
-    [[nodiscard]] const SpiDevice* get() const noexcept {
-        return m_device;
-    }
+    [[nodiscard]] const SpiDevice* get() const noexcept { return m_device; }
 
     /**
      * @brief Get the chip select used for this scoped transaction
      * @return Chip select value
      */
-    [[nodiscard]] ChipSelect chipSelect() const noexcept {
-        return m_cs;
-    }
+    [[nodiscard]] ChipSelect chipSelect() const noexcept { return m_cs; }
 
     /**
      * @brief Convenience method: Full-duplex SPI transfer
@@ -166,7 +149,8 @@ public:
      * @param size Number of bytes to transfer
      * @return Result containing number of bytes transferred or error
      */
-    [[nodiscard]] Result<size_t, ErrorCode> transfer(const uint8_t* tx_data, uint8_t* rx_data, size_t size) {
+    [[nodiscard]] Result<size_t, ErrorCode> transfer(const uint8_t* tx_data, uint8_t* rx_data,
+                                                     size_t size) {
         return m_device->transfer(tx_data, rx_data, size, m_cs);
     }
 
@@ -239,15 +223,13 @@ public:
         return Result<uint8_t, ErrorCode>::error(result.error());
     }
 
-private:
+   private:
     /**
      * @brief Private constructor - use create() factory method
      * @param device Reference to the SPI device
      * @param cs Chip select for this transaction
      */
-    explicit ScopedSpi(SpiDevice& device, ChipSelect cs)
-        : m_device(&device), m_cs(cs) {
-    }
+    explicit ScopedSpi(SpiDevice& device, ChipSelect cs) : m_device(&device), m_cs(cs) {}
 
     SpiDevice* m_device;  ///< Pointer to the managed SPI device
     ChipSelect m_cs;      ///< Chip select for this scoped transaction
@@ -265,11 +247,8 @@ private:
  */
 template <typename SpiDevice, typename ChipSelect>
 [[nodiscard]] inline Result<ScopedSpi<SpiDevice, ChipSelect>, ErrorCode> makeScopedSpi(
-    SpiDevice& device,
-    ChipSelect cs,
-    uint32_t timeout_ms = 100
-) {
+    SpiDevice& device, ChipSelect cs, uint32_t timeout_ms = 100) {
     return ScopedSpi<SpiDevice, ChipSelect>::create(device, cs, timeout_ms);
 }
 
-} // namespace alloy::core
+}  // namespace alloy::core

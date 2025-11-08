@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f1::uart5 {
 
 /// UART5 Register Structure
 struct UART5_Registers {
-
     /// UART4_SR
     /// Offset: 0x0000
     /// Reset value: 0x00000000

@@ -17,10 +17,11 @@
  * - Clock frequency calculations
  */
 
+#include <stdio.h>
+
 #include "hal/platform/same70/clock.hpp"
 #include "hal/platform/same70/gpio.hpp"
 #include "hal/platform/same70/uart.hpp"
-#include <stdio.h>
 
 using namespace alloy::hal::same70;
 
@@ -112,30 +113,36 @@ void example2_frequency_reporting() {
 
     printf("MCK Prescaler: ");
     switch (config.mck_prescaler) {
-        case MasterClockPrescaler::DIV_1: printf("/1\n"); break;
-        case MasterClockPrescaler::DIV_2: printf("/2\n"); break;
-        case MasterClockPrescaler::DIV_3: printf("/3\n"); break;
-        case MasterClockPrescaler::DIV_4: printf("/4\n"); break;
+        case MasterClockPrescaler::DIV_1:
+            printf("/1\n");
+            break;
+        case MasterClockPrescaler::DIV_2:
+            printf("/2\n");
+            break;
+        case MasterClockPrescaler::DIV_3:
+            printf("/3\n");
+            break;
+        case MasterClockPrescaler::DIV_4:
+            printf("/4\n");
+            break;
     }
 
     printf("\n--- Calculated Frequencies ---\n");
-    printf("Main Clock:   %10u Hz (%6.2f MHz)\n",
-           Clock::getMainClockFrequency(),
+    printf("Main Clock:   %10u Hz (%6.2f MHz)\n", Clock::getMainClockFrequency(),
            Clock::getMainClockFrequency() / 1000000.0f);
 
-    printf("PLLA Clock:   %10u Hz (%6.2f MHz)\n",
-           Clock::getPllaFrequency(),
+    printf("PLLA Clock:   %10u Hz (%6.2f MHz)\n", Clock::getPllaFrequency(),
            Clock::getPllaFrequency() / 1000000.0f);
 
-    printf("Master Clock: %10u Hz (%6.2f MHz)\n",
-           Clock::getMasterClockFrequency(),
+    printf("Master Clock: %10u Hz (%6.2f MHz)\n", Clock::getMasterClockFrequency(),
            Clock::getMasterClockFrequency() / 1000000.0f);
 
     printf("\n--- Derived Peripheral Clocks ---\n");
     uint32_t mck = Clock::getMasterClockFrequency();
-    printf("MCK/2:   %10u Hz (%6.2f MHz) - Used by TC, PWM\n", mck/2, (mck/2) / 1000000.0f);
-    printf("MCK/4:   %10u Hz (%6.2f MHz)\n", mck/4, (mck/4) / 1000000.0f);
-    printf("MCK/8:   %10u Hz (%6.2f MHz) - Used by UART baud rate\n", mck/8, (mck/8) / 1000000.0f);
+    printf("MCK/2:   %10u Hz (%6.2f MHz) - Used by TC, PWM\n", mck / 2, (mck / 2) / 1000000.0f);
+    printf("MCK/4:   %10u Hz (%6.2f MHz)\n", mck / 4, (mck / 4) / 1000000.0f);
+    printf("MCK/8:   %10u Hz (%6.2f MHz) - Used by UART baud rate\n", mck / 8,
+           (mck / 8) / 1000000.0f);
 }
 
 // ============================================================================
@@ -248,8 +255,7 @@ void example4_conservative_configuration() {
     }
 
     printf("Clock initialization successful!\n");
-    printf("Master Clock (MCK): %u Hz (%.1f MHz)\n",
-           Clock::getMasterClockFrequency(),
+    printf("Master Clock (MCK): %u Hz (%.1f MHz)\n", Clock::getMasterClockFrequency(),
            Clock::getMasterClockFrequency() / 1000000.0f);
 
     printf("\nBenefits of 120 MHz configuration:\n");
@@ -281,8 +287,7 @@ void example5_low_power_configuration() {
     }
 
     printf("Clock initialization successful!\n");
-    printf("Master Clock (MCK): %u Hz (%.1f MHz)\n",
-           Clock::getMasterClockFrequency(),
+    printf("Master Clock (MCK): %u Hz (%.1f MHz)\n", Clock::getMasterClockFrequency(),
            Clock::getMasterClockFrequency() / 1000000.0f);
 
     printf("\nBenefits of RC oscillator configuration:\n");
@@ -326,11 +331,9 @@ void example6_custom_configuration() {
     }
 
     printf("Custom clock configuration successful!\n");
-    printf("PLLA Clock: %u Hz (%.1f MHz)\n",
-           Clock::getPllaFrequency(),
+    printf("PLLA Clock: %u Hz (%.1f MHz)\n", Clock::getPllaFrequency(),
            Clock::getPllaFrequency() / 1000000.0f);
-    printf("Master Clock (MCK): %u Hz (%.1f MHz)\n",
-           Clock::getMasterClockFrequency(),
+    printf("Master Clock (MCK): %u Hz (%.1f MHz)\n", Clock::getMasterClockFrequency(),
            Clock::getMasterClockFrequency() / 1000000.0f);
 }
 
@@ -362,23 +365,22 @@ void example7_clock_dependent_peripherals() {
         uint32_t actual_baud = mck / (16 * cd);
         float error = ((float)actual_baud - baud) / baud * 100.0f;
 
-        printf("  %7u baud: CD=%5u, actual=%7u, error=%+.2f%%\n",
-               baud, cd, actual_baud, error);
+        printf("  %7u baud: CD=%5u, actual=%7u, error=%+.2f%%\n", baud, cd, actual_baud, error);
     }
 
     // Timer frequency calculation
     printf("\n--- Timer Clock Frequencies ---\n");
-    printf("  MCK/2:   %10u Hz (%.2f MHz)\n", mck/2, (mck/2)/1000000.0f);
-    printf("  MCK/8:   %10u Hz (%.2f MHz)\n", mck/8, (mck/8)/1000000.0f);
-    printf("  MCK/32:  %10u Hz (%.2f MHz)\n", mck/32, (mck/32)/1000000.0f);
-    printf("  MCK/128: %10u Hz (%.2f MHz)\n", mck/128, (mck/128)/1000000.0f);
+    printf("  MCK/2:   %10u Hz (%.2f MHz)\n", mck / 2, (mck / 2) / 1000000.0f);
+    printf("  MCK/8:   %10u Hz (%.2f MHz)\n", mck / 8, (mck / 8) / 1000000.0f);
+    printf("  MCK/32:  %10u Hz (%.2f MHz)\n", mck / 32, (mck / 32) / 1000000.0f);
+    printf("  MCK/128: %10u Hz (%.2f MHz)\n", mck / 128, (mck / 128) / 1000000.0f);
 
     // PWM frequency calculation
     printf("\n--- PWM Maximum Frequencies (16-bit counter) ---\n");
-    printf("  MCK/1:    %10u Hz (%.2f kHz)\n", mck/65536, (mck/65536)/1000.0f);
-    printf("  MCK/2:    %10u Hz (%.2f kHz)\n", (mck/2)/65536, ((mck/2)/65536)/1000.0f);
-    printf("  MCK/4:    %10u Hz (%.2f kHz)\n", (mck/4)/65536, ((mck/4)/65536)/1000.0f);
-    printf("  MCK/8:    %10u Hz (%.2f kHz)\n", (mck/8)/65536, ((mck/8)/65536)/1000.0f);
+    printf("  MCK/1:    %10u Hz (%.2f kHz)\n", mck / 65536, (mck / 65536) / 1000.0f);
+    printf("  MCK/2:    %10u Hz (%.2f kHz)\n", (mck / 2) / 65536, ((mck / 2) / 65536) / 1000.0f);
+    printf("  MCK/4:    %10u Hz (%.2f kHz)\n", (mck / 4) / 65536, ((mck / 4) / 65536) / 1000.0f);
+    printf("  MCK/8:    %10u Hz (%.2f kHz)\n", (mck / 8) / 65536, ((mck / 8) / 65536) / 1000.0f);
 }
 
 // ============================================================================

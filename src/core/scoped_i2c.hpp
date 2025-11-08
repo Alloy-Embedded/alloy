@@ -51,7 +51,7 @@ namespace alloy::core {
  */
 template <typename I2cDevice>
 class ScopedI2c {
-public:
+   public:
     /**
      * @brief Create a scoped I2C bus lock with timeout
      *
@@ -63,10 +63,8 @@ public:
      * @param timeout_ms Lock acquisition timeout in milliseconds (default: 100ms)
      * @return Result containing ScopedI2c or error code
      */
-    [[nodiscard]] static Result<ScopedI2c<I2cDevice>, ErrorCode> create(
-        I2cDevice& device,
-        uint32_t timeout_ms = 100
-    ) {
+    [[nodiscard]] static Result<ScopedI2c<I2cDevice>, ErrorCode> create(I2cDevice& device,
+                                                                        uint32_t timeout_ms = 100) {
         // Check if device is open
         if (!device.isOpen()) {
             return Err(ErrorCode::NotInitialized);
@@ -100,49 +98,37 @@ public:
      * @brief Access the underlying I2C device via pointer semantics
      * @return Pointer to the I2C device
      */
-    [[nodiscard]] I2cDevice* operator->() noexcept {
-        return m_device;
-    }
+    [[nodiscard]] I2cDevice* operator->() noexcept { return m_device; }
 
     /**
      * @brief Access the underlying I2C device via pointer semantics (const)
      * @return Const pointer to the I2C device
      */
-    [[nodiscard]] const I2cDevice* operator->() const noexcept {
-        return m_device;
-    }
+    [[nodiscard]] const I2cDevice* operator->() const noexcept { return m_device; }
 
     /**
      * @brief Access the underlying I2C device via reference
      * @return Reference to the I2C device
      */
-    [[nodiscard]] I2cDevice& operator*() noexcept {
-        return *m_device;
-    }
+    [[nodiscard]] I2cDevice& operator*() noexcept { return *m_device; }
 
     /**
      * @brief Access the underlying I2C device via reference (const)
      * @return Const reference to the I2C device
      */
-    [[nodiscard]] const I2cDevice& operator*() const noexcept {
-        return *m_device;
-    }
+    [[nodiscard]] const I2cDevice& operator*() const noexcept { return *m_device; }
 
     /**
      * @brief Get raw pointer to the I2C device
      * @return Pointer to the I2C device
      */
-    [[nodiscard]] I2cDevice* get() noexcept {
-        return m_device;
-    }
+    [[nodiscard]] I2cDevice* get() noexcept { return m_device; }
 
     /**
      * @brief Get raw pointer to the I2C device (const)
      * @return Const pointer to the I2C device
      */
-    [[nodiscard]] const I2cDevice* get() const noexcept {
-        return m_device;
-    }
+    [[nodiscard]] const I2cDevice* get() const noexcept { return m_device; }
 
     /**
      * @brief Convenience method: Write data to I2C device
@@ -152,7 +138,8 @@ public:
      * @param size Number of bytes to write
      * @return Result containing number of bytes written or error
      */
-    [[nodiscard]] Result<size_t, ErrorCode> write(uint8_t device_addr, const uint8_t* data, size_t size) {
+    [[nodiscard]] Result<size_t, ErrorCode> write(uint8_t device_addr, const uint8_t* data,
+                                                  size_t size) {
         return m_device->write(device_addr, data, size);
     }
 
@@ -176,7 +163,8 @@ public:
      * @param value Value to write
      * @return Result indicating success or error
      */
-    [[nodiscard]] Result<void, ErrorCode> writeRegister(uint8_t device_addr, uint8_t reg_addr, uint8_t value) {
+    [[nodiscard]] Result<void, ErrorCode> writeRegister(uint8_t device_addr, uint8_t reg_addr,
+                                                        uint8_t value) {
         return m_device->writeRegister(device_addr, reg_addr, value);
     }
 
@@ -188,18 +176,17 @@ public:
      * @param value Pointer to store read value
      * @return Result indicating success or error
      */
-    [[nodiscard]] Result<void, ErrorCode> readRegister(uint8_t device_addr, uint8_t reg_addr, uint8_t* value) {
+    [[nodiscard]] Result<void, ErrorCode> readRegister(uint8_t device_addr, uint8_t reg_addr,
+                                                       uint8_t* value) {
         return m_device->readRegister(device_addr, reg_addr, value);
     }
 
-private:
+   private:
     /**
      * @brief Private constructor - use create() factory method
      * @param device Reference to the I2C device
      */
-    explicit ScopedI2c(I2cDevice& device)
-        : m_device(&device) {
-    }
+    explicit ScopedI2c(I2cDevice& device) : m_device(&device) {}
 
     I2cDevice* m_device;  ///< Pointer to the managed I2C device
 };
@@ -214,10 +201,8 @@ private:
  */
 template <typename I2cDevice>
 [[nodiscard]] inline Result<ScopedI2c<I2cDevice>, ErrorCode> makeScopedI2c(
-    I2cDevice& device,
-    uint32_t timeout_ms = 100
-) {
+    I2cDevice& device, uint32_t timeout_ms = 100) {
     return ScopedI2c<I2cDevice>::create(device, timeout_ms);
 }
 
-} // namespace alloy::core
+}  // namespace alloy::core

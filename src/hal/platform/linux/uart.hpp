@@ -17,38 +17,41 @@
 
 #pragma once
 
-#include "core/error.hpp"
-#include "core/types.hpp"
 #include "hal/types.hpp"
 
+#include "core/error.hpp"
+#include "core/types.hpp"
+
 // POSIX headers for serial I/O
-#include <fcntl.h>      // open()
-#include <unistd.h>     // close(), read(), write()
-#include <termios.h>    // termios, tcgetattr(), tcsetattr()
+#include <cstring>  // memset
+
+#include <fcntl.h>    // open()
+#include <termios.h>  // termios, tcgetattr(), tcsetattr()
+#include <unistd.h>   // close(), read(), write()
+
 #include <sys/ioctl.h>  // ioctl()
-#include <cstring>      // memset
 
 // macOS compatibility (doesn't have CRTSCTS in termios.h)
 #ifndef CRTSCTS
-#define CRTSCTS 0  // Hardware flow control not available on macOS via POSIX API
+    #define CRTSCTS 0  // Hardware flow control not available on macOS via POSIX API
 #endif
 
 // macOS uses numeric baudrate values directly
 #ifndef B57600
-#define B57600 57600
+    #define B57600 57600
 #endif
 #ifndef B115200
-#define B115200 115200
+    #define B115200 115200
 #endif
 #ifndef B230400
-#define B230400 230400
+    #define B230400 230400
 #endif
 
 namespace alloy::hal::linux {
 
 // Import types from core and hal namespaces
-using alloy::core::Result;
 using alloy::core::ErrorCode;
+using alloy::core::Result;
 using alloy::hal::Baudrate;
 
 /**
@@ -78,7 +81,7 @@ using alloy::hal::Baudrate;
  */
 template <const char* DEVICE_PATH>
 class Uart {
-public:
+   public:
     // Compile-time constants
     static constexpr const char* device_path = DEVICE_PATH;
 
@@ -279,20 +282,36 @@ public:
         // Map Baudrate enum to termios speed_t
         speed_t speed;
         switch (baudrate) {
-            case Baudrate::e9600:   speed = B9600;   break;
-            case Baudrate::e19200:  speed = B19200;  break;
-            case Baudrate::e38400:  speed = B38400;  break;
-            case Baudrate::e57600:  speed = B57600;  break;
-            case Baudrate::e115200: speed = B115200; break;
-            case Baudrate::e230400: speed = B230400; break;
+            case Baudrate::e9600:
+                speed = B9600;
+                break;
+            case Baudrate::e19200:
+                speed = B19200;
+                break;
+            case Baudrate::e38400:
+                speed = B38400;
+                break;
+            case Baudrate::e57600:
+                speed = B57600;
+                break;
+            case Baudrate::e115200:
+                speed = B115200;
+                break;
+            case Baudrate::e230400:
+                speed = B230400;
+                break;
 #ifdef B460800
-            case Baudrate::e460800: speed = B460800; break;
+            case Baudrate::e460800:
+                speed = B460800;
+                break;
 #else
             case Baudrate::e460800:
                 return Result<void>::error(ErrorCode::NotSupported);
 #endif
 #ifdef B921600
-            case Baudrate::e921600: speed = B921600; break;
+            case Baudrate::e921600:
+                speed = B921600;
+                break;
 #else
             case Baudrate::e921600:
                 return Result<void>::error(ErrorCode::NotSupported);
@@ -353,13 +372,11 @@ public:
      *
      * @return true if open, false otherwise
      */
-    bool isOpen() const {
-        return m_opened;
-    }
+    bool isOpen() const { return m_opened; }
 
-private:
-    int m_fd;          ///< File descriptor for serial device
-    bool m_opened;     ///< Device open state
+   private:
+    int m_fd;       ///< File descriptor for serial device
+    bool m_opened;  ///< Device open state
 };
 
 // ============================================================================
@@ -382,4 +399,4 @@ using UartAcm1 = Uart<ttyACM1_path>;  // USB CDC/ACM device 1
 using UartS0 = Uart<ttyS0_path>;      // Hardware serial port 0
 using UartS1 = Uart<ttyS1_path>;      // Hardware serial port 1
 
-} // namespace alloy::hal::linux
+}  // namespace alloy::hal::linux

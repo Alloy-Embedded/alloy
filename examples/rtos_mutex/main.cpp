@@ -19,10 +19,12 @@
 /// Hardware: STM32F103 (Bluepill)
 /// - LED blink patterns indicate which task is running
 
-#include "stm32f103c8/board.hpp"
-#include "rtos/rtos.hpp"
 #include "rtos/mutex.hpp"
+#include "rtos/rtos.hpp"
+
 #include "core/types.hpp"
+
+#include "stm32f103c8/board.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
@@ -125,8 +127,7 @@ void high_priority_task_func() {
             RTOS::delay(100);
 
             core::u32 wait_time_ms = wait_time_us / 1000;
-            int blink_count = (wait_time_ms < 50) ? 1 :
-                             (wait_time_ms < 100) ? 2 : 3;
+            int blink_count = (wait_time_ms < 50) ? 1 : (wait_time_ms < 100) ? 2 : 3;
 
             for (int i = 0; i < blink_count; i++) {
                 Board::Led::on();
@@ -161,10 +162,10 @@ void idle_task_func() {
 
 // Create tasks with different priorities
 // Note the priority levels - this creates the priority inversion scenario
-Task<512, Priority::Low>      low_task(low_priority_task_func, "LowPri");
-Task<512, Priority::Normal>   medium_task(medium_priority_task_func, "MediumPri");
-Task<512, Priority::Highest>  high_task(high_priority_task_func, "HighPri");
-Task<256, Priority::Idle>     idle_task(idle_task_func, "Idle");
+Task<512, Priority::Low> low_task(low_priority_task_func, "LowPri");
+Task<512, Priority::Normal> medium_task(medium_priority_task_func, "MediumPri");
+Task<512, Priority::Highest> high_task(high_priority_task_func, "HighPri");
+Task<256, Priority::Idle> idle_task(idle_task_func, "Idle");
 
 int main() {
     // Initialize board (includes SysTick)
@@ -181,7 +182,7 @@ int main() {
 
 // Weak symbols for startup code
 extern "C" {
-    void SystemInit() {
-        // Running on default HSI (8MHz)
-    }
+void SystemInit() {
+    // Running on default HSI (8MHz)
+}
 }

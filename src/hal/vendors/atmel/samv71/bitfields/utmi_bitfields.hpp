@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samv71::utmi {
@@ -19,43 +20,43 @@ using namespace alloy::hal::bitfields;
 
 /// OHCIICR - OHCI Interrupt Configuration Register
 namespace ohciicr {
-    /// USB PORTx Reset
-    /// Position: 0, Width: 1
-    using RES0 = BitField<0, 1>;
-    constexpr uint32_t RES0_Pos = 0;
-    constexpr uint32_t RES0_Msk = RES0::mask;
+/// USB PORTx Reset
+/// Position: 0, Width: 1
+using RES0 = BitField<0, 1>;
+constexpr uint32_t RES0_Pos = 0;
+constexpr uint32_t RES0_Msk = RES0::mask;
 
-    /// OHCI Asynchronous Resume Interrupt Enable
-    /// Position: 4, Width: 1
-    using ARIE = BitField<4, 1>;
-    constexpr uint32_t ARIE_Pos = 4;
-    constexpr uint32_t ARIE_Msk = ARIE::mask;
+/// OHCI Asynchronous Resume Interrupt Enable
+/// Position: 4, Width: 1
+using ARIE = BitField<4, 1>;
+constexpr uint32_t ARIE_Pos = 4;
+constexpr uint32_t ARIE_Msk = ARIE::mask;
 
-    /// Position: 5, Width: 1
-    using APPSTART = BitField<5, 1>;
-    constexpr uint32_t APPSTART_Pos = 5;
-    constexpr uint32_t APPSTART_Msk = APPSTART::mask;
+/// Position: 5, Width: 1
+using APPSTART = BitField<5, 1>;
+constexpr uint32_t APPSTART_Pos = 5;
+constexpr uint32_t APPSTART_Msk = APPSTART::mask;
 
-    /// USB Device Pull-up Disable
-    /// Position: 23, Width: 1
-    using UDPPUDIS = BitField<23, 1>;
-    constexpr uint32_t UDPPUDIS_Pos = 23;
-    constexpr uint32_t UDPPUDIS_Msk = UDPPUDIS::mask;
+/// USB Device Pull-up Disable
+/// Position: 23, Width: 1
+using UDPPUDIS = BitField<23, 1>;
+constexpr uint32_t UDPPUDIS_Pos = 23;
+constexpr uint32_t UDPPUDIS_Msk = UDPPUDIS::mask;
 
 }  // namespace ohciicr
 
 /// CKTRIM - UTMI Clock Trimming Register
 namespace cktrim {
-    /// UTMI Reference Clock Frequency
-    /// Position: 0, Width: 2
-    using FREQ = BitField<0, 2>;
-    constexpr uint32_t FREQ_Pos = 0;
-    constexpr uint32_t FREQ_Msk = FREQ::mask;
-    /// Enumerated values for FREQ
-    namespace freq {
-        constexpr uint32_t XTAL12 = 0;
-        constexpr uint32_t XTAL16 = 1;
-    }
+/// UTMI Reference Clock Frequency
+/// Position: 0, Width: 2
+using FREQ = BitField<0, 2>;
+constexpr uint32_t FREQ_Pos = 0;
+constexpr uint32_t FREQ_Msk = FREQ::mask;
+/// Enumerated values for FREQ
+namespace freq {
+constexpr uint32_t XTAL12 = 0;
+constexpr uint32_t XTAL16 = 1;
+}  // namespace freq
 
 }  // namespace cktrim
 

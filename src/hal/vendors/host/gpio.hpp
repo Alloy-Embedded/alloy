@@ -1,9 +1,11 @@
 #ifndef ALLOY_HAL_HOST_GPIO_HPP
 #define ALLOY_HAL_HOST_GPIO_HPP
 
-#include "../interface/gpio.hpp"
-#include <stdint.h>
 #include <array>
+
+#include <stdint.h>
+
+#include "../interface/gpio.hpp"
 
 namespace alloy::hal::host {
 
@@ -24,9 +26,9 @@ namespace alloy::hal::host {
 /// led.set_high();   // Prints: [GPIO Mock] Pin 13 set HIGH
 /// led.toggle();     // Prints: [GPIO Mock] Pin 13 set LOW
 /// \endcode
-template<uint8_t PIN>
+template <uint8_t PIN>
 class GpioPin {
-public:
+   public:
     static constexpr uint8_t pin_number = PIN;
 
     /// Constructor - initializes pin state to LOW
@@ -56,15 +58,14 @@ public:
     /// @return Current PinMode
     PinMode get_mode() const { return mode_; }
 
-private:
+   private:
     PinMode mode_;
     bool state_;
 };
 
 // Static assertion to verify concept compliance
-static_assert(alloy::hal::GpioPin<GpioPin<0>>,
-              "host::GpioPin must satisfy GpioPin concept");
+static_assert(alloy::hal::GpioPin<GpioPin<0>>, "host::GpioPin must satisfy GpioPin concept");
 
-} // namespace alloy::hal::host
+}  // namespace alloy::hal::host
 
-#endif // ALLOY_HAL_HOST_GPIO_HPP
+#endif  // ALLOY_HAL_HOST_GPIO_HPP

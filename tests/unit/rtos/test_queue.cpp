@@ -3,11 +3,14 @@
 /// Tests type-safe FIFO message queue for inter-task communication.
 /// Covers send/receive, blocking, timeouts, full/empty conditions, and edge cases.
 
-#include <catch2/catch_test_macros.hpp>
-#include "rtos/queue.hpp"
-#include "hal/host/systick.hpp"
-#include <thread>
 #include <atomic>
+#include <thread>
+
+#include <catch2/catch_test_macros.hpp>
+
+#include "hal/host/systick.hpp"
+
+#include "rtos/queue.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
@@ -366,8 +369,12 @@ TEST_CASE("CountTracking", "[rtos][queue]") {
 // Test 11: Type Safety
 // ============================================================================
 
-struct TypeA { int x; };
-struct TypeB { float y; };
+struct TypeA {
+    int x;
+};
+struct TypeB {
+    float y;
+};
 
 TEST_CASE("TypeSafety", "[rtos][queue]") {
     auto systick_result = hal::host::SystemTick::init();
@@ -473,5 +480,3 @@ TEST_CASE("StressTestManyOperations", "[rtos][queue]") {
 // ============================================================================
 // Main
 // ============================================================================
-
-

@@ -20,9 +20,10 @@
  */
 
 // Generic portable headers - work on any MCU!
+#include "core/types.hpp"
+
 #include "alloy/hal/gpio.hpp"
 #include "alloy/hal/uart.hpp"
-#include "core/types.hpp"
 
 using namespace alloy::hal;
 using namespace alloy::core;
@@ -30,14 +31,14 @@ using namespace alloy::core;
 // LED pin is configured by CMakeLists.txt based on board
 // For example: -DLED_PIN=45 for BluePill PC13
 #ifndef LED_PIN
-#define LED_PIN 13  // Default fallback
+    #define LED_PIN 13  // Default fallback
 #endif
 
 // Simple delay function (blocking, for demonstration)
 void delay_ms(uint32_t ms) {
     // This is a very rough delay - should use timer in production
     for (volatile uint32_t i = 0; i < ms * 1000; i++) {
-        __asm volatile ("nop");
+        __asm volatile("nop");
     }
 }
 
@@ -47,9 +48,9 @@ int main() {
     GpioPin<LED_PIN> led;
     led.configure(PinMode::Output);
 
-    // Optionally configure UART for debug output
-    // Comment this out if your board doesn't have UART configured
-    #ifdef USE_UART
+// Optionally configure UART for debug output
+// Comment this out if your board doesn't have UART configured
+#ifdef USE_UART
     UartDevice<UsartId::USART1> serial;
     serial.configure({baud_rates::Baud115200});
 
@@ -57,14 +58,14 @@ int main() {
     for (const char* p = hello; *p; p++) {
         serial.write_byte(static_cast<u8>(*p));
     }
-    #endif
+#endif
 
     // Main loop - blink LED forever
     uint32_t count = 0;
     while (true) {
         led.toggle();
 
-        #ifdef USE_UART
+#ifdef USE_UART
         // Send heartbeat message
         if (count % 10 == 0) {
             const char* msg = "Heartbeat\r\n";
@@ -72,7 +73,7 @@ int main() {
                 serial.write_byte(static_cast<u8>(*p));
             }
         }
-        #endif
+#endif
 
         delay_ms(500);  // 500ms delay
         count++;

@@ -17,9 +17,10 @@
  * - Compile-time calculation helpers
  */
 
-#include "hal/platform/same70/timer.hpp"
-#include "hal/platform/same70/gpio.hpp"
 #include <stdio.h>
+
+#include "hal/platform/same70/gpio.hpp"
+#include "hal/platform/same70/timer.hpp"
 
 using namespace alloy::hal::same70;
 
@@ -48,10 +49,7 @@ void example1_frequency_generation() {
     // Calculate period for 1 kHz frequency
     // Using MCK/8 = 18.75 MHz
     constexpr uint32_t desired_freq = 1000;  // 1 kHz
-    constexpr uint32_t period = Timer0Ch0::calculatePeriod(
-        TimerClock::MCK_DIV_8,
-        desired_freq
-    );
+    constexpr uint32_t period = Timer0Ch0::calculatePeriod(TimerClock::MCK_DIV_8, desired_freq);
 
     printf("Calculated period: %lu (for %lu Hz)\n", period, desired_freq);
 
@@ -118,18 +116,15 @@ void example2_pwm_dual_output() {
 
     // Configure for 10 kHz PWM
     constexpr uint32_t pwm_freq = 10000;  // 10 kHz
-    constexpr uint32_t period = Timer0Ch1::calculatePeriod(
-        TimerClock::MCK_DIV_8,
-        pwm_freq
-    );
+    constexpr uint32_t period = Timer0Ch1::calculatePeriod(TimerClock::MCK_DIV_8, pwm_freq);
 
     TimerConfig config{};
     config.mode = TimerMode::Waveform;
     config.clock = TimerClock::MCK_DIV_8;
     config.waveform = WaveformType::UpReset;
     config.period = period;
-    config.duty_a = period / 4;      // 25% duty on TIOA
-    config.duty_b = (period * 3) / 4; // 75% duty on TIOB
+    config.duty_a = period / 4;        // 25% duty on TIOA
+    config.duty_b = (period * 3) / 4;  // 75% duty on TIOB
     config.invert_output = false;
 
     result = timer.configure(config);
@@ -177,10 +172,7 @@ void example3_interval_timing() {
 
     // Configure for 10 Hz (100ms period)
     constexpr uint32_t interval_freq = 10;  // 10 Hz = 100ms
-    constexpr uint32_t period = Timer0Ch2::calculatePeriod(
-        TimerClock::MCK_DIV_128,
-        interval_freq
-    );
+    constexpr uint32_t period = Timer0Ch2::calculatePeriod(TimerClock::MCK_DIV_128, interval_freq);
 
     TimerConfig config{};
     config.mode = TimerMode::Waveform;
@@ -350,20 +342,11 @@ void example6_compile_time_calculations() {
     printf("\n=== Example 6: Compile-Time Calculations ===\n");
 
     // Calculate periods and frequencies
-    uint32_t freq_1khz = Timer0Ch0::calculateFrequency(
-        TimerClock::MCK_DIV_8,
-        1875
-    );
+    uint32_t freq_1khz = Timer0Ch0::calculateFrequency(TimerClock::MCK_DIV_8, 1875);
 
-    uint32_t period_10khz = Timer0Ch0::calculatePeriod(
-        TimerClock::MCK_DIV_8,
-        10000
-    );
+    uint32_t period_10khz = Timer0Ch0::calculatePeriod(TimerClock::MCK_DIV_8, 10000);
 
-    uint32_t period_1mhz = Timer0Ch0::calculatePeriod(
-        TimerClock::MCK_DIV_2,
-        1000000
-    );
+    uint32_t period_1mhz = Timer0Ch0::calculatePeriod(TimerClock::MCK_DIV_2, 1000000);
 
     printf("Timer calculations:\n");
     printf("  1875 ticks @ MCK/8 = %u Hz\n", freq_1khz);

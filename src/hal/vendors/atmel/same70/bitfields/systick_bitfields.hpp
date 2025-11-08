@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::same70::systick {
@@ -19,96 +20,96 @@ using namespace alloy::hal::bitfields;
 
 /// CSR - Control and Status Register
 namespace csr {
-    /// Enables the counter
-    /// Position: 0, Width: 1
-    using ENABLE = BitField<0, 1>;
-    constexpr uint32_t ENABLE_Pos = 0;
-    constexpr uint32_t ENABLE_Msk = ENABLE::mask;
-    /// Enumerated values for ENABLE
-    namespace enable {
-        constexpr uint32_t VALUE_0 = 0;
-        constexpr uint32_t VALUE_1 = 1;
-    }
+/// Enables the counter
+/// Position: 0, Width: 1
+using ENABLE = BitField<0, 1>;
+constexpr uint32_t ENABLE_Pos = 0;
+constexpr uint32_t ENABLE_Msk = ENABLE::mask;
+/// Enumerated values for ENABLE
+namespace enable {
+constexpr uint32_t VALUE_0 = 0;
+constexpr uint32_t VALUE_1 = 1;
+}  // namespace enable
 
-    /// Enables SysTick exception request
-    /// Position: 1, Width: 1
-    using TICKINT = BitField<1, 1>;
-    constexpr uint32_t TICKINT_Pos = 1;
-    constexpr uint32_t TICKINT_Msk = TICKINT::mask;
-    /// Enumerated values for TICKINT
-    namespace tickint {
-        constexpr uint32_t VALUE_0 = 0;
-        constexpr uint32_t VALUE_1 = 1;
-    }
+/// Enables SysTick exception request
+/// Position: 1, Width: 1
+using TICKINT = BitField<1, 1>;
+constexpr uint32_t TICKINT_Pos = 1;
+constexpr uint32_t TICKINT_Msk = TICKINT::mask;
+/// Enumerated values for TICKINT
+namespace tickint {
+constexpr uint32_t VALUE_0 = 0;
+constexpr uint32_t VALUE_1 = 1;
+}  // namespace tickint
 
-    /// Indicates the clock source
-    /// Position: 2, Width: 1
-    using CLKSOURCE = BitField<2, 1>;
-    constexpr uint32_t CLKSOURCE_Pos = 2;
-    constexpr uint32_t CLKSOURCE_Msk = CLKSOURCE::mask;
-    /// Enumerated values for CLKSOURCE
-    namespace clksource {
-        constexpr uint32_t VALUE_0 = 0;
-        constexpr uint32_t VALUE_1 = 1;
-    }
+/// Indicates the clock source
+/// Position: 2, Width: 1
+using CLKSOURCE = BitField<2, 1>;
+constexpr uint32_t CLKSOURCE_Pos = 2;
+constexpr uint32_t CLKSOURCE_Msk = CLKSOURCE::mask;
+/// Enumerated values for CLKSOURCE
+namespace clksource {
+constexpr uint32_t VALUE_0 = 0;
+constexpr uint32_t VALUE_1 = 1;
+}  // namespace clksource
 
-    /// Returns 1 if timer counted to 0 since last time this was read
-    /// Position: 16, Width: 1
-    using COUNTFLAG = BitField<16, 1>;
-    constexpr uint32_t COUNTFLAG_Pos = 16;
-    constexpr uint32_t COUNTFLAG_Msk = COUNTFLAG::mask;
+/// Returns 1 if timer counted to 0 since last time this was read
+/// Position: 16, Width: 1
+using COUNTFLAG = BitField<16, 1>;
+constexpr uint32_t COUNTFLAG_Pos = 16;
+constexpr uint32_t COUNTFLAG_Msk = COUNTFLAG::mask;
 
 }  // namespace csr
 
 /// RVR - Reload Value Register
 namespace rvr {
-    /// Value to load into the SysTick Current Value Register when the counter reaches 0
-    /// Position: 0, Width: 24
-    using RELOAD = BitField<0, 24>;
-    constexpr uint32_t RELOAD_Pos = 0;
-    constexpr uint32_t RELOAD_Msk = RELOAD::mask;
+/// Value to load into the SysTick Current Value Register when the counter reaches 0
+/// Position: 0, Width: 24
+using RELOAD = BitField<0, 24>;
+constexpr uint32_t RELOAD_Pos = 0;
+constexpr uint32_t RELOAD_Msk = RELOAD::mask;
 
 }  // namespace rvr
 
 /// CVR - Current Value Register
 namespace cvr {
-    /// Current value at the time the register is accessed
-    /// Position: 0, Width: 24
-    using CURRENT = BitField<0, 24>;
-    constexpr uint32_t CURRENT_Pos = 0;
-    constexpr uint32_t CURRENT_Msk = CURRENT::mask;
+/// Current value at the time the register is accessed
+/// Position: 0, Width: 24
+using CURRENT = BitField<0, 24>;
+constexpr uint32_t CURRENT_Pos = 0;
+constexpr uint32_t CURRENT_Msk = CURRENT::mask;
 
 }  // namespace cvr
 
 /// CALIB - Calibration Value Register
 namespace calib {
-    /// Reload value to use for 10ms timing
-    /// Position: 0, Width: 24
-    using TENMS = BitField<0, 24>;
-    constexpr uint32_t TENMS_Pos = 0;
-    constexpr uint32_t TENMS_Msk = TENMS::mask;
+/// Reload value to use for 10ms timing
+/// Position: 0, Width: 24
+using TENMS = BitField<0, 24>;
+constexpr uint32_t TENMS_Pos = 0;
+constexpr uint32_t TENMS_Msk = TENMS::mask;
 
-    /// Indicates whether the TENMS value is exact
-    /// Position: 30, Width: 1
-    using SKEW = BitField<30, 1>;
-    constexpr uint32_t SKEW_Pos = 30;
-    constexpr uint32_t SKEW_Msk = SKEW::mask;
-    /// Enumerated values for SKEW
-    namespace skew {
-        constexpr uint32_t VALUE_0 = 0;
-        constexpr uint32_t VALUE_1 = 1;
-    }
+/// Indicates whether the TENMS value is exact
+/// Position: 30, Width: 1
+using SKEW = BitField<30, 1>;
+constexpr uint32_t SKEW_Pos = 30;
+constexpr uint32_t SKEW_Msk = SKEW::mask;
+/// Enumerated values for SKEW
+namespace skew {
+constexpr uint32_t VALUE_0 = 0;
+constexpr uint32_t VALUE_1 = 1;
+}  // namespace skew
 
-    /// Indicates whether the device provides a reference clock to the processor
-    /// Position: 31, Width: 1
-    using NOREF = BitField<31, 1>;
-    constexpr uint32_t NOREF_Pos = 31;
-    constexpr uint32_t NOREF_Msk = NOREF::mask;
-    /// Enumerated values for NOREF
-    namespace noref {
-        constexpr uint32_t VALUE_0 = 0;
-        constexpr uint32_t VALUE_1 = 1;
-    }
+/// Indicates whether the device provides a reference clock to the processor
+/// Position: 31, Width: 1
+using NOREF = BitField<31, 1>;
+constexpr uint32_t NOREF_Pos = 31;
+constexpr uint32_t NOREF_Msk = NOREF::mask;
+/// Enumerated values for NOREF
+namespace noref {
+constexpr uint32_t VALUE_0 = 0;
+constexpr uint32_t VALUE_1 = 1;
+}  // namespace noref
 
 }  // namespace calib
 

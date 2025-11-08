@@ -4,16 +4,19 @@
 /// in realistic multi-task scenarios. Tests complex interactions
 /// between Task, Queue, Mutex, Semaphore, EventFlags, and Scheduler.
 
-#include <catch2/catch_test_macros.hpp>
-#include "rtos/rtos.hpp"
-#include "rtos/queue.hpp"
-#include "rtos/mutex.hpp"
-#include "rtos/semaphore.hpp"
-#include "rtos/event.hpp"
-#include "hal/host/systick.hpp"
-#include <thread>
 #include <atomic>
 #include <chrono>
+#include <thread>
+
+#include <catch2/catch_test_macros.hpp>
+
+#include "hal/host/systick.hpp"
+
+#include "rtos/event.hpp"
+#include "rtos/mutex.hpp"
+#include "rtos/queue.hpp"
+#include "rtos/rtos.hpp"
+#include "rtos/semaphore.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
@@ -238,9 +241,7 @@ TEST_CASE("ResourcePoolWithSemaphoreAndMutex", "[rtos][integration]") {
     // When: Multiple workers compete for resources
     std::vector<std::unique_ptr<Task<1024, Priority::Normal>>> workers;
     for (int i = 0; i < NUM_WORKERS; i++) {
-        workers.push_back(
-            std::make_unique<Task<1024, Priority::Normal>>(worker_func, "Worker")
-        );
+        workers.push_back(std::make_unique<Task<1024, Priority::Normal>>(worker_func, "Worker"));
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -248,7 +249,7 @@ TEST_CASE("ResourcePoolWithSemaphoreAndMutex", "[rtos][integration]") {
     // Then: Concurrency should not exceed pool size
     REQUIRE(max_concurrent.load(), 5);
     REQUIRE(successful_uses.load(), 0);
-    REQUIRE(current_active.load(), 0); // All resources returned
+    REQUIRE(current_active.load(), 0);  // All resources returned
 }
 
 // ============================================================================
@@ -367,10 +368,8 @@ TEST_CASE("DataProcessingPipeline", "[rtos][integration]") {
     Task<1024, Priority::Low> stage3(stage3_func, "Stage3");
 
     // Wait for pipeline to complete
-    core::u32 result = pipeline_events.wait_all(
-        STAGE1_COMPLETE | STAGE2_COMPLETE | STAGE3_COMPLETE,
-        5000
-    );
+    core::u32 result =
+        pipeline_events.wait_all(STAGE1_COMPLETE | STAGE2_COMPLETE | STAGE3_COMPLETE, 5000);
 
     // Then: All data should flow through pipeline
     REQUIRE(result, 0u) << "Pipeline should complete";
@@ -436,12 +435,8 @@ TEST_CASE("StressTestAllPrimitivesUnderLoad", "[rtos][integration]") {
     // When: Running stress test
     std::vector<std::unique_ptr<Task<1024, Priority::Normal>>> stress_tasks;
     for (int i = 0; i < NUM_STRESS_TASKS; i++) {
-        stress_tasks.push_back(
-            std::make_unique<Task<1024, Priority::Normal>>(
-                [&stress_worker, i]() { stress_worker(i); },
-                "StressWorker"
-            )
-        );
+        stress_tasks.push_back(std::make_unique<Task<1024, Priority::Normal>>(
+            [&stress_worker, i]() { stress_worker(i); }, "StressWorker"));
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(800));
@@ -520,5 +515,3 @@ TEST_CASE("TimeoutsPreventDeadlocks", "[rtos][integration]") {
 // ============================================================================
 // Main
 // ============================================================================
-
-

@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f0::crc {
 
 /// CRC Register Structure
 struct CRC_Registers {
-
     /// Data register
     /// Offset: 0x0000
     /// Reset value: 0xFFFFFFFF

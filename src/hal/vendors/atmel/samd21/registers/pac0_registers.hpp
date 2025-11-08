@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samd21::pac0 {
 
 /// PAC0 Register Structure
 struct PAC0_Registers {
-
     /// Write Protection Clear
     /// Offset: 0x0000
     volatile uint32_t WPCLR;

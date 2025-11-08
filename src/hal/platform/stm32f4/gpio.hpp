@@ -27,10 +27,11 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -63,9 +64,9 @@ using namespace alloy::hal::st::stm32f4;
  * @brief GPIO output speed (STM32-specific)
  */
 enum class GpioSpeed : uint8_t {
-    Low = 0,  ///< Low speed (2 MHz)
-    Medium = 1,  ///< Medium speed (25 MHz)
-    High = 2,  ///< High speed (50 MHz)
+    Low = 0,       ///< Low speed (2 MHz)
+    Medium = 1,    ///< Medium speed (25 MHz)
+    High = 2,      ///< High speed (50 MHz)
     VeryHigh = 3,  ///< Very high speed (100 MHz)
 };
 
@@ -98,7 +99,7 @@ led.set();
  */
 template <uint32_t PORT_BASE, uint8_t PIN_NUM>
 class GpioPin {
-public:
+   public:
     // Compile-time constants
     static constexpr uint32_t port_base = PORT_BASE;
     static constexpr uint8_t pin_number = PIN_NUM;
@@ -169,8 +170,7 @@ public:
     Result<void, ErrorCode> write(bool value) {
         auto* port = get_port();
 
-        if (value) {
-        }
+        if (value) {}
         return Ok();
     }
 
@@ -241,9 +241,15 @@ public:
         temp &= ~(0x3 << (PIN_NUM * 2));
         uint32_t value = 0;
         switch (pull) {
-            case PinPull::None: value = 0x0 << (PIN_NUM * 2); break;
-            case PinPull::PullUp: value = 0x1 << (PIN_NUM * 2); break;
-            case PinPull::PullDown: value = 0x2 << (PIN_NUM * 2); break;
+            case PinPull::None:
+                value = 0x0 << (PIN_NUM * 2);
+                break;
+            case PinPull::PullUp:
+                value = 0x1 << (PIN_NUM * 2);
+                break;
+            case PinPull::PullDown:
+                value = 0x2 << (PIN_NUM * 2);
+                break;
         }
         temp |= value;
         port->PUPDR = temp;
@@ -281,13 +287,12 @@ public:
     Result<bool, ErrorCode> isOutput() const {
         auto* port = get_port();
 
-        uint32_t moder = port->MODER;  // 
+        uint32_t moder = port->MODER;  //
 
         bool is_output = ((moder >> (PIN_NUM * 2)) & 0x3) == 0x1;
 
         return Ok(bool(is_output));
     }
-
 };
 
 // ==============================================================================
@@ -317,4 +322,4 @@ constexpr uint32_t GPIOI_BASE = 0x40022000;
 // led.setSpeed(GpioSpeed::Medium);
 // led.set();
 
-} // namespace alloy::hal::stm32f4
+}  // namespace alloy::hal::stm32f4

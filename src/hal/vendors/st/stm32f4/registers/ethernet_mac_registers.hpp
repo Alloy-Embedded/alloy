@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::ethernet_mac {
 
 /// Ethernet_MAC Register Structure
 struct Ethernet_MAC_Registers {
-
     /// Ethernet MAC configuration register
     /// Offset: 0x0000
     /// Reset value: 0x00008000
@@ -65,14 +64,14 @@ struct Ethernet_MAC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t MACVLANTR;
-    uint8_t RESERVED_0020[12]; ///< Reserved
+    uint8_t RESERVED_0020[12];  ///< Reserved
 
     /// Ethernet MAC PMT control and status register
     /// Offset: 0x002C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t MACPMTCSR;
-    uint8_t RESERVED_0030[4]; ///< Reserved
+    uint8_t RESERVED_0030[4];  ///< Reserved
 
     /// Ethernet MAC debug register
     /// Offset: 0x0034

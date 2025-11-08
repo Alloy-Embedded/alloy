@@ -17,7 +17,6 @@ namespace alloy::hal::raspberrypi::rp2040::pio0 {
 
 /// PIO0 Register Structure
 struct PIO0_Registers {
-
     /// PIO control register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -38,52 +37,36 @@ struct PIO0_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t FLEVEL;
 
-    /// Direct write access to the TX FIFO for this state machine. Each write pushes one word to the FIFO.
-    /// Offset: 0x0010
-    /// Reset value: 0x00000000
-    /// Access: write-only
+    /// Direct write access to the TX FIFO for this state machine. Each write pushes one word to the
+    /// FIFO. Offset: 0x0010 Reset value: 0x00000000 Access: write-only
     volatile uint32_t TXF0;
 
-    /// Direct write access to the TX FIFO for this state machine. Each write pushes one word to the FIFO.
-    /// Offset: 0x0014
-    /// Reset value: 0x00000000
-    /// Access: write-only
+    /// Direct write access to the TX FIFO for this state machine. Each write pushes one word to the
+    /// FIFO. Offset: 0x0014 Reset value: 0x00000000 Access: write-only
     volatile uint32_t TXF1;
 
-    /// Direct write access to the TX FIFO for this state machine. Each write pushes one word to the FIFO.
-    /// Offset: 0x0018
-    /// Reset value: 0x00000000
-    /// Access: write-only
+    /// Direct write access to the TX FIFO for this state machine. Each write pushes one word to the
+    /// FIFO. Offset: 0x0018 Reset value: 0x00000000 Access: write-only
     volatile uint32_t TXF2;
 
-    /// Direct write access to the TX FIFO for this state machine. Each write pushes one word to the FIFO.
-    /// Offset: 0x001C
-    /// Reset value: 0x00000000
-    /// Access: write-only
+    /// Direct write access to the TX FIFO for this state machine. Each write pushes one word to the
+    /// FIFO. Offset: 0x001C Reset value: 0x00000000 Access: write-only
     volatile uint32_t TXF3;
 
-    /// Direct read access to the RX FIFO for this state machine. Each read pops one word from the FIFO.
-    /// Offset: 0x0020
-    /// Reset value: 0x00000000
-    /// Access: read-only
+    /// Direct read access to the RX FIFO for this state machine. Each read pops one word from the
+    /// FIFO. Offset: 0x0020 Reset value: 0x00000000 Access: read-only
     volatile uint32_t RXF0;
 
-    /// Direct read access to the RX FIFO for this state machine. Each read pops one word from the FIFO.
-    /// Offset: 0x0024
-    /// Reset value: 0x00000000
-    /// Access: read-only
+    /// Direct read access to the RX FIFO for this state machine. Each read pops one word from the
+    /// FIFO. Offset: 0x0024 Reset value: 0x00000000 Access: read-only
     volatile uint32_t RXF1;
 
-    /// Direct read access to the RX FIFO for this state machine. Each read pops one word from the FIFO.
-    /// Offset: 0x0028
-    /// Reset value: 0x00000000
-    /// Access: read-only
+    /// Direct read access to the RX FIFO for this state machine. Each read pops one word from the
+    /// FIFO. Offset: 0x0028 Reset value: 0x00000000 Access: read-only
     volatile uint32_t RXF2;
 
-    /// Direct read access to the RX FIFO for this state machine. Each read pops one word from the FIFO.
-    /// Offset: 0x002C
-    /// Reset value: 0x00000000
-    /// Access: read-only
+    /// Direct read access to the RX FIFO for this state machine. Each read pops one word from the
+    /// FIFO. Offset: 0x002C Reset value: 0x00000000 Access: read-only
     volatile uint32_t RXF3;
 
     /// Interrupt request register. Write 1 to clear
@@ -91,15 +74,17 @@ struct PIO0_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t IRQ;
 
-    /// Writing a 1 to each of these bits will forcibly assert the corresponding IRQ.\n Note this is different to the INTF register: writing here affects PIO internal\n state. INTF just asserts the processor-facing IRQ signal for testing ISRs,\n and is not visible to the state machines.
-    /// Offset: 0x0034
-    /// Reset value: 0x00000000
+    /// Writing a 1 to each of these bits will forcibly assert the corresponding IRQ.\n Note this is
+    /// different to the INTF register: writing here affects PIO internal\n state. INTF just asserts
+    /// the processor-facing IRQ signal for testing ISRs,\n and is not visible to the state
+    /// machines. Offset: 0x0034 Reset value: 0x00000000
     volatile uint32_t IRQ_FORCE;
 
-    /// There is a 2-flipflop synchronizer on each GPIO input, which protects\n PIO logic from metastabilities. This increases input delay, and for fast\n synchronous IO (e.g. SPI) these synchronizers may need to be bypassed.\n Each bit in this register corresponds to one GPIO.\n 0 -> input is synchronized (default)\n 1 -> synchronizer is bypassed\n If in doubt, leave this register as all zeroes.
-    /// Offset: 0x0038
-    /// Reset value: 0x00000000
-    /// Access: read-write
+    /// There is a 2-flipflop synchronizer on each GPIO input, which protects\n PIO logic from
+    /// metastabilities. This increases input delay, and for fast\n synchronous IO (e.g. SPI) these
+    /// synchronizers may need to be bypassed.\n Each bit in this register corresponds to one
+    /// GPIO.\n 0 -> input is synchronized (default)\n 1 -> synchronizer is bypassed\n If in doubt,
+    /// leave this register as all zeroes. Offset: 0x0038 Reset value: 0x00000000 Access: read-write
     volatile uint32_t INPUT_SYNC_BYPASS;
 
     /// Read to sample the pad output values PIO is currently driving to the GPIOs.
@@ -114,9 +99,9 @@ struct PIO0_Registers {
     /// Access: read-only
     volatile uint32_t DBG_PADOE;
 
-    /// The PIO hardware has some free parameters that may vary between chip products.\n These should be provided in the chip datasheet, but are also exposed here.
-    /// Offset: 0x0044
-    /// Reset value: 0x00000000
+    /// The PIO hardware has some free parameters that may vary between chip products.\n These
+    /// should be provided in the chip datasheet, but are also exposed here. Offset: 0x0044 Reset
+    /// value: 0x00000000
     volatile uint32_t DBG_CFGINFO;
 
     /// Write-only access to instruction memory location 0
@@ -279,9 +264,8 @@ struct PIO0_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t INSTR_MEM31;
 
-    /// Clock divider register for state machine 0\n Frequency = clock freq / (CLKDIV_INT + CLKDIV_FRAC / 256)
-    /// Offset: 0x00C8
-    /// Reset value: 0x00010000
+    /// Clock divider register for state machine 0\n Frequency = clock freq / (CLKDIV_INT +
+    /// CLKDIV_FRAC / 256) Offset: 0x00C8 Reset value: 0x00010000
     volatile uint32_t SM0_CLKDIV;
 
     /// Execution/behavioural settings for state machine 0
@@ -299,9 +283,9 @@ struct PIO0_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t SM0_ADDR;
 
-    /// Instruction currently being executed by state machine 0\n Write to execute an instruction immediately (including jumps) and then resume execution.
-    /// Offset: 0x00D8
-    /// Reset value: 0x00000000
+    /// Instruction currently being executed by state machine 0\n Write to execute an instruction
+    /// immediately (including jumps) and then resume execution. Offset: 0x00D8 Reset value:
+    /// 0x00000000
     volatile uint32_t SM0_INSTR;
 
     /// State machine pin control
@@ -309,9 +293,8 @@ struct PIO0_Registers {
     /// Reset value: 0x14000000
     volatile uint32_t SM0_PINCTRL;
 
-    /// Clock divider register for state machine 1\n Frequency = clock freq / (CLKDIV_INT + CLKDIV_FRAC / 256)
-    /// Offset: 0x00E0
-    /// Reset value: 0x00010000
+    /// Clock divider register for state machine 1\n Frequency = clock freq / (CLKDIV_INT +
+    /// CLKDIV_FRAC / 256) Offset: 0x00E0 Reset value: 0x00010000
     volatile uint32_t SM1_CLKDIV;
 
     /// Execution/behavioural settings for state machine 1
@@ -329,9 +312,9 @@ struct PIO0_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t SM1_ADDR;
 
-    /// Instruction currently being executed by state machine 1\n Write to execute an instruction immediately (including jumps) and then resume execution.
-    /// Offset: 0x00F0
-    /// Reset value: 0x00000000
+    /// Instruction currently being executed by state machine 1\n Write to execute an instruction
+    /// immediately (including jumps) and then resume execution. Offset: 0x00F0 Reset value:
+    /// 0x00000000
     volatile uint32_t SM1_INSTR;
 
     /// State machine pin control
@@ -339,9 +322,8 @@ struct PIO0_Registers {
     /// Reset value: 0x14000000
     volatile uint32_t SM1_PINCTRL;
 
-    /// Clock divider register for state machine 2\n Frequency = clock freq / (CLKDIV_INT + CLKDIV_FRAC / 256)
-    /// Offset: 0x00F8
-    /// Reset value: 0x00010000
+    /// Clock divider register for state machine 2\n Frequency = clock freq / (CLKDIV_INT +
+    /// CLKDIV_FRAC / 256) Offset: 0x00F8 Reset value: 0x00010000
     volatile uint32_t SM2_CLKDIV;
 
     /// Execution/behavioural settings for state machine 2
@@ -359,9 +341,9 @@ struct PIO0_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t SM2_ADDR;
 
-    /// Instruction currently being executed by state machine 2\n Write to execute an instruction immediately (including jumps) and then resume execution.
-    /// Offset: 0x0108
-    /// Reset value: 0x00000000
+    /// Instruction currently being executed by state machine 2\n Write to execute an instruction
+    /// immediately (including jumps) and then resume execution. Offset: 0x0108 Reset value:
+    /// 0x00000000
     volatile uint32_t SM2_INSTR;
 
     /// State machine pin control
@@ -369,9 +351,8 @@ struct PIO0_Registers {
     /// Reset value: 0x14000000
     volatile uint32_t SM2_PINCTRL;
 
-    /// Clock divider register for state machine 3\n Frequency = clock freq / (CLKDIV_INT + CLKDIV_FRAC / 256)
-    /// Offset: 0x0110
-    /// Reset value: 0x00010000
+    /// Clock divider register for state machine 3\n Frequency = clock freq / (CLKDIV_INT +
+    /// CLKDIV_FRAC / 256) Offset: 0x0110 Reset value: 0x00010000
     volatile uint32_t SM3_CLKDIV;
 
     /// Execution/behavioural settings for state machine 3
@@ -389,9 +370,9 @@ struct PIO0_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t SM3_ADDR;
 
-    /// Instruction currently being executed by state machine 3\n Write to execute an instruction immediately (including jumps) and then resume execution.
-    /// Offset: 0x0120
-    /// Reset value: 0x00000000
+    /// Instruction currently being executed by state machine 3\n Write to execute an instruction
+    /// immediately (including jumps) and then resume execution. Offset: 0x0120 Reset value:
+    /// 0x00000000
     volatile uint32_t SM3_INSTR;
 
     /// State machine pin control

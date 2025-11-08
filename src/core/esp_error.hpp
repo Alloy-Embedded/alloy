@@ -26,8 +26,8 @@
 #include "error.hpp"
 
 #ifdef ESP_PLATFORM
-#include "esp_err.h"
-#include "esp_log.h"
+    #include "esp_err.h"
+    #include "esp_log.h"
 #endif
 
 namespace alloy::core {
@@ -49,7 +49,7 @@ inline ErrorCode esp_to_error_code(esp_err_t esp_error) noexcept {
             return ErrorCode::Ok;
 
         case ESP_ERR_NO_MEM:
-            return ErrorCode::HardwareError; // Out of memory
+            return ErrorCode::HardwareError;  // Out of memory
 
         case ESP_ERR_INVALID_ARG:
         case ESP_ERR_INVALID_SIZE:
@@ -105,7 +105,7 @@ inline ErrorCode esp_to_error_code(esp_err_t esp_error) noexcept {
  * }
  * @endcode
  */
-template<typename T>
+template <typename T>
 inline Result<T> esp_result_error(esp_err_t esp_error) {
     return Result<T>::error(esp_to_error_code(esp_error));
 }
@@ -146,51 +146,53 @@ inline Result<void> esp_check(esp_err_t esp_error) {
     return esp_result_error_void(esp_error);
 }
 
-/**
- * @brief Macro to check ESP-IDF result and return error if failed
- *
- * This macro simplifies error handling by checking an ESP-IDF function call
- * and returning early if it fails. Similar to ESP-IDF's ESP_ERROR_CHECK but
- * returns a Result instead of aborting.
- *
- * Example:
- * @code
- * Result<void> init_components() {
- *     ESP_TRY(esp_wifi_init(&cfg));
- *     ESP_TRY(esp_wifi_start());
- *     return Result<void>::ok();
- * }
- * @endcode
- */
-#define ESP_TRY(expr) do { \
-    esp_err_t __err = (expr); \
-    if (__err != ESP_OK) { \
-        return ::alloy::core::esp_result_error_void(__err); \
-    } \
-} while(0)
+    /**
+     * @brief Macro to check ESP-IDF result and return error if failed
+     *
+     * This macro simplifies error handling by checking an ESP-IDF function call
+     * and returning early if it fails. Similar to ESP-IDF's ESP_ERROR_CHECK but
+     * returns a Result instead of aborting.
+     *
+     * Example:
+     * @code
+     * Result<void> init_components() {
+     *     ESP_TRY(esp_wifi_init(&cfg));
+     *     ESP_TRY(esp_wifi_start());
+     *     return Result<void>::ok();
+     * }
+     * @endcode
+     */
+    #define ESP_TRY(expr)                                           \
+        do {                                                        \
+            esp_err_t __err = (expr);                               \
+            if (__err != ESP_OK) {                                  \
+                return ::alloy::core::esp_result_error_void(__err); \
+            }                                                       \
+        } while (0)
 
-/**
- * @brief Macro to check ESP-IDF result and return typed error if failed
- *
- * Similar to ESP_TRY but for functions returning Result<T>.
- *
- * @param T The value type of the Result to return
- * @param expr Expression that returns esp_err_t
- *
- * Example:
- * @code
- * Result<IPAddress> get_ip() {
- *     ESP_TRY_T(IPAddress, esp_wifi_connect());
- *     return Result<IPAddress>::ok(read_ip_address());
- * }
- * @endcode
- */
-#define ESP_TRY_T(T, expr) do { \
-    esp_err_t __err = (expr); \
-    if (__err != ESP_OK) { \
-        return ::alloy::core::esp_result_error<T>(__err); \
-    } \
-} while(0)
+    /**
+     * @brief Macro to check ESP-IDF result and return typed error if failed
+     *
+     * Similar to ESP_TRY but for functions returning Result<T>.
+     *
+     * @param T The value type of the Result to return
+     * @param expr Expression that returns esp_err_t
+     *
+     * Example:
+     * @code
+     * Result<IPAddress> get_ip() {
+     *     ESP_TRY_T(IPAddress, esp_wifi_connect());
+     *     return Result<IPAddress>::ok(read_ip_address());
+     * }
+     * @endcode
+     */
+    #define ESP_TRY_T(T, expr)                                    \
+        do {                                                      \
+            esp_err_t __err = (expr);                             \
+            if (__err != ESP_OK) {                                \
+                return ::alloy::core::esp_result_error<T>(__err); \
+            }                                                     \
+        } while (0)
 
 /**
  * @brief Get error name string from ESP-IDF error
@@ -221,6 +223,6 @@ inline void esp_log_error(const char* tag, esp_err_t esp_error, const char* mess
     }
 }
 
-#endif // ESP_PLATFORM
+#endif  // ESP_PLATFORM
 
-} // namespace alloy::core
+}  // namespace alloy::core

@@ -17,7 +17,6 @@ namespace alloy::hal::raspberrypi::rp2040::spi0 {
 
 /// SPI0 Register Structure
 struct SPI0_Registers {
-
     /// Control register 0, SSPCR0 on page 3-4
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -67,7 +66,7 @@ struct SPI0_Registers {
     /// Offset: 0x0024
     /// Reset value: 0x00000000
     volatile uint32_t SSPDMACR;
-    uint8_t RESERVED_0028[4024]; ///< Reserved
+    uint8_t RESERVED_0028[4024];  ///< Reserved
 
     /// Peripheral identification registers, SSPPeriphID0-3 on page 3-13
     /// Offset: 0x0FE0

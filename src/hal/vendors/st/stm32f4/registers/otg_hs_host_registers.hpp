@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::otg_hs_host {
 
 /// OTG_HS_HOST Register Structure
 struct OTG_HS_HOST_Registers {
-
     /// OTG_HS host configuration register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -34,7 +33,7 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00003FFF
     /// Access: read-only
     volatile uint32_t OTG_HS_HFNUM;
-    uint8_t RESERVED_000C[4]; ///< Reserved
+    uint8_t RESERVED_000C[4];  ///< Reserved
 
     /// OTG_HS_Host periodic transmit FIFO/queue status register
     /// Offset: 0x0010
@@ -52,13 +51,13 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_HAINTMSK;
-    uint8_t RESERVED_001C[36]; ///< Reserved
+    uint8_t RESERVED_001C[36];  ///< Reserved
 
     /// OTG_HS host port control and status register
     /// Offset: 0x0040
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_HPRT;
-    uint8_t RESERVED_0044[188]; ///< Reserved
+    uint8_t RESERVED_0044[188];  ///< Reserved
 
     /// OTG_HS host channel-0 characteristics register
     /// Offset: 0x0100
@@ -95,7 +94,7 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_HCDMA0;
-    uint8_t RESERVED_0118[8]; ///< Reserved
+    uint8_t RESERVED_0118[8];  ///< Reserved
 
     /// OTG_HS host channel-1 characteristics register
     /// Offset: 0x0120
@@ -132,7 +131,7 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_HCDMA1;
-    uint8_t RESERVED_0138[8]; ///< Reserved
+    uint8_t RESERVED_0138[8];  ///< Reserved
 
     /// OTG_HS host channel-2 characteristics register
     /// Offset: 0x0140
@@ -169,7 +168,7 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_HCDMA2;
-    uint8_t RESERVED_0158[8]; ///< Reserved
+    uint8_t RESERVED_0158[8];  ///< Reserved
 
     /// OTG_HS host channel-3 characteristics register
     /// Offset: 0x0160
@@ -206,7 +205,7 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_HCDMA3;
-    uint8_t RESERVED_0178[8]; ///< Reserved
+    uint8_t RESERVED_0178[8];  ///< Reserved
 
     /// OTG_HS host channel-4 characteristics register
     /// Offset: 0x0180
@@ -243,7 +242,7 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_HCDMA4;
-    uint8_t RESERVED_0198[8]; ///< Reserved
+    uint8_t RESERVED_0198[8];  ///< Reserved
 
     /// OTG_HS host channel-5 characteristics register
     /// Offset: 0x01A0
@@ -280,7 +279,7 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_HCDMA5;
-    uint8_t RESERVED_01B8[8]; ///< Reserved
+    uint8_t RESERVED_01B8[8];  ///< Reserved
 
     /// OTG_HS host channel-6 characteristics register
     /// Offset: 0x01C0
@@ -317,7 +316,7 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_HCDMA6;
-    uint8_t RESERVED_01D8[8]; ///< Reserved
+    uint8_t RESERVED_01D8[8];  ///< Reserved
 
     /// OTG_HS host channel-7 characteristics register
     /// Offset: 0x01E0
@@ -354,7 +353,7 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_HCDMA7;
-    uint8_t RESERVED_01F8[8]; ///< Reserved
+    uint8_t RESERVED_01F8[8];  ///< Reserved
 
     /// OTG_HS host channel-8 characteristics register
     /// Offset: 0x0200
@@ -391,7 +390,7 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_HCDMA8;
-    uint8_t RESERVED_0218[8]; ///< Reserved
+    uint8_t RESERVED_0218[8];  ///< Reserved
 
     /// OTG_HS host channel-9 characteristics register
     /// Offset: 0x0220
@@ -428,7 +427,7 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_HCDMA9;
-    uint8_t RESERVED_0238[8]; ///< Reserved
+    uint8_t RESERVED_0238[8];  ///< Reserved
 
     /// OTG_HS host channel-10 characteristics register
     /// Offset: 0x0240
@@ -465,7 +464,7 @@ struct OTG_HS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_HCDMA10;
-    uint8_t RESERVED_0258[8]; ///< Reserved
+    uint8_t RESERVED_0258[8];  ///< Reserved
 
     /// OTG_HS host channel-11 characteristics register
     /// Offset: 0x0260

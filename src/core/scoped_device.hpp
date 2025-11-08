@@ -18,9 +18,10 @@
 
 #pragma once
 
+#include <utility>  // For std::move, std::forward
+
 #include "core/error.hpp"
 #include "core/result.hpp"
-#include <utility>  // For std::move, std::forward
 
 namespace alloy::core {
 
@@ -44,7 +45,7 @@ namespace alloy::core {
  */
 template <typename Device>
 class ScopedDevice {
-public:
+   public:
     /**
      * @brief Create a scoped device wrapper
      *
@@ -79,9 +80,7 @@ public:
     ScopedDevice& operator=(const ScopedDevice&) = delete;
 
     // Allow move operations
-    ScopedDevice(ScopedDevice&& other) noexcept
-        : m_device(other.m_device) {
-    }
+    ScopedDevice(ScopedDevice&& other) noexcept : m_device(other.m_device) {}
 
     ScopedDevice& operator=(ScopedDevice&& other) noexcept {
         if (this != &other) {
@@ -94,60 +93,46 @@ public:
      * @brief Access the underlying device via pointer semantics
      * @return Pointer to the managed device
      */
-    [[nodiscard]] Device* operator->() noexcept {
-        return m_device;
-    }
+    [[nodiscard]] Device* operator->() noexcept { return m_device; }
 
     /**
      * @brief Access the underlying device via pointer semantics (const)
      * @return Const pointer to the managed device
      */
-    [[nodiscard]] const Device* operator->() const noexcept {
-        return m_device;
-    }
+    [[nodiscard]] const Device* operator->() const noexcept { return m_device; }
 
     /**
      * @brief Access the underlying device via reference
      * @return Reference to the managed device
      */
-    [[nodiscard]] Device& operator*() noexcept {
-        return *m_device;
-    }
+    [[nodiscard]] Device& operator*() noexcept { return *m_device; }
 
     /**
      * @brief Access the underlying device via reference (const)
      * @return Const reference to the managed device
      */
-    [[nodiscard]] const Device& operator*() const noexcept {
-        return *m_device;
-    }
+    [[nodiscard]] const Device& operator*() const noexcept { return *m_device; }
 
     /**
      * @brief Get raw pointer to the underlying device
      * @return Pointer to the managed device
      */
-    [[nodiscard]] Device* get() noexcept {
-        return m_device;
-    }
+    [[nodiscard]] Device* get() noexcept { return m_device; }
 
     /**
      * @brief Get raw pointer to the underlying device (const)
      * @return Const pointer to the managed device
      */
-    [[nodiscard]] const Device* get() const noexcept {
-        return m_device;
-    }
+    [[nodiscard]] const Device* get() const noexcept { return m_device; }
 
-private:
+   private:
     /**
      * @brief Private constructor - use create() factory method
      * @param device Reference to the device to manage
      */
-    explicit ScopedDevice(Device& device)
-        : m_device(&device) {
-    }
+    explicit ScopedDevice(Device& device) : m_device(&device) {}
 
     Device* m_device;  ///< Pointer to the managed device
 };
 
-} // namespace alloy::core
+}  // namespace alloy::core

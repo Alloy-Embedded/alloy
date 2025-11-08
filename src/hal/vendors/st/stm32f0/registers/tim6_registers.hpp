@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f0::tim6 {
 
 /// TIM6 Register Structure
 struct TIM6_Registers {
-
     /// control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -29,7 +28,7 @@ struct TIM6_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CR2;
-    uint8_t RESERVED_0008[4]; ///< Reserved
+    uint8_t RESERVED_0008[4];  ///< Reserved
 
     /// DMA/Interrupt enable register
     /// Offset: 0x000C
@@ -48,7 +47,7 @@ struct TIM6_Registers {
     /// Reset value: 0x00000000
     /// Access: write-only
     volatile uint32_t EGR;
-    uint8_t RESERVED_0018[12]; ///< Reserved
+    uint8_t RESERVED_0018[12];  ///< Reserved
 
     /// counter
     /// Offset: 0x0024

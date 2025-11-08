@@ -327,14 +327,14 @@ enum class CHIPID_CIDR_EPROC : uint32_t {
 /// Field: NVPSIZ [8:11]
 enum class CHIPID_CIDR_NVPSIZ : uint32_t {
     NONE = 0x0,
-    VAL_8K = 0x1,  // _8K
-    VAL_16K = 0x2,  // _16K
-    VAL_32K = 0x3,  // _32K
-    VAL_64K = 0x5,  // _64K
-    VAL_128K = 0x7,  // _128K
-    VAL_160K = 0x8,  // _160K
-    VAL_256K = 0x9,  // _256K
-    VAL_512K = 0xA,  // _512K
+    VAL_8K = 0x1,     // _8K
+    VAL_16K = 0x2,    // _16K
+    VAL_32K = 0x3,    // _32K
+    VAL_64K = 0x5,    // _64K
+    VAL_128K = 0x7,   // _128K
+    VAL_160K = 0x8,   // _160K
+    VAL_256K = 0x9,   // _256K
+    VAL_512K = 0xA,   // _512K
     VAL_1024K = 0xC,  // _1024K
     VAL_2048K = 0xE,  // _2048K
 };
@@ -344,13 +344,13 @@ enum class CHIPID_CIDR_NVPSIZ : uint32_t {
 /// Field: NVPSIZ2 [12:15]
 enum class CHIPID_CIDR_NVPSIZ2 : uint32_t {
     NONE = 0x0,
-    VAL_8K = 0x1,  // _8K
-    VAL_16K = 0x2,  // _16K
-    VAL_32K = 0x3,  // _32K
-    VAL_64K = 0x5,  // _64K
-    VAL_128K = 0x7,  // _128K
-    VAL_256K = 0x9,  // _256K
-    VAL_512K = 0xA,  // _512K
+    VAL_8K = 0x1,     // _8K
+    VAL_16K = 0x2,    // _16K
+    VAL_32K = 0x3,    // _32K
+    VAL_64K = 0x5,    // _64K
+    VAL_128K = 0x7,   // _128K
+    VAL_256K = 0x9,   // _256K
+    VAL_512K = 0xA,   // _512K
     VAL_1024K = 0xC,  // _1024K
     VAL_2048K = 0xE,  // _2048K
 };
@@ -359,21 +359,21 @@ enum class CHIPID_CIDR_NVPSIZ2 : uint32_t {
 /// Register: CIDR
 /// Field: SRAMSIZ [16:19]
 enum class CHIPID_CIDR_SRAMSIZ : uint32_t {
-    VAL_48K = 0x0,  // _48K
+    VAL_48K = 0x0,   // _48K
     VAL_192K = 0x1,  // _192K
     VAL_384K = 0x2,  // _384K
-    VAL_6K = 0x3,  // _6K
-    VAL_24K = 0x4,  // _24K
-    VAL_4K = 0x5,  // _4K
-    VAL_80K = 0x6,  // _80K
+    VAL_6K = 0x3,    // _6K
+    VAL_24K = 0x4,   // _24K
+    VAL_4K = 0x5,    // _4K
+    VAL_80K = 0x6,   // _80K
     VAL_160K = 0x7,  // _160K
-    VAL_8K = 0x8,  // _8K
-    VAL_16K = 0x9,  // _16K
-    VAL_32K = 0xA,  // _32K
-    VAL_64K = 0xB,  // _64K
+    VAL_8K = 0x8,    // _8K
+    VAL_16K = 0x9,   // _16K
+    VAL_32K = 0xA,   // _32K
+    VAL_64K = 0xB,   // _64K
     VAL_128K = 0xC,  // _128K
     VAL_256K = 0xD,  // _256K
-    VAL_96K = 0xE,  // _96K
+    VAL_96K = 0xE,   // _96K
     VAL_512K = 0xF,  // _512K
 };
 
@@ -608,13 +608,13 @@ enum class GMAC_ST2CW1_OFFSSTRT : uint32_t {
 /// Register: DTOR
 /// Field: DTOMUL [4:6]
 enum class HSMCI_DTOR_DTOMUL : uint32_t {
-    VAL_1 = 0x0,  // _1
-    VAL_16 = 0x1,  // _16
-    VAL_128 = 0x2,  // _128
-    VAL_256 = 0x3,  // _256
-    VAL_1024 = 0x4,  // _1024
-    VAL_4096 = 0x5,  // _4096
-    VAL_65536 = 0x6,  // _65536
+    VAL_1 = 0x0,        // _1
+    VAL_16 = 0x1,       // _16
+    VAL_128 = 0x2,      // _128
+    VAL_256 = 0x3,      // _256
+    VAL_1024 = 0x4,     // _1024
+    VAL_4096 = 0x5,     // _4096
+    VAL_65536 = 0x6,    // _65536
     VAL_1048576 = 0x7,  // _1048576
 };
 
@@ -639,7 +639,7 @@ enum class HSMCI_SDCR_SDCBUS : uint32_t {
 /// Field: RSPTYP [6:7]
 enum class HSMCI_CMDR_RSPTYP : uint32_t {
     NORESP = 0x0,
-    VAL_48_BIT = 0x1,  // _48_BIT
+    VAL_48_BIT = 0x1,   // _48_BIT
     VAL_136_BIT = 0x2,  // _136_BIT
     R1B = 0x3,
 };
@@ -670,7 +670,7 @@ enum class HSMCI_CMDR_OPDCMD : uint32_t {
 /// Register: CMDR
 /// Field: MAXLAT [12:12]
 enum class HSMCI_CMDR_MAXLAT : uint32_t {
-    VAL_5 = 0x0,  // _5
+    VAL_5 = 0x0,   // _5
     VAL_64 = 0x1,  // _64
 };
 
@@ -723,13 +723,13 @@ enum class HSMCI_CMDR_ATACS : uint32_t {
 /// Register: CSTOR
 /// Field: CSTOMUL [4:6]
 enum class HSMCI_CSTOR_CSTOMUL : uint32_t {
-    VAL_1 = 0x0,  // _1
-    VAL_16 = 0x1,  // _16
-    VAL_128 = 0x2,  // _128
-    VAL_256 = 0x3,  // _256
-    VAL_1024 = 0x4,  // _1024
-    VAL_4096 = 0x5,  // _4096
-    VAL_65536 = 0x6,  // _65536
+    VAL_1 = 0x0,        // _1
+    VAL_16 = 0x1,       // _16
+    VAL_128 = 0x2,      // _128
+    VAL_256 = 0x3,      // _256
+    VAL_1024 = 0x4,     // _1024
+    VAL_4096 = 0x5,     // _4096
+    VAL_65536 = 0x6,    // _65536
     VAL_1048576 = 0x7,  // _1048576
 };
 
@@ -737,10 +737,10 @@ enum class HSMCI_CSTOR_CSTOMUL : uint32_t {
 /// Register: DMA
 /// Field: CHKSIZE [4:6]
 enum class HSMCI_DMA_CHKSIZE : uint32_t {
-    VAL_1 = 0x0,  // _1
-    VAL_2 = 0x1,  // _2
-    VAL_4 = 0x2,  // _4
-    VAL_8 = 0x3,  // _8
+    VAL_1 = 0x0,   // _1
+    VAL_2 = 0x1,   // _2
+    VAL_4 = 0x2,   // _4
+    VAL_8 = 0x3,   // _8
     VAL_16 = 0x4,  // _16
 };
 
@@ -767,14 +767,14 @@ enum class I2SC0_MR_MODE : uint32_t {
 /// Register: MR
 /// Field: DATALENGTH [2:4]
 enum class I2SC0_MR_DATALENGTH : uint32_t {
-    VAL_32_BITS = 0x0,  // _32_BITS
-    VAL_24_BITS = 0x1,  // _24_BITS
-    VAL_20_BITS = 0x2,  // _20_BITS
-    VAL_18_BITS = 0x3,  // _18_BITS
-    VAL_16_BITS = 0x4,  // _16_BITS
+    VAL_32_BITS = 0x0,          // _32_BITS
+    VAL_24_BITS = 0x1,          // _24_BITS
+    VAL_20_BITS = 0x2,          // _20_BITS
+    VAL_18_BITS = 0x3,          // _18_BITS
+    VAL_16_BITS = 0x4,          // _16_BITS
     VAL_16_BITS_COMPACT = 0x5,  // _16_BITS_COMPACT
-    VAL_8_BITS = 0x6,  // _8_BITS
-    VAL_8_BITS_COMPACT = 0x7,  // _8_BITS_COMPACT
+    VAL_8_BITS = 0x6,           // _8_BITS
+    VAL_8_BITS_COMPACT = 0x7,   // _8_BITS_COMPACT
 };
 
 /// Master Clock to fs Ratio
@@ -869,11 +869,11 @@ enum class ISI_WPMR_WPKEY : uint32_t {
 enum class MATRIX_MCFG_13_ULBT : uint32_t {
     UNLTD_LENGTH = 0x0,
     SINGLE_ACCESS = 0x1,
-    VAL_4BEAT_BURST = 0x2,  // _4BEAT_BURST
-    VAL_8BEAT_BURST = 0x3,  // _8BEAT_BURST
-    VAL_16BEAT_BURST = 0x4,  // _16BEAT_BURST
-    VAL_32BEAT_BURST = 0x5,  // _32BEAT_BURST
-    VAL_64BEAT_BURST = 0x6,  // _64BEAT_BURST
+    VAL_4BEAT_BURST = 0x2,    // _4BEAT_BURST
+    VAL_8BEAT_BURST = 0x3,    // _8BEAT_BURST
+    VAL_16BEAT_BURST = 0x4,   // _16BEAT_BURST
+    VAL_32BEAT_BURST = 0x5,   // _32BEAT_BURST
+    VAL_64BEAT_BURST = 0x6,   // _64BEAT_BURST
     VAL_128BEAT_BURST = 0x7,  // _128BEAT_BURST
 };
 
@@ -1102,7 +1102,7 @@ enum class MCAN0_RXF1S_DMS : uint32_t {
 /// Register: RXESC
 /// Field: F0DS [0:2]
 enum class MCAN0_RXESC_F0DS : uint32_t {
-    VAL_8_BYTE = 0x0,  // _8_BYTE
+    VAL_8_BYTE = 0x0,   // _8_BYTE
     VAL_12_BYTE = 0x1,  // _12_BYTE
     VAL_16_BYTE = 0x2,  // _16_BYTE
     VAL_20_BYTE = 0x3,  // _20_BYTE
@@ -1116,7 +1116,7 @@ enum class MCAN0_RXESC_F0DS : uint32_t {
 /// Register: RXESC
 /// Field: F1DS [4:6]
 enum class MCAN0_RXESC_F1DS : uint32_t {
-    VAL_8_BYTE = 0x0,  // _8_BYTE
+    VAL_8_BYTE = 0x0,   // _8_BYTE
     VAL_12_BYTE = 0x1,  // _12_BYTE
     VAL_16_BYTE = 0x2,  // _16_BYTE
     VAL_20_BYTE = 0x3,  // _20_BYTE
@@ -1130,7 +1130,7 @@ enum class MCAN0_RXESC_F1DS : uint32_t {
 /// Register: RXESC
 /// Field: RBDS [8:10]
 enum class MCAN0_RXESC_RBDS : uint32_t {
-    VAL_8_BYTE = 0x0,  // _8_BYTE
+    VAL_8_BYTE = 0x0,   // _8_BYTE
     VAL_12_BYTE = 0x1,  // _12_BYTE
     VAL_16_BYTE = 0x2,  // _16_BYTE
     VAL_20_BYTE = 0x3,  // _20_BYTE
@@ -1144,7 +1144,7 @@ enum class MCAN0_RXESC_RBDS : uint32_t {
 /// Register: TXESC
 /// Field: TBDS [0:2]
 enum class MCAN0_TXESC_TBDS : uint32_t {
-    VAL_8_BYTE = 0x0,  // _8_BYTE
+    VAL_8_BYTE = 0x0,   // _8_BYTE
     VAL_12_BYTE = 0x1,  // _12_BYTE
     VAL_16_BYTE = 0x2,  // _16_BYTE
     VAL_20_BYTE = 0x3,  // _20_BYTE
@@ -1162,8 +1162,8 @@ enum class MCAN0_TXESC_TBDS : uint32_t {
 /// Register: MLBC0
 /// Field: MLBCLK [2:4]
 enum class MLB_MLBC0_MLBCLK : uint32_t {
-    VAL_256_FS = 0x0,  // _256_FS
-    VAL_512_FS = 0x1,  // _512_FS
+    VAL_256_FS = 0x0,   // _256_FS
+    VAL_512_FS = 0x1,   // _512_FS
     VAL_1024_FS = 0x2,  // _1024_FS
 };
 
@@ -1171,10 +1171,10 @@ enum class MLB_MLBC0_MLBCLK : uint32_t {
 /// Register: MLBC0
 /// Field: FCNT [15:17]
 enum class MLB_MLBC0_FCNT : uint32_t {
-    VAL_1_FRAME = 0x0,  // _1_FRAME
-    VAL_2_FRAMES = 0x1,  // _2_FRAMES
-    VAL_4_FRAMES = 0x2,  // _4_FRAMES
-    VAL_8_FRAMES = 0x3,  // _8_FRAMES
+    VAL_1_FRAME = 0x0,    // _1_FRAME
+    VAL_2_FRAMES = 0x1,   // _2_FRAMES
+    VAL_4_FRAMES = 0x2,   // _4_FRAMES
+    VAL_8_FRAMES = 0x3,   // _8_FRAMES
     VAL_16_FRAMES = 0x4,  // _16_FRAMES
     VAL_32_FRAMES = 0x5,  // _32_FRAMES
     VAL_64_FRAMES = 0x6,  // _64_FRAMES
@@ -1480,8 +1480,8 @@ enum class PIOA_PCMR_DSIZE : uint32_t {
 /// Register: CKGR_MOR
 /// Field: MOSCRCF [4:6]
 enum class PMC_CKGR_MOR_MOSCRCF : uint32_t {
-    VAL_4_MHz = 0x0,  // _4_MHz
-    VAL_8_MHz = 0x1,  // _8_MHz
+    VAL_4_MHz = 0x0,   // _4_MHz
+    VAL_8_MHz = 0x1,   // _8_MHz
     VAL_12_MHz = 0x2,  // _12_MHz
 };
 
@@ -1787,7 +1787,7 @@ enum class QSPI_MR_CSMODE : uint32_t {
 /// Register: MR
 /// Field: NBBITS [8:11]
 enum class QSPI_MR_NBBITS : uint32_t {
-    VAL_8_BIT = 0x0,  // _8_BIT
+    VAL_8_BIT = 0x0,   // _8_BIT
     VAL_16_BIT = 0x8,  // _16_BIT
 };
 
@@ -2022,9 +2022,8 @@ enum class RTC_SR_TDERR : uint32_t {
 // SCB - System Control Block
 // ----------------------------------------------------------------------------
 
-/// Indicates whether there is an active exception other than the exception indicated by the current value of the IPSR
-/// Register: ICSR
-/// Field: RETTOBASE [11:11]
+/// Indicates whether there is an active exception other than the exception indicated by the current
+/// value of the IPSR Register: ICSR Field: RETTOBASE [11:11]
 enum class SCB_ICSR_RETTOBASE : uint32_t {
     VALUE_0 = 0x0,
     VALUE_1 = 0x1,
@@ -2094,9 +2093,8 @@ enum class SCB_AIRCR_ENDIANNESS : uint32_t {
     VALUE_1 = 0x1,
 };
 
-/// Determines whether, on an exit from an ISR that returns to the base level of execution priority, the processor enters a sleep state
-/// Register: SCR
-/// Field: SLEEPONEXIT [1:1]
+/// Determines whether, on an exit from an ISR that returns to the base level of execution priority,
+/// the processor enters a sleep state Register: SCR Field: SLEEPONEXIT [1:1]
 enum class SCB_SCR_SLEEPONEXIT : uint32_t {
     VALUE_0 = 0x0,
     VALUE_1 = 0x1,
@@ -2110,9 +2108,8 @@ enum class SCB_SCR_SLEEPDEEP : uint32_t {
     VALUE_1 = 0x1,
 };
 
-/// Determines whether an interrupt transition from inactive state to pending state is a wakeup event
-/// Register: SCR
-/// Field: SEVONPEND [4:4]
+/// Determines whether an interrupt transition from inactive state to pending state is a wakeup
+/// event Register: SCR Field: SEVONPEND [4:4]
 enum class SCB_SCR_SEVONPEND : uint32_t {
     VALUE_0 = 0x0,
     VALUE_1 = 0x1,
@@ -2142,17 +2139,15 @@ enum class SCB_CCR_UNALIGN_TRP : uint32_t {
     VALUE_1 = 0x1,
 };
 
-/// Enables faulting or halting when the processor executes an SDIV or UDIV instruction with a divisor of 0
-/// Register: CCR
-/// Field: DIV_0_TRP [4:4]
+/// Enables faulting or halting when the processor executes an SDIV or UDIV instruction with a
+/// divisor of 0 Register: CCR Field: DIV_0_TRP [4:4]
 enum class SCB_CCR_DIV_0_TRP : uint32_t {
     VALUE_0 = 0x0,
     VALUE_1 = 0x1,
 };
 
-/// Enables handlers with priority -1 or -2 to ignore data BusFaults caused by load and store instructions.
-/// Register: CCR
-/// Field: BFHFNMIGN [8:8]
+/// Enables handlers with priority -1 or -2 to ignore data BusFaults caused by load and store
+/// instructions. Register: CCR Field: BFHFNMIGN [8:8]
 enum class SCB_CCR_BFHFNMIGN : uint32_t {
     VALUE_0 = 0x0,
     VALUE_1 = 0x1,
@@ -2623,7 +2618,7 @@ enum class SMC_MODE_BAT : uint32_t {
 /// Register: MODE
 /// Field: DBW [12:12]
 enum class SMC_MODE_DBW : uint32_t {
-    VAL_8_BIT = 0x0,  // _8_BIT
+    VAL_8_BIT = 0x0,   // _8_BIT
     VAL_16_BIT = 0x1,  // _16_BIT
 };
 
@@ -2631,8 +2626,8 @@ enum class SMC_MODE_DBW : uint32_t {
 /// Register: MODE
 /// Field: PS [28:29]
 enum class SMC_MODE_PS : uint32_t {
-    VAL_4_BYTE = 0x0,  // _4_BYTE
-    VAL_8_BYTE = 0x1,  // _8_BYTE
+    VAL_4_BYTE = 0x0,   // _4_BYTE
+    VAL_8_BYTE = 0x1,   // _8_BYTE
     VAL_16_BYTE = 0x2,  // _16_BYTE
     VAL_32_BYTE = 0x3,  // _32_BYTE
 };
@@ -2696,8 +2691,8 @@ enum class SPI0_CSR_4_NCPHA : uint32_t {
 /// Register: CSR[4]
 /// Field: BITS [4:7]
 enum class SPI0_CSR_4_BITS : uint32_t {
-    VAL_8_BIT = 0x0,  // _8_BIT
-    VAL_9_BIT = 0x1,  // _9_BIT
+    VAL_8_BIT = 0x0,   // _8_BIT
+    VAL_9_BIT = 0x1,   // _9_BIT
     VAL_10_BIT = 0x2,  // _10_BIT
     VAL_11_BIT = 0x3,  // _11_BIT
     VAL_12_BIT = 0x4,  // _12_BIT
@@ -2881,8 +2876,8 @@ enum class SUPC_CR_KEY : uint32_t {
 enum class SUPC_SMMR_SMSMPL : uint32_t {
     SMD = 0x0,
     CSM = 0x1,
-    VAL_32SLCK = 0x2,  // _32SLCK
-    VAL_256SLCK = 0x3,  // _256SLCK
+    VAL_32SLCK = 0x2,    // _32SLCK
+    VAL_256SLCK = 0x3,   // _256SLCK
     VAL_2048SLCK = 0x4,  // _2048SLCK
 };
 
@@ -2994,10 +2989,10 @@ enum class SUPC_WUMR_LPDBCCLR : uint32_t {
 /// Field: WKUPDBC [12:14]
 enum class SUPC_WUMR_WKUPDBC : uint32_t {
     IMMEDIATE = 0x0,
-    VAL_3_SLCK = 0x1,  // _3_SLCK
-    VAL_32_SLCK = 0x2,  // _32_SLCK
-    VAL_512_SLCK = 0x3,  // _512_SLCK
-    VAL_4096_SLCK = 0x4,  // _4096_SLCK
+    VAL_3_SLCK = 0x1,      // _3_SLCK
+    VAL_32_SLCK = 0x2,     // _32_SLCK
+    VAL_512_SLCK = 0x3,    // _512_SLCK
+    VAL_4096_SLCK = 0x4,   // _4096_SLCK
     VAL_32768_SLCK = 0x5,  // _32768_SLCK
 };
 
@@ -3873,9 +3868,9 @@ enum class USART0_US_MR_USART_MODE_PAR : uint32_t {
 /// Register: US_MR_USART_MODE
 /// Field: NBSTOP [12:13]
 enum class USART0_US_MR_USART_MODE_NBSTOP : uint32_t {
-    VAL_1_BIT = 0x0,  // _1_BIT
+    VAL_1_BIT = 0x0,    // _1_BIT
     VAL_1_5_BIT = 0x1,  // _1_5_BIT
-    VAL_2_BIT = 0x2,  // _2_BIT
+    VAL_2_BIT = 0x2,    // _2_BIT
 };
 
 /// Channel Mode
@@ -3989,13 +3984,13 @@ enum class USBHS_DEVEPTCFG_10_EPBK : uint32_t {
 /// Register: DEVEPTCFG[10]
 /// Field: EPSIZE [4:6]
 enum class USBHS_DEVEPTCFG_10_EPSIZE : uint32_t {
-    VAL_8_BYTE = 0x0,  // 8_BYTE
-    VAL_16_BYTE = 0x1,  // 16_BYTE
-    VAL_32_BYTE = 0x2,  // 32_BYTE
-    VAL_64_BYTE = 0x3,  // 64_BYTE
-    VAL_128_BYTE = 0x4,  // 128_BYTE
-    VAL_256_BYTE = 0x5,  // 256_BYTE
-    VAL_512_BYTE = 0x6,  // 512_BYTE
+    VAL_8_BYTE = 0x0,     // 8_BYTE
+    VAL_16_BYTE = 0x1,    // 16_BYTE
+    VAL_32_BYTE = 0x2,    // 32_BYTE
+    VAL_64_BYTE = 0x3,    // 64_BYTE
+    VAL_128_BYTE = 0x4,   // 128_BYTE
+    VAL_256_BYTE = 0x5,   // 256_BYTE
+    VAL_512_BYTE = 0x6,   // 512_BYTE
     VAL_1024_BYTE = 0x7,  // 1024_BYTE
 };
 
@@ -4166,13 +4161,13 @@ enum class USBHS_HSTPIPCFG_10_PBK : uint32_t {
 /// Register: HSTPIPCFG[10]
 /// Field: PSIZE [4:6]
 enum class USBHS_HSTPIPCFG_10_PSIZE : uint32_t {
-    VAL_8_BYTE = 0x0,  // _8_BYTE
-    VAL_16_BYTE = 0x1,  // _16_BYTE
-    VAL_32_BYTE = 0x2,  // _32_BYTE
-    VAL_64_BYTE = 0x3,  // _64_BYTE
-    VAL_128_BYTE = 0x4,  // _128_BYTE
-    VAL_256_BYTE = 0x5,  // _256_BYTE
-    VAL_512_BYTE = 0x6,  // _512_BYTE
+    VAL_8_BYTE = 0x0,     // _8_BYTE
+    VAL_16_BYTE = 0x1,    // _16_BYTE
+    VAL_32_BYTE = 0x2,    // _32_BYTE
+    VAL_64_BYTE = 0x3,    // _64_BYTE
+    VAL_128_BYTE = 0x4,   // _128_BYTE
+    VAL_256_BYTE = 0x5,   // _256_BYTE
+    VAL_512_BYTE = 0x6,   // _512_BYTE
     VAL_1024_BYTE = 0x7,  // _1024_BYTE
 };
 
@@ -4208,13 +4203,13 @@ enum class USBHS_HSTPIPCFG_CTRL_BULK_MODE_10_PBK : uint32_t {
 /// Register: HSTPIPCFG_CTRL_BULK_MODE[10]
 /// Field: PSIZE [4:6]
 enum class USBHS_HSTPIPCFG_CTRL_BULK_MODE_10_PSIZE : uint32_t {
-    VAL_8_BYTE = 0x0,  // _8_BYTE
-    VAL_16_BYTE = 0x1,  // _16_BYTE
-    VAL_32_BYTE = 0x2,  // _32_BYTE
-    VAL_64_BYTE = 0x3,  // _64_BYTE
-    VAL_128_BYTE = 0x4,  // _128_BYTE
-    VAL_256_BYTE = 0x5,  // _256_BYTE
-    VAL_512_BYTE = 0x6,  // _512_BYTE
+    VAL_8_BYTE = 0x0,     // _8_BYTE
+    VAL_16_BYTE = 0x1,    // _16_BYTE
+    VAL_32_BYTE = 0x2,    // _32_BYTE
+    VAL_64_BYTE = 0x3,    // _64_BYTE
+    VAL_128_BYTE = 0x4,   // _128_BYTE
+    VAL_256_BYTE = 0x5,   // _256_BYTE
+    VAL_512_BYTE = 0x6,   // _512_BYTE
     VAL_1024_BYTE = 0x7,  // _1024_BYTE
 };
 

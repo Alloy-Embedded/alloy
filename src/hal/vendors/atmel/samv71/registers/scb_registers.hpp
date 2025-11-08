@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samv71::scb {
 
 /// SCB Register Structure
 struct SCB_Registers {
-
     /// CPUID Base Register
     /// Offset: 0x0000
     /// Reset value: 0x411FC271
@@ -98,7 +97,7 @@ struct SCB_Registers {
     /// Offset: 0x003C
     /// Reset value: 0x00000000
     volatile uint32_t AFSR;
-    uint8_t RESERVED_0040[56]; ///< Reserved
+    uint8_t RESERVED_0040[56];  ///< Reserved
 
     /// Cache Level ID Register
     /// Offset: 0x0078
@@ -127,13 +126,13 @@ struct SCB_Registers {
     /// Offset: 0x0088
     /// Reset value: 0x00000000
     volatile uint32_t CPACR;
-    uint8_t RESERVED_008C[196]; ///< Reserved
+    uint8_t RESERVED_008C[196];  ///< Reserved
 
     /// I-cache invalidate all to PoU
     /// Offset: 0x0150
     /// Access: write-only
     volatile uint32_t ICIALLU;
-    uint8_t RESERVED_0154[4]; ///< Reserved
+    uint8_t RESERVED_0154[4];  ///< Reserved
 
     /// I-cache invalidate by MVA to PoU
     /// Offset: 0x0158
@@ -179,14 +178,14 @@ struct SCB_Registers {
     /// Offset: 0x0178
     /// Access: write-only
     volatile uint32_t BPIALL;
-    uint8_t RESERVED_017C[132]; ///< Reserved
+    uint8_t RESERVED_017C[132];  ///< Reserved
 
     /// Software Trigger Interrupt Register
     /// Offset: 0x0200
     /// Reset value: 0x00000000
     /// Access: write-only
     volatile uint32_t STIR;
-    uint8_t RESERVED_0204[60]; ///< Reserved
+    uint8_t RESERVED_0204[60];  ///< Reserved
 
     /// Media and VFP Feature Register 0
     /// Offset: 0x0240

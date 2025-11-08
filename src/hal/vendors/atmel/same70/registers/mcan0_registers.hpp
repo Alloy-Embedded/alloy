@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::mcan0 {
 
 /// MCAN0 Register Structure
 struct MCAN0_Registers {
-
     /// Core Release Register
     /// Offset: 0x0000
     /// Access: read-only
@@ -67,7 +66,7 @@ struct MCAN0_Registers {
     /// Timeout Counter Value Register
     /// Offset: 0x002C
     volatile uint32_t TOCV;
-    uint8_t RESERVED_0030[16]; ///< Reserved
+    uint8_t RESERVED_0030[16];  ///< Reserved
 
     /// Error Counter Register
     /// Offset: 0x0040
@@ -82,7 +81,7 @@ struct MCAN0_Registers {
     /// Transmit Delay Compensation Register
     /// Offset: 0x0048
     volatile uint32_t TDCR;
-    uint8_t RESERVED_004C[4]; ///< Reserved
+    uint8_t RESERVED_004C[4];  ///< Reserved
 
     /// Interrupt Register
     /// Offset: 0x0050
@@ -99,7 +98,7 @@ struct MCAN0_Registers {
     /// Interrupt Line Enable Register
     /// Offset: 0x005C
     volatile uint32_t ILE;
-    uint8_t RESERVED_0060[32]; ///< Reserved
+    uint8_t RESERVED_0060[32];  ///< Reserved
 
     /// Global Filter Configuration Register
     /// Offset: 0x0080
@@ -112,7 +111,7 @@ struct MCAN0_Registers {
     /// Extended ID Filter Configuration Register
     /// Offset: 0x0088
     volatile uint32_t XIDFC;
-    uint8_t RESERVED_008C[4]; ///< Reserved
+    uint8_t RESERVED_008C[4];  ///< Reserved
 
     /// Extended ID AND Mask Register
     /// Offset: 0x0090
@@ -208,7 +207,7 @@ struct MCAN0_Registers {
     /// Transmit Buffer Cancellation Finished Interrupt Enable Register
     /// Offset: 0x00E4
     volatile uint32_t TXBCIE;
-    uint8_t RESERVED_00E8[8]; ///< Reserved
+    uint8_t RESERVED_00E8[8];  ///< Reserved
 
     /// Transmit Event FIFO Configuration Register
     /// Offset: 0x00F0

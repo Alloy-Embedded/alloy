@@ -6,9 +6,10 @@
 #include "station.hpp"
 
 #ifdef ESP_PLATFORM
-#include <cstring>
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
+    #include <cstring>
+
+    #include "freertos/FreeRTOS.h"
+    #include "freertos/event_groups.h"
 
 namespace alloy::wifi {
 
@@ -21,12 +22,11 @@ static EventGroupHandle_t s_wifi_event_group = nullptr;
 static Station* s_instance = nullptr;
 
 Station::Station()
-    : initialized_(false)
-    , state_(ConnectionState::Disconnected)
-    , conn_info_{}
-    , current_ssid_{}
-    , callback_(nullptr)
-{
+    : initialized_(false),
+      state_(ConnectionState::Disconnected),
+      conn_info_{},
+      current_ssid_{},
+      callback_(nullptr) {
     s_instance = this;
 }
 
@@ -79,19 +79,11 @@ Result<void> Station::init() {
     ESP_TRY(esp_wifi_init(&cfg));
 
     // Register event handlers
-    ESP_TRY(esp_event_handler_register(
-        WIFI_EVENT,
-        ESP_EVENT_ANY_ID,
-        &Station::event_handler,
-        this
-    ));
+    ESP_TRY(
+        esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &Station::event_handler, this));
 
-    ESP_TRY(esp_event_handler_register(
-        IP_EVENT,
-        IP_EVENT_STA_GOT_IP,
-        &Station::event_handler,
-        this
-    ));
+    ESP_TRY(
+        esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &Station::event_handler, this));
 
     // Set WiFi mode to station
     ESP_TRY(esp_wifi_set_mode(WIFI_MODE_STA));
@@ -100,11 +92,8 @@ Result<void> Station::init() {
     return Result<void>::ok();
 }
 
-Result<ConnectionInfo> Station::connect(
-    const char* ssid,
-    const char* password,
-    uint32_t timeout_ms
-) {
+Result<ConnectionInfo> Station::connect(const char* ssid, const char* password,
+                                        uint32_t timeout_ms) {
     if (!initialized_) {
         return Result<ConnectionInfo>::error(ErrorCode::NotInitialized);
     }
@@ -126,7 +115,8 @@ Result<ConnectionInfo> Station::connect(
     strncpy(reinterpret_cast<char*>(wifi_config.sta.ssid), ssid, sizeof(wifi_config.sta.ssid));
 
     if (password != nullptr) {
-        strncpy(reinterpret_cast<char*>(wifi_config.sta.password), password, sizeof(wifi_config.sta.password));
+        strncpy(reinterpret_cast<char*>(wifi_config.sta.password), password,
+                sizeof(wifi_config.sta.password));
     }
 
     wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
@@ -144,13 +134,10 @@ Result<ConnectionInfo> Station::connect(
     ESP_TRY_T(ConnectionInfo, esp_wifi_connect());
 
     // Wait for connection result
-    EventBits_t bits = xEventGroupWaitBits(
-        s_wifi_event_group,
-        WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
-        pdTRUE,  // Clear bits on exit
-        pdFALSE, // Wait for any bit
-        pdMS_TO_TICKS(timeout_ms)
-    );
+    EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group, WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
+                                           pdTRUE,   // Clear bits on exit
+                                           pdFALSE,  // Wait for any bit
+                                           pdMS_TO_TICKS(timeout_ms));
 
     if (bits & WIFI_CONNECTED_BIT) {
         state_ = ConnectionState::GotIP;
@@ -230,12 +217,8 @@ const char* Station::ssid() const {
 }
 
 // Static event handler (ESP-IDF callback)
-void Station::event_handler(
-    void* arg,
-    esp_event_base_t event_base,
-    int32_t event_id,
-    void* event_data
-) {
+void Station::event_handler(void* arg, esp_event_base_t event_base, int32_t event_id,
+                            void* event_data) {
     Station* self = static_cast<Station*>(arg);
 
     if (event_base == WIFI_EVENT) {
@@ -302,20 +285,19 @@ void Station::handle_ip_event(int32_t event_id, void* event_data) {
     }
 }
 
-} // namespace alloy::wifi
+}  // namespace alloy::wifi
 
-#else // !ESP_PLATFORM
+#else  // !ESP_PLATFORM
 
 namespace alloy::wifi {
 
 // Stub implementation for non-ESP platforms
 Station::Station()
-    : initialized_(false)
-    , state_(ConnectionState::Disconnected)
-    , conn_info_{}
-    , current_ssid_{}
-    , callback_(nullptr)
-{}
+    : initialized_(false),
+      state_(ConnectionState::Disconnected),
+      conn_info_{},
+      current_ssid_{},
+      callback_(nullptr) {}
 
 Station::~Station() {}
 
@@ -353,6 +335,6 @@ const char* Station::ssid() const {
     return "";
 }
 
-} // namespace alloy::wifi
+}  // namespace alloy::wifi
 
-#endif // ESP_PLATFORM
+#endif  // ESP_PLATFORM

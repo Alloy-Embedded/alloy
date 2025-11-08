@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f1::i2c1 {
 
 /// I2C1 Register Structure
 struct I2C1_Registers {
-
     /// Control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000

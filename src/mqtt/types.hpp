@@ -1,8 +1,9 @@
 #pragma once
 
-#include <stdint.h>
 #include <functional>
 #include <string_view>
+
+#include <stdint.h>
 
 namespace MQTT {
 
@@ -42,11 +43,11 @@ enum class ErrorReason {
  * @brief MQTT message data
  */
 struct Message {
-    std::string_view topic;    ///< Message topic
-    const uint8_t* data;       ///< Message payload data
-    size_t length;             ///< Payload length in bytes
-    QoS qos;                   ///< Quality of Service level
-    bool retained;             ///< Retained message flag
+    std::string_view topic;  ///< Message topic
+    const uint8_t* data;     ///< Message payload data
+    size_t length;           ///< Payload length in bytes
+    QoS qos;                 ///< Quality of Service level
+    bool retained;           ///< Retained message flag
 
     /**
      * @brief Get message payload as string view
@@ -69,16 +70,16 @@ struct Config {
     bool clean_session = true;        ///< Clean session flag
 
     // TLS/SSL Configuration
-    const char* ca_cert = nullptr;        ///< CA certificate (PEM format)
-    const char* client_cert = nullptr;    ///< Client certificate (PEM format)
-    const char* client_key = nullptr;     ///< Client private key (PEM format)
-    bool skip_cert_verify = false;        ///< Skip certificate verification (insecure)
+    const char* ca_cert = nullptr;      ///< CA certificate (PEM format)
+    const char* client_cert = nullptr;  ///< Client certificate (PEM format)
+    const char* client_key = nullptr;   ///< Client private key (PEM format)
+    bool skip_cert_verify = false;      ///< Skip certificate verification (insecure)
 
     // Last Will and Testament
-    const char* lwt_topic = nullptr;      ///< Last will topic
-    const char* lwt_message = nullptr;    ///< Last will message
-    QoS lwt_qos = QoS::AtMostOnce;       ///< Last will QoS
-    bool lwt_retain = false;              ///< Last will retain flag
+    const char* lwt_topic = nullptr;    ///< Last will topic
+    const char* lwt_message = nullptr;  ///< Last will message
+    QoS lwt_qos = QoS::AtMostOnce;      ///< Last will QoS
+    bool lwt_retain = false;            ///< Last will retain flag
 };
 
 /**
@@ -112,4 +113,4 @@ using PublishCallback = std::function<void(int message_id, bool success)>;
  */
 using SubscribeCallback = std::function<void(const char* topic, bool success)>;
 
-} // namespace MQTT
+}  // namespace MQTT

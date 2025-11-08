@@ -18,9 +18,10 @@
  * - Or use a virtual serial port (socat)
  */
 
-#include "hal/platform/linux/uart.hpp"
-#include <iostream>
 #include <cstring>
+#include <iostream>
+
+#include "hal/platform/linux/uart.hpp"
 
 using namespace alloy::hal::linux;
 using namespace alloy::core;
@@ -60,10 +61,7 @@ int main() {
     const char* message = "Hello, UART!\n";
     std::cout << "Writing: \"" << message << "\"\n";
 
-    auto write_result = uart.write(
-        reinterpret_cast<const uint8_t*>(message),
-        std::strlen(message)
-    );
+    auto write_result = uart.write(reinterpret_cast<const uint8_t*>(message), std::strlen(message));
 
     if (write_result.is_error()) {
         std::cerr << "ERROR: Failed to write data\n";

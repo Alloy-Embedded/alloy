@@ -26,11 +26,12 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -70,10 +71,10 @@ enum class AdcResolution : uint8_t {
  * @brief ADC Trigger Source
  */
 enum class AdcTrigger : uint8_t {
-    Software = 0,  ///< Software trigger (manual)
-    External = 1,  ///< External trigger pin
-    Timer = 2,  ///< Timer/Counter trigger
-    PwmEvent = 3,  ///< PWM event trigger
+    Software = 0,    ///< Software trigger (manual)
+    External = 1,    ///< External trigger pin
+    Timer = 2,       ///< Timer/Counter trigger
+    PwmEvent = 3,    ///< PWM event trigger
     Continuous = 4,  ///< Free-running mode
 };
 
@@ -81,16 +82,16 @@ enum class AdcTrigger : uint8_t {
  * @brief ADC Channel Number
  */
 enum class AdcChannel : uint8_t {
-    CH0 = 0,  ///< Channel 0
-    CH1 = 1,  ///< Channel 1
-    CH2 = 2,  ///< Channel 2
-    CH3 = 3,  ///< Channel 3
-    CH4 = 4,  ///< Channel 4
-    CH5 = 5,  ///< Channel 5
-    CH6 = 6,  ///< Channel 6
-    CH7 = 7,  ///< Channel 7
-    CH8 = 8,  ///< Channel 8
-    CH9 = 9,  ///< Channel 9
+    CH0 = 0,    ///< Channel 0
+    CH1 = 1,    ///< Channel 1
+    CH2 = 2,    ///< Channel 2
+    CH3 = 3,    ///< Channel 3
+    CH4 = 4,    ///< Channel 4
+    CH5 = 5,    ///< Channel 5
+    CH6 = 6,    ///< Channel 6
+    CH7 = 7,    ///< Channel 7
+    CH8 = 8,    ///< Channel 8
+    CH9 = 9,    ///< Channel 9
     CH10 = 10,  ///< Channel 10
     CH11 = 11,  ///< Channel 11
 };
@@ -101,10 +102,10 @@ enum class AdcChannel : uint8_t {
  */
 struct AdcConfig {
     AdcResolution resolution = AdcResolution::Bits12;  ///< ADC resolution
-    AdcTrigger trigger = AdcTrigger::Software;  ///< Trigger source
-    uint32_t sample_rate = 1000000;  ///< Target sample rate in Hz (up to 2 MHz)
-    bool use_dma = false;  ///< Enable DMA transfers
-    uint8_t channels = 1;  ///< Number of channels to scan
+    AdcTrigger trigger = AdcTrigger::Software;         ///< Trigger source
+    uint32_t sample_rate = 1000000;                    ///< Target sample rate in Hz (up to 2 MHz)
+    bool use_dma = false;                              ///< Enable DMA transfers
+    uint8_t channels = 1;                              ///< Number of channels to scan
 };
 
 /**
@@ -137,7 +138,7 @@ struct AdcConfig {
  */
 template <uint32_t BASE_ADDR, uint32_t IRQ_ID>
 class Adc {
-public:
+   public:
     // Compile-time constants
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t irq_id = IRQ_ID;
@@ -154,7 +155,8 @@ public:
         // In tests, use the mock hardware pointer
         return ALLOY_ADC_MOCK_HW();
 #else
-        return reinterpret_cast<volatile alloy::hal::atmel::same70::afec0::AFEC0_Registers*>(BASE_ADDR);
+        return reinterpret_cast<volatile alloy::hal::atmel::same70::afec0::AFEC0_Registers*>(
+            BASE_ADDR);
 #endif
     }
 
@@ -181,15 +183,15 @@ public:
         // ADC_CLK = MCK / ((PRESCAL+1) * 2)
         // Target 1 MHz ADC clock (assuming 150 MHz MCK)
         uint32_t prescal = 74;  // (150MHz / (2 * 1MHz)) - 1 = 74
-        
+
         uint32_t mr = 0;
         mr = afec::mr::PRESCAL::write(mr, prescal);
         mr = afec::mr::STARTUP::write(mr, afec::mr::startup::SUT0);  // Fastest startup
-        mr = afec::mr::TRACKTIM::write(mr, 0);  // Fastest tracking
+        mr = afec::mr::TRACKTIM::write(mr, 0);                       // Fastest tracking
         mr = afec::mr::TRANSFER::write(mr, 0);
         mr = afec::mr::USEQ::write(mr, afec::mr::useq::NUM_ORDER);  // Channel order CH0-CH11
-        mr = afec::mr::ONE::set(mr);  // Must be set to 1 (ONE bit)
-        
+        mr = afec::mr::ONE::set(mr);                                // Must be set to 1 (ONE bit)
+
         hw->MR = mr;
 
         m_opened = true;
@@ -235,7 +237,7 @@ public:
             res_value = afec::emr::res::OSR4;  // 13-bit with oversampling
         }
         emr = afec::emr::RES::write(emr, res_value);
-        emr = afec::emr::TAG::write(emr, 0);  // No tag
+        emr = afec::emr::TAG::write(emr, 0);                            // No tag
         emr = afec::emr::CMPMODE::write(emr, afec::emr::cmpmode::LOW);  // No comparison
         hw->EMR = emr;
 
@@ -249,7 +251,7 @@ public:
         }
         hw->MR = mr;
 
-        // 
+        //
         m_config = config;
 
         return Ok();
@@ -267,7 +269,7 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         hw->CHER = (1u << static_cast<uint8_t>(channel));
 
         return Ok();
@@ -285,7 +287,7 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         hw->CHDR = (1u << static_cast<uint8_t>(channel));
 
         return Ok();
@@ -320,25 +322,24 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         uint8_t ch = static_cast<uint8_t>(channel);
-        
+
         // Wait for conversion complete on this channel
         uint32_t timeout = 100000;
         while ((hw->ISR & (1u << ch)) == 0 && timeout > 0) {
             --timeout;
         }
-        
+
         if (timeout == 0) {
             return Err(ErrorCode::Timeout);
         }
-        
+
         // Read converted data register (CDR) for the channel
         // CDR registers are at offset 0x50 + (channel * 4)
-        volatile uint32_t* cdr = reinterpret_cast<volatile uint32_t*>(
-            reinterpret_cast<uintptr_t>(hw) + 0x50 + (ch * 4)
-        );
-        
+        volatile uint32_t* cdr =
+            reinterpret_cast<volatile uint32_t*>(reinterpret_cast<uintptr_t>(hw) + 0x50 + (ch * 4));
+
         uint16_t value = static_cast<uint16_t>(*cdr & 0xFFF);  // 12-bit value
 
         return Ok(uint16_t(value));
@@ -354,30 +355,30 @@ public:
     Result<uint16_t, ErrorCode> readSingle(AdcChannel channel) {
         auto* hw = get_hw();
 
-        // 
+        //
         auto enable_result = enableChannel(channel);
         if (!enable_result.is_ok()) {
             return Err(enable_result.err());
         }
-        
+
         auto start_result = startConversion();
         if (!start_result.is_ok()) {
             return Err(start_result.err());
         }
-        
-        auto read_result = read(channel);
-        
-        disableChannel(channel);
-        
-        return read_result;
 
+        auto read_result = read(channel);
+
+        disableChannel(channel);
+
+        return read_result;
     }
 
     /**
      * @brief Enable DMA mode
      *
      * @return Result<void, ErrorCode>     *
-     * @note In DMA mode, converted values are automatically transferred to memory by the DMA controller without CPU intervention
+     * @note In DMA mode, converted values are automatically transferred to memory by the DMA
+     * controller without CPU intervention
      */
     Result<void, ErrorCode> enableDma() {
         auto* hw = get_hw();
@@ -396,12 +397,13 @@ public:
      * @brief Get data register address for DMA
      *
      * @return const volatile void* Get data register address for DMA     *
-     * @note The DMA controller needs to know the address of the last converted data register (LCDR) to read from
+     * @note The DMA controller needs to know the address of the last converted data register (LCDR)
+     * to read from
      */
     const volatile void* getDmaSourceAddress() const {
         auto* hw = get_hw();
 
-        // 
+        //
         return &hw->LCDR;
 
         return &hw->LCDR;
@@ -411,9 +413,7 @@ public:
      * @brief Check if ADC is open
      *
      * @return bool Check if ADC is open     */
-    bool isOpen() const {
-        return m_opened;
-    }
+    bool isOpen() const { return m_opened; }
 
     // ========================================================================
     // Static Utility Methods
@@ -431,8 +431,8 @@ public:
     }
 
 
-private:
-    bool m_opened = false;  ///< Tracks if peripheral is initialized
+   private:
+    bool m_opened = false;    ///< Tracks if peripheral is initialized
     AdcConfig m_config = {};  ///< Current configuration
 };
 
@@ -449,4 +449,4 @@ constexpr uint32_t ADC1_IRQ = 40;
 using Adc0 = Adc<ADC0_BASE, ADC0_IRQ>;  ///< AFEC0 - 12 channels (CH0-CH11)
 using Adc1 = Adc<ADC1_BASE, ADC1_IRQ>;  ///< AFEC1 - 8 channels (CH0-CH7)
 
-} // namespace alloy::hal::same70
+}  // namespace alloy::hal::same70

@@ -1,6 +1,7 @@
 /// Alloy RTOS Scheduler Implementation
 
 #include "rtos/scheduler.hpp"
+
 #include "hal/interface/systick.hpp"
 
 // Include platform-specific systick implementation
@@ -12,7 +13,7 @@
     #elif defined(SAMD21)
         #include "hal/microchip/samd21/systick.hpp"
     #elif defined(ATSAME70)
-        // SAME70 uses ARM SysTick (TODO: implement)
+    // SAME70 uses ARM SysTick (TODO: implement)
     #endif
 #elif defined(ESP32) || defined(ESP_PLATFORM)
     #include "hal/espressif/esp32/systick.hpp"
@@ -42,7 +43,8 @@ TaskControlBlock* ReadyQueue::get_highest_priority() {
 }
 
 void ReadyQueue::make_ready(TaskControlBlock* task) {
-    if (task == nullptr) return;
+    if (task == nullptr)
+        return;
 
     // Set bit for this priority
     priority_bitmap_ |= (1 << task->priority);
@@ -55,7 +57,8 @@ void ReadyQueue::make_ready(TaskControlBlock* task) {
 }
 
 void ReadyQueue::make_not_ready(TaskControlBlock* task) {
-    if (task == nullptr) return;
+    if (task == nullptr)
+        return;
 
     // Remove from linked list
     TaskControlBlock** current = &ready_lists_[task->priority];
@@ -108,7 +111,8 @@ void init() {
     platform::start_first_task();
 
     // Never reached
-    while (1);
+    while (1)
+        ;
 }
 
 void tick() {
@@ -123,10 +127,12 @@ void tick() {
 }
 
 void delay(core::u32 ms) {
-    if (!g_scheduler.started || ms == 0) return;
+    if (!g_scheduler.started || ms == 0)
+        return;
 
     TaskControlBlock* current = g_scheduler.current_task;
-    if (current == nullptr) return;
+    if (current == nullptr)
+        return;
 
     // Calculate wake time
     current->wake_time = systick::micros() + (ms * 1000);
@@ -147,7 +153,8 @@ void delay(core::u32 ms) {
 }
 
 void yield() {
-    if (!g_scheduler.started) return;
+    if (!g_scheduler.started)
+        return;
 
     // Simply reschedule
     reschedule();
@@ -160,10 +167,12 @@ void yield() {
 }
 
 void block_current_task(TaskControlBlock** wait_list) {
-    if (!g_scheduler.started) return;
+    if (!g_scheduler.started)
+        return;
 
     TaskControlBlock* current = g_scheduler.current_task;
-    if (current == nullptr) return;
+    if (current == nullptr)
+        return;
 
     // Remove from ready queue
     current->state = TaskState::Blocked;
@@ -181,7 +190,8 @@ void block_current_task(TaskControlBlock** wait_list) {
 }
 
 void unblock_one_task(TaskControlBlock** wait_list) {
-    if (*wait_list == nullptr) return;
+    if (*wait_list == nullptr)
+        return;
 
     // Remove first task from wait list
     TaskControlBlock* task = *wait_list;
@@ -205,7 +215,8 @@ void unblock_all_tasks(TaskControlBlock** wait_list) {
 }
 
 void reschedule() {
-    if (!g_scheduler.started) return;
+    if (!g_scheduler.started)
+        return;
 
     // Find highest priority ready task
     TaskControlBlock* next = g_scheduler.ready_queue.get_highest_priority();
@@ -236,8 +247,7 @@ void wake_delayed_tasks() {
     core::u32 now = systick::micros();
 
     while (*current != nullptr) {
-        if (systick::micros_since((*current)->wake_time) == 0 ||
-            now >= (*current)->wake_time) {
+        if (systick::micros_since((*current)->wake_time) == 0 || now >= (*current)->wake_time) {
             // Time to wake up this task
             TaskControlBlock* task = *current;
             *current = task->next;  // Remove from delayed list
@@ -251,7 +261,7 @@ void wake_delayed_tasks() {
     }
 }
 
-} // namespace scheduler
+}  // namespace scheduler
 
 // RTOS API implementation
 
@@ -287,12 +297,13 @@ bool need_context_switch() {
 }
 
 void register_task(TaskControlBlock* tcb) {
-    if (tcb == nullptr) return;
+    if (tcb == nullptr)
+        return;
 
     // Add task to ready queue
     g_scheduler.ready_queue.make_ready(tcb);
 }
 
-} // namespace RTOS
+}  // namespace RTOS
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos

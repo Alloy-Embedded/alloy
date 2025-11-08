@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::ethernet_dma {
 
 /// Ethernet_DMA Register Structure
 struct Ethernet_DMA_Registers {
-
     /// Ethernet DMA bus mode register
     /// Offset: 0x0000
     /// Reset value: 0x00002101
@@ -76,7 +75,7 @@ struct Ethernet_DMA_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t DMARSWTR;
-    uint8_t RESERVED_0028[32]; ///< Reserved
+    uint8_t RESERVED_0028[32];  ///< Reserved
 
     /// Ethernet DMA current host transmit descriptor register
     /// Offset: 0x0048

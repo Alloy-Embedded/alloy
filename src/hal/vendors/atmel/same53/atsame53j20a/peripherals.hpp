@@ -11,10 +11,10 @@ namespace alloy::generated::atsame53j20a {
 
 /// Basic peripheral base addresses
 namespace peripherals {
-    // Peripheral addresses will be added here
-    // This is a minimal implementation
+// Peripheral addresses will be added here
+// This is a minimal implementation
 }
 
-} // namespace alloy::generated::atsame53j20a
+}  // namespace alloy::generated::atsame53j20a
 
-#endif // ALLOY_GENERATED_ATSAME53J20A_PERIPHERALS_HPP
+#endif  // ALLOY_GENERATED_ATSAME53J20A_PERIPHERALS_HPP

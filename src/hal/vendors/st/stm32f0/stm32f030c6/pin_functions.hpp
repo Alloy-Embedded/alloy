@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+
 #include "pins.hpp"
 
 namespace alloy::hal::stm32f0::stm32f030c6::pin_functions {

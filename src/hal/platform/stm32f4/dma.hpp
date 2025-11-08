@@ -26,11 +26,12 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -64,25 +65,25 @@ namespace dma = alloy::hal::st::stm32f4::dma2;
 enum class DmaDirection : uint8_t {
     PeripheralToMemory = 0,  ///< Peripheral -> Memory
     MemoryToPeripheral = 1,  ///< Memory -> Peripheral
-    MemoryToMemory = 2,  ///< Memory -> Memory
+    MemoryToMemory = 2,      ///< Memory -> Memory
 };
 
 /**
  * @brief DMA Transfer Width
  */
 enum class DmaWidth : uint8_t {
-    Byte = 0,  ///< 8-bit transfers
+    Byte = 0,      ///< 8-bit transfers
     HalfWord = 1,  ///< 16-bit transfers
-    Word = 2,  ///< 32-bit transfers
+    Word = 2,      ///< 32-bit transfers
 };
 
 /**
  * @brief DMA Priority Level
  */
 enum class DmaPriority : uint8_t {
-    Low = 0,  ///< Low priority
-    Medium = 1,  ///< Medium priority
-    High = 2,  ///< High priority
+    Low = 0,       ///< Low priority
+    Medium = 1,    ///< Medium priority
+    High = 2,      ///< High priority
     VeryHigh = 3,  ///< Very high priority
 };
 
@@ -92,13 +93,13 @@ enum class DmaPriority : uint8_t {
  */
 struct DmaConfig {
     DmaDirection direction = DmaDirection::PeripheralToMemory;  ///< Transfer direction
-    DmaWidth peripheral_width = DmaWidth::Word;  ///< Peripheral data width
-    DmaWidth memory_width = DmaWidth::Word;  ///< Memory data width
-    DmaPriority priority = DmaPriority::Low;  ///< Stream priority
-    bool peripheral_increment = false;  ///< Increment peripheral address
-    bool memory_increment = true;  ///< Increment memory address
-    bool circular = false;  ///< Circular mode
-    uint8_t channel = 0;  ///< DMA channel (0-7)
+    DmaWidth peripheral_width = DmaWidth::Word;                 ///< Peripheral data width
+    DmaWidth memory_width = DmaWidth::Word;                     ///< Memory data width
+    DmaPriority priority = DmaPriority::Low;                    ///< Stream priority
+    bool peripheral_increment = false;                          ///< Increment peripheral address
+    bool memory_increment = true;                               ///< Increment memory address
+    bool circular = false;                                      ///< Circular mode
+    uint8_t channel = 0;                                        ///< DMA channel (0-7)
 };
 
 
@@ -126,7 +127,8 @@ struct DmaConfig {
 template <uint8_t STREAM_NUM>
 class DmaChannel {
     static_assert(STREAM_NUM < 8, "STM32F4 DMA has 8 streams (0-7)");
-public:
+
+   public:
     // Compile-time constants
     static constexpr uint8_t stream_num = STREAM_NUM;
 
@@ -182,7 +184,7 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         // Configuration would require per-stream register access
         // This is simplified - full implementation needs stream-specific registers
         m_config = config;
@@ -197,7 +199,8 @@ public:
      * @param dst_addr Destination address
      * @param size Transfer size
      * @return Result<void, ErrorCode>     */
-    Result<void, ErrorCode> transfer(const volatile void* src_addr, volatile void* dst_addr, size_t size) {
+    Result<void, ErrorCode> transfer(const volatile void* src_addr, volatile void* dst_addr,
+                                     size_t size) {
         if (!m_opened) {
             return Err(ErrorCode::NotInitialized);
         }
@@ -206,7 +209,7 @@ public:
             return Err(ErrorCode::InvalidParameter);
         }
 
-        // 
+        //
         // Transfer would require per-stream register access
         // This is simplified - full implementation needs stream-specific registers
         (void)src_addr;
@@ -221,7 +224,7 @@ public:
      *
      * @return bool Check if transfer is complete     */
     bool isComplete() const {
-        // 
+        //
         // Would check TCIF flag in ISR
         return true;
 
@@ -232,13 +235,11 @@ public:
      * @brief Check if DMA stream is open
      *
      * @return bool Check if DMA stream is open     */
-    bool isOpen() const {
-        return m_opened;
-    }
+    bool isOpen() const { return m_opened; }
 
 
-private:
-    bool m_opened = false;  ///< Tracks if stream is initialized
+   private:
+    bool m_opened = false;    ///< Tracks if stream is initialized
     DmaConfig m_config = {};  ///< Current configuration
 };
 
@@ -255,4 +256,4 @@ using Dma1Stream5 = DmaChannel<5>;  ///< DMA1 Stream 5
 using Dma1Stream6 = DmaChannel<6>;  ///< DMA1 Stream 6
 using Dma1Stream7 = DmaChannel<7>;  ///< DMA1 Stream 7
 
-} // namespace alloy::hal::stm32f4
+}  // namespace alloy::hal::stm32f4

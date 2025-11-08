@@ -5,15 +5,17 @@
 ///
 /// This example proves that embedded RTOS code can run on a PC for testing!
 
-#include "rtos/rtos.hpp"
-#include "rtos/queue.hpp"
-#include "rtos/mutex.hpp"
-#include "rtos/semaphore.hpp"
-#include "rtos/event.hpp"
-#include "hal/host/systick.hpp"
-#include "hal/host/delay.hpp"
-#include <iostream>
 #include <iomanip>
+#include <iostream>
+
+#include "hal/host/delay.hpp"
+#include "hal/host/systick.hpp"
+
+#include "rtos/event.hpp"
+#include "rtos/mutex.hpp"
+#include "rtos/queue.hpp"
+#include "rtos/rtos.hpp"
+#include "rtos/semaphore.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
@@ -45,11 +47,11 @@ constexpr core::u32 EVENT_ERROR = (1 << 2);
 // ============================================================================
 
 /// Thread-safe console output
-template<typename... Args>
+template <typename... Args>
 void print(const char* task_name, Args&&... args) {
     LockGuard lock(console_mutex);
-    std::cout << "[" << std::setw(10) << task_name << " | "
-              << std::setw(6) << (systick::micros() / 1000) << "ms] ";
+    std::cout << "[" << std::setw(10) << task_name << " | " << std::setw(6)
+              << (systick::micros() / 1000) << "ms] ";
     (std::cout << ... << args) << std::endl;
 }
 
@@ -72,8 +74,8 @@ void sensor_task() {
 
         // Send to queue (blocking if full)
         if (sensor_queue.send(data, 1000)) {  // 1 second timeout
-            print("SENSOR", "Sent data #", reading_count,
-                  ": temp=", data.temperature, "°C, humidity=", data.humidity, "%");
+            print("SENSOR", "Sent data #", reading_count, ": temp=", data.temperature,
+                  "°C, humidity=", data.humidity, "%");
 
             // Signal data ready
             data_ready_sem.give();
@@ -135,11 +137,11 @@ void monitor_task() {
 
     while (true) {
         // Wait for any event (2 second timeout)
-        core::u32 events = system_events.wait_any(
-            EVENT_DATA_READY | EVENT_THRESHOLD_EXCEEDED | EVENT_ERROR,
-            false,  // Don't clear flags
-            2000    // 2 second timeout
-        );
+        core::u32 events =
+            system_events.wait_any(EVENT_DATA_READY | EVENT_THRESHOLD_EXCEEDED | EVENT_ERROR,
+                                   false,  // Don't clear flags
+                                   2000    // 2 second timeout
+            );
 
         if (events != 0) {
             if (events & EVENT_DATA_READY) {
@@ -196,10 +198,11 @@ void stats_task() {
         {
             LockGuard lock(console_mutex);
             std::cout << "\n" << std::string(60, '=') << std::endl;
-            std::cout << "  RTOS Statistics (" << (systick::micros() / 1000) << "ms uptime)" << std::endl;
+            std::cout << "  RTOS Statistics (" << (systick::micros() / 1000) << "ms uptime)"
+                      << std::endl;
             std::cout << std::string(60, '=') << std::endl;
-            std::cout << "  Queue occupancy: " << sensor_queue.count()
-                      << " / " << sensor_queue.capacity() << std::endl;
+            std::cout << "  Queue occupancy: " << sensor_queue.count() << " / "
+                      << sensor_queue.capacity() << std::endl;
             std::cout << "  Tick count: " << RTOS::get_tick_count() << " ms" << std::endl;
             std::cout << std::string(60, '=') << "\n" << std::endl;
         }
@@ -211,11 +214,11 @@ void stats_task() {
 // ============================================================================
 
 // Task priorities: 0 (lowest) to 7 (highest)
-Task<2048, Priority::High>    task_sensor(sensor_task, "Sensor");
-Task<2048, Priority::Normal>  task_processor(processor_task, "Processor");
-Task<2048, Priority::Normal>  task_monitor(monitor_task, "Monitor");
-Task<2048, Priority::Low>     task_heartbeat(heartbeat_task, "Heartbeat");
-Task<2048, Priority::Lowest>  task_stats(stats_task, "Stats");
+Task<2048, Priority::High> task_sensor(sensor_task, "Sensor");
+Task<2048, Priority::Normal> task_processor(processor_task, "Processor");
+Task<2048, Priority::Normal> task_monitor(monitor_task, "Monitor");
+Task<2048, Priority::Low> task_heartbeat(heartbeat_task, "Heartbeat");
+Task<2048, Priority::Lowest> task_stats(stats_task, "Stats");
 
 // ============================================================================
 // Main Entry Point

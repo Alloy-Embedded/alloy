@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::io_mux {
 
 /// IO_MUX Register Structure
 struct IO_MUX_Registers {
-
     /// PIN_CTRL
     /// Offset: 0x0000
     volatile uint32_t PIN_CTRL;

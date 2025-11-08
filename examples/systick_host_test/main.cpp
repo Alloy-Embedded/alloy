@@ -9,11 +9,12 @@
 /// - Tests overflow handling (micros_since)
 /// - Measures timing accuracy
 
-#include "hal/host/systick.hpp"
+#include <iomanip>
+#include <iostream>
+
 #include "hal/host/delay.hpp"
 #include "hal/host/gpio.hpp"
-#include <iostream>
-#include <iomanip>
+#include "hal/host/systick.hpp"
 
 using namespace alloy;
 
@@ -24,8 +25,7 @@ void print_test(const char* name) {
 
 /// Print test result
 void print_result(const char* test, bool passed) {
-    std::cout << "  " << test << ": "
-              << (passed ? "\033[32mPASS\033[0m" : "\033[31mFAIL\033[0m")
+    std::cout << "  " << test << ": " << (passed ? "\033[32mPASS\033[0m" : "\033[31mFAIL\033[0m")
               << std::endl;
 }
 
@@ -54,7 +54,7 @@ void test_micros_since() {
 
     // Simulate near-overflow scenario
     core::u32 start = 0xFFFFFFF0;  // Near max uint32
-    core::u32 now   = 0x00000100;  // Wrapped around
+    core::u32 now = 0x00000100;    // Wrapped around
 
     core::u32 elapsed = now - start;  // Unsigned arithmetic handles this
 
@@ -81,12 +81,11 @@ void test_delay_accuracy() {
         core::u32 expected_us = delay_ms * 1000;
         core::u32 tolerance = delay_ms * 200;  // 20% tolerance
 
-        bool passed = (elapsed >= (expected_us - tolerance) &&
-                      elapsed <= (expected_us + tolerance));
+        bool passed =
+            (elapsed >= (expected_us - tolerance) && elapsed <= (expected_us + tolerance));
 
-        std::cout << "  " << delay_ms << "ms delay: "
-                  << elapsed << " us (expected ~" << expected_us << " us) - "
-                  << (passed ? "OK" : "FAIL") << std::endl;
+        std::cout << "  " << delay_ms << "ms delay: " << elapsed << " us (expected ~" << expected_us
+                  << " us) - " << (passed ? "OK" : "FAIL") << std::endl;
     }
 
     // Test microsecond delays
@@ -100,11 +99,9 @@ void test_delay_accuracy() {
 
         core::u32 tolerance = delay_us / 5;  // 20% tolerance
 
-        bool passed = (elapsed >= (delay_us - tolerance) &&
-                      elapsed <= (delay_us + tolerance));
+        bool passed = (elapsed >= (delay_us - tolerance) && elapsed <= (delay_us + tolerance));
 
-        std::cout << "  " << delay_us << "us delay: "
-                  << elapsed << " us - "
+        std::cout << "  " << delay_us << "us delay: " << elapsed << " us - "
                   << (passed ? "OK" : "FAIL") << std::endl;
     }
 }
@@ -169,7 +166,7 @@ void test_simulated_blink() {
         hal::host::delay_ms(100);
 
         core::u32 cycle_time = systick::micros_since(cycle_start);
-        std::cout << "  Cycle " << (i+1) << " took " << cycle_time << " us" << std::endl;
+        std::cout << "  Cycle " << (i + 1) << " took " << cycle_time << " us" << std::endl;
     }
 }
 

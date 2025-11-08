@@ -14,49 +14,52 @@
 ///
 /// Note: This is a bare-metal version without ESP-IDF dependencies.
 
-#include "esp32_devkit/board.hpp"
 #include "rtos/rtos.hpp"
+
 #include "core/types.hpp"
+
+#include "esp32_devkit/board.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
 
 // Simple UART0 output for logging (bare-metal, no ESP-IDF)
 namespace uart {
-    // ESP32 UART0 registers
-    constexpr core::u32 UART0_BASE = 0x3FF40000;
-    constexpr core::u32 UART_FIFO_REG = UART0_BASE + 0x00;
-    constexpr core::u32 UART_STATUS_REG = UART0_BASE + 0x1C;
-    constexpr core::u32 UART_TX_FIFO_CNT_MASK = 0xFF;
-    constexpr core::u32 UART_TX_FIFO_CNT_SHIFT = 16;
+// ESP32 UART0 registers
+constexpr core::u32 UART0_BASE = 0x3FF40000;
+constexpr core::u32 UART_FIFO_REG = UART0_BASE + 0x00;
+constexpr core::u32 UART_STATUS_REG = UART0_BASE + 0x1C;
+constexpr core::u32 UART_TX_FIFO_CNT_MASK = 0xFF;
+constexpr core::u32 UART_TX_FIFO_CNT_SHIFT = 16;
 
-    inline void putchar(char c) {
-        volatile core::u32* fifo = reinterpret_cast<volatile core::u32*>(UART_FIFO_REG);
-        volatile core::u32* status = reinterpret_cast<volatile core::u32*>(UART_STATUS_REG);
+inline void putchar(char c) {
+    volatile core::u32* fifo = reinterpret_cast<volatile core::u32*>(UART_FIFO_REG);
+    volatile core::u32* status = reinterpret_cast<volatile core::u32*>(UART_STATUS_REG);
 
-        // Wait for TX FIFO to have space
-        while (((*status >> UART_TX_FIFO_CNT_SHIFT) & UART_TX_FIFO_CNT_MASK) >= 128);
+    // Wait for TX FIFO to have space
+    while (((*status >> UART_TX_FIFO_CNT_SHIFT) & UART_TX_FIFO_CNT_MASK) >= 128)
+        ;
 
-        *fifo = c;
-    }
+    *fifo = c;
+}
 
-    void puts(const char* str) {
-        while (*str) {
-            if (*str == '\n') {
-                putchar('\r');
-            }
-            putchar(*str++);
+void puts(const char* str) {
+    while (*str) {
+        if (*str == '\n') {
+            putchar('\r');
         }
-    }
-
-    void log(const char* level, const char* msg) {
-        puts("[");
-        puts(level);
-        puts("] ");
-        puts(msg);
-        puts("\n");
+        putchar(*str++);
     }
 }
+
+void log(const char* level, const char* msg) {
+    puts("[");
+    puts(level);
+    puts("] ");
+    puts(msg);
+    puts("\n");
+}
+}  // namespace uart
 
 // Task 1: Fast blink (high priority)
 void task1_func() {
@@ -102,9 +105,9 @@ void idle_task_func() {
 }
 
 // Create tasks with different priorities
-Task<2048, Priority::High>   task1(task1_func, "FastBlink");
+Task<2048, Priority::High> task1(task1_func, "FastBlink");
 Task<2048, Priority::Normal> task2(task2_func, "SlowBlink");
-Task<1024, Priority::Idle>   idle_task(idle_task_func, "Idle");
+Task<1024, Priority::Idle> idle_task(idle_task_func, "Idle");
 
 int main() {
     // Initialize board (includes GPIO)
@@ -126,5 +129,5 @@ int main() {
     // Start RTOS (never returns)
     RTOS::start();
 
-    return 0; // Never reached
+    return 0;  // Never reached
 }

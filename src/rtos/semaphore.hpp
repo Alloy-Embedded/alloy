@@ -49,11 +49,13 @@
 #ifndef ALLOY_RTOS_SEMAPHORE_HPP
 #define ALLOY_RTOS_SEMAPHORE_HPP
 
+#include "hal/interface/systick.hpp"
+
+#include "rtos/platform/critical_section.hpp"
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
+
 #include "core/types.hpp"
-#include "hal/interface/systick.hpp"
-#include "rtos/platform/critical_section.hpp"
 
 namespace alloy::rtos {
 
@@ -86,18 +88,17 @@ namespace alloy::rtos {
 /// }
 /// ```
 class BinarySemaphore {
-private:
-    core::u8 count_;                     ///< 0 or 1
-    TaskControlBlock* wait_list_;        ///< Tasks blocked on take()
+   private:
+    core::u8 count_;               ///< 0 or 1
+    TaskControlBlock* wait_list_;  ///< Tasks blocked on take()
 
-public:
+   public:
     /// Constructor
     ///
     /// @param initial_value Initial count (0 = taken, 1 = available)
     explicit BinarySemaphore(core::u8 initial_value = 0)
-        : count_(initial_value > 0 ? 1 : 0)
-        , wait_list_(nullptr)
-    {}
+        : count_(initial_value > 0 ? 1 : 0),
+          wait_list_(nullptr) {}
 
     /// Give semaphore (increment count to 1)
     ///
@@ -149,27 +150,19 @@ public:
     /// Get current count (0 or 1)
     ///
     /// @return 0 if taken, 1 if available
-    core::u8 count() const {
-        return count_;
-    }
+    core::u8 count() const { return count_; }
 
     /// Check if available
     ///
     /// @return true if count is 1
-    bool is_available() const {
-        return count_ > 0;
-    }
+    bool is_available() const { return count_ > 0; }
 
-private:
+   private:
     /// Disable interrupts (critical section)
-    static inline void disable_interrupts() {
-platform::disable_interrupts();
-    }
+    static inline void disable_interrupts() { platform::disable_interrupts(); }
 
     /// Enable interrupts
-    static inline void enable_interrupts() {
-platform::enable_interrupts();
-    }
+    static inline void enable_interrupts() { platform::enable_interrupts(); }
 };
 
 /// Counting Semaphore
@@ -209,25 +202,23 @@ platform::enable_interrupts();
 ///     }
 /// }
 /// ```
-template<core::u8 MaxCount>
+template <core::u8 MaxCount>
 class CountingSemaphore {
-    static_assert(MaxCount > 0 && MaxCount <= 255,
-                  "MaxCount must be between 1 and 255");
+    static_assert(MaxCount > 0 && MaxCount <= 255, "MaxCount must be between 1 and 255");
 
-private:
-    core::u8 count_;                     ///< Current count (0 to MaxCount)
-    core::u8 max_count_;                 ///< Maximum count
-    TaskControlBlock* wait_list_;        ///< Tasks blocked on take()
+   private:
+    core::u8 count_;               ///< Current count (0 to MaxCount)
+    core::u8 max_count_;           ///< Maximum count
+    TaskControlBlock* wait_list_;  ///< Tasks blocked on take()
 
-public:
+   public:
     /// Constructor
     ///
     /// @param initial_count Initial count (0 to MaxCount)
     explicit CountingSemaphore(core::u8 initial_count = 0)
-        : count_(initial_count > MaxCount ? MaxCount : initial_count)
-        , max_count_(MaxCount)
-        , wait_list_(nullptr)
-    {}
+        : count_(initial_count > MaxCount ? MaxCount : initial_count),
+          max_count_(MaxCount),
+          wait_list_(nullptr) {}
 
     /// Give semaphore (increment count)
     ///
@@ -279,34 +270,24 @@ public:
     /// Get current count
     ///
     /// @return Current count (0 to MaxCount)
-    core::u8 count() const {
-        return count_;
-    }
+    core::u8 count() const { return count_; }
 
     /// Get maximum count
     ///
     /// @return MaxCount
-    core::u8 max_count() const {
-        return max_count_;
-    }
+    core::u8 max_count() const { return max_count_; }
 
     /// Check if available
     ///
     /// @return true if count > 0
-    bool is_available() const {
-        return count_ > 0;
-    }
+    bool is_available() const { return count_ > 0; }
 
-private:
+   private:
     /// Disable interrupts (critical section)
-    static inline void disable_interrupts() {
-platform::disable_interrupts();
-    }
+    static inline void disable_interrupts() { platform::disable_interrupts(); }
 
     /// Enable interrupts
-    static inline void enable_interrupts() {
-platform::enable_interrupts();
-    }
+    static inline void enable_interrupts() { platform::enable_interrupts(); }
 };
 
 // BinarySemaphore implementation
@@ -368,7 +349,7 @@ inline bool BinarySemaphore::try_take() {
 
 // CountingSemaphore implementation
 
-template<core::u8 MaxCount>
+template <core::u8 MaxCount>
 void CountingSemaphore<MaxCount>::give() {
     disable_interrupts();
 
@@ -385,7 +366,7 @@ void CountingSemaphore<MaxCount>::give() {
     }
 }
 
-template<core::u8 MaxCount>
+template <core::u8 MaxCount>
 bool CountingSemaphore<MaxCount>::take(core::u32 timeout_ms) {
     core::u32 start_time = systick::micros();
 
@@ -414,7 +395,7 @@ bool CountingSemaphore<MaxCount>::take(core::u32 timeout_ms) {
     }
 }
 
-template<core::u8 MaxCount>
+template <core::u8 MaxCount>
 bool CountingSemaphore<MaxCount>::try_take() {
     disable_interrupts();
 
@@ -428,6 +409,6 @@ bool CountingSemaphore<MaxCount>::try_take() {
     return false;
 }
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
-#endif // ALLOY_RTOS_SEMAPHORE_HPP
+#endif  // ALLOY_RTOS_SEMAPHORE_HPP

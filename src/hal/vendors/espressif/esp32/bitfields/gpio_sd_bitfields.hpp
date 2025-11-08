@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::gpio_sd {
@@ -19,47 +20,47 @@ using namespace alloy::hal::bitfields;
 
 /// SIGMADELTA[8] - SIGMADELTA[8]
 namespace sigmadelta {
-    /// Position: 0, Width: 8
-    /// Access: read-write
-    using SD0_IN = BitField<0, 8>;
-    constexpr uint32_t SD0_IN_Pos = 0;
-    constexpr uint32_t SD0_IN_Msk = SD0_IN::mask;
+/// Position: 0, Width: 8
+/// Access: read-write
+using SD0_IN = BitField<0, 8>;
+constexpr uint32_t SD0_IN_Pos = 0;
+constexpr uint32_t SD0_IN_Msk = SD0_IN::mask;
 
-    /// Position: 8, Width: 8
-    /// Access: read-write
-    using SD0_PRESCALE = BitField<8, 8>;
-    constexpr uint32_t SD0_PRESCALE_Pos = 8;
-    constexpr uint32_t SD0_PRESCALE_Msk = SD0_PRESCALE::mask;
+/// Position: 8, Width: 8
+/// Access: read-write
+using SD0_PRESCALE = BitField<8, 8>;
+constexpr uint32_t SD0_PRESCALE_Pos = 8;
+constexpr uint32_t SD0_PRESCALE_Msk = SD0_PRESCALE::mask;
 
 }  // namespace sigmadelta
 
 /// CG - CG
 namespace cg {
-    /// Position: 31, Width: 1
-    /// Access: read-write
-    using SD_CLK_EN = BitField<31, 1>;
-    constexpr uint32_t SD_CLK_EN_Pos = 31;
-    constexpr uint32_t SD_CLK_EN_Msk = SD_CLK_EN::mask;
+/// Position: 31, Width: 1
+/// Access: read-write
+using SD_CLK_EN = BitField<31, 1>;
+constexpr uint32_t SD_CLK_EN_Pos = 31;
+constexpr uint32_t SD_CLK_EN_Msk = SD_CLK_EN::mask;
 
 }  // namespace cg
 
 /// MISC - MISC
 namespace misc {
-    /// Position: 31, Width: 1
-    /// Access: read-write
-    using SPI_SWAP = BitField<31, 1>;
-    constexpr uint32_t SPI_SWAP_Pos = 31;
-    constexpr uint32_t SPI_SWAP_Msk = SPI_SWAP::mask;
+/// Position: 31, Width: 1
+/// Access: read-write
+using SPI_SWAP = BitField<31, 1>;
+constexpr uint32_t SPI_SWAP_Pos = 31;
+constexpr uint32_t SPI_SWAP_Msk = SPI_SWAP::mask;
 
 }  // namespace misc
 
 /// VERSION - VERSION
 namespace version {
-    /// Position: 0, Width: 28
-    /// Access: read-write
-    using SD_DATE = BitField<0, 28>;
-    constexpr uint32_t SD_DATE_Pos = 0;
-    constexpr uint32_t SD_DATE_Msk = SD_DATE::mask;
+/// Position: 0, Width: 28
+/// Access: read-write
+using SD_DATE = BitField<0, 28>;
+constexpr uint32_t SD_DATE_Pos = 0;
+constexpr uint32_t SD_DATE_Msk = SD_DATE::mask;
 
 }  // namespace version
 

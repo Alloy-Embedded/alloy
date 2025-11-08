@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::apb_ctrl {
 
 /// APB_CTRL Register Structure
 struct APB_CTRL_Registers {
-
     /// SYSCLK_CONF
     /// Offset: 0x0000
     /// Reset value: 0x00002000
@@ -67,7 +66,7 @@ struct APB_CTRL_Registers {
     /// Offset: 0x003C
     /// Reset value: 0x00000063
     volatile uint32_t APLL_TICK_CONF;
-    uint8_t RESERVED_0040[60]; ///< Reserved
+    uint8_t RESERVED_0040[60];  ///< Reserved
 
     /// DATE
     /// Offset: 0x007C

@@ -13,9 +13,11 @@
 /// - Raspberry Pi Pico board
 /// - Built-in LED on GPIO25
 
-#include "pico/board.hpp"
 #include "rtos/rtos.hpp"
+
 #include "core/types.hpp"
+
+#include "pico/board.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
@@ -72,10 +74,10 @@ void idle_task_func() {
 }
 
 // Create tasks with different priorities and stack sizes
-Task<512, Priority::High>    task1(task1_func, "FastBlink");
-Task<512, Priority::Normal>  task2(task2_func, "SlowBlink");
-Task<256, Priority::Low>     task3(task3_func, "Status");
-Task<256, Priority::Idle>    idle_task(idle_task_func, "Idle");
+Task<512, Priority::High> task1(task1_func, "FastBlink");
+Task<512, Priority::Normal> task2(task2_func, "SlowBlink");
+Task<256, Priority::Low> task3(task3_func, "Status");
+Task<256, Priority::Idle> idle_task(idle_task_func, "Idle");
 
 int main() {
     // Initialize board (clocks, GPIO)
@@ -87,9 +89,11 @@ int main() {
     // Quick startup blink to show we're alive
     for (int i = 0; i < 3; i++) {
         Board::Led::on();
-        for (volatile int j = 0; j < 1000000; j++);
+        for (volatile int j = 0; j < 1000000; j++)
+            ;
         Board::Led::off();
-        for (volatile int j = 0; j < 1000000; j++);
+        for (volatile int j = 0; j < 1000000; j++)
+            ;
     }
 
     // Start RTOS (never returns)

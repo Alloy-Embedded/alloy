@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samv71::qspi {
 
 /// QSPI Register Structure
 struct QSPI_Registers {
-
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -60,7 +59,7 @@ struct QSPI_Registers {
     /// Serial Clock Register
     /// Offset: 0x0020
     volatile uint32_t SCR;
-    uint8_t RESERVED_0024[12]; ///< Reserved
+    uint8_t RESERVED_0024[12];  ///< Reserved
 
     /// Instruction Address Register
     /// Offset: 0x0030
@@ -73,7 +72,7 @@ struct QSPI_Registers {
     /// Instruction Frame Register
     /// Offset: 0x0038
     volatile uint32_t IFR;
-    uint8_t RESERVED_003C[4]; ///< Reserved
+    uint8_t RESERVED_003C[4];  ///< Reserved
 
     /// Scrambling Mode Register
     /// Offset: 0x0040
@@ -83,7 +82,7 @@ struct QSPI_Registers {
     /// Offset: 0x0044
     /// Access: write-only
     volatile uint32_t SKR;
-    uint8_t RESERVED_0048[156]; ///< Reserved
+    uint8_t RESERVED_0048[156];  ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4

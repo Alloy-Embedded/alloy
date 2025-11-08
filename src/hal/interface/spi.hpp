@@ -5,10 +5,11 @@
 #ifndef ALLOY_HAL_INTERFACE_SPI_HPP
 #define ALLOY_HAL_INTERFACE_SPI_HPP
 
-#include "core/error.hpp"
-#include "core/types.hpp"
 #include <concepts>
 #include <span>
+
+#include "core/error.hpp"
+#include "core/types.hpp"
 
 namespace alloy::hal {
 
@@ -32,8 +33,8 @@ enum class SpiBitOrder : core::u8 {
 
 /// SPI data size
 enum class SpiDataSize : core::u8 {
-    Bits8  = 8,   ///< 8-bit data frames
-    Bits16 = 16   ///< 16-bit data frames
+    Bits8 = 8,   ///< 8-bit data frames
+    Bits16 = 16  ///< 16-bit data frames
 };
 
 /// SPI configuration parameters
@@ -47,10 +48,13 @@ struct SpiConfig {
 
     /// Constructor with default configuration
     constexpr SpiConfig(SpiMode m = SpiMode::Mode0,
-                       core::u32 speed = 1000000,  // 1 MHz default
-                       SpiBitOrder order = SpiBitOrder::MsbFirst,
-                       SpiDataSize size = SpiDataSize::Bits8)
-        : mode(m), clock_speed(speed), bit_order(order), data_size(size) {}
+                        core::u32 speed = 1000000,  // 1 MHz default
+                        SpiBitOrder order = SpiBitOrder::MsbFirst,
+                        SpiDataSize size = SpiDataSize::Bits8)
+        : mode(m),
+          clock_speed(speed),
+          bit_order(order),
+          data_size(size) {}
 };
 
 /// SPI master device concept
@@ -60,11 +64,9 @@ struct SpiConfig {
 ///
 /// Note: Chip select (CS) management is typically done via GPIO pins,
 /// which should be controlled separately by the application.
-template<typename T>
-concept SpiMaster = requires(T device, const T const_device,
-                            std::span<core::u8> buffer,
-                            std::span<const core::u8> const_buffer,
-                            SpiConfig config) {
+template <typename T>
+concept SpiMaster = requires(T device, const T const_device, std::span<core::u8> buffer,
+                             std::span<const core::u8> const_buffer, SpiConfig config) {
     /// Transfer data (full duplex)
     ///
     /// Simultaneously sends and receives data. The tx_buffer and rx_buffer
@@ -111,7 +113,7 @@ concept SpiMaster = requires(T device, const T const_device,
 /// @param device SPI device instance
 /// @param tx_byte Byte to transmit
 /// @return Received byte or error code
-template<SpiMaster Device>
+template <SpiMaster Device>
 core::Result<core::u8> spi_transfer_byte(Device& device, core::u8 tx_byte) {
     core::u8 rx_byte = 0;
     auto tx_buf = std::span(&tx_byte, 1);
@@ -132,7 +134,7 @@ core::Result<core::u8> spi_transfer_byte(Device& device, core::u8 tx_byte) {
 /// @param device SPI device instance
 /// @param byte Byte to write
 /// @return Ok on success, error code on failure
-template<SpiMaster Device>
+template <SpiMaster Device>
 core::Result<void> spi_write_byte(Device& device, core::u8 byte) {
     auto buffer = std::span(&byte, 1);
     return device.transmit(buffer);
@@ -143,7 +145,7 @@ core::Result<void> spi_write_byte(Device& device, core::u8 byte) {
 /// @tparam Device SPI device type satisfying SpiMaster concept
 /// @param device SPI device instance
 /// @return Received byte or error code
-template<SpiMaster Device>
+template <SpiMaster Device>
 core::Result<core::u8> spi_read_byte(Device& device) {
     core::u8 byte = 0;
     auto buffer = std::span(&byte, 1);
@@ -169,18 +171,14 @@ core::Result<core::u8> spi_read_byte(Device& device) {
 ///     spi.transmit(data);
 /// }  // CS goes high automatically
 /// \endcode
-template<typename GpioPin>
+template <typename GpioPin>
 class SpiChipSelect {
-public:
+   public:
     /// Constructor - asserts chip select (active low)
-    explicit SpiChipSelect(GpioPin& pin) : pin_(pin) {
-        pin_.set_low();
-    }
+    explicit SpiChipSelect(GpioPin& pin) : pin_(pin) { pin_.set_low(); }
 
     /// Destructor - deasserts chip select
-    ~SpiChipSelect() {
-        pin_.set_high();
-    }
+    ~SpiChipSelect() { pin_.set_high(); }
 
     // Disable copy and move
     SpiChipSelect(const SpiChipSelect&) = delete;
@@ -188,10 +186,10 @@ public:
     SpiChipSelect(SpiChipSelect&&) = delete;
     SpiChipSelect& operator=(SpiChipSelect&&) = delete;
 
-private:
+   private:
     GpioPin& pin_;
 };
 
-} // namespace alloy::hal
+}  // namespace alloy::hal
 
-#endif // ALLOY_HAL_INTERFACE_SPI_HPP
+#endif  // ALLOY_HAL_INTERFACE_SPI_HPP

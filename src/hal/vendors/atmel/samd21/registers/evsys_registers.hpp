@@ -17,12 +17,11 @@ namespace alloy::hal::atmel::samd21::evsys {
 
 /// EVSYS Register Structure
 struct EVSYS_Registers {
-
     /// Control
     /// Offset: 0x0000
     /// Access: write-only
     volatile uint8_t CTRL;
-    uint8_t RESERVED_0001[3]; ///< Reserved
+    uint8_t RESERVED_0001[3];  ///< Reserved
 
     /// Channel
     /// Offset: 0x0004
@@ -31,7 +30,7 @@ struct EVSYS_Registers {
     /// User Multiplexer
     /// Offset: 0x0008
     volatile uint16_t USER;
-    uint8_t RESERVED_000A[2]; ///< Reserved
+    uint8_t RESERVED_000A[2];  ///< Reserved
 
     /// Channel Status
     /// Offset: 0x000C

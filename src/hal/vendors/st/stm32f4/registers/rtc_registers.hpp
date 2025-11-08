@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::rtc {
 
 /// RTC Register Structure
 struct RTC_Registers {
-
     /// time register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -130,7 +129,7 @@ struct RTC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ALRMBSSR;
-    uint8_t RESERVED_004C[4]; ///< Reserved
+    uint8_t RESERVED_004C[4];  ///< Reserved
 
     /// backup register
     /// Offset: 0x0050

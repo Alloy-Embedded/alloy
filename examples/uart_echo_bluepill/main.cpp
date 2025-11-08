@@ -23,9 +23,9 @@
 ///   screen /dev/ttyUSB0 115200
 ///   (or use any serial terminal)
 
-#include "hal/stm32f1/uart.hpp"
-#include "hal/stm32f1/gpio.hpp"
 #include "hal/stm32f1/delay.hpp"
+#include "hal/stm32f1/gpio.hpp"
+#include "hal/stm32f1/uart.hpp"
 
 using namespace alloy::hal;
 using namespace alloy::core;

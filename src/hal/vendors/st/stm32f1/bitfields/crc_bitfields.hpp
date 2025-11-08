@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f1::crc {
@@ -19,31 +20,31 @@ using namespace alloy::hal::bitfields;
 
 /// DR - Data register
 namespace dr {
-    /// Data Register
-    /// Position: 0, Width: 32
-    using DR = BitField<0, 32>;
-    constexpr uint32_t DR_Pos = 0;
-    constexpr uint32_t DR_Msk = DR::mask;
+/// Data Register
+/// Position: 0, Width: 32
+using DR = BitField<0, 32>;
+constexpr uint32_t DR_Pos = 0;
+constexpr uint32_t DR_Msk = DR::mask;
 
 }  // namespace dr
 
 /// IDR - Independent Data register
 namespace idr {
-    /// Independent Data register
-    /// Position: 0, Width: 8
-    using IDR = BitField<0, 8>;
-    constexpr uint32_t IDR_Pos = 0;
-    constexpr uint32_t IDR_Msk = IDR::mask;
+/// Independent Data register
+/// Position: 0, Width: 8
+using IDR = BitField<0, 8>;
+constexpr uint32_t IDR_Pos = 0;
+constexpr uint32_t IDR_Msk = IDR::mask;
 
 }  // namespace idr
 
 /// CR - Control register
 namespace cr {
-    /// Reset bit
-    /// Position: 0, Width: 1
-    using RESET = BitField<0, 1>;
-    constexpr uint32_t RESET_Pos = 0;
-    constexpr uint32_t RESET_Msk = RESET::mask;
+/// Reset bit
+/// Position: 0, Width: 1
+using RESET = BitField<0, 1>;
+constexpr uint32_t RESET_Pos = 0;
+constexpr uint32_t RESET_Msk = RESET::mask;
 
 }  // namespace cr
 

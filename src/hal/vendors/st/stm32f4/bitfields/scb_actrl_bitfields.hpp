@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::scb_actrl {
@@ -19,35 +20,35 @@ using namespace alloy::hal::bitfields;
 
 /// ACTRL - Auxiliary control register
 namespace actrl {
-    /// DISMCYCINT
-    /// Position: 0, Width: 1
-    using DISMCYCINT = BitField<0, 1>;
-    constexpr uint32_t DISMCYCINT_Pos = 0;
-    constexpr uint32_t DISMCYCINT_Msk = DISMCYCINT::mask;
+/// DISMCYCINT
+/// Position: 0, Width: 1
+using DISMCYCINT = BitField<0, 1>;
+constexpr uint32_t DISMCYCINT_Pos = 0;
+constexpr uint32_t DISMCYCINT_Msk = DISMCYCINT::mask;
 
-    /// DISDEFWBUF
-    /// Position: 1, Width: 1
-    using DISDEFWBUF = BitField<1, 1>;
-    constexpr uint32_t DISDEFWBUF_Pos = 1;
-    constexpr uint32_t DISDEFWBUF_Msk = DISDEFWBUF::mask;
+/// DISDEFWBUF
+/// Position: 1, Width: 1
+using DISDEFWBUF = BitField<1, 1>;
+constexpr uint32_t DISDEFWBUF_Pos = 1;
+constexpr uint32_t DISDEFWBUF_Msk = DISDEFWBUF::mask;
 
-    /// DISFOLD
-    /// Position: 2, Width: 1
-    using DISFOLD = BitField<2, 1>;
-    constexpr uint32_t DISFOLD_Pos = 2;
-    constexpr uint32_t DISFOLD_Msk = DISFOLD::mask;
+/// DISFOLD
+/// Position: 2, Width: 1
+using DISFOLD = BitField<2, 1>;
+constexpr uint32_t DISFOLD_Pos = 2;
+constexpr uint32_t DISFOLD_Msk = DISFOLD::mask;
 
-    /// DISFPCA
-    /// Position: 8, Width: 1
-    using DISFPCA = BitField<8, 1>;
-    constexpr uint32_t DISFPCA_Pos = 8;
-    constexpr uint32_t DISFPCA_Msk = DISFPCA::mask;
+/// DISFPCA
+/// Position: 8, Width: 1
+using DISFPCA = BitField<8, 1>;
+constexpr uint32_t DISFPCA_Pos = 8;
+constexpr uint32_t DISFPCA_Msk = DISFPCA::mask;
 
-    /// DISOOFP
-    /// Position: 9, Width: 1
-    using DISOOFP = BitField<9, 1>;
-    constexpr uint32_t DISOOFP_Pos = 9;
-    constexpr uint32_t DISOOFP_Msk = DISOOFP::mask;
+/// DISOOFP
+/// Position: 9, Width: 1
+using DISOOFP = BitField<9, 1>;
+constexpr uint32_t DISOOFP_Pos = 9;
+constexpr uint32_t DISOOFP_Msk = DISOOFP::mask;
 
 }  // namespace actrl
 

@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::slc {
 
 /// SLC Register Structure
 struct SLC_Registers {
-
     /// CONF0
     /// Offset: 0x0000
     /// Reset value: 0xFF3CFF30
@@ -293,7 +292,7 @@ struct SLC_Registers {
     /// _0_RXPKTU_E_DSCR
     /// Offset: 0x0108
     volatile uint32_t _0_RXPKTU_E_DSCR;
-    uint8_t RESERVED_010C[8]; ///< Reserved
+    uint8_t RESERVED_010C[8];  ///< Reserved
 
     /// SEQ_POSITION
     /// Offset: 0x0114
@@ -353,7 +352,7 @@ struct SLC_Registers {
     /// _1INT_ENA1
     /// Offset: 0x0148
     volatile uint32_t _1INT_ENA1;
-    uint8_t RESERVED_014C[172]; ///< Reserved
+    uint8_t RESERVED_014C[172];  ///< Reserved
 
     /// DATE
     /// Offset: 0x01F8

@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f1::usb {
 
 /// USB Register Structure
 struct USB_Registers {
-
     /// endpoint 0 register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -65,7 +64,7 @@ struct USB_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t EP7R;
-    uint8_t RESERVED_0020[32]; ///< Reserved
+    uint8_t RESERVED_0020[32];  ///< Reserved
 
     /// control register
     /// Offset: 0x0040

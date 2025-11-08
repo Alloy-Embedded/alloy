@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::otg_hs_pwrclk {
 
 /// OTG_HS_PWRCLK Register Structure
 struct OTG_HS_PWRCLK_Registers {
-
     /// Power and clock gating control register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

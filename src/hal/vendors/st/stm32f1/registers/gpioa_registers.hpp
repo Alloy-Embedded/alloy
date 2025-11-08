@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f1::gpioa {
 
 /// GPIOA Register Structure
 struct GPIOA_Registers {
-
     /// Port configuration register low (GPIOn_CRL)
     /// Offset: 0x0000
     /// Reset value: 0x44444444

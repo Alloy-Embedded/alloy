@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::fpu_cpacr {
 
 /// FPU_CPACR Register Structure
 struct FPU_CPACR_Registers {
-
     /// Coprocessor access control register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

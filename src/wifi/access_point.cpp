@@ -6,19 +6,18 @@
 #include "access_point.hpp"
 
 #ifdef ESP_PLATFORM
-#include <cstring>
+    #include <cstring>
 
 namespace alloy::wifi {
 
 static AccessPoint* s_ap_instance = nullptr;
 
 AccessPoint::AccessPoint()
-    : initialized_(false)
-    , running_(false)
-    , ap_info_{}
-    , current_ssid_{}
-    , callback_(nullptr)
-{
+    : initialized_(false),
+      running_(false),
+      ap_info_{},
+      current_ssid_{},
+      callback_(nullptr) {
     s_ap_instance = this;
 }
 
@@ -65,12 +64,8 @@ Result<void> AccessPoint::init() {
     ESP_TRY(esp_wifi_init(&cfg));
 
     // Register event handlers
-    ESP_TRY(esp_event_handler_register(
-        WIFI_EVENT,
-        ESP_EVENT_ANY_ID,
-        &AccessPoint::event_handler,
-        this
-    ));
+    ESP_TRY(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &AccessPoint::event_handler,
+                                       this));
 
     // Set WiFi mode to AP
     ESP_TRY(esp_wifi_set_mode(WIFI_MODE_AP));
@@ -125,7 +120,8 @@ Result<ConnectionInfo> AccessPoint::start(const APConfig& config) {
     wifi_config.ap.ssid_len = strlen(config.ssid);
 
     if (config.password != nullptr) {
-        strncpy(reinterpret_cast<char*>(wifi_config.ap.password), config.password, sizeof(wifi_config.ap.password));
+        strncpy(reinterpret_cast<char*>(wifi_config.ap.password), config.password,
+                sizeof(wifi_config.ap.password));
         wifi_config.ap.authmode = WIFI_AUTH_WPA2_PSK;
     } else {
         wifi_config.ap.authmode = WIFI_AUTH_OPEN;
@@ -237,12 +233,8 @@ const char* AccessPoint::ssid() const {
 }
 
 // Static event handler (ESP-IDF callback)
-void AccessPoint::event_handler(
-    void* arg,
-    esp_event_base_t event_base,
-    int32_t event_id,
-    void* event_data
-) {
+void AccessPoint::event_handler(void* arg, esp_event_base_t event_base, int32_t event_id,
+                                void* event_data) {
     AccessPoint* self = static_cast<AccessPoint*>(arg);
 
     if (event_base == WIFI_EVENT) {
@@ -291,20 +283,19 @@ void AccessPoint::handle_wifi_event(int32_t event_id, void* event_data) {
     }
 }
 
-} // namespace alloy::wifi
+}  // namespace alloy::wifi
 
-#else // !ESP_PLATFORM
+#else  // !ESP_PLATFORM
 
 namespace alloy::wifi {
 
 // Stub implementation for non-ESP platforms
 AccessPoint::AccessPoint()
-    : initialized_(false)
-    , running_(false)
-    , ap_info_{}
-    , current_ssid_{}
-    , callback_(nullptr)
-{}
+    : initialized_(false),
+      running_(false),
+      ap_info_{},
+      current_ssid_{},
+      callback_(nullptr) {}
 
 AccessPoint::~AccessPoint() {}
 
@@ -346,6 +337,6 @@ const char* AccessPoint::ssid() const {
     return "";
 }
 
-} // namespace alloy::wifi
+}  // namespace alloy::wifi
 
-#endif // ESP_PLATFORM
+#endif  // ESP_PLATFORM

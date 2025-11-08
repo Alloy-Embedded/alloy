@@ -25,11 +25,12 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -61,13 +62,13 @@ namespace tim = alloy::hal::st::stm32f4::tim2;
  * @brief PWM clock prescaler (maps to PSC register)
  */
 enum class PwmPrescaler : uint8_t {
-    DIV_1 = 0,  ///< Prescaler = 1 (no division)
-    DIV_2 = 1,  ///< Prescaler = 2
-    DIV_4 = 3,  ///< Prescaler = 4
-    DIV_8 = 7,  ///< Prescaler = 8
-    DIV_16 = 15,  ///< Prescaler = 16
-    DIV_32 = 31,  ///< Prescaler = 32
-    DIV_64 = 63,  ///< Prescaler = 64
+    DIV_1 = 0,      ///< Prescaler = 1 (no division)
+    DIV_2 = 1,      ///< Prescaler = 2
+    DIV_4 = 3,      ///< Prescaler = 4
+    DIV_8 = 7,      ///< Prescaler = 8
+    DIV_16 = 15,    ///< Prescaler = 16
+    DIV_32 = 31,    ///< Prescaler = 32
+    DIV_64 = 63,    ///< Prescaler = 64
     DIV_128 = 127,  ///< Prescaler = 128
 };
 
@@ -77,10 +78,10 @@ enum class PwmPrescaler : uint8_t {
  */
 struct PwmConfig {
     PwmAlignment alignment = PwmAlignment::Edge;  ///< Alignment mode (from hal/types.hpp)
-    PwmPolarity polarity = PwmPolarity::Normal;  ///< Polarity (from hal/types.hpp)
-    uint16_t prescaler = 0;  ///< Prescaler value (0-65535)
-    uint32_t period = 1000;  ///< Auto-reload period
-    uint32_t duty_cycle = 500;  ///< Duty cycle value (0 to period)
+    PwmPolarity polarity = PwmPolarity::Normal;   ///< Polarity (from hal/types.hpp)
+    uint16_t prescaler = 0;                       ///< Prescaler value (0-65535)
+    uint32_t period = 1000;                       ///< Auto-reload period
+    uint32_t duty_cycle = 500;                    ///< Duty cycle value (0 to period)
 };
 
 
@@ -116,7 +117,8 @@ struct PwmConfig {
 template <uint32_t BASE_ADDR, uint8_t CHANNEL, uint32_t IRQ_ID>
 class Pwm {
     static_assert(CHANNEL >= 1 && CHANNEL <= 4, "TIM has 4 PWM channels (1-4)");
-public:
+
+   public:
     // Compile-time constants
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint8_t channel = CHANNEL;
@@ -207,13 +209,13 @@ public:
 
         // Configure counting mode based on alignment
         uint32_t cr1 = hw->CR1 & ~(tim::cr1::DIR::mask | tim::cr1::CMS::mask);
-        
+
         if (config.alignment == PwmAlignment::Center) {
             // Center-aligned mode 1
             cr1 = tim::cr1::CMS::write(cr1, 1);
         }
         // Edge-aligned is default (CMS = 0, DIR = 0 for up-counting)
-        
+
         hw->CR1 = cr1;
 
         // Set prescaler and period
@@ -222,10 +224,10 @@ public:
 
         // Configure PWM mode for the channel
         uint32_t pwm_mode = (config.polarity == PwmPolarity::Inverted) ? PWM_MODE2 : PWM_MODE1;
-        
+
         if (CHANNEL == 1 || CHANNEL == 2) {
             uint32_t ccmr1 = hw->CCMR1_Output;
-            
+
             if (CHANNEL == 1) {
                 ccmr1 = tim::ccmr1_output::CC1S::write(ccmr1, 0);  // Output
                 ccmr1 = tim::ccmr1_output::OC1M::write(ccmr1, pwm_mode);
@@ -235,11 +237,11 @@ public:
                 ccmr1 = tim::ccmr1_output::OC2M::write(ccmr1, pwm_mode);
                 ccmr1 = tim::ccmr1_output::OC2PE::set(ccmr1);
             }
-            
+
             hw->CCMR1_Output = ccmr1;
         } else {
             uint32_t ccmr2 = hw->CCMR2_Output;
-            
+
             if (CHANNEL == 3) {
                 ccmr2 = tim::ccmr2_output::CC3S::write(ccmr2, 0);
                 ccmr2 = tim::ccmr2_output::OC3M::write(ccmr2, pwm_mode);
@@ -249,22 +251,30 @@ public:
                 ccmr2 = tim::ccmr2_output::OC4M::write(ccmr2, pwm_mode);
                 ccmr2 = tim::ccmr2_output::OC4PE::set(ccmr2);
             }
-            
+
             hw->CCMR2_Output = ccmr2;
         }
 
         // Set duty cycle
         switch (CHANNEL) {
-            case 1: hw->CCR1 = config.duty_cycle; break;
-            case 2: hw->CCR2 = config.duty_cycle; break;
-            case 3: hw->CCR3 = config.duty_cycle; break;
-            case 4: hw->CCR4 = config.duty_cycle; break;
+            case 1:
+                hw->CCR1 = config.duty_cycle;
+                break;
+            case 2:
+                hw->CCR2 = config.duty_cycle;
+                break;
+            case 3:
+                hw->CCR3 = config.duty_cycle;
+                break;
+            case 4:
+                hw->CCR4 = config.duty_cycle;
+                break;
         }
 
         // Generate update event to load prescaler and ARR
         hw->EGR = tim::egr::UG::mask;
 
-        // 
+        //
         m_config = config;
 
         return Ok();
@@ -323,12 +333,20 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         switch (CHANNEL) {
-            case 1: hw->CCR1 = duty_cycle; break;
-            case 2: hw->CCR2 = duty_cycle; break;
-            case 3: hw->CCR3 = duty_cycle; break;
-            case 4: hw->CCR4 = duty_cycle; break;
+            case 1:
+                hw->CCR1 = duty_cycle;
+                break;
+            case 2:
+                hw->CCR2 = duty_cycle;
+                break;
+            case 3:
+                hw->CCR3 = duty_cycle;
+                break;
+            case 4:
+                hw->CCR4 = duty_cycle;
+                break;
         }
         m_config.duty_cycle = duty_cycle;
 
@@ -347,7 +365,7 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         hw->ARR = period;
         m_config.period = period;
 
@@ -375,8 +393,9 @@ public:
     bool isRunning() const {
         auto* hw = get_hw();
 
-        // 
-        if (!m_opened) return false;
+        //
+        if (!m_opened)
+            return false;
         return (hw->CR1 & tim::cr1::CEN::mask) != 0;
 
         return false;
@@ -386,12 +405,10 @@ public:
      * @brief Check if PWM is open
      *
      * @return bool Check if PWM is open     */
-    bool isOpen() const {
-        return m_opened;
-    }
+    bool isOpen() const { return m_opened; }
 
-private:
-    bool m_opened = false;  ///< Tracks if peripheral is initialized
+   private:
+    bool m_opened = false;    ///< Tracks if peripheral is initialized
     PwmConfig m_config = {};  ///< Current configuration
 };
 
@@ -448,4 +465,4 @@ using Pwm4Ch2 = Pwm<PWM4CH2_BASE, 2, PWM4CH2_IRQ>;  ///< TIM4 Channel 2 (PWM)
 using Pwm4Ch3 = Pwm<PWM4CH3_BASE, 3, PWM4CH3_IRQ>;  ///< TIM4 Channel 3 (PWM)
 using Pwm4Ch4 = Pwm<PWM4CH4_BASE, 4, PWM4CH4_IRQ>;  ///< TIM4 Channel 4 (PWM)
 
-} // namespace alloy::hal::stm32f4
+}  // namespace alloy::hal::stm32f4

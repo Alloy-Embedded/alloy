@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f1::can {
 
 /// CAN Register Structure
 struct CAN_Registers {
-
     /// CAN_MCR
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -60,7 +59,7 @@ struct CAN_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CAN_BTR;
-    uint8_t RESERVED_0020[352]; ///< Reserved
+    uint8_t RESERVED_0020[352];  ///< Reserved
 
     /// CAN_TI0R
     /// Offset: 0x0180
@@ -181,7 +180,7 @@ struct CAN_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t CAN_RDH1R;
-    uint8_t RESERVED_01D0[48]; ///< Reserved
+    uint8_t RESERVED_01D0[48];  ///< Reserved
 
     /// CAN_FMR
     /// Offset: 0x0200
@@ -194,28 +193,28 @@ struct CAN_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CAN_FM1R;
-    uint8_t RESERVED_0208[4]; ///< Reserved
+    uint8_t RESERVED_0208[4];  ///< Reserved
 
     /// CAN_FS1R
     /// Offset: 0x020C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CAN_FS1R;
-    uint8_t RESERVED_0210[4]; ///< Reserved
+    uint8_t RESERVED_0210[4];  ///< Reserved
 
     /// CAN_FFA1R
     /// Offset: 0x0214
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CAN_FFA1R;
-    uint8_t RESERVED_0218[4]; ///< Reserved
+    uint8_t RESERVED_0218[4];  ///< Reserved
 
     /// CAN_FA1R
     /// Offset: 0x021C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CAN_FA1R;
-    uint8_t RESERVED_0220[32]; ///< Reserved
+    uint8_t RESERVED_0220[32];  ///< Reserved
 
     /// Filter bank 0 register 1
     /// Offset: 0x0240

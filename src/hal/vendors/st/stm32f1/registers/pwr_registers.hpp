@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f1::pwr {
 
 /// PWR Register Structure
 struct PWR_Registers {
-
     /// Power control register (PWR_CR)
     /// Offset: 0x0000
     /// Reset value: 0x00000000

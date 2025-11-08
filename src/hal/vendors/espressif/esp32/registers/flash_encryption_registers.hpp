@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::flash_encryption {
 
 /// FLASH_ENCRYPTION Register Structure
 struct FLASH_ENCRYPTION_Registers {
-
     /// BUFFER_[8]
     /// Offset: 0x0000
     volatile uint32_t BUFFER_[8][8];

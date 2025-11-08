@@ -11,10 +11,10 @@ namespace alloy::generated::stm32l15xxe {
 
 /// Basic peripheral base addresses
 namespace peripherals {
-    // Peripheral addresses will be added here
-    // This is a minimal implementation
+// Peripheral addresses will be added here
+// This is a minimal implementation
 }
 
-} // namespace alloy::generated::stm32l15xxe
+}  // namespace alloy::generated::stm32l15xxe
 
-#endif // ALLOY_GENERATED_STM32L15XXE_PERIPHERALS_HPP
+#endif  // ALLOY_GENERATED_STM32L15XXE_PERIPHERALS_HPP

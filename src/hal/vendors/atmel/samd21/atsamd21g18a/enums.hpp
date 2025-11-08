@@ -128,16 +128,16 @@ enum class ADC_REFCTRL_REFSEL : uint8_t {
 /// Register: AVGCTRL
 /// Field: SAMPLENUM [0:3]
 enum class ADC_AVGCTRL_SAMPLENUM : uint8_t {
-    VAL_1 = 0x0,  // 1
-    VAL_2 = 0x1,  // 2
-    VAL_4 = 0x2,  // 4
-    VAL_8 = 0x3,  // 8
-    VAL_16 = 0x4,  // 16
-    VAL_32 = 0x5,  // 32
-    VAL_64 = 0x6,  // 64
-    VAL_128 = 0x7,  // 128
-    VAL_256 = 0x8,  // 256
-    VAL_512 = 0x9,  // 512
+    VAL_1 = 0x0,     // 1
+    VAL_2 = 0x1,     // 2
+    VAL_4 = 0x2,     // 4
+    VAL_8 = 0x3,     // 8
+    VAL_16 = 0x4,    // 16
+    VAL_32 = 0x5,    // 32
+    VAL_64 = 0x6,    // 64
+    VAL_128 = 0x7,   // 128
+    VAL_256 = 0x8,   // 256
+    VAL_512 = 0x9,   // 512
     VAL_1024 = 0xA,  // 1024
 };
 
@@ -148,7 +148,7 @@ enum class ADC_CTRLB_RESSEL : uint16_t {
     VAL_12BIT = 0x0,  // 12BIT
     VAL_16BIT = 0x1,  // 16BIT
     VAL_10BIT = 0x2,  // 10BIT
-    VAL_8BIT = 0x3,  // 8BIT
+    VAL_8BIT = 0x3,   // 8BIT
 };
 
 /// Prescaler Configuration
@@ -227,10 +227,10 @@ enum class ADC_INPUTCTRL_MUXNEG : uint32_t {
 /// Register: INPUTCTRL
 /// Field: GAIN [24:27]
 enum class ADC_INPUTCTRL_GAIN : uint32_t {
-    VAL_1X = 0x0,  // 1X
-    VAL_2X = 0x1,  // 2X
-    VAL_4X = 0x2,  // 4X
-    VAL_8X = 0x3,  // 8X
+    VAL_1X = 0x0,   // 1X
+    VAL_2X = 0x1,   // 2X
+    VAL_4X = 0x2,   // 4X
+    VAL_8X = 0x3,   // 8X
     VAL_16X = 0x4,  // 16X
     DIV2 = 0xF,
 };
@@ -581,7 +581,7 @@ enum class GCLK_GENCTRL_SRC : uint32_t {
 /// Register: CLKCTRL[2]
 /// Field: SLOTSIZE [0:1]
 enum class I2S_CLKCTRL_2_SLOTSIZE : uint32_t {
-    VAL_8 = 0x0,  // 8
+    VAL_8 = 0x0,   // 8
     VAL_16 = 0x1,  // 16
     VAL_24 = 0x2,  // 24
     VAL_32 = 0x3,  // 32
@@ -675,14 +675,14 @@ enum class I2S_SERCTRL_2_SLOTADJ : uint32_t {
 /// Register: SERCTRL[2]
 /// Field: DATASIZE [8:10]
 enum class I2S_SERCTRL_2_DATASIZE : uint32_t {
-    VAL_32 = 0x0,  // 32
-    VAL_24 = 0x1,  // 24
-    VAL_20 = 0x2,  // 20
-    VAL_18 = 0x3,  // 18
-    VAL_16 = 0x4,  // 16
+    VAL_32 = 0x0,   // 32
+    VAL_24 = 0x1,   // 24
+    VAL_20 = 0x2,   // 20
+    VAL_18 = 0x3,   // 18
+    VAL_16 = 0x4,   // 16
     VAL_16C = 0x5,  // 16C
-    VAL_8 = 0x6,  // 8
-    VAL_8C = 0x7,  // 8C
+    VAL_8 = 0x6,    // 8
+    VAL_8C = 0x7,   // 8C
 };
 
 /// Data Word Formatting Adjust
@@ -788,13 +788,13 @@ enum class NVMCTRL_CTRLB_READMODE : uint32_t {
 /// Register: PARAM
 /// Field: PSZ [16:18]
 enum class NVMCTRL_PARAM_PSZ : uint32_t {
-    VAL_8 = 0x0,  // 8
-    VAL_16 = 0x1,  // 16
-    VAL_32 = 0x2,  // 32
-    VAL_64 = 0x3,  // 64
-    VAL_128 = 0x4,  // 128
-    VAL_256 = 0x5,  // 256
-    VAL_512 = 0x6,  // 512
+    VAL_8 = 0x0,     // 8
+    VAL_16 = 0x1,    // 16
+    VAL_32 = 0x2,    // 32
+    VAL_64 = 0x3,    // 64
+    VAL_128 = 0x4,   // 128
+    VAL_256 = 0x5,   // 256
+    VAL_512 = 0x6,   // 512
     VAL_1024 = 0x7,  // 1024
 };
 
@@ -1064,8 +1064,8 @@ enum class SYSCTRL_DPLLCTRLB_REFCLK : uint32_t {
 /// Field: LTIME [8:10]
 enum class SYSCTRL_DPLLCTRLB_LTIME : uint32_t {
     DEFAULT = 0x0,
-    VAL_8MS = 0x4,  // 8MS
-    VAL_9MS = 0x5,  // 9MS
+    VAL_8MS = 0x4,   // 8MS
+    VAL_9MS = 0x5,   // 9MS
     VAL_10MS = 0x6,  // 10MS
     VAL_11MS = 0x7,  // 11MS
 };
@@ -1503,17 +1503,17 @@ enum class USB_FSMSTATUS_FSMSTATE : uint8_t {
 /// Register: CONFIG
 /// Field: PER [0:3]
 enum class WDT_CONFIG_PER : uint8_t {
-    VAL_8 = 0x0,  // 8
-    VAL_16 = 0x1,  // 16
-    VAL_32 = 0x2,  // 32
-    VAL_64 = 0x3,  // 64
+    VAL_8 = 0x0,    // 8
+    VAL_16 = 0x1,   // 16
+    VAL_32 = 0x2,   // 32
+    VAL_64 = 0x3,   // 64
     VAL_128 = 0x4,  // 128
     VAL_256 = 0x5,  // 256
     VAL_512 = 0x6,  // 512
-    VAL_1K = 0x7,  // 1K
-    VAL_2K = 0x8,  // 2K
-    VAL_4K = 0x9,  // 4K
-    VAL_8K = 0xA,  // 8K
+    VAL_1K = 0x7,   // 1K
+    VAL_2K = 0x8,   // 2K
+    VAL_4K = 0x9,   // 4K
+    VAL_8K = 0xA,   // 8K
     VAL_16K = 0xB,  // 16K
 };
 
@@ -1521,17 +1521,17 @@ enum class WDT_CONFIG_PER : uint8_t {
 /// Register: CONFIG
 /// Field: WINDOW [4:7]
 enum class WDT_CONFIG_WINDOW : uint8_t {
-    VAL_8 = 0x0,  // 8
-    VAL_16 = 0x1,  // 16
-    VAL_32 = 0x2,  // 32
-    VAL_64 = 0x3,  // 64
+    VAL_8 = 0x0,    // 8
+    VAL_16 = 0x1,   // 16
+    VAL_32 = 0x2,   // 32
+    VAL_64 = 0x3,   // 64
     VAL_128 = 0x4,  // 128
     VAL_256 = 0x5,  // 256
     VAL_512 = 0x6,  // 512
-    VAL_1K = 0x7,  // 1K
-    VAL_2K = 0x8,  // 2K
-    VAL_4K = 0x9,  // 4K
-    VAL_8K = 0xA,  // 8K
+    VAL_1K = 0x7,   // 1K
+    VAL_2K = 0x8,   // 2K
+    VAL_4K = 0x9,   // 4K
+    VAL_8K = 0xA,   // 8K
     VAL_16K = 0xB,  // 16K
 };
 
@@ -1539,17 +1539,17 @@ enum class WDT_CONFIG_WINDOW : uint8_t {
 /// Register: EWCTRL
 /// Field: EWOFFSET [0:3]
 enum class WDT_EWCTRL_EWOFFSET : uint8_t {
-    VAL_8 = 0x0,  // 8
-    VAL_16 = 0x1,  // 16
-    VAL_32 = 0x2,  // 32
-    VAL_64 = 0x3,  // 64
+    VAL_8 = 0x0,    // 8
+    VAL_16 = 0x1,   // 16
+    VAL_32 = 0x2,   // 32
+    VAL_64 = 0x3,   // 64
     VAL_128 = 0x4,  // 128
     VAL_256 = 0x5,  // 256
     VAL_512 = 0x6,  // 512
-    VAL_1K = 0x7,  // 1K
-    VAL_2K = 0x8,  // 2K
-    VAL_4K = 0x9,  // 4K
-    VAL_8K = 0xA,  // 8K
+    VAL_1K = 0x7,   // 1K
+    VAL_2K = 0x8,   // 2K
+    VAL_4K = 0x9,   // 4K
+    VAL_8K = 0xA,   // 8K
     VAL_16K = 0xB,  // 16K
 };
 

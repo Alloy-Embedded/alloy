@@ -1,7 +1,7 @@
 #include "peripheral.hpp"
 
-using alloy::core::u8;
 using alloy::core::u16;
+using alloy::core::u8;
 
 /// BLE Peripheral implementation - STUB
 ///
@@ -69,12 +69,8 @@ Result<void> Peripheral::start_service(const ServiceHandle& service) {
     return Result<void>::error(ErrorCode::NotSupported);
 }
 
-Result<CharHandle> Peripheral::add_characteristic(
-    const ServiceHandle& service,
-    const UUID& uuid,
-    u8 properties,
-    u8 permissions)
-{
+Result<CharHandle> Peripheral::add_characteristic(const ServiceHandle& service, const UUID& uuid,
+                                                  u8 properties, u8 permissions) {
     (void)service;
     (void)uuid;
     (void)properties;
@@ -82,44 +78,30 @@ Result<CharHandle> Peripheral::add_characteristic(
     return Result<CharHandle>::error(ErrorCode::NotSupported);
 }
 
-Result<void> Peripheral::set_char_value(
-    const CharHandle& characteristic,
-    const u8* data,
-    u16 length)
-{
+Result<void> Peripheral::set_char_value(const CharHandle& characteristic, const u8* data,
+                                        u16 length) {
     (void)characteristic;
     (void)data;
     (void)length;
     return Result<void>::error(ErrorCode::NotSupported);
 }
 
-Result<u16> Peripheral::get_char_value(
-    const CharHandle& characteristic,
-    u8* buffer,
-    u16 buffer_size) const
-{
+Result<u16> Peripheral::get_char_value(const CharHandle& characteristic, u8* buffer,
+                                       u16 buffer_size) const {
     (void)characteristic;
     (void)buffer;
     (void)buffer_size;
     return Result<u16>::error(ErrorCode::NotSupported);
 }
 
-Result<void> Peripheral::notify(
-    const CharHandle& characteristic,
-    const u8* data,
-    u16 length)
-{
+Result<void> Peripheral::notify(const CharHandle& characteristic, const u8* data, u16 length) {
     (void)characteristic;
     (void)data;
     (void)length;
     return Result<void>::error(ErrorCode::NotSupported);
 }
 
-Result<void> Peripheral::indicate(
-    const CharHandle& characteristic,
-    const u8* data,
-    u16 length)
-{
+Result<void> Peripheral::indicate(const CharHandle& characteristic, const u8* data, u16 length) {
     (void)characteristic;
     (void)data;
     (void)length;
@@ -155,4 +137,4 @@ void Peripheral::set_write_callback(WriteCallback callback) {
     (void)callback;
 }
 
-} // namespace alloy::ble
+}  // namespace alloy::ble

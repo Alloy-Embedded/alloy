@@ -30,7 +30,7 @@ struct USART2_TX {};
 /// Template for alternate function mapping
 /// @tparam Pin Pin number constant
 /// @tparam Function Peripheral signal tag type
-template<uint8_t Pin, typename Function>
+template <uint8_t Pin, typename Function>
 struct AlternateFunction;
 
 // ============================================================================
@@ -38,25 +38,25 @@ struct AlternateFunction;
 // ============================================================================
 
 // PA10 alternate functions
-template<>
+template <>
 struct AlternateFunction<PA10, USART1_RX> {
     static constexpr uint8_t af_number = 7;
 };
 
 // PA2 alternate functions
-template<>
+template <>
 struct AlternateFunction<PA2, USART2_TX> {
     static constexpr uint8_t af_number = 7;
 };
 
 // PA3 alternate functions
-template<>
+template <>
 struct AlternateFunction<PA3, USART2_RX> {
     static constexpr uint8_t af_number = 7;
 };
 
 // PA9 alternate functions
-template<>
+template <>
 struct AlternateFunction<PA9, USART1_TX> {
     static constexpr uint8_t af_number = 7;
 };
@@ -71,7 +71,7 @@ struct AlternateFunction<PA9, USART1_TX> {
 ///   constexpr uint8_t af = AF<PA9, USART1_TX>;  // Returns 7 (example)
 ///
 /// Compile-time error if combination is invalid.
-template<uint8_t Pin, typename Function>
+template <uint8_t Pin, typename Function>
 constexpr uint8_t AF = AlternateFunction<Pin, Function>::af_number;
 
 // ============================================================================
@@ -82,7 +82,7 @@ constexpr uint8_t AF = AlternateFunction<Pin, Function>::af_number;
 ///
 /// Usage:
 ///   static_assert(HasAF<PA9, USART1_TX>, "PA9 does not support USART1_TX");
-template<uint8_t Pin, typename Function>
+template <uint8_t Pin, typename Function>
 concept HasAF = requires {
     { AlternateFunction<Pin, Function>::af_number } -> std::same_as<const uint8_t&>;
 };

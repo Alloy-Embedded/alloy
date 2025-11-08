@@ -3,16 +3,16 @@
 /// Uses stdin/stdout for UART simulation on host machines.
 
 #include "hal/host/uart.hpp"
+
 #include <iostream>
-#include <sys/select.h>
+
 #include <unistd.h>
+
+#include <sys/select.h>
 
 namespace alloy::hal::host {
 
-Uart::Uart()
-    : configured_(false)
-    , config_(core::baud_rates::Baud115200) {
-}
+Uart::Uart() : configured_(false), config_(core::baud_rates::Baud115200) {}
 
 core::Result<void> Uart::configure(UartConfig config) {
     // Validate configuration parameters
@@ -78,4 +78,4 @@ core::usize Uart::available() const {
     return 0;
 }
 
-} // namespace alloy::hal::host
+}  // namespace alloy::hal::host

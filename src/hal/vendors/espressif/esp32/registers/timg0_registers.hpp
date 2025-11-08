@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::timg0 {
 
 /// TIMG0 Register Structure
 struct TIMG0_Registers {
-
     /// T0CONFIG
     /// Offset: 0x0000
     /// Reset value: 0x60002000
@@ -196,7 +195,7 @@ struct TIMG0_Registers {
     /// INT_CLR_TIMERS
     /// Offset: 0x00A4
     volatile uint32_t INT_CLR_TIMERS;
-    uint8_t RESERVED_00A8[80]; ///< Reserved
+    uint8_t RESERVED_00A8[80];  ///< Reserved
 
     /// NTIMERS_DATE
     /// Offset: 0x00F8

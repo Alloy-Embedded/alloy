@@ -32,6 +32,7 @@
 #define ALLOY_RTOS_XTENSA_CONTEXT_HPP
 
 #include "rtos/rtos.hpp"
+
 #include "core/types.hpp"
 
 #ifdef ESP32
@@ -76,37 +77,37 @@ namespace xtensa {
 /// This is the format of the stack after an exception/interrupt.
 /// The hardware automatically saves this.
 struct XtExceptionFrame {
-    core::u32 pc;          ///< Program counter
-    core::u32 ps;          ///< Processor status
-    core::u32 a0;          ///< Return address
-    core::u32 a1;          ///< Stack pointer
-    core::u32 a2;          ///< First argument
-    core::u32 a3;          ///< Second argument
-    core::u32 a4;          ///< Register a4
-    core::u32 a5;          ///< Register a5
-    core::u32 a6;          ///< Register a6
-    core::u32 a7;          ///< Register a7
-    core::u32 a8;          ///< Register a8
-    core::u32 a9;          ///< Register a9
-    core::u32 a10;         ///< Register a10
-    core::u32 a11;         ///< Register a11
-    core::u32 a12;         ///< Register a12
-    core::u32 a13;         ///< Register a13
-    core::u32 a14;         ///< Register a14
-    core::u32 a15;         ///< Register a15
-    core::u32 sar;         ///< Shift amount register
-    core::u32 exccause;    ///< Exception cause
-    core::u32 excvaddr;    ///< Exception virtual address
-    core::u32 lbeg;        ///< Loop begin
-    core::u32 lend;        ///< Loop end
-    core::u32 lcount;      ///< Loop count
+    core::u32 pc;        ///< Program counter
+    core::u32 ps;        ///< Processor status
+    core::u32 a0;        ///< Return address
+    core::u32 a1;        ///< Stack pointer
+    core::u32 a2;        ///< First argument
+    core::u32 a3;        ///< Second argument
+    core::u32 a4;        ///< Register a4
+    core::u32 a5;        ///< Register a5
+    core::u32 a6;        ///< Register a6
+    core::u32 a7;        ///< Register a7
+    core::u32 a8;        ///< Register a8
+    core::u32 a9;        ///< Register a9
+    core::u32 a10;       ///< Register a10
+    core::u32 a11;       ///< Register a11
+    core::u32 a12;       ///< Register a12
+    core::u32 a13;       ///< Register a13
+    core::u32 a14;       ///< Register a14
+    core::u32 a15;       ///< Register a15
+    core::u32 sar;       ///< Shift amount register
+    core::u32 exccause;  ///< Exception cause
+    core::u32 excvaddr;  ///< Exception virtual address
+    core::u32 lbeg;      ///< Loop begin
+    core::u32 lend;      ///< Loop end
+    core::u32 lcount;    ///< Loop count
 };
 
 /// Context saved by software (in addition to exception frame)
 struct XtSolFrame {
-    core::u32 exit;        ///< Exit routine address
-    core::u32 pc;          ///< Program counter
-    core::u32 ps;          ///< Processor status (with interrupt enable)
+    core::u32 exit;  ///< Exit routine address
+    core::u32 pc;    ///< Program counter
+    core::u32 ps;    ///< Processor status (with interrupt enable)
     // Additional callee-saved registers if needed
 };
 
@@ -122,10 +123,10 @@ void init_rtos_timer();
 /// Stop RTOS timer
 void stop_rtos_timer();
 
-} // namespace xtensa
+}  // namespace xtensa
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
-#endif // ESP32
+#endif  // ESP32
 
-#endif // ALLOY_RTOS_XTENSA_CONTEXT_HPP
+#endif  // ALLOY_RTOS_XTENSA_CONTEXT_HPP

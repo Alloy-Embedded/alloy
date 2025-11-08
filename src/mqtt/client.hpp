@@ -1,11 +1,12 @@
 #pragma once
 
-#include "types.hpp"
-#include "../core/result.hpp"
-#include "../core/error.hpp"
-#include <string>
-#include <memory>
 #include <map>
+#include <memory>
+#include <string>
+
+#include "../core/error.hpp"
+#include "../core/result.hpp"
+#include "types.hpp"
 
 namespace MQTT {
 
@@ -47,7 +48,7 @@ namespace MQTT {
  * @endcode
  */
 class Client {
-public:
+   public:
     /**
      * @brief Construct MQTT client with configuration
      *
@@ -108,7 +109,7 @@ public:
      * @return Result<int> - Message ID if successful
      */
     Result<int, ErrorCode> publish(const char* topic, const void* data, size_t length,
-                                    QoS qos = QoS::AtMostOnce, bool retain = false);
+                                   QoS qos = QoS::AtMostOnce, bool retain = false);
 
     /**
      * @brief Publish string message to topic
@@ -120,7 +121,7 @@ public:
      * @return Result<int> - Message ID if successful
      */
     Result<int, ErrorCode> publish(const char* topic, const char* message,
-                                    QoS qos = QoS::AtMostOnce, bool retain = false);
+                                   QoS qos = QoS::AtMostOnce, bool retain = false);
 
     /**
      * @brief Subscribe to topic with callback
@@ -130,8 +131,7 @@ public:
      * @param callback Callback for incoming messages on this topic
      * @return Result<void> - Ok if subscription initiated successfully
      */
-    Result<void, ErrorCode> subscribe(const char* topic, QoS qos,
-                                       MessageCallback callback);
+    Result<void, ErrorCode> subscribe(const char* topic, QoS qos, MessageCallback callback);
 
     /**
      * @brief Subscribe to topic (uses default message callback)
@@ -187,9 +187,9 @@ public:
      */
     void set_subscribe_callback(SubscribeCallback callback);
 
-private:
+   private:
     struct Impl;
     std::unique_ptr<Impl> impl_;
 };
 
-} // namespace MQTT
+}  // namespace MQTT

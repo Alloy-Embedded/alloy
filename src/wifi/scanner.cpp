@@ -6,11 +6,12 @@
 #include "scanner.hpp"
 
 #ifdef ESP_PLATFORM
-#include <cstring>
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
-#include "nvs_flash.h"
-#include "esp_netif.h"
+    #include <cstring>
+
+    #include "esp_netif.h"
+    #include "freertos/FreeRTOS.h"
+    #include "freertos/event_groups.h"
+    #include "nvs_flash.h"
 
 namespace alloy::wifi {
 
@@ -21,12 +22,7 @@ static constexpr int SCAN_DONE_BIT = BIT0;
 static EventGroupHandle_t s_scan_event_group = nullptr;
 static Scanner* s_scanner_instance = nullptr;
 
-Scanner::Scanner()
-    : initialized_(false)
-    , scanning_(false)
-    , result_count_(0)
-    , callback_(nullptr)
-{
+Scanner::Scanner() : initialized_(false), scanning_(false), result_count_(0), callback_(nullptr) {
     s_scanner_instance = this;
 }
 
@@ -83,12 +79,8 @@ Result<void> Scanner::init() {
     }
 
     // Register event handler for scan done
-    ESP_TRY(esp_event_handler_register(
-        WIFI_EVENT,
-        WIFI_EVENT_SCAN_DONE,
-        &Scanner::event_handler,
-        this
-    ));
+    ESP_TRY(esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_SCAN_DONE, &Scanner::event_handler,
+                                       this));
 
     // Set WiFi mode to station (required for scanning)
     wifi_mode_t current_mode;
@@ -254,12 +246,8 @@ void Scanner::set_scan_callback(ScanCallback callback) {
 }
 
 // Static event handler (ESP-IDF callback)
-void Scanner::event_handler(
-    void* arg,
-    esp_event_base_t event_base,
-    int32_t event_id,
-    void* event_data
-) {
+void Scanner::event_handler(void* arg, esp_event_base_t event_base, int32_t event_id,
+                            void* event_data) {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_SCAN_DONE) {
         Scanner* self = static_cast<Scanner*>(arg);
         self->handle_scan_done();
@@ -285,19 +273,14 @@ void Scanner::handle_scan_done() {
     }
 }
 
-} // namespace alloy::wifi
+}  // namespace alloy::wifi
 
-#else // !ESP_PLATFORM
+#else  // !ESP_PLATFORM
 
 namespace alloy::wifi {
 
 // Stub implementation for non-ESP platforms
-Scanner::Scanner()
-    : initialized_(false)
-    , scanning_(false)
-    , result_count_(0)
-    , callback_(nullptr)
-{}
+Scanner::Scanner() : initialized_(false), scanning_(false), result_count_(0), callback_(nullptr) {}
 
 Scanner::~Scanner() {}
 
@@ -331,6 +314,6 @@ bool Scanner::is_scanning() const {
 
 void Scanner::set_scan_callback(ScanCallback) {}
 
-} // namespace alloy::wifi
+}  // namespace alloy::wifi
 
-#endif // ESP_PLATFORM
+#endif  // ESP_PLATFORM

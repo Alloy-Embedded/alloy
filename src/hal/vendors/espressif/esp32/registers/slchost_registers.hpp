@@ -17,7 +17,7 @@ namespace alloy::hal::espressif::esp32::slchost {
 
 /// SLCHOST Register Structure
 struct SLCHOST_Registers {
-    uint8_t RESERVED_0000[16]; ///< Reserved
+    uint8_t RESERVED_0000[16];  ///< Reserved
 
     /// HOST_SLCHOST_FUNC2_0
     /// Offset: 0x0010
@@ -26,13 +26,13 @@ struct SLCHOST_Registers {
     /// HOST_SLCHOST_FUNC2_1
     /// Offset: 0x0014
     volatile uint32_t HOST_SLCHOST_FUNC2_1;
-    uint8_t RESERVED_0018[8]; ///< Reserved
+    uint8_t RESERVED_0018[8];  ///< Reserved
 
     /// HOST_SLCHOST_FUNC2_2
     /// Offset: 0x0020
     /// Reset value: 0x00000001
     volatile uint32_t HOST_SLCHOST_FUNC2_2;
-    uint8_t RESERVED_0024[16]; ///< Reserved
+    uint8_t RESERVED_0024[16];  ///< Reserved
 
     /// HOST_SLCHOST_GPIO_STATUS0
     /// Offset: 0x0034
@@ -269,7 +269,7 @@ struct SLCHOST_Registers {
     /// HOST_SLC1HOST_INT_ENA1
     /// Offset: 0x0118
     volatile uint32_t HOST_SLC1HOST_INT_ENA1;
-    uint8_t RESERVED_011C[92]; ///< Reserved
+    uint8_t RESERVED_011C[92];  ///< Reserved
 
     /// HOST_SLCHOSTDATE
     /// Offset: 0x0178
@@ -280,7 +280,7 @@ struct SLCHOST_Registers {
     /// Offset: 0x017C
     /// Reset value: 0x00000600
     volatile uint32_t HOST_SLCHOSTID;
-    uint8_t RESERVED_0180[112]; ///< Reserved
+    uint8_t RESERVED_0180[112];  ///< Reserved
 
     /// HOST_SLCHOST_CONF
     /// Offset: 0x01F0

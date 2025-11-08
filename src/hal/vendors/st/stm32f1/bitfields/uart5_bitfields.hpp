@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f1::uart5 {
@@ -19,250 +20,250 @@ using namespace alloy::hal::bitfields;
 
 /// SR - UART4_SR
 namespace sr {
-    /// PE
-    /// Position: 0, Width: 1
-    /// Access: read-only
-    using PE = BitField<0, 1>;
-    constexpr uint32_t PE_Pos = 0;
-    constexpr uint32_t PE_Msk = PE::mask;
+/// PE
+/// Position: 0, Width: 1
+/// Access: read-only
+using PE = BitField<0, 1>;
+constexpr uint32_t PE_Pos = 0;
+constexpr uint32_t PE_Msk = PE::mask;
 
-    /// FE
-    /// Position: 1, Width: 1
-    /// Access: read-only
-    using FE = BitField<1, 1>;
-    constexpr uint32_t FE_Pos = 1;
-    constexpr uint32_t FE_Msk = FE::mask;
+/// FE
+/// Position: 1, Width: 1
+/// Access: read-only
+using FE = BitField<1, 1>;
+constexpr uint32_t FE_Pos = 1;
+constexpr uint32_t FE_Msk = FE::mask;
 
-    /// NE
-    /// Position: 2, Width: 1
-    /// Access: read-only
-    using NE = BitField<2, 1>;
-    constexpr uint32_t NE_Pos = 2;
-    constexpr uint32_t NE_Msk = NE::mask;
+/// NE
+/// Position: 2, Width: 1
+/// Access: read-only
+using NE = BitField<2, 1>;
+constexpr uint32_t NE_Pos = 2;
+constexpr uint32_t NE_Msk = NE::mask;
 
-    /// ORE
-    /// Position: 3, Width: 1
-    /// Access: read-only
-    using ORE = BitField<3, 1>;
-    constexpr uint32_t ORE_Pos = 3;
-    constexpr uint32_t ORE_Msk = ORE::mask;
+/// ORE
+/// Position: 3, Width: 1
+/// Access: read-only
+using ORE = BitField<3, 1>;
+constexpr uint32_t ORE_Pos = 3;
+constexpr uint32_t ORE_Msk = ORE::mask;
 
-    /// IDLE
-    /// Position: 4, Width: 1
-    /// Access: read-only
-    using IDLE = BitField<4, 1>;
-    constexpr uint32_t IDLE_Pos = 4;
-    constexpr uint32_t IDLE_Msk = IDLE::mask;
+/// IDLE
+/// Position: 4, Width: 1
+/// Access: read-only
+using IDLE = BitField<4, 1>;
+constexpr uint32_t IDLE_Pos = 4;
+constexpr uint32_t IDLE_Msk = IDLE::mask;
 
-    /// RXNE
-    /// Position: 5, Width: 1
-    /// Access: read-write
-    using RXNE = BitField<5, 1>;
-    constexpr uint32_t RXNE_Pos = 5;
-    constexpr uint32_t RXNE_Msk = RXNE::mask;
+/// RXNE
+/// Position: 5, Width: 1
+/// Access: read-write
+using RXNE = BitField<5, 1>;
+constexpr uint32_t RXNE_Pos = 5;
+constexpr uint32_t RXNE_Msk = RXNE::mask;
 
-    /// TC
-    /// Position: 6, Width: 1
-    /// Access: read-write
-    using TC = BitField<6, 1>;
-    constexpr uint32_t TC_Pos = 6;
-    constexpr uint32_t TC_Msk = TC::mask;
+/// TC
+/// Position: 6, Width: 1
+/// Access: read-write
+using TC = BitField<6, 1>;
+constexpr uint32_t TC_Pos = 6;
+constexpr uint32_t TC_Msk = TC::mask;
 
-    /// TXE
-    /// Position: 7, Width: 1
-    /// Access: read-only
-    using TXE = BitField<7, 1>;
-    constexpr uint32_t TXE_Pos = 7;
-    constexpr uint32_t TXE_Msk = TXE::mask;
+/// TXE
+/// Position: 7, Width: 1
+/// Access: read-only
+using TXE = BitField<7, 1>;
+constexpr uint32_t TXE_Pos = 7;
+constexpr uint32_t TXE_Msk = TXE::mask;
 
-    /// LBD
-    /// Position: 8, Width: 1
-    /// Access: read-write
-    using LBD = BitField<8, 1>;
-    constexpr uint32_t LBD_Pos = 8;
-    constexpr uint32_t LBD_Msk = LBD::mask;
+/// LBD
+/// Position: 8, Width: 1
+/// Access: read-write
+using LBD = BitField<8, 1>;
+constexpr uint32_t LBD_Pos = 8;
+constexpr uint32_t LBD_Msk = LBD::mask;
 
 }  // namespace sr
 
 /// DR - UART4_DR
 namespace dr {
-    /// DR
-    /// Position: 0, Width: 9
-    using DR = BitField<0, 9>;
-    constexpr uint32_t DR_Pos = 0;
-    constexpr uint32_t DR_Msk = DR::mask;
+/// DR
+/// Position: 0, Width: 9
+using DR = BitField<0, 9>;
+constexpr uint32_t DR_Pos = 0;
+constexpr uint32_t DR_Msk = DR::mask;
 
 }  // namespace dr
 
 /// BRR - UART4_BRR
 namespace brr {
-    /// DIV_Fraction
-    /// Position: 0, Width: 4
-    using DIV_Fraction = BitField<0, 4>;
-    constexpr uint32_t DIV_Fraction_Pos = 0;
-    constexpr uint32_t DIV_Fraction_Msk = DIV_Fraction::mask;
+/// DIV_Fraction
+/// Position: 0, Width: 4
+using DIV_Fraction = BitField<0, 4>;
+constexpr uint32_t DIV_Fraction_Pos = 0;
+constexpr uint32_t DIV_Fraction_Msk = DIV_Fraction::mask;
 
-    /// DIV_Mantissa
-    /// Position: 4, Width: 12
-    using DIV_Mantissa = BitField<4, 12>;
-    constexpr uint32_t DIV_Mantissa_Pos = 4;
-    constexpr uint32_t DIV_Mantissa_Msk = DIV_Mantissa::mask;
+/// DIV_Mantissa
+/// Position: 4, Width: 12
+using DIV_Mantissa = BitField<4, 12>;
+constexpr uint32_t DIV_Mantissa_Pos = 4;
+constexpr uint32_t DIV_Mantissa_Msk = DIV_Mantissa::mask;
 
 }  // namespace brr
 
 /// CR1 - UART4_CR1
 namespace cr1 {
-    /// SBK
-    /// Position: 0, Width: 1
-    using SBK = BitField<0, 1>;
-    constexpr uint32_t SBK_Pos = 0;
-    constexpr uint32_t SBK_Msk = SBK::mask;
+/// SBK
+/// Position: 0, Width: 1
+using SBK = BitField<0, 1>;
+constexpr uint32_t SBK_Pos = 0;
+constexpr uint32_t SBK_Msk = SBK::mask;
 
-    /// RWU
-    /// Position: 1, Width: 1
-    using RWU = BitField<1, 1>;
-    constexpr uint32_t RWU_Pos = 1;
-    constexpr uint32_t RWU_Msk = RWU::mask;
+/// RWU
+/// Position: 1, Width: 1
+using RWU = BitField<1, 1>;
+constexpr uint32_t RWU_Pos = 1;
+constexpr uint32_t RWU_Msk = RWU::mask;
 
-    /// RE
-    /// Position: 2, Width: 1
-    using RE = BitField<2, 1>;
-    constexpr uint32_t RE_Pos = 2;
-    constexpr uint32_t RE_Msk = RE::mask;
+/// RE
+/// Position: 2, Width: 1
+using RE = BitField<2, 1>;
+constexpr uint32_t RE_Pos = 2;
+constexpr uint32_t RE_Msk = RE::mask;
 
-    /// TE
-    /// Position: 3, Width: 1
-    using TE = BitField<3, 1>;
-    constexpr uint32_t TE_Pos = 3;
-    constexpr uint32_t TE_Msk = TE::mask;
+/// TE
+/// Position: 3, Width: 1
+using TE = BitField<3, 1>;
+constexpr uint32_t TE_Pos = 3;
+constexpr uint32_t TE_Msk = TE::mask;
 
-    /// IDLEIE
-    /// Position: 4, Width: 1
-    using IDLEIE = BitField<4, 1>;
-    constexpr uint32_t IDLEIE_Pos = 4;
-    constexpr uint32_t IDLEIE_Msk = IDLEIE::mask;
+/// IDLEIE
+/// Position: 4, Width: 1
+using IDLEIE = BitField<4, 1>;
+constexpr uint32_t IDLEIE_Pos = 4;
+constexpr uint32_t IDLEIE_Msk = IDLEIE::mask;
 
-    /// RXNEIE
-    /// Position: 5, Width: 1
-    using RXNEIE = BitField<5, 1>;
-    constexpr uint32_t RXNEIE_Pos = 5;
-    constexpr uint32_t RXNEIE_Msk = RXNEIE::mask;
+/// RXNEIE
+/// Position: 5, Width: 1
+using RXNEIE = BitField<5, 1>;
+constexpr uint32_t RXNEIE_Pos = 5;
+constexpr uint32_t RXNEIE_Msk = RXNEIE::mask;
 
-    /// TCIE
-    /// Position: 6, Width: 1
-    using TCIE = BitField<6, 1>;
-    constexpr uint32_t TCIE_Pos = 6;
-    constexpr uint32_t TCIE_Msk = TCIE::mask;
+/// TCIE
+/// Position: 6, Width: 1
+using TCIE = BitField<6, 1>;
+constexpr uint32_t TCIE_Pos = 6;
+constexpr uint32_t TCIE_Msk = TCIE::mask;
 
-    /// TXEIE
-    /// Position: 7, Width: 1
-    using TXEIE = BitField<7, 1>;
-    constexpr uint32_t TXEIE_Pos = 7;
-    constexpr uint32_t TXEIE_Msk = TXEIE::mask;
+/// TXEIE
+/// Position: 7, Width: 1
+using TXEIE = BitField<7, 1>;
+constexpr uint32_t TXEIE_Pos = 7;
+constexpr uint32_t TXEIE_Msk = TXEIE::mask;
 
-    /// PEIE
-    /// Position: 8, Width: 1
-    using PEIE = BitField<8, 1>;
-    constexpr uint32_t PEIE_Pos = 8;
-    constexpr uint32_t PEIE_Msk = PEIE::mask;
+/// PEIE
+/// Position: 8, Width: 1
+using PEIE = BitField<8, 1>;
+constexpr uint32_t PEIE_Pos = 8;
+constexpr uint32_t PEIE_Msk = PEIE::mask;
 
-    /// PS
-    /// Position: 9, Width: 1
-    using PS = BitField<9, 1>;
-    constexpr uint32_t PS_Pos = 9;
-    constexpr uint32_t PS_Msk = PS::mask;
+/// PS
+/// Position: 9, Width: 1
+using PS = BitField<9, 1>;
+constexpr uint32_t PS_Pos = 9;
+constexpr uint32_t PS_Msk = PS::mask;
 
-    /// PCE
-    /// Position: 10, Width: 1
-    using PCE = BitField<10, 1>;
-    constexpr uint32_t PCE_Pos = 10;
-    constexpr uint32_t PCE_Msk = PCE::mask;
+/// PCE
+/// Position: 10, Width: 1
+using PCE = BitField<10, 1>;
+constexpr uint32_t PCE_Pos = 10;
+constexpr uint32_t PCE_Msk = PCE::mask;
 
-    /// WAKE
-    /// Position: 11, Width: 1
-    using WAKE = BitField<11, 1>;
-    constexpr uint32_t WAKE_Pos = 11;
-    constexpr uint32_t WAKE_Msk = WAKE::mask;
+/// WAKE
+/// Position: 11, Width: 1
+using WAKE = BitField<11, 1>;
+constexpr uint32_t WAKE_Pos = 11;
+constexpr uint32_t WAKE_Msk = WAKE::mask;
 
-    /// M
-    /// Position: 12, Width: 1
-    using M = BitField<12, 1>;
-    constexpr uint32_t M_Pos = 12;
-    constexpr uint32_t M_Msk = M::mask;
+/// M
+/// Position: 12, Width: 1
+using M = BitField<12, 1>;
+constexpr uint32_t M_Pos = 12;
+constexpr uint32_t M_Msk = M::mask;
 
-    /// UE
-    /// Position: 13, Width: 1
-    using UE = BitField<13, 1>;
-    constexpr uint32_t UE_Pos = 13;
-    constexpr uint32_t UE_Msk = UE::mask;
+/// UE
+/// Position: 13, Width: 1
+using UE = BitField<13, 1>;
+constexpr uint32_t UE_Pos = 13;
+constexpr uint32_t UE_Msk = UE::mask;
 
 }  // namespace cr1
 
 /// CR2 - UART4_CR2
 namespace cr2 {
-    /// ADD
-    /// Position: 0, Width: 4
-    using ADD = BitField<0, 4>;
-    constexpr uint32_t ADD_Pos = 0;
-    constexpr uint32_t ADD_Msk = ADD::mask;
+/// ADD
+/// Position: 0, Width: 4
+using ADD = BitField<0, 4>;
+constexpr uint32_t ADD_Pos = 0;
+constexpr uint32_t ADD_Msk = ADD::mask;
 
-    /// LBDL
-    /// Position: 5, Width: 1
-    using LBDL = BitField<5, 1>;
-    constexpr uint32_t LBDL_Pos = 5;
-    constexpr uint32_t LBDL_Msk = LBDL::mask;
+/// LBDL
+/// Position: 5, Width: 1
+using LBDL = BitField<5, 1>;
+constexpr uint32_t LBDL_Pos = 5;
+constexpr uint32_t LBDL_Msk = LBDL::mask;
 
-    /// LBDIE
-    /// Position: 6, Width: 1
-    using LBDIE = BitField<6, 1>;
-    constexpr uint32_t LBDIE_Pos = 6;
-    constexpr uint32_t LBDIE_Msk = LBDIE::mask;
+/// LBDIE
+/// Position: 6, Width: 1
+using LBDIE = BitField<6, 1>;
+constexpr uint32_t LBDIE_Pos = 6;
+constexpr uint32_t LBDIE_Msk = LBDIE::mask;
 
-    /// STOP
-    /// Position: 12, Width: 2
-    using STOP = BitField<12, 2>;
-    constexpr uint32_t STOP_Pos = 12;
-    constexpr uint32_t STOP_Msk = STOP::mask;
+/// STOP
+/// Position: 12, Width: 2
+using STOP = BitField<12, 2>;
+constexpr uint32_t STOP_Pos = 12;
+constexpr uint32_t STOP_Msk = STOP::mask;
 
-    /// LINEN
-    /// Position: 14, Width: 1
-    using LINEN = BitField<14, 1>;
-    constexpr uint32_t LINEN_Pos = 14;
-    constexpr uint32_t LINEN_Msk = LINEN::mask;
+/// LINEN
+/// Position: 14, Width: 1
+using LINEN = BitField<14, 1>;
+constexpr uint32_t LINEN_Pos = 14;
+constexpr uint32_t LINEN_Msk = LINEN::mask;
 
 }  // namespace cr2
 
 /// CR3 - UART4_CR3
 namespace cr3 {
-    /// Error interrupt enable
-    /// Position: 0, Width: 1
-    using EIE = BitField<0, 1>;
-    constexpr uint32_t EIE_Pos = 0;
-    constexpr uint32_t EIE_Msk = EIE::mask;
+/// Error interrupt enable
+/// Position: 0, Width: 1
+using EIE = BitField<0, 1>;
+constexpr uint32_t EIE_Pos = 0;
+constexpr uint32_t EIE_Msk = EIE::mask;
 
-    /// IrDA mode enable
-    /// Position: 1, Width: 1
-    using IREN = BitField<1, 1>;
-    constexpr uint32_t IREN_Pos = 1;
-    constexpr uint32_t IREN_Msk = IREN::mask;
+/// IrDA mode enable
+/// Position: 1, Width: 1
+using IREN = BitField<1, 1>;
+constexpr uint32_t IREN_Pos = 1;
+constexpr uint32_t IREN_Msk = IREN::mask;
 
-    /// IrDA low-power
-    /// Position: 2, Width: 1
-    using IRLP = BitField<2, 1>;
-    constexpr uint32_t IRLP_Pos = 2;
-    constexpr uint32_t IRLP_Msk = IRLP::mask;
+/// IrDA low-power
+/// Position: 2, Width: 1
+using IRLP = BitField<2, 1>;
+constexpr uint32_t IRLP_Pos = 2;
+constexpr uint32_t IRLP_Msk = IRLP::mask;
 
-    /// Half-duplex selection
-    /// Position: 3, Width: 1
-    using HDSEL = BitField<3, 1>;
-    constexpr uint32_t HDSEL_Pos = 3;
-    constexpr uint32_t HDSEL_Msk = HDSEL::mask;
+/// Half-duplex selection
+/// Position: 3, Width: 1
+using HDSEL = BitField<3, 1>;
+constexpr uint32_t HDSEL_Pos = 3;
+constexpr uint32_t HDSEL_Msk = HDSEL::mask;
 
-    /// DMA enable transmitter
-    /// Position: 7, Width: 1
-    using DMAT = BitField<7, 1>;
-    constexpr uint32_t DMAT_Pos = 7;
-    constexpr uint32_t DMAT_Msk = DMAT::mask;
+/// DMA enable transmitter
+/// Position: 7, Width: 1
+using DMAT = BitField<7, 1>;
+constexpr uint32_t DMAT_Pos = 7;
+constexpr uint32_t DMAT_Msk = DMAT::mask;
 
 }  // namespace cr3
 

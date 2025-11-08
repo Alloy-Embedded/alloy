@@ -27,7 +27,7 @@ using namespace alloy::hal;
  * @brief Simple I2C EEPROM driver using SAME70 I2C
  */
 class I2cEeprom {
-public:
+   public:
     /**
      * @brief Initialize I2C EEPROM
      *
@@ -35,7 +35,8 @@ public:
      * @param page_size Page size in bytes (typically 32 or 64)
      */
     constexpr I2cEeprom(uint8_t device_address = 0x50, size_t page_size = 32)
-        : m_device_addr(device_address), m_page_size(page_size) {}
+        : m_device_addr(device_address),
+          m_page_size(page_size) {}
 
     /**
      * @brief Initialize I2C peripheral
@@ -59,11 +60,8 @@ public:
      */
     auto writeByte(uint16_t address, uint8_t data) -> alloy::core::Result<void> {
         // EEPROM write: [Address_High, Address_Low, Data]
-        uint8_t buffer[3] = {
-            static_cast<uint8_t>((address >> 8) & 0xFF),
-            static_cast<uint8_t>(address & 0xFF),
-            data
-        };
+        uint8_t buffer[3] = {static_cast<uint8_t>((address >> 8) & 0xFF),
+                             static_cast<uint8_t>(address & 0xFF), data};
 
         auto result = m_i2c.write(m_device_addr, buffer, 3);
         if (!result.is_ok()) {
@@ -86,10 +84,8 @@ public:
         // This simplified version uses two transactions:
 
         // 1. Write address pointer
-        uint8_t addr_buffer[2] = {
-            static_cast<uint8_t>((address >> 8) & 0xFF),
-            static_cast<uint8_t>(address & 0xFF)
-        };
+        uint8_t addr_buffer[2] = {static_cast<uint8_t>((address >> 8) & 0xFF),
+                                  static_cast<uint8_t>(address & 0xFF)};
 
         auto write_result = m_i2c.write(m_device_addr, addr_buffer, 2);
         if (!write_result.is_ok()) {
@@ -117,11 +113,8 @@ public:
      */
     auto writePage(uint16_t address, const uint8_t* data, size_t size)
         -> alloy::core::Result<size_t> {
-
         if (size > m_page_size) {
-            return alloy::core::Result<size_t>::error(
-                alloy::core::ErrorCode::InvalidParameter
-            );
+            return alloy::core::Result<size_t>::error(alloy::core::ErrorCode::InvalidParameter);
         }
 
         // Build write buffer: [Addr_High, Addr_Low, Data...]
@@ -153,12 +146,9 @@ public:
      */
     auto readSequential(uint16_t address, uint8_t* data, size_t size)
         -> alloy::core::Result<size_t> {
-
         // Write address pointer
-        uint8_t addr_buffer[2] = {
-            static_cast<uint8_t>((address >> 8) & 0xFF),
-            static_cast<uint8_t>(address & 0xFF)
-        };
+        uint8_t addr_buffer[2] = {static_cast<uint8_t>((address >> 8) & 0xFF),
+                                  static_cast<uint8_t>(address & 0xFF)};
 
         auto write_result = m_i2c.write(m_device_addr, addr_buffer, 2);
         if (!write_result.is_ok()) {
@@ -175,24 +165,20 @@ public:
      * For single-byte operations at 8-bit addresses, you can use
      * the convenience methods writeRegister() and readRegister().
      */
-    auto writeRegisterExample(uint8_t reg_addr, uint8_t value)
-        -> alloy::core::Result<void> {
+    auto writeRegisterExample(uint8_t reg_addr, uint8_t value) -> alloy::core::Result<void> {
         return m_i2c.writeRegister(m_device_addr, reg_addr, value);
     }
 
-    auto readRegisterExample(uint8_t reg_addr, uint8_t* value)
-        -> alloy::core::Result<void> {
+    auto readRegisterExample(uint8_t reg_addr, uint8_t* value) -> alloy::core::Result<void> {
         return m_i2c.readRegister(m_device_addr, reg_addr, value);
     }
 
     /**
      * @brief Close I2C peripheral
      */
-    auto close() -> alloy::core::Result<void> {
-        return m_i2c.close();
-    }
+    auto close() -> alloy::core::Result<void> { return m_i2c.close(); }
 
-private:
+   private:
     I2c0 m_i2c;
     uint8_t m_device_addr;
     size_t m_page_size;

@@ -18,9 +18,10 @@
  * - Compile-time calculation helpers
  */
 
-#include "hal/platform/same70/pwm.hpp"
-#include "hal/platform/same70/gpio.hpp"
 #include <stdio.h>
+
+#include "hal/platform/same70/gpio.hpp"
+#include "hal/platform/same70/pwm.hpp"
 
 using namespace alloy::hal::same70;
 
@@ -50,11 +51,8 @@ void example1_led_dimming() {
     // Configure PWM for LED dimming
     // High frequency to avoid visible flicker (1 kHz)
     constexpr uint32_t pwm_freq = 1000;  // 1 kHz
-    const uint16_t period = Pwm0Ch0::calculatePeriod(
-        PwmPrescaler::DIV_128,
-        pwm_freq,
-        PwmAlignment::Edge
-    );
+    const uint16_t period =
+        Pwm0Ch0::calculatePeriod(PwmPrescaler::DIV_128, pwm_freq, PwmAlignment::Edge);
 
     Same70PwmConfig config{};
     config.alignment = PwmAlignment::Edge;
@@ -118,11 +116,10 @@ void example2_motor_control() {
 
     // Motor control PWM: 20 kHz typical for motor drives
     constexpr uint32_t motor_freq = 20000;  // 20 kHz
-    const uint16_t period = Pwm0Ch1::calculatePeriod(
-        PwmPrescaler::DIV_8,
-        motor_freq,
-        PwmAlignment::Center  // Center-aligned for symmetric switching
-    );
+    const uint16_t period =
+        Pwm0Ch1::calculatePeriod(PwmPrescaler::DIV_8, motor_freq,
+                                 PwmAlignment::Center  // Center-aligned for symmetric switching
+        );
 
     // Dead-time: 500ns typical for MOSFETs
     // Clock @ DIV_8 = 18.75 MHz, period = 53.33ns
@@ -135,8 +132,8 @@ void example2_motor_control() {
     config.prescaler = PwmPrescaler::DIV_8;
     config.period = period;
     config.duty_cycle = Pwm0Ch1::calculateDuty(period, 50);  // 50% duty = no net rotation
-    config.dead_time_h = dead_time_ticks;  // High-side dead-time
-    config.dead_time_l = dead_time_ticks;  // Low-side dead-time
+    config.dead_time_h = dead_time_ticks;                    // High-side dead-time
+    config.dead_time_l = dead_time_ticks;                    // Low-side dead-time
 
     pwm.configure(config);
     pwm.start();
@@ -195,11 +192,8 @@ void example3_servo_control() {
 
     // Servo standard: 50 Hz (20ms period)
     constexpr uint32_t servo_freq = 50;
-    const uint16_t period = Pwm0Ch2::calculatePeriod(
-        PwmPrescaler::DIV_128,
-        servo_freq,
-        PwmAlignment::Edge
-    );
+    const uint16_t period =
+        Pwm0Ch2::calculatePeriod(PwmPrescaler::DIV_128, servo_freq, PwmAlignment::Edge);
 
     // Servo pulse width:
     // - 1.0ms = 0°
@@ -284,11 +278,8 @@ void example4_multi_channel_pwm() {
 
     // Configure all for same frequency (1 kHz)
     constexpr uint32_t pwm_freq = 1000;
-    const uint16_t period = Pwm0Ch0::calculatePeriod(
-        PwmPrescaler::DIV_128,
-        pwm_freq,
-        PwmAlignment::Edge
-    );
+    const uint16_t period =
+        Pwm0Ch0::calculatePeriod(PwmPrescaler::DIV_128, pwm_freq, PwmAlignment::Edge);
 
     // Configure each channel with different duty cycle
     Same70PwmConfig config{};
@@ -326,8 +317,7 @@ void example4_multi_channel_pwm() {
     pwm3.start();
 
     // Verify all are running
-    printf("Status: Ch0=%d Ch1=%d Ch2=%d Ch3=%d\n",
-           pwm0.isRunning(), pwm1.isRunning(),
+    printf("Status: Ch0=%d Ch1=%d Ch2=%d Ch3=%d\n", pwm0.isRunning(), pwm1.isRunning(),
            pwm2.isRunning(), pwm3.isRunning());
 
     // Animate: cycle through different color combinations
@@ -382,11 +372,8 @@ void example5_center_aligned_pwm() {
 
     // Configure center-aligned PWM
     constexpr uint32_t pwm_freq = 10000;  // 10 kHz
-    const uint16_t period = Pwm1Ch0::calculatePeriod(
-        PwmPrescaler::DIV_16,
-        pwm_freq,
-        PwmAlignment::Center
-    );
+    const uint16_t period =
+        Pwm1Ch0::calculatePeriod(PwmPrescaler::DIV_16, pwm_freq, PwmAlignment::Center);
 
     Same70PwmConfig config{};
     config.alignment = PwmAlignment::Center;
@@ -450,11 +437,8 @@ void example6_dynamic_frequency() {
         pwm.setPeriod(period);
         pwm.setDutyCycle(period / 2);  // Maintain 50% duty
 
-        uint32_t freq = Pwm1Ch1::calculateFrequency(
-            PwmPrescaler::DIV_8,
-            period,
-            PwmAlignment::Edge
-        );
+        uint32_t freq =
+            Pwm1Ch1::calculateFrequency(PwmPrescaler::DIV_8, period, PwmAlignment::Edge);
 
         printf("  Period=%u -> Frequency=%lu Hz\n", period, freq);
 
@@ -478,23 +462,14 @@ void example7_compile_time_calculations() {
     printf("\n=== Example 7: Compile-Time Calculations ===\n");
 
     // All calculations happen at COMPILE TIME
-    const uint16_t period_1khz = Pwm0Ch0::calculatePeriod(
-        PwmPrescaler::DIV_128,
-        1000,
-        PwmAlignment::Edge
-    );
+    const uint16_t period_1khz =
+        Pwm0Ch0::calculatePeriod(PwmPrescaler::DIV_128, 1000, PwmAlignment::Edge);
 
-    const uint16_t period_50hz = Pwm0Ch0::calculatePeriod(
-        PwmPrescaler::DIV_128,
-        50,
-        PwmAlignment::Edge
-    );
+    const uint16_t period_50hz =
+        Pwm0Ch0::calculatePeriod(PwmPrescaler::DIV_128, 50, PwmAlignment::Edge);
 
-    const uint32_t freq_from_period = Pwm0Ch0::calculateFrequency(
-        PwmPrescaler::DIV_128,
-        period_1khz,
-        PwmAlignment::Edge
-    );
+    const uint32_t freq_from_period =
+        Pwm0Ch0::calculateFrequency(PwmPrescaler::DIV_128, period_1khz, PwmAlignment::Edge);
 
     constexpr uint16_t duty_25 = Pwm0Ch0::calculateDuty(1000, 25);
     constexpr uint16_t duty_50 = Pwm0Ch0::calculateDuty(1000, 50);

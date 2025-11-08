@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samv71::rtt {
 
 /// RTT Register Structure
 struct RTT_Registers {
-
     /// Mode Register
     /// Offset: 0x0000
     volatile uint32_t MR;

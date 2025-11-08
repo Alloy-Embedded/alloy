@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../sink.hpp"
 #include <cstdio>
 #include <cstring>
+
+#include "../sink.hpp"
 
 // Platform detection for terminal features
 #ifdef _WIN32
@@ -36,7 +37,7 @@ namespace logger {
  *   Logger::add_sink(&console);
  */
 class ConsoleSink : public Sink {
-public:
+   public:
     /**
      * Construct console sink
      *
@@ -92,49 +93,46 @@ public:
     /**
      * Enable or disable colors dynamically
      */
-    void set_colors_enabled(bool enabled) {
-        enable_colors_ = enabled && is_terminal();
-    }
+    void set_colors_enabled(bool enabled) { enable_colors_ = enabled && is_terminal(); }
 
-private:
+   private:
     // ANSI color codes
-    static constexpr const char* ANSI_RESET  = "\033[0m";
-    static constexpr const char* ANSI_GRAY   = "\033[90m";
-    static constexpr const char* ANSI_CYAN   = "\033[36m";
-    static constexpr const char* ANSI_GREEN  = "\033[32m";
+    static constexpr const char* ANSI_RESET = "\033[0m";
+    static constexpr const char* ANSI_GRAY = "\033[90m";
+    static constexpr const char* ANSI_CYAN = "\033[36m";
+    static constexpr const char* ANSI_GREEN = "\033[32m";
     static constexpr const char* ANSI_YELLOW = "\033[33m";
-    static constexpr const char* ANSI_RED    = "\033[31m";
+    static constexpr const char* ANSI_RED = "\033[31m";
 
     /**
      * Check if stdout is a terminal (TTY)
      */
-    static bool is_terminal() {
-        return ISATTY(FILENO(stdout)) != 0;
-    }
+    static bool is_terminal() { return ISATTY(FILENO(stdout)) != 0; }
 
     /**
      * Check if message already contains ANSI codes
      */
-    static bool has_ansi_codes(const char* data) {
-        return strstr(data, "\033[") != nullptr;
-    }
+    static bool has_ansi_codes(const char* data) { return strstr(data, "\033[") != nullptr; }
 
     /**
      * Check if message is an error
      */
-    static bool is_error_message(const char* data) {
-        return strstr(data, "ERROR") != nullptr;
-    }
+    static bool is_error_message(const char* data) { return strstr(data, "ERROR") != nullptr; }
 
     /**
      * Get color code based on message content
      */
     const char* get_color_for_message(const char* data) const {
-        if (strstr(data, "TRACE") != nullptr) return ANSI_GRAY;
-        if (strstr(data, "DEBUG") != nullptr) return ANSI_CYAN;
-        if (strstr(data, "INFO") != nullptr)  return ANSI_GREEN;
-        if (strstr(data, "WARN") != nullptr)  return ANSI_YELLOW;
-        if (strstr(data, "ERROR") != nullptr) return ANSI_RED;
+        if (strstr(data, "TRACE") != nullptr)
+            return ANSI_GRAY;
+        if (strstr(data, "DEBUG") != nullptr)
+            return ANSI_CYAN;
+        if (strstr(data, "INFO") != nullptr)
+            return ANSI_GREEN;
+        if (strstr(data, "WARN") != nullptr)
+            return ANSI_YELLOW;
+        if (strstr(data, "ERROR") != nullptr)
+            return ANSI_RED;
         return "";  // No color
     }
 
@@ -149,16 +147,14 @@ private:
  * Use this if you don't need colors or stderr routing.
  */
 class SimpleConsoleSink : public Sink {
-public:
+   public:
     void write(const char* data, size_t length) override {
         fwrite(data, 1, length, stdout);
         fflush(stdout);
     }
 
-    void flush() override {
-        fflush(stdout);
-    }
+    void flush() override { fflush(stdout); }
 };
 
-} // namespace logger
-} // namespace alloy
+}  // namespace logger
+}  // namespace alloy

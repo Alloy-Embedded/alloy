@@ -5,48 +5,45 @@
 #ifndef ALLOY_HAL_INTERFACE_PWM_HPP
 #define ALLOY_HAL_INTERFACE_PWM_HPP
 
-#include "core/error.hpp"
-#include "core/types.hpp"
 #include <concepts>
 #include <span>
+
+#include "core/error.hpp"
+#include "core/types.hpp"
 
 namespace alloy::hal {
 
 /// PWM channel identifier
-enum class PwmChannel : core::u8 {
-    Channel1 = 0,
-    Channel2 = 1,
-    Channel3 = 2,
-    Channel4 = 3
-};
+enum class PwmChannel : core::u8 { Channel1 = 0, Channel2 = 1, Channel3 = 2, Channel4 = 3 };
 
 /// PWM resolution (bits of duty cycle control)
 enum class PwmResolution : core::u8 {
-    Bits8  = 8,    ///< 8-bit resolution (0-255 steps)
-    Bits10 = 10,   ///< 10-bit resolution (0-1023 steps)
-    Bits12 = 12,   ///< 12-bit resolution (0-4095 steps)
-    Bits16 = 16    ///< 16-bit resolution (0-65535 steps)
+    Bits8 = 8,    ///< 8-bit resolution (0-255 steps)
+    Bits10 = 10,  ///< 10-bit resolution (0-1023 steps)
+    Bits12 = 12,  ///< 12-bit resolution (0-4095 steps)
+    Bits16 = 16   ///< 16-bit resolution (0-65535 steps)
 };
 
 /// PWM output polarity
 enum class PwmPolarity : core::u8 {
-    Normal,        ///< Active high (default)
-    Inverted       ///< Active low (inverted)
+    Normal,   ///< Active high (default)
+    Inverted  ///< Active low (inverted)
 };
 
 /// PWM configuration parameters
 ///
 /// Contains all parameters needed to configure a PWM peripheral.
 struct PwmConfig {
-    core::u32 frequency_hz;      ///< PWM frequency in Hz (e.g., 1000 for 1kHz)
-    PwmResolution resolution;    ///< Duty cycle resolution
-    PwmPolarity polarity;        ///< Output polarity
+    core::u32 frequency_hz;    ///< PWM frequency in Hz (e.g., 1000 for 1kHz)
+    PwmResolution resolution;  ///< Duty cycle resolution
+    PwmPolarity polarity;      ///< Output polarity
 
     /// Constructor with default configuration
-    constexpr PwmConfig(core::u32 freq = 1000,
-                       PwmResolution res = PwmResolution::Bits12,
-                       PwmPolarity pol = PwmPolarity::Normal)
-        : frequency_hz(freq), resolution(res), polarity(pol) {}
+    constexpr PwmConfig(core::u32 freq = 1000, PwmResolution res = PwmResolution::Bits12,
+                        PwmPolarity pol = PwmPolarity::Normal)
+        : frequency_hz(freq),
+          resolution(res),
+          polarity(pol) {}
 };
 
 /// PWM complementary output configuration (for motor control)
@@ -54,12 +51,13 @@ struct PwmConfig {
 /// Used for H-bridge motor drivers where two outputs must never be
 /// active simultaneously (to prevent shoot-through).
 struct PwmComplementaryConfig {
-    PwmChannel channel;          ///< Main PWM channel
-    core::u16 dead_time_ns;      ///< Dead time in nanoseconds (prevents shoot-through)
+    PwmChannel channel;      ///< Main PWM channel
+    core::u16 dead_time_ns;  ///< Dead time in nanoseconds (prevents shoot-through)
 
     /// Constructor
     constexpr PwmComplementaryConfig(PwmChannel ch, core::u16 dead_ns = 100)
-        : channel(ch), dead_time_ns(dead_ns) {}
+        : channel(ch),
+          dead_time_ns(dead_ns) {}
 };
 
 /// PWM device concept
@@ -71,16 +69,11 @@ struct PwmComplementaryConfig {
 /// - ErrorCode::InvalidParameter: Invalid channel, frequency, or duty cycle
 /// - ErrorCode::NotSupported: Feature not supported by hardware
 /// - ErrorCode::OutOfRange: Frequency or duty cycle out of valid range
-template<typename T>
-concept PwmDevice = requires(T device, const T const_device,
-                             PwmChannel channel,
-                             float duty_cycle_percent,
-                             core::u16 duty_cycle_ticks,
-                             core::u32 frequency_hz,
-                             PwmConfig config,
-                             PwmComplementaryConfig comp_config,
-                             PwmPolarity polarity,
-                             std::span<PwmChannel> channels) {
+template <typename T>
+concept PwmDevice = requires(
+    T device, const T const_device, PwmChannel channel, float duty_cycle_percent,
+    core::u16 duty_cycle_ticks, core::u32 frequency_hz, PwmConfig config,
+    PwmComplementaryConfig comp_config, PwmPolarity polarity, std::span<PwmChannel> channels) {
     /// Set PWM duty cycle as percentage (0-100%)
     ///
     /// @param channel PWM channel
@@ -163,8 +156,10 @@ concept PwmDevice = requires(T device, const T const_device,
 /// @param max_ticks Maximum tick value (2^resolution - 1)
 /// @return Duty cycle in ticks
 inline constexpr core::u16 percent_to_ticks(float percent, core::u16 max_ticks) {
-    if (percent < 0.0f) percent = 0.0f;
-    if (percent > 100.0f) percent = 100.0f;
+    if (percent < 0.0f)
+        percent = 0.0f;
+    if (percent > 100.0f)
+        percent = 100.0f;
     return static_cast<core::u16>((percent / 100.0f) * static_cast<float>(max_ticks));
 }
 
@@ -193,6 +188,6 @@ inline constexpr core::u32 frequency_to_period_us(core::u32 frequency_hz) {
     return 1000000u / frequency_hz;
 }
 
-} // namespace alloy::hal
+}  // namespace alloy::hal
 
-#endif // ALLOY_HAL_INTERFACE_PWM_HPP
+#endif  // ALLOY_HAL_INTERFACE_PWM_HPP

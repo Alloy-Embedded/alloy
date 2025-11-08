@@ -39,11 +39,13 @@
 #ifndef ALLOY_RTOS_MUTEX_HPP
 #define ALLOY_RTOS_MUTEX_HPP
 
+#include "hal/interface/systick.hpp"
+
+#include "rtos/platform/critical_section.hpp"
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
-#include "rtos/platform/critical_section.hpp"
+
 #include "core/types.hpp"
-#include "hal/interface/systick.hpp"
 
 namespace alloy::rtos {
 
@@ -96,20 +98,15 @@ namespace alloy::rtos {
 /// }
 /// ```
 class Mutex {
-private:
-    TaskControlBlock* owner_;            ///< Task currently holding mutex (nullptr if free)
-    core::u8 original_priority_;         ///< Owner's original priority (for restoration)
-    core::u8 lock_count_;                ///< Recursive lock count (0 = unlocked)
-    TaskControlBlock* wait_list_;        ///< Tasks blocked waiting for mutex
+   private:
+    TaskControlBlock* owner_;      ///< Task currently holding mutex (nullptr if free)
+    core::u8 original_priority_;   ///< Owner's original priority (for restoration)
+    core::u8 lock_count_;          ///< Recursive lock count (0 = unlocked)
+    TaskControlBlock* wait_list_;  ///< Tasks blocked waiting for mutex
 
-public:
+   public:
     /// Constructor
-    Mutex()
-        : owner_(nullptr)
-        , original_priority_(0)
-        , lock_count_(0)
-        , wait_list_(nullptr)
-    {}
+    Mutex() : owner_(nullptr), original_priority_(0), lock_count_(0), wait_list_(nullptr) {}
 
     /// Lock mutex (acquire)
     ///
@@ -168,18 +165,14 @@ public:
     /// Check if mutex is locked
     ///
     /// @return true if locked by any task
-    bool is_locked() const {
-        return owner_ != nullptr;
-    }
+    bool is_locked() const { return owner_ != nullptr; }
 
     /// Get current owner
     ///
     /// @return Pointer to owner TCB, or nullptr if free
-    TaskControlBlock* owner() const {
-        return owner_;
-    }
+    TaskControlBlock* owner() const { return owner_; }
 
-private:
+   private:
     /// Apply priority inheritance
     ///
     /// Boosts owner's priority to match the highest waiting task.
@@ -192,14 +185,10 @@ private:
     void restore_priority();
 
     /// Disable interrupts (critical section)
-    static inline void disable_interrupts() {
-        platform::disable_interrupts();
-    }
+    static inline void disable_interrupts() { platform::disable_interrupts(); }
 
     /// Enable interrupts
-    static inline void enable_interrupts() {
-        platform::enable_interrupts();
-    }
+    static inline void enable_interrupts() { platform::enable_interrupts(); }
 };
 
 /// RAII Lock Guard
@@ -220,19 +209,18 @@ private:
 /// }
 /// ```
 class LockGuard {
-private:
+   private:
     Mutex& mutex_;
     bool locked_;
 
-public:
+   public:
     /// Constructor - locks mutex
     ///
     /// @param mutex Mutex to lock
     /// @param timeout_ms Timeout for lock (default: INFINITE)
     explicit LockGuard(Mutex& mutex, core::u32 timeout_ms = INFINITE)
-        : mutex_(mutex)
-        , locked_(mutex_.lock(timeout_ms))
-    {}
+        : mutex_(mutex),
+          locked_(mutex_.lock(timeout_ms)) {}
 
     /// Destructor - unlocks mutex if locked
     ~LockGuard() {
@@ -244,9 +232,7 @@ public:
     /// Check if lock was acquired
     ///
     /// @return true if mutex was successfully locked
-    bool is_locked() const {
-        return locked_;
-    }
+    bool is_locked() const { return locked_; }
 
     // Disable copy and move
     LockGuard(const LockGuard&) = delete;
@@ -392,6 +378,6 @@ inline void Mutex::restore_priority() {
     }
 }
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
-#endif // ALLOY_RTOS_MUTEX_HPP
+#endif  // ALLOY_RTOS_MUTEX_HPP

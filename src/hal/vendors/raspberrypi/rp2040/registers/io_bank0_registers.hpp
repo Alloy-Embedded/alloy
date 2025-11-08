@@ -17,7 +17,6 @@ namespace alloy::hal::raspberrypi::rp2040::io_bank0 {
 
 /// IO_BANK0 Register Structure
 struct IO_BANK0_Registers {
-
     /// GPIO status
     /// Offset: 0x0000
     /// Reset value: 0x00000000

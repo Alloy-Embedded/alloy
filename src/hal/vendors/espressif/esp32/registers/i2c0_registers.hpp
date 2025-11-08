@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::i2c0 {
 
 /// I2C0 Register Structure
 struct I2C0_Registers {
-
     /// SCL_LOW_PERIOD
     /// Offset: 0x0000
     volatile uint32_t SCL_LOW_PERIOD;
@@ -79,7 +78,7 @@ struct I2C0_Registers {
     /// SCL_HIGH_PERIOD
     /// Offset: 0x0038
     volatile uint32_t SCL_HIGH_PERIOD;
-    uint8_t RESERVED_003C[4]; ///< Reserved
+    uint8_t RESERVED_003C[4];  ///< Reserved
 
     /// SCL_START_HOLD
     /// Offset: 0x0040
@@ -112,13 +111,13 @@ struct I2C0_Registers {
     /// COMD[16]
     /// Offset: 0x0058
     volatile uint32_t COMD[16][16];
-    uint8_t RESERVED_0098[96]; ///< Reserved
+    uint8_t RESERVED_0098[96];  ///< Reserved
 
     /// DATE
     /// Offset: 0x00F8
     /// Reset value: 0x16042000
     volatile uint32_t DATE;
-    uint8_t RESERVED_00FC[4]; ///< Reserved
+    uint8_t RESERVED_00FC[4];  ///< Reserved
 
     /// FIFO_START_ADDR
     /// Offset: 0x0100

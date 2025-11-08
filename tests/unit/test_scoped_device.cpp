@@ -11,13 +11,14 @@
  * - Move semantics where applicable
  */
 
+#include <cassert>
+#include <iostream>
+
+#include "core/error.hpp"
+#include "core/result.hpp"
 #include "core/scoped_device.hpp"
 #include "core/scoped_i2c.hpp"
 #include "core/scoped_spi.hpp"
-#include "core/error.hpp"
-#include "core/result.hpp"
-#include <cassert>
-#include <iostream>
 
 using namespace alloy::core;
 
@@ -25,29 +26,29 @@ using namespace alloy::core;
 static int tests_run = 0;
 static int tests_passed = 0;
 
-#define TEST(name) \
-    void test_##name(); \
-    void run_test_##name() { \
-        tests_run++; \
-        std::cout << "Running test: " #name << "..."; \
-        try { \
-            test_##name(); \
-            tests_passed++; \
-            std::cout << " PASS" << std::endl; \
-        } catch (const std::exception& e) { \
-            std::cout << " FAIL: " << e.what() << std::endl; \
-        } catch (...) { \
+#define TEST(name)                                                \
+    void test_##name();                                           \
+    void run_test_##name() {                                      \
+        tests_run++;                                              \
+        std::cout << "Running test: " #name << "...";             \
+        try {                                                     \
+            test_##name();                                        \
+            tests_passed++;                                       \
+            std::cout << " PASS" << std::endl;                    \
+        } catch (const std::exception& e) {                       \
+            std::cout << " FAIL: " << e.what() << std::endl;      \
+        } catch (...) {                                           \
             std::cout << " FAIL: Unknown exception" << std::endl; \
-        } \
-    } \
+        }                                                         \
+    }                                                             \
     void test_##name()
 
-#define ASSERT(condition) \
-    do { \
-        if (!(condition)) { \
+#define ASSERT(condition)                                              \
+    do {                                                               \
+        if (!(condition)) {                                            \
             throw std::runtime_error("Assertion failed: " #condition); \
-        } \
-    } while(0)
+        }                                                              \
+    } while (0)
 
 // ============================================================================
 // Mock Device Classes for Testing
@@ -57,7 +58,7 @@ static int tests_passed = 0;
  * @brief Mock device for testing basic ScopedDevice
  */
 class MockDevice {
-public:
+   public:
     MockDevice() : m_open(false), m_access_count(0) {}
 
     bool isOpen() const { return m_open; }
@@ -67,7 +68,7 @@ public:
     void doSomething() { m_access_count++; }
     int getAccessCount() const { return m_access_count; }
 
-private:
+   private:
     bool m_open;
     int m_access_count;
 };
@@ -76,13 +77,13 @@ private:
  * @brief Mock I2C device for testing ScopedI2c
  */
 class MockI2cDevice {
-public:
+   public:
     MockI2cDevice()
-        : m_open(false)
-        , m_write_count(0)
-        , m_read_count(0)
-        , m_register_write_count(0)
-        , m_register_read_count(0) {}
+        : m_open(false),
+          m_write_count(0),
+          m_read_count(0),
+          m_register_write_count(0),
+          m_register_read_count(0) {}
 
     bool isOpen() const { return m_open; }
     void open() { m_open = true; }
@@ -129,7 +130,7 @@ public:
     uint8_t getLastReg() const { return m_last_reg; }
     uint8_t getLastValue() const { return m_last_value; }
 
-private:
+   private:
     bool m_open;
     int m_write_count;
     int m_read_count;
@@ -144,20 +145,15 @@ private:
  * @brief Mock SPI device for testing ScopedSpi
  */
 class MockSpiDevice {
-public:
-    enum class ChipSelect : uint8_t {
-        CS0 = 0,
-        CS1 = 1,
-        CS2 = 2,
-        CS3 = 3
-    };
+   public:
+    enum class ChipSelect : uint8_t { CS0 = 0, CS1 = 1, CS2 = 2, CS3 = 3 };
 
     MockSpiDevice()
-        : m_open(false)
-        , m_transfer_count(0)
-        , m_write_count(0)
-        , m_read_count(0)
-        , m_last_cs(ChipSelect::CS0) {}
+        : m_open(false),
+          m_transfer_count(0),
+          m_write_count(0),
+          m_read_count(0),
+          m_last_cs(ChipSelect::CS0) {}
 
     bool isOpen() const { return m_open; }
     void open() { m_open = true; }
@@ -195,7 +191,7 @@ public:
     int getReadCount() const { return m_read_count; }
     ChipSelect getLastCs() const { return m_last_cs; }
 
-private:
+   private:
     bool m_open;
     int m_transfer_count;
     int m_write_count;
@@ -408,8 +404,7 @@ TEST(scoped_spi_create_closed_fails) {
     // Device is not open
 
     auto result = ScopedSpi<MockSpiDevice, MockSpiDevice::ChipSelect>::create(
-        device, MockSpiDevice::ChipSelect::CS0
-    );
+        device, MockSpiDevice::ChipSelect::CS0);
 
     ASSERT(!result.is_ok());
     ASSERT(result.err() == ErrorCode::NotInitialized);
@@ -420,8 +415,7 @@ TEST(scoped_spi_create_open_succeeds) {
     device.open();
 
     auto result = ScopedSpi<MockSpiDevice, MockSpiDevice::ChipSelect>::create(
-        device, MockSpiDevice::ChipSelect::CS0
-    );
+        device, MockSpiDevice::ChipSelect::CS0);
 
     ASSERT(result.is_ok());
 }
@@ -431,8 +425,7 @@ TEST(scoped_spi_transfer_operation) {
     device.open();
 
     auto result = ScopedSpi<MockSpiDevice, MockSpiDevice::ChipSelect>::create(
-        device, MockSpiDevice::ChipSelect::CS1
-    );
+        device, MockSpiDevice::ChipSelect::CS1);
     ASSERT(result.is_ok());
 
     auto scoped = std::move(result).unwrap();
@@ -456,8 +449,7 @@ TEST(scoped_spi_write_operation) {
     device.open();
 
     auto result = ScopedSpi<MockSpiDevice, MockSpiDevice::ChipSelect>::create(
-        device, MockSpiDevice::ChipSelect::CS2
-    );
+        device, MockSpiDevice::ChipSelect::CS2);
     ASSERT(result.is_ok());
 
     auto scoped = std::move(result).unwrap();
@@ -475,8 +467,7 @@ TEST(scoped_spi_read_operation) {
     device.open();
 
     auto result = ScopedSpi<MockSpiDevice, MockSpiDevice::ChipSelect>::create(
-        device, MockSpiDevice::ChipSelect::CS3
-    );
+        device, MockSpiDevice::ChipSelect::CS3);
     ASSERT(result.is_ok());
 
     auto scoped = std::move(result).unwrap();
@@ -494,8 +485,7 @@ TEST(scoped_spi_write_byte) {
     device.open();
 
     auto result = ScopedSpi<MockSpiDevice, MockSpiDevice::ChipSelect>::create(
-        device, MockSpiDevice::ChipSelect::CS0
-    );
+        device, MockSpiDevice::ChipSelect::CS0);
     ASSERT(result.is_ok());
 
     auto scoped = std::move(result).unwrap();
@@ -510,8 +500,7 @@ TEST(scoped_spi_read_byte) {
     device.open();
 
     auto result = ScopedSpi<MockSpiDevice, MockSpiDevice::ChipSelect>::create(
-        device, MockSpiDevice::ChipSelect::CS0
-    );
+        device, MockSpiDevice::ChipSelect::CS0);
     ASSERT(result.is_ok());
 
     auto scoped = std::move(result).unwrap();
@@ -527,8 +516,7 @@ TEST(scoped_spi_transfer_byte) {
     device.open();
 
     auto result = ScopedSpi<MockSpiDevice, MockSpiDevice::ChipSelect>::create(
-        device, MockSpiDevice::ChipSelect::CS0
-    );
+        device, MockSpiDevice::ChipSelect::CS0);
     ASSERT(result.is_ok());
 
     auto scoped = std::move(result).unwrap();
@@ -544,8 +532,7 @@ TEST(scoped_spi_chip_select_access) {
     device.open();
 
     auto result = ScopedSpi<MockSpiDevice, MockSpiDevice::ChipSelect>::create(
-        device, MockSpiDevice::ChipSelect::CS2
-    );
+        device, MockSpiDevice::ChipSelect::CS2);
     ASSERT(result.is_ok());
 
     auto scoped = std::move(result).unwrap();
@@ -568,8 +555,7 @@ TEST(scoped_spi_scope_lifetime) {
     // Ensure device is accessible within scope
     {
         auto result = ScopedSpi<MockSpiDevice, MockSpiDevice::ChipSelect>::create(
-            device, MockSpiDevice::ChipSelect::CS0
-        );
+            device, MockSpiDevice::ChipSelect::CS0);
         ASSERT(result.is_ok());
 
         auto scoped = std::move(result).unwrap();
@@ -613,8 +599,7 @@ TEST(raii_spi_cleanup_early_return) {
 
     auto test_func = [&device]() -> bool {
         auto result = ScopedSpi<MockSpiDevice, MockSpiDevice::ChipSelect>::create(
-            device, MockSpiDevice::ChipSelect::CS0
-        );
+            device, MockSpiDevice::ChipSelect::CS0);
         if (!result.is_ok()) {
             return false;
         }

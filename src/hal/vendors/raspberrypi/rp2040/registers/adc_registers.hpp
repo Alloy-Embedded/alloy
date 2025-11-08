@@ -17,7 +17,6 @@ namespace alloy::hal::raspberrypi::rp2040::adc {
 
 /// ADC Register Structure
 struct ADC_Registers {
-
     /// ADC Control and Status
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -38,9 +37,9 @@ struct ADC_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t FIFO;
 
-    /// Clock divider. If non-zero, CS_START_MANY will start conversions\n at regular intervals rather than back-to-back.\n The divider is reset when either of these fields are written.\n Total period is 1 + INT + FRAC / 256
-    /// Offset: 0x0010
-    /// Reset value: 0x00000000
+    /// Clock divider. If non-zero, CS_START_MANY will start conversions\n at regular intervals
+    /// rather than back-to-back.\n The divider is reset when either of these fields are written.\n
+    /// Total period is 1 + INT + FRAC / 256 Offset: 0x0010 Reset value: 0x00000000
     volatile uint32_t DIV;
 
     /// Raw Interrupts
