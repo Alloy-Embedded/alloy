@@ -6,11 +6,12 @@
  * This ensures the code generator produces valid C++ code.
  */
 
-#include "../../../src/hal/vendors/atmel/same70/atsame70q21/register_map.hpp"
-#include "../../../src/core/types.hpp"
 #include <cassert>
 #include <iostream>
 #include <type_traits>
+
+#include "../../../src/core/types.hpp"
+#include "../../../src/hal/vendors/atmel/same70/atsame70q21/register_map.hpp"
 
 using namespace alloy::core;
 using namespace alloy::hal::atmel::same70;
@@ -19,29 +20,29 @@ using namespace alloy::hal::atmel::same70;
 static int tests_run = 0;
 static int tests_passed = 0;
 
-#define TEST(name) \
-    void test_##name(); \
-    void run_test_##name() { \
-        tests_run++; \
-        std::cout << "Running test: " #name << "..."; \
-        try { \
-            test_##name(); \
-            tests_passed++; \
-            std::cout << " PASS" << std::endl; \
-        } catch (const std::exception& e) { \
-            std::cout << " FAIL: " << e.what() << std::endl; \
-        } catch (...) { \
+#define TEST(name)                                                \
+    void test_##name();                                           \
+    void run_test_##name() {                                      \
+        tests_run++;                                              \
+        std::cout << "Running test: " #name << "...";             \
+        try {                                                     \
+            test_##name();                                        \
+            tests_passed++;                                       \
+            std::cout << " PASS" << std::endl;                    \
+        } catch (const std::exception& e) {                       \
+            std::cout << " FAIL: " << e.what() << std::endl;      \
+        } catch (...) {                                           \
             std::cout << " FAIL: Unknown exception" << std::endl; \
-        } \
-    } \
+        }                                                         \
+    }                                                             \
     void test_##name()
 
-#define ASSERT(condition) \
-    do { \
-        if (!(condition)) { \
+#define ASSERT(condition)                                              \
+    do {                                                               \
+        if (!(condition)) {                                            \
             throw std::runtime_error("Assertion failed: " #condition); \
-        } \
-    } while(0)
+        }                                                              \
+    } while (0)
 
 // =============================================================================
 // Register Structure Size Tests

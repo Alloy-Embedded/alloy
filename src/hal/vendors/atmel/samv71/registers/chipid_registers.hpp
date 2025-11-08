@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samv71::chipid {
 
 /// CHIPID Register Structure
 struct CHIPID_Registers {
-
     /// Chip ID Register
     /// Offset: 0x0000
     /// Access: read-only

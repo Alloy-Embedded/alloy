@@ -52,13 +52,15 @@
 #ifndef ALLOY_RTOS_QUEUE_HPP
 #define ALLOY_RTOS_QUEUE_HPP
 
-#include "rtos/rtos.hpp"
-#include "rtos/scheduler.hpp"
-#include "rtos/platform/critical_section.hpp"
-#include "core/types.hpp"
-#include "core/error.hpp"
 #include <cstring>
 #include <type_traits>
+
+#include "rtos/platform/critical_section.hpp"
+#include "rtos/rtos.hpp"
+#include "rtos/scheduler.hpp"
+
+#include "core/error.hpp"
+#include "core/types.hpp"
 
 namespace alloy::rtos {
 
@@ -73,23 +75,20 @@ namespace alloy::rtos {
 /// - T must be trivially copyable (memcpy-safe)
 /// - Capacity must be between 2 and 256
 /// - Capacity must be power of 2 (for efficient modulo with mask)
-template<typename T, size_t Capacity>
+template <typename T, size_t Capacity>
 class Queue {
-    static_assert(std::is_trivially_copyable_v<T>,
-                  "Queue message type must be trivially copyable");
-    static_assert(Capacity >= 2 && Capacity <= 256,
-                  "Queue capacity must be between 2 and 256");
-    static_assert((Capacity & (Capacity - 1)) == 0,
-                  "Queue capacity must be power of 2");
+    static_assert(std::is_trivially_copyable_v<T>, "Queue message type must be trivially copyable");
+    static_assert(Capacity >= 2 && Capacity <= 256, "Queue capacity must be between 2 and 256");
+    static_assert((Capacity & (Capacity - 1)) == 0, "Queue capacity must be power of 2");
 
-private:
+   private:
     /// Circular buffer for messages
     alignas(T) T buffer_[Capacity];
 
     /// Queue state
-    core::u32 head_;           ///< Write position (producer)
-    core::u32 tail_;           ///< Read position (consumer)
-    core::u32 count_;          ///< Number of messages in queue
+    core::u32 head_;   ///< Write position (producer)
+    core::u32 tail_;   ///< Read position (consumer)
+    core::u32 count_;  ///< Number of messages in queue
 
     /// Wait lists for blocked tasks
     TaskControlBlock* send_wait_list_;     ///< Tasks blocked on full queue
@@ -98,16 +97,15 @@ private:
     /// Capacity mask (Capacity - 1, for fast modulo)
     static constexpr core::u32 MASK = Capacity - 1;
 
-public:
+   public:
     /// Constructor
     constexpr Queue()
-        : buffer_{}
-        , head_(0)
-        , tail_(0)
-        , count_(0)
-        , send_wait_list_(nullptr)
-        , receive_wait_list_(nullptr)
-    {}
+        : buffer_{},
+          head_(0),
+          tail_(0),
+          count_(0),
+          send_wait_list_(nullptr),
+          receive_wait_list_(nullptr) {}
 
     /// Send message to queue (blocking)
     ///
@@ -179,37 +177,27 @@ public:
     /// Check if queue is empty
     ///
     /// @return true if no messages in queue
-    bool is_empty() const {
-        return count_ == 0;
-    }
+    bool is_empty() const { return count_ == 0; }
 
     /// Check if queue is full
     ///
     /// @return true if queue is at capacity
-    bool is_full() const {
-        return count_ == Capacity;
-    }
+    bool is_full() const { return count_ == Capacity; }
 
     /// Get number of messages currently in queue
     ///
     /// @return Number of messages (0 to Capacity)
-    core::u32 count() const {
-        return count_;
-    }
+    core::u32 count() const { return count_; }
 
     /// Get queue capacity
     ///
     /// @return Maximum number of messages
-    constexpr core::u32 capacity() const {
-        return Capacity;
-    }
+    constexpr core::u32 capacity() const { return Capacity; }
 
     /// Get number of free slots
     ///
     /// @return Number of messages that can be sent without blocking
-    core::u32 available() const {
-        return Capacity - count_;
-    }
+    core::u32 available() const { return Capacity - count_; }
 
     /// Reset queue to empty state
     ///
@@ -226,21 +214,17 @@ public:
         enable_interrupts();
     }
 
-private:
+   private:
     /// Disable interrupts (critical section entry)
-    static inline void disable_interrupts() {
-        platform::disable_interrupts();
-    }
+    static inline void disable_interrupts() { platform::disable_interrupts(); }
 
     /// Enable interrupts (critical section exit)
-    static inline void enable_interrupts() {
-        platform::enable_interrupts();
-    }
+    static inline void enable_interrupts() { platform::enable_interrupts(); }
 };
 
 // Template implementation
 
-template<typename T, size_t Capacity>
+template <typename T, size_t Capacity>
 bool Queue<T, Capacity>::send(const T& message, core::u32 timeout_ms) {
     core::u32 start_time = systick::micros();
 
@@ -269,7 +253,7 @@ bool Queue<T, Capacity>::send(const T& message, core::u32 timeout_ms) {
     }
 }
 
-template<typename T, size_t Capacity>
+template <typename T, size_t Capacity>
 bool Queue<T, Capacity>::receive(T& message, core::u32 timeout_ms) {
     core::u32 start_time = systick::micros();
 
@@ -298,7 +282,7 @@ bool Queue<T, Capacity>::receive(T& message, core::u32 timeout_ms) {
     }
 }
 
-template<typename T, size_t Capacity>
+template <typename T, size_t Capacity>
 bool Queue<T, Capacity>::try_send(const T& message) {
     disable_interrupts();
 
@@ -325,7 +309,7 @@ bool Queue<T, Capacity>::try_send(const T& message) {
     return true;
 }
 
-template<typename T, size_t Capacity>
+template <typename T, size_t Capacity>
 bool Queue<T, Capacity>::try_receive(T& message) {
     disable_interrupts();
 
@@ -352,6 +336,6 @@ bool Queue<T, Capacity>::try_receive(T& message) {
     return true;
 }
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
-#endif // ALLOY_RTOS_QUEUE_HPP
+#endif  // ALLOY_RTOS_QUEUE_HPP

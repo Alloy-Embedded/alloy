@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::rtc_i2c {
 
 /// RTC_I2C Register Structure
 struct RTC_I2C_Registers {
-
     /// SCL_LOW_PERIOD
     /// Offset: 0x0000
     volatile uint32_t SCL_LOW_PERIOD;
@@ -37,7 +36,7 @@ struct RTC_I2C_Registers {
     /// SLAVE_ADDR
     /// Offset: 0x0010
     volatile uint32_t SLAVE_ADDR;
-    uint8_t RESERVED_0014[8]; ///< Reserved
+    uint8_t RESERVED_0014[8];  ///< Reserved
 
     /// DATA
     /// Offset: 0x001C
@@ -62,12 +61,12 @@ struct RTC_I2C_Registers {
     /// SDA_DUTY
     /// Offset: 0x0030
     volatile uint32_t SDA_DUTY;
-    uint8_t RESERVED_0034[4]; ///< Reserved
+    uint8_t RESERVED_0034[4];  ///< Reserved
 
     /// SCL_HIGH_PERIOD
     /// Offset: 0x0038
     volatile uint32_t SCL_HIGH_PERIOD;
-    uint8_t RESERVED_003C[4]; ///< Reserved
+    uint8_t RESERVED_003C[4];  ///< Reserved
 
     /// SCL_START_PERIOD
     /// Offset: 0x0040

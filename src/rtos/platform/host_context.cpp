@@ -1,23 +1,26 @@
 /// Alloy RTOS - Host Context Switching Implementation
 
 #include "host_context.hpp"
-#include "rtos/scheduler.hpp"
-#include "hal/host/systick.hpp"
-#include <iostream>
-#include <chrono>
-#include <map>
+
 #include <cassert>
+#include <chrono>
+#include <iostream>
+#include <map>
+
+#include "hal/host/systick.hpp"
+
+#include "rtos/scheduler.hpp"
 
 namespace alloy::rtos {
 
 // Forward declare platform functions
 namespace platform {
-    void context_switch();
-    void trigger_context_switch();
-    HostTaskContext* get_host_context(TaskControlBlock* tcb);
-    void start_first_task();
-    void scheduler_tick_thread();
-}
+void context_switch();
+void trigger_context_switch();
+HostTaskContext* get_host_context(TaskControlBlock* tcb);
+void start_first_task();
+void scheduler_tick_thread();
+}  // namespace platform
 
 // Global namespace implementations (required by RTOS interface)
 void init_task_stack(TaskControlBlock* tcb, void (*func)()) {
@@ -29,12 +32,12 @@ void trigger_context_switch() {
 }
 
 namespace scheduler {
-    void trigger_context_switch() {
-        platform::trigger_context_switch();
-    }
+void trigger_context_switch() {
+    platform::trigger_context_switch();
 }
+}  // namespace scheduler
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
 namespace alloy::rtos::platform {
 
@@ -62,12 +65,12 @@ static void task_thread_wrapper(TaskControlBlock* tcb) {
         // Wait for scheduler to give us permission to run
         {
             std::unique_lock<std::mutex> lock(ctx->mutex);
-            ctx->cv.wait(lock, [ctx]() {
-                return ctx->should_run.load() || ctx->terminated.load();
-            });
+            ctx->cv.wait(lock,
+                         [ctx]() { return ctx->should_run.load() || ctx->terminated.load(); });
         }
 
-        if (ctx->terminated) break;
+        if (ctx->terminated)
+            break;
 
         // Set this task as current
         g_current_task_atomic.store(tcb);
@@ -184,21 +187,20 @@ void start_first_task() {
     {
         std::lock_guard<std::mutex> lock(g_contexts_mutex);
         for (auto& [tcb, ctx] : g_task_contexts) {
-            std::cout << "[RTOS Host] Creating thread for task: "
-                      << tcb->name << " (priority " << (int)tcb->priority << ")"
-                      << std::endl;
+            std::cout << "[RTOS Host] Creating thread for task: " << tcb->name << " (priority "
+                      << (int)tcb->priority << ")" << std::endl;
 
             ctx->thread = std::thread(task_thread_wrapper, tcb);
 
-            // Set thread priority based on task priority (platform-specific)
-            // Note: This is best-effort on most platforms
-            #ifdef __linux__
-            // Linux: sched_setscheduler
-            #elif defined(__APPLE__)
-            // macOS: thread_policy_set (limited control)
-            #elif defined(_WIN32)
-            // Windows: SetThreadPriority
-            #endif
+// Set thread priority based on task priority (platform-specific)
+// Note: This is best-effort on most platforms
+#ifdef __linux__
+// Linux: sched_setscheduler
+#elif defined(__APPLE__)
+// macOS: thread_policy_set (limited control)
+#elif defined(_WIN32)
+// Windows: SetThreadPriority
+#endif
         }
     }
 
@@ -267,4 +269,4 @@ void start_first_task() {
     std::exit(0);  // Exit cleanly
 }
 
-} // namespace alloy::rtos::platform
+}  // namespace alloy::rtos::platform

@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::dac {
@@ -19,182 +20,182 @@ using namespace alloy::hal::bitfields;
 
 /// CTRLA - Control A
 namespace ctrla {
-    /// Software Reset
-    /// Position: 0, Width: 1
-    using SWRST = BitField<0, 1>;
-    constexpr uint32_t SWRST_Pos = 0;
-    constexpr uint32_t SWRST_Msk = SWRST::mask;
+/// Software Reset
+/// Position: 0, Width: 1
+using SWRST = BitField<0, 1>;
+constexpr uint32_t SWRST_Pos = 0;
+constexpr uint32_t SWRST_Msk = SWRST::mask;
 
-    /// Enable
-    /// Position: 1, Width: 1
-    using ENABLE = BitField<1, 1>;
-    constexpr uint32_t ENABLE_Pos = 1;
-    constexpr uint32_t ENABLE_Msk = ENABLE::mask;
+/// Enable
+/// Position: 1, Width: 1
+using ENABLE = BitField<1, 1>;
+constexpr uint32_t ENABLE_Pos = 1;
+constexpr uint32_t ENABLE_Msk = ENABLE::mask;
 
-    /// Run in Standby
-    /// Position: 2, Width: 1
-    using RUNSTDBY = BitField<2, 1>;
-    constexpr uint32_t RUNSTDBY_Pos = 2;
-    constexpr uint32_t RUNSTDBY_Msk = RUNSTDBY::mask;
+/// Run in Standby
+/// Position: 2, Width: 1
+using RUNSTDBY = BitField<2, 1>;
+constexpr uint32_t RUNSTDBY_Pos = 2;
+constexpr uint32_t RUNSTDBY_Msk = RUNSTDBY::mask;
 
 }  // namespace ctrla
 
 /// CTRLB - Control B
 namespace ctrlb {
-    /// External Output Enable
-    /// Position: 0, Width: 1
-    using EOEN = BitField<0, 1>;
-    constexpr uint32_t EOEN_Pos = 0;
-    constexpr uint32_t EOEN_Msk = EOEN::mask;
+/// External Output Enable
+/// Position: 0, Width: 1
+using EOEN = BitField<0, 1>;
+constexpr uint32_t EOEN_Pos = 0;
+constexpr uint32_t EOEN_Msk = EOEN::mask;
 
-    /// Internal Output Enable
-    /// Position: 1, Width: 1
-    using IOEN = BitField<1, 1>;
-    constexpr uint32_t IOEN_Pos = 1;
-    constexpr uint32_t IOEN_Msk = IOEN::mask;
+/// Internal Output Enable
+/// Position: 1, Width: 1
+using IOEN = BitField<1, 1>;
+constexpr uint32_t IOEN_Pos = 1;
+constexpr uint32_t IOEN_Msk = IOEN::mask;
 
-    /// Left Adjusted Data
-    /// Position: 2, Width: 1
-    using LEFTADJ = BitField<2, 1>;
-    constexpr uint32_t LEFTADJ_Pos = 2;
-    constexpr uint32_t LEFTADJ_Msk = LEFTADJ::mask;
+/// Left Adjusted Data
+/// Position: 2, Width: 1
+using LEFTADJ = BitField<2, 1>;
+constexpr uint32_t LEFTADJ_Pos = 2;
+constexpr uint32_t LEFTADJ_Msk = LEFTADJ::mask;
 
-    /// Voltage Pump Disable
-    /// Position: 3, Width: 1
-    using VPD = BitField<3, 1>;
-    constexpr uint32_t VPD_Pos = 3;
-    constexpr uint32_t VPD_Msk = VPD::mask;
+/// Voltage Pump Disable
+/// Position: 3, Width: 1
+using VPD = BitField<3, 1>;
+constexpr uint32_t VPD_Pos = 3;
+constexpr uint32_t VPD_Msk = VPD::mask;
 
-    /// Bypass DATABUF Write Protection
-    /// Position: 4, Width: 1
-    using BDWP = BitField<4, 1>;
-    constexpr uint32_t BDWP_Pos = 4;
-    constexpr uint32_t BDWP_Msk = BDWP::mask;
+/// Bypass DATABUF Write Protection
+/// Position: 4, Width: 1
+using BDWP = BitField<4, 1>;
+constexpr uint32_t BDWP_Pos = 4;
+constexpr uint32_t BDWP_Msk = BDWP::mask;
 
-    /// Reference Selection
-    /// Position: 6, Width: 2
-    using REFSEL = BitField<6, 2>;
-    constexpr uint32_t REFSEL_Pos = 6;
-    constexpr uint32_t REFSEL_Msk = REFSEL::mask;
-    /// Enumerated values for REFSEL
-    namespace refsel {
-        constexpr uint32_t INT1V = 0;
-        constexpr uint32_t AVCC = 1;
-        constexpr uint32_t VREFP = 2;
-    }
+/// Reference Selection
+/// Position: 6, Width: 2
+using REFSEL = BitField<6, 2>;
+constexpr uint32_t REFSEL_Pos = 6;
+constexpr uint32_t REFSEL_Msk = REFSEL::mask;
+/// Enumerated values for REFSEL
+namespace refsel {
+constexpr uint32_t INT1V = 0;
+constexpr uint32_t AVCC = 1;
+constexpr uint32_t VREFP = 2;
+}  // namespace refsel
 
 }  // namespace ctrlb
 
 /// EVCTRL - Event Control
 namespace evctrl {
-    /// Start Conversion Event Input
-    /// Position: 0, Width: 1
-    using STARTEI = BitField<0, 1>;
-    constexpr uint32_t STARTEI_Pos = 0;
-    constexpr uint32_t STARTEI_Msk = STARTEI::mask;
+/// Start Conversion Event Input
+/// Position: 0, Width: 1
+using STARTEI = BitField<0, 1>;
+constexpr uint32_t STARTEI_Pos = 0;
+constexpr uint32_t STARTEI_Msk = STARTEI::mask;
 
-    /// Data Buffer Empty Event Output
-    /// Position: 1, Width: 1
-    using EMPTYEO = BitField<1, 1>;
-    constexpr uint32_t EMPTYEO_Pos = 1;
-    constexpr uint32_t EMPTYEO_Msk = EMPTYEO::mask;
+/// Data Buffer Empty Event Output
+/// Position: 1, Width: 1
+using EMPTYEO = BitField<1, 1>;
+constexpr uint32_t EMPTYEO_Pos = 1;
+constexpr uint32_t EMPTYEO_Msk = EMPTYEO::mask;
 
 }  // namespace evctrl
 
 /// INTENCLR - Interrupt Enable Clear
 namespace intenclr {
-    /// Underrun Interrupt Enable
-    /// Position: 0, Width: 1
-    using UNDERRUN = BitField<0, 1>;
-    constexpr uint32_t UNDERRUN_Pos = 0;
-    constexpr uint32_t UNDERRUN_Msk = UNDERRUN::mask;
+/// Underrun Interrupt Enable
+/// Position: 0, Width: 1
+using UNDERRUN = BitField<0, 1>;
+constexpr uint32_t UNDERRUN_Pos = 0;
+constexpr uint32_t UNDERRUN_Msk = UNDERRUN::mask;
 
-    /// Data Buffer Empty Interrupt Enable
-    /// Position: 1, Width: 1
-    using EMPTY = BitField<1, 1>;
-    constexpr uint32_t EMPTY_Pos = 1;
-    constexpr uint32_t EMPTY_Msk = EMPTY::mask;
+/// Data Buffer Empty Interrupt Enable
+/// Position: 1, Width: 1
+using EMPTY = BitField<1, 1>;
+constexpr uint32_t EMPTY_Pos = 1;
+constexpr uint32_t EMPTY_Msk = EMPTY::mask;
 
-    /// Synchronization Ready Interrupt Enable
-    /// Position: 2, Width: 1
-    using SYNCRDY = BitField<2, 1>;
-    constexpr uint32_t SYNCRDY_Pos = 2;
-    constexpr uint32_t SYNCRDY_Msk = SYNCRDY::mask;
+/// Synchronization Ready Interrupt Enable
+/// Position: 2, Width: 1
+using SYNCRDY = BitField<2, 1>;
+constexpr uint32_t SYNCRDY_Pos = 2;
+constexpr uint32_t SYNCRDY_Msk = SYNCRDY::mask;
 
 }  // namespace intenclr
 
 /// INTENSET - Interrupt Enable Set
 namespace intenset {
-    /// Underrun Interrupt Enable
-    /// Position: 0, Width: 1
-    using UNDERRUN = BitField<0, 1>;
-    constexpr uint32_t UNDERRUN_Pos = 0;
-    constexpr uint32_t UNDERRUN_Msk = UNDERRUN::mask;
+/// Underrun Interrupt Enable
+/// Position: 0, Width: 1
+using UNDERRUN = BitField<0, 1>;
+constexpr uint32_t UNDERRUN_Pos = 0;
+constexpr uint32_t UNDERRUN_Msk = UNDERRUN::mask;
 
-    /// Data Buffer Empty Interrupt Enable
-    /// Position: 1, Width: 1
-    using EMPTY = BitField<1, 1>;
-    constexpr uint32_t EMPTY_Pos = 1;
-    constexpr uint32_t EMPTY_Msk = EMPTY::mask;
+/// Data Buffer Empty Interrupt Enable
+/// Position: 1, Width: 1
+using EMPTY = BitField<1, 1>;
+constexpr uint32_t EMPTY_Pos = 1;
+constexpr uint32_t EMPTY_Msk = EMPTY::mask;
 
-    /// Synchronization Ready Interrupt Enable
-    /// Position: 2, Width: 1
-    using SYNCRDY = BitField<2, 1>;
-    constexpr uint32_t SYNCRDY_Pos = 2;
-    constexpr uint32_t SYNCRDY_Msk = SYNCRDY::mask;
+/// Synchronization Ready Interrupt Enable
+/// Position: 2, Width: 1
+using SYNCRDY = BitField<2, 1>;
+constexpr uint32_t SYNCRDY_Pos = 2;
+constexpr uint32_t SYNCRDY_Msk = SYNCRDY::mask;
 
 }  // namespace intenset
 
 /// INTFLAG - Interrupt Flag Status and Clear
 namespace intflag {
-    /// Underrun
-    /// Position: 0, Width: 1
-    using UNDERRUN = BitField<0, 1>;
-    constexpr uint32_t UNDERRUN_Pos = 0;
-    constexpr uint32_t UNDERRUN_Msk = UNDERRUN::mask;
+/// Underrun
+/// Position: 0, Width: 1
+using UNDERRUN = BitField<0, 1>;
+constexpr uint32_t UNDERRUN_Pos = 0;
+constexpr uint32_t UNDERRUN_Msk = UNDERRUN::mask;
 
-    /// Data Buffer Empty
-    /// Position: 1, Width: 1
-    using EMPTY = BitField<1, 1>;
-    constexpr uint32_t EMPTY_Pos = 1;
-    constexpr uint32_t EMPTY_Msk = EMPTY::mask;
+/// Data Buffer Empty
+/// Position: 1, Width: 1
+using EMPTY = BitField<1, 1>;
+constexpr uint32_t EMPTY_Pos = 1;
+constexpr uint32_t EMPTY_Msk = EMPTY::mask;
 
-    /// Synchronization Ready
-    /// Position: 2, Width: 1
-    using SYNCRDY = BitField<2, 1>;
-    constexpr uint32_t SYNCRDY_Pos = 2;
-    constexpr uint32_t SYNCRDY_Msk = SYNCRDY::mask;
+/// Synchronization Ready
+/// Position: 2, Width: 1
+using SYNCRDY = BitField<2, 1>;
+constexpr uint32_t SYNCRDY_Pos = 2;
+constexpr uint32_t SYNCRDY_Msk = SYNCRDY::mask;
 
 }  // namespace intflag
 
 /// STATUS - Status
 namespace status {
-    /// Synchronization Busy Status
-    /// Position: 7, Width: 1
-    /// Access: read-only
-    using SYNCBUSY = BitField<7, 1>;
-    constexpr uint32_t SYNCBUSY_Pos = 7;
-    constexpr uint32_t SYNCBUSY_Msk = SYNCBUSY::mask;
+/// Synchronization Busy Status
+/// Position: 7, Width: 1
+/// Access: read-only
+using SYNCBUSY = BitField<7, 1>;
+constexpr uint32_t SYNCBUSY_Pos = 7;
+constexpr uint32_t SYNCBUSY_Msk = SYNCBUSY::mask;
 
 }  // namespace status
 
 /// DATA - Data
 namespace data {
-    /// Data value to be converted
-    /// Position: 0, Width: 16
-    using DATA = BitField<0, 16>;
-    constexpr uint32_t DATA_Pos = 0;
-    constexpr uint32_t DATA_Msk = DATA::mask;
+/// Data value to be converted
+/// Position: 0, Width: 16
+using DATA = BitField<0, 16>;
+constexpr uint32_t DATA_Pos = 0;
+constexpr uint32_t DATA_Msk = DATA::mask;
 
 }  // namespace data
 
 /// DATABUF - Data Buffer
 namespace databuf {
-    /// Data Buffer
-    /// Position: 0, Width: 16
-    using DATABUF = BitField<0, 16>;
-    constexpr uint32_t DATABUF_Pos = 0;
-    constexpr uint32_t DATABUF_Msk = DATABUF::mask;
+/// Data Buffer
+/// Position: 0, Width: 16
+using DATABUF = BitField<0, 16>;
+constexpr uint32_t DATABUF_Pos = 0;
+constexpr uint32_t DATABUF_Msk = DATABUF::mask;
 
 }  // namespace databuf
 

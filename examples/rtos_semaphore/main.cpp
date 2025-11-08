@@ -8,10 +8,12 @@
 /// Hardware: STM32F103 (Bluepill)
 /// - LED on PC13 shows different patterns based on semaphore state
 
-#include "stm32f103c8/board.hpp"
 #include "rtos/rtos.hpp"
 #include "rtos/semaphore.hpp"
+
 #include "core/types.hpp"
+
+#include "stm32f103c8/board.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
@@ -137,11 +139,11 @@ void idle_task_func() {
 
 // Create tasks with different priorities
 // Event generator has highest priority (simulates ISR timing)
-Task<256, Priority::Highest>  event_gen_task(event_generator_task_func, "EventGen");
-Task<512, Priority::High>     event_handler_task(event_handler_task_func, "EventHandler");
-Task<512, Priority::Normal>   resource_user1_task(resource_user1_task_func, "ResUser1");
-Task<512, Priority::Normal>   resource_user2_task(resource_user2_task_func, "ResUser2");
-Task<256, Priority::Idle>     idle_task(idle_task_func, "Idle");
+Task<256, Priority::Highest> event_gen_task(event_generator_task_func, "EventGen");
+Task<512, Priority::High> event_handler_task(event_handler_task_func, "EventHandler");
+Task<512, Priority::Normal> resource_user1_task(resource_user1_task_func, "ResUser1");
+Task<512, Priority::Normal> resource_user2_task(resource_user2_task_func, "ResUser2");
+Task<256, Priority::Idle> idle_task(idle_task_func, "Idle");
 
 int main() {
     // Initialize board (includes SysTick)
@@ -158,7 +160,7 @@ int main() {
 
 // Weak symbols for startup code
 extern "C" {
-    void SystemInit() {
-        // Running on default HSI (8MHz)
-    }
+void SystemInit() {
+    // Running on default HSI (8MHz)
+}
 }

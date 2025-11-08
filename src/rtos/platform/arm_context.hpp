@@ -39,6 +39,7 @@
 #define ALLOY_RTOS_ARM_CONTEXT_HPP
 
 #include "rtos/rtos.hpp"
+
 #include "core/types.hpp"
 
 namespace alloy::rtos {
@@ -79,14 +80,15 @@ namespace arm_regs {
 
 /// System Control Block (SCB) registers
 struct SCB_Type {
-    volatile core::u32 CPUID;    // Offset: 0x000 (R/ )  CPUID Base Register
-    volatile core::u32 ICSR;     // Offset: 0x004 (R/W)  Interrupt Control and State Register
-    volatile core::u32 VTOR;     // Offset: 0x008 (R/W)  Vector Table Offset Register
-    volatile core::u32 AIRCR;    // Offset: 0x00C (R/W)  Application Interrupt and Reset Control Register
-    volatile core::u32 SCR;      // Offset: 0x010 (R/W)  System Control Register
-    volatile core::u32 CCR;      // Offset: 0x014 (R/W)  Configuration Control Register
-    volatile core::u8  SHP[12];  // Offset: 0x018 (R/W)  System Handlers Priority Registers
-    volatile core::u32 SHCSR;    // Offset: 0x024 (R/W)  System Handler Control and State Register
+    volatile core::u32 CPUID;  // Offset: 0x000 (R/ )  CPUID Base Register
+    volatile core::u32 ICSR;   // Offset: 0x004 (R/W)  Interrupt Control and State Register
+    volatile core::u32 VTOR;   // Offset: 0x008 (R/W)  Vector Table Offset Register
+    volatile core::u32
+        AIRCR;  // Offset: 0x00C (R/W)  Application Interrupt and Reset Control Register
+    volatile core::u32 SCR;     // Offset: 0x010 (R/W)  System Control Register
+    volatile core::u32 CCR;     // Offset: 0x014 (R/W)  Configuration Control Register
+    volatile core::u8 SHP[12];  // Offset: 0x018 (R/W)  System Handlers Priority Registers
+    volatile core::u32 SHCSR;   // Offset: 0x024 (R/W)  System Handler Control and State Register
 };
 
 // SCB base address (ARM Cortex-M standard)
@@ -97,8 +99,8 @@ inline SCB_Type* const SCB = reinterpret_cast<SCB_Type*>(SCB_BASE);
 constexpr core::u32 SCB_ICSR_PENDSVSET_Pos = 28;
 constexpr core::u32 SCB_ICSR_PENDSVSET_Msk = (1UL << SCB_ICSR_PENDSVSET_Pos);
 
-} // namespace arm_regs
+}  // namespace arm_regs
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
-#endif // ALLOY_RTOS_ARM_CONTEXT_HPP
+#endif  // ALLOY_RTOS_ARM_CONTEXT_HPP

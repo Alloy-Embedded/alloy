@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::gpioi {
@@ -19,1007 +20,1007 @@ using namespace alloy::hal::bitfields;
 
 /// MODER - GPIO port mode register
 namespace moder {
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 0, Width: 2
-    using MODER0 = BitField<0, 2>;
-    constexpr uint32_t MODER0_Pos = 0;
-    constexpr uint32_t MODER0_Msk = MODER0::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 0, Width: 2
+using MODER0 = BitField<0, 2>;
+constexpr uint32_t MODER0_Pos = 0;
+constexpr uint32_t MODER0_Msk = MODER0::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 2, Width: 2
-    using MODER1 = BitField<2, 2>;
-    constexpr uint32_t MODER1_Pos = 2;
-    constexpr uint32_t MODER1_Msk = MODER1::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 2, Width: 2
+using MODER1 = BitField<2, 2>;
+constexpr uint32_t MODER1_Pos = 2;
+constexpr uint32_t MODER1_Msk = MODER1::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 4, Width: 2
-    using MODER2 = BitField<4, 2>;
-    constexpr uint32_t MODER2_Pos = 4;
-    constexpr uint32_t MODER2_Msk = MODER2::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 4, Width: 2
+using MODER2 = BitField<4, 2>;
+constexpr uint32_t MODER2_Pos = 4;
+constexpr uint32_t MODER2_Msk = MODER2::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 6, Width: 2
-    using MODER3 = BitField<6, 2>;
-    constexpr uint32_t MODER3_Pos = 6;
-    constexpr uint32_t MODER3_Msk = MODER3::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 6, Width: 2
+using MODER3 = BitField<6, 2>;
+constexpr uint32_t MODER3_Pos = 6;
+constexpr uint32_t MODER3_Msk = MODER3::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 8, Width: 2
-    using MODER4 = BitField<8, 2>;
-    constexpr uint32_t MODER4_Pos = 8;
-    constexpr uint32_t MODER4_Msk = MODER4::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 8, Width: 2
+using MODER4 = BitField<8, 2>;
+constexpr uint32_t MODER4_Pos = 8;
+constexpr uint32_t MODER4_Msk = MODER4::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 10, Width: 2
-    using MODER5 = BitField<10, 2>;
-    constexpr uint32_t MODER5_Pos = 10;
-    constexpr uint32_t MODER5_Msk = MODER5::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 10, Width: 2
+using MODER5 = BitField<10, 2>;
+constexpr uint32_t MODER5_Pos = 10;
+constexpr uint32_t MODER5_Msk = MODER5::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 12, Width: 2
-    using MODER6 = BitField<12, 2>;
-    constexpr uint32_t MODER6_Pos = 12;
-    constexpr uint32_t MODER6_Msk = MODER6::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 12, Width: 2
+using MODER6 = BitField<12, 2>;
+constexpr uint32_t MODER6_Pos = 12;
+constexpr uint32_t MODER6_Msk = MODER6::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 14, Width: 2
-    using MODER7 = BitField<14, 2>;
-    constexpr uint32_t MODER7_Pos = 14;
-    constexpr uint32_t MODER7_Msk = MODER7::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 14, Width: 2
+using MODER7 = BitField<14, 2>;
+constexpr uint32_t MODER7_Pos = 14;
+constexpr uint32_t MODER7_Msk = MODER7::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 16, Width: 2
-    using MODER8 = BitField<16, 2>;
-    constexpr uint32_t MODER8_Pos = 16;
-    constexpr uint32_t MODER8_Msk = MODER8::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 16, Width: 2
+using MODER8 = BitField<16, 2>;
+constexpr uint32_t MODER8_Pos = 16;
+constexpr uint32_t MODER8_Msk = MODER8::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 18, Width: 2
-    using MODER9 = BitField<18, 2>;
-    constexpr uint32_t MODER9_Pos = 18;
-    constexpr uint32_t MODER9_Msk = MODER9::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 18, Width: 2
+using MODER9 = BitField<18, 2>;
+constexpr uint32_t MODER9_Pos = 18;
+constexpr uint32_t MODER9_Msk = MODER9::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 20, Width: 2
-    using MODER10 = BitField<20, 2>;
-    constexpr uint32_t MODER10_Pos = 20;
-    constexpr uint32_t MODER10_Msk = MODER10::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 20, Width: 2
+using MODER10 = BitField<20, 2>;
+constexpr uint32_t MODER10_Pos = 20;
+constexpr uint32_t MODER10_Msk = MODER10::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 22, Width: 2
-    using MODER11 = BitField<22, 2>;
-    constexpr uint32_t MODER11_Pos = 22;
-    constexpr uint32_t MODER11_Msk = MODER11::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 22, Width: 2
+using MODER11 = BitField<22, 2>;
+constexpr uint32_t MODER11_Pos = 22;
+constexpr uint32_t MODER11_Msk = MODER11::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 24, Width: 2
-    using MODER12 = BitField<24, 2>;
-    constexpr uint32_t MODER12_Pos = 24;
-    constexpr uint32_t MODER12_Msk = MODER12::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 24, Width: 2
+using MODER12 = BitField<24, 2>;
+constexpr uint32_t MODER12_Pos = 24;
+constexpr uint32_t MODER12_Msk = MODER12::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 26, Width: 2
-    using MODER13 = BitField<26, 2>;
-    constexpr uint32_t MODER13_Pos = 26;
-    constexpr uint32_t MODER13_Msk = MODER13::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 26, Width: 2
+using MODER13 = BitField<26, 2>;
+constexpr uint32_t MODER13_Pos = 26;
+constexpr uint32_t MODER13_Msk = MODER13::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 28, Width: 2
-    using MODER14 = BitField<28, 2>;
-    constexpr uint32_t MODER14_Pos = 28;
-    constexpr uint32_t MODER14_Msk = MODER14::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 28, Width: 2
+using MODER14 = BitField<28, 2>;
+constexpr uint32_t MODER14_Pos = 28;
+constexpr uint32_t MODER14_Msk = MODER14::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 30, Width: 2
-    using MODER15 = BitField<30, 2>;
-    constexpr uint32_t MODER15_Pos = 30;
-    constexpr uint32_t MODER15_Msk = MODER15::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 30, Width: 2
+using MODER15 = BitField<30, 2>;
+constexpr uint32_t MODER15_Pos = 30;
+constexpr uint32_t MODER15_Msk = MODER15::mask;
 
 }  // namespace moder
 
 /// OTYPER - GPIO port output type register
 namespace otyper {
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 0, Width: 1
-    using OT0 = BitField<0, 1>;
-    constexpr uint32_t OT0_Pos = 0;
-    constexpr uint32_t OT0_Msk = OT0::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 0, Width: 1
+using OT0 = BitField<0, 1>;
+constexpr uint32_t OT0_Pos = 0;
+constexpr uint32_t OT0_Msk = OT0::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 1, Width: 1
-    using OT1 = BitField<1, 1>;
-    constexpr uint32_t OT1_Pos = 1;
-    constexpr uint32_t OT1_Msk = OT1::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 1, Width: 1
+using OT1 = BitField<1, 1>;
+constexpr uint32_t OT1_Pos = 1;
+constexpr uint32_t OT1_Msk = OT1::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 2, Width: 1
-    using OT2 = BitField<2, 1>;
-    constexpr uint32_t OT2_Pos = 2;
-    constexpr uint32_t OT2_Msk = OT2::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 2, Width: 1
+using OT2 = BitField<2, 1>;
+constexpr uint32_t OT2_Pos = 2;
+constexpr uint32_t OT2_Msk = OT2::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 3, Width: 1
-    using OT3 = BitField<3, 1>;
-    constexpr uint32_t OT3_Pos = 3;
-    constexpr uint32_t OT3_Msk = OT3::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 3, Width: 1
+using OT3 = BitField<3, 1>;
+constexpr uint32_t OT3_Pos = 3;
+constexpr uint32_t OT3_Msk = OT3::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 4, Width: 1
-    using OT4 = BitField<4, 1>;
-    constexpr uint32_t OT4_Pos = 4;
-    constexpr uint32_t OT4_Msk = OT4::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 4, Width: 1
+using OT4 = BitField<4, 1>;
+constexpr uint32_t OT4_Pos = 4;
+constexpr uint32_t OT4_Msk = OT4::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 5, Width: 1
-    using OT5 = BitField<5, 1>;
-    constexpr uint32_t OT5_Pos = 5;
-    constexpr uint32_t OT5_Msk = OT5::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 5, Width: 1
+using OT5 = BitField<5, 1>;
+constexpr uint32_t OT5_Pos = 5;
+constexpr uint32_t OT5_Msk = OT5::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 6, Width: 1
-    using OT6 = BitField<6, 1>;
-    constexpr uint32_t OT6_Pos = 6;
-    constexpr uint32_t OT6_Msk = OT6::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 6, Width: 1
+using OT6 = BitField<6, 1>;
+constexpr uint32_t OT6_Pos = 6;
+constexpr uint32_t OT6_Msk = OT6::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 7, Width: 1
-    using OT7 = BitField<7, 1>;
-    constexpr uint32_t OT7_Pos = 7;
-    constexpr uint32_t OT7_Msk = OT7::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 7, Width: 1
+using OT7 = BitField<7, 1>;
+constexpr uint32_t OT7_Pos = 7;
+constexpr uint32_t OT7_Msk = OT7::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 8, Width: 1
-    using OT8 = BitField<8, 1>;
-    constexpr uint32_t OT8_Pos = 8;
-    constexpr uint32_t OT8_Msk = OT8::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 8, Width: 1
+using OT8 = BitField<8, 1>;
+constexpr uint32_t OT8_Pos = 8;
+constexpr uint32_t OT8_Msk = OT8::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 9, Width: 1
-    using OT9 = BitField<9, 1>;
-    constexpr uint32_t OT9_Pos = 9;
-    constexpr uint32_t OT9_Msk = OT9::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 9, Width: 1
+using OT9 = BitField<9, 1>;
+constexpr uint32_t OT9_Pos = 9;
+constexpr uint32_t OT9_Msk = OT9::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 10, Width: 1
-    using OT10 = BitField<10, 1>;
-    constexpr uint32_t OT10_Pos = 10;
-    constexpr uint32_t OT10_Msk = OT10::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 10, Width: 1
+using OT10 = BitField<10, 1>;
+constexpr uint32_t OT10_Pos = 10;
+constexpr uint32_t OT10_Msk = OT10::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 11, Width: 1
-    using OT11 = BitField<11, 1>;
-    constexpr uint32_t OT11_Pos = 11;
-    constexpr uint32_t OT11_Msk = OT11::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 11, Width: 1
+using OT11 = BitField<11, 1>;
+constexpr uint32_t OT11_Pos = 11;
+constexpr uint32_t OT11_Msk = OT11::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 12, Width: 1
-    using OT12 = BitField<12, 1>;
-    constexpr uint32_t OT12_Pos = 12;
-    constexpr uint32_t OT12_Msk = OT12::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 12, Width: 1
+using OT12 = BitField<12, 1>;
+constexpr uint32_t OT12_Pos = 12;
+constexpr uint32_t OT12_Msk = OT12::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 13, Width: 1
-    using OT13 = BitField<13, 1>;
-    constexpr uint32_t OT13_Pos = 13;
-    constexpr uint32_t OT13_Msk = OT13::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 13, Width: 1
+using OT13 = BitField<13, 1>;
+constexpr uint32_t OT13_Pos = 13;
+constexpr uint32_t OT13_Msk = OT13::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 14, Width: 1
-    using OT14 = BitField<14, 1>;
-    constexpr uint32_t OT14_Pos = 14;
-    constexpr uint32_t OT14_Msk = OT14::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 14, Width: 1
+using OT14 = BitField<14, 1>;
+constexpr uint32_t OT14_Pos = 14;
+constexpr uint32_t OT14_Msk = OT14::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 15, Width: 1
-    using OT15 = BitField<15, 1>;
-    constexpr uint32_t OT15_Pos = 15;
-    constexpr uint32_t OT15_Msk = OT15::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 15, Width: 1
+using OT15 = BitField<15, 1>;
+constexpr uint32_t OT15_Pos = 15;
+constexpr uint32_t OT15_Msk = OT15::mask;
 
 }  // namespace otyper
 
 /// OSPEEDR - GPIO port output speed register
 namespace ospeedr {
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 0, Width: 2
-    using OSPEEDR0 = BitField<0, 2>;
-    constexpr uint32_t OSPEEDR0_Pos = 0;
-    constexpr uint32_t OSPEEDR0_Msk = OSPEEDR0::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 0, Width: 2
+using OSPEEDR0 = BitField<0, 2>;
+constexpr uint32_t OSPEEDR0_Pos = 0;
+constexpr uint32_t OSPEEDR0_Msk = OSPEEDR0::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 2, Width: 2
-    using OSPEEDR1 = BitField<2, 2>;
-    constexpr uint32_t OSPEEDR1_Pos = 2;
-    constexpr uint32_t OSPEEDR1_Msk = OSPEEDR1::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 2, Width: 2
+using OSPEEDR1 = BitField<2, 2>;
+constexpr uint32_t OSPEEDR1_Pos = 2;
+constexpr uint32_t OSPEEDR1_Msk = OSPEEDR1::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 4, Width: 2
-    using OSPEEDR2 = BitField<4, 2>;
-    constexpr uint32_t OSPEEDR2_Pos = 4;
-    constexpr uint32_t OSPEEDR2_Msk = OSPEEDR2::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 4, Width: 2
+using OSPEEDR2 = BitField<4, 2>;
+constexpr uint32_t OSPEEDR2_Pos = 4;
+constexpr uint32_t OSPEEDR2_Msk = OSPEEDR2::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 6, Width: 2
-    using OSPEEDR3 = BitField<6, 2>;
-    constexpr uint32_t OSPEEDR3_Pos = 6;
-    constexpr uint32_t OSPEEDR3_Msk = OSPEEDR3::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 6, Width: 2
+using OSPEEDR3 = BitField<6, 2>;
+constexpr uint32_t OSPEEDR3_Pos = 6;
+constexpr uint32_t OSPEEDR3_Msk = OSPEEDR3::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 8, Width: 2
-    using OSPEEDR4 = BitField<8, 2>;
-    constexpr uint32_t OSPEEDR4_Pos = 8;
-    constexpr uint32_t OSPEEDR4_Msk = OSPEEDR4::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 8, Width: 2
+using OSPEEDR4 = BitField<8, 2>;
+constexpr uint32_t OSPEEDR4_Pos = 8;
+constexpr uint32_t OSPEEDR4_Msk = OSPEEDR4::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 10, Width: 2
-    using OSPEEDR5 = BitField<10, 2>;
-    constexpr uint32_t OSPEEDR5_Pos = 10;
-    constexpr uint32_t OSPEEDR5_Msk = OSPEEDR5::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 10, Width: 2
+using OSPEEDR5 = BitField<10, 2>;
+constexpr uint32_t OSPEEDR5_Pos = 10;
+constexpr uint32_t OSPEEDR5_Msk = OSPEEDR5::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 12, Width: 2
-    using OSPEEDR6 = BitField<12, 2>;
-    constexpr uint32_t OSPEEDR6_Pos = 12;
-    constexpr uint32_t OSPEEDR6_Msk = OSPEEDR6::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 12, Width: 2
+using OSPEEDR6 = BitField<12, 2>;
+constexpr uint32_t OSPEEDR6_Pos = 12;
+constexpr uint32_t OSPEEDR6_Msk = OSPEEDR6::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 14, Width: 2
-    using OSPEEDR7 = BitField<14, 2>;
-    constexpr uint32_t OSPEEDR7_Pos = 14;
-    constexpr uint32_t OSPEEDR7_Msk = OSPEEDR7::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 14, Width: 2
+using OSPEEDR7 = BitField<14, 2>;
+constexpr uint32_t OSPEEDR7_Pos = 14;
+constexpr uint32_t OSPEEDR7_Msk = OSPEEDR7::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 16, Width: 2
-    using OSPEEDR8 = BitField<16, 2>;
-    constexpr uint32_t OSPEEDR8_Pos = 16;
-    constexpr uint32_t OSPEEDR8_Msk = OSPEEDR8::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 16, Width: 2
+using OSPEEDR8 = BitField<16, 2>;
+constexpr uint32_t OSPEEDR8_Pos = 16;
+constexpr uint32_t OSPEEDR8_Msk = OSPEEDR8::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 18, Width: 2
-    using OSPEEDR9 = BitField<18, 2>;
-    constexpr uint32_t OSPEEDR9_Pos = 18;
-    constexpr uint32_t OSPEEDR9_Msk = OSPEEDR9::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 18, Width: 2
+using OSPEEDR9 = BitField<18, 2>;
+constexpr uint32_t OSPEEDR9_Pos = 18;
+constexpr uint32_t OSPEEDR9_Msk = OSPEEDR9::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 20, Width: 2
-    using OSPEEDR10 = BitField<20, 2>;
-    constexpr uint32_t OSPEEDR10_Pos = 20;
-    constexpr uint32_t OSPEEDR10_Msk = OSPEEDR10::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 20, Width: 2
+using OSPEEDR10 = BitField<20, 2>;
+constexpr uint32_t OSPEEDR10_Pos = 20;
+constexpr uint32_t OSPEEDR10_Msk = OSPEEDR10::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 22, Width: 2
-    using OSPEEDR11 = BitField<22, 2>;
-    constexpr uint32_t OSPEEDR11_Pos = 22;
-    constexpr uint32_t OSPEEDR11_Msk = OSPEEDR11::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 22, Width: 2
+using OSPEEDR11 = BitField<22, 2>;
+constexpr uint32_t OSPEEDR11_Pos = 22;
+constexpr uint32_t OSPEEDR11_Msk = OSPEEDR11::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 24, Width: 2
-    using OSPEEDR12 = BitField<24, 2>;
-    constexpr uint32_t OSPEEDR12_Pos = 24;
-    constexpr uint32_t OSPEEDR12_Msk = OSPEEDR12::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 24, Width: 2
+using OSPEEDR12 = BitField<24, 2>;
+constexpr uint32_t OSPEEDR12_Pos = 24;
+constexpr uint32_t OSPEEDR12_Msk = OSPEEDR12::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 26, Width: 2
-    using OSPEEDR13 = BitField<26, 2>;
-    constexpr uint32_t OSPEEDR13_Pos = 26;
-    constexpr uint32_t OSPEEDR13_Msk = OSPEEDR13::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 26, Width: 2
+using OSPEEDR13 = BitField<26, 2>;
+constexpr uint32_t OSPEEDR13_Pos = 26;
+constexpr uint32_t OSPEEDR13_Msk = OSPEEDR13::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 28, Width: 2
-    using OSPEEDR14 = BitField<28, 2>;
-    constexpr uint32_t OSPEEDR14_Pos = 28;
-    constexpr uint32_t OSPEEDR14_Msk = OSPEEDR14::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 28, Width: 2
+using OSPEEDR14 = BitField<28, 2>;
+constexpr uint32_t OSPEEDR14_Pos = 28;
+constexpr uint32_t OSPEEDR14_Msk = OSPEEDR14::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 30, Width: 2
-    using OSPEEDR15 = BitField<30, 2>;
-    constexpr uint32_t OSPEEDR15_Pos = 30;
-    constexpr uint32_t OSPEEDR15_Msk = OSPEEDR15::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 30, Width: 2
+using OSPEEDR15 = BitField<30, 2>;
+constexpr uint32_t OSPEEDR15_Pos = 30;
+constexpr uint32_t OSPEEDR15_Msk = OSPEEDR15::mask;
 
 }  // namespace ospeedr
 
 /// PUPDR - GPIO port pull-up/pull-down register
 namespace pupdr {
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 0, Width: 2
-    using PUPDR0 = BitField<0, 2>;
-    constexpr uint32_t PUPDR0_Pos = 0;
-    constexpr uint32_t PUPDR0_Msk = PUPDR0::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 0, Width: 2
+using PUPDR0 = BitField<0, 2>;
+constexpr uint32_t PUPDR0_Pos = 0;
+constexpr uint32_t PUPDR0_Msk = PUPDR0::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 2, Width: 2
-    using PUPDR1 = BitField<2, 2>;
-    constexpr uint32_t PUPDR1_Pos = 2;
-    constexpr uint32_t PUPDR1_Msk = PUPDR1::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 2, Width: 2
+using PUPDR1 = BitField<2, 2>;
+constexpr uint32_t PUPDR1_Pos = 2;
+constexpr uint32_t PUPDR1_Msk = PUPDR1::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 4, Width: 2
-    using PUPDR2 = BitField<4, 2>;
-    constexpr uint32_t PUPDR2_Pos = 4;
-    constexpr uint32_t PUPDR2_Msk = PUPDR2::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 4, Width: 2
+using PUPDR2 = BitField<4, 2>;
+constexpr uint32_t PUPDR2_Pos = 4;
+constexpr uint32_t PUPDR2_Msk = PUPDR2::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 6, Width: 2
-    using PUPDR3 = BitField<6, 2>;
-    constexpr uint32_t PUPDR3_Pos = 6;
-    constexpr uint32_t PUPDR3_Msk = PUPDR3::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 6, Width: 2
+using PUPDR3 = BitField<6, 2>;
+constexpr uint32_t PUPDR3_Pos = 6;
+constexpr uint32_t PUPDR3_Msk = PUPDR3::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 8, Width: 2
-    using PUPDR4 = BitField<8, 2>;
-    constexpr uint32_t PUPDR4_Pos = 8;
-    constexpr uint32_t PUPDR4_Msk = PUPDR4::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 8, Width: 2
+using PUPDR4 = BitField<8, 2>;
+constexpr uint32_t PUPDR4_Pos = 8;
+constexpr uint32_t PUPDR4_Msk = PUPDR4::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 10, Width: 2
-    using PUPDR5 = BitField<10, 2>;
-    constexpr uint32_t PUPDR5_Pos = 10;
-    constexpr uint32_t PUPDR5_Msk = PUPDR5::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 10, Width: 2
+using PUPDR5 = BitField<10, 2>;
+constexpr uint32_t PUPDR5_Pos = 10;
+constexpr uint32_t PUPDR5_Msk = PUPDR5::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 12, Width: 2
-    using PUPDR6 = BitField<12, 2>;
-    constexpr uint32_t PUPDR6_Pos = 12;
-    constexpr uint32_t PUPDR6_Msk = PUPDR6::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 12, Width: 2
+using PUPDR6 = BitField<12, 2>;
+constexpr uint32_t PUPDR6_Pos = 12;
+constexpr uint32_t PUPDR6_Msk = PUPDR6::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 14, Width: 2
-    using PUPDR7 = BitField<14, 2>;
-    constexpr uint32_t PUPDR7_Pos = 14;
-    constexpr uint32_t PUPDR7_Msk = PUPDR7::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 14, Width: 2
+using PUPDR7 = BitField<14, 2>;
+constexpr uint32_t PUPDR7_Pos = 14;
+constexpr uint32_t PUPDR7_Msk = PUPDR7::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 16, Width: 2
-    using PUPDR8 = BitField<16, 2>;
-    constexpr uint32_t PUPDR8_Pos = 16;
-    constexpr uint32_t PUPDR8_Msk = PUPDR8::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 16, Width: 2
+using PUPDR8 = BitField<16, 2>;
+constexpr uint32_t PUPDR8_Pos = 16;
+constexpr uint32_t PUPDR8_Msk = PUPDR8::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 18, Width: 2
-    using PUPDR9 = BitField<18, 2>;
-    constexpr uint32_t PUPDR9_Pos = 18;
-    constexpr uint32_t PUPDR9_Msk = PUPDR9::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 18, Width: 2
+using PUPDR9 = BitField<18, 2>;
+constexpr uint32_t PUPDR9_Pos = 18;
+constexpr uint32_t PUPDR9_Msk = PUPDR9::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 20, Width: 2
-    using PUPDR10 = BitField<20, 2>;
-    constexpr uint32_t PUPDR10_Pos = 20;
-    constexpr uint32_t PUPDR10_Msk = PUPDR10::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 20, Width: 2
+using PUPDR10 = BitField<20, 2>;
+constexpr uint32_t PUPDR10_Pos = 20;
+constexpr uint32_t PUPDR10_Msk = PUPDR10::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 22, Width: 2
-    using PUPDR11 = BitField<22, 2>;
-    constexpr uint32_t PUPDR11_Pos = 22;
-    constexpr uint32_t PUPDR11_Msk = PUPDR11::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 22, Width: 2
+using PUPDR11 = BitField<22, 2>;
+constexpr uint32_t PUPDR11_Pos = 22;
+constexpr uint32_t PUPDR11_Msk = PUPDR11::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 24, Width: 2
-    using PUPDR12 = BitField<24, 2>;
-    constexpr uint32_t PUPDR12_Pos = 24;
-    constexpr uint32_t PUPDR12_Msk = PUPDR12::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 24, Width: 2
+using PUPDR12 = BitField<24, 2>;
+constexpr uint32_t PUPDR12_Pos = 24;
+constexpr uint32_t PUPDR12_Msk = PUPDR12::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 26, Width: 2
-    using PUPDR13 = BitField<26, 2>;
-    constexpr uint32_t PUPDR13_Pos = 26;
-    constexpr uint32_t PUPDR13_Msk = PUPDR13::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 26, Width: 2
+using PUPDR13 = BitField<26, 2>;
+constexpr uint32_t PUPDR13_Pos = 26;
+constexpr uint32_t PUPDR13_Msk = PUPDR13::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 28, Width: 2
-    using PUPDR14 = BitField<28, 2>;
-    constexpr uint32_t PUPDR14_Pos = 28;
-    constexpr uint32_t PUPDR14_Msk = PUPDR14::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 28, Width: 2
+using PUPDR14 = BitField<28, 2>;
+constexpr uint32_t PUPDR14_Pos = 28;
+constexpr uint32_t PUPDR14_Msk = PUPDR14::mask;
 
-    /// Port x configuration bits (y = 0..15)
-    /// Position: 30, Width: 2
-    using PUPDR15 = BitField<30, 2>;
-    constexpr uint32_t PUPDR15_Pos = 30;
-    constexpr uint32_t PUPDR15_Msk = PUPDR15::mask;
+/// Port x configuration bits (y = 0..15)
+/// Position: 30, Width: 2
+using PUPDR15 = BitField<30, 2>;
+constexpr uint32_t PUPDR15_Pos = 30;
+constexpr uint32_t PUPDR15_Msk = PUPDR15::mask;
 
 }  // namespace pupdr
 
 /// IDR - GPIO port input data register
 namespace idr {
-    /// Port input data (y = 0..15)
-    /// Position: 0, Width: 1
-    using IDR0 = BitField<0, 1>;
-    constexpr uint32_t IDR0_Pos = 0;
-    constexpr uint32_t IDR0_Msk = IDR0::mask;
+/// Port input data (y = 0..15)
+/// Position: 0, Width: 1
+using IDR0 = BitField<0, 1>;
+constexpr uint32_t IDR0_Pos = 0;
+constexpr uint32_t IDR0_Msk = IDR0::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 1, Width: 1
-    using IDR1 = BitField<1, 1>;
-    constexpr uint32_t IDR1_Pos = 1;
-    constexpr uint32_t IDR1_Msk = IDR1::mask;
+/// Port input data (y = 0..15)
+/// Position: 1, Width: 1
+using IDR1 = BitField<1, 1>;
+constexpr uint32_t IDR1_Pos = 1;
+constexpr uint32_t IDR1_Msk = IDR1::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 2, Width: 1
-    using IDR2 = BitField<2, 1>;
-    constexpr uint32_t IDR2_Pos = 2;
-    constexpr uint32_t IDR2_Msk = IDR2::mask;
+/// Port input data (y = 0..15)
+/// Position: 2, Width: 1
+using IDR2 = BitField<2, 1>;
+constexpr uint32_t IDR2_Pos = 2;
+constexpr uint32_t IDR2_Msk = IDR2::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 3, Width: 1
-    using IDR3 = BitField<3, 1>;
-    constexpr uint32_t IDR3_Pos = 3;
-    constexpr uint32_t IDR3_Msk = IDR3::mask;
+/// Port input data (y = 0..15)
+/// Position: 3, Width: 1
+using IDR3 = BitField<3, 1>;
+constexpr uint32_t IDR3_Pos = 3;
+constexpr uint32_t IDR3_Msk = IDR3::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 4, Width: 1
-    using IDR4 = BitField<4, 1>;
-    constexpr uint32_t IDR4_Pos = 4;
-    constexpr uint32_t IDR4_Msk = IDR4::mask;
+/// Port input data (y = 0..15)
+/// Position: 4, Width: 1
+using IDR4 = BitField<4, 1>;
+constexpr uint32_t IDR4_Pos = 4;
+constexpr uint32_t IDR4_Msk = IDR4::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 5, Width: 1
-    using IDR5 = BitField<5, 1>;
-    constexpr uint32_t IDR5_Pos = 5;
-    constexpr uint32_t IDR5_Msk = IDR5::mask;
+/// Port input data (y = 0..15)
+/// Position: 5, Width: 1
+using IDR5 = BitField<5, 1>;
+constexpr uint32_t IDR5_Pos = 5;
+constexpr uint32_t IDR5_Msk = IDR5::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 6, Width: 1
-    using IDR6 = BitField<6, 1>;
-    constexpr uint32_t IDR6_Pos = 6;
-    constexpr uint32_t IDR6_Msk = IDR6::mask;
+/// Port input data (y = 0..15)
+/// Position: 6, Width: 1
+using IDR6 = BitField<6, 1>;
+constexpr uint32_t IDR6_Pos = 6;
+constexpr uint32_t IDR6_Msk = IDR6::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 7, Width: 1
-    using IDR7 = BitField<7, 1>;
-    constexpr uint32_t IDR7_Pos = 7;
-    constexpr uint32_t IDR7_Msk = IDR7::mask;
+/// Port input data (y = 0..15)
+/// Position: 7, Width: 1
+using IDR7 = BitField<7, 1>;
+constexpr uint32_t IDR7_Pos = 7;
+constexpr uint32_t IDR7_Msk = IDR7::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 8, Width: 1
-    using IDR8 = BitField<8, 1>;
-    constexpr uint32_t IDR8_Pos = 8;
-    constexpr uint32_t IDR8_Msk = IDR8::mask;
+/// Port input data (y = 0..15)
+/// Position: 8, Width: 1
+using IDR8 = BitField<8, 1>;
+constexpr uint32_t IDR8_Pos = 8;
+constexpr uint32_t IDR8_Msk = IDR8::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 9, Width: 1
-    using IDR9 = BitField<9, 1>;
-    constexpr uint32_t IDR9_Pos = 9;
-    constexpr uint32_t IDR9_Msk = IDR9::mask;
+/// Port input data (y = 0..15)
+/// Position: 9, Width: 1
+using IDR9 = BitField<9, 1>;
+constexpr uint32_t IDR9_Pos = 9;
+constexpr uint32_t IDR9_Msk = IDR9::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 10, Width: 1
-    using IDR10 = BitField<10, 1>;
-    constexpr uint32_t IDR10_Pos = 10;
-    constexpr uint32_t IDR10_Msk = IDR10::mask;
+/// Port input data (y = 0..15)
+/// Position: 10, Width: 1
+using IDR10 = BitField<10, 1>;
+constexpr uint32_t IDR10_Pos = 10;
+constexpr uint32_t IDR10_Msk = IDR10::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 11, Width: 1
-    using IDR11 = BitField<11, 1>;
-    constexpr uint32_t IDR11_Pos = 11;
-    constexpr uint32_t IDR11_Msk = IDR11::mask;
+/// Port input data (y = 0..15)
+/// Position: 11, Width: 1
+using IDR11 = BitField<11, 1>;
+constexpr uint32_t IDR11_Pos = 11;
+constexpr uint32_t IDR11_Msk = IDR11::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 12, Width: 1
-    using IDR12 = BitField<12, 1>;
-    constexpr uint32_t IDR12_Pos = 12;
-    constexpr uint32_t IDR12_Msk = IDR12::mask;
+/// Port input data (y = 0..15)
+/// Position: 12, Width: 1
+using IDR12 = BitField<12, 1>;
+constexpr uint32_t IDR12_Pos = 12;
+constexpr uint32_t IDR12_Msk = IDR12::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 13, Width: 1
-    using IDR13 = BitField<13, 1>;
-    constexpr uint32_t IDR13_Pos = 13;
-    constexpr uint32_t IDR13_Msk = IDR13::mask;
+/// Port input data (y = 0..15)
+/// Position: 13, Width: 1
+using IDR13 = BitField<13, 1>;
+constexpr uint32_t IDR13_Pos = 13;
+constexpr uint32_t IDR13_Msk = IDR13::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 14, Width: 1
-    using IDR14 = BitField<14, 1>;
-    constexpr uint32_t IDR14_Pos = 14;
-    constexpr uint32_t IDR14_Msk = IDR14::mask;
+/// Port input data (y = 0..15)
+/// Position: 14, Width: 1
+using IDR14 = BitField<14, 1>;
+constexpr uint32_t IDR14_Pos = 14;
+constexpr uint32_t IDR14_Msk = IDR14::mask;
 
-    /// Port input data (y = 0..15)
-    /// Position: 15, Width: 1
-    using IDR15 = BitField<15, 1>;
-    constexpr uint32_t IDR15_Pos = 15;
-    constexpr uint32_t IDR15_Msk = IDR15::mask;
+/// Port input data (y = 0..15)
+/// Position: 15, Width: 1
+using IDR15 = BitField<15, 1>;
+constexpr uint32_t IDR15_Pos = 15;
+constexpr uint32_t IDR15_Msk = IDR15::mask;
 
 }  // namespace idr
 
 /// ODR - GPIO port output data register
 namespace odr {
-    /// Port output data (y = 0..15)
-    /// Position: 0, Width: 1
-    using ODR0 = BitField<0, 1>;
-    constexpr uint32_t ODR0_Pos = 0;
-    constexpr uint32_t ODR0_Msk = ODR0::mask;
+/// Port output data (y = 0..15)
+/// Position: 0, Width: 1
+using ODR0 = BitField<0, 1>;
+constexpr uint32_t ODR0_Pos = 0;
+constexpr uint32_t ODR0_Msk = ODR0::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 1, Width: 1
-    using ODR1 = BitField<1, 1>;
-    constexpr uint32_t ODR1_Pos = 1;
-    constexpr uint32_t ODR1_Msk = ODR1::mask;
+/// Port output data (y = 0..15)
+/// Position: 1, Width: 1
+using ODR1 = BitField<1, 1>;
+constexpr uint32_t ODR1_Pos = 1;
+constexpr uint32_t ODR1_Msk = ODR1::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 2, Width: 1
-    using ODR2 = BitField<2, 1>;
-    constexpr uint32_t ODR2_Pos = 2;
-    constexpr uint32_t ODR2_Msk = ODR2::mask;
+/// Port output data (y = 0..15)
+/// Position: 2, Width: 1
+using ODR2 = BitField<2, 1>;
+constexpr uint32_t ODR2_Pos = 2;
+constexpr uint32_t ODR2_Msk = ODR2::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 3, Width: 1
-    using ODR3 = BitField<3, 1>;
-    constexpr uint32_t ODR3_Pos = 3;
-    constexpr uint32_t ODR3_Msk = ODR3::mask;
+/// Port output data (y = 0..15)
+/// Position: 3, Width: 1
+using ODR3 = BitField<3, 1>;
+constexpr uint32_t ODR3_Pos = 3;
+constexpr uint32_t ODR3_Msk = ODR3::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 4, Width: 1
-    using ODR4 = BitField<4, 1>;
-    constexpr uint32_t ODR4_Pos = 4;
-    constexpr uint32_t ODR4_Msk = ODR4::mask;
+/// Port output data (y = 0..15)
+/// Position: 4, Width: 1
+using ODR4 = BitField<4, 1>;
+constexpr uint32_t ODR4_Pos = 4;
+constexpr uint32_t ODR4_Msk = ODR4::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 5, Width: 1
-    using ODR5 = BitField<5, 1>;
-    constexpr uint32_t ODR5_Pos = 5;
-    constexpr uint32_t ODR5_Msk = ODR5::mask;
+/// Port output data (y = 0..15)
+/// Position: 5, Width: 1
+using ODR5 = BitField<5, 1>;
+constexpr uint32_t ODR5_Pos = 5;
+constexpr uint32_t ODR5_Msk = ODR5::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 6, Width: 1
-    using ODR6 = BitField<6, 1>;
-    constexpr uint32_t ODR6_Pos = 6;
-    constexpr uint32_t ODR6_Msk = ODR6::mask;
+/// Port output data (y = 0..15)
+/// Position: 6, Width: 1
+using ODR6 = BitField<6, 1>;
+constexpr uint32_t ODR6_Pos = 6;
+constexpr uint32_t ODR6_Msk = ODR6::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 7, Width: 1
-    using ODR7 = BitField<7, 1>;
-    constexpr uint32_t ODR7_Pos = 7;
-    constexpr uint32_t ODR7_Msk = ODR7::mask;
+/// Port output data (y = 0..15)
+/// Position: 7, Width: 1
+using ODR7 = BitField<7, 1>;
+constexpr uint32_t ODR7_Pos = 7;
+constexpr uint32_t ODR7_Msk = ODR7::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 8, Width: 1
-    using ODR8 = BitField<8, 1>;
-    constexpr uint32_t ODR8_Pos = 8;
-    constexpr uint32_t ODR8_Msk = ODR8::mask;
+/// Port output data (y = 0..15)
+/// Position: 8, Width: 1
+using ODR8 = BitField<8, 1>;
+constexpr uint32_t ODR8_Pos = 8;
+constexpr uint32_t ODR8_Msk = ODR8::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 9, Width: 1
-    using ODR9 = BitField<9, 1>;
-    constexpr uint32_t ODR9_Pos = 9;
-    constexpr uint32_t ODR9_Msk = ODR9::mask;
+/// Port output data (y = 0..15)
+/// Position: 9, Width: 1
+using ODR9 = BitField<9, 1>;
+constexpr uint32_t ODR9_Pos = 9;
+constexpr uint32_t ODR9_Msk = ODR9::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 10, Width: 1
-    using ODR10 = BitField<10, 1>;
-    constexpr uint32_t ODR10_Pos = 10;
-    constexpr uint32_t ODR10_Msk = ODR10::mask;
+/// Port output data (y = 0..15)
+/// Position: 10, Width: 1
+using ODR10 = BitField<10, 1>;
+constexpr uint32_t ODR10_Pos = 10;
+constexpr uint32_t ODR10_Msk = ODR10::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 11, Width: 1
-    using ODR11 = BitField<11, 1>;
-    constexpr uint32_t ODR11_Pos = 11;
-    constexpr uint32_t ODR11_Msk = ODR11::mask;
+/// Port output data (y = 0..15)
+/// Position: 11, Width: 1
+using ODR11 = BitField<11, 1>;
+constexpr uint32_t ODR11_Pos = 11;
+constexpr uint32_t ODR11_Msk = ODR11::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 12, Width: 1
-    using ODR12 = BitField<12, 1>;
-    constexpr uint32_t ODR12_Pos = 12;
-    constexpr uint32_t ODR12_Msk = ODR12::mask;
+/// Port output data (y = 0..15)
+/// Position: 12, Width: 1
+using ODR12 = BitField<12, 1>;
+constexpr uint32_t ODR12_Pos = 12;
+constexpr uint32_t ODR12_Msk = ODR12::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 13, Width: 1
-    using ODR13 = BitField<13, 1>;
-    constexpr uint32_t ODR13_Pos = 13;
-    constexpr uint32_t ODR13_Msk = ODR13::mask;
+/// Port output data (y = 0..15)
+/// Position: 13, Width: 1
+using ODR13 = BitField<13, 1>;
+constexpr uint32_t ODR13_Pos = 13;
+constexpr uint32_t ODR13_Msk = ODR13::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 14, Width: 1
-    using ODR14 = BitField<14, 1>;
-    constexpr uint32_t ODR14_Pos = 14;
-    constexpr uint32_t ODR14_Msk = ODR14::mask;
+/// Port output data (y = 0..15)
+/// Position: 14, Width: 1
+using ODR14 = BitField<14, 1>;
+constexpr uint32_t ODR14_Pos = 14;
+constexpr uint32_t ODR14_Msk = ODR14::mask;
 
-    /// Port output data (y = 0..15)
-    /// Position: 15, Width: 1
-    using ODR15 = BitField<15, 1>;
-    constexpr uint32_t ODR15_Pos = 15;
-    constexpr uint32_t ODR15_Msk = ODR15::mask;
+/// Port output data (y = 0..15)
+/// Position: 15, Width: 1
+using ODR15 = BitField<15, 1>;
+constexpr uint32_t ODR15_Pos = 15;
+constexpr uint32_t ODR15_Msk = ODR15::mask;
 
 }  // namespace odr
 
 /// BSRR - GPIO port bit set/reset register
 namespace bsrr {
-    /// Port x set bit y (y= 0..15)
-    /// Position: 0, Width: 1
-    using BS0 = BitField<0, 1>;
-    constexpr uint32_t BS0_Pos = 0;
-    constexpr uint32_t BS0_Msk = BS0::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 0, Width: 1
+using BS0 = BitField<0, 1>;
+constexpr uint32_t BS0_Pos = 0;
+constexpr uint32_t BS0_Msk = BS0::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 1, Width: 1
-    using BS1 = BitField<1, 1>;
-    constexpr uint32_t BS1_Pos = 1;
-    constexpr uint32_t BS1_Msk = BS1::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 1, Width: 1
+using BS1 = BitField<1, 1>;
+constexpr uint32_t BS1_Pos = 1;
+constexpr uint32_t BS1_Msk = BS1::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 2, Width: 1
-    using BS2 = BitField<2, 1>;
-    constexpr uint32_t BS2_Pos = 2;
-    constexpr uint32_t BS2_Msk = BS2::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 2, Width: 1
+using BS2 = BitField<2, 1>;
+constexpr uint32_t BS2_Pos = 2;
+constexpr uint32_t BS2_Msk = BS2::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 3, Width: 1
-    using BS3 = BitField<3, 1>;
-    constexpr uint32_t BS3_Pos = 3;
-    constexpr uint32_t BS3_Msk = BS3::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 3, Width: 1
+using BS3 = BitField<3, 1>;
+constexpr uint32_t BS3_Pos = 3;
+constexpr uint32_t BS3_Msk = BS3::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 4, Width: 1
-    using BS4 = BitField<4, 1>;
-    constexpr uint32_t BS4_Pos = 4;
-    constexpr uint32_t BS4_Msk = BS4::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 4, Width: 1
+using BS4 = BitField<4, 1>;
+constexpr uint32_t BS4_Pos = 4;
+constexpr uint32_t BS4_Msk = BS4::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 5, Width: 1
-    using BS5 = BitField<5, 1>;
-    constexpr uint32_t BS5_Pos = 5;
-    constexpr uint32_t BS5_Msk = BS5::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 5, Width: 1
+using BS5 = BitField<5, 1>;
+constexpr uint32_t BS5_Pos = 5;
+constexpr uint32_t BS5_Msk = BS5::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 6, Width: 1
-    using BS6 = BitField<6, 1>;
-    constexpr uint32_t BS6_Pos = 6;
-    constexpr uint32_t BS6_Msk = BS6::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 6, Width: 1
+using BS6 = BitField<6, 1>;
+constexpr uint32_t BS6_Pos = 6;
+constexpr uint32_t BS6_Msk = BS6::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 7, Width: 1
-    using BS7 = BitField<7, 1>;
-    constexpr uint32_t BS7_Pos = 7;
-    constexpr uint32_t BS7_Msk = BS7::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 7, Width: 1
+using BS7 = BitField<7, 1>;
+constexpr uint32_t BS7_Pos = 7;
+constexpr uint32_t BS7_Msk = BS7::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 8, Width: 1
-    using BS8 = BitField<8, 1>;
-    constexpr uint32_t BS8_Pos = 8;
-    constexpr uint32_t BS8_Msk = BS8::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 8, Width: 1
+using BS8 = BitField<8, 1>;
+constexpr uint32_t BS8_Pos = 8;
+constexpr uint32_t BS8_Msk = BS8::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 9, Width: 1
-    using BS9 = BitField<9, 1>;
-    constexpr uint32_t BS9_Pos = 9;
-    constexpr uint32_t BS9_Msk = BS9::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 9, Width: 1
+using BS9 = BitField<9, 1>;
+constexpr uint32_t BS9_Pos = 9;
+constexpr uint32_t BS9_Msk = BS9::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 10, Width: 1
-    using BS10 = BitField<10, 1>;
-    constexpr uint32_t BS10_Pos = 10;
-    constexpr uint32_t BS10_Msk = BS10::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 10, Width: 1
+using BS10 = BitField<10, 1>;
+constexpr uint32_t BS10_Pos = 10;
+constexpr uint32_t BS10_Msk = BS10::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 11, Width: 1
-    using BS11 = BitField<11, 1>;
-    constexpr uint32_t BS11_Pos = 11;
-    constexpr uint32_t BS11_Msk = BS11::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 11, Width: 1
+using BS11 = BitField<11, 1>;
+constexpr uint32_t BS11_Pos = 11;
+constexpr uint32_t BS11_Msk = BS11::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 12, Width: 1
-    using BS12 = BitField<12, 1>;
-    constexpr uint32_t BS12_Pos = 12;
-    constexpr uint32_t BS12_Msk = BS12::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 12, Width: 1
+using BS12 = BitField<12, 1>;
+constexpr uint32_t BS12_Pos = 12;
+constexpr uint32_t BS12_Msk = BS12::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 13, Width: 1
-    using BS13 = BitField<13, 1>;
-    constexpr uint32_t BS13_Pos = 13;
-    constexpr uint32_t BS13_Msk = BS13::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 13, Width: 1
+using BS13 = BitField<13, 1>;
+constexpr uint32_t BS13_Pos = 13;
+constexpr uint32_t BS13_Msk = BS13::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 14, Width: 1
-    using BS14 = BitField<14, 1>;
-    constexpr uint32_t BS14_Pos = 14;
-    constexpr uint32_t BS14_Msk = BS14::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 14, Width: 1
+using BS14 = BitField<14, 1>;
+constexpr uint32_t BS14_Pos = 14;
+constexpr uint32_t BS14_Msk = BS14::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 15, Width: 1
-    using BS15 = BitField<15, 1>;
-    constexpr uint32_t BS15_Pos = 15;
-    constexpr uint32_t BS15_Msk = BS15::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 15, Width: 1
+using BS15 = BitField<15, 1>;
+constexpr uint32_t BS15_Pos = 15;
+constexpr uint32_t BS15_Msk = BS15::mask;
 
-    /// Port x set bit y (y= 0..15)
-    /// Position: 16, Width: 1
-    using BR0 = BitField<16, 1>;
-    constexpr uint32_t BR0_Pos = 16;
-    constexpr uint32_t BR0_Msk = BR0::mask;
+/// Port x set bit y (y= 0..15)
+/// Position: 16, Width: 1
+using BR0 = BitField<16, 1>;
+constexpr uint32_t BR0_Pos = 16;
+constexpr uint32_t BR0_Msk = BR0::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 17, Width: 1
-    using BR1 = BitField<17, 1>;
-    constexpr uint32_t BR1_Pos = 17;
-    constexpr uint32_t BR1_Msk = BR1::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 17, Width: 1
+using BR1 = BitField<17, 1>;
+constexpr uint32_t BR1_Pos = 17;
+constexpr uint32_t BR1_Msk = BR1::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 18, Width: 1
-    using BR2 = BitField<18, 1>;
-    constexpr uint32_t BR2_Pos = 18;
-    constexpr uint32_t BR2_Msk = BR2::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 18, Width: 1
+using BR2 = BitField<18, 1>;
+constexpr uint32_t BR2_Pos = 18;
+constexpr uint32_t BR2_Msk = BR2::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 19, Width: 1
-    using BR3 = BitField<19, 1>;
-    constexpr uint32_t BR3_Pos = 19;
-    constexpr uint32_t BR3_Msk = BR3::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 19, Width: 1
+using BR3 = BitField<19, 1>;
+constexpr uint32_t BR3_Pos = 19;
+constexpr uint32_t BR3_Msk = BR3::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 20, Width: 1
-    using BR4 = BitField<20, 1>;
-    constexpr uint32_t BR4_Pos = 20;
-    constexpr uint32_t BR4_Msk = BR4::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 20, Width: 1
+using BR4 = BitField<20, 1>;
+constexpr uint32_t BR4_Pos = 20;
+constexpr uint32_t BR4_Msk = BR4::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 21, Width: 1
-    using BR5 = BitField<21, 1>;
-    constexpr uint32_t BR5_Pos = 21;
-    constexpr uint32_t BR5_Msk = BR5::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 21, Width: 1
+using BR5 = BitField<21, 1>;
+constexpr uint32_t BR5_Pos = 21;
+constexpr uint32_t BR5_Msk = BR5::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 22, Width: 1
-    using BR6 = BitField<22, 1>;
-    constexpr uint32_t BR6_Pos = 22;
-    constexpr uint32_t BR6_Msk = BR6::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 22, Width: 1
+using BR6 = BitField<22, 1>;
+constexpr uint32_t BR6_Pos = 22;
+constexpr uint32_t BR6_Msk = BR6::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 23, Width: 1
-    using BR7 = BitField<23, 1>;
-    constexpr uint32_t BR7_Pos = 23;
-    constexpr uint32_t BR7_Msk = BR7::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 23, Width: 1
+using BR7 = BitField<23, 1>;
+constexpr uint32_t BR7_Pos = 23;
+constexpr uint32_t BR7_Msk = BR7::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 24, Width: 1
-    using BR8 = BitField<24, 1>;
-    constexpr uint32_t BR8_Pos = 24;
-    constexpr uint32_t BR8_Msk = BR8::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 24, Width: 1
+using BR8 = BitField<24, 1>;
+constexpr uint32_t BR8_Pos = 24;
+constexpr uint32_t BR8_Msk = BR8::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 25, Width: 1
-    using BR9 = BitField<25, 1>;
-    constexpr uint32_t BR9_Pos = 25;
-    constexpr uint32_t BR9_Msk = BR9::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 25, Width: 1
+using BR9 = BitField<25, 1>;
+constexpr uint32_t BR9_Pos = 25;
+constexpr uint32_t BR9_Msk = BR9::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 26, Width: 1
-    using BR10 = BitField<26, 1>;
-    constexpr uint32_t BR10_Pos = 26;
-    constexpr uint32_t BR10_Msk = BR10::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 26, Width: 1
+using BR10 = BitField<26, 1>;
+constexpr uint32_t BR10_Pos = 26;
+constexpr uint32_t BR10_Msk = BR10::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 27, Width: 1
-    using BR11 = BitField<27, 1>;
-    constexpr uint32_t BR11_Pos = 27;
-    constexpr uint32_t BR11_Msk = BR11::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 27, Width: 1
+using BR11 = BitField<27, 1>;
+constexpr uint32_t BR11_Pos = 27;
+constexpr uint32_t BR11_Msk = BR11::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 28, Width: 1
-    using BR12 = BitField<28, 1>;
-    constexpr uint32_t BR12_Pos = 28;
-    constexpr uint32_t BR12_Msk = BR12::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 28, Width: 1
+using BR12 = BitField<28, 1>;
+constexpr uint32_t BR12_Pos = 28;
+constexpr uint32_t BR12_Msk = BR12::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 29, Width: 1
-    using BR13 = BitField<29, 1>;
-    constexpr uint32_t BR13_Pos = 29;
-    constexpr uint32_t BR13_Msk = BR13::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 29, Width: 1
+using BR13 = BitField<29, 1>;
+constexpr uint32_t BR13_Pos = 29;
+constexpr uint32_t BR13_Msk = BR13::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 30, Width: 1
-    using BR14 = BitField<30, 1>;
-    constexpr uint32_t BR14_Pos = 30;
-    constexpr uint32_t BR14_Msk = BR14::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 30, Width: 1
+using BR14 = BitField<30, 1>;
+constexpr uint32_t BR14_Pos = 30;
+constexpr uint32_t BR14_Msk = BR14::mask;
 
-    /// Port x reset bit y (y = 0..15)
-    /// Position: 31, Width: 1
-    using BR15 = BitField<31, 1>;
-    constexpr uint32_t BR15_Pos = 31;
-    constexpr uint32_t BR15_Msk = BR15::mask;
+/// Port x reset bit y (y = 0..15)
+/// Position: 31, Width: 1
+using BR15 = BitField<31, 1>;
+constexpr uint32_t BR15_Pos = 31;
+constexpr uint32_t BR15_Msk = BR15::mask;
 
 }  // namespace bsrr
 
 /// LCKR - GPIO port configuration lock register
 namespace lckr {
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 0, Width: 1
-    using LCK0 = BitField<0, 1>;
-    constexpr uint32_t LCK0_Pos = 0;
-    constexpr uint32_t LCK0_Msk = LCK0::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 0, Width: 1
+using LCK0 = BitField<0, 1>;
+constexpr uint32_t LCK0_Pos = 0;
+constexpr uint32_t LCK0_Msk = LCK0::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 1, Width: 1
-    using LCK1 = BitField<1, 1>;
-    constexpr uint32_t LCK1_Pos = 1;
-    constexpr uint32_t LCK1_Msk = LCK1::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 1, Width: 1
+using LCK1 = BitField<1, 1>;
+constexpr uint32_t LCK1_Pos = 1;
+constexpr uint32_t LCK1_Msk = LCK1::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 2, Width: 1
-    using LCK2 = BitField<2, 1>;
-    constexpr uint32_t LCK2_Pos = 2;
-    constexpr uint32_t LCK2_Msk = LCK2::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 2, Width: 1
+using LCK2 = BitField<2, 1>;
+constexpr uint32_t LCK2_Pos = 2;
+constexpr uint32_t LCK2_Msk = LCK2::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 3, Width: 1
-    using LCK3 = BitField<3, 1>;
-    constexpr uint32_t LCK3_Pos = 3;
-    constexpr uint32_t LCK3_Msk = LCK3::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 3, Width: 1
+using LCK3 = BitField<3, 1>;
+constexpr uint32_t LCK3_Pos = 3;
+constexpr uint32_t LCK3_Msk = LCK3::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 4, Width: 1
-    using LCK4 = BitField<4, 1>;
-    constexpr uint32_t LCK4_Pos = 4;
-    constexpr uint32_t LCK4_Msk = LCK4::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 4, Width: 1
+using LCK4 = BitField<4, 1>;
+constexpr uint32_t LCK4_Pos = 4;
+constexpr uint32_t LCK4_Msk = LCK4::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 5, Width: 1
-    using LCK5 = BitField<5, 1>;
-    constexpr uint32_t LCK5_Pos = 5;
-    constexpr uint32_t LCK5_Msk = LCK5::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 5, Width: 1
+using LCK5 = BitField<5, 1>;
+constexpr uint32_t LCK5_Pos = 5;
+constexpr uint32_t LCK5_Msk = LCK5::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 6, Width: 1
-    using LCK6 = BitField<6, 1>;
-    constexpr uint32_t LCK6_Pos = 6;
-    constexpr uint32_t LCK6_Msk = LCK6::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 6, Width: 1
+using LCK6 = BitField<6, 1>;
+constexpr uint32_t LCK6_Pos = 6;
+constexpr uint32_t LCK6_Msk = LCK6::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 7, Width: 1
-    using LCK7 = BitField<7, 1>;
-    constexpr uint32_t LCK7_Pos = 7;
-    constexpr uint32_t LCK7_Msk = LCK7::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 7, Width: 1
+using LCK7 = BitField<7, 1>;
+constexpr uint32_t LCK7_Pos = 7;
+constexpr uint32_t LCK7_Msk = LCK7::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 8, Width: 1
-    using LCK8 = BitField<8, 1>;
-    constexpr uint32_t LCK8_Pos = 8;
-    constexpr uint32_t LCK8_Msk = LCK8::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 8, Width: 1
+using LCK8 = BitField<8, 1>;
+constexpr uint32_t LCK8_Pos = 8;
+constexpr uint32_t LCK8_Msk = LCK8::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 9, Width: 1
-    using LCK9 = BitField<9, 1>;
-    constexpr uint32_t LCK9_Pos = 9;
-    constexpr uint32_t LCK9_Msk = LCK9::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 9, Width: 1
+using LCK9 = BitField<9, 1>;
+constexpr uint32_t LCK9_Pos = 9;
+constexpr uint32_t LCK9_Msk = LCK9::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 10, Width: 1
-    using LCK10 = BitField<10, 1>;
-    constexpr uint32_t LCK10_Pos = 10;
-    constexpr uint32_t LCK10_Msk = LCK10::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 10, Width: 1
+using LCK10 = BitField<10, 1>;
+constexpr uint32_t LCK10_Pos = 10;
+constexpr uint32_t LCK10_Msk = LCK10::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 11, Width: 1
-    using LCK11 = BitField<11, 1>;
-    constexpr uint32_t LCK11_Pos = 11;
-    constexpr uint32_t LCK11_Msk = LCK11::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 11, Width: 1
+using LCK11 = BitField<11, 1>;
+constexpr uint32_t LCK11_Pos = 11;
+constexpr uint32_t LCK11_Msk = LCK11::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 12, Width: 1
-    using LCK12 = BitField<12, 1>;
-    constexpr uint32_t LCK12_Pos = 12;
-    constexpr uint32_t LCK12_Msk = LCK12::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 12, Width: 1
+using LCK12 = BitField<12, 1>;
+constexpr uint32_t LCK12_Pos = 12;
+constexpr uint32_t LCK12_Msk = LCK12::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 13, Width: 1
-    using LCK13 = BitField<13, 1>;
-    constexpr uint32_t LCK13_Pos = 13;
-    constexpr uint32_t LCK13_Msk = LCK13::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 13, Width: 1
+using LCK13 = BitField<13, 1>;
+constexpr uint32_t LCK13_Pos = 13;
+constexpr uint32_t LCK13_Msk = LCK13::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 14, Width: 1
-    using LCK14 = BitField<14, 1>;
-    constexpr uint32_t LCK14_Pos = 14;
-    constexpr uint32_t LCK14_Msk = LCK14::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 14, Width: 1
+using LCK14 = BitField<14, 1>;
+constexpr uint32_t LCK14_Pos = 14;
+constexpr uint32_t LCK14_Msk = LCK14::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 15, Width: 1
-    using LCK15 = BitField<15, 1>;
-    constexpr uint32_t LCK15_Pos = 15;
-    constexpr uint32_t LCK15_Msk = LCK15::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 15, Width: 1
+using LCK15 = BitField<15, 1>;
+constexpr uint32_t LCK15_Pos = 15;
+constexpr uint32_t LCK15_Msk = LCK15::mask;
 
-    /// Port x lock bit y (y= 0..15)
-    /// Position: 16, Width: 1
-    using LCKK = BitField<16, 1>;
-    constexpr uint32_t LCKK_Pos = 16;
-    constexpr uint32_t LCKK_Msk = LCKK::mask;
+/// Port x lock bit y (y= 0..15)
+/// Position: 16, Width: 1
+using LCKK = BitField<16, 1>;
+constexpr uint32_t LCKK_Pos = 16;
+constexpr uint32_t LCKK_Msk = LCKK::mask;
 
 }  // namespace lckr
 
 /// AFRL - GPIO alternate function low register
 namespace afrl {
-    /// Alternate function selection for port x bit y (y = 0..7)
-    /// Position: 0, Width: 4
-    using AFRL0 = BitField<0, 4>;
-    constexpr uint32_t AFRL0_Pos = 0;
-    constexpr uint32_t AFRL0_Msk = AFRL0::mask;
+/// Alternate function selection for port x bit y (y = 0..7)
+/// Position: 0, Width: 4
+using AFRL0 = BitField<0, 4>;
+constexpr uint32_t AFRL0_Pos = 0;
+constexpr uint32_t AFRL0_Msk = AFRL0::mask;
 
-    /// Alternate function selection for port x bit y (y = 0..7)
-    /// Position: 4, Width: 4
-    using AFRL1 = BitField<4, 4>;
-    constexpr uint32_t AFRL1_Pos = 4;
-    constexpr uint32_t AFRL1_Msk = AFRL1::mask;
+/// Alternate function selection for port x bit y (y = 0..7)
+/// Position: 4, Width: 4
+using AFRL1 = BitField<4, 4>;
+constexpr uint32_t AFRL1_Pos = 4;
+constexpr uint32_t AFRL1_Msk = AFRL1::mask;
 
-    /// Alternate function selection for port x bit y (y = 0..7)
-    /// Position: 8, Width: 4
-    using AFRL2 = BitField<8, 4>;
-    constexpr uint32_t AFRL2_Pos = 8;
-    constexpr uint32_t AFRL2_Msk = AFRL2::mask;
+/// Alternate function selection for port x bit y (y = 0..7)
+/// Position: 8, Width: 4
+using AFRL2 = BitField<8, 4>;
+constexpr uint32_t AFRL2_Pos = 8;
+constexpr uint32_t AFRL2_Msk = AFRL2::mask;
 
-    /// Alternate function selection for port x bit y (y = 0..7)
-    /// Position: 12, Width: 4
-    using AFRL3 = BitField<12, 4>;
-    constexpr uint32_t AFRL3_Pos = 12;
-    constexpr uint32_t AFRL3_Msk = AFRL3::mask;
+/// Alternate function selection for port x bit y (y = 0..7)
+/// Position: 12, Width: 4
+using AFRL3 = BitField<12, 4>;
+constexpr uint32_t AFRL3_Pos = 12;
+constexpr uint32_t AFRL3_Msk = AFRL3::mask;
 
-    /// Alternate function selection for port x bit y (y = 0..7)
-    /// Position: 16, Width: 4
-    using AFRL4 = BitField<16, 4>;
-    constexpr uint32_t AFRL4_Pos = 16;
-    constexpr uint32_t AFRL4_Msk = AFRL4::mask;
+/// Alternate function selection for port x bit y (y = 0..7)
+/// Position: 16, Width: 4
+using AFRL4 = BitField<16, 4>;
+constexpr uint32_t AFRL4_Pos = 16;
+constexpr uint32_t AFRL4_Msk = AFRL4::mask;
 
-    /// Alternate function selection for port x bit y (y = 0..7)
-    /// Position: 20, Width: 4
-    using AFRL5 = BitField<20, 4>;
-    constexpr uint32_t AFRL5_Pos = 20;
-    constexpr uint32_t AFRL5_Msk = AFRL5::mask;
+/// Alternate function selection for port x bit y (y = 0..7)
+/// Position: 20, Width: 4
+using AFRL5 = BitField<20, 4>;
+constexpr uint32_t AFRL5_Pos = 20;
+constexpr uint32_t AFRL5_Msk = AFRL5::mask;
 
-    /// Alternate function selection for port x bit y (y = 0..7)
-    /// Position: 24, Width: 4
-    using AFRL6 = BitField<24, 4>;
-    constexpr uint32_t AFRL6_Pos = 24;
-    constexpr uint32_t AFRL6_Msk = AFRL6::mask;
+/// Alternate function selection for port x bit y (y = 0..7)
+/// Position: 24, Width: 4
+using AFRL6 = BitField<24, 4>;
+constexpr uint32_t AFRL6_Pos = 24;
+constexpr uint32_t AFRL6_Msk = AFRL6::mask;
 
-    /// Alternate function selection for port x bit y (y = 0..7)
-    /// Position: 28, Width: 4
-    using AFRL7 = BitField<28, 4>;
-    constexpr uint32_t AFRL7_Pos = 28;
-    constexpr uint32_t AFRL7_Msk = AFRL7::mask;
+/// Alternate function selection for port x bit y (y = 0..7)
+/// Position: 28, Width: 4
+using AFRL7 = BitField<28, 4>;
+constexpr uint32_t AFRL7_Pos = 28;
+constexpr uint32_t AFRL7_Msk = AFRL7::mask;
 
 }  // namespace afrl
 
 /// AFRH - GPIO alternate function high register
 namespace afrh {
-    /// Alternate function selection for port x bit y (y = 8..15)
-    /// Position: 0, Width: 4
-    using AFRH8 = BitField<0, 4>;
-    constexpr uint32_t AFRH8_Pos = 0;
-    constexpr uint32_t AFRH8_Msk = AFRH8::mask;
+/// Alternate function selection for port x bit y (y = 8..15)
+/// Position: 0, Width: 4
+using AFRH8 = BitField<0, 4>;
+constexpr uint32_t AFRH8_Pos = 0;
+constexpr uint32_t AFRH8_Msk = AFRH8::mask;
 
-    /// Alternate function selection for port x bit y (y = 8..15)
-    /// Position: 4, Width: 4
-    using AFRH9 = BitField<4, 4>;
-    constexpr uint32_t AFRH9_Pos = 4;
-    constexpr uint32_t AFRH9_Msk = AFRH9::mask;
+/// Alternate function selection for port x bit y (y = 8..15)
+/// Position: 4, Width: 4
+using AFRH9 = BitField<4, 4>;
+constexpr uint32_t AFRH9_Pos = 4;
+constexpr uint32_t AFRH9_Msk = AFRH9::mask;
 
-    /// Alternate function selection for port x bit y (y = 8..15)
-    /// Position: 8, Width: 4
-    using AFRH10 = BitField<8, 4>;
-    constexpr uint32_t AFRH10_Pos = 8;
-    constexpr uint32_t AFRH10_Msk = AFRH10::mask;
+/// Alternate function selection for port x bit y (y = 8..15)
+/// Position: 8, Width: 4
+using AFRH10 = BitField<8, 4>;
+constexpr uint32_t AFRH10_Pos = 8;
+constexpr uint32_t AFRH10_Msk = AFRH10::mask;
 
-    /// Alternate function selection for port x bit y (y = 8..15)
-    /// Position: 12, Width: 4
-    using AFRH11 = BitField<12, 4>;
-    constexpr uint32_t AFRH11_Pos = 12;
-    constexpr uint32_t AFRH11_Msk = AFRH11::mask;
+/// Alternate function selection for port x bit y (y = 8..15)
+/// Position: 12, Width: 4
+using AFRH11 = BitField<12, 4>;
+constexpr uint32_t AFRH11_Pos = 12;
+constexpr uint32_t AFRH11_Msk = AFRH11::mask;
 
-    /// Alternate function selection for port x bit y (y = 8..15)
-    /// Position: 16, Width: 4
-    using AFRH12 = BitField<16, 4>;
-    constexpr uint32_t AFRH12_Pos = 16;
-    constexpr uint32_t AFRH12_Msk = AFRH12::mask;
+/// Alternate function selection for port x bit y (y = 8..15)
+/// Position: 16, Width: 4
+using AFRH12 = BitField<16, 4>;
+constexpr uint32_t AFRH12_Pos = 16;
+constexpr uint32_t AFRH12_Msk = AFRH12::mask;
 
-    /// Alternate function selection for port x bit y (y = 8..15)
-    /// Position: 20, Width: 4
-    using AFRH13 = BitField<20, 4>;
-    constexpr uint32_t AFRH13_Pos = 20;
-    constexpr uint32_t AFRH13_Msk = AFRH13::mask;
+/// Alternate function selection for port x bit y (y = 8..15)
+/// Position: 20, Width: 4
+using AFRH13 = BitField<20, 4>;
+constexpr uint32_t AFRH13_Pos = 20;
+constexpr uint32_t AFRH13_Msk = AFRH13::mask;
 
-    /// Alternate function selection for port x bit y (y = 8..15)
-    /// Position: 24, Width: 4
-    using AFRH14 = BitField<24, 4>;
-    constexpr uint32_t AFRH14_Pos = 24;
-    constexpr uint32_t AFRH14_Msk = AFRH14::mask;
+/// Alternate function selection for port x bit y (y = 8..15)
+/// Position: 24, Width: 4
+using AFRH14 = BitField<24, 4>;
+constexpr uint32_t AFRH14_Pos = 24;
+constexpr uint32_t AFRH14_Msk = AFRH14::mask;
 
-    /// Alternate function selection for port x bit y (y = 8..15)
-    /// Position: 28, Width: 4
-    using AFRH15 = BitField<28, 4>;
-    constexpr uint32_t AFRH15_Pos = 28;
-    constexpr uint32_t AFRH15_Msk = AFRH15::mask;
+/// Alternate function selection for port x bit y (y = 8..15)
+/// Position: 28, Width: 4
+using AFRH15 = BitField<28, 4>;
+constexpr uint32_t AFRH15_Pos = 28;
+constexpr uint32_t AFRH15_Msk = AFRH15::mask;
 
 }  // namespace afrh
 

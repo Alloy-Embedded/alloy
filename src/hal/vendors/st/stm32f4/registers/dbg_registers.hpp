@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::dbg {
 
 /// DBG Register Structure
 struct DBG_Registers {
-
     /// IDCODE
     /// Offset: 0x0000
     /// Reset value: 0x10006411

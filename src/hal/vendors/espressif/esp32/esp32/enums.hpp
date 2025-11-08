@@ -70,9 +70,8 @@ enum class RTC_CNTL_CLK_CONF_ANA_CLK_RTC_SEL : uint32_t {
 // TIMG0 - Timer Group 0
 // ----------------------------------------------------------------------------
 
-/// length of system reset selection. 0: 100ns  1: 200ns  2: 300ns  3: 400ns  4: 500ns  5: 800ns  6: 1.6us  7: 3.2us
-/// Register: WDTCONFIG0
-/// Field: WDT_SYS_RESET_LENGTH [15:17]
+/// length of system reset selection. 0: 100ns  1: 200ns  2: 300ns  3: 400ns  4: 500ns  5: 800ns
+/// 6: 1.6us  7: 3.2us Register: WDTCONFIG0 Field: WDT_SYS_RESET_LENGTH [15:17]
 enum class TIMG0_WDTCONFIG0_WDT_SYS_RESET_LENGTH : uint32_t {
     NS100 = 0x0,
     NS200 = 0x1,
@@ -84,9 +83,8 @@ enum class TIMG0_WDTCONFIG0_WDT_SYS_RESET_LENGTH : uint32_t {
     NS3200 = 0x7,
 };
 
-/// length of CPU reset selection. 0: 100ns  1: 200ns  2: 300ns 3: 400ns  4: 500ns  5: 800ns  6: 1.6us  7: 3.2us
-/// Register: WDTCONFIG0
-/// Field: WDT_CPU_RESET_LENGTH [18:20]
+/// length of CPU reset selection. 0: 100ns  1: 200ns  2: 300ns 3: 400ns  4: 500ns  5: 800ns
+/// 6: 1.6us  7: 3.2us Register: WDTCONFIG0 Field: WDT_CPU_RESET_LENGTH [18:20]
 enum class TIMG0_WDTCONFIG0_WDT_CPU_RESET_LENGTH : uint32_t {
     NS100 = 0x0,
     NS200 = 0x1,

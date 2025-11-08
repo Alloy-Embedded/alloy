@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::uhci0 {
 
 /// UHCI0 Register Structure
 struct UHCI0_Registers {
-
     /// CONF0
     /// Offset: 0x0000
     /// Reset value: 0x00370100
@@ -225,7 +224,7 @@ struct UHCI0_Registers {
     /// Offset: 0x00C0
     /// Reset value: 0x00000080
     volatile uint32_t PKT_THRES;
-    uint8_t RESERVED_00C4[56]; ///< Reserved
+    uint8_t RESERVED_00C4[56];  ///< Reserved
 
     /// DATE
     /// Offset: 0x00FC

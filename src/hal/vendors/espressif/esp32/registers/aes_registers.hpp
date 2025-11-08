@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::aes {
 
 /// AES Register Structure
 struct AES_Registers {
-
     /// START
     /// Offset: 0x0000
     volatile uint32_t START;
@@ -29,7 +28,7 @@ struct AES_Registers {
     /// MODE
     /// Offset: 0x0008
     volatile uint32_t MODE;
-    uint8_t RESERVED_000C[4]; ///< Reserved
+    uint8_t RESERVED_000C[4];  ///< Reserved
 
     /// KEY_[8]
     /// Offset: 0x0010

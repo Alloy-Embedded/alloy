@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f0::adc {
 
 /// ADC Register Structure
 struct ADC_Registers {
-
     /// interrupt and status register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -53,28 +52,28 @@ struct ADC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t SMPR;
-    uint8_t RESERVED_0018[8]; ///< Reserved
+    uint8_t RESERVED_0018[8];  ///< Reserved
 
     /// watchdog threshold register
     /// Offset: 0x0020
     /// Reset value: 0x00000FFF
     /// Access: read-write
     volatile uint32_t TR;
-    uint8_t RESERVED_0024[4]; ///< Reserved
+    uint8_t RESERVED_0024[4];  ///< Reserved
 
     /// channel selection register
     /// Offset: 0x0028
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CHSELR;
-    uint8_t RESERVED_002C[20]; ///< Reserved
+    uint8_t RESERVED_002C[20];  ///< Reserved
 
     /// data register
     /// Offset: 0x0040
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t DR;
-    uint8_t RESERVED_0044[708]; ///< Reserved
+    uint8_t RESERVED_0044[708];  ///< Reserved
 
     /// common configuration register
     /// Offset: 0x0308

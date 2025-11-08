@@ -6,8 +6,9 @@
 #include "server.hpp"
 
 #ifdef ESP_PLATFORM
-#include <cstring>
-#include "esp_log.h"
+    #include <cstring>
+
+    #include "esp_log.h"
 
 namespace alloy::http {
 
@@ -23,30 +24,33 @@ struct HandlerContext {
 // ============================================================================
 
 Server::Server()
-    : config_()
-    , running_(false)
-#ifdef ESP_PLATFORM
-    , server_handle_(nullptr)
-#endif
+    : config_(),
+      running_(false)
+    #ifdef ESP_PLATFORM
+      ,
+      server_handle_(nullptr)
+    #endif
 {
 }
 
 Server::Server(uint16_t port)
-    : config_()
-    , running_(false)
-#ifdef ESP_PLATFORM
-    , server_handle_(nullptr)
-#endif
+    : config_(),
+      running_(false)
+    #ifdef ESP_PLATFORM
+      ,
+      server_handle_(nullptr)
+    #endif
 {
     config_.port = port;
 }
 
 Server::Server(const ServerConfig& config)
-    : config_(config)
-    , running_(false)
-#ifdef ESP_PLATFORM
-    , server_handle_(nullptr)
-#endif
+    : config_(config),
+      running_(false)
+    #ifdef ESP_PLATFORM
+      ,
+      server_handle_(nullptr)
+    #endif
 {
 }
 
@@ -112,23 +116,35 @@ Result<void> Server::on(Method method, const char* uri, Handler handler) {
     // Convert method
     httpd_method_t httpd_method;
     switch (method) {
-        case Method::GET:     httpd_method = HTTP_GET; break;
-        case Method::POST:    httpd_method = HTTP_POST; break;
-        case Method::PUT:     httpd_method = HTTP_PUT; break;
-        case Method::DELETE:  httpd_method = HTTP_DELETE; break;
-        case Method::HEAD:    httpd_method = HTTP_HEAD; break;
-        case Method::OPTIONS: httpd_method = HTTP_OPTIONS; break;
-        case Method::PATCH:   httpd_method = HTTP_PATCH; break;
-        default:              httpd_method = HTTP_GET; break;
+        case Method::GET:
+            httpd_method = HTTP_GET;
+            break;
+        case Method::POST:
+            httpd_method = HTTP_POST;
+            break;
+        case Method::PUT:
+            httpd_method = HTTP_PUT;
+            break;
+        case Method::DELETE:
+            httpd_method = HTTP_DELETE;
+            break;
+        case Method::HEAD:
+            httpd_method = HTTP_HEAD;
+            break;
+        case Method::OPTIONS:
+            httpd_method = HTTP_OPTIONS;
+            break;
+        case Method::PATCH:
+            httpd_method = HTTP_PATCH;
+            break;
+        default:
+            httpd_method = HTTP_GET;
+            break;
     }
 
     // Register handler
     httpd_uri_t uri_config = {
-        .uri = uri,
-        .method = httpd_method,
-        .handler = &Server::handler_wrapper,
-        .user_ctx = ctx
-    };
+        .uri = uri, .method = httpd_method, .handler = &Server::handler_wrapper, .user_ctx = ctx};
 
     esp_err_t err = httpd_register_uri_handler(server_handle_, &uri_config);
     if (err != ESP_OK) {
@@ -187,21 +203,26 @@ esp_err_t Server::handler_wrapper(httpd_req_t* req) {
 // Request Implementation
 // ============================================================================
 
-Request::Request(httpd_req_t* req)
-    : req_(req)
-{
-}
+Request::Request(httpd_req_t* req) : req_(req) {}
 
 Method Request::method() const {
     switch (req_->method) {
-        case HTTP_GET:     return Method::GET;
-        case HTTP_POST:    return Method::POST;
-        case HTTP_PUT:     return Method::PUT;
-        case HTTP_DELETE:  return Method::DELETE;
-        case HTTP_HEAD:    return Method::HEAD;
-        case HTTP_OPTIONS: return Method::OPTIONS;
-        case HTTP_PATCH:   return Method::PATCH;
-        default:           return Method::GET;
+        case HTTP_GET:
+            return Method::GET;
+        case HTTP_POST:
+            return Method::POST;
+        case HTTP_PUT:
+            return Method::PUT;
+        case HTTP_DELETE:
+            return Method::DELETE;
+        case HTTP_HEAD:
+            return Method::HEAD;
+        case HTTP_OPTIONS:
+            return Method::OPTIONS;
+        case HTTP_PATCH:
+            return Method::PATCH;
+        default:
+            return Method::GET;
     }
 }
 
@@ -285,7 +306,7 @@ Result<size_t> Request::body(char* buffer, size_t buffer_size) const {
         return Result<size_t>::error(ErrorCode::CommunicationError);
     }
 
-    buffer[ret] = '\0'; // Null-terminate
+    buffer[ret] = '\0';  // Null-terminate
     return Result<size_t>::ok(ret);
 }
 
@@ -301,11 +322,7 @@ httpd_req_t* Request::native_handle() const {
 // Response Implementation
 // ============================================================================
 
-Response::Response(httpd_req_t* req)
-    : req_(req)
-    , status_(Status::OK)
-{
-}
+Response::Response(httpd_req_t* req) : req_(req), status_(Status::OK) {}
 
 Response& Response::status(Status status) {
     status_ = status;
@@ -358,16 +375,18 @@ httpd_req_t* Response::native_handle() const {
     return req_;
 }
 
-} // namespace alloy::http
+}  // namespace alloy::http
 
-#else // !ESP_PLATFORM
+#else  // !ESP_PLATFORM
 
 namespace alloy::http {
 
 // Stub implementations for non-ESP platforms
 
 Server::Server() : config_(), running_(false) {}
-Server::Server(uint16_t port) : config_(), running_(false) { config_.port = port; }
+Server::Server(uint16_t port) : config_(), running_(false) {
+    config_.port = port;
+}
 Server::Server(const ServerConfig& config) : config_(config), running_(false) {}
 Server::~Server() {}
 
@@ -409,8 +428,12 @@ uint16_t Server::port() const {
 
 // Request stubs
 Request::Request() {}
-Method Request::method() const { return Method::GET; }
-const char* Request::uri() const { return ""; }
+Method Request::method() const {
+    return Method::GET;
+}
+const char* Request::uri() const {
+    return "";
+}
 Result<size_t> Request::query(const char*, char*, size_t) const {
     return Result<size_t>::error(ErrorCode::NotSupported);
 }
@@ -420,13 +443,22 @@ Result<size_t> Request::header(const char*, char*, size_t) const {
 Result<size_t> Request::body(char*, size_t) const {
     return Result<size_t>::error(ErrorCode::NotSupported);
 }
-size_t Request::content_length() const { return 0; }
+size_t Request::content_length() const {
+    return 0;
+}
 
 // Response stubs
 Response::Response() : status_(Status::OK) {}
-Response& Response::status(Status status) { status_ = status; return *this; }
-Response& Response::header(const char*, const char*) { return *this; }
-Response& Response::type(const char*) { return *this; }
+Response& Response::status(Status status) {
+    status_ = status;
+    return *this;
+}
+Response& Response::header(const char*, const char*) {
+    return *this;
+}
+Response& Response::type(const char*) {
+    return *this;
+}
 Result<void> Response::send(const char*) {
     return Result<void>::error(ErrorCode::NotSupported);
 }
@@ -440,6 +472,6 @@ Result<void> Response::html(const char*) {
     return Result<void>::error(ErrorCode::NotSupported);
 }
 
-} // namespace alloy::http
+}  // namespace alloy::http
 
-#endif // ESP_PLATFORM
+#endif  // ESP_PLATFORM

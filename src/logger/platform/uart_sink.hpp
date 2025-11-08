@@ -17,9 +17,9 @@ namespace logger {
  *
  * @tparam UartImpl UART implementation (must have write() method)
  */
-template<typename UartImpl>
+template <typename UartImpl>
 class UartSink : public Sink {
-public:
+   public:
     /**
      * Construct UART sink
      *
@@ -51,13 +51,11 @@ public:
      *
      * @return true if UART is initialized
      */
-    bool is_ready() const override {
-        return uart_.is_initialized();
-    }
+    bool is_ready() const override { return uart_.is_initialized(); }
 
-private:
+   private:
     UartImpl& uart_;
 };
 
-} // namespace logger
-} // namespace alloy
+}  // namespace logger
+}  // namespace alloy

@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::rtc_io {
 
 /// RTC_IO Register Structure
 struct RTC_IO_Registers {
-
     /// OUT
     /// Offset: 0x0000
     volatile uint32_t OUT;

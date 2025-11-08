@@ -33,9 +33,8 @@ using namespace alloy::hal::same70;
  * @brief High-speed ADC with DMA data acquisition
  */
 class AdcDmaAcquisition {
-public:
-    constexpr AdcDmaAcquisition(size_t buffer_size = 1024)
-        : m_buffer_size(buffer_size) {}
+   public:
+    constexpr AdcDmaAcquisition(size_t buffer_size = 1024) : m_buffer_size(buffer_size) {}
 
     /**
      * @brief Initialize ADC and DMA
@@ -51,7 +50,7 @@ public:
         AdcConfig adc_config;
         adc_config.resolution = AdcResolution::Bits12;
         adc_config.trigger = AdcTrigger::Continuous;  // Free-running mode
-        adc_config.sample_rate = 1000000;  // 1 MSPS
+        adc_config.sample_rate = 1000000;             // 1 MSPS
         adc_config.use_dma = true;
 
         auto config_result = m_adc.configure(adc_config);
@@ -74,7 +73,7 @@ public:
         // Configure DMA for ADC -> Memory transfer
         DmaConfig dma_config;
         dma_config.direction = DmaDirection::PeripheralToMemory;
-        dma_config.src_width = DmaWidth::Word;  // 32-bit reads from LCDR
+        dma_config.src_width = DmaWidth::Word;      // 32-bit reads from LCDR
         dma_config.dst_width = DmaWidth::HalfWord;  // 16-bit writes to buffer
         dma_config.peripheral = DmaPeripheralId::AFEC0;
         dma_config.src_increment = false;  // Read from same LCDR register
@@ -97,10 +96,9 @@ public:
         }
 
         // Start DMA transfer from ADC data register to buffer
-        auto dma_result = m_dma.transfer(
-            m_adc.getDmaSourceAddress(),  // Source: ADC LCDR
-            buffer,                        // Destination: RAM buffer
-            size                           // Number of samples
+        auto dma_result = m_dma.transfer(m_adc.getDmaSourceAddress(),  // Source: ADC LCDR
+                                         buffer,                       // Destination: RAM buffer
+                                         size                          // Number of samples
         );
 
         if (!dma_result.is_ok()) {
@@ -122,9 +120,7 @@ public:
     /**
      * @brief Check if acquisition is complete
      */
-    bool isComplete() const {
-        return m_dma.isComplete();
-    }
+    bool isComplete() const { return m_dma.isComplete(); }
 
     /**
      * @brief Wait for acquisition to complete
@@ -143,7 +139,7 @@ public:
         return dma_result;
     }
 
-private:
+   private:
     Adc0 m_adc;
     DmaAdcChannel0 m_dma;
     size_t m_buffer_size;
@@ -155,7 +151,7 @@ private:
  * Scans multiple ADC channels continuously and stores them in an interleaved buffer.
  */
 class MultiChannelAdcDma {
-public:
+   public:
     /**
      * @brief Initialize multi-channel ADC with DMA
      */
@@ -212,14 +208,9 @@ public:
      */
     auto startAcquisition(uint16_t* buffer, size_t samples_per_channel)
         -> alloy::core::Result<void> {
-
         size_t total_samples = samples_per_channel * m_num_channels;
 
-        auto dma_result = m_dma.transfer(
-            m_adc.getDmaSourceAddress(),
-            buffer,
-            total_samples
-        );
+        auto dma_result = m_dma.transfer(m_adc.getDmaSourceAddress(), buffer, total_samples);
 
         if (!dma_result.is_ok()) {
             return dma_result;
@@ -228,16 +219,14 @@ public:
         return m_adc.startConversion();
     }
 
-    bool isComplete() const {
-        return m_dma.isComplete();
-    }
+    bool isComplete() const { return m_dma.isComplete(); }
 
     auto close() -> alloy::core::Result<void> {
         m_adc.close();
         return m_dma.close();
     }
 
-private:
+   private:
     Adc0 m_adc;
     DmaAdcChannel0 m_dma;
     size_t m_num_channels = 1;
@@ -247,59 +236,61 @@ private:
  * @brief Simple signal processing example
  */
 namespace SignalProcessing {
-    /**
-     * @brief Calculate average of buffer
-     */
-    uint32_t calculateAverage(const uint16_t* buffer, size_t size) {
-        uint32_t sum = 0;
-        for (size_t i = 0; i < size; ++i) {
-            sum += buffer[i];
-        }
-        return sum / size;
+/**
+ * @brief Calculate average of buffer
+ */
+uint32_t calculateAverage(const uint16_t* buffer, size_t size) {
+    uint32_t sum = 0;
+    for (size_t i = 0; i < size; ++i) {
+        sum += buffer[i];
     }
+    return sum / size;
+}
 
-    /**
-     * @brief Find min and max values
-     */
-    void findMinMax(const uint16_t* buffer, size_t size, uint16_t* min, uint16_t* max) {
-        *min = 4095;
-        *max = 0;
+/**
+ * @brief Find min and max values
+ */
+void findMinMax(const uint16_t* buffer, size_t size, uint16_t* min, uint16_t* max) {
+    *min = 4095;
+    *max = 0;
 
-        for (size_t i = 0; i < size; ++i) {
-            if (buffer[i] < *min) *min = buffer[i];
-            if (buffer[i] > *max) *max = buffer[i];
-        }
-    }
-
-    /**
-     * @brief Calculate RMS (Root Mean Square)
-     */
-    uint32_t calculateRms(const uint16_t* buffer, size_t size) {
-        uint64_t sum_squares = 0;
-        for (size_t i = 0; i < size; ++i) {
-            uint32_t val = buffer[i];
-            sum_squares += val * val;
-        }
-        uint32_t mean_square = sum_squares / size;
-
-        // Simple integer square root
-        uint32_t rms = 0;
-        uint32_t bit = 1u << 30;
-        while (bit > mean_square) {
-            bit >>= 2;
-        }
-        while (bit != 0) {
-            if (mean_square >= rms + bit) {
-                mean_square -= rms + bit;
-                rms = (rms >> 1) + bit;
-            } else {
-                rms >>= 1;
-            }
-            bit >>= 2;
-        }
-        return rms;
+    for (size_t i = 0; i < size; ++i) {
+        if (buffer[i] < *min)
+            *min = buffer[i];
+        if (buffer[i] > *max)
+            *max = buffer[i];
     }
 }
+
+/**
+ * @brief Calculate RMS (Root Mean Square)
+ */
+uint32_t calculateRms(const uint16_t* buffer, size_t size) {
+    uint64_t sum_squares = 0;
+    for (size_t i = 0; i < size; ++i) {
+        uint32_t val = buffer[i];
+        sum_squares += val * val;
+    }
+    uint32_t mean_square = sum_squares / size;
+
+    // Simple integer square root
+    uint32_t rms = 0;
+    uint32_t bit = 1u << 30;
+    while (bit > mean_square) {
+        bit >>= 2;
+    }
+    while (bit != 0) {
+        if (mean_square >= rms + bit) {
+            mean_square -= rms + bit;
+            rms = (rms >> 1) + bit;
+        } else {
+            rms >>= 1;
+        }
+        bit >>= 2;
+    }
+    return rms;
+}
+}  // namespace SignalProcessing
 
 /**
  * @brief Example usage
@@ -344,12 +335,8 @@ int main() {
         MultiChannelAdcDma multi_adc;
 
         // Configure 4 channels
-        AdcChannel channels[] = {
-            AdcChannel::CH0,
-            AdcChannel::CH1,
-            AdcChannel::CH2,
-            AdcChannel::CH3
-        };
+        AdcChannel channels[] = {AdcChannel::CH0, AdcChannel::CH1, AdcChannel::CH2,
+                                 AdcChannel::CH3};
 
         [[maybe_unused]] auto init_result = multi_adc.init(channels, 4);
 

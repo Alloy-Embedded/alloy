@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::sens {
 
 /// SENS Register Structure
 struct SENS_Registers {
-
     /// SAR_READ_CTRL
     /// Offset: 0x0000
     /// Reset value: 0x00070902
@@ -169,7 +168,7 @@ struct SENS_Registers {
     /// Offset: 0x0084
     /// Reset value: 0x00400800
     volatile uint32_t SAR_TOUCH_CTRL2;
-    uint8_t RESERVED_0088[4]; ///< Reserved
+    uint8_t RESERVED_0088[4];  ///< Reserved
 
     /// SAR_TOUCH_ENABLE
     /// Offset: 0x008C
@@ -198,7 +197,7 @@ struct SENS_Registers {
     /// Offset: 0x00A0
     /// Reset value: 0x00000003
     volatile uint32_t SAR_MEAS_CTRL2;
-    uint8_t RESERVED_00A4[84]; ///< Reserved
+    uint8_t RESERVED_00A4[84];  ///< Reserved
 
     /// SAR_NOUSE
     /// Offset: 0x00F8

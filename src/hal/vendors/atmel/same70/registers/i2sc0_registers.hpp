@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::i2sc0 {
 
 /// I2SC0 Register Structure
 struct I2SC0_Registers {
-
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only

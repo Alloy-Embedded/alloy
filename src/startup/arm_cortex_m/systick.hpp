@@ -16,8 +16,9 @@
 
 #pragma once
 
-#include "core_common.hpp"
 #include <stdint.h>
+
+#include "core_common.hpp"
 
 namespace alloy::arm::cortex_m::systick {
 
@@ -139,4 +140,4 @@ inline void delay_ticks(uint32_t ticks) {
     }
 }
 
-} // namespace alloy::arm::cortex_m::systick
+}  // namespace alloy::arm::cortex_m::systick

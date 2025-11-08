@@ -24,42 +24,42 @@
 
 #pragma once
 
-#include <utility>      // std::move, std::forward
-#include <type_traits>  // std::enable_if, std::is_same
-#include <cstdlib>      // std::abort
 #include <cassert>      // assert
+#include <cstdlib>      // std::abort
+#include <type_traits>  // std::enable_if, std::is_same
+#include <utility>      // std::move, std::forward
 
 namespace alloy {
 namespace core {
 
 // Forward declarations
-template<typename T, typename E>
+template <typename T, typename E>
 class Result;
 
 namespace detail {
-    // Tag types for Ok and Err construction
-    template<typename T>
-    struct OkTag {
-        T value;
+// Tag types for Ok and Err construction
+template <typename T>
+struct OkTag {
+    T value;
 
-        explicit OkTag(T&& v) : value(std::forward<T>(v)) {}
-        explicit OkTag(const T& v) : value(v) {}
-    };
+    explicit OkTag(T&& v) : value(std::forward<T>(v)) {}
+    explicit OkTag(const T& v) : value(v) {}
+};
 
-    // Specialization for void
-    template<>
-    struct OkTag<void> {
-        OkTag() = default;
-    };
+// Specialization for void
+template <>
+struct OkTag<void> {
+    OkTag() = default;
+};
 
-    template<typename E>
-    struct ErrTag {
-        E error;
+template <typename E>
+struct ErrTag {
+    E error;
 
-        explicit ErrTag(E&& e) : error(std::forward<E>(e)) {}
-        explicit ErrTag(const E& e) : error(e) {}
-    };
-}
+    explicit ErrTag(E&& e) : error(std::forward<E>(e)) {}
+    explicit ErrTag(const E& e) : error(e) {}
+};
+}  // namespace detail
 
 /**
  * @brief Factory function to create an Ok result
@@ -67,7 +67,7 @@ namespace detail {
  * @param value The success value
  * @return OkTag wrapping the value
  */
-template<typename T>
+template <typename T>
 constexpr detail::OkTag<T> Ok(T&& value) {
     return detail::OkTag<T>(std::forward<T>(value));
 }
@@ -86,7 +86,7 @@ inline constexpr detail::OkTag<void> Ok() {
  * @param error The error value
  * @return ErrTag wrapping the error
  */
-template<typename E>
+template <typename E>
 constexpr detail::ErrTag<E> Err(E&& error) {
     return detail::ErrTag<E>(std::forward<E>(error));
 }
@@ -103,9 +103,9 @@ constexpr detail::ErrTag<E> Err(E&& error) {
  * Memory layout: Uses a union to store either T or E, plus a bool flag.
  * Size: sizeof(Result<T,E>) = max(sizeof(T), sizeof(E)) + sizeof(bool) + padding
  */
-template<typename T, typename E>
+template <typename T, typename E>
 class Result {
-public:
+   public:
     // Type aliases
     using value_type = T;
     using error_type = E;
@@ -115,13 +115,9 @@ public:
     /**
      * @brief Construct an Ok result from OkTag
      */
-    Result(detail::OkTag<T>&& ok) : is_ok_(true) {
-        new (&storage_.value) T(std::move(ok.value));
-    }
+    Result(detail::OkTag<T>&& ok) : is_ok_(true) { new (&storage_.value) T(std::move(ok.value)); }
 
-    Result(const detail::OkTag<T>& ok) : is_ok_(true) {
-        new (&storage_.value) T(ok.value);
-    }
+    Result(const detail::OkTag<T>& ok) : is_ok_(true) { new (&storage_.value) T(ok.value); }
 
     /**
      * @brief Construct an Err result from ErrTag
@@ -130,9 +126,7 @@ public:
         new (&storage_.error) E(std::move(err.error));
     }
 
-    Result(const detail::ErrTag<E>& err) : is_ok_(false) {
-        new (&storage_.error) E(err.error);
-    }
+    Result(const detail::ErrTag<E>& err) : is_ok_(false) { new (&storage_.error) E(err.error); }
 
     /**
      * @brief Copy constructor
@@ -191,9 +185,7 @@ public:
     /**
      * @brief Destructor
      */
-    ~Result() {
-        destroy();
-    }
+    ~Result() { destroy(); }
 
     // Query methods
 
@@ -201,25 +193,19 @@ public:
      * @brief Check if result is Ok
      * @return true if contains a value, false if contains an error
      */
-    constexpr bool is_ok() const noexcept {
-        return is_ok_;
-    }
+    constexpr bool is_ok() const noexcept { return is_ok_; }
 
     /**
      * @brief Check if result is Err
      * @return true if contains an error, false if contains a value
      */
-    constexpr bool is_err() const noexcept {
-        return !is_ok_;
-    }
+    constexpr bool is_err() const noexcept { return !is_ok_; }
 
     /**
      * @brief Boolean conversion operator
      * @return true if Ok, false if Err
      */
-    explicit operator bool() const noexcept {
-        return is_ok();
-    }
+    explicit operator bool() const noexcept { return is_ok(); }
 
     // Value access methods
 
@@ -236,7 +222,7 @@ public:
         return storage_.value;
     }
 
-    const T& unwrap() const & {
+    const T& unwrap() const& {
         if (!is_ok_) {
             std::abort();
         }
@@ -255,13 +241,9 @@ public:
      * @param default_value Value to return if result is Err
      * @return The contained value or the default
      */
-    T unwrap_or(T default_value) const & {
-        return is_ok_ ? storage_.value : default_value;
-    }
+    T unwrap_or(T default_value) const& { return is_ok_ ? storage_.value : default_value; }
 
-    T unwrap_or(T default_value) && {
-        return is_ok_ ? std::move(storage_.value) : default_value;
-    }
+    T unwrap_or(T default_value) && { return is_ok_ ? std::move(storage_.value) : default_value; }
 
     /**
      * @brief Unwrap with a custom panic message
@@ -270,13 +252,13 @@ public:
      */
     T& expect(const char* msg) & {
         if (!is_ok_) {
-            (void)msg; // Unused in release builds
+            (void)msg;  // Unused in release builds
             std::abort();
         }
         return storage_.value;
     }
 
-    const T& expect(const char* msg) const & {
+    const T& expect(const char* msg) const& {
         if (!is_ok_) {
             (void)msg;
             std::abort();
@@ -298,7 +280,7 @@ public:
         return storage_.error;
     }
 
-    const E& err() const & {
+    const E& err() const& {
         if (is_ok_) {
             std::abort();
         }
@@ -323,7 +305,7 @@ public:
         return storage_.error;
     }
 
-    const E& unwrap_err() const & {
+    const E& unwrap_err() const& {
         if (is_ok_) {
             std::abort();
         }
@@ -351,8 +333,8 @@ public:
      * auto r2 = r.map([](int x) { return x * 2; }); // Ok(10)
      * @endcode
      */
-    template<typename F>
-    auto map(F&& fn) const & -> Result<decltype(fn(std::declval<T>())), E> {
+    template <typename F>
+    auto map(F&& fn) const& -> Result<decltype(fn(std::declval<T>())), E> {
         using U = decltype(fn(std::declval<T>()));
         if (is_ok_) {
             return Ok(fn(storage_.value));
@@ -361,7 +343,7 @@ public:
         }
     }
 
-    template<typename F>
+    template <typename F>
     auto map(F&& fn) && -> Result<decltype(fn(std::declval<T>())), E> {
         using U = decltype(fn(std::declval<T>()));
         if (is_ok_) {
@@ -387,8 +369,8 @@ public:
      * auto r2 = r.and_then(divide); // Ok(20)
      * @endcode
      */
-    template<typename F>
-    auto and_then(F&& fn) const & -> decltype(fn(std::declval<T>())) {
+    template <typename F>
+    auto and_then(F&& fn) const& -> decltype(fn(std::declval<T>())) {
         using ResultType = decltype(fn(std::declval<T>()));
         if (is_ok_) {
             return fn(storage_.value);
@@ -397,7 +379,7 @@ public:
         }
     }
 
-    template<typename F>
+    template <typename F>
     auto and_then(F&& fn) && -> decltype(fn(std::declval<T>())) {
         using ResultType = decltype(fn(std::declval<T>()));
         if (is_ok_) {
@@ -422,8 +404,8 @@ public:
      * });
      * @endcode
      */
-    template<typename F>
-    auto or_else(F&& fn) const & -> decltype(fn(std::declval<E>())) {
+    template <typename F>
+    auto or_else(F&& fn) const& -> decltype(fn(std::declval<E>())) {
         using ResultType = decltype(fn(std::declval<E>()));
         if (is_ok_) {
             return ResultType(Ok(T(storage_.value)));
@@ -432,7 +414,7 @@ public:
         }
     }
 
-    template<typename F>
+    template <typename F>
     auto or_else(F&& fn) && -> decltype(fn(std::declval<E>())) {
         using ResultType = decltype(fn(std::declval<E>()));
         if (is_ok_) {
@@ -442,7 +424,7 @@ public:
         }
     }
 
-private:
+   private:
     void destroy() {
         if (is_ok_) {
             storage_.value.~T();
@@ -455,8 +437,8 @@ private:
         T value;
         E error;
 
-        Storage() {} // Union requires manual construction
-        ~Storage() {} // Union requires manual destruction
+        Storage() {}   // Union requires manual construction
+        ~Storage() {}  // Union requires manual destruction
     } storage_;
 
     bool is_ok_;
@@ -478,9 +460,9 @@ private:
  * }
  * @endcode
  */
-template<typename E>
+template <typename E>
 class Result<void, E> {
-public:
+   public:
     using error_type = E;
 
     // Constructors
@@ -497,24 +479,20 @@ public:
      * @brief Check if the result is success
      * @return true if success, false if error
      */
-    [[nodiscard]] constexpr bool is_ok() const noexcept {
-        return is_ok_;
-    }
+    [[nodiscard]] constexpr bool is_ok() const noexcept { return is_ok_; }
 
     /**
      * @brief Check if the result is error
      * @return true if error, false if success
      */
-    [[nodiscard]] constexpr bool is_err() const noexcept {
-        return !is_ok_;
-    }
+    [[nodiscard]] constexpr bool is_err() const noexcept { return !is_ok_; }
 
     /**
      * @brief Get the error value (short alias)
      * @return Reference to the error
      * @pre is_err() must be true
      */
-    [[nodiscard]] const E& err() const & {
+    [[nodiscard]] const E& err() const& {
         assert(!is_ok_ && "Cannot access err() on success Result");
         return error_;
     }
@@ -534,7 +512,7 @@ public:
      * @return Reference to the error
      * @pre is_err() must be true
      */
-    [[nodiscard]] const E& error() const & {
+    [[nodiscard]] const E& error() const& {
         assert(!is_ok_ && "Cannot access error() on success Result");
         return error_;
     }
@@ -565,14 +543,12 @@ public:
      * @brief Unwrap the result (asserts if error)
      * @pre is_ok() must be true
      */
-    void unwrap() const {
-        assert(is_ok_ && "Cannot unwrap error Result");
-    }
+    void unwrap() const { assert(is_ok_ && "Cannot unwrap error Result"); }
 
-private:
+   private:
     bool is_ok_;
     E error_;  // Only valid when is_ok_ == false
 };
 
-} // namespace core
-} // namespace alloy
+}  // namespace core
+}  // namespace alloy

@@ -2,13 +2,16 @@
 ///
 /// Tests binary and counting semaphores for synchronization using Catch2
 
-#include <catch2/catch_test_macros.hpp>
-#include <catch2/catch_section_info.hpp>
-#include "rtos/semaphore.hpp"
-#include "hal/host/systick.hpp"
-#include <thread>
-#include <chrono>
 #include <atomic>
+#include <chrono>
+#include <thread>
+
+#include <catch2/catch_section_info.hpp>
+#include <catch2/catch_test_macros.hpp>
+
+#include "hal/host/systick.hpp"
+
+#include "rtos/semaphore.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
@@ -82,7 +85,7 @@ TEST_CASE("Counting semaphore basic operations", "[semaphore][counting][basic]")
 
     SECTION("give respects max count") {
         CountingSemaphore<3> sem(3);
-        sem.give();  // At max, should not increment
+        sem.give();                 // At max, should not increment
         REQUIRE(sem.count() == 3);  // Still at max
     }
 
@@ -158,7 +161,8 @@ TEST_CASE("Semaphore multi-threaded synchronization", "[semaphore][threading]") 
                 sem.take();
 
                 int count = ++current_count;
-                if (count > max_seen) max_seen = count;
+                if (count > max_seen)
+                    max_seen = count;
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
 

@@ -1,9 +1,10 @@
 #include "client.hpp"
 
 #ifdef ESP_PLATFORM
-#include "mqtt_client.h"
-#include "esp_log.h"
-#include <cstring>
+    #include <cstring>
+
+    #include "esp_log.h"
+    #include "mqtt_client.h"
 
 static const char* TAG = "MQTT::Client";
 
@@ -25,8 +26,8 @@ struct Client::Impl {
     std::map<std::string, MessageCallback> topic_callbacks;
 
     // Static event handler for ESP-IDF
-    static void event_handler(void* handler_args, esp_event_base_t base,
-                            int32_t event_id, void* event_data) {
+    static void event_handler(void* handler_args, esp_event_base_t base, int32_t event_id,
+                              void* event_data) {
         auto* impl = static_cast<Impl*>(handler_args);
         auto* event = static_cast<esp_mqtt_event_handle_t>(event_data);
 
@@ -89,16 +90,14 @@ struct Client::Impl {
 
     void handle_data(esp_mqtt_event_handle_t event) {
         // Create message from event data
-        Message msg{
-            .topic = std::string_view(event->topic, event->topic_len),
-            .data = reinterpret_cast<const uint8_t*>(event->data),
-            .length = static_cast<size_t>(event->data_len),
-            .qos = static_cast<QoS>(event->qos),
-            .retained = event->retain
-        };
+        Message msg{.topic = std::string_view(event->topic, event->topic_len),
+                    .data = reinterpret_cast<const uint8_t*>(event->data),
+                    .length = static_cast<size_t>(event->data_len),
+                    .qos = static_cast<QoS>(event->qos),
+                    .retained = event->retain};
 
-        ESP_LOGD(TAG, "Received message on topic: %.*s, length: %d",
-                 event->topic_len, event->topic, event->data_len);
+        ESP_LOGD(TAG, "Received message on topic: %.*s, length: %d", event->topic_len, event->topic,
+                 event->data_len);
 
         // Check for topic-specific callback
         bool handled = false;
@@ -132,8 +131,7 @@ struct Client::Impl {
     }
 };
 
-Client::Client(const Config& config)
-    : impl_(std::make_unique<Impl>()) {
+Client::Client(const Config& config) : impl_(std::make_unique<Impl>()) {
     impl_->config = config;
 
     // Configure ESP-IDF MQTT client
@@ -193,8 +191,7 @@ Client::Client(const Config& config)
     }
 
     // Register event handler
-    esp_mqtt_client_register_event(impl_->client, MQTT_EVENT_ANY,
-                                   Impl::event_handler, impl_.get());
+    esp_mqtt_client_register_event(impl_->client, MQTT_EVENT_ANY, Impl::event_handler, impl_.get());
 }
 
 Client::~Client() {
@@ -239,16 +236,14 @@ State Client::state() const {
     return impl_ ? impl_->current_state : State::Error;
 }
 
-Result<int, ErrorCode> Client::publish(const char* topic, const void* data,
-                                       size_t length, QoS qos, bool retain) {
+Result<int, ErrorCode> Client::publish(const char* topic, const void* data, size_t length, QoS qos,
+                                       bool retain) {
     if (!is_connected()) {
         return Result<int, ErrorCode>::error(ErrorCode::Communication);
     }
 
-    int msg_id = esp_mqtt_client_publish(impl_->client, topic,
-                                         static_cast<const char*>(data),
-                                         length, static_cast<int>(qos),
-                                         retain ? 1 : 0);
+    int msg_id = esp_mqtt_client_publish(impl_->client, topic, static_cast<const char*>(data),
+                                         length, static_cast<int>(qos), retain ? 1 : 0);
 
     if (msg_id < 0) {
         ESP_LOGE(TAG, "Failed to publish message");
@@ -259,13 +254,12 @@ Result<int, ErrorCode> Client::publish(const char* topic, const void* data,
     return Result<int, ErrorCode>::ok(msg_id);
 }
 
-Result<int, ErrorCode> Client::publish(const char* topic, const char* message,
-                                       QoS qos, bool retain) {
+Result<int, ErrorCode> Client::publish(const char* topic, const char* message, QoS qos,
+                                       bool retain) {
     return publish(topic, message, strlen(message), qos, retain);
 }
 
-Result<void, ErrorCode> Client::subscribe(const char* topic, QoS qos,
-                                          MessageCallback callback) {
+Result<void, ErrorCode> Client::subscribe(const char* topic, QoS qos, MessageCallback callback) {
     if (!is_connected()) {
         return Result<void, ErrorCode>::error(ErrorCode::Communication);
     }
@@ -275,8 +269,7 @@ Result<void, ErrorCode> Client::subscribe(const char* topic, QoS qos,
         impl_->topic_callbacks[topic] = std::move(callback);
     }
 
-    int msg_id = esp_mqtt_client_subscribe(impl_->client, topic,
-                                           static_cast<int>(qos));
+    int msg_id = esp_mqtt_client_subscribe(impl_->client, topic, static_cast<int>(qos));
 
     if (msg_id < 0) {
         ESP_LOGE(TAG, "Failed to subscribe to %s", topic);
@@ -335,9 +328,9 @@ void Client::set_subscribe_callback(SubscribeCallback callback) {
     }
 }
 
-} // namespace MQTT
+}  // namespace MQTT
 
-#else // !ESP_PLATFORM
+#else  // !ESP_PLATFORM
 
 // Stub implementation for non-ESP32 platforms
 namespace MQTT {
@@ -354,8 +347,12 @@ Result<void, ErrorCode> Client::connect() {
 }
 
 void Client::disconnect() {}
-bool Client::is_connected() const { return false; }
-State Client::state() const { return State::Disconnected; }
+bool Client::is_connected() const {
+    return false;
+}
+State Client::state() const {
+    return State::Disconnected;
+}
 
 Result<int, ErrorCode> Client::publish(const char*, const void*, size_t, QoS, bool) {
     return Result<int, ErrorCode>::error(ErrorCode::Generic);
@@ -382,6 +379,6 @@ void Client::set_message_callback(MessageCallback) {}
 void Client::set_publish_callback(PublishCallback) {}
 void Client::set_subscribe_callback(SubscribeCallback) {}
 
-} // namespace MQTT
+}  // namespace MQTT
 
-#endif // ESP_PLATFORM
+#endif  // ESP_PLATFORM

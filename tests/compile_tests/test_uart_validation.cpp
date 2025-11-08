@@ -14,7 +14,7 @@
 
 #ifdef ALLOY_MCU  // Only compile when building for real hardware
 
-#include "hal/st/stm32f1/uart.hpp"
+    #include "hal/st/stm32f1/uart.hpp"
 
 using namespace alloy::hal::stm32f1;
 
@@ -45,4 +45,4 @@ void test_valid_usart_instances() {
 //     UartDevice<UsartId::USART3> usart3;  // Should fail
 // }
 
-#endif // ALLOY_MCU
+#endif  // ALLOY_MCU

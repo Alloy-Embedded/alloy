@@ -14,9 +14,11 @@ import logging
 try:
     from .metadata_loader import MetadataLoader
     from .template_engine import TemplateEngine
+    from .code_formatter import CodeFormatter
 except ImportError:
     from metadata_loader import MetadataLoader
     from template_engine import TemplateEngine
+    from code_formatter import CodeFormatter
 
 
 logger = logging.getLogger(__name__)
@@ -39,28 +41,32 @@ class UnifiedGenerator:
         schema_dir: Path,
         template_dir: Path,
         output_dir: Path,
-        verbose: bool = False
+        verbose: bool = False,
+        auto_format: bool = True
     ):
         """
         Initialize unified generator.
-        
+
         Args:
             metadata_dir: Root directory for metadata JSON files
             schema_dir: Directory containing JSON Schemas
             template_dir: Root directory for Jinja2 templates
             output_dir: Output directory for generated files
             verbose: Enable verbose logging
+            auto_format: Automatically format generated code with clang-format (default: True)
         """
         self.metadata_dir = Path(metadata_dir)
         self.schema_dir = Path(schema_dir)
         self.template_dir = Path(template_dir)
         self.output_dir = Path(output_dir)
         self.verbose = verbose
-        
+        self.auto_format = auto_format
+
         # Initialize components
         self.metadata_loader = MetadataLoader(metadata_dir, schema_dir)
         self.template_engine = TemplateEngine(template_dir)
-        
+        self.code_formatter = CodeFormatter() if auto_format else None
+
         # Setup logging
         if verbose:
             logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -190,10 +196,17 @@ class UnifiedGenerator:
         # Step 4: Write output atomically
         output_path = self.output_dir / output_file
         self._write_atomic(output_path, rendered)
-        
+
+        # Step 5: Format generated code (if enabled)
+        if self.auto_format and self.code_formatter:
+            if self.verbose:
+                logger.info(f"  Formatting with clang-format...")
+            if not self.code_formatter.format_file(output_path):
+                logger.warning(f"  Warning: Could not format {output_path}")
+
         if self.verbose:
             logger.info(f"  ✓ Generated: {output_path}")
-        
+
         return None
     
     def generate_registers(

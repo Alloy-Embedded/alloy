@@ -16,6 +16,7 @@
 #define ALLOY_RTOS_SCHEDULER_HPP
 
 #include "rtos/rtos.hpp"
+
 #include "core/types.hpp"
 
 namespace alloy::rtos {
@@ -25,19 +26,16 @@ namespace alloy::rtos {
 /// Manages ready tasks using priority bitmap for O(1) selection.
 /// Uses linked lists for tasks at same priority (future: round-robin).
 class ReadyQueue {
-private:
+   private:
     /// Priority bitmap - bit N set = tasks at priority N are ready
     core::u8 priority_bitmap_;
 
     /// Array of task lists, one per priority level (0-7)
     TaskControlBlock* ready_lists_[8];
 
-public:
+   public:
     /// Constructor
-    constexpr ReadyQueue()
-        : priority_bitmap_(0)
-        , ready_lists_{}
-    {}
+    constexpr ReadyQueue() : priority_bitmap_(0), ready_lists_{} {}
 
     /// Get highest priority ready task (O(1))
     ///
@@ -57,16 +55,12 @@ public:
     /// Check if any tasks are ready
     ///
     /// @return true if at least one task is ready
-    bool has_ready_tasks() const {
-        return priority_bitmap_ != 0;
-    }
+    bool has_ready_tasks() const { return priority_bitmap_ != 0; }
 
     /// Get priority bitmap (for debugging)
-    core::u8 get_bitmap() const {
-        return priority_bitmap_;
-    }
+    core::u8 get_bitmap() const { return priority_bitmap_; }
 
-private:
+   private:
     /// Find highest set bit in bitmap (0-7)
     ///
     /// Uses __builtin_clz (Count Leading Zeros) for O(1) operation.
@@ -75,7 +69,8 @@ private:
     /// @param bitmap 8-bit priority bitmap
     /// @return Highest set bit position (0-7), or 0 if bitmap is 0
     static inline core::u8 find_highest_bit(core::u8 bitmap) {
-        if (bitmap == 0) return 0;
+        if (bitmap == 0)
+            return 0;
 
         // __builtin_clz works on 32-bit values, so we need to adjust
         // CLZ on 0x01 (bit 0 set) returns 31
@@ -87,21 +82,20 @@ private:
 
 /// Scheduler State
 struct SchedulerState {
-    ReadyQueue ready_queue;              ///< Ready task queue
-    TaskControlBlock* current_task;      ///< Currently running task
-    TaskControlBlock* delayed_tasks;     ///< Linked list of delayed tasks
-    core::u32 tick_counter;              ///< System tick counter (milliseconds)
-    bool started;                        ///< RTOS started flag
-    bool need_context_switch;            ///< Context switch requested
+    ReadyQueue ready_queue;           ///< Ready task queue
+    TaskControlBlock* current_task;   ///< Currently running task
+    TaskControlBlock* delayed_tasks;  ///< Linked list of delayed tasks
+    core::u32 tick_counter;           ///< System tick counter (milliseconds)
+    bool started;                     ///< RTOS started flag
+    bool need_context_switch;         ///< Context switch requested
 
     constexpr SchedulerState()
-        : ready_queue()
-        , current_task(nullptr)
-        , delayed_tasks(nullptr)
-        , tick_counter(0)
-        , started(false)
-        , need_context_switch(false)
-    {}
+        : ready_queue(),
+          current_task(nullptr),
+          delayed_tasks(nullptr),
+          tick_counter(0),
+          started(false),
+          need_context_switch(false) {}
 };
 
 /// Global scheduler state
@@ -140,8 +134,8 @@ void reschedule();
 /// Wake delayed tasks (called from tick)
 void wake_delayed_tasks();
 
-} // namespace scheduler
+}  // namespace scheduler
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
-#endif // ALLOY_RTOS_SCHEDULER_HPP
+#endif  // ALLOY_RTOS_SCHEDULER_HPP

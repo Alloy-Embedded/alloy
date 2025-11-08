@@ -26,11 +26,12 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -89,14 +90,16 @@ namespace spi = alloy::hal::st::stm32f4::spi1;
  */
 template <uint32_t BASE_ADDR, uint32_t IRQ_ID>
 class Spi {
-public:
+   public:
     // Compile-time constants
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t irq_id = IRQ_ID;
 
     // Configuration constants
-    static constexpr uint32_t SPI_TIMEOUT = 100000;  ///< SPI timeout in loop iterations (~10ms at 168MHz)
-    static constexpr size_t STACK_BUFFER_SIZE = 256;  ///< Stack buffer size for dummy data in write/read operations
+    static constexpr uint32_t SPI_TIMEOUT =
+        100000;  ///< SPI timeout in loop iterations (~10ms at 168MHz)
+    static constexpr size_t STACK_BUFFER_SIZE =
+        256;  ///< Stack buffer size for dummy data in write/read operations
 
     /**
      * @brief Get SPI peripheral registers
@@ -131,9 +134,9 @@ public:
 
         // Configure CR1 for master mode
         uint32_t cr1 = 0;
-        cr1 = spi::cr1::MSTR::set(cr1);  // Master mode
-        cr1 = spi::cr1::SSM::set(cr1);   // Software slave management
-        cr1 = spi::cr1::SSI::set(cr1);   // Internal slave select
+        cr1 = spi::cr1::MSTR::set(cr1);       // Master mode
+        cr1 = spi::cr1::SSM::set(cr1);        // Software slave management
+        cr1 = spi::cr1::SSI::set(cr1);        // Internal slave select
         cr1 = spi::cr1::BR::write(cr1, 0x3);  // Default baud rate = f_PCLK/16
         hw->CR1 = cr1;
 
@@ -186,7 +189,7 @@ public:
 
         // Configure mode and baud rate
         uint32_t cr1 = hw->CR1;
-        
+
         // Configure SPI mode (CPOL and CPHA)
         uint8_t mode_val = static_cast<uint8_t>(mode);
         if (mode_val & 0x02) {  // CPOL bit
@@ -199,10 +202,10 @@ public:
         } else {
             cr1 = spi::cr1::CPHA::clear(cr1);
         }
-        
+
         // Configure baud rate
         cr1 = spi::cr1::BR::write(cr1, baud_rate_div);
-        
+
         hw->CR1 = cr1;
 
         // Re-enable SPI
@@ -217,7 +220,8 @@ public:
      * @param tx_data Transmit data buffer
      * @param rx_data Receive data buffer
      * @param size Number of bytes to transfer
-     * @return Result<size_t, ErrorCode> Full-duplex SPI transfer (send and receive simultaneously)     */
+     * @return Result<size_t, ErrorCode> Full-duplex SPI transfer (send and receive simultaneously)
+     */
     Result<size_t, ErrorCode> transfer(const uint8_t* tx_data, uint8_t* rx_data, size_t size) {
         auto* hw = get_hw();
 
@@ -238,10 +242,10 @@ public:
                     return Err(ErrorCode::Timeout);
                 }
             }
-            
+
             // Write data to DR
             hw->DR = tx_data[i];
-            
+
             // Wait for receive buffer not empty
             timeout = 0;
             while (!(hw->SR & spi::sr::RXNE::mask)) {
@@ -249,7 +253,7 @@ public:
                     return Err(ErrorCode::Timeout);
                 }
             }
-            
+
             // Read received data from DR
             rx_data[i] = static_cast<uint8_t>(hw->DR);
         }
@@ -277,7 +281,7 @@ public:
         // Use stack buffer for dummy RX data, or transfer byte-by-byte for large transfers
         uint8_t stack_buffer[STACK_BUFFER_SIZE];
         uint8_t* dummy = stack_buffer;
-        
+
         if (size > STACK_BUFFER_SIZE) {
             // For large transfers, transfer byte-by-byte to avoid allocation
             for (size_t i = 0; i < size; ++i) {
@@ -289,7 +293,7 @@ public:
             }
             return Ok(size_t(size));
         }
-        
+
         auto result = transfer(data, dummy, size);
         if (!result.is_ok()) {
             return Err(result.err());
@@ -318,7 +322,7 @@ public:
         // Use stack buffer for dummy TX data (0xFF), or transfer byte-by-byte for large transfers
         uint8_t stack_buffer[STACK_BUFFER_SIZE];
         uint8_t* dummy = stack_buffer;
-        
+
         if (size > STACK_BUFFER_SIZE) {
             // For large transfers, transfer byte-by-byte
             for (size_t i = 0; i < size; ++i) {
@@ -330,12 +334,12 @@ public:
             }
             return Ok(size_t(size));
         }
-        
+
         // Initialize dummy buffer with 0xFF for read
         for (size_t i = 0; i < size; ++i) {
             dummy[i] = 0xFF;
         }
-        
+
         auto result = transfer(dummy, data, size);
         if (!result.is_ok()) {
             return Err(result.err());
@@ -348,11 +352,9 @@ public:
      * @brief Check if SPI peripheral is open
      *
      * @return bool Check if SPI peripheral is open     */
-    bool isOpen() const {
-        return m_opened;
-    }
+    bool isOpen() const { return m_opened; }
 
-private:
+   private:
     bool m_opened = false;  ///< Tracks if peripheral is initialized
 };
 
@@ -373,4 +375,4 @@ using Spi1 = Spi<SPI1_BASE, SPI1_IRQ>;  ///< SPI1 instance
 using Spi2 = Spi<SPI2_BASE, SPI2_IRQ>;  ///< SPI2 instance
 using Spi3 = Spi<SPI3_BASE, SPI3_IRQ>;  ///< SPI3 instance
 
-} // namespace alloy::hal::stm32f4
+}  // namespace alloy::hal::stm32f4

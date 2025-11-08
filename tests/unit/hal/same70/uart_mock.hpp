@@ -15,8 +15,8 @@
 #pragma once
 
 #include <cstdint>
-#include <vector>
 #include <cstring>
+#include <vector>
 
 // Include actual UART register definition for compatibility
 #include "hal/vendors/atmel/same70/atsame70q21/registers/uart0_registers.hpp"
@@ -34,10 +34,10 @@ using UartRegisters = alloy::hal::atmel::same70::atsame70q21::uart0::UART0_Regis
  * and a periodic sync mechanism to capture register writes.
  */
 class MockUartRegisters : public UartRegisters {
-public:
+   public:
     // Test state
-    bool tx_ready = true;      // TXRDY flag state
-    bool rx_ready = false;     // RXRDY flag state
+    bool tx_ready = true;                   // TXRDY flag state
+    bool rx_ready = false;                  // RXRDY flag state
     std::vector<uint8_t> transmitted_data;  // Captured writes to THR
     std::vector<uint8_t> receive_buffer;    // Data to return from RHR
     size_t receive_index = 0;
@@ -179,7 +179,8 @@ public:
      */
     bool transmitted_matches(const char* expected) const {
         size_t len = std::strlen(expected);
-        if (transmitted_data.size() != len) return false;
+        if (transmitted_data.size() != len)
+            return false;
         return std::memcmp(transmitted_data.data(), expected, len) == 0;
     }
 };
@@ -188,12 +189,10 @@ public:
  * @brief Mock PMC (Power Management Controller)
  */
 class MockPmc {
-public:
+   public:
     uint32_t PCER0 = 0;  // Peripheral Clock Enable Register
 
-    void reset() {
-        PCER0 = 0;
-    }
+    void reset() { PCER0 = 0; }
 
     bool is_clock_enabled(uint32_t peripheral_id) const {
         return (PCER0 & (1u << peripheral_id)) != 0;
@@ -210,7 +209,7 @@ inline MockPmc* g_mock_pmc = nullptr;
  * @brief RAII helper to set up and tear down mocks
  */
 class MockUartFixture {
-public:
+   public:
     MockUartFixture() {
         uart_mock.reset();
         pmc_mock.reset();
@@ -226,9 +225,9 @@ public:
     MockUartRegisters& uart() { return uart_mock; }
     MockPmc& pmc() { return pmc_mock; }
 
-private:
+   private:
     MockUartRegisters uart_mock;
     MockPmc pmc_mock;
 };
 
-} // namespace alloy::hal::test
+}  // namespace alloy::hal::test

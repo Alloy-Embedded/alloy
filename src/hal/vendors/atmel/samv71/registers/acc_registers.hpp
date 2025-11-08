@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samv71::acc {
 
 /// ACC Register Structure
 struct ACC_Registers {
-
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -26,7 +25,7 @@ struct ACC_Registers {
     /// Mode Register
     /// Offset: 0x0004
     volatile uint32_t MR;
-    uint8_t RESERVED_0008[28]; ///< Reserved
+    uint8_t RESERVED_0008[28];  ///< Reserved
 
     /// Interrupt Enable Register
     /// Offset: 0x0024
@@ -47,12 +46,12 @@ struct ACC_Registers {
     /// Offset: 0x0030
     /// Access: read-only
     volatile uint32_t ISR;
-    uint8_t RESERVED_0034[96]; ///< Reserved
+    uint8_t RESERVED_0034[96];  ///< Reserved
 
     /// Analog Control Register
     /// Offset: 0x0094
     volatile uint32_t ACR;
-    uint8_t RESERVED_0098[76]; ///< Reserved
+    uint8_t RESERVED_0098[76];  ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4

@@ -1,36 +1,36 @@
 /// ARM Cortex-M Context Switching Implementation
 
 #include "rtos/platform/arm_context.hpp"
+
 #include "rtos/scheduler.hpp"
 
 namespace alloy::rtos {
 
 void init_task_stack(TaskControlBlock* tcb, void (*func)()) {
     // Get pointer to top of stack (stacks grow downward)
-    core::u32* sp = reinterpret_cast<core::u32*>(
-        static_cast<core::u8*>(tcb->stack_base) + tcb->stack_size
-    );
+    core::u32* sp =
+        reinterpret_cast<core::u32*>(static_cast<core::u8*>(tcb->stack_base) + tcb->stack_size);
 
     // Initialize stack as if exception occurred
     // Hardware-pushed registers (exception frame)
-    *(--sp) = 0x01000000;  // xPSR (Thumb bit set)
+    *(--sp) = 0x01000000;                         // xPSR (Thumb bit set)
     *(--sp) = reinterpret_cast<core::u32>(func);  // PC (task entry point)
-    *(--sp) = 0;           // LR (link register)
-    *(--sp) = 0;           // R12
-    *(--sp) = 0;           // R3
-    *(--sp) = 0;           // R2
-    *(--sp) = 0;           // R1
-    *(--sp) = 0;           // R0
+    *(--sp) = 0;                                  // LR (link register)
+    *(--sp) = 0;                                  // R12
+    *(--sp) = 0;                                  // R3
+    *(--sp) = 0;                                  // R2
+    *(--sp) = 0;                                  // R1
+    *(--sp) = 0;                                  // R0
 
     // Software-pushed registers (saved by PendSV)
-    *(--sp) = 0;           // R11
-    *(--sp) = 0;           // R10
-    *(--sp) = 0;           // R9
-    *(--sp) = 0;           // R8
-    *(--sp) = 0;           // R7
-    *(--sp) = 0;           // R6
-    *(--sp) = 0;           // R5
-    *(--sp) = 0;           // R4
+    *(--sp) = 0;  // R11
+    *(--sp) = 0;  // R10
+    *(--sp) = 0;  // R9
+    *(--sp) = 0;  // R8
+    *(--sp) = 0;  // R7
+    *(--sp) = 0;  // R6
+    *(--sp) = 0;  // R5
+    *(--sp) = 0;  // R4
 
     // Save stack pointer in TCB
     tcb->stack_pointer = sp;
@@ -59,42 +59,38 @@ void trigger_context_switch() {
     void* sp = g_scheduler.current_task->stack_pointer;
 
     // Set PSP to task's stack pointer
-    __asm volatile(
-        "msr psp, %0    \n"  // Set PSP to task stack
-        :
-        : "r" (sp)
-    );
+    __asm volatile("msr psp, %0    \n"  // Set PSP to task stack
+                   :
+                   : "r"(sp));
 
     // Set CONTROL register to use PSP and unprivileged mode
-    __asm volatile(
-        "mov r0, #2     \n"  // CONTROL = 2 (use PSP, unprivileged)
-        "msr control, r0\n"
-        "isb            \n"  // Ensure change takes effect
+    __asm volatile("mov r0, #2     \n"  // CONTROL = 2 (use PSP, unprivileged)
+                   "msr control, r0\n"
+                   "isb            \n"  // Ensure change takes effect
     );
 
     // Pop registers from stack
-    __asm volatile(
-        "pop {r4-r11}   \n"  // Restore r4-r11
-        "pop {r0-r3}    \n"  // Restore r0-r3
-        "pop {r12}      \n"  // Restore r12
-        "add sp, sp, #4 \n"  // Skip LR
-        "pop {lr}       \n"  // Restore PC to LR
-        "add sp, sp, #4 \n"  // Skip xPSR
+    __asm volatile("pop {r4-r11}   \n"  // Restore r4-r11
+                   "pop {r0-r3}    \n"  // Restore r0-r3
+                   "pop {r12}      \n"  // Restore r12
+                   "add sp, sp, #4 \n"  // Skip LR
+                   "pop {lr}       \n"  // Restore PC to LR
+                   "add sp, sp, #4 \n"  // Skip xPSR
     );
 
     // Enable interrupts
     __asm volatile("cpsie i");
 
     // Jump to task
-    __asm volatile(
-        "bx lr          \n"  // Branch to task entry point
+    __asm volatile("bx lr          \n"  // Branch to task entry point
     );
 
     // Never reached
-    while (1);
+    while (1)
+        ;
 }
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
 // PendSV Handler - Context Switch
 //
@@ -117,7 +113,8 @@ extern "C" __attribute__((naked)) void PendSV_Handler() {
         "msr psp, r0            \n"  // Set PSP to next task's SP
 
         // Clear context switch flag and return
-        "bx lr                  \n"  // Return from exception (hardware restores r0-r3, r12, lr, pc, xPSR)
+        "bx lr                  \n"  // Return from exception (hardware restores r0-r3, r12, lr, pc,
+                                     // xPSR)
     );
 }
 

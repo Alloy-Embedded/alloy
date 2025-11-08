@@ -14,7 +14,7 @@ namespace alloy::core {
 /// Prevents mixing baud rates with raw integers and enables compile-time
 /// validation of common baud rates.
 class BaudRate {
-public:
+   public:
     /// Construct from raw baud rate value
     constexpr explicit BaudRate(u32 rate) : rate_(rate) {}
 
@@ -29,7 +29,7 @@ public:
         return rate_ != other.rate_;
     }
 
-private:
+   private:
     u32 rate_;
 };
 
@@ -41,20 +41,20 @@ constexpr BaudRate operator""_baud(unsigned long long rate) {
     return BaudRate(static_cast<u32>(rate));
 }
 
-} // namespace literals
+}  // namespace literals
 
 /// Common baud rate constants
 namespace baud_rates {
-    constexpr BaudRate Baud9600   = BaudRate(9600);
-    constexpr BaudRate Baud19200  = BaudRate(19200);
-    constexpr BaudRate Baud38400  = BaudRate(38400);
-    constexpr BaudRate Baud57600  = BaudRate(57600);
-    constexpr BaudRate Baud115200 = BaudRate(115200);
-    constexpr BaudRate Baud230400 = BaudRate(230400);
-    constexpr BaudRate Baud460800 = BaudRate(460800);
-    constexpr BaudRate Baud921600 = BaudRate(921600);
-} // namespace baud_rates
+constexpr BaudRate Baud9600 = BaudRate(9600);
+constexpr BaudRate Baud19200 = BaudRate(19200);
+constexpr BaudRate Baud38400 = BaudRate(38400);
+constexpr BaudRate Baud57600 = BaudRate(57600);
+constexpr BaudRate Baud115200 = BaudRate(115200);
+constexpr BaudRate Baud230400 = BaudRate(230400);
+constexpr BaudRate Baud460800 = BaudRate(460800);
+constexpr BaudRate Baud921600 = BaudRate(921600);
+}  // namespace baud_rates
 
-} // namespace alloy::core
+}  // namespace alloy::core
 
-#endif // ALLOY_CORE_UNITS_HPP
+#endif  // ALLOY_CORE_UNITS_HPP

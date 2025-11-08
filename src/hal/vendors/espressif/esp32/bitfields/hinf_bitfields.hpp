@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::hinf {
@@ -19,251 +20,251 @@ using namespace alloy::hal::bitfields;
 
 /// CFG_DATA0 - CFG_DATA0
 namespace cfg_data0 {
-    /// Position: 0, Width: 16
-    /// Access: read-write
-    using USER_ID_FN1 = BitField<0, 16>;
-    constexpr uint32_t USER_ID_FN1_Pos = 0;
-    constexpr uint32_t USER_ID_FN1_Msk = USER_ID_FN1::mask;
+/// Position: 0, Width: 16
+/// Access: read-write
+using USER_ID_FN1 = BitField<0, 16>;
+constexpr uint32_t USER_ID_FN1_Pos = 0;
+constexpr uint32_t USER_ID_FN1_Msk = USER_ID_FN1::mask;
 
-    /// Position: 16, Width: 16
-    /// Access: read-write
-    using DEVICE_ID_FN1 = BitField<16, 16>;
-    constexpr uint32_t DEVICE_ID_FN1_Pos = 16;
-    constexpr uint32_t DEVICE_ID_FN1_Msk = DEVICE_ID_FN1::mask;
+/// Position: 16, Width: 16
+/// Access: read-write
+using DEVICE_ID_FN1 = BitField<16, 16>;
+constexpr uint32_t DEVICE_ID_FN1_Pos = 16;
+constexpr uint32_t DEVICE_ID_FN1_Msk = DEVICE_ID_FN1::mask;
 
 }  // namespace cfg_data0
 
 /// CFG_DATA1 - CFG_DATA1
 namespace cfg_data1 {
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using SDIO_ENABLE = BitField<0, 1>;
-    constexpr uint32_t SDIO_ENABLE_Pos = 0;
-    constexpr uint32_t SDIO_ENABLE_Msk = SDIO_ENABLE::mask;
+/// Position: 0, Width: 1
+/// Access: read-write
+using SDIO_ENABLE = BitField<0, 1>;
+constexpr uint32_t SDIO_ENABLE_Pos = 0;
+constexpr uint32_t SDIO_ENABLE_Msk = SDIO_ENABLE::mask;
 
-    /// Position: 1, Width: 1
-    /// Access: read-write
-    using SDIO_IOREADY1 = BitField<1, 1>;
-    constexpr uint32_t SDIO_IOREADY1_Pos = 1;
-    constexpr uint32_t SDIO_IOREADY1_Msk = SDIO_IOREADY1::mask;
+/// Position: 1, Width: 1
+/// Access: read-write
+using SDIO_IOREADY1 = BitField<1, 1>;
+constexpr uint32_t SDIO_IOREADY1_Pos = 1;
+constexpr uint32_t SDIO_IOREADY1_Msk = SDIO_IOREADY1::mask;
 
-    /// Position: 2, Width: 1
-    /// Access: read-write
-    using HIGHSPEED_ENABLE = BitField<2, 1>;
-    constexpr uint32_t HIGHSPEED_ENABLE_Pos = 2;
-    constexpr uint32_t HIGHSPEED_ENABLE_Msk = HIGHSPEED_ENABLE::mask;
+/// Position: 2, Width: 1
+/// Access: read-write
+using HIGHSPEED_ENABLE = BitField<2, 1>;
+constexpr uint32_t HIGHSPEED_ENABLE_Pos = 2;
+constexpr uint32_t HIGHSPEED_ENABLE_Msk = HIGHSPEED_ENABLE::mask;
 
-    /// Position: 3, Width: 1
-    /// Access: read-only
-    using HIGHSPEED_MODE = BitField<3, 1>;
-    constexpr uint32_t HIGHSPEED_MODE_Pos = 3;
-    constexpr uint32_t HIGHSPEED_MODE_Msk = HIGHSPEED_MODE::mask;
+/// Position: 3, Width: 1
+/// Access: read-only
+using HIGHSPEED_MODE = BitField<3, 1>;
+constexpr uint32_t HIGHSPEED_MODE_Pos = 3;
+constexpr uint32_t HIGHSPEED_MODE_Msk = HIGHSPEED_MODE::mask;
 
-    /// Position: 4, Width: 1
-    /// Access: read-write
-    using SDIO_CD_ENABLE = BitField<4, 1>;
-    constexpr uint32_t SDIO_CD_ENABLE_Pos = 4;
-    constexpr uint32_t SDIO_CD_ENABLE_Msk = SDIO_CD_ENABLE::mask;
+/// Position: 4, Width: 1
+/// Access: read-write
+using SDIO_CD_ENABLE = BitField<4, 1>;
+constexpr uint32_t SDIO_CD_ENABLE_Pos = 4;
+constexpr uint32_t SDIO_CD_ENABLE_Msk = SDIO_CD_ENABLE::mask;
 
-    /// Position: 5, Width: 1
-    /// Access: read-write
-    using SDIO_IOREADY2 = BitField<5, 1>;
-    constexpr uint32_t SDIO_IOREADY2_Pos = 5;
-    constexpr uint32_t SDIO_IOREADY2_Msk = SDIO_IOREADY2::mask;
+/// Position: 5, Width: 1
+/// Access: read-write
+using SDIO_IOREADY2 = BitField<5, 1>;
+constexpr uint32_t SDIO_IOREADY2_Pos = 5;
+constexpr uint32_t SDIO_IOREADY2_Msk = SDIO_IOREADY2::mask;
 
-    /// Position: 6, Width: 1
-    /// Access: read-write
-    using SDIO_INT_MASK = BitField<6, 1>;
-    constexpr uint32_t SDIO_INT_MASK_Pos = 6;
-    constexpr uint32_t SDIO_INT_MASK_Msk = SDIO_INT_MASK::mask;
+/// Position: 6, Width: 1
+/// Access: read-write
+using SDIO_INT_MASK = BitField<6, 1>;
+constexpr uint32_t SDIO_INT_MASK_Pos = 6;
+constexpr uint32_t SDIO_INT_MASK_Msk = SDIO_INT_MASK::mask;
 
-    /// Position: 7, Width: 1
-    /// Access: read-only
-    using IOENABLE2 = BitField<7, 1>;
-    constexpr uint32_t IOENABLE2_Pos = 7;
-    constexpr uint32_t IOENABLE2_Msk = IOENABLE2::mask;
+/// Position: 7, Width: 1
+/// Access: read-only
+using IOENABLE2 = BitField<7, 1>;
+constexpr uint32_t IOENABLE2_Pos = 7;
+constexpr uint32_t IOENABLE2_Msk = IOENABLE2::mask;
 
-    /// Position: 8, Width: 1
-    /// Access: read-only
-    using CD_DISABLE = BitField<8, 1>;
-    constexpr uint32_t CD_DISABLE_Pos = 8;
-    constexpr uint32_t CD_DISABLE_Msk = CD_DISABLE::mask;
+/// Position: 8, Width: 1
+/// Access: read-only
+using CD_DISABLE = BitField<8, 1>;
+constexpr uint32_t CD_DISABLE_Pos = 8;
+constexpr uint32_t CD_DISABLE_Msk = CD_DISABLE::mask;
 
-    /// Position: 9, Width: 1
-    /// Access: read-only
-    using FUNC1_EPS = BitField<9, 1>;
-    constexpr uint32_t FUNC1_EPS_Pos = 9;
-    constexpr uint32_t FUNC1_EPS_Msk = FUNC1_EPS::mask;
+/// Position: 9, Width: 1
+/// Access: read-only
+using FUNC1_EPS = BitField<9, 1>;
+constexpr uint32_t FUNC1_EPS_Pos = 9;
+constexpr uint32_t FUNC1_EPS_Msk = FUNC1_EPS::mask;
 
-    /// Position: 10, Width: 1
-    /// Access: read-only
-    using EMP = BitField<10, 1>;
-    constexpr uint32_t EMP_Pos = 10;
-    constexpr uint32_t EMP_Msk = EMP::mask;
+/// Position: 10, Width: 1
+/// Access: read-only
+using EMP = BitField<10, 1>;
+constexpr uint32_t EMP_Pos = 10;
+constexpr uint32_t EMP_Msk = EMP::mask;
 
-    /// Position: 11, Width: 1
-    /// Access: read-only
-    using IOENABLE1 = BitField<11, 1>;
-    constexpr uint32_t IOENABLE1_Pos = 11;
-    constexpr uint32_t IOENABLE1_Msk = IOENABLE1::mask;
+/// Position: 11, Width: 1
+/// Access: read-only
+using IOENABLE1 = BitField<11, 1>;
+constexpr uint32_t IOENABLE1_Pos = 11;
+constexpr uint32_t IOENABLE1_Msk = IOENABLE1::mask;
 
-    /// Position: 12, Width: 4
-    /// Access: read-write
-    using SDIO20_CONF0 = BitField<12, 4>;
-    constexpr uint32_t SDIO20_CONF0_Pos = 12;
-    constexpr uint32_t SDIO20_CONF0_Msk = SDIO20_CONF0::mask;
+/// Position: 12, Width: 4
+/// Access: read-write
+using SDIO20_CONF0 = BitField<12, 4>;
+constexpr uint32_t SDIO20_CONF0_Pos = 12;
+constexpr uint32_t SDIO20_CONF0_Msk = SDIO20_CONF0::mask;
 
-    /// Position: 16, Width: 12
-    /// Access: read-write
-    using SDIO_VER = BitField<16, 12>;
-    constexpr uint32_t SDIO_VER_Pos = 16;
-    constexpr uint32_t SDIO_VER_Msk = SDIO_VER::mask;
+/// Position: 16, Width: 12
+/// Access: read-write
+using SDIO_VER = BitField<16, 12>;
+constexpr uint32_t SDIO_VER_Pos = 16;
+constexpr uint32_t SDIO_VER_Msk = SDIO_VER::mask;
 
-    /// Position: 28, Width: 1
-    /// Access: read-only
-    using FUNC2_EPS = BitField<28, 1>;
-    constexpr uint32_t FUNC2_EPS_Pos = 28;
-    constexpr uint32_t FUNC2_EPS_Msk = FUNC2_EPS::mask;
+/// Position: 28, Width: 1
+/// Access: read-only
+using FUNC2_EPS = BitField<28, 1>;
+constexpr uint32_t FUNC2_EPS_Pos = 28;
+constexpr uint32_t FUNC2_EPS_Msk = FUNC2_EPS::mask;
 
-    /// Position: 29, Width: 3
-    /// Access: read-write
-    using SDIO20_CONF1 = BitField<29, 3>;
-    constexpr uint32_t SDIO20_CONF1_Pos = 29;
-    constexpr uint32_t SDIO20_CONF1_Msk = SDIO20_CONF1::mask;
+/// Position: 29, Width: 3
+/// Access: read-write
+using SDIO20_CONF1 = BitField<29, 3>;
+constexpr uint32_t SDIO20_CONF1_Pos = 29;
+constexpr uint32_t SDIO20_CONF1_Msk = SDIO20_CONF1::mask;
 
 }  // namespace cfg_data1
 
 /// CFG_DATA7 - CFG_DATA7
 namespace cfg_data7 {
-    /// Position: 0, Width: 8
-    /// Access: read-write
-    using PIN_STATE = BitField<0, 8>;
-    constexpr uint32_t PIN_STATE_Pos = 0;
-    constexpr uint32_t PIN_STATE_Msk = PIN_STATE::mask;
+/// Position: 0, Width: 8
+/// Access: read-write
+using PIN_STATE = BitField<0, 8>;
+constexpr uint32_t PIN_STATE_Pos = 0;
+constexpr uint32_t PIN_STATE_Msk = PIN_STATE::mask;
 
-    /// Position: 8, Width: 8
-    /// Access: read-write
-    using CHIP_STATE = BitField<8, 8>;
-    constexpr uint32_t CHIP_STATE_Pos = 8;
-    constexpr uint32_t CHIP_STATE_Msk = CHIP_STATE::mask;
+/// Position: 8, Width: 8
+/// Access: read-write
+using CHIP_STATE = BitField<8, 8>;
+constexpr uint32_t CHIP_STATE_Pos = 8;
+constexpr uint32_t CHIP_STATE_Msk = CHIP_STATE::mask;
 
-    /// Position: 16, Width: 1
-    /// Access: read-write
-    using SDIO_RST = BitField<16, 1>;
-    constexpr uint32_t SDIO_RST_Pos = 16;
-    constexpr uint32_t SDIO_RST_Msk = SDIO_RST::mask;
+/// Position: 16, Width: 1
+/// Access: read-write
+using SDIO_RST = BitField<16, 1>;
+constexpr uint32_t SDIO_RST_Pos = 16;
+constexpr uint32_t SDIO_RST_Msk = SDIO_RST::mask;
 
-    /// Position: 17, Width: 1
-    /// Access: read-write
-    using SDIO_IOREADY0 = BitField<17, 1>;
-    constexpr uint32_t SDIO_IOREADY0_Pos = 17;
-    constexpr uint32_t SDIO_IOREADY0_Msk = SDIO_IOREADY0::mask;
+/// Position: 17, Width: 1
+/// Access: read-write
+using SDIO_IOREADY0 = BitField<17, 1>;
+constexpr uint32_t SDIO_IOREADY0_Pos = 17;
+constexpr uint32_t SDIO_IOREADY0_Msk = SDIO_IOREADY0::mask;
 
 }  // namespace cfg_data7
 
 /// CIS_CONF0 - CIS_CONF0
 namespace cis_conf0 {
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using CIS_CONF_W0 = BitField<0, 32>;
-    constexpr uint32_t CIS_CONF_W0_Pos = 0;
-    constexpr uint32_t CIS_CONF_W0_Msk = CIS_CONF_W0::mask;
+/// Position: 0, Width: 32
+/// Access: read-write
+using CIS_CONF_W0 = BitField<0, 32>;
+constexpr uint32_t CIS_CONF_W0_Pos = 0;
+constexpr uint32_t CIS_CONF_W0_Msk = CIS_CONF_W0::mask;
 
 }  // namespace cis_conf0
 
 /// CIS_CONF1 - CIS_CONF1
 namespace cis_conf1 {
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using CIS_CONF_W1 = BitField<0, 32>;
-    constexpr uint32_t CIS_CONF_W1_Pos = 0;
-    constexpr uint32_t CIS_CONF_W1_Msk = CIS_CONF_W1::mask;
+/// Position: 0, Width: 32
+/// Access: read-write
+using CIS_CONF_W1 = BitField<0, 32>;
+constexpr uint32_t CIS_CONF_W1_Pos = 0;
+constexpr uint32_t CIS_CONF_W1_Msk = CIS_CONF_W1::mask;
 
 }  // namespace cis_conf1
 
 /// CIS_CONF2 - CIS_CONF2
 namespace cis_conf2 {
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using CIS_CONF_W2 = BitField<0, 32>;
-    constexpr uint32_t CIS_CONF_W2_Pos = 0;
-    constexpr uint32_t CIS_CONF_W2_Msk = CIS_CONF_W2::mask;
+/// Position: 0, Width: 32
+/// Access: read-write
+using CIS_CONF_W2 = BitField<0, 32>;
+constexpr uint32_t CIS_CONF_W2_Pos = 0;
+constexpr uint32_t CIS_CONF_W2_Msk = CIS_CONF_W2::mask;
 
 }  // namespace cis_conf2
 
 /// CIS_CONF3 - CIS_CONF3
 namespace cis_conf3 {
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using CIS_CONF_W3 = BitField<0, 32>;
-    constexpr uint32_t CIS_CONF_W3_Pos = 0;
-    constexpr uint32_t CIS_CONF_W3_Msk = CIS_CONF_W3::mask;
+/// Position: 0, Width: 32
+/// Access: read-write
+using CIS_CONF_W3 = BitField<0, 32>;
+constexpr uint32_t CIS_CONF_W3_Pos = 0;
+constexpr uint32_t CIS_CONF_W3_Msk = CIS_CONF_W3::mask;
 
 }  // namespace cis_conf3
 
 /// CIS_CONF4 - CIS_CONF4
 namespace cis_conf4 {
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using CIS_CONF_W4 = BitField<0, 32>;
-    constexpr uint32_t CIS_CONF_W4_Pos = 0;
-    constexpr uint32_t CIS_CONF_W4_Msk = CIS_CONF_W4::mask;
+/// Position: 0, Width: 32
+/// Access: read-write
+using CIS_CONF_W4 = BitField<0, 32>;
+constexpr uint32_t CIS_CONF_W4_Pos = 0;
+constexpr uint32_t CIS_CONF_W4_Msk = CIS_CONF_W4::mask;
 
 }  // namespace cis_conf4
 
 /// CIS_CONF5 - CIS_CONF5
 namespace cis_conf5 {
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using CIS_CONF_W5 = BitField<0, 32>;
-    constexpr uint32_t CIS_CONF_W5_Pos = 0;
-    constexpr uint32_t CIS_CONF_W5_Msk = CIS_CONF_W5::mask;
+/// Position: 0, Width: 32
+/// Access: read-write
+using CIS_CONF_W5 = BitField<0, 32>;
+constexpr uint32_t CIS_CONF_W5_Pos = 0;
+constexpr uint32_t CIS_CONF_W5_Msk = CIS_CONF_W5::mask;
 
 }  // namespace cis_conf5
 
 /// CIS_CONF6 - CIS_CONF6
 namespace cis_conf6 {
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using CIS_CONF_W6 = BitField<0, 32>;
-    constexpr uint32_t CIS_CONF_W6_Pos = 0;
-    constexpr uint32_t CIS_CONF_W6_Msk = CIS_CONF_W6::mask;
+/// Position: 0, Width: 32
+/// Access: read-write
+using CIS_CONF_W6 = BitField<0, 32>;
+constexpr uint32_t CIS_CONF_W6_Pos = 0;
+constexpr uint32_t CIS_CONF_W6_Msk = CIS_CONF_W6::mask;
 
 }  // namespace cis_conf6
 
 /// CIS_CONF7 - CIS_CONF7
 namespace cis_conf7 {
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using CIS_CONF_W7 = BitField<0, 32>;
-    constexpr uint32_t CIS_CONF_W7_Pos = 0;
-    constexpr uint32_t CIS_CONF_W7_Msk = CIS_CONF_W7::mask;
+/// Position: 0, Width: 32
+/// Access: read-write
+using CIS_CONF_W7 = BitField<0, 32>;
+constexpr uint32_t CIS_CONF_W7_Pos = 0;
+constexpr uint32_t CIS_CONF_W7_Msk = CIS_CONF_W7::mask;
 
 }  // namespace cis_conf7
 
 /// CFG_DATA16 - CFG_DATA16
 namespace cfg_data16 {
-    /// Position: 0, Width: 16
-    /// Access: read-write
-    using USER_ID_FN2 = BitField<0, 16>;
-    constexpr uint32_t USER_ID_FN2_Pos = 0;
-    constexpr uint32_t USER_ID_FN2_Msk = USER_ID_FN2::mask;
+/// Position: 0, Width: 16
+/// Access: read-write
+using USER_ID_FN2 = BitField<0, 16>;
+constexpr uint32_t USER_ID_FN2_Pos = 0;
+constexpr uint32_t USER_ID_FN2_Msk = USER_ID_FN2::mask;
 
-    /// Position: 16, Width: 16
-    /// Access: read-write
-    using DEVICE_ID_FN2 = BitField<16, 16>;
-    constexpr uint32_t DEVICE_ID_FN2_Pos = 16;
-    constexpr uint32_t DEVICE_ID_FN2_Msk = DEVICE_ID_FN2::mask;
+/// Position: 16, Width: 16
+/// Access: read-write
+using DEVICE_ID_FN2 = BitField<16, 16>;
+constexpr uint32_t DEVICE_ID_FN2_Pos = 16;
+constexpr uint32_t DEVICE_ID_FN2_Msk = DEVICE_ID_FN2::mask;
 
 }  // namespace cfg_data16
 
 /// DATE - DATE
 namespace date {
-    /// Position: 0, Width: 32
-    /// Access: read-write
-    using SDIO_DATE = BitField<0, 32>;
-    constexpr uint32_t SDIO_DATE_Pos = 0;
-    constexpr uint32_t SDIO_DATE_Msk = SDIO_DATE::mask;
+/// Position: 0, Width: 32
+/// Access: read-write
+using SDIO_DATE = BitField<0, 32>;
+constexpr uint32_t SDIO_DATE_Pos = 0;
+constexpr uint32_t SDIO_DATE_Msk = SDIO_DATE::mask;
 
 }  // namespace date
 

@@ -16,6 +16,7 @@
 #define ALLOY_HAL_HOST_CLOCK_HPP
 
 #include "hal/interface/clock.hpp"
+
 #include "core/types.hpp"
 
 namespace alloy::hal::host {
@@ -25,7 +26,7 @@ namespace alloy::hal::host {
 /// Returns simulated clock values matching typical embedded targets.
 /// No actual hardware configuration occurs.
 class SystemClock {
-public:
+   public:
     /// Default frequency: 168MHz (simulating STM32F4)
     static constexpr core::u32 DEFAULT_FREQUENCY = 168000000;
 
@@ -59,16 +60,12 @@ public:
     /// Returns the stored frequency value (default: 168MHz).
     ///
     /// @return System frequency in Hz
-    core::u32 get_frequency() const {
-        return system_frequency_;
-    }
+    core::u32 get_frequency() const { return system_frequency_; }
 
     /// Get AHB frequency (same as system frequency on host)
     ///
     /// @return AHB frequency in Hz
-    core::u32 get_ahb_frequency() const {
-        return system_frequency_;
-    }
+    core::u32 get_ahb_frequency() const { return system_frequency_; }
 
     /// Get APB1 frequency (simulating typical /4 divider)
     ///
@@ -141,14 +138,13 @@ public:
         return core::Result<void>::error(core::ErrorCode::NotSupported);
     }
 
-private:
+   private:
     core::u32 system_frequency_;  ///< Simulated system frequency
 };
 
 // Static assertion to verify concept compliance
-static_assert(hal::SystemClock<SystemClock>,
-              "Host SystemClock must satisfy SystemClock concept");
+static_assert(hal::SystemClock<SystemClock>, "Host SystemClock must satisfy SystemClock concept");
 
-} // namespace alloy::hal::host
+}  // namespace alloy::hal::host
 
-#endif // ALLOY_HAL_HOST_CLOCK_HPP
+#endif  // ALLOY_HAL_HOST_CLOCK_HPP

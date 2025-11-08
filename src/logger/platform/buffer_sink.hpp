@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../sink.hpp"
 #include <cstring>
+
+#include "../sink.hpp"
 
 namespace alloy {
 namespace logger {
@@ -19,15 +20,14 @@ namespace logger {
  *   // Later: read buffer_sink.data()
  */
 class BufferSink : public Sink {
-public:
+   public:
     /**
      * Construct buffer sink with static buffer
      *
      * @param buffer Pointer to buffer
      * @param capacity Buffer size in bytes
      */
-    BufferSink(char* buffer, size_t capacity)
-        : buffer_(buffer), capacity_(capacity), size_(0) {
+    BufferSink(char* buffer, size_t capacity) : buffer_(buffer), capacity_(capacity), size_(0) {
         if (buffer_ && capacity_ > 0) {
             buffer_[0] = '\0';
         }
@@ -65,27 +65,21 @@ public:
      *
      * @return Pointer to buffer (null-terminated)
      */
-    const char* data() const {
-        return buffer_;
-    }
+    const char* data() const { return buffer_; }
 
     /**
      * Get current buffer size
      *
      * @return Number of bytes written to buffer
      */
-    size_t size() const {
-        return size_;
-    }
+    size_t size() const { return size_; }
 
     /**
      * Get buffer capacity
      *
      * @return Maximum buffer size
      */
-    size_t capacity() const {
-        return capacity_;
-    }
+    size_t capacity() const { return capacity_; }
 
     /**
      * Clear buffer contents
@@ -102,15 +96,13 @@ public:
      *
      * @return true if no more space available
      */
-    bool is_full() const {
-        return size_ >= capacity_ - 1;
-    }
+    bool is_full() const { return size_ >= capacity_ - 1; }
 
-private:
+   private:
     char* buffer_;
     size_t capacity_;
     size_t size_;
 };
 
-} // namespace logger
-} // namespace alloy
+}  // namespace logger
+}  // namespace alloy

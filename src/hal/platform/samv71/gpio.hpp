@@ -26,10 +26,11 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -70,9 +71,9 @@ enum class GpioMode {
  * @brief GPIO pull resistor configuration
  */
 enum class GpioPull {
-    None,      ///< No pull resistor
-    Up,        ///< Pull-up resistor enabled
-    Down       ///< Pull-down resistor enabled (if supported)
+    None,  ///< No pull resistor
+    Up,    ///< Pull-up resistor enabled
+    Down   ///< Pull-down resistor enabled (if supported)
 };
 
 /**
@@ -105,7 +106,7 @@ enum class GpioPull {
  */
 template <uint32_t PORT_BASE, uint8_t PIN_NUM>
 class GpioPin {
-public:
+   public:
     // Compile-time constants
     static constexpr uint32_t port_base = PORT_BASE;
     static constexpr uint8_t pin_number = PIN_NUM;
@@ -157,7 +158,7 @@ public:
 
             case GpioMode::Output:
                 // Configure as output (push-pull)
-                port->OER = pin_mask;   // Enable output
+                port->OER = pin_mask;  // Enable output
 #ifdef ALLOY_GPIO_TEST_HOOK_OER
                 ALLOY_GPIO_TEST_HOOK_OER();
 #endif
@@ -169,7 +170,7 @@ public:
 
             case GpioMode::OutputOpenDrain:
                 // Configure as output with open-drain
-                port->OER = pin_mask;   // Enable output
+                port->OER = pin_mask;  // Enable output
 #ifdef ALLOY_GPIO_TEST_HOOK_OER
                 ALLOY_GPIO_TEST_HOOK_OER();
 #endif
@@ -358,4 +359,4 @@ constexpr uint32_t PIOA_BASE = 0x400E0E00;
 // using LedGreen = GpioPin<PIOC_BASE, 8>;
 // using Button0 = GpioPin<PIOA_BASE, 11>;
 
-} // namespace alloy::hal::samv71
+}  // namespace alloy::hal::samv71

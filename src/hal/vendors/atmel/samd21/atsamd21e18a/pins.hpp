@@ -10,14 +10,14 @@ namespace alloy::hal::atmel::samd21::atsamd21e18a::pins {
 // ============================================================================
 
 // Port A pins
-constexpr uint8_t PA02 = 2;  // A2
-constexpr uint8_t PA03 = 3;  // A3
-constexpr uint8_t PA04 = 4;  // A4
-constexpr uint8_t PA05 = 5;  // A5
-constexpr uint8_t PA06 = 6;  // A6
-constexpr uint8_t PA07 = 7;  // A7
-constexpr uint8_t PA08 = 8;  // A8
-constexpr uint8_t PA09 = 9;  // A9
+constexpr uint8_t PA02 = 2;   // A2
+constexpr uint8_t PA03 = 3;   // A3
+constexpr uint8_t PA04 = 4;   // A4
+constexpr uint8_t PA05 = 5;   // A5
+constexpr uint8_t PA06 = 6;   // A6
+constexpr uint8_t PA07 = 7;   // A7
+constexpr uint8_t PA08 = 8;   // A8
+constexpr uint8_t PA09 = 9;   // A9
 constexpr uint8_t PA14 = 14;  // A14
 constexpr uint8_t PA15 = 15;  // A15
 constexpr uint8_t PA16 = 16;  // A16

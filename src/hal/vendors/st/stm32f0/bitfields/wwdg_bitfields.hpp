@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f0::wwdg {
@@ -19,49 +20,49 @@ using namespace alloy::hal::bitfields;
 
 /// CR - Control register
 namespace cr {
-    /// 7-bit counter
-    /// Position: 0, Width: 7
-    using T = BitField<0, 7>;
-    constexpr uint32_t T_Pos = 0;
-    constexpr uint32_t T_Msk = T::mask;
+/// 7-bit counter
+/// Position: 0, Width: 7
+using T = BitField<0, 7>;
+constexpr uint32_t T_Pos = 0;
+constexpr uint32_t T_Msk = T::mask;
 
-    /// Activation bit
-    /// Position: 7, Width: 1
-    using WDGA = BitField<7, 1>;
-    constexpr uint32_t WDGA_Pos = 7;
-    constexpr uint32_t WDGA_Msk = WDGA::mask;
+/// Activation bit
+/// Position: 7, Width: 1
+using WDGA = BitField<7, 1>;
+constexpr uint32_t WDGA_Pos = 7;
+constexpr uint32_t WDGA_Msk = WDGA::mask;
 
 }  // namespace cr
 
 /// CFR - Configuration register
 namespace cfr {
-    /// 7-bit window value
-    /// Position: 0, Width: 7
-    using W = BitField<0, 7>;
-    constexpr uint32_t W_Pos = 0;
-    constexpr uint32_t W_Msk = W::mask;
+/// 7-bit window value
+/// Position: 0, Width: 7
+using W = BitField<0, 7>;
+constexpr uint32_t W_Pos = 0;
+constexpr uint32_t W_Msk = W::mask;
 
-    /// Timer base
-    /// Position: 7, Width: 2
-    using WDGTB = BitField<7, 2>;
-    constexpr uint32_t WDGTB_Pos = 7;
-    constexpr uint32_t WDGTB_Msk = WDGTB::mask;
+/// Timer base
+/// Position: 7, Width: 2
+using WDGTB = BitField<7, 2>;
+constexpr uint32_t WDGTB_Pos = 7;
+constexpr uint32_t WDGTB_Msk = WDGTB::mask;
 
-    /// Early wakeup interrupt
-    /// Position: 9, Width: 1
-    using EWI = BitField<9, 1>;
-    constexpr uint32_t EWI_Pos = 9;
-    constexpr uint32_t EWI_Msk = EWI::mask;
+/// Early wakeup interrupt
+/// Position: 9, Width: 1
+using EWI = BitField<9, 1>;
+constexpr uint32_t EWI_Pos = 9;
+constexpr uint32_t EWI_Msk = EWI::mask;
 
 }  // namespace cfr
 
 /// SR - Status register
 namespace sr {
-    /// Early wakeup interrupt flag
-    /// Position: 0, Width: 1
-    using EWIF = BitField<0, 1>;
-    constexpr uint32_t EWIF_Pos = 0;
-    constexpr uint32_t EWIF_Msk = EWIF::mask;
+/// Early wakeup interrupt flag
+/// Position: 0, Width: 1
+using EWIF = BitField<0, 1>;
+constexpr uint32_t EWIF_Pos = 0;
+constexpr uint32_t EWIF_Msk = EWIF::mask;
 
 }  // namespace sr
 

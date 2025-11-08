@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::mcpwm0 {
 
 /// MCPWM0 Register Structure
 struct MCPWM0_Registers {
-
     /// CLK_CFG
     /// Offset: 0x0000
     volatile uint32_t CLK_CFG;

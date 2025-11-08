@@ -17,6 +17,7 @@
  */
 
 #include "hal/platform/same70/uart.hpp"
+
 #include "board.hpp"
 
 using namespace alloy::hal::same70;
@@ -27,7 +28,8 @@ using namespace alloy::core;
 template <typename TUart>
 void uart_puts(TUart& uart, const char* str) {
     size_t len = 0;
-    while (str[len] != '\0') len++;
+    while (str[len] != '\0')
+        len++;
     uart.write(reinterpret_cast<const uint8_t*>(str), len);
 }
 
@@ -92,7 +94,8 @@ int main() {
         // Copy to buffer (reverse)
         len = 0;
         const char* prefix = "Counter: ";
-        while (*prefix) buffer[len++] = *prefix++;
+        while (*prefix)
+            buffer[len++] = *prefix++;
 
         for (int i = idx - 1; i >= 0; i--) {
             buffer[len++] = temp[i];

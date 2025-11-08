@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samd21::sercom0 {
 
 /// SERCOM0 Register Structure
 struct SERCOM0_Registers {
-
     /// I2CM Control A
     /// Offset: 0x0000
     volatile uint32_t CTRLA;
@@ -49,7 +48,7 @@ struct SERCOM0_Registers {
     /// USART Control B
     /// Offset: 0x0004
     volatile uint32_t CTRLB;
-    uint8_t RESERVED_0008[4]; ///< Reserved
+    uint8_t RESERVED_0008[4];  ///< Reserved
 
     /// I2CM Baud Rate
     /// Offset: 0x000C
@@ -78,7 +77,7 @@ struct SERCOM0_Registers {
     /// USART Receive Pulse Length
     /// Offset: 0x000E
     volatile uint8_t RXPL;
-    uint8_t RESERVED_000F[5]; ///< Reserved
+    uint8_t RESERVED_000F[5];  ///< Reserved
 
     /// I2CM Interrupt Enable Clear
     /// Offset: 0x0014
@@ -95,7 +94,7 @@ struct SERCOM0_Registers {
     /// USART Interrupt Enable Clear
     /// Offset: 0x0014
     volatile uint8_t INTENCLR;
-    uint8_t RESERVED_0015[1]; ///< Reserved
+    uint8_t RESERVED_0015[1];  ///< Reserved
 
     /// I2CM Interrupt Enable Set
     /// Offset: 0x0016
@@ -112,7 +111,7 @@ struct SERCOM0_Registers {
     /// USART Interrupt Enable Set
     /// Offset: 0x0016
     volatile uint8_t INTENSET;
-    uint8_t RESERVED_0017[1]; ///< Reserved
+    uint8_t RESERVED_0017[1];  ///< Reserved
 
     /// I2CM Interrupt Flag Status and Clear
     /// Offset: 0x0018
@@ -129,7 +128,7 @@ struct SERCOM0_Registers {
     /// USART Interrupt Flag Status and Clear
     /// Offset: 0x0018
     volatile uint8_t INTFLAG;
-    uint8_t RESERVED_0019[1]; ///< Reserved
+    uint8_t RESERVED_0019[1];  ///< Reserved
 
     /// I2CM Status
     /// Offset: 0x001A
@@ -166,7 +165,7 @@ struct SERCOM0_Registers {
     /// Offset: 0x001C
     /// Access: read-only
     volatile uint32_t SYNCBUSY;
-    uint8_t RESERVED_0020[4]; ///< Reserved
+    uint8_t RESERVED_0020[4];  ///< Reserved
 
     /// I2CM Address
     /// Offset: 0x0024
@@ -195,7 +194,7 @@ struct SERCOM0_Registers {
     /// USART Data
     /// Offset: 0x0028
     volatile uint16_t DATA;
-    uint8_t RESERVED_002A[6]; ///< Reserved
+    uint8_t RESERVED_002A[6];  ///< Reserved
 
     /// I2CM Debug Control
     /// Offset: 0x0030

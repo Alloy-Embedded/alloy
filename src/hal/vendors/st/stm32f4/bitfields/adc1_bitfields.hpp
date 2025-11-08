@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::adc1 {
@@ -19,483 +20,483 @@ using namespace alloy::hal::bitfields;
 
 /// SR - status register
 namespace sr {
-    /// Analog watchdog flag
-    /// Position: 0, Width: 1
-    using AWD = BitField<0, 1>;
-    constexpr uint32_t AWD_Pos = 0;
-    constexpr uint32_t AWD_Msk = AWD::mask;
+/// Analog watchdog flag
+/// Position: 0, Width: 1
+using AWD = BitField<0, 1>;
+constexpr uint32_t AWD_Pos = 0;
+constexpr uint32_t AWD_Msk = AWD::mask;
 
-    /// Regular channel end of conversion
-    /// Position: 1, Width: 1
-    using EOC = BitField<1, 1>;
-    constexpr uint32_t EOC_Pos = 1;
-    constexpr uint32_t EOC_Msk = EOC::mask;
+/// Regular channel end of conversion
+/// Position: 1, Width: 1
+using EOC = BitField<1, 1>;
+constexpr uint32_t EOC_Pos = 1;
+constexpr uint32_t EOC_Msk = EOC::mask;
 
-    /// Injected channel end of conversion
-    /// Position: 2, Width: 1
-    using JEOC = BitField<2, 1>;
-    constexpr uint32_t JEOC_Pos = 2;
-    constexpr uint32_t JEOC_Msk = JEOC::mask;
+/// Injected channel end of conversion
+/// Position: 2, Width: 1
+using JEOC = BitField<2, 1>;
+constexpr uint32_t JEOC_Pos = 2;
+constexpr uint32_t JEOC_Msk = JEOC::mask;
 
-    /// Injected channel start flag
-    /// Position: 3, Width: 1
-    using JSTRT = BitField<3, 1>;
-    constexpr uint32_t JSTRT_Pos = 3;
-    constexpr uint32_t JSTRT_Msk = JSTRT::mask;
+/// Injected channel start flag
+/// Position: 3, Width: 1
+using JSTRT = BitField<3, 1>;
+constexpr uint32_t JSTRT_Pos = 3;
+constexpr uint32_t JSTRT_Msk = JSTRT::mask;
 
-    /// Regular channel start flag
-    /// Position: 4, Width: 1
-    using STRT = BitField<4, 1>;
-    constexpr uint32_t STRT_Pos = 4;
-    constexpr uint32_t STRT_Msk = STRT::mask;
+/// Regular channel start flag
+/// Position: 4, Width: 1
+using STRT = BitField<4, 1>;
+constexpr uint32_t STRT_Pos = 4;
+constexpr uint32_t STRT_Msk = STRT::mask;
 
-    /// Overrun
-    /// Position: 5, Width: 1
-    using OVR = BitField<5, 1>;
-    constexpr uint32_t OVR_Pos = 5;
-    constexpr uint32_t OVR_Msk = OVR::mask;
+/// Overrun
+/// Position: 5, Width: 1
+using OVR = BitField<5, 1>;
+constexpr uint32_t OVR_Pos = 5;
+constexpr uint32_t OVR_Msk = OVR::mask;
 
 }  // namespace sr
 
 /// CR1 - control register 1
 namespace cr1 {
-    /// Analog watchdog channel select bits
-    /// Position: 0, Width: 5
-    using AWDCH = BitField<0, 5>;
-    constexpr uint32_t AWDCH_Pos = 0;
-    constexpr uint32_t AWDCH_Msk = AWDCH::mask;
+/// Analog watchdog channel select bits
+/// Position: 0, Width: 5
+using AWDCH = BitField<0, 5>;
+constexpr uint32_t AWDCH_Pos = 0;
+constexpr uint32_t AWDCH_Msk = AWDCH::mask;
 
-    /// Interrupt enable for EOC
-    /// Position: 5, Width: 1
-    using EOCIE = BitField<5, 1>;
-    constexpr uint32_t EOCIE_Pos = 5;
-    constexpr uint32_t EOCIE_Msk = EOCIE::mask;
+/// Interrupt enable for EOC
+/// Position: 5, Width: 1
+using EOCIE = BitField<5, 1>;
+constexpr uint32_t EOCIE_Pos = 5;
+constexpr uint32_t EOCIE_Msk = EOCIE::mask;
 
-    /// Analog watchdog interrupt enable
-    /// Position: 6, Width: 1
-    using AWDIE = BitField<6, 1>;
-    constexpr uint32_t AWDIE_Pos = 6;
-    constexpr uint32_t AWDIE_Msk = AWDIE::mask;
+/// Analog watchdog interrupt enable
+/// Position: 6, Width: 1
+using AWDIE = BitField<6, 1>;
+constexpr uint32_t AWDIE_Pos = 6;
+constexpr uint32_t AWDIE_Msk = AWDIE::mask;
 
-    /// Interrupt enable for injected channels
-    /// Position: 7, Width: 1
-    using JEOCIE = BitField<7, 1>;
-    constexpr uint32_t JEOCIE_Pos = 7;
-    constexpr uint32_t JEOCIE_Msk = JEOCIE::mask;
+/// Interrupt enable for injected channels
+/// Position: 7, Width: 1
+using JEOCIE = BitField<7, 1>;
+constexpr uint32_t JEOCIE_Pos = 7;
+constexpr uint32_t JEOCIE_Msk = JEOCIE::mask;
 
-    /// Scan mode
-    /// Position: 8, Width: 1
-    using SCAN = BitField<8, 1>;
-    constexpr uint32_t SCAN_Pos = 8;
-    constexpr uint32_t SCAN_Msk = SCAN::mask;
+/// Scan mode
+/// Position: 8, Width: 1
+using SCAN = BitField<8, 1>;
+constexpr uint32_t SCAN_Pos = 8;
+constexpr uint32_t SCAN_Msk = SCAN::mask;
 
-    /// Enable the watchdog on a single channel in scan mode
-    /// Position: 9, Width: 1
-    using AWDSGL = BitField<9, 1>;
-    constexpr uint32_t AWDSGL_Pos = 9;
-    constexpr uint32_t AWDSGL_Msk = AWDSGL::mask;
+/// Enable the watchdog on a single channel in scan mode
+/// Position: 9, Width: 1
+using AWDSGL = BitField<9, 1>;
+constexpr uint32_t AWDSGL_Pos = 9;
+constexpr uint32_t AWDSGL_Msk = AWDSGL::mask;
 
-    /// Automatic injected group conversion
-    /// Position: 10, Width: 1
-    using JAUTO = BitField<10, 1>;
-    constexpr uint32_t JAUTO_Pos = 10;
-    constexpr uint32_t JAUTO_Msk = JAUTO::mask;
+/// Automatic injected group conversion
+/// Position: 10, Width: 1
+using JAUTO = BitField<10, 1>;
+constexpr uint32_t JAUTO_Pos = 10;
+constexpr uint32_t JAUTO_Msk = JAUTO::mask;
 
-    /// Discontinuous mode on regular channels
-    /// Position: 11, Width: 1
-    using DISCEN = BitField<11, 1>;
-    constexpr uint32_t DISCEN_Pos = 11;
-    constexpr uint32_t DISCEN_Msk = DISCEN::mask;
+/// Discontinuous mode on regular channels
+/// Position: 11, Width: 1
+using DISCEN = BitField<11, 1>;
+constexpr uint32_t DISCEN_Pos = 11;
+constexpr uint32_t DISCEN_Msk = DISCEN::mask;
 
-    /// Discontinuous mode on injected channels
-    /// Position: 12, Width: 1
-    using JDISCEN = BitField<12, 1>;
-    constexpr uint32_t JDISCEN_Pos = 12;
-    constexpr uint32_t JDISCEN_Msk = JDISCEN::mask;
+/// Discontinuous mode on injected channels
+/// Position: 12, Width: 1
+using JDISCEN = BitField<12, 1>;
+constexpr uint32_t JDISCEN_Pos = 12;
+constexpr uint32_t JDISCEN_Msk = JDISCEN::mask;
 
-    /// Discontinuous mode channel count
-    /// Position: 13, Width: 3
-    using DISCNUM = BitField<13, 3>;
-    constexpr uint32_t DISCNUM_Pos = 13;
-    constexpr uint32_t DISCNUM_Msk = DISCNUM::mask;
+/// Discontinuous mode channel count
+/// Position: 13, Width: 3
+using DISCNUM = BitField<13, 3>;
+constexpr uint32_t DISCNUM_Pos = 13;
+constexpr uint32_t DISCNUM_Msk = DISCNUM::mask;
 
-    /// Analog watchdog enable on injected channels
-    /// Position: 22, Width: 1
-    using JAWDEN = BitField<22, 1>;
-    constexpr uint32_t JAWDEN_Pos = 22;
-    constexpr uint32_t JAWDEN_Msk = JAWDEN::mask;
+/// Analog watchdog enable on injected channels
+/// Position: 22, Width: 1
+using JAWDEN = BitField<22, 1>;
+constexpr uint32_t JAWDEN_Pos = 22;
+constexpr uint32_t JAWDEN_Msk = JAWDEN::mask;
 
-    /// Analog watchdog enable on regular channels
-    /// Position: 23, Width: 1
-    using AWDEN = BitField<23, 1>;
-    constexpr uint32_t AWDEN_Pos = 23;
-    constexpr uint32_t AWDEN_Msk = AWDEN::mask;
+/// Analog watchdog enable on regular channels
+/// Position: 23, Width: 1
+using AWDEN = BitField<23, 1>;
+constexpr uint32_t AWDEN_Pos = 23;
+constexpr uint32_t AWDEN_Msk = AWDEN::mask;
 
-    /// Resolution
-    /// Position: 24, Width: 2
-    using RES = BitField<24, 2>;
-    constexpr uint32_t RES_Pos = 24;
-    constexpr uint32_t RES_Msk = RES::mask;
+/// Resolution
+/// Position: 24, Width: 2
+using RES = BitField<24, 2>;
+constexpr uint32_t RES_Pos = 24;
+constexpr uint32_t RES_Msk = RES::mask;
 
-    /// Overrun interrupt enable
-    /// Position: 26, Width: 1
-    using OVRIE = BitField<26, 1>;
-    constexpr uint32_t OVRIE_Pos = 26;
-    constexpr uint32_t OVRIE_Msk = OVRIE::mask;
+/// Overrun interrupt enable
+/// Position: 26, Width: 1
+using OVRIE = BitField<26, 1>;
+constexpr uint32_t OVRIE_Pos = 26;
+constexpr uint32_t OVRIE_Msk = OVRIE::mask;
 
 }  // namespace cr1
 
 /// CR2 - control register 2
 namespace cr2 {
-    /// A/D Converter ON / OFF
-    /// Position: 0, Width: 1
-    using ADON = BitField<0, 1>;
-    constexpr uint32_t ADON_Pos = 0;
-    constexpr uint32_t ADON_Msk = ADON::mask;
+/// A/D Converter ON / OFF
+/// Position: 0, Width: 1
+using ADON = BitField<0, 1>;
+constexpr uint32_t ADON_Pos = 0;
+constexpr uint32_t ADON_Msk = ADON::mask;
 
-    /// Continuous conversion
-    /// Position: 1, Width: 1
-    using CONT = BitField<1, 1>;
-    constexpr uint32_t CONT_Pos = 1;
-    constexpr uint32_t CONT_Msk = CONT::mask;
+/// Continuous conversion
+/// Position: 1, Width: 1
+using CONT = BitField<1, 1>;
+constexpr uint32_t CONT_Pos = 1;
+constexpr uint32_t CONT_Msk = CONT::mask;
 
-    /// Direct memory access mode (for single ADC mode)
-    /// Position: 8, Width: 1
-    using DMA = BitField<8, 1>;
-    constexpr uint32_t DMA_Pos = 8;
-    constexpr uint32_t DMA_Msk = DMA::mask;
+/// Direct memory access mode (for single ADC mode)
+/// Position: 8, Width: 1
+using DMA = BitField<8, 1>;
+constexpr uint32_t DMA_Pos = 8;
+constexpr uint32_t DMA_Msk = DMA::mask;
 
-    /// DMA disable selection (for single ADC mode)
-    /// Position: 9, Width: 1
-    using DDS = BitField<9, 1>;
-    constexpr uint32_t DDS_Pos = 9;
-    constexpr uint32_t DDS_Msk = DDS::mask;
+/// DMA disable selection (for single ADC mode)
+/// Position: 9, Width: 1
+using DDS = BitField<9, 1>;
+constexpr uint32_t DDS_Pos = 9;
+constexpr uint32_t DDS_Msk = DDS::mask;
 
-    /// End of conversion selection
-    /// Position: 10, Width: 1
-    using EOCS = BitField<10, 1>;
-    constexpr uint32_t EOCS_Pos = 10;
-    constexpr uint32_t EOCS_Msk = EOCS::mask;
+/// End of conversion selection
+/// Position: 10, Width: 1
+using EOCS = BitField<10, 1>;
+constexpr uint32_t EOCS_Pos = 10;
+constexpr uint32_t EOCS_Msk = EOCS::mask;
 
-    /// Data alignment
-    /// Position: 11, Width: 1
-    using ALIGN = BitField<11, 1>;
-    constexpr uint32_t ALIGN_Pos = 11;
-    constexpr uint32_t ALIGN_Msk = ALIGN::mask;
+/// Data alignment
+/// Position: 11, Width: 1
+using ALIGN = BitField<11, 1>;
+constexpr uint32_t ALIGN_Pos = 11;
+constexpr uint32_t ALIGN_Msk = ALIGN::mask;
 
-    /// External event select for injected group
-    /// Position: 16, Width: 4
-    using JEXTSEL = BitField<16, 4>;
-    constexpr uint32_t JEXTSEL_Pos = 16;
-    constexpr uint32_t JEXTSEL_Msk = JEXTSEL::mask;
+/// External event select for injected group
+/// Position: 16, Width: 4
+using JEXTSEL = BitField<16, 4>;
+constexpr uint32_t JEXTSEL_Pos = 16;
+constexpr uint32_t JEXTSEL_Msk = JEXTSEL::mask;
 
-    /// External trigger enable for injected channels
-    /// Position: 20, Width: 2
-    using JEXTEN = BitField<20, 2>;
-    constexpr uint32_t JEXTEN_Pos = 20;
-    constexpr uint32_t JEXTEN_Msk = JEXTEN::mask;
+/// External trigger enable for injected channels
+/// Position: 20, Width: 2
+using JEXTEN = BitField<20, 2>;
+constexpr uint32_t JEXTEN_Pos = 20;
+constexpr uint32_t JEXTEN_Msk = JEXTEN::mask;
 
-    /// Start conversion of injected channels
-    /// Position: 22, Width: 1
-    using JSWSTART = BitField<22, 1>;
-    constexpr uint32_t JSWSTART_Pos = 22;
-    constexpr uint32_t JSWSTART_Msk = JSWSTART::mask;
+/// Start conversion of injected channels
+/// Position: 22, Width: 1
+using JSWSTART = BitField<22, 1>;
+constexpr uint32_t JSWSTART_Pos = 22;
+constexpr uint32_t JSWSTART_Msk = JSWSTART::mask;
 
-    /// External event select for regular group
-    /// Position: 24, Width: 4
-    using EXTSEL = BitField<24, 4>;
-    constexpr uint32_t EXTSEL_Pos = 24;
-    constexpr uint32_t EXTSEL_Msk = EXTSEL::mask;
+/// External event select for regular group
+/// Position: 24, Width: 4
+using EXTSEL = BitField<24, 4>;
+constexpr uint32_t EXTSEL_Pos = 24;
+constexpr uint32_t EXTSEL_Msk = EXTSEL::mask;
 
-    /// External trigger enable for regular channels
-    /// Position: 28, Width: 2
-    using EXTEN = BitField<28, 2>;
-    constexpr uint32_t EXTEN_Pos = 28;
-    constexpr uint32_t EXTEN_Msk = EXTEN::mask;
+/// External trigger enable for regular channels
+/// Position: 28, Width: 2
+using EXTEN = BitField<28, 2>;
+constexpr uint32_t EXTEN_Pos = 28;
+constexpr uint32_t EXTEN_Msk = EXTEN::mask;
 
-    /// Start conversion of regular channels
-    /// Position: 30, Width: 1
-    using SWSTART = BitField<30, 1>;
-    constexpr uint32_t SWSTART_Pos = 30;
-    constexpr uint32_t SWSTART_Msk = SWSTART::mask;
+/// Start conversion of regular channels
+/// Position: 30, Width: 1
+using SWSTART = BitField<30, 1>;
+constexpr uint32_t SWSTART_Pos = 30;
+constexpr uint32_t SWSTART_Msk = SWSTART::mask;
 
 }  // namespace cr2
 
 /// SMPR1 - sample time register 1
 namespace smpr1 {
-    /// Sample time bits
-    /// Position: 0, Width: 32
-    using SMPx_x = BitField<0, 32>;
-    constexpr uint32_t SMPx_x_Pos = 0;
-    constexpr uint32_t SMPx_x_Msk = SMPx_x::mask;
+/// Sample time bits
+/// Position: 0, Width: 32
+using SMPx_x = BitField<0, 32>;
+constexpr uint32_t SMPx_x_Pos = 0;
+constexpr uint32_t SMPx_x_Msk = SMPx_x::mask;
 
 }  // namespace smpr1
 
 /// SMPR2 - sample time register 2
 namespace smpr2 {
-    /// Sample time bits
-    /// Position: 0, Width: 32
-    using SMPx_x = BitField<0, 32>;
-    constexpr uint32_t SMPx_x_Pos = 0;
-    constexpr uint32_t SMPx_x_Msk = SMPx_x::mask;
+/// Sample time bits
+/// Position: 0, Width: 32
+using SMPx_x = BitField<0, 32>;
+constexpr uint32_t SMPx_x_Pos = 0;
+constexpr uint32_t SMPx_x_Msk = SMPx_x::mask;
 
 }  // namespace smpr2
 
 /// JOFR1 - injected channel data offset register x
 namespace jofr1 {
-    /// Data offset for injected channel x
-    /// Position: 0, Width: 12
-    using JOFFSET1 = BitField<0, 12>;
-    constexpr uint32_t JOFFSET1_Pos = 0;
-    constexpr uint32_t JOFFSET1_Msk = JOFFSET1::mask;
+/// Data offset for injected channel x
+/// Position: 0, Width: 12
+using JOFFSET1 = BitField<0, 12>;
+constexpr uint32_t JOFFSET1_Pos = 0;
+constexpr uint32_t JOFFSET1_Msk = JOFFSET1::mask;
 
 }  // namespace jofr1
 
 /// JOFR2 - injected channel data offset register x
 namespace jofr2 {
-    /// Data offset for injected channel x
-    /// Position: 0, Width: 12
-    using JOFFSET2 = BitField<0, 12>;
-    constexpr uint32_t JOFFSET2_Pos = 0;
-    constexpr uint32_t JOFFSET2_Msk = JOFFSET2::mask;
+/// Data offset for injected channel x
+/// Position: 0, Width: 12
+using JOFFSET2 = BitField<0, 12>;
+constexpr uint32_t JOFFSET2_Pos = 0;
+constexpr uint32_t JOFFSET2_Msk = JOFFSET2::mask;
 
 }  // namespace jofr2
 
 /// JOFR3 - injected channel data offset register x
 namespace jofr3 {
-    /// Data offset for injected channel x
-    /// Position: 0, Width: 12
-    using JOFFSET3 = BitField<0, 12>;
-    constexpr uint32_t JOFFSET3_Pos = 0;
-    constexpr uint32_t JOFFSET3_Msk = JOFFSET3::mask;
+/// Data offset for injected channel x
+/// Position: 0, Width: 12
+using JOFFSET3 = BitField<0, 12>;
+constexpr uint32_t JOFFSET3_Pos = 0;
+constexpr uint32_t JOFFSET3_Msk = JOFFSET3::mask;
 
 }  // namespace jofr3
 
 /// JOFR4 - injected channel data offset register x
 namespace jofr4 {
-    /// Data offset for injected channel x
-    /// Position: 0, Width: 12
-    using JOFFSET4 = BitField<0, 12>;
-    constexpr uint32_t JOFFSET4_Pos = 0;
-    constexpr uint32_t JOFFSET4_Msk = JOFFSET4::mask;
+/// Data offset for injected channel x
+/// Position: 0, Width: 12
+using JOFFSET4 = BitField<0, 12>;
+constexpr uint32_t JOFFSET4_Pos = 0;
+constexpr uint32_t JOFFSET4_Msk = JOFFSET4::mask;
 
 }  // namespace jofr4
 
 /// HTR - watchdog higher threshold register
 namespace htr {
-    /// Analog watchdog higher threshold
-    /// Position: 0, Width: 12
-    using HT = BitField<0, 12>;
-    constexpr uint32_t HT_Pos = 0;
-    constexpr uint32_t HT_Msk = HT::mask;
+/// Analog watchdog higher threshold
+/// Position: 0, Width: 12
+using HT = BitField<0, 12>;
+constexpr uint32_t HT_Pos = 0;
+constexpr uint32_t HT_Msk = HT::mask;
 
 }  // namespace htr
 
 /// LTR - watchdog lower threshold register
 namespace ltr {
-    /// Analog watchdog lower threshold
-    /// Position: 0, Width: 12
-    using LT = BitField<0, 12>;
-    constexpr uint32_t LT_Pos = 0;
-    constexpr uint32_t LT_Msk = LT::mask;
+/// Analog watchdog lower threshold
+/// Position: 0, Width: 12
+using LT = BitField<0, 12>;
+constexpr uint32_t LT_Pos = 0;
+constexpr uint32_t LT_Msk = LT::mask;
 
 }  // namespace ltr
 
 /// SQR1 - regular sequence register 1
 namespace sqr1 {
-    /// 13th conversion in regular sequence
-    /// Position: 0, Width: 5
-    using SQ13 = BitField<0, 5>;
-    constexpr uint32_t SQ13_Pos = 0;
-    constexpr uint32_t SQ13_Msk = SQ13::mask;
+/// 13th conversion in regular sequence
+/// Position: 0, Width: 5
+using SQ13 = BitField<0, 5>;
+constexpr uint32_t SQ13_Pos = 0;
+constexpr uint32_t SQ13_Msk = SQ13::mask;
 
-    /// 14th conversion in regular sequence
-    /// Position: 5, Width: 5
-    using SQ14 = BitField<5, 5>;
-    constexpr uint32_t SQ14_Pos = 5;
-    constexpr uint32_t SQ14_Msk = SQ14::mask;
+/// 14th conversion in regular sequence
+/// Position: 5, Width: 5
+using SQ14 = BitField<5, 5>;
+constexpr uint32_t SQ14_Pos = 5;
+constexpr uint32_t SQ14_Msk = SQ14::mask;
 
-    /// 15th conversion in regular sequence
-    /// Position: 10, Width: 5
-    using SQ15 = BitField<10, 5>;
-    constexpr uint32_t SQ15_Pos = 10;
-    constexpr uint32_t SQ15_Msk = SQ15::mask;
+/// 15th conversion in regular sequence
+/// Position: 10, Width: 5
+using SQ15 = BitField<10, 5>;
+constexpr uint32_t SQ15_Pos = 10;
+constexpr uint32_t SQ15_Msk = SQ15::mask;
 
-    /// 16th conversion in regular sequence
-    /// Position: 15, Width: 5
-    using SQ16 = BitField<15, 5>;
-    constexpr uint32_t SQ16_Pos = 15;
-    constexpr uint32_t SQ16_Msk = SQ16::mask;
+/// 16th conversion in regular sequence
+/// Position: 15, Width: 5
+using SQ16 = BitField<15, 5>;
+constexpr uint32_t SQ16_Pos = 15;
+constexpr uint32_t SQ16_Msk = SQ16::mask;
 
-    /// Regular channel sequence length
-    /// Position: 20, Width: 4
-    using L = BitField<20, 4>;
-    constexpr uint32_t L_Pos = 20;
-    constexpr uint32_t L_Msk = L::mask;
+/// Regular channel sequence length
+/// Position: 20, Width: 4
+using L = BitField<20, 4>;
+constexpr uint32_t L_Pos = 20;
+constexpr uint32_t L_Msk = L::mask;
 
 }  // namespace sqr1
 
 /// SQR2 - regular sequence register 2
 namespace sqr2 {
-    /// 7th conversion in regular sequence
-    /// Position: 0, Width: 5
-    using SQ7 = BitField<0, 5>;
-    constexpr uint32_t SQ7_Pos = 0;
-    constexpr uint32_t SQ7_Msk = SQ7::mask;
+/// 7th conversion in regular sequence
+/// Position: 0, Width: 5
+using SQ7 = BitField<0, 5>;
+constexpr uint32_t SQ7_Pos = 0;
+constexpr uint32_t SQ7_Msk = SQ7::mask;
 
-    /// 8th conversion in regular sequence
-    /// Position: 5, Width: 5
-    using SQ8 = BitField<5, 5>;
-    constexpr uint32_t SQ8_Pos = 5;
-    constexpr uint32_t SQ8_Msk = SQ8::mask;
+/// 8th conversion in regular sequence
+/// Position: 5, Width: 5
+using SQ8 = BitField<5, 5>;
+constexpr uint32_t SQ8_Pos = 5;
+constexpr uint32_t SQ8_Msk = SQ8::mask;
 
-    /// 9th conversion in regular sequence
-    /// Position: 10, Width: 5
-    using SQ9 = BitField<10, 5>;
-    constexpr uint32_t SQ9_Pos = 10;
-    constexpr uint32_t SQ9_Msk = SQ9::mask;
+/// 9th conversion in regular sequence
+/// Position: 10, Width: 5
+using SQ9 = BitField<10, 5>;
+constexpr uint32_t SQ9_Pos = 10;
+constexpr uint32_t SQ9_Msk = SQ9::mask;
 
-    /// 10th conversion in regular sequence
-    /// Position: 15, Width: 5
-    using SQ10 = BitField<15, 5>;
-    constexpr uint32_t SQ10_Pos = 15;
-    constexpr uint32_t SQ10_Msk = SQ10::mask;
+/// 10th conversion in regular sequence
+/// Position: 15, Width: 5
+using SQ10 = BitField<15, 5>;
+constexpr uint32_t SQ10_Pos = 15;
+constexpr uint32_t SQ10_Msk = SQ10::mask;
 
-    /// 11th conversion in regular sequence
-    /// Position: 20, Width: 5
-    using SQ11 = BitField<20, 5>;
-    constexpr uint32_t SQ11_Pos = 20;
-    constexpr uint32_t SQ11_Msk = SQ11::mask;
+/// 11th conversion in regular sequence
+/// Position: 20, Width: 5
+using SQ11 = BitField<20, 5>;
+constexpr uint32_t SQ11_Pos = 20;
+constexpr uint32_t SQ11_Msk = SQ11::mask;
 
-    /// 12th conversion in regular sequence
-    /// Position: 25, Width: 5
-    using SQ12 = BitField<25, 5>;
-    constexpr uint32_t SQ12_Pos = 25;
-    constexpr uint32_t SQ12_Msk = SQ12::mask;
+/// 12th conversion in regular sequence
+/// Position: 25, Width: 5
+using SQ12 = BitField<25, 5>;
+constexpr uint32_t SQ12_Pos = 25;
+constexpr uint32_t SQ12_Msk = SQ12::mask;
 
 }  // namespace sqr2
 
 /// SQR3 - regular sequence register 3
 namespace sqr3 {
-    /// 1st conversion in regular sequence
-    /// Position: 0, Width: 5
-    using SQ1 = BitField<0, 5>;
-    constexpr uint32_t SQ1_Pos = 0;
-    constexpr uint32_t SQ1_Msk = SQ1::mask;
+/// 1st conversion in regular sequence
+/// Position: 0, Width: 5
+using SQ1 = BitField<0, 5>;
+constexpr uint32_t SQ1_Pos = 0;
+constexpr uint32_t SQ1_Msk = SQ1::mask;
 
-    /// 2nd conversion in regular sequence
-    /// Position: 5, Width: 5
-    using SQ2 = BitField<5, 5>;
-    constexpr uint32_t SQ2_Pos = 5;
-    constexpr uint32_t SQ2_Msk = SQ2::mask;
+/// 2nd conversion in regular sequence
+/// Position: 5, Width: 5
+using SQ2 = BitField<5, 5>;
+constexpr uint32_t SQ2_Pos = 5;
+constexpr uint32_t SQ2_Msk = SQ2::mask;
 
-    /// 3rd conversion in regular sequence
-    /// Position: 10, Width: 5
-    using SQ3 = BitField<10, 5>;
-    constexpr uint32_t SQ3_Pos = 10;
-    constexpr uint32_t SQ3_Msk = SQ3::mask;
+/// 3rd conversion in regular sequence
+/// Position: 10, Width: 5
+using SQ3 = BitField<10, 5>;
+constexpr uint32_t SQ3_Pos = 10;
+constexpr uint32_t SQ3_Msk = SQ3::mask;
 
-    /// 4th conversion in regular sequence
-    /// Position: 15, Width: 5
-    using SQ4 = BitField<15, 5>;
-    constexpr uint32_t SQ4_Pos = 15;
-    constexpr uint32_t SQ4_Msk = SQ4::mask;
+/// 4th conversion in regular sequence
+/// Position: 15, Width: 5
+using SQ4 = BitField<15, 5>;
+constexpr uint32_t SQ4_Pos = 15;
+constexpr uint32_t SQ4_Msk = SQ4::mask;
 
-    /// 5th conversion in regular sequence
-    /// Position: 20, Width: 5
-    using SQ5 = BitField<20, 5>;
-    constexpr uint32_t SQ5_Pos = 20;
-    constexpr uint32_t SQ5_Msk = SQ5::mask;
+/// 5th conversion in regular sequence
+/// Position: 20, Width: 5
+using SQ5 = BitField<20, 5>;
+constexpr uint32_t SQ5_Pos = 20;
+constexpr uint32_t SQ5_Msk = SQ5::mask;
 
-    /// 6th conversion in regular sequence
-    /// Position: 25, Width: 5
-    using SQ6 = BitField<25, 5>;
-    constexpr uint32_t SQ6_Pos = 25;
-    constexpr uint32_t SQ6_Msk = SQ6::mask;
+/// 6th conversion in regular sequence
+/// Position: 25, Width: 5
+using SQ6 = BitField<25, 5>;
+constexpr uint32_t SQ6_Pos = 25;
+constexpr uint32_t SQ6_Msk = SQ6::mask;
 
 }  // namespace sqr3
 
 /// JSQR - injected sequence register
 namespace jsqr {
-    /// 1st conversion in injected sequence
-    /// Position: 0, Width: 5
-    using JSQ1 = BitField<0, 5>;
-    constexpr uint32_t JSQ1_Pos = 0;
-    constexpr uint32_t JSQ1_Msk = JSQ1::mask;
+/// 1st conversion in injected sequence
+/// Position: 0, Width: 5
+using JSQ1 = BitField<0, 5>;
+constexpr uint32_t JSQ1_Pos = 0;
+constexpr uint32_t JSQ1_Msk = JSQ1::mask;
 
-    /// 2nd conversion in injected sequence
-    /// Position: 5, Width: 5
-    using JSQ2 = BitField<5, 5>;
-    constexpr uint32_t JSQ2_Pos = 5;
-    constexpr uint32_t JSQ2_Msk = JSQ2::mask;
+/// 2nd conversion in injected sequence
+/// Position: 5, Width: 5
+using JSQ2 = BitField<5, 5>;
+constexpr uint32_t JSQ2_Pos = 5;
+constexpr uint32_t JSQ2_Msk = JSQ2::mask;
 
-    /// 3rd conversion in injected sequence
-    /// Position: 10, Width: 5
-    using JSQ3 = BitField<10, 5>;
-    constexpr uint32_t JSQ3_Pos = 10;
-    constexpr uint32_t JSQ3_Msk = JSQ3::mask;
+/// 3rd conversion in injected sequence
+/// Position: 10, Width: 5
+using JSQ3 = BitField<10, 5>;
+constexpr uint32_t JSQ3_Pos = 10;
+constexpr uint32_t JSQ3_Msk = JSQ3::mask;
 
-    /// 4th conversion in injected sequence
-    /// Position: 15, Width: 5
-    using JSQ4 = BitField<15, 5>;
-    constexpr uint32_t JSQ4_Pos = 15;
-    constexpr uint32_t JSQ4_Msk = JSQ4::mask;
+/// 4th conversion in injected sequence
+/// Position: 15, Width: 5
+using JSQ4 = BitField<15, 5>;
+constexpr uint32_t JSQ4_Pos = 15;
+constexpr uint32_t JSQ4_Msk = JSQ4::mask;
 
-    /// Injected sequence length
-    /// Position: 20, Width: 2
-    using JL = BitField<20, 2>;
-    constexpr uint32_t JL_Pos = 20;
-    constexpr uint32_t JL_Msk = JL::mask;
+/// Injected sequence length
+/// Position: 20, Width: 2
+using JL = BitField<20, 2>;
+constexpr uint32_t JL_Pos = 20;
+constexpr uint32_t JL_Msk = JL::mask;
 
 }  // namespace jsqr
 
 /// JDR1 - injected data register x
 namespace jdr1 {
-    /// Injected data
-    /// Position: 0, Width: 16
-    using JDATA = BitField<0, 16>;
-    constexpr uint32_t JDATA_Pos = 0;
-    constexpr uint32_t JDATA_Msk = JDATA::mask;
+/// Injected data
+/// Position: 0, Width: 16
+using JDATA = BitField<0, 16>;
+constexpr uint32_t JDATA_Pos = 0;
+constexpr uint32_t JDATA_Msk = JDATA::mask;
 
 }  // namespace jdr1
 
 /// JDR2 - injected data register x
 namespace jdr2 {
-    /// Injected data
-    /// Position: 0, Width: 16
-    using JDATA = BitField<0, 16>;
-    constexpr uint32_t JDATA_Pos = 0;
-    constexpr uint32_t JDATA_Msk = JDATA::mask;
+/// Injected data
+/// Position: 0, Width: 16
+using JDATA = BitField<0, 16>;
+constexpr uint32_t JDATA_Pos = 0;
+constexpr uint32_t JDATA_Msk = JDATA::mask;
 
 }  // namespace jdr2
 
 /// JDR3 - injected data register x
 namespace jdr3 {
-    /// Injected data
-    /// Position: 0, Width: 16
-    using JDATA = BitField<0, 16>;
-    constexpr uint32_t JDATA_Pos = 0;
-    constexpr uint32_t JDATA_Msk = JDATA::mask;
+/// Injected data
+/// Position: 0, Width: 16
+using JDATA = BitField<0, 16>;
+constexpr uint32_t JDATA_Pos = 0;
+constexpr uint32_t JDATA_Msk = JDATA::mask;
 
 }  // namespace jdr3
 
 /// JDR4 - injected data register x
 namespace jdr4 {
-    /// Injected data
-    /// Position: 0, Width: 16
-    using JDATA = BitField<0, 16>;
-    constexpr uint32_t JDATA_Pos = 0;
-    constexpr uint32_t JDATA_Msk = JDATA::mask;
+/// Injected data
+/// Position: 0, Width: 16
+using JDATA = BitField<0, 16>;
+constexpr uint32_t JDATA_Pos = 0;
+constexpr uint32_t JDATA_Msk = JDATA::mask;
 
 }  // namespace jdr4
 
 /// DR - regular data register
 namespace dr {
-    /// Regular data
-    /// Position: 0, Width: 16
-    using DATA = BitField<0, 16>;
-    constexpr uint32_t DATA_Pos = 0;
-    constexpr uint32_t DATA_Msk = DATA::mask;
+/// Regular data
+/// Position: 0, Width: 16
+using DATA = BitField<0, 16>;
+constexpr uint32_t DATA_Pos = 0;
+constexpr uint32_t DATA_Msk = DATA::mask;
 
 }  // namespace dr
 

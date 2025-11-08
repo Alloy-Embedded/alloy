@@ -11,13 +11,18 @@
 namespace alloy::hal::raspberrypi::rp2040::timer {
 
 // ============================================================================
-// TIMER - Controls time and alarms\n time is a 64 bit value indicating the time in usec since power-on\n timeh is the top 32 bits of time & timel is the bottom 32 bits\n to change time write to timelw before timehw\n to read time read from timelr before timehr\n An alarm is set by setting alarm_enable and writing to the corresponding alarm register\n When an alarm is pending, the corresponding alarm_running signal will be high\n An alarm can be cancelled before it has finished by clearing the alarm_enable\n When an alarm fires, the corresponding alarm_irq is set and alarm_running is cleared\n To clear the interrupt write a 1 to the corresponding alarm_irq
+// TIMER - Controls time and alarms\n time is a 64 bit value indicating the time in usec since
+// power-on\n timeh is the top 32 bits of time & timel is the bottom 32 bits\n to change time write
+// to timelw before timehw\n to read time read from timelr before timehr\n An alarm is set by
+// setting alarm_enable and writing to the corresponding alarm register\n When an alarm is pending,
+// the corresponding alarm_running signal will be high\n An alarm can be cancelled before it has
+// finished by clearing the alarm_enable\n When an alarm fires, the corresponding alarm_irq is set
+// and alarm_running is cleared\n To clear the interrupt write a 1 to the corresponding alarm_irq
 // Base Address: 0x40054000
 // ============================================================================
 
 /// TIMER Register Structure
 struct TIMER_Registers {
-
     /// Write to bits 63:32 of time\n always write timelw before timehw
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -42,33 +47,33 @@ struct TIMER_Registers {
     /// Access: read-only
     volatile uint32_t TIMELR;
 
-    /// Arm alarm 0, and configure the time it will fire.\n Once armed, the alarm fires when TIMER_ALARM0 == TIMELR.\n The alarm will disarm itself once it fires, and can\n be disarmed early using the ARMED status register.
-    /// Offset: 0x0010
-    /// Reset value: 0x00000000
-    /// Access: read-write
+    /// Arm alarm 0, and configure the time it will fire.\n Once armed, the alarm fires when
+    /// TIMER_ALARM0 == TIMELR.\n The alarm will disarm itself once it fires, and can\n be disarmed
+    /// early using the ARMED status register. Offset: 0x0010 Reset value: 0x00000000 Access:
+    /// read-write
     volatile uint32_t ALARM0;
 
-    /// Arm alarm 1, and configure the time it will fire.\n Once armed, the alarm fires when TIMER_ALARM1 == TIMELR.\n The alarm will disarm itself once it fires, and can\n be disarmed early using the ARMED status register.
-    /// Offset: 0x0014
-    /// Reset value: 0x00000000
-    /// Access: read-write
+    /// Arm alarm 1, and configure the time it will fire.\n Once armed, the alarm fires when
+    /// TIMER_ALARM1 == TIMELR.\n The alarm will disarm itself once it fires, and can\n be disarmed
+    /// early using the ARMED status register. Offset: 0x0014 Reset value: 0x00000000 Access:
+    /// read-write
     volatile uint32_t ALARM1;
 
-    /// Arm alarm 2, and configure the time it will fire.\n Once armed, the alarm fires when TIMER_ALARM2 == TIMELR.\n The alarm will disarm itself once it fires, and can\n be disarmed early using the ARMED status register.
-    /// Offset: 0x0018
-    /// Reset value: 0x00000000
-    /// Access: read-write
+    /// Arm alarm 2, and configure the time it will fire.\n Once armed, the alarm fires when
+    /// TIMER_ALARM2 == TIMELR.\n The alarm will disarm itself once it fires, and can\n be disarmed
+    /// early using the ARMED status register. Offset: 0x0018 Reset value: 0x00000000 Access:
+    /// read-write
     volatile uint32_t ALARM2;
 
-    /// Arm alarm 3, and configure the time it will fire.\n Once armed, the alarm fires when TIMER_ALARM3 == TIMELR.\n The alarm will disarm itself once it fires, and can\n be disarmed early using the ARMED status register.
-    /// Offset: 0x001C
-    /// Reset value: 0x00000000
-    /// Access: read-write
+    /// Arm alarm 3, and configure the time it will fire.\n Once armed, the alarm fires when
+    /// TIMER_ALARM3 == TIMELR.\n The alarm will disarm itself once it fires, and can\n be disarmed
+    /// early using the ARMED status register. Offset: 0x001C Reset value: 0x00000000 Access:
+    /// read-write
     volatile uint32_t ALARM3;
 
-    /// Indicates the armed/disarmed status of each alarm.\n A write to the corresponding ALARMx register arms the alarm.\n Alarms automatically disarm upon firing, but writing ones here\n will disarm immediately without waiting to fire.
-    /// Offset: 0x0020
-    /// Reset value: 0x00000000
+    /// Indicates the armed/disarmed status of each alarm.\n A write to the corresponding ALARMx
+    /// register arms the alarm.\n Alarms automatically disarm upon firing, but writing ones here\n
+    /// will disarm immediately without waiting to fire. Offset: 0x0020 Reset value: 0x00000000
     volatile uint32_t ARMED;
 
     /// Raw read from bits 63:32 of time (no side effects)

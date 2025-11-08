@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samd21::rtc {
 
 /// RTC Register Structure
 struct RTC_Registers {
-
     /// MODE0 Control
     /// Offset: 0x0000
     volatile uint16_t CTRL;
@@ -92,7 +91,7 @@ struct RTC_Registers {
     /// MODE2 Interrupt Flag Status and Clear
     /// Offset: 0x0008
     volatile uint8_t INTFLAG;
-    uint8_t RESERVED_0009[1]; ///< Reserved
+    uint8_t RESERVED_0009[1];  ///< Reserved
 
     /// Status
     /// Offset: 0x000A
@@ -129,7 +128,7 @@ struct RTC_Registers {
     /// Frequency Correction
     /// Offset: 0x000C
     volatile uint8_t FREQCORR;
-    uint8_t RESERVED_000D[3]; ///< Reserved
+    uint8_t RESERVED_000D[3];  ///< Reserved
 
     /// MODE0 Counter Value
     /// Offset: 0x0010
@@ -146,11 +145,11 @@ struct RTC_Registers {
     /// MODE1 Counter Period
     /// Offset: 0x0014
     volatile uint16_t PER;
-    uint8_t RESERVED_0016[2]; ///< Reserved
+    uint8_t RESERVED_0016[2];  ///< Reserved
 
     /// MODE0 Compare n Value
     /// Offset: 0x0018
-    volatile uint32_t COMP%s;
+    volatile uint32_t COMP % s;
 
     /// MODE1 Compare n Value
     /// Offset: 0x0018
@@ -158,11 +157,11 @@ struct RTC_Registers {
 
     /// MODE2 Alarm n Value
     /// Offset: 0x0018
-    volatile uint32_t ALARM%s;
+    volatile uint32_t ALARM % s;
 
     /// MODE2 Alarm n Mask
     /// Offset: 0x001C
-    volatile uint8_t MASK%s;
+    volatile uint8_t MASK % s;
 };
 
 static_assert(sizeof(RTC_Registers) >= 29, "RTC_Registers size mismatch");

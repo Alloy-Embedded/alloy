@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::uart0 {
 
 /// UART0 Register Structure
 struct UART0_Registers {
-
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -64,7 +63,7 @@ struct UART0_Registers {
     /// Comparison Register
     /// Offset: 0x0024
     volatile uint32_t CMPR;
-    uint8_t RESERVED_0028[188]; ///< Reserved
+    uint8_t RESERVED_0028[188];  ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4

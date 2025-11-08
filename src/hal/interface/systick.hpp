@@ -6,9 +6,10 @@
 #ifndef ALLOY_HAL_INTERFACE_SYSTICK_HPP
 #define ALLOY_HAL_INTERFACE_SYSTICK_HPP
 
+#include <concepts>
+
 #include "core/error.hpp"
 #include "core/types.hpp"
-#include <concepts>
 
 namespace alloy::hal {
 
@@ -20,8 +21,7 @@ struct SysTickConfig {
     core::u32 tick_frequency_hz;  ///< Desired tick frequency (typically 1MHz for 1us resolution)
 
     /// Constructor with default 1MHz (microsecond precision)
-    constexpr SysTickConfig(core::u32 freq_hz = 1000000)
-        : tick_frequency_hz(freq_hz) {}
+    constexpr SysTickConfig(core::u32 freq_hz = 1000000) : tick_frequency_hz(freq_hz) {}
 };
 
 /// SystemTick device concept
@@ -52,7 +52,7 @@ struct SysTickConfig {
 ///     // 1ms timeout expired
 /// }
 /// @endcode
-template<typename T>
+template <typename T>
 concept SystemTick = requires(T device, const T const_device) {
     /// Initialize SysTick timer
     ///
@@ -86,7 +86,7 @@ concept SystemTick = requires(T device, const T const_device) {
     { T::is_initialized() } -> std::same_as<bool>;
 };
 
-} // namespace alloy::hal
+}  // namespace alloy::hal
 
 /// Global namespace API for convenient access
 ///
@@ -105,7 +105,7 @@ namespace alloy::systick {
 
 // Forward declaration - implemented by platform-specific code
 namespace detail {
-    core::u32 get_micros();
+core::u32 get_micros();
 }
 
 /// Get current time in microseconds
@@ -173,6 +173,6 @@ inline void delay_us(core::u32 delay_us) {
     }
 }
 
-} // namespace alloy::systick
+}  // namespace alloy::systick
 
-#endif // ALLOY_HAL_INTERFACE_SYSTICK_HPP
+#endif  // ALLOY_HAL_INTERFACE_SYSTICK_HPP

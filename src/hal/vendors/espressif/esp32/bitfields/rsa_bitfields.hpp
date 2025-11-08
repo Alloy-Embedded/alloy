@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::rsa {
@@ -19,78 +20,78 @@ using namespace alloy::hal::bitfields;
 
 /// M_PRIME - M_PRIME
 namespace m_prime {
-    /// This register contains M’.
-    /// Position: 0, Width: 8
-    /// Access: read-write
-    using M_PRIME = BitField<0, 8>;
-    constexpr uint32_t M_PRIME_Pos = 0;
-    constexpr uint32_t M_PRIME_Msk = M_PRIME::mask;
+/// This register contains M’.
+/// Position: 0, Width: 8
+/// Access: read-write
+using M_PRIME = BitField<0, 8>;
+constexpr uint32_t M_PRIME_Pos = 0;
+constexpr uint32_t M_PRIME_Msk = M_PRIME::mask;
 
 }  // namespace m_prime
 
 /// MODEXP_MODE - MODEXP_MODE
 namespace modexp_mode {
-    /// This register contains the mode of modular exponentiation.
-    /// Position: 0, Width: 3
-    /// Access: read-write
-    using MODEXP_MODE = BitField<0, 3>;
-    constexpr uint32_t MODEXP_MODE_Pos = 0;
-    constexpr uint32_t MODEXP_MODE_Msk = MODEXP_MODE::mask;
+/// This register contains the mode of modular exponentiation.
+/// Position: 0, Width: 3
+/// Access: read-write
+using MODEXP_MODE = BitField<0, 3>;
+constexpr uint32_t MODEXP_MODE_Pos = 0;
+constexpr uint32_t MODEXP_MODE_Msk = MODEXP_MODE::mask;
 
 }  // namespace modexp_mode
 
 /// MODEXP_START - MODEXP_START
 namespace modexp_start {
-    /// Write 1 to start modular exponentiation.
-    /// Position: 0, Width: 1
-    /// Access: write-only
-    using MODEXP_START = BitField<0, 1>;
-    constexpr uint32_t MODEXP_START_Pos = 0;
-    constexpr uint32_t MODEXP_START_Msk = MODEXP_START::mask;
+/// Write 1 to start modular exponentiation.
+/// Position: 0, Width: 1
+/// Access: write-only
+using MODEXP_START = BitField<0, 1>;
+constexpr uint32_t MODEXP_START_Pos = 0;
+constexpr uint32_t MODEXP_START_Msk = MODEXP_START::mask;
 
 }  // namespace modexp_start
 
 /// MULT_MODE - MULT_MODE
 namespace mult_mode {
-    /// This register contains the mode of modular multiplication and multiplication.
-    /// Position: 0, Width: 4
-    /// Access: read-write
-    using MULT_MODE = BitField<0, 4>;
-    constexpr uint32_t MULT_MODE_Pos = 0;
-    constexpr uint32_t MULT_MODE_Msk = MULT_MODE::mask;
+/// This register contains the mode of modular multiplication and multiplication.
+/// Position: 0, Width: 4
+/// Access: read-write
+using MULT_MODE = BitField<0, 4>;
+constexpr uint32_t MULT_MODE_Pos = 0;
+constexpr uint32_t MULT_MODE_Msk = MULT_MODE::mask;
 
 }  // namespace mult_mode
 
 /// MULT_START - MULT_START
 namespace mult_start {
-    /// Write 1 to start modular multiplication or multiplication.
-    /// Position: 0, Width: 1
-    /// Access: write-only
-    using MULT_START = BitField<0, 1>;
-    constexpr uint32_t MULT_START_Pos = 0;
-    constexpr uint32_t MULT_START_Msk = MULT_START::mask;
+/// Write 1 to start modular multiplication or multiplication.
+/// Position: 0, Width: 1
+/// Access: write-only
+using MULT_START = BitField<0, 1>;
+constexpr uint32_t MULT_START_Pos = 0;
+constexpr uint32_t MULT_START_Msk = MULT_START::mask;
 
 }  // namespace mult_start
 
 /// INTERRUPT - INTERRUPT
 namespace interrupt {
-    /// RSA interrupt status register. Will read 1 once an operation has completed.
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using INTERRUPT = BitField<0, 1>;
-    constexpr uint32_t INTERRUPT_Pos = 0;
-    constexpr uint32_t INTERRUPT_Msk = INTERRUPT::mask;
+/// RSA interrupt status register. Will read 1 once an operation has completed.
+/// Position: 0, Width: 1
+/// Access: read-write
+using INTERRUPT = BitField<0, 1>;
+constexpr uint32_t INTERRUPT_Pos = 0;
+constexpr uint32_t INTERRUPT_Msk = INTERRUPT::mask;
 
 }  // namespace interrupt
 
 /// CLEAN - CLEAN
 namespace clean {
-    /// This bit will read 1 once the memory initialization is completed.
-    /// Position: 0, Width: 1
-    /// Access: read-only
-    using CLEAN = BitField<0, 1>;
-    constexpr uint32_t CLEAN_Pos = 0;
-    constexpr uint32_t CLEAN_Msk = CLEAN::mask;
+/// This bit will read 1 once the memory initialization is completed.
+/// Position: 0, Width: 1
+/// Access: read-only
+using CLEAN = BitField<0, 1>;
+constexpr uint32_t CLEAN_Pos = 0;
+constexpr uint32_t CLEAN_Msk = CLEAN::mask;
 
 }  // namespace clean
 

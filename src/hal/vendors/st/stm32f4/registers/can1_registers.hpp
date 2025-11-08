@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::can1 {
 
 /// CAN1 Register Structure
 struct CAN1_Registers {
-
     /// master control register
     /// Offset: 0x0000
     /// Reset value: 0x00010002
@@ -60,7 +59,7 @@ struct CAN1_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t BTR;
-    uint8_t RESERVED_0020[352]; ///< Reserved
+    uint8_t RESERVED_0020[352];  ///< Reserved
 
     /// TX mailbox identifier register
     /// Offset: 0x0180
@@ -181,7 +180,7 @@ struct CAN1_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t RDH1R;
-    uint8_t RESERVED_01D0[48]; ///< Reserved
+    uint8_t RESERVED_01D0[48];  ///< Reserved
 
     /// filter master register
     /// Offset: 0x0200
@@ -194,28 +193,28 @@ struct CAN1_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t FM1R;
-    uint8_t RESERVED_0208[4]; ///< Reserved
+    uint8_t RESERVED_0208[4];  ///< Reserved
 
     /// filter scale register
     /// Offset: 0x020C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t FS1R;
-    uint8_t RESERVED_0210[4]; ///< Reserved
+    uint8_t RESERVED_0210[4];  ///< Reserved
 
     /// filter FIFO assignment register
     /// Offset: 0x0214
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t FFA1R;
-    uint8_t RESERVED_0218[4]; ///< Reserved
+    uint8_t RESERVED_0218[4];  ///< Reserved
 
     /// filter activation register
     /// Offset: 0x021C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t FA1R;
-    uint8_t RESERVED_0220[32]; ///< Reserved
+    uint8_t RESERVED_0220[32];  ///< Reserved
 
     /// Filter bank 0 register 1
     /// Offset: 0x0240

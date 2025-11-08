@@ -25,9 +25,9 @@ namespace alloy::hal::platform::arm {
  *
  * @tparam SystemClockHz System clock frequency in Hz
  */
-template<uint32_t SystemClockHz>
+template <uint32_t SystemClockHz>
 class SysTick {
-public:
+   public:
     /**
      * @brief Initialize SysTick for continuous operation
      * @param tick_rate_hz Desired tick rate (e.g., 1000 for 1ms ticks)
@@ -84,9 +84,7 @@ public:
      *     SysTick::tick();
      * }
      */
-    static inline void tick() {
-        tick_counter++;
-    }
+    static inline void tick() { tick_counter++; }
 
     /**
      * @brief Get current tick count
@@ -102,25 +100,19 @@ public:
      * @brief Get elapsed time in milliseconds
      * @return Milliseconds since init()
      */
-    static inline uint64_t get_time_ms() {
-        return (get_ticks() * tick_period_us) / 1000;
-    }
+    static inline uint64_t get_time_ms() { return (get_ticks() * tick_period_us) / 1000; }
 
     /**
      * @brief Get elapsed time in microseconds
      * @return Microseconds since init()
      */
-    static inline uint64_t get_time_us() {
-        return get_ticks() * tick_period_us;
-    }
+    static inline uint64_t get_time_us() { return get_ticks() * tick_period_us; }
 
     /**
      * @brief Get elapsed time in seconds
      * @return Seconds since init()
      */
-    static inline uint32_t get_time_s() {
-        return static_cast<uint32_t>(get_time_ms() / 1000);
-    }
+    static inline uint32_t get_time_s() { return static_cast<uint32_t>(get_time_ms() / 1000); }
 
     /**
      * @brief Delay using busy-wait based on tick counter
@@ -143,24 +135,20 @@ public:
      * @brief Get current tick period in microseconds
      * @return Microseconds per tick
      */
-    static inline uint32_t get_tick_period_us() {
-        return tick_period_us;
-    }
+    static inline uint32_t get_tick_period_us() { return tick_period_us; }
 
     /**
      * @brief Reset tick counter to zero
      */
-    static inline void reset() {
-        tick_counter = 0;
-    }
+    static inline void reset() { tick_counter = 0; }
 
-private:
+   private:
     // 64-bit counter - will never overflow in practice
     // At 1000 Hz: overflows after ~584 million years
     static inline volatile uint64_t tick_counter = 0;
 
     // Tick period in microseconds (calculated during init)
-    static inline uint32_t tick_period_us = 1000; // Default 1ms
+    static inline uint32_t tick_period_us = 1000;  // Default 1ms
 };
 
-} // namespace alloy::hal::platform::arm
+}  // namespace alloy::hal::platform::arm

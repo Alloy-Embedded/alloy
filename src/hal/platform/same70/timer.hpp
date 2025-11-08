@@ -26,11 +26,12 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -68,7 +69,7 @@ namespace tc = alloy::hal::atmel::same70::tc0;
  * @brief Timer operating mode
  */
 enum class TimerMode : uint8_t {
-    Capture = 0,  ///< Capture mode (frequency/pulse width measurement)
+    Capture = 0,   ///< Capture mode (frequency/pulse width measurement)
     Waveform = 1,  ///< Waveform generation mode (PWM, pulses)
 };
 
@@ -76,24 +77,24 @@ enum class TimerMode : uint8_t {
  * @brief Timer clock source selection
  */
 enum class TimerClock : uint8_t {
-    MCK_DIV_2 = 0,  ///< MCK/2 (75 MHz)
-    MCK_DIV_8 = 1,  ///< MCK/8 (18.75 MHz)
-    MCK_DIV_32 = 2,  ///< MCK/32 (4.6875 MHz)
+    MCK_DIV_2 = 0,    ///< MCK/2 (75 MHz)
+    MCK_DIV_8 = 1,    ///< MCK/8 (18.75 MHz)
+    MCK_DIV_32 = 2,   ///< MCK/32 (4.6875 MHz)
     MCK_DIV_128 = 3,  ///< MCK/128 (1.171875 MHz)
-    TCLK1 = 4,  ///< External clock 1
-    TCLK2 = 5,  ///< External clock 2
-    XC0 = 6,  ///< External clock 0
-    XC1 = 7,  ///< External clock 1
-    XC2 = 8,  ///< External clock 2
+    TCLK1 = 4,        ///< External clock 1
+    TCLK2 = 5,        ///< External clock 2
+    XC0 = 6,          ///< External clock 0
+    XC1 = 7,          ///< External clock 1
+    XC2 = 8,          ///< External clock 2
 };
 
 /**
  * @brief Waveform generation type
  */
 enum class WaveformType : uint8_t {
-    UpAuto = 0,  ///< Up counting with automatic trigger on RC compare
-    UpDown = 1,  ///< Up/down counting with automatic trigger on RC compare
-    UpReset = 2,  ///< Up counting with trigger on RC compare and reset
+    UpAuto = 0,     ///< Up counting with automatic trigger on RC compare
+    UpDown = 1,     ///< Up/down counting with automatic trigger on RC compare
+    UpReset = 2,    ///< Up counting with trigger on RC compare and reset
     UpDownAlt = 3,  ///< Up/down counting with trigger on RC compare
 };
 
@@ -102,13 +103,13 @@ enum class WaveformType : uint8_t {
  * @brief Timer configuration structure
  */
 struct TimerConfig {
-    TimerMode mode = TimerMode::Waveform;  ///< Operating mode
-    TimerClock clock = TimerClock::MCK_DIV_8;  ///< Clock source
+    TimerMode mode = TimerMode::Waveform;           ///< Operating mode
+    TimerClock clock = TimerClock::MCK_DIV_8;       ///< Clock source
     WaveformType waveform = WaveformType::UpReset;  ///< Waveform type
-    uint32_t period = 1000;  ///< Period (RC register value)
-    uint32_t duty_a = 500;  ///< Duty cycle for output A (RA register)
-    uint32_t duty_b = 500;  ///< Duty cycle for output B (RB register)
-    bool invert_output = false;  ///< Invert output polarity
+    uint32_t period = 1000;                         ///< Period (RC register value)
+    uint32_t duty_a = 500;                          ///< Duty cycle for output A (RA register)
+    uint32_t duty_b = 500;                          ///< Duty cycle for output B (RB register)
+    bool invert_output = false;                     ///< Invert output polarity
 };
 
 /**
@@ -144,7 +145,8 @@ struct TimerConfig {
 template <uint32_t BASE_ADDR, uint8_t CHANNEL, uint32_t IRQ_ID>
 class Timer {
     static_assert(CHANNEL < 3, "TC has 3 channels (0-2)");
-public:
+
+   public:
     // Compile-time constants
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint8_t channel = CHANNEL;
@@ -164,7 +166,8 @@ public:
         // In tests, use the mock hardware pointer
         return ALLOY_TIMER_MOCK_HW();
 #else
-        return reinterpret_cast<volatile alloy::hal::atmel::same70::tc0::TC0_Registers*>(BASE_ADDR + channel_offset);
+        return reinterpret_cast<volatile alloy::hal::atmel::same70::tc0::TC0_Registers*>(
+            BASE_ADDR + channel_offset);
 #endif
     }
 
@@ -223,17 +226,17 @@ public:
 
         // Build CMR based on mode
         uint32_t cmr = 0;
-        
+
         // Clock selection
         cmr = tc::cmr_waveform_mode::TCCLKS::write(cmr, static_cast<uint32_t>(config.clock) & 0x07);
-        
+
         if (config.mode == TimerMode::Waveform) {
             // Waveform mode
             cmr = tc::cmr_waveform_mode::WAVE::set(cmr);
-            
+
             // Waveform selection
             cmr = tc::cmr_waveform_mode::WAVSEL::write(cmr, static_cast<uint32_t>(config.waveform));
-            
+
             // Output configuration for TIOA (RA compare)
             if (config.invert_output) {
                 cmr = tc::cmr_waveform_mode::ACPA::write(cmr, tc::cmr_waveform_mode::acpa::SET);
@@ -242,7 +245,7 @@ public:
                 cmr = tc::cmr_waveform_mode::ACPA::write(cmr, tc::cmr_waveform_mode::acpa::CLEAR);
                 cmr = tc::cmr_waveform_mode::ACPC::write(cmr, tc::cmr_waveform_mode::acpc::SET);
             }
-            
+
             // Output configuration for TIOB (RB compare)
             if (config.invert_output) {
                 cmr = tc::cmr_waveform_mode::BCPB::write(cmr, tc::cmr_waveform_mode::bcpb::SET);
@@ -252,16 +255,16 @@ public:
                 cmr = tc::cmr_waveform_mode::BCPC::write(cmr, tc::cmr_waveform_mode::bcpc::SET);
             }
         }
-        
+
         hw->CMR_WAVEFORM_MODE = cmr;
-        
+
         // Set period (RC)
         hw->RC = config.period;
-        
+
         // Set duty cycles
         hw->RA = config.duty_a;
         hw->RB = config.duty_b;
-        
+
         m_config = config;
 
         return Ok();
@@ -313,7 +316,7 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         hw->RA = duty;
 
         return Ok();
@@ -331,7 +334,7 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         hw->RB = duty;
 
         return Ok();
@@ -349,7 +352,7 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         hw->RC = period;
 
         return Ok();
@@ -381,7 +384,7 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         hw->IER = interrupt_mask;
 
         return Ok();
@@ -391,12 +394,10 @@ public:
      * @brief Check if timer is open
      *
      * @return bool Check if timer is open     */
-    bool isOpen() const {
-        return m_opened;
-    }
+    bool isOpen() const { return m_opened; }
 
-private:
-    bool m_opened = false;  ///< Tracks if peripheral is initialized
+   private:
+    bool m_opened = false;      ///< Tracks if peripheral is initialized
     TimerConfig m_config = {};  ///< Current configuration
 };
 
@@ -441,4 +442,4 @@ using Timer2Ch0 = Timer<TIMER2CH0_BASE, 0, TIMER2CH0_IRQ>;  ///< TC2 Channel 0
 using Timer2Ch1 = Timer<TIMER2CH1_BASE, 1, TIMER2CH1_IRQ>;  ///< TC2 Channel 1
 using Timer2Ch2 = Timer<TIMER2CH2_BASE, 2, TIMER2CH2_IRQ>;  ///< TC2 Channel 2
 
-} // namespace alloy::hal::same70
+}  // namespace alloy::hal::same70

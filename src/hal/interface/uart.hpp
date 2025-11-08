@@ -5,34 +5,28 @@
 #ifndef ALLOY_HAL_INTERFACE_UART_HPP
 #define ALLOY_HAL_INTERFACE_UART_HPP
 
+#include <concepts>
+
 #include "core/error.hpp"
 #include "core/types.hpp"
 #include "core/units.hpp"
-#include <concepts>
 
 namespace alloy::hal {
 
 /// UART data bits configuration
 enum class DataBits : core::u8 {
-    Five  = 5,
-    Six   = 6,
+    Five = 5,
+    Six = 6,
     Seven = 7,
     Eight = 8,
-    Nine  = 9  // Some MCUs support 9-bit mode
+    Nine = 9  // Some MCUs support 9-bit mode
 };
 
 /// UART parity configuration
-enum class Parity : core::u8 {
-    None = 0,
-    Even = 1,
-    Odd  = 2
-};
+enum class Parity : core::u8 { None = 0, Even = 1, Odd = 2 };
 
 /// UART stop bits configuration
-enum class StopBits : core::u8 {
-    One = 1,
-    Two = 2
-};
+enum class StopBits : core::u8 { One = 1, Two = 2 };
 
 /// UART configuration parameters
 ///
@@ -44,18 +38,19 @@ struct UartConfig {
     StopBits stop_bits = StopBits::One;
 
     /// Constructor with default 8N1 configuration
-    constexpr UartConfig(core::BaudRate rate,
-                        DataBits bits = DataBits::Eight,
-                        Parity par = Parity::None,
-                        StopBits stop = StopBits::One)
-        : baud_rate(rate), data_bits(bits), parity(par), stop_bits(stop) {}
+    constexpr UartConfig(core::BaudRate rate, DataBits bits = DataBits::Eight,
+                         Parity par = Parity::None, StopBits stop = StopBits::One)
+        : baud_rate(rate),
+          data_bits(bits),
+          parity(par),
+          stop_bits(stop) {}
 };
 
 /// UART device concept
 ///
 /// Defines the interface that all UART implementations must satisfy.
 /// Uses Result<T, ErrorCode> for all operations that can fail.
-template<typename T>
+template <typename T>
 concept UartDevice = requires(T device, const T const_device, core::u8 byte, UartConfig config) {
     /// Read a single byte from UART
     /// Returns ErrorCode::Timeout if no data available
@@ -76,10 +71,10 @@ concept UartDevice = requires(T device, const T const_device, core::u8 byte, Uar
 /// Type alias for configured UART device
 ///
 /// Wraps a UART device type with compile-time configuration.
-template<typename UartImpl, core::u32 BaudRateValue>
+template <typename UartImpl, core::u32 BaudRateValue>
     requires UartDevice<UartImpl>
 class ConfiguredUart {
-public:
+   public:
     ConfiguredUart() {
         // Configure on construction with compile-time rate
         UartConfig config{core::BaudRate{BaudRateValue}};
@@ -87,19 +82,13 @@ public:
     }
 
     /// Read a byte from UART
-    [[nodiscard]] core::Result<core::u8> read_byte() {
-        return device_.read_byte();
-    }
+    [[nodiscard]] core::Result<core::u8> read_byte() { return device_.read_byte(); }
 
     /// Write a byte to UART
-    [[nodiscard]] core::Result<void> write_byte(core::u8 byte) {
-        return device_.write_byte(byte);
-    }
+    [[nodiscard]] core::Result<void> write_byte(core::u8 byte) { return device_.write_byte(byte); }
 
     /// Check available bytes
-    [[nodiscard]] core::usize available() const {
-        return device_.available();
-    }
+    [[nodiscard]] core::usize available() const { return device_.available(); }
 
     /// Write multiple bytes
     [[nodiscard]] core::Result<void> write(const core::u8* data, core::usize length) {
@@ -124,10 +113,10 @@ public:
         return core::Result<void>::ok();
     }
 
-private:
+   private:
     UartImpl device_;
 };
 
-} // namespace alloy::hal
+}  // namespace alloy::hal
 
-#endif // ALLOY_HAL_INTERFACE_UART_HPP
+#endif  // ALLOY_HAL_INTERFACE_UART_HPP

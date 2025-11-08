@@ -6,12 +6,12 @@
 /// All code compiles to identical assembly as manual bit manipulation!
 
 // Include auto-generated register structures
-#include "../src/hal/vendors/st/stm32f1/stm32f103xx/registers/rcc_registers.hpp"
 #include "../src/hal/vendors/st/stm32f1/stm32f103xx/registers/gpioc_registers.hpp"
+#include "../src/hal/vendors/st/stm32f1/stm32f103xx/registers/rcc_registers.hpp"
 
 // Include auto-generated bitfield definitions
-#include "../src/hal/vendors/st/stm32f1/stm32f103xx/bitfields/rcc_bitfields.hpp"
 #include "../src/hal/vendors/st/stm32f1/stm32f103xx/bitfields/gpioc_bitfields.hpp"
+#include "../src/hal/vendors/st/stm32f1/stm32f103xx/bitfields/rcc_bitfields.hpp"
 
 using namespace alloy::hal::st::stm32f1::stm32f103xx;
 
@@ -84,8 +84,8 @@ void cmsis_style_usage() {
     using namespace rcc::cr;
 
     uint32_t cr = RCC->CR;
-    cr |= (1U << HSEON_Pos);           // Set HSE enable bit
-    cr &= ~HSEBYP_Msk;                 // Clear HSE bypass mask
+    cr |= (1U << HSEON_Pos);  // Set HSE enable bit
+    cr &= ~HSEBYP_Msk;        // Clear HSE bypass mask
     RCC->CR = cr;
 
     // Both styles work - choose what you prefer!

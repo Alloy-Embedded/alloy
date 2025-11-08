@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::rcc {
@@ -19,1733 +20,1733 @@ using namespace alloy::hal::bitfields;
 
 /// CR - clock control register
 namespace cr {
-    /// Internal high-speed clock enable
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using HSION = BitField<0, 1>;
-    constexpr uint32_t HSION_Pos = 0;
-    constexpr uint32_t HSION_Msk = HSION::mask;
+/// Internal high-speed clock enable
+/// Position: 0, Width: 1
+/// Access: read-write
+using HSION = BitField<0, 1>;
+constexpr uint32_t HSION_Pos = 0;
+constexpr uint32_t HSION_Msk = HSION::mask;
 
-    /// Internal high-speed clock ready flag
-    /// Position: 1, Width: 1
-    /// Access: read-only
-    using HSIRDY = BitField<1, 1>;
-    constexpr uint32_t HSIRDY_Pos = 1;
-    constexpr uint32_t HSIRDY_Msk = HSIRDY::mask;
+/// Internal high-speed clock ready flag
+/// Position: 1, Width: 1
+/// Access: read-only
+using HSIRDY = BitField<1, 1>;
+constexpr uint32_t HSIRDY_Pos = 1;
+constexpr uint32_t HSIRDY_Msk = HSIRDY::mask;
 
-    /// Internal high-speed clock trimming
-    /// Position: 3, Width: 5
-    /// Access: read-write
-    using HSITRIM = BitField<3, 5>;
-    constexpr uint32_t HSITRIM_Pos = 3;
-    constexpr uint32_t HSITRIM_Msk = HSITRIM::mask;
+/// Internal high-speed clock trimming
+/// Position: 3, Width: 5
+/// Access: read-write
+using HSITRIM = BitField<3, 5>;
+constexpr uint32_t HSITRIM_Pos = 3;
+constexpr uint32_t HSITRIM_Msk = HSITRIM::mask;
 
-    /// Internal high-speed clock calibration
-    /// Position: 8, Width: 8
-    /// Access: read-only
-    using HSICAL = BitField<8, 8>;
-    constexpr uint32_t HSICAL_Pos = 8;
-    constexpr uint32_t HSICAL_Msk = HSICAL::mask;
+/// Internal high-speed clock calibration
+/// Position: 8, Width: 8
+/// Access: read-only
+using HSICAL = BitField<8, 8>;
+constexpr uint32_t HSICAL_Pos = 8;
+constexpr uint32_t HSICAL_Msk = HSICAL::mask;
 
-    /// HSE clock enable
-    /// Position: 16, Width: 1
-    /// Access: read-write
-    using HSEON = BitField<16, 1>;
-    constexpr uint32_t HSEON_Pos = 16;
-    constexpr uint32_t HSEON_Msk = HSEON::mask;
+/// HSE clock enable
+/// Position: 16, Width: 1
+/// Access: read-write
+using HSEON = BitField<16, 1>;
+constexpr uint32_t HSEON_Pos = 16;
+constexpr uint32_t HSEON_Msk = HSEON::mask;
 
-    /// HSE clock ready flag
-    /// Position: 17, Width: 1
-    /// Access: read-only
-    using HSERDY = BitField<17, 1>;
-    constexpr uint32_t HSERDY_Pos = 17;
-    constexpr uint32_t HSERDY_Msk = HSERDY::mask;
+/// HSE clock ready flag
+/// Position: 17, Width: 1
+/// Access: read-only
+using HSERDY = BitField<17, 1>;
+constexpr uint32_t HSERDY_Pos = 17;
+constexpr uint32_t HSERDY_Msk = HSERDY::mask;
 
-    /// HSE clock bypass
-    /// Position: 18, Width: 1
-    /// Access: read-write
-    using HSEBYP = BitField<18, 1>;
-    constexpr uint32_t HSEBYP_Pos = 18;
-    constexpr uint32_t HSEBYP_Msk = HSEBYP::mask;
+/// HSE clock bypass
+/// Position: 18, Width: 1
+/// Access: read-write
+using HSEBYP = BitField<18, 1>;
+constexpr uint32_t HSEBYP_Pos = 18;
+constexpr uint32_t HSEBYP_Msk = HSEBYP::mask;
 
-    /// Clock security system enable
-    /// Position: 19, Width: 1
-    /// Access: read-write
-    using CSSON = BitField<19, 1>;
-    constexpr uint32_t CSSON_Pos = 19;
-    constexpr uint32_t CSSON_Msk = CSSON::mask;
+/// Clock security system enable
+/// Position: 19, Width: 1
+/// Access: read-write
+using CSSON = BitField<19, 1>;
+constexpr uint32_t CSSON_Pos = 19;
+constexpr uint32_t CSSON_Msk = CSSON::mask;
 
-    /// Main PLL (PLL) enable
-    /// Position: 24, Width: 1
-    /// Access: read-write
-    using PLLON = BitField<24, 1>;
-    constexpr uint32_t PLLON_Pos = 24;
-    constexpr uint32_t PLLON_Msk = PLLON::mask;
+/// Main PLL (PLL) enable
+/// Position: 24, Width: 1
+/// Access: read-write
+using PLLON = BitField<24, 1>;
+constexpr uint32_t PLLON_Pos = 24;
+constexpr uint32_t PLLON_Msk = PLLON::mask;
 
-    /// Main PLL (PLL) clock ready flag
-    /// Position: 25, Width: 1
-    /// Access: read-only
-    using PLLRDY = BitField<25, 1>;
-    constexpr uint32_t PLLRDY_Pos = 25;
-    constexpr uint32_t PLLRDY_Msk = PLLRDY::mask;
+/// Main PLL (PLL) clock ready flag
+/// Position: 25, Width: 1
+/// Access: read-only
+using PLLRDY = BitField<25, 1>;
+constexpr uint32_t PLLRDY_Pos = 25;
+constexpr uint32_t PLLRDY_Msk = PLLRDY::mask;
 
-    /// PLLI2S enable
-    /// Position: 26, Width: 1
-    /// Access: read-write
-    using PLLI2SON = BitField<26, 1>;
-    constexpr uint32_t PLLI2SON_Pos = 26;
-    constexpr uint32_t PLLI2SON_Msk = PLLI2SON::mask;
+/// PLLI2S enable
+/// Position: 26, Width: 1
+/// Access: read-write
+using PLLI2SON = BitField<26, 1>;
+constexpr uint32_t PLLI2SON_Pos = 26;
+constexpr uint32_t PLLI2SON_Msk = PLLI2SON::mask;
 
-    /// PLLI2S clock ready flag
-    /// Position: 27, Width: 1
-    /// Access: read-only
-    using PLLI2SRDY = BitField<27, 1>;
-    constexpr uint32_t PLLI2SRDY_Pos = 27;
-    constexpr uint32_t PLLI2SRDY_Msk = PLLI2SRDY::mask;
+/// PLLI2S clock ready flag
+/// Position: 27, Width: 1
+/// Access: read-only
+using PLLI2SRDY = BitField<27, 1>;
+constexpr uint32_t PLLI2SRDY_Pos = 27;
+constexpr uint32_t PLLI2SRDY_Msk = PLLI2SRDY::mask;
 
 }  // namespace cr
 
 /// PLLCFGR - PLL configuration register
 namespace pllcfgr {
-    /// Division factor for the main PLL (PLL) and audio PLL (PLLI2S) input clock
-    /// Position: 0, Width: 1
-    using PLLM0 = BitField<0, 1>;
-    constexpr uint32_t PLLM0_Pos = 0;
-    constexpr uint32_t PLLM0_Msk = PLLM0::mask;
+/// Division factor for the main PLL (PLL) and audio PLL (PLLI2S) input clock
+/// Position: 0, Width: 1
+using PLLM0 = BitField<0, 1>;
+constexpr uint32_t PLLM0_Pos = 0;
+constexpr uint32_t PLLM0_Msk = PLLM0::mask;
 
-    /// Division factor for the main PLL (PLL) and audio PLL (PLLI2S) input clock
-    /// Position: 1, Width: 1
-    using PLLM1 = BitField<1, 1>;
-    constexpr uint32_t PLLM1_Pos = 1;
-    constexpr uint32_t PLLM1_Msk = PLLM1::mask;
+/// Division factor for the main PLL (PLL) and audio PLL (PLLI2S) input clock
+/// Position: 1, Width: 1
+using PLLM1 = BitField<1, 1>;
+constexpr uint32_t PLLM1_Pos = 1;
+constexpr uint32_t PLLM1_Msk = PLLM1::mask;
 
-    /// Division factor for the main PLL (PLL) and audio PLL (PLLI2S) input clock
-    /// Position: 2, Width: 1
-    using PLLM2 = BitField<2, 1>;
-    constexpr uint32_t PLLM2_Pos = 2;
-    constexpr uint32_t PLLM2_Msk = PLLM2::mask;
+/// Division factor for the main PLL (PLL) and audio PLL (PLLI2S) input clock
+/// Position: 2, Width: 1
+using PLLM2 = BitField<2, 1>;
+constexpr uint32_t PLLM2_Pos = 2;
+constexpr uint32_t PLLM2_Msk = PLLM2::mask;
 
-    /// Division factor for the main PLL (PLL) and audio PLL (PLLI2S) input clock
-    /// Position: 3, Width: 1
-    using PLLM3 = BitField<3, 1>;
-    constexpr uint32_t PLLM3_Pos = 3;
-    constexpr uint32_t PLLM3_Msk = PLLM3::mask;
+/// Division factor for the main PLL (PLL) and audio PLL (PLLI2S) input clock
+/// Position: 3, Width: 1
+using PLLM3 = BitField<3, 1>;
+constexpr uint32_t PLLM3_Pos = 3;
+constexpr uint32_t PLLM3_Msk = PLLM3::mask;
 
-    /// Division factor for the main PLL (PLL) and audio PLL (PLLI2S) input clock
-    /// Position: 4, Width: 1
-    using PLLM4 = BitField<4, 1>;
-    constexpr uint32_t PLLM4_Pos = 4;
-    constexpr uint32_t PLLM4_Msk = PLLM4::mask;
+/// Division factor for the main PLL (PLL) and audio PLL (PLLI2S) input clock
+/// Position: 4, Width: 1
+using PLLM4 = BitField<4, 1>;
+constexpr uint32_t PLLM4_Pos = 4;
+constexpr uint32_t PLLM4_Msk = PLLM4::mask;
 
-    /// Division factor for the main PLL (PLL) and audio PLL (PLLI2S) input clock
-    /// Position: 5, Width: 1
-    using PLLM5 = BitField<5, 1>;
-    constexpr uint32_t PLLM5_Pos = 5;
-    constexpr uint32_t PLLM5_Msk = PLLM5::mask;
+/// Division factor for the main PLL (PLL) and audio PLL (PLLI2S) input clock
+/// Position: 5, Width: 1
+using PLLM5 = BitField<5, 1>;
+constexpr uint32_t PLLM5_Pos = 5;
+constexpr uint32_t PLLM5_Msk = PLLM5::mask;
 
-    /// Main PLL (PLL) multiplication factor for VCO
-    /// Position: 6, Width: 1
-    using PLLN0 = BitField<6, 1>;
-    constexpr uint32_t PLLN0_Pos = 6;
-    constexpr uint32_t PLLN0_Msk = PLLN0::mask;
+/// Main PLL (PLL) multiplication factor for VCO
+/// Position: 6, Width: 1
+using PLLN0 = BitField<6, 1>;
+constexpr uint32_t PLLN0_Pos = 6;
+constexpr uint32_t PLLN0_Msk = PLLN0::mask;
 
-    /// Main PLL (PLL) multiplication factor for VCO
-    /// Position: 7, Width: 1
-    using PLLN1 = BitField<7, 1>;
-    constexpr uint32_t PLLN1_Pos = 7;
-    constexpr uint32_t PLLN1_Msk = PLLN1::mask;
+/// Main PLL (PLL) multiplication factor for VCO
+/// Position: 7, Width: 1
+using PLLN1 = BitField<7, 1>;
+constexpr uint32_t PLLN1_Pos = 7;
+constexpr uint32_t PLLN1_Msk = PLLN1::mask;
 
-    /// Main PLL (PLL) multiplication factor for VCO
-    /// Position: 8, Width: 1
-    using PLLN2 = BitField<8, 1>;
-    constexpr uint32_t PLLN2_Pos = 8;
-    constexpr uint32_t PLLN2_Msk = PLLN2::mask;
+/// Main PLL (PLL) multiplication factor for VCO
+/// Position: 8, Width: 1
+using PLLN2 = BitField<8, 1>;
+constexpr uint32_t PLLN2_Pos = 8;
+constexpr uint32_t PLLN2_Msk = PLLN2::mask;
 
-    /// Main PLL (PLL) multiplication factor for VCO
-    /// Position: 9, Width: 1
-    using PLLN3 = BitField<9, 1>;
-    constexpr uint32_t PLLN3_Pos = 9;
-    constexpr uint32_t PLLN3_Msk = PLLN3::mask;
+/// Main PLL (PLL) multiplication factor for VCO
+/// Position: 9, Width: 1
+using PLLN3 = BitField<9, 1>;
+constexpr uint32_t PLLN3_Pos = 9;
+constexpr uint32_t PLLN3_Msk = PLLN3::mask;
 
-    /// Main PLL (PLL) multiplication factor for VCO
-    /// Position: 10, Width: 1
-    using PLLN4 = BitField<10, 1>;
-    constexpr uint32_t PLLN4_Pos = 10;
-    constexpr uint32_t PLLN4_Msk = PLLN4::mask;
+/// Main PLL (PLL) multiplication factor for VCO
+/// Position: 10, Width: 1
+using PLLN4 = BitField<10, 1>;
+constexpr uint32_t PLLN4_Pos = 10;
+constexpr uint32_t PLLN4_Msk = PLLN4::mask;
 
-    /// Main PLL (PLL) multiplication factor for VCO
-    /// Position: 11, Width: 1
-    using PLLN5 = BitField<11, 1>;
-    constexpr uint32_t PLLN5_Pos = 11;
-    constexpr uint32_t PLLN5_Msk = PLLN5::mask;
+/// Main PLL (PLL) multiplication factor for VCO
+/// Position: 11, Width: 1
+using PLLN5 = BitField<11, 1>;
+constexpr uint32_t PLLN5_Pos = 11;
+constexpr uint32_t PLLN5_Msk = PLLN5::mask;
 
-    /// Main PLL (PLL) multiplication factor for VCO
-    /// Position: 12, Width: 1
-    using PLLN6 = BitField<12, 1>;
-    constexpr uint32_t PLLN6_Pos = 12;
-    constexpr uint32_t PLLN6_Msk = PLLN6::mask;
+/// Main PLL (PLL) multiplication factor for VCO
+/// Position: 12, Width: 1
+using PLLN6 = BitField<12, 1>;
+constexpr uint32_t PLLN6_Pos = 12;
+constexpr uint32_t PLLN6_Msk = PLLN6::mask;
 
-    /// Main PLL (PLL) multiplication factor for VCO
-    /// Position: 13, Width: 1
-    using PLLN7 = BitField<13, 1>;
-    constexpr uint32_t PLLN7_Pos = 13;
-    constexpr uint32_t PLLN7_Msk = PLLN7::mask;
+/// Main PLL (PLL) multiplication factor for VCO
+/// Position: 13, Width: 1
+using PLLN7 = BitField<13, 1>;
+constexpr uint32_t PLLN7_Pos = 13;
+constexpr uint32_t PLLN7_Msk = PLLN7::mask;
 
-    /// Main PLL (PLL) multiplication factor for VCO
-    /// Position: 14, Width: 1
-    using PLLN8 = BitField<14, 1>;
-    constexpr uint32_t PLLN8_Pos = 14;
-    constexpr uint32_t PLLN8_Msk = PLLN8::mask;
+/// Main PLL (PLL) multiplication factor for VCO
+/// Position: 14, Width: 1
+using PLLN8 = BitField<14, 1>;
+constexpr uint32_t PLLN8_Pos = 14;
+constexpr uint32_t PLLN8_Msk = PLLN8::mask;
 
-    /// Main PLL (PLL) division factor for main system clock
-    /// Position: 16, Width: 1
-    using PLLP0 = BitField<16, 1>;
-    constexpr uint32_t PLLP0_Pos = 16;
-    constexpr uint32_t PLLP0_Msk = PLLP0::mask;
+/// Main PLL (PLL) division factor for main system clock
+/// Position: 16, Width: 1
+using PLLP0 = BitField<16, 1>;
+constexpr uint32_t PLLP0_Pos = 16;
+constexpr uint32_t PLLP0_Msk = PLLP0::mask;
 
-    /// Main PLL (PLL) division factor for main system clock
-    /// Position: 17, Width: 1
-    using PLLP1 = BitField<17, 1>;
-    constexpr uint32_t PLLP1_Pos = 17;
-    constexpr uint32_t PLLP1_Msk = PLLP1::mask;
+/// Main PLL (PLL) division factor for main system clock
+/// Position: 17, Width: 1
+using PLLP1 = BitField<17, 1>;
+constexpr uint32_t PLLP1_Pos = 17;
+constexpr uint32_t PLLP1_Msk = PLLP1::mask;
 
-    /// Main PLL(PLL) and audio PLL (PLLI2S) entry clock source
-    /// Position: 22, Width: 1
-    using PLLSRC = BitField<22, 1>;
-    constexpr uint32_t PLLSRC_Pos = 22;
-    constexpr uint32_t PLLSRC_Msk = PLLSRC::mask;
+/// Main PLL(PLL) and audio PLL (PLLI2S) entry clock source
+/// Position: 22, Width: 1
+using PLLSRC = BitField<22, 1>;
+constexpr uint32_t PLLSRC_Pos = 22;
+constexpr uint32_t PLLSRC_Msk = PLLSRC::mask;
 
-    /// Main PLL (PLL) division factor for USB OTG FS, SDIO and random number generator clocks
-    /// Position: 24, Width: 1
-    using PLLQ0 = BitField<24, 1>;
-    constexpr uint32_t PLLQ0_Pos = 24;
-    constexpr uint32_t PLLQ0_Msk = PLLQ0::mask;
+/// Main PLL (PLL) division factor for USB OTG FS, SDIO and random number generator clocks
+/// Position: 24, Width: 1
+using PLLQ0 = BitField<24, 1>;
+constexpr uint32_t PLLQ0_Pos = 24;
+constexpr uint32_t PLLQ0_Msk = PLLQ0::mask;
 
-    /// Main PLL (PLL) division factor for USB OTG FS, SDIO and random number generator clocks
-    /// Position: 25, Width: 1
-    using PLLQ1 = BitField<25, 1>;
-    constexpr uint32_t PLLQ1_Pos = 25;
-    constexpr uint32_t PLLQ1_Msk = PLLQ1::mask;
+/// Main PLL (PLL) division factor for USB OTG FS, SDIO and random number generator clocks
+/// Position: 25, Width: 1
+using PLLQ1 = BitField<25, 1>;
+constexpr uint32_t PLLQ1_Pos = 25;
+constexpr uint32_t PLLQ1_Msk = PLLQ1::mask;
 
-    /// Main PLL (PLL) division factor for USB OTG FS, SDIO and random number generator clocks
-    /// Position: 26, Width: 1
-    using PLLQ2 = BitField<26, 1>;
-    constexpr uint32_t PLLQ2_Pos = 26;
-    constexpr uint32_t PLLQ2_Msk = PLLQ2::mask;
+/// Main PLL (PLL) division factor for USB OTG FS, SDIO and random number generator clocks
+/// Position: 26, Width: 1
+using PLLQ2 = BitField<26, 1>;
+constexpr uint32_t PLLQ2_Pos = 26;
+constexpr uint32_t PLLQ2_Msk = PLLQ2::mask;
 
-    /// Main PLL (PLL) division factor for USB OTG FS, SDIO and random number generator clocks
-    /// Position: 27, Width: 1
-    using PLLQ3 = BitField<27, 1>;
-    constexpr uint32_t PLLQ3_Pos = 27;
-    constexpr uint32_t PLLQ3_Msk = PLLQ3::mask;
+/// Main PLL (PLL) division factor for USB OTG FS, SDIO and random number generator clocks
+/// Position: 27, Width: 1
+using PLLQ3 = BitField<27, 1>;
+constexpr uint32_t PLLQ3_Pos = 27;
+constexpr uint32_t PLLQ3_Msk = PLLQ3::mask;
 
 }  // namespace pllcfgr
 
 /// CFGR - clock configuration register
 namespace cfgr {
-    /// System clock switch
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using SW0 = BitField<0, 1>;
-    constexpr uint32_t SW0_Pos = 0;
-    constexpr uint32_t SW0_Msk = SW0::mask;
+/// System clock switch
+/// Position: 0, Width: 1
+/// Access: read-write
+using SW0 = BitField<0, 1>;
+constexpr uint32_t SW0_Pos = 0;
+constexpr uint32_t SW0_Msk = SW0::mask;
 
-    /// System clock switch
-    /// Position: 1, Width: 1
-    /// Access: read-write
-    using SW1 = BitField<1, 1>;
-    constexpr uint32_t SW1_Pos = 1;
-    constexpr uint32_t SW1_Msk = SW1::mask;
+/// System clock switch
+/// Position: 1, Width: 1
+/// Access: read-write
+using SW1 = BitField<1, 1>;
+constexpr uint32_t SW1_Pos = 1;
+constexpr uint32_t SW1_Msk = SW1::mask;
 
-    /// System clock switch status
-    /// Position: 2, Width: 1
-    /// Access: read-only
-    using SWS0 = BitField<2, 1>;
-    constexpr uint32_t SWS0_Pos = 2;
-    constexpr uint32_t SWS0_Msk = SWS0::mask;
+/// System clock switch status
+/// Position: 2, Width: 1
+/// Access: read-only
+using SWS0 = BitField<2, 1>;
+constexpr uint32_t SWS0_Pos = 2;
+constexpr uint32_t SWS0_Msk = SWS0::mask;
 
-    /// System clock switch status
-    /// Position: 3, Width: 1
-    /// Access: read-only
-    using SWS1 = BitField<3, 1>;
-    constexpr uint32_t SWS1_Pos = 3;
-    constexpr uint32_t SWS1_Msk = SWS1::mask;
+/// System clock switch status
+/// Position: 3, Width: 1
+/// Access: read-only
+using SWS1 = BitField<3, 1>;
+constexpr uint32_t SWS1_Pos = 3;
+constexpr uint32_t SWS1_Msk = SWS1::mask;
 
-    /// AHB prescaler
-    /// Position: 4, Width: 4
-    /// Access: read-write
-    using HPRE = BitField<4, 4>;
-    constexpr uint32_t HPRE_Pos = 4;
-    constexpr uint32_t HPRE_Msk = HPRE::mask;
+/// AHB prescaler
+/// Position: 4, Width: 4
+/// Access: read-write
+using HPRE = BitField<4, 4>;
+constexpr uint32_t HPRE_Pos = 4;
+constexpr uint32_t HPRE_Msk = HPRE::mask;
 
-    /// APB Low speed prescaler (APB1)
-    /// Position: 10, Width: 3
-    /// Access: read-write
-    using PPRE1 = BitField<10, 3>;
-    constexpr uint32_t PPRE1_Pos = 10;
-    constexpr uint32_t PPRE1_Msk = PPRE1::mask;
+/// APB Low speed prescaler (APB1)
+/// Position: 10, Width: 3
+/// Access: read-write
+using PPRE1 = BitField<10, 3>;
+constexpr uint32_t PPRE1_Pos = 10;
+constexpr uint32_t PPRE1_Msk = PPRE1::mask;
 
-    /// APB high-speed prescaler (APB2)
-    /// Position: 13, Width: 3
-    /// Access: read-write
-    using PPRE2 = BitField<13, 3>;
-    constexpr uint32_t PPRE2_Pos = 13;
-    constexpr uint32_t PPRE2_Msk = PPRE2::mask;
+/// APB high-speed prescaler (APB2)
+/// Position: 13, Width: 3
+/// Access: read-write
+using PPRE2 = BitField<13, 3>;
+constexpr uint32_t PPRE2_Pos = 13;
+constexpr uint32_t PPRE2_Msk = PPRE2::mask;
 
-    /// HSE division factor for RTC clock
-    /// Position: 16, Width: 5
-    /// Access: read-write
-    using RTCPRE = BitField<16, 5>;
-    constexpr uint32_t RTCPRE_Pos = 16;
-    constexpr uint32_t RTCPRE_Msk = RTCPRE::mask;
+/// HSE division factor for RTC clock
+/// Position: 16, Width: 5
+/// Access: read-write
+using RTCPRE = BitField<16, 5>;
+constexpr uint32_t RTCPRE_Pos = 16;
+constexpr uint32_t RTCPRE_Msk = RTCPRE::mask;
 
-    /// Microcontroller clock output 1
-    /// Position: 21, Width: 2
-    /// Access: read-write
-    using MCO1 = BitField<21, 2>;
-    constexpr uint32_t MCO1_Pos = 21;
-    constexpr uint32_t MCO1_Msk = MCO1::mask;
+/// Microcontroller clock output 1
+/// Position: 21, Width: 2
+/// Access: read-write
+using MCO1 = BitField<21, 2>;
+constexpr uint32_t MCO1_Pos = 21;
+constexpr uint32_t MCO1_Msk = MCO1::mask;
 
-    /// I2S clock selection
-    /// Position: 23, Width: 1
-    /// Access: read-write
-    using I2SSRC = BitField<23, 1>;
-    constexpr uint32_t I2SSRC_Pos = 23;
-    constexpr uint32_t I2SSRC_Msk = I2SSRC::mask;
+/// I2S clock selection
+/// Position: 23, Width: 1
+/// Access: read-write
+using I2SSRC = BitField<23, 1>;
+constexpr uint32_t I2SSRC_Pos = 23;
+constexpr uint32_t I2SSRC_Msk = I2SSRC::mask;
 
-    /// MCO1 prescaler
-    /// Position: 24, Width: 3
-    /// Access: read-write
-    using MCO1PRE = BitField<24, 3>;
-    constexpr uint32_t MCO1PRE_Pos = 24;
-    constexpr uint32_t MCO1PRE_Msk = MCO1PRE::mask;
+/// MCO1 prescaler
+/// Position: 24, Width: 3
+/// Access: read-write
+using MCO1PRE = BitField<24, 3>;
+constexpr uint32_t MCO1PRE_Pos = 24;
+constexpr uint32_t MCO1PRE_Msk = MCO1PRE::mask;
 
-    /// MCO2 prescaler
-    /// Position: 27, Width: 3
-    /// Access: read-write
-    using MCO2PRE = BitField<27, 3>;
-    constexpr uint32_t MCO2PRE_Pos = 27;
-    constexpr uint32_t MCO2PRE_Msk = MCO2PRE::mask;
+/// MCO2 prescaler
+/// Position: 27, Width: 3
+/// Access: read-write
+using MCO2PRE = BitField<27, 3>;
+constexpr uint32_t MCO2PRE_Pos = 27;
+constexpr uint32_t MCO2PRE_Msk = MCO2PRE::mask;
 
-    /// Microcontroller clock output 2
-    /// Position: 30, Width: 2
-    /// Access: read-write
-    using MCO2 = BitField<30, 2>;
-    constexpr uint32_t MCO2_Pos = 30;
-    constexpr uint32_t MCO2_Msk = MCO2::mask;
+/// Microcontroller clock output 2
+/// Position: 30, Width: 2
+/// Access: read-write
+using MCO2 = BitField<30, 2>;
+constexpr uint32_t MCO2_Pos = 30;
+constexpr uint32_t MCO2_Msk = MCO2::mask;
 
 }  // namespace cfgr
 
 /// CIR - clock interrupt register
 namespace cir {
-    /// LSI ready interrupt flag
-    /// Position: 0, Width: 1
-    /// Access: read-only
-    using LSIRDYF = BitField<0, 1>;
-    constexpr uint32_t LSIRDYF_Pos = 0;
-    constexpr uint32_t LSIRDYF_Msk = LSIRDYF::mask;
+/// LSI ready interrupt flag
+/// Position: 0, Width: 1
+/// Access: read-only
+using LSIRDYF = BitField<0, 1>;
+constexpr uint32_t LSIRDYF_Pos = 0;
+constexpr uint32_t LSIRDYF_Msk = LSIRDYF::mask;
 
-    /// LSE ready interrupt flag
-    /// Position: 1, Width: 1
-    /// Access: read-only
-    using LSERDYF = BitField<1, 1>;
-    constexpr uint32_t LSERDYF_Pos = 1;
-    constexpr uint32_t LSERDYF_Msk = LSERDYF::mask;
+/// LSE ready interrupt flag
+/// Position: 1, Width: 1
+/// Access: read-only
+using LSERDYF = BitField<1, 1>;
+constexpr uint32_t LSERDYF_Pos = 1;
+constexpr uint32_t LSERDYF_Msk = LSERDYF::mask;
 
-    /// HSI ready interrupt flag
-    /// Position: 2, Width: 1
-    /// Access: read-only
-    using HSIRDYF = BitField<2, 1>;
-    constexpr uint32_t HSIRDYF_Pos = 2;
-    constexpr uint32_t HSIRDYF_Msk = HSIRDYF::mask;
+/// HSI ready interrupt flag
+/// Position: 2, Width: 1
+/// Access: read-only
+using HSIRDYF = BitField<2, 1>;
+constexpr uint32_t HSIRDYF_Pos = 2;
+constexpr uint32_t HSIRDYF_Msk = HSIRDYF::mask;
 
-    /// HSE ready interrupt flag
-    /// Position: 3, Width: 1
-    /// Access: read-only
-    using HSERDYF = BitField<3, 1>;
-    constexpr uint32_t HSERDYF_Pos = 3;
-    constexpr uint32_t HSERDYF_Msk = HSERDYF::mask;
+/// HSE ready interrupt flag
+/// Position: 3, Width: 1
+/// Access: read-only
+using HSERDYF = BitField<3, 1>;
+constexpr uint32_t HSERDYF_Pos = 3;
+constexpr uint32_t HSERDYF_Msk = HSERDYF::mask;
 
-    /// Main PLL (PLL) ready interrupt flag
-    /// Position: 4, Width: 1
-    /// Access: read-only
-    using PLLRDYF = BitField<4, 1>;
-    constexpr uint32_t PLLRDYF_Pos = 4;
-    constexpr uint32_t PLLRDYF_Msk = PLLRDYF::mask;
+/// Main PLL (PLL) ready interrupt flag
+/// Position: 4, Width: 1
+/// Access: read-only
+using PLLRDYF = BitField<4, 1>;
+constexpr uint32_t PLLRDYF_Pos = 4;
+constexpr uint32_t PLLRDYF_Msk = PLLRDYF::mask;
 
-    /// PLLI2S ready interrupt flag
-    /// Position: 5, Width: 1
-    /// Access: read-only
-    using PLLI2SRDYF = BitField<5, 1>;
-    constexpr uint32_t PLLI2SRDYF_Pos = 5;
-    constexpr uint32_t PLLI2SRDYF_Msk = PLLI2SRDYF::mask;
+/// PLLI2S ready interrupt flag
+/// Position: 5, Width: 1
+/// Access: read-only
+using PLLI2SRDYF = BitField<5, 1>;
+constexpr uint32_t PLLI2SRDYF_Pos = 5;
+constexpr uint32_t PLLI2SRDYF_Msk = PLLI2SRDYF::mask;
 
-    /// Clock security system interrupt flag
-    /// Position: 7, Width: 1
-    /// Access: read-only
-    using CSSF = BitField<7, 1>;
-    constexpr uint32_t CSSF_Pos = 7;
-    constexpr uint32_t CSSF_Msk = CSSF::mask;
+/// Clock security system interrupt flag
+/// Position: 7, Width: 1
+/// Access: read-only
+using CSSF = BitField<7, 1>;
+constexpr uint32_t CSSF_Pos = 7;
+constexpr uint32_t CSSF_Msk = CSSF::mask;
 
-    /// LSI ready interrupt enable
-    /// Position: 8, Width: 1
-    /// Access: read-write
-    using LSIRDYIE = BitField<8, 1>;
-    constexpr uint32_t LSIRDYIE_Pos = 8;
-    constexpr uint32_t LSIRDYIE_Msk = LSIRDYIE::mask;
+/// LSI ready interrupt enable
+/// Position: 8, Width: 1
+/// Access: read-write
+using LSIRDYIE = BitField<8, 1>;
+constexpr uint32_t LSIRDYIE_Pos = 8;
+constexpr uint32_t LSIRDYIE_Msk = LSIRDYIE::mask;
 
-    /// LSE ready interrupt enable
-    /// Position: 9, Width: 1
-    /// Access: read-write
-    using LSERDYIE = BitField<9, 1>;
-    constexpr uint32_t LSERDYIE_Pos = 9;
-    constexpr uint32_t LSERDYIE_Msk = LSERDYIE::mask;
+/// LSE ready interrupt enable
+/// Position: 9, Width: 1
+/// Access: read-write
+using LSERDYIE = BitField<9, 1>;
+constexpr uint32_t LSERDYIE_Pos = 9;
+constexpr uint32_t LSERDYIE_Msk = LSERDYIE::mask;
 
-    /// HSI ready interrupt enable
-    /// Position: 10, Width: 1
-    /// Access: read-write
-    using HSIRDYIE = BitField<10, 1>;
-    constexpr uint32_t HSIRDYIE_Pos = 10;
-    constexpr uint32_t HSIRDYIE_Msk = HSIRDYIE::mask;
+/// HSI ready interrupt enable
+/// Position: 10, Width: 1
+/// Access: read-write
+using HSIRDYIE = BitField<10, 1>;
+constexpr uint32_t HSIRDYIE_Pos = 10;
+constexpr uint32_t HSIRDYIE_Msk = HSIRDYIE::mask;
 
-    /// HSE ready interrupt enable
-    /// Position: 11, Width: 1
-    /// Access: read-write
-    using HSERDYIE = BitField<11, 1>;
-    constexpr uint32_t HSERDYIE_Pos = 11;
-    constexpr uint32_t HSERDYIE_Msk = HSERDYIE::mask;
+/// HSE ready interrupt enable
+/// Position: 11, Width: 1
+/// Access: read-write
+using HSERDYIE = BitField<11, 1>;
+constexpr uint32_t HSERDYIE_Pos = 11;
+constexpr uint32_t HSERDYIE_Msk = HSERDYIE::mask;
 
-    /// Main PLL (PLL) ready interrupt enable
-    /// Position: 12, Width: 1
-    /// Access: read-write
-    using PLLRDYIE = BitField<12, 1>;
-    constexpr uint32_t PLLRDYIE_Pos = 12;
-    constexpr uint32_t PLLRDYIE_Msk = PLLRDYIE::mask;
+/// Main PLL (PLL) ready interrupt enable
+/// Position: 12, Width: 1
+/// Access: read-write
+using PLLRDYIE = BitField<12, 1>;
+constexpr uint32_t PLLRDYIE_Pos = 12;
+constexpr uint32_t PLLRDYIE_Msk = PLLRDYIE::mask;
 
-    /// PLLI2S ready interrupt enable
-    /// Position: 13, Width: 1
-    /// Access: read-write
-    using PLLI2SRDYIE = BitField<13, 1>;
-    constexpr uint32_t PLLI2SRDYIE_Pos = 13;
-    constexpr uint32_t PLLI2SRDYIE_Msk = PLLI2SRDYIE::mask;
+/// PLLI2S ready interrupt enable
+/// Position: 13, Width: 1
+/// Access: read-write
+using PLLI2SRDYIE = BitField<13, 1>;
+constexpr uint32_t PLLI2SRDYIE_Pos = 13;
+constexpr uint32_t PLLI2SRDYIE_Msk = PLLI2SRDYIE::mask;
 
-    /// LSI ready interrupt clear
-    /// Position: 16, Width: 1
-    /// Access: write-only
-    using LSIRDYC = BitField<16, 1>;
-    constexpr uint32_t LSIRDYC_Pos = 16;
-    constexpr uint32_t LSIRDYC_Msk = LSIRDYC::mask;
+/// LSI ready interrupt clear
+/// Position: 16, Width: 1
+/// Access: write-only
+using LSIRDYC = BitField<16, 1>;
+constexpr uint32_t LSIRDYC_Pos = 16;
+constexpr uint32_t LSIRDYC_Msk = LSIRDYC::mask;
 
-    /// LSE ready interrupt clear
-    /// Position: 17, Width: 1
-    /// Access: write-only
-    using LSERDYC = BitField<17, 1>;
-    constexpr uint32_t LSERDYC_Pos = 17;
-    constexpr uint32_t LSERDYC_Msk = LSERDYC::mask;
+/// LSE ready interrupt clear
+/// Position: 17, Width: 1
+/// Access: write-only
+using LSERDYC = BitField<17, 1>;
+constexpr uint32_t LSERDYC_Pos = 17;
+constexpr uint32_t LSERDYC_Msk = LSERDYC::mask;
 
-    /// HSI ready interrupt clear
-    /// Position: 18, Width: 1
-    /// Access: write-only
-    using HSIRDYC = BitField<18, 1>;
-    constexpr uint32_t HSIRDYC_Pos = 18;
-    constexpr uint32_t HSIRDYC_Msk = HSIRDYC::mask;
+/// HSI ready interrupt clear
+/// Position: 18, Width: 1
+/// Access: write-only
+using HSIRDYC = BitField<18, 1>;
+constexpr uint32_t HSIRDYC_Pos = 18;
+constexpr uint32_t HSIRDYC_Msk = HSIRDYC::mask;
 
-    /// HSE ready interrupt clear
-    /// Position: 19, Width: 1
-    /// Access: write-only
-    using HSERDYC = BitField<19, 1>;
-    constexpr uint32_t HSERDYC_Pos = 19;
-    constexpr uint32_t HSERDYC_Msk = HSERDYC::mask;
+/// HSE ready interrupt clear
+/// Position: 19, Width: 1
+/// Access: write-only
+using HSERDYC = BitField<19, 1>;
+constexpr uint32_t HSERDYC_Pos = 19;
+constexpr uint32_t HSERDYC_Msk = HSERDYC::mask;
 
-    /// Main PLL(PLL) ready interrupt clear
-    /// Position: 20, Width: 1
-    /// Access: write-only
-    using PLLRDYC = BitField<20, 1>;
-    constexpr uint32_t PLLRDYC_Pos = 20;
-    constexpr uint32_t PLLRDYC_Msk = PLLRDYC::mask;
+/// Main PLL(PLL) ready interrupt clear
+/// Position: 20, Width: 1
+/// Access: write-only
+using PLLRDYC = BitField<20, 1>;
+constexpr uint32_t PLLRDYC_Pos = 20;
+constexpr uint32_t PLLRDYC_Msk = PLLRDYC::mask;
 
-    /// PLLI2S ready interrupt clear
-    /// Position: 21, Width: 1
-    /// Access: write-only
-    using PLLI2SRDYC = BitField<21, 1>;
-    constexpr uint32_t PLLI2SRDYC_Pos = 21;
-    constexpr uint32_t PLLI2SRDYC_Msk = PLLI2SRDYC::mask;
+/// PLLI2S ready interrupt clear
+/// Position: 21, Width: 1
+/// Access: write-only
+using PLLI2SRDYC = BitField<21, 1>;
+constexpr uint32_t PLLI2SRDYC_Pos = 21;
+constexpr uint32_t PLLI2SRDYC_Msk = PLLI2SRDYC::mask;
 
-    /// Clock security system interrupt clear
-    /// Position: 23, Width: 1
-    /// Access: write-only
-    using CSSC = BitField<23, 1>;
-    constexpr uint32_t CSSC_Pos = 23;
-    constexpr uint32_t CSSC_Msk = CSSC::mask;
+/// Clock security system interrupt clear
+/// Position: 23, Width: 1
+/// Access: write-only
+using CSSC = BitField<23, 1>;
+constexpr uint32_t CSSC_Pos = 23;
+constexpr uint32_t CSSC_Msk = CSSC::mask;
 
 }  // namespace cir
 
 /// AHB1RSTR - AHB1 peripheral reset register
 namespace ahb1rstr {
-    /// IO port A reset
-    /// Position: 0, Width: 1
-    using GPIOARST = BitField<0, 1>;
-    constexpr uint32_t GPIOARST_Pos = 0;
-    constexpr uint32_t GPIOARST_Msk = GPIOARST::mask;
+/// IO port A reset
+/// Position: 0, Width: 1
+using GPIOARST = BitField<0, 1>;
+constexpr uint32_t GPIOARST_Pos = 0;
+constexpr uint32_t GPIOARST_Msk = GPIOARST::mask;
 
-    /// IO port B reset
-    /// Position: 1, Width: 1
-    using GPIOBRST = BitField<1, 1>;
-    constexpr uint32_t GPIOBRST_Pos = 1;
-    constexpr uint32_t GPIOBRST_Msk = GPIOBRST::mask;
+/// IO port B reset
+/// Position: 1, Width: 1
+using GPIOBRST = BitField<1, 1>;
+constexpr uint32_t GPIOBRST_Pos = 1;
+constexpr uint32_t GPIOBRST_Msk = GPIOBRST::mask;
 
-    /// IO port C reset
-    /// Position: 2, Width: 1
-    using GPIOCRST = BitField<2, 1>;
-    constexpr uint32_t GPIOCRST_Pos = 2;
-    constexpr uint32_t GPIOCRST_Msk = GPIOCRST::mask;
+/// IO port C reset
+/// Position: 2, Width: 1
+using GPIOCRST = BitField<2, 1>;
+constexpr uint32_t GPIOCRST_Pos = 2;
+constexpr uint32_t GPIOCRST_Msk = GPIOCRST::mask;
 
-    /// IO port D reset
-    /// Position: 3, Width: 1
-    using GPIODRST = BitField<3, 1>;
-    constexpr uint32_t GPIODRST_Pos = 3;
-    constexpr uint32_t GPIODRST_Msk = GPIODRST::mask;
+/// IO port D reset
+/// Position: 3, Width: 1
+using GPIODRST = BitField<3, 1>;
+constexpr uint32_t GPIODRST_Pos = 3;
+constexpr uint32_t GPIODRST_Msk = GPIODRST::mask;
 
-    /// IO port E reset
-    /// Position: 4, Width: 1
-    using GPIOERST = BitField<4, 1>;
-    constexpr uint32_t GPIOERST_Pos = 4;
-    constexpr uint32_t GPIOERST_Msk = GPIOERST::mask;
+/// IO port E reset
+/// Position: 4, Width: 1
+using GPIOERST = BitField<4, 1>;
+constexpr uint32_t GPIOERST_Pos = 4;
+constexpr uint32_t GPIOERST_Msk = GPIOERST::mask;
 
-    /// IO port F reset
-    /// Position: 5, Width: 1
-    using GPIOFRST = BitField<5, 1>;
-    constexpr uint32_t GPIOFRST_Pos = 5;
-    constexpr uint32_t GPIOFRST_Msk = GPIOFRST::mask;
+/// IO port F reset
+/// Position: 5, Width: 1
+using GPIOFRST = BitField<5, 1>;
+constexpr uint32_t GPIOFRST_Pos = 5;
+constexpr uint32_t GPIOFRST_Msk = GPIOFRST::mask;
 
-    /// IO port G reset
-    /// Position: 6, Width: 1
-    using GPIOGRST = BitField<6, 1>;
-    constexpr uint32_t GPIOGRST_Pos = 6;
-    constexpr uint32_t GPIOGRST_Msk = GPIOGRST::mask;
+/// IO port G reset
+/// Position: 6, Width: 1
+using GPIOGRST = BitField<6, 1>;
+constexpr uint32_t GPIOGRST_Pos = 6;
+constexpr uint32_t GPIOGRST_Msk = GPIOGRST::mask;
 
-    /// IO port H reset
-    /// Position: 7, Width: 1
-    using GPIOHRST = BitField<7, 1>;
-    constexpr uint32_t GPIOHRST_Pos = 7;
-    constexpr uint32_t GPIOHRST_Msk = GPIOHRST::mask;
+/// IO port H reset
+/// Position: 7, Width: 1
+using GPIOHRST = BitField<7, 1>;
+constexpr uint32_t GPIOHRST_Pos = 7;
+constexpr uint32_t GPIOHRST_Msk = GPIOHRST::mask;
 
-    /// IO port I reset
-    /// Position: 8, Width: 1
-    using GPIOIRST = BitField<8, 1>;
-    constexpr uint32_t GPIOIRST_Pos = 8;
-    constexpr uint32_t GPIOIRST_Msk = GPIOIRST::mask;
+/// IO port I reset
+/// Position: 8, Width: 1
+using GPIOIRST = BitField<8, 1>;
+constexpr uint32_t GPIOIRST_Pos = 8;
+constexpr uint32_t GPIOIRST_Msk = GPIOIRST::mask;
 
-    /// CRC reset
-    /// Position: 12, Width: 1
-    using CRCRST = BitField<12, 1>;
-    constexpr uint32_t CRCRST_Pos = 12;
-    constexpr uint32_t CRCRST_Msk = CRCRST::mask;
+/// CRC reset
+/// Position: 12, Width: 1
+using CRCRST = BitField<12, 1>;
+constexpr uint32_t CRCRST_Pos = 12;
+constexpr uint32_t CRCRST_Msk = CRCRST::mask;
 
-    /// DMA2 reset
-    /// Position: 21, Width: 1
-    using DMA1RST = BitField<21, 1>;
-    constexpr uint32_t DMA1RST_Pos = 21;
-    constexpr uint32_t DMA1RST_Msk = DMA1RST::mask;
+/// DMA2 reset
+/// Position: 21, Width: 1
+using DMA1RST = BitField<21, 1>;
+constexpr uint32_t DMA1RST_Pos = 21;
+constexpr uint32_t DMA1RST_Msk = DMA1RST::mask;
 
-    /// DMA2 reset
-    /// Position: 22, Width: 1
-    using DMA2RST = BitField<22, 1>;
-    constexpr uint32_t DMA2RST_Pos = 22;
-    constexpr uint32_t DMA2RST_Msk = DMA2RST::mask;
+/// DMA2 reset
+/// Position: 22, Width: 1
+using DMA2RST = BitField<22, 1>;
+constexpr uint32_t DMA2RST_Pos = 22;
+constexpr uint32_t DMA2RST_Msk = DMA2RST::mask;
 
-    /// Ethernet MAC reset
-    /// Position: 25, Width: 1
-    using ETHMACRST = BitField<25, 1>;
-    constexpr uint32_t ETHMACRST_Pos = 25;
-    constexpr uint32_t ETHMACRST_Msk = ETHMACRST::mask;
+/// Ethernet MAC reset
+/// Position: 25, Width: 1
+using ETHMACRST = BitField<25, 1>;
+constexpr uint32_t ETHMACRST_Pos = 25;
+constexpr uint32_t ETHMACRST_Msk = ETHMACRST::mask;
 
-    /// USB OTG HS module reset
-    /// Position: 29, Width: 1
-    using OTGHSRST = BitField<29, 1>;
-    constexpr uint32_t OTGHSRST_Pos = 29;
-    constexpr uint32_t OTGHSRST_Msk = OTGHSRST::mask;
+/// USB OTG HS module reset
+/// Position: 29, Width: 1
+using OTGHSRST = BitField<29, 1>;
+constexpr uint32_t OTGHSRST_Pos = 29;
+constexpr uint32_t OTGHSRST_Msk = OTGHSRST::mask;
 
 }  // namespace ahb1rstr
 
 /// AHB2RSTR - AHB2 peripheral reset register
 namespace ahb2rstr {
-    /// Camera interface reset
-    /// Position: 0, Width: 1
-    using DCMIRST = BitField<0, 1>;
-    constexpr uint32_t DCMIRST_Pos = 0;
-    constexpr uint32_t DCMIRST_Msk = DCMIRST::mask;
+/// Camera interface reset
+/// Position: 0, Width: 1
+using DCMIRST = BitField<0, 1>;
+constexpr uint32_t DCMIRST_Pos = 0;
+constexpr uint32_t DCMIRST_Msk = DCMIRST::mask;
 
-    /// Random number generator module reset
-    /// Position: 6, Width: 1
-    using RNGRST = BitField<6, 1>;
-    constexpr uint32_t RNGRST_Pos = 6;
-    constexpr uint32_t RNGRST_Msk = RNGRST::mask;
+/// Random number generator module reset
+/// Position: 6, Width: 1
+using RNGRST = BitField<6, 1>;
+constexpr uint32_t RNGRST_Pos = 6;
+constexpr uint32_t RNGRST_Msk = RNGRST::mask;
 
-    /// USB OTG FS module reset
-    /// Position: 7, Width: 1
-    using OTGFSRST = BitField<7, 1>;
-    constexpr uint32_t OTGFSRST_Pos = 7;
-    constexpr uint32_t OTGFSRST_Msk = OTGFSRST::mask;
+/// USB OTG FS module reset
+/// Position: 7, Width: 1
+using OTGFSRST = BitField<7, 1>;
+constexpr uint32_t OTGFSRST_Pos = 7;
+constexpr uint32_t OTGFSRST_Msk = OTGFSRST::mask;
 
 }  // namespace ahb2rstr
 
 /// AHB3RSTR - AHB3 peripheral reset register
 namespace ahb3rstr {
-    /// Flexible static memory controller module reset
-    /// Position: 0, Width: 1
-    using FSMCRST = BitField<0, 1>;
-    constexpr uint32_t FSMCRST_Pos = 0;
-    constexpr uint32_t FSMCRST_Msk = FSMCRST::mask;
+/// Flexible static memory controller module reset
+/// Position: 0, Width: 1
+using FSMCRST = BitField<0, 1>;
+constexpr uint32_t FSMCRST_Pos = 0;
+constexpr uint32_t FSMCRST_Msk = FSMCRST::mask;
 
 }  // namespace ahb3rstr
 
 /// APB1RSTR - APB1 peripheral reset register
 namespace apb1rstr {
-    /// TIM2 reset
-    /// Position: 0, Width: 1
-    using TIM2RST = BitField<0, 1>;
-    constexpr uint32_t TIM2RST_Pos = 0;
-    constexpr uint32_t TIM2RST_Msk = TIM2RST::mask;
+/// TIM2 reset
+/// Position: 0, Width: 1
+using TIM2RST = BitField<0, 1>;
+constexpr uint32_t TIM2RST_Pos = 0;
+constexpr uint32_t TIM2RST_Msk = TIM2RST::mask;
 
-    /// TIM3 reset
-    /// Position: 1, Width: 1
-    using TIM3RST = BitField<1, 1>;
-    constexpr uint32_t TIM3RST_Pos = 1;
-    constexpr uint32_t TIM3RST_Msk = TIM3RST::mask;
+/// TIM3 reset
+/// Position: 1, Width: 1
+using TIM3RST = BitField<1, 1>;
+constexpr uint32_t TIM3RST_Pos = 1;
+constexpr uint32_t TIM3RST_Msk = TIM3RST::mask;
 
-    /// TIM4 reset
-    /// Position: 2, Width: 1
-    using TIM4RST = BitField<2, 1>;
-    constexpr uint32_t TIM4RST_Pos = 2;
-    constexpr uint32_t TIM4RST_Msk = TIM4RST::mask;
+/// TIM4 reset
+/// Position: 2, Width: 1
+using TIM4RST = BitField<2, 1>;
+constexpr uint32_t TIM4RST_Pos = 2;
+constexpr uint32_t TIM4RST_Msk = TIM4RST::mask;
 
-    /// TIM5 reset
-    /// Position: 3, Width: 1
-    using TIM5RST = BitField<3, 1>;
-    constexpr uint32_t TIM5RST_Pos = 3;
-    constexpr uint32_t TIM5RST_Msk = TIM5RST::mask;
+/// TIM5 reset
+/// Position: 3, Width: 1
+using TIM5RST = BitField<3, 1>;
+constexpr uint32_t TIM5RST_Pos = 3;
+constexpr uint32_t TIM5RST_Msk = TIM5RST::mask;
 
-    /// TIM6 reset
-    /// Position: 4, Width: 1
-    using TIM6RST = BitField<4, 1>;
-    constexpr uint32_t TIM6RST_Pos = 4;
-    constexpr uint32_t TIM6RST_Msk = TIM6RST::mask;
+/// TIM6 reset
+/// Position: 4, Width: 1
+using TIM6RST = BitField<4, 1>;
+constexpr uint32_t TIM6RST_Pos = 4;
+constexpr uint32_t TIM6RST_Msk = TIM6RST::mask;
 
-    /// TIM7 reset
-    /// Position: 5, Width: 1
-    using TIM7RST = BitField<5, 1>;
-    constexpr uint32_t TIM7RST_Pos = 5;
-    constexpr uint32_t TIM7RST_Msk = TIM7RST::mask;
+/// TIM7 reset
+/// Position: 5, Width: 1
+using TIM7RST = BitField<5, 1>;
+constexpr uint32_t TIM7RST_Pos = 5;
+constexpr uint32_t TIM7RST_Msk = TIM7RST::mask;
 
-    /// TIM12 reset
-    /// Position: 6, Width: 1
-    using TIM12RST = BitField<6, 1>;
-    constexpr uint32_t TIM12RST_Pos = 6;
-    constexpr uint32_t TIM12RST_Msk = TIM12RST::mask;
+/// TIM12 reset
+/// Position: 6, Width: 1
+using TIM12RST = BitField<6, 1>;
+constexpr uint32_t TIM12RST_Pos = 6;
+constexpr uint32_t TIM12RST_Msk = TIM12RST::mask;
 
-    /// TIM13 reset
-    /// Position: 7, Width: 1
-    using TIM13RST = BitField<7, 1>;
-    constexpr uint32_t TIM13RST_Pos = 7;
-    constexpr uint32_t TIM13RST_Msk = TIM13RST::mask;
+/// TIM13 reset
+/// Position: 7, Width: 1
+using TIM13RST = BitField<7, 1>;
+constexpr uint32_t TIM13RST_Pos = 7;
+constexpr uint32_t TIM13RST_Msk = TIM13RST::mask;
 
-    /// TIM14 reset
-    /// Position: 8, Width: 1
-    using TIM14RST = BitField<8, 1>;
-    constexpr uint32_t TIM14RST_Pos = 8;
-    constexpr uint32_t TIM14RST_Msk = TIM14RST::mask;
+/// TIM14 reset
+/// Position: 8, Width: 1
+using TIM14RST = BitField<8, 1>;
+constexpr uint32_t TIM14RST_Pos = 8;
+constexpr uint32_t TIM14RST_Msk = TIM14RST::mask;
 
-    /// Window watchdog reset
-    /// Position: 11, Width: 1
-    using WWDGRST = BitField<11, 1>;
-    constexpr uint32_t WWDGRST_Pos = 11;
-    constexpr uint32_t WWDGRST_Msk = WWDGRST::mask;
+/// Window watchdog reset
+/// Position: 11, Width: 1
+using WWDGRST = BitField<11, 1>;
+constexpr uint32_t WWDGRST_Pos = 11;
+constexpr uint32_t WWDGRST_Msk = WWDGRST::mask;
 
-    /// SPI 2 reset
-    /// Position: 14, Width: 1
-    using SPI2RST = BitField<14, 1>;
-    constexpr uint32_t SPI2RST_Pos = 14;
-    constexpr uint32_t SPI2RST_Msk = SPI2RST::mask;
+/// SPI 2 reset
+/// Position: 14, Width: 1
+using SPI2RST = BitField<14, 1>;
+constexpr uint32_t SPI2RST_Pos = 14;
+constexpr uint32_t SPI2RST_Msk = SPI2RST::mask;
 
-    /// SPI 3 reset
-    /// Position: 15, Width: 1
-    using SPI3RST = BitField<15, 1>;
-    constexpr uint32_t SPI3RST_Pos = 15;
-    constexpr uint32_t SPI3RST_Msk = SPI3RST::mask;
+/// SPI 3 reset
+/// Position: 15, Width: 1
+using SPI3RST = BitField<15, 1>;
+constexpr uint32_t SPI3RST_Pos = 15;
+constexpr uint32_t SPI3RST_Msk = SPI3RST::mask;
 
-    /// USART 2 reset
-    /// Position: 17, Width: 1
-    using UART2RST = BitField<17, 1>;
-    constexpr uint32_t UART2RST_Pos = 17;
-    constexpr uint32_t UART2RST_Msk = UART2RST::mask;
+/// USART 2 reset
+/// Position: 17, Width: 1
+using UART2RST = BitField<17, 1>;
+constexpr uint32_t UART2RST_Pos = 17;
+constexpr uint32_t UART2RST_Msk = UART2RST::mask;
 
-    /// USART 3 reset
-    /// Position: 18, Width: 1
-    using UART3RST = BitField<18, 1>;
-    constexpr uint32_t UART3RST_Pos = 18;
-    constexpr uint32_t UART3RST_Msk = UART3RST::mask;
+/// USART 3 reset
+/// Position: 18, Width: 1
+using UART3RST = BitField<18, 1>;
+constexpr uint32_t UART3RST_Pos = 18;
+constexpr uint32_t UART3RST_Msk = UART3RST::mask;
 
-    /// USART 4 reset
-    /// Position: 19, Width: 1
-    using UART4RST = BitField<19, 1>;
-    constexpr uint32_t UART4RST_Pos = 19;
-    constexpr uint32_t UART4RST_Msk = UART4RST::mask;
+/// USART 4 reset
+/// Position: 19, Width: 1
+using UART4RST = BitField<19, 1>;
+constexpr uint32_t UART4RST_Pos = 19;
+constexpr uint32_t UART4RST_Msk = UART4RST::mask;
 
-    /// USART 5 reset
-    /// Position: 20, Width: 1
-    using UART5RST = BitField<20, 1>;
-    constexpr uint32_t UART5RST_Pos = 20;
-    constexpr uint32_t UART5RST_Msk = UART5RST::mask;
+/// USART 5 reset
+/// Position: 20, Width: 1
+using UART5RST = BitField<20, 1>;
+constexpr uint32_t UART5RST_Pos = 20;
+constexpr uint32_t UART5RST_Msk = UART5RST::mask;
 
-    /// I2C 1 reset
-    /// Position: 21, Width: 1
-    using I2C1RST = BitField<21, 1>;
-    constexpr uint32_t I2C1RST_Pos = 21;
-    constexpr uint32_t I2C1RST_Msk = I2C1RST::mask;
+/// I2C 1 reset
+/// Position: 21, Width: 1
+using I2C1RST = BitField<21, 1>;
+constexpr uint32_t I2C1RST_Pos = 21;
+constexpr uint32_t I2C1RST_Msk = I2C1RST::mask;
 
-    /// I2C 2 reset
-    /// Position: 22, Width: 1
-    using I2C2RST = BitField<22, 1>;
-    constexpr uint32_t I2C2RST_Pos = 22;
-    constexpr uint32_t I2C2RST_Msk = I2C2RST::mask;
+/// I2C 2 reset
+/// Position: 22, Width: 1
+using I2C2RST = BitField<22, 1>;
+constexpr uint32_t I2C2RST_Pos = 22;
+constexpr uint32_t I2C2RST_Msk = I2C2RST::mask;
 
-    /// I2C3 reset
-    /// Position: 23, Width: 1
-    using I2C3RST = BitField<23, 1>;
-    constexpr uint32_t I2C3RST_Pos = 23;
-    constexpr uint32_t I2C3RST_Msk = I2C3RST::mask;
+/// I2C3 reset
+/// Position: 23, Width: 1
+using I2C3RST = BitField<23, 1>;
+constexpr uint32_t I2C3RST_Pos = 23;
+constexpr uint32_t I2C3RST_Msk = I2C3RST::mask;
 
-    /// CAN1 reset
-    /// Position: 25, Width: 1
-    using CAN1RST = BitField<25, 1>;
-    constexpr uint32_t CAN1RST_Pos = 25;
-    constexpr uint32_t CAN1RST_Msk = CAN1RST::mask;
+/// CAN1 reset
+/// Position: 25, Width: 1
+using CAN1RST = BitField<25, 1>;
+constexpr uint32_t CAN1RST_Pos = 25;
+constexpr uint32_t CAN1RST_Msk = CAN1RST::mask;
 
-    /// CAN2 reset
-    /// Position: 26, Width: 1
-    using CAN2RST = BitField<26, 1>;
-    constexpr uint32_t CAN2RST_Pos = 26;
-    constexpr uint32_t CAN2RST_Msk = CAN2RST::mask;
+/// CAN2 reset
+/// Position: 26, Width: 1
+using CAN2RST = BitField<26, 1>;
+constexpr uint32_t CAN2RST_Pos = 26;
+constexpr uint32_t CAN2RST_Msk = CAN2RST::mask;
 
-    /// Power interface reset
-    /// Position: 28, Width: 1
-    using PWRRST = BitField<28, 1>;
-    constexpr uint32_t PWRRST_Pos = 28;
-    constexpr uint32_t PWRRST_Msk = PWRRST::mask;
+/// Power interface reset
+/// Position: 28, Width: 1
+using PWRRST = BitField<28, 1>;
+constexpr uint32_t PWRRST_Pos = 28;
+constexpr uint32_t PWRRST_Msk = PWRRST::mask;
 
-    /// DAC reset
-    /// Position: 29, Width: 1
-    using DACRST = BitField<29, 1>;
-    constexpr uint32_t DACRST_Pos = 29;
-    constexpr uint32_t DACRST_Msk = DACRST::mask;
+/// DAC reset
+/// Position: 29, Width: 1
+using DACRST = BitField<29, 1>;
+constexpr uint32_t DACRST_Pos = 29;
+constexpr uint32_t DACRST_Msk = DACRST::mask;
 
 }  // namespace apb1rstr
 
 /// APB2RSTR - APB2 peripheral reset register
 namespace apb2rstr {
-    /// TIM1 reset
-    /// Position: 0, Width: 1
-    using TIM1RST = BitField<0, 1>;
-    constexpr uint32_t TIM1RST_Pos = 0;
-    constexpr uint32_t TIM1RST_Msk = TIM1RST::mask;
+/// TIM1 reset
+/// Position: 0, Width: 1
+using TIM1RST = BitField<0, 1>;
+constexpr uint32_t TIM1RST_Pos = 0;
+constexpr uint32_t TIM1RST_Msk = TIM1RST::mask;
 
-    /// TIM8 reset
-    /// Position: 1, Width: 1
-    using TIM8RST = BitField<1, 1>;
-    constexpr uint32_t TIM8RST_Pos = 1;
-    constexpr uint32_t TIM8RST_Msk = TIM8RST::mask;
+/// TIM8 reset
+/// Position: 1, Width: 1
+using TIM8RST = BitField<1, 1>;
+constexpr uint32_t TIM8RST_Pos = 1;
+constexpr uint32_t TIM8RST_Msk = TIM8RST::mask;
 
-    /// USART1 reset
-    /// Position: 4, Width: 1
-    using USART1RST = BitField<4, 1>;
-    constexpr uint32_t USART1RST_Pos = 4;
-    constexpr uint32_t USART1RST_Msk = USART1RST::mask;
+/// USART1 reset
+/// Position: 4, Width: 1
+using USART1RST = BitField<4, 1>;
+constexpr uint32_t USART1RST_Pos = 4;
+constexpr uint32_t USART1RST_Msk = USART1RST::mask;
 
-    /// USART6 reset
-    /// Position: 5, Width: 1
-    using USART6RST = BitField<5, 1>;
-    constexpr uint32_t USART6RST_Pos = 5;
-    constexpr uint32_t USART6RST_Msk = USART6RST::mask;
+/// USART6 reset
+/// Position: 5, Width: 1
+using USART6RST = BitField<5, 1>;
+constexpr uint32_t USART6RST_Pos = 5;
+constexpr uint32_t USART6RST_Msk = USART6RST::mask;
 
-    /// ADC interface reset (common to all ADCs)
-    /// Position: 8, Width: 1
-    using ADCRST = BitField<8, 1>;
-    constexpr uint32_t ADCRST_Pos = 8;
-    constexpr uint32_t ADCRST_Msk = ADCRST::mask;
+/// ADC interface reset (common to all ADCs)
+/// Position: 8, Width: 1
+using ADCRST = BitField<8, 1>;
+constexpr uint32_t ADCRST_Pos = 8;
+constexpr uint32_t ADCRST_Msk = ADCRST::mask;
 
-    /// SDIO reset
-    /// Position: 11, Width: 1
-    using SDIORST = BitField<11, 1>;
-    constexpr uint32_t SDIORST_Pos = 11;
-    constexpr uint32_t SDIORST_Msk = SDIORST::mask;
+/// SDIO reset
+/// Position: 11, Width: 1
+using SDIORST = BitField<11, 1>;
+constexpr uint32_t SDIORST_Pos = 11;
+constexpr uint32_t SDIORST_Msk = SDIORST::mask;
 
-    /// SPI 1 reset
-    /// Position: 12, Width: 1
-    using SPI1RST = BitField<12, 1>;
-    constexpr uint32_t SPI1RST_Pos = 12;
-    constexpr uint32_t SPI1RST_Msk = SPI1RST::mask;
+/// SPI 1 reset
+/// Position: 12, Width: 1
+using SPI1RST = BitField<12, 1>;
+constexpr uint32_t SPI1RST_Pos = 12;
+constexpr uint32_t SPI1RST_Msk = SPI1RST::mask;
 
-    /// System configuration controller reset
-    /// Position: 14, Width: 1
-    using SYSCFGRST = BitField<14, 1>;
-    constexpr uint32_t SYSCFGRST_Pos = 14;
-    constexpr uint32_t SYSCFGRST_Msk = SYSCFGRST::mask;
+/// System configuration controller reset
+/// Position: 14, Width: 1
+using SYSCFGRST = BitField<14, 1>;
+constexpr uint32_t SYSCFGRST_Pos = 14;
+constexpr uint32_t SYSCFGRST_Msk = SYSCFGRST::mask;
 
-    /// TIM9 reset
-    /// Position: 16, Width: 1
-    using TIM9RST = BitField<16, 1>;
-    constexpr uint32_t TIM9RST_Pos = 16;
-    constexpr uint32_t TIM9RST_Msk = TIM9RST::mask;
+/// TIM9 reset
+/// Position: 16, Width: 1
+using TIM9RST = BitField<16, 1>;
+constexpr uint32_t TIM9RST_Pos = 16;
+constexpr uint32_t TIM9RST_Msk = TIM9RST::mask;
 
-    /// TIM10 reset
-    /// Position: 17, Width: 1
-    using TIM10RST = BitField<17, 1>;
-    constexpr uint32_t TIM10RST_Pos = 17;
-    constexpr uint32_t TIM10RST_Msk = TIM10RST::mask;
+/// TIM10 reset
+/// Position: 17, Width: 1
+using TIM10RST = BitField<17, 1>;
+constexpr uint32_t TIM10RST_Pos = 17;
+constexpr uint32_t TIM10RST_Msk = TIM10RST::mask;
 
-    /// TIM11 reset
-    /// Position: 18, Width: 1
-    using TIM11RST = BitField<18, 1>;
-    constexpr uint32_t TIM11RST_Pos = 18;
-    constexpr uint32_t TIM11RST_Msk = TIM11RST::mask;
+/// TIM11 reset
+/// Position: 18, Width: 1
+using TIM11RST = BitField<18, 1>;
+constexpr uint32_t TIM11RST_Pos = 18;
+constexpr uint32_t TIM11RST_Msk = TIM11RST::mask;
 
 }  // namespace apb2rstr
 
 /// AHB1ENR - AHB1 peripheral clock register
 namespace ahb1enr {
-    /// IO port A clock enable
-    /// Position: 0, Width: 1
-    using GPIOAEN = BitField<0, 1>;
-    constexpr uint32_t GPIOAEN_Pos = 0;
-    constexpr uint32_t GPIOAEN_Msk = GPIOAEN::mask;
+/// IO port A clock enable
+/// Position: 0, Width: 1
+using GPIOAEN = BitField<0, 1>;
+constexpr uint32_t GPIOAEN_Pos = 0;
+constexpr uint32_t GPIOAEN_Msk = GPIOAEN::mask;
 
-    /// IO port B clock enable
-    /// Position: 1, Width: 1
-    using GPIOBEN = BitField<1, 1>;
-    constexpr uint32_t GPIOBEN_Pos = 1;
-    constexpr uint32_t GPIOBEN_Msk = GPIOBEN::mask;
+/// IO port B clock enable
+/// Position: 1, Width: 1
+using GPIOBEN = BitField<1, 1>;
+constexpr uint32_t GPIOBEN_Pos = 1;
+constexpr uint32_t GPIOBEN_Msk = GPIOBEN::mask;
 
-    /// IO port C clock enable
-    /// Position: 2, Width: 1
-    using GPIOCEN = BitField<2, 1>;
-    constexpr uint32_t GPIOCEN_Pos = 2;
-    constexpr uint32_t GPIOCEN_Msk = GPIOCEN::mask;
+/// IO port C clock enable
+/// Position: 2, Width: 1
+using GPIOCEN = BitField<2, 1>;
+constexpr uint32_t GPIOCEN_Pos = 2;
+constexpr uint32_t GPIOCEN_Msk = GPIOCEN::mask;
 
-    /// IO port D clock enable
-    /// Position: 3, Width: 1
-    using GPIODEN = BitField<3, 1>;
-    constexpr uint32_t GPIODEN_Pos = 3;
-    constexpr uint32_t GPIODEN_Msk = GPIODEN::mask;
+/// IO port D clock enable
+/// Position: 3, Width: 1
+using GPIODEN = BitField<3, 1>;
+constexpr uint32_t GPIODEN_Pos = 3;
+constexpr uint32_t GPIODEN_Msk = GPIODEN::mask;
 
-    /// IO port E clock enable
-    /// Position: 4, Width: 1
-    using GPIOEEN = BitField<4, 1>;
-    constexpr uint32_t GPIOEEN_Pos = 4;
-    constexpr uint32_t GPIOEEN_Msk = GPIOEEN::mask;
+/// IO port E clock enable
+/// Position: 4, Width: 1
+using GPIOEEN = BitField<4, 1>;
+constexpr uint32_t GPIOEEN_Pos = 4;
+constexpr uint32_t GPIOEEN_Msk = GPIOEEN::mask;
 
-    /// IO port F clock enable
-    /// Position: 5, Width: 1
-    using GPIOFEN = BitField<5, 1>;
-    constexpr uint32_t GPIOFEN_Pos = 5;
-    constexpr uint32_t GPIOFEN_Msk = GPIOFEN::mask;
+/// IO port F clock enable
+/// Position: 5, Width: 1
+using GPIOFEN = BitField<5, 1>;
+constexpr uint32_t GPIOFEN_Pos = 5;
+constexpr uint32_t GPIOFEN_Msk = GPIOFEN::mask;
 
-    /// IO port G clock enable
-    /// Position: 6, Width: 1
-    using GPIOGEN = BitField<6, 1>;
-    constexpr uint32_t GPIOGEN_Pos = 6;
-    constexpr uint32_t GPIOGEN_Msk = GPIOGEN::mask;
+/// IO port G clock enable
+/// Position: 6, Width: 1
+using GPIOGEN = BitField<6, 1>;
+constexpr uint32_t GPIOGEN_Pos = 6;
+constexpr uint32_t GPIOGEN_Msk = GPIOGEN::mask;
 
-    /// IO port H clock enable
-    /// Position: 7, Width: 1
-    using GPIOHEN = BitField<7, 1>;
-    constexpr uint32_t GPIOHEN_Pos = 7;
-    constexpr uint32_t GPIOHEN_Msk = GPIOHEN::mask;
+/// IO port H clock enable
+/// Position: 7, Width: 1
+using GPIOHEN = BitField<7, 1>;
+constexpr uint32_t GPIOHEN_Pos = 7;
+constexpr uint32_t GPIOHEN_Msk = GPIOHEN::mask;
 
-    /// IO port I clock enable
-    /// Position: 8, Width: 1
-    using GPIOIEN = BitField<8, 1>;
-    constexpr uint32_t GPIOIEN_Pos = 8;
-    constexpr uint32_t GPIOIEN_Msk = GPIOIEN::mask;
+/// IO port I clock enable
+/// Position: 8, Width: 1
+using GPIOIEN = BitField<8, 1>;
+constexpr uint32_t GPIOIEN_Pos = 8;
+constexpr uint32_t GPIOIEN_Msk = GPIOIEN::mask;
 
-    /// CRC clock enable
-    /// Position: 12, Width: 1
-    using CRCEN = BitField<12, 1>;
-    constexpr uint32_t CRCEN_Pos = 12;
-    constexpr uint32_t CRCEN_Msk = CRCEN::mask;
+/// CRC clock enable
+/// Position: 12, Width: 1
+using CRCEN = BitField<12, 1>;
+constexpr uint32_t CRCEN_Pos = 12;
+constexpr uint32_t CRCEN_Msk = CRCEN::mask;
 
-    /// Backup SRAM interface clock enable
-    /// Position: 18, Width: 1
-    using BKPSRAMEN = BitField<18, 1>;
-    constexpr uint32_t BKPSRAMEN_Pos = 18;
-    constexpr uint32_t BKPSRAMEN_Msk = BKPSRAMEN::mask;
+/// Backup SRAM interface clock enable
+/// Position: 18, Width: 1
+using BKPSRAMEN = BitField<18, 1>;
+constexpr uint32_t BKPSRAMEN_Pos = 18;
+constexpr uint32_t BKPSRAMEN_Msk = BKPSRAMEN::mask;
 
-    /// DMA1 clock enable
-    /// Position: 21, Width: 1
-    using DMA1EN = BitField<21, 1>;
-    constexpr uint32_t DMA1EN_Pos = 21;
-    constexpr uint32_t DMA1EN_Msk = DMA1EN::mask;
+/// DMA1 clock enable
+/// Position: 21, Width: 1
+using DMA1EN = BitField<21, 1>;
+constexpr uint32_t DMA1EN_Pos = 21;
+constexpr uint32_t DMA1EN_Msk = DMA1EN::mask;
 
-    /// DMA2 clock enable
-    /// Position: 22, Width: 1
-    using DMA2EN = BitField<22, 1>;
-    constexpr uint32_t DMA2EN_Pos = 22;
-    constexpr uint32_t DMA2EN_Msk = DMA2EN::mask;
+/// DMA2 clock enable
+/// Position: 22, Width: 1
+using DMA2EN = BitField<22, 1>;
+constexpr uint32_t DMA2EN_Pos = 22;
+constexpr uint32_t DMA2EN_Msk = DMA2EN::mask;
 
-    /// Ethernet MAC clock enable
-    /// Position: 25, Width: 1
-    using ETHMACEN = BitField<25, 1>;
-    constexpr uint32_t ETHMACEN_Pos = 25;
-    constexpr uint32_t ETHMACEN_Msk = ETHMACEN::mask;
+/// Ethernet MAC clock enable
+/// Position: 25, Width: 1
+using ETHMACEN = BitField<25, 1>;
+constexpr uint32_t ETHMACEN_Pos = 25;
+constexpr uint32_t ETHMACEN_Msk = ETHMACEN::mask;
 
-    /// Ethernet Transmission clock enable
-    /// Position: 26, Width: 1
-    using ETHMACTXEN = BitField<26, 1>;
-    constexpr uint32_t ETHMACTXEN_Pos = 26;
-    constexpr uint32_t ETHMACTXEN_Msk = ETHMACTXEN::mask;
+/// Ethernet Transmission clock enable
+/// Position: 26, Width: 1
+using ETHMACTXEN = BitField<26, 1>;
+constexpr uint32_t ETHMACTXEN_Pos = 26;
+constexpr uint32_t ETHMACTXEN_Msk = ETHMACTXEN::mask;
 
-    /// Ethernet Reception clock enable
-    /// Position: 27, Width: 1
-    using ETHMACRXEN = BitField<27, 1>;
-    constexpr uint32_t ETHMACRXEN_Pos = 27;
-    constexpr uint32_t ETHMACRXEN_Msk = ETHMACRXEN::mask;
+/// Ethernet Reception clock enable
+/// Position: 27, Width: 1
+using ETHMACRXEN = BitField<27, 1>;
+constexpr uint32_t ETHMACRXEN_Pos = 27;
+constexpr uint32_t ETHMACRXEN_Msk = ETHMACRXEN::mask;
 
-    /// Ethernet PTP clock enable
-    /// Position: 28, Width: 1
-    using ETHMACPTPEN = BitField<28, 1>;
-    constexpr uint32_t ETHMACPTPEN_Pos = 28;
-    constexpr uint32_t ETHMACPTPEN_Msk = ETHMACPTPEN::mask;
+/// Ethernet PTP clock enable
+/// Position: 28, Width: 1
+using ETHMACPTPEN = BitField<28, 1>;
+constexpr uint32_t ETHMACPTPEN_Pos = 28;
+constexpr uint32_t ETHMACPTPEN_Msk = ETHMACPTPEN::mask;
 
-    /// USB OTG HS clock enable
-    /// Position: 29, Width: 1
-    using OTGHSEN = BitField<29, 1>;
-    constexpr uint32_t OTGHSEN_Pos = 29;
-    constexpr uint32_t OTGHSEN_Msk = OTGHSEN::mask;
+/// USB OTG HS clock enable
+/// Position: 29, Width: 1
+using OTGHSEN = BitField<29, 1>;
+constexpr uint32_t OTGHSEN_Pos = 29;
+constexpr uint32_t OTGHSEN_Msk = OTGHSEN::mask;
 
-    /// USB OTG HSULPI clock enable
-    /// Position: 30, Width: 1
-    using OTGHSULPIEN = BitField<30, 1>;
-    constexpr uint32_t OTGHSULPIEN_Pos = 30;
-    constexpr uint32_t OTGHSULPIEN_Msk = OTGHSULPIEN::mask;
+/// USB OTG HSULPI clock enable
+/// Position: 30, Width: 1
+using OTGHSULPIEN = BitField<30, 1>;
+constexpr uint32_t OTGHSULPIEN_Pos = 30;
+constexpr uint32_t OTGHSULPIEN_Msk = OTGHSULPIEN::mask;
 
 }  // namespace ahb1enr
 
 /// AHB2ENR - AHB2 peripheral clock enable register
 namespace ahb2enr {
-    /// Camera interface enable
-    /// Position: 0, Width: 1
-    using DCMIEN = BitField<0, 1>;
-    constexpr uint32_t DCMIEN_Pos = 0;
-    constexpr uint32_t DCMIEN_Msk = DCMIEN::mask;
+/// Camera interface enable
+/// Position: 0, Width: 1
+using DCMIEN = BitField<0, 1>;
+constexpr uint32_t DCMIEN_Pos = 0;
+constexpr uint32_t DCMIEN_Msk = DCMIEN::mask;
 
-    /// Random number generator clock enable
-    /// Position: 6, Width: 1
-    using RNGEN = BitField<6, 1>;
-    constexpr uint32_t RNGEN_Pos = 6;
-    constexpr uint32_t RNGEN_Msk = RNGEN::mask;
+/// Random number generator clock enable
+/// Position: 6, Width: 1
+using RNGEN = BitField<6, 1>;
+constexpr uint32_t RNGEN_Pos = 6;
+constexpr uint32_t RNGEN_Msk = RNGEN::mask;
 
-    /// USB OTG FS clock enable
-    /// Position: 7, Width: 1
-    using OTGFSEN = BitField<7, 1>;
-    constexpr uint32_t OTGFSEN_Pos = 7;
-    constexpr uint32_t OTGFSEN_Msk = OTGFSEN::mask;
+/// USB OTG FS clock enable
+/// Position: 7, Width: 1
+using OTGFSEN = BitField<7, 1>;
+constexpr uint32_t OTGFSEN_Pos = 7;
+constexpr uint32_t OTGFSEN_Msk = OTGFSEN::mask;
 
 }  // namespace ahb2enr
 
 /// AHB3ENR - AHB3 peripheral clock enable register
 namespace ahb3enr {
-    /// Flexible static memory controller module clock enable
-    /// Position: 0, Width: 1
-    using FSMCEN = BitField<0, 1>;
-    constexpr uint32_t FSMCEN_Pos = 0;
-    constexpr uint32_t FSMCEN_Msk = FSMCEN::mask;
+/// Flexible static memory controller module clock enable
+/// Position: 0, Width: 1
+using FSMCEN = BitField<0, 1>;
+constexpr uint32_t FSMCEN_Pos = 0;
+constexpr uint32_t FSMCEN_Msk = FSMCEN::mask;
 
 }  // namespace ahb3enr
 
 /// APB1ENR - APB1 peripheral clock enable register
 namespace apb1enr {
-    /// TIM2 clock enable
-    /// Position: 0, Width: 1
-    using TIM2EN = BitField<0, 1>;
-    constexpr uint32_t TIM2EN_Pos = 0;
-    constexpr uint32_t TIM2EN_Msk = TIM2EN::mask;
+/// TIM2 clock enable
+/// Position: 0, Width: 1
+using TIM2EN = BitField<0, 1>;
+constexpr uint32_t TIM2EN_Pos = 0;
+constexpr uint32_t TIM2EN_Msk = TIM2EN::mask;
 
-    /// TIM3 clock enable
-    /// Position: 1, Width: 1
-    using TIM3EN = BitField<1, 1>;
-    constexpr uint32_t TIM3EN_Pos = 1;
-    constexpr uint32_t TIM3EN_Msk = TIM3EN::mask;
+/// TIM3 clock enable
+/// Position: 1, Width: 1
+using TIM3EN = BitField<1, 1>;
+constexpr uint32_t TIM3EN_Pos = 1;
+constexpr uint32_t TIM3EN_Msk = TIM3EN::mask;
 
-    /// TIM4 clock enable
-    /// Position: 2, Width: 1
-    using TIM4EN = BitField<2, 1>;
-    constexpr uint32_t TIM4EN_Pos = 2;
-    constexpr uint32_t TIM4EN_Msk = TIM4EN::mask;
+/// TIM4 clock enable
+/// Position: 2, Width: 1
+using TIM4EN = BitField<2, 1>;
+constexpr uint32_t TIM4EN_Pos = 2;
+constexpr uint32_t TIM4EN_Msk = TIM4EN::mask;
 
-    /// TIM5 clock enable
-    /// Position: 3, Width: 1
-    using TIM5EN = BitField<3, 1>;
-    constexpr uint32_t TIM5EN_Pos = 3;
-    constexpr uint32_t TIM5EN_Msk = TIM5EN::mask;
+/// TIM5 clock enable
+/// Position: 3, Width: 1
+using TIM5EN = BitField<3, 1>;
+constexpr uint32_t TIM5EN_Pos = 3;
+constexpr uint32_t TIM5EN_Msk = TIM5EN::mask;
 
-    /// TIM6 clock enable
-    /// Position: 4, Width: 1
-    using TIM6EN = BitField<4, 1>;
-    constexpr uint32_t TIM6EN_Pos = 4;
-    constexpr uint32_t TIM6EN_Msk = TIM6EN::mask;
+/// TIM6 clock enable
+/// Position: 4, Width: 1
+using TIM6EN = BitField<4, 1>;
+constexpr uint32_t TIM6EN_Pos = 4;
+constexpr uint32_t TIM6EN_Msk = TIM6EN::mask;
 
-    /// TIM7 clock enable
-    /// Position: 5, Width: 1
-    using TIM7EN = BitField<5, 1>;
-    constexpr uint32_t TIM7EN_Pos = 5;
-    constexpr uint32_t TIM7EN_Msk = TIM7EN::mask;
+/// TIM7 clock enable
+/// Position: 5, Width: 1
+using TIM7EN = BitField<5, 1>;
+constexpr uint32_t TIM7EN_Pos = 5;
+constexpr uint32_t TIM7EN_Msk = TIM7EN::mask;
 
-    /// TIM12 clock enable
-    /// Position: 6, Width: 1
-    using TIM12EN = BitField<6, 1>;
-    constexpr uint32_t TIM12EN_Pos = 6;
-    constexpr uint32_t TIM12EN_Msk = TIM12EN::mask;
+/// TIM12 clock enable
+/// Position: 6, Width: 1
+using TIM12EN = BitField<6, 1>;
+constexpr uint32_t TIM12EN_Pos = 6;
+constexpr uint32_t TIM12EN_Msk = TIM12EN::mask;
 
-    /// TIM13 clock enable
-    /// Position: 7, Width: 1
-    using TIM13EN = BitField<7, 1>;
-    constexpr uint32_t TIM13EN_Pos = 7;
-    constexpr uint32_t TIM13EN_Msk = TIM13EN::mask;
+/// TIM13 clock enable
+/// Position: 7, Width: 1
+using TIM13EN = BitField<7, 1>;
+constexpr uint32_t TIM13EN_Pos = 7;
+constexpr uint32_t TIM13EN_Msk = TIM13EN::mask;
 
-    /// TIM14 clock enable
-    /// Position: 8, Width: 1
-    using TIM14EN = BitField<8, 1>;
-    constexpr uint32_t TIM14EN_Pos = 8;
-    constexpr uint32_t TIM14EN_Msk = TIM14EN::mask;
+/// TIM14 clock enable
+/// Position: 8, Width: 1
+using TIM14EN = BitField<8, 1>;
+constexpr uint32_t TIM14EN_Pos = 8;
+constexpr uint32_t TIM14EN_Msk = TIM14EN::mask;
 
-    /// Window watchdog clock enable
-    /// Position: 11, Width: 1
-    using WWDGEN = BitField<11, 1>;
-    constexpr uint32_t WWDGEN_Pos = 11;
-    constexpr uint32_t WWDGEN_Msk = WWDGEN::mask;
+/// Window watchdog clock enable
+/// Position: 11, Width: 1
+using WWDGEN = BitField<11, 1>;
+constexpr uint32_t WWDGEN_Pos = 11;
+constexpr uint32_t WWDGEN_Msk = WWDGEN::mask;
 
-    /// SPI2 clock enable
-    /// Position: 14, Width: 1
-    using SPI2EN = BitField<14, 1>;
-    constexpr uint32_t SPI2EN_Pos = 14;
-    constexpr uint32_t SPI2EN_Msk = SPI2EN::mask;
+/// SPI2 clock enable
+/// Position: 14, Width: 1
+using SPI2EN = BitField<14, 1>;
+constexpr uint32_t SPI2EN_Pos = 14;
+constexpr uint32_t SPI2EN_Msk = SPI2EN::mask;
 
-    /// SPI3 clock enable
-    /// Position: 15, Width: 1
-    using SPI3EN = BitField<15, 1>;
-    constexpr uint32_t SPI3EN_Pos = 15;
-    constexpr uint32_t SPI3EN_Msk = SPI3EN::mask;
+/// SPI3 clock enable
+/// Position: 15, Width: 1
+using SPI3EN = BitField<15, 1>;
+constexpr uint32_t SPI3EN_Pos = 15;
+constexpr uint32_t SPI3EN_Msk = SPI3EN::mask;
 
-    /// USART 2 clock enable
-    /// Position: 17, Width: 1
-    using USART2EN = BitField<17, 1>;
-    constexpr uint32_t USART2EN_Pos = 17;
-    constexpr uint32_t USART2EN_Msk = USART2EN::mask;
+/// USART 2 clock enable
+/// Position: 17, Width: 1
+using USART2EN = BitField<17, 1>;
+constexpr uint32_t USART2EN_Pos = 17;
+constexpr uint32_t USART2EN_Msk = USART2EN::mask;
 
-    /// USART3 clock enable
-    /// Position: 18, Width: 1
-    using USART3EN = BitField<18, 1>;
-    constexpr uint32_t USART3EN_Pos = 18;
-    constexpr uint32_t USART3EN_Msk = USART3EN::mask;
+/// USART3 clock enable
+/// Position: 18, Width: 1
+using USART3EN = BitField<18, 1>;
+constexpr uint32_t USART3EN_Pos = 18;
+constexpr uint32_t USART3EN_Msk = USART3EN::mask;
 
-    /// UART4 clock enable
-    /// Position: 19, Width: 1
-    using UART4EN = BitField<19, 1>;
-    constexpr uint32_t UART4EN_Pos = 19;
-    constexpr uint32_t UART4EN_Msk = UART4EN::mask;
+/// UART4 clock enable
+/// Position: 19, Width: 1
+using UART4EN = BitField<19, 1>;
+constexpr uint32_t UART4EN_Pos = 19;
+constexpr uint32_t UART4EN_Msk = UART4EN::mask;
 
-    /// UART5 clock enable
-    /// Position: 20, Width: 1
-    using UART5EN = BitField<20, 1>;
-    constexpr uint32_t UART5EN_Pos = 20;
-    constexpr uint32_t UART5EN_Msk = UART5EN::mask;
+/// UART5 clock enable
+/// Position: 20, Width: 1
+using UART5EN = BitField<20, 1>;
+constexpr uint32_t UART5EN_Pos = 20;
+constexpr uint32_t UART5EN_Msk = UART5EN::mask;
 
-    /// I2C1 clock enable
-    /// Position: 21, Width: 1
-    using I2C1EN = BitField<21, 1>;
-    constexpr uint32_t I2C1EN_Pos = 21;
-    constexpr uint32_t I2C1EN_Msk = I2C1EN::mask;
+/// I2C1 clock enable
+/// Position: 21, Width: 1
+using I2C1EN = BitField<21, 1>;
+constexpr uint32_t I2C1EN_Pos = 21;
+constexpr uint32_t I2C1EN_Msk = I2C1EN::mask;
 
-    /// I2C2 clock enable
-    /// Position: 22, Width: 1
-    using I2C2EN = BitField<22, 1>;
-    constexpr uint32_t I2C2EN_Pos = 22;
-    constexpr uint32_t I2C2EN_Msk = I2C2EN::mask;
+/// I2C2 clock enable
+/// Position: 22, Width: 1
+using I2C2EN = BitField<22, 1>;
+constexpr uint32_t I2C2EN_Pos = 22;
+constexpr uint32_t I2C2EN_Msk = I2C2EN::mask;
 
-    /// I2C3 clock enable
-    /// Position: 23, Width: 1
-    using I2C3EN = BitField<23, 1>;
-    constexpr uint32_t I2C3EN_Pos = 23;
-    constexpr uint32_t I2C3EN_Msk = I2C3EN::mask;
+/// I2C3 clock enable
+/// Position: 23, Width: 1
+using I2C3EN = BitField<23, 1>;
+constexpr uint32_t I2C3EN_Pos = 23;
+constexpr uint32_t I2C3EN_Msk = I2C3EN::mask;
 
-    /// CAN 1 clock enable
-    /// Position: 25, Width: 1
-    using CAN1EN = BitField<25, 1>;
-    constexpr uint32_t CAN1EN_Pos = 25;
-    constexpr uint32_t CAN1EN_Msk = CAN1EN::mask;
+/// CAN 1 clock enable
+/// Position: 25, Width: 1
+using CAN1EN = BitField<25, 1>;
+constexpr uint32_t CAN1EN_Pos = 25;
+constexpr uint32_t CAN1EN_Msk = CAN1EN::mask;
 
-    /// CAN 2 clock enable
-    /// Position: 26, Width: 1
-    using CAN2EN = BitField<26, 1>;
-    constexpr uint32_t CAN2EN_Pos = 26;
-    constexpr uint32_t CAN2EN_Msk = CAN2EN::mask;
+/// CAN 2 clock enable
+/// Position: 26, Width: 1
+using CAN2EN = BitField<26, 1>;
+constexpr uint32_t CAN2EN_Pos = 26;
+constexpr uint32_t CAN2EN_Msk = CAN2EN::mask;
 
-    /// Power interface clock enable
-    /// Position: 28, Width: 1
-    using PWREN = BitField<28, 1>;
-    constexpr uint32_t PWREN_Pos = 28;
-    constexpr uint32_t PWREN_Msk = PWREN::mask;
+/// Power interface clock enable
+/// Position: 28, Width: 1
+using PWREN = BitField<28, 1>;
+constexpr uint32_t PWREN_Pos = 28;
+constexpr uint32_t PWREN_Msk = PWREN::mask;
 
-    /// DAC interface clock enable
-    /// Position: 29, Width: 1
-    using DACEN = BitField<29, 1>;
-    constexpr uint32_t DACEN_Pos = 29;
-    constexpr uint32_t DACEN_Msk = DACEN::mask;
+/// DAC interface clock enable
+/// Position: 29, Width: 1
+using DACEN = BitField<29, 1>;
+constexpr uint32_t DACEN_Pos = 29;
+constexpr uint32_t DACEN_Msk = DACEN::mask;
 
 }  // namespace apb1enr
 
 /// APB2ENR - APB2 peripheral clock enable register
 namespace apb2enr {
-    /// TIM1 clock enable
-    /// Position: 0, Width: 1
-    using TIM1EN = BitField<0, 1>;
-    constexpr uint32_t TIM1EN_Pos = 0;
-    constexpr uint32_t TIM1EN_Msk = TIM1EN::mask;
+/// TIM1 clock enable
+/// Position: 0, Width: 1
+using TIM1EN = BitField<0, 1>;
+constexpr uint32_t TIM1EN_Pos = 0;
+constexpr uint32_t TIM1EN_Msk = TIM1EN::mask;
 
-    /// TIM8 clock enable
-    /// Position: 1, Width: 1
-    using TIM8EN = BitField<1, 1>;
-    constexpr uint32_t TIM8EN_Pos = 1;
-    constexpr uint32_t TIM8EN_Msk = TIM8EN::mask;
+/// TIM8 clock enable
+/// Position: 1, Width: 1
+using TIM8EN = BitField<1, 1>;
+constexpr uint32_t TIM8EN_Pos = 1;
+constexpr uint32_t TIM8EN_Msk = TIM8EN::mask;
 
-    /// USART1 clock enable
-    /// Position: 4, Width: 1
-    using USART1EN = BitField<4, 1>;
-    constexpr uint32_t USART1EN_Pos = 4;
-    constexpr uint32_t USART1EN_Msk = USART1EN::mask;
+/// USART1 clock enable
+/// Position: 4, Width: 1
+using USART1EN = BitField<4, 1>;
+constexpr uint32_t USART1EN_Pos = 4;
+constexpr uint32_t USART1EN_Msk = USART1EN::mask;
 
-    /// USART6 clock enable
-    /// Position: 5, Width: 1
-    using USART6EN = BitField<5, 1>;
-    constexpr uint32_t USART6EN_Pos = 5;
-    constexpr uint32_t USART6EN_Msk = USART6EN::mask;
+/// USART6 clock enable
+/// Position: 5, Width: 1
+using USART6EN = BitField<5, 1>;
+constexpr uint32_t USART6EN_Pos = 5;
+constexpr uint32_t USART6EN_Msk = USART6EN::mask;
 
-    /// ADC1 clock enable
-    /// Position: 8, Width: 1
-    using ADC1EN = BitField<8, 1>;
-    constexpr uint32_t ADC1EN_Pos = 8;
-    constexpr uint32_t ADC1EN_Msk = ADC1EN::mask;
+/// ADC1 clock enable
+/// Position: 8, Width: 1
+using ADC1EN = BitField<8, 1>;
+constexpr uint32_t ADC1EN_Pos = 8;
+constexpr uint32_t ADC1EN_Msk = ADC1EN::mask;
 
-    /// ADC2 clock enable
-    /// Position: 9, Width: 1
-    using ADC2EN = BitField<9, 1>;
-    constexpr uint32_t ADC2EN_Pos = 9;
-    constexpr uint32_t ADC2EN_Msk = ADC2EN::mask;
+/// ADC2 clock enable
+/// Position: 9, Width: 1
+using ADC2EN = BitField<9, 1>;
+constexpr uint32_t ADC2EN_Pos = 9;
+constexpr uint32_t ADC2EN_Msk = ADC2EN::mask;
 
-    /// ADC3 clock enable
-    /// Position: 10, Width: 1
-    using ADC3EN = BitField<10, 1>;
-    constexpr uint32_t ADC3EN_Pos = 10;
-    constexpr uint32_t ADC3EN_Msk = ADC3EN::mask;
+/// ADC3 clock enable
+/// Position: 10, Width: 1
+using ADC3EN = BitField<10, 1>;
+constexpr uint32_t ADC3EN_Pos = 10;
+constexpr uint32_t ADC3EN_Msk = ADC3EN::mask;
 
-    /// SDIO clock enable
-    /// Position: 11, Width: 1
-    using SDIOEN = BitField<11, 1>;
-    constexpr uint32_t SDIOEN_Pos = 11;
-    constexpr uint32_t SDIOEN_Msk = SDIOEN::mask;
+/// SDIO clock enable
+/// Position: 11, Width: 1
+using SDIOEN = BitField<11, 1>;
+constexpr uint32_t SDIOEN_Pos = 11;
+constexpr uint32_t SDIOEN_Msk = SDIOEN::mask;
 
-    /// SPI1 clock enable
-    /// Position: 12, Width: 1
-    using SPI1EN = BitField<12, 1>;
-    constexpr uint32_t SPI1EN_Pos = 12;
-    constexpr uint32_t SPI1EN_Msk = SPI1EN::mask;
+/// SPI1 clock enable
+/// Position: 12, Width: 1
+using SPI1EN = BitField<12, 1>;
+constexpr uint32_t SPI1EN_Pos = 12;
+constexpr uint32_t SPI1EN_Msk = SPI1EN::mask;
 
-    /// System configuration controller clock enable
-    /// Position: 14, Width: 1
-    using SYSCFGEN = BitField<14, 1>;
-    constexpr uint32_t SYSCFGEN_Pos = 14;
-    constexpr uint32_t SYSCFGEN_Msk = SYSCFGEN::mask;
+/// System configuration controller clock enable
+/// Position: 14, Width: 1
+using SYSCFGEN = BitField<14, 1>;
+constexpr uint32_t SYSCFGEN_Pos = 14;
+constexpr uint32_t SYSCFGEN_Msk = SYSCFGEN::mask;
 
-    /// TIM9 clock enable
-    /// Position: 16, Width: 1
-    using TIM9EN = BitField<16, 1>;
-    constexpr uint32_t TIM9EN_Pos = 16;
-    constexpr uint32_t TIM9EN_Msk = TIM9EN::mask;
+/// TIM9 clock enable
+/// Position: 16, Width: 1
+using TIM9EN = BitField<16, 1>;
+constexpr uint32_t TIM9EN_Pos = 16;
+constexpr uint32_t TIM9EN_Msk = TIM9EN::mask;
 
-    /// TIM10 clock enable
-    /// Position: 17, Width: 1
-    using TIM10EN = BitField<17, 1>;
-    constexpr uint32_t TIM10EN_Pos = 17;
-    constexpr uint32_t TIM10EN_Msk = TIM10EN::mask;
+/// TIM10 clock enable
+/// Position: 17, Width: 1
+using TIM10EN = BitField<17, 1>;
+constexpr uint32_t TIM10EN_Pos = 17;
+constexpr uint32_t TIM10EN_Msk = TIM10EN::mask;
 
-    /// TIM11 clock enable
-    /// Position: 18, Width: 1
-    using TIM11EN = BitField<18, 1>;
-    constexpr uint32_t TIM11EN_Pos = 18;
-    constexpr uint32_t TIM11EN_Msk = TIM11EN::mask;
+/// TIM11 clock enable
+/// Position: 18, Width: 1
+using TIM11EN = BitField<18, 1>;
+constexpr uint32_t TIM11EN_Pos = 18;
+constexpr uint32_t TIM11EN_Msk = TIM11EN::mask;
 
 }  // namespace apb2enr
 
 /// AHB1LPENR - AHB1 peripheral clock enable in low power mode register
 namespace ahb1lpenr {
-    /// IO port A clock enable during sleep mode
-    /// Position: 0, Width: 1
-    using GPIOALPEN = BitField<0, 1>;
-    constexpr uint32_t GPIOALPEN_Pos = 0;
-    constexpr uint32_t GPIOALPEN_Msk = GPIOALPEN::mask;
+/// IO port A clock enable during sleep mode
+/// Position: 0, Width: 1
+using GPIOALPEN = BitField<0, 1>;
+constexpr uint32_t GPIOALPEN_Pos = 0;
+constexpr uint32_t GPIOALPEN_Msk = GPIOALPEN::mask;
 
-    /// IO port B clock enable during Sleep mode
-    /// Position: 1, Width: 1
-    using GPIOBLPEN = BitField<1, 1>;
-    constexpr uint32_t GPIOBLPEN_Pos = 1;
-    constexpr uint32_t GPIOBLPEN_Msk = GPIOBLPEN::mask;
+/// IO port B clock enable during Sleep mode
+/// Position: 1, Width: 1
+using GPIOBLPEN = BitField<1, 1>;
+constexpr uint32_t GPIOBLPEN_Pos = 1;
+constexpr uint32_t GPIOBLPEN_Msk = GPIOBLPEN::mask;
 
-    /// IO port C clock enable during Sleep mode
-    /// Position: 2, Width: 1
-    using GPIOCLPEN = BitField<2, 1>;
-    constexpr uint32_t GPIOCLPEN_Pos = 2;
-    constexpr uint32_t GPIOCLPEN_Msk = GPIOCLPEN::mask;
+/// IO port C clock enable during Sleep mode
+/// Position: 2, Width: 1
+using GPIOCLPEN = BitField<2, 1>;
+constexpr uint32_t GPIOCLPEN_Pos = 2;
+constexpr uint32_t GPIOCLPEN_Msk = GPIOCLPEN::mask;
 
-    /// IO port D clock enable during Sleep mode
-    /// Position: 3, Width: 1
-    using GPIODLPEN = BitField<3, 1>;
-    constexpr uint32_t GPIODLPEN_Pos = 3;
-    constexpr uint32_t GPIODLPEN_Msk = GPIODLPEN::mask;
+/// IO port D clock enable during Sleep mode
+/// Position: 3, Width: 1
+using GPIODLPEN = BitField<3, 1>;
+constexpr uint32_t GPIODLPEN_Pos = 3;
+constexpr uint32_t GPIODLPEN_Msk = GPIODLPEN::mask;
 
-    /// IO port E clock enable during Sleep mode
-    /// Position: 4, Width: 1
-    using GPIOELPEN = BitField<4, 1>;
-    constexpr uint32_t GPIOELPEN_Pos = 4;
-    constexpr uint32_t GPIOELPEN_Msk = GPIOELPEN::mask;
+/// IO port E clock enable during Sleep mode
+/// Position: 4, Width: 1
+using GPIOELPEN = BitField<4, 1>;
+constexpr uint32_t GPIOELPEN_Pos = 4;
+constexpr uint32_t GPIOELPEN_Msk = GPIOELPEN::mask;
 
-    /// IO port F clock enable during Sleep mode
-    /// Position: 5, Width: 1
-    using GPIOFLPEN = BitField<5, 1>;
-    constexpr uint32_t GPIOFLPEN_Pos = 5;
-    constexpr uint32_t GPIOFLPEN_Msk = GPIOFLPEN::mask;
+/// IO port F clock enable during Sleep mode
+/// Position: 5, Width: 1
+using GPIOFLPEN = BitField<5, 1>;
+constexpr uint32_t GPIOFLPEN_Pos = 5;
+constexpr uint32_t GPIOFLPEN_Msk = GPIOFLPEN::mask;
 
-    /// IO port G clock enable during Sleep mode
-    /// Position: 6, Width: 1
-    using GPIOGLPEN = BitField<6, 1>;
-    constexpr uint32_t GPIOGLPEN_Pos = 6;
-    constexpr uint32_t GPIOGLPEN_Msk = GPIOGLPEN::mask;
+/// IO port G clock enable during Sleep mode
+/// Position: 6, Width: 1
+using GPIOGLPEN = BitField<6, 1>;
+constexpr uint32_t GPIOGLPEN_Pos = 6;
+constexpr uint32_t GPIOGLPEN_Msk = GPIOGLPEN::mask;
 
-    /// IO port H clock enable during Sleep mode
-    /// Position: 7, Width: 1
-    using GPIOHLPEN = BitField<7, 1>;
-    constexpr uint32_t GPIOHLPEN_Pos = 7;
-    constexpr uint32_t GPIOHLPEN_Msk = GPIOHLPEN::mask;
+/// IO port H clock enable during Sleep mode
+/// Position: 7, Width: 1
+using GPIOHLPEN = BitField<7, 1>;
+constexpr uint32_t GPIOHLPEN_Pos = 7;
+constexpr uint32_t GPIOHLPEN_Msk = GPIOHLPEN::mask;
 
-    /// IO port I clock enable during Sleep mode
-    /// Position: 8, Width: 1
-    using GPIOILPEN = BitField<8, 1>;
-    constexpr uint32_t GPIOILPEN_Pos = 8;
-    constexpr uint32_t GPIOILPEN_Msk = GPIOILPEN::mask;
+/// IO port I clock enable during Sleep mode
+/// Position: 8, Width: 1
+using GPIOILPEN = BitField<8, 1>;
+constexpr uint32_t GPIOILPEN_Pos = 8;
+constexpr uint32_t GPIOILPEN_Msk = GPIOILPEN::mask;
 
-    /// CRC clock enable during Sleep mode
-    /// Position: 12, Width: 1
-    using CRCLPEN = BitField<12, 1>;
-    constexpr uint32_t CRCLPEN_Pos = 12;
-    constexpr uint32_t CRCLPEN_Msk = CRCLPEN::mask;
+/// CRC clock enable during Sleep mode
+/// Position: 12, Width: 1
+using CRCLPEN = BitField<12, 1>;
+constexpr uint32_t CRCLPEN_Pos = 12;
+constexpr uint32_t CRCLPEN_Msk = CRCLPEN::mask;
 
-    /// Flash interface clock enable during Sleep mode
-    /// Position: 15, Width: 1
-    using FLITFLPEN = BitField<15, 1>;
-    constexpr uint32_t FLITFLPEN_Pos = 15;
-    constexpr uint32_t FLITFLPEN_Msk = FLITFLPEN::mask;
+/// Flash interface clock enable during Sleep mode
+/// Position: 15, Width: 1
+using FLITFLPEN = BitField<15, 1>;
+constexpr uint32_t FLITFLPEN_Pos = 15;
+constexpr uint32_t FLITFLPEN_Msk = FLITFLPEN::mask;
 
-    /// SRAM 1interface clock enable during Sleep mode
-    /// Position: 16, Width: 1
-    using SRAM1LPEN = BitField<16, 1>;
-    constexpr uint32_t SRAM1LPEN_Pos = 16;
-    constexpr uint32_t SRAM1LPEN_Msk = SRAM1LPEN::mask;
+/// SRAM 1interface clock enable during Sleep mode
+/// Position: 16, Width: 1
+using SRAM1LPEN = BitField<16, 1>;
+constexpr uint32_t SRAM1LPEN_Pos = 16;
+constexpr uint32_t SRAM1LPEN_Msk = SRAM1LPEN::mask;
 
-    /// SRAM 2 interface clock enable during Sleep mode
-    /// Position: 17, Width: 1
-    using SRAM2LPEN = BitField<17, 1>;
-    constexpr uint32_t SRAM2LPEN_Pos = 17;
-    constexpr uint32_t SRAM2LPEN_Msk = SRAM2LPEN::mask;
+/// SRAM 2 interface clock enable during Sleep mode
+/// Position: 17, Width: 1
+using SRAM2LPEN = BitField<17, 1>;
+constexpr uint32_t SRAM2LPEN_Pos = 17;
+constexpr uint32_t SRAM2LPEN_Msk = SRAM2LPEN::mask;
 
-    /// Backup SRAM interface clock enable during Sleep mode
-    /// Position: 18, Width: 1
-    using BKPSRAMLPEN = BitField<18, 1>;
-    constexpr uint32_t BKPSRAMLPEN_Pos = 18;
-    constexpr uint32_t BKPSRAMLPEN_Msk = BKPSRAMLPEN::mask;
+/// Backup SRAM interface clock enable during Sleep mode
+/// Position: 18, Width: 1
+using BKPSRAMLPEN = BitField<18, 1>;
+constexpr uint32_t BKPSRAMLPEN_Pos = 18;
+constexpr uint32_t BKPSRAMLPEN_Msk = BKPSRAMLPEN::mask;
 
-    /// DMA1 clock enable during Sleep mode
-    /// Position: 21, Width: 1
-    using DMA1LPEN = BitField<21, 1>;
-    constexpr uint32_t DMA1LPEN_Pos = 21;
-    constexpr uint32_t DMA1LPEN_Msk = DMA1LPEN::mask;
+/// DMA1 clock enable during Sleep mode
+/// Position: 21, Width: 1
+using DMA1LPEN = BitField<21, 1>;
+constexpr uint32_t DMA1LPEN_Pos = 21;
+constexpr uint32_t DMA1LPEN_Msk = DMA1LPEN::mask;
 
-    /// DMA2 clock enable during Sleep mode
-    /// Position: 22, Width: 1
-    using DMA2LPEN = BitField<22, 1>;
-    constexpr uint32_t DMA2LPEN_Pos = 22;
-    constexpr uint32_t DMA2LPEN_Msk = DMA2LPEN::mask;
+/// DMA2 clock enable during Sleep mode
+/// Position: 22, Width: 1
+using DMA2LPEN = BitField<22, 1>;
+constexpr uint32_t DMA2LPEN_Pos = 22;
+constexpr uint32_t DMA2LPEN_Msk = DMA2LPEN::mask;
 
-    /// Ethernet MAC clock enable during Sleep mode
-    /// Position: 25, Width: 1
-    using ETHMACLPEN = BitField<25, 1>;
-    constexpr uint32_t ETHMACLPEN_Pos = 25;
-    constexpr uint32_t ETHMACLPEN_Msk = ETHMACLPEN::mask;
+/// Ethernet MAC clock enable during Sleep mode
+/// Position: 25, Width: 1
+using ETHMACLPEN = BitField<25, 1>;
+constexpr uint32_t ETHMACLPEN_Pos = 25;
+constexpr uint32_t ETHMACLPEN_Msk = ETHMACLPEN::mask;
 
-    /// Ethernet transmission clock enable during Sleep mode
-    /// Position: 26, Width: 1
-    using ETHMACTXLPEN = BitField<26, 1>;
-    constexpr uint32_t ETHMACTXLPEN_Pos = 26;
-    constexpr uint32_t ETHMACTXLPEN_Msk = ETHMACTXLPEN::mask;
+/// Ethernet transmission clock enable during Sleep mode
+/// Position: 26, Width: 1
+using ETHMACTXLPEN = BitField<26, 1>;
+constexpr uint32_t ETHMACTXLPEN_Pos = 26;
+constexpr uint32_t ETHMACTXLPEN_Msk = ETHMACTXLPEN::mask;
 
-    /// Ethernet reception clock enable during Sleep mode
-    /// Position: 27, Width: 1
-    using ETHMACRXLPEN = BitField<27, 1>;
-    constexpr uint32_t ETHMACRXLPEN_Pos = 27;
-    constexpr uint32_t ETHMACRXLPEN_Msk = ETHMACRXLPEN::mask;
+/// Ethernet reception clock enable during Sleep mode
+/// Position: 27, Width: 1
+using ETHMACRXLPEN = BitField<27, 1>;
+constexpr uint32_t ETHMACRXLPEN_Pos = 27;
+constexpr uint32_t ETHMACRXLPEN_Msk = ETHMACRXLPEN::mask;
 
-    /// Ethernet PTP clock enable during Sleep mode
-    /// Position: 28, Width: 1
-    using ETHMACPTPLPEN = BitField<28, 1>;
-    constexpr uint32_t ETHMACPTPLPEN_Pos = 28;
-    constexpr uint32_t ETHMACPTPLPEN_Msk = ETHMACPTPLPEN::mask;
+/// Ethernet PTP clock enable during Sleep mode
+/// Position: 28, Width: 1
+using ETHMACPTPLPEN = BitField<28, 1>;
+constexpr uint32_t ETHMACPTPLPEN_Pos = 28;
+constexpr uint32_t ETHMACPTPLPEN_Msk = ETHMACPTPLPEN::mask;
 
-    /// USB OTG HS clock enable during Sleep mode
-    /// Position: 29, Width: 1
-    using OTGHSLPEN = BitField<29, 1>;
-    constexpr uint32_t OTGHSLPEN_Pos = 29;
-    constexpr uint32_t OTGHSLPEN_Msk = OTGHSLPEN::mask;
+/// USB OTG HS clock enable during Sleep mode
+/// Position: 29, Width: 1
+using OTGHSLPEN = BitField<29, 1>;
+constexpr uint32_t OTGHSLPEN_Pos = 29;
+constexpr uint32_t OTGHSLPEN_Msk = OTGHSLPEN::mask;
 
-    /// USB OTG HS ULPI clock enable during Sleep mode
-    /// Position: 30, Width: 1
-    using OTGHSULPILPEN = BitField<30, 1>;
-    constexpr uint32_t OTGHSULPILPEN_Pos = 30;
-    constexpr uint32_t OTGHSULPILPEN_Msk = OTGHSULPILPEN::mask;
+/// USB OTG HS ULPI clock enable during Sleep mode
+/// Position: 30, Width: 1
+using OTGHSULPILPEN = BitField<30, 1>;
+constexpr uint32_t OTGHSULPILPEN_Pos = 30;
+constexpr uint32_t OTGHSULPILPEN_Msk = OTGHSULPILPEN::mask;
 
 }  // namespace ahb1lpenr
 
 /// AHB2LPENR - AHB2 peripheral clock enable in low power mode register
 namespace ahb2lpenr {
-    /// Camera interface enable during Sleep mode
-    /// Position: 0, Width: 1
-    using DCMILPEN = BitField<0, 1>;
-    constexpr uint32_t DCMILPEN_Pos = 0;
-    constexpr uint32_t DCMILPEN_Msk = DCMILPEN::mask;
+/// Camera interface enable during Sleep mode
+/// Position: 0, Width: 1
+using DCMILPEN = BitField<0, 1>;
+constexpr uint32_t DCMILPEN_Pos = 0;
+constexpr uint32_t DCMILPEN_Msk = DCMILPEN::mask;
 
-    /// Random number generator clock enable during Sleep mode
-    /// Position: 6, Width: 1
-    using RNGLPEN = BitField<6, 1>;
-    constexpr uint32_t RNGLPEN_Pos = 6;
-    constexpr uint32_t RNGLPEN_Msk = RNGLPEN::mask;
+/// Random number generator clock enable during Sleep mode
+/// Position: 6, Width: 1
+using RNGLPEN = BitField<6, 1>;
+constexpr uint32_t RNGLPEN_Pos = 6;
+constexpr uint32_t RNGLPEN_Msk = RNGLPEN::mask;
 
-    /// USB OTG FS clock enable during Sleep mode
-    /// Position: 7, Width: 1
-    using OTGFSLPEN = BitField<7, 1>;
-    constexpr uint32_t OTGFSLPEN_Pos = 7;
-    constexpr uint32_t OTGFSLPEN_Msk = OTGFSLPEN::mask;
+/// USB OTG FS clock enable during Sleep mode
+/// Position: 7, Width: 1
+using OTGFSLPEN = BitField<7, 1>;
+constexpr uint32_t OTGFSLPEN_Pos = 7;
+constexpr uint32_t OTGFSLPEN_Msk = OTGFSLPEN::mask;
 
 }  // namespace ahb2lpenr
 
 /// AHB3LPENR - AHB3 peripheral clock enable in low power mode register
 namespace ahb3lpenr {
-    /// Flexible static memory controller module clock enable during Sleep mode
-    /// Position: 0, Width: 1
-    using FSMCLPEN = BitField<0, 1>;
-    constexpr uint32_t FSMCLPEN_Pos = 0;
-    constexpr uint32_t FSMCLPEN_Msk = FSMCLPEN::mask;
+/// Flexible static memory controller module clock enable during Sleep mode
+/// Position: 0, Width: 1
+using FSMCLPEN = BitField<0, 1>;
+constexpr uint32_t FSMCLPEN_Pos = 0;
+constexpr uint32_t FSMCLPEN_Msk = FSMCLPEN::mask;
 
 }  // namespace ahb3lpenr
 
 /// APB1LPENR - APB1 peripheral clock enable in low power mode register
 namespace apb1lpenr {
-    /// TIM2 clock enable during Sleep mode
-    /// Position: 0, Width: 1
-    using TIM2LPEN = BitField<0, 1>;
-    constexpr uint32_t TIM2LPEN_Pos = 0;
-    constexpr uint32_t TIM2LPEN_Msk = TIM2LPEN::mask;
+/// TIM2 clock enable during Sleep mode
+/// Position: 0, Width: 1
+using TIM2LPEN = BitField<0, 1>;
+constexpr uint32_t TIM2LPEN_Pos = 0;
+constexpr uint32_t TIM2LPEN_Msk = TIM2LPEN::mask;
 
-    /// TIM3 clock enable during Sleep mode
-    /// Position: 1, Width: 1
-    using TIM3LPEN = BitField<1, 1>;
-    constexpr uint32_t TIM3LPEN_Pos = 1;
-    constexpr uint32_t TIM3LPEN_Msk = TIM3LPEN::mask;
+/// TIM3 clock enable during Sleep mode
+/// Position: 1, Width: 1
+using TIM3LPEN = BitField<1, 1>;
+constexpr uint32_t TIM3LPEN_Pos = 1;
+constexpr uint32_t TIM3LPEN_Msk = TIM3LPEN::mask;
 
-    /// TIM4 clock enable during Sleep mode
-    /// Position: 2, Width: 1
-    using TIM4LPEN = BitField<2, 1>;
-    constexpr uint32_t TIM4LPEN_Pos = 2;
-    constexpr uint32_t TIM4LPEN_Msk = TIM4LPEN::mask;
+/// TIM4 clock enable during Sleep mode
+/// Position: 2, Width: 1
+using TIM4LPEN = BitField<2, 1>;
+constexpr uint32_t TIM4LPEN_Pos = 2;
+constexpr uint32_t TIM4LPEN_Msk = TIM4LPEN::mask;
 
-    /// TIM5 clock enable during Sleep mode
-    /// Position: 3, Width: 1
-    using TIM5LPEN = BitField<3, 1>;
-    constexpr uint32_t TIM5LPEN_Pos = 3;
-    constexpr uint32_t TIM5LPEN_Msk = TIM5LPEN::mask;
+/// TIM5 clock enable during Sleep mode
+/// Position: 3, Width: 1
+using TIM5LPEN = BitField<3, 1>;
+constexpr uint32_t TIM5LPEN_Pos = 3;
+constexpr uint32_t TIM5LPEN_Msk = TIM5LPEN::mask;
 
-    /// TIM6 clock enable during Sleep mode
-    /// Position: 4, Width: 1
-    using TIM6LPEN = BitField<4, 1>;
-    constexpr uint32_t TIM6LPEN_Pos = 4;
-    constexpr uint32_t TIM6LPEN_Msk = TIM6LPEN::mask;
+/// TIM6 clock enable during Sleep mode
+/// Position: 4, Width: 1
+using TIM6LPEN = BitField<4, 1>;
+constexpr uint32_t TIM6LPEN_Pos = 4;
+constexpr uint32_t TIM6LPEN_Msk = TIM6LPEN::mask;
 
-    /// TIM7 clock enable during Sleep mode
-    /// Position: 5, Width: 1
-    using TIM7LPEN = BitField<5, 1>;
-    constexpr uint32_t TIM7LPEN_Pos = 5;
-    constexpr uint32_t TIM7LPEN_Msk = TIM7LPEN::mask;
+/// TIM7 clock enable during Sleep mode
+/// Position: 5, Width: 1
+using TIM7LPEN = BitField<5, 1>;
+constexpr uint32_t TIM7LPEN_Pos = 5;
+constexpr uint32_t TIM7LPEN_Msk = TIM7LPEN::mask;
 
-    /// TIM12 clock enable during Sleep mode
-    /// Position: 6, Width: 1
-    using TIM12LPEN = BitField<6, 1>;
-    constexpr uint32_t TIM12LPEN_Pos = 6;
-    constexpr uint32_t TIM12LPEN_Msk = TIM12LPEN::mask;
+/// TIM12 clock enable during Sleep mode
+/// Position: 6, Width: 1
+using TIM12LPEN = BitField<6, 1>;
+constexpr uint32_t TIM12LPEN_Pos = 6;
+constexpr uint32_t TIM12LPEN_Msk = TIM12LPEN::mask;
 
-    /// TIM13 clock enable during Sleep mode
-    /// Position: 7, Width: 1
-    using TIM13LPEN = BitField<7, 1>;
-    constexpr uint32_t TIM13LPEN_Pos = 7;
-    constexpr uint32_t TIM13LPEN_Msk = TIM13LPEN::mask;
+/// TIM13 clock enable during Sleep mode
+/// Position: 7, Width: 1
+using TIM13LPEN = BitField<7, 1>;
+constexpr uint32_t TIM13LPEN_Pos = 7;
+constexpr uint32_t TIM13LPEN_Msk = TIM13LPEN::mask;
 
-    /// TIM14 clock enable during Sleep mode
-    /// Position: 8, Width: 1
-    using TIM14LPEN = BitField<8, 1>;
-    constexpr uint32_t TIM14LPEN_Pos = 8;
-    constexpr uint32_t TIM14LPEN_Msk = TIM14LPEN::mask;
+/// TIM14 clock enable during Sleep mode
+/// Position: 8, Width: 1
+using TIM14LPEN = BitField<8, 1>;
+constexpr uint32_t TIM14LPEN_Pos = 8;
+constexpr uint32_t TIM14LPEN_Msk = TIM14LPEN::mask;
 
-    /// Window watchdog clock enable during Sleep mode
-    /// Position: 11, Width: 1
-    using WWDGLPEN = BitField<11, 1>;
-    constexpr uint32_t WWDGLPEN_Pos = 11;
-    constexpr uint32_t WWDGLPEN_Msk = WWDGLPEN::mask;
+/// Window watchdog clock enable during Sleep mode
+/// Position: 11, Width: 1
+using WWDGLPEN = BitField<11, 1>;
+constexpr uint32_t WWDGLPEN_Pos = 11;
+constexpr uint32_t WWDGLPEN_Msk = WWDGLPEN::mask;
 
-    /// SPI2 clock enable during Sleep mode
-    /// Position: 14, Width: 1
-    using SPI2LPEN = BitField<14, 1>;
-    constexpr uint32_t SPI2LPEN_Pos = 14;
-    constexpr uint32_t SPI2LPEN_Msk = SPI2LPEN::mask;
+/// SPI2 clock enable during Sleep mode
+/// Position: 14, Width: 1
+using SPI2LPEN = BitField<14, 1>;
+constexpr uint32_t SPI2LPEN_Pos = 14;
+constexpr uint32_t SPI2LPEN_Msk = SPI2LPEN::mask;
 
-    /// SPI3 clock enable during Sleep mode
-    /// Position: 15, Width: 1
-    using SPI3LPEN = BitField<15, 1>;
-    constexpr uint32_t SPI3LPEN_Pos = 15;
-    constexpr uint32_t SPI3LPEN_Msk = SPI3LPEN::mask;
+/// SPI3 clock enable during Sleep mode
+/// Position: 15, Width: 1
+using SPI3LPEN = BitField<15, 1>;
+constexpr uint32_t SPI3LPEN_Pos = 15;
+constexpr uint32_t SPI3LPEN_Msk = SPI3LPEN::mask;
 
-    /// USART2 clock enable during Sleep mode
-    /// Position: 17, Width: 1
-    using USART2LPEN = BitField<17, 1>;
-    constexpr uint32_t USART2LPEN_Pos = 17;
-    constexpr uint32_t USART2LPEN_Msk = USART2LPEN::mask;
+/// USART2 clock enable during Sleep mode
+/// Position: 17, Width: 1
+using USART2LPEN = BitField<17, 1>;
+constexpr uint32_t USART2LPEN_Pos = 17;
+constexpr uint32_t USART2LPEN_Msk = USART2LPEN::mask;
 
-    /// USART3 clock enable during Sleep mode
-    /// Position: 18, Width: 1
-    using USART3LPEN = BitField<18, 1>;
-    constexpr uint32_t USART3LPEN_Pos = 18;
-    constexpr uint32_t USART3LPEN_Msk = USART3LPEN::mask;
+/// USART3 clock enable during Sleep mode
+/// Position: 18, Width: 1
+using USART3LPEN = BitField<18, 1>;
+constexpr uint32_t USART3LPEN_Pos = 18;
+constexpr uint32_t USART3LPEN_Msk = USART3LPEN::mask;
 
-    /// UART4 clock enable during Sleep mode
-    /// Position: 19, Width: 1
-    using UART4LPEN = BitField<19, 1>;
-    constexpr uint32_t UART4LPEN_Pos = 19;
-    constexpr uint32_t UART4LPEN_Msk = UART4LPEN::mask;
+/// UART4 clock enable during Sleep mode
+/// Position: 19, Width: 1
+using UART4LPEN = BitField<19, 1>;
+constexpr uint32_t UART4LPEN_Pos = 19;
+constexpr uint32_t UART4LPEN_Msk = UART4LPEN::mask;
 
-    /// UART5 clock enable during Sleep mode
-    /// Position: 20, Width: 1
-    using UART5LPEN = BitField<20, 1>;
-    constexpr uint32_t UART5LPEN_Pos = 20;
-    constexpr uint32_t UART5LPEN_Msk = UART5LPEN::mask;
+/// UART5 clock enable during Sleep mode
+/// Position: 20, Width: 1
+using UART5LPEN = BitField<20, 1>;
+constexpr uint32_t UART5LPEN_Pos = 20;
+constexpr uint32_t UART5LPEN_Msk = UART5LPEN::mask;
 
-    /// I2C1 clock enable during Sleep mode
-    /// Position: 21, Width: 1
-    using I2C1LPEN = BitField<21, 1>;
-    constexpr uint32_t I2C1LPEN_Pos = 21;
-    constexpr uint32_t I2C1LPEN_Msk = I2C1LPEN::mask;
+/// I2C1 clock enable during Sleep mode
+/// Position: 21, Width: 1
+using I2C1LPEN = BitField<21, 1>;
+constexpr uint32_t I2C1LPEN_Pos = 21;
+constexpr uint32_t I2C1LPEN_Msk = I2C1LPEN::mask;
 
-    /// I2C2 clock enable during Sleep mode
-    /// Position: 22, Width: 1
-    using I2C2LPEN = BitField<22, 1>;
-    constexpr uint32_t I2C2LPEN_Pos = 22;
-    constexpr uint32_t I2C2LPEN_Msk = I2C2LPEN::mask;
+/// I2C2 clock enable during Sleep mode
+/// Position: 22, Width: 1
+using I2C2LPEN = BitField<22, 1>;
+constexpr uint32_t I2C2LPEN_Pos = 22;
+constexpr uint32_t I2C2LPEN_Msk = I2C2LPEN::mask;
 
-    /// I2C3 clock enable during Sleep mode
-    /// Position: 23, Width: 1
-    using I2C3LPEN = BitField<23, 1>;
-    constexpr uint32_t I2C3LPEN_Pos = 23;
-    constexpr uint32_t I2C3LPEN_Msk = I2C3LPEN::mask;
+/// I2C3 clock enable during Sleep mode
+/// Position: 23, Width: 1
+using I2C3LPEN = BitField<23, 1>;
+constexpr uint32_t I2C3LPEN_Pos = 23;
+constexpr uint32_t I2C3LPEN_Msk = I2C3LPEN::mask;
 
-    /// CAN 1 clock enable during Sleep mode
-    /// Position: 25, Width: 1
-    using CAN1LPEN = BitField<25, 1>;
-    constexpr uint32_t CAN1LPEN_Pos = 25;
-    constexpr uint32_t CAN1LPEN_Msk = CAN1LPEN::mask;
+/// CAN 1 clock enable during Sleep mode
+/// Position: 25, Width: 1
+using CAN1LPEN = BitField<25, 1>;
+constexpr uint32_t CAN1LPEN_Pos = 25;
+constexpr uint32_t CAN1LPEN_Msk = CAN1LPEN::mask;
 
-    /// CAN 2 clock enable during Sleep mode
-    /// Position: 26, Width: 1
-    using CAN2LPEN = BitField<26, 1>;
-    constexpr uint32_t CAN2LPEN_Pos = 26;
-    constexpr uint32_t CAN2LPEN_Msk = CAN2LPEN::mask;
+/// CAN 2 clock enable during Sleep mode
+/// Position: 26, Width: 1
+using CAN2LPEN = BitField<26, 1>;
+constexpr uint32_t CAN2LPEN_Pos = 26;
+constexpr uint32_t CAN2LPEN_Msk = CAN2LPEN::mask;
 
-    /// Power interface clock enable during Sleep mode
-    /// Position: 28, Width: 1
-    using PWRLPEN = BitField<28, 1>;
-    constexpr uint32_t PWRLPEN_Pos = 28;
-    constexpr uint32_t PWRLPEN_Msk = PWRLPEN::mask;
+/// Power interface clock enable during Sleep mode
+/// Position: 28, Width: 1
+using PWRLPEN = BitField<28, 1>;
+constexpr uint32_t PWRLPEN_Pos = 28;
+constexpr uint32_t PWRLPEN_Msk = PWRLPEN::mask;
 
-    /// DAC interface clock enable during Sleep mode
-    /// Position: 29, Width: 1
-    using DACLPEN = BitField<29, 1>;
-    constexpr uint32_t DACLPEN_Pos = 29;
-    constexpr uint32_t DACLPEN_Msk = DACLPEN::mask;
+/// DAC interface clock enable during Sleep mode
+/// Position: 29, Width: 1
+using DACLPEN = BitField<29, 1>;
+constexpr uint32_t DACLPEN_Pos = 29;
+constexpr uint32_t DACLPEN_Msk = DACLPEN::mask;
 
 }  // namespace apb1lpenr
 
 /// APB2LPENR - APB2 peripheral clock enabled in low power mode register
 namespace apb2lpenr {
-    /// TIM1 clock enable during Sleep mode
-    /// Position: 0, Width: 1
-    using TIM1LPEN = BitField<0, 1>;
-    constexpr uint32_t TIM1LPEN_Pos = 0;
-    constexpr uint32_t TIM1LPEN_Msk = TIM1LPEN::mask;
+/// TIM1 clock enable during Sleep mode
+/// Position: 0, Width: 1
+using TIM1LPEN = BitField<0, 1>;
+constexpr uint32_t TIM1LPEN_Pos = 0;
+constexpr uint32_t TIM1LPEN_Msk = TIM1LPEN::mask;
 
-    /// TIM8 clock enable during Sleep mode
-    /// Position: 1, Width: 1
-    using TIM8LPEN = BitField<1, 1>;
-    constexpr uint32_t TIM8LPEN_Pos = 1;
-    constexpr uint32_t TIM8LPEN_Msk = TIM8LPEN::mask;
+/// TIM8 clock enable during Sleep mode
+/// Position: 1, Width: 1
+using TIM8LPEN = BitField<1, 1>;
+constexpr uint32_t TIM8LPEN_Pos = 1;
+constexpr uint32_t TIM8LPEN_Msk = TIM8LPEN::mask;
 
-    /// USART1 clock enable during Sleep mode
-    /// Position: 4, Width: 1
-    using USART1LPEN = BitField<4, 1>;
-    constexpr uint32_t USART1LPEN_Pos = 4;
-    constexpr uint32_t USART1LPEN_Msk = USART1LPEN::mask;
+/// USART1 clock enable during Sleep mode
+/// Position: 4, Width: 1
+using USART1LPEN = BitField<4, 1>;
+constexpr uint32_t USART1LPEN_Pos = 4;
+constexpr uint32_t USART1LPEN_Msk = USART1LPEN::mask;
 
-    /// USART6 clock enable during Sleep mode
-    /// Position: 5, Width: 1
-    using USART6LPEN = BitField<5, 1>;
-    constexpr uint32_t USART6LPEN_Pos = 5;
-    constexpr uint32_t USART6LPEN_Msk = USART6LPEN::mask;
+/// USART6 clock enable during Sleep mode
+/// Position: 5, Width: 1
+using USART6LPEN = BitField<5, 1>;
+constexpr uint32_t USART6LPEN_Pos = 5;
+constexpr uint32_t USART6LPEN_Msk = USART6LPEN::mask;
 
-    /// ADC1 clock enable during Sleep mode
-    /// Position: 8, Width: 1
-    using ADC1LPEN = BitField<8, 1>;
-    constexpr uint32_t ADC1LPEN_Pos = 8;
-    constexpr uint32_t ADC1LPEN_Msk = ADC1LPEN::mask;
+/// ADC1 clock enable during Sleep mode
+/// Position: 8, Width: 1
+using ADC1LPEN = BitField<8, 1>;
+constexpr uint32_t ADC1LPEN_Pos = 8;
+constexpr uint32_t ADC1LPEN_Msk = ADC1LPEN::mask;
 
-    /// ADC2 clock enable during Sleep mode
-    /// Position: 9, Width: 1
-    using ADC2LPEN = BitField<9, 1>;
-    constexpr uint32_t ADC2LPEN_Pos = 9;
-    constexpr uint32_t ADC2LPEN_Msk = ADC2LPEN::mask;
+/// ADC2 clock enable during Sleep mode
+/// Position: 9, Width: 1
+using ADC2LPEN = BitField<9, 1>;
+constexpr uint32_t ADC2LPEN_Pos = 9;
+constexpr uint32_t ADC2LPEN_Msk = ADC2LPEN::mask;
 
-    /// ADC 3 clock enable during Sleep mode
-    /// Position: 10, Width: 1
-    using ADC3LPEN = BitField<10, 1>;
-    constexpr uint32_t ADC3LPEN_Pos = 10;
-    constexpr uint32_t ADC3LPEN_Msk = ADC3LPEN::mask;
+/// ADC 3 clock enable during Sleep mode
+/// Position: 10, Width: 1
+using ADC3LPEN = BitField<10, 1>;
+constexpr uint32_t ADC3LPEN_Pos = 10;
+constexpr uint32_t ADC3LPEN_Msk = ADC3LPEN::mask;
 
-    /// SDIO clock enable during Sleep mode
-    /// Position: 11, Width: 1
-    using SDIOLPEN = BitField<11, 1>;
-    constexpr uint32_t SDIOLPEN_Pos = 11;
-    constexpr uint32_t SDIOLPEN_Msk = SDIOLPEN::mask;
+/// SDIO clock enable during Sleep mode
+/// Position: 11, Width: 1
+using SDIOLPEN = BitField<11, 1>;
+constexpr uint32_t SDIOLPEN_Pos = 11;
+constexpr uint32_t SDIOLPEN_Msk = SDIOLPEN::mask;
 
-    /// SPI 1 clock enable during Sleep mode
-    /// Position: 12, Width: 1
-    using SPI1LPEN = BitField<12, 1>;
-    constexpr uint32_t SPI1LPEN_Pos = 12;
-    constexpr uint32_t SPI1LPEN_Msk = SPI1LPEN::mask;
+/// SPI 1 clock enable during Sleep mode
+/// Position: 12, Width: 1
+using SPI1LPEN = BitField<12, 1>;
+constexpr uint32_t SPI1LPEN_Pos = 12;
+constexpr uint32_t SPI1LPEN_Msk = SPI1LPEN::mask;
 
-    /// System configuration controller clock enable during Sleep mode
-    /// Position: 14, Width: 1
-    using SYSCFGLPEN = BitField<14, 1>;
-    constexpr uint32_t SYSCFGLPEN_Pos = 14;
-    constexpr uint32_t SYSCFGLPEN_Msk = SYSCFGLPEN::mask;
+/// System configuration controller clock enable during Sleep mode
+/// Position: 14, Width: 1
+using SYSCFGLPEN = BitField<14, 1>;
+constexpr uint32_t SYSCFGLPEN_Pos = 14;
+constexpr uint32_t SYSCFGLPEN_Msk = SYSCFGLPEN::mask;
 
-    /// TIM9 clock enable during sleep mode
-    /// Position: 16, Width: 1
-    using TIM9LPEN = BitField<16, 1>;
-    constexpr uint32_t TIM9LPEN_Pos = 16;
-    constexpr uint32_t TIM9LPEN_Msk = TIM9LPEN::mask;
+/// TIM9 clock enable during sleep mode
+/// Position: 16, Width: 1
+using TIM9LPEN = BitField<16, 1>;
+constexpr uint32_t TIM9LPEN_Pos = 16;
+constexpr uint32_t TIM9LPEN_Msk = TIM9LPEN::mask;
 
-    /// TIM10 clock enable during Sleep mode
-    /// Position: 17, Width: 1
-    using TIM10LPEN = BitField<17, 1>;
-    constexpr uint32_t TIM10LPEN_Pos = 17;
-    constexpr uint32_t TIM10LPEN_Msk = TIM10LPEN::mask;
+/// TIM10 clock enable during Sleep mode
+/// Position: 17, Width: 1
+using TIM10LPEN = BitField<17, 1>;
+constexpr uint32_t TIM10LPEN_Pos = 17;
+constexpr uint32_t TIM10LPEN_Msk = TIM10LPEN::mask;
 
-    /// TIM11 clock enable during Sleep mode
-    /// Position: 18, Width: 1
-    using TIM11LPEN = BitField<18, 1>;
-    constexpr uint32_t TIM11LPEN_Pos = 18;
-    constexpr uint32_t TIM11LPEN_Msk = TIM11LPEN::mask;
+/// TIM11 clock enable during Sleep mode
+/// Position: 18, Width: 1
+using TIM11LPEN = BitField<18, 1>;
+constexpr uint32_t TIM11LPEN_Pos = 18;
+constexpr uint32_t TIM11LPEN_Msk = TIM11LPEN::mask;
 
 }  // namespace apb2lpenr
 
 /// BDCR - Backup domain control register
 namespace bdcr {
-    /// External low-speed oscillator enable
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using LSEON = BitField<0, 1>;
-    constexpr uint32_t LSEON_Pos = 0;
-    constexpr uint32_t LSEON_Msk = LSEON::mask;
+/// External low-speed oscillator enable
+/// Position: 0, Width: 1
+/// Access: read-write
+using LSEON = BitField<0, 1>;
+constexpr uint32_t LSEON_Pos = 0;
+constexpr uint32_t LSEON_Msk = LSEON::mask;
 
-    /// External low-speed oscillator ready
-    /// Position: 1, Width: 1
-    /// Access: read-only
-    using LSERDY = BitField<1, 1>;
-    constexpr uint32_t LSERDY_Pos = 1;
-    constexpr uint32_t LSERDY_Msk = LSERDY::mask;
+/// External low-speed oscillator ready
+/// Position: 1, Width: 1
+/// Access: read-only
+using LSERDY = BitField<1, 1>;
+constexpr uint32_t LSERDY_Pos = 1;
+constexpr uint32_t LSERDY_Msk = LSERDY::mask;
 
-    /// External low-speed oscillator bypass
-    /// Position: 2, Width: 1
-    /// Access: read-write
-    using LSEBYP = BitField<2, 1>;
-    constexpr uint32_t LSEBYP_Pos = 2;
-    constexpr uint32_t LSEBYP_Msk = LSEBYP::mask;
+/// External low-speed oscillator bypass
+/// Position: 2, Width: 1
+/// Access: read-write
+using LSEBYP = BitField<2, 1>;
+constexpr uint32_t LSEBYP_Pos = 2;
+constexpr uint32_t LSEBYP_Msk = LSEBYP::mask;
 
-    /// RTC clock source selection
-    /// Position: 8, Width: 1
-    /// Access: read-write
-    using RTCSEL0 = BitField<8, 1>;
-    constexpr uint32_t RTCSEL0_Pos = 8;
-    constexpr uint32_t RTCSEL0_Msk = RTCSEL0::mask;
+/// RTC clock source selection
+/// Position: 8, Width: 1
+/// Access: read-write
+using RTCSEL0 = BitField<8, 1>;
+constexpr uint32_t RTCSEL0_Pos = 8;
+constexpr uint32_t RTCSEL0_Msk = RTCSEL0::mask;
 
-    /// RTC clock source selection
-    /// Position: 9, Width: 1
-    /// Access: read-write
-    using RTCSEL1 = BitField<9, 1>;
-    constexpr uint32_t RTCSEL1_Pos = 9;
-    constexpr uint32_t RTCSEL1_Msk = RTCSEL1::mask;
+/// RTC clock source selection
+/// Position: 9, Width: 1
+/// Access: read-write
+using RTCSEL1 = BitField<9, 1>;
+constexpr uint32_t RTCSEL1_Pos = 9;
+constexpr uint32_t RTCSEL1_Msk = RTCSEL1::mask;
 
-    /// RTC clock enable
-    /// Position: 15, Width: 1
-    /// Access: read-write
-    using RTCEN = BitField<15, 1>;
-    constexpr uint32_t RTCEN_Pos = 15;
-    constexpr uint32_t RTCEN_Msk = RTCEN::mask;
+/// RTC clock enable
+/// Position: 15, Width: 1
+/// Access: read-write
+using RTCEN = BitField<15, 1>;
+constexpr uint32_t RTCEN_Pos = 15;
+constexpr uint32_t RTCEN_Msk = RTCEN::mask;
 
-    /// Backup domain software reset
-    /// Position: 16, Width: 1
-    /// Access: read-write
-    using BDRST = BitField<16, 1>;
-    constexpr uint32_t BDRST_Pos = 16;
-    constexpr uint32_t BDRST_Msk = BDRST::mask;
+/// Backup domain software reset
+/// Position: 16, Width: 1
+/// Access: read-write
+using BDRST = BitField<16, 1>;
+constexpr uint32_t BDRST_Pos = 16;
+constexpr uint32_t BDRST_Msk = BDRST::mask;
 
 }  // namespace bdcr
 
 /// CSR - clock control & status register
 namespace csr {
-    /// Internal low-speed oscillator enable
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using LSION = BitField<0, 1>;
-    constexpr uint32_t LSION_Pos = 0;
-    constexpr uint32_t LSION_Msk = LSION::mask;
+/// Internal low-speed oscillator enable
+/// Position: 0, Width: 1
+/// Access: read-write
+using LSION = BitField<0, 1>;
+constexpr uint32_t LSION_Pos = 0;
+constexpr uint32_t LSION_Msk = LSION::mask;
 
-    /// Internal low-speed oscillator ready
-    /// Position: 1, Width: 1
-    /// Access: read-only
-    using LSIRDY = BitField<1, 1>;
-    constexpr uint32_t LSIRDY_Pos = 1;
-    constexpr uint32_t LSIRDY_Msk = LSIRDY::mask;
+/// Internal low-speed oscillator ready
+/// Position: 1, Width: 1
+/// Access: read-only
+using LSIRDY = BitField<1, 1>;
+constexpr uint32_t LSIRDY_Pos = 1;
+constexpr uint32_t LSIRDY_Msk = LSIRDY::mask;
 
-    /// Remove reset flag
-    /// Position: 24, Width: 1
-    /// Access: read-write
-    using RMVF = BitField<24, 1>;
-    constexpr uint32_t RMVF_Pos = 24;
-    constexpr uint32_t RMVF_Msk = RMVF::mask;
+/// Remove reset flag
+/// Position: 24, Width: 1
+/// Access: read-write
+using RMVF = BitField<24, 1>;
+constexpr uint32_t RMVF_Pos = 24;
+constexpr uint32_t RMVF_Msk = RMVF::mask;
 
-    /// BOR reset flag
-    /// Position: 25, Width: 1
-    /// Access: read-write
-    using BORRSTF = BitField<25, 1>;
-    constexpr uint32_t BORRSTF_Pos = 25;
-    constexpr uint32_t BORRSTF_Msk = BORRSTF::mask;
+/// BOR reset flag
+/// Position: 25, Width: 1
+/// Access: read-write
+using BORRSTF = BitField<25, 1>;
+constexpr uint32_t BORRSTF_Pos = 25;
+constexpr uint32_t BORRSTF_Msk = BORRSTF::mask;
 
-    /// PIN reset flag
-    /// Position: 26, Width: 1
-    /// Access: read-write
-    using PADRSTF = BitField<26, 1>;
-    constexpr uint32_t PADRSTF_Pos = 26;
-    constexpr uint32_t PADRSTF_Msk = PADRSTF::mask;
+/// PIN reset flag
+/// Position: 26, Width: 1
+/// Access: read-write
+using PADRSTF = BitField<26, 1>;
+constexpr uint32_t PADRSTF_Pos = 26;
+constexpr uint32_t PADRSTF_Msk = PADRSTF::mask;
 
-    /// POR/PDR reset flag
-    /// Position: 27, Width: 1
-    /// Access: read-write
-    using PORRSTF = BitField<27, 1>;
-    constexpr uint32_t PORRSTF_Pos = 27;
-    constexpr uint32_t PORRSTF_Msk = PORRSTF::mask;
+/// POR/PDR reset flag
+/// Position: 27, Width: 1
+/// Access: read-write
+using PORRSTF = BitField<27, 1>;
+constexpr uint32_t PORRSTF_Pos = 27;
+constexpr uint32_t PORRSTF_Msk = PORRSTF::mask;
 
-    /// Software reset flag
-    /// Position: 28, Width: 1
-    /// Access: read-write
-    using SFTRSTF = BitField<28, 1>;
-    constexpr uint32_t SFTRSTF_Pos = 28;
-    constexpr uint32_t SFTRSTF_Msk = SFTRSTF::mask;
+/// Software reset flag
+/// Position: 28, Width: 1
+/// Access: read-write
+using SFTRSTF = BitField<28, 1>;
+constexpr uint32_t SFTRSTF_Pos = 28;
+constexpr uint32_t SFTRSTF_Msk = SFTRSTF::mask;
 
-    /// Independent watchdog reset flag
-    /// Position: 29, Width: 1
-    /// Access: read-write
-    using WDGRSTF = BitField<29, 1>;
-    constexpr uint32_t WDGRSTF_Pos = 29;
-    constexpr uint32_t WDGRSTF_Msk = WDGRSTF::mask;
+/// Independent watchdog reset flag
+/// Position: 29, Width: 1
+/// Access: read-write
+using WDGRSTF = BitField<29, 1>;
+constexpr uint32_t WDGRSTF_Pos = 29;
+constexpr uint32_t WDGRSTF_Msk = WDGRSTF::mask;
 
-    /// Window watchdog reset flag
-    /// Position: 30, Width: 1
-    /// Access: read-write
-    using WWDGRSTF = BitField<30, 1>;
-    constexpr uint32_t WWDGRSTF_Pos = 30;
-    constexpr uint32_t WWDGRSTF_Msk = WWDGRSTF::mask;
+/// Window watchdog reset flag
+/// Position: 30, Width: 1
+/// Access: read-write
+using WWDGRSTF = BitField<30, 1>;
+constexpr uint32_t WWDGRSTF_Pos = 30;
+constexpr uint32_t WWDGRSTF_Msk = WWDGRSTF::mask;
 
-    /// Low-power reset flag
-    /// Position: 31, Width: 1
-    /// Access: read-write
-    using LPWRRSTF = BitField<31, 1>;
-    constexpr uint32_t LPWRRSTF_Pos = 31;
-    constexpr uint32_t LPWRRSTF_Msk = LPWRRSTF::mask;
+/// Low-power reset flag
+/// Position: 31, Width: 1
+/// Access: read-write
+using LPWRRSTF = BitField<31, 1>;
+constexpr uint32_t LPWRRSTF_Pos = 31;
+constexpr uint32_t LPWRRSTF_Msk = LPWRRSTF::mask;
 
 }  // namespace csr
 
 /// SSCGR - spread spectrum clock generation register
 namespace sscgr {
-    /// Modulation period
-    /// Position: 0, Width: 13
-    using MODPER = BitField<0, 13>;
-    constexpr uint32_t MODPER_Pos = 0;
-    constexpr uint32_t MODPER_Msk = MODPER::mask;
+/// Modulation period
+/// Position: 0, Width: 13
+using MODPER = BitField<0, 13>;
+constexpr uint32_t MODPER_Pos = 0;
+constexpr uint32_t MODPER_Msk = MODPER::mask;
 
-    /// Incrementation step
-    /// Position: 13, Width: 15
-    using INCSTEP = BitField<13, 15>;
-    constexpr uint32_t INCSTEP_Pos = 13;
-    constexpr uint32_t INCSTEP_Msk = INCSTEP::mask;
+/// Incrementation step
+/// Position: 13, Width: 15
+using INCSTEP = BitField<13, 15>;
+constexpr uint32_t INCSTEP_Pos = 13;
+constexpr uint32_t INCSTEP_Msk = INCSTEP::mask;
 
-    /// Spread Select
-    /// Position: 30, Width: 1
-    using SPREADSEL = BitField<30, 1>;
-    constexpr uint32_t SPREADSEL_Pos = 30;
-    constexpr uint32_t SPREADSEL_Msk = SPREADSEL::mask;
+/// Spread Select
+/// Position: 30, Width: 1
+using SPREADSEL = BitField<30, 1>;
+constexpr uint32_t SPREADSEL_Pos = 30;
+constexpr uint32_t SPREADSEL_Msk = SPREADSEL::mask;
 
-    /// Spread spectrum modulation enable
-    /// Position: 31, Width: 1
-    using SSCGEN = BitField<31, 1>;
-    constexpr uint32_t SSCGEN_Pos = 31;
-    constexpr uint32_t SSCGEN_Msk = SSCGEN::mask;
+/// Spread spectrum modulation enable
+/// Position: 31, Width: 1
+using SSCGEN = BitField<31, 1>;
+constexpr uint32_t SSCGEN_Pos = 31;
+constexpr uint32_t SSCGEN_Msk = SSCGEN::mask;
 
 }  // namespace sscgr
 
 /// PLLI2SCFGR - PLLI2S configuration register
 namespace plli2scfgr {
-    /// PLLI2S multiplication factor for VCO
-    /// Position: 6, Width: 9
-    using PLLI2SNx = BitField<6, 9>;
-    constexpr uint32_t PLLI2SNx_Pos = 6;
-    constexpr uint32_t PLLI2SNx_Msk = PLLI2SNx::mask;
+/// PLLI2S multiplication factor for VCO
+/// Position: 6, Width: 9
+using PLLI2SNx = BitField<6, 9>;
+constexpr uint32_t PLLI2SNx_Pos = 6;
+constexpr uint32_t PLLI2SNx_Msk = PLLI2SNx::mask;
 
-    /// PLLI2S division factor for I2S clocks
-    /// Position: 28, Width: 3
-    using PLLI2SRx = BitField<28, 3>;
-    constexpr uint32_t PLLI2SRx_Pos = 28;
-    constexpr uint32_t PLLI2SRx_Msk = PLLI2SRx::mask;
+/// PLLI2S division factor for I2S clocks
+/// Position: 28, Width: 3
+using PLLI2SRx = BitField<28, 3>;
+constexpr uint32_t PLLI2SRx_Pos = 28;
+constexpr uint32_t PLLI2SRx_Msk = PLLI2SRx::mask;
 
 }  // namespace plli2scfgr
 

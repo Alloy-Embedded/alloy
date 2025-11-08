@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::syscfg {
 
 /// SYSCFG Register Structure
 struct SYSCFG_Registers {
-
     /// memory remap register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -53,7 +52,7 @@ struct SYSCFG_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t EXTICR4;
-    uint8_t RESERVED_0018[8]; ///< Reserved
+    uint8_t RESERVED_0018[8];  ///< Reserved
 
     /// Compensation cell control register
     /// Offset: 0x0020

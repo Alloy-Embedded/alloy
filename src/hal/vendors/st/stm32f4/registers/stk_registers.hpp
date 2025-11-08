@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::stk {
 
 /// STK Register Structure
 struct STK_Registers {
-
     /// SysTick control and status register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

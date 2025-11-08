@@ -5,56 +5,57 @@
 #ifndef ALLOY_HAL_INTERFACE_ADC_HPP
 #define ALLOY_HAL_INTERFACE_ADC_HPP
 
+#include <concepts>
+#include <functional>
+#include <span>
+
 #include "core/error.hpp"
 #include "core/types.hpp"
-#include <concepts>
-#include <span>
-#include <functional>
 
 namespace alloy::hal {
 
 /// ADC resolution options
 enum class AdcResolution : core::u8 {
-    Bits6  = 6,    ///< 6-bit resolution (0-63)
-    Bits8  = 8,    ///< 8-bit resolution (0-255)
-    Bits10 = 10,   ///< 10-bit resolution (0-1023)
-    Bits12 = 12,   ///< 12-bit resolution (0-4095, most common)
-    Bits14 = 14,   ///< 14-bit resolution (0-16383)
-    Bits16 = 16    ///< 16-bit resolution (0-65535)
+    Bits6 = 6,    ///< 6-bit resolution (0-63)
+    Bits8 = 8,    ///< 8-bit resolution (0-255)
+    Bits10 = 10,  ///< 10-bit resolution (0-1023)
+    Bits12 = 12,  ///< 12-bit resolution (0-4095, most common)
+    Bits14 = 14,  ///< 14-bit resolution (0-16383)
+    Bits16 = 16   ///< 16-bit resolution (0-65535)
 };
 
 /// ADC reference voltage source
 enum class AdcReference : core::u8 {
-    Internal,      ///< Internal reference voltage (typically 1.2V or 2.5V)
-    External,      ///< External reference voltage (VREF pin)
-    Vdd            ///< Supply voltage (VDD/VDDA)
+    Internal,  ///< Internal reference voltage (typically 1.2V or 2.5V)
+    External,  ///< External reference voltage (VREF pin)
+    Vdd        ///< Supply voltage (VDD/VDDA)
 };
 
 /// ADC sample time (conversion speed vs accuracy trade-off)
 enum class AdcSampleTime : core::u8 {
-    Cycles1_5   = 0,   ///< 1.5 cycles (fastest, least accurate)
-    Cycles7_5   = 1,   ///< 7.5 cycles
-    Cycles13_5  = 2,   ///< 13.5 cycles
-    Cycles28_5  = 3,   ///< 28.5 cycles
-    Cycles41_5  = 4,   ///< 41.5 cycles
-    Cycles55_5  = 5,   ///< 55.5 cycles
-    Cycles71_5  = 6,   ///< 71.5 cycles
-    Cycles84    = 7,   ///< 84 cycles
-    Cycles239_5 = 8    ///< 239.5 cycles (slowest, most accurate)
+    Cycles1_5 = 0,   ///< 1.5 cycles (fastest, least accurate)
+    Cycles7_5 = 1,   ///< 7.5 cycles
+    Cycles13_5 = 2,  ///< 13.5 cycles
+    Cycles28_5 = 3,  ///< 28.5 cycles
+    Cycles41_5 = 4,  ///< 41.5 cycles
+    Cycles55_5 = 5,  ///< 55.5 cycles
+    Cycles71_5 = 6,  ///< 71.5 cycles
+    Cycles84 = 7,    ///< 84 cycles
+    Cycles239_5 = 8  ///< 239.5 cycles (slowest, most accurate)
 };
 
 /// ADC channel identifier
 enum class AdcChannel : core::u8 {
-    Channel0  = 0,
-    Channel1  = 1,
-    Channel2  = 2,
-    Channel3  = 3,
-    Channel4  = 4,
-    Channel5  = 5,
-    Channel6  = 6,
-    Channel7  = 7,
-    Channel8  = 8,
-    Channel9  = 9,
+    Channel0 = 0,
+    Channel1 = 1,
+    Channel2 = 2,
+    Channel3 = 3,
+    Channel4 = 4,
+    Channel5 = 5,
+    Channel6 = 6,
+    Channel7 = 7,
+    Channel8 = 8,
+    Channel9 = 9,
     Channel10 = 10,
     Channel11 = 11,
     Channel12 = 12,
@@ -76,9 +77,11 @@ struct AdcConfig {
 
     /// Constructor with default configuration
     constexpr AdcConfig(AdcResolution res = AdcResolution::Bits12,
-                       AdcReference ref = AdcReference::Vdd,
-                       AdcSampleTime sample = AdcSampleTime::Cycles84)
-        : resolution(res), reference(ref), sample_time(sample) {}
+                        AdcReference ref = AdcReference::Vdd,
+                        AdcSampleTime sample = AdcSampleTime::Cycles84)
+        : resolution(res),
+          reference(ref),
+          sample_time(sample) {}
 };
 
 /// ADC device concept
@@ -92,13 +95,10 @@ struct AdcConfig {
 /// - ErrorCode::AdcConversionTimeout: Conversion did not complete in time
 /// - ErrorCode::InvalidParameter: Invalid channel or configuration
 /// - ErrorCode::NotSupported: Feature not supported by hardware
-template<typename T>
-concept AdcDevice = requires(T device, const T const_device,
-                             AdcChannel channel,
-                             std::span<core::u16> buffer,
-                             std::span<AdcChannel> channels,
-                             AdcConfig config,
-                             std::function<void(core::u16)> callback) {
+template <typename T>
+concept AdcDevice = requires(T device, const T const_device, AdcChannel channel,
+                             std::span<core::u16> buffer, std::span<AdcChannel> channels,
+                             AdcConfig config, std::function<void(core::u16)> callback) {
     /// Read single ADC channel (blocking)
     ///
     /// Performs a single conversion on the specified channel and returns
@@ -173,7 +173,8 @@ concept AdcDevice = requires(T device, const T const_device,
 /// @param max_value Maximum ADC value (2^resolution - 1)
 /// @param reference_voltage Reference voltage in volts (e.g., 3.3V)
 /// @return Voltage in volts
-inline constexpr float raw_to_voltage(core::u16 raw_value, core::u16 max_value, float reference_voltage) {
+inline constexpr float raw_to_voltage(core::u16 raw_value, core::u16 max_value,
+                                      float reference_voltage) {
     return (static_cast<float>(raw_value) / static_cast<float>(max_value)) * reference_voltage;
 }
 
@@ -194,6 +195,6 @@ inline constexpr core::u16 get_max_adc_value(AdcResolution resolution) {
     return (1u << static_cast<core::u8>(resolution)) - 1;
 }
 
-} // namespace alloy::hal
+}  // namespace alloy::hal
 
-#endif // ALLOY_HAL_INTERFACE_ADC_HPP
+#endif  // ALLOY_HAL_INTERFACE_ADC_HPP

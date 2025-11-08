@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f1::spi1 {
 
 /// SPI1 Register Structure
 struct SPI1_Registers {
-
     /// control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000

@@ -17,7 +17,6 @@ namespace alloy::hal::raspberrypi::rp2040::xip_ctrl {
 
 /// XIP_CTRL Register Structure
 struct XIP_CTRL_Registers {
-
     /// Cache control
     /// Offset: 0x0000
     /// Reset value: 0x00000003
@@ -33,16 +32,16 @@ struct XIP_CTRL_Registers {
     /// Reset value: 0x00000002
     volatile uint32_t STAT;
 
-    /// Cache Hit counter\n A 32 bit saturating counter that increments upon each cache hit,\n i.e. when an XIP access is serviced directly from cached data.\n Write any value to clear.
+    /// Cache Hit counter\n A 32 bit saturating counter that increments upon each cache hit,\n i.e.
+    /// when an XIP access is serviced directly from cached data.\n Write any value to clear.
     /// Offset: 0x000C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CTR_HIT;
 
-    /// Cache Access counter\n A 32 bit saturating counter that increments upon each XIP access,\n whether the cache is hit or not. This includes noncacheable accesses.\n Write any value to clear.
-    /// Offset: 0x0010
-    /// Reset value: 0x00000000
-    /// Access: read-write
+    /// Cache Access counter\n A 32 bit saturating counter that increments upon each XIP access,\n
+    /// whether the cache is hit or not. This includes noncacheable accesses.\n Write any value to
+    /// clear. Offset: 0x0010 Reset value: 0x00000000 Access: read-write
     volatile uint32_t CTR_ACC;
 
     /// FIFO stream address
@@ -55,10 +54,9 @@ struct XIP_CTRL_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t STREAM_CTR;
 
-    /// FIFO stream data\n Streamed data is buffered here, for retrieval by the system DMA.\n This FIFO can also be accessed via the XIP_AUX slave, to avoid exposing\n the DMA to bus stalls caused by other XIP traffic.
-    /// Offset: 0x001C
-    /// Reset value: 0x00000000
-    /// Access: read-only
+    /// FIFO stream data\n Streamed data is buffered here, for retrieval by the system DMA.\n This
+    /// FIFO can also be accessed via the XIP_AUX slave, to avoid exposing\n the DMA to bus stalls
+    /// caused by other XIP traffic. Offset: 0x001C Reset value: 0x00000000 Access: read-only
     volatile uint32_t STREAM_FIFO;
 };
 

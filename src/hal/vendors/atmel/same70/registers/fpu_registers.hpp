@@ -17,7 +17,7 @@ namespace alloy::hal::atmel::same70::fpu {
 
 /// FPU Register Structure
 struct FPU_Registers {
-    uint8_t RESERVED_0000[4]; ///< Reserved
+    uint8_t RESERVED_0000[4];  ///< Reserved
 
     /// Floating-point Context Control Register
     /// Offset: 0x0004

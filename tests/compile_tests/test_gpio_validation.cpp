@@ -14,7 +14,7 @@
 
 #ifdef ALLOY_MCU  // Only compile when building for real hardware
 
-#include "hal/st/stm32f1/gpio.hpp"
+    #include "hal/st/stm32f1/gpio.hpp"
 
 using namespace alloy::hal::stm32f1;
 
@@ -26,16 +26,16 @@ using namespace alloy::hal::stm32f1;
 // STM32F103C8 has GPIOA, GPIOB, GPIOC (7 ports total in database)
 void test_valid_gpio_pins() {
     // Valid pins on Port A (PA0-PA15)
-    GpioPin<0> pa0;   // PA0 - valid
-    GpioPin<15> pa15; // PA15 - valid
+    GpioPin<0> pa0;    // PA0 - valid
+    GpioPin<15> pa15;  // PA15 - valid
 
     // Valid pins on Port B (PB0-PB15)
-    GpioPin<16> pb0;  // PB0 - valid
-    GpioPin<31> pb15; // PB15 - valid
+    GpioPin<16> pb0;   // PB0 - valid
+    GpioPin<31> pb15;  // PB15 - valid
 
     // Valid pins on Port C (PC0-PC15)
-    GpioPin<32> pc0;  // PC0 - valid
-    GpioPin<45> pc13; // PC13 - valid (BluePill LED)
+    GpioPin<32> pc0;   // PC0 - valid
+    GpioPin<45> pc13;  // PC13 - valid (BluePill LED)
 }
 
 // ============================================================================
@@ -54,4 +54,4 @@ void test_valid_gpio_pins() {
 //     GpioPin<112> pg0;  // Port G = 112/16 = 7, should fail with "GPIO port not available"
 // }
 
-#endif // ALLOY_MCU
+#endif  // ALLOY_MCU

@@ -7,9 +7,11 @@
 /// This shows preemptive multitasking where high priority task
 /// interrupts low priority task.
 
-#include "stm32f103c8/board.hpp"
 #include "rtos/rtos.hpp"
+
 #include "core/types.hpp"
+
+#include "stm32f103c8/board.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
@@ -43,9 +45,9 @@ void idle_task_func() {
 }
 
 // Create tasks with different priorities
-Task<512, Priority::High>   task1(task1_func, "Fast");
+Task<512, Priority::High> task1(task1_func, "Fast");
 Task<512, Priority::Normal> task2(task2_func, "Slow");
-Task<256, Priority::Idle>   idle_task(idle_task_func, "Idle");
+Task<256, Priority::Idle> idle_task(idle_task_func, "Idle");
 
 int main() {
     // Initialize board (includes SysTick)
@@ -62,8 +64,8 @@ int main() {
 
 // Weak symbols for startup code
 extern "C" {
-    void SystemInit() {
-        // Optional: Configure clocks here
-        // For now, running on default HSI (8MHz)
-    }
+void SystemInit() {
+    // Optional: Configure clocks here
+    // For now, running on default HSI (8MHz)
+}
 }

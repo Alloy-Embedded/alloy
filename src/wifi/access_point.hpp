@@ -22,41 +22,41 @@
 
 #pragma once
 
-#include "types.hpp"
 #include "core/error.hpp"
 #include "core/esp_error.hpp"
 
+#include "types.hpp"
+
 #ifdef ESP_PLATFORM
-#include "esp_wifi.h"
-#include "esp_event.h"
-#include "nvs_flash.h"
-#include "esp_netif.h"
+    #include "esp_event.h"
+    #include "esp_netif.h"
+    #include "esp_wifi.h"
+    #include "nvs_flash.h"
 #endif
 
 namespace alloy::wifi {
 
-using core::Result;
 using core::ErrorCode;
+using core::Result;
 
 /**
  * @brief WiFi Access Point configuration
  */
 struct APConfig {
-    const char* ssid;                   ///< AP SSID (max 32 characters)
-    const char* password;               ///< AP password (min 8, max 63 characters, or nullptr for open)
-    uint8_t channel;                    ///< WiFi channel (1-13)
-    uint8_t max_connections;            ///< Maximum number of stations (1-10)
-    AuthMode auth_mode;                 ///< Authentication mode
-    bool ssid_hidden;                   ///< Hide SSID
+    const char* ssid;         ///< AP SSID (max 32 characters)
+    const char* password;     ///< AP password (min 8, max 63 characters, or nullptr for open)
+    uint8_t channel;          ///< WiFi channel (1-13)
+    uint8_t max_connections;  ///< Maximum number of stations (1-10)
+    AuthMode auth_mode;       ///< Authentication mode
+    bool ssid_hidden;         ///< Hide SSID
 
     APConfig()
-        : ssid(nullptr)
-        , password(nullptr)
-        , channel(1)
-        , max_connections(4)
-        , auth_mode(AuthMode::WPA2_PSK)
-        , ssid_hidden(false)
-    {}
+        : ssid(nullptr),
+          password(nullptr),
+          channel(1),
+          max_connections(4),
+          auth_mode(AuthMode::WPA2_PSK),
+          ssid_hidden(false) {}
 };
 
 /**
@@ -69,7 +69,7 @@ struct APConfig {
  * be used per application due to ESP-IDF WiFi driver limitations.
  */
 class AccessPoint {
-public:
+   public:
     /**
      * @brief Station connection callback function type
      * @param connected true if station connected, false if disconnected
@@ -175,7 +175,7 @@ public:
      */
     const char* ssid() const;
 
-private:
+   private:
     bool initialized_;
     bool running_;
     ConnectionInfo ap_info_;
@@ -183,15 +183,11 @@ private:
     StationCallback callback_;
 
 #ifdef ESP_PLATFORM
-    static void event_handler(
-        void* arg,
-        esp_event_base_t event_base,
-        int32_t event_id,
-        void* event_data
-    );
+    static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id,
+                              void* event_data);
 
     void handle_wifi_event(int32_t event_id, void* event_data);
 #endif
 };
 
-} // namespace alloy::wifi
+}  // namespace alloy::wifi

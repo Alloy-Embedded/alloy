@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::rtc_i2c {
@@ -19,288 +20,288 @@ using namespace alloy::hal::bitfields;
 
 /// SCL_LOW_PERIOD - SCL_LOW_PERIOD
 namespace scl_low_period {
-    /// number of cycles that scl == 0
-    /// Position: 0, Width: 25
-    /// Access: read-write
-    using SCL_LOW_PERIOD = BitField<0, 25>;
-    constexpr uint32_t SCL_LOW_PERIOD_Pos = 0;
-    constexpr uint32_t SCL_LOW_PERIOD_Msk = SCL_LOW_PERIOD::mask;
+/// number of cycles that scl == 0
+/// Position: 0, Width: 25
+/// Access: read-write
+using SCL_LOW_PERIOD = BitField<0, 25>;
+constexpr uint32_t SCL_LOW_PERIOD_Pos = 0;
+constexpr uint32_t SCL_LOW_PERIOD_Msk = SCL_LOW_PERIOD::mask;
 
 }  // namespace scl_low_period
 
 /// CTRL - CTRL
 namespace ctrl {
-    /// SDA is push-pull (1) or open-drain (0)
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using SDA_FORCE_OUT = BitField<0, 1>;
-    constexpr uint32_t SDA_FORCE_OUT_Pos = 0;
-    constexpr uint32_t SDA_FORCE_OUT_Msk = SDA_FORCE_OUT::mask;
+/// SDA is push-pull (1) or open-drain (0)
+/// Position: 0, Width: 1
+/// Access: read-write
+using SDA_FORCE_OUT = BitField<0, 1>;
+constexpr uint32_t SDA_FORCE_OUT_Pos = 0;
+constexpr uint32_t SDA_FORCE_OUT_Msk = SDA_FORCE_OUT::mask;
 
-    /// SCL is push-pull (1) or open-drain (0)
-    /// Position: 1, Width: 1
-    /// Access: read-write
-    using SCL_FORCE_OUT = BitField<1, 1>;
-    constexpr uint32_t SCL_FORCE_OUT_Pos = 1;
-    constexpr uint32_t SCL_FORCE_OUT_Msk = SCL_FORCE_OUT::mask;
+/// SCL is push-pull (1) or open-drain (0)
+/// Position: 1, Width: 1
+/// Access: read-write
+using SCL_FORCE_OUT = BitField<1, 1>;
+constexpr uint32_t SCL_FORCE_OUT_Pos = 1;
+constexpr uint32_t SCL_FORCE_OUT_Msk = SCL_FORCE_OUT::mask;
 
-    /// Master (1) or slave (0)
-    /// Position: 4, Width: 1
-    /// Access: read-write
-    using MS_MODE = BitField<4, 1>;
-    constexpr uint32_t MS_MODE_Pos = 4;
-    constexpr uint32_t MS_MODE_Msk = MS_MODE::mask;
+/// Master (1) or slave (0)
+/// Position: 4, Width: 1
+/// Access: read-write
+using MS_MODE = BitField<4, 1>;
+constexpr uint32_t MS_MODE_Pos = 4;
+constexpr uint32_t MS_MODE_Msk = MS_MODE::mask;
 
-    /// Force to generate start condition
-    /// Position: 5, Width: 1
-    /// Access: read-write
-    using TRANS_START = BitField<5, 1>;
-    constexpr uint32_t TRANS_START_Pos = 5;
-    constexpr uint32_t TRANS_START_Msk = TRANS_START::mask;
+/// Force to generate start condition
+/// Position: 5, Width: 1
+/// Access: read-write
+using TRANS_START = BitField<5, 1>;
+constexpr uint32_t TRANS_START_Pos = 5;
+constexpr uint32_t TRANS_START_Msk = TRANS_START::mask;
 
-    /// Send LSB first
-    /// Position: 6, Width: 1
-    /// Access: read-write
-    using TX_LSB_FIRST = BitField<6, 1>;
-    constexpr uint32_t TX_LSB_FIRST_Pos = 6;
-    constexpr uint32_t TX_LSB_FIRST_Msk = TX_LSB_FIRST::mask;
+/// Send LSB first
+/// Position: 6, Width: 1
+/// Access: read-write
+using TX_LSB_FIRST = BitField<6, 1>;
+constexpr uint32_t TX_LSB_FIRST_Pos = 6;
+constexpr uint32_t TX_LSB_FIRST_Msk = TX_LSB_FIRST::mask;
 
-    /// Receive LSB first
-    /// Position: 7, Width: 1
-    /// Access: read-write
-    using RX_LSB_FIRST = BitField<7, 1>;
-    constexpr uint32_t RX_LSB_FIRST_Pos = 7;
-    constexpr uint32_t RX_LSB_FIRST_Msk = RX_LSB_FIRST::mask;
+/// Receive LSB first
+/// Position: 7, Width: 1
+/// Access: read-write
+using RX_LSB_FIRST = BitField<7, 1>;
+constexpr uint32_t RX_LSB_FIRST_Pos = 7;
+constexpr uint32_t RX_LSB_FIRST_Msk = RX_LSB_FIRST::mask;
 
 }  // namespace ctrl
 
 /// DEBUG_STATUS - DEBUG_STATUS
 namespace debug_status {
-    /// The value of an acknowledge signal on the bus
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using ACK_VAL = BitField<0, 1>;
-    constexpr uint32_t ACK_VAL_Pos = 0;
-    constexpr uint32_t ACK_VAL_Msk = ACK_VAL::mask;
+/// The value of an acknowledge signal on the bus
+/// Position: 0, Width: 1
+/// Access: read-write
+using ACK_VAL = BitField<0, 1>;
+constexpr uint32_t ACK_VAL_Pos = 0;
+constexpr uint32_t ACK_VAL_Msk = ACK_VAL::mask;
 
-    /// When working as a slave, the value of R/W bit received
-    /// Position: 1, Width: 1
-    /// Access: read-write
-    using SLAVE_RW = BitField<1, 1>;
-    constexpr uint32_t SLAVE_RW_Pos = 1;
-    constexpr uint32_t SLAVE_RW_Msk = SLAVE_RW::mask;
+/// When working as a slave, the value of R/W bit received
+/// Position: 1, Width: 1
+/// Access: read-write
+using SLAVE_RW = BitField<1, 1>;
+constexpr uint32_t SLAVE_RW_Pos = 1;
+constexpr uint32_t SLAVE_RW_Msk = SLAVE_RW::mask;
 
-    /// Transfer has timed out
-    /// Position: 2, Width: 1
-    /// Access: read-write
-    using TIMED_OUT = BitField<2, 1>;
-    constexpr uint32_t TIMED_OUT_Pos = 2;
-    constexpr uint32_t TIMED_OUT_Msk = TIMED_OUT::mask;
+/// Transfer has timed out
+/// Position: 2, Width: 1
+/// Access: read-write
+using TIMED_OUT = BitField<2, 1>;
+constexpr uint32_t TIMED_OUT_Pos = 2;
+constexpr uint32_t TIMED_OUT_Msk = TIMED_OUT::mask;
 
-    /// When working as a master, lost control of I2C bus
-    /// Position: 3, Width: 1
-    /// Access: read-write
-    using ARB_LOST = BitField<3, 1>;
-    constexpr uint32_t ARB_LOST_Pos = 3;
-    constexpr uint32_t ARB_LOST_Msk = ARB_LOST::mask;
+/// When working as a master, lost control of I2C bus
+/// Position: 3, Width: 1
+/// Access: read-write
+using ARB_LOST = BitField<3, 1>;
+constexpr uint32_t ARB_LOST_Pos = 3;
+constexpr uint32_t ARB_LOST_Msk = ARB_LOST::mask;
 
-    /// operation is in progress
-    /// Position: 4, Width: 1
-    /// Access: read-write
-    using BUS_BUSY = BitField<4, 1>;
-    constexpr uint32_t BUS_BUSY_Pos = 4;
-    constexpr uint32_t BUS_BUSY_Msk = BUS_BUSY::mask;
+/// operation is in progress
+/// Position: 4, Width: 1
+/// Access: read-write
+using BUS_BUSY = BitField<4, 1>;
+constexpr uint32_t BUS_BUSY_Pos = 4;
+constexpr uint32_t BUS_BUSY_Msk = BUS_BUSY::mask;
 
-    /// When working as a slave, whether address was matched
-    /// Position: 5, Width: 1
-    /// Access: read-write
-    using SLAVE_ADDR_MATCH = BitField<5, 1>;
-    constexpr uint32_t SLAVE_ADDR_MATCH_Pos = 5;
-    constexpr uint32_t SLAVE_ADDR_MATCH_Msk = SLAVE_ADDR_MATCH::mask;
+/// When working as a slave, whether address was matched
+/// Position: 5, Width: 1
+/// Access: read-write
+using SLAVE_ADDR_MATCH = BitField<5, 1>;
+constexpr uint32_t SLAVE_ADDR_MATCH_Pos = 5;
+constexpr uint32_t SLAVE_ADDR_MATCH_Msk = SLAVE_ADDR_MATCH::mask;
 
-    /// 8 bit transmit done
-    /// Position: 6, Width: 1
-    /// Access: read-write
-    using BYTE_TRANS = BitField<6, 1>;
-    constexpr uint32_t BYTE_TRANS_Pos = 6;
-    constexpr uint32_t BYTE_TRANS_Msk = BYTE_TRANS::mask;
+/// 8 bit transmit done
+/// Position: 6, Width: 1
+/// Access: read-write
+using BYTE_TRANS = BitField<6, 1>;
+constexpr uint32_t BYTE_TRANS_Pos = 6;
+constexpr uint32_t BYTE_TRANS_Msk = BYTE_TRANS::mask;
 
-    /// state of the main state machine
-    /// Position: 25, Width: 3
-    /// Access: read-write
-    using MAIN_STATE = BitField<25, 3>;
-    constexpr uint32_t MAIN_STATE_Pos = 25;
-    constexpr uint32_t MAIN_STATE_Msk = MAIN_STATE::mask;
+/// state of the main state machine
+/// Position: 25, Width: 3
+/// Access: read-write
+using MAIN_STATE = BitField<25, 3>;
+constexpr uint32_t MAIN_STATE_Pos = 25;
+constexpr uint32_t MAIN_STATE_Msk = MAIN_STATE::mask;
 
-    /// state of SCL state machine
-    /// Position: 28, Width: 3
-    /// Access: read-write
-    using SCL_STATE = BitField<28, 3>;
-    constexpr uint32_t SCL_STATE_Pos = 28;
-    constexpr uint32_t SCL_STATE_Msk = SCL_STATE::mask;
+/// state of SCL state machine
+/// Position: 28, Width: 3
+/// Access: read-write
+using SCL_STATE = BitField<28, 3>;
+constexpr uint32_t SCL_STATE_Pos = 28;
+constexpr uint32_t SCL_STATE_Msk = SCL_STATE::mask;
 
 }  // namespace debug_status
 
 /// TIMEOUT - TIMEOUT
 namespace timeout {
-    /// Maximum number of FAST_CLK cycles that the transmission can take
-    /// Position: 0, Width: 20
-    /// Access: read-write
-    using TIMEOUT = BitField<0, 20>;
-    constexpr uint32_t TIMEOUT_Pos = 0;
-    constexpr uint32_t TIMEOUT_Msk = TIMEOUT::mask;
+/// Maximum number of FAST_CLK cycles that the transmission can take
+/// Position: 0, Width: 20
+/// Access: read-write
+using TIMEOUT = BitField<0, 20>;
+constexpr uint32_t TIMEOUT_Pos = 0;
+constexpr uint32_t TIMEOUT_Msk = TIMEOUT::mask;
 
 }  // namespace timeout
 
 /// SLAVE_ADDR - SLAVE_ADDR
 namespace slave_addr {
-    /// local slave address
-    /// Position: 0, Width: 15
-    /// Access: read-write
-    using SLAVE_ADDR = BitField<0, 15>;
-    constexpr uint32_t SLAVE_ADDR_Pos = 0;
-    constexpr uint32_t SLAVE_ADDR_Msk = SLAVE_ADDR::mask;
+/// local slave address
+/// Position: 0, Width: 15
+/// Access: read-write
+using SLAVE_ADDR = BitField<0, 15>;
+constexpr uint32_t SLAVE_ADDR_Pos = 0;
+constexpr uint32_t SLAVE_ADDR_Msk = SLAVE_ADDR::mask;
 
-    /// Set if local slave address is 10-bit
-    /// Position: 31, Width: 1
-    /// Access: read-write
-    using _10BIT = BitField<31, 1>;
-    constexpr uint32_t _10BIT_Pos = 31;
-    constexpr uint32_t _10BIT_Msk = _10BIT::mask;
+/// Set if local slave address is 10-bit
+/// Position: 31, Width: 1
+/// Access: read-write
+using _10BIT = BitField<31, 1>;
+constexpr uint32_t _10BIT_Pos = 31;
+constexpr uint32_t _10BIT_Msk = _10BIT::mask;
 
 }  // namespace slave_addr
 
 /// INT_RAW - INT_RAW
 namespace int_raw {
-    /// Slave accepted 1 byte and address matched
-    /// Position: 3, Width: 1
-    /// Access: read-write
-    using SLAVE_TRANS_COMPLETE_INT_RAW = BitField<3, 1>;
-    constexpr uint32_t SLAVE_TRANS_COMPLETE_INT_RAW_Pos = 3;
-    constexpr uint32_t SLAVE_TRANS_COMPLETE_INT_RAW_Msk = SLAVE_TRANS_COMPLETE_INT_RAW::mask;
+/// Slave accepted 1 byte and address matched
+/// Position: 3, Width: 1
+/// Access: read-write
+using SLAVE_TRANS_COMPLETE_INT_RAW = BitField<3, 1>;
+constexpr uint32_t SLAVE_TRANS_COMPLETE_INT_RAW_Pos = 3;
+constexpr uint32_t SLAVE_TRANS_COMPLETE_INT_RAW_Msk = SLAVE_TRANS_COMPLETE_INT_RAW::mask;
 
-    /// Master lost arbitration
-    /// Position: 4, Width: 1
-    /// Access: read-write
-    using ARBITRATION_LOST_INT_RAW = BitField<4, 1>;
-    constexpr uint32_t ARBITRATION_LOST_INT_RAW_Pos = 4;
-    constexpr uint32_t ARBITRATION_LOST_INT_RAW_Msk = ARBITRATION_LOST_INT_RAW::mask;
+/// Master lost arbitration
+/// Position: 4, Width: 1
+/// Access: read-write
+using ARBITRATION_LOST_INT_RAW = BitField<4, 1>;
+constexpr uint32_t ARBITRATION_LOST_INT_RAW_Pos = 4;
+constexpr uint32_t ARBITRATION_LOST_INT_RAW_Msk = ARBITRATION_LOST_INT_RAW::mask;
 
-    /// Position: 5, Width: 1
-    /// Access: read-write
-    using MASTER_TRANS_COMPLETE_INT_RAW = BitField<5, 1>;
-    constexpr uint32_t MASTER_TRANS_COMPLETE_INT_RAW_Pos = 5;
-    constexpr uint32_t MASTER_TRANS_COMPLETE_INT_RAW_Msk = MASTER_TRANS_COMPLETE_INT_RAW::mask;
+/// Position: 5, Width: 1
+/// Access: read-write
+using MASTER_TRANS_COMPLETE_INT_RAW = BitField<5, 1>;
+constexpr uint32_t MASTER_TRANS_COMPLETE_INT_RAW_Pos = 5;
+constexpr uint32_t MASTER_TRANS_COMPLETE_INT_RAW_Msk = MASTER_TRANS_COMPLETE_INT_RAW::mask;
 
-    /// Stop condition has been detected interrupt raw status
-    /// Position: 6, Width: 1
-    /// Access: read-write
-    using TRANS_COMPLETE_INT_RAW = BitField<6, 1>;
-    constexpr uint32_t TRANS_COMPLETE_INT_RAW_Pos = 6;
-    constexpr uint32_t TRANS_COMPLETE_INT_RAW_Msk = TRANS_COMPLETE_INT_RAW::mask;
+/// Stop condition has been detected interrupt raw status
+/// Position: 6, Width: 1
+/// Access: read-write
+using TRANS_COMPLETE_INT_RAW = BitField<6, 1>;
+constexpr uint32_t TRANS_COMPLETE_INT_RAW_Pos = 6;
+constexpr uint32_t TRANS_COMPLETE_INT_RAW_Msk = TRANS_COMPLETE_INT_RAW::mask;
 
-    /// time out interrupt raw status
-    /// Position: 7, Width: 1
-    /// Access: read-only
-    using TIME_OUT_INT_RAW = BitField<7, 1>;
-    constexpr uint32_t TIME_OUT_INT_RAW_Pos = 7;
-    constexpr uint32_t TIME_OUT_INT_RAW_Msk = TIME_OUT_INT_RAW::mask;
+/// time out interrupt raw status
+/// Position: 7, Width: 1
+/// Access: read-only
+using TIME_OUT_INT_RAW = BitField<7, 1>;
+constexpr uint32_t TIME_OUT_INT_RAW_Pos = 7;
+constexpr uint32_t TIME_OUT_INT_RAW_Msk = TIME_OUT_INT_RAW::mask;
 
 }  // namespace int_raw
 
 /// INT_CLR - INT_CLR
 namespace int_clr {
-    /// Position: 4, Width: 1
-    /// Access: read-write
-    using SLAVE_TRANS_COMPLETE_INT_CLR = BitField<4, 1>;
-    constexpr uint32_t SLAVE_TRANS_COMPLETE_INT_CLR_Pos = 4;
-    constexpr uint32_t SLAVE_TRANS_COMPLETE_INT_CLR_Msk = SLAVE_TRANS_COMPLETE_INT_CLR::mask;
+/// Position: 4, Width: 1
+/// Access: read-write
+using SLAVE_TRANS_COMPLETE_INT_CLR = BitField<4, 1>;
+constexpr uint32_t SLAVE_TRANS_COMPLETE_INT_CLR_Pos = 4;
+constexpr uint32_t SLAVE_TRANS_COMPLETE_INT_CLR_Msk = SLAVE_TRANS_COMPLETE_INT_CLR::mask;
 
-    /// Position: 5, Width: 1
-    /// Access: read-write
-    using ARBITRATION_LOST_INT_CLR = BitField<5, 1>;
-    constexpr uint32_t ARBITRATION_LOST_INT_CLR_Pos = 5;
-    constexpr uint32_t ARBITRATION_LOST_INT_CLR_Msk = ARBITRATION_LOST_INT_CLR::mask;
+/// Position: 5, Width: 1
+/// Access: read-write
+using ARBITRATION_LOST_INT_CLR = BitField<5, 1>;
+constexpr uint32_t ARBITRATION_LOST_INT_CLR_Pos = 5;
+constexpr uint32_t ARBITRATION_LOST_INT_CLR_Msk = ARBITRATION_LOST_INT_CLR::mask;
 
-    /// Position: 6, Width: 1
-    /// Access: read-write
-    using MASTER_TRANS_COMPLETE_INT_CLR = BitField<6, 1>;
-    constexpr uint32_t MASTER_TRANS_COMPLETE_INT_CLR_Pos = 6;
-    constexpr uint32_t MASTER_TRANS_COMPLETE_INT_CLR_Msk = MASTER_TRANS_COMPLETE_INT_CLR::mask;
+/// Position: 6, Width: 1
+/// Access: read-write
+using MASTER_TRANS_COMPLETE_INT_CLR = BitField<6, 1>;
+constexpr uint32_t MASTER_TRANS_COMPLETE_INT_CLR_Pos = 6;
+constexpr uint32_t MASTER_TRANS_COMPLETE_INT_CLR_Msk = MASTER_TRANS_COMPLETE_INT_CLR::mask;
 
-    /// Position: 7, Width: 1
-    /// Access: read-write
-    using TRANS_COMPLETE_INT_CLR = BitField<7, 1>;
-    constexpr uint32_t TRANS_COMPLETE_INT_CLR_Pos = 7;
-    constexpr uint32_t TRANS_COMPLETE_INT_CLR_Msk = TRANS_COMPLETE_INT_CLR::mask;
+/// Position: 7, Width: 1
+/// Access: read-write
+using TRANS_COMPLETE_INT_CLR = BitField<7, 1>;
+constexpr uint32_t TRANS_COMPLETE_INT_CLR_Pos = 7;
+constexpr uint32_t TRANS_COMPLETE_INT_CLR_Msk = TRANS_COMPLETE_INT_CLR::mask;
 
-    /// Position: 8, Width: 1
-    /// Access: write-only
-    using TIME_OUT_INT_CLR = BitField<8, 1>;
-    constexpr uint32_t TIME_OUT_INT_CLR_Pos = 8;
-    constexpr uint32_t TIME_OUT_INT_CLR_Msk = TIME_OUT_INT_CLR::mask;
+/// Position: 8, Width: 1
+/// Access: write-only
+using TIME_OUT_INT_CLR = BitField<8, 1>;
+constexpr uint32_t TIME_OUT_INT_CLR_Pos = 8;
+constexpr uint32_t TIME_OUT_INT_CLR_Msk = TIME_OUT_INT_CLR::mask;
 
 }  // namespace int_clr
 
 /// SDA_DUTY - SDA_DUTY
 namespace sda_duty {
-    /// Number of FAST_CLK cycles SDA will switch after falling edge of SCL
-    /// Position: 0, Width: 20
-    /// Access: read-write
-    using SDA_DUTY = BitField<0, 20>;
-    constexpr uint32_t SDA_DUTY_Pos = 0;
-    constexpr uint32_t SDA_DUTY_Msk = SDA_DUTY::mask;
+/// Number of FAST_CLK cycles SDA will switch after falling edge of SCL
+/// Position: 0, Width: 20
+/// Access: read-write
+using SDA_DUTY = BitField<0, 20>;
+constexpr uint32_t SDA_DUTY_Pos = 0;
+constexpr uint32_t SDA_DUTY_Msk = SDA_DUTY::mask;
 
 }  // namespace sda_duty
 
 /// SCL_HIGH_PERIOD - SCL_HIGH_PERIOD
 namespace scl_high_period {
-    /// Number of FAST_CLK cycles for SCL to be high
-    /// Position: 0, Width: 20
-    /// Access: read-write
-    using SCL_HIGH_PERIOD = BitField<0, 20>;
-    constexpr uint32_t SCL_HIGH_PERIOD_Pos = 0;
-    constexpr uint32_t SCL_HIGH_PERIOD_Msk = SCL_HIGH_PERIOD::mask;
+/// Number of FAST_CLK cycles for SCL to be high
+/// Position: 0, Width: 20
+/// Access: read-write
+using SCL_HIGH_PERIOD = BitField<0, 20>;
+constexpr uint32_t SCL_HIGH_PERIOD_Pos = 0;
+constexpr uint32_t SCL_HIGH_PERIOD_Msk = SCL_HIGH_PERIOD::mask;
 
 }  // namespace scl_high_period
 
 /// SCL_START_PERIOD - SCL_START_PERIOD
 namespace scl_start_period {
-    /// Number of FAST_CLK cycles to wait before generating start condition
-    /// Position: 0, Width: 20
-    /// Access: read-write
-    using SCL_START_PERIOD = BitField<0, 20>;
-    constexpr uint32_t SCL_START_PERIOD_Pos = 0;
-    constexpr uint32_t SCL_START_PERIOD_Msk = SCL_START_PERIOD::mask;
+/// Number of FAST_CLK cycles to wait before generating start condition
+/// Position: 0, Width: 20
+/// Access: read-write
+using SCL_START_PERIOD = BitField<0, 20>;
+constexpr uint32_t SCL_START_PERIOD_Pos = 0;
+constexpr uint32_t SCL_START_PERIOD_Msk = SCL_START_PERIOD::mask;
 
 }  // namespace scl_start_period
 
 /// SCL_STOP_PERIOD - SCL_STOP_PERIOD
 namespace scl_stop_period {
-    /// Number of FAST_CLK cycles to wait before generating stop condition
-    /// Position: 0, Width: 20
-    /// Access: read-write
-    using SCL_STOP_PERIOD = BitField<0, 20>;
-    constexpr uint32_t SCL_STOP_PERIOD_Pos = 0;
-    constexpr uint32_t SCL_STOP_PERIOD_Msk = SCL_STOP_PERIOD::mask;
+/// Number of FAST_CLK cycles to wait before generating stop condition
+/// Position: 0, Width: 20
+/// Access: read-write
+using SCL_STOP_PERIOD = BitField<0, 20>;
+constexpr uint32_t SCL_STOP_PERIOD_Pos = 0;
+constexpr uint32_t SCL_STOP_PERIOD_Msk = SCL_STOP_PERIOD::mask;
 
 }  // namespace scl_stop_period
 
 /// CMD - CMD
 namespace cmd {
-    /// Command content
-    /// Position: 0, Width: 14
-    /// Access: read-write
-    using VAL = BitField<0, 14>;
-    constexpr uint32_t VAL_Pos = 0;
-    constexpr uint32_t VAL_Msk = VAL::mask;
+/// Command content
+/// Position: 0, Width: 14
+/// Access: read-write
+using VAL = BitField<0, 14>;
+constexpr uint32_t VAL_Pos = 0;
+constexpr uint32_t VAL_Msk = VAL::mask;
 
-    /// Bit is set by HW when command is done
-    /// Position: 31, Width: 1
-    /// Access: read-write
-    using DONE = BitField<31, 1>;
-    constexpr uint32_t DONE_Pos = 31;
-    constexpr uint32_t DONE_Msk = DONE::mask;
+/// Bit is set by HW when command is done
+/// Position: 31, Width: 1
+/// Access: read-write
+using DONE = BitField<31, 1>;
+constexpr uint32_t DONE_Pos = 31;
+constexpr uint32_t DONE_Msk = DONE::mask;
 
 }  // namespace cmd
 

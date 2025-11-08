@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f0::flash {
 
 /// Flash Register Structure
 struct Flash_Registers {
-
     /// Flash access control register
     /// Offset: 0x0000
     /// Reset value: 0x00000030
@@ -51,7 +50,7 @@ struct Flash_Registers {
     /// Reset value: 0x00000000
     /// Access: write-only
     volatile uint32_t AR;
-    uint8_t RESERVED_0018[4]; ///< Reserved
+    uint8_t RESERVED_0018[4];  ///< Reserved
 
     /// Option byte register
     /// Offset: 0x001C

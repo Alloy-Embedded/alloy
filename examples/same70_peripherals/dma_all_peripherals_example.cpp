@@ -20,10 +20,10 @@
  *       working seamlessly with ALL peripherals using hardware handshaking.
  */
 
-#include "hal/platform/same70/dma.hpp"
 #include "hal/platform/same70/adc.hpp"
-#include "hal/platform/same70/spi.hpp"
+#include "hal/platform/same70/dma.hpp"
 #include "hal/platform/same70/i2c.hpp"
+#include "hal/platform/same70/spi.hpp"
 
 using namespace alloy::hal::same70;
 using namespace alloy::hal;
@@ -39,7 +39,7 @@ using namespace alloy::hal;
  * without blocking the CPU.
  */
 class UartDmaTx {
-public:
+   public:
     auto init() -> alloy::core::Result<void> {
         // Note: In real implementation, you would also initialize UART here
         // For this example, we focus on DMA configuration
@@ -71,15 +71,11 @@ public:
         return m_dma.transfer(data, uart_thr, length);
     }
 
-    auto waitComplete() -> alloy::core::Result<void> {
-        return m_dma.waitComplete();
-    }
+    auto waitComplete() -> alloy::core::Result<void> { return m_dma.waitComplete(); }
 
-    auto close() -> alloy::core::Result<void> {
-        return m_dma.close();
-    }
+    auto close() -> alloy::core::Result<void> { return m_dma.close(); }
 
-private:
+   private:
     DmaUartTx m_dma;
 };
 
@@ -90,7 +86,7 @@ private:
  * without polling or interrupts.
  */
 class UartDmaRx {
-public:
+   public:
     auto init() -> alloy::core::Result<void> {
         auto dma_result = m_dma.open();
         if (!dma_result.is_ok()) {
@@ -119,15 +115,11 @@ public:
         return m_dma.transfer(uart_rhr, buffer, length);
     }
 
-    auto waitComplete() -> alloy::core::Result<void> {
-        return m_dma.waitComplete();
-    }
+    auto waitComplete() -> alloy::core::Result<void> { return m_dma.waitComplete(); }
 
-    auto close() -> alloy::core::Result<void> {
-        return m_dma.close();
-    }
+    auto close() -> alloy::core::Result<void> { return m_dma.close(); }
 
-private:
+   private:
     DmaUartRx m_dma;
 };
 
@@ -142,7 +134,7 @@ private:
  * for data logging, firmware updates, or file systems.
  */
 class SpiFlashDma {
-public:
+   public:
     auto init() -> alloy::core::Result<void> {
         // Initialize SPI
         auto spi_result = m_spi.open();
@@ -150,11 +142,9 @@ public:
             return spi_result;
         }
 
-        auto config_result = m_spi.configureChipSelect(
-            SpiChipSelect::CS0,
-            8,  // Clock divider
-            SpiMode::Mode0
-        );
+        auto config_result = m_spi.configureChipSelect(SpiChipSelect::CS0,
+                                                       8,  // Clock divider
+                                                       SpiMode::Mode0);
         if (!config_result.is_ok()) {
             return config_result;
         }
@@ -200,16 +190,12 @@ public:
      *
      * This is MUCH faster than CPU-based SPI transfer for large blocks.
      */
-    auto readBlock(uint32_t address, uint8_t* buffer, size_t size)
-        -> alloy::core::Result<void> {
-
+    auto readBlock(uint32_t address, uint8_t* buffer, size_t size) -> alloy::core::Result<void> {
         // Send read command + address (CPU does this part)
-        uint8_t cmd[4] = {
-            0x03,  // READ command
-            static_cast<uint8_t>((address >> 16) & 0xFF),
-            static_cast<uint8_t>((address >> 8) & 0xFF),
-            static_cast<uint8_t>(address & 0xFF)
-        };
+        uint8_t cmd[4] = {0x03,  // READ command
+                          static_cast<uint8_t>((address >> 16) & 0xFF),
+                          static_cast<uint8_t>((address >> 8) & 0xFF),
+                          static_cast<uint8_t>(address & 0xFF)};
 
         auto cmd_result = m_spi.write(cmd, 4, SpiChipSelect::CS0);
         if (!cmd_result.is_ok()) {
@@ -233,7 +219,6 @@ public:
      */
     auto writeBlock(uint32_t address, const uint8_t* data, size_t size)
         -> alloy::core::Result<void> {
-
         // Enable write (required for flash)
         uint8_t wren_cmd = 0x06;
         auto wren_result = m_spi.write(&wren_cmd, 1, SpiChipSelect::CS0);
@@ -242,12 +227,10 @@ public:
         }
 
         // Send page program command + address
-        uint8_t cmd[4] = {
-            0x02,  // PAGE PROGRAM command
-            static_cast<uint8_t>((address >> 16) & 0xFF),
-            static_cast<uint8_t>((address >> 8) & 0xFF),
-            static_cast<uint8_t>(address & 0xFF)
-        };
+        uint8_t cmd[4] = {0x02,  // PAGE PROGRAM command
+                          static_cast<uint8_t>((address >> 16) & 0xFF),
+                          static_cast<uint8_t>((address >> 8) & 0xFF),
+                          static_cast<uint8_t>(address & 0xFF)};
 
         auto cmd_result = m_spi.write(cmd, 4, SpiChipSelect::CS0);
         if (!cmd_result.is_ok()) {
@@ -272,7 +255,7 @@ public:
         return m_dma_rx.close();
     }
 
-private:
+   private:
     Spi0 m_spi;
     DmaSpiTx m_dma_tx;
     DmaSpiRx m_dma_rx;
@@ -289,9 +272,8 @@ private:
  * or logs to I2C EEPROM without CPU intervention.
  */
 class I2cEepromDma {
-public:
-    constexpr I2cEepromDma(uint8_t device_addr = 0x50)
-        : m_device_addr(device_addr) {}
+   public:
+    constexpr I2cEepromDma(uint8_t device_addr = 0x50) : m_device_addr(device_addr) {}
 
     auto init() -> alloy::core::Result<void> {
         // Initialize I2C
@@ -344,14 +326,10 @@ public:
     /**
      * @brief Read block from EEPROM using DMA
      */
-    auto readBlock(uint16_t address, uint8_t* buffer, size_t size)
-        -> alloy::core::Result<void> {
-
+    auto readBlock(uint16_t address, uint8_t* buffer, size_t size) -> alloy::core::Result<void> {
         // Write address (CPU does this)
-        uint8_t addr_buf[2] = {
-            static_cast<uint8_t>((address >> 8) & 0xFF),
-            static_cast<uint8_t>(address & 0xFF)
-        };
+        uint8_t addr_buf[2] = {static_cast<uint8_t>((address >> 8) & 0xFF),
+                               static_cast<uint8_t>(address & 0xFF)};
 
         auto write_result = m_i2c.write(m_device_addr, addr_buf, 2);
         if (!write_result.is_ok()) {
@@ -375,15 +353,12 @@ public:
      */
     auto writeBlock(uint16_t address, const uint8_t* data, size_t size)
         -> alloy::core::Result<void> {
-
         // Prepare address + data buffer
         constexpr size_t max_size = 256;
         uint8_t write_buf[max_size + 2];
 
         if (size > max_size) {
-            return alloy::core::Result<void>::error(
-                alloy::core::ErrorCode::InvalidParameter
-            );
+            return alloy::core::Result<void>::error(alloy::core::ErrorCode::InvalidParameter);
         }
 
         write_buf[0] = static_cast<uint8_t>((address >> 8) & 0xFF);
@@ -411,7 +386,7 @@ public:
         return m_dma_rx.close();
     }
 
-private:
+   private:
     I2c0 m_i2c;
     DmaI2cTx m_dma_tx;
     DmaI2cRx m_dma_rx;
@@ -429,7 +404,7 @@ private:
  * spectrum analysis - any application requiring continuous high-speed sampling.
  */
 class AdcDmaStreaming {
-public:
+   public:
     auto init() -> alloy::core::Result<void> {
         // Initialize ADC
         auto adc_result = m_adc.open();
@@ -479,11 +454,7 @@ public:
             return enable_result;
         }
 
-        auto dma_result = m_dma.transfer(
-            m_adc.getDmaSourceAddress(),
-            buffer,
-            size
-        );
+        auto dma_result = m_dma.transfer(m_adc.getDmaSourceAddress(), buffer, size);
 
         if (!dma_result.is_ok()) {
             return dma_result;
@@ -492,16 +463,14 @@ public:
         return m_adc.startConversion();
     }
 
-    bool isComplete() const {
-        return m_dma.isComplete();
-    }
+    bool isComplete() const { return m_dma.isComplete(); }
 
     auto close() -> alloy::core::Result<void> {
         m_adc.close();
         return m_dma.close();
     }
 
-private:
+   private:
     Adc0 m_adc;
     DmaAdcChannel0 m_dma;
 };
@@ -516,7 +485,7 @@ private:
  * Use case: Copying large buffers, image processing, buffer management
  */
 class DmaMemcpy {
-public:
+   public:
     auto init() -> alloy::core::Result<void> {
         auto dma_result = m_dma.open();
         if (!dma_result.is_ok()) {
@@ -537,9 +506,7 @@ public:
     /**
      * @brief Copy memory using DMA (faster than CPU memcpy for large blocks)
      */
-    auto copy(const void* src, void* dst, size_t size_bytes)
-        -> alloy::core::Result<void> {
-
+    auto copy(const void* src, void* dst, size_t size_bytes) -> alloy::core::Result<void> {
         // Convert byte size to word count
         size_t word_count = size_bytes / 4;
 
@@ -551,11 +518,9 @@ public:
         return m_dma.waitComplete();
     }
 
-    auto close() -> alloy::core::Result<void> {
-        return m_dma.close();
-    }
+    auto close() -> alloy::core::Result<void> { return m_dma.close(); }
 
-private:
+   private:
     DmaChannel0 m_dma;
 };
 
@@ -675,11 +640,8 @@ int main() {
         }
 
         // DMA copy (hardware does the work)
-        [[maybe_unused]] auto copy_result = dma_memcpy.copy(
-            source_buffer,
-            dest_buffer,
-            sizeof(source_buffer)
-        );
+        [[maybe_unused]] auto copy_result =
+            dma_memcpy.copy(source_buffer, dest_buffer, sizeof(source_buffer));
 
         [[maybe_unused]] auto close_result = dma_memcpy.close();
     }

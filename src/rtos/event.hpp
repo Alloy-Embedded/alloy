@@ -49,11 +49,13 @@
 #ifndef ALLOY_RTOS_EVENT_HPP
 #define ALLOY_RTOS_EVENT_HPP
 
+#include "hal/interface/systick.hpp"
+
+#include "rtos/platform/critical_section.hpp"
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
+
 #include "core/types.hpp"
-#include "hal/interface/systick.hpp"
-#include "rtos/platform/critical_section.hpp"
 
 namespace alloy::rtos {
 
@@ -96,18 +98,15 @@ namespace alloy::rtos {
 /// }
 /// ```
 class EventFlags {
-private:
-    core::u32 flags_;                    ///< Current event flags (32-bit mask)
-    TaskControlBlock* wait_list_;        ///< Tasks blocked waiting for events
+   private:
+    core::u32 flags_;              ///< Current event flags (32-bit mask)
+    TaskControlBlock* wait_list_;  ///< Tasks blocked waiting for events
 
-public:
+   public:
     /// Constructor
     ///
     /// @param initial_flags Initial flag state (default: 0 = all clear)
-    explicit EventFlags(core::u32 initial_flags = 0)
-        : flags_(initial_flags)
-        , wait_list_(nullptr)
-    {}
+    explicit EventFlags(core::u32 initial_flags = 0) : flags_(initial_flags), wait_list_(nullptr) {}
 
     /// Set event flags
     ///
@@ -185,27 +184,21 @@ public:
     /// Get current flags (non-blocking)
     ///
     /// @return Current flag state
-    core::u32 get() const {
-        return flags_;
-    }
+    core::u32 get() const { return flags_; }
 
     /// Check if specific flags are set
     ///
     /// @param flags Flags to check
     /// @return true if ALL specified flags are set
-    bool is_set(core::u32 flags) const {
-        return (flags_ & flags) == flags;
-    }
+    bool is_set(core::u32 flags) const { return (flags_ & flags) == flags; }
 
     /// Check if any of the flags are set
     ///
     /// @param flags Flags to check
     /// @return true if ANY of the specified flags are set
-    bool is_any_set(core::u32 flags) const {
-        return (flags_ & flags) != 0;
-    }
+    bool is_any_set(core::u32 flags) const { return (flags_ & flags) != 0; }
 
-private:
+   private:
     /// Check if waiting task should be unblocked
     ///
     /// @param task Task waiting on events
@@ -215,14 +208,10 @@ private:
     bool should_unblock(const TaskControlBlock* task, core::u32 wait_flags, bool wait_all) const;
 
     /// Disable interrupts (critical section)
-    static inline void disable_interrupts() {
-platform::disable_interrupts();
-    }
+    static inline void disable_interrupts() { platform::disable_interrupts(); }
 
     /// Enable interrupts
-    static inline void enable_interrupts() {
-platform::enable_interrupts();
-    }
+    static inline void enable_interrupts() { platform::enable_interrupts(); }
 };
 
 // EventFlags implementation
@@ -330,6 +319,6 @@ inline core::u32 EventFlags::wait_all(core::u32 flags, core::u32 timeout_ms, boo
     }
 }
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
-#endif // ALLOY_RTOS_EVENT_HPP
+#endif  // ALLOY_RTOS_EVENT_HPP

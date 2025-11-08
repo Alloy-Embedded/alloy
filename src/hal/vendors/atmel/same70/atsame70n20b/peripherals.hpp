@@ -19,73 +19,73 @@ namespace alloy::generated::atsame70n20b {
 // ============================================================================
 
 namespace peripherals {
-    constexpr uintptr_t LOCKBIT              = 0x00000000;
-    constexpr uintptr_t HSMCI                = 0x40000000;  // High Speed MultiMedia Card Interface
-    constexpr uintptr_t SSC                  = 0x40004000;  // Synchronous Serial Controller
-    constexpr uintptr_t SPI0                 = 0x40008000;  // Serial Peripheral Interface
-    constexpr uintptr_t TC0                  = 0x4000C000;  // Timer Counter
-    constexpr uintptr_t TC1                  = 0x40010000;
-    constexpr uintptr_t TC2                  = 0x40014000;
-    constexpr uintptr_t TWIHS0               = 0x40018000;  // Two-wire Interface High Speed
-    constexpr uintptr_t TWIHS1               = 0x4001C000;
-    constexpr uintptr_t PWM0                 = 0x40020000;  // Pulse Width Modulation Controller
-    constexpr uintptr_t USART0               = 0x40024000;  // Universal Synchronous Asynchronous Receiver Transmitter
-    constexpr uintptr_t USART1               = 0x40028000;
-    constexpr uintptr_t USART2               = 0x4002C000;
-    constexpr uintptr_t MCAN0                = 0x40030000;  // Controller Area Network
-    constexpr uintptr_t MCAN1                = 0x40034000;
-    constexpr uintptr_t USBHS                = 0x40038000;  // USB High-Speed Interface
-    constexpr uintptr_t AFEC0                = 0x4003C000;  // Analog Front-End Controller
-    constexpr uintptr_t DACC                 = 0x40040000;  // Digital-to-Analog Converter Controller
-    constexpr uintptr_t ACC                  = 0x40044000;  // Analog Comparator Controller
-    constexpr uintptr_t ICM                  = 0x40048000;  // Integrity Check Monitor
-    constexpr uintptr_t ISI                  = 0x4004C000;  // Image Sensor Interface
-    constexpr uintptr_t GMAC                 = 0x40050000;  // Gigabit Ethernet MAC
-    constexpr uintptr_t TC3                  = 0x40054000;
-    constexpr uintptr_t PWM1                 = 0x4005C000;
-    constexpr uintptr_t TWIHS2               = 0x40060000;
-    constexpr uintptr_t AFEC1                = 0x40064000;
-    constexpr uintptr_t AES                  = 0x4006C000;  // Advanced Encryption Standard
-    constexpr uintptr_t TRNG                 = 0x40070000;  // True Random Number Generator
-    constexpr uintptr_t XDMAC                = 0x40078000;  // Extensible DMA Controller
-    constexpr uintptr_t QSPI                 = 0x4007C000;  // Quad Serial Peripheral Interface
-    constexpr uintptr_t MATRIX               = 0x40088000;  // AHB Bus Matrix
-    constexpr uintptr_t I2SC0                = 0x4008C000;  // Inter-IC Sound Controller
-    constexpr uintptr_t UTMI                 = 0x400E0400;  // USB Transmitter Interface Macrocell
-    constexpr uintptr_t PMC                  = 0x400E0600;  // Power Management Controller
-    constexpr uintptr_t UART0                = 0x400E0800;  // Universal Asynchronous Receiver Transmitter
-    constexpr uintptr_t CHIPID               = 0x400E0940;  // Chip Identifier
-    constexpr uintptr_t UART1                = 0x400E0A00;
-    constexpr uintptr_t EFC                  = 0x400E0C00;  // Embedded Flash Controller
-    constexpr uintptr_t PIOA                 = 0x400E0E00;  // Parallel Input/Output Controller
-    constexpr uintptr_t PIOB                 = 0x400E1000;
-    constexpr uintptr_t PIOD                 = 0x400E1400;
-    constexpr uintptr_t RSTC                 = 0x400E1800;  // Reset Controller
-    constexpr uintptr_t SUPC                 = 0x400E1810;  // Supply Controller
-    constexpr uintptr_t RTT                  = 0x400E1830;  // Real-time Timer
-    constexpr uintptr_t WDT                  = 0x400E1850;  // Watchdog Timer
-    constexpr uintptr_t RTC                  = 0x400E1860;  // Real-time Clock
-    constexpr uintptr_t GPBR                 = 0x400E1890;  // General Purpose Backup Registers
-    constexpr uintptr_t RSWDT                = 0x400E1900;  // Reinforced Safety Watchdog Timer
-    constexpr uintptr_t UART2                = 0x400E1A00;
-    constexpr uintptr_t UART3                = 0x400E1C00;
-    constexpr uintptr_t UART4                = 0x400E1E00;
-    constexpr uintptr_t SCnSCB               = 0xE000E000;  // System control not in SCB
-    constexpr uintptr_t SysTick              = 0xE000E010;  // System timer
-    constexpr uintptr_t NVIC                 = 0xE000E100;  // Nested Vectored Interrupt Controller
-    constexpr uintptr_t SCB                  = 0xE000ED00;  // System Control Block
-    constexpr uintptr_t MPU                  = 0xE000ED90;  // Memory Protection Unit
-    constexpr uintptr_t FPU                  = 0xE000EF30;  // Floating Point Unit
-} // namespace peripherals
+constexpr uintptr_t LOCKBIT = 0x00000000;
+constexpr uintptr_t HSMCI = 0x40000000;  // High Speed MultiMedia Card Interface
+constexpr uintptr_t SSC = 0x40004000;    // Synchronous Serial Controller
+constexpr uintptr_t SPI0 = 0x40008000;   // Serial Peripheral Interface
+constexpr uintptr_t TC0 = 0x4000C000;    // Timer Counter
+constexpr uintptr_t TC1 = 0x40010000;
+constexpr uintptr_t TC2 = 0x40014000;
+constexpr uintptr_t TWIHS0 = 0x40018000;  // Two-wire Interface High Speed
+constexpr uintptr_t TWIHS1 = 0x4001C000;
+constexpr uintptr_t PWM0 = 0x40020000;    // Pulse Width Modulation Controller
+constexpr uintptr_t USART0 = 0x40024000;  // Universal Synchronous Asynchronous Receiver Transmitter
+constexpr uintptr_t USART1 = 0x40028000;
+constexpr uintptr_t USART2 = 0x4002C000;
+constexpr uintptr_t MCAN0 = 0x40030000;  // Controller Area Network
+constexpr uintptr_t MCAN1 = 0x40034000;
+constexpr uintptr_t USBHS = 0x40038000;  // USB High-Speed Interface
+constexpr uintptr_t AFEC0 = 0x4003C000;  // Analog Front-End Controller
+constexpr uintptr_t DACC = 0x40040000;   // Digital-to-Analog Converter Controller
+constexpr uintptr_t ACC = 0x40044000;    // Analog Comparator Controller
+constexpr uintptr_t ICM = 0x40048000;    // Integrity Check Monitor
+constexpr uintptr_t ISI = 0x4004C000;    // Image Sensor Interface
+constexpr uintptr_t GMAC = 0x40050000;   // Gigabit Ethernet MAC
+constexpr uintptr_t TC3 = 0x40054000;
+constexpr uintptr_t PWM1 = 0x4005C000;
+constexpr uintptr_t TWIHS2 = 0x40060000;
+constexpr uintptr_t AFEC1 = 0x40064000;
+constexpr uintptr_t AES = 0x4006C000;     // Advanced Encryption Standard
+constexpr uintptr_t TRNG = 0x40070000;    // True Random Number Generator
+constexpr uintptr_t XDMAC = 0x40078000;   // Extensible DMA Controller
+constexpr uintptr_t QSPI = 0x4007C000;    // Quad Serial Peripheral Interface
+constexpr uintptr_t MATRIX = 0x40088000;  // AHB Bus Matrix
+constexpr uintptr_t I2SC0 = 0x4008C000;   // Inter-IC Sound Controller
+constexpr uintptr_t UTMI = 0x400E0400;    // USB Transmitter Interface Macrocell
+constexpr uintptr_t PMC = 0x400E0600;     // Power Management Controller
+constexpr uintptr_t UART0 = 0x400E0800;   // Universal Asynchronous Receiver Transmitter
+constexpr uintptr_t CHIPID = 0x400E0940;  // Chip Identifier
+constexpr uintptr_t UART1 = 0x400E0A00;
+constexpr uintptr_t EFC = 0x400E0C00;   // Embedded Flash Controller
+constexpr uintptr_t PIOA = 0x400E0E00;  // Parallel Input/Output Controller
+constexpr uintptr_t PIOB = 0x400E1000;
+constexpr uintptr_t PIOD = 0x400E1400;
+constexpr uintptr_t RSTC = 0x400E1800;   // Reset Controller
+constexpr uintptr_t SUPC = 0x400E1810;   // Supply Controller
+constexpr uintptr_t RTT = 0x400E1830;    // Real-time Timer
+constexpr uintptr_t WDT = 0x400E1850;    // Watchdog Timer
+constexpr uintptr_t RTC = 0x400E1860;    // Real-time Clock
+constexpr uintptr_t GPBR = 0x400E1890;   // General Purpose Backup Registers
+constexpr uintptr_t RSWDT = 0x400E1900;  // Reinforced Safety Watchdog Timer
+constexpr uintptr_t UART2 = 0x400E1A00;
+constexpr uintptr_t UART3 = 0x400E1C00;
+constexpr uintptr_t UART4 = 0x400E1E00;
+constexpr uintptr_t SCnSCB = 0xE000E000;   // System control not in SCB
+constexpr uintptr_t SysTick = 0xE000E010;  // System timer
+constexpr uintptr_t NVIC = 0xE000E100;     // Nested Vectored Interrupt Controller
+constexpr uintptr_t SCB = 0xE000ED00;      // System Control Block
+constexpr uintptr_t MPU = 0xE000ED90;      // Memory Protection Unit
+constexpr uintptr_t FPU = 0xE000EF30;      // Floating Point Unit
+}  // namespace peripherals
 
 // ============================================================================
 // MEMORY MAP
 // ============================================================================
 
 namespace memory {
-    // Memory regions not defined in SVD
-} // namespace memory
+// Memory regions not defined in SVD
+}  // namespace memory
 
-} // namespace alloy::generated::atsame70n20b
+}  // namespace alloy::generated::atsame70n20b
 
-#endif // ALLOY_GENERATED_ATSAME70N20B_PERIPHERALS_HPP
+#endif  // ALLOY_GENERATED_ATSAME70N20B_PERIPHERALS_HPP

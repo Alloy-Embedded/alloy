@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::dma2 {
 
 /// DMA2 Register Structure
 struct DMA2_Registers {
-
     /// low interrupt status register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

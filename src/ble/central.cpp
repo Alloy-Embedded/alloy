@@ -1,26 +1,27 @@
 #include "central.hpp"
 
-using alloy::core::u8;
+using alloy::core::i8;
 using alloy::core::u16;
 using alloy::core::u32;
-using alloy::core::i8;
+using alloy::core::u8;
 
 #ifdef ESP_PLATFORM
-#include "esp_bt.h"
-#include "esp_bt_main.h"
-#include "esp_gap_ble_api.h"
-#include "esp_gattc_api.h"
-#include "esp_log.h"
-#include "nvs_flash.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
-#include <cstring>
+    #include <cstring>
+
+    #include "esp_bt.h"
+    #include "esp_bt_main.h"
+    #include "esp_gap_ble_api.h"
+    #include "esp_gattc_api.h"
+    #include "esp_log.h"
+    #include "freertos/FreeRTOS.h"
+    #include "freertos/event_groups.h"
+    #include "nvs_flash.h"
 
 static const char* TAG = "BLE_Central";
 
-#define SCAN_DONE_BIT BIT0
+    #define SCAN_DONE_BIT BIT0
 
-#endif // ESP_PLATFORM
+#endif  // ESP_PLATFORM
 
 namespace alloy::ble {
 
@@ -45,15 +46,14 @@ struct CentralImplData {
     u8 scan_count;
 
     CentralImplData()
-        : initialized(false)
-        , scanning(false)
-        , scan_callback(nullptr)
-        , conn_callback(nullptr)
-        , read_callback(nullptr)
-        , notify_callback(nullptr)
-        , event_group(nullptr)
-        , scan_count(0)
-    {
+        : initialized(false),
+          scanning(false),
+          scan_callback(nullptr),
+          conn_callback(nullptr),
+          read_callback(nullptr),
+          notify_callback(nullptr),
+          event_group(nullptr),
+          scan_count(0) {
         event_group = xEventGroupCreate();
     }
 
@@ -75,7 +75,8 @@ static CentralImplData* g_impl = nullptr;
 
 // GAP event handler
 static void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t* param) {
-    if (!g_impl) return;
+    if (!g_impl)
+        return;
 
     switch (event) {
         case ESP_GAP_BLE_SCAN_PARAM_SET_COMPLETE_EVT:
@@ -102,18 +103,17 @@ static void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param
 
                         // Copy address
                         memcpy(dev.address.addr, scan_result->scan_rst.bda, 6);
-                        dev.addr_type = static_cast<AddressType>(scan_result->scan_rst.ble_addr_type);
+                        dev.addr_type =
+                            static_cast<AddressType>(scan_result->scan_rst.ble_addr_type);
                         dev.rssi = scan_result->scan_rst.rssi;
-                        dev.adv_type = AdvType::ConnectableUndirected; // Simplified
+                        dev.adv_type = AdvType::ConnectableUndirected;  // Simplified
 
                         // Extract device name from adv data
                         u8* adv_name = NULL;
                         u8 adv_name_len = 0;
-                        adv_name = esp_ble_resolve_adv_data(
-                            scan_result->scan_rst.ble_adv,
-                            ESP_BLE_AD_TYPE_NAME_CMPL,
-                            &adv_name_len
-                        );
+                        adv_name =
+                            esp_ble_resolve_adv_data(scan_result->scan_rst.ble_adv,
+                                                     ESP_BLE_AD_TYPE_NAME_CMPL, &adv_name_len);
 
                         if (adv_name && adv_name_len > 0 && adv_name_len < 32) {
                             memcpy(dev.name, adv_name, adv_name_len);
@@ -124,7 +124,8 @@ static void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param
 
                         // Copy raw adv data
                         dev.adv_data_len = scan_result->scan_rst.adv_data_len;
-                        if (dev.adv_data_len > 31) dev.adv_data_len = 31;
+                        if (dev.adv_data_len > 31)
+                            dev.adv_data_len = 31;
                         memcpy(dev.adv_data, scan_result->scan_rst.ble_adv, dev.adv_data_len);
 
                         g_impl->scan_count++;
@@ -163,7 +164,8 @@ static void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param
 }
 
 // GATTC event handler (stub for now)
-static void gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_gattc_cb_param_t* param) {
+static void gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
+                                esp_ble_gattc_cb_param_t* param) {
     (void)event;
     (void)gattc_if;
     (void)param;
@@ -187,14 +189,13 @@ struct CentralImplData {
     u8 scan_count;
 
     Impl()
-        : initialized(false)
-        , scanning(false)
-        , scan_callback(nullptr)
-        , conn_callback(nullptr)
-        , read_callback(nullptr)
-        , notify_callback(nullptr)
-        , scan_count(0)
-    {}
+        : initialized(false),
+          scanning(false),
+          scan_callback(nullptr),
+          conn_callback(nullptr),
+          read_callback(nullptr),
+          notify_callback(nullptr),
+          scan_count(0) {}
 };
 
 // Define Central::Impl for stub
@@ -203,7 +204,7 @@ struct Central::Impl {
     Impl() = default;
 };
 
-#endif // ESP_PLATFORM
+#endif  // ESP_PLATFORM
 
 // ============================================================================
 // Central Implementation
@@ -332,13 +333,13 @@ Result<u8> Central::scan(const ScanConfig& config) {
 
     // Configure scan parameters
     esp_ble_scan_params_t scan_params = {
-        .scan_type = (config.type == ScanType::Active) ? BLE_SCAN_TYPE_ACTIVE : BLE_SCAN_TYPE_PASSIVE,
+        .scan_type =
+            (config.type == ScanType::Active) ? BLE_SCAN_TYPE_ACTIVE : BLE_SCAN_TYPE_PASSIVE,
         .own_addr_type = BLE_ADDR_TYPE_PUBLIC,
         .scan_filter_policy = static_cast<esp_ble_scan_filter_t>(config.filter),
         .scan_interval = config.interval,
         .scan_window = config.window,
-        .scan_duplicate = BLE_SCAN_DUPLICATE_DISABLE
-    };
+        .scan_duplicate = BLE_SCAN_DUPLICATE_DISABLE};
 
     esp_err_t ret = esp_ble_gap_set_scan_params(&scan_params);
     if (ret != ESP_OK) {
@@ -347,20 +348,17 @@ Result<u8> Central::scan(const ScanConfig& config) {
     }
 
     // Start scan
-    ret = esp_ble_gap_start_scanning(config.duration / 1000); // Convert to seconds
+    ret = esp_ble_gap_start_scanning(config.duration / 1000);  // Convert to seconds
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Start scanning failed: %s", esp_err_to_name(ret));
         return Result<u8>::error(ErrorCode::CommunicationError);
     }
 
     // Wait for scan to complete
-    xEventGroupWaitBits(
-        impl_->data.event_group,
-        SCAN_DONE_BIT,
-        pdTRUE,  // Clear on exit
-        pdFALSE, // Wait for any bit
-        pdMS_TO_TICKS(config.duration + 1000)
-    );
+    xEventGroupWaitBits(impl_->data.event_group, SCAN_DONE_BIT,
+                        pdTRUE,   // Clear on exit
+                        pdFALSE,  // Wait for any bit
+                        pdMS_TO_TICKS(config.duration + 1000));
 
     return Result<u8>::ok(impl_->data.scan_count);
 #else
@@ -384,13 +382,13 @@ Result<void> Central::scan_async(const ScanConfig& config) {
 
     // Configure and start scan (same as synchronous)
     esp_ble_scan_params_t scan_params = {
-        .scan_type = (config.type == ScanType::Active) ? BLE_SCAN_TYPE_ACTIVE : BLE_SCAN_TYPE_PASSIVE,
+        .scan_type =
+            (config.type == ScanType::Active) ? BLE_SCAN_TYPE_ACTIVE : BLE_SCAN_TYPE_PASSIVE,
         .own_addr_type = BLE_ADDR_TYPE_PUBLIC,
         .scan_filter_policy = static_cast<esp_ble_scan_filter_t>(config.filter),
         .scan_interval = config.interval,
         .scan_window = config.window,
-        .scan_duplicate = BLE_SCAN_DUPLICATE_DISABLE
-    };
+        .scan_duplicate = BLE_SCAN_DUPLICATE_DISABLE};
 
     esp_err_t ret = esp_ble_gap_set_scan_params(&scan_params);
     if (ret != ESP_OK) {
@@ -444,7 +442,8 @@ Result<ConnHandle> Central::connect(const Address& address, u16 timeout_ms) {
     return Result<ConnHandle>::error(ErrorCode::NotSupported);
 }
 
-Result<ConnHandle> Central::connect(const Address& address, const ConnParams& params, u16 timeout_ms) {
+Result<ConnHandle> Central::connect(const Address& address, const ConnParams& params,
+                                    u16 timeout_ms) {
     (void)address;
     (void)params;
     (void)timeout_ms;
@@ -478,7 +477,8 @@ Result<ServiceHandle> Central::discover_service(ConnHandle conn_handle, const UU
     return Result<ServiceHandle>::error(ErrorCode::NotSupported);
 }
 
-Result<u8> Central::get_services(ConnHandle conn_handle, ServiceHandle* services, u8 max_services) const {
+Result<u8> Central::get_services(ConnHandle conn_handle, ServiceHandle* services,
+                                 u8 max_services) const {
     (void)conn_handle;
     (void)services;
     (void)max_services;
@@ -491,14 +491,17 @@ Result<u8> Central::discover_characteristics(ConnHandle conn_handle, const Servi
     return Result<u8>::error(ErrorCode::NotSupported);
 }
 
-Result<CharHandle> Central::discover_characteristic(ConnHandle conn_handle, const ServiceHandle& service, const UUID& char_uuid) {
+Result<CharHandle> Central::discover_characteristic(ConnHandle conn_handle,
+                                                    const ServiceHandle& service,
+                                                    const UUID& char_uuid) {
     (void)conn_handle;
     (void)service;
     (void)char_uuid;
     return Result<CharHandle>::error(ErrorCode::NotSupported);
 }
 
-Result<u8> Central::get_characteristics(ConnHandle conn_handle, const ServiceHandle& service, CharHandle* characteristics, u8 max_chars) const {
+Result<u8> Central::get_characteristics(ConnHandle conn_handle, const ServiceHandle& service,
+                                        CharHandle* characteristics, u8 max_chars) const {
     (void)conn_handle;
     (void)service;
     (void)characteristics;
@@ -507,7 +510,8 @@ Result<u8> Central::get_characteristics(ConnHandle conn_handle, const ServiceHan
 }
 
 // Characteristic operations stubs
-Result<u16> Central::read_char(ConnHandle conn_handle, const CharHandle& characteristic, u8* buffer, u16 buffer_size) {
+Result<u16> Central::read_char(ConnHandle conn_handle, const CharHandle& characteristic, u8* buffer,
+                               u16 buffer_size) {
     (void)conn_handle;
     (void)characteristic;
     (void)buffer;
@@ -515,7 +519,8 @@ Result<u16> Central::read_char(ConnHandle conn_handle, const CharHandle& charact
     return Result<u16>::error(ErrorCode::NotSupported);
 }
 
-Result<void> Central::write_char(ConnHandle conn_handle, const CharHandle& characteristic, const u8* data, u16 length) {
+Result<void> Central::write_char(ConnHandle conn_handle, const CharHandle& characteristic,
+                                 const u8* data, u16 length) {
     (void)conn_handle;
     (void)characteristic;
     (void)data;
@@ -523,7 +528,9 @@ Result<void> Central::write_char(ConnHandle conn_handle, const CharHandle& chara
     return Result<void>::error(ErrorCode::NotSupported);
 }
 
-Result<void> Central::write_char_no_response(ConnHandle conn_handle, const CharHandle& characteristic, const u8* data, u16 length) {
+Result<void> Central::write_char_no_response(ConnHandle conn_handle,
+                                             const CharHandle& characteristic, const u8* data,
+                                             u16 length) {
     (void)conn_handle;
     (void)characteristic;
     (void)data;
@@ -560,4 +567,4 @@ void Central::set_notify_callback(WriteCallback callback) {
     impl_->data.notify_callback = callback;
 }
 
-} // namespace alloy::ble
+}  // namespace alloy::ble

@@ -17,7 +17,7 @@ namespace alloy::hal::atmel::samv71::scnscb {
 
 /// SCnSCB Register Structure
 struct SCnSCB_Registers {
-    uint8_t RESERVED_0000[4]; ///< Reserved
+    uint8_t RESERVED_0000[4];  ///< Reserved
 
     /// Interrupt Controller Type Register
     /// Offset: 0x0004

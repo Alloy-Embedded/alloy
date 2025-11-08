@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f0::nvic {
@@ -19,265 +20,265 @@ using namespace alloy::hal::bitfields;
 
 /// ISER - Interrupt Set Enable Register
 namespace iser {
-    /// SETENA
-    /// Position: 0, Width: 32
-    using SETENA = BitField<0, 32>;
-    constexpr uint32_t SETENA_Pos = 0;
-    constexpr uint32_t SETENA_Msk = SETENA::mask;
+/// SETENA
+/// Position: 0, Width: 32
+using SETENA = BitField<0, 32>;
+constexpr uint32_t SETENA_Pos = 0;
+constexpr uint32_t SETENA_Msk = SETENA::mask;
 
 }  // namespace iser
 
 /// ICER - Interrupt Clear Enable Register
 namespace icer {
-    /// CLRENA
-    /// Position: 0, Width: 32
-    using CLRENA = BitField<0, 32>;
-    constexpr uint32_t CLRENA_Pos = 0;
-    constexpr uint32_t CLRENA_Msk = CLRENA::mask;
+/// CLRENA
+/// Position: 0, Width: 32
+using CLRENA = BitField<0, 32>;
+constexpr uint32_t CLRENA_Pos = 0;
+constexpr uint32_t CLRENA_Msk = CLRENA::mask;
 
 }  // namespace icer
 
 /// ISPR - Interrupt Set-Pending Register
 namespace ispr {
-    /// SETPEND
-    /// Position: 0, Width: 32
-    using SETPEND = BitField<0, 32>;
-    constexpr uint32_t SETPEND_Pos = 0;
-    constexpr uint32_t SETPEND_Msk = SETPEND::mask;
+/// SETPEND
+/// Position: 0, Width: 32
+using SETPEND = BitField<0, 32>;
+constexpr uint32_t SETPEND_Pos = 0;
+constexpr uint32_t SETPEND_Msk = SETPEND::mask;
 
 }  // namespace ispr
 
 /// ICPR - Interrupt Clear-Pending Register
 namespace icpr {
-    /// CLRPEND
-    /// Position: 0, Width: 32
-    using CLRPEND = BitField<0, 32>;
-    constexpr uint32_t CLRPEND_Pos = 0;
-    constexpr uint32_t CLRPEND_Msk = CLRPEND::mask;
+/// CLRPEND
+/// Position: 0, Width: 32
+using CLRPEND = BitField<0, 32>;
+constexpr uint32_t CLRPEND_Pos = 0;
+constexpr uint32_t CLRPEND_Msk = CLRPEND::mask;
 
 }  // namespace icpr
 
 /// IPR0 - Interrupt Priority Register 0
 namespace ipr0 {
-    /// PRI_00
-    /// Position: 6, Width: 2
-    using PRI_00 = BitField<6, 2>;
-    constexpr uint32_t PRI_00_Pos = 6;
-    constexpr uint32_t PRI_00_Msk = PRI_00::mask;
+/// PRI_00
+/// Position: 6, Width: 2
+using PRI_00 = BitField<6, 2>;
+constexpr uint32_t PRI_00_Pos = 6;
+constexpr uint32_t PRI_00_Msk = PRI_00::mask;
 
-    /// PRI_01
-    /// Position: 14, Width: 2
-    using PRI_01 = BitField<14, 2>;
-    constexpr uint32_t PRI_01_Pos = 14;
-    constexpr uint32_t PRI_01_Msk = PRI_01::mask;
+/// PRI_01
+/// Position: 14, Width: 2
+using PRI_01 = BitField<14, 2>;
+constexpr uint32_t PRI_01_Pos = 14;
+constexpr uint32_t PRI_01_Msk = PRI_01::mask;
 
-    /// PRI_02
-    /// Position: 22, Width: 2
-    using PRI_02 = BitField<22, 2>;
-    constexpr uint32_t PRI_02_Pos = 22;
-    constexpr uint32_t PRI_02_Msk = PRI_02::mask;
+/// PRI_02
+/// Position: 22, Width: 2
+using PRI_02 = BitField<22, 2>;
+constexpr uint32_t PRI_02_Pos = 22;
+constexpr uint32_t PRI_02_Msk = PRI_02::mask;
 
-    /// PRI_03
-    /// Position: 30, Width: 2
-    using PRI_03 = BitField<30, 2>;
-    constexpr uint32_t PRI_03_Pos = 30;
-    constexpr uint32_t PRI_03_Msk = PRI_03::mask;
+/// PRI_03
+/// Position: 30, Width: 2
+using PRI_03 = BitField<30, 2>;
+constexpr uint32_t PRI_03_Pos = 30;
+constexpr uint32_t PRI_03_Msk = PRI_03::mask;
 
 }  // namespace ipr0
 
 /// IPR1 - Interrupt Priority Register 1
 namespace ipr1 {
-    /// PRI_40
-    /// Position: 6, Width: 2
-    using PRI_40 = BitField<6, 2>;
-    constexpr uint32_t PRI_40_Pos = 6;
-    constexpr uint32_t PRI_40_Msk = PRI_40::mask;
+/// PRI_40
+/// Position: 6, Width: 2
+using PRI_40 = BitField<6, 2>;
+constexpr uint32_t PRI_40_Pos = 6;
+constexpr uint32_t PRI_40_Msk = PRI_40::mask;
 
-    /// PRI_41
-    /// Position: 14, Width: 2
-    using PRI_41 = BitField<14, 2>;
-    constexpr uint32_t PRI_41_Pos = 14;
-    constexpr uint32_t PRI_41_Msk = PRI_41::mask;
+/// PRI_41
+/// Position: 14, Width: 2
+using PRI_41 = BitField<14, 2>;
+constexpr uint32_t PRI_41_Pos = 14;
+constexpr uint32_t PRI_41_Msk = PRI_41::mask;
 
-    /// PRI_42
-    /// Position: 22, Width: 2
-    using PRI_42 = BitField<22, 2>;
-    constexpr uint32_t PRI_42_Pos = 22;
-    constexpr uint32_t PRI_42_Msk = PRI_42::mask;
+/// PRI_42
+/// Position: 22, Width: 2
+using PRI_42 = BitField<22, 2>;
+constexpr uint32_t PRI_42_Pos = 22;
+constexpr uint32_t PRI_42_Msk = PRI_42::mask;
 
-    /// PRI_43
-    /// Position: 30, Width: 2
-    using PRI_43 = BitField<30, 2>;
-    constexpr uint32_t PRI_43_Pos = 30;
-    constexpr uint32_t PRI_43_Msk = PRI_43::mask;
+/// PRI_43
+/// Position: 30, Width: 2
+using PRI_43 = BitField<30, 2>;
+constexpr uint32_t PRI_43_Pos = 30;
+constexpr uint32_t PRI_43_Msk = PRI_43::mask;
 
 }  // namespace ipr1
 
 /// IPR2 - Interrupt Priority Register 2
 namespace ipr2 {
-    /// PRI_80
-    /// Position: 6, Width: 2
-    using PRI_80 = BitField<6, 2>;
-    constexpr uint32_t PRI_80_Pos = 6;
-    constexpr uint32_t PRI_80_Msk = PRI_80::mask;
+/// PRI_80
+/// Position: 6, Width: 2
+using PRI_80 = BitField<6, 2>;
+constexpr uint32_t PRI_80_Pos = 6;
+constexpr uint32_t PRI_80_Msk = PRI_80::mask;
 
-    /// PRI_81
-    /// Position: 14, Width: 2
-    using PRI_81 = BitField<14, 2>;
-    constexpr uint32_t PRI_81_Pos = 14;
-    constexpr uint32_t PRI_81_Msk = PRI_81::mask;
+/// PRI_81
+/// Position: 14, Width: 2
+using PRI_81 = BitField<14, 2>;
+constexpr uint32_t PRI_81_Pos = 14;
+constexpr uint32_t PRI_81_Msk = PRI_81::mask;
 
-    /// PRI_82
-    /// Position: 22, Width: 2
-    using PRI_82 = BitField<22, 2>;
-    constexpr uint32_t PRI_82_Pos = 22;
-    constexpr uint32_t PRI_82_Msk = PRI_82::mask;
+/// PRI_82
+/// Position: 22, Width: 2
+using PRI_82 = BitField<22, 2>;
+constexpr uint32_t PRI_82_Pos = 22;
+constexpr uint32_t PRI_82_Msk = PRI_82::mask;
 
-    /// PRI_83
-    /// Position: 30, Width: 2
-    using PRI_83 = BitField<30, 2>;
-    constexpr uint32_t PRI_83_Pos = 30;
-    constexpr uint32_t PRI_83_Msk = PRI_83::mask;
+/// PRI_83
+/// Position: 30, Width: 2
+using PRI_83 = BitField<30, 2>;
+constexpr uint32_t PRI_83_Pos = 30;
+constexpr uint32_t PRI_83_Msk = PRI_83::mask;
 
 }  // namespace ipr2
 
 /// IPR3 - Interrupt Priority Register 3
 namespace ipr3 {
-    /// PRI_120
-    /// Position: 6, Width: 2
-    using PRI_120 = BitField<6, 2>;
-    constexpr uint32_t PRI_120_Pos = 6;
-    constexpr uint32_t PRI_120_Msk = PRI_120::mask;
+/// PRI_120
+/// Position: 6, Width: 2
+using PRI_120 = BitField<6, 2>;
+constexpr uint32_t PRI_120_Pos = 6;
+constexpr uint32_t PRI_120_Msk = PRI_120::mask;
 
-    /// PRI_121
-    /// Position: 14, Width: 2
-    using PRI_121 = BitField<14, 2>;
-    constexpr uint32_t PRI_121_Pos = 14;
-    constexpr uint32_t PRI_121_Msk = PRI_121::mask;
+/// PRI_121
+/// Position: 14, Width: 2
+using PRI_121 = BitField<14, 2>;
+constexpr uint32_t PRI_121_Pos = 14;
+constexpr uint32_t PRI_121_Msk = PRI_121::mask;
 
-    /// PRI_122
-    /// Position: 22, Width: 2
-    using PRI_122 = BitField<22, 2>;
-    constexpr uint32_t PRI_122_Pos = 22;
-    constexpr uint32_t PRI_122_Msk = PRI_122::mask;
+/// PRI_122
+/// Position: 22, Width: 2
+using PRI_122 = BitField<22, 2>;
+constexpr uint32_t PRI_122_Pos = 22;
+constexpr uint32_t PRI_122_Msk = PRI_122::mask;
 
-    /// PRI_123
-    /// Position: 30, Width: 2
-    using PRI_123 = BitField<30, 2>;
-    constexpr uint32_t PRI_123_Pos = 30;
-    constexpr uint32_t PRI_123_Msk = PRI_123::mask;
+/// PRI_123
+/// Position: 30, Width: 2
+using PRI_123 = BitField<30, 2>;
+constexpr uint32_t PRI_123_Pos = 30;
+constexpr uint32_t PRI_123_Msk = PRI_123::mask;
 
 }  // namespace ipr3
 
 /// IPR4 - Interrupt Priority Register 4
 namespace ipr4 {
-    /// PRI_160
-    /// Position: 6, Width: 2
-    using PRI_160 = BitField<6, 2>;
-    constexpr uint32_t PRI_160_Pos = 6;
-    constexpr uint32_t PRI_160_Msk = PRI_160::mask;
+/// PRI_160
+/// Position: 6, Width: 2
+using PRI_160 = BitField<6, 2>;
+constexpr uint32_t PRI_160_Pos = 6;
+constexpr uint32_t PRI_160_Msk = PRI_160::mask;
 
-    /// PRI_161
-    /// Position: 14, Width: 2
-    using PRI_161 = BitField<14, 2>;
-    constexpr uint32_t PRI_161_Pos = 14;
-    constexpr uint32_t PRI_161_Msk = PRI_161::mask;
+/// PRI_161
+/// Position: 14, Width: 2
+using PRI_161 = BitField<14, 2>;
+constexpr uint32_t PRI_161_Pos = 14;
+constexpr uint32_t PRI_161_Msk = PRI_161::mask;
 
-    /// PRI_162
-    /// Position: 22, Width: 2
-    using PRI_162 = BitField<22, 2>;
-    constexpr uint32_t PRI_162_Pos = 22;
-    constexpr uint32_t PRI_162_Msk = PRI_162::mask;
+/// PRI_162
+/// Position: 22, Width: 2
+using PRI_162 = BitField<22, 2>;
+constexpr uint32_t PRI_162_Pos = 22;
+constexpr uint32_t PRI_162_Msk = PRI_162::mask;
 
-    /// PRI_163
-    /// Position: 30, Width: 2
-    using PRI_163 = BitField<30, 2>;
-    constexpr uint32_t PRI_163_Pos = 30;
-    constexpr uint32_t PRI_163_Msk = PRI_163::mask;
+/// PRI_163
+/// Position: 30, Width: 2
+using PRI_163 = BitField<30, 2>;
+constexpr uint32_t PRI_163_Pos = 30;
+constexpr uint32_t PRI_163_Msk = PRI_163::mask;
 
 }  // namespace ipr4
 
 /// IPR5 - Interrupt Priority Register 5
 namespace ipr5 {
-    /// PRI_200
-    /// Position: 6, Width: 2
-    using PRI_200 = BitField<6, 2>;
-    constexpr uint32_t PRI_200_Pos = 6;
-    constexpr uint32_t PRI_200_Msk = PRI_200::mask;
+/// PRI_200
+/// Position: 6, Width: 2
+using PRI_200 = BitField<6, 2>;
+constexpr uint32_t PRI_200_Pos = 6;
+constexpr uint32_t PRI_200_Msk = PRI_200::mask;
 
-    /// PRI_201
-    /// Position: 14, Width: 2
-    using PRI_201 = BitField<14, 2>;
-    constexpr uint32_t PRI_201_Pos = 14;
-    constexpr uint32_t PRI_201_Msk = PRI_201::mask;
+/// PRI_201
+/// Position: 14, Width: 2
+using PRI_201 = BitField<14, 2>;
+constexpr uint32_t PRI_201_Pos = 14;
+constexpr uint32_t PRI_201_Msk = PRI_201::mask;
 
-    /// PRI_202
-    /// Position: 22, Width: 2
-    using PRI_202 = BitField<22, 2>;
-    constexpr uint32_t PRI_202_Pos = 22;
-    constexpr uint32_t PRI_202_Msk = PRI_202::mask;
+/// PRI_202
+/// Position: 22, Width: 2
+using PRI_202 = BitField<22, 2>;
+constexpr uint32_t PRI_202_Pos = 22;
+constexpr uint32_t PRI_202_Msk = PRI_202::mask;
 
-    /// PRI_203
-    /// Position: 30, Width: 2
-    using PRI_203 = BitField<30, 2>;
-    constexpr uint32_t PRI_203_Pos = 30;
-    constexpr uint32_t PRI_203_Msk = PRI_203::mask;
+/// PRI_203
+/// Position: 30, Width: 2
+using PRI_203 = BitField<30, 2>;
+constexpr uint32_t PRI_203_Pos = 30;
+constexpr uint32_t PRI_203_Msk = PRI_203::mask;
 
 }  // namespace ipr5
 
 /// IPR6 - Interrupt Priority Register 6
 namespace ipr6 {
-    /// PRI_240
-    /// Position: 6, Width: 2
-    using PRI_240 = BitField<6, 2>;
-    constexpr uint32_t PRI_240_Pos = 6;
-    constexpr uint32_t PRI_240_Msk = PRI_240::mask;
+/// PRI_240
+/// Position: 6, Width: 2
+using PRI_240 = BitField<6, 2>;
+constexpr uint32_t PRI_240_Pos = 6;
+constexpr uint32_t PRI_240_Msk = PRI_240::mask;
 
-    /// PRI_241
-    /// Position: 14, Width: 2
-    using PRI_241 = BitField<14, 2>;
-    constexpr uint32_t PRI_241_Pos = 14;
-    constexpr uint32_t PRI_241_Msk = PRI_241::mask;
+/// PRI_241
+/// Position: 14, Width: 2
+using PRI_241 = BitField<14, 2>;
+constexpr uint32_t PRI_241_Pos = 14;
+constexpr uint32_t PRI_241_Msk = PRI_241::mask;
 
-    /// PRI_242
-    /// Position: 22, Width: 2
-    using PRI_242 = BitField<22, 2>;
-    constexpr uint32_t PRI_242_Pos = 22;
-    constexpr uint32_t PRI_242_Msk = PRI_242::mask;
+/// PRI_242
+/// Position: 22, Width: 2
+using PRI_242 = BitField<22, 2>;
+constexpr uint32_t PRI_242_Pos = 22;
+constexpr uint32_t PRI_242_Msk = PRI_242::mask;
 
-    /// PRI_243
-    /// Position: 30, Width: 2
-    using PRI_243 = BitField<30, 2>;
-    constexpr uint32_t PRI_243_Pos = 30;
-    constexpr uint32_t PRI_243_Msk = PRI_243::mask;
+/// PRI_243
+/// Position: 30, Width: 2
+using PRI_243 = BitField<30, 2>;
+constexpr uint32_t PRI_243_Pos = 30;
+constexpr uint32_t PRI_243_Msk = PRI_243::mask;
 
 }  // namespace ipr6
 
 /// IPR7 - Interrupt Priority Register 7
 namespace ipr7 {
-    /// PRI_280
-    /// Position: 6, Width: 2
-    using PRI_280 = BitField<6, 2>;
-    constexpr uint32_t PRI_280_Pos = 6;
-    constexpr uint32_t PRI_280_Msk = PRI_280::mask;
+/// PRI_280
+/// Position: 6, Width: 2
+using PRI_280 = BitField<6, 2>;
+constexpr uint32_t PRI_280_Pos = 6;
+constexpr uint32_t PRI_280_Msk = PRI_280::mask;
 
-    /// PRI_281
-    /// Position: 14, Width: 2
-    using PRI_281 = BitField<14, 2>;
-    constexpr uint32_t PRI_281_Pos = 14;
-    constexpr uint32_t PRI_281_Msk = PRI_281::mask;
+/// PRI_281
+/// Position: 14, Width: 2
+using PRI_281 = BitField<14, 2>;
+constexpr uint32_t PRI_281_Pos = 14;
+constexpr uint32_t PRI_281_Msk = PRI_281::mask;
 
-    /// PRI_282
-    /// Position: 22, Width: 2
-    using PRI_282 = BitField<22, 2>;
-    constexpr uint32_t PRI_282_Pos = 22;
-    constexpr uint32_t PRI_282_Msk = PRI_282::mask;
+/// PRI_282
+/// Position: 22, Width: 2
+using PRI_282 = BitField<22, 2>;
+constexpr uint32_t PRI_282_Pos = 22;
+constexpr uint32_t PRI_282_Msk = PRI_282::mask;
 
-    /// PRI_283
-    /// Position: 30, Width: 2
-    using PRI_283 = BitField<30, 2>;
-    constexpr uint32_t PRI_283_Pos = 30;
-    constexpr uint32_t PRI_283_Msk = PRI_283::mask;
+/// PRI_283
+/// Position: 30, Width: 2
+using PRI_283 = BitField<30, 2>;
+constexpr uint32_t PRI_283_Pos = 30;
+constexpr uint32_t PRI_283_Msk = PRI_283::mask;
 
 }  // namespace ipr7
 

@@ -5,9 +5,10 @@
  * Tests type-safe unit wrappers
  */
 
-#include "../../src/core/units.hpp"
 #include <cassert>
 #include <iostream>
+
+#include "../../src/core/units.hpp"
 
 using namespace alloy::core;
 using namespace alloy::core::literals;
@@ -17,29 +18,29 @@ using namespace alloy::core::baud_rates;
 static int tests_run = 0;
 static int tests_passed = 0;
 
-#define TEST(name) \
-    void test_##name(); \
-    void run_test_##name() { \
-        tests_run++; \
-        std::cout << "Running test: " #name << "..."; \
-        try { \
-            test_##name(); \
-            tests_passed++; \
-            std::cout << " PASS" << std::endl; \
-        } catch (const std::exception& e) { \
-            std::cout << " FAIL: " << e.what() << std::endl; \
-        } catch (...) { \
+#define TEST(name)                                                \
+    void test_##name();                                           \
+    void run_test_##name() {                                      \
+        tests_run++;                                              \
+        std::cout << "Running test: " #name << "...";             \
+        try {                                                     \
+            test_##name();                                        \
+            tests_passed++;                                       \
+            std::cout << " PASS" << std::endl;                    \
+        } catch (const std::exception& e) {                       \
+            std::cout << " FAIL: " << e.what() << std::endl;      \
+        } catch (...) {                                           \
             std::cout << " FAIL: Unknown exception" << std::endl; \
-        } \
-    } \
+        }                                                         \
+    }                                                             \
     void test_##name()
 
-#define ASSERT(condition) \
-    do { \
-        if (!(condition)) { \
+#define ASSERT(condition)                                              \
+    do {                                                               \
+        if (!(condition)) {                                            \
             throw std::runtime_error("Assertion failed: " #condition); \
-        } \
-    } while(0)
+        }                                                              \
+    } while (0)
 
 // =============================================================================
 // BaudRate Construction Tests
@@ -230,7 +231,7 @@ TEST(baudrate_switch_statement) {
 
     // BaudRate can't be used directly in switch, but value() can
     u32 divider = 0;
-    switch(rate.value()) {
+    switch (rate.value()) {
         case 9600:
             divider = 1;
             break;
@@ -246,13 +247,7 @@ TEST(baudrate_switch_statement) {
 }
 
 TEST(baudrate_array_of_rates) {
-    BaudRate rates[] = {
-        Baud9600,
-        Baud19200,
-        Baud38400,
-        Baud57600,
-        Baud115200
-    };
+    BaudRate rates[] = {Baud9600, Baud19200, Baud38400, Baud57600, Baud115200};
 
     ASSERT(rates[0] == Baud9600);
     ASSERT(rates[4] == Baud115200);
@@ -263,10 +258,8 @@ TEST(baudrate_array_of_rates) {
 // =============================================================================
 
 // Verify BaudRate is trivially copyable (zero overhead)
-static_assert(std::is_trivially_copyable_v<BaudRate>,
-              "BaudRate must be trivially copyable");
-static_assert(std::is_standard_layout_v<BaudRate>,
-              "BaudRate must be standard layout");
+static_assert(std::is_trivially_copyable_v<BaudRate>, "BaudRate must be trivially copyable");
+static_assert(std::is_standard_layout_v<BaudRate>, "BaudRate must be standard layout");
 
 TEST(baudrate_compile_time_checks) {
     // If we reach here, all static_assert passed

@@ -8,10 +8,12 @@
 /// Hardware: STM32F103 (Bluepill)
 /// - LED patterns indicate which events are active
 
-#include "stm32f103c8/board.hpp"
-#include "rtos/rtos.hpp"
 #include "rtos/event.hpp"
+#include "rtos/rtos.hpp"
+
 #include "core/types.hpp"
+
+#include "stm32f103c8/board.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;
@@ -20,7 +22,8 @@ using namespace alloy::rtos;
 constexpr core::u32 EVENT_SENSOR1_READY = (1 << 0);
 constexpr core::u32 EVENT_SENSOR2_READY = (1 << 1);
 constexpr core::u32 EVENT_SENSOR3_READY = (1 << 2);
-constexpr core::u32 EVENT_ALL_SENSORS   = EVENT_SENSOR1_READY | EVENT_SENSOR2_READY | EVENT_SENSOR3_READY;
+constexpr core::u32 EVENT_ALL_SENSORS =
+    EVENT_SENSOR1_READY | EVENT_SENSOR2_READY | EVENT_SENSOR3_READY;
 
 /// Event flags for sensor coordination
 EventFlags sensor_events;
@@ -97,9 +100,12 @@ void quick_process_task_func() {
         if (events != 0) {
             // At least one sensor ready - show which one(s)
             int blink_count = 0;
-            if (events & EVENT_SENSOR1_READY) blink_count++;
-            if (events & EVENT_SENSOR2_READY) blink_count++;
-            if (events & EVENT_SENSOR3_READY) blink_count++;
+            if (events & EVENT_SENSOR1_READY)
+                blink_count++;
+            if (events & EVENT_SENSOR2_READY)
+                blink_count++;
+            if (events & EVENT_SENSOR3_READY)
+                blink_count++;
 
             // Fast blinks = quick processing
             for (int i = 0; i < blink_count; i++) {
@@ -163,12 +169,12 @@ void idle_task_func() {
 }
 
 // Create tasks
-Task<256, Priority::Normal>  sensor1_task(sensor1_task_func, "Sensor1");
-Task<256, Priority::Normal>  sensor2_task(sensor2_task_func, "Sensor2");
-Task<256, Priority::Normal>  sensor3_task(sensor3_task_func, "Sensor3");
-Task<512, Priority::High>    quick_task(quick_process_task_func, "QuickProc");
-Task<512, Priority::High>    fusion_task(fusion_process_task_func, "FusionProc");
-Task<256, Priority::Idle>    idle_task(idle_task_func, "Idle");
+Task<256, Priority::Normal> sensor1_task(sensor1_task_func, "Sensor1");
+Task<256, Priority::Normal> sensor2_task(sensor2_task_func, "Sensor2");
+Task<256, Priority::Normal> sensor3_task(sensor3_task_func, "Sensor3");
+Task<512, Priority::High> quick_task(quick_process_task_func, "QuickProc");
+Task<512, Priority::High> fusion_task(fusion_process_task_func, "FusionProc");
+Task<256, Priority::Idle> idle_task(idle_task_func, "Idle");
 
 int main() {
     // Initialize board (includes SysTick)
@@ -185,7 +191,7 @@ int main() {
 
 // Weak symbols for startup code
 extern "C" {
-    void SystemInit() {
-        // Running on default HSI (8MHz)
-    }
+void SystemInit() {
+    // Running on default HSI (8MHz)
+}
 }

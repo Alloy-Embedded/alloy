@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samv71::afec0 {
 
 /// AFEC0 Register Structure
 struct AFEC0_Registers {
-
     /// AFEC Control Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -78,7 +77,7 @@ struct AFEC0_Registers {
     /// Offset: 0x0030
     /// Access: read-only
     volatile uint32_t ISR;
-    uint8_t RESERVED_0034[24]; ///< Reserved
+    uint8_t RESERVED_0034[24];  ///< Reserved
 
     /// AFEC Overrun Status Register
     /// Offset: 0x004C
@@ -92,7 +91,7 @@ struct AFEC0_Registers {
     /// AFEC Channel Gain Register
     /// Offset: 0x0054
     volatile uint32_t CGR;
-    uint8_t RESERVED_0058[8]; ///< Reserved
+    uint8_t RESERVED_0058[8];  ///< Reserved
 
     /// AFEC Channel Differential Register
     /// Offset: 0x0060
@@ -118,17 +117,17 @@ struct AFEC0_Registers {
     /// AFEC Temperature Compare Window Register
     /// Offset: 0x0074
     volatile uint32_t TEMPCWR;
-    uint8_t RESERVED_0078[28]; ///< Reserved
+    uint8_t RESERVED_0078[28];  ///< Reserved
 
     /// AFEC Analog Control Register
     /// Offset: 0x0094
     volatile uint32_t ACR;
-    uint8_t RESERVED_0098[8]; ///< Reserved
+    uint8_t RESERVED_0098[8];  ///< Reserved
 
     /// AFEC Sample & Hold Mode Register
     /// Offset: 0x00A0
     volatile uint32_t SHMR;
-    uint8_t RESERVED_00A4[44]; ///< Reserved
+    uint8_t RESERVED_00A4[44];  ///< Reserved
 
     /// AFEC Correction Select Register
     /// Offset: 0x00D0
@@ -141,7 +140,7 @@ struct AFEC0_Registers {
     /// AFEC Channel Error Correction Register
     /// Offset: 0x00D8
     volatile uint32_t CECR;
-    uint8_t RESERVED_00DC[8]; ///< Reserved
+    uint8_t RESERVED_00DC[8];  ///< Reserved
 
     /// AFEC Write Protection Mode Register
     /// Offset: 0x00E4

@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::dport {
 
 /// DPORT Register Structure
 struct DPORT_Registers {
-
     /// PRO_BOOT_REMAP_CTRL
     /// Offset: 0x0000
     volatile uint32_t PRO_BOOT_REMAP_CTRL;
@@ -1702,7 +1701,7 @@ struct DPORT_Registers {
     /// APP_VECBASE_SET
     /// Offset: 0x05B8
     volatile uint32_t APP_VECBASE_SET;
-    uint8_t RESERVED_05BC[2624]; ///< Reserved
+    uint8_t RESERVED_05BC[2624];  ///< Reserved
 
     /// DATE
     /// Offset: 0x0FFC

@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samv71::dacc {
 
 /// DACC Register Structure
 struct DACC_Registers {
-
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -30,7 +29,7 @@ struct DACC_Registers {
     /// Trigger Register
     /// Offset: 0x0008
     volatile uint32_t TRIGR;
-    uint8_t RESERVED_000C[4]; ///< Reserved
+    uint8_t RESERVED_000C[4];  ///< Reserved
 
     /// Channel Enable Register
     /// Offset: 0x0010
@@ -71,12 +70,12 @@ struct DACC_Registers {
     /// Offset: 0x0030
     /// Access: read-only
     volatile uint32_t ISR;
-    uint8_t RESERVED_0034[96]; ///< Reserved
+    uint8_t RESERVED_0034[96];  ///< Reserved
 
     /// Analog Current Register
     /// Offset: 0x0094
     volatile uint32_t ACR;
-    uint8_t RESERVED_0098[76]; ///< Reserved
+    uint8_t RESERVED_0098[76];  ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4

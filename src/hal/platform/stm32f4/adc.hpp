@@ -26,11 +26,12 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -64,24 +65,24 @@ namespace adc = alloy::hal::st::stm32f4::adc1;
 enum class AdcResolution : uint8_t {
     Bits12 = 0,  ///< 12-bit resolution (default)
     Bits10 = 1,  ///< 10-bit resolution
-    Bits8 = 2,  ///< 8-bit resolution
-    Bits6 = 3,  ///< 6-bit resolution
+    Bits8 = 2,   ///< 8-bit resolution
+    Bits6 = 3,   ///< 6-bit resolution
 };
 
 /**
  * @brief ADC Channel Number
  */
 enum class AdcChannel : uint8_t {
-    CH0 = 0,  ///< Channel 0
-    CH1 = 1,  ///< Channel 1
-    CH2 = 2,  ///< Channel 2
-    CH3 = 3,  ///< Channel 3
-    CH4 = 4,  ///< Channel 4
-    CH5 = 5,  ///< Channel 5
-    CH6 = 6,  ///< Channel 6
-    CH7 = 7,  ///< Channel 7
-    CH8 = 8,  ///< Channel 8
-    CH9 = 9,  ///< Channel 9
+    CH0 = 0,    ///< Channel 0
+    CH1 = 1,    ///< Channel 1
+    CH2 = 2,    ///< Channel 2
+    CH3 = 3,    ///< Channel 3
+    CH4 = 4,    ///< Channel 4
+    CH5 = 5,    ///< Channel 5
+    CH6 = 6,    ///< Channel 6
+    CH7 = 7,    ///< Channel 7
+    CH8 = 8,    ///< Channel 8
+    CH9 = 9,    ///< Channel 9
     CH10 = 10,  ///< Channel 10
     CH11 = 11,  ///< Channel 11
     CH12 = 12,  ///< Channel 12
@@ -132,7 +133,7 @@ struct AdcConfig {
  */
 template <uint32_t BASE_ADDR, uint32_t IRQ_ID>
 class Adc {
-public:
+   public:
     // Compile-time constants
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t irq_id = IRQ_ID;
@@ -213,7 +214,7 @@ public:
         cr1 = adc::cr1::RES::write(cr1, static_cast<uint32_t>(config.resolution));
         hw->CR1 = cr1;
 
-        // 
+        //
         m_config = config;
 
         return Ok();
@@ -235,17 +236,17 @@ public:
 
         // Set sequence length to 1 and channel in SQR3
         uint8_t ch = static_cast<uint8_t>(channel);
-        
+
         // Set sequence length to 1 conversion
         uint32_t sqr1 = hw->SQR1 & ~adc::sqr1::L::mask;
         sqr1 = adc::sqr1::L::write(sqr1, 0);  // 1 conversion (L=0)
         hw->SQR1 = sqr1;
-        
+
         // Set first conversion channel in SQR3
         uint32_t sqr3 = hw->SQR3 & ~adc::sqr3::SQ1::mask;
         sqr3 = adc::sqr3::SQ1::write(sqr3, ch);
         hw->SQR3 = sqr3;
-        
+
         // Set sample time for this channel
         if (ch < 10) {
             // CH0-CH9: SMPR2
@@ -294,17 +295,17 @@ public:
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         // Wait for end of conversion (EOC)
         uint32_t timeout = 100000;
         while ((hw->SR & adc::sr::EOC::mask) == 0 && timeout > 0) {
             --timeout;
         }
-        
+
         if (timeout == 0) {
             return Err(ErrorCode::Timeout);
         }
-        
+
         // Read data register (clears EOC flag)
         uint16_t value = static_cast<uint16_t>(hw->DR & 0xFFFF);
 
@@ -321,28 +322,25 @@ public:
     Result<uint16_t, ErrorCode> readSingle(AdcChannel channel) {
         auto* hw = get_hw();
 
-        // 
+        //
         auto enable_result = enableChannel(channel);
         if (!enable_result.is_ok()) {
             return Err(enable_result.err());
         }
-        
+
         auto start_result = startConversion();
         if (!start_result.is_ok()) {
             return Err(start_result.err());
         }
-        
-        return read();
 
+        return read();
     }
 
     /**
      * @brief Check if ADC is open
      *
      * @return bool Check if ADC is open     */
-    bool isOpen() const {
-        return m_opened;
-    }
+    bool isOpen() const { return m_opened; }
 
     // ========================================================================
     // Static Utility Methods
@@ -356,14 +354,15 @@ public:
      * @param resolution ADC resolution
      * @return uint32_t
      */
-    static constexpr uint32_t toVoltage(uint16_t adc_value, uint32_t vref_mv = 3300, AdcResolution resolution = AdcResolution::Bits12) {
+    static constexpr uint32_t toVoltage(uint16_t adc_value, uint32_t vref_mv = 3300,
+                                        AdcResolution resolution = AdcResolution::Bits12) {
         uint32_t max_value = (1u << (12 - (static_cast<uint32_t>(resolution) * 2))) - 1;
         return (static_cast<uint32_t>(adc_value) * vref_mv) / max_value;
     }
 
 
-private:
-    bool m_opened = false;  ///< Tracks if peripheral is initialized
+   private:
+    bool m_opened = false;    ///< Tracks if peripheral is initialized
     AdcConfig m_config = {};  ///< Current configuration
 };
 
@@ -384,4 +383,4 @@ using Adc1 = Adc<ADC1_BASE, ADC1_IRQ>;  ///< ADC1 - 19 channels (CH0-CH18)
 using Adc2 = Adc<ADC2_BASE, ADC2_IRQ>;  ///< ADC2 - 19 channels (CH0-CH18)
 using Adc3 = Adc<ADC3_BASE, ADC3_IRQ>;  ///< ADC3 - 19 channels (CH0-CH18)
 
-} // namespace alloy::hal::stm32f4
+}  // namespace alloy::hal::stm32f4

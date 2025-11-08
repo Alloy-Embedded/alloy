@@ -17,27 +17,34 @@ namespace alloy::hal::espressif::esp32::emac_dma {
 
 /// EMAC_DMA Register Structure
 struct EMAC_DMA_Registers {
-
     /// Bus mode configuration
     /// Offset: 0x0000
     volatile uint32_t DMABUSMODE;
 
-    /// When these bits are written with any value the DMA reads the current descriptor to which the Register (Current Host Transmit Descriptor Register) is pointing. If that descriptor is not available (owned by the Host) the transmission returns to the suspend state and Bit[2] (TU) of Status Register is asserted. If the descriptor is available the transmission resumes.
+    /// When these bits are written with any value the DMA reads the current descriptor to which the
+    /// Register (Current Host Transmit Descriptor Register) is pointing. If that descriptor is not
+    /// available (owned by the Host) the transmission returns to the suspend state and Bit[2] (TU)
+    /// of Status Register is asserted. If the descriptor is available the transmission resumes.
     /// Offset: 0x0004
     /// Access: read-only
     volatile uint32_t DMATXPOLLDEMAND;
 
-    /// When these bits are written with any value the DMA reads the current descriptor to which the Current Host Receive Descriptor Register is pointing. If that descriptor is not available (owned by the Host) the reception returns to the Suspended state and Bit[7] (RU) of Status Register is asserted. If the descriptor is available the Rx DMA returns to the active state.
+    /// When these bits are written with any value the DMA reads the current descriptor to which the
+    /// Current Host Receive Descriptor Register is pointing. If that descriptor is not available
+    /// (owned by the Host) the reception returns to the Suspended state and Bit[7] (RU) of Status
+    /// Register is asserted. If the descriptor is available the Rx DMA returns to the active state.
     /// Offset: 0x0008
     /// Access: read-only
     volatile uint32_t DMARXPOLLDEMAND;
 
-    /// This field contains the base address of the first descriptor in the Receive Descriptor list. The LSB Bits[1:0] are ignored and internally taken as all-zero by the DMA. Therefore these LSB bits are read-only.
-    /// Offset: 0x000C
+    /// This field contains the base address of the first descriptor in the Receive Descriptor list.
+    /// The LSB Bits[1:0] are ignored and internally taken as all-zero by the DMA. Therefore these
+    /// LSB bits are read-only. Offset: 0x000C
     volatile uint32_t DMARXBASEADDR;
 
-    /// This field contains the base address of the first descriptor in the Transmit Descriptor list. The LSB Bits[1:0] are ignored and are internally taken as all-zero by the DMA.Therefore these LSB bits are read-only.
-    /// Offset: 0x0010
+    /// This field contains the base address of the first descriptor in the Transmit Descriptor
+    /// list. The LSB Bits[1:0] are ignored and are internally taken as all-zero by the
+    /// DMA.Therefore these LSB bits are read-only. Offset: 0x0010
     volatile uint32_t DMATXBASEADDR;
 
     /// State of interrupts, errors and other events
@@ -59,26 +66,22 @@ struct EMAC_DMA_Registers {
     /// Watchdog timer count on receive
     /// Offset: 0x0024
     volatile uint32_t DMARINTWDTIMER;
-    uint8_t RESERVED_0028[32]; ///< Reserved
+    uint8_t RESERVED_0028[32];  ///< Reserved
 
-    /// The address of the current receive descriptor list. Cleared on Reset.Pointer updated by the DMA during operation.
-    /// Offset: 0x0048
-    /// Access: read-only
+    /// The address of the current receive descriptor list. Cleared on Reset.Pointer updated by the
+    /// DMA during operation. Offset: 0x0048 Access: read-only
     volatile uint32_t DMATXCURRDESC;
 
-    /// The address of the current receive descriptor list. Cleared on Reset.Pointer updated by the DMA during operation.
-    /// Offset: 0x004C
-    /// Access: read-only
+    /// The address of the current receive descriptor list. Cleared on Reset.Pointer updated by the
+    /// DMA during operation. Offset: 0x004C Access: read-only
     volatile uint32_t DMARXCURRDESC;
 
-    /// The address of the current receive descriptor list. Cleared on Reset.Pointer updated by the DMA during operation.
-    /// Offset: 0x0050
-    /// Access: read-only
+    /// The address of the current receive descriptor list. Cleared on Reset.Pointer updated by the
+    /// DMA during operation. Offset: 0x0050 Access: read-only
     volatile uint32_t DMATXCURRADDR_BUF;
 
-    /// The address of the current receive descriptor list. Cleared on Reset.Pointer updated by the DMA during operation.
-    /// Offset: 0x0054
-    /// Access: read-only
+    /// The address of the current receive descriptor list. Cleared on Reset.Pointer updated by the
+    /// DMA during operation. Offset: 0x0054 Access: read-only
     volatile uint32_t DMARXCURRADDR_BUF;
 };
 

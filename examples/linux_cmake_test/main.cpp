@@ -3,8 +3,9 @@
  * @brief Simple Linux platform test using CMake
  */
 
-#include "hal/platform/linux/uart.hpp"
 #include <iostream>
+
+#include "hal/platform/linux/uart.hpp"
 
 int main() {
     std::cout << "Linux Platform CMake Test\n";

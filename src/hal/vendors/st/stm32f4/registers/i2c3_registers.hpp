@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::i2c3 {
 
 /// I2C3 Register Structure
 struct I2C3_Registers {
-
     /// Control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000

@@ -1,12 +1,13 @@
 #pragma once
 
-#include "types.hpp"
-#include "sink.hpp"
-#include "format.hpp"
 #include "hal/interface/systick.hpp"
 
+#include "format.hpp"
+#include "sink.hpp"
+#include "types.hpp"
+
 #ifdef ALLOY_HAS_RTOS
-#include "rtos/mutex.hpp"
+    #include "rtos/mutex.hpp"
 #endif
 
 #include <cstdarg>
@@ -30,7 +31,7 @@ namespace logger {
  *   LOG_WARN("Temperature: {}°C", temp);
  */
 class Logger {
-public:
+   public:
     /**
      * Get singleton instance
      */
@@ -47,16 +48,12 @@ public:
      *
      * @param level New minimum level
      */
-    static void set_level(Level level) {
-        instance().runtime_level_ = level;
-    }
+    static void set_level(Level level) { instance().runtime_level_ = level; }
 
     /**
      * Get current runtime log level
      */
-    static Level get_level() {
-        return instance().runtime_level_;
-    }
+    static Level get_level() { return instance().runtime_level_; }
 
     /**
      * Add an output sink
@@ -137,9 +134,7 @@ public:
      *
      * @param enable true to enable colors
      */
-    static void enable_colors(bool enable) {
-        instance().config_.enable_colors = enable;
-    }
+    static void enable_colors(bool enable) { instance().config_.enable_colors = enable; }
 
     /**
      * Core logging function (usually called via macros)
@@ -174,15 +169,8 @@ public:
 #endif
 
         // Format prefix
-        size_t prefix_len = Formatter::format_prefix(
-            inst.buffer_,
-            sizeof(inst.buffer_),
-            timestamp_us,
-            level,
-            file,
-            line,
-            inst.config_
-        );
+        size_t prefix_len = Formatter::format_prefix(inst.buffer_, sizeof(inst.buffer_),
+                                                     timestamp_us, level, file, line, inst.config_);
 
         // Format message
         va_list args;
@@ -190,9 +178,7 @@ public:
         size_t msg_len = Formatter::format_message(
             inst.buffer_ + prefix_len,
             sizeof(inst.buffer_) - prefix_len - 1,  // Leave room for newline
-            fmt,
-            args
-        );
+            fmt, args);
         va_end(args);
 
         // Add newline
@@ -210,7 +196,7 @@ public:
         }
     }
 
-private:
+   private:
     Logger() = default;
     ~Logger() = default;
     Logger(const Logger&) = delete;
@@ -232,8 +218,8 @@ private:
 #endif
 };
 
-} // namespace logger
-} // namespace alloy
+}  // namespace logger
+}  // namespace alloy
 
 // ============================================================================
 // Logging Macros
@@ -242,8 +228,9 @@ private:
 /**
  * Helper macro to strip file path down to just filename
  */
-#define LOG_FILENAME(file) (strrchr(file, '/') ? strrchr(file, '/') + 1 : \
-                           (strrchr(file, '\\') ? strrchr(file, '\\') + 1 : file))
+#define LOG_FILENAME(file)                       \
+    (strrchr(file, '/') ? strrchr(file, '/') + 1 \
+                        : (strrchr(file, '\\') ? strrchr(file, '\\') + 1 : file))
 
 /**
  * TRACE level logging - very detailed diagnostic information
@@ -251,14 +238,13 @@ private:
  */
 #if LOG_MIN_LEVEL <= LOG_LEVEL_TRACE
     #if LOG_ENABLE_SOURCE_LOCATION
-        #define LOG_TRACE(fmt, ...) \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Trace, \
-                                        LOG_FILENAME(__FILE__), __LINE__, \
-                                        fmt, ##__VA_ARGS__)
+        #define LOG_TRACE(fmt, ...)                                                             \
+            ::alloy::logger::Logger::log(::alloy::logger::Level::Trace, LOG_FILENAME(__FILE__), \
+                                         __LINE__, fmt, ##__VA_ARGS__)
     #else
-        #define LOG_TRACE(fmt, ...) \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Trace, \
-                                        nullptr, 0, fmt, ##__VA_ARGS__)
+        #define LOG_TRACE(fmt, ...)                                                      \
+            ::alloy::logger::Logger::log(::alloy::logger::Level::Trace, nullptr, 0, fmt, \
+                                         ##__VA_ARGS__)
     #endif
 #else
     #define LOG_TRACE(fmt, ...) ((void)0)
@@ -270,14 +256,13 @@ private:
  */
 #if LOG_MIN_LEVEL <= LOG_LEVEL_DEBUG
     #if LOG_ENABLE_SOURCE_LOCATION
-        #define LOG_DEBUG(fmt, ...) \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Debug, \
-                                        LOG_FILENAME(__FILE__), __LINE__, \
-                                        fmt, ##__VA_ARGS__)
+        #define LOG_DEBUG(fmt, ...)                                                             \
+            ::alloy::logger::Logger::log(::alloy::logger::Level::Debug, LOG_FILENAME(__FILE__), \
+                                         __LINE__, fmt, ##__VA_ARGS__)
     #else
-        #define LOG_DEBUG(fmt, ...) \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Debug, \
-                                        nullptr, 0, fmt, ##__VA_ARGS__)
+        #define LOG_DEBUG(fmt, ...)                                                      \
+            ::alloy::logger::Logger::log(::alloy::logger::Level::Debug, nullptr, 0, fmt, \
+                                         ##__VA_ARGS__)
     #endif
 #else
     #define LOG_DEBUG(fmt, ...) ((void)0)
@@ -289,14 +274,13 @@ private:
  */
 #if LOG_MIN_LEVEL <= LOG_LEVEL_INFO
     #if LOG_ENABLE_SOURCE_LOCATION
-        #define LOG_INFO(fmt, ...) \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Info, \
-                                        LOG_FILENAME(__FILE__), __LINE__, \
-                                        fmt, ##__VA_ARGS__)
+        #define LOG_INFO(fmt, ...)                                                             \
+            ::alloy::logger::Logger::log(::alloy::logger::Level::Info, LOG_FILENAME(__FILE__), \
+                                         __LINE__, fmt, ##__VA_ARGS__)
     #else
-        #define LOG_INFO(fmt, ...) \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Info, \
-                                        nullptr, 0, fmt, ##__VA_ARGS__)
+        #define LOG_INFO(fmt, ...)                                                      \
+            ::alloy::logger::Logger::log(::alloy::logger::Level::Info, nullptr, 0, fmt, \
+                                         ##__VA_ARGS__)
     #endif
 #else
     #define LOG_INFO(fmt, ...) ((void)0)
@@ -308,14 +292,13 @@ private:
  */
 #if LOG_MIN_LEVEL <= LOG_LEVEL_WARN
     #if LOG_ENABLE_SOURCE_LOCATION
-        #define LOG_WARN(fmt, ...) \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Warn, \
-                                        LOG_FILENAME(__FILE__), __LINE__, \
-                                        fmt, ##__VA_ARGS__)
+        #define LOG_WARN(fmt, ...)                                                             \
+            ::alloy::logger::Logger::log(::alloy::logger::Level::Warn, LOG_FILENAME(__FILE__), \
+                                         __LINE__, fmt, ##__VA_ARGS__)
     #else
-        #define LOG_WARN(fmt, ...) \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Warn, \
-                                        nullptr, 0, fmt, ##__VA_ARGS__)
+        #define LOG_WARN(fmt, ...)                                                      \
+            ::alloy::logger::Logger::log(::alloy::logger::Level::Warn, nullptr, 0, fmt, \
+                                         ##__VA_ARGS__)
     #endif
 #else
     #define LOG_WARN(fmt, ...) ((void)0)
@@ -327,14 +310,13 @@ private:
  */
 #if LOG_MIN_LEVEL <= LOG_LEVEL_ERROR
     #if LOG_ENABLE_SOURCE_LOCATION
-        #define LOG_ERROR(fmt, ...) \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Error, \
-                                        LOG_FILENAME(__FILE__), __LINE__, \
-                                        fmt, ##__VA_ARGS__)
+        #define LOG_ERROR(fmt, ...)                                                             \
+            ::alloy::logger::Logger::log(::alloy::logger::Level::Error, LOG_FILENAME(__FILE__), \
+                                         __LINE__, fmt, ##__VA_ARGS__)
     #else
-        #define LOG_ERROR(fmt, ...) \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Error, \
-                                        nullptr, 0, fmt, ##__VA_ARGS__)
+        #define LOG_ERROR(fmt, ...)                                                      \
+            ::alloy::logger::Logger::log(::alloy::logger::Level::Error, nullptr, 0, fmt, \
+                                         ##__VA_ARGS__)
     #endif
 #else
     #define LOG_ERROR(fmt, ...) ((void)0)

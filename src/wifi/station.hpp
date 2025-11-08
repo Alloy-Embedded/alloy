@@ -22,21 +22,22 @@
 
 #pragma once
 
-#include "types.hpp"
 #include "core/error.hpp"
 #include "core/esp_error.hpp"
 
+#include "types.hpp"
+
 #ifdef ESP_PLATFORM
-#include "esp_wifi.h"
-#include "esp_event.h"
-#include "nvs_flash.h"
-#include "esp_netif.h"
+    #include "esp_event.h"
+    #include "esp_netif.h"
+    #include "esp_wifi.h"
+    #include "nvs_flash.h"
 #endif
 
 namespace alloy::wifi {
 
-using core::Result;
 using core::ErrorCode;
+using core::Result;
 
 /**
  * @brief WiFi Station mode manager
@@ -48,7 +49,7 @@ using core::ErrorCode;
  * be used per application due to ESP-IDF WiFi driver limitations.
  */
 class Station {
-public:
+   public:
     /**
      * @brief Connection callback function type
      * @param connected true if connected, false if disconnected
@@ -91,11 +92,8 @@ public:
      * @param timeout_ms Connection timeout in milliseconds (default: 10000)
      * @return Result<ConnectionInfo> - Connection info if successful
      */
-    Result<ConnectionInfo> connect(
-        const char* ssid,
-        const char* password,
-        uint32_t timeout_ms = 10000
-    );
+    Result<ConnectionInfo> connect(const char* ssid, const char* password,
+                                   uint32_t timeout_ms = 10000);
 
     /**
      * @brief Disconnect from WiFi
@@ -148,7 +146,7 @@ public:
      */
     const char* ssid() const;
 
-private:
+   private:
     bool initialized_;
     ConnectionState state_;
     ConnectionInfo conn_info_;
@@ -156,16 +154,12 @@ private:
     ConnectionCallback callback_;
 
 #ifdef ESP_PLATFORM
-    static void event_handler(
-        void* arg,
-        esp_event_base_t event_base,
-        int32_t event_id,
-        void* event_data
-    );
+    static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id,
+                              void* event_data);
 
     void handle_wifi_event(int32_t event_id, void* event_data);
     void handle_ip_event(int32_t event_id, void* event_data);
 #endif
 };
 
-} // namespace alloy::wifi
+}  // namespace alloy::wifi

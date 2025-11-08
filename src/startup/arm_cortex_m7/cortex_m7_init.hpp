@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include "fpu_m7.hpp"
-#include "cache_m7.hpp"
 #include "../arm_cortex_m/core_common.hpp"
+#include "cache_m7.hpp"
+#include "fpu_m7.hpp"
 
 namespace alloy::arm::cortex_m7 {
 
@@ -52,21 +52,17 @@ using namespace alloy::arm::cortex_m;
 ///       cortex_m7::initialize();  // Enable all features
 ///       // Now safe to use float, double, and benefit from caching
 ///   }
-inline void initialize(
-    bool enable_fpu_flag = true,
-    bool enable_lazy_fpu_stacking = true,
-    bool enable_icache = true,
-    bool enable_dcache = true
-) {
-    // 1. Enable FPU if present and requested
-    #if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
-        if (enable_fpu_flag) {
-            fpu::initialize(enable_lazy_fpu_stacking);
-        }
-    #else
-        (void)enable_fpu_flag;
-        (void)enable_lazy_fpu_stacking;
-    #endif
+inline void initialize(bool enable_fpu_flag = true, bool enable_lazy_fpu_stacking = true,
+                       bool enable_icache = true, bool enable_dcache = true) {
+// 1. Enable FPU if present and requested
+#if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
+    if (enable_fpu_flag) {
+        fpu::initialize(enable_lazy_fpu_stacking);
+    }
+#else
+    (void)enable_fpu_flag;
+    (void)enable_lazy_fpu_stacking;
+#endif
 
     // 2. Enable caches if present and requested
     cache::initialize(enable_icache, enable_dcache);
@@ -94,4 +90,4 @@ inline void initialize_minimal() {
     initialize(false, false, false, false);
 }
 
-} // namespace alloy::arm::cortex_m7
+}  // namespace alloy::arm::cortex_m7

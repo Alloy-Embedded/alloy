@@ -36,24 +36,26 @@
 #ifndef ALLOY_RTOS_HPP
 #define ALLOY_RTOS_HPP
 
-#include "core/types.hpp"
-#include "core/error.hpp"
-#include "hal/interface/systick.hpp"
 #include <cstddef>
 #include <type_traits>
+
+#include "hal/interface/systick.hpp"
+
+#include "core/error.hpp"
+#include "core/types.hpp"
 
 namespace alloy::rtos {
 
 /// Task priority levels (0 = lowest, 7 = highest)
 enum class Priority : core::u8 {
-    Idle     = 0,  ///< Lowest priority (idle task)
-    Lowest   = 1,  ///< Very low priority
-    Low      = 2,  ///< Low priority
-    Normal   = 3,  ///< Normal priority (default)
-    High     = 4,  ///< High priority
-    Higher   = 5,  ///< Very high priority
-    Highest  = 6,  ///< Highest user priority
-    Critical = 7   ///< Critical system priority
+    Idle = 0,     ///< Lowest priority (idle task)
+    Lowest = 1,   ///< Very low priority
+    Low = 2,      ///< Low priority
+    Normal = 3,   ///< Normal priority (default)
+    High = 4,     ///< High priority
+    Higher = 5,   ///< Very high priority
+    Highest = 6,  ///< Highest user priority
+    Critical = 7  ///< Critical system priority
 };
 
 /// Task state
@@ -73,26 +75,25 @@ class TaskControlBlock;
 /// Contains all state needed to manage a task.
 /// Size: 32 bytes on 32-bit systems
 struct TaskControlBlock {
-    void* stack_pointer;          ///< Current stack pointer (updated on context switch)
-    void* stack_base;             ///< Stack bottom (for overflow detection)
-    core::u32 stack_size;         ///< Stack size in bytes
-    core::u8 priority;            ///< Task priority (0-7)
-    TaskState state;              ///< Current task state
-    core::u32 wake_time;          ///< Wake time in microseconds (for delayed tasks)
-    const char* name;             ///< Task name (for debugging)
-    TaskControlBlock* next;       ///< Next task in ready list (same priority)
+    void* stack_pointer;     ///< Current stack pointer (updated on context switch)
+    void* stack_base;        ///< Stack bottom (for overflow detection)
+    core::u32 stack_size;    ///< Stack size in bytes
+    core::u8 priority;       ///< Task priority (0-7)
+    TaskState state;         ///< Current task state
+    core::u32 wake_time;     ///< Wake time in microseconds (for delayed tasks)
+    const char* name;        ///< Task name (for debugging)
+    TaskControlBlock* next;  ///< Next task in ready list (same priority)
 
     /// Constructor
     constexpr TaskControlBlock()
-        : stack_pointer(nullptr)
-        , stack_base(nullptr)
-        , stack_size(0)
-        , priority(0)
-        , state(TaskState::Ready)
-        , wake_time(0)
-        , name("unnamed")
-        , next(nullptr)
-    {}
+        : stack_pointer(nullptr),
+          stack_base(nullptr),
+          stack_size(0),
+          priority(0),
+          state(TaskState::Ready),
+          wake_time(0),
+          name("unnamed"),
+          next(nullptr) {}
 };
 
 /// Task class template
@@ -113,18 +114,18 @@ struct TaskControlBlock {
 ///
 /// Task<512, Priority::High> task(my_task, "MyTask");
 /// ```
-template<size_t StackSize, Priority Pri>
+template <size_t StackSize, Priority Pri>
 class Task {
     static_assert(StackSize >= 256, "Stack size must be at least 256 bytes");
     static_assert(StackSize % 8 == 0, "Stack size must be 8-byte aligned");
     static_assert(Pri >= Priority::Idle && Pri <= Priority::Critical,
                   "Priority must be between Idle (0) and Critical (7)");
 
-private:
+   private:
     alignas(8) core::u8 stack_[StackSize];  ///< Task stack (8-byte aligned)
-    TaskControlBlock tcb_;                   ///< Task control block
+    TaskControlBlock tcb_;                  ///< Task control block
 
-public:
+   public:
     /// Constructor
     ///
     /// @param task_func Task entry point function
@@ -141,7 +142,7 @@ public:
     /// Check for stack overflow (debug builds)
     bool check_stack_overflow() const;
 
-private:
+   private:
     /// Initialize task stack with initial context
     void init_stack(void (*task_func)());
 };
@@ -198,21 +199,21 @@ bool need_context_switch();
 /// @note Internal function, called by Task constructor
 void register_task(TaskControlBlock* tcb);
 
-} // namespace RTOS
+}  // namespace RTOS
 
 /// Infinite timeout constant
 constexpr core::u32 INFINITE = 0xFFFFFFFF;
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
 // Include platform-specific context switching
-#if defined(__ARM_ARCH_6M__) || defined(__ARM_ARCH_7M__) || \
-    defined(__ARM_ARCH_7EM__) || defined(__ARM_ARCH_8M__)
+#if defined(__ARM_ARCH_6M__) || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__) || \
+    defined(__ARM_ARCH_8M__)
     #include "rtos/platform/arm_context.hpp"
 #elif defined(ESP32) || defined(ESP_PLATFORM)
     #include "rtos/platform/xtensa_context.hpp"
 #elif defined(__x86_64__) || defined(__aarch64__) || defined(_WIN64) || defined(__APPLE__)
-    // Host platform (x86-64, ARM64 macOS, Windows x64)
+   // Host platform (x86-64, ARM64 macOS, Windows x64)
     #include "rtos/platform/host_context.hpp"
 #else
     #error "Unsupported platform for RTOS"
@@ -221,11 +222,9 @@ constexpr core::u32 INFINITE = 0xFFFFFFFF;
 // Include Task implementation
 namespace alloy::rtos {
 
-template<size_t StackSize, Priority Pri>
-Task<StackSize, Pri>::Task(void (*task_func)(), const char* name)
-    : stack_{}
-    , tcb_{}
-{
+template <size_t StackSize, Priority Pri>
+Task<StackSize, Pri>::Task(void (*task_func)(), const char* name) : stack_{},
+                                                                    tcb_{} {
     // Initialize TCB
     tcb_.stack_base = &stack_[0];
     tcb_.stack_size = StackSize;
@@ -241,18 +240,19 @@ Task<StackSize, Pri>::Task(void (*task_func)(), const char* name)
     RTOS::register_task(&tcb_);
 }
 
-template<size_t StackSize, Priority Pri>
+template <size_t StackSize, Priority Pri>
 void Task<StackSize, Pri>::init_stack(void (*task_func)()) {
     // Platform-specific stack initialization
     // This will be implemented in platform-specific files
-    extern void init_task_stack(TaskControlBlock* tcb, void (*func)());
+    extern void init_task_stack(TaskControlBlock * tcb, void (*func)());
     init_task_stack(&tcb_, task_func);
 }
 
-template<size_t StackSize, Priority Pri>
+template <size_t StackSize, Priority Pri>
 core::u32 Task<StackSize, Pri>::get_stack_usage() const {
     // Calculate stack usage (simplified - just checks current SP position)
-    if (tcb_.stack_pointer == nullptr) return 0;
+    if (tcb_.stack_pointer == nullptr)
+        return 0;
 
     core::u8* sp = static_cast<core::u8*>(tcb_.stack_pointer);
     core::u8* base = static_cast<core::u8*>(tcb_.stack_base);
@@ -261,7 +261,7 @@ core::u32 Task<StackSize, Pri>::get_stack_usage() const {
     return static_cast<core::u32>(base + StackSize - sp);
 }
 
-template<size_t StackSize, Priority Pri>
+template <size_t StackSize, Priority Pri>
 bool Task<StackSize, Pri>::check_stack_overflow() const {
 #ifdef DEBUG
     // Check stack canary (if implemented)
@@ -273,6 +273,6 @@ bool Task<StackSize, Pri>::check_stack_overflow() const {
 #endif
 }
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
-#endif // ALLOY_RTOS_HPP
+#endif  // ALLOY_RTOS_HPP

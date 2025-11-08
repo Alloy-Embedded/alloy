@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::hsmci {
 
 /// HSMCI Register Structure
 struct HSMCI_Registers {
-
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -66,7 +65,7 @@ struct HSMCI_Registers {
     /// Offset: 0x0034
     /// Access: write-only
     volatile uint32_t TDR;
-    uint8_t RESERVED_0038[8]; ///< Reserved
+    uint8_t RESERVED_0038[8];  ///< Reserved
 
     /// Status Register
     /// Offset: 0x0040
@@ -95,7 +94,7 @@ struct HSMCI_Registers {
     /// Configuration Register
     /// Offset: 0x0054
     volatile uint32_t CFG;
-    uint8_t RESERVED_0058[140]; ///< Reserved
+    uint8_t RESERVED_0058[140];  ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4
@@ -105,7 +104,7 @@ struct HSMCI_Registers {
     /// Offset: 0x00E8
     /// Access: read-only
     volatile uint32_t WPSR;
-    uint8_t RESERVED_00EC[276]; ///< Reserved
+    uint8_t RESERVED_00EC[276];  ///< Reserved
 
     /// FIFO Memory Aperture0 0
     /// Offset: 0x0200

@@ -2,26 +2,24 @@
 
 #ifdef ESP32
 
-#include "rtos/platform/xtensa_context.hpp"
-#include "rtos/scheduler.hpp"
-#include "core/types.hpp"
+    #include "rtos/platform/xtensa_context.hpp"
+
+    #include "rtos/scheduler.hpp"
+
+    #include "core/types.hpp"
 
 namespace alloy::rtos {
 
 void init_task_stack(TaskControlBlock* tcb, void (*func)()) {
     // Get pointer to top of stack (stacks grow downward)
-    core::u32* sp = reinterpret_cast<core::u32*>(
-        static_cast<core::u8*>(tcb->stack_base) + tcb->stack_size
-    );
+    core::u32* sp =
+        reinterpret_cast<core::u32*>(static_cast<core::u8*>(tcb->stack_base) + tcb->stack_size);
 
     // Align stack to 16 bytes (Xtensa requirement)
-    sp = reinterpret_cast<core::u32*>(
-        reinterpret_cast<core::u32>(sp) & ~0xF
-    );
+    sp = reinterpret_cast<core::u32*>(reinterpret_cast<core::u32>(sp) & ~0xF);
 
     // Initialize Xtensa exception frame
-    xtensa::XtExceptionFrame* frame =
-        reinterpret_cast<xtensa::XtExceptionFrame*>(sp) - 1;
+    xtensa::XtExceptionFrame* frame = reinterpret_cast<xtensa::XtExceptionFrame*>(sp) - 1;
 
     // Initialize all registers to safe values
     frame->pc = reinterpret_cast<core::u32>(func);  // Task entry point
@@ -65,7 +63,7 @@ void setup_timer_interrupt() {
     init_rtos_timer();
 }
 
-} // namespace xtensa
+}  // namespace xtensa
 
 void trigger_context_switch() {
     // For bare-metal, just set flag
@@ -81,22 +79,22 @@ void trigger_context_switch() {
     void* sp = g_scheduler.current_task->stack_pointer;
 
     // Cast to exception frame and restore registers
-    xtensa::XtExceptionFrame* frame =
-        static_cast<xtensa::XtExceptionFrame*>(sp);
+    xtensa::XtExceptionFrame* frame = static_cast<xtensa::XtExceptionFrame*>(sp);
 
     // Jump to task (simplified - real implementation needs assembly)
-    void (*task_entry)() = reinterpret_cast<void(*)()>(frame->pc);
+    void (*task_entry)() = reinterpret_cast<void (*)()>(frame->pc);
     task_entry();
 
     // Never reached
-    while (1);
+    while (1)
+        ;
 }
 
-} // namespace alloy::rtos
+}  // namespace alloy::rtos
 
 // Context switch handler (software interrupt)
 extern "C" void context_switch_handler(void* arg) {
-    (void)arg; // Unused
+    (void)arg;  // Unused
 
     // Save current task context
     if (alloy::rtos::g_scheduler.current_task != nullptr) {
@@ -113,4 +111,4 @@ extern "C" void context_switch_handler(void* arg) {
     // This would be done in assembly for a full implementation
 }
 
-#endif // ESP32
+#endif  // ESP32

@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f0::dbgmcu {
 
 /// DBGMCU Register Structure
 struct DBGMCU_Registers {
-
     /// MCU Device ID Code Register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

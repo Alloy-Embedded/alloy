@@ -19,76 +19,71 @@ namespace alloy::generated::stm32f411 {
 // ============================================================================
 
 namespace peripherals {
-    constexpr uintptr_t TIM2                 = 0x40000000;  // General purpose timers
-    constexpr uintptr_t TIM3                 = 0x40000400;  // General purpose timers
-    constexpr uintptr_t TIM4                 = 0x40000800;
-    constexpr uintptr_t TIM5                 = 0x40000C00;  // General-purpose-timers
-    constexpr uintptr_t RTC                  = 0x40002800;  // Real-time clock
-    constexpr uintptr_t WWDG                 = 0x40002C00;  // Window watchdog
-    constexpr uintptr_t IWDG                 = 0x40003000;  // Independent watchdog
-    constexpr uintptr_t I2S2ext              = 0x40003400;  // Serial peripheral interface
-    constexpr uintptr_t SPI2                 = 0x40003800;
-    constexpr uintptr_t SPI3                 = 0x40003C00;
-    constexpr uintptr_t I2S3ext              = 0x40004000;
-    constexpr uintptr_t USART2               = 0x40004400;
-    constexpr uintptr_t I2C1                 = 0x40005400;
-    constexpr uintptr_t I2C2                 = 0x40005800;
-    constexpr uintptr_t I2C3                 = 0x40005C00;  // Inter-integrated circuit
-    constexpr uintptr_t PWR                  = 0x40007000;  // Power control
-    constexpr uintptr_t TIM1                 = 0x40010000;  // Advanced-timers
-    constexpr uintptr_t TIM8                 = 0x40010400;
-    constexpr uintptr_t USART1               = 0x40011000;  // Universal synchronous asynchronous receiver
-      transmitter
-    constexpr uintptr_t USART6               = 0x40011400;
-    constexpr uintptr_t ADC1                 = 0x40012000;  // Analog-to-digital converter
-    constexpr uintptr_t ADC_Common           = 0x40012300;  // ADC common registers
-    constexpr uintptr_t SDIO                 = 0x40012C00;  // Secure digital input/output
-      interface
-    constexpr uintptr_t SPI1                 = 0x40013000;
-    constexpr uintptr_t SPI4                 = 0x40013400;
-    constexpr uintptr_t SYSCFG               = 0x40013800;  // System configuration controller
-    constexpr uintptr_t EXTI                 = 0x40013C00;  // External interrupt/event
-      controller
-    constexpr uintptr_t TIM9                 = 0x40014000;  // General purpose timers
-    constexpr uintptr_t TIM10                = 0x40014400;  // General-purpose-timers
-    constexpr uintptr_t TIM11                = 0x40014800;  // General-purpose-timers
-    constexpr uintptr_t SPI5                 = 0x40015000;
-    constexpr uintptr_t GPIOA                = 0x40020000;  // General-purpose I/Os
-    constexpr uintptr_t GPIOB                = 0x40020400;  // General-purpose I/Os
-    constexpr uintptr_t GPIOC                = 0x40020800;
-    constexpr uintptr_t GPIOD                = 0x40020C00;
-    constexpr uintptr_t GPIOE                = 0x40021000;
-    constexpr uintptr_t GPIOH                = 0x40021C00;  // General-purpose I/Os
-    constexpr uintptr_t CRC                  = 0x40023000;  // Cryptographic processor
-    constexpr uintptr_t RCC                  = 0x40023800;  // Reset and clock control
-    constexpr uintptr_t FLASH                = 0x40023C00;  // FLASH
-    constexpr uintptr_t DMA1                 = 0x40026000;
-    constexpr uintptr_t DMA2                 = 0x40026400;  // DMA controller
-    constexpr uintptr_t OTG_FS_GLOBAL        = 0x50000000;  // USB on the go full speed
-    constexpr uintptr_t OTG_FS_HOST          = 0x50000400;  // USB on the go full speed
-    constexpr uintptr_t OTG_FS_DEVICE        = 0x50000800;  // USB on the go full speed
-    constexpr uintptr_t OTG_FS_PWRCLK        = 0x50000E00;  // USB on the go full speed
-    constexpr uintptr_t SCB_ACTRL            = 0xE000E008;  // System control block ACTLR
-    constexpr uintptr_t STK                  = 0xE000E010;  // SysTick timer
-    constexpr uintptr_t NVIC                 = 0xE000E100;  // Nested Vectored Interrupt
-      Controller
-    constexpr uintptr_t SCB                  = 0xE000ED00;  // System control block
-    constexpr uintptr_t FPU_CPACR            = 0xE000ED88;  // Floating point unit CPACR
-    constexpr uintptr_t MPU                  = 0xE000ED90;  // Memory protection unit
-    constexpr uintptr_t NVIC_STIR            = 0xE000EF00;  // Nested vectored interrupt
-      controller
-    constexpr uintptr_t FPU                  = 0xE000EF34;  // Floting point unit
-    constexpr uintptr_t DBG                  = 0xE0042000;  // Debug support
-} // namespace peripherals
+constexpr uintptr_t TIM2 = 0x40000000;  // General purpose timers
+constexpr uintptr_t TIM3 = 0x40000400;  // General purpose timers
+constexpr uintptr_t TIM4 = 0x40000800;
+constexpr uintptr_t TIM5 = 0x40000C00;     // General-purpose-timers
+constexpr uintptr_t RTC = 0x40002800;      // Real-time clock
+constexpr uintptr_t WWDG = 0x40002C00;     // Window watchdog
+constexpr uintptr_t IWDG = 0x40003000;     // Independent watchdog
+constexpr uintptr_t I2S2ext = 0x40003400;  // Serial peripheral interface
+constexpr uintptr_t SPI2 = 0x40003800;
+constexpr uintptr_t SPI3 = 0x40003C00;
+constexpr uintptr_t I2S3ext = 0x40004000;
+constexpr uintptr_t USART2 = 0x40004400;
+constexpr uintptr_t I2C1 = 0x40005400;
+constexpr uintptr_t I2C2 = 0x40005800;
+constexpr uintptr_t I2C3 = 0x40005C00;  // Inter-integrated circuit
+constexpr uintptr_t PWR = 0x40007000;   // Power control
+constexpr uintptr_t TIM1 = 0x40010000;  // Advanced-timers
+constexpr uintptr_t TIM8 = 0x40010400;
+constexpr uintptr_t USART1 = 0x40011000;  // Universal synchronous asynchronous receiver
+transmitter constexpr uintptr_t USART6 = 0x40011400;
+constexpr uintptr_t ADC1 = 0x40012000;        // Analog-to-digital converter
+constexpr uintptr_t ADC_Common = 0x40012300;  // ADC common registers
+constexpr uintptr_t SDIO = 0x40012C00;        // Secure digital input/output
+interface constexpr uintptr_t SPI1 = 0x40013000;
+constexpr uintptr_t SPI4 = 0x40013400;
+constexpr uintptr_t SYSCFG = 0x40013800;           // System configuration controller
+constexpr uintptr_t EXTI = 0x40013C00;             // External interrupt/event
+controller constexpr uintptr_t TIM9 = 0x40014000;  // General purpose timers
+constexpr uintptr_t TIM10 = 0x40014400;            // General-purpose-timers
+constexpr uintptr_t TIM11 = 0x40014800;            // General-purpose-timers
+constexpr uintptr_t SPI5 = 0x40015000;
+constexpr uintptr_t GPIOA = 0x40020000;  // General-purpose I/Os
+constexpr uintptr_t GPIOB = 0x40020400;  // General-purpose I/Os
+constexpr uintptr_t GPIOC = 0x40020800;
+constexpr uintptr_t GPIOD = 0x40020C00;
+constexpr uintptr_t GPIOE = 0x40021000;
+constexpr uintptr_t GPIOH = 0x40021C00;  // General-purpose I/Os
+constexpr uintptr_t CRC = 0x40023000;    // Cryptographic processor
+constexpr uintptr_t RCC = 0x40023800;    // Reset and clock control
+constexpr uintptr_t FLASH = 0x40023C00;  // FLASH
+constexpr uintptr_t DMA1 = 0x40026000;
+constexpr uintptr_t DMA2 = 0x40026400;            // DMA controller
+constexpr uintptr_t OTG_FS_GLOBAL = 0x50000000;   // USB on the go full speed
+constexpr uintptr_t OTG_FS_HOST = 0x50000400;     // USB on the go full speed
+constexpr uintptr_t OTG_FS_DEVICE = 0x50000800;   // USB on the go full speed
+constexpr uintptr_t OTG_FS_PWRCLK = 0x50000E00;   // USB on the go full speed
+constexpr uintptr_t SCB_ACTRL = 0xE000E008;       // System control block ACTLR
+constexpr uintptr_t STK = 0xE000E010;             // SysTick timer
+constexpr uintptr_t NVIC = 0xE000E100;            // Nested Vectored Interrupt
+Controller constexpr uintptr_t SCB = 0xE000ED00;  // System control block
+constexpr uintptr_t FPU_CPACR = 0xE000ED88;       // Floating point unit CPACR
+constexpr uintptr_t MPU = 0xE000ED90;             // Memory protection unit
+constexpr uintptr_t NVIC_STIR = 0xE000EF00;       // Nested vectored interrupt
+controller constexpr uintptr_t FPU = 0xE000EF34;  // Floting point unit
+constexpr uintptr_t DBG = 0xE0042000;             // Debug support
+}  // namespace peripherals
 
 // ============================================================================
 // MEMORY MAP
 // ============================================================================
 
 namespace memory {
-    constexpr uintptr_t FLASH                = 0x40023C00;
-} // namespace memory
+constexpr uintptr_t FLASH = 0x40023C00;
+}  // namespace memory
 
-} // namespace alloy::generated::stm32f411
+}  // namespace alloy::generated::stm32f411
 
-#endif // ALLOY_GENERATED_STM32F411_PERIPHERALS_HPP
+#endif  // ALLOY_GENERATED_STM32F411_PERIPHERALS_HPP

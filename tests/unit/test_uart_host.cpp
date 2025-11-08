@@ -2,9 +2,11 @@
 ///
 /// Tests the host UART using stdout/stdin simulation.
 
-#include "hal/host/uart.hpp"
-#include "core/units.hpp"
 #include <catch2/catch_test_macros.hpp>
+
+#include "hal/host/uart.hpp"
+
+#include "core/units.hpp"
 
 using namespace alloy::core;
 using namespace alloy::hal;
@@ -93,8 +95,8 @@ TEST_CASE("Read byte returns valid Result type", "[uart][host][read]") {
         REQUIRE(result.value() <= 255);
     } else {
         // Error occurred - should be Timeout or HardwareError
-        REQUIRE((result.error() == ErrorCode::Timeout ||
-                 result.error() == ErrorCode::HardwareError));
+        REQUIRE(
+            (result.error() == ErrorCode::Timeout || result.error() == ErrorCode::HardwareError));
     }
 }
 
@@ -159,12 +161,7 @@ TEST_CASE("UartConfig default values", "[uart][config]") {
 /// Test: UartConfig custom values
 TEST_CASE("UartConfig custom values", "[uart][config]") {
     // Given/When: Creating config with custom values
-    UartConfig config{
-        baud_rates::Baud9600,
-        DataBits::Seven,
-        Parity::Even,
-        StopBits::Two
-    };
+    UartConfig config{baud_rates::Baud9600, DataBits::Seven, Parity::Even, StopBits::Two};
 
     // Then: Values should match
     REQUIRE(config.baud_rate == baud_rates::Baud9600);

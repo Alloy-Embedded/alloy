@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::otg_hs_device {
 
 /// OTG_HS_DEVICE Register Structure
 struct OTG_HS_DEVICE_Registers {
-
     /// OTG_HS device configuration register
     /// Offset: 0x0000
     /// Reset value: 0x02200000
@@ -34,7 +33,7 @@ struct OTG_HS_DEVICE_Registers {
     /// Reset value: 0x00000010
     /// Access: read-only
     volatile uint32_t OTG_HS_DSTS;
-    uint8_t RESERVED_000C[4]; ///< Reserved
+    uint8_t RESERVED_000C[4];  ///< Reserved
 
     /// OTG_HS device IN endpoint common interrupt mask register
     /// Offset: 0x0010
@@ -59,7 +58,7 @@ struct OTG_HS_DEVICE_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DAINTMSK;
-    uint8_t RESERVED_0020[8]; ///< Reserved
+    uint8_t RESERVED_0020[8];  ///< Reserved
 
     /// OTG_HS device VBUS discharge time register
     /// Offset: 0x0028
@@ -102,26 +101,26 @@ struct OTG_HS_DEVICE_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DIEPEACHMSK1;
-    uint8_t RESERVED_0044[60]; ///< Reserved
+    uint8_t RESERVED_0044[60];  ///< Reserved
 
     /// OTG_HS device each OUT endpoint-1 interrupt register
     /// Offset: 0x0080
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPEACHMSK1;
-    uint8_t RESERVED_0084[124]; ///< Reserved
+    uint8_t RESERVED_0084[124];  ///< Reserved
 
     /// OTG device endpoint-0 control register
     /// Offset: 0x0100
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPCTL0;
-    uint8_t RESERVED_0104[4]; ///< Reserved
+    uint8_t RESERVED_0104[4];  ///< Reserved
 
     /// OTG device endpoint-0 interrupt register
     /// Offset: 0x0108
     /// Reset value: 0x00000080
     volatile uint32_t OTG_HS_DIEPINT0;
-    uint8_t RESERVED_010C[4]; ///< Reserved
+    uint8_t RESERVED_010C[4];  ///< Reserved
 
     /// OTG_HS device IN endpoint 0 transfer size register
     /// Offset: 0x0110
@@ -140,19 +139,19 @@ struct OTG_HS_DEVICE_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t OTG_HS_DTXFSTS0;
-    uint8_t RESERVED_011C[4]; ///< Reserved
+    uint8_t RESERVED_011C[4];  ///< Reserved
 
     /// OTG device endpoint-1 control register
     /// Offset: 0x0120
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPCTL1;
-    uint8_t RESERVED_0124[4]; ///< Reserved
+    uint8_t RESERVED_0124[4];  ///< Reserved
 
     /// OTG device endpoint-1 interrupt register
     /// Offset: 0x0128
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPINT1;
-    uint8_t RESERVED_012C[4]; ///< Reserved
+    uint8_t RESERVED_012C[4];  ///< Reserved
 
     /// OTG_HS device endpoint transfer size register
     /// Offset: 0x0130
@@ -171,19 +170,19 @@ struct OTG_HS_DEVICE_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t OTG_HS_DTXFSTS1;
-    uint8_t RESERVED_013C[4]; ///< Reserved
+    uint8_t RESERVED_013C[4];  ///< Reserved
 
     /// OTG device endpoint-2 control register
     /// Offset: 0x0140
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPCTL2;
-    uint8_t RESERVED_0144[4]; ///< Reserved
+    uint8_t RESERVED_0144[4];  ///< Reserved
 
     /// OTG device endpoint-2 interrupt register
     /// Offset: 0x0148
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPINT2;
-    uint8_t RESERVED_014C[4]; ///< Reserved
+    uint8_t RESERVED_014C[4];  ///< Reserved
 
     /// OTG_HS device endpoint transfer size register
     /// Offset: 0x0150
@@ -202,19 +201,19 @@ struct OTG_HS_DEVICE_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t OTG_HS_DTXFSTS2;
-    uint8_t RESERVED_015C[4]; ///< Reserved
+    uint8_t RESERVED_015C[4];  ///< Reserved
 
     /// OTG device endpoint-3 control register
     /// Offset: 0x0160
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPCTL3;
-    uint8_t RESERVED_0164[4]; ///< Reserved
+    uint8_t RESERVED_0164[4];  ///< Reserved
 
     /// OTG device endpoint-3 interrupt register
     /// Offset: 0x0168
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPINT3;
-    uint8_t RESERVED_016C[4]; ///< Reserved
+    uint8_t RESERVED_016C[4];  ///< Reserved
 
     /// OTG_HS device endpoint transfer size register
     /// Offset: 0x0170
@@ -233,19 +232,19 @@ struct OTG_HS_DEVICE_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t OTG_HS_DTXFSTS3;
-    uint8_t RESERVED_017C[4]; ///< Reserved
+    uint8_t RESERVED_017C[4];  ///< Reserved
 
     /// OTG device endpoint-4 control register
     /// Offset: 0x0180
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPCTL4;
-    uint8_t RESERVED_0184[4]; ///< Reserved
+    uint8_t RESERVED_0184[4];  ///< Reserved
 
     /// OTG device endpoint-4 interrupt register
     /// Offset: 0x0188
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPINT4;
-    uint8_t RESERVED_018C[4]; ///< Reserved
+    uint8_t RESERVED_018C[4];  ///< Reserved
 
     /// OTG_HS device endpoint transfer size register
     /// Offset: 0x0190
@@ -264,165 +263,165 @@ struct OTG_HS_DEVICE_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t OTG_HS_DTXFSTS4;
-    uint8_t RESERVED_019C[4]; ///< Reserved
+    uint8_t RESERVED_019C[4];  ///< Reserved
 
     /// OTG device endpoint-5 control register
     /// Offset: 0x01A0
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPCTL5;
-    uint8_t RESERVED_01A4[4]; ///< Reserved
+    uint8_t RESERVED_01A4[4];  ///< Reserved
 
     /// OTG device endpoint-5 interrupt register
     /// Offset: 0x01A8
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPINT5;
-    uint8_t RESERVED_01AC[4]; ///< Reserved
+    uint8_t RESERVED_01AC[4];  ///< Reserved
 
     /// OTG_HS device endpoint transfer size register
     /// Offset: 0x01B0
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DIEPTSIZ5;
-    uint8_t RESERVED_01B4[4]; ///< Reserved
+    uint8_t RESERVED_01B4[4];  ///< Reserved
 
     /// OTG_HS device IN endpoint transmit FIFO status register
     /// Offset: 0x01B8
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t OTG_HS_DTXFSTS5;
-    uint8_t RESERVED_01BC[4]; ///< Reserved
+    uint8_t RESERVED_01BC[4];  ///< Reserved
 
     /// OTG device endpoint-6 control register
     /// Offset: 0x01C0
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPCTL6;
-    uint8_t RESERVED_01C4[4]; ///< Reserved
+    uint8_t RESERVED_01C4[4];  ///< Reserved
 
     /// OTG device endpoint-6 interrupt register
     /// Offset: 0x01C8
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPINT6;
-    uint8_t RESERVED_01CC[20]; ///< Reserved
+    uint8_t RESERVED_01CC[20];  ///< Reserved
 
     /// OTG device endpoint-7 control register
     /// Offset: 0x01E0
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPCTL7;
-    uint8_t RESERVED_01E4[4]; ///< Reserved
+    uint8_t RESERVED_01E4[4];  ///< Reserved
 
     /// OTG device endpoint-7 interrupt register
     /// Offset: 0x01E8
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DIEPINT7;
-    uint8_t RESERVED_01EC[276]; ///< Reserved
+    uint8_t RESERVED_01EC[276];  ///< Reserved
 
     /// OTG_HS device control OUT endpoint 0 control register
     /// Offset: 0x0300
     /// Reset value: 0x00008000
     volatile uint32_t OTG_HS_DOEPCTL0;
-    uint8_t RESERVED_0304[4]; ///< Reserved
+    uint8_t RESERVED_0304[4];  ///< Reserved
 
     /// OTG_HS device endpoint-0 interrupt register
     /// Offset: 0x0308
     /// Reset value: 0x00000080
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPINT0;
-    uint8_t RESERVED_030C[4]; ///< Reserved
+    uint8_t RESERVED_030C[4];  ///< Reserved
 
     /// OTG_HS device endpoint-1 transfer size register
     /// Offset: 0x0310
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPTSIZ0;
-    uint8_t RESERVED_0314[12]; ///< Reserved
+    uint8_t RESERVED_0314[12];  ///< Reserved
 
     /// OTG device endpoint-1 control register
     /// Offset: 0x0320
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DOEPCTL1;
-    uint8_t RESERVED_0324[4]; ///< Reserved
+    uint8_t RESERVED_0324[4];  ///< Reserved
 
     /// OTG_HS device endpoint-1 interrupt register
     /// Offset: 0x0328
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPINT1;
-    uint8_t RESERVED_032C[4]; ///< Reserved
+    uint8_t RESERVED_032C[4];  ///< Reserved
 
     /// OTG_HS device endpoint-2 transfer size register
     /// Offset: 0x0330
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPTSIZ1;
-    uint8_t RESERVED_0334[12]; ///< Reserved
+    uint8_t RESERVED_0334[12];  ///< Reserved
 
     /// OTG device endpoint-2 control register
     /// Offset: 0x0340
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DOEPCTL2;
-    uint8_t RESERVED_0344[4]; ///< Reserved
+    uint8_t RESERVED_0344[4];  ///< Reserved
 
     /// OTG_HS device endpoint-2 interrupt register
     /// Offset: 0x0348
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPINT2;
-    uint8_t RESERVED_034C[4]; ///< Reserved
+    uint8_t RESERVED_034C[4];  ///< Reserved
 
     /// OTG_HS device endpoint-3 transfer size register
     /// Offset: 0x0350
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPTSIZ2;
-    uint8_t RESERVED_0354[12]; ///< Reserved
+    uint8_t RESERVED_0354[12];  ///< Reserved
 
     /// OTG device endpoint-3 control register
     /// Offset: 0x0360
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_DOEPCTL3;
-    uint8_t RESERVED_0364[4]; ///< Reserved
+    uint8_t RESERVED_0364[4];  ///< Reserved
 
     /// OTG_HS device endpoint-3 interrupt register
     /// Offset: 0x0368
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPINT3;
-    uint8_t RESERVED_036C[4]; ///< Reserved
+    uint8_t RESERVED_036C[4];  ///< Reserved
 
     /// OTG_HS device endpoint-4 transfer size register
     /// Offset: 0x0370
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPTSIZ3;
-    uint8_t RESERVED_0374[20]; ///< Reserved
+    uint8_t RESERVED_0374[20];  ///< Reserved
 
     /// OTG_HS device endpoint-4 interrupt register
     /// Offset: 0x0388
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPINT4;
-    uint8_t RESERVED_038C[4]; ///< Reserved
+    uint8_t RESERVED_038C[4];  ///< Reserved
 
     /// OTG_HS device endpoint-5 transfer size register
     /// Offset: 0x0390
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPTSIZ4;
-    uint8_t RESERVED_0394[20]; ///< Reserved
+    uint8_t RESERVED_0394[20];  ///< Reserved
 
     /// OTG_HS device endpoint-5 interrupt register
     /// Offset: 0x03A8
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPINT5;
-    uint8_t RESERVED_03AC[28]; ///< Reserved
+    uint8_t RESERVED_03AC[28];  ///< Reserved
 
     /// OTG_HS device endpoint-6 interrupt register
     /// Offset: 0x03C8
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_DOEPINT6;
-    uint8_t RESERVED_03CC[28]; ///< Reserved
+    uint8_t RESERVED_03CC[28];  ///< Reserved
 
     /// OTG_HS device endpoint-7 interrupt register
     /// Offset: 0x03E8

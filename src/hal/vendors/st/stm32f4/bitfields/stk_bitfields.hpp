@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::stk {
@@ -19,71 +20,71 @@ using namespace alloy::hal::bitfields;
 
 /// CTRL - SysTick control and status register
 namespace ctrl {
-    /// Counter enable
-    /// Position: 0, Width: 1
-    using ENABLE = BitField<0, 1>;
-    constexpr uint32_t ENABLE_Pos = 0;
-    constexpr uint32_t ENABLE_Msk = ENABLE::mask;
+/// Counter enable
+/// Position: 0, Width: 1
+using ENABLE = BitField<0, 1>;
+constexpr uint32_t ENABLE_Pos = 0;
+constexpr uint32_t ENABLE_Msk = ENABLE::mask;
 
-    /// SysTick exception request enable
-    /// Position: 1, Width: 1
-    using TICKINT = BitField<1, 1>;
-    constexpr uint32_t TICKINT_Pos = 1;
-    constexpr uint32_t TICKINT_Msk = TICKINT::mask;
+/// SysTick exception request enable
+/// Position: 1, Width: 1
+using TICKINT = BitField<1, 1>;
+constexpr uint32_t TICKINT_Pos = 1;
+constexpr uint32_t TICKINT_Msk = TICKINT::mask;
 
-    /// Clock source selection
-    /// Position: 2, Width: 1
-    using CLKSOURCE = BitField<2, 1>;
-    constexpr uint32_t CLKSOURCE_Pos = 2;
-    constexpr uint32_t CLKSOURCE_Msk = CLKSOURCE::mask;
+/// Clock source selection
+/// Position: 2, Width: 1
+using CLKSOURCE = BitField<2, 1>;
+constexpr uint32_t CLKSOURCE_Pos = 2;
+constexpr uint32_t CLKSOURCE_Msk = CLKSOURCE::mask;
 
-    /// COUNTFLAG
-    /// Position: 16, Width: 1
-    using COUNTFLAG = BitField<16, 1>;
-    constexpr uint32_t COUNTFLAG_Pos = 16;
-    constexpr uint32_t COUNTFLAG_Msk = COUNTFLAG::mask;
+/// COUNTFLAG
+/// Position: 16, Width: 1
+using COUNTFLAG = BitField<16, 1>;
+constexpr uint32_t COUNTFLAG_Pos = 16;
+constexpr uint32_t COUNTFLAG_Msk = COUNTFLAG::mask;
 
 }  // namespace ctrl
 
 /// LOAD - SysTick reload value register
 namespace load {
-    /// RELOAD value
-    /// Position: 0, Width: 24
-    using RELOAD = BitField<0, 24>;
-    constexpr uint32_t RELOAD_Pos = 0;
-    constexpr uint32_t RELOAD_Msk = RELOAD::mask;
+/// RELOAD value
+/// Position: 0, Width: 24
+using RELOAD = BitField<0, 24>;
+constexpr uint32_t RELOAD_Pos = 0;
+constexpr uint32_t RELOAD_Msk = RELOAD::mask;
 
 }  // namespace load
 
 /// VAL - SysTick current value register
 namespace val {
-    /// Current counter value
-    /// Position: 0, Width: 24
-    using CURRENT = BitField<0, 24>;
-    constexpr uint32_t CURRENT_Pos = 0;
-    constexpr uint32_t CURRENT_Msk = CURRENT::mask;
+/// Current counter value
+/// Position: 0, Width: 24
+using CURRENT = BitField<0, 24>;
+constexpr uint32_t CURRENT_Pos = 0;
+constexpr uint32_t CURRENT_Msk = CURRENT::mask;
 
 }  // namespace val
 
 /// CALIB - SysTick calibration value register
 namespace calib {
-    /// Calibration value
-    /// Position: 0, Width: 24
-    using TENMS = BitField<0, 24>;
-    constexpr uint32_t TENMS_Pos = 0;
-    constexpr uint32_t TENMS_Msk = TENMS::mask;
+/// Calibration value
+/// Position: 0, Width: 24
+using TENMS = BitField<0, 24>;
+constexpr uint32_t TENMS_Pos = 0;
+constexpr uint32_t TENMS_Msk = TENMS::mask;
 
-    /// SKEW flag: Indicates whether the TENMS value is exact
-    /// Position: 30, Width: 1
-    using SKEW = BitField<30, 1>;
-    constexpr uint32_t SKEW_Pos = 30;
-    constexpr uint32_t SKEW_Msk = SKEW::mask;
+/// SKEW flag: Indicates whether the TENMS value is exact
+/// Position: 30, Width: 1
+using SKEW = BitField<30, 1>;
+constexpr uint32_t SKEW_Pos = 30;
+constexpr uint32_t SKEW_Msk = SKEW::mask;
 
-    /// NOREF flag. Reads as zero
-    /// Position: 31, Width: 1
-    using NOREF = BitField<31, 1>;
-    constexpr uint32_t NOREF_Pos = 31;
-    constexpr uint32_t NOREF_Msk = NOREF::mask;
+/// NOREF flag. Reads as zero
+/// Position: 31, Width: 1
+using NOREF = BitField<31, 1>;
+constexpr uint32_t NOREF_Pos = 31;
+constexpr uint32_t NOREF_Msk = NOREF::mask;
 
 }  // namespace calib
 

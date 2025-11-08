@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f0::tim1 {
 
 /// TIM1 Register Structure
 struct TIM1_Registers {
-
     /// control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000

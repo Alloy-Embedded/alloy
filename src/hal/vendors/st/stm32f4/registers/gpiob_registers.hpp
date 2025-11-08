@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::gpiob {
 
 /// GPIOB Register Structure
 struct GPIOB_Registers {
-
     /// GPIO port mode register
     /// Offset: 0x0000
     /// Reset value: 0x00000280

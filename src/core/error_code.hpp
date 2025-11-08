@@ -32,23 +32,23 @@ enum class ErrorCode : u8 {
     I2cArbitrationLost,  ///< I2C arbitration lost (multi-master conflict)
 
     // ADC-specific errors
-    AdcCalibrationFailed, ///< ADC calibration failed
-    AdcOverrun,          ///< ADC data overrun (conversion too fast)
-    AdcConversionTimeout, ///< ADC conversion did not complete in time
+    AdcCalibrationFailed,  ///< ADC calibration failed
+    AdcOverrun,            ///< ADC data overrun (conversion too fast)
+    AdcConversionTimeout,  ///< ADC conversion did not complete in time
 
     // DMA-specific errors
-    DmaTransferError,    ///< DMA transfer error occurred
-    DmaAlignmentError,   ///< DMA address alignment error
-    DmaChannelBusy,      ///< DMA channel is already in use
+    DmaTransferError,   ///< DMA transfer error occurred
+    DmaAlignmentError,  ///< DMA address alignment error
+    DmaChannelBusy,     ///< DMA channel is already in use
 
     // Clock-specific errors
-    PllLockFailed,       ///< PLL failed to lock/stabilize
-    ClockInvalidFrequency, ///< Requested frequency is invalid or out of range
-    ClockSourceNotReady, ///< Clock source not ready/stable
+    PllLockFailed,          ///< PLL failed to lock/stabilize
+    ClockInvalidFrequency,  ///< Requested frequency is invalid or out of range
+    ClockSourceNotReady,    ///< Clock source not ready/stable
 
-    Unknown              ///< Unknown error occurred
+    Unknown  ///< Unknown error occurred
 };
 
-} // namespace alloy::core
+}  // namespace alloy::core
 
-#endif // ALLOY_CORE_ERROR_CODE_HPP
+#endif  // ALLOY_CORE_ERROR_CODE_HPP

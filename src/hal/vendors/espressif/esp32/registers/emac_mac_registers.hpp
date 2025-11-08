@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::emac_mac {
 
 /// EMAC_MAC Register Structure
 struct EMAC_MAC_Registers {
-
     /// MAC configuration
     /// Offset: 0x0000
     volatile uint32_t EMACCONFIG;
@@ -25,7 +24,7 @@ struct EMAC_MAC_Registers {
     /// Frame filter settings
     /// Offset: 0x0004
     volatile uint32_t EMACFF;
-    uint8_t RESERVED_0008[8]; ///< Reserved
+    uint8_t RESERVED_0008[8];  ///< Reserved
 
     /// PHY configuration access
     /// Offset: 0x0010
@@ -38,15 +37,19 @@ struct EMAC_MAC_Registers {
     /// Frame flow control
     /// Offset: 0x0018
     volatile uint32_t EMACFC;
-    uint8_t RESERVED_001C[8]; ///< Reserved
+    uint8_t RESERVED_001C[8];  ///< Reserved
 
     /// Status debugging bits
     /// Offset: 0x0024
     /// Access: read-only
     volatile uint32_t EMACDEBUG;
 
-    /// The MSB (31st bit) must be zero.Bit j[30:0] is the byte mask. If Bit 1/2/3/4 (byte number) of the byte mask is set the CRC block processes the Filter 1/2/3/4 Offset + j of the incoming packet(PWKPTR is 0/1/2/3).RWKPTR is 0:Filter 0 Byte Mask .RWKPTR is 1:Filter 1 Byte Mask RWKPTR is 2:Filter 2 Byte Mask RWKPTR is 3:Filter 3 Byte Mask RWKPTR is 4:Bit 3/11/19/27 specifies the address type defining the destination address type of the pattern.When the bit is set the pattern applies to only multicast packets
-    /// Offset: 0x0028
+    /// The MSB (31st bit) must be zero.Bit j[30:0] is the byte mask. If Bit 1/2/3/4 (byte number)
+    /// of the byte mask is set the CRC block processes the Filter 1/2/3/4 Offset + j of the
+    /// incoming packet(PWKPTR is 0/1/2/3).RWKPTR is 0:Filter 0 Byte Mask .RWKPTR is 1:Filter 1 Byte
+    /// Mask RWKPTR is 2:Filter 2 Byte Mask RWKPTR is 3:Filter 3 Byte Mask RWKPTR is 4:Bit
+    /// 3/11/19/27 specifies the address type defining the destination address type of the
+    /// pattern.When the bit is set the pattern applies to only multicast packets Offset: 0x0028
     /// Access: read-only
     volatile uint32_t PMT_RWUFFR;
 
@@ -78,15 +81,17 @@ struct EMAC_MAC_Registers {
     /// Offset: 0x0040
     volatile uint32_t EMACADDR0HIGH;
 
-    /// This field contains the lower 32 bits of the first 6-byte MAC address. This is used by the MAC for filtering the received frames and inserting the MAC address in the Transmit Flow Control (Pause) Frames.
-    /// Offset: 0x0044
+    /// This field contains the lower 32 bits of the first 6-byte MAC address. This is used by the
+    /// MAC for filtering the received frames and inserting the MAC address in the Transmit Flow
+    /// Control (Pause) Frames. Offset: 0x0044
     volatile uint32_t EMACADDR0LOW;
 
     /// Upper 16 bits of the second 6-byte MAC address
     /// Offset: 0x0048
     volatile uint32_t EMACADDR1HIGH;
 
-    /// This field contains the lower 32 bits of the second 6-byte MAC address.The content of this field is undefined so the register needs to be configured after the initialization Process.
+    /// This field contains the lower 32 bits of the second 6-byte MAC address.The content of this
+    /// field is undefined so the register needs to be configured after the initialization Process.
     /// Offset: 0x004C
     volatile uint32_t EMACADDR1LOW;
 
@@ -94,7 +99,8 @@ struct EMAC_MAC_Registers {
     /// Offset: 0x0050
     volatile uint32_t EMACADDR2HIGH;
 
-    /// This field contains the lower 32 bits of the third 6-byte MAC address. The content of this field is undefined so the register needs to be configured after the initialization process.
+    /// This field contains the lower 32 bits of the third 6-byte MAC address. The content of this
+    /// field is undefined so the register needs to be configured after the initialization process.
     /// Offset: 0x0054
     volatile uint32_t EMACADDR2LOW;
 
@@ -102,7 +108,8 @@ struct EMAC_MAC_Registers {
     /// Offset: 0x0058
     volatile uint32_t EMACADDR3HIGH;
 
-    /// This field contains the lower 32 bits of the fourth 6-byte MAC address.The content of this field is undefined so the register needs to be configured after the initialization Process.
+    /// This field contains the lower 32 bits of the fourth 6-byte MAC address.The content of this
+    /// field is undefined so the register needs to be configured after the initialization Process.
     /// Offset: 0x005C
     volatile uint32_t EMACADDR3LOW;
 
@@ -110,7 +117,8 @@ struct EMAC_MAC_Registers {
     /// Offset: 0x0060
     volatile uint32_t EMACADDR4HIGH;
 
-    /// This field contains the lower 32 bits of the fifth 6-byte MAC address. The content of this field is undefined so the register needs to be configured after the initialization process.
+    /// This field contains the lower 32 bits of the fifth 6-byte MAC address. The content of this
+    /// field is undefined so the register needs to be configured after the initialization process.
     /// Offset: 0x0064
     volatile uint32_t EMACADDR4LOW;
 
@@ -118,7 +126,8 @@ struct EMAC_MAC_Registers {
     /// Offset: 0x0068
     volatile uint32_t EMACADDR5HIGH;
 
-    /// This field contains the lower 32 bits of the sixth 6-byte MAC address. The content of this field is undefined so the register needs to be configured after the initialization process.
+    /// This field contains the lower 32 bits of the sixth 6-byte MAC address. The content of this
+    /// field is undefined so the register needs to be configured after the initialization process.
     /// Offset: 0x006C
     volatile uint32_t EMACADDR5LOW;
 
@@ -126,7 +135,8 @@ struct EMAC_MAC_Registers {
     /// Offset: 0x0070
     volatile uint32_t EMACADDR6HIGH;
 
-    /// This field contains the lower 32 bits of the seventh 6-byte MAC address.The content of this field is undefined so the register needs to be configured after the initialization Process.
+    /// This field contains the lower 32 bits of the seventh 6-byte MAC address.The content of this
+    /// field is undefined so the register needs to be configured after the initialization Process.
     /// Offset: 0x0074
     volatile uint32_t EMACADDR6LOW;
 
@@ -134,10 +144,11 @@ struct EMAC_MAC_Registers {
     /// Offset: 0x0078
     volatile uint32_t EMACADDR7HIGH;
 
-    /// This field contains the lower 32 bits of the eighth 6-byte MAC address.The content of this field is undefined so the register needs to be configured after the initialization Process.
+    /// This field contains the lower 32 bits of the eighth 6-byte MAC address.The content of this
+    /// field is undefined so the register needs to be configured after the initialization Process.
     /// Offset: 0x007C
     volatile uint32_t EMACADDR7LOW;
-    uint8_t RESERVED_0080[88]; ///< Reserved
+    uint8_t RESERVED_0080[88];  ///< Reserved
 
     /// Link communication status
     /// Offset: 0x00D8

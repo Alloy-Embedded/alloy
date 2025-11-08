@@ -43,8 +43,8 @@ static_assert(Traits::Peripherals::HAS_USB == true, "Should have USB");
 static_assert(Traits::Peripherals::HAS_CAN == true, "Should have CAN");
 
 // Test that validation concept works
-template<uint8_t Pin>
-requires pins::ValidPin<Pin>
+template <uint8_t Pin>
+    requires pins::ValidPin<Pin>
 constexpr uint8_t get_pin() {
     return Pin;
 }

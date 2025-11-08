@@ -13,8 +13,9 @@
 
 #pragma once
 
-#include "../arm_cortex_m/core_common.hpp"
 #include <stdint.h>
+
+#include "../arm_cortex_m/core_common.hpp"
 
 namespace alloy::arm::cortex_m4::fpu {
 
@@ -25,27 +26,28 @@ namespace alloy::arm::cortex_m4::fpu {
 
 struct FPU_Registers {
     uint32_t RESERVED0;
-    volatile uint32_t FPCCR;     // Offset: 0x004 (R/W)  Floating-Point Context Control Register
-    volatile uint32_t FPCAR;     // Offset: 0x008 (R/W)  Floating-Point Context Address Register
-    volatile uint32_t FPDSCR;    // Offset: 0x00C (R/W)  Floating-Point Default Status Control Register
-    volatile uint32_t MVFR0;     // Offset: 0x010 (R/ )  Media and FP Feature Register 0
-    volatile uint32_t MVFR1;     // Offset: 0x014 (R/ )  Media and FP Feature Register 1
+    volatile uint32_t FPCCR;  // Offset: 0x004 (R/W)  Floating-Point Context Control Register
+    volatile uint32_t FPCAR;  // Offset: 0x008 (R/W)  Floating-Point Context Address Register
+    volatile uint32_t
+        FPDSCR;               // Offset: 0x00C (R/W)  Floating-Point Default Status Control Register
+    volatile uint32_t MVFR0;  // Offset: 0x010 (R/ )  Media and FP Feature Register 0
+    volatile uint32_t MVFR1;  // Offset: 0x014 (R/ )  Media and FP Feature Register 1
 };
 
 constexpr FPU_Registers* FPU = reinterpret_cast<FPU_Registers*>(0xE000EF30);
 
 // FPCCR (Floating-Point Context Control Register) bit definitions
 namespace fpccr {
-    constexpr uint32_t LSPACT  = (1UL << 0);   // Lazy State Preservation Active
-    constexpr uint32_t USER    = (1UL << 1);   // Privilege level when exception was taken
-    constexpr uint32_t THREAD  = (1UL << 3);   // Mode when exception was taken
-    constexpr uint32_t HFRDY   = (1UL << 4);   // HardFault Ready
-    constexpr uint32_t MMRDY   = (1UL << 5);   // MemManage Ready
-    constexpr uint32_t BFRDY   = (1UL << 6);   // BusFault Ready
-    constexpr uint32_t MONRDY  = (1UL << 8);   // DebugMonitor Ready
-    constexpr uint32_t LSPEN   = (1UL << 30);  // Lazy State Preservation Enable
-    constexpr uint32_t ASPEN   = (1UL << 31);  // Automatic State Preservation Enable
-}
+constexpr uint32_t LSPACT = (1UL << 0);  // Lazy State Preservation Active
+constexpr uint32_t USER = (1UL << 1);    // Privilege level when exception was taken
+constexpr uint32_t THREAD = (1UL << 3);  // Mode when exception was taken
+constexpr uint32_t HFRDY = (1UL << 4);   // HardFault Ready
+constexpr uint32_t MMRDY = (1UL << 5);   // MemManage Ready
+constexpr uint32_t BFRDY = (1UL << 6);   // BusFault Ready
+constexpr uint32_t MONRDY = (1UL << 8);  // DebugMonitor Ready
+constexpr uint32_t LSPEN = (1UL << 30);  // Lazy State Preservation Enable
+constexpr uint32_t ASPEN = (1UL << 31);  // Automatic State Preservation Enable
+}  // namespace fpccr
 
 // ============================================================================
 // FPU Control Functions
@@ -82,29 +84,28 @@ inline bool is_fpu_enabled() {
 ///   enable_fpu();
 ///   // Now safe to use floating point operations
 inline void enable_fpu() {
-    #if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
-        // Enable CP10 and CP11 coprocessors (FPU)
-        // Set bits 20-23 to enable full access
-        SCB->CPACR |= (cpacr::Access_Full << cpacr::CP10_Pos) |
-                      (cpacr::Access_Full << cpacr::CP11_Pos);
+#if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
+    // Enable CP10 and CP11 coprocessors (FPU)
+    // Set bits 20-23 to enable full access
+    SCB->CPACR |= (cpacr::Access_Full << cpacr::CP10_Pos) | (cpacr::Access_Full << cpacr::CP11_Pos);
 
-        // Memory barrier to ensure FPU is enabled before FPU instructions execute
-        dsb();
-        isb();
-    #endif
+    // Memory barrier to ensure FPU is enabled before FPU instructions execute
+    dsb();
+    isb();
+#endif
 }
 
 /// Disable FPU
 /// Disables access to CP10 and CP11 coprocessors
 /// Warning: Calling this when floating point code is in use will cause a fault!
 inline void disable_fpu() {
-    #if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
-        // Clear CP10 and CP11 enable bits
-        SCB->CPACR &= ~(cpacr::CP10_Msk | cpacr::CP11_Msk);
+#if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
+    // Clear CP10 and CP11 enable bits
+    SCB->CPACR &= ~(cpacr::CP10_Msk | cpacr::CP11_Msk);
 
-        dsb();
-        isb();
-    #endif
+    dsb();
+    isb();
+#endif
 }
 
 /// Configure FPU lazy context switching
@@ -123,15 +124,15 @@ inline void disable_fpu() {
 ///
 /// For RTOS use, typically disabled for deterministic timing.
 inline void configure_lazy_stacking(bool enable_lazy = true) {
-    #if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
-        if (enable_lazy) {
-            // Enable automatic and lazy state preservation
-            FPU->FPCCR |= (fpccr::ASPEN | fpccr::LSPEN);
-        } else {
-            // Disable lazy state preservation (always save FPU context)
-            FPU->FPCCR &= ~fpccr::LSPEN;
-        }
-    #endif
+#if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
+    if (enable_lazy) {
+        // Enable automatic and lazy state preservation
+        FPU->FPCCR |= (fpccr::ASPEN | fpccr::LSPEN);
+    } else {
+        // Disable lazy state preservation (always save FPU context)
+        FPU->FPCCR &= ~fpccr::LSPEN;
+    }
+#endif
 }
 
 /// Initialize FPU with recommended settings
@@ -146,48 +147,48 @@ inline void configure_lazy_stacking(bool enable_lazy = true) {
 ///       // ... rest of initialization
 ///   }
 inline void initialize(bool enable_lazy_stacking = true) {
-    #if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
-        // 1. Enable FPU
-        enable_fpu();
+#if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
+    // 1. Enable FPU
+    enable_fpu();
 
-        // 2. Configure lazy context switching
-        configure_lazy_stacking(enable_lazy_stacking);
+    // 2. Configure lazy context switching
+    configure_lazy_stacking(enable_lazy_stacking);
 
-        // 3. Memory barriers to ensure configuration is complete
-        dsb();
-        isb();
-    #endif
+    // 3. Memory barriers to ensure configuration is complete
+    dsb();
+    isb();
+#endif
 }
 
 /// Get FPU exception status
 /// @return FPSCR (Floating-Point Status and Control Register) value
 inline uint32_t get_fpscr() {
-    #if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
-        uint32_t result;
-        __asm__ volatile ("VMRS %0, fpscr" : "=r" (result));
-        return result;
-    #else
-        return 0;
-    #endif
+#if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
+    uint32_t result;
+    __asm__ volatile("VMRS %0, fpscr" : "=r"(result));
+    return result;
+#else
+    return 0;
+#endif
 }
 
 /// Set FPU exception status
 /// @param fpscr: FPSCR value to set
 inline void set_fpscr(uint32_t fpscr) {
-    #if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
-        __asm__ volatile ("VMSR fpscr, %0" :: "r" (fpscr));
-    #endif
+#if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
+    __asm__ volatile("VMSR fpscr, %0" ::"r"(fpscr));
+#endif
 }
 
 /// Clear FPU exception flags
 /// Clears all FPU exception flags in FPSCR
 inline void clear_exceptions() {
-    #if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
-        // Clear exception flags (bits 0-4 of FPSCR)
-        uint32_t fpscr = get_fpscr();
-        fpscr &= ~0x1F;
-        set_fpscr(fpscr);
-    #endif
+#if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1)
+    // Clear exception flags (bits 0-4 of FPSCR)
+    uint32_t fpscr = get_fpscr();
+    fpscr &= ~0x1F;
+    set_fpscr(fpscr);
+#endif
 }
 
-} // namespace alloy::arm::cortex_m4::fpu
+}  // namespace alloy::arm::cortex_m4::fpu

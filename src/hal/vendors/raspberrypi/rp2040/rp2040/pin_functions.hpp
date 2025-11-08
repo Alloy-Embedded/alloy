@@ -26,7 +26,7 @@ namespace alloy::hal::raspberrypi::rp2040::rp2040::pin_functions {
 /// Template for alternate function mapping
 /// @tparam Pin Pin number constant
 /// @tparam Function Peripheral signal tag type
-template<uint8_t Pin, typename Function>
+template <uint8_t Pin, typename Function>
 struct AlternateFunction;
 
 // ============================================================================
@@ -43,7 +43,7 @@ struct AlternateFunction;
 ///   constexpr uint8_t af = AF<PA9, USART1_TX>;  // Returns 7 (example)
 ///
 /// Compile-time error if combination is invalid.
-template<uint8_t Pin, typename Function>
+template <uint8_t Pin, typename Function>
 constexpr uint8_t AF = AlternateFunction<Pin, Function>::af_number;
 
 // ============================================================================
@@ -54,7 +54,7 @@ constexpr uint8_t AF = AlternateFunction<Pin, Function>::af_number;
 ///
 /// Usage:
 ///   static_assert(HasAF<PA9, USART1_TX>, "PA9 does not support USART1_TX");
-template<uint8_t Pin, typename Function>
+template <uint8_t Pin, typename Function>
 concept HasAF = requires {
     { AlternateFunction<Pin, Function>::af_number } -> std::same_as<const uint8_t&>;
 };

@@ -1,15 +1,16 @@
 #ifndef ALLOY_BLE_TYPES_HPP
 #define ALLOY_BLE_TYPES_HPP
 
-#include "core/types.hpp"
 #include <cstring>
 
-using alloy::core::u8;
-using alloy::core::u16;
-using alloy::core::u32;
-using alloy::core::i8;
+#include "core/types.hpp"
+
 using alloy::core::i16;
 using alloy::core::i32;
+using alloy::core::i8;
+using alloy::core::u16;
+using alloy::core::u32;
+using alloy::core::u8;
 
 /// BLE (Bluetooth Low Energy) types for Alloy framework
 ///
@@ -26,34 +27,30 @@ namespace alloy::ble {
 struct Address {
     u8 addr[6];
 
-    Address() {
-        memset(addr, 0, 6);
-    }
+    Address() { memset(addr, 0, 6); }
 
     Address(u8 a0, u8 a1, u8 a2, u8 a3, u8 a4, u8 a5) {
-        addr[0] = a0; addr[1] = a1; addr[2] = a2;
-        addr[3] = a3; addr[4] = a4; addr[5] = a5;
+        addr[0] = a0;
+        addr[1] = a1;
+        addr[2] = a2;
+        addr[3] = a3;
+        addr[4] = a4;
+        addr[5] = a5;
     }
 
-    Address(const u8* data) {
-        memcpy(addr, data, 6);
-    }
+    Address(const u8* data) { memcpy(addr, data, 6); }
 
-    bool operator==(const Address& other) const {
-        return memcmp(addr, other.addr, 6) == 0;
-    }
+    bool operator==(const Address& other) const { return memcmp(addr, other.addr, 6) == 0; }
 
-    bool operator!=(const Address& other) const {
-        return !(*this == other);
-    }
+    bool operator!=(const Address& other) const { return !(*this == other); }
 };
 
 /// BLE address type
 enum class AddressType : u8 {
-    Public = 0,      // Public device address
-    Random = 1,      // Random device address
-    PublicID = 2,    // Public identity address (resolved from RPA)
-    RandomID = 3,    // Random identity address (resolved from RPA)
+    Public = 0,    // Public device address
+    Random = 1,    // Random device address
+    PublicID = 2,  // Public identity address (resolved from RPA)
+    RandomID = 3,  // Random identity address (resolved from RPA)
 };
 
 /// BLE UUID (16-bit, 32-bit, or 128-bit)
@@ -77,12 +74,11 @@ struct UUID {
 
     explicit UUID(u32 uuid) : type(Type::UUID32), uuid32(uuid) {}
 
-    explicit UUID(const u8* uuid) : type(Type::UUID128) {
-        memcpy(uuid128, uuid, 16);
-    }
+    explicit UUID(const u8* uuid) : type(Type::UUID128) { memcpy(uuid128, uuid, 16); }
 
     bool operator==(const UUID& other) const {
-        if (type != other.type) return false;
+        if (type != other.type)
+            return false;
         switch (type) {
             case Type::UUID16:
                 return uuid16 == other.uuid16;
@@ -94,9 +90,7 @@ struct UUID {
         return false;
     }
 
-    bool operator!=(const UUID& other) const {
-        return !(*this == other);
-    }
+    bool operator!=(const UUID& other) const { return !(*this == other); }
 };
 
 // ============================================================================
@@ -105,26 +99,26 @@ struct UUID {
 
 /// BLE advertisement type
 enum class AdvType : u8 {
-    ConnectableUndirected = 0,    // ADV_IND
-    ConnectableDirected = 1,      // ADV_DIRECT_IND
-    ScannableUndirected = 2,      // ADV_SCAN_IND
-    NonConnectable = 3,           // ADV_NONCONN_IND
-    ScanResponse = 4,             // SCAN_RSP
+    ConnectableUndirected = 0,  // ADV_IND
+    ConnectableDirected = 1,    // ADV_DIRECT_IND
+    ScannableUndirected = 2,    // ADV_SCAN_IND
+    NonConnectable = 3,         // ADV_NONCONN_IND
+    ScanResponse = 4,           // SCAN_RSP
 };
 
 /// Advertisement data
 struct AdvData {
-    char name[32];              // Device name
-    u16 appearance;             // Appearance value
-    bool include_name;          // Include name in advertisement
-    bool include_txpower;       // Include TX power in advertisement
-    u8 flags;                   // Advertisement flags
+    char name[32];         // Device name
+    u16 appearance;        // Appearance value
+    bool include_name;     // Include name in advertisement
+    bool include_txpower;  // Include TX power in advertisement
+    u8 flags;              // Advertisement flags
 
     AdvData()
-        : appearance(0)
-        , include_name(true)
-        , include_txpower(false)
-        , flags(0x06) // General discoverable + BR/EDR not supported
+        : appearance(0),
+          include_name(true),
+          include_txpower(false),
+          flags(0x06)  // General discoverable + BR/EDR not supported
     {
         name[0] = '\0';
     }
@@ -138,11 +132,10 @@ struct ScanRspData {
     u16 manufacturer_data_len;  // Length of manufacturer data
 
     ScanRspData()
-        : service_uuids(nullptr)
-        , service_count(0)
-        , manufacturer_data(nullptr)
-        , manufacturer_data_len(0)
-    {}
+        : service_uuids(nullptr),
+          service_count(0),
+          manufacturer_data(nullptr),
+          manufacturer_data_len(0) {}
 };
 
 // ============================================================================
@@ -151,34 +144,33 @@ struct ScanRspData {
 
 /// BLE scan type
 enum class ScanType : u8 {
-    Passive = 0,    // Passive scanning (no scan requests)
-    Active = 1,     // Active scanning (send scan requests)
+    Passive = 0,  // Passive scanning (no scan requests)
+    Active = 1,   // Active scanning (send scan requests)
 };
 
 /// BLE scan filter policy
 enum class ScanFilterPolicy : u8 {
-    AcceptAll = 0,              // Accept all advertisements
-    WhiteListOnly = 1,          // Accept only from white list
-    AcceptAllResolvable = 2,    // Accept all + use IRK for directed
-    WhiteListResolvable = 3,    // White list + use IRK for directed
+    AcceptAll = 0,            // Accept all advertisements
+    WhiteListOnly = 1,        // Accept only from white list
+    AcceptAllResolvable = 2,  // Accept all + use IRK for directed
+    WhiteListResolvable = 3,  // White list + use IRK for directed
 };
 
 /// Discovered BLE device information
 struct DeviceInfo {
-    Address address;            // Device address
-    AddressType addr_type;      // Address type
-    i8 rssi;                    // Signal strength (dBm)
-    AdvType adv_type;           // Advertisement type
-    char name[32];              // Device name (if available)
-    u8 adv_data[31];           // Raw advertisement data
-    u8 adv_data_len;           // Advertisement data length
+    Address address;        // Device address
+    AddressType addr_type;  // Address type
+    i8 rssi;                // Signal strength (dBm)
+    AdvType adv_type;       // Advertisement type
+    char name[32];          // Device name (if available)
+    u8 adv_data[31];        // Raw advertisement data
+    u8 adv_data_len;        // Advertisement data length
 
     DeviceInfo()
-        : addr_type(AddressType::Public)
-        , rssi(0)
-        , adv_type(AdvType::ConnectableUndirected)
-        , adv_data_len(0)
-    {
+        : addr_type(AddressType::Public),
+          rssi(0),
+          adv_type(AdvType::ConnectableUndirected),
+          adv_data_len(0) {
         name[0] = '\0';
         memset(adv_data, 0, 31);
     }
@@ -190,22 +182,22 @@ struct DeviceInfo {
 
 /// GATT characteristic properties
 enum class CharProperty : u8 {
-    Broadcast = 0x01,           // Broadcast
-    Read = 0x02,                // Read
-    WriteNoResponse = 0x04,     // Write without response
-    Write = 0x08,               // Write
-    Notify = 0x10,              // Notify
-    Indicate = 0x20,            // Indicate
-    AuthWrite = 0x40,           // Authenticated write
-    ExtProp = 0x80,             // Extended properties
+    Broadcast = 0x01,        // Broadcast
+    Read = 0x02,             // Read
+    WriteNoResponse = 0x04,  // Write without response
+    Write = 0x08,            // Write
+    Notify = 0x10,           // Notify
+    Indicate = 0x20,         // Indicate
+    AuthWrite = 0x40,        // Authenticated write
+    ExtProp = 0x80,          // Extended properties
 };
 
 /// GATT characteristic permissions
 enum class CharPermission : u8 {
-    Read = 0x01,                // Read
-    Write = 0x02,               // Write
-    ReadEncrypted = 0x04,       // Encrypted read
-    WriteEncrypted = 0x08,      // Encrypted write
+    Read = 0x01,            // Read
+    Write = 0x02,           // Write
+    ReadEncrypted = 0x04,   // Encrypted read
+    WriteEncrypted = 0x08,  // Encrypted write
 };
 
 /// GATT attribute handle
@@ -244,21 +236,13 @@ struct CharHandle {
 
 /// GATT characteristic value
 struct CharValue {
-    u8* data;                   // Value data
-    u16 length;                 // Value length
-    u16 max_length;             // Maximum value length
+    u8* data;        // Value data
+    u16 length;      // Value length
+    u16 max_length;  // Maximum value length
 
-    CharValue()
-        : data(nullptr)
-        , length(0)
-        , max_length(0)
-    {}
+    CharValue() : data(nullptr), length(0), max_length(0) {}
 
-    CharValue(u8* buf, u16 len, u16 max_len)
-        : data(buf)
-        , length(len)
-        , max_length(max_len)
-    {}
+    CharValue(u8* buf, u16 len, u16 max_len) : data(buf), length(len), max_length(max_len) {}
 };
 
 // ============================================================================
@@ -267,16 +251,18 @@ struct CharValue {
 
 /// BLE connection parameters
 struct ConnParams {
-    u16 interval_min;           // Min connection interval (units of 1.25ms)
-    u16 interval_max;           // Max connection interval (units of 1.25ms)
-    u16 latency;                // Slave latency (connection events)
-    u16 timeout;                // Supervision timeout (units of 10ms)
+    u16 interval_min;  // Min connection interval (units of 1.25ms)
+    u16 interval_max;  // Max connection interval (units of 1.25ms)
+    u16 latency;       // Slave latency (connection events)
+    u16 timeout;       // Supervision timeout (units of 10ms)
 
     ConnParams()
-        : interval_min(80)      // 100ms
-        , interval_max(100)     // 125ms
-        , latency(0)
-        , timeout(400)          // 4s
+        : interval_min(80)  // 100ms
+          ,
+          interval_max(100)  // 125ms
+          ,
+          latency(0),
+          timeout(400)  // 4s
     {}
 };
 
@@ -323,15 +309,21 @@ inline ServiceHandle::ServiceHandle() : handle(INVALID_ATTR_HANDLE), uuid() {}
 
 inline ServiceHandle::ServiceHandle(AttrHandle h, const UUID& u) : handle(h), uuid(u) {}
 
-inline bool ServiceHandle::is_valid() const { return handle != INVALID_ATTR_HANDLE; }
+inline bool ServiceHandle::is_valid() const {
+    return handle != INVALID_ATTR_HANDLE;
+}
 
 inline CharHandle::CharHandle() : handle(INVALID_ATTR_HANDLE), uuid(), properties(0) {}
 
 inline CharHandle::CharHandle(AttrHandle h, const UUID& u, u8 props)
-    : handle(h), uuid(u), properties(props) {}
+    : handle(h),
+      uuid(u),
+      properties(props) {}
 
-inline bool CharHandle::is_valid() const { return handle != INVALID_ATTR_HANDLE; }
+inline bool CharHandle::is_valid() const {
+    return handle != INVALID_ATTR_HANDLE;
+}
 
-} // namespace alloy::ble
+}  // namespace alloy::ble
 
-#endif // ALLOY_BLE_TYPES_HPP
+#endif  // ALLOY_BLE_TYPES_HPP

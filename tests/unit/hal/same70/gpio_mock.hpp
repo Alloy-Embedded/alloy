@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <cstdint>
 #include <bitset>
+#include <cstdint>
 
 // Include actual PIO register definition for compatibility
 #include "hal/vendors/atmel/same70/atsame70q21/registers/pioa_registers.hpp"
@@ -35,10 +35,10 @@ using PioRegisters = alloy::hal::atmel::same70::atsame70q21::pioa::PIOA_Register
  * so it can be safely cast for use with the GPIO template.
  */
 class MockGpioRegisters : public PioRegisters {
-public:
+   public:
     // Test state
-    std::bitset<32> pin_output_state;    ///< Simulated output pin states
-    std::bitset<32> pin_input_state;     ///< Simulated input pin states (for read)
+    std::bitset<32> pin_output_state;  ///< Simulated output pin states
+    std::bitset<32> pin_input_state;   ///< Simulated input pin states (for read)
 
     /**
      * @brief Reset mock to initial state
@@ -304,23 +304,17 @@ public:
     /**
      * @brief Get output pin state
      */
-    bool get_output_pin(uint8_t pin) const {
-        return pin_output_state.test(pin);
-    }
+    bool get_output_pin(uint8_t pin) const { return pin_output_state.test(pin); }
 
     /**
      * @brief Check if pin is configured as output
      */
-    bool is_output(uint8_t pin) const {
-        return (this->OSR & (1u << pin)) != 0;
-    }
+    bool is_output(uint8_t pin) const { return (this->OSR & (1u << pin)) != 0; }
 
     /**
      * @brief Check if PIO control is enabled for pin
      */
-    bool is_pio_enabled(uint8_t pin) const {
-        return (this->PSR & (1u << pin)) != 0;
-    }
+    bool is_pio_enabled(uint8_t pin) const { return (this->PSR & (1u << pin)) != 0; }
 };
 
 /**
@@ -332,20 +326,18 @@ inline MockGpioRegisters* g_mock_gpio = nullptr;
  * @brief RAII helper to set up and tear down GPIO mocks
  */
 class MockGpioFixture {
-public:
+   public:
     MockGpioFixture() {
         gpio_mock.reset();
         g_mock_gpio = &gpio_mock;
     }
 
-    ~MockGpioFixture() {
-        g_mock_gpio = nullptr;
-    }
+    ~MockGpioFixture() { g_mock_gpio = nullptr; }
 
     MockGpioRegisters& gpio() { return gpio_mock; }
 
-private:
+   private:
     MockGpioRegisters gpio_mock;
 };
 
-} // namespace alloy::hal::test
+}  // namespace alloy::hal::test

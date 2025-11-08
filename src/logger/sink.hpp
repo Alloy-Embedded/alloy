@@ -27,7 +27,7 @@ namespace logger {
  * };
  */
 class Sink {
-public:
+   public:
     virtual ~Sink() = default;
 
     /**
@@ -60,5 +60,5 @@ public:
     virtual bool is_ready() const { return true; }
 };
 
-} // namespace logger
-} // namespace alloy
+}  // namespace logger
+}  // namespace alloy

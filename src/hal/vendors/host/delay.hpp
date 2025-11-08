@@ -13,9 +13,10 @@
 #ifndef ALLOY_HAL_HOST_DELAY_HPP
 #define ALLOY_HAL_HOST_DELAY_HPP
 
-#include <stdint.h>
-#include <thread>
 #include <chrono>
+#include <thread>
+
+#include <stdint.h>
 
 namespace alloy::hal::host {
 
@@ -39,6 +40,6 @@ inline void delay_us(uint32_t microseconds) {
     std::this_thread::sleep_for(std::chrono::microseconds(microseconds));
 }
 
-} // namespace alloy::hal::host
+}  // namespace alloy::hal::host
 
-#endif // ALLOY_HAL_HOST_DELAY_HPP
+#endif  // ALLOY_HAL_HOST_DELAY_HPP

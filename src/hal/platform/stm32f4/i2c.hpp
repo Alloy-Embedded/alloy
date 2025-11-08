@@ -26,11 +26,12 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -88,13 +89,14 @@ namespace i2c = alloy::hal::st::stm32f4::i2c3;
  */
 template <uint32_t BASE_ADDR, uint32_t IRQ_ID>
 class I2c {
-public:
+   public:
     // Compile-time constants
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t irq_id = IRQ_ID;
 
     // Configuration constants
-    static constexpr uint32_t I2C_TIMEOUT = 100000;  ///< I2C timeout in loop iterations (~10ms at 168MHz)
+    static constexpr uint32_t I2C_TIMEOUT =
+        100000;  ///< I2C timeout in loop iterations (~10ms at 168MHz)
 
     /**
      * @brief Get I2C peripheral registers
@@ -172,15 +174,15 @@ public:
         uint32_t speed_hz = static_cast<uint32_t>(speed);
         // Assuming 42MHz APB1 clock for STM32F4
         constexpr uint32_t PCLK1 = 42000000;
-        
+
         // Disable peripheral during configuration
         hw->CR1 &= ~i2c::cr1::PE::mask;
-        
+
         // Configure frequency (APB1 freq in MHz)
         uint32_t cr2 = hw->CR2 & ~i2c::cr2::FREQ::mask;
         cr2 = i2c::cr2::FREQ::write(cr2, PCLK1 / 1000000);
         hw->CR2 = cr2;
-        
+
         // Configure CCR
         uint32_t ccr = 0;
         if (speed_hz <= 100000) {
@@ -196,7 +198,7 @@ public:
             hw->TRISE = ((PCLK1 / 1000000) * 300) / 1000 + 1;
         }
         hw->CCR = ccr;
-        
+
         // Re-enable peripheral
         hw->CR1 |= i2c::cr1::PE::mask;
 
@@ -223,16 +225,16 @@ public:
 
         // Generate START condition and send address
         hw->CR1 |= i2c::cr1::START::mask;
-        
+
         uint32_t timeout = 0;
         while (!(hw->SR1 & i2c::sr1::SB::mask)) {
             if (++timeout > I2C_TIMEOUT) {
                 return Err(ErrorCode::Timeout);
             }
         }
-        
+
         hw->DR = device_addr << 1;
-        
+
         timeout = 0;
         while (!(hw->SR1 & i2c::sr1::ADDR::mask)) {
             if (hw->SR1 & i2c::sr1::AF::mask) {
@@ -244,15 +246,15 @@ public:
                 return Err(ErrorCode::Timeout);
             }
         }
-        
+
         // Clear ADDR flag by reading SR1 and SR2
         (void)hw->SR1;
         (void)hw->SR2;
-        
+
         // Send data bytes
         for (size_t i = 0; i < size; ++i) {
             hw->DR = data[i];
-            
+
             timeout = 0;
             while (!(hw->SR1 & i2c::sr1::TxE::mask)) {
                 if (++timeout > I2C_TIMEOUT) {
@@ -261,7 +263,7 @@ public:
                 }
             }
         }
-        
+
         // Wait for byte transfer finished
         timeout = 0;
         while (!(hw->SR1 & i2c::sr1::BTF::mask)) {
@@ -270,7 +272,7 @@ public:
                 return Err(ErrorCode::Timeout);
             }
         }
-        
+
         // Generate STOP condition
         hw->CR1 |= i2c::cr1::STOP::mask;
 
@@ -298,16 +300,16 @@ public:
         // Generate START condition and send address with read bit
         hw->CR1 |= i2c::cr1::ACK::mask;
         hw->CR1 |= i2c::cr1::START::mask;
-        
+
         uint32_t timeout = 0;
         while (!(hw->SR1 & i2c::sr1::SB::mask)) {
             if (++timeout > I2C_TIMEOUT) {
                 return Err(ErrorCode::Timeout);
             }
         }
-        
+
         hw->DR = (device_addr << 1) | 0x01;
-        
+
         timeout = 0;
         while (!(hw->SR1 & i2c::sr1::ADDR::mask)) {
             if (hw->SR1 & i2c::sr1::AF::mask) {
@@ -319,11 +321,11 @@ public:
                 return Err(ErrorCode::Timeout);
             }
         }
-        
+
         // Clear ADDR flag
         (void)hw->SR1;
         (void)hw->SR2;
-        
+
         // Read data bytes
         for (size_t i = 0; i < size; ++i) {
             if (i == size - 1) {
@@ -331,7 +333,7 @@ public:
                 hw->CR1 &= ~i2c::cr1::ACK::mask;
                 hw->CR1 |= i2c::cr1::STOP::mask;
             }
-            
+
             timeout = 0;
             while (!(hw->SR1 & i2c::sr1::RxNE::mask)) {
                 if (++timeout > I2C_TIMEOUT) {
@@ -339,7 +341,7 @@ public:
                     return Err(ErrorCode::Timeout);
                 }
             }
-            
+
             data[i] = static_cast<uint8_t>(hw->DR);
         }
 
@@ -393,7 +395,7 @@ public:
         if (!write_result.is_ok()) {
             return Err(write_result.err());
         }
-        
+
         auto read_result = read(device_addr, value, 1);
         if (!read_result.is_ok()) {
             return Err(read_result.err());
@@ -406,11 +408,9 @@ public:
      * @brief Check if I2C peripheral is open
      *
      * @return bool Check if I2C peripheral is open     */
-    bool isOpen() const {
-        return m_opened;
-    }
+    bool isOpen() const { return m_opened; }
 
-private:
+   private:
     bool m_opened = false;  ///< Tracks if peripheral is initialized
 };
 
@@ -431,4 +431,4 @@ using I2c1 = I2c<I2C1_BASE, I2C1_IRQ>;  ///< I2C1 instance
 using I2c2 = I2c<I2C2_BASE, I2C2_IRQ>;  ///< I2C2 instance
 using I2c3 = I2c<I2C3_BASE, I2C3_IRQ>;  ///< I2C3 instance
 
-} // namespace alloy::hal::stm32f4
+}  // namespace alloy::hal::stm32f4

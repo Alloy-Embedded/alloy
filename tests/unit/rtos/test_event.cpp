@@ -2,14 +2,18 @@
 ///
 /// Tests 32-bit event flags for multi-event synchronization using Catch2
 
-#include <catch2/catch_test_macros.hpp>
-#include <catch2/catch_section_info.hpp>
-#include "rtos/event.hpp"
-#include "hal/host/systick.hpp"
-#include "core/types.hpp"
-#include <thread>
-#include <chrono>
 #include <atomic>
+#include <chrono>
+#include <thread>
+
+#include <catch2/catch_section_info.hpp>
+#include <catch2/catch_test_macros.hpp>
+
+#include "hal/host/systick.hpp"
+
+#include "rtos/event.hpp"
+
+#include "core/types.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;

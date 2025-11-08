@@ -6,11 +6,12 @@
  * it behaves correctly in all scenarios.
  */
 
-#include "../../src/core/result.hpp"
-#include "../../src/core/error_code.hpp"
 #include <cassert>
-#include <string>
 #include <iostream>
+#include <string>
+
+#include "../../src/core/error_code.hpp"
+#include "../../src/core/result.hpp"
 
 using namespace alloy::core;
 
@@ -18,29 +19,29 @@ using namespace alloy::core;
 static int tests_run = 0;
 static int tests_passed = 0;
 
-#define TEST(name) \
-    void test_##name(); \
-    void run_test_##name() { \
-        tests_run++; \
-        std::cout << "Running test: " #name << "..."; \
-        try { \
-            test_##name(); \
-            tests_passed++; \
-            std::cout << " PASS" << std::endl; \
-        } catch (const std::exception& e) { \
-            std::cout << " FAIL: " << e.what() << std::endl; \
-        } catch (...) { \
+#define TEST(name)                                                \
+    void test_##name();                                           \
+    void run_test_##name() {                                      \
+        tests_run++;                                              \
+        std::cout << "Running test: " #name << "...";             \
+        try {                                                     \
+            test_##name();                                        \
+            tests_passed++;                                       \
+            std::cout << " PASS" << std::endl;                    \
+        } catch (const std::exception& e) {                       \
+            std::cout << " FAIL: " << e.what() << std::endl;      \
+        } catch (...) {                                           \
             std::cout << " FAIL: Unknown exception" << std::endl; \
-        } \
-    } \
+        }                                                         \
+    }                                                             \
     void test_##name()
 
-#define ASSERT(condition) \
-    do { \
-        if (!(condition)) { \
+#define ASSERT(condition)                                              \
+    do {                                                               \
+        if (!(condition)) {                                            \
             throw std::runtime_error("Assertion failed: " #condition); \
-        } \
-    } while(0)
+        }                                                              \
+    } while (0)
 
 // =============================================================================
 // Result<T> Construction Tests
@@ -109,7 +110,8 @@ TEST(result_move_construction) {
 
 TEST(result_move_assignment) {
     auto result1 = Result<std::string, ErrorCode>(Ok(std::string("world")));
-    Result<std::string, ErrorCode> result2 = Result<std::string, ErrorCode>(Err(ErrorCode::InvalidParameter));
+    Result<std::string, ErrorCode> result2 =
+        Result<std::string, ErrorCode>(Err(ErrorCode::InvalidParameter));
     result2 = std::move(result1);
     ASSERT(result2.is_ok());
     ASSERT(result2.unwrap() == "world");
@@ -135,45 +137,36 @@ TEST(result_map_error) {
 
 TEST(result_and_then_ok) {
     auto result = Result<int, ErrorCode>(Ok(5));
-    auto chained = result.and_then([](int x) {
-        return Result<int, ErrorCode>(Ok(x * 3));
-    });
+    auto chained = result.and_then([](int x) { return Result<int, ErrorCode>(Ok(x * 3)); });
     ASSERT(chained.is_ok());
     ASSERT(chained.unwrap() == 15);
 }
 
 TEST(result_and_then_error) {
     auto result = Result<int, ErrorCode>(Err(ErrorCode::Timeout));
-    auto chained = result.and_then([](int x) {
-        return Result<int, ErrorCode>(Ok(x * 3));
-    });
+    auto chained = result.and_then([](int x) { return Result<int, ErrorCode>(Ok(x * 3)); });
     ASSERT(chained.is_err());
     ASSERT(chained.err() == ErrorCode::Timeout);
 }
 
 TEST(result_and_then_chain_error) {
     auto result = Result<int, ErrorCode>(Ok(5));
-    auto chained = result.and_then([](int x) {
-        return Result<int, ErrorCode>(Err(ErrorCode::HardwareError));
-    });
+    auto chained = result.and_then(
+        [](int x) { return Result<int, ErrorCode>(Err(ErrorCode::HardwareError)); });
     ASSERT(chained.is_err());
     ASSERT(chained.err() == ErrorCode::HardwareError);
 }
 
 TEST(result_or_else_ok) {
     auto result = Result<int, ErrorCode>(Ok(42));
-    auto recovered = result.or_else([](ErrorCode) {
-        return Result<int, ErrorCode>(Ok(999));
-    });
+    auto recovered = result.or_else([](ErrorCode) { return Result<int, ErrorCode>(Ok(999)); });
     ASSERT(recovered.is_ok());
     ASSERT(recovered.unwrap() == 42);
 }
 
 TEST(result_or_else_error) {
     auto result = Result<int, ErrorCode>(Err(ErrorCode::InvalidParameter));
-    auto recovered = result.or_else([](ErrorCode err) {
-        return Result<int, ErrorCode>(Ok(999));
-    });
+    auto recovered = result.or_else([](ErrorCode err) { return Result<int, ErrorCode>(Ok(999)); });
     ASSERT(recovered.is_ok());
     ASSERT(recovered.unwrap() == 999);
 }
@@ -184,21 +177,20 @@ TEST(result_or_else_error) {
 
 TEST(result_complex_chain) {
     auto result = Result<int, ErrorCode>(Ok(10))
-        .map([](int x) { return x + 5; })
-        .and_then([](int x) { return Result<int, ErrorCode>(Ok(x * 2)); })
-        .map([](int x) { return x - 10; });
+                      .map([](int x) { return x + 5; })
+                      .and_then([](int x) { return Result<int, ErrorCode>(Ok(x * 2)); })
+                      .map([](int x) { return x - 10; });
 
     ASSERT(result.is_ok());
     ASSERT(result.unwrap() == 20);  // (10 + 5) * 2 - 10 = 20
 }
 
 TEST(result_chain_with_error) {
-    auto result = Result<int, ErrorCode>(Ok(10))
-        .map([](int x) { return x + 5; })
-        .and_then([](int x) {
-            return Result<int, ErrorCode>(Err(ErrorCode::Timeout));
-        })
-        .map([](int x) { return x - 10; });  // This shouldn't execute
+    auto result =
+        Result<int, ErrorCode>(Ok(10))
+            .map([](int x) { return x + 5; })
+            .and_then([](int x) { return Result<int, ErrorCode>(Err(ErrorCode::Timeout)); })
+            .map([](int x) { return x - 10; });  // This shouldn't execute
 
     ASSERT(result.is_err());
     ASSERT(result.err() == ErrorCode::Timeout);

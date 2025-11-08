@@ -3,8 +3,9 @@
 /// Tests the mockable GPIO implementation used for development
 /// on PC platforms without physical hardware.
 
-#include "hal/host/gpio.hpp"
 #include <catch2/catch_test_macros.hpp>
+
+#include "hal/host/gpio.hpp"
 
 // Note: Not using "using namespace" to avoid ambiguity with GpioPin concept
 // using namespace alloy::hal;

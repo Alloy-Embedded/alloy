@@ -16,8 +16,9 @@
  * setup which is complex. These tests focus on API validation.
  */
 
-#include <catch2/catch_test_macros.hpp>
 #include "hal/platform/linux/uart.hpp"
+
+#include <catch2/catch_test_macros.hpp>
 
 using namespace alloy::hal::linux;
 using namespace alloy::core;

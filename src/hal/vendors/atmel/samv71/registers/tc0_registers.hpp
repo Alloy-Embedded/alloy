@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samv71::tc0 {
 
 /// TC0 Register Structure
 struct TC0_Registers {
-
     /// Channel Control Register (channel = 0)
     /// Offset: 0x0000
     /// Access: write-only
@@ -80,7 +79,7 @@ struct TC0_Registers {
     /// Extended Mode Register (channel = 0)
     /// Offset: 0x0030
     volatile uint32_t EMR;
-    uint8_t RESERVED_0034[140]; ///< Reserved
+    uint8_t RESERVED_0034[140];  ///< Reserved
 
     /// Block Control Register
     /// Offset: 0x00C0
@@ -114,7 +113,7 @@ struct TC0_Registers {
     /// Fault Mode Register
     /// Offset: 0x00D8
     volatile uint32_t FMR;
-    uint8_t RESERVED_00DC[8]; ///< Reserved
+    uint8_t RESERVED_00DC[8];  ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4

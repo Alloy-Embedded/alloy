@@ -25,11 +25,11 @@ int main() {
 
     // Blink forever
     while (true) {
-        Board::Led::on();           // Turn LED ON
-        Board::delay_ms(500);       // Wait 500ms
+        Board::Led::on();      // Turn LED ON
+        Board::delay_ms(500);  // Wait 500ms
 
-        Board::Led::off();          // Turn LED OFF
-        Board::delay_ms(500);       // Wait 500ms
+        Board::Led::off();     // Turn LED OFF
+        Board::delay_ms(500);  // Wait 500ms
     }
 
     return 0;

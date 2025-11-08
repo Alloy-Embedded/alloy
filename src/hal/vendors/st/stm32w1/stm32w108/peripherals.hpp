@@ -11,10 +11,10 @@ namespace alloy::generated::stm32w108 {
 
 /// Basic peripheral base addresses
 namespace peripherals {
-    // Peripheral addresses will be added here
-    // This is a minimal implementation
+// Peripheral addresses will be added here
+// This is a minimal implementation
 }
 
-} // namespace alloy::generated::stm32w108
+}  // namespace alloy::generated::stm32w108
 
-#endif // ALLOY_GENERATED_STM32W108_PERIPHERALS_HPP
+#endif  // ALLOY_GENERATED_STM32W108_PERIPHERALS_HPP

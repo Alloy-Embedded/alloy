@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::rcc {
 
 /// RCC Register Structure
 struct RCC_Registers {
-
     /// clock control register
     /// Offset: 0x0000
     /// Reset value: 0x00000083
@@ -56,7 +55,7 @@ struct RCC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t AHB3RSTR;
-    uint8_t RESERVED_001C[4]; ///< Reserved
+    uint8_t RESERVED_001C[4];  ///< Reserved
 
     /// APB1 peripheral reset register
     /// Offset: 0x0020
@@ -69,7 +68,7 @@ struct RCC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t APB2RSTR;
-    uint8_t RESERVED_0028[8]; ///< Reserved
+    uint8_t RESERVED_0028[8];  ///< Reserved
 
     /// AHB1 peripheral clock register
     /// Offset: 0x0030
@@ -88,7 +87,7 @@ struct RCC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t AHB3ENR;
-    uint8_t RESERVED_003C[4]; ///< Reserved
+    uint8_t RESERVED_003C[4];  ///< Reserved
 
     /// APB1 peripheral clock enable register
     /// Offset: 0x0040
@@ -101,7 +100,7 @@ struct RCC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t APB2ENR;
-    uint8_t RESERVED_0048[8]; ///< Reserved
+    uint8_t RESERVED_0048[8];  ///< Reserved
 
     /// AHB1 peripheral clock enable in low power mode register
     /// Offset: 0x0050
@@ -120,7 +119,7 @@ struct RCC_Registers {
     /// Reset value: 0x00000001
     /// Access: read-write
     volatile uint32_t AHB3LPENR;
-    uint8_t RESERVED_005C[4]; ///< Reserved
+    uint8_t RESERVED_005C[4];  ///< Reserved
 
     /// APB1 peripheral clock enable in low power mode register
     /// Offset: 0x0060
@@ -133,7 +132,7 @@ struct RCC_Registers {
     /// Reset value: 0x00075F33
     /// Access: read-write
     volatile uint32_t APB2LPENR;
-    uint8_t RESERVED_0068[8]; ///< Reserved
+    uint8_t RESERVED_0068[8];  ///< Reserved
 
     /// Backup domain control register
     /// Offset: 0x0070
@@ -144,7 +143,7 @@ struct RCC_Registers {
     /// Offset: 0x0074
     /// Reset value: 0x0E000000
     volatile uint32_t CSR;
-    uint8_t RESERVED_0078[8]; ///< Reserved
+    uint8_t RESERVED_0078[8];  ///< Reserved
 
     /// spread spectrum clock generation register
     /// Offset: 0x0080

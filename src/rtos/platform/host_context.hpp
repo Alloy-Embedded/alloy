@@ -23,12 +23,14 @@
 #ifndef ALLOY_RTOS_PLATFORM_HOST_CONTEXT_HPP
 #define ALLOY_RTOS_PLATFORM_HOST_CONTEXT_HPP
 
-#include "rtos/rtos.hpp"
-#include "core/types.hpp"
-#include <thread>
-#include <mutex>
-#include <condition_variable>
 #include <atomic>
+#include <condition_variable>
+#include <mutex>
+#include <thread>
+
+#include "rtos/rtos.hpp"
+
+#include "core/types.hpp"
 
 namespace alloy::rtos::platform {
 
@@ -96,6 +98,6 @@ HostTaskContext* get_host_context(TaskControlBlock* tcb);
 /// This simulates the SysTick interrupt on embedded platforms.
 void scheduler_tick_thread();
 
-} // namespace alloy::rtos::platform
+}  // namespace alloy::rtos::platform
 
-#endif // ALLOY_RTOS_PLATFORM_HOST_CONTEXT_HPP
+#endif  // ALLOY_RTOS_PLATFORM_HOST_CONTEXT_HPP

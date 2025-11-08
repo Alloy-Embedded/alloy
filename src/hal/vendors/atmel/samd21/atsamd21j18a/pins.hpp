@@ -10,16 +10,16 @@ namespace alloy::hal::atmel::samd21::atsamd21j18a::pins {
 // ============================================================================
 
 // Port A pins
-constexpr uint8_t PA00 = 0;  // A0
-constexpr uint8_t PA01 = 1;  // A1
-constexpr uint8_t PA02 = 2;  // A2
-constexpr uint8_t PA03 = 3;  // A3
-constexpr uint8_t PA04 = 4;  // A4
-constexpr uint8_t PA05 = 5;  // A5
-constexpr uint8_t PA06 = 6;  // A6
-constexpr uint8_t PA07 = 7;  // A7
-constexpr uint8_t PA08 = 8;  // A8
-constexpr uint8_t PA09 = 9;  // A9
+constexpr uint8_t PA00 = 0;   // A0
+constexpr uint8_t PA01 = 1;   // A1
+constexpr uint8_t PA02 = 2;   // A2
+constexpr uint8_t PA03 = 3;   // A3
+constexpr uint8_t PA04 = 4;   // A4
+constexpr uint8_t PA05 = 5;   // A5
+constexpr uint8_t PA06 = 6;   // A6
+constexpr uint8_t PA07 = 7;   // A7
+constexpr uint8_t PA08 = 8;   // A8
+constexpr uint8_t PA09 = 9;   // A9
 constexpr uint8_t PA10 = 10;  // A10
 constexpr uint8_t PA11 = 11;  // A11
 constexpr uint8_t PA12 = 12;  // A12
@@ -44,16 +44,16 @@ constexpr uint8_t PA30 = 30;  // A30
 constexpr uint8_t PA31 = 31;  // A31
 
 // Port B pins
-constexpr uint8_t PB00 = 0;  // B0
-constexpr uint8_t PB01 = 1;  // B1
-constexpr uint8_t PB02 = 2;  // B2
-constexpr uint8_t PB03 = 3;  // B3
-constexpr uint8_t PB04 = 4;  // B4
-constexpr uint8_t PB05 = 5;  // B5
-constexpr uint8_t PB06 = 6;  // B6
-constexpr uint8_t PB07 = 7;  // B7
-constexpr uint8_t PB08 = 8;  // B8
-constexpr uint8_t PB09 = 9;  // B9
+constexpr uint8_t PB00 = 0;   // B0
+constexpr uint8_t PB01 = 1;   // B1
+constexpr uint8_t PB02 = 2;   // B2
+constexpr uint8_t PB03 = 3;   // B3
+constexpr uint8_t PB04 = 4;   // B4
+constexpr uint8_t PB05 = 5;   // B5
+constexpr uint8_t PB06 = 6;   // B6
+constexpr uint8_t PB07 = 7;   // B7
+constexpr uint8_t PB08 = 8;   // B8
+constexpr uint8_t PB09 = 9;   // B9
 constexpr uint8_t PB10 = 10;  // B10
 constexpr uint8_t PB11 = 11;  // B11
 constexpr uint8_t PB12 = 12;  // B12

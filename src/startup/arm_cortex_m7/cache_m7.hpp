@@ -18,8 +18,9 @@
 
 #pragma once
 
-#include "../arm_cortex_m/core_common.hpp"
 #include <stdint.h>
+
+#include "../arm_cortex_m/core_common.hpp"
 
 namespace alloy::arm::cortex_m7::cache {
 
@@ -59,44 +60,44 @@ inline constexpr bool is_dcache_present() {
 /// - Modifying code in Flash/RAM (self-modifying code)
 /// - Loading new code via bootloader
 inline void invalidate_icache() {
-    #if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1)
-        dsb();  // Ensure all memory transactions are complete
-        isb();  // Ensure instruction fetch before invalidate
+#if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1)
+    dsb();  // Ensure all memory transactions are complete
+    isb();  // Ensure instruction fetch before invalidate
 
-        CACHE()->ICIALLU = 0;  // Invalidate all I-Cache
+    CACHE()->ICIALLU = 0;  // Invalidate all I-Cache
 
-        dsb();  // Ensure invalidation is complete
-        isb();  // Refetch instructions
-    #endif
+    dsb();  // Ensure invalidation is complete
+    isb();  // Refetch instructions
+#endif
 }
 
 /// Enable Instruction Cache
 /// Enables I-Cache for faster code execution (typically 2-3x speedup)
 inline void enable_icache() {
-    #if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1)
-        // Invalidate I-Cache before enabling
-        invalidate_icache();
+#if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1)
+    // Invalidate I-Cache before enabling
+    invalidate_icache();
 
-        // Enable I-Cache via CCR register
-        SCB()->CCR |= ccr::IC_Msk;
+    // Enable I-Cache via CCR register
+    SCB()->CCR |= ccr::IC_Msk;
 
-        dsb();
-        isb();
-    #endif
+    dsb();
+    isb();
+#endif
 }
 
 /// Disable Instruction Cache
 inline void disable_icache() {
-    #if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1)
-        dsb();
-        isb();
+#if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1)
+    dsb();
+    isb();
 
-        // Disable I-Cache
-        SCB()->CCR &= ~ccr::IC_Msk;
+    // Disable I-Cache
+    SCB()->CCR &= ~ccr::IC_Msk;
 
-        // Invalidate I-Cache after disabling
-        invalidate_icache();
-    #endif
+    // Invalidate I-Cache after disabling
+    invalidate_icache();
+#endif
 }
 
 /// Check if I-Cache is enabled
@@ -115,18 +116,18 @@ inline bool is_icache_enabled() {
 ///
 /// Use case: Before enabling D-Cache or after DMA writes to memory
 inline void invalidate_dcache() {
-    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
-        // Invalidate D-Cache by set/way (all ways, all sets)
-        for (uint32_t set = 0; set < 4; ++set) {
-            for (uint32_t way = 0; way < 4; ++way) {
-                // Format: [way:31-30] [set:12-5]
-                uint32_t value = (way << 30) | (set << 5);
-                CACHE()->DCISW = value;
-            }
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
+    // Invalidate D-Cache by set/way (all ways, all sets)
+    for (uint32_t set = 0; set < 4; ++set) {
+        for (uint32_t way = 0; way < 4; ++way) {
+            // Format: [way:31-30] [set:12-5]
+            uint32_t value = (way << 30) | (set << 5);
+            CACHE()->DCISW = value;
         }
+    }
 
-        dsb();  // Ensure invalidation is complete
-    #endif
+    dsb();  // Ensure invalidation is complete
+#endif
 }
 
 /// Clean entire D-Cache
@@ -134,18 +135,18 @@ inline void invalidate_dcache() {
 ///
 /// Use case: Before DMA reads from memory (memory -> peripheral)
 inline void clean_dcache() {
-    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
-        // Clean D-Cache by set/way (all ways, all sets)
-        for (uint32_t set = 0; set < 4; ++set) {
-            for (uint32_t way = 0; way < 4; ++way) {
-                // Format: [way:31-30] [set:12-5]
-                uint32_t value = (way << 30) | (set << 5);
-                CACHE()->DCCSW = value;
-            }
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
+    // Clean D-Cache by set/way (all ways, all sets)
+    for (uint32_t set = 0; set < 4; ++set) {
+        for (uint32_t way = 0; way < 4; ++way) {
+            // Format: [way:31-30] [set:12-5]
+            uint32_t value = (way << 30) | (set << 5);
+            CACHE()->DCCSW = value;
         }
+    }
 
-        dsb();  // Ensure clean is complete
-    #endif
+    dsb();  // Ensure clean is complete
+#endif
 }
 
 /// Clean and invalidate entire D-Cache
@@ -153,47 +154,47 @@ inline void clean_dcache() {
 ///
 /// Use case: Complete cache flush with data preservation
 inline void clean_invalidate_dcache() {
-    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
-        // Clean and invalidate D-Cache by set/way
-        for (uint32_t set = 0; set < 4; ++set) {
-            for (uint32_t way = 0; way < 4; ++way) {
-                // Format: [way:31-30] [set:12-5]
-                uint32_t value = (way << 30) | (set << 5);
-                CACHE()->DCCISW = value;
-            }
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
+    // Clean and invalidate D-Cache by set/way
+    for (uint32_t set = 0; set < 4; ++set) {
+        for (uint32_t way = 0; way < 4; ++way) {
+            // Format: [way:31-30] [set:12-5]
+            uint32_t value = (way << 30) | (set << 5);
+            CACHE()->DCCISW = value;
         }
+    }
 
-        dsb();
-    #endif
+    dsb();
+#endif
 }
 
 /// Enable Data Cache
 /// Enables D-Cache for faster data access (typically 2-3x speedup)
 inline void enable_dcache() {
-    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
-        // Invalidate D-Cache before enabling
-        invalidate_dcache();
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
+    // Invalidate D-Cache before enabling
+    invalidate_dcache();
 
-        // Enable D-Cache via CCR register
-        SCB()->CCR |= ccr::DC_Msk;
+    // Enable D-Cache via CCR register
+    SCB()->CCR |= ccr::DC_Msk;
 
-        dsb();
-        isb();
-    #endif
+    dsb();
+    isb();
+#endif
 }
 
 /// Disable Data Cache
 inline void disable_dcache() {
-    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
-        // Clean and invalidate D-Cache before disabling
-        clean_invalidate_dcache();
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
+    // Clean and invalidate D-Cache before disabling
+    clean_invalidate_dcache();
 
-        // Disable D-Cache
-        SCB()->CCR &= ~ccr::DC_Msk;
+    // Disable D-Cache
+    SCB()->CCR &= ~ccr::DC_Msk;
 
-        dsb();
-        isb();
-    #endif
+    dsb();
+    isb();
+#endif
 }
 
 /// Check if D-Cache is enabled
@@ -217,26 +218,26 @@ inline bool is_dcache_enabled() {
 ///   invalidate_dcache_by_addr(buffer, sizeof(buffer));
 ///   // Start DMA transfer
 inline void invalidate_dcache_by_addr(void* addr, uint32_t size) {
-    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
-        uint32_t start_addr = reinterpret_cast<uint32_t>(addr);
-        uint32_t end_addr = start_addr + size;
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
+    uint32_t start_addr = reinterpret_cast<uint32_t>(addr);
+    uint32_t end_addr = start_addr + size;
 
-        // Align to cache line size (32 bytes on Cortex-M7)
-        start_addr &= ~0x1FUL;
+    // Align to cache line size (32 bytes on Cortex-M7)
+    start_addr &= ~0x1FUL;
 
-        dsb();
+    dsb();
 
-        // Invalidate each cache line
-        for (uint32_t addr_val = start_addr; addr_val < end_addr; addr_val += 32) {
-            CACHE()->DCIMVAC = addr_val;
-        }
+    // Invalidate each cache line
+    for (uint32_t addr_val = start_addr; addr_val < end_addr; addr_val += 32) {
+        CACHE()->DCIMVAC = addr_val;
+    }
 
-        dsb();
-        isb();
-    #else
-        (void)addr;
-        (void)size;
-    #endif
+    dsb();
+    isb();
+#else
+    (void)addr;
+    (void)size;
+#endif
 }
 
 /// Clean D-Cache by address range
@@ -251,26 +252,26 @@ inline void invalidate_dcache_by_addr(void* addr, uint32_t size) {
 ///   clean_dcache_by_addr(buffer, sizeof(buffer));
 ///   // Start DMA transfer
 inline void clean_dcache_by_addr(const void* addr, uint32_t size) {
-    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
-        uint32_t start_addr = reinterpret_cast<uint32_t>(addr);
-        uint32_t end_addr = start_addr + size;
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
+    uint32_t start_addr = reinterpret_cast<uint32_t>(addr);
+    uint32_t end_addr = start_addr + size;
 
-        // Align to cache line size (32 bytes)
-        start_addr &= ~0x1FUL;
+    // Align to cache line size (32 bytes)
+    start_addr &= ~0x1FUL;
 
-        dsb();
+    dsb();
 
-        // Clean each cache line
-        for (uint32_t addr_val = start_addr; addr_val < end_addr; addr_val += 32) {
-            CACHE()->DCCMVAC = addr_val;
-        }
+    // Clean each cache line
+    for (uint32_t addr_val = start_addr; addr_val < end_addr; addr_val += 32) {
+        CACHE()->DCCMVAC = addr_val;
+    }
 
-        dsb();
-        isb();
-    #else
-        (void)addr;
-        (void)size;
-    #endif
+    dsb();
+    isb();
+#else
+    (void)addr;
+    (void)size;
+#endif
 }
 
 /// Clean and invalidate D-Cache by address range
@@ -279,26 +280,26 @@ inline void clean_dcache_by_addr(const void* addr, uint32_t size) {
 /// @param addr: Start address (must be 32-byte aligned for optimal performance)
 /// @param size: Size in bytes
 inline void clean_invalidate_dcache_by_addr(void* addr, uint32_t size) {
-    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
-        uint32_t start_addr = reinterpret_cast<uint32_t>(addr);
-        uint32_t end_addr = start_addr + size;
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
+    uint32_t start_addr = reinterpret_cast<uint32_t>(addr);
+    uint32_t end_addr = start_addr + size;
 
-        // Align to cache line size (32 bytes)
-        start_addr &= ~0x1FUL;
+    // Align to cache line size (32 bytes)
+    start_addr &= ~0x1FUL;
 
-        dsb();
+    dsb();
 
-        // Clean and invalidate each cache line
-        for (uint32_t addr_val = start_addr; addr_val < end_addr; addr_val += 32) {
-            CACHE()->DCCIMVAC = addr_val;
-        }
+    // Clean and invalidate each cache line
+    for (uint32_t addr_val = start_addr; addr_val < end_addr; addr_val += 32) {
+        CACHE()->DCCIMVAC = addr_val;
+    }
 
-        dsb();
-        isb();
-    #else
-        (void)addr;
-        (void)size;
-    #endif
+    dsb();
+    isb();
+#else
+    (void)addr;
+    (void)size;
+#endif
 }
 
 // ============================================================================
@@ -324,21 +325,21 @@ inline void clean_invalidate_dcache_by_addr(void* addr, uint32_t size) {
 ///       // ... rest of initialization
 ///   }
 inline void initialize(bool enable_icache_flag = true, bool enable_dcache_flag = true) {
-    #if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1)
-        if (enable_icache_flag) {
-            enable_icache();
-        }
-    #else
-        (void)enable_icache_flag;
-    #endif
+#if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1)
+    if (enable_icache_flag) {
+        enable_icache();
+    }
+#else
+    (void)enable_icache_flag;
+#endif
 
-    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
-        if (enable_dcache_flag) {
-            enable_dcache();
-        }
-    #else
-        (void)enable_dcache_flag;
-    #endif
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1)
+    if (enable_dcache_flag) {
+        enable_dcache();
+    }
+#else
+    (void)enable_dcache_flag;
+#endif
 }
 
-} // namespace alloy::arm::cortex_m7::cache
+}  // namespace alloy::arm::cortex_m7::cache

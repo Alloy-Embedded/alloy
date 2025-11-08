@@ -101,8 +101,10 @@
 // Error: No MCU defined
 // ============================================================================
 #else
-    #error "No MCU defined! Please define one of the supported MCU macros (e.g., MCU_STM32F407VG) in your build system."
-    #error "Supported MCUs: STM32F030, STM32F103, STM32F401, STM32F405, STM32F407, STM32F411, STM32F429, STM32F7xx"
+    #error \
+        "No MCU defined! Please define one of the supported MCU macros (e.g., MCU_STM32F407VG) in your build system."
+    #error \
+        "Supported MCUs: STM32F030, STM32F103, STM32F401, STM32F405, STM32F407, STM32F411, STM32F429, STM32F7xx"
     #error "Example CMake: target_compile_definitions(my_target PRIVATE MCU_STM32F407VG)"
 #endif
 

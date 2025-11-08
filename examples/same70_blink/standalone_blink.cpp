@@ -5,25 +5,25 @@
 #include <stdint.h>
 
 // PMC (Power Management Controller) - needed to enable PIOC clock
-#define PMC_BASE     0x400E0600UL
-#define PMC_PCER0    (*(volatile uint32_t*)(PMC_BASE + 0x0010))  // Peripheral Clock Enable Register 0
-#define PMC_PCSR0    (*(volatile uint32_t*)(PMC_BASE + 0x0018))  // Peripheral Clock Status Register 0
+#define PMC_BASE  0x400E0600UL
+#define PMC_PCER0 (*(volatile uint32_t*)(PMC_BASE + 0x0010))  // Peripheral Clock Enable Register 0
+#define PMC_PCSR0 (*(volatile uint32_t*)(PMC_BASE + 0x0018))  // Peripheral Clock Status Register 0
 
 // Peripheral IDs (for PMC)
-#define ID_PIOC      12  // PIOC Peripheral ID
+#define ID_PIOC 12  // PIOC Peripheral ID
 
 // PIOC Base Address (Port C - where LED is connected)
-#define PIOC_BASE    0x400E1200UL
+#define PIOC_BASE 0x400E1200UL
 
 // PIOC Register Offsets
-#define PIOC_PER     (*(volatile uint32_t*)(PIOC_BASE + 0x0000))  // PIO Enable
-#define PIOC_OER     (*(volatile uint32_t*)(PIOC_BASE + 0x0010))  // Output Enable
-#define PIOC_SODR    (*(volatile uint32_t*)(PIOC_BASE + 0x0030))  // Set Output Data
-#define PIOC_CODR    (*(volatile uint32_t*)(PIOC_BASE + 0x0034))  // Clear Output Data
-#define PIOC_ODSR    (*(volatile uint32_t*)(PIOC_BASE + 0x0038))  // Output Data Status
+#define PIOC_PER  (*(volatile uint32_t*)(PIOC_BASE + 0x0000))  // PIO Enable
+#define PIOC_OER  (*(volatile uint32_t*)(PIOC_BASE + 0x0010))  // Output Enable
+#define PIOC_SODR (*(volatile uint32_t*)(PIOC_BASE + 0x0030))  // Set Output Data
+#define PIOC_CODR (*(volatile uint32_t*)(PIOC_BASE + 0x0034))  // Clear Output Data
+#define PIOC_ODSR (*(volatile uint32_t*)(PIOC_BASE + 0x0038))  // Output Data Status
 
 // LED on PC8
-#define LED_PIN      (1U << 8)
+#define LED_PIN (1U << 8)
 
 // Simple delay function
 void delay_ms(uint32_t ms) {
@@ -72,14 +72,13 @@ extern "C" void Reset_Handler() {
 // Minimal vector table
 extern uint32_t _estack;  // Defined in linker script
 
-__attribute__((section(".isr_vector")))
-__attribute__((used))
-const void* vector_table[] = {
-    &_estack,                           // Initial stack pointer
+__attribute__((section(".isr_vector"))) __attribute__((used)) const void* vector_table[] = {
+    &_estack,                                // Initial stack pointer
     reinterpret_cast<void*>(Reset_Handler),  // Reset handler
 };
 
 // Default handler for all exceptions/interrupts
 extern "C" void Default_Handler() {
-    while(1);
+    while (1)
+        ;
 }

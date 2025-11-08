@@ -25,7 +25,7 @@ using namespace alloy::hal::same70;
  * @brief Simple ADC wrapper for sensor readings
  */
 class AnalogSensor {
-public:
+   public:
     constexpr AnalogSensor(AdcChannel channel) : m_channel(channel) {}
 
     auto init() -> alloy::core::Result<void> {
@@ -47,9 +47,7 @@ public:
     /**
      * @brief Read raw ADC value (0-4095 for 12-bit)
      */
-    auto readRaw() -> alloy::core::Result<uint16_t> {
-        return m_adc.readSingle(m_channel);
-    }
+    auto readRaw() -> alloy::core::Result<uint16_t> { return m_adc.readSingle(m_channel); }
 
     /**
      * @brief Read voltage in millivolts
@@ -79,11 +77,9 @@ public:
         return alloy::core::Result<uint8_t>::ok(percentage);
     }
 
-    auto close() -> alloy::core::Result<void> {
-        return m_adc.close();
-    }
+    auto close() -> alloy::core::Result<void> { return m_adc.close(); }
 
-private:
+   private:
     Adc0 m_adc;
     AdcChannel m_channel;
 };
@@ -94,7 +90,7 @@ private:
  * Demonstrates reading multiple channels sequentially.
  */
 class MultiChannelAdc {
-public:
+   public:
     auto init() -> alloy::core::Result<void> {
         auto result = m_adc.open();
         if (!result.is_ok()) {
@@ -118,7 +114,6 @@ public:
      */
     auto readChannels(const AdcChannel* channels, uint16_t* values, size_t count)
         -> alloy::core::Result<void> {
-
         // Enable all channels
         for (size_t i = 0; i < count; ++i) {
             auto result = m_adc.enableChannel(channels[i]);
@@ -150,11 +145,9 @@ public:
         return alloy::core::Result<void>::ok();
     }
 
-    auto close() -> alloy::core::Result<void> {
-        return m_adc.close();
-    }
+    auto close() -> alloy::core::Result<void> { return m_adc.close(); }
 
-private:
+   private:
     Adc0 m_adc;
 };
 
@@ -209,12 +202,8 @@ int main() {
         [[maybe_unused]] auto init_result = multi_adc.init();
 
         // Read 4 channels
-        AdcChannel channels[] = {
-            AdcChannel::CH0,
-            AdcChannel::CH1,
-            AdcChannel::CH2,
-            AdcChannel::CH3
-        };
+        AdcChannel channels[] = {AdcChannel::CH0, AdcChannel::CH1, AdcChannel::CH2,
+                                 AdcChannel::CH3};
         uint16_t values[4];
 
         [[maybe_unused]] auto read_result = multi_adc.readChannels(channels, values, 4);

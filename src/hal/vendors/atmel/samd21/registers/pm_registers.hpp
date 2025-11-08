@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samd21::pm {
 
 /// PM Register Structure
 struct PM_Registers {
-
     /// Control
     /// Offset: 0x0000
     volatile uint8_t CTRL;
@@ -25,7 +24,7 @@ struct PM_Registers {
     /// Sleep Mode
     /// Offset: 0x0001
     volatile uint8_t SLEEP;
-    uint8_t RESERVED_0002[6]; ///< Reserved
+    uint8_t RESERVED_0002[6];  ///< Reserved
 
     /// CPU Clock Select
     /// Offset: 0x0008
@@ -42,7 +41,7 @@ struct PM_Registers {
     /// APBC Clock Select
     /// Offset: 0x000B
     volatile uint8_t APBCSEL;
-    uint8_t RESERVED_000C[8]; ///< Reserved
+    uint8_t RESERVED_000C[8];  ///< Reserved
 
     /// AHB Mask
     /// Offset: 0x0014
@@ -63,7 +62,7 @@ struct PM_Registers {
     /// Offset: 0x0020
     /// Reset value: 0x00010000
     volatile uint32_t APBCMASK;
-    uint8_t RESERVED_0024[16]; ///< Reserved
+    uint8_t RESERVED_0024[16];  ///< Reserved
 
     /// Interrupt Enable Clear
     /// Offset: 0x0034
@@ -76,7 +75,7 @@ struct PM_Registers {
     /// Interrupt Flag Status and Clear
     /// Offset: 0x0036
     volatile uint8_t INTFLAG;
-    uint8_t RESERVED_0037[1]; ///< Reserved
+    uint8_t RESERVED_0037[1];  ///< Reserved
 
     /// Reset Cause
     /// Offset: 0x0038

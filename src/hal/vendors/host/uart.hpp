@@ -19,7 +19,7 @@ namespace alloy::hal::host {
 /// Configuration (baud rate, data bits, etc.) is accepted but has no effect
 /// on host, as the OS terminal handles serial settings.
 class Uart {
-public:
+   public:
     /// Construct host UART (initially not configured)
     Uart();
 
@@ -45,15 +45,15 @@ public:
     /// Returns the number of bytes that can be read without blocking.
     [[nodiscard]] core::usize available() const;
 
-private:
+   private:
     bool configured_;
     UartConfig config_;
 };
 
-} // namespace alloy::hal::host
+}  // namespace alloy::hal::host
 
 // Validate that host UART satisfies UartDevice concept
 static_assert(alloy::hal::UartDevice<alloy::hal::host::Uart>,
               "Host Uart must satisfy UartDevice concept");
 
-#endif // ALLOY_HAL_HOST_UART_HPP
+#endif  // ALLOY_HAL_HOST_UART_HPP

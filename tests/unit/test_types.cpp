@@ -5,10 +5,11 @@
  * Tests the fundamental type aliases defined in types.hpp
  */
 
-#include "../../src/core/types.hpp"
 #include <cassert>
 #include <iostream>
 #include <limits>
+
+#include "../../src/core/types.hpp"
 
 using namespace alloy::core;
 
@@ -16,29 +17,29 @@ using namespace alloy::core;
 static int tests_run = 0;
 static int tests_passed = 0;
 
-#define TEST(name) \
-    void test_##name(); \
-    void run_test_##name() { \
-        tests_run++; \
-        std::cout << "Running test: " #name << "..."; \
-        try { \
-            test_##name(); \
-            tests_passed++; \
-            std::cout << " PASS" << std::endl; \
-        } catch (const std::exception& e) { \
-            std::cout << " FAIL: " << e.what() << std::endl; \
-        } catch (...) { \
+#define TEST(name)                                                \
+    void test_##name();                                           \
+    void run_test_##name() {                                      \
+        tests_run++;                                              \
+        std::cout << "Running test: " #name << "...";             \
+        try {                                                     \
+            test_##name();                                        \
+            tests_passed++;                                       \
+            std::cout << " PASS" << std::endl;                    \
+        } catch (const std::exception& e) {                       \
+            std::cout << " FAIL: " << e.what() << std::endl;      \
+        } catch (...) {                                           \
             std::cout << " FAIL: Unknown exception" << std::endl; \
-        } \
-    } \
+        }                                                         \
+    }                                                             \
     void test_##name()
 
-#define ASSERT(condition) \
-    do { \
-        if (!(condition)) { \
+#define ASSERT(condition)                                              \
+    do {                                                               \
+        if (!(condition)) {                                            \
             throw std::runtime_error("Assertion failed: " #condition); \
-        } \
-    } while(0)
+        }                                                              \
+    } while (0)
 
 // =============================================================================
 // Integer Type Tests

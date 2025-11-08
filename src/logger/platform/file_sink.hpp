@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../sink.hpp"
 #include <cstdio>
 #include <cstring>
+
+#include "../sink.hpp"
 
 namespace alloy {
 namespace logger {
@@ -23,7 +24,7 @@ namespace logger {
  * Note: File must be writable. No automatic rotation (see RotatingFileSink).
  */
 class FileSink : public Sink {
-public:
+   public:
     /**
      * Construct file sink
      *
@@ -31,16 +32,16 @@ public:
      * @param append If true, append to existing file. If false, truncate.
      */
     explicit FileSink(const char* filename, bool append = true)
-        : filename_(filename), file_(nullptr), is_open_(false) {
+        : filename_(filename),
+          file_(nullptr),
+          is_open_(false) {
         open(append);
     }
 
     /**
      * Destructor - closes file
      */
-    ~FileSink() {
-        close();
-    }
+    ~FileSink() { close(); }
 
     /**
      * Write log message to file
@@ -70,9 +71,7 @@ public:
     /**
      * Check if file is open and ready
      */
-    bool is_ready() const override {
-        return is_open_ && file_ != nullptr;
-    }
+    bool is_ready() const override { return is_open_ && file_ != nullptr; }
 
     /**
      * Close the file
@@ -125,11 +124,9 @@ public:
     /**
      * Get filename
      */
-    const char* filename() const {
-        return filename_;
-    }
+    const char* filename() const { return filename_; }
 
-private:
+   private:
     /**
      * Open the file
      */
@@ -156,7 +153,7 @@ private:
  *   Logger::add_sink(&sink);
  */
 class RotatingFileSink : public Sink {
-public:
+   public:
     /**
      * Construct rotating file sink
      *
@@ -165,8 +162,11 @@ public:
      * @param max_files Maximum number of backup files
      */
     RotatingFileSink(const char* filename, size_t max_size, size_t max_files = 3)
-        : base_filename_(filename), max_size_(max_size), max_files_(max_files),
-          current_size_(0), file_(nullptr) {
+        : base_filename_(filename),
+          max_size_(max_size),
+          max_files_(max_files),
+          current_size_(0),
+          file_(nullptr) {
         open_current_file();
     }
 
@@ -197,11 +197,9 @@ public:
         }
     }
 
-    bool is_ready() const override {
-        return file_ != nullptr;
-    }
+    bool is_ready() const override { return file_ != nullptr; }
 
-private:
+   private:
     void open_current_file() {
         file_ = fopen(base_filename_, "a");
         if (file_ != nullptr) {
@@ -244,5 +242,5 @@ private:
     FILE* file_;
 };
 
-} // namespace logger
-} // namespace alloy
+}  // namespace logger
+}  // namespace alloy

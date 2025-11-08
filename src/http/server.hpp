@@ -23,18 +23,19 @@
 
 #pragma once
 
-#include "types.hpp"
 #include "core/error.hpp"
 #include "core/esp_error.hpp"
 
+#include "types.hpp"
+
 #ifdef ESP_PLATFORM
-#include "esp_http_server.h"
+    #include "esp_http_server.h"
 #endif
 
 namespace alloy::http {
 
-using core::Result;
 using core::ErrorCode;
+using core::Result;
 
 // Forward declarations
 class Request;
@@ -52,21 +53,20 @@ using Handler = Status (*)(Request& req, Response& res);
  * @brief HTTP Server configuration
  */
 struct ServerConfig {
-    uint16_t port;                  ///< Server port (default: 80)
-    uint16_t max_uri_handlers;      ///< Maximum URI handlers (default: 8)
-    uint16_t max_resp_headers;      ///< Maximum response headers (default: 8)
-    size_t stack_size;              ///< Task stack size (default: 4096)
-    uint8_t task_priority;          ///< Task priority (default: 5)
-    bool lru_purge_enable;          ///< Enable LRU purge (default: false)
+    uint16_t port;              ///< Server port (default: 80)
+    uint16_t max_uri_handlers;  ///< Maximum URI handlers (default: 8)
+    uint16_t max_resp_headers;  ///< Maximum response headers (default: 8)
+    size_t stack_size;          ///< Task stack size (default: 4096)
+    uint8_t task_priority;      ///< Task priority (default: 5)
+    bool lru_purge_enable;      ///< Enable LRU purge (default: false)
 
     ServerConfig()
-        : port(80)
-        , max_uri_handlers(8)
-        , max_resp_headers(8)
-        , stack_size(4096)
-        , task_priority(5)
-        , lru_purge_enable(false)
-    {}
+        : port(80),
+          max_uri_handlers(8),
+          max_resp_headers(8),
+          stack_size(4096),
+          task_priority(5),
+          lru_purge_enable(false) {}
 };
 
 /**
@@ -78,7 +78,7 @@ struct ServerConfig {
  * Note: Only one server instance should be active at a time.
  */
 class Server {
-public:
+   public:
     /**
      * @brief Constructor with default configuration
      */
@@ -188,7 +188,7 @@ public:
     httpd_handle_t native_handle() const;
 #endif
 
-private:
+   private:
     ServerConfig config_;
     bool running_;
 
@@ -205,7 +205,7 @@ private:
  * Wraps ESP-IDF httpd_req_t with convenient C++ API
  */
 class Request {
-public:
+   public:
 #ifdef ESP_PLATFORM
     explicit Request(httpd_req_t* req);
 #else
@@ -271,7 +271,7 @@ public:
     httpd_req_t* native_handle() const;
 #endif
 
-private:
+   private:
 #ifdef ESP_PLATFORM
     httpd_req_t* req_;
 #endif
@@ -283,7 +283,7 @@ private:
  * Provides convenient API for sending HTTP responses
  */
 class Response {
-public:
+   public:
 #ifdef ESP_PLATFORM
     explicit Response(httpd_req_t* req);
 #else
@@ -363,11 +363,11 @@ public:
     httpd_req_t* native_handle() const;
 #endif
 
-private:
+   private:
 #ifdef ESP_PLATFORM
     httpd_req_t* req_;
 #endif
     Status status_;
 };
 
-} // namespace alloy::http
+}  // namespace alloy::http

@@ -11,6 +11,7 @@
  */
 
 #include <stdint.h>
+
 #include "hal/platform/same70/gpio.hpp"
 
 using namespace alloy::hal::same70;
@@ -67,14 +68,13 @@ extern "C" void Reset_Handler() {
 // Minimal vector table
 extern uint32_t _estack;  // Defined in linker script
 
-__attribute__((section(".isr_vector")))
-__attribute__((used))
-const void* vector_table[] = {
-    &_estack,                                    // Initial stack pointer
-    reinterpret_cast<void*>(Reset_Handler),     // Reset handler
+__attribute__((section(".isr_vector"))) __attribute__((used)) const void* vector_table[] = {
+    &_estack,                                // Initial stack pointer
+    reinterpret_cast<void*>(Reset_Handler),  // Reset handler
 };
 
 // Default handler for all exceptions/interrupts
 extern "C" void Default_Handler() {
-    while(1);
+    while (1)
+        ;
 }

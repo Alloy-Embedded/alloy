@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samv71::usbhs {
 
 /// USBHS Register Structure
 struct USBHS_Registers {
-
     /// Device General Control Register
     /// Offset: 0x0000
     volatile uint32_t DEVCTRL;
@@ -92,12 +91,12 @@ struct USBHS_Registers {
     /// Offset: 0x0020
     /// Access: read-only
     volatile uint32_t DEVFNUM;
-    uint8_t RESERVED_0024[220]; ///< Reserved
+    uint8_t RESERVED_0024[220];  ///< Reserved
 
     /// Device Endpoint Configuration Register
     /// Offset: 0x0100
     volatile uint32_t DEVEPTCFG[10][10];
-    uint8_t RESERVED_0128[8]; ///< Reserved
+    uint8_t RESERVED_0128[8];  ///< Reserved
 
     /// Device Endpoint Interrupt Status Register
     /// Offset: 0x0130
@@ -118,7 +117,7 @@ struct USBHS_Registers {
     /// Offset: 0x0130
     /// Access: read-only
     volatile uint32_t DEVEPTISR_INTRPT_MODE[10][10];
-    uint8_t RESERVED_0158[8]; ///< Reserved
+    uint8_t RESERVED_0158[8];  ///< Reserved
 
     /// Device Endpoint Interrupt Clear Register
     /// Offset: 0x0160
@@ -139,7 +138,7 @@ struct USBHS_Registers {
     /// Offset: 0x0160
     /// Access: write-only
     volatile uint32_t DEVEPTICR_INTRPT_MODE[10][10];
-    uint8_t RESERVED_0188[8]; ///< Reserved
+    uint8_t RESERVED_0188[8];  ///< Reserved
 
     /// Device Endpoint Interrupt Set Register
     /// Offset: 0x0190
@@ -160,7 +159,7 @@ struct USBHS_Registers {
     /// Offset: 0x0190
     /// Access: write-only
     volatile uint32_t DEVEPTIFR_INTRPT_MODE[10][10];
-    uint8_t RESERVED_01B8[8]; ///< Reserved
+    uint8_t RESERVED_01B8[8];  ///< Reserved
 
     /// Device Endpoint Interrupt Mask Register
     /// Offset: 0x01C0
@@ -181,7 +180,7 @@ struct USBHS_Registers {
     /// Offset: 0x01C0
     /// Access: read-only
     volatile uint32_t DEVEPTIMR_INTRPT_MODE[10][10];
-    uint8_t RESERVED_01E8[8]; ///< Reserved
+    uint8_t RESERVED_01E8[8];  ///< Reserved
 
     /// Device Endpoint Interrupt Enable Register
     /// Offset: 0x01F0
@@ -202,7 +201,7 @@ struct USBHS_Registers {
     /// Offset: 0x01F0
     /// Access: write-only
     volatile uint32_t DEVEPTIER_INTRPT_MODE[10][10];
-    uint8_t RESERVED_0218[8]; ///< Reserved
+    uint8_t RESERVED_0218[8];  ///< Reserved
 
     /// Device Endpoint Interrupt Disable Register
     /// Offset: 0x0220
@@ -223,7 +222,7 @@ struct USBHS_Registers {
     /// Offset: 0x0220
     /// Access: write-only
     volatile uint32_t DEVEPTIDR_INTRPT_MODE[10][10];
-    uint8_t RESERVED_0248[440]; ///< Reserved
+    uint8_t RESERVED_0248[440];  ///< Reserved
 
     /// Host General Control Register
     /// Offset: 0x0400
@@ -278,7 +277,7 @@ struct USBHS_Registers {
     /// Host Address 3 Register
     /// Offset: 0x042C
     volatile uint32_t HSTADDR3;
-    uint8_t RESERVED_0430[208]; ///< Reserved
+    uint8_t RESERVED_0430[208];  ///< Reserved
 
     /// Host Pipe Configuration Register
     /// Offset: 0x0500
@@ -287,7 +286,7 @@ struct USBHS_Registers {
     /// Host Pipe Configuration Register
     /// Offset: 0x0500
     volatile uint32_t HSTPIPCFG_CTRL_BULK_MODE[10][10];
-    uint8_t RESERVED_0528[8]; ///< Reserved
+    uint8_t RESERVED_0528[8];  ///< Reserved
 
     /// Host Pipe Status Register
     /// Offset: 0x0530
@@ -308,7 +307,7 @@ struct USBHS_Registers {
     /// Offset: 0x0530
     /// Access: read-only
     volatile uint32_t HSTPIPISR_INTRPT_MODE[10][10];
-    uint8_t RESERVED_0558[8]; ///< Reserved
+    uint8_t RESERVED_0558[8];  ///< Reserved
 
     /// Host Pipe Clear Register
     /// Offset: 0x0560
@@ -329,7 +328,7 @@ struct USBHS_Registers {
     /// Offset: 0x0560
     /// Access: write-only
     volatile uint32_t HSTPIPICR_INTRPT_MODE[10][10];
-    uint8_t RESERVED_0588[8]; ///< Reserved
+    uint8_t RESERVED_0588[8];  ///< Reserved
 
     /// Host Pipe Set Register
     /// Offset: 0x0590
@@ -350,7 +349,7 @@ struct USBHS_Registers {
     /// Offset: 0x0590
     /// Access: write-only
     volatile uint32_t HSTPIPIFR_INTRPT_MODE[10][10];
-    uint8_t RESERVED_05B8[8]; ///< Reserved
+    uint8_t RESERVED_05B8[8];  ///< Reserved
 
     /// Host Pipe Mask Register
     /// Offset: 0x05C0
@@ -371,7 +370,7 @@ struct USBHS_Registers {
     /// Offset: 0x05C0
     /// Access: read-only
     volatile uint32_t HSTPIPIMR_INTRPT_MODE[10][10];
-    uint8_t RESERVED_05E8[8]; ///< Reserved
+    uint8_t RESERVED_05E8[8];  ///< Reserved
 
     /// Host Pipe Enable Register
     /// Offset: 0x05F0
@@ -392,7 +391,7 @@ struct USBHS_Registers {
     /// Offset: 0x05F0
     /// Access: write-only
     volatile uint32_t HSTPIPIER_INTRPT_MODE[10][10];
-    uint8_t RESERVED_0618[8]; ///< Reserved
+    uint8_t RESERVED_0618[8];  ///< Reserved
 
     /// Host Pipe Disable Register
     /// Offset: 0x0620
@@ -413,17 +412,17 @@ struct USBHS_Registers {
     /// Offset: 0x0620
     /// Access: write-only
     volatile uint32_t HSTPIPIDR_INTRPT_MODE[10][10];
-    uint8_t RESERVED_0648[8]; ///< Reserved
+    uint8_t RESERVED_0648[8];  ///< Reserved
 
     /// Host Pipe IN Request Register
     /// Offset: 0x0650
     volatile uint32_t HSTPIPINRQ[10][10];
-    uint8_t RESERVED_0678[8]; ///< Reserved
+    uint8_t RESERVED_0678[8];  ///< Reserved
 
     /// Host Pipe Error Register
     /// Offset: 0x0680
     volatile uint32_t HSTPIPERR[10][10];
-    uint8_t RESERVED_06A8[344]; ///< Reserved
+    uint8_t RESERVED_06A8[344];  ///< Reserved
 
     /// General Control Register
     /// Offset: 0x0800

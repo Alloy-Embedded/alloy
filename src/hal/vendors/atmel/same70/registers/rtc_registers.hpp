@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::rtc {
 
 /// RTC Register Structure
 struct RTC_Registers {
-
     /// Control Register
     /// Offset: 0x0000
     volatile uint32_t CR;

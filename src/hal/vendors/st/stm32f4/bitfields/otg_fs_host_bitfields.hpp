@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::otg_fs_host {
@@ -19,1849 +20,1849 @@ using namespace alloy::hal::bitfields;
 
 /// FS_HCFG - OTG_FS host configuration register (OTG_FS_HCFG)
 namespace fs_hcfg {
-    /// FS/LS PHY clock select
-    /// Position: 0, Width: 2
-    /// Access: read-write
-    using FSLSPCS = BitField<0, 2>;
-    constexpr uint32_t FSLSPCS_Pos = 0;
-    constexpr uint32_t FSLSPCS_Msk = FSLSPCS::mask;
+/// FS/LS PHY clock select
+/// Position: 0, Width: 2
+/// Access: read-write
+using FSLSPCS = BitField<0, 2>;
+constexpr uint32_t FSLSPCS_Pos = 0;
+constexpr uint32_t FSLSPCS_Msk = FSLSPCS::mask;
 
-    /// FS- and LS-only support
-    /// Position: 2, Width: 1
-    /// Access: read-only
-    using FSLSS = BitField<2, 1>;
-    constexpr uint32_t FSLSS_Pos = 2;
-    constexpr uint32_t FSLSS_Msk = FSLSS::mask;
+/// FS- and LS-only support
+/// Position: 2, Width: 1
+/// Access: read-only
+using FSLSS = BitField<2, 1>;
+constexpr uint32_t FSLSS_Pos = 2;
+constexpr uint32_t FSLSS_Msk = FSLSS::mask;
 
 }  // namespace fs_hcfg
 
 /// HFIR - OTG_FS Host frame interval register
 namespace hfir {
-    /// Frame interval
-    /// Position: 0, Width: 16
-    using FRIVL = BitField<0, 16>;
-    constexpr uint32_t FRIVL_Pos = 0;
-    constexpr uint32_t FRIVL_Msk = FRIVL::mask;
+/// Frame interval
+/// Position: 0, Width: 16
+using FRIVL = BitField<0, 16>;
+constexpr uint32_t FRIVL_Pos = 0;
+constexpr uint32_t FRIVL_Msk = FRIVL::mask;
 
 }  // namespace hfir
 
 /// FS_HFNUM - OTG_FS host frame number/frame time remaining register (OTG_FS_HFNUM)
 namespace fs_hfnum {
-    /// Frame number
-    /// Position: 0, Width: 16
-    using FRNUM = BitField<0, 16>;
-    constexpr uint32_t FRNUM_Pos = 0;
-    constexpr uint32_t FRNUM_Msk = FRNUM::mask;
+/// Frame number
+/// Position: 0, Width: 16
+using FRNUM = BitField<0, 16>;
+constexpr uint32_t FRNUM_Pos = 0;
+constexpr uint32_t FRNUM_Msk = FRNUM::mask;
 
-    /// Frame time remaining
-    /// Position: 16, Width: 16
-    using FTREM = BitField<16, 16>;
-    constexpr uint32_t FTREM_Pos = 16;
-    constexpr uint32_t FTREM_Msk = FTREM::mask;
+/// Frame time remaining
+/// Position: 16, Width: 16
+using FTREM = BitField<16, 16>;
+constexpr uint32_t FTREM_Pos = 16;
+constexpr uint32_t FTREM_Msk = FTREM::mask;
 
 }  // namespace fs_hfnum
 
 /// FS_HPTXSTS - OTG_FS_Host periodic transmit FIFO/queue status register (OTG_FS_HPTXSTS)
 namespace fs_hptxsts {
-    /// Periodic transmit data FIFO space available
-    /// Position: 0, Width: 16
-    /// Access: read-write
-    using PTXFSAVL = BitField<0, 16>;
-    constexpr uint32_t PTXFSAVL_Pos = 0;
-    constexpr uint32_t PTXFSAVL_Msk = PTXFSAVL::mask;
+/// Periodic transmit data FIFO space available
+/// Position: 0, Width: 16
+/// Access: read-write
+using PTXFSAVL = BitField<0, 16>;
+constexpr uint32_t PTXFSAVL_Pos = 0;
+constexpr uint32_t PTXFSAVL_Msk = PTXFSAVL::mask;
 
-    /// Periodic transmit request queue space available
-    /// Position: 16, Width: 8
-    /// Access: read-only
-    using PTXQSAV = BitField<16, 8>;
-    constexpr uint32_t PTXQSAV_Pos = 16;
-    constexpr uint32_t PTXQSAV_Msk = PTXQSAV::mask;
+/// Periodic transmit request queue space available
+/// Position: 16, Width: 8
+/// Access: read-only
+using PTXQSAV = BitField<16, 8>;
+constexpr uint32_t PTXQSAV_Pos = 16;
+constexpr uint32_t PTXQSAV_Msk = PTXQSAV::mask;
 
-    /// Top of the periodic transmit request queue
-    /// Position: 24, Width: 8
-    /// Access: read-only
-    using PTXQTOP = BitField<24, 8>;
-    constexpr uint32_t PTXQTOP_Pos = 24;
-    constexpr uint32_t PTXQTOP_Msk = PTXQTOP::mask;
+/// Top of the periodic transmit request queue
+/// Position: 24, Width: 8
+/// Access: read-only
+using PTXQTOP = BitField<24, 8>;
+constexpr uint32_t PTXQTOP_Pos = 24;
+constexpr uint32_t PTXQTOP_Msk = PTXQTOP::mask;
 
 }  // namespace fs_hptxsts
 
 /// HAINT - OTG_FS Host all channels interrupt register
 namespace haint {
-    /// Channel interrupts
-    /// Position: 0, Width: 16
-    using HAINT = BitField<0, 16>;
-    constexpr uint32_t HAINT_Pos = 0;
-    constexpr uint32_t HAINT_Msk = HAINT::mask;
+/// Channel interrupts
+/// Position: 0, Width: 16
+using HAINT = BitField<0, 16>;
+constexpr uint32_t HAINT_Pos = 0;
+constexpr uint32_t HAINT_Msk = HAINT::mask;
 
 }  // namespace haint
 
 /// HAINTMSK - OTG_FS host all channels interrupt mask register
 namespace haintmsk {
-    /// Channel interrupt mask
-    /// Position: 0, Width: 16
-    using HAINTM = BitField<0, 16>;
-    constexpr uint32_t HAINTM_Pos = 0;
-    constexpr uint32_t HAINTM_Msk = HAINTM::mask;
+/// Channel interrupt mask
+/// Position: 0, Width: 16
+using HAINTM = BitField<0, 16>;
+constexpr uint32_t HAINTM_Pos = 0;
+constexpr uint32_t HAINTM_Msk = HAINTM::mask;
 
 }  // namespace haintmsk
 
 /// FS_HPRT - OTG_FS host port control and status register (OTG_FS_HPRT)
 namespace fs_hprt {
-    /// Port connect status
-    /// Position: 0, Width: 1
-    /// Access: read-only
-    using PCSTS = BitField<0, 1>;
-    constexpr uint32_t PCSTS_Pos = 0;
-    constexpr uint32_t PCSTS_Msk = PCSTS::mask;
+/// Port connect status
+/// Position: 0, Width: 1
+/// Access: read-only
+using PCSTS = BitField<0, 1>;
+constexpr uint32_t PCSTS_Pos = 0;
+constexpr uint32_t PCSTS_Msk = PCSTS::mask;
 
-    /// Port connect detected
-    /// Position: 1, Width: 1
-    /// Access: read-write
-    using PCDET = BitField<1, 1>;
-    constexpr uint32_t PCDET_Pos = 1;
-    constexpr uint32_t PCDET_Msk = PCDET::mask;
+/// Port connect detected
+/// Position: 1, Width: 1
+/// Access: read-write
+using PCDET = BitField<1, 1>;
+constexpr uint32_t PCDET_Pos = 1;
+constexpr uint32_t PCDET_Msk = PCDET::mask;
 
-    /// Port enable
-    /// Position: 2, Width: 1
-    /// Access: read-write
-    using PENA = BitField<2, 1>;
-    constexpr uint32_t PENA_Pos = 2;
-    constexpr uint32_t PENA_Msk = PENA::mask;
+/// Port enable
+/// Position: 2, Width: 1
+/// Access: read-write
+using PENA = BitField<2, 1>;
+constexpr uint32_t PENA_Pos = 2;
+constexpr uint32_t PENA_Msk = PENA::mask;
 
-    /// Port enable/disable change
-    /// Position: 3, Width: 1
-    /// Access: read-write
-    using PENCHNG = BitField<3, 1>;
-    constexpr uint32_t PENCHNG_Pos = 3;
-    constexpr uint32_t PENCHNG_Msk = PENCHNG::mask;
+/// Port enable/disable change
+/// Position: 3, Width: 1
+/// Access: read-write
+using PENCHNG = BitField<3, 1>;
+constexpr uint32_t PENCHNG_Pos = 3;
+constexpr uint32_t PENCHNG_Msk = PENCHNG::mask;
 
-    /// Port overcurrent active
-    /// Position: 4, Width: 1
-    /// Access: read-only
-    using POCA = BitField<4, 1>;
-    constexpr uint32_t POCA_Pos = 4;
-    constexpr uint32_t POCA_Msk = POCA::mask;
+/// Port overcurrent active
+/// Position: 4, Width: 1
+/// Access: read-only
+using POCA = BitField<4, 1>;
+constexpr uint32_t POCA_Pos = 4;
+constexpr uint32_t POCA_Msk = POCA::mask;
 
-    /// Port overcurrent change
-    /// Position: 5, Width: 1
-    /// Access: read-write
-    using POCCHNG = BitField<5, 1>;
-    constexpr uint32_t POCCHNG_Pos = 5;
-    constexpr uint32_t POCCHNG_Msk = POCCHNG::mask;
+/// Port overcurrent change
+/// Position: 5, Width: 1
+/// Access: read-write
+using POCCHNG = BitField<5, 1>;
+constexpr uint32_t POCCHNG_Pos = 5;
+constexpr uint32_t POCCHNG_Msk = POCCHNG::mask;
 
-    /// Port resume
-    /// Position: 6, Width: 1
-    /// Access: read-write
-    using PRES = BitField<6, 1>;
-    constexpr uint32_t PRES_Pos = 6;
-    constexpr uint32_t PRES_Msk = PRES::mask;
+/// Port resume
+/// Position: 6, Width: 1
+/// Access: read-write
+using PRES = BitField<6, 1>;
+constexpr uint32_t PRES_Pos = 6;
+constexpr uint32_t PRES_Msk = PRES::mask;
 
-    /// Port suspend
-    /// Position: 7, Width: 1
-    /// Access: read-write
-    using PSUSP = BitField<7, 1>;
-    constexpr uint32_t PSUSP_Pos = 7;
-    constexpr uint32_t PSUSP_Msk = PSUSP::mask;
+/// Port suspend
+/// Position: 7, Width: 1
+/// Access: read-write
+using PSUSP = BitField<7, 1>;
+constexpr uint32_t PSUSP_Pos = 7;
+constexpr uint32_t PSUSP_Msk = PSUSP::mask;
 
-    /// Port reset
-    /// Position: 8, Width: 1
-    /// Access: read-write
-    using PRST = BitField<8, 1>;
-    constexpr uint32_t PRST_Pos = 8;
-    constexpr uint32_t PRST_Msk = PRST::mask;
+/// Port reset
+/// Position: 8, Width: 1
+/// Access: read-write
+using PRST = BitField<8, 1>;
+constexpr uint32_t PRST_Pos = 8;
+constexpr uint32_t PRST_Msk = PRST::mask;
 
-    /// Port line status
-    /// Position: 10, Width: 2
-    /// Access: read-only
-    using PLSTS = BitField<10, 2>;
-    constexpr uint32_t PLSTS_Pos = 10;
-    constexpr uint32_t PLSTS_Msk = PLSTS::mask;
+/// Port line status
+/// Position: 10, Width: 2
+/// Access: read-only
+using PLSTS = BitField<10, 2>;
+constexpr uint32_t PLSTS_Pos = 10;
+constexpr uint32_t PLSTS_Msk = PLSTS::mask;
 
-    /// Port power
-    /// Position: 12, Width: 1
-    /// Access: read-write
-    using PPWR = BitField<12, 1>;
-    constexpr uint32_t PPWR_Pos = 12;
-    constexpr uint32_t PPWR_Msk = PPWR::mask;
+/// Port power
+/// Position: 12, Width: 1
+/// Access: read-write
+using PPWR = BitField<12, 1>;
+constexpr uint32_t PPWR_Pos = 12;
+constexpr uint32_t PPWR_Msk = PPWR::mask;
 
-    /// Port test control
-    /// Position: 13, Width: 4
-    /// Access: read-write
-    using PTCTL = BitField<13, 4>;
-    constexpr uint32_t PTCTL_Pos = 13;
-    constexpr uint32_t PTCTL_Msk = PTCTL::mask;
+/// Port test control
+/// Position: 13, Width: 4
+/// Access: read-write
+using PTCTL = BitField<13, 4>;
+constexpr uint32_t PTCTL_Pos = 13;
+constexpr uint32_t PTCTL_Msk = PTCTL::mask;
 
-    /// Port speed
-    /// Position: 17, Width: 2
-    /// Access: read-only
-    using PSPD = BitField<17, 2>;
-    constexpr uint32_t PSPD_Pos = 17;
-    constexpr uint32_t PSPD_Msk = PSPD::mask;
+/// Port speed
+/// Position: 17, Width: 2
+/// Access: read-only
+using PSPD = BitField<17, 2>;
+constexpr uint32_t PSPD_Pos = 17;
+constexpr uint32_t PSPD_Msk = PSPD::mask;
 
 }  // namespace fs_hprt
 
 /// FS_HCCHAR0 - OTG_FS host channel-0 characteristics register (OTG_FS_HCCHAR0)
 namespace fs_hcchar0 {
-    /// Maximum packet size
-    /// Position: 0, Width: 11
-    using MPSIZ = BitField<0, 11>;
-    constexpr uint32_t MPSIZ_Pos = 0;
-    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+/// Maximum packet size
+/// Position: 0, Width: 11
+using MPSIZ = BitField<0, 11>;
+constexpr uint32_t MPSIZ_Pos = 0;
+constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-    /// Endpoint number
-    /// Position: 11, Width: 4
-    using EPNUM = BitField<11, 4>;
-    constexpr uint32_t EPNUM_Pos = 11;
-    constexpr uint32_t EPNUM_Msk = EPNUM::mask;
+/// Endpoint number
+/// Position: 11, Width: 4
+using EPNUM = BitField<11, 4>;
+constexpr uint32_t EPNUM_Pos = 11;
+constexpr uint32_t EPNUM_Msk = EPNUM::mask;
 
-    /// Endpoint direction
-    /// Position: 15, Width: 1
-    using EPDIR = BitField<15, 1>;
-    constexpr uint32_t EPDIR_Pos = 15;
-    constexpr uint32_t EPDIR_Msk = EPDIR::mask;
+/// Endpoint direction
+/// Position: 15, Width: 1
+using EPDIR = BitField<15, 1>;
+constexpr uint32_t EPDIR_Pos = 15;
+constexpr uint32_t EPDIR_Msk = EPDIR::mask;
 
-    /// Low-speed device
-    /// Position: 17, Width: 1
-    using LSDEV = BitField<17, 1>;
-    constexpr uint32_t LSDEV_Pos = 17;
-    constexpr uint32_t LSDEV_Msk = LSDEV::mask;
+/// Low-speed device
+/// Position: 17, Width: 1
+using LSDEV = BitField<17, 1>;
+constexpr uint32_t LSDEV_Pos = 17;
+constexpr uint32_t LSDEV_Msk = LSDEV::mask;
 
-    /// Endpoint type
-    /// Position: 18, Width: 2
-    using EPTYP = BitField<18, 2>;
-    constexpr uint32_t EPTYP_Pos = 18;
-    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+/// Endpoint type
+/// Position: 18, Width: 2
+using EPTYP = BitField<18, 2>;
+constexpr uint32_t EPTYP_Pos = 18;
+constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-    /// Multicount
-    /// Position: 20, Width: 2
-    using MCNT = BitField<20, 2>;
-    constexpr uint32_t MCNT_Pos = 20;
-    constexpr uint32_t MCNT_Msk = MCNT::mask;
+/// Multicount
+/// Position: 20, Width: 2
+using MCNT = BitField<20, 2>;
+constexpr uint32_t MCNT_Pos = 20;
+constexpr uint32_t MCNT_Msk = MCNT::mask;
 
-    /// Device address
-    /// Position: 22, Width: 7
-    using DAD = BitField<22, 7>;
-    constexpr uint32_t DAD_Pos = 22;
-    constexpr uint32_t DAD_Msk = DAD::mask;
+/// Device address
+/// Position: 22, Width: 7
+using DAD = BitField<22, 7>;
+constexpr uint32_t DAD_Pos = 22;
+constexpr uint32_t DAD_Msk = DAD::mask;
 
-    /// Odd frame
-    /// Position: 29, Width: 1
-    using ODDFRM = BitField<29, 1>;
-    constexpr uint32_t ODDFRM_Pos = 29;
-    constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
+/// Odd frame
+/// Position: 29, Width: 1
+using ODDFRM = BitField<29, 1>;
+constexpr uint32_t ODDFRM_Pos = 29;
+constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
 
-    /// Channel disable
-    /// Position: 30, Width: 1
-    using CHDIS = BitField<30, 1>;
-    constexpr uint32_t CHDIS_Pos = 30;
-    constexpr uint32_t CHDIS_Msk = CHDIS::mask;
+/// Channel disable
+/// Position: 30, Width: 1
+using CHDIS = BitField<30, 1>;
+constexpr uint32_t CHDIS_Pos = 30;
+constexpr uint32_t CHDIS_Msk = CHDIS::mask;
 
-    /// Channel enable
-    /// Position: 31, Width: 1
-    using CHENA = BitField<31, 1>;
-    constexpr uint32_t CHENA_Pos = 31;
-    constexpr uint32_t CHENA_Msk = CHENA::mask;
+/// Channel enable
+/// Position: 31, Width: 1
+using CHENA = BitField<31, 1>;
+constexpr uint32_t CHENA_Pos = 31;
+constexpr uint32_t CHENA_Msk = CHENA::mask;
 
 }  // namespace fs_hcchar0
 
 /// FS_HCINT0 - OTG_FS host channel-0 interrupt register (OTG_FS_HCINT0)
 namespace fs_hcint0 {
-    /// Transfer completed
-    /// Position: 0, Width: 1
-    using XFRC = BitField<0, 1>;
-    constexpr uint32_t XFRC_Pos = 0;
-    constexpr uint32_t XFRC_Msk = XFRC::mask;
+/// Transfer completed
+/// Position: 0, Width: 1
+using XFRC = BitField<0, 1>;
+constexpr uint32_t XFRC_Pos = 0;
+constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-    /// Channel halted
-    /// Position: 1, Width: 1
-    using CHH = BitField<1, 1>;
-    constexpr uint32_t CHH_Pos = 1;
-    constexpr uint32_t CHH_Msk = CHH::mask;
+/// Channel halted
+/// Position: 1, Width: 1
+using CHH = BitField<1, 1>;
+constexpr uint32_t CHH_Pos = 1;
+constexpr uint32_t CHH_Msk = CHH::mask;
 
-    /// STALL response received interrupt
-    /// Position: 3, Width: 1
-    using STALL = BitField<3, 1>;
-    constexpr uint32_t STALL_Pos = 3;
-    constexpr uint32_t STALL_Msk = STALL::mask;
+/// STALL response received interrupt
+/// Position: 3, Width: 1
+using STALL = BitField<3, 1>;
+constexpr uint32_t STALL_Pos = 3;
+constexpr uint32_t STALL_Msk = STALL::mask;
 
-    /// NAK response received interrupt
-    /// Position: 4, Width: 1
-    using NAK = BitField<4, 1>;
-    constexpr uint32_t NAK_Pos = 4;
-    constexpr uint32_t NAK_Msk = NAK::mask;
+/// NAK response received interrupt
+/// Position: 4, Width: 1
+using NAK = BitField<4, 1>;
+constexpr uint32_t NAK_Pos = 4;
+constexpr uint32_t NAK_Msk = NAK::mask;
 
-    /// ACK response received/transmitted interrupt
-    /// Position: 5, Width: 1
-    using ACK = BitField<5, 1>;
-    constexpr uint32_t ACK_Pos = 5;
-    constexpr uint32_t ACK_Msk = ACK::mask;
+/// ACK response received/transmitted interrupt
+/// Position: 5, Width: 1
+using ACK = BitField<5, 1>;
+constexpr uint32_t ACK_Pos = 5;
+constexpr uint32_t ACK_Msk = ACK::mask;
 
-    /// Transaction error
-    /// Position: 7, Width: 1
-    using TXERR = BitField<7, 1>;
-    constexpr uint32_t TXERR_Pos = 7;
-    constexpr uint32_t TXERR_Msk = TXERR::mask;
+/// Transaction error
+/// Position: 7, Width: 1
+using TXERR = BitField<7, 1>;
+constexpr uint32_t TXERR_Pos = 7;
+constexpr uint32_t TXERR_Msk = TXERR::mask;
 
-    /// Babble error
-    /// Position: 8, Width: 1
-    using BBERR = BitField<8, 1>;
-    constexpr uint32_t BBERR_Pos = 8;
-    constexpr uint32_t BBERR_Msk = BBERR::mask;
+/// Babble error
+/// Position: 8, Width: 1
+using BBERR = BitField<8, 1>;
+constexpr uint32_t BBERR_Pos = 8;
+constexpr uint32_t BBERR_Msk = BBERR::mask;
 
-    /// Frame overrun
-    /// Position: 9, Width: 1
-    using FRMOR = BitField<9, 1>;
-    constexpr uint32_t FRMOR_Pos = 9;
-    constexpr uint32_t FRMOR_Msk = FRMOR::mask;
+/// Frame overrun
+/// Position: 9, Width: 1
+using FRMOR = BitField<9, 1>;
+constexpr uint32_t FRMOR_Pos = 9;
+constexpr uint32_t FRMOR_Msk = FRMOR::mask;
 
-    /// Data toggle error
-    /// Position: 10, Width: 1
-    using DTERR = BitField<10, 1>;
-    constexpr uint32_t DTERR_Pos = 10;
-    constexpr uint32_t DTERR_Msk = DTERR::mask;
+/// Data toggle error
+/// Position: 10, Width: 1
+using DTERR = BitField<10, 1>;
+constexpr uint32_t DTERR_Pos = 10;
+constexpr uint32_t DTERR_Msk = DTERR::mask;
 
 }  // namespace fs_hcint0
 
 /// FS_HCINTMSK0 - OTG_FS host channel-0 mask register (OTG_FS_HCINTMSK0)
 namespace fs_hcintmsk0 {
-    /// Transfer completed mask
-    /// Position: 0, Width: 1
-    using XFRCM = BitField<0, 1>;
-    constexpr uint32_t XFRCM_Pos = 0;
-    constexpr uint32_t XFRCM_Msk = XFRCM::mask;
+/// Transfer completed mask
+/// Position: 0, Width: 1
+using XFRCM = BitField<0, 1>;
+constexpr uint32_t XFRCM_Pos = 0;
+constexpr uint32_t XFRCM_Msk = XFRCM::mask;
 
-    /// Channel halted mask
-    /// Position: 1, Width: 1
-    using CHHM = BitField<1, 1>;
-    constexpr uint32_t CHHM_Pos = 1;
-    constexpr uint32_t CHHM_Msk = CHHM::mask;
+/// Channel halted mask
+/// Position: 1, Width: 1
+using CHHM = BitField<1, 1>;
+constexpr uint32_t CHHM_Pos = 1;
+constexpr uint32_t CHHM_Msk = CHHM::mask;
 
-    /// STALL response received interrupt mask
-    /// Position: 3, Width: 1
-    using STALLM = BitField<3, 1>;
-    constexpr uint32_t STALLM_Pos = 3;
-    constexpr uint32_t STALLM_Msk = STALLM::mask;
+/// STALL response received interrupt mask
+/// Position: 3, Width: 1
+using STALLM = BitField<3, 1>;
+constexpr uint32_t STALLM_Pos = 3;
+constexpr uint32_t STALLM_Msk = STALLM::mask;
 
-    /// NAK response received interrupt mask
-    /// Position: 4, Width: 1
-    using NAKM = BitField<4, 1>;
-    constexpr uint32_t NAKM_Pos = 4;
-    constexpr uint32_t NAKM_Msk = NAKM::mask;
+/// NAK response received interrupt mask
+/// Position: 4, Width: 1
+using NAKM = BitField<4, 1>;
+constexpr uint32_t NAKM_Pos = 4;
+constexpr uint32_t NAKM_Msk = NAKM::mask;
 
-    /// ACK response received/transmitted interrupt mask
-    /// Position: 5, Width: 1
-    using ACKM = BitField<5, 1>;
-    constexpr uint32_t ACKM_Pos = 5;
-    constexpr uint32_t ACKM_Msk = ACKM::mask;
+/// ACK response received/transmitted interrupt mask
+/// Position: 5, Width: 1
+using ACKM = BitField<5, 1>;
+constexpr uint32_t ACKM_Pos = 5;
+constexpr uint32_t ACKM_Msk = ACKM::mask;
 
-    /// response received interrupt mask
-    /// Position: 6, Width: 1
-    using NYET = BitField<6, 1>;
-    constexpr uint32_t NYET_Pos = 6;
-    constexpr uint32_t NYET_Msk = NYET::mask;
+/// response received interrupt mask
+/// Position: 6, Width: 1
+using NYET = BitField<6, 1>;
+constexpr uint32_t NYET_Pos = 6;
+constexpr uint32_t NYET_Msk = NYET::mask;
 
-    /// Transaction error mask
-    /// Position: 7, Width: 1
-    using TXERRM = BitField<7, 1>;
-    constexpr uint32_t TXERRM_Pos = 7;
-    constexpr uint32_t TXERRM_Msk = TXERRM::mask;
+/// Transaction error mask
+/// Position: 7, Width: 1
+using TXERRM = BitField<7, 1>;
+constexpr uint32_t TXERRM_Pos = 7;
+constexpr uint32_t TXERRM_Msk = TXERRM::mask;
 
-    /// Babble error mask
-    /// Position: 8, Width: 1
-    using BBERRM = BitField<8, 1>;
-    constexpr uint32_t BBERRM_Pos = 8;
-    constexpr uint32_t BBERRM_Msk = BBERRM::mask;
+/// Babble error mask
+/// Position: 8, Width: 1
+using BBERRM = BitField<8, 1>;
+constexpr uint32_t BBERRM_Pos = 8;
+constexpr uint32_t BBERRM_Msk = BBERRM::mask;
 
-    /// Frame overrun mask
-    /// Position: 9, Width: 1
-    using FRMORM = BitField<9, 1>;
-    constexpr uint32_t FRMORM_Pos = 9;
-    constexpr uint32_t FRMORM_Msk = FRMORM::mask;
+/// Frame overrun mask
+/// Position: 9, Width: 1
+using FRMORM = BitField<9, 1>;
+constexpr uint32_t FRMORM_Pos = 9;
+constexpr uint32_t FRMORM_Msk = FRMORM::mask;
 
-    /// Data toggle error mask
-    /// Position: 10, Width: 1
-    using DTERRM = BitField<10, 1>;
-    constexpr uint32_t DTERRM_Pos = 10;
-    constexpr uint32_t DTERRM_Msk = DTERRM::mask;
+/// Data toggle error mask
+/// Position: 10, Width: 1
+using DTERRM = BitField<10, 1>;
+constexpr uint32_t DTERRM_Pos = 10;
+constexpr uint32_t DTERRM_Msk = DTERRM::mask;
 
 }  // namespace fs_hcintmsk0
 
 /// FS_HCTSIZ0 - OTG_FS host channel-0 transfer size register
 namespace fs_hctsiz0 {
-    /// Transfer size
-    /// Position: 0, Width: 19
-    using XFRSIZ = BitField<0, 19>;
-    constexpr uint32_t XFRSIZ_Pos = 0;
-    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+/// Transfer size
+/// Position: 0, Width: 19
+using XFRSIZ = BitField<0, 19>;
+constexpr uint32_t XFRSIZ_Pos = 0;
+constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-    /// Packet count
-    /// Position: 19, Width: 10
-    using PKTCNT = BitField<19, 10>;
-    constexpr uint32_t PKTCNT_Pos = 19;
-    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+/// Packet count
+/// Position: 19, Width: 10
+using PKTCNT = BitField<19, 10>;
+constexpr uint32_t PKTCNT_Pos = 19;
+constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-    /// Data PID
-    /// Position: 29, Width: 2
-    using DPID = BitField<29, 2>;
-    constexpr uint32_t DPID_Pos = 29;
-    constexpr uint32_t DPID_Msk = DPID::mask;
+/// Data PID
+/// Position: 29, Width: 2
+using DPID = BitField<29, 2>;
+constexpr uint32_t DPID_Pos = 29;
+constexpr uint32_t DPID_Msk = DPID::mask;
 
 }  // namespace fs_hctsiz0
 
 /// FS_HCCHAR1 - OTG_FS host channel-1 characteristics register (OTG_FS_HCCHAR1)
 namespace fs_hcchar1 {
-    /// Maximum packet size
-    /// Position: 0, Width: 11
-    using MPSIZ = BitField<0, 11>;
-    constexpr uint32_t MPSIZ_Pos = 0;
-    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+/// Maximum packet size
+/// Position: 0, Width: 11
+using MPSIZ = BitField<0, 11>;
+constexpr uint32_t MPSIZ_Pos = 0;
+constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-    /// Endpoint number
-    /// Position: 11, Width: 4
-    using EPNUM = BitField<11, 4>;
-    constexpr uint32_t EPNUM_Pos = 11;
-    constexpr uint32_t EPNUM_Msk = EPNUM::mask;
+/// Endpoint number
+/// Position: 11, Width: 4
+using EPNUM = BitField<11, 4>;
+constexpr uint32_t EPNUM_Pos = 11;
+constexpr uint32_t EPNUM_Msk = EPNUM::mask;
 
-    /// Endpoint direction
-    /// Position: 15, Width: 1
-    using EPDIR = BitField<15, 1>;
-    constexpr uint32_t EPDIR_Pos = 15;
-    constexpr uint32_t EPDIR_Msk = EPDIR::mask;
+/// Endpoint direction
+/// Position: 15, Width: 1
+using EPDIR = BitField<15, 1>;
+constexpr uint32_t EPDIR_Pos = 15;
+constexpr uint32_t EPDIR_Msk = EPDIR::mask;
 
-    /// Low-speed device
-    /// Position: 17, Width: 1
-    using LSDEV = BitField<17, 1>;
-    constexpr uint32_t LSDEV_Pos = 17;
-    constexpr uint32_t LSDEV_Msk = LSDEV::mask;
+/// Low-speed device
+/// Position: 17, Width: 1
+using LSDEV = BitField<17, 1>;
+constexpr uint32_t LSDEV_Pos = 17;
+constexpr uint32_t LSDEV_Msk = LSDEV::mask;
 
-    /// Endpoint type
-    /// Position: 18, Width: 2
-    using EPTYP = BitField<18, 2>;
-    constexpr uint32_t EPTYP_Pos = 18;
-    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+/// Endpoint type
+/// Position: 18, Width: 2
+using EPTYP = BitField<18, 2>;
+constexpr uint32_t EPTYP_Pos = 18;
+constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-    /// Multicount
-    /// Position: 20, Width: 2
-    using MCNT = BitField<20, 2>;
-    constexpr uint32_t MCNT_Pos = 20;
-    constexpr uint32_t MCNT_Msk = MCNT::mask;
+/// Multicount
+/// Position: 20, Width: 2
+using MCNT = BitField<20, 2>;
+constexpr uint32_t MCNT_Pos = 20;
+constexpr uint32_t MCNT_Msk = MCNT::mask;
 
-    /// Device address
-    /// Position: 22, Width: 7
-    using DAD = BitField<22, 7>;
-    constexpr uint32_t DAD_Pos = 22;
-    constexpr uint32_t DAD_Msk = DAD::mask;
+/// Device address
+/// Position: 22, Width: 7
+using DAD = BitField<22, 7>;
+constexpr uint32_t DAD_Pos = 22;
+constexpr uint32_t DAD_Msk = DAD::mask;
 
-    /// Odd frame
-    /// Position: 29, Width: 1
-    using ODDFRM = BitField<29, 1>;
-    constexpr uint32_t ODDFRM_Pos = 29;
-    constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
+/// Odd frame
+/// Position: 29, Width: 1
+using ODDFRM = BitField<29, 1>;
+constexpr uint32_t ODDFRM_Pos = 29;
+constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
 
-    /// Channel disable
-    /// Position: 30, Width: 1
-    using CHDIS = BitField<30, 1>;
-    constexpr uint32_t CHDIS_Pos = 30;
-    constexpr uint32_t CHDIS_Msk = CHDIS::mask;
+/// Channel disable
+/// Position: 30, Width: 1
+using CHDIS = BitField<30, 1>;
+constexpr uint32_t CHDIS_Pos = 30;
+constexpr uint32_t CHDIS_Msk = CHDIS::mask;
 
-    /// Channel enable
-    /// Position: 31, Width: 1
-    using CHENA = BitField<31, 1>;
-    constexpr uint32_t CHENA_Pos = 31;
-    constexpr uint32_t CHENA_Msk = CHENA::mask;
+/// Channel enable
+/// Position: 31, Width: 1
+using CHENA = BitField<31, 1>;
+constexpr uint32_t CHENA_Pos = 31;
+constexpr uint32_t CHENA_Msk = CHENA::mask;
 
 }  // namespace fs_hcchar1
 
 /// FS_HCINT1 - OTG_FS host channel-1 interrupt register (OTG_FS_HCINT1)
 namespace fs_hcint1 {
-    /// Transfer completed
-    /// Position: 0, Width: 1
-    using XFRC = BitField<0, 1>;
-    constexpr uint32_t XFRC_Pos = 0;
-    constexpr uint32_t XFRC_Msk = XFRC::mask;
+/// Transfer completed
+/// Position: 0, Width: 1
+using XFRC = BitField<0, 1>;
+constexpr uint32_t XFRC_Pos = 0;
+constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-    /// Channel halted
-    /// Position: 1, Width: 1
-    using CHH = BitField<1, 1>;
-    constexpr uint32_t CHH_Pos = 1;
-    constexpr uint32_t CHH_Msk = CHH::mask;
+/// Channel halted
+/// Position: 1, Width: 1
+using CHH = BitField<1, 1>;
+constexpr uint32_t CHH_Pos = 1;
+constexpr uint32_t CHH_Msk = CHH::mask;
 
-    /// STALL response received interrupt
-    /// Position: 3, Width: 1
-    using STALL = BitField<3, 1>;
-    constexpr uint32_t STALL_Pos = 3;
-    constexpr uint32_t STALL_Msk = STALL::mask;
+/// STALL response received interrupt
+/// Position: 3, Width: 1
+using STALL = BitField<3, 1>;
+constexpr uint32_t STALL_Pos = 3;
+constexpr uint32_t STALL_Msk = STALL::mask;
 
-    /// NAK response received interrupt
-    /// Position: 4, Width: 1
-    using NAK = BitField<4, 1>;
-    constexpr uint32_t NAK_Pos = 4;
-    constexpr uint32_t NAK_Msk = NAK::mask;
+/// NAK response received interrupt
+/// Position: 4, Width: 1
+using NAK = BitField<4, 1>;
+constexpr uint32_t NAK_Pos = 4;
+constexpr uint32_t NAK_Msk = NAK::mask;
 
-    /// ACK response received/transmitted interrupt
-    /// Position: 5, Width: 1
-    using ACK = BitField<5, 1>;
-    constexpr uint32_t ACK_Pos = 5;
-    constexpr uint32_t ACK_Msk = ACK::mask;
+/// ACK response received/transmitted interrupt
+/// Position: 5, Width: 1
+using ACK = BitField<5, 1>;
+constexpr uint32_t ACK_Pos = 5;
+constexpr uint32_t ACK_Msk = ACK::mask;
 
-    /// Transaction error
-    /// Position: 7, Width: 1
-    using TXERR = BitField<7, 1>;
-    constexpr uint32_t TXERR_Pos = 7;
-    constexpr uint32_t TXERR_Msk = TXERR::mask;
+/// Transaction error
+/// Position: 7, Width: 1
+using TXERR = BitField<7, 1>;
+constexpr uint32_t TXERR_Pos = 7;
+constexpr uint32_t TXERR_Msk = TXERR::mask;
 
-    /// Babble error
-    /// Position: 8, Width: 1
-    using BBERR = BitField<8, 1>;
-    constexpr uint32_t BBERR_Pos = 8;
-    constexpr uint32_t BBERR_Msk = BBERR::mask;
+/// Babble error
+/// Position: 8, Width: 1
+using BBERR = BitField<8, 1>;
+constexpr uint32_t BBERR_Pos = 8;
+constexpr uint32_t BBERR_Msk = BBERR::mask;
 
-    /// Frame overrun
-    /// Position: 9, Width: 1
-    using FRMOR = BitField<9, 1>;
-    constexpr uint32_t FRMOR_Pos = 9;
-    constexpr uint32_t FRMOR_Msk = FRMOR::mask;
+/// Frame overrun
+/// Position: 9, Width: 1
+using FRMOR = BitField<9, 1>;
+constexpr uint32_t FRMOR_Pos = 9;
+constexpr uint32_t FRMOR_Msk = FRMOR::mask;
 
-    /// Data toggle error
-    /// Position: 10, Width: 1
-    using DTERR = BitField<10, 1>;
-    constexpr uint32_t DTERR_Pos = 10;
-    constexpr uint32_t DTERR_Msk = DTERR::mask;
+/// Data toggle error
+/// Position: 10, Width: 1
+using DTERR = BitField<10, 1>;
+constexpr uint32_t DTERR_Pos = 10;
+constexpr uint32_t DTERR_Msk = DTERR::mask;
 
 }  // namespace fs_hcint1
 
 /// FS_HCINTMSK1 - OTG_FS host channel-1 mask register (OTG_FS_HCINTMSK1)
 namespace fs_hcintmsk1 {
-    /// Transfer completed mask
-    /// Position: 0, Width: 1
-    using XFRCM = BitField<0, 1>;
-    constexpr uint32_t XFRCM_Pos = 0;
-    constexpr uint32_t XFRCM_Msk = XFRCM::mask;
+/// Transfer completed mask
+/// Position: 0, Width: 1
+using XFRCM = BitField<0, 1>;
+constexpr uint32_t XFRCM_Pos = 0;
+constexpr uint32_t XFRCM_Msk = XFRCM::mask;
 
-    /// Channel halted mask
-    /// Position: 1, Width: 1
-    using CHHM = BitField<1, 1>;
-    constexpr uint32_t CHHM_Pos = 1;
-    constexpr uint32_t CHHM_Msk = CHHM::mask;
+/// Channel halted mask
+/// Position: 1, Width: 1
+using CHHM = BitField<1, 1>;
+constexpr uint32_t CHHM_Pos = 1;
+constexpr uint32_t CHHM_Msk = CHHM::mask;
 
-    /// STALL response received interrupt mask
-    /// Position: 3, Width: 1
-    using STALLM = BitField<3, 1>;
-    constexpr uint32_t STALLM_Pos = 3;
-    constexpr uint32_t STALLM_Msk = STALLM::mask;
+/// STALL response received interrupt mask
+/// Position: 3, Width: 1
+using STALLM = BitField<3, 1>;
+constexpr uint32_t STALLM_Pos = 3;
+constexpr uint32_t STALLM_Msk = STALLM::mask;
 
-    /// NAK response received interrupt mask
-    /// Position: 4, Width: 1
-    using NAKM = BitField<4, 1>;
-    constexpr uint32_t NAKM_Pos = 4;
-    constexpr uint32_t NAKM_Msk = NAKM::mask;
+/// NAK response received interrupt mask
+/// Position: 4, Width: 1
+using NAKM = BitField<4, 1>;
+constexpr uint32_t NAKM_Pos = 4;
+constexpr uint32_t NAKM_Msk = NAKM::mask;
 
-    /// ACK response received/transmitted interrupt mask
-    /// Position: 5, Width: 1
-    using ACKM = BitField<5, 1>;
-    constexpr uint32_t ACKM_Pos = 5;
-    constexpr uint32_t ACKM_Msk = ACKM::mask;
+/// ACK response received/transmitted interrupt mask
+/// Position: 5, Width: 1
+using ACKM = BitField<5, 1>;
+constexpr uint32_t ACKM_Pos = 5;
+constexpr uint32_t ACKM_Msk = ACKM::mask;
 
-    /// response received interrupt mask
-    /// Position: 6, Width: 1
-    using NYET = BitField<6, 1>;
-    constexpr uint32_t NYET_Pos = 6;
-    constexpr uint32_t NYET_Msk = NYET::mask;
+/// response received interrupt mask
+/// Position: 6, Width: 1
+using NYET = BitField<6, 1>;
+constexpr uint32_t NYET_Pos = 6;
+constexpr uint32_t NYET_Msk = NYET::mask;
 
-    /// Transaction error mask
-    /// Position: 7, Width: 1
-    using TXERRM = BitField<7, 1>;
-    constexpr uint32_t TXERRM_Pos = 7;
-    constexpr uint32_t TXERRM_Msk = TXERRM::mask;
+/// Transaction error mask
+/// Position: 7, Width: 1
+using TXERRM = BitField<7, 1>;
+constexpr uint32_t TXERRM_Pos = 7;
+constexpr uint32_t TXERRM_Msk = TXERRM::mask;
 
-    /// Babble error mask
-    /// Position: 8, Width: 1
-    using BBERRM = BitField<8, 1>;
-    constexpr uint32_t BBERRM_Pos = 8;
-    constexpr uint32_t BBERRM_Msk = BBERRM::mask;
+/// Babble error mask
+/// Position: 8, Width: 1
+using BBERRM = BitField<8, 1>;
+constexpr uint32_t BBERRM_Pos = 8;
+constexpr uint32_t BBERRM_Msk = BBERRM::mask;
 
-    /// Frame overrun mask
-    /// Position: 9, Width: 1
-    using FRMORM = BitField<9, 1>;
-    constexpr uint32_t FRMORM_Pos = 9;
-    constexpr uint32_t FRMORM_Msk = FRMORM::mask;
+/// Frame overrun mask
+/// Position: 9, Width: 1
+using FRMORM = BitField<9, 1>;
+constexpr uint32_t FRMORM_Pos = 9;
+constexpr uint32_t FRMORM_Msk = FRMORM::mask;
 
-    /// Data toggle error mask
-    /// Position: 10, Width: 1
-    using DTERRM = BitField<10, 1>;
-    constexpr uint32_t DTERRM_Pos = 10;
-    constexpr uint32_t DTERRM_Msk = DTERRM::mask;
+/// Data toggle error mask
+/// Position: 10, Width: 1
+using DTERRM = BitField<10, 1>;
+constexpr uint32_t DTERRM_Pos = 10;
+constexpr uint32_t DTERRM_Msk = DTERRM::mask;
 
 }  // namespace fs_hcintmsk1
 
 /// FS_HCTSIZ1 - OTG_FS host channel-1 transfer size register
 namespace fs_hctsiz1 {
-    /// Transfer size
-    /// Position: 0, Width: 19
-    using XFRSIZ = BitField<0, 19>;
-    constexpr uint32_t XFRSIZ_Pos = 0;
-    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+/// Transfer size
+/// Position: 0, Width: 19
+using XFRSIZ = BitField<0, 19>;
+constexpr uint32_t XFRSIZ_Pos = 0;
+constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-    /// Packet count
-    /// Position: 19, Width: 10
-    using PKTCNT = BitField<19, 10>;
-    constexpr uint32_t PKTCNT_Pos = 19;
-    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+/// Packet count
+/// Position: 19, Width: 10
+using PKTCNT = BitField<19, 10>;
+constexpr uint32_t PKTCNT_Pos = 19;
+constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-    /// Data PID
-    /// Position: 29, Width: 2
-    using DPID = BitField<29, 2>;
-    constexpr uint32_t DPID_Pos = 29;
-    constexpr uint32_t DPID_Msk = DPID::mask;
+/// Data PID
+/// Position: 29, Width: 2
+using DPID = BitField<29, 2>;
+constexpr uint32_t DPID_Pos = 29;
+constexpr uint32_t DPID_Msk = DPID::mask;
 
 }  // namespace fs_hctsiz1
 
 /// FS_HCCHAR2 - OTG_FS host channel-2 characteristics register (OTG_FS_HCCHAR2)
 namespace fs_hcchar2 {
-    /// Maximum packet size
-    /// Position: 0, Width: 11
-    using MPSIZ = BitField<0, 11>;
-    constexpr uint32_t MPSIZ_Pos = 0;
-    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+/// Maximum packet size
+/// Position: 0, Width: 11
+using MPSIZ = BitField<0, 11>;
+constexpr uint32_t MPSIZ_Pos = 0;
+constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-    /// Endpoint number
-    /// Position: 11, Width: 4
-    using EPNUM = BitField<11, 4>;
-    constexpr uint32_t EPNUM_Pos = 11;
-    constexpr uint32_t EPNUM_Msk = EPNUM::mask;
+/// Endpoint number
+/// Position: 11, Width: 4
+using EPNUM = BitField<11, 4>;
+constexpr uint32_t EPNUM_Pos = 11;
+constexpr uint32_t EPNUM_Msk = EPNUM::mask;
 
-    /// Endpoint direction
-    /// Position: 15, Width: 1
-    using EPDIR = BitField<15, 1>;
-    constexpr uint32_t EPDIR_Pos = 15;
-    constexpr uint32_t EPDIR_Msk = EPDIR::mask;
+/// Endpoint direction
+/// Position: 15, Width: 1
+using EPDIR = BitField<15, 1>;
+constexpr uint32_t EPDIR_Pos = 15;
+constexpr uint32_t EPDIR_Msk = EPDIR::mask;
 
-    /// Low-speed device
-    /// Position: 17, Width: 1
-    using LSDEV = BitField<17, 1>;
-    constexpr uint32_t LSDEV_Pos = 17;
-    constexpr uint32_t LSDEV_Msk = LSDEV::mask;
+/// Low-speed device
+/// Position: 17, Width: 1
+using LSDEV = BitField<17, 1>;
+constexpr uint32_t LSDEV_Pos = 17;
+constexpr uint32_t LSDEV_Msk = LSDEV::mask;
 
-    /// Endpoint type
-    /// Position: 18, Width: 2
-    using EPTYP = BitField<18, 2>;
-    constexpr uint32_t EPTYP_Pos = 18;
-    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+/// Endpoint type
+/// Position: 18, Width: 2
+using EPTYP = BitField<18, 2>;
+constexpr uint32_t EPTYP_Pos = 18;
+constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-    /// Multicount
-    /// Position: 20, Width: 2
-    using MCNT = BitField<20, 2>;
-    constexpr uint32_t MCNT_Pos = 20;
-    constexpr uint32_t MCNT_Msk = MCNT::mask;
+/// Multicount
+/// Position: 20, Width: 2
+using MCNT = BitField<20, 2>;
+constexpr uint32_t MCNT_Pos = 20;
+constexpr uint32_t MCNT_Msk = MCNT::mask;
 
-    /// Device address
-    /// Position: 22, Width: 7
-    using DAD = BitField<22, 7>;
-    constexpr uint32_t DAD_Pos = 22;
-    constexpr uint32_t DAD_Msk = DAD::mask;
+/// Device address
+/// Position: 22, Width: 7
+using DAD = BitField<22, 7>;
+constexpr uint32_t DAD_Pos = 22;
+constexpr uint32_t DAD_Msk = DAD::mask;
 
-    /// Odd frame
-    /// Position: 29, Width: 1
-    using ODDFRM = BitField<29, 1>;
-    constexpr uint32_t ODDFRM_Pos = 29;
-    constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
+/// Odd frame
+/// Position: 29, Width: 1
+using ODDFRM = BitField<29, 1>;
+constexpr uint32_t ODDFRM_Pos = 29;
+constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
 
-    /// Channel disable
-    /// Position: 30, Width: 1
-    using CHDIS = BitField<30, 1>;
-    constexpr uint32_t CHDIS_Pos = 30;
-    constexpr uint32_t CHDIS_Msk = CHDIS::mask;
+/// Channel disable
+/// Position: 30, Width: 1
+using CHDIS = BitField<30, 1>;
+constexpr uint32_t CHDIS_Pos = 30;
+constexpr uint32_t CHDIS_Msk = CHDIS::mask;
 
-    /// Channel enable
-    /// Position: 31, Width: 1
-    using CHENA = BitField<31, 1>;
-    constexpr uint32_t CHENA_Pos = 31;
-    constexpr uint32_t CHENA_Msk = CHENA::mask;
+/// Channel enable
+/// Position: 31, Width: 1
+using CHENA = BitField<31, 1>;
+constexpr uint32_t CHENA_Pos = 31;
+constexpr uint32_t CHENA_Msk = CHENA::mask;
 
 }  // namespace fs_hcchar2
 
 /// FS_HCINT2 - OTG_FS host channel-2 interrupt register (OTG_FS_HCINT2)
 namespace fs_hcint2 {
-    /// Transfer completed
-    /// Position: 0, Width: 1
-    using XFRC = BitField<0, 1>;
-    constexpr uint32_t XFRC_Pos = 0;
-    constexpr uint32_t XFRC_Msk = XFRC::mask;
+/// Transfer completed
+/// Position: 0, Width: 1
+using XFRC = BitField<0, 1>;
+constexpr uint32_t XFRC_Pos = 0;
+constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-    /// Channel halted
-    /// Position: 1, Width: 1
-    using CHH = BitField<1, 1>;
-    constexpr uint32_t CHH_Pos = 1;
-    constexpr uint32_t CHH_Msk = CHH::mask;
+/// Channel halted
+/// Position: 1, Width: 1
+using CHH = BitField<1, 1>;
+constexpr uint32_t CHH_Pos = 1;
+constexpr uint32_t CHH_Msk = CHH::mask;
 
-    /// STALL response received interrupt
-    /// Position: 3, Width: 1
-    using STALL = BitField<3, 1>;
-    constexpr uint32_t STALL_Pos = 3;
-    constexpr uint32_t STALL_Msk = STALL::mask;
+/// STALL response received interrupt
+/// Position: 3, Width: 1
+using STALL = BitField<3, 1>;
+constexpr uint32_t STALL_Pos = 3;
+constexpr uint32_t STALL_Msk = STALL::mask;
 
-    /// NAK response received interrupt
-    /// Position: 4, Width: 1
-    using NAK = BitField<4, 1>;
-    constexpr uint32_t NAK_Pos = 4;
-    constexpr uint32_t NAK_Msk = NAK::mask;
+/// NAK response received interrupt
+/// Position: 4, Width: 1
+using NAK = BitField<4, 1>;
+constexpr uint32_t NAK_Pos = 4;
+constexpr uint32_t NAK_Msk = NAK::mask;
 
-    /// ACK response received/transmitted interrupt
-    /// Position: 5, Width: 1
-    using ACK = BitField<5, 1>;
-    constexpr uint32_t ACK_Pos = 5;
-    constexpr uint32_t ACK_Msk = ACK::mask;
+/// ACK response received/transmitted interrupt
+/// Position: 5, Width: 1
+using ACK = BitField<5, 1>;
+constexpr uint32_t ACK_Pos = 5;
+constexpr uint32_t ACK_Msk = ACK::mask;
 
-    /// Transaction error
-    /// Position: 7, Width: 1
-    using TXERR = BitField<7, 1>;
-    constexpr uint32_t TXERR_Pos = 7;
-    constexpr uint32_t TXERR_Msk = TXERR::mask;
+/// Transaction error
+/// Position: 7, Width: 1
+using TXERR = BitField<7, 1>;
+constexpr uint32_t TXERR_Pos = 7;
+constexpr uint32_t TXERR_Msk = TXERR::mask;
 
-    /// Babble error
-    /// Position: 8, Width: 1
-    using BBERR = BitField<8, 1>;
-    constexpr uint32_t BBERR_Pos = 8;
-    constexpr uint32_t BBERR_Msk = BBERR::mask;
+/// Babble error
+/// Position: 8, Width: 1
+using BBERR = BitField<8, 1>;
+constexpr uint32_t BBERR_Pos = 8;
+constexpr uint32_t BBERR_Msk = BBERR::mask;
 
-    /// Frame overrun
-    /// Position: 9, Width: 1
-    using FRMOR = BitField<9, 1>;
-    constexpr uint32_t FRMOR_Pos = 9;
-    constexpr uint32_t FRMOR_Msk = FRMOR::mask;
+/// Frame overrun
+/// Position: 9, Width: 1
+using FRMOR = BitField<9, 1>;
+constexpr uint32_t FRMOR_Pos = 9;
+constexpr uint32_t FRMOR_Msk = FRMOR::mask;
 
-    /// Data toggle error
-    /// Position: 10, Width: 1
-    using DTERR = BitField<10, 1>;
-    constexpr uint32_t DTERR_Pos = 10;
-    constexpr uint32_t DTERR_Msk = DTERR::mask;
+/// Data toggle error
+/// Position: 10, Width: 1
+using DTERR = BitField<10, 1>;
+constexpr uint32_t DTERR_Pos = 10;
+constexpr uint32_t DTERR_Msk = DTERR::mask;
 
 }  // namespace fs_hcint2
 
 /// FS_HCINTMSK2 - OTG_FS host channel-2 mask register (OTG_FS_HCINTMSK2)
 namespace fs_hcintmsk2 {
-    /// Transfer completed mask
-    /// Position: 0, Width: 1
-    using XFRCM = BitField<0, 1>;
-    constexpr uint32_t XFRCM_Pos = 0;
-    constexpr uint32_t XFRCM_Msk = XFRCM::mask;
+/// Transfer completed mask
+/// Position: 0, Width: 1
+using XFRCM = BitField<0, 1>;
+constexpr uint32_t XFRCM_Pos = 0;
+constexpr uint32_t XFRCM_Msk = XFRCM::mask;
 
-    /// Channel halted mask
-    /// Position: 1, Width: 1
-    using CHHM = BitField<1, 1>;
-    constexpr uint32_t CHHM_Pos = 1;
-    constexpr uint32_t CHHM_Msk = CHHM::mask;
+/// Channel halted mask
+/// Position: 1, Width: 1
+using CHHM = BitField<1, 1>;
+constexpr uint32_t CHHM_Pos = 1;
+constexpr uint32_t CHHM_Msk = CHHM::mask;
 
-    /// STALL response received interrupt mask
-    /// Position: 3, Width: 1
-    using STALLM = BitField<3, 1>;
-    constexpr uint32_t STALLM_Pos = 3;
-    constexpr uint32_t STALLM_Msk = STALLM::mask;
+/// STALL response received interrupt mask
+/// Position: 3, Width: 1
+using STALLM = BitField<3, 1>;
+constexpr uint32_t STALLM_Pos = 3;
+constexpr uint32_t STALLM_Msk = STALLM::mask;
 
-    /// NAK response received interrupt mask
-    /// Position: 4, Width: 1
-    using NAKM = BitField<4, 1>;
-    constexpr uint32_t NAKM_Pos = 4;
-    constexpr uint32_t NAKM_Msk = NAKM::mask;
+/// NAK response received interrupt mask
+/// Position: 4, Width: 1
+using NAKM = BitField<4, 1>;
+constexpr uint32_t NAKM_Pos = 4;
+constexpr uint32_t NAKM_Msk = NAKM::mask;
 
-    /// ACK response received/transmitted interrupt mask
-    /// Position: 5, Width: 1
-    using ACKM = BitField<5, 1>;
-    constexpr uint32_t ACKM_Pos = 5;
-    constexpr uint32_t ACKM_Msk = ACKM::mask;
+/// ACK response received/transmitted interrupt mask
+/// Position: 5, Width: 1
+using ACKM = BitField<5, 1>;
+constexpr uint32_t ACKM_Pos = 5;
+constexpr uint32_t ACKM_Msk = ACKM::mask;
 
-    /// response received interrupt mask
-    /// Position: 6, Width: 1
-    using NYET = BitField<6, 1>;
-    constexpr uint32_t NYET_Pos = 6;
-    constexpr uint32_t NYET_Msk = NYET::mask;
+/// response received interrupt mask
+/// Position: 6, Width: 1
+using NYET = BitField<6, 1>;
+constexpr uint32_t NYET_Pos = 6;
+constexpr uint32_t NYET_Msk = NYET::mask;
 
-    /// Transaction error mask
-    /// Position: 7, Width: 1
-    using TXERRM = BitField<7, 1>;
-    constexpr uint32_t TXERRM_Pos = 7;
-    constexpr uint32_t TXERRM_Msk = TXERRM::mask;
+/// Transaction error mask
+/// Position: 7, Width: 1
+using TXERRM = BitField<7, 1>;
+constexpr uint32_t TXERRM_Pos = 7;
+constexpr uint32_t TXERRM_Msk = TXERRM::mask;
 
-    /// Babble error mask
-    /// Position: 8, Width: 1
-    using BBERRM = BitField<8, 1>;
-    constexpr uint32_t BBERRM_Pos = 8;
-    constexpr uint32_t BBERRM_Msk = BBERRM::mask;
+/// Babble error mask
+/// Position: 8, Width: 1
+using BBERRM = BitField<8, 1>;
+constexpr uint32_t BBERRM_Pos = 8;
+constexpr uint32_t BBERRM_Msk = BBERRM::mask;
 
-    /// Frame overrun mask
-    /// Position: 9, Width: 1
-    using FRMORM = BitField<9, 1>;
-    constexpr uint32_t FRMORM_Pos = 9;
-    constexpr uint32_t FRMORM_Msk = FRMORM::mask;
+/// Frame overrun mask
+/// Position: 9, Width: 1
+using FRMORM = BitField<9, 1>;
+constexpr uint32_t FRMORM_Pos = 9;
+constexpr uint32_t FRMORM_Msk = FRMORM::mask;
 
-    /// Data toggle error mask
-    /// Position: 10, Width: 1
-    using DTERRM = BitField<10, 1>;
-    constexpr uint32_t DTERRM_Pos = 10;
-    constexpr uint32_t DTERRM_Msk = DTERRM::mask;
+/// Data toggle error mask
+/// Position: 10, Width: 1
+using DTERRM = BitField<10, 1>;
+constexpr uint32_t DTERRM_Pos = 10;
+constexpr uint32_t DTERRM_Msk = DTERRM::mask;
 
 }  // namespace fs_hcintmsk2
 
 /// FS_HCTSIZ2 - OTG_FS host channel-2 transfer size register
 namespace fs_hctsiz2 {
-    /// Transfer size
-    /// Position: 0, Width: 19
-    using XFRSIZ = BitField<0, 19>;
-    constexpr uint32_t XFRSIZ_Pos = 0;
-    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+/// Transfer size
+/// Position: 0, Width: 19
+using XFRSIZ = BitField<0, 19>;
+constexpr uint32_t XFRSIZ_Pos = 0;
+constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-    /// Packet count
-    /// Position: 19, Width: 10
-    using PKTCNT = BitField<19, 10>;
-    constexpr uint32_t PKTCNT_Pos = 19;
-    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+/// Packet count
+/// Position: 19, Width: 10
+using PKTCNT = BitField<19, 10>;
+constexpr uint32_t PKTCNT_Pos = 19;
+constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-    /// Data PID
-    /// Position: 29, Width: 2
-    using DPID = BitField<29, 2>;
-    constexpr uint32_t DPID_Pos = 29;
-    constexpr uint32_t DPID_Msk = DPID::mask;
+/// Data PID
+/// Position: 29, Width: 2
+using DPID = BitField<29, 2>;
+constexpr uint32_t DPID_Pos = 29;
+constexpr uint32_t DPID_Msk = DPID::mask;
 
 }  // namespace fs_hctsiz2
 
 /// FS_HCCHAR3 - OTG_FS host channel-3 characteristics register (OTG_FS_HCCHAR3)
 namespace fs_hcchar3 {
-    /// Maximum packet size
-    /// Position: 0, Width: 11
-    using MPSIZ = BitField<0, 11>;
-    constexpr uint32_t MPSIZ_Pos = 0;
-    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+/// Maximum packet size
+/// Position: 0, Width: 11
+using MPSIZ = BitField<0, 11>;
+constexpr uint32_t MPSIZ_Pos = 0;
+constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-    /// Endpoint number
-    /// Position: 11, Width: 4
-    using EPNUM = BitField<11, 4>;
-    constexpr uint32_t EPNUM_Pos = 11;
-    constexpr uint32_t EPNUM_Msk = EPNUM::mask;
+/// Endpoint number
+/// Position: 11, Width: 4
+using EPNUM = BitField<11, 4>;
+constexpr uint32_t EPNUM_Pos = 11;
+constexpr uint32_t EPNUM_Msk = EPNUM::mask;
 
-    /// Endpoint direction
-    /// Position: 15, Width: 1
-    using EPDIR = BitField<15, 1>;
-    constexpr uint32_t EPDIR_Pos = 15;
-    constexpr uint32_t EPDIR_Msk = EPDIR::mask;
+/// Endpoint direction
+/// Position: 15, Width: 1
+using EPDIR = BitField<15, 1>;
+constexpr uint32_t EPDIR_Pos = 15;
+constexpr uint32_t EPDIR_Msk = EPDIR::mask;
 
-    /// Low-speed device
-    /// Position: 17, Width: 1
-    using LSDEV = BitField<17, 1>;
-    constexpr uint32_t LSDEV_Pos = 17;
-    constexpr uint32_t LSDEV_Msk = LSDEV::mask;
+/// Low-speed device
+/// Position: 17, Width: 1
+using LSDEV = BitField<17, 1>;
+constexpr uint32_t LSDEV_Pos = 17;
+constexpr uint32_t LSDEV_Msk = LSDEV::mask;
 
-    /// Endpoint type
-    /// Position: 18, Width: 2
-    using EPTYP = BitField<18, 2>;
-    constexpr uint32_t EPTYP_Pos = 18;
-    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+/// Endpoint type
+/// Position: 18, Width: 2
+using EPTYP = BitField<18, 2>;
+constexpr uint32_t EPTYP_Pos = 18;
+constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-    /// Multicount
-    /// Position: 20, Width: 2
-    using MCNT = BitField<20, 2>;
-    constexpr uint32_t MCNT_Pos = 20;
-    constexpr uint32_t MCNT_Msk = MCNT::mask;
+/// Multicount
+/// Position: 20, Width: 2
+using MCNT = BitField<20, 2>;
+constexpr uint32_t MCNT_Pos = 20;
+constexpr uint32_t MCNT_Msk = MCNT::mask;
 
-    /// Device address
-    /// Position: 22, Width: 7
-    using DAD = BitField<22, 7>;
-    constexpr uint32_t DAD_Pos = 22;
-    constexpr uint32_t DAD_Msk = DAD::mask;
+/// Device address
+/// Position: 22, Width: 7
+using DAD = BitField<22, 7>;
+constexpr uint32_t DAD_Pos = 22;
+constexpr uint32_t DAD_Msk = DAD::mask;
 
-    /// Odd frame
-    /// Position: 29, Width: 1
-    using ODDFRM = BitField<29, 1>;
-    constexpr uint32_t ODDFRM_Pos = 29;
-    constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
+/// Odd frame
+/// Position: 29, Width: 1
+using ODDFRM = BitField<29, 1>;
+constexpr uint32_t ODDFRM_Pos = 29;
+constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
 
-    /// Channel disable
-    /// Position: 30, Width: 1
-    using CHDIS = BitField<30, 1>;
-    constexpr uint32_t CHDIS_Pos = 30;
-    constexpr uint32_t CHDIS_Msk = CHDIS::mask;
+/// Channel disable
+/// Position: 30, Width: 1
+using CHDIS = BitField<30, 1>;
+constexpr uint32_t CHDIS_Pos = 30;
+constexpr uint32_t CHDIS_Msk = CHDIS::mask;
 
-    /// Channel enable
-    /// Position: 31, Width: 1
-    using CHENA = BitField<31, 1>;
-    constexpr uint32_t CHENA_Pos = 31;
-    constexpr uint32_t CHENA_Msk = CHENA::mask;
+/// Channel enable
+/// Position: 31, Width: 1
+using CHENA = BitField<31, 1>;
+constexpr uint32_t CHENA_Pos = 31;
+constexpr uint32_t CHENA_Msk = CHENA::mask;
 
 }  // namespace fs_hcchar3
 
 /// FS_HCINT3 - OTG_FS host channel-3 interrupt register (OTG_FS_HCINT3)
 namespace fs_hcint3 {
-    /// Transfer completed
-    /// Position: 0, Width: 1
-    using XFRC = BitField<0, 1>;
-    constexpr uint32_t XFRC_Pos = 0;
-    constexpr uint32_t XFRC_Msk = XFRC::mask;
+/// Transfer completed
+/// Position: 0, Width: 1
+using XFRC = BitField<0, 1>;
+constexpr uint32_t XFRC_Pos = 0;
+constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-    /// Channel halted
-    /// Position: 1, Width: 1
-    using CHH = BitField<1, 1>;
-    constexpr uint32_t CHH_Pos = 1;
-    constexpr uint32_t CHH_Msk = CHH::mask;
+/// Channel halted
+/// Position: 1, Width: 1
+using CHH = BitField<1, 1>;
+constexpr uint32_t CHH_Pos = 1;
+constexpr uint32_t CHH_Msk = CHH::mask;
 
-    /// STALL response received interrupt
-    /// Position: 3, Width: 1
-    using STALL = BitField<3, 1>;
-    constexpr uint32_t STALL_Pos = 3;
-    constexpr uint32_t STALL_Msk = STALL::mask;
+/// STALL response received interrupt
+/// Position: 3, Width: 1
+using STALL = BitField<3, 1>;
+constexpr uint32_t STALL_Pos = 3;
+constexpr uint32_t STALL_Msk = STALL::mask;
 
-    /// NAK response received interrupt
-    /// Position: 4, Width: 1
-    using NAK = BitField<4, 1>;
-    constexpr uint32_t NAK_Pos = 4;
-    constexpr uint32_t NAK_Msk = NAK::mask;
+/// NAK response received interrupt
+/// Position: 4, Width: 1
+using NAK = BitField<4, 1>;
+constexpr uint32_t NAK_Pos = 4;
+constexpr uint32_t NAK_Msk = NAK::mask;
 
-    /// ACK response received/transmitted interrupt
-    /// Position: 5, Width: 1
-    using ACK = BitField<5, 1>;
-    constexpr uint32_t ACK_Pos = 5;
-    constexpr uint32_t ACK_Msk = ACK::mask;
+/// ACK response received/transmitted interrupt
+/// Position: 5, Width: 1
+using ACK = BitField<5, 1>;
+constexpr uint32_t ACK_Pos = 5;
+constexpr uint32_t ACK_Msk = ACK::mask;
 
-    /// Transaction error
-    /// Position: 7, Width: 1
-    using TXERR = BitField<7, 1>;
-    constexpr uint32_t TXERR_Pos = 7;
-    constexpr uint32_t TXERR_Msk = TXERR::mask;
+/// Transaction error
+/// Position: 7, Width: 1
+using TXERR = BitField<7, 1>;
+constexpr uint32_t TXERR_Pos = 7;
+constexpr uint32_t TXERR_Msk = TXERR::mask;
 
-    /// Babble error
-    /// Position: 8, Width: 1
-    using BBERR = BitField<8, 1>;
-    constexpr uint32_t BBERR_Pos = 8;
-    constexpr uint32_t BBERR_Msk = BBERR::mask;
+/// Babble error
+/// Position: 8, Width: 1
+using BBERR = BitField<8, 1>;
+constexpr uint32_t BBERR_Pos = 8;
+constexpr uint32_t BBERR_Msk = BBERR::mask;
 
-    /// Frame overrun
-    /// Position: 9, Width: 1
-    using FRMOR = BitField<9, 1>;
-    constexpr uint32_t FRMOR_Pos = 9;
-    constexpr uint32_t FRMOR_Msk = FRMOR::mask;
+/// Frame overrun
+/// Position: 9, Width: 1
+using FRMOR = BitField<9, 1>;
+constexpr uint32_t FRMOR_Pos = 9;
+constexpr uint32_t FRMOR_Msk = FRMOR::mask;
 
-    /// Data toggle error
-    /// Position: 10, Width: 1
-    using DTERR = BitField<10, 1>;
-    constexpr uint32_t DTERR_Pos = 10;
-    constexpr uint32_t DTERR_Msk = DTERR::mask;
+/// Data toggle error
+/// Position: 10, Width: 1
+using DTERR = BitField<10, 1>;
+constexpr uint32_t DTERR_Pos = 10;
+constexpr uint32_t DTERR_Msk = DTERR::mask;
 
 }  // namespace fs_hcint3
 
 /// FS_HCINTMSK3 - OTG_FS host channel-3 mask register (OTG_FS_HCINTMSK3)
 namespace fs_hcintmsk3 {
-    /// Transfer completed mask
-    /// Position: 0, Width: 1
-    using XFRCM = BitField<0, 1>;
-    constexpr uint32_t XFRCM_Pos = 0;
-    constexpr uint32_t XFRCM_Msk = XFRCM::mask;
+/// Transfer completed mask
+/// Position: 0, Width: 1
+using XFRCM = BitField<0, 1>;
+constexpr uint32_t XFRCM_Pos = 0;
+constexpr uint32_t XFRCM_Msk = XFRCM::mask;
 
-    /// Channel halted mask
-    /// Position: 1, Width: 1
-    using CHHM = BitField<1, 1>;
-    constexpr uint32_t CHHM_Pos = 1;
-    constexpr uint32_t CHHM_Msk = CHHM::mask;
+/// Channel halted mask
+/// Position: 1, Width: 1
+using CHHM = BitField<1, 1>;
+constexpr uint32_t CHHM_Pos = 1;
+constexpr uint32_t CHHM_Msk = CHHM::mask;
 
-    /// STALL response received interrupt mask
-    /// Position: 3, Width: 1
-    using STALLM = BitField<3, 1>;
-    constexpr uint32_t STALLM_Pos = 3;
-    constexpr uint32_t STALLM_Msk = STALLM::mask;
+/// STALL response received interrupt mask
+/// Position: 3, Width: 1
+using STALLM = BitField<3, 1>;
+constexpr uint32_t STALLM_Pos = 3;
+constexpr uint32_t STALLM_Msk = STALLM::mask;
 
-    /// NAK response received interrupt mask
-    /// Position: 4, Width: 1
-    using NAKM = BitField<4, 1>;
-    constexpr uint32_t NAKM_Pos = 4;
-    constexpr uint32_t NAKM_Msk = NAKM::mask;
+/// NAK response received interrupt mask
+/// Position: 4, Width: 1
+using NAKM = BitField<4, 1>;
+constexpr uint32_t NAKM_Pos = 4;
+constexpr uint32_t NAKM_Msk = NAKM::mask;
 
-    /// ACK response received/transmitted interrupt mask
-    /// Position: 5, Width: 1
-    using ACKM = BitField<5, 1>;
-    constexpr uint32_t ACKM_Pos = 5;
-    constexpr uint32_t ACKM_Msk = ACKM::mask;
+/// ACK response received/transmitted interrupt mask
+/// Position: 5, Width: 1
+using ACKM = BitField<5, 1>;
+constexpr uint32_t ACKM_Pos = 5;
+constexpr uint32_t ACKM_Msk = ACKM::mask;
 
-    /// response received interrupt mask
-    /// Position: 6, Width: 1
-    using NYET = BitField<6, 1>;
-    constexpr uint32_t NYET_Pos = 6;
-    constexpr uint32_t NYET_Msk = NYET::mask;
+/// response received interrupt mask
+/// Position: 6, Width: 1
+using NYET = BitField<6, 1>;
+constexpr uint32_t NYET_Pos = 6;
+constexpr uint32_t NYET_Msk = NYET::mask;
 
-    /// Transaction error mask
-    /// Position: 7, Width: 1
-    using TXERRM = BitField<7, 1>;
-    constexpr uint32_t TXERRM_Pos = 7;
-    constexpr uint32_t TXERRM_Msk = TXERRM::mask;
+/// Transaction error mask
+/// Position: 7, Width: 1
+using TXERRM = BitField<7, 1>;
+constexpr uint32_t TXERRM_Pos = 7;
+constexpr uint32_t TXERRM_Msk = TXERRM::mask;
 
-    /// Babble error mask
-    /// Position: 8, Width: 1
-    using BBERRM = BitField<8, 1>;
-    constexpr uint32_t BBERRM_Pos = 8;
-    constexpr uint32_t BBERRM_Msk = BBERRM::mask;
+/// Babble error mask
+/// Position: 8, Width: 1
+using BBERRM = BitField<8, 1>;
+constexpr uint32_t BBERRM_Pos = 8;
+constexpr uint32_t BBERRM_Msk = BBERRM::mask;
 
-    /// Frame overrun mask
-    /// Position: 9, Width: 1
-    using FRMORM = BitField<9, 1>;
-    constexpr uint32_t FRMORM_Pos = 9;
-    constexpr uint32_t FRMORM_Msk = FRMORM::mask;
+/// Frame overrun mask
+/// Position: 9, Width: 1
+using FRMORM = BitField<9, 1>;
+constexpr uint32_t FRMORM_Pos = 9;
+constexpr uint32_t FRMORM_Msk = FRMORM::mask;
 
-    /// Data toggle error mask
-    /// Position: 10, Width: 1
-    using DTERRM = BitField<10, 1>;
-    constexpr uint32_t DTERRM_Pos = 10;
-    constexpr uint32_t DTERRM_Msk = DTERRM::mask;
+/// Data toggle error mask
+/// Position: 10, Width: 1
+using DTERRM = BitField<10, 1>;
+constexpr uint32_t DTERRM_Pos = 10;
+constexpr uint32_t DTERRM_Msk = DTERRM::mask;
 
 }  // namespace fs_hcintmsk3
 
 /// FS_HCTSIZ3 - OTG_FS host channel-3 transfer size register
 namespace fs_hctsiz3 {
-    /// Transfer size
-    /// Position: 0, Width: 19
-    using XFRSIZ = BitField<0, 19>;
-    constexpr uint32_t XFRSIZ_Pos = 0;
-    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+/// Transfer size
+/// Position: 0, Width: 19
+using XFRSIZ = BitField<0, 19>;
+constexpr uint32_t XFRSIZ_Pos = 0;
+constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-    /// Packet count
-    /// Position: 19, Width: 10
-    using PKTCNT = BitField<19, 10>;
-    constexpr uint32_t PKTCNT_Pos = 19;
-    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+/// Packet count
+/// Position: 19, Width: 10
+using PKTCNT = BitField<19, 10>;
+constexpr uint32_t PKTCNT_Pos = 19;
+constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-    /// Data PID
-    /// Position: 29, Width: 2
-    using DPID = BitField<29, 2>;
-    constexpr uint32_t DPID_Pos = 29;
-    constexpr uint32_t DPID_Msk = DPID::mask;
+/// Data PID
+/// Position: 29, Width: 2
+using DPID = BitField<29, 2>;
+constexpr uint32_t DPID_Pos = 29;
+constexpr uint32_t DPID_Msk = DPID::mask;
 
 }  // namespace fs_hctsiz3
 
 /// FS_HCCHAR4 - OTG_FS host channel-4 characteristics register (OTG_FS_HCCHAR4)
 namespace fs_hcchar4 {
-    /// Maximum packet size
-    /// Position: 0, Width: 11
-    using MPSIZ = BitField<0, 11>;
-    constexpr uint32_t MPSIZ_Pos = 0;
-    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+/// Maximum packet size
+/// Position: 0, Width: 11
+using MPSIZ = BitField<0, 11>;
+constexpr uint32_t MPSIZ_Pos = 0;
+constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-    /// Endpoint number
-    /// Position: 11, Width: 4
-    using EPNUM = BitField<11, 4>;
-    constexpr uint32_t EPNUM_Pos = 11;
-    constexpr uint32_t EPNUM_Msk = EPNUM::mask;
+/// Endpoint number
+/// Position: 11, Width: 4
+using EPNUM = BitField<11, 4>;
+constexpr uint32_t EPNUM_Pos = 11;
+constexpr uint32_t EPNUM_Msk = EPNUM::mask;
 
-    /// Endpoint direction
-    /// Position: 15, Width: 1
-    using EPDIR = BitField<15, 1>;
-    constexpr uint32_t EPDIR_Pos = 15;
-    constexpr uint32_t EPDIR_Msk = EPDIR::mask;
+/// Endpoint direction
+/// Position: 15, Width: 1
+using EPDIR = BitField<15, 1>;
+constexpr uint32_t EPDIR_Pos = 15;
+constexpr uint32_t EPDIR_Msk = EPDIR::mask;
 
-    /// Low-speed device
-    /// Position: 17, Width: 1
-    using LSDEV = BitField<17, 1>;
-    constexpr uint32_t LSDEV_Pos = 17;
-    constexpr uint32_t LSDEV_Msk = LSDEV::mask;
+/// Low-speed device
+/// Position: 17, Width: 1
+using LSDEV = BitField<17, 1>;
+constexpr uint32_t LSDEV_Pos = 17;
+constexpr uint32_t LSDEV_Msk = LSDEV::mask;
 
-    /// Endpoint type
-    /// Position: 18, Width: 2
-    using EPTYP = BitField<18, 2>;
-    constexpr uint32_t EPTYP_Pos = 18;
-    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+/// Endpoint type
+/// Position: 18, Width: 2
+using EPTYP = BitField<18, 2>;
+constexpr uint32_t EPTYP_Pos = 18;
+constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-    /// Multicount
-    /// Position: 20, Width: 2
-    using MCNT = BitField<20, 2>;
-    constexpr uint32_t MCNT_Pos = 20;
-    constexpr uint32_t MCNT_Msk = MCNT::mask;
+/// Multicount
+/// Position: 20, Width: 2
+using MCNT = BitField<20, 2>;
+constexpr uint32_t MCNT_Pos = 20;
+constexpr uint32_t MCNT_Msk = MCNT::mask;
 
-    /// Device address
-    /// Position: 22, Width: 7
-    using DAD = BitField<22, 7>;
-    constexpr uint32_t DAD_Pos = 22;
-    constexpr uint32_t DAD_Msk = DAD::mask;
+/// Device address
+/// Position: 22, Width: 7
+using DAD = BitField<22, 7>;
+constexpr uint32_t DAD_Pos = 22;
+constexpr uint32_t DAD_Msk = DAD::mask;
 
-    /// Odd frame
-    /// Position: 29, Width: 1
-    using ODDFRM = BitField<29, 1>;
-    constexpr uint32_t ODDFRM_Pos = 29;
-    constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
+/// Odd frame
+/// Position: 29, Width: 1
+using ODDFRM = BitField<29, 1>;
+constexpr uint32_t ODDFRM_Pos = 29;
+constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
 
-    /// Channel disable
-    /// Position: 30, Width: 1
-    using CHDIS = BitField<30, 1>;
-    constexpr uint32_t CHDIS_Pos = 30;
-    constexpr uint32_t CHDIS_Msk = CHDIS::mask;
+/// Channel disable
+/// Position: 30, Width: 1
+using CHDIS = BitField<30, 1>;
+constexpr uint32_t CHDIS_Pos = 30;
+constexpr uint32_t CHDIS_Msk = CHDIS::mask;
 
-    /// Channel enable
-    /// Position: 31, Width: 1
-    using CHENA = BitField<31, 1>;
-    constexpr uint32_t CHENA_Pos = 31;
-    constexpr uint32_t CHENA_Msk = CHENA::mask;
+/// Channel enable
+/// Position: 31, Width: 1
+using CHENA = BitField<31, 1>;
+constexpr uint32_t CHENA_Pos = 31;
+constexpr uint32_t CHENA_Msk = CHENA::mask;
 
 }  // namespace fs_hcchar4
 
 /// FS_HCINT4 - OTG_FS host channel-4 interrupt register (OTG_FS_HCINT4)
 namespace fs_hcint4 {
-    /// Transfer completed
-    /// Position: 0, Width: 1
-    using XFRC = BitField<0, 1>;
-    constexpr uint32_t XFRC_Pos = 0;
-    constexpr uint32_t XFRC_Msk = XFRC::mask;
+/// Transfer completed
+/// Position: 0, Width: 1
+using XFRC = BitField<0, 1>;
+constexpr uint32_t XFRC_Pos = 0;
+constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-    /// Channel halted
-    /// Position: 1, Width: 1
-    using CHH = BitField<1, 1>;
-    constexpr uint32_t CHH_Pos = 1;
-    constexpr uint32_t CHH_Msk = CHH::mask;
+/// Channel halted
+/// Position: 1, Width: 1
+using CHH = BitField<1, 1>;
+constexpr uint32_t CHH_Pos = 1;
+constexpr uint32_t CHH_Msk = CHH::mask;
 
-    /// STALL response received interrupt
-    /// Position: 3, Width: 1
-    using STALL = BitField<3, 1>;
-    constexpr uint32_t STALL_Pos = 3;
-    constexpr uint32_t STALL_Msk = STALL::mask;
+/// STALL response received interrupt
+/// Position: 3, Width: 1
+using STALL = BitField<3, 1>;
+constexpr uint32_t STALL_Pos = 3;
+constexpr uint32_t STALL_Msk = STALL::mask;
 
-    /// NAK response received interrupt
-    /// Position: 4, Width: 1
-    using NAK = BitField<4, 1>;
-    constexpr uint32_t NAK_Pos = 4;
-    constexpr uint32_t NAK_Msk = NAK::mask;
+/// NAK response received interrupt
+/// Position: 4, Width: 1
+using NAK = BitField<4, 1>;
+constexpr uint32_t NAK_Pos = 4;
+constexpr uint32_t NAK_Msk = NAK::mask;
 
-    /// ACK response received/transmitted interrupt
-    /// Position: 5, Width: 1
-    using ACK = BitField<5, 1>;
-    constexpr uint32_t ACK_Pos = 5;
-    constexpr uint32_t ACK_Msk = ACK::mask;
+/// ACK response received/transmitted interrupt
+/// Position: 5, Width: 1
+using ACK = BitField<5, 1>;
+constexpr uint32_t ACK_Pos = 5;
+constexpr uint32_t ACK_Msk = ACK::mask;
 
-    /// Transaction error
-    /// Position: 7, Width: 1
-    using TXERR = BitField<7, 1>;
-    constexpr uint32_t TXERR_Pos = 7;
-    constexpr uint32_t TXERR_Msk = TXERR::mask;
+/// Transaction error
+/// Position: 7, Width: 1
+using TXERR = BitField<7, 1>;
+constexpr uint32_t TXERR_Pos = 7;
+constexpr uint32_t TXERR_Msk = TXERR::mask;
 
-    /// Babble error
-    /// Position: 8, Width: 1
-    using BBERR = BitField<8, 1>;
-    constexpr uint32_t BBERR_Pos = 8;
-    constexpr uint32_t BBERR_Msk = BBERR::mask;
+/// Babble error
+/// Position: 8, Width: 1
+using BBERR = BitField<8, 1>;
+constexpr uint32_t BBERR_Pos = 8;
+constexpr uint32_t BBERR_Msk = BBERR::mask;
 
-    /// Frame overrun
-    /// Position: 9, Width: 1
-    using FRMOR = BitField<9, 1>;
-    constexpr uint32_t FRMOR_Pos = 9;
-    constexpr uint32_t FRMOR_Msk = FRMOR::mask;
+/// Frame overrun
+/// Position: 9, Width: 1
+using FRMOR = BitField<9, 1>;
+constexpr uint32_t FRMOR_Pos = 9;
+constexpr uint32_t FRMOR_Msk = FRMOR::mask;
 
-    /// Data toggle error
-    /// Position: 10, Width: 1
-    using DTERR = BitField<10, 1>;
-    constexpr uint32_t DTERR_Pos = 10;
-    constexpr uint32_t DTERR_Msk = DTERR::mask;
+/// Data toggle error
+/// Position: 10, Width: 1
+using DTERR = BitField<10, 1>;
+constexpr uint32_t DTERR_Pos = 10;
+constexpr uint32_t DTERR_Msk = DTERR::mask;
 
 }  // namespace fs_hcint4
 
 /// FS_HCINTMSK4 - OTG_FS host channel-4 mask register (OTG_FS_HCINTMSK4)
 namespace fs_hcintmsk4 {
-    /// Transfer completed mask
-    /// Position: 0, Width: 1
-    using XFRCM = BitField<0, 1>;
-    constexpr uint32_t XFRCM_Pos = 0;
-    constexpr uint32_t XFRCM_Msk = XFRCM::mask;
+/// Transfer completed mask
+/// Position: 0, Width: 1
+using XFRCM = BitField<0, 1>;
+constexpr uint32_t XFRCM_Pos = 0;
+constexpr uint32_t XFRCM_Msk = XFRCM::mask;
 
-    /// Channel halted mask
-    /// Position: 1, Width: 1
-    using CHHM = BitField<1, 1>;
-    constexpr uint32_t CHHM_Pos = 1;
-    constexpr uint32_t CHHM_Msk = CHHM::mask;
+/// Channel halted mask
+/// Position: 1, Width: 1
+using CHHM = BitField<1, 1>;
+constexpr uint32_t CHHM_Pos = 1;
+constexpr uint32_t CHHM_Msk = CHHM::mask;
 
-    /// STALL response received interrupt mask
-    /// Position: 3, Width: 1
-    using STALLM = BitField<3, 1>;
-    constexpr uint32_t STALLM_Pos = 3;
-    constexpr uint32_t STALLM_Msk = STALLM::mask;
+/// STALL response received interrupt mask
+/// Position: 3, Width: 1
+using STALLM = BitField<3, 1>;
+constexpr uint32_t STALLM_Pos = 3;
+constexpr uint32_t STALLM_Msk = STALLM::mask;
 
-    /// NAK response received interrupt mask
-    /// Position: 4, Width: 1
-    using NAKM = BitField<4, 1>;
-    constexpr uint32_t NAKM_Pos = 4;
-    constexpr uint32_t NAKM_Msk = NAKM::mask;
+/// NAK response received interrupt mask
+/// Position: 4, Width: 1
+using NAKM = BitField<4, 1>;
+constexpr uint32_t NAKM_Pos = 4;
+constexpr uint32_t NAKM_Msk = NAKM::mask;
 
-    /// ACK response received/transmitted interrupt mask
-    /// Position: 5, Width: 1
-    using ACKM = BitField<5, 1>;
-    constexpr uint32_t ACKM_Pos = 5;
-    constexpr uint32_t ACKM_Msk = ACKM::mask;
+/// ACK response received/transmitted interrupt mask
+/// Position: 5, Width: 1
+using ACKM = BitField<5, 1>;
+constexpr uint32_t ACKM_Pos = 5;
+constexpr uint32_t ACKM_Msk = ACKM::mask;
 
-    /// response received interrupt mask
-    /// Position: 6, Width: 1
-    using NYET = BitField<6, 1>;
-    constexpr uint32_t NYET_Pos = 6;
-    constexpr uint32_t NYET_Msk = NYET::mask;
+/// response received interrupt mask
+/// Position: 6, Width: 1
+using NYET = BitField<6, 1>;
+constexpr uint32_t NYET_Pos = 6;
+constexpr uint32_t NYET_Msk = NYET::mask;
 
-    /// Transaction error mask
-    /// Position: 7, Width: 1
-    using TXERRM = BitField<7, 1>;
-    constexpr uint32_t TXERRM_Pos = 7;
-    constexpr uint32_t TXERRM_Msk = TXERRM::mask;
+/// Transaction error mask
+/// Position: 7, Width: 1
+using TXERRM = BitField<7, 1>;
+constexpr uint32_t TXERRM_Pos = 7;
+constexpr uint32_t TXERRM_Msk = TXERRM::mask;
 
-    /// Babble error mask
-    /// Position: 8, Width: 1
-    using BBERRM = BitField<8, 1>;
-    constexpr uint32_t BBERRM_Pos = 8;
-    constexpr uint32_t BBERRM_Msk = BBERRM::mask;
+/// Babble error mask
+/// Position: 8, Width: 1
+using BBERRM = BitField<8, 1>;
+constexpr uint32_t BBERRM_Pos = 8;
+constexpr uint32_t BBERRM_Msk = BBERRM::mask;
 
-    /// Frame overrun mask
-    /// Position: 9, Width: 1
-    using FRMORM = BitField<9, 1>;
-    constexpr uint32_t FRMORM_Pos = 9;
-    constexpr uint32_t FRMORM_Msk = FRMORM::mask;
+/// Frame overrun mask
+/// Position: 9, Width: 1
+using FRMORM = BitField<9, 1>;
+constexpr uint32_t FRMORM_Pos = 9;
+constexpr uint32_t FRMORM_Msk = FRMORM::mask;
 
-    /// Data toggle error mask
-    /// Position: 10, Width: 1
-    using DTERRM = BitField<10, 1>;
-    constexpr uint32_t DTERRM_Pos = 10;
-    constexpr uint32_t DTERRM_Msk = DTERRM::mask;
+/// Data toggle error mask
+/// Position: 10, Width: 1
+using DTERRM = BitField<10, 1>;
+constexpr uint32_t DTERRM_Pos = 10;
+constexpr uint32_t DTERRM_Msk = DTERRM::mask;
 
 }  // namespace fs_hcintmsk4
 
 /// FS_HCTSIZ4 - OTG_FS host channel-x transfer size register
 namespace fs_hctsiz4 {
-    /// Transfer size
-    /// Position: 0, Width: 19
-    using XFRSIZ = BitField<0, 19>;
-    constexpr uint32_t XFRSIZ_Pos = 0;
-    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+/// Transfer size
+/// Position: 0, Width: 19
+using XFRSIZ = BitField<0, 19>;
+constexpr uint32_t XFRSIZ_Pos = 0;
+constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-    /// Packet count
-    /// Position: 19, Width: 10
-    using PKTCNT = BitField<19, 10>;
-    constexpr uint32_t PKTCNT_Pos = 19;
-    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+/// Packet count
+/// Position: 19, Width: 10
+using PKTCNT = BitField<19, 10>;
+constexpr uint32_t PKTCNT_Pos = 19;
+constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-    /// Data PID
-    /// Position: 29, Width: 2
-    using DPID = BitField<29, 2>;
-    constexpr uint32_t DPID_Pos = 29;
-    constexpr uint32_t DPID_Msk = DPID::mask;
+/// Data PID
+/// Position: 29, Width: 2
+using DPID = BitField<29, 2>;
+constexpr uint32_t DPID_Pos = 29;
+constexpr uint32_t DPID_Msk = DPID::mask;
 
 }  // namespace fs_hctsiz4
 
 /// FS_HCCHAR5 - OTG_FS host channel-5 characteristics register (OTG_FS_HCCHAR5)
 namespace fs_hcchar5 {
-    /// Maximum packet size
-    /// Position: 0, Width: 11
-    using MPSIZ = BitField<0, 11>;
-    constexpr uint32_t MPSIZ_Pos = 0;
-    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+/// Maximum packet size
+/// Position: 0, Width: 11
+using MPSIZ = BitField<0, 11>;
+constexpr uint32_t MPSIZ_Pos = 0;
+constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-    /// Endpoint number
-    /// Position: 11, Width: 4
-    using EPNUM = BitField<11, 4>;
-    constexpr uint32_t EPNUM_Pos = 11;
-    constexpr uint32_t EPNUM_Msk = EPNUM::mask;
+/// Endpoint number
+/// Position: 11, Width: 4
+using EPNUM = BitField<11, 4>;
+constexpr uint32_t EPNUM_Pos = 11;
+constexpr uint32_t EPNUM_Msk = EPNUM::mask;
 
-    /// Endpoint direction
-    /// Position: 15, Width: 1
-    using EPDIR = BitField<15, 1>;
-    constexpr uint32_t EPDIR_Pos = 15;
-    constexpr uint32_t EPDIR_Msk = EPDIR::mask;
+/// Endpoint direction
+/// Position: 15, Width: 1
+using EPDIR = BitField<15, 1>;
+constexpr uint32_t EPDIR_Pos = 15;
+constexpr uint32_t EPDIR_Msk = EPDIR::mask;
 
-    /// Low-speed device
-    /// Position: 17, Width: 1
-    using LSDEV = BitField<17, 1>;
-    constexpr uint32_t LSDEV_Pos = 17;
-    constexpr uint32_t LSDEV_Msk = LSDEV::mask;
+/// Low-speed device
+/// Position: 17, Width: 1
+using LSDEV = BitField<17, 1>;
+constexpr uint32_t LSDEV_Pos = 17;
+constexpr uint32_t LSDEV_Msk = LSDEV::mask;
 
-    /// Endpoint type
-    /// Position: 18, Width: 2
-    using EPTYP = BitField<18, 2>;
-    constexpr uint32_t EPTYP_Pos = 18;
-    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+/// Endpoint type
+/// Position: 18, Width: 2
+using EPTYP = BitField<18, 2>;
+constexpr uint32_t EPTYP_Pos = 18;
+constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-    /// Multicount
-    /// Position: 20, Width: 2
-    using MCNT = BitField<20, 2>;
-    constexpr uint32_t MCNT_Pos = 20;
-    constexpr uint32_t MCNT_Msk = MCNT::mask;
+/// Multicount
+/// Position: 20, Width: 2
+using MCNT = BitField<20, 2>;
+constexpr uint32_t MCNT_Pos = 20;
+constexpr uint32_t MCNT_Msk = MCNT::mask;
 
-    /// Device address
-    /// Position: 22, Width: 7
-    using DAD = BitField<22, 7>;
-    constexpr uint32_t DAD_Pos = 22;
-    constexpr uint32_t DAD_Msk = DAD::mask;
+/// Device address
+/// Position: 22, Width: 7
+using DAD = BitField<22, 7>;
+constexpr uint32_t DAD_Pos = 22;
+constexpr uint32_t DAD_Msk = DAD::mask;
 
-    /// Odd frame
-    /// Position: 29, Width: 1
-    using ODDFRM = BitField<29, 1>;
-    constexpr uint32_t ODDFRM_Pos = 29;
-    constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
+/// Odd frame
+/// Position: 29, Width: 1
+using ODDFRM = BitField<29, 1>;
+constexpr uint32_t ODDFRM_Pos = 29;
+constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
 
-    /// Channel disable
-    /// Position: 30, Width: 1
-    using CHDIS = BitField<30, 1>;
-    constexpr uint32_t CHDIS_Pos = 30;
-    constexpr uint32_t CHDIS_Msk = CHDIS::mask;
+/// Channel disable
+/// Position: 30, Width: 1
+using CHDIS = BitField<30, 1>;
+constexpr uint32_t CHDIS_Pos = 30;
+constexpr uint32_t CHDIS_Msk = CHDIS::mask;
 
-    /// Channel enable
-    /// Position: 31, Width: 1
-    using CHENA = BitField<31, 1>;
-    constexpr uint32_t CHENA_Pos = 31;
-    constexpr uint32_t CHENA_Msk = CHENA::mask;
+/// Channel enable
+/// Position: 31, Width: 1
+using CHENA = BitField<31, 1>;
+constexpr uint32_t CHENA_Pos = 31;
+constexpr uint32_t CHENA_Msk = CHENA::mask;
 
 }  // namespace fs_hcchar5
 
 /// FS_HCINT5 - OTG_FS host channel-5 interrupt register (OTG_FS_HCINT5)
 namespace fs_hcint5 {
-    /// Transfer completed
-    /// Position: 0, Width: 1
-    using XFRC = BitField<0, 1>;
-    constexpr uint32_t XFRC_Pos = 0;
-    constexpr uint32_t XFRC_Msk = XFRC::mask;
+/// Transfer completed
+/// Position: 0, Width: 1
+using XFRC = BitField<0, 1>;
+constexpr uint32_t XFRC_Pos = 0;
+constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-    /// Channel halted
-    /// Position: 1, Width: 1
-    using CHH = BitField<1, 1>;
-    constexpr uint32_t CHH_Pos = 1;
-    constexpr uint32_t CHH_Msk = CHH::mask;
+/// Channel halted
+/// Position: 1, Width: 1
+using CHH = BitField<1, 1>;
+constexpr uint32_t CHH_Pos = 1;
+constexpr uint32_t CHH_Msk = CHH::mask;
 
-    /// STALL response received interrupt
-    /// Position: 3, Width: 1
-    using STALL = BitField<3, 1>;
-    constexpr uint32_t STALL_Pos = 3;
-    constexpr uint32_t STALL_Msk = STALL::mask;
+/// STALL response received interrupt
+/// Position: 3, Width: 1
+using STALL = BitField<3, 1>;
+constexpr uint32_t STALL_Pos = 3;
+constexpr uint32_t STALL_Msk = STALL::mask;
 
-    /// NAK response received interrupt
-    /// Position: 4, Width: 1
-    using NAK = BitField<4, 1>;
-    constexpr uint32_t NAK_Pos = 4;
-    constexpr uint32_t NAK_Msk = NAK::mask;
+/// NAK response received interrupt
+/// Position: 4, Width: 1
+using NAK = BitField<4, 1>;
+constexpr uint32_t NAK_Pos = 4;
+constexpr uint32_t NAK_Msk = NAK::mask;
 
-    /// ACK response received/transmitted interrupt
-    /// Position: 5, Width: 1
-    using ACK = BitField<5, 1>;
-    constexpr uint32_t ACK_Pos = 5;
-    constexpr uint32_t ACK_Msk = ACK::mask;
+/// ACK response received/transmitted interrupt
+/// Position: 5, Width: 1
+using ACK = BitField<5, 1>;
+constexpr uint32_t ACK_Pos = 5;
+constexpr uint32_t ACK_Msk = ACK::mask;
 
-    /// Transaction error
-    /// Position: 7, Width: 1
-    using TXERR = BitField<7, 1>;
-    constexpr uint32_t TXERR_Pos = 7;
-    constexpr uint32_t TXERR_Msk = TXERR::mask;
+/// Transaction error
+/// Position: 7, Width: 1
+using TXERR = BitField<7, 1>;
+constexpr uint32_t TXERR_Pos = 7;
+constexpr uint32_t TXERR_Msk = TXERR::mask;
 
-    /// Babble error
-    /// Position: 8, Width: 1
-    using BBERR = BitField<8, 1>;
-    constexpr uint32_t BBERR_Pos = 8;
-    constexpr uint32_t BBERR_Msk = BBERR::mask;
+/// Babble error
+/// Position: 8, Width: 1
+using BBERR = BitField<8, 1>;
+constexpr uint32_t BBERR_Pos = 8;
+constexpr uint32_t BBERR_Msk = BBERR::mask;
 
-    /// Frame overrun
-    /// Position: 9, Width: 1
-    using FRMOR = BitField<9, 1>;
-    constexpr uint32_t FRMOR_Pos = 9;
-    constexpr uint32_t FRMOR_Msk = FRMOR::mask;
+/// Frame overrun
+/// Position: 9, Width: 1
+using FRMOR = BitField<9, 1>;
+constexpr uint32_t FRMOR_Pos = 9;
+constexpr uint32_t FRMOR_Msk = FRMOR::mask;
 
-    /// Data toggle error
-    /// Position: 10, Width: 1
-    using DTERR = BitField<10, 1>;
-    constexpr uint32_t DTERR_Pos = 10;
-    constexpr uint32_t DTERR_Msk = DTERR::mask;
+/// Data toggle error
+/// Position: 10, Width: 1
+using DTERR = BitField<10, 1>;
+constexpr uint32_t DTERR_Pos = 10;
+constexpr uint32_t DTERR_Msk = DTERR::mask;
 
 }  // namespace fs_hcint5
 
 /// FS_HCINTMSK5 - OTG_FS host channel-5 mask register (OTG_FS_HCINTMSK5)
 namespace fs_hcintmsk5 {
-    /// Transfer completed mask
-    /// Position: 0, Width: 1
-    using XFRCM = BitField<0, 1>;
-    constexpr uint32_t XFRCM_Pos = 0;
-    constexpr uint32_t XFRCM_Msk = XFRCM::mask;
+/// Transfer completed mask
+/// Position: 0, Width: 1
+using XFRCM = BitField<0, 1>;
+constexpr uint32_t XFRCM_Pos = 0;
+constexpr uint32_t XFRCM_Msk = XFRCM::mask;
 
-    /// Channel halted mask
-    /// Position: 1, Width: 1
-    using CHHM = BitField<1, 1>;
-    constexpr uint32_t CHHM_Pos = 1;
-    constexpr uint32_t CHHM_Msk = CHHM::mask;
+/// Channel halted mask
+/// Position: 1, Width: 1
+using CHHM = BitField<1, 1>;
+constexpr uint32_t CHHM_Pos = 1;
+constexpr uint32_t CHHM_Msk = CHHM::mask;
 
-    /// STALL response received interrupt mask
-    /// Position: 3, Width: 1
-    using STALLM = BitField<3, 1>;
-    constexpr uint32_t STALLM_Pos = 3;
-    constexpr uint32_t STALLM_Msk = STALLM::mask;
+/// STALL response received interrupt mask
+/// Position: 3, Width: 1
+using STALLM = BitField<3, 1>;
+constexpr uint32_t STALLM_Pos = 3;
+constexpr uint32_t STALLM_Msk = STALLM::mask;
 
-    /// NAK response received interrupt mask
-    /// Position: 4, Width: 1
-    using NAKM = BitField<4, 1>;
-    constexpr uint32_t NAKM_Pos = 4;
-    constexpr uint32_t NAKM_Msk = NAKM::mask;
+/// NAK response received interrupt mask
+/// Position: 4, Width: 1
+using NAKM = BitField<4, 1>;
+constexpr uint32_t NAKM_Pos = 4;
+constexpr uint32_t NAKM_Msk = NAKM::mask;
 
-    /// ACK response received/transmitted interrupt mask
-    /// Position: 5, Width: 1
-    using ACKM = BitField<5, 1>;
-    constexpr uint32_t ACKM_Pos = 5;
-    constexpr uint32_t ACKM_Msk = ACKM::mask;
+/// ACK response received/transmitted interrupt mask
+/// Position: 5, Width: 1
+using ACKM = BitField<5, 1>;
+constexpr uint32_t ACKM_Pos = 5;
+constexpr uint32_t ACKM_Msk = ACKM::mask;
 
-    /// response received interrupt mask
-    /// Position: 6, Width: 1
-    using NYET = BitField<6, 1>;
-    constexpr uint32_t NYET_Pos = 6;
-    constexpr uint32_t NYET_Msk = NYET::mask;
+/// response received interrupt mask
+/// Position: 6, Width: 1
+using NYET = BitField<6, 1>;
+constexpr uint32_t NYET_Pos = 6;
+constexpr uint32_t NYET_Msk = NYET::mask;
 
-    /// Transaction error mask
-    /// Position: 7, Width: 1
-    using TXERRM = BitField<7, 1>;
-    constexpr uint32_t TXERRM_Pos = 7;
-    constexpr uint32_t TXERRM_Msk = TXERRM::mask;
+/// Transaction error mask
+/// Position: 7, Width: 1
+using TXERRM = BitField<7, 1>;
+constexpr uint32_t TXERRM_Pos = 7;
+constexpr uint32_t TXERRM_Msk = TXERRM::mask;
 
-    /// Babble error mask
-    /// Position: 8, Width: 1
-    using BBERRM = BitField<8, 1>;
-    constexpr uint32_t BBERRM_Pos = 8;
-    constexpr uint32_t BBERRM_Msk = BBERRM::mask;
+/// Babble error mask
+/// Position: 8, Width: 1
+using BBERRM = BitField<8, 1>;
+constexpr uint32_t BBERRM_Pos = 8;
+constexpr uint32_t BBERRM_Msk = BBERRM::mask;
 
-    /// Frame overrun mask
-    /// Position: 9, Width: 1
-    using FRMORM = BitField<9, 1>;
-    constexpr uint32_t FRMORM_Pos = 9;
-    constexpr uint32_t FRMORM_Msk = FRMORM::mask;
+/// Frame overrun mask
+/// Position: 9, Width: 1
+using FRMORM = BitField<9, 1>;
+constexpr uint32_t FRMORM_Pos = 9;
+constexpr uint32_t FRMORM_Msk = FRMORM::mask;
 
-    /// Data toggle error mask
-    /// Position: 10, Width: 1
-    using DTERRM = BitField<10, 1>;
-    constexpr uint32_t DTERRM_Pos = 10;
-    constexpr uint32_t DTERRM_Msk = DTERRM::mask;
+/// Data toggle error mask
+/// Position: 10, Width: 1
+using DTERRM = BitField<10, 1>;
+constexpr uint32_t DTERRM_Pos = 10;
+constexpr uint32_t DTERRM_Msk = DTERRM::mask;
 
 }  // namespace fs_hcintmsk5
 
 /// FS_HCTSIZ5 - OTG_FS host channel-5 transfer size register
 namespace fs_hctsiz5 {
-    /// Transfer size
-    /// Position: 0, Width: 19
-    using XFRSIZ = BitField<0, 19>;
-    constexpr uint32_t XFRSIZ_Pos = 0;
-    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+/// Transfer size
+/// Position: 0, Width: 19
+using XFRSIZ = BitField<0, 19>;
+constexpr uint32_t XFRSIZ_Pos = 0;
+constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-    /// Packet count
-    /// Position: 19, Width: 10
-    using PKTCNT = BitField<19, 10>;
-    constexpr uint32_t PKTCNT_Pos = 19;
-    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+/// Packet count
+/// Position: 19, Width: 10
+using PKTCNT = BitField<19, 10>;
+constexpr uint32_t PKTCNT_Pos = 19;
+constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-    /// Data PID
-    /// Position: 29, Width: 2
-    using DPID = BitField<29, 2>;
-    constexpr uint32_t DPID_Pos = 29;
-    constexpr uint32_t DPID_Msk = DPID::mask;
+/// Data PID
+/// Position: 29, Width: 2
+using DPID = BitField<29, 2>;
+constexpr uint32_t DPID_Pos = 29;
+constexpr uint32_t DPID_Msk = DPID::mask;
 
 }  // namespace fs_hctsiz5
 
 /// FS_HCCHAR6 - OTG_FS host channel-6 characteristics register (OTG_FS_HCCHAR6)
 namespace fs_hcchar6 {
-    /// Maximum packet size
-    /// Position: 0, Width: 11
-    using MPSIZ = BitField<0, 11>;
-    constexpr uint32_t MPSIZ_Pos = 0;
-    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+/// Maximum packet size
+/// Position: 0, Width: 11
+using MPSIZ = BitField<0, 11>;
+constexpr uint32_t MPSIZ_Pos = 0;
+constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-    /// Endpoint number
-    /// Position: 11, Width: 4
-    using EPNUM = BitField<11, 4>;
-    constexpr uint32_t EPNUM_Pos = 11;
-    constexpr uint32_t EPNUM_Msk = EPNUM::mask;
+/// Endpoint number
+/// Position: 11, Width: 4
+using EPNUM = BitField<11, 4>;
+constexpr uint32_t EPNUM_Pos = 11;
+constexpr uint32_t EPNUM_Msk = EPNUM::mask;
 
-    /// Endpoint direction
-    /// Position: 15, Width: 1
-    using EPDIR = BitField<15, 1>;
-    constexpr uint32_t EPDIR_Pos = 15;
-    constexpr uint32_t EPDIR_Msk = EPDIR::mask;
+/// Endpoint direction
+/// Position: 15, Width: 1
+using EPDIR = BitField<15, 1>;
+constexpr uint32_t EPDIR_Pos = 15;
+constexpr uint32_t EPDIR_Msk = EPDIR::mask;
 
-    /// Low-speed device
-    /// Position: 17, Width: 1
-    using LSDEV = BitField<17, 1>;
-    constexpr uint32_t LSDEV_Pos = 17;
-    constexpr uint32_t LSDEV_Msk = LSDEV::mask;
+/// Low-speed device
+/// Position: 17, Width: 1
+using LSDEV = BitField<17, 1>;
+constexpr uint32_t LSDEV_Pos = 17;
+constexpr uint32_t LSDEV_Msk = LSDEV::mask;
 
-    /// Endpoint type
-    /// Position: 18, Width: 2
-    using EPTYP = BitField<18, 2>;
-    constexpr uint32_t EPTYP_Pos = 18;
-    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+/// Endpoint type
+/// Position: 18, Width: 2
+using EPTYP = BitField<18, 2>;
+constexpr uint32_t EPTYP_Pos = 18;
+constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-    /// Multicount
-    /// Position: 20, Width: 2
-    using MCNT = BitField<20, 2>;
-    constexpr uint32_t MCNT_Pos = 20;
-    constexpr uint32_t MCNT_Msk = MCNT::mask;
+/// Multicount
+/// Position: 20, Width: 2
+using MCNT = BitField<20, 2>;
+constexpr uint32_t MCNT_Pos = 20;
+constexpr uint32_t MCNT_Msk = MCNT::mask;
 
-    /// Device address
-    /// Position: 22, Width: 7
-    using DAD = BitField<22, 7>;
-    constexpr uint32_t DAD_Pos = 22;
-    constexpr uint32_t DAD_Msk = DAD::mask;
+/// Device address
+/// Position: 22, Width: 7
+using DAD = BitField<22, 7>;
+constexpr uint32_t DAD_Pos = 22;
+constexpr uint32_t DAD_Msk = DAD::mask;
 
-    /// Odd frame
-    /// Position: 29, Width: 1
-    using ODDFRM = BitField<29, 1>;
-    constexpr uint32_t ODDFRM_Pos = 29;
-    constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
+/// Odd frame
+/// Position: 29, Width: 1
+using ODDFRM = BitField<29, 1>;
+constexpr uint32_t ODDFRM_Pos = 29;
+constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
 
-    /// Channel disable
-    /// Position: 30, Width: 1
-    using CHDIS = BitField<30, 1>;
-    constexpr uint32_t CHDIS_Pos = 30;
-    constexpr uint32_t CHDIS_Msk = CHDIS::mask;
+/// Channel disable
+/// Position: 30, Width: 1
+using CHDIS = BitField<30, 1>;
+constexpr uint32_t CHDIS_Pos = 30;
+constexpr uint32_t CHDIS_Msk = CHDIS::mask;
 
-    /// Channel enable
-    /// Position: 31, Width: 1
-    using CHENA = BitField<31, 1>;
-    constexpr uint32_t CHENA_Pos = 31;
-    constexpr uint32_t CHENA_Msk = CHENA::mask;
+/// Channel enable
+/// Position: 31, Width: 1
+using CHENA = BitField<31, 1>;
+constexpr uint32_t CHENA_Pos = 31;
+constexpr uint32_t CHENA_Msk = CHENA::mask;
 
 }  // namespace fs_hcchar6
 
 /// FS_HCINT6 - OTG_FS host channel-6 interrupt register (OTG_FS_HCINT6)
 namespace fs_hcint6 {
-    /// Transfer completed
-    /// Position: 0, Width: 1
-    using XFRC = BitField<0, 1>;
-    constexpr uint32_t XFRC_Pos = 0;
-    constexpr uint32_t XFRC_Msk = XFRC::mask;
+/// Transfer completed
+/// Position: 0, Width: 1
+using XFRC = BitField<0, 1>;
+constexpr uint32_t XFRC_Pos = 0;
+constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-    /// Channel halted
-    /// Position: 1, Width: 1
-    using CHH = BitField<1, 1>;
-    constexpr uint32_t CHH_Pos = 1;
-    constexpr uint32_t CHH_Msk = CHH::mask;
+/// Channel halted
+/// Position: 1, Width: 1
+using CHH = BitField<1, 1>;
+constexpr uint32_t CHH_Pos = 1;
+constexpr uint32_t CHH_Msk = CHH::mask;
 
-    /// STALL response received interrupt
-    /// Position: 3, Width: 1
-    using STALL = BitField<3, 1>;
-    constexpr uint32_t STALL_Pos = 3;
-    constexpr uint32_t STALL_Msk = STALL::mask;
+/// STALL response received interrupt
+/// Position: 3, Width: 1
+using STALL = BitField<3, 1>;
+constexpr uint32_t STALL_Pos = 3;
+constexpr uint32_t STALL_Msk = STALL::mask;
 
-    /// NAK response received interrupt
-    /// Position: 4, Width: 1
-    using NAK = BitField<4, 1>;
-    constexpr uint32_t NAK_Pos = 4;
-    constexpr uint32_t NAK_Msk = NAK::mask;
+/// NAK response received interrupt
+/// Position: 4, Width: 1
+using NAK = BitField<4, 1>;
+constexpr uint32_t NAK_Pos = 4;
+constexpr uint32_t NAK_Msk = NAK::mask;
 
-    /// ACK response received/transmitted interrupt
-    /// Position: 5, Width: 1
-    using ACK = BitField<5, 1>;
-    constexpr uint32_t ACK_Pos = 5;
-    constexpr uint32_t ACK_Msk = ACK::mask;
+/// ACK response received/transmitted interrupt
+/// Position: 5, Width: 1
+using ACK = BitField<5, 1>;
+constexpr uint32_t ACK_Pos = 5;
+constexpr uint32_t ACK_Msk = ACK::mask;
 
-    /// Transaction error
-    /// Position: 7, Width: 1
-    using TXERR = BitField<7, 1>;
-    constexpr uint32_t TXERR_Pos = 7;
-    constexpr uint32_t TXERR_Msk = TXERR::mask;
+/// Transaction error
+/// Position: 7, Width: 1
+using TXERR = BitField<7, 1>;
+constexpr uint32_t TXERR_Pos = 7;
+constexpr uint32_t TXERR_Msk = TXERR::mask;
 
-    /// Babble error
-    /// Position: 8, Width: 1
-    using BBERR = BitField<8, 1>;
-    constexpr uint32_t BBERR_Pos = 8;
-    constexpr uint32_t BBERR_Msk = BBERR::mask;
+/// Babble error
+/// Position: 8, Width: 1
+using BBERR = BitField<8, 1>;
+constexpr uint32_t BBERR_Pos = 8;
+constexpr uint32_t BBERR_Msk = BBERR::mask;
 
-    /// Frame overrun
-    /// Position: 9, Width: 1
-    using FRMOR = BitField<9, 1>;
-    constexpr uint32_t FRMOR_Pos = 9;
-    constexpr uint32_t FRMOR_Msk = FRMOR::mask;
+/// Frame overrun
+/// Position: 9, Width: 1
+using FRMOR = BitField<9, 1>;
+constexpr uint32_t FRMOR_Pos = 9;
+constexpr uint32_t FRMOR_Msk = FRMOR::mask;
 
-    /// Data toggle error
-    /// Position: 10, Width: 1
-    using DTERR = BitField<10, 1>;
-    constexpr uint32_t DTERR_Pos = 10;
-    constexpr uint32_t DTERR_Msk = DTERR::mask;
+/// Data toggle error
+/// Position: 10, Width: 1
+using DTERR = BitField<10, 1>;
+constexpr uint32_t DTERR_Pos = 10;
+constexpr uint32_t DTERR_Msk = DTERR::mask;
 
 }  // namespace fs_hcint6
 
 /// FS_HCINTMSK6 - OTG_FS host channel-6 mask register (OTG_FS_HCINTMSK6)
 namespace fs_hcintmsk6 {
-    /// Transfer completed mask
-    /// Position: 0, Width: 1
-    using XFRCM = BitField<0, 1>;
-    constexpr uint32_t XFRCM_Pos = 0;
-    constexpr uint32_t XFRCM_Msk = XFRCM::mask;
+/// Transfer completed mask
+/// Position: 0, Width: 1
+using XFRCM = BitField<0, 1>;
+constexpr uint32_t XFRCM_Pos = 0;
+constexpr uint32_t XFRCM_Msk = XFRCM::mask;
 
-    /// Channel halted mask
-    /// Position: 1, Width: 1
-    using CHHM = BitField<1, 1>;
-    constexpr uint32_t CHHM_Pos = 1;
-    constexpr uint32_t CHHM_Msk = CHHM::mask;
+/// Channel halted mask
+/// Position: 1, Width: 1
+using CHHM = BitField<1, 1>;
+constexpr uint32_t CHHM_Pos = 1;
+constexpr uint32_t CHHM_Msk = CHHM::mask;
 
-    /// STALL response received interrupt mask
-    /// Position: 3, Width: 1
-    using STALLM = BitField<3, 1>;
-    constexpr uint32_t STALLM_Pos = 3;
-    constexpr uint32_t STALLM_Msk = STALLM::mask;
+/// STALL response received interrupt mask
+/// Position: 3, Width: 1
+using STALLM = BitField<3, 1>;
+constexpr uint32_t STALLM_Pos = 3;
+constexpr uint32_t STALLM_Msk = STALLM::mask;
 
-    /// NAK response received interrupt mask
-    /// Position: 4, Width: 1
-    using NAKM = BitField<4, 1>;
-    constexpr uint32_t NAKM_Pos = 4;
-    constexpr uint32_t NAKM_Msk = NAKM::mask;
+/// NAK response received interrupt mask
+/// Position: 4, Width: 1
+using NAKM = BitField<4, 1>;
+constexpr uint32_t NAKM_Pos = 4;
+constexpr uint32_t NAKM_Msk = NAKM::mask;
 
-    /// ACK response received/transmitted interrupt mask
-    /// Position: 5, Width: 1
-    using ACKM = BitField<5, 1>;
-    constexpr uint32_t ACKM_Pos = 5;
-    constexpr uint32_t ACKM_Msk = ACKM::mask;
+/// ACK response received/transmitted interrupt mask
+/// Position: 5, Width: 1
+using ACKM = BitField<5, 1>;
+constexpr uint32_t ACKM_Pos = 5;
+constexpr uint32_t ACKM_Msk = ACKM::mask;
 
-    /// response received interrupt mask
-    /// Position: 6, Width: 1
-    using NYET = BitField<6, 1>;
-    constexpr uint32_t NYET_Pos = 6;
-    constexpr uint32_t NYET_Msk = NYET::mask;
+/// response received interrupt mask
+/// Position: 6, Width: 1
+using NYET = BitField<6, 1>;
+constexpr uint32_t NYET_Pos = 6;
+constexpr uint32_t NYET_Msk = NYET::mask;
 
-    /// Transaction error mask
-    /// Position: 7, Width: 1
-    using TXERRM = BitField<7, 1>;
-    constexpr uint32_t TXERRM_Pos = 7;
-    constexpr uint32_t TXERRM_Msk = TXERRM::mask;
+/// Transaction error mask
+/// Position: 7, Width: 1
+using TXERRM = BitField<7, 1>;
+constexpr uint32_t TXERRM_Pos = 7;
+constexpr uint32_t TXERRM_Msk = TXERRM::mask;
 
-    /// Babble error mask
-    /// Position: 8, Width: 1
-    using BBERRM = BitField<8, 1>;
-    constexpr uint32_t BBERRM_Pos = 8;
-    constexpr uint32_t BBERRM_Msk = BBERRM::mask;
+/// Babble error mask
+/// Position: 8, Width: 1
+using BBERRM = BitField<8, 1>;
+constexpr uint32_t BBERRM_Pos = 8;
+constexpr uint32_t BBERRM_Msk = BBERRM::mask;
 
-    /// Frame overrun mask
-    /// Position: 9, Width: 1
-    using FRMORM = BitField<9, 1>;
-    constexpr uint32_t FRMORM_Pos = 9;
-    constexpr uint32_t FRMORM_Msk = FRMORM::mask;
+/// Frame overrun mask
+/// Position: 9, Width: 1
+using FRMORM = BitField<9, 1>;
+constexpr uint32_t FRMORM_Pos = 9;
+constexpr uint32_t FRMORM_Msk = FRMORM::mask;
 
-    /// Data toggle error mask
-    /// Position: 10, Width: 1
-    using DTERRM = BitField<10, 1>;
-    constexpr uint32_t DTERRM_Pos = 10;
-    constexpr uint32_t DTERRM_Msk = DTERRM::mask;
+/// Data toggle error mask
+/// Position: 10, Width: 1
+using DTERRM = BitField<10, 1>;
+constexpr uint32_t DTERRM_Pos = 10;
+constexpr uint32_t DTERRM_Msk = DTERRM::mask;
 
 }  // namespace fs_hcintmsk6
 
 /// FS_HCTSIZ6 - OTG_FS host channel-6 transfer size register
 namespace fs_hctsiz6 {
-    /// Transfer size
-    /// Position: 0, Width: 19
-    using XFRSIZ = BitField<0, 19>;
-    constexpr uint32_t XFRSIZ_Pos = 0;
-    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+/// Transfer size
+/// Position: 0, Width: 19
+using XFRSIZ = BitField<0, 19>;
+constexpr uint32_t XFRSIZ_Pos = 0;
+constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-    /// Packet count
-    /// Position: 19, Width: 10
-    using PKTCNT = BitField<19, 10>;
-    constexpr uint32_t PKTCNT_Pos = 19;
-    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+/// Packet count
+/// Position: 19, Width: 10
+using PKTCNT = BitField<19, 10>;
+constexpr uint32_t PKTCNT_Pos = 19;
+constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-    /// Data PID
-    /// Position: 29, Width: 2
-    using DPID = BitField<29, 2>;
-    constexpr uint32_t DPID_Pos = 29;
-    constexpr uint32_t DPID_Msk = DPID::mask;
+/// Data PID
+/// Position: 29, Width: 2
+using DPID = BitField<29, 2>;
+constexpr uint32_t DPID_Pos = 29;
+constexpr uint32_t DPID_Msk = DPID::mask;
 
 }  // namespace fs_hctsiz6
 
 /// FS_HCCHAR7 - OTG_FS host channel-7 characteristics register (OTG_FS_HCCHAR7)
 namespace fs_hcchar7 {
-    /// Maximum packet size
-    /// Position: 0, Width: 11
-    using MPSIZ = BitField<0, 11>;
-    constexpr uint32_t MPSIZ_Pos = 0;
-    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+/// Maximum packet size
+/// Position: 0, Width: 11
+using MPSIZ = BitField<0, 11>;
+constexpr uint32_t MPSIZ_Pos = 0;
+constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-    /// Endpoint number
-    /// Position: 11, Width: 4
-    using EPNUM = BitField<11, 4>;
-    constexpr uint32_t EPNUM_Pos = 11;
-    constexpr uint32_t EPNUM_Msk = EPNUM::mask;
+/// Endpoint number
+/// Position: 11, Width: 4
+using EPNUM = BitField<11, 4>;
+constexpr uint32_t EPNUM_Pos = 11;
+constexpr uint32_t EPNUM_Msk = EPNUM::mask;
 
-    /// Endpoint direction
-    /// Position: 15, Width: 1
-    using EPDIR = BitField<15, 1>;
-    constexpr uint32_t EPDIR_Pos = 15;
-    constexpr uint32_t EPDIR_Msk = EPDIR::mask;
+/// Endpoint direction
+/// Position: 15, Width: 1
+using EPDIR = BitField<15, 1>;
+constexpr uint32_t EPDIR_Pos = 15;
+constexpr uint32_t EPDIR_Msk = EPDIR::mask;
 
-    /// Low-speed device
-    /// Position: 17, Width: 1
-    using LSDEV = BitField<17, 1>;
-    constexpr uint32_t LSDEV_Pos = 17;
-    constexpr uint32_t LSDEV_Msk = LSDEV::mask;
+/// Low-speed device
+/// Position: 17, Width: 1
+using LSDEV = BitField<17, 1>;
+constexpr uint32_t LSDEV_Pos = 17;
+constexpr uint32_t LSDEV_Msk = LSDEV::mask;
 
-    /// Endpoint type
-    /// Position: 18, Width: 2
-    using EPTYP = BitField<18, 2>;
-    constexpr uint32_t EPTYP_Pos = 18;
-    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+/// Endpoint type
+/// Position: 18, Width: 2
+using EPTYP = BitField<18, 2>;
+constexpr uint32_t EPTYP_Pos = 18;
+constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-    /// Multicount
-    /// Position: 20, Width: 2
-    using MCNT = BitField<20, 2>;
-    constexpr uint32_t MCNT_Pos = 20;
-    constexpr uint32_t MCNT_Msk = MCNT::mask;
+/// Multicount
+/// Position: 20, Width: 2
+using MCNT = BitField<20, 2>;
+constexpr uint32_t MCNT_Pos = 20;
+constexpr uint32_t MCNT_Msk = MCNT::mask;
 
-    /// Device address
-    /// Position: 22, Width: 7
-    using DAD = BitField<22, 7>;
-    constexpr uint32_t DAD_Pos = 22;
-    constexpr uint32_t DAD_Msk = DAD::mask;
+/// Device address
+/// Position: 22, Width: 7
+using DAD = BitField<22, 7>;
+constexpr uint32_t DAD_Pos = 22;
+constexpr uint32_t DAD_Msk = DAD::mask;
 
-    /// Odd frame
-    /// Position: 29, Width: 1
-    using ODDFRM = BitField<29, 1>;
-    constexpr uint32_t ODDFRM_Pos = 29;
-    constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
+/// Odd frame
+/// Position: 29, Width: 1
+using ODDFRM = BitField<29, 1>;
+constexpr uint32_t ODDFRM_Pos = 29;
+constexpr uint32_t ODDFRM_Msk = ODDFRM::mask;
 
-    /// Channel disable
-    /// Position: 30, Width: 1
-    using CHDIS = BitField<30, 1>;
-    constexpr uint32_t CHDIS_Pos = 30;
-    constexpr uint32_t CHDIS_Msk = CHDIS::mask;
+/// Channel disable
+/// Position: 30, Width: 1
+using CHDIS = BitField<30, 1>;
+constexpr uint32_t CHDIS_Pos = 30;
+constexpr uint32_t CHDIS_Msk = CHDIS::mask;
 
-    /// Channel enable
-    /// Position: 31, Width: 1
-    using CHENA = BitField<31, 1>;
-    constexpr uint32_t CHENA_Pos = 31;
-    constexpr uint32_t CHENA_Msk = CHENA::mask;
+/// Channel enable
+/// Position: 31, Width: 1
+using CHENA = BitField<31, 1>;
+constexpr uint32_t CHENA_Pos = 31;
+constexpr uint32_t CHENA_Msk = CHENA::mask;
 
 }  // namespace fs_hcchar7
 
 /// FS_HCINT7 - OTG_FS host channel-7 interrupt register (OTG_FS_HCINT7)
 namespace fs_hcint7 {
-    /// Transfer completed
-    /// Position: 0, Width: 1
-    using XFRC = BitField<0, 1>;
-    constexpr uint32_t XFRC_Pos = 0;
-    constexpr uint32_t XFRC_Msk = XFRC::mask;
+/// Transfer completed
+/// Position: 0, Width: 1
+using XFRC = BitField<0, 1>;
+constexpr uint32_t XFRC_Pos = 0;
+constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-    /// Channel halted
-    /// Position: 1, Width: 1
-    using CHH = BitField<1, 1>;
-    constexpr uint32_t CHH_Pos = 1;
-    constexpr uint32_t CHH_Msk = CHH::mask;
+/// Channel halted
+/// Position: 1, Width: 1
+using CHH = BitField<1, 1>;
+constexpr uint32_t CHH_Pos = 1;
+constexpr uint32_t CHH_Msk = CHH::mask;
 
-    /// STALL response received interrupt
-    /// Position: 3, Width: 1
-    using STALL = BitField<3, 1>;
-    constexpr uint32_t STALL_Pos = 3;
-    constexpr uint32_t STALL_Msk = STALL::mask;
+/// STALL response received interrupt
+/// Position: 3, Width: 1
+using STALL = BitField<3, 1>;
+constexpr uint32_t STALL_Pos = 3;
+constexpr uint32_t STALL_Msk = STALL::mask;
 
-    /// NAK response received interrupt
-    /// Position: 4, Width: 1
-    using NAK = BitField<4, 1>;
-    constexpr uint32_t NAK_Pos = 4;
-    constexpr uint32_t NAK_Msk = NAK::mask;
+/// NAK response received interrupt
+/// Position: 4, Width: 1
+using NAK = BitField<4, 1>;
+constexpr uint32_t NAK_Pos = 4;
+constexpr uint32_t NAK_Msk = NAK::mask;
 
-    /// ACK response received/transmitted interrupt
-    /// Position: 5, Width: 1
-    using ACK = BitField<5, 1>;
-    constexpr uint32_t ACK_Pos = 5;
-    constexpr uint32_t ACK_Msk = ACK::mask;
+/// ACK response received/transmitted interrupt
+/// Position: 5, Width: 1
+using ACK = BitField<5, 1>;
+constexpr uint32_t ACK_Pos = 5;
+constexpr uint32_t ACK_Msk = ACK::mask;
 
-    /// Transaction error
-    /// Position: 7, Width: 1
-    using TXERR = BitField<7, 1>;
-    constexpr uint32_t TXERR_Pos = 7;
-    constexpr uint32_t TXERR_Msk = TXERR::mask;
+/// Transaction error
+/// Position: 7, Width: 1
+using TXERR = BitField<7, 1>;
+constexpr uint32_t TXERR_Pos = 7;
+constexpr uint32_t TXERR_Msk = TXERR::mask;
 
-    /// Babble error
-    /// Position: 8, Width: 1
-    using BBERR = BitField<8, 1>;
-    constexpr uint32_t BBERR_Pos = 8;
-    constexpr uint32_t BBERR_Msk = BBERR::mask;
+/// Babble error
+/// Position: 8, Width: 1
+using BBERR = BitField<8, 1>;
+constexpr uint32_t BBERR_Pos = 8;
+constexpr uint32_t BBERR_Msk = BBERR::mask;
 
-    /// Frame overrun
-    /// Position: 9, Width: 1
-    using FRMOR = BitField<9, 1>;
-    constexpr uint32_t FRMOR_Pos = 9;
-    constexpr uint32_t FRMOR_Msk = FRMOR::mask;
+/// Frame overrun
+/// Position: 9, Width: 1
+using FRMOR = BitField<9, 1>;
+constexpr uint32_t FRMOR_Pos = 9;
+constexpr uint32_t FRMOR_Msk = FRMOR::mask;
 
-    /// Data toggle error
-    /// Position: 10, Width: 1
-    using DTERR = BitField<10, 1>;
-    constexpr uint32_t DTERR_Pos = 10;
-    constexpr uint32_t DTERR_Msk = DTERR::mask;
+/// Data toggle error
+/// Position: 10, Width: 1
+using DTERR = BitField<10, 1>;
+constexpr uint32_t DTERR_Pos = 10;
+constexpr uint32_t DTERR_Msk = DTERR::mask;
 
 }  // namespace fs_hcint7
 
 /// FS_HCINTMSK7 - OTG_FS host channel-7 mask register (OTG_FS_HCINTMSK7)
 namespace fs_hcintmsk7 {
-    /// Transfer completed mask
-    /// Position: 0, Width: 1
-    using XFRCM = BitField<0, 1>;
-    constexpr uint32_t XFRCM_Pos = 0;
-    constexpr uint32_t XFRCM_Msk = XFRCM::mask;
+/// Transfer completed mask
+/// Position: 0, Width: 1
+using XFRCM = BitField<0, 1>;
+constexpr uint32_t XFRCM_Pos = 0;
+constexpr uint32_t XFRCM_Msk = XFRCM::mask;
 
-    /// Channel halted mask
-    /// Position: 1, Width: 1
-    using CHHM = BitField<1, 1>;
-    constexpr uint32_t CHHM_Pos = 1;
-    constexpr uint32_t CHHM_Msk = CHHM::mask;
+/// Channel halted mask
+/// Position: 1, Width: 1
+using CHHM = BitField<1, 1>;
+constexpr uint32_t CHHM_Pos = 1;
+constexpr uint32_t CHHM_Msk = CHHM::mask;
 
-    /// STALL response received interrupt mask
-    /// Position: 3, Width: 1
-    using STALLM = BitField<3, 1>;
-    constexpr uint32_t STALLM_Pos = 3;
-    constexpr uint32_t STALLM_Msk = STALLM::mask;
+/// STALL response received interrupt mask
+/// Position: 3, Width: 1
+using STALLM = BitField<3, 1>;
+constexpr uint32_t STALLM_Pos = 3;
+constexpr uint32_t STALLM_Msk = STALLM::mask;
 
-    /// NAK response received interrupt mask
-    /// Position: 4, Width: 1
-    using NAKM = BitField<4, 1>;
-    constexpr uint32_t NAKM_Pos = 4;
-    constexpr uint32_t NAKM_Msk = NAKM::mask;
+/// NAK response received interrupt mask
+/// Position: 4, Width: 1
+using NAKM = BitField<4, 1>;
+constexpr uint32_t NAKM_Pos = 4;
+constexpr uint32_t NAKM_Msk = NAKM::mask;
 
-    /// ACK response received/transmitted interrupt mask
-    /// Position: 5, Width: 1
-    using ACKM = BitField<5, 1>;
-    constexpr uint32_t ACKM_Pos = 5;
-    constexpr uint32_t ACKM_Msk = ACKM::mask;
+/// ACK response received/transmitted interrupt mask
+/// Position: 5, Width: 1
+using ACKM = BitField<5, 1>;
+constexpr uint32_t ACKM_Pos = 5;
+constexpr uint32_t ACKM_Msk = ACKM::mask;
 
-    /// response received interrupt mask
-    /// Position: 6, Width: 1
-    using NYET = BitField<6, 1>;
-    constexpr uint32_t NYET_Pos = 6;
-    constexpr uint32_t NYET_Msk = NYET::mask;
+/// response received interrupt mask
+/// Position: 6, Width: 1
+using NYET = BitField<6, 1>;
+constexpr uint32_t NYET_Pos = 6;
+constexpr uint32_t NYET_Msk = NYET::mask;
 
-    /// Transaction error mask
-    /// Position: 7, Width: 1
-    using TXERRM = BitField<7, 1>;
-    constexpr uint32_t TXERRM_Pos = 7;
-    constexpr uint32_t TXERRM_Msk = TXERRM::mask;
+/// Transaction error mask
+/// Position: 7, Width: 1
+using TXERRM = BitField<7, 1>;
+constexpr uint32_t TXERRM_Pos = 7;
+constexpr uint32_t TXERRM_Msk = TXERRM::mask;
 
-    /// Babble error mask
-    /// Position: 8, Width: 1
-    using BBERRM = BitField<8, 1>;
-    constexpr uint32_t BBERRM_Pos = 8;
-    constexpr uint32_t BBERRM_Msk = BBERRM::mask;
+/// Babble error mask
+/// Position: 8, Width: 1
+using BBERRM = BitField<8, 1>;
+constexpr uint32_t BBERRM_Pos = 8;
+constexpr uint32_t BBERRM_Msk = BBERRM::mask;
 
-    /// Frame overrun mask
-    /// Position: 9, Width: 1
-    using FRMORM = BitField<9, 1>;
-    constexpr uint32_t FRMORM_Pos = 9;
-    constexpr uint32_t FRMORM_Msk = FRMORM::mask;
+/// Frame overrun mask
+/// Position: 9, Width: 1
+using FRMORM = BitField<9, 1>;
+constexpr uint32_t FRMORM_Pos = 9;
+constexpr uint32_t FRMORM_Msk = FRMORM::mask;
 
-    /// Data toggle error mask
-    /// Position: 10, Width: 1
-    using DTERRM = BitField<10, 1>;
-    constexpr uint32_t DTERRM_Pos = 10;
-    constexpr uint32_t DTERRM_Msk = DTERRM::mask;
+/// Data toggle error mask
+/// Position: 10, Width: 1
+using DTERRM = BitField<10, 1>;
+constexpr uint32_t DTERRM_Pos = 10;
+constexpr uint32_t DTERRM_Msk = DTERRM::mask;
 
 }  // namespace fs_hcintmsk7
 
 /// FS_HCTSIZ7 - OTG_FS host channel-7 transfer size register
 namespace fs_hctsiz7 {
-    /// Transfer size
-    /// Position: 0, Width: 19
-    using XFRSIZ = BitField<0, 19>;
-    constexpr uint32_t XFRSIZ_Pos = 0;
-    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+/// Transfer size
+/// Position: 0, Width: 19
+using XFRSIZ = BitField<0, 19>;
+constexpr uint32_t XFRSIZ_Pos = 0;
+constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-    /// Packet count
-    /// Position: 19, Width: 10
-    using PKTCNT = BitField<19, 10>;
-    constexpr uint32_t PKTCNT_Pos = 19;
-    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+/// Packet count
+/// Position: 19, Width: 10
+using PKTCNT = BitField<19, 10>;
+constexpr uint32_t PKTCNT_Pos = 19;
+constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-    /// Data PID
-    /// Position: 29, Width: 2
-    using DPID = BitField<29, 2>;
-    constexpr uint32_t DPID_Pos = 29;
-    constexpr uint32_t DPID_Msk = DPID::mask;
+/// Data PID
+/// Position: 29, Width: 2
+using DPID = BitField<29, 2>;
+constexpr uint32_t DPID_Pos = 29;
+constexpr uint32_t DPID_Msk = DPID::mask;
 
 }  // namespace fs_hctsiz7
 

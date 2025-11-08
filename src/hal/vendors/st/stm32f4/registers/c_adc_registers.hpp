@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::c_adc {
 
 /// C_ADC Register Structure
 struct C_ADC_Registers {
-
     /// ADC Common status register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

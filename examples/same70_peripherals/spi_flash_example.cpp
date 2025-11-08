@@ -28,26 +28,26 @@ using namespace alloy::hal::same70;
 
 // Flash command definitions
 namespace FlashCmd {
-    constexpr uint8_t READ_JEDEC_ID = 0x9F;
-    constexpr uint8_t WRITE_ENABLE = 0x06;
-    constexpr uint8_t WRITE_DISABLE = 0x04;
-    constexpr uint8_t READ_STATUS = 0x05;
-    constexpr uint8_t PAGE_PROGRAM = 0x02;
-    constexpr uint8_t READ_DATA = 0x03;
-    constexpr uint8_t SECTOR_ERASE = 0x20;
-}
+constexpr uint8_t READ_JEDEC_ID = 0x9F;
+constexpr uint8_t WRITE_ENABLE = 0x06;
+constexpr uint8_t WRITE_DISABLE = 0x04;
+constexpr uint8_t READ_STATUS = 0x05;
+constexpr uint8_t PAGE_PROGRAM = 0x02;
+constexpr uint8_t READ_DATA = 0x03;
+constexpr uint8_t SECTOR_ERASE = 0x20;
+}  // namespace FlashCmd
 
 // Flash status register bits
 namespace FlashStatus {
-    constexpr uint8_t BUSY = (1 << 0);
-    constexpr uint8_t WEL = (1 << 1);  // Write Enable Latch
-}
+constexpr uint8_t BUSY = (1 << 0);
+constexpr uint8_t WEL = (1 << 1);  // Write Enable Latch
+}  // namespace FlashStatus
 
 /**
  * @brief Simple SPI Flash driver using SAME70 SPI
  */
 class SpiFlash {
-public:
+   public:
     /**
      * @brief Initialize SPI flash
      */
@@ -60,11 +60,9 @@ public:
 
         // Configure CS0 for flash (8 MHz SPI clock, Mode 0)
         // Clock divider = MCK / SPI_CLK = 150MHz / 8MHz = ~19
-        return m_spi.configureChipSelect(
-            SpiChipSelect::CS0,
-            19,  // Clock divider for ~8 MHz
-            alloy::hal::SpiMode::Mode0
-        );
+        return m_spi.configureChipSelect(SpiChipSelect::CS0,
+                                         19,  // Clock divider for ~8 MHz
+                                         alloy::hal::SpiMode::Mode0);
     }
 
     /**
@@ -75,7 +73,6 @@ public:
      */
     auto readJedecId(uint8_t* manufacturer, uint8_t* device_type, uint8_t* capacity)
         -> alloy::core::Result<void> {
-
         uint8_t tx_data[4] = {FlashCmd::READ_JEDEC_ID, 0xFF, 0xFF, 0xFF};
         uint8_t rx_data[4];
 
@@ -141,9 +138,7 @@ public:
     /**
      * @brief Read data from flash
      */
-    auto read(uint32_t address, uint8_t* buffer, size_t size)
-        -> alloy::core::Result<size_t> {
-
+    auto read(uint32_t address, uint8_t* buffer, size_t size) -> alloy::core::Result<size_t> {
         // Wait for ready
         auto wait_result = waitReady();
         if (!wait_result.is_ok()) {
@@ -151,12 +146,9 @@ public:
         }
 
         // Send read command + 24-bit address
-        uint8_t cmd[4] = {
-            FlashCmd::READ_DATA,
-            static_cast<uint8_t>((address >> 16) & 0xFF),
-            static_cast<uint8_t>((address >> 8) & 0xFF),
-            static_cast<uint8_t>(address & 0xFF)
-        };
+        uint8_t cmd[4] = {FlashCmd::READ_DATA, static_cast<uint8_t>((address >> 16) & 0xFF),
+                          static_cast<uint8_t>((address >> 8) & 0xFF),
+                          static_cast<uint8_t>(address & 0xFF)};
 
         auto cmd_result = m_spi.write(cmd, 4, SpiChipSelect::CS0);
         if (!cmd_result.is_ok()) {
@@ -172,11 +164,9 @@ public:
     /**
      * @brief Close SPI peripheral
      */
-    auto close() -> alloy::core::Result<void> {
-        return m_spi.close();
-    }
+    auto close() -> alloy::core::Result<void> { return m_spi.close(); }
 
-private:
+   private:
     Spi0 m_spi;
 };
 

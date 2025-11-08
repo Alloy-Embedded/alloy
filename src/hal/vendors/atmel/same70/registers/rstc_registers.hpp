@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::rstc {
 
 /// RSTC Register Structure
 struct RSTC_Registers {
-
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only

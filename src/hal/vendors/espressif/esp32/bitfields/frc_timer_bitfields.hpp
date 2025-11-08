@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::frc_timer {
@@ -19,51 +20,51 @@ using namespace alloy::hal::bitfields;
 
 /// TIMER_LOAD - TIMER_LOAD
 namespace timer_load {
-    /// Position: 0, Width: 8
-    /// Access: read-write
-    using VALUE = BitField<0, 8>;
-    constexpr uint32_t VALUE_Pos = 0;
-    constexpr uint32_t VALUE_Msk = VALUE::mask;
+/// Position: 0, Width: 8
+/// Access: read-write
+using VALUE = BitField<0, 8>;
+constexpr uint32_t VALUE_Pos = 0;
+constexpr uint32_t VALUE_Msk = VALUE::mask;
 
 }  // namespace timer_load
 
 /// TIMER_COUNT - TIMER_COUNT
 namespace timer_count {
-    /// Position: 0, Width: 8
-    /// Access: read-write
-    using TIMER_COUNT = BitField<0, 8>;
-    constexpr uint32_t TIMER_COUNT_Pos = 0;
-    constexpr uint32_t TIMER_COUNT_Msk = TIMER_COUNT::mask;
+/// Position: 0, Width: 8
+/// Access: read-write
+using TIMER_COUNT = BitField<0, 8>;
+constexpr uint32_t TIMER_COUNT_Pos = 0;
+constexpr uint32_t TIMER_COUNT_Msk = TIMER_COUNT::mask;
 
 }  // namespace timer_count
 
 /// TIMER_CTRL - TIMER_CTRL
 namespace timer_ctrl {
-    /// Position: 1, Width: 8
-    /// Access: read-write
-    using TIMER_PRESCALER = BitField<1, 8>;
-    constexpr uint32_t TIMER_PRESCALER_Pos = 1;
-    constexpr uint32_t TIMER_PRESCALER_Msk = TIMER_PRESCALER::mask;
+/// Position: 1, Width: 8
+/// Access: read-write
+using TIMER_PRESCALER = BitField<1, 8>;
+constexpr uint32_t TIMER_PRESCALER_Pos = 1;
+constexpr uint32_t TIMER_PRESCALER_Msk = TIMER_PRESCALER::mask;
 
 }  // namespace timer_ctrl
 
 /// TIMER_INT - TIMER_INT
 namespace timer_int {
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using CLR = BitField<0, 1>;
-    constexpr uint32_t CLR_Pos = 0;
-    constexpr uint32_t CLR_Msk = CLR::mask;
+/// Position: 0, Width: 1
+/// Access: read-write
+using CLR = BitField<0, 1>;
+constexpr uint32_t CLR_Pos = 0;
+constexpr uint32_t CLR_Msk = CLR::mask;
 
 }  // namespace timer_int
 
 /// TIMER_ALARM - TIMER_ALARM
 namespace timer_alarm {
-    /// Position: 0, Width: 8
-    /// Access: read-write
-    using TIMER_ALARM = BitField<0, 8>;
-    constexpr uint32_t TIMER_ALARM_Pos = 0;
-    constexpr uint32_t TIMER_ALARM_Msk = TIMER_ALARM::mask;
+/// Position: 0, Width: 8
+/// Access: read-write
+using TIMER_ALARM = BitField<0, 8>;
+constexpr uint32_t TIMER_ALARM_Pos = 0;
+constexpr uint32_t TIMER_ALARM_Msk = TIMER_ALARM::mask;
 
 }  // namespace timer_alarm
 

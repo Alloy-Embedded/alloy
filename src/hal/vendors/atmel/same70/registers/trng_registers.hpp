@@ -17,12 +17,11 @@ namespace alloy::hal::atmel::same70::trng {
 
 /// TRNG Register Structure
 struct TRNG_Registers {
-
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only
     volatile uint32_t CR;
-    uint8_t RESERVED_0004[12]; ///< Reserved
+    uint8_t RESERVED_0004[12];  ///< Reserved
 
     /// Interrupt Enable Register
     /// Offset: 0x0010
@@ -43,7 +42,7 @@ struct TRNG_Registers {
     /// Offset: 0x001C
     /// Access: read-only
     volatile uint32_t ISR;
-    uint8_t RESERVED_0020[48]; ///< Reserved
+    uint8_t RESERVED_0020[48];  ///< Reserved
 
     /// Output Data Register
     /// Offset: 0x0050

@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::bb {
@@ -19,29 +20,29 @@ using namespace alloy::hal::bitfields;
 
 /// BBPD_CTRL - Baseband control register
 namespace bbpd_ctrl {
-    /// Position: 0, Width: 1
-    /// Access: read-write
-    using DC_EST_FORCE_PD = BitField<0, 1>;
-    constexpr uint32_t DC_EST_FORCE_PD_Pos = 0;
-    constexpr uint32_t DC_EST_FORCE_PD_Msk = DC_EST_FORCE_PD::mask;
+/// Position: 0, Width: 1
+/// Access: read-write
+using DC_EST_FORCE_PD = BitField<0, 1>;
+constexpr uint32_t DC_EST_FORCE_PD_Pos = 0;
+constexpr uint32_t DC_EST_FORCE_PD_Msk = DC_EST_FORCE_PD::mask;
 
-    /// Position: 1, Width: 1
-    /// Access: read-write
-    using DC_EST_FORCE_PU = BitField<1, 1>;
-    constexpr uint32_t DC_EST_FORCE_PU_Pos = 1;
-    constexpr uint32_t DC_EST_FORCE_PU_Msk = DC_EST_FORCE_PU::mask;
+/// Position: 1, Width: 1
+/// Access: read-write
+using DC_EST_FORCE_PU = BitField<1, 1>;
+constexpr uint32_t DC_EST_FORCE_PU_Pos = 1;
+constexpr uint32_t DC_EST_FORCE_PU_Msk = DC_EST_FORCE_PU::mask;
 
-    /// Position: 2, Width: 1
-    /// Access: read-write
-    using FFT_FORCE_PD = BitField<2, 1>;
-    constexpr uint32_t FFT_FORCE_PD_Pos = 2;
-    constexpr uint32_t FFT_FORCE_PD_Msk = FFT_FORCE_PD::mask;
+/// Position: 2, Width: 1
+/// Access: read-write
+using FFT_FORCE_PD = BitField<2, 1>;
+constexpr uint32_t FFT_FORCE_PD_Pos = 2;
+constexpr uint32_t FFT_FORCE_PD_Msk = FFT_FORCE_PD::mask;
 
-    /// Position: 3, Width: 1
-    /// Access: read-write
-    using FFT_FORCE_PU = BitField<3, 1>;
-    constexpr uint32_t FFT_FORCE_PU_Pos = 3;
-    constexpr uint32_t FFT_FORCE_PU_Msk = FFT_FORCE_PU::mask;
+/// Position: 3, Width: 1
+/// Access: read-write
+using FFT_FORCE_PU = BitField<3, 1>;
+constexpr uint32_t FFT_FORCE_PU_Pos = 3;
+constexpr uint32_t FFT_FORCE_PU_Msk = FFT_FORCE_PU::mask;
 
 }  // namespace bbpd_ctrl
 

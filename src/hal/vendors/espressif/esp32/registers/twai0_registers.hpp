@@ -17,7 +17,6 @@ namespace alloy::hal::espressif::esp32::twai0 {
 
 /// TWAI0 Register Structure
 struct TWAI0_Registers {
-
     /// Mode Register
     /// Offset: 0x0000
     /// Reset value: 0x00000001
@@ -38,7 +37,7 @@ struct TWAI0_Registers {
     /// Interrupt Enable Register
     /// Offset: 0x0010
     volatile uint32_t INT_ENA;
-    uint8_t RESERVED_0014[4]; ///< Reserved
+    uint8_t RESERVED_0014[4];  ///< Reserved
 
     /// Bus Timing Register 0
     /// Offset: 0x0018
@@ -47,7 +46,7 @@ struct TWAI0_Registers {
     /// Bus Timing Register 1
     /// Offset: 0x001C
     volatile uint32_t BUS_TIMING_1;
-    uint8_t RESERVED_0020[12]; ///< Reserved
+    uint8_t RESERVED_0020[12];  ///< Reserved
 
     /// Arbitration Lost Capture Register
     /// Offset: 0x002C
@@ -125,7 +124,7 @@ struct TWAI0_Registers {
     /// Receive Message Counter Register
     /// Offset: 0x0074
     volatile uint32_t RX_MESSAGE_CNT;
-    uint8_t RESERVED_0078[4]; ///< Reserved
+    uint8_t RESERVED_0078[4];  ///< Reserved
 
     /// Clock Divider register
     /// Offset: 0x007C

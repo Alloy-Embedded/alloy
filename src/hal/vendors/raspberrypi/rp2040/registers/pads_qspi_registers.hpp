@@ -17,7 +17,6 @@ namespace alloy::hal::raspberrypi::rp2040::pads_qspi {
 
 /// PADS_QSPI Register Structure
 struct PADS_QSPI_Registers {
-
     /// Voltage select. Per bank control
     /// Offset: 0x0000
     /// Reset value: 0x00000000

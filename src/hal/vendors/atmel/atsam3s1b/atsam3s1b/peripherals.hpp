@@ -11,10 +11,10 @@ namespace alloy::generated::atsam3s1b {
 
 /// Basic peripheral base addresses
 namespace peripherals {
-    // Peripheral addresses will be added here
-    // This is a minimal implementation
+// Peripheral addresses will be added here
+// This is a minimal implementation
 }
 
-} // namespace alloy::generated::atsam3s1b
+}  // namespace alloy::generated::atsam3s1b
 
-#endif // ALLOY_GENERATED_ATSAM3S1B_PERIPHERALS_HPP
+#endif  // ALLOY_GENERATED_ATSAM3S1B_PERIPHERALS_HPP

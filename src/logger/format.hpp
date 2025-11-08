@@ -3,6 +3,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+
 #include "types.hpp"
 
 namespace alloy {
@@ -12,7 +13,7 @@ namespace logger {
  * Format utilities for logger messages
  */
 class Formatter {
-public:
+   public:
     /**
      * Format timestamp into buffer
      *
@@ -22,8 +23,7 @@ public:
      * @param precision Timestamp precision
      * @return Number of characters written
      */
-    static size_t format_timestamp(char* buffer, size_t size,
-                                   uint64_t timestamp_us,
+    static size_t format_timestamp(char* buffer, size_t size, uint64_t timestamp_us,
                                    TimestampPrecision precision) {
         if (timestamp_us == 0) {
             // Before SysTick initialization
@@ -81,8 +81,7 @@ public:
      * @param line Line number
      * @return Number of characters written
      */
-    static size_t format_source_location(char* buffer, size_t size,
-                                         const char* file, int line) {
+    static size_t format_source_location(char* buffer, size_t size, const char* file, int line) {
         // Extract just filename from path
         const char* filename = get_filename(file);
         return snprintf(buffer, size, "[%s:%d] ", filename, line);
@@ -100,16 +99,14 @@ public:
      * @param config Logger configuration
      * @return Number of characters written
      */
-    static size_t format_prefix(char* buffer, size_t size,
-                                uint64_t timestamp_us, Level level,
-                                const char* file, int line,
-                                const Config& config) {
+    static size_t format_prefix(char* buffer, size_t size, uint64_t timestamp_us, Level level,
+                                const char* file, int line, const Config& config) {
         size_t pos = 0;
 
         // Timestamp
         if (config.enable_timestamps && pos < size) {
-            pos += format_timestamp(buffer + pos, size - pos,
-                                   timestamp_us, config.timestamp_precision);
+            pos += format_timestamp(buffer + pos, size - pos, timestamp_us,
+                                    config.timestamp_precision);
         }
 
         // Log level
@@ -134,23 +131,28 @@ public:
      * @param args Variable arguments
      * @return Number of characters written
      */
-    static size_t format_message(char* buffer, size_t size,
-                                 const char* fmt, va_list args) {
+    static size_t format_message(char* buffer, size_t size, const char* fmt, va_list args) {
         return vsnprintf(buffer, size, fmt, args);
     }
 
-private:
+   private:
     /**
      * Get ANSI color code for log level
      */
     static const char* get_level_color(Level level) {
         switch (level) {
-            case Level::Trace: return "\033[90m";  // Gray
-            case Level::Debug: return "\033[36m";  // Cyan
-            case Level::Info:  return "\033[32m";  // Green
-            case Level::Warn:  return "\033[33m";  // Yellow
-            case Level::Error: return "\033[31m";  // Red
-            default:           return "\033[0m";   // Reset
+            case Level::Trace:
+                return "\033[90m";  // Gray
+            case Level::Debug:
+                return "\033[36m";  // Cyan
+            case Level::Info:
+                return "\033[32m";  // Green
+            case Level::Warn:
+                return "\033[33m";  // Yellow
+            case Level::Error:
+                return "\033[31m";  // Red
+            default:
+                return "\033[0m";  // Reset
         }
     }
 
@@ -158,7 +160,8 @@ private:
      * Extract filename from full path
      */
     static const char* get_filename(const char* path) {
-        if (path == nullptr) return "";
+        if (path == nullptr)
+            return "";
 
         const char* filename = path;
         for (const char* p = path; *p != '\0'; ++p) {
@@ -170,5 +173,5 @@ private:
     }
 };
 
-} // namespace logger
-} // namespace alloy
+}  // namespace logger
+}  // namespace alloy

@@ -5,9 +5,10 @@
  * Tests the ErrorCode enum values and properties
  */
 
-#include "../../src/core/error_code.hpp"
 #include <cassert>
 #include <iostream>
+
+#include "../../src/core/error_code.hpp"
 
 using namespace alloy::core;
 
@@ -15,29 +16,29 @@ using namespace alloy::core;
 static int tests_run = 0;
 static int tests_passed = 0;
 
-#define TEST(name) \
-    void test_##name(); \
-    void run_test_##name() { \
-        tests_run++; \
-        std::cout << "Running test: " #name << "..."; \
-        try { \
-            test_##name(); \
-            tests_passed++; \
-            std::cout << " PASS" << std::endl; \
-        } catch (const std::exception& e) { \
-            std::cout << " FAIL: " << e.what() << std::endl; \
-        } catch (...) { \
+#define TEST(name)                                                \
+    void test_##name();                                           \
+    void run_test_##name() {                                      \
+        tests_run++;                                              \
+        std::cout << "Running test: " #name << "...";             \
+        try {                                                     \
+            test_##name();                                        \
+            tests_passed++;                                       \
+            std::cout << " PASS" << std::endl;                    \
+        } catch (const std::exception& e) {                       \
+            std::cout << " FAIL: " << e.what() << std::endl;      \
+        } catch (...) {                                           \
             std::cout << " FAIL: Unknown exception" << std::endl; \
-        } \
-    } \
+        }                                                         \
+    }                                                             \
     void test_##name()
 
-#define ASSERT(condition) \
-    do { \
-        if (!(condition)) { \
+#define ASSERT(condition)                                              \
+    do {                                                               \
+        if (!(condition)) {                                            \
             throw std::runtime_error("Assertion failed: " #condition); \
-        } \
-    } while(0)
+        }                                                              \
+    } while (0)
 
 // =============================================================================
 // ErrorCode Enum Tests
@@ -120,7 +121,7 @@ TEST(error_code_switch_statement) {
     ErrorCode e = ErrorCode::Timeout;
     bool handled = false;
 
-    switch(e) {
+    switch (e) {
         case ErrorCode::Ok:
             break;
         case ErrorCode::Timeout:

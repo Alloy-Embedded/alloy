@@ -4,8 +4,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-#include <thread>
-#include <chrono>
+    #include <chrono>
+    #include <thread>
 #endif
 
 namespace alloy::platform {
@@ -35,6 +35,6 @@ inline void delay_ms(uint32_t milliseconds) {
 #endif
 }
 
-} // namespace alloy::platform
+}  // namespace alloy::platform
 
-#endif // ALLOY_PLATFORM_DELAY_HPP
+#endif  // ALLOY_PLATFORM_DELAY_HPP

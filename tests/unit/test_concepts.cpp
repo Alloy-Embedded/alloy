@@ -5,11 +5,12 @@
  * Tests the concept definitions used for template constraints
  */
 
-#include "../../src/core/concepts.hpp"
-#include "../../src/core/types.hpp"
 #include <cassert>
 #include <iostream>
 #include <string>
+
+#include "../../src/core/concepts.hpp"
+#include "../../src/core/types.hpp"
 
 using namespace alloy::core;
 
@@ -17,29 +18,29 @@ using namespace alloy::core;
 static int tests_run = 0;
 static int tests_passed = 0;
 
-#define TEST(name) \
-    void test_##name(); \
-    void run_test_##name() { \
-        tests_run++; \
-        std::cout << "Running test: " #name << "..."; \
-        try { \
-            test_##name(); \
-            tests_passed++; \
-            std::cout << " PASS" << std::endl; \
-        } catch (const std::exception& e) { \
-            std::cout << " FAIL: " << e.what() << std::endl; \
-        } catch (...) { \
+#define TEST(name)                                                \
+    void test_##name();                                           \
+    void run_test_##name() {                                      \
+        tests_run++;                                              \
+        std::cout << "Running test: " #name << "...";             \
+        try {                                                     \
+            test_##name();                                        \
+            tests_passed++;                                       \
+            std::cout << " PASS" << std::endl;                    \
+        } catch (const std::exception& e) {                       \
+            std::cout << " FAIL: " << e.what() << std::endl;      \
+        } catch (...) {                                           \
             std::cout << " FAIL: Unknown exception" << std::endl; \
-        } \
-    } \
+        }                                                         \
+    }                                                             \
     void test_##name()
 
-#define ASSERT(condition) \
-    do { \
-        if (!(condition)) { \
+#define ASSERT(condition)                                              \
+    do {                                                               \
+        if (!(condition)) {                                            \
             throw std::runtime_error("Assertion failed: " #condition); \
-        } \
-    } while(0)
+        }                                                              \
+    } while (0)
 
 // =============================================================================
 // Test Types
@@ -54,11 +55,7 @@ struct NonTrivialStruct {
     std::string s;  // Not trivially copyable
 };
 
-enum class TestEnum : u8 {
-    Value1,
-    Value2,
-    Value3
-};
+enum class TestEnum : u8 { Value1, Value2, Value3 };
 
 // =============================================================================
 // TrivialType Concept Tests
@@ -212,7 +209,7 @@ TEST(enum_not_struct) {
 // =============================================================================
 
 // Example function using Integral concept
-template<Integral T>
+template <Integral T>
 T add_one(T value) {
     return value + 1;
 }
@@ -226,7 +223,7 @@ TEST(concept_integral_function) {
 }
 
 // Example function using Arithmetic concept
-template<Arithmetic T>
+template <Arithmetic T>
 T multiply_by_two(T value) {
     return value * 2;
 }
@@ -240,7 +237,7 @@ TEST(concept_arithmetic_function) {
 }
 
 // Example function using TrivialType concept
-template<TrivialType T>
+template <TrivialType T>
 bool types_equal(T a, T b) {
     // For trivial types, we can use memcmp safely
     return a == b;

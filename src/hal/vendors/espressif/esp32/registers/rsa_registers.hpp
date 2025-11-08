@@ -17,30 +17,29 @@ namespace alloy::hal::espressif::esp32::rsa {
 
 /// RSA Register Structure
 struct RSA_Registers {
-
     /// Represents M
     /// Offset: 0x0000
     /// Access: read-write
     volatile uint8_t M_MEM[128][128];
-    uint8_t RESERVED_0080[384]; ///< Reserved
+    uint8_t RESERVED_0080[384];  ///< Reserved
 
     /// Represents Z
     /// Offset: 0x0200
     /// Access: read-write
     volatile uint8_t Z_MEM[128][128];
-    uint8_t RESERVED_0280[384]; ///< Reserved
+    uint8_t RESERVED_0280[384];  ///< Reserved
 
     /// Represents Y
     /// Offset: 0x0400
     /// Access: read-write
     volatile uint8_t Y_MEM[128][128];
-    uint8_t RESERVED_0480[384]; ///< Reserved
+    uint8_t RESERVED_0480[384];  ///< Reserved
 
     /// Represents X
     /// Offset: 0x0600
     /// Access: read-write
     volatile uint8_t X_MEM[128][128];
-    uint8_t RESERVED_0680[384]; ///< Reserved
+    uint8_t RESERVED_0680[384];  ///< Reserved
 
     /// M_PRIME
     /// Offset: 0x0800

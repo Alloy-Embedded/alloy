@@ -20,10 +20,12 @@
 #ifndef ALLOY_HAL_HOST_SYSTICK_HPP
 #define ALLOY_HAL_HOST_SYSTICK_HPP
 
+#include <chrono>
+
+#include "hal/interface/systick.hpp"
+
 #include "core/error.hpp"
 #include "core/types.hpp"
-#include "hal/interface/systick.hpp"
-#include <chrono>
 
 namespace alloy::hal::host {
 
@@ -31,7 +33,7 @@ namespace alloy::hal::host {
 ///
 /// @note This class is stateless - all state is in static variables
 class SystemTick {
-public:
+   public:
     /// Initialize SysTick timer
     ///
     /// Captures the start time using steady_clock.
@@ -58,9 +60,7 @@ public:
         }
 
         auto now = std::chrono::steady_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(
-            now - start_time_
-        );
+        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - start_time_);
 
         // Convert to u32 (will overflow after ~71 minutes, same as hardware)
         return static_cast<core::u32>(elapsed.count());
@@ -79,11 +79,9 @@ public:
     /// Check if initialized
     ///
     /// @return true if init() has been called
-    static bool is_initialized() {
-        return initialized_;
-    }
+    static bool is_initialized() { return initialized_; }
 
-private:
+   private:
     /// Start time reference point
     static inline std::chrono::steady_clock::time_point start_time_{};
 
@@ -95,13 +93,13 @@ private:
 static_assert(alloy::hal::SystemTick<SystemTick>,
               "Host SystemTick must satisfy SystemTick concept");
 
-} // namespace alloy::hal::host
+}  // namespace alloy::hal::host
 
 /// Global namespace implementation for host
 namespace alloy::systick::detail {
-    inline core::u32 get_micros() {
-        return alloy::hal::host::SystemTick::micros();
-    }
+inline core::u32 get_micros() {
+    return alloy::hal::host::SystemTick::micros();
 }
+}  // namespace alloy::systick::detail
 
-#endif // ALLOY_HAL_HOST_SYSTICK_HPP
+#endif  // ALLOY_HAL_HOST_SYSTICK_HPP

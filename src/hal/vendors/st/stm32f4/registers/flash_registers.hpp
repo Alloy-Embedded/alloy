@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f4::flash {
 
 /// FLASH Register Structure
 struct FLASH_Registers {
-
     /// Flash access control register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

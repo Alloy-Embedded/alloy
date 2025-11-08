@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f1::sdio {
@@ -19,661 +20,662 @@ using namespace alloy::hal::bitfields;
 
 /// POWER - Bits 1:0 = PWRCTRL: Power supply control bits
 namespace power {
-    /// PWRCTRL
-    /// Position: 0, Width: 2
-    using PWRCTRL = BitField<0, 2>;
-    constexpr uint32_t PWRCTRL_Pos = 0;
-    constexpr uint32_t PWRCTRL_Msk = PWRCTRL::mask;
+/// PWRCTRL
+/// Position: 0, Width: 2
+using PWRCTRL = BitField<0, 2>;
+constexpr uint32_t PWRCTRL_Pos = 0;
+constexpr uint32_t PWRCTRL_Msk = PWRCTRL::mask;
 
 }  // namespace power
 
 /// CLKCR - SDI clock control register (SDIO_CLKCR)
 namespace clkcr {
-    /// Clock divide factor
-    /// Position: 0, Width: 8
-    using CLKDIV = BitField<0, 8>;
-    constexpr uint32_t CLKDIV_Pos = 0;
-    constexpr uint32_t CLKDIV_Msk = CLKDIV::mask;
+/// Clock divide factor
+/// Position: 0, Width: 8
+using CLKDIV = BitField<0, 8>;
+constexpr uint32_t CLKDIV_Pos = 0;
+constexpr uint32_t CLKDIV_Msk = CLKDIV::mask;
 
-    /// Clock enable bit
-    /// Position: 8, Width: 1
-    using CLKEN = BitField<8, 1>;
-    constexpr uint32_t CLKEN_Pos = 8;
-    constexpr uint32_t CLKEN_Msk = CLKEN::mask;
+/// Clock enable bit
+/// Position: 8, Width: 1
+using CLKEN = BitField<8, 1>;
+constexpr uint32_t CLKEN_Pos = 8;
+constexpr uint32_t CLKEN_Msk = CLKEN::mask;
 
-    /// Power saving configuration bit
-    /// Position: 9, Width: 1
-    using PWRSAV = BitField<9, 1>;
-    constexpr uint32_t PWRSAV_Pos = 9;
-    constexpr uint32_t PWRSAV_Msk = PWRSAV::mask;
+/// Power saving configuration bit
+/// Position: 9, Width: 1
+using PWRSAV = BitField<9, 1>;
+constexpr uint32_t PWRSAV_Pos = 9;
+constexpr uint32_t PWRSAV_Msk = PWRSAV::mask;
 
-    /// Clock divider bypass enable bit
-    /// Position: 10, Width: 1
-    using BYPASS = BitField<10, 1>;
-    constexpr uint32_t BYPASS_Pos = 10;
-    constexpr uint32_t BYPASS_Msk = BYPASS::mask;
+/// Clock divider bypass enable bit
+/// Position: 10, Width: 1
+using BYPASS = BitField<10, 1>;
+constexpr uint32_t BYPASS_Pos = 10;
+constexpr uint32_t BYPASS_Msk = BYPASS::mask;
 
-    /// Wide bus mode enable bit
-    /// Position: 11, Width: 2
-    using WIDBUS = BitField<11, 2>;
-    constexpr uint32_t WIDBUS_Pos = 11;
-    constexpr uint32_t WIDBUS_Msk = WIDBUS::mask;
+/// Wide bus mode enable bit
+/// Position: 11, Width: 2
+using WIDBUS = BitField<11, 2>;
+constexpr uint32_t WIDBUS_Pos = 11;
+constexpr uint32_t WIDBUS_Msk = WIDBUS::mask;
 
-    /// SDIO_CK dephasing selection bit
-    /// Position: 13, Width: 1
-    using NEGEDGE = BitField<13, 1>;
-    constexpr uint32_t NEGEDGE_Pos = 13;
-    constexpr uint32_t NEGEDGE_Msk = NEGEDGE::mask;
+/// SDIO_CK dephasing selection bit
+/// Position: 13, Width: 1
+using NEGEDGE = BitField<13, 1>;
+constexpr uint32_t NEGEDGE_Pos = 13;
+constexpr uint32_t NEGEDGE_Msk = NEGEDGE::mask;
 
-    /// HW Flow Control enable
-    /// Position: 14, Width: 1
-    using HWFC_EN = BitField<14, 1>;
-    constexpr uint32_t HWFC_EN_Pos = 14;
-    constexpr uint32_t HWFC_EN_Msk = HWFC_EN::mask;
+/// HW Flow Control enable
+/// Position: 14, Width: 1
+using HWFC_EN = BitField<14, 1>;
+constexpr uint32_t HWFC_EN_Pos = 14;
+constexpr uint32_t HWFC_EN_Msk = HWFC_EN::mask;
 
 }  // namespace clkcr
 
 /// ARG - Bits 31:0 = : Command argument
 namespace arg {
-    /// Command argument
-    /// Position: 0, Width: 32
-    using CMDARG = BitField<0, 32>;
-    constexpr uint32_t CMDARG_Pos = 0;
-    constexpr uint32_t CMDARG_Msk = CMDARG::mask;
+/// Command argument
+/// Position: 0, Width: 32
+using CMDARG = BitField<0, 32>;
+constexpr uint32_t CMDARG_Pos = 0;
+constexpr uint32_t CMDARG_Msk = CMDARG::mask;
 
 }  // namespace arg
 
 /// CMD - SDIO command register (SDIO_CMD)
 namespace cmd {
-    /// CMDINDEX
-    /// Position: 0, Width: 6
-    using CMDINDEX = BitField<0, 6>;
-    constexpr uint32_t CMDINDEX_Pos = 0;
-    constexpr uint32_t CMDINDEX_Msk = CMDINDEX::mask;
+/// CMDINDEX
+/// Position: 0, Width: 6
+using CMDINDEX = BitField<0, 6>;
+constexpr uint32_t CMDINDEX_Pos = 0;
+constexpr uint32_t CMDINDEX_Msk = CMDINDEX::mask;
 
-    /// WAITRESP
-    /// Position: 6, Width: 2
-    using WAITRESP = BitField<6, 2>;
-    constexpr uint32_t WAITRESP_Pos = 6;
-    constexpr uint32_t WAITRESP_Msk = WAITRESP::mask;
+/// WAITRESP
+/// Position: 6, Width: 2
+using WAITRESP = BitField<6, 2>;
+constexpr uint32_t WAITRESP_Pos = 6;
+constexpr uint32_t WAITRESP_Msk = WAITRESP::mask;
 
-    /// WAITINT
-    /// Position: 8, Width: 1
-    using WAITINT = BitField<8, 1>;
-    constexpr uint32_t WAITINT_Pos = 8;
-    constexpr uint32_t WAITINT_Msk = WAITINT::mask;
+/// WAITINT
+/// Position: 8, Width: 1
+using WAITINT = BitField<8, 1>;
+constexpr uint32_t WAITINT_Pos = 8;
+constexpr uint32_t WAITINT_Msk = WAITINT::mask;
 
-    /// WAITPEND
-    /// Position: 9, Width: 1
-    using WAITPEND = BitField<9, 1>;
-    constexpr uint32_t WAITPEND_Pos = 9;
-    constexpr uint32_t WAITPEND_Msk = WAITPEND::mask;
+/// WAITPEND
+/// Position: 9, Width: 1
+using WAITPEND = BitField<9, 1>;
+constexpr uint32_t WAITPEND_Pos = 9;
+constexpr uint32_t WAITPEND_Msk = WAITPEND::mask;
 
-    /// CPSMEN
-    /// Position: 10, Width: 1
-    using CPSMEN = BitField<10, 1>;
-    constexpr uint32_t CPSMEN_Pos = 10;
-    constexpr uint32_t CPSMEN_Msk = CPSMEN::mask;
+/// CPSMEN
+/// Position: 10, Width: 1
+using CPSMEN = BitField<10, 1>;
+constexpr uint32_t CPSMEN_Pos = 10;
+constexpr uint32_t CPSMEN_Msk = CPSMEN::mask;
 
-    /// SDIOSuspend
-    /// Position: 11, Width: 1
-    using SDIOSuspend = BitField<11, 1>;
-    constexpr uint32_t SDIOSuspend_Pos = 11;
-    constexpr uint32_t SDIOSuspend_Msk = SDIOSuspend::mask;
+/// SDIOSuspend
+/// Position: 11, Width: 1
+using SDIOSuspend = BitField<11, 1>;
+constexpr uint32_t SDIOSuspend_Pos = 11;
+constexpr uint32_t SDIOSuspend_Msk = SDIOSuspend::mask;
 
-    /// ENCMDcompl
-    /// Position: 12, Width: 1
-    using ENCMDcompl = BitField<12, 1>;
-    constexpr uint32_t ENCMDcompl_Pos = 12;
-    constexpr uint32_t ENCMDcompl_Msk = ENCMDcompl::mask;
+/// ENCMDcompl
+/// Position: 12, Width: 1
+using ENCMDcompl = BitField<12, 1>;
+constexpr uint32_t ENCMDcompl_Pos = 12;
+constexpr uint32_t ENCMDcompl_Msk = ENCMDcompl::mask;
 
-    /// nIEN
-    /// Position: 13, Width: 1
-    using nIEN = BitField<13, 1>;
-    constexpr uint32_t nIEN_Pos = 13;
-    constexpr uint32_t nIEN_Msk = nIEN::mask;
+/// nIEN
+/// Position: 13, Width: 1
+using nIEN = BitField<13, 1>;
+constexpr uint32_t nIEN_Pos = 13;
+constexpr uint32_t nIEN_Msk = nIEN::mask;
 
-    /// CE_ATACMD
-    /// Position: 14, Width: 1
-    using CE_ATACMD = BitField<14, 1>;
-    constexpr uint32_t CE_ATACMD_Pos = 14;
-    constexpr uint32_t CE_ATACMD_Msk = CE_ATACMD::mask;
+/// CE_ATACMD
+/// Position: 14, Width: 1
+using CE_ATACMD = BitField<14, 1>;
+constexpr uint32_t CE_ATACMD_Pos = 14;
+constexpr uint32_t CE_ATACMD_Msk = CE_ATACMD::mask;
 
 }  // namespace cmd
 
 /// RESPCMD - SDIO command register
 namespace respcmd {
-    /// RESPCMD
-    /// Position: 0, Width: 6
-    using RESPCMD = BitField<0, 6>;
-    constexpr uint32_t RESPCMD_Pos = 0;
-    constexpr uint32_t RESPCMD_Msk = RESPCMD::mask;
+/// RESPCMD
+/// Position: 0, Width: 6
+using RESPCMD = BitField<0, 6>;
+constexpr uint32_t RESPCMD_Pos = 0;
+constexpr uint32_t RESPCMD_Msk = RESPCMD::mask;
 
 }  // namespace respcmd
 
 /// RESPI1 - Bits 31:0 = CARDSTATUS1
 namespace respi1 {
-    /// CARDSTATUS1
-    /// Position: 0, Width: 32
-    using CARDSTATUS1 = BitField<0, 32>;
-    constexpr uint32_t CARDSTATUS1_Pos = 0;
-    constexpr uint32_t CARDSTATUS1_Msk = CARDSTATUS1::mask;
+/// CARDSTATUS1
+/// Position: 0, Width: 32
+using CARDSTATUS1 = BitField<0, 32>;
+constexpr uint32_t CARDSTATUS1_Pos = 0;
+constexpr uint32_t CARDSTATUS1_Msk = CARDSTATUS1::mask;
 
 }  // namespace respi1
 
 /// RESP2 - Bits 31:0 = CARDSTATUS2
 namespace resp2 {
-    /// CARDSTATUS2
-    /// Position: 0, Width: 32
-    using CARDSTATUS2 = BitField<0, 32>;
-    constexpr uint32_t CARDSTATUS2_Pos = 0;
-    constexpr uint32_t CARDSTATUS2_Msk = CARDSTATUS2::mask;
+/// CARDSTATUS2
+/// Position: 0, Width: 32
+using CARDSTATUS2 = BitField<0, 32>;
+constexpr uint32_t CARDSTATUS2_Pos = 0;
+constexpr uint32_t CARDSTATUS2_Msk = CARDSTATUS2::mask;
 
 }  // namespace resp2
 
 /// RESP3 - Bits 31:0 = CARDSTATUS3
 namespace resp3 {
-    /// CARDSTATUS3
-    /// Position: 0, Width: 32
-    using CARDSTATUS3 = BitField<0, 32>;
-    constexpr uint32_t CARDSTATUS3_Pos = 0;
-    constexpr uint32_t CARDSTATUS3_Msk = CARDSTATUS3::mask;
+/// CARDSTATUS3
+/// Position: 0, Width: 32
+using CARDSTATUS3 = BitField<0, 32>;
+constexpr uint32_t CARDSTATUS3_Pos = 0;
+constexpr uint32_t CARDSTATUS3_Msk = CARDSTATUS3::mask;
 
 }  // namespace resp3
 
 /// RESP4 - Bits 31:0 = CARDSTATUS4
 namespace resp4 {
-    /// CARDSTATUS4
-    /// Position: 0, Width: 32
-    using CARDSTATUS4 = BitField<0, 32>;
-    constexpr uint32_t CARDSTATUS4_Pos = 0;
-    constexpr uint32_t CARDSTATUS4_Msk = CARDSTATUS4::mask;
+/// CARDSTATUS4
+/// Position: 0, Width: 32
+using CARDSTATUS4 = BitField<0, 32>;
+constexpr uint32_t CARDSTATUS4_Pos = 0;
+constexpr uint32_t CARDSTATUS4_Msk = CARDSTATUS4::mask;
 
 }  // namespace resp4
 
 /// DTIMER - Bits 31:0 = DATATIME: Data timeout period
 namespace dtimer {
-    /// Data timeout period
-    /// Position: 0, Width: 32
-    using DATATIME = BitField<0, 32>;
-    constexpr uint32_t DATATIME_Pos = 0;
-    constexpr uint32_t DATATIME_Msk = DATATIME::mask;
+/// Data timeout period
+/// Position: 0, Width: 32
+using DATATIME = BitField<0, 32>;
+constexpr uint32_t DATATIME_Pos = 0;
+constexpr uint32_t DATATIME_Msk = DATATIME::mask;
 
 }  // namespace dtimer
 
 /// DLEN - Bits 24:0 = DATALENGTH: Data length value
 namespace dlen {
-    /// Data length value
-    /// Position: 0, Width: 25
-    using DATALENGTH = BitField<0, 25>;
-    constexpr uint32_t DATALENGTH_Pos = 0;
-    constexpr uint32_t DATALENGTH_Msk = DATALENGTH::mask;
+/// Data length value
+/// Position: 0, Width: 25
+using DATALENGTH = BitField<0, 25>;
+constexpr uint32_t DATALENGTH_Pos = 0;
+constexpr uint32_t DATALENGTH_Msk = DATALENGTH::mask;
 
 }  // namespace dlen
 
 /// DCTRL - SDIO data control register (SDIO_DCTRL)
 namespace dctrl {
-    /// DTEN
-    /// Position: 0, Width: 1
-    using DTEN = BitField<0, 1>;
-    constexpr uint32_t DTEN_Pos = 0;
-    constexpr uint32_t DTEN_Msk = DTEN::mask;
+/// DTEN
+/// Position: 0, Width: 1
+using DTEN = BitField<0, 1>;
+constexpr uint32_t DTEN_Pos = 0;
+constexpr uint32_t DTEN_Msk = DTEN::mask;
 
-    /// DTDIR
-    /// Position: 1, Width: 1
-    using DTDIR = BitField<1, 1>;
-    constexpr uint32_t DTDIR_Pos = 1;
-    constexpr uint32_t DTDIR_Msk = DTDIR::mask;
+/// DTDIR
+/// Position: 1, Width: 1
+using DTDIR = BitField<1, 1>;
+constexpr uint32_t DTDIR_Pos = 1;
+constexpr uint32_t DTDIR_Msk = DTDIR::mask;
 
-    /// DTMODE
-    /// Position: 2, Width: 1
-    using DTMODE = BitField<2, 1>;
-    constexpr uint32_t DTMODE_Pos = 2;
-    constexpr uint32_t DTMODE_Msk = DTMODE::mask;
+/// DTMODE
+/// Position: 2, Width: 1
+using DTMODE = BitField<2, 1>;
+constexpr uint32_t DTMODE_Pos = 2;
+constexpr uint32_t DTMODE_Msk = DTMODE::mask;
 
-    /// DMAEN
-    /// Position: 3, Width: 1
-    using DMAEN = BitField<3, 1>;
-    constexpr uint32_t DMAEN_Pos = 3;
-    constexpr uint32_t DMAEN_Msk = DMAEN::mask;
+/// DMAEN
+/// Position: 3, Width: 1
+using DMAEN = BitField<3, 1>;
+constexpr uint32_t DMAEN_Pos = 3;
+constexpr uint32_t DMAEN_Msk = DMAEN::mask;
 
-    /// DBLOCKSIZE
-    /// Position: 4, Width: 4
-    using DBLOCKSIZE = BitField<4, 4>;
-    constexpr uint32_t DBLOCKSIZE_Pos = 4;
-    constexpr uint32_t DBLOCKSIZE_Msk = DBLOCKSIZE::mask;
+/// DBLOCKSIZE
+/// Position: 4, Width: 4
+using DBLOCKSIZE = BitField<4, 4>;
+constexpr uint32_t DBLOCKSIZE_Pos = 4;
+constexpr uint32_t DBLOCKSIZE_Msk = DBLOCKSIZE::mask;
 
-    /// PWSTART
-    /// Position: 8, Width: 1
-    using PWSTART = BitField<8, 1>;
-    constexpr uint32_t PWSTART_Pos = 8;
-    constexpr uint32_t PWSTART_Msk = PWSTART::mask;
+/// PWSTART
+/// Position: 8, Width: 1
+using PWSTART = BitField<8, 1>;
+constexpr uint32_t PWSTART_Pos = 8;
+constexpr uint32_t PWSTART_Msk = PWSTART::mask;
 
-    /// PWSTOP
-    /// Position: 9, Width: 1
-    using PWSTOP = BitField<9, 1>;
-    constexpr uint32_t PWSTOP_Pos = 9;
-    constexpr uint32_t PWSTOP_Msk = PWSTOP::mask;
+/// PWSTOP
+/// Position: 9, Width: 1
+using PWSTOP = BitField<9, 1>;
+constexpr uint32_t PWSTOP_Pos = 9;
+constexpr uint32_t PWSTOP_Msk = PWSTOP::mask;
 
-    /// RWMOD
-    /// Position: 10, Width: 1
-    using RWMOD = BitField<10, 1>;
-    constexpr uint32_t RWMOD_Pos = 10;
-    constexpr uint32_t RWMOD_Msk = RWMOD::mask;
+/// RWMOD
+/// Position: 10, Width: 1
+using RWMOD = BitField<10, 1>;
+constexpr uint32_t RWMOD_Pos = 10;
+constexpr uint32_t RWMOD_Msk = RWMOD::mask;
 
-    /// SDIOEN
-    /// Position: 11, Width: 1
-    using SDIOEN = BitField<11, 1>;
-    constexpr uint32_t SDIOEN_Pos = 11;
-    constexpr uint32_t SDIOEN_Msk = SDIOEN::mask;
+/// SDIOEN
+/// Position: 11, Width: 1
+using SDIOEN = BitField<11, 1>;
+constexpr uint32_t SDIOEN_Pos = 11;
+constexpr uint32_t SDIOEN_Msk = SDIOEN::mask;
 
 }  // namespace dctrl
 
 /// DCOUNT - Bits 24:0 = DATACOUNT: Data count value
 namespace dcount {
-    /// Data count value
-    /// Position: 0, Width: 25
-    using DATACOUNT = BitField<0, 25>;
-    constexpr uint32_t DATACOUNT_Pos = 0;
-    constexpr uint32_t DATACOUNT_Msk = DATACOUNT::mask;
+/// Data count value
+/// Position: 0, Width: 25
+using DATACOUNT = BitField<0, 25>;
+constexpr uint32_t DATACOUNT_Pos = 0;
+constexpr uint32_t DATACOUNT_Msk = DATACOUNT::mask;
 
 }  // namespace dcount
 
 /// STA - SDIO status register (SDIO_STA)
 namespace sta {
-    /// CCRCFAIL
-    /// Position: 0, Width: 1
-    using CCRCFAIL = BitField<0, 1>;
-    constexpr uint32_t CCRCFAIL_Pos = 0;
-    constexpr uint32_t CCRCFAIL_Msk = CCRCFAIL::mask;
+/// CCRCFAIL
+/// Position: 0, Width: 1
+using CCRCFAIL = BitField<0, 1>;
+constexpr uint32_t CCRCFAIL_Pos = 0;
+constexpr uint32_t CCRCFAIL_Msk = CCRCFAIL::mask;
 
-    /// DCRCFAIL
-    /// Position: 1, Width: 1
-    using DCRCFAIL = BitField<1, 1>;
-    constexpr uint32_t DCRCFAIL_Pos = 1;
-    constexpr uint32_t DCRCFAIL_Msk = DCRCFAIL::mask;
+/// DCRCFAIL
+/// Position: 1, Width: 1
+using DCRCFAIL = BitField<1, 1>;
+constexpr uint32_t DCRCFAIL_Pos = 1;
+constexpr uint32_t DCRCFAIL_Msk = DCRCFAIL::mask;
 
-    /// CTIMEOUT
-    /// Position: 2, Width: 1
-    using CTIMEOUT = BitField<2, 1>;
-    constexpr uint32_t CTIMEOUT_Pos = 2;
-    constexpr uint32_t CTIMEOUT_Msk = CTIMEOUT::mask;
+/// CTIMEOUT
+/// Position: 2, Width: 1
+using CTIMEOUT = BitField<2, 1>;
+constexpr uint32_t CTIMEOUT_Pos = 2;
+constexpr uint32_t CTIMEOUT_Msk = CTIMEOUT::mask;
 
-    /// DTIMEOUT
-    /// Position: 3, Width: 1
-    using DTIMEOUT = BitField<3, 1>;
-    constexpr uint32_t DTIMEOUT_Pos = 3;
-    constexpr uint32_t DTIMEOUT_Msk = DTIMEOUT::mask;
+/// DTIMEOUT
+/// Position: 3, Width: 1
+using DTIMEOUT = BitField<3, 1>;
+constexpr uint32_t DTIMEOUT_Pos = 3;
+constexpr uint32_t DTIMEOUT_Msk = DTIMEOUT::mask;
 
-    /// TXUNDERR
-    /// Position: 4, Width: 1
-    using TXUNDERR = BitField<4, 1>;
-    constexpr uint32_t TXUNDERR_Pos = 4;
-    constexpr uint32_t TXUNDERR_Msk = TXUNDERR::mask;
+/// TXUNDERR
+/// Position: 4, Width: 1
+using TXUNDERR = BitField<4, 1>;
+constexpr uint32_t TXUNDERR_Pos = 4;
+constexpr uint32_t TXUNDERR_Msk = TXUNDERR::mask;
 
-    /// RXOVERR
-    /// Position: 5, Width: 1
-    using RXOVERR = BitField<5, 1>;
-    constexpr uint32_t RXOVERR_Pos = 5;
-    constexpr uint32_t RXOVERR_Msk = RXOVERR::mask;
+/// RXOVERR
+/// Position: 5, Width: 1
+using RXOVERR = BitField<5, 1>;
+constexpr uint32_t RXOVERR_Pos = 5;
+constexpr uint32_t RXOVERR_Msk = RXOVERR::mask;
 
-    /// CMDREND
-    /// Position: 6, Width: 1
-    using CMDREND = BitField<6, 1>;
-    constexpr uint32_t CMDREND_Pos = 6;
-    constexpr uint32_t CMDREND_Msk = CMDREND::mask;
+/// CMDREND
+/// Position: 6, Width: 1
+using CMDREND = BitField<6, 1>;
+constexpr uint32_t CMDREND_Pos = 6;
+constexpr uint32_t CMDREND_Msk = CMDREND::mask;
 
-    /// CMDSENT
-    /// Position: 7, Width: 1
-    using CMDSENT = BitField<7, 1>;
-    constexpr uint32_t CMDSENT_Pos = 7;
-    constexpr uint32_t CMDSENT_Msk = CMDSENT::mask;
+/// CMDSENT
+/// Position: 7, Width: 1
+using CMDSENT = BitField<7, 1>;
+constexpr uint32_t CMDSENT_Pos = 7;
+constexpr uint32_t CMDSENT_Msk = CMDSENT::mask;
 
-    /// DATAEND
-    /// Position: 8, Width: 1
-    using DATAEND = BitField<8, 1>;
-    constexpr uint32_t DATAEND_Pos = 8;
-    constexpr uint32_t DATAEND_Msk = DATAEND::mask;
+/// DATAEND
+/// Position: 8, Width: 1
+using DATAEND = BitField<8, 1>;
+constexpr uint32_t DATAEND_Pos = 8;
+constexpr uint32_t DATAEND_Msk = DATAEND::mask;
 
-    /// STBITERR
-    /// Position: 9, Width: 1
-    using STBITERR = BitField<9, 1>;
-    constexpr uint32_t STBITERR_Pos = 9;
-    constexpr uint32_t STBITERR_Msk = STBITERR::mask;
+/// STBITERR
+/// Position: 9, Width: 1
+using STBITERR = BitField<9, 1>;
+constexpr uint32_t STBITERR_Pos = 9;
+constexpr uint32_t STBITERR_Msk = STBITERR::mask;
 
-    /// DBCKEND
-    /// Position: 10, Width: 1
-    using DBCKEND = BitField<10, 1>;
-    constexpr uint32_t DBCKEND_Pos = 10;
-    constexpr uint32_t DBCKEND_Msk = DBCKEND::mask;
+/// DBCKEND
+/// Position: 10, Width: 1
+using DBCKEND = BitField<10, 1>;
+constexpr uint32_t DBCKEND_Pos = 10;
+constexpr uint32_t DBCKEND_Msk = DBCKEND::mask;
 
-    /// CMDACT
-    /// Position: 11, Width: 1
-    using CMDACT = BitField<11, 1>;
-    constexpr uint32_t CMDACT_Pos = 11;
-    constexpr uint32_t CMDACT_Msk = CMDACT::mask;
+/// CMDACT
+/// Position: 11, Width: 1
+using CMDACT = BitField<11, 1>;
+constexpr uint32_t CMDACT_Pos = 11;
+constexpr uint32_t CMDACT_Msk = CMDACT::mask;
 
-    /// TXACT
-    /// Position: 12, Width: 1
-    using TXACT = BitField<12, 1>;
-    constexpr uint32_t TXACT_Pos = 12;
-    constexpr uint32_t TXACT_Msk = TXACT::mask;
+/// TXACT
+/// Position: 12, Width: 1
+using TXACT = BitField<12, 1>;
+constexpr uint32_t TXACT_Pos = 12;
+constexpr uint32_t TXACT_Msk = TXACT::mask;
 
-    /// RXACT
-    /// Position: 13, Width: 1
-    using RXACT = BitField<13, 1>;
-    constexpr uint32_t RXACT_Pos = 13;
-    constexpr uint32_t RXACT_Msk = RXACT::mask;
+/// RXACT
+/// Position: 13, Width: 1
+using RXACT = BitField<13, 1>;
+constexpr uint32_t RXACT_Pos = 13;
+constexpr uint32_t RXACT_Msk = RXACT::mask;
 
-    /// TXFIFOHE
-    /// Position: 14, Width: 1
-    using TXFIFOHE = BitField<14, 1>;
-    constexpr uint32_t TXFIFOHE_Pos = 14;
-    constexpr uint32_t TXFIFOHE_Msk = TXFIFOHE::mask;
+/// TXFIFOHE
+/// Position: 14, Width: 1
+using TXFIFOHE = BitField<14, 1>;
+constexpr uint32_t TXFIFOHE_Pos = 14;
+constexpr uint32_t TXFIFOHE_Msk = TXFIFOHE::mask;
 
-    /// RXFIFOHF
-    /// Position: 15, Width: 1
-    using RXFIFOHF = BitField<15, 1>;
-    constexpr uint32_t RXFIFOHF_Pos = 15;
-    constexpr uint32_t RXFIFOHF_Msk = RXFIFOHF::mask;
+/// RXFIFOHF
+/// Position: 15, Width: 1
+using RXFIFOHF = BitField<15, 1>;
+constexpr uint32_t RXFIFOHF_Pos = 15;
+constexpr uint32_t RXFIFOHF_Msk = RXFIFOHF::mask;
 
-    /// TXFIFOF
-    /// Position: 16, Width: 1
-    using TXFIFOF = BitField<16, 1>;
-    constexpr uint32_t TXFIFOF_Pos = 16;
-    constexpr uint32_t TXFIFOF_Msk = TXFIFOF::mask;
+/// TXFIFOF
+/// Position: 16, Width: 1
+using TXFIFOF = BitField<16, 1>;
+constexpr uint32_t TXFIFOF_Pos = 16;
+constexpr uint32_t TXFIFOF_Msk = TXFIFOF::mask;
 
-    /// RXFIFOF
-    /// Position: 17, Width: 1
-    using RXFIFOF = BitField<17, 1>;
-    constexpr uint32_t RXFIFOF_Pos = 17;
-    constexpr uint32_t RXFIFOF_Msk = RXFIFOF::mask;
+/// RXFIFOF
+/// Position: 17, Width: 1
+using RXFIFOF = BitField<17, 1>;
+constexpr uint32_t RXFIFOF_Pos = 17;
+constexpr uint32_t RXFIFOF_Msk = RXFIFOF::mask;
 
-    /// TXFIFOE
-    /// Position: 18, Width: 1
-    using TXFIFOE = BitField<18, 1>;
-    constexpr uint32_t TXFIFOE_Pos = 18;
-    constexpr uint32_t TXFIFOE_Msk = TXFIFOE::mask;
+/// TXFIFOE
+/// Position: 18, Width: 1
+using TXFIFOE = BitField<18, 1>;
+constexpr uint32_t TXFIFOE_Pos = 18;
+constexpr uint32_t TXFIFOE_Msk = TXFIFOE::mask;
 
-    /// RXFIFOE
-    /// Position: 19, Width: 1
-    using RXFIFOE = BitField<19, 1>;
-    constexpr uint32_t RXFIFOE_Pos = 19;
-    constexpr uint32_t RXFIFOE_Msk = RXFIFOE::mask;
+/// RXFIFOE
+/// Position: 19, Width: 1
+using RXFIFOE = BitField<19, 1>;
+constexpr uint32_t RXFIFOE_Pos = 19;
+constexpr uint32_t RXFIFOE_Msk = RXFIFOE::mask;
 
-    /// TXDAVL
-    /// Position: 20, Width: 1
-    using TXDAVL = BitField<20, 1>;
-    constexpr uint32_t TXDAVL_Pos = 20;
-    constexpr uint32_t TXDAVL_Msk = TXDAVL::mask;
+/// TXDAVL
+/// Position: 20, Width: 1
+using TXDAVL = BitField<20, 1>;
+constexpr uint32_t TXDAVL_Pos = 20;
+constexpr uint32_t TXDAVL_Msk = TXDAVL::mask;
 
-    /// RXDAVL
-    /// Position: 21, Width: 1
-    using RXDAVL = BitField<21, 1>;
-    constexpr uint32_t RXDAVL_Pos = 21;
-    constexpr uint32_t RXDAVL_Msk = RXDAVL::mask;
+/// RXDAVL
+/// Position: 21, Width: 1
+using RXDAVL = BitField<21, 1>;
+constexpr uint32_t RXDAVL_Pos = 21;
+constexpr uint32_t RXDAVL_Msk = RXDAVL::mask;
 
-    /// SDIOIT
-    /// Position: 22, Width: 1
-    using SDIOIT = BitField<22, 1>;
-    constexpr uint32_t SDIOIT_Pos = 22;
-    constexpr uint32_t SDIOIT_Msk = SDIOIT::mask;
+/// SDIOIT
+/// Position: 22, Width: 1
+using SDIOIT = BitField<22, 1>;
+constexpr uint32_t SDIOIT_Pos = 22;
+constexpr uint32_t SDIOIT_Msk = SDIOIT::mask;
 
-    /// CEATAEND
-    /// Position: 23, Width: 1
-    using CEATAEND = BitField<23, 1>;
-    constexpr uint32_t CEATAEND_Pos = 23;
-    constexpr uint32_t CEATAEND_Msk = CEATAEND::mask;
+/// CEATAEND
+/// Position: 23, Width: 1
+using CEATAEND = BitField<23, 1>;
+constexpr uint32_t CEATAEND_Pos = 23;
+constexpr uint32_t CEATAEND_Msk = CEATAEND::mask;
 
 }  // namespace sta
 
 /// ICR - SDIO interrupt clear register (SDIO_ICR)
 namespace icr {
-    /// CCRCFAILC
-    /// Position: 0, Width: 1
-    using CCRCFAILC = BitField<0, 1>;
-    constexpr uint32_t CCRCFAILC_Pos = 0;
-    constexpr uint32_t CCRCFAILC_Msk = CCRCFAILC::mask;
+/// CCRCFAILC
+/// Position: 0, Width: 1
+using CCRCFAILC = BitField<0, 1>;
+constexpr uint32_t CCRCFAILC_Pos = 0;
+constexpr uint32_t CCRCFAILC_Msk = CCRCFAILC::mask;
 
-    /// DCRCFAILC
-    /// Position: 1, Width: 1
-    using DCRCFAILC = BitField<1, 1>;
-    constexpr uint32_t DCRCFAILC_Pos = 1;
-    constexpr uint32_t DCRCFAILC_Msk = DCRCFAILC::mask;
+/// DCRCFAILC
+/// Position: 1, Width: 1
+using DCRCFAILC = BitField<1, 1>;
+constexpr uint32_t DCRCFAILC_Pos = 1;
+constexpr uint32_t DCRCFAILC_Msk = DCRCFAILC::mask;
 
-    /// CTIMEOUTC
-    /// Position: 2, Width: 1
-    using CTIMEOUTC = BitField<2, 1>;
-    constexpr uint32_t CTIMEOUTC_Pos = 2;
-    constexpr uint32_t CTIMEOUTC_Msk = CTIMEOUTC::mask;
+/// CTIMEOUTC
+/// Position: 2, Width: 1
+using CTIMEOUTC = BitField<2, 1>;
+constexpr uint32_t CTIMEOUTC_Pos = 2;
+constexpr uint32_t CTIMEOUTC_Msk = CTIMEOUTC::mask;
 
-    /// DTIMEOUTC
-    /// Position: 3, Width: 1
-    using DTIMEOUTC = BitField<3, 1>;
-    constexpr uint32_t DTIMEOUTC_Pos = 3;
-    constexpr uint32_t DTIMEOUTC_Msk = DTIMEOUTC::mask;
+/// DTIMEOUTC
+/// Position: 3, Width: 1
+using DTIMEOUTC = BitField<3, 1>;
+constexpr uint32_t DTIMEOUTC_Pos = 3;
+constexpr uint32_t DTIMEOUTC_Msk = DTIMEOUTC::mask;
 
-    /// TXUNDERRC
-    /// Position: 4, Width: 1
-    using TXUNDERRC = BitField<4, 1>;
-    constexpr uint32_t TXUNDERRC_Pos = 4;
-    constexpr uint32_t TXUNDERRC_Msk = TXUNDERRC::mask;
+/// TXUNDERRC
+/// Position: 4, Width: 1
+using TXUNDERRC = BitField<4, 1>;
+constexpr uint32_t TXUNDERRC_Pos = 4;
+constexpr uint32_t TXUNDERRC_Msk = TXUNDERRC::mask;
 
-    /// RXOVERRC
-    /// Position: 5, Width: 1
-    using RXOVERRC = BitField<5, 1>;
-    constexpr uint32_t RXOVERRC_Pos = 5;
-    constexpr uint32_t RXOVERRC_Msk = RXOVERRC::mask;
+/// RXOVERRC
+/// Position: 5, Width: 1
+using RXOVERRC = BitField<5, 1>;
+constexpr uint32_t RXOVERRC_Pos = 5;
+constexpr uint32_t RXOVERRC_Msk = RXOVERRC::mask;
 
-    /// CMDRENDC
-    /// Position: 6, Width: 1
-    using CMDRENDC = BitField<6, 1>;
-    constexpr uint32_t CMDRENDC_Pos = 6;
-    constexpr uint32_t CMDRENDC_Msk = CMDRENDC::mask;
+/// CMDRENDC
+/// Position: 6, Width: 1
+using CMDRENDC = BitField<6, 1>;
+constexpr uint32_t CMDRENDC_Pos = 6;
+constexpr uint32_t CMDRENDC_Msk = CMDRENDC::mask;
 
-    /// CMDSENTC
-    /// Position: 7, Width: 1
-    using CMDSENTC = BitField<7, 1>;
-    constexpr uint32_t CMDSENTC_Pos = 7;
-    constexpr uint32_t CMDSENTC_Msk = CMDSENTC::mask;
+/// CMDSENTC
+/// Position: 7, Width: 1
+using CMDSENTC = BitField<7, 1>;
+constexpr uint32_t CMDSENTC_Pos = 7;
+constexpr uint32_t CMDSENTC_Msk = CMDSENTC::mask;
 
-    /// DATAENDC
-    /// Position: 8, Width: 1
-    using DATAENDC = BitField<8, 1>;
-    constexpr uint32_t DATAENDC_Pos = 8;
-    constexpr uint32_t DATAENDC_Msk = DATAENDC::mask;
+/// DATAENDC
+/// Position: 8, Width: 1
+using DATAENDC = BitField<8, 1>;
+constexpr uint32_t DATAENDC_Pos = 8;
+constexpr uint32_t DATAENDC_Msk = DATAENDC::mask;
 
-    /// STBITERRC
-    /// Position: 9, Width: 1
-    using STBITERRC = BitField<9, 1>;
-    constexpr uint32_t STBITERRC_Pos = 9;
-    constexpr uint32_t STBITERRC_Msk = STBITERRC::mask;
+/// STBITERRC
+/// Position: 9, Width: 1
+using STBITERRC = BitField<9, 1>;
+constexpr uint32_t STBITERRC_Pos = 9;
+constexpr uint32_t STBITERRC_Msk = STBITERRC::mask;
 
-    /// DBCKENDC
-    /// Position: 10, Width: 1
-    using DBCKENDC = BitField<10, 1>;
-    constexpr uint32_t DBCKENDC_Pos = 10;
-    constexpr uint32_t DBCKENDC_Msk = DBCKENDC::mask;
+/// DBCKENDC
+/// Position: 10, Width: 1
+using DBCKENDC = BitField<10, 1>;
+constexpr uint32_t DBCKENDC_Pos = 10;
+constexpr uint32_t DBCKENDC_Msk = DBCKENDC::mask;
 
-    /// SDIOITC
-    /// Position: 22, Width: 1
-    using SDIOITC = BitField<22, 1>;
-    constexpr uint32_t SDIOITC_Pos = 22;
-    constexpr uint32_t SDIOITC_Msk = SDIOITC::mask;
+/// SDIOITC
+/// Position: 22, Width: 1
+using SDIOITC = BitField<22, 1>;
+constexpr uint32_t SDIOITC_Pos = 22;
+constexpr uint32_t SDIOITC_Msk = SDIOITC::mask;
 
-    /// CEATAENDC
-    /// Position: 23, Width: 1
-    using CEATAENDC = BitField<23, 1>;
-    constexpr uint32_t CEATAENDC_Pos = 23;
-    constexpr uint32_t CEATAENDC_Msk = CEATAENDC::mask;
+/// CEATAENDC
+/// Position: 23, Width: 1
+using CEATAENDC = BitField<23, 1>;
+constexpr uint32_t CEATAENDC_Pos = 23;
+constexpr uint32_t CEATAENDC_Msk = CEATAENDC::mask;
 
 }  // namespace icr
 
 /// MASK - SDIO mask register (SDIO_MASK)
 namespace mask {
-    /// CCRCFAILIE
-    /// Position: 0, Width: 1
-    using CCRCFAILIE = BitField<0, 1>;
-    constexpr uint32_t CCRCFAILIE_Pos = 0;
-    constexpr uint32_t CCRCFAILIE_Msk = CCRCFAILIE::mask;
+/// CCRCFAILIE
+/// Position: 0, Width: 1
+using CCRCFAILIE = BitField<0, 1>;
+constexpr uint32_t CCRCFAILIE_Pos = 0;
+constexpr uint32_t CCRCFAILIE_Msk = CCRCFAILIE::mask;
 
-    /// DCRCFAILIE
-    /// Position: 1, Width: 1
-    using DCRCFAILIE = BitField<1, 1>;
-    constexpr uint32_t DCRCFAILIE_Pos = 1;
-    constexpr uint32_t DCRCFAILIE_Msk = DCRCFAILIE::mask;
+/// DCRCFAILIE
+/// Position: 1, Width: 1
+using DCRCFAILIE = BitField<1, 1>;
+constexpr uint32_t DCRCFAILIE_Pos = 1;
+constexpr uint32_t DCRCFAILIE_Msk = DCRCFAILIE::mask;
 
-    /// CTIMEOUTIE
-    /// Position: 2, Width: 1
-    using CTIMEOUTIE = BitField<2, 1>;
-    constexpr uint32_t CTIMEOUTIE_Pos = 2;
-    constexpr uint32_t CTIMEOUTIE_Msk = CTIMEOUTIE::mask;
+/// CTIMEOUTIE
+/// Position: 2, Width: 1
+using CTIMEOUTIE = BitField<2, 1>;
+constexpr uint32_t CTIMEOUTIE_Pos = 2;
+constexpr uint32_t CTIMEOUTIE_Msk = CTIMEOUTIE::mask;
 
-    /// DTIMEOUTIE
-    /// Position: 3, Width: 1
-    using DTIMEOUTIE = BitField<3, 1>;
-    constexpr uint32_t DTIMEOUTIE_Pos = 3;
-    constexpr uint32_t DTIMEOUTIE_Msk = DTIMEOUTIE::mask;
+/// DTIMEOUTIE
+/// Position: 3, Width: 1
+using DTIMEOUTIE = BitField<3, 1>;
+constexpr uint32_t DTIMEOUTIE_Pos = 3;
+constexpr uint32_t DTIMEOUTIE_Msk = DTIMEOUTIE::mask;
 
-    /// TXUNDERRIE
-    /// Position: 4, Width: 1
-    using TXUNDERRIE = BitField<4, 1>;
-    constexpr uint32_t TXUNDERRIE_Pos = 4;
-    constexpr uint32_t TXUNDERRIE_Msk = TXUNDERRIE::mask;
+/// TXUNDERRIE
+/// Position: 4, Width: 1
+using TXUNDERRIE = BitField<4, 1>;
+constexpr uint32_t TXUNDERRIE_Pos = 4;
+constexpr uint32_t TXUNDERRIE_Msk = TXUNDERRIE::mask;
 
-    /// RXOVERRIE
-    /// Position: 5, Width: 1
-    using RXOVERRIE = BitField<5, 1>;
-    constexpr uint32_t RXOVERRIE_Pos = 5;
-    constexpr uint32_t RXOVERRIE_Msk = RXOVERRIE::mask;
+/// RXOVERRIE
+/// Position: 5, Width: 1
+using RXOVERRIE = BitField<5, 1>;
+constexpr uint32_t RXOVERRIE_Pos = 5;
+constexpr uint32_t RXOVERRIE_Msk = RXOVERRIE::mask;
 
-    /// CMDRENDIE
-    /// Position: 6, Width: 1
-    using CMDRENDIE = BitField<6, 1>;
-    constexpr uint32_t CMDRENDIE_Pos = 6;
-    constexpr uint32_t CMDRENDIE_Msk = CMDRENDIE::mask;
+/// CMDRENDIE
+/// Position: 6, Width: 1
+using CMDRENDIE = BitField<6, 1>;
+constexpr uint32_t CMDRENDIE_Pos = 6;
+constexpr uint32_t CMDRENDIE_Msk = CMDRENDIE::mask;
 
-    /// CMDSENTIE
-    /// Position: 7, Width: 1
-    using CMDSENTIE = BitField<7, 1>;
-    constexpr uint32_t CMDSENTIE_Pos = 7;
-    constexpr uint32_t CMDSENTIE_Msk = CMDSENTIE::mask;
+/// CMDSENTIE
+/// Position: 7, Width: 1
+using CMDSENTIE = BitField<7, 1>;
+constexpr uint32_t CMDSENTIE_Pos = 7;
+constexpr uint32_t CMDSENTIE_Msk = CMDSENTIE::mask;
 
-    /// DATAENDIE
-    /// Position: 8, Width: 1
-    using DATAENDIE = BitField<8, 1>;
-    constexpr uint32_t DATAENDIE_Pos = 8;
-    constexpr uint32_t DATAENDIE_Msk = DATAENDIE::mask;
+/// DATAENDIE
+/// Position: 8, Width: 1
+using DATAENDIE = BitField<8, 1>;
+constexpr uint32_t DATAENDIE_Pos = 8;
+constexpr uint32_t DATAENDIE_Msk = DATAENDIE::mask;
 
-    /// STBITERRIE
-    /// Position: 9, Width: 1
-    using STBITERRIE = BitField<9, 1>;
-    constexpr uint32_t STBITERRIE_Pos = 9;
-    constexpr uint32_t STBITERRIE_Msk = STBITERRIE::mask;
+/// STBITERRIE
+/// Position: 9, Width: 1
+using STBITERRIE = BitField<9, 1>;
+constexpr uint32_t STBITERRIE_Pos = 9;
+constexpr uint32_t STBITERRIE_Msk = STBITERRIE::mask;
 
-    /// DBACKENDIE
-    /// Position: 10, Width: 1
-    using DBACKENDIE = BitField<10, 1>;
-    constexpr uint32_t DBACKENDIE_Pos = 10;
-    constexpr uint32_t DBACKENDIE_Msk = DBACKENDIE::mask;
+/// DBACKENDIE
+/// Position: 10, Width: 1
+using DBACKENDIE = BitField<10, 1>;
+constexpr uint32_t DBACKENDIE_Pos = 10;
+constexpr uint32_t DBACKENDIE_Msk = DBACKENDIE::mask;
 
-    /// CMDACTIE
-    /// Position: 11, Width: 1
-    using CMDACTIE = BitField<11, 1>;
-    constexpr uint32_t CMDACTIE_Pos = 11;
-    constexpr uint32_t CMDACTIE_Msk = CMDACTIE::mask;
+/// CMDACTIE
+/// Position: 11, Width: 1
+using CMDACTIE = BitField<11, 1>;
+constexpr uint32_t CMDACTIE_Pos = 11;
+constexpr uint32_t CMDACTIE_Msk = CMDACTIE::mask;
 
-    /// TXACTIE
-    /// Position: 12, Width: 1
-    using TXACTIE = BitField<12, 1>;
-    constexpr uint32_t TXACTIE_Pos = 12;
-    constexpr uint32_t TXACTIE_Msk = TXACTIE::mask;
+/// TXACTIE
+/// Position: 12, Width: 1
+using TXACTIE = BitField<12, 1>;
+constexpr uint32_t TXACTIE_Pos = 12;
+constexpr uint32_t TXACTIE_Msk = TXACTIE::mask;
 
-    /// RXACTIE
-    /// Position: 13, Width: 1
-    using RXACTIE = BitField<13, 1>;
-    constexpr uint32_t RXACTIE_Pos = 13;
-    constexpr uint32_t RXACTIE_Msk = RXACTIE::mask;
+/// RXACTIE
+/// Position: 13, Width: 1
+using RXACTIE = BitField<13, 1>;
+constexpr uint32_t RXACTIE_Pos = 13;
+constexpr uint32_t RXACTIE_Msk = RXACTIE::mask;
 
-    /// TXFIFOHEIE
-    /// Position: 14, Width: 1
-    using TXFIFOHEIE = BitField<14, 1>;
-    constexpr uint32_t TXFIFOHEIE_Pos = 14;
-    constexpr uint32_t TXFIFOHEIE_Msk = TXFIFOHEIE::mask;
+/// TXFIFOHEIE
+/// Position: 14, Width: 1
+using TXFIFOHEIE = BitField<14, 1>;
+constexpr uint32_t TXFIFOHEIE_Pos = 14;
+constexpr uint32_t TXFIFOHEIE_Msk = TXFIFOHEIE::mask;
 
-    /// RXFIFOHFIE
-    /// Position: 15, Width: 1
-    using RXFIFOHFIE = BitField<15, 1>;
-    constexpr uint32_t RXFIFOHFIE_Pos = 15;
-    constexpr uint32_t RXFIFOHFIE_Msk = RXFIFOHFIE::mask;
+/// RXFIFOHFIE
+/// Position: 15, Width: 1
+using RXFIFOHFIE = BitField<15, 1>;
+constexpr uint32_t RXFIFOHFIE_Pos = 15;
+constexpr uint32_t RXFIFOHFIE_Msk = RXFIFOHFIE::mask;
 
-    /// TXFIFOFIE
-    /// Position: 16, Width: 1
-    using TXFIFOFIE = BitField<16, 1>;
-    constexpr uint32_t TXFIFOFIE_Pos = 16;
-    constexpr uint32_t TXFIFOFIE_Msk = TXFIFOFIE::mask;
+/// TXFIFOFIE
+/// Position: 16, Width: 1
+using TXFIFOFIE = BitField<16, 1>;
+constexpr uint32_t TXFIFOFIE_Pos = 16;
+constexpr uint32_t TXFIFOFIE_Msk = TXFIFOFIE::mask;
 
-    /// RXFIFOFIE
-    /// Position: 17, Width: 1
-    using RXFIFOFIE = BitField<17, 1>;
-    constexpr uint32_t RXFIFOFIE_Pos = 17;
-    constexpr uint32_t RXFIFOFIE_Msk = RXFIFOFIE::mask;
+/// RXFIFOFIE
+/// Position: 17, Width: 1
+using RXFIFOFIE = BitField<17, 1>;
+constexpr uint32_t RXFIFOFIE_Pos = 17;
+constexpr uint32_t RXFIFOFIE_Msk = RXFIFOFIE::mask;
 
-    /// TXFIFOEIE
-    /// Position: 18, Width: 1
-    using TXFIFOEIE = BitField<18, 1>;
-    constexpr uint32_t TXFIFOEIE_Pos = 18;
-    constexpr uint32_t TXFIFOEIE_Msk = TXFIFOEIE::mask;
+/// TXFIFOEIE
+/// Position: 18, Width: 1
+using TXFIFOEIE = BitField<18, 1>;
+constexpr uint32_t TXFIFOEIE_Pos = 18;
+constexpr uint32_t TXFIFOEIE_Msk = TXFIFOEIE::mask;
 
-    /// RXFIFOEIE
-    /// Position: 19, Width: 1
-    using RXFIFOEIE = BitField<19, 1>;
-    constexpr uint32_t RXFIFOEIE_Pos = 19;
-    constexpr uint32_t RXFIFOEIE_Msk = RXFIFOEIE::mask;
+/// RXFIFOEIE
+/// Position: 19, Width: 1
+using RXFIFOEIE = BitField<19, 1>;
+constexpr uint32_t RXFIFOEIE_Pos = 19;
+constexpr uint32_t RXFIFOEIE_Msk = RXFIFOEIE::mask;
 
-    /// TXDAVLIE
-    /// Position: 20, Width: 1
-    using TXDAVLIE = BitField<20, 1>;
-    constexpr uint32_t TXDAVLIE_Pos = 20;
-    constexpr uint32_t TXDAVLIE_Msk = TXDAVLIE::mask;
+/// TXDAVLIE
+/// Position: 20, Width: 1
+using TXDAVLIE = BitField<20, 1>;
+constexpr uint32_t TXDAVLIE_Pos = 20;
+constexpr uint32_t TXDAVLIE_Msk = TXDAVLIE::mask;
 
-    /// RXDAVLIE
-    /// Position: 21, Width: 1
-    using RXDAVLIE = BitField<21, 1>;
-    constexpr uint32_t RXDAVLIE_Pos = 21;
-    constexpr uint32_t RXDAVLIE_Msk = RXDAVLIE::mask;
+/// RXDAVLIE
+/// Position: 21, Width: 1
+using RXDAVLIE = BitField<21, 1>;
+constexpr uint32_t RXDAVLIE_Pos = 21;
+constexpr uint32_t RXDAVLIE_Msk = RXDAVLIE::mask;
 
-    /// SDIOITIE
-    /// Position: 22, Width: 1
-    using SDIOITIE = BitField<22, 1>;
-    constexpr uint32_t SDIOITIE_Pos = 22;
-    constexpr uint32_t SDIOITIE_Msk = SDIOITIE::mask;
+/// SDIOITIE
+/// Position: 22, Width: 1
+using SDIOITIE = BitField<22, 1>;
+constexpr uint32_t SDIOITIE_Pos = 22;
+constexpr uint32_t SDIOITIE_Msk = SDIOITIE::mask;
 
-    /// CEATENDIE
-    /// Position: 23, Width: 1
-    using CEATENDIE = BitField<23, 1>;
-    constexpr uint32_t CEATENDIE_Pos = 23;
-    constexpr uint32_t CEATENDIE_Msk = CEATENDIE::mask;
+/// CEATENDIE
+/// Position: 23, Width: 1
+using CEATENDIE = BitField<23, 1>;
+constexpr uint32_t CEATENDIE_Pos = 23;
+constexpr uint32_t CEATENDIE_Msk = CEATENDIE::mask;
 
 }  // namespace mask
 
-/// FIFOCNT - Bits 23:0 = FIFOCOUNT: Remaining number of words to be written to or read from the FIFO
+/// FIFOCNT - Bits 23:0 = FIFOCOUNT: Remaining number of words to be written to or read from the
+/// FIFO
 namespace fifocnt {
-    /// FIF0COUNT
-    /// Position: 0, Width: 24
-    using FIF0COUNT = BitField<0, 24>;
-    constexpr uint32_t FIF0COUNT_Pos = 0;
-    constexpr uint32_t FIF0COUNT_Msk = FIF0COUNT::mask;
+/// FIF0COUNT
+/// Position: 0, Width: 24
+using FIF0COUNT = BitField<0, 24>;
+constexpr uint32_t FIF0COUNT_Pos = 0;
+constexpr uint32_t FIF0COUNT_Msk = FIF0COUNT::mask;
 
 }  // namespace fifocnt
 
 /// FIFO - bits 31:0 = FIFOData: Receive and transmit FIFO data
 namespace fifo {
-    /// FIFOData
-    /// Position: 0, Width: 32
-    using FIFOData = BitField<0, 32>;
-    constexpr uint32_t FIFOData_Pos = 0;
-    constexpr uint32_t FIFOData_Msk = FIFOData::mask;
+/// FIFOData
+/// Position: 0, Width: 32
+using FIFOData = BitField<0, 32>;
+constexpr uint32_t FIFOData_Pos = 0;
+constexpr uint32_t FIFOData_Msk = FIFOData::mask;
 
 }  // namespace fifo
 

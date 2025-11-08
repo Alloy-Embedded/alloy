@@ -6,10 +6,11 @@
 /// - Message formatting
 /// - Sink management
 
+#include <cassert>
+#include <cstring>
+
 #include "logger/logger.hpp"
 #include "logger/platform/buffer_sink.hpp"
-#include <cstring>
-#include <cassert>
 
 using namespace alloy::logger;
 

@@ -17,9 +17,8 @@ namespace alloy::hal::raspberrypi::rp2040::pll_sys {
 
 /// PLL_SYS Register Structure
 struct PLL_SYS_Registers {
-
-    /// Control and Status\n GENERAL CONSTRAINTS:\n Reference clock frequency min=5MHz, max=800MHz\n Feedback divider min=16, max=320\n VCO frequency min=400MHz, max=1600MHz
-    /// Offset: 0x0000
+    /// Control and Status\n GENERAL CONSTRAINTS:\n Reference clock frequency min=5MHz, max=800MHz\n
+    /// Feedback divider min=16, max=320\n VCO frequency min=400MHz, max=1600MHz Offset: 0x0000
     /// Reset value: 0x00000001
     volatile uint32_t CS;
 
@@ -33,7 +32,8 @@ struct PLL_SYS_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t FBDIV_INT;
 
-    /// Controls the PLL post dividers for the primary output\n (note: this PLL does not have a secondary output)\n the primary output is driven from VCO divided by postdiv1*postdiv2
+    /// Controls the PLL post dividers for the primary output\n (note: this PLL does not have a
+    /// secondary output)\n the primary output is driven from VCO divided by postdiv1*postdiv2
     /// Offset: 0x000C
     /// Reset value: 0x00077000
     volatile uint32_t PRIM;

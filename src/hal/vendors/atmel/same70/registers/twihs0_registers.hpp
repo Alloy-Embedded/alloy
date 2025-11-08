@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::same70::twihs0 {
 
 /// TWIHS0 Register Structure
 struct TWIHS0_Registers {
-
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -38,7 +37,7 @@ struct TWIHS0_Registers {
     /// Clock Waveform Generator Register
     /// Offset: 0x0010
     volatile uint32_t CWGR;
-    uint8_t RESERVED_0014[12]; ///< Reserved
+    uint8_t RESERVED_0014[12];  ///< Reserved
 
     /// Status Register
     /// Offset: 0x0020
@@ -73,17 +72,17 @@ struct TWIHS0_Registers {
     /// SMBus Timing Register
     /// Offset: 0x0038
     volatile uint32_t SMBTR;
-    uint8_t RESERVED_003C[8]; ///< Reserved
+    uint8_t RESERVED_003C[8];  ///< Reserved
 
     /// Filter Register
     /// Offset: 0x0044
     volatile uint32_t FILTR;
-    uint8_t RESERVED_0048[4]; ///< Reserved
+    uint8_t RESERVED_0048[4];  ///< Reserved
 
     /// SleepWalking Matching Register
     /// Offset: 0x004C
     volatile uint32_t SWMR;
-    uint8_t RESERVED_0050[148]; ///< Reserved
+    uint8_t RESERVED_0050[148];  ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4

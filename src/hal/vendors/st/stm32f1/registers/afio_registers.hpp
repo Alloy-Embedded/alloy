@@ -17,7 +17,6 @@ namespace alloy::hal::st::stm32f1::afio {
 
 /// AFIO Register Structure
 struct AFIO_Registers {
-
     /// Event Control Register (AFIO_EVCR)
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -52,7 +51,7 @@ struct AFIO_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t EXTICR4;
-    uint8_t RESERVED_0018[4]; ///< Reserved
+    uint8_t RESERVED_0018[4];  ///< Reserved
 
     /// AF remap and debug I/O configuration register
     /// Offset: 0x001C

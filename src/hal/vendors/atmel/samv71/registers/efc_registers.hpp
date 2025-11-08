@@ -17,7 +17,6 @@ namespace alloy::hal::atmel::samv71::efc {
 
 /// EFC Register Structure
 struct EFC_Registers {
-
     /// EEFC Flash Mode Register
     /// Offset: 0x0000
     volatile uint32_t EEFC_FMR;
@@ -36,7 +35,7 @@ struct EFC_Registers {
     /// Offset: 0x000C
     /// Access: read-only
     volatile uint32_t EEFC_FRR;
-    uint8_t RESERVED_0010[212]; ///< Reserved
+    uint8_t RESERVED_0010[212];  ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4

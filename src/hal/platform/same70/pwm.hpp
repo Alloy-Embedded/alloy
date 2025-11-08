@@ -25,11 +25,12 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -37,7 +38,6 @@
 
 // Register definitions from vendor (family-level)
 #include "hal/vendors/atmel/same70/registers/pwm0_registers.hpp"
-
 
 
 namespace alloy::hal::same70 {
@@ -59,16 +59,16 @@ namespace pwm = alloy::hal::atmel::same70::pwm0;
  * @brief PWM Clock Prescaler
  */
 enum class PwmPrescaler : uint8_t {
-    DIV_1 = 0,  ///< MCK/1
-    DIV_2 = 1,  ///< MCK/2
-    DIV_4 = 2,  ///< MCK/4
-    DIV_8 = 3,  ///< MCK/8
-    DIV_16 = 4,  ///< MCK/16
-    DIV_32 = 5,  ///< MCK/32
-    DIV_64 = 6,  ///< MCK/64
-    DIV_128 = 7,  ///< MCK/128
-    DIV_256 = 8,  ///< MCK/256
-    DIV_512 = 9,  ///< MCK/512
+    DIV_1 = 0,      ///< MCK/1
+    DIV_2 = 1,      ///< MCK/2
+    DIV_4 = 2,      ///< MCK/4
+    DIV_8 = 3,      ///< MCK/8
+    DIV_16 = 4,     ///< MCK/16
+    DIV_32 = 5,     ///< MCK/32
+    DIV_64 = 6,     ///< MCK/64
+    DIV_128 = 7,    ///< MCK/128
+    DIV_256 = 8,    ///< MCK/256
+    DIV_512 = 9,    ///< MCK/512
     DIV_1024 = 10,  ///< MCK/1024
 };
 
@@ -77,13 +77,13 @@ enum class PwmPrescaler : uint8_t {
  * @brief PWM configuration structure
  */
 struct PwmConfig {
-    PwmAlignment alignment = PwmAlignment::Edge;  ///< Alignment mode (from hal/types.hpp)
-    PwmPolarity polarity = PwmPolarity::Normal;  ///< Polarity (from hal/types.hpp)
+    PwmAlignment alignment = PwmAlignment::Edge;   ///< Alignment mode (from hal/types.hpp)
+    PwmPolarity polarity = PwmPolarity::Normal;    ///< Polarity (from hal/types.hpp)
     PwmPrescaler prescaler = PwmPrescaler::DIV_1;  ///< Clock prescaler
-    uint16_t period = 1000;  ///< Period (CPRD register value)
-    uint16_t duty_cycle = 500;  ///< Duty cycle (CDTY register value)
-    uint16_t dead_time_h = 0;  ///< Dead-time for high side output
-    uint16_t dead_time_l = 0;  ///< Dead-time for low side output
+    uint16_t period = 1000;                        ///< Period (CPRD register value)
+    uint16_t duty_cycle = 500;                     ///< Duty cycle (CDTY register value)
+    uint16_t dead_time_h = 0;                      ///< Dead-time for high side output
+    uint16_t dead_time_l = 0;                      ///< Dead-time for low side output
 };
 
 // ============================================================================
@@ -91,17 +91,18 @@ struct PwmConfig {
 // ============================================================================
 
 /**
- * @brief PWM Channel Registers (per-channel). Each of the 4 PWM channels has its own register block at offset 0x200 + (channel * 0x20)
+ * @brief PWM Channel Registers (per-channel). Each of the 4 PWM channels has its own register block
+ * at offset 0x200 + (channel * 0x20)
  */
 struct PwmChannelRegisters {
-    volatile uint32_t CMR;  ///< Channel Mode Register
-    volatile uint32_t CDTY;  ///< Channel Duty Cycle Register
+    volatile uint32_t CMR;      ///< Channel Mode Register
+    volatile uint32_t CDTY;     ///< Channel Duty Cycle Register
     volatile uint32_t CDTYUPD;  ///< Channel Duty Cycle Update Register
-    volatile uint32_t CPRD;  ///< Channel Period Register
+    volatile uint32_t CPRD;     ///< Channel Period Register
     volatile uint32_t CPRDUPD;  ///< Channel Period Update Register
-    volatile uint32_t CCNT;  ///< Channel Counter Register (read-only)
-    volatile uint32_t DT;  ///< Channel Dead Time Register
-    volatile uint32_t DTUPD;  ///< Channel Dead Time Update Register
+    volatile uint32_t CCNT;     ///< Channel Counter Register (read-only)
+    volatile uint32_t DT;       ///< Channel Dead Time Register
+    volatile uint32_t DTUPD;    ///< Channel Dead Time Update Register
 };
 
 
@@ -137,14 +138,16 @@ struct PwmChannelRegisters {
 template <uint32_t BASE_ADDR, uint8_t CHANNEL, uint32_t IRQ_ID>
 class Pwm {
     static_assert(CHANNEL < 4, "PWM has 4 channels (0-3)");
-public:
+
+   public:
     // Compile-time constants
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint8_t channel = CHANNEL;
     static constexpr uint32_t irq_id = IRQ_ID;
 
     // Configuration constants
-    static constexpr uint32_t channel_offset = 0x200 + (CHANNEL * 0x20);  ///< Channel register offset
+    static constexpr uint32_t channel_offset =
+        0x200 + (CHANNEL * 0x20);  ///< Channel register offset
 
     /**
      * @brief Get PWM peripheral registers
@@ -157,15 +160,16 @@ public:
         // In tests, use the mock hardware pointer
         return ALLOY_PWM_MOCK_HW();
 #else
-        return reinterpret_cast<volatile alloy::hal::atmel::same70::pwm0::PWM0_Registers*>(BASE_ADDR);
+        return reinterpret_cast<volatile alloy::hal::atmel::same70::pwm0::PWM0_Registers*>(
+            BASE_ADDR);
 #endif
     }
 
     /**
      * @brief Get PWM channel registers
      */
-static inline volatile PwmChannelRegisters* get_channel() {
-        #ifdef ALLOY_PWM_MOCK_CHANNEL
+    static inline volatile PwmChannelRegisters* get_channel() {
+#ifdef ALLOY_PWM_MOCK_CHANNEL
         return ALLOY_PWM_MOCK_CHANNEL();
 #else
         return reinterpret_cast<volatile PwmChannelRegisters*>(BASE_ADDR + channel_offset);
@@ -230,41 +234,41 @@ static inline volatile PwmChannelRegisters* get_channel() {
 
         // Build CMR (Channel Mode Register)
         auto* channel = get_channel();
-        
+
         uint32_t cmr = 0;
-        
+
         // Clock prescaler
         cmr |= (static_cast<uint32_t>(config.prescaler) & 0x0F);
-        
+
         // Alignment mode
         if (config.alignment == PwmAlignment::Center) {
             cmr |= (1 << 8);  // CALG = 1 (center-aligned)
         }
-        
+
         // Polarity
         if (config.polarity == PwmPolarity::Inverted) {
             cmr |= (1 << 9);  // CPOL = 1 (inverted)
         }
-        
+
         // Dead-time enable (if non-zero)
         if (config.dead_time_h > 0 || config.dead_time_l > 0) {
             cmr |= (1 << 16);  // DTE = 1 (dead-time enabled)
         }
-        
+
         channel->CMR = cmr;
-        
+
         // Set period
         channel->CPRD = config.period;
-        
+
         // Set duty cycle
         channel->CDTY = config.duty_cycle;
-        
+
         // Set dead-time (if enabled)
         if (config.dead_time_h > 0 || config.dead_time_l > 0) {
             uint32_t dt = (config.dead_time_h & 0xFFFF) | ((config.dead_time_l & 0xFFFF) << 16);
             channel->DT = dt;
         }
-        
+
         m_config = config;
 
         return Ok();
@@ -309,7 +313,8 @@ static inline volatile PwmChannelRegisters* get_channel() {
      *
      * @param duty_cycle Duty cycle value (0 to period)
      * @return Result<void, ErrorCode>     *
-     * @note For left-aligned: 0 = always low, period = always high. For center-aligned: 0 = always low, period/2 = 50% duty
+     * @note For left-aligned: 0 = always low, period = always high. For center-aligned: 0 = always
+     * low, period/2 = 50% duty
      */
     Result<void, ErrorCode> setDutyCycle(uint16_t duty_cycle) {
         auto* hw = get_hw();
@@ -357,7 +362,7 @@ static inline volatile PwmChannelRegisters* get_channel() {
             return Err(ErrorCode::NotInitialized);
         }
 
-        // 
+        //
         auto* channel = get_channel();
 
         return Ok(uint32_t(channel->CCNT));
@@ -370,8 +375,9 @@ static inline volatile PwmChannelRegisters* get_channel() {
     bool isRunning() const {
         auto* hw = get_hw();
 
-        // 
-        if (!m_opened) return false;
+        //
+        if (!m_opened)
+            return false;
         return (hw->SR & (1u << CHANNEL)) != 0;
 
         return false;
@@ -398,12 +404,10 @@ static inline volatile PwmChannelRegisters* get_channel() {
      * @brief Check if PWM is open
      *
      * @return bool Check if PWM is open     */
-    bool isOpen() const {
-        return m_opened;
-    }
+    bool isOpen() const { return m_opened; }
 
-private:
-    bool m_opened = false;  ///< Tracks if peripheral is initialized
+   private:
+    bool m_opened = false;    ///< Tracks if peripheral is initialized
     PwmConfig m_config = {};  ///< Current configuration
 };
 
@@ -444,4 +448,4 @@ using Pwm1Ch1 = Pwm<PWM1CH1_BASE, 1, PWM1CH1_IRQ>;  ///< PWM1 Channel 1
 using Pwm1Ch2 = Pwm<PWM1CH2_BASE, 2, PWM1CH2_IRQ>;  ///< PWM1 Channel 2
 using Pwm1Ch3 = Pwm<PWM1CH3_BASE, 3, PWM1CH3_IRQ>;  ///< PWM1 Channel 3
 
-} // namespace alloy::hal::same70
+}  // namespace alloy::hal::same70

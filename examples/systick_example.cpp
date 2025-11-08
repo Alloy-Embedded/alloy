@@ -22,16 +22,16 @@
 // Platform-specific includes
 #if defined(MCU_SAME70)
     #include "hal/vendors/atmel/same70/systick.hpp"
-    using namespace alloy::hal::atmel::same70;
+using namespace alloy::hal::atmel::same70;
 #elif defined(MCU_STM32F103C8) || defined(MCU_STM32F1)
     #include "hal/vendors/st/stm32f1/systick.hpp"
-    using namespace alloy::hal::st::stm32f1;
+using namespace alloy::hal::st::stm32f1;
 #elif defined(MCU_SAMD21)
     #include "hal/vendors/microchip/samd21/systick_time.hpp"
-    using namespace alloy::hal::microchip::samd21;
+using namespace alloy::hal::microchip::samd21;
 #elif defined(MCU_RP2040)
     #include "hal/vendors/raspberrypi/rp2040/systick_time.hpp"
-    using namespace alloy::hal::raspberrypi::rp2040;
+using namespace alloy::hal::raspberrypi::rp2040;
 #else
     #error "Unsupported MCU - please add SysTick support for your platform"
 #endif
