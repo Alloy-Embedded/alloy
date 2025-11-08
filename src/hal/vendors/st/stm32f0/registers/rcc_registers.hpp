@@ -23,61 +23,52 @@ struct RCC_Registers {
     /// Reset value: 0x00000083
     volatile uint32_t CR;
 
-    /// Clock configuration register
-          (RCC_CFGR)
+    /// Clock configuration register (RCC_CFGR)
     /// Offset: 0x0004
     /// Reset value: 0x00000000
     volatile uint32_t CFGR;
 
-    /// Clock interrupt register
-          (RCC_CIR)
+    /// Clock interrupt register (RCC_CIR)
     /// Offset: 0x0008
     /// Reset value: 0x00000000
     volatile uint32_t CIR;
 
-    /// APB2 peripheral reset register
-          (RCC_APB2RSTR)
+    /// APB2 peripheral reset register (RCC_APB2RSTR)
     /// Offset: 0x000C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t APB2RSTR;
 
-    /// APB1 peripheral reset register
-          (RCC_APB1RSTR)
+    /// APB1 peripheral reset register (RCC_APB1RSTR)
     /// Offset: 0x0010
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t APB1RSTR;
 
-    /// AHB Peripheral Clock enable register
-          (RCC_AHBENR)
+    /// AHB Peripheral Clock enable register (RCC_AHBENR)
     /// Offset: 0x0014
     /// Reset value: 0x00000014
     /// Access: read-write
     volatile uint32_t AHBENR;
 
-    /// APB2 peripheral clock enable register
-          (RCC_APB2ENR)
+    /// APB2 peripheral clock enable register (RCC_APB2ENR)
     /// Offset: 0x0018
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t APB2ENR;
 
-    /// APB1 peripheral clock enable register
-          (RCC_APB1ENR)
+    /// APB1 peripheral clock enable register (RCC_APB1ENR)
     /// Offset: 0x001C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t APB1ENR;
 
-    /// Backup domain control register
-          (RCC_BDCR)
+    /// Backup domain control register (RCC_BDCR)
     /// Offset: 0x0020
     /// Reset value: 0x00000000
     volatile uint32_t BDCR;
 
-    /// Control/status register
-          (RCC_CSR)
+    /// Control/status register (RCC_CSR)
     /// Offset: 0x0024
     /// Reset value: 0x0C000000
     volatile uint32_t CSR;

@@ -17,8 +17,7 @@ using namespace alloy::hal::bitfields;
 // EXTI Bit Field Definitions
 // ============================================================================
 
-/// IMR - Interrupt mask register
-          (EXTI_IMR)
+/// IMR - Interrupt mask register (EXTI_IMR)
 namespace imr {
     /// Interrupt Mask on line 0
     /// Position: 0, Width: 1
@@ -362,137 +361,117 @@ namespace emr {
 
 }  // namespace emr
 
-/// RTSR - Rising Trigger selection register
-          (EXTI_RTSR)
+/// RTSR - Rising Trigger selection register (EXTI_RTSR)
 namespace rtsr {
-    /// Rising trigger event configuration of
-              line 0
+    /// Rising trigger event configuration of line 0
     /// Position: 0, Width: 1
     using TR0 = BitField<0, 1>;
     constexpr uint32_t TR0_Pos = 0;
     constexpr uint32_t TR0_Msk = TR0::mask;
 
-    /// Rising trigger event configuration of
-              line 1
+    /// Rising trigger event configuration of line 1
     /// Position: 1, Width: 1
     using TR1 = BitField<1, 1>;
     constexpr uint32_t TR1_Pos = 1;
     constexpr uint32_t TR1_Msk = TR1::mask;
 
-    /// Rising trigger event configuration of
-              line 2
+    /// Rising trigger event configuration of line 2
     /// Position: 2, Width: 1
     using TR2 = BitField<2, 1>;
     constexpr uint32_t TR2_Pos = 2;
     constexpr uint32_t TR2_Msk = TR2::mask;
 
-    /// Rising trigger event configuration of
-              line 3
+    /// Rising trigger event configuration of line 3
     /// Position: 3, Width: 1
     using TR3 = BitField<3, 1>;
     constexpr uint32_t TR3_Pos = 3;
     constexpr uint32_t TR3_Msk = TR3::mask;
 
-    /// Rising trigger event configuration of
-              line 4
+    /// Rising trigger event configuration of line 4
     /// Position: 4, Width: 1
     using TR4 = BitField<4, 1>;
     constexpr uint32_t TR4_Pos = 4;
     constexpr uint32_t TR4_Msk = TR4::mask;
 
-    /// Rising trigger event configuration of
-              line 5
+    /// Rising trigger event configuration of line 5
     /// Position: 5, Width: 1
     using TR5 = BitField<5, 1>;
     constexpr uint32_t TR5_Pos = 5;
     constexpr uint32_t TR5_Msk = TR5::mask;
 
-    /// Rising trigger event configuration of
-              line 6
+    /// Rising trigger event configuration of line 6
     /// Position: 6, Width: 1
     using TR6 = BitField<6, 1>;
     constexpr uint32_t TR6_Pos = 6;
     constexpr uint32_t TR6_Msk = TR6::mask;
 
-    /// Rising trigger event configuration of
-              line 7
+    /// Rising trigger event configuration of line 7
     /// Position: 7, Width: 1
     using TR7 = BitField<7, 1>;
     constexpr uint32_t TR7_Pos = 7;
     constexpr uint32_t TR7_Msk = TR7::mask;
 
-    /// Rising trigger event configuration of
-              line 8
+    /// Rising trigger event configuration of line 8
     /// Position: 8, Width: 1
     using TR8 = BitField<8, 1>;
     constexpr uint32_t TR8_Pos = 8;
     constexpr uint32_t TR8_Msk = TR8::mask;
 
-    /// Rising trigger event configuration of
-              line 9
+    /// Rising trigger event configuration of line 9
     /// Position: 9, Width: 1
     using TR9 = BitField<9, 1>;
     constexpr uint32_t TR9_Pos = 9;
     constexpr uint32_t TR9_Msk = TR9::mask;
 
-    /// Rising trigger event configuration of
-              line 10
+    /// Rising trigger event configuration of line 10
     /// Position: 10, Width: 1
     using TR10 = BitField<10, 1>;
     constexpr uint32_t TR10_Pos = 10;
     constexpr uint32_t TR10_Msk = TR10::mask;
 
-    /// Rising trigger event configuration of
-              line 11
+    /// Rising trigger event configuration of line 11
     /// Position: 11, Width: 1
     using TR11 = BitField<11, 1>;
     constexpr uint32_t TR11_Pos = 11;
     constexpr uint32_t TR11_Msk = TR11::mask;
 
-    /// Rising trigger event configuration of
-              line 12
+    /// Rising trigger event configuration of line 12
     /// Position: 12, Width: 1
     using TR12 = BitField<12, 1>;
     constexpr uint32_t TR12_Pos = 12;
     constexpr uint32_t TR12_Msk = TR12::mask;
 
-    /// Rising trigger event configuration of
-              line 13
+    /// Rising trigger event configuration of line 13
     /// Position: 13, Width: 1
     using TR13 = BitField<13, 1>;
     constexpr uint32_t TR13_Pos = 13;
     constexpr uint32_t TR13_Msk = TR13::mask;
 
-    /// Rising trigger event configuration of
-              line 14
+    /// Rising trigger event configuration of line 14
     /// Position: 14, Width: 1
     using TR14 = BitField<14, 1>;
     constexpr uint32_t TR14_Pos = 14;
     constexpr uint32_t TR14_Msk = TR14::mask;
 
-    /// Rising trigger event configuration of
-              line 15
+    /// Rising trigger event configuration of line 15
     /// Position: 15, Width: 1
     using TR15 = BitField<15, 1>;
     constexpr uint32_t TR15_Pos = 15;
     constexpr uint32_t TR15_Msk = TR15::mask;
 
-    /// Rising trigger event configuration of
-              line 16
+    /// Rising trigger event configuration of line 16
     /// Position: 16, Width: 1
     using TR16 = BitField<16, 1>;
     constexpr uint32_t TR16_Pos = 16;
     constexpr uint32_t TR16_Msk = TR16::mask;
 
-    /// Rising trigger event configuration of
-              line 17
+    /// Rising trigger event configuration of line 17
     /// Position: 17, Width: 1
     using TR17 = BitField<17, 1>;
     constexpr uint32_t TR17_Pos = 17;
     constexpr uint32_t TR17_Msk = TR17::mask;
 
-    /// Rising trigger event configuration of
-              line 19
+    /// Rising trigger event configuration of line 19
     /// Position: 19, Width: 1
     using TR19 = BitField<19, 1>;
     constexpr uint32_t TR19_Pos = 19;
@@ -500,137 +479,117 @@ namespace rtsr {
 
 }  // namespace rtsr
 
-/// FTSR - Falling Trigger selection register
-          (EXTI_FTSR)
+/// FTSR - Falling Trigger selection register (EXTI_FTSR)
 namespace ftsr {
-    /// Falling trigger event configuration of
-              line 0
+    /// Falling trigger event configuration of line 0
     /// Position: 0, Width: 1
     using TR0 = BitField<0, 1>;
     constexpr uint32_t TR0_Pos = 0;
     constexpr uint32_t TR0_Msk = TR0::mask;
 
-    /// Falling trigger event configuration of
-              line 1
+    /// Falling trigger event configuration of line 1
     /// Position: 1, Width: 1
     using TR1 = BitField<1, 1>;
     constexpr uint32_t TR1_Pos = 1;
     constexpr uint32_t TR1_Msk = TR1::mask;
 
-    /// Falling trigger event configuration of
-              line 2
+    /// Falling trigger event configuration of line 2
     /// Position: 2, Width: 1
     using TR2 = BitField<2, 1>;
     constexpr uint32_t TR2_Pos = 2;
     constexpr uint32_t TR2_Msk = TR2::mask;
 
-    /// Falling trigger event configuration of
-              line 3
+    /// Falling trigger event configuration of line 3
     /// Position: 3, Width: 1
     using TR3 = BitField<3, 1>;
     constexpr uint32_t TR3_Pos = 3;
     constexpr uint32_t TR3_Msk = TR3::mask;
 
-    /// Falling trigger event configuration of
-              line 4
+    /// Falling trigger event configuration of line 4
     /// Position: 4, Width: 1
     using TR4 = BitField<4, 1>;
     constexpr uint32_t TR4_Pos = 4;
     constexpr uint32_t TR4_Msk = TR4::mask;
 
-    /// Falling trigger event configuration of
-              line 5
+    /// Falling trigger event configuration of line 5
     /// Position: 5, Width: 1
     using TR5 = BitField<5, 1>;
     constexpr uint32_t TR5_Pos = 5;
     constexpr uint32_t TR5_Msk = TR5::mask;
 
-    /// Falling trigger event configuration of
-              line 6
+    /// Falling trigger event configuration of line 6
     /// Position: 6, Width: 1
     using TR6 = BitField<6, 1>;
     constexpr uint32_t TR6_Pos = 6;
     constexpr uint32_t TR6_Msk = TR6::mask;
 
-    /// Falling trigger event configuration of
-              line 7
+    /// Falling trigger event configuration of line 7
     /// Position: 7, Width: 1
     using TR7 = BitField<7, 1>;
     constexpr uint32_t TR7_Pos = 7;
     constexpr uint32_t TR7_Msk = TR7::mask;
 
-    /// Falling trigger event configuration of
-              line 8
+    /// Falling trigger event configuration of line 8
     /// Position: 8, Width: 1
     using TR8 = BitField<8, 1>;
     constexpr uint32_t TR8_Pos = 8;
     constexpr uint32_t TR8_Msk = TR8::mask;
 
-    /// Falling trigger event configuration of
-              line 9
+    /// Falling trigger event configuration of line 9
     /// Position: 9, Width: 1
     using TR9 = BitField<9, 1>;
     constexpr uint32_t TR9_Pos = 9;
     constexpr uint32_t TR9_Msk = TR9::mask;
 
-    /// Falling trigger event configuration of
-              line 10
+    /// Falling trigger event configuration of line 10
     /// Position: 10, Width: 1
     using TR10 = BitField<10, 1>;
     constexpr uint32_t TR10_Pos = 10;
     constexpr uint32_t TR10_Msk = TR10::mask;
 
-    /// Falling trigger event configuration of
-              line 11
+    /// Falling trigger event configuration of line 11
     /// Position: 11, Width: 1
     using TR11 = BitField<11, 1>;
     constexpr uint32_t TR11_Pos = 11;
     constexpr uint32_t TR11_Msk = TR11::mask;
 
-    /// Falling trigger event configuration of
-              line 12
+    /// Falling trigger event configuration of line 12
     /// Position: 12, Width: 1
     using TR12 = BitField<12, 1>;
     constexpr uint32_t TR12_Pos = 12;
     constexpr uint32_t TR12_Msk = TR12::mask;
 
-    /// Falling trigger event configuration of
-              line 13
+    /// Falling trigger event configuration of line 13
     /// Position: 13, Width: 1
     using TR13 = BitField<13, 1>;
     constexpr uint32_t TR13_Pos = 13;
     constexpr uint32_t TR13_Msk = TR13::mask;
 
-    /// Falling trigger event configuration of
-              line 14
+    /// Falling trigger event configuration of line 14
     /// Position: 14, Width: 1
     using TR14 = BitField<14, 1>;
     constexpr uint32_t TR14_Pos = 14;
     constexpr uint32_t TR14_Msk = TR14::mask;
 
-    /// Falling trigger event configuration of
-              line 15
+    /// Falling trigger event configuration of line 15
     /// Position: 15, Width: 1
     using TR15 = BitField<15, 1>;
     constexpr uint32_t TR15_Pos = 15;
     constexpr uint32_t TR15_Msk = TR15::mask;
 
-    /// Falling trigger event configuration of
-              line 16
+    /// Falling trigger event configuration of line 16
     /// Position: 16, Width: 1
     using TR16 = BitField<16, 1>;
     constexpr uint32_t TR16_Pos = 16;
     constexpr uint32_t TR16_Msk = TR16::mask;
 
-    /// Falling trigger event configuration of
-              line 17
+    /// Falling trigger event configuration of line 17
     /// Position: 17, Width: 1
     using TR17 = BitField<17, 1>;
     constexpr uint32_t TR17_Pos = 17;
     constexpr uint32_t TR17_Msk = TR17::mask;
 
-    /// Falling trigger event configuration of
-              line 19
+    /// Falling trigger event configuration of line 19
     /// Position: 19, Width: 1
     using TR19 = BitField<19, 1>;
     constexpr uint32_t TR19_Pos = 19;
@@ -638,137 +597,117 @@ namespace ftsr {
 
 }  // namespace ftsr
 
-/// SWIER - Software interrupt event register
-          (EXTI_SWIER)
+/// SWIER - Software interrupt event register (EXTI_SWIER)
 namespace swier {
-    /// Software Interrupt on line
-              0
+    /// Software Interrupt on line 0
     /// Position: 0, Width: 1
     using SWIER0 = BitField<0, 1>;
     constexpr uint32_t SWIER0_Pos = 0;
     constexpr uint32_t SWIER0_Msk = SWIER0::mask;
 
-    /// Software Interrupt on line
-              1
+    /// Software Interrupt on line 1
     /// Position: 1, Width: 1
     using SWIER1 = BitField<1, 1>;
     constexpr uint32_t SWIER1_Pos = 1;
     constexpr uint32_t SWIER1_Msk = SWIER1::mask;
 
-    /// Software Interrupt on line
-              2
+    /// Software Interrupt on line 2
     /// Position: 2, Width: 1
     using SWIER2 = BitField<2, 1>;
     constexpr uint32_t SWIER2_Pos = 2;
     constexpr uint32_t SWIER2_Msk = SWIER2::mask;
 
-    /// Software Interrupt on line
-              3
+    /// Software Interrupt on line 3
     /// Position: 3, Width: 1
     using SWIER3 = BitField<3, 1>;
     constexpr uint32_t SWIER3_Pos = 3;
     constexpr uint32_t SWIER3_Msk = SWIER3::mask;
 
-    /// Software Interrupt on line
-              4
+    /// Software Interrupt on line 4
     /// Position: 4, Width: 1
     using SWIER4 = BitField<4, 1>;
     constexpr uint32_t SWIER4_Pos = 4;
     constexpr uint32_t SWIER4_Msk = SWIER4::mask;
 
-    /// Software Interrupt on line
-              5
+    /// Software Interrupt on line 5
     /// Position: 5, Width: 1
     using SWIER5 = BitField<5, 1>;
     constexpr uint32_t SWIER5_Pos = 5;
     constexpr uint32_t SWIER5_Msk = SWIER5::mask;
 
-    /// Software Interrupt on line
-              6
+    /// Software Interrupt on line 6
     /// Position: 6, Width: 1
     using SWIER6 = BitField<6, 1>;
     constexpr uint32_t SWIER6_Pos = 6;
     constexpr uint32_t SWIER6_Msk = SWIER6::mask;
 
-    /// Software Interrupt on line
-              7
+    /// Software Interrupt on line 7
     /// Position: 7, Width: 1
     using SWIER7 = BitField<7, 1>;
     constexpr uint32_t SWIER7_Pos = 7;
     constexpr uint32_t SWIER7_Msk = SWIER7::mask;
 
-    /// Software Interrupt on line
-              8
+    /// Software Interrupt on line 8
     /// Position: 8, Width: 1
     using SWIER8 = BitField<8, 1>;
     constexpr uint32_t SWIER8_Pos = 8;
     constexpr uint32_t SWIER8_Msk = SWIER8::mask;
 
-    /// Software Interrupt on line
-              9
+    /// Software Interrupt on line 9
     /// Position: 9, Width: 1
     using SWIER9 = BitField<9, 1>;
     constexpr uint32_t SWIER9_Pos = 9;
     constexpr uint32_t SWIER9_Msk = SWIER9::mask;
 
-    /// Software Interrupt on line
-              10
+    /// Software Interrupt on line 10
     /// Position: 10, Width: 1
     using SWIER10 = BitField<10, 1>;
     constexpr uint32_t SWIER10_Pos = 10;
     constexpr uint32_t SWIER10_Msk = SWIER10::mask;
 
-    /// Software Interrupt on line
-              11
+    /// Software Interrupt on line 11
     /// Position: 11, Width: 1
     using SWIER11 = BitField<11, 1>;
     constexpr uint32_t SWIER11_Pos = 11;
     constexpr uint32_t SWIER11_Msk = SWIER11::mask;
 
-    /// Software Interrupt on line
-              12
+    /// Software Interrupt on line 12
     /// Position: 12, Width: 1
     using SWIER12 = BitField<12, 1>;
     constexpr uint32_t SWIER12_Pos = 12;
     constexpr uint32_t SWIER12_Msk = SWIER12::mask;
 
-    /// Software Interrupt on line
-              13
+    /// Software Interrupt on line 13
     /// Position: 13, Width: 1
     using SWIER13 = BitField<13, 1>;
     constexpr uint32_t SWIER13_Pos = 13;
     constexpr uint32_t SWIER13_Msk = SWIER13::mask;
 
-    /// Software Interrupt on line
-              14
+    /// Software Interrupt on line 14
     /// Position: 14, Width: 1
     using SWIER14 = BitField<14, 1>;
     constexpr uint32_t SWIER14_Pos = 14;
     constexpr uint32_t SWIER14_Msk = SWIER14::mask;
 
-    /// Software Interrupt on line
-              15
+    /// Software Interrupt on line 15
     /// Position: 15, Width: 1
     using SWIER15 = BitField<15, 1>;
     constexpr uint32_t SWIER15_Pos = 15;
     constexpr uint32_t SWIER15_Msk = SWIER15::mask;
 
-    /// Software Interrupt on line
-              16
+    /// Software Interrupt on line 16
     /// Position: 16, Width: 1
     using SWIER16 = BitField<16, 1>;
     constexpr uint32_t SWIER16_Pos = 16;
     constexpr uint32_t SWIER16_Msk = SWIER16::mask;
 
-    /// Software Interrupt on line
-              17
+    /// Software Interrupt on line 17
     /// Position: 17, Width: 1
     using SWIER17 = BitField<17, 1>;
     constexpr uint32_t SWIER17_Pos = 17;
     constexpr uint32_t SWIER17_Msk = SWIER17::mask;
 
-    /// Software Interrupt on line
-              19
+    /// Software Interrupt on line 19
     /// Position: 19, Width: 1
     using SWIER19 = BitField<19, 1>;
     constexpr uint32_t SWIER19_Pos = 19;

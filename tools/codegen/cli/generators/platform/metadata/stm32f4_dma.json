@@ -1,0 +1,223 @@
+{
+  "family": "stm32f4",
+  "vendor": "st",
+  "peripheral_name": "DMA",
+  "register_include": "hal/vendors/st/stm32f4/registers/dma2_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32f4/bitfields/dma2_bitfields.hpp",
+  "register_namespace": "alloy::hal::st::stm32f4::dma2",
+  "register_type": "DMA2_Registers",
+  "platform_namespace": "alloy::hal::stm32f4",
+  "vendor_namespace": "alloy::hal::st::stm32f4",
+  "namespace_alias": "dma",
+  "requires_clock": false,
+
+  "template_params": [
+    {
+      "name": "STREAM_NUM",
+      "type": "uint8_t",
+      "description": "DMA stream number (0-7)"
+    }
+  ],
+
+  "additional_enums": [
+    {
+      "name": "DmaDirection",
+      "type": "uint8_t",
+      "description": "DMA Transfer Direction",
+      "values": [
+        {"name": "PeripheralToMemory", "value": 0, "description": "Peripheral -> Memory"},
+        {"name": "MemoryToPeripheral", "value": 1, "description": "Memory -> Peripheral"},
+        {"name": "MemoryToMemory", "value": 2, "description": "Memory -> Memory"}
+      ]
+    },
+    {
+      "name": "DmaWidth",
+      "type": "uint8_t",
+      "description": "DMA Transfer Width",
+      "values": [
+        {"name": "Byte", "value": 0, "description": "8-bit transfers"},
+        {"name": "HalfWord", "value": 1, "description": "16-bit transfers"},
+        {"name": "Word", "value": 2, "description": "32-bit transfers"}
+      ]
+    },
+    {
+      "name": "DmaPriority",
+      "type": "uint8_t",
+      "description": "DMA Priority Level",
+      "values": [
+        {"name": "Low", "value": 0, "description": "Low priority"},
+        {"name": "Medium", "value": 1, "description": "Medium priority"},
+        {"name": "High", "value": 2, "description": "High priority"},
+        {"name": "VeryHigh", "value": 3, "description": "Very high priority"}
+      ]
+    }
+  ],
+
+  "config_struct": {
+    "name": "DmaConfig",
+    "description": "DMA Stream Configuration",
+    "fields": [
+      {"name": "direction", "type": "DmaDirection", "default": "DmaDirection::PeripheralToMemory", "description": "Transfer direction"},
+      {"name": "peripheral_width", "type": "DmaWidth", "default": "DmaWidth::Word", "description": "Peripheral data width"},
+      {"name": "memory_width", "type": "DmaWidth", "default": "DmaWidth::Word", "description": "Memory data width"},
+      {"name": "priority", "type": "DmaPriority", "default": "DmaPriority::Low", "description": "Stream priority"},
+      {"name": "peripheral_increment", "type": "bool", "default": "false", "description": "Increment peripheral address"},
+      {"name": "memory_increment", "type": "bool", "default": "true", "description": "Increment memory address"},
+      {"name": "circular", "type": "bool", "default": "false", "description": "Circular mode"},
+      {"name": "channel", "type": "uint8_t", "default": "0", "description": "DMA channel (0-7)"}
+    ]
+  },
+
+  "constants": [
+    {
+      "name": "base_address",
+      "type": "uint32_t",
+      "value": "0x40026000",
+      "constexpr": true,
+      "description": "DMA1 base address"
+    }
+  ],
+
+  "static_asserts": [
+    {"condition": "STREAM_NUM < 8", "message": "STM32F4 DMA has 8 streams (0-7)"}
+  ],
+
+  "registers": {
+    "low_interrupt_status": {"name": "LISR", "description": "Low Interrupt Status Register"},
+    "high_interrupt_status": {"name": "HISR", "description": "High Interrupt Status Register"},
+    "low_interrupt_clear": {"name": "LIFCR", "description": "Low Interrupt Flag Clear Register"},
+    "high_interrupt_clear": {"name": "HIFCR", "description": "High Interrupt Flag Clear Register"}
+  },
+
+  "operations": {
+    "open": {
+      "description": "Enable DMA stream",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (m_opened)",
+          "return_error": "ErrorCode::AlreadyInitialized"
+        },
+        {
+          "comment": "Enable DMA clock (RCC)",
+          "custom_code": "// TODO: Enable peripheral clock via RCC"
+        },
+        {
+          "set_state": "m_opened = true"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "close": {
+      "description": "Close DMA stream",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable stream",
+          "custom_code": "// TODO: Disable stream via SxCR"
+        },
+        {
+          "set_state": "m_opened = false"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "configure": {
+      "description": "Configure DMA stream",
+      "parameters": [
+        {"name": "config", "type": "const DmaConfig&", "description": "DMA configuration"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "note": "Stream must be disabled before configuration",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "// Configuration would require per-stream register access\n        // This is simplified - full implementation needs stream-specific registers\n        m_config = config;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "transfer": {
+      "description": "Start DMA transfer",
+      "parameters": [
+        {"name": "src_addr", "type": "const volatile void*", "description": "Source address"},
+        {"name": "dst_addr", "type": "volatile void*", "description": "Destination address"},
+        {"name": "size", "type": "size_t", "description": "Transfer size"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (src_addr == nullptr || dst_addr == nullptr || size == 0)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "custom_code": "// Transfer would require per-stream register access\n        // This is simplified - full implementation needs stream-specific registers\n        (void)src_addr;\n        (void)dst_addr;\n        (void)size;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "isComplete": {
+      "description": "Check if transfer is complete",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "steps": [
+        {
+          "custom_code": "// Would check TCIF flag in ISR\n        return true;"
+        }
+      ],
+      "returns": "true",
+      "returns_type": "bool"
+    },
+
+    "isOpen": {
+      "description": "Check if DMA stream is open",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "returns": "m_opened",
+      "returns_type": "bool",
+      "steps": []
+    }
+  },
+
+  "state_variables": [
+    {"name": "m_opened", "type": "bool", "initial_value": "false", "description": "Tracks if stream is initialized"},
+    {"name": "m_config", "type": "DmaConfig", "initial_value": "{}", "description": "Current configuration"}
+  ],
+
+  "instances": [
+    {"name": "Dma1Stream0", "channel": "0", "description": "DMA1 Stream 0"},
+    {"name": "Dma1Stream1", "channel": "1", "description": "DMA1 Stream 1"},
+    {"name": "Dma1Stream2", "channel": "2", "description": "DMA1 Stream 2"},
+    {"name": "Dma1Stream3", "channel": "3", "description": "DMA1 Stream 3"},
+    {"name": "Dma1Stream4", "channel": "4", "description": "DMA1 Stream 4"},
+    {"name": "Dma1Stream5", "channel": "5", "description": "DMA1 Stream 5"},
+    {"name": "Dma1Stream6", "channel": "6", "description": "DMA1 Stream 6"},
+    {"name": "Dma1Stream7", "channel": "7", "description": "DMA1 Stream 7"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic DMA usage (simplified)",
+      "code": "auto dma = Dma1Stream0{};\nDmaConfig config;\nconfig.direction = DmaDirection::MemoryToMemory;\ndma.open();\ndma.configure(config);"
+    }
+  }
+}

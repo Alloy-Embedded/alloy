@@ -1,0 +1,324 @@
+{
+  "family": "same70",
+  "vendor": "atmel",
+  "peripheral_name": "TC",
+  "register_include": "hal/vendors/atmel/same70/registers/tc0_registers.hpp",
+  "bitfield_include": "hal/vendors/atmel/same70/bitfields/tc0_bitfields.hpp",
+  "register_namespace": "alloy::hal::atmel::same70::tc0",
+  "register_type": "TC0_Registers",
+  "platform_namespace": "alloy::hal::same70",
+  "vendor_namespace": "alloy::hal::atmel::same70",
+  "namespace_alias": "tc",
+  "requires_clock": false,
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "TC block base address"
+    },
+    {
+      "name": "CHANNEL",
+      "type": "uint8_t",
+      "description": "Channel number (0-2)"
+    },
+    {
+      "name": "IRQ_ID",
+      "type": "uint32_t",
+      "description": "Peripheral IRQ ID (for channel 0)"
+    }
+  ],
+
+  "additional_enums": [
+    {
+      "name": "TimerMode",
+      "type": "uint8_t",
+      "description": "Timer operating mode",
+      "values": [
+        {"name": "Capture", "value": 0, "description": "Capture mode (frequency/pulse width measurement)"},
+        {"name": "Waveform", "value": 1, "description": "Waveform generation mode (PWM, pulses)"}
+      ]
+    },
+    {
+      "name": "TimerClock",
+      "type": "uint8_t",
+      "description": "Timer clock source selection",
+      "values": [
+        {"name": "MCK_DIV_2", "value": 0, "description": "MCK/2 (75 MHz)"},
+        {"name": "MCK_DIV_8", "value": 1, "description": "MCK/8 (18.75 MHz)"},
+        {"name": "MCK_DIV_32", "value": 2, "description": "MCK/32 (4.6875 MHz)"},
+        {"name": "MCK_DIV_128", "value": 3, "description": "MCK/128 (1.171875 MHz)"},
+        {"name": "TCLK1", "value": 4, "description": "External clock 1"},
+        {"name": "TCLK2", "value": 5, "description": "External clock 2"},
+        {"name": "XC0", "value": 6, "description": "External clock 0"},
+        {"name": "XC1", "value": 7, "description": "External clock 1"},
+        {"name": "XC2", "value": 8, "description": "External clock 2"}
+      ]
+    },
+    {
+      "name": "WaveformType",
+      "type": "uint8_t",
+      "description": "Waveform generation type",
+      "values": [
+        {"name": "UpAuto", "value": 0, "description": "Up counting with automatic trigger on RC compare"},
+        {"name": "UpDown", "value": 1, "description": "Up/down counting with automatic trigger on RC compare"},
+        {"name": "UpReset", "value": 2, "description": "Up counting with trigger on RC compare and reset"},
+        {"name": "UpDownAlt", "value": 3, "description": "Up/down counting with trigger on RC compare"}
+      ]
+    }
+  ],
+
+  "config_struct": {
+    "name": "TimerConfig",
+    "description": "Timer configuration structure",
+    "fields": [
+      {"name": "mode", "type": "TimerMode", "default": "TimerMode::Waveform", "description": "Operating mode"},
+      {"name": "clock", "type": "TimerClock", "default": "TimerClock::MCK_DIV_8", "description": "Clock source"},
+      {"name": "waveform", "type": "WaveformType", "default": "WaveformType::UpReset", "description": "Waveform type"},
+      {"name": "period", "type": "uint32_t", "default": "1000", "description": "Period (RC register value)"},
+      {"name": "duty_a", "type": "uint32_t", "default": "500", "description": "Duty cycle for output A (RA register)"},
+      {"name": "duty_b", "type": "uint32_t", "default": "500", "description": "Duty cycle for output B (RB register)"},
+      {"name": "invert_output", "type": "bool", "default": "false", "description": "Invert output polarity"}
+    ]
+  },
+
+  "constants": [
+    {
+      "name": "channel_offset",
+      "type": "uint32_t",
+      "value": "0x40 * CHANNEL",
+      "constexpr": true,
+      "description": "Channel register offset"
+    }
+  ],
+
+  "static_asserts": [
+    {"condition": "CHANNEL < 3", "message": "TC has 3 channels (0-2)"}
+  ],
+
+  "registers": {
+    "control": {"name": "CCR", "description": "Channel Control Register"},
+    "mode_waveform": {"name": "CMR_WAVEFORM_MODE", "description": "Channel Mode Register (Waveform)"},
+    "counter_value": {"name": "CV", "description": "Counter Value"},
+    "register_a": {"name": "RA", "description": "Register A (compare/capture)"},
+    "register_b": {"name": "RB", "description": "Register B (compare/capture)"},
+    "register_c": {"name": "RC", "description": "Register C (period)"},
+    "interrupt_enable": {"name": "IER", "description": "Interrupt Enable Register"}
+  },
+
+  "operations": {
+    "open": {
+      "description": "Initialize timer",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (m_opened)",
+          "return_error": "ErrorCode::AlreadyInitialized"
+        },
+        {
+          "comment": "Enable TC clock (PMC)",
+          "custom_code": "// TODO: Enable peripheral clock via PMC\n        // uint32_t periph_id = IRQ_ID + CHANNEL;"
+        },
+        {
+          "set_state": "m_opened = true"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "close": {
+      "description": "Close timer",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable clock",
+          "custom_code": "hw->CCR = tc::ccr::CLKDIS::mask;"
+        },
+        {
+          "set_state": "m_opened = false"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "configure": {
+      "description": "Configure timer",
+      "parameters": [
+        {"name": "config", "type": "const TimerConfig&", "description": "Timer configuration"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Build CMR based on mode",
+          "custom_code": "uint32_t cmr = 0;\n        \n        // Clock selection\n        cmr = tc::cmr_waveform_mode::TCCLKS::write(cmr, static_cast<uint32_t>(config.clock) & 0x07);\n        \n        if (config.mode == TimerMode::Waveform) {\n            // Waveform mode\n            cmr = tc::cmr_waveform_mode::WAVE::set(cmr);\n            \n            // Waveform selection\n            cmr = tc::cmr_waveform_mode::WAVSEL::write(cmr, static_cast<uint32_t>(config.waveform));\n            \n            // Output configuration for TIOA (RA compare)\n            if (config.invert_output) {\n                cmr = tc::cmr_waveform_mode::ACPA::write(cmr, tc::cmr_waveform_mode::acpa::SET);\n                cmr = tc::cmr_waveform_mode::ACPC::write(cmr, tc::cmr_waveform_mode::acpc::CLEAR);\n            } else {\n                cmr = tc::cmr_waveform_mode::ACPA::write(cmr, tc::cmr_waveform_mode::acpa::CLEAR);\n                cmr = tc::cmr_waveform_mode::ACPC::write(cmr, tc::cmr_waveform_mode::acpc::SET);\n            }\n            \n            // Output configuration for TIOB (RB compare)\n            if (config.invert_output) {\n                cmr = tc::cmr_waveform_mode::BCPB::write(cmr, tc::cmr_waveform_mode::bcpb::SET);\n                cmr = tc::cmr_waveform_mode::BCPC::write(cmr, tc::cmr_waveform_mode::bcpc::CLEAR);\n            } else {\n                cmr = tc::cmr_waveform_mode::BCPB::write(cmr, tc::cmr_waveform_mode::bcpb::CLEAR);\n                cmr = tc::cmr_waveform_mode::BCPC::write(cmr, tc::cmr_waveform_mode::bcpc::SET);\n            }\n        }\n        \n        hw->CMR_WAVEFORM_MODE = cmr;\n        \n        // Set period (RC)\n        hw->RC = config.period;\n        \n        // Set duty cycles\n        hw->RA = config.duty_a;\n        hw->RB = config.duty_b;\n        \n        m_config = config;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "start": {
+      "description": "Start timer",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Enable clock and trigger",
+          "custom_code": "hw->CCR = tc::ccr::CLKEN::mask | tc::ccr::SWTRG::mask;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "stop": {
+      "description": "Stop timer",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable clock",
+          "custom_code": "hw->CCR = tc::ccr::CLKDIS::mask;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "setDutyA": {
+      "description": "Set PWM duty cycle for output A",
+      "parameters": [
+        {"name": "duty", "type": "uint32_t", "description": "Duty cycle value (0 to period)"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "hw->RA = duty;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "setDutyB": {
+      "description": "Set PWM duty cycle for output B",
+      "parameters": [
+        {"name": "duty", "type": "uint32_t", "description": "Duty cycle value (0 to period)"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "hw->RB = duty;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "setPeriod": {
+      "description": "Set period (frequency)",
+      "parameters": [
+        {"name": "period", "type": "uint32_t", "description": "Period value (RC register)"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "hw->RC = period;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "getCounter": {
+      "description": "Get current counter value",
+      "parameters": [],
+      "return_type": "Result<uint32_t, ErrorCode>",
+      "const": true,
+      "returns": "hw->CV",
+      "returns_type": "uint32_t",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        }
+      ]
+    },
+
+    "enableInterrupts": {
+      "description": "Enable interrupts",
+      "parameters": [
+        {"name": "interrupt_mask", "type": "uint32_t", "description": "Interrupt mask"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "hw->IER = interrupt_mask;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "isOpen": {
+      "description": "Check if timer is open",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "returns": "m_opened",
+      "returns_type": "bool",
+      "steps": []
+    }
+  },
+
+  "state_variables": [
+    {"name": "m_opened", "type": "bool", "initial_value": "false", "description": "Tracks if peripheral is initialized"},
+    {"name": "m_config", "type": "TimerConfig", "initial_value": "{}", "description": "Current configuration"}
+  ],
+
+  "instances": [
+    {"name": "Timer0Ch0", "base": "0x4000C000", "channel": "0", "irq": "23", "description": "TC0 Channel 0"},
+    {"name": "Timer0Ch1", "base": "0x4000C000", "channel": "1", "irq": "23", "description": "TC0 Channel 1"},
+    {"name": "Timer0Ch2", "base": "0x4000C000", "channel": "2", "irq": "23", "description": "TC0 Channel 2"},
+    {"name": "Timer1Ch0", "base": "0x40010000", "channel": "0", "irq": "26", "description": "TC1 Channel 0"},
+    {"name": "Timer1Ch1", "base": "0x40010000", "channel": "1", "irq": "26", "description": "TC1 Channel 1"},
+    {"name": "Timer1Ch2", "base": "0x40010000", "channel": "2", "irq": "26", "description": "TC1 Channel 2"},
+    {"name": "Timer2Ch0", "base": "0x40014000", "channel": "0", "irq": "29", "description": "TC2 Channel 0"},
+    {"name": "Timer2Ch1", "base": "0x40014000", "channel": "1", "irq": "29", "description": "TC2 Channel 1"},
+    {"name": "Timer2Ch2", "base": "0x40014000", "channel": "2", "irq": "29", "description": "TC2 Channel 2"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic timer PWM usage",
+      "code": "using MyTimer = Timer<TC0_BASE, 0, TC0_CH0_IRQ>;\nauto timer = MyTimer{};\nTimerConfig config;\nconfig.mode = TimerMode::Waveform;\nconfig.clock = TimerClock::MCK_DIV_8;\nconfig.period = 1000;\nconfig.duty_a = 500;\ntimer.open();\ntimer.configure(config);\ntimer.start();"
+    }
+  }
+}

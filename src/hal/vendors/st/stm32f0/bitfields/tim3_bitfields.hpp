@@ -49,8 +49,7 @@ namespace cr1 {
     constexpr uint32_t DIR_Pos = 4;
     constexpr uint32_t DIR_Msk = DIR::mask;
 
-    /// Center-aligned mode
-              selection
+    /// Center-aligned mode selection
     /// Position: 5, Width: 2
     using CMS = BitField<5, 2>;
     constexpr uint32_t CMS_Pos = 5;
@@ -72,8 +71,7 @@ namespace cr1 {
 
 /// CR2 - control register 2
 namespace cr2 {
-    /// Capture/compare DMA
-              selection
+    /// Capture/compare DMA selection
     /// Position: 3, Width: 1
     using CCDS = BitField<3, 1>;
     constexpr uint32_t CCDS_Pos = 3;
@@ -147,29 +145,25 @@ namespace dier {
     constexpr uint32_t UIE_Pos = 0;
     constexpr uint32_t UIE_Msk = UIE::mask;
 
-    /// Capture/Compare 1 interrupt
-              enable
+    /// Capture/Compare 1 interrupt enable
     /// Position: 1, Width: 1
     using CC1IE = BitField<1, 1>;
     constexpr uint32_t CC1IE_Pos = 1;
     constexpr uint32_t CC1IE_Msk = CC1IE::mask;
 
-    /// Capture/Compare 2 interrupt
-              enable
+    /// Capture/Compare 2 interrupt enable
     /// Position: 2, Width: 1
     using CC2IE = BitField<2, 1>;
     constexpr uint32_t CC2IE_Pos = 2;
     constexpr uint32_t CC2IE_Msk = CC2IE::mask;
 
-    /// Capture/Compare 3 interrupt
-              enable
+    /// Capture/Compare 3 interrupt enable
     /// Position: 3, Width: 1
     using CC3IE = BitField<3, 1>;
     constexpr uint32_t CC3IE_Pos = 3;
     constexpr uint32_t CC3IE_Msk = CC3IE::mask;
 
-    /// Capture/Compare 4 interrupt
-              enable
+    /// Capture/Compare 4 interrupt enable
     /// Position: 4, Width: 1
     using CC4IE = BitField<4, 1>;
     constexpr uint32_t CC4IE_Pos = 4;
@@ -187,29 +181,25 @@ namespace dier {
     constexpr uint32_t UDE_Pos = 8;
     constexpr uint32_t UDE_Msk = UDE::mask;
 
-    /// Capture/Compare 1 DMA request
-              enable
+    /// Capture/Compare 1 DMA request enable
     /// Position: 9, Width: 1
     using CC1DE = BitField<9, 1>;
     constexpr uint32_t CC1DE_Pos = 9;
     constexpr uint32_t CC1DE_Msk = CC1DE::mask;
 
-    /// Capture/Compare 2 DMA request
-              enable
+    /// Capture/Compare 2 DMA request enable
     /// Position: 10, Width: 1
     using CC2DE = BitField<10, 1>;
     constexpr uint32_t CC2DE_Pos = 10;
     constexpr uint32_t CC2DE_Msk = CC2DE::mask;
 
-    /// Capture/Compare 3 DMA request
-              enable
+    /// Capture/Compare 3 DMA request enable
     /// Position: 11, Width: 1
     using CC3DE = BitField<11, 1>;
     constexpr uint32_t CC3DE_Pos = 11;
     constexpr uint32_t CC3DE_Msk = CC3DE::mask;
 
-    /// Capture/Compare 4 DMA request
-              enable
+    /// Capture/Compare 4 DMA request enable
     /// Position: 12, Width: 1
     using CC4DE = BitField<12, 1>;
     constexpr uint32_t CC4DE_Pos = 12;
@@ -237,29 +227,25 @@ namespace sr {
     constexpr uint32_t UIF_Pos = 0;
     constexpr uint32_t UIF_Msk = UIF::mask;
 
-    /// Capture/compare 1 interrupt
-              flag
+    /// Capture/compare 1 interrupt flag
     /// Position: 1, Width: 1
     using CC1IF = BitField<1, 1>;
     constexpr uint32_t CC1IF_Pos = 1;
     constexpr uint32_t CC1IF_Msk = CC1IF::mask;
 
-    /// Capture/Compare 2 interrupt
-              flag
+    /// Capture/Compare 2 interrupt flag
     /// Position: 2, Width: 1
     using CC2IF = BitField<2, 1>;
     constexpr uint32_t CC2IF_Pos = 2;
     constexpr uint32_t CC2IF_Msk = CC2IF::mask;
 
-    /// Capture/Compare 3 interrupt
-              flag
+    /// Capture/Compare 3 interrupt flag
     /// Position: 3, Width: 1
     using CC3IF = BitField<3, 1>;
     constexpr uint32_t CC3IF_Pos = 3;
     constexpr uint32_t CC3IF_Msk = CC3IF::mask;
 
-    /// Capture/Compare 4 interrupt
-              flag
+    /// Capture/Compare 4 interrupt flag
     /// Position: 4, Width: 1
     using CC4IF = BitField<4, 1>;
     constexpr uint32_t CC4IF_Pos = 4;
@@ -271,29 +257,25 @@ namespace sr {
     constexpr uint32_t TIF_Pos = 6;
     constexpr uint32_t TIF_Msk = TIF::mask;
 
-    /// Capture/Compare 1 overcapture
-              flag
+    /// Capture/Compare 1 overcapture flag
     /// Position: 9, Width: 1
     using CC1OF = BitField<9, 1>;
     constexpr uint32_t CC1OF_Pos = 9;
     constexpr uint32_t CC1OF_Msk = CC1OF::mask;
 
-    /// Capture/compare 2 overcapture
-              flag
+    /// Capture/compare 2 overcapture flag
     /// Position: 10, Width: 1
     using CC2OF = BitField<10, 1>;
     constexpr uint32_t CC2OF_Pos = 10;
     constexpr uint32_t CC2OF_Msk = CC2OF::mask;
 
-    /// Capture/Compare 3 overcapture
-              flag
+    /// Capture/Compare 3 overcapture flag
     /// Position: 11, Width: 1
     using CC3OF = BitField<11, 1>;
     constexpr uint32_t CC3OF_Pos = 11;
     constexpr uint32_t CC3OF_Msk = CC3OF::mask;
 
-    /// Capture/Compare 4 overcapture
-              flag
+    /// Capture/Compare 4 overcapture flag
     /// Position: 12, Width: 1
     using CC4OF = BitField<12, 1>;
     constexpr uint32_t CC4OF_Pos = 12;
@@ -309,29 +291,25 @@ namespace egr {
     constexpr uint32_t UG_Pos = 0;
     constexpr uint32_t UG_Msk = UG::mask;
 
-    /// Capture/compare 1
-              generation
+    /// Capture/compare 1 generation
     /// Position: 1, Width: 1
     using CC1G = BitField<1, 1>;
     constexpr uint32_t CC1G_Pos = 1;
     constexpr uint32_t CC1G_Msk = CC1G::mask;
 
-    /// Capture/compare 2
-              generation
+    /// Capture/compare 2 generation
     /// Position: 2, Width: 1
     using CC2G = BitField<2, 1>;
     constexpr uint32_t CC2G_Pos = 2;
     constexpr uint32_t CC2G_Msk = CC2G::mask;
 
-    /// Capture/compare 3
-              generation
+    /// Capture/compare 3 generation
     /// Position: 3, Width: 1
     using CC3G = BitField<3, 1>;
     constexpr uint32_t CC3G_Pos = 3;
     constexpr uint32_t CC3G_Msk = CC3G::mask;
 
-    /// Capture/compare 4
-              generation
+    /// Capture/compare 4 generation
     /// Position: 4, Width: 1
     using CC4G = BitField<4, 1>;
     constexpr uint32_t CC4G_Pos = 4;
@@ -345,25 +323,21 @@ namespace egr {
 
 }  // namespace egr
 
-/// CCMR1_Output - capture/compare mode register 1 (output
-          mode)
+/// CCMR1_Output - capture/compare mode register 1 (output mode)
 namespace ccmr1_output {
-    /// Capture/Compare 1
-              selection
+    /// Capture/Compare 1 selection
     /// Position: 0, Width: 2
     using CC1S = BitField<0, 2>;
     constexpr uint32_t CC1S_Pos = 0;
     constexpr uint32_t CC1S_Msk = CC1S::mask;
 
-    /// Output compare 1 fast
-              enable
+    /// Output compare 1 fast enable
     /// Position: 2, Width: 1
     using OC1FE = BitField<2, 1>;
     constexpr uint32_t OC1FE_Pos = 2;
     constexpr uint32_t OC1FE_Msk = OC1FE::mask;
 
-    /// Output compare 1 preload
-              enable
+    /// Output compare 1 preload enable
     /// Position: 3, Width: 1
     using OC1PE = BitField<3, 1>;
     constexpr uint32_t OC1PE_Pos = 3;
@@ -375,29 +349,25 @@ namespace ccmr1_output {
     constexpr uint32_t OC1M_Pos = 4;
     constexpr uint32_t OC1M_Msk = OC1M::mask;
 
-    /// Output compare 1 clear
-              enable
+    /// Output compare 1 clear enable
     /// Position: 7, Width: 1
     using OC1CE = BitField<7, 1>;
     constexpr uint32_t OC1CE_Pos = 7;
     constexpr uint32_t OC1CE_Msk = OC1CE::mask;
 
-    /// Capture/Compare 2
-              selection
+    /// Capture/Compare 2 selection
     /// Position: 8, Width: 2
     using CC2S = BitField<8, 2>;
     constexpr uint32_t CC2S_Pos = 8;
     constexpr uint32_t CC2S_Msk = CC2S::mask;
 
-    /// Output compare 2 fast
-              enable
+    /// Output compare 2 fast enable
     /// Position: 10, Width: 1
     using OC2FE = BitField<10, 1>;
     constexpr uint32_t OC2FE_Pos = 10;
     constexpr uint32_t OC2FE_Msk = OC2FE::mask;
 
-    /// Output compare 2 preload
-              enable
+    /// Output compare 2 preload enable
     /// Position: 11, Width: 1
     using OC2PE = BitField<11, 1>;
     constexpr uint32_t OC2PE_Pos = 11;
@@ -409,8 +379,7 @@ namespace ccmr1_output {
     constexpr uint32_t OC2M_Pos = 12;
     constexpr uint32_t OC2M_Msk = OC2M::mask;
 
-    /// Output compare 2 clear
-              enable
+    /// Output compare 2 clear enable
     /// Position: 15, Width: 1
     using OC2CE = BitField<15, 1>;
     constexpr uint32_t OC2CE_Pos = 15;
@@ -418,11 +387,9 @@ namespace ccmr1_output {
 
 }  // namespace ccmr1_output
 
-/// CCMR1_Input - capture/compare mode register 1 (input
-          mode)
+/// CCMR1_Input - capture/compare mode register 1 (input mode)
 namespace ccmr1_input {
-    /// Capture/Compare 1
-              selection
+    /// Capture/Compare 1 selection
     /// Position: 0, Width: 2
     using CC1S = BitField<0, 2>;
     constexpr uint32_t CC1S_Pos = 0;
@@ -440,8 +407,7 @@ namespace ccmr1_input {
     constexpr uint32_t IC1F_Pos = 4;
     constexpr uint32_t IC1F_Msk = IC1F::mask;
 
-    /// Capture/compare 2
-              selection
+    /// Capture/compare 2 selection
     /// Position: 8, Width: 2
     using CC2S = BitField<8, 2>;
     constexpr uint32_t CC2S_Pos = 8;
@@ -461,25 +427,21 @@ namespace ccmr1_input {
 
 }  // namespace ccmr1_input
 
-/// CCMR2_Output - capture/compare mode register 2 (output
-          mode)
+/// CCMR2_Output - capture/compare mode register 2 (output mode)
 namespace ccmr2_output {
-    /// Capture/Compare 3
-              selection
+    /// Capture/Compare 3 selection
     /// Position: 0, Width: 2
     using CC3S = BitField<0, 2>;
     constexpr uint32_t CC3S_Pos = 0;
     constexpr uint32_t CC3S_Msk = CC3S::mask;
 
-    /// Output compare 3 fast
-              enable
+    /// Output compare 3 fast enable
     /// Position: 2, Width: 1
     using OC3FE = BitField<2, 1>;
     constexpr uint32_t OC3FE_Pos = 2;
     constexpr uint32_t OC3FE_Msk = OC3FE::mask;
 
-    /// Output compare 3 preload
-              enable
+    /// Output compare 3 preload enable
     /// Position: 3, Width: 1
     using OC3PE = BitField<3, 1>;
     constexpr uint32_t OC3PE_Pos = 3;
@@ -491,29 +453,25 @@ namespace ccmr2_output {
     constexpr uint32_t OC3M_Pos = 4;
     constexpr uint32_t OC3M_Msk = OC3M::mask;
 
-    /// Output compare 3 clear
-              enable
+    /// Output compare 3 clear enable
     /// Position: 7, Width: 1
     using OC3CE = BitField<7, 1>;
     constexpr uint32_t OC3CE_Pos = 7;
     constexpr uint32_t OC3CE_Msk = OC3CE::mask;
 
-    /// Capture/Compare 4
-              selection
+    /// Capture/Compare 4 selection
     /// Position: 8, Width: 2
     using CC4S = BitField<8, 2>;
     constexpr uint32_t CC4S_Pos = 8;
     constexpr uint32_t CC4S_Msk = CC4S::mask;
 
-    /// Output compare 4 fast
-              enable
+    /// Output compare 4 fast enable
     /// Position: 10, Width: 1
     using OC4FE = BitField<10, 1>;
     constexpr uint32_t OC4FE_Pos = 10;
     constexpr uint32_t OC4FE_Msk = OC4FE::mask;
 
-    /// Output compare 4 preload
-              enable
+    /// Output compare 4 preload enable
     /// Position: 11, Width: 1
     using OC4PE = BitField<11, 1>;
     constexpr uint32_t OC4PE_Pos = 11;
@@ -525,8 +483,7 @@ namespace ccmr2_output {
     constexpr uint32_t OC4M_Pos = 12;
     constexpr uint32_t OC4M_Msk = OC4M::mask;
 
-    /// Output compare 4 clear
-              enable
+    /// Output compare 4 clear enable
     /// Position: 15, Width: 1
     using OC4CE = BitField<15, 1>;
     constexpr uint32_t OC4CE_Pos = 15;
@@ -534,11 +491,9 @@ namespace ccmr2_output {
 
 }  // namespace ccmr2_output
 
-/// CCMR2_Input - capture/compare mode register 2 (input
-          mode)
+/// CCMR2_Input - capture/compare mode register 2 (input mode)
 namespace ccmr2_input {
-    /// Capture/Compare 3
-              selection
+    /// Capture/Compare 3 selection
     /// Position: 0, Width: 2
     using CC3S = BitField<0, 2>;
     constexpr uint32_t CC3S_Pos = 0;
@@ -556,8 +511,7 @@ namespace ccmr2_input {
     constexpr uint32_t IC3F_Pos = 4;
     constexpr uint32_t IC3F_Msk = IC3F::mask;
 
-    /// Capture/Compare 4
-              selection
+    /// Capture/Compare 4 selection
     /// Position: 8, Width: 2
     using CC4S = BitField<8, 2>;
     constexpr uint32_t CC4S_Pos = 8;
@@ -577,88 +531,75 @@ namespace ccmr2_input {
 
 }  // namespace ccmr2_input
 
-/// CCER - capture/compare enable
-          register
+/// CCER - capture/compare enable register
 namespace ccer {
-    /// Capture/Compare 1 output
-              enable
+    /// Capture/Compare 1 output enable
     /// Position: 0, Width: 1
     using CC1E = BitField<0, 1>;
     constexpr uint32_t CC1E_Pos = 0;
     constexpr uint32_t CC1E_Msk = CC1E::mask;
 
-    /// Capture/Compare 1 output
-              Polarity
+    /// Capture/Compare 1 output Polarity
     /// Position: 1, Width: 1
     using CC1P = BitField<1, 1>;
     constexpr uint32_t CC1P_Pos = 1;
     constexpr uint32_t CC1P_Msk = CC1P::mask;
 
-    /// Capture/Compare 1 output
-              Polarity
+    /// Capture/Compare 1 output Polarity
     /// Position: 3, Width: 1
     using CC1NP = BitField<3, 1>;
     constexpr uint32_t CC1NP_Pos = 3;
     constexpr uint32_t CC1NP_Msk = CC1NP::mask;
 
-    /// Capture/Compare 2 output
-              enable
+    /// Capture/Compare 2 output enable
     /// Position: 4, Width: 1
     using CC2E = BitField<4, 1>;
     constexpr uint32_t CC2E_Pos = 4;
     constexpr uint32_t CC2E_Msk = CC2E::mask;
 
-    /// Capture/Compare 2 output
-              Polarity
+    /// Capture/Compare 2 output Polarity
     /// Position: 5, Width: 1
     using CC2P = BitField<5, 1>;
     constexpr uint32_t CC2P_Pos = 5;
     constexpr uint32_t CC2P_Msk = CC2P::mask;
 
-    /// Capture/Compare 2 output
-              Polarity
+    /// Capture/Compare 2 output Polarity
     /// Position: 7, Width: 1
     using CC2NP = BitField<7, 1>;
     constexpr uint32_t CC2NP_Pos = 7;
     constexpr uint32_t CC2NP_Msk = CC2NP::mask;
 
-    /// Capture/Compare 3 output
-              enable
+    /// Capture/Compare 3 output enable
     /// Position: 8, Width: 1
     using CC3E = BitField<8, 1>;
     constexpr uint32_t CC3E_Pos = 8;
     constexpr uint32_t CC3E_Msk = CC3E::mask;
 
-    /// Capture/Compare 3 output
-              Polarity
+    /// Capture/Compare 3 output Polarity
     /// Position: 9, Width: 1
     using CC3P = BitField<9, 1>;
     constexpr uint32_t CC3P_Pos = 9;
     constexpr uint32_t CC3P_Msk = CC3P::mask;
 
-    /// Capture/Compare 3 output
-              Polarity
+    /// Capture/Compare 3 output Polarity
     /// Position: 11, Width: 1
     using CC3NP = BitField<11, 1>;
     constexpr uint32_t CC3NP_Pos = 11;
     constexpr uint32_t CC3NP_Msk = CC3NP::mask;
 
-    /// Capture/Compare 4 output
-              enable
+    /// Capture/Compare 4 output enable
     /// Position: 12, Width: 1
     using CC4E = BitField<12, 1>;
     constexpr uint32_t CC4E_Pos = 12;
     constexpr uint32_t CC4E_Msk = CC4E::mask;
 
-    /// Capture/Compare 3 output
-              Polarity
+    /// Capture/Compare 3 output Polarity
     /// Position: 13, Width: 1
     using CC4P = BitField<13, 1>;
     constexpr uint32_t CC4P_Pos = 13;
     constexpr uint32_t CC4P_Msk = CC4P::mask;
 
-    /// Capture/Compare 4 output
-              Polarity
+    /// Capture/Compare 4 output Polarity
     /// Position: 15, Width: 1
     using CC4NP = BitField<15, 1>;
     constexpr uint32_t CC4NP_Pos = 15;
@@ -674,8 +615,7 @@ namespace cnt {
     constexpr uint32_t CNT_L_Pos = 0;
     constexpr uint32_t CNT_L_Msk = CNT_L::mask;
 
-    /// High counter value (TIM2
-              only)
+    /// High counter value (TIM2 only)
     /// Position: 16, Width: 16
     using CNT_H = BitField<16, 16>;
     constexpr uint32_t CNT_H_Pos = 16;
@@ -701,8 +641,7 @@ namespace arr {
     constexpr uint32_t ARR_L_Pos = 0;
     constexpr uint32_t ARR_L_Msk = ARR_L::mask;
 
-    /// High Auto-reload value (TIM2
-              only)
+    /// High Auto-reload value (TIM2 only)
     /// Position: 16, Width: 16
     using ARR_H = BitField<16, 16>;
     constexpr uint32_t ARR_H_Pos = 16;
@@ -712,15 +651,13 @@ namespace arr {
 
 /// CCR1 - capture/compare register 1
 namespace ccr1 {
-    /// Low Capture/Compare 1
-              value
+    /// Low Capture/Compare 1 value
     /// Position: 0, Width: 16
     using CCR1_L = BitField<0, 16>;
     constexpr uint32_t CCR1_L_Pos = 0;
     constexpr uint32_t CCR1_L_Msk = CCR1_L::mask;
 
-    /// High Capture/Compare 1 value (TIM2
-              only)
+    /// High Capture/Compare 1 value (TIM2 only)
     /// Position: 16, Width: 16
     using CCR1_H = BitField<16, 16>;
     constexpr uint32_t CCR1_H_Pos = 16;
@@ -730,15 +667,13 @@ namespace ccr1 {
 
 /// CCR2 - capture/compare register 2
 namespace ccr2 {
-    /// Low Capture/Compare 2
-              value
+    /// Low Capture/Compare 2 value
     /// Position: 0, Width: 16
     using CCR2_L = BitField<0, 16>;
     constexpr uint32_t CCR2_L_Pos = 0;
     constexpr uint32_t CCR2_L_Msk = CCR2_L::mask;
 
-    /// High Capture/Compare 2 value (TIM2
-              only)
+    /// High Capture/Compare 2 value (TIM2 only)
     /// Position: 16, Width: 16
     using CCR2_H = BitField<16, 16>;
     constexpr uint32_t CCR2_H_Pos = 16;
@@ -754,8 +689,7 @@ namespace ccr3 {
     constexpr uint32_t CCR3_L_Pos = 0;
     constexpr uint32_t CCR3_L_Msk = CCR3_L::mask;
 
-    /// High Capture/Compare value (TIM2
-              only)
+    /// High Capture/Compare value (TIM2 only)
     /// Position: 16, Width: 16
     using CCR3_H = BitField<16, 16>;
     constexpr uint32_t CCR3_H_Pos = 16;
@@ -771,8 +705,7 @@ namespace ccr4 {
     constexpr uint32_t CCR4_L_Pos = 0;
     constexpr uint32_t CCR4_L_Msk = CCR4_L::mask;
 
-    /// High Capture/Compare value (TIM2
-              only)
+    /// High Capture/Compare value (TIM2 only)
     /// Position: 16, Width: 16
     using CCR4_H = BitField<16, 16>;
     constexpr uint32_t CCR4_H_Pos = 16;
@@ -798,8 +731,7 @@ namespace dcr {
 
 /// DMAR - DMA address for full transfer
 namespace dmar {
-    /// DMA register for burst
-              accesses
+    /// DMA register for burst accesses
     /// Position: 0, Width: 16
     using DMAR = BitField<0, 16>;
     constexpr uint32_t DMAR_Pos = 0;

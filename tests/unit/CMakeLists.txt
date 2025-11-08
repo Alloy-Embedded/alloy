@@ -38,6 +38,14 @@ add_test(NAME ConceptsTest COMMAND test_concepts)
 add_executable(test_units test_units.cpp)
 add_test(NAME UnitsTest COMMAND test_units)
 
+# Test for RAII scoped device wrappers
+add_executable(test_scoped_device test_scoped_device.cpp)
+add_test(NAME ScopedDeviceTest COMMAND test_scoped_device)
+
+# Test for circular buffer
+add_executable(test_circular_buffer test_circular_buffer.cpp)
+add_test(NAME CircularBufferTest COMMAND test_circular_buffer)
+
 # ============================================================================
 # Code Generation Tests - Test generated register files
 # ============================================================================
@@ -69,6 +77,6 @@ add_test(NAME STM32F4CodegenTest COMMAND test_stm32f4_codegen)
 # Custom target to run all tests
 add_custom_target(run_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-    DEPENDS test_result test_types test_memory test_error_code test_concepts test_units test_same70_codegen test_stm32f1_codegen test_stm32f4_codegen
+    DEPENDS test_result test_types test_memory test_error_code test_concepts test_units test_scoped_device test_circular_buffer test_same70_codegen test_stm32f1_codegen test_stm32f4_codegen
     COMMENT "Running all unit tests..."
 )

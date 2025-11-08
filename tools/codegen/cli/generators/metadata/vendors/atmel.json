@@ -1,0 +1,67 @@
+{
+  "vendor": "Atmel",
+  "architecture": "arm_cortex_m",
+  "common": {
+    "endianness": "little",
+    "pointer_size": 32,
+    "fpu": true,
+    "naming": {
+      "register_case": "UPPER",
+      "field_case": "UPPER_SNAKE",
+      "enum_case": "PascalCase"
+    },
+    "svd_quirks": {
+      "known_bugs": [
+        {
+          "description": "PIO_ABCDSR array dimension incorrect in SVD",
+          "pattern": "PIO_ABCDSR",
+          "fix": "Should be [2] not [2][2]"
+        },
+        {
+          "description": "Reserved fields have inconsistent naming",
+          "fix": "Use _reservedN pattern"
+        }
+      ],
+      "array_dimension_fixes": {
+        "PIO_ABCDSR": 2
+      }
+    },
+    "code_style": {
+      "include_guards": "pragma_once",
+      "namespace_style": "nested",
+      "documentation_style": "doxygen",
+      "constexpr_preference": true
+    }
+  },
+  "families": [
+    {
+      "name": "SAME70",
+      "description": "High-performance ARM Cortex-M7 MCUs with FPU, cache, and DSP",
+      "core": "Cortex-M7",
+      "metadata_file": "same70.json"
+    },
+    {
+      "name": "SAMV71",
+      "description": "Automotive-grade ARM Cortex-M7 MCUs",
+      "core": "Cortex-M7",
+      "metadata_file": "samv71.json"
+    },
+    {
+      "name": "SAMD21",
+      "description": "Low-power ARM Cortex-M0+ MCUs",
+      "core": "Cortex-M0+",
+      "metadata_file": "samd21.json"
+    },
+    {
+      "name": "SAMD51",
+      "description": "High-performance ARM Cortex-M4 MCUs with FPU and DSP",
+      "core": "Cortex-M4",
+      "metadata_file": "samd51.json"
+    }
+  ],
+  "peripheral_mappings": {
+    "PIO": "GPIO",
+    "TWI": "I2C",
+    "USART": "UART"
+  }
+}

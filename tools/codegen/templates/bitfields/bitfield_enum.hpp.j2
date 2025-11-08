@@ -1,0 +1,212 @@
+/**
+ * @file {{ peripheral | lower }}_bitfields.hpp
+ * @brief Bitfield definitions for {{ peripheral }} ({{ family }})
+ *
+ * Type-safe bitfield enums with masks, shifts, and helper functions.
+ * Auto-generated from metadata using Unified Code Generation System.
+ *
+ * Family: {{ family }}
+ * Vendor: {{ vendor }}
+ * Core: {{ core }}
+ * Peripheral: {{ peripheral }}
+ * Generated: {{ generation_date }}
+ */
+
+#pragma once
+
+#include <cstdint>
+#include <type_traits>
+
+namespace alloy {
+namespace platform {
+namespace {{ family | lower }} {
+namespace {{ peripheral | lower }} {
+namespace bitfields {
+
+{%- if registers %}
+
+{%- for reg_name, reg in registers.items() | sort %}
+{%- if reg.fields %}
+
+/**
+ * @brief Bitfields for {{ reg_name }} - {{ reg.description }}
+ */
+namespace {{ reg_name }} {
+{%- for field_name, field in reg.fields.items() | sort %}
+{%- set bit_info = field.bit_range | parse_bit_range %}
+
+    /**
+     * @brief {{ field.description }}
+     * 
+     * Bit range: {{ field.bit_range }}
+     * Width: {{ bit_info.width }} bit(s)
+     * Shift: {{ bit_info.shift }}
+     */
+    namespace {{ field_name }} {
+        constexpr uint{{ reg.size }}_t SHIFT = {{ bit_info.shift }};
+        constexpr uint{{ reg.size }}_t WIDTH = {{ bit_info.width }};
+        constexpr uint{{ reg.size }}_t MASK = {{ field.bit_range | calculate_mask }}u;
+        
+{%- if 'values' in field and field['values'] %}
+        
+        /**
+         * @brief Enumerated values for {{ field_name }}
+         */
+        enum class Values : uint{{ reg.size }}_t {
+{%- for val_name, val_desc in field['values'].items() %}
+{%- if val_name.startswith('0x') or val_name.startswith('0X') %}
+            {{ val_desc | sanitize | to_upper_snake }} = {{ val_name }}, ///< {{ val_desc }}
+{%- elif val_name.isdigit() %}
+            VALUE_{{ val_name }} = {{ val_name }}u, ///< {{ val_desc }}
+{%- else %}
+            {{ val_name | sanitize | to_upper_snake }} = {{ val_name }}, ///< {{ val_desc }}
+{%- endif %}
+{%- endfor %}
+        };
+{%- endif %}
+        
+        /**
+         * @brief Create field value
+         * 
+         * @param value Raw value to shift into position
+         * @return Shifted and masked value
+         */
+        constexpr uint{{ reg.size }}_t create(uint{{ reg.size }}_t value) {
+            return (value << SHIFT) & MASK;
+        }
+{%- if field['values'] %}
+        
+        /**
+         * @brief Create field value from enum
+         * 
+         * @param value Enumerated value
+         * @return Shifted and masked value
+         */
+        constexpr uint{{ reg.size }}_t create(Values value) {
+            return create(static_cast<uint{{ reg.size }}_t>(value));
+        }
+{%- endif %}
+        
+        /**
+         * @brief Extract field value
+         * 
+         * @param reg_value Full register value
+         * @return Extracted field value
+         */
+        constexpr uint{{ reg.size }}_t extract(uint{{ reg.size }}_t reg_value) {
+            return (reg_value & MASK) >> SHIFT;
+        }
+{%- if field['values'] %}
+        
+        /**
+         * @brief Extract field value as enum
+         * 
+         * @param reg_value Full register value
+         * @return Extracted field value as enum
+         */
+        constexpr Values extract_enum(uint{{ reg.size }}_t reg_value) {
+            return static_cast<Values>(extract(reg_value));
+        }
+{%- endif %}
+        
+        /**
+         * @brief Check if field matches value
+         * 
+         * @param reg_value Full register value
+         * @param expected Expected field value
+         * @return true if field matches expected value
+         */
+        constexpr bool matches(uint{{ reg.size }}_t reg_value, uint{{ reg.size }}_t expected) {
+            return extract(reg_value) == expected;
+        }
+{%- if field['values'] %}
+        
+        /**
+         * @brief Check if field matches enum value
+         * 
+         * @param reg_value Full register value
+         * @param expected Expected enum value
+         * @return true if field matches expected value
+         */
+        constexpr bool matches(uint{{ reg.size }}_t reg_value, Values expected) {
+            return matches(reg_value, static_cast<uint{{ reg.size }}_t>(expected));
+        }
+{%- endif %}
+    } // namespace {{ field_name }}
+{%- endfor %}
+} // namespace {{ reg_name }}
+{%- endif %}
+{%- endfor %}
+
+{%- endif %}
+
+/**
+ * @brief Helper functions for bitfield manipulation
+ */
+template<typename T>
+struct BitfieldHelper {
+    /**
+     * @brief Set a bitfield in a register value
+     * 
+     * @param reg_value Current register value
+     * @param mask Bitfield mask
+     * @param value New bitfield value (already shifted)
+     * @return Updated register value
+     */
+    static constexpr T set_field(T reg_value, T mask, T value) {
+        return (reg_value & ~mask) | (value & mask);
+    }
+    
+    /**
+     * @brief Set multiple bitfields at once
+     * 
+     * @param reg_value Current register value
+     * @param fields Variadic pairs of (mask, value)
+     * @return Updated register value
+     */
+    template<typename... Fields>
+    static constexpr T set_fields(T reg_value, Fields... fields) {
+        T result = reg_value;
+        ((result = set_field(result, fields.first, fields.second)), ...);
+        return result;
+    }
+};
+
+} // namespace bitfields
+} // namespace {{ peripheral | lower }}
+} // namespace {{ family | lower }}
+} // namespace platform
+} // namespace alloy
+
+/**
+ * Example Usage:
+ * 
+ * #include "hal/platform/{{ family | lower }}/{{ peripheral | lower }}/{{ peripheral | lower }}_bitfields.hpp"
+ * #include "hal/platform/{{ family | lower }}/{{ peripheral | lower }}/{{ peripheral | lower }}_registers.hpp"
+ * 
+ * using namespace alloy::platform::{{ family | lower }}::{{ peripheral | lower }};
+ * using namespace bitfields;
+ * 
+ * // Create bitfield value
+ * uint32_t wpmr_value = PIO_WPMR::WPEN::create(PIO_WPMR::WPEN::Values::VALUE_1);
+ * wpmr_value |= PIO_WPMR::WPKEY::create(0x50494F);
+ * 
+ * // Write to register
+ * PIOA.PIO_WPMR.write(wpmr_value);
+ * 
+ * // Extract bitfield
+ * uint32_t div = PIO_SCDR::DIV::extract(PIOA.PIO_SCDR.read());
+ * 
+ * // Check field value
+ * if (PIO_WPSR::WPVS::matches(PIOA.PIO_WPSR.read(), 
+ *                             PIO_WPSR::WPVS::Values::VALUE_1)) {
+ *     // Write protection violation detected
+ * }
+ * 
+ * // Set multiple fields
+ * uint32_t new_val = BitfieldHelper<uint32_t>::set_field(
+ *     0,
+ *     PIO_WPMR::WPEN::MASK,
+ *     PIO_WPMR::WPEN::create(1)
+ * );
+ */

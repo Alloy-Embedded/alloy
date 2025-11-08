@@ -1,0 +1,207 @@
+/**
+ * @file clock.hpp
+ * @brief {{ metadata.description }}
+ *
+ * This file implements the clock management for {{ metadata.family|upper }} using static methods with
+ * ZERO virtual functions and ZERO runtime overhead.
+ *
+ * Design Principles:
+ * - Compile-time clock configuration
+ * - Type-safe clock source selection
+ * - Zero overhead abstractions
+ * - Peripheral clock management
+ *
+{% if metadata.architecture_notes %}
+ * {{ metadata.family|upper }} Clock Architecture:
+{% for note in metadata.architecture_notes %}
+ * {{ note }}
+{% endfor %}
+{% endif %}
+ *
+ * Auto-generated from: {{ metadata.family }}
+ * Generator: generate_platform_clock.py
+ * Generated: {{ timestamp }}
+ *
+ * @note Part of Alloy HAL Platform Abstraction Layer
+ */
+
+#pragma once
+
+// ============================================================================
+// Core Types
+// ============================================================================
+
+#include "core/error.hpp"
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+#include "core/types.hpp"
+#include "hal/types.hpp"
+
+// ============================================================================
+// Vendor-Specific Includes (Auto-Generated)
+// ============================================================================
+
+// Register definitions from vendor (family-level)
+#include "{{ metadata.register_include }}"
+
+// Bitfields (family-level)
+#include "{{ metadata.bitfield_include }}"
+
+
+namespace {{ metadata.platform_namespace }} {
+
+using namespace alloy::core;
+using namespace alloy::hal;
+
+// Import vendor-specific register types
+using namespace {{ metadata.vendor_namespace }};
+
+// Namespace alias for bitfield access
+namespace {{ metadata.namespace_alias }} = {{ metadata.register_namespace }};
+
+// ============================================================================
+// Platform-Specific Enums
+// ============================================================================
+
+{% if metadata.additional_enums %}
+{% for enum in metadata.additional_enums %}
+/**
+ * @brief {{ enum.description }}
+ */
+enum class {{ enum.name }} : {{ enum.type }} {
+{% for value in enum.enum_values %}
+    {{ value.name }} = {{ value.value }},  ///< {{ value.description }}
+{% endfor %}
+};
+
+{% endfor %}
+{% endif %}
+
+{% if metadata.additional_structs %}
+// ============================================================================
+// Additional Structures
+// ============================================================================
+
+{% for struct in metadata.additional_structs %}
+/**
+ * @brief {{ struct.description }}
+ */
+struct {{ struct.name }} {
+{% for field in struct.fields %}
+    {{ field.type }} {{ field.name }} = {{ field.default }};  ///< {{ field.description }}
+{% endfor %}
+};
+
+{% endfor %}
+{% endif %}
+
+{% if metadata.config_struct %}
+/**
+ * @brief {{ metadata.config_struct.description }}
+ */
+struct {{ metadata.config_struct.name }} {
+{% for field in metadata.config_struct.fields %}
+    {{ field.type }} {{ field.name }} = {{ field.default }};  ///< {{ field.description }}
+{% endfor %}
+};
+
+{% endif %}
+
+/**
+ * @brief {{ metadata.description }}
+ *
+ * Singleton class for managing system and peripheral clocks.
+ * All methods are static for zero-overhead access.
+ */
+class Clock {
+public:
+{% if metadata.constants %}
+    // Compile-time constants
+{% for constant in metadata.constants %}
+    static {% if constant.constexpr %}constexpr {% endif %}{{ constant.type }} {{ constant.name }} = {{ constant.value }};  ///< {{ constant.description }}
+{% endfor %}
+
+{% endif %}
+{% for op_name, operation in metadata.operations.items() %}
+    /**
+     * @brief {{ operation.description }}
+     *
+{% for param in operation.parameters %}
+     * @param {{ param.name }} {{ param.description }}
+{% endfor %}
+{% if operation.return_type != 'void' %}
+     * @return {{ operation.return_type }}{% endif %}{% if operation.note %}     *
+     * @note {{ operation.note }}
+{% endif %}
+     */
+    static {{ operation.return_type }} {{ op_name }}({% for param in operation.parameters %}{{ param.type }} {{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}) {
+{% if operation.implementation == 'custom' %}
+        {{ metadata.custom_implementations[op_name] | indent(8) }}
+{% else %}
+{% for step in operation.steps %}
+{% if step.check_state %}
+        {{ step.check_state }} {
+            return Err({{ step.return_error }});
+        }
+{% endif %}
+{% if step.check_param %}
+        {{ step.check_param }} {
+            return Err({{ step.return_error }});
+        }
+{% endif %}
+{% if step.custom_code %}
+        {{ step.custom_code | indent(8) }}
+{% endif %}
+{% if step.set_state %}
+        {{ step.set_state }};
+{% endif %}
+{% endfor %}
+
+{% if operation.returns %}
+        return {{ operation.returns }};
+{% elif operation.always_succeeds %}
+        return Ok();
+{% endif %}
+{% endif %}
+    }
+
+{% endfor %}
+
+private:
+{% if metadata.additional_methods %}
+{% for method in metadata.additional_methods %}
+    /**
+     * @brief {{ method.description | default('Get register pointer') }}
+     */
+{{ 'static ' if method.static }}{{ 'inline ' if method.inline }}{{ 'volatile ' if method.volatile }}{{ method.return_type }} {{ method.name }}({% for param in method.parameters %}{{ param.type }} {{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}) {
+        {{ method.body | indent(8) }}
+    }
+
+{% endfor %}
+{% endif %}
+{% if metadata.state_variables %}
+{% for var in metadata.state_variables %}
+    static {{ 'inline ' if var.inline }}{{ var.type }} {{ var.name }} = {{ var.initial_value }};  ///< {{ var.description }}
+{% endfor %}
+{% endif %}
+};
+
+{% if metadata.predefined_configs %}
+// ============================================================================
+// Common Clock Configurations
+// ============================================================================
+
+{% for config in metadata.predefined_configs %}
+/**
+ * @brief {{ config.description }}
+ */
+{% if config.constexpr %}constexpr {% endif %}ClockConfig {{ config.name }} = {
+{% for field_name, field_value in config.fields.items() %}
+    .{{ field_name }} = {{ field_value }}{% if not loop.last %},{% endif %}{% if config.comment and loop.last %}  // {{ config.comment }}{% endif %}
+
+{% endfor %}
+};
+
+{% endfor %}
+{% endif %}
+} // namespace {{ metadata.platform_namespace }}

@@ -11,16 +11,14 @@
 namespace alloy::hal::st::stm32f0::exti {
 
 // ============================================================================
-// EXTI - External interrupt/event
-      controller
+// EXTI - External interrupt/event controller
 // Base Address: 0x40010400
 // ============================================================================
 
 /// EXTI Register Structure
 struct EXTI_Registers {
 
-    /// Interrupt mask register
-          (EXTI_IMR)
+    /// Interrupt mask register (EXTI_IMR)
     /// Offset: 0x0000
     /// Reset value: 0x0F940000
     /// Access: read-write
@@ -32,22 +30,19 @@ struct EXTI_Registers {
     /// Access: read-write
     volatile uint32_t EMR;
 
-    /// Rising Trigger selection register
-          (EXTI_RTSR)
+    /// Rising Trigger selection register (EXTI_RTSR)
     /// Offset: 0x0008
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t RTSR;
 
-    /// Falling Trigger selection register
-          (EXTI_FTSR)
+    /// Falling Trigger selection register (EXTI_FTSR)
     /// Offset: 0x000C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t FTSR;
 
-    /// Software interrupt event register
-          (EXTI_SWIER)
+    /// Software interrupt event register (EXTI_SWIER)
     /// Offset: 0x0010
     /// Reset value: 0x00000000
     /// Access: read-write

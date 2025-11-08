@@ -1,0 +1,267 @@
+{
+  "family": "stm32f4",
+  "vendor": "st",
+  "peripheral_name": "ADC",
+  "register_include": "hal/vendors/st/stm32f4/registers/adc1_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32f4/bitfields/adc1_bitfields.hpp",
+  "register_namespace": "alloy::hal::st::stm32f4::adc1",
+  "register_type": "ADC1_Registers",
+  "platform_namespace": "alloy::hal::stm32f4",
+  "vendor_namespace": "alloy::hal::st::stm32f4",
+  "namespace_alias": "adc",
+  "requires_clock": false,
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "ADC peripheral base address"
+    },
+    {
+      "name": "IRQ_ID",
+      "type": "uint32_t",
+      "description": "ADC IRQ ID"
+    }
+  ],
+
+  "additional_enums": [
+    {
+      "name": "AdcResolution",
+      "type": "uint8_t",
+      "description": "ADC Resolution",
+      "values": [
+        {"name": "Bits12", "value": 0, "description": "12-bit resolution (default)"},
+        {"name": "Bits10", "value": 1, "description": "10-bit resolution"},
+        {"name": "Bits8", "value": 2, "description": "8-bit resolution"},
+        {"name": "Bits6", "value": 3, "description": "6-bit resolution"}
+      ]
+    },
+    {
+      "name": "AdcChannel",
+      "type": "uint8_t",
+      "description": "ADC Channel Number",
+      "values": [
+        {"name": "CH0", "value": 0, "description": "Channel 0"},
+        {"name": "CH1", "value": 1, "description": "Channel 1"},
+        {"name": "CH2", "value": 2, "description": "Channel 2"},
+        {"name": "CH3", "value": 3, "description": "Channel 3"},
+        {"name": "CH4", "value": 4, "description": "Channel 4"},
+        {"name": "CH5", "value": 5, "description": "Channel 5"},
+        {"name": "CH6", "value": 6, "description": "Channel 6"},
+        {"name": "CH7", "value": 7, "description": "Channel 7"},
+        {"name": "CH8", "value": 8, "description": "Channel 8"},
+        {"name": "CH9", "value": 9, "description": "Channel 9"},
+        {"name": "CH10", "value": 10, "description": "Channel 10"},
+        {"name": "CH11", "value": 11, "description": "Channel 11"},
+        {"name": "CH12", "value": 12, "description": "Channel 12"},
+        {"name": "CH13", "value": 13, "description": "Channel 13"},
+        {"name": "CH14", "value": 14, "description": "Channel 14"},
+        {"name": "CH15", "value": 15, "description": "Channel 15"},
+        {"name": "CH16", "value": 16, "description": "Channel 16 (Temperature sensor)"},
+        {"name": "CH17", "value": 17, "description": "Channel 17 (Vrefint)"},
+        {"name": "CH18", "value": 18, "description": "Channel 18 (Vbat)"}
+      ]
+    }
+  ],
+
+  "config_struct": {
+    "name": "AdcConfig",
+    "description": "ADC configuration structure",
+    "fields": [
+      {"name": "resolution", "type": "AdcResolution", "default": "AdcResolution::Bits12", "description": "ADC resolution"},
+      {"name": "sample_time", "type": "uint8_t", "default": "3", "description": "Sample time (0-7: 3, 15, 28, 56, 84, 112, 144, 480 cycles)"}
+    ]
+  },
+
+  "registers": {
+    "status": {"name": "SR", "description": "Status Register"},
+    "control1": {"name": "CR1", "description": "Control Register 1"},
+    "control2": {"name": "CR2", "description": "Control Register 2"},
+    "sample_time1": {"name": "SMPR1", "description": "Sample Time Register 1 (CH10-CH18)"},
+    "sample_time2": {"name": "SMPR2", "description": "Sample Time Register 2 (CH0-CH9)"},
+    "sequence1": {"name": "SQR1", "description": "Regular Sequence Register 1"},
+    "sequence2": {"name": "SQR2", "description": "Regular Sequence Register 2"},
+    "sequence3": {"name": "SQR3", "description": "Regular Sequence Register 3"},
+    "data": {"name": "DR", "description": "Data Register"}
+  },
+
+  "operations": {
+    "open": {
+      "description": "Initialize ADC peripheral",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (m_opened)",
+          "return_error": "ErrorCode::AlreadyInitialized"
+        },
+        {
+          "comment": "Enable ADC clock (RCC)",
+          "custom_code": "// TODO: Enable peripheral clock via RCC"
+        },
+        {
+          "comment": "Enable ADC",
+          "custom_code": "hw->CR2 = adc::cr2::ADON::mask;"
+        },
+        {
+          "set_state": "m_opened = true"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "close": {
+      "description": "Close ADC peripheral",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable ADC",
+          "custom_code": "hw->CR2 &= ~adc::cr2::ADON::mask;"
+        },
+        {
+          "set_state": "m_opened = false"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "configure": {
+      "description": "Configure ADC",
+      "parameters": [
+        {"name": "config", "type": "const AdcConfig&", "description": "ADC configuration"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Configure resolution in CR1",
+          "custom_code": "uint32_t cr1 = hw->CR1 & ~adc::cr1::RES::mask;\n        cr1 = adc::cr1::RES::write(cr1, static_cast<uint32_t>(config.resolution));\n        hw->CR1 = cr1;"
+        },
+        {
+          "custom_code": "m_config = config;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "enableChannel": {
+      "description": "Enable ADC channel",
+      "parameters": [
+        {"name": "channel", "type": "AdcChannel", "description": "Channel to enable"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "note": "Configures the channel for single conversion",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Set sequence length to 1 and channel in SQR3",
+          "custom_code": "uint8_t ch = static_cast<uint8_t>(channel);\n        \n        // Set sequence length to 1 conversion\n        uint32_t sqr1 = hw->SQR1 & ~adc::sqr1::L::mask;\n        sqr1 = adc::sqr1::L::write(sqr1, 0);  // 1 conversion (L=0)\n        hw->SQR1 = sqr1;\n        \n        // Set first conversion channel in SQR3\n        uint32_t sqr3 = hw->SQR3 & ~adc::sqr3::SQ1::mask;\n        sqr3 = adc::sqr3::SQ1::write(sqr3, ch);\n        hw->SQR3 = sqr3;\n        \n        // Set sample time for this channel\n        if (ch < 10) {\n            // CH0-CH9: SMPR2\n            uint32_t shift = ch * 3;\n            uint32_t smpr2 = hw->SMPR2 & ~(0x7 << shift);\n            smpr2 |= (m_config.sample_time << shift);\n            hw->SMPR2 = smpr2;\n        } else {\n            // CH10-CH18: SMPR1\n            uint32_t shift = (ch - 10) * 3;\n            uint32_t smpr1 = hw->SMPR1 & ~(0x7 << shift);\n            smpr1 |= (m_config.sample_time << shift);\n            hw->SMPR1 = smpr1;\n        }"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "startConversion": {
+      "description": "Start ADC conversion (software trigger)",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Start regular conversion",
+          "custom_code": "hw->CR2 |= adc::cr2::SWSTART::mask;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "read": {
+      "description": "Read converted value",
+      "parameters": [],
+      "return_type": "Result<uint16_t, ErrorCode>",
+      "note": "Waits for conversion to complete and reads the data register",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "// Wait for end of conversion (EOC)\n        uint32_t timeout = 100000;\n        while ((hw->SR & adc::sr::EOC::mask) == 0 && timeout > 0) {\n            --timeout;\n        }\n        \n        if (timeout == 0) {\n            return Err(ErrorCode::Timeout);\n        }\n        \n        // Read data register (clears EOC flag)\n        uint16_t value = static_cast<uint16_t>(hw->DR & 0xFFFF);"
+        }
+      ],
+      "returns": "value",
+      "returns_type": "uint16_t"
+    },
+
+    "readSingle": {
+      "description": "Read single channel (enable, start, read)",
+      "parameters": [
+        {"name": "channel", "type": "AdcChannel", "description": "Channel to read"}
+      ],
+      "return_type": "Result<uint16_t, ErrorCode>",
+      "note": "Convenience method for one-shot readings",
+      "steps": [
+        {
+          "custom_code": "auto enable_result = enableChannel(channel);\n        if (!enable_result.is_ok()) {\n            return Err(enable_result.err());\n        }\n        \n        auto start_result = startConversion();\n        if (!start_result.is_ok()) {\n            return Err(start_result.err());\n        }\n        \n        return read();"
+        }
+      ]
+    },
+
+    "isOpen": {
+      "description": "Check if ADC is open",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "returns": "m_opened",
+      "returns_type": "bool",
+      "steps": []
+    }
+  },
+
+  "state_variables": [
+    {"name": "m_opened", "type": "bool", "initial_value": "false", "description": "Tracks if peripheral is initialized"},
+    {"name": "m_config", "type": "AdcConfig", "initial_value": "{}", "description": "Current configuration"}
+  ],
+
+  "static_methods": [
+    {
+      "name": "toVoltage",
+      "description": "Convert ADC value to voltage",
+      "parameters": [
+        {"name": "adc_value", "type": "uint16_t", "description": "ADC reading"},
+        {"name": "vref_mv", "type": "uint32_t", "default": "3300", "description": "Reference voltage in millivolts"},
+        {"name": "resolution", "type": "AdcResolution", "default": "AdcResolution::Bits12", "description": "ADC resolution"}
+      ],
+      "return_type": "uint32_t",
+      "constexpr": true,
+      "body": "uint32_t max_value = (1u << (12 - (static_cast<uint32_t>(resolution) * 2))) - 1;\n        return (static_cast<uint32_t>(adc_value) * vref_mv) / max_value;"
+    }
+  ],
+
+  "instances": [
+    {"name": "Adc1", "base": "0x40012000", "irq": "18", "description": "ADC1 - 19 channels (CH0-CH18)"},
+    {"name": "Adc2", "base": "0x40012100", "irq": "18", "description": "ADC2 - 19 channels (CH0-CH18)"},
+    {"name": "Adc3", "base": "0x40012200", "irq": "18", "description": "ADC3 - 19 channels (CH0-CH18)"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic ADC usage",
+      "code": "using MyAdc = Adc<ADC1_BASE, ADC1_IRQ>;\nauto adc = MyAdc{};\nAdcConfig config;\nadc.open();\nadc.configure(config);\nauto result = adc.readSingle(AdcChannel::CH0);\nif (result.is_ok()) {\n    uint16_t value = result.ok();\n    uint32_t voltage_mv = MyAdc::toVoltage(value);\n}"
+    }
+  }
+}

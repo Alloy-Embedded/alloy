@@ -1,0 +1,429 @@
+{
+  "peripheral": "PIO",
+  "type": "gpio",
+  "description": "Parallel Input/Output Controller for SAME70",
+  "base_addresses": {
+    "PIOA": "0x400E0E00",
+    "PIOB": "0x400E1000",
+    "PIOC": "0x400E1200",
+    "PIOD": "0x400E1400",
+    "PIOE": "0x400E1600"
+  },
+  "registers": {
+    "PIO_PER": {
+      "offset": "0x0000",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "PIO Enable Register",
+      "fields": {
+        "P0": {
+          "bit_range": "[0]",
+          "description": "PIO Enable for pin 0"
+        },
+        "P31": {
+          "bit_range": "[31]",
+          "description": "PIO Enable for pin 31"
+        }
+      }
+    },
+    "PIO_PDR": {
+      "offset": "0x0004",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "PIO Disable Register"
+    },
+    "PIO_PSR": {
+      "offset": "0x0008",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "PIO Status Register"
+    },
+    "PIO_OER": {
+      "offset": "0x0010",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Output Enable Register"
+    },
+    "PIO_ODR": {
+      "offset": "0x0014",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Output Disable Register"
+    },
+    "PIO_OSR": {
+      "offset": "0x0018",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Output Status Register"
+    },
+    "PIO_IFER": {
+      "offset": "0x0020",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Glitch Input Filter Enable Register"
+    },
+    "PIO_IFDR": {
+      "offset": "0x0024",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Glitch Input Filter Disable Register"
+    },
+    "PIO_IFSR": {
+      "offset": "0x0028",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Glitch Input Filter Status Register"
+    },
+    "PIO_SODR": {
+      "offset": "0x0030",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Set Output Data Register"
+    },
+    "PIO_CODR": {
+      "offset": "0x0034",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Clear Output Data Register"
+    },
+    "PIO_ODSR": {
+      "offset": "0x0038",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Output Data Status Register"
+    },
+    "PIO_PDSR": {
+      "offset": "0x003C",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Pin Data Status Register"
+    },
+    "PIO_IER": {
+      "offset": "0x0040",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Enable Register"
+    },
+    "PIO_IDR": {
+      "offset": "0x0044",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Disable Register"
+    },
+    "PIO_IMR": {
+      "offset": "0x0048",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Mask Register"
+    },
+    "PIO_ISR": {
+      "offset": "0x004C",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Status Register"
+    },
+    "PIO_MDER": {
+      "offset": "0x0050",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Multi-driver Enable Register"
+    },
+    "PIO_MDDR": {
+      "offset": "0x0054",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Multi-driver Disable Register"
+    },
+    "PIO_MDSR": {
+      "offset": "0x0058",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Multi-driver Status Register"
+    },
+    "PIO_PUDR": {
+      "offset": "0x0060",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Pull-up Disable Register"
+    },
+    "PIO_PUER": {
+      "offset": "0x0064",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Pull-up Enable Register"
+    },
+    "PIO_PUSR": {
+      "offset": "0x0068",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Pad Pull-up Status Register"
+    },
+    "PIO_ABCDSR1": {
+      "offset": "0x0070",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Peripheral ABCD Select Register 1",
+      "fields": {
+        "P0": {
+          "bit_range": "[0]",
+          "description": "Peripheral Select bit 0 for pin 0",
+          "values": {
+            "0": "Peripheral A or B selected",
+            "1": "Peripheral C or D selected"
+          }
+        }
+      }
+    },
+    "PIO_ABCDSR2": {
+      "offset": "0x0074",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Peripheral ABCD Select Register 2",
+      "fields": {
+        "P0": {
+          "bit_range": "[0]",
+          "description": "Peripheral Select bit 1 for pin 0",
+          "values": {
+            "0": "Peripheral A or C selected",
+            "1": "Peripheral B or D selected"
+          }
+        }
+      }
+    },
+    "PIO_IFSCDR": {
+      "offset": "0x0080",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Input Filter Slow Clock Disable Register"
+    },
+    "PIO_IFSCER": {
+      "offset": "0x0084",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Input Filter Slow Clock Enable Register"
+    },
+    "PIO_IFSCSR": {
+      "offset": "0x0088",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Input Filter Slow Clock Status Register"
+    },
+    "PIO_SCDR": {
+      "offset": "0x008C",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Slow Clock Divider Debouncing Register",
+      "fields": {
+        "DIV": {
+          "bit_range": "[13:0]",
+          "description": "Slow Clock Divider Selection for Debouncing"
+        }
+      }
+    },
+    "PIO_PPDDR": {
+      "offset": "0x0090",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Pad Pull-down Disable Register"
+    },
+    "PIO_PPDER": {
+      "offset": "0x0094",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Pad Pull-down Enable Register"
+    },
+    "PIO_PPDSR": {
+      "offset": "0x0098",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Pad Pull-down Status Register"
+    },
+    "PIO_OWER": {
+      "offset": "0x00A0",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Output Write Enable"
+    },
+    "PIO_OWDR": {
+      "offset": "0x00A4",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Output Write Disable"
+    },
+    "PIO_OWSR": {
+      "offset": "0x00A8",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Output Write Status Register"
+    },
+    "PIO_AIMER": {
+      "offset": "0x00B0",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Additional Interrupt Modes Enable Register"
+    },
+    "PIO_AIMDR": {
+      "offset": "0x00B4",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Additional Interrupt Modes Disable Register"
+    },
+    "PIO_AIMMR": {
+      "offset": "0x00B8",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Additional Interrupt Modes Mask Register"
+    },
+    "PIO_ESR": {
+      "offset": "0x00C0",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Edge Select Register"
+    },
+    "PIO_LSR": {
+      "offset": "0x00C4",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Level Select Register"
+    },
+    "PIO_ELSR": {
+      "offset": "0x00C8",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Edge/Level Status Register"
+    },
+    "PIO_FELLSR": {
+      "offset": "0x00D0",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Falling Edge/Low-Level Select Register"
+    },
+    "PIO_REHLSR": {
+      "offset": "0x00D4",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Rising Edge/High-Level Select Register"
+    },
+    "PIO_FRLHSR": {
+      "offset": "0x00D8",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Fall/Rise - Low/High Status Register"
+    },
+    "PIO_WPMR": {
+      "offset": "0x00E4",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Write Protection Mode Register",
+      "fields": {
+        "WPEN": {
+          "bit_range": "[0]",
+          "description": "Write Protection Enable",
+          "values": {
+            "0": "Disables write protection",
+            "1": "Enables write protection"
+          }
+        },
+        "WPKEY": {
+          "bit_range": "[31:8]",
+          "description": "Write Protection Key",
+          "values": {
+            "0x50494F": "Writing any other value in this field aborts the write operation"
+          }
+        }
+      }
+    },
+    "PIO_WPSR": {
+      "offset": "0x00E8",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Write Protection Status Register",
+      "fields": {
+        "WPVS": {
+          "bit_range": "[0]",
+          "description": "Write Protection Violation Status",
+          "values": {
+            "0": "No write protection violation",
+            "1": "Write protection violation detected"
+          }
+        },
+        "WPVSRC": {
+          "bit_range": "[23:8]",
+          "description": "Write Protection Violation Source"
+        }
+      }
+    }
+  },
+  "operations": [
+    {
+      "name": "set",
+      "type": "write",
+      "description": "Set pin high",
+      "registers": ["PIO_SODR"]
+    },
+    {
+      "name": "clear",
+      "type": "write",
+      "description": "Set pin low",
+      "registers": ["PIO_CODR"]
+    },
+    {
+      "name": "toggle",
+      "type": "modify",
+      "description": "Toggle pin state",
+      "registers": ["PIO_ODSR"]
+    },
+    {
+      "name": "read",
+      "type": "read",
+      "description": "Read pin state",
+      "registers": ["PIO_PDSR"]
+    }
+  ]
+}

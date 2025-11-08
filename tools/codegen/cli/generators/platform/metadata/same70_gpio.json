@@ -1,0 +1,414 @@
+{
+  "family": "same70",
+  "vendor": "atmel",
+  "peripheral_name": "PIO",
+  "description": "Parallel Input/Output Controller",
+  "register_type": "PIOA_Registers",
+  "register_namespace": "pioa",
+  "register_include": "hal/vendors/atmel/same70/registers/pioa_registers.hpp",
+  "bitfield_include": "hal/vendors/atmel/same70/bitfields/pioa_bitfields.hpp",
+  "platform_namespace": "alloy::hal::same70",
+  "vendor_namespace": "alloy::hal::atmel::same70",
+
+  "features": {
+    "pull_up": true,
+    "pull_down": false,
+    "open_drain": true,
+    "input_filter": true,
+    "schmitt_trigger": false,
+    "interrupt_support": true,
+    "debounce": true
+  },
+
+  "port_bases": {
+    "PIOA": "0x400E0E00",
+    "PIOB": "0x400E1000",
+    "PIOC": "0x400E1200",
+    "PIOD": "0x400E1400",
+    "PIOE": "0x400E1600"
+  },
+
+  "registers": {
+    "enable_pio": {
+      "name": "PER",
+      "description": "PIO Enable Register",
+      "access": "write-only",
+      "operation": "write"
+    },
+    "disable_pio": {
+      "name": "PDR",
+      "description": "PIO Disable Register",
+      "access": "write-only",
+      "operation": "write"
+    },
+    "enable_output": {
+      "name": "OER",
+      "description": "Output Enable Register",
+      "access": "write-only",
+      "operation": "write"
+    },
+    "disable_output": {
+      "name": "ODR",
+      "description": "Output Disable Register",
+      "access": "write-only",
+      "operation": "write"
+    },
+    "output_status": {
+      "name": "OSR",
+      "description": "Output Status Register",
+      "access": "read-only",
+      "operation": "read"
+    },
+    "set_output": {
+      "name": "SODR",
+      "description": "Set Output Data Register",
+      "access": "write-only",
+      "operation": "write"
+    },
+    "clear_output": {
+      "name": "CODR",
+      "description": "Clear Output Data Register",
+      "access": "write-only",
+      "operation": "write"
+    },
+    "output_data_status": {
+      "name": "ODSR",
+      "description": "Output Data Status Register",
+      "access": "read-write",
+      "operation": "read"
+    },
+    "pin_data_status": {
+      "name": "PDSR",
+      "description": "Pin Data Status Register",
+      "access": "read-only",
+      "operation": "read"
+    },
+    "pull_up_enable": {
+      "name": "PUER",
+      "description": "Pull-up Enable Register",
+      "access": "write-only",
+      "operation": "write"
+    },
+    "pull_up_disable": {
+      "name": "PUDR",
+      "description": "Pull-up Disable Register",
+      "access": "write-only",
+      "operation": "write"
+    },
+    "pull_up_status": {
+      "name": "PUSR",
+      "description": "Pull-up Status Register",
+      "access": "read-only",
+      "operation": "read"
+    },
+    "multi_driver_enable": {
+      "name": "MDER",
+      "description": "Multi-driver Enable Register (Open-drain)",
+      "access": "write-only",
+      "operation": "write"
+    },
+    "multi_driver_disable": {
+      "name": "MDDR",
+      "description": "Multi-driver Disable Register",
+      "access": "write-only",
+      "operation": "write"
+    },
+    "input_filter_enable": {
+      "name": "IFER",
+      "description": "Input Filter Enable Register",
+      "access": "write-only",
+      "operation": "write"
+    },
+    "input_filter_disable": {
+      "name": "IFDR",
+      "description": "Input Filter Disable Register",
+      "access": "write-only",
+      "operation": "write"
+    }
+  },
+
+  "operations": {
+    "set": {
+      "description": "Set pin HIGH (output = 1)",
+      "steps": [
+        {
+          "register": "set_output",
+          "value": "pin_mask",
+          "comment": "Single instruction: writes pin mask to SODR"
+        }
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "always_succeeds": true,
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_SODR"
+    },
+
+    "clear": {
+      "description": "Set pin LOW (output = 0)",
+      "steps": [
+        {
+          "register": "clear_output",
+          "value": "pin_mask",
+          "comment": "Single instruction: writes pin mask to CODR"
+        }
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "always_succeeds": true,
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_CODR"
+    },
+
+    "toggle": {
+      "description": "Toggle pin state",
+      "steps": [
+        {
+          "register": "output_data_status",
+          "operation": "read",
+          "store_as": "current_state",
+          "comment": "Read current output data status"
+        },
+        {
+          "condition": "if (current_state & pin_mask)",
+          "then": [
+            {
+              "register": "clear_output",
+              "value": "pin_mask",
+              "comment": "Pin is HIGH, set it LOW"
+            }
+          ],
+          "else": [
+            {
+              "register": "set_output",
+              "value": "pin_mask",
+              "comment": "Pin is LOW, set it HIGH"
+            }
+          ]
+        }
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "always_succeeds": true
+    },
+
+    "write": {
+      "description": "Write pin value",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bool",
+          "description": "true for HIGH, false for LOW"
+        }
+      ],
+      "steps": [
+        {
+          "condition": "if (value)",
+          "then_call": "set",
+          "else_call": "clear"
+        }
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "always_succeeds": true
+    },
+
+    "read": {
+      "description": "Read pin input value",
+      "steps": [
+        {
+          "register": "pin_data_status",
+          "operation": "read",
+          "store_as": "pin_state",
+          "comment": "Reads the actual pin state from PDSR register"
+        },
+        {
+          "compute": "(pin_state & pin_mask) != 0",
+          "store_as": "value"
+        }
+      ],
+      "return_type": "Result<bool, ErrorCode>",
+      "returns": "value",
+      "const": true
+    },
+
+    "setDirection": {
+      "description": "Set GPIO pin direction",
+      "parameters": [
+        {
+          "name": "direction",
+          "type": "PinDirection",
+          "description": "Pin direction (Input or Output)"
+        }
+      ],
+      "steps": [
+        {
+          "register": "enable_pio",
+          "value": "pin_mask",
+          "comment": "Enable PIO control (disable peripheral function)",
+          "test_hook": "ALLOY_GPIO_TEST_HOOK_PER"
+        },
+        {
+          "condition": "if (direction == PinDirection::Input)",
+          "then": [
+            {
+              "register": "disable_output",
+              "value": "pin_mask",
+              "comment": "Configure as input",
+              "test_hook": "ALLOY_GPIO_TEST_HOOK_ODR"
+            }
+          ],
+          "else": [
+            {
+              "register": "enable_output",
+              "value": "pin_mask",
+              "comment": "Configure as output",
+              "test_hook": "ALLOY_GPIO_TEST_HOOK_OER"
+            }
+          ]
+        }
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "always_succeeds": true
+    },
+
+    "setDrive": {
+      "description": "Set GPIO pin drive mode",
+      "parameters": [
+        {
+          "name": "drive",
+          "type": "PinDrive",
+          "description": "Drive mode (PushPull or OpenDrain)"
+        }
+      ],
+      "steps": [
+        {
+          "condition": "if (drive == PinDrive::OpenDrain)",
+          "then": [
+            {
+              "register": "multi_driver_enable",
+              "value": "pin_mask",
+              "comment": "Enable multi-driver (open-drain)",
+              "test_hook": "ALLOY_GPIO_TEST_HOOK_MDER"
+            }
+          ],
+          "else": [
+            {
+              "register": "multi_driver_disable",
+              "value": "pin_mask",
+              "comment": "Disable multi-driver (push-pull)",
+              "test_hook": "ALLOY_GPIO_TEST_HOOK_MDDR"
+            }
+          ]
+        }
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "always_succeeds": true
+    },
+
+    "setPull": {
+      "description": "Configure pull resistor",
+      "parameters": [
+        {
+          "name": "pull",
+          "type": "PinPull",
+          "description": "Pull resistor configuration"
+        }
+      ],
+      "steps": [
+        {
+          "switch": "pull",
+          "cases": [
+            {
+              "value": "PinPull::None",
+              "steps": [
+                {
+                  "register": "pull_up_disable",
+                  "value": "pin_mask",
+                  "comment": "Disable pull-up",
+                  "test_hook": "ALLOY_GPIO_TEST_HOOK_PUDR"
+                }
+              ]
+            },
+            {
+              "value": "PinPull::PullUp",
+              "steps": [
+                {
+                  "register": "pull_up_enable",
+                  "value": "pin_mask",
+                  "comment": "Enable pull-up",
+                  "test_hook": "ALLOY_GPIO_TEST_HOOK_PUER"
+                }
+              ]
+            },
+            {
+              "value": "PinPull::PullDown",
+              "steps": [
+                {
+                  "return_error": "ErrorCode::NotSupported",
+                  "comment": "Pull-down not supported in SAME70 hardware"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "can_fail": true,
+      "note": "SAME70 only supports pull-up, not pull-down. PullDown will return ErrorCode::NotSupported."
+    },
+
+    "enableFilter": {
+      "description": "Enable input glitch filter",
+      "steps": [
+        {
+          "register": "input_filter_enable",
+          "value": "pin_mask",
+          "test_hook": "ALLOY_GPIO_TEST_HOOK_IFER"
+        }
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "always_succeeds": true
+    },
+
+    "disableFilter": {
+      "description": "Disable input glitch filter",
+      "steps": [
+        {
+          "register": "input_filter_disable",
+          "value": "pin_mask",
+          "test_hook": "ALLOY_GPIO_TEST_HOOK_IFDR"
+        }
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "always_succeeds": true
+    },
+
+    "isOutput": {
+      "description": "Check if pin is configured as output",
+      "steps": [
+        {
+          "register": "output_status",
+          "operation": "read",
+          "store_as": "status"
+        },
+        {
+          "compute": "(status & pin_mask) != 0",
+          "store_as": "is_output"
+        }
+      ],
+      "return_type": "Result<bool, ErrorCode>",
+      "returns": "is_output",
+      "const": true
+    }
+  },
+
+  "examples": {
+    "led": {
+      "description": "Define LED pin (PIOC pin 8)",
+      "code": "using LedGreen = GpioPin<PIOC_BASE, 8>;"
+    },
+    "button": {
+      "description": "Define button pin (PIOA pin 11)",
+      "code": "using Button0 = GpioPin<PIOA_BASE, 11>;"
+    },
+    "basic_usage": {
+      "description": "Use GPIO pin",
+      "code": "auto led = LedGreen{};\nauto result = led.setDirection(PinDirection::Output);\nif (result.is_ok()) {\n    led.set();     // Turn on\n    led.clear();   // Turn off\n    led.toggle();  // Toggle state\n}"
+    }
+  }
+}

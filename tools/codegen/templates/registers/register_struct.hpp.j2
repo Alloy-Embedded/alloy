@@ -1,0 +1,171 @@
+/**
+ * @file {{ peripheral | lower }}_registers.hpp
+ * @brief Register definitions for {{ peripheral }} ({{ family }})
+ *
+ * Memory-mapped register structures with compile-time safety.
+ * Auto-generated from metadata using Unified Code Generation System.
+ *
+ * Family: {{ family }}
+ * Vendor: {{ vendor }}
+ * Core: {{ core }}
+ * Peripheral: {{ peripheral }}
+ * Generated: {{ generation_date }}
+ */
+
+#pragma once
+
+#include <cstdint>
+#include <type_traits>
+
+namespace alloy {
+namespace platform {
+namespace {{ family | lower }} {
+namespace {{ peripheral | lower }} {
+
+/**
+ * @brief Access mode tags for registers
+ */
+struct ReadOnly {};
+struct WriteOnly {};
+struct ReadWrite {};
+
+/**
+ * @brief Register wrapper with access control
+ * 
+ * @tparam T Register value type
+ * @tparam Access Access mode (ReadOnly, WriteOnly, ReadWrite)
+ */
+template<typename T, typename Access>
+class Register {
+    volatile T value_;
+    
+public:
+    using value_type = T;
+    using access_type = Access;
+    
+    // Read operations (enabled for RO and RW)
+    template<typename A = Access>
+    typename std::enable_if<
+        std::is_same<A, ReadOnly>::value || std::is_same<A, ReadWrite>::value,
+        T
+    >::type read() const volatile {
+        return value_;
+    }
+    
+    // Write operations (enabled for WO and RW)
+    template<typename A = Access>
+    typename std::enable_if<
+        std::is_same<A, WriteOnly>::value || std::is_same<A, ReadWrite>::value,
+        void
+    >::type write(T val) volatile {
+        value_ = val;
+    }
+    
+    // Modify operations (enabled for RW only)
+    template<typename A = Access>
+    typename std::enable_if<
+        std::is_same<A, ReadWrite>::value,
+        void
+    >::type modify(T mask, T val) volatile {
+        value_ = (value_ & ~mask) | (val & mask);
+    }
+    
+    // Set bits (enabled for WO and RW)
+    template<typename A = Access>
+    typename std::enable_if<
+        std::is_same<A, WriteOnly>::value || std::is_same<A, ReadWrite>::value,
+        void
+    >::type set(T mask) volatile {
+        value_ = value_ | mask;
+    }
+    
+    // Clear bits (enabled for WO and RW)
+    template<typename A = Access>
+    typename std::enable_if<
+        std::is_same<A, WriteOnly>::value || std::is_same<A, ReadWrite>::value,
+        void
+    >::type clear(T mask) volatile {
+        value_ = value_ & ~mask;
+    }
+} __attribute__((packed));
+
+{%- if registers %}
+
+/**
+ * @brief {{ peripheral }} Register Block
+ * 
+ * Memory layout for {{ peripheral }} peripheral registers.
+ * Use with base addresses defined in the platform configuration.
+ */
+struct {{ peripheral }}Registers {
+{%- set ns = namespace(last_offset=0, padding_count=0) %}
+{%- for reg_name, reg in registers.items() | sort(attribute='1.offset') %}
+{%- set offset = reg.offset | int(base=16) %}
+{%- set size_bytes = reg.size // 8 %}
+
+{%- if offset > ns.last_offset %}
+    // Padding: 0x{{ '%04X' % ns.last_offset }} to 0x{{ '%04X' % (offset - 1) }}
+    uint8_t _reserved{{ ns.padding_count }}[{{ offset - ns.last_offset }}];
+{%- set ns.padding_count = ns.padding_count + 1 %}
+{%- endif %}
+
+    // 0x{{ reg.offset[2:].upper() }}: {{ reg.description }}
+{%- if reg.access == 'RO' %}
+    Register<uint{{ reg.size }}_t, ReadOnly> {{ reg_name }};
+{%- elif reg.access == 'WO' %}
+    Register<uint{{ reg.size }}_t, WriteOnly> {{ reg_name }};
+{%- else %}
+    Register<uint{{ reg.size }}_t, ReadWrite> {{ reg_name }};
+{%- endif %}
+{%- set ns.last_offset = offset + size_bytes %}
+{%- endfor %}
+} __attribute__((packed));
+
+// Ensure register block has the expected size
+static_assert(sizeof({{ peripheral }}Registers) >= {{ ns.last_offset }}, 
+              "{{ peripheral }}Registers size mismatch");
+
+{%- endif %}
+
+{%- if base_addresses %}
+
+// Base addresses for {{ peripheral }} instances
+{%- for instance, addr in base_addresses.items() %}
+constexpr uintptr_t {{ instance }}_BASE = {{ addr }};
+{%- endfor %}
+
+// Typed pointers to register blocks
+{%- for instance, addr in base_addresses.items() %}
+static inline volatile {{ peripheral }}Registers& {{ instance }} = 
+    *reinterpret_cast<volatile {{ peripheral }}Registers*>({{ instance }}_BASE);
+{%- endfor %}
+
+{%- endif %}
+
+} // namespace {{ peripheral | lower }}
+} // namespace {{ family | lower }}
+} // namespace platform
+} // namespace alloy
+
+/**
+ * Example Usage:
+ * 
+ * #include "hal/platform/{{ family | lower }}/{{ peripheral | lower }}/{{ peripheral | lower }}_registers.hpp"
+ * 
+ * using namespace alloy::platform::{{ family | lower }}::{{ peripheral | lower }};
+ * 
+ * // Read register
+ * uint32_t status = PIOA.PIO_PSR.read();
+ * 
+ * // Write register
+ * PIOA.PIO_PER.write(0x00000001);
+ * 
+ * // Set bits
+ * PIOA.PIO_SODR.set(0x00000020);  // Set pin 5 high
+ * 
+ * // Clear bits
+ * PIOA.PIO_CODR.clear(0x00000020);  // Set pin 5 low
+ * 
+ * // Modify register (RW only)
+ * PIOA.PIO_ABCDSR1.modify(0x00000001, 0x00000001);
+ */

@@ -43,8 +43,7 @@ namespace cr {
     constexpr uint32_t CSBF_Pos = 3;
     constexpr uint32_t CSBF_Msk = CSBF::mask;
 
-    /// Power voltage detector
-              enable
+    /// Power voltage detector enable
     /// Position: 4, Width: 1
     using PVDE = BitField<4, 1>;
     constexpr uint32_t PVDE_Pos = 4;
@@ -56,15 +55,13 @@ namespace cr {
     constexpr uint32_t PLS_Pos = 5;
     constexpr uint32_t PLS_Msk = PLS::mask;
 
-    /// Disable backup domain write
-              protection
+    /// Disable backup domain write protection
     /// Position: 8, Width: 1
     using DBP = BitField<8, 1>;
     constexpr uint32_t DBP_Pos = 8;
     constexpr uint32_t DBP_Msk = DBP::mask;
 
-    /// Flash power down in Stop
-              mode
+    /// Flash power down in Stop mode
     /// Position: 9, Width: 1
     using FPDS = BitField<9, 1>;
     constexpr uint32_t FPDS_Pos = 9;

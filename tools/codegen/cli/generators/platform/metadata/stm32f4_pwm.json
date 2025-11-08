@@ -1,0 +1,328 @@
+{
+  "family": "stm32f4",
+  "vendor": "st",
+  "peripheral_name": "PWM (TIM-based)",
+  "register_include": "hal/vendors/st/stm32f4/registers/tim2_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32f4/bitfields/tim2_bitfields.hpp",
+  "register_namespace": "alloy::hal::st::stm32f4::tim2",
+  "register_type": "TIM2_Registers",
+  "platform_namespace": "alloy::hal::stm32f4",
+  "vendor_namespace": "alloy::hal::st::stm32f4",
+  "namespace_alias": "tim",
+  "requires_clock": false,
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "Timer peripheral base address"
+    },
+    {
+      "name": "CHANNEL",
+      "type": "uint8_t",
+      "description": "PWM channel number (1-4)"
+    },
+    {
+      "name": "IRQ_ID",
+      "type": "uint32_t",
+      "description": "Timer IRQ ID"
+    }
+  ],
+
+  "additional_enums": [
+    {
+      "name": "PwmPrescaler",
+      "type": "uint8_t",
+      "description": "PWM clock prescaler (maps to PSC register)",
+      "values": [
+        {"name": "DIV_1", "value": 0, "description": "Prescaler = 1 (no division)"},
+        {"name": "DIV_2", "value": 1, "description": "Prescaler = 2"},
+        {"name": "DIV_4", "value": 3, "description": "Prescaler = 4"},
+        {"name": "DIV_8", "value": 7, "description": "Prescaler = 8"},
+        {"name": "DIV_16", "value": 15, "description": "Prescaler = 16"},
+        {"name": "DIV_32", "value": 31, "description": "Prescaler = 32"},
+        {"name": "DIV_64", "value": 63, "description": "Prescaler = 64"},
+        {"name": "DIV_128", "value": 127, "description": "Prescaler = 128"}
+      ]
+    }
+  ],
+
+  "config_struct": {
+    "name": "PwmConfig",
+    "description": "PWM configuration structure",
+    "fields": [
+      {"name": "alignment", "type": "PwmAlignment", "default": "PwmAlignment::Edge", "description": "Alignment mode (from hal/types.hpp)"},
+      {"name": "polarity", "type": "PwmPolarity", "default": "PwmPolarity::Normal", "description": "Polarity (from hal/types.hpp)"},
+      {"name": "prescaler", "type": "uint16_t", "default": "0", "description": "Prescaler value (0-65535)"},
+      {"name": "period", "type": "uint32_t", "default": "1000", "description": "Auto-reload period"},
+      {"name": "duty_cycle", "type": "uint32_t", "default": "500", "description": "Duty cycle value (0 to period)"}
+    ]
+  },
+
+  "constants": [
+    {
+      "name": "PWM_MODE1",
+      "type": "uint32_t",
+      "value": "6",
+      "constexpr": true,
+      "description": "PWM mode 1 (active high)"
+    },
+    {
+      "name": "PWM_MODE2",
+      "type": "uint32_t",
+      "value": "7",
+      "constexpr": true,
+      "description": "PWM mode 2 (active low)"
+    }
+  ],
+
+  "static_asserts": [
+    {"condition": "CHANNEL >= 1 && CHANNEL <= 4", "message": "TIM has 4 PWM channels (1-4)"}
+  ],
+
+  "registers": {
+    "control1": {"name": "CR1", "description": "Control Register 1"},
+    "ccmr1_output": {"name": "CCMR1_Output", "description": "Capture/Compare Mode Register 1 (Output)"},
+    "ccmr2_output": {"name": "CCMR2_Output", "description": "Capture/Compare Mode Register 2 (Output)"},
+    "capture_compare_enable": {"name": "CCER", "description": "Capture/Compare Enable Register"},
+    "prescaler_reg": {"name": "PSC", "description": "Prescaler"},
+    "auto_reload": {"name": "ARR", "description": "Auto-Reload Register"},
+    "ccr1": {"name": "CCR1", "description": "Capture/Compare Register 1"},
+    "ccr2": {"name": "CCR2", "description": "Capture/Compare Register 2"},
+    "ccr3": {"name": "CCR3", "description": "Capture/Compare Register 3"},
+    "ccr4": {"name": "CCR4", "description": "Capture/Compare Register 4"},
+    "event_generation": {"name": "EGR", "description": "Event Generation Register"}
+  },
+
+  "operations": {
+    "open": {
+      "description": "Initialize PWM",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (m_opened)",
+          "return_error": "ErrorCode::AlreadyInitialized"
+        },
+        {
+          "comment": "Enable timer clock (RCC)",
+          "custom_code": "// TODO: Enable peripheral clock via RCC"
+        },
+        {
+          "comment": "Disable counter initially",
+          "custom_code": "hw->CR1 &= ~tim::cr1::CEN::mask;"
+        },
+        {
+          "set_state": "m_opened = true"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "close": {
+      "description": "Close PWM",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable counter",
+          "custom_code": "hw->CR1 &= ~tim::cr1::CEN::mask;"
+        },
+        {
+          "comment": "Disable channel output",
+          "custom_code": "uint32_t ccer = hw->CCER;\n        ccer &= ~(tim::ccer::CC1E::mask << ((CHANNEL - 1) * 4));\n        hw->CCER = ccer;"
+        },
+        {
+          "set_state": "m_opened = false"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "configure": {
+      "description": "Configure PWM",
+      "parameters": [
+        {"name": "config", "type": "const PwmConfig&", "description": "PWM configuration"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable counter during configuration",
+          "custom_code": "hw->CR1 &= ~tim::cr1::CEN::mask;"
+        },
+        {
+          "comment": "Configure counting mode based on alignment",
+          "custom_code": "uint32_t cr1 = hw->CR1 & ~(tim::cr1::DIR::mask | tim::cr1::CMS::mask);\n        \n        if (config.alignment == PwmAlignment::Center) {\n            // Center-aligned mode 1\n            cr1 = tim::cr1::CMS::write(cr1, 1);\n        }\n        // Edge-aligned is default (CMS = 0, DIR = 0 for up-counting)\n        \n        hw->CR1 = cr1;"
+        },
+        {
+          "comment": "Set prescaler and period",
+          "custom_code": "hw->PSC = config.prescaler;\n        hw->ARR = config.period;"
+        },
+        {
+          "comment": "Configure PWM mode for the channel",
+          "custom_code": "uint32_t pwm_mode = (config.polarity == PwmPolarity::Inverted) ? PWM_MODE2 : PWM_MODE1;\n        \n        if (CHANNEL == 1 || CHANNEL == 2) {\n            uint32_t ccmr1 = hw->CCMR1_Output;\n            \n            if (CHANNEL == 1) {\n                ccmr1 = tim::ccmr1_output::CC1S::write(ccmr1, 0);  // Output\n                ccmr1 = tim::ccmr1_output::OC1M::write(ccmr1, pwm_mode);\n                ccmr1 = tim::ccmr1_output::OC1PE::set(ccmr1);  // Preload enable\n            } else {\n                ccmr1 = tim::ccmr1_output::CC2S::write(ccmr1, 0);\n                ccmr1 = tim::ccmr1_output::OC2M::write(ccmr1, pwm_mode);\n                ccmr1 = tim::ccmr1_output::OC2PE::set(ccmr1);\n            }\n            \n            hw->CCMR1_Output = ccmr1;\n        } else {\n            uint32_t ccmr2 = hw->CCMR2_Output;\n            \n            if (CHANNEL == 3) {\n                ccmr2 = tim::ccmr2_output::CC3S::write(ccmr2, 0);\n                ccmr2 = tim::ccmr2_output::OC3M::write(ccmr2, pwm_mode);\n                ccmr2 = tim::ccmr2_output::OC3PE::set(ccmr2);\n            } else {\n                ccmr2 = tim::ccmr2_output::CC4S::write(ccmr2, 0);\n                ccmr2 = tim::ccmr2_output::OC4M::write(ccmr2, pwm_mode);\n                ccmr2 = tim::ccmr2_output::OC4PE::set(ccmr2);\n            }\n            \n            hw->CCMR2_Output = ccmr2;\n        }"
+        },
+        {
+          "comment": "Set duty cycle",
+          "custom_code": "switch (CHANNEL) {\n            case 1: hw->CCR1 = config.duty_cycle; break;\n            case 2: hw->CCR2 = config.duty_cycle; break;\n            case 3: hw->CCR3 = config.duty_cycle; break;\n            case 4: hw->CCR4 = config.duty_cycle; break;\n        }"
+        },
+        {
+          "comment": "Generate update event to load prescaler and ARR",
+          "custom_code": "hw->EGR = tim::egr::UG::mask;"
+        },
+        {
+          "custom_code": "m_config = config;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "start": {
+      "description": "Start PWM output",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Enable channel output",
+          "custom_code": "uint32_t ccer = hw->CCER;\n        ccer |= (tim::ccer::CC1E::mask << ((CHANNEL - 1) * 4));\n        hw->CCER = ccer;"
+        },
+        {
+          "comment": "Enable counter",
+          "custom_code": "hw->CR1 |= tim::cr1::CEN::mask;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "stop": {
+      "description": "Stop PWM output",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable channel output",
+          "custom_code": "uint32_t ccer = hw->CCER;\n        ccer &= ~(tim::ccer::CC1E::mask << ((CHANNEL - 1) * 4));\n        hw->CCER = ccer;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "setDutyCycle": {
+      "description": "Set PWM duty cycle",
+      "parameters": [
+        {"name": "duty_cycle", "type": "uint32_t", "description": "Duty cycle value (0 to period)"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "switch (CHANNEL) {\n            case 1: hw->CCR1 = duty_cycle; break;\n            case 2: hw->CCR2 = duty_cycle; break;\n            case 3: hw->CCR3 = duty_cycle; break;\n            case 4: hw->CCR4 = duty_cycle; break;\n        }\n        m_config.duty_cycle = duty_cycle;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "setPeriod": {
+      "description": "Set PWM period (frequency)",
+      "parameters": [
+        {"name": "period", "type": "uint32_t", "description": "Period value (ARR register)"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "hw->ARR = period;\n        m_config.period = period;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "getCounter": {
+      "description": "Get current counter value",
+      "parameters": [],
+      "return_type": "Result<uint32_t, ErrorCode>",
+      "const": true,
+      "returns": "hw->CNT",
+      "returns_type": "uint32_t",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        }
+      ]
+    },
+
+    "isRunning": {
+      "description": "Check if PWM is running",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "steps": [
+        {
+          "custom_code": "if (!m_opened) return false;\n        return (hw->CR1 & tim::cr1::CEN::mask) != 0;"
+        }
+      ],
+      "returns": "false",
+      "returns_type": "bool"
+    },
+
+    "isOpen": {
+      "description": "Check if PWM is open",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "returns": "m_opened",
+      "returns_type": "bool",
+      "steps": []
+    }
+  },
+
+  "state_variables": [
+    {"name": "m_opened", "type": "bool", "initial_value": "false", "description": "Tracks if peripheral is initialized"},
+    {"name": "m_config", "type": "PwmConfig", "initial_value": "{}", "description": "Current configuration"}
+  ],
+
+  "instances": [
+    {"name": "Pwm2Ch1", "base": "0x40000000", "channel": "1", "irq": "28", "description": "TIM2 Channel 1 (PWM)"},
+    {"name": "Pwm2Ch2", "base": "0x40000000", "channel": "2", "irq": "28", "description": "TIM2 Channel 2 (PWM)"},
+    {"name": "Pwm2Ch3", "base": "0x40000000", "channel": "3", "irq": "28", "description": "TIM2 Channel 3 (PWM)"},
+    {"name": "Pwm2Ch4", "base": "0x40000000", "channel": "4", "irq": "28", "description": "TIM2 Channel 4 (PWM)"},
+    {"name": "Pwm3Ch1", "base": "0x40000400", "channel": "1", "irq": "29", "description": "TIM3 Channel 1 (PWM)"},
+    {"name": "Pwm3Ch2", "base": "0x40000400", "channel": "2", "irq": "29", "description": "TIM3 Channel 2 (PWM)"},
+    {"name": "Pwm3Ch3", "base": "0x40000400", "channel": "3", "irq": "29", "description": "TIM3 Channel 3 (PWM)"},
+    {"name": "Pwm3Ch4", "base": "0x40000400", "channel": "4", "irq": "29", "description": "TIM3 Channel 4 (PWM)"},
+    {"name": "Pwm4Ch1", "base": "0x40000800", "channel": "1", "irq": "30", "description": "TIM4 Channel 1 (PWM)"},
+    {"name": "Pwm4Ch2", "base": "0x40000800", "channel": "2", "irq": "30", "description": "TIM4 Channel 2 (PWM)"},
+    {"name": "Pwm4Ch3", "base": "0x40000800", "channel": "3", "irq": "30", "description": "TIM4 Channel 3 (PWM)"},
+    {"name": "Pwm4Ch4", "base": "0x40000800", "channel": "4", "irq": "30", "description": "TIM4 Channel 4 (PWM)"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic PWM usage",
+      "code": "using MyPwm = Pwm<TIM2_BASE, 1, TIM2_IRQ>;\nauto pwm = MyPwm{};\nPwmConfig config;\nconfig.prescaler = 83;  // 84MHz / (83+1) = 1MHz\nconfig.period = 1000;   // 1kHz\nconfig.duty_cycle = 500;  // 50%\npwm.open();\npwm.configure(config);\npwm.start();"
+    }
+  }
+}

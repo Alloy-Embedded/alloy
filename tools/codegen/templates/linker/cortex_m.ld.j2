@@ -1,0 +1,188 @@
+/**
+ * Linker script for {{ metadata.mcu_name }} ({{ metadata.board_name }})
+ *
+ * Memory layout:
+{% for region in metadata.memory_regions %}
+ *   {{ region.name }}: {{ region.size_kb }}KB{% if region.description %} ({{ region.description }}){% endif %} at {{ region.origin }}
+{% endfor %}
+ *
+ * {{ metadata.mcu_name }} features:
+{% for feature in metadata.features %}
+ * - {{ feature }}
+{% endfor %}
+ *
+ * Stack grows downward from end of {{ metadata.stack_region }}
+ * Heap grows upward from end of .bss
+ *
+ * Auto-generated from: {{ metadata.family }}
+ * Generator: generate_linker.py
+ * Generated: {{ timestamp }}
+ */
+
+/* Entry point */
+ENTRY({{ metadata.entry_point | default('Reset_Handler') }})
+
+/* Memory regions */
+MEMORY
+{
+{% for region in metadata.memory_regions %}
+    {{ region.name }} ({{ region.permissions }})  : ORIGIN = {{ region.origin }}, LENGTH = {{ region.size_kb }}K
+{% endfor %}
+}
+
+/* Highest address of the user mode stack */
+_estack = ORIGIN({{ metadata.stack_region }}) + LENGTH({{ metadata.stack_region }});  /* Stack at end of {{ metadata.stack_region }} */
+
+/* Minimum heap size */
+_Min_Heap_Size = {{ metadata.min_heap_size }};   /* {{ metadata.min_heap_size | hex_to_kb }}KB */
+_Min_Stack_Size = {{ metadata.min_stack_size }};  /* {{ metadata.min_stack_size | hex_to_kb }}KB */
+
+/* Sections */
+SECTIONS
+{
+    /* Interrupt vector table */
+    .isr_vector :
+    {
+        . = ALIGN(4);
+        KEEP(*(.isr_vector))  /* Vector table */
+        . = ALIGN(4);
+    } >{{ metadata.flash_region }}
+
+    /* Program code and read-only data */
+    .text :
+    {
+        . = ALIGN(4);
+        *(.text)           /* Normal code */
+        *(.text*)          /* C++ code */
+        *(.glue_7)         /* ARM/Thumb interworking */
+        *(.glue_7t)
+        *(.eh_frame)
+
+        KEEP(*(.init))     /* Startup code */
+        KEEP(*(.fini))     /* Cleanup code */
+
+        . = ALIGN(4);
+        _etext = .;        /* End of code section */
+    } >{{ metadata.flash_region }}
+
+    /* Read-only data */
+    .rodata :
+    {
+        . = ALIGN(4);
+        *(.rodata)         /* Constants */
+        *(.rodata*)
+        . = ALIGN(4);
+    } >{{ metadata.flash_region }}
+
+{% if metadata.support_exceptions %}
+    /* C++ exception handling (if needed) */
+    .ARM.extab :
+    {
+        *(.ARM.extab* .gnu.linkonce.armextab.*)
+    } >{{ metadata.flash_region }}
+
+    .ARM :
+    {
+        __exidx_start = .;
+        *(.ARM.exidx*)
+        __exidx_end = .;
+    } >{{ metadata.flash_region }}
+{% endif %}
+
+{% if metadata.support_cpp %}
+    /* C++ constructors/destructors */
+    .preinit_array :
+    {
+        PROVIDE_HIDDEN (__preinit_array_start = .);
+        KEEP (*(.preinit_array*))
+        PROVIDE_HIDDEN (__preinit_array_end = .);
+    } >{{ metadata.flash_region }}
+
+    .init_array :
+    {
+        PROVIDE_HIDDEN (__init_array_start = .);
+        KEEP (*(SORT(.init_array.*)))
+        KEEP (*(.init_array*))
+        PROVIDE_HIDDEN (__init_array_end = .);
+    } >{{ metadata.flash_region }}
+
+    .fini_array :
+    {
+        PROVIDE_HIDDEN (__fini_array_start = .);
+        KEEP (*(SORT(.fini_array.*)))
+        KEEP (*(.fini_array*))
+        PROVIDE_HIDDEN (__fini_array_end = .);
+    } >{{ metadata.flash_region }}
+{% endif %}
+
+    /* Used by startup to initialize data */
+    _sidata = LOADADDR(.data);
+
+    /* Initialized data (copied from flash to RAM at startup) */
+    .data :
+    {
+        . = ALIGN(4);
+        _sdata = .;        /* Start of .data in RAM */
+        *(.data)
+        *(.data*)
+{% if metadata.ram_functions %}
+        *(.RamFunc)        /* Functions in RAM */
+{% endif %}
+
+        . = ALIGN(4);
+        _edata = .;        /* End of .data in RAM */
+    } >{{ metadata.ram_region }} AT> {{ metadata.flash_region }}
+
+    /* Uninitialized data (zeroed at startup) */
+    .bss :
+    {
+        . = ALIGN(4);
+        _sbss = .;         /* Start of .bss */
+        __bss_start__ = _sbss;
+        *(.bss)
+        *(.bss*)
+        *(COMMON)
+
+        . = ALIGN(4);
+        _ebss = .;         /* End of .bss */
+        __bss_end__ = _ebss;
+    } >{{ metadata.ram_region }}
+
+{% if metadata.additional_ram_regions %}
+{% for region in metadata.additional_ram_regions %}
+    /* {{ region.description }} */
+    .{{ region.section_name }} (NOLOAD) :
+    {
+        . = ALIGN(4);
+        _s{{ region.section_name }} = .;
+        *(.{{ region.section_name }})
+        *(.{{ region.section_name }}*)
+        . = ALIGN(4);
+        _e{{ region.section_name }} = .;
+    } >{{ region.name }}
+
+{% endfor %}
+{% endif %}
+
+    /* Heap (grows upward) */
+    ._user_heap_stack :
+    {
+        . = ALIGN(8);
+        PROVIDE ( end = . );
+        PROVIDE ( _end = . );
+        . = . + _Min_Heap_Size;
+        . = . + _Min_Stack_Size;
+        . = ALIGN(8);
+    } >{{ metadata.ram_region }}
+
+    /* Remove debugging sections */
+    /DISCARD/ :
+    {
+        libc.a ( * )
+        libm.a ( * )
+        libgcc.a ( * )
+    }
+
+    /* ARM attributes */
+    .ARM.attributes 0 : { *(.ARM.attributes) }
+}

@@ -1,0 +1,306 @@
+{
+  "family": "stm32f4",
+  "vendor": "st",
+  "peripheral_name": "Clock",
+  "register_include": "hal/vendors/st/stm32f4/registers/rcc_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32f4/bitfields/rcc_bitfields.hpp",
+  "register_namespace": "alloy::hal::st::stm32f4::rcc",
+  "register_type": "RCC_Registers",
+  "platform_namespace": "alloy::hal::stm32f4",
+  "vendor_namespace": "alloy::hal::st::stm32f4",
+  "namespace_alias": "rcc",
+  "is_singleton": true,
+  "requires_clock": false,
+
+  "description": "Reset and Clock Control (RCC) for STM32F4",
+  "architecture_notes": [
+    "HSI (High Speed Internal): 16 MHz RC oscillator",
+    "HSE (High Speed External): 4-26 MHz crystal/oscillator",
+    "PLL: Up to 168 MHz (STM32F4) or 180 MHz (STM32F429)",
+    "AHB Bus: Up to 168/180 MHz",
+    "APB1 Bus: Up to 42/45 MHz (max)",
+    "APB2 Bus: Up to 84/90 MHz (max)",
+    "",
+    "Typical Clock Tree:",
+    "HSE (8 MHz) -> PLL (168 MHz) -> AHB (168 MHz) -> APB1 (42 MHz), APB2 (84 MHz)"
+  ],
+
+  "additional_enums": [
+    {
+      "name": "SystemClockSource",
+      "type": "uint8_t",
+      "description": "System Clock Source",
+      "enum_values": [
+        {"name": "HSI", "value": 0, "description": "High Speed Internal (16 MHz)"},
+        {"name": "HSE", "value": 1, "description": "High Speed External (crystal/oscillator)"},
+        {"name": "PLL", "value": 2, "description": "PLL output"}
+      ]
+    },
+    {
+      "name": "AhbPrescaler",
+      "type": "uint8_t",
+      "description": "AHB Prescaler",
+      "enum_values": [
+        {"name": "DIV_1", "value": 0, "description": "SYSCLK not divided"},
+        {"name": "DIV_2", "value": 8, "description": "SYSCLK divided by 2"},
+        {"name": "DIV_4", "value": 9, "description": "SYSCLK divided by 4"},
+        {"name": "DIV_8", "value": 10, "description": "SYSCLK divided by 8"},
+        {"name": "DIV_16", "value": 11, "description": "SYSCLK divided by 16"}
+      ]
+    },
+    {
+      "name": "ApbPrescaler",
+      "type": "uint8_t",
+      "description": "APB Prescaler (APB1 and APB2)",
+      "enum_values": [
+        {"name": "DIV_1", "value": 0, "description": "AHB not divided"},
+        {"name": "DIV_2", "value": 4, "description": "AHB divided by 2"},
+        {"name": "DIV_4", "value": 5, "description": "AHB divided by 4"},
+        {"name": "DIV_8", "value": 6, "description": "AHB divided by 8"},
+        {"name": "DIV_16", "value": 7, "description": "AHB divided by 16"}
+      ]
+    }
+  ],
+
+  "additional_structs": [
+    {
+      "name": "PllConfig",
+      "description": "PLL Configuration\\n\\nPLL_VCO = (HSE_VALUE or HSI_VALUE / PLLM) * PLLN\\nSYSCLK = PLL_VCO / PLLP\\nUSB OTG FS, SDIO = PLL_VCO / PLLQ\\n\\nFor HSE=8MHz, SYSCLK=168MHz:\\n- PLLM = 8\\n- PLLN = 336\\n- PLLP = 2\\nResult: (8MHz / 8) * 336 / 2 = 168 MHz",
+      "fields": [
+        {"name": "pllm", "type": "uint8_t", "default": "8", "description": "PLL input divider (2-63)"},
+        {"name": "plln", "type": "uint16_t", "default": "336", "description": "PLL multiplier (50-432)"},
+        {"name": "pllp", "type": "uint8_t", "default": "2", "description": "PLL output divider (2, 4, 6, 8)"},
+        {"name": "pllq", "type": "uint8_t", "default": "7", "description": "PLL USB/SDIO divider (2-15)"}
+      ]
+    }
+  ],
+
+  "config_struct": {
+    "name": "ClockConfig",
+    "description": "Complete Clock Configuration",
+    "fields": [
+      {"name": "sysclk_source", "type": "SystemClockSource", "default": "SystemClockSource::PLL", "description": "System clock source"},
+      {"name": "use_hse", "type": "bool", "default": "true", "description": "Use external crystal"},
+      {"name": "hse_freq_hz", "type": "uint32_t", "default": "8000000", "description": "HSE frequency (if used)"},
+      {"name": "pll", "type": "PllConfig", "default": "{8, 336, 2, 7}", "description": "PLL config for 168 MHz"},
+      {"name": "ahb_prescaler", "type": "AhbPrescaler", "default": "AhbPrescaler::DIV_1", "description": "AHB = 168 MHz"},
+      {"name": "apb1_prescaler", "type": "ApbPrescaler", "default": "ApbPrescaler::DIV_4", "description": "APB1 = 42 MHz"},
+      {"name": "apb2_prescaler", "type": "ApbPrescaler", "default": "ApbPrescaler::DIV_2", "description": "APB2 = 84 MHz"}
+    ]
+  },
+
+  "constants": [
+    {"name": "RCC_BASE", "type": "uint32_t", "value": "0x40023800", "constexpr": true, "description": "RCC base address"},
+    {"name": "HSI_FREQ", "type": "uint32_t", "value": "16000000", "constexpr": true, "description": "16 MHz internal oscillator"}
+  ],
+
+  "operations": {
+    "initialize": {
+      "description": "Initialize system clocks\\n\\nConfigures HSE/HSI, PLL, and bus prescalers.\\nThis should be called early in system initialization.",
+      "parameters": [
+        {"name": "config", "type": "const ClockConfig&", "description": "Clock configuration"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "static": true,
+      "implementation": "custom",
+      "steps": []
+    },
+
+    "enableAhb1Clock": {
+      "description": "Enable peripheral clock on AHB1 bus",
+      "parameters": [
+        {"name": "peripheral_bit", "type": "uint32_t", "description": "Peripheral bit position"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "static": true,
+      "steps": [
+        {
+          "check_state": "if (!s_initialized)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "auto* rcc_regs = get_rcc();\n        rcc_regs->AHB1ENR |= (1u << peripheral_bit);"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "enableApb1Clock": {
+      "description": "Enable peripheral clock on APB1 bus",
+      "parameters": [
+        {"name": "peripheral_bit", "type": "uint32_t", "description": "Peripheral bit position"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "static": true,
+      "steps": [
+        {
+          "check_state": "if (!s_initialized)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "auto* rcc_regs = get_rcc();\n        rcc_regs->APB1ENR |= (1u << peripheral_bit);"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "enableApb2Clock": {
+      "description": "Enable peripheral clock on APB2 bus",
+      "parameters": [
+        {"name": "peripheral_bit", "type": "uint32_t", "description": "Peripheral bit position"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "static": true,
+      "steps": [
+        {
+          "check_state": "if (!s_initialized)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "auto* rcc_regs = get_rcc();\n        rcc_regs->APB2ENR |= (1u << peripheral_bit);"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "getSystemClockFrequency": {
+      "description": "Get system clock frequency in Hz",
+      "parameters": [],
+      "return_type": "uint32_t",
+      "const": false,
+      "static": true,
+      "implementation": "custom",
+      "steps": []
+    },
+
+    "getAhbClockFrequency": {
+      "description": "Get AHB bus clock frequency in Hz",
+      "parameters": [],
+      "return_type": "uint32_t",
+      "const": false,
+      "static": true,
+      "implementation": "custom",
+      "steps": []
+    },
+
+    "getApb1ClockFrequency": {
+      "description": "Get APB1 bus clock frequency in Hz",
+      "parameters": [],
+      "return_type": "uint32_t",
+      "const": false,
+      "static": true,
+      "implementation": "custom",
+      "steps": []
+    },
+
+    "getApb2ClockFrequency": {
+      "description": "Get APB2 bus clock frequency in Hz",
+      "parameters": [],
+      "return_type": "uint32_t",
+      "const": false,
+      "static": true,
+      "implementation": "custom",
+      "steps": []
+    },
+
+    "isInitialized": {
+      "description": "Check if clocks are initialized",
+      "parameters": [],
+      "return_type": "bool",
+      "const": false,
+      "static": true,
+      "returns": "s_initialized",
+      "returns_type": "bool",
+      "steps": []
+    },
+
+    "getConfig": {
+      "description": "Get current clock configuration",
+      "parameters": [],
+      "return_type": "const ClockConfig&",
+      "const": false,
+      "static": true,
+      "returns": "s_config",
+      "returns_type": "const ClockConfig&",
+      "steps": []
+    }
+  },
+
+  "additional_methods": [
+    {
+      "name": "get_rcc",
+      "visibility": "private",
+      "static": true,
+      "inline": true,
+      "volatile": true,
+      "return_type": "st::stm32f4::rcc::RCC_Registers*",
+      "parameters": [],
+      "body": "#ifdef ALLOY_CLOCK_MOCK_HW\n        return ALLOY_CLOCK_MOCK_HW();\n#else\n        return reinterpret_cast<volatile st::stm32f4::rcc::RCC_Registers*>(RCC_BASE);\n#endif"
+    }
+  ],
+
+  "state_variables": [
+    {"name": "s_initialized", "type": "bool", "initial_value": "false", "inline": true, "static": true, "description": "Tracks if clocks are initialized"},
+    {"name": "s_config", "type": "ClockConfig", "initial_value": "{}", "inline": true, "static": true, "description": "Current clock configuration"}
+  ],
+
+  "predefined_configs": [
+    {
+      "name": "CLOCK_CONFIG_168MHZ",
+      "description": "Default configuration: 8 MHz HSE -> 168 MHz SYSCLK (STM32F4)",
+      "constexpr": true,
+      "fields": {
+        "sysclk_source": "SystemClockSource::PLL",
+        "use_hse": "true",
+        "hse_freq_hz": "8000000",
+        "pll": "{8, 336, 2, 7}",
+        "ahb_prescaler": "AhbPrescaler::DIV_1",
+        "apb1_prescaler": "ApbPrescaler::DIV_4",
+        "apb2_prescaler": "ApbPrescaler::DIV_2"
+      },
+      "comment": "(8MHz / 8) * 336 / 2 = 168 MHz"
+    },
+    {
+      "name": "CLOCK_CONFIG_100MHZ",
+      "description": "Conservative configuration: 8 MHz HSE -> 100 MHz SYSCLK",
+      "constexpr": true,
+      "fields": {
+        "sysclk_source": "SystemClockSource::PLL",
+        "use_hse": "true",
+        "hse_freq_hz": "8000000",
+        "pll": "{8, 200, 2, 5}",
+        "ahb_prescaler": "AhbPrescaler::DIV_1",
+        "apb1_prescaler": "ApbPrescaler::DIV_2",
+        "apb2_prescaler": "ApbPrescaler::DIV_1"
+      },
+      "comment": "(8MHz / 8) * 200 / 2 = 100 MHz"
+    },
+    {
+      "name": "CLOCK_CONFIG_16MHZ_HSI",
+      "description": "Low power configuration: 16 MHz HSI (internal RC)",
+      "constexpr": true,
+      "fields": {
+        "sysclk_source": "SystemClockSource::HSI",
+        "use_hse": "false",
+        "hse_freq_hz": "0",
+        "pll": "{8, 336, 2, 7}",
+        "ahb_prescaler": "AhbPrescaler::DIV_1",
+        "apb1_prescaler": "ApbPrescaler::DIV_1",
+        "apb2_prescaler": "ApbPrescaler::DIV_1"
+      },
+      "comment": "PLL not used"
+    }
+  ],
+
+  "custom_implementations": {
+    "initialize": "auto* rcc_regs = get_rcc();\n\n        // Save configuration\n        s_config = config;\n\n        // Step 1: Enable HSE if used\n        if (config.use_hse) {\n            rcc_regs->CR |= rcc::cr::HSEON::mask;\n\n            // Wait for HSE ready\n            uint32_t timeout = 100000;\n            while ((rcc_regs->CR & rcc::cr::HSERDY::mask) == 0 && timeout > 0) {\n                --timeout;\n            }\n            if (timeout == 0) {\n                return Err(ErrorCode::Timeout);\n            }\n        }\n\n        // Step 2: Configure PLL if needed\n        if (config.sysclk_source == SystemClockSource::PLL) {\n            // Disable PLL before configuration\n            rcc_regs->CR &= ~rcc::cr::PLLON::mask;\n\n            // Configure PLL\n            uint32_t pllcfgr = 0;\n\n            // PLL source (HSE or HSI)\n            if (config.use_hse) {\n                pllcfgr = rcc::pllcfgr::PLLSRC::set(pllcfgr);  // HSE\n            }\n\n            // PLL parameters - manually set bit fields\n            // PLLM (bits 0-5): 6 bits\n            pllcfgr |= (config.pll.pllm & 0x3F);\n\n            // PLLN (bits 6-14): 9 bits\n            pllcfgr |= ((config.pll.plln & 0x1FF) << 6);\n\n            // PLLP (bits 16-17): 2 bits, encoding: 0=/2, 1=/4, 2=/6, 3=/8\n            uint32_t pllp_value = (config.pll.pllp / 2) - 1;\n            pllcfgr |= ((pllp_value & 0x3) << 16);\n\n            // PLLQ (bits 24-27): 4 bits\n            pllcfgr |= ((config.pll.pllq & 0xF) << 24);\n\n            rcc_regs->PLLCFGR = pllcfgr;\n\n            // Enable PLL\n            rcc_regs->CR |= rcc::cr::PLLON::mask;\n\n            // Wait for PLL ready\n            uint32_t timeout = 100000;\n            while ((rcc_regs->CR & rcc::cr::PLLRDY::mask) == 0 && timeout > 0) {\n                --timeout;\n            }\n            if (timeout == 0) {\n                return Err(ErrorCode::Timeout);\n            }\n        }\n\n        // Step 3: Configure Flash latency (required before increasing frequency)\n        // This should be done based on voltage and frequency\n        // For 168 MHz @ 3.3V: 5 wait states\n        // Note: Flash registers are separate, this is simplified\n\n        // Step 4: Configure bus prescalers\n        uint32_t cfgr = rcc_regs->CFGR;\n\n        // AHB prescaler\n        cfgr = rcc::cfgr::HPRE::write(cfgr, static_cast<uint32_t>(config.ahb_prescaler));\n\n        // APB1 prescaler (low speed, max 42 MHz)\n        cfgr = rcc::cfgr::PPRE1::write(cfgr, static_cast<uint32_t>(config.apb1_prescaler));\n\n        // APB2 prescaler (high speed, max 84 MHz)\n        cfgr = rcc::cfgr::PPRE2::write(cfgr, static_cast<uint32_t>(config.apb2_prescaler));\n\n        rcc_regs->CFGR = cfgr;\n\n        // Step 5: Switch system clock source\n        cfgr = rcc_regs->CFGR;\n        // Clear SW bits (0-1) and set new value\n        cfgr &= ~0x3;\n        cfgr |= (static_cast<uint32_t>(config.sysclk_source) & 0x3);\n        rcc_regs->CFGR = cfgr;\n\n        // Wait for system clock switch\n        uint32_t timeout = 100000;\n        uint32_t expected_sws = static_cast<uint32_t>(config.sysclk_source);\n        // SWS bits are 2-3\n        while ((((rcc_regs->CFGR >> 2) & 0x3) != expected_sws) && timeout > 0) {\n            --timeout;\n        }\n        if (timeout == 0) {\n            return Err(ErrorCode::Timeout);\n        }\n\n        s_initialized = true;\n        return Ok();",
+
+    "getSystemClockFrequency": "if (!s_initialized) {\n            return 0;\n        }\n\n        uint32_t sysclk = 0;\n\n        switch (s_config.sysclk_source) {\n            case SystemClockSource::HSI:\n                sysclk = HSI_FREQ;\n                break;\n\n            case SystemClockSource::HSE:\n                sysclk = s_config.hse_freq_hz;\n                break;\n\n            case SystemClockSource::PLL: {\n                // PLL_VCO = (HSE_VALUE or HSI_VALUE / PLLM) * PLLN\n                // SYSCLK = PLL_VCO / PLLP\n                uint32_t pll_source = s_config.use_hse ? s_config.hse_freq_hz : HSI_FREQ;\n                uint32_t pll_vco = (pll_source / s_config.pll.pllm) * s_config.pll.plln;\n                sysclk = pll_vco / s_config.pll.pllp;\n                break;\n            }\n        }\n\n        return sysclk;",
+
+    "getAhbClockFrequency": "uint32_t sysclk = getSystemClockFrequency();\n\n        // Apply AHB prescaler\n        uint32_t ahb_div = 1;\n        if (static_cast<uint8_t>(s_config.ahb_prescaler) >= 8) {\n            ahb_div = 1u << (static_cast<uint8_t>(s_config.ahb_prescaler) - 7);\n        }\n\n        return sysclk / ahb_div;",
+
+    "getApb1ClockFrequency": "uint32_t ahb_freq = getAhbClockFrequency();\n\n        // Apply APB1 prescaler\n        uint32_t apb1_div = 1;\n        if (static_cast<uint8_t>(s_config.apb1_prescaler) >= 4) {\n            apb1_div = 1u << (static_cast<uint8_t>(s_config.apb1_prescaler) - 3);\n        }\n\n        return ahb_freq / apb1_div;",
+
+    "getApb2ClockFrequency": "uint32_t ahb_freq = getAhbClockFrequency();\n\n        // Apply APB2 prescaler\n        uint32_t apb2_div = 1;\n        if (static_cast<uint8_t>(s_config.apb2_prescaler) >= 4) {\n            apb2_div = 1u << (static_cast<uint8_t>(s_config.apb2_prescaler) - 3);\n        }\n\n        return ahb_freq / apb2_div;"
+  }
+}

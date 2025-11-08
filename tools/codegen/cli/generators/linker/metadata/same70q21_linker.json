@@ -1,0 +1,47 @@
+{
+  "family": "same70",
+  "vendor": "atmel",
+  "mcu_name": "ATSAME70Q21",
+  "board_name": "Atmel SAME70 Xplained",
+  "core": "cortex-m7",
+  "entry_point": "Reset_Handler",
+
+  "features": [
+    "ARM Cortex-M7 @ 300MHz",
+    "2MB Flash",
+    "384KB SRAM",
+    "FPU (double precision)",
+    "DSP instructions",
+    "Cache (I-Cache and D-Cache)"
+  ],
+
+  "memory_regions": [
+    {
+      "name": "FLASH",
+      "permissions": "rx",
+      "origin": "0x00400000",
+      "size_kb": 2048,
+      "description": "2MB"
+    },
+    {
+      "name": "RAM",
+      "permissions": "rwx",
+      "origin": "0x20400000",
+      "size_kb": 384,
+      "description": "SRAM - starts at 0x20400000!"
+    }
+  ],
+
+  "flash_region": "FLASH",
+  "ram_region": "RAM",
+  "stack_region": "RAM",
+
+  "min_heap_size": "0x2000",
+  "min_stack_size": "0x2000",
+
+  "support_cpp": true,
+  "support_exceptions": true,
+  "ram_functions": true,
+
+  "additional_ram_regions": []
+}

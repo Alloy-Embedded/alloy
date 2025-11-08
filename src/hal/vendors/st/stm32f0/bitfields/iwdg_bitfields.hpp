@@ -39,8 +39,7 @@ namespace pr {
 
 /// RLR - Reload register
 namespace rlr {
-    /// Watchdog counter reload
-              value
+    /// Watchdog counter reload value
     /// Position: 0, Width: 12
     using RL = BitField<0, 12>;
     constexpr uint32_t RL_Pos = 0;
@@ -50,22 +49,19 @@ namespace rlr {
 
 /// SR - Status register
 namespace sr {
-    /// Watchdog prescaler value
-              update
+    /// Watchdog prescaler value update
     /// Position: 0, Width: 1
     using PVU = BitField<0, 1>;
     constexpr uint32_t PVU_Pos = 0;
     constexpr uint32_t PVU_Msk = PVU::mask;
 
-    /// Watchdog counter reload value
-              update
+    /// Watchdog counter reload value update
     /// Position: 1, Width: 1
     using RVU = BitField<1, 1>;
     constexpr uint32_t RVU_Pos = 1;
     constexpr uint32_t RVU_Msk = RVU::mask;
 
-    /// Watchdog counter window value
-              update
+    /// Watchdog counter window value update
     /// Position: 2, Width: 1
     using WVU = BitField<2, 1>;
     constexpr uint32_t WVU_Pos = 2;
@@ -75,8 +71,7 @@ namespace sr {
 
 /// WINR - Window register
 namespace winr {
-    /// Watchdog counter window
-              value
+    /// Watchdog counter window value
     /// Position: 0, Width: 12
     using WIN = BitField<0, 12>;
     constexpr uint32_t WIN_Pos = 0;

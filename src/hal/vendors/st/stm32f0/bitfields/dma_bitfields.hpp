@@ -17,200 +17,171 @@ using namespace alloy::hal::bitfields;
 // DMA Bit Field Definitions
 // ============================================================================
 
-/// ISR - DMA interrupt status register
-          (DMA_ISR)
+/// ISR - DMA interrupt status register (DMA_ISR)
 namespace isr {
-    /// Channel 1 Global interrupt
-              flag
+    /// Channel 1 Global interrupt flag
     /// Position: 0, Width: 1
     using GIF1 = BitField<0, 1>;
     constexpr uint32_t GIF1_Pos = 0;
     constexpr uint32_t GIF1_Msk = GIF1::mask;
 
-    /// Channel 1 Transfer Complete
-              flag
+    /// Channel 1 Transfer Complete flag
     /// Position: 1, Width: 1
     using TCIF1 = BitField<1, 1>;
     constexpr uint32_t TCIF1_Pos = 1;
     constexpr uint32_t TCIF1_Msk = TCIF1::mask;
 
-    /// Channel 1 Half Transfer Complete
-              flag
+    /// Channel 1 Half Transfer Complete flag
     /// Position: 2, Width: 1
     using HTIF1 = BitField<2, 1>;
     constexpr uint32_t HTIF1_Pos = 2;
     constexpr uint32_t HTIF1_Msk = HTIF1::mask;
 
-    /// Channel 1 Transfer Error
-              flag
+    /// Channel 1 Transfer Error flag
     /// Position: 3, Width: 1
     using TEIF1 = BitField<3, 1>;
     constexpr uint32_t TEIF1_Pos = 3;
     constexpr uint32_t TEIF1_Msk = TEIF1::mask;
 
-    /// Channel 2 Global interrupt
-              flag
+    /// Channel 2 Global interrupt flag
     /// Position: 4, Width: 1
     using GIF2 = BitField<4, 1>;
     constexpr uint32_t GIF2_Pos = 4;
     constexpr uint32_t GIF2_Msk = GIF2::mask;
 
-    /// Channel 2 Transfer Complete
-              flag
+    /// Channel 2 Transfer Complete flag
     /// Position: 5, Width: 1
     using TCIF2 = BitField<5, 1>;
     constexpr uint32_t TCIF2_Pos = 5;
     constexpr uint32_t TCIF2_Msk = TCIF2::mask;
 
-    /// Channel 2 Half Transfer Complete
-              flag
+    /// Channel 2 Half Transfer Complete flag
     /// Position: 6, Width: 1
     using HTIF2 = BitField<6, 1>;
     constexpr uint32_t HTIF2_Pos = 6;
     constexpr uint32_t HTIF2_Msk = HTIF2::mask;
 
-    /// Channel 2 Transfer Error
-              flag
+    /// Channel 2 Transfer Error flag
     /// Position: 7, Width: 1
     using TEIF2 = BitField<7, 1>;
     constexpr uint32_t TEIF2_Pos = 7;
     constexpr uint32_t TEIF2_Msk = TEIF2::mask;
 
-    /// Channel 3 Global interrupt
-              flag
+    /// Channel 3 Global interrupt flag
     /// Position: 8, Width: 1
     using GIF3 = BitField<8, 1>;
     constexpr uint32_t GIF3_Pos = 8;
     constexpr uint32_t GIF3_Msk = GIF3::mask;
 
-    /// Channel 3 Transfer Complete
-              flag
+    /// Channel 3 Transfer Complete flag
     /// Position: 9, Width: 1
     using TCIF3 = BitField<9, 1>;
     constexpr uint32_t TCIF3_Pos = 9;
     constexpr uint32_t TCIF3_Msk = TCIF3::mask;
 
-    /// Channel 3 Half Transfer Complete
-              flag
+    /// Channel 3 Half Transfer Complete flag
     /// Position: 10, Width: 1
     using HTIF3 = BitField<10, 1>;
     constexpr uint32_t HTIF3_Pos = 10;
     constexpr uint32_t HTIF3_Msk = HTIF3::mask;
 
-    /// Channel 3 Transfer Error
-              flag
+    /// Channel 3 Transfer Error flag
     /// Position: 11, Width: 1
     using TEIF3 = BitField<11, 1>;
     constexpr uint32_t TEIF3_Pos = 11;
     constexpr uint32_t TEIF3_Msk = TEIF3::mask;
 
-    /// Channel 4 Global interrupt
-              flag
+    /// Channel 4 Global interrupt flag
     /// Position: 12, Width: 1
     using GIF4 = BitField<12, 1>;
     constexpr uint32_t GIF4_Pos = 12;
     constexpr uint32_t GIF4_Msk = GIF4::mask;
 
-    /// Channel 4 Transfer Complete
-              flag
+    /// Channel 4 Transfer Complete flag
     /// Position: 13, Width: 1
     using TCIF4 = BitField<13, 1>;
     constexpr uint32_t TCIF4_Pos = 13;
     constexpr uint32_t TCIF4_Msk = TCIF4::mask;
 
-    /// Channel 4 Half Transfer Complete
-              flag
+    /// Channel 4 Half Transfer Complete flag
     /// Position: 14, Width: 1
     using HTIF4 = BitField<14, 1>;
     constexpr uint32_t HTIF4_Pos = 14;
     constexpr uint32_t HTIF4_Msk = HTIF4::mask;
 
-    /// Channel 4 Transfer Error
-              flag
+    /// Channel 4 Transfer Error flag
     /// Position: 15, Width: 1
     using TEIF4 = BitField<15, 1>;
     constexpr uint32_t TEIF4_Pos = 15;
     constexpr uint32_t TEIF4_Msk = TEIF4::mask;
 
-    /// Channel 5 Global interrupt
-              flag
+    /// Channel 5 Global interrupt flag
     /// Position: 16, Width: 1
     using GIF5 = BitField<16, 1>;
     constexpr uint32_t GIF5_Pos = 16;
     constexpr uint32_t GIF5_Msk = GIF5::mask;
 
-    /// Channel 5 Transfer Complete
-              flag
+    /// Channel 5 Transfer Complete flag
     /// Position: 17, Width: 1
     using TCIF5 = BitField<17, 1>;
     constexpr uint32_t TCIF5_Pos = 17;
     constexpr uint32_t TCIF5_Msk = TCIF5::mask;
 
-    /// Channel 5 Half Transfer Complete
-              flag
+    /// Channel 5 Half Transfer Complete flag
     /// Position: 18, Width: 1
     using HTIF5 = BitField<18, 1>;
     constexpr uint32_t HTIF5_Pos = 18;
     constexpr uint32_t HTIF5_Msk = HTIF5::mask;
 
-    /// Channel 5 Transfer Error
-              flag
+    /// Channel 5 Transfer Error flag
     /// Position: 19, Width: 1
     using TEIF5 = BitField<19, 1>;
     constexpr uint32_t TEIF5_Pos = 19;
     constexpr uint32_t TEIF5_Msk = TEIF5::mask;
 
-    /// Channel 6 Global interrupt
-              flag
+    /// Channel 6 Global interrupt flag
     /// Position: 20, Width: 1
     using GIF6 = BitField<20, 1>;
     constexpr uint32_t GIF6_Pos = 20;
     constexpr uint32_t GIF6_Msk = GIF6::mask;
 
-    /// Channel 6 Transfer Complete
-              flag
+    /// Channel 6 Transfer Complete flag
     /// Position: 21, Width: 1
     using TCIF6 = BitField<21, 1>;
     constexpr uint32_t TCIF6_Pos = 21;
     constexpr uint32_t TCIF6_Msk = TCIF6::mask;
 
-    /// Channel 6 Half Transfer Complete
-              flag
+    /// Channel 6 Half Transfer Complete flag
     /// Position: 22, Width: 1
     using HTIF6 = BitField<22, 1>;
     constexpr uint32_t HTIF6_Pos = 22;
     constexpr uint32_t HTIF6_Msk = HTIF6::mask;
 
-    /// Channel 6 Transfer Error
-              flag
+    /// Channel 6 Transfer Error flag
     /// Position: 23, Width: 1
     using TEIF6 = BitField<23, 1>;
     constexpr uint32_t TEIF6_Pos = 23;
     constexpr uint32_t TEIF6_Msk = TEIF6::mask;
 
-    /// Channel 7 Global interrupt
-              flag
+    /// Channel 7 Global interrupt flag
     /// Position: 24, Width: 1
     using GIF7 = BitField<24, 1>;
     constexpr uint32_t GIF7_Pos = 24;
     constexpr uint32_t GIF7_Msk = GIF7::mask;
 
-    /// Channel 7 Transfer Complete
-              flag
+    /// Channel 7 Transfer Complete flag
     /// Position: 25, Width: 1
     using TCIF7 = BitField<25, 1>;
     constexpr uint32_t TCIF7_Pos = 25;
     constexpr uint32_t TCIF7_Msk = TCIF7::mask;
 
-    /// Channel 7 Half Transfer Complete
-              flag
+    /// Channel 7 Half Transfer Complete flag
     /// Position: 26, Width: 1
     using HTIF7 = BitField<26, 1>;
     constexpr uint32_t HTIF7_Pos = 26;
     constexpr uint32_t HTIF7_Msk = HTIF7::mask;
 
-    /// Channel 7 Transfer Error
-              flag
+    /// Channel 7 Transfer Error flag
     /// Position: 27, Width: 1
     using TEIF7 = BitField<27, 1>;
     constexpr uint32_t TEIF7_Pos = 27;
@@ -218,200 +189,171 @@ namespace isr {
 
 }  // namespace isr
 
-/// IFCR - DMA interrupt flag clear register
-          (DMA_IFCR)
+/// IFCR - DMA interrupt flag clear register (DMA_IFCR)
 namespace ifcr {
-    /// Channel 1 Global interrupt
-              clear
+    /// Channel 1 Global interrupt clear
     /// Position: 0, Width: 1
     using CGIF1 = BitField<0, 1>;
     constexpr uint32_t CGIF1_Pos = 0;
     constexpr uint32_t CGIF1_Msk = CGIF1::mask;
 
-    /// Channel 1 Transfer Complete
-              clear
+    /// Channel 1 Transfer Complete clear
     /// Position: 1, Width: 1
     using CTCIF1 = BitField<1, 1>;
     constexpr uint32_t CTCIF1_Pos = 1;
     constexpr uint32_t CTCIF1_Msk = CTCIF1::mask;
 
-    /// Channel 1 Half Transfer
-              clear
+    /// Channel 1 Half Transfer clear
     /// Position: 2, Width: 1
     using CHTIF1 = BitField<2, 1>;
     constexpr uint32_t CHTIF1_Pos = 2;
     constexpr uint32_t CHTIF1_Msk = CHTIF1::mask;
 
-    /// Channel 1 Transfer Error
-              clear
+    /// Channel 1 Transfer Error clear
     /// Position: 3, Width: 1
     using CTEIF1 = BitField<3, 1>;
     constexpr uint32_t CTEIF1_Pos = 3;
     constexpr uint32_t CTEIF1_Msk = CTEIF1::mask;
 
-    /// Channel 2 Global interrupt
-              clear
+    /// Channel 2 Global interrupt clear
     /// Position: 4, Width: 1
     using CGIF2 = BitField<4, 1>;
     constexpr uint32_t CGIF2_Pos = 4;
     constexpr uint32_t CGIF2_Msk = CGIF2::mask;
 
-    /// Channel 2 Transfer Complete
-              clear
+    /// Channel 2 Transfer Complete clear
     /// Position: 5, Width: 1
     using CTCIF2 = BitField<5, 1>;
     constexpr uint32_t CTCIF2_Pos = 5;
     constexpr uint32_t CTCIF2_Msk = CTCIF2::mask;
 
-    /// Channel 2 Half Transfer
-              clear
+    /// Channel 2 Half Transfer clear
     /// Position: 6, Width: 1
     using CHTIF2 = BitField<6, 1>;
     constexpr uint32_t CHTIF2_Pos = 6;
     constexpr uint32_t CHTIF2_Msk = CHTIF2::mask;
 
-    /// Channel 2 Transfer Error
-              clear
+    /// Channel 2 Transfer Error clear
     /// Position: 7, Width: 1
     using CTEIF2 = BitField<7, 1>;
     constexpr uint32_t CTEIF2_Pos = 7;
     constexpr uint32_t CTEIF2_Msk = CTEIF2::mask;
 
-    /// Channel 3 Global interrupt
-              clear
+    /// Channel 3 Global interrupt clear
     /// Position: 8, Width: 1
     using CGIF3 = BitField<8, 1>;
     constexpr uint32_t CGIF3_Pos = 8;
     constexpr uint32_t CGIF3_Msk = CGIF3::mask;
 
-    /// Channel 3 Transfer Complete
-              clear
+    /// Channel 3 Transfer Complete clear
     /// Position: 9, Width: 1
     using CTCIF3 = BitField<9, 1>;
     constexpr uint32_t CTCIF3_Pos = 9;
     constexpr uint32_t CTCIF3_Msk = CTCIF3::mask;
 
-    /// Channel 3 Half Transfer
-              clear
+    /// Channel 3 Half Transfer clear
     /// Position: 10, Width: 1
     using CHTIF3 = BitField<10, 1>;
     constexpr uint32_t CHTIF3_Pos = 10;
     constexpr uint32_t CHTIF3_Msk = CHTIF3::mask;
 
-    /// Channel 3 Transfer Error
-              clear
+    /// Channel 3 Transfer Error clear
     /// Position: 11, Width: 1
     using CTEIF3 = BitField<11, 1>;
     constexpr uint32_t CTEIF3_Pos = 11;
     constexpr uint32_t CTEIF3_Msk = CTEIF3::mask;
 
-    /// Channel 4 Global interrupt
-              clear
+    /// Channel 4 Global interrupt clear
     /// Position: 12, Width: 1
     using CGIF4 = BitField<12, 1>;
     constexpr uint32_t CGIF4_Pos = 12;
     constexpr uint32_t CGIF4_Msk = CGIF4::mask;
 
-    /// Channel 4 Transfer Complete
-              clear
+    /// Channel 4 Transfer Complete clear
     /// Position: 13, Width: 1
     using CTCIF4 = BitField<13, 1>;
     constexpr uint32_t CTCIF4_Pos = 13;
     constexpr uint32_t CTCIF4_Msk = CTCIF4::mask;
 
-    /// Channel 4 Half Transfer
-              clear
+    /// Channel 4 Half Transfer clear
     /// Position: 14, Width: 1
     using CHTIF4 = BitField<14, 1>;
     constexpr uint32_t CHTIF4_Pos = 14;
     constexpr uint32_t CHTIF4_Msk = CHTIF4::mask;
 
-    /// Channel 4 Transfer Error
-              clear
+    /// Channel 4 Transfer Error clear
     /// Position: 15, Width: 1
     using CTEIF4 = BitField<15, 1>;
     constexpr uint32_t CTEIF4_Pos = 15;
     constexpr uint32_t CTEIF4_Msk = CTEIF4::mask;
 
-    /// Channel 5 Global interrupt
-              clear
+    /// Channel 5 Global interrupt clear
     /// Position: 16, Width: 1
     using CGIF5 = BitField<16, 1>;
     constexpr uint32_t CGIF5_Pos = 16;
     constexpr uint32_t CGIF5_Msk = CGIF5::mask;
 
-    /// Channel 5 Transfer Complete
-              clear
+    /// Channel 5 Transfer Complete clear
     /// Position: 17, Width: 1
     using CTCIF5 = BitField<17, 1>;
     constexpr uint32_t CTCIF5_Pos = 17;
     constexpr uint32_t CTCIF5_Msk = CTCIF5::mask;
 
-    /// Channel 5 Half Transfer
-              clear
+    /// Channel 5 Half Transfer clear
     /// Position: 18, Width: 1
     using CHTIF5 = BitField<18, 1>;
     constexpr uint32_t CHTIF5_Pos = 18;
     constexpr uint32_t CHTIF5_Msk = CHTIF5::mask;
 
-    /// Channel 5 Transfer Error
-              clear
+    /// Channel 5 Transfer Error clear
     /// Position: 19, Width: 1
     using CTEIF5 = BitField<19, 1>;
     constexpr uint32_t CTEIF5_Pos = 19;
     constexpr uint32_t CTEIF5_Msk = CTEIF5::mask;
 
-    /// Channel 6 Global interrupt
-              clear
+    /// Channel 6 Global interrupt clear
     /// Position: 20, Width: 1
     using CGIF6 = BitField<20, 1>;
     constexpr uint32_t CGIF6_Pos = 20;
     constexpr uint32_t CGIF6_Msk = CGIF6::mask;
 
-    /// Channel 6 Transfer Complete
-              clear
+    /// Channel 6 Transfer Complete clear
     /// Position: 21, Width: 1
     using CTCIF6 = BitField<21, 1>;
     constexpr uint32_t CTCIF6_Pos = 21;
     constexpr uint32_t CTCIF6_Msk = CTCIF6::mask;
 
-    /// Channel 6 Half Transfer
-              clear
+    /// Channel 6 Half Transfer clear
     /// Position: 22, Width: 1
     using CHTIF6 = BitField<22, 1>;
     constexpr uint32_t CHTIF6_Pos = 22;
     constexpr uint32_t CHTIF6_Msk = CHTIF6::mask;
 
-    /// Channel 6 Transfer Error
-              clear
+    /// Channel 6 Transfer Error clear
     /// Position: 23, Width: 1
     using CTEIF6 = BitField<23, 1>;
     constexpr uint32_t CTEIF6_Pos = 23;
     constexpr uint32_t CTEIF6_Msk = CTEIF6::mask;
 
-    /// Channel 7 Global interrupt
-              clear
+    /// Channel 7 Global interrupt clear
     /// Position: 24, Width: 1
     using CGIF7 = BitField<24, 1>;
     constexpr uint32_t CGIF7_Pos = 24;
     constexpr uint32_t CGIF7_Msk = CGIF7::mask;
 
-    /// Channel 7 Transfer Complete
-              clear
+    /// Channel 7 Transfer Complete clear
     /// Position: 25, Width: 1
     using CTCIF7 = BitField<25, 1>;
     constexpr uint32_t CTCIF7_Pos = 25;
     constexpr uint32_t CTCIF7_Msk = CTCIF7::mask;
 
-    /// Channel 7 Half Transfer
-              clear
+    /// Channel 7 Half Transfer clear
     /// Position: 26, Width: 1
     using CHTIF7 = BitField<26, 1>;
     constexpr uint32_t CHTIF7_Pos = 26;
     constexpr uint32_t CHTIF7_Msk = CHTIF7::mask;
 
-    /// Channel 7 Transfer Error
-              clear
+    /// Channel 7 Transfer Error clear
     /// Position: 27, Width: 1
     using CTEIF7 = BitField<27, 1>;
     constexpr uint32_t CTEIF7_Pos = 27;
@@ -419,8 +361,7 @@ namespace ifcr {
 
 }  // namespace ifcr
 
-/// CCR1 - DMA channel configuration register
-          (DMA_CCR)
+/// CCR1 - DMA channel configuration register (DMA_CCR)
 namespace ccr1 {
     /// Channel enable
     /// Position: 0, Width: 1
@@ -428,22 +369,19 @@ namespace ccr1 {
     constexpr uint32_t EN_Pos = 0;
     constexpr uint32_t EN_Msk = EN::mask;
 
-    /// Transfer complete interrupt
-              enable
+    /// Transfer complete interrupt enable
     /// Position: 1, Width: 1
     using TCIE = BitField<1, 1>;
     constexpr uint32_t TCIE_Pos = 1;
     constexpr uint32_t TCIE_Msk = TCIE::mask;
 
-    /// Half Transfer interrupt
-              enable
+    /// Half Transfer interrupt enable
     /// Position: 2, Width: 1
     using HTIE = BitField<2, 1>;
     constexpr uint32_t HTIE_Pos = 2;
     constexpr uint32_t HTIE_Msk = HTIE::mask;
 
-    /// Transfer error interrupt
-              enable
+    /// Transfer error interrupt enable
     /// Position: 3, Width: 1
     using TEIE = BitField<3, 1>;
     constexpr uint32_t TEIE_Pos = 3;
@@ -499,8 +437,7 @@ namespace ccr1 {
 
 }  // namespace ccr1
 
-/// CNDTR1 - DMA channel 1 number of data
-          register
+/// CNDTR1 - DMA channel 1 number of data register
 namespace cndtr1 {
     /// Number of data to transfer
     /// Position: 0, Width: 16
@@ -510,8 +447,7 @@ namespace cndtr1 {
 
 }  // namespace cndtr1
 
-/// CPAR1 - DMA channel 1 peripheral address
-          register
+/// CPAR1 - DMA channel 1 peripheral address register
 namespace cpar1 {
     /// Peripheral address
     /// Position: 0, Width: 32
@@ -521,8 +457,7 @@ namespace cpar1 {
 
 }  // namespace cpar1
 
-/// CMAR1 - DMA channel 1 memory address
-          register
+/// CMAR1 - DMA channel 1 memory address register
 namespace cmar1 {
     /// Memory address
     /// Position: 0, Width: 32
@@ -532,8 +467,7 @@ namespace cmar1 {
 
 }  // namespace cmar1
 
-/// CCR2 - DMA channel configuration register
-          (DMA_CCR)
+/// CCR2 - DMA channel configuration register (DMA_CCR)
 namespace ccr2 {
     /// Channel enable
     /// Position: 0, Width: 1
@@ -541,22 +475,19 @@ namespace ccr2 {
     constexpr uint32_t EN_Pos = 0;
     constexpr uint32_t EN_Msk = EN::mask;
 
-    /// Transfer complete interrupt
-              enable
+    /// Transfer complete interrupt enable
     /// Position: 1, Width: 1
     using TCIE = BitField<1, 1>;
     constexpr uint32_t TCIE_Pos = 1;
     constexpr uint32_t TCIE_Msk = TCIE::mask;
 
-    /// Half Transfer interrupt
-              enable
+    /// Half Transfer interrupt enable
     /// Position: 2, Width: 1
     using HTIE = BitField<2, 1>;
     constexpr uint32_t HTIE_Pos = 2;
     constexpr uint32_t HTIE_Msk = HTIE::mask;
 
-    /// Transfer error interrupt
-              enable
+    /// Transfer error interrupt enable
     /// Position: 3, Width: 1
     using TEIE = BitField<3, 1>;
     constexpr uint32_t TEIE_Pos = 3;
@@ -612,8 +543,7 @@ namespace ccr2 {
 
 }  // namespace ccr2
 
-/// CNDTR2 - DMA channel 2 number of data
-          register
+/// CNDTR2 - DMA channel 2 number of data register
 namespace cndtr2 {
     /// Number of data to transfer
     /// Position: 0, Width: 16
@@ -623,8 +553,7 @@ namespace cndtr2 {
 
 }  // namespace cndtr2
 
-/// CPAR2 - DMA channel 2 peripheral address
-          register
+/// CPAR2 - DMA channel 2 peripheral address register
 namespace cpar2 {
     /// Peripheral address
     /// Position: 0, Width: 32
@@ -634,8 +563,7 @@ namespace cpar2 {
 
 }  // namespace cpar2
 
-/// CMAR2 - DMA channel 2 memory address
-          register
+/// CMAR2 - DMA channel 2 memory address register
 namespace cmar2 {
     /// Memory address
     /// Position: 0, Width: 32
@@ -645,8 +573,7 @@ namespace cmar2 {
 
 }  // namespace cmar2
 
-/// CCR3 - DMA channel configuration register
-          (DMA_CCR)
+/// CCR3 - DMA channel configuration register (DMA_CCR)
 namespace ccr3 {
     /// Channel enable
     /// Position: 0, Width: 1
@@ -654,22 +581,19 @@ namespace ccr3 {
     constexpr uint32_t EN_Pos = 0;
     constexpr uint32_t EN_Msk = EN::mask;
 
-    /// Transfer complete interrupt
-              enable
+    /// Transfer complete interrupt enable
     /// Position: 1, Width: 1
     using TCIE = BitField<1, 1>;
     constexpr uint32_t TCIE_Pos = 1;
     constexpr uint32_t TCIE_Msk = TCIE::mask;
 
-    /// Half Transfer interrupt
-              enable
+    /// Half Transfer interrupt enable
     /// Position: 2, Width: 1
     using HTIE = BitField<2, 1>;
     constexpr uint32_t HTIE_Pos = 2;
     constexpr uint32_t HTIE_Msk = HTIE::mask;
 
-    /// Transfer error interrupt
-              enable
+    /// Transfer error interrupt enable
     /// Position: 3, Width: 1
     using TEIE = BitField<3, 1>;
     constexpr uint32_t TEIE_Pos = 3;
@@ -725,8 +649,7 @@ namespace ccr3 {
 
 }  // namespace ccr3
 
-/// CNDTR3 - DMA channel 3 number of data
-          register
+/// CNDTR3 - DMA channel 3 number of data register
 namespace cndtr3 {
     /// Number of data to transfer
     /// Position: 0, Width: 16
@@ -736,8 +659,7 @@ namespace cndtr3 {
 
 }  // namespace cndtr3
 
-/// CPAR3 - DMA channel 3 peripheral address
-          register
+/// CPAR3 - DMA channel 3 peripheral address register
 namespace cpar3 {
     /// Peripheral address
     /// Position: 0, Width: 32
@@ -747,8 +669,7 @@ namespace cpar3 {
 
 }  // namespace cpar3
 
-/// CMAR3 - DMA channel 3 memory address
-          register
+/// CMAR3 - DMA channel 3 memory address register
 namespace cmar3 {
     /// Memory address
     /// Position: 0, Width: 32
@@ -758,8 +679,7 @@ namespace cmar3 {
 
 }  // namespace cmar3
 
-/// CCR4 - DMA channel configuration register
-          (DMA_CCR)
+/// CCR4 - DMA channel configuration register (DMA_CCR)
 namespace ccr4 {
     /// Channel enable
     /// Position: 0, Width: 1
@@ -767,22 +687,19 @@ namespace ccr4 {
     constexpr uint32_t EN_Pos = 0;
     constexpr uint32_t EN_Msk = EN::mask;
 
-    /// Transfer complete interrupt
-              enable
+    /// Transfer complete interrupt enable
     /// Position: 1, Width: 1
     using TCIE = BitField<1, 1>;
     constexpr uint32_t TCIE_Pos = 1;
     constexpr uint32_t TCIE_Msk = TCIE::mask;
 
-    /// Half Transfer interrupt
-              enable
+    /// Half Transfer interrupt enable
     /// Position: 2, Width: 1
     using HTIE = BitField<2, 1>;
     constexpr uint32_t HTIE_Pos = 2;
     constexpr uint32_t HTIE_Msk = HTIE::mask;
 
-    /// Transfer error interrupt
-              enable
+    /// Transfer error interrupt enable
     /// Position: 3, Width: 1
     using TEIE = BitField<3, 1>;
     constexpr uint32_t TEIE_Pos = 3;
@@ -838,8 +755,7 @@ namespace ccr4 {
 
 }  // namespace ccr4
 
-/// CNDTR4 - DMA channel 4 number of data
-          register
+/// CNDTR4 - DMA channel 4 number of data register
 namespace cndtr4 {
     /// Number of data to transfer
     /// Position: 0, Width: 16
@@ -849,8 +765,7 @@ namespace cndtr4 {
 
 }  // namespace cndtr4
 
-/// CPAR4 - DMA channel 4 peripheral address
-          register
+/// CPAR4 - DMA channel 4 peripheral address register
 namespace cpar4 {
     /// Peripheral address
     /// Position: 0, Width: 32
@@ -860,8 +775,7 @@ namespace cpar4 {
 
 }  // namespace cpar4
 
-/// CMAR4 - DMA channel 4 memory address
-          register
+/// CMAR4 - DMA channel 4 memory address register
 namespace cmar4 {
     /// Memory address
     /// Position: 0, Width: 32
@@ -871,8 +785,7 @@ namespace cmar4 {
 
 }  // namespace cmar4
 
-/// CCR5 - DMA channel configuration register
-          (DMA_CCR)
+/// CCR5 - DMA channel configuration register (DMA_CCR)
 namespace ccr5 {
     /// Channel enable
     /// Position: 0, Width: 1
@@ -880,22 +793,19 @@ namespace ccr5 {
     constexpr uint32_t EN_Pos = 0;
     constexpr uint32_t EN_Msk = EN::mask;
 
-    /// Transfer complete interrupt
-              enable
+    /// Transfer complete interrupt enable
     /// Position: 1, Width: 1
     using TCIE = BitField<1, 1>;
     constexpr uint32_t TCIE_Pos = 1;
     constexpr uint32_t TCIE_Msk = TCIE::mask;
 
-    /// Half Transfer interrupt
-              enable
+    /// Half Transfer interrupt enable
     /// Position: 2, Width: 1
     using HTIE = BitField<2, 1>;
     constexpr uint32_t HTIE_Pos = 2;
     constexpr uint32_t HTIE_Msk = HTIE::mask;
 
-    /// Transfer error interrupt
-              enable
+    /// Transfer error interrupt enable
     /// Position: 3, Width: 1
     using TEIE = BitField<3, 1>;
     constexpr uint32_t TEIE_Pos = 3;
@@ -951,8 +861,7 @@ namespace ccr5 {
 
 }  // namespace ccr5
 
-/// CNDTR5 - DMA channel 5 number of data
-          register
+/// CNDTR5 - DMA channel 5 number of data register
 namespace cndtr5 {
     /// Number of data to transfer
     /// Position: 0, Width: 16
@@ -962,8 +871,7 @@ namespace cndtr5 {
 
 }  // namespace cndtr5
 
-/// CPAR5 - DMA channel 5 peripheral address
-          register
+/// CPAR5 - DMA channel 5 peripheral address register
 namespace cpar5 {
     /// Peripheral address
     /// Position: 0, Width: 32
@@ -973,8 +881,7 @@ namespace cpar5 {
 
 }  // namespace cpar5
 
-/// CMAR5 - DMA channel 5 memory address
-          register
+/// CMAR5 - DMA channel 5 memory address register
 namespace cmar5 {
     /// Memory address
     /// Position: 0, Width: 32
@@ -984,8 +891,7 @@ namespace cmar5 {
 
 }  // namespace cmar5
 
-/// CCR6 - DMA channel configuration register
-          (DMA_CCR)
+/// CCR6 - DMA channel configuration register (DMA_CCR)
 namespace ccr6 {
     /// Channel enable
     /// Position: 0, Width: 1
@@ -993,22 +899,19 @@ namespace ccr6 {
     constexpr uint32_t EN_Pos = 0;
     constexpr uint32_t EN_Msk = EN::mask;
 
-    /// Transfer complete interrupt
-              enable
+    /// Transfer complete interrupt enable
     /// Position: 1, Width: 1
     using TCIE = BitField<1, 1>;
     constexpr uint32_t TCIE_Pos = 1;
     constexpr uint32_t TCIE_Msk = TCIE::mask;
 
-    /// Half Transfer interrupt
-              enable
+    /// Half Transfer interrupt enable
     /// Position: 2, Width: 1
     using HTIE = BitField<2, 1>;
     constexpr uint32_t HTIE_Pos = 2;
     constexpr uint32_t HTIE_Msk = HTIE::mask;
 
-    /// Transfer error interrupt
-              enable
+    /// Transfer error interrupt enable
     /// Position: 3, Width: 1
     using TEIE = BitField<3, 1>;
     constexpr uint32_t TEIE_Pos = 3;
@@ -1064,8 +967,7 @@ namespace ccr6 {
 
 }  // namespace ccr6
 
-/// CNDTR6 - DMA channel 6 number of data
-          register
+/// CNDTR6 - DMA channel 6 number of data register
 namespace cndtr6 {
     /// Number of data to transfer
     /// Position: 0, Width: 16
@@ -1075,8 +977,7 @@ namespace cndtr6 {
 
 }  // namespace cndtr6
 
-/// CPAR6 - DMA channel 6 peripheral address
-          register
+/// CPAR6 - DMA channel 6 peripheral address register
 namespace cpar6 {
     /// Peripheral address
     /// Position: 0, Width: 32
@@ -1086,8 +987,7 @@ namespace cpar6 {
 
 }  // namespace cpar6
 
-/// CMAR6 - DMA channel 6 memory address
-          register
+/// CMAR6 - DMA channel 6 memory address register
 namespace cmar6 {
     /// Memory address
     /// Position: 0, Width: 32
@@ -1097,8 +997,7 @@ namespace cmar6 {
 
 }  // namespace cmar6
 
-/// CCR7 - DMA channel configuration register
-          (DMA_CCR)
+/// CCR7 - DMA channel configuration register (DMA_CCR)
 namespace ccr7 {
     /// Channel enable
     /// Position: 0, Width: 1
@@ -1106,22 +1005,19 @@ namespace ccr7 {
     constexpr uint32_t EN_Pos = 0;
     constexpr uint32_t EN_Msk = EN::mask;
 
-    /// Transfer complete interrupt
-              enable
+    /// Transfer complete interrupt enable
     /// Position: 1, Width: 1
     using TCIE = BitField<1, 1>;
     constexpr uint32_t TCIE_Pos = 1;
     constexpr uint32_t TCIE_Msk = TCIE::mask;
 
-    /// Half Transfer interrupt
-              enable
+    /// Half Transfer interrupt enable
     /// Position: 2, Width: 1
     using HTIE = BitField<2, 1>;
     constexpr uint32_t HTIE_Pos = 2;
     constexpr uint32_t HTIE_Msk = HTIE::mask;
 
-    /// Transfer error interrupt
-              enable
+    /// Transfer error interrupt enable
     /// Position: 3, Width: 1
     using TEIE = BitField<3, 1>;
     constexpr uint32_t TEIE_Pos = 3;
@@ -1177,8 +1073,7 @@ namespace ccr7 {
 
 }  // namespace ccr7
 
-/// CNDTR7 - DMA channel 7 number of data
-          register
+/// CNDTR7 - DMA channel 7 number of data register
 namespace cndtr7 {
     /// Number of data to transfer
     /// Position: 0, Width: 16
@@ -1188,8 +1083,7 @@ namespace cndtr7 {
 
 }  // namespace cndtr7
 
-/// CPAR7 - DMA channel 7 peripheral address
-          register
+/// CPAR7 - DMA channel 7 peripheral address register
 namespace cpar7 {
     /// Peripheral address
     /// Position: 0, Width: 32
@@ -1199,8 +1093,7 @@ namespace cpar7 {
 
 }  // namespace cpar7
 
-/// CMAR7 - DMA channel 7 memory address
-          register
+/// CMAR7 - DMA channel 7 memory address register
 namespace cmar7 {
     /// Memory address
     /// Position: 0, Width: 32

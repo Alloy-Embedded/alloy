@@ -30,15 +30,13 @@ struct GPIOF_Registers {
     /// Access: read-write
     volatile uint32_t OTYPER;
 
-    /// GPIO port output speed
-          register
+    /// GPIO port output speed register
     /// Offset: 0x0008
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OSPEEDR;
 
-    /// GPIO port pull-up/pull-down
-          register
+    /// GPIO port pull-up/pull-down register
     /// Offset: 0x000C
     /// Reset value: 0x00000000
     /// Access: read-write
@@ -56,29 +54,25 @@ struct GPIOF_Registers {
     /// Access: read-write
     volatile uint32_t ODR;
 
-    /// GPIO port bit set/reset
-          register
+    /// GPIO port bit set/reset register
     /// Offset: 0x0018
     /// Reset value: 0x00000000
     /// Access: write-only
     volatile uint32_t BSRR;
 
-    /// GPIO port configuration lock
-          register
+    /// GPIO port configuration lock register
     /// Offset: 0x001C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t LCKR;
 
-    /// GPIO alternate function low
-          register
+    /// GPIO alternate function low register
     /// Offset: 0x0020
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t AFRL;
 
-    /// GPIO alternate function high
-          register
+    /// GPIO alternate function high register
     /// Offset: 0x0024
     /// Reset value: 0x00000000
     /// Access: read-write

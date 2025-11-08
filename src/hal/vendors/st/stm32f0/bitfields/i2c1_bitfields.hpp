@@ -40,32 +40,28 @@ namespace cr1 {
     constexpr uint32_t RXIE_Pos = 2;
     constexpr uint32_t RXIE_Msk = RXIE::mask;
 
-    /// Address match interrupt enable (slave
-              only)
+    /// Address match interrupt enable (slave only)
     /// Position: 3, Width: 1
     /// Access: read-write
     using ADDRIE = BitField<3, 1>;
     constexpr uint32_t ADDRIE_Pos = 3;
     constexpr uint32_t ADDRIE_Msk = ADDRIE::mask;
 
-    /// Not acknowledge received interrupt
-              enable
+    /// Not acknowledge received interrupt enable
     /// Position: 4, Width: 1
     /// Access: read-write
     using NACKIE = BitField<4, 1>;
     constexpr uint32_t NACKIE_Pos = 4;
     constexpr uint32_t NACKIE_Msk = NACKIE::mask;
 
-    /// STOP detection Interrupt
-              enable
+    /// STOP detection Interrupt enable
     /// Position: 5, Width: 1
     /// Access: read-write
     using STOPIE = BitField<5, 1>;
     constexpr uint32_t STOPIE_Pos = 5;
     constexpr uint32_t STOPIE_Msk = STOPIE::mask;
 
-    /// Transfer Complete interrupt
-              enable
+    /// Transfer Complete interrupt enable
     /// Position: 6, Width: 1
     /// Access: read-write
     using TCIE = BitField<6, 1>;
@@ -100,16 +96,14 @@ namespace cr1 {
     constexpr uint32_t SWRST_Pos = 13;
     constexpr uint32_t SWRST_Msk = SWRST::mask;
 
-    /// DMA transmission requests
-              enable
+    /// DMA transmission requests enable
     /// Position: 14, Width: 1
     /// Access: read-write
     using TXDMAEN = BitField<14, 1>;
     constexpr uint32_t TXDMAEN_Pos = 14;
     constexpr uint32_t TXDMAEN_Msk = TXDMAEN::mask;
 
-    /// DMA reception requests
-              enable
+    /// DMA reception requests enable
     /// Position: 15, Width: 1
     /// Access: read-write
     using RXDMAEN = BitField<15, 1>;
@@ -151,8 +145,7 @@ namespace cr1 {
     constexpr uint32_t SMBHEN_Pos = 20;
     constexpr uint32_t SMBHEN_Msk = SMBHEN::mask;
 
-    /// SMBus Device Default address
-              enable
+    /// SMBus Device Default address enable
     /// Position: 21, Width: 1
     /// Access: read-write
     using SMBDEN = BitField<21, 1>;
@@ -177,43 +170,37 @@ namespace cr1 {
 
 /// CR2 - Control register 2
 namespace cr2 {
-    /// Slave address bit 0 (master
-              mode)
+    /// Slave address bit 0 (master mode)
     /// Position: 0, Width: 1
     using SADD0 = BitField<0, 1>;
     constexpr uint32_t SADD0_Pos = 0;
     constexpr uint32_t SADD0_Msk = SADD0::mask;
 
-    /// Slave address bit 7:1 (master
-              mode)
+    /// Slave address bit 7:1 (master mode)
     /// Position: 1, Width: 7
     using SADD1 = BitField<1, 7>;
     constexpr uint32_t SADD1_Pos = 1;
     constexpr uint32_t SADD1_Msk = SADD1::mask;
 
-    /// Slave address bit 9:8 (master
-              mode)
+    /// Slave address bit 9:8 (master mode)
     /// Position: 8, Width: 2
     using SADD8 = BitField<8, 2>;
     constexpr uint32_t SADD8_Pos = 8;
     constexpr uint32_t SADD8_Msk = SADD8::mask;
 
-    /// Transfer direction (master
-              mode)
+    /// Transfer direction (master mode)
     /// Position: 10, Width: 1
     using RD_WRN = BitField<10, 1>;
     constexpr uint32_t RD_WRN_Pos = 10;
     constexpr uint32_t RD_WRN_Msk = RD_WRN::mask;
 
-    /// 10-bit addressing mode (master
-              mode)
+    /// 10-bit addressing mode (master mode)
     /// Position: 11, Width: 1
     using ADD10 = BitField<11, 1>;
     constexpr uint32_t ADD10_Pos = 11;
     constexpr uint32_t ADD10_Msk = ADD10::mask;
 
-    /// 10-bit address header only read
-              direction (master receiver mode)
+    /// 10-bit address header only read direction (master receiver mode)
     /// Position: 12, Width: 1
     using HEAD10R = BitField<12, 1>;
     constexpr uint32_t HEAD10R_Pos = 12;
@@ -225,15 +212,13 @@ namespace cr2 {
     constexpr uint32_t START_Pos = 13;
     constexpr uint32_t START_Msk = START::mask;
 
-    /// Stop generation (master
-              mode)
+    /// Stop generation (master mode)
     /// Position: 14, Width: 1
     using STOP = BitField<14, 1>;
     constexpr uint32_t STOP_Pos = 14;
     constexpr uint32_t STOP_Msk = STOP::mask;
 
-    /// NACK generation (slave
-              mode)
+    /// NACK generation (slave mode)
     /// Position: 15, Width: 1
     using NACK = BitField<15, 1>;
     constexpr uint32_t NACK_Pos = 15;
@@ -251,8 +236,7 @@ namespace cr2 {
     constexpr uint32_t RELOAD_Pos = 24;
     constexpr uint32_t RELOAD_Msk = RELOAD::mask;
 
-    /// Automatic end mode (master
-              mode)
+    /// Automatic end mode (master mode)
     /// Position: 25, Width: 1
     using AUTOEND = BitField<25, 1>;
     constexpr uint32_t AUTOEND_Pos = 25;
@@ -324,15 +308,13 @@ namespace oar2 {
 
 /// TIMINGR - Timing register
 namespace timingr {
-    /// SCL low period (master
-              mode)
+    /// SCL low period (master mode)
     /// Position: 0, Width: 8
     using SCLL = BitField<0, 8>;
     constexpr uint32_t SCLL_Pos = 0;
     constexpr uint32_t SCLL_Msk = SCLL::mask;
 
-    /// SCL high period (master
-              mode)
+    /// SCL high period (master mode)
     /// Position: 8, Width: 8
     using SCLH = BitField<8, 8>;
     constexpr uint32_t SCLH_Pos = 8;
@@ -366,8 +348,7 @@ namespace timeoutr {
     constexpr uint32_t TIMEOUTA_Pos = 0;
     constexpr uint32_t TIMEOUTA_Msk = TIMEOUTA::mask;
 
-    /// Idle clock timeout
-              detection
+    /// Idle clock timeout detection
     /// Position: 12, Width: 1
     using TIDLE = BitField<12, 1>;
     constexpr uint32_t TIDLE_Pos = 12;
@@ -385,8 +366,7 @@ namespace timeoutr {
     constexpr uint32_t TIMEOUTB_Pos = 16;
     constexpr uint32_t TIMEOUTB_Msk = TIMEOUTB::mask;
 
-    /// Extended clock timeout
-              enable
+    /// Extended clock timeout enable
     /// Position: 31, Width: 1
     using TEXTEN = BitField<31, 1>;
     constexpr uint32_t TEXTEN_Pos = 31;
@@ -396,40 +376,35 @@ namespace timeoutr {
 
 /// ISR - Interrupt and Status register
 namespace isr {
-    /// Transmit data register empty
-              (transmitters)
+    /// Transmit data register empty (transmitters)
     /// Position: 0, Width: 1
     /// Access: read-write
     using TXE = BitField<0, 1>;
     constexpr uint32_t TXE_Pos = 0;
     constexpr uint32_t TXE_Msk = TXE::mask;
 
-    /// Transmit interrupt status
-              (transmitters)
+    /// Transmit interrupt status (transmitters)
     /// Position: 1, Width: 1
     /// Access: read-write
     using TXIS = BitField<1, 1>;
     constexpr uint32_t TXIS_Pos = 1;
     constexpr uint32_t TXIS_Msk = TXIS::mask;
 
-    /// Receive data register not empty
-              (receivers)
+    /// Receive data register not empty (receivers)
     /// Position: 2, Width: 1
     /// Access: read-only
     using RXNE = BitField<2, 1>;
     constexpr uint32_t RXNE_Pos = 2;
     constexpr uint32_t RXNE_Msk = RXNE::mask;
 
-    /// Address matched (slave
-              mode)
+    /// Address matched (slave mode)
     /// Position: 3, Width: 1
     /// Access: read-only
     using ADDR = BitField<3, 1>;
     constexpr uint32_t ADDR_Pos = 3;
     constexpr uint32_t ADDR_Msk = ADDR::mask;
 
-    /// Not acknowledge received
-              flag
+    /// Not acknowledge received flag
     /// Position: 4, Width: 1
     /// Access: read-only
     using NACKF = BitField<4, 1>;
@@ -443,8 +418,7 @@ namespace isr {
     constexpr uint32_t STOPF_Pos = 5;
     constexpr uint32_t STOPF_Msk = STOPF::mask;
 
-    /// Transfer Complete (master
-              mode)
+    /// Transfer Complete (master mode)
     /// Position: 6, Width: 1
     /// Access: read-only
     using TC = BitField<6, 1>;
@@ -472,8 +446,7 @@ namespace isr {
     constexpr uint32_t ARLO_Pos = 9;
     constexpr uint32_t ARLO_Msk = ARLO::mask;
 
-    /// Overrun/Underrun (slave
-              mode)
+    /// Overrun/Underrun (slave mode)
     /// Position: 10, Width: 1
     /// Access: read-only
     using OVR = BitField<10, 1>;
@@ -487,8 +460,7 @@ namespace isr {
     constexpr uint32_t PECERR_Pos = 11;
     constexpr uint32_t PECERR_Msk = PECERR::mask;
 
-    /// Timeout or t_low detection
-              flag
+    /// Timeout or t_low detection flag
     /// Position: 12, Width: 1
     /// Access: read-only
     using TIMEOUT = BitField<12, 1>;
@@ -509,16 +481,14 @@ namespace isr {
     constexpr uint32_t BUSY_Pos = 15;
     constexpr uint32_t BUSY_Msk = BUSY::mask;
 
-    /// Transfer direction (Slave
-              mode)
+    /// Transfer direction (Slave mode)
     /// Position: 16, Width: 1
     /// Access: read-only
     using DIR = BitField<16, 1>;
     constexpr uint32_t DIR_Pos = 16;
     constexpr uint32_t DIR_Msk = DIR::mask;
 
-    /// Address match code (Slave
-              mode)
+    /// Address match code (Slave mode)
     /// Position: 17, Width: 7
     /// Access: read-only
     using ADDCODE = BitField<17, 7>;
@@ -553,15 +523,13 @@ namespace icr {
     constexpr uint32_t BERRCF_Pos = 8;
     constexpr uint32_t BERRCF_Msk = BERRCF::mask;
 
-    /// Arbitration lost flag
-              clear
+    /// Arbitration lost flag clear
     /// Position: 9, Width: 1
     using ARLOCF = BitField<9, 1>;
     constexpr uint32_t ARLOCF_Pos = 9;
     constexpr uint32_t ARLOCF_Msk = ARLOCF::mask;
 
-    /// Overrun/Underrun flag
-              clear
+    /// Overrun/Underrun flag clear
     /// Position: 10, Width: 1
     using OVRCF = BitField<10, 1>;
     constexpr uint32_t OVRCF_Pos = 10;
@@ -573,8 +541,7 @@ namespace icr {
     constexpr uint32_t PECCF_Pos = 11;
     constexpr uint32_t PECCF_Msk = PECCF::mask;
 
-    /// Timeout detection flag
-              clear
+    /// Timeout detection flag clear
     /// Position: 12, Width: 1
     using TIMOUTCF = BitField<12, 1>;
     constexpr uint32_t TIMOUTCF_Pos = 12;
@@ -590,8 +557,7 @@ namespace icr {
 
 /// PECR - PEC register
 namespace pecr {
-    /// Packet error checking
-              register
+    /// Packet error checking register
     /// Position: 0, Width: 8
     using PEC = BitField<0, 8>;
     constexpr uint32_t PEC_Pos = 0;

@@ -11,8 +11,7 @@
 namespace alloy::hal::st::stm32f0::usart1 {
 
 // ============================================================================
-// USART1 - Universal synchronous asynchronous receiver
-      transmitter
+// USART1 - Universal synchronous asynchronous receiver transmitter
 // Base Address: 0x40013800
 // ============================================================================
 
@@ -43,8 +42,7 @@ struct USART1_Registers {
     /// Access: read-write
     volatile uint32_t BRR;
 
-    /// Guard time and prescaler
-          register
+    /// Guard time and prescaler register
     /// Offset: 0x0010
     /// Reset value: 0x00000000
     /// Access: read-write
@@ -62,8 +60,7 @@ struct USART1_Registers {
     /// Access: read-write
     volatile uint32_t RQR;
 
-    /// Interrupt & status
-          register
+    /// Interrupt & status register
     /// Offset: 0x001C
     /// Reset value: 0x000000C0
     /// Access: read-only

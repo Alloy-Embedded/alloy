@@ -27,8 +27,7 @@ namespace iser {
 
 }  // namespace iser
 
-/// ICER - Interrupt Clear Enable
-          Register
+/// ICER - Interrupt Clear Enable Register
 namespace icer {
     /// CLRENA
     /// Position: 0, Width: 32
@@ -48,8 +47,7 @@ namespace ispr {
 
 }  // namespace ispr
 
-/// ICPR - Interrupt Clear-Pending
-          Register
+/// ICPR - Interrupt Clear-Pending Register
 namespace icpr {
     /// CLRPEND
     /// Position: 0, Width: 32

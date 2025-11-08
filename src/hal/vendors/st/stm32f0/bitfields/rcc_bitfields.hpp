@@ -19,64 +19,56 @@ using namespace alloy::hal::bitfields;
 
 /// CR - Clock control register
 namespace cr {
-    /// Internal High Speed clock
-              enable
+    /// Internal High Speed clock enable
     /// Position: 0, Width: 1
     /// Access: read-write
     using HSION = BitField<0, 1>;
     constexpr uint32_t HSION_Pos = 0;
     constexpr uint32_t HSION_Msk = HSION::mask;
 
-    /// Internal High Speed clock ready
-              flag
+    /// Internal High Speed clock ready flag
     /// Position: 1, Width: 1
     /// Access: read-only
     using HSIRDY = BitField<1, 1>;
     constexpr uint32_t HSIRDY_Pos = 1;
     constexpr uint32_t HSIRDY_Msk = HSIRDY::mask;
 
-    /// Internal High Speed clock
-              trimming
+    /// Internal High Speed clock trimming
     /// Position: 3, Width: 5
     /// Access: read-write
     using HSITRIM = BitField<3, 5>;
     constexpr uint32_t HSITRIM_Pos = 3;
     constexpr uint32_t HSITRIM_Msk = HSITRIM::mask;
 
-    /// Internal High Speed clock
-              Calibration
+    /// Internal High Speed clock Calibration
     /// Position: 8, Width: 8
     /// Access: read-only
     using HSICAL = BitField<8, 8>;
     constexpr uint32_t HSICAL_Pos = 8;
     constexpr uint32_t HSICAL_Msk = HSICAL::mask;
 
-    /// External High Speed clock
-              enable
+    /// External High Speed clock enable
     /// Position: 16, Width: 1
     /// Access: read-write
     using HSEON = BitField<16, 1>;
     constexpr uint32_t HSEON_Pos = 16;
     constexpr uint32_t HSEON_Msk = HSEON::mask;
 
-    /// External High Speed clock ready
-              flag
+    /// External High Speed clock ready flag
     /// Position: 17, Width: 1
     /// Access: read-only
     using HSERDY = BitField<17, 1>;
     constexpr uint32_t HSERDY_Pos = 17;
     constexpr uint32_t HSERDY_Msk = HSERDY::mask;
 
-    /// External High Speed clock
-              Bypass
+    /// External High Speed clock Bypass
     /// Position: 18, Width: 1
     /// Access: read-write
     using HSEBYP = BitField<18, 1>;
     constexpr uint32_t HSEBYP_Pos = 18;
     constexpr uint32_t HSEBYP_Msk = HSEBYP::mask;
 
-    /// Clock Security System
-              enable
+    /// Clock Security System enable
     /// Position: 19, Width: 1
     /// Access: read-write
     using CSSON = BitField<19, 1>;
@@ -99,8 +91,7 @@ namespace cr {
 
 }  // namespace cr
 
-/// CFGR - Clock configuration register
-          (RCC_CFGR)
+/// CFGR - Clock configuration register (RCC_CFGR)
 namespace cfgr {
     /// System clock Switch
     /// Position: 0, Width: 2
@@ -123,8 +114,7 @@ namespace cfgr {
     constexpr uint32_t HPRE_Pos = 4;
     constexpr uint32_t HPRE_Msk = HPRE::mask;
 
-    /// APB Low speed prescaler
-              (APB1)
+    /// APB Low speed prescaler (APB1)
     /// Position: 8, Width: 3
     /// Access: read-write
     using PPRE = BitField<8, 3>;
@@ -159,24 +149,21 @@ namespace cfgr {
     constexpr uint32_t PLLMUL_Pos = 18;
     constexpr uint32_t PLLMUL_Msk = PLLMUL::mask;
 
-    /// Microcontroller clock
-              output
+    /// Microcontroller clock output
     /// Position: 24, Width: 3
     /// Access: read-write
     using MCO = BitField<24, 3>;
     constexpr uint32_t MCO_Pos = 24;
     constexpr uint32_t MCO_Msk = MCO::mask;
 
-    /// Microcontroller Clock Output
-              Prescaler
+    /// Microcontroller Clock Output Prescaler
     /// Position: 28, Width: 3
     /// Access: read-write
     using MCOPRE = BitField<28, 3>;
     constexpr uint32_t MCOPRE_Pos = 28;
     constexpr uint32_t MCOPRE_Msk = MCOPRE::mask;
 
-    /// PLL clock not divided for
-              MCO
+    /// PLL clock not divided for MCO
     /// Position: 31, Width: 1
     /// Access: read-write
     using PLLNODIV = BitField<31, 1>;
@@ -185,8 +172,7 @@ namespace cfgr {
 
 }  // namespace cfgr
 
-/// CIR - Clock interrupt register
-          (RCC_CIR)
+/// CIR - Clock interrupt register (RCC_CIR)
 namespace cir {
     /// LSI Ready Interrupt flag
     /// Position: 0, Width: 1
@@ -237,8 +223,7 @@ namespace cir {
     constexpr uint32_t HSI48RDYF_Pos = 6;
     constexpr uint32_t HSI48RDYF_Msk = HSI48RDYF::mask;
 
-    /// Clock Security System Interrupt
-              flag
+    /// Clock Security System Interrupt flag
     /// Position: 7, Width: 1
     /// Access: read-only
     using CSSF = BitField<7, 1>;
@@ -280,16 +265,14 @@ namespace cir {
     constexpr uint32_t PLLRDYIE_Pos = 12;
     constexpr uint32_t PLLRDYIE_Msk = PLLRDYIE::mask;
 
-    /// HSI14 ready interrupt
-              enable
+    /// HSI14 ready interrupt enable
     /// Position: 13, Width: 1
     /// Access: read-write
     using HSI14RDYE = BitField<13, 1>;
     constexpr uint32_t HSI14RDYE_Pos = 13;
     constexpr uint32_t HSI14RDYE_Msk = HSI14RDYE::mask;
 
-    /// HSI48 ready interrupt
-              enable
+    /// HSI48 ready interrupt enable
     /// Position: 14, Width: 1
     /// Access: read-write
     using HSI48RDYIE = BitField<14, 1>;
@@ -331,24 +314,21 @@ namespace cir {
     constexpr uint32_t PLLRDYC_Pos = 20;
     constexpr uint32_t PLLRDYC_Msk = PLLRDYC::mask;
 
-    /// HSI 14 MHz Ready Interrupt
-              Clear
+    /// HSI 14 MHz Ready Interrupt Clear
     /// Position: 21, Width: 1
     /// Access: write-only
     using HSI14RDYC = BitField<21, 1>;
     constexpr uint32_t HSI14RDYC_Pos = 21;
     constexpr uint32_t HSI14RDYC_Msk = HSI14RDYC::mask;
 
-    /// HSI48 Ready Interrupt
-              Clear
+    /// HSI48 Ready Interrupt Clear
     /// Position: 22, Width: 1
     /// Access: write-only
     using HSI48RDYC = BitField<22, 1>;
     constexpr uint32_t HSI48RDYC_Pos = 22;
     constexpr uint32_t HSI48RDYC_Msk = HSI48RDYC::mask;
 
-    /// Clock security system interrupt
-              clear
+    /// Clock security system interrupt clear
     /// Position: 23, Width: 1
     /// Access: write-only
     using CSSC = BitField<23, 1>;
@@ -357,8 +337,7 @@ namespace cir {
 
 }  // namespace cir
 
-/// APB2RSTR - APB2 peripheral reset register
-          (RCC_APB2RSTR)
+/// APB2RSTR - APB2 peripheral reset register (RCC_APB2RSTR)
 namespace apb2rstr {
     /// SYSCFG and COMP reset
     /// Position: 0, Width: 1
@@ -416,8 +395,7 @@ namespace apb2rstr {
 
 }  // namespace apb2rstr
 
-/// APB1RSTR - APB1 peripheral reset register
-          (RCC_APB1RSTR)
+/// APB1RSTR - APB1 peripheral reset register (RCC_APB1RSTR)
 namespace apb1rstr {
     /// Timer 3 reset
     /// Position: 1, Width: 1
@@ -475,8 +453,7 @@ namespace apb1rstr {
 
 }  // namespace apb1rstr
 
-/// AHBENR - AHB Peripheral Clock enable register
-          (RCC_AHBENR)
+/// AHBENR - AHB Peripheral Clock enable register (RCC_AHBENR)
 namespace ahbenr {
     /// DMA1 clock enable
     /// Position: 0, Width: 1
@@ -484,8 +461,7 @@ namespace ahbenr {
     constexpr uint32_t DMAEN_Pos = 0;
     constexpr uint32_t DMAEN_Msk = DMAEN::mask;
 
-    /// SRAM interface clock
-              enable
+    /// SRAM interface clock enable
     /// Position: 2, Width: 1
     using SRAMEN = BitField<2, 1>;
     constexpr uint32_t SRAMEN_Pos = 2;
@@ -535,8 +511,7 @@ namespace ahbenr {
 
 }  // namespace ahbenr
 
-/// APB2ENR - APB2 peripheral clock enable register
-          (RCC_APB2ENR)
+/// APB2ENR - APB2 peripheral clock enable register (RCC_APB2ENR)
 namespace apb2enr {
     /// SYSCFG clock enable
     /// Position: 0, Width: 1
@@ -544,8 +519,7 @@ namespace apb2enr {
     constexpr uint32_t SYSCFGEN_Pos = 0;
     constexpr uint32_t SYSCFGEN_Msk = SYSCFGEN::mask;
 
-    /// ADC 1 interface clock
-              enable
+    /// ADC 1 interface clock enable
     /// Position: 9, Width: 1
     using ADCEN = BitField<9, 1>;
     constexpr uint32_t ADCEN_Pos = 9;
@@ -587,8 +561,7 @@ namespace apb2enr {
     constexpr uint32_t TIM17EN_Pos = 18;
     constexpr uint32_t TIM17EN_Msk = TIM17EN::mask;
 
-    /// MCU debug module clock
-              enable
+    /// MCU debug module clock enable
     /// Position: 22, Width: 1
     using DBGMCUEN = BitField<22, 1>;
     constexpr uint32_t DBGMCUEN_Pos = 22;
@@ -596,8 +569,7 @@ namespace apb2enr {
 
 }  // namespace apb2enr
 
-/// APB1ENR - APB1 peripheral clock enable register
-          (RCC_APB1ENR)
+/// APB1ENR - APB1 peripheral clock enable register (RCC_APB1ENR)
 namespace apb1enr {
     /// Timer 3 clock enable
     /// Position: 1, Width: 1
@@ -617,8 +589,7 @@ namespace apb1enr {
     constexpr uint32_t TIM14EN_Pos = 8;
     constexpr uint32_t TIM14EN_Msk = TIM14EN::mask;
 
-    /// Window watchdog clock
-              enable
+    /// Window watchdog clock enable
     /// Position: 11, Width: 1
     using WWDGEN = BitField<11, 1>;
     constexpr uint32_t WWDGEN_Pos = 11;
@@ -648,8 +619,7 @@ namespace apb1enr {
     constexpr uint32_t I2C2EN_Pos = 22;
     constexpr uint32_t I2C2EN_Msk = I2C2EN::mask;
 
-    /// Power interface clock
-              enable
+    /// Power interface clock enable
     /// Position: 28, Width: 1
     using PWREN = BitField<28, 1>;
     constexpr uint32_t PWREN_Pos = 28;
@@ -657,35 +627,30 @@ namespace apb1enr {
 
 }  // namespace apb1enr
 
-/// BDCR - Backup domain control register
-          (RCC_BDCR)
+/// BDCR - Backup domain control register (RCC_BDCR)
 namespace bdcr {
-    /// External Low Speed oscillator
-              enable
+    /// External Low Speed oscillator enable
     /// Position: 0, Width: 1
     /// Access: read-write
     using LSEON = BitField<0, 1>;
     constexpr uint32_t LSEON_Pos = 0;
     constexpr uint32_t LSEON_Msk = LSEON::mask;
 
-    /// External Low Speed oscillator
-              ready
+    /// External Low Speed oscillator ready
     /// Position: 1, Width: 1
     /// Access: read-only
     using LSERDY = BitField<1, 1>;
     constexpr uint32_t LSERDY_Pos = 1;
     constexpr uint32_t LSERDY_Msk = LSERDY::mask;
 
-    /// External Low Speed oscillator
-              bypass
+    /// External Low Speed oscillator bypass
     /// Position: 2, Width: 1
     /// Access: read-write
     using LSEBYP = BitField<2, 1>;
     constexpr uint32_t LSEBYP_Pos = 2;
     constexpr uint32_t LSEBYP_Msk = LSEBYP::mask;
 
-    /// LSE oscillator drive
-              capability
+    /// LSE oscillator drive capability
     /// Position: 3, Width: 2
     /// Access: read-write
     using LSEDRV = BitField<3, 2>;
@@ -706,8 +671,7 @@ namespace bdcr {
     constexpr uint32_t RTCEN_Pos = 15;
     constexpr uint32_t RTCEN_Msk = RTCEN::mask;
 
-    /// Backup domain software
-              reset
+    /// Backup domain software reset
     /// Position: 16, Width: 1
     /// Access: read-write
     using BDRST = BitField<16, 1>;
@@ -716,19 +680,16 @@ namespace bdcr {
 
 }  // namespace bdcr
 
-/// CSR - Control/status register
-          (RCC_CSR)
+/// CSR - Control/status register (RCC_CSR)
 namespace csr {
-    /// Internal low speed oscillator
-              enable
+    /// Internal low speed oscillator enable
     /// Position: 0, Width: 1
     /// Access: read-write
     using LSION = BitField<0, 1>;
     constexpr uint32_t LSION_Pos = 0;
     constexpr uint32_t LSION_Msk = LSION::mask;
 
-    /// Internal low speed oscillator
-              ready
+    /// Internal low speed oscillator ready
     /// Position: 1, Width: 1
     /// Access: read-only
     using LSIRDY = BitField<1, 1>;
@@ -742,8 +703,7 @@ namespace csr {
     constexpr uint32_t RMVF_Pos = 24;
     constexpr uint32_t RMVF_Msk = RMVF::mask;
 
-    /// Option byte loader reset
-              flag
+    /// Option byte loader reset flag
     /// Position: 25, Width: 1
     /// Access: read-write
     using OBLRSTF = BitField<25, 1>;
@@ -771,8 +731,7 @@ namespace csr {
     constexpr uint32_t SFTRSTF_Pos = 28;
     constexpr uint32_t SFTRSTF_Msk = SFTRSTF::mask;
 
-    /// Independent watchdog reset
-              flag
+    /// Independent watchdog reset flag
     /// Position: 29, Width: 1
     /// Access: read-write
     using IWDGRSTF = BitField<29, 1>;
@@ -841,15 +800,13 @@ namespace cfgr2 {
 
 /// CFGR3 - Clock configuration register 3
 namespace cfgr3 {
-    /// USART1 clock source
-              selection
+    /// USART1 clock source selection
     /// Position: 0, Width: 2
     using USART1SW = BitField<0, 2>;
     constexpr uint32_t USART1SW_Pos = 0;
     constexpr uint32_t USART1SW_Msk = USART1SW::mask;
 
-    /// I2C1 clock source
-              selection
+    /// I2C1 clock source selection
     /// Position: 4, Width: 1
     using I2C1SW = BitField<4, 1>;
     constexpr uint32_t I2C1SW_Pos = 4;
@@ -861,8 +818,7 @@ namespace cfgr3 {
     constexpr uint32_t ADCSW_Pos = 8;
     constexpr uint32_t ADCSW_Msk = ADCSW::mask;
 
-    /// USART2 clock source
-              selection
+    /// USART2 clock source selection
     /// Position: 16, Width: 2
     using USART2SW = BitField<16, 2>;
     constexpr uint32_t USART2SW_Pos = 16;
@@ -886,8 +842,7 @@ namespace cr2 {
     constexpr uint32_t HSI14RDY_Pos = 1;
     constexpr uint32_t HSI14RDY_Msk = HSI14RDY::mask;
 
-    /// HSI14 clock request from ADC
-              disable
+    /// HSI14 clock request from ADC disable
     /// Position: 2, Width: 1
     /// Access: read-write
     using HSI14DIS = BitField<2, 1>;
@@ -922,8 +877,7 @@ namespace cr2 {
     constexpr uint32_t HSI48RDY_Pos = 17;
     constexpr uint32_t HSI48RDY_Msk = HSI48RDY::mask;
 
-    /// HSI48 factory clock
-              calibration
+    /// HSI48 factory clock calibration
     /// Position: 24, Width: 1
     /// Access: read-only
     using HSI48CAL = BitField<24, 1>;

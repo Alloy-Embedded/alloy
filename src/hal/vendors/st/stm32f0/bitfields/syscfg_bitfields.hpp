@@ -19,8 +19,7 @@ using namespace alloy::hal::bitfields;
 
 /// CFGR1 - configuration register 1
 namespace cfgr1 {
-    /// Memory mapping selection
-              bits
+    /// Memory mapping selection bits
     /// Position: 0, Width: 2
     using MEM_MODE = BitField<0, 2>;
     constexpr uint32_t MEM_MODE_Pos = 0;
@@ -32,120 +31,103 @@ namespace cfgr1 {
     constexpr uint32_t ADC_DMA_RMP_Pos = 8;
     constexpr uint32_t ADC_DMA_RMP_Msk = ADC_DMA_RMP::mask;
 
-    /// USART1_TX DMA remapping
-              bit
+    /// USART1_TX DMA remapping bit
     /// Position: 9, Width: 1
     using USART1_TX_DMA_RMP = BitField<9, 1>;
     constexpr uint32_t USART1_TX_DMA_RMP_Pos = 9;
     constexpr uint32_t USART1_TX_DMA_RMP_Msk = USART1_TX_DMA_RMP::mask;
 
-    /// USART1_RX DMA request remapping
-              bit
+    /// USART1_RX DMA request remapping bit
     /// Position: 10, Width: 1
     using USART1_RX_DMA_RMP = BitField<10, 1>;
     constexpr uint32_t USART1_RX_DMA_RMP_Pos = 10;
     constexpr uint32_t USART1_RX_DMA_RMP_Msk = USART1_RX_DMA_RMP::mask;
 
-    /// TIM16 DMA request remapping
-              bit
+    /// TIM16 DMA request remapping bit
     /// Position: 11, Width: 1
     using TIM16_DMA_RMP = BitField<11, 1>;
     constexpr uint32_t TIM16_DMA_RMP_Pos = 11;
     constexpr uint32_t TIM16_DMA_RMP_Msk = TIM16_DMA_RMP::mask;
 
-    /// TIM17 DMA request remapping
-              bit
+    /// TIM17 DMA request remapping bit
     /// Position: 12, Width: 1
     using TIM17_DMA_RMP = BitField<12, 1>;
     constexpr uint32_t TIM17_DMA_RMP_Pos = 12;
     constexpr uint32_t TIM17_DMA_RMP_Msk = TIM17_DMA_RMP::mask;
 
-    /// Fast Mode Plus (FM plus) driving
-              capability activation bits.
+    /// Fast Mode Plus (FM plus) driving capability activation bits.
     /// Position: 16, Width: 1
     using I2C_PB6_FM = BitField<16, 1>;
     constexpr uint32_t I2C_PB6_FM_Pos = 16;
     constexpr uint32_t I2C_PB6_FM_Msk = I2C_PB6_FM::mask;
 
-    /// Fast Mode Plus (FM+) driving capability
-              activation bits.
+    /// Fast Mode Plus (FM+) driving capability activation bits.
     /// Position: 17, Width: 1
     using I2C_PB7_FM = BitField<17, 1>;
     constexpr uint32_t I2C_PB7_FM_Pos = 17;
     constexpr uint32_t I2C_PB7_FM_Msk = I2C_PB7_FM::mask;
 
-    /// Fast Mode Plus (FM+) driving capability
-              activation bits.
+    /// Fast Mode Plus (FM+) driving capability activation bits.
     /// Position: 18, Width: 1
     using I2C_PB8_FM = BitField<18, 1>;
     constexpr uint32_t I2C_PB8_FM_Pos = 18;
     constexpr uint32_t I2C_PB8_FM_Msk = I2C_PB8_FM::mask;
 
-    /// Fast Mode Plus (FM+) driving capability
-              activation bits.
+    /// Fast Mode Plus (FM+) driving capability activation bits.
     /// Position: 19, Width: 1
     using I2C_PB9_FM = BitField<19, 1>;
     constexpr uint32_t I2C_PB9_FM_Pos = 19;
     constexpr uint32_t I2C_PB9_FM_Msk = I2C_PB9_FM::mask;
 
-    /// FM+ driving capability activation for
-              I2C1
+    /// FM+ driving capability activation for I2C1
     /// Position: 20, Width: 1
     using I2C1_FM_plus = BitField<20, 1>;
     constexpr uint32_t I2C1_FM_plus_Pos = 20;
     constexpr uint32_t I2C1_FM_plus_Msk = I2C1_FM_plus::mask;
 
-    /// FM+ driving capability activation for
-              I2C2
+    /// FM+ driving capability activation for I2C2
     /// Position: 21, Width: 1
     using I2C2_FM_plus = BitField<21, 1>;
     constexpr uint32_t I2C2_FM_plus_Pos = 21;
     constexpr uint32_t I2C2_FM_plus_Msk = I2C2_FM_plus::mask;
 
-    /// SPI2 DMA request remapping
-              bit
+    /// SPI2 DMA request remapping bit
     /// Position: 24, Width: 1
     using SPI2_DMA_RMP = BitField<24, 1>;
     constexpr uint32_t SPI2_DMA_RMP_Pos = 24;
     constexpr uint32_t SPI2_DMA_RMP_Msk = SPI2_DMA_RMP::mask;
 
-    /// USART2 DMA request remapping
-              bit
+    /// USART2 DMA request remapping bit
     /// Position: 25, Width: 1
     using USART2_DMA_RMP = BitField<25, 1>;
     constexpr uint32_t USART2_DMA_RMP_Pos = 25;
     constexpr uint32_t USART2_DMA_RMP_Msk = USART2_DMA_RMP::mask;
 
-    /// USART3 DMA request remapping
-              bit
+    /// USART3 DMA request remapping bit
     /// Position: 26, Width: 1
     using USART3_DMA_RMP = BitField<26, 1>;
     constexpr uint32_t USART3_DMA_RMP_Pos = 26;
     constexpr uint32_t USART3_DMA_RMP_Msk = USART3_DMA_RMP::mask;
 
-    /// I2C1 DMA request remapping
-              bit
+    /// I2C1 DMA request remapping bit
     /// Position: 27, Width: 1
     using I2C1_DMA_RMP = BitField<27, 1>;
     constexpr uint32_t I2C1_DMA_RMP_Pos = 27;
     constexpr uint32_t I2C1_DMA_RMP_Msk = I2C1_DMA_RMP::mask;
 
-    /// TIM1 DMA request remapping
-              bit
+    /// TIM1 DMA request remapping bit
     /// Position: 28, Width: 1
     using TIM1_DMA_RMP = BitField<28, 1>;
     constexpr uint32_t TIM1_DMA_RMP_Pos = 28;
     constexpr uint32_t TIM1_DMA_RMP_Msk = TIM1_DMA_RMP::mask;
 
-    /// TIM2 DMA request remapping
-              bit
+    /// TIM2 DMA request remapping bit
     /// Position: 29, Width: 1
     using TIM2_DMA_RMP = BitField<29, 1>;
     constexpr uint32_t TIM2_DMA_RMP_Pos = 29;
     constexpr uint32_t TIM2_DMA_RMP_Msk = TIM2_DMA_RMP::mask;
 
-    /// TIM3 DMA request remapping
-              bit
+    /// TIM3 DMA request remapping bit
     /// Position: 30, Width: 1
     using TIM3_DMA_RMP = BitField<30, 1>;
     constexpr uint32_t TIM3_DMA_RMP_Pos = 30;
@@ -153,8 +135,7 @@ namespace cfgr1 {
 
 }  // namespace cfgr1
 
-/// EXTICR1 - external interrupt configuration register
-          1
+/// EXTICR1 - external interrupt configuration register 1
 namespace exticr1 {
     /// EXTI 0 configuration bits
     /// Position: 0, Width: 4
@@ -182,8 +163,7 @@ namespace exticr1 {
 
 }  // namespace exticr1
 
-/// EXTICR2 - external interrupt configuration register
-          2
+/// EXTICR2 - external interrupt configuration register 2
 namespace exticr2 {
     /// EXTI 4 configuration bits
     /// Position: 0, Width: 4
@@ -211,8 +191,7 @@ namespace exticr2 {
 
 }  // namespace exticr2
 
-/// EXTICR3 - external interrupt configuration register
-          3
+/// EXTICR3 - external interrupt configuration register 3
 namespace exticr3 {
     /// EXTI 8 configuration bits
     /// Position: 0, Width: 4
@@ -240,8 +219,7 @@ namespace exticr3 {
 
 }  // namespace exticr3
 
-/// EXTICR4 - external interrupt configuration register
-          4
+/// EXTICR4 - external interrupt configuration register 4
 namespace exticr4 {
     /// EXTI 12 configuration bits
     /// Position: 0, Width: 4
@@ -271,8 +249,7 @@ namespace exticr4 {
 
 /// CFGR2 - configuration register 2
 namespace cfgr2 {
-    /// Cortex-M0 LOCKUP bit enable
-              bit
+    /// Cortex-M0 LOCKUP bit enable bit
     /// Position: 0, Width: 1
     using LOCUP_LOCK = BitField<0, 1>;
     constexpr uint32_t LOCUP_LOCK_Pos = 0;

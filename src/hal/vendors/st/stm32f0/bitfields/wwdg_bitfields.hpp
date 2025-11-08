@@ -57,8 +57,7 @@ namespace cfr {
 
 /// SR - Status register
 namespace sr {
-    /// Early wakeup interrupt
-              flag
+    /// Early wakeup interrupt flag
     /// Position: 0, Width: 1
     using EWIF = BitField<0, 1>;
     constexpr uint32_t EWIF_Pos = 0;

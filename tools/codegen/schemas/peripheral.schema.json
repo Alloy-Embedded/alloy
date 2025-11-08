@@ -1,0 +1,303 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://alloy-embedded.com/schemas/codegen/peripheral.schema.json",
+  "title": "Peripheral Metadata Schema",
+  "description": "Schema for peripheral-specific code generation metadata",
+  "type": "object",
+  "required": [
+    "peripheral",
+    "type",
+    "operations"
+  ],
+  "properties": {
+    "peripheral": {
+      "type": "string",
+      "description": "Peripheral name (e.g., 'GPIO', 'UART', 'SPI')",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "description": "Peripheral category",
+      "enum": [
+        "gpio",
+        "uart",
+        "spi",
+        "i2c",
+        "timer",
+        "adc",
+        "dac",
+        "pwm",
+        "dma",
+        "clock",
+        "power",
+        "watchdog",
+        "rtc",
+        "custom"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description"
+    },
+    "base_addresses": {
+      "type": "object",
+      "description": "Base addresses for peripheral instances",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^0x[0-9A-Fa-f]+$"
+      }
+    },
+    "registers": {
+      "type": "object",
+      "description": "Register definitions",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["offset", "size"],
+        "properties": {
+          "offset": {
+            "type": "string",
+            "pattern": "^0x[0-9A-Fa-f]+$"
+          },
+          "size": {
+            "type": "integer",
+            "enum": [8, 16, 32, 64]
+          },
+          "access": {
+            "type": "string",
+            "enum": ["RO", "WO", "RW"],
+            "default": "RW"
+          },
+          "reset_value": {
+            "type": "string",
+            "pattern": "^0x[0-9A-Fa-f]+$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "object",
+            "description": "Bitfield definitions",
+            "additionalProperties": {
+              "type": "object",
+              "required": ["bit_range"],
+              "properties": {
+                "bit_range": {
+                  "type": "string",
+                  "pattern": "^\\[\\d+(:\\d+)?\\]$",
+                  "description": "Bit range (e.g., '[7:4]' or '[3]')"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "values": {
+                  "type": "object",
+                  "description": "Enumerated values for this field",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "operations": {
+      "type": "array",
+      "description": "List of peripheral operations to generate",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "type"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Operation name (e.g., 'set', 'clear', 'toggle')"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "write",
+              "read",
+              "modify",
+              "configure",
+              "enable",
+              "disable",
+              "custom"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "registers": {
+            "type": "array",
+            "description": "Registers involved in this operation",
+            "items": {
+              "type": "string"
+            }
+          },
+          "parameters": {
+            "type": "array",
+            "description": "Function parameters",
+            "items": {
+              "type": "object",
+              "required": ["name", "type"],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "return_type": {
+            "type": "string",
+            "description": "Return type (e.g., 'void', 'Result<void,ErrorCode>')",
+            "default": "void"
+          },
+          "implementation": {
+            "type": "string",
+            "description": "Custom implementation code or template snippet"
+          }
+        }
+      }
+    },
+    "pin_configurations": {
+      "type": "array",
+      "description": "Pin configuration options",
+      "items": {
+        "type": "object",
+        "required": ["port", "pin", "function"],
+        "properties": {
+          "port": {
+            "type": "string",
+            "pattern": "^[A-Z]$"
+          },
+          "pin": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 31
+          },
+          "function": {
+            "type": "string"
+          },
+          "peripheral_function": {
+            "type": "string",
+            "enum": ["A", "B", "C", "D", "E", "F", "G", "H"]
+          },
+          "alternate_function": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 15
+          }
+        }
+      }
+    },
+    "interrupts": {
+      "type": "array",
+      "description": "Interrupt sources for this peripheral",
+      "items": {
+        "type": "object",
+        "required": ["name", "number"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "number": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dma_channels": {
+      "type": "array",
+      "description": "DMA channel assignments",
+      "items": {
+        "type": "object",
+        "required": ["channel", "direction"],
+        "properties": {
+          "channel": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "direction": {
+            "type": "string",
+            "enum": ["tx", "rx", "both"]
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "clock_config": {
+      "type": "object",
+      "description": "Clock configuration requirements",
+      "properties": {
+        "clock_source": {
+          "type": "string"
+        },
+        "enable_register": {
+          "type": "string"
+        },
+        "enable_bit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 31
+        },
+        "divisor_register": {
+          "type": "string"
+        }
+      }
+    },
+    "template_overrides": {
+      "type": "object",
+      "description": "Custom template snippets or overrides",
+      "properties": {
+        "header_includes": {
+          "type": "array",
+          "description": "Additional header files to include",
+          "items": {
+            "type": "string"
+          }
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Custom namespace for this peripheral"
+        },
+        "base_class": {
+          "type": "string",
+          "description": "Base class to inherit from"
+        },
+        "custom_methods": {
+          "type": "array",
+          "description": "Additional custom methods to generate",
+          "items": {
+            "type": "object",
+            "required": ["name", "signature", "body"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "signature": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

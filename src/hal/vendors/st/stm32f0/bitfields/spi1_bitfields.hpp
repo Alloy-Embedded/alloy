@@ -85,22 +85,19 @@ namespace cr1 {
     constexpr uint32_t CRCNEXT_Pos = 12;
     constexpr uint32_t CRCNEXT_Msk = CRCNEXT::mask;
 
-    /// Hardware CRC calculation
-              enable
+    /// Hardware CRC calculation enable
     /// Position: 13, Width: 1
     using CRCEN = BitField<13, 1>;
     constexpr uint32_t CRCEN_Pos = 13;
     constexpr uint32_t CRCEN_Msk = CRCEN::mask;
 
-    /// Output enable in bidirectional
-              mode
+    /// Output enable in bidirectional mode
     /// Position: 14, Width: 1
     using BIDIOE = BitField<14, 1>;
     constexpr uint32_t BIDIOE_Pos = 14;
     constexpr uint32_t BIDIOE_Msk = BIDIOE::mask;
 
-    /// Bidirectional data mode
-              enable
+    /// Bidirectional data mode enable
     /// Position: 15, Width: 1
     using BIDIMODE = BitField<15, 1>;
     constexpr uint32_t BIDIMODE_Pos = 15;
@@ -146,15 +143,13 @@ namespace cr2 {
     constexpr uint32_t ERRIE_Pos = 5;
     constexpr uint32_t ERRIE_Msk = ERRIE::mask;
 
-    /// RX buffer not empty interrupt
-              enable
+    /// RX buffer not empty interrupt enable
     /// Position: 6, Width: 1
     using RXNEIE = BitField<6, 1>;
     constexpr uint32_t RXNEIE_Pos = 6;
     constexpr uint32_t RXNEIE_Msk = RXNEIE::mask;
 
-    /// Tx buffer empty interrupt
-              enable
+    /// Tx buffer empty interrupt enable
     /// Position: 7, Width: 1
     using TXEIE = BitField<7, 1>;
     constexpr uint32_t TXEIE_Pos = 7;
@@ -172,15 +167,13 @@ namespace cr2 {
     constexpr uint32_t FRXTH_Pos = 12;
     constexpr uint32_t FRXTH_Msk = FRXTH::mask;
 
-    /// Last DMA transfer for
-              reception
+    /// Last DMA transfer for reception
     /// Position: 13, Width: 1
     using LDMA_RX = BitField<13, 1>;
     constexpr uint32_t LDMA_RX_Pos = 13;
     constexpr uint32_t LDMA_RX_Msk = LDMA_RX::mask;
 
-    /// Last DMA transfer for
-              transmission
+    /// Last DMA transfer for transmission
     /// Position: 14, Width: 1
     using LDMA_TX = BitField<14, 1>;
     constexpr uint32_t LDMA_TX_Pos = 14;
@@ -311,22 +304,19 @@ namespace txcrcr {
 
 /// I2SCFGR - I2S configuration register
 namespace i2scfgr {
-    /// Channel length (number of bits per audio
-              channel)
+    /// Channel length (number of bits per audio channel)
     /// Position: 0, Width: 1
     using CHLEN = BitField<0, 1>;
     constexpr uint32_t CHLEN_Pos = 0;
     constexpr uint32_t CHLEN_Msk = CHLEN::mask;
 
-    /// Data length to be
-              transferred
+    /// Data length to be transferred
     /// Position: 1, Width: 2
     using DATLEN = BitField<1, 2>;
     constexpr uint32_t DATLEN_Pos = 1;
     constexpr uint32_t DATLEN_Msk = DATLEN::mask;
 
-    /// Steady state clock
-              polarity
+    /// Steady state clock polarity
     /// Position: 3, Width: 1
     using CKPOL = BitField<3, 1>;
     constexpr uint32_t CKPOL_Pos = 3;
@@ -372,8 +362,7 @@ namespace i2spr {
     constexpr uint32_t I2SDIV_Pos = 0;
     constexpr uint32_t I2SDIV_Msk = I2SDIV::mask;
 
-    /// Odd factor for the
-              prescaler
+    /// Odd factor for the prescaler
     /// Position: 8, Width: 1
     using ODD = BitField<8, 1>;
     constexpr uint32_t ODD_Pos = 8;

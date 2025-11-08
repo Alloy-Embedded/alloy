@@ -1,0 +1,67 @@
+{
+  "vendor": "ST",
+  "architecture": "arm_cortex_m",
+  "common": {
+    "endianness": "little",
+    "pointer_size": 32,
+    "fpu": true,
+    "naming": {
+      "register_case": "UPPER",
+      "field_case": "UPPER_SNAKE",
+      "enum_case": "PascalCase"
+    },
+    "svd_quirks": {
+      "known_bugs": [
+        {
+          "description": "Some peripherals have inconsistent naming",
+          "fix": "Use canonical names"
+        }
+      ],
+      "array_dimension_fixes": {}
+    },
+    "code_style": {
+      "include_guards": "pragma_once",
+      "namespace_style": "nested",
+      "documentation_style": "doxygen",
+      "constexpr_preference": true
+    }
+  },
+  "families": [
+    {
+      "name": "STM32F0",
+      "description": "Entry-level ARM Cortex-M0 MCUs",
+      "core": "Cortex-M0",
+      "metadata_file": "stm32f0.json"
+    },
+    {
+      "name": "STM32F1",
+      "description": "Mainstream ARM Cortex-M3 MCUs",
+      "core": "Cortex-M3",
+      "metadata_file": "stm32f1.json"
+    },
+    {
+      "name": "STM32F4",
+      "description": "High-performance ARM Cortex-M4 MCUs with FPU and DSP",
+      "core": "Cortex-M4",
+      "metadata_file": "stm32f4.json"
+    },
+    {
+      "name": "STM32F7",
+      "description": "Very high-performance ARM Cortex-M7 MCUs",
+      "core": "Cortex-M7",
+      "metadata_file": "stm32f7.json"
+    },
+    {
+      "name": "STM32H7",
+      "description": "High-performance dual-core ARM Cortex-M7/M4 MCUs",
+      "core": "Cortex-M7",
+      "metadata_file": "stm32h7.json"
+    }
+  ],
+  "peripheral_mappings": {
+    "GPIOA": "GPIO",
+    "USART1": "UART",
+    "SPI1": "SPI",
+    "I2C1": "I2C"
+  }
+}

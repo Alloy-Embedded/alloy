@@ -104,6 +104,12 @@
 #include "enums.hpp"
 
 // ============================================================================
+// Pin Alternate Function Mappings
+// ============================================================================
+
+#include "pin_functions.hpp"
+
+// ============================================================================
 // Namespace Convenience Aliases
 // ============================================================================
 
@@ -136,6 +142,7 @@ namespace alloy::hal::st::stm32f1::stm32f103xx {
 //   - 31 peripheral register structures
 //   - 31 peripheral bit field definitions
 //   - Enumeration definitions
+//   - Pin alternate function mappings
 //
 // Total peripherals with registers: 31
 //

@@ -21,21 +21,9 @@ struct LOCKBIT_Registers {
     /// Lock Bits Word 0
     /// Offset: 0x0000
     volatile uint32_t WORD0;
-
-    /// Lock Bits Word 1
-    /// Offset: 0x0004
-    volatile uint32_t WORD1;
-
-    /// Lock Bits Word 2
-    /// Offset: 0x0008
-    volatile uint32_t WORD2;
-
-    /// Lock Bits Word 3
-    /// Offset: 0x000C
-    volatile uint32_t WORD3;
 };
 
-static_assert(sizeof(LOCKBIT_Registers) >= 16, "LOCKBIT_Registers size mismatch");
+static_assert(sizeof(LOCKBIT_Registers) >= 4, "LOCKBIT_Registers size mismatch");
 
 /// LOCKBIT peripheral instance
 inline LOCKBIT_Registers* LOCKBIT() {

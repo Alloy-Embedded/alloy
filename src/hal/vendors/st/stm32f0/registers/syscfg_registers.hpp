@@ -25,29 +25,25 @@ struct SYSCFG_Registers {
     volatile uint32_t CFGR1;
     uint8_t RESERVED_0004[4]; ///< Reserved
 
-    /// external interrupt configuration register
-          1
+    /// external interrupt configuration register 1
     /// Offset: 0x0008
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t EXTICR1;
 
-    /// external interrupt configuration register
-          2
+    /// external interrupt configuration register 2
     /// Offset: 0x000C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t EXTICR2;
 
-    /// external interrupt configuration register
-          3
+    /// external interrupt configuration register 3
     /// Offset: 0x0010
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t EXTICR3;
 
-    /// external interrupt configuration register
-          4
+    /// external interrupt configuration register 4
     /// Offset: 0x0014
     /// Reset value: 0x00000000
     /// Access: read-write

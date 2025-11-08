@@ -1,0 +1,415 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://alloy-embedded.com/schemas/codegen/family.schema.json",
+  "title": "Family Metadata Schema",
+  "description": "Schema for MCU family-level code generation metadata",
+  "type": "object",
+  "required": [
+    "family",
+    "vendor",
+    "architecture",
+    "mcus"
+  ],
+  "properties": {
+    "family": {
+      "type": "string",
+      "description": "Family name (e.g., 'SAME70', 'STM32F4')",
+      "minLength": 1
+    },
+    "vendor": {
+      "type": "string",
+      "description": "Vendor name (must match vendor metadata)",
+      "minLength": 1
+    },
+    "architecture": {
+      "type": "string",
+      "description": "Architecture family",
+      "enum": [
+        "arm_cortex_m",
+        "arm_cortex_a",
+        "risc_v",
+        "rl78",
+        "xtensa",
+        "avr",
+        "mips"
+      ]
+    },
+    "core": {
+      "type": "string",
+      "description": "Specific core (e.g., 'Cortex-M7', 'Cortex-M4F')"
+    },
+    "register_generation": {
+      "type": "object",
+      "description": "Register structure generation configuration",
+      "properties": {
+        "namespace_format": {
+          "type": "string",
+          "description": "Template for namespace (e.g., 'alloy::platform::{family}')",
+          "default": "alloy::platform::{family}"
+        },
+        "struct_name_format": {
+          "type": "string",
+          "description": "Template for struct name (e.g., '{peripheral}Registers')",
+          "default": "{peripheral}Registers"
+        },
+        "type_mappings": {
+          "type": "object",
+          "description": "SVD type to C++ type mappings",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "handle_overlaps": {
+          "type": "string",
+          "enum": ["union", "separate", "error"],
+          "default": "union",
+          "description": "How to handle overlapping registers"
+        },
+        "generate_padding": {
+          "type": "boolean",
+          "default": true,
+          "description": "Generate padding fields for gaps"
+        },
+        "padding_name_format": {
+          "type": "string",
+          "default": "_reserved{n}",
+          "description": "Format for padding field names"
+        },
+        "array_handling": {
+          "type": "string",
+          "enum": ["array", "separate", "both"],
+          "default": "array",
+          "description": "How to handle register arrays"
+        }
+      }
+    },
+    "bitfield_generation": {
+      "type": "object",
+      "description": "Bitfield enum generation configuration",
+      "properties": {
+        "enum_style": {
+          "type": "string",
+          "enum": ["enum_class", "namespace_enum", "constexpr"],
+          "default": "enum_class"
+        },
+        "value_format": {
+          "type": "string",
+          "enum": ["hex", "decimal", "binary"],
+          "default": "hex"
+        },
+        "generate_masks": {
+          "type": "boolean",
+          "default": true
+        },
+        "mask_suffix": {
+          "type": "string",
+          "default": "_MASK"
+        },
+        "shift_suffix": {
+          "type": "string",
+          "default": "_SHIFT"
+        },
+        "generate_helpers": {
+          "type": "boolean",
+          "default": true,
+          "description": "Generate set_field/get_field helpers"
+        }
+      }
+    },
+    "svd_fixes": {
+      "type": "object",
+      "description": "Family-specific SVD bug fixes",
+      "properties": {
+        "dimension_fixes": {
+          "type": "object",
+          "description": "Fix incorrect array dimensions",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        },
+        "address_fixes": {
+          "type": "object",
+          "description": "Fix incorrect base addresses",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^0x[0-9A-Fa-f]+$"
+          }
+        },
+        "name_replacements": {
+          "type": "object",
+          "description": "Replace incorrect names",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "peripherals": {
+      "type": "object",
+      "description": "Per-peripheral configuration overrides",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "template": {
+            "type": "string",
+            "description": "Custom template file for this peripheral"
+          },
+          "metadata_file": {
+            "type": "string",
+            "description": "Path to peripheral metadata JSON"
+          },
+          "registers": {
+            "type": "object",
+            "description": "Register-specific overrides"
+          },
+          "operations": {
+            "type": "array",
+            "description": "List of supported operations",
+            "items": {
+              "type": "object",
+              "required": ["name", "registers"],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "registers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "platform": {
+      "type": "object",
+      "description": "Platform HAL configuration",
+      "properties": {
+        "gpio": {
+          "type": "object",
+          "properties": {
+            "num_ports": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "pins_per_port": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "peripheral_functions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "supports_interrupts": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "uart": {
+          "type": "object",
+          "properties": {
+            "num_ports": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_baud": {
+              "type": "integer"
+            },
+            "supports_dma": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "spi": {
+          "type": "object",
+          "properties": {
+            "num_ports": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_frequency": {
+              "type": "integer"
+            },
+            "supports_dma": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "i2c": {
+          "type": "object",
+          "properties": {
+            "num_ports": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_speed": {
+              "type": "integer"
+            },
+            "supports_multi_master": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      }
+    },
+    "memory_layout": {
+      "type": "object",
+      "description": "Memory regions for linker script generation",
+      "properties": {
+        "flash": {
+          "type": "object",
+          "required": ["base", "size"],
+          "properties": {
+            "base": {
+              "type": "string",
+              "pattern": "^0x[0-9A-Fa-f]+$"
+            },
+            "size": {
+              "type": "string",
+              "description": "Size (e.g., '512K', '2M')"
+            },
+            "page_size": {
+              "type": "string"
+            }
+          }
+        },
+        "ram": {
+          "type": "object",
+          "required": ["base", "size"],
+          "properties": {
+            "base": {
+              "type": "string",
+              "pattern": "^0x[0-9A-Fa-f]+$"
+            },
+            "size": {
+              "type": "string"
+            }
+          }
+        },
+        "dtcm": {
+          "type": "object",
+          "properties": {
+            "base": {
+              "type": "string",
+              "pattern": "^0x[0-9A-Fa-f]+$"
+            },
+            "size": {
+              "type": "string"
+            }
+          }
+        },
+        "itcm": {
+          "type": "object",
+          "properties": {
+            "base": {
+              "type": "string",
+              "pattern": "^0x[0-9A-Fa-f]+$"
+            },
+            "size": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "startup": {
+      "type": "object",
+      "description": "Startup code generation configuration",
+      "properties": {
+        "stack_size": {
+          "type": "integer",
+          "minimum": 1024,
+          "default": 8192
+        },
+        "heap_size": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "enable_fpu": {
+          "type": "boolean",
+          "default": false
+        },
+        "enable_cache": {
+          "type": "boolean",
+          "default": false
+        },
+        "enable_mpu": {
+          "type": "boolean",
+          "default": false
+        },
+        "vector_table_location": {
+          "type": "string",
+          "enum": ["flash", "ram"],
+          "default": "flash"
+        }
+      }
+    },
+    "mcus": {
+      "type": "object",
+      "description": "Specific MCU variants in this family",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["flash", "ram"],
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "flash": {
+            "type": "object",
+            "required": ["size_kb"],
+            "properties": {
+              "size_kb": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "base_address": {
+                "type": "string",
+                "pattern": "^0x[0-9A-Fa-f]+$"
+              }
+            }
+          },
+          "ram": {
+            "type": "object",
+            "required": ["size_kb"],
+            "properties": {
+              "size_kb": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "base_address": {
+                "type": "string",
+                "pattern": "^0x[0-9A-Fa-f]+$"
+              }
+            }
+          },
+          "peripherals": {
+            "type": "object",
+            "description": "Peripheral instance overrides for this specific MCU"
+          },
+          "package": {
+            "type": "string",
+            "description": "Package type (e.g., 'LQFP100', 'BGA144')"
+          }
+        }
+      }
+    }
+  }
+}

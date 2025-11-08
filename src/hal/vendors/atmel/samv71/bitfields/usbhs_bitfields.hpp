@@ -1211,9 +1211,9 @@ namespace deveptcfg {
     constexpr uint32_t EPBK_Msk = EPBK::mask;
     /// Enumerated values for EPBK
     namespace epbk {
-        constexpr uint32_t 1_BANK = 0;
-        constexpr uint32_t 2_BANK = 1;
-        constexpr uint32_t 3_BANK = 2;
+        constexpr uint32_t _1_BANK = 0;
+        constexpr uint32_t _2_BANK = 1;
+        constexpr uint32_t _3_BANK = 2;
     }
 
     /// Endpoint Size
@@ -1223,14 +1223,14 @@ namespace deveptcfg {
     constexpr uint32_t EPSIZE_Msk = EPSIZE::mask;
     /// Enumerated values for EPSIZE
     namespace epsize {
-        constexpr uint32_t 8_BYTE = 0;
-        constexpr uint32_t 16_BYTE = 1;
-        constexpr uint32_t 32_BYTE = 2;
-        constexpr uint32_t 64_BYTE = 3;
-        constexpr uint32_t 128_BYTE = 4;
-        constexpr uint32_t 256_BYTE = 5;
-        constexpr uint32_t 512_BYTE = 6;
-        constexpr uint32_t 1024_BYTE = 7;
+        constexpr uint32_t _8_BYTE = 0;
+        constexpr uint32_t _16_BYTE = 1;
+        constexpr uint32_t _32_BYTE = 2;
+        constexpr uint32_t _64_BYTE = 3;
+        constexpr uint32_t _128_BYTE = 4;
+        constexpr uint32_t _256_BYTE = 5;
+        constexpr uint32_t _512_BYTE = 6;
+        constexpr uint32_t _1024_BYTE = 7;
     }
 
     /// Endpoint Direction

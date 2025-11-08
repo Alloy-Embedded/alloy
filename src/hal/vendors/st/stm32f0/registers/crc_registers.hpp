@@ -11,8 +11,7 @@
 namespace alloy::hal::st::stm32f0::crc {
 
 // ============================================================================
-// CRC - cyclic redundancy check calculation
-      unit
+// CRC - cyclic redundancy check calculation unit
 // Base Address: 0x40023000
 // ============================================================================
 

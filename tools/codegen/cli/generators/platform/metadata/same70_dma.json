@@ -1,0 +1,335 @@
+{
+  "family": "same70",
+  "vendor": "atmel",
+  "peripheral_name": "XDMAC",
+  "register_include": "hal/vendors/atmel/same70/registers/xdmac_registers.hpp",
+  "bitfield_include": "hal/vendors/atmel/same70/bitfields/xdmac_bitfields.hpp",
+  "register_namespace": "alloy::hal::atmel::same70::xdmac",
+  "register_type": "XDMAC_Registers",
+  "platform_namespace": "alloy::hal::same70",
+  "vendor_namespace": "alloy::hal::atmel::same70",
+  "namespace_alias": "xdmac",
+  "requires_clock": false,
+
+  "template_params": [
+    {
+      "name": "CHANNEL_NUM",
+      "type": "uint8_t",
+      "description": "DMA channel number (0-23)"
+    }
+  ],
+
+  "additional_enums": [
+    {
+      "name": "DmaDirection",
+      "type": "uint8_t",
+      "description": "DMA Transfer Direction",
+      "values": [
+        {"name": "PeripheralToMemory", "value": 0, "description": "Peripheral -> Memory (e.g., ADC -> RAM)"},
+        {"name": "MemoryToPeripheral", "value": 1, "description": "Memory -> Peripheral (e.g., RAM -> UART)"},
+        {"name": "MemoryToMemory", "value": 2, "description": "Memory -> Memory (memcpy)"}
+      ]
+    },
+    {
+      "name": "DmaWidth",
+      "type": "uint8_t",
+      "description": "DMA Transfer Width",
+      "values": [
+        {"name": "Byte", "value": 0, "description": "8-bit transfers"},
+        {"name": "HalfWord", "value": 1, "description": "16-bit transfers"},
+        {"name": "Word", "value": 2, "description": "32-bit transfers"}
+      ]
+    },
+    {
+      "name": "DmaPeripheralId",
+      "type": "uint8_t",
+      "description": "DMA Peripheral IDs for hardware handshaking",
+      "values": [
+        {"name": "TWIHS0_TX", "value": 0, "description": "TWI0 Transmit"},
+        {"name": "TWIHS0_RX", "value": 1, "description": "TWI0 Receive"},
+        {"name": "TWIHS1_TX", "value": 2, "description": "TWI1 Transmit"},
+        {"name": "TWIHS1_RX", "value": 3, "description": "TWI1 Receive"},
+        {"name": "TWIHS2_TX", "value": 4, "description": "TWI2 Transmit"},
+        {"name": "TWIHS2_RX", "value": 5, "description": "TWI2 Receive"},
+        {"name": "SPI0_TX", "value": 6, "description": "SPI0 Transmit"},
+        {"name": "SPI0_RX", "value": 7, "description": "SPI0 Receive"},
+        {"name": "SPI1_TX", "value": 8, "description": "SPI1 Transmit"},
+        {"name": "SPI1_RX", "value": 9, "description": "SPI1 Receive"},
+        {"name": "USART0_TX", "value": 10, "description": "USART0 Transmit"},
+        {"name": "USART0_RX", "value": 11, "description": "USART0 Receive"},
+        {"name": "USART1_TX", "value": 12, "description": "USART1 Transmit"},
+        {"name": "USART1_RX", "value": 13, "description": "USART1 Receive"},
+        {"name": "USART2_TX", "value": 14, "description": "USART2 Transmit"},
+        {"name": "USART2_RX", "value": 15, "description": "USART2 Receive"},
+        {"name": "AFEC0", "value": 16, "description": "ADC AFEC0"},
+        {"name": "AFEC1", "value": 17, "description": "ADC AFEC1"},
+        {"name": "DACC", "value": 18, "description": "DAC"},
+        {"name": "SSC_TX", "value": 19, "description": "SSC Transmit"},
+        {"name": "SSC_RX", "value": 20, "description": "SSC Receive"},
+        {"name": "PWM0", "value": 21, "description": "PWM0"},
+        {"name": "PWM1", "value": 22, "description": "PWM1"},
+        {"name": "MEM", "value": 255, "description": "Memory-to-memory (no peripheral)"}
+      ]
+    }
+  ],
+
+  "config_struct": {
+    "name": "DmaConfig",
+    "description": "DMA Channel Configuration",
+    "fields": [
+      {"name": "direction", "type": "DmaDirection", "default": "DmaDirection::PeripheralToMemory", "description": "Transfer direction"},
+      {"name": "src_width", "type": "DmaWidth", "default": "DmaWidth::Word", "description": "Source data width"},
+      {"name": "dst_width", "type": "DmaWidth", "default": "DmaWidth::Word", "description": "Destination data width"},
+      {"name": "peripheral", "type": "DmaPeripheralId", "default": "DmaPeripheralId::MEM", "description": "Peripheral ID for handshaking"},
+      {"name": "src_increment", "type": "bool", "default": "false", "description": "Increment source address"},
+      {"name": "dst_increment", "type": "bool", "default": "true", "description": "Increment destination address"},
+      {"name": "burst_size", "type": "uint8_t", "default": "1", "description": "Burst size (1, 4, 8, 16)"}
+    ]
+  },
+
+  "constants": [
+    {
+      "name": "base_address",
+      "type": "uint32_t",
+      "value": "0x40078000",
+      "constexpr": true,
+      "description": "XDMAC base address"
+    },
+    {
+      "name": "channel_offset",
+      "type": "uint32_t",
+      "value": "0x50 + (CHANNEL_NUM * 0x40)",
+      "constexpr": true,
+      "description": "Channel register offset"
+    }
+  ],
+
+  "static_asserts": [
+    {"condition": "CHANNEL_NUM < 24", "message": "SAME70 XDMAC has 24 channels (0-23)"}
+  ],
+
+  "registers": {
+    "global_enable": {"name": "GE", "description": "Global Channel Enable Register"},
+    "global_disable": {"name": "GD", "description": "Global Channel Disable Register"},
+    "global_status": {"name": "GS", "description": "Global Channel Status Register"},
+    "global_interrupt_enable": {"name": "GIE", "description": "Global Interrupt Enable Register"},
+    "global_software_request": {"name": "GSWR", "description": "Global Channel Software Request Register"}
+  },
+
+  "additional_structs": [
+    {
+      "name": "XdmacChannelRegisters",
+      "description": "XDMAC Channel Registers (per-channel). Each of the 24 DMA channels has its own register block at offset 0x50 + (channel * 0x40)",
+      "fields": [
+        {"name": "CIE", "type": "volatile uint32_t", "description": "Channel Interrupt Enable"},
+        {"name": "CID", "type": "volatile uint32_t", "description": "Channel Interrupt Disable"},
+        {"name": "CIM", "type": "volatile uint32_t", "description": "Channel Interrupt Mask"},
+        {"name": "CIS", "type": "volatile uint32_t", "description": "Channel Interrupt Status"},
+        {"name": "CSA", "type": "volatile uint32_t", "description": "Channel Source Address"},
+        {"name": "CDA", "type": "volatile uint32_t", "description": "Channel Destination Address"},
+        {"name": "CNDA", "type": "volatile uint32_t", "description": "Channel Next Descriptor Address"},
+        {"name": "CNDC", "type": "volatile uint32_t", "description": "Channel Next Descriptor Control"},
+        {"name": "CUBC", "type": "volatile uint32_t", "description": "Channel Microblock Control"},
+        {"name": "CBC", "type": "volatile uint32_t", "description": "Channel Block Control"},
+        {"name": "CC", "type": "volatile uint32_t", "description": "Channel Configuration"},
+        {"name": "CDS_MSP", "type": "volatile uint32_t", "description": "Channel Data Stride/Memory Set Pattern"},
+        {"name": "CSUS", "type": "volatile uint32_t", "description": "Channel Source Microblock Stride"},
+        {"name": "CDUS", "type": "volatile uint32_t", "description": "Channel Destination Microblock Stride"},
+        {"name": "RESERVED[2]", "type": "uint32_t", "description": "Reserved"}
+      ]
+    }
+  ],
+
+  "additional_methods": [
+    {
+      "name": "get_xdmac",
+      "description": "Get XDMAC peripheral registers",
+      "return_type": "volatile alloy::hal::atmel::same70::xdmac::XDMAC_Registers*",
+      "static": true,
+      "inline": true,
+      "const": false,
+      "body": "#ifdef ALLOY_DMA_MOCK_HW\n        return ALLOY_DMA_MOCK_HW();\n#else\n        return reinterpret_cast<volatile alloy::hal::atmel::same70::xdmac::XDMAC_Registers*>(base_address);\n#endif"
+    },
+    {
+      "name": "get_channel",
+      "description": "Get DMA channel registers",
+      "return_type": "volatile XdmacChannelRegisters*",
+      "static": true,
+      "inline": true,
+      "const": false,
+      "body": "#ifdef ALLOY_DMA_MOCK_CHANNEL\n        return ALLOY_DMA_MOCK_CHANNEL();\n#else\n        return reinterpret_cast<volatile XdmacChannelRegisters*>(base_address + channel_offset);\n#endif"
+    }
+  ],
+
+  "operations": {
+    "open": {
+      "description": "Enable DMA channel and clock",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (m_opened)",
+          "return_error": "ErrorCode::AlreadyInitialized"
+        },
+        {
+          "comment": "Enable XDMAC clock (peripheral ID 22)",
+          "custom_code": "// TODO: Enable peripheral clock via PMC"
+        },
+        {
+          "comment": "Disable channel initially",
+          "custom_code": "auto* xdmac = get_xdmac();\n        xdmac->GD = (1u << CHANNEL_NUM);"
+        },
+        {
+          "set_state": "m_opened = true"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "close": {
+      "description": "Close DMA channel",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable channel",
+          "custom_code": "auto* xdmac = get_xdmac();\n        xdmac->GD = (1u << CHANNEL_NUM);"
+        },
+        {
+          "set_state": "m_opened = false"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "configure": {
+      "description": "Configure DMA channel",
+      "parameters": [
+        {"name": "config", "type": "const DmaConfig&", "description": "DMA configuration"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Build CC register value",
+          "custom_code": "auto* channel = get_channel();\n        \n        uint32_t cc = 0;\n        \n        // Transfer type\n        if (config.direction == DmaDirection::MemoryToMemory) {\n            cc = xdmac::cc::TYPE::write(cc, xdmac::cc::type::MEM_TRAN);\n        } else {\n            cc = xdmac::cc::TYPE::write(cc, xdmac::cc::type::PER_TRAN);\n        }\n        \n        // Memory burst size (single beat)\n        cc = xdmac::cc::MBSIZE::write(cc, xdmac::cc::mbsize::SINGLE);\n        \n        // Synchronization and peripheral ID\n        if (config.peripheral != DmaPeripheralId::MEM) {\n            // Peripheral synchronized\n            cc = xdmac::cc::DSYNC::write(cc, xdmac::cc::dsync::PER2MEM);\n            cc = xdmac::cc::PERID::write(cc, static_cast<uint32_t>(config.peripheral));\n        } else {\n            // Memory synchronized\n            cc = xdmac::cc::DSYNC::write(cc, xdmac::cc::dsync::MEM2PER);\n        }\n        \n        // Source addressing mode\n        if (config.src_increment) {\n            cc = xdmac::cc::SAM::write(cc, xdmac::cc::sam::INCREMENTED_AM);\n        } else {\n            cc = xdmac::cc::SAM::write(cc, xdmac::cc::sam::FIXED_AM);\n        }\n        \n        // Destination addressing mode\n        if (config.dst_increment) {\n            cc = xdmac::cc::DAM::write(cc, xdmac::cc::dam::INCREMENTED_AM);\n        } else {\n            cc = xdmac::cc::DAM::write(cc, xdmac::cc::dam::FIXED_AM);\n        }\n        \n        // Data width\n        uint32_t width_value = xdmac::cc::dwidth::BYTE;\n        if (config.src_width == DmaWidth::HalfWord) {\n            width_value = xdmac::cc::dwidth::HALFWORD;\n        } else if (config.src_width == DmaWidth::Word) {\n            width_value = xdmac::cc::dwidth::WORD;\n        }\n        cc = xdmac::cc::DWIDTH::write(cc, width_value);\n        \n        // Write configuration\n        channel->CC = cc;\n        \n        m_config = config;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "transfer": {
+      "description": "Start DMA transfer",
+      "parameters": [
+        {"name": "src_addr", "type": "const volatile void*", "description": "Source address"},
+        {"name": "dst_addr", "type": "volatile void*", "description": "Destination address"},
+        {"name": "size", "type": "size_t", "description": "Transfer size in units"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "note": "Size is in units (bytes, halfwords, or words depending on width)",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (src_addr == nullptr || dst_addr == nullptr || size == 0)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "custom_code": "auto* xdmac = get_xdmac();\n        auto* channel = get_channel();\n        \n        // Set source and destination addresses\n        channel->CSA = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(src_addr));\n        channel->CDA = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(dst_addr));\n        \n        // Set transfer size (microblock control)\n        channel->CUBC = size & 0xFFFFFF;  // 24-bit transfer count\n        \n        // Enable channel\n        xdmac->GE = (1u << CHANNEL_NUM);\n        \n        // For memory-to-memory, trigger software request\n        if (m_config.peripheral == DmaPeripheralId::MEM) {\n            xdmac->GSWR = (1u << CHANNEL_NUM);\n        }"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "isComplete": {
+      "description": "Check if transfer is complete",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "steps": [
+        {
+          "custom_code": "auto* xdmac = get_xdmac();\n        // Check if channel is still enabled\n        return (xdmac->GS & (1u << CHANNEL_NUM)) == 0;"
+        }
+      ],
+      "returns": "(xdmac->GS & (1u << CHANNEL_NUM)) == 0",
+      "returns_type": "bool"
+    },
+
+    "waitComplete": {
+      "description": "Wait for transfer to complete",
+      "parameters": [
+        {"name": "timeout_ms", "type": "uint32_t", "default": "1000", "description": "Timeout in milliseconds"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "custom_code": "uint32_t count = 0;\n        while (!isComplete() && count < timeout_ms * 1000) {\n            ++count;\n        }\n        \n        if (!isComplete()) {\n            return Err(ErrorCode::Timeout);\n        }"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "enableInterrupts": {
+      "description": "Enable channel interrupts",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Enable block interrupt for this channel",
+          "custom_code": "auto* xdmac = get_xdmac();\n        xdmac->GIE = (1u << CHANNEL_NUM);"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "isOpen": {
+      "description": "Check if DMA channel is open",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "returns": "m_opened",
+      "returns_type": "bool",
+      "steps": []
+    }
+  },
+
+  "state_variables": [
+    {"name": "m_opened", "type": "bool", "initial_value": "false", "description": "Tracks if channel is initialized"},
+    {"name": "m_config", "type": "DmaConfig", "initial_value": "{}", "description": "Current configuration"}
+  ],
+
+  "instances": [
+    {"name": "DmaChannel0", "channel": "0", "description": "DMA Channel 0 - General purpose"},
+    {"name": "DmaChannel1", "channel": "1", "description": "DMA Channel 1 - General purpose"},
+    {"name": "DmaChannel2", "channel": "2", "description": "DMA Channel 2 - General purpose"},
+    {"name": "DmaChannel3", "channel": "3", "description": "DMA Channel 3 - General purpose"},
+    {"name": "DmaChannel4", "channel": "4", "description": "DMA Channel 4 - General purpose"},
+    {"name": "DmaChannel5", "channel": "5", "description": "DMA Channel 5 - General purpose"},
+    {"name": "DmaChannel6", "channel": "6", "description": "DMA Channel 6 - General purpose"},
+    {"name": "DmaChannel7", "channel": "7", "description": "DMA Channel 7 - General purpose"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic DMA memory copy",
+      "code": "auto dma = DmaChannel0{};\nDmaConfig config;\nconfig.direction = DmaDirection::MemoryToMemory;\nconfig.src_increment = true;\nconfig.dst_increment = true;\nuint32_t src[100], dst[100];\ndma.open();\ndma.configure(config);\ndma.transfer(src, dst, 100);\ndma.waitComplete();"
+    }
+  }
+}
