@@ -138,10 +138,8 @@ class UnifiedGenerator:
 
         # Load platform-specific metadata if peripheral is specified
         if peripheral:
-            # Platform metadata is in cli/generators/platform/metadata/
-            # metadata_dir is cli/generators/metadata, so go up one level
-            generators_dir = self.metadata_dir.parent
-            platform_metadata_file = generators_dir / 'platform' / 'metadata' / f'{family}_{peripheral}.json'
+            # Platform metadata is now in cli/generators/metadata/platform/
+            platform_metadata_file = self.metadata_dir / 'platform' / f'{family}_{peripheral}.json'
             if platform_metadata_file.exists():
                 try:
                     import json

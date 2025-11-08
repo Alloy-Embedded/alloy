@@ -1,209 +1,171 @@
 # Alloy Code Generator
 
-Sistema de geração automática de código para MCUs a partir de arquivos CMSIS-SVD.
+Sistema de geração automática de código C++ zero-overhead para MCUs a partir de arquivos CMSIS-SVD e templates Jinja2.
 
 ## 🚀 Quick Start
 
 ```bash
 cd tools/codegen
 
-# Gerar tudo (startup + registers + enums + pins)
-./codegen generate
+# Gerar HAL completo para uma família
+python3 codegen.py --family same70
 
-# Ver status
-./codegen status
+# Gerar a partir de arquivo SVD
+python3 scripts/generate_from_svd.py path/to/device.svd
 
-# Help
-./codegen --help
+# Formatar código gerado
+./scripts/format_generated_code.sh
+
+# Executar testes
+./scripts/run_tests.sh
 ```
 
-**Novo!** CLI unificada com geração completa de registros, bit fields e enumerações. Ver [CLI_GUIDE.md](CLI_GUIDE.md) para detalhes.
-
-## Estrutura
+## 📁 Estrutura do Projeto
 
 ```
 tools/codegen/
-├── cli/                    # CLI principal
-│   ├── core/              # Infraestrutura central
-│   │   ├── config.py      # Configuração centralizada
-│   │   ├── paths.py       # Gerenciamento de caminhos
-│   │   ├── logger.py      # Sistema de logs
-│   │   ├── progress.py    # Rastreamento de progresso
-│   │   └── manifest.py    # Gerenciamento de manifesto
-│   ├── parsers/           # Parsers SVD
-│   │   └── generic_svd.py # Parser SVD genérico
-│   ├── generators/        # Geradores de código
-│   │   └── generate_startup.py
-│   └── vendors/           # Código específico por vendor
-│       ├── st/
-│       ├── atmel/
-│       ├── raspberrypi/
-│       └── espressif/
-└── upstream/              # Arquivos SVD externos
+├── cli/                          # Geradores principais
+│   ├── core/                     # Infraestrutura
+│   └── generators/               # Geradores de código
+│       ├── metadata/             # Metadados centralizados
+│       │   ├── vendors/          # Configuração de vendors
+│       │   ├── families/         # Configuração de famílias
+│       │   ├── platform/         # Metadados de periféricos (GPIO, UART, etc)
+│       │   ├── linker/           # Metadados de linker scripts
+│       │   └── peripherals/      # Metadados adicionais
+│       ├── unified_generator.py  # Gerador unificado template-based
+│       ├── generate_registers.py # Gerador de registros (SVD)
+│       ├── generate_startup.py   # Gerador de startup
+│       └── code_formatter.py     # Auto-formatação
+│
+├── templates/                    # Templates Jinja2
+│   ├── platform/                 # Templates HAL (GPIO, UART, SPI, etc)
+│   ├── registers/                # Templates de registros
+│   ├── startup/                  # Templates de startup
+│   └── linker/                   # Templates de linker scripts
+│
+├── schemas/                      # JSON Schemas para validação
+│   ├── vendor.schema.json
+│   ├── family.schema.json
+│   └── peripheral.schema.json
+│
+├── tests/                        # Testes unitários e integração
+│   ├── test_unified_generator.py
+│   ├── test_register_generation.py
+│   └── test_startup_generation.py
+│
+├── scripts/                      # Scripts utilitários
+│   ├── generate_from_svd.py      # Processador SVD
+│   ├── format_generated_code.sh  # Auto-formatação
+│   ├── run_tests.sh              # Test runner
+│   └── validate_metadata.py      # Validação de metadados
+│
+├── docs/                         # Documentação
+│   ├── guides/                   # Guias de uso
+│   ├── architecture/             # Arquitetura e design
+│   ├── usage/                    # Exemplos de uso
+│   └── development/              # Desenvolvimento
+│
+├── svd/                          # Arquivos SVD
+│   ├── custom/                   # SVDs customizados
+│   └── upstream/                 # SVDs upstream (CMSIS-SVD-data)
+│
+└── codegen.py                    # Script principal
+
 ```
 
-## Comandos Principais
+## 🎯 Capacidades
 
-**Nova CLI Unificada!** Use `./codegen` para tudo:
+### ✅ Geração Implementada
 
-### 1. Gerar Código
+- **Vendor Layer** (SVD-based):
+  - ✓ Register definitions com bitfields
+  - ✓ Enumerações e tipos
+  - ✓ Pin functions
+  - ✓ Register maps
+  - ✓ Startup code
+
+- **Platform HAL** (Template-based):
+  - ✓ GPIO (9 periféricos)
+  - ✓ UART (9 periféricos)
+  - ✓ SPI
+  - ✓ I2C
+  - ✓ Timer
+  - ✓ PWM
+  - ✓ ADC
+  - ✓ DMA
+  - ✓ Clock
+
+- **Linker Scripts**:
+  - ✓ Memory layout
+  - ✓ Heap/stack configuration
+  - ✓ C++ support
+
+### 🎨 Arquitetura
+
+**Dois sistemas de geração:**
+
+1. **SVD-based** (Vendor Layer)
+   - Parseia arquivos CMSIS-SVD
+   - Gera registros, bitfields, enums
+   - Fornece acesso de baixo nível ao hardware
+
+2. **Template-based** (Platform HAL)
+   - Usa templates Jinja2 + metadados JSON
+   - Gera APIs de alto nível tipo-safe
+   - Zero overhead, 100% compile-time
+
+## 📖 Documentação
+
+- **[Quick Start](docs/guides/QUICK_START.md)** - Primeiros passos
+- **[CLI Guide](docs/guides/CLI_GUIDE.md)** - Uso da CLI
+- **[Template Guide](docs/architecture/TEMPLATE_GUIDE.md)** - Desenvolvimento de templates
+- **[Architecture](docs/architecture/TEMPLATE_ARCHITECTURE.md)** - Arquitetura do sistema
+- **[Testing](docs/development/TESTING.md)** - Executar e escrever testes
+
+## 🔧 Desenvolvimento
+
+### Executar Testes
 
 ```bash
-# Gerar tudo (startup + registers + enums + pins para todos vendors)
-./codegen generate
+# Todos os testes
+./scripts/run_tests.sh
 
-# Apenas startup
-./codegen generate --startup
+# Testes específicos
+python3 -m pytest tests/test_unified_generator.py -v
 
-# Apenas registros e bitfields
-./codegen generate --registers
-
-# Apenas enumerações
-./codegen generate --enums
-
-# Apenas pins
-./codegen generate --pins
-
-# Pins para vendor específico
-./codegen generate --pins --vendor st
-
-# Com verbose
-./codegen generate --verbose
-
-# Modo quiet (mais rápido)
-./codegen generate --quiet
+# Com coverage
+python3 -m pytest --cov=cli/generators --cov-report=html
 ```
 
-Aliases: `gen`, `g`
-```bash
-./codegen gen              # Mesmo que generate
-./codegen g --startup      # Atalho
-```
-
-**MCUs suportados**:
-- ATSAMD21G18A (arduino_zero)
-- STM32F103 (bluepill)
-- ESP32 (esp32_devkit)
-- RP2040 (rp_pico)
-- ATSAME70Q21 (same70_xpld)
-- ATSAMV71Q21 (samv71_xult)
-- STM32F407 (stm32f407vg)
-- STM32F746 (stm32f746disco)
-
-### 2. Ver Status
+### Validar Metadados
 
 ```bash
-./codegen status           # Status geral
-./codegen vendors          # Info de vendors
+python3 scripts/validate_metadata.py
 ```
 
-### 3. Limpar Arquivos
+### Formatar Código Gerado
 
 ```bash
-./codegen clean --stats    # Ver estatísticas
-./codegen clean --dry-run  # Simular limpeza
-./codegen clean            # Limpar (cuidado!)
+# Check mode (não modifica)
+./scripts/format_generated_code.sh --check
+
+# Formatar
+./scripts/format_generated_code.sh
 ```
 
-### 4. Testar Parser
+## 📊 Status
 
-```bash
-./codegen test-parser STMicro/STM32F103.svd --verbose
-```
+- ✅ 9/9 periféricos Platform HAL funcionando (100%)
+- ✅ Auto-formatação com clang-format integrada
+- ✅ 135+ testes unitários passando
+- ✅ Metadata centralizado e organizado
+- ✅ Documentação completa
 
-### 5. Ver Configuração
+## 🤝 Contribuindo
 
-```bash
-./codegen config --test    # Ver e testar config
-```
+Ver [CONTRIBUTING.md](../../CONTRIBUTING.md) para guidelines de contribuição.
 
-## Usando o Parser Genérico
+## 📝 License
 
-```python
-from cli.parsers.generic_svd import parse_svd
-
-device = parse_svd(Path("STM32F103.svd"))
-
-print(f"Device: {device.name}")
-print(f"Vendor: {device.vendor_normalized}")  # Normalizado!
-print(f"Family: {device.family}")              # Auto-detectado!
-print(f"Peripherals: {len(device.peripherals)}")
-print(f"Interrupts: {len(device.interrupts)}")
-```
-
-## Usando a Configuração
-
-```python
-from cli.core.config import normalize_vendor, detect_family
-
-vendor = normalize_vendor("STMicroelectronics")  # → "st"
-family = detect_family("STM32F103C8")            # → "stm32f1"
-```
-
-## Estrutura de Saída
-
-```
-src/hal/vendors/{vendor}/{family}/{mcu}/
-├── startup.cpp
-├── peripherals.hpp
-├── pins.hpp
-├── gpio.hpp
-└── ...
-```
-
-## Vendors Suportados
-
-60+ variações incluindo:
-- ST Microelectronics
-- Microchip/Atmel
-- NXP/Freescale
-- Nordic Semiconductor
-- Texas Instruments
-- Silicon Labs
-- Espressif
-- Raspberry Pi
-
-## Detecção de Família
-
-```python
-"STM32F103C8"  → "stm32f1"
-"ATSAMD21G18A" → "samd21"
-"nRF52840"     → "nrf52"
-"ESP32-C3"     → "esp32_c3"
-"RP2040"       → "rp2040"
-```
-
-## Adicionando Novo Vendor
-
-Edite `cli/core/config.py`:
-
-```python
-VENDOR_NAME_MAP = {
-    "new vendor inc.": "newvendor",
-}
-
-FAMILY_PATTERNS = [
-    (re.compile(r'newchip(\d+)'), r'newchip\1', 'newvendor'),
-]
-```
-
-## Testes
-
-```bash
-# Testar parser
-python3 cli/parsers/generic_svd.py STMicro/STM32F103.svd -v
-
-# Testar config
-python3 -c "from cli.core.config import *; print(detect_family('STM32F407'))"
-```
-
-## Documentação
-
-- `REFACTORING_REPORT.md` - Detalhes técnicos
-- `ANALYSIS_SUMMARY.md` - Análise completa
-- `cli/core/config.py` - Configuração central
-- `cli/parsers/generic_svd.py` - Parser genérico
-
----
-
-**Última atualização**: 2025-11-05
+Ver LICENSE no repositório raiz.

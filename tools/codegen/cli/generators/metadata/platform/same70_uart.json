@@ -1,0 +1,244 @@
+{
+  "family": "same70",
+  "vendor": "atmel",
+  "peripheral_name": "UART",
+  "register_include": "hal/vendors/atmel/same70/registers/uart0_registers.hpp",
+  "bitfield_include": "hal/vendors/atmel/same70/bitfields/uart0_bitfields.hpp",
+  "register_namespace": "atmel::same70::uart0",
+  "namespace_alias": "uart",
+  "register_type": "UART0_Registers",
+  "platform_namespace": "alloy::hal::same70",
+  "vendor_namespace": "alloy::hal::atmel::same70",
+  "requires_clock": false,
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "UART peripheral base address"
+    },
+    {
+      "name": "IRQ_ID",
+      "type": "uint32_t",
+      "description": "UART interrupt ID for clock enable"
+    }
+  ],
+
+  "constants": [
+    {
+      "name": "UART_TIMEOUT",
+      "type": "uint32_t",
+      "value": "100000",
+      "description": "UART timeout in loop iterations (~10ms at 150MHz)"
+    }
+  ],
+
+  "registers": {
+    "control": {"name": "CR", "description": "Control Register"},
+    "mode": {"name": "MR", "description": "Mode Register"},
+    "status": {"name": "SR", "description": "Status Register"},
+    "receive_holding": {"name": "RHR", "description": "Receive Holding Register"},
+    "transmit_holding": {"name": "THR", "description": "Transmit Holding Register"},
+    "baud_rate": {"name": "BRGR", "description": "Baud Rate Generator Register"}
+  },
+
+  "operations": {
+    "open": {
+      "description": "Initialize UART peripheral",
+      "parameters": [
+        {"name": "baud_rate", "type": "uint32_t", "description": "Desired baud rate (e.g., 115200)"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (m_opened)",
+          "return_error": "ErrorCode::AlreadyInitialized"
+        },
+        {
+          "comment": "Enable peripheral clock (PMC)",
+          "custom_code": "// TODO: Enable peripheral clock via PMC"
+        },
+        {
+          "comment": "Reset and disable TX/RX",
+          "custom_code": "hw->CR = uart::cr::RSTRX::mask | uart::cr::RSTTX::mask | uart::cr::RXDIS::mask | uart::cr::TXDIS::mask;"
+        },
+        {
+          "comment": "Configure mode: 8N1 (8 data bits, no parity, 1 stop bit)",
+          "custom_code": "hw->MR = uart::mr::PAR::write(0, uart::mr::par::NO_PARITY);"
+        },
+        {
+          "comment": "Calculate and set baud rate divisor (assuming 150MHz peripheral clock)",
+          "custom_code": "constexpr uint32_t peripheral_clock = 150000000;\n        uint32_t cd = peripheral_clock / (16 * baud_rate);\n        hw->BRGR = uart::brgr::CD::write(0, cd);"
+        },
+        {
+          "comment": "Enable TX and RX",
+          "custom_code": "hw->CR = uart::cr::RXEN::mask | uart::cr::TXEN::mask;"
+        },
+        {
+          "set_state": "m_opened = true"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "close": {
+      "description": "Deinitialize UART peripheral",
+      "parameters": [],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Disable TX and RX",
+          "custom_code": "hw->CR = uart::cr::RXDIS::mask | uart::cr::TXDIS::mask;"
+        },
+        {
+          "comment": "Disable peripheral clock (PMC)",
+          "custom_code": "// TODO: Disable peripheral clock via PMC"
+        },
+        {
+          "set_state": "m_opened = false"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "write": {
+      "description": "Write data to UART (blocking)",
+      "parameters": [
+        {"name": "data", "type": "const uint8_t*", "description": "Data buffer to write"},
+        {"name": "size", "type": "size_t", "description": "Number of bytes to write"}
+      ],
+      "return_type": "Result<size_t, ErrorCode>",
+      "returns": "size",
+      "returns_type": "size_t",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (data == nullptr)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "comment": "Transmit each byte with timeout",
+          "custom_code": "for (size_t i = 0; i < size; ++i) {\n            uint32_t timeout = UART_TIMEOUT;\n            while (!(hw->SR & uart::sr::TXRDY::mask) && --timeout);\n            if (timeout == 0) {\n                return Err(ErrorCode::Timeout);\n            }\n            hw->THR = data[i];\n        }"
+        }
+      ]
+    },
+
+    "read": {
+      "description": "Read data from UART (blocking)",
+      "parameters": [
+        {"name": "data", "type": "uint8_t*", "description": "Buffer for received data"},
+        {"name": "size", "type": "size_t", "description": "Number of bytes to read"}
+      ],
+      "return_type": "Result<size_t, ErrorCode>",
+      "returns": "size",
+      "returns_type": "size_t",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "check_param": "if (data == nullptr)",
+          "return_error": "ErrorCode::InvalidParameter"
+        },
+        {
+          "comment": "Receive each byte with timeout",
+          "custom_code": "for (size_t i = 0; i < size; ++i) {\n            uint32_t timeout = UART_TIMEOUT;\n            while (!(hw->SR & uart::sr::RXRDY::mask) && --timeout);\n            if (timeout == 0) {\n                return Err(ErrorCode::Timeout);\n            }\n            data[i] = static_cast<uint8_t>(hw->RHR);\n        }"
+        }
+      ]
+    },
+
+    "writeByte": {
+      "description": "Write single byte to UART (blocking)",
+      "parameters": [
+        {"name": "byte", "type": "uint8_t", "description": "Byte to write"}
+      ],
+      "return_type": "Result<void, ErrorCode>",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Wait for TX ready with timeout",
+          "custom_code": "uint32_t timeout = UART_TIMEOUT;\n        while (!(hw->SR & uart::sr::TXRDY::mask) && --timeout);\n        if (timeout == 0) {\n            return Err(ErrorCode::Timeout);\n        }\n        hw->THR = byte;"
+        }
+      ],
+      "always_succeeds": true
+    },
+
+    "readByte": {
+      "description": "Read single byte from UART (blocking)",
+      "parameters": [],
+      "return_type": "Result<uint8_t, ErrorCode>",
+      "returns": "static_cast<uint8_t>(hw->RHR)",
+      "returns_type": "uint8_t",
+      "steps": [
+        {
+          "check_state": "if (!m_opened)",
+          "return_error": "ErrorCode::NotInitialized"
+        },
+        {
+          "comment": "Wait for RX ready with timeout",
+          "custom_code": "uint32_t timeout = UART_TIMEOUT;\n        while (!(hw->SR & uart::sr::RXRDY::mask) && --timeout);\n        if (timeout == 0) {\n            return Err(ErrorCode::Timeout);\n        }"
+        }
+      ]
+    },
+
+    "isOpen": {
+      "description": "Check if UART peripheral is open",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "returns": "m_opened",
+      "returns_type": "bool",
+      "steps": []
+    },
+
+    "isReadReady": {
+      "description": "Check if data is available to read",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "returns": "(hw->SR & uart::sr::RXRDY::mask) != 0",
+      "returns_type": "bool",
+      "steps": []
+    },
+
+    "isWriteReady": {
+      "description": "Check if TX buffer is ready for write",
+      "parameters": [],
+      "return_type": "bool",
+      "const": true,
+      "returns": "(hw->SR & uart::sr::TXRDY::mask) != 0",
+      "returns_type": "bool",
+      "steps": []
+    }
+  },
+
+  "state_variables": [
+    {"name": "m_opened", "type": "bool", "initial_value": "false", "description": "Tracks if peripheral is initialized"}
+  ],
+
+  "instances": [
+    {"name": "Uart0", "base": "0x400E0800", "irq": "7", "description": "UART0 instance"},
+    {"name": "Uart1", "base": "0x400E0A00", "irq": "8", "description": "UART1 instance"},
+    {"name": "Uart2", "base": "0x400E1A00", "irq": "44", "description": "UART2 instance"},
+    {"name": "Uart3", "base": "0x400E1C00", "irq": "45", "description": "UART3 instance"},
+    {"name": "Uart4", "base": "0x400E1E00", "irq": "46", "description": "UART4 instance"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic UART usage example",
+      "code": "using MyUart = Uart<UART0_BASE, UART0_IRQ>;\nauto uart = MyUart{};\nuart.open(115200);\nconst char* msg = \"Hello\\n\";\nuart.write(reinterpret_cast<const uint8_t*>(msg), 6);\nuart.close();"
+    }
+  }
+}

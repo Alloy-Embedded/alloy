@@ -53,7 +53,9 @@ def load_metadata(mcu: str) -> Dict[str, Any]:
         FileNotFoundError: If metadata file doesn't exist
         json.JSONDecodeError: If metadata file is invalid JSON
     """
-    metadata_file = SCRIPT_DIR / "metadata" / f"{mcu.lower()}_linker.json"
+    # Linker metadata is now in cli/generators/metadata/linker/
+    metadata_dir = SCRIPT_DIR.parent / "metadata" / "linker"
+    metadata_file = metadata_dir / f"{mcu.lower()}_linker.json"
 
     if not metadata_file.exists():
         raise FileNotFoundError(
@@ -92,7 +94,8 @@ def list_available_mcus() -> list:
     Returns:
         List of MCU names
     """
-    metadata_dir = SCRIPT_DIR / "metadata"
+    # Linker metadata is now in cli/generators/metadata/linker/
+    metadata_dir = SCRIPT_DIR.parent / "metadata" / "linker"
     if not metadata_dir.exists():
         return []
 
