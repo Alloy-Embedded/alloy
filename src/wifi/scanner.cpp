@@ -36,7 +36,7 @@ Scanner::~Scanner() {
 
 Result<void> Scanner::init() {
     if (initialized_) {
-        return Result<void>::ok();
+        return Ok();
     }
 
     // Initialize NVS (required for WiFi)
@@ -50,7 +50,7 @@ Result<void> Scanner::init() {
     // Create event group
     s_scan_event_group = xEventGroupCreate();
     if (s_scan_event_group == nullptr) {
-        return Result<void>::error(ErrorCode::HardwareError);
+        return Err(ErrorCode::HardwareError);
     }
 
     // Initialize TCP/IP stack (if not already initialized)
@@ -91,7 +91,7 @@ Result<void> Scanner::init() {
     }
 
     initialized_ = true;
-    return Result<void>::ok();
+    return Ok();
 }
 
 Result<uint8_t> Scanner::scan(uint32_t timeout_ms) {
@@ -102,11 +102,11 @@ Result<uint8_t> Scanner::scan(uint32_t timeout_ms) {
 
 Result<uint8_t> Scanner::scan(const ScanConfig& config) {
     if (!initialized_) {
-        return Result<uint8_t>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     if (scanning_) {
-        return Result<uint8_t>::error(ErrorCode::Busy);
+        return Err(ErrorCode::Busy);
     }
 
     // Configure scan
@@ -136,16 +136,16 @@ Result<uint8_t> Scanner::scan(const ScanConfig& config) {
     result_count_ = (count > 255) ? 255 : (uint8_t)count;
     scanning_ = false;
 
-    return Result<uint8_t>::ok(result_count_);
+    return Ok(result_count_);
 }
 
 Result<void> Scanner::scan_async(const ScanConfig& config) {
     if (!initialized_) {
-        return Result<void>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     if (scanning_) {
-        return Result<void>::error(ErrorCode::Busy);
+        return Err(ErrorCode::Busy);
     }
 
     // Configure scan
@@ -163,20 +163,20 @@ Result<void> Scanner::scan_async(const ScanConfig& config) {
     scanning_ = true;
     ESP_TRY(esp_wifi_scan_start(&scan_config, false));
 
-    return Result<void>::ok();
+    return Ok();
 }
 
 Result<uint8_t> Scanner::get_results(AccessPointInfo* results, uint8_t max_results) {
     if (!initialized_) {
-        return Result<uint8_t>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     if (results == nullptr || max_results == 0) {
-        return Result<uint8_t>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     if (result_count_ == 0) {
-        return Result<uint8_t>::ok(0);
+        return Ok(0);
     }
 
     // Get actual results
@@ -230,7 +230,7 @@ Result<uint8_t> Scanner::get_results(AccessPointInfo* results, uint8_t max_resul
     }
 
     delete[] ap_records;
-    return Result<uint8_t>::ok((uint8_t)count);
+    return Ok((uint8_t)count);
 }
 
 uint8_t Scanner::result_count() const {
@@ -282,37 +282,42 @@ namespace alloy::wifi {
 // Stub implementation for non-ESP platforms
 Scanner::Scanner() : initialized_(false), scanning_(false), result_count_(0), callback_(nullptr) {}
 
-Scanner::~Scanner() {}
-
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> Scanner::init() {
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
-Result<uint8_t> Scanner::scan(uint32_t) {
-    return Result<uint8_t>::error(ErrorCode::NotSupported);
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+Result<uint8_t> Scanner::scan([[maybe_unused]] uint32_t timeout_ms) {
+    return Err(ErrorCode::NotSupported);
 }
 
-Result<uint8_t> Scanner::scan(const ScanConfig&) {
-    return Result<uint8_t>::error(ErrorCode::NotSupported);
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+Result<uint8_t> Scanner::scan([[maybe_unused]] const ScanConfig& config) {
+    return Err(ErrorCode::NotSupported);
 }
 
-Result<void> Scanner::scan_async(const ScanConfig&) {
-    return Result<void>::error(ErrorCode::NotSupported);
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+Result<void> Scanner::scan_async([[maybe_unused]] const ScanConfig& config) {
+    return Err(ErrorCode::NotSupported);
 }
 
-Result<uint8_t> Scanner::get_results(AccessPointInfo*, uint8_t) {
-    return Result<uint8_t>::error(ErrorCode::NotSupported);
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+Result<uint8_t> Scanner::get_results([[maybe_unused]] AccessPointInfo* results, [[maybe_unused]] uint8_t max_results) {
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 uint8_t Scanner::result_count() const {
     return 0;
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 bool Scanner::is_scanning() const {
     return false;
 }
 
-void Scanner::set_scan_callback(ScanCallback) {}
+void Scanner::set_scan_callback([[maybe_unused]] ScanCallback callback) {}
 
 }  // namespace alloy::wifi
 

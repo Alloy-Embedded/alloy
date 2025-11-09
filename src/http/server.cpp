@@ -62,7 +62,7 @@ Server::~Server() {
 
 Result<void> Server::start() {
     if (running_) {
-        return Result<void>::ok();
+        return Ok();
     }
 
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
@@ -78,15 +78,15 @@ Result<void> Server::start() {
     running_ = true;
     ESP_LOGI(TAG, "HTTP server started on port %d", config_.port);
 
-    return Result<void>::ok();
+    return Ok();
 }
 
 Result<void> Server::stop() {
     if (!running_) {
-        return Result<void>::ok();
+        return Ok();
     }
 
-    if (server_handle_) {
+    if (server_handle_ != nullptr) {
         ESP_TRY(httpd_stop(server_handle_));
         server_handle_ = nullptr;
     }
@@ -94,7 +94,7 @@ Result<void> Server::stop() {
     running_ = false;
     ESP_LOGI(TAG, "HTTP server stopped");
 
-    return Result<void>::ok();
+    return Ok();
 }
 
 bool Server::is_running() const {
@@ -103,11 +103,11 @@ bool Server::is_running() const {
 
 Result<void> Server::on(Method method, const char* uri, Handler handler) {
     if (!running_) {
-        return Result<void>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     if (uri == nullptr || handler == nullptr) {
-        return Result<void>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     // Create context (will be freed by ESP-IDF when unregistering)
@@ -153,7 +153,7 @@ Result<void> Server::on(Method method, const char* uri, Handler handler) {
     }
 
     ESP_LOGI(TAG, "Registered %s %s", method_to_string(method), uri);
-    return Result<void>::ok();
+    return Ok();
 }
 
 Result<void> Server::get(const char* uri, Handler handler) {
@@ -232,21 +232,21 @@ const char* Request::uri() const {
 
 Result<size_t> Request::query(const char* key, char* buffer, size_t buffer_size) const {
     if (key == nullptr || buffer == nullptr || buffer_size == 0) {
-        return Result<size_t>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     // Get query string
     size_t query_len = httpd_req_get_url_query_len(req_);
     if (query_len == 0) {
         buffer[0] = '\0';
-        return Result<size_t>::ok(0);
+        return Ok(0);
     }
 
     // Allocate buffer for query string
     char* query_str = new char[query_len + 1];
     if (httpd_req_get_url_query_str(req_, query_str, query_len + 1) != ESP_OK) {
         delete[] query_str;
-        return Result<size_t>::error(ErrorCode::HardwareError);
+        return Err(ErrorCode::HardwareError);
     }
 
     // Get parameter value
@@ -255,59 +255,59 @@ Result<size_t> Request::query(const char* key, char* buffer, size_t buffer_size)
 
     if (err == ESP_ERR_NOT_FOUND) {
         buffer[0] = '\0';
-        return Result<size_t>::ok(0);
+        return Ok(0);
     } else if (err != ESP_OK) {
         return core::esp_result_error<size_t>(err);
     }
 
-    return Result<size_t>::ok(strlen(buffer));
+    return Ok(strlen(buffer));
 }
 
 Result<size_t> Request::header(const char* key, char* buffer, size_t buffer_size) const {
     if (key == nullptr || buffer == nullptr || buffer_size == 0) {
-        return Result<size_t>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     size_t header_len = httpd_req_get_hdr_value_len(req_, key);
     if (header_len == 0) {
         buffer[0] = '\0';
-        return Result<size_t>::ok(0);
+        return Ok(0);
     }
 
     if (header_len >= buffer_size) {
-        return Result<size_t>::error(ErrorCode::BufferFull);
+        return Err(ErrorCode::BufferFull);
     }
 
     ESP_TRY_T(size_t, httpd_req_get_hdr_value_str(req_, key, buffer, buffer_size));
 
-    return Result<size_t>::ok(strlen(buffer));
+    return Ok(strlen(buffer));
 }
 
 Result<size_t> Request::body(char* buffer, size_t buffer_size) const {
     if (buffer == nullptr || buffer_size == 0) {
-        return Result<size_t>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     size_t content_len = req_->content_len;
     if (content_len == 0) {
         buffer[0] = '\0';
-        return Result<size_t>::ok(0);
+        return Ok(0);
     }
 
     if (content_len >= buffer_size) {
-        return Result<size_t>::error(ErrorCode::BufferFull);
+        return Err(ErrorCode::BufferFull);
     }
 
     int ret = httpd_req_recv(req_, buffer, buffer_size);
     if (ret <= 0) {
         if (ret == HTTPD_SOCK_ERR_TIMEOUT) {
-            return Result<size_t>::error(ErrorCode::Timeout);
+            return Err(ErrorCode::Timeout);
         }
-        return Result<size_t>::error(ErrorCode::CommunicationError);
+        return Err(ErrorCode::CommunicationError);
     }
 
     buffer[ret] = '\0';  // Null-terminate
-    return Result<size_t>::ok(ret);
+    return Ok(ret);
 }
 
 size_t Request::content_length() const {
@@ -330,14 +330,14 @@ Response& Response::status(Status status) {
 }
 
 Response& Response::header(const char* key, const char* value) {
-    if (key && value) {
+    if (key != nullptr && value != nullptr) {
         httpd_resp_set_hdr(req_, key, value);
     }
     return *this;
 }
 
 Response& Response::type(const char* content_type) {
-    if (content_type) {
+    if (content_type != nullptr) {
         httpd_resp_set_type(req_, content_type);
     }
     return *this;
@@ -358,7 +358,7 @@ Result<void> Response::send(const char* body, size_t length) {
     // Send response
     ESP_TRY(httpd_resp_send(req_, body, length));
 
-    return Result<void>::ok();
+    return Ok();
 }
 
 Result<void> Response::json(const char* json) {
@@ -388,38 +388,38 @@ Server::Server(uint16_t port) : config_(), running_(false) {
     config_.port = port;
 }
 Server::Server(const ServerConfig& config) : config_(config), running_(false) {}
-Server::~Server() {}
+Server::~Server() = default;
 
 Result<void> Server::start() {
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 Result<void> Server::stop() {
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 bool Server::is_running() const {
     return false;
 }
 
-Result<void> Server::on(Method, const char*, Handler) {
-    return Result<void>::error(ErrorCode::NotSupported);
+Result<void> Server::on([[maybe_unused]] Method method, [[maybe_unused]] const char* uri, [[maybe_unused]] Handler handler) {
+    return Err(ErrorCode::NotSupported);
 }
 
-Result<void> Server::get(const char*, Handler) {
-    return Result<void>::error(ErrorCode::NotSupported);
+Result<void> Server::get([[maybe_unused]] const char* uri, [[maybe_unused]] Handler handler) {
+    return Err(ErrorCode::NotSupported);
 }
 
-Result<void> Server::post(const char*, Handler) {
-    return Result<void>::error(ErrorCode::NotSupported);
+Result<void> Server::post([[maybe_unused]] const char* uri, [[maybe_unused]] Handler handler) {
+    return Err(ErrorCode::NotSupported);
 }
 
-Result<void> Server::put(const char*, Handler) {
-    return Result<void>::error(ErrorCode::NotSupported);
+Result<void> Server::put([[maybe_unused]] const char* uri, [[maybe_unused]] Handler handler) {
+    return Err(ErrorCode::NotSupported);
 }
 
-Result<void> Server::delete_(const char*, Handler) {
-    return Result<void>::error(ErrorCode::NotSupported);
+Result<void> Server::delete_([[maybe_unused]] const char* uri, [[maybe_unused]] Handler handler) {
+    return Err(ErrorCode::NotSupported);
 }
 
 uint16_t Server::port() const {
@@ -434,14 +434,14 @@ Method Request::method() const {
 const char* Request::uri() const {
     return "";
 }
-Result<size_t> Request::query(const char*, char*, size_t) const {
-    return Result<size_t>::error(ErrorCode::NotSupported);
+Result<size_t> Request::query([[maybe_unused]] const char* key, [[maybe_unused]] char* buffer, [[maybe_unused]] size_t buffer_size) const {
+    return Err(ErrorCode::NotSupported);
 }
-Result<size_t> Request::header(const char*, char*, size_t) const {
-    return Result<size_t>::error(ErrorCode::NotSupported);
+Result<size_t> Request::header([[maybe_unused]] const char* key, [[maybe_unused]] char* buffer, [[maybe_unused]] size_t buffer_size) const {
+    return Err(ErrorCode::NotSupported);
 }
-Result<size_t> Request::body(char*, size_t) const {
-    return Result<size_t>::error(ErrorCode::NotSupported);
+Result<size_t> Request::body([[maybe_unused]] char* buffer, [[maybe_unused]] size_t buffer_size) const {
+    return Err(ErrorCode::NotSupported);
 }
 size_t Request::content_length() const {
     return 0;
@@ -453,23 +453,23 @@ Response& Response::status(Status status) {
     status_ = status;
     return *this;
 }
-Response& Response::header(const char*, const char*) {
+Response& Response::header([[maybe_unused]] const char* key, [[maybe_unused]] const char* value) {
     return *this;
 }
-Response& Response::type(const char*) {
+Response& Response::type([[maybe_unused]] const char* content_type) {
     return *this;
 }
-Result<void> Response::send(const char*) {
-    return Result<void>::error(ErrorCode::NotSupported);
+Result<void> Response::send([[maybe_unused]] const char* body) {
+    return Err(ErrorCode::NotSupported);
 }
-Result<void> Response::send(const char*, size_t) {
-    return Result<void>::error(ErrorCode::NotSupported);
+Result<void> Response::send([[maybe_unused]] const char* body, [[maybe_unused]] size_t length) {
+    return Err(ErrorCode::NotSupported);
 }
-Result<void> Response::json(const char*) {
-    return Result<void>::error(ErrorCode::NotSupported);
+Result<void> Response::json([[maybe_unused]] const char* json) {
+    return Err(ErrorCode::NotSupported);
 }
-Result<void> Response::html(const char*) {
-    return Result<void>::error(ErrorCode::NotSupported);
+Result<void> Response::html([[maybe_unused]] const char* html) {
+    return Err(ErrorCode::NotSupported);
 }
 
 }  // namespace alloy::http

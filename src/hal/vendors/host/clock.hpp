@@ -41,7 +41,7 @@ class SystemClock {
     /// @return Always returns Ok
     core::Result<void> configure(const ClockConfig& config) {
         system_frequency_ = config.crystal_frequency_hz;
-        return core::Result<void>::ok();
+        return core::Ok();
     }
 
     /// Set system frequency (stub)
@@ -52,7 +52,7 @@ class SystemClock {
     /// @return Always returns Ok
     core::Result<void> set_frequency(core::u32 frequency_hz) {
         system_frequency_ = frequency_hz;
-        return core::Result<void>::ok();
+        return core::Ok();
     }
 
     /// Get current system frequency
@@ -104,7 +104,7 @@ class SystemClock {
     /// @return Always returns Ok
     core::Result<void> enable_peripheral(Peripheral periph) {
         (void)periph;  // Unused
-        return core::Result<void>::ok();
+        return core::Ok();
     }
 
     /// Disable peripheral clock (stub - always succeeds)
@@ -115,7 +115,7 @@ class SystemClock {
     /// @return Always returns Ok
     core::Result<void> disable_peripheral(Peripheral periph) {
         (void)periph;  // Unused
-        return core::Result<void>::ok();
+        return core::Ok();
     }
 
     /// Set flash latency (stub - always succeeds)
@@ -126,7 +126,7 @@ class SystemClock {
     /// @return Always returns Ok
     core::Result<void> set_flash_latency(core::u32 frequency_hz) {
         (void)frequency_hz;  // Unused
-        return core::Result<void>::ok();
+        return core::Ok();
     }
 
     /// Configure PLL (stub - not supported)
@@ -135,7 +135,7 @@ class SystemClock {
     /// @return Always returns NotSupported
     core::Result<void> configure_pll(const PllConfig& config) {
         (void)config;  // Unused
-        return core::Result<void>::error(core::ErrorCode::NotSupported);
+        return core::Err(core::ErrorCode::NotSupported);
     }
 
    private:

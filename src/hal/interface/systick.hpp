@@ -9,6 +9,7 @@
 #include <concepts>
 
 #include "core/error.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 
 namespace alloy::hal {
@@ -60,7 +61,7 @@ concept SystemTick = requires(T device, const T const_device) {
     /// Called automatically during Board::initialize().
     ///
     /// @return Ok on success, error code on failure
-    { T::init() } -> std::same_as<core::Result<void>>;
+    { T::init() } -> std::convertible_to<core::Result<void, core::ErrorCode>>;
 
     /// Get current time in microseconds
     ///
@@ -70,7 +71,7 @@ concept SystemTick = requires(T device, const T const_device) {
     /// Thread-safe: Yes (atomic read on ARM, critical section on others)
     ///
     /// @return Current time in microseconds since init
-    { T::micros() } -> std::same_as<core::u32>;
+    { T::micros() } -> std::convertible_to<core::u32>;
 
     /// Reset counter to zero
     ///
@@ -78,12 +79,12 @@ concept SystemTick = requires(T device, const T const_device) {
     /// when overflow needs to be managed explicitly.
     ///
     /// @return Ok on success, error code on failure
-    { T::reset() } -> std::same_as<core::Result<void>>;
+    { T::reset() } -> std::convertible_to<core::Result<void, core::ErrorCode>>;
 
     /// Check if SysTick is initialized
     ///
     /// @return true if init() has been called successfully
-    { T::is_initialized() } -> std::same_as<bool>;
+    { T::is_initialized() } -> std::convertible_to<bool>;
 };
 
 }  // namespace alloy::hal

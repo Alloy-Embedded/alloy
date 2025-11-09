@@ -7,7 +7,7 @@
 #include <iostream>
 #include <map>
 
-#include "hal/host/systick.hpp"
+#include "hal/vendors/host/systick.hpp"
 
 #include "rtos/scheduler.hpp"
 

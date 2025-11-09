@@ -247,7 +247,7 @@ time ./codegen generate -v
 Add to `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-alias cg='cd /path/to/corezero/tools/codegen && ./codegen'
+alias cg='cd /path/to/alloy/tools/codegen && ./codegen'
 alias cgq='cg generate -q'  # Quick generate
 alias cgs='cg generate --startup -q'  # Startup only
 alias cgp='cg generate --pins -q'  # Pins only

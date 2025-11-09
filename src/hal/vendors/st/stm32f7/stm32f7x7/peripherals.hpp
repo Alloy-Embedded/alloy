@@ -124,6 +124,71 @@ constexpr uintptr_t AC = 0xE000EF90;             // Access control
 }  // namespace peripherals
 
 // ============================================================================
+// PERIPHERAL IDs (for Clock Enable/Disable)
+// ============================================================================
+
+namespace id {
+constexpr uint8_t WWDG = 0;            // Window watchdog
+constexpr uint8_t EXTI = 1;            // External interrupt/event       controller
+constexpr uint8_t RTC = 3;             // Real-time clock
+constexpr uint8_t Flash = 4;           // FLASH
+constexpr uint8_t RCC = 5;             // Reset and clock control
+constexpr uint8_t DMA1 = 11;           // DMA1
+constexpr uint8_t ADC1 = 18;           // Analog-to-digital converter
+constexpr uint8_t CAN1 = 19;           // Controller area network
+constexpr uint8_t TIM1 = 24;           // Advanced-timers
+constexpr uint8_t TIM2 = 28;           // General purpose timers
+constexpr uint8_t TIM3 = 29;           // General purpose timers
+constexpr uint8_t TIM4 = 30;           // General purpose timers
+constexpr uint8_t I2C1 = 31;           // Inter-integrated circuit
+constexpr uint8_t I2C2 = 33;           // I2C2
+constexpr uint8_t SPI1 = 35;           // Serial peripheral interface
+constexpr uint8_t SPI2 = 36;           // SPI2
+constexpr uint8_t USART1 = 37;         // USART1
+constexpr uint8_t USART2 = 38;         // USART2
+constexpr uint8_t USART3 = 39;         // USART3
+constexpr uint8_t TIM8 = 43;           // TIM8
+constexpr uint8_t FMC = 48;            // Flexible memory controller
+constexpr uint8_t SDMMC1 = 49;         // Secure digital input/output       interface
+constexpr uint8_t TIM10 = 50;          // General-purpose-timers
+constexpr uint8_t SPI3 = 51;           // SPI3
+constexpr uint8_t UART4 = 52;          // UART4
+constexpr uint8_t UART5 = 53;          // UART5
+constexpr uint8_t TIM6 = 54;           // Basic timers
+constexpr uint8_t TIM7 = 55;           // TIM7
+constexpr uint8_t DMA2 = 56;           // DMA controller
+constexpr uint8_t Ethernet_MAC = 61;   // Ethernet: media access control       (MAC)
+constexpr uint8_t CAN2 = 63;           // CAN2
+constexpr uint8_t OTG_FS_GLOBAL = 67;  // USB on the go full speed
+constexpr uint8_t USART6 = 71;  // Universal synchronous asynchronous receiver       transmitter
+constexpr uint8_t I2C3 = 72;    // I2C3
+constexpr uint8_t OTG_HS_GLOBAL = 74;  // USB on the go high speed
+constexpr uint8_t DCMI = 78;           // Digital camera interface
+constexpr uint8_t CRYP = 79;           // Cryptographic processor
+constexpr uint8_t RNG = 80;            // Random number generator
+constexpr uint8_t FPU = 81;            // Floting point unit
+constexpr uint8_t UART7 = 82;          // UART7
+constexpr uint8_t UART8 = 83;          // UART8
+constexpr uint8_t SPI4 = 84;           // SPI4
+constexpr uint8_t SPI5 = 85;           // SPI5
+constexpr uint8_t SPI6 = 86;           // SPI6
+constexpr uint8_t SAI1 = 87;           // Serial audio interface
+constexpr uint8_t LTCD = 88;           // LCD-TFT Controller
+constexpr uint8_t DMA2D = 90;          // DMA2D controller
+constexpr uint8_t SAI2 = 91;           // SAI2
+constexpr uint8_t QUADSPI = 92;        // QuadSPI interface
+constexpr uint8_t LPTIM1 = 93;         // Low power timer
+constexpr uint8_t I2C4 = 95;           // I2C4
+constexpr uint8_t SPDIFRX = 97;        // Receiver Interface
+constexpr uint8_t DSI = 98;            // DSI Host
+constexpr uint8_t DFSDM = 99;          // Digital filter for sigma delta       modulators
+constexpr uint8_t SDMMC2 = 103;        // SDMMC2
+constexpr uint8_t CAN3 = 104;          // CAN3
+constexpr uint8_t JPEG = 108;          // JPEG codec
+constexpr uint8_t MDIOS = 109;         // Management data input/output slave
+}  // namespace id
+
+// ============================================================================
 // MEMORY MAP
 // ============================================================================
 

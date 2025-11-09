@@ -4,8 +4,7 @@
 
 #include "../sink.hpp"
 
-namespace alloy {
-namespace logger {
+namespace alloy::logger {
 
 /**
  * Memory buffer sink for logger
@@ -28,7 +27,7 @@ class BufferSink : public Sink {
      * @param capacity Buffer size in bytes
      */
     BufferSink(char* buffer, size_t capacity) : buffer_(buffer), capacity_(capacity), size_(0) {
-        if (buffer_ && capacity_ > 0) {
+        if (buffer_ != nullptr && capacity_ > 0) {
             buffer_[0] = '\0';
         }
     }
@@ -86,7 +85,7 @@ class BufferSink : public Sink {
      */
     void clear() {
         size_ = 0;
-        if (buffer_ && capacity_ > 0) {
+        if (buffer_ != nullptr && capacity_ > 0) {
             buffer_[0] = '\0';
         }
     }
@@ -104,5 +103,4 @@ class BufferSink : public Sink {
     size_t size_;
 };
 
-}  // namespace logger
-}  // namespace alloy
+}  // namespace alloy::logger

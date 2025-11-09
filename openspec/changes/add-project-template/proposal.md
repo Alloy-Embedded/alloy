@@ -213,7 +213,7 @@ alloy-project-template/          # GitHub template repo
 │   └── extensions.json          # Recommended extensions
 │
 ├── external/
-│   └── alloy/                   # Git submodule → corezero repo
+│   └── alloy/                   # Git submodule → alloy repo
 │       ├── src/
 │       ├── boards/
 │       ├── CMakeLists.txt

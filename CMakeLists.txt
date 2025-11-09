@@ -244,9 +244,10 @@ if(ALLOY_BOARD STREQUAL "rp2040_zero")
 endif()
 
 if(ALLOY_BOARD STREQUAL "same70_xpld")
-    add_subdirectory(examples/blink_same70)
-    add_subdirectory(examples/same70_blink_leds)
-    add_subdirectory(examples/same70_uart_hello)
+    add_subdirectory(examples/same70_xplained_blink)  # Simple blink example
+    add_subdirectory(examples/same70_clock_test)      # Clock configuration test
+    add_subdirectory(examples/same70_systick_test)    # SysTick timer test with precise delays
+    # add_subdirectory(examples/same70_uart_hello)    # TODO: Create this example
 endif()
 
 if(ALLOY_BOARD STREQUAL "host")
@@ -262,4 +263,8 @@ endif()
 
 # Export compile commands for IDEs
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-add_subdirectory(examples/linux_cmake_test)
+
+# Linux-specific examples (only for host builds)
+if(ALLOY_BOARD STREQUAL "host")
+    add_subdirectory(examples/linux_cmake_test)
+endif()

@@ -1,7 +1,7 @@
-# Unit Tests for CoreZero Framework
+# Unit Tests for Alloy Framework
 cmake_minimum_required(VERSION 3.16)
 
-project(corezero_unit_tests CXX)
+project(alloy_unit_tests CXX)
 
 # Set C++20 standard
 set(CMAKE_CXX_STANDARD 20)

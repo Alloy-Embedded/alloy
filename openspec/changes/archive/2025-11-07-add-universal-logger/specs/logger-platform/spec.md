@@ -1,6 +1,6 @@
 # Logger Platform Adapters Specification
 
-Platform-specific logging sinks and adapters for CoreZero logger.
+Platform-specific logging sinks and adapters for Alloy logger.
 
 ## ADDED Requirements
 
@@ -34,7 +34,7 @@ Logger::add_sink(&my_sink);
 
 The system SHALL provide a UART sink for bare-metal and RTOS platforms.
 
-**Platforms**: All CoreZero platforms with UART support
+**Platforms**: All Alloy platforms with UART support
 
 #### Scenario: UART logging on bare-metal
 ```cpp
@@ -82,7 +82,7 @@ void app_main() {
 
 The system SHALL provide a sink that integrates with ESP-IDF's `esp_log` system.
 
-**Purpose**: Allow CoreZero logger to coexist with ESP-IDF logging infrastructure
+**Purpose**: Allow Alloy logger to coexist with ESP-IDF logging infrastructure
 
 #### Scenario: Bridge to ESP_LOG
 ```cpp
@@ -91,8 +91,8 @@ The system SHALL provide a sink that integrates with ESP-IDF's `esp_log` system.
 logger::EspLogSink esp_sink;
 Logger::add_sink(&esp_sink);
 
-// CoreZero logs appear in ESP-IDF log system
-LOG_INFO("From CoreZero logger");
+// Alloy logs appear in ESP-IDF log system
+LOG_INFO("From Alloy logger");
 
 // Visible via:
 // - idf.py monitor
@@ -102,7 +102,7 @@ LOG_INFO("From CoreZero logger");
 
 #### Scenario: Level mapping
 ```cpp
-// CoreZero levels map to ESP-IDF levels:
+// Alloy levels map to ESP-IDF levels:
 LOG_TRACE() -> ESP_LOGV()  // Verbose
 LOG_DEBUG() -> ESP_LOGD()  // Debug
 LOG_INFO()  -> ESP_LOGI()  // Info

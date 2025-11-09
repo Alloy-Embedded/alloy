@@ -4,8 +4,8 @@
 
 set -e
 
-COREZERO_ROOT="/Users/lgili/Documents/01 - Codes/01 - Github/corezero"
-cd "$COREZERO_ROOT"
+ALLOY_ROOT="/Users/lgili/Documents/01 - Codes/01 - Github/alloy"
+cd "$ALLOY_ROOT"
 
 echo "🔍 Running comprehensive clang-tidy validation..."
 echo ""
@@ -37,7 +37,7 @@ check_directory() {
         TOTAL=$((TOTAL + 1))
 
         # Extract relative path for display
-        REL_PATH=$(echo "$file" | sed "s|$COREZERO_ROOT/||")
+        REL_PATH=$(echo "$file" | sed "s|$ALLOY_ROOT/||")
 
         echo -n "  $REL_PATH... "
 

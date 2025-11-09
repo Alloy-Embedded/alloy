@@ -52,6 +52,9 @@
 // Bitfields (family-level)
 #include "hal/vendors/atmel/same70/bitfields/pmc_bitfields.hpp"
 
+// Peripheral addresses (device-specific)
+#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
+
 
 namespace alloy::hal::same70 {
 
@@ -133,8 +136,8 @@ struct ClockConfig {
  */
 class Clock {
    public:
-    // Compile-time constants
-    static constexpr uint32_t PMC_BASE = 0x400E0600;    ///< PMC base address
+    // Compile-time constants (using generated peripheral addresses)
+    static constexpr uintptr_t PMC_BASE = alloy::generated::atsame70q21b::peripherals::PMC;
     static constexpr uint32_t SLOW_CLOCK_FREQ = 32768;  ///< 32.768 kHz
 
     /**
@@ -145,56 +148,69 @@ class Clock {
      * @return Result<void, ErrorCode>     */
     static Result<void, ErrorCode> initialize(const ClockConfig& config) {
         auto* pmc = get_pmc();
-
-        // Save configuration
         s_config = config;
 
-        // Step 1: Configure main oscillator
+        // Step 1: Configure main oscillator (Crystal or RC)
         if (config.main_source == MainClockSource::ExternalCrystal) {
-            // Enable external crystal oscillator
+            // Enable both RC (for safety) and Crystal
             uint32_t mor = 0;
-            mor = pmc::ckgr_mor::MOSCXTEN::set(mor);
             mor = pmc::ckgr_mor::KEY::write(mor, pmc::ckgr_mor::key::PASSWD);
-            mor = pmc::ckgr_mor::MOSCXTST::write(mor, 8);
-            mor = pmc::ckgr_mor::MOSCSEL::set(mor);
+            mor = pmc::ckgr_mor::MOSCXTST::write(mor, 0xFF);
+            mor = pmc::ckgr_mor::MOSCRCEN::set(mor);
+            mor = pmc::ckgr_mor::MOSCXTEN::set(mor);
             pmc->CKGR_MOR = mor;
 
-            // Wait for main crystal to stabilize
-            while ((pmc->CKGR_MCFR & pmc::ckgr_mcfr::MAINFRDY::mask) == 0) {
-                // Wait for MAINFRDY
+            // Wait for crystal stabilization
+            volatile uint32_t timeout = 0;
+            while (!(pmc->SR & pmc::sr::MOSCXTS::mask)) {
+                if (++timeout > 1000000)
+                    return Err(ErrorCode::HardwareError);
+            }
+
+            // Switch to crystal - set MOSCSEL
+            mor = 0;
+            mor = pmc::ckgr_mor::KEY::write(mor, pmc::ckgr_mor::key::PASSWD);
+            mor = pmc::ckgr_mor::MOSCXTST::write(mor, 0xFF);
+            mor = pmc::ckgr_mor::MOSCSEL::set(mor);
+            mor = pmc::ckgr_mor::MOSCRCEN::set(mor);
+            mor = pmc::ckgr_mor::MOSCXTEN::set(mor);
+            pmc->CKGR_MOR = mor;
+
+            // Wait for oscillator selection
+            timeout = 0;
+            while (!(pmc->SR & pmc::sr::MOSCSELS::mask)) {
+                if (++timeout > 100000)
+                    return Err(ErrorCode::HardwareError);
             }
         } else {
-            // Use internal RC oscillator
-            uint32_t rc_freq = 0;
-            switch (config.main_source) {
-                case MainClockSource::InternalRC_4MHz:
-                    rc_freq = pmc::ckgr_mor::moscrcf::_4_MHz;
-                    break;
-                case MainClockSource::InternalRC_8MHz:
-                    rc_freq = pmc::ckgr_mor::moscrcf::_8_MHz;
-                    break;
-                case MainClockSource::InternalRC_12MHz:
-                    rc_freq = pmc::ckgr_mor::moscrcf::_12_MHz;
-                    break;
-                default:
-                    break;
-            }
+            // Use RC oscillator
+            uint32_t rc_freq = (config.main_source == MainClockSource::InternalRC_4MHz)
+                                   ? pmc::ckgr_mor::moscrcf::_4_MHz
+                               : (config.main_source == MainClockSource::InternalRC_8MHz)
+                                   ? pmc::ckgr_mor::moscrcf::_8_MHz
+                                   : pmc::ckgr_mor::moscrcf::_12_MHz;
 
             uint32_t mor = 0;
-            mor = pmc::ckgr_mor::MOSCRCEN::set(mor);
             mor = pmc::ckgr_mor::KEY::write(mor, pmc::ckgr_mor::key::PASSWD);
+            mor = pmc::ckgr_mor::MOSCXTST::write(mor, 0xFF);
             mor = pmc::ckgr_mor::MOSCRCF::write(mor, rc_freq);
+            mor = pmc::ckgr_mor::MOSCRCEN::set(mor);
+            // MOSCSEL=0 (use RC) - default value, no need to clear
             pmc->CKGR_MOR = mor;
 
-            // Wait for RC to stabilize
-            while ((pmc->SR & pmc::sr::MOSCRCS::mask) == 0) {
-                // Wait for MOSCRCS
-            }
+            for (volatile int i = 0; i < 100; i++)
+                ;  // Small delay
         }
 
-        // Step 2: Configure PLLA
+        // If using MainClock only (no PLL), we're done
+        if (config.mck_source == MasterClockSource::MainClock &&
+            config.mck_prescaler == MasterClockPrescaler::DIV_1) {
+            s_initialized = true;
+            return Ok();
+        }
+
+        // Step 2: Configure PLLA if needed
         if (config.mck_source == MasterClockSource::PLLAClock) {
-            // PLLA = (MAIN_CLK * (MUL+1)) / DIV
             uint32_t pllar = 0;
             pllar = pmc::ckgr_pllar::MULA::write(pllar, config.plla.multiplier);
             pllar = pmc::ckgr_pllar::DIVA::write(pllar, config.plla.divider);
@@ -202,73 +218,58 @@ class Clock {
             pllar = pmc::ckgr_pllar::ONE::set(pllar);
             pmc->CKGR_PLLAR = pllar;
 
-            // Wait for PLLA to lock
-            while ((pmc->SR & pmc::sr::LOCKA::mask) == 0) {
-                // Wait for LOCKA
+            // Wait for PLLA lock
+            volatile uint32_t timeout = 0;
+            while (!(pmc->SR & pmc::sr::LOCKA::mask)) {
+                if (++timeout > 1000000)
+                    return Err(ErrorCode::HardwareError);
             }
         }
 
-        // Step 3: Configure Master Clock
-        // First, switch to main clock to safely change prescaler
+        // Step 3: Configure MCK - CRITICAL SEQUENCE per datasheet
+        // Must follow exact order: CSS -> wait -> PRES -> wait -> CSS -> wait
+
+        // 3.1: Switch to MAIN_CLK first (safe intermediate state)
         uint32_t mckr = pmc->MCKR;
         mckr = pmc::mckr::CSS::write(mckr, pmc::mckr::css::MAIN_CLK);
         pmc->MCKR = mckr;
 
-        // Wait for master clock ready
-        while ((pmc->SR & pmc::sr::MCKRDY::mask) == 0) {
-            // Wait for MCKRDY
+        volatile uint32_t timeout = 0;
+        while (!(pmc->SR & pmc::sr::MCKRDY::mask)) {
+            if (++timeout > 100000)
+                return Err(ErrorCode::HardwareError);
         }
 
-        // Set prescaler
-        uint32_t pres_value = 0;
-        switch (config.mck_prescaler) {
-            case MasterClockPrescaler::DIV_1:
-                pres_value = pmc::mckr::pres::CLK_1;
-                break;
-            case MasterClockPrescaler::DIV_2:
-                pres_value = pmc::mckr::pres::CLK_2;
-                break;
-            case MasterClockPrescaler::DIV_3:
-                pres_value = pmc::mckr::pres::CLK_3;
-                break;
-            case MasterClockPrescaler::DIV_4:
-                pres_value = pmc::mckr::pres::CLK_4;
-                break;
-        }
+        // 3.2: Set prescaler
+        uint32_t pres_value =
+            (config.mck_prescaler == MasterClockPrescaler::DIV_1)   ? pmc::mckr::pres::CLK_1
+            : (config.mck_prescaler == MasterClockPrescaler::DIV_2) ? pmc::mckr::pres::CLK_2
+            : (config.mck_prescaler == MasterClockPrescaler::DIV_3) ? pmc::mckr::pres::CLK_3
+                                                                    : pmc::mckr::pres::CLK_4;
 
         mckr = pmc->MCKR;
         mckr = pmc::mckr::PRES::write(mckr, pres_value);
         pmc->MCKR = mckr;
 
-        // Wait for prescaler change
-        while ((pmc->SR & pmc::sr::MCKRDY::mask) == 0) {
-            // Wait for MCKRDY
+        timeout = 0;
+        while (!(pmc->SR & pmc::sr::MCKRDY::mask)) {
+            if (++timeout > 100000)
+                return Err(ErrorCode::HardwareError);
         }
 
-        // Finally, switch to final clock source
-        uint32_t css_value = 0;
-        switch (config.mck_source) {
-            case MasterClockSource::SlowClock:
-                css_value = pmc::mckr::css::SLOW_CLK;
-                break;
-            case MasterClockSource::MainClock:
-                css_value = pmc::mckr::css::MAIN_CLK;
-                break;
-            case MasterClockSource::PLLAClock:
-                css_value = pmc::mckr::css::PLLA_CLK;
-                break;
-            case MasterClockSource::UPLLClock:
-                css_value = pmc::mckr::css::UPLL_CLK;
-                break;
-        }
+        // 3.3: Switch to final clock source (PLLA or MAIN)
+        uint32_t css_value = (config.mck_source == MasterClockSource::PLLAClock)
+                                 ? pmc::mckr::css::PLLA_CLK
+                                 : pmc::mckr::css::MAIN_CLK;
 
         mckr = pmc->MCKR;
         mckr = pmc::mckr::CSS::write(mckr, css_value);
         pmc->MCKR = mckr;
 
-        // Wait for final clock switch
-        while ((pmc->SR & pmc::sr::MCKRDY::mask) == 0) {
-            // Wait for MCKRDY
+        timeout = 0;
+        while (!(pmc->SR & pmc::sr::MCKRDY::mask)) {
+            if (++timeout > 100000)
+                return Err(ErrorCode::HardwareError);
         }
 
         s_initialized = true;

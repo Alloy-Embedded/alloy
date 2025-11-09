@@ -2,7 +2,7 @@
 
 ## Why
 
-After comprehensive analysis of the legacy LUG framework (documented in `docs/LEGACY_LUG_ANALYSIS.md`), we identified several production-proven patterns that can significantly improve CoreZero's architecture, type safety, and maintainability. The LUG framework has been battle-tested in 15+ commercial products with 50,000+ hours of field operation and <0.1% critical bug rate.
+After comprehensive analysis of the legacy LUG framework (documented in `docs/LEGACY_LUG_ANALYSIS.md`), we identified several production-proven patterns that can significantly improve Alloy's architecture, type safety, and maintainability. The LUG framework has been battle-tested in 15+ commercial products with 50,000+ hours of field operation and <0.1% critical bug rate.
 
 Key problems addressed:
 - **Performance overhead**: Runtime peripheral configuration instead of compile-time
@@ -11,7 +11,7 @@ Key problems addressed:
 
 This change introduces **three core patterns** from LUG that provide immediate value with minimal overhead, while documenting advanced patterns (Device Manager) as optional future enhancements.
 
-**Note on Scope Reduction**: After comprehensive analysis (`docs/DUAL_API_ANALYSIS.md`, `docs/DEVICE_MANAGER_ANALYSIS.md`), we determined that Device Manager adds +70% maintenance overhead and is only beneficial for complex multi-module projects. CoreZero prioritizes **simplicity and zero-overhead** for the majority of users, with advanced patterns available as opt-in future features.
+**Note on Scope Reduction**: After comprehensive analysis (`docs/DUAL_API_ANALYSIS.md`, `docs/DEVICE_MANAGER_ANALYSIS.md`), we determined that Device Manager adds +70% maintenance overhead and is only beneficial for complex multi-module projects. Alloy prioritizes **simplicity and zero-overhead** for the majority of users, with advanced patterns available as opt-in future features.
 
 ## What Changes
 
@@ -31,7 +31,7 @@ This change introduces **three core patterns** from the LUG framework, implement
 2. **ScopedI2c/ScopedSpi**: Bus locking with automatic unlock (from LUG)
 3. **CircularBuffer<T, N>**: Fixed-size ring buffer for UART/SPI/DMA (from LUG)
 
-**Note on Result<T, E>**: CoreZero's existing `Result<T, E>` implementation is **superior** to LUG's `Result<T>` (Rust-inspired with union storage, monadic operations, and flexible error types). No changes needed - already excellent.
+**Note on Result<T, E>**: Alloy's existing `Result<T, E>` implementation is **superior** to LUG's `Result<T>` (Rust-inspired with union storage, monadic operations, and flexible error types). No changes needed - already excellent.
 
 ### Breaking Changes
 
@@ -93,7 +93,7 @@ This change introduces **three core patterns** from the LUG framework, implement
 ### Compatibility
 - **Fully Backwards Compatible**: All changes are additive, no breaking changes
 - **Forward Compatible**: New code can immediately adopt new patterns
-- **Toolchain**: Requires C++17 (already required by CoreZero)
+- **Toolchain**: Requires C++17 (already required by Alloy)
 - **Dependencies**: No new external dependencies
 - **Migration**: No migration needed - patterns are opt-in
 
@@ -134,11 +134,11 @@ This change introduces **three core patterns** from the LUG framework, implement
    - ❌ Additional dependencies
    - ❌ May not fit embedded constraints
    - ❌ Less control over implementation
-   - ✅ Our custom implementation is tailored to CoreZero
+   - ✅ Our custom implementation is tailored to Alloy
 
 4. **Adopt All 5 LUG Patterns (original proposal)**:
    - ❌ Device Manager adds +70% overhead for minimal gain
-   - ❌ Result<T, E> replacement unnecessary (CoreZero's is better)
+   - ❌ Result<T, E> replacement unnecessary (Alloy's is better)
    - ✅ Selected: Focus on 3 high-value, zero-overhead patterns
 
 ## Implementation Timeline
@@ -183,7 +183,7 @@ After comprehensive analysis (`docs/DUAL_API_ANALYSIS.md`), we determined that:
 2. Simple direct peripheral access serves 80% of use cases
 3. Device Manager creates API fragmentation (simple vs managed)
 4. Maintenance overhead (+70%) only justified for complex projects
-5. CoreZero prioritizes **simplicity and zero-overhead** as defaults
+5. Alloy prioritizes **simplicity and zero-overhead** as defaults
 
 **Future path**:
 If user demand emerges for complex multi-module projects, Device Manager can be implemented as an **optional layer** without breaking existing simple APIs. Users would opt-in via:

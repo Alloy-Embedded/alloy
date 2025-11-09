@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  corezero-dev:
+  alloy-dev:
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,9 +10,9 @@ services:
         USER_UID: 1000
         USER_GID: 1000
 
-    image: corezero/dev:latest
+    image: alloy/dev:latest
 
-    container_name: corezero-dev
+    container_name: alloy-dev
 
     # Keep container running
     tty: true
@@ -22,9 +22,9 @@ services:
     volumes:
       - .:/workspace:cached
       # Persist build artifacts
-      - corezero-build:/workspace/build
+      - alloy-build:/workspace/build
       # Persist toolchains and downloads
-      - corezero-cache:/home/developer/.cache
+      - alloy-cache:/home/developer/.cache
 
     # USB device passthrough for ESP32/Pico
     # Automatically detect and mount all USB serial devices
@@ -65,7 +65,7 @@ services:
 
 # Named volumes for persistence
 volumes:
-  corezero-build:
+  alloy-build:
     driver: local
-  corezero-cache:
+  alloy-cache:
     driver: local

@@ -66,10 +66,27 @@ extern "C" [[noreturn]] void Reset_Handler() {
     *WDT_MR = (1U << 15);     // WDDIS
     *RSWDT_MR = (1U << 15);   // WDDIS
 
-    // Small delay
-    for (volatile int i = 0; i < 1000; i++) {
-        __asm__ volatile("nop");
-    }
+    // DEBUG: Blink LED in startup to prove we got here
+    volatile uint32_t* PMC_PCER0 = reinterpret_cast<volatile uint32_t*>(0x400E0610);
+    volatile uint32_t* PIOC_PER  = reinterpret_cast<volatile uint32_t*>(0x400E1200);
+    volatile uint32_t* PIOC_OER  = reinterpret_cast<volatile uint32_t*>(0x400E1210);
+    volatile uint32_t* PIOC_SODR = reinterpret_cast<volatile uint32_t*>(0x400E1230);
+    volatile uint32_t* PIOC_CODR = reinterpret_cast<volatile uint32_t*>(0x400E1234);
+
+    *PMC_PCER0 = (1U << 12);  // Enable PIOC
+    *PIOC_PER = (1U << 8);    // PC8 as PIO
+    *PIOC_OER = (1U << 8);    // PC8 as output
+
+    // Blink 5 times to show we're in Reset_Handler
+    // for (int j = 0; j < 5; j++) {
+    //     *PIOC_CODR = (1U << 8);  // LED ON
+    //     for (volatile int i = 0; i < 200000; i++);
+    //     *PIOC_SODR = (1U << 8);  // LED OFF
+    //     for (volatile int i = 0; i < 200000; i++);
+    // }
+
+    // Long pause before main
+    for (volatile int i = 0; i < 500000; i++);
 
     // TEMPORARY: Skip SystemInit() and initialize_runtime() for testing
     // SystemInit();

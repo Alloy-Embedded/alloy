@@ -1,6 +1,6 @@
 # ESP32 ESP-IDF Integration Guide
 
-Complete guide for using CoreZero Framework with ESP-IDF on ESP32 platforms.
+Complete guide for using Alloy Framework with ESP-IDF on ESP32 platforms.
 
 ## Table of Contents
 
@@ -19,7 +19,7 @@ Complete guide for using CoreZero Framework with ESP-IDF on ESP32 platforms.
 
 ## Overview
 
-CoreZero provides modern C++ abstractions over ESP-IDF, offering:
+Alloy provides modern C++ abstractions over ESP-IDF, offering:
 
 - **Type Safety**: C++20 concepts and templates
 - **Error Handling**: `Result<T, ErrorCode>` monadic operations
@@ -72,7 +72,7 @@ cd esp-idf
 
 ### 1. Project Structure
 
-CoreZero ESP-IDF projects use the standard ESP-IDF structure:
+Alloy ESP-IDF projects use the standard ESP-IDF structure:
 
 ```
 my_project/
@@ -88,17 +88,17 @@ my_project/
 ```cmake
 cmake_minimum_required(VERSION 3.16)
 
-# Set CoreZero root
-get_filename_component(COREZERO_ROOT "${CMAKE_CURRENT_LIST_DIR}/../.." ABSOLUTE)
+# Set Alloy root
+get_filename_component(ALLOY_ROOT "${CMAKE_CURRENT_LIST_DIR}/../.." ABSOLUTE)
 
-# Add CoreZero components
+# Add Alloy components
 set(EXTRA_COMPONENT_DIRS
-    "${COREZERO_ROOT}/src/wifi"
-    "${COREZERO_ROOT}/src/mqtt"
-    "${COREZERO_ROOT}/src/http"
-    "${COREZERO_ROOT}/src/ble"
-    "${COREZERO_ROOT}/src/core"
-    "${COREZERO_ROOT}/src/hal/esp32"
+    "${ALLOY_ROOT}/src/wifi"
+    "${ALLOY_ROOT}/src/mqtt"
+    "${ALLOY_ROOT}/src/http"
+    "${ALLOY_ROOT}/src/ble"
+    "${ALLOY_ROOT}/src/core"
+    "${ALLOY_ROOT}/src/hal/esp32"
 )
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
@@ -128,7 +128,7 @@ extern "C" void app_main() {
     // Initialize NVS
     nvs_flash_init();
 
-    ESP_LOGI(TAG, "CoreZero ESP32 Application");
+    ESP_LOGI(TAG, "Alloy ESP32 Application");
 
     // WiFi connection
     WiFi::Station wifi;
@@ -445,7 +445,7 @@ if (scan_result.is_ok()) {
 
 ### Automatic Component Detection
 
-CoreZero automatically detects required ESP-IDF components based on `#include` statements:
+Alloy automatically detects required ESP-IDF components based on `#include` statements:
 
 - `#include "esp_wifi.h"` → links `esp_wifi`, `esp_netif`, `nvs_flash`
 - `#include "esp_bt.h"` → links `bt`, `nvs_flash`
@@ -465,7 +465,7 @@ idf_component_register(
 
 ## Examples
 
-CoreZero includes comprehensive examples:
+Alloy includes comprehensive examples:
 
 | Example | Description | Key Features |
 |---------|-------------|--------------|
@@ -496,8 +496,8 @@ Solution: Source ESP-IDF environment
 
 **Problem**: `Component not found`
 ```cmake
-# Ensure EXTRA_COMPONENT_DIRS includes CoreZero components
-set(EXTRA_COMPONENT_DIRS "${COREZERO_ROOT}/src/wifi" ...)
+# Ensure EXTRA_COMPONENT_DIRS includes Alloy components
+set(EXTRA_COMPONENT_DIRS "${ALLOY_ROOT}/src/wifi" ...)
 ```
 
 ### WiFi Issues
@@ -556,7 +556,7 @@ set(EXTRA_COMPONENT_DIRS "${COREZERO_ROOT}/src/wifi" ...)
 ## Additional Resources
 
 - [ESP-IDF Documentation](https://docs.espressif.com/projects/esp-idf/)
-- [CoreZero Examples](../examples/)
+- [Alloy Examples](../examples/)
 - [ESP32 HAL Documentation](../src/hal/esp32/README.md)
 - [OpenSpec Design Documents](../openspec/changes/integrate-esp-idf-framework/)
 
@@ -570,4 +570,4 @@ For issues and questions:
 
 ## License
 
-CoreZero Framework is open source. See LICENSE file for details.
+Alloy Framework is open source. See LICENSE file for details.

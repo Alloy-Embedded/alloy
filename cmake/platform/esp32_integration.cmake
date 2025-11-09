@@ -164,7 +164,7 @@ include("${IDF_PATH}/tools/cmake/idf.cmake")
 if(DEFINED IDF_VERSION_MAJOR AND DEFINED IDF_VERSION_MINOR)
     if(IDF_VERSION_MAJOR LESS 5)
         message(WARNING "ESP-IDF version ${IDF_VERSION_MAJOR}.${IDF_VERSION_MINOR} detected.")
-        message(WARNING "CoreZero requires ESP-IDF >= 5.0 for full feature support.")
+        message(WARNING "Alloy requires ESP-IDF >= 5.0 for full feature support.")
         message(WARNING "Some features may not work correctly.")
     endif()
 endif()
@@ -174,7 +174,7 @@ message(STATUS "Target Chip: ${IDF_TARGET}")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "========================================")
 
-# Function: Register CoreZero application as ESP-IDF component with auto-detection
+# Function: Register Alloy application as ESP-IDF component with auto-detection
 # Usage: alloy_esp32_component(
 #            SRCS source1.cpp source2.cpp ...
 #            [INCLUDE_DIRS dir1 dir2 ...]
@@ -202,7 +202,7 @@ function(alloy_esp32_component)
         list(APPEND DEFAULT_INCLUDES ${ARG_INCLUDE_DIRS})
     endif()
 
-    # Minimum required components for CoreZero
+    # Minimum required components for Alloy
     set(BASE_COMPONENTS esp_system driver)
 
     # Automatic component detection (unless disabled)
@@ -229,12 +229,12 @@ function(alloy_esp32_component)
         REQUIRES ${BASE_COMPONENTS}
     )
 
-    # Set CoreZero-specific compile options
+    # Set Alloy-specific compile options
     target_compile_options(${COMPONENT_LIB} PRIVATE
         -DUSE_ESP_IDF=1
         -Wall
         -Wextra
     )
 
-    message(STATUS "Registered CoreZero component with ESP-IDF components: ${BASE_COMPONENTS}")
+    message(STATUS "Registered Alloy component with ESP-IDF components: ${BASE_COMPONENTS}")
 endfunction()

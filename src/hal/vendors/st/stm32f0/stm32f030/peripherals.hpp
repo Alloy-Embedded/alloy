@@ -54,6 +54,34 @@ Controller
 }  // namespace peripherals
 
 // ============================================================================
+// PERIPHERAL IDs (for Clock Enable/Disable)
+// ============================================================================
+
+namespace id {
+constexpr uint8_t TIM1 = 0;              // Advanced-timers
+constexpr uint8_t RCC = 1;               // Reset and clock control
+constexpr uint8_t USART1 = 4;            // Universal synchronous asynchronous receiver
+transmitter constexpr uint8_t ADC = 9;   // Analog-to-digital converter
+constexpr uint8_t RTC = 12;              // Real-time clock
+constexpr uint8_t DBGMCU = 12;           // Debug support
+constexpr uint8_t TIM3 = 13;             // General-purpose-timers
+constexpr uint8_t TIM14 = 15;            // General-purpose-timers
+constexpr uint8_t TIM6 = 16;             // Basic-timers
+constexpr uint8_t PWR = 17;              // Power control
+constexpr uint8_t NVIC = 17;             // Nested Vectored Interrupt
+Controller constexpr uint8_t DMA = 18;   // DMA controller
+constexpr uint8_t EXTI = 19;             // External interrupt/event
+controller constexpr uint8_t I2C2 = 23;  // I2C2
+constexpr uint8_t IWDG = 24;             // Independent watchdog
+constexpr uint8_t SPI1 = 25;             // Serial peripheral interface
+constexpr uint8_t SPI2 = 26;             // SPI2
+constexpr uint8_t TIM15 = 27;            // General-purpose-timers
+constexpr uint8_t TIM16 = 28;            // General-purpose-timers
+constexpr uint8_t TIM17 = 29;            // TIM17
+constexpr uint8_t Flash = 29;            // Flash
+}  // namespace id
+
+// ============================================================================
 // MEMORY MAP
 // ============================================================================
 

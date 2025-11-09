@@ -17,36 +17,36 @@ Uart::Uart() : configured_(false), config_(core::baud_rates::Baud115200) {}
 core::Result<void> Uart::configure(UartConfig config) {
     // Validate configuration parameters
     if (config.baud_rate.value() == 0) {
-        return core::Result<void>::error(core::ErrorCode::InvalidParameter);
+        return core::Err(core::ErrorCode::InvalidParameter);
     }
 
     config_ = config;
     configured_ = true;
-    return core::Result<void>::ok();
+    return core::Ok();
 }
 
 core::Result<core::u8> Uart::read_byte() {
     if (!configured_) {
-        return core::Result<core::u8>::error(core::ErrorCode::NotInitialized);
+        return core::Err(core::ErrorCode::NotInitialized);
     }
 
     // Check if data is available without blocking
     if (available() == 0) {
-        return core::Result<core::u8>::error(core::ErrorCode::Timeout);
+        return core::Err(core::ErrorCode::Timeout);
     }
 
     // Read one byte from stdin
     char ch;
     if (std::cin.get(ch)) {
-        return core::Result<core::u8>::ok(static_cast<core::u8>(ch));
+        return core::Ok(static_cast<core::u8>(ch));
     }
 
-    return core::Result<core::u8>::error(core::ErrorCode::HardwareError);
+    return core::Err(core::ErrorCode::HardwareError);
 }
 
 core::Result<void> Uart::write_byte(core::u8 byte) {
     if (!configured_) {
-        return core::Result<void>::error(core::ErrorCode::NotInitialized);
+        return core::Err(core::ErrorCode::NotInitialized);
     }
 
     // Write byte to stdout
@@ -54,10 +54,10 @@ core::Result<void> Uart::write_byte(core::u8 byte) {
     std::cout.flush();  // Ensure immediate output
 
     if (std::cout.good()) {
-        return core::Result<void>::ok();
+        return core::Ok();
     }
 
-    return core::Result<void>::error(core::ErrorCode::HardwareError);
+    return core::Err(core::ErrorCode::HardwareError);
 }
 
 core::usize Uart::available() const {

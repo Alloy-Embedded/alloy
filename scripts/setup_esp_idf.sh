@@ -1,11 +1,11 @@
 #!/bin/bash
-# Automatic ESP-IDF Setup for CoreZero
+# Automatic ESP-IDF Setup for Alloy
 # This script downloads, installs, and configures ESP-IDF seamlessly
 
 set -e
 
 echo "═══════════════════════════════════════════════════"
-echo "  ESP-IDF Automatic Setup for CoreZero"
+echo "  ESP-IDF Automatic Setup for Alloy"
 echo "═══════════════════════════════════════════════════"
 echo ""
 
@@ -203,6 +203,6 @@ echo "     source $ESP_IDF_DIR/export.sh"
 echo ""
 echo "📖 Documentation:"
 echo "   ESP-IDF: https://docs.espressif.com/projects/esp-idf/"
-echo "   CoreZero ESP32: docs/ESP32_QUICK_START.md"
+echo "   Alloy ESP32: docs/ESP32_QUICK_START.md"
 echo ""
 echo "═══════════════════════════════════════════════════"

@@ -20,6 +20,7 @@
 #include "hal/types.hpp"
 
 #include "core/error.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 
 // POSIX headers for serial I/O
@@ -116,17 +117,17 @@ class Uart {
      * 3. Sets default baudrate (115200)
      * 4. Disables hardware/software flow control
      *
-     * @return Result<void> Ok() if successful, Err() if already open or device not found
+     * @return Result<void, ErrorCode> Ok() if successful, Err() if already open or device not found
      */
-    Result<void> open() {
+    Result<void, ErrorCode> open() {
         if (m_opened) {
-            return Result<void>::error(ErrorCode::AlreadyInitialized);
+            return Err(ErrorCode::AlreadyInitialized);
         }
 
         // Open device (read/write, no controlling terminal, non-blocking initially)
         m_fd = ::open(DEVICE_PATH, O_RDWR | O_NOCTTY | O_NONBLOCK);
         if (m_fd < 0) {
-            return Result<void>::error(ErrorCode::HardwareError);
+            return Err(ErrorCode::HardwareError);
         }
 
         // Get current termios configuration
@@ -134,7 +135,7 @@ class Uart {
         if (tcgetattr(m_fd, &tty) != 0) {
             ::close(m_fd);
             m_fd = -1;
-            return Result<void>::error(ErrorCode::HardwareError);
+            return Err(ErrorCode::HardwareError);
         }
 
         // Configure for raw mode (8N1, no flow control)
@@ -163,24 +164,24 @@ class Uart {
         if (tcsetattr(m_fd, TCSANOW, &tty) != 0) {
             ::close(m_fd);
             m_fd = -1;
-            return Result<void>::error(ErrorCode::HardwareError);
+            return Err(ErrorCode::HardwareError);
         }
 
         // Flush any stale data
         tcflush(m_fd, TCIOFLUSH);
 
         m_opened = true;
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
      * @brief Close UART device
      *
-     * @return Result<void> Ok() if successful, Err() if not open
+     * @return Result<void, ErrorCode> Ok() if successful, Err() if not open
      */
-    Result<void> close() {
+    Result<void, ErrorCode> close() {
         if (!m_opened) {
-            return Result<void>::error(ErrorCode::NotInitialized);
+            return Err(ErrorCode::NotInitialized);
         }
 
         if (m_fd >= 0) {
@@ -189,7 +190,7 @@ class Uart {
         }
 
         m_opened = false;
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -199,31 +200,31 @@ class Uart {
      *
      * @param data Pointer to data buffer
      * @param size Number of bytes to write
-     * @return Result<size_t> Number of bytes written, or error
+     * @return Result<size_t, ErrorCode> Number of bytes written, or error
      */
-    Result<size_t> write(const uint8_t* data, size_t size) {
+    Result<size_t, ErrorCode> write(const uint8_t* data, size_t size) {
         if (!m_opened) {
-            return Result<size_t>::error(ErrorCode::NotInitialized);
+            return Err(ErrorCode::NotInitialized);
         }
 
         if (data == nullptr) {
-            return Result<size_t>::error(ErrorCode::InvalidParameter);
+            return Err(ErrorCode::InvalidParameter);
         }
 
         if (size == 0) {
-            return Result<size_t>::ok(0);
+            return Ok(0);
         }
 
         ssize_t bytes_written = ::write(m_fd, data, size);
 
         if (bytes_written < 0) {
-            return Result<size_t>::error(ErrorCode::CommunicationError);
+            return Err(ErrorCode::CommunicationError);
         }
 
         // Ensure data is transmitted (drain output buffer)
         tcdrain(m_fd);
 
-        return Result<size_t>::ok(static_cast<size_t>(bytes_written));
+        return Ok(static_cast<size_t>(bytes_written));
     }
 
     /**
@@ -236,28 +237,28 @@ class Uart {
      *
      * @param data Pointer to buffer for received data
      * @param size Maximum number of bytes to read
-     * @return Result<size_t> Number of bytes read (may be less than size), or error
+     * @return Result<size_t, ErrorCode> Number of bytes read (may be less than size), or error
      */
-    Result<size_t> read(uint8_t* data, size_t size) {
+    Result<size_t, ErrorCode> read(uint8_t* data, size_t size) {
         if (!m_opened) {
-            return Result<size_t>::error(ErrorCode::NotInitialized);
+            return Err(ErrorCode::NotInitialized);
         }
 
         if (data == nullptr) {
-            return Result<size_t>::error(ErrorCode::InvalidParameter);
+            return Err(ErrorCode::InvalidParameter);
         }
 
         if (size == 0) {
-            return Result<size_t>::ok(0);
+            return Ok(0);
         }
 
         ssize_t bytes_read = ::read(m_fd, data, size);
 
         if (bytes_read < 0) {
-            return Result<size_t>::error(ErrorCode::CommunicationError);
+            return Err(ErrorCode::CommunicationError);
         }
 
-        return Result<size_t>::ok(static_cast<size_t>(bytes_read));
+        return Ok(static_cast<size_t>(bytes_read));
     }
 
     /**
@@ -266,17 +267,17 @@ class Uart {
      * Changes the baudrate of the serial device.
      *
      * @param baudrate Desired baudrate (see hal/types.hpp)
-     * @return Result<void> Ok() if successful, Err() on failure
+     * @return Result<void, ErrorCode> Ok() if successful, Err() on failure
      */
-    Result<void> setBaudrate(Baudrate baudrate) {
+    Result<void, ErrorCode> setBaudrate(Baudrate baudrate) {
         if (!m_opened) {
-            return Result<void>::error(ErrorCode::NotInitialized);
+            return Err(ErrorCode::NotInitialized);
         }
 
         // Get current termios configuration
         struct termios tty;
         if (tcgetattr(m_fd, &tty) != 0) {
-            return Result<void>::error(ErrorCode::HardwareError);
+            return Err(ErrorCode::HardwareError);
         }
 
         // Map Baudrate enum to termios speed_t
@@ -306,7 +307,7 @@ class Uart {
                 break;
 #else
             case Baudrate::e460800:
-                return Result<void>::error(ErrorCode::NotSupported);
+                return Err(ErrorCode::NotSupported);
 #endif
 #ifdef B921600
             case Baudrate::e921600:
@@ -314,10 +315,10 @@ class Uart {
                 break;
 #else
             case Baudrate::e921600:
-                return Result<void>::error(ErrorCode::NotSupported);
+                return Err(ErrorCode::NotSupported);
 #endif
             default:
-                return Result<void>::error(ErrorCode::InvalidParameter);
+                return Err(ErrorCode::InvalidParameter);
         }
 
         // Set input and output speed
@@ -326,45 +327,45 @@ class Uart {
 
         // Apply configuration
         if (tcsetattr(m_fd, TCSANOW, &tty) != 0) {
-            return Result<void>::error(ErrorCode::HardwareError);
+            return Err(ErrorCode::HardwareError);
         }
 
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
      * @brief Get number of bytes available to read
      *
-     * @return Result<size_t> Number of bytes available, or error
+     * @return Result<size_t, ErrorCode> Number of bytes available, or error
      */
-    Result<size_t> available() const {
+    Result<size_t, ErrorCode> available() const {
         if (!m_opened) {
-            return Result<size_t>::error(ErrorCode::NotInitialized);
+            return Err(ErrorCode::NotInitialized);
         }
 
         int bytes_available = 0;
         if (ioctl(m_fd, FIONREAD, &bytes_available) < 0) {
-            return Result<size_t>::error(ErrorCode::HardwareError);
+            return Err(ErrorCode::HardwareError);
         }
 
-        return Result<size_t>::ok(static_cast<size_t>(bytes_available));
+        return Ok(static_cast<size_t>(bytes_available));
     }
 
     /**
      * @brief Flush input and output buffers
      *
-     * @return Result<void> Ok() if successful
+     * @return Result<void, ErrorCode> Ok() if successful
      */
-    Result<void> flush() {
+    Result<void, ErrorCode> flush() {
         if (!m_opened) {
-            return Result<void>::error(ErrorCode::NotInitialized);
+            return Err(ErrorCode::NotInitialized);
         }
 
         if (tcflush(m_fd, TCIOFLUSH) != 0) {
-            return Result<void>::error(ErrorCode::HardwareError);
+            return Err(ErrorCode::HardwareError);
         }
 
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**

@@ -113,6 +113,68 @@ constexpr uintptr_t DBG = 0xE0042000;                 // Debug support
 }  // namespace peripherals
 
 // ============================================================================
+// PERIPHERAL IDs (for Clock Enable/Disable)
+// ============================================================================
+
+namespace id {
+constexpr uint8_t WWDG = 0;                // Window watchdog
+constexpr uint8_t PWR = 1;                 // Power control
+constexpr uint8_t EXTI = 2;                // External interrupt/event
+controller constexpr uint8_t RTC = 3;      // Real-time clock
+constexpr uint8_t RCC = 5;                 // Reset and clock control
+constexpr uint8_t DMA1 = 11;               // DMA1
+constexpr uint8_t ADC1 = 18;               // Analog-to-digital converter
+constexpr uint8_t ADC2 = 18;               // ADC2
+constexpr uint8_t ADC3 = 18;               // ADC3
+constexpr uint8_t CAN1 = 19;               // Controller area network
+constexpr uint8_t TIM1 = 24;               // Advanced-timers
+constexpr uint8_t TIM9 = 24;               // General purpose timers
+constexpr uint8_t TIM10 = 25;              // General-purpose-timers
+constexpr uint8_t TIM11 = 26;              // General-purpose-timers
+constexpr uint8_t TIM2 = 28;               // General purpose timers
+constexpr uint8_t TIM3 = 29;               // General purpose timers
+constexpr uint8_t TIM4 = 30;               // TIM4
+constexpr uint8_t I2C1 = 31;               // I2C1
+constexpr uint8_t I2C2 = 33;               // I2C2
+constexpr uint8_t SPI1 = 35;               // Serial peripheral interface
+constexpr uint8_t SPI4 = 35;               // SPI4
+constexpr uint8_t SPI5 = 35;               // SPI5
+constexpr uint8_t SPI2 = 36;               // SPI2
+constexpr uint8_t USART1 = 37;             // USART1
+constexpr uint8_t USART2 = 38;             // USART2
+constexpr uint8_t USART3 = 39;             // USART3
+constexpr uint8_t OTG_FS_GLOBAL = 42;      // USB on the go full speed
+constexpr uint8_t TIM12 = 43;              // TIM12
+constexpr uint8_t TIM8 = 43;               // TIM8
+constexpr uint8_t TIM13 = 44;              // TIM13
+constexpr uint8_t TIM14 = 45;              // TIM14
+constexpr uint8_t FSMC = 48;               // Flexible static memory controller
+constexpr uint8_t SDIO = 49;               // Secure digital input/output
+interface constexpr uint8_t TIM5 = 50;     // General-purpose-timers
+constexpr uint8_t SPI3 = 51;               // SPI3
+constexpr uint8_t SPI6 = 51;               // SPI6
+constexpr uint8_t UART4 = 52;              // Universal synchronous asynchronous receiver
+transmitter constexpr uint8_t UART7 = 52;  // UART7
+constexpr uint8_t UART5 = 53;              // UART5
+constexpr uint8_t UART8 = 53;              // UART8
+constexpr uint8_t TIM6 = 54;               // Basic timers
+constexpr uint8_t DAC = 54;                // Digital-to-analog converter
+constexpr uint8_t TIM7 = 55;               // TIM7
+constexpr uint8_t DMA2 = 56;               // DMA controller
+constexpr uint8_t Ethernet_MAC = 61;       // Ethernet: media access control
+(MAC) constexpr uint8_t CAN2 = 63;         // CAN2
+constexpr uint8_t USART6 = 71;             // Universal synchronous asynchronous receiver
+transmitter constexpr uint8_t I2C3 = 72;   // Inter-integrated circuit
+constexpr uint8_t OTG_HS_GLOBAL = 74;      // USB on the go high speed
+constexpr uint8_t DCMI = 78;               // Digital camera interface
+constexpr uint8_t CRYP = 79;               // Cryptographic processor
+constexpr uint8_t HASH = 80;               // Hash processor
+constexpr uint8_t RNG = 81;                // Random number generator
+constexpr uint8_t FPU = 81;                // Floting point unit
+constexpr uint8_t LTDC = 88;               // LCD-TFT Controller
+}  // namespace id
+
+// ============================================================================
 // MEMORY MAP
 // ============================================================================
 

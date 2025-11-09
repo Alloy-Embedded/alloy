@@ -95,8 +95,43 @@ constexpr uintptr_t XIP_SSI = 0x18000000;   // DW_apb_ssi has the following feat
         constexpr uintptr_t PIO1 = 0x50300000;
         constexpr uintptr_t SIO = 0xD0000000;  // Single-cycle IO block\n
         Provides core-local and inter-core hardware for the two processors, with single-cycle access.
-    constexpr uintptr_t PPB                  = 0xE0000000;
+constexpr uintptr_t PPB                  = 0xE0000000;
         }  // namespace peripherals
+
+        // ============================================================================
+        // PERIPHERAL IDs (for Clock Enable/Disable)
+        // ============================================================================
+
+        namespace id {
+        constexpr uint8_t TIMER = 0;  // Controls time and alarms\n
+        time is a 64 bit value indicating the time in usec since power -
+            on\n timeh is the top 32 bits of time &timel is the bottom 32 bits\n to change time
+                write to timelw before timehw\n to read time read from timelr before timehr\n An
+                    alarm is set by setting alarm_enable and writing to the corresponding
+                        alarm register\n When an alarm is pending,
+            the corresponding alarm_running signal will be high\n An alarm can be cancelled before
+                it has finished by clearing the alarm_enable\n When an alarm fires,
+            the corresponding alarm_irq is set and alarm_running is cleared\n To clear the interrupt
+                write a 1 to the corresponding alarm_irq constexpr uint8_t PWM = 4;  // Simple PWM
+        constexpr uint8_t USBCTRL_REGS = 5;  // USB FS/LS controller device registers
+        constexpr uint8_t XIP_CTRL = 6;      // QSPI flash execute-in-place block
+        constexpr uint8_t PIO0 = 7;          // Programmable IO block
+        constexpr uint8_t PIO1 = 9;          // PIO1
+        constexpr uint8_t DMA = 11;          // DMA with separate read and write masters
+        constexpr uint8_t IO_BANK0 = 13;     // IO_BANK0
+        constexpr uint8_t IO_QSPI = 14;      // IO_QSPI
+        constexpr uint8_t SIO = 15;          // Single-cycle IO block\n
+        Provides core-local and inter-core hardware for the two processors, with single-cycle access.
+constexpr uint8_t CLOCKS               =  17;  // CLOCKS
+        constexpr uint8_t SPI0 = 18;           // SPI0
+        constexpr uint8_t SPI1 = 19;           // SPI1
+        constexpr uint8_t UART0 = 20;          // UART0
+        constexpr uint8_t UART1 = 21;          // UART1
+        constexpr uint8_t ADC = 22;            // Control and data interface to SAR ADC
+        constexpr uint8_t I2C0 = 23;           // DW_apb_i2c address block
+        constexpr uint8_t I2C1 = 24;           // I2C1
+        constexpr uint8_t RTC = 25;            // Register block to control RTC
+        }  // namespace id
 
         // ============================================================================
         // MEMORY MAP

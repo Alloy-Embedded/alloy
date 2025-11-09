@@ -84,6 +84,64 @@ constexpr uintptr_t FPU = 0xE000EF30;      // Floating Point Unit
 }  // namespace peripherals
 
 // ============================================================================
+// PERIPHERAL IDs (for Clock Enable/Disable)
+// ============================================================================
+
+namespace id {
+constexpr uint8_t SUPC = 0;     // Supply Controller
+constexpr uint8_t RSTC = 1;     // Reset Controller
+constexpr uint8_t RTC = 2;      // Real-time Clock
+constexpr uint8_t RTT = 3;      // Real-time Timer
+constexpr uint8_t WDT = 4;      // Watchdog Timer
+constexpr uint8_t PMC = 5;      // Power Management Controller
+constexpr uint8_t EFC = 6;      // Embedded Flash Controller
+constexpr uint8_t UART0 = 7;    // Universal Asynchronous Receiver Transmitter
+constexpr uint8_t UART1 = 8;    // UART1
+constexpr uint8_t PIOA = 10;    // Parallel Input/Output Controller
+constexpr uint8_t PIOB = 11;    // PIOB
+constexpr uint8_t PIOC = 12;    // PIOC
+constexpr uint8_t USART0 = 13;  // Universal Synchronous Asynchronous Receiver Transmitter
+constexpr uint8_t USART1 = 14;  // USART1
+constexpr uint8_t USART2 = 15;  // USART2
+constexpr uint8_t PIOD = 16;    // PIOD
+constexpr uint8_t PIOE = 17;    // PIOE
+constexpr uint8_t HSMCI = 18;   // High Speed MultiMedia Card Interface
+constexpr uint8_t TWIHS0 = 19;  // Two-wire Interface High Speed
+constexpr uint8_t TWIHS1 = 20;  // TWIHS1
+constexpr uint8_t SPI0 = 21;    // Serial Peripheral Interface
+constexpr uint8_t SSC = 22;     // Synchronous Serial Controller
+constexpr uint8_t TC0 = 23;     // Timer Counter
+constexpr uint8_t TC1 = 26;     // TC1
+constexpr uint8_t AFEC0 = 29;   // Analog Front-End Controller
+constexpr uint8_t DACC = 30;    // Digital-to-Analog Converter Controller
+constexpr uint8_t PWM0 = 31;    // Pulse Width Modulation Controller
+constexpr uint8_t ICM = 32;     // Integrity Check Monitor
+constexpr uint8_t ACC = 33;     // Analog Comparator Controller
+constexpr uint8_t USBHS = 34;   // USB High-Speed Interface
+constexpr uint8_t MCAN0 = 35;   // Controller Area Network
+constexpr uint8_t MCAN1 = 37;   // MCAN1
+constexpr uint8_t GMAC = 39;    // Gigabit Ethernet MAC
+constexpr uint8_t AFEC1 = 40;   // AFEC1
+constexpr uint8_t TWIHS2 = 41;  // TWIHS2
+constexpr uint8_t SPI1 = 42;    // SPI1
+constexpr uint8_t QSPI = 43;    // Quad Serial Peripheral Interface
+constexpr uint8_t UART2 = 44;   // UART2
+constexpr uint8_t UART3 = 45;   // UART3
+constexpr uint8_t UART4 = 46;   // UART4
+constexpr uint8_t TC2 = 47;     // TC2
+constexpr uint8_t TC3 = 50;     // TC3
+constexpr uint8_t MLB = 53;     // MediaLB
+constexpr uint8_t AES = 56;     // Advanced Encryption Standard
+constexpr uint8_t TRNG = 57;    // True Random Number Generator
+constexpr uint8_t XDMAC = 58;   // Extensible DMA Controller
+constexpr uint8_t ISI = 59;     // Image Sensor Interface
+constexpr uint8_t PWM1 = 60;    // PWM1
+constexpr uint8_t FPU = 61;     // Floating Point Unit
+constexpr uint8_t SDRAMC = 62;  // SDRAM Controller
+constexpr uint8_t RSWDT = 63;   // Reinforced Safety Watchdog Timer
+}  // namespace id
+
+// ============================================================================
 // MEMORY MAP
 // ============================================================================
 

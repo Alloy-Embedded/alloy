@@ -1,4 +1,4 @@
-/// Unit tests for CoreZero Logger System
+/// Unit tests for Alloy Logger System
 ///
 /// Tests:
 /// - Log level filtering (compile-time and runtime)

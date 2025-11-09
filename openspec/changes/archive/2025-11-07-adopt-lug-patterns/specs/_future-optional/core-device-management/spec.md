@@ -164,14 +164,14 @@ The system SHALL integrate with C++ RAII patterns using shared_ptr for automatic
 The system SHALL document thread safety guarantees and provide guidance for multi-threaded usage (if RTOS support is enabled).
 
 #### Scenario: Single-threaded usage (default)
-- **GIVEN** CoreZero running without RTOS
+- **GIVEN** Alloy running without RTOS
 - **WHEN** devices are acquired and released
 - **THEN** no mutex locking SHALL occur
 - **AND** operations SHALL have minimal overhead
 - **AND** thread safety is user's responsibility
 
 #### Scenario: Multi-threaded usage with RTOS (future)
-- **GIVEN** CoreZero with RTOS support enabled
+- **GIVEN** Alloy with RTOS support enabled
 - **WHEN** multiple threads access device registry
 - **THEN** registry operations SHALL be mutex-protected
 - **AND** acquire/release SHALL be atomic

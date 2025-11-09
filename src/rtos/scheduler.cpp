@@ -21,7 +21,7 @@
     // RISC-V platforms (RP2040, etc.)
     #include "hal/raspberrypi/rp2040/systick.hpp"
 #elif defined(__x86_64__) || defined(__aarch64__) || defined(_WIN64) || defined(__APPLE__)
-    #include "hal/host/systick.hpp"
+    #include "hal/vendors/host/systick.hpp"
 #endif
 
 namespace alloy::rtos {

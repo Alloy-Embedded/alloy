@@ -133,7 +133,7 @@ The system SHALL ensure RAII wrappers are exception-safe, properly releasing res
 - **AND** no resource leak SHALL occur
 
 #### Scenario: No exceptions configuration works
-- **GIVEN** CoreZero compiled with -fno-exceptions
+- **GIVEN** Alloy compiled with -fno-exceptions
 - **WHEN** using RAII wrappers
 - **THEN** SHALL still work correctly
 - **AND** cleanup SHALL rely on scope exit, not exception handling

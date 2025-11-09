@@ -16,7 +16,7 @@
  *
  * Auto-generated from: same70
  * Generator: generate_platform_gpio.py
- * Generated: 2025-11-07 17:18:08
+ * Generated: 2025-11-08 20:54:51
  *
  * @note Part of Alloy HAL Platform Abstraction Layer
  */
@@ -119,6 +119,10 @@ class GpioPin {
     Result<void, ErrorCode> set() {
         auto* port = get_port();
 
+        port->SODR = pin_mask;  // Set Output Data Register
+#ifdef ALLOY_GPIO_TEST_HOOK_SODR
+        ALLOY_GPIO_TEST_HOOK_SODR();
+#endif
 
         return Ok();
     }
@@ -130,6 +134,10 @@ class GpioPin {
     Result<void, ErrorCode> clear() {
         auto* port = get_port();
 
+        port->CODR = pin_mask;  // Clear Output Data Register
+#ifdef ALLOY_GPIO_TEST_HOOK_CODR
+        ALLOY_GPIO_TEST_HOOK_CODR();
+#endif
 
         return Ok();
     }
@@ -251,8 +259,8 @@ class GpioPin {
 
             case PinPull::PullDown:
                 return Err(ErrorCode::NotSupported);
-                break;
         }
+        return Ok();
     }
 
     /**

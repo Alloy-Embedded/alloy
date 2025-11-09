@@ -2,7 +2,7 @@
 
 ## Why
 
-Currently, CoreZero lacks a unified logging system. Developers must use platform-specific logging (ESP_LOG on ESP32, printf on bare-metal, Serial on Arduino) which creates several problems:
+Currently, Alloy lacks a unified logging system. Developers must use platform-specific logging (ESP_LOG on ESP32, printf on bare-metal, Serial on Arduino) which creates several problems:
 
 - **Inconsistent APIs**: Different logging methods across platforms break portability
 - **No Runtime Control**: Cannot enable/disable logs without recompiling
@@ -102,7 +102,7 @@ LOG_ERROR("Failed: {}", error.message());
 - [log4cxx](https://logging.apache.org/log4cxx/) - Flexible configuration
 - [ESP-IDF logging](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/log.html) - Platform-specific approach
 
-**CoreZero foundations:**
+**Alloy foundations:**
 - `src/hal/interface/systick.hpp` - Timing source for timestamps
 - `src/core/result.hpp` - Error handling pattern
 - `src/core/types.hpp` - Common types

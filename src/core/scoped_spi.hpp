@@ -14,7 +14,7 @@
  * - Thread-safe: Prevents concurrent access to shared bus
  * - CS Management: Optionally manages chip select automatically
  *
- * @note Part of CoreZero Core Library
+ * @note Part of Alloy Core Library
  */
 
 #pragma once
@@ -67,7 +67,7 @@ class ScopedSpi {
      * @return Result containing ScopedSpi or error code
      */
     [[nodiscard]] static Result<ScopedSpi<SpiDevice, ChipSelect>, ErrorCode> create(
-        SpiDevice& device, ChipSelect cs, uint32_t timeout_ms = 100) {
+        SpiDevice& device, ChipSelect cs, [[maybe_unused]] uint32_t timeout_ms = 100) {
         // Check if device is open
         if (!device.isOpen()) {
             return Err(ErrorCode::NotInitialized);
@@ -76,6 +76,7 @@ class ScopedSpi {
         // For now, we don't have explicit lock/unlock in the SPI interface
         // This is a simplified version that just wraps the device
         // In a multi-threaded environment, you would implement actual mutex locking here
+        // timeout_ms is reserved for future use when implementing actual bus locking
 
         return Ok(ScopedSpi(device, cs));
     }
@@ -86,10 +87,7 @@ class ScopedSpi {
      * The destructor ensures the bus is properly unlocked and chip select
      * is deactivated even if an exception is thrown or an early return occurs.
      */
-    ~ScopedSpi() {
-        // In a multi-threaded environment, unlock mutex here
-        // CS deactivation is handled by the SPI hardware automatically
-    }
+    ~ScopedSpi() = default;
 
     // Delete copy and move operations - bus locks are not transferable
     ScopedSpi(const ScopedSpi&) = delete;
@@ -189,9 +187,9 @@ class ScopedSpi {
     [[nodiscard]] Result<void, ErrorCode> writeByte(uint8_t byte) {
         auto result = write(&byte, 1);
         if (result.is_ok()) {
-            return Result<void, ErrorCode>::ok();
+            return Ok();
         }
-        return Result<void, ErrorCode>::error(result.error());
+        return Err(result.error());
     }
 
     /**
@@ -203,9 +201,9 @@ class ScopedSpi {
         uint8_t byte;
         auto result = read(&byte, 1);
         if (result.is_ok()) {
-            return Result<uint8_t, ErrorCode>::ok(byte);
+            return Ok(byte);
         }
-        return Result<uint8_t, ErrorCode>::error(result.error());
+        return Err(result.error());
     }
 
     /**
@@ -218,9 +216,9 @@ class ScopedSpi {
         uint8_t rx_byte;
         auto result = transfer(&tx_byte, &rx_byte, 1);
         if (result.is_ok()) {
-            return Result<uint8_t, ErrorCode>::ok(rx_byte);
+            return Ok(rx_byte);
         }
-        return Result<uint8_t, ErrorCode>::error(result.error());
+        return Err(result.error());
     }
 
    private:

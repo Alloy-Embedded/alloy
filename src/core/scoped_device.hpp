@@ -13,7 +13,7 @@
  * - Zero overhead: No virtual functions, fully inlined
  * - Type-safe: Strong typing prevents misuse
  *
- * @note Part of CoreZero Core Library
+ * @note Part of Alloy Core Library
  */
 
 #pragma once
@@ -70,10 +70,7 @@ class ScopedDevice {
      * The destructor ensures the device is properly released even if
      * an exception is thrown or an early return occurs.
      */
-    ~ScopedDevice() {
-        // Device is managed by the underlying implementation
-        // No explicit release needed for basic scoped access
-    }
+    ~ScopedDevice() = default;
 
     // Delete copy constructor and copy assignment
     ScopedDevice(const ScopedDevice&) = delete;

@@ -159,7 +159,7 @@
 
 ### 4.3 ESP32 Integration Example
 - [ ] 4.3.1 Create `examples/esp32_logger/` project
-- [ ] 4.3.2 Show CoreZero logger + ESP_LOG coexistence
+- [ ] 4.3.2 Show Alloy logger + ESP_LOG coexistence
 - [ ] 4.3.3 Demonstrate UART + File + UDP sinks
 - [ ] 4.3.4 Add WiFi logging to remote server
 

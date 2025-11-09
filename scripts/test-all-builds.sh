@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 export PATH="/Users/lgili/.local/xpack-arm-toolchain/bin:$PATH"
 
 # Project root
-PROJECT_ROOT="/Users/lgili/Documents/01 - Codes/01 - Github/corezero"
+PROJECT_ROOT="/Users/lgili/Documents/01 - Codes/01 - Github/alloy"
 cd "$PROJECT_ROOT"
 
 echo -e "${BLUE}========================================${NC}"

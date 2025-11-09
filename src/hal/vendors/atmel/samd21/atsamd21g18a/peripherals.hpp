@@ -56,6 +56,38 @@ constexpr uintptr_t PORT_IOBUS = 0x60000000;  // Port Module (IOBUS)
 }  // namespace peripherals
 
 // ============================================================================
+// PERIPHERAL IDs (for Clock Enable/Disable)
+// ============================================================================
+
+namespace id {
+constexpr uint8_t PM = 0;        // Power Manager
+constexpr uint8_t SYSCTRL = 1;   // System Control
+constexpr uint8_t WDT = 2;       // Watchdog Timer
+constexpr uint8_t RTC = 3;       // Real-Time Counter
+constexpr uint8_t EIC = 4;       // External Interrupt Controller
+constexpr uint8_t NVMCTRL = 5;   // Non-Volatile Memory Controller
+constexpr uint8_t DMAC = 6;      // Direct Memory Access Controller
+constexpr uint8_t USB = 7;       // Universal Serial Bus
+constexpr uint8_t EVSYS = 8;     // Event System Interface
+constexpr uint8_t SERCOM0 = 9;   // Serial Communication Interface 0
+constexpr uint8_t SERCOM1 = 10;  // Serial Communication Interface 1
+constexpr uint8_t SERCOM2 = 11;  // Serial Communication Interface 2
+constexpr uint8_t SERCOM3 = 12;  // Serial Communication Interface 3
+constexpr uint8_t SERCOM4 = 13;  // Serial Communication Interface 4
+constexpr uint8_t SERCOM5 = 14;  // Serial Communication Interface 5
+constexpr uint8_t TCC0 = 15;     // Timer Counter Control 0
+constexpr uint8_t TCC1 = 16;     // Timer Counter Control 1
+constexpr uint8_t TCC2 = 17;     // Timer Counter Control 2
+constexpr uint8_t TC3 = 18;      // Basic Timer Counter 3
+constexpr uint8_t TC4 = 19;      // Basic Timer Counter 4
+constexpr uint8_t TC5 = 20;      // Basic Timer Counter 5
+constexpr uint8_t ADC = 23;      // Analog Digital Converter
+constexpr uint8_t AC = 24;       // Analog Comparators
+constexpr uint8_t DAC = 25;      // Digital Analog Converter
+constexpr uint8_t I2S = 27;      // Inter-IC Sound Interface
+}  // namespace id
+
+// ============================================================================
 // MEMORY MAP
 // ============================================================================
 

@@ -13,7 +13,7 @@
  * - Zero overhead: No virtual functions, fully inlined
  * - Thread-safe: Prevents concurrent access to shared bus
  *
- * @note Part of CoreZero Core Library
+ * @note Part of Alloy Core Library
  */
 
 #pragma once
@@ -63,8 +63,8 @@ class ScopedI2c {
      * @param timeout_ms Lock acquisition timeout in milliseconds (default: 100ms)
      * @return Result containing ScopedI2c or error code
      */
-    [[nodiscard]] static Result<ScopedI2c<I2cDevice>, ErrorCode> create(I2cDevice& device,
-                                                                        uint32_t timeout_ms = 100) {
+    [[nodiscard]] static Result<ScopedI2c<I2cDevice>, ErrorCode> create(
+        I2cDevice& device, [[maybe_unused]] uint32_t timeout_ms = 100) {
         // Check if device is open
         if (!device.isOpen()) {
             return Err(ErrorCode::NotInitialized);
@@ -72,7 +72,7 @@ class ScopedI2c {
 
         // For now, we don't have explicit lock/unlock in the I2C interface
         // This is a simplified version that just wraps the device
-        // In a multi-threaded environment, you would implement actual mutex locking here
+        // timeout_ms is reserved for future use when implementing actual bus locking
 
         return Ok(ScopedI2c(device));
     }
@@ -83,10 +83,7 @@ class ScopedI2c {
      * The destructor ensures the bus is properly unlocked even if
      * an exception is thrown or an early return occurs.
      */
-    ~ScopedI2c() {
-        // In a multi-threaded environment, unlock mutex here
-        // For single-threaded embedded, this is a no-op
-    }
+    ~ScopedI2c() = default;
 
     // Delete copy and move operations - bus locks are not transferable
     ScopedI2c(const ScopedI2c&) = delete;

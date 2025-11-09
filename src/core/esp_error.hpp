@@ -9,6 +9,7 @@
  * Example:
  * @code
  * #include "core/error.hpp"
+#include "core/result.hpp"
  * #include "core/esp_error.hpp"
  *
  * Result<IPAddress> connect_wifi() {
@@ -16,7 +17,7 @@
  *     if (err != ESP_OK) {
  *         return esp_result_error<IPAddress>(err);
  *     }
- *     return Result<IPAddress>::ok(get_ip_address());
+ *     return Ok(get_ip_address());
  * }
  * @endcode
  */
@@ -107,7 +108,7 @@ inline ErrorCode esp_to_error_code(esp_err_t esp_error) noexcept {
  */
 template <typename T>
 inline Result<T> esp_result_error(esp_err_t esp_error) {
-    return Result<T>::error(esp_to_error_code(esp_error));
+    return Err(esp_to_error_code(esp_error));
 }
 
 /**
@@ -119,7 +120,7 @@ inline Result<T> esp_result_error(esp_err_t esp_error) {
  * @return Result<void> in error state
  */
 inline Result<void> esp_result_error_void(esp_err_t esp_error) {
-    return Result<void>::error(esp_to_error_code(esp_error));
+    return Err(esp_to_error_code(esp_error));
 }
 
 /**
@@ -129,7 +130,7 @@ inline Result<void> esp_result_error_void(esp_err_t esp_error) {
  * and returns an appropriate Result<void>.
  *
  * @param esp_error ESP-IDF error code to check
- * @return Result<void>::ok() if ESP_OK, otherwise Result<void>::error()
+ * @return Ok() if ESP_OK, otherwise Result<void>::error()
  *
  * Example:
  * @code
@@ -141,7 +142,7 @@ inline Result<void> esp_result_error_void(esp_err_t esp_error) {
  */
 inline Result<void> esp_check(esp_err_t esp_error) {
     if (esp_error == ESP_OK) {
-        return Result<void>::ok();
+        return Ok();
     }
     return esp_result_error_void(esp_error);
 }
@@ -158,7 +159,7 @@ inline Result<void> esp_check(esp_err_t esp_error) {
      * Result<void> init_components() {
      *     ESP_TRY(esp_wifi_init(&cfg));
      *     ESP_TRY(esp_wifi_start());
-     *     return Result<void>::ok();
+     *     return Ok();
      * }
      * @endcode
      */
@@ -182,7 +183,7 @@ inline Result<void> esp_check(esp_err_t esp_error) {
      * @code
      * Result<IPAddress> get_ip() {
      *     ESP_TRY_T(IPAddress, esp_wifi_connect());
-     *     return Result<IPAddress>::ok(read_ip_address());
+     *     return Ok(read_ip_address());
      * }
      * @endcode
      */

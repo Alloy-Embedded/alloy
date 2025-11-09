@@ -22,7 +22,7 @@ struct Peripheral::Impl {
 Peripheral::Peripheral() : impl_(new Impl()) {}
 
 Peripheral::~Peripheral() {
-    if (impl_) {
+    if (impl_ != nullptr) {
         deinit();
         delete impl_;
     }
@@ -30,29 +30,29 @@ Peripheral::~Peripheral() {
 
 Result<void> Peripheral::init(const char* device_name) {
     (void)device_name;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 Result<void> Peripheral::init(const PeripheralConfig& config) {
     (void)config;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 Result<void> Peripheral::deinit() {
-    return Result<void>::ok();
+    return Ok();
 }
 
 Result<void> Peripheral::start_advertising() {
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 Result<void> Peripheral::start_advertising(const AdvData& adv_data) {
     (void)adv_data;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 Result<void> Peripheral::stop_advertising() {
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 bool Peripheral::is_advertising() const {
@@ -61,12 +61,12 @@ bool Peripheral::is_advertising() const {
 
 Result<ServiceHandle> Peripheral::add_service(const UUID& uuid) {
     (void)uuid;
-    return Result<ServiceHandle>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 Result<void> Peripheral::start_service(const ServiceHandle& service) {
     (void)service;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 Result<CharHandle> Peripheral::add_characteristic(const ServiceHandle& service, const UUID& uuid,
@@ -75,7 +75,7 @@ Result<CharHandle> Peripheral::add_characteristic(const ServiceHandle& service, 
     (void)uuid;
     (void)properties;
     (void)permissions;
-    return Result<CharHandle>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 Result<void> Peripheral::set_char_value(const CharHandle& characteristic, const u8* data,
@@ -83,7 +83,7 @@ Result<void> Peripheral::set_char_value(const CharHandle& characteristic, const 
     (void)characteristic;
     (void)data;
     (void)length;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 Result<u16> Peripheral::get_char_value(const CharHandle& characteristic, u8* buffer,
@@ -91,21 +91,21 @@ Result<u16> Peripheral::get_char_value(const CharHandle& characteristic, u8* buf
     (void)characteristic;
     (void)buffer;
     (void)buffer_size;
-    return Result<u16>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 Result<void> Peripheral::notify(const CharHandle& characteristic, const u8* data, u16 length) {
     (void)characteristic;
     (void)data;
     (void)length;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 Result<void> Peripheral::indicate(const CharHandle& characteristic, const u8* data, u16 length) {
     (void)characteristic;
     (void)data;
     (void)length;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 bool Peripheral::is_connected() const {
@@ -117,12 +117,12 @@ u8 Peripheral::connection_count() const {
 }
 
 Result<void> Peripheral::disconnect_all() {
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 Result<void> Peripheral::disconnect(ConnHandle conn_handle) {
     (void)conn_handle;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 void Peripheral::set_connection_callback(ConnectionCallback callback) {

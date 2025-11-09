@@ -2,6 +2,7 @@
 #define ALLOY_BLE_CENTRAL_HPP
 
 #include "core/error.hpp"
+#include "core/result.hpp"
 
 #include "types.hpp"
 

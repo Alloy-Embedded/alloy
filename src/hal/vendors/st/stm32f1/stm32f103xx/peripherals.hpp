@@ -75,6 +75,52 @@ Controller constexpr uintptr_t DBG = 0xE0042000;  // Debug support
 }  // namespace peripherals
 
 // ============================================================================
+// PERIPHERAL IDs (for Clock Enable/Disable)
+// ============================================================================
+
+namespace id {
+constexpr uint8_t WWDG = 0;                 // Window watchdog
+constexpr uint8_t PWR = 1;                  // Power control
+constexpr uint8_t EXTI = 2;                 // EXTI
+constexpr uint8_t RTC = 3;                  // Real time clock
+constexpr uint8_t FLASH = 4;                // FLASH
+constexpr uint8_t RCC = 5;                  // Reset and clock control
+constexpr uint8_t DMA1 = 11;                // DMA controller
+constexpr uint8_t ADC1 = 18;                // Analog to digital converter
+constexpr uint8_t ADC2 = 18;                // Analog to digital converter
+constexpr uint8_t CAN = 19;                 // Controller area network
+constexpr uint8_t TIM1 = 24;                // Advanced timer
+constexpr uint8_t TIM9 = 24;                // General purpose timer
+constexpr uint8_t TIM10 = 25;               // General purpose timer
+constexpr uint8_t TIM11 = 26;               // TIM11
+constexpr uint8_t TIM2 = 28;                // General purpose timer
+constexpr uint8_t TIM3 = 29;                // TIM3
+constexpr uint8_t TIM4 = 30;                // TIM4
+constexpr uint8_t I2C1 = 31;                // Inter integrated circuit
+constexpr uint8_t I2C2 = 33;                // I2C2
+constexpr uint8_t SPI1 = 35;                // Serial peripheral interface
+constexpr uint8_t SPI2 = 36;                // SPI2
+constexpr uint8_t USART1 = 37;              // Universal synchronous asynchronous receiver
+transmitter constexpr uint8_t USART2 = 38;  // USART2
+constexpr uint8_t USART3 = 39;              // USART3
+constexpr uint8_t USB = 42;                 // Universal serial bus full-speed device
+interface constexpr uint8_t TIM12 = 43;     // TIM12
+constexpr uint8_t TIM8 = 43;                // TIM8
+constexpr uint8_t TIM13 = 44;               // TIM13
+constexpr uint8_t TIM14 = 45;               // TIM14
+constexpr uint8_t ADC3 = 47;                // ADC3
+constexpr uint8_t FSMC = 48;                // Flexible static memory controller
+constexpr uint8_t SDIO = 49;                // Secure digital input/output
+interface constexpr uint8_t TIM5 = 50;      // TIM5
+constexpr uint8_t SPI3 = 51;                // SPI3
+constexpr uint8_t UART4 = 52;               // Universal asynchronous receiver
+transmitter constexpr uint8_t UART5 = 53;   // Universal asynchronous receiver
+transmitter constexpr uint8_t TIM6 = 54;    // Basic timer
+constexpr uint8_t TIM7 = 55;                // TIM7
+constexpr uint8_t DMA2 = 56;                // DMA2
+}  // namespace id
+
+// ============================================================================
 // MEMORY MAP
 // ============================================================================
 

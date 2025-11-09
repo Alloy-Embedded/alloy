@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Corezero code generation system uses a hierarchical metadata structure to describe microcontrollers, peripherals, and their characteristics. This metadata drives template-based code generation for HAL implementations.
+The Alloy code generation system uses a hierarchical metadata structure to describe microcontrollers, peripherals, and their characteristics. This metadata drives template-based code generation for HAL implementations.
 
 ## Directory Structure
 

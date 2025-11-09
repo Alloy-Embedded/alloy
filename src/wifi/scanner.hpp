@@ -31,6 +31,7 @@
 
 #include "core/error.hpp"
 #include "core/esp_error.hpp"
+#include "core/result.hpp"
 
 #include "types.hpp"
 
@@ -87,7 +88,7 @@ class Scanner {
     /**
      * @brief Destructor
      */
-    ~Scanner();
+    ~Scanner() = default;
 
     // Prevent copying
     Scanner(const Scanner&) = delete;

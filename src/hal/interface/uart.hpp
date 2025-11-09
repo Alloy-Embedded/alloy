@@ -8,6 +8,7 @@
 #include <concepts>
 
 #include "core/error.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 #include "core/units.hpp"
 
@@ -98,7 +99,7 @@ class ConfiguredUart {
                 return result;
             }
         }
-        return core::Result<void>::ok();
+        return core::Ok();
     }
 
     /// Write null-terminated string
@@ -110,7 +111,7 @@ class ConfiguredUart {
             }
             ++str;
         }
-        return core::Result<void>::ok();
+        return core::Ok();
     }
 
    private:

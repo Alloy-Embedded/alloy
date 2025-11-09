@@ -1,6 +1,6 @@
-# CoreZero Testing Guide
+# Alloy Testing Guide
 
-Comprehensive testing framework for CoreZero ESP-IDF integration.
+Comprehensive testing framework for Alloy ESP-IDF integration.
 
 ## Table of Contents
 
@@ -13,7 +13,7 @@ Comprehensive testing framework for CoreZero ESP-IDF integration.
 
 ## Overview
 
-CoreZero uses a multi-layered testing approach:
+Alloy uses a multi-layered testing approach:
 
 1. **Unit Tests**: Test core functionality (Result<T>, Error handling)
 2. **Build Validation**: Verify all examples compile successfully
@@ -70,7 +70,7 @@ Run all tests:
 Output:
 ```
 ==========================================
-  CoreZero Unit Tests
+  Alloy Unit Tests
 ==========================================
 
 Configuring tests...

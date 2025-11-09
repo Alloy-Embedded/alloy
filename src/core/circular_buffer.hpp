@@ -27,7 +27,7 @@
  * - Inter-thread communication (with proper memory ordering)
  * - Audio/video sample buffering
  *
- * @note Part of CoreZero Core Library
+ * @note Part of Alloy Core Library
  */
 
 #pragma once
@@ -86,7 +86,7 @@ class CircularBuffer {
     using const_reference = const T&;
 
     // Use atomic or regular size_t based on template parameter
-    using index_type = typename std::conditional<Atomic, std::atomic<size_t>, size_t>::type;
+    using index_type = std::conditional_t<Atomic, std::atomic<size_t>, size_t>;
 
     static constexpr size_t capacity = N;
 
@@ -212,9 +212,8 @@ class CircularBuffer {
 
         if (head >= tail) {
             return head - tail;
-        } else {
-            return N - tail + head;
         }
+        return N - tail + head;
     }
 
     /**

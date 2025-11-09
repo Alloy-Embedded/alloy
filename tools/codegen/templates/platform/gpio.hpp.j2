@@ -256,6 +256,8 @@ public:
         return Ok({{ operation.returns_type|default('bool') }}({{ operation.returns }}));
 {% elif operation.always_succeeds %}
         return Ok();
+{% elif operation.return_type and 'Result' in operation.return_type %}
+        return Ok();
 {% endif %}
     }
 

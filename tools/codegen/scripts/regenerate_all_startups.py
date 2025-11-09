@@ -13,7 +13,7 @@ import re
 
 # Add codegen to path
 CODEGEN_DIR = Path(__file__).parent.parent
-COREZERO_ROOT = CODEGEN_DIR.parent.parent
+ALLOY_ROOT = CODEGEN_DIR.parent.parent
 sys.path.insert(0, str(CODEGEN_DIR))
 
 from cli.core.logger import print_header, print_success, print_error, print_info
@@ -30,7 +30,7 @@ def main():
     print_header("Regenerating ALL startup.cpp files")
 
     # Find all existing startup.cpp files
-    startup_files = list(COREZERO_ROOT.glob("src/hal/vendors/**/startup.cpp"))
+    startup_files = list(ALLOY_ROOT.glob("src/hal/vendors/**/startup.cpp"))
     print_info(f"Found {len(startup_files)} startup.cpp files")
 
     # Discover all available SVD files

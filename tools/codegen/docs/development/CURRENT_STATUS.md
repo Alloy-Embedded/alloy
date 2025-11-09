@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Corezero code generation system is in a **hybrid state** with multiple generation approaches coexisting:
+The Alloy code generation system is in a **hybrid state** with multiple generation approaches coexisting:
 
 1. **SVD-based generators** (registers, bitfields) - PRODUCTION READY ✅
 2. **Template-based platform generators** (GPIO, UART, SPI, etc.) - PRODUCTION READY ✅

@@ -12,8 +12,7 @@
 
 #include <cstdarg>
 
-namespace alloy {
-namespace logger {
+namespace alloy::logger {
 
 /**
  * Core logging engine
@@ -196,11 +195,13 @@ class Logger {
         }
     }
 
-   private:
-    Logger() = default;
-    ~Logger() = default;
+    // Prevent copying and moving
     Logger(const Logger&) = delete;
     Logger& operator=(const Logger&) = delete;
+
+   private:
+    Logger() : buffer_{} {}
+    ~Logger() = default;
 
     // Configuration
     Config config_;
@@ -218,8 +219,7 @@ class Logger {
 #endif
 };
 
-}  // namespace logger
-}  // namespace alloy
+}  // namespace alloy::logger
 
 // ============================================================================
 // Logging Macros

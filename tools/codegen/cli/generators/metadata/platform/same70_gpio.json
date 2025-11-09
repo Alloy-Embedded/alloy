@@ -133,13 +133,14 @@
       "steps": [
         {
           "register": "set_output",
+          "operation": "write",
           "value": "pin_mask",
-          "comment": "Single instruction: writes pin mask to SODR"
+          "comment": "Set Output Data Register",
+          "test_hook": "ALLOY_GPIO_TEST_HOOK_SODR"
         }
       ],
       "return_type": "Result<void, ErrorCode>",
-      "always_succeeds": true,
-      "test_hook": "ALLOY_GPIO_TEST_HOOK_SODR"
+      "always_succeeds": true
     },
 
     "clear": {
@@ -147,13 +148,14 @@
       "steps": [
         {
           "register": "clear_output",
+          "operation": "write",
           "value": "pin_mask",
-          "comment": "Single instruction: writes pin mask to CODR"
+          "comment": "Clear Output Data Register",
+          "test_hook": "ALLOY_GPIO_TEST_HOOK_CODR"
         }
       ],
       "return_type": "Result<void, ErrorCode>",
-      "always_succeeds": true,
-      "test_hook": "ALLOY_GPIO_TEST_HOOK_CODR"
+      "always_succeeds": true
     },
 
     "toggle": {
