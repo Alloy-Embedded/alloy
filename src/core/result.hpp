@@ -29,8 +29,7 @@
 #include <type_traits>  // std::enable_if, std::is_same
 #include <utility>      // std::move, std::forward
 
-namespace alloy {
-namespace core {
+namespace alloy::core {
 
 // Forward declarations
 template <typename T, typename E>
@@ -42,7 +41,7 @@ template <typename T>
 struct OkTag {
     T value;
 
-    explicit OkTag(T&& v) : value(std::forward<T>(v)) {}
+    explicit OkTag(T&& v) : value(std::move(v)) {}
     explicit OkTag(const T& v) : value(v) {}
 };
 
@@ -56,7 +55,7 @@ template <typename E>
 struct ErrTag {
     E error;
 
-    explicit ErrTag(E&& e) : error(std::forward<E>(e)) {}
+    explicit ErrTag(E&& e) : error(std::move(e)) {}
     explicit ErrTag(const E& e) : error(e) {}
 };
 }  // namespace detail
@@ -77,7 +76,7 @@ constexpr detail::OkTag<T> Ok(T&& value) {
  * @return OkTag for void
  */
 inline constexpr detail::OkTag<void> Ok() {
-    return detail::OkTag<void>();
+    return {};
 }
 
 /**
@@ -115,7 +114,7 @@ class Result {
     /**
      * @brief Construct an Ok result from OkTag
      */
-    Result(detail::OkTag<T>&& ok) : is_ok_(true) { new (&storage_.value) T(std::move(ok.value)); }
+    Result(detail::OkTag<T>&& ok) : is_ok_(true) { new (&storage_.value) T(std::move(ok).value); }
 
     Result(const detail::OkTag<T>& ok) : is_ok_(true) { new (&storage_.value) T(ok.value); }
 
@@ -123,7 +122,7 @@ class Result {
      * @brief Construct an Err result from ErrTag
      */
     Result(detail::ErrTag<E>&& err) : is_ok_(false) {
-        new (&storage_.error) E(std::move(err.error));
+        new (&storage_.error) E(std::move(err).error);
     }
 
     Result(const detail::ErrTag<E>& err) : is_ok_(false) { new (&storage_.error) E(err.error); }
@@ -334,23 +333,22 @@ class Result {
      * @endcode
      */
     template <typename F>
-    auto map(F&& fn) const& -> Result<decltype(fn(std::declval<T>())), E> {
-        using U = decltype(fn(std::declval<T>()));
+    auto map(F&& fn) const& -> Result<decltype(std::forward<F>(fn)(std::declval<T>())), E> {
+        using U = decltype(std::forward<F>(fn)(std::declval<T>()));
         if (is_ok_) {
-            return Ok(fn(storage_.value));
-        } else {
-            return Result<U, E>(Err(E(storage_.error)));
+            return Ok(std::forward<F>(fn)(storage_.value));
         }
+        return Result<U, E>(Err(E(storage_.error)));
     }
 
     template <typename F>
-    auto map(F&& fn) && -> Result<decltype(fn(std::declval<T>())), E> {
-        using U = decltype(fn(std::declval<T>()));
+    auto map(F&& fn) && -> Result<decltype(std::forward<F>(fn)(std::declval<T>())), E> {
+        using U = decltype(std::forward<F>(fn)(std::declval<T>()));
         if (is_ok_) {
-            return Ok(fn(std::move(storage_.value)));
-        } else {
-            return Result<U, E>(Err(std::move(storage_.error)));
+            return Ok(std::forward<F>(fn)(std::move(storage_.value)));
+
         }
+            return Result<U, E>(Err(std::move(storage_.error)));
     }
 
     /**
@@ -370,23 +368,23 @@ class Result {
      * @endcode
      */
     template <typename F>
-    auto and_then(F&& fn) const& -> decltype(fn(std::declval<T>())) {
-        using ResultType = decltype(fn(std::declval<T>()));
+    auto and_then(F&& fn) const& -> decltype(std::forward<F>(fn)(std::declval<T>())) {
+        using ResultType = decltype(std::forward<F>(fn)(std::declval<T>()));
         if (is_ok_) {
-            return fn(storage_.value);
-        } else {
-            return ResultType(Err(E(storage_.error)));
+            return std::forward<F>(fn)(storage_.value);
+
         }
+            return ResultType(Err(E(storage_.error)));
     }
 
     template <typename F>
-    auto and_then(F&& fn) && -> decltype(fn(std::declval<T>())) {
-        using ResultType = decltype(fn(std::declval<T>()));
+    auto and_then(F&& fn) && -> decltype(std::forward<F>(fn)(std::declval<T>())) {
+        using ResultType = decltype(std::forward<F>(fn)(std::declval<T>()));
         if (is_ok_) {
-            return fn(std::move(storage_.value));
-        } else {
-            return ResultType(Err(std::move(storage_.error)));
+            return std::forward<F>(fn)(std::move(storage_.value));
+
         }
+            return ResultType(Err(std::move(storage_.error)));
     }
 
     /**
@@ -405,23 +403,23 @@ class Result {
      * @endcode
      */
     template <typename F>
-    auto or_else(F&& fn) const& -> decltype(fn(std::declval<E>())) {
-        using ResultType = decltype(fn(std::declval<E>()));
+    auto or_else(F&& fn) const& -> decltype(std::forward<F>(fn)(std::declval<E>())) {
+        using ResultType = decltype(std::forward<F>(fn)(std::declval<E>()));
         if (is_ok_) {
             return ResultType(Ok(T(storage_.value)));
-        } else {
-            return fn(storage_.error);
+
         }
+            return std::forward<F>(fn)(storage_.error);
     }
 
     template <typename F>
-    auto or_else(F&& fn) && -> decltype(fn(std::declval<E>())) {
-        using ResultType = decltype(fn(std::declval<E>()));
+    auto or_else(F&& fn) && -> decltype(std::forward<F>(fn)(std::declval<E>())) {
+        using ResultType = decltype(std::forward<F>(fn)(std::declval<E>()));
         if (is_ok_) {
             return ResultType(Ok(std::move(storage_.value)));
-        } else {
-            return fn(std::move(storage_.error));
+
         }
+            return std::forward<F>(fn)(std::move(storage_.error));
     }
 
    private:
@@ -466,7 +464,7 @@ class Result<void, E> {
     using error_type = E;
 
     // Constructors
-    Result(const detail::OkTag<void>&) : is_ok_(true), error_() {}
+    Result([[maybe_unused]] const detail::OkTag<void>& ok) : is_ok_(true), error_() {}
     Result(const detail::ErrTag<E>& err) : is_ok_(false), error_(err.error) {}
 
     // No copy/move as we're keeping it simple for void type
@@ -550,5 +548,4 @@ class Result<void, E> {
     E error_;  // Only valid when is_ok_ == false
 };
 
-}  // namespace core
-}  // namespace alloy
+}  // namespace alloy::core

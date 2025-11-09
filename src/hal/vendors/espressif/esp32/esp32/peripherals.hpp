@@ -72,6 +72,38 @@ constexpr uintptr_t RNG = 0x60035000;  // Hardware Random Number Generator
 }  // namespace peripherals
 
 // ============================================================================
+// PERIPHERAL IDs (for Clock Enable/Disable)
+// ============================================================================
+
+namespace id {
+constexpr uint8_t DPORT = 0;      // DPORT Peripheral
+constexpr uint8_t UHCI0 = 12;     // Universal Host Controller Interface 0
+constexpr uint8_t UHCI1 = 13;     // Universal Host Controller Interface 1
+constexpr uint8_t TIMG0 = 14;     // Timer Group 0
+constexpr uint8_t TIMG1 = 18;     // Timer Group 1
+constexpr uint8_t GPIO = 22;      // General Purpose Input/Output
+constexpr uint8_t SPI0 = 28;      // SPI (Serial Peripheral Interface) Controller 0
+constexpr uint8_t SPI1 = 29;      // SPI (Serial Peripheral Interface) Controller 1
+constexpr uint8_t SPI2 = 30;      // SPI (Serial Peripheral Interface) Controller 2
+constexpr uint8_t SPI3 = 31;      // SPI (Serial Peripheral Interface) Controller 3
+constexpr uint8_t I2S0 = 32;      // I2S (Inter-IC Sound) Controller 0
+constexpr uint8_t I2S1 = 33;      // I2S (Inter-IC Sound) Controller 1
+constexpr uint8_t UART0 = 34;     // UART (Universal Asynchronous Receiver-Transmitter) Controller 0
+constexpr uint8_t UART1 = 35;     // UART (Universal Asynchronous Receiver-Transmitter) Controller 1
+constexpr uint8_t UART2 = 36;     // UART (Universal Asynchronous Receiver-Transmitter) Controller 2
+constexpr uint8_t MCPWM0 = 39;    // Motor Control Pulse-Width Modulation 0
+constexpr uint8_t LEDC = 43;      // LED Control PWM (Pulse Width Modulation)
+constexpr uint8_t EFUSE = 44;     // eFuse Controller
+constexpr uint8_t TWAI0 = 45;     // Two-Wire Automotive Interface
+constexpr uint8_t RTC_CNTL = 46;  // Real-Time Clock Control
+constexpr uint8_t RMT = 47;       // Remote Control
+constexpr uint8_t PCNT = 48;      // Pulse Count Controller
+constexpr uint8_t I2C0 = 49;      // I2C (Inter-Integrated Circuit) Controller 0
+constexpr uint8_t I2C1 = 50;      // I2C (Inter-Integrated Circuit) Controller 1
+constexpr uint8_t RSA = 51;       // RSA (Rivest Shamir Adleman) Accelerator
+}  // namespace id
+
+// ============================================================================
 // MEMORY MAP
 // ============================================================================
 

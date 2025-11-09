@@ -61,7 +61,7 @@ struct Client::Impl {
     void handle_connected() {
         ESP_LOGI(TAG, "Connected to MQTT broker");
         current_state = State::Connected;
-        if (connection_cb) {
+        if (connection_cb != nullptr) {
             connection_cb(true, ErrorReason::None);
         }
     }
@@ -69,21 +69,21 @@ struct Client::Impl {
     void handle_disconnected() {
         ESP_LOGI(TAG, "Disconnected from MQTT broker");
         current_state = State::Disconnected;
-        if (connection_cb) {
+        if (connection_cb != nullptr) {
             connection_cb(false, ErrorReason::NetworkError);
         }
     }
 
     void handle_subscribed(esp_mqtt_event_handle_t event) {
         ESP_LOGI(TAG, "Subscribed, msg_id=%d", event->msg_id);
-        if (subscribe_cb) {
+        if (subscribe_cb != nullptr) {
             subscribe_cb("", true);  // Topic not available in event
         }
     }
 
     void handle_published(esp_mqtt_event_handle_t event) {
         ESP_LOGD(TAG, "Published, msg_id=%d", event->msg_id);
-        if (publish_cb) {
+        if (publish_cb != nullptr) {
             publish_cb(event->msg_id, true);
         }
     }
@@ -110,7 +110,7 @@ struct Client::Impl {
         }
 
         // Use default message callback if no specific handler
-        if (!handled && message_cb) {
+        if (!handled && message_cb != nullptr) {
             message_cb(msg);
         }
     }
@@ -118,7 +118,7 @@ struct Client::Impl {
     void handle_error(esp_mqtt_event_handle_t event) {
         ESP_LOGE(TAG, "MQTT error event");
         current_state = State::Error;
-        if (connection_cb) {
+        if (connection_cb != nullptr) {
             connection_cb(false, ErrorReason::Unknown);
         }
     }
@@ -142,15 +142,15 @@ Client::Client(const Config& config) : impl_(std::make_unique<Impl>()) {
         mqtt_cfg.broker.address.port = config.port;
     }
 
-    if (config.client_id) {
+    if (config.client_id != nullptr) {
         mqtt_cfg.credentials.client_id = config.client_id;
     }
 
-    if (config.username) {
+    if (config.username != nullptr) {
         mqtt_cfg.credentials.username = config.username;
     }
 
-    if (config.password) {
+    if (config.password != nullptr) {
         mqtt_cfg.credentials.authentication.password = config.password;
     }
 
@@ -158,15 +158,15 @@ Client::Client(const Config& config) : impl_(std::make_unique<Impl>()) {
     mqtt_cfg.session.disable_clean_session = !config.clean_session;
 
     // TLS/SSL configuration
-    if (config.ca_cert) {
+    if (config.ca_cert != nullptr) {
         mqtt_cfg.broker.verification.certificate = config.ca_cert;
     }
 
-    if (config.client_cert) {
+    if (config.client_cert != nullptr) {
         mqtt_cfg.credentials.authentication.certificate = config.client_cert;
     }
 
-    if (config.client_key) {
+    if (config.client_key != nullptr) {
         mqtt_cfg.credentials.authentication.key = config.client_key;
     }
 
@@ -175,17 +175,17 @@ Client::Client(const Config& config) : impl_(std::make_unique<Impl>()) {
     }
 
     // Last Will and Testament
-    if (config.lwt_topic) {
+    if (config.lwt_topic != nullptr) {
         mqtt_cfg.session.last_will.topic = config.lwt_topic;
         mqtt_cfg.session.last_will.msg = config.lwt_message;
-        mqtt_cfg.session.last_will.msg_len = config.lwt_message ? strlen(config.lwt_message) : 0;
+        mqtt_cfg.session.last_will.msg_len = config.lwt_message != nullptr ? strlen(config.lwt_message) : 0;
         mqtt_cfg.session.last_will.qos = static_cast<int>(config.lwt_qos);
         mqtt_cfg.session.last_will.retain = config.lwt_retain;
     }
 
     // Create client
     impl_->client = esp_mqtt_client_init(&mqtt_cfg);
-    if (!impl_->client) {
+    if (impl_->client == nullptr) {
         ESP_LOGE(TAG, "Failed to initialize MQTT client");
         return;
     }
@@ -195,7 +195,7 @@ Client::Client(const Config& config) : impl_(std::make_unique<Impl>()) {
 }
 
 Client::~Client() {
-    if (impl_ && impl_->client) {
+    if (impl_ && impl_->client != nullptr) {
         disconnect();
         esp_mqtt_client_destroy(impl_->client);
     }
@@ -205,8 +205,8 @@ Client::Client(Client&&) noexcept = default;
 Client& Client::operator=(Client&&) noexcept = default;
 
 Result<void, ErrorCode> Client::connect() {
-    if (!impl_ || !impl_->client) {
-        return Result<void, ErrorCode>::error(ErrorCode::Generic);
+    if (!impl_ || impl_->client == nullptr) {
+        return Err(ErrorCode::Generic);
     }
 
     impl_->current_state = State::Connecting;
@@ -215,14 +215,14 @@ Result<void, ErrorCode> Client::connect() {
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to start MQTT client: %s", esp_err_to_name(err));
         impl_->current_state = State::Error;
-        return Result<void, ErrorCode>::error(ErrorCode::Communication);
+        return Err(ErrorCode::Communication);
     }
 
-    return Result<void, ErrorCode>::ok();
+    return Ok();
 }
 
 void Client::disconnect() {
-    if (impl_ && impl_->client) {
+    if (impl_ && impl_->client != nullptr) {
         esp_mqtt_client_stop(impl_->client);
         impl_->current_state = State::Disconnected;
     }
@@ -239,7 +239,7 @@ State Client::state() const {
 Result<int, ErrorCode> Client::publish(const char* topic, const void* data, size_t length, QoS qos,
                                        bool retain) {
     if (!is_connected()) {
-        return Result<int, ErrorCode>::error(ErrorCode::Communication);
+        return Err(ErrorCode::Communication);
     }
 
     int msg_id = esp_mqtt_client_publish(impl_->client, topic, static_cast<const char*>(data),
@@ -247,11 +247,11 @@ Result<int, ErrorCode> Client::publish(const char* topic, const void* data, size
 
     if (msg_id < 0) {
         ESP_LOGE(TAG, "Failed to publish message");
-        return Result<int, ErrorCode>::error(ErrorCode::Communication);
+        return Err(ErrorCode::Communication);
     }
 
     ESP_LOGD(TAG, "Published to %s, msg_id=%d", topic, msg_id);
-    return Result<int, ErrorCode>::ok(msg_id);
+    return Ok(msg_id);
 }
 
 Result<int, ErrorCode> Client::publish(const char* topic, const char* message, QoS qos,
@@ -261,11 +261,11 @@ Result<int, ErrorCode> Client::publish(const char* topic, const char* message, Q
 
 Result<void, ErrorCode> Client::subscribe(const char* topic, QoS qos, MessageCallback callback) {
     if (!is_connected()) {
-        return Result<void, ErrorCode>::error(ErrorCode::Communication);
+        return Err(ErrorCode::Communication);
     }
 
     // Store topic-specific callback
-    if (callback) {
+    if (callback != nullptr) {
         impl_->topic_callbacks[topic] = std::move(callback);
     }
 
@@ -274,11 +274,11 @@ Result<void, ErrorCode> Client::subscribe(const char* topic, QoS qos, MessageCal
     if (msg_id < 0) {
         ESP_LOGE(TAG, "Failed to subscribe to %s", topic);
         impl_->topic_callbacks.erase(topic);
-        return Result<void, ErrorCode>::error(ErrorCode::Communication);
+        return Err(ErrorCode::Communication);
     }
 
     ESP_LOGI(TAG, "Subscribing to %s, msg_id=%d", topic, msg_id);
-    return Result<void, ErrorCode>::ok();
+    return Ok();
 }
 
 Result<void, ErrorCode> Client::subscribe(const char* topic, QoS qos) {
@@ -287,21 +287,21 @@ Result<void, ErrorCode> Client::subscribe(const char* topic, QoS qos) {
 
 Result<void, ErrorCode> Client::unsubscribe(const char* topic) {
     if (!is_connected()) {
-        return Result<void, ErrorCode>::error(ErrorCode::Communication);
+        return Err(ErrorCode::Communication);
     }
 
     int msg_id = esp_mqtt_client_unsubscribe(impl_->client, topic);
 
     if (msg_id < 0) {
         ESP_LOGE(TAG, "Failed to unsubscribe from %s", topic);
-        return Result<void, ErrorCode>::error(ErrorCode::Communication);
+        return Err(ErrorCode::Communication);
     }
 
     // Remove topic-specific callback
     impl_->topic_callbacks.erase(topic);
 
     ESP_LOGI(TAG, "Unsubscribing from %s, msg_id=%d", topic, msg_id);
-    return Result<void, ErrorCode>::ok();
+    return Ok();
 }
 
 void Client::set_connection_callback(ConnectionCallback callback) {
@@ -343,7 +343,7 @@ Client::Client(Client&&) noexcept = default;
 Client& Client::operator=(Client&&) noexcept = default;
 
 Result<void, ErrorCode> Client::connect() {
-    return Result<void, ErrorCode>::error(ErrorCode::Generic);
+    return Err(ErrorCode::Generic);
 }
 
 void Client::disconnect() {}
@@ -355,23 +355,23 @@ State Client::state() const {
 }
 
 Result<int, ErrorCode> Client::publish(const char*, const void*, size_t, QoS, bool) {
-    return Result<int, ErrorCode>::error(ErrorCode::Generic);
+    return Err(ErrorCode::Generic);
 }
 
 Result<int, ErrorCode> Client::publish(const char*, const char*, QoS, bool) {
-    return Result<int, ErrorCode>::error(ErrorCode::Generic);
+    return Err(ErrorCode::Generic);
 }
 
 Result<void, ErrorCode> Client::subscribe(const char*, QoS, MessageCallback) {
-    return Result<void, ErrorCode>::error(ErrorCode::Generic);
+    return Err(ErrorCode::Generic);
 }
 
 Result<void, ErrorCode> Client::subscribe(const char*, QoS) {
-    return Result<void, ErrorCode>::error(ErrorCode::Generic);
+    return Err(ErrorCode::Generic);
 }
 
 Result<void, ErrorCode> Client::unsubscribe(const char*) {
-    return Result<void, ErrorCode>::error(ErrorCode::Generic);
+    return Err(ErrorCode::Generic);
 }
 
 void Client::set_connection_callback(ConnectionCallback) {}

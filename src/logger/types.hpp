@@ -2,10 +2,9 @@
 
 #include <cstddef>
 
-#include <stdint.h>
+#include <cstdint>
 
-namespace alloy {
-namespace logger {
+namespace alloy::logger {
 
 /**
  * Log severity levels (in order of increasing severity)
@@ -78,8 +77,7 @@ struct Config {
     TimestampPrecision timestamp_precision = TimestampPrecision::Microseconds;
 };
 
-}  // namespace logger
-}  // namespace alloy
+}  // namespace alloy::logger
 
 // ============================================================================
 // Compile-Time Configuration Macros

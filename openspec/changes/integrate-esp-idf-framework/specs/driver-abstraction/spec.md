@@ -6,7 +6,7 @@
 The system SHALL provide modern C++ wrappers around ESP-IDF C drivers.
 
 #### Scenario: WiFi Station C++ wrapper
-- **WHEN** application includes `<corezero/wifi/station.hpp>`
+- **WHEN** application includes `<alloy/wifi/station.hpp>`
 - **THEN** SHALL provide `WiFi::Station` class
 - **AND** SHALL wrap `esp_wifi.h` APIs in RAII pattern
 - **AND** SHALL use `std::string` for SSID/password instead of char arrays
@@ -14,14 +14,14 @@ The system SHALL provide modern C++ wrappers around ESP-IDF C drivers.
 - **AND** SHALL provide async operations via callbacks or coroutines
 
 #### Scenario: GPIO C++ wrapper with ESP-IDF backend
-- **WHEN** application includes `<corezero/hal/gpio.hpp>`
+- **WHEN** application includes `<alloy/hal/gpio.hpp>`
 - **AND** `USE_ESP_IDF_DRIVERS=ON` is configured
 - **THEN** GPIO operations SHALL delegate to `driver/gpio.h`
-- **AND** SHALL maintain CoreZero's GPIO interface
+- **AND** SHALL maintain Alloy's GPIO interface
 - **AND** SHALL support interrupts via ESP-IDF's GPIO ISR service
 
 #### Scenario: UART C++ wrapper with ESP-IDF backend
-- **WHEN** application includes `<corezero/hal/uart.hpp>`
+- **WHEN** application includes `<alloy/hal/uart.hpp>`
 - **AND** `USE_ESP_IDF_DRIVERS=ON` is configured
 - **THEN** UART operations SHALL delegate to `driver/uart.h`
 - **AND** SHALL support DMA and buffered I/O
@@ -161,16 +161,16 @@ The system SHALL provide MQTT client abstraction layer.
 - **AND** SHALL provide event type and data
 
 ### Requirement: Driver Backend Selection
-The system SHALL allow selection between CoreZero bare-metal drivers and ESP-IDF drivers.
+The system SHALL allow selection between Alloy bare-metal drivers and ESP-IDF drivers.
 
 #### Scenario: ESP-IDF driver backend enabled
 - **WHEN** `USE_ESP_IDF_DRIVERS=ON` is set in CMake
-- **THEN** CoreZero HAL implementations SHALL use ESP-IDF drivers
+- **THEN** Alloy HAL implementations SHALL use ESP-IDF drivers
 - **AND** SHALL provide ESP-IDF features (DMA, interrupts, power management)
 
 #### Scenario: Bare-metal driver backend
 - **WHEN** `USE_ESP_IDF_DRIVERS=OFF` or not set
-- **THEN** CoreZero HAL implementations SHALL use direct register access
+- **THEN** Alloy HAL implementations SHALL use direct register access
 - **AND** SHALL be lighter weight
 - **AND** SHALL not depend on ESP-IDF
 
@@ -180,17 +180,17 @@ The system SHALL allow selection between CoreZero bare-metal drivers and ESP-IDF
 - **AND** SHALL be available via compile-time constant `USE_ESP_IDF`
 
 ### Requirement: Header Forwarding Pattern
-The system SHALL provide CoreZero-style headers that forward to ESP-IDF components.
+The system SHALL provide Alloy-style headers that forward to ESP-IDF components.
 
 #### Scenario: WiFi header forwarding
-- **WHEN** application includes `<corezero/wifi/station.hpp>`
+- **WHEN** application includes `<alloy/wifi/station.hpp>`
 - **THEN** header SHALL internally include ESP-IDF headers (`esp_wifi.h`, `esp_netif.h`)
-- **AND** SHALL wrap ESP-IDF types in CoreZero namespace
+- **AND** SHALL wrap ESP-IDF types in Alloy namespace
 - **AND** SHALL provide modern C++ interface
 
 #### Scenario: Namespace isolation
-- **WHEN** using CoreZero WiFi classes
-- **THEN** ALL types SHALL be in `corezero::wifi` namespace
+- **WHEN** using Alloy WiFi classes
+- **THEN** ALL types SHALL be in `alloy::wifi` namespace
 - **AND** ESP-IDF types SHALL be wrapped or hidden
 - **AND** SHALL not pollute global namespace with ESP-IDF C types
 
@@ -199,7 +199,7 @@ The system SHALL provide consistent error handling across drivers.
 
 #### Scenario: ESP-IDF error code translation
 - **WHEN** ESP-IDF function returns `esp_err_t`
-- **THEN** CoreZero wrapper SHALL translate to C++ exception or Result<T, Error>
+- **THEN** Alloy wrapper SHALL translate to C++ exception or Result<T, Error>
 - **AND** SHALL preserve error code and message
 - **AND** SHALL provide stack trace information in debug builds
 
@@ -212,7 +212,7 @@ The system SHALL provide consistent error handling across drivers.
 #### Scenario: Exception safety
 - **WHEN** ESP-IDF operation fails
 - **AND** exceptions are enabled
-- **THEN** CoreZero wrapper SHALL throw typed exception
+- **THEN** Alloy wrapper SHALL throw typed exception
 - **AND** SHALL properly clean up ESP-IDF resources
 - **AND** SHALL maintain RAII guarantees
 

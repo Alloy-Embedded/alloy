@@ -200,7 +200,7 @@ class GpioPin {
         ALLOY_GPIO_TEST_HOOK_MODER();
 #endif
 
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -217,7 +217,7 @@ class GpioPin {
 #ifdef ALLOY_GPIO_TEST_HOOK_BSRR
         ALLOY_GPIO_TEST_HOOK_BSRR();
 #endif
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -234,7 +234,7 @@ class GpioPin {
 #ifdef ALLOY_GPIO_TEST_HOOK_BSRR
         ALLOY_GPIO_TEST_HOOK_BSRR();
 #endif
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -256,7 +256,7 @@ class GpioPin {
             port->BSRR = pin_mask;
         }
 
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -283,7 +283,7 @@ class GpioPin {
     Result<bool> read() const {
         auto* port = get_port();
         bool value = (port->IDR & pin_mask) != 0;
-        return Result<bool>::ok(value);
+        return Ok(value);
     }
 
     /**
@@ -322,7 +322,7 @@ class GpioPin {
         ALLOY_GPIO_TEST_HOOK_PUPDR();
 #endif
 
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -346,7 +346,7 @@ class GpioPin {
         ALLOY_GPIO_TEST_HOOK_OSPEEDR();
 #endif
 
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -359,7 +359,7 @@ class GpioPin {
         uint32_t mode = (port->MODER >> (pin_pos * 2)) & 0x3;
         // Mode 01 = output
         bool is_output = (mode == 0x1);
-        return Result<bool>::ok(is_output);
+        return Ok(is_output);
     }
 };
 

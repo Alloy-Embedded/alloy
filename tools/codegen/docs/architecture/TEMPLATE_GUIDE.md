@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide explains how to create and maintain Jinja2 templates for the Corezero code generation system. Templates transform metadata JSON into C++ HAL code, register definitions, startup files, and linker scripts.
+This guide explains how to create and maintain Jinja2 templates for the Alloy code generation system. Templates transform metadata JSON into C++ HAL code, register definitions, startup files, and linker scripts.
 
 ## Table of Contents
 

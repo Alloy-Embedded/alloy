@@ -5,7 +5,7 @@
 ### 1.1 Submodule Setup
 ```bash
 # In template repository root
-git submodule add https://github.com/user/corezero.git external/alloy
+git submodule add https://github.com/user/alloy.git external/alloy
 git submodule update --init --recursive
 
 # Track specific version (stable release)
@@ -20,7 +20,7 @@ git commit -m "Pin Alloy to v1.0.0"
 ```ini
 [submodule "external/alloy"]
     path = external/alloy
-    url = https://github.com/user/corezero.git
+    url = https://github.com/user/alloy.git
     branch = main  # or specific release branch
 ```
 

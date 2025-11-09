@@ -5,8 +5,7 @@
 
 #include "../sink.hpp"
 
-namespace alloy {
-namespace logger {
+namespace alloy::logger {
 
 /**
  * File output sink for logger
@@ -41,7 +40,7 @@ class FileSink : public Sink {
     /**
      * Destructor - closes file
      */
-    ~FileSink() { close(); }
+    ~FileSink() override { close(); }
 
     /**
      * Write log message to file
@@ -64,7 +63,7 @@ class FileSink : public Sink {
      */
     void flush() override {
         if (is_open_ && file_ != nullptr) {
-            fflush(file_);
+            (void)fflush(file_);
         }
     }
 
@@ -78,8 +77,8 @@ class FileSink : public Sink {
      */
     void close() {
         if (file_ != nullptr) {
-            fflush(file_);
-            fclose(file_);
+            (void)fflush(file_);
+            (void)fclose(file_);
             file_ = nullptr;
             is_open_ = false;
         }
@@ -106,17 +105,17 @@ class FileSink : public Sink {
             return 0;
         }
 
-        long current_pos = ftell(file_);
+        int64_t current_pos = ftell(file_);
         if (current_pos < 0) {
             return 0;
         }
 
         // Seek to end to get size
-        fseek(file_, 0, SEEK_END);
-        long file_size = ftell(file_);
+        (void)fseek(file_, 0, SEEK_END);
+        int64_t file_size = ftell(file_);
 
         // Restore position
-        fseek(file_, current_pos, SEEK_SET);
+        (void)fseek(file_, current_pos, SEEK_SET);
 
         return (file_size >= 0) ? static_cast<size_t>(file_size) : 0;
     }
@@ -170,9 +169,9 @@ class RotatingFileSink : public Sink {
         open_current_file();
     }
 
-    ~RotatingFileSink() {
+    ~RotatingFileSink() override {
         if (file_ != nullptr) {
-            fclose(file_);
+            (void)fclose(file_);
         }
     }
 
@@ -193,7 +192,7 @@ class RotatingFileSink : public Sink {
 
     void flush() override {
         if (file_ != nullptr) {
-            fflush(file_);
+            (void)fflush(file_);
         }
     }
 
@@ -203,8 +202,8 @@ class RotatingFileSink : public Sink {
     void open_current_file() {
         file_ = fopen(base_filename_, "a");
         if (file_ != nullptr) {
-            fseek(file_, 0, SEEK_END);
-            long pos = ftell(file_);
+            (void)fseek(file_, 0, SEEK_END);
+            int64_t pos = ftell(file_);
             current_size_ = (pos >= 0) ? static_cast<size_t>(pos) : 0;
         }
     }
@@ -212,7 +211,7 @@ class RotatingFileSink : public Sink {
     void rotate() {
         // Close current file
         if (file_ != nullptr) {
-            fclose(file_);
+            (void)fclose(file_);
             file_ = nullptr;
         }
 
@@ -221,14 +220,14 @@ class RotatingFileSink : public Sink {
         char new_name[256];
 
         for (int i = static_cast<int>(max_files_) - 1; i >= 1; --i) {
-            snprintf(old_name, sizeof(old_name), "%s.%d", base_filename_, i);
-            snprintf(new_name, sizeof(new_name), "%s.%d", base_filename_, i + 1);
-            rename(old_name, new_name);  // Ignore errors
+            (void)snprintf(old_name, sizeof(old_name), "%s.%d", base_filename_, i);
+            (void)snprintf(new_name, sizeof(new_name), "%s.%d", base_filename_, i + 1);
+            (void)rename(old_name, new_name);  // Ignore errors
         }
 
         // Rename current file to .1
-        snprintf(new_name, sizeof(new_name), "%s.1", base_filename_);
-        rename(base_filename_, new_name);
+        (void)snprintf(new_name, sizeof(new_name), "%s.1", base_filename_);
+        (void)rename(base_filename_, new_name);
 
         // Open new current file
         current_size_ = 0;
@@ -242,5 +241,4 @@ class RotatingFileSink : public Sink {
     FILE* file_;
 };
 
-}  // namespace logger
-}  // namespace alloy
+}  // namespace alloy::logger

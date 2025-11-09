@@ -10,8 +10,8 @@ CompileFlags:
     - -std=c++20
     - -Wall
     - -Wextra
-    - -I/Users/lgili/Documents/01 - Codes/01 - Github/corezero/src
-    - -I/Users/lgili/Documents/01 - Codes/01 - Github/corezero/include
+    - -I/Users/lgili/Documents/01 - Codes/01 - Github/alloy/src
+    - -I/Users/lgili/Documents/01 - Codes/01 - Github/alloy/include
 
 Diagnostics:
   # Suppress warnings about undefined macros when not configured yet

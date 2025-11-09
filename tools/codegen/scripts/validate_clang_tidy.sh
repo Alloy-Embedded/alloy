@@ -4,8 +4,8 @@
 
 set -e
 
-COREZERO_ROOT="/Users/lgili/Documents/01 - Codes/01 - Github/corezero"
-cd "$COREZERO_ROOT"
+ALLOY_ROOT="/Users/lgili/Documents/01 - Codes/01 - Github/alloy"
+cd "$ALLOY_ROOT"
 
 echo "🔍 Validating all startup.cpp files with clang-tidy..."
 echo "   (Ignoring compiler errors - checking only clang-tidy warnings)"

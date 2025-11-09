@@ -222,7 +222,7 @@ Complete working example for STM32F103:
 - ✅ Periodic logging in main loop
 - ✅ Error handling
 
-## Integration with CoreZero
+## Integration with Alloy
 
 ### SysTick Integration
 - **Seamless**: Uses existing `alloy::systick::micros()` API
@@ -274,7 +274,7 @@ Complete working example for STM32F103:
 
 ### Design Verification
 - ✅ Matches OpenSpec requirements (specs/logger-core/spec.md)
-- ✅ Follows CoreZero conventions
+- ✅ Follows Alloy conventions
 - ✅ Zero-cost abstraction principles maintained
 - ✅ Platform-agnostic design
 
@@ -297,7 +297,7 @@ The implementation provides:
 - ✅ Clean, extensible architecture
 - ✅ Comprehensive testing
 
-The logger is ready to be used in CoreZero projects. Users can:
+The logger is ready to be used in Alloy projects. Users can:
 1. Include `logger/logger.hpp`
 2. Create and register sinks
 3. Use `LOG_INFO()`, `LOG_ERROR()`, etc.

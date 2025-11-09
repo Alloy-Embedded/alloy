@@ -146,7 +146,7 @@ A family test passes when:
 ## Current Results
 
 ```
-Test project /Users/lgili/Documents/01 - Codes/01 - Github/corezero/build_tests
+Test project /Users/lgili/Documents/01 - Codes/01 - Github/alloy/build_tests
     ✅ Core Tests: 6/6 suites passing (118 tests)
     ⚠️  Codegen Tests: 0/3 families passing (issues found)
 

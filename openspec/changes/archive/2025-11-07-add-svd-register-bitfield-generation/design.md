@@ -2,7 +2,7 @@
 
 ## Context
 
-The corezero HAL currently generates peripheral base addresses and pin definitions from SVD files, but leaves register-level access to manual implementation. This design document specifies how to generate complete, type-safe register and bitfield definitions using modern C++20 templates with zero runtime overhead.
+The alloy HAL currently generates peripheral base addresses and pin definitions from SVD files, but leaves register-level access to manual implementation. This design document specifies how to generate complete, type-safe register and bitfield definitions using modern C++20 templates with zero runtime overhead.
 
 ### Current State
 - ✅ SVD parser extracts peripherals, interrupts, memory layout

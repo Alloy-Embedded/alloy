@@ -76,6 +76,41 @@ constexpr uintptr_t DBG = 0xE0042000;             // Debug support
 }  // namespace peripherals
 
 // ============================================================================
+// PERIPHERAL IDs (for Clock Enable/Disable)
+// ============================================================================
+
+namespace id {
+constexpr uint8_t WWDG = 1;                   // Window watchdog
+constexpr uint8_t EXTI = 2;                   // External interrupt/event
+controller constexpr uint8_t DMA1 = 3;        // DMA1
+constexpr uint8_t FLASH = 4;                  // FLASH
+constexpr uint8_t DMA2 = 5;                   // DMA controller
+constexpr uint8_t ADC1 = 18;                  // Analog-to-digital converter
+constexpr uint8_t GPIOD = 24;                 // GPIOD
+constexpr uint8_t GPIOC = 25;                 // GPIOC
+constexpr uint8_t GPIOB = 26;                 // General-purpose I/Os
+constexpr uint8_t GPIOA = 28;                 // General-purpose I/Os
+constexpr uint8_t I2C3 = 29;                  // Inter-integrated circuit
+constexpr uint8_t I2S2ext = 31;               // Serial peripheral interface
+constexpr uint8_t RCC = 31;                   // Reset and clock control
+constexpr uint8_t RTC = 33;                   // Real-time clock
+constexpr uint8_t I2C1 = 33;                  // I2C1
+constexpr uint8_t SPI2 = 35;                  // SPI2
+constexpr uint8_t TIM10 = 35;                 // General-purpose-timers
+constexpr uint8_t SPI3 = 36;                  // SPI3
+constexpr uint8_t TIM11 = 36;                 // General-purpose-timers
+constexpr uint8_t USART1 = 42;                // Universal synchronous asynchronous receiver
+transmitter constexpr uint8_t GPIOH = 49;     // General-purpose I/Os
+constexpr uint8_t TIM2 = 51;                  // General purpose timers
+constexpr uint8_t SPI4 = 51;                  // SPI4
+constexpr uint8_t I2C2 = 72;                  // I2C2
+constexpr uint8_t SDIO = 72;                  // Secure digital input/output
+interface constexpr uint8_t ADC_Common = 81;  // ADC common registers
+constexpr uint8_t FPU = 81;                   // Floting point unit
+constexpr uint8_t TIM3 = 84;                  // General purpose timers
+}  // namespace id
+
+// ============================================================================
 // MEMORY MAP
 // ============================================================================
 

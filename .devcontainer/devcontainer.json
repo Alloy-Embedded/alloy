@@ -1,11 +1,11 @@
 {
-  "name": "CoreZero RTOS Development",
+  "name": "Alloy RTOS Development",
   "dockerComposeFile": "../docker-compose.yml",
-  "service": "corezero-dev",
+  "service": "alloy-dev",
   "workspaceFolder": "/workspace",
 
   // Run when container starts
-  "postCreateCommand": "echo '✅ CoreZero development container ready!'",
+  "postCreateCommand": "echo '✅ Alloy development container ready!'",
 
   // VS Code settings
   "customizations": {

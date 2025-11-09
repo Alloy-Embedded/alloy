@@ -8,7 +8,7 @@
 
 ## 📋 Overview
 
-This document summarizes the complete code quality infrastructure implemented for CoreZero, including:
+This document summarizes the complete code quality infrastructure implemented for Alloy, including:
 
 1. ✅ Fixed code generation templates (startup.cpp)
 2. ✅ Hierarchical clang-tidy configuration
@@ -142,7 +142,7 @@ bash tools/codegen/scripts/validate_all_clang_tidy.sh
 
 **Example code pattern**:
 ```cpp
-// ✅ Correct pattern for CoreZero
+// ✅ Correct pattern for Alloy
 template<typename Config>
 class Peripheral {
     static constexpr auto BASE = Config::BASE_ADDRESS;
@@ -346,5 +346,5 @@ Before your first PR:
 ---
 
 **Last Updated**: 2025-11-08
-**Maintained By**: CoreZero Team
+**Maintained By**: Alloy Team
 **Version**: 1.0

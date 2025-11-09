@@ -2,11 +2,9 @@
 #define ALLOY_BLE_PERIPHERAL_HPP
 
 #include "core/error.hpp"
+#include "core/result.hpp"
 
 #include "types.hpp"
-
-using alloy::core::u16;
-using alloy::core::u8;
 
 /// BLE Peripheral (Server) API for Alloy framework
 ///
@@ -22,6 +20,8 @@ namespace alloy::ble {
 
 using alloy::core::ErrorCode;
 using alloy::core::Result;
+using alloy::core::u16;
+using alloy::core::u8;
 
 /// BLE Peripheral configuration
 struct PeripheralConfig {
@@ -33,11 +33,10 @@ struct PeripheralConfig {
     u16 timeout;           // Supervision timeout (10ms units)
 
     PeripheralConfig()
-        : appearance(0),
-          min_interval(80)  // 100ms
-          ,
-          max_interval(100)  // 125ms
-          ,
+        : device_name{},
+          appearance(0),
+          min_interval(80),   // 100ms
+          max_interval(100),  // 125ms
           latency(0),
           timeout(400)  // 4s
     {

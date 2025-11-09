@@ -9,6 +9,7 @@
 #include <span>
 
 #include "core/error.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 
 namespace alloy::hal {
@@ -109,10 +110,10 @@ core::Result<core::u8> i2c_read_byte(Device& device, core::u16 address) {
     auto result = device.read(address, buffer);
 
     if (result.is_error()) {
-        return core::Result<core::u8>::error(result.error());
+        return core::Err(result.error());
     }
 
-    return core::Result<core::u8>::ok(byte);
+    return core::Ok(byte);
 }
 
 /// Helper function to write a single byte to I2C device
@@ -146,10 +147,10 @@ core::Result<core::u8> i2c_read_register(Device& device, core::u16 address, core
     auto result = device.write_read(address, write_buf, read_buf);
 
     if (result.is_error()) {
-        return core::Result<core::u8>::error(result.error());
+        return core::Err(result.error());
     }
 
-    return core::Result<core::u8>::ok(value);
+    return core::Ok(value);
 }
 
 /// Helper function to write a register to I2C device

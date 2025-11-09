@@ -66,7 +66,7 @@
 
 ### 3. Error Code Standardization
 - [ ] 3.1 Create `src/core/error_codes.hpp`
-- [ ] 3.2 Define CoreZero error enum
+- [ ] 3.2 Define Alloy error enum
   - [ ] 3.2.1 Common errors (InvalidArgument, NotOpened, etc.)
   - [ ] 3.2.2 Hardware errors (Timeout, BusError, etc.)
   - [ ] 3.2.3 Resource errors (DeviceBusy, NotAvailable, etc.)

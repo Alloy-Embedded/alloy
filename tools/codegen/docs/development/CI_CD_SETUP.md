@@ -177,7 +177,7 @@ echo "Tests: $TEST_COUNT"
 
 **Badge Status (opcional):**
 ```markdown
-![Tests](https://github.com/seu-repo/corezero/workflows/Code%20Generator%20Tests/badge.svg)
+![Tests](https://github.com/seu-repo/alloy/workflows/Code%20Generator%20Tests/badge.svg)
 ```
 
 ---

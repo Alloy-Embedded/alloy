@@ -6,8 +6,7 @@
 
 #include "types.hpp"
 
-namespace alloy {
-namespace logger {
+namespace alloy::logger {
 
 /**
  * Format utilities for logger messages
@@ -67,9 +66,8 @@ class Formatter {
             const char* color = get_level_color(level);
             const char* reset = "\033[0m";
             return snprintf(buffer, size, "%s%-5s%s ", color, level_to_string(level), reset);
-        } else {
-            return snprintf(buffer, size, "%-5s ", level_to_string(level));
         }
+        return snprintf(buffer, size, "%-5s ", level_to_string(level));
     }
 
     /**
@@ -173,5 +171,4 @@ class Formatter {
     }
 };
 
-}  // namespace logger
-}  // namespace alloy
+}  // namespace alloy::logger

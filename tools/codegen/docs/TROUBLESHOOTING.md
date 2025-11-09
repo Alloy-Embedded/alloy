@@ -77,7 +77,7 @@ fatal: not a git repository (or any of the parent directories): .git
 
 **Solution:**
 ```bash
-cd /path/to/corezero  # Go to repository root
+cd /path/to/alloy  # Go to repository root
 git submodule update --init --recursive
 ```
 

@@ -25,6 +25,7 @@
 #include "hal/interface/systick.hpp"
 
 #include "core/error.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 
 namespace alloy::hal::host {
@@ -40,10 +41,10 @@ class SystemTick {
     /// This clock is monotonic and never goes backwards.
     ///
     /// @return Ok on success
-    static core::Result<void> init() {
+    static core::Result<void, core::ErrorCode> init() {
         start_time_ = std::chrono::steady_clock::now();
         initialized_ = true;
-        return core::Result<void>::ok();
+        return core::Ok();
     }
 
     /// Get current time in microseconds
@@ -71,9 +72,9 @@ class SystemTick {
     /// Resets the start time to current time.
     ///
     /// @return Ok on success
-    static core::Result<void> reset() {
+    static core::Result<void, core::ErrorCode> reset() {
         start_time_ = std::chrono::steady_clock::now();
-        return core::Result<void>::ok();
+        return core::Ok();
     }
 
     /// Check if initialized

@@ -47,6 +47,11 @@
 // Bitfields (family-level)
 #include "{{ metadata.bitfield_include }}"
 
+{% if metadata.peripherals_include %}
+// Peripheral addresses (device-specific)
+#include "{{ metadata.peripherals_include }}"
+{% endif %}
+
 
 namespace {{ metadata.platform_namespace }} {
 

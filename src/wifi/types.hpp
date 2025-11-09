@@ -9,7 +9,7 @@
 
 #include <array>
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "core/types.hpp"
 
@@ -44,13 +44,13 @@ enum class ConnectionState : uint8_t {
  * @brief MAC address (6 bytes)
  */
 struct MacAddress {
-    std::array<uint8_t, 6> bytes;
+    std::array<uint8_t, 6> bytes{};
 
-    MacAddress() : bytes{0} {}
+    MacAddress() = default;
 
     explicit MacAddress(const uint8_t* mac) {
-        for (int i = 0; i < 6; i++) {
-            bytes[i] = mac[i];
+        for (size_t i = 0; i < bytes.size(); i++) {
+            bytes[i] = mac[i];  // NOLINT(cppcoreguidelines-pro-bounds-constant-array-index)
         }
     }
 
@@ -62,11 +62,7 @@ struct MacAddress {
      * @brief Check if MAC address is zero (invalid)
      */
     bool is_zero() const {
-        for (uint8_t b : bytes) {
-            if (b != 0)
-                return false;
-        }
-        return true;
+        return std::all_of(bytes.begin(), bytes.end(), [](uint8_t b) { return b == 0; });
     }
 };
 
@@ -80,16 +76,16 @@ struct IPAddress {
 
     IPAddress(uint8_t a, uint8_t b, uint8_t c, uint8_t d) : octet{a, b, c, d} {}
 
-    explicit IPAddress(uint32_t ip) {
-        octet[0] = (ip >> 0) & 0xFF;
-        octet[1] = (ip >> 8) & 0xFF;
-        octet[2] = (ip >> 16) & 0xFF;
-        octet[3] = (ip >> 24) & 0xFF;
-    }
+    explicit IPAddress(uint32_t ip) : octet{
+        static_cast<uint8_t>((ip >> 0) & 0xFF),
+        static_cast<uint8_t>((ip >> 8) & 0xFF),
+        static_cast<uint8_t>((ip >> 16) & 0xFF),
+        static_cast<uint8_t>((ip >> 24) & 0xFF)
+    } {}
 
     uint32_t to_u32() const {
-        return (uint32_t)octet[0] | ((uint32_t)octet[1] << 8) | ((uint32_t)octet[2] << 16) |
-               ((uint32_t)octet[3] << 24);
+        return static_cast<uint32_t>(octet[0]) | (static_cast<uint32_t>(octet[1]) << 8) |
+               (static_cast<uint32_t>(octet[2]) << 16) | (static_cast<uint32_t>(octet[3]) << 24);
     }
 
     bool operator==(const IPAddress& other) const {

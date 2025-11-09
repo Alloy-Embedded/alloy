@@ -2,7 +2,7 @@
 
 ## Quick Summary
 
-A professional, zero-cost, platform-agnostic logging system for CoreZero Framework.
+A professional, zero-cost, platform-agnostic logging system for Alloy Framework.
 
 ### Key Features
 - ✅ **Zero-Cost**: Disabled logs completely removed at compile-time

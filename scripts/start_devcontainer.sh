@@ -4,7 +4,7 @@
 set -e
 
 echo "═══════════════════════════════════════════════════"
-echo "  CoreZero RTOS - DevContainer Setup"
+echo "  Alloy RTOS - DevContainer Setup"
 echo "═══════════════════════════════════════════════════"
 echo ""
 
@@ -82,7 +82,7 @@ case $choice in
         echo ""
 
         # Build if needed
-        if ! docker images | grep -q "corezero/dev"; then
+        if ! docker images | grep -q "alloy/dev"; then
             echo "📦 Primeira vez: building imagem..."
             echo "   Isso demora ~10-15 minutos"
             echo ""
@@ -100,10 +100,10 @@ case $choice in
         echo "📋 Comandos úteis:"
         echo ""
         echo "  Entrar no container:"
-        echo "    docker-compose exec corezero-dev bash"
+        echo "    docker-compose exec alloy-dev bash"
         echo ""
         echo "  Compilar projeto:"
-        echo "    docker-compose exec corezero-dev cmake -B build ..."
+        echo "    docker-compose exec alloy-dev cmake -B build ..."
         echo ""
         echo "  Parar container:"
         echo "    docker-compose down"
@@ -114,7 +114,7 @@ case $choice in
 
         read -p "Deseja entrar no container agora? (s/n): " enter
         if [[ "$enter" == "s" || "$enter" == "S" ]]; then
-            docker-compose exec corezero-dev bash
+            docker-compose exec alloy-dev bash
         fi
         ;;
 

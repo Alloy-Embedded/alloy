@@ -10,7 +10,7 @@
 #include <catch2/catch_section_info.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-#include "hal/host/systick.hpp"
+#include "hal/vendors/host/systick.hpp"
 
 #include "rtos/rtos.hpp"
 

@@ -25,6 +25,7 @@
 
 #include "core/error.hpp"
 #include "core/esp_error.hpp"
+#include "core/result.hpp"
 
 #include "types.hpp"
 

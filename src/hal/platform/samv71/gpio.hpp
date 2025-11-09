@@ -181,7 +181,7 @@ class GpioPin {
                 break;
         }
 
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -198,7 +198,7 @@ class GpioPin {
 #ifdef ALLOY_GPIO_TEST_HOOK_SODR
         ALLOY_GPIO_TEST_HOOK_SODR();
 #endif
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -215,7 +215,7 @@ class GpioPin {
 #ifdef ALLOY_GPIO_TEST_HOOK_CODR
         ALLOY_GPIO_TEST_HOOK_CODR();
 #endif
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -237,7 +237,7 @@ class GpioPin {
             port->SODR = pin_mask;
         }
 
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -264,7 +264,7 @@ class GpioPin {
     Result<bool> read() const {
         auto* port = get_port();
         bool value = (port->PDSR & pin_mask) != 0;
-        return Result<bool>::ok(value);
+        return Ok(value);
     }
 
     /**
@@ -298,10 +298,10 @@ class GpioPin {
 
             case GpioPull::Down:
                 // Pull-down not supported in SAMV71 hardware
-                return Result<void>::error(ErrorCode::NotSupported);
+                return Err(ErrorCode::NotSupported);
         }
 
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -315,7 +315,7 @@ class GpioPin {
 #ifdef ALLOY_GPIO_TEST_HOOK_IFER
         ALLOY_GPIO_TEST_HOOK_IFER();
 #endif
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -329,7 +329,7 @@ class GpioPin {
 #ifdef ALLOY_GPIO_TEST_HOOK_IFDR
         ALLOY_GPIO_TEST_HOOK_IFDR();
 #endif
-        return Result<void>::ok();
+        return Ok();
     }
 
     /**
@@ -340,7 +340,7 @@ class GpioPin {
     Result<bool> isOutput() const {
         auto* port = get_port();
         bool is_output = (port->OSR & pin_mask) != 0;
-        return Result<bool>::ok(is_output);
+        return Ok(is_output);
     }
 };
 

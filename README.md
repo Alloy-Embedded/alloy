@@ -35,9 +35,36 @@ The result: A framework that's simultaneously robust, efficient, and a pleasure 
 
 ## 🚀 Quick Start
 
-### 1. Install ARM Toolchain (Required)
+### 1. Install Development Environment
 
-**Automatic Installation (Recommended):**
+**Automatic Setup (Recommended):**
+```bash
+./setup-dev-env.sh
+```
+
+This script will install:
+- **Clang 21** (macOS) or **Clang 14** (Linux) - Required for C++20 support
+- CMake 3.25+
+- Ninja build system
+
+**macOS Manual Setup:**
+```bash
+brew install llvm@21 cmake ninja
+export PATH="$(brew --prefix llvm@21)/bin:$PATH"
+export CC=$(brew --prefix llvm@21)/bin/clang
+export CXX=$(brew --prefix llvm@21)/bin/clang++
+```
+
+**Linux Manual Setup:**
+```bash
+sudo apt-get install clang-14 cmake ninja-build
+export CC=clang-14
+export CXX=clang++-14
+```
+
+### 2. Install ARM Toolchain (For Embedded Targets)
+
+**Automatic Installation:**
 ```bash
 ./scripts/install-xpack-toolchain.sh
 ```
@@ -49,7 +76,7 @@ This will download and install the [xPack ARM toolchain](https://xpack-dev-tools
 export PATH="$HOME/.local/xpack-arm-toolchain/bin:$PATH"
 ```
 
-### 2. Build an Example
+### 3. Build an Example
 
 ```bash
 # Configure for your board
@@ -64,7 +91,7 @@ cmake --build build --target flash
 
 **Supported boards:** `bluepill`, `stm32f407vg`, `arduino_zero`, `rp_pico`, `esp32_devkit`, `host`
 
-### 3. Your First Blink
+### 4. Your First Blink
 
 ```cpp
 #include "stm32f103c8/board.hpp"

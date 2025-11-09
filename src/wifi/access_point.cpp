@@ -36,7 +36,7 @@ AccessPoint::~AccessPoint() {
 
 Result<void> AccessPoint::init() {
     if (initialized_) {
-        return Result<void>::ok();
+        return Ok();
     }
 
     // Initialize NVS (required for WiFi)
@@ -56,7 +56,7 @@ Result<void> AccessPoint::init() {
     // Create default WiFi AP interface
     esp_netif_t* ap_netif = esp_netif_create_default_wifi_ap();
     if (ap_netif == nullptr) {
-        return Result<void>::error(ErrorCode::HardwareError);
+        return Err(ErrorCode::HardwareError);
     }
 
     // Initialize WiFi with default config
@@ -71,7 +71,7 @@ Result<void> AccessPoint::init() {
     ESP_TRY(esp_wifi_set_mode(WIFI_MODE_AP));
 
     initialized_ = true;
-    return Result<void>::ok();
+    return Ok();
 }
 
 Result<ConnectionInfo> AccessPoint::start(const char* ssid, const char* password) {
@@ -88,26 +88,26 @@ Result<ConnectionInfo> AccessPoint::start(const char* ssid, const char* password
 
 Result<ConnectionInfo> AccessPoint::start(const APConfig& config) {
     if (!initialized_) {
-        return Result<ConnectionInfo>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     if (config.ssid == nullptr || strlen(config.ssid) > 32) {
-        return Result<ConnectionInfo>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     if (config.password != nullptr) {
         size_t pwd_len = strlen(config.password);
         if (pwd_len < 8 || pwd_len > 63) {
-            return Result<ConnectionInfo>::error(ErrorCode::InvalidParameter);
+            return Err(ErrorCode::InvalidParameter);
         }
     }
 
     if (config.channel < 1 || config.channel > 13) {
-        return Result<ConnectionInfo>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     if (config.max_connections < 1 || config.max_connections > 10) {
-        return Result<ConnectionInfo>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     // Store SSID
@@ -151,16 +151,16 @@ Result<ConnectionInfo> AccessPoint::start(const APConfig& config) {
     }
 
     running_ = true;
-    return Result<ConnectionInfo>::ok(ap_info_);
+    return Ok(ap_info_);
 }
 
 Result<void> AccessPoint::stop() {
     if (!initialized_) {
-        return Result<void>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     if (!running_) {
-        return Result<void>::ok();
+        return Ok();
     }
 
     ESP_TRY(esp_wifi_stop());
@@ -169,7 +169,7 @@ Result<void> AccessPoint::stop() {
     current_ssid_[0] = '\0';
     ap_info_ = ConnectionInfo{};
 
-    return Result<void>::ok();
+    return Ok();
 }
 
 bool AccessPoint::is_running() const {
@@ -178,14 +178,14 @@ bool AccessPoint::is_running() const {
 
 Result<ConnectionInfo> AccessPoint::ap_info() const {
     if (!running_) {
-        return Result<ConnectionInfo>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
-    return Result<ConnectionInfo>::ok(ap_info_);
+    return Ok(ap_info_);
 }
 
 Result<uint8_t> AccessPoint::station_count() const {
     if (!running_) {
-        return Result<uint8_t>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     wifi_sta_list_t sta_list;
@@ -195,16 +195,16 @@ Result<uint8_t> AccessPoint::station_count() const {
         return core::esp_result_error<uint8_t>(err);
     }
 
-    return Result<uint8_t>::ok(sta_list.num);
+    return Ok(sta_list.num);
 }
 
 Result<uint8_t> AccessPoint::get_stations(StationInfo* stations, uint8_t max_stations) const {
     if (!running_) {
-        return Result<uint8_t>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     if (stations == nullptr || max_stations == 0) {
-        return Result<uint8_t>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     wifi_sta_list_t sta_list;
@@ -221,7 +221,7 @@ Result<uint8_t> AccessPoint::get_stations(StationInfo* stations, uint8_t max_sta
         stations[i].rssi = sta_list.sta[i].rssi;
     }
 
-    return Result<uint8_t>::ok(count);
+    return Ok(count);
 }
 
 void AccessPoint::set_station_callback(StationCallback callback) {
@@ -297,42 +297,51 @@ AccessPoint::AccessPoint()
       current_ssid_{},
       callback_(nullptr) {}
 
-AccessPoint::~AccessPoint() {}
-
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> AccessPoint::init() {
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
-Result<ConnectionInfo> AccessPoint::start(const char*, const char*) {
-    return Result<ConnectionInfo>::error(ErrorCode::NotSupported);
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+Result<ConnectionInfo> AccessPoint::start([[maybe_unused]] const char* ssid,
+                                         [[maybe_unused]] const char* password) {
+    return Err(ErrorCode::NotSupported);
 }
 
-Result<ConnectionInfo> AccessPoint::start(const APConfig&) {
-    return Result<ConnectionInfo>::error(ErrorCode::NotSupported);
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+Result<ConnectionInfo> AccessPoint::start([[maybe_unused]] const APConfig& config) {
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> AccessPoint::stop() {
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 bool AccessPoint::is_running() const {
     return false;
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<ConnectionInfo> AccessPoint::ap_info() const {
-    return Result<ConnectionInfo>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<uint8_t> AccessPoint::station_count() const {
-    return Result<uint8_t>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
-Result<uint8_t> AccessPoint::get_stations(StationInfo*, uint8_t) const {
-    return Result<uint8_t>::error(ErrorCode::NotSupported);
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+Result<uint8_t> AccessPoint::get_stations([[maybe_unused]] StationInfo* stations,
+                                          [[maybe_unused]] uint8_t max_stations) const {
+    return Err(ErrorCode::NotSupported);
 }
 
-void AccessPoint::set_station_callback(StationCallback) {}
+void AccessPoint::set_station_callback([[maybe_unused]] StationCallback callback) {}
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 const char* AccessPoint::ssid() const {
     return "";
 }

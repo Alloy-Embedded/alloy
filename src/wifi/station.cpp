@@ -45,7 +45,7 @@ Station::~Station() {
 
 Result<void> Station::init() {
     if (initialized_) {
-        return Result<void>::ok();
+        return Ok();
     }
 
     // Initialize NVS (required for WiFi)
@@ -59,7 +59,7 @@ Result<void> Station::init() {
     // Create event group
     s_wifi_event_group = xEventGroupCreate();
     if (s_wifi_event_group == nullptr) {
-        return Result<void>::error(ErrorCode::HardwareError);
+        return Err(ErrorCode::HardwareError);
     }
 
     // Initialize TCP/IP stack
@@ -71,7 +71,7 @@ Result<void> Station::init() {
     // Create default WiFi station interface
     esp_netif_t* sta_netif = esp_netif_create_default_wifi_sta();
     if (sta_netif == nullptr) {
-        return Result<void>::error(ErrorCode::HardwareError);
+        return Err(ErrorCode::HardwareError);
     }
 
     // Initialize WiFi with default config
@@ -89,21 +89,21 @@ Result<void> Station::init() {
     ESP_TRY(esp_wifi_set_mode(WIFI_MODE_STA));
 
     initialized_ = true;
-    return Result<void>::ok();
+    return Ok();
 }
 
 Result<ConnectionInfo> Station::connect(const char* ssid, const char* password,
                                         uint32_t timeout_ms) {
     if (!initialized_) {
-        return Result<ConnectionInfo>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     if (ssid == nullptr || strlen(ssid) > 32) {
-        return Result<ConnectionInfo>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     if (password != nullptr && strlen(password) > 63) {
-        return Result<ConnectionInfo>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     // Store SSID
@@ -147,21 +147,21 @@ Result<ConnectionInfo> Station::connect(const char* ssid, const char* password,
             callback_(true, conn_info_);
         }
 
-        return Result<ConnectionInfo>::ok(conn_info_);
+        return Ok(conn_info_);
     } else if (bits & WIFI_FAIL_BIT) {
         state_ = ConnectionState::Failed;
-        return Result<ConnectionInfo>::error(ErrorCode::CommunicationError);
+        return Err(ErrorCode::CommunicationError);
     } else {
         // Timeout
         state_ = ConnectionState::Failed;
         esp_wifi_disconnect();
-        return Result<ConnectionInfo>::error(ErrorCode::Timeout);
+        return Err(ErrorCode::Timeout);
     }
 }
 
 Result<void> Station::disconnect() {
     if (!initialized_) {
-        return Result<void>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     ESP_TRY(esp_wifi_disconnect());
@@ -175,7 +175,7 @@ Result<void> Station::disconnect() {
         callback_(false, conn_info_);
     }
 
-    return Result<void>::ok();
+    return Ok();
 }
 
 bool Station::is_connected() const {
@@ -188,14 +188,14 @@ ConnectionState Station::state() const {
 
 Result<ConnectionInfo> Station::connection_info() const {
     if (!is_connected()) {
-        return Result<ConnectionInfo>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
-    return Result<ConnectionInfo>::ok(conn_info_);
+    return Ok(conn_info_);
 }
 
 Result<int8_t> Station::rssi() const {
     if (!is_connected()) {
-        return Result<int8_t>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     wifi_ap_record_t ap_info;
@@ -205,7 +205,7 @@ Result<int8_t> Station::rssi() const {
         return core::esp_result_error<int8_t>(err);
     }
 
-    return Result<int8_t>::ok(ap_info.rssi);
+    return Ok(ap_info.rssi);
 }
 
 void Station::set_connection_callback(ConnectionCallback callback) {
@@ -299,20 +299,24 @@ Station::Station()
       current_ssid_{},
       callback_(nullptr) {}
 
-Station::~Station() {}
-
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> Station::init() {
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
-Result<ConnectionInfo> Station::connect(const char*, const char*, uint32_t) {
-    return Result<ConnectionInfo>::error(ErrorCode::NotSupported);
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+Result<ConnectionInfo> Station::connect([[maybe_unused]] const char* ssid,
+                                        [[maybe_unused]] const char* password,
+                                        [[maybe_unused]] uint32_t timeout_ms) {
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> Station::disconnect() {
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 bool Station::is_connected() const {
     return false;
 }
@@ -321,16 +325,19 @@ ConnectionState Station::state() const {
     return state_;
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<ConnectionInfo> Station::connection_info() const {
-    return Result<ConnectionInfo>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<int8_t> Station::rssi() const {
-    return Result<int8_t>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
-void Station::set_connection_callback(ConnectionCallback) {}
+void Station::set_connection_callback([[maybe_unused]] ConnectionCallback callback) {}
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 const char* Station::ssid() const {
     return "";
 }

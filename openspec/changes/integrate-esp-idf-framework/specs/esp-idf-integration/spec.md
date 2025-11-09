@@ -3,13 +3,13 @@
 ## ADDED Requirements
 
 ### Requirement: Automatic ESP-IDF Component Registration
-The build system SHALL automatically register CoreZero examples and applications as ESP-IDF components when ESP-IDF is detected.
+The build system SHALL automatically register Alloy examples and applications as ESP-IDF components when ESP-IDF is detected.
 
 #### Scenario: ESP-IDF detected via IDF_PATH
 - **WHEN** `$IDF_PATH` environment variable is set
 - **AND** `$IDF_PATH/tools/cmake/idf.cmake` exists
 - **THEN** the build system SHALL use `idf_component_register()` instead of `add_executable()`
-- **AND** SHALL register CoreZero source files as component SRCS
+- **AND** SHALL register Alloy source files as component SRCS
 - **AND** SHALL declare ESP-IDF component dependencies via REQUIRES
 
 #### Scenario: Bare-metal fallback when ESP-IDF not detected
@@ -19,35 +19,35 @@ The build system SHALL automatically register CoreZero examples and applications
 - **AND** SHALL not require ESP-IDF to be installed
 
 #### Scenario: Component dependencies automatically resolved
-- **WHEN** CoreZero code includes ESP-IDF headers (e.g., `esp_wifi.h`)
+- **WHEN** Alloy code includes ESP-IDF headers (e.g., `esp_wifi.h`)
 - **THEN** the build system SHALL automatically add corresponding component to REQUIRES
 - **AND** SHALL link against ESP-IDF component libraries
 - **AND** SHALL include component header paths
 
 ### Requirement: ESP-IDF Driver Access
-The system SHALL provide seamless access to ESP-IDF drivers and components through CoreZero abstractions.
+The system SHALL provide seamless access to ESP-IDF drivers and components through Alloy abstractions.
 
 #### Scenario: WiFi driver access
 - **WHEN** application code includes `wifi/station.hpp`
 - **THEN** the build system SHALL link `esp_wifi` component
 - **AND** SHALL link `esp_netif` component
 - **AND** SHALL link `nvs_flash` component (required for WiFi)
-- **AND** CoreZero SHALL provide C++ wrapper around `esp_wifi` APIs
+- **AND** Alloy SHALL provide C++ wrapper around `esp_wifi` APIs
 
 #### Scenario: Bluetooth Low Energy access
 - **WHEN** application code includes `bluetooth/ble.hpp`
 - **THEN** the build system SHALL link `bt` component
-- **AND** CoreZero SHALL provide C++ wrapper around ESP-IDF BLE APIs
+- **AND** Alloy SHALL provide C++ wrapper around ESP-IDF BLE APIs
 
 #### Scenario: HTTP server access
 - **WHEN** application code includes `http/server.hpp`
 - **THEN** the build system SHALL link `esp_http_server` component
-- **AND** CoreZero SHALL provide modern C++ interface for HTTP server
+- **AND** Alloy SHALL provide modern C++ interface for HTTP server
 
 #### Scenario: MQTT client access
 - **WHEN** application code includes `mqtt/client.hpp`
 - **THEN** the build system SHALL link `mqtt` component
-- **AND** CoreZero SHALL provide async C++ wrapper for MQTT
+- **AND** Alloy SHALL provide async C++ wrapper for MQTT
 
 ### Requirement: Component Include Detection
 The build system SHALL automatically detect required ESP-IDF components based on header includes.
@@ -64,45 +64,45 @@ The build system SHALL automatically detect required ESP-IDF components based on
 - **AND** only user-specified components SHALL be linked
 
 ### Requirement: Configuration Integration
-The system SHALL integrate ESP-IDF's sdkconfig with CoreZero's build configuration.
+The system SHALL integrate ESP-IDF's sdkconfig with Alloy's build configuration.
 
 #### Scenario: Default sdkconfig provided
 - **WHEN** building ESP32 project for first time
-- **THEN** CoreZero SHALL provide sensible default `sdkconfig.defaults`
-- **AND** SHALL include configurations for CoreZero RTOS integration
-- **AND** SHALL optimize for CoreZero's use cases (e.g., disable FreeRTOS if using CoreZero RTOS)
+- **THEN** Alloy SHALL provide sensible default `sdkconfig.defaults`
+- **AND** SHALL include configurations for Alloy RTOS integration
+- **AND** SHALL optimize for Alloy's use cases (e.g., disable FreeRTOS if using Alloy RTOS)
 
 #### Scenario: User sdkconfig customization
 - **WHEN** user creates `sdkconfig` or `sdkconfig.defaults` in project root
-- **THEN** user settings SHALL override CoreZero defaults
+- **THEN** user settings SHALL override Alloy defaults
 - **AND** SHALL be merged with ESP-IDF defaults
 
 #### Scenario: Configuration validation
-- **WHEN** incompatible configurations are detected (e.g., using both FreeRTOS and CoreZero RTOS)
+- **WHEN** incompatible configurations are detected (e.g., using both FreeRTOS and Alloy RTOS)
 - **THEN** build system SHALL emit clear warning
 - **AND** SHALL suggest correct configuration
 
-### Requirement: CoreZero HAL ESP-IDF Backend
-The CoreZero HAL SHALL optionally use ESP-IDF drivers as implementation backend.
+### Requirement: Alloy HAL ESP-IDF Backend
+The Alloy HAL SHALL optionally use ESP-IDF drivers as implementation backend.
 
 #### Scenario: GPIO HAL using ESP-IDF driver
 - **WHEN** `USE_ESP_IDF_DRIVERS=ON` is set
 - **AND** GPIO operations are called
-- **THEN** CoreZero GPIO HAL SHALL delegate to `driver/gpio.h`
-- **AND** SHALL maintain CoreZero's C++ interface
+- **THEN** Alloy GPIO HAL SHALL delegate to `driver/gpio.h`
+- **AND** SHALL maintain Alloy's C++ interface
 - **AND** SHALL provide same behavior as bare-metal implementation
 
 #### Scenario: UART HAL using ESP-IDF driver
 - **WHEN** `USE_ESP_IDF_DRIVERS=ON` is set
 - **AND** UART operations are called
-- **THEN** CoreZero UART HAL SHALL delegate to `driver/uart.h`
+- **THEN** Alloy UART HAL SHALL delegate to `driver/uart.h`
 - **AND** SHALL support ESP-IDF's buffered I/O
 - **AND** SHALL support async operations via ESP-IDF events
 
 #### Scenario: SPI HAL using ESP-IDF driver
 - **WHEN** `USE_ESP_IDF_DRIVERS=ON` is set
 - **AND** SPI operations are called
-- **THEN** CoreZero SPI HAL SHALL delegate to `driver/spi_master.h`
+- **THEN** Alloy SPI HAL SHALL delegate to `driver/spi_master.h`
 - **AND** SHALL support DMA transfers
 - **AND** SHALL support transactions
 
@@ -111,7 +111,7 @@ The system SHALL provide zero-configuration WiFi setup for common use cases.
 
 #### Scenario: WiFi Station mode initialization
 - **WHEN** user code calls `WiFi::connect("SSID", "password")`
-- **THEN** CoreZero SHALL automatically:
+- **THEN** Alloy SHALL automatically:
   - Initialize NVS flash
   - Create default event loop
   - Initialize TCP/IP stack (netif)
@@ -122,13 +122,13 @@ The system SHALL provide zero-configuration WiFi setup for common use cases.
 
 #### Scenario: WiFi AP mode initialization
 - **WHEN** user code calls `WiFi::startAP("SSID", "password")`
-- **THEN** CoreZero SHALL automatically configure access point
+- **THEN** Alloy SHALL automatically configure access point
 - **AND** SHALL start DHCP server
 - **AND** SHALL return when AP is active
 
 #### Scenario: WiFi connection callbacks
 - **WHEN** WiFi connection state changes
-- **THEN** CoreZero SHALL invoke user-registered callbacks
+- **THEN** Alloy SHALL invoke user-registered callbacks
 - **AND** SHALL provide event data (IP address, disconnect reason, etc.)
 
 ### Requirement: Component Optimization

@@ -1,4 +1,4 @@
-# CoreZero Universal Logger
+# Alloy Universal Logger
 
 Professional, zero-cost, platform-agnostic logging system for embedded systems.
 
@@ -300,4 +300,4 @@ Include proper headers:
 
 ## License
 
-Part of CoreZero Framework - See LICENSE file
+Part of Alloy Framework - See LICENSE file

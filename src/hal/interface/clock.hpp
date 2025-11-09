@@ -8,6 +8,7 @@
 #include <concepts>
 
 #include "core/error.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 
 namespace alloy::hal {

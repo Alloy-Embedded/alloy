@@ -4,7 +4,7 @@
 
 FROM ubuntu:24.04
 
-LABEL maintainer="CoreZero RTOS"
+LABEL maintainer="Alloy RTOS"
 LABEL description="Embedded development environment for ARM, Xtensa, and RISC-V"
 
 # Prevent interactive prompts during package installation
@@ -117,11 +117,11 @@ RUN apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/* \
 USER ${USERNAME}
 
 # Set up shell environment
-RUN echo 'export PS1="\[\033[01;32m\]corezero-dev\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "' >> ~/.bashrc
+RUN echo 'export PS1="\[\033[01;32m\]alloy-dev\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "' >> ~/.bashrc
 
 # Display toolchain versions on container start
 RUN echo 'echo "═══════════════════════════════════════════════════"' >> ~/.bashrc && \
-    echo 'echo "  CoreZero RTOS Development Container"' >> ~/.bashrc && \
+    echo 'echo "  Alloy RTOS Development Container"' >> ~/.bashrc && \
     echo 'echo "═══════════════════════════════════════════════════"' >> ~/.bashrc && \
     echo 'echo ""' >> ~/.bashrc && \
     echo 'echo "📦 Installed Toolchains:"' >> ~/.bashrc && \

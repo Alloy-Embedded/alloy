@@ -24,6 +24,7 @@
 
 #include "core/error.hpp"
 #include "core/esp_error.hpp"
+#include "core/result.hpp"
 
 #include "types.hpp"
 
@@ -85,7 +86,7 @@ class AccessPoint {
     /**
      * @brief Destructor
      */
-    ~AccessPoint();
+    ~AccessPoint() = default;
 
     // Prevent copying
     AccessPoint(const AccessPoint&) = delete;

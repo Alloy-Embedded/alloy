@@ -17,7 +17,7 @@ Phase 2 successfully implemented **5 platform-specific sinks** to enable logging
 
 ### 1. ESP-IDF Integration Sink (`src/logger/platform/esp_log_sink.hpp`)
 
-**Purpose**: Bridge CoreZero logger to ESP-IDF's native `esp_log` system
+**Purpose**: Bridge Alloy logger to ESP-IDF's native `esp_log` system
 
 **Features**:
 - **EspLogSink**: Simple bridge that forwards all logs to ESP-IDF
@@ -29,14 +29,14 @@ Phase 2 successfully implemented **5 platform-specific sinks** to enable logging
 ```cpp
 #include "logger/platform/esp_log_sink.hpp"
 
-logger::EspLogSink esp_sink("CoreZero");
+logger::EspLogSink esp_sink("Alloy");
 Logger::add_sink(&esp_sink);
 
 LOG_INFO("Appears in ESP-IDF logs");
 ```
 
 **Benefits**:
-- CoreZero logs integrate seamlessly with ESP-IDF ecosystem
+- Alloy logs integrate seamlessly with ESP-IDF ecosystem
 - Can use existing ESP-IDF log configuration
 - Works with ESP-IDF remote logging
 - No duplicate logging infrastructure needed
@@ -190,7 +190,7 @@ idf.py -p /dev/ttyUSB0 flash monitor
 **Output**:
 ```
 [0.000123] INFO  [main.cpp:115] ========================================
-[0.000234] INFO  [main.cpp:116]   CoreZero Logger - ESP32 Example
+[0.000234] INFO  [main.cpp:116]   Alloy Logger - ESP32 Example
 [0.000345] INFO  [main.cpp:117] ========================================
 [0.000456] INFO  [main.cpp:118] Chip: esp32
 [0.000567] INFO  [main.cpp:119] Free heap: 295848 bytes
@@ -469,7 +469,7 @@ Logger::add_sink(&esp_sink);
 - 🖥️ Host development (with colors)
 - 🧪 Testing (memory buffers)
 
-**Ready for production use across all CoreZero platforms!** 🚀
+**Ready for production use across all Alloy platforms!** 🚀
 
 ---
 

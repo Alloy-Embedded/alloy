@@ -13,21 +13,21 @@ The system SHALL provide a convenient type alias making std::error_code the defa
 - **AND** custom error types SHALL still be usable via full template
 
 ### Requirement: Enhanced Documentation for Existing Features
-The system SHALL document CoreZero's existing Result<T, E> superiority over LUG's Result<T>, emphasizing features already present.
+The system SHALL document Alloy's existing Result<T, E> superiority over LUG's Result<T>, emphasizing features already present.
 
-#### Scenario: Documentation highlights CoreZero advantages
+#### Scenario: Documentation highlights Alloy advantages
 - **GIVEN** developer choosing error handling approach
 - **WHEN** reading Result documentation
 - **THEN** SHALL see feature comparison with LUG
-- **AND** SHALL understand why CoreZero's approach is superior
+- **AND** SHALL understand why Alloy's approach is superior
 - **AND** SHALL find examples of monadic operations
 - **AND** SHALL see structured binding patterns
 
 #### Scenario: Migration guide for LUG patterns
 - **GIVEN** code using LUG-style Result
-- **WHEN** migrating to CoreZero
+- **WHEN** migrating to Alloy
 - **THEN** SHALL find conversion examples
-- **AND** SHALL understand CoreZero advantages
+- **AND** SHALL understand Alloy advantages
 - **AND** SHALL see how to leverage monadic operations
 
 ## MODIFIED Requirements

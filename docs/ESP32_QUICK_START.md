@@ -34,7 +34,7 @@ pip3 install esptool
 ### Método 1: Script Automático ⭐ (RECOMENDADO)
 
 ```bash
-cd /caminho/para/corezero
+cd /caminho/para/alloy
 
 # Compile! (O script faz tudo sozinho)
 ./build-esp32.sh

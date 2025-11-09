@@ -1,4 +1,4 @@
-# 🎯 CoreZero Framework - Status Atual
+# 🎯 Alloy Framework - Status Atual
 
 ## ✅ Integração ESP-IDF + Docker COMPLETA!
 
@@ -35,7 +35,7 @@ code .
 - ✅ `alloy_esp32_component()` - Helper para registro simplificado de componentes
 
 ### Build Configuration:
-- ✅ `sdkconfig.defaults` - Configurações otimizadas para CoreZero
+- ✅ `sdkconfig.defaults` - Configurações otimizadas para Alloy
 
 ### Docs:
 - ✅ `docs/DOCKER_DEVELOPMENT.md` - Guia Docker completo
@@ -107,7 +107,7 @@ O build system **automaticamente** detecta e linka os componentes necessários!
 ### 3. Docker Terminal
 ```
 docker-compose up -d
-docker-compose exec corezero-dev bash
+docker-compose exec alloy-dev bash
 ```
 
 ---

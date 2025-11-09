@@ -31,7 +31,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 Gere o arquivo rodando CMake:
 
 ```bash
-cd /path/to/corezero
+cd /path/to/alloy
 cmake -S . -B build
 ```
 
@@ -202,9 +202,9 @@ target_compile_definitions(alloy_hal PUBLIC
 ```json
 [
   {
-    "directory": "/path/to/corezero/build",
+    "directory": "/path/to/alloy/build",
     "command": "g++ -DALLOY_GENERATED_NAMESPACE=alloy::generated::stm32f103c8 ...",
-    "file": "/path/to/corezero/src/hal/st/stm32f1/gpio.cpp"
+    "file": "/path/to/alloy/src/hal/st/stm32f1/gpio.cpp"
   }
 ]
 ```

@@ -328,7 +328,7 @@ TEST(scoped_i2c_read_operation) {
     auto read_result = scoped.read(0x51, data, 5);
 
     ASSERT(read_result.is_ok());
-    ASSERT(read_std::move(result).unwrap() == 5);
+    ASSERT(read_result::move(result).unwrap() == 5);
     ASSERT(device.getReadCount() == 1);
     ASSERT(device.getLastAddr() == 0x51);
 }
@@ -475,7 +475,7 @@ TEST(scoped_spi_read_operation) {
     auto read_result = scoped.read(data, 4);
 
     ASSERT(read_result.is_ok());
-    ASSERT(read_std::move(result).unwrap() == 4);
+    ASSERT(read_result::move(result).unwrap() == 4);
     ASSERT(device.getReadCount() == 1);
     ASSERT(device.getLastCs() == MockSpiDevice::ChipSelect::CS3);
 }
@@ -507,7 +507,7 @@ TEST(scoped_spi_read_byte) {
     auto read_result = scoped.readByte();
 
     ASSERT(read_result.is_ok());
-    ASSERT(read_std::move(result).unwrap() == 0);  // Mock returns 0 for first byte
+    ASSERT(read_result::move(result).unwrap() == 0);  // Mock returns 0 for first byte
     ASSERT(device.getReadCount() == 1);
 }
 

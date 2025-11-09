@@ -430,7 +430,7 @@ ls upstream/cmsis-svd-data/data/STMicro/
 Adicione ao `.bashrc` ou `.zshrc`:
 
 ```bash
-alias codegen='cd /path/to/corezero/tools/codegen && ./codegen'
+alias codegen='cd /path/to/alloy/tools/codegen && ./codegen'
 alias cg='codegen'
 ```
 

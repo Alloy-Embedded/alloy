@@ -16,8 +16,7 @@
     #define FILENO fileno
 #endif
 
-namespace alloy {
-namespace logger {
+namespace alloy::logger {
 
 /**
  * Console output sink with ANSI color support
@@ -65,22 +64,22 @@ class ConsoleSink : public Sink {
         // Apply color if enabled and not already colored
         if (enable_colors_ && !has_ansi_codes(data)) {
             const char* color = get_color_for_message(data);
-            fprintf(stream, "%s%.*s%s", color, static_cast<int>(length), data, ANSI_RESET);
+            (void)fprintf(stream, "%s%.*s%s", color, static_cast<int>(length), data, ANSI_RESET);
         } else {
-            fwrite(data, 1, length, stream);
+            (void)fwrite(data, 1, length, stream);
         }
 
         // Ensure newline (message should already have it)
         // Just flush to ensure output appears immediately
-        fflush(stream);
+        (void)fflush(stream);
     }
 
     /**
      * Flush console buffers
      */
     void flush() override {
-        fflush(stdout);
-        fflush(stderr);
+        (void)fflush(stdout);
+        (void)fflush(stderr);
     }
 
     /**
@@ -122,7 +121,7 @@ class ConsoleSink : public Sink {
     /**
      * Get color code based on message content
      */
-    const char* get_color_for_message(const char* data) const {
+    static const char* get_color_for_message(const char* data) {
         if (strstr(data, "TRACE") != nullptr)
             return ANSI_GRAY;
         if (strstr(data, "DEBUG") != nullptr)
@@ -149,12 +148,11 @@ class ConsoleSink : public Sink {
 class SimpleConsoleSink : public Sink {
    public:
     void write(const char* data, size_t length) override {
-        fwrite(data, 1, length, stdout);
-        fflush(stdout);
+        (void)fwrite(data, 1, length, stdout);
+        (void)fflush(stdout);
     }
 
-    void flush() override { fflush(stdout); }
+    void flush() override { (void)fflush(stdout); }
 };
 
-}  // namespace logger
-}  // namespace alloy
+}  // namespace alloy::logger

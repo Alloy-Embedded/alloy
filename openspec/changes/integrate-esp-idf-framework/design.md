@@ -2,9 +2,9 @@
 
 ## Context
 
-CoreZero Framework aims to provide modern C++20 development for embedded systems with portability across multiple architectures. ESP32 is a key platform that offers rich connectivity (WiFi, Bluetooth) and extensive ecosystem via ESP-IDF.
+Alloy Framework aims to provide modern C++20 development for embedded systems with portability across multiple architectures. ESP32 is a key platform that offers rich connectivity (WiFi, Bluetooth) and extensive ecosystem via ESP-IDF.
 
-Currently, CoreZero has basic ESP32 HAL support but developers cannot easily access ESP-IDF's advanced features. This integration will make ESP-IDF a first-class citizen while maintaining CoreZero's philosophy of simplicity and modern C++.
+Currently, Alloy has basic ESP32 HAL support but developers cannot easily access ESP-IDF's advanced features. This integration will make ESP-IDF a first-class citizen while maintaining Alloy's philosophy of simplicity and modern C++.
 
 ### Stakeholders
 - **Embedded Developers**: Need easy access to WiFi, BLE, and ESP-IDF components
@@ -14,8 +14,8 @@ Currently, CoreZero has basic ESP32 HAL support but developers cannot easily acc
 ### Constraints
 - Must maintain bare-metal mode for minimal use cases
 - Must not force ESP-IDF dependency on non-ESP32 platforms
-- Must preserve CoreZero's modern C++ interface
-- Must support both FreeRTOS (ESP-IDF) and CoreZero RTOS
+- Must preserve Alloy's modern C++ interface
+- Must support both FreeRTOS (ESP-IDF) and Alloy RTOS
 
 ## Goals / Non-Goals
 
@@ -28,7 +28,7 @@ Currently, CoreZero has basic ESP32 HAL support but developers cannot easily acc
 6. **Build Mode Transparency**: Same code works in ESP-IDF and bare-metal modes
 
 ### Non-Goals
-1. **Not replacing ESP-IDF**: CoreZero is a wrapper, not a reimplementation
+1. **Not replacing ESP-IDF**: Alloy is a wrapper, not a reimplementation
 2. **Not supporting all ESP-IDF components**: Focus on most common (WiFi, BLE, HTTP, MQTT)
 3. **Not breaking existing bare-metal code**: Opt-in integration only
 4. **Not abstracting ESP32 specifics**: Some features are ESP32-specific (OK to expose)
@@ -115,7 +115,7 @@ idf_component_register(
 ```
 Application Code
       ↓
-CoreZero C++ Wrapper (corezero::wifi::Station)
+Alloy C++ Wrapper (alloy::wifi::Station)
       ↓
 ESP-IDF C API (esp_wifi_*)
       ↓
@@ -126,8 +126,8 @@ ESP32 Hardware
 
 **Pattern**:
 ```cpp
-// corezero/wifi/station.hpp
-namespace corezero::wifi {
+// alloy/wifi/station.hpp
+namespace alloy::wifi {
     class Station {
         public:
             Result<IP, Error> connect(const std::string& ssid,
@@ -208,28 +208,28 @@ WiFi::connect("SSID", "password")
 
 ### Decision 5: Header Organization and Namespacing
 
-**Choice**: CoreZero headers in `corezero/` directory, ESP-IDF details hidden
+**Choice**: Alloy headers in `alloy/` directory, ESP-IDF details hidden
 
 **Structure**:
 ```
 src/
-├── corezero/
+├── alloy/
 │   ├── wifi/
-│   │   ├── station.hpp       // corezero::wifi::Station
-│   │   ├── ap.hpp            // corezero::wifi::AP
-│   │   └── scan.hpp          // corezero::wifi::scan()
+│   │   ├── station.hpp       // alloy::wifi::Station
+│   │   ├── ap.hpp            // alloy::wifi::AP
+│   │   └── scan.hpp          // alloy::wifi::scan()
 │   ├── bluetooth/
-│   │   ├── ble.hpp           // corezero::bluetooth::BLE
+│   │   ├── ble.hpp           // alloy::bluetooth::BLE
 │   │   └── gatt.hpp          // GATT server/client
 │   ├── http/
-│   │   ├── server.hpp        // corezero::http::Server
-│   │   └── client.hpp        // corezero::http::Client
+│   │   ├── server.hpp        // alloy::http::Server
+│   │   └── client.hpp        // alloy::http::Client
 │   ├── mqtt/
-│   │   └── client.hpp        // corezero::mqtt::Client
+│   │   └── client.hpp        // alloy::mqtt::Client
 │   └── hal/
-│       ├── gpio.hpp          // corezero::hal::GPIO (can use ESP-IDF backend)
-│       ├── uart.hpp          // corezero::hal::UART
-│       └── spi.hpp           // corezero::hal::SPI
+│       ├── gpio.hpp          // alloy::hal::GPIO (can use ESP-IDF backend)
+│       ├── uart.hpp          // alloy::hal::UART
+│       └── spi.hpp           // alloy::hal::SPI
 └── drivers/
     └── esp32/                // ESP-IDF wrapper implementations
         ├── wifi_impl.cpp
@@ -239,7 +239,7 @@ src/
 
 **Rationale**:
 - Clear separation between interface (headers) and implementation
-- Users include CoreZero headers, not ESP-IDF headers directly
+- Users include Alloy headers, not ESP-IDF headers directly
 - ESP-IDF types wrapped and hidden in implementation
 
 **Alternatives Considered**:
@@ -313,7 +313,7 @@ dependencies:
 - Version check in CMake configuration
 
 ### Risk 5: API Instability
-**Risk**: CoreZero API might need to change as ESP-IDF evolves
+**Risk**: Alloy API might need to change as ESP-IDF evolves
 
 **Mitigation**:
 - Follow semantic versioning
@@ -362,17 +362,17 @@ If integration causes issues:
 
 ## Open Questions
 
-### Q1: Should we support ESP-IDF's FreeRTOS or CoreZero RTOS?
+### Q1: Should we support ESP-IDF's FreeRTOS or Alloy RTOS?
 **Options**:
 - A) Use ESP-IDF's FreeRTOS when in ESP-IDF mode
-- B) Port CoreZero RTOS to work with ESP-IDF
+- B) Port Alloy RTOS to work with ESP-IDF
 - C) Support both (configurable)
 
-**Current thinking**: Option C - Let user choose. ESP-IDF's FreeRTOS is battle-tested and integrates well with WiFi/BLE. CoreZero RTOS is simpler and educational. Provide both options.
+**Current thinking**: Option C - Let user choose. ESP-IDF's FreeRTOS is battle-tested and integrates well with WiFi/BLE. Alloy RTOS is simpler and educational. Provide both options.
 
 **Configuration**:
 ```cmake
-option(USE_COREZERO_RTOS "Use CoreZero RTOS instead of FreeRTOS" OFF)
+option(USE_ALLOY_RTOS "Use Alloy RTOS instead of FreeRTOS" OFF)
 ```
 
 ### Q2: How to handle sdkconfig in multi-example project?
@@ -383,13 +383,13 @@ option(USE_COREZERO_RTOS "Use CoreZero RTOS instead of FreeRTOS" OFF)
 
 **Current thinking**: Option C - Shared defaults for common settings, examples can override specific settings.
 
-### Q3: Should CoreZero abstractions support non-ESP32 WiFi/BLE chips?
+### Q3: Should Alloy abstractions support non-ESP32 WiFi/BLE chips?
 **Current answer**: Not in this phase. Focus on ESP32 first. If other platforms need WiFi/BLE (e.g., RP2040W), can extend later. Architecture allows platform-specific implementations behind common interface.
 
-### Q4: How to handle ESP-IDF event loop vs CoreZero event system?
+### Q4: How to handle ESP-IDF event loop vs Alloy event system?
 **Options**:
 - A) Use ESP-IDF event loop exclusively
-- B) Bridge ESP-IDF events to CoreZero event system
+- B) Bridge ESP-IDF events to Alloy event system
 - C) Keep them separate
 
 **Current thinking**: Option A for now - Use ESP-IDF event loop when in ESP-IDF mode. It's well-integrated with WiFi/BLE. Can add bridge later if needed.

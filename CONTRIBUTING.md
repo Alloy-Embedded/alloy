@@ -11,10 +11,25 @@ Thank you for your interest in contributing to Alloy! This document provides gui
    - [plan.md](plan.md) - Project vision and roadmap
 
 2. **Set up your development environment**
-   - GCC 11+ or Clang 13+ with C++20 support
+   - **Clang 21+** (required for macOS to avoid build issues) or GCC 11+
    - CMake 3.25+
    - Python 3.10+ (for code generator)
-   - Google Test (fetched automatically)
+   - Catch2 v3 (fetched automatically)
+
+   **macOS Setup:**
+   ```bash
+   brew install llvm@21 cmake ninja
+   export PATH="$(brew --prefix llvm@21)/bin:$PATH"
+   export CC=$(brew --prefix llvm@21)/bin/clang
+   export CXX=$(brew --prefix llvm@21)/bin/clang++
+   ```
+
+   **Linux Setup:**
+   ```bash
+   sudo apt-get install clang-14 cmake ninja-build
+   export CC=clang-14
+   export CXX=clang++-14
+   ```
 
 ## Coding Standards
 

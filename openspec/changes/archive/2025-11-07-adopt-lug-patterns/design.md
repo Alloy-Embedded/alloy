@@ -2,7 +2,7 @@
 
 ## Context
 
-The CoreZero HAL framework currently lacks several production-proven patterns for embedded systems development. After analyzing the legacy LUG framework (15+ commercial products, 50,000+ field hours, <0.1% critical bug rate), we identified key patterns that can significantly improve CoreZero's robustness, performance, and developer experience.
+The Alloy HAL framework currently lacks several production-proven patterns for embedded systems development. After analyzing the legacy LUG framework (15+ commercial products, 50,000+ field hours, <0.1% critical bug rate), we identified key patterns that can significantly improve Alloy's robustness, performance, and developer experience.
 
 ### Background
 - **Current State**: Basic HAL with raw error codes, manual resource management
@@ -29,9 +29,9 @@ The CoreZero HAL framework currently lacks several production-proven patterns fo
 - ✅ Zero runtime overhead for new patterns
 
 ### Non-Goals
-- ❌ Complete rewrite of CoreZero (cherry-pick patterns only)
+- ❌ Complete rewrite of Alloy (cherry-pick patterns only)
 - ❌ Port entire LUG framework (too disruptive)
-- ❌ Add external dependencies (keep CoreZero standalone)
+- ❌ Add external dependencies (keep Alloy standalone)
 - ❌ Support C++14 or earlier (requires C++17 features)
 - ❌ Implement advanced features immediately (DMA, interrupts) - those come later
 
@@ -112,7 +112,7 @@ boards/atmel_same70_xpld/
 **Trade-offs**:
 - ⚠️ Custom code to maintain
 - ✅ Full control over implementation
-- ✅ Can add CoreZero-specific features
+- ✅ Can add Alloy-specific features
 
 ### Decision 2: Template-Based Peripherals
 
@@ -808,4 +808,4 @@ Memory usage        | Dynamic     | Fixed          | Predictable
 
 **Document Status**: Draft for Review
 **Last Updated**: 2025-01-06
-**Author**: CoreZero Team (based on LUG framework analysis)
+**Author**: Alloy Team (based on LUG framework analysis)

@@ -121,19 +121,19 @@ struct MemoryBudget {
 /// Memory category classifications (from ADR-013)
 namespace memory_class {
 /// Tiny MCUs (2-8KB RAM) - e.g., ATmega328P
-constexpr size_t tiny_ram = 8 * 1024;
-constexpr size_t tiny_overhead_budget = 512;
+constexpr size_t tiny_ram = 8UL * 1024UL;
+constexpr size_t tiny_overhead_budget = 512UL;
 
 /// Small MCUs (8-32KB RAM) - e.g., STM32F103C6, RL78/G13
-constexpr size_t small_ram = 32 * 1024;
-constexpr size_t small_overhead_budget = 2 * 1024;
+constexpr size_t small_ram = 32UL * 1024UL;
+constexpr size_t small_overhead_budget = 2UL * 1024UL;
 
 /// Medium MCUs (32-128KB RAM) - e.g., STM32F407
-constexpr size_t medium_ram = 128 * 1024;
-constexpr size_t medium_overhead_budget = 8 * 1024;
+constexpr size_t medium_ram = 128UL * 1024UL;
+constexpr size_t medium_overhead_budget = 8UL * 1024UL;
 
 /// Large MCUs (128+KB RAM) - e.g., SAME70
-constexpr size_t large_overhead_budget = 16 * 1024;
+constexpr size_t large_overhead_budget = 16UL * 1024UL;
 }  // namespace memory_class
 
 /// Calculate memory overhead for a type

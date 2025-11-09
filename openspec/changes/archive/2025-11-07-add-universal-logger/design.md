@@ -2,7 +2,7 @@
 
 ## Context
 
-CoreZero needs a professional logging system that works across all supported platforms (bare-metal ARM, RTOS, ESP32 with ESP-IDF, host development) while maintaining the framework's core principles of zero-cost abstractions and minimal resource usage.
+Alloy needs a professional logging system that works across all supported platforms (bare-metal ARM, RTOS, ESP32 with ESP-IDF, host development) while maintaining the framework's core principles of zero-cost abstractions and minimal resource usage.
 
 ### Stakeholders
 - **Embedded Developers**: Need efficient debugging without performance impact
@@ -475,7 +475,7 @@ struct Config {
 
 1. **Performance**: <10 microseconds per log call (formatted, no I/O)
 2. **Size**: Core < 2KB flash, <1KB RAM
-3. **Compatibility**: Works on all CoreZero platforms
+3. **Compatibility**: Works on all Alloy platforms
 4. **Usability**: 90% of logging needs covered by simple macros
 5. **Adoption**: Used in 5+ examples within first month
 

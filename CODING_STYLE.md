@@ -1,4 +1,4 @@
-# CoreZero Coding Style Guide
+# Alloy Coding Style Guide
 
 **Version**: 1.0
 **Last Updated**: 2025-11-08
@@ -23,7 +23,7 @@
 
 ## 🎯 Philosophy
 
-CoreZero is a **modern C++20 embedded systems framework** focused on:
+Alloy is a **modern C++20 embedded systems framework** focused on:
 
 - **Zero-overhead abstractions**: No runtime cost for high-level features
 - **Type safety**: Compile-time error detection
@@ -529,7 +529,7 @@ cmake --build build --target test
 ## 📦 Project Structure
 
 ```
-corezero/
+alloy/
 ├── src/                      # Source code
 │   ├── core/                 # Core utilities
 │   ├── hal/                  # Hardware abstraction layer
@@ -572,7 +572,7 @@ Before submitting code:
 
 ## 🤝 For AI Assistants
 
-When generating code for CoreZero:
+When generating code for Alloy:
 
 1. **Always use C++20 features** (constexpr, concepts, auto)
 2. **Follow naming**: snake_case for functions/variables, PascalCase for types

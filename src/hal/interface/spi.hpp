@@ -9,6 +9,7 @@
 #include <span>
 
 #include "core/error.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 
 namespace alloy::hal {
@@ -122,10 +123,10 @@ core::Result<core::u8> spi_transfer_byte(Device& device, core::u8 tx_byte) {
     auto result = device.transfer(tx_buf, rx_buf);
 
     if (result.is_error()) {
-        return core::Result<core::u8>::error(result.error());
+        return core::Err(result.error());
     }
 
-    return core::Result<core::u8>::ok(rx_byte);
+    return core::Ok(rx_byte);
 }
 
 /// Helper function to write a single byte via SPI
@@ -153,10 +154,10 @@ core::Result<core::u8> spi_read_byte(Device& device) {
     auto result = device.receive(buffer);
 
     if (result.is_error()) {
-        return core::Result<core::u8>::error(result.error());
+        return core::Err(result.error());
     }
 
-    return core::Result<core::u8>::ok(byte);
+    return core::Ok(byte);
 }
 
 /// RAII helper for SPI chip select

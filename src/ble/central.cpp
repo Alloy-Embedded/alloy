@@ -58,7 +58,7 @@ struct CentralImplData {
     }
 
     ~CentralImplData() {
-        if (event_group) {
+        if (event_group != nullptr) {
             vEventGroupDelete(event_group);
         }
     }
@@ -75,7 +75,7 @@ static CentralImplData* g_impl = nullptr;
 
 // GAP event handler
 static void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t* param) {
-    if (!g_impl)
+    if (g_impl == nullptr)
         return;
 
     switch (event) {
@@ -109,13 +109,13 @@ static void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param
                         dev.adv_type = AdvType::ConnectableUndirected;  // Simplified
 
                         // Extract device name from adv data
-                        u8* adv_name = NULL;
+                        u8* adv_name = nullptr;
                         u8 adv_name_len = 0;
                         adv_name =
                             esp_ble_resolve_adv_data(scan_result->scan_rst.ble_adv,
                                                      ESP_BLE_AD_TYPE_NAME_CMPL, &adv_name_len);
 
-                        if (adv_name && adv_name_len > 0 && adv_name_len < 32) {
+                        if (adv_name != nullptr && adv_name_len > 0 && adv_name_len < 32) {
                             memcpy(dev.name, adv_name, adv_name_len);
                             dev.name[adv_name_len] = '\0';
                         } else {
@@ -131,7 +131,7 @@ static void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param
                         g_impl->scan_count++;
 
                         // Call user callback
-                        if (g_impl->scan_callback) {
+                        if (g_impl->scan_callback != nullptr) {
                             g_impl->scan_callback(dev);
                         }
                     }
@@ -188,13 +188,14 @@ struct CentralImplData {
     DeviceInfo scan_results[32];
     u8 scan_count;
 
-    Impl()
+    CentralImplData()
         : initialized(false),
           scanning(false),
           scan_callback(nullptr),
           conn_callback(nullptr),
           read_callback(nullptr),
           notify_callback(nullptr),
+          scan_results{},
           scan_count(0) {}
 };
 
@@ -213,16 +214,14 @@ struct Central::Impl {
 Central::Central() : impl_(new Impl()) {}
 
 Central::~Central() {
-    if (impl_) {
-        deinit();
-        delete impl_;
-    }
+    deinit();
+    delete impl_;
 }
 
 Result<void> Central::init() {
 #ifdef ESP_PLATFORM
     if (impl_->data.initialized) {
-        return Result<void>::ok();
+        return Ok();
     }
 
     // Initialize NVS (required for BLE)
@@ -233,7 +232,7 @@ Result<void> Central::init() {
     }
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "NVS init failed: %s", esp_err_to_name(ret));
-        return Result<void>::error(ErrorCode::HardwareError);
+        return Err(ErrorCode::HardwareError);
     }
 
     // Release classic BT memory
@@ -244,27 +243,27 @@ Result<void> Central::init() {
     ret = esp_bt_controller_init(&bt_cfg);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "BT controller init failed: %s", esp_err_to_name(ret));
-        return Result<void>::error(ErrorCode::HardwareError);
+        return Err(ErrorCode::HardwareError);
     }
 
     // Enable BLE mode
     ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "BT controller enable failed: %s", esp_err_to_name(ret));
-        return Result<void>::error(ErrorCode::HardwareError);
+        return Err(ErrorCode::HardwareError);
     }
 
     // Initialize Bluedroid
     ret = esp_bluedroid_init();
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Bluedroid init failed: %s", esp_err_to_name(ret));
-        return Result<void>::error(ErrorCode::HardwareError);
+        return Err(ErrorCode::HardwareError);
     }
 
     ret = esp_bluedroid_enable();
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Bluedroid enable failed: %s", esp_err_to_name(ret));
-        return Result<void>::error(ErrorCode::HardwareError);
+        return Err(ErrorCode::HardwareError);
     }
 
     // Register GAP callback
@@ -272,29 +271,30 @@ Result<void> Central::init() {
     ret = esp_ble_gap_register_callback(gap_event_handler);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "GAP callback register failed: %s", esp_err_to_name(ret));
-        return Result<void>::error(ErrorCode::HardwareError);
+        return Err(ErrorCode::HardwareError);
     }
 
     // Register GATTC callback
     ret = esp_ble_gattc_register_callback(gattc_event_handler);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "GATTC callback register failed: %s", esp_err_to_name(ret));
-        return Result<void>::error(ErrorCode::HardwareError);
+        return Err(ErrorCode::HardwareError);
     }
 
     impl_->data.initialized = true;
     ESP_LOGI(TAG, "BLE Central initialized");
-    return Result<void>::ok();
+    return Ok();
 #else
     impl_->data.initialized = true;
-    return Result<void>::ok();
+    return Ok();
 #endif
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> Central::deinit() {
 #ifdef ESP_PLATFORM
     if (!impl_->data.initialized) {
-        return Result<void>::ok();
+        return Ok();
     }
 
     stop_scan();
@@ -308,23 +308,25 @@ Result<void> Central::deinit() {
     impl_->data.initialized = false;
     ESP_LOGI(TAG, "BLE Central deinitialized");
 #endif
-    return Result<void>::ok();
+    return Ok();
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<u8> Central::scan(u16 duration_ms) {
     ScanConfig config;
     config.duration = duration_ms;
     return scan(config);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<u8> Central::scan(const ScanConfig& config) {
 #ifdef ESP_PLATFORM
     if (!impl_->data.initialized) {
-        return Result<u8>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     if (impl_->data.scanning) {
-        return Result<u8>::error(ErrorCode::Busy);
+        return Err(ErrorCode::Busy);
     }
 
     // Clear previous results
@@ -344,14 +346,14 @@ Result<u8> Central::scan(const ScanConfig& config) {
     esp_err_t ret = esp_ble_gap_set_scan_params(&scan_params);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Set scan params failed: %s", esp_err_to_name(ret));
-        return Result<u8>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     // Start scan
     ret = esp_ble_gap_start_scanning(config.duration / 1000);  // Convert to seconds
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Start scanning failed: %s", esp_err_to_name(ret));
-        return Result<u8>::error(ErrorCode::CommunicationError);
+        return Err(ErrorCode::CommunicationError);
     }
 
     // Wait for scan to complete
@@ -360,21 +362,22 @@ Result<u8> Central::scan(const ScanConfig& config) {
                         pdFALSE,  // Wait for any bit
                         pdMS_TO_TICKS(config.duration + 1000));
 
-    return Result<u8>::ok(impl_->data.scan_count);
+    return Ok(impl_->data.scan_count);
 #else
     (void)config;
-    return Result<u8>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 #endif
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> Central::scan_async(const ScanConfig& config) {
 #ifdef ESP_PLATFORM
     if (!impl_->data.initialized) {
-        return Result<void>::error(ErrorCode::NotInitialized);
+        return Err(ErrorCode::NotInitialized);
     }
 
     if (impl_->data.scanning) {
-        return Result<void>::error(ErrorCode::Busy);
+        return Err(ErrorCode::Busy);
     }
 
     // Clear previous results
@@ -392,28 +395,29 @@ Result<void> Central::scan_async(const ScanConfig& config) {
 
     esp_err_t ret = esp_ble_gap_set_scan_params(&scan_params);
     if (ret != ESP_OK) {
-        return Result<void>::error(ErrorCode::InvalidParameter);
+        return Err(ErrorCode::InvalidParameter);
     }
 
     ret = esp_ble_gap_start_scanning(config.duration / 1000);
     if (ret != ESP_OK) {
-        return Result<void>::error(ErrorCode::CommunicationError);
+        return Err(ErrorCode::CommunicationError);
     }
 
-    return Result<void>::ok();
+    return Ok();
 #else
     (void)config;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 #endif
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> Central::stop_scan() {
 #ifdef ESP_PLATFORM
     if (impl_->data.scanning) {
         esp_ble_gap_stop_scanning();
     }
 #endif
-    return Result<void>::ok();
+    return Ok();
 }
 
 bool Central::is_scanning() const {
@@ -421,14 +425,14 @@ bool Central::is_scanning() const {
 }
 
 Result<u8> Central::get_scan_results(DeviceInfo* devices, u8 max_devices) const {
-    if (!devices || max_devices == 0) {
-        return Result<u8>::error(ErrorCode::InvalidParameter);
+    if (devices == nullptr || max_devices == 0) {
+        return Err(ErrorCode::InvalidParameter);
     }
 
     u8 count = (impl_->data.scan_count < max_devices) ? impl_->data.scan_count : max_devices;
     memcpy(devices, impl_->data.scan_results, count * sizeof(DeviceInfo));
 
-    return Result<u8>::ok(count);
+    return Ok(count);
 }
 
 void Central::clear_scan_results() {
@@ -436,98 +440,112 @@ void Central::clear_scan_results() {
 }
 
 // Connection management stubs
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<ConnHandle> Central::connect(const Address& address, u16 timeout_ms) {
     (void)address;
     (void)timeout_ms;
-    return Result<ConnHandle>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<ConnHandle> Central::connect(const Address& address, const ConnParams& params,
                                     u16 timeout_ms) {
     (void)address;
     (void)params;
     (void)timeout_ms;
-    return Result<ConnHandle>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> Central::disconnect(ConnHandle conn_handle) {
     (void)conn_handle;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 bool Central::is_connected(ConnHandle conn_handle) const {
     (void)conn_handle;
     return false;
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 ConnState Central::get_conn_state(ConnHandle conn_handle) const {
     (void)conn_handle;
     return ConnState::Disconnected;
 }
 
 // Service/characteristic discovery stubs
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<u8> Central::discover_services(ConnHandle conn_handle) {
     (void)conn_handle;
-    return Result<u8>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<ServiceHandle> Central::discover_service(ConnHandle conn_handle, const UUID& service_uuid) {
     (void)conn_handle;
     (void)service_uuid;
-    return Result<ServiceHandle>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<u8> Central::get_services(ConnHandle conn_handle, ServiceHandle* services,
                                  u8 max_services) const {
     (void)conn_handle;
     (void)services;
     (void)max_services;
-    return Result<u8>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<u8> Central::discover_characteristics(ConnHandle conn_handle, const ServiceHandle& service) {
     (void)conn_handle;
     (void)service;
-    return Result<u8>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<CharHandle> Central::discover_characteristic(ConnHandle conn_handle,
                                                     const ServiceHandle& service,
                                                     const UUID& char_uuid) {
     (void)conn_handle;
     (void)service;
     (void)char_uuid;
-    return Result<CharHandle>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<u8> Central::get_characteristics(ConnHandle conn_handle, const ServiceHandle& service,
                                         CharHandle* characteristics, u8 max_chars) const {
     (void)conn_handle;
     (void)service;
     (void)characteristics;
     (void)max_chars;
-    return Result<u8>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 // Characteristic operations stubs
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<u16> Central::read_char(ConnHandle conn_handle, const CharHandle& characteristic, u8* buffer,
                                u16 buffer_size) {
     (void)conn_handle;
     (void)characteristic;
     (void)buffer;
     (void)buffer_size;
-    return Result<u16>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> Central::write_char(ConnHandle conn_handle, const CharHandle& characteristic,
                                  const u8* data, u16 length) {
     (void)conn_handle;
     (void)characteristic;
     (void)data;
     (void)length;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> Central::write_char_no_response(ConnHandle conn_handle,
                                              const CharHandle& characteristic, const u8* data,
                                              u16 length) {
@@ -535,19 +553,21 @@ Result<void> Central::write_char_no_response(ConnHandle conn_handle,
     (void)characteristic;
     (void)data;
     (void)length;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> Central::subscribe(ConnHandle conn_handle, const CharHandle& characteristic) {
     (void)conn_handle;
     (void)characteristic;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<void> Central::unsubscribe(ConnHandle conn_handle, const CharHandle& characteristic) {
     (void)conn_handle;
     (void)characteristic;
-    return Result<void>::error(ErrorCode::NotSupported);
+    return Err(ErrorCode::NotSupported);
 }
 
 // Callbacks
