@@ -34,6 +34,26 @@ add_test(NAME ErrorCodeTest COMMAND test_error_code)
 add_executable(test_concepts test_concepts.cpp)
 add_test(NAME ConceptsTest COMMAND test_concepts)
 
+# Test for HAL peripheral concepts (modernize-peripheral-architecture Phase 1)
+add_executable(test_hal_concepts test_hal_concepts.cpp)
+add_test(NAME HalConceptsTest COMMAND test_hal_concepts)
+
+# Test for signal routing tables (modernize-peripheral-architecture Phase 2)
+add_executable(test_signal_tables test_signal_tables.cpp)
+add_test(NAME SignalTablesTest COMMAND test_signal_tables)
+
+# Test for GPIO signal routing (modernize-peripheral-architecture Phase 3.1)
+add_executable(test_gpio_signal_routing test_gpio_signal_routing.cpp)
+add_test(NAME GpioSignalRoutingTest COMMAND test_gpio_signal_routing)
+
+# Test for pin-signal connection API (modernize-peripheral-architecture Phase 3.2)
+add_executable(test_pin_signal_connection test_pin_signal_connection.cpp)
+add_test(NAME PinSignalConnectionTest COMMAND test_pin_signal_connection)
+
+# Test for signal routing registry (modernize-peripheral-architecture Phase 3.3)
+add_executable(test_signal_registry test_signal_registry.cpp)
+add_test(NAME SignalRegistryTest COMMAND test_signal_registry)
+
 # Test for units (BaudRate)
 add_executable(test_units test_units.cpp)
 add_test(NAME UnitsTest COMMAND test_units)
@@ -77,6 +97,6 @@ add_test(NAME STM32F4CodegenTest COMMAND test_stm32f4_codegen)
 # Custom target to run all tests
 add_custom_target(run_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-    DEPENDS test_result test_types test_memory test_error_code test_concepts test_units test_scoped_device test_circular_buffer test_same70_codegen test_stm32f1_codegen test_stm32f4_codegen
+    DEPENDS test_result test_types test_memory test_error_code test_concepts test_hal_concepts test_signal_tables test_gpio_signal_routing test_pin_signal_connection test_signal_registry test_units test_scoped_device test_circular_buffer test_same70_codegen test_stm32f1_codegen test_stm32f4_codegen
     COMMENT "Running all unit tests..."
 )

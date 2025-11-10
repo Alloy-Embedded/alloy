@@ -28,6 +28,7 @@
 // ============================================================================
 
 #include "hal/types.hpp"
+#include "hal/signals.hpp"
 
 #include "core/error.hpp"
 #include "core/result.hpp"
@@ -50,6 +51,10 @@ using namespace alloy::hal;
 
 // Import vendor-specific register types (now from family-level namespace)
 using namespace alloy::hal::atmel::same70;
+
+// Import signal routing types (Phase 3: GPIO Signal Routing)
+using alloy::hal::signals::AlternateFunction;
+using alloy::hal::signals::PinId;
 
 // Note: GPIO configuration uses common HAL types from hal/types.hpp:
 // - PinDirection (Input, Output)
@@ -297,6 +302,179 @@ class GpioPin {
         bool is_output = (status & pin_mask) != 0;
 
         return Ok(bool(is_output));
+    }
+
+    // ========================================================================
+    // Signal Routing Support (Phase 3: GPIO Signal Routing)
+    // ========================================================================
+
+    /**
+     * @brief Set alternate function for peripheral routing
+     *
+     * Configures the pin's alternate function (peripheral A, B, C, or D).
+     * This is required when using the pin for peripherals like USART, SPI, etc.
+     *
+     * SAME70 Peripheral Selection:
+     * - Peripheral A: ABCDSR[0]=0, ABCDSR[1]=0
+     * - Peripheral B: ABCDSR[0]=1, ABCDSR[1]=0
+     * - Peripheral C: ABCDSR[0]=0, ABCDSR[1]=1
+     * - Peripheral D: ABCDSR[0]=1, ABCDSR[1]=1
+     *
+     * @param af Alternate function to set (PERIPH_A, PERIPH_B, PERIPH_C, PERIPH_D)
+     * @return Result<void, ErrorCode>
+     *
+     * @note Part of modernize-peripheral-architecture Phase 3
+     */
+    Result<void, ErrorCode> setAlternateFunction(AlternateFunction af) {
+        auto* port = get_port();
+
+        // First, disable PIO control (assign to peripheral)
+        port->PDR = pin_mask;  // PIO Disable Register
+
+        // Configure peripheral selection based on alternate function
+        // Note: ABCDSR is a 2D array [2][2], we use [0][0] and [1][0]
+        switch (af) {
+            case AlternateFunction::PERIPH_A:
+                // A: ABCDSR[0][0]=0, ABCDSR[1][0]=0
+                port->ABCDSR[0][0] &= ~pin_mask;
+                port->ABCDSR[1][0] &= ~pin_mask;
+                break;
+
+            case AlternateFunction::PERIPH_B:
+                // B: ABCDSR[0][0]=1, ABCDSR[1][0]=0
+                port->ABCDSR[0][0] |= pin_mask;
+                port->ABCDSR[1][0] &= ~pin_mask;
+                break;
+
+            case AlternateFunction::PERIPH_C:
+                // C: ABCDSR[0][0]=0, ABCDSR[1][0]=1
+                port->ABCDSR[0][0] &= ~pin_mask;
+                port->ABCDSR[1][0] |= pin_mask;
+                break;
+
+            case AlternateFunction::PERIPH_D:
+                // D: ABCDSR[0][0]=1, ABCDSR[1][0]=1
+                port->ABCDSR[0][0] |= pin_mask;
+                port->ABCDSR[1][0] |= pin_mask;
+                break;
+
+            default:
+                return Err(ErrorCode::InvalidParameter);
+        }
+
+        return Ok();
+    }
+
+    /**
+     * @brief Check if pin supports a specific peripheral signal at compile-time
+     *
+     * Uses signal routing tables generated in Phase 2 to validate compatibility.
+     *
+     * @tparam Signal Signal type (e.g., Usart0RxSignal, Spi0MosiSignal)
+     * @return true if pin supports signal, false otherwise
+     *
+     * Example:
+     * @code
+     * using PinD4 = GpioPin<PIOD_BASE, 4>;
+     * static_assert(PinD4::supports<Usart0RxSignal>());
+     * @endcode
+     *
+     * @note Part of modernize-peripheral-architecture Phase 3
+     */
+    template <typename Signal>
+    static constexpr bool supports() {
+        // Get PinId for this pin
+        constexpr PinId pin_id = get_pin_id();
+
+        // Check if this pin is in the signal's compatible_pins array
+        if constexpr (requires { Signal::compatible_pins; }) {
+            for (const auto& pin_def : Signal::compatible_pins) {
+                if (pin_def.pin == pin_id) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @brief Get alternate function for a specific signal
+     *
+     * Returns the alternate function needed to route this signal to this pin.
+     *
+     * @tparam Signal Signal type
+     * @return AlternateFunction if compatible, otherwise AF0
+     *
+     * @note Part of modernize-peripheral-architecture Phase 3
+     */
+    template <typename Signal>
+    static constexpr AlternateFunction get_af_for_signal() {
+        constexpr PinId pin_id = get_pin_id();
+
+        if constexpr (requires { Signal::compatible_pins; }) {
+            for (const auto& pin_def : Signal::compatible_pins) {
+                if (pin_def.pin == pin_id) {
+                    return pin_def.af;
+                }
+            }
+        }
+        return AlternateFunction::AF0;  // Invalid
+    }
+
+    /**
+     * @brief Configure pin for a specific peripheral signal
+     *
+     * Convenience method that sets the alternate function and configures
+     * the pin for the given signal.
+     *
+     * @tparam Signal Signal type
+     * @return Result<void, ErrorCode>
+     *
+     * Example:
+     * @code
+     * using PinD4 = GpioPin<PIOD_BASE, 4>;
+     * auto pin = PinD4{};
+     * auto result = pin.configure_for_signal<Usart0RxSignal>();
+     * @endcode
+     *
+     * @note Part of modernize-peripheral-architecture Phase 3
+     */
+    template <typename Signal>
+    Result<void, ErrorCode> configure_for_signal() {
+        // Validate at compile-time
+        static_assert(supports<Signal>(),
+                     "Pin does not support this signal. Check signal routing tables.");
+
+        // Get alternate function for this signal
+        constexpr auto af = get_af_for_signal<Signal>();
+
+        // Set alternate function
+        return setAlternateFunction(af);
+    }
+
+    /**
+     * @brief Get PinId enum value for this pin (Public for connection API)
+     *
+     * Converts PORT_BASE and PIN_NUM to PinId enum.
+     * Used by signal connection API in Phase 3.2.
+     *
+     * @return PinId corresponding to this pin
+     */
+    static constexpr PinId get_pin_id() {
+        // Calculate PinId: Port A = 0-31, Port B = 100-131, etc.
+        // Compare with hard-coded addresses since constants are defined after class
+        if constexpr (PORT_BASE == 0x400E0E00) {  // PIOA_BASE
+            return static_cast<PinId>(PIN_NUM);
+        } else if constexpr (PORT_BASE == 0x400E1000) {  // PIOB_BASE
+            return static_cast<PinId>(100 + PIN_NUM);
+        } else if constexpr (PORT_BASE == 0x400E1200) {  // PIOC_BASE
+            return static_cast<PinId>(200 + PIN_NUM);
+        } else if constexpr (PORT_BASE == 0x400E1400) {  // PIOD_BASE
+            return static_cast<PinId>(300 + PIN_NUM);
+        } else if constexpr (PORT_BASE == 0x400E1600) {  // PIOE_BASE
+            return static_cast<PinId>(400 + PIN_NUM);
+        }
+        return static_cast<PinId>(0);  // Invalid
     }
 };
 
