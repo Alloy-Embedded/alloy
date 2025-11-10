@@ -26,6 +26,7 @@
 
 #include <cassert>      // assert
 #include <cstdlib>      // std::abort
+#include <new>          // placement new
 #include <type_traits>  // std::enable_if, std::is_same
 #include <utility>      // std::move, std::forward
 

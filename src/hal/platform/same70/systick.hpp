@@ -102,31 +102,30 @@ class SystemTick {
 
         auto* systick = SysTick();
 
-        // Disable SysTick during configuration
+        // 1. Disable SysTick during configuration
         systick->CSR = 0;
 
-        // Set reload value for 1ms tick
+        // 2. Clear current value
+        systick->CVR = 0;
+
+        // 3. Set reload value for 1ms tick
         systick->RVR = rvr_bits::RELOAD::write(0, reload_value);
 
         // Store reload value for micros() calculation
         reload_value_ = reload_value;
 
-        // Clear current value
-        systick->CVR = 0;
-
-        // Configure and enable SysTick:
-        // - CLKSOURCE = 1 (processor clock / MCK)
-        // - TICKINT = 1 (enable interrupt)
-        // - ENABLE = 1 (enable counter)
-        uint32_t csr_val = 0;
-        csr_val = csr_bits::CLKSOURCE::set(csr_val);  // Use processor clock
-        csr_val = csr_bits::TICKINT::set(csr_val);    // Enable interrupt
-        csr_val = csr_bits::ENABLE::set(csr_val);     // Enable counter
-        systick->CSR = csr_val;
-
-        // Reset counters
+        // Reset counters BEFORE enabling interrupts
         millis_counter_ = 0;
         initialized_ = true;
+
+        // 4. Configure and enable SysTick
+        // CSR bits: ENABLE(0) | TICKINT(1) | CLKSOURCE(2)
+        // Following LUG pattern: TICKINT | CLKSOURCE | ENABLE
+        // Bit 0: ENABLE    = 0x1
+        // Bit 1: TICKINT   = 0x2
+        // Bit 2: CLKSOURCE = 0x4
+        // Total: 0x7 = 0b111
+        systick->CSR = 0x7;
 
         return core::Ok();
     }
@@ -188,6 +187,14 @@ class SystemTick {
     ///
     /// @note This is called from interrupt context (1000 Hz)
     static void irq_handler() {
+        using namespace alloy::hal::atmel::same70::systick;
+        auto* systick = SysTick();
+
+        // IMPORTANT: Read CTRL register to clear COUNTFLAG
+        // This is required by ARM Cortex-M specification
+        volatile uint32_t ctrl = systick->CSR;
+        (void)ctrl;  // Suppress unused warning
+
         // Increment millisecond counter
         // Will overflow after ~49 days (2^32 ms)
         ++millis_counter_;

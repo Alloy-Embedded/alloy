@@ -79,7 +79,7 @@ endif()
 
 # Auto-detect platform from board if not explicitly set
 if(NOT ALLOY_PLATFORM)
-    if(ALLOY_BOARD STREQUAL "same70_xpld")
+    if(ALLOY_BOARD STREQUAL "same70_xpld" OR ALLOY_BOARD STREQUAL "same70_xplained")
         set(ALLOY_PLATFORM "same70")
     elseif(ALLOY_BOARD STREQUAL "host")
         set(ALLOY_PLATFORM "linux")
@@ -98,6 +98,42 @@ if(NOT ALLOY_PLATFORM)
         set(ALLOY_PLATFORM "linux")
     endif()
     message(STATUS "Auto-detected platform: ${ALLOY_PLATFORM} (from board: ${ALLOY_BOARD})")
+endif()
+
+# ============================================================================
+# Board Abstraction Layer Configuration
+# ============================================================================
+
+# Map board to header file and startup code
+if(ALLOY_BOARD STREQUAL "same70_xpld" OR ALLOY_BOARD STREQUAL "same70_xplained")
+    set(BOARD_HEADER_PATH "boards/same70_xplained/board.hpp")
+    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/atsame70/startup.cpp")
+    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/same70_xplained/ATSAME70Q21.ld")
+elseif(ALLOY_BOARD STREQUAL "arduino_zero")
+    set(BOARD_HEADER_PATH "boards/arduino_zero/board.hpp")
+    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/atsamd21/startup.cpp")
+    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/arduino_zero/ATSAMD21G18.ld")
+elseif(ALLOY_BOARD STREQUAL "waveshare_rp2040_zero" OR ALLOY_BOARD STREQUAL "rp_pico")
+    set(BOARD_HEADER_PATH "boards/waveshare_rp2040_zero/board.hpp")
+    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/rp2040/startup.cpp")
+    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/waveshare_rp2040_zero/RP2040.ld")
+elseif(ALLOY_BOARD STREQUAL "host")
+    set(BOARD_HEADER_PATH "boards/linux_host/board.hpp")
+    # No startup code needed for host platform
+else()
+    message(WARNING "Board '${ALLOY_BOARD}' not configured for board abstraction layer")
+endif()
+
+# Define BOARD_HEADER macro for use in examples
+if(DEFINED BOARD_HEADER_PATH)
+    # Define BOARD_HEADER as a macro that expands to the header path
+    # Use angle brackets for include: #include BOARD_HEADER expands to #include <boards/...>
+    add_compile_definitions(BOARD_HEADER=<${BOARD_HEADER_PATH}>)
+    message(STATUS "  Board Header: ${BOARD_HEADER_PATH}")
+
+    if(DEFINED STARTUP_SOURCE)
+        message(STATUS "  Startup Code: ${STARTUP_SOURCE}")
+    endif()
 endif()
 
 # Include platform selection module (new HAL abstraction system)
@@ -209,6 +245,21 @@ endif()
 # Examples
 # add_subdirectory(examples/blinky)  # Not exists yet
 # add_subdirectory(examples/portable_blinky)  # Portable example for all MCUs
+
+# ==============================================================================
+# Generic Examples (Work on Any Board)
+# ==============================================================================
+
+# These examples use the board abstraction layer and work on any supported board
+if(DEFINED BOARD_HEADER_PATH)
+    add_subdirectory(examples/blink_led)      # Generic LED blink
+    # add_subdirectory(examples/systick_test)  # Generic SysTick test (TODO)
+    # add_subdirectory(examples/button_led)    # Generic button → LED (TODO)
+endif()
+
+# ==============================================================================
+# Board-Specific Examples (Legacy - To be migrated)
+# ==============================================================================
 
 # Board-specific blink examples
 if(ALLOY_BOARD STREQUAL "bluepill")
