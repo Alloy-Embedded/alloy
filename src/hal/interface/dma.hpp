@@ -10,26 +10,29 @@
 #include <span>
 
 #include "core/error.hpp"
+#include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
 
 namespace alloy::hal {
 
+using namespace alloy::core;
+
 /// DMA transfer direction
-enum class DmaDirection : core::u8 {
+enum class DmaDirection : u8 {
     MemoryToMemory,      ///< Memory to memory (fast array copy)
     MemoryToPeripheral,  ///< Memory to peripheral (e.g., UART TX, DAC)
     PeripheralToMemory   ///< Peripheral to memory (e.g., ADC, UART RX)
 };
 
 /// DMA transfer mode
-enum class DmaMode : core::u8 {
+enum class DmaMode : u8 {
     Normal,   ///< Single transfer, stops when complete
     Circular  ///< Circular buffer, wraps automatically
 };
 
 /// DMA channel priority
-enum class DmaPriority : core::u8 {
+enum class DmaPriority : u8 {
     Low = 0,      ///< Low priority
     Medium = 1,   ///< Medium priority
     High = 2,     ///< High priority
@@ -37,7 +40,7 @@ enum class DmaPriority : core::u8 {
 };
 
 /// DMA data width
-enum class DmaDataWidth : core::u8 {
+enum class DmaDataWidth : u8 {
     Bits8 = 1,   ///< 8-bit transfers (byte)
     Bits16 = 2,  ///< 16-bit transfers (half-word)
     Bits32 = 4   ///< 32-bit transfers (word)
@@ -78,8 +81,8 @@ struct DmaConfig {
 template <typename T>
 concept DmaChannel =
     requires(T device, const T const_device, DmaConfig config, const void* source,
-             void* destination, core::usize size, std::function<void()> complete_callback,
-             std::function<void(core::ErrorCode)> error_callback) {
+             void* destination, usize size, std::function<void()> complete_callback,
+             std::function<void(ErrorCode)> error_callback) {
         /// Start DMA transfer
         ///
         /// Initiates transfer from source to destination.
@@ -92,14 +95,14 @@ concept DmaChannel =
         /// @param destination Destination address (or nullptr for peripheral destination)
         /// @param size Number of data elements to transfer
         /// @return Ok on success, error code on failure
-        { device.start_transfer(source, destination, size) } -> std::same_as<core::Result<void>>;
+        { device.start_transfer(source, destination, size) } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Stop DMA transfer
         ///
         /// Aborts ongoing transfer immediately.
         ///
         /// @return Ok on success, error code on failure
-        { device.stop_transfer() } -> std::same_as<core::Result<void>>;
+        { device.stop_transfer() } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Check if transfer is complete
         ///
@@ -116,7 +119,7 @@ concept DmaChannel =
         /// Returns number of data elements still to be transferred.
         ///
         /// @return Remaining count
-        { const_device.get_remaining_count() } -> std::same_as<core::u32>;
+        { const_device.get_remaining_count() } -> std::same_as<u32>;
 
         /// Set transfer complete callback
         ///
@@ -125,7 +128,7 @@ concept DmaChannel =
         ///
         /// @param callback Function to call on completion
         /// @return Ok on success, error code on failure
-        { device.set_complete_callback(complete_callback) } -> std::same_as<core::Result<void>>;
+        { device.set_complete_callback(complete_callback) } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Set transfer error callback
         ///
@@ -134,13 +137,13 @@ concept DmaChannel =
         ///
         /// @param callback Function to call on error
         /// @return Ok on success, error code on failure
-        { device.set_error_callback(error_callback) } -> std::same_as<core::Result<void>>;
+        { device.set_error_callback(error_callback) } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Configure DMA channel
         ///
         /// @param config DMA configuration (direction, mode, priority, etc)
         /// @return Ok on success, error code on failure
-        { device.configure(config) } -> std::same_as<core::Result<void>>;
+        { device.configure(config) } -> std::same_as<Result<void, ErrorCode>>;
     };
 
 /// Helper function to check if address is aligned for DMA
@@ -150,9 +153,9 @@ concept DmaChannel =
 /// @param address Memory address to check
 /// @param data_width DMA data width
 /// @return true if aligned, false otherwise
-inline constexpr bool is_dma_aligned(const void* address, DmaDataWidth data_width) {
-    auto addr = reinterpret_cast<core::usize>(address);
-    auto alignment = static_cast<core::u8>(data_width);
+inline bool is_dma_aligned(const void* address, DmaDataWidth data_width) {
+    auto addr = reinterpret_cast<usize>(address);
+    auto alignment = static_cast<u8>(data_width);
     return (addr % alignment) == 0;
 }
 
@@ -161,9 +164,9 @@ inline constexpr bool is_dma_aligned(const void* address, DmaDataWidth data_widt
 /// @param element_count Number of elements
 /// @param data_width Width of each element
 /// @return Total size in bytes
-inline constexpr core::usize calculate_dma_size(core::usize element_count,
+inline constexpr usize calculate_dma_size(usize element_count,
                                                 DmaDataWidth data_width) {
-    return element_count * static_cast<core::u8>(data_width);
+    return element_count * static_cast<u8>(data_width);
 }
 
 /// Helper function to get recommended DMA data width for a type
