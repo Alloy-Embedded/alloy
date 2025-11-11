@@ -245,46 +245,12 @@ struct PwmConfig {
 // ADC Types
 // ============================================================================
 
-/**
- * @brief ADC resolution
- */
-enum class AdcResolution : uint8_t {
-    Bits8 = 8,    ///< 8-bit resolution (256 levels)
-    Bits10 = 10,  ///< 10-bit resolution (1024 levels)
-    Bits12 = 12,  ///< 12-bit resolution (4096 levels)
-    Bits16 = 16,  ///< 16-bit resolution (65536 levels)
-};
-
-/**
- * @brief ADC reference voltage source
- */
-enum class AdcReference : uint8_t {
-    Internal = 0,  ///< Internal reference voltage
-    External = 1,  ///< External reference voltage (VREF pin)
-    Vcc = 2,       ///< VCC/VDD as reference
-};
-
-/**
- * @brief ADC sample time (affects conversion accuracy vs speed)
- */
-enum class AdcSampleTime : uint8_t {
-    Cycles1_5 = 0,
-    Cycles7_5 = 1,
-    Cycles13_5 = 2,
-    Cycles28_5 = 3,
-    Cycles41_5 = 4,
-    Cycles55_5 = 5,
-    Cycles71_5 = 6,
-    Cycles239_5 = 7,
-};
-
-/**
- * @brief ADC configuration structure
- */
-struct AdcConfig {
-    AdcResolution resolution = AdcResolution::Bits12;
-    AdcReference reference = AdcReference::Internal;
-    AdcSampleTime sample_time = AdcSampleTime::Cycles28_5;
-};
+// NOTE: ADC types moved to hal/interface/adc.hpp to avoid redefinition
+// Use the types from hal/interface/adc.hpp instead:
+// - AdcResolution (Bits6, Bits8, Bits10, Bits12, Bits14, Bits16)
+// - AdcReference (Internal, External, Vdd)
+// - AdcSampleTime (Cycles1_5, Cycles7_5, etc.)
+// - AdcChannel (Channel0-Channel18)
+// - AdcConfig
 
 }  // namespace alloy::hal

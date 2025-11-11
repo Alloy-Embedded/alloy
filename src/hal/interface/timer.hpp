@@ -9,13 +9,16 @@
 #include <functional>
 
 #include "core/error.hpp"
+#include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
 
 namespace alloy::hal {
 
+using namespace alloy::core;
+
 /// Timer operating mode
-enum class TimerMode : core::u8 {
+enum class TimerMode : u8 {
     OneShot,        ///< Fire once and stop
     Periodic,       ///< Fire repeatedly at fixed interval
     InputCapture,   ///< Capture timer value on external event
@@ -24,7 +27,7 @@ enum class TimerMode : core::u8 {
 };
 
 /// Input capture edge selection
-enum class CaptureEdge : core::u8 {
+enum class CaptureEdge : u8 {
     Rising,   ///< Capture on rising edge
     Falling,  ///< Capture on falling edge
     Both      ///< Capture on both edges
@@ -35,15 +38,15 @@ enum class CaptureEdge : core::u8 {
 /// Contains all parameters needed to configure a timer peripheral.
 struct TimerConfig {
     TimerMode mode;            ///< Timer operating mode
-    core::u32 period_us;       ///< Period in microseconds (for periodic/one-shot)
-    core::u32 prescaler;       ///< Clock prescaler value
+    u32 period_us;       ///< Period in microseconds (for periodic/one-shot)
+    u32 prescaler;       ///< Clock prescaler value
     CaptureEdge capture_edge;  ///< Edge selection for input capture mode
-    core::u32 compare_value;   ///< Compare value for output compare mode
+    u32 compare_value;   ///< Compare value for output compare mode
 
     /// Constructor with default configuration (1ms periodic)
-    constexpr TimerConfig(TimerMode m = TimerMode::Periodic, core::u32 period = 1000,
-                          core::u32 presc = 1, CaptureEdge edge = CaptureEdge::Rising,
-                          core::u32 compare = 0)
+    constexpr TimerConfig(TimerMode m = TimerMode::Periodic, u32 period = 1000,
+                          u32 presc = 1, CaptureEdge edge = CaptureEdge::Rising,
+                          u32 compare = 0)
         : mode(m),
           period_us(period),
           prescaler(presc),
@@ -62,28 +65,28 @@ struct TimerConfig {
 /// - ErrorCode::Busy: Timer already running
 template <typename T>
 concept TimerDevice =
-    requires(T device, const T const_device, TimerConfig config, core::u32 counter_value,
-             core::u32 period_us, std::function<void()> callback) {
+    requires(T device, const T const_device, TimerConfig config, u32 counter_value,
+             u32 period_us, std::function<void()> callback) {
         /// Start timer
         ///
         /// Begins timer operation according to configured mode.
         ///
         /// @return Ok on success, error code on failure
-        { device.start() } -> std::same_as<core::Result<void>>;
+        { device.start() } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Stop timer
         ///
         /// Halts timer operation immediately.
         ///
         /// @return Ok on success, error code on failure
-        { device.stop() } -> std::same_as<core::Result<void>>;
+        { device.stop() } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Get current counter value
         ///
         /// Reads the current timer counter. Useful for measuring elapsed time.
         ///
         /// @return Current counter value in timer ticks
-        { const_device.get_counter() } -> std::same_as<core::u32>;
+        { const_device.get_counter() } -> std::same_as<u32>;
 
         /// Set counter value
         ///
@@ -91,7 +94,7 @@ concept TimerDevice =
         ///
         /// @param value New counter value
         /// @return Ok on success, error code on failure
-        { device.set_counter(counter_value) } -> std::same_as<core::Result<void>>;
+        { device.set_counter(counter_value) } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Set timer period
         ///
@@ -99,7 +102,7 @@ concept TimerDevice =
         ///
         /// @param period_us Period in microseconds
         /// @return Ok on success, error code on failure
-        { device.set_period(period_us) } -> std::same_as<core::Result<void>>;
+        { device.set_period(period_us) } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Set timer callback
         ///
@@ -108,7 +111,7 @@ concept TimerDevice =
         ///
         /// @param callback Function to call on timer event
         /// @return Ok on success, error code on failure
-        { device.set_callback(callback) } -> std::same_as<core::Result<void>>;
+        { device.set_callback(callback) } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Get captured value (input capture mode)
         ///
@@ -116,7 +119,7 @@ concept TimerDevice =
         /// Useful for measuring frequency or pulse width.
         ///
         /// @return Captured timer value, or error code
-        { const_device.get_captured_value() } -> std::same_as<core::Result<core::u32>>;
+        { const_device.get_captured_value() } -> std::same_as<Result<u32, ErrorCode>>;
 
         /// Configure input capture mode
         ///
@@ -124,7 +127,7 @@ concept TimerDevice =
         ///
         /// @param edge Edge to trigger capture (rising, falling, or both)
         /// @return Ok on success, error code on failure
-        { device.configure_capture(config.capture_edge) } -> std::same_as<core::Result<void>>;
+        { device.configure_capture(config.capture_edge) } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Configure output compare mode
         ///
@@ -133,13 +136,13 @@ concept TimerDevice =
         ///
         /// @param compare_value Value to compare against counter
         /// @return Ok on success, error code on failure
-        { device.configure_compare(counter_value) } -> std::same_as<core::Result<void>>;
+        { device.configure_compare(counter_value) } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Configure timer parameters
         ///
         /// @param config Timer configuration (mode, period, prescaler, etc)
         /// @return Ok on success, error code on failure
-        { device.configure(config) } -> std::same_as<core::Result<void>>;
+        { device.configure(config) } -> std::same_as<Result<void, ErrorCode>>;
     };
 
 /// Helper function to calculate prescaler for desired timer frequency
@@ -147,7 +150,7 @@ concept TimerDevice =
 /// @param clock_hz Timer input clock frequency in Hz
 /// @param desired_freq_hz Desired timer frequency in Hz
 /// @return Prescaler value
-inline constexpr core::u32 calculate_prescaler(core::u32 clock_hz, core::u32 desired_freq_hz) {
+inline constexpr u32 calculate_prescaler(u32 clock_hz, u32 desired_freq_hz) {
     return (clock_hz / desired_freq_hz) - 1;
 }
 
@@ -156,7 +159,7 @@ inline constexpr core::u32 calculate_prescaler(core::u32 clock_hz, core::u32 des
 /// @param clock_hz Timer clock frequency in Hz
 /// @param period_us Desired period in microseconds
 /// @return Period in timer ticks
-inline constexpr core::u32 period_us_to_ticks(core::u32 clock_hz, core::u32 period_us) {
+inline constexpr u32 period_us_to_ticks(u32 clock_hz, u32 period_us) {
     return (clock_hz / 1000000u) * period_us;
 }
 
@@ -165,7 +168,7 @@ inline constexpr core::u32 period_us_to_ticks(core::u32 clock_hz, core::u32 peri
 /// @param ticks Timer ticks
 /// @param clock_hz Timer clock frequency in Hz
 /// @return Time in microseconds
-inline constexpr core::u32 ticks_to_us(core::u32 ticks, core::u32 clock_hz) {
+inline constexpr u32 ticks_to_us(u32 ticks, u32 clock_hz) {
     return (ticks * 1000000u) / clock_hz;
 }
 
@@ -176,7 +179,7 @@ inline constexpr core::u32 ticks_to_us(core::u32 ticks, core::u32 clock_hz) {
 /// @param timer_clock_hz Timer clock frequency in Hz
 /// @param captured_ticks Difference between two captures
 /// @return Measured frequency in Hz
-inline constexpr core::u32 calculate_frequency(core::u32 timer_clock_hz, core::u32 captured_ticks) {
+inline constexpr u32 calculate_frequency(u32 timer_clock_hz, u32 captured_ticks) {
     if (captured_ticks == 0)
         return 0;
     return timer_clock_hz / captured_ticks;
