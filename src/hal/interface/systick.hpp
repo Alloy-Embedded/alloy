@@ -9,20 +9,23 @@
 #include <concepts>
 
 #include "core/error.hpp"
+#include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
 
 namespace alloy::hal {
+
+using namespace alloy::core;
 
 /// SysTick configuration parameters
 ///
 /// Reserved for future use. Currently SysTick auto-configures
 /// during Board::initialize() with platform-specific defaults.
 struct SysTickConfig {
-    core::u32 tick_frequency_hz;  ///< Desired tick frequency (typically 1MHz for 1us resolution)
+    u32 tick_frequency_hz;  ///< Desired tick frequency (typically 1MHz for 1us resolution)
 
     /// Constructor with default 1MHz (microsecond precision)
-    constexpr SysTickConfig(core::u32 freq_hz = 1000000) : tick_frequency_hz(freq_hz) {}
+    constexpr SysTickConfig(u32 freq_hz = 1000000) : tick_frequency_hz(freq_hz) {}
 };
 
 /// SystemTick device concept
@@ -61,7 +64,7 @@ concept SystemTick = requires(T device, const T const_device) {
     /// Called automatically during Board::initialize().
     ///
     /// @return Ok on success, error code on failure
-    { T::init() } -> std::convertible_to<core::Result<void, core::ErrorCode>>;
+    { T::init() } -> std::convertible_to<Result<void, ErrorCode>>;
 
     /// Get current time in microseconds
     ///
@@ -71,7 +74,7 @@ concept SystemTick = requires(T device, const T const_device) {
     /// Thread-safe: Yes (atomic read on ARM, critical section on others)
     ///
     /// @return Current time in microseconds since init
-    { T::micros() } -> std::convertible_to<core::u32>;
+    { T::micros() } -> std::convertible_to<u32>;
 
     /// Reset counter to zero
     ///
@@ -79,7 +82,7 @@ concept SystemTick = requires(T device, const T const_device) {
     /// when overflow needs to be managed explicitly.
     ///
     /// @return Ok on success, error code on failure
-    { T::reset() } -> std::convertible_to<core::Result<void, core::ErrorCode>>;
+    { T::reset() } -> std::convertible_to<Result<void, ErrorCode>>;
 
     /// Check if SysTick is initialized
     ///
@@ -106,13 +109,13 @@ namespace alloy::systick {
 
 // Forward declaration - implemented by platform-specific code
 namespace detail {
-core::u32 get_micros();
+alloy::core::u32 get_micros();
 }
 
 /// Get current time in microseconds
 ///
 /// @return Microseconds since SysTick initialization
-inline core::u32 micros() {
+inline alloy::core::u32 micros() {
     return detail::get_micros();
 }
 
@@ -129,7 +132,7 @@ inline core::u32 micros() {
 /// // ... time passes, possibly with overflow ...
 /// uint32_t elapsed = alloy::systick::micros_since(start);
 /// @endcode
-inline core::u32 micros_since(core::u32 start_time) {
+inline alloy::core::u32 micros_since(alloy::core::u32 start_time) {
     // Unsigned arithmetic handles wraparound correctly
     // Example: start=0xFFFFFF00, now=0x00000100
     // elapsed = 0x00000100 - 0xFFFFFF00 = 0x00000200 (512us) ✓
@@ -152,7 +155,7 @@ inline core::u32 micros_since(core::u32 start_time) {
 ///     if (data_ready()) break;
 /// }
 /// @endcode
-inline bool is_timeout(core::u32 start_time, core::u32 timeout_us) {
+inline bool is_timeout(alloy::core::u32 start_time, alloy::core::u32 timeout_us) {
     return micros_since(start_time) >= timeout_us;
 }
 
@@ -167,8 +170,8 @@ inline bool is_timeout(core::u32 start_time, core::u32 timeout_us) {
 /// @code
 /// alloy::systick::delay_us(100);  // 100us delay
 /// @endcode
-inline void delay_us(core::u32 delay_us) {
-    core::u32 start = micros();
+inline void delay_us(alloy::core::u32 delay_us) {
+    alloy::core::u32 start = micros();
     while (!is_timeout(start, delay_us)) {
         // Busy wait
     }

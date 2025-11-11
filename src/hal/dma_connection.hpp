@@ -104,6 +104,7 @@ enum class DmaRequest : u8 {
     // Timer requests
     TIMER0_UPDATE = 40,
     TIMER1_UPDATE = 41,
+    TIMER2_UPDATE = 42,
 };
 
 // ============================================================================
@@ -209,6 +210,31 @@ struct DmaConnection {
         if (Peripheral == PeripheralId::I2C2) {
             return Request == DmaRequest::I2C2_TX ||
                    Request == DmaRequest::I2C2_RX;
+        }
+
+        // ADC0 requests
+        if (Peripheral == PeripheralId::ADC0) {
+            return Request == DmaRequest::ADC0;
+        }
+
+        // ADC1 requests
+        if (Peripheral == PeripheralId::ADC1) {
+            return Request == DmaRequest::ADC1;
+        }
+
+        // TIMER0 requests
+        if (Peripheral == PeripheralId::TIMER0) {
+            return Request == DmaRequest::TIMER0_UPDATE;
+        }
+
+        // TIMER1 requests
+        if (Peripheral == PeripheralId::TIMER1) {
+            return Request == DmaRequest::TIMER1_UPDATE;
+        }
+
+        // TIMER2 requests
+        if (Peripheral == PeripheralId::TIMER2) {
+            return Request == DmaRequest::TIMER2_UPDATE;
         }
 
         return false;

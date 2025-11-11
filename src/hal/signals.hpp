@@ -68,6 +68,7 @@ enum class PeripheralId : u16 {
     TC0 = 40,
     TC1 = 41,
     TC2 = 42,
+    TIMER0 = 44,
     TIMER1 = 45,
     TIMER2 = 46,
 

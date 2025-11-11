@@ -275,38 +275,334 @@
 
 ---
 
-## Phase 8: Validation & Performance (Week 15)
+## Phase 8: Hardware Policy Implementation (Weeks 15-17)
 
-### 8.1 Comprehensive Testing
-- [ ] Unit tests for all concepts
-- [ ] Integration tests for signal routing
-- [ ] DMA allocation conflict tests
-- [ ] Cross-peripheral interaction tests
-- [ ] Platform-specific tests (SAME70, STM32, ESP32)
+### 8.1 UART Hardware Policy
+- [ ] Extend `same70_uart.json` with policy_methods section
+- [ ] Create `uart_hardware_policy.hpp.j2` Jinja2 template
+- [ ] Create `hardware_policy_generator.py` script
+- [ ] Generate SAME70 UART hardware policy
+- [ ] Verify generated code compiles
+- [ ] Add mock hooks for testing (ALLOY_UART_MOCK_HW)
 
-**Validation**: All tests pass on all platforms
-
----
-
-### 8.2 Performance Benchmarking
-- [ ] Measure binary size vs old implementation
-- [ ] Measure compile time for each API level
-- [ ] Profile runtime performance (should be identical)
-- [ ] Compare error message quality
-- [ ] Document results
-
-**Validation**: Zero runtime overhead confirmed, compile time acceptable
+**Validation**: Generated UART policy compiles and contains all required methods
+**Location**: `src/hal/vendors/atmel/same70/uart_hardware_policy.hpp`
 
 ---
 
-### 8.3 Final Review
+### 8.2 Generic API Integration with Policy
+- [ ] Update `uart_simple.hpp` to accept HardwarePolicy template parameter
+- [ ] Update `uart_fluent.hpp` to use HardwarePolicy
+- [ ] Update `uart_expert.hpp` to use HardwarePolicy
+- [ ] Update `SimpleUartConfig` to use policy for initialize()
+- [ ] Create platform-specific type aliases in `platform/same70/peripherals.hpp`
+- [ ] Verify all three API levels work with policy
+
+**Validation**: Generic APIs successfully use hardware policy, all levels tested
+**Location**: `src/hal/api/uart_*.hpp`, `src/platform/same70/peripherals.hpp`
+
+---
+
+### 8.3 UART Policy Unit Tests
+- [ ] Create `test_uart_hardware_policy.cpp` with mock registers
+- [ ] Test reset() method
+- [ ] Test configure_8n1() method
+- [ ] Test set_baudrate() method
+- [ ] Test enable_tx/rx() methods
+- [ ] Test is_tx_ready/is_rx_ready() methods
+- [ ] Test write_byte/read_byte() methods
+- [ ] Test wait_tx_ready/wait_rx_ready() timeout behavior
+- [ ] Achieve 100% line coverage for UART policy
+
+**Validation**: All unit tests pass, 100% coverage
+**Location**: `tests/unit/test_uart_hardware_policy.cpp`
+
+---
+
+### 8.4 UART Integration Tests
+- [ ] Create `test_uart_simple_api.cpp` with mock policy
+- [ ] Test quick_setup() compile-time validation
+- [ ] Test initialize() calls policy methods correctly
+- [ ] Test write() data transfer
+- [ ] Test write() timeout handling
+- [ ] Test read() data reception
+- [ ] Repeat for Fluent and Expert APIs
+- [ ] Verify pin validation integration
+
+**Validation**: Integration tests pass for all three API levels
+**Location**: `tests/integration/test_uart_simple_api.cpp` (and fluent/expert)
+
+---
+
+### 8.5 Extend to SPI and I2C
+- [ ] Create SPI policy template (`spi_hardware_policy.hpp.j2`)
+- [ ] Extend `same70_spi.json` with policy_methods
+- [ ] Generate SPI hardware policy
+- [ ] Update `spi_simple.hpp` to use policy
+- [ ] Create unit tests for SPI policy
+- [ ] Create integration tests for SPI API
+- [ ] Repeat process for I2C
+- [ ] Verify all tests pass
+
+**Validation**: SPI and I2C policies generated, tested, and integrated
+**Location**: `src/hal/vendors/atmel/same70/{spi,i2c}_hardware_policy.hpp`
+
+---
+
+### 8.6 Extend to Remaining Peripherals
+- [ ] Create GPIO hardware policy
+- [ ] Create ADC hardware policy
+- [ ] Create Timer hardware policy
+- [ ] Create PWM hardware policy
+- [ ] Create DMA hardware policy
+- [ ] Generate all policies for SAME70
+- [ ] Create unit tests for each policy
+- [ ] Create integration tests for each API
+
+**Validation**: All peripherals have hardware policies with tests
+**Coverage**: GPIO, ADC, Timer, PWM, DMA
+
+---
+
+## Phase 9: File Organization & Cleanup (Week 18)
+
+### 9.1 Reorganize HAL Directory
+- [ ] Create `src/hal/api/` directory
+- [ ] Move `uart_simple.hpp` → `api/uart_simple.hpp`
+- [ ] Move `uart_fluent.hpp` → `api/uart_fluent.hpp`
+- [ ] Move `uart_expert.hpp` → `api/uart_expert.hpp`
+- [ ] Move `uart_dma.hpp` → `api/uart_dma.hpp`
+- [ ] Move `spi_*.hpp` → `api/spi_*.hpp`
+- [ ] Move `i2c_*.hpp` → `api/i2c_*.hpp`
+- [ ] Update all `#include` paths
+- [ ] Update CMakeLists.txt
+- [ ] Verify all examples compile
+
+**Validation**: All files in correct locations, examples compile
+**Target Structure**: See hardware-policy spec for full directory tree
+
+---
+
+### 9.2 Clean Up Legacy Files
+- [ ] Identify obsolete platform-specific implementations
+- [ ] Archive old `src/hal/platform/{family}/{peripheral}.hpp` files
+- [ ] Remove duplicate UART/SPI/I2C implementations
+- [ ] Remove TODO/FIXME comments from migrated code
+- [ ] Update documentation to reference new paths
+- [ ] Verify no broken references
+
+**Validation**: No obsolete files remain, documentation updated
+**Action**: Move legacy files to `archive/legacy_hal/` for reference
+
+---
+
+### 9.3 Remove Legacy Code Generators
+- [ ] Archive `platform_generator.py`
+- [ ] Archive `peripheral_generator.py`
+- [ ] Archive `old_uart_generator.py`
+- [ ] Remove obsolete templates from `templates/platform/`
+- [ ] Remove obsolete templates from `templates/peripheral/`
+- [ ] Update build scripts to use only new generators
+- [ ] Document generator changes in CHANGELOG
+
+**Validation**: Only hardware_policy_generator used, old generators archived
+**Location**: Archive to `tools/codegen/archive/`
+
+---
+
+### 9.4 Update Build System
+- [ ] Update CMakeLists.txt to generate policies
+- [ ] Add policy generation to pre-build step
+- [ ] Add policy header dependencies to targets
+- [ ] Verify incremental builds work correctly
+- [ ] Update CI/CD pipeline with new structure
+- [ ] Test clean build from scratch
+
+**Validation**: Build system generates policies automatically
+**Performance**: Incremental builds < 5s for policy changes
+
+---
+
+## Phase 10: Multi-Platform Support (Weeks 19-21)
+
+### 10.1 STM32F4 UART Policy
+- [ ] Create `stm32f4_uart.json` metadata file
+- [ ] Define STM32F4-specific register operations
+- [ ] Generate STM32F4 UART hardware policy
+- [ ] Create STM32F4 signal tables
+- [ ] Verify compilation on STM32F4 target
+- [ ] Run unit tests with STM32F4 policy
+
+**Validation**: STM32F4 UART policy generated and tested
+**Location**: `src/hal/vendors/st/stm32f4/uart_hardware_policy.hpp`
+
+---
+
+### 10.2 STM32F4 Full Peripheral Set
+- [ ] Create policies for SPI (STM32F4)
+- [ ] Create policies for I2C (STM32F4)
+- [ ] Create policies for GPIO (STM32F4)
+- [ ] Create policies for ADC (STM32F4)
+- [ ] Create policies for Timer (STM32F4)
+- [ ] Run integration tests on STM32F4
+- [ ] Create STM32F4 example project
+
+**Validation**: All peripherals work on STM32F4
+**Example**: `examples/stm32f4_multi_peripheral/`
+
+---
+
+### 10.3 STM32F1 Support
+- [ ] Create STM32F1 metadata files for all peripherals
+- [ ] Generate STM32F1 hardware policies
+- [ ] Create STM32F1 signal tables
+- [ ] Run unit and integration tests
+- [ ] Create Blue Pill example
+
+**Validation**: STM32F1 (Blue Pill) fully supported
+**Example**: `examples/bluepill_uart_spi/`
+
+---
+
+### 10.4 RP2040 Support
+- [ ] Create RP2040 metadata files
+- [ ] Generate RP2040 hardware policies
+- [ ] Handle RP2040-specific features (PIO)
+- [ ] Run tests on Raspberry Pi Pico
+- [ ] Create Pico example
+
+**Validation**: RP2040 fully supported
+**Example**: `examples/rp_pico_peripherals/`
+
+---
+
+## Phase 11: Hardware Testing (Week 22)
+
+### 11.1 SAME70 Hardware Tests
+- [ ] Set up SAME70 hardware test rig
+- [ ] Create UART loopback test
+- [ ] Create SPI loopback test
+- [ ] Create I2C EEPROM test
+- [ ] Create ADC voltage reading test
+- [ ] Verify timing accuracy (baud rate, SPI clock)
+- [ ] Run tests on CI hardware farm (if available)
+
+**Validation**: All hardware tests pass on SAME70
+**Location**: `tests/hardware/same70/`
+
+---
+
+### 11.2 STM32F4 Hardware Tests
+- [ ] Set up STM32F4 Discovery test rig
+- [ ] Port UART loopback test
+- [ ] Port SPI loopback test
+- [ ] Port I2C test
+- [ ] Verify all peripherals function correctly
+- [ ] Compare timing with SAME70
+
+**Validation**: All hardware tests pass on STM32F4
+**Location**: `tests/hardware/stm32f4/`
+
+---
+
+### 11.3 Cross-Platform Validation
+- [ ] Run same test suite on SAME70, STM32F4, STM32F1
+- [ ] Verify binary sizes are equivalent to old implementation
+- [ ] Measure compile times on all platforms
+- [ ] Document any platform-specific quirks
+- [ ] Create platform comparison table
+
+**Validation**: Consistent behavior across platforms
+**Deliverable**: Platform comparison report
+
+---
+
+## Phase 12: Documentation & Migration (Week 23-24)
+
+### 12.1 API Documentation
+- [ ] Document hardware policy concept
+- [ ] Document policy-based design pattern
+- [ ] Create policy implementation guide
+- [ ] Document code generation process
+- [ ] Add Doxygen comments to all policies
+- [ ] Generate API reference documentation
+
+**Validation**: Complete API documentation available
+**Location**: `docs/api/hardware_policy.md`
+
+---
+
+### 12.2 Migration Guide
+- [ ] Write "Old vs New" comparison
+- [ ] Create step-by-step migration tutorial
+- [ ] Document breaking changes
+- [ ] Provide migration examples for each peripheral
+- [ ] Create FAQ section
+- [ ] Document testing strategy for migrated code
+
+**Validation**: Migration guide complete and reviewed
+**Location**: `docs/migration/hardware_policy_migration.md`
+
+---
+
+### 12.3 Update Examples
+- [ ] Update all UART examples to use new API
+- [ ] Update all SPI examples
+- [ ] Update all I2C examples
+- [ ] Create multi-peripheral examples
+- [ ] Add comments explaining policy pattern
+- [ ] Verify all examples compile and run
+
+**Validation**: All examples updated and tested
+**Coverage**: Every example in `examples/` directory
+
+---
+
+### 12.4 Final Review
 - [ ] Code review with team
-- [ ] Review error message quality
-- [ ] Validate documentation completeness
+- [ ] Review error message quality across platforms
+- [ ] Validate test coverage (unit + integration + hardware)
+- [ ] Verify documentation completeness
 - [ ] Check backward compatibility
+- [ ] Performance review (binary size, compile time)
 - [ ] Get approval for merge
 
-**Validation**: All reviewers approve
+**Validation**: All reviewers approve, ready for production
+
+---
+
+## Phase 13: Performance Validation (Week 25)
+
+### 13.1 Binary Size Analysis
+- [ ] Measure binary size for each peripheral (old vs new)
+- [ ] Ensure zero increase in release builds
+- [ ] Profile memory usage (stack, heap, globals)
+- [ ] Document any differences
+- [ ] Optimize if necessary
+
+**Target**: ≤ 0% increase in binary size
+
+---
+
+### 13.2 Compile Time Benchmarking
+- [ ] Measure full build time (old vs new)
+- [ ] Measure incremental build time
+- [ ] Profile template instantiation time
+- [ ] Document compile time by peripheral
+- [ ] Optimize slow templates if > 15% increase
+
+**Target**: < 15% increase in compile time
+
+---
+
+### 13.3 Runtime Performance
+- [ ] Benchmark UART throughput (old vs new)
+- [ ] Benchmark SPI transfer speed
+- [ ] Benchmark I2C transaction time
+- [ ] Verify zero runtime overhead
+- [ ] Profile interrupt latency
+
+**Target**: Identical performance to old implementation
 
 ---
 
