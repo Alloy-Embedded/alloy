@@ -90,10 +90,12 @@ enum class DmaRequest : u8 {
     SPI1_RX = 13,
 
     // I2C requests
-    I2C1_TX = 20,
-    I2C1_RX = 21,
-    I2C2_TX = 22,
-    I2C2_RX = 23,
+    I2C0_TX = 20,
+    I2C0_RX = 21,
+    I2C1_TX = 22,
+    I2C1_RX = 23,
+    I2C2_TX = 24,
+    I2C2_RX = 25,
 
     // ADC requests
     ADC0 = 30,
@@ -189,6 +191,12 @@ struct DmaConnection {
         if (Peripheral == PeripheralId::SPI1) {
             return Request == DmaRequest::SPI1_TX ||
                    Request == DmaRequest::SPI1_RX;
+        }
+
+        // I2C0 requests
+        if (Peripheral == PeripheralId::I2C0) {
+            return Request == DmaRequest::I2C0_TX ||
+                   Request == DmaRequest::I2C0_RX;
         }
 
         // I2C1 requests

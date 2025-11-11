@@ -186,69 +186,22 @@ struct GpioConfig {
 // I2C Types
 // ============================================================================
 
-/**
- * @brief I2C addressing mode
- */
-enum class I2cAddressing : uint8_t {
-    SevenBit = 0,  ///< 7-bit addressing (default)
-    TenBit = 1,    ///< 10-bit addressing
-};
-
-/**
- * @brief I2C clock speed presets
- */
-enum class I2cSpeed : uint32_t {
-    Standard = 100000,    ///< 100 kHz (standard mode)
-    Fast = 400000,        ///< 400 kHz (fast mode)
-    FastPlus = 1000000,   ///< 1 MHz (fast mode plus)
-    HighSpeed = 3400000,  ///< 3.4 MHz (high speed mode)
-};
-
-/**
- * @brief I2C configuration structure
- */
-struct I2cConfig {
-    I2cSpeed speed = I2cSpeed::Fast;
-    I2cAddressing addressing = I2cAddressing::SevenBit;
-    bool enable_general_call = false;  ///< Respond to general call address (0x00)
-    uint8_t own_address = 0x00;        ///< Own address (for slave mode)
-};
+// NOTE: I2C types moved to hal/interface/i2c.hpp to avoid redefinition
+// Use the types from hal/interface/i2c.hpp instead:
+// - I2cAddressing (SevenBit, TenBit)
+// - I2cSpeed (Standard, Fast, FastPlus, HighSpeed)
+// - I2cConfig
 
 // ============================================================================
 // SPI Types
 // ============================================================================
 
-/**
- * @brief SPI mode (clock polarity and phase)
- *
- * SPI modes define the clock polarity (CPOL) and phase (CPHA):
- * - Mode 0: CPOL=0, CPHA=0 (clock idle low, sample on rising edge)
- * - Mode 1: CPOL=0, CPHA=1 (clock idle low, sample on falling edge)
- * - Mode 2: CPOL=1, CPHA=0 (clock idle high, sample on falling edge)
- * - Mode 3: CPOL=1, CPHA=1 (clock idle high, sample on rising edge)
- */
-enum class SpiMode : uint8_t {
-    Mode0 = 0,  ///< CPOL=0, CPHA=0
-    Mode1 = 1,  ///< CPOL=0, CPHA=1
-    Mode2 = 2,  ///< CPOL=1, CPHA=0
-    Mode3 = 3,  ///< CPOL=1, CPHA=1
-};
-
-/**
- * @brief SPI bit order
- */
-enum class SpiBitOrder : uint8_t {
-    MsbFirst = 0,  ///< Most significant bit first (default)
-    LsbFirst = 1,  ///< Least significant bit first
-};
-
-/**
- * @brief SPI data bits per transfer
- */
-enum class SpiDataBits : uint8_t {
-    Bits8 = 8,    ///< 8 bits per transfer (default)
-    Bits16 = 16,  ///< 16 bits per transfer
-};
+// NOTE: SPI types moved to hal/interface/spi.hpp to avoid redefinition
+// Use the types from hal/interface/spi.hpp instead:
+// - SpiMode (Mode0, Mode1, Mode2, Mode3)
+// - SpiBitOrder (MsbFirst, LsbFirst)
+// - SpiDataSize (Bits8, Bits16)
+// - SpiConfig
 
 /**
  * @brief SPI chip select mode
@@ -256,17 +209,6 @@ enum class SpiDataBits : uint8_t {
 enum class SpiCsMode : uint8_t {
     Hardware = 0,  ///< Hardware-controlled chip select
     Software = 1,  ///< Software-controlled chip select (manual toggle)
-};
-
-/**
- * @brief SPI configuration structure
- */
-struct SpiConfig {
-    uint32_t clock_speed = 1000000;  ///< SPI clock speed in Hz (default 1 MHz)
-    SpiMode mode = SpiMode::Mode0;
-    SpiBitOrder bit_order = SpiBitOrder::MsbFirst;
-    SpiDataBits data_bits = SpiDataBits::Bits8;
-    SpiCsMode cs_mode = SpiCsMode::Hardware;
 };
 
 // ============================================================================

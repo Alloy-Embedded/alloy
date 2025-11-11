@@ -78,6 +78,14 @@ add_test(NAME ScopedDeviceTest COMMAND test_scoped_device)
 add_executable(test_circular_buffer test_circular_buffer.cpp)
 add_test(NAME CircularBufferTest COMMAND test_circular_buffer)
 
+# Test for SPI multi-level APIs (modernize-peripheral-architecture Phase 6.2)
+add_executable(test_spi_apis test_spi_apis.cpp)
+add_test(NAME SpiApisTest COMMAND test_spi_apis)
+
+# Test for I2C multi-level APIs (modernize-peripheral-architecture Phase 6.3)
+add_executable(test_i2c_apis test_i2c_apis.cpp)
+add_test(NAME I2cApisTest COMMAND test_i2c_apis)
+
 # ============================================================================
 # Code Generation Tests - Test generated register files
 # ============================================================================
@@ -109,6 +117,6 @@ add_test(NAME STM32F4CodegenTest COMMAND test_stm32f4_codegen)
 # Custom target to run all tests
 add_custom_target(run_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-    DEPENDS test_result test_types test_memory test_error_code test_concepts test_hal_concepts test_signal_tables test_gpio_signal_routing test_pin_signal_connection test_signal_registry test_uart_simple_api test_uart_fluent_api test_uart_expert_api test_units test_scoped_device test_circular_buffer test_same70_codegen test_stm32f1_codegen test_stm32f4_codegen
+    DEPENDS test_result test_types test_memory test_error_code test_concepts test_hal_concepts test_signal_tables test_gpio_signal_routing test_pin_signal_connection test_signal_registry test_uart_simple_api test_uart_fluent_api test_uart_expert_api test_units test_scoped_device test_circular_buffer test_spi_apis test_i2c_apis test_same70_codegen test_stm32f1_codegen test_stm32f4_codegen
     COMMENT "Running all unit tests..."
 )
