@@ -412,5 +412,169 @@
       "description": "Use GPIO pin",
       "code": "auto led = LedGreen{};\nauto result = led.setDirection(PinDirection::Output);\nif (result.is_ok()) {\n    led.set();     // Turn on\n    led.clear();   // Turn off\n    led.toggle();  // Toggle state\n}"
     }
+  },
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for Policy-Based Design pattern",
+    "peripheral_clock_hz": 150000000,
+    "mock_hook_prefix": "ALLOY_GPIO_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "enable_pio": {
+      "description": "Enable PIO control for pin mask",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->PER = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_PER"
+    },
+
+    "disable_pio": {
+      "description": "Disable PIO control (enable peripheral function)",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->PDR = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_PDR"
+    },
+
+    "enable_output": {
+      "description": "Configure pin as output",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->OER = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_OER"
+    },
+
+    "disable_output": {
+      "description": "Configure pin as input",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->ODR = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_ODR"
+    },
+
+    "set_output": {
+      "description": "Set output pin high",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->SODR = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_SODR"
+    },
+
+    "clear_output": {
+      "description": "Set output pin low",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->CODR = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_CODR"
+    },
+
+    "toggle_output": {
+      "description": "Toggle output pin",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "if (hw()->ODSR & pin_mask) {\n    hw()->CODR = pin_mask;\n} else {\n    hw()->SODR = pin_mask;\n}",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_TOGGLE"
+    },
+
+    "read_pin": {
+      "description": "Read pin input state",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->PDSR & pin_mask) != 0;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_PDSR"
+    },
+
+    "is_output": {
+      "description": "Check if pin is configured as output",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->OSR & pin_mask) != 0;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_OSR"
+    },
+
+    "enable_pull_up": {
+      "description": "Enable pull-up resistor",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->PUER = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_PUER"
+    },
+
+    "disable_pull_up": {
+      "description": "Disable pull-up resistor",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->PUDR = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_PUDR"
+    },
+
+    "enable_multi_driver": {
+      "description": "Enable multi-driver (open-drain)",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->MDER = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_MDER"
+    },
+
+    "disable_multi_driver": {
+      "description": "Disable multi-driver (push-pull)",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->MDDR = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_MDDR"
+    },
+
+    "enable_input_filter": {
+      "description": "Enable input glitch filter",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->IFER = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_IFER"
+    },
+
+    "disable_input_filter": {
+      "description": "Disable input glitch filter",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->IFDR = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_IFDR"
+    }
   }
 }

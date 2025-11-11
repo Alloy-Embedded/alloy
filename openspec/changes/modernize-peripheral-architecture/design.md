@@ -1,5 +1,9 @@
 # Design: Modernize Peripheral Architecture
 
+> **⚠️ IMPORTANT**: This project uses **EXCLUSIVELY Policy-Based Design** for hardware abstraction.
+> See [ARCHITECTURE.md](ARCHITECTURE.md) for the comprehensive rationale and decision.
+> No other techniques (traits, CRTP, inheritance) will be used.
+
 ## Architecture Overview
 
 ### Current State (Template-Heavy)
@@ -72,21 +76,92 @@
                │
                ▼
 ┌─────────────────────────────────────────────────────────┐
-│  Platform Layer (Unchanged)                              │
-│  - Same zero-overhead templates                          │
+│  Generic API Layer (Platform-Agnostic)                   │
+│  - template <typename HardwarePolicy>                    │
+│  - Business logic & validation                           │
+│  - NO platform-specific code                             │
 │  - Result<T, ErrorCode> error handling                   │
 └──────────────┬──────────────────────────────────────────┘
-               │
+               │ uses
+               ▼
+┌─────────────────────────────────────────────────────────┐
+│  Hardware Policy Layer (NEW - Platform-Specific)         │
+│  - Auto-generated from JSON metadata                     │
+│  - Static inline methods (zero overhead)                 │
+│  - Direct register access                                │
+│  - Mock hooks for testing                                │
+└──────────────┬──────────────────────────────────────────┘
+               │ accesses
                ▼
 ┌─────────────────────────────────────────────────────────┐
 │  Vendor Layer (Enhanced with Metadata)                   │
 │  - Auto-generated registers (existing)                   │
+│  - Auto-generated bitfields (existing)                   │
 │  - NEW: Signal routing tables from SVD                   │
+│  - NEW: IRQ tables from SVD                              │
 │  - NEW: DMA channel compatibility matrices               │
 └─────────────────────────────────────────────────────────┘
 ```
 
 ## Key Design Decisions
+
+### 0. Policy-Based Design for Hardware Abstraction ✅ CANONICAL
+
+**Decision**: Use **ONLY** policy-based design for connecting generic APIs to platform-specific hardware.
+
+**Rationale**:
+- Zero runtime overhead (all methods static inline)
+- Clear separation of concerns (generic logic vs hardware access)
+- Testable (can inject mock policies)
+- Maintainable (auto-generated from JSON metadata)
+
+**Implementation Pattern**:
+```cpp
+// Generic API (platform-agnostic)
+template <PeripheralId Id, typename HardwarePolicy>
+class UartImpl {
+public:
+    Result<void, ErrorCode> initialize() {
+        HardwarePolicy::reset();        // Uses policy
+        HardwarePolicy::set_baudrate(); // Uses policy
+        HardwarePolicy::enable();       // Uses policy
+        return Ok();
+    }
+};
+
+// Hardware Policy (platform-specific)
+template <uint32_t BASE_ADDR, uint32_t CLOCK_HZ>
+struct Same70UartHardwarePolicy {
+    static inline void reset() {
+        hw()->CR = uart::cr::RSTRX::mask;  // Direct register access
+    }
+
+    static inline void set_baudrate(uint32_t baud) {
+        hw()->BRGR = CLOCK_HZ / (16 * baud);
+    }
+
+    static inline void enable() {
+        hw()->CR = uart::cr::TXEN::mask | uart::cr::RXEN::mask;
+    }
+
+    static inline volatile UART0_Registers* hw() {
+        return reinterpret_cast<volatile UART0_Registers*>(BASE_ADDR);
+    }
+};
+
+// Platform-specific aliases
+using Uart0 = UartImpl<PeripheralId::USART0, Same70UartHardwarePolicy<0x400E0800, 150000000>>;
+```
+
+**Why NOT other techniques:**
+- ❌ **Traits**: Requires specialization for each peripheral instance, less flexible
+- ❌ **CRTP**: Inheritance-based, more complex, harder to test
+- ❌ **Virtual Functions**: Runtime overhead (vtable), violates zero-cost principle
+- ❌ **Template Specialization**: Code duplication, hard to maintain
+
+**See [ARCHITECTURE.md](ARCHITECTURE.md) for complete rationale.**
+
+---
 
 ### 1. Three-Level API Hierarchy
 

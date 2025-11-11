@@ -47,7 +47,7 @@
 #include "core/types.hpp"
 #include "core/units.hpp"
 #include "hal/signals.hpp"
-#include "hal/uart_simple.hpp"  // For UartParity
+#include "hal/api/uart_simple.hpp"  // For UartParity
 
 namespace alloy::hal {
 
@@ -63,7 +63,10 @@ using namespace alloy::hal::signals;
  *
  * Complete configuration structure with all UART parameters.
  * Can be validated at compile-time or runtime.
+ *
+ * @tparam HardwarePolicy Hardware policy for platform-specific operations
  */
+template <typename HardwarePolicy>
 struct UartExpertConfig {
     // Core configuration
     PeripheralId peripheral;
@@ -200,11 +203,11 @@ struct UartExpertConfig {
      *
      * Common configuration for most UART applications.
      */
-    static constexpr UartExpertConfig standard_115200(
+    static constexpr UartExpertConfig<HardwarePolicy> standard_115200(
         PeripheralId peripheral,
         PinId tx_pin,
         PinId rx_pin) {
-        return UartExpertConfig{
+        return UartExpertConfig<HardwarePolicy>{
             .peripheral = peripheral,
             .tx_pin = tx_pin,
             .rx_pin = rx_pin,
@@ -229,11 +232,11 @@ struct UartExpertConfig {
      *
      * Optimized for logging/debug output.
      */
-    static constexpr UartExpertConfig logger_config(
+    static constexpr UartExpertConfig<HardwarePolicy> logger_config(
         PeripheralId peripheral,
         PinId tx_pin,
         BaudRate baudrate = BaudRate{115200}) {
-        return UartExpertConfig{
+        return UartExpertConfig<HardwarePolicy>{
             .peripheral = peripheral,
             .tx_pin = tx_pin,
             .rx_pin = PinId::PA0,  // Unused
@@ -258,12 +261,12 @@ struct UartExpertConfig {
      *
      * High-performance configuration with DMA.
      */
-    static constexpr UartExpertConfig dma_config(
+    static constexpr UartExpertConfig<HardwarePolicy> dma_config(
         PeripheralId peripheral,
         PinId tx_pin,
         PinId rx_pin,
         BaudRate baudrate) {
-        return UartExpertConfig{
+        return UartExpertConfig<HardwarePolicy>{
             .peripheral = peripheral,
             .tx_pin = tx_pin,
             .rx_pin = rx_pin,
@@ -298,26 +301,45 @@ namespace expert {
 /**
  * @brief Configure UART with expert configuration
  *
- * Applies a validated configuration to the UART peripheral.
+ * Applies a validated configuration to the UART peripheral using hardware policy.
  *
+ * @tparam HardwarePolicy Hardware policy for platform-specific operations
  * @param config Expert configuration struct
  * @return Result indicating success or error
  *
  * @note Configuration must be valid (config.is_valid() == true)
  */
-inline Result<void, ErrorCode> configure(const UartExpertConfig& config) {
+template <typename HardwarePolicy>
+inline Result<void, ErrorCode> configure(const UartExpertConfig<HardwarePolicy>& config) {
     // Validate configuration
     if (!config.is_valid()) {
         return Err(ErrorCode::InvalidParameter);
     }
 
-    // TODO: Apply configuration to hardware
-    // - Configure GPIO pins
-    // - Set baud rate
-    // - Configure data format (data bits, parity, stop bits)
-    // - Enable TX/RX as needed
-    // - Configure DMA if enabled
-    // - Enable interrupts if needed
+    // TODO: Configure GPIO pins for TX/RX
+
+    // Reset UART peripheral
+    HardwarePolicy::reset();
+
+    // Configure data format (data bits, parity, stop bits)
+    if (config.parity == UartParity::NONE && config.data_bits == 8 && config.stop_bits == 1) {
+        HardwarePolicy::configure_8n1();
+    }
+    // TODO: Handle other parity/data/stop bit combinations
+
+    // Set baud rate
+    HardwarePolicy::set_baudrate(config.baudrate.value());
+
+    // Enable TX/RX as needed
+    if (config.enable_tx) {
+        HardwarePolicy::enable_tx();
+    }
+    if (config.enable_rx) {
+        HardwarePolicy::enable_rx();
+    }
+
+    // TODO: Configure DMA if enabled
+    // TODO: Enable interrupts if needed
 
     return Ok();
 }
@@ -341,30 +363,35 @@ inline Result<void, ErrorCode> configure(const UartExpertConfig& config) {
  *
  * Example:
  * @code
- * constexpr auto config = UartExpertConfig::standard_115200(...);
+ * constexpr auto config = UartExpertConfig<Policy>::standard_115200(...);
  * static_assert(validate_uart_config(config), "Invalid UART config");
  * @endcode
  */
-constexpr bool validate_uart_config(const UartExpertConfig& config) {
+template <typename HardwarePolicy>
+constexpr bool validate_uart_config(const UartExpertConfig<HardwarePolicy>& config) {
     return config.is_valid();
 }
 
 /**
  * @brief Check specific validation rules
  */
-constexpr bool has_valid_baudrate(const UartExpertConfig& config) {
+template <typename HardwarePolicy>
+constexpr bool has_valid_baudrate(const UartExpertConfig<HardwarePolicy>& config) {
     return config.baudrate.value() >= 300 && config.baudrate.value() <= 10000000;
 }
 
-constexpr bool has_valid_data_bits(const UartExpertConfig& config) {
+template <typename HardwarePolicy>
+constexpr bool has_valid_data_bits(const UartExpertConfig<HardwarePolicy>& config) {
     return config.data_bits >= 7 && config.data_bits <= 9;
 }
 
-constexpr bool has_valid_stop_bits(const UartExpertConfig& config) {
+template <typename HardwarePolicy>
+constexpr bool has_valid_stop_bits(const UartExpertConfig<HardwarePolicy>& config) {
     return config.stop_bits >= 1 && config.stop_bits <= 2;
 }
 
-constexpr bool has_enabled_direction(const UartExpertConfig& config) {
+template <typename HardwarePolicy>
+constexpr bool has_enabled_direction(const UartExpertConfig<HardwarePolicy>& config) {
     return config.enable_tx || config.enable_rx;
 }
 

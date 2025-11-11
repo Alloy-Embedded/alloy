@@ -27,6 +27,13 @@
 #include "hal/platform/same70/gpio.hpp"
 #include "hal/platform/same70/systick.hpp"
 #include "hal/platform/same70/systick_delay.hpp"
+#include "hal/platform/same70/uart.hpp"
+#include "hal/platform/same70/spi.hpp"
+#include "hal/platform/same70/i2c.hpp"
+#include "hal/platform/same70/timer.hpp"
+#include "hal/platform/same70/pwm.hpp"
+#include "hal/platform/same70/adc.hpp"
+#include "hal/platform/same70/dma.hpp"
 
 // Vendor-specific register definitions
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
@@ -36,6 +43,112 @@ namespace alloy::boards::same70_xplained {
 using namespace alloy::core;
 using namespace alloy::hal;
 using namespace alloy::hal::same70;
+
+// ============================================================================
+// Peripheral Type Aliases (OpenSpec REQ-TP-008)
+// ============================================================================
+
+/**
+ * @brief Board-level peripheral type aliases
+ *
+ * These aliases provide convenient access to SAME70 peripherals without
+ * needing to specify template parameters. They follow the OpenSpec
+ * template-based peripheral pattern for zero-overhead abstraction.
+ *
+ * All peripherals use compile-time base addresses and IRQ IDs from the
+ * generated peripheral definitions.
+ *
+ * Example usage:
+ * @code
+ * #include "boards/same70_xplained/board.hpp"
+ * using namespace alloy::boards::same70_xplained;
+ *
+ * int main() {
+ *     board::init();
+ *
+ *     // UART
+ *     Uart0 uart;
+ *     uart.initialize(uart_config);
+ *     uart.write('H');
+ *
+ *     // SPI
+ *     Spi0 spi;
+ *     spi.open();
+ *     spi.transfer(tx_data, rx_data, 3, SpiChipSelect::CS0);
+ *
+ *     // I2C
+ *     I2c0 i2c;
+ *     i2c.open();
+ *     i2c.write(0x50, data, 4);
+ * }
+ * @endcode
+ */
+
+// Import vendor peripheral addresses and IDs
+using namespace alloy::generated::atsame70q21b;
+
+// UART peripherals (USART)
+using Uart0 = same70::Uart<peripherals::USART0, id::USART0>;
+using Uart1 = same70::Uart<peripherals::USART1, id::USART1>;
+using Uart2 = same70::Uart<peripherals::USART2, id::USART2>;
+
+// SPI peripherals
+using Spi0 = same70::Spi<peripherals::SPI0, id::SPI0>;
+using Spi1 = same70::Spi<peripherals::SPI1, id::SPI1>;
+
+// I2C peripherals (TWIHS - Two-Wire Interface High Speed)
+using I2c0 = same70::I2c<peripherals::TWIHS0, id::TWIHS0>;
+using I2c1 = same70::I2c<peripherals::TWIHS1, id::TWIHS1>;
+using I2c2 = same70::I2c<peripherals::TWIHS2, id::TWIHS2>;
+
+// Timer Counter peripherals
+using Timer0 = same70::Timer<peripherals::TC0, id::TC0>;
+using Timer1 = same70::Timer<peripherals::TC1, id::TC1>;
+using Timer2 = same70::Timer<peripherals::TC2, id::TC2>;
+using Timer3 = same70::Timer<peripherals::TC3, id::TC3>;
+
+// PWM peripherals
+using Pwm0 = same70::Pwm<peripherals::PWM0, id::PWM0>;
+using Pwm1 = same70::Pwm<peripherals::PWM1, id::PWM1>;
+
+// ADC peripherals (AFEC - Analog Front-End Controller)
+using Adc0 = same70::Adc<peripherals::AFEC0, id::AFEC0>;
+using Adc1 = same70::Adc<peripherals::AFEC1, id::AFEC1>;
+
+// DMA peripheral (XDMAC - eXtensible DMA Controller)
+using Dma = same70::Dma<peripherals::XDMAC, id::XDMAC>;
+
+// GPIO ports (already defined in detail namespace, but exposed here for consistency)
+using GpioA = peripherals::PIOA;
+using GpioB = peripherals::PIOB;
+using GpioC = peripherals::PIOC;
+using GpioD = peripherals::PIOD;
+using GpioE = peripherals::PIOE;
+
+// Convenience GPIO pin aliases for common board features
+namespace pins {
+    // LEDs (active-low)
+    using Led0 = GpioPin<peripherals::PIOC, 8>;   // PC8
+    using Led1 = GpioPin<peripherals::PIOC, 9>;   // PC9
+
+    // Buttons (active-low with pull-up)
+    using Button0 = GpioPin<peripherals::PIOA, 11>;  // PA11
+    using Button1 = GpioPin<peripherals::PIOC, 2>;   // PC2
+
+    // UART0 pins (commonly used on Arduino headers)
+    using Uart0_Tx = GpioPin<peripherals::PIOA, 10>;  // PA10 - URXD0
+    using Uart0_Rx = GpioPin<peripherals::PIOA, 9>;   // PA9 - UTXD0
+
+    // SPI0 pins
+    using Spi0_Miso = GpioPin<peripherals::PIOD, 20>;  // PD20 - MISO
+    using Spi0_Mosi = GpioPin<peripherals::PIOD, 21>;  // PD21 - MOSI
+    using Spi0_Sck  = GpioPin<peripherals::PIOD, 22>;  // PD22 - SCK
+    using Spi0_Cs0  = GpioPin<peripherals::PIOB, 2>;   // PB2 - NPCS0
+
+    // I2C0 pins (TWIHS0)
+    using I2c0_Sda = GpioPin<peripherals::PIOA, 3>;   // PA3 - TWD0
+    using I2c0_Scl = GpioPin<peripherals::PIOA, 4>;   // PA4 - TWCK0
+}
 
 // ============================================================================
 // Board Identification

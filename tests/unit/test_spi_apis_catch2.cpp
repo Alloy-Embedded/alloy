@@ -4,10 +4,10 @@
  */
 
 #include <catch2/catch_test_macros.hpp>
-#include "hal/spi_simple.hpp"
-#include "hal/spi_fluent.hpp"
-#include "hal/spi_expert.hpp"
-#include "hal/spi_dma.hpp"
+#include "hal/api/spi_simple.hpp"
+#include "hal/api/spi_fluent.hpp"
+#include "hal/api/spi_expert.hpp"
+#include "hal/api/spi_dma.hpp"
 
 using namespace alloy::hal;
 using namespace alloy::core;

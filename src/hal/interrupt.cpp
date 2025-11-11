@@ -3,7 +3,7 @@
  * @brief Platform-agnostic interrupt management implementation
  */
 
-#include "hal/interrupt_simple.hpp"
+#include "hal/api/interrupt_simple.hpp"
 #include "hal/interface/interrupt.hpp"
 
 namespace alloy::hal {

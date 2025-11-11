@@ -240,5 +240,123 @@
       "description": "Basic UART usage example",
       "code": "using MyUart = Uart<UART0_BASE, UART0_IRQ>;\nauto uart = MyUart{};\nuart.open(115200);\nconst char* msg = \"Hello\\n\";\nuart.write(reinterpret_cast<const uint8_t*>(msg), 6);\nuart.close();"
     }
+  },
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for Policy-Based Design pattern",
+    "peripheral_clock_hz": 150000000,
+    "mock_hook_prefix": "ALLOY_UART_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "reset": {
+      "description": "Reset UART peripheral (TX and RX)",
+      "return_type": "void",
+      "code": "hw()->CR = uart::cr::RSTRX::mask | uart::cr::RSTTX::mask | uart::cr::RXDIS::mask | uart::cr::TXDIS::mask;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RESET"
+    },
+
+    "configure_8n1": {
+      "description": "Configure 8 data bits, no parity, 1 stop bit",
+      "return_type": "void",
+      "code": "hw()->MR = uart::mr::PAR::write(0, uart::mr::par::NO_PARITY);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_CONFIGURE"
+    },
+
+    "set_baudrate": {
+      "description": "Set UART baud rate",
+      "parameters": [
+        {"name": "baud", "type": "uint32_t", "description": "Desired baud rate"}
+      ],
+      "return_type": "void",
+      "code": "uint32_t cd = PERIPH_CLOCK_HZ / (16 * baud);\nhw()->BRGR = uart::brgr::CD::write(0, cd);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_BAUDRATE"
+    },
+
+    "enable_tx": {
+      "description": "Enable transmitter",
+      "return_type": "void",
+      "code": "hw()->CR = uart::cr::TXEN::mask;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_TX_ENABLE"
+    },
+
+    "enable_rx": {
+      "description": "Enable receiver",
+      "return_type": "void",
+      "code": "hw()->CR = uart::cr::RXEN::mask;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RX_ENABLE"
+    },
+
+    "disable_tx": {
+      "description": "Disable transmitter",
+      "return_type": "void",
+      "code": "hw()->CR = uart::cr::TXDIS::mask;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_TX_DISABLE"
+    },
+
+    "disable_rx": {
+      "description": "Disable receiver",
+      "return_type": "void",
+      "code": "hw()->CR = uart::cr::RXDIS::mask;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RX_DISABLE"
+    },
+
+    "is_tx_ready": {
+      "description": "Check if transmitter is ready",
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->SR & uart::sr::TXRDY::mask) != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_TX_READY"
+    },
+
+    "is_rx_ready": {
+      "description": "Check if receiver has data",
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->SR & uart::sr::RXRDY::mask) != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RX_READY"
+    },
+
+    "write_byte": {
+      "description": "Write single byte to THR",
+      "parameters": [
+        {"name": "byte", "type": "uint8_t", "description": "Byte to write"}
+      ],
+      "return_type": "void",
+      "code": "hw()->THR = byte;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_WRITE"
+    },
+
+    "read_byte": {
+      "description": "Read single byte from RHR",
+      "return_type": "uint8_t",
+      "const": true,
+      "code": "return static_cast<uint8_t>(hw()->RHR);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_READ"
+    },
+
+    "wait_tx_ready": {
+      "description": "Wait for TX ready with timeout",
+      "parameters": [
+        {"name": "timeout_loops", "type": "uint32_t", "description": "Timeout in loop iterations"}
+      ],
+      "return_type": "bool",
+      "code": "uint32_t timeout = timeout_loops;\nwhile (!is_tx_ready() && --timeout);\nreturn timeout != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_WAIT_TX"
+    },
+
+    "wait_rx_ready": {
+      "description": "Wait for RX ready with timeout",
+      "parameters": [
+        {"name": "timeout_loops", "type": "uint32_t", "description": "Timeout in loop iterations"}
+      ],
+      "return_type": "bool",
+      "code": "uint32_t timeout = timeout_loops;\nwhile (!is_rx_ready() && --timeout);\nreturn timeout != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_WAIT_RX"
+    }
   }
 }

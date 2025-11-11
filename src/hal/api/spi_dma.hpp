@@ -53,7 +53,7 @@
 #include "hal/dma_config.hpp"
 #include "hal/dma_connection.hpp"
 #include "hal/dma_registry.hpp"
-#include "hal/spi_expert.hpp"
+#include "hal/api/spi_expert.hpp"
 
 namespace alloy::hal {
 

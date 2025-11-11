@@ -102,6 +102,14 @@ add_test(NAME SysTickApisTest COMMAND test_systick_apis)
 add_executable(test_interrupt_apis test_interrupt_apis.cpp ../../src/hal/interrupt.cpp)
 add_test(NAME InterruptApisTest COMMAND test_interrupt_apis)
 
+# Test for UART Hardware Policy (modernize-peripheral-architecture Phase 8.3)
+add_executable(test_uart_hardware_policy test_uart_hardware_policy.cpp)
+add_test(NAME UartHardwarePolicyTest COMMAND test_uart_hardware_policy)
+
+# Test for UART API Integration (modernize-peripheral-architecture Phase 8.4)
+add_executable(test_uart_api_integration test_uart_api_integration.cpp)
+add_test(NAME UartApiIntegrationTest COMMAND test_uart_api_integration)
+
 # ============================================================================
 # Code Generation Tests - Test generated register files
 # ============================================================================
@@ -133,6 +141,6 @@ add_test(NAME STM32F4CodegenTest COMMAND test_stm32f4_codegen)
 # Custom target to run all tests
 add_custom_target(run_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-    DEPENDS test_result test_types test_memory test_error_code test_concepts test_hal_concepts test_signal_tables test_gpio_signal_routing test_pin_signal_connection test_signal_registry test_uart_simple_api test_uart_fluent_api test_uart_expert_api test_units test_scoped_device test_circular_buffer test_spi_apis test_i2c_apis test_adc_apis test_timer_apis test_systick_apis test_interrupt_apis test_same70_codegen test_stm32f1_codegen test_stm32f4_codegen
+    DEPENDS test_result test_types test_memory test_error_code test_concepts test_hal_concepts test_signal_tables test_gpio_signal_routing test_pin_signal_connection test_signal_registry test_uart_simple_api test_uart_fluent_api test_uart_expert_api test_units test_scoped_device test_circular_buffer test_spi_apis test_i2c_apis test_adc_apis test_timer_apis test_systick_apis test_interrupt_apis test_uart_hardware_policy test_uart_api_integration test_same70_codegen test_stm32f1_codegen test_stm32f4_codegen
     COMMENT "Running all unit tests..."
 )

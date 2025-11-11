@@ -1,0 +1,178 @@
+{
+  "family": "stm32f4",
+  "vendor": "st",
+  "peripheral_name": "USART",
+  "register_include": "hal/vendors/st/stm32f4/registers/usart6_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32f4/bitfields/usart6_bitfields.hpp",
+  "register_namespace": "st::stm32f4::usart6",
+  "namespace_alias": "usart",
+  "register_type": "USART6_Registers",
+  "platform_namespace": "alloy::hal::stm32f4",
+  "vendor_namespace": "alloy::hal::st::stm32f4",
+  "requires_clock": true,
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "USART peripheral base address"
+    },
+    {
+      "name": "PERIPH_CLOCK_HZ",
+      "type": "uint32_t",
+      "description": "Peripheral clock frequency for baud rate calculation"
+    }
+  ],
+
+  "constants": [
+    {
+      "name": "UART_TIMEOUT",
+      "type": "uint32_t",
+      "value": "100000",
+      "description": "UART timeout in loop iterations (~10ms at 168MHz)"
+    }
+  ],
+
+  "registers": {
+    "status": {"name": "SR", "description": "Status Register"},
+    "data": {"name": "DR", "description": "Data Register"},
+    "baud_rate": {"name": "BRR", "description": "Baud Rate Register"},
+    "control1": {"name": "CR1", "description": "Control Register 1"},
+    "control2": {"name": "CR2", "description": "Control Register 2"},
+    "control3": {"name": "CR3", "description": "Control Register 3"}
+  },
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for STM32F4 USART using Policy-Based Design pattern",
+    "peripheral_clock_hz": 84000000,
+    "mock_hook_prefix": "ALLOY_UART_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "reset": {
+      "description": "Reset USART peripheral (disable TX and RX)",
+      "return_type": "void",
+      "code": "hw()->CR1 &= ~(usart::cr1::TE::mask | usart::cr1::RE::mask | usart::cr1::UE::mask);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RESET"
+    },
+
+    "configure_8n1": {
+      "description": "Configure 8 data bits, no parity, 1 stop bit",
+      "return_type": "void",
+      "code": "hw()->CR1 &= ~(usart::cr1::M::mask | usart::cr1::PCE::mask);\nhw()->CR2 &= ~(usart::cr2::STOP::mask);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_CONFIGURE"
+    },
+
+    "set_baudrate": {
+      "description": "Set USART baud rate using BRR register",
+      "parameters": [
+        {"name": "baud", "type": "uint32_t", "description": "Desired baud rate"}
+      ],
+      "return_type": "void",
+      "code": "uint32_t usartdiv = (PERIPH_CLOCK_HZ + (baud / 2)) / baud;\nuint32_t mantissa = usartdiv >> 4;\nuint32_t fraction = usartdiv & 0xF;\nhw()->BRR = (mantissa << 4) | fraction;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_BAUDRATE"
+    },
+
+    "enable_tx": {
+      "description": "Enable transmitter",
+      "return_type": "void",
+      "code": "hw()->CR1 |= usart::cr1::TE::mask | usart::cr1::UE::mask;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_TX_ENABLE"
+    },
+
+    "enable_rx": {
+      "description": "Enable receiver",
+      "return_type": "void",
+      "code": "hw()->CR1 |= usart::cr1::RE::mask | usart::cr1::UE::mask;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RX_ENABLE"
+    },
+
+    "disable_tx": {
+      "description": "Disable transmitter",
+      "return_type": "void",
+      "code": "hw()->CR1 &= ~usart::cr1::TE::mask;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_TX_DISABLE"
+    },
+
+    "disable_rx": {
+      "description": "Disable receiver",
+      "return_type": "void",
+      "code": "hw()->CR1 &= ~usart::cr1::RE::mask;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RX_DISABLE"
+    },
+
+    "is_tx_ready": {
+      "description": "Check if transmit data register is empty (TXE flag)",
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->SR & usart::sr::TXE::mask) != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_TX_READY"
+    },
+
+    "is_rx_ready": {
+      "description": "Check if receive data register is not empty (RXNE flag)",
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->SR & usart::sr::RXNE::mask) != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RX_READY"
+    },
+
+    "write_byte": {
+      "description": "Write single byte to data register",
+      "parameters": [
+        {"name": "byte", "type": "uint8_t", "description": "Byte to write"}
+      ],
+      "return_type": "void",
+      "code": "hw()->DR = byte;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_WRITE"
+    },
+
+    "read_byte": {
+      "description": "Read single byte from data register",
+      "return_type": "uint8_t",
+      "const": true,
+      "code": "return static_cast<uint8_t>(hw()->DR & 0xFF);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_READ"
+    },
+
+    "wait_tx_ready": {
+      "description": "Wait for TX ready with timeout",
+      "parameters": [
+        {"name": "timeout_loops", "type": "uint32_t", "description": "Timeout in loop iterations"}
+      ],
+      "return_type": "bool",
+      "code": "uint32_t timeout = timeout_loops;\nwhile (!is_tx_ready() && --timeout);\nreturn timeout != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_WAIT_TX"
+    },
+
+    "wait_rx_ready": {
+      "description": "Wait for RX ready with timeout",
+      "parameters": [
+        {"name": "timeout_loops", "type": "uint32_t", "description": "Timeout in loop iterations"}
+      ],
+      "return_type": "bool",
+      "code": "uint32_t timeout = timeout_loops;\nwhile (!is_rx_ready() && --timeout);\nreturn timeout != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_WAIT_RX"
+    }
+  },
+
+  "instances": [
+    {"name": "Usart1", "base": "0x40011000", "clock": "84000000", "description": "USART1 instance (APB2)"},
+    {"name": "Usart2", "base": "0x40004400", "clock": "42000000", "description": "USART2 instance (APB1)"},
+    {"name": "Usart3", "base": "0x40004800", "clock": "42000000", "description": "USART3 instance (APB1)"},
+    {"name": "Uart4", "base": "0x40004C00", "clock": "42000000", "description": "UART4 instance (APB1)"},
+    {"name": "Uart5", "base": "0x40005000", "clock": "42000000", "description": "UART5 instance (APB1)"},
+    {"name": "Usart6", "base": "0x40011400", "clock": "84000000", "description": "USART6 instance (APB2)"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic STM32F4 USART usage example",
+      "code": "using MyUsart = Usart<USART1_BASE, 84000000>;\nauto usart = MyUsart{};\nusart.reset();\nusart.configure_8n1();\nusart.set_baudrate(115200);\nusart.enable_tx();\nusart.enable_rx();\nusart.write_byte('H');"
+    }
+  }
+}

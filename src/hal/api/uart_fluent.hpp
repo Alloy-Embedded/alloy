@@ -36,7 +36,7 @@
 #include "core/units.hpp"
 #include "hal/signals.hpp"
 #include "hal/signal_registry.hpp"
-#include "hal/uart_simple.hpp"  // For UartParity and defaults
+#include "hal/api/uart_simple.hpp"  // For UartParity and defaults
 
 namespace alloy::hal {
 
@@ -51,7 +51,10 @@ using namespace alloy::hal::signals;
  * @brief UART configuration from fluent builder
  *
  * Holds the complete validated configuration from the builder.
+ *
+ * @tparam HardwarePolicy Hardware policy for platform-specific operations
  */
+template <typename HardwarePolicy>
 struct FluentUartConfig {
     PeripheralId peripheral;
     PinId tx_pin;
@@ -67,15 +70,34 @@ struct FluentUartConfig {
     /**
      * @brief Apply configuration to hardware
      *
-     * Configures GPIO pins and UART peripheral registers.
+     * Configures GPIO pins and UART peripheral registers using hardware policy.
      *
      * @return Result indicating success or error
      */
     Result<void, ErrorCode> apply() const {
         // TODO: Configure TX pin if has_tx
         // TODO: Configure RX pin if has_rx
-        // TODO: Configure UART peripheral registers
-        // For now, return success for testing
+
+        // Reset and configure UART peripheral using hardware policy
+        HardwarePolicy::reset();
+
+        // Configure communication parameters
+        if (parity == UartParity::NONE && data_bits == 8 && stop_bits == 1) {
+            HardwarePolicy::configure_8n1();
+        }
+        // TODO: Handle other parity/data/stop bit combinations
+
+        // Set baud rate
+        HardwarePolicy::set_baudrate(baudrate.value());
+
+        // Enable TX and/or RX based on configuration
+        if (has_tx) {
+            HardwarePolicy::enable_tx();
+        }
+        if (has_rx) {
+            HardwarePolicy::enable_rx();
+        }
+
         return Ok();
     }
 };
@@ -126,8 +148,9 @@ struct BuilderState {
  * with method chaining.
  *
  * @tparam PeriphId UART peripheral ID
+ * @tparam HardwarePolicy Hardware policy implementing platform-specific operations
  */
-template <PeripheralId PeriphId>
+template <PeripheralId PeriphId, typename HardwarePolicy>
 class UartBuilder {
 public:
     /**
@@ -349,7 +372,7 @@ public:
      *
      * @return Result with configured UART or error
      */
-    Result<FluentUartConfig, ErrorCode> initialize() const {
+    Result<FluentUartConfig<HardwarePolicy>, ErrorCode> initialize() const {
         auto validation = validate();
         if (!validation.is_ok()) {
             // Need to copy error to avoid reference issues
@@ -357,7 +380,7 @@ public:
             return Err(std::move(error_copy));
         }
 
-        return Ok(FluentUartConfig{
+        return Ok(FluentUartConfig<HardwarePolicy>{
             .peripheral = PeriphId,
             .tx_pin = tx_pin_id_,
             .rx_pin = rx_pin_id_,

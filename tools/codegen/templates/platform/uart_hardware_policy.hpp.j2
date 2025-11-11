@@ -1,0 +1,188 @@
+/**
+ * @file uart_hardware_policy.hpp
+ * @brief Hardware Policy for UART on {{ family.upper() }} (Policy-Based Design)
+ *
+ * This file provides platform-specific hardware access for UART using
+ * the Policy-Based Design pattern. All methods are static inline for
+ * zero runtime overhead.
+ *
+ * Design Pattern: Policy-Based Design
+ * - Generic APIs accept this policy as template parameter
+ * - All methods are static inline (zero overhead)
+ * - Direct register access with compile-time addresses
+ * - Mock hooks for testing (#ifdef ALLOY_UART_MOCK_HW)
+ *
+ * Auto-generated from: {{ metadata.family }}/{{ peripheral_name | lower }}.json
+ * Generator: hardware_policy_generator.py
+ * Generated: {{ generation_date }}
+ *
+ * @note Part of Alloy HAL Vendor Layer
+ * @note See ARCHITECTURE.md for Policy-Based Design rationale
+ */
+
+#pragma once
+
+#include "core/types.hpp"
+#include "core/error.hpp"
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+
+// Register definitions
+#include "{{ metadata.register_include }}"
+
+// Bitfield definitions
+{% if metadata.bitfield_include %}
+#include "{{ metadata.bitfield_include }}"
+{% endif %}
+
+namespace {{ metadata.platform_namespace }} {
+
+using namespace alloy::core;
+
+// Import register types
+using namespace {{ metadata.vendor_namespace }};
+
+{% if metadata.namespace_alias %}
+// Namespace alias for bitfields
+namespace {{ metadata.namespace_alias }} = {{ metadata.register_namespace }};
+{% endif %}
+
+/**
+ * @brief Hardware Policy for {{ metadata.peripheral_name }} on {{ family.upper() }}
+ *
+ * This policy provides all platform-specific hardware access methods
+ * for {{ metadata.peripheral_name }}. It is designed to be used as a template
+ * parameter in generic {{ metadata.peripheral_name }} implementations.
+ *
+ * Template Parameters:
+ * - BASE_ADDR: {{ metadata.peripheral_name }} peripheral base address
+ * - PERIPH_CLOCK_HZ: Peripheral clock frequency in Hz
+ *
+ * Usage:
+ * @code
+ * // In generic API
+ * template <typename HardwarePolicy>
+ * class UartImpl {
+ *     void initialize() {
+ *         HardwarePolicy::reset();
+ *         HardwarePolicy::configure_8n1();
+ *         HardwarePolicy::set_baudrate(115200);
+ *         HardwarePolicy::enable_tx();
+ *         HardwarePolicy::enable_rx();
+ *     }
+ * };
+ *
+ * // Platform-specific alias
+ * using Uart0 = UartImpl<{{ family.capitalize() }}UartHardwarePolicy<UART0_BASE, 150000000>>;
+ * @endcode
+ *
+ * @tparam BASE_ADDR Peripheral base address
+ * @tparam PERIPH_CLOCK_HZ Peripheral clock frequency (for baud rate calculation)
+ */
+template <uint32_t BASE_ADDR, uint32_t PERIPH_CLOCK_HZ>
+struct {{ family.capitalize() }}UartHardwarePolicy {
+    // ========================================================================
+    // Type Definitions
+    // ========================================================================
+
+    using RegisterType = {{ metadata.register_type }};
+
+    // ========================================================================
+    // Compile-Time Constants
+    // ========================================================================
+
+    static constexpr uint32_t base_address = BASE_ADDR;
+    static constexpr uint32_t peripheral_clock_hz = PERIPH_CLOCK_HZ;
+{% for constant in metadata.constants %}
+    static constexpr {{ constant.type }} {{ constant.name }} = {{ constant.value }};  ///< {{ constant.description }}
+{% endfor %}
+
+    // ========================================================================
+    // Hardware Accessor (with Mock Hook)
+    // ========================================================================
+
+    /**
+     * @brief Get pointer to hardware registers
+     *
+     * This method provides access to the actual hardware registers.
+     * It includes a mock hook for testing purposes.
+     *
+     * @return Pointer to hardware registers
+     */
+    static inline volatile RegisterType* hw() {
+        #ifdef {{ policy_methods.mock_hook_prefix }}
+            return {{ policy_methods.mock_hook_prefix }}();  // Test hook
+        #else
+            {{ policy_methods.hw_accessor.code }}
+        #endif
+    }
+
+    // ========================================================================
+    // Hardware Policy Methods
+    // ========================================================================
+
+{% for method_name, method in policy_methods.items() %}
+{% if method_name not in ['description', 'peripheral_clock_hz', 'mock_hook_prefix', 'hw_accessor'] %}
+    /**
+     * @brief {{ method.description }}
+{% if method.parameters %}
+     *
+{% for param in method.parameters %}
+     * @param {{ param.name }} {{ param.description }}
+{% endfor %}
+{% endif %}
+{% if method.return_type != 'void' %}
+     * @return {{ method.return_type }}
+{% endif %}
+{% if method.test_hook %}
+     *
+     * @note Test hook: {{ method.test_hook }}
+{% endif %}
+     */
+    static inline {{ method.return_type }} {{ method_name }}({% if method.parameters %}{% for param in method.parameters %}{{ param.type }} {{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}){% if method.const %} const{% endif %} {
+        #ifdef {{ method.test_hook }}
+            {{ method.test_hook }}({% if method.parameters %}{% for param in method.parameters %}{{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %});
+        #endif
+
+        {{ method.code | indent(8) }}
+    }
+
+{% endif %}
+{% endfor %}
+};
+
+// ============================================================================
+// Type Aliases for Common Instances
+// ============================================================================
+
+{% for instance in metadata.instances %}
+/// @brief Hardware policy for {{ instance.name }}
+using {{ instance.name }}Hardware = {{ family.capitalize() }}UartHardwarePolicy<{{ instance.base }}, {{ policy_methods.peripheral_clock_hz }}>;
+
+{% endfor %}
+
+}  // namespace {{ metadata.platform_namespace }}
+
+/**
+ * @example
+ * Using the hardware policy with generic UART API:
+ *
+ * @code
+ * #include "hal/api/uart_simple.hpp"
+ * #include "hal/vendors/atmel/same70/uart_hardware_policy.hpp"
+ *
+ * using namespace alloy::hal;
+ * using namespace alloy::hal::same70;
+ *
+ * // Create UART with hardware policy
+ * using Uart0 = UartImpl<PeripheralId::USART0, Uart0Hardware>;
+ *
+ * int main() {
+ *     auto config = Uart0::quick_setup<TxPin, RxPin>(BaudRate{115200});
+ *     config.initialize();
+ *
+ *     const char* msg = "Hello World\n";
+ *     config.write(reinterpret_cast<const uint8_t*>(msg), 12);
+ * }
+ * @endcode
+ */
