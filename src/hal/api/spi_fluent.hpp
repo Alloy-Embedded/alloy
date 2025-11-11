@@ -35,7 +35,7 @@
 #include "core/types.hpp"
 #include "hal/interface/spi.hpp"
 #include "hal/signals.hpp"
-#include "hal/spi_simple.hpp"
+#include "hal/api/spi_simple.hpp"
 
 namespace alloy::hal {
 

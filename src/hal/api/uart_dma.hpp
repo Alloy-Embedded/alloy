@@ -52,7 +52,7 @@
 #include "hal/dma_config.hpp"
 #include "hal/dma_connection.hpp"
 #include "hal/dma_registry.hpp"
-#include "hal/uart_expert.hpp"
+#include "hal/api/uart_expert.hpp"
 
 namespace alloy::hal {
 

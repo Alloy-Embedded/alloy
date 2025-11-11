@@ -5,6 +5,7 @@
   "register_include": "hal/vendors/atmel/same70/registers/spi0_registers.hpp",
   "bitfield_include": "hal/vendors/atmel/same70/bitfields/spi0_bitfields.hpp",
   "register_namespace": "atmel::same70::spi0",
+  "namespace_alias": "spi",
   "register_type": "SPI0_Registers",
   "platform_namespace": "alloy::hal::same70",
   "vendor_namespace": "alloy::hal::atmel::same70",
@@ -251,6 +252,122 @@
     "basic_usage": {
       "description": "Basic SPI usage example",
       "code": "using MySpi = Spi<SPI0_BASE, SPI0_IRQ>;\nauto spi = MySpi{};\nspi.open();\nspi.configureChipSelect(SpiChipSelect::CS0, 10, SpiMode::Mode0);\nuint8_t tx[] = {0x01, 0x02, 0x03};\nuint8_t rx[3];\nspi.transfer(tx, rx, 3, SpiChipSelect::CS0);\nspi.close();"
+    }
+  },
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for Policy-Based Design pattern",
+    "peripheral_clock_hz": 150000000,
+    "mock_hook_prefix": "ALLOY_SPI_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "reset": {
+      "description": "Reset SPI peripheral",
+      "return_type": "void",
+      "code": "hw()->CR = spi::cr::SWRST::mask;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_RESET"
+    },
+
+    "enable": {
+      "description": "Enable SPI peripheral",
+      "return_type": "void",
+      "code": "hw()->CR = spi::cr::SPIEN::mask;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_ENABLE"
+    },
+
+    "disable": {
+      "description": "Disable SPI peripheral",
+      "return_type": "void",
+      "code": "hw()->CR = spi::cr::SPIDIS::mask;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_DISABLE"
+    },
+
+    "configure_master": {
+      "description": "Configure SPI in master mode",
+      "return_type": "void",
+      "code": "hw()->MR = spi::mr::MSTR::mask | spi::mr::MODFDIS::mask;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_MASTER"
+    },
+
+    "configure_chip_select": {
+      "description": "Configure chip select parameters",
+      "parameters": [
+        {"name": "cs", "type": "uint8_t", "description": "Chip select number (0-3)"},
+        {"name": "scbr", "type": "uint32_t", "description": "Serial Clock Baud Rate divider"},
+        {"name": "mode", "type": "uint8_t", "description": "SPI mode (0-3)"}
+      ],
+      "return_type": "void",
+      "code": "uint32_t csr_value = spi::csr::SCBR::write(0, scbr);\nif (mode & 0x01) csr_value |= spi::csr::NCPHA::mask;\nif (mode & 0x02) csr_value |= spi::csr::CPOL::mask;\nhw()->CSR[cs] = csr_value;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_CS_CONFIG"
+    },
+
+    "select_chip": {
+      "description": "Select chip (assert CS)",
+      "parameters": [
+        {"name": "cs", "type": "uint8_t", "description": "Chip select number (0-3)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->MR = (hw()->MR & ~spi::mr::PCS::mask) | spi::mr::PCS::write(0, ~(1u << cs));",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_SELECT"
+    },
+
+    "is_tx_ready": {
+      "description": "Check if transmit buffer is ready",
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->SR & spi::sr::TDRE::mask) != 0;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_TX_READY"
+    },
+
+    "is_rx_ready": {
+      "description": "Check if receive data is ready",
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->SR & spi::sr::RDRF::mask) != 0;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_RX_READY"
+    },
+
+    "write_byte": {
+      "description": "Write byte to transmit register",
+      "parameters": [
+        {"name": "byte", "type": "uint8_t", "description": "Byte to transmit"}
+      ],
+      "return_type": "void",
+      "code": "hw()->TDR = byte;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_WRITE"
+    },
+
+    "read_byte": {
+      "description": "Read byte from receive register",
+      "return_type": "uint8_t",
+      "const": true,
+      "code": "return static_cast<uint8_t>(hw()->RDR & 0xFF);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_READ"
+    },
+
+    "wait_tx_ready": {
+      "description": "Wait for TX ready with timeout",
+      "parameters": [
+        {"name": "timeout_loops", "type": "uint32_t", "description": "Timeout in loop iterations"}
+      ],
+      "return_type": "bool",
+      "code": "uint32_t timeout = timeout_loops;\nwhile (!is_tx_ready() && --timeout);\nreturn timeout != 0;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_WAIT_TX"
+    },
+
+    "wait_rx_ready": {
+      "description": "Wait for RX ready with timeout",
+      "parameters": [
+        {"name": "timeout_loops", "type": "uint32_t", "description": "Timeout in loop iterations"}
+      ],
+      "return_type": "bool",
+      "code": "uint32_t timeout = timeout_loops;\nwhile (!is_rx_ready() && --timeout);\nreturn timeout != 0;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_WAIT_RX"
     }
   }
 }

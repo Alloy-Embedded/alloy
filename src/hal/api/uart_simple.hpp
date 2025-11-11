@@ -77,10 +77,10 @@ struct UartDefaults {
 // Forward Declarations
 // ============================================================================
 
-template <typename TxPin, typename RxPin>
+template <typename TxPin, typename RxPin, typename HardwarePolicy>
 struct SimpleUartConfig;
 
-template <typename TxPin>
+template <typename TxPin, typename HardwarePolicy>
 struct SimpleUartConfigTxOnly;
 
 // ============================================================================
@@ -94,8 +94,9 @@ struct SimpleUartConfigTxOnly;
  * Automatically validates pins at compile-time and provides clear errors.
  *
  * @tparam PeriphId UART peripheral ID (USART0, USART1, etc.)
+ * @tparam HardwarePolicy Hardware policy implementing platform-specific operations
  */
-template <PeripheralId PeriphId>
+template <PeripheralId PeriphId, typename HardwarePolicy>
 class Uart {
 public:
     /**
@@ -131,7 +132,7 @@ public:
                      "Check signal routing tables for valid RX pins.");
 
         // Return configuration result
-        return SimpleUartConfig<TxPin, RxPin>(
+        return SimpleUartConfig<TxPin, RxPin, HardwarePolicy>(
             PeriphId,
             baudrate,
             UartDefaults::data_bits,
@@ -155,7 +156,7 @@ public:
         static_assert(is_valid_tx_pin<TxPin>(), "Invalid TX pin");
         static_assert(is_valid_rx_pin<RxPin>(), "Invalid RX pin");
 
-        return SimpleUartConfig<TxPin, RxPin>(
+        return SimpleUartConfig<TxPin, RxPin, HardwarePolicy>(
             PeriphId,
             baudrate,
             UartDefaults::data_bits,
@@ -178,7 +179,7 @@ public:
     static constexpr auto quick_setup_tx_only(BaudRate baudrate) {
         static_assert(is_valid_tx_pin<TxPin>(), "Invalid TX pin");
 
-        return SimpleUartConfigTxOnly<TxPin>(
+        return SimpleUartConfigTxOnly<TxPin, HardwarePolicy>(
             PeriphId,
             baudrate,
             UartDefaults::data_bits,
@@ -248,8 +249,12 @@ private:
  * @brief Simple UART configuration (TX + RX)
  *
  * Holds validated configuration for full-duplex UART.
+ *
+ * @tparam TxPin TX pin type
+ * @tparam RxPin RX pin type
+ * @tparam HardwarePolicy Hardware policy for platform-specific operations
  */
-template <typename TxPin, typename RxPin>
+template <typename TxPin, typename RxPin, typename HardwarePolicy>
 struct SimpleUartConfig {
     PeripheralId peripheral;
     BaudRate baudrate;
@@ -264,14 +269,29 @@ struct SimpleUartConfig {
     /**
      * @brief Initialize the UART with this configuration
      *
-     * Applies the configuration to hardware registers.
+     * Applies the configuration to hardware registers using the hardware policy.
      *
      * @return Result<void, ErrorCode> Success or error
      */
     Result<void, ErrorCode> initialize() const {
-        // TODO: Configure TX and RX pins
-        // TODO: Configure UART peripheral registers
-        // For now, just return success for testing
+        // TODO: Configure TX and RX pins using GPIO configuration
+
+        // Reset and configure UART peripheral using hardware policy
+        HardwarePolicy::reset();
+
+        // Configure communication parameters
+        if (parity == UartParity::NONE && data_bits == 8 && stop_bits == 1) {
+            HardwarePolicy::configure_8n1();
+        }
+        // TODO: Handle other parity/data/stop bit combinations
+
+        // Set baud rate
+        HardwarePolicy::set_baudrate(baudrate.value());
+
+        // Enable TX and RX
+        HardwarePolicy::enable_tx();
+        HardwarePolicy::enable_rx();
+
         return Ok(); // Success
     }
 };
@@ -280,8 +300,11 @@ struct SimpleUartConfig {
  * @brief Simple UART configuration (TX only)
  *
  * Simplified configuration for TX-only operation.
+ *
+ * @tparam TxPin TX pin type
+ * @tparam HardwarePolicy Hardware policy for platform-specific operations
  */
-template <typename TxPin>
+template <typename TxPin, typename HardwarePolicy>
 struct SimpleUartConfigTxOnly {
     PeripheralId peripheral;
     BaudRate baudrate;
@@ -293,8 +316,22 @@ struct SimpleUartConfigTxOnly {
         : peripheral(p), baudrate(br), data_bits(db), parity(par), stop_bits(sb) {}
 
     Result<void, ErrorCode> initialize() const {
-        // TODO: Configure TX pin
-        // TODO: Configure UART peripheral registers for TX only
+        // TODO: Configure TX pin using GPIO configuration
+
+        // Reset and configure UART peripheral using hardware policy
+        HardwarePolicy::reset();
+
+        // Configure communication parameters (8N1 assumed for TX-only)
+        if (parity == UartParity::NONE && data_bits == 8 && stop_bits == 1) {
+            HardwarePolicy::configure_8n1();
+        }
+
+        // Set baud rate
+        HardwarePolicy::set_baudrate(baudrate.value());
+
+        // Enable TX only
+        HardwarePolicy::enable_tx();
+
         return Ok(); // Success
     }
 };

@@ -233,5 +233,126 @@
       "description": "Basic I2C usage example",
       "code": "using MyI2c = I2c<TWIHS0_BASE, TWIHS0_IRQ>;\nauto i2c = MyI2c{};\ni2c.open();\ni2c.setSpeed(I2cSpeed::Standard100kHz);\nuint8_t data[] = {0x01, 0x02, 0x03};\ni2c.write(0x50, data, 3);\ni2c.close();"
     }
+  },
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for Policy-Based Design pattern",
+    "peripheral_clock_hz": 150000000,
+    "mock_hook_prefix": "ALLOY_I2C_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "reset": {
+      "description": "Software reset I2C peripheral",
+      "return_type": "void",
+      "code": "hw()->CR = twihs::cr::SWRST::mask;",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_RESET"
+    },
+
+    "enable_master": {
+      "description": "Enable I2C in master mode",
+      "return_type": "void",
+      "code": "hw()->CR = twihs::cr::MSEN::mask | twihs::cr::SVDIS::mask;",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_ENABLE"
+    },
+
+    "disable": {
+      "description": "Disable I2C peripheral",
+      "return_type": "void",
+      "code": "hw()->CR = twihs::cr::MSDIS::mask;",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_DISABLE"
+    },
+
+    "set_clock": {
+      "description": "Configure I2C clock speed",
+      "parameters": [
+        {"name": "speed_hz", "type": "uint32_t", "description": "Desired clock speed in Hz"}
+      ],
+      "return_type": "void",
+      "code": "uint32_t ckdiv = 0;\nuint32_t cldiv = (PERIPH_CLOCK_HZ / (2 * speed_hz)) - 4;\nwhile (cldiv > 255 && ckdiv < 7) {\n    ckdiv++;\n    cldiv = (PERIPH_CLOCK_HZ / (2 * speed_hz * (1 << ckdiv))) - 4;\n}\nuint32_t cwgr = twihs::cwgr::CLDIV::write(0, cldiv);\ncwgr = twihs::cwgr::CHDIV::write(cwgr, cldiv);\ncwgr = twihs::cwgr::CKDIV::write(cwgr, ckdiv);\nhw()->CWGR = cwgr;",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_CLOCK"
+    },
+
+    "start_write": {
+      "description": "Start I2C write transaction",
+      "parameters": [
+        {"name": "device_addr", "type": "uint8_t", "description": "7-bit device address"}
+      ],
+      "return_type": "void",
+      "code": "uint32_t mmr = 0;\nmmr = twihs::mmr::DADR::write(mmr, device_addr);\nmmr = twihs::mmr::MREAD::clear(mmr);\nhw()->MMR = mmr;",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_START_WRITE"
+    },
+
+    "start_read": {
+      "description": "Start I2C read transaction",
+      "parameters": [
+        {"name": "device_addr", "type": "uint8_t", "description": "7-bit device address"},
+        {"name": "read_count", "type": "uint8_t", "description": "Number of bytes to read"}
+      ],
+      "return_type": "void",
+      "code": "uint32_t mmr = 0;\nmmr = twihs::mmr::DADR::write(mmr, device_addr);\nmmr = twihs::mmr::MREAD::set(mmr);\nhw()->MMR = mmr;\nif (read_count == 1) {\n    hw()->CR = twihs::cr::START::mask | twihs::cr::STOP::mask;\n} else {\n    hw()->CR = twihs::cr::START::mask;\n}",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_START_READ"
+    },
+
+    "send_stop": {
+      "description": "Send STOP condition",
+      "return_type": "void",
+      "code": "hw()->CR = twihs::cr::STOP::mask;",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_STOP"
+    },
+
+    "is_tx_ready": {
+      "description": "Check if TX buffer is ready",
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->SR & twihs::sr::TXRDY::mask) != 0;",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_TX_READY"
+    },
+
+    "is_rx_ready": {
+      "description": "Check if RX data is ready",
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->SR & twihs::sr::RXRDY::mask) != 0;",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_RX_READY"
+    },
+
+    "is_tx_complete": {
+      "description": "Check if transmission is complete",
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->SR & twihs::sr::TXCOMP::mask) != 0;",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_TX_COMPLETE"
+    },
+
+    "has_nack": {
+      "description": "Check if NACK was received",
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->SR & twihs::sr::NACK::mask) != 0;",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_NACK"
+    },
+
+    "write_byte": {
+      "description": "Write byte to TX register",
+      "parameters": [
+        {"name": "byte", "type": "uint8_t", "description": "Byte to write"}
+      ],
+      "return_type": "void",
+      "code": "hw()->THR = byte;",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_WRITE"
+    },
+
+    "read_byte": {
+      "description": "Read byte from RX register",
+      "return_type": "uint8_t",
+      "const": true,
+      "code": "return static_cast<uint8_t>(hw()->RHR);",
+      "test_hook": "ALLOY_I2C_TEST_HOOK_READ"
+    }
   }
 }

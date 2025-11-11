@@ -15,12 +15,15 @@ The current HAL architecture works but has several limitations compared to moder
 
 Modernize the HAL architecture using C++20/23 features while maintaining zero-overhead guarantees:
 
-1. **Add C++20 Concepts** - Replace SFINAE with concepts for clear error messages
-2. **Signal-based Connections** - Explicit peripheral-to-peripheral connections (GPIO→UART, ADC→DMA)
-3. **Multi-level API** - Simple, Fluent, and Expert APIs for different use cases
-4. **Compile-time Validation** - Use `consteval` for pin/signal compatibility checking
-5. **Auto-generated Metadata** - Extend SVD codegen to produce signal routing tables
-6. **Integrated DMA Configuration** - Type-safe DMA channel assignment and validation
+1. **Policy-Based Hardware Abstraction** - Generic APIs accept hardware policies as template parameters (ONLY technique used)
+2. **Add C++20 Concepts** - Replace SFINAE with concepts for clear error messages
+3. **Signal-based Connections** - Explicit peripheral-to-peripheral connections (GPIO→UART, ADC→DMA)
+4. **Multi-level API** - Simple, Fluent, and Expert APIs for different use cases
+5. **Compile-time Validation** - Use `consteval` for pin/signal compatibility checking
+6. **Auto-generated Metadata** - Extend SVD codegen to produce signal routing tables and hardware policies
+7. **Integrated DMA Configuration** - Type-safe DMA channel assignment and validation
+
+> **Architecture Decision**: See [ARCHITECTURE.md](ARCHITECTURE.md) for complete rationale on why we use policy-based design exclusively.
 
 ## Goals
 

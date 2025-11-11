@@ -10,8 +10,8 @@
 
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/interrupt_simple.hpp"
-#include "hal/interrupt_expert.hpp"
+#include "hal/api/interrupt_simple.hpp"
+#include "hal/api/interrupt_expert.hpp"
 #include "hal/signals.hpp"
 
 namespace alloy::hal {
