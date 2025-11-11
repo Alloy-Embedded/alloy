@@ -54,6 +54,18 @@ add_test(NAME PinSignalConnectionTest COMMAND test_pin_signal_connection)
 add_executable(test_signal_registry test_signal_registry.cpp)
 add_test(NAME SignalRegistryTest COMMAND test_signal_registry)
 
+# Test for UART simple API (modernize-peripheral-architecture Phase 4.1)
+add_executable(test_uart_simple_api test_uart_simple_api.cpp)
+add_test(NAME UartSimpleApiTest COMMAND test_uart_simple_api)
+
+# Test for UART fluent API (modernize-peripheral-architecture Phase 4.2)
+add_executable(test_uart_fluent_api test_uart_fluent_api.cpp)
+add_test(NAME UartFluentApiTest COMMAND test_uart_fluent_api)
+
+# Test for UART expert API (modernize-peripheral-architecture Phase 4.3)
+add_executable(test_uart_expert_api test_uart_expert_api.cpp)
+add_test(NAME UartExpertApiTest COMMAND test_uart_expert_api)
+
 # Test for units (BaudRate)
 add_executable(test_units test_units.cpp)
 add_test(NAME UnitsTest COMMAND test_units)
@@ -97,6 +109,6 @@ add_test(NAME STM32F4CodegenTest COMMAND test_stm32f4_codegen)
 # Custom target to run all tests
 add_custom_target(run_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-    DEPENDS test_result test_types test_memory test_error_code test_concepts test_hal_concepts test_signal_tables test_gpio_signal_routing test_pin_signal_connection test_signal_registry test_units test_scoped_device test_circular_buffer test_same70_codegen test_stm32f1_codegen test_stm32f4_codegen
+    DEPENDS test_result test_types test_memory test_error_code test_concepts test_hal_concepts test_signal_tables test_gpio_signal_routing test_pin_signal_connection test_signal_registry test_uart_simple_api test_uart_fluent_api test_uart_expert_api test_units test_scoped_device test_circular_buffer test_same70_codegen test_stm32f1_codegen test_stm32f4_codegen
     COMMENT "Running all unit tests..."
 )
