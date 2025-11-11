@@ -53,10 +53,11 @@ enum class PeripheralId : u16 {
     SPI2 = 12,
 
     // I2C/TWI
-    I2C1 = 20,
-    I2C2 = 21,
-    TWI0 = 22,
-    TWI1 = 23,
+    I2C0 = 20,
+    I2C1 = 21,
+    I2C2 = 22,
+    TWI0 = 23,
+    TWI1 = 24,
 
     // ADC/DAC
     ADC0 = 30,

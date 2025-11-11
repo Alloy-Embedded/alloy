@@ -9,19 +9,22 @@
 #include <span>
 
 #include "core/error.hpp"
+#include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
 
 namespace alloy::hal {
 
+using namespace alloy::core;
+
 /// I2C addressing mode
-enum class I2cAddressing : core::u8 {
+enum class I2cAddressing : u8 {
     SevenBit = 7,  ///< 7-bit addressing (most common)
     TenBit = 10    ///< 10-bit addressing (extended)
 };
 
 /// I2C bus speed
-enum class I2cSpeed : core::u32 {
+enum class I2cSpeed : u32 {
     Standard = 100000,   ///< Standard mode: 100 kHz
     Fast = 400000,       ///< Fast mode: 400 kHz
     FastPlus = 1000000,  ///< Fast mode plus: 1 MHz
@@ -55,21 +58,21 @@ struct I2cConfig {
 /// - ErrorCode::InvalidParameter: Invalid address or buffer
 template <typename T>
 concept I2cMaster =
-    requires(T device, const T const_device, core::u16 address, std::span<core::u8> buffer,
-             std::span<const core::u8> const_buffer, I2cConfig config) {
+    requires(T device, const T const_device, u16 address, std::span<u8> buffer,
+             std::span<const u8> const_buffer, I2cConfig config) {
         /// Read data from I2C device
         ///
         /// @param address 7-bit or 10-bit I2C device address
         /// @param buffer Buffer to store received data
         /// @return Ok on success, error code on failure
-        { device.read(address, buffer) } -> std::same_as<core::Result<void>>;
+        { device.read(address, buffer) } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Write data to I2C device
         ///
         /// @param address 7-bit or 10-bit I2C device address
         /// @param buffer Buffer containing data to send
         /// @return Ok on success, error code on failure
-        { device.write(address, const_buffer) } -> std::same_as<core::Result<void>>;
+        { device.write(address, const_buffer) } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Write then read from I2C device (repeated start)
         ///
@@ -79,7 +82,7 @@ concept I2cMaster =
         /// @param write_buffer Buffer containing data to write
         /// @param read_buffer Buffer to store received data
         /// @return Ok on success, error code on failure
-        { device.write_read(address, const_buffer, buffer) } -> std::same_as<core::Result<void>>;
+        { device.write_read(address, const_buffer, buffer) } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Scan I2C bus for devices
         ///
@@ -88,13 +91,13 @@ concept I2cMaster =
         ///
         /// @param found_devices Buffer to store found device addresses
         /// @return Number of devices found, or error code
-        { device.scan_bus(buffer) } -> std::same_as<core::Result<core::usize>>;
+        { device.scan_bus(buffer) } -> std::same_as<Result<usize, ErrorCode>>;
 
         /// Configure I2C peripheral
         ///
         /// @param config I2C configuration (speed, addressing mode)
         /// @return Ok on success, error code on failure
-        { device.configure(config) } -> std::same_as<core::Result<void>>;
+        { device.configure(config) } -> std::same_as<Result<void, ErrorCode>>;
     };
 
 /// Helper function to read a single byte from I2C device
@@ -104,16 +107,16 @@ concept I2cMaster =
 /// @param address 7-bit or 10-bit I2C device address
 /// @return Byte value or error code
 template <I2cMaster Device>
-core::Result<core::u8> i2c_read_byte(Device& device, core::u16 address) {
-    core::u8 byte = 0;
+Result<u8, ErrorCode> i2c_read_byte(Device& device, u16 address) {
+    u8 byte = 0;
     auto buffer = std::span(&byte, 1);
     auto result = device.read(address, buffer);
 
-    if (result.is_error()) {
-        return core::Err(result.error());
+    if (!result.is_ok()) {
+        return Err(std::move(result).error());
     }
 
-    return core::Ok(byte);
+    return Ok(static_cast<u8>(byte));
 }
 
 /// Helper function to write a single byte to I2C device
@@ -124,7 +127,7 @@ core::Result<core::u8> i2c_read_byte(Device& device, core::u16 address) {
 /// @param byte Byte to write
 /// @return Ok on success, error code on failure
 template <I2cMaster Device>
-core::Result<void> i2c_write_byte(Device& device, core::u16 address, core::u8 byte) {
+Result<void, ErrorCode> i2c_write_byte(Device& device, u16 address, u8 byte) {
     auto buffer = std::span(&byte, 1);
     return device.write(address, buffer);
 }
@@ -139,18 +142,18 @@ core::Result<void> i2c_write_byte(Device& device, core::u16 address, core::u8 by
 /// @param reg_addr Register address to read from
 /// @return Register value or error code
 template <I2cMaster Device>
-core::Result<core::u8> i2c_read_register(Device& device, core::u16 address, core::u8 reg_addr) {
-    core::u8 value = 0;
+Result<u8, ErrorCode> i2c_read_register(Device& device, u16 address, u8 reg_addr) {
+    u8 value = 0;
     auto write_buf = std::span(&reg_addr, 1);
     auto read_buf = std::span(&value, 1);
 
     auto result = device.write_read(address, write_buf, read_buf);
 
-    if (result.is_error()) {
-        return core::Err(result.error());
+    if (!result.is_ok()) {
+        return Err(std::move(result).error());
     }
 
-    return core::Ok(value);
+    return Ok(static_cast<u8>(value));
 }
 
 /// Helper function to write a register to I2C device
@@ -164,9 +167,9 @@ core::Result<core::u8> i2c_read_register(Device& device, core::u16 address, core
 /// @param value Value to write
 /// @return Ok on success, error code on failure
 template <I2cMaster Device>
-core::Result<void> i2c_write_register(Device& device, core::u16 address, core::u8 reg_addr,
-                                      core::u8 value) {
-    core::u8 buffer[2] = {reg_addr, value};
+Result<void, ErrorCode> i2c_write_register(Device& device, u16 address, u8 reg_addr,
+                                      u8 value) {
+    u8 buffer[2] = {reg_addr, value};
     return device.write(address, std::span(buffer, 2));
 }
 
