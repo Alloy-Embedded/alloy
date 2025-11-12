@@ -12,7 +12,7 @@
 
 #include "board_config.hpp"
 #include "hal/vendors/atmel/same70/pio_hardware_policy.hpp"
-#include "hal/vendors/arm/same70/systick_hardware_policy.hpp"
+#include "hal/vendors/atmel/same70/systick_hardware_policy.hpp"
 
 namespace board {
 

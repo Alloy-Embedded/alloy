@@ -5,7 +5,7 @@
  * @brief SAME70 NVIC Platform Integration
  */
 
-#include "hal/vendors/arm/same70/nvic_hardware_policy.hpp"
+#include "hal/vendors/atmel/same70/nvic_hardware_policy.hpp"
 
 namespace alloy::hal::same70 {
 

@@ -5,7 +5,7 @@
  * @brief SAME70 SysTick Platform Integration
  */
 
-#include "hal/vendors/arm/same70/systick_hardware_policy.hpp"
+#include "hal/vendors/atmel/same70/systick_hardware_policy.hpp"
 
 namespace alloy::hal::same70 {
 
