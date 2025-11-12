@@ -1,11 +1,11 @@
 /**
  * @file signals.hpp
- * @brief Signal Routing Tables for ATSAME70Q21B
+ * @brief Signal Routing Tables for ATSAME70Q19B
  *
  * Auto-generated signal routing tables for peripheral signal validation.
  * Part of Phase 2: Signal Metadata Generation.
  *
- * MCU: ATSAME70Q21B
+ * MCU: ATSAME70Q19B
  * Package: Q-pin (144 pins)
  * Available Ports: PA, PB, PC, PD, PE
  *

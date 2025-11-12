@@ -1,0 +1,52 @@
+/**
+ * @file signals.hpp
+ * @brief Signal Routing Tables for {{ mcu_name.upper() }}
+ *
+ * Auto-generated signal routing tables for peripheral signal validation.
+ * Part of Phase 2: Signal Metadata Generation.
+ *
+ * MCU: {{ mcu_name.upper() }}
+ * Package: {{ package }}-pin ({{ pin_count }} pins)
+ * Available Ports: {{ available_ports|join(', ') }}
+ *
+ * Generated from: same70_pin_functions.py
+ * Generator: signals_generator.py
+ * Generated: {{ generation_date }}
+ *
+ * @note Part of modernize-peripheral-architecture OpenSpec change
+ * @see openspec/changes/modernize-peripheral-architecture/specs/signal-routing/spec.md
+ */
+
+#pragma once
+
+#include "hal/signals.hpp"
+
+namespace alloy::hal::atmel::same70 {
+
+using namespace alloy::hal::signals;
+
+// ============================================================================
+// Peripheral Signal Specializations
+// ============================================================================
+{% for peripheral_group, signals in signals_by_peripheral.items() %}
+// {{ peripheral_group }} Signals
+// ------------------------------------------------------------------------------
+{% for signal in signals %}
+
+/**
+ * @brief {{ signal.name }} signal
+ * Compatible pins: {{ signal.pins|join(', ') }}
+ */
+struct {{ signal.struct_name }} {
+    static constexpr PeripheralId peripheral = PeripheralId::{{ signal.peripheral_id }};
+    static constexpr SignalType type = SignalType::{{ signal.signal_type }};
+    static constexpr std::array compatible_pins = {
+{%- for pin_info in signal.pin_details %}
+        PinDef{PinId::{{ pin_info.pin_id }}, AlternateFunction::PERIPH_{{ pin_info.af }}}{{ "," if not loop.last else "" }}
+{%- endfor %}
+    };
+};
+{%- endfor %}
+{%- endfor %}
+
+} // namespace alloy::hal::atmel::same70

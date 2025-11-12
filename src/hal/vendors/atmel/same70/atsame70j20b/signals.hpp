@@ -1,13 +1,13 @@
 /**
  * @file signals.hpp
- * @brief Signal Routing Tables for ATSAME70Q21B
+ * @brief Signal Routing Tables for ATSAME70J20B
  *
  * Auto-generated signal routing tables for peripheral signal validation.
  * Part of Phase 2: Signal Metadata Generation.
  *
- * MCU: ATSAME70Q21B
- * Package: Q-pin (144 pins)
- * Available Ports: PA, PB, PC, PD, PE
+ * MCU: ATSAME70J20B
+ * Package: J-pin (64 pins)
+ * Available Ports: PA, PB
  *
  * Generated from: same70_pin_functions.py
  * Generator: signals_generator.py
@@ -35,7 +35,7 @@ using namespace alloy::hal::signals;
 
 /**
  * @brief PWM0_HIGH signal
- * Compatible pins: PA0, PA1, PA11, PA12, PA2, PA30, PA7, PB0, PB1, PB4, PC0, PC1, PC12, PC13, PC14, PC15, PC2, PC3, PD0, PD1, PD2, PD24, PD3, PE0, PE1, PE2, PE3
+ * Compatible pins: PA0, PA1, PA11, PA12, PA2, PA30, PA7, PB0, PB1, PB4
  */
 struct PWM0HIGHSignal {
     static constexpr PeripheralId peripheral = PeripheralId::PWM0;
@@ -50,65 +50,20 @@ struct PWM0HIGHSignal {
         PinDef{PinId::PA7, AlternateFunction::PERIPH_A},
         PinDef{PinId::PB0, AlternateFunction::PERIPH_B},
         PinDef{PinId::PB1, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PB4, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC0, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC1, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC12, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC13, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC14, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC15, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC2, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC3, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD0, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD1, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD2, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD24, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD3, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PE0, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PE1, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PE2, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PE3, AlternateFunction::PERIPH_B}
+        PinDef{PinId::PB4, AlternateFunction::PERIPH_B}
     };
 };
 
 /**
  * @brief PWM0_LOW signal
- * Compatible pins: PA8, PB5, PC10, PC11, PC8, PC9, PD4, PD5, PD6, PD7, PE4, PE5
+ * Compatible pins: PA8, PB5
  */
 struct PWM0LOWSignal {
     static constexpr PeripheralId peripheral = PeripheralId::PWM0;
     static constexpr SignalType type = SignalType::DATA;
     static constexpr std::array compatible_pins = {
         PinDef{PinId::PA8, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PB5, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC10, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC11, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC8, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC9, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD4, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD5, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD6, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD7, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PE4, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PE5, AlternateFunction::PERIPH_B}
-    };
-};
-
-/**
- * @brief PWM0_DATA signal
- * Compatible pins: PD10, PD11, PD12, PD13, PD14, PD8, PD9
- */
-struct PWM0DATASignal {
-    static constexpr PeripheralId peripheral = PeripheralId::PWM0;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PD10, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD11, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD12, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD13, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD14, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD8, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD9, AlternateFunction::PERIPH_B}
+        PinDef{PinId::PB5, AlternateFunction::PERIPH_B}
     };
 };
 // TC Signals
@@ -117,7 +72,7 @@ struct PWM0DATASignal {
 
 /**
  * @brief Timer0_TIOA signal
- * Compatible pins: PA0, PA14, PA16, PA26, PA31, PC5, PD15, PD25, PD28, PD31
+ * Compatible pins: PA0, PA14, PA16, PA26, PA31
  */
 struct TIMER0TIOASignal {
     static constexpr PeripheralId peripheral = PeripheralId::TIMER0;
@@ -127,18 +82,13 @@ struct TIMER0TIOASignal {
         PinDef{PinId::PA14, AlternateFunction::PERIPH_B},
         PinDef{PinId::PA16, AlternateFunction::PERIPH_B},
         PinDef{PinId::PA26, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PA31, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC5, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD15, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD25, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD28, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD31, AlternateFunction::PERIPH_C}
+        PinDef{PinId::PA31, AlternateFunction::PERIPH_B}
     };
 };
 
 /**
  * @brief Timer0_TIOB signal
- * Compatible pins: PA1, PA15, PA17, PA27, PC6, PD16, PD26, PD29
+ * Compatible pins: PA1, PA15, PA17, PA27
  */
 struct TIMER0TIOBSignal {
     static constexpr PeripheralId peripheral = PeripheralId::TIMER0;
@@ -147,17 +97,13 @@ struct TIMER0TIOBSignal {
         PinDef{PinId::PA1, AlternateFunction::PERIPH_B},
         PinDef{PinId::PA15, AlternateFunction::PERIPH_B},
         PinDef{PinId::PA17, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PA27, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PC6, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD16, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD26, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD29, AlternateFunction::PERIPH_C}
+        PinDef{PinId::PA27, AlternateFunction::PERIPH_B}
     };
 };
 
 /**
  * @brief Timer0_CLOCK signal
- * Compatible pins: PA13, PA28, PA29, PA4, PD27, PD30
+ * Compatible pins: PA13, PA28, PA29, PA4
  */
 struct TIMER0CLOCKSignal {
     static constexpr PeripheralId peripheral = PeripheralId::TIMER0;
@@ -166,89 +112,7 @@ struct TIMER0CLOCKSignal {
         PinDef{PinId::PA13, AlternateFunction::PERIPH_B},
         PinDef{PinId::PA28, AlternateFunction::PERIPH_B},
         PinDef{PinId::PA29, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PA4, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD27, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD30, AlternateFunction::PERIPH_C}
-    };
-};
-
-/**
- * @brief Timer1_TIOA signal
- * Compatible pins: PC26, PC29, PD18
- */
-struct TIMER1TIOASignal {
-    static constexpr PeripheralId peripheral = PeripheralId::TIMER1;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PC26, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC29, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD18, AlternateFunction::PERIPH_C}
-    };
-};
-
-/**
- * @brief Timer1_TIOB signal
- * Compatible pins: PC27, PC30, PD19
- */
-struct TIMER1TIOBSignal {
-    static constexpr PeripheralId peripheral = PeripheralId::TIMER1;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PC27, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC30, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD19, AlternateFunction::PERIPH_C}
-    };
-};
-
-/**
- * @brief Timer1_CLOCK signal
- * Compatible pins: PC28, PC31, PC7
- */
-struct TIMER1CLOCKSignal {
-    static constexpr PeripheralId peripheral = PeripheralId::TIMER1;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PC28, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC31, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC7, AlternateFunction::PERIPH_C}
-    };
-};
-
-/**
- * @brief Timer2_CLOCK signal
- * Compatible pins: PD17, PD20, PD23
- */
-struct TIMER2CLOCKSignal {
-    static constexpr PeripheralId peripheral = PeripheralId::TIMER2;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PD17, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD20, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD23, AlternateFunction::PERIPH_C}
-    };
-};
-
-/**
- * @brief Timer2_TIOA signal
- * Compatible pins: PD21
- */
-struct TIMER2TIOASignal {
-    static constexpr PeripheralId peripheral = PeripheralId::TIMER2;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PD21, AlternateFunction::PERIPH_C}
-    };
-};
-
-/**
- * @brief Timer2_TIOB signal
- * Compatible pins: PD22
- */
-struct TIMER2TIOBSignal {
-    static constexpr PeripheralId peripheral = PeripheralId::TIMER2;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PD22, AlternateFunction::PERIPH_C}
+        PinDef{PinId::PA4, AlternateFunction::PERIPH_B}
     };
 };
 // USART Signals
@@ -372,103 +236,49 @@ struct USART0RTSSignal {
 
 /**
  * @brief USART3_TX signal
- * Compatible pins: PB10, PD29
+ * Compatible pins: PB10
  */
 struct USART3TXSignal {
     static constexpr PeripheralId peripheral = PeripheralId::USART3;
     static constexpr SignalType type = SignalType::DATA;
     static constexpr std::array compatible_pins = {
-        PinDef{PinId::PB10, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD29, AlternateFunction::PERIPH_A}
+        PinDef{PinId::PB10, AlternateFunction::PERIPH_A}
     };
 };
 
 /**
  * @brief USART3_RX signal
- * Compatible pins: PB11, PD30
+ * Compatible pins: PB11
  */
 struct USART3RXSignal {
     static constexpr PeripheralId peripheral = PeripheralId::USART3;
     static constexpr SignalType type = SignalType::DATA;
     static constexpr std::array compatible_pins = {
-        PinDef{PinId::PB11, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD30, AlternateFunction::PERIPH_A}
+        PinDef{PinId::PB11, AlternateFunction::PERIPH_A}
     };
 };
 
 /**
  * @brief USART2_TX signal
- * Compatible pins: PB8, PD21, PD26
+ * Compatible pins: PB8
  */
 struct USART2TXSignal {
     static constexpr PeripheralId peripheral = PeripheralId::USART2;
     static constexpr SignalType type = SignalType::DATA;
     static constexpr std::array compatible_pins = {
-        PinDef{PinId::PB8, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD21, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD26, AlternateFunction::PERIPH_A}
+        PinDef{PinId::PB8, AlternateFunction::PERIPH_A}
     };
 };
 
 /**
  * @brief USART2_RX signal
- * Compatible pins: PB9, PD20, PD25
+ * Compatible pins: PB9
  */
 struct USART2RXSignal {
     static constexpr PeripheralId peripheral = PeripheralId::USART2;
     static constexpr SignalType type = SignalType::DATA;
     static constexpr std::array compatible_pins = {
-        PinDef{PinId::PB9, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD20, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD25, AlternateFunction::PERIPH_A}
-    };
-};
-
-/**
- * @brief USART2_CLOCK signal
- * Compatible pins: PD22
- */
-struct USART2CLOCKSignal {
-    static constexpr PeripheralId peripheral = PeripheralId::USART2;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PD22, AlternateFunction::PERIPH_A}
-    };
-};
-
-/**
- * @brief USART2_RTS signal
- * Compatible pins: PD23
- */
-struct USART2RTSSignal {
-    static constexpr PeripheralId peripheral = PeripheralId::USART2;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PD23, AlternateFunction::PERIPH_A}
-    };
-};
-
-/**
- * @brief USART2_CTS signal
- * Compatible pins: PD24
- */
-struct USART2CTSSignal {
-    static constexpr PeripheralId peripheral = PeripheralId::USART2;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PD24, AlternateFunction::PERIPH_A}
-    };
-};
-
-/**
- * @brief USART3_CLOCK signal
- * Compatible pins: PD31
- */
-struct USART3CLOCKSignal {
-    static constexpr PeripheralId peripheral = PeripheralId::USART3;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PD31, AlternateFunction::PERIPH_A}
+        PinDef{PinId::PB9, AlternateFunction::PERIPH_A}
     };
 };
 // ISI Signals
@@ -503,19 +313,13 @@ struct ISI0DATASignal {
 
 /**
  * @brief QSPI0_DATA signal
- * Compatible pins: PA11, PC20, PC21, PC22, PC23, PC24, PC25
+ * Compatible pins: PA11
  */
 struct QSPI0DATASignal {
     static constexpr PeripheralId peripheral = PeripheralId::QSPI0;
     static constexpr SignalType type = SignalType::CS;
     static constexpr std::array compatible_pins = {
-        PinDef{PinId::PA11, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC20, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC21, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC22, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC23, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC24, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC25, AlternateFunction::PERIPH_C}
+        PinDef{PinId::PA11, AlternateFunction::PERIPH_A}
     };
 };
 // HSMCI Signals
@@ -546,7 +350,7 @@ struct HSMCI0DATASignal {
 
 /**
  * @brief PMC0_DATA signal
- * Compatible pins: PA18, PA21, PB13, PD27
+ * Compatible pins: PA18, PA21, PB13
  */
 struct PMC0DATASignal {
     static constexpr PeripheralId peripheral = PeripheralId::PMC0;
@@ -554,8 +358,7 @@ struct PMC0DATASignal {
     static constexpr std::array compatible_pins = {
         PinDef{PinId::PA18, AlternateFunction::PERIPH_A},
         PinDef{PinId::PA21, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PB13, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD27, AlternateFunction::PERIPH_A}
+        PinDef{PinId::PB13, AlternateFunction::PERIPH_B}
     };
 };
 // DAC Signals
@@ -579,46 +382,43 @@ struct DACOUTSignal {
 
 /**
  * @brief SPI0_CLOCK signal
- * Compatible pins: PA22, PC18
+ * Compatible pins: PA22
  */
 struct SPI0CLOCKSignal {
     static constexpr PeripheralId peripheral = PeripheralId::SPI0;
     static constexpr SignalType type = SignalType::CLOCK;
     static constexpr std::array compatible_pins = {
-        PinDef{PinId::PA22, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC18, AlternateFunction::PERIPH_C}
+        PinDef{PinId::PA22, AlternateFunction::PERIPH_C}
     };
 };
 
 /**
  * @brief SPI0_MOSI signal
- * Compatible pins: PA23, PC17
+ * Compatible pins: PA23
  */
 struct SPI0MOSISignal {
     static constexpr PeripheralId peripheral = PeripheralId::SPI0;
     static constexpr SignalType type = SignalType::MOSI;
     static constexpr std::array compatible_pins = {
-        PinDef{PinId::PA23, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC17, AlternateFunction::PERIPH_C}
+        PinDef{PinId::PA23, AlternateFunction::PERIPH_C}
     };
 };
 
 /**
  * @brief SPI0_MISO signal
- * Compatible pins: PA24, PC16
+ * Compatible pins: PA24
  */
 struct SPI0MISOSignal {
     static constexpr PeripheralId peripheral = PeripheralId::SPI0;
     static constexpr SignalType type = SignalType::MISO;
     static constexpr std::array compatible_pins = {
-        PinDef{PinId::PA24, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC16, AlternateFunction::PERIPH_C}
+        PinDef{PinId::PA24, AlternateFunction::PERIPH_C}
     };
 };
 
 /**
  * @brief SPI0_CS signal
- * Compatible pins: PA25, PA30, PA31, PC19, PC4, PD28
+ * Compatible pins: PA25, PA30, PA31
  */
 struct SPI0CSSignal {
     static constexpr PeripheralId peripheral = PeripheralId::SPI0;
@@ -626,10 +426,7 @@ struct SPI0CSSignal {
     static constexpr std::array compatible_pins = {
         PinDef{PinId::PA25, AlternateFunction::PERIPH_C},
         PinDef{PinId::PA30, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PA31, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC19, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PC4, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PD28, AlternateFunction::PERIPH_A}
+        PinDef{PinId::PA31, AlternateFunction::PERIPH_A}
     };
 };
 // TWI Signals
@@ -693,19 +490,13 @@ struct I2C1CLOCKSignal {
 
 /**
  * @brief LCD0_DATA signal
- * Compatible pins: PA3, PE0, PE1, PE2, PE3, PE4, PE5
+ * Compatible pins: PA3
  */
 struct LCD0DATASignal {
     static constexpr PeripheralId peripheral = PeripheralId::LCD0;
     static constexpr SignalType type = SignalType::DATA;
     static constexpr std::array compatible_pins = {
-        PinDef{PinId::PA3, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PE0, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PE1, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PE2, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PE3, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PE4, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PE5, AlternateFunction::PERIPH_A}
+        PinDef{PinId::PA3, AlternateFunction::PERIPH_C}
     };
 };
 // UART Signals
@@ -766,86 +557,6 @@ struct CAN0DATASignal {
     static constexpr std::array compatible_pins = {
         PinDef{PinId::PB2, AlternateFunction::PERIPH_A},
         PinDef{PinId::PB3, AlternateFunction::PERIPH_A}
-    };
-};
-// EBI Signals
-// ------------------------------------------------------------------------------
-
-
-/**
- * @brief EBI0_DATA signal
- * Compatible pins: PC0, PC1, PC10, PC11, PC12, PC13, PC14, PC15, PC16, PC17, PC18, PC19, PC2, PC20, PC21, PC22, PC23, PC24, PC25, PC26, PC27, PC28, PC29, PC3, PC30, PC31, PC4, PC5, PC6, PC7, PC8, PC9
- */
-struct EBI0DATASignal {
-    static constexpr PeripheralId peripheral = PeripheralId::EBI0;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PC0, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC1, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC10, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC11, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC12, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC13, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC14, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC15, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC16, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC17, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC18, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC19, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC2, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC20, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC21, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC22, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC23, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC24, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC25, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC26, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC27, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC28, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC29, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC3, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC30, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC31, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC4, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC5, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC6, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC7, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC8, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PC9, AlternateFunction::PERIPH_A}
-    };
-};
-// GMAC Signals
-// ------------------------------------------------------------------------------
-
-
-/**
- * @brief GMAC0_DATA signal
- * Compatible pins: PD0, PD1, PD10, PD11, PD12, PD13, PD14, PD15, PD16, PD17, PD18, PD19, PD2, PD3, PD4, PD5, PD6, PD7, PD8, PD9
- */
-struct GMAC0DATASignal {
-    static constexpr PeripheralId peripheral = PeripheralId::GMAC0;
-    static constexpr SignalType type = SignalType::DATA;
-    static constexpr std::array compatible_pins = {
-        PinDef{PinId::PD0, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD1, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD10, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD11, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD12, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD13, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD14, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD15, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD16, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD17, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD18, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD19, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD2, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD3, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD4, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD5, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD6, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD7, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD8, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PD9, AlternateFunction::PERIPH_A}
     };
 };
 
