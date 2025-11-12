@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "hal/signals.hpp"
+#include "hal/core/signals.hpp"
 
 namespace alloy::hal::atmel::same70 {
 

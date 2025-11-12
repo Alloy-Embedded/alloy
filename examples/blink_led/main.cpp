@@ -1,9 +1,10 @@
 /**
  * @file main.cpp
- * @brief Simple LED Blink using Board Abstraction Layer
+ * @brief Portable LED Blink Example - Works on Any Board!
  *
- * This example demonstrates the board abstraction layer with SysTick delays.
- * The code is portable and works on any supported board!
+ * This example demonstrates the power of board abstraction.
+ * The SAME CODE compiles for different boards by simply changing
+ * the build configuration - no code changes needed!
  *
  * Features:
  * - board::init() - Initializes clock, SysTick, and GPIO automatically
@@ -11,25 +12,31 @@
  * - board::led::toggle() - Hardware-independent LED control
  *
  * Expected Behavior:
- * - LED blinks with precise 500ms timing
+ * - LED blinks with precise 500ms ON/OFF timing
  * - Continues indefinitely
  *
- * Build: cmake --build build-same70 --target blink_led
- * Flash: ./scripts/flash_with_bossa.sh build-same70/examples/blink_led/blink_led.bin
+ * Build for SAME70:
+ *   make same70-blink
  *
- * @note SysTick_Handler is defined in board_config.cpp
+ * Build for other boards (when available):
+ *   make BOARD=stm32f103_bluepill blink
+ *   make BOARD=arduino_zero blink
+ *
+ * The magic: Each board has its own board.hpp that implements
+ * the same interface (board::init, board::led::toggle, etc.)
  */
 
-#include "same70_xplained/board.hpp"
-
-// Use explicit namespace to avoid any ambiguity
-using namespace alloy::boards::same70_xplained;
+// Include board-specific header based on build configuration
+// CMake sets the board include path, so we can use a simple include
+#include "board.hpp"
 
 int main() {
-    // Initialize board: Clock + SysTick + GPIO + Disable Watchdog
+    // Initialize board hardware (clocks, timers, GPIO)
+    // This function is board-specific but has the same interface
     board::init();
 
-    // Blink LED forever with precise 500ms timing using SysTick
+    // Blink LED forever with precise 500ms timing
+    // Same code works on all boards!
     while (true) {
         board::led::toggle();
         board::delay_ms(500);

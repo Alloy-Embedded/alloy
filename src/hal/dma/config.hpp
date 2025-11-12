@@ -41,7 +41,7 @@
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/dma_connection.hpp"
+#include "hal/dma/connection.hpp"
 #include "hal/interface/dma.hpp"
 
 namespace alloy::hal {

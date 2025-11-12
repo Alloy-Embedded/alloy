@@ -12,7 +12,7 @@
 #include "core/result.hpp"
 #include "hal/api/interrupt_simple.hpp"
 #include "hal/api/interrupt_expert.hpp"
-#include "hal/signals.hpp"
+#include "hal/core/signals.hpp"
 
 namespace alloy::hal {
 

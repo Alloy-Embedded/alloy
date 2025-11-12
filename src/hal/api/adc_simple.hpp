@@ -10,7 +10,7 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 #include "hal/interface/adc.hpp"
-#include "hal/signals.hpp"
+#include "hal/core/signals.hpp"
 
 namespace alloy::hal {
 
