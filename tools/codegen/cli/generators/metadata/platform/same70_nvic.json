@@ -1,0 +1,142 @@
+{
+  "family": "same70",
+  "vendor": "arm",
+  "peripheral_name": "NVIC",
+  "register_include": "hal/vendors/arm/cortex_m7/nvic_registers.hpp",
+  "bitfield_include": "hal/vendors/arm/cortex_m7/nvic_bitfields.hpp",
+  "register_namespace": "alloy::hal::arm::cortex_m7",
+  "namespace_alias": "nvic",
+  "register_type": "cortex_m7::NVIC_Type",
+  "platform_namespace": "alloy::hal::same70",
+  "vendor_namespace": "alloy::hal::arm::cortex_m7",
+  "requires_clock": false,
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "NVIC base address (0xE000E100)"
+    },
+    {
+      "name": "CPU_CLOCK_HZ",
+      "type": "uint32_t",
+      "description": "CPU clock frequency (unused, for compatibility)"
+    }
+  ],
+
+  "constants": [
+    {
+      "name": "NVIC_BASE",
+      "type": "uint32_t",
+      "value": "0xE000E100",
+      "description": "NVIC base address in ARM Cortex-M"
+    }
+  ],
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for ARM Cortex-M NVIC",
+    "peripheral_clock_hz": 300000000,
+    "mock_hook_prefix": "ALLOY_NVIC_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "enable_irq": {
+      "description": "Enable interrupt",
+      "parameters": [
+        {"name": "irq_num", "type": "uint8_t", "description": "IRQ number (0-239)"}
+      ],
+      "return_type": "void",
+      "code": "if (irq_num < 240) { hw()->ISER[irq_num / 32] = (1u << (irq_num % 32)); }",
+      "test_hook": "ALLOY_NVIC_TEST_HOOK_ENABLE"
+    },
+
+    "disable_irq": {
+      "description": "Disable interrupt",
+      "parameters": [
+        {"name": "irq_num", "type": "uint8_t", "description": "IRQ number (0-239)"}
+      ],
+      "return_type": "void",
+      "code": "if (irq_num < 240) { hw()->ICER[irq_num / 32] = (1u << (irq_num % 32)); }",
+      "test_hook": "ALLOY_NVIC_TEST_HOOK_DISABLE"
+    },
+
+    "set_pending": {
+      "description": "Set interrupt pending",
+      "parameters": [
+        {"name": "irq_num", "type": "uint8_t", "description": "IRQ number (0-239)"}
+      ],
+      "return_type": "void",
+      "code": "if (irq_num < 240) { hw()->ISPR[irq_num / 32] = (1u << (irq_num % 32)); }",
+      "test_hook": "ALLOY_NVIC_TEST_HOOK_SET_PEND"
+    },
+
+    "clear_pending": {
+      "description": "Clear interrupt pending",
+      "parameters": [
+        {"name": "irq_num", "type": "uint8_t", "description": "IRQ number (0-239)"}
+      ],
+      "return_type": "void",
+      "code": "if (irq_num < 240) { hw()->ICPR[irq_num / 32] = (1u << (irq_num % 32)); }",
+      "test_hook": "ALLOY_NVIC_TEST_HOOK_CLR_PEND"
+    },
+
+    "is_pending": {
+      "description": "Check if interrupt is pending",
+      "parameters": [
+        {"name": "irq_num", "type": "uint8_t", "description": "IRQ number (0-239)"}
+      ],
+      "return_type": "bool",
+      "const": true,
+      "code": "if (irq_num < 240) { return (hw()->ISPR[irq_num / 32] & (1u << (irq_num % 32))) != 0; } return false;",
+      "test_hook": "ALLOY_NVIC_TEST_HOOK_IS_PEND"
+    },
+
+    "is_active": {
+      "description": "Check if interrupt is active",
+      "parameters": [
+        {"name": "irq_num", "type": "uint8_t", "description": "IRQ number (0-239)"}
+      ],
+      "return_type": "bool",
+      "const": true,
+      "code": "if (irq_num < 240) { return (hw()->IABR[irq_num / 32] & (1u << (irq_num % 32))) != 0; } return false;",
+      "test_hook": "ALLOY_NVIC_TEST_HOOK_IS_ACTIVE"
+    },
+
+    "set_priority": {
+      "description": "Set interrupt priority",
+      "parameters": [
+        {"name": "irq_num", "type": "uint8_t", "description": "IRQ number (0-239)"},
+        {"name": "priority", "type": "uint8_t", "description": "Priority (0-15, lower is higher priority)"}
+      ],
+      "return_type": "void",
+      "code": "if (irq_num < 240) { hw()->IP[irq_num] = (priority << 4) & 0xF0; }",
+      "test_hook": "ALLOY_NVIC_TEST_HOOK_SET_PRIO"
+    },
+
+    "get_priority": {
+      "description": "Get interrupt priority",
+      "parameters": [
+        {"name": "irq_num", "type": "uint8_t", "description": "IRQ number (0-239)"}
+      ],
+      "return_type": "uint8_t",
+      "const": true,
+      "code": "if (irq_num < 240) { return (hw()->IP[irq_num] >> 4) & 0x0F; } return 0;",
+      "test_hook": "ALLOY_NVIC_TEST_HOOK_GET_PRIO"
+    },
+
+    "system_reset": {
+      "description": "Trigger system reset",
+      "return_type": "void",
+      "code": "volatile uint32_t* AIRCR = reinterpret_cast<volatile uint32_t*>(0xE000ED0C); *AIRCR = (0x05FA << 16) | (1u << 2);",
+      "test_hook": "ALLOY_NVIC_TEST_HOOK_RESET"
+    }
+  },
+
+  "instances": [
+    {"name": "Nvic", "base": "0xE000E100", "clock": "300000000", "description": "ARM Cortex-M7 NVIC"}
+  ]
+}

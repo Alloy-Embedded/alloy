@@ -3,346 +3,124 @@
   "vendor": "atmel",
   "peripheral_name": "PWM",
   "register_include": "hal/vendors/atmel/same70/registers/pwm0_registers.hpp",
-  "bitfield_include": null,
+  "bitfield_include": "hal/vendors/atmel/same70/bitfields/pwm0_bitfields.hpp",
   "register_namespace": "alloy::hal::atmel::same70::pwm0",
-  "register_type": "PWM0_Registers",
+  "namespace_alias": "pwm",
+  "register_type": "pwm0::PWM0_Registers",
   "platform_namespace": "alloy::hal::same70",
   "vendor_namespace": "alloy::hal::atmel::same70",
-  "namespace_alias": "pwm",
-  "requires_clock": false,
+  "requires_clock": true,
 
   "template_params": [
     {
       "name": "BASE_ADDR",
       "type": "uint32_t",
-      "description": "PWM block base address"
+      "description": "PWM peripheral base address"
     },
     {
-      "name": "CHANNEL",
-      "type": "uint8_t",
-      "description": "Channel number (0-3)"
-    },
-    {
-      "name": "IRQ_ID",
+      "name": "PERIPH_CLOCK_HZ",
       "type": "uint32_t",
-      "description": "PWM IRQ ID"
+      "description": "Peripheral clock frequency"
     }
   ],
-
-  "additional_enums": [
-    {
-      "name": "PwmPrescaler",
-      "type": "uint8_t",
-      "description": "PWM Clock Prescaler",
-      "values": [
-        {"name": "DIV_1", "value": 0, "description": "MCK/1"},
-        {"name": "DIV_2", "value": 1, "description": "MCK/2"},
-        {"name": "DIV_4", "value": 2, "description": "MCK/4"},
-        {"name": "DIV_8", "value": 3, "description": "MCK/8"},
-        {"name": "DIV_16", "value": 4, "description": "MCK/16"},
-        {"name": "DIV_32", "value": 5, "description": "MCK/32"},
-        {"name": "DIV_64", "value": 6, "description": "MCK/64"},
-        {"name": "DIV_128", "value": 7, "description": "MCK/128"},
-        {"name": "DIV_256", "value": 8, "description": "MCK/256"},
-        {"name": "DIV_512", "value": 9, "description": "MCK/512"},
-        {"name": "DIV_1024", "value": 10, "description": "MCK/1024"}
-      ]
-    }
-  ],
-
-  "config_struct": {
-    "name": "PwmConfig",
-    "description": "PWM configuration structure",
-    "fields": [
-      {"name": "alignment", "type": "PwmAlignment", "default": "PwmAlignment::Edge", "description": "Alignment mode (from hal/types.hpp)"},
-      {"name": "polarity", "type": "PwmPolarity", "default": "PwmPolarity::Normal", "description": "Polarity (from hal/types.hpp)"},
-      {"name": "prescaler", "type": "PwmPrescaler", "default": "PwmPrescaler::DIV_1", "description": "Clock prescaler"},
-      {"name": "period", "type": "uint16_t", "default": "1000", "description": "Period (CPRD register value)"},
-      {"name": "duty_cycle", "type": "uint16_t", "default": "500", "description": "Duty cycle (CDTY register value)"},
-      {"name": "dead_time_h", "type": "uint16_t", "default": "0", "description": "Dead-time for high side output"},
-      {"name": "dead_time_l", "type": "uint16_t", "default": "0", "description": "Dead-time for low side output"}
-    ]
-  },
 
   "constants": [
     {
-      "name": "channel_offset",
-      "type": "uint32_t",
-      "value": "0x200 + (CHANNEL * 0x20)",
-      "constexpr": true,
-      "description": "Channel register offset"
+      "name": "NUM_CHANNELS",
+      "type": "uint8_t",
+      "value": "4",
+      "description": "Number of PWM channels"
     }
   ],
 
-  "static_asserts": [
-    {"condition": "CHANNEL < 4", "message": "PWM has 4 channels (0-3)"}
-  ],
+  "policy_methods": {
+    "description": "Hardware Policy methods for SAME70 PWM",
+    "peripheral_clock_hz": 150000000,
+    "mock_hook_prefix": "ALLOY_PWM_MOCK_HW",
 
-  "registers": {
-    "enable": {"name": "ENA", "description": "PWM Enable Register"},
-    "disable": {"name": "DIS", "description": "PWM Disable Register"},
-    "status": {"name": "SR", "description": "PWM Status Register"},
-    "interrupt_enable1": {"name": "IER1", "description": "PWM Interrupt Enable Register 1"}
-  },
-
-  "channel_registers": {
-    "mode": {"name": "CMR", "offset": "0x00", "description": "Channel Mode Register"},
-    "duty": {"name": "CDTY", "offset": "0x04", "description": "Channel Duty Cycle Register"},
-    "duty_update": {"name": "CDTYUPD", "offset": "0x08", "description": "Channel Duty Cycle Update Register"},
-    "period": {"name": "CPRD", "offset": "0x0C", "description": "Channel Period Register"},
-    "period_update": {"name": "CPRDUPD", "offset": "0x10", "description": "Channel Period Update Register"},
-    "counter": {"name": "CCNT", "offset": "0x14", "description": "Channel Counter Register"},
-    "dead_time": {"name": "DT", "offset": "0x18", "description": "Channel Dead Time Register"},
-    "dead_time_update": {"name": "DTUPD", "offset": "0x1C", "description": "Channel Dead Time Update Register"}
-  },
-
-  "operations": {
-    "open": {
-      "description": "Initialize PWM",
-      "parameters": [],
-      "return_type": "Result<void, ErrorCode>",
-      "steps": [
-        {
-          "check_state": "if (m_opened)",
-          "return_error": "ErrorCode::AlreadyInitialized"
-        },
-        {
-          "comment": "Enable peripheral clock",
-          "custom_code": "// TODO: Enable peripheral clock via PMC"
-        },
-        {
-          "comment": "Disable channel initially",
-          "custom_code": "hw->DIS = (1u << CHANNEL);"
-        },
-        {
-          "set_state": "m_opened = true"
-        }
-      ],
-      "always_succeeds": true
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
     },
 
-    "close": {
-      "description": "Close PWM",
-      "parameters": [],
-      "return_type": "Result<void, ErrorCode>",
-      "steps": [
-        {
-          "check_state": "if (!m_opened)",
-          "return_error": "ErrorCode::NotInitialized"
-        },
-        {
-          "comment": "Disable channel",
-          "custom_code": "hw->DIS = (1u << CHANNEL);"
-        },
-        {
-          "set_state": "m_opened = false"
-        }
-      ],
-      "always_succeeds": true
-    },
-
-    "configure": {
-      "description": "Configure PWM channel",
+    "enable_channel": {
+      "description": "Enable PWM channel",
       "parameters": [
-        {"name": "config", "type": "const PwmConfig&", "description": "PWM configuration"}
+        {"name": "channel", "type": "uint8_t", "description": "Channel number (0-3)"}
       ],
-      "return_type": "Result<void, ErrorCode>",
-      "steps": [
-        {
-          "check_state": "if (!m_opened)",
-          "return_error": "ErrorCode::NotInitialized"
-        },
-        {
-          "comment": "Build CMR (Channel Mode Register)",
-          "custom_code": "auto* channel = get_channel();\n        \n        uint32_t cmr = 0;\n        \n        // Clock prescaler\n        cmr |= (static_cast<uint32_t>(config.prescaler) & 0x0F);\n        \n        // Alignment mode\n        if (config.alignment == PwmAlignment::Center) {\n            cmr |= (1 << 8);  // CALG = 1 (center-aligned)\n        }\n        \n        // Polarity\n        if (config.polarity == PwmPolarity::Inverted) {\n            cmr |= (1 << 9);  // CPOL = 1 (inverted)\n        }\n        \n        // Dead-time enable (if non-zero)\n        if (config.dead_time_h > 0 || config.dead_time_l > 0) {\n            cmr |= (1 << 16);  // DTE = 1 (dead-time enabled)\n        }\n        \n        channel->CMR = cmr;\n        \n        // Set period\n        channel->CPRD = config.period;\n        \n        // Set duty cycle\n        channel->CDTY = config.duty_cycle;\n        \n        // Set dead-time (if enabled)\n        if (config.dead_time_h > 0 || config.dead_time_l > 0) {\n            uint32_t dt = (config.dead_time_h & 0xFFFF) | ((config.dead_time_l & 0xFFFF) << 16);\n            channel->DT = dt;\n        }\n        \n        m_config = config;"
-        }
-      ],
-      "always_succeeds": true
+      "return_type": "void",
+      "code": "hw()->ENA = (1u << channel);",
+      "test_hook": "ALLOY_PWM_TEST_HOOK_ENABLE"
     },
 
-    "start": {
-      "description": "Start PWM output",
-      "parameters": [],
-      "return_type": "Result<void, ErrorCode>",
-      "steps": [
-        {
-          "check_state": "if (!m_opened)",
-          "return_error": "ErrorCode::NotInitialized"
-        },
-        {
-          "comment": "Enable channel",
-          "custom_code": "hw->ENA = (1u << CHANNEL);"
-        }
+    "disable_channel": {
+      "description": "Disable PWM channel",
+      "parameters": [
+        {"name": "channel", "type": "uint8_t", "description": "Channel number (0-3)"}
       ],
-      "always_succeeds": true
+      "return_type": "void",
+      "code": "hw()->DIS = (1u << channel);",
+      "test_hook": "ALLOY_PWM_TEST_HOOK_DISABLE"
     },
 
-    "stop": {
-      "description": "Stop PWM output",
-      "parameters": [],
-      "return_type": "Result<void, ErrorCode>",
-      "steps": [
-        {
-          "check_state": "if (!m_opened)",
-          "return_error": "ErrorCode::NotInitialized"
-        },
-        {
-          "comment": "Disable channel",
-          "custom_code": "hw->DIS = (1u << CHANNEL);"
-        }
+    "set_period": {
+      "description": "Set PWM period",
+      "parameters": [
+        {"name": "channel", "type": "uint8_t", "description": "Channel number (0-3)"},
+        {"name": "period", "type": "uint32_t", "description": "Period value"}
       ],
-      "always_succeeds": true
+      "return_type": "void",
+      "code": "if (channel < 4) { volatile uint32_t* cprd = reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x200 + (channel * 0x20) + 0x0C); *cprd = period; }",
+      "test_hook": "ALLOY_PWM_TEST_HOOK_PERIOD"
     },
 
-    "setDutyCycle": {
+    "set_duty_cycle": {
       "description": "Set PWM duty cycle",
       "parameters": [
-        {"name": "duty_cycle", "type": "uint16_t", "description": "Duty cycle value (0 to period)"}
+        {"name": "channel", "type": "uint8_t", "description": "Channel number (0-3)"},
+        {"name": "duty", "type": "uint32_t", "description": "Duty cycle value"}
       ],
-      "return_type": "Result<void, ErrorCode>",
-      "note": "For left-aligned: 0 = always low, period = always high. For center-aligned: 0 = always low, period/2 = 50% duty",
-      "steps": [
-        {
-          "check_state": "if (!m_opened)",
-          "return_error": "ErrorCode::NotInitialized"
-        },
-        {
-          "comment": "Write to update register (takes effect at next period)",
-          "custom_code": "auto* channel = get_channel();\n        channel->CDTYUPD = duty_cycle;"
-        }
-      ],
-      "always_succeeds": true
+      "return_type": "void",
+      "code": "if (channel < 4) { volatile uint32_t* cdty = reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x200 + (channel * 0x20) + 0x04); *cdty = duty; }",
+      "test_hook": "ALLOY_PWM_TEST_HOOK_DUTY"
     },
 
-    "setPeriod": {
-      "description": "Set PWM period (frequency)",
+    "set_prescaler": {
+      "description": "Set PWM clock prescaler",
       "parameters": [
-        {"name": "period", "type": "uint16_t", "description": "Period value (CPRD register)"}
+        {"name": "prescaler", "type": "uint8_t", "description": "Prescaler value (0-10)"}
       ],
-      "return_type": "Result<void, ErrorCode>",
-      "note": "Takes effect at next period boundary",
-      "steps": [
-        {
-          "check_state": "if (!m_opened)",
-          "return_error": "ErrorCode::NotInitialized"
-        },
-        {
-          "comment": "Write to update register",
-          "custom_code": "auto* channel = get_channel();\n        channel->CPRDUPD = period;"
-        }
-      ],
-      "always_succeeds": true
+      "return_type": "void",
+      "code": "hw()->CLK = (hw()->CLK & ~0x0FF) | (prescaler & 0xFF);",
+      "test_hook": "ALLOY_PWM_TEST_HOOK_PRESCALER"
     },
 
-    "getCounter": {
-      "description": "Get current counter value",
-      "parameters": [],
-      "return_type": "Result<uint32_t, ErrorCode>",
-      "const": true,
-      "returns": "channel->CCNT",
-      "returns_type": "uint32_t",
-      "steps": [
-        {
-          "check_state": "if (!m_opened)",
-          "return_error": "ErrorCode::NotInitialized"
-        },
-        {
-          "custom_code": "auto* channel = get_channel();"
-        }
-      ]
+    "set_polarity": {
+      "description": "Set PWM output polarity",
+      "parameters": [
+        {"name": "channel", "type": "uint8_t", "description": "Channel number (0-3)"},
+        {"name": "inverted", "type": "bool", "description": "true for inverted polarity"}
+      ],
+      "return_type": "void",
+      "code": "if (channel < 4) { volatile uint32_t* cmr = reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x200 + (channel * 0x20)); if (inverted) { *cmr |= (1u << 9); } else { *cmr &= ~(1u << 9); } }",
+      "test_hook": "ALLOY_PWM_TEST_HOOK_POLARITY"
     },
 
-    "isRunning": {
-      "description": "Check if PWM is running",
-      "parameters": [],
+    "is_channel_enabled": {
+      "description": "Check if PWM channel is enabled",
+      "parameters": [
+        {"name": "channel", "type": "uint8_t", "description": "Channel number (0-3)"}
+      ],
       "return_type": "bool",
       "const": true,
-      "steps": [
-        {
-          "custom_code": "if (!m_opened) return false;\n        return (hw->SR & (1u << CHANNEL)) != 0;"
-        }
-      ],
-      "returns": "false",
-      "returns_type": "bool"
-    },
-
-    "enableInterrupts": {
-      "description": "Enable channel interrupts",
-      "parameters": [],
-      "return_type": "Result<void, ErrorCode>",
-      "steps": [
-        {
-          "check_state": "if (!m_opened)",
-          "return_error": "ErrorCode::NotInitialized"
-        },
-        {
-          "comment": "Enable period interrupt for this channel",
-          "custom_code": "hw->IER1 = (1u << CHANNEL);"
-        }
-      ],
-      "always_succeeds": true
-    },
-
-    "isOpen": {
-      "description": "Check if PWM is open",
-      "parameters": [],
-      "return_type": "bool",
-      "const": true,
-      "returns": "m_opened",
-      "returns_type": "bool",
-      "steps": []
+      "code": "return (hw()->SR & (1u << channel)) != 0;",
+      "test_hook": "ALLOY_PWM_TEST_HOOK_IS_ENABLED"
     }
   },
 
-  "state_variables": [
-    {"name": "m_opened", "type": "bool", "initial_value": "false", "description": "Tracks if peripheral is initialized"},
-    {"name": "m_config", "type": "PwmConfig", "initial_value": "{}", "description": "Current configuration"}
-  ],
-
-  "additional_structs": [
-    {
-      "name": "PwmChannelRegisters",
-      "description": "PWM Channel Registers (per-channel). Each of the 4 PWM channels has its own register block at offset 0x200 + (channel * 0x20)",
-      "fields": [
-        {"name": "CMR", "type": "volatile uint32_t", "description": "Channel Mode Register"},
-        {"name": "CDTY", "type": "volatile uint32_t", "description": "Channel Duty Cycle Register"},
-        {"name": "CDTYUPD", "type": "volatile uint32_t", "description": "Channel Duty Cycle Update Register"},
-        {"name": "CPRD", "type": "volatile uint32_t", "description": "Channel Period Register"},
-        {"name": "CPRDUPD", "type": "volatile uint32_t", "description": "Channel Period Update Register"},
-        {"name": "CCNT", "type": "volatile uint32_t", "description": "Channel Counter Register (read-only)"},
-        {"name": "DT", "type": "volatile uint32_t", "description": "Channel Dead Time Register"},
-        {"name": "DTUPD", "type": "volatile uint32_t", "description": "Channel Dead Time Update Register"}
-      ]
-    }
-  ],
-
-  "additional_methods": [
-    {
-      "name": "get_channel",
-      "description": "Get PWM channel registers",
-      "return_type": "volatile PwmChannelRegisters*",
-      "static": true,
-      "inline": true,
-      "const": false,
-      "body": "#ifdef ALLOY_PWM_MOCK_CHANNEL\n        return ALLOY_PWM_MOCK_CHANNEL();\n#else\n        return reinterpret_cast<volatile PwmChannelRegisters*>(BASE_ADDR + channel_offset);\n#endif"
-    }
-  ],
-
   "instances": [
-    {"name": "Pwm0Ch0", "base": "0x40020000", "channel": "0", "irq": "31", "description": "PWM0 Channel 0"},
-    {"name": "Pwm0Ch1", "base": "0x40020000", "channel": "1", "irq": "31", "description": "PWM0 Channel 1"},
-    {"name": "Pwm0Ch2", "base": "0x40020000", "channel": "2", "irq": "31", "description": "PWM0 Channel 2"},
-    {"name": "Pwm0Ch3", "base": "0x40020000", "channel": "3", "irq": "31", "description": "PWM0 Channel 3"},
-    {"name": "Pwm1Ch0", "base": "0x4005C000", "channel": "0", "irq": "60", "description": "PWM1 Channel 0"},
-    {"name": "Pwm1Ch1", "base": "0x4005C000", "channel": "1", "irq": "60", "description": "PWM1 Channel 1"},
-    {"name": "Pwm1Ch2", "base": "0x4005C000", "channel": "2", "irq": "60", "description": "PWM1 Channel 2"},
-    {"name": "Pwm1Ch3", "base": "0x4005C000", "channel": "3", "irq": "60", "description": "PWM1 Channel 3"}
-  ],
-
-  "examples": {
-    "basic_usage": {
-      "description": "Basic PWM usage",
-      "code": "using MyPwm = Pwm<PWM0_BASE, 0, PWM0_IRQ>;\nauto pwm = MyPwm{};\nPwmConfig config;\nconfig.prescaler = PwmPrescaler::DIV_1;\nconfig.period = 1000;\nconfig.duty_cycle = 500;  // 50%\npwm.open();\npwm.configure(config);\npwm.start();"
-    }
-  }
+    {"name": "Pwm0", "base": "0x40020000", "clock": "150000000", "description": "PWM0 instance"},
+    {"name": "Pwm1", "base": "0x4005C000", "clock": "150000000", "description": "PWM1 instance"}
+  ]
 }

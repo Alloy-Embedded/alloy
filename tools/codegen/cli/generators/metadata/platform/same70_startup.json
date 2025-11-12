@@ -1,0 +1,487 @@
+{
+  "family": "same70",
+  "mcu": "ATSAME70Q21B",
+  "arch": "cortex-m7",
+  "description": "SAME70Q21B Startup Configuration",
+
+  "memory": {
+    "flash": {
+      "base": "0x00400000",
+      "size": "0x00200000",
+      "comment": "2 MB internal flash"
+    },
+    "sram": {
+      "base": "0x20400000",
+      "size": "0x00060000",
+      "comment": "384 KB SRAM"
+    },
+    "stack_size": "0x00001000",
+    "heap_size": "0x0005F000"
+  },
+
+  "vector_table": {
+    "standard_exceptions": 16,
+    "irq_count": 80,
+    "total_vectors": 96,
+    "handlers": [
+      {
+        "index": 16,
+        "name": "SUPC_Handler",
+        "irq_number": 0,
+        "description": "Supply Controller"
+      },
+      {
+        "index": 17,
+        "name": "RSTC_Handler",
+        "irq_number": 1,
+        "description": "Reset Controller"
+      },
+      {
+        "index": 18,
+        "name": "RTC_Handler",
+        "irq_number": 2,
+        "description": "Real-time Clock"
+      },
+      {
+        "index": 19,
+        "name": "RTT_Handler",
+        "irq_number": 3,
+        "description": "Real-time Timer"
+      },
+      {
+        "index": 20,
+        "name": "WDT_Handler",
+        "irq_number": 4,
+        "description": "Watchdog Timer"
+      },
+      {
+        "index": 21,
+        "name": "PMC_Handler",
+        "irq_number": 5,
+        "description": "Power Management Controller"
+      },
+      {
+        "index": 22,
+        "name": "EEFC_Handler",
+        "irq_number": 6,
+        "description": "Enhanced Embedded Flash Controller"
+      },
+      {
+        "index": 23,
+        "name": "UART0_Handler",
+        "irq_number": 7,
+        "description": "UART 0"
+      },
+      {
+        "index": 24,
+        "name": "UART1_Handler",
+        "irq_number": 8,
+        "description": "UART 1"
+      },
+      {
+        "index": 25,
+        "name": "PIOA_Handler",
+        "irq_number": 9,
+        "description": "PIO Controller A"
+      },
+      {
+        "index": 26,
+        "name": "PIOB_Handler",
+        "irq_number": 10,
+        "description": "PIO Controller B"
+      },
+      {
+        "index": 27,
+        "name": "PIOC_Handler",
+        "irq_number": 11,
+        "description": "PIO Controller C"
+      },
+      {
+        "index": 28,
+        "name": "USART0_Handler",
+        "irq_number": 12,
+        "description": "USART 0"
+      },
+      {
+        "index": 29,
+        "name": "USART1_Handler",
+        "irq_number": 13,
+        "description": "USART 1"
+      },
+      {
+        "index": 30,
+        "name": "USART2_Handler",
+        "irq_number": 14,
+        "description": "USART 2"
+      },
+      {
+        "index": 31,
+        "name": "PIOD_Handler",
+        "irq_number": 15,
+        "description": "PIO Controller D"
+      },
+      {
+        "index": 32,
+        "name": "PIOE_Handler",
+        "irq_number": 16,
+        "description": "PIO Controller E"
+      },
+      {
+        "index": 33,
+        "name": "HSMCI_Handler",
+        "irq_number": 17,
+        "description": "High Speed Multimedia Card Interface"
+      },
+      {
+        "index": 34,
+        "name": "TWIHS0_Handler",
+        "irq_number": 18,
+        "description": "Two-wire Interface 0"
+      },
+      {
+        "index": 35,
+        "name": "TWIHS1_Handler",
+        "irq_number": 19,
+        "description": "Two-wire Interface 1"
+      },
+      {
+        "index": 36,
+        "name": "SPI0_Handler",
+        "irq_number": 20,
+        "description": "Serial Peripheral Interface 0"
+      },
+      {
+        "index": 37,
+        "name": "SSC_Handler",
+        "irq_number": 21,
+        "description": "Synchronous Serial Controller"
+      },
+      {
+        "index": 38,
+        "name": "TC0_Handler",
+        "irq_number": 22,
+        "description": "Timer Counter 0"
+      },
+      {
+        "index": 39,
+        "name": "TC1_Handler",
+        "irq_number": 23,
+        "description": "Timer Counter 1"
+      },
+      {
+        "index": 40,
+        "name": "TC2_Handler",
+        "irq_number": 24,
+        "description": "Timer Counter 2"
+      },
+      {
+        "index": 41,
+        "name": "TC3_Handler",
+        "irq_number": 25,
+        "description": "Timer Counter 3"
+      },
+      {
+        "index": 42,
+        "name": "TC4_Handler",
+        "irq_number": 26,
+        "description": "Timer Counter 4"
+      },
+      {
+        "index": 43,
+        "name": "TC5_Handler",
+        "irq_number": 27,
+        "description": "Timer Counter 5"
+      },
+      {
+        "index": 44,
+        "name": "AFEC0_Handler",
+        "irq_number": 28,
+        "description": "Analog Front End Controller 0"
+      },
+      {
+        "index": 45,
+        "name": "DACC_Handler",
+        "irq_number": 29,
+        "description": "Digital-to-Analog Converter"
+      },
+      {
+        "index": 46,
+        "name": "PWM0_Handler",
+        "irq_number": 30,
+        "description": "Pulse Width Modulation Controller 0"
+      },
+      {
+        "index": 47,
+        "name": "ICM_Handler",
+        "irq_number": 31,
+        "description": "Integrity Check Monitor"
+      },
+      {
+        "index": 48,
+        "name": "ACC_Handler",
+        "irq_number": 32,
+        "description": "Analog Comparator Controller"
+      },
+      {
+        "index": 49,
+        "name": "USBHS_Handler",
+        "irq_number": 33,
+        "description": "USB High Speed"
+      },
+      {
+        "index": 50,
+        "name": "MCAN0_Handler",
+        "irq_number": 34,
+        "description": "CAN Controller 0"
+      },
+      {
+        "index": 51,
+        "name": "MCAN1_Handler",
+        "irq_number": 35,
+        "description": "CAN Controller 1"
+      },
+      {
+        "index": 52,
+        "name": "GMAC_Handler",
+        "irq_number": 36,
+        "description": "Gigabit Ethernet MAC"
+      },
+      {
+        "index": 53,
+        "name": "AFEC1_Handler",
+        "irq_number": 37,
+        "description": "Analog Front End Controller 1"
+      },
+      {
+        "index": 54,
+        "name": "TWIHS2_Handler",
+        "irq_number": 38,
+        "description": "Two-wire Interface 2"
+      },
+      {
+        "index": 55,
+        "name": "SPI1_Handler",
+        "irq_number": 39,
+        "description": "Serial Peripheral Interface 1"
+      },
+      {
+        "index": 56,
+        "name": "QSPI_Handler",
+        "irq_number": 40,
+        "description": "Quad SPI"
+      },
+      {
+        "index": 57,
+        "name": "UART2_Handler",
+        "irq_number": 41,
+        "description": "UART 2"
+      },
+      {
+        "index": 58,
+        "name": "UART3_Handler",
+        "irq_number": 42,
+        "description": "UART 3"
+      },
+      {
+        "index": 59,
+        "name": "UART4_Handler",
+        "irq_number": 43,
+        "description": "UART 4"
+      },
+      {
+        "index": 60,
+        "name": "TC6_Handler",
+        "irq_number": 44,
+        "description": "Timer Counter 6"
+      },
+      {
+        "index": 61,
+        "name": "TC7_Handler",
+        "irq_number": 45,
+        "description": "Timer Counter 7"
+      },
+      {
+        "index": 62,
+        "name": "TC8_Handler",
+        "irq_number": 46,
+        "description": "Timer Counter 8"
+      },
+      {
+        "index": 63,
+        "name": "TC9_Handler",
+        "irq_number": 47,
+        "description": "Timer Counter 9"
+      },
+      {
+        "index": 64,
+        "name": "TC10_Handler",
+        "irq_number": 48,
+        "description": "Timer Counter 10"
+      },
+      {
+        "index": 65,
+        "name": "TC11_Handler",
+        "irq_number": 49,
+        "description": "Timer Counter 11"
+      },
+      {
+        "index": 66,
+        "name": "MLB_Handler",
+        "irq_number": 50,
+        "description": "MediaLB"
+      },
+      {
+        "index": 69,
+        "name": "AES_Handler",
+        "irq_number": 53,
+        "description": "Advanced Encryption Standard"
+      },
+      {
+        "index": 70,
+        "name": "TRNG_Handler",
+        "irq_number": 54,
+        "description": "True Random Number Generator"
+      },
+      {
+        "index": 71,
+        "name": "XDMAC_Handler",
+        "irq_number": 55,
+        "description": "DMA Controller"
+      },
+      {
+        "index": 72,
+        "name": "ISI_Handler",
+        "irq_number": 56,
+        "description": "Image Sensor Interface"
+      },
+      {
+        "index": 73,
+        "name": "PWM1_Handler",
+        "irq_number": 57,
+        "description": "Pulse Width Modulation Controller 1"
+      },
+      {
+        "index": 74,
+        "name": "FPU_Handler",
+        "irq_number": 58,
+        "description": "Floating Point Unit"
+      },
+      {
+        "index": 75,
+        "name": "SDRAMC_Handler",
+        "irq_number": 59,
+        "description": "SDRAM Controller"
+      },
+      {
+        "index": 76,
+        "name": "RSWDT_Handler",
+        "irq_number": 60,
+        "description": "Reinforced Safety Watchdog Timer"
+      },
+      {
+        "index": 77,
+        "name": "CCW_Handler",
+        "irq_number": 61,
+        "description": "System Control Block - Cache Warning"
+      },
+      {
+        "index": 78,
+        "name": "CCF_Handler",
+        "irq_number": 62,
+        "description": "System Control Block - Cache Fault"
+      },
+      {
+        "index": 79,
+        "name": "GMAC_Q1_Handler",
+        "irq_number": 63,
+        "description": "Gigabit Ethernet MAC Queue 1"
+      },
+      {
+        "index": 80,
+        "name": "GMAC_Q2_Handler",
+        "irq_number": 64,
+        "description": "Gigabit Ethernet MAC Queue 2"
+      },
+      {
+        "index": 81,
+        "name": "IXC_Handler",
+        "irq_number": 65,
+        "description": "Floating Point Exception"
+      },
+      {
+        "index": 85,
+        "name": "I2SC0_Handler",
+        "irq_number": 69,
+        "description": "Inter-IC Sound Controller 0"
+      },
+      {
+        "index": 86,
+        "name": "I2SC1_Handler",
+        "irq_number": 70,
+        "description": "Inter-IC Sound Controller 1"
+      },
+      {
+        "index": 87,
+        "name": "GMAC_Q3_Handler",
+        "irq_number": 71,
+        "description": "Gigabit Ethernet MAC Queue 3"
+      },
+      {
+        "index": 88,
+        "name": "GMAC_Q4_Handler",
+        "irq_number": 72,
+        "description": "Gigabit Ethernet MAC Queue 4"
+      },
+      {
+        "index": 89,
+        "name": "GMAC_Q5_Handler",
+        "irq_number": 73,
+        "description": "Gigabit Ethernet MAC Queue 5"
+      }
+    ]
+  },
+
+  "clock": {
+    "default_cpu_freq": 300000000,
+    "default_systick_freq": 1000,
+    "main_crystal_freq": 12000000,
+    "slow_clock_freq": 32768,
+    "comment": "300 MHz CPU, 12 MHz main crystal, 32.768 kHz slow clock"
+  },
+
+  "init_hooks": {
+    "early_init": {
+      "enabled": true,
+      "description": "Called before .data/.bss initialization",
+      "use_cases": ["Flash wait states", "Watchdog disable", "Critical hardware"]
+    },
+    "pre_main_init": {
+      "enabled": true,
+      "description": "Called after .data/.bss, before main",
+      "use_cases": ["Clock configuration", "Cache enable", "Memory controller"]
+    },
+    "late_init": {
+      "enabled": true,
+      "description": "Called from board::init()",
+      "use_cases": ["Peripheral initialization", "Board setup", "Application config"]
+    }
+  },
+
+  "features": {
+    "fpu": true,
+    "mpu": true,
+    "cache": {
+      "instruction_cache": true,
+      "data_cache": true
+    },
+    "dsp": true,
+    "comment": "Cortex-M7 with FPU, MPU, I/D cache, DSP"
+  },
+
+  "generation": {
+    "output_dir": "src/hal/vendors/arm/same70",
+    "output_file": "startup_same70_generated.cpp",
+    "template": "startup.cpp.j2",
+    "generator": "startup_generator.py"
+  }
+}

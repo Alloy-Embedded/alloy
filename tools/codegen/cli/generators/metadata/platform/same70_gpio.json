@@ -576,5 +576,28 @@
       "code": "hw()->IFDR = pin_mask;",
       "test_hook": "ALLOY_GPIO_TEST_HOOK_IFDR"
     }
-  }
+  },
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "PIO peripheral base address"
+    },
+    {
+      "name": "PERIPH_CLOCK_HZ",
+      "type": "uint32_t",
+      "description": "Peripheral clock frequency"
+    }
+  ],
+
+  "constants": [],
+
+  "instances": [
+    {"name": "PioA", "base": "0x400E0E00", "clock": "150000000", "description": "PIOA port"},
+    {"name": "PioB", "base": "0x400E1000", "clock": "150000000", "description": "PIOB port"},
+    {"name": "PioC", "base": "0x400E1200", "clock": "150000000", "description": "PIOC port"},
+    {"name": "PioD", "base": "0x400E1400", "clock": "150000000", "description": "PIOD port"},
+    {"name": "PioE", "base": "0x400E1600", "clock": "150000000", "description": "PIOE port"}
+  ]
 }

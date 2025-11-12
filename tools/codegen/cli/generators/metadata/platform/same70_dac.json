@@ -1,0 +1,124 @@
+{
+  "family": "same70",
+  "vendor": "atmel",
+  "peripheral_name": "DAC",
+  "register_include": "hal/vendors/atmel/same70/registers/dacc_registers.hpp",
+  "bitfield_include": "hal/vendors/atmel/same70/bitfields/dacc_bitfields.hpp",
+  "register_namespace": "atmel::same70::dacc",
+  "namespace_alias": "dacc",
+  "register_type": "DACC_Registers",
+  "platform_namespace": "alloy::hal::same70",
+  "vendor_namespace": "alloy::hal::atmel::same70",
+  "requires_clock": true,
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "DACC peripheral base address"
+    },
+    {
+      "name": "PERIPH_CLOCK_HZ",
+      "type": "uint32_t",
+      "description": "Peripheral clock frequency"
+    }
+  ],
+
+  "constants": [
+    {
+      "name": "NUM_CHANNELS",
+      "type": "uint8_t",
+      "value": "2",
+      "description": "Number of DAC channels"
+    }
+  ],
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for SAME70 DACC (DAC)",
+    "peripheral_clock_hz": 150000000,
+    "mock_hook_prefix": "ALLOY_DAC_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "reset": {
+      "description": "Software reset of DACC",
+      "return_type": "void",
+      "code": "hw()->CR = dacc::cr::SWRST::mask;",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_RESET"
+    },
+
+    "enable_channel": {
+      "description": "Enable DAC channel",
+      "parameters": [
+        {"name": "channel", "type": "uint8_t", "description": "Channel number (0-1)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->CHER = (1u << channel);",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_ENABLE"
+    },
+
+    "disable_channel": {
+      "description": "Disable DAC channel",
+      "parameters": [
+        {"name": "channel", "type": "uint8_t", "description": "Channel number (0-1)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->CHDR = (1u << channel);",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_DISABLE"
+    },
+
+    "write_value": {
+      "description": "Write value to DAC channel",
+      "parameters": [
+        {"name": "channel", "type": "uint8_t", "description": "Channel number (0-1)"},
+        {"name": "value", "type": "uint16_t", "description": "12-bit value (0-4095)"}
+      ],
+      "return_type": "void",
+      "code": "if (channel == 0) { hw()->CDR0 = value & 0xFFF; } else { hw()->CDR1 = value & 0xFFF; }",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_WRITE"
+    },
+
+    "configure_mode": {
+      "description": "Configure DAC mode register",
+      "parameters": [
+        {"name": "mode", "type": "uint32_t", "description": "Mode register value"}
+      ],
+      "return_type": "void",
+      "code": "hw()->MR = mode;",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_MODE"
+    },
+
+    "enable_trigger": {
+      "description": "Enable external trigger",
+      "return_type": "void",
+      "code": "hw()->MR |= dacc::mr::TRGEN::mask;",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_TRIG_EN"
+    },
+
+    "disable_trigger": {
+      "description": "Disable external trigger",
+      "return_type": "void",
+      "code": "hw()->MR &= ~dacc::mr::TRGEN::mask;",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_TRIG_DIS"
+    },
+
+    "is_ready": {
+      "description": "Check if DAC is ready",
+      "parameters": [
+        {"name": "channel", "type": "uint8_t", "description": "Channel number (0-1)"}
+      ],
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->ISR & (dacc::isr::TXRDY0::mask << channel)) != 0;",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_READY"
+    }
+  },
+
+  "instances": [
+    {"name": "Dac", "base": "0x40040000", "clock": "150000000", "description": "DACC instance"}
+  ]
+}

@@ -1,8 +1,8 @@
 /**
- * @file uart_hardware_policy.hpp
- * @brief Hardware Policy for UART on SAME70 (Policy-Based Design)
+ * @file spi_hardware_policy.hpp
+ * @brief Hardware Policy for SPI on SAME70 (Policy-Based Design)
  *
- * This file provides platform-specific hardware access for UART using
+ * This file provides platform-specific hardware access for SPI using
  * the Policy-Based Design pattern. All methods are static inline for
  * zero runtime overhead.
  *
@@ -10,11 +10,11 @@
  * - Generic APIs accept this policy as template parameter
  * - All methods are static inline (zero overhead)
  * - Direct register access with compile-time addresses
- * - Mock hooks for testing (#ifdef ALLOY_UART_MOCK_HW)
+ * - Mock hooks for testing (#ifdef ALLOY_SPI_MOCK_HW)
  *
  * Auto-generated from: same70/spi.json
  * Generator: hardware_policy_generator.py
- * Generated: 2025-11-11 07:14:38
+ * Generated: 2025-11-11 20:39:30
  *
  * @note Part of Alloy HAL Vendor Layer
  * @note See ARCHITECTURE.md for Policy-Based Design rationale
@@ -52,31 +52,13 @@ namespace spi = atmel::same70::spi0;
  *
  * Template Parameters:
  * - BASE_ADDR: SPI peripheral base address
- * - PERIPH_CLOCK_HZ: Peripheral clock frequency in Hz
+ * - IRQ_ID: SPI interrupt ID for clock enable
  *
- * Usage:
- * @code
- * // In generic API
- * template <typename HardwarePolicy>
- * class UartImpl {
- *     void initialize() {
- *         HardwarePolicy::reset();
- *         HardwarePolicy::configure_8n1();
- *         HardwarePolicy::set_baudrate(115200);
- *         HardwarePolicy::enable_tx();
- *         HardwarePolicy::enable_rx();
- *     }
- * };
- *
- * // Platform-specific alias
- * using Uart0 = UartImpl<Same70UartHardwarePolicy<UART0_BASE, 150000000>>;
- * @endcode
- *
- * @tparam BASE_ADDR Peripheral base address
- * @tparam PERIPH_CLOCK_HZ Peripheral clock frequency (for baud rate calculation)
+ * @tparam BASE_ADDR SPI peripheral base address
+ * @tparam IRQ_ID SPI interrupt ID for clock enable
  */
-template <uint32_t BASE_ADDR, uint32_t PERIPH_CLOCK_HZ>
-struct Same70UartHardwarePolicy {
+template <uint32_t BASE_ADDR, uint32_t IRQ_ID>
+struct Same70SPIHardwarePolicy {
     // ========================================================================
     // Type Definitions
     // ========================================================================
@@ -87,8 +69,8 @@ struct Same70UartHardwarePolicy {
     // Compile-Time Constants
     // ========================================================================
 
-    static constexpr uint32_t base_address = BASE_ADDR;
-    static constexpr uint32_t peripheral_clock_hz = PERIPH_CLOCK_HZ;
+    static constexpr uint32_t base_addr = BASE_ADDR;
+    static constexpr uint32_t irq_id = IRQ_ID;
     static constexpr uint32_t SPI_TIMEOUT = 100000;  ///< SPI timeout in loop iterations (~10ms at 150MHz)
     static constexpr size_t STACK_BUFFER_SIZE = 256;  ///< Stack buffer size for dummy data in write/read operations
 
@@ -105,8 +87,8 @@ struct Same70UartHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_SPI_MOCK_HW
-            return ALLOY_SPI_MOCK_HW();  // Test hook
+        #ifdef 
+            return ();  // Test hook
         #else
             return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         #endif
@@ -115,6 +97,14 @@ struct Same70UartHardwarePolicy {
     // ========================================================================
     // Hardware Policy Methods
     // ========================================================================
+
+    /**
+     * @brief Get pointer to hardware registers
+     * @return volatile RegisterType*
+     */
+    static inline volatile RegisterType* hw_accessor() {
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+    }
 
     /**
      * @brief Reset SPI peripheral
@@ -170,7 +160,6 @@ struct Same70UartHardwarePolicy {
 
     /**
      * @brief Configure chip select parameters
-     *
      * @param cs Chip select number (0-3)
      * @param scbr Serial Clock Baud Rate divider
      * @param mode SPI mode (0-3)
@@ -183,14 +172,13 @@ struct Same70UartHardwarePolicy {
         #endif
 
         uint32_t csr_value = spi::csr::SCBR::write(0, scbr);
-        if (mode & 0x01) csr_value |= spi::csr::NCPHA::mask;
-        if (mode & 0x02) csr_value |= spi::csr::CPOL::mask;
-        hw()->CSR[cs] = csr_value;
+if (mode & 0x01) csr_value |= spi::csr::NCPHA::mask;
+if (mode & 0x02) csr_value |= spi::csr::CPOL::mask;
+hw()->CSR[cs] = csr_value;
     }
 
     /**
      * @brief Select chip (assert CS)
-     *
      * @param cs Chip select number (0-3)
      *
      * @note Test hook: ALLOY_SPI_TEST_HOOK_SELECT
@@ -233,7 +221,6 @@ struct Same70UartHardwarePolicy {
 
     /**
      * @brief Write byte to transmit register
-     *
      * @param byte Byte to transmit
      *
      * @note Test hook: ALLOY_SPI_TEST_HOOK_WRITE
@@ -262,7 +249,6 @@ struct Same70UartHardwarePolicy {
 
     /**
      * @brief Wait for TX ready with timeout
-     *
      * @param timeout_loops Timeout in loop iterations
      * @return bool
      *
@@ -274,13 +260,12 @@ struct Same70UartHardwarePolicy {
         #endif
 
         uint32_t timeout = timeout_loops;
-        while (!is_tx_ready() && --timeout);
-        return timeout != 0;
+while (!is_tx_ready() && --timeout);
+return timeout != 0;
     }
 
     /**
      * @brief Wait for RX ready with timeout
-     *
      * @param timeout_loops Timeout in loop iterations
      * @return bool
      *
@@ -292,8 +277,8 @@ struct Same70UartHardwarePolicy {
         #endif
 
         uint32_t timeout = timeout_loops;
-        while (!is_rx_ready() && --timeout);
-        return timeout != 0;
+while (!is_rx_ready() && --timeout);
+return timeout != 0;
     }
 
 };
@@ -303,34 +288,29 @@ struct Same70UartHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Spi0
-using Spi0Hardware = Same70UartHardwarePolicy<0x40008000, 150000000>;
-
+using Spi0Hardware = Same70SPIHardwarePolicy<0x40008000, >;
 /// @brief Hardware policy for Spi1
-using Spi1Hardware = Same70UartHardwarePolicy<0x40058000, 150000000>;
-
+using Spi1Hardware = Same70SPIHardwarePolicy<0x40058000, >;
 
 }  // namespace alloy::hal::same70
 
 /**
  * @example
- * Using the hardware policy with generic UART API:
+ * Using the hardware policy with generic SPI API:
  *
  * @code
- * #include "hal/api/uart_simple.hpp"
- * #include "hal/vendors/atmel/same70/uart_hardware_policy.hpp"
+ * #include "hal/api/spi_simple.hpp"
+ * #include "hal/platform/same70/spi.hpp"
  *
  * using namespace alloy::hal;
  * using namespace alloy::hal::same70;
  *
- * // Create UART with hardware policy
- * using Uart0 = UartImpl<PeripheralId::USART0, Uart0Hardware>;
+ * // Create SPI with hardware policy
+ * using Instance0 = Spi0Hardware;
  *
  * int main() {
- *     auto config = Uart0::quick_setup<TxPin, RxPin>(BaudRate{115200});
- *     config.initialize();
- *
- *     const char* msg = "Hello World\n";
- *     config.write(reinterpret_cast<const uint8_t*>(msg), 12);
+ *     Instance0::reset();
+ *     // Use other policy methods...
  * }
  * @endcode
  */

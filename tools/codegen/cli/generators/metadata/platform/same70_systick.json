@@ -1,40 +1,146 @@
 {
-  "device": "ATSAME70Q21B",
-  "vendor": "atmel",
   "family": "same70",
-  "peripheral": "SysTick",
-  "description": "System Timer with 1kHz interrupt and microsecond interpolation",
+  "vendor": "arm",
+  "peripheral_name": "SysTick",
+  "register_include": "hal/vendors/arm/cortex_m7/systick_registers.hpp",
+  "bitfield_include": "hal/vendors/arm/cortex_m7/systick_bitfields.hpp",
+  "register_namespace": "alloy::hal::arm::cortex_m7",
+  "namespace_alias": "systick",
+  "register_type": "cortex_m7::SysTick_Type",
+  "platform_namespace": "alloy::hal::same70",
+  "vendor_namespace": "alloy::hal::arm::cortex_m7",
+  "requires_clock": false,
 
-  "features": [
-    "1kHz interrupt rate (1000 interrupts/second)",
-    "Microsecond precision through hardware counter interpolation",
-    "Automatic MCK frequency detection",
-    "Sub-millisecond timing accuracy",
-    "RTOS-ready with low interrupt overhead"
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "SysTick base address (0xE000E010)"
+    },
+    {
+      "name": "CPU_CLOCK_HZ",
+      "type": "uint32_t",
+      "description": "CPU clock frequency in Hz"
+    }
   ],
 
-  "dependencies": {
-    "clock": "Clock HAL for MCK frequency",
-    "registers": "hal/vendors/atmel/same70/registers/systick_registers.hpp",
-    "bitfields": "hal/vendors/atmel/same70/bitfields/systick_bitfields.hpp"
+  "constants": [
+    {
+      "name": "SYSTICK_BASE",
+      "type": "uint32_t",
+      "value": "0xE000E010",
+      "description": "SysTick base address in ARM Cortex-M"
+    }
+  ],
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for ARM Cortex-M SysTick",
+    "peripheral_clock_hz": 300000000,
+    "mock_hook_prefix": "ALLOY_SYSTICK_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "enable": {
+      "description": "Enable SysTick timer",
+      "return_type": "void",
+      "code": "hw()->CTRL |= (1u << 0);",
+      "test_hook": "ALLOY_SYSTICK_TEST_HOOK_ENABLE"
+    },
+
+    "disable": {
+      "description": "Disable SysTick timer",
+      "return_type": "void",
+      "code": "hw()->CTRL &= ~(1u << 0);",
+      "test_hook": "ALLOY_SYSTICK_TEST_HOOK_DISABLE"
+    },
+
+    "enable_interrupt": {
+      "description": "Enable SysTick interrupt",
+      "return_type": "void",
+      "code": "hw()->CTRL |= (1u << 1);",
+      "test_hook": "ALLOY_SYSTICK_TEST_HOOK_INT_EN"
+    },
+
+    "disable_interrupt": {
+      "description": "Disable SysTick interrupt",
+      "return_type": "void",
+      "code": "hw()->CTRL &= ~(1u << 1);",
+      "test_hook": "ALLOY_SYSTICK_TEST_HOOK_INT_DIS"
+    },
+
+    "set_clock_source_cpu": {
+      "description": "Set clock source to CPU clock",
+      "return_type": "void",
+      "code": "hw()->CTRL |= (1u << 2);",
+      "test_hook": "ALLOY_SYSTICK_TEST_HOOK_CLK_CPU"
+    },
+
+    "set_clock_source_external": {
+      "description": "Set clock source to external reference",
+      "return_type": "void",
+      "code": "hw()->CTRL &= ~(1u << 2);",
+      "test_hook": "ALLOY_SYSTICK_TEST_HOOK_CLK_EXT"
+    },
+
+    "set_reload_value": {
+      "description": "Set reload value (period)",
+      "parameters": [
+        {"name": "value", "type": "uint32_t", "description": "Reload value (24-bit, max 0xFFFFFF)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->LOAD = value & 0xFFFFFF;",
+      "test_hook": "ALLOY_SYSTICK_TEST_HOOK_RELOAD"
+    },
+
+    "get_current_value": {
+      "description": "Get current counter value",
+      "return_type": "uint32_t",
+      "const": true,
+      "code": "return hw()->VAL;",
+      "test_hook": "ALLOY_SYSTICK_TEST_HOOK_GET_VAL"
+    },
+
+    "clear_current_value": {
+      "description": "Clear current counter value",
+      "return_type": "void",
+      "code": "hw()->VAL = 0;",
+      "test_hook": "ALLOY_SYSTICK_TEST_HOOK_CLEAR"
+    },
+
+    "has_counted_to_zero": {
+      "description": "Check if counter has counted to zero (COUNTFLAG)",
+      "return_type": "bool",
+      "const": true,
+      "code": "return (hw()->CTRL & (1u << 16)) != 0;",
+      "test_hook": "ALLOY_SYSTICK_TEST_HOOK_FLAG"
+    },
+
+    "configure_ms": {
+      "description": "Configure SysTick for millisecond interrupts",
+      "parameters": [
+        {"name": "ms", "type": "uint32_t", "description": "Millisecond period"}
+      ],
+      "return_type": "void",
+      "code": "uint32_t ticks = (CPU_CLOCK_HZ / 1000) * ms; if (ticks > 0xFFFFFF) ticks = 0xFFFFFF; hw()->LOAD = ticks - 1; hw()->VAL = 0; hw()->CTRL = 0x07;",
+      "test_hook": "ALLOY_SYSTICK_TEST_HOOK_CONFIG_MS"
+    },
+
+    "configure_us": {
+      "description": "Configure SysTick for microsecond interrupts",
+      "parameters": [
+        {"name": "us", "type": "uint32_t", "description": "Microsecond period"}
+      ],
+      "return_type": "void",
+      "code": "uint32_t ticks = (CPU_CLOCK_HZ / 1000000) * us; if (ticks > 0xFFFFFF) ticks = 0xFFFFFF; hw()->LOAD = ticks - 1; hw()->VAL = 0; hw()->CTRL = 0x07;",
+      "test_hook": "ALLOY_SYSTICK_TEST_HOOK_CONFIG_US"
+    }
   },
 
-  "interrupt": {
-    "handler": "SysTick_Handler",
-    "frequency_hz": 1000,
-    "priority": "High (system timer)"
-  },
-
-  "configuration": {
-    "tick_rate_hz": 1000,
-    "resolution_us": 1,
-    "overflow_time": "~49 days (2^32 milliseconds)"
-  },
-
-  "notes": [
-    "Must call Clock::initialize() before SystemTick::init()",
-    "Interrupt handler must be defined in user code (see example)",
-    "Uses 1kHz interrupt rate to minimize CPU overhead",
-    "Provides microsecond accuracy through counter interpolation"
+  "instances": [
+    {"name": "SysTick", "base": "0xE000E010", "clock": "300000000", "description": "ARM Cortex-M7 SysTick timer"}
   ]
 }
