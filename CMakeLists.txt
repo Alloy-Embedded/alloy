@@ -107,7 +107,7 @@ endif()
 # Map board to header file and startup code
 if(ALLOY_BOARD STREQUAL "same70_xpld" OR ALLOY_BOARD STREQUAL "same70_xplained")
     set(BOARD_HEADER_PATH "boards/same70_xplained/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/atsame70/startup.cpp")
+    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/atmel/same70/startup_same70.cpp")
     set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/same70_xplained/ATSAME70Q21.ld")
 elseif(ALLOY_BOARD STREQUAL "arduino_zero")
     set(BOARD_HEADER_PATH "boards/arduino_zero/board.hpp")
@@ -242,70 +242,25 @@ endif()
 
 # add_subdirectory(src/drivers)
 
-# Examples
-# add_subdirectory(examples/blinky)  # Not exists yet
-# add_subdirectory(examples/portable_blinky)  # Portable example for all MCUs
-
 # ==============================================================================
-# Generic Examples (Work on Any Board)
+# Examples - Board Abstraction Layer
 # ==============================================================================
 
-# These examples use the board abstraction layer and work on any supported board
-if(DEFINED BOARD_HEADER_PATH)
-    add_subdirectory(examples/blink_led)      # Generic LED blink
-    # add_subdirectory(examples/systick_test)  # Generic SysTick test (TODO)
-    # add_subdirectory(examples/button_led)    # Generic button → LED (TODO)
+# Generic blink_led example - works on any board with board.hpp abstraction
+# The same code compiles for different boards by including the appropriate board.hpp
+
+if(ALLOY_BOARD STREQUAL "same70_xplained")
+    add_subdirectory(examples/blink_led)
 endif()
 
-# ==============================================================================
-# Board-Specific Examples (Legacy - To be migrated)
-# ==============================================================================
-
-# Board-specific blink examples
-if(ALLOY_BOARD STREQUAL "bluepill")
-    add_subdirectory(examples/blink_stm32f103)
-    add_subdirectory(examples/rtos_blink)
-    add_subdirectory(examples/rtos_queue)
-    add_subdirectory(examples/rtos_semaphore)
-    add_subdirectory(examples/rtos_mutex)
-    add_subdirectory(examples/rtos_events)
-endif()
-
-if(ALLOY_BOARD STREQUAL "esp32_devkit")
-    add_subdirectory(examples/blink_esp32)
-    add_subdirectory(examples/rtos_blink_esp32)
-endif()
-
-if(ALLOY_BOARD STREQUAL "stm32f407vg")
-    add_subdirectory(examples/blink_stm32f407)
-endif()
-
-if(ALLOY_BOARD STREQUAL "arduino_zero")
-    add_subdirectory(examples/blink_arduino_zero)
-endif()
-
-if(ALLOY_BOARD STREQUAL "rp_pico")
-    add_subdirectory(examples/blink_rp_pico)
-    # add_subdirectory(examples/rtos_blink_pico)  # TODO: Needs systick.cpp implementation
-endif()
-
-if(ALLOY_BOARD STREQUAL "rp2040_zero")
-    add_subdirectory(examples/blink_rp2040_zero)
-    add_subdirectory(examples/blink_rp2040_zero_pio)
-endif()
-
-if(ALLOY_BOARD STREQUAL "same70_xpld")
-    add_subdirectory(examples/same70_xplained_blink)  # Simple blink example
-    add_subdirectory(examples/same70_clock_test)      # Clock configuration test
-    add_subdirectory(examples/same70_systick_test)    # SysTick timer test with precise delays
-    # add_subdirectory(examples/same70_uart_hello)    # TODO: Create this example
-endif()
-
-if(ALLOY_BOARD STREQUAL "host")
-    # Temporarily disabled due to gpio.cpp path issues
-    # add_subdirectory(examples/systick_host_test)
-    # add_subdirectory(examples/rtos_host_demo)
-endif()
+# TODO: Add more boards as they implement board.hpp abstraction:
+# if(ALLOY_BOARD STREQUAL "stm32f103_bluepill")
+#     add_subdirectory(examples/blink_led)
+# endif()
+#
+# if(ALLOY_BOARD STREQUAL "arduino_zero")
+#     add_subdirectory(examples/blink_led)
+# endif()
 
 # Tests
 if(ALLOY_BUILD_TESTS AND ALLOY_BOARD STREQUAL "host")
@@ -314,8 +269,3 @@ endif()
 
 # Export compile commands for IDEs
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-# Linux-specific examples (only for host builds)
-if(ALLOY_BOARD STREQUAL "host")
-    add_subdirectory(examples/linux_cmake_test)
-endif()

@@ -34,8 +34,8 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 #include "core/units.hpp"
-#include "hal/signals.hpp"
-#include "hal/signal_registry.hpp"
+#include "hal/core/signals.hpp"
+#include "hal/core/signal_registry.hpp"
 #include "hal/api/uart_simple.hpp"  // For UartParity and defaults
 
 namespace alloy::hal {

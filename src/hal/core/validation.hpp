@@ -24,7 +24,7 @@
 #include <string_view>
 
 #include "core/types.hpp"
-#include "hal/signals.hpp"
+#include "hal/core/signals.hpp"
 
 namespace alloy::hal::validation {
 

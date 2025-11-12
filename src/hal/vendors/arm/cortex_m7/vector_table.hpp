@@ -25,6 +25,31 @@ concept InterruptHandler = requires(T t) {
 };
 
 /**
+ * @brief ARM Cortex-M Vector Table Entry
+ *
+ * In ARM Cortex-M, the vector table has a special structure:
+ * - Entry 0: Initial stack pointer (raw address value)
+ * - Entries 1+: Exception/interrupt handlers (function pointers)
+ *
+ * This union allows representing both types. When placed in the vector table,
+ * the hardware interprets entry 0 as a stack pointer address and all other
+ * entries as function pointers to jump to.
+ */
+union VectorEntry {
+    uintptr_t address;      // For stack pointer (entry 0)
+    void (*handler)();      // For exception/interrupt handlers (entries 1+)
+
+    // Default constructor for handler
+    constexpr VectorEntry() : handler(nullptr) {}
+
+    // Constructor for raw address (stack pointer)
+    constexpr explicit VectorEntry(uintptr_t addr) : address(addr) {}
+
+    // Constructor for function pointer (handlers)
+    constexpr VectorEntry(void (*h)()) : handler(h) {}
+};
+
+/**
  * @brief Compile-time vector table builder
  *
  * Builds ARM Cortex-M vector table at compile time using constexpr.
@@ -67,9 +92,10 @@ public:
      * Initializes all vectors to default handler.
      */
     consteval VectorTableBuilder() {
-        // Initialize all to default handler
-        for (size_t i = 0; i < VectorCount; ++i) {
-            vectors_[i] = &default_handler;
+        // Entry 0 will be set by set_stack_pointer()
+        // Initialize all handler entries (1+) to default handler
+        for (size_t i = 1; i < VectorCount; ++i) {
+            vectors_[i] = VectorEntry(&default_handler);
         }
     }
 
@@ -81,8 +107,8 @@ public:
      * @return Reference to builder for chaining
      */
     constexpr VectorTableBuilder& set_handler(size_t index, HandlerType handler) {
-        if (index < VectorCount && handler != nullptr) {
-            vectors_[index] = handler;
+        if (index < VectorCount) {
+            vectors_[index] = VectorEntry(handler);
         }
         return *this;
     }
@@ -92,9 +118,12 @@ public:
      *
      * @param sp Stack pointer address (top of stack)
      * @return Reference to builder for chaining
+     *
+     * This sets the initial stack pointer value in entry 0 of the vector table.
+     * The hardware loads this value into the stack pointer on reset.
      */
     constexpr VectorTableBuilder& set_stack_pointer(uintptr_t sp) {
-        vectors_[0] = reinterpret_cast<HandlerType>(sp);
+        vectors_[0] = VectorEntry(sp);
         return *this;
     }
 
@@ -146,11 +175,11 @@ public:
      * @return Reference to builder for chaining
      */
     constexpr VectorTableBuilder& set_reserved_null() {
-        vectors_[7] = nullptr;
-        vectors_[8] = nullptr;
-        vectors_[9] = nullptr;
-        vectors_[10] = nullptr;
-        vectors_[13] = nullptr;
+        vectors_[7] = VectorEntry(nullptr);
+        vectors_[8] = VectorEntry(nullptr);
+        vectors_[9] = VectorEntry(nullptr);
+        vectors_[10] = VectorEntry(nullptr);
+        vectors_[13] = VectorEntry(nullptr);
         return *this;
     }
 
@@ -173,7 +202,7 @@ public:
     }
 
 private:
-    std::array<HandlerType, VectorCount> vectors_{};
+    std::array<VectorEntry, VectorCount> vectors_{};
 
     /**
      * @brief Default handler (infinite loop)

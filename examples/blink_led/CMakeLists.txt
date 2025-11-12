@@ -17,9 +17,11 @@ set(SOURCES
     main.cpp
 )
 
-# Add board configuration implementation if it exists
-if(EXISTS "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/board_config.cpp")
-    list(APPEND SOURCES "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/board_config.cpp")
+# Add board implementation (required for board abstraction)
+if(EXISTS "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/board.cpp")
+    list(APPEND SOURCES "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/board.cpp")
+else()
+    message(FATAL_ERROR "Board implementation not found: ${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/board.cpp")
 endif()
 
 # Add startup code (board-specific, managed by CMake)

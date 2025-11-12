@@ -37,7 +37,7 @@
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/signals.hpp"
+#include "hal/core/signals.hpp"
 #include "hal/interface/dma.hpp"
 
 #include <array>

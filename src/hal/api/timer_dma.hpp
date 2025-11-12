@@ -8,7 +8,7 @@
 
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/dma_connection.hpp"
+#include "hal/dma/connection.hpp"
 #include "hal/timer_expert.hpp"
 
 namespace alloy::hal {

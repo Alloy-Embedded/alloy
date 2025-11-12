@@ -13,6 +13,9 @@
 #include <algorithm>
 #include "init_hooks.hpp"
 
+// Forward declare main (must be in global scope)
+extern "C" int main();
+
 namespace alloy::hal::arm {
 
 /**
@@ -153,8 +156,7 @@ public:
         pre_main_init();
 
         // 6. Call main
-        extern int main();
-        main();
+        ::main();
 
         // 7. If main returns, infinite loop
         while (true) {

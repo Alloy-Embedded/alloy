@@ -42,7 +42,7 @@
 #pragma once
 
 #include "core/types.hpp"
-#include "hal/dma_connection.hpp"
+#include "hal/dma/connection.hpp"
 
 #include <array>
 

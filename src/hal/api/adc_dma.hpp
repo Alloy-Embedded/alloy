@@ -8,8 +8,8 @@
 
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/dma_config.hpp"
-#include "hal/dma_connection.hpp"
+#include "hal/dma/config.hpp"
+#include "hal/dma/connection.hpp"
 #include "hal/adc_expert.hpp"
 
 namespace alloy::hal {

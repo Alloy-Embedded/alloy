@@ -46,7 +46,7 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 #include "core/units.hpp"
-#include "hal/signals.hpp"
+#include "hal/core/signals.hpp"
 #include "hal/api/uart_simple.hpp"  // For UartParity
 
 namespace alloy::hal {

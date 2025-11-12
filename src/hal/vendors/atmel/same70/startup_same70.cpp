@@ -18,7 +18,7 @@ using namespace alloy::hal::same70;
 // =============================================================================
 
 extern "C" {
-    void Reset_Handler();
+    [[noreturn]] void Reset_Handler();
     void Default_Handler();
     void NMI_Handler();
     void HardFault_Handler();

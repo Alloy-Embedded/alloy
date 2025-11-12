@@ -9,6 +9,17 @@
 
 #include <cstdint>
 
+// Linker script symbols (must be in global scope)
+extern "C" {
+    extern uint32_t _sidata;  // Source of .data in flash
+    extern uint32_t _sdata;   // Start of .data in RAM
+    extern uint32_t _edata;   // End of .data in RAM
+    extern uint32_t _sbss;    // Start of .bss
+    extern uint32_t _ebss;    // End of .bss
+    extern void (*__init_array_start)();  // Start of constructor array
+    extern void (*__init_array_end)();    // End of constructor array
+}
+
 namespace alloy::hal::same70 {
 
 /**
@@ -28,18 +39,13 @@ namespace alloy::hal::same70 {
  * - __init_array_end:   End of constructor array
  */
 struct StartupConfig {
-    // Linker script symbols (extern declarations)
-    // These are defined by the linker, not by us
-    // We declare them here to access their addresses
-
     /**
      * @brief Get source address of .data section in flash
      *
      * @return Pointer to .data source (in flash)
      */
     static uint32_t* data_src_start() {
-        extern uint32_t _sidata;
-        return &_sidata;
+        return &::_sidata;
     }
 
     /**
@@ -48,8 +54,7 @@ struct StartupConfig {
      * @return Pointer to .data start (in RAM)
      */
     static uint32_t* data_dst_start() {
-        extern uint32_t _sdata;
-        return &_sdata;
+        return &::_sdata;
     }
 
     /**
@@ -58,8 +63,7 @@ struct StartupConfig {
      * @return Pointer to .data end (in RAM)
      */
     static uint32_t* data_dst_end() {
-        extern uint32_t _edata;
-        return &_edata;
+        return &::_edata;
     }
 
     /**
@@ -68,8 +72,7 @@ struct StartupConfig {
      * @return Pointer to .bss start
      */
     static uint32_t* bss_start() {
-        extern uint32_t _sbss;
-        return &_sbss;
+        return &::_sbss;
     }
 
     /**
@@ -78,8 +81,7 @@ struct StartupConfig {
      * @return Pointer to .bss end
      */
     static uint32_t* bss_end() {
-        extern uint32_t _ebss;
-        return &_ebss;
+        return &::_ebss;
     }
 
     /**
@@ -87,9 +89,10 @@ struct StartupConfig {
      *
      * @return Stack pointer value (top of stack)
      */
-    static uintptr_t stack_top() {
-        extern uint32_t _estack;
-        return reinterpret_cast<uintptr_t>(&_estack);
+    static constexpr uintptr_t stack_top() {
+        // For constexpr, we return the expected stack top address
+        // The linker script places _estack at SRAM_BASE + SRAM_SIZE
+        return SRAM_BASE + SRAM_SIZE;
     }
 
     /**
@@ -97,9 +100,8 @@ struct StartupConfig {
      *
      * @return Pointer to constructor array start
      */
-    static void (**init_array_start)() {
-        extern void (*__init_array_start)();
-        return &__init_array_start;
+    static auto init_array_start() -> void (**)() {
+        return &::__init_array_start;
     }
 
     /**
@@ -107,9 +109,8 @@ struct StartupConfig {
      *
      * @return Pointer to constructor array end
      */
-    static void (**init_array_end)() {
-        extern void (*__init_array_end)();
-        return &__init_array_end;
+    static auto init_array_end() -> void (**)() {
+        return &::__init_array_end;
     }
 
     // Memory configuration constants (from SAME70 datasheet)
@@ -160,6 +161,14 @@ struct StartupConfig {
      * @brief Total vector count
      */
     static constexpr size_t VECTOR_COUNT = EXCEPTION_COUNT + IRQ_COUNT;
+
+    // Exception handler indices (Cortex-M7 standard)
+    static constexpr size_t MEM_MANAGE_HANDLER_IDX = 4;   // Memory Management
+    static constexpr size_t BUS_FAULT_HANDLER_IDX = 5;    // Bus Fault
+    static constexpr size_t USAGE_FAULT_HANDLER_IDX = 6;  // Usage Fault
+    static constexpr size_t SVCALL_HANDLER_IDX = 11;      // SVCall
+    static constexpr size_t DEBUG_MON_HANDLER_IDX = 12;   // Debug Monitor
+    static constexpr size_t PENDSV_HANDLER_IDX = 14;      // PendSV
 
     // Clock configuration (defaults, can be changed by pre_main_init)
 

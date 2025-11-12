@@ -28,7 +28,7 @@
 // ============================================================================
 
 #include "hal/types.hpp"
-#include "hal/signals.hpp"
+#include "hal/core/signals.hpp"
 
 #include "core/error.hpp"
 #include "core/result.hpp"
