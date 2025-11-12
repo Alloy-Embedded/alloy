@@ -1,13 +1,13 @@
 /**
  * @file signals.hpp
- * @brief Signal Routing Tables for ATSAME70Q21B
+ * @brief Signal Routing Tables for ATSAME70N20B
  *
  * Auto-generated signal routing tables for peripheral signal validation.
  * Part of Phase 2: Signal Metadata Generation.
  *
- * MCU: ATSAME70Q21B
- * Package: Q-pin (144 pins)
- * Available Ports: PA, PB, PC, PD, PE
+ * MCU: ATSAME70N20B
+ * Package: N-pin (100 pins)
+ * Available Ports: PA, PB, PC, PD
  *
  * Generated from: same70_pin_functions.py
  * Generator: signals_generator.py
@@ -35,7 +35,7 @@ using namespace alloy::hal::signals;
 
 /**
  * @brief PWM0_HIGH signal
- * Compatible pins: PA0, PA1, PA11, PA12, PA2, PA30, PA7, PB0, PB1, PB4, PC0, PC1, PC12, PC13, PC14, PC15, PC2, PC3, PD0, PD1, PD2, PD24, PD3, PE0, PE1, PE2, PE3
+ * Compatible pins: PA0, PA1, PA11, PA12, PA2, PA30, PA7, PB0, PB1, PB4, PC0, PC1, PC12, PC13, PC14, PC15, PC2, PC3, PD0, PD1, PD2, PD24, PD3
  */
 struct PWM0HIGHSignal {
     static constexpr PeripheralId peripheral = PeripheralId::PWM0;
@@ -63,17 +63,13 @@ struct PWM0HIGHSignal {
         PinDef{PinId::PD1, AlternateFunction::PERIPH_B},
         PinDef{PinId::PD2, AlternateFunction::PERIPH_B},
         PinDef{PinId::PD24, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD3, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PE0, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PE1, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PE2, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PE3, AlternateFunction::PERIPH_B}
+        PinDef{PinId::PD3, AlternateFunction::PERIPH_B}
     };
 };
 
 /**
  * @brief PWM0_LOW signal
- * Compatible pins: PA8, PB5, PC10, PC11, PC8, PC9, PD4, PD5, PD6, PD7, PE4, PE5
+ * Compatible pins: PA8, PB5, PC10, PC11, PC8, PC9, PD4, PD5, PD6, PD7
  */
 struct PWM0LOWSignal {
     static constexpr PeripheralId peripheral = PeripheralId::PWM0;
@@ -88,9 +84,7 @@ struct PWM0LOWSignal {
         PinDef{PinId::PD4, AlternateFunction::PERIPH_B},
         PinDef{PinId::PD5, AlternateFunction::PERIPH_B},
         PinDef{PinId::PD6, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PD7, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PE4, AlternateFunction::PERIPH_B},
-        PinDef{PinId::PE5, AlternateFunction::PERIPH_B}
+        PinDef{PinId::PD7, AlternateFunction::PERIPH_B}
     };
 };
 
@@ -693,19 +687,13 @@ struct I2C1CLOCKSignal {
 
 /**
  * @brief LCD0_DATA signal
- * Compatible pins: PA3, PE0, PE1, PE2, PE3, PE4, PE5
+ * Compatible pins: PA3
  */
 struct LCD0DATASignal {
     static constexpr PeripheralId peripheral = PeripheralId::LCD0;
     static constexpr SignalType type = SignalType::DATA;
     static constexpr std::array compatible_pins = {
-        PinDef{PinId::PA3, AlternateFunction::PERIPH_C},
-        PinDef{PinId::PE0, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PE1, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PE2, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PE3, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PE4, AlternateFunction::PERIPH_A},
-        PinDef{PinId::PE5, AlternateFunction::PERIPH_A}
+        PinDef{PinId::PA3, AlternateFunction::PERIPH_C}
     };
 };
 // UART Signals

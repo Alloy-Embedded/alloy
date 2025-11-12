@@ -1,0 +1,197 @@
+{
+  "family": "same70",
+  "vendor": "atmel",
+  "description": "SAME70 Signal Routing Configuration",
+
+  "pin_functions_source": "cli/vendors/atmel/same70_pin_functions.py",
+
+  "mcus": [
+    {
+      "name": "atsame70j19b",
+      "package": "J",
+      "pin_count": 64,
+      "flash_kb": 512,
+      "description": "SAME70J19B - 64-pin LQFP package",
+      "available_ports": ["PA", "PB"],
+      "max_pins_per_port": {
+        "PA": 32,
+        "PB": 14
+      }
+    },
+    {
+      "name": "atsame70j20b",
+      "package": "J",
+      "pin_count": 64,
+      "flash_kb": 1024,
+      "description": "SAME70J20B - 64-pin LQFP package",
+      "available_ports": ["PA", "PB"],
+      "max_pins_per_port": {
+        "PA": 32,
+        "PB": 14
+      }
+    },
+    {
+      "name": "atsame70j21b",
+      "package": "J",
+      "pin_count": 64,
+      "flash_kb": 2048,
+      "description": "SAME70J21B - 64-pin LQFP package",
+      "available_ports": ["PA", "PB"],
+      "max_pins_per_port": {
+        "PA": 32,
+        "PB": 14
+      }
+    },
+    {
+      "name": "atsame70n19b",
+      "package": "N",
+      "pin_count": 100,
+      "flash_kb": 512,
+      "description": "SAME70N19B - 100-pin LQFP package",
+      "available_ports": ["PA", "PB", "PC", "PD"],
+      "max_pins_per_port": {
+        "PA": 32,
+        "PB": 14,
+        "PC": 32,
+        "PD": 32
+      }
+    },
+    {
+      "name": "atsame70n20b",
+      "package": "N",
+      "pin_count": 100,
+      "flash_kb": 1024,
+      "description": "SAME70N20B - 100-pin LQFP package",
+      "available_ports": ["PA", "PB", "PC", "PD"],
+      "max_pins_per_port": {
+        "PA": 32,
+        "PB": 14,
+        "PC": 32,
+        "PD": 32
+      }
+    },
+    {
+      "name": "atsame70n21b",
+      "package": "N",
+      "pin_count": 100,
+      "flash_kb": 2048,
+      "description": "SAME70N21B - 100-pin LQFP package",
+      "available_ports": ["PA", "PB", "PC", "PD"],
+      "max_pins_per_port": {
+        "PA": 32,
+        "PB": 14,
+        "PC": 32,
+        "PD": 32
+      }
+    },
+    {
+      "name": "atsame70q19b",
+      "package": "Q",
+      "pin_count": 144,
+      "flash_kb": 512,
+      "description": "SAME70Q19B - 144-pin LQFP package",
+      "available_ports": ["PA", "PB", "PC", "PD", "PE"],
+      "max_pins_per_port": {
+        "PA": 32,
+        "PB": 14,
+        "PC": 32,
+        "PD": 32,
+        "PE": 6
+      }
+    },
+    {
+      "name": "atsame70q20b",
+      "package": "Q",
+      "pin_count": 144,
+      "flash_kb": 1024,
+      "description": "SAME70Q20B - 144-pin LQFP package",
+      "available_ports": ["PA", "PB", "PC", "PD", "PE"],
+      "max_pins_per_port": {
+        "PA": 32,
+        "PB": 14,
+        "PC": 32,
+        "PD": 32,
+        "PE": 6
+      }
+    },
+    {
+      "name": "atsame70q21",
+      "package": "Q",
+      "pin_count": 144,
+      "flash_kb": 2048,
+      "description": "SAME70Q21 - 144-pin LQFP package",
+      "available_ports": ["PA", "PB", "PC", "PD", "PE"],
+      "max_pins_per_port": {
+        "PA": 32,
+        "PB": 14,
+        "PC": 32,
+        "PD": 32,
+        "PE": 6
+      }
+    },
+    {
+      "name": "atsame70q21b",
+      "package": "Q",
+      "pin_count": 144,
+      "flash_kb": 2048,
+      "description": "SAME70Q21B - 144-pin LQFP package",
+      "available_ports": ["PA", "PB", "PC", "PD", "PE"],
+      "max_pins_per_port": {
+        "PA": 32,
+        "PB": 14,
+        "PC": 32,
+        "PD": 32,
+        "PE": 6
+      }
+    }
+  ],
+
+  "peripheral_signal_types": {
+    "UART": ["RX", "TX"],
+    "USART": ["RX", "TX", "CK", "RTS", "CTS"],
+    "SPI": ["MISO", "MOSI", "SPCK", "NPCS"],
+    "TWI": ["TWD", "TWCK"],
+    "PWM": ["HIGH", "LOW"],
+    "TC": ["TIOA", "TIOB", "TCLK"],
+    "ADC": ["TRIGGER", "IN"],
+    "DAC": ["TRIGGER", "OUT"],
+    "QSPI": ["CS", "IO", "CLK"],
+    "HSMCI": ["CMD", "DAT", "CLK"],
+    "ISI": ["D", "HSYNC", "VSYNC", "PCK"],
+    "GMAC": ["TX", "RX", "MDC", "MDIO"],
+    "CAN": ["TX", "RX"]
+  },
+
+  "signal_type_mapping": {
+    "RX": "RX",
+    "TX": "TX",
+    "CK": "CLOCK",
+    "CLK": "CLOCK",
+    "RTS": "CONTROL",
+    "CTS": "CONTROL",
+    "MISO": "MISO",
+    "MOSI": "MOSI",
+    "SPCK": "CLOCK",
+    "NPCS": "CS",
+    "TWD": "DATA",
+    "TWCK": "CLOCK",
+    "TIOA": "DATA",
+    "TIOB": "DATA",
+    "TCLK": "CLOCK",
+    "TRIGGER": "TRIGGER",
+    "IN": "DATA",
+    "OUT": "DATA",
+    "CS": "CS",
+    "IO": "DATA",
+    "CMD": "CONTROL",
+    "DAT": "DATA",
+    "D": "DATA",
+    "HSYNC": "CONTROL",
+    "VSYNC": "CONTROL",
+    "PCK": "CLOCK",
+    "MDC": "CLOCK",
+    "MDIO": "DATA",
+    "HIGH": "DATA",
+    "LOW": "DATA"
+  }
+}
