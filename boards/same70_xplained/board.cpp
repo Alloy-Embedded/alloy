@@ -6,7 +6,7 @@
  */
 
 #include "board.hpp"
-#include "hal/vendors/arm/same70/systick_hardware_policy.hpp"
+#include "hal/vendors/atmel/same70/systick_hardware_policy.hpp"
 #include "hal/vendors/arm/cortex_m7/init_hooks.hpp"
 
 namespace board {
