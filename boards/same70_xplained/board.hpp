@@ -1,72 +1,120 @@
-/**
- * @file board.hpp
- * @brief Board Support Package for SAME70 Xplained Ultra
- *
- * This is the main board header that applications should include.
- * It provides a standard interface for portable code.
- *
- * SAME70 Xplained Ultra Specifications:
- * - MCU: ATSAME70Q21B (ARM Cortex-M7 @ 300MHz max)
- * - Flash: 2MB
- * - RAM: 384KB
- * - LEDs: 2x user LEDs (LED0: PC8, LED1: PC9)
- * - Buttons: 2x user buttons (SW0: PA11, SW1: PC2)
- * - USB: Full-speed USB device + host
- * - Ethernet: 10/100 Mbps
- * - Camera interface, SD card, etc.
- *
- * Simple Usage:
- * @code
- * #include BOARD_HEADER  // CMake defines this
- *
- * int main() {
- *     board::init();  // Initialize with defaults
- *
- *     while (true) {
- *         board::led::toggle();
- *         board::delay_ms(500);
- *     }
- * }
- * @endcode
- *
- * Advanced Usage:
- * @code
- * #include "boards/same70_xplained/board.hpp"
- * using namespace alloy::boards::same70_xplained;
- *
- * int main() {
- *     // Initialize with specific clock
- *     board::init(ClockPreset::Clock150MHz);
- *
- *     // Use multiple LEDs
- *     board::led::on();
- *     board::led::led1::on();
- *
- *     // Use buttons
- *     if (board::button::read()) {
- *         board::led::toggle();
- *     }
- *
- *     while (true) {
- *         board::delay_ms(100);
- *     }
- * }
- * @endcode
- *
- * @see board_config.hpp for implementation details
- * @see boards/common/board_interface.hpp for standard interface
- *
- * @note Part of Alloy Framework Board Support
- */
-
 #pragma once
 
-// Include standard board interface
-#include "../common/board_interface.hpp"
+/**
+ * @file board.hpp
+ * @brief SAME70 Xplained Ultra Board API
+ * 
+ * High-level board abstraction providing:
+ * - Pre-configured peripherals (LED, UART, etc.)
+ * - Board initialization
+ * - Utility functions (delay, etc.)
+ */
 
-// Include board-specific configuration and implementation
 #include "board_config.hpp"
+#include "hal/vendors/atmel/same70/pio_hardware_policy.hpp"
+#include "hal/vendors/arm/same70/systick_hardware_policy.hpp"
 
-// Re-export board namespace for convenience
-// This makes alloy::boards::same70_xplained::board available as just board::
-using namespace alloy::boards::same70_xplained;
+namespace board {
+
+using namespace same70_xplained;
+
+// =============================================================================
+// Timing
+// =============================================================================
+
+/// Global tick counter (incremented in SysTick_Handler)
+extern volatile uint32_t system_ticks_ms;
+
+/**
+ * @brief Delay for specified milliseconds
+ * @param ms Milliseconds to delay
+ * 
+ * Uses SysTick counter for timing
+ */
+inline void delay_ms(uint32_t ms) {
+    uint32_t start = system_ticks_ms;
+    while ((system_ticks_ms - start) < ms) {
+        __asm volatile ("wfi");  // Wait for interrupt (power save)
+    }
+}
+
+/**
+ * @brief Get system uptime in milliseconds
+ * @return Milliseconds since board_init()
+ */
+inline uint32_t millis() {
+    return system_ticks_ms;
+}
+
+// =============================================================================
+// LED Control
+// =============================================================================
+
+namespace led {
+
+using LedGpio = alloy::hal::same70::PioCHardware;
+
+/**
+ * @brief Initialize LED GPIO
+ */
+inline void init() {
+    LedGpio::enable_pio(1u << LedConfig::led_green_pin);
+    LedGpio::enable_output(1u << LedConfig::led_green_pin);
+    
+    // Start with LED off
+    if (LedConfig::led_green_active_high) {
+        LedGpio::clear_output(1u << LedConfig::led_green_pin);
+    } else {
+        LedGpio::set_output(1u << LedConfig::led_green_pin);
+    }
+}
+
+/**
+ * @brief Turn LED on
+ */
+inline void on() {
+    if (LedConfig::led_green_active_high) {
+        LedGpio::set_output(1u << LedConfig::led_green_pin);
+    } else {
+        LedGpio::clear_output(1u << LedConfig::led_green_pin);
+    }
+}
+
+/**
+ * @brief Turn LED off
+ */
+inline void off() {
+    if (LedConfig::led_green_active_high) {
+        LedGpio::clear_output(1u << LedConfig::led_green_pin);
+    } else {
+        LedGpio::set_output(1u << LedConfig::led_green_pin);
+    }
+}
+
+/**
+ * @brief Toggle LED state
+ */
+inline void toggle() {
+    LedGpio::toggle_output(1u << LedConfig::led_green_pin);
+}
+
+} // namespace led
+
+// =============================================================================
+// Board Initialization
+// =============================================================================
+
+/**
+ * @brief Initialize board hardware
+ * 
+ * Configures:
+ * - System clocks (300 MHz)
+ * - SysTick (1ms tick)
+ * - LED GPIO
+ * - (Future: UART console, etc.)
+ * 
+ * Call this early in main() before using board peripherals
+ */
+void init();
+
+} // namespace board

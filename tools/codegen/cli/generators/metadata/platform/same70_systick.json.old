@@ -1,0 +1,40 @@
+{
+  "device": "ATSAME70Q21B",
+  "vendor": "atmel",
+  "family": "same70",
+  "peripheral": "SysTick",
+  "description": "System Timer with 1kHz interrupt and microsecond interpolation",
+
+  "features": [
+    "1kHz interrupt rate (1000 interrupts/second)",
+    "Microsecond precision through hardware counter interpolation",
+    "Automatic MCK frequency detection",
+    "Sub-millisecond timing accuracy",
+    "RTOS-ready with low interrupt overhead"
+  ],
+
+  "dependencies": {
+    "clock": "Clock HAL for MCK frequency",
+    "registers": "hal/vendors/atmel/same70/registers/systick_registers.hpp",
+    "bitfields": "hal/vendors/atmel/same70/bitfields/systick_bitfields.hpp"
+  },
+
+  "interrupt": {
+    "handler": "SysTick_Handler",
+    "frequency_hz": 1000,
+    "priority": "High (system timer)"
+  },
+
+  "configuration": {
+    "tick_rate_hz": 1000,
+    "resolution_us": 1,
+    "overflow_time": "~49 days (2^32 milliseconds)"
+  },
+
+  "notes": [
+    "Must call Clock::initialize() before SystemTick::init()",
+    "Interrupt handler must be defined in user code (see example)",
+    "Uses 1kHz interrupt rate to minimize CPU overhead",
+    "Provides microsecond accuracy through counter interpolation"
+  ]
+}

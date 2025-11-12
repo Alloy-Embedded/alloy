@@ -14,7 +14,7 @@
  *
  * Auto-generated from: same70/uart.json
  * Generator: hardware_policy_generator.py
- * Generated: 2025-11-11 07:14:38
+ * Generated: 2025-11-11 20:39:30
  *
  * @note Part of Alloy HAL Vendor Layer
  * @note See ARCHITECTURE.md for Policy-Based Design rationale
@@ -52,31 +52,13 @@ namespace uart = atmel::same70::uart0;
  *
  * Template Parameters:
  * - BASE_ADDR: UART peripheral base address
- * - PERIPH_CLOCK_HZ: Peripheral clock frequency in Hz
+ * - IRQ_ID: UART interrupt ID for clock enable
  *
- * Usage:
- * @code
- * // In generic API
- * template <typename HardwarePolicy>
- * class UartImpl {
- *     void initialize() {
- *         HardwarePolicy::reset();
- *         HardwarePolicy::configure_8n1();
- *         HardwarePolicy::set_baudrate(115200);
- *         HardwarePolicy::enable_tx();
- *         HardwarePolicy::enable_rx();
- *     }
- * };
- *
- * // Platform-specific alias
- * using Uart0 = UartImpl<Same70UartHardwarePolicy<UART0_BASE, 150000000>>;
- * @endcode
- *
- * @tparam BASE_ADDR Peripheral base address
- * @tparam PERIPH_CLOCK_HZ Peripheral clock frequency (for baud rate calculation)
+ * @tparam BASE_ADDR UART peripheral base address
+ * @tparam IRQ_ID UART interrupt ID for clock enable
  */
-template <uint32_t BASE_ADDR, uint32_t PERIPH_CLOCK_HZ>
-struct Same70UartHardwarePolicy {
+template <uint32_t BASE_ADDR, uint32_t IRQ_ID>
+struct Same70UARTHardwarePolicy {
     // ========================================================================
     // Type Definitions
     // ========================================================================
@@ -87,8 +69,8 @@ struct Same70UartHardwarePolicy {
     // Compile-Time Constants
     // ========================================================================
 
-    static constexpr uint32_t base_address = BASE_ADDR;
-    static constexpr uint32_t peripheral_clock_hz = PERIPH_CLOCK_HZ;
+    static constexpr uint32_t base_addr = BASE_ADDR;
+    static constexpr uint32_t irq_id = IRQ_ID;
     static constexpr uint32_t UART_TIMEOUT = 100000;  ///< UART timeout in loop iterations (~10ms at 150MHz)
 
     // ========================================================================
@@ -104,8 +86,8 @@ struct Same70UartHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_UART_MOCK_HW
-            return ALLOY_UART_MOCK_HW();  // Test hook
+        #ifdef 
+            return ();  // Test hook
         #else
             return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         #endif
@@ -114,6 +96,14 @@ struct Same70UartHardwarePolicy {
     // ========================================================================
     // Hardware Policy Methods
     // ========================================================================
+
+    /**
+     * @brief Get pointer to hardware registers
+     * @return volatile RegisterType*
+     */
+    static inline volatile RegisterType* hw_accessor() {
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+    }
 
     /**
      * @brief Reset UART peripheral (TX and RX)
@@ -143,7 +133,6 @@ struct Same70UartHardwarePolicy {
 
     /**
      * @brief Set UART baud rate
-     *
      * @param baud Desired baud rate
      *
      * @note Test hook: ALLOY_UART_TEST_HOOK_BAUDRATE
@@ -154,7 +143,7 @@ struct Same70UartHardwarePolicy {
         #endif
 
         uint32_t cd = PERIPH_CLOCK_HZ / (16 * baud);
-        hw()->BRGR = uart::brgr::CD::write(0, cd);
+hw()->BRGR = uart::brgr::CD::write(0, cd);
     }
 
     /**
@@ -239,7 +228,6 @@ struct Same70UartHardwarePolicy {
 
     /**
      * @brief Write single byte to THR
-     *
      * @param byte Byte to write
      *
      * @note Test hook: ALLOY_UART_TEST_HOOK_WRITE
@@ -268,7 +256,6 @@ struct Same70UartHardwarePolicy {
 
     /**
      * @brief Wait for TX ready with timeout
-     *
      * @param timeout_loops Timeout in loop iterations
      * @return bool
      *
@@ -280,13 +267,12 @@ struct Same70UartHardwarePolicy {
         #endif
 
         uint32_t timeout = timeout_loops;
-        while (!is_tx_ready() && --timeout);
-        return timeout != 0;
+while (!is_tx_ready() && --timeout);
+return timeout != 0;
     }
 
     /**
      * @brief Wait for RX ready with timeout
-     *
      * @param timeout_loops Timeout in loop iterations
      * @return bool
      *
@@ -298,8 +284,8 @@ struct Same70UartHardwarePolicy {
         #endif
 
         uint32_t timeout = timeout_loops;
-        while (!is_rx_ready() && --timeout);
-        return timeout != 0;
+while (!is_rx_ready() && --timeout);
+return timeout != 0;
     }
 
 };
@@ -309,20 +295,15 @@ struct Same70UartHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Uart0
-using Uart0Hardware = Same70UartHardwarePolicy<0x400E0800, 150000000>;
-
+using Uart0Hardware = Same70UARTHardwarePolicy<0x400E0800, >;
 /// @brief Hardware policy for Uart1
-using Uart1Hardware = Same70UartHardwarePolicy<0x400E0A00, 150000000>;
-
+using Uart1Hardware = Same70UARTHardwarePolicy<0x400E0A00, >;
 /// @brief Hardware policy for Uart2
-using Uart2Hardware = Same70UartHardwarePolicy<0x400E1A00, 150000000>;
-
+using Uart2Hardware = Same70UARTHardwarePolicy<0x400E1A00, >;
 /// @brief Hardware policy for Uart3
-using Uart3Hardware = Same70UartHardwarePolicy<0x400E1C00, 150000000>;
-
+using Uart3Hardware = Same70UARTHardwarePolicy<0x400E1C00, >;
 /// @brief Hardware policy for Uart4
-using Uart4Hardware = Same70UartHardwarePolicy<0x400E1E00, 150000000>;
-
+using Uart4Hardware = Same70UARTHardwarePolicy<0x400E1E00, >;
 
 }  // namespace alloy::hal::same70
 
@@ -332,20 +313,17 @@ using Uart4Hardware = Same70UartHardwarePolicy<0x400E1E00, 150000000>;
  *
  * @code
  * #include "hal/api/uart_simple.hpp"
- * #include "hal/vendors/atmel/same70/uart_hardware_policy.hpp"
+ * #include "hal/platform/same70/uart.hpp"
  *
  * using namespace alloy::hal;
  * using namespace alloy::hal::same70;
  *
  * // Create UART with hardware policy
- * using Uart0 = UartImpl<PeripheralId::USART0, Uart0Hardware>;
+ * using Instance0 = Uart0Hardware;
  *
  * int main() {
- *     auto config = Uart0::quick_setup<TxPin, RxPin>(BaudRate{115200});
- *     config.initialize();
- *
- *     const char* msg = "Hello World\n";
- *     config.write(reinterpret_cast<const uint8_t*>(msg), 12);
+ *     Instance0::reset();
+ *     // Use other policy methods...
  * }
  * @endcode
  */

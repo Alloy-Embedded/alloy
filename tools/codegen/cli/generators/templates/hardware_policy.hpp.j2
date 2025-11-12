@@ -1,0 +1,166 @@
+/**
+ * @file {{ peripheral_name|lower }}_hardware_policy.hpp
+ * @brief Hardware Policy for {{ peripheral_name }} on {{ family|upper }} (Policy-Based Design)
+ *
+ * This file provides platform-specific hardware access for {{ peripheral_name }} using
+ * the Policy-Based Design pattern. All methods are static inline for
+ * zero runtime overhead.
+ *
+ * Design Pattern: Policy-Based Design
+ * - Generic APIs accept this policy as template parameter
+ * - All methods are static inline (zero overhead)
+ * - Direct register access with compile-time addresses
+ * - Mock hooks for testing (#ifdef ALLOY_{{ peripheral_name|upper }}_MOCK_HW)
+ *
+ * Auto-generated from: {{ family }}/{{ peripheral_name|lower }}.json
+ * Generator: hardware_policy_generator.py
+ * Generated: {{ generation_date }}
+ *
+ * @note Part of Alloy HAL Vendor Layer
+ * @note See ARCHITECTURE.md for Policy-Based Design rationale
+ */
+
+#pragma once
+
+#include "core/types.hpp"
+#include "core/error.hpp"
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+
+// Register definitions
+#include "{{ register_include }}"
+
+// Bitfield definitions
+#include "{{ bitfield_include }}"
+
+namespace {{ platform_namespace }} {
+
+using namespace alloy::core;
+
+// Import register types
+using namespace {{ vendor_namespace }};
+
+// Namespace alias for bitfields
+namespace {{ namespace_alias }} = {{ register_namespace }};
+
+/**
+ * @brief Hardware Policy for {{ peripheral_name }} on {{ family|upper }}
+ *
+ * This policy provides all platform-specific hardware access methods
+ * for {{ peripheral_name }}. It is designed to be used as a template
+ * parameter in generic {{ peripheral_name }} implementations.
+ *
+ * Template Parameters:
+{% for param in template_params %}
+ * - {{ param.name }}: {{ param.description }}
+{% endfor %}
+ *
+{% for param in template_params %}
+ * @tparam {{ param.name }} {{ param.description }}
+{% endfor %}
+ */
+template <{% for param in template_params %}{{ param.type }} {{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}>
+struct {{ family|capitalize }}{{ peripheral_name }}HardwarePolicy {
+    // ========================================================================
+    // Type Definitions
+    // ========================================================================
+
+    using RegisterType = {{ register_type }};
+
+    // ========================================================================
+    // Compile-Time Constants
+    // ========================================================================
+
+{% for param in template_params %}
+    static constexpr {{ param.type }} {{ param.name|lower }} = {{ param.name }};
+{% endfor %}
+{% for const in constants %}
+    static constexpr {{ const.type }} {{ const.name }} = {{ const.value }};  ///< {{ const.description }}
+{% endfor %}
+
+    // ========================================================================
+    // Hardware Accessor (with Mock Hook)
+    // ========================================================================
+
+    /**
+     * @brief Get pointer to hardware registers
+     *
+     * This method provides access to the actual hardware registers.
+     * It includes a mock hook for testing purposes.
+     *
+     * @return Pointer to hardware registers
+     */
+    static inline volatile RegisterType* hw() {
+        #ifdef {{ mock_hook_prefix }}
+            return {{ mock_hook_prefix }}();  // Test hook
+        #else
+            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        #endif
+    }
+
+    // ========================================================================
+    // Hardware Policy Methods
+    // ========================================================================
+
+{% for method_name, method in policy_methods.items() %}
+{% if method_name not in ['description', 'peripheral_clock_hz', 'mock_hook_prefix'] %}
+    /**
+     * @brief {{ method.description }}
+{% if method.parameters %}
+{% for param in method.parameters %}
+     * @param {{ param.name }} {{ param.description }}
+{% endfor %}
+{% endif %}
+{% if method.return_type != 'void' %}
+     * @return {{ method.return_type }}
+{% endif %}
+{% if method.test_hook %}
+     *
+     * @note Test hook: {{ method.test_hook }}
+{% endif %}
+     */
+    static inline {{ method.return_type }} {{ method_name }}({% if method.parameters %}{% for param in method.parameters %}{{ param.type }} {{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}){% if method.const %} const{% endif %} {
+{% if method.test_hook %}
+        #ifdef {{ method.test_hook }}
+            {{ method.test_hook }}({% if method.parameters %}{% for param in method.parameters %}{{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %});
+        #endif
+
+{% endif %}
+        {{ method.code }}
+    }
+
+{% endif %}
+{% endfor %}
+};
+
+// ============================================================================
+// Type Aliases for Common Instances
+// ============================================================================
+
+{% for instance in instances %}
+/// @brief Hardware policy for {{ instance.name }}
+using {{ instance.name }}Hardware = {{ family|capitalize }}{{ peripheral_name }}HardwarePolicy<{{ instance.base }}, {{ instance.clock }}>;
+{% endfor %}
+
+}  // namespace {{ platform_namespace }}
+
+/**
+ * @example
+ * Using the hardware policy with generic {{ peripheral_name }} API:
+ *
+ * @code
+ * #include "hal/api/{{ peripheral_name|lower }}_simple.hpp"
+ * #include "hal/platform/{{ family }}/{{ peripheral_name|lower }}.hpp"
+ *
+ * using namespace alloy::hal;
+ * using namespace {{ platform_namespace }};
+ *
+ * // Create {{ peripheral_name }} with hardware policy
+ * using Instance0 = {{ instances[0].name }}Hardware;
+ *
+ * int main() {
+ *     Instance0::reset();
+ *     // Use other policy methods...
+ * }
+ * @endcode
+ */
