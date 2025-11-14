@@ -41,10 +41,7 @@ namespace {{ platform_namespace }} {
 using namespace alloy::core;
 
 // Import register types
-using namespace {{ vendor_namespace }};
-
-// Namespace alias for bitfields
-namespace {{ namespace_alias }} = {{ register_namespace }};
+using namespace {{ vendor_namespace }}::{{ register_namespace }};
 
 /**
  * @brief Hardware Policy for {{ peripheral_name }} on {{ family|upper }}
@@ -140,6 +137,7 @@ struct {{ family|capitalize }}{{ peripheral_name }}HardwarePolicy {
 // Type Aliases for Common Instances
 // ============================================================================
 
+{% if instances %}
 {% for instance in instances %}
 /// @brief Hardware policy for {{ instance.name }}
 {% if instance.peripheral_name %}
@@ -148,6 +146,7 @@ using {{ instance.name }}Hardware = {{ family|capitalize }}{{ peripheral_name }}
 using {{ instance.name }}Hardware = {{ family|capitalize }}{{ peripheral_name }}HardwarePolicy<{{ instance.base }}, {{ instance.clock }}>;
 {% endif %}
 {% endfor %}
+{% endif %}
 
 }  // namespace {{ platform_namespace }}
 
@@ -157,17 +156,20 @@ using {{ instance.name }}Hardware = {{ family|capitalize }}{{ peripheral_name }}
  *
  * @code
  * #include "hal/api/{{ peripheral_name|lower }}_simple.hpp"
- * #include "hal/platform/{{ family }}/{{ peripheral_name|lower }}.hpp"
+ * #include "hal/vendors/{{ vendor }}/{{ family }}/{{ peripheral_name|lower }}_hardware_policy.hpp"
  *
  * using namespace alloy::hal;
  * using namespace {{ platform_namespace }};
  *
  * // Create {{ peripheral_name }} with hardware policy
- * using Instance0 = {{ instances[0].name }}Hardware;
+ * using Uart0 = UartImpl<{{ family|capitalize }}{{ peripheral_name }}HardwarePolicy<UART0_BASE, 150000000>>;
  *
  * int main() {
- *     Instance0::reset();
- *     // Use other policy methods...
+ *     auto config = Uart0::quick_setup<TxPin, RxPin>(BaudRate{115200});
+ *     config.initialize();
+ *
+ *     const char* msg = "Hello World\n";
+ *     config.write(reinterpret_cast<const uint8_t*>(msg), 12);
  * }
  * @endcode
  */

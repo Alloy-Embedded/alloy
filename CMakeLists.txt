@@ -36,6 +36,7 @@ set_property(CACHE ALLOY_BOARD PROPERTY STRINGS
     "rp_pico"            # RP2040 Raspberry Pi Pico
     "rp2040_zero"        # Waveshare RP2040-Zero
     "same70_xpld"        # Atmel SAME70 Xplained
+    "nucleo_g0b1re"      # STM32 Nucleo-G0B1RE
 )
 
 # Build type
@@ -93,6 +94,8 @@ if(NOT ALLOY_PLATFORM)
         set(ALLOY_PLATFORM "samd21")
     elseif(ALLOY_BOARD MATCHES "rp2040" OR ALLOY_BOARD MATCHES "rp_pico")
         set(ALLOY_PLATFORM "rp2040")
+    elseif(ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD MATCHES "^stm32g0")
+        set(ALLOY_PLATFORM "stm32g0")
     else()
         message(WARNING "Could not auto-detect ALLOY_PLATFORM from ALLOY_BOARD='${ALLOY_BOARD}'. Using 'linux' as fallback.")
         set(ALLOY_PLATFORM "linux")
@@ -117,6 +120,10 @@ elseif(ALLOY_BOARD STREQUAL "waveshare_rp2040_zero" OR ALLOY_BOARD STREQUAL "rp_
     set(BOARD_HEADER_PATH "boards/waveshare_rp2040_zero/board.hpp")
     set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/rp2040/startup.cpp")
     set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/waveshare_rp2040_zero/RP2040.ld")
+elseif(ALLOY_BOARD STREQUAL "nucleo_g0b1re")
+    set(BOARD_HEADER_PATH "boards/nucleo_g0b1re/board.hpp")
+    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32g0/stm32g0b1/startup.cpp")
+    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/nucleo_g0b1re/STM32G0B1RET6.ld")
 elseif(ALLOY_BOARD STREQUAL "host")
     set(BOARD_HEADER_PATH "boards/linux_host/board.hpp")
     # No startup code needed for host platform
@@ -130,6 +137,11 @@ if(DEFINED BOARD_HEADER_PATH)
     # Use angle brackets for include: #include BOARD_HEADER expands to #include <boards/...>
     add_compile_definitions(BOARD_HEADER=<${BOARD_HEADER_PATH}>)
     message(STATUS "  Board Header: ${BOARD_HEADER_PATH}")
+
+    # Define ALLOY_BOARD_* for conditional compilation in examples
+    string(TOUPPER "${ALLOY_BOARD}" ALLOY_BOARD_UPPER)
+    add_compile_definitions(ALLOY_BOARD_${ALLOY_BOARD_UPPER})
+    message(STATUS "  Board Define: ALLOY_BOARD_${ALLOY_BOARD_UPPER}")
 
     if(DEFINED STARTUP_SOURCE)
         message(STATUS "  Startup Code: ${STARTUP_SOURCE}")
@@ -249,18 +261,23 @@ endif()
 # Generic examples - work on any board with board.hpp abstraction
 # The same code compiles for different boards by including the appropriate board.hpp
 
+# Universal blink example - demonstrates board abstraction power
+if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re")
+    add_subdirectory(examples/blink)
+endif()
+
+# Board-specific examples
 if(ALLOY_BOARD STREQUAL "same70_xplained")
-    add_subdirectory(examples/blink_led)
     add_subdirectory(examples/uart_logger)
 endif()
 
 # TODO: Add more boards as they implement board.hpp abstraction:
 # if(ALLOY_BOARD STREQUAL "stm32f103_bluepill")
-#     add_subdirectory(examples/blink_led)
+#     add_subdirectory(examples/blink)
 # endif()
 #
 # if(ALLOY_BOARD STREQUAL "arduino_zero")
-#     add_subdirectory(examples/blink_led)
+#     add_subdirectory(examples/blink)
 # endif()
 
 # Tests

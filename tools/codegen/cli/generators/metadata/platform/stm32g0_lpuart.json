@@ -1,0 +1,265 @@
+{
+  "family": "stm32g0",
+  "mcu": "stm32g0b1",
+  "vendor": "st",
+  "peripheral_name": "LPUART",
+  "description": "Low-Power Universal Asynchronous Receiver Transmitter",
+  "register_type": "LPUART1_Registers",
+  "register_namespace": "lpuart1",
+  "register_include": "hal/vendors/st/stm32g0/registers/lpuart1_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32g0/bitfields/lpuart1_bitfields.hpp",
+  "platform_namespace": "alloy::hal::st::stm32g0",
+  "vendor_namespace": "alloy::hal::st::stm32g0",
+
+  "features": {
+    "low_power_mode": true,
+    "hardware_flow_control": true,
+    "dma_support": true,
+    "fifo": false,
+    "9bit_mode": true,
+    "wakeup_from_stop": true
+  },
+
+  "lpuart_bases": {
+    "LPUART1": "0x40008000",
+    "LPUART2": "0x40008400"
+  },
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "Peripheral base address"
+    },
+    {
+      "name": "PERIPH_CLOCK_HZ",
+      "type": "uint32_t",
+      "description": "Peripheral clock frequency in Hz"
+    }
+  ],
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for LPUART on STM32G0",
+    "peripheral_clock_hz": 64000000,
+    "mock_hook_prefix": "ALLOY_LPUART_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "enable_uart": {
+      "description": "Enable LPUART peripheral",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 |= (1U << 0);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_UE",
+      "notes": "UE bit in CR1"
+    },
+
+    "disable_uart": {
+      "description": "Disable LPUART peripheral",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 &= ~(1U << 0);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_UE"
+    },
+
+    "enable_transmitter": {
+      "description": "Enable transmitter",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 |= (1U << 3);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_TE",
+      "notes": "TE bit in CR1"
+    },
+
+    "enable_receiver": {
+      "description": "Enable receiver",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 |= (1U << 2);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_RE",
+      "notes": "RE bit in CR1"
+    },
+
+    "disable_transmitter": {
+      "description": "Disable transmitter",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 &= ~(1U << 3);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_TE"
+    },
+
+    "disable_receiver": {
+      "description": "Disable receiver",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 &= ~(1U << 2);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_RE"
+    },
+
+    "set_baudrate": {
+      "description": "Set baud rate (using different formula than USART)",
+      "parameters": [
+        {"name": "baudrate", "type": "uint32_t", "description": "Desired baud rate"}
+      ],
+      "return_type": "void",
+      "code": "uint32_t lpuartdiv = (256ULL * PERIPH_CLOCK_HZ) / baudrate;\\nhw()->LPUART_BRR = lpuartdiv;",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_BRR",
+      "notes": "BRR = (256 * PCLK) / baudrate for LPUART"
+    },
+
+    "set_word_length_7bit": {
+      "description": "Set word length to 7 bits",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 |= (1U << 28);\\nhw()->LPUART_CR1 &= ~(1U << 12);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_M",
+      "notes": "M1=1, M0=0"
+    },
+
+    "set_word_length_8bit": {
+      "description": "Set word length to 8 bits",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 &= ~(1U << 28);\\nhw()->LPUART_CR1 &= ~(1U << 12);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_M",
+      "notes": "M1=0, M0=0"
+    },
+
+    "set_word_length_9bit": {
+      "description": "Set word length to 9 bits",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 &= ~(1U << 28);\\nhw()->LPUART_CR1 |= (1U << 12);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_M",
+      "notes": "M1=0, M0=1"
+    },
+
+    "set_parity_none": {
+      "description": "Disable parity",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 &= ~(1U << 10);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_PCE",
+      "notes": "PCE=0"
+    },
+
+    "set_parity_even": {
+      "description": "Enable even parity",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 |= (1U << 10);\\nhw()->LPUART_CR1 &= ~(1U << 9);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_PCE",
+      "notes": "PCE=1, PS=0"
+    },
+
+    "set_parity_odd": {
+      "description": "Enable odd parity",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 |= (1U << 10);\\nhw()->LPUART_CR1 |= (1U << 9);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_PCE",
+      "notes": "PCE=1, PS=1"
+    },
+
+    "set_stop_bits_1": {
+      "description": "Set 1 stop bit",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR2 &= ~(0x3U << 12);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_STOP",
+      "notes": "STOP=00"
+    },
+
+    "set_stop_bits_2": {
+      "description": "Set 2 stop bits",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR2 = (hw()->LPUART_CR2 & ~(0x3U << 12)) | (0x2U << 12);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_STOP",
+      "notes": "STOP=10"
+    },
+
+    "write_data": {
+      "description": "Write data to transmit register",
+      "parameters": [
+        {"name": "data", "type": "uint8_t", "description": "Data byte to transmit"}
+      ],
+      "return_type": "void",
+      "code": "hw()->LPUART_TDR = data;",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_TDR"
+    },
+
+    "read_data": {
+      "description": "Read data from receive register",
+      "parameters": [],
+      "return_type": "uint8_t",
+      "code": "return static_cast<uint8_t>(hw()->LPUART_RDR & 0xFF);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_RDR"
+    },
+
+    "is_tx_empty": {
+      "description": "Check if transmit register is empty",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->LPUART_ISR & (1U << 7)) != 0;",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_TXE",
+      "notes": "TXE bit in ISR"
+    },
+
+    "is_tx_complete": {
+      "description": "Check if transmission is complete",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->LPUART_ISR & (1U << 6)) != 0;",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_TC",
+      "notes": "TC bit in ISR"
+    },
+
+    "is_rx_not_empty": {
+      "description": "Check if receive register has data",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->LPUART_ISR & (1U << 5)) != 0;",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_RXNE",
+      "notes": "RXNE bit in ISR"
+    },
+
+    "enable_rx_interrupt": {
+      "description": "Enable receive interrupt",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 |= (1U << 5);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_RXNEIE",
+      "notes": "RXNEIE bit in CR1"
+    },
+
+    "enable_tx_interrupt": {
+      "description": "Enable transmit interrupt",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 |= (1U << 7);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_TXEIE",
+      "notes": "TXEIE bit in CR1"
+    },
+
+    "disable_rx_interrupt": {
+      "description": "Disable receive interrupt",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 &= ~(1U << 5);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_RXNEIE"
+    },
+
+    "disable_tx_interrupt": {
+      "description": "Disable transmit interrupt",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->LPUART_CR1 &= ~(1U << 7);",
+      "test_hook": "ALLOY_LPUART_TEST_HOOK_TXEIE"
+    }
+  }
+}

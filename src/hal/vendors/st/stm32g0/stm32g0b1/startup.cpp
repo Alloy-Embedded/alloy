@@ -29,7 +29,14 @@ extern "C" [[noreturn]] void Default_Handler() {
     }
 }
 
-// Interrupt handlers (weak, can be overridden)
+// Cortex-M System Exception Handlers (weak, can be overridden)
+extern "C" void NMI_Handler() __attribute__((weak, alias("Default_Handler")));
+extern "C" void HardFault_Handler() __attribute__((weak, alias("Default_Handler")));
+extern "C" void SVC_Handler() __attribute__((weak, alias("Default_Handler")));
+extern "C" void PendSV_Handler() __attribute__((weak, alias("Default_Handler")));
+extern "C" void SysTick_Handler() __attribute__((weak, alias("Default_Handler")));
+
+// Peripheral Interrupt Handlers (weak, can be overridden)
 extern "C" void WWDG_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void PVD_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void RTC_TAMP_Handler() __attribute__((weak, alias("Default_Handler")));
@@ -41,8 +48,7 @@ extern "C" void EXTI4_15_Handler() __attribute__((weak, alias("Default_Handler")
 extern "C" void UCPD1_UCPD2_USB_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void DMA1_Channel1_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void DMA1_Channel2_3_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void DMA1_Channel4_5_6_7_DMAMUX_DMA2_Channel1_2_3_4_5_Handler()
-    __attribute__((weak, alias("Default_Handler")));
+extern "C" void DMA1_Channel4_5_6_7_DMAMUX_DMA2_Channel1_2_3_4_5_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void ADC_COMP_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void TIM1_BRK_UP_TRG_COM_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void TIM1_CC_Handler() __attribute__((weak, alias("Default_Handler")));
@@ -61,8 +67,7 @@ extern "C" void SPI1_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void SPI2_SPI3_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void USART1_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void USART2_LPUART2_Handler() __attribute__((weak, alias("Default_Handler")));
-extern "C" void USART3_USART4_USART5_USART6_LPUART1_Handler()
-    __attribute__((weak, alias("Default_Handler")));
+extern "C" void USART3_USART4_USART5_USART6_LPUART1_Handler() __attribute__((weak, alias("Default_Handler")));
 extern "C" void CEC_Handler() __attribute__((weak, alias("Default_Handler")));
 
 // Reset Handler - Entry point after reset
@@ -98,40 +103,57 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
-    reinterpret_cast<void (*)()>(&_estack),                    // Initial stack pointer
-    Reset_Handler,                                             // Reset handler
-    WWDG_Handler,                                              // IRQ 0: WWDG
-    PVD_Handler,                                               // IRQ 1: PVD
-    RTC_TAMP_Handler,                                          // IRQ 2: RTC_TAMP
-    FLASH_Handler,                                             // IRQ 3: FLASH
-    RCC_CRS_Handler,                                           // IRQ 4: RCC_CRS
-    EXTI0_1_Handler,                                           // IRQ 5: EXTI0_1
-    EXTI2_3_Handler,                                           // IRQ 6: EXTI2_3
-    EXTI4_15_Handler,                                          // IRQ 7: EXTI4_15
-    UCPD1_UCPD2_USB_Handler,                                   // IRQ 8: UCPD1_UCPD2_USB
-    DMA1_Channel1_Handler,                                     // IRQ 9: DMA1_Channel1
-    DMA1_Channel2_3_Handler,                                   // IRQ 10: DMA1_Channel2_3
-    DMA1_Channel4_5_6_7_DMAMUX_DMA2_Channel1_2_3_4_5_Handler,  // IRQ 11:
-                                                               // DMA1_Channel4_5_6_7_DMAMUX_DMA2_Channel1_2_3_4_5
-    ADC_COMP_Handler,                             // IRQ 12: ADC_COMP
-    TIM1_BRK_UP_TRG_COM_Handler,                  // IRQ 13: TIM1_BRK_UP_TRG_COM
-    TIM1_CC_Handler,                              // IRQ 14: TIM1_CC
-    TIM2_Handler,                                 // IRQ 15: TIM2
-    TIM3_TIM4_Handler,                            // IRQ 16: TIM3_TIM4
-    TIM6_DAC_LPTIM1_Handler,                      // IRQ 17: TIM6_DAC_LPTIM1
-    TIM6_DAC_Handler,                             // IRQ 17: TIM6_DAC
-    TIM7_Handler,                                 // IRQ 18: TIM7
-    TIM14_Handler,                                // IRQ 19: TIM14
-    TIM15_Handler,                                // IRQ 20: TIM15
-    TIM16_Handler,                                // IRQ 21: TIM16
-    TIM17_Handler,                                // IRQ 22: TIM17
-    I2C1_Handler,                                 // IRQ 23: I2C1
-    I2C2_I2C3_Handler,                            // IRQ 24: I2C2_I2C3
-    SPI1_Handler,                                 // IRQ 25: SPI1
-    SPI2_SPI3_Handler,                            // IRQ 26: SPI2_SPI3
-    USART1_Handler,                               // IRQ 27: USART1
-    USART2_LPUART2_Handler,                       // IRQ 28: USART2_LPUART2
+__attribute__((section(".isr_vector"), used))
+void (* const vector_table[])() = {
+    // Cortex-M0+ System Exceptions
+    reinterpret_cast<void (*)()>(&_estack),  // 0: Initial stack pointer
+    Reset_Handler,                            // 1: Reset handler
+    NMI_Handler,                              // 2: NMI
+    HardFault_Handler,                        // 3: HardFault
+    nullptr,                                  // 4: Reserved
+    nullptr,                                  // 5: Reserved
+    nullptr,                                  // 6: Reserved
+    nullptr,                                  // 7: Reserved
+    nullptr,                                  // 8: Reserved
+    nullptr,                                  // 9: Reserved
+    nullptr,                                  // 10: Reserved
+    SVC_Handler,                              // 11: SVCall
+    nullptr,                                  // 12: Reserved
+    nullptr,                                  // 13: Reserved
+    PendSV_Handler,                           // 14: PendSV
+    SysTick_Handler,                          // 15: SysTick
+
+    // STM32G0B1 External Interrupts
+    WWDG_Handler,  // IRQ 0: WWDG
+    PVD_Handler,  // IRQ 1: PVD
+    RTC_TAMP_Handler,  // IRQ 2: RTC_TAMP
+    FLASH_Handler,  // IRQ 3: FLASH
+    RCC_CRS_Handler,  // IRQ 4: RCC_CRS
+    EXTI0_1_Handler,  // IRQ 5: EXTI0_1
+    EXTI2_3_Handler,  // IRQ 6: EXTI2_3
+    EXTI4_15_Handler,  // IRQ 7: EXTI4_15
+    UCPD1_UCPD2_USB_Handler,  // IRQ 8: UCPD1_UCPD2_USB
+    DMA1_Channel1_Handler,  // IRQ 9: DMA1_Channel1
+    DMA1_Channel2_3_Handler,  // IRQ 10: DMA1_Channel2_3
+    DMA1_Channel4_5_6_7_DMAMUX_DMA2_Channel1_2_3_4_5_Handler,  // IRQ 11: DMA1_Channel4_5_6_7_DMAMUX_DMA2_Channel1_2_3_4_5
+    ADC_COMP_Handler,  // IRQ 12: ADC_COMP
+    TIM1_BRK_UP_TRG_COM_Handler,  // IRQ 13: TIM1_BRK_UP_TRG_COM
+    TIM1_CC_Handler,  // IRQ 14: TIM1_CC
+    TIM2_Handler,  // IRQ 15: TIM2
+    TIM3_TIM4_Handler,  // IRQ 16: TIM3_TIM4
+    TIM6_DAC_LPTIM1_Handler,  // IRQ 17: TIM6_DAC_LPTIM1
+    TIM6_DAC_Handler,  // IRQ 17: TIM6_DAC
+    TIM7_Handler,  // IRQ 18: TIM7
+    TIM14_Handler,  // IRQ 19: TIM14
+    TIM15_Handler,  // IRQ 20: TIM15
+    TIM16_Handler,  // IRQ 21: TIM16
+    TIM17_Handler,  // IRQ 22: TIM17
+    I2C1_Handler,  // IRQ 23: I2C1
+    I2C2_I2C3_Handler,  // IRQ 24: I2C2_I2C3
+    SPI1_Handler,  // IRQ 25: SPI1
+    SPI2_SPI3_Handler,  // IRQ 26: SPI2_SPI3
+    USART1_Handler,  // IRQ 27: USART1
+    USART2_LPUART2_Handler,  // IRQ 28: USART2_LPUART2
     USART3_USART4_USART5_USART6_LPUART1_Handler,  // IRQ 29: USART3_USART4_USART5_USART6_LPUART1
-    CEC_Handler,                                  // IRQ 30: CEC
+    CEC_Handler,  // IRQ 30: CEC
 };

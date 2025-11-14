@@ -383,6 +383,80 @@ Each board includes:
 
 ---
 
+## 🔧 Peripheral Support by MCU Family
+
+This table shows the implementation status of peripheral drivers (hardware policies) for each MCU family. Each peripheral has auto-generated hardware policies that provide low-level register access with zero runtime overhead.
+
+### Legend
+- ✅ **Implemented** - Hardware policy generated and tested
+- 🔄 **Planned** - Will be implemented soon
+- ⏳ **Future** - Support planned for later releases
+- ➖ **Not Available** - Peripheral not present in this family
+
+### Peripheral Support Matrix
+
+| MCU Family | GPIO | UART | LPUART | SPI | I2C | ADC | DAC | Timer | DMA | USB | Ethernet | CAN | RTC | Watchdog | Total |
+|-----------|------|------|--------|-----|-----|-----|-----|-------|-----|-----|----------|-----|-----|----------|-------|
+| **SAME70** (Cortex-M7) | ✅ | ✅ | ➖ | 🔄 | 🔄 | 🔄 | 🔄 | 🔄 | 🔄 | ✅ | ✅ | ✅ | ⏳ | ⏳ | **4/14** |
+| **STM32G0** (Cortex-M0+) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ➖ | ⏳ | ⏳ | ⏳ | **10/14** |
+| **STM32F1** (Cortex-M3) | ✅ | 🔄 | ➖ | 🔄 | 🔄 | 🔄 | 🔄 | 🔄 | 🔄 | 🔄 | ➖ | ⏳ | ⏳ | ⏳ | **1/14** |
+| **STM32F4** (Cortex-M4F) | ✅ | 🔄 | ➖ | 🔄 | 🔄 | 🔄 | 🔄 | 🔄 | 🔄 | 🔄 | ✅ | ⏳ | ⏳ | ⏳ | **2/14** |
+| **ATSAMD21** (Cortex-M0+) | ✅ | 🔄 | ➖ | 🔄 | 🔄 | 🔄 | 🔄 | 🔄 | 🔄 | 🔄 | ➖ | ➖ | ⏳ | ⏳ | **1/14** |
+| **RP2040** (Cortex-M0+ Dual) | ✅ | 🔄 | ➖ | 🔄 | 🔄 | 🔄 | ➖ | 🔄 | 🔄 | 🔄 | ➖ | ➖ | ⏳ | ⏳ | **1/14** |
+
+### Family-Specific Details
+
+#### SAME70 (Atmel ARM Cortex-M7)
+- **Status**: Primary development platform
+- **Peripherals**: 33 register files + 33 bitfield files
+- **Hardware Policies**: GPIO, UART, USB, Ethernet (4/33)
+- **Clock**: Up to 300 MHz
+- **Unique Features**: Ethernet MAC, QSPI, HSMCI
+
+#### STM32G0 (ST ARM Cortex-M0+)
+- **Status**: ✅ **10/33 peripherals implemented**
+- **Peripherals**: 33 register files + 33 bitfield files
+- **Hardware Policies**: GPIO, UART, LPUART, SPI, I2C, ADC, DAC, Timer, DMA, USB (10/33)
+- **Clock**: Up to 64 MHz
+- **Unique Features**: Low-power UART, USB-C Power Delivery
+- **Documentation**: See [docs/adding-new-mcu-family.md](docs/adding-new-mcu-family.md)
+
+#### STM32F1 (ST ARM Cortex-M3)
+- **Status**: Basic GPIO support
+- **Hardware Policies**: GPIO (1/?)
+- **Clock**: Up to 72 MHz
+- **Unique Features**: Blue Pill board support
+
+#### STM32F4 (ST ARM Cortex-M4F)
+- **Status**: Basic GPIO support
+- **Hardware Policies**: GPIO (1/?)
+- **Clock**: Up to 168 MHz
+- **Unique Features**: Hardware FPU, Discovery board support
+
+#### ATSAMD21 (Microchip ARM Cortex-M0+)
+- **Status**: Basic GPIO support
+- **Hardware Policies**: GPIO (1/?)
+- **Clock**: Up to 48 MHz
+- **Unique Features**: Arduino Zero compatibility, SERCOM flexibility
+
+#### RP2040 (Raspberry Pi ARM Cortex-M0+ Dual-Core)
+- **Status**: Basic GPIO support
+- **Hardware Policies**: GPIO (1/?)
+- **Clock**: Up to 133 MHz
+- **Unique Features**: Dual-core, PIO state machines, unique SIO
+
+### Notes
+
+1. **Auto-Generated Code**: All register definitions and bitfields are auto-generated from CMSIS-SVD files
+2. **Hardware Policies**: Use Policy-Based Design pattern for zero runtime overhead
+3. **Type-Safe**: All bitfield operations are compile-time validated
+4. **Testable**: Mock hooks available for all hardware policies
+5. **Documentation**: Each peripheral has metadata describing all policy methods
+
+**Want to add support for a peripheral?** See [docs/adding-new-mcu-family.md](docs/adding-new-mcu-family.md) for a complete guide.
+
+---
+
 ## 🚀 Quick Start
 
 > **Note**: Alloy is currently in **Phase 0 (Foundation)**. The API shown below represents our design vision and is not yet fully implemented.

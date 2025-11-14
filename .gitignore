@@ -56,7 +56,6 @@ docs/latex/
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
-Makefile
 *.cmake.in
 CTestTestfile.cmake
 
