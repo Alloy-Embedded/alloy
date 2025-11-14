@@ -14,7 +14,7 @@
  *
  * Auto-generated from: same70/adc.json
  * Generator: hardware_policy_generator.py
- * Generated: 2025-11-11 20:39:30
+ * Generated: 2025-11-14 09:58:28
  *
  * @note Part of Alloy HAL Vendor Layer
  * @note See ARCHITECTURE.md for Policy-Based Design rationale
@@ -32,6 +32,9 @@
 
 // Bitfield definitions
 #include "hal/vendors/atmel/same70/bitfields/afec0_bitfields.hpp"
+
+// Peripheral addresses (generated from SVD)
+#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 namespace alloy::hal::same70 {
 
@@ -87,8 +90,8 @@ struct Same70ADCHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef 
-            return ();  // Test hook
+        #ifdef ALLOY_ADC_MOCK_HW
+            return ALLOY_ADC_MOCK_HW();  // Test hook
         #else
             return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         #endif
@@ -320,9 +323,9 @@ struct Same70ADCHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Adc0
-using Adc0Hardware = Same70ADCHardwarePolicy<0x4003C000, 150000000>;
+using Adc0Hardware = Same70ADCHardwarePolicy<alloy::generated::atsame70q21b::peripherals::AFEC0, 150000000>;
 /// @brief Hardware policy for Adc1
-using Adc1Hardware = Same70ADCHardwarePolicy<0x40064000, 150000000>;
+using Adc1Hardware = Same70ADCHardwarePolicy<alloy::generated::atsame70q21b::peripherals::AFEC1, 150000000>;
 
 }  // namespace alloy::hal::same70
 

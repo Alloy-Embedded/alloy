@@ -15,7 +15,7 @@
  *
  * Auto-generated from: same70
  * Generator: generate_platform_twihs.py
- * Generated: 2025-11-07 17:32:32
+ * Generated: 2025-11-14 09:58:16
  *
  * @note Part of Alloy HAL Platform Abstraction Layer
  */
@@ -26,12 +26,11 @@
 // Core Types
 // ============================================================================
 
-#include "hal/types.hpp"
-
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
+#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -42,6 +41,9 @@
 
 // Bitfields (family-level)
 #include "hal/vendors/atmel/same70/bitfields/twihs0_bitfields.hpp"
+
+// Peripheral addresses (generated from SVD)
+#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 
 namespace alloy::hal::same70 {
@@ -89,14 +91,13 @@ namespace twihs = alloy::hal::atmel::same70::twihs0;
  */
 template <uint32_t BASE_ADDR, uint32_t IRQ_ID>
 class I2c {
-   public:
+public:
     // Compile-time constants
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t irq_id = IRQ_ID;
 
     // Configuration constants
-    static constexpr uint32_t I2C_TIMEOUT =
-        100000;  ///< I2C timeout in loop iterations (~10ms at 150MHz)
+    static constexpr uint32_t I2C_TIMEOUT = 100000;  ///< I2C timeout in loop iterations (~10ms at 150MHz)
 
     /**
      * @brief Get TWIHS peripheral registers
@@ -109,8 +110,7 @@ class I2c {
         // In tests, use the mock hardware pointer
         return ALLOY_I2C_MOCK_HW();
 #else
-        return reinterpret_cast<volatile alloy::hal::atmel::same70::twihs0::TWIHS0_Registers*>(
-            BASE_ADDR);
+        return reinterpret_cast<volatile alloy::hal::atmel::same70::twihs0::TWIHS0_Registers*>(BASE_ADDR);
 #endif
     }
 
@@ -176,11 +176,11 @@ class I2c {
         // Assuming 150MHz master clock for SAME70
         constexpr uint32_t MCK = 150000000;
         uint32_t div = (MCK / (2 * speed_hz)) - 4;
-
+        
         if (div > 255) {
             return Err(ErrorCode::InvalidParameter);
         }
-
+        
         // Configure clock waveform generator
         uint32_t cwgr = 0;
         cwgr = twihs::cwgr::CLDIV::write(cwgr, div);
@@ -213,10 +213,10 @@ class I2c {
         uint32_t mmr = 0;
         mmr = twihs::mmr::DADR::write(mmr, device_addr);
         hw->MMR = mmr;
-
+        
         for (size_t i = 0; i < size; ++i) {
             hw->THR = data[i];
-
+            
             uint32_t timeout = 0;
             while (!(hw->SR & twihs::sr::TXRDY::mask)) {
                 if (hw->SR & twihs::sr::NACK::mask) {
@@ -227,9 +227,9 @@ class I2c {
                 }
             }
         }
-
+        
         hw->CR = twihs::cr::STOP::mask;
-
+        
         uint32_t timeout = 0;
         while (!(hw->SR & twihs::sr::TXCOMP::mask)) {
             if (++timeout > I2C_TIMEOUT) {
@@ -263,18 +263,18 @@ class I2c {
         mmr = twihs::mmr::DADR::write(mmr, device_addr);
         mmr = twihs::mmr::MREAD::set(mmr);
         hw->MMR = mmr;
-
+        
         if (size == 1) {
             hw->CR = twihs::cr::START::mask | twihs::cr::STOP::mask;
         } else {
             hw->CR = twihs::cr::START::mask;
         }
-
+        
         for (size_t i = 0; i < size; ++i) {
             if (i == size - 1 && size > 1) {
                 hw->CR = twihs::cr::STOP::mask;
             }
-
+            
             uint32_t timeout = 0;
             while (!(hw->SR & twihs::sr::RXRDY::mask)) {
                 if (hw->SR & twihs::sr::NACK::mask) {
@@ -284,10 +284,10 @@ class I2c {
                     return Err(ErrorCode::Timeout);
                 }
             }
-
+            
             data[i] = static_cast<uint8_t>(hw->RHR);
         }
-
+        
         uint32_t timeout = 0;
         while (!(hw->SR & twihs::sr::TXCOMP::mask)) {
             if (++timeout > I2C_TIMEOUT) {
@@ -319,7 +319,7 @@ class I2c {
         hw->MMR = mmr;
         hw->IADR = reg_addr;
         hw->THR = value;
-
+        
         uint32_t timeout = 0;
         while (!(hw->SR & twihs::sr::TXRDY::mask)) {
             if (hw->SR & twihs::sr::NACK::mask) {
@@ -329,9 +329,9 @@ class I2c {
                 return Err(ErrorCode::Timeout);
             }
         }
-
+        
         hw->CR = twihs::cr::STOP::mask;
-
+        
         timeout = 0;
         while (!(hw->SR & twihs::sr::TXCOMP::mask)) {
             if (++timeout > I2C_TIMEOUT) {
@@ -368,7 +368,7 @@ class I2c {
         hw->MMR = mmr;
         hw->IADR = reg_addr;
         hw->CR = twihs::cr::START::mask | twihs::cr::STOP::mask;
-
+        
         uint32_t timeout = 0;
         while (!(hw->SR & twihs::sr::RXRDY::mask)) {
             if (hw->SR & twihs::sr::NACK::mask) {
@@ -378,9 +378,9 @@ class I2c {
                 return Err(ErrorCode::Timeout);
             }
         }
-
+        
         *value = static_cast<uint8_t>(hw->RHR);
-
+        
         timeout = 0;
         while (!(hw->SR & twihs::sr::TXCOMP::mask)) {
             if (++timeout > I2C_TIMEOUT) {
@@ -395,27 +395,29 @@ class I2c {
      * @brief Check if I2C peripheral is open
      *
      * @return bool Check if I2C peripheral is open     */
-    bool isOpen() const { return m_opened; }
+    bool isOpen() const {
+        return m_opened;
+    }
 
-   private:
+private:
     bool m_opened = false;  ///< Tracks if peripheral is initialized
 };
 
 // ==============================================================================
-// Predefined I2C Instances
+// Predefined I2C Instances (from generated peripherals.hpp)
 // ==============================================================================
 
-constexpr uint32_t I2C0_BASE = 0x40018000;
-constexpr uint32_t I2C0_IRQ = 19;
+constexpr uint32_t I2C0_BASE = alloy::generated::atsame70q21b::peripherals::TWIHS0;
+constexpr uint32_t I2C0_IRQ = alloy::generated::atsame70q21b::id::TWIHS0;
 
-constexpr uint32_t I2C1_BASE = 0x4001C000;
-constexpr uint32_t I2C1_IRQ = 20;
+constexpr uint32_t I2C1_BASE = alloy::generated::atsame70q21b::peripherals::TWIHS1;
+constexpr uint32_t I2C1_IRQ = alloy::generated::atsame70q21b::id::TWIHS1;
 
-constexpr uint32_t I2C2_BASE = 0x40060000;
-constexpr uint32_t I2C2_IRQ = 41;
+constexpr uint32_t I2C2_BASE = alloy::generated::atsame70q21b::peripherals::TWIHS2;
+constexpr uint32_t I2C2_IRQ = alloy::generated::atsame70q21b::id::TWIHS2;
 
 using I2c0 = I2c<I2C0_BASE, I2C0_IRQ>;  ///< TWIHS0 instance (I2C0)
 using I2c1 = I2c<I2C1_BASE, I2C1_IRQ>;  ///< TWIHS1 instance (I2C1)
 using I2c2 = I2c<I2C2_BASE, I2C2_IRQ>;  ///< TWIHS2 instance (I2C2)
 
-}  // namespace alloy::hal::same70
+} // namespace alloy::hal::same70

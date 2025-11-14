@@ -1,5 +1,6 @@
 {
   "family": "same70",
+  "mcu": "atsame70q21b",
   "vendor": "atmel",
   "peripheral_name": "ADC",
   "register_include": "hal/vendors/atmel/same70/registers/afec0_registers.hpp",
@@ -182,7 +183,14 @@
   },
 
   "instances": [
-    {"name": "Adc0", "base": "0x4003C000", "clock": "150000000", "description": "AFEC0 instance"},
-    {"name": "Adc1", "base": "0x40064000", "clock": "150000000", "description": "AFEC1 instance"}
-  ]
+    {"name": "Adc0", "peripheral_name": "AFEC0", "base": "0x4003C000", "clock": "150000000", "description": "AFEC0 instance"},
+    {"name": "Adc1", "peripheral_name": "AFEC1", "base": "0x40064000", "clock": "150000000", "description": "AFEC1 instance"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic ADC usage example",
+      "code": "using MyAdc = Adc<AFEC0_BASE, 150000000>;\nauto adc = MyAdc{};\nadc.open();\nadc.setPrescaler(9);\nadc.enableChannel(0);\nadc.startConversion();\nuint16_t value = adc.readValue();\nadc.close();"
+    }
+  }
 }

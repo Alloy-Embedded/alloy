@@ -36,20 +36,53 @@ constexpr uint32_t LED_PIN = 8;
 // Timing
 // =============================================================================
 
-/// Global tick counter (incremented in SysTick_Handler)
-extern volatile uint32_t system_ticks_ms;
+/// Global tick counter in microseconds (incremented in SysTick_Handler)
+extern volatile uint64_t system_tick_us;
 
 /**
- * @brief Delay for specified milliseconds
- * @param ms Milliseconds to delay
- * 
- * Uses SysTick counter for timing
+ * @brief Get system uptime in microseconds with sub-millisecond precision
+ * @return Microseconds since board_init()
+ *
+ * Reads the SysTick VAL register to get microsecond precision between interrupts.
+ * SysTick counts DOWN from LOAD to 0.
  */
-inline void delay_ms(uint32_t ms) {
-    uint32_t start = system_ticks_ms;
-    while ((system_ticks_ms - start) < ms) {
-        __asm volatile ("wfi");  // Wait for interrupt (power save)
+inline uint64_t micros() {
+    // SysTick registers
+    constexpr uint32_t SYSTICK_VAL = 0xE000E008;
+    constexpr uint32_t SYSTICK_LOAD = 0xE000E004;
+
+    // Read current values (do multiple reads for consistency)
+    volatile uint32_t* val_reg = reinterpret_cast<volatile uint32_t*>(SYSTICK_VAL);
+    volatile uint32_t* load_reg = reinterpret_cast<volatile uint32_t*>(SYSTICK_LOAD);
+
+    uint32_t load = *load_reg;
+    uint32_t val1 = *val_reg;
+    uint64_t tick1 = system_tick_us;
+    uint32_t val2 = *val_reg;
+
+    // If VAL decreased (normal case) or wrapped around, use first reading
+    // If VAL increased, interrupt occurred between reads, use second reading
+    uint64_t base_us;
+    uint32_t counter;
+
+    if (val2 <= val1) {
+        // Normal case: counter decreased or stayed same
+        base_us = tick1;
+        counter = val1;
+    } else {
+        // Counter wrapped (interrupt occurred)
+        base_us = system_tick_us;
+        counter = val2;
     }
+
+    // SysTick counts DOWN from LOAD to 0
+    // Convert counter ticks to microseconds
+    // At 150MHz: each tick = 1/150MHz = 6.67ns
+    // LOAD = 150000 for 1ms, so elapsed_ticks * 1000us / LOAD
+    uint32_t elapsed_ticks = load - counter;
+    uint32_t sub_ms_us = (elapsed_ticks * 1000) / (load + 1);
+
+    return base_us + sub_ms_us;
 }
 
 /**
@@ -57,7 +90,35 @@ inline void delay_ms(uint32_t ms) {
  * @return Milliseconds since board_init()
  */
 inline uint32_t millis() {
-    return system_ticks_ms;
+    // Fast path: just convert microseconds to milliseconds without reading VAL
+    return static_cast<uint32_t>(system_tick_us / 1000);
+}
+
+/**
+ * @brief Delay for specified milliseconds
+ * @param ms Milliseconds to delay
+ *
+ * Uses SysTick counter for timing
+ */
+inline void delay_ms(uint32_t ms) {
+    uint64_t start = system_tick_us;
+    uint64_t delay_us = ms * 1000ULL;
+    while ((system_tick_us - start) < delay_us) {
+        // Busy wait - don't use WFI for now to debug
+    }
+}
+
+/**
+ * @brief Delay for specified microseconds
+ * @param us Microseconds to delay
+ *
+ * Uses SysTick counter for timing
+ */
+inline void delay_us(uint32_t us) {
+    uint64_t start = system_tick_us;
+    while ((system_tick_us - start) < us) {
+        // Busy wait
+    }
 }
 
 // =============================================================================

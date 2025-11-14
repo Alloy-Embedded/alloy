@@ -15,7 +15,7 @@
  *
  * Auto-generated from: same70
  * Generator: generate_platform_spi.py
- * Generated: 2025-11-07 17:24:38
+ * Generated: 2025-11-14 09:58:16
  *
  * @note Part of Alloy HAL Platform Abstraction Layer
  */
@@ -26,12 +26,11 @@
 // Core Types
 // ============================================================================
 
-#include "hal/types.hpp"
-
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
+#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -42,6 +41,9 @@
 
 // Bitfields (family-level)
 #include "hal/vendors/atmel/same70/bitfields/spi0_bitfields.hpp"
+
+// Peripheral addresses (generated from SVD)
+#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 
 namespace alloy::hal::same70 {
@@ -104,16 +106,14 @@ enum class SpiChipSelect : uint8_t {
  */
 template <uint32_t BASE_ADDR, uint32_t IRQ_ID>
 class Spi {
-   public:
+public:
     // Compile-time constants
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t irq_id = IRQ_ID;
 
     // Configuration constants
-    static constexpr uint32_t SPI_TIMEOUT =
-        100000;  ///< SPI timeout in loop iterations (~10ms at 150MHz)
-    static constexpr size_t STACK_BUFFER_SIZE =
-        256;  ///< Stack buffer size for dummy data in write/read operations
+    static constexpr uint32_t SPI_TIMEOUT = 100000;  ///< SPI timeout in loop iterations (~10ms at 150MHz)
+    static constexpr size_t STACK_BUFFER_SIZE = 256;  ///< Stack buffer size for dummy data in write/read operations
 
     /**
      * @brief Get SPI peripheral registers
@@ -186,8 +186,7 @@ class Spi {
      * @param clock_divider SPI clock divider (1-255)
      * @param mode SPI mode (polarity and phase)
      * @return Result<void, ErrorCode>     */
-    Result<void, ErrorCode> configureChipSelect(SpiChipSelect cs, uint8_t clock_divider,
-                                                SpiMode mode = SpiMode::Mode0) {
+    Result<void, ErrorCode> configureChipSelect(SpiChipSelect cs, uint8_t clock_divider, SpiMode mode = SpiMode::Mode0) {
         auto* hw = get_hw();
 
         if (!m_opened) {
@@ -201,7 +200,7 @@ class Spi {
         // Configure chip select register with mode and clock divider
         uint8_t cs_num = static_cast<uint8_t>(cs);
         uint32_t csr_value = 0;
-
+        
         // Configure SPI mode (CPOL and NCPHA)
         uint8_t mode_val = static_cast<uint8_t>(mode);
         if (mode_val & 0x02) {
@@ -210,16 +209,16 @@ class Spi {
         if (!(mode_val & 0x01)) {
             csr_value = spi::csr::NCPHA::set(csr_value);
         }
-
+        
         // Chip select active after transfer
         csr_value = spi::csr::CSAAT::set(csr_value);
-
+        
         // 8-bit transfers
         csr_value = spi::csr::BITS::write(csr_value, spi::csr::bits::_8_BIT);
-
+        
         // Serial clock baud rate
         csr_value = spi::csr::SCBR::write(csr_value, clock_divider);
-
+        
         hw->CSR[cs_num][0] = csr_value;
 
         return Ok();
@@ -232,10 +231,8 @@ class Spi {
      * @param rx_data Receive data buffer
      * @param size Number of bytes to transfer
      * @param cs Chip select to use
-     * @return Result<size_t, ErrorCode> Full-duplex SPI transfer (send and receive simultaneously)
-     */
-    Result<size_t, ErrorCode> transfer(const uint8_t* tx_data, uint8_t* rx_data, size_t size,
-                                       SpiChipSelect cs) {
+     * @return Result<size_t, ErrorCode> Full-duplex SPI transfer (send and receive simultaneously)     */
+    Result<size_t, ErrorCode> transfer(const uint8_t* tx_data, uint8_t* rx_data, size_t size, SpiChipSelect cs) {
         auto* hw = get_hw();
 
         if (!m_opened) {
@@ -248,7 +245,7 @@ class Spi {
 
         // Transfer data byte by byte with timeout
         uint8_t cs_num = static_cast<uint8_t>(cs);
-
+        
         for (size_t i = 0; i < size; ++i) {
             // Wait for transmit data register empty
             uint32_t timeout = 0;
@@ -257,13 +254,13 @@ class Spi {
                     return Err(ErrorCode::Timeout);
                 }
             }
-
+            
             // Build TDR value with data and chip select
             uint32_t tdr_value = 0;
             tdr_value = spi::tdr::TD::write(tdr_value, tx_data[i]);
             tdr_value = spi::tdr::PCS::write(tdr_value, cs_num);
             hw->TDR = tdr_value;
-
+            
             // Wait for receive data register full
             timeout = 0;
             while (!(hw->SR & spi::sr::RDRF::mask)) {
@@ -271,7 +268,7 @@ class Spi {
                     return Err(ErrorCode::Timeout);
                 }
             }
-
+            
             // Read received data
             rx_data[i] = static_cast<uint8_t>(spi::rdr::RD::read(hw->RDR));
         }
@@ -300,7 +297,7 @@ class Spi {
         // Use stack buffer for dummy RX data, or transfer byte-by-byte for large transfers
         uint8_t stack_buffer[STACK_BUFFER_SIZE];
         uint8_t* dummy = stack_buffer;
-
+        
         if (size > STACK_BUFFER_SIZE) {
             // For large transfers, transfer byte-by-byte to avoid allocation
             for (size_t i = 0; i < size; ++i) {
@@ -312,7 +309,7 @@ class Spi {
             }
             return Ok(size_t(size));
         }
-
+        
         auto result = transfer(data, dummy, size, cs);
         if (!result.is_ok()) {
             return Err(result.err());
@@ -342,7 +339,7 @@ class Spi {
         // Use stack buffer for dummy TX data (0xFF), or transfer byte-by-byte for large transfers
         uint8_t stack_buffer[STACK_BUFFER_SIZE];
         uint8_t* dummy = stack_buffer;
-
+        
         if (size > STACK_BUFFER_SIZE) {
             // For large transfers, transfer byte-by-byte
             for (size_t i = 0; i < size; ++i) {
@@ -354,12 +351,12 @@ class Spi {
             }
             return Ok(size_t(size));
         }
-
+        
         // Initialize dummy buffer with 0xFF for read
         for (size_t i = 0; i < size; ++i) {
             dummy[i] = 0xFF;
         }
-
+        
         auto result = transfer(dummy, data, size, cs);
         if (!result.is_ok()) {
             return Err(result.err());
@@ -372,23 +369,25 @@ class Spi {
      * @brief Check if SPI peripheral is open
      *
      * @return bool Check if SPI peripheral is open     */
-    bool isOpen() const { return m_opened; }
+    bool isOpen() const {
+        return m_opened;
+    }
 
-   private:
+private:
     bool m_opened = false;  ///< Tracks if peripheral is initialized
 };
 
 // ==============================================================================
-// Predefined SPI Instances
+// Predefined SPI Instances (from generated peripherals.hpp)
 // ==============================================================================
 
-constexpr uint32_t SPI0_BASE = 0x40008000;
-constexpr uint32_t SPI0_IRQ = 21;
+constexpr uint32_t SPI0_BASE = alloy::generated::atsame70q21b::peripherals::SPI0;
+constexpr uint32_t SPI0_IRQ = alloy::generated::atsame70q21b::id::SPI0;
 
-constexpr uint32_t SPI1_BASE = 0x40058000;
-constexpr uint32_t SPI1_IRQ = 42;
+constexpr uint32_t SPI1_BASE = alloy::generated::atsame70q21b::peripherals::SPI1;
+constexpr uint32_t SPI1_IRQ = alloy::generated::atsame70q21b::id::SPI1;
 
 using Spi0 = Spi<SPI0_BASE, SPI0_IRQ>;  ///< SPI0 instance
 using Spi1 = Spi<SPI1_BASE, SPI1_IRQ>;  ///< SPI1 instance
 
-}  // namespace alloy::hal::same70
+} // namespace alloy::hal::same70

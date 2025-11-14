@@ -1,5 +1,6 @@
 {
   "family": "same70",
+  "mcu": "atsame70q21b",
   "vendor": "atmel",
   "peripheral_name": "DMA",
   "register_include": "hal/vendors/atmel/same70/registers/xdmac_registers.hpp",
@@ -182,6 +183,13 @@
   },
 
   "instances": [
-    {"name": "Dma", "base": "0x40078000", "clock": "150000000", "description": "XDMAC instance (24 channels)"}
-  ]
+    {"name": "Dma", "peripheral_name": "XDMAC", "base": "0x40078000", "clock": "150000000", "description": "XDMAC instance (24 channels)"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic DMA usage example",
+      "code": "using MyDma = Dma<XDMAC_BASE, 150000000>;\nauto dma = MyDma{};\nuint8_t channel = 0;\ndma.setSourceAddress(channel, src_addr);\ndma.setDestinationAddress(channel, dst_addr);\ndma.setTransferSize(channel, 256);\ndma.enableChannel(channel);\nwhile (!dma.isTransferComplete(channel));"
+    }
+  }
 }

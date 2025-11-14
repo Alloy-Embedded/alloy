@@ -14,7 +14,7 @@
  *
  * Auto-generated from: same70/timer.json
  * Generator: hardware_policy_generator.py
- * Generated: 2025-11-11 20:39:30
+ * Generated: 2025-11-14 09:58:28
  *
  * @note Part of Alloy HAL Vendor Layer
  * @note See ARCHITECTURE.md for Policy-Based Design rationale
@@ -32,6 +32,9 @@
 
 // Bitfield definitions
 #include "hal/vendors/atmel/same70/bitfields/tc0_bitfields.hpp"
+
+// Peripheral addresses (generated from SVD)
+#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 namespace alloy::hal::same70 {
 
@@ -85,8 +88,8 @@ struct Same70TimerHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef 
-            return ();  // Test hook
+        #ifdef ALLOY_TIMER_MOCK_HW
+            return ALLOY_TIMER_MOCK_HW();  // Test hook
         #else
             return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         #endif
@@ -313,13 +316,13 @@ struct Same70TimerHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Timer0Ch0
-using Timer0Ch0Hardware = Same70TimerHardwarePolicy<0x4000C000, 150000000>;
+using Timer0Ch0Hardware = Same70TimerHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TC0, 150000000>;
 /// @brief Hardware policy for Timer1Ch0
-using Timer1Ch0Hardware = Same70TimerHardwarePolicy<0x40010000, 150000000>;
+using Timer1Ch0Hardware = Same70TimerHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TC1, 150000000>;
 /// @brief Hardware policy for Timer2Ch0
-using Timer2Ch0Hardware = Same70TimerHardwarePolicy<0x40014000, 150000000>;
+using Timer2Ch0Hardware = Same70TimerHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TC2, 150000000>;
 /// @brief Hardware policy for Timer3Ch0
-using Timer3Ch0Hardware = Same70TimerHardwarePolicy<0x40054000, 150000000>;
+using Timer3Ch0Hardware = Same70TimerHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TC3, 150000000>;
 
 }  // namespace alloy::hal::same70
 

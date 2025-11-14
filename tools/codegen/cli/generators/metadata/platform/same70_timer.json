@@ -1,5 +1,6 @@
 {
   "family": "same70",
+  "mcu": "atsame70q21b",
   "vendor": "atmel",
   "peripheral_name": "Timer",
   "register_include": "hal/vendors/atmel/same70/registers/tc0_registers.hpp",
@@ -159,9 +160,16 @@
   },
 
   "instances": [
-    {"name": "Timer0Ch0", "base": "0x4000C000", "clock": "150000000", "description": "TC0 Channel 0"},
-    {"name": "Timer1Ch0", "base": "0x40010000", "clock": "150000000", "description": "TC1 Channel 0"},
-    {"name": "Timer2Ch0", "base": "0x40014000", "clock": "150000000", "description": "TC2 Channel 0"},
-    {"name": "Timer3Ch0", "base": "0x40054000", "clock": "150000000", "description": "TC3 Channel 0"}
-  ]
+    {"name": "Timer0Ch0", "peripheral_name": "TC0", "base": "0x4000C000", "clock": "150000000", "description": "TC0 Channel 0"},
+    {"name": "Timer1Ch0", "peripheral_name": "TC1", "base": "0x40010000", "clock": "150000000", "description": "TC1 Channel 0"},
+    {"name": "Timer2Ch0", "peripheral_name": "TC2", "base": "0x40014000", "clock": "150000000", "description": "TC2 Channel 0"},
+    {"name": "Timer3Ch0", "peripheral_name": "TC3", "base": "0x40054000", "clock": "150000000", "description": "TC3 Channel 0"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic Timer usage example",
+      "code": "using MyTimer = Timer<TC0_BASE, 150000000>;\nauto timer = MyTimer{};\ntimer.setClockSource(0);\ntimer.setRc(1000);\ntimer.enableClock();\ntimer.start();\nwhile (!timer.isRcCompare());"
+    }
+  }
 }

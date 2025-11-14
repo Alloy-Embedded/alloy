@@ -14,7 +14,7 @@
  *
  * Auto-generated from: same70/systick.json
  * Generator: hardware_policy_generator.py
- * Generated: 2025-11-11 20:39:30
+ * Generated: 2025-11-14 09:58:28
  *
  * @note Part of Alloy HAL Vendor Layer
  * @note See ARCHITECTURE.md for Policy-Based Design rationale
@@ -32,6 +32,9 @@
 
 // Bitfield definitions
 #include "hal/vendors/arm/cortex_m7/systick_bitfields.hpp"
+
+// Peripheral addresses (generated from SVD)
+#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 namespace alloy::hal::same70 {
 
@@ -63,7 +66,7 @@ struct Same70SysTickHardwarePolicy {
     // Type Definitions
     // ========================================================================
 
-    using RegisterType = cortex_m7::SysTick_Type;
+    using RegisterType = alloy::hal::arm::cortex_m7::SysTick_Type;
 
     // ========================================================================
     // Compile-Time Constants
@@ -86,8 +89,8 @@ struct Same70SysTickHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef 
-            return ();  // Test hook
+        #ifdef ALLOY_SYSTICK_MOCK_HW
+            return ALLOY_SYSTICK_MOCK_HW();  // Test hook
         #else
             return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         #endif
@@ -115,7 +118,7 @@ struct Same70SysTickHardwarePolicy {
             ALLOY_SYSTICK_TEST_HOOK_ENABLE();
         #endif
 
-        hw()->CTRL |= (1u << 0);
+        auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->CTRL |= (1u << 0);
     }
 
     /**
@@ -128,7 +131,7 @@ struct Same70SysTickHardwarePolicy {
             ALLOY_SYSTICK_TEST_HOOK_DISABLE();
         #endif
 
-        hw()->CTRL &= ~(1u << 0);
+        auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->CTRL &= ~(1u << 0);
     }
 
     /**
@@ -141,7 +144,7 @@ struct Same70SysTickHardwarePolicy {
             ALLOY_SYSTICK_TEST_HOOK_INT_EN();
         #endif
 
-        hw()->CTRL |= (1u << 1);
+        auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->CTRL |= (1u << 1);
     }
 
     /**
@@ -154,7 +157,7 @@ struct Same70SysTickHardwarePolicy {
             ALLOY_SYSTICK_TEST_HOOK_INT_DIS();
         #endif
 
-        hw()->CTRL &= ~(1u << 1);
+        auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->CTRL &= ~(1u << 1);
     }
 
     /**
@@ -167,7 +170,7 @@ struct Same70SysTickHardwarePolicy {
             ALLOY_SYSTICK_TEST_HOOK_CLK_CPU();
         #endif
 
-        hw()->CTRL |= (1u << 2);
+        auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->CTRL |= (1u << 2);
     }
 
     /**
@@ -180,7 +183,7 @@ struct Same70SysTickHardwarePolicy {
             ALLOY_SYSTICK_TEST_HOOK_CLK_EXT();
         #endif
 
-        hw()->CTRL &= ~(1u << 2);
+        auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->CTRL &= ~(1u << 2);
     }
 
     /**
@@ -194,7 +197,7 @@ struct Same70SysTickHardwarePolicy {
             ALLOY_SYSTICK_TEST_HOOK_RELOAD(value);
         #endif
 
-        hw()->LOAD = value & 0xFFFFFF;
+        auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->LOAD = value & 0xFFFFFF;
     }
 
     /**
@@ -203,12 +206,12 @@ struct Same70SysTickHardwarePolicy {
      *
      * @note Test hook: ALLOY_SYSTICK_TEST_HOOK_GET_VAL
      */
-    static inline uint32_t get_current_value() const {
+    static inline uint32_t get_current_value() {
         #ifdef ALLOY_SYSTICK_TEST_HOOK_GET_VAL
             ALLOY_SYSTICK_TEST_HOOK_GET_VAL();
         #endif
 
-        return hw()->VAL;
+        auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); return systick->VAL;
     }
 
     /**
@@ -221,7 +224,7 @@ struct Same70SysTickHardwarePolicy {
             ALLOY_SYSTICK_TEST_HOOK_CLEAR();
         #endif
 
-        hw()->VAL = 0;
+        auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->VAL = 0;
     }
 
     /**
@@ -230,12 +233,12 @@ struct Same70SysTickHardwarePolicy {
      *
      * @note Test hook: ALLOY_SYSTICK_TEST_HOOK_FLAG
      */
-    static inline bool has_counted_to_zero() const {
+    static inline bool has_counted_to_zero() {
         #ifdef ALLOY_SYSTICK_TEST_HOOK_FLAG
             ALLOY_SYSTICK_TEST_HOOK_FLAG();
         #endif
 
-        return (hw()->CTRL & (1u << 16)) != 0;
+        auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); return (systick->CTRL & (1u << 16)) != 0;
     }
 
     /**
@@ -249,7 +252,7 @@ struct Same70SysTickHardwarePolicy {
             ALLOY_SYSTICK_TEST_HOOK_CONFIG_MS(ms);
         #endif
 
-        uint32_t ticks = (CPU_CLOCK_HZ / 1000) * ms; if (ticks > 0xFFFFFF) ticks = 0xFFFFFF; hw()->LOAD = ticks - 1; hw()->VAL = 0; hw()->CTRL = 0x07;
+        uint32_t ticks = (CPU_CLOCK_HZ / 1000) * ms; if (ticks > 0xFFFFFF) ticks = 0xFFFFFF; auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->LOAD = ticks - 1; systick->VAL = 0; systick->CTRL = 0x07;
     }
 
     /**
@@ -263,7 +266,7 @@ struct Same70SysTickHardwarePolicy {
             ALLOY_SYSTICK_TEST_HOOK_CONFIG_US(us);
         #endif
 
-        uint32_t ticks = (CPU_CLOCK_HZ / 1000000) * us; if (ticks > 0xFFFFFF) ticks = 0xFFFFFF; hw()->LOAD = ticks - 1; hw()->VAL = 0; hw()->CTRL = 0x07;
+        uint32_t ticks = (CPU_CLOCK_HZ / 1000000) * us; if (ticks > 0xFFFFFF) ticks = 0xFFFFFF; auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->LOAD = ticks - 1; systick->VAL = 0; systick->CTRL = 0x07;
     }
 
 };

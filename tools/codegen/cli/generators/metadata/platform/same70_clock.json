@@ -1,5 +1,6 @@
 {
   "family": "same70",
+  "mcu": "atsame70q21b",
   "vendor": "atmel",
   "device": "atsame70q21b",
   "peripheral_name": "Clock",

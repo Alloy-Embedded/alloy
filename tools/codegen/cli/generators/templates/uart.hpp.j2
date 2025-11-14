@@ -1,8 +1,8 @@
 /**
- * @file spi.hpp
- * @brief Template-based SPI implementation for {{ family.upper() }} (Platform Layer)
+ * @file uart.hpp
+ * @brief Template-based UART implementation for {{ family.upper() }} (Platform Layer)
  *
- * This file implements SPI peripheral using templates with ZERO virtual
+ * This file implements UART peripheral using templates with ZERO virtual
  * functions and ZERO runtime overhead.
  *
  * Design Principles:
@@ -10,11 +10,11 @@
  * - Zero overhead: Fully inlined, identical assembly to manual register access
  * - Type-safe: Strong typing prevents errors
  * - Error handling: Uses Result<T, ErrorCode> for robust error handling
- * - Master mode only (for simplicity)
+ * - DMA support: Can work with DMA for high-speed transfers
  * - Testable: Includes test hooks for unit testing
  *
  * Auto-generated from: {{ metadata.family }}
- * Generator: generate_platform_spi.py
+ * Generator: generate_platform_uart.py
  * Generated: {{ generation_date }}
  *
  * @note Part of Alloy HAL Platform Abstraction Layer
@@ -60,26 +60,28 @@ using namespace alloy::hal;
 // Import vendor-specific register types
 using namespace {{ metadata.vendor_namespace }};
 
+{% if metadata.namespace_alias %}
 // Namespace alias for bitfield access
-namespace spi = {{ metadata.register_namespace }};
+namespace {{ metadata.namespace_alias }} = {{ metadata.register_namespace }};
+{% endif %}
 
-// Note: SPI uses common SpiMode from hal/types.hpp:
-// - Mode0: CPOL=0, CPHA=0
-// - Mode1: CPOL=0, CPHA=1
-// - Mode2: CPOL=1, CPHA=0
-// - Mode3: CPOL=1, CPHA=1
+// Note: UART uses common types from hal/types.hpp:
+// - Parity (None, Even, Odd)
+// - StopBits (One, Two)
+// - WordLength (Bits7, Bits8, Bits9)
+// - FlowControl (None, RTS, CTS, RTS_CTS)
 
 {% if metadata.additional_enums %}
 // ============================================================================
 // Platform-Specific Enums
 // ============================================================================
 
-{% for enum in metadata.additional_enums %}
-{% set enum_values = enum['values'] %}
+{% for enum_def in metadata.additional_enums %}
+{% set enum_values = enum_def['values'] %}
 /**
- * @brief {{ enum.description }}
+ * @brief {{ enum_def.description }}
  */
-enum class {{ enum.name }} : {{ enum.type }} {
+enum class {{ enum_def.name }} : {{ enum_def.type }} {
 {% for enum_value in enum_values %}
     {{ enum_value.name }} = {{ enum_value.value }},  ///< {{ enum_value.description }}
 {% endfor %}
@@ -88,10 +90,40 @@ enum class {{ enum.name }} : {{ enum.type }} {
 {% endfor %}
 {% endif %}
 
+{% if metadata.config_struct %}
 /**
- * @brief Template-based SPI peripheral for {{ family.upper() }}
+ * @brief {{ metadata.config_struct.description }}
+ */
+struct {{ metadata.config_struct.name }} {
+{% for field in metadata.config_struct.fields %}
+    {{ field.type }} {{ field.name }} = {{ field.default }};  ///< {{ field.description }}
+{% endfor %}
+};
+
+{% endif %}
+
+{% if metadata.additional_structs %}
+// ============================================================================
+// Additional Structures
+// ============================================================================
+
+{% for struct in metadata.additional_structs %}
+/**
+ * @brief {{ struct.description }}
+ */
+struct {{ struct.name }} {
+{% for field in struct.fields %}
+    {{ field.type }} {{ field.name }};  ///< {{ field.description }}
+{% endfor %}
+};
+
+{% endfor %}
+{% endif %}
+
+/**
+ * @brief Template-based UART peripheral for {{ family.upper() }}
  *
- * This class provides a template-based SPI implementation with ZERO runtime
+ * This class provides a template-based UART implementation with ZERO runtime
  * overhead. All peripheral configuration is resolved at compile-time.
  *
  * Template Parameters:
@@ -114,7 +146,13 @@ enum class {{ enum.name }} : {{ enum.type }} {
 {% endfor %}
  */
 template <{% for param in metadata.template_params %}{{ param.type }} {{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}>
-class Spi {
+class Uart {
+{% if metadata.static_asserts %}
+{% for assert in metadata.static_asserts %}
+    static_assert({{ assert.condition }}, "{{ assert.message }}");
+{% endfor %}
+{% endif %}
+
 public:
     // Compile-time constants
 {% for param in metadata.template_params %}
@@ -135,15 +173,27 @@ public:
      * for test hook injection.
      */
     static inline volatile {{ metadata.register_namespace }}::{{ metadata.register_type }}* get_hw() {
-#ifdef ALLOY_SPI_MOCK_HW
+#ifdef ALLOY_UART_MOCK_HW
         // In tests, use the mock hardware pointer
-        return ALLOY_SPI_MOCK_HW();
+        return ALLOY_UART_MOCK_HW();
 #else
         return reinterpret_cast<volatile {{ metadata.register_namespace }}::{{ metadata.register_type }}*>(BASE_ADDR);
 #endif
     }
 
-    constexpr Spi() = default;
+{% if metadata.additional_methods %}
+{% for method in metadata.additional_methods %}
+    /**
+     * @brief {{ method.description }}
+     */
+    {% if method.static %}static {% endif %}{% if method.inline %}inline {% endif %}{{ method.return_type }} {{ method.name }}(){% if method.const %} const{% endif %} {
+        {{ method.body }}
+    }
+
+{% endfor %}
+{% endif %}
+
+    constexpr Uart() = default;
 
 {% for operation_name, operation in metadata.operations.items() %}
     /**
@@ -184,7 +234,7 @@ public:
 
 {% elif step.register %}
 {% if step.operation == 'write_bitfield' %}
-        hw->{{ metadata.registers[step.register].name }} = spi::{{ metadata.registers[step.register].name|lower }}::{{ step.bitfield }}::{{ step.value }};  // {{ step.comment }}
+        hw->{{ metadata.registers[step.register].name }} = {{ metadata.namespace_alias }}::{{ metadata.registers[step.register].name|lower }}::{{ step.bitfield }}::{{ step.value }};  // {{ step.comment }}
 {% elif step.operation == 'read' %}
         auto {{ step.store_as }} = hw->{{ metadata.registers[step.register].name }};  // {{ step.comment }}
 {% elif step.operation == 'write' %}
@@ -194,6 +244,7 @@ public:
 {% endif %}
 {% endfor %}
 {% endif %}
+
 {% if operation.returns %}
 {% if 'Result' in operation.return_type %}
         return Ok({{ operation.returns_type }}({{ operation.returns }}));
@@ -215,7 +266,7 @@ private:
 };
 
 // ==============================================================================
-// Predefined SPI Instances (from generated peripherals.hpp)
+// Predefined UART Instances
 // ==============================================================================
 
 {% for instance in metadata.instances %}
@@ -224,7 +275,7 @@ constexpr uint32_t {{ instance.name.upper() }}_IRQ = alloy::generated::{{ metada
 
 {% endfor %}
 {% for instance in metadata.instances %}
-using {{ instance.name }} = Spi<{{ instance.name.upper() }}_BASE, {{ instance.name.upper() }}_IRQ>;  ///< {{ instance.description }}
+using {{ instance.name }} = Uart<{{ instance.name.upper() }}_BASE, {{ instance.name.upper() }}_IRQ>;  ///< {{ instance.description }}
 {% endfor %}
 
 } // namespace {{ metadata.platform_namespace }}

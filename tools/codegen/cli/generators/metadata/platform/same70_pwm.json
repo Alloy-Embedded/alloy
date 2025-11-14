@@ -1,5 +1,6 @@
 {
   "family": "same70",
+  "mcu": "atsame70q21b",
   "vendor": "atmel",
   "peripheral_name": "PWM",
   "register_include": "hal/vendors/atmel/same70/registers/pwm0_registers.hpp",
@@ -120,7 +121,14 @@
   },
 
   "instances": [
-    {"name": "Pwm0", "base": "0x40020000", "clock": "150000000", "description": "PWM0 instance"},
-    {"name": "Pwm1", "base": "0x4005C000", "clock": "150000000", "description": "PWM1 instance"}
-  ]
+    {"name": "Pwm0", "peripheral_name": "PWM0", "base": "0x40020000", "clock": "150000000", "description": "PWM0 instance"},
+    {"name": "Pwm1", "peripheral_name": "PWM1", "base": "0x4005C000", "clock": "150000000", "description": "PWM1 instance"}
+  ],
+
+  "examples": {
+    "basic_usage": {
+      "description": "Basic PWM usage example",
+      "code": "using MyPwm = Pwm<PWM0_BASE, 150000000>;\nauto pwm = MyPwm{};\nuint8_t channel = 0;\npwm.setPrescaler(10);\npwm.setPeriod(channel, 1000);\npwm.setDutyCycle(channel, 500);\npwm.enableChannel(channel);"
+    }
+  }
 }
