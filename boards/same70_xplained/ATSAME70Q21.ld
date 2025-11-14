@@ -24,7 +24,12 @@ ENTRY(Reset_Handler)
 MEMORY
 {
     FLASH (rx)  : ORIGIN = 0x00400000, LENGTH = 2048K
-    RAM (rwx)   : ORIGIN = 0x20400000, LENGTH = 384K  /* SAME70 RAM starts at 0x20400000! */
+    /* SAME70 has TCM memories that must be avoided for regular stack/heap:
+     * - DTCM: 0x20000000 - 0x2000FFFF (64KB) - Data Tightly Coupled Memory
+     * - ITCM: 0x00000000 - 0x00001FFF (8KB)  - Instruction Tightly Coupled Memory
+     * - SRAM: 0x20400000 - 0x2045FFFF (384KB) - Normal SRAM
+     * We use SRAM for stack/heap, not TCM */
+    RAM (rw!x)  : ORIGIN = 0x20400000, LENGTH = 384K  /* SAME70 SRAM (not TCM!) */
 }
 
 /* Highest address of the user mode stack */

@@ -1,5 +1,6 @@
 {
   "family": "same70",
+  "mcu": "atsame70q21b",
   "vendor": "atmel",
   "peripheral_name": "TWIHS",
   "register_include": "hal/vendors/atmel/same70/registers/twihs0_registers.hpp",
@@ -223,9 +224,9 @@
   ],
 
   "instances": [
-    {"name": "I2c0", "base": "0x40018000", "irq": "19", "description": "TWIHS0 instance (I2C0)"},
-    {"name": "I2c1", "base": "0x4001C000", "irq": "20", "description": "TWIHS1 instance (I2C1)"},
-    {"name": "I2c2", "base": "0x40060000", "irq": "41", "description": "TWIHS2 instance (I2C2)"}
+    {"name": "I2c0", "peripheral_name": "TWIHS0", "base": "0x40018000", "irq": "19", "description": "TWIHS0 instance (I2C0)"},
+    {"name": "I2c1", "peripheral_name": "TWIHS1", "base": "0x4001C000", "irq": "20", "description": "TWIHS1 instance (I2C1)"},
+    {"name": "I2c2", "peripheral_name": "TWIHS2", "base": "0x40060000", "irq": "41", "description": "TWIHS2 instance (I2C2)"}
   ],
 
   "examples": {

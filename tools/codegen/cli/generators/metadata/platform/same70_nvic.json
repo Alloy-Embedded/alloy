@@ -1,5 +1,6 @@
 {
   "family": "same70",
+  "mcu": "atsame70q21b",
   "vendor": "arm",
   "peripheral_name": "NVIC",
   "register_include": "hal/vendors/arm/cortex_m7/nvic_registers.hpp",

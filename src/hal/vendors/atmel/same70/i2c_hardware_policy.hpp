@@ -14,7 +14,7 @@
  *
  * Auto-generated from: same70/twihs.json
  * Generator: hardware_policy_generator.py
- * Generated: 2025-11-11 20:39:30
+ * Generated: 2025-11-14 09:58:28
  *
  * @note Part of Alloy HAL Vendor Layer
  * @note See ARCHITECTURE.md for Policy-Based Design rationale
@@ -32,6 +32,9 @@
 
 // Bitfield definitions
 #include "hal/vendors/atmel/same70/bitfields/twihs0_bitfields.hpp"
+
+// Peripheral addresses (generated from SVD)
+#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 namespace alloy::hal::same70 {
 
@@ -86,8 +89,8 @@ struct Same70TWIHSHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef 
-            return ();  // Test hook
+        #ifdef ALLOY_I2C_MOCK_HW
+            return ALLOY_I2C_MOCK_HW();  // Test hook
         #else
             return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         #endif
@@ -311,11 +314,11 @@ if (read_count == 1) {
 // ============================================================================
 
 /// @brief Hardware policy for I2c0
-using I2c0Hardware = Same70TWIHSHardwarePolicy<0x40018000, >;
+using I2c0Hardware = Same70TWIHSHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TWIHS0, >;
 /// @brief Hardware policy for I2c1
-using I2c1Hardware = Same70TWIHSHardwarePolicy<0x4001C000, >;
+using I2c1Hardware = Same70TWIHSHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TWIHS1, >;
 /// @brief Hardware policy for I2c2
-using I2c2Hardware = Same70TWIHSHardwarePolicy<0x40060000, >;
+using I2c2Hardware = Same70TWIHSHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TWIHS2, >;
 
 }  // namespace alloy::hal::same70
 

@@ -14,7 +14,7 @@
  *
  * Auto-generated from: same70/pwm.json
  * Generator: hardware_policy_generator.py
- * Generated: 2025-11-11 20:39:30
+ * Generated: 2025-11-14 09:58:28
  *
  * @note Part of Alloy HAL Vendor Layer
  * @note See ARCHITECTURE.md for Policy-Based Design rationale
@@ -32,6 +32,9 @@
 
 // Bitfield definitions
 #include "hal/vendors/atmel/same70/bitfields/pwm0_bitfields.hpp"
+
+// Peripheral addresses (generated from SVD)
+#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 namespace alloy::hal::same70 {
 
@@ -86,8 +89,8 @@ struct Same70PWMHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef 
-            return ();  // Test hook
+        #ifdef ALLOY_PWM_MOCK_HW
+            return ALLOY_PWM_MOCK_HW();  // Test hook
         #else
             return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         #endif
@@ -214,9 +217,9 @@ struct Same70PWMHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Pwm0
-using Pwm0Hardware = Same70PWMHardwarePolicy<0x40020000, 150000000>;
+using Pwm0Hardware = Same70PWMHardwarePolicy<alloy::generated::atsame70q21b::peripherals::PWM0, 150000000>;
 /// @brief Hardware policy for Pwm1
-using Pwm1Hardware = Same70PWMHardwarePolicy<0x4005C000, 150000000>;
+using Pwm1Hardware = Same70PWMHardwarePolicy<alloy::generated::atsame70q21b::peripherals::PWM1, 150000000>;
 
 }  // namespace alloy::hal::same70
 

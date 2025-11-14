@@ -14,7 +14,7 @@
  *
  * Auto-generated from: same70/dma.json
  * Generator: hardware_policy_generator.py
- * Generated: 2025-11-11 20:39:30
+ * Generated: 2025-11-14 09:58:28
  *
  * @note Part of Alloy HAL Vendor Layer
  * @note See ARCHITECTURE.md for Policy-Based Design rationale
@@ -32,6 +32,9 @@
 
 // Bitfield definitions
 #include "hal/vendors/atmel/same70/bitfields/xdmac_bitfields.hpp"
+
+// Peripheral addresses (generated from SVD)
+#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 namespace alloy::hal::same70 {
 
@@ -86,8 +89,8 @@ struct Same70DMAHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef 
-            return ();  // Test hook
+        #ifdef ALLOY_DMA_MOCK_HW
+            return ALLOY_DMA_MOCK_HW();  // Test hook
         #else
             return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         #endif
@@ -300,7 +303,7 @@ struct Same70DMAHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Dma
-using DmaHardware = Same70DMAHardwarePolicy<0x40078000, 150000000>;
+using DmaHardware = Same70DMAHardwarePolicy<alloy::generated::atsame70q21b::peripherals::XDMAC, 150000000>;
 
 }  // namespace alloy::hal::same70
 

@@ -33,6 +33,9 @@
 // Bitfield definitions
 #include "{{ bitfield_include }}"
 
+// Peripheral addresses (generated from SVD)
+#include "hal/vendors/{{ vendor }}/{{ family }}/{{ mcu }}/peripherals.hpp"
+
 namespace {{ platform_namespace }} {
 
 using namespace alloy::core;
@@ -91,8 +94,8 @@ struct {{ family|capitalize }}{{ peripheral_name }}HardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef {{ mock_hook_prefix }}
-            return {{ mock_hook_prefix }}();  // Test hook
+        #ifdef {{ policy_methods.mock_hook_prefix }}
+            return {{ policy_methods.mock_hook_prefix }}();  // Test hook
         #else
             return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         #endif
@@ -139,7 +142,11 @@ struct {{ family|capitalize }}{{ peripheral_name }}HardwarePolicy {
 
 {% for instance in instances %}
 /// @brief Hardware policy for {{ instance.name }}
+{% if instance.peripheral_name %}
+using {{ instance.name }}Hardware = {{ family|capitalize }}{{ peripheral_name }}HardwarePolicy<alloy::generated::{{ mcu }}::peripherals::{{ instance.peripheral_name }}, {{ instance.clock }}>;
+{% else %}
 using {{ instance.name }}Hardware = {{ family|capitalize }}{{ peripheral_name }}HardwarePolicy<{{ instance.base }}, {{ instance.clock }}>;
+{% endif %}
 {% endfor %}
 
 }  // namespace {{ platform_namespace }}

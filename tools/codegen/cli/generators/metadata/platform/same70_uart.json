@@ -1,5 +1,6 @@
 {
   "family": "same70",
+  "mcu": "atsame70q21b",
   "vendor": "atmel",
   "peripheral_name": "UART",
   "register_include": "hal/vendors/atmel/same70/registers/uart0_registers.hpp",

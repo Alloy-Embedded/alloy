@@ -121,13 +121,16 @@ extern "C" void Default_Handler() {
 /**
  * @brief Reset handler - entry point after reset
  *
- * Uses modern startup sequence with initialization hooks.
+ * Implements the full startup sequence using the modern C++23 startup framework.
  */
 extern "C" [[noreturn]] void Reset_Handler() {
-    // Execute modern startup sequence
+    // Run the complete startup sequence (modern C++23 implementation)
+    // This will:
+    // 1. Initialize .data and .bss sections
+    // 2. Run C++ constructors
+    // 3. Call main()
+    // 4. Handle main() return
     StartupImpl::startup_sequence<StartupConfig>();
-
-    // Never returns
 }
 
 /**

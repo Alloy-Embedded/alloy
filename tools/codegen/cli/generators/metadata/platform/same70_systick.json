@@ -1,12 +1,13 @@
 {
   "family": "same70",
-  "vendor": "arm",
+  "mcu": "atsame70q21b",
+  "vendor": "atmel",
   "peripheral_name": "SysTick",
   "register_include": "hal/vendors/arm/cortex_m7/systick_registers.hpp",
   "bitfield_include": "hal/vendors/arm/cortex_m7/systick_bitfields.hpp",
   "register_namespace": "alloy::hal::arm::cortex_m7",
   "namespace_alias": "systick",
-  "register_type": "cortex_m7::SysTick_Type",
+  "register_type": "alloy::hal::arm::cortex_m7::SysTick_Type",
   "platform_namespace": "alloy::hal::same70",
   "vendor_namespace": "alloy::hal::arm::cortex_m7",
   "requires_clock": false,
@@ -47,42 +48,42 @@
     "enable": {
       "description": "Enable SysTick timer",
       "return_type": "void",
-      "code": "hw()->CTRL |= (1u << 0);",
+      "code": "auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->CTRL |= (1u << 0);",
       "test_hook": "ALLOY_SYSTICK_TEST_HOOK_ENABLE"
     },
 
     "disable": {
       "description": "Disable SysTick timer",
       "return_type": "void",
-      "code": "hw()->CTRL &= ~(1u << 0);",
+      "code": "auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->CTRL &= ~(1u << 0);",
       "test_hook": "ALLOY_SYSTICK_TEST_HOOK_DISABLE"
     },
 
     "enable_interrupt": {
       "description": "Enable SysTick interrupt",
       "return_type": "void",
-      "code": "hw()->CTRL |= (1u << 1);",
+      "code": "auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->CTRL |= (1u << 1);",
       "test_hook": "ALLOY_SYSTICK_TEST_HOOK_INT_EN"
     },
 
     "disable_interrupt": {
       "description": "Disable SysTick interrupt",
       "return_type": "void",
-      "code": "hw()->CTRL &= ~(1u << 1);",
+      "code": "auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->CTRL &= ~(1u << 1);",
       "test_hook": "ALLOY_SYSTICK_TEST_HOOK_INT_DIS"
     },
 
     "set_clock_source_cpu": {
       "description": "Set clock source to CPU clock",
       "return_type": "void",
-      "code": "hw()->CTRL |= (1u << 2);",
+      "code": "auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->CTRL |= (1u << 2);",
       "test_hook": "ALLOY_SYSTICK_TEST_HOOK_CLK_CPU"
     },
 
     "set_clock_source_external": {
       "description": "Set clock source to external reference",
       "return_type": "void",
-      "code": "hw()->CTRL &= ~(1u << 2);",
+      "code": "auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->CTRL &= ~(1u << 2);",
       "test_hook": "ALLOY_SYSTICK_TEST_HOOK_CLK_EXT"
     },
 
@@ -92,30 +93,28 @@
         {"name": "value", "type": "uint32_t", "description": "Reload value (24-bit, max 0xFFFFFF)"}
       ],
       "return_type": "void",
-      "code": "hw()->LOAD = value & 0xFFFFFF;",
+      "code": "auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->LOAD = value & 0xFFFFFF;",
       "test_hook": "ALLOY_SYSTICK_TEST_HOOK_RELOAD"
     },
 
     "get_current_value": {
       "description": "Get current counter value",
       "return_type": "uint32_t",
-      "const": true,
-      "code": "return hw()->VAL;",
+      "code": "auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); return systick->VAL;",
       "test_hook": "ALLOY_SYSTICK_TEST_HOOK_GET_VAL"
     },
 
     "clear_current_value": {
       "description": "Clear current counter value",
       "return_type": "void",
-      "code": "hw()->VAL = 0;",
+      "code": "auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->VAL = 0;",
       "test_hook": "ALLOY_SYSTICK_TEST_HOOK_CLEAR"
     },
 
     "has_counted_to_zero": {
       "description": "Check if counter has counted to zero (COUNTFLAG)",
       "return_type": "bool",
-      "const": true,
-      "code": "return (hw()->CTRL & (1u << 16)) != 0;",
+      "code": "auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); return (systick->CTRL & (1u << 16)) != 0;",
       "test_hook": "ALLOY_SYSTICK_TEST_HOOK_FLAG"
     },
 
@@ -125,7 +124,7 @@
         {"name": "ms", "type": "uint32_t", "description": "Millisecond period"}
       ],
       "return_type": "void",
-      "code": "uint32_t ticks = (CPU_CLOCK_HZ / 1000) * ms; if (ticks > 0xFFFFFF) ticks = 0xFFFFFF; hw()->LOAD = ticks - 1; hw()->VAL = 0; hw()->CTRL = 0x07;",
+      "code": "uint32_t ticks = (CPU_CLOCK_HZ / 1000) * ms; if (ticks > 0xFFFFFF) ticks = 0xFFFFFF; auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->LOAD = ticks - 1; systick->VAL = 0; systick->CTRL = 0x07;",
       "test_hook": "ALLOY_SYSTICK_TEST_HOOK_CONFIG_MS"
     },
 
@@ -135,7 +134,7 @@
         {"name": "us", "type": "uint32_t", "description": "Microsecond period"}
       ],
       "return_type": "void",
-      "code": "uint32_t ticks = (CPU_CLOCK_HZ / 1000000) * us; if (ticks > 0xFFFFFF) ticks = 0xFFFFFF; hw()->LOAD = ticks - 1; hw()->VAL = 0; hw()->CTRL = 0x07;",
+      "code": "uint32_t ticks = (CPU_CLOCK_HZ / 1000000) * us; if (ticks > 0xFFFFFF) ticks = 0xFFFFFF; auto* systick = reinterpret_cast<volatile alloy::hal::arm::cortex_m7::SysTick_Type*>(BASE_ADDR); systick->LOAD = ticks - 1; systick->VAL = 0; systick->CTRL = 0x07;",
       "test_hook": "ALLOY_SYSTICK_TEST_HOOK_CONFIG_US"
     }
   },

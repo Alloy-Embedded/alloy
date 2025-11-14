@@ -39,24 +39,24 @@ class Nvic {
 public:
     /**
      * @brief Enable global interrupts
-     * 
+     *
      * Clears PRIMASK to enable interrupts globally.
      * Uses ARM __enable_irq() intrinsic.
      */
     static void enable_global() noexcept {
         // ARM Cortex-M: __enable_irq()
-        // asm volatile ("cpsie i" : : : "memory");
+        __asm volatile ("cpsie i" ::: "memory");
     }
     
     /**
      * @brief Disable global interrupts
-     * 
+     *
      * Sets PRIMASK to disable all interrupts.
      * Uses ARM __disable_irq() intrinsic.
      */
     static void disable_global() noexcept {
         // ARM Cortex-M: __disable_irq()
-        // asm volatile ("cpsid i" : : : "memory");
+        __asm volatile ("cpsid i" ::: "memory");
     }
     
     /**

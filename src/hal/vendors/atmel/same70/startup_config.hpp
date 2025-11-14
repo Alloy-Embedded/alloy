@@ -127,6 +127,12 @@ struct StartupConfig {
 
     /**
      * @brief SRAM base address
+     *
+     * SAME70 has multiple memory regions:
+     * - DTCM: 0x20000000 (64KB) - Data Tightly Coupled Memory
+     * - SRAM: 0x20400000 (384KB) - Normal SRAM for stack/heap
+     *
+     * We use SRAM, not DTCM, for regular stack/heap operations
      */
     static constexpr uintptr_t SRAM_BASE = 0x20400000;
 

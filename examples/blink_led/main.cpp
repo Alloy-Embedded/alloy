@@ -1,44 +1,45 @@
 /**
  * @file main.cpp
- * @brief Portable LED Blink Example - Works on Any Board!
+ * @brief Blink LED Example for SAME70 Xplained Ultra
  *
- * This example demonstrates the power of board abstraction.
- * The SAME CODE compiles for different boards by simply changing
- * the build configuration - no code changes needed!
+ * This example demonstrates the use of CoreZero HAL abstractions:
+ * - Board initialization (clock, SysTick, peripherals)
+ * - GPIO configuration using platform-specific GpioPin template
+ * - SysTick-based millisecond delays
  *
- * Features:
- * - board::init() - Initializes clock, SysTick, and GPIO automatically
- * - board::delay_ms() - Precise millisecond delays using SysTick timer
- * - board::led::toggle() - Hardware-independent LED control
+ * @section hardware Hardware Setup
+ * - Board: SAME70 Xplained Ultra
+ * - LED: Green LED on PC8 (PIOC pin 8) - Active LOW
+ * - Clock: 12 MHz internal RC oscillator (PLL not available - see docs/KNOWN_ISSUES.md)
  *
- * Expected Behavior:
- * - LED blinks with precise 500ms ON/OFF timing
- * - Continues indefinitely
+ * @section behavior Expected Behavior
+ * The LED blinks with 500ms ON / 500ms OFF period (1 Hz frequency).
  *
- * Build for SAME70:
- *   make same70-blink
- *
- * Build for other boards (when available):
- *   make BOARD=stm32f103_bluepill blink
- *   make BOARD=arduino_zero blink
- *
- * The magic: Each board has its own board.hpp that implements
- * the same interface (board::init, board::led::toggle, etc.)
+ * @note This example uses the SAME70 platform-specific GPIO API.
+ *       For portable code across multiple platforms, use the hal::interface APIs.
  */
 
-// Include board-specific header based on build configuration
-// CMake sets the board include path, so we can use a simple include
-#include "board.hpp"
+#include "same70_xplained/board.hpp"
+#include "hal/platform/same70/gpio.hpp"
+#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
+
+using namespace alloy::hal::same70;
+using namespace alloy::generated::atsame70q21b;
 
 int main() {
-    // Initialize board hardware (clocks, timers, GPIO)
-    // This function is board-specific but has the same interface
+    // Initialize board hardware (clock, SysTick, interrupts, peripherals)
     board::init();
 
-    // Blink LED forever with precise 500ms timing
-    // Same code works on all boards!
+    // Create LED GPIO pin instance (PC8)
+    // Using platform-specific GpioPin template for compile-time peripheral configuration
+    GpioPin<peripherals::PIOC, 8> led;
+    led.setDirection(PinDirection::Output);
+
+    // Main loop: Blink LED at 1 Hz
     while (true) {
-        board::led::toggle();
+        led.clear();  // LED ON (active LOW)
+        board::delay_ms(500);
+        led.set();    // LED OFF
         board::delay_ms(500);
     }
 

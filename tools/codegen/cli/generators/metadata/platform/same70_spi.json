@@ -1,5 +1,6 @@
 {
   "family": "same70",
+  "mcu": "atsame70q21b",
   "vendor": "atmel",
   "peripheral_name": "SPI",
   "register_include": "hal/vendors/atmel/same70/registers/spi0_registers.hpp",
