@@ -42,6 +42,7 @@ using namespace alloy::core;
 
 // Import register types
 using namespace alloy::hal::atmel::same70;
+using namespace alloy::hal::atmel::same70::uart0;
 
 // Namespace alias for bitfields
 namespace uart = atmel::same70::uart0;
@@ -118,7 +119,8 @@ struct Same70UARTHardwarePolicy {
             ALLOY_UART_TEST_HOOK_RESET();
         #endif
 
-        hw()->CR = uart::cr::RSTRX::mask | uart::cr::RSTTX::mask | uart::cr::RXDIS::mask | uart::cr::TXDIS::mask;
+        auto* regs = reinterpret_cast<volatile UART0_Registers*>(BASE_ADDR);
+        regs->CR = uart::cr::RSTRX::mask | uart::cr::RSTTX::mask | uart::cr::RXDIS::mask | uart::cr::TXDIS::mask;
     }
 
     /**
@@ -131,7 +133,8 @@ struct Same70UARTHardwarePolicy {
             ALLOY_UART_TEST_HOOK_CONFIGURE();
         #endif
 
-        hw()->MR = uart::mr::PAR::write(0, uart::mr::par::NO_PARITY);
+        auto* regs = reinterpret_cast<volatile UART0_Registers*>(BASE_ADDR);
+        regs->MR = uart::mr::PAR::write(0, uart::mr::par::NO);
     }
 
     /**
@@ -145,8 +148,10 @@ struct Same70UARTHardwarePolicy {
             ALLOY_UART_TEST_HOOK_BAUDRATE(baud);
         #endif
 
+        constexpr uint32_t PERIPH_CLOCK_HZ = 12000000;  // 12 MHz RC oscillator
         uint32_t cd = PERIPH_CLOCK_HZ / (16 * baud);
-hw()->BRGR = uart::brgr::CD::write(0, cd);
+        auto* regs = reinterpret_cast<volatile UART0_Registers*>(BASE_ADDR);
+        regs->BRGR = uart::brgr::CD::write(0, cd);
     }
 
     /**
@@ -159,7 +164,8 @@ hw()->BRGR = uart::brgr::CD::write(0, cd);
             ALLOY_UART_TEST_HOOK_TX_ENABLE();
         #endif
 
-        hw()->CR = uart::cr::TXEN::mask;
+        auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        regs->CR = uart::cr::TXEN::mask;
     }
 
     /**
@@ -172,7 +178,8 @@ hw()->BRGR = uart::brgr::CD::write(0, cd);
             ALLOY_UART_TEST_HOOK_RX_ENABLE();
         #endif
 
-        hw()->CR = uart::cr::RXEN::mask;
+        auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        regs->CR = uart::cr::RXEN::mask;
     }
 
     /**
@@ -185,7 +192,8 @@ hw()->BRGR = uart::brgr::CD::write(0, cd);
             ALLOY_UART_TEST_HOOK_TX_DISABLE();
         #endif
 
-        hw()->CR = uart::cr::TXDIS::mask;
+        auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        regs->CR = uart::cr::TXDIS::mask;
     }
 
     /**
@@ -198,7 +206,8 @@ hw()->BRGR = uart::brgr::CD::write(0, cd);
             ALLOY_UART_TEST_HOOK_RX_DISABLE();
         #endif
 
-        hw()->CR = uart::cr::RXDIS::mask;
+        auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        regs->CR = uart::cr::RXDIS::mask;
     }
 
     /**
@@ -207,12 +216,13 @@ hw()->BRGR = uart::brgr::CD::write(0, cd);
      *
      * @note Test hook: ALLOY_UART_TEST_HOOK_TX_READY
      */
-    static inline bool is_tx_ready() const {
+    static inline bool is_tx_ready() {
         #ifdef ALLOY_UART_TEST_HOOK_TX_READY
             ALLOY_UART_TEST_HOOK_TX_READY();
         #endif
 
-        return (hw()->SR & uart::sr::TXRDY::mask) != 0;
+        auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        return (regs->SR & uart::sr::TXRDY::mask) != 0;
     }
 
     /**
@@ -221,12 +231,13 @@ hw()->BRGR = uart::brgr::CD::write(0, cd);
      *
      * @note Test hook: ALLOY_UART_TEST_HOOK_RX_READY
      */
-    static inline bool is_rx_ready() const {
+    static inline bool is_rx_ready() {
         #ifdef ALLOY_UART_TEST_HOOK_RX_READY
             ALLOY_UART_TEST_HOOK_RX_READY();
         #endif
 
-        return (hw()->SR & uart::sr::RXRDY::mask) != 0;
+        auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        return (regs->SR & uart::sr::RXRDY::mask) != 0;
     }
 
     /**
@@ -240,7 +251,8 @@ hw()->BRGR = uart::brgr::CD::write(0, cd);
             ALLOY_UART_TEST_HOOK_WRITE(byte);
         #endif
 
-        hw()->THR = byte;
+        auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        regs->THR = byte;
     }
 
     /**
@@ -249,12 +261,13 @@ hw()->BRGR = uart::brgr::CD::write(0, cd);
      *
      * @note Test hook: ALLOY_UART_TEST_HOOK_READ
      */
-    static inline uint8_t read_byte() const {
+    static inline uint8_t read_byte() {
         #ifdef ALLOY_UART_TEST_HOOK_READ
             ALLOY_UART_TEST_HOOK_READ();
         #endif
 
-        return static_cast<uint8_t>(hw()->RHR);
+        auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        return static_cast<uint8_t>(regs->RHR);
     }
 
     /**
@@ -298,15 +311,15 @@ return timeout != 0;
 // ============================================================================
 
 /// @brief Hardware policy for Uart0
-using Uart0Hardware = Same70UARTHardwarePolicy<0x400E0800, >;
+using Uart0Hardware = Same70UARTHardwarePolicy<0x400E0800, 7>;
 /// @brief Hardware policy for Uart1
-using Uart1Hardware = Same70UARTHardwarePolicy<0x400E0A00, >;
+using Uart1Hardware = Same70UARTHardwarePolicy<0x400E0A00, 8>;
 /// @brief Hardware policy for Uart2
-using Uart2Hardware = Same70UARTHardwarePolicy<0x400E1A00, >;
+using Uart2Hardware = Same70UARTHardwarePolicy<0x400E1A00, 41>;
 /// @brief Hardware policy for Uart3
-using Uart3Hardware = Same70UARTHardwarePolicy<0x400E1C00, >;
+using Uart3Hardware = Same70UARTHardwarePolicy<0x400E1C00, 42>;
 /// @brief Hardware policy for Uart4
-using Uart4Hardware = Same70UARTHardwarePolicy<0x400E1E00, >;
+using Uart4Hardware = Same70UARTHardwarePolicy<0x400E1E00, 43>;
 
 }  // namespace alloy::hal::same70
 

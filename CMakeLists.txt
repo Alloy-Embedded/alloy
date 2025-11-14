@@ -246,11 +246,12 @@ endif()
 # Examples - Board Abstraction Layer
 # ==============================================================================
 
-# Generic blink_led example - works on any board with board.hpp abstraction
+# Generic examples - work on any board with board.hpp abstraction
 # The same code compiles for different boards by including the appropriate board.hpp
 
 if(ALLOY_BOARD STREQUAL "same70_xplained")
     add_subdirectory(examples/blink_led)
+    add_subdirectory(examples/uart_logger)
 endif()
 
 # TODO: Add more boards as they implement board.hpp abstraction:
