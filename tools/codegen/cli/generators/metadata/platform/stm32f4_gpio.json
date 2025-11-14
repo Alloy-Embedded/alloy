@@ -1,5 +1,6 @@
 {
   "family": "stm32f4",
+  "mcu": "stm32f401",
   "vendor": "st",
   "peripheral_name": "GPIO",
   "description": "General Purpose Input/Output",
@@ -7,7 +8,7 @@
   "register_namespace": "gpioa",
   "register_include": "hal/vendors/st/stm32f4/registers/gpioa_registers.hpp",
   "bitfield_include": "hal/vendors/st/stm32f4/bitfields/gpioa_bitfields.hpp",
-  "platform_namespace": "alloy::hal::stm32f4",
+  "platform_namespace": "alloy::hal::st::stm32f4",
   "vendor_namespace": "alloy::hal::st::stm32f4",
 
   "features": {
@@ -15,10 +16,11 @@
     "pull_down": true,
     "open_drain": true,
     "input_filter": false,
-    "schmitt_trigger": true,
+    "schmitt_trigger": false,
     "interrupt_support": true,
+    "debounce": false,
     "alternate_function": true,
-    "speed_control": true
+    "output_speed": true
   },
 
   "port_bases": {
@@ -27,329 +29,201 @@
     "GPIOC": "0x40020800",
     "GPIOD": "0x40020C00",
     "GPIOE": "0x40021000",
-    "GPIOF": "0x40021400",
-    "GPIOG": "0x40021800",
-    "GPIOH": "0x40021C00",
-    "GPIOI": "0x40022000"
+    "GPIOH": "0x40021C00"
   },
 
-  "registers": {
-    "mode": {
-      "name": "MODER",
-      "description": "GPIO port mode register",
-      "access": "read-write",
-      "operation": "modify",
-      "bits_per_pin": 2,
-      "values": {
-        "input": 0,
-        "output": 1,
-        "alternate": 2,
-        "analog": 3
-      }
-    },
-    "output_type": {
-      "name": "OTYPER",
-      "description": "GPIO port output type register",
-      "access": "read-write",
-      "operation": "modify",
-      "bits_per_pin": 1,
-      "values": {
-        "push_pull": 0,
-        "open_drain": 1
-      }
-    },
-    "speed": {
-      "name": "OSPEEDR",
-      "description": "GPIO port output speed register",
-      "access": "read-write",
-      "operation": "modify",
-      "bits_per_pin": 2,
-      "values": {
-        "low": 0,
-        "medium": 1,
-        "high": 2,
-        "very_high": 3
-      }
-    },
-    "pull_up_down": {
-      "name": "PUPDR",
-      "description": "GPIO port pull-up/pull-down register",
-      "access": "read-write",
-      "operation": "modify",
-      "bits_per_pin": 2,
-      "values": {
-        "none": 0,
-        "pull_up": 1,
-        "pull_down": 2
-      }
-    },
-    "input_data": {
-      "name": "IDR",
-      "description": "GPIO port input data register",
-      "access": "read-only",
-      "operation": "read"
-    },
-    "output_data": {
-      "name": "ODR",
-      "description": "GPIO port output data register",
-      "access": "read-write",
-      "operation": "read"
-    },
-    "bit_set_reset": {
-      "name": "BSRR",
-      "description": "GPIO port bit set/reset register",
-      "access": "write-only",
-      "operation": "write",
-      "note": "Bits 0-15 set pins, bits 16-31 reset pins"
-    }
-  },
-
-  "operations": {
-    "set": {
-      "description": "Set pin HIGH (output = 1)",
-      "steps": [
-        {
-          "register": "bit_set_reset",
-          "value": "pin_mask",
-          "comment": "Write to lower 16 bits to set pin",
-          "note": "BSRR bits 0-15 set corresponding pins"
-        }
-      ],
-      "return_type": "Result<void>",
-      "always_succeeds": true,
-      "test_hook": "ALLOY_GPIO_TEST_HOOK_BSRR_SET"
-    },
-
-    "clear": {
-      "description": "Set pin LOW (output = 0)",
-      "steps": [
-        {
-          "register": "bit_set_reset",
-          "value": "(pin_mask << 16)",
-          "comment": "Write to upper 16 bits to reset pin",
-          "note": "BSRR bits 16-31 reset corresponding pins"
-        }
-      ],
-      "return_type": "Result<void>",
-      "always_succeeds": true,
-      "test_hook": "ALLOY_GPIO_TEST_HOOK_BSRR_RESET"
-    },
-
-    "toggle": {
-      "description": "Toggle pin state",
-      "steps": [
-        {
-          "register": "output_data",
-          "operation": "read",
-          "store_as": "current_state",
-          "comment": "Read current output data"
-        },
-        {
-          "condition": "if (current_state & pin_mask)",
-          "then": [
-            {
-              "register": "bit_set_reset",
-              "value": "(pin_mask << 16)",
-              "comment": "Pin is HIGH, reset it"
-            }
-          ],
-          "else": [
-            {
-              "register": "bit_set_reset",
-              "value": "pin_mask",
-              "comment": "Pin is LOW, set it"
-            }
-          ]
-        }
-      ],
-      "return_type": "Result<void>",
-      "always_succeeds": true
-    },
-
-    "write": {
-      "description": "Write pin value",
-      "parameters": [
-        {
-          "name": "value",
-          "type": "bool",
-          "description": "true for HIGH, false for LOW"
-        }
-      ],
-      "steps": [
-        {
-          "condition": "if (value)",
-          "then_call": "set",
-          "else_call": "clear"
-        }
-      ],
-      "return_type": "Result<void>",
-      "always_succeeds": true
-    },
-
-    "read": {
-      "description": "Read pin input value",
-      "steps": [
-        {
-          "register": "input_data",
-          "operation": "read",
-          "store_as": "pin_state",
-          "comment": "Read from IDR register"
-        },
-        {
-          "compute": "(pin_state & pin_mask) != 0",
-          "store_as": "value"
-        }
-      ],
-      "return_type": "Result<bool>",
-      "returns": "value",
-      "const": true
-    },
-
-    "setDirection": {
-      "description": "Set GPIO pin direction",
-      "parameters": [
-        {
-          "name": "direction",
-          "type": "PinDirection",
-          "description": "Pin direction (Input or Output)"
-        }
-      ],
-      "steps": [
-        {
-          "register": "mode",
-          "operation": "modify_2bit",
-          "pin_position": "PIN_NUM * 2",
-          "clear_mask": "(0x3 << (PIN_NUM * 2))",
-          "value": "direction == PinDirection::Input ? 0x0 : 0x1",
-          "comment": "Set MODER bits: 00=input, 01=output",
-          "test_hook": "ALLOY_GPIO_TEST_HOOK_MODER"
-        }
-      ],
-      "return_type": "Result<void>",
-      "always_succeeds": true
-    },
-
-    "setDrive": {
-      "description": "Set GPIO pin drive mode",
-      "parameters": [
-        {
-          "name": "drive",
-          "type": "PinDrive",
-          "description": "Drive mode (PushPull or OpenDrain)"
-        }
-      ],
-      "steps": [
-        {
-          "register": "output_type",
-          "operation": "modify_1bit",
-          "clear_mask": "pin_mask",
-          "value": "drive == PinDrive::OpenDrain ? pin_mask : 0",
-          "comment": "Set OTYPER bit: 0=push-pull, 1=open-drain",
-          "test_hook": "ALLOY_GPIO_TEST_HOOK_OTYPER"
-        }
-      ],
-      "return_type": "Result<void>",
-      "always_succeeds": true
-    },
-
-    "setPull": {
-      "description": "Configure pull resistor",
-      "parameters": [
-        {
-          "name": "pull",
-          "type": "PinPull",
-          "description": "Pull resistor configuration"
-        }
-      ],
-      "steps": [
-        {
-          "register": "pull_up_down",
-          "operation": "modify_2bit",
-          "pin_position": "PIN_NUM * 2",
-          "clear_mask": "(0x3 << (PIN_NUM * 2))",
-          "compute_value": true,
-          "value_switch": {
-            "PinPull::None": "0x0",
-            "PinPull::PullUp": "0x1",
-            "PinPull::PullDown": "0x2"
-          },
-          "comment": "Set PUPDR bits: 00=none, 01=pull-up, 10=pull-down",
-          "test_hook": "ALLOY_GPIO_TEST_HOOK_PUPDR"
-        }
-      ],
-      "return_type": "Result<void>",
-      "always_succeeds": true
-    },
-
-    "setSpeed": {
-      "description": "Set GPIO output speed",
-      "parameters": [
-        {
-          "name": "speed",
-          "type": "GpioSpeed",
-          "description": "Output speed (Low, Medium, High, VeryHigh)"
-        }
-      ],
-      "steps": [
-        {
-          "register": "speed",
-          "operation": "modify_2bit",
-          "pin_position": "PIN_NUM * 2",
-          "clear_mask": "(0x3 << (PIN_NUM * 2))",
-          "value": "static_cast<uint32_t>(speed)",
-          "comment": "Set OSPEEDR bits",
-          "test_hook": "ALLOY_GPIO_TEST_HOOK_OSPEEDR"
-        }
-      ],
-      "return_type": "Result<void>",
-      "always_succeeds": true
-    },
-
-    "isOutput": {
-      "description": "Check if pin is configured as output",
-      "steps": [
-        {
-          "register": "mode",
-          "operation": "read",
-          "store_as": "moder"
-        },
-        {
-          "compute": "((moder >> (PIN_NUM * 2)) & 0x3) == 0x1",
-          "store_as": "is_output"
-        }
-      ],
-      "return_type": "Result<bool>",
-      "returns": "is_output",
-      "const": true
-    }
-  },
-
-  "additional_enums": [
+  "template_params": [
     {
-      "name": "GpioSpeed",
-      "type": "uint8_t",
-      "description": "GPIO output speed (STM32-specific)",
-      "values": [
-        {"name": "Low", "value": 0, "description": "Low speed (2 MHz)"},
-        {"name": "Medium", "value": 1, "description": "Medium speed (25 MHz)"},
-        {"name": "High", "value": 2, "description": "High speed (50 MHz)"},
-        {"name": "VeryHigh", "value": 3, "description": "Very high speed (100 MHz)"}
-      ]
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "GPIO peripheral base address"
+    },
+    {
+      "name": "PERIPH_CLOCK_HZ",
+      "type": "uint32_t",
+      "description": "Peripheral clock frequency in Hz"
     }
   ],
 
-  "examples": {
-    "led": {
-      "description": "Define LED pin (GPIOA pin 5)",
-      "code": "using LedGreen = GpioPin<GPIOA_BASE, 5>;"
+  "policy_methods": {
+    "description": "Hardware Policy methods for Policy-Based Design pattern",
+    "peripheral_clock_hz": 84000000,
+    "mock_hook_prefix": "ALLOY_GPIO_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
     },
-    "button": {
-      "description": "Define button pin (GPIOC pin 13)",
-      "code": "using Button0 = GpioPin<GPIOC_BASE, 13>;"
+
+    "set_mode_output": {
+      "description": "Configure pin as output",
+      "parameters": [
+        {"name": "pin_number", "type": "uint8_t", "description": "Pin number (0-15)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->MODER = (hw()->MODER & ~(0x3U << (pin_number * 2))) | (0x1U << (pin_number * 2));",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_MODER"
     },
-    "basic_usage": {
-      "description": "Use GPIO pin with speed control",
-      "code": "auto led = LedGreen{};\nled.setDirection(PinDirection::Output);\nled.setSpeed(GpioSpeed::Medium);\nled.set();"
+
+    "set_mode_input": {
+      "description": "Configure pin as input",
+      "parameters": [
+        {"name": "pin_number", "type": "uint8_t", "description": "Pin number (0-15)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->MODER = (hw()->MODER & ~(0x3U << (pin_number * 2)));",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_MODER"
+    },
+
+    "set_mode_alternate": {
+      "description": "Configure pin as alternate function",
+      "parameters": [
+        {"name": "pin_number", "type": "uint8_t", "description": "Pin number (0-15)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->MODER = (hw()->MODER & ~(0x3U << (pin_number * 2))) | (0x2U << (pin_number * 2));",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_MODER"
+    },
+
+    "set_mode_analog": {
+      "description": "Configure pin as analog",
+      "parameters": [
+        {"name": "pin_number", "type": "uint8_t", "description": "Pin number (0-15)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->MODER = (hw()->MODER & ~(0x3U << (pin_number * 2))) | (0x3U << (pin_number * 2));",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_MODER"
+    },
+
+    "set_output_type_pushpull": {
+      "description": "Configure output as push-pull",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->OTYPER &= ~pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_OTYPER"
+    },
+
+    "set_output_type_opendrain": {
+      "description": "Configure output as open-drain",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->OTYPER |= pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_OTYPER"
+    },
+
+    "set_pull_none": {
+      "description": "Disable pull-up/pull-down resistors",
+      "parameters": [
+        {"name": "pin_number", "type": "uint8_t", "description": "Pin number (0-15)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->PUPDR = (hw()->PUPDR & ~(0x3U << (pin_number * 2)));",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_PUPDR"
+    },
+
+    "set_pull_up": {
+      "description": "Enable pull-up resistor",
+      "parameters": [
+        {"name": "pin_number", "type": "uint8_t", "description": "Pin number (0-15)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->PUPDR = (hw()->PUPDR & ~(0x3U << (pin_number * 2))) | (0x1U << (pin_number * 2));",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_PUPDR"
+    },
+
+    "set_pull_down": {
+      "description": "Enable pull-down resistor",
+      "parameters": [
+        {"name": "pin_number", "type": "uint8_t", "description": "Pin number (0-15)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->PUPDR = (hw()->PUPDR & ~(0x3U << (pin_number * 2))) | (0x2U << (pin_number * 2));",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_PUPDR"
+    },
+
+    "set_output": {
+      "description": "Set output pin high",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->BSRR = pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_BSRR"
+    },
+
+    "clear_output": {
+      "description": "Set output pin low",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->BSRR = (pin_mask << 16);",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_BSRR",
+      "notes": "STM32F4 uses upper 16 bits of BSRR for reset"
+    },
+
+    "toggle_output": {
+      "description": "Toggle output pin",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "void",
+      "code": "hw()->ODR ^= pin_mask;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_ODR"
+    },
+
+    "read_input": {
+      "description": "Read input pin state",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "bool",
+      "code": "return (hw()->IDR & pin_mask) != 0;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_IDR"
+    },
+
+    "read_output": {
+      "description": "Read output register state",
+      "parameters": [
+        {"name": "pin_mask", "type": "uint32_t", "description": "Pin mask"}
+      ],
+      "return_type": "bool",
+      "code": "return (hw()->ODR & pin_mask) != 0;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_ODR"
+    },
+
+    "write_port": {
+      "description": "Write entire port output data",
+      "parameters": [
+        {"name": "value", "type": "uint32_t", "description": "Port value"}
+      ],
+      "return_type": "void",
+      "code": "hw()->ODR = value;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_ODR"
+    },
+
+    "read_port": {
+      "description": "Read entire port input data",
+      "parameters": [],
+      "return_type": "uint32_t",
+      "code": "return hw()->IDR;",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_IDR"
+    },
+
+    "set_alternate_function": {
+      "description": "Configure alternate function for a pin",
+      "parameters": [
+        {"name": "pin_number", "type": "uint8_t", "description": "Pin number (0-15)"},
+        {"name": "af_number", "type": "uint8_t", "description": "Alternate function number (0-15)"}
+      ],
+      "return_type": "void",
+      "code": "if (pin_number < 8) {\n    hw()->AFRL = (hw()->AFRL & ~(0xFU << (pin_number * 4))) | (af_number << (pin_number * 4));\n} else {\n    hw()->AFRH = (hw()->AFRH & ~(0xFU << ((pin_number - 8) * 4))) | (af_number << ((pin_number - 8) * 4));\n}",
+      "test_hook": "ALLOY_GPIO_TEST_HOOK_AFR"
     }
   }
 }

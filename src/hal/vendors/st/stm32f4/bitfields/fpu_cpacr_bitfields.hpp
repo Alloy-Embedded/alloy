@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::fpu_cpacr {
@@ -20,11 +19,11 @@ using namespace alloy::hal::bitfields;
 
 /// CPACR - Coprocessor access control register
 namespace cpacr {
-/// CP
-/// Position: 20, Width: 4
-using CP = BitField<20, 4>;
-constexpr uint32_t CP_Pos = 20;
-constexpr uint32_t CP_Msk = CP::mask;
+    /// CP
+    /// Position: 20, Width: 4
+    using CP = BitField<20, 4>;
+    constexpr uint32_t CP_Pos = 20;
+    constexpr uint32_t CP_Msk = CP::mask;
 
 }  // namespace cpacr
 

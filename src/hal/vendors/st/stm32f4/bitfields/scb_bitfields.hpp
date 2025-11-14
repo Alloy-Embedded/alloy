@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::scb {
@@ -20,505 +19,505 @@ using namespace alloy::hal::bitfields;
 
 /// CPUID - CPUID base register
 namespace cpuid {
-/// Revision number
-/// Position: 0, Width: 4
-using Revision = BitField<0, 4>;
-constexpr uint32_t Revision_Pos = 0;
-constexpr uint32_t Revision_Msk = Revision::mask;
+    /// Revision number
+    /// Position: 0, Width: 4
+    using Revision = BitField<0, 4>;
+    constexpr uint32_t Revision_Pos = 0;
+    constexpr uint32_t Revision_Msk = Revision::mask;
 
-/// Part number of the processor
-/// Position: 4, Width: 12
-using PartNo = BitField<4, 12>;
-constexpr uint32_t PartNo_Pos = 4;
-constexpr uint32_t PartNo_Msk = PartNo::mask;
+    /// Part number of the processor
+    /// Position: 4, Width: 12
+    using PartNo = BitField<4, 12>;
+    constexpr uint32_t PartNo_Pos = 4;
+    constexpr uint32_t PartNo_Msk = PartNo::mask;
 
-/// Reads as 0xF
-/// Position: 16, Width: 4
-using Constant = BitField<16, 4>;
-constexpr uint32_t Constant_Pos = 16;
-constexpr uint32_t Constant_Msk = Constant::mask;
+    /// Reads as 0xF
+    /// Position: 16, Width: 4
+    using Constant = BitField<16, 4>;
+    constexpr uint32_t Constant_Pos = 16;
+    constexpr uint32_t Constant_Msk = Constant::mask;
 
-/// Variant number
-/// Position: 20, Width: 4
-using Variant = BitField<20, 4>;
-constexpr uint32_t Variant_Pos = 20;
-constexpr uint32_t Variant_Msk = Variant::mask;
+    /// Variant number
+    /// Position: 20, Width: 4
+    using Variant = BitField<20, 4>;
+    constexpr uint32_t Variant_Pos = 20;
+    constexpr uint32_t Variant_Msk = Variant::mask;
 
-/// Implementer code
-/// Position: 24, Width: 8
-using Implementer = BitField<24, 8>;
-constexpr uint32_t Implementer_Pos = 24;
-constexpr uint32_t Implementer_Msk = Implementer::mask;
+    /// Implementer code
+    /// Position: 24, Width: 8
+    using Implementer = BitField<24, 8>;
+    constexpr uint32_t Implementer_Pos = 24;
+    constexpr uint32_t Implementer_Msk = Implementer::mask;
 
 }  // namespace cpuid
 
 /// ICSR - Interrupt control and state register
 namespace icsr {
-/// Active vector
-/// Position: 0, Width: 9
-using VECTACTIVE = BitField<0, 9>;
-constexpr uint32_t VECTACTIVE_Pos = 0;
-constexpr uint32_t VECTACTIVE_Msk = VECTACTIVE::mask;
+    /// Active vector
+    /// Position: 0, Width: 9
+    using VECTACTIVE = BitField<0, 9>;
+    constexpr uint32_t VECTACTIVE_Pos = 0;
+    constexpr uint32_t VECTACTIVE_Msk = VECTACTIVE::mask;
 
-/// Return to base level
-/// Position: 11, Width: 1
-using RETTOBASE = BitField<11, 1>;
-constexpr uint32_t RETTOBASE_Pos = 11;
-constexpr uint32_t RETTOBASE_Msk = RETTOBASE::mask;
+    /// Return to base level
+    /// Position: 11, Width: 1
+    using RETTOBASE = BitField<11, 1>;
+    constexpr uint32_t RETTOBASE_Pos = 11;
+    constexpr uint32_t RETTOBASE_Msk = RETTOBASE::mask;
 
-/// Pending vector
-/// Position: 12, Width: 7
-using VECTPENDING = BitField<12, 7>;
-constexpr uint32_t VECTPENDING_Pos = 12;
-constexpr uint32_t VECTPENDING_Msk = VECTPENDING::mask;
+    /// Pending vector
+    /// Position: 12, Width: 7
+    using VECTPENDING = BitField<12, 7>;
+    constexpr uint32_t VECTPENDING_Pos = 12;
+    constexpr uint32_t VECTPENDING_Msk = VECTPENDING::mask;
 
-/// Interrupt pending flag
-/// Position: 22, Width: 1
-using ISRPENDING = BitField<22, 1>;
-constexpr uint32_t ISRPENDING_Pos = 22;
-constexpr uint32_t ISRPENDING_Msk = ISRPENDING::mask;
+    /// Interrupt pending flag
+    /// Position: 22, Width: 1
+    using ISRPENDING = BitField<22, 1>;
+    constexpr uint32_t ISRPENDING_Pos = 22;
+    constexpr uint32_t ISRPENDING_Msk = ISRPENDING::mask;
 
-/// SysTick exception clear-pending bit
-/// Position: 25, Width: 1
-using PENDSTCLR = BitField<25, 1>;
-constexpr uint32_t PENDSTCLR_Pos = 25;
-constexpr uint32_t PENDSTCLR_Msk = PENDSTCLR::mask;
+    /// SysTick exception clear-pending bit
+    /// Position: 25, Width: 1
+    using PENDSTCLR = BitField<25, 1>;
+    constexpr uint32_t PENDSTCLR_Pos = 25;
+    constexpr uint32_t PENDSTCLR_Msk = PENDSTCLR::mask;
 
-/// SysTick exception set-pending bit
-/// Position: 26, Width: 1
-using PENDSTSET = BitField<26, 1>;
-constexpr uint32_t PENDSTSET_Pos = 26;
-constexpr uint32_t PENDSTSET_Msk = PENDSTSET::mask;
+    /// SysTick exception set-pending bit
+    /// Position: 26, Width: 1
+    using PENDSTSET = BitField<26, 1>;
+    constexpr uint32_t PENDSTSET_Pos = 26;
+    constexpr uint32_t PENDSTSET_Msk = PENDSTSET::mask;
 
-/// PendSV clear-pending bit
-/// Position: 27, Width: 1
-using PENDSVCLR = BitField<27, 1>;
-constexpr uint32_t PENDSVCLR_Pos = 27;
-constexpr uint32_t PENDSVCLR_Msk = PENDSVCLR::mask;
+    /// PendSV clear-pending bit
+    /// Position: 27, Width: 1
+    using PENDSVCLR = BitField<27, 1>;
+    constexpr uint32_t PENDSVCLR_Pos = 27;
+    constexpr uint32_t PENDSVCLR_Msk = PENDSVCLR::mask;
 
-/// PendSV set-pending bit
-/// Position: 28, Width: 1
-using PENDSVSET = BitField<28, 1>;
-constexpr uint32_t PENDSVSET_Pos = 28;
-constexpr uint32_t PENDSVSET_Msk = PENDSVSET::mask;
+    /// PendSV set-pending bit
+    /// Position: 28, Width: 1
+    using PENDSVSET = BitField<28, 1>;
+    constexpr uint32_t PENDSVSET_Pos = 28;
+    constexpr uint32_t PENDSVSET_Msk = PENDSVSET::mask;
 
-/// NMI set-pending bit.
-/// Position: 31, Width: 1
-using NMIPENDSET = BitField<31, 1>;
-constexpr uint32_t NMIPENDSET_Pos = 31;
-constexpr uint32_t NMIPENDSET_Msk = NMIPENDSET::mask;
+    /// NMI set-pending bit.
+    /// Position: 31, Width: 1
+    using NMIPENDSET = BitField<31, 1>;
+    constexpr uint32_t NMIPENDSET_Pos = 31;
+    constexpr uint32_t NMIPENDSET_Msk = NMIPENDSET::mask;
 
 }  // namespace icsr
 
 /// VTOR - Vector table offset register
 namespace vtor {
-/// Vector table base offset field
-/// Position: 9, Width: 21
-using TBLOFF = BitField<9, 21>;
-constexpr uint32_t TBLOFF_Pos = 9;
-constexpr uint32_t TBLOFF_Msk = TBLOFF::mask;
+    /// Vector table base offset field
+    /// Position: 9, Width: 21
+    using TBLOFF = BitField<9, 21>;
+    constexpr uint32_t TBLOFF_Pos = 9;
+    constexpr uint32_t TBLOFF_Msk = TBLOFF::mask;
 
 }  // namespace vtor
 
 /// AIRCR - Application interrupt and reset control register
 namespace aircr {
-/// VECTRESET
-/// Position: 0, Width: 1
-using VECTRESET = BitField<0, 1>;
-constexpr uint32_t VECTRESET_Pos = 0;
-constexpr uint32_t VECTRESET_Msk = VECTRESET::mask;
+    /// VECTRESET
+    /// Position: 0, Width: 1
+    using VECTRESET = BitField<0, 1>;
+    constexpr uint32_t VECTRESET_Pos = 0;
+    constexpr uint32_t VECTRESET_Msk = VECTRESET::mask;
 
-/// VECTCLRACTIVE
-/// Position: 1, Width: 1
-using VECTCLRACTIVE = BitField<1, 1>;
-constexpr uint32_t VECTCLRACTIVE_Pos = 1;
-constexpr uint32_t VECTCLRACTIVE_Msk = VECTCLRACTIVE::mask;
+    /// VECTCLRACTIVE
+    /// Position: 1, Width: 1
+    using VECTCLRACTIVE = BitField<1, 1>;
+    constexpr uint32_t VECTCLRACTIVE_Pos = 1;
+    constexpr uint32_t VECTCLRACTIVE_Msk = VECTCLRACTIVE::mask;
 
-/// SYSRESETREQ
-/// Position: 2, Width: 1
-using SYSRESETREQ = BitField<2, 1>;
-constexpr uint32_t SYSRESETREQ_Pos = 2;
-constexpr uint32_t SYSRESETREQ_Msk = SYSRESETREQ::mask;
+    /// SYSRESETREQ
+    /// Position: 2, Width: 1
+    using SYSRESETREQ = BitField<2, 1>;
+    constexpr uint32_t SYSRESETREQ_Pos = 2;
+    constexpr uint32_t SYSRESETREQ_Msk = SYSRESETREQ::mask;
 
-/// PRIGROUP
-/// Position: 8, Width: 3
-using PRIGROUP = BitField<8, 3>;
-constexpr uint32_t PRIGROUP_Pos = 8;
-constexpr uint32_t PRIGROUP_Msk = PRIGROUP::mask;
+    /// PRIGROUP
+    /// Position: 8, Width: 3
+    using PRIGROUP = BitField<8, 3>;
+    constexpr uint32_t PRIGROUP_Pos = 8;
+    constexpr uint32_t PRIGROUP_Msk = PRIGROUP::mask;
 
-/// ENDIANESS
-/// Position: 15, Width: 1
-using ENDIANESS = BitField<15, 1>;
-constexpr uint32_t ENDIANESS_Pos = 15;
-constexpr uint32_t ENDIANESS_Msk = ENDIANESS::mask;
+    /// ENDIANESS
+    /// Position: 15, Width: 1
+    using ENDIANESS = BitField<15, 1>;
+    constexpr uint32_t ENDIANESS_Pos = 15;
+    constexpr uint32_t ENDIANESS_Msk = ENDIANESS::mask;
 
-/// Register key
-/// Position: 16, Width: 16
-using VECTKEYSTAT = BitField<16, 16>;
-constexpr uint32_t VECTKEYSTAT_Pos = 16;
-constexpr uint32_t VECTKEYSTAT_Msk = VECTKEYSTAT::mask;
+    /// Register key
+    /// Position: 16, Width: 16
+    using VECTKEYSTAT = BitField<16, 16>;
+    constexpr uint32_t VECTKEYSTAT_Pos = 16;
+    constexpr uint32_t VECTKEYSTAT_Msk = VECTKEYSTAT::mask;
 
 }  // namespace aircr
 
 /// SCR - System control register
 namespace scr {
-/// SLEEPONEXIT
-/// Position: 1, Width: 1
-using SLEEPONEXIT = BitField<1, 1>;
-constexpr uint32_t SLEEPONEXIT_Pos = 1;
-constexpr uint32_t SLEEPONEXIT_Msk = SLEEPONEXIT::mask;
+    /// SLEEPONEXIT
+    /// Position: 1, Width: 1
+    using SLEEPONEXIT = BitField<1, 1>;
+    constexpr uint32_t SLEEPONEXIT_Pos = 1;
+    constexpr uint32_t SLEEPONEXIT_Msk = SLEEPONEXIT::mask;
 
-/// SLEEPDEEP
-/// Position: 2, Width: 1
-using SLEEPDEEP = BitField<2, 1>;
-constexpr uint32_t SLEEPDEEP_Pos = 2;
-constexpr uint32_t SLEEPDEEP_Msk = SLEEPDEEP::mask;
+    /// SLEEPDEEP
+    /// Position: 2, Width: 1
+    using SLEEPDEEP = BitField<2, 1>;
+    constexpr uint32_t SLEEPDEEP_Pos = 2;
+    constexpr uint32_t SLEEPDEEP_Msk = SLEEPDEEP::mask;
 
-/// Send Event on Pending bit
-/// Position: 4, Width: 1
-using SEVEONPEND = BitField<4, 1>;
-constexpr uint32_t SEVEONPEND_Pos = 4;
-constexpr uint32_t SEVEONPEND_Msk = SEVEONPEND::mask;
+    /// Send Event on Pending bit
+    /// Position: 4, Width: 1
+    using SEVEONPEND = BitField<4, 1>;
+    constexpr uint32_t SEVEONPEND_Pos = 4;
+    constexpr uint32_t SEVEONPEND_Msk = SEVEONPEND::mask;
 
 }  // namespace scr
 
 /// CCR - Configuration and control register
 namespace ccr {
-/// Configures how the processor enters Thread mode
-/// Position: 0, Width: 1
-using NONBASETHRDENA = BitField<0, 1>;
-constexpr uint32_t NONBASETHRDENA_Pos = 0;
-constexpr uint32_t NONBASETHRDENA_Msk = NONBASETHRDENA::mask;
+    /// Configures how the processor enters Thread mode
+    /// Position: 0, Width: 1
+    using NONBASETHRDENA = BitField<0, 1>;
+    constexpr uint32_t NONBASETHRDENA_Pos = 0;
+    constexpr uint32_t NONBASETHRDENA_Msk = NONBASETHRDENA::mask;
 
-/// USERSETMPEND
-/// Position: 1, Width: 1
-using USERSETMPEND = BitField<1, 1>;
-constexpr uint32_t USERSETMPEND_Pos = 1;
-constexpr uint32_t USERSETMPEND_Msk = USERSETMPEND::mask;
+    /// USERSETMPEND
+    /// Position: 1, Width: 1
+    using USERSETMPEND = BitField<1, 1>;
+    constexpr uint32_t USERSETMPEND_Pos = 1;
+    constexpr uint32_t USERSETMPEND_Msk = USERSETMPEND::mask;
 
-/// UNALIGN_ TRP
-/// Position: 3, Width: 1
-using UNALIGN__TRP = BitField<3, 1>;
-constexpr uint32_t UNALIGN__TRP_Pos = 3;
-constexpr uint32_t UNALIGN__TRP_Msk = UNALIGN__TRP::mask;
+    /// UNALIGN_ TRP
+    /// Position: 3, Width: 1
+    using UNALIGN__TRP = BitField<3, 1>;
+    constexpr uint32_t UNALIGN__TRP_Pos = 3;
+    constexpr uint32_t UNALIGN__TRP_Msk = UNALIGN__TRP::mask;
 
-/// DIV_0_TRP
-/// Position: 4, Width: 1
-using DIV_0_TRP = BitField<4, 1>;
-constexpr uint32_t DIV_0_TRP_Pos = 4;
-constexpr uint32_t DIV_0_TRP_Msk = DIV_0_TRP::mask;
+    /// DIV_0_TRP
+    /// Position: 4, Width: 1
+    using DIV_0_TRP = BitField<4, 1>;
+    constexpr uint32_t DIV_0_TRP_Pos = 4;
+    constexpr uint32_t DIV_0_TRP_Msk = DIV_0_TRP::mask;
 
-/// BFHFNMIGN
-/// Position: 8, Width: 1
-using BFHFNMIGN = BitField<8, 1>;
-constexpr uint32_t BFHFNMIGN_Pos = 8;
-constexpr uint32_t BFHFNMIGN_Msk = BFHFNMIGN::mask;
+    /// BFHFNMIGN
+    /// Position: 8, Width: 1
+    using BFHFNMIGN = BitField<8, 1>;
+    constexpr uint32_t BFHFNMIGN_Pos = 8;
+    constexpr uint32_t BFHFNMIGN_Msk = BFHFNMIGN::mask;
 
-/// STKALIGN
-/// Position: 9, Width: 1
-using STKALIGN = BitField<9, 1>;
-constexpr uint32_t STKALIGN_Pos = 9;
-constexpr uint32_t STKALIGN_Msk = STKALIGN::mask;
+    /// STKALIGN
+    /// Position: 9, Width: 1
+    using STKALIGN = BitField<9, 1>;
+    constexpr uint32_t STKALIGN_Pos = 9;
+    constexpr uint32_t STKALIGN_Msk = STKALIGN::mask;
 
 }  // namespace ccr
 
 /// SHPR1 - System handler priority registers
 namespace shpr1 {
-/// Priority of system handler 4
-/// Position: 0, Width: 8
-using PRI_4 = BitField<0, 8>;
-constexpr uint32_t PRI_4_Pos = 0;
-constexpr uint32_t PRI_4_Msk = PRI_4::mask;
+    /// Priority of system handler 4
+    /// Position: 0, Width: 8
+    using PRI_4 = BitField<0, 8>;
+    constexpr uint32_t PRI_4_Pos = 0;
+    constexpr uint32_t PRI_4_Msk = PRI_4::mask;
 
-/// Priority of system handler 5
-/// Position: 8, Width: 8
-using PRI_5 = BitField<8, 8>;
-constexpr uint32_t PRI_5_Pos = 8;
-constexpr uint32_t PRI_5_Msk = PRI_5::mask;
+    /// Priority of system handler 5
+    /// Position: 8, Width: 8
+    using PRI_5 = BitField<8, 8>;
+    constexpr uint32_t PRI_5_Pos = 8;
+    constexpr uint32_t PRI_5_Msk = PRI_5::mask;
 
-/// Priority of system handler 6
-/// Position: 16, Width: 8
-using PRI_6 = BitField<16, 8>;
-constexpr uint32_t PRI_6_Pos = 16;
-constexpr uint32_t PRI_6_Msk = PRI_6::mask;
+    /// Priority of system handler 6
+    /// Position: 16, Width: 8
+    using PRI_6 = BitField<16, 8>;
+    constexpr uint32_t PRI_6_Pos = 16;
+    constexpr uint32_t PRI_6_Msk = PRI_6::mask;
 
 }  // namespace shpr1
 
 /// SHPR2 - System handler priority registers
 namespace shpr2 {
-/// Priority of system handler 11
-/// Position: 24, Width: 8
-using PRI_11 = BitField<24, 8>;
-constexpr uint32_t PRI_11_Pos = 24;
-constexpr uint32_t PRI_11_Msk = PRI_11::mask;
+    /// Priority of system handler 11
+    /// Position: 24, Width: 8
+    using PRI_11 = BitField<24, 8>;
+    constexpr uint32_t PRI_11_Pos = 24;
+    constexpr uint32_t PRI_11_Msk = PRI_11::mask;
 
 }  // namespace shpr2
 
 /// SHPR3 - System handler priority registers
 namespace shpr3 {
-/// Priority of system handler 14
-/// Position: 16, Width: 8
-using PRI_14 = BitField<16, 8>;
-constexpr uint32_t PRI_14_Pos = 16;
-constexpr uint32_t PRI_14_Msk = PRI_14::mask;
+    /// Priority of system handler 14
+    /// Position: 16, Width: 8
+    using PRI_14 = BitField<16, 8>;
+    constexpr uint32_t PRI_14_Pos = 16;
+    constexpr uint32_t PRI_14_Msk = PRI_14::mask;
 
-/// Priority of system handler 15
-/// Position: 24, Width: 8
-using PRI_15 = BitField<24, 8>;
-constexpr uint32_t PRI_15_Pos = 24;
-constexpr uint32_t PRI_15_Msk = PRI_15::mask;
+    /// Priority of system handler 15
+    /// Position: 24, Width: 8
+    using PRI_15 = BitField<24, 8>;
+    constexpr uint32_t PRI_15_Pos = 24;
+    constexpr uint32_t PRI_15_Msk = PRI_15::mask;
 
 }  // namespace shpr3
 
 /// SHCRS - System handler control and state register
 namespace shcrs {
-/// Memory management fault exception active bit
-/// Position: 0, Width: 1
-using MEMFAULTACT = BitField<0, 1>;
-constexpr uint32_t MEMFAULTACT_Pos = 0;
-constexpr uint32_t MEMFAULTACT_Msk = MEMFAULTACT::mask;
+    /// Memory management fault exception active bit
+    /// Position: 0, Width: 1
+    using MEMFAULTACT = BitField<0, 1>;
+    constexpr uint32_t MEMFAULTACT_Pos = 0;
+    constexpr uint32_t MEMFAULTACT_Msk = MEMFAULTACT::mask;
 
-/// Bus fault exception active bit
-/// Position: 1, Width: 1
-using BUSFAULTACT = BitField<1, 1>;
-constexpr uint32_t BUSFAULTACT_Pos = 1;
-constexpr uint32_t BUSFAULTACT_Msk = BUSFAULTACT::mask;
+    /// Bus fault exception active bit
+    /// Position: 1, Width: 1
+    using BUSFAULTACT = BitField<1, 1>;
+    constexpr uint32_t BUSFAULTACT_Pos = 1;
+    constexpr uint32_t BUSFAULTACT_Msk = BUSFAULTACT::mask;
 
-/// Usage fault exception active bit
-/// Position: 3, Width: 1
-using USGFAULTACT = BitField<3, 1>;
-constexpr uint32_t USGFAULTACT_Pos = 3;
-constexpr uint32_t USGFAULTACT_Msk = USGFAULTACT::mask;
+    /// Usage fault exception active bit
+    /// Position: 3, Width: 1
+    using USGFAULTACT = BitField<3, 1>;
+    constexpr uint32_t USGFAULTACT_Pos = 3;
+    constexpr uint32_t USGFAULTACT_Msk = USGFAULTACT::mask;
 
-/// SVC call active bit
-/// Position: 7, Width: 1
-using SVCALLACT = BitField<7, 1>;
-constexpr uint32_t SVCALLACT_Pos = 7;
-constexpr uint32_t SVCALLACT_Msk = SVCALLACT::mask;
+    /// SVC call active bit
+    /// Position: 7, Width: 1
+    using SVCALLACT = BitField<7, 1>;
+    constexpr uint32_t SVCALLACT_Pos = 7;
+    constexpr uint32_t SVCALLACT_Msk = SVCALLACT::mask;
 
-/// Debug monitor active bit
-/// Position: 8, Width: 1
-using MONITORACT = BitField<8, 1>;
-constexpr uint32_t MONITORACT_Pos = 8;
-constexpr uint32_t MONITORACT_Msk = MONITORACT::mask;
+    /// Debug monitor active bit
+    /// Position: 8, Width: 1
+    using MONITORACT = BitField<8, 1>;
+    constexpr uint32_t MONITORACT_Pos = 8;
+    constexpr uint32_t MONITORACT_Msk = MONITORACT::mask;
 
-/// PendSV exception active bit
-/// Position: 10, Width: 1
-using PENDSVACT = BitField<10, 1>;
-constexpr uint32_t PENDSVACT_Pos = 10;
-constexpr uint32_t PENDSVACT_Msk = PENDSVACT::mask;
+    /// PendSV exception active bit
+    /// Position: 10, Width: 1
+    using PENDSVACT = BitField<10, 1>;
+    constexpr uint32_t PENDSVACT_Pos = 10;
+    constexpr uint32_t PENDSVACT_Msk = PENDSVACT::mask;
 
-/// SysTick exception active bit
-/// Position: 11, Width: 1
-using SYSTICKACT = BitField<11, 1>;
-constexpr uint32_t SYSTICKACT_Pos = 11;
-constexpr uint32_t SYSTICKACT_Msk = SYSTICKACT::mask;
+    /// SysTick exception active bit
+    /// Position: 11, Width: 1
+    using SYSTICKACT = BitField<11, 1>;
+    constexpr uint32_t SYSTICKACT_Pos = 11;
+    constexpr uint32_t SYSTICKACT_Msk = SYSTICKACT::mask;
 
-/// Usage fault exception pending bit
-/// Position: 12, Width: 1
-using USGFAULTPENDED = BitField<12, 1>;
-constexpr uint32_t USGFAULTPENDED_Pos = 12;
-constexpr uint32_t USGFAULTPENDED_Msk = USGFAULTPENDED::mask;
+    /// Usage fault exception pending bit
+    /// Position: 12, Width: 1
+    using USGFAULTPENDED = BitField<12, 1>;
+    constexpr uint32_t USGFAULTPENDED_Pos = 12;
+    constexpr uint32_t USGFAULTPENDED_Msk = USGFAULTPENDED::mask;
 
-/// Memory management fault exception pending bit
-/// Position: 13, Width: 1
-using MEMFAULTPENDED = BitField<13, 1>;
-constexpr uint32_t MEMFAULTPENDED_Pos = 13;
-constexpr uint32_t MEMFAULTPENDED_Msk = MEMFAULTPENDED::mask;
+    /// Memory management fault exception pending bit
+    /// Position: 13, Width: 1
+    using MEMFAULTPENDED = BitField<13, 1>;
+    constexpr uint32_t MEMFAULTPENDED_Pos = 13;
+    constexpr uint32_t MEMFAULTPENDED_Msk = MEMFAULTPENDED::mask;
 
-/// Bus fault exception pending bit
-/// Position: 14, Width: 1
-using BUSFAULTPENDED = BitField<14, 1>;
-constexpr uint32_t BUSFAULTPENDED_Pos = 14;
-constexpr uint32_t BUSFAULTPENDED_Msk = BUSFAULTPENDED::mask;
+    /// Bus fault exception pending bit
+    /// Position: 14, Width: 1
+    using BUSFAULTPENDED = BitField<14, 1>;
+    constexpr uint32_t BUSFAULTPENDED_Pos = 14;
+    constexpr uint32_t BUSFAULTPENDED_Msk = BUSFAULTPENDED::mask;
 
-/// SVC call pending bit
-/// Position: 15, Width: 1
-using SVCALLPENDED = BitField<15, 1>;
-constexpr uint32_t SVCALLPENDED_Pos = 15;
-constexpr uint32_t SVCALLPENDED_Msk = SVCALLPENDED::mask;
+    /// SVC call pending bit
+    /// Position: 15, Width: 1
+    using SVCALLPENDED = BitField<15, 1>;
+    constexpr uint32_t SVCALLPENDED_Pos = 15;
+    constexpr uint32_t SVCALLPENDED_Msk = SVCALLPENDED::mask;
 
-/// Memory management fault enable bit
-/// Position: 16, Width: 1
-using MEMFAULTENA = BitField<16, 1>;
-constexpr uint32_t MEMFAULTENA_Pos = 16;
-constexpr uint32_t MEMFAULTENA_Msk = MEMFAULTENA::mask;
+    /// Memory management fault enable bit
+    /// Position: 16, Width: 1
+    using MEMFAULTENA = BitField<16, 1>;
+    constexpr uint32_t MEMFAULTENA_Pos = 16;
+    constexpr uint32_t MEMFAULTENA_Msk = MEMFAULTENA::mask;
 
-/// Bus fault enable bit
-/// Position: 17, Width: 1
-using BUSFAULTENA = BitField<17, 1>;
-constexpr uint32_t BUSFAULTENA_Pos = 17;
-constexpr uint32_t BUSFAULTENA_Msk = BUSFAULTENA::mask;
+    /// Bus fault enable bit
+    /// Position: 17, Width: 1
+    using BUSFAULTENA = BitField<17, 1>;
+    constexpr uint32_t BUSFAULTENA_Pos = 17;
+    constexpr uint32_t BUSFAULTENA_Msk = BUSFAULTENA::mask;
 
-/// Usage fault enable bit
-/// Position: 18, Width: 1
-using USGFAULTENA = BitField<18, 1>;
-constexpr uint32_t USGFAULTENA_Pos = 18;
-constexpr uint32_t USGFAULTENA_Msk = USGFAULTENA::mask;
+    /// Usage fault enable bit
+    /// Position: 18, Width: 1
+    using USGFAULTENA = BitField<18, 1>;
+    constexpr uint32_t USGFAULTENA_Pos = 18;
+    constexpr uint32_t USGFAULTENA_Msk = USGFAULTENA::mask;
 
 }  // namespace shcrs
 
 /// CFSR_UFSR_BFSR_MMFSR - Configurable fault status register
 namespace cfsr_ufsr_bfsr_mmfsr {
-/// Instruction access violation flag
-/// Position: 1, Width: 1
-using IACCVIOL = BitField<1, 1>;
-constexpr uint32_t IACCVIOL_Pos = 1;
-constexpr uint32_t IACCVIOL_Msk = IACCVIOL::mask;
+    /// Instruction access violation flag
+    /// Position: 1, Width: 1
+    using IACCVIOL = BitField<1, 1>;
+    constexpr uint32_t IACCVIOL_Pos = 1;
+    constexpr uint32_t IACCVIOL_Msk = IACCVIOL::mask;
 
-/// Memory manager fault on unstacking for a return from exception
-/// Position: 3, Width: 1
-using MUNSTKERR = BitField<3, 1>;
-constexpr uint32_t MUNSTKERR_Pos = 3;
-constexpr uint32_t MUNSTKERR_Msk = MUNSTKERR::mask;
+    /// Memory manager fault on unstacking for a return from exception
+    /// Position: 3, Width: 1
+    using MUNSTKERR = BitField<3, 1>;
+    constexpr uint32_t MUNSTKERR_Pos = 3;
+    constexpr uint32_t MUNSTKERR_Msk = MUNSTKERR::mask;
 
-/// Memory manager fault on stacking for exception entry.
-/// Position: 4, Width: 1
-using MSTKERR = BitField<4, 1>;
-constexpr uint32_t MSTKERR_Pos = 4;
-constexpr uint32_t MSTKERR_Msk = MSTKERR::mask;
+    /// Memory manager fault on stacking for exception entry.
+    /// Position: 4, Width: 1
+    using MSTKERR = BitField<4, 1>;
+    constexpr uint32_t MSTKERR_Pos = 4;
+    constexpr uint32_t MSTKERR_Msk = MSTKERR::mask;
 
-/// MLSPERR
-/// Position: 5, Width: 1
-using MLSPERR = BitField<5, 1>;
-constexpr uint32_t MLSPERR_Pos = 5;
-constexpr uint32_t MLSPERR_Msk = MLSPERR::mask;
+    /// MLSPERR
+    /// Position: 5, Width: 1
+    using MLSPERR = BitField<5, 1>;
+    constexpr uint32_t MLSPERR_Pos = 5;
+    constexpr uint32_t MLSPERR_Msk = MLSPERR::mask;
 
-/// Memory Management Fault Address Register (MMAR) valid flag
-/// Position: 7, Width: 1
-using MMARVALID = BitField<7, 1>;
-constexpr uint32_t MMARVALID_Pos = 7;
-constexpr uint32_t MMARVALID_Msk = MMARVALID::mask;
+    /// Memory Management Fault Address Register (MMAR) valid flag
+    /// Position: 7, Width: 1
+    using MMARVALID = BitField<7, 1>;
+    constexpr uint32_t MMARVALID_Pos = 7;
+    constexpr uint32_t MMARVALID_Msk = MMARVALID::mask;
 
-/// Instruction bus error
-/// Position: 8, Width: 1
-using IBUSERR = BitField<8, 1>;
-constexpr uint32_t IBUSERR_Pos = 8;
-constexpr uint32_t IBUSERR_Msk = IBUSERR::mask;
+    /// Instruction bus error
+    /// Position: 8, Width: 1
+    using IBUSERR = BitField<8, 1>;
+    constexpr uint32_t IBUSERR_Pos = 8;
+    constexpr uint32_t IBUSERR_Msk = IBUSERR::mask;
 
-/// Precise data bus error
-/// Position: 9, Width: 1
-using PRECISERR = BitField<9, 1>;
-constexpr uint32_t PRECISERR_Pos = 9;
-constexpr uint32_t PRECISERR_Msk = PRECISERR::mask;
+    /// Precise data bus error
+    /// Position: 9, Width: 1
+    using PRECISERR = BitField<9, 1>;
+    constexpr uint32_t PRECISERR_Pos = 9;
+    constexpr uint32_t PRECISERR_Msk = PRECISERR::mask;
 
-/// Imprecise data bus error
-/// Position: 10, Width: 1
-using IMPRECISERR = BitField<10, 1>;
-constexpr uint32_t IMPRECISERR_Pos = 10;
-constexpr uint32_t IMPRECISERR_Msk = IMPRECISERR::mask;
+    /// Imprecise data bus error
+    /// Position: 10, Width: 1
+    using IMPRECISERR = BitField<10, 1>;
+    constexpr uint32_t IMPRECISERR_Pos = 10;
+    constexpr uint32_t IMPRECISERR_Msk = IMPRECISERR::mask;
 
-/// Bus fault on unstacking for a return from exception
-/// Position: 11, Width: 1
-using UNSTKERR = BitField<11, 1>;
-constexpr uint32_t UNSTKERR_Pos = 11;
-constexpr uint32_t UNSTKERR_Msk = UNSTKERR::mask;
+    /// Bus fault on unstacking for a return from exception
+    /// Position: 11, Width: 1
+    using UNSTKERR = BitField<11, 1>;
+    constexpr uint32_t UNSTKERR_Pos = 11;
+    constexpr uint32_t UNSTKERR_Msk = UNSTKERR::mask;
 
-/// Bus fault on stacking for exception entry
-/// Position: 12, Width: 1
-using STKERR = BitField<12, 1>;
-constexpr uint32_t STKERR_Pos = 12;
-constexpr uint32_t STKERR_Msk = STKERR::mask;
+    /// Bus fault on stacking for exception entry
+    /// Position: 12, Width: 1
+    using STKERR = BitField<12, 1>;
+    constexpr uint32_t STKERR_Pos = 12;
+    constexpr uint32_t STKERR_Msk = STKERR::mask;
 
-/// Bus fault on floating-point lazy state preservation
-/// Position: 13, Width: 1
-using LSPERR = BitField<13, 1>;
-constexpr uint32_t LSPERR_Pos = 13;
-constexpr uint32_t LSPERR_Msk = LSPERR::mask;
+    /// Bus fault on floating-point lazy state preservation
+    /// Position: 13, Width: 1
+    using LSPERR = BitField<13, 1>;
+    constexpr uint32_t LSPERR_Pos = 13;
+    constexpr uint32_t LSPERR_Msk = LSPERR::mask;
 
-/// Bus Fault Address Register (BFAR) valid flag
-/// Position: 15, Width: 1
-using BFARVALID = BitField<15, 1>;
-constexpr uint32_t BFARVALID_Pos = 15;
-constexpr uint32_t BFARVALID_Msk = BFARVALID::mask;
+    /// Bus Fault Address Register (BFAR) valid flag
+    /// Position: 15, Width: 1
+    using BFARVALID = BitField<15, 1>;
+    constexpr uint32_t BFARVALID_Pos = 15;
+    constexpr uint32_t BFARVALID_Msk = BFARVALID::mask;
 
-/// Undefined instruction usage fault
-/// Position: 16, Width: 1
-using UNDEFINSTR = BitField<16, 1>;
-constexpr uint32_t UNDEFINSTR_Pos = 16;
-constexpr uint32_t UNDEFINSTR_Msk = UNDEFINSTR::mask;
+    /// Undefined instruction usage fault
+    /// Position: 16, Width: 1
+    using UNDEFINSTR = BitField<16, 1>;
+    constexpr uint32_t UNDEFINSTR_Pos = 16;
+    constexpr uint32_t UNDEFINSTR_Msk = UNDEFINSTR::mask;
 
-/// Invalid state usage fault
-/// Position: 17, Width: 1
-using INVSTATE = BitField<17, 1>;
-constexpr uint32_t INVSTATE_Pos = 17;
-constexpr uint32_t INVSTATE_Msk = INVSTATE::mask;
+    /// Invalid state usage fault
+    /// Position: 17, Width: 1
+    using INVSTATE = BitField<17, 1>;
+    constexpr uint32_t INVSTATE_Pos = 17;
+    constexpr uint32_t INVSTATE_Msk = INVSTATE::mask;
 
-/// Invalid PC load usage fault
-/// Position: 18, Width: 1
-using INVPC = BitField<18, 1>;
-constexpr uint32_t INVPC_Pos = 18;
-constexpr uint32_t INVPC_Msk = INVPC::mask;
+    /// Invalid PC load usage fault
+    /// Position: 18, Width: 1
+    using INVPC = BitField<18, 1>;
+    constexpr uint32_t INVPC_Pos = 18;
+    constexpr uint32_t INVPC_Msk = INVPC::mask;
 
-/// No coprocessor usage fault.
-/// Position: 19, Width: 1
-using NOCP = BitField<19, 1>;
-constexpr uint32_t NOCP_Pos = 19;
-constexpr uint32_t NOCP_Msk = NOCP::mask;
+    /// No coprocessor usage fault.
+    /// Position: 19, Width: 1
+    using NOCP = BitField<19, 1>;
+    constexpr uint32_t NOCP_Pos = 19;
+    constexpr uint32_t NOCP_Msk = NOCP::mask;
 
-/// Unaligned access usage fault
-/// Position: 24, Width: 1
-using UNALIGNED = BitField<24, 1>;
-constexpr uint32_t UNALIGNED_Pos = 24;
-constexpr uint32_t UNALIGNED_Msk = UNALIGNED::mask;
+    /// Unaligned access usage fault
+    /// Position: 24, Width: 1
+    using UNALIGNED = BitField<24, 1>;
+    constexpr uint32_t UNALIGNED_Pos = 24;
+    constexpr uint32_t UNALIGNED_Msk = UNALIGNED::mask;
 
-/// Divide by zero usage fault
-/// Position: 25, Width: 1
-using DIVBYZERO = BitField<25, 1>;
-constexpr uint32_t DIVBYZERO_Pos = 25;
-constexpr uint32_t DIVBYZERO_Msk = DIVBYZERO::mask;
+    /// Divide by zero usage fault
+    /// Position: 25, Width: 1
+    using DIVBYZERO = BitField<25, 1>;
+    constexpr uint32_t DIVBYZERO_Pos = 25;
+    constexpr uint32_t DIVBYZERO_Msk = DIVBYZERO::mask;
 
 }  // namespace cfsr_ufsr_bfsr_mmfsr
 
 /// HFSR - Hard fault status register
 namespace hfsr {
-/// Vector table hard fault
-/// Position: 1, Width: 1
-using VECTTBL = BitField<1, 1>;
-constexpr uint32_t VECTTBL_Pos = 1;
-constexpr uint32_t VECTTBL_Msk = VECTTBL::mask;
+    /// Vector table hard fault
+    /// Position: 1, Width: 1
+    using VECTTBL = BitField<1, 1>;
+    constexpr uint32_t VECTTBL_Pos = 1;
+    constexpr uint32_t VECTTBL_Msk = VECTTBL::mask;
 
-/// Forced hard fault
-/// Position: 30, Width: 1
-using FORCED = BitField<30, 1>;
-constexpr uint32_t FORCED_Pos = 30;
-constexpr uint32_t FORCED_Msk = FORCED::mask;
+    /// Forced hard fault
+    /// Position: 30, Width: 1
+    using FORCED = BitField<30, 1>;
+    constexpr uint32_t FORCED_Pos = 30;
+    constexpr uint32_t FORCED_Msk = FORCED::mask;
 
-/// Reserved for Debug use
-/// Position: 31, Width: 1
-using DEBUG_VT = BitField<31, 1>;
-constexpr uint32_t DEBUG_VT_Pos = 31;
-constexpr uint32_t DEBUG_VT_Msk = DEBUG_VT::mask;
+    /// Reserved for Debug use
+    /// Position: 31, Width: 1
+    using DEBUG_VT = BitField<31, 1>;
+    constexpr uint32_t DEBUG_VT_Pos = 31;
+    constexpr uint32_t DEBUG_VT_Msk = DEBUG_VT::mask;
 
 }  // namespace hfsr
 
 /// MMFAR - Memory management fault address register
 namespace mmfar {
-/// Memory management fault address
-/// Position: 0, Width: 32
-using MMFAR = BitField<0, 32>;
-constexpr uint32_t MMFAR_Pos = 0;
-constexpr uint32_t MMFAR_Msk = MMFAR::mask;
+    /// Memory management fault address
+    /// Position: 0, Width: 32
+    using MMFAR = BitField<0, 32>;
+    constexpr uint32_t MMFAR_Pos = 0;
+    constexpr uint32_t MMFAR_Msk = MMFAR::mask;
 
 }  // namespace mmfar
 
 /// BFAR - Bus fault address register
 namespace bfar {
-/// Bus fault address
-/// Position: 0, Width: 32
-using BFAR = BitField<0, 32>;
-constexpr uint32_t BFAR_Pos = 0;
-constexpr uint32_t BFAR_Msk = BFAR::mask;
+    /// Bus fault address
+    /// Position: 0, Width: 32
+    using BFAR = BitField<0, 32>;
+    constexpr uint32_t BFAR_Pos = 0;
+    constexpr uint32_t BFAR_Msk = BFAR::mask;
 
 }  // namespace bfar
 
 /// AFSR - Auxiliary fault status register
 namespace afsr {
-/// Implementation defined
-/// Position: 0, Width: 32
-using IMPDEF = BitField<0, 32>;
-constexpr uint32_t IMPDEF_Pos = 0;
-constexpr uint32_t IMPDEF_Msk = IMPDEF::mask;
+    /// Implementation defined
+    /// Position: 0, Width: 32
+    using IMPDEF = BitField<0, 32>;
+    constexpr uint32_t IMPDEF_Pos = 0;
+    constexpr uint32_t IMPDEF_Msk = IMPDEF::mask;
 
 }  // namespace afsr
 

@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::otg_fs_device {
@@ -20,1509 +19,1509 @@ using namespace alloy::hal::bitfields;
 
 /// FS_DCFG - OTG_FS device configuration register (OTG_FS_DCFG)
 namespace fs_dcfg {
-/// Device speed
-/// Position: 0, Width: 2
-using DSPD = BitField<0, 2>;
-constexpr uint32_t DSPD_Pos = 0;
-constexpr uint32_t DSPD_Msk = DSPD::mask;
+    /// Device speed
+    /// Position: 0, Width: 2
+    using DSPD = BitField<0, 2>;
+    constexpr uint32_t DSPD_Pos = 0;
+    constexpr uint32_t DSPD_Msk = DSPD::mask;
 
-/// Non-zero-length status OUT handshake
-/// Position: 2, Width: 1
-using NZLSOHSK = BitField<2, 1>;
-constexpr uint32_t NZLSOHSK_Pos = 2;
-constexpr uint32_t NZLSOHSK_Msk = NZLSOHSK::mask;
+    /// Non-zero-length status OUT handshake
+    /// Position: 2, Width: 1
+    using NZLSOHSK = BitField<2, 1>;
+    constexpr uint32_t NZLSOHSK_Pos = 2;
+    constexpr uint32_t NZLSOHSK_Msk = NZLSOHSK::mask;
 
-/// Device address
-/// Position: 4, Width: 7
-using DAD = BitField<4, 7>;
-constexpr uint32_t DAD_Pos = 4;
-constexpr uint32_t DAD_Msk = DAD::mask;
+    /// Device address
+    /// Position: 4, Width: 7
+    using DAD = BitField<4, 7>;
+    constexpr uint32_t DAD_Pos = 4;
+    constexpr uint32_t DAD_Msk = DAD::mask;
 
-/// Periodic frame interval
-/// Position: 11, Width: 2
-using PFIVL = BitField<11, 2>;
-constexpr uint32_t PFIVL_Pos = 11;
-constexpr uint32_t PFIVL_Msk = PFIVL::mask;
+    /// Periodic frame interval
+    /// Position: 11, Width: 2
+    using PFIVL = BitField<11, 2>;
+    constexpr uint32_t PFIVL_Pos = 11;
+    constexpr uint32_t PFIVL_Msk = PFIVL::mask;
 
 }  // namespace fs_dcfg
 
 /// FS_DCTL - OTG_FS device control register (OTG_FS_DCTL)
 namespace fs_dctl {
-/// Remote wakeup signaling
-/// Position: 0, Width: 1
-/// Access: read-write
-using RWUSIG = BitField<0, 1>;
-constexpr uint32_t RWUSIG_Pos = 0;
-constexpr uint32_t RWUSIG_Msk = RWUSIG::mask;
+    /// Remote wakeup signaling
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using RWUSIG = BitField<0, 1>;
+    constexpr uint32_t RWUSIG_Pos = 0;
+    constexpr uint32_t RWUSIG_Msk = RWUSIG::mask;
 
-/// Soft disconnect
-/// Position: 1, Width: 1
-/// Access: read-write
-using SDIS = BitField<1, 1>;
-constexpr uint32_t SDIS_Pos = 1;
-constexpr uint32_t SDIS_Msk = SDIS::mask;
+    /// Soft disconnect
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using SDIS = BitField<1, 1>;
+    constexpr uint32_t SDIS_Pos = 1;
+    constexpr uint32_t SDIS_Msk = SDIS::mask;
 
-/// Global IN NAK status
-/// Position: 2, Width: 1
-/// Access: read-only
-using GINSTS = BitField<2, 1>;
-constexpr uint32_t GINSTS_Pos = 2;
-constexpr uint32_t GINSTS_Msk = GINSTS::mask;
+    /// Global IN NAK status
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using GINSTS = BitField<2, 1>;
+    constexpr uint32_t GINSTS_Pos = 2;
+    constexpr uint32_t GINSTS_Msk = GINSTS::mask;
 
-/// Global OUT NAK status
-/// Position: 3, Width: 1
-/// Access: read-only
-using GONSTS = BitField<3, 1>;
-constexpr uint32_t GONSTS_Pos = 3;
-constexpr uint32_t GONSTS_Msk = GONSTS::mask;
+    /// Global OUT NAK status
+    /// Position: 3, Width: 1
+    /// Access: read-only
+    using GONSTS = BitField<3, 1>;
+    constexpr uint32_t GONSTS_Pos = 3;
+    constexpr uint32_t GONSTS_Msk = GONSTS::mask;
 
-/// Test control
-/// Position: 4, Width: 3
-/// Access: read-write
-using TCTL = BitField<4, 3>;
-constexpr uint32_t TCTL_Pos = 4;
-constexpr uint32_t TCTL_Msk = TCTL::mask;
+    /// Test control
+    /// Position: 4, Width: 3
+    /// Access: read-write
+    using TCTL = BitField<4, 3>;
+    constexpr uint32_t TCTL_Pos = 4;
+    constexpr uint32_t TCTL_Msk = TCTL::mask;
 
-/// Set global IN NAK
-/// Position: 7, Width: 1
-/// Access: read-write
-using SGINAK = BitField<7, 1>;
-constexpr uint32_t SGINAK_Pos = 7;
-constexpr uint32_t SGINAK_Msk = SGINAK::mask;
+    /// Set global IN NAK
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using SGINAK = BitField<7, 1>;
+    constexpr uint32_t SGINAK_Pos = 7;
+    constexpr uint32_t SGINAK_Msk = SGINAK::mask;
 
-/// Clear global IN NAK
-/// Position: 8, Width: 1
-/// Access: read-write
-using CGINAK = BitField<8, 1>;
-constexpr uint32_t CGINAK_Pos = 8;
-constexpr uint32_t CGINAK_Msk = CGINAK::mask;
+    /// Clear global IN NAK
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using CGINAK = BitField<8, 1>;
+    constexpr uint32_t CGINAK_Pos = 8;
+    constexpr uint32_t CGINAK_Msk = CGINAK::mask;
 
-/// Set global OUT NAK
-/// Position: 9, Width: 1
-/// Access: read-write
-using SGONAK = BitField<9, 1>;
-constexpr uint32_t SGONAK_Pos = 9;
-constexpr uint32_t SGONAK_Msk = SGONAK::mask;
+    /// Set global OUT NAK
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using SGONAK = BitField<9, 1>;
+    constexpr uint32_t SGONAK_Pos = 9;
+    constexpr uint32_t SGONAK_Msk = SGONAK::mask;
 
-/// Clear global OUT NAK
-/// Position: 10, Width: 1
-/// Access: read-write
-using CGONAK = BitField<10, 1>;
-constexpr uint32_t CGONAK_Pos = 10;
-constexpr uint32_t CGONAK_Msk = CGONAK::mask;
+    /// Clear global OUT NAK
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using CGONAK = BitField<10, 1>;
+    constexpr uint32_t CGONAK_Pos = 10;
+    constexpr uint32_t CGONAK_Msk = CGONAK::mask;
 
-/// Power-on programming done
-/// Position: 11, Width: 1
-/// Access: read-write
-using POPRGDNE = BitField<11, 1>;
-constexpr uint32_t POPRGDNE_Pos = 11;
-constexpr uint32_t POPRGDNE_Msk = POPRGDNE::mask;
+    /// Power-on programming done
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using POPRGDNE = BitField<11, 1>;
+    constexpr uint32_t POPRGDNE_Pos = 11;
+    constexpr uint32_t POPRGDNE_Msk = POPRGDNE::mask;
 
 }  // namespace fs_dctl
 
 /// FS_DSTS - OTG_FS device status register (OTG_FS_DSTS)
 namespace fs_dsts {
-/// Suspend status
-/// Position: 0, Width: 1
-using SUSPSTS = BitField<0, 1>;
-constexpr uint32_t SUSPSTS_Pos = 0;
-constexpr uint32_t SUSPSTS_Msk = SUSPSTS::mask;
+    /// Suspend status
+    /// Position: 0, Width: 1
+    using SUSPSTS = BitField<0, 1>;
+    constexpr uint32_t SUSPSTS_Pos = 0;
+    constexpr uint32_t SUSPSTS_Msk = SUSPSTS::mask;
 
-/// Enumerated speed
-/// Position: 1, Width: 2
-using ENUMSPD = BitField<1, 2>;
-constexpr uint32_t ENUMSPD_Pos = 1;
-constexpr uint32_t ENUMSPD_Msk = ENUMSPD::mask;
+    /// Enumerated speed
+    /// Position: 1, Width: 2
+    using ENUMSPD = BitField<1, 2>;
+    constexpr uint32_t ENUMSPD_Pos = 1;
+    constexpr uint32_t ENUMSPD_Msk = ENUMSPD::mask;
 
-/// Erratic error
-/// Position: 3, Width: 1
-using EERR = BitField<3, 1>;
-constexpr uint32_t EERR_Pos = 3;
-constexpr uint32_t EERR_Msk = EERR::mask;
+    /// Erratic error
+    /// Position: 3, Width: 1
+    using EERR = BitField<3, 1>;
+    constexpr uint32_t EERR_Pos = 3;
+    constexpr uint32_t EERR_Msk = EERR::mask;
 
-/// Frame number of the received SOF
-/// Position: 8, Width: 14
-using FNSOF = BitField<8, 14>;
-constexpr uint32_t FNSOF_Pos = 8;
-constexpr uint32_t FNSOF_Msk = FNSOF::mask;
+    /// Frame number of the received SOF
+    /// Position: 8, Width: 14
+    using FNSOF = BitField<8, 14>;
+    constexpr uint32_t FNSOF_Pos = 8;
+    constexpr uint32_t FNSOF_Msk = FNSOF::mask;
 
 }  // namespace fs_dsts
 
 /// FS_DIEPMSK - OTG_FS device IN endpoint common interrupt mask register (OTG_FS_DIEPMSK)
 namespace fs_diepmsk {
-/// Transfer completed interrupt mask
-/// Position: 0, Width: 1
-using XFRCM = BitField<0, 1>;
-constexpr uint32_t XFRCM_Pos = 0;
-constexpr uint32_t XFRCM_Msk = XFRCM::mask;
+    /// Transfer completed interrupt mask
+    /// Position: 0, Width: 1
+    using XFRCM = BitField<0, 1>;
+    constexpr uint32_t XFRCM_Pos = 0;
+    constexpr uint32_t XFRCM_Msk = XFRCM::mask;
 
-/// Endpoint disabled interrupt mask
-/// Position: 1, Width: 1
-using EPDM = BitField<1, 1>;
-constexpr uint32_t EPDM_Pos = 1;
-constexpr uint32_t EPDM_Msk = EPDM::mask;
+    /// Endpoint disabled interrupt mask
+    /// Position: 1, Width: 1
+    using EPDM = BitField<1, 1>;
+    constexpr uint32_t EPDM_Pos = 1;
+    constexpr uint32_t EPDM_Msk = EPDM::mask;
 
-/// Timeout condition mask (Non-isochronous endpoints)
-/// Position: 3, Width: 1
-using TOM = BitField<3, 1>;
-constexpr uint32_t TOM_Pos = 3;
-constexpr uint32_t TOM_Msk = TOM::mask;
+    /// Timeout condition mask (Non-isochronous endpoints)
+    /// Position: 3, Width: 1
+    using TOM = BitField<3, 1>;
+    constexpr uint32_t TOM_Pos = 3;
+    constexpr uint32_t TOM_Msk = TOM::mask;
 
-/// IN token received when TxFIFO empty mask
-/// Position: 4, Width: 1
-using ITTXFEMSK = BitField<4, 1>;
-constexpr uint32_t ITTXFEMSK_Pos = 4;
-constexpr uint32_t ITTXFEMSK_Msk = ITTXFEMSK::mask;
+    /// IN token received when TxFIFO empty mask
+    /// Position: 4, Width: 1
+    using ITTXFEMSK = BitField<4, 1>;
+    constexpr uint32_t ITTXFEMSK_Pos = 4;
+    constexpr uint32_t ITTXFEMSK_Msk = ITTXFEMSK::mask;
 
-/// IN token received with EP mismatch mask
-/// Position: 5, Width: 1
-using INEPNMM = BitField<5, 1>;
-constexpr uint32_t INEPNMM_Pos = 5;
-constexpr uint32_t INEPNMM_Msk = INEPNMM::mask;
+    /// IN token received with EP mismatch mask
+    /// Position: 5, Width: 1
+    using INEPNMM = BitField<5, 1>;
+    constexpr uint32_t INEPNMM_Pos = 5;
+    constexpr uint32_t INEPNMM_Msk = INEPNMM::mask;
 
-/// IN endpoint NAK effective mask
-/// Position: 6, Width: 1
-using INEPNEM = BitField<6, 1>;
-constexpr uint32_t INEPNEM_Pos = 6;
-constexpr uint32_t INEPNEM_Msk = INEPNEM::mask;
+    /// IN endpoint NAK effective mask
+    /// Position: 6, Width: 1
+    using INEPNEM = BitField<6, 1>;
+    constexpr uint32_t INEPNEM_Pos = 6;
+    constexpr uint32_t INEPNEM_Msk = INEPNEM::mask;
 
 }  // namespace fs_diepmsk
 
 /// FS_DOEPMSK - OTG_FS device OUT endpoint common interrupt mask register (OTG_FS_DOEPMSK)
 namespace fs_doepmsk {
-/// Transfer completed interrupt mask
-/// Position: 0, Width: 1
-using XFRCM = BitField<0, 1>;
-constexpr uint32_t XFRCM_Pos = 0;
-constexpr uint32_t XFRCM_Msk = XFRCM::mask;
+    /// Transfer completed interrupt mask
+    /// Position: 0, Width: 1
+    using XFRCM = BitField<0, 1>;
+    constexpr uint32_t XFRCM_Pos = 0;
+    constexpr uint32_t XFRCM_Msk = XFRCM::mask;
 
-/// Endpoint disabled interrupt mask
-/// Position: 1, Width: 1
-using EPDM = BitField<1, 1>;
-constexpr uint32_t EPDM_Pos = 1;
-constexpr uint32_t EPDM_Msk = EPDM::mask;
+    /// Endpoint disabled interrupt mask
+    /// Position: 1, Width: 1
+    using EPDM = BitField<1, 1>;
+    constexpr uint32_t EPDM_Pos = 1;
+    constexpr uint32_t EPDM_Msk = EPDM::mask;
 
-/// SETUP phase done mask
-/// Position: 3, Width: 1
-using STUPM = BitField<3, 1>;
-constexpr uint32_t STUPM_Pos = 3;
-constexpr uint32_t STUPM_Msk = STUPM::mask;
+    /// SETUP phase done mask
+    /// Position: 3, Width: 1
+    using STUPM = BitField<3, 1>;
+    constexpr uint32_t STUPM_Pos = 3;
+    constexpr uint32_t STUPM_Msk = STUPM::mask;
 
-/// OUT token received when endpoint disabled mask
-/// Position: 4, Width: 1
-using OTEPDM = BitField<4, 1>;
-constexpr uint32_t OTEPDM_Pos = 4;
-constexpr uint32_t OTEPDM_Msk = OTEPDM::mask;
+    /// OUT token received when endpoint disabled mask
+    /// Position: 4, Width: 1
+    using OTEPDM = BitField<4, 1>;
+    constexpr uint32_t OTEPDM_Pos = 4;
+    constexpr uint32_t OTEPDM_Msk = OTEPDM::mask;
 
 }  // namespace fs_doepmsk
 
 /// FS_DAINT - OTG_FS device all endpoints interrupt register (OTG_FS_DAINT)
 namespace fs_daint {
-/// IN endpoint interrupt bits
-/// Position: 0, Width: 16
-using IEPINT = BitField<0, 16>;
-constexpr uint32_t IEPINT_Pos = 0;
-constexpr uint32_t IEPINT_Msk = IEPINT::mask;
+    /// IN endpoint interrupt bits
+    /// Position: 0, Width: 16
+    using IEPINT = BitField<0, 16>;
+    constexpr uint32_t IEPINT_Pos = 0;
+    constexpr uint32_t IEPINT_Msk = IEPINT::mask;
 
-/// OUT endpoint interrupt bits
-/// Position: 16, Width: 16
-using OEPINT = BitField<16, 16>;
-constexpr uint32_t OEPINT_Pos = 16;
-constexpr uint32_t OEPINT_Msk = OEPINT::mask;
+    /// OUT endpoint interrupt bits
+    /// Position: 16, Width: 16
+    using OEPINT = BitField<16, 16>;
+    constexpr uint32_t OEPINT_Pos = 16;
+    constexpr uint32_t OEPINT_Msk = OEPINT::mask;
 
 }  // namespace fs_daint
 
 /// FS_DAINTMSK - OTG_FS all endpoints interrupt mask register (OTG_FS_DAINTMSK)
 namespace fs_daintmsk {
-/// IN EP interrupt mask bits
-/// Position: 0, Width: 16
-using IEPM = BitField<0, 16>;
-constexpr uint32_t IEPM_Pos = 0;
-constexpr uint32_t IEPM_Msk = IEPM::mask;
+    /// IN EP interrupt mask bits
+    /// Position: 0, Width: 16
+    using IEPM = BitField<0, 16>;
+    constexpr uint32_t IEPM_Pos = 0;
+    constexpr uint32_t IEPM_Msk = IEPM::mask;
 
-/// OUT endpoint interrupt bits
-/// Position: 16, Width: 16
-using OEPINT = BitField<16, 16>;
-constexpr uint32_t OEPINT_Pos = 16;
-constexpr uint32_t OEPINT_Msk = OEPINT::mask;
+    /// OUT endpoint interrupt bits
+    /// Position: 16, Width: 16
+    using OEPINT = BitField<16, 16>;
+    constexpr uint32_t OEPINT_Pos = 16;
+    constexpr uint32_t OEPINT_Msk = OEPINT::mask;
 
 }  // namespace fs_daintmsk
 
 /// DVBUSDIS - OTG_FS device VBUS discharge time register
 namespace dvbusdis {
-/// Device VBUS discharge time
-/// Position: 0, Width: 16
-using VBUSDT = BitField<0, 16>;
-constexpr uint32_t VBUSDT_Pos = 0;
-constexpr uint32_t VBUSDT_Msk = VBUSDT::mask;
+    /// Device VBUS discharge time
+    /// Position: 0, Width: 16
+    using VBUSDT = BitField<0, 16>;
+    constexpr uint32_t VBUSDT_Pos = 0;
+    constexpr uint32_t VBUSDT_Msk = VBUSDT::mask;
 
 }  // namespace dvbusdis
 
 /// DVBUSPULSE - OTG_FS device VBUS pulsing time register
 namespace dvbuspulse {
-/// Device VBUS pulsing time
-/// Position: 0, Width: 12
-using DVBUSP = BitField<0, 12>;
-constexpr uint32_t DVBUSP_Pos = 0;
-constexpr uint32_t DVBUSP_Msk = DVBUSP::mask;
+    /// Device VBUS pulsing time
+    /// Position: 0, Width: 12
+    using DVBUSP = BitField<0, 12>;
+    constexpr uint32_t DVBUSP_Pos = 0;
+    constexpr uint32_t DVBUSP_Msk = DVBUSP::mask;
 
 }  // namespace dvbuspulse
 
 /// DIEPEMPMSK - OTG_FS device IN endpoint FIFO empty interrupt mask register
 namespace diepempmsk {
-/// IN EP Tx FIFO empty interrupt mask bits
-/// Position: 0, Width: 16
-using INEPTXFEM = BitField<0, 16>;
-constexpr uint32_t INEPTXFEM_Pos = 0;
-constexpr uint32_t INEPTXFEM_Msk = INEPTXFEM::mask;
+    /// IN EP Tx FIFO empty interrupt mask bits
+    /// Position: 0, Width: 16
+    using INEPTXFEM = BitField<0, 16>;
+    constexpr uint32_t INEPTXFEM_Pos = 0;
+    constexpr uint32_t INEPTXFEM_Msk = INEPTXFEM::mask;
 
 }  // namespace diepempmsk
 
 /// FS_DIEPCTL0 - OTG_FS device control IN endpoint 0 control register (OTG_FS_DIEPCTL0)
 namespace fs_diepctl0 {
-/// Maximum packet size
-/// Position: 0, Width: 2
-/// Access: read-write
-using MPSIZ = BitField<0, 2>;
-constexpr uint32_t MPSIZ_Pos = 0;
-constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+    /// Maximum packet size
+    /// Position: 0, Width: 2
+    /// Access: read-write
+    using MPSIZ = BitField<0, 2>;
+    constexpr uint32_t MPSIZ_Pos = 0;
+    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-/// USB active endpoint
-/// Position: 15, Width: 1
-/// Access: read-only
-using USBAEP = BitField<15, 1>;
-constexpr uint32_t USBAEP_Pos = 15;
-constexpr uint32_t USBAEP_Msk = USBAEP::mask;
+    /// USB active endpoint
+    /// Position: 15, Width: 1
+    /// Access: read-only
+    using USBAEP = BitField<15, 1>;
+    constexpr uint32_t USBAEP_Pos = 15;
+    constexpr uint32_t USBAEP_Msk = USBAEP::mask;
 
-/// NAK status
-/// Position: 17, Width: 1
-/// Access: read-only
-using NAKSTS = BitField<17, 1>;
-constexpr uint32_t NAKSTS_Pos = 17;
-constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
+    /// NAK status
+    /// Position: 17, Width: 1
+    /// Access: read-only
+    using NAKSTS = BitField<17, 1>;
+    constexpr uint32_t NAKSTS_Pos = 17;
+    constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
 
-/// Endpoint type
-/// Position: 18, Width: 2
-/// Access: read-only
-using EPTYP = BitField<18, 2>;
-constexpr uint32_t EPTYP_Pos = 18;
-constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+    /// Endpoint type
+    /// Position: 18, Width: 2
+    /// Access: read-only
+    using EPTYP = BitField<18, 2>;
+    constexpr uint32_t EPTYP_Pos = 18;
+    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-/// STALL handshake
-/// Position: 21, Width: 1
-/// Access: read-write
-using STALL = BitField<21, 1>;
-constexpr uint32_t STALL_Pos = 21;
-constexpr uint32_t STALL_Msk = STALL::mask;
+    /// STALL handshake
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using STALL = BitField<21, 1>;
+    constexpr uint32_t STALL_Pos = 21;
+    constexpr uint32_t STALL_Msk = STALL::mask;
 
-/// TxFIFO number
-/// Position: 22, Width: 4
-/// Access: read-write
-using TXFNUM = BitField<22, 4>;
-constexpr uint32_t TXFNUM_Pos = 22;
-constexpr uint32_t TXFNUM_Msk = TXFNUM::mask;
+    /// TxFIFO number
+    /// Position: 22, Width: 4
+    /// Access: read-write
+    using TXFNUM = BitField<22, 4>;
+    constexpr uint32_t TXFNUM_Pos = 22;
+    constexpr uint32_t TXFNUM_Msk = TXFNUM::mask;
 
-/// Clear NAK
-/// Position: 26, Width: 1
-/// Access: write-only
-using CNAK = BitField<26, 1>;
-constexpr uint32_t CNAK_Pos = 26;
-constexpr uint32_t CNAK_Msk = CNAK::mask;
+    /// Clear NAK
+    /// Position: 26, Width: 1
+    /// Access: write-only
+    using CNAK = BitField<26, 1>;
+    constexpr uint32_t CNAK_Pos = 26;
+    constexpr uint32_t CNAK_Msk = CNAK::mask;
 
-/// Set NAK
-/// Position: 27, Width: 1
-/// Access: write-only
-using SNAK = BitField<27, 1>;
-constexpr uint32_t SNAK_Pos = 27;
-constexpr uint32_t SNAK_Msk = SNAK::mask;
+    /// Set NAK
+    /// Position: 27, Width: 1
+    /// Access: write-only
+    using SNAK = BitField<27, 1>;
+    constexpr uint32_t SNAK_Pos = 27;
+    constexpr uint32_t SNAK_Msk = SNAK::mask;
 
-/// Endpoint disable
-/// Position: 30, Width: 1
-/// Access: read-only
-using EPDIS = BitField<30, 1>;
-constexpr uint32_t EPDIS_Pos = 30;
-constexpr uint32_t EPDIS_Msk = EPDIS::mask;
+    /// Endpoint disable
+    /// Position: 30, Width: 1
+    /// Access: read-only
+    using EPDIS = BitField<30, 1>;
+    constexpr uint32_t EPDIS_Pos = 30;
+    constexpr uint32_t EPDIS_Msk = EPDIS::mask;
 
-/// Endpoint enable
-/// Position: 31, Width: 1
-/// Access: read-only
-using EPENA = BitField<31, 1>;
-constexpr uint32_t EPENA_Pos = 31;
-constexpr uint32_t EPENA_Msk = EPENA::mask;
+    /// Endpoint enable
+    /// Position: 31, Width: 1
+    /// Access: read-only
+    using EPENA = BitField<31, 1>;
+    constexpr uint32_t EPENA_Pos = 31;
+    constexpr uint32_t EPENA_Msk = EPENA::mask;
 
 }  // namespace fs_diepctl0
 
 /// DIEPINT0 - device endpoint-x interrupt register
 namespace diepint0 {
-/// XFRC
-/// Position: 0, Width: 1
-/// Access: read-write
-using XFRC = BitField<0, 1>;
-constexpr uint32_t XFRC_Pos = 0;
-constexpr uint32_t XFRC_Msk = XFRC::mask;
+    /// XFRC
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using XFRC = BitField<0, 1>;
+    constexpr uint32_t XFRC_Pos = 0;
+    constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-/// EPDISD
-/// Position: 1, Width: 1
-/// Access: read-write
-using EPDISD = BitField<1, 1>;
-constexpr uint32_t EPDISD_Pos = 1;
-constexpr uint32_t EPDISD_Msk = EPDISD::mask;
+    /// EPDISD
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using EPDISD = BitField<1, 1>;
+    constexpr uint32_t EPDISD_Pos = 1;
+    constexpr uint32_t EPDISD_Msk = EPDISD::mask;
 
-/// TOC
-/// Position: 3, Width: 1
-/// Access: read-write
-using TOC = BitField<3, 1>;
-constexpr uint32_t TOC_Pos = 3;
-constexpr uint32_t TOC_Msk = TOC::mask;
+    /// TOC
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using TOC = BitField<3, 1>;
+    constexpr uint32_t TOC_Pos = 3;
+    constexpr uint32_t TOC_Msk = TOC::mask;
 
-/// ITTXFE
-/// Position: 4, Width: 1
-/// Access: read-write
-using ITTXFE = BitField<4, 1>;
-constexpr uint32_t ITTXFE_Pos = 4;
-constexpr uint32_t ITTXFE_Msk = ITTXFE::mask;
+    /// ITTXFE
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using ITTXFE = BitField<4, 1>;
+    constexpr uint32_t ITTXFE_Pos = 4;
+    constexpr uint32_t ITTXFE_Msk = ITTXFE::mask;
 
-/// INEPNE
-/// Position: 6, Width: 1
-/// Access: read-write
-using INEPNE = BitField<6, 1>;
-constexpr uint32_t INEPNE_Pos = 6;
-constexpr uint32_t INEPNE_Msk = INEPNE::mask;
+    /// INEPNE
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using INEPNE = BitField<6, 1>;
+    constexpr uint32_t INEPNE_Pos = 6;
+    constexpr uint32_t INEPNE_Msk = INEPNE::mask;
 
-/// TXFE
-/// Position: 7, Width: 1
-/// Access: read-only
-using TXFE = BitField<7, 1>;
-constexpr uint32_t TXFE_Pos = 7;
-constexpr uint32_t TXFE_Msk = TXFE::mask;
+    /// TXFE
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using TXFE = BitField<7, 1>;
+    constexpr uint32_t TXFE_Pos = 7;
+    constexpr uint32_t TXFE_Msk = TXFE::mask;
 
 }  // namespace diepint0
 
 /// DIEPTSIZ0 - device endpoint-0 transfer size register
 namespace dieptsiz0 {
-/// Transfer size
-/// Position: 0, Width: 7
-using XFRSIZ = BitField<0, 7>;
-constexpr uint32_t XFRSIZ_Pos = 0;
-constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+    /// Transfer size
+    /// Position: 0, Width: 7
+    using XFRSIZ = BitField<0, 7>;
+    constexpr uint32_t XFRSIZ_Pos = 0;
+    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-/// Packet count
-/// Position: 19, Width: 2
-using PKTCNT = BitField<19, 2>;
-constexpr uint32_t PKTCNT_Pos = 19;
-constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+    /// Packet count
+    /// Position: 19, Width: 2
+    using PKTCNT = BitField<19, 2>;
+    constexpr uint32_t PKTCNT_Pos = 19;
+    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
 }  // namespace dieptsiz0
 
 /// DTXFSTS0 - OTG_FS device IN endpoint transmit FIFO status register
 namespace dtxfsts0 {
-/// IN endpoint TxFIFO space available
-/// Position: 0, Width: 16
-using INEPTFSAV = BitField<0, 16>;
-constexpr uint32_t INEPTFSAV_Pos = 0;
-constexpr uint32_t INEPTFSAV_Msk = INEPTFSAV::mask;
+    /// IN endpoint TxFIFO space available
+    /// Position: 0, Width: 16
+    using INEPTFSAV = BitField<0, 16>;
+    constexpr uint32_t INEPTFSAV_Pos = 0;
+    constexpr uint32_t INEPTFSAV_Msk = INEPTFSAV::mask;
 
 }  // namespace dtxfsts0
 
 /// DIEPCTL1 - OTG device endpoint-1 control register
 namespace diepctl1 {
-/// MPSIZ
-/// Position: 0, Width: 11
-/// Access: read-write
-using MPSIZ = BitField<0, 11>;
-constexpr uint32_t MPSIZ_Pos = 0;
-constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+    /// MPSIZ
+    /// Position: 0, Width: 11
+    /// Access: read-write
+    using MPSIZ = BitField<0, 11>;
+    constexpr uint32_t MPSIZ_Pos = 0;
+    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-/// USBAEP
-/// Position: 15, Width: 1
-/// Access: read-write
-using USBAEP = BitField<15, 1>;
-constexpr uint32_t USBAEP_Pos = 15;
-constexpr uint32_t USBAEP_Msk = USBAEP::mask;
+    /// USBAEP
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using USBAEP = BitField<15, 1>;
+    constexpr uint32_t USBAEP_Pos = 15;
+    constexpr uint32_t USBAEP_Msk = USBAEP::mask;
 
-/// EONUM/DPID
-/// Position: 16, Width: 1
-/// Access: read-only
-using EONUM_DPID = BitField<16, 1>;
-constexpr uint32_t EONUM_DPID_Pos = 16;
-constexpr uint32_t EONUM_DPID_Msk = EONUM_DPID::mask;
+    /// EONUM/DPID
+    /// Position: 16, Width: 1
+    /// Access: read-only
+    using EONUM_DPID = BitField<16, 1>;
+    constexpr uint32_t EONUM_DPID_Pos = 16;
+    constexpr uint32_t EONUM_DPID_Msk = EONUM_DPID::mask;
 
-/// NAKSTS
-/// Position: 17, Width: 1
-/// Access: read-only
-using NAKSTS = BitField<17, 1>;
-constexpr uint32_t NAKSTS_Pos = 17;
-constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
+    /// NAKSTS
+    /// Position: 17, Width: 1
+    /// Access: read-only
+    using NAKSTS = BitField<17, 1>;
+    constexpr uint32_t NAKSTS_Pos = 17;
+    constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
 
-/// EPTYP
-/// Position: 18, Width: 2
-/// Access: read-write
-using EPTYP = BitField<18, 2>;
-constexpr uint32_t EPTYP_Pos = 18;
-constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+    /// EPTYP
+    /// Position: 18, Width: 2
+    /// Access: read-write
+    using EPTYP = BitField<18, 2>;
+    constexpr uint32_t EPTYP_Pos = 18;
+    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-/// Stall
-/// Position: 21, Width: 1
-/// Access: read-write
-using Stall = BitField<21, 1>;
-constexpr uint32_t Stall_Pos = 21;
-constexpr uint32_t Stall_Msk = Stall::mask;
+    /// Stall
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using Stall = BitField<21, 1>;
+    constexpr uint32_t Stall_Pos = 21;
+    constexpr uint32_t Stall_Msk = Stall::mask;
 
-/// TXFNUM
-/// Position: 22, Width: 4
-/// Access: read-write
-using TXFNUM = BitField<22, 4>;
-constexpr uint32_t TXFNUM_Pos = 22;
-constexpr uint32_t TXFNUM_Msk = TXFNUM::mask;
+    /// TXFNUM
+    /// Position: 22, Width: 4
+    /// Access: read-write
+    using TXFNUM = BitField<22, 4>;
+    constexpr uint32_t TXFNUM_Pos = 22;
+    constexpr uint32_t TXFNUM_Msk = TXFNUM::mask;
 
-/// CNAK
-/// Position: 26, Width: 1
-/// Access: write-only
-using CNAK = BitField<26, 1>;
-constexpr uint32_t CNAK_Pos = 26;
-constexpr uint32_t CNAK_Msk = CNAK::mask;
+    /// CNAK
+    /// Position: 26, Width: 1
+    /// Access: write-only
+    using CNAK = BitField<26, 1>;
+    constexpr uint32_t CNAK_Pos = 26;
+    constexpr uint32_t CNAK_Msk = CNAK::mask;
 
-/// SNAK
-/// Position: 27, Width: 1
-/// Access: write-only
-using SNAK = BitField<27, 1>;
-constexpr uint32_t SNAK_Pos = 27;
-constexpr uint32_t SNAK_Msk = SNAK::mask;
+    /// SNAK
+    /// Position: 27, Width: 1
+    /// Access: write-only
+    using SNAK = BitField<27, 1>;
+    constexpr uint32_t SNAK_Pos = 27;
+    constexpr uint32_t SNAK_Msk = SNAK::mask;
 
-/// SD0PID/SEVNFRM
-/// Position: 28, Width: 1
-/// Access: write-only
-using SD0PID_SEVNFRM = BitField<28, 1>;
-constexpr uint32_t SD0PID_SEVNFRM_Pos = 28;
-constexpr uint32_t SD0PID_SEVNFRM_Msk = SD0PID_SEVNFRM::mask;
+    /// SD0PID/SEVNFRM
+    /// Position: 28, Width: 1
+    /// Access: write-only
+    using SD0PID_SEVNFRM = BitField<28, 1>;
+    constexpr uint32_t SD0PID_SEVNFRM_Pos = 28;
+    constexpr uint32_t SD0PID_SEVNFRM_Msk = SD0PID_SEVNFRM::mask;
 
-/// SODDFRM/SD1PID
-/// Position: 29, Width: 1
-/// Access: write-only
-using SODDFRM_SD1PID = BitField<29, 1>;
-constexpr uint32_t SODDFRM_SD1PID_Pos = 29;
-constexpr uint32_t SODDFRM_SD1PID_Msk = SODDFRM_SD1PID::mask;
+    /// SODDFRM/SD1PID
+    /// Position: 29, Width: 1
+    /// Access: write-only
+    using SODDFRM_SD1PID = BitField<29, 1>;
+    constexpr uint32_t SODDFRM_SD1PID_Pos = 29;
+    constexpr uint32_t SODDFRM_SD1PID_Msk = SODDFRM_SD1PID::mask;
 
-/// EPDIS
-/// Position: 30, Width: 1
-/// Access: read-write
-using EPDIS = BitField<30, 1>;
-constexpr uint32_t EPDIS_Pos = 30;
-constexpr uint32_t EPDIS_Msk = EPDIS::mask;
+    /// EPDIS
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using EPDIS = BitField<30, 1>;
+    constexpr uint32_t EPDIS_Pos = 30;
+    constexpr uint32_t EPDIS_Msk = EPDIS::mask;
 
-/// EPENA
-/// Position: 31, Width: 1
-/// Access: read-write
-using EPENA = BitField<31, 1>;
-constexpr uint32_t EPENA_Pos = 31;
-constexpr uint32_t EPENA_Msk = EPENA::mask;
+    /// EPENA
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using EPENA = BitField<31, 1>;
+    constexpr uint32_t EPENA_Pos = 31;
+    constexpr uint32_t EPENA_Msk = EPENA::mask;
 
 }  // namespace diepctl1
 
 /// DIEPINT1 - device endpoint-1 interrupt register
 namespace diepint1 {
-/// XFRC
-/// Position: 0, Width: 1
-/// Access: read-write
-using XFRC = BitField<0, 1>;
-constexpr uint32_t XFRC_Pos = 0;
-constexpr uint32_t XFRC_Msk = XFRC::mask;
+    /// XFRC
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using XFRC = BitField<0, 1>;
+    constexpr uint32_t XFRC_Pos = 0;
+    constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-/// EPDISD
-/// Position: 1, Width: 1
-/// Access: read-write
-using EPDISD = BitField<1, 1>;
-constexpr uint32_t EPDISD_Pos = 1;
-constexpr uint32_t EPDISD_Msk = EPDISD::mask;
+    /// EPDISD
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using EPDISD = BitField<1, 1>;
+    constexpr uint32_t EPDISD_Pos = 1;
+    constexpr uint32_t EPDISD_Msk = EPDISD::mask;
 
-/// TOC
-/// Position: 3, Width: 1
-/// Access: read-write
-using TOC = BitField<3, 1>;
-constexpr uint32_t TOC_Pos = 3;
-constexpr uint32_t TOC_Msk = TOC::mask;
+    /// TOC
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using TOC = BitField<3, 1>;
+    constexpr uint32_t TOC_Pos = 3;
+    constexpr uint32_t TOC_Msk = TOC::mask;
 
-/// ITTXFE
-/// Position: 4, Width: 1
-/// Access: read-write
-using ITTXFE = BitField<4, 1>;
-constexpr uint32_t ITTXFE_Pos = 4;
-constexpr uint32_t ITTXFE_Msk = ITTXFE::mask;
+    /// ITTXFE
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using ITTXFE = BitField<4, 1>;
+    constexpr uint32_t ITTXFE_Pos = 4;
+    constexpr uint32_t ITTXFE_Msk = ITTXFE::mask;
 
-/// INEPNE
-/// Position: 6, Width: 1
-/// Access: read-write
-using INEPNE = BitField<6, 1>;
-constexpr uint32_t INEPNE_Pos = 6;
-constexpr uint32_t INEPNE_Msk = INEPNE::mask;
+    /// INEPNE
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using INEPNE = BitField<6, 1>;
+    constexpr uint32_t INEPNE_Pos = 6;
+    constexpr uint32_t INEPNE_Msk = INEPNE::mask;
 
-/// TXFE
-/// Position: 7, Width: 1
-/// Access: read-only
-using TXFE = BitField<7, 1>;
-constexpr uint32_t TXFE_Pos = 7;
-constexpr uint32_t TXFE_Msk = TXFE::mask;
+    /// TXFE
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using TXFE = BitField<7, 1>;
+    constexpr uint32_t TXFE_Pos = 7;
+    constexpr uint32_t TXFE_Msk = TXFE::mask;
 
 }  // namespace diepint1
 
 /// DIEPTSIZ1 - device endpoint-1 transfer size register
 namespace dieptsiz1 {
-/// Transfer size
-/// Position: 0, Width: 19
-using XFRSIZ = BitField<0, 19>;
-constexpr uint32_t XFRSIZ_Pos = 0;
-constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+    /// Transfer size
+    /// Position: 0, Width: 19
+    using XFRSIZ = BitField<0, 19>;
+    constexpr uint32_t XFRSIZ_Pos = 0;
+    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-/// Packet count
-/// Position: 19, Width: 10
-using PKTCNT = BitField<19, 10>;
-constexpr uint32_t PKTCNT_Pos = 19;
-constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+    /// Packet count
+    /// Position: 19, Width: 10
+    using PKTCNT = BitField<19, 10>;
+    constexpr uint32_t PKTCNT_Pos = 19;
+    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-/// Multi count
-/// Position: 29, Width: 2
-using MCNT = BitField<29, 2>;
-constexpr uint32_t MCNT_Pos = 29;
-constexpr uint32_t MCNT_Msk = MCNT::mask;
+    /// Multi count
+    /// Position: 29, Width: 2
+    using MCNT = BitField<29, 2>;
+    constexpr uint32_t MCNT_Pos = 29;
+    constexpr uint32_t MCNT_Msk = MCNT::mask;
 
 }  // namespace dieptsiz1
 
 /// DTXFSTS1 - OTG_FS device IN endpoint transmit FIFO status register
 namespace dtxfsts1 {
-/// IN endpoint TxFIFO space available
-/// Position: 0, Width: 16
-using INEPTFSAV = BitField<0, 16>;
-constexpr uint32_t INEPTFSAV_Pos = 0;
-constexpr uint32_t INEPTFSAV_Msk = INEPTFSAV::mask;
+    /// IN endpoint TxFIFO space available
+    /// Position: 0, Width: 16
+    using INEPTFSAV = BitField<0, 16>;
+    constexpr uint32_t INEPTFSAV_Pos = 0;
+    constexpr uint32_t INEPTFSAV_Msk = INEPTFSAV::mask;
 
 }  // namespace dtxfsts1
 
 /// DIEPCTL2 - OTG device endpoint-2 control register
 namespace diepctl2 {
-/// MPSIZ
-/// Position: 0, Width: 11
-/// Access: read-write
-using MPSIZ = BitField<0, 11>;
-constexpr uint32_t MPSIZ_Pos = 0;
-constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+    /// MPSIZ
+    /// Position: 0, Width: 11
+    /// Access: read-write
+    using MPSIZ = BitField<0, 11>;
+    constexpr uint32_t MPSIZ_Pos = 0;
+    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-/// USBAEP
-/// Position: 15, Width: 1
-/// Access: read-write
-using USBAEP = BitField<15, 1>;
-constexpr uint32_t USBAEP_Pos = 15;
-constexpr uint32_t USBAEP_Msk = USBAEP::mask;
+    /// USBAEP
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using USBAEP = BitField<15, 1>;
+    constexpr uint32_t USBAEP_Pos = 15;
+    constexpr uint32_t USBAEP_Msk = USBAEP::mask;
 
-/// EONUM/DPID
-/// Position: 16, Width: 1
-/// Access: read-only
-using EONUM_DPID = BitField<16, 1>;
-constexpr uint32_t EONUM_DPID_Pos = 16;
-constexpr uint32_t EONUM_DPID_Msk = EONUM_DPID::mask;
+    /// EONUM/DPID
+    /// Position: 16, Width: 1
+    /// Access: read-only
+    using EONUM_DPID = BitField<16, 1>;
+    constexpr uint32_t EONUM_DPID_Pos = 16;
+    constexpr uint32_t EONUM_DPID_Msk = EONUM_DPID::mask;
 
-/// NAKSTS
-/// Position: 17, Width: 1
-/// Access: read-only
-using NAKSTS = BitField<17, 1>;
-constexpr uint32_t NAKSTS_Pos = 17;
-constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
+    /// NAKSTS
+    /// Position: 17, Width: 1
+    /// Access: read-only
+    using NAKSTS = BitField<17, 1>;
+    constexpr uint32_t NAKSTS_Pos = 17;
+    constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
 
-/// EPTYP
-/// Position: 18, Width: 2
-/// Access: read-write
-using EPTYP = BitField<18, 2>;
-constexpr uint32_t EPTYP_Pos = 18;
-constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+    /// EPTYP
+    /// Position: 18, Width: 2
+    /// Access: read-write
+    using EPTYP = BitField<18, 2>;
+    constexpr uint32_t EPTYP_Pos = 18;
+    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-/// Stall
-/// Position: 21, Width: 1
-/// Access: read-write
-using Stall = BitField<21, 1>;
-constexpr uint32_t Stall_Pos = 21;
-constexpr uint32_t Stall_Msk = Stall::mask;
+    /// Stall
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using Stall = BitField<21, 1>;
+    constexpr uint32_t Stall_Pos = 21;
+    constexpr uint32_t Stall_Msk = Stall::mask;
 
-/// TXFNUM
-/// Position: 22, Width: 4
-/// Access: read-write
-using TXFNUM = BitField<22, 4>;
-constexpr uint32_t TXFNUM_Pos = 22;
-constexpr uint32_t TXFNUM_Msk = TXFNUM::mask;
+    /// TXFNUM
+    /// Position: 22, Width: 4
+    /// Access: read-write
+    using TXFNUM = BitField<22, 4>;
+    constexpr uint32_t TXFNUM_Pos = 22;
+    constexpr uint32_t TXFNUM_Msk = TXFNUM::mask;
 
-/// CNAK
-/// Position: 26, Width: 1
-/// Access: write-only
-using CNAK = BitField<26, 1>;
-constexpr uint32_t CNAK_Pos = 26;
-constexpr uint32_t CNAK_Msk = CNAK::mask;
+    /// CNAK
+    /// Position: 26, Width: 1
+    /// Access: write-only
+    using CNAK = BitField<26, 1>;
+    constexpr uint32_t CNAK_Pos = 26;
+    constexpr uint32_t CNAK_Msk = CNAK::mask;
 
-/// SNAK
-/// Position: 27, Width: 1
-/// Access: write-only
-using SNAK = BitField<27, 1>;
-constexpr uint32_t SNAK_Pos = 27;
-constexpr uint32_t SNAK_Msk = SNAK::mask;
+    /// SNAK
+    /// Position: 27, Width: 1
+    /// Access: write-only
+    using SNAK = BitField<27, 1>;
+    constexpr uint32_t SNAK_Pos = 27;
+    constexpr uint32_t SNAK_Msk = SNAK::mask;
 
-/// SD0PID/SEVNFRM
-/// Position: 28, Width: 1
-/// Access: write-only
-using SD0PID_SEVNFRM = BitField<28, 1>;
-constexpr uint32_t SD0PID_SEVNFRM_Pos = 28;
-constexpr uint32_t SD0PID_SEVNFRM_Msk = SD0PID_SEVNFRM::mask;
+    /// SD0PID/SEVNFRM
+    /// Position: 28, Width: 1
+    /// Access: write-only
+    using SD0PID_SEVNFRM = BitField<28, 1>;
+    constexpr uint32_t SD0PID_SEVNFRM_Pos = 28;
+    constexpr uint32_t SD0PID_SEVNFRM_Msk = SD0PID_SEVNFRM::mask;
 
-/// SODDFRM
-/// Position: 29, Width: 1
-/// Access: write-only
-using SODDFRM = BitField<29, 1>;
-constexpr uint32_t SODDFRM_Pos = 29;
-constexpr uint32_t SODDFRM_Msk = SODDFRM::mask;
+    /// SODDFRM
+    /// Position: 29, Width: 1
+    /// Access: write-only
+    using SODDFRM = BitField<29, 1>;
+    constexpr uint32_t SODDFRM_Pos = 29;
+    constexpr uint32_t SODDFRM_Msk = SODDFRM::mask;
 
-/// EPDIS
-/// Position: 30, Width: 1
-/// Access: read-write
-using EPDIS = BitField<30, 1>;
-constexpr uint32_t EPDIS_Pos = 30;
-constexpr uint32_t EPDIS_Msk = EPDIS::mask;
+    /// EPDIS
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using EPDIS = BitField<30, 1>;
+    constexpr uint32_t EPDIS_Pos = 30;
+    constexpr uint32_t EPDIS_Msk = EPDIS::mask;
 
-/// EPENA
-/// Position: 31, Width: 1
-/// Access: read-write
-using EPENA = BitField<31, 1>;
-constexpr uint32_t EPENA_Pos = 31;
-constexpr uint32_t EPENA_Msk = EPENA::mask;
+    /// EPENA
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using EPENA = BitField<31, 1>;
+    constexpr uint32_t EPENA_Pos = 31;
+    constexpr uint32_t EPENA_Msk = EPENA::mask;
 
 }  // namespace diepctl2
 
 /// DIEPINT2 - device endpoint-2 interrupt register
 namespace diepint2 {
-/// XFRC
-/// Position: 0, Width: 1
-/// Access: read-write
-using XFRC = BitField<0, 1>;
-constexpr uint32_t XFRC_Pos = 0;
-constexpr uint32_t XFRC_Msk = XFRC::mask;
+    /// XFRC
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using XFRC = BitField<0, 1>;
+    constexpr uint32_t XFRC_Pos = 0;
+    constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-/// EPDISD
-/// Position: 1, Width: 1
-/// Access: read-write
-using EPDISD = BitField<1, 1>;
-constexpr uint32_t EPDISD_Pos = 1;
-constexpr uint32_t EPDISD_Msk = EPDISD::mask;
+    /// EPDISD
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using EPDISD = BitField<1, 1>;
+    constexpr uint32_t EPDISD_Pos = 1;
+    constexpr uint32_t EPDISD_Msk = EPDISD::mask;
 
-/// TOC
-/// Position: 3, Width: 1
-/// Access: read-write
-using TOC = BitField<3, 1>;
-constexpr uint32_t TOC_Pos = 3;
-constexpr uint32_t TOC_Msk = TOC::mask;
+    /// TOC
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using TOC = BitField<3, 1>;
+    constexpr uint32_t TOC_Pos = 3;
+    constexpr uint32_t TOC_Msk = TOC::mask;
 
-/// ITTXFE
-/// Position: 4, Width: 1
-/// Access: read-write
-using ITTXFE = BitField<4, 1>;
-constexpr uint32_t ITTXFE_Pos = 4;
-constexpr uint32_t ITTXFE_Msk = ITTXFE::mask;
+    /// ITTXFE
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using ITTXFE = BitField<4, 1>;
+    constexpr uint32_t ITTXFE_Pos = 4;
+    constexpr uint32_t ITTXFE_Msk = ITTXFE::mask;
 
-/// INEPNE
-/// Position: 6, Width: 1
-/// Access: read-write
-using INEPNE = BitField<6, 1>;
-constexpr uint32_t INEPNE_Pos = 6;
-constexpr uint32_t INEPNE_Msk = INEPNE::mask;
+    /// INEPNE
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using INEPNE = BitField<6, 1>;
+    constexpr uint32_t INEPNE_Pos = 6;
+    constexpr uint32_t INEPNE_Msk = INEPNE::mask;
 
-/// TXFE
-/// Position: 7, Width: 1
-/// Access: read-only
-using TXFE = BitField<7, 1>;
-constexpr uint32_t TXFE_Pos = 7;
-constexpr uint32_t TXFE_Msk = TXFE::mask;
+    /// TXFE
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using TXFE = BitField<7, 1>;
+    constexpr uint32_t TXFE_Pos = 7;
+    constexpr uint32_t TXFE_Msk = TXFE::mask;
 
 }  // namespace diepint2
 
 /// DIEPTSIZ2 - device endpoint-2 transfer size register
 namespace dieptsiz2 {
-/// Transfer size
-/// Position: 0, Width: 19
-using XFRSIZ = BitField<0, 19>;
-constexpr uint32_t XFRSIZ_Pos = 0;
-constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+    /// Transfer size
+    /// Position: 0, Width: 19
+    using XFRSIZ = BitField<0, 19>;
+    constexpr uint32_t XFRSIZ_Pos = 0;
+    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-/// Packet count
-/// Position: 19, Width: 10
-using PKTCNT = BitField<19, 10>;
-constexpr uint32_t PKTCNT_Pos = 19;
-constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+    /// Packet count
+    /// Position: 19, Width: 10
+    using PKTCNT = BitField<19, 10>;
+    constexpr uint32_t PKTCNT_Pos = 19;
+    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-/// Multi count
-/// Position: 29, Width: 2
-using MCNT = BitField<29, 2>;
-constexpr uint32_t MCNT_Pos = 29;
-constexpr uint32_t MCNT_Msk = MCNT::mask;
+    /// Multi count
+    /// Position: 29, Width: 2
+    using MCNT = BitField<29, 2>;
+    constexpr uint32_t MCNT_Pos = 29;
+    constexpr uint32_t MCNT_Msk = MCNT::mask;
 
 }  // namespace dieptsiz2
 
 /// DTXFSTS2 - OTG_FS device IN endpoint transmit FIFO status register
 namespace dtxfsts2 {
-/// IN endpoint TxFIFO space available
-/// Position: 0, Width: 16
-using INEPTFSAV = BitField<0, 16>;
-constexpr uint32_t INEPTFSAV_Pos = 0;
-constexpr uint32_t INEPTFSAV_Msk = INEPTFSAV::mask;
+    /// IN endpoint TxFIFO space available
+    /// Position: 0, Width: 16
+    using INEPTFSAV = BitField<0, 16>;
+    constexpr uint32_t INEPTFSAV_Pos = 0;
+    constexpr uint32_t INEPTFSAV_Msk = INEPTFSAV::mask;
 
 }  // namespace dtxfsts2
 
 /// DIEPCTL3 - OTG device endpoint-3 control register
 namespace diepctl3 {
-/// MPSIZ
-/// Position: 0, Width: 11
-/// Access: read-write
-using MPSIZ = BitField<0, 11>;
-constexpr uint32_t MPSIZ_Pos = 0;
-constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+    /// MPSIZ
+    /// Position: 0, Width: 11
+    /// Access: read-write
+    using MPSIZ = BitField<0, 11>;
+    constexpr uint32_t MPSIZ_Pos = 0;
+    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-/// USBAEP
-/// Position: 15, Width: 1
-/// Access: read-write
-using USBAEP = BitField<15, 1>;
-constexpr uint32_t USBAEP_Pos = 15;
-constexpr uint32_t USBAEP_Msk = USBAEP::mask;
+    /// USBAEP
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using USBAEP = BitField<15, 1>;
+    constexpr uint32_t USBAEP_Pos = 15;
+    constexpr uint32_t USBAEP_Msk = USBAEP::mask;
 
-/// EONUM/DPID
-/// Position: 16, Width: 1
-/// Access: read-only
-using EONUM_DPID = BitField<16, 1>;
-constexpr uint32_t EONUM_DPID_Pos = 16;
-constexpr uint32_t EONUM_DPID_Msk = EONUM_DPID::mask;
+    /// EONUM/DPID
+    /// Position: 16, Width: 1
+    /// Access: read-only
+    using EONUM_DPID = BitField<16, 1>;
+    constexpr uint32_t EONUM_DPID_Pos = 16;
+    constexpr uint32_t EONUM_DPID_Msk = EONUM_DPID::mask;
 
-/// NAKSTS
-/// Position: 17, Width: 1
-/// Access: read-only
-using NAKSTS = BitField<17, 1>;
-constexpr uint32_t NAKSTS_Pos = 17;
-constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
+    /// NAKSTS
+    /// Position: 17, Width: 1
+    /// Access: read-only
+    using NAKSTS = BitField<17, 1>;
+    constexpr uint32_t NAKSTS_Pos = 17;
+    constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
 
-/// EPTYP
-/// Position: 18, Width: 2
-/// Access: read-write
-using EPTYP = BitField<18, 2>;
-constexpr uint32_t EPTYP_Pos = 18;
-constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+    /// EPTYP
+    /// Position: 18, Width: 2
+    /// Access: read-write
+    using EPTYP = BitField<18, 2>;
+    constexpr uint32_t EPTYP_Pos = 18;
+    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-/// Stall
-/// Position: 21, Width: 1
-/// Access: read-write
-using Stall = BitField<21, 1>;
-constexpr uint32_t Stall_Pos = 21;
-constexpr uint32_t Stall_Msk = Stall::mask;
+    /// Stall
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using Stall = BitField<21, 1>;
+    constexpr uint32_t Stall_Pos = 21;
+    constexpr uint32_t Stall_Msk = Stall::mask;
 
-/// TXFNUM
-/// Position: 22, Width: 4
-/// Access: read-write
-using TXFNUM = BitField<22, 4>;
-constexpr uint32_t TXFNUM_Pos = 22;
-constexpr uint32_t TXFNUM_Msk = TXFNUM::mask;
+    /// TXFNUM
+    /// Position: 22, Width: 4
+    /// Access: read-write
+    using TXFNUM = BitField<22, 4>;
+    constexpr uint32_t TXFNUM_Pos = 22;
+    constexpr uint32_t TXFNUM_Msk = TXFNUM::mask;
 
-/// CNAK
-/// Position: 26, Width: 1
-/// Access: write-only
-using CNAK = BitField<26, 1>;
-constexpr uint32_t CNAK_Pos = 26;
-constexpr uint32_t CNAK_Msk = CNAK::mask;
+    /// CNAK
+    /// Position: 26, Width: 1
+    /// Access: write-only
+    using CNAK = BitField<26, 1>;
+    constexpr uint32_t CNAK_Pos = 26;
+    constexpr uint32_t CNAK_Msk = CNAK::mask;
 
-/// SNAK
-/// Position: 27, Width: 1
-/// Access: write-only
-using SNAK = BitField<27, 1>;
-constexpr uint32_t SNAK_Pos = 27;
-constexpr uint32_t SNAK_Msk = SNAK::mask;
+    /// SNAK
+    /// Position: 27, Width: 1
+    /// Access: write-only
+    using SNAK = BitField<27, 1>;
+    constexpr uint32_t SNAK_Pos = 27;
+    constexpr uint32_t SNAK_Msk = SNAK::mask;
 
-/// SD0PID/SEVNFRM
-/// Position: 28, Width: 1
-/// Access: write-only
-using SD0PID_SEVNFRM = BitField<28, 1>;
-constexpr uint32_t SD0PID_SEVNFRM_Pos = 28;
-constexpr uint32_t SD0PID_SEVNFRM_Msk = SD0PID_SEVNFRM::mask;
+    /// SD0PID/SEVNFRM
+    /// Position: 28, Width: 1
+    /// Access: write-only
+    using SD0PID_SEVNFRM = BitField<28, 1>;
+    constexpr uint32_t SD0PID_SEVNFRM_Pos = 28;
+    constexpr uint32_t SD0PID_SEVNFRM_Msk = SD0PID_SEVNFRM::mask;
 
-/// SODDFRM
-/// Position: 29, Width: 1
-/// Access: write-only
-using SODDFRM = BitField<29, 1>;
-constexpr uint32_t SODDFRM_Pos = 29;
-constexpr uint32_t SODDFRM_Msk = SODDFRM::mask;
+    /// SODDFRM
+    /// Position: 29, Width: 1
+    /// Access: write-only
+    using SODDFRM = BitField<29, 1>;
+    constexpr uint32_t SODDFRM_Pos = 29;
+    constexpr uint32_t SODDFRM_Msk = SODDFRM::mask;
 
-/// EPDIS
-/// Position: 30, Width: 1
-/// Access: read-write
-using EPDIS = BitField<30, 1>;
-constexpr uint32_t EPDIS_Pos = 30;
-constexpr uint32_t EPDIS_Msk = EPDIS::mask;
+    /// EPDIS
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using EPDIS = BitField<30, 1>;
+    constexpr uint32_t EPDIS_Pos = 30;
+    constexpr uint32_t EPDIS_Msk = EPDIS::mask;
 
-/// EPENA
-/// Position: 31, Width: 1
-/// Access: read-write
-using EPENA = BitField<31, 1>;
-constexpr uint32_t EPENA_Pos = 31;
-constexpr uint32_t EPENA_Msk = EPENA::mask;
+    /// EPENA
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using EPENA = BitField<31, 1>;
+    constexpr uint32_t EPENA_Pos = 31;
+    constexpr uint32_t EPENA_Msk = EPENA::mask;
 
 }  // namespace diepctl3
 
 /// DIEPINT3 - device endpoint-3 interrupt register
 namespace diepint3 {
-/// XFRC
-/// Position: 0, Width: 1
-/// Access: read-write
-using XFRC = BitField<0, 1>;
-constexpr uint32_t XFRC_Pos = 0;
-constexpr uint32_t XFRC_Msk = XFRC::mask;
+    /// XFRC
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using XFRC = BitField<0, 1>;
+    constexpr uint32_t XFRC_Pos = 0;
+    constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-/// EPDISD
-/// Position: 1, Width: 1
-/// Access: read-write
-using EPDISD = BitField<1, 1>;
-constexpr uint32_t EPDISD_Pos = 1;
-constexpr uint32_t EPDISD_Msk = EPDISD::mask;
+    /// EPDISD
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using EPDISD = BitField<1, 1>;
+    constexpr uint32_t EPDISD_Pos = 1;
+    constexpr uint32_t EPDISD_Msk = EPDISD::mask;
 
-/// TOC
-/// Position: 3, Width: 1
-/// Access: read-write
-using TOC = BitField<3, 1>;
-constexpr uint32_t TOC_Pos = 3;
-constexpr uint32_t TOC_Msk = TOC::mask;
+    /// TOC
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using TOC = BitField<3, 1>;
+    constexpr uint32_t TOC_Pos = 3;
+    constexpr uint32_t TOC_Msk = TOC::mask;
 
-/// ITTXFE
-/// Position: 4, Width: 1
-/// Access: read-write
-using ITTXFE = BitField<4, 1>;
-constexpr uint32_t ITTXFE_Pos = 4;
-constexpr uint32_t ITTXFE_Msk = ITTXFE::mask;
+    /// ITTXFE
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using ITTXFE = BitField<4, 1>;
+    constexpr uint32_t ITTXFE_Pos = 4;
+    constexpr uint32_t ITTXFE_Msk = ITTXFE::mask;
 
-/// INEPNE
-/// Position: 6, Width: 1
-/// Access: read-write
-using INEPNE = BitField<6, 1>;
-constexpr uint32_t INEPNE_Pos = 6;
-constexpr uint32_t INEPNE_Msk = INEPNE::mask;
+    /// INEPNE
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using INEPNE = BitField<6, 1>;
+    constexpr uint32_t INEPNE_Pos = 6;
+    constexpr uint32_t INEPNE_Msk = INEPNE::mask;
 
-/// TXFE
-/// Position: 7, Width: 1
-/// Access: read-only
-using TXFE = BitField<7, 1>;
-constexpr uint32_t TXFE_Pos = 7;
-constexpr uint32_t TXFE_Msk = TXFE::mask;
+    /// TXFE
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using TXFE = BitField<7, 1>;
+    constexpr uint32_t TXFE_Pos = 7;
+    constexpr uint32_t TXFE_Msk = TXFE::mask;
 
 }  // namespace diepint3
 
 /// DIEPTSIZ3 - device endpoint-3 transfer size register
 namespace dieptsiz3 {
-/// Transfer size
-/// Position: 0, Width: 19
-using XFRSIZ = BitField<0, 19>;
-constexpr uint32_t XFRSIZ_Pos = 0;
-constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+    /// Transfer size
+    /// Position: 0, Width: 19
+    using XFRSIZ = BitField<0, 19>;
+    constexpr uint32_t XFRSIZ_Pos = 0;
+    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-/// Packet count
-/// Position: 19, Width: 10
-using PKTCNT = BitField<19, 10>;
-constexpr uint32_t PKTCNT_Pos = 19;
-constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+    /// Packet count
+    /// Position: 19, Width: 10
+    using PKTCNT = BitField<19, 10>;
+    constexpr uint32_t PKTCNT_Pos = 19;
+    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-/// Multi count
-/// Position: 29, Width: 2
-using MCNT = BitField<29, 2>;
-constexpr uint32_t MCNT_Pos = 29;
-constexpr uint32_t MCNT_Msk = MCNT::mask;
+    /// Multi count
+    /// Position: 29, Width: 2
+    using MCNT = BitField<29, 2>;
+    constexpr uint32_t MCNT_Pos = 29;
+    constexpr uint32_t MCNT_Msk = MCNT::mask;
 
 }  // namespace dieptsiz3
 
 /// DTXFSTS3 - OTG_FS device IN endpoint transmit FIFO status register
 namespace dtxfsts3 {
-/// IN endpoint TxFIFO space available
-/// Position: 0, Width: 16
-using INEPTFSAV = BitField<0, 16>;
-constexpr uint32_t INEPTFSAV_Pos = 0;
-constexpr uint32_t INEPTFSAV_Msk = INEPTFSAV::mask;
+    /// IN endpoint TxFIFO space available
+    /// Position: 0, Width: 16
+    using INEPTFSAV = BitField<0, 16>;
+    constexpr uint32_t INEPTFSAV_Pos = 0;
+    constexpr uint32_t INEPTFSAV_Msk = INEPTFSAV::mask;
 
 }  // namespace dtxfsts3
 
 /// DOEPCTL0 - device endpoint-0 control register
 namespace doepctl0 {
-/// MPSIZ
-/// Position: 0, Width: 2
-/// Access: read-only
-using MPSIZ = BitField<0, 2>;
-constexpr uint32_t MPSIZ_Pos = 0;
-constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+    /// MPSIZ
+    /// Position: 0, Width: 2
+    /// Access: read-only
+    using MPSIZ = BitField<0, 2>;
+    constexpr uint32_t MPSIZ_Pos = 0;
+    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-/// USBAEP
-/// Position: 15, Width: 1
-/// Access: read-only
-using USBAEP = BitField<15, 1>;
-constexpr uint32_t USBAEP_Pos = 15;
-constexpr uint32_t USBAEP_Msk = USBAEP::mask;
+    /// USBAEP
+    /// Position: 15, Width: 1
+    /// Access: read-only
+    using USBAEP = BitField<15, 1>;
+    constexpr uint32_t USBAEP_Pos = 15;
+    constexpr uint32_t USBAEP_Msk = USBAEP::mask;
 
-/// NAKSTS
-/// Position: 17, Width: 1
-/// Access: read-only
-using NAKSTS = BitField<17, 1>;
-constexpr uint32_t NAKSTS_Pos = 17;
-constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
+    /// NAKSTS
+    /// Position: 17, Width: 1
+    /// Access: read-only
+    using NAKSTS = BitField<17, 1>;
+    constexpr uint32_t NAKSTS_Pos = 17;
+    constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
 
-/// EPTYP
-/// Position: 18, Width: 2
-/// Access: read-only
-using EPTYP = BitField<18, 2>;
-constexpr uint32_t EPTYP_Pos = 18;
-constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+    /// EPTYP
+    /// Position: 18, Width: 2
+    /// Access: read-only
+    using EPTYP = BitField<18, 2>;
+    constexpr uint32_t EPTYP_Pos = 18;
+    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-/// SNPM
-/// Position: 20, Width: 1
-/// Access: read-write
-using SNPM = BitField<20, 1>;
-constexpr uint32_t SNPM_Pos = 20;
-constexpr uint32_t SNPM_Msk = SNPM::mask;
+    /// SNPM
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using SNPM = BitField<20, 1>;
+    constexpr uint32_t SNPM_Pos = 20;
+    constexpr uint32_t SNPM_Msk = SNPM::mask;
 
-/// Stall
-/// Position: 21, Width: 1
-/// Access: read-write
-using Stall = BitField<21, 1>;
-constexpr uint32_t Stall_Pos = 21;
-constexpr uint32_t Stall_Msk = Stall::mask;
+    /// Stall
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using Stall = BitField<21, 1>;
+    constexpr uint32_t Stall_Pos = 21;
+    constexpr uint32_t Stall_Msk = Stall::mask;
 
-/// CNAK
-/// Position: 26, Width: 1
-/// Access: write-only
-using CNAK = BitField<26, 1>;
-constexpr uint32_t CNAK_Pos = 26;
-constexpr uint32_t CNAK_Msk = CNAK::mask;
+    /// CNAK
+    /// Position: 26, Width: 1
+    /// Access: write-only
+    using CNAK = BitField<26, 1>;
+    constexpr uint32_t CNAK_Pos = 26;
+    constexpr uint32_t CNAK_Msk = CNAK::mask;
 
-/// SNAK
-/// Position: 27, Width: 1
-/// Access: write-only
-using SNAK = BitField<27, 1>;
-constexpr uint32_t SNAK_Pos = 27;
-constexpr uint32_t SNAK_Msk = SNAK::mask;
+    /// SNAK
+    /// Position: 27, Width: 1
+    /// Access: write-only
+    using SNAK = BitField<27, 1>;
+    constexpr uint32_t SNAK_Pos = 27;
+    constexpr uint32_t SNAK_Msk = SNAK::mask;
 
-/// EPDIS
-/// Position: 30, Width: 1
-/// Access: read-only
-using EPDIS = BitField<30, 1>;
-constexpr uint32_t EPDIS_Pos = 30;
-constexpr uint32_t EPDIS_Msk = EPDIS::mask;
+    /// EPDIS
+    /// Position: 30, Width: 1
+    /// Access: read-only
+    using EPDIS = BitField<30, 1>;
+    constexpr uint32_t EPDIS_Pos = 30;
+    constexpr uint32_t EPDIS_Msk = EPDIS::mask;
 
-/// EPENA
-/// Position: 31, Width: 1
-/// Access: write-only
-using EPENA = BitField<31, 1>;
-constexpr uint32_t EPENA_Pos = 31;
-constexpr uint32_t EPENA_Msk = EPENA::mask;
+    /// EPENA
+    /// Position: 31, Width: 1
+    /// Access: write-only
+    using EPENA = BitField<31, 1>;
+    constexpr uint32_t EPENA_Pos = 31;
+    constexpr uint32_t EPENA_Msk = EPENA::mask;
 
 }  // namespace doepctl0
 
 /// DOEPINT0 - device endpoint-0 interrupt register
 namespace doepint0 {
-/// XFRC
-/// Position: 0, Width: 1
-using XFRC = BitField<0, 1>;
-constexpr uint32_t XFRC_Pos = 0;
-constexpr uint32_t XFRC_Msk = XFRC::mask;
+    /// XFRC
+    /// Position: 0, Width: 1
+    using XFRC = BitField<0, 1>;
+    constexpr uint32_t XFRC_Pos = 0;
+    constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-/// EPDISD
-/// Position: 1, Width: 1
-using EPDISD = BitField<1, 1>;
-constexpr uint32_t EPDISD_Pos = 1;
-constexpr uint32_t EPDISD_Msk = EPDISD::mask;
+    /// EPDISD
+    /// Position: 1, Width: 1
+    using EPDISD = BitField<1, 1>;
+    constexpr uint32_t EPDISD_Pos = 1;
+    constexpr uint32_t EPDISD_Msk = EPDISD::mask;
 
-/// STUP
-/// Position: 3, Width: 1
-using STUP = BitField<3, 1>;
-constexpr uint32_t STUP_Pos = 3;
-constexpr uint32_t STUP_Msk = STUP::mask;
+    /// STUP
+    /// Position: 3, Width: 1
+    using STUP = BitField<3, 1>;
+    constexpr uint32_t STUP_Pos = 3;
+    constexpr uint32_t STUP_Msk = STUP::mask;
 
-/// OTEPDIS
-/// Position: 4, Width: 1
-using OTEPDIS = BitField<4, 1>;
-constexpr uint32_t OTEPDIS_Pos = 4;
-constexpr uint32_t OTEPDIS_Msk = OTEPDIS::mask;
+    /// OTEPDIS
+    /// Position: 4, Width: 1
+    using OTEPDIS = BitField<4, 1>;
+    constexpr uint32_t OTEPDIS_Pos = 4;
+    constexpr uint32_t OTEPDIS_Msk = OTEPDIS::mask;
 
-/// B2BSTUP
-/// Position: 6, Width: 1
-using B2BSTUP = BitField<6, 1>;
-constexpr uint32_t B2BSTUP_Pos = 6;
-constexpr uint32_t B2BSTUP_Msk = B2BSTUP::mask;
+    /// B2BSTUP
+    /// Position: 6, Width: 1
+    using B2BSTUP = BitField<6, 1>;
+    constexpr uint32_t B2BSTUP_Pos = 6;
+    constexpr uint32_t B2BSTUP_Msk = B2BSTUP::mask;
 
 }  // namespace doepint0
 
 /// DOEPTSIZ0 - device OUT endpoint-0 transfer size register
 namespace doeptsiz0 {
-/// Transfer size
-/// Position: 0, Width: 7
-using XFRSIZ = BitField<0, 7>;
-constexpr uint32_t XFRSIZ_Pos = 0;
-constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+    /// Transfer size
+    /// Position: 0, Width: 7
+    using XFRSIZ = BitField<0, 7>;
+    constexpr uint32_t XFRSIZ_Pos = 0;
+    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-/// Packet count
-/// Position: 19, Width: 1
-using PKTCNT = BitField<19, 1>;
-constexpr uint32_t PKTCNT_Pos = 19;
-constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+    /// Packet count
+    /// Position: 19, Width: 1
+    using PKTCNT = BitField<19, 1>;
+    constexpr uint32_t PKTCNT_Pos = 19;
+    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-/// SETUP packet count
-/// Position: 29, Width: 2
-using STUPCNT = BitField<29, 2>;
-constexpr uint32_t STUPCNT_Pos = 29;
-constexpr uint32_t STUPCNT_Msk = STUPCNT::mask;
+    /// SETUP packet count
+    /// Position: 29, Width: 2
+    using STUPCNT = BitField<29, 2>;
+    constexpr uint32_t STUPCNT_Pos = 29;
+    constexpr uint32_t STUPCNT_Msk = STUPCNT::mask;
 
 }  // namespace doeptsiz0
 
 /// DOEPCTL1 - device endpoint-1 control register
 namespace doepctl1 {
-/// MPSIZ
-/// Position: 0, Width: 11
-/// Access: read-write
-using MPSIZ = BitField<0, 11>;
-constexpr uint32_t MPSIZ_Pos = 0;
-constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+    /// MPSIZ
+    /// Position: 0, Width: 11
+    /// Access: read-write
+    using MPSIZ = BitField<0, 11>;
+    constexpr uint32_t MPSIZ_Pos = 0;
+    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-/// USBAEP
-/// Position: 15, Width: 1
-/// Access: read-write
-using USBAEP = BitField<15, 1>;
-constexpr uint32_t USBAEP_Pos = 15;
-constexpr uint32_t USBAEP_Msk = USBAEP::mask;
+    /// USBAEP
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using USBAEP = BitField<15, 1>;
+    constexpr uint32_t USBAEP_Pos = 15;
+    constexpr uint32_t USBAEP_Msk = USBAEP::mask;
 
-/// EONUM/DPID
-/// Position: 16, Width: 1
-/// Access: read-only
-using EONUM_DPID = BitField<16, 1>;
-constexpr uint32_t EONUM_DPID_Pos = 16;
-constexpr uint32_t EONUM_DPID_Msk = EONUM_DPID::mask;
+    /// EONUM/DPID
+    /// Position: 16, Width: 1
+    /// Access: read-only
+    using EONUM_DPID = BitField<16, 1>;
+    constexpr uint32_t EONUM_DPID_Pos = 16;
+    constexpr uint32_t EONUM_DPID_Msk = EONUM_DPID::mask;
 
-/// NAKSTS
-/// Position: 17, Width: 1
-/// Access: read-only
-using NAKSTS = BitField<17, 1>;
-constexpr uint32_t NAKSTS_Pos = 17;
-constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
+    /// NAKSTS
+    /// Position: 17, Width: 1
+    /// Access: read-only
+    using NAKSTS = BitField<17, 1>;
+    constexpr uint32_t NAKSTS_Pos = 17;
+    constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
 
-/// EPTYP
-/// Position: 18, Width: 2
-/// Access: read-write
-using EPTYP = BitField<18, 2>;
-constexpr uint32_t EPTYP_Pos = 18;
-constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+    /// EPTYP
+    /// Position: 18, Width: 2
+    /// Access: read-write
+    using EPTYP = BitField<18, 2>;
+    constexpr uint32_t EPTYP_Pos = 18;
+    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-/// SNPM
-/// Position: 20, Width: 1
-/// Access: read-write
-using SNPM = BitField<20, 1>;
-constexpr uint32_t SNPM_Pos = 20;
-constexpr uint32_t SNPM_Msk = SNPM::mask;
+    /// SNPM
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using SNPM = BitField<20, 1>;
+    constexpr uint32_t SNPM_Pos = 20;
+    constexpr uint32_t SNPM_Msk = SNPM::mask;
 
-/// Stall
-/// Position: 21, Width: 1
-/// Access: read-write
-using Stall = BitField<21, 1>;
-constexpr uint32_t Stall_Pos = 21;
-constexpr uint32_t Stall_Msk = Stall::mask;
+    /// Stall
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using Stall = BitField<21, 1>;
+    constexpr uint32_t Stall_Pos = 21;
+    constexpr uint32_t Stall_Msk = Stall::mask;
 
-/// CNAK
-/// Position: 26, Width: 1
-/// Access: write-only
-using CNAK = BitField<26, 1>;
-constexpr uint32_t CNAK_Pos = 26;
-constexpr uint32_t CNAK_Msk = CNAK::mask;
+    /// CNAK
+    /// Position: 26, Width: 1
+    /// Access: write-only
+    using CNAK = BitField<26, 1>;
+    constexpr uint32_t CNAK_Pos = 26;
+    constexpr uint32_t CNAK_Msk = CNAK::mask;
 
-/// SNAK
-/// Position: 27, Width: 1
-/// Access: write-only
-using SNAK = BitField<27, 1>;
-constexpr uint32_t SNAK_Pos = 27;
-constexpr uint32_t SNAK_Msk = SNAK::mask;
+    /// SNAK
+    /// Position: 27, Width: 1
+    /// Access: write-only
+    using SNAK = BitField<27, 1>;
+    constexpr uint32_t SNAK_Pos = 27;
+    constexpr uint32_t SNAK_Msk = SNAK::mask;
 
-/// SD0PID/SEVNFRM
-/// Position: 28, Width: 1
-/// Access: write-only
-using SD0PID_SEVNFRM = BitField<28, 1>;
-constexpr uint32_t SD0PID_SEVNFRM_Pos = 28;
-constexpr uint32_t SD0PID_SEVNFRM_Msk = SD0PID_SEVNFRM::mask;
+    /// SD0PID/SEVNFRM
+    /// Position: 28, Width: 1
+    /// Access: write-only
+    using SD0PID_SEVNFRM = BitField<28, 1>;
+    constexpr uint32_t SD0PID_SEVNFRM_Pos = 28;
+    constexpr uint32_t SD0PID_SEVNFRM_Msk = SD0PID_SEVNFRM::mask;
 
-/// SODDFRM
-/// Position: 29, Width: 1
-/// Access: write-only
-using SODDFRM = BitField<29, 1>;
-constexpr uint32_t SODDFRM_Pos = 29;
-constexpr uint32_t SODDFRM_Msk = SODDFRM::mask;
+    /// SODDFRM
+    /// Position: 29, Width: 1
+    /// Access: write-only
+    using SODDFRM = BitField<29, 1>;
+    constexpr uint32_t SODDFRM_Pos = 29;
+    constexpr uint32_t SODDFRM_Msk = SODDFRM::mask;
 
-/// EPDIS
-/// Position: 30, Width: 1
-/// Access: read-write
-using EPDIS = BitField<30, 1>;
-constexpr uint32_t EPDIS_Pos = 30;
-constexpr uint32_t EPDIS_Msk = EPDIS::mask;
+    /// EPDIS
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using EPDIS = BitField<30, 1>;
+    constexpr uint32_t EPDIS_Pos = 30;
+    constexpr uint32_t EPDIS_Msk = EPDIS::mask;
 
-/// EPENA
-/// Position: 31, Width: 1
-/// Access: read-write
-using EPENA = BitField<31, 1>;
-constexpr uint32_t EPENA_Pos = 31;
-constexpr uint32_t EPENA_Msk = EPENA::mask;
+    /// EPENA
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using EPENA = BitField<31, 1>;
+    constexpr uint32_t EPENA_Pos = 31;
+    constexpr uint32_t EPENA_Msk = EPENA::mask;
 
 }  // namespace doepctl1
 
 /// DOEPINT1 - device endpoint-1 interrupt register
 namespace doepint1 {
-/// XFRC
-/// Position: 0, Width: 1
-using XFRC = BitField<0, 1>;
-constexpr uint32_t XFRC_Pos = 0;
-constexpr uint32_t XFRC_Msk = XFRC::mask;
+    /// XFRC
+    /// Position: 0, Width: 1
+    using XFRC = BitField<0, 1>;
+    constexpr uint32_t XFRC_Pos = 0;
+    constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-/// EPDISD
-/// Position: 1, Width: 1
-using EPDISD = BitField<1, 1>;
-constexpr uint32_t EPDISD_Pos = 1;
-constexpr uint32_t EPDISD_Msk = EPDISD::mask;
+    /// EPDISD
+    /// Position: 1, Width: 1
+    using EPDISD = BitField<1, 1>;
+    constexpr uint32_t EPDISD_Pos = 1;
+    constexpr uint32_t EPDISD_Msk = EPDISD::mask;
 
-/// STUP
-/// Position: 3, Width: 1
-using STUP = BitField<3, 1>;
-constexpr uint32_t STUP_Pos = 3;
-constexpr uint32_t STUP_Msk = STUP::mask;
+    /// STUP
+    /// Position: 3, Width: 1
+    using STUP = BitField<3, 1>;
+    constexpr uint32_t STUP_Pos = 3;
+    constexpr uint32_t STUP_Msk = STUP::mask;
 
-/// OTEPDIS
-/// Position: 4, Width: 1
-using OTEPDIS = BitField<4, 1>;
-constexpr uint32_t OTEPDIS_Pos = 4;
-constexpr uint32_t OTEPDIS_Msk = OTEPDIS::mask;
+    /// OTEPDIS
+    /// Position: 4, Width: 1
+    using OTEPDIS = BitField<4, 1>;
+    constexpr uint32_t OTEPDIS_Pos = 4;
+    constexpr uint32_t OTEPDIS_Msk = OTEPDIS::mask;
 
-/// B2BSTUP
-/// Position: 6, Width: 1
-using B2BSTUP = BitField<6, 1>;
-constexpr uint32_t B2BSTUP_Pos = 6;
-constexpr uint32_t B2BSTUP_Msk = B2BSTUP::mask;
+    /// B2BSTUP
+    /// Position: 6, Width: 1
+    using B2BSTUP = BitField<6, 1>;
+    constexpr uint32_t B2BSTUP_Pos = 6;
+    constexpr uint32_t B2BSTUP_Msk = B2BSTUP::mask;
 
 }  // namespace doepint1
 
 /// DOEPTSIZ1 - device OUT endpoint-1 transfer size register
 namespace doeptsiz1 {
-/// Transfer size
-/// Position: 0, Width: 19
-using XFRSIZ = BitField<0, 19>;
-constexpr uint32_t XFRSIZ_Pos = 0;
-constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+    /// Transfer size
+    /// Position: 0, Width: 19
+    using XFRSIZ = BitField<0, 19>;
+    constexpr uint32_t XFRSIZ_Pos = 0;
+    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-/// Packet count
-/// Position: 19, Width: 10
-using PKTCNT = BitField<19, 10>;
-constexpr uint32_t PKTCNT_Pos = 19;
-constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+    /// Packet count
+    /// Position: 19, Width: 10
+    using PKTCNT = BitField<19, 10>;
+    constexpr uint32_t PKTCNT_Pos = 19;
+    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-/// Received data PID/SETUP packet count
-/// Position: 29, Width: 2
-using RXDPID_STUPCNT = BitField<29, 2>;
-constexpr uint32_t RXDPID_STUPCNT_Pos = 29;
-constexpr uint32_t RXDPID_STUPCNT_Msk = RXDPID_STUPCNT::mask;
+    /// Received data PID/SETUP packet count
+    /// Position: 29, Width: 2
+    using RXDPID_STUPCNT = BitField<29, 2>;
+    constexpr uint32_t RXDPID_STUPCNT_Pos = 29;
+    constexpr uint32_t RXDPID_STUPCNT_Msk = RXDPID_STUPCNT::mask;
 
 }  // namespace doeptsiz1
 
 /// DOEPCTL2 - device endpoint-2 control register
 namespace doepctl2 {
-/// MPSIZ
-/// Position: 0, Width: 11
-/// Access: read-write
-using MPSIZ = BitField<0, 11>;
-constexpr uint32_t MPSIZ_Pos = 0;
-constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+    /// MPSIZ
+    /// Position: 0, Width: 11
+    /// Access: read-write
+    using MPSIZ = BitField<0, 11>;
+    constexpr uint32_t MPSIZ_Pos = 0;
+    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-/// USBAEP
-/// Position: 15, Width: 1
-/// Access: read-write
-using USBAEP = BitField<15, 1>;
-constexpr uint32_t USBAEP_Pos = 15;
-constexpr uint32_t USBAEP_Msk = USBAEP::mask;
+    /// USBAEP
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using USBAEP = BitField<15, 1>;
+    constexpr uint32_t USBAEP_Pos = 15;
+    constexpr uint32_t USBAEP_Msk = USBAEP::mask;
 
-/// EONUM/DPID
-/// Position: 16, Width: 1
-/// Access: read-only
-using EONUM_DPID = BitField<16, 1>;
-constexpr uint32_t EONUM_DPID_Pos = 16;
-constexpr uint32_t EONUM_DPID_Msk = EONUM_DPID::mask;
+    /// EONUM/DPID
+    /// Position: 16, Width: 1
+    /// Access: read-only
+    using EONUM_DPID = BitField<16, 1>;
+    constexpr uint32_t EONUM_DPID_Pos = 16;
+    constexpr uint32_t EONUM_DPID_Msk = EONUM_DPID::mask;
 
-/// NAKSTS
-/// Position: 17, Width: 1
-/// Access: read-only
-using NAKSTS = BitField<17, 1>;
-constexpr uint32_t NAKSTS_Pos = 17;
-constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
+    /// NAKSTS
+    /// Position: 17, Width: 1
+    /// Access: read-only
+    using NAKSTS = BitField<17, 1>;
+    constexpr uint32_t NAKSTS_Pos = 17;
+    constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
 
-/// EPTYP
-/// Position: 18, Width: 2
-/// Access: read-write
-using EPTYP = BitField<18, 2>;
-constexpr uint32_t EPTYP_Pos = 18;
-constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+    /// EPTYP
+    /// Position: 18, Width: 2
+    /// Access: read-write
+    using EPTYP = BitField<18, 2>;
+    constexpr uint32_t EPTYP_Pos = 18;
+    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-/// SNPM
-/// Position: 20, Width: 1
-/// Access: read-write
-using SNPM = BitField<20, 1>;
-constexpr uint32_t SNPM_Pos = 20;
-constexpr uint32_t SNPM_Msk = SNPM::mask;
+    /// SNPM
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using SNPM = BitField<20, 1>;
+    constexpr uint32_t SNPM_Pos = 20;
+    constexpr uint32_t SNPM_Msk = SNPM::mask;
 
-/// Stall
-/// Position: 21, Width: 1
-/// Access: read-write
-using Stall = BitField<21, 1>;
-constexpr uint32_t Stall_Pos = 21;
-constexpr uint32_t Stall_Msk = Stall::mask;
+    /// Stall
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using Stall = BitField<21, 1>;
+    constexpr uint32_t Stall_Pos = 21;
+    constexpr uint32_t Stall_Msk = Stall::mask;
 
-/// CNAK
-/// Position: 26, Width: 1
-/// Access: write-only
-using CNAK = BitField<26, 1>;
-constexpr uint32_t CNAK_Pos = 26;
-constexpr uint32_t CNAK_Msk = CNAK::mask;
+    /// CNAK
+    /// Position: 26, Width: 1
+    /// Access: write-only
+    using CNAK = BitField<26, 1>;
+    constexpr uint32_t CNAK_Pos = 26;
+    constexpr uint32_t CNAK_Msk = CNAK::mask;
 
-/// SNAK
-/// Position: 27, Width: 1
-/// Access: write-only
-using SNAK = BitField<27, 1>;
-constexpr uint32_t SNAK_Pos = 27;
-constexpr uint32_t SNAK_Msk = SNAK::mask;
+    /// SNAK
+    /// Position: 27, Width: 1
+    /// Access: write-only
+    using SNAK = BitField<27, 1>;
+    constexpr uint32_t SNAK_Pos = 27;
+    constexpr uint32_t SNAK_Msk = SNAK::mask;
 
-/// SD0PID/SEVNFRM
-/// Position: 28, Width: 1
-/// Access: write-only
-using SD0PID_SEVNFRM = BitField<28, 1>;
-constexpr uint32_t SD0PID_SEVNFRM_Pos = 28;
-constexpr uint32_t SD0PID_SEVNFRM_Msk = SD0PID_SEVNFRM::mask;
+    /// SD0PID/SEVNFRM
+    /// Position: 28, Width: 1
+    /// Access: write-only
+    using SD0PID_SEVNFRM = BitField<28, 1>;
+    constexpr uint32_t SD0PID_SEVNFRM_Pos = 28;
+    constexpr uint32_t SD0PID_SEVNFRM_Msk = SD0PID_SEVNFRM::mask;
 
-/// SODDFRM
-/// Position: 29, Width: 1
-/// Access: write-only
-using SODDFRM = BitField<29, 1>;
-constexpr uint32_t SODDFRM_Pos = 29;
-constexpr uint32_t SODDFRM_Msk = SODDFRM::mask;
+    /// SODDFRM
+    /// Position: 29, Width: 1
+    /// Access: write-only
+    using SODDFRM = BitField<29, 1>;
+    constexpr uint32_t SODDFRM_Pos = 29;
+    constexpr uint32_t SODDFRM_Msk = SODDFRM::mask;
 
-/// EPDIS
-/// Position: 30, Width: 1
-/// Access: read-write
-using EPDIS = BitField<30, 1>;
-constexpr uint32_t EPDIS_Pos = 30;
-constexpr uint32_t EPDIS_Msk = EPDIS::mask;
+    /// EPDIS
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using EPDIS = BitField<30, 1>;
+    constexpr uint32_t EPDIS_Pos = 30;
+    constexpr uint32_t EPDIS_Msk = EPDIS::mask;
 
-/// EPENA
-/// Position: 31, Width: 1
-/// Access: read-write
-using EPENA = BitField<31, 1>;
-constexpr uint32_t EPENA_Pos = 31;
-constexpr uint32_t EPENA_Msk = EPENA::mask;
+    /// EPENA
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using EPENA = BitField<31, 1>;
+    constexpr uint32_t EPENA_Pos = 31;
+    constexpr uint32_t EPENA_Msk = EPENA::mask;
 
 }  // namespace doepctl2
 
 /// DOEPINT2 - device endpoint-2 interrupt register
 namespace doepint2 {
-/// XFRC
-/// Position: 0, Width: 1
-using XFRC = BitField<0, 1>;
-constexpr uint32_t XFRC_Pos = 0;
-constexpr uint32_t XFRC_Msk = XFRC::mask;
+    /// XFRC
+    /// Position: 0, Width: 1
+    using XFRC = BitField<0, 1>;
+    constexpr uint32_t XFRC_Pos = 0;
+    constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-/// EPDISD
-/// Position: 1, Width: 1
-using EPDISD = BitField<1, 1>;
-constexpr uint32_t EPDISD_Pos = 1;
-constexpr uint32_t EPDISD_Msk = EPDISD::mask;
+    /// EPDISD
+    /// Position: 1, Width: 1
+    using EPDISD = BitField<1, 1>;
+    constexpr uint32_t EPDISD_Pos = 1;
+    constexpr uint32_t EPDISD_Msk = EPDISD::mask;
 
-/// STUP
-/// Position: 3, Width: 1
-using STUP = BitField<3, 1>;
-constexpr uint32_t STUP_Pos = 3;
-constexpr uint32_t STUP_Msk = STUP::mask;
+    /// STUP
+    /// Position: 3, Width: 1
+    using STUP = BitField<3, 1>;
+    constexpr uint32_t STUP_Pos = 3;
+    constexpr uint32_t STUP_Msk = STUP::mask;
 
-/// OTEPDIS
-/// Position: 4, Width: 1
-using OTEPDIS = BitField<4, 1>;
-constexpr uint32_t OTEPDIS_Pos = 4;
-constexpr uint32_t OTEPDIS_Msk = OTEPDIS::mask;
+    /// OTEPDIS
+    /// Position: 4, Width: 1
+    using OTEPDIS = BitField<4, 1>;
+    constexpr uint32_t OTEPDIS_Pos = 4;
+    constexpr uint32_t OTEPDIS_Msk = OTEPDIS::mask;
 
-/// B2BSTUP
-/// Position: 6, Width: 1
-using B2BSTUP = BitField<6, 1>;
-constexpr uint32_t B2BSTUP_Pos = 6;
-constexpr uint32_t B2BSTUP_Msk = B2BSTUP::mask;
+    /// B2BSTUP
+    /// Position: 6, Width: 1
+    using B2BSTUP = BitField<6, 1>;
+    constexpr uint32_t B2BSTUP_Pos = 6;
+    constexpr uint32_t B2BSTUP_Msk = B2BSTUP::mask;
 
 }  // namespace doepint2
 
 /// DOEPTSIZ2 - device OUT endpoint-2 transfer size register
 namespace doeptsiz2 {
-/// Transfer size
-/// Position: 0, Width: 19
-using XFRSIZ = BitField<0, 19>;
-constexpr uint32_t XFRSIZ_Pos = 0;
-constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+    /// Transfer size
+    /// Position: 0, Width: 19
+    using XFRSIZ = BitField<0, 19>;
+    constexpr uint32_t XFRSIZ_Pos = 0;
+    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-/// Packet count
-/// Position: 19, Width: 10
-using PKTCNT = BitField<19, 10>;
-constexpr uint32_t PKTCNT_Pos = 19;
-constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+    /// Packet count
+    /// Position: 19, Width: 10
+    using PKTCNT = BitField<19, 10>;
+    constexpr uint32_t PKTCNT_Pos = 19;
+    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-/// Received data PID/SETUP packet count
-/// Position: 29, Width: 2
-using RXDPID_STUPCNT = BitField<29, 2>;
-constexpr uint32_t RXDPID_STUPCNT_Pos = 29;
-constexpr uint32_t RXDPID_STUPCNT_Msk = RXDPID_STUPCNT::mask;
+    /// Received data PID/SETUP packet count
+    /// Position: 29, Width: 2
+    using RXDPID_STUPCNT = BitField<29, 2>;
+    constexpr uint32_t RXDPID_STUPCNT_Pos = 29;
+    constexpr uint32_t RXDPID_STUPCNT_Msk = RXDPID_STUPCNT::mask;
 
 }  // namespace doeptsiz2
 
 /// DOEPCTL3 - device endpoint-3 control register
 namespace doepctl3 {
-/// MPSIZ
-/// Position: 0, Width: 11
-/// Access: read-write
-using MPSIZ = BitField<0, 11>;
-constexpr uint32_t MPSIZ_Pos = 0;
-constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
+    /// MPSIZ
+    /// Position: 0, Width: 11
+    /// Access: read-write
+    using MPSIZ = BitField<0, 11>;
+    constexpr uint32_t MPSIZ_Pos = 0;
+    constexpr uint32_t MPSIZ_Msk = MPSIZ::mask;
 
-/// USBAEP
-/// Position: 15, Width: 1
-/// Access: read-write
-using USBAEP = BitField<15, 1>;
-constexpr uint32_t USBAEP_Pos = 15;
-constexpr uint32_t USBAEP_Msk = USBAEP::mask;
+    /// USBAEP
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using USBAEP = BitField<15, 1>;
+    constexpr uint32_t USBAEP_Pos = 15;
+    constexpr uint32_t USBAEP_Msk = USBAEP::mask;
 
-/// EONUM/DPID
-/// Position: 16, Width: 1
-/// Access: read-only
-using EONUM_DPID = BitField<16, 1>;
-constexpr uint32_t EONUM_DPID_Pos = 16;
-constexpr uint32_t EONUM_DPID_Msk = EONUM_DPID::mask;
+    /// EONUM/DPID
+    /// Position: 16, Width: 1
+    /// Access: read-only
+    using EONUM_DPID = BitField<16, 1>;
+    constexpr uint32_t EONUM_DPID_Pos = 16;
+    constexpr uint32_t EONUM_DPID_Msk = EONUM_DPID::mask;
 
-/// NAKSTS
-/// Position: 17, Width: 1
-/// Access: read-only
-using NAKSTS = BitField<17, 1>;
-constexpr uint32_t NAKSTS_Pos = 17;
-constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
+    /// NAKSTS
+    /// Position: 17, Width: 1
+    /// Access: read-only
+    using NAKSTS = BitField<17, 1>;
+    constexpr uint32_t NAKSTS_Pos = 17;
+    constexpr uint32_t NAKSTS_Msk = NAKSTS::mask;
 
-/// EPTYP
-/// Position: 18, Width: 2
-/// Access: read-write
-using EPTYP = BitField<18, 2>;
-constexpr uint32_t EPTYP_Pos = 18;
-constexpr uint32_t EPTYP_Msk = EPTYP::mask;
+    /// EPTYP
+    /// Position: 18, Width: 2
+    /// Access: read-write
+    using EPTYP = BitField<18, 2>;
+    constexpr uint32_t EPTYP_Pos = 18;
+    constexpr uint32_t EPTYP_Msk = EPTYP::mask;
 
-/// SNPM
-/// Position: 20, Width: 1
-/// Access: read-write
-using SNPM = BitField<20, 1>;
-constexpr uint32_t SNPM_Pos = 20;
-constexpr uint32_t SNPM_Msk = SNPM::mask;
+    /// SNPM
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using SNPM = BitField<20, 1>;
+    constexpr uint32_t SNPM_Pos = 20;
+    constexpr uint32_t SNPM_Msk = SNPM::mask;
 
-/// Stall
-/// Position: 21, Width: 1
-/// Access: read-write
-using Stall = BitField<21, 1>;
-constexpr uint32_t Stall_Pos = 21;
-constexpr uint32_t Stall_Msk = Stall::mask;
+    /// Stall
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using Stall = BitField<21, 1>;
+    constexpr uint32_t Stall_Pos = 21;
+    constexpr uint32_t Stall_Msk = Stall::mask;
 
-/// CNAK
-/// Position: 26, Width: 1
-/// Access: write-only
-using CNAK = BitField<26, 1>;
-constexpr uint32_t CNAK_Pos = 26;
-constexpr uint32_t CNAK_Msk = CNAK::mask;
+    /// CNAK
+    /// Position: 26, Width: 1
+    /// Access: write-only
+    using CNAK = BitField<26, 1>;
+    constexpr uint32_t CNAK_Pos = 26;
+    constexpr uint32_t CNAK_Msk = CNAK::mask;
 
-/// SNAK
-/// Position: 27, Width: 1
-/// Access: write-only
-using SNAK = BitField<27, 1>;
-constexpr uint32_t SNAK_Pos = 27;
-constexpr uint32_t SNAK_Msk = SNAK::mask;
+    /// SNAK
+    /// Position: 27, Width: 1
+    /// Access: write-only
+    using SNAK = BitField<27, 1>;
+    constexpr uint32_t SNAK_Pos = 27;
+    constexpr uint32_t SNAK_Msk = SNAK::mask;
 
-/// SD0PID/SEVNFRM
-/// Position: 28, Width: 1
-/// Access: write-only
-using SD0PID_SEVNFRM = BitField<28, 1>;
-constexpr uint32_t SD0PID_SEVNFRM_Pos = 28;
-constexpr uint32_t SD0PID_SEVNFRM_Msk = SD0PID_SEVNFRM::mask;
+    /// SD0PID/SEVNFRM
+    /// Position: 28, Width: 1
+    /// Access: write-only
+    using SD0PID_SEVNFRM = BitField<28, 1>;
+    constexpr uint32_t SD0PID_SEVNFRM_Pos = 28;
+    constexpr uint32_t SD0PID_SEVNFRM_Msk = SD0PID_SEVNFRM::mask;
 
-/// SODDFRM
-/// Position: 29, Width: 1
-/// Access: write-only
-using SODDFRM = BitField<29, 1>;
-constexpr uint32_t SODDFRM_Pos = 29;
-constexpr uint32_t SODDFRM_Msk = SODDFRM::mask;
+    /// SODDFRM
+    /// Position: 29, Width: 1
+    /// Access: write-only
+    using SODDFRM = BitField<29, 1>;
+    constexpr uint32_t SODDFRM_Pos = 29;
+    constexpr uint32_t SODDFRM_Msk = SODDFRM::mask;
 
-/// EPDIS
-/// Position: 30, Width: 1
-/// Access: read-write
-using EPDIS = BitField<30, 1>;
-constexpr uint32_t EPDIS_Pos = 30;
-constexpr uint32_t EPDIS_Msk = EPDIS::mask;
+    /// EPDIS
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using EPDIS = BitField<30, 1>;
+    constexpr uint32_t EPDIS_Pos = 30;
+    constexpr uint32_t EPDIS_Msk = EPDIS::mask;
 
-/// EPENA
-/// Position: 31, Width: 1
-/// Access: read-write
-using EPENA = BitField<31, 1>;
-constexpr uint32_t EPENA_Pos = 31;
-constexpr uint32_t EPENA_Msk = EPENA::mask;
+    /// EPENA
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using EPENA = BitField<31, 1>;
+    constexpr uint32_t EPENA_Pos = 31;
+    constexpr uint32_t EPENA_Msk = EPENA::mask;
 
 }  // namespace doepctl3
 
 /// DOEPINT3 - device endpoint-3 interrupt register
 namespace doepint3 {
-/// XFRC
-/// Position: 0, Width: 1
-using XFRC = BitField<0, 1>;
-constexpr uint32_t XFRC_Pos = 0;
-constexpr uint32_t XFRC_Msk = XFRC::mask;
+    /// XFRC
+    /// Position: 0, Width: 1
+    using XFRC = BitField<0, 1>;
+    constexpr uint32_t XFRC_Pos = 0;
+    constexpr uint32_t XFRC_Msk = XFRC::mask;
 
-/// EPDISD
-/// Position: 1, Width: 1
-using EPDISD = BitField<1, 1>;
-constexpr uint32_t EPDISD_Pos = 1;
-constexpr uint32_t EPDISD_Msk = EPDISD::mask;
+    /// EPDISD
+    /// Position: 1, Width: 1
+    using EPDISD = BitField<1, 1>;
+    constexpr uint32_t EPDISD_Pos = 1;
+    constexpr uint32_t EPDISD_Msk = EPDISD::mask;
 
-/// STUP
-/// Position: 3, Width: 1
-using STUP = BitField<3, 1>;
-constexpr uint32_t STUP_Pos = 3;
-constexpr uint32_t STUP_Msk = STUP::mask;
+    /// STUP
+    /// Position: 3, Width: 1
+    using STUP = BitField<3, 1>;
+    constexpr uint32_t STUP_Pos = 3;
+    constexpr uint32_t STUP_Msk = STUP::mask;
 
-/// OTEPDIS
-/// Position: 4, Width: 1
-using OTEPDIS = BitField<4, 1>;
-constexpr uint32_t OTEPDIS_Pos = 4;
-constexpr uint32_t OTEPDIS_Msk = OTEPDIS::mask;
+    /// OTEPDIS
+    /// Position: 4, Width: 1
+    using OTEPDIS = BitField<4, 1>;
+    constexpr uint32_t OTEPDIS_Pos = 4;
+    constexpr uint32_t OTEPDIS_Msk = OTEPDIS::mask;
 
-/// B2BSTUP
-/// Position: 6, Width: 1
-using B2BSTUP = BitField<6, 1>;
-constexpr uint32_t B2BSTUP_Pos = 6;
-constexpr uint32_t B2BSTUP_Msk = B2BSTUP::mask;
+    /// B2BSTUP
+    /// Position: 6, Width: 1
+    using B2BSTUP = BitField<6, 1>;
+    constexpr uint32_t B2BSTUP_Pos = 6;
+    constexpr uint32_t B2BSTUP_Msk = B2BSTUP::mask;
 
 }  // namespace doepint3
 
 /// DOEPTSIZ3 - device OUT endpoint-3 transfer size register
 namespace doeptsiz3 {
-/// Transfer size
-/// Position: 0, Width: 19
-using XFRSIZ = BitField<0, 19>;
-constexpr uint32_t XFRSIZ_Pos = 0;
-constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
+    /// Transfer size
+    /// Position: 0, Width: 19
+    using XFRSIZ = BitField<0, 19>;
+    constexpr uint32_t XFRSIZ_Pos = 0;
+    constexpr uint32_t XFRSIZ_Msk = XFRSIZ::mask;
 
-/// Packet count
-/// Position: 19, Width: 10
-using PKTCNT = BitField<19, 10>;
-constexpr uint32_t PKTCNT_Pos = 19;
-constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
+    /// Packet count
+    /// Position: 19, Width: 10
+    using PKTCNT = BitField<19, 10>;
+    constexpr uint32_t PKTCNT_Pos = 19;
+    constexpr uint32_t PKTCNT_Msk = PKTCNT::mask;
 
-/// Received data PID/SETUP packet count
-/// Position: 29, Width: 2
-using RXDPID_STUPCNT = BitField<29, 2>;
-constexpr uint32_t RXDPID_STUPCNT_Pos = 29;
-constexpr uint32_t RXDPID_STUPCNT_Msk = RXDPID_STUPCNT::mask;
+    /// Received data PID/SETUP packet count
+    /// Position: 29, Width: 2
+    using RXDPID_STUPCNT = BitField<29, 2>;
+    constexpr uint32_t RXDPID_STUPCNT_Pos = 29;
+    constexpr uint32_t RXDPID_STUPCNT_Msk = RXDPID_STUPCNT::mask;
 
 }  // namespace doeptsiz3
 
