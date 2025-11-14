@@ -46,6 +46,9 @@ function(alloy_board_to_platform BOARD_NAME OUT_PLATFORM)
     elseif(BOARD_NAME MATCHES "rp2040" OR BOARD_NAME MATCHES "rp_pico")
         set(${OUT_PLATFORM} "rp2040" PARENT_SCOPE)
 
+    elseif(BOARD_NAME STREQUAL "nucleo_g0b1re" OR BOARD_NAME MATCHES "stm32g0")
+        set(${OUT_PLATFORM} "stm32g0" PARENT_SCOPE)
+
     elseif(BOARD_NAME STREQUAL "host")
         set(${OUT_PLATFORM} "linux" PARENT_SCOPE)
 

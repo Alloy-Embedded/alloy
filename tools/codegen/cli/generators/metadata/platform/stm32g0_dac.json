@@ -1,0 +1,160 @@
+{
+  "family": "stm32g0",
+  "mcu": "stm32g0b1",
+  "vendor": "st",
+  "peripheral_name": "DAC",
+  "description": "Digital-to-Analog Converter",
+  "register_type": "DAC_Registers",
+  "register_namespace": "dac",
+  "register_include": "hal/vendors/st/stm32g0/registers/dac_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32g0/bitfields/dac_bitfields.hpp",
+  "platform_namespace": "alloy::hal::st::stm32g0",
+  "vendor_namespace": "alloy::hal::st::stm32g0",
+
+  "features": {
+    "dual_channel": true,
+    "dma_support": true,
+    "trigger_support": true,
+    "wave_generation": true,
+    "buffer_mode": true
+  },
+
+  "dac_bases": {
+    "DAC": "0x40007400"
+  },
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "Peripheral base address"
+    },
+    {
+      "name": "PERIPH_CLOCK_HZ",
+      "type": "uint32_t",
+      "description": "Peripheral clock frequency in Hz"
+    }
+  ],
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for DAC on STM32G0",
+    "peripheral_clock_hz": 64000000,
+    "mock_hook_prefix": "ALLOY_DAC_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "enable_channel_1": {
+      "description": "Enable DAC channel 1",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->DAC_CR |= (1U << 0);",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_EN1",
+      "notes": "EN1 bit in CR"
+    },
+
+    "disable_channel_1": {
+      "description": "Disable DAC channel 1",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->DAC_CR &= ~(1U << 0);",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_EN1"
+    },
+
+    "enable_channel_2": {
+      "description": "Enable DAC channel 2",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->DAC_CR |= (1U << 16);",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_EN2",
+      "notes": "EN2 bit in CR"
+    },
+
+    "disable_channel_2": {
+      "description": "Disable DAC channel 2",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->DAC_CR &= ~(1U << 16);",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_EN2"
+    },
+
+    "set_data_channel_1_12bit": {
+      "description": "Set 12-bit data for channel 1 (right-aligned)",
+      "parameters": [
+        {"name": "data", "type": "uint16_t", "description": "12-bit data value"}
+      ],
+      "return_type": "void",
+      "code": "hw()->DAC_DHR12R1 = data & 0xFFF;",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_DHR12R1"
+    },
+
+    "set_data_channel_2_12bit": {
+      "description": "Set 12-bit data for channel 2 (right-aligned)",
+      "parameters": [
+        {"name": "data", "type": "uint16_t", "description": "12-bit data value"}
+      ],
+      "return_type": "void",
+      "code": "hw()->DAC_DHR12R2 = data & 0xFFF;",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_DHR12R2"
+    },
+
+    "set_data_channel_1_8bit": {
+      "description": "Set 8-bit data for channel 1",
+      "parameters": [
+        {"name": "data", "type": "uint8_t", "description": "8-bit data value"}
+      ],
+      "return_type": "void",
+      "code": "hw()->DAC_DHR8R1 = data;",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_DHR8R1"
+    },
+
+    "set_data_channel_2_8bit": {
+      "description": "Set 8-bit data for channel 2",
+      "parameters": [
+        {"name": "data", "type": "uint8_t", "description": "8-bit data value"}
+      ],
+      "return_type": "void",
+      "code": "hw()->DAC_DHR8R2 = data;",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_DHR8R2"
+    },
+
+    "trigger_channel_1": {
+      "description": "Software trigger for channel 1",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->DAC_SWTRIGR |= (1U << 0);",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_SWTRIG1",
+      "notes": "SWTRIG1 bit in SWTRIGR"
+    },
+
+    "trigger_channel_2": {
+      "description": "Software trigger for channel 2",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->DAC_SWTRIGR |= (1U << 1);",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_SWTRIG2",
+      "notes": "SWTRIG2 bit in SWTRIGR"
+    },
+
+    "enable_dma_channel_1": {
+      "description": "Enable DMA for channel 1",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->DAC_CR |= (1U << 12);",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_DMAEN1",
+      "notes": "DMAEN1 bit in CR"
+    },
+
+    "enable_dma_channel_2": {
+      "description": "Enable DMA for channel 2",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->DAC_CR |= (1U << 28);",
+      "test_hook": "ALLOY_DAC_TEST_HOOK_DMAEN2",
+      "notes": "DMAEN2 bit in CR"
+    }
+  }
+}

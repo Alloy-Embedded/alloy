@@ -31,6 +31,7 @@ set(ALLOY_SUPPORTED_PLATFORMS
     "same70"    # Atmel/Microchip SAME70 (ARM Cortex-M7)
     "linux"     # Linux/POSIX (for host-based testing)
     "esp32"     # Espressif ESP32 (Xtensa LX6 + ESP-IDF)
+    "stm32g0"   # STMicroelectronics STM32G0 (ARM Cortex-M0+)
     # Future platforms:
     # "stm32f4"   # STMicroelectronics STM32F4 (ARM Cortex-M4)
     # "stm32h7"   # STMicroelectronics STM32H7 (ARM Cortex-M7)

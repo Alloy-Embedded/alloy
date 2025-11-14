@@ -1,0 +1,249 @@
+{
+  "family": "stm32g0",
+  "mcu": "stm32g0b1",
+  "vendor": "st",
+  "peripheral_name": "TIM",
+  "description": "General Purpose Timer",
+  "register_type": "TIM1_Registers",
+  "register_namespace": "tim1",
+  "register_include": "hal/vendors/st/stm32g0/registers/tim1_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32g0/bitfields/tim1_bitfields.hpp",
+  "platform_namespace": "alloy::hal::st::stm32g0",
+  "vendor_namespace": "alloy::hal::st::stm32g0",
+
+  "features": {
+    "pwm": true,
+    "input_capture": true,
+    "output_compare": true,
+    "one_pulse_mode": true,
+    "encoder_mode": true,
+    "dma_support": true,
+    "break_input": true,
+    "complementary_outputs": true
+  },
+
+  "tim_bases": {
+    "TIM1": "0x40012C00",
+    "TIM2": "0x40000000",
+    "TIM3": "0x40000400",
+    "TIM6": "0x40001000",
+    "TIM14": "0x40002000",
+    "TIM15": "0x40014000",
+    "TIM16": "0x40014400"
+  },
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "Peripheral base address"
+    },
+    {
+      "name": "PERIPH_CLOCK_HZ",
+      "type": "uint32_t",
+      "description": "Peripheral clock frequency in Hz"
+    }
+  ],
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for TIM on STM32G0",
+    "peripheral_clock_hz": 64000000,
+    "mock_hook_prefix": "ALLOY_TIM_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "enable_counter": {
+      "description": "Enable timer counter",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->TIM1_CR1 |= (1U << 0);",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_CEN",
+      "notes": "CEN bit in CR1"
+    },
+
+    "disable_counter": {
+      "description": "Disable timer counter",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->TIM1_CR1 &= ~(1U << 0);",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_CEN"
+    },
+
+    "set_prescaler": {
+      "description": "Set prescaler value (actual division = PSC + 1)",
+      "parameters": [
+        {"name": "prescaler", "type": "uint16_t", "description": "Prescaler value (0-65535)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->TIM1_PSC = prescaler;",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_PSC"
+    },
+
+    "set_auto_reload": {
+      "description": "Set auto-reload value (period)",
+      "parameters": [
+        {"name": "value", "type": "uint32_t", "description": "Auto-reload value"}
+      ],
+      "return_type": "void",
+      "code": "hw()->TIM1_ARR = value;",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_ARR"
+    },
+
+    "get_counter": {
+      "description": "Get current counter value",
+      "parameters": [],
+      "return_type": "uint32_t",
+      "code": "return hw()->TIM1_CNT;",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_CNT"
+    },
+
+    "set_counter": {
+      "description": "Set counter value",
+      "parameters": [
+        {"name": "value", "type": "uint32_t", "description": "Counter value"}
+      ],
+      "return_type": "void",
+      "code": "hw()->TIM1_CNT = value;",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_CNT"
+    },
+
+    "enable_update_interrupt": {
+      "description": "Enable update interrupt",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->TIM1_DIER |= (1U << 0);",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_UIE",
+      "notes": "UIE bit in DIER"
+    },
+
+    "disable_update_interrupt": {
+      "description": "Disable update interrupt",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->TIM1_DIER &= ~(1U << 0);",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_UIE"
+    },
+
+    "is_update_flag_set": {
+      "description": "Check if update interrupt flag is set",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->TIM1_SR & (1U << 0)) != 0;",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_UIF",
+      "notes": "UIF bit in SR"
+    },
+
+    "clear_update_flag": {
+      "description": "Clear update interrupt flag",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->TIM1_SR &= ~(1U << 0);",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_UIF"
+    },
+
+    "set_pwm_mode_1": {
+      "description": "Set PWM mode 1 for channel 1",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->TIM1_CCMR1_OUTPUT = (hw()->TIM1_CCMR1_OUTPUT & ~(0x7U << 4)) | (0x6U << 4);",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_OC1M",
+      "notes": "OC1M=110 (PWM mode 1)"
+    },
+
+    "set_pwm_mode_2": {
+      "description": "Set PWM mode 2 for channel 1",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->TIM1_CCMR1_OUTPUT = (hw()->TIM1_CCMR1_OUTPUT & ~(0x7U << 4)) | (0x7U << 4);",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_OC1M",
+      "notes": "OC1M=111 (PWM mode 2)"
+    },
+
+    "enable_channel_1_output": {
+      "description": "Enable channel 1 output",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->TIM1_CCER |= (1U << 0);",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_CC1E",
+      "notes": "CC1E bit in CCER"
+    },
+
+    "disable_channel_1_output": {
+      "description": "Disable channel 1 output",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->TIM1_CCER &= ~(1U << 0);",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_CC1E"
+    },
+
+    "set_compare_1": {
+      "description": "Set compare value for channel 1 (duty cycle)",
+      "parameters": [
+        {"name": "value", "type": "uint32_t", "description": "Compare value"}
+      ],
+      "return_type": "void",
+      "code": "hw()->TIM1_CCR1 = value;",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_CCR1"
+    },
+
+    "set_compare_2": {
+      "description": "Set compare value for channel 2",
+      "parameters": [
+        {"name": "value", "type": "uint32_t", "description": "Compare value"}
+      ],
+      "return_type": "void",
+      "code": "hw()->TIM1_CCR2 = value;",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_CCR2"
+    },
+
+    "set_compare_3": {
+      "description": "Set compare value for channel 3",
+      "parameters": [
+        {"name": "value", "type": "uint32_t", "description": "Compare value"}
+      ],
+      "return_type": "void",
+      "code": "hw()->TIM1_CCR3 = value;",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_CCR3"
+    },
+
+    "set_compare_4": {
+      "description": "Set compare value for channel 4",
+      "parameters": [
+        {"name": "value", "type": "uint32_t", "description": "Compare value"}
+      ],
+      "return_type": "void",
+      "code": "hw()->TIM1_CCR4 = value;",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_CCR4"
+    },
+
+    "enable_auto_reload_preload": {
+      "description": "Enable auto-reload preload",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->TIM1_CR1 |= (1U << 7);",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_ARPE",
+      "notes": "ARPE bit in CR1"
+    },
+
+    "disable_auto_reload_preload": {
+      "description": "Disable auto-reload preload",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->TIM1_CR1 &= ~(1U << 7);",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_ARPE"
+    },
+
+    "generate_update_event": {
+      "description": "Generate update event to reload registers",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->TIM1_EGR = (1U << 0);",
+      "test_hook": "ALLOY_TIM_TEST_HOOK_UG",
+      "notes": "UG bit in EGR"
+    }
+  }
+}

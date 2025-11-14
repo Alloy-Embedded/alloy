@@ -310,10 +310,50 @@ def parse_svd(svd_path: Path) -> Optional[Dict]:
         return None
 
 
+def get_cortex_system_exceptions(cpu_name: str) -> list:
+    """Get Cortex-M system exception handlers based on CPU type"""
+    if not cpu_name:
+        return []
+
+    cpu_lower = cpu_name.lower()
+
+    # Cortex-M0/M0+ have 16 system exceptions (0-15)
+    if 'cm0' in cpu_lower or 'm0' in cpu_lower:
+        return [
+            "NMI_Handler",                             # 2
+            "HardFault_Handler",                       # 3
+            None, None, None, None, None, None, None,  # 4-10 Reserved
+            "SVC_Handler",                             # 11
+            None, None,                                # 12-13 Reserved
+            "PendSV_Handler",                          # 14
+            "SysTick_Handler"                          # 15
+        ]
+
+    # Cortex-M3/M4/M7/M33 have more exceptions
+    return [
+        "NMI_Handler",                             # 2
+        "HardFault_Handler",                       # 3
+        "MemManage_Handler",                       # 4
+        "BusFault_Handler",                        # 5
+        "UsageFault_Handler",                      # 6
+        None,                                      # 7 Reserved
+        None, None, None,                          # 8-10 Reserved
+        "SVC_Handler",                             # 11
+        "DebugMon_Handler",                        # 12
+        None,                                      # 13 Reserved
+        "PendSV_Handler",                          # 14
+        "SysTick_Handler"                          # 15
+    ]
+
+
 def generate_startup_cpp(device_info: Dict, output_path: Path):
     """Generate startup.cpp file"""
     device_name = device_info['name']
+    cpu_name = device_info.get('cpu', '')
     interrupts = device_info['interrupts']
+
+    # Get Cortex-M system exceptions
+    system_exceptions = get_cortex_system_exceptions(cpu_name)
 
     # Generate vector table entries
     handlers_set = set()  # Use set to deduplicate
@@ -358,10 +398,17 @@ extern "C" [[noreturn]] void Default_Handler() {{
     }}
 }}
 
-// Interrupt handlers (weak, can be overridden)
+// Cortex-M System Exception Handlers (weak, can be overridden)
 '''
 
-    # Add weak handler declarations
+    # Add system exception handlers
+    for handler in system_exceptions:
+        if handler:
+            content += f'extern "C" void {handler}() __attribute__((weak, alias("Default_Handler")));\n'
+
+    content += '\n// Peripheral Interrupt Handlers (weak, can be overridden)\n'
+
+    # Add peripheral interrupt handlers
     for handler in handlers:
         content += f'extern "C" void {handler}() __attribute__((weak, alias("Default_Handler")));\n'
 
@@ -401,11 +448,21 @@ extern "C" [[noreturn]] void Reset_Handler() {
 // Vector table
 __attribute__((section(".isr_vector"), used))
 void (* const vector_table[])() = {
-    reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
-    Reset_Handler,                            // Reset handler
+    // Cortex-M System Exceptions
+    reinterpret_cast<void (*)()>(&_estack),  // 0: Initial stack pointer
+    Reset_Handler,                            // 1: Reset handler
 '''
 
-    # Add all interrupt handlers
+    # Add system exception entries
+    for idx, handler in enumerate(system_exceptions, start=2):
+        if handler:
+            content += f"    {handler},  // {idx}: {handler.replace('_Handler', '')}\n"
+        else:
+            content += f"    nullptr,  // {idx}: Reserved\n"
+
+    content += '\n    // Peripheral Interrupts\n'
+
+    # Add peripheral interrupt handlers
     content += '\n'.join(vector_table)
     content += '\n};\n'
 
@@ -424,7 +481,7 @@ def generate_peripherals_hpp(device_info: Dict, output_path: Path, namespace: st
     for periph in peripherals:
         name = periph['name']
         base = periph['base']
-        desc = periph['description']
+        desc = periph['description'].replace('\n', ' ').strip()  # Remove newlines
         # Format: constexpr uintptr_t NAME = 0xADDRESS;  // Description
         peripheral_defs.append(f"constexpr uintptr_t {name} = 0x{base:08X};  // {desc}")
 

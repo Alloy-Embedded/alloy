@@ -1,0 +1,250 @@
+{
+  "family": "stm32g0",
+  "mcu": "stm32g0b1",
+  "vendor": "st",
+  "peripheral_name": "SPI",
+  "description": "Serial Peripheral Interface",
+  "register_type": "SPI1_Registers",
+  "register_namespace": "spi1",
+  "register_include": "hal/vendors/st/stm32g0/registers/spi1_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32g0/bitfields/spi1_bitfields.hpp",
+  "platform_namespace": "alloy::hal::st::stm32g0",
+  "vendor_namespace": "alloy::hal::st::stm32g0",
+
+  "features": {
+    "master_mode": true,
+    "slave_mode": true,
+    "full_duplex": true,
+    "half_duplex": true,
+    "dma_support": true,
+    "crc": true,
+    "ti_mode": false,
+    "i2s_mode": false
+  },
+
+  "spi_bases": {
+    "SPI1": "0x40013000",
+    "SPI2": "0x40003800"
+  },
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "Peripheral base address"
+    },
+    {
+      "name": "PERIPH_CLOCK_HZ",
+      "type": "uint32_t",
+      "description": "Peripheral clock frequency in Hz"
+    }
+  ],
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for SPI on STM32G0",
+    "peripheral_clock_hz": 64000000,
+    "mock_hook_prefix": "ALLOY_SPI_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "enable_spi": {
+      "description": "Enable SPI peripheral",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR1 |= (1U << 6);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_SPE",
+      "notes": "SPE bit in CR1"
+    },
+
+    "disable_spi": {
+      "description": "Disable SPI peripheral",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR1 &= ~(1U << 6);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_SPE"
+    },
+
+    "set_master_mode": {
+      "description": "Configure as SPI master",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR1 |= (1U << 2);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_MSTR",
+      "notes": "MSTR bit in CR1"
+    },
+
+    "set_slave_mode": {
+      "description": "Configure as SPI slave",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR1 &= ~(1U << 2);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_MSTR"
+    },
+
+    "set_clock_polarity_low": {
+      "description": "Set clock polarity to low when idle",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR1 &= ~(1U << 1);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_CPOL",
+      "notes": "CPOL=0"
+    },
+
+    "set_clock_polarity_high": {
+      "description": "Set clock polarity to high when idle",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR1 |= (1U << 1);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_CPOL",
+      "notes": "CPOL=1"
+    },
+
+    "set_clock_phase_first_edge": {
+      "description": "Data captured on first clock edge",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR1 &= ~(1U << 0);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_CPHA",
+      "notes": "CPHA=0"
+    },
+
+    "set_clock_phase_second_edge": {
+      "description": "Data captured on second clock edge",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR1 |= (1U << 0);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_CPHA",
+      "notes": "CPHA=1"
+    },
+
+    "set_baud_rate_prescaler": {
+      "description": "Set baud rate prescaler (0=/2, 1=/4, 2=/8, ..., 7=/256)",
+      "parameters": [
+        {"name": "prescaler", "type": "uint8_t", "description": "Prescaler value (0-7)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->SPI_CR1 = (hw()->SPI_CR1 & ~(0x7U << 3)) | ((prescaler & 0x7U) << 3);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_BR",
+      "notes": "BR[2:0] bits in CR1"
+    },
+
+    "set_data_size_8bit": {
+      "description": "Set data frame format to 8 bits",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR2 &= ~(0xFU << 8);\\nhw()->SPI_CR2 |= (0x7U << 8);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_DS",
+      "notes": "DS=0111 (8-bit)"
+    },
+
+    "set_data_size_16bit": {
+      "description": "Set data frame format to 16 bits",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR2 &= ~(0xFU << 8);\\nhw()->SPI_CR2 |= (0xFU << 8);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_DS",
+      "notes": "DS=1111 (16-bit)"
+    },
+
+    "set_msb_first": {
+      "description": "Transmit MSB first",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR1 &= ~(1U << 7);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_LSBFIRST",
+      "notes": "LSBFIRST=0"
+    },
+
+    "set_lsb_first": {
+      "description": "Transmit LSB first",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR1 |= (1U << 7);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_LSBFIRST",
+      "notes": "LSBFIRST=1"
+    },
+
+    "write_data": {
+      "description": "Write data to SPI data register",
+      "parameters": [
+        {"name": "data", "type": "uint16_t", "description": "Data to transmit"}
+      ],
+      "return_type": "void",
+      "code": "hw()->SPI_DR = data;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_DR"
+    },
+
+    "read_data": {
+      "description": "Read data from SPI data register",
+      "parameters": [],
+      "return_type": "uint16_t",
+      "code": "return hw()->SPI_DR;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_DR"
+    },
+
+    "is_tx_buffer_empty": {
+      "description": "Check if transmit buffer is empty",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->SPI_SR & (1U << 1)) != 0;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_TXE",
+      "notes": "TXE bit in SR"
+    },
+
+    "is_rx_buffer_not_empty": {
+      "description": "Check if receive buffer has data",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->SPI_SR & (1U << 0)) != 0;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_RXNE",
+      "notes": "RXNE bit in SR"
+    },
+
+    "is_busy": {
+      "description": "Check if SPI is busy transmitting/receiving",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->SPI_SR & (1U << 7)) != 0;",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_BSY",
+      "notes": "BSY bit in SR"
+    },
+
+    "enable_rx_dma": {
+      "description": "Enable DMA for reception",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR2 |= (1U << 0);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_RXDMAEN",
+      "notes": "RXDMAEN bit in CR2"
+    },
+
+    "enable_tx_dma": {
+      "description": "Enable DMA for transmission",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR2 |= (1U << 1);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_TXDMAEN",
+      "notes": "TXDMAEN bit in CR2"
+    },
+
+    "disable_rx_dma": {
+      "description": "Disable DMA for reception",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR2 &= ~(1U << 0);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_RXDMAEN"
+    },
+
+    "disable_tx_dma": {
+      "description": "Disable DMA for transmission",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->SPI_CR2 &= ~(1U << 1);",
+      "test_hook": "ALLOY_SPI_TEST_HOOK_TXDMAEN"
+    }
+  }
+}

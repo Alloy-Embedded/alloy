@@ -1,0 +1,203 @@
+{
+  "family": "stm32g0",
+  "mcu": "stm32g0b1",
+  "vendor": "st",
+  "peripheral_name": "ADC",
+  "description": "Analog-to-Digital Converter",
+  "register_type": "ADC_Registers",
+  "register_namespace": "adc",
+  "register_include": "hal/vendors/st/stm32g0/registers/adc_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32g0/bitfields/adc_bitfields.hpp",
+  "platform_namespace": "alloy::hal::st::stm32g0",
+  "vendor_namespace": "alloy::hal::st::stm32g0",
+
+  "features": {
+    "resolution_12bit": true,
+    "resolution_10bit": true,
+    "resolution_8bit": true,
+    "resolution_6bit": true,
+    "dma_support": true,
+    "oversampling": true,
+    "temperature_sensor": true,
+    "vrefint": true
+  },
+
+  "adc_bases": {
+    "ADC": "0x40012400"
+  },
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "Peripheral base address"
+    },
+    {
+      "name": "PERIPH_CLOCK_HZ",
+      "type": "uint32_t",
+      "description": "Peripheral clock frequency in Hz"
+    }
+  ],
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for ADC on STM32G0",
+    "peripheral_clock_hz": 64000000,
+    "mock_hook_prefix": "ALLOY_ADC_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "enable_adc": {
+      "description": "Enable ADC",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_CR |= (1U << 0);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_ADEN",
+      "notes": "ADEN bit in CR"
+    },
+
+    "disable_adc": {
+      "description": "Disable ADC",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_CR |= (1U << 1);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_ADDIS",
+      "notes": "ADDIS bit in CR"
+    },
+
+    "start_conversion": {
+      "description": "Start ADC conversion",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_CR |= (1U << 2);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_ADSTART",
+      "notes": "ADSTART bit in CR"
+    },
+
+    "stop_conversion": {
+      "description": "Stop ADC conversion",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_CR |= (1U << 4);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_ADSTP",
+      "notes": "ADSTP bit in CR"
+    },
+
+    "calibrate": {
+      "description": "Start ADC calibration",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_CR |= (1U << 31);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_ADCAL",
+      "notes": "ADCAL bit in CR"
+    },
+
+    "set_resolution_12bit": {
+      "description": "Set 12-bit resolution",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_CFGR1 &= ~(0x3U << 3);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_RES",
+      "notes": "RES=00 (12-bit)"
+    },
+
+    "set_resolution_10bit": {
+      "description": "Set 10-bit resolution",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_CFGR1 = (hw()->ADC_CFGR1 & ~(0x3U << 3)) | (0x1U << 3);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_RES",
+      "notes": "RES=01 (10-bit)"
+    },
+
+    "set_resolution_8bit": {
+      "description": "Set 8-bit resolution",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_CFGR1 = (hw()->ADC_CFGR1 & ~(0x3U << 3)) | (0x2U << 3);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_RES",
+      "notes": "RES=10 (8-bit)"
+    },
+
+    "set_continuous_mode": {
+      "description": "Enable continuous conversion mode",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_CFGR1 |= (1U << 13);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_CONT",
+      "notes": "CONT bit in CFGR1"
+    },
+
+    "set_single_mode": {
+      "description": "Enable single conversion mode",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_CFGR1 &= ~(1U << 13);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_CONT"
+    },
+
+    "select_channel": {
+      "description": "Select ADC channel",
+      "parameters": [
+        {"name": "channel", "type": "uint8_t", "description": "Channel number (0-18)"}
+      ],
+      "return_type": "void",
+      "code": "hw()->ADC_CHSELR = (1U << channel);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_CHSEL"
+    },
+
+    "read_data": {
+      "description": "Read conversion result",
+      "parameters": [],
+      "return_type": "uint16_t",
+      "code": "return static_cast<uint16_t>(hw()->ADC_DR & 0xFFFF);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_DR"
+    },
+
+    "is_conversion_complete": {
+      "description": "Check if conversion is complete",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->ADC_ISR & (1U << 2)) != 0;",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_EOC",
+      "notes": "EOC bit in ISR"
+    },
+
+    "is_ready": {
+      "description": "Check if ADC is ready",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->ADC_ISR & (1U << 0)) != 0;",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_ADRDY",
+      "notes": "ADRDY bit in ISR"
+    },
+
+    "clear_ready_flag": {
+      "description": "Clear ADC ready flag",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_ISR = (1U << 0);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_ADRDY"
+    },
+
+    "enable_dma": {
+      "description": "Enable DMA mode",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_CFGR1 |= (1U << 0);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_DMAEN",
+      "notes": "DMAEN bit in CFGR1"
+    },
+
+    "disable_dma": {
+      "description": "Disable DMA mode",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->ADC_CFGR1 &= ~(1U << 0);",
+      "test_hook": "ALLOY_ADC_TEST_HOOK_DMAEN"
+    }
+  }
+}
