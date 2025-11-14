@@ -1,30 +1,38 @@
 /**
  * @file board.cpp
- * @brief SAME70 Xplained Ultra - Board Implementation
+ * @brief SAME70 Xplained Ultra Board Implementation
  *
- * Implements the standard board interface for SAME70 Xplained Ultra.
- * Uses HAL abstractions for clock and peripheral management.
+ * Implements hardware initialization and support for the SAME70 Xplained Ultra
+ * development board. This file provides the concrete implementation of the
+ * board interface defined in board.hpp.
  */
 
 #include "board.hpp"
 #include "hal/vendors/arm/cortex_m7/init_hooks.hpp"
+#include "hal/api/clock_simple.hpp"
+#include "hal/api/systick_simple.hpp"
+#include "hal/api/watchdog_simple.hpp"
 #include "hal/platform/same70/clock.hpp"
 #include "hal/platform/same70/interrupt.hpp"
-#include "hal/vendors/atmel/same70/systick_hardware_policy.hpp"
+#include "hal/platform/same70/systick_platform.hpp"
+#include "hal/vendors/atmel/same70/watchdog_hardware_policy.hpp"
+#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 #include <cstdint>
 
 using namespace alloy::hal::same70;
+using namespace alloy::generated::atsame70q21b;
+using namespace alloy::hal;
 
 namespace board {
 
 // =============================================================================
-// System State
+// Internal State
 // =============================================================================
 
-/// Global tick counter in microseconds (incremented by SysTick_Handler every 1000us)
-volatile uint64_t system_tick_us = 0;
+// SysTick instance for timing (12 MHz clock)
+using BoardSysTick = SysTick<12000000>;
 
-/// Initialization flag to prevent double-init
+// Initialization flag to prevent double-init
 static bool board_initialized = false;
 
 
@@ -34,63 +42,38 @@ static bool board_initialized = false;
 
 void init() {
     if (board_initialized) {
-        return;  // Already initialized
+        return;
     }
 
-    // CRITICAL: Disable BOTH Watchdog Timers first!
-    // SAME70 has TWO watchdogs that must BOTH be disabled:
-    //
-    // 1. WDT (Watchdog Timer) at 0x400E1800
-    //    - WDT_MR at offset 0x54 = 0x400E1854
-    //    - Set bit 15 (WDDIS) to disable
-    //
-    // 2. RSWDT (Reinforced Secure Watchdog Timer) at 0x400E1900
-    //    - RSWDT_MR at offset 0x04 = 0x400E1904
-    //    - Set bit 15 (WDDIS) to disable
-    //    - CRITICAL: Bits [11:0] MUST be set to 0xFFF (ALLONES field)
-    //    - This is a SAME70-specific requirement per datasheet
-    //
-    // Both watchdogs are enabled by default and will reset the system!
+    // Step 1: Disable watchdog timers
+    // SAME70 has two independent watchdogs that must both be disabled for development
+    using WDT_Policy = atmel::same70::Same70WatchdogHardwarePolicy<peripherals::WDT>;
+    using RSWDT_Policy = atmel::same70::Same70WatchdogHardwarePolicy<peripherals::RSWDT>;
+    Watchdog::disable<WDT_Policy>();
+    Watchdog::disable<RSWDT_Policy>();
 
-    // Disable WDT (standard watchdog)
-    volatile uint32_t* WDT_MR = (volatile uint32_t*)0x400E1854;
-    *WDT_MR = (1 << 15);  // WDDIS bit
-
-    // Disable RSWDT (reinforced secure watchdog)
-    // Value: 0x8FFF = bit 15 (WDDIS) + bits [11:0] (ALLONES = 0xFFF)
-    volatile uint32_t* RSWDT_MR = (volatile uint32_t*)0x400E1904;
-    *RSWDT_MR = 0x00008FFF;  // WDDIS=1, ALLONES=0xFFF
-
-    // Configure system clock to 12MHz using internal RC oscillator
-    // NOTE: PLL configuration is currently not working (see docs/KNOWN_ISSUES.md)
-    // Using 12MHz RC oscillator without PLL as a stable configuration
-    auto clock_result = Clock::initialize(CLOCK_CONFIG_12MHZ_RC);
-
-    uint32_t cpu_freq = 12000000;  // 12 MHz
-
+    // Step 2: Configure system clock
+    // Using 12 MHz internal RC oscillator (safe default)
+    auto clock_result = SystemClock::use_safe_default<Clock>();
     if (!clock_result.is_ok()) {
-        // Clock initialization failed - this should not happen with RC oscillator
-        // System will run at default 12MHz RC (same frequency, but not configured through HAL)
+        // Clock initialization failed - system will continue at default frequency
     }
 
-    // Enable peripheral clocks for GPIO ports using Clock abstraction
-    Clock::enablePeripheralClock(10);  // PIOA
-    Clock::enablePeripheralClock(11);  // PIOB
-    Clock::enablePeripheralClock(12);  // PIOC
-    Clock::enablePeripheralClock(13);  // PIOD
-    Clock::enablePeripheralClock(14);  // PIOE
+    // Step 3: Enable GPIO peripheral clocks
+    // PIOA-PIOE correspond to peripheral IDs 10-14
+    const u8 gpio_peripherals[] = {10, 11, 12, 13, 14};
+    SystemClock::enable_peripherals<Clock>(gpio_peripherals, 5);
 
-    // Configure SysTick for 1ms ticks at 12MHz
-    using SysTickPolicy = Same70SysTickHardwarePolicy<0xE000E010, 12000000>;
-    SysTickPolicy::configure_ms(1);
+    // Step 4: Initialize SysTick timer (1ms period)
+    SysTickTimer::init_ms<BoardSysTick>(1);
 
-    // Initialize LED GPIO
+    // Step 5: Initialize board peripherals
     led::init();
 
-    // Enable global interrupts using interrupt controller abstraction
+    // Step 6: Enable interrupts
     Nvic::enable_global();
 
-    // Call late initialization hook (for application-specific setup)
+    // Step 7: Call platform-specific late initialization hook
     alloy::hal::arm::late_init();
 
     board_initialized = true;
@@ -103,16 +86,13 @@ void init() {
 // =============================================================================
 
 /**
- * @brief SysTick interrupt handler
+ * @brief SysTick timer interrupt handler
  *
- * Called every 1ms to increment system tick counter by 1000 µs.
- * This handler overrides the weak default in startup.cpp.
+ * Called automatically every 1ms by the SysTick timer.
+ * Updates the system time counter used by timing functions.
+ *
+ * @note This overrides the weak default handler in startup code.
  */
 extern "C" void SysTick_Handler() {
-    // Reading CTRL register clears the COUNTFLAG
-    volatile uint32_t ctrl = *reinterpret_cast<volatile uint32_t*>(0xE000E010);
-    (void)ctrl;
-
-    // Increment by 1000 microseconds (1ms)
-    board::system_tick_us += 1000;
+    board::BoardSysTick::increment_tick();
 }

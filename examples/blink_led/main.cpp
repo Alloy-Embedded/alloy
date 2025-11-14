@@ -1,46 +1,54 @@
 /**
  * @file main.cpp
- * @brief Blink LED Example for SAME70 Xplained Ultra
+ * @brief LED Blink Example
  *
- * This example demonstrates the use of CoreZero HAL abstractions:
- * - Board initialization (clock, SysTick, peripherals)
- * - GPIO configuration using platform-specific GpioPin template
- * - SysTick-based millisecond delays
+ * Demonstrates basic board initialization and LED control using the CoreZero HAL.
  *
- * @section hardware Hardware Setup
- * - Board: SAME70 Xplained Ultra
- * - LED: Green LED on PC8 (PIOC pin 8) - Active LOW
- * - Clock: 12 MHz internal RC oscillator (PLL not available - see docs/KNOWN_ISSUES.md)
+ * ## What This Example Shows
  *
- * @section behavior Expected Behavior
- * The LED blinks with 500ms ON / 500ms OFF period (1 Hz frequency).
+ * - Board initialization with `board::init()`
+ * - LED control using `board::led` API
+ * - Delays using `SysTickTimer` API
+ * - Clean, portable code structure
  *
- * @note This example uses the SAME70 platform-specific GPIO API.
- *       For portable code across multiple platforms, use the hal::interface APIs.
+ * ## Hardware Requirements
+ *
+ * - **Board:** SAME70 Xplained Ultra
+ * - **LED:** Onboard green LED (PC8)
+ * - **Power:** USB or external 5V
+ *
+ * ## Expected Behavior
+ *
+ * The green LED blinks with a 500ms ON / 500ms OFF pattern (1 Hz).
+ *
+ * ## Code Structure
+ *
+ * The example demonstrates the layered HAL architecture:
+ * - Application code uses high-level board and timer APIs
+ * - Board layer handles hardware initialization
+ * - HAL APIs provide portable interfaces
+ * - Platform layer manages hardware-specific details
+ *
+ * @note To port this example to another board, simply change the board include
+ *       and update the board::init() call. The LED and timing APIs remain the same.
  */
 
 #include "same70_xplained/board.hpp"
-#include "hal/platform/same70/gpio.hpp"
-#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
+#include "hal/api/systick_simple.hpp"
 
-using namespace alloy::hal::same70;
-using namespace alloy::generated::atsame70q21b;
+using namespace alloy::hal;
 
 int main() {
-    // Initialize board hardware (clock, SysTick, interrupts, peripherals)
+    // Initialize all board hardware
     board::init();
 
-    // Create LED GPIO pin instance (PC8)
-    // Using platform-specific GpioPin template for compile-time peripheral configuration
-    GpioPin<peripherals::PIOC, 8> led;
-    led.setDirection(PinDirection::Output);
-
-    // Main loop: Blink LED at 1 Hz
+    // Blink LED forever
     while (true) {
-        led.clear();  // LED ON (active LOW)
-        board::delay_ms(500);
-        led.set();    // LED OFF
-        board::delay_ms(500);
+        board::led::on();
+        SysTickTimer::delay_ms<board::BoardSysTick>(500);
+
+        board::led::off();
+        SysTickTimer::delay_ms<board::BoardSysTick>(500);
     }
 
     return 0;
