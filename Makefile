@@ -580,3 +580,40 @@ nucleo-g071rb-clean: ## Clean Nucleo G071RB build directory
 
 nucleo-g071rb-rebuild: nucleo-g071rb-clean nucleo-g071rb-blink-build ## Clean and rebuild Nucleo G071RB
 
+
+# ==============================================================================
+# STM32 Nucleo-F401RE Board (STM32F4 Family - Cortex-M4F @ 84 MHz)
+# ==============================================================================
+
+NUCLEO_F401RE_BUILD_DIR := build-nucleo-f401re
+NUCLEO_F401RE_BLINK := blink
+
+nucleo-f401re-blink: nucleo-f401re-blink-flash ## 🎯 Build and flash universal blink LED for Nucleo G071RB
+
+nucleo-f401re-blink-build: ## Build blink example for Nucleo-F401RE
+	@echo "$(CYAN)🔨 Building blink for Nucleo-F401RE (STM32F401RET6 @ 84 MHz)...$(NC)"
+	@cmake -S . -B $(NUCLEO_F401RE_BUILD_DIR) \
+		-DALLOY_BOARD=nucleo_f401re \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
+		-GNinja
+	@cmake --build $(NUCLEO_F401RE_BUILD_DIR) --target $(NUCLEO_F401RE_BLINK)
+	@echo ""
+	@echo "$(GREEN)✅ Build complete! Binary ready:$(NC)"
+	@echo "  $(NUCLEO_F401RE_BUILD_DIR)/examples/blink/blink.elf"
+	@echo "  $(NUCLEO_F401RE_BUILD_DIR)/examples/blink/blink.hex"
+	@echo "  $(NUCLEO_F401RE_BUILD_DIR)/examples/blink/blink.bin"
+
+nucleo-f401re-blink-flash: nucleo-f401re-blink-build ## Flash blink to Nucleo-F401RE
+	@echo "$(CYAN)📡 Flashing Nucleo-F401RE via ST-Link...$(NC)"
+	@openocd -f interface/stlink.cfg -f target/stm32f4x.cfg \
+		-c "program $(NUCLEO_F401RE_BUILD_DIR)/examples/blink/blink.elf verify reset exit"
+	@echo "$(GREEN)✅ LED should now be blinking!$(NC)"
+
+nucleo-f401re-clean: ## Clean Nucleo-F401RE build directory
+	@echo "$(YELLOW)🧹 Cleaning Nucleo-F401RE build...$(NC)"
+	@rm -rf $(NUCLEO_F401RE_BUILD_DIR)
+	@echo "$(GREEN)✓ Clean complete$(NC)"
+
+nucleo-f401re-rebuild: nucleo-f401re-clean nucleo-f401re-blink-build ## Clean and rebuild Nucleo-F401RE
+

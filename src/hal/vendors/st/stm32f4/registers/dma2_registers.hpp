@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f4::dma2 {
 
 /// DMA2 Register Structure
 struct DMA2_Registers {
+
     /// low interrupt status register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -32,13 +33,13 @@ struct DMA2_Registers {
     /// low interrupt flag clear register
     /// Offset: 0x0008
     /// Reset value: 0x00000000
-    /// Access: read-write
+    /// Access: write-only
     volatile uint32_t LIFCR;
 
     /// high interrupt flag clear register
     /// Offset: 0x000C
     /// Reset value: 0x00000000
-    /// Access: read-write
+    /// Access: write-only
     volatile uint32_t HIFCR;
 
     /// stream x configuration register

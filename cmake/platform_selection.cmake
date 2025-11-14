@@ -32,8 +32,8 @@ set(ALLOY_SUPPORTED_PLATFORMS
     "linux"     # Linux/POSIX (for host-based testing)
     "esp32"     # Espressif ESP32 (Xtensa LX6 + ESP-IDF)
     "stm32g0"   # STMicroelectronics STM32G0 (ARM Cortex-M0+)
+    "stm32f4"   # STMicroelectronics STM32F4 (ARM Cortex-M4)
     # Future platforms:
-    # "stm32f4"   # STMicroelectronics STM32F4 (ARM Cortex-M4)
     # "stm32h7"   # STMicroelectronics STM32H7 (ARM Cortex-M7)
     # "nrf52"     # Nordic nRF52 (ARM Cortex-M4)
     # "esp32c3"   # Espressif ESP32-C3 (RISC-V)

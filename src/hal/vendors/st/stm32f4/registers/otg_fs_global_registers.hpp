@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f4::otg_fs_global {
 
 /// OTG_FS_GLOBAL Register Structure
 struct OTG_FS_GLOBAL_Registers {
+
     /// OTG_FS control and status register (OTG_FS_GOTGCTL)
     /// Offset: 0x0000
     /// Reset value: 0x00000800
@@ -65,7 +66,7 @@ struct OTG_FS_GLOBAL_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t FS_GRXSTSR_Host;
-    uint8_t RESERVED_0020[4];  ///< Reserved
+    uint8_t RESERVED_0020[4]; ///< Reserved
 
     /// OTG_FS Receive FIFO size register (OTG_FS_GRXFSIZ)
     /// Offset: 0x0024
@@ -90,7 +91,7 @@ struct OTG_FS_GLOBAL_Registers {
     /// Reset value: 0x00080200
     /// Access: read-only
     volatile uint32_t FS_GNPTXSTS;
-    uint8_t RESERVED_0030[8];  ///< Reserved
+    uint8_t RESERVED_0030[8]; ///< Reserved
 
     /// OTG_FS general core configuration register (OTG_FS_GCCFG)
     /// Offset: 0x0038
@@ -103,7 +104,7 @@ struct OTG_FS_GLOBAL_Registers {
     /// Reset value: 0x00001000
     /// Access: read-write
     volatile uint32_t FS_CID;
-    uint8_t RESERVED_0040[192];  ///< Reserved
+    uint8_t RESERVED_0040[192]; ///< Reserved
 
     /// OTG_FS Host periodic transmit FIFO size register (OTG_FS_HPTXFSIZ)
     /// Offset: 0x0100

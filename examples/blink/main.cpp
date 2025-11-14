@@ -17,6 +17,7 @@
  * - **same70_xplained:** SAME70 Xplained Ultra (green LED on PC8)
  * - **nucleo_g0b1re:** STM32 Nucleo-G0B1RE (green LED on PA5)
  * - **nucleo_g071rb:** STM32 Nucleo-G071RB (green LED on PA5)
+ * - **nucleo_f401re:** STM32 Nucleo-F401RE (green LED on PA5)
  *
  * ## Expected Behavior
  *
@@ -40,6 +41,8 @@
     #include "nucleo_g0b1re/board.hpp"
 #elif defined(ALLOY_BOARD_NUCLEO_G071RB)
     #include "nucleo_g071rb/board.hpp"
+#elif defined(ALLOY_BOARD_NUCLEO_F401RE)
+    #include "nucleo_f401re/board.hpp"
 #else
     #error "Unsupported board! Define ALLOY_BOARD_* in your build system."
 #endif

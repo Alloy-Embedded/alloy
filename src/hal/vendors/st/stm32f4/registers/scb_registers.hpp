@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f4::scb {
 
 /// SCB Register Structure
 struct SCB_Registers {
+
     /// CPUID base register
     /// Offset: 0x0000
     /// Reset value: 0x410FC241
@@ -88,7 +89,7 @@ struct SCB_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t HFSR;
-    uint8_t RESERVED_0030[4];  ///< Reserved
+    uint8_t RESERVED_0030[4]; ///< Reserved
 
     /// Memory management fault address register
     /// Offset: 0x0034

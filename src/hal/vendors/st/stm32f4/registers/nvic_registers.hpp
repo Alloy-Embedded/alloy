@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f4::nvic {
 
 /// NVIC Register Structure
 struct NVIC_Registers {
+
     /// Interrupt Set-Enable Register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -34,7 +35,7 @@ struct NVIC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ISER2;
-    uint8_t RESERVED_000C[116];  ///< Reserved
+    uint8_t RESERVED_000C[116]; ///< Reserved
 
     /// Interrupt Clear-Enable Register
     /// Offset: 0x0080
@@ -53,7 +54,7 @@ struct NVIC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ICER2;
-    uint8_t RESERVED_008C[116];  ///< Reserved
+    uint8_t RESERVED_008C[116]; ///< Reserved
 
     /// Interrupt Set-Pending Register
     /// Offset: 0x0100
@@ -72,7 +73,7 @@ struct NVIC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ISPR2;
-    uint8_t RESERVED_010C[116];  ///< Reserved
+    uint8_t RESERVED_010C[116]; ///< Reserved
 
     /// Interrupt Clear-Pending Register
     /// Offset: 0x0180
@@ -91,7 +92,7 @@ struct NVIC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ICPR2;
-    uint8_t RESERVED_018C[116];  ///< Reserved
+    uint8_t RESERVED_018C[116]; ///< Reserved
 
     /// Interrupt Active Bit Register
     /// Offset: 0x0200
@@ -110,7 +111,7 @@ struct NVIC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t IABR2;
-    uint8_t RESERVED_020C[244];  ///< Reserved
+    uint8_t RESERVED_020C[244]; ///< Reserved
 
     /// Interrupt Priority Register
     /// Offset: 0x0300

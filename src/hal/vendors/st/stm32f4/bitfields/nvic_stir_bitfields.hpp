@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::nvic_stir {
@@ -20,11 +19,11 @@ using namespace alloy::hal::bitfields;
 
 /// STIR - Software trigger interrupt register
 namespace stir {
-/// Software generated interrupt ID
-/// Position: 0, Width: 9
-using INTID = BitField<0, 9>;
-constexpr uint32_t INTID_Pos = 0;
-constexpr uint32_t INTID_Msk = INTID::mask;
+    /// Software generated interrupt ID
+    /// Position: 0, Width: 9
+    using INTID = BitField<0, 9>;
+    constexpr uint32_t INTID_Pos = 0;
+    constexpr uint32_t INTID_Msk = INTID::mask;
 
 }  // namespace stir
 
