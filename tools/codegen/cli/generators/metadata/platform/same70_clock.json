@@ -238,6 +238,18 @@
         "mck_source": "MasterClockSource::MainClock",
         "mck_prescaler": "MasterClockPrescaler::DIV_1"
       }
+    },
+    {
+      "name": "CLOCK_CONFIG_12MHZ_RC",
+      "description": "Workaround configuration: 12 MHz RC direct (no PLL) - Use until PLL issue is resolved",
+      "constexpr": true,
+      "fields": {
+        "main_source": "MainClockSource::InternalRC_12MHz",
+        "crystal_freq_hz": "0",
+        "plla": "{24, 1}",
+        "mck_source": "MasterClockSource::MainClock",
+        "mck_prescaler": "MasterClockPrescaler::DIV_1"
+      }
     }
   ],
 

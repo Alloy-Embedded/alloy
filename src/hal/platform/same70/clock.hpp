@@ -138,6 +138,11 @@ public:
     static constexpr uintptr_t PMC_BASE = alloy::generated::atsame70q21b::peripherals::PMC;  ///< PMC base address (using generated peripheral addresses)
     static constexpr uint32_t SLOW_CLOCK_FREQ = 32768;  ///< 32.768 kHz
 
+    // API Layer constants - defined after preset configurations
+    static const ClockConfig& CLOCK_CONFIG_SAFE_DEFAULT;
+    static const ClockConfig& CLOCK_CONFIG_HIGH_PERFORMANCE;
+    static const ClockConfig& CLOCK_CONFIG_MEDIUM_PERFORMANCE;
+
     /**
      * @brief Initialize system clocks\n\nConfigures main oscillator, PLLA, and master clock.\nThis should be called early in system initialization.
      *
@@ -440,5 +445,25 @@ constexpr ClockConfig CLOCK_CONFIG_12MHZ_CRYSTAL = {
     .mck_source = MasterClockSource::MainClock,
     .mck_prescaler = MasterClockPrescaler::DIV_1
 };
+
+/**
+ * @brief Workaround configuration: 12 MHz RC direct (no PLL) - Use until PLL issue is resolved
+ */
+constexpr ClockConfig CLOCK_CONFIG_12MHZ_RC = {
+    .main_source = MainClockSource::InternalRC_12MHz,
+    .crystal_freq_hz = 0,
+    .plla = {24, 1},
+    .mck_source = MasterClockSource::MainClock,
+    .mck_prescaler = MasterClockPrescaler::DIV_1
+};
+
+// ============================================================================
+// API Layer Constants (for hal::SystemClock compatibility)
+// ============================================================================
+
+// Define static member constants
+inline const ClockConfig& Clock::CLOCK_CONFIG_SAFE_DEFAULT = CLOCK_CONFIG_12MHZ_RC;
+inline const ClockConfig& Clock::CLOCK_CONFIG_HIGH_PERFORMANCE = CLOCK_CONFIG_150MHZ;
+inline const ClockConfig& Clock::CLOCK_CONFIG_MEDIUM_PERFORMANCE = CLOCK_CONFIG_120MHZ;
 
 } // namespace alloy::hal::same70
