@@ -46,6 +46,10 @@ enum class PeripheralId : u16 {
     USART2 = 2,
     USART3 = 3,
     UART0 = 5,
+    UART1 = 6,
+    UART2 = 7,
+    UART3 = 8,
+    UART4 = 9,
 
     // SPI
     SPI0 = 10,

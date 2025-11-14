@@ -334,6 +334,50 @@ struct SimpleUartConfigTxOnly {
 
         return Ok(); // Success
     }
+
+    /**
+     * @brief Write a single byte (blocking)
+     *
+     * Waits until the transmitter is ready, then sends the byte.
+     *
+     * @param byte Byte to transmit
+     */
+    void write_byte(u8 byte) const {
+        // Wait for transmitter ready
+        while (!HardwarePolicy::is_tx_ready()) {
+            // Busy wait
+        }
+        HardwarePolicy::write_byte(byte);
+    }
+
+    /**
+     * @brief Write a null-terminated string (blocking)
+     *
+     * @param str Null-terminated string to transmit
+     */
+    void write(const char* str) const {
+        if (str == nullptr) {
+            return;
+        }
+        while (*str) {
+            write_byte(static_cast<u8>(*str++));
+        }
+    }
+
+    /**
+     * @brief Write a buffer of bytes (blocking)
+     *
+     * @param data Pointer to data buffer
+     * @param size Number of bytes to transmit
+     */
+    void write(const u8* data, size_t size) const {
+        if (data == nullptr) {
+            return;
+        }
+        for (size_t i = 0; i < size; ++i) {
+            write_byte(data[i]);
+        }
+    }
 };
 
 }  // namespace alloy::hal

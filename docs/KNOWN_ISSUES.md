@@ -78,6 +78,97 @@ auto result = Clock::initialize(CLOCK_CONFIG_12MHZ_RC);
 
 ---
 
+### UART Output Not Working on SAME70 Xplained Ultra
+
+**Status:** Under Investigation
+**Affects:** UART Logger Example (`examples/uart_logger`)
+**Severity:** Medium
+
+**Description:**
+
+The UART logger example compiles and runs successfully (LED blink patterns work correctly), but no data is received on the host computer's serial terminal.
+
+**Configuration Tested:**
+
+- **Board:** SAME70 Xplained Ultra
+- **UART:** UART0 (PA10 TX, PA9 RX)
+- **Baud Rate:** 115200
+- **Format:** 8N1
+- **Port:** `/dev/tty.usbmodem31302` (macOS) via EDBG virtual COM port
+
+**Symptoms:**
+
+- ✅ Code compiles without errors
+- ✅ Flashes successfully to board
+- ✅ LED blink patterns indicate code is running
+- ✅ Board initialization completes
+- ✅ GPIO configuration executes
+- ✅ UART initialization returns success
+- ❌ No data received on serial terminal (screen, cu, pyserial)
+- ❌ TXRDY status bit behavior unclear
+
+**Possible Causes:**
+
+1. **Clock configuration issue**
+   - UART0 peripheral clock may not be enabled correctly
+   - Baud rate generator calculation may be incorrect for actual MCK frequency (12 MHz)
+   - CD = MCK / (16 * baudrate) = 12000000 / (16 * 115200) ≈ 6.51 (rounded to 7)
+
+2. **GPIO pin muxing**
+   - PA10 may not be correctly configured for UART0_TXD peripheral function
+   - Peripheral function select (A/B/C/D) may be incorrect
+
+3. **EDBG interface**
+   - EDBG firmware on board may require specific initialization
+   - Virtual COM port mapping may be different than expected
+
+4. **Hardware connection**
+   - USB cable may be power-only (unlikely, as EDBG is detected)
+   - EDBG may route to different UART peripheral (UART1 instead of UART0?)
+
+**Reference Implementation:**
+
+The LUG project (`/Users/lgili/Documents/01 - Codes/01 - Github/lug/lugpe-mcal-arm-f292a8612044/`) successfully uses UART on SAME70 with:
+- UART0 with PA9 (RX) and PA10 (TX)
+- Peripheral function A
+- 300 MHz system clock (MCK = 150 MHz)
+- Similar configuration approach
+
+**Next Investigation Steps:**
+
+1. [ ] Verify actual MCK frequency using debugger
+2. [ ] Check UART0 peripheral clock enable register (PMC_PCSR0)
+3. [ ] Verify GPIO peripheral function selection registers (PIO_ABCDSR)
+4. [ ] Test with different baud rates (9600, 19200, 38400)
+5. [ ] Use logic analyzer to verify signal on PA10 pin
+6. [ ] Check EDBG firmware version and documentation
+7. [ ] Try UART1 instead of UART0 (PB4 for TX)
+8. [ ] Compare register values with working LUG implementation using debugger
+9. [ ] Increase MCK to 150 MHz to match LUG implementation (once PLL issue is resolved)
+
+**Workarounds:**
+
+None available at this time. For UART logging on SAME70, consider:
+- Using a JTAG debugger with semihosting
+- Using an external USB-UART adapter connected to different pins
+- Implementing logging via SWO (Serial Wire Output)
+
+**Files Involved:**
+
+- `examples/uart_logger/main.cpp`
+- `src/hal/vendors/atmel/same70/uart_hardware_policy.hpp`
+- `src/hal/api/uart_simple.hpp`
+- `src/logger/sinks/uart_sink.hpp`
+- `scripts/uart_monitor.py`
+
+**Related Documentation:**
+
+- SAME70 Datasheet: Section on UART and GPIO pin functions
+- SAME70 Xplained Ultra User Guide: EDBG virtual COM port section
+- LUG Project: `lib/board/same70_xplained/v1.0.0/config/same70_xplained/v1.0.0/config.hpp`
+
+---
+
 ## ✅ Completed Issues
 
 ### 1. Clock Configuration Generator - RESOLVED
@@ -221,6 +312,7 @@ static void disable_global() noexcept {
 | Issue | Severity | Status | Impact |
 |-------|----------|--------|--------|
 | PLL Not Locking | **CRITICAL** | Under Investigation | Cannot use high-speed clocks (>12 MHz) |
+| UART Output Not Working | Medium | Under Investigation | Cannot use UART for logging/debugging |
 
 ### ✅ Completed Issues
 
