@@ -207,7 +207,7 @@ quick: ## Quick build (no clean, no configure)
 
 ##@ Embedded Examples - Universal Blink
 
-.PHONY: blink-same70 blink-stm32g0 blink-all clean-embedded
+.PHONY: blink-same70 blink-g0b1re blink-g071rb blink-stm32g0 blink-all clean-embedded
 
 # xPack ARM GCC toolchain paths
 XPACK_ARM_BASE := $(HOME)/.local/xpack-arm-toolchain
@@ -294,11 +294,15 @@ same70-rebuild: same70-clean same70-blink-build ## Clean and rebuild SAME70
 # Unified blink targets
 blink-same70: same70-blink ## Alias for same70-blink
 
-blink-stm32g0: nucleo-g0b1re-blink ## Alias for nucleo-g0b1re-blink
+blink-g0b1re: nucleo-g0b1re-blink ## Alias for nucleo-g0b1re-blink
 
-blink-all: blink-same70 blink-stm32g0 ## Build and flash blink for both boards
+blink-g071rb: nucleo-g071rb-blink ## Alias for nucleo-g071rb-blink
 
-clean-embedded: same70-clean nucleo-g0b1re-clean ## Clean all embedded builds
+blink-stm32g0: blink-g0b1re blink-g071rb ## Build and flash blink for all STM32G0 boards
+
+blink-all: blink-same70 blink-stm32g0 ## Build and flash blink for all boards
+
+clean-embedded: same70-clean nucleo-g0b1re-clean nucleo-g071rb-clean ## Clean all embedded builds
 
 ##@ SAME70 Examples - UART Logger
 
@@ -487,4 +491,92 @@ nucleo-g0b1re-clean: ## Clean Nucleo G0B1RE build directory
 	@echo "$(GREEN)✓ Clean complete$(NC)"
 
 nucleo-g0b1re-rebuild: nucleo-g0b1re-clean nucleo-g0b1re-blink-build ## Clean and rebuild Nucleo G0B1RE
+
+##@ STM32 Nucleo G071RB Examples - Universal Blink
+
+.PHONY: nucleo-g071rb-blink nucleo-g071rb-blink-build nucleo-g071rb-blink-flash nucleo-g071rb-blink-run
+
+NUCLEO_G071RB_BUILD_DIR := build-nucleo-g071rb
+NUCLEO_G071RB_BLINK := blink
+
+nucleo-g071rb-blink: nucleo-g071rb-blink-flash ## 🎯 Build and flash universal blink LED for Nucleo G071RB
+
+nucleo-g071rb-blink-build: ## Build blink LED example for Nucleo G071RB
+	@echo "$(BLUE)========================================$(NC)"
+	@echo "$(BLUE)Building Blink LED Example - Nucleo G071RB$(NC)"
+	@echo "$(BLUE)========================================$(NC)"
+	@echo ""
+	@echo "$(CYAN)Checking ARM toolchain...$(NC)"
+	@if [ ! -f "$(ARM_TOOLCHAIN)/arm-none-eabi-gcc" ]; then \
+		echo "$(RED)✗ ARM toolchain not found at $(ARM_TOOLCHAIN)$(NC)"; \
+		echo "$(YELLOW)  Run: ./scripts/install-xpack-toolchain.sh$(NC)"; \
+		exit 1; \
+	fi
+	@echo "$(GREEN)✓ ARM GCC found: $$($(ARM_TOOLCHAIN)/arm-none-eabi-gcc --version | head -1)$(NC)"
+	@echo ""
+	@echo "$(CYAN)Configuring CMake for Nucleo G071RB...$(NC)"
+	@PATH="$(ARM_TOOLCHAIN):$$PATH" cmake -B $(NUCLEO_G071RB_BUILD_DIR) -S . \
+		-G Ninja \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DALLOY_BOARD=nucleo_g071rb \
+		-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
+		-DLINKER_SCRIPT="$(PWD)/boards/nucleo_g071rb/STM32G071RBT6.ld" \
+		-DSTARTUP_SOURCE="$(PWD)/src/hal/vendors/st/stm32g0/stm32g0b1/startup.cpp" \
+		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+	@echo ""
+	@echo "$(CYAN)Building $(NUCLEO_G071RB_BLINK)...$(NC)"
+	@PATH="$(ARM_TOOLCHAIN):$$PATH" cmake --build $(NUCLEO_G071RB_BUILD_DIR) --target $(NUCLEO_G071RB_BLINK) -j$(JOBS)
+	@echo ""
+	@echo "$(GREEN)✨ Build complete!$(NC)"
+	@echo ""
+	@echo "$(CYAN)Output files:$(NC)"
+	@ls -lh $(NUCLEO_G071RB_BUILD_DIR)/examples/$(NUCLEO_G071RB_BLINK)/$(NUCLEO_G071RB_BLINK).{elf,hex,bin} 2>/dev/null || \
+		ls -lh $(NUCLEO_G071RB_BUILD_DIR)/examples/$(NUCLEO_G071RB_BLINK)/$(NUCLEO_G071RB_BLINK) 2>/dev/null || true
+	@echo ""
+	@echo "$(CYAN)Memory usage:$(NC)"
+	@$(ARM_TOOLCHAIN)/arm-none-eabi-size $(NUCLEO_G071RB_BUILD_DIR)/examples/$(NUCLEO_G071RB_BLINK)/$(NUCLEO_G071RB_BLINK) 2>/dev/null || true
+	@echo ""
+	@echo "$(GREEN)✅ Build successful!$(NC)"
+
+nucleo-g071rb-blink-flash: nucleo-g071rb-blink-build ## Flash blink LED to Nucleo G071RB
+	@echo ""
+	@echo "$(BLUE)========================================$(NC)"
+	@echo "$(BLUE)Flashing Blink LED Example$(NC)"
+	@echo "$(BLUE)========================================$(NC)"
+	@echo ""
+	@if ! command -v st-flash >/dev/null 2>&1; then \
+		echo "$(RED)✗ st-flash not found$(NC)"; \
+		echo "$(YELLOW)  Install stlink tools:$(NC)"; \
+		echo "$(YELLOW)    macOS: brew install stlink$(NC)"; \
+		echo "$(YELLOW)    Linux: sudo apt install stlink-tools$(NC)"; \
+		exit 1; \
+	fi
+	@echo "$(CYAN)Connecting to STM32 Nucleo G071RB...$(NC)"
+	@st-flash write $(NUCLEO_G071RB_BUILD_DIR)/examples/$(NUCLEO_G071RB_BLINK)/$(NUCLEO_G071RB_BLINK).bin 0x08000000 && \
+		echo "" && \
+		echo "$(GREEN)✅ Flash complete!$(NC)" && \
+		echo "" && \
+		echo "$(CYAN)Expected behavior:$(NC)" && \
+		echo "  - Green LED (LD4/PA5) blinks at 1 Hz (500ms ON, 500ms OFF)" && \
+		echo "  - User button (B1/PC13) can be used for future examples" || \
+		(echo "" && echo "$(RED)✗ Flash failed!$(NC)" && \
+		echo "$(YELLOW)Troubleshooting:$(NC)" && \
+		echo "  1. Check USB connection (ST-Link)" && \
+		echo "  2. Verify board is powered on" && \
+		echo "  3. Try pressing RESET button" && exit 1)
+
+nucleo-g071rb-blink-run: nucleo-g071rb-blink-flash ## 🚀 Flash and verify LED blinks
+	@echo ""
+	@echo "$(GREEN)✅ LED should now be blinking!$(NC)"
+	@echo "$(CYAN)If LED is not blinking, check:$(NC)"
+	@echo "  - Board power LED is on"
+	@echo "  - USB cable is properly connected"
+	@echo "  - Press RESET button on the board"
+
+nucleo-g071rb-clean: ## Clean Nucleo G071RB build directory
+	@echo "$(YELLOW)🧹 Cleaning Nucleo G071RB build...$(NC)"
+	@rm -rf $(NUCLEO_G071RB_BUILD_DIR)
+	@echo "$(GREEN)✓ Clean complete$(NC)"
+
+nucleo-g071rb-rebuild: nucleo-g071rb-clean nucleo-g071rb-blink-build ## Clean and rebuild Nucleo G071RB
 
