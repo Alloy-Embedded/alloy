@@ -112,14 +112,29 @@ int main() {
 
 ## ✨ Features
 
-- **🚀 Modern C++20**: Leverages Concepts, Ranges, and compile-time programming
-- **🔧 Zero Vendor Lock-in**: Pure CMake, no custom build tools
-- **⚡ Zero Overhead**: Compile-time configuration, no runtime penalties
+### Modern C++20 Design
+- **🔍 Concepts**: Type-safe interfaces with compile-time validation
+- **🚀 Zero Overhead**: Template-based, fully inlined, single-instruction operations
+- **🛡️ Type Safety**: Strong typing prevents configuration errors at compile-time
+- **⚡ Compile-time Evaluation**: All configuration resolved at compile-time
+
+### Architecture
+- **🏗️ 5-Layer Architecture**: Generated Register → Hardware Policy → Platform → Board → Application
+- **📐 Policy-Based Design**: Hardware policies provide zero-overhead abstractions
+- **🔌 Interface Validation**: C++20 concepts ensure API compliance across platforms
+- **📊 Automatic Code Generation**: Register and bitfield definitions from CMSIS-SVD files
+
+### Developer Experience
+- **🔧 Pure CMake**: No custom build tools, perfect IDE integration
 - **🧪 Testable by Design**: Mock HAL for unit tests on host
+- **📚 Comprehensive Documentation**: Architecture, porting guides, and tutorials
+- **🌍 Consistent APIs**: Same interface across STM32F4, STM32F7, STM32G0, SAME70
+
+### Embedded-Optimized
 - **🎯 Bare-Metal First**: No RTOS dependencies (RTOS support planned)
-- **📦 No Dynamic Allocation**: Everything static or stack-based in HAL
-- **🌍 Cross-Platform**: Consistent API across different MCUs
-- **🤖 Auto Code Generation**: Startup code and peripherals generated from SVD files
+- **📦 No Dynamic Allocation**: Everything static or stack-based
+- **⚙️ Direct Register Access**: Thin abstraction over hardware
+- **🔄 Result<T,E>**: Rust-style error handling without exceptions
 
 ---
 
@@ -317,15 +332,22 @@ bash scripts/validate_clang_tidy.sh
 
 ### Currently Supported MCUs
 
-Alloy now supports **5 different MCU families** across 3 architectures with complete clock configuration, GPIO control, and blink examples:
+Alloy now supports **4 STM32 families + 1 Atmel SAME70** with **standardized APIs** validated by C++20 concepts:
 
-| MCU/Board | Core | Max Freq | Flash | RAM | Supported Peripherals | Status |
-|-----------|------|----------|-------|-----|----------------------|--------|
-| **STM32F103C8** (Blue Pill) | ARM Cortex-M3 | 72 MHz | 64KB | 20KB | Clock, GPIO | ✅ Complete |
-| **ESP32** (DevKit) | Xtensa LX6 Dual | 240 MHz | 4MB | 320KB | Clock, GPIO | ✅ Complete |
-| **STM32F407VG** (Discovery) | ARM Cortex-M4F | 168 MHz | 1MB | 192KB (128KB+64KB CCM) | Clock, GPIO, FPU | ✅ Complete |
-| **ATSAMD21G18** (Arduino Zero) | ARM Cortex-M0+ | 48 MHz | 256KB | 32KB | Clock, GPIO, DFLL48M | ✅ Complete |
-| **RP2040** (Raspberry Pi Pico) | ARM Cortex-M0+ Dual | 133 MHz | 2MB | 264KB | Clock, GPIO, SIO, XIP | ✅ Complete |
+| Platform | Core | Freq | Flash | RAM | API Validation | Status |
+|----------|------|------|-------|-----|----------------|--------|
+| **STM32F4** | Cortex-M4F | 168 MHz | 1MB | 192KB | ✅ ClockPlatform<br>✅ GpioPin | ✅ Phase 6 |
+| **STM32F7** | Cortex-M7 | 216 MHz | 1MB | 512KB | ✅ ClockPlatform<br>✅ GpioPin | ✅ Phase 6 |
+| **STM32G0** | Cortex-M0+ | 64 MHz | 512KB | 144KB | ✅ ClockPlatform<br>✅ GpioPin | ✅ Phase 6 |
+| **SAME70** | Cortex-M7 | 300 MHz | 2MB | 384KB | 🔄 In Progress | 🔄 Planned |
+
+### Phase 6 Achievement: API Standardization
+
+All STM32 platforms now have:
+- **Consistent APIs**: Same interface across STM32F4, F7, and G0
+- **Concept Validation**: Compile-time verification with `static_assert`
+- **Type Safety**: Strong typing prevents misuse
+- **Zero Overhead**: Template-based, fully inlined implementations
 
 ### Architecture Support
 
@@ -509,12 +531,69 @@ target_link_libraries(blinky PRIVATE alloy::hal::gpio)
 
 ---
 
+## 🏛️ Architecture Overview
+
+Alloy uses a **5-layer architecture** with C++20 concepts for interface validation:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Layer 5: Application Layer                             │
+│  ├─ User code (main.cpp)                                │
+│  └─ Application logic                                   │
+└───────────────────┬─────────────────────────────────────┘
+                    │
+┌───────────────────▼─────────────────────────────────────┐
+│  Layer 4: Board Layer                                   │
+│  ├─ Board-specific pin mappings                         │
+│  ├─ Clock configuration                                 │
+│  └─ Linker scripts                                      │
+└───────────────────┬─────────────────────────────────────┘
+                    │
+┌───────────────────▼─────────────────────────────────────┐
+│  Layer 3: Platform Implementation Layer                 │
+│  ├─ gpio.hpp (satisfies GpioPin concept)               │
+│  ├─ clock_platform.hpp (satisfies ClockPlatform)       │
+│  └─ User-facing API with Result<T,E> error handling    │
+└───────────────────┬─────────────────────────────────────┘
+                    │
+┌───────────────────▼─────────────────────────────────────┐
+│  Layer 2: Hardware Policy Layer                         │
+│  ├─ Low-level register manipulation                     │
+│  ├─ Compile-time peripheral access                      │
+│  └─ Zero runtime overhead                               │
+└───────────────────┬─────────────────────────────────────┘
+                    │
+┌───────────────────▼─────────────────────────────────────┐
+│  Layer 1: Generated Register Layer                      │
+│  ├─ *_registers.hpp (auto-generated from SVD)           │
+│  ├─ *_bitfields.hpp (type-safe bitfield access)         │
+│  └─ Peripheral base addresses and structures            │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Key Design Patterns
+
+1. **Policy-Based Design**: Hardware policies provide compile-time abstraction
+2. **C++20 Concepts**: Interface validation ensures API compliance
+3. **Template Metaprogramming**: All configuration resolved at compile-time
+4. **Result<T,E>**: Rust-style error handling without exceptions
+
+**Learn more**: See [Architecture Documentation](docs/ARCHITECTURE.md)
+
+---
+
 ## 📚 Documentation
 
+### Core Documentation
+- **[Architecture](docs/ARCHITECTURE.md)** - Complete system architecture and design patterns
 - **[Plan](plan.md)** - Project vision and roadmap
-- **[Architecture](architecture.md)** - Technical architecture details
 - **[Decisions (ADR)](decisions.md)** - Architecture decision records
-- **[Code Generation](codegen-system.md)** - How code generation works
+
+### Developer Guides
+- **[Porting a New Board](docs/PORTING_NEW_BOARD.md)** - Step-by-step guide to add new boards
+- **[Porting a New Platform](docs/PORTING_NEW_PLATFORM.md)** - Guide to add new MCU families
+- **[Code Generation](docs/CODE_GENERATION.md)** - Complete code generation system guide
+- **[Toolchains](docs/toolchains.md)** - Toolchain setup and configuration
 
 ---
 
