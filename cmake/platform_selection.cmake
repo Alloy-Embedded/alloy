@@ -107,16 +107,21 @@ message(STATUS "Included platform config: ${PLATFORM_CONFIG_FILE}")
 # Platform Source Files
 # ------------------------------------------------------------------------------
 
-# Platform implementations are located in: src/hal/platform/<platform>/
-set(ALLOY_PLATFORM_DIR "${CMAKE_SOURCE_DIR}/src/hal/platform/${ALLOY_PLATFORM}")
+# Platform implementations are located in: src/hal/vendors/<vendor>/<family>/
+# The platform directory is determined by the platform-specific config file
+# (e.g., cmake/platforms/stm32f4.cmake sets ALLOY_PLATFORM_DIR)
 
-if(NOT EXISTS "${ALLOY_PLATFORM_DIR}")
+# Note: ALLOY_PLATFORM_DIR should be set by the platform-specific CMake file
+# If not set, we'll use a fallback (though this may not work for all platforms)
+if(NOT DEFINED ALLOY_PLATFORM_DIR)
+    # Fallback: try to auto-detect based on platform name
+    # This is a temporary solution - platforms should define their own ALLOY_PLATFORM_DIR
     message(WARNING
-        "Platform directory not found: ${ALLOY_PLATFORM_DIR}\n"
-        "Expected location: src/hal/platform/${ALLOY_PLATFORM}/\n"
-        "This platform may not be implemented yet."
+        "ALLOY_PLATFORM_DIR not set by platform config!\n"
+        "Platform: ${ALLOY_PLATFORM}\n"
+        "This may cause build issues. Platform configs should set ALLOY_PLATFORM_DIR."
     )
-    # Don't fail here - allow the build to continue for partial implementations
+    set(ALLOY_PLATFORM_DIR "${CMAKE_SOURCE_DIR}/src/hal/vendors")
 endif()
 
 # Collect all platform-specific source files (*.cpp)
