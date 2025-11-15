@@ -1,0 +1,348 @@
+name: CI Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'examples/**'
+      - 'boards/**'
+      - 'CMakeLists.txt'
+      - 'cmake/**'
+      - '.github/workflows/build.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'examples/**'
+      - 'boards/**'
+      - 'CMakeLists.txt'
+      - 'cmake/**'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+jobs:
+  # ==============================================================================
+  # Host Tests (Unit, Integration, Regression)
+  # ==============================================================================
+  host-tests:
+    name: Host Tests (${{ matrix.os }}, ${{ matrix.compiler }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        compiler: [gcc, clang]
+        exclude:
+          # macOS doesn't have gcc in GitHub Actions
+          - os: macos-latest
+            compiler: gcc
+      fail-fast: false
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies (Ubuntu)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          ninja-build \
+          gcc-11 \
+          g++-11 \
+          clang-14
+
+    - name: Install dependencies (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install cmake ninja llvm@21
+        echo "$(brew --prefix llvm@21)/bin" >> $GITHUB_PATH
+
+    - name: Set up compiler (GCC on Linux)
+      if: runner.os == 'Linux' && matrix.compiler == 'gcc'
+      run: |
+        echo "CC=gcc-11" >> $GITHUB_ENV
+        echo "CXX=g++-11" >> $GITHUB_ENV
+
+    - name: Set up compiler (Clang on Linux)
+      if: runner.os == 'Linux' && matrix.compiler == 'clang'
+      run: |
+        echo "CC=clang-14" >> $GITHUB_ENV
+        echo "CXX=clang++-14" >> $GITHUB_ENV
+
+    - name: Set up compiler (Clang on macOS)
+      if: runner.os == 'macOS'
+      run: |
+        echo "CC=$(brew --prefix llvm@21)/bin/clang" >> $GITHUB_ENV
+        echo "CXX=$(brew --prefix llvm@21)/bin/clang++" >> $GITHUB_ENV
+
+    - name: Cache CMake build directory
+      uses: actions/cache@v3
+      with:
+        path: build-host
+        key: ${{ runner.os }}-${{ matrix.compiler }}-cmake-${{ hashFiles('**/CMakeLists.txt', 'cmake/**') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.compiler }}-cmake-
+
+    - name: Configure CMake (Host)
+      run: |
+        cmake -B build-host \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DALLOY_PLATFORM=linux \
+          -DALLOY_BUILD_TESTS=ON \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+    - name: Build Host Tests
+      run: cmake --build build-host --parallel
+
+    - name: Run Unit Tests
+      run: |
+        cd build-host
+        ctest --output-on-failure -R "unit_" --verbose
+
+    - name: Run Integration Tests
+      run: |
+        cd build-host
+        ctest --output-on-failure -R "integration_" --verbose
+
+    - name: Run Regression Tests
+      run: |
+        cd build-host
+        ctest --output-on-failure -R "regression_" --verbose
+
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results-${{ matrix.os }}-${{ matrix.compiler }}
+        path: |
+          build-host/Testing/
+          build-host/compile_commands.json
+
+  # ==============================================================================
+  # Embedded Builds (All Boards)
+  # ==============================================================================
+  embedded-builds:
+    name: Embedded Build (${{ matrix.board }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        board:
+          - nucleo_f401re
+          - nucleo_f722ze
+          - nucleo_g071rb
+          - nucleo_g0b1re
+        include:
+          - board: nucleo_f401re
+            platform: stm32f4
+            mcu: STM32F401xE
+          - board: nucleo_f722ze
+            platform: stm32f7
+            mcu: STM32F722xx
+          - board: nucleo_g071rb
+            platform: stm32g0
+            mcu: STM32G071xx
+          - board: nucleo_g0b1re
+            platform: stm32g0
+            mcu: STM32G0B1xx
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install ARM GCC Toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi cmake ninja-build
+
+    - name: Verify ARM GCC Installation
+      run: |
+        arm-none-eabi-gcc --version
+        arm-none-eabi-size --version
+
+    - name: Configure CMake (${{ matrix.board }})
+      run: |
+        cmake -B build-${{ matrix.board }} \
+          -G Ninja \
+          -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
+          -DCMAKE_BUILD_TYPE=MinSizeRel \
+          -DALLOY_BOARD=${{ matrix.board }} \
+          -DALLOY_PLATFORM=${{ matrix.platform }} \
+          -DALLOY_BUILD_TESTS=OFF
+
+    - name: Build Blink Example
+      run: |
+        cmake --build build-${{ matrix.board }} --target blink -j$(nproc)
+
+    - name: Display Binary Size
+      run: |
+        echo "=== Binary Size Report for ${{ matrix.board }} ==="
+        arm-none-eabi-size build-${{ matrix.board }}/examples/blink/blink.elf
+
+    - name: Upload Binary Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: binaries-${{ matrix.board }}
+        path: |
+          build-${{ matrix.board }}/examples/blink/blink.elf
+          build-${{ matrix.board }}/examples/blink/blink.bin
+          build-${{ matrix.board }}/examples/blink/blink.hex
+
+  # ==============================================================================
+  # Hardware Tests (Build Only - No Execution)
+  # ==============================================================================
+  hardware-tests-build:
+    name: Hardware Tests Build (${{ matrix.board }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        board:
+          - nucleo_f401re
+          - nucleo_f722ze
+          - nucleo_g071rb
+          - nucleo_g0b1re
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install ARM GCC Toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi cmake ninja-build
+
+    - name: Configure CMake for Hardware Tests
+      run: |
+        cmake -B build-hw-${{ matrix.board }} \
+          -G Ninja \
+          -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DALLOY_BOARD=${{ matrix.board }} \
+          -DALLOY_BUILD_TESTS=ON
+
+    - name: Build Hardware Tests
+      run: |
+        cmake --build build-hw-${{ matrix.board }} --target hw_gpio_led_test -j$(nproc)
+        cmake --build build-hw-${{ matrix.board }} --target hw_clock_validation -j$(nproc)
+        cmake --build build-hw-${{ matrix.board }} --target hw_board_validation -j$(nproc)
+
+    - name: Display Hardware Test Binary Sizes
+      run: |
+        echo "=== Hardware Test Sizes for ${{ matrix.board }} ==="
+        arm-none-eabi-size build-hw-${{ matrix.board }}/tests/hardware/hw_gpio_led_test.elf || true
+        arm-none-eabi-size build-hw-${{ matrix.board }}/tests/hardware/hw_clock_validation.elf || true
+        arm-none-eabi-size build-hw-${{ matrix.board }}/tests/hardware/hw_board_validation.elf || true
+
+    - name: Upload Hardware Test Binaries
+      uses: actions/upload-artifact@v4
+      with:
+        name: hardware-tests-${{ matrix.board }}
+        path: |
+          build-hw-${{ matrix.board }}/tests/hardware/*.elf
+          build-hw-${{ matrix.board }}/tests/hardware/*.bin
+          build-hw-${{ matrix.board }}/tests/hardware/*.hex
+
+  # ==============================================================================
+  # Code Generation Validation
+  # ==============================================================================
+  codegen-validation:
+    name: Code Generation Validation
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install Python dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip install jinja2 lxml
+
+    - name: Validate Code Generation (Dry Run)
+      run: |
+        cd tools/codegen
+        python3 codegen.py generate-complete --dry-run
+
+    - name: Check for Generated Files Status
+      run: |
+        cd tools/codegen
+        python3 codegen.py status
+
+  # ==============================================================================
+  # Build System Validation
+  # ==============================================================================
+  build-system-validation:
+    name: Build System Validation
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build g++
+
+    - name: Configure CMake
+      run: |
+        cmake -B build-validation \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DALLOY_PLATFORM=host \
+          -DALLOY_BUILD_TESTS=ON
+
+    - name: Run Build System Validation
+      run: |
+        cd build-validation
+        cmake --build . --target validate-build-system
+
+  # ==============================================================================
+  # Summary Report
+  # ==============================================================================
+  summary:
+    name: CI Summary
+    runs-on: ubuntu-latest
+    needs: [host-tests, embedded-builds, hardware-tests-build, codegen-validation, build-system-validation]
+    if: always()
+
+    steps:
+    - name: Check Results
+      run: |
+        echo "=== CI Pipeline Summary ==="
+        echo "Host Tests: ${{ needs.host-tests.result }}"
+        echo "Embedded Builds: ${{ needs.embedded-builds.result }}"
+        echo "Hardware Tests Build: ${{ needs.hardware-tests-build.result }}"
+        echo "Code Generation: ${{ needs.codegen-validation.result }}"
+        echo "Build System: ${{ needs.build-system-validation.result }}"
+
+    - name: Fail if any job failed
+      if: |
+        needs.host-tests.result == 'failure' ||
+        needs.embedded-builds.result == 'failure' ||
+        needs.hardware-tests-build.result == 'failure' ||
+        needs.codegen-validation.result == 'failure' ||
+        needs.build-system-validation.result == 'failure'
+      run: exit 1

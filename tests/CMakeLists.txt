@@ -24,6 +24,33 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/unit/CMakeLists.txt)
 endif()
 
 # ==============================================================================
+# Integration Tests
+# ==============================================================================
+
+# Include integration tests subdirectory
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/integration/CMakeLists.txt)
+    add_subdirectory(integration)
+endif()
+
+# ==============================================================================
+# Regression Tests
+# ==============================================================================
+
+# Include regression tests subdirectory
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/regression/CMakeLists.txt)
+    add_subdirectory(regression)
+endif()
+
+# ==============================================================================
+# Hardware Validation Tests
+# ==============================================================================
+
+# Include hardware validation tests (only for embedded platforms)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/hardware/CMakeLists.txt)
+    add_subdirectory(hardware)
+endif()
+
+# ==============================================================================
 # Test Summary
 # ==============================================================================
 

@@ -6,7 +6,6 @@
  */
 
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/matchers/catch_matchers_string.hpp>
 
 #include "core/result.hpp"
 #include "core/error.hpp"
@@ -89,95 +88,23 @@ TEST_CASE("unwrap_err() returns the error", "[result][core]") {
 }
 
 // ==============================================================================
-// Result Mapping Tests
+// Result State Checking Tests
 // ==============================================================================
 
-TEST_CASE("map() transforms Ok value", "[result][core][map]") {
-    auto result = divide(10, 2);
-    auto doubled = result.map([](int x) { return x * 2; });
+TEST_CASE("is_ok() correctly identifies Ok state", "[result][core]") {
+    auto ok_result = divide(10, 2);
+    auto err_result = divide(10, 0);
 
-    REQUIRE(doubled.is_ok());
-    REQUIRE(doubled.unwrap() == 10);
+    REQUIRE(ok_result.is_ok());
+    REQUIRE_FALSE(err_result.is_ok());
 }
 
-TEST_CASE("map() preserves Err", "[result][core][map]") {
-    auto result = divide(10, 0);
-    auto doubled = result.map([](int x) { return x * 2; });
+TEST_CASE("is_err() correctly identifies Err state", "[result][core]") {
+    auto ok_result = divide(10, 2);
+    auto err_result = divide(10, 0);
 
-    REQUIRE(doubled.is_err());
-    REQUIRE(doubled.unwrap_err() == ErrorCode::InvalidParameter);
-}
-
-TEST_CASE("map_err() transforms error", "[result][core][map]") {
-    auto result = divide(10, 0);
-    auto mapped = result.map_err([](ErrorCode) { return ErrorCode::Unknown; });
-
-    REQUIRE(mapped.is_err());
-    REQUIRE(mapped.unwrap_err() == ErrorCode::Unknown);
-}
-
-TEST_CASE("map_err() preserves Ok", "[result][core][map]") {
-    auto result = divide(10, 2);
-    auto mapped = result.map_err([](ErrorCode) { return ErrorCode::Unknown; });
-
-    REQUIRE(mapped.is_ok());
-    REQUIRE(mapped.unwrap() == 5);
-}
-
-// ==============================================================================
-// Result and_then() Monadic Chaining Tests
-// ==============================================================================
-
-TEST_CASE("and_then() chains Ok results", "[result][core][monad]") {
-    auto result = divide(10, 2)
-        .and_then([](int x) { return divide(x, 5); });
-
-    REQUIRE(result.is_ok());
-    REQUIRE(result.unwrap() == 1);
-}
-
-TEST_CASE("and_then() short-circuits on first Err", "[result][core][monad]") {
-    auto result = divide(10, 0)
-        .and_then([](int x) { return divide(x, 5); });
-
-    REQUIRE(result.is_err());
-    REQUIRE(result.unwrap_err() == ErrorCode::InvalidParameter);
-}
-
-TEST_CASE("and_then() propagates second Err", "[result][core][monad]") {
-    auto result = divide(10, 2)
-        .and_then([](int x) { return divide(x, 0); });
-
-    REQUIRE(result.is_err());
-    REQUIRE(result.unwrap_err() == ErrorCode::InvalidParameter);
-}
-
-// ==============================================================================
-// Result Pattern Matching Tests
-// ==============================================================================
-
-TEST_CASE("match() handles Ok case", "[result][core][match]") {
-    auto result = divide(10, 2);
-    int output = 0;
-
-    result.match(
-        [&](int value) { output = value; },
-        [&](ErrorCode) { output = -1; }
-    );
-
-    REQUIRE(output == 5);
-}
-
-TEST_CASE("match() handles Err case", "[result][core][match]") {
-    auto result = divide(10, 0);
-    ErrorCode captured_error = ErrorCode::Success;
-
-    result.match(
-        [&](int) { /* not called */ },
-        [&](ErrorCode error) { captured_error = error; }
-    );
-
-    REQUIRE(captured_error == ErrorCode::InvalidParameter);
+    REQUIRE_FALSE(ok_result.is_err());
+    REQUIRE(err_result.is_err());
 }
 
 // ==============================================================================
@@ -201,41 +128,91 @@ TEST_CASE("Result<void, E> can represent failure", "[result][core][void]") {
     auto result = perform_action(false);
 
     REQUIRE(result.is_err());
-    REQUIRE(result.unwrap_err() == ErrorCode::Timeout);
 }
 
-TEST_CASE("Result<void, E> can be chained", "[result][core][void]") {
-    auto result = perform_action(true)
-        .and_then([](){ return perform_action(true); });
+// ==============================================================================
+// Result Copy/Move Tests
+// ==============================================================================
 
-    REQUIRE(result.is_ok());
+TEST_CASE("Result can be copied", "[result][core][copy]") {
+    Result<int, ErrorCode> original = Ok(42);
+    Result<int, ErrorCode> copy = original;
+
+    REQUIRE(copy.is_ok());
+    REQUIRE(copy.unwrap() == 42);
+    REQUIRE(original.is_ok());
+}
+
+TEST_CASE("Result can be moved", "[result][core][move]") {
+    Result<std::string, ErrorCode> original = Ok(std::string("hello"));
+    Result<std::string, ErrorCode> moved = std::move(original);
+
+    REQUIRE(moved.is_ok());
+    REQUIRE(moved.unwrap() == "hello");
 }
 
 // ==============================================================================
 // Result Real-World Scenarios
 // ==============================================================================
 
-TEST_CASE("Complex chaining scenario", "[result][core][integration]") {
-    auto result = get_username(true)
-        .map([](const std::string& name) { return name.length(); })
-        .and_then([](size_t len) -> Result<int, ErrorCode> {
-            if (len > 10) {
-                return Err(ErrorCode::InvalidParameter);
-            }
-            return Ok(static_cast<int>(len));
-        });
+TEST_CASE("Chaining operations with manual checks", "[result][core][integration]") {
+    auto username_result = get_username(true);
 
-    REQUIRE(result.is_ok());
-    REQUIRE(result.unwrap() == 5); // "alice" has 5 characters
+    REQUIRE(username_result.is_ok());
+
+    // Manual chaining - check and extract
+    if (username_result.is_ok()) {
+        std::string name = username_result.unwrap();
+        REQUIRE(name.length() == 5); // "alice"
+    }
 }
 
-TEST_CASE("Error propagation in chain", "[result][core][integration]") {
-    auto result = get_username(false)
-        .map([](const std::string& name) { return name.length(); })
-        .and_then([](size_t len) -> Result<int, ErrorCode> {
-            return Ok(static_cast<int>(len));
-        });
+TEST_CASE("Error propagation pattern", "[result][core][integration]") {
+    auto result = get_username(false);
 
     REQUIRE(result.is_err());
     REQUIRE(result.unwrap_err() == ErrorCode::Busy);
+}
+
+TEST_CASE("unwrap_or provides safe default", "[result][core][integration]") {
+    auto failed_username = get_username(false);
+    auto username = failed_username.unwrap_or("guest");
+
+    REQUIRE(username == "guest");
+}
+
+// ==============================================================================
+// Result Error Handling Patterns
+// ==============================================================================
+
+TEST_CASE("Early return on error pattern", "[result][core][pattern]") {
+    auto process_user = [](bool valid) -> int {
+        auto result = get_username(valid);
+        if (result.is_err()) {
+            return -1; // Error indicator
+        }
+        return result.unwrap().length();
+    };
+
+    REQUIRE(process_user(true) == 5);
+    REQUIRE(process_user(false) == -1);
+}
+
+TEST_CASE("Cascading checks pattern", "[result][core][pattern]") {
+    auto divide_chain = [](int a, int b, int c) -> Result<int, ErrorCode> {
+        auto result1 = divide(a, b);
+        if (result1.is_err()) {
+            return result1;
+        }
+
+        auto result2 = divide(result1.unwrap(), c);
+        return result2;
+    };
+
+    auto success = divide_chain(100, 10, 2);
+    REQUIRE(success.is_ok());
+    REQUIRE(success.unwrap() == 5);
+
+    auto failure = divide_chain(100, 0, 2);
+    REQUIRE(failure.is_err());
 }

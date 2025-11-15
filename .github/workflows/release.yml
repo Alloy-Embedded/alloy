@@ -1,0 +1,350 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v1.0.0)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  # ==============================================================================
+  # Build All Targets
+  # ==============================================================================
+  build-all:
+    name: Build Release Binaries
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        board:
+          - nucleo_f401re
+          - nucleo_f722ze
+          - nucleo_g071rb
+          - nucleo_g0b1re
+        example:
+          - blink
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0  # Full history for changelog
+
+    - name: Install ARM GCC Toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi cmake ninja-build
+
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Configure CMake
+      run: |
+        cmake -B build-${{ matrix.board }} \
+          -G Ninja \
+          -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
+          -DCMAKE_BUILD_TYPE=MinSizeRel \
+          -DALLOY_BOARD=${{ matrix.board }} \
+          -DALLOY_BUILD_TESTS=OFF
+
+    - name: Build Example
+      run: |
+        cmake --build build-${{ matrix.board }} --target ${{ matrix.example }} -j$(nproc)
+
+    - name: Generate Binary Info
+      run: |
+        cd build-${{ matrix.board }}/examples/${{ matrix.example }}
+
+        # Size report
+        arm-none-eabi-size ${{ matrix.example }}.elf > size-report.txt
+
+        # Checksums
+        sha256sum ${{ matrix.example }}.bin > ${{ matrix.example }}.bin.sha256
+        sha256sum ${{ matrix.example }}.hex > ${{ matrix.example }}.hex.sha256
+
+        # Version file
+        cat > version.txt <<EOF
+        Alloy Framework Release
+        Version: ${{ steps.version.outputs.VERSION }}
+        Board: ${{ matrix.board }}
+        Example: ${{ matrix.example }}
+        Build Type: MinSizeRel
+        Built: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        Commit: ${{ github.sha }}
+        EOF
+
+    - name: Create Release Package
+      run: |
+        cd build-${{ matrix.board }}/examples/${{ matrix.example }}
+        mkdir -p ../../../release-packages
+
+        tar -czf ../../../release-packages/alloy-${{ steps.version.outputs.VERSION }}-${{ matrix.board }}-${{ matrix.example }}.tar.gz \
+          ${{ matrix.example }}.elf \
+          ${{ matrix.example }}.bin \
+          ${{ matrix.example }}.hex \
+          ${{ matrix.example }}.map \
+          *.sha256 \
+          size-report.txt \
+          version.txt
+
+    - name: Upload Release Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-${{ matrix.board }}-${{ matrix.example }}
+        path: release-packages/*.tar.gz
+
+  # ==============================================================================
+  # Run Full Test Suite
+  # ==============================================================================
+  test-release:
+    name: Test Release Build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build g++-11
+
+    - name: Configure and Build Tests
+      run: |
+        cmake -B build-test \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DALLOY_PLATFORM=linux \
+          -DALLOY_BUILD_TESTS=ON \
+          -DCMAKE_C_COMPILER=gcc-11 \
+          -DCMAKE_CXX_COMPILER=g++-11
+
+        cmake --build build-test --parallel
+
+    - name: Run Test Suite
+      run: |
+        cd build-test
+        ctest --output-on-failure --verbose
+
+    - name: Verify Test Results
+      run: |
+        cd build-test
+        TEST_COUNT=$(ctest --show-only | grep "Total Tests" | awk '{print $4}')
+        echo "Total tests: $TEST_COUNT"
+        if [ "$TEST_COUNT" -lt 100 ]; then
+          echo "ERROR: Expected at least 100 tests, got $TEST_COUNT"
+          exit 1
+        fi
+
+  # ==============================================================================
+  # Generate Release Notes
+  # ==============================================================================
+  generate-changelog:
+    name: Generate Changelog
+    runs-on: ubuntu-latest
+    outputs:
+      changelog: ${{ steps.changelog.outputs.changelog }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Generate Changelog
+      id: changelog
+      run: |
+        # Get previous tag
+        PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+
+        if [ -z "$PREV_TAG" ]; then
+          echo "First release - no previous tag"
+          CHANGELOG="## First Release
+
+        This is the first official release of Alloy Framework.
+
+        ### Features
+        - Modern C++20 Hardware Abstraction Layer
+        - Support for STM32F4, STM32F7, STM32G0 platforms
+        - 100+ comprehensive tests
+        - Code generation from SVD files
+        - Policy-based design with C++20 concepts
+
+        ### Supported Boards
+        - Nucleo-F401RE (STM32F4)
+        - Nucleo-F722ZE (STM32F7)
+        - Nucleo-G071RB (STM32G0)
+        - Nucleo-G0B1RE (STM32G0)
+        "
+        else
+          echo "Generating changelog from $PREV_TAG to HEAD"
+
+          CHANGELOG="## Changes since $PREV_TAG
+
+        ### Commits
+        $(git log $PREV_TAG..HEAD --pretty=format:'- %s (%h)' --no-merges)
+
+        ### Statistics
+        - Commits: $(git rev-list $PREV_TAG..HEAD --count)
+        - Files changed: $(git diff --stat $PREV_TAG..HEAD | tail -1)
+        "
+        fi
+
+        # Save to file
+        echo "$CHANGELOG" > RELEASE_NOTES.md
+
+        # Output for GitHub
+        echo "changelog<<EOF" >> $GITHUB_OUTPUT
+        echo "$CHANGELOG" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Upload Release Notes
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-notes
+        path: RELEASE_NOTES.md
+
+  # ==============================================================================
+  # Create GitHub Release
+  # ==============================================================================
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [build-all, test-release, generate-changelog]
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          echo "PRERELEASE=${{ github.event.inputs.prerelease }}" >> $GITHUB_OUTPUT
+        else
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          echo "PRERELEASE=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: release-artifacts
+
+    - name: Download release notes
+      uses: actions/download-artifact@v4
+      with:
+        name: release-notes
+        path: .
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.version.outputs.VERSION }}
+        name: Alloy Framework ${{ steps.version.outputs.VERSION }}
+        body_path: RELEASE_NOTES.md
+        draft: false
+        prerelease: ${{ steps.version.outputs.PRERELEASE }}
+        files: |
+          release-artifacts/**/*.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ==============================================================================
+  # Publish Documentation
+  # ==============================================================================
+  publish-docs:
+    name: Publish Documentation
+    runs-on: ubuntu-latest
+    needs: create-release
+    if: github.event.inputs.prerelease != 'true'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Create documentation package
+      run: |
+        mkdir -p docs-package
+        cp -r docs/* docs-package/
+        cp README.md docs-package/
+        cp -r examples docs-package/
+
+        # Create version file
+        echo "${{ steps.version.outputs.VERSION }}" > docs-package/VERSION
+
+    - name: Upload documentation
+      uses: actions/upload-artifact@v4
+      with:
+        name: documentation-${{ steps.version.outputs.VERSION }}
+        path: docs-package/
+
+  # ==============================================================================
+  # Release Summary
+  # ==============================================================================
+  summary:
+    name: Release Summary
+    runs-on: ubuntu-latest
+    needs: [create-release, publish-docs]
+    if: always()
+
+    steps:
+    - name: Print Summary
+      run: |
+        echo "### Release Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Task | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Build All | ${{ needs.build-all.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Test Release | ${{ needs.test-release.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Generate Changelog | ${{ needs.generate-changelog.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Create Release | ${{ needs.create-release.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Publish Docs | ${{ needs.publish-docs.result }} |" >> $GITHUB_STEP_SUMMARY
+
+        if [ "${{ needs.create-release.result }}" == "success" ]; then
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Release created successfully!" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "❌ Release creation failed" >> $GITHUB_STEP_SUMMARY
+          exit 1
+        fi

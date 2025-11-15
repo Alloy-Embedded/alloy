@@ -1,0 +1,269 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  # ==============================================================================
+  # Clang-Format Check
+  # ==============================================================================
+  clang-format:
+    name: Format Check (clang-format)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install clang-format
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-format-14
+
+    - name: Run clang-format check
+      run: |
+        echo "🔍 Checking code formatting with clang-format..."
+        FAILED=0
+        while IFS= read -r file; do
+          if ! clang-format-14 --dry-run -Werror "$file" 2>&1; then
+            echo "❌ Format error in: $file"
+            FAILED=1
+          fi
+        done < <(find src tests examples boards -name "*.cpp" -o -name "*.hpp")
+
+        if [ $FAILED -eq 1 ]; then
+          echo ""
+          echo "❌ Code formatting check failed!"
+          echo "Run: clang-format -i <file> to fix"
+          exit 1
+        fi
+        echo "✅ All files are properly formatted"
+
+  # ==============================================================================
+  # Clang-Tidy Static Analysis
+  # ==============================================================================
+  clang-tidy:
+    name: Static Analysis (clang-tidy)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install clang-tidy
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-tidy-14 cmake ninja-build g++
+
+    - name: Configure CMake (for compilation database)
+      run: |
+        cmake -B build-tidy \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+          -DALLOY_PLATFORM=host \
+          -DALLOY_BUILD_TESTS=ON
+
+    - name: Run clang-tidy on core
+      run: |
+        find src/core -name "*.cpp" | \
+        xargs clang-tidy-14 -p build-tidy \
+          --checks='modernize-*,performance-*,readability-*,bugprone-*' \
+          --warnings-as-errors='*' || true
+
+    - name: Run clang-tidy on HAL (best effort)
+      run: |
+        find src/hal -name "*.cpp" -not -path "*/generated/*" | \
+        xargs clang-tidy-14 -p build-tidy \
+          --checks='modernize-*,performance-*,bugprone-*' || true
+
+  # ==============================================================================
+  # Cppcheck Static Analysis
+  # ==============================================================================
+  cppcheck:
+    name: Static Analysis (cppcheck)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install cppcheck
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cppcheck
+
+    - name: Run cppcheck
+      run: |
+        cppcheck --enable=all \
+          --std=c++20 \
+          --suppress=missingIncludeSystem \
+          --suppress=unusedFunction \
+          --suppress=unmatchedSuppression \
+          --error-exitcode=1 \
+          --inline-suppr \
+          -I src \
+          src/core src/hal/core 2>&1 | tee cppcheck-report.txt
+
+    - name: Upload cppcheck report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cppcheck-report
+        path: cppcheck-report.txt
+
+  # ==============================================================================
+  # Include Guard Check
+  # ==============================================================================
+  include-guards:
+    name: Include Guard Validation
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check include guards
+      run: |
+        EXIT_CODE=0
+        echo "=== Checking include guards in header files ==="
+
+        find src boards -name "*.hpp" -not -path "*/generated/*" | while read file; do
+          # Expected guard format: ALLOY_<PATH>_<FILE>_HPP
+          EXPECTED_GUARD=$(echo "$file" | \
+            sed 's|^src/||; s|^boards/||; s|/|_|g; s|\.hpp$||' | \
+            tr '[:lower:]' '[:upper:]')_HPP
+
+          # Check if file has pragma once OR proper include guard
+          if grep -q "#pragma once" "$file"; then
+            echo "✓ $file (uses #pragma once)"
+          elif grep -q "#ifndef.*$EXPECTED_GUARD" "$file" && \
+               grep -q "#define.*$EXPECTED_GUARD" "$file"; then
+            echo "✓ $file (uses include guard)"
+          else
+            echo "✗ $file (missing or incorrect include guard)"
+            EXIT_CODE=1
+          fi
+        done
+
+        exit $EXIT_CODE
+
+  # ==============================================================================
+  # TODOs and FIXMEs Report
+  # ==============================================================================
+  todos:
+    name: TODO/FIXME Report
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Generate TODO report
+      run: |
+        echo "=== TODO/FIXME Report ===" > todo-report.txt
+        echo "" >> todo-report.txt
+
+        grep -rn "TODO\|FIXME\|XXX\|HACK" src boards examples tests \
+          --include="*.cpp" --include="*.hpp" || true >> todo-report.txt
+
+        cat todo-report.txt
+
+    - name: Upload TODO report
+      uses: actions/upload-artifact@v4
+      with:
+        name: todo-report
+        path: todo-report.txt
+
+  # ==============================================================================
+  # Documentation Coverage
+  # ==============================================================================
+  documentation:
+    name: Documentation Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check documentation files exist
+      run: |
+        EXIT_CODE=0
+
+        # Required documentation files
+        REQUIRED_DOCS=(
+          "README.md"
+          "docs/ARCHITECTURE.md"
+          "docs/PORTING_NEW_BOARD.md"
+          "docs/PORTING_NEW_PLATFORM.md"
+          "docs/CODE_GENERATION.md"
+        )
+
+        echo "=== Checking required documentation ==="
+        for doc in "${REQUIRED_DOCS[@]}"; do
+          if [ -f "$doc" ]; then
+            echo "✓ $doc exists"
+          else
+            echo "✗ $doc missing"
+            EXIT_CODE=1
+          fi
+        done
+
+        exit $EXIT_CODE
+
+    - name: Check function documentation coverage
+      run: |
+        echo "=== Checking function documentation ==="
+
+        # Count functions in core (should be documented)
+        TOTAL_FUNCS=$(grep -rn "^[[:space:]]*\(template.*\)\?[[:space:]]*\(inline\|static\|virtual\|constexpr\)\?[[:space:]]*[a-zA-Z_][a-zA-Z0-9_<>:]*[[:space:]]\+[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]*(" \
+          src/core src/hal/core --include="*.hpp" | wc -l || echo "0")
+
+        # Count documented functions (with /** or ///)
+        DOCUMENTED_FUNCS=$(grep -B1 -rn "^[[:space:]]*\(template.*\)\?[[:space:]]*\(inline\|static\|virtual\|constexpr\)\?[[:space:]]*[a-zA-Z_][a-zA-Z0-9_<>:]*[[:space:]]\+[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]*(" \
+          src/core src/hal/core --include="*.hpp" | grep -c "/\*\*\|///" || echo "0")
+
+        echo "Total functions: $TOTAL_FUNCS"
+        echo "Documented functions: $DOCUMENTED_FUNCS"
+
+        if [ "$TOTAL_FUNCS" -gt 0 ]; then
+          COVERAGE=$((DOCUMENTED_FUNCS * 100 / TOTAL_FUNCS))
+          echo "Documentation coverage: ${COVERAGE}%"
+
+          if [ "$COVERAGE" -lt 50 ]; then
+            echo "⚠️  Warning: Documentation coverage is low"
+          fi
+        fi
+
+  # ==============================================================================
+  # Summary
+  # ==============================================================================
+  quality-summary:
+    name: Quality Summary
+    runs-on: ubuntu-latest
+    needs: [clang-format, clang-tidy, cppcheck, include-guards, todos, documentation]
+    if: always()
+
+    steps:
+    - name: Check Results
+      run: |
+        echo "=== Code Quality Summary ==="
+        echo "Format Check: ${{ needs.clang-format.result }}"
+        echo "Clang-Tidy: ${{ needs.clang-tidy.result }}"
+        echo "Cppcheck: ${{ needs.cppcheck.result }}"
+        echo "Include Guards: ${{ needs.include-guards.result }}"
+        echo "TODOs: ${{ needs.todos.result }}"
+        echo "Documentation: ${{ needs.documentation.result }}"
+
+    - name: Fail if critical checks failed
+      if: |
+        needs.clang-format.result == 'failure' ||
+        needs.cppcheck.result == 'failure' ||
+        needs.include-guards.result == 'failure'
+      run: exit 1
