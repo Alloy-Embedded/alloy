@@ -104,6 +104,44 @@ include("${PLATFORM_CONFIG_FILE}")
 message(STATUS "Included platform config: ${PLATFORM_CONFIG_FILE}")
 
 # ------------------------------------------------------------------------------
+# Board/MCU Validation
+# ------------------------------------------------------------------------------
+
+# Define valid board-to-platform mappings
+# This ensures users don't accidentally try to build incompatible combinations
+set(BOARD_TO_PLATFORM_nucleo_f401re "stm32f4")
+set(BOARD_TO_PLATFORM_nucleo_f722ze "stm32f7")
+set(BOARD_TO_PLATFORM_nucleo_g071rb "stm32g0")
+set(BOARD_TO_PLATFORM_nucleo_g0b1re "stm32g0")
+set(BOARD_TO_PLATFORM_same70_xplained "same70")
+
+# If ALLOY_BOARD is defined, validate it matches the selected platform
+if(DEFINED ALLOY_BOARD)
+    set(EXPECTED_PLATFORM ${BOARD_TO_PLATFORM_${ALLOY_BOARD}})
+
+    if(NOT DEFINED EXPECTED_PLATFORM)
+        message(WARNING
+            "Unknown board: '${ALLOY_BOARD}'\n"
+            "Board-to-platform mapping not defined.\n"
+            "Proceeding with platform: ${ALLOY_PLATFORM}\n"
+            "Known boards: nucleo_f401re, nucleo_f722ze, nucleo_g071rb, nucleo_g0b1re, same70_xplained"
+        )
+    elseif(NOT "${EXPECTED_PLATFORM}" STREQUAL "${ALLOY_PLATFORM}")
+        message(FATAL_ERROR
+            "Board/Platform mismatch!\n"
+            "  Board:            ${ALLOY_BOARD}\n"
+            "  Expected Platform: ${EXPECTED_PLATFORM}\n"
+            "  Selected Platform: ${ALLOY_PLATFORM}\n"
+            "\n"
+            "Please use the correct platform for this board:\n"
+            "  cmake -DALLOY_BOARD=${ALLOY_BOARD} -DALLOY_PLATFORM=${EXPECTED_PLATFORM} -B build-${ALLOY_BOARD}"
+        )
+    endif()
+
+    message(STATUS "Board: ${ALLOY_BOARD} (validated against platform ${ALLOY_PLATFORM})")
+endif()
+
+# ------------------------------------------------------------------------------
 # Platform Source Files
 # ------------------------------------------------------------------------------
 
@@ -116,12 +154,14 @@ message(STATUS "Included platform config: ${PLATFORM_CONFIG_FILE}")
 if(NOT DEFINED ALLOY_PLATFORM_DIR)
     # Fallback: try to auto-detect based on platform name
     # This is a temporary solution - platforms should define their own ALLOY_PLATFORM_DIR
-    message(WARNING
+    message(FATAL_ERROR
         "ALLOY_PLATFORM_DIR not set by platform config!\n"
         "Platform: ${ALLOY_PLATFORM}\n"
-        "This may cause build issues. Platform configs should set ALLOY_PLATFORM_DIR."
+        "Config file: ${PLATFORM_CONFIG_FILE}\n"
+        "\n"
+        "The platform configuration file must set ALLOY_PLATFORM_DIR.\n"
+        "Example: set(ALLOY_PLATFORM_DIR \${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/st/stm32f4)"
     )
-    set(ALLOY_PLATFORM_DIR "${CMAKE_SOURCE_DIR}/src/hal/vendors")
 endif()
 
 # Collect all platform-specific source files (*.cpp)
