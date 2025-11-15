@@ -16,9 +16,13 @@ message(STATUS "Configuring platform: STM32F7 (ARM Cortex-M7)")
 # ------------------------------------------------------------------------------
 
 # Collect STM32F7-specific platform sources
+# EXCLUDE startup.cpp files - they are board-specific and added via STARTUP_SOURCE
 file(GLOB_RECURSE ALLOY_PLATFORM_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/st/stm32f7/*.cpp
 )
+
+# Remove all startup*.cpp files from platform sources (board-specific)
+list(FILTER ALLOY_PLATFORM_SOURCES EXCLUDE REGEX ".*startup.*\\.cpp$")
 
 # Platform headers are in vendors directory (consolidated architecture)
 set(ALLOY_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/st/stm32f7)

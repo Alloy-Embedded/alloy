@@ -125,9 +125,14 @@ if(NOT DEFINED ALLOY_PLATFORM_DIR)
 endif()
 
 # Collect all platform-specific source files (*.cpp)
-file(GLOB_RECURSE ALLOY_PLATFORM_SOURCES
+# EXCLUDE startup.cpp files - they are board-specific and added via STARTUP_SOURCE
+# NOTE: Only collect .cpp from the SPECIFIC platform directory, not subdirectories with other MCU variants
+file(GLOB ALLOY_PLATFORM_SOURCES
     "${ALLOY_PLATFORM_DIR}/*.cpp"
 )
+
+# Remove all startup*.cpp files from platform sources (board-specific)
+list(FILTER ALLOY_PLATFORM_SOURCES EXCLUDE REGEX ".*startup.*\\.cpp$")
 
 # Collect all platform-specific header files (*.hpp, *.h)
 file(GLOB_RECURSE ALLOY_PLATFORM_HEADERS

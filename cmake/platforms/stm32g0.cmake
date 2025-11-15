@@ -20,6 +20,13 @@
 message(STATUS "Configuring for STM32G0 platform (ARM Cortex-M0+)")
 
 # ------------------------------------------------------------------------------
+# Platform Directory
+# ------------------------------------------------------------------------------
+
+# Set platform directory for this family
+set(ALLOY_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/st/stm32g0)
+
+# ------------------------------------------------------------------------------
 # Toolchain Requirements
 # ------------------------------------------------------------------------------
 

@@ -243,12 +243,15 @@ set(ALLOY_CORE_SOURCES
 )
 
 # Create HAL library (INTERFACE for header-only, or STATIC if platform has .cpp files)
-if(ALLOY_PLATFORM_SOURCES)
+if(ALLOY_PLATFORM_SOURCES OR STARTUP_SOURCE)
     # Platform has .cpp files - create STATIC library
-    add_library(alloy-hal STATIC
-        ${ALLOY_PLATFORM_SOURCES}
-        ${ALLOY_CORE_SOURCES}
-    )
+    # Include platform sources + startup code (if board defines one)
+    set(HAL_SOURCES ${ALLOY_PLATFORM_SOURCES} ${ALLOY_CORE_SOURCES})
+    if(DEFINED STARTUP_SOURCE AND EXISTS "${STARTUP_SOURCE}")
+        list(APPEND HAL_SOURCES ${STARTUP_SOURCE})
+    endif()
+
+    add_library(alloy-hal STATIC ${HAL_SOURCES})
 
     message(STATUS "Created STATIC alloy-hal library with platform sources")
 else()
