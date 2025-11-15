@@ -355,6 +355,31 @@ core::Result<T, RTOSError> Queue<T, Capacity>::try_receive() {
     return Ok(message);
 }
 
+// ============================================================================
+// Compile-Time Concept Validation
+// ============================================================================
+
+// Validate Queue satisfies various concepts
+// Note: These are template-dependent, so we validate with a test type
+
+struct TestMessage {
+    core::u32 timestamp;
+    core::u8 data[8];
+};
+
+// Validate TestMessage satisfies IPCMessage
+static_assert(IPCMessage<TestMessage>, "TestMessage must be IPCMessage");
+static_assert(HasTimestamp<TestMessage>, "TestMessage must have timestamp");
+
+// Validate Queue satisfies concepts
+using TestQueue = Queue<TestMessage, 8>;
+static_assert(QueueProducer<TestQueue, TestMessage>, "Must be QueueProducer");
+static_assert(QueueConsumer<TestQueue, TestMessage>, "Must be QueueConsumer");
+static_assert(BidirectionalQueue<TestQueue, TestMessage>, "Must be Bidirectional");
+static_assert(BlockingQueue<TestQueue, TestMessage>, "Must support blocking");
+static_assert(NonBlockingQueue<TestQueue, TestMessage>, "Must support non-blocking");
+static_assert(TimestampedQueue<TestQueue, TestMessage>, "Must support timestamps");
+
 }  // namespace alloy::rtos
 
 #endif  // ALLOY_RTOS_QUEUE_HPP

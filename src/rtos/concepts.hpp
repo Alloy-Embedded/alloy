@@ -418,6 +418,262 @@ consteval core::u8 lowest_priority() {
     return min;
 }
 
+// ============================================================================
+// Advanced Type Constraints
+// ============================================================================
+
+/// Concept: TriviallyCopyableAndSmall<T, MaxSize>
+///
+/// Ensures type is suitable for embedded IPC with size constraint.
+///
+/// @tparam T Type to check
+/// @tparam MaxSize Maximum allowed size
+template <typename T, size_t MaxSize = 256>
+concept TriviallyCopyableAndSmall =
+    std::is_trivially_copyable_v<T> &&
+    sizeof(T) <= MaxSize &&
+    !std::is_pointer_v<T>;
+
+/// Concept: PODType<T>
+///
+/// Validates Plain Old Data type (C-compatible).
+///
+/// @tparam T Type to check
+template <typename T>
+concept PODType =
+    std::is_standard_layout_v<T> &&
+    std::is_trivial_v<T>;
+
+/// Concept: HasTimestamp<T>
+///
+/// Validates that a message type has a timestamp field.
+/// Useful for time-ordered queues and debugging.
+///
+/// @tparam T Type to check
+template <typename T>
+concept HasTimestamp = requires(T t) {
+    { t.timestamp } -> std::convertible_to<core::u32>;
+};
+
+/// Concept: HasPriority<T>
+///
+/// Validates that a message type has a priority field.
+/// Useful for priority queues.
+///
+/// @tparam T Type to check
+template <typename T>
+concept HasPriority = requires(T t) {
+    { t.priority } -> std::convertible_to<core::u8>;
+};
+
+// ============================================================================
+// Advanced Queue Concepts
+// ============================================================================
+
+/// Concept: PriorityQueue<Q, T>
+///
+/// Validates a queue that supports priority-based operations.
+///
+/// @tparam Q Queue type
+/// @tparam T Message type (must have priority)
+template <typename Q, typename T>
+concept PriorityQueue =
+    QueueProducer<Q, T> &&
+    QueueConsumer<Q, T> &&
+    HasPriority<T>;
+
+/// Concept: TimestampedQueue<Q, T>
+///
+/// Validates a queue for timestamped messages.
+///
+/// @tparam Q Queue type
+/// @tparam T Message type (must have timestamp)
+template <typename Q, typename T>
+concept TimestampedQueue =
+    QueueProducer<Q, T> &&
+    QueueConsumer<Q, T> &&
+    HasTimestamp<T>;
+
+/// Concept: BlockingQueue<Q, T>
+///
+/// Validates a queue with blocking semantics.
+///
+/// @tparam Q Queue type
+/// @tparam T Message type
+template <typename Q, typename T>
+concept BlockingQueue = requires(Q q, const T& msg, core::u32 timeout) {
+    { q.send(msg, timeout) } -> std::same_as<core::Result<void, class RTOSError>>;
+    { q.receive(timeout) } -> std::same_as<core::Result<T, class RTOSError>>;
+};
+
+/// Concept: NonBlockingQueue<Q, T>
+///
+/// Validates a queue with non-blocking semantics.
+///
+/// @tparam Q Queue type
+/// @tparam T Message type
+template <typename Q, typename T>
+concept NonBlockingQueue = requires(Q q, const T& msg) {
+    { q.try_send(msg) } -> std::same_as<core::Result<void, class RTOSError>>;
+    { q.try_receive() } -> std::same_as<core::Result<T, class RTOSError>>;
+};
+
+// ============================================================================
+// Task-Related Advanced Concepts
+// ============================================================================
+
+/// Concept: HasTaskMetadata<T>
+///
+/// Validates that a task type provides metadata.
+///
+/// @tparam T Task type
+template <typename T>
+concept HasTaskMetadata = requires {
+    { T::name() } -> std::convertible_to<const char*>;
+    { T::stack_size() } -> std::convertible_to<size_t>;
+    { T::priority() } -> std::convertible_to<class Priority>;
+};
+
+/// Concept: ValidTask<T>
+///
+/// Comprehensive validation for a task type.
+///
+/// @tparam T Task type
+template <typename T>
+concept ValidTask =
+    HasTaskMetadata<T> &&
+    requires {
+        requires T::stack_size() >= 256;
+        requires T::stack_size() <= 65536;
+        requires (T::stack_size() % 8) == 0;
+    };
+
+// ============================================================================
+// Memory Pool Concepts (for Phase 6)
+// ============================================================================
+
+/// Concept: PoolAllocatable<T>
+///
+/// Validates type is suitable for pool allocation.
+///
+/// @tparam T Type to check
+template <typename T>
+concept PoolAllocatable =
+    std::is_trivially_destructible_v<T> &&
+    sizeof(T) <= 4096 &&  // Reasonable size limit
+    alignof(T) <= 64;     // Reasonable alignment
+
+/// Concept: MemoryPool<P, T>
+///
+/// Validates memory pool interface.
+///
+/// @tparam P Pool type
+/// @tparam T Allocated type
+template <typename P, typename T>
+concept MemoryPool = requires(P p, T* ptr) {
+    { p.allocate() } -> std::same_as<core::Result<T*, class RTOSError>>;
+    { p.deallocate(ptr) } -> std::same_as<core::Result<void, class RTOSError>>;
+    { p.available() } -> std::convertible_to<size_t>;
+};
+
+// ============================================================================
+// Interrupt Safety Concepts
+// ============================================================================
+
+/// Concept: ISRSafe<F>
+///
+/// Validates that a function can be called from ISR context.
+/// ISR-safe functions must:
+/// - Not block
+/// - Not allocate memory
+/// - Be reentrant
+///
+/// Note: This is a marker concept - actual ISR safety must be
+/// verified by code review and testing.
+///
+/// @tparam F Function type
+template <typename F>
+concept ISRSafe =
+    std::is_invocable_v<F> &&
+    requires {
+        requires noexcept(std::declval<F>()());
+    };
+
+// ============================================================================
+// Compile-Time Deadlock Detection Helpers
+// ============================================================================
+
+/// Check if two priorities can cause priority inversion
+///
+/// @tparam HighPri High priority value
+/// @tparam LowPri Low priority value
+/// @return true if can cause inversion
+template <core::u8 HighPri, core::u8 LowPri>
+consteval bool can_cause_priority_inversion() {
+    return HighPri > LowPri + 1;  // Gap > 1 allows medium priority to preempt
+}
+
+/// Detect potential deadlock in resource acquisition order
+///
+/// Deadlock can occur if:
+/// - Task A locks R1 then R2
+/// - Task B locks R2 then R1
+///
+/// This helper validates resource ordering.
+///
+/// @tparam ResourceIds Ordered resource IDs
+/// @return true if ordering is consistent
+template <core::u8... ResourceIds>
+consteval bool has_consistent_lock_order() {
+    constexpr core::u8 ids[] = {ResourceIds...};
+    constexpr size_t N = sizeof...(ResourceIds);
+
+    // Check if strictly increasing (consistent order)
+    for (size_t i = 1; i < N; ++i) {
+        if (ids[i] <= ids[i-1]) {
+            return false;  // Not strictly increasing
+        }
+    }
+    return true;
+}
+
+// ============================================================================
+// Advanced Validation
+// ============================================================================
+
+/// Calculate worst-case stack usage for nested calls
+///
+/// @tparam StackUsages Individual function stack usages
+/// @return Total worst-case stack
+template <size_t... StackUsages>
+consteval size_t worst_case_stack_usage() {
+    return (StackUsages + ...);  // Sum all (worst case: all nested)
+}
+
+/// Validate that total queue memory fits in RAM budget
+///
+/// @tparam QueueSizes Individual queue sizes (capacity * sizeof(T))
+/// @tparam MaxRAM Maximum RAM budget
+/// @return true if fits
+template <size_t MaxRAM, size_t... QueueSizes>
+consteval bool queue_memory_fits_budget() {
+    constexpr size_t total = (QueueSizes + ...);
+    return total <= MaxRAM;
+}
+
+/// Calculate response time for highest priority task
+///
+/// Simplified Rate Monotonic Analysis (RMA)
+///
+/// @tparam ExecutionTime Task execution time (us)
+/// @tparam Period Task period (us)
+/// @return true if schedulable
+template <core::u32 ExecutionTime, core::u32 Period>
+consteval bool is_schedulable() {
+    // Utilization must be <= 100%
+    return ExecutionTime <= Period;
+}
+
 }  // namespace alloy::rtos
 
 #endif  // ALLOY_RTOS_CONCEPTS_HPP

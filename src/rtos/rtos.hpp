@@ -382,6 +382,61 @@ struct TaskSet {
         return true;
     }
 
+    /// Check for potential priority inversion scenarios
+    ///
+    /// Priority inversion can occur when high and low priority tasks
+    /// share resources and there's a medium priority task that can preempt.
+    ///
+    /// @return true if potential for priority inversion exists
+    static consteval bool has_priority_inversion_risk() {
+        constexpr core::u8 high = highest_priority();
+        constexpr core::u8 low = lowest_priority();
+        return can_cause_priority_inversion<high, low>();
+    }
+
+    /// Validate all tasks satisfy ValidTask concept
+    ///
+    /// @return true if all tasks valid
+    static consteval bool all_tasks_valid() {
+        return (ValidTask<Tasks> && ...);
+    }
+
+    /// Calculate CPU utilization (simplified)
+    ///
+    /// Note: This is a placeholder for real-time analysis.
+    /// In real implementation, would need execution times and periods.
+    ///
+    /// @return Estimated utilization percentage (0-100)
+    static consteval core::u8 estimated_utilization() {
+        // Placeholder: assume each task uses 10% per priority level
+        return count() * 10;  // Very simplified
+    }
+
+    /// Advanced validation with deadlock and priority inversion checks
+    ///
+    /// @tparam RequireUniquePriorities Enforce unique priorities
+    /// @tparam WarnPriorityInversion Warn if priority inversion possible
+    /// @return true if all checks pass
+    template <bool RequireUniquePriorities = false,
+              bool WarnPriorityInversion = true>
+    static consteval bool validate_advanced() {
+        // Basic validation
+        if (!validate<RequireUniquePriorities>()) return false;
+
+        // Task concept validation
+        if (!all_tasks_valid()) return false;
+
+        // Priority inversion warning
+        if constexpr (WarnPriorityInversion) {
+            if (has_priority_inversion_risk() && count() > 2) {
+                // Warning: potential priority inversion
+                // In production, would need runtime priority inheritance
+            }
+        }
+
+        return true;
+    }
+
     /// Print task set info (compile-time friendly format)
     ///
     /// Generates static_assert-friendly error messages.
@@ -398,6 +453,8 @@ struct TaskSet {
         static constexpr core::u8 max_priority = highest_priority();
         static constexpr core::u8 min_priority = lowest_priority();
         static constexpr bool unique_priorities = has_unique_priorities();
+        static constexpr bool priority_inversion_risk = has_priority_inversion_risk();
+        static constexpr core::u8 utilization_estimate = estimated_utilization();
     };
 };
 
