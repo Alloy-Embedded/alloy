@@ -230,12 +230,13 @@ class LockGuard {
     /// @param timeout_ms Timeout for lock (default: INFINITE)
     explicit LockGuard(Mutex& mutex, core::u32 timeout_ms = INFINITE)
         : mutex_(mutex),
-          locked_(mutex_.lock(timeout_ms)) {}
+          locked_(mutex_.lock(timeout_ms).is_ok()) {}
 
     /// Destructor - unlocks mutex if locked
     ~LockGuard() {
         if (locked_) {
-            mutex_.unlock();
+            // Ignore unlock result in destructor (no exceptions)
+            (void)mutex_.unlock();
         }
     }
 
