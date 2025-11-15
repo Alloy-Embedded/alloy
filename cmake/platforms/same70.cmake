@@ -27,6 +27,11 @@ message(STATUS "Configuring for SAME70 platform (ARM Cortex-M7)")
 # Set platform directory for this family
 set(ALLOY_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/atmel/same70)
 
+# Add src/ to include path so startup code can find headers
+# This is needed because target_include_directories() in CMakeLists.txt
+# doesn't always apply to STATIC library's own source compilation
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+
 # ------------------------------------------------------------------------------
 # Toolchain Requirements
 # ------------------------------------------------------------------------------

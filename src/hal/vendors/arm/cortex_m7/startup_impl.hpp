@@ -50,11 +50,14 @@ public:
         uint32_t* dst_end
     ) {
         // Modern C++: use std::copy
-        std::copy(
-            src_start,
-            src_start + (dst_end - dst_start),
-            dst_start
-        );
+        // Guard against empty section to avoid array-bounds warnings
+        if (dst_start != dst_end) {
+            std::copy(
+                src_start,
+                src_start + (dst_end - dst_start),
+                dst_start
+            );
+        }
     }
 
     /**
@@ -76,7 +79,10 @@ public:
         uint32_t* end
     ) {
         // Modern C++: use std::fill
-        std::fill(start, end, 0);
+        // Guard against empty section to avoid array-bounds warnings
+        if (start != end) {
+            std::fill(start, end, 0);
+        }
     }
 
     /**
@@ -156,7 +162,8 @@ public:
         pre_main_init();
 
         // 6. Call main
-        ::main();
+        // Call directly - the forward declaration at the top of file handles the signature
+        (void)main();
 
         // 7. If main returns, infinite loop
         while (true) {
@@ -193,8 +200,7 @@ public:
         );
 
         // Call main
-        extern int main();
-        main();
+        (void)main();
 
         // Infinite loop
         while (true) {
@@ -243,8 +249,7 @@ public:
         pre_main();
 
         // Call main
-        extern int main();
-        main();
+        (void)main();
 
         // Infinite loop
         while (true) {
