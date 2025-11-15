@@ -21,6 +21,13 @@
 message(STATUS "Configuring for SAME70 platform (ARM Cortex-M7)")
 
 # ------------------------------------------------------------------------------
+# Platform Directory
+# ------------------------------------------------------------------------------
+
+# Set platform directory for this family
+set(ALLOY_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/atmel/same70)
+
+# ------------------------------------------------------------------------------
 # Toolchain Requirements
 # ------------------------------------------------------------------------------
 
