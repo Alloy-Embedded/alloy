@@ -107,4 +107,4 @@ struct UartConfig {
     static constexpr uint32_t default_baud_rate = 115200;
 };
 
-} // namespace nucleo_f401re
+} // namespace nucleo_f722ze
