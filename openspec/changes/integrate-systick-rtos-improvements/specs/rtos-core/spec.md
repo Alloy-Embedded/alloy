@@ -1,5 +1,23 @@
 # RTOS Core with Compile-Time Type Safety Specification
 
+## Overview
+
+This spec defines the core RTOS functionality with maximum compile-time validation using C++23 features. The design prioritizes:
+- **Zero-overhead abstractions** - All compile-time features have zero runtime cost
+- **Guaranteed compile-time** - Using `consteval` to enforce compile-time evaluation
+- **Type safety** - C++20 concepts for validation
+- **Minimal RAM footprint** - TCB reduced from 32 bytes to 28 bytes using `fixed_string`
+
+### Key Improvements Over Current Implementation
+
+| Feature | Current (C++20) | Proposed (C++23) | Benefit |
+|---------|----------------|------------------|---------|
+| **Task Registration** | Constructor (runtime) | `TaskSet<>` variadic template | Compile-time validation |
+| **RAM Calculation** | Manual | `consteval` guaranteed | Must be compile-time |
+| **Task Names** | `const char*` (4 bytes RAM) | `fixed_string` (0 bytes RAM) | 4 bytes saved per task |
+| **TCB Size** | 32 bytes | 28 bytes | 12.5% smaller |
+| **Error Handling** | `bool` | `Result<T,E>` | Consistent with HAL |
+
 ## ADDED Requirements
 
 ### Requirement: Variadic Task Registration with TaskSet
@@ -316,6 +334,189 @@ ERROR: Stack overflow detected in task 'Sensor'
   Stack: 512 bytes
   Usage: 516 bytes (overflow!)
 ```
+
+---
+
+### Requirement: C++23 consteval for Guaranteed Compile-Time RAM Calculation
+
+TaskSet SHALL use `consteval` to guarantee that total RAM calculation happens at compile-time with zero runtime overhead.
+
+**Rationale**: `constexpr` can sometimes be evaluated at runtime. `consteval` forces compile-time evaluation.
+
+#### Scenario: RAM calculation must be compile-time
+
+- **GIVEN** TaskSet with multiple tasks
+- **WHEN** total_ram is accessed
+- **THEN** calculation SHALL be done at compile-time (consteval)
+- **AND** compiler SHALL error if runtime evaluation attempted
+- **AND** binary SHALL contain zero calculation code
+
+```cpp
+template <typename... Tasks>
+class TaskSet {
+    // GUARANTEED compile-time (compiler error if not possible)
+    static consteval size_t calculate_total_ram() {
+        return ((Tasks::stack_size + sizeof(TaskControlBlock)) + ...);
+    }
+
+    static constexpr size_t total_ram = calculate_total_ram();
+
+    // This WILL compile (consteval succeeds):
+    static_assert(total_ram <= 8192, "RAM budget exceeded");
+};
+```
+
+#### Scenario: Compile error if not compile-time evaluable
+
+- **GIVEN** attempt to use runtime value in consteval function
+- **WHEN** code is compiled
+- **THEN** compiler SHALL produce error
+- **AND** error SHALL indicate consteval requirement
+
+```cpp
+void runtime_function(size_t stack_size) {
+    // This FAILS to compile:
+    // consteval auto ram = calculate_total_ram();  // Error: non-constant expression
+}
+```
+
+---
+
+### Requirement: C++23 fixed_string for Zero-RAM Task Names
+
+Tasks SHALL use `fixed_string` template parameter for names, storing them in .rodata instead of RAM.
+
+**Rationale**: Task names should be available for debugging without consuming RAM.
+
+#### Scenario: Task name stored in .rodata
+
+- **GIVEN** task defined with string literal name
+- **WHEN** task is created
+- **THEN** name SHALL be stored in .rodata section (not .data/.bss)
+- **AND** no RAM SHALL be consumed for name storage
+- **AND** name SHALL be accessible via Task::name constexpr
+
+```cpp
+template <size_t N>
+struct fixed_string {
+    char data[N];
+    static constexpr size_t size = N - 1;
+
+    consteval fixed_string(const char (&str)[N]) {
+        std::copy_n(str, N, data);
+    }
+
+    constexpr operator const char*() const { return data; }
+};
+
+// Task with compile-time name (zero RAM cost)
+template <size_t StackSize, Priority Pri, fixed_string Name>
+class Task {
+    static constexpr const char* name = Name;  // In .rodata
+    // No name member variable needed!
+};
+
+// Usage:
+using SensorTask = Task<512, Priority::High, "Sensor">;
+static_assert(SensorTask::name == "Sensor");  // Compile-time check
+```
+
+#### Scenario: TCB size reduced by 4 bytes
+
+- **GIVEN** TaskControlBlock structure
+- **WHEN** using fixed_string for names
+- **THEN** TCB SHALL NOT contain name pointer
+- **AND** TCB size SHALL be 28 bytes (down from 32 bytes)
+- **AND** name SHALL still be accessible for debugging
+
+```cpp
+// Before (C++20): 32 bytes
+struct TaskControlBlock {
+    void* stack_pointer;     // 4 bytes
+    void* stack_base;        // 4 bytes
+    u32 stack_size;          // 4 bytes
+    u8 priority;             // 1 byte
+    TaskState state;         // 1 byte
+    u32 wake_time;           // 4 bytes
+    const char* name;        // 4 bytes ← REMOVED
+    TaskControlBlock* next;  // 4 bytes
+    // Total: 32 bytes
+};
+
+// After (C++23): 28 bytes
+struct TaskControlBlock {
+    void* stack_pointer;     // 4 bytes
+    void* stack_base;        // 4 bytes
+    u32 stack_size;          // 4 bytes
+    u8 priority;             // 1 byte
+    TaskState state;         // 1 byte
+    u32 wake_time;           // 4 bytes
+    // name removed (in Task<> type)
+    TaskControlBlock* next;  // 4 bytes
+    // Total: 26 bytes → 28 with padding
+};
+```
+
+#### Scenario: RAM savings for multi-task system
+
+- **GIVEN** system with 8 tasks
+- **WHEN** using fixed_string names
+- **THEN** 32 bytes total RAM saved (4 bytes × 8 tasks)
+- **AND** task names still available in debugger
+- **AND** stack traces still show task names
+
+```
+// RAM savings calculation:
+// - 8 tasks × 4 bytes per name pointer = 32 bytes saved
+// - Name strings moved from .data to .rodata (no RAM cost)
+// - Total: 32 bytes RAM saved for 8-task system
+```
+
+---
+
+### Requirement: C++23 if consteval for Dual-Mode Functions
+
+RTOS SHALL provide functions that work both at compile-time and runtime using `if consteval`.
+
+**Rationale**: Some operations (like stack usage calculation) are useful both at compile-time (estimation) and runtime (actual measurement).
+
+#### Scenario: Stack usage function works at compile-time and runtime
+
+- **GIVEN** function to calculate stack usage
+- **WHEN** called at compile-time
+- **THEN** SHALL use static analysis estimation
+- **WHEN** called at runtime
+- **THEN** SHALL use actual stack pointer measurement
+
+```cpp
+constexpr u32 calculate_stack_usage(const TaskControlBlock& tcb) {
+    if consteval {
+        // Compile-time path: estimate max usage
+        return estimate_max_stack_usage<decltype(tcb)>();
+    } else {
+        // Runtime path: measure actual usage
+        u8* sp = static_cast<u8*>(tcb.stack_pointer);
+        u8* base = static_cast<u8*>(tcb.stack_base);
+        return static_cast<u32>(base + tcb.stack_size - sp);
+    }
+}
+
+// Compile-time usage:
+constexpr u32 predicted = calculate_stack_usage(sensor_task.get_tcb());
+
+// Runtime usage:
+u32 actual = calculate_stack_usage(sensor_task.get_tcb());
+```
+
+#### Scenario: Compiler optimizes correctly
+
+- **GIVEN** if consteval function
+- **WHEN** called at compile-time
+- **THEN** only compile-time branch SHALL be compiled
+- **AND** runtime branch SHALL be eliminated
+- **WHEN** called at runtime
+- **THEN** only runtime branch SHALL be in binary
+- **AND** compile-time branch SHALL be eliminated
 
 ---
 

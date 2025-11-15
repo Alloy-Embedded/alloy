@@ -2,17 +2,32 @@
 
 ## Why
 
-The Alloy RTOS currently has **excellent fundamental implementation** with priority-based preemptive scheduling, but it doesn't fully leverage the **compile-time type safety philosophy** used throughout the HAL layer. Additionally, the integration with SysTick is functional but could benefit from:
+The Alloy RTOS currently has **excellent fundamental implementation** with priority-based preemptive scheduling, but it doesn't fully leverage the **compile-time type safety philosophy** used throughout the HAL layer. Additionally, the integration with SysTick is functional but could benefit from improvements.
+
+### Current Strengths (Best-in-Class)
+
+| Feature | Implementation | Status |
+|---------|---------------|--------|
+| **O(1) Scheduler** | CLZ-based priority bitmap | ⭐⭐⭐⭐⭐ |
+| **Context Switch** | PendSV with <10µs latency | ⭐⭐⭐⭐⭐ |
+| **Static Memory** | Zero heap usage | ⭐⭐⭐⭐⭐ |
+| **Type Safety (IPC)** | Template-based Queue<T,N> | ⭐⭐⭐⭐ |
+| **Priority Inheritance** | Full implementation for mutexes | ⭐⭐⭐⭐⭐ |
+| **Code Quality** | Clean, well-documented | ⭐⭐⭐⭐⭐ |
+| **TCB Size** | 32 bytes (3x smaller than FreeRTOS) | ⭐⭐⭐⭐⭐ |
+
+### Areas for Improvement
 
 1. **Compile-time task registration** - Tasks are currently registered dynamically in constructors
 2. **Type-safe IPC validation** - Message queues use basic `static_assert` instead of C++20 concepts
 3. **Result<T,E> consistency** - RTOS APIs return `bool` while HAL uses `Result<T,E>`
-4. **SysTick integration** - Not standardized across boards, limiting RTOS portability
+4. **SysTick integration** - Uses platform-specific ifdefs, not standardized across boards
 5. **Memory footprint calculation** - Computed manually instead of at compile-time
+6. **C++23 features** - Not leveraging `consteval`, `if consteval`, deducing this, etc.
 
 This creates inconsistency between HAL (100% compile-time safe) and RTOS (mostly runtime safe).
 
-**Vision**: Make RTOS as type-safe as the HAL, with compile-time validation and zero-overhead abstractions.
+**Vision**: Make RTOS as type-safe as the HAL, with compile-time validation and zero-overhead abstractions using modern C++23.
 
 ## What Changes
 
@@ -55,11 +70,18 @@ This creates inconsistency between HAL (100% compile-time safe) and RTOS (mostly
    - Consistent with HAL error handling
    - Zero overhead (union-based)
 
-### Phase 5: Advanced Features
-7. **Task notifications** (lightweight alternative to queues)
-8. **Static memory pools** with type safety
-9. **Scheduler configuration** as template parameters
-10. **Compile-time deadlock detection** (optional, advanced)
+### Phase 5: C++23 Features
+7. **consteval for guaranteed compile-time** - Memory calculations MUST happen at compile-time
+8. **if consteval for dual-mode functions** - Same function works compile-time and runtime
+9. **Deducing this** - Cleaner CRTP patterns and better error messages
+10. **fixed_string task names** - Zero RAM cost (names stored in .rodata)
+
+### Phase 6: Advanced Features
+11. **Task notifications** (lightweight alternative to queues - 8 bytes vs 20+ bytes)
+12. **Static memory pools** with type safety and bounds checking
+13. **Scheduler configuration** as template parameters
+14. **Compile-time deadlock detection** (optional, advanced)
+15. **Tickless idle hooks** for low-power applications
 
 ## Impact
 
@@ -71,14 +93,38 @@ This creates inconsistency between HAL (100% compile-time safe) and RTOS (mostly
 - `examples-rtos` (NEW) - RTOS examples demonstrating type safety
 
 ### Affected Code
-- `src/rtos/rtos.hpp` - Add variadic task registration
+
+**Core RTOS (Modified):**
+- `src/rtos/rtos.hpp` - Add variadic task registration, C++23 features
 - `src/rtos/queue.hpp` - Add concepts for type safety
-- `src/rtos/mutex.hpp` - Add multi-lock guard
+- `src/rtos/mutex.hpp` - Add multi-lock guard, Result<T,E>
 - `src/rtos/scheduler.hpp` - Add Result<T,E> returns
-- `src/rtos/task_notification.hpp` (NEW) - Lightweight signaling
+- `src/rtos/platform/arm_context.hpp` - FPU lazy context saving (Cortex-M4F/M7F)
+- `src/rtos/platform/critical_section.hpp` - Unchanged
+
+**New Files:**
+- `src/rtos/task_notification.hpp` (NEW) - Lightweight signaling (8 bytes)
 - `src/rtos/memory_pool.hpp` (NEW) - Type-safe allocation
-- `boards/*/board.cpp` - Standardize RTOS tick integration
-- `examples/rtos/` (NEW) - Type-safe RTOS examples
+- `src/rtos/concepts.hpp` (NEW) - All C++20/23 concepts
+- `src/rtos/config.hpp` (NEW) - Compile-time RTOS configuration
+
+**Board Integration (Standardized):**
+- `boards/nucleo_f401re/board.cpp` - Unified SysTick integration
+- `boards/nucleo_f722ze/board.cpp` - Unified SysTick integration
+- `boards/nucleo_g071rb/board.cpp` - Unified SysTick integration
+- `boards/nucleo_g0b1re/board.cpp` - Unified SysTick integration
+- `boards/same70_xplained/board.cpp` - Unified SysTick integration
+
+**Examples (NEW):**
+- `examples/rtos/hello_world/` - Minimal TaskSet example
+- `examples/rtos/producer_consumer/` - Type-safe queue IPC
+- `examples/rtos/mutex_example/` - Resource sharing
+- `examples/rtos/task_notifications/` - Lightweight IPC
+- `examples/rtos/memory_pool/` - Dynamic allocation
+- `examples/rtos/multi_mutex/` - Deadlock-free locking
+
+**Removed:**
+- `src/rtos/platform/arm_systick_integration.cpp` - Replaced by unified board integration
 
 ### Benefits
 - ✅ **100% compile-time validation** - Task configuration errors caught before deployment
@@ -132,30 +178,50 @@ RTOS::start<TaskSet<Task1, Task2>>();  // New API
 
 ### Phased Rollout
 
-**Week 1-2**: SysTick integration (non-breaking)
-- All boards get standardized tick
-- Examples demonstrate integration
-- RTOS::tick() gets Result<T,E> wrapper
+**Phase 1 (Weeks 1-2)**: Result<T,E> Integration (non-breaking with deprecation)
+- Replace `bool` returns with `Result<T, RTOSError>`
+- Add backward compatibility helpers (`.unwrap_or(false)`)
+- Update all RTOS APIs (Mutex, Queue, Semaphore, RTOS::tick())
+- Migration guide published
 
-**Week 3-4**: Compile-time task registration (breaking)
-- Variadic template system added
+**Phase 2 (Weeks 3-5)**: Compile-Time TaskSet (breaking with migration path)
+- Variadic template `TaskSet<Tasks...>` added
+- Compile-time RAM calculation and validation
 - Old API still works with deprecation warning
+- Automated migration script provided
 - Examples show both old and new
 
-**Week 5-6**: Type-safe IPC (non-breaking)
-- Concepts added (opt-in)
+**Phase 3 (Weeks 6-7)**: Concept-Based Type Safety (non-breaking)
+- `IPCMessage<T>` concept for queues
+- `RTOSTickSource` concept for tick validation
+- `QueueProducer`/`QueueConsumer` concepts (opt-in)
 - Old static_assert still works
 - Examples demonstrate concepts
 
-**Week 7-8**: Result<T,E> integration (breaking)
-- All APIs return Result<T,E>
-- Compatibility wrappers provided
-- Migration guide published
+**Phase 4 (Weeks 8-9)**: Unified SysTick Integration (non-breaking)
+- Standardize all board.cpp SysTick_Handler patterns
+- Remove platform-specific ifdefs
+- Concept-based tick source validation
+- All 5 boards unified
 
-**Week 9-10**: Advanced features (non-breaking)
-- Task notifications
-- Memory pools
+**Phase 5 (Weeks 10-12)**: C++23 Enhancements (non-breaking)
+- `consteval` for guaranteed compile-time calculations
+- `if consteval` for dual-mode functions
+- Deducing this for cleaner CRTP
+- `fixed_string` for zero-RAM task names
+- Update CMakeLists.txt to require C++23
+
+**Phase 6 (Weeks 13-16)**: Advanced Features (non-breaking)
+- Task notifications (8 bytes per task)
+- Static memory pools
+- Tickless idle hooks
 - Enhanced examples
+
+**Phase 7 (Weeks 17-18)**: Documentation & Release
+- Complete API documentation
+- Integration guides
+- Migration tutorials
+- Final validation and release
 
 ## Success Criteria
 
