@@ -55,6 +55,7 @@
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
 #include "rtos/error.hpp"
+#include "rtos/concepts.hpp"
 
 #include "core/types.hpp"
 #include "core/result.hpp"
@@ -440,6 +441,10 @@ core::Result<void, RTOSError> CountingSemaphore<MaxCount>::try_take() {
     enable_interrupts();
     return Err(RTOSError::Timeout);
 }
+
+// Compile-time concept validation
+static_assert(Semaphore<BinarySemaphore>, "BinarySemaphore must satisfy Semaphore concept");
+static_assert(Semaphore<CountingSemaphore<10>>, "CountingSemaphore must satisfy Semaphore concept");
 
 }  // namespace alloy::rtos
 

@@ -59,6 +59,7 @@
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
 #include "rtos/error.hpp"
+#include "rtos/concepts.hpp"
 
 #include "core/error.hpp"
 #include "core/types.hpp"
@@ -70,16 +71,15 @@ namespace alloy::rtos {
 ///
 /// Type-safe FIFO queue for passing messages between tasks.
 ///
-/// @tparam T Message type (must be trivially copyable)
+/// @tparam T Message type (must satisfy IPCMessage concept)
 /// @tparam Capacity Maximum number of messages in queue (must be power of 2)
 ///
 /// Template constraints:
-/// - T must be trivially copyable (memcpy-safe)
+/// - T must satisfy IPCMessage concept (trivially copyable, <= 256 bytes, not a pointer)
 /// - Capacity must be between 2 and 256
 /// - Capacity must be power of 2 (for efficient modulo with mask)
-template <typename T, size_t Capacity>
+template <IPCMessage T, size_t Capacity>
 class Queue {
-    static_assert(std::is_trivially_copyable_v<T>, "Queue message type must be trivially copyable");
     static_assert(Capacity >= 2 && Capacity <= 256, "Queue capacity must be between 2 and 256");
     static_assert((Capacity & (Capacity - 1)) == 0, "Queue capacity must be power of 2");
 
