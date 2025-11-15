@@ -41,8 +41,11 @@
 
 #include "hal/interface/systick.hpp"
 
+#include "rtos/error.hpp"
+
 #include "core/error.hpp"
 #include "core/types.hpp"
+#include "core/result.hpp"
 
 namespace alloy::rtos {
 
@@ -186,8 +189,21 @@ core::u32 get_tick_count();
 
 /// Scheduler tick - called from SysTick ISR
 ///
-/// @note Internal function, do not call directly
-void tick();
+/// Updates delayed tasks and triggers context switch if needed.
+///
+/// @return Ok(void) on success, Err(RTOSError) on failure
+/// @note Internal function, called from SysTick_Handler
+///
+/// Example:
+/// ```cpp
+/// extern "C" void SysTick_Handler() {
+///     board::BoardSysTick::increment_tick();
+///     #ifdef ALLOY_RTOS_ENABLED
+///         RTOS::tick().unwrap();  // Or handle error
+///     #endif
+/// }
+/// ```
+core::Result<void, RTOSError> tick();
 
 /// Check if context switch is needed
 ///
