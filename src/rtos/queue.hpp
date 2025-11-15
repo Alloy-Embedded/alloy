@@ -58,9 +58,11 @@
 #include "rtos/platform/critical_section.hpp"
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
+#include "rtos/error.hpp"
 
 #include "core/error.hpp"
 #include "core/types.hpp"
+#include "core/result.hpp"
 
 namespace alloy::rtos {
 
@@ -113,66 +115,68 @@ class Queue {
     ///
     /// @param message Message to send (copied into queue)
     /// @param timeout_ms Timeout in milliseconds (INFINITE = wait forever)
-    /// @return true if sent successfully, false if timeout
+    /// @return Ok(void) if sent successfully, Err(RTOSError::QueueFull) if timeout
     ///
     /// Example:
     /// ```cpp
     /// SensorData data = {micros(), temp, humidity};
-    /// if (!queue.send(data, 1000)) {
+    /// auto result = queue.send(data, 1000);
+    /// if (result.is_err()) {
     ///     // Timeout - queue still full after 1 second
     /// }
     /// ```
-    bool send(const T& message, core::u32 timeout_ms = INFINITE);
+    core::Result<void, RTOSError> send(const T& message, core::u32 timeout_ms = INFINITE);
 
     /// Receive message from queue (blocking)
     ///
     /// Blocks if queue is empty. Unblocks when message becomes available.
     ///
-    /// @param message Output parameter - receives message from queue
     /// @param timeout_ms Timeout in milliseconds (INFINITE = wait forever)
-    /// @return true if received successfully, false if timeout
+    /// @return Ok(T) with message if received, Err(RTOSError::QueueEmpty) if timeout
     ///
     /// Example:
     /// ```cpp
-    /// SensorData data;
-    /// if (queue.receive(data, 1000)) {
+    /// auto result = queue.receive(1000);
+    /// if (result.is_ok()) {
+    ///     SensorData data = result.unwrap();
     ///     process(data);
     /// } else {
     ///     // Timeout - no data received in 1 second
     /// }
     /// ```
-    bool receive(T& message, core::u32 timeout_ms = INFINITE);
+    core::Result<T, RTOSError> receive(core::u32 timeout_ms = INFINITE);
 
     /// Try to send message (non-blocking)
     ///
     /// Returns immediately if queue is full (does not block).
     ///
     /// @param message Message to send
-    /// @return true if sent, false if queue is full
+    /// @return Ok(void) if sent, Err(RTOSError::QueueFull) if queue is full
     ///
     /// Example:
     /// ```cpp
-    /// if (!queue.try_send(data)) {
+    /// auto result = queue.try_send(data);
+    /// if (result.is_err()) {
     ///     // Queue full - drop message or handle error
     /// }
     /// ```
-    bool try_send(const T& message);
+    core::Result<void, RTOSError> try_send(const T& message);
 
     /// Try to receive message (non-blocking)
     ///
     /// Returns immediately if queue is empty (does not block).
     ///
-    /// @param message Output parameter - receives message
-    /// @return true if received, false if queue is empty
+    /// @return Ok(T) with message if received, Err(RTOSError::QueueEmpty) if queue is empty
     ///
     /// Example:
     /// ```cpp
-    /// SensorData data;
-    /// if (queue.try_receive(data)) {
+    /// auto result = queue.try_receive();
+    /// if (result.is_ok()) {
+    ///     SensorData data = result.unwrap();
     ///     process(data);
     /// }
     /// ```
-    bool try_receive(T& message);
+    core::Result<T, RTOSError> try_receive();
 
     /// Check if queue is empty
     ///
@@ -225,20 +229,24 @@ class Queue {
 // Template implementation
 
 template <typename T, size_t Capacity>
-bool Queue<T, Capacity>::send(const T& message, core::u32 timeout_ms) {
+core::Result<void, RTOSError> Queue<T, Capacity>::send(const T& message, core::u32 timeout_ms) {
+    using core::Ok;
+    using core::Err;
+
     core::u32 start_time = systick::micros();
 
     while (true) {
         // Try to send without blocking
-        if (try_send(message)) {
-            return true;  // Success
+        auto try_result = try_send(message);
+        if (try_result.is_ok()) {
+            return Ok();  // Success
         }
 
         // Queue is full - check timeout
         if (timeout_ms != INFINITE) {
             core::u32 elapsed = systick::micros_since(start_time);
             if (elapsed >= (timeout_ms * 1000)) {
-                return false;  // Timeout
+                return Err(RTOSError::QueueFull);
             }
         }
 
@@ -254,20 +262,24 @@ bool Queue<T, Capacity>::send(const T& message, core::u32 timeout_ms) {
 }
 
 template <typename T, size_t Capacity>
-bool Queue<T, Capacity>::receive(T& message, core::u32 timeout_ms) {
+core::Result<T, RTOSError> Queue<T, Capacity>::receive(core::u32 timeout_ms) {
+    using core::Ok;
+    using core::Err;
+
     core::u32 start_time = systick::micros();
 
     while (true) {
         // Try to receive without blocking
-        if (try_receive(message)) {
-            return true;  // Success
+        auto try_result = try_receive();
+        if (try_result.is_ok()) {
+            return try_result;  // Success - return the message
         }
 
         // Queue is empty - check timeout
         if (timeout_ms != INFINITE) {
             core::u32 elapsed = systick::micros_since(start_time);
             if (elapsed >= (timeout_ms * 1000)) {
-                return false;  // Timeout
+                return Err(RTOSError::QueueEmpty);
             }
         }
 
@@ -283,13 +295,16 @@ bool Queue<T, Capacity>::receive(T& message, core::u32 timeout_ms) {
 }
 
 template <typename T, size_t Capacity>
-bool Queue<T, Capacity>::try_send(const T& message) {
+core::Result<void, RTOSError> Queue<T, Capacity>::try_send(const T& message) {
+    using core::Ok;
+    using core::Err;
+
     disable_interrupts();
 
     // Check if queue is full
     if (count_ >= Capacity) {
         enable_interrupts();
-        return false;
+        return Err(RTOSError::QueueFull);
     }
 
     // Copy message to buffer
@@ -306,20 +321,24 @@ bool Queue<T, Capacity>::try_send(const T& message) {
         scheduler::unblock_one_task(&receive_wait_list_);
     }
 
-    return true;
+    return Ok();
 }
 
 template <typename T, size_t Capacity>
-bool Queue<T, Capacity>::try_receive(T& message) {
+core::Result<T, RTOSError> Queue<T, Capacity>::try_receive() {
+    using core::Ok;
+    using core::Err;
+
     disable_interrupts();
 
     // Check if queue is empty
     if (count_ == 0) {
         enable_interrupts();
-        return false;
+        return Err(RTOSError::QueueEmpty);
     }
 
     // Copy message from buffer
+    T message;
     std::memcpy(&message, &buffer_[tail_], sizeof(T));
 
     // Advance tail pointer (wrap with mask)
@@ -333,7 +352,7 @@ bool Queue<T, Capacity>::try_receive(T& message) {
         scheduler::unblock_one_task(&send_wait_list_);
     }
 
-    return true;
+    return Ok(message);
 }
 
 }  // namespace alloy::rtos
