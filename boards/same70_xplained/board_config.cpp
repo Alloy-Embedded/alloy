@@ -7,8 +7,8 @@
  */
 
 #include "board_config.hpp"
-#include "hal/platform/same70/clock.hpp"
-#include "hal/platform/same70/systick.hpp"
+#include "hal/vendors/arm/same70/clock.hpp"
+#include "hal/vendors/arm/same70/systick.hpp"
 
 namespace alloy::boards::same70_xplained {
 namespace board {

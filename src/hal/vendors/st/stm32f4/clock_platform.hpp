@@ -46,10 +46,10 @@
 
 #include "core/result.hpp"
 #include "core/error.hpp"
-#include "hal/vendors/st/stm32f4/registers/rcc_registers.hpp"
-#include "hal/vendors/st/stm32f4/registers/flash_registers.hpp"
-#include "hal/vendors/st/stm32f4/bitfields/rcc_bitfields.hpp"
-#include "hal/vendors/st/stm32f4/bitfields/flash_bitfields.hpp"
+#include "hal/vendors/st/stm32f4/generated/registers/rcc_registers.hpp"
+#include "hal/vendors/st/stm32f4/generated/registers/flash_registers.hpp"
+#include "hal/vendors/st/stm32f4/generated/bitfields/rcc_bitfields.hpp"
+#include "hal/vendors/st/stm32f4/generated/bitfields/flash_bitfields.hpp"
 #include <cstdint>
 
 namespace alloy::hal::st::stm32f4 {

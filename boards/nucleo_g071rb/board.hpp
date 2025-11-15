@@ -38,8 +38,8 @@
 
 #include "board_config.hpp"
 #include "hal/api/gpio_simple.hpp"
-#include "hal/platform/st/stm32g0/gpio.hpp"
-#include "hal/platform/st/stm32g0/systick_platform.hpp"
+#include "hal/vendors/st/stm32g0/gpio.hpp"
+#include "hal/vendors/st/stm32g0/systick_platform.hpp"
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
 #include <cstdint>
 

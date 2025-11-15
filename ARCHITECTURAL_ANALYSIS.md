@@ -1,4 +1,4 @@
-# Análise Arquitetural Abrangente: CoreZero/Alloy Framework
+# Análise Arquitetural Abrangente: Alloy/Alloy Framework
 
 **Data da Análise:** 14 de Novembro de 2025
 **Versão do Código:** main branch (commit bc85b54b)
@@ -9,7 +9,7 @@
 
 ## Sumário Executivo
 
-CoreZero (também chamado "Alloy") é um framework C++20 moderno e ambicioso para sistemas embarcados bare-metal. Demonstra **visão técnica excepcional** com abstrações sofisticadas em tempo de compilação, mas apresenta sinais de **evolução rápida** levando a inconsistências organizacionais.
+Alloy (também chamado "Alloy") é um framework C++20 moderno e ambicioso para sistemas embarcados bare-metal. Demonstra **visão técnica excepcional** com abstrações sofisticadas em tempo de compilação, mas apresenta sinais de **evolução rápida** levando a inconsistências organizacionais.
 
 **Pontuação Geral: B+ (Muito Bom, Precisa de Polimento)**
 
@@ -2241,7 +2241,7 @@ jobs:
 | 1 | **Dual HAL Structure** (vendors/ vs platform/) | 🔴 Alto | 2-3 dias | P0 |
 | 2 | **Board Abstraction Incompleta** (#ifdef ladders) | 🔴 Alto | 1 dia | P0 |
 | 3 | **Documentação vs Realidade** (boards não implementados) | 🔴 Alto | 2 horas | P0 |
-| 4 | **Naming Inconsistency** (Alloy vs CoreZero) | 🔴 Alto | 1 dia | P0 |
+| 4 | **Naming Inconsistency** (Alloy vs Alloy) | 🔴 Alto | 1 dia | P0 |
 
 ### Significativos (🟡 Endereçar Logo)
 
@@ -2325,7 +2325,7 @@ jobs:
    - **Esforço:** 1 dia
 
 3. **Padronizar naming**
-   - **Escolha:** "Alloy" OU "CoreZero" (recomendo Alloy - mais único)
+   - **Escolha:** "Alloy" OU "Alloy" (recomendo Alloy - mais único)
    - **Ação:** Global rename de namespaces, READMEs, CMake
    - **Esforço:** 1 dia
 
@@ -2444,7 +2444,7 @@ jobs:
 
 ### vs. ARM CMSIS
 
-| Aspecto | Alloy/CoreZero | CMSIS | Vencedor |
+| Aspecto | Alloy/Alloy | CMSIS | Vencedor |
 |---------|----------------|-------|----------|
 | Linguagem | C++20 | C99 | ✅ Alloy (moderna) |
 | Type Safety | Alta | Baixa | ✅ Alloy |
@@ -2457,7 +2457,7 @@ jobs:
 
 ### vs. Zephyr RTOS
 
-| Aspecto | Alloy/CoreZero | Zephyr | Vencedor |
+| Aspecto | Alloy/Alloy | Zephyr | Vencedor |
 |---------|----------------|--------|----------|
 | Complexidade | Simples | Alta | ✅ Alloy |
 | Linguagem | C++20 | C | ✅ Alloy (preferência) |
@@ -2470,7 +2470,7 @@ jobs:
 
 ### vs. mbed
 
-| Aspecto | Alloy/CoreZero | mbed | Vencedor |
+| Aspecto | Alloy/Alloy | mbed | Vencedor |
 |---------|----------------|------|----------|
 | Desenvolvimento Ativo | ✅ Sim | ❌ Archived | ✅ Alloy |
 | C++ Moderno | C++20 | C++11 | ✅ Alloy |
@@ -2517,13 +2517,13 @@ jobs:
 
 ### Veredito
 
-**CoreZero/Alloy demonstra mérito técnico excepcional e visão arquitetural moderna.** O framework usa policy-based design, code generation, e C++20 de forma exemplar, atingindo true zero-overhead abstractions.
+**Alloy/Alloy demonstra mérito técnico excepcional e visão arquitetural moderna.** O framework usa policy-based design, code generation, e C++20 de forma exemplar, atingindo true zero-overhead abstractions.
 
 **Porém, o projeto sofre de drift arquitetural durante evolução rápida,** resultando em:
 - Estrutura dual de diretórios (vendors/ vs platform/)
 - Abstrações inconsistentes entre famílias
 - Gaps de documentação
-- Naming confusion (Alloy vs CoreZero)
+- Naming confusion (Alloy vs Alloy)
 
 ### Recomendação Principal
 
@@ -2531,10 +2531,10 @@ jobs:
 
 1. ✅ Merge dual systems (vendors/platform)
 2. ✅ Complete board abstraction
-3. ✅ Standardize naming (escolher Alloy OU CoreZero)
+3. ✅ Standardize naming (escolher Alloy OU Alloy)
 4. ✅ Update documentation
 
-**Com estas melhorias, CoreZero/Alloy pode se tornar framework embedded C++ best-in-class.**
+**Com estas melhorias, Alloy/Alloy pode se tornar framework embedded C++ best-in-class.**
 
 ### Fatores-Chave de Sucesso
 

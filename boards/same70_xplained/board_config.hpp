@@ -15,8 +15,8 @@
  */
 
 #include <cstdint>
-#include "hal/platform/same70/gpio.hpp"
-#include "hal/platform/same70/clock.hpp"
+#include "hal/vendors/arm/same70/gpio.hpp"
+#include "hal/vendors/arm/same70/clock.hpp"
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 namespace board::same70_xplained {

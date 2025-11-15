@@ -8,7 +8,7 @@
 
 #include "board.hpp"
 #include "hal/api/systick_simple.hpp"
-#include "hal/platform/st/stm32f7/clock_platform.hpp"
+#include "hal/vendors/st/stm32f7/clock_platform.hpp"
 #include <cstdint>
 
 #ifdef ALLOY_RTOS_ENABLED

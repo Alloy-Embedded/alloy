@@ -8,7 +8,7 @@
 
 ## 🎯 Goal
 
-Clean up and organize the CoreZero framework to have only essential code with a single board (SAME70 Xplained) and a single portable example (blink_led) that demonstrates the power of board abstraction.
+Clean up and organize the Alloy framework to have only essential code with a single board (SAME70 Xplained) and a single portable example (blink_led) that demonstrates the power of board abstraction.
 
 ---
 

@@ -8,7 +8,7 @@
 
 #include "board.hpp"
 #include "hal/api/systick_simple.hpp"
-#include "hal/platform/st/stm32f4/clock_platform.hpp"
+#include "hal/vendors/st/stm32f4/clock_platform.hpp"
 #include <cstdint>
 
 using namespace alloy::hal::st::stm32f4;

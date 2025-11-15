@@ -8,7 +8,7 @@
  * development board (MB1360).
  */
 
-#include "hal/platform/st/stm32g0/gpio.hpp"
+#include "hal/vendors/st/stm32g0/gpio.hpp"
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
 #include <cstdint>
 

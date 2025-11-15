@@ -1,8 +1,8 @@
-# Adding a New MCU Family to CoreZero
+# Adding a New MCU Family to Alloy
 
 **Complete Guide with Real-World Example (STM32G0)**
 
-This document provides a step-by-step guide for adding support for a new MCU family to the CoreZero framework. It uses the STM32G0 family as a real-world example throughout.
+This document provides a step-by-step guide for adding support for a new MCU family to the Alloy framework. It uses the STM32G0 family as a real-world example throughout.
 
 ---
 
@@ -20,7 +20,7 @@ This document provides a step-by-step guide for adding support for a new MCU fam
 
 ## Overview
 
-Adding a new MCU family involves several layers of the CoreZero architecture:
+Adding a new MCU family involves several layers of the Alloy architecture:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -890,7 +890,7 @@ Use this checklist when adding a new family:
 
 ## Summary
 
-Adding a new MCU family to CoreZero involves:
+Adding a new MCU family to Alloy involves:
 
 1. **Auto-generate** registers, bitfields, and startup code from SVD
 2. **Create** JSON metadata for hardware policies

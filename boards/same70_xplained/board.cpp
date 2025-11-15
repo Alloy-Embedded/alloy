@@ -12,9 +12,9 @@
 #include "hal/api/clock_simple.hpp"
 #include "hal/api/systick_simple.hpp"
 #include "hal/api/watchdog_simple.hpp"
-#include "hal/platform/same70/clock.hpp"
-#include "hal/platform/same70/interrupt.hpp"
-#include "hal/platform/same70/systick_platform.hpp"
+#include "hal/vendors/arm/same70/clock.hpp"
+#include "hal/vendors/arm/same70/interrupt.hpp"
+#include "hal/vendors/arm/same70/systick_platform.hpp"
 #include "hal/vendors/atmel/same70/watchdog_hardware_policy.hpp"
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 #include <cstdint>
