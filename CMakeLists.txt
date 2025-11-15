@@ -39,6 +39,7 @@ set_property(CACHE ALLOY_BOARD PROPERTY STRINGS
     "nucleo_g0b1re"      # STM32 Nucleo-G0B1RE
     "nucleo_g071rb"      # STM32 Nucleo-G071RB
     "nucleo_f401re"      # STM32 Nucleo-F401RE
+    "nucleo_f722ze"      # STM32 Nucleo-F722ZE
 )
 
 # Build type
@@ -100,6 +101,8 @@ if(NOT ALLOY_PLATFORM)
         set(ALLOY_PLATFORM "stm32g0")
     elseif(ALLOY_BOARD STREQUAL "nucleo_f401re" OR ALLOY_BOARD MATCHES "^stm32f4" OR ALLOY_BOARD MATCHES "^nucleo_f4")
         set(ALLOY_PLATFORM "stm32f4")
+    elseif(ALLOY_BOARD STREQUAL "nucleo_f722ze" OR ALLOY_BOARD MATCHES "^stm32f7" OR ALLOY_BOARD MATCHES "^nucleo_f7")
+        set(ALLOY_PLATFORM "stm32f7")
     else()
         message(WARNING "Could not auto-detect ALLOY_PLATFORM from ALLOY_BOARD='${ALLOY_BOARD}'. Using 'linux' as fallback.")
         set(ALLOY_PLATFORM "linux")
@@ -136,6 +139,10 @@ elseif(ALLOY_BOARD STREQUAL "nucleo_f401re")
     set(BOARD_HEADER_PATH "boards/nucleo_f401re/board.hpp")
     set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32f4/stm32f401/startup.cpp")
     set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/nucleo_f401re/STM32F401RET6.ld")
+elseif(ALLOY_BOARD STREQUAL "nucleo_f722ze")
+    set(BOARD_HEADER_PATH "boards/nucleo_f722ze/board.hpp")
+    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32f7/stm32f722/startup.cpp")
+    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/nucleo_f722ze/STM32F722ZET6.ld")
 elseif(ALLOY_BOARD STREQUAL "host")
     set(BOARD_HEADER_PATH "boards/linux_host/board.hpp")
     # No startup code needed for host platform
@@ -274,7 +281,7 @@ endif()
 # The same code compiles for different boards by including the appropriate board.hpp
 
 # Universal blink example - demonstrates board abstraction power
-if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD STREQUAL "nucleo_f401re")
+if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD STREQUAL "nucleo_f401re" OR ALLOY_BOARD STREQUAL "nucleo_f722ze")
     add_subdirectory(examples/blink)
 endif()
 

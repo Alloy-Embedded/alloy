@@ -1,22 +1,22 @@
 /**
  * @file board.cpp
- * @brief Nucleo-F401RE Board Implementation
+ * @brief Nucleo-F722ZE Board Implementation
  *
- * Implements hardware initialization and support for the STM32 Nucleo-F401RE
+ * Implements hardware initialization and support for the STM32 Nucleo-F722ZE
  * development board (MB1136).
  */
 
 #include "board.hpp"
 #include "hal/api/systick_simple.hpp"
-#include "hal/platform/st/stm32f4/clock_platform.hpp"
+#include "hal/platform/st/stm32f7/clock_platform.hpp"
 #include <cstdint>
 
-using namespace alloy::hal::st::stm32f4;
-using namespace alloy::generated::stm32f401;
+using namespace alloy::hal::st::stm32f7;
+using namespace alloy::generated::stm32f722;
 using namespace alloy::hal;
 
 // Board clock type using config from board_config.hpp
-using BoardClock = Stm32f4Clock<nucleo_f401re::ClockConfig>;
+using BoardClock = Stm32f7Clock<nucleo_f722ze::ClockConfig>;
 
 namespace board {
 
@@ -37,7 +37,7 @@ static LedConfig::led_green led_pin;
 /**
  * @brief Configure system clock using BoardClock policy
  *
- * Uses the Stm32f4Clock policy template with configuration from board_config.hpp.
+ * Uses the Stm32f7Clock policy template with configuration from board_config.hpp.
  * This provides a clean, type-safe interface with compile-time validation.
  *
  * Clock configuration is defined in ClockConfig struct in board_config.hpp.
@@ -52,7 +52,7 @@ static inline void configure_system_clock() {
 /**
  * @brief Enable all GPIO peripheral clocks using BoardClock policy
  *
- * Enables GPIOA through GPIOE and GPIOH clocks via the clock policy interface.
+ * Enables GPIOA through GPIOH clocks via the clock policy interface.
  */
 static inline void enable_gpio_clocks() {
     BoardClock::enable_gpio_clocks();
@@ -102,7 +102,7 @@ void init() {
         return;
     }
 
-    // Step 1: Configure system clock to 84 MHz
+    // Step 1: Configure system clock to 216 MHz
     configure_system_clock();
 
     // Step 2: Enable GPIO peripheral clocks
