@@ -28,10 +28,10 @@
 #include "core/result.hpp"
 
 // Register definitions
-#include "hal/vendors/atmel/same70/registers/pioa_registers.hpp"
+#include "hal/vendors/atmel/same70/generated/registers/pioa_registers.hpp"
 
 // Bitfield definitions
-#include "hal/vendors/atmel/same70/bitfields/pioa_bitfields.hpp"
+#include "hal/vendors/atmel/same70/generated/bitfields/pioa_bitfields.hpp"
 
 namespace alloy::hal::same70 {
 

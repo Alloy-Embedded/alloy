@@ -28,10 +28,10 @@
 #include "core/result.hpp"
 
 // Register definitions
-#include "hal/vendors/st/stm32g0/registers/gpioa_registers.hpp"
+#include "hal/vendors/st/stm32g0/generated/registers/gpioa_registers.hpp"
 
 // Bitfield definitions
-#include "hal/vendors/st/stm32g0/bitfields/gpioa_bitfields.hpp"
+#include "hal/vendors/st/stm32g0/generated/bitfields/gpioa_bitfields.hpp"
 
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"

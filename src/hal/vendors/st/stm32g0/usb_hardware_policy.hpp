@@ -28,10 +28,10 @@
 #include "core/result.hpp"
 
 // Register definitions
-#include "hal/vendors/st/stm32g0/registers/usb_registers.hpp"
+#include "hal/vendors/st/stm32g0/generated/registers/usb_registers.hpp"
 
 // Bitfield definitions
-#include "hal/vendors/st/stm32g0/bitfields/usb_bitfields.hpp"
+#include "hal/vendors/st/stm32g0/generated/bitfields/usb_bitfields.hpp"
 
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"

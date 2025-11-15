@@ -83,6 +83,33 @@ def get_family_dir(vendor: str, family: str) -> Path:
     return HAL_VENDORS_DIR / vendor.lower() / family.lower()
 
 
+def get_generated_output_dir(vendor: str, family: str, mcu: Optional[str] = None) -> Path:
+    """
+    Get the /generated/ subdirectory for auto-generated code.
+
+    This directory contains all auto-generated code (registers, bitfields, etc.)
+    that should not be manually edited.
+
+    Args:
+        vendor: Vendor name (e.g., "st", "microchip", "raspberrypi")
+        family: Family name (e.g., "stm32f1", "samd21", "rp2040")
+        mcu: Optional MCU name for MCU-specific generated code
+
+    Returns:
+        Path object for: src/hal/vendors/{vendor}/{family}/generated/
+        or src/hal/vendors/{vendor}/{family}/{mcu}/generated/
+
+    Examples:
+        >>> get_generated_output_dir("st", "stm32f4")
+        PosixPath('src/hal/vendors/st/stm32f4/generated')
+
+        >>> get_generated_output_dir("atmel", "same70", "atsame70q21b")
+        PosixPath('src/hal/vendors/atmel/same70/atsame70q21b/generated')
+    """
+    base_dir = get_mcu_output_dir(vendor, family, mcu)
+    return base_dir / "generated"
+
+
 def normalize_vendor_name(vendor: str) -> str:
     """
     Normalize vendor names to standard form.

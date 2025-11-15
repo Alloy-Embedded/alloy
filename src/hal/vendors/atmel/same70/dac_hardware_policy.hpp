@@ -28,10 +28,10 @@
 #include "core/result.hpp"
 
 // Register definitions
-#include "hal/vendors/atmel/same70/registers/dacc_registers.hpp"
+#include "hal/vendors/atmel/same70/generated/registers/dacc_registers.hpp"
 
 // Bitfield definitions
-#include "hal/vendors/atmel/same70/bitfields/dacc_bitfields.hpp"
+#include "hal/vendors/atmel/same70/generated/bitfields/dacc_bitfields.hpp"
 
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
