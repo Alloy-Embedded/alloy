@@ -210,8 +210,10 @@ public:
      * @brief Enable all GPIO peripheral clocks
      *
      * Enables clock for GPIOA through GPIOH.
+     *
+     * @return Result indicating success
      */
-    static void enable_gpio_clocks() {
+    static Result<void, ErrorCode> enable_gpio_clocks() {
         using namespace rcc;
 
         rcc::RCC()->AHB1ENR |= ahb1enr::GPIOAEN::mask |
@@ -222,6 +224,124 @@ public:
                                ahb1enr::GPIOFEN::mask |
                                ahb1enr::GPIOGEN::mask |
                                ahb1enr::GPIOHEN::mask;
+
+        return Ok();
+    }
+
+    /**
+     * @brief Enable UART/USART peripheral clock
+     *
+     * Enables clock for the specified UART/USART peripheral.
+     *
+     * @param uart_base UART/USART peripheral base address
+     * @return Result indicating success or error if invalid peripheral
+     */
+    static Result<void, ErrorCode> enable_uart_clock(uint32_t uart_base) {
+        using namespace rcc;
+
+        // USART1 and USART6 are on APB2
+        if (uart_base == 0x40011000) {  // USART1
+            rcc::RCC()->APB2ENR |= apb2enr::USART1EN::mask;
+            return Ok();
+        }
+        if (uart_base == 0x40011400) {  // USART6
+            rcc::RCC()->APB2ENR |= apb2enr::USART6EN::mask;
+            return Ok();
+        }
+
+        // USART2, USART3, UART4, UART5, UART7, UART8 are on APB1
+        if (uart_base == 0x40004400) {  // USART2
+            rcc::RCC()->APB1ENR |= apb1enr::USART2EN::mask;
+            return Ok();
+        }
+        if (uart_base == 0x40004800) {  // USART3
+            rcc::RCC()->APB1ENR |= apb1enr::USART3EN::mask;
+            return Ok();
+        }
+        if (uart_base == 0x40004C00) {  // UART4
+            rcc::RCC()->APB1ENR |= apb1enr::UART4EN::mask;
+            return Ok();
+        }
+        if (uart_base == 0x40005000) {  // UART5
+            rcc::RCC()->APB1ENR |= apb1enr::UART5EN::mask;
+            return Ok();
+        }
+        if (uart_base == 0x40007800) {  // UART7
+            rcc::RCC()->APB1ENR |= apb1enr::UART7EN::mask;
+            return Ok();
+        }
+        if (uart_base == 0x40007C00) {  // UART8
+            rcc::RCC()->APB1ENR |= apb1enr::UART8EN::mask;
+            return Ok();
+        }
+
+        return Err(ErrorCode::InvalidParameter);
+    }
+
+    /**
+     * @brief Enable SPI peripheral clock
+     *
+     * Enables clock for the specified SPI peripheral.
+     *
+     * @param spi_base SPI peripheral base address
+     * @return Result indicating success or error if invalid peripheral
+     */
+    static Result<void, ErrorCode> enable_spi_clock(uint32_t spi_base) {
+        using namespace rcc;
+
+        // SPI1, SPI4, SPI5 are on APB2
+        if (spi_base == 0x40013000) {  // SPI1
+            rcc::RCC()->APB2ENR |= apb2enr::SPI1EN::mask;
+            return Ok();
+        }
+        if (spi_base == 0x40013400) {  // SPI4
+            rcc::RCC()->APB2ENR |= apb2enr::SPI4EN::mask;
+            return Ok();
+        }
+        if (spi_base == 0x40015000) {  // SPI5
+            rcc::RCC()->APB2ENR |= apb2enr::SPI5EN::mask;
+            return Ok();
+        }
+
+        // SPI2 and SPI3 are on APB1
+        if (spi_base == 0x40003800) {  // SPI2
+            rcc::RCC()->APB1ENR |= apb1enr::SPI2EN::mask;
+            return Ok();
+        }
+        if (spi_base == 0x40003C00) {  // SPI3
+            rcc::RCC()->APB1ENR |= apb1enr::SPI3EN::mask;
+            return Ok();
+        }
+
+        return Err(ErrorCode::InvalidParameter);
+    }
+
+    /**
+     * @brief Enable I2C peripheral clock
+     *
+     * Enables clock for the specified I2C peripheral.
+     *
+     * @param i2c_base I2C peripheral base address
+     * @return Result indicating success or error if invalid peripheral
+     */
+    static Result<void, ErrorCode> enable_i2c_clock(uint32_t i2c_base) {
+        using namespace rcc;
+
+        // All I2C peripherals are on APB1
+        if (i2c_base == 0x40005400) {  // I2C1
+            rcc::RCC()->APB1ENR |= apb1enr::I2C1EN::mask;
+            return Ok();
+        }
+        if (i2c_base == 0x40005800) {  // I2C2
+            rcc::RCC()->APB1ENR |= apb1enr::I2C2EN::mask;
+            return Ok();
+        }
+        if (i2c_base == 0x40005C00) {  // I2C3
+            rcc::RCC()->APB1ENR |= apb1enr::I2C3EN::mask;
+            return Ok();
+        }
+
+        return Err(ErrorCode::InvalidParameter);
     }
 
     /**
