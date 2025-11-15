@@ -153,7 +153,7 @@ namespace respcmd {
 
 /// RESP1 - response 1..4 register
 namespace resp1 {
-    /// Card Status
+    /// see Table 132.
     /// Position: 0, Width: 32
     using CARDSTATUS1 = BitField<0, 32>;
     constexpr uint32_t CARDSTATUS1_Pos = 0;
@@ -163,7 +163,7 @@ namespace resp1 {
 
 /// RESP2 - response 1..4 register
 namespace resp2 {
-    /// Card Status
+    /// see Table 132.
     /// Position: 0, Width: 32
     using CARDSTATUS2 = BitField<0, 32>;
     constexpr uint32_t CARDSTATUS2_Pos = 0;
@@ -173,7 +173,7 @@ namespace resp2 {
 
 /// RESP3 - response 1..4 register
 namespace resp3 {
-    /// Card Status
+    /// see Table 132.
     /// Position: 0, Width: 32
     using CARDSTATUS3 = BitField<0, 32>;
     constexpr uint32_t CARDSTATUS3_Pos = 0;
@@ -183,7 +183,7 @@ namespace resp3 {
 
 /// RESP4 - response 1..4 register
 namespace resp4 {
-    /// Card Status
+    /// see Table 132.
     /// Position: 0, Width: 32
     using CARDSTATUS4 = BitField<0, 32>;
     constexpr uint32_t CARDSTATUS4_Pos = 0;

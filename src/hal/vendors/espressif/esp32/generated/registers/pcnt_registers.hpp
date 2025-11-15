@@ -17,23 +17,24 @@ namespace alloy::hal::espressif::esp32::pcnt {
 
 /// PCNT Register Structure
 struct PCNT_Registers {
+
     /// U[8]_CONF0
     /// Offset: 0x0000
     /// Reset value: 0x00003C10
-    volatile uint32_t U[8] _CONF0[8];
+    volatile uint32_t U[8]_CONF0[8];
 
     /// U[8]_CONF1
     /// Offset: 0x0004
-    volatile uint32_t U[8] _CONF1[8];
+    volatile uint32_t U[8]_CONF1[8];
 
     /// U[8]_CONF2
     /// Offset: 0x0008
-    volatile uint32_t U[8] _CONF2[8];
-    uint8_t RESERVED_0028[56];  ///< Reserved
+    volatile uint32_t U[8]_CONF2[8];
+    uint8_t RESERVED_0028[56]; ///< Reserved
 
     /// U[8]_CNT
     /// Offset: 0x0060
-    volatile uint32_t U[8] _CNT[8];
+    volatile uint32_t U[8]_CNT[8];
 
     /// INT_RAW
     /// Offset: 0x0080
@@ -53,13 +54,13 @@ struct PCNT_Registers {
 
     /// U[8]_STATUS
     /// Offset: 0x0090
-    volatile uint32_t U[8] _STATUS[8];
+    volatile uint32_t U[8]_STATUS[8];
 
     /// CTRL
     /// Offset: 0x00B0
     /// Reset value: 0x00005555
     volatile uint32_t CTRL;
-    uint8_t RESERVED_00B4[72];  ///< Reserved
+    uint8_t RESERVED_00B4[72]; ///< Reserved
 
     /// DATE
     /// Offset: 0x00FC

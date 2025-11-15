@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f0::i2c1 {
@@ -20,569 +19,569 @@ using namespace alloy::hal::bitfields;
 
 /// CR1 - Control register 1
 namespace cr1 {
-/// Peripheral enable
-/// Position: 0, Width: 1
-/// Access: read-write
-using PE = BitField<0, 1>;
-constexpr uint32_t PE_Pos = 0;
-constexpr uint32_t PE_Msk = PE::mask;
+    /// Peripheral enable
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using PE = BitField<0, 1>;
+    constexpr uint32_t PE_Pos = 0;
+    constexpr uint32_t PE_Msk = PE::mask;
 
-/// TX Interrupt enable
-/// Position: 1, Width: 1
-/// Access: read-write
-using TXIE = BitField<1, 1>;
-constexpr uint32_t TXIE_Pos = 1;
-constexpr uint32_t TXIE_Msk = TXIE::mask;
+    /// TX Interrupt enable
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using TXIE = BitField<1, 1>;
+    constexpr uint32_t TXIE_Pos = 1;
+    constexpr uint32_t TXIE_Msk = TXIE::mask;
 
-/// RX Interrupt enable
-/// Position: 2, Width: 1
-/// Access: read-write
-using RXIE = BitField<2, 1>;
-constexpr uint32_t RXIE_Pos = 2;
-constexpr uint32_t RXIE_Msk = RXIE::mask;
+    /// RX Interrupt enable
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using RXIE = BitField<2, 1>;
+    constexpr uint32_t RXIE_Pos = 2;
+    constexpr uint32_t RXIE_Msk = RXIE::mask;
 
-/// Address match interrupt enable (slave only)
-/// Position: 3, Width: 1
-/// Access: read-write
-using ADDRIE = BitField<3, 1>;
-constexpr uint32_t ADDRIE_Pos = 3;
-constexpr uint32_t ADDRIE_Msk = ADDRIE::mask;
+    /// Address match interrupt enable (slave only)
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using ADDRIE = BitField<3, 1>;
+    constexpr uint32_t ADDRIE_Pos = 3;
+    constexpr uint32_t ADDRIE_Msk = ADDRIE::mask;
 
-/// Not acknowledge received interrupt enable
-/// Position: 4, Width: 1
-/// Access: read-write
-using NACKIE = BitField<4, 1>;
-constexpr uint32_t NACKIE_Pos = 4;
-constexpr uint32_t NACKIE_Msk = NACKIE::mask;
+    /// Not acknowledge received interrupt enable
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using NACKIE = BitField<4, 1>;
+    constexpr uint32_t NACKIE_Pos = 4;
+    constexpr uint32_t NACKIE_Msk = NACKIE::mask;
 
-/// STOP detection Interrupt enable
-/// Position: 5, Width: 1
-/// Access: read-write
-using STOPIE = BitField<5, 1>;
-constexpr uint32_t STOPIE_Pos = 5;
-constexpr uint32_t STOPIE_Msk = STOPIE::mask;
+    /// STOP detection Interrupt enable
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using STOPIE = BitField<5, 1>;
+    constexpr uint32_t STOPIE_Pos = 5;
+    constexpr uint32_t STOPIE_Msk = STOPIE::mask;
 
-/// Transfer Complete interrupt enable
-/// Position: 6, Width: 1
-/// Access: read-write
-using TCIE = BitField<6, 1>;
-constexpr uint32_t TCIE_Pos = 6;
-constexpr uint32_t TCIE_Msk = TCIE::mask;
+    /// Transfer Complete interrupt enable
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using TCIE = BitField<6, 1>;
+    constexpr uint32_t TCIE_Pos = 6;
+    constexpr uint32_t TCIE_Msk = TCIE::mask;
 
-/// Error interrupts enable
-/// Position: 7, Width: 1
-/// Access: read-write
-using ERRIE = BitField<7, 1>;
-constexpr uint32_t ERRIE_Pos = 7;
-constexpr uint32_t ERRIE_Msk = ERRIE::mask;
+    /// Error interrupts enable
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using ERRIE = BitField<7, 1>;
+    constexpr uint32_t ERRIE_Pos = 7;
+    constexpr uint32_t ERRIE_Msk = ERRIE::mask;
 
-/// Digital noise filter
-/// Position: 8, Width: 4
-/// Access: read-write
-using DNF = BitField<8, 4>;
-constexpr uint32_t DNF_Pos = 8;
-constexpr uint32_t DNF_Msk = DNF::mask;
+    /// Digital noise filter
+    /// Position: 8, Width: 4
+    /// Access: read-write
+    using DNF = BitField<8, 4>;
+    constexpr uint32_t DNF_Pos = 8;
+    constexpr uint32_t DNF_Msk = DNF::mask;
 
-/// Analog noise filter OFF
-/// Position: 12, Width: 1
-/// Access: read-write
-using ANFOFF = BitField<12, 1>;
-constexpr uint32_t ANFOFF_Pos = 12;
-constexpr uint32_t ANFOFF_Msk = ANFOFF::mask;
+    /// Analog noise filter OFF
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using ANFOFF = BitField<12, 1>;
+    constexpr uint32_t ANFOFF_Pos = 12;
+    constexpr uint32_t ANFOFF_Msk = ANFOFF::mask;
 
-/// Software reset
-/// Position: 13, Width: 1
-/// Access: write-only
-using SWRST = BitField<13, 1>;
-constexpr uint32_t SWRST_Pos = 13;
-constexpr uint32_t SWRST_Msk = SWRST::mask;
+    /// Software reset
+    /// Position: 13, Width: 1
+    /// Access: write-only
+    using SWRST = BitField<13, 1>;
+    constexpr uint32_t SWRST_Pos = 13;
+    constexpr uint32_t SWRST_Msk = SWRST::mask;
 
-/// DMA transmission requests enable
-/// Position: 14, Width: 1
-/// Access: read-write
-using TXDMAEN = BitField<14, 1>;
-constexpr uint32_t TXDMAEN_Pos = 14;
-constexpr uint32_t TXDMAEN_Msk = TXDMAEN::mask;
+    /// DMA transmission requests enable
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using TXDMAEN = BitField<14, 1>;
+    constexpr uint32_t TXDMAEN_Pos = 14;
+    constexpr uint32_t TXDMAEN_Msk = TXDMAEN::mask;
 
-/// DMA reception requests enable
-/// Position: 15, Width: 1
-/// Access: read-write
-using RXDMAEN = BitField<15, 1>;
-constexpr uint32_t RXDMAEN_Pos = 15;
-constexpr uint32_t RXDMAEN_Msk = RXDMAEN::mask;
+    /// DMA reception requests enable
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using RXDMAEN = BitField<15, 1>;
+    constexpr uint32_t RXDMAEN_Pos = 15;
+    constexpr uint32_t RXDMAEN_Msk = RXDMAEN::mask;
 
-/// Slave byte control
-/// Position: 16, Width: 1
-/// Access: read-write
-using SBC = BitField<16, 1>;
-constexpr uint32_t SBC_Pos = 16;
-constexpr uint32_t SBC_Msk = SBC::mask;
+    /// Slave byte control
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using SBC = BitField<16, 1>;
+    constexpr uint32_t SBC_Pos = 16;
+    constexpr uint32_t SBC_Msk = SBC::mask;
 
-/// Clock stretching disable
-/// Position: 17, Width: 1
-/// Access: read-write
-using NOSTRETCH = BitField<17, 1>;
-constexpr uint32_t NOSTRETCH_Pos = 17;
-constexpr uint32_t NOSTRETCH_Msk = NOSTRETCH::mask;
+    /// Clock stretching disable
+    /// Position: 17, Width: 1
+    /// Access: read-write
+    using NOSTRETCH = BitField<17, 1>;
+    constexpr uint32_t NOSTRETCH_Pos = 17;
+    constexpr uint32_t NOSTRETCH_Msk = NOSTRETCH::mask;
 
-/// Wakeup from STOP enable
-/// Position: 18, Width: 1
-/// Access: read-write
-using WUPEN = BitField<18, 1>;
-constexpr uint32_t WUPEN_Pos = 18;
-constexpr uint32_t WUPEN_Msk = WUPEN::mask;
+    /// Wakeup from STOP enable
+    /// Position: 18, Width: 1
+    /// Access: read-write
+    using WUPEN = BitField<18, 1>;
+    constexpr uint32_t WUPEN_Pos = 18;
+    constexpr uint32_t WUPEN_Msk = WUPEN::mask;
 
-/// General call enable
-/// Position: 19, Width: 1
-/// Access: read-write
-using GCEN = BitField<19, 1>;
-constexpr uint32_t GCEN_Pos = 19;
-constexpr uint32_t GCEN_Msk = GCEN::mask;
+    /// General call enable
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using GCEN = BitField<19, 1>;
+    constexpr uint32_t GCEN_Pos = 19;
+    constexpr uint32_t GCEN_Msk = GCEN::mask;
 
-/// SMBus Host address enable
-/// Position: 20, Width: 1
-/// Access: read-write
-using SMBHEN = BitField<20, 1>;
-constexpr uint32_t SMBHEN_Pos = 20;
-constexpr uint32_t SMBHEN_Msk = SMBHEN::mask;
+    /// SMBus Host address enable
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using SMBHEN = BitField<20, 1>;
+    constexpr uint32_t SMBHEN_Pos = 20;
+    constexpr uint32_t SMBHEN_Msk = SMBHEN::mask;
 
-/// SMBus Device Default address enable
-/// Position: 21, Width: 1
-/// Access: read-write
-using SMBDEN = BitField<21, 1>;
-constexpr uint32_t SMBDEN_Pos = 21;
-constexpr uint32_t SMBDEN_Msk = SMBDEN::mask;
+    /// SMBus Device Default address enable
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using SMBDEN = BitField<21, 1>;
+    constexpr uint32_t SMBDEN_Pos = 21;
+    constexpr uint32_t SMBDEN_Msk = SMBDEN::mask;
 
-/// SMBUS alert enable
-/// Position: 22, Width: 1
-/// Access: read-write
-using ALERTEN = BitField<22, 1>;
-constexpr uint32_t ALERTEN_Pos = 22;
-constexpr uint32_t ALERTEN_Msk = ALERTEN::mask;
+    /// SMBUS alert enable
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using ALERTEN = BitField<22, 1>;
+    constexpr uint32_t ALERTEN_Pos = 22;
+    constexpr uint32_t ALERTEN_Msk = ALERTEN::mask;
 
-/// PEC enable
-/// Position: 23, Width: 1
-/// Access: read-write
-using PECEN = BitField<23, 1>;
-constexpr uint32_t PECEN_Pos = 23;
-constexpr uint32_t PECEN_Msk = PECEN::mask;
+    /// PEC enable
+    /// Position: 23, Width: 1
+    /// Access: read-write
+    using PECEN = BitField<23, 1>;
+    constexpr uint32_t PECEN_Pos = 23;
+    constexpr uint32_t PECEN_Msk = PECEN::mask;
 
 }  // namespace cr1
 
 /// CR2 - Control register 2
 namespace cr2 {
-/// Slave address bit 0 (master mode)
-/// Position: 0, Width: 1
-using SADD0 = BitField<0, 1>;
-constexpr uint32_t SADD0_Pos = 0;
-constexpr uint32_t SADD0_Msk = SADD0::mask;
+    /// Slave address bit 0 (master mode)
+    /// Position: 0, Width: 1
+    using SADD0 = BitField<0, 1>;
+    constexpr uint32_t SADD0_Pos = 0;
+    constexpr uint32_t SADD0_Msk = SADD0::mask;
 
-/// Slave address bit 7:1 (master mode)
-/// Position: 1, Width: 7
-using SADD1 = BitField<1, 7>;
-constexpr uint32_t SADD1_Pos = 1;
-constexpr uint32_t SADD1_Msk = SADD1::mask;
+    /// Slave address bit 7:1 (master mode)
+    /// Position: 1, Width: 7
+    using SADD1 = BitField<1, 7>;
+    constexpr uint32_t SADD1_Pos = 1;
+    constexpr uint32_t SADD1_Msk = SADD1::mask;
 
-/// Slave address bit 9:8 (master mode)
-/// Position: 8, Width: 2
-using SADD8 = BitField<8, 2>;
-constexpr uint32_t SADD8_Pos = 8;
-constexpr uint32_t SADD8_Msk = SADD8::mask;
+    /// Slave address bit 9:8 (master mode)
+    /// Position: 8, Width: 2
+    using SADD8 = BitField<8, 2>;
+    constexpr uint32_t SADD8_Pos = 8;
+    constexpr uint32_t SADD8_Msk = SADD8::mask;
 
-/// Transfer direction (master mode)
-/// Position: 10, Width: 1
-using RD_WRN = BitField<10, 1>;
-constexpr uint32_t RD_WRN_Pos = 10;
-constexpr uint32_t RD_WRN_Msk = RD_WRN::mask;
+    /// Transfer direction (master mode)
+    /// Position: 10, Width: 1
+    using RD_WRN = BitField<10, 1>;
+    constexpr uint32_t RD_WRN_Pos = 10;
+    constexpr uint32_t RD_WRN_Msk = RD_WRN::mask;
 
-/// 10-bit addressing mode (master mode)
-/// Position: 11, Width: 1
-using ADD10 = BitField<11, 1>;
-constexpr uint32_t ADD10_Pos = 11;
-constexpr uint32_t ADD10_Msk = ADD10::mask;
+    /// 10-bit addressing mode (master mode)
+    /// Position: 11, Width: 1
+    using ADD10 = BitField<11, 1>;
+    constexpr uint32_t ADD10_Pos = 11;
+    constexpr uint32_t ADD10_Msk = ADD10::mask;
 
-/// 10-bit address header only read direction (master receiver mode)
-/// Position: 12, Width: 1
-using HEAD10R = BitField<12, 1>;
-constexpr uint32_t HEAD10R_Pos = 12;
-constexpr uint32_t HEAD10R_Msk = HEAD10R::mask;
+    /// 10-bit address header only read direction (master receiver mode)
+    /// Position: 12, Width: 1
+    using HEAD10R = BitField<12, 1>;
+    constexpr uint32_t HEAD10R_Pos = 12;
+    constexpr uint32_t HEAD10R_Msk = HEAD10R::mask;
 
-/// Start generation
-/// Position: 13, Width: 1
-using START = BitField<13, 1>;
-constexpr uint32_t START_Pos = 13;
-constexpr uint32_t START_Msk = START::mask;
+    /// Start generation
+    /// Position: 13, Width: 1
+    using START = BitField<13, 1>;
+    constexpr uint32_t START_Pos = 13;
+    constexpr uint32_t START_Msk = START::mask;
 
-/// Stop generation (master mode)
-/// Position: 14, Width: 1
-using STOP = BitField<14, 1>;
-constexpr uint32_t STOP_Pos = 14;
-constexpr uint32_t STOP_Msk = STOP::mask;
+    /// Stop generation (master mode)
+    /// Position: 14, Width: 1
+    using STOP = BitField<14, 1>;
+    constexpr uint32_t STOP_Pos = 14;
+    constexpr uint32_t STOP_Msk = STOP::mask;
 
-/// NACK generation (slave mode)
-/// Position: 15, Width: 1
-using NACK = BitField<15, 1>;
-constexpr uint32_t NACK_Pos = 15;
-constexpr uint32_t NACK_Msk = NACK::mask;
+    /// NACK generation (slave mode)
+    /// Position: 15, Width: 1
+    using NACK = BitField<15, 1>;
+    constexpr uint32_t NACK_Pos = 15;
+    constexpr uint32_t NACK_Msk = NACK::mask;
 
-/// Number of bytes
-/// Position: 16, Width: 8
-using NBYTES = BitField<16, 8>;
-constexpr uint32_t NBYTES_Pos = 16;
-constexpr uint32_t NBYTES_Msk = NBYTES::mask;
+    /// Number of bytes
+    /// Position: 16, Width: 8
+    using NBYTES = BitField<16, 8>;
+    constexpr uint32_t NBYTES_Pos = 16;
+    constexpr uint32_t NBYTES_Msk = NBYTES::mask;
 
-/// NBYTES reload mode
-/// Position: 24, Width: 1
-using RELOAD = BitField<24, 1>;
-constexpr uint32_t RELOAD_Pos = 24;
-constexpr uint32_t RELOAD_Msk = RELOAD::mask;
+    /// NBYTES reload mode
+    /// Position: 24, Width: 1
+    using RELOAD = BitField<24, 1>;
+    constexpr uint32_t RELOAD_Pos = 24;
+    constexpr uint32_t RELOAD_Msk = RELOAD::mask;
 
-/// Automatic end mode (master mode)
-/// Position: 25, Width: 1
-using AUTOEND = BitField<25, 1>;
-constexpr uint32_t AUTOEND_Pos = 25;
-constexpr uint32_t AUTOEND_Msk = AUTOEND::mask;
+    /// Automatic end mode (master mode)
+    /// Position: 25, Width: 1
+    using AUTOEND = BitField<25, 1>;
+    constexpr uint32_t AUTOEND_Pos = 25;
+    constexpr uint32_t AUTOEND_Msk = AUTOEND::mask;
 
-/// Packet error checking byte
-/// Position: 26, Width: 1
-using PECBYTE = BitField<26, 1>;
-constexpr uint32_t PECBYTE_Pos = 26;
-constexpr uint32_t PECBYTE_Msk = PECBYTE::mask;
+    /// Packet error checking byte
+    /// Position: 26, Width: 1
+    using PECBYTE = BitField<26, 1>;
+    constexpr uint32_t PECBYTE_Pos = 26;
+    constexpr uint32_t PECBYTE_Msk = PECBYTE::mask;
 
 }  // namespace cr2
 
 /// OAR1 - Own address register 1
 namespace oar1 {
-/// Interface address
-/// Position: 0, Width: 1
-using OA1_0 = BitField<0, 1>;
-constexpr uint32_t OA1_0_Pos = 0;
-constexpr uint32_t OA1_0_Msk = OA1_0::mask;
+    /// Interface address
+    /// Position: 0, Width: 1
+    using OA1_0 = BitField<0, 1>;
+    constexpr uint32_t OA1_0_Pos = 0;
+    constexpr uint32_t OA1_0_Msk = OA1_0::mask;
 
-/// Interface address
-/// Position: 1, Width: 7
-using OA1_1 = BitField<1, 7>;
-constexpr uint32_t OA1_1_Pos = 1;
-constexpr uint32_t OA1_1_Msk = OA1_1::mask;
+    /// Interface address
+    /// Position: 1, Width: 7
+    using OA1_1 = BitField<1, 7>;
+    constexpr uint32_t OA1_1_Pos = 1;
+    constexpr uint32_t OA1_1_Msk = OA1_1::mask;
 
-/// Interface address
-/// Position: 8, Width: 2
-using OA1_8 = BitField<8, 2>;
-constexpr uint32_t OA1_8_Pos = 8;
-constexpr uint32_t OA1_8_Msk = OA1_8::mask;
+    /// Interface address
+    /// Position: 8, Width: 2
+    using OA1_8 = BitField<8, 2>;
+    constexpr uint32_t OA1_8_Pos = 8;
+    constexpr uint32_t OA1_8_Msk = OA1_8::mask;
 
-/// Own Address 1 10-bit mode
-/// Position: 10, Width: 1
-using OA1MODE = BitField<10, 1>;
-constexpr uint32_t OA1MODE_Pos = 10;
-constexpr uint32_t OA1MODE_Msk = OA1MODE::mask;
+    /// Own Address 1 10-bit mode
+    /// Position: 10, Width: 1
+    using OA1MODE = BitField<10, 1>;
+    constexpr uint32_t OA1MODE_Pos = 10;
+    constexpr uint32_t OA1MODE_Msk = OA1MODE::mask;
 
-/// Own Address 1 enable
-/// Position: 15, Width: 1
-using OA1EN = BitField<15, 1>;
-constexpr uint32_t OA1EN_Pos = 15;
-constexpr uint32_t OA1EN_Msk = OA1EN::mask;
+    /// Own Address 1 enable
+    /// Position: 15, Width: 1
+    using OA1EN = BitField<15, 1>;
+    constexpr uint32_t OA1EN_Pos = 15;
+    constexpr uint32_t OA1EN_Msk = OA1EN::mask;
 
 }  // namespace oar1
 
 /// OAR2 - Own address register 2
 namespace oar2 {
-/// Interface address
-/// Position: 1, Width: 7
-using OA2 = BitField<1, 7>;
-constexpr uint32_t OA2_Pos = 1;
-constexpr uint32_t OA2_Msk = OA2::mask;
+    /// Interface address
+    /// Position: 1, Width: 7
+    using OA2 = BitField<1, 7>;
+    constexpr uint32_t OA2_Pos = 1;
+    constexpr uint32_t OA2_Msk = OA2::mask;
 
-/// Own Address 2 masks
-/// Position: 8, Width: 3
-using OA2MSK = BitField<8, 3>;
-constexpr uint32_t OA2MSK_Pos = 8;
-constexpr uint32_t OA2MSK_Msk = OA2MSK::mask;
+    /// Own Address 2 masks
+    /// Position: 8, Width: 3
+    using OA2MSK = BitField<8, 3>;
+    constexpr uint32_t OA2MSK_Pos = 8;
+    constexpr uint32_t OA2MSK_Msk = OA2MSK::mask;
 
-/// Own Address 2 enable
-/// Position: 15, Width: 1
-using OA2EN = BitField<15, 1>;
-constexpr uint32_t OA2EN_Pos = 15;
-constexpr uint32_t OA2EN_Msk = OA2EN::mask;
+    /// Own Address 2 enable
+    /// Position: 15, Width: 1
+    using OA2EN = BitField<15, 1>;
+    constexpr uint32_t OA2EN_Pos = 15;
+    constexpr uint32_t OA2EN_Msk = OA2EN::mask;
 
 }  // namespace oar2
 
 /// TIMINGR - Timing register
 namespace timingr {
-/// SCL low period (master mode)
-/// Position: 0, Width: 8
-using SCLL = BitField<0, 8>;
-constexpr uint32_t SCLL_Pos = 0;
-constexpr uint32_t SCLL_Msk = SCLL::mask;
+    /// SCL low period (master mode)
+    /// Position: 0, Width: 8
+    using SCLL = BitField<0, 8>;
+    constexpr uint32_t SCLL_Pos = 0;
+    constexpr uint32_t SCLL_Msk = SCLL::mask;
 
-/// SCL high period (master mode)
-/// Position: 8, Width: 8
-using SCLH = BitField<8, 8>;
-constexpr uint32_t SCLH_Pos = 8;
-constexpr uint32_t SCLH_Msk = SCLH::mask;
+    /// SCL high period (master mode)
+    /// Position: 8, Width: 8
+    using SCLH = BitField<8, 8>;
+    constexpr uint32_t SCLH_Pos = 8;
+    constexpr uint32_t SCLH_Msk = SCLH::mask;
 
-/// Data hold time
-/// Position: 16, Width: 4
-using SDADEL = BitField<16, 4>;
-constexpr uint32_t SDADEL_Pos = 16;
-constexpr uint32_t SDADEL_Msk = SDADEL::mask;
+    /// Data hold time
+    /// Position: 16, Width: 4
+    using SDADEL = BitField<16, 4>;
+    constexpr uint32_t SDADEL_Pos = 16;
+    constexpr uint32_t SDADEL_Msk = SDADEL::mask;
 
-/// Data setup time
-/// Position: 20, Width: 4
-using SCLDEL = BitField<20, 4>;
-constexpr uint32_t SCLDEL_Pos = 20;
-constexpr uint32_t SCLDEL_Msk = SCLDEL::mask;
+    /// Data setup time
+    /// Position: 20, Width: 4
+    using SCLDEL = BitField<20, 4>;
+    constexpr uint32_t SCLDEL_Pos = 20;
+    constexpr uint32_t SCLDEL_Msk = SCLDEL::mask;
 
-/// Timing prescaler
-/// Position: 28, Width: 4
-using PRESC = BitField<28, 4>;
-constexpr uint32_t PRESC_Pos = 28;
-constexpr uint32_t PRESC_Msk = PRESC::mask;
+    /// Timing prescaler
+    /// Position: 28, Width: 4
+    using PRESC = BitField<28, 4>;
+    constexpr uint32_t PRESC_Pos = 28;
+    constexpr uint32_t PRESC_Msk = PRESC::mask;
 
 }  // namespace timingr
 
 /// TIMEOUTR - Status register 1
 namespace timeoutr {
-/// Bus timeout A
-/// Position: 0, Width: 12
-using TIMEOUTA = BitField<0, 12>;
-constexpr uint32_t TIMEOUTA_Pos = 0;
-constexpr uint32_t TIMEOUTA_Msk = TIMEOUTA::mask;
+    /// Bus timeout A
+    /// Position: 0, Width: 12
+    using TIMEOUTA = BitField<0, 12>;
+    constexpr uint32_t TIMEOUTA_Pos = 0;
+    constexpr uint32_t TIMEOUTA_Msk = TIMEOUTA::mask;
 
-/// Idle clock timeout detection
-/// Position: 12, Width: 1
-using TIDLE = BitField<12, 1>;
-constexpr uint32_t TIDLE_Pos = 12;
-constexpr uint32_t TIDLE_Msk = TIDLE::mask;
+    /// Idle clock timeout detection
+    /// Position: 12, Width: 1
+    using TIDLE = BitField<12, 1>;
+    constexpr uint32_t TIDLE_Pos = 12;
+    constexpr uint32_t TIDLE_Msk = TIDLE::mask;
 
-/// Clock timeout enable
-/// Position: 15, Width: 1
-using TIMOUTEN = BitField<15, 1>;
-constexpr uint32_t TIMOUTEN_Pos = 15;
-constexpr uint32_t TIMOUTEN_Msk = TIMOUTEN::mask;
+    /// Clock timeout enable
+    /// Position: 15, Width: 1
+    using TIMOUTEN = BitField<15, 1>;
+    constexpr uint32_t TIMOUTEN_Pos = 15;
+    constexpr uint32_t TIMOUTEN_Msk = TIMOUTEN::mask;
 
-/// Bus timeout B
-/// Position: 16, Width: 12
-using TIMEOUTB = BitField<16, 12>;
-constexpr uint32_t TIMEOUTB_Pos = 16;
-constexpr uint32_t TIMEOUTB_Msk = TIMEOUTB::mask;
+    /// Bus timeout B
+    /// Position: 16, Width: 12
+    using TIMEOUTB = BitField<16, 12>;
+    constexpr uint32_t TIMEOUTB_Pos = 16;
+    constexpr uint32_t TIMEOUTB_Msk = TIMEOUTB::mask;
 
-/// Extended clock timeout enable
-/// Position: 31, Width: 1
-using TEXTEN = BitField<31, 1>;
-constexpr uint32_t TEXTEN_Pos = 31;
-constexpr uint32_t TEXTEN_Msk = TEXTEN::mask;
+    /// Extended clock timeout enable
+    /// Position: 31, Width: 1
+    using TEXTEN = BitField<31, 1>;
+    constexpr uint32_t TEXTEN_Pos = 31;
+    constexpr uint32_t TEXTEN_Msk = TEXTEN::mask;
 
 }  // namespace timeoutr
 
 /// ISR - Interrupt and Status register
 namespace isr {
-/// Transmit data register empty (transmitters)
-/// Position: 0, Width: 1
-/// Access: read-write
-using TXE = BitField<0, 1>;
-constexpr uint32_t TXE_Pos = 0;
-constexpr uint32_t TXE_Msk = TXE::mask;
+    /// Transmit data register empty (transmitters)
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using TXE = BitField<0, 1>;
+    constexpr uint32_t TXE_Pos = 0;
+    constexpr uint32_t TXE_Msk = TXE::mask;
 
-/// Transmit interrupt status (transmitters)
-/// Position: 1, Width: 1
-/// Access: read-write
-using TXIS = BitField<1, 1>;
-constexpr uint32_t TXIS_Pos = 1;
-constexpr uint32_t TXIS_Msk = TXIS::mask;
+    /// Transmit interrupt status (transmitters)
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using TXIS = BitField<1, 1>;
+    constexpr uint32_t TXIS_Pos = 1;
+    constexpr uint32_t TXIS_Msk = TXIS::mask;
 
-/// Receive data register not empty (receivers)
-/// Position: 2, Width: 1
-/// Access: read-only
-using RXNE = BitField<2, 1>;
-constexpr uint32_t RXNE_Pos = 2;
-constexpr uint32_t RXNE_Msk = RXNE::mask;
+    /// Receive data register not empty (receivers)
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using RXNE = BitField<2, 1>;
+    constexpr uint32_t RXNE_Pos = 2;
+    constexpr uint32_t RXNE_Msk = RXNE::mask;
 
-/// Address matched (slave mode)
-/// Position: 3, Width: 1
-/// Access: read-only
-using ADDR = BitField<3, 1>;
-constexpr uint32_t ADDR_Pos = 3;
-constexpr uint32_t ADDR_Msk = ADDR::mask;
+    /// Address matched (slave mode)
+    /// Position: 3, Width: 1
+    /// Access: read-only
+    using ADDR = BitField<3, 1>;
+    constexpr uint32_t ADDR_Pos = 3;
+    constexpr uint32_t ADDR_Msk = ADDR::mask;
 
-/// Not acknowledge received flag
-/// Position: 4, Width: 1
-/// Access: read-only
-using NACKF = BitField<4, 1>;
-constexpr uint32_t NACKF_Pos = 4;
-constexpr uint32_t NACKF_Msk = NACKF::mask;
+    /// Not acknowledge received flag
+    /// Position: 4, Width: 1
+    /// Access: read-only
+    using NACKF = BitField<4, 1>;
+    constexpr uint32_t NACKF_Pos = 4;
+    constexpr uint32_t NACKF_Msk = NACKF::mask;
 
-/// Stop detection flag
-/// Position: 5, Width: 1
-/// Access: read-only
-using STOPF = BitField<5, 1>;
-constexpr uint32_t STOPF_Pos = 5;
-constexpr uint32_t STOPF_Msk = STOPF::mask;
+    /// Stop detection flag
+    /// Position: 5, Width: 1
+    /// Access: read-only
+    using STOPF = BitField<5, 1>;
+    constexpr uint32_t STOPF_Pos = 5;
+    constexpr uint32_t STOPF_Msk = STOPF::mask;
 
-/// Transfer Complete (master mode)
-/// Position: 6, Width: 1
-/// Access: read-only
-using TC = BitField<6, 1>;
-constexpr uint32_t TC_Pos = 6;
-constexpr uint32_t TC_Msk = TC::mask;
+    /// Transfer Complete (master mode)
+    /// Position: 6, Width: 1
+    /// Access: read-only
+    using TC = BitField<6, 1>;
+    constexpr uint32_t TC_Pos = 6;
+    constexpr uint32_t TC_Msk = TC::mask;
 
-/// Transfer Complete Reload
-/// Position: 7, Width: 1
-/// Access: read-only
-using TCR = BitField<7, 1>;
-constexpr uint32_t TCR_Pos = 7;
-constexpr uint32_t TCR_Msk = TCR::mask;
+    /// Transfer Complete Reload
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using TCR = BitField<7, 1>;
+    constexpr uint32_t TCR_Pos = 7;
+    constexpr uint32_t TCR_Msk = TCR::mask;
 
-/// Bus error
-/// Position: 8, Width: 1
-/// Access: read-only
-using BERR = BitField<8, 1>;
-constexpr uint32_t BERR_Pos = 8;
-constexpr uint32_t BERR_Msk = BERR::mask;
+    /// Bus error
+    /// Position: 8, Width: 1
+    /// Access: read-only
+    using BERR = BitField<8, 1>;
+    constexpr uint32_t BERR_Pos = 8;
+    constexpr uint32_t BERR_Msk = BERR::mask;
 
-/// Arbitration lost
-/// Position: 9, Width: 1
-/// Access: read-only
-using ARLO = BitField<9, 1>;
-constexpr uint32_t ARLO_Pos = 9;
-constexpr uint32_t ARLO_Msk = ARLO::mask;
+    /// Arbitration lost
+    /// Position: 9, Width: 1
+    /// Access: read-only
+    using ARLO = BitField<9, 1>;
+    constexpr uint32_t ARLO_Pos = 9;
+    constexpr uint32_t ARLO_Msk = ARLO::mask;
 
-/// Overrun/Underrun (slave mode)
-/// Position: 10, Width: 1
-/// Access: read-only
-using OVR = BitField<10, 1>;
-constexpr uint32_t OVR_Pos = 10;
-constexpr uint32_t OVR_Msk = OVR::mask;
+    /// Overrun/Underrun (slave mode)
+    /// Position: 10, Width: 1
+    /// Access: read-only
+    using OVR = BitField<10, 1>;
+    constexpr uint32_t OVR_Pos = 10;
+    constexpr uint32_t OVR_Msk = OVR::mask;
 
-/// PEC Error in reception
-/// Position: 11, Width: 1
-/// Access: read-only
-using PECERR = BitField<11, 1>;
-constexpr uint32_t PECERR_Pos = 11;
-constexpr uint32_t PECERR_Msk = PECERR::mask;
+    /// PEC Error in reception
+    /// Position: 11, Width: 1
+    /// Access: read-only
+    using PECERR = BitField<11, 1>;
+    constexpr uint32_t PECERR_Pos = 11;
+    constexpr uint32_t PECERR_Msk = PECERR::mask;
 
-/// Timeout or t_low detection flag
-/// Position: 12, Width: 1
-/// Access: read-only
-using TIMEOUT = BitField<12, 1>;
-constexpr uint32_t TIMEOUT_Pos = 12;
-constexpr uint32_t TIMEOUT_Msk = TIMEOUT::mask;
+    /// Timeout or t_low detection flag
+    /// Position: 12, Width: 1
+    /// Access: read-only
+    using TIMEOUT = BitField<12, 1>;
+    constexpr uint32_t TIMEOUT_Pos = 12;
+    constexpr uint32_t TIMEOUT_Msk = TIMEOUT::mask;
 
-/// SMBus alert
-/// Position: 13, Width: 1
-/// Access: read-only
-using ALERT = BitField<13, 1>;
-constexpr uint32_t ALERT_Pos = 13;
-constexpr uint32_t ALERT_Msk = ALERT::mask;
+    /// SMBus alert
+    /// Position: 13, Width: 1
+    /// Access: read-only
+    using ALERT = BitField<13, 1>;
+    constexpr uint32_t ALERT_Pos = 13;
+    constexpr uint32_t ALERT_Msk = ALERT::mask;
 
-/// Bus busy
-/// Position: 15, Width: 1
-/// Access: read-only
-using BUSY = BitField<15, 1>;
-constexpr uint32_t BUSY_Pos = 15;
-constexpr uint32_t BUSY_Msk = BUSY::mask;
+    /// Bus busy
+    /// Position: 15, Width: 1
+    /// Access: read-only
+    using BUSY = BitField<15, 1>;
+    constexpr uint32_t BUSY_Pos = 15;
+    constexpr uint32_t BUSY_Msk = BUSY::mask;
 
-/// Transfer direction (Slave mode)
-/// Position: 16, Width: 1
-/// Access: read-only
-using DIR = BitField<16, 1>;
-constexpr uint32_t DIR_Pos = 16;
-constexpr uint32_t DIR_Msk = DIR::mask;
+    /// Transfer direction (Slave mode)
+    /// Position: 16, Width: 1
+    /// Access: read-only
+    using DIR = BitField<16, 1>;
+    constexpr uint32_t DIR_Pos = 16;
+    constexpr uint32_t DIR_Msk = DIR::mask;
 
-/// Address match code (Slave mode)
-/// Position: 17, Width: 7
-/// Access: read-only
-using ADDCODE = BitField<17, 7>;
-constexpr uint32_t ADDCODE_Pos = 17;
-constexpr uint32_t ADDCODE_Msk = ADDCODE::mask;
+    /// Address match code (Slave mode)
+    /// Position: 17, Width: 7
+    /// Access: read-only
+    using ADDCODE = BitField<17, 7>;
+    constexpr uint32_t ADDCODE_Pos = 17;
+    constexpr uint32_t ADDCODE_Msk = ADDCODE::mask;
 
 }  // namespace isr
 
 /// ICR - Interrupt clear register
 namespace icr {
-/// Address Matched flag clear
-/// Position: 3, Width: 1
-using ADDRCF = BitField<3, 1>;
-constexpr uint32_t ADDRCF_Pos = 3;
-constexpr uint32_t ADDRCF_Msk = ADDRCF::mask;
+    /// Address Matched flag clear
+    /// Position: 3, Width: 1
+    using ADDRCF = BitField<3, 1>;
+    constexpr uint32_t ADDRCF_Pos = 3;
+    constexpr uint32_t ADDRCF_Msk = ADDRCF::mask;
 
-/// Not Acknowledge flag clear
-/// Position: 4, Width: 1
-using NACKCF = BitField<4, 1>;
-constexpr uint32_t NACKCF_Pos = 4;
-constexpr uint32_t NACKCF_Msk = NACKCF::mask;
+    /// Not Acknowledge flag clear
+    /// Position: 4, Width: 1
+    using NACKCF = BitField<4, 1>;
+    constexpr uint32_t NACKCF_Pos = 4;
+    constexpr uint32_t NACKCF_Msk = NACKCF::mask;
 
-/// Stop detection flag clear
-/// Position: 5, Width: 1
-using STOPCF = BitField<5, 1>;
-constexpr uint32_t STOPCF_Pos = 5;
-constexpr uint32_t STOPCF_Msk = STOPCF::mask;
+    /// Stop detection flag clear
+    /// Position: 5, Width: 1
+    using STOPCF = BitField<5, 1>;
+    constexpr uint32_t STOPCF_Pos = 5;
+    constexpr uint32_t STOPCF_Msk = STOPCF::mask;
 
-/// Bus error flag clear
-/// Position: 8, Width: 1
-using BERRCF = BitField<8, 1>;
-constexpr uint32_t BERRCF_Pos = 8;
-constexpr uint32_t BERRCF_Msk = BERRCF::mask;
+    /// Bus error flag clear
+    /// Position: 8, Width: 1
+    using BERRCF = BitField<8, 1>;
+    constexpr uint32_t BERRCF_Pos = 8;
+    constexpr uint32_t BERRCF_Msk = BERRCF::mask;
 
-/// Arbitration lost flag clear
-/// Position: 9, Width: 1
-using ARLOCF = BitField<9, 1>;
-constexpr uint32_t ARLOCF_Pos = 9;
-constexpr uint32_t ARLOCF_Msk = ARLOCF::mask;
+    /// Arbitration lost flag clear
+    /// Position: 9, Width: 1
+    using ARLOCF = BitField<9, 1>;
+    constexpr uint32_t ARLOCF_Pos = 9;
+    constexpr uint32_t ARLOCF_Msk = ARLOCF::mask;
 
-/// Overrun/Underrun flag clear
-/// Position: 10, Width: 1
-using OVRCF = BitField<10, 1>;
-constexpr uint32_t OVRCF_Pos = 10;
-constexpr uint32_t OVRCF_Msk = OVRCF::mask;
+    /// Overrun/Underrun flag clear
+    /// Position: 10, Width: 1
+    using OVRCF = BitField<10, 1>;
+    constexpr uint32_t OVRCF_Pos = 10;
+    constexpr uint32_t OVRCF_Msk = OVRCF::mask;
 
-/// PEC Error flag clear
-/// Position: 11, Width: 1
-using PECCF = BitField<11, 1>;
-constexpr uint32_t PECCF_Pos = 11;
-constexpr uint32_t PECCF_Msk = PECCF::mask;
+    /// PEC Error flag clear
+    /// Position: 11, Width: 1
+    using PECCF = BitField<11, 1>;
+    constexpr uint32_t PECCF_Pos = 11;
+    constexpr uint32_t PECCF_Msk = PECCF::mask;
 
-/// Timeout detection flag clear
-/// Position: 12, Width: 1
-using TIMOUTCF = BitField<12, 1>;
-constexpr uint32_t TIMOUTCF_Pos = 12;
-constexpr uint32_t TIMOUTCF_Msk = TIMOUTCF::mask;
+    /// Timeout detection flag clear
+    /// Position: 12, Width: 1
+    using TIMOUTCF = BitField<12, 1>;
+    constexpr uint32_t TIMOUTCF_Pos = 12;
+    constexpr uint32_t TIMOUTCF_Msk = TIMOUTCF::mask;
 
-/// Alert flag clear
-/// Position: 13, Width: 1
-using ALERTCF = BitField<13, 1>;
-constexpr uint32_t ALERTCF_Pos = 13;
-constexpr uint32_t ALERTCF_Msk = ALERTCF::mask;
+    /// Alert flag clear
+    /// Position: 13, Width: 1
+    using ALERTCF = BitField<13, 1>;
+    constexpr uint32_t ALERTCF_Pos = 13;
+    constexpr uint32_t ALERTCF_Msk = ALERTCF::mask;
 
 }  // namespace icr
 
 /// PECR - PEC register
 namespace pecr {
-/// Packet error checking register
-/// Position: 0, Width: 8
-using PEC = BitField<0, 8>;
-constexpr uint32_t PEC_Pos = 0;
-constexpr uint32_t PEC_Msk = PEC::mask;
+    /// Packet error checking register
+    /// Position: 0, Width: 8
+    using PEC = BitField<0, 8>;
+    constexpr uint32_t PEC_Pos = 0;
+    constexpr uint32_t PEC_Msk = PEC::mask;
 
 }  // namespace pecr
 
 /// RXDR - Receive data register
 namespace rxdr {
-/// 8-bit receive data
-/// Position: 0, Width: 8
-using RXDATA = BitField<0, 8>;
-constexpr uint32_t RXDATA_Pos = 0;
-constexpr uint32_t RXDATA_Msk = RXDATA::mask;
+    /// 8-bit receive data
+    /// Position: 0, Width: 8
+    using RXDATA = BitField<0, 8>;
+    constexpr uint32_t RXDATA_Pos = 0;
+    constexpr uint32_t RXDATA_Msk = RXDATA::mask;
 
 }  // namespace rxdr
 
 /// TXDR - Transmit data register
 namespace txdr {
-/// 8-bit transmit data
-/// Position: 0, Width: 8
-using TXDATA = BitField<0, 8>;
-constexpr uint32_t TXDATA_Pos = 0;
-constexpr uint32_t TXDATA_Msk = TXDATA::mask;
+    /// 8-bit transmit data
+    /// Position: 0, Width: 8
+    using TXDATA = BitField<0, 8>;
+    constexpr uint32_t TXDATA_Pos = 0;
+    constexpr uint32_t TXDATA_Msk = TXDATA::mask;
 
 }  // namespace txdr
 

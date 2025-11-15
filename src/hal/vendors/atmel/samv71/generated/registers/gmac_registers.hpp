@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samv71::gmac {
 
 /// GMAC Register Structure
 struct GMAC_Registers {
+
     /// Network Control Register
     /// Offset: 0x0000
     volatile uint32_t NCR;
@@ -113,7 +114,7 @@ struct GMAC_Registers {
     /// RX Jumbo Frame Max Length Register
     /// Offset: 0x0048
     volatile uint32_t RJFML;
-    uint8_t RESERVED_004C[52];  ///< Reserved
+    uint8_t RESERVED_004C[52]; ///< Reserved
 
     /// Hash Register Bottom
     /// Offset: 0x0080
@@ -122,7 +123,7 @@ struct GMAC_Registers {
     /// Hash Register Top
     /// Offset: 0x0084
     volatile uint32_t HRT;
-    uint8_t RESERVED_0088[32];  ///< Reserved
+    uint8_t RESERVED_0088[32]; ///< Reserved
 
     /// Type ID Match 1 Register
     /// Offset: 0x00A8
@@ -163,7 +164,7 @@ struct GMAC_Registers {
     /// Specific Address 1 Mask Top Register
     /// Offset: 0x00CC
     volatile uint32_t SAMT1;
-    uint8_t RESERVED_00D0[12];  ///< Reserved
+    uint8_t RESERVED_00D0[12]; ///< Reserved
 
     /// 1588 Timer Nanosecond Comparison Register
     /// Offset: 0x00DC
@@ -196,7 +197,7 @@ struct GMAC_Registers {
     /// Offset: 0x00F4
     /// Access: read-only
     volatile uint32_t PEFRSH;
-    uint8_t RESERVED_00F8[8];  ///< Reserved
+    uint8_t RESERVED_00F8[8]; ///< Reserved
 
     /// Octets Transmitted Low Register
     /// Offset: 0x0100
@@ -422,7 +423,7 @@ struct GMAC_Registers {
     /// Offset: 0x01B0
     /// Access: read-only
     volatile uint32_t UCE;
-    uint8_t RESERVED_01B4[8];  ///< Reserved
+    uint8_t RESERVED_01B4[8]; ///< Reserved
 
     /// 1588 Timer Increment Sub-nanoseconds Register
     /// Offset: 0x01BC
@@ -431,7 +432,7 @@ struct GMAC_Registers {
     /// 1588 Timer Seconds High Register
     /// Offset: 0x01C0
     volatile uint32_t TSH;
-    uint8_t RESERVED_01C4[12];  ///< Reserved
+    uint8_t RESERVED_01C4[12]; ///< Reserved
 
     /// 1588 Timer Seconds Low Register
     /// Offset: 0x01D0
@@ -489,7 +490,7 @@ struct GMAC_Registers {
     /// Offset: 0x01FC
     /// Access: read-only
     volatile uint32_t PEFRN;
-    uint8_t RESERVED_0200[112];  ///< Reserved
+    uint8_t RESERVED_0200[112]; ///< Reserved
 
     /// Received LPI Transitions
     /// Offset: 0x0270
@@ -510,28 +511,28 @@ struct GMAC_Registers {
     /// Offset: 0x027C
     /// Access: read-only
     volatile uint32_t TXLPITIME;
-    uint8_t RESERVED_0280[384];  ///< Reserved
+    uint8_t RESERVED_0280[384]; ///< Reserved
 
     /// Interrupt Status Register Priority Queue (1..5)
     /// Offset: 0x0400
     /// Access: read-only
     volatile uint32_t ISRPQ[5][5];
-    uint8_t RESERVED_0414[44];  ///< Reserved
+    uint8_t RESERVED_0414[44]; ///< Reserved
 
     /// Transmit Buffer Queue Base Address Register Priority Queue (1..5)
     /// Offset: 0x0440
     volatile uint32_t TBQBAPQ[5][5];
-    uint8_t RESERVED_0454[44];  ///< Reserved
+    uint8_t RESERVED_0454[44]; ///< Reserved
 
     /// Receive Buffer Queue Base Address Register Priority Queue (1..5)
     /// Offset: 0x0480
     volatile uint32_t RBQBAPQ[5][5];
-    uint8_t RESERVED_0494[12];  ///< Reserved
+    uint8_t RESERVED_0494[12]; ///< Reserved
 
     /// Receive Buffer Size Register Priority Queue (1..5)
     /// Offset: 0x04A0
     volatile uint32_t RBSRPQ[5][5];
-    uint8_t RESERVED_04B4[8];  ///< Reserved
+    uint8_t RESERVED_04B4[8]; ///< Reserved
 
     /// Credit-Based Shaping Control Register
     /// Offset: 0x04BC
@@ -544,34 +545,34 @@ struct GMAC_Registers {
     /// Credit-Based Shaping IdleSlope Register for Queue B
     /// Offset: 0x04C4
     volatile uint32_t CBSISQB;
-    uint8_t RESERVED_04C8[56];  ///< Reserved
+    uint8_t RESERVED_04C8[56]; ///< Reserved
 
     /// Screening Type 1 Register Priority Queue
     /// Offset: 0x0500
     volatile uint32_t ST1RPQ[4][4];
-    uint8_t RESERVED_0510[48];  ///< Reserved
+    uint8_t RESERVED_0510[48]; ///< Reserved
 
     /// Screening Type 2 Register Priority Queue
     /// Offset: 0x0540
     volatile uint32_t ST2RPQ[8][8];
-    uint8_t RESERVED_0560[160];  ///< Reserved
+    uint8_t RESERVED_0560[160]; ///< Reserved
 
     /// Interrupt Enable Register Priority Queue (1..5)
     /// Offset: 0x0600
     /// Access: write-only
     volatile uint32_t IERPQ[5][5];
-    uint8_t RESERVED_0614[12];  ///< Reserved
+    uint8_t RESERVED_0614[12]; ///< Reserved
 
     /// Interrupt Disable Register Priority Queue (1..5)
     /// Offset: 0x0620
     /// Access: write-only
     volatile uint32_t IDRPQ[5][5];
-    uint8_t RESERVED_0634[12];  ///< Reserved
+    uint8_t RESERVED_0634[12]; ///< Reserved
 
     /// Interrupt Mask Register Priority Queue (1..5)
     /// Offset: 0x0640
     volatile uint32_t IMRPQ[5][5];
-    uint8_t RESERVED_0654[140];  ///< Reserved
+    uint8_t RESERVED_0654[140]; ///< Reserved
 
     /// Screening Type 2 Ethertype Register
     /// Offset: 0x06E0

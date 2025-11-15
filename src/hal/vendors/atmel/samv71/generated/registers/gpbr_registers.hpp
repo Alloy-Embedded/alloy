@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samv71::gpbr {
 
 /// GPBR Register Structure
 struct GPBR_Registers {
+
     /// General Purpose Backup Register 0
     /// Offset: 0x0000
     volatile uint32_t SYS_GPBR[8][8];

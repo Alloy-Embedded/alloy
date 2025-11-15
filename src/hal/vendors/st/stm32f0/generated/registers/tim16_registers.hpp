@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f0::tim16 {
 
 /// TIM16 Register Structure
 struct TIM16_Registers {
+
     /// control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -28,7 +29,7 @@ struct TIM16_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CR2;
-    uint8_t RESERVED_0008[4];  ///< Reserved
+    uint8_t RESERVED_0008[4]; ///< Reserved
 
     /// DMA/Interrupt enable register
     /// Offset: 0x000C
@@ -59,7 +60,7 @@ struct TIM16_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCMR1_Input;
-    uint8_t RESERVED_001C[4];  ///< Reserved
+    uint8_t RESERVED_001C[4]; ///< Reserved
 
     /// capture/compare enable register
     /// Offset: 0x0020
@@ -96,7 +97,7 @@ struct TIM16_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCR1;
-    uint8_t RESERVED_0038[12];  ///< Reserved
+    uint8_t RESERVED_0038[12]; ///< Reserved
 
     /// break and dead-time register
     /// Offset: 0x0044

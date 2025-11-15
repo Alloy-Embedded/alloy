@@ -17,7 +17,7 @@ namespace alloy::hal::st::stm32f4::sai1 {
 
 /// SAI1 Register Structure
 struct SAI1_Registers {
-    uint8_t RESERVED_0000[4];  ///< Reserved
+    uint8_t RESERVED_0000[4]; ///< Reserved
 
     /// SAI AConfiguration register 1
     /// Offset: 0x0004

@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::emac_dma {
@@ -20,531 +19,480 @@ using namespace alloy::hal::bitfields;
 
 /// DMABUSMODE - Bus mode configuration
 namespace dmabusmode {
-/// When this bit is set the MAC DMA Controller resets the logic and all internal registers of the
-/// MAC. It is cleared automatically after the reset operation is complete in all of the ETH_MAC
-/// clock domains. Before reprogramming any register of the ETH_MAC you should read a zero (0) value
-/// in this bit. Position: 0, Width: 1 Access: read-write
-using SW_RST = BitField<0, 1>;
-constexpr uint32_t SW_RST_Pos = 0;
-constexpr uint32_t SW_RST_Msk = SW_RST::mask;
+    /// When this bit is set the MAC DMA Controller resets the logic and all internal registers of the MAC. It is cleared automatically after the reset operation is complete in all of the ETH_MAC clock domains. Before reprogramming any register of the ETH_MAC you should read a zero (0) value in this bit.
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using SW_RST = BitField<0, 1>;
+    constexpr uint32_t SW_RST_Pos = 0;
+    constexpr uint32_t SW_RST_Msk = SW_RST::mask;
 
-/// This bit specifies the arbitration scheme between the transmit and receive paths.1'b0: weighted
-/// round-robin with RX:TX or TX:RX priority specified in PR (bit[15:14]). 1'b1 Fixed priority (Rx
-/// priority to Tx). Position: 1, Width: 1 Access: read-write
-using DMA_ARB_SCH = BitField<1, 1>;
-constexpr uint32_t DMA_ARB_SCH_Pos = 1;
-constexpr uint32_t DMA_ARB_SCH_Msk = DMA_ARB_SCH::mask;
+    /// This bit specifies the arbitration scheme between the transmit and receive paths.1'b0: weighted round-robin with RX:TX or TX:RX priority specified in PR (bit[15:14]). 1'b1 Fixed priority (Rx priority to Tx).
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using DMA_ARB_SCH = BitField<1, 1>;
+    constexpr uint32_t DMA_ARB_SCH_Pos = 1;
+    constexpr uint32_t DMA_ARB_SCH_Msk = DMA_ARB_SCH::mask;
 
-/// This bit specifies the number of Word to skip between two unchained descriptors.The address
-/// skipping starts from the end of current descriptor to the start of next descriptor. When the
-/// DSL(DESC_SKIP_LEN) value is equal to zero the descriptor table is taken as contiguous by the DMA
-/// in Ring mode. Position: 2, Width: 5 Access: read-write
-using DESC_SKIP_LEN = BitField<2, 5>;
-constexpr uint32_t DESC_SKIP_LEN_Pos = 2;
-constexpr uint32_t DESC_SKIP_LEN_Msk = DESC_SKIP_LEN::mask;
+    /// This bit specifies the number of Word to skip between two unchained descriptors.The address skipping starts from the end of current descriptor to the start of next descriptor. When the DSL(DESC_SKIP_LEN) value is equal to zero the descriptor table is taken as contiguous by the DMA in Ring mode.
+    /// Position: 2, Width: 5
+    /// Access: read-write
+    using DESC_SKIP_LEN = BitField<2, 5>;
+    constexpr uint32_t DESC_SKIP_LEN_Pos = 2;
+    constexpr uint32_t DESC_SKIP_LEN_Msk = DESC_SKIP_LEN::mask;
 
-/// When set the size of the alternate descriptor increases to 32 bytes.
-/// Position: 7, Width: 1
-/// Access: read-write
-using ALT_DESC_SIZE = BitField<7, 1>;
-constexpr uint32_t ALT_DESC_SIZE_Pos = 7;
-constexpr uint32_t ALT_DESC_SIZE_Msk = ALT_DESC_SIZE::mask;
+    /// When set the size of the alternate descriptor increases to 32 bytes.
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using ALT_DESC_SIZE = BitField<7, 1>;
+    constexpr uint32_t ALT_DESC_SIZE_Pos = 7;
+    constexpr uint32_t ALT_DESC_SIZE_Msk = ALT_DESC_SIZE::mask;
 
-/// These bits indicate the maximum number of beats to be transferred in one DMA transaction. If the
-/// number of beats to be transferred is more than 32 then perform the following steps: 1. Set the
-/// PBLx8 mode 2. Set the PBL(PROG_BURST_LEN). Position: 8, Width: 6 Access: read-write
-using PROG_BURST_LEN = BitField<8, 6>;
-constexpr uint32_t PROG_BURST_LEN_Pos = 8;
-constexpr uint32_t PROG_BURST_LEN_Msk = PROG_BURST_LEN::mask;
+    /// These bits indicate the maximum number of beats to be transferred in one DMA transaction. If the number of beats to be transferred is more than 32 then perform the following steps: 1. Set the PBLx8 mode 2. Set the PBL(PROG_BURST_LEN).
+    /// Position: 8, Width: 6
+    /// Access: read-write
+    using PROG_BURST_LEN = BitField<8, 6>;
+    constexpr uint32_t PROG_BURST_LEN_Pos = 8;
+    constexpr uint32_t PROG_BURST_LEN_Msk = PROG_BURST_LEN::mask;
 
-/// These bits control the priority ratio in the weighted round-robin arbitration between the Rx DMA
-/// and Tx DMA. These bits are valid only when Bit 1 (DA) is reset. The priority ratio Rx:Tx
-/// represented by each bit: 2'b00 -- 1: 1 2'b01 -- 2: 0 2'b10 -- 3: 1 2'b11 -- 4: 1 Position: 14,
-/// Width: 2 Access: read-write
-using PRI_RATIO = BitField<14, 2>;
-constexpr uint32_t PRI_RATIO_Pos = 14;
-constexpr uint32_t PRI_RATIO_Msk = PRI_RATIO::mask;
+    /// These bits control the priority ratio in the weighted round-robin arbitration between the Rx DMA and Tx DMA. These bits are valid only when Bit 1 (DA) is reset. The priority ratio Rx:Tx represented by each bit: 2'b00 -- 1: 1 2'b01 -- 2: 0 2'b10 -- 3: 1 2'b11 -- 4: 1
+    /// Position: 14, Width: 2
+    /// Access: read-write
+    using PRI_RATIO = BitField<14, 2>;
+    constexpr uint32_t PRI_RATIO_Pos = 14;
+    constexpr uint32_t PRI_RATIO_Msk = PRI_RATIO::mask;
 
-/// This bit controls whether the AHB master interface performs fixed burst transfers or not. When
-/// set the AHB interface uses only SINGLE INCR4 INCR8 or INCR16 during start of the normal burst
-/// transfers. When reset the AHB interface uses SINGLE and INCR burst transfer Operations.
-/// Position: 16, Width: 1
-/// Access: read-write
-using FIXED_BURST = BitField<16, 1>;
-constexpr uint32_t FIXED_BURST_Pos = 16;
-constexpr uint32_t FIXED_BURST_Msk = FIXED_BURST::mask;
+    /// This bit controls whether the AHB master interface performs fixed burst transfers or not. When set the AHB interface uses only SINGLE INCR4 INCR8 or INCR16 during start of the normal burst transfers. When reset the AHB interface uses SINGLE and INCR burst transfer Operations.
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using FIXED_BURST = BitField<16, 1>;
+    constexpr uint32_t FIXED_BURST_Pos = 16;
+    constexpr uint32_t FIXED_BURST_Msk = FIXED_BURST::mask;
 
-/// This field indicates the maximum number of beats to be transferred in one Rx DMA transaction.
-/// This is the maximum value that is used in a single block Read or Write.The Rx DMA always
-/// attempts to burst as specified in the RPBL(RX_DMA_PBL) bit each time it starts a burst transfer
-/// on the host bus. You can program RPBL with values of 1 2 4 8 16 and 32. Any other value results
-/// in undefined behavior. This field is valid and applicable only when USP(USE_SEP_PBL) is set
-/// high. Position: 17, Width: 6 Access: read-write
-using RX_DMA_PBL = BitField<17, 6>;
-constexpr uint32_t RX_DMA_PBL_Pos = 17;
-constexpr uint32_t RX_DMA_PBL_Msk = RX_DMA_PBL::mask;
+    /// This field indicates the maximum number of beats to be transferred in one Rx DMA transaction. This is the maximum value that is used in a single block Read or Write.The Rx DMA always attempts to burst as specified in the RPBL(RX_DMA_PBL) bit each time it starts a burst transfer on the host bus. You can program RPBL with values of 1 2 4 8 16 and 32. Any other value results in undefined behavior. This field is valid and applicable only when USP(USE_SEP_PBL) is set high.
+    /// Position: 17, Width: 6
+    /// Access: read-write
+    using RX_DMA_PBL = BitField<17, 6>;
+    constexpr uint32_t RX_DMA_PBL_Pos = 17;
+    constexpr uint32_t RX_DMA_PBL_Msk = RX_DMA_PBL::mask;
 
-/// When set high this bit configures the Rx DMA to use the value configured in Bits[22:17] as PBL.
-/// The PBL value in Bits[13:8] is applicable only to the Tx DMA operations. When reset to low the
-/// PBL value in Bits[13:8] is applicable for both DMA engines. Position: 23, Width: 1 Access:
-/// read-write
-using USE_SEP_PBL = BitField<23, 1>;
-constexpr uint32_t USE_SEP_PBL_Pos = 23;
-constexpr uint32_t USE_SEP_PBL_Msk = USE_SEP_PBL::mask;
+    /// When set high this bit configures the Rx DMA to use the value configured in Bits[22:17] as PBL. The PBL value in Bits[13:8] is applicable only to the Tx DMA operations. When reset to low the PBL value in Bits[13:8] is applicable for both DMA engines.
+    /// Position: 23, Width: 1
+    /// Access: read-write
+    using USE_SEP_PBL = BitField<23, 1>;
+    constexpr uint32_t USE_SEP_PBL_Pos = 23;
+    constexpr uint32_t USE_SEP_PBL_Msk = USE_SEP_PBL::mask;
 
-/// When set high this bit multiplies the programmed PBL value (Bits[22:17] and Bits[13:8]) eight
-/// times. Therefore the DMA transfers the data in 8 16 32 64 128 and 256 beats depending on the PBL
-/// value. Position: 24, Width: 1 Access: read-write
-using PBLX8_MODE = BitField<24, 1>;
-constexpr uint32_t PBLX8_MODE_Pos = 24;
-constexpr uint32_t PBLX8_MODE_Msk = PBLX8_MODE::mask;
+    /// When set high this bit multiplies the programmed PBL value (Bits[22:17] and Bits[13:8]) eight times. Therefore the DMA transfers the data in 8 16 32 64 128 and 256 beats depending on the PBL value.
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using PBLX8_MODE = BitField<24, 1>;
+    constexpr uint32_t PBLX8_MODE_Pos = 24;
+    constexpr uint32_t PBLX8_MODE_Msk = PBLX8_MODE::mask;
 
-/// When this bit is set high and the FIXED_BURST bit is 1 the AHB interface generates all bursts
-/// aligned to the start address LS bits. If the FIXED_BURST bit is 0 the first burst (accessing the
-/// start address of data buffer) is not aligned but subsequent bursts are aligned to the address.
-/// Position: 25, Width: 1
-/// Access: read-write
-using DMAADDRALIBEA = BitField<25, 1>;
-constexpr uint32_t DMAADDRALIBEA_Pos = 25;
-constexpr uint32_t DMAADDRALIBEA_Msk = DMAADDRALIBEA::mask;
+    /// When this bit is set high and the FIXED_BURST bit is 1 the AHB interface generates all bursts aligned to the start address LS bits. If the FIXED_BURST bit is 0 the first burst (accessing the start address of data buffer) is not aligned but subsequent bursts are aligned to the address.
+    /// Position: 25, Width: 1
+    /// Access: read-write
+    using DMAADDRALIBEA = BitField<25, 1>;
+    constexpr uint32_t DMAADDRALIBEA_Pos = 25;
+    constexpr uint32_t DMAADDRALIBEA_Msk = DMAADDRALIBEA::mask;
 
-/// When this bit is set high and the FIXED_BURST bit is low the AHB master interface starts all
-/// bursts of a length more than 16 with INCR (undefined burst) whereas it reverts to fixed burst
-/// transfers (INCRx and SINGLE) for burst length of 16 and less. Position: 26, Width: 1 Access:
-/// read-write
-using DMAMIXEDBURST = BitField<26, 1>;
-constexpr uint32_t DMAMIXEDBURST_Pos = 26;
-constexpr uint32_t DMAMIXEDBURST_Msk = DMAMIXEDBURST::mask;
+    /// When this bit is set high and the FIXED_BURST bit is low the AHB master interface starts all bursts of a length more than 16 with INCR (undefined burst) whereas it reverts to fixed burst transfers (INCRx and SINGLE) for burst length of 16 and less.
+    /// Position: 26, Width: 1
+    /// Access: read-write
+    using DMAMIXEDBURST = BitField<26, 1>;
+    constexpr uint32_t DMAMIXEDBURST_Pos = 26;
+    constexpr uint32_t DMAMIXEDBURST_Msk = DMAMIXEDBURST::mask;
 
 }  // namespace dmabusmode
 
 /// DMASTATUS - State of interrupts, errors and other events
 namespace dmastatus {
-/// This bit indicates that the frame transmission is complete. When transmission is complete
-/// Bit[31] (OWN) of TDES0 is reset and the specific frame status information is updated in the
-/// Descriptor. Position: 0, Width: 1 Access: read-write
-using TRANS_INT = BitField<0, 1>;
-constexpr uint32_t TRANS_INT_Pos = 0;
-constexpr uint32_t TRANS_INT_Msk = TRANS_INT::mask;
+    /// This bit indicates that the frame transmission is complete. When transmission is complete Bit[31] (OWN) of TDES0 is reset and the specific frame status information is updated in the Descriptor.
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using TRANS_INT = BitField<0, 1>;
+    constexpr uint32_t TRANS_INT_Pos = 0;
+    constexpr uint32_t TRANS_INT_Msk = TRANS_INT::mask;
 
-/// This bit is set when the transmission is stopped.
-/// Position: 1, Width: 1
-/// Access: read-write
-using TRANS_PROC_STOP = BitField<1, 1>;
-constexpr uint32_t TRANS_PROC_STOP_Pos = 1;
-constexpr uint32_t TRANS_PROC_STOP_Msk = TRANS_PROC_STOP::mask;
+    /// This bit is set when the transmission is stopped.
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using TRANS_PROC_STOP = BitField<1, 1>;
+    constexpr uint32_t TRANS_PROC_STOP_Pos = 1;
+    constexpr uint32_t TRANS_PROC_STOP_Msk = TRANS_PROC_STOP::mask;
 
-/// This bit indicates that the host owns the Next Descriptor in the Transmit List and the DMA
-/// cannot acquire it. Transmission is suspended. Bits[22:20] explain the Transmit Process state
-/// transitions. To resume processing Transmit descriptors the host should change the ownership of
-/// the descriptor by setting TDES0[31] and then issue a Transmit Poll Demand Command. Position: 2,
-/// Width: 1 Access: read-write
-using TRANS_BUF_UNAVAIL = BitField<2, 1>;
-constexpr uint32_t TRANS_BUF_UNAVAIL_Pos = 2;
-constexpr uint32_t TRANS_BUF_UNAVAIL_Msk = TRANS_BUF_UNAVAIL::mask;
+    /// This bit indicates that the host owns the Next Descriptor in the Transmit List and the DMA cannot acquire it. Transmission is suspended. Bits[22:20] explain the Transmit Process state transitions. To resume processing Transmit descriptors the host should change the ownership of the descriptor by setting TDES0[31] and then issue a Transmit Poll Demand Command.
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using TRANS_BUF_UNAVAIL = BitField<2, 1>;
+    constexpr uint32_t TRANS_BUF_UNAVAIL_Pos = 2;
+    constexpr uint32_t TRANS_BUF_UNAVAIL_Msk = TRANS_BUF_UNAVAIL::mask;
 
-/// This bit indicates that the Transmit Jabber Timer expired which happens when the frame size
-/// exceeds 2 048 (10 240 bytes when the Jumbo frame is enabled). When the Jabber Timeout occurs the
-/// transmission process is aborted and placed in the Stopped state. This causes the Transmit Jabber
-/// Timeout TDES0[14] flag to assert. Position: 3, Width: 1 Access: read-write
-using TRANS_JABBER_TO = BitField<3, 1>;
-constexpr uint32_t TRANS_JABBER_TO_Pos = 3;
-constexpr uint32_t TRANS_JABBER_TO_Msk = TRANS_JABBER_TO::mask;
+    /// This bit indicates that the Transmit Jabber Timer expired which happens when the frame size exceeds 2 048 (10 240 bytes when the Jumbo frame is enabled). When the Jabber Timeout occurs the transmission process is aborted and placed in the Stopped state. This causes the Transmit Jabber Timeout TDES0[14] flag to assert.
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using TRANS_JABBER_TO = BitField<3, 1>;
+    constexpr uint32_t TRANS_JABBER_TO_Pos = 3;
+    constexpr uint32_t TRANS_JABBER_TO_Msk = TRANS_JABBER_TO::mask;
 
-/// This bit indicates that the Receive Buffer had an Overflow during frame reception. If the
-/// partial frame is transferred to the application the overflow status is set in RDES0[11].
-/// Position: 4, Width: 1
-/// Access: read-write
-using RECV_OVFLOW = BitField<4, 1>;
-constexpr uint32_t RECV_OVFLOW_Pos = 4;
-constexpr uint32_t RECV_OVFLOW_Msk = RECV_OVFLOW::mask;
+    /// This bit indicates that the Receive Buffer had an Overflow during frame reception. If the partial frame is transferred to the application the overflow status is set in RDES0[11].
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using RECV_OVFLOW = BitField<4, 1>;
+    constexpr uint32_t RECV_OVFLOW_Pos = 4;
+    constexpr uint32_t RECV_OVFLOW_Msk = RECV_OVFLOW::mask;
 
-/// This bit indicates that the Transmit Buffer had an Underflow during frame transmission.
-/// Transmission is suspended and an Underflow Error TDES0[1] is set. Position: 5, Width: 1 Access:
-/// read-write
-using TRANS_UNDFLOW = BitField<5, 1>;
-constexpr uint32_t TRANS_UNDFLOW_Pos = 5;
-constexpr uint32_t TRANS_UNDFLOW_Msk = TRANS_UNDFLOW::mask;
+    /// This bit indicates that the Transmit Buffer had an Underflow during frame transmission. Transmission is suspended and an Underflow Error TDES0[1] is set.
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using TRANS_UNDFLOW = BitField<5, 1>;
+    constexpr uint32_t TRANS_UNDFLOW_Pos = 5;
+    constexpr uint32_t TRANS_UNDFLOW_Msk = TRANS_UNDFLOW::mask;
 
-/// This bit indicates that the frame reception is complete. When reception is complete the Bit[31]
-/// of RDES1 (Disable Interrupt on Completion) is reset in the last Descriptor and the specific
-/// frame status information is updated in the descriptor. The reception remains in the Running
-/// state. Position: 6, Width: 1 Access: read-write
-using RECV_INT = BitField<6, 1>;
-constexpr uint32_t RECV_INT_Pos = 6;
-constexpr uint32_t RECV_INT_Msk = RECV_INT::mask;
+    /// This bit indicates that the frame reception is complete. When reception is complete the Bit[31] of RDES1 (Disable Interrupt on Completion) is reset in the last Descriptor and the specific frame status information is updated in the descriptor. The reception remains in the Running state.
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using RECV_INT = BitField<6, 1>;
+    constexpr uint32_t RECV_INT_Pos = 6;
+    constexpr uint32_t RECV_INT_Msk = RECV_INT::mask;
 
-/// This bit indicates that the host owns the Next Descriptor in the Receive List and the DMA cannot
-/// acquire it. The Receive Process is suspended. To resume processing Receive descriptors the host
-/// should change the ownership of the descriptor and issue a Receive Poll Demand command. If no
-/// Receive Poll Demand is issued the Receive Process resumes when the next recognized incoming
-/// frame is received. This bit is set only when the previous Receive Descriptor is owned by the
-/// DMA. Position: 7, Width: 1 Access: read-write
-using RECV_BUF_UNAVAIL = BitField<7, 1>;
-constexpr uint32_t RECV_BUF_UNAVAIL_Pos = 7;
-constexpr uint32_t RECV_BUF_UNAVAIL_Msk = RECV_BUF_UNAVAIL::mask;
+    /// This bit indicates that the host owns the Next Descriptor in the Receive List and the DMA cannot acquire it. The Receive Process is suspended. To resume processing Receive descriptors the host should change the ownership of the descriptor and issue a Receive Poll Demand command. If no Receive Poll Demand is issued the Receive Process resumes when the next recognized incoming frame is received. This bit is set only when the previous Receive Descriptor is owned by the DMA.
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using RECV_BUF_UNAVAIL = BitField<7, 1>;
+    constexpr uint32_t RECV_BUF_UNAVAIL_Pos = 7;
+    constexpr uint32_t RECV_BUF_UNAVAIL_Msk = RECV_BUF_UNAVAIL::mask;
 
-/// This bit is asserted when the Receive Process enters the Stopped state.
-/// Position: 8, Width: 1
-/// Access: read-write
-using RECV_PROC_STOP = BitField<8, 1>;
-constexpr uint32_t RECV_PROC_STOP_Pos = 8;
-constexpr uint32_t RECV_PROC_STOP_Msk = RECV_PROC_STOP::mask;
+    /// This bit is asserted when the Receive Process enters the Stopped state.
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using RECV_PROC_STOP = BitField<8, 1>;
+    constexpr uint32_t RECV_PROC_STOP_Pos = 8;
+    constexpr uint32_t RECV_PROC_STOP_Msk = RECV_PROC_STOP::mask;
 
-/// When set this bit indicates that the Receive Watchdog Timer expired while receiving the current
-/// frame and the current frame is truncated after the watchdog timeout. Position: 9, Width: 1
-/// Access: read-write
-using RECV_WDT_TO = BitField<9, 1>;
-constexpr uint32_t RECV_WDT_TO_Pos = 9;
-constexpr uint32_t RECV_WDT_TO_Msk = RECV_WDT_TO::mask;
+    /// When set this bit indicates that the Receive Watchdog Timer expired while receiving the current frame and the current frame is truncated after the watchdog timeout.
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using RECV_WDT_TO = BitField<9, 1>;
+    constexpr uint32_t RECV_WDT_TO_Pos = 9;
+    constexpr uint32_t RECV_WDT_TO_Msk = RECV_WDT_TO::mask;
 
-/// This bit indicates that the frame to be transmitted is fully transferred to the MTL Transmit
-/// FIFO. Position: 10, Width: 1 Access: read-write
-using EARLY_TRANS_INT = BitField<10, 1>;
-constexpr uint32_t EARLY_TRANS_INT_Pos = 10;
-constexpr uint32_t EARLY_TRANS_INT_Msk = EARLY_TRANS_INT::mask;
+    /// This bit indicates that the frame to be transmitted is fully transferred to the MTL Transmit FIFO.
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using EARLY_TRANS_INT = BitField<10, 1>;
+    constexpr uint32_t EARLY_TRANS_INT_Pos = 10;
+    constexpr uint32_t EARLY_TRANS_INT_Msk = EARLY_TRANS_INT::mask;
 
-/// This bit indicates that a bus error occurred as described in Bits [25:23]. When this bit is set
-/// the corresponding DMA engine disables all of its bus accesses. Position: 13, Width: 1 Access:
-/// read-write
-using FATAL_BUS_ERR_INT = BitField<13, 1>;
-constexpr uint32_t FATAL_BUS_ERR_INT_Pos = 13;
-constexpr uint32_t FATAL_BUS_ERR_INT_Msk = FATAL_BUS_ERR_INT::mask;
+    /// This bit indicates that a bus error occurred as described in Bits [25:23]. When this bit is set the corresponding DMA engine disables all of its bus accesses.
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using FATAL_BUS_ERR_INT = BitField<13, 1>;
+    constexpr uint32_t FATAL_BUS_ERR_INT_Pos = 13;
+    constexpr uint32_t FATAL_BUS_ERR_INT_Msk = FATAL_BUS_ERR_INT::mask;
 
-/// This bit indicates that the DMA filled the first data buffer of the packet. This bit is cleared
-/// when the software writes 1 to this bit or when Bit[6] (RI) of this register is set (whichever
-/// occurs earlier). Position: 14, Width: 1 Access: read-write
-using EARLY_RECV_INT = BitField<14, 1>;
-constexpr uint32_t EARLY_RECV_INT_Pos = 14;
-constexpr uint32_t EARLY_RECV_INT_Msk = EARLY_RECV_INT::mask;
+    /// This bit indicates that the DMA filled the first data buffer of the packet. This bit is cleared when the software writes 1 to this bit or when Bit[6] (RI) of this register is set (whichever occurs earlier).
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using EARLY_RECV_INT = BitField<14, 1>;
+    constexpr uint32_t EARLY_RECV_INT_Pos = 14;
+    constexpr uint32_t EARLY_RECV_INT_Msk = EARLY_RECV_INT::mask;
 
-/// Abnormal Interrupt Summary bit value is the logical OR of the following when the corresponding
-/// interrupt bits are enabled in Interrupt Enable Register: Bit[1]: Transmit Process Stopped.
-/// Bit[3]: Transmit Jabber Timeout. Bit[4]: Receive FIFO Overflow. Bit[5]: Transmit Underflow.
-/// Bit[7]: Receive Buffer Unavailable. Bit[8]: Receive Process Stopped. Bit[9]: Receive Watchdog
-/// Timeout. Bit[10]: Early Transmit Interrupt. Bit[13]: Fatal Bus Error. Only unmasked bits affect
-/// the Abnormal Interrupt Summary bit. This is a sticky bit and must be cleared (by writing 1 to
-/// this bit) each time a corresponding bit which causes AIS to be set is cleared. Position: 15,
-/// Width: 1 Access: read-write
-using ABN_INT_SUMM = BitField<15, 1>;
-constexpr uint32_t ABN_INT_SUMM_Pos = 15;
-constexpr uint32_t ABN_INT_SUMM_Msk = ABN_INT_SUMM::mask;
+    /// Abnormal Interrupt Summary bit value is the logical OR of the following when the corresponding interrupt bits are enabled in Interrupt Enable Register: Bit[1]: Transmit Process Stopped. Bit[3]: Transmit Jabber Timeout. Bit[4]: Receive FIFO Overflow. Bit[5]: Transmit Underflow. Bit[7]: Receive Buffer Unavailable. Bit[8]: Receive Process Stopped. Bit[9]: Receive Watchdog Timeout. Bit[10]: Early Transmit Interrupt. Bit[13]: Fatal Bus Error. Only unmasked bits affect the Abnormal Interrupt Summary bit. This is a sticky bit and must be cleared (by writing 1 to this bit) each time a corresponding bit which causes AIS to be set is cleared.
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using ABN_INT_SUMM = BitField<15, 1>;
+    constexpr uint32_t ABN_INT_SUMM_Pos = 15;
+    constexpr uint32_t ABN_INT_SUMM_Msk = ABN_INT_SUMM::mask;
 
-/// Normal Interrupt Summary bit value is the logical OR of the following bits when the
-/// corresponding interrupt bits are enabled in Interrupt Enable Register: Bit[0]: Transmit
-/// Interrupt. Bit[2]: Transmit Buffer Unavailable. Bit[6]: Receive Interrupt. Bit[14]: Early
-/// Receive Interrupt. Only unmasked bits affect the Normal Interrupt Summary bit.This is a sticky
-/// bit and must be cleared (by writing 1 to this bit) each time a corresponding bit which causes
-/// NIS to be set is cleared. Position: 16, Width: 1 Access: read-write
-using NORM_INT_SUMM = BitField<16, 1>;
-constexpr uint32_t NORM_INT_SUMM_Pos = 16;
-constexpr uint32_t NORM_INT_SUMM_Msk = NORM_INT_SUMM::mask;
+    /// Normal Interrupt Summary bit value is the logical OR of the following bits when the corresponding interrupt bits are enabled in Interrupt Enable Register: Bit[0]: Transmit Interrupt. Bit[2]: Transmit Buffer Unavailable. Bit[6]: Receive Interrupt. Bit[14]: Early Receive Interrupt. Only unmasked bits affect the Normal Interrupt Summary bit.This is a sticky bit and must be cleared (by writing 1 to this bit) each time a corresponding bit which causes NIS to be set is cleared.
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using NORM_INT_SUMM = BitField<16, 1>;
+    constexpr uint32_t NORM_INT_SUMM_Pos = 16;
+    constexpr uint32_t NORM_INT_SUMM_Msk = NORM_INT_SUMM::mask;
 
-/// This field indicates the Receive DMA FSM state. This field does not generate an interrupt.
-/// 3'b000: Stopped. Reset or Stop Receive Command issued. 3'b001: Running. Fetching Receive
-/// Transfer Descriptor. 3'b010: Reserved for future use. 3'b011: Running. Waiting for RX packets.
-/// 3'b100: Suspended. Receive Descriptor Unavailable. 3'b101: Running. Closing Receive Descriptor.
-/// 3'b110: TIME_STAMP write state. 3'b111: Running. Transferring the TX packets data from receive
-/// buffer to host memory. Position: 17, Width: 3 Access: read-write
-using RECV_PROC_STATE = BitField<17, 3>;
-constexpr uint32_t RECV_PROC_STATE_Pos = 17;
-constexpr uint32_t RECV_PROC_STATE_Msk = RECV_PROC_STATE::mask;
+    /// This field indicates the Receive DMA FSM state. This field does not generate an interrupt. 3'b000: Stopped. Reset or Stop Receive Command issued. 3'b001: Running. Fetching Receive Transfer Descriptor. 3'b010: Reserved for future use. 3'b011: Running. Waiting for RX packets. 3'b100: Suspended. Receive Descriptor Unavailable. 3'b101: Running. Closing Receive Descriptor. 3'b110: TIME_STAMP write state. 3'b111: Running. Transferring the TX packets data from receive buffer to host memory.
+    /// Position: 17, Width: 3
+    /// Access: read-write
+    using RECV_PROC_STATE = BitField<17, 3>;
+    constexpr uint32_t RECV_PROC_STATE_Pos = 17;
+    constexpr uint32_t RECV_PROC_STATE_Msk = RECV_PROC_STATE::mask;
 
-/// This field indicates the Transmit DMA FSM state. This field does not generate an interrupt.
-/// 3'b000: Stopped. Reset or Stop Transmit Command issued. 3'b001: Running. Fetching Transmit
-/// Transfer Descriptor. 3'b010: Reserved for future use. 3'b011: Running. Waiting for TX packets.
-/// 3'b100: Suspended. Receive Descriptor Unavailable. 3'b101: Running. Closing Transmit Descriptor.
-/// 3'b110: TIME_STAMP write state. 3'b111: Running. Transferring the TX packets data from transmit
-/// buffer to host memory. Position: 20, Width: 3 Access: read-write
-using TRANS_PROC_STATE = BitField<20, 3>;
-constexpr uint32_t TRANS_PROC_STATE_Pos = 20;
-constexpr uint32_t TRANS_PROC_STATE_Msk = TRANS_PROC_STATE::mask;
+    /// This field indicates the Transmit DMA FSM state. This field does not generate an interrupt. 3'b000: Stopped. Reset or Stop Transmit Command issued. 3'b001: Running. Fetching Transmit Transfer Descriptor. 3'b010: Reserved for future use. 3'b011: Running. Waiting for TX packets. 3'b100: Suspended. Receive Descriptor Unavailable. 3'b101: Running. Closing Transmit Descriptor. 3'b110: TIME_STAMP write state. 3'b111: Running. Transferring the TX packets data from transmit buffer to host memory.
+    /// Position: 20, Width: 3
+    /// Access: read-write
+    using TRANS_PROC_STATE = BitField<20, 3>;
+    constexpr uint32_t TRANS_PROC_STATE_Pos = 20;
+    constexpr uint32_t TRANS_PROC_STATE_Msk = TRANS_PROC_STATE::mask;
 
-/// This field indicates the type of error that caused a Bus Error for example error response on the
-/// AHB interface. This field is valid only when Bit[13] (FBI) is set. This field does not generate
-/// an interrupt. 3'b000: Error during Rx DMA Write Data Transfer. 3'b011: Error during Tx DMA Read
-/// Data Transfer. 3'b100: Error during Rx DMA Descriptor Write Access. 3'b101: Error during Tx DMA
-/// Descriptor Write Access. 3'b110: Error during Rx DMA Descriptor Read Access. 3'b111: Error
-/// during Tx DMA Descriptor Read Access. Position: 23, Width: 3 Access: read-write
-using ERROR_BITS = BitField<23, 3>;
-constexpr uint32_t ERROR_BITS_Pos = 23;
-constexpr uint32_t ERROR_BITS_Msk = ERROR_BITS::mask;
+    /// This field indicates the type of error that caused a Bus Error for example error response on the AHB interface. This field is valid only when Bit[13] (FBI) is set. This field does not generate an interrupt. 3'b000: Error during Rx DMA Write Data Transfer. 3'b011: Error during Tx DMA Read Data Transfer. 3'b100: Error during Rx DMA Descriptor Write Access. 3'b101: Error during Tx DMA Descriptor Write Access. 3'b110: Error during Rx DMA Descriptor Read Access. 3'b111: Error during Tx DMA Descriptor Read Access.
+    /// Position: 23, Width: 3
+    /// Access: read-write
+    using ERROR_BITS = BitField<23, 3>;
+    constexpr uint32_t ERROR_BITS_Pos = 23;
+    constexpr uint32_t ERROR_BITS_Msk = ERROR_BITS::mask;
 
-/// This bit indicates an interrupt event in the PMT module of the ETH_MAC. The software must read
-/// the PMT Control and Status Register in the MAC to get the exact cause of interrupt and clear its
-/// source to reset this bit to 1'b0. Position: 28, Width: 1 Access: read-write
-using PMT_INT = BitField<28, 1>;
-constexpr uint32_t PMT_INT_Pos = 28;
-constexpr uint32_t PMT_INT_Msk = PMT_INT::mask;
+    /// This bit indicates an interrupt event in the PMT module of the ETH_MAC. The software must read the PMT Control and Status Register in the MAC to get the exact cause of interrupt and clear its source to reset this bit to 1'b0.
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using PMT_INT = BitField<28, 1>;
+    constexpr uint32_t PMT_INT_Pos = 28;
+    constexpr uint32_t PMT_INT_Msk = PMT_INT::mask;
 
-/// This bit indicates an interrupt event in the Timestamp Generator block of the ETH_MAC.The
-/// software must read the corresponding registers in the ETH_MAC to get the exact cause of the
-/// interrupt and clear its source to reset this bit to 1'b0. Position: 29, Width: 1 Access:
-/// read-write
-using TS_TRI_INT = BitField<29, 1>;
-constexpr uint32_t TS_TRI_INT_Pos = 29;
-constexpr uint32_t TS_TRI_INT_Msk = TS_TRI_INT::mask;
+    /// This bit indicates an interrupt event in the Timestamp Generator block of the ETH_MAC.The software must read the corresponding registers in the ETH_MAC to get the exact cause of the interrupt and clear its source to reset this bit to 1'b0.
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using TS_TRI_INT = BitField<29, 1>;
+    constexpr uint32_t TS_TRI_INT_Pos = 29;
+    constexpr uint32_t TS_TRI_INT_Msk = TS_TRI_INT::mask;
 
 }  // namespace dmastatus
 
 /// DMAOPERATION_MODE - Receive and Transmit operating modes and command
 namespace dmaoperation_mode {
-/// When this bit is set the Receive process is placed in the Running state. The DMA attempts to
-/// acquire the descriptor from the Receive list and processes the incoming frames.When this bit is
-/// cleared the Rx DMA operation is stopped after the transfer of the current frame. Position: 1,
-/// Width: 1 Access: read-write
-using START_STOP_RX = BitField<1, 1>;
-constexpr uint32_t START_STOP_RX_Pos = 1;
-constexpr uint32_t START_STOP_RX_Msk = START_STOP_RX::mask;
+    /// When this bit is set the Receive process is placed in the Running state. The DMA attempts to acquire the descriptor from the Receive list and processes the incoming frames.When this bit is cleared the Rx DMA operation is stopped after the transfer of the current frame.
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using START_STOP_RX = BitField<1, 1>;
+    constexpr uint32_t START_STOP_RX_Pos = 1;
+    constexpr uint32_t START_STOP_RX_Msk = START_STOP_RX::mask;
 
-/// When this bit is set it instructs the DMA to process the second frame of the Transmit data even
-/// before the status for the first frame is obtained. Position: 2, Width: 1 Access: read-write
-using OPT_SECOND_FRAME = BitField<2, 1>;
-constexpr uint32_t OPT_SECOND_FRAME_Pos = 2;
-constexpr uint32_t OPT_SECOND_FRAME_Msk = OPT_SECOND_FRAME::mask;
+    /// When this bit is set it instructs the DMA to process the second frame of the Transmit data even before the status for the first frame is obtained.
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using OPT_SECOND_FRAME = BitField<2, 1>;
+    constexpr uint32_t OPT_SECOND_FRAME_Pos = 2;
+    constexpr uint32_t OPT_SECOND_FRAME_Msk = OPT_SECOND_FRAME::mask;
 
-/// These two bits control the threshold level of the MTL Receive FIFO. Transfer (request) to DMA
-/// starts when the frame size within the MTL Receive FIFO is larger than the threshold. 2'b00: 64，
-/// 2'b01: 32， 2'b10: 96， 2'b11: 128 . Position: 3, Width: 2 Access: read-write
-using RX_THRESH_CTRL = BitField<3, 2>;
-constexpr uint32_t RX_THRESH_CTRL_Pos = 3;
-constexpr uint32_t RX_THRESH_CTRL_Msk = RX_THRESH_CTRL::mask;
+    /// These two bits control the threshold level of the MTL Receive FIFO. Transfer (request) to DMA starts when the frame size within the MTL Receive FIFO is larger than the threshold. 2'b00: 64， 2'b01: 32， 2'b10: 96， 2'b11: 128 .
+    /// Position: 3, Width: 2
+    /// Access: read-write
+    using RX_THRESH_CTRL = BitField<3, 2>;
+    constexpr uint32_t RX_THRESH_CTRL_Pos = 3;
+    constexpr uint32_t RX_THRESH_CTRL_Msk = RX_THRESH_CTRL::mask;
 
-/// When set the MAC drops the received giant frames in the Rx FIFO that is frames that are larger
-/// than the computed giant frame limit. Position: 5, Width: 1 Access: read-write
-using DROP_GFRM = BitField<5, 1>;
-constexpr uint32_t DROP_GFRM_Pos = 5;
-constexpr uint32_t DROP_GFRM_Msk = DROP_GFRM::mask;
+    /// When set the MAC drops the received giant frames in the Rx FIFO that is frames that are larger than the computed giant frame limit.
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using DROP_GFRM = BitField<5, 1>;
+    constexpr uint32_t DROP_GFRM_Pos = 5;
+    constexpr uint32_t DROP_GFRM_Msk = DROP_GFRM::mask;
 
-/// When set the Rx FIFO forwards Undersized frames (that is frames with no Error and length less
-/// than 64 bytes) including pad-bytes and CRC. Position: 6, Width: 1 Access: read-write
-using FWD_UNDER_GF = BitField<6, 1>;
-constexpr uint32_t FWD_UNDER_GF_Pos = 6;
-constexpr uint32_t FWD_UNDER_GF_Msk = FWD_UNDER_GF::mask;
+    /// When set the Rx FIFO forwards Undersized frames (that is frames with no Error and length less than 64 bytes) including pad-bytes and CRC.
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using FWD_UNDER_GF = BitField<6, 1>;
+    constexpr uint32_t FWD_UNDER_GF_Pos = 6;
+    constexpr uint32_t FWD_UNDER_GF_Msk = FWD_UNDER_GF::mask;
 
-/// When this bit is reset the Rx FIFO drops frames with error status (CRC error collision error
-/// giant frame watchdog timeout or overflow). Position: 7, Width: 1 Access: read-write
-using FWD_ERR_FRAME = BitField<7, 1>;
-constexpr uint32_t FWD_ERR_FRAME_Pos = 7;
-constexpr uint32_t FWD_ERR_FRAME_Msk = FWD_ERR_FRAME::mask;
+    /// When this bit is reset the Rx FIFO drops frames with error status (CRC error collision error giant frame watchdog timeout or overflow).
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using FWD_ERR_FRAME = BitField<7, 1>;
+    constexpr uint32_t FWD_ERR_FRAME_Pos = 7;
+    constexpr uint32_t FWD_ERR_FRAME_Msk = FWD_ERR_FRAME::mask;
 
-/// When this bit is set transmission is placed in the Running state and the DMA checks the Transmit
-/// List at the current position for a frame to be transmitted.When this bit is reset the
-/// transmission process is placed in the Stopped state after completing the transmission of the
-/// current frame. Position: 13, Width: 1 Access: read-write
-using START_STOP_TRANSMISSION_COMMAND = BitField<13, 1>;
-constexpr uint32_t START_STOP_TRANSMISSION_COMMAND_Pos = 13;
-constexpr uint32_t START_STOP_TRANSMISSION_COMMAND_Msk = START_STOP_TRANSMISSION_COMMAND::mask;
+    /// When this bit is set transmission is placed in the Running state and the DMA checks the Transmit List at the current position for a frame to be transmitted.When this bit is reset the transmission process is placed in the Stopped state after completing the transmission of the current frame.
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using START_STOP_TRANSMISSION_COMMAND = BitField<13, 1>;
+    constexpr uint32_t START_STOP_TRANSMISSION_COMMAND_Pos = 13;
+    constexpr uint32_t START_STOP_TRANSMISSION_COMMAND_Msk = START_STOP_TRANSMISSION_COMMAND::mask;
 
-/// These bits control the threshold level of the MTL Transmit FIFO. Transmission starts when the
-/// frame size within the MTL Transmit FIFO is larger than the threshold. In addition full frames
-/// with a length less than the threshold are also transmitted. These bits are used only when
-/// Tx_Str_fwd is reset. 3'b000: 64 3'b001: 128 3'b010: 192 3'b011: 256 3'b100: 40 3'b101: 32
-/// 3'b110: 24 3'b111: 16 . Position: 14, Width: 3 Access: read-write
-using TX_THRESH_CTRL = BitField<14, 3>;
-constexpr uint32_t TX_THRESH_CTRL_Pos = 14;
-constexpr uint32_t TX_THRESH_CTRL_Msk = TX_THRESH_CTRL::mask;
+    /// These bits control the threshold level of the MTL Transmit FIFO. Transmission starts when the frame size within the MTL Transmit FIFO is larger than the threshold. In addition full frames with a length less than the threshold are also transmitted. These bits are used only when Tx_Str_fwd is reset. 3'b000: 64 3'b001: 128 3'b010: 192 3'b011: 256 3'b100: 40 3'b101: 32 3'b110: 24 3'b111: 16 .
+    /// Position: 14, Width: 3
+    /// Access: read-write
+    using TX_THRESH_CTRL = BitField<14, 3>;
+    constexpr uint32_t TX_THRESH_CTRL_Pos = 14;
+    constexpr uint32_t TX_THRESH_CTRL_Msk = TX_THRESH_CTRL::mask;
 
-/// When this bit is set the transmit FIFO controller logic is reset to its default values and thus
-/// all data in the Tx FIFO is lost or flushed. This bit is cleared internally when the flushing
-/// operation is complete. Position: 20, Width: 1 Access: read-write
-using FLUSH_TX_FIFO = BitField<20, 1>;
-constexpr uint32_t FLUSH_TX_FIFO_Pos = 20;
-constexpr uint32_t FLUSH_TX_FIFO_Msk = FLUSH_TX_FIFO::mask;
+    /// When this bit is set the transmit FIFO controller logic is reset to its default values and thus all data in the Tx FIFO is lost or flushed. This bit is cleared internally when the flushing operation is complete.
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using FLUSH_TX_FIFO = BitField<20, 1>;
+    constexpr uint32_t FLUSH_TX_FIFO_Pos = 20;
+    constexpr uint32_t FLUSH_TX_FIFO_Msk = FLUSH_TX_FIFO::mask;
 
-/// When this bit is set transmission starts when a full frame resides in the MTL Transmit FIFO.
-/// When this bit is set the Tx_Thresh_Ctrl values specified in Tx_Thresh_Ctrl are ignored.
-/// Position: 21, Width: 1
-/// Access: read-write
-using TX_STR_FWD = BitField<21, 1>;
-constexpr uint32_t TX_STR_FWD_Pos = 21;
-constexpr uint32_t TX_STR_FWD_Msk = TX_STR_FWD::mask;
+    /// When this bit is set transmission starts when a full frame resides in the MTL Transmit FIFO. When this bit is set the Tx_Thresh_Ctrl values specified in Tx_Thresh_Ctrl are ignored.
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using TX_STR_FWD = BitField<21, 1>;
+    constexpr uint32_t TX_STR_FWD_Pos = 21;
+    constexpr uint32_t TX_STR_FWD_Msk = TX_STR_FWD::mask;
 
-/// When this bit is set the Rx DMA does not flush any frames because of the unavailability of
-/// receive descriptors or buffers. Position: 24, Width: 1 Access: read-write
-using DIS_FLUSH_RECV_FRAMES = BitField<24, 1>;
-constexpr uint32_t DIS_FLUSH_RECV_FRAMES_Pos = 24;
-constexpr uint32_t DIS_FLUSH_RECV_FRAMES_Msk = DIS_FLUSH_RECV_FRAMES::mask;
+    /// When this bit is set the Rx DMA does not flush any frames because of the unavailability of receive descriptors or buffers.
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using DIS_FLUSH_RECV_FRAMES = BitField<24, 1>;
+    constexpr uint32_t DIS_FLUSH_RECV_FRAMES_Pos = 24;
+    constexpr uint32_t DIS_FLUSH_RECV_FRAMES_Msk = DIS_FLUSH_RECV_FRAMES::mask;
 
-/// When this bit is set the MTL reads a frame from the Rx FIFO only after the complete frame has
-/// been written to it. Position: 25, Width: 1 Access: read-write
-using RX_STORE_FORWARD = BitField<25, 1>;
-constexpr uint32_t RX_STORE_FORWARD_Pos = 25;
-constexpr uint32_t RX_STORE_FORWARD_Msk = RX_STORE_FORWARD::mask;
+    /// When this bit is set the MTL reads a frame from the Rx FIFO only after the complete frame has been written to it.
+    /// Position: 25, Width: 1
+    /// Access: read-write
+    using RX_STORE_FORWARD = BitField<25, 1>;
+    constexpr uint32_t RX_STORE_FORWARD_Pos = 25;
+    constexpr uint32_t RX_STORE_FORWARD_Msk = RX_STORE_FORWARD::mask;
 
-/// When this bit is set the MAC does not drop the frames which only have errors detected by the
-/// Receive Checksum engine.When this bit is reset all error frames are dropped if the Fwd_Err_Frame
-/// bit is reset. Position: 26, Width: 1 Access: read-write
-using DIS_DROP_TCPIP_ERR_FRAM = BitField<26, 1>;
-constexpr uint32_t DIS_DROP_TCPIP_ERR_FRAM_Pos = 26;
-constexpr uint32_t DIS_DROP_TCPIP_ERR_FRAM_Msk = DIS_DROP_TCPIP_ERR_FRAM::mask;
+    /// When this bit is set the MAC does not drop the frames which only have errors detected by the Receive Checksum engine.When this bit is reset all error frames are dropped if the Fwd_Err_Frame bit is reset.
+    /// Position: 26, Width: 1
+    /// Access: read-write
+    using DIS_DROP_TCPIP_ERR_FRAM = BitField<26, 1>;
+    constexpr uint32_t DIS_DROP_TCPIP_ERR_FRAM_Pos = 26;
+    constexpr uint32_t DIS_DROP_TCPIP_ERR_FRAM_Msk = DIS_DROP_TCPIP_ERR_FRAM::mask;
 
 }  // namespace dmaoperation_mode
 
 /// DMAIN_EN - DMAIN_EN
 namespace dmain_en {
-/// When this bit is set with Normal Interrupt Summary Enable (Bit[16]) the Transmit Interrupt is
-/// enabled. When this bit is reset the Transmit Interrupt is disabled. Position: 0, Width: 1
-/// Access: read-write
-using DMAIN_TIE = BitField<0, 1>;
-constexpr uint32_t DMAIN_TIE_Pos = 0;
-constexpr uint32_t DMAIN_TIE_Msk = DMAIN_TIE::mask;
+    /// When this bit is set with Normal Interrupt Summary Enable (Bit[16]) the Transmit Interrupt is enabled. When this bit is reset the Transmit Interrupt is disabled.
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using DMAIN_TIE = BitField<0, 1>;
+    constexpr uint32_t DMAIN_TIE_Pos = 0;
+    constexpr uint32_t DMAIN_TIE_Msk = DMAIN_TIE::mask;
 
-/// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Transmission Stopped
-/// Interrupt is enabled. When this bit is reset the Transmission Stopped Interrupt is disabled.
-/// Position: 1, Width: 1
-/// Access: read-write
-using DMAIN_TSE = BitField<1, 1>;
-constexpr uint32_t DMAIN_TSE_Pos = 1;
-constexpr uint32_t DMAIN_TSE_Msk = DMAIN_TSE::mask;
+    /// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Transmission Stopped Interrupt is enabled. When this bit is reset the Transmission Stopped Interrupt is disabled.
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using DMAIN_TSE = BitField<1, 1>;
+    constexpr uint32_t DMAIN_TSE_Pos = 1;
+    constexpr uint32_t DMAIN_TSE_Msk = DMAIN_TSE::mask;
 
-/// When this bit is set with Normal Interrupt Summary Enable (Bit 16) the Transmit Buffer
-/// Unavailable Interrupt is enabled. When this bit is reset the Transmit Buffer Unavailable
-/// Interrupt is Disabled. Position: 2, Width: 1 Access: read-write
-using DMAIN_TBUE = BitField<2, 1>;
-constexpr uint32_t DMAIN_TBUE_Pos = 2;
-constexpr uint32_t DMAIN_TBUE_Msk = DMAIN_TBUE::mask;
+    /// When this bit is set with Normal Interrupt Summary Enable (Bit 16) the Transmit Buffer Unavailable Interrupt is enabled. When this bit is reset the Transmit Buffer Unavailable Interrupt is Disabled.
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using DMAIN_TBUE = BitField<2, 1>;
+    constexpr uint32_t DMAIN_TBUE_Pos = 2;
+    constexpr uint32_t DMAIN_TBUE_Msk = DMAIN_TBUE::mask;
 
-/// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Transmit Jabber
-/// Timeout Interrupt is enabled. When this bit is reset the Transmit Jabber Timeout Interrupt is
-/// disabled. Position: 3, Width: 1 Access: read-write
-using DMAIN_TJTE = BitField<3, 1>;
-constexpr uint32_t DMAIN_TJTE_Pos = 3;
-constexpr uint32_t DMAIN_TJTE_Msk = DMAIN_TJTE::mask;
+    /// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Transmit Jabber Timeout Interrupt is enabled. When this bit is reset the Transmit Jabber Timeout Interrupt is disabled.
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using DMAIN_TJTE = BitField<3, 1>;
+    constexpr uint32_t DMAIN_TJTE_Pos = 3;
+    constexpr uint32_t DMAIN_TJTE_Msk = DMAIN_TJTE::mask;
 
-/// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Receive Overflow
-/// Interrupt is enabled. When this bit is reset the Overflow Interrupt is disabled. Position: 4,
-/// Width: 1 Access: read-write
-using DMAIN_OIE = BitField<4, 1>;
-constexpr uint32_t DMAIN_OIE_Pos = 4;
-constexpr uint32_t DMAIN_OIE_Msk = DMAIN_OIE::mask;
+    /// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Receive Overflow Interrupt is enabled. When this bit is reset the Overflow Interrupt is disabled.
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using DMAIN_OIE = BitField<4, 1>;
+    constexpr uint32_t DMAIN_OIE_Pos = 4;
+    constexpr uint32_t DMAIN_OIE_Msk = DMAIN_OIE::mask;
 
-/// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Transmit Underflow
-/// Interrupt is enabled. When this bit is reset the Underflow Interrupt is disabled. Position: 5,
-/// Width: 1 Access: read-write
-using DMAIN_UIE = BitField<5, 1>;
-constexpr uint32_t DMAIN_UIE_Pos = 5;
-constexpr uint32_t DMAIN_UIE_Msk = DMAIN_UIE::mask;
+    /// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Transmit Underflow Interrupt is enabled. When this bit is reset the Underflow Interrupt is disabled.
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using DMAIN_UIE = BitField<5, 1>;
+    constexpr uint32_t DMAIN_UIE_Pos = 5;
+    constexpr uint32_t DMAIN_UIE_Msk = DMAIN_UIE::mask;
 
-/// When this bit is set with Normal Interrupt Summary Enable (Bit[16]) the Receive Interrupt is
-/// enabled. When this bit is reset the Receive Interrupt is disabled. Position: 6, Width: 1 Access:
-/// read-write
-using DMAIN_RIE = BitField<6, 1>;
-constexpr uint32_t DMAIN_RIE_Pos = 6;
-constexpr uint32_t DMAIN_RIE_Msk = DMAIN_RIE::mask;
+    /// When this bit is set with Normal Interrupt Summary Enable (Bit[16]) the Receive Interrupt is enabled. When this bit is reset the Receive Interrupt is disabled.
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using DMAIN_RIE = BitField<6, 1>;
+    constexpr uint32_t DMAIN_RIE_Pos = 6;
+    constexpr uint32_t DMAIN_RIE_Msk = DMAIN_RIE::mask;
 
-/// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Receive Buffer
-/// Unavailable Interrupt is enabled. When this bit is reset the Receive Buffer Unavailable
-/// Interrupt is disabled. Position: 7, Width: 1 Access: read-write
-using DMAIN_RBUE = BitField<7, 1>;
-constexpr uint32_t DMAIN_RBUE_Pos = 7;
-constexpr uint32_t DMAIN_RBUE_Msk = DMAIN_RBUE::mask;
+    /// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Receive Buffer Unavailable Interrupt is enabled. When this bit is reset the Receive Buffer Unavailable Interrupt is disabled.
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using DMAIN_RBUE = BitField<7, 1>;
+    constexpr uint32_t DMAIN_RBUE_Pos = 7;
+    constexpr uint32_t DMAIN_RBUE_Msk = DMAIN_RBUE::mask;
 
-/// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Receive Stopped
-/// Interrupt is enabled. When this bit is reset the Receive Stopped Interrupt is disabled.
-/// Position: 8, Width: 1
-/// Access: read-write
-using DMAIN_RSE = BitField<8, 1>;
-constexpr uint32_t DMAIN_RSE_Pos = 8;
-constexpr uint32_t DMAIN_RSE_Msk = DMAIN_RSE::mask;
+    /// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Receive Stopped Interrupt is enabled. When this bit is reset the Receive Stopped Interrupt is disabled.
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using DMAIN_RSE = BitField<8, 1>;
+    constexpr uint32_t DMAIN_RSE_Pos = 8;
+    constexpr uint32_t DMAIN_RSE_Msk = DMAIN_RSE::mask;
 
-/// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Receive Watchdog
-/// Timeout Interrupt is enabled. When this bit is reset the Receive Watchdog Timeout Interrupt is
-/// disabled. Position: 9, Width: 1 Access: read-write
-using DMAIN_RWTE = BitField<9, 1>;
-constexpr uint32_t DMAIN_RWTE_Pos = 9;
-constexpr uint32_t DMAIN_RWTE_Msk = DMAIN_RWTE::mask;
+    /// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Receive Watchdog Timeout Interrupt is enabled. When this bit is reset the Receive Watchdog Timeout Interrupt is disabled.
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using DMAIN_RWTE = BitField<9, 1>;
+    constexpr uint32_t DMAIN_RWTE_Pos = 9;
+    constexpr uint32_t DMAIN_RWTE_Msk = DMAIN_RWTE::mask;
 
-/// When this bit is set with an Abnormal Interrupt Summary Enable (Bit[15]) the Early Transmit
-/// Interrupt is enabled. When this bit is reset the Early Transmit Interrupt is disabled. Position:
-/// 10, Width: 1 Access: read-write
-using DMAIN_ETIE = BitField<10, 1>;
-constexpr uint32_t DMAIN_ETIE_Pos = 10;
-constexpr uint32_t DMAIN_ETIE_Msk = DMAIN_ETIE::mask;
+    /// When this bit is set with an Abnormal Interrupt Summary Enable (Bit[15]) the Early Transmit Interrupt is enabled. When this bit is reset the Early Transmit Interrupt is disabled.
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using DMAIN_ETIE = BitField<10, 1>;
+    constexpr uint32_t DMAIN_ETIE_Pos = 10;
+    constexpr uint32_t DMAIN_ETIE_Msk = DMAIN_ETIE::mask;
 
-/// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Fatal Bus Error
-/// Interrupt is enabled. When this bit is reset the Fatal Bus Error Enable Interrupt is disabled.
-/// Position: 13, Width: 1
-/// Access: read-write
-using DMAIN_FBEE = BitField<13, 1>;
-constexpr uint32_t DMAIN_FBEE_Pos = 13;
-constexpr uint32_t DMAIN_FBEE_Msk = DMAIN_FBEE::mask;
+    /// When this bit is set with Abnormal Interrupt Summary Enable (Bit[15]) the Fatal Bus Error Interrupt is enabled. When this bit is reset the Fatal Bus Error Enable Interrupt is disabled.
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using DMAIN_FBEE = BitField<13, 1>;
+    constexpr uint32_t DMAIN_FBEE_Pos = 13;
+    constexpr uint32_t DMAIN_FBEE_Msk = DMAIN_FBEE::mask;
 
-/// When this bit is set with Normal Interrupt Summary Enable (Bit[16]) the Early Receive Interrupt
-/// is enabled. When this bit is reset the Early Receive Interrupt is disabled. Position: 14, Width:
-/// 1 Access: read-write
-using DMAIN_ERIE = BitField<14, 1>;
-constexpr uint32_t DMAIN_ERIE_Pos = 14;
-constexpr uint32_t DMAIN_ERIE_Msk = DMAIN_ERIE::mask;
+    /// When this bit is set with Normal Interrupt Summary Enable (Bit[16]) the Early Receive Interrupt is enabled. When this bit is reset the Early Receive Interrupt is disabled.
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using DMAIN_ERIE = BitField<14, 1>;
+    constexpr uint32_t DMAIN_ERIE_Pos = 14;
+    constexpr uint32_t DMAIN_ERIE_Msk = DMAIN_ERIE::mask;
 
-/// When this bit is set abnormal interrupt summary is enabled. When this bit is reset the abnormal
-/// interrupt summary is disabled. This bit enables the following interrupts in Status Register:
-/// Bit[1]: Transmit Process Stopped. Bit[3]: Transmit Jabber Timeout. Bit[4]: Receive Overflow.
-/// Bit[5]: Transmit Underflow. Bit[7]: Receive Buffer Unavailable. Bit[8]: Receive Process Stopped.
-/// Bit[9]: Receive Watchdog Timeout. Bit[10]: Early Transmit Interrupt. Bit[13]: Fatal Bus Error.
-/// Position: 15, Width: 1
-/// Access: read-write
-using DMAIN_AISE = BitField<15, 1>;
-constexpr uint32_t DMAIN_AISE_Pos = 15;
-constexpr uint32_t DMAIN_AISE_Msk = DMAIN_AISE::mask;
+    /// When this bit is set abnormal interrupt summary is enabled. When this bit is reset the abnormal interrupt summary is disabled. This bit enables the following interrupts in Status Register: Bit[1]: Transmit Process Stopped. Bit[3]: Transmit Jabber Timeout. Bit[4]: Receive Overflow. Bit[5]: Transmit Underflow. Bit[7]: Receive Buffer Unavailable. Bit[8]: Receive Process Stopped. Bit[9]: Receive Watchdog Timeout. Bit[10]: Early Transmit Interrupt. Bit[13]: Fatal Bus Error.
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using DMAIN_AISE = BitField<15, 1>;
+    constexpr uint32_t DMAIN_AISE_Pos = 15;
+    constexpr uint32_t DMAIN_AISE_Msk = DMAIN_AISE::mask;
 
-/// When this bit is set normal interrupt summary is enabled. When this bit is reset normal
-/// interrupt summary is disabled. This bit enables the following interrupts in Status Register:
-/// Bit[0]: Transmit Interrupt. Bit[2]: Transmit Buffer Unavailable. Bit[6]: Receive Interrupt.
-/// Bit[14]: Early Receive Interrupt. Position: 16, Width: 1 Access: read-write
-using DMAIN_NISE = BitField<16, 1>;
-constexpr uint32_t DMAIN_NISE_Pos = 16;
-constexpr uint32_t DMAIN_NISE_Msk = DMAIN_NISE::mask;
+    /// When this bit is set normal interrupt summary is enabled. When this bit is reset normal interrupt summary is disabled. This bit enables the following interrupts in Status Register: Bit[0]: Transmit Interrupt. Bit[2]: Transmit Buffer Unavailable. Bit[6]: Receive Interrupt. Bit[14]: Early Receive Interrupt.
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using DMAIN_NISE = BitField<16, 1>;
+    constexpr uint32_t DMAIN_NISE_Pos = 16;
+    constexpr uint32_t DMAIN_NISE_Msk = DMAIN_NISE::mask;
 
 }  // namespace dmain_en
 
 /// DMAMISSEDFR - Missed Frame and Buffer Overflow Counter Register
 namespace dmamissedfr {
-/// This field indicates the number of frames missed by the controller because of the Host Receive
-/// Buffer being unavailable. This counter is incremented each time the DMA discards an incoming
-/// frame. The counter is cleared when this register is read. Position: 0, Width: 16 Access:
-/// read-write
-using MISSED_FC = BitField<0, 16>;
-constexpr uint32_t MISSED_FC_Pos = 0;
-constexpr uint32_t MISSED_FC_Msk = MISSED_FC::mask;
+    /// This field indicates the number of frames missed by the controller because of the Host Receive Buffer being unavailable. This counter is incremented each time the DMA discards an incoming frame. The counter is cleared when this register is read.
+    /// Position: 0, Width: 16
+    /// Access: read-write
+    using MISSED_FC = BitField<0, 16>;
+    constexpr uint32_t MISSED_FC_Pos = 0;
+    constexpr uint32_t MISSED_FC_Msk = MISSED_FC::mask;
 
-/// This bit is set every time Missed Frame Counter (Bits[15:0]) overflows that is the DMA discards
-/// an incoming frame because of the Host Receive Buffer being unavailable with the missed frame
-/// counter at maximum value. In such a scenario the Missed frame counter is reset to all-zeros and
-/// this bit indicates that the rollover happened. Position: 16, Width: 1 Access: read-write
-using OVERFLOW_BMFC = BitField<16, 1>;
-constexpr uint32_t OVERFLOW_BMFC_Pos = 16;
-constexpr uint32_t OVERFLOW_BMFC_Msk = OVERFLOW_BMFC::mask;
+    /// This bit is set every time Missed Frame Counter (Bits[15:0]) overflows that is the DMA discards an incoming frame because of the Host Receive Buffer being unavailable with the missed frame counter at maximum value. In such a scenario the Missed frame counter is reset to all-zeros and this bit indicates that the rollover happened.
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using OVERFLOW_BMFC = BitField<16, 1>;
+    constexpr uint32_t OVERFLOW_BMFC_Pos = 16;
+    constexpr uint32_t OVERFLOW_BMFC_Msk = OVERFLOW_BMFC::mask;
 
-/// This field indicates the number of frames missed by the application. This counter is incremented
-/// each time the MTL FIFO overflows. The counter is cleared when this register is read. Position:
-/// 17, Width: 11 Access: read-write
-using OVERFLOW_FC = BitField<17, 11>;
-constexpr uint32_t OVERFLOW_FC_Pos = 17;
-constexpr uint32_t OVERFLOW_FC_Msk = OVERFLOW_FC::mask;
+    /// This field indicates the number of frames missed by the application. This counter is incremented each time the MTL FIFO overflows. The counter is cleared when this register is read.
+    /// Position: 17, Width: 11
+    /// Access: read-write
+    using OVERFLOW_FC = BitField<17, 11>;
+    constexpr uint32_t OVERFLOW_FC_Pos = 17;
+    constexpr uint32_t OVERFLOW_FC_Msk = OVERFLOW_FC::mask;
 
-/// This bit is set every time the Overflow Frame Counter (Bits[27:17]) overflows that is the Rx
-/// FIFO overflows with the overflow frame counter at maximum value. In such a scenario the overflow
-/// frame counter is reset to all-zeros and this bit indicates that the rollover happened. Position:
-/// 28, Width: 1 Access: read-write
-using OVERFLOW_BFOC = BitField<28, 1>;
-constexpr uint32_t OVERFLOW_BFOC_Pos = 28;
-constexpr uint32_t OVERFLOW_BFOC_Msk = OVERFLOW_BFOC::mask;
+    /// This bit is set every time the Overflow Frame Counter (Bits[27:17]) overflows that is the Rx FIFO overflows with the overflow frame counter at maximum value. In such a scenario the overflow frame counter is reset to all-zeros and this bit indicates that the rollover happened.
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using OVERFLOW_BFOC = BitField<28, 1>;
+    constexpr uint32_t OVERFLOW_BFOC_Pos = 28;
+    constexpr uint32_t OVERFLOW_BFOC_Msk = OVERFLOW_BFOC::mask;
 
 }  // namespace dmamissedfr
 
 /// DMARINTWDTIMER - Watchdog timer count on receive
 namespace dmarintwdtimer {
-/// This bit indicates the number of system clock cycles multiplied by 256 for which the watchdog
-/// timer is set. The watchdog timer gets triggered with the programmed value after the Rx DMA
-/// completes the transfer of a frame for which the RI(RECV_INT) status bit is not set because of
-/// the setting in the corresponding descriptor RDES1[31]. When the watchdog timer runs out the RI
-/// bit is set and the timer is stopped. The watchdog timer is reset when the RI bit is set high
-/// because of automatic setting of RI as per RDES1[31] of any received frame. Position: 0, Width: 8
-/// Access: read-write
-using RIWTC = BitField<0, 8>;
-constexpr uint32_t RIWTC_Pos = 0;
-constexpr uint32_t RIWTC_Msk = RIWTC::mask;
+    /// This bit indicates the number of system clock cycles multiplied by 256 for which the watchdog timer is set. The watchdog timer gets triggered with the programmed value after the Rx DMA completes the transfer of a frame for which the RI(RECV_INT) status bit is not set because of the setting in the corresponding descriptor RDES1[31]. When the watchdog timer runs out the RI bit is set and the timer is stopped. The watchdog timer is reset when the RI bit is set high because of automatic setting of RI as per RDES1[31] of any received frame.
+    /// Position: 0, Width: 8
+    /// Access: read-write
+    using RIWTC = BitField<0, 8>;
+    constexpr uint32_t RIWTC_Pos = 0;
+    constexpr uint32_t RIWTC_Msk = RIWTC::mask;
 
 }  // namespace dmarintwdtimer
 

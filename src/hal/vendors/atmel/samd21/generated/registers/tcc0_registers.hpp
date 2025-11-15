@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::tcc0 {
 
 /// TCC0 Register Structure
 struct TCC0_Registers {
+
     /// Control A
     /// Offset: 0x0000
     volatile uint32_t CTRLA;
@@ -28,7 +29,7 @@ struct TCC0_Registers {
     /// Control B Set
     /// Offset: 0x0005
     volatile uint8_t CTRLBSET;
-    uint8_t RESERVED_0006[2];  ///< Reserved
+    uint8_t RESERVED_0006[2]; ///< Reserved
 
     /// Synchronization Busy
     /// Offset: 0x0008
@@ -50,12 +51,12 @@ struct TCC0_Registers {
     /// Driver Control
     /// Offset: 0x0018
     volatile uint32_t DRVCTRL;
-    uint8_t RESERVED_001C[2];  ///< Reserved
+    uint8_t RESERVED_001C[2]; ///< Reserved
 
     /// Debug Control
     /// Offset: 0x001E
     volatile uint8_t DBGCTRL;
-    uint8_t RESERVED_001F[1];  ///< Reserved
+    uint8_t RESERVED_001F[1]; ///< Reserved
 
     /// Event Control
     /// Offset: 0x0020
@@ -97,7 +98,7 @@ struct TCC0_Registers {
     /// Pattern
     /// Offset: 0x0038
     volatile uint16_t PATT;
-    uint8_t RESERVED_003A[2];  ///< Reserved
+    uint8_t RESERVED_003A[2]; ///< Reserved
 
     /// Waveform Control
     /// Offset: 0x003C
@@ -129,21 +130,21 @@ struct TCC0_Registers {
 
     /// Compare and Capture
     /// Offset: 0x0044
-    volatile uint32_t CC[4] _DITH4[4];
+    volatile uint32_t CC[4]_DITH4[4];
 
     /// Compare and Capture
     /// Offset: 0x0044
-    volatile uint32_t CC[4] _DITH5[4];
+    volatile uint32_t CC[4]_DITH5[4];
 
     /// Compare and Capture
     /// Offset: 0x0044
-    volatile uint32_t CC[4] _DITH6[4];
-    uint8_t RESERVED_0054[16];  ///< Reserved
+    volatile uint32_t CC[4]_DITH6[4];
+    uint8_t RESERVED_0054[16]; ///< Reserved
 
     /// Pattern Buffer
     /// Offset: 0x0064
     volatile uint16_t PATTB;
-    uint8_t RESERVED_0066[2];  ///< Reserved
+    uint8_t RESERVED_0066[2]; ///< Reserved
 
     /// Waveform Control Buffer
     /// Offset: 0x0068
@@ -175,15 +176,15 @@ struct TCC0_Registers {
 
     /// Compare and Capture Buffer
     /// Offset: 0x0070
-    volatile uint32_t CCB[4] _DITH4[4];
+    volatile uint32_t CCB[4]_DITH4[4];
 
     /// Compare and Capture Buffer
     /// Offset: 0x0070
-    volatile uint32_t CCB[4] _DITH5[4];
+    volatile uint32_t CCB[4]_DITH5[4];
 
     /// Compare and Capture Buffer
     /// Offset: 0x0070
-    volatile uint32_t CCB[4] _DITH6[4];
+    volatile uint32_t CCB[4]_DITH6[4];
 };
 
 static_assert(sizeof(TCC0_Registers) >= 128, "TCC0_Registers size mismatch");

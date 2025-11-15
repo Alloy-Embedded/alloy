@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::rtc_cntl {
@@ -20,2361 +19,2361 @@ using namespace alloy::hal::bitfields;
 
 /// OPTIONS0 - OPTIONS0
 namespace options0 {
-/// {reg_sw_stall_appcpu_c1[5:0] reg_sw_stall_appcpu_c0[1:0]} == 0x86 will stall APP CPU
-/// Position: 0, Width: 2
-/// Access: read-write
-using SW_STALL_APPCPU_C0 = BitField<0, 2>;
-constexpr uint32_t SW_STALL_APPCPU_C0_Pos = 0;
-constexpr uint32_t SW_STALL_APPCPU_C0_Msk = SW_STALL_APPCPU_C0::mask;
+    /// {reg_sw_stall_appcpu_c1[5:0] reg_sw_stall_appcpu_c0[1:0]} == 0x86 will stall APP CPU
+    /// Position: 0, Width: 2
+    /// Access: read-write
+    using SW_STALL_APPCPU_C0 = BitField<0, 2>;
+    constexpr uint32_t SW_STALL_APPCPU_C0_Pos = 0;
+    constexpr uint32_t SW_STALL_APPCPU_C0_Msk = SW_STALL_APPCPU_C0::mask;
 
-/// {reg_sw_stall_procpu_c1[5:0] reg_sw_stall_procpu_c0[1:0]} == 0x86 will stall PRO CPU
-/// Position: 2, Width: 2
-/// Access: read-write
-using SW_STALL_PROCPU_C0 = BitField<2, 2>;
-constexpr uint32_t SW_STALL_PROCPU_C0_Pos = 2;
-constexpr uint32_t SW_STALL_PROCPU_C0_Msk = SW_STALL_PROCPU_C0::mask;
+    /// {reg_sw_stall_procpu_c1[5:0] reg_sw_stall_procpu_c0[1:0]} == 0x86 will stall PRO CPU
+    /// Position: 2, Width: 2
+    /// Access: read-write
+    using SW_STALL_PROCPU_C0 = BitField<2, 2>;
+    constexpr uint32_t SW_STALL_PROCPU_C0_Pos = 2;
+    constexpr uint32_t SW_STALL_PROCPU_C0_Msk = SW_STALL_PROCPU_C0::mask;
 
-/// APP CPU SW reset
-/// Position: 4, Width: 1
-/// Access: write-only
-using SW_APPCPU_RST = BitField<4, 1>;
-constexpr uint32_t SW_APPCPU_RST_Pos = 4;
-constexpr uint32_t SW_APPCPU_RST_Msk = SW_APPCPU_RST::mask;
+    /// APP CPU SW reset
+    /// Position: 4, Width: 1
+    /// Access: write-only
+    using SW_APPCPU_RST = BitField<4, 1>;
+    constexpr uint32_t SW_APPCPU_RST_Pos = 4;
+    constexpr uint32_t SW_APPCPU_RST_Msk = SW_APPCPU_RST::mask;
 
-/// PRO CPU SW reset
-/// Position: 5, Width: 1
-/// Access: write-only
-using SW_PROCPU_RST = BitField<5, 1>;
-constexpr uint32_t SW_PROCPU_RST_Pos = 5;
-constexpr uint32_t SW_PROCPU_RST_Msk = SW_PROCPU_RST::mask;
+    /// PRO CPU SW reset
+    /// Position: 5, Width: 1
+    /// Access: write-only
+    using SW_PROCPU_RST = BitField<5, 1>;
+    constexpr uint32_t SW_PROCPU_RST_Pos = 5;
+    constexpr uint32_t SW_PROCPU_RST_Msk = SW_PROCPU_RST::mask;
 
-/// BB_I2C force power down
-/// Position: 6, Width: 1
-/// Access: read-write
-using BB_I2C_FORCE_PD = BitField<6, 1>;
-constexpr uint32_t BB_I2C_FORCE_PD_Pos = 6;
-constexpr uint32_t BB_I2C_FORCE_PD_Msk = BB_I2C_FORCE_PD::mask;
+    /// BB_I2C force power down
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using BB_I2C_FORCE_PD = BitField<6, 1>;
+    constexpr uint32_t BB_I2C_FORCE_PD_Pos = 6;
+    constexpr uint32_t BB_I2C_FORCE_PD_Msk = BB_I2C_FORCE_PD::mask;
 
-/// BB_I2C force power up
-/// Position: 7, Width: 1
-/// Access: read-write
-using BB_I2C_FORCE_PU = BitField<7, 1>;
-constexpr uint32_t BB_I2C_FORCE_PU_Pos = 7;
-constexpr uint32_t BB_I2C_FORCE_PU_Msk = BB_I2C_FORCE_PU::mask;
+    /// BB_I2C force power up
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using BB_I2C_FORCE_PU = BitField<7, 1>;
+    constexpr uint32_t BB_I2C_FORCE_PU_Pos = 7;
+    constexpr uint32_t BB_I2C_FORCE_PU_Msk = BB_I2C_FORCE_PU::mask;
 
-/// BB_PLL _I2C force power down
-/// Position: 8, Width: 1
-/// Access: read-write
-using BBPLL_I2C_FORCE_PD = BitField<8, 1>;
-constexpr uint32_t BBPLL_I2C_FORCE_PD_Pos = 8;
-constexpr uint32_t BBPLL_I2C_FORCE_PD_Msk = BBPLL_I2C_FORCE_PD::mask;
+    /// BB_PLL _I2C force power down
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using BBPLL_I2C_FORCE_PD = BitField<8, 1>;
+    constexpr uint32_t BBPLL_I2C_FORCE_PD_Pos = 8;
+    constexpr uint32_t BBPLL_I2C_FORCE_PD_Msk = BBPLL_I2C_FORCE_PD::mask;
 
-/// BB_PLL_I2C force power up
-/// Position: 9, Width: 1
-/// Access: read-write
-using BBPLL_I2C_FORCE_PU = BitField<9, 1>;
-constexpr uint32_t BBPLL_I2C_FORCE_PU_Pos = 9;
-constexpr uint32_t BBPLL_I2C_FORCE_PU_Msk = BBPLL_I2C_FORCE_PU::mask;
+    /// BB_PLL_I2C force power up
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using BBPLL_I2C_FORCE_PU = BitField<9, 1>;
+    constexpr uint32_t BBPLL_I2C_FORCE_PU_Pos = 9;
+    constexpr uint32_t BBPLL_I2C_FORCE_PU_Msk = BBPLL_I2C_FORCE_PU::mask;
 
-/// BB_PLL force power down
-/// Position: 10, Width: 1
-/// Access: read-write
-using BBPLL_FORCE_PD = BitField<10, 1>;
-constexpr uint32_t BBPLL_FORCE_PD_Pos = 10;
-constexpr uint32_t BBPLL_FORCE_PD_Msk = BBPLL_FORCE_PD::mask;
+    /// BB_PLL force power down
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using BBPLL_FORCE_PD = BitField<10, 1>;
+    constexpr uint32_t BBPLL_FORCE_PD_Pos = 10;
+    constexpr uint32_t BBPLL_FORCE_PD_Msk = BBPLL_FORCE_PD::mask;
 
-/// BB_PLL force power up
-/// Position: 11, Width: 1
-/// Access: read-write
-using BBPLL_FORCE_PU = BitField<11, 1>;
-constexpr uint32_t BBPLL_FORCE_PU_Pos = 11;
-constexpr uint32_t BBPLL_FORCE_PU_Msk = BBPLL_FORCE_PU::mask;
+    /// BB_PLL force power up
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using BBPLL_FORCE_PU = BitField<11, 1>;
+    constexpr uint32_t BBPLL_FORCE_PU_Pos = 11;
+    constexpr uint32_t BBPLL_FORCE_PU_Msk = BBPLL_FORCE_PU::mask;
 
-/// crystall force power down
-/// Position: 12, Width: 1
-/// Access: read-write
-using XTL_FORCE_PD = BitField<12, 1>;
-constexpr uint32_t XTL_FORCE_PD_Pos = 12;
-constexpr uint32_t XTL_FORCE_PD_Msk = XTL_FORCE_PD::mask;
+    /// crystall force power down
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using XTL_FORCE_PD = BitField<12, 1>;
+    constexpr uint32_t XTL_FORCE_PD_Pos = 12;
+    constexpr uint32_t XTL_FORCE_PD_Msk = XTL_FORCE_PD::mask;
 
-/// crystall force power up
-/// Position: 13, Width: 1
-/// Access: read-write
-using XTL_FORCE_PU = BitField<13, 1>;
-constexpr uint32_t XTL_FORCE_PU_Pos = 13;
-constexpr uint32_t XTL_FORCE_PU_Msk = XTL_FORCE_PU::mask;
+    /// crystall force power up
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using XTL_FORCE_PU = BitField<13, 1>;
+    constexpr uint32_t XTL_FORCE_PU_Pos = 13;
+    constexpr uint32_t XTL_FORCE_PU_Msk = XTL_FORCE_PU::mask;
 
-/// BIAS_SLEEP follow CK8M
-/// Position: 14, Width: 1
-/// Access: read-write
-using BIAS_SLEEP_FOLW_8M = BitField<14, 1>;
-constexpr uint32_t BIAS_SLEEP_FOLW_8M_Pos = 14;
-constexpr uint32_t BIAS_SLEEP_FOLW_8M_Msk = BIAS_SLEEP_FOLW_8M::mask;
+    /// BIAS_SLEEP follow CK8M
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using BIAS_SLEEP_FOLW_8M = BitField<14, 1>;
+    constexpr uint32_t BIAS_SLEEP_FOLW_8M_Pos = 14;
+    constexpr uint32_t BIAS_SLEEP_FOLW_8M_Msk = BIAS_SLEEP_FOLW_8M::mask;
 
-/// BIAS_SLEEP force sleep
-/// Position: 15, Width: 1
-/// Access: read-write
-using BIAS_FORCE_SLEEP = BitField<15, 1>;
-constexpr uint32_t BIAS_FORCE_SLEEP_Pos = 15;
-constexpr uint32_t BIAS_FORCE_SLEEP_Msk = BIAS_FORCE_SLEEP::mask;
+    /// BIAS_SLEEP force sleep
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using BIAS_FORCE_SLEEP = BitField<15, 1>;
+    constexpr uint32_t BIAS_FORCE_SLEEP_Pos = 15;
+    constexpr uint32_t BIAS_FORCE_SLEEP_Msk = BIAS_FORCE_SLEEP::mask;
 
-/// BIAS_SLEEP force no sleep
-/// Position: 16, Width: 1
-/// Access: read-write
-using BIAS_FORCE_NOSLEEP = BitField<16, 1>;
-constexpr uint32_t BIAS_FORCE_NOSLEEP_Pos = 16;
-constexpr uint32_t BIAS_FORCE_NOSLEEP_Msk = BIAS_FORCE_NOSLEEP::mask;
+    /// BIAS_SLEEP force no sleep
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using BIAS_FORCE_NOSLEEP = BitField<16, 1>;
+    constexpr uint32_t BIAS_FORCE_NOSLEEP_Pos = 16;
+    constexpr uint32_t BIAS_FORCE_NOSLEEP_Msk = BIAS_FORCE_NOSLEEP::mask;
 
-/// BIAS_I2C follow CK8M
-/// Position: 17, Width: 1
-/// Access: read-write
-using BIAS_I2C_FOLW_8M = BitField<17, 1>;
-constexpr uint32_t BIAS_I2C_FOLW_8M_Pos = 17;
-constexpr uint32_t BIAS_I2C_FOLW_8M_Msk = BIAS_I2C_FOLW_8M::mask;
+    /// BIAS_I2C follow CK8M
+    /// Position: 17, Width: 1
+    /// Access: read-write
+    using BIAS_I2C_FOLW_8M = BitField<17, 1>;
+    constexpr uint32_t BIAS_I2C_FOLW_8M_Pos = 17;
+    constexpr uint32_t BIAS_I2C_FOLW_8M_Msk = BIAS_I2C_FOLW_8M::mask;
 
-/// BIAS_I2C force power down
-/// Position: 18, Width: 1
-/// Access: read-write
-using BIAS_I2C_FORCE_PD = BitField<18, 1>;
-constexpr uint32_t BIAS_I2C_FORCE_PD_Pos = 18;
-constexpr uint32_t BIAS_I2C_FORCE_PD_Msk = BIAS_I2C_FORCE_PD::mask;
+    /// BIAS_I2C force power down
+    /// Position: 18, Width: 1
+    /// Access: read-write
+    using BIAS_I2C_FORCE_PD = BitField<18, 1>;
+    constexpr uint32_t BIAS_I2C_FORCE_PD_Pos = 18;
+    constexpr uint32_t BIAS_I2C_FORCE_PD_Msk = BIAS_I2C_FORCE_PD::mask;
 
-/// BIAS_I2C force power up
-/// Position: 19, Width: 1
-/// Access: read-write
-using BIAS_I2C_FORCE_PU = BitField<19, 1>;
-constexpr uint32_t BIAS_I2C_FORCE_PU_Pos = 19;
-constexpr uint32_t BIAS_I2C_FORCE_PU_Msk = BIAS_I2C_FORCE_PU::mask;
+    /// BIAS_I2C force power up
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using BIAS_I2C_FORCE_PU = BitField<19, 1>;
+    constexpr uint32_t BIAS_I2C_FORCE_PU_Pos = 19;
+    constexpr uint32_t BIAS_I2C_FORCE_PU_Msk = BIAS_I2C_FORCE_PU::mask;
 
-/// BIAS_CORE follow CK8M
-/// Position: 20, Width: 1
-/// Access: read-write
-using BIAS_CORE_FOLW_8M = BitField<20, 1>;
-constexpr uint32_t BIAS_CORE_FOLW_8M_Pos = 20;
-constexpr uint32_t BIAS_CORE_FOLW_8M_Msk = BIAS_CORE_FOLW_8M::mask;
+    /// BIAS_CORE follow CK8M
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using BIAS_CORE_FOLW_8M = BitField<20, 1>;
+    constexpr uint32_t BIAS_CORE_FOLW_8M_Pos = 20;
+    constexpr uint32_t BIAS_CORE_FOLW_8M_Msk = BIAS_CORE_FOLW_8M::mask;
 
-/// BIAS_CORE force power down
-/// Position: 21, Width: 1
-/// Access: read-write
-using BIAS_CORE_FORCE_PD = BitField<21, 1>;
-constexpr uint32_t BIAS_CORE_FORCE_PD_Pos = 21;
-constexpr uint32_t BIAS_CORE_FORCE_PD_Msk = BIAS_CORE_FORCE_PD::mask;
+    /// BIAS_CORE force power down
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using BIAS_CORE_FORCE_PD = BitField<21, 1>;
+    constexpr uint32_t BIAS_CORE_FORCE_PD_Pos = 21;
+    constexpr uint32_t BIAS_CORE_FORCE_PD_Msk = BIAS_CORE_FORCE_PD::mask;
 
-/// BIAS_CORE force power up
-/// Position: 22, Width: 1
-/// Access: read-write
-using BIAS_CORE_FORCE_PU = BitField<22, 1>;
-constexpr uint32_t BIAS_CORE_FORCE_PU_Pos = 22;
-constexpr uint32_t BIAS_CORE_FORCE_PU_Msk = BIAS_CORE_FORCE_PU::mask;
+    /// BIAS_CORE force power up
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using BIAS_CORE_FORCE_PU = BitField<22, 1>;
+    constexpr uint32_t BIAS_CORE_FORCE_PU_Pos = 22;
+    constexpr uint32_t BIAS_CORE_FORCE_PU_Msk = BIAS_CORE_FORCE_PU::mask;
 
-/// Position: 23, Width: 1
-/// Access: read-write
-using XTL_FORCE_ISO = BitField<23, 1>;
-constexpr uint32_t XTL_FORCE_ISO_Pos = 23;
-constexpr uint32_t XTL_FORCE_ISO_Msk = XTL_FORCE_ISO::mask;
+    /// Position: 23, Width: 1
+    /// Access: read-write
+    using XTL_FORCE_ISO = BitField<23, 1>;
+    constexpr uint32_t XTL_FORCE_ISO_Pos = 23;
+    constexpr uint32_t XTL_FORCE_ISO_Msk = XTL_FORCE_ISO::mask;
 
-/// Position: 24, Width: 1
-/// Access: read-write
-using PLL_FORCE_ISO = BitField<24, 1>;
-constexpr uint32_t PLL_FORCE_ISO_Pos = 24;
-constexpr uint32_t PLL_FORCE_ISO_Msk = PLL_FORCE_ISO::mask;
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using PLL_FORCE_ISO = BitField<24, 1>;
+    constexpr uint32_t PLL_FORCE_ISO_Pos = 24;
+    constexpr uint32_t PLL_FORCE_ISO_Msk = PLL_FORCE_ISO::mask;
 
-/// Position: 25, Width: 1
-/// Access: read-write
-using ANALOG_FORCE_ISO = BitField<25, 1>;
-constexpr uint32_t ANALOG_FORCE_ISO_Pos = 25;
-constexpr uint32_t ANALOG_FORCE_ISO_Msk = ANALOG_FORCE_ISO::mask;
+    /// Position: 25, Width: 1
+    /// Access: read-write
+    using ANALOG_FORCE_ISO = BitField<25, 1>;
+    constexpr uint32_t ANALOG_FORCE_ISO_Pos = 25;
+    constexpr uint32_t ANALOG_FORCE_ISO_Msk = ANALOG_FORCE_ISO::mask;
 
-/// Position: 26, Width: 1
-/// Access: read-write
-using XTL_FORCE_NOISO = BitField<26, 1>;
-constexpr uint32_t XTL_FORCE_NOISO_Pos = 26;
-constexpr uint32_t XTL_FORCE_NOISO_Msk = XTL_FORCE_NOISO::mask;
+    /// Position: 26, Width: 1
+    /// Access: read-write
+    using XTL_FORCE_NOISO = BitField<26, 1>;
+    constexpr uint32_t XTL_FORCE_NOISO_Pos = 26;
+    constexpr uint32_t XTL_FORCE_NOISO_Msk = XTL_FORCE_NOISO::mask;
 
-/// Position: 27, Width: 1
-/// Access: read-write
-using PLL_FORCE_NOISO = BitField<27, 1>;
-constexpr uint32_t PLL_FORCE_NOISO_Pos = 27;
-constexpr uint32_t PLL_FORCE_NOISO_Msk = PLL_FORCE_NOISO::mask;
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using PLL_FORCE_NOISO = BitField<27, 1>;
+    constexpr uint32_t PLL_FORCE_NOISO_Pos = 27;
+    constexpr uint32_t PLL_FORCE_NOISO_Msk = PLL_FORCE_NOISO::mask;
 
-/// Position: 28, Width: 1
-/// Access: read-write
-using ANALOG_FORCE_NOISO = BitField<28, 1>;
-constexpr uint32_t ANALOG_FORCE_NOISO_Pos = 28;
-constexpr uint32_t ANALOG_FORCE_NOISO_Msk = ANALOG_FORCE_NOISO::mask;
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using ANALOG_FORCE_NOISO = BitField<28, 1>;
+    constexpr uint32_t ANALOG_FORCE_NOISO_Pos = 28;
+    constexpr uint32_t ANALOG_FORCE_NOISO_Msk = ANALOG_FORCE_NOISO::mask;
 
-/// digital wrap force reset in deep sleep
-/// Position: 29, Width: 1
-/// Access: read-write
-using DG_WRAP_FORCE_RST = BitField<29, 1>;
-constexpr uint32_t DG_WRAP_FORCE_RST_Pos = 29;
-constexpr uint32_t DG_WRAP_FORCE_RST_Msk = DG_WRAP_FORCE_RST::mask;
+    /// digital wrap force reset in deep sleep
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using DG_WRAP_FORCE_RST = BitField<29, 1>;
+    constexpr uint32_t DG_WRAP_FORCE_RST_Pos = 29;
+    constexpr uint32_t DG_WRAP_FORCE_RST_Msk = DG_WRAP_FORCE_RST::mask;
 
-/// digital core force no reset in deep sleep
-/// Position: 30, Width: 1
-/// Access: read-write
-using DG_WRAP_FORCE_NORST = BitField<30, 1>;
-constexpr uint32_t DG_WRAP_FORCE_NORST_Pos = 30;
-constexpr uint32_t DG_WRAP_FORCE_NORST_Msk = DG_WRAP_FORCE_NORST::mask;
+    /// digital core force no reset in deep sleep
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using DG_WRAP_FORCE_NORST = BitField<30, 1>;
+    constexpr uint32_t DG_WRAP_FORCE_NORST_Pos = 30;
+    constexpr uint32_t DG_WRAP_FORCE_NORST_Msk = DG_WRAP_FORCE_NORST::mask;
 
-/// SW system reset
-/// Position: 31, Width: 1
-/// Access: write-only
-using SW_SYS_RST = BitField<31, 1>;
-constexpr uint32_t SW_SYS_RST_Pos = 31;
-constexpr uint32_t SW_SYS_RST_Msk = SW_SYS_RST::mask;
+    /// SW system reset
+    /// Position: 31, Width: 1
+    /// Access: write-only
+    using SW_SYS_RST = BitField<31, 1>;
+    constexpr uint32_t SW_SYS_RST_Pos = 31;
+    constexpr uint32_t SW_SYS_RST_Msk = SW_SYS_RST::mask;
 
 }  // namespace options0
 
 /// SLP_TIMER0 - SLP_TIMER0
 namespace slp_timer0 {
-/// RTC sleep timer low 32 bits
-/// Position: 0, Width: 32
-/// Access: read-write
-using SLP_VAL_LO = BitField<0, 32>;
-constexpr uint32_t SLP_VAL_LO_Pos = 0;
-constexpr uint32_t SLP_VAL_LO_Msk = SLP_VAL_LO::mask;
+    /// RTC sleep timer low 32 bits
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using SLP_VAL_LO = BitField<0, 32>;
+    constexpr uint32_t SLP_VAL_LO_Pos = 0;
+    constexpr uint32_t SLP_VAL_LO_Msk = SLP_VAL_LO::mask;
 
 }  // namespace slp_timer0
 
 /// SLP_TIMER1 - SLP_TIMER1
 namespace slp_timer1 {
-/// RTC sleep timer high 16 bits
-/// Position: 0, Width: 16
-/// Access: read-write
-using SLP_VAL_HI = BitField<0, 16>;
-constexpr uint32_t SLP_VAL_HI_Pos = 0;
-constexpr uint32_t SLP_VAL_HI_Msk = SLP_VAL_HI::mask;
+    /// RTC sleep timer high 16 bits
+    /// Position: 0, Width: 16
+    /// Access: read-write
+    using SLP_VAL_HI = BitField<0, 16>;
+    constexpr uint32_t SLP_VAL_HI_Pos = 0;
+    constexpr uint32_t SLP_VAL_HI_Msk = SLP_VAL_HI::mask;
 
-/// timer alarm enable bit
-/// Position: 16, Width: 1
-/// Access: read-write
-using MAIN_TIMER_ALARM_EN = BitField<16, 1>;
-constexpr uint32_t MAIN_TIMER_ALARM_EN_Pos = 16;
-constexpr uint32_t MAIN_TIMER_ALARM_EN_Msk = MAIN_TIMER_ALARM_EN::mask;
+    /// timer alarm enable bit
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using MAIN_TIMER_ALARM_EN = BitField<16, 1>;
+    constexpr uint32_t MAIN_TIMER_ALARM_EN_Pos = 16;
+    constexpr uint32_t MAIN_TIMER_ALARM_EN_Msk = MAIN_TIMER_ALARM_EN::mask;
 
 }  // namespace slp_timer1
 
 /// TIME_UPDATE - TIME_UPDATE
 namespace time_update {
-/// To indicate the register is updated
-/// Position: 30, Width: 1
-/// Access: read-only
-using TIME_VALID = BitField<30, 1>;
-constexpr uint32_t TIME_VALID_Pos = 30;
-constexpr uint32_t TIME_VALID_Msk = TIME_VALID::mask;
+    /// To indicate the register is updated
+    /// Position: 30, Width: 1
+    /// Access: read-only
+    using TIME_VALID = BitField<30, 1>;
+    constexpr uint32_t TIME_VALID_Pos = 30;
+    constexpr uint32_t TIME_VALID_Msk = TIME_VALID::mask;
 
-/// Set 1: to update register with RTC timer
-/// Position: 31, Width: 1
-/// Access: write-only
-using TIME_UPDATE = BitField<31, 1>;
-constexpr uint32_t TIME_UPDATE_Pos = 31;
-constexpr uint32_t TIME_UPDATE_Msk = TIME_UPDATE::mask;
+    /// Set 1: to update register with RTC timer
+    /// Position: 31, Width: 1
+    /// Access: write-only
+    using TIME_UPDATE = BitField<31, 1>;
+    constexpr uint32_t TIME_UPDATE_Pos = 31;
+    constexpr uint32_t TIME_UPDATE_Msk = TIME_UPDATE::mask;
 
 }  // namespace time_update
 
 /// TIME0 - TIME0
 namespace time0 {
-/// RTC timer low 32 bits
-/// Position: 0, Width: 32
-/// Access: read-only
-using TIME_LO = BitField<0, 32>;
-constexpr uint32_t TIME_LO_Pos = 0;
-constexpr uint32_t TIME_LO_Msk = TIME_LO::mask;
+    /// RTC timer low 32 bits
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using TIME_LO = BitField<0, 32>;
+    constexpr uint32_t TIME_LO_Pos = 0;
+    constexpr uint32_t TIME_LO_Msk = TIME_LO::mask;
 
 }  // namespace time0
 
 /// TIME1 - TIME1
 namespace time1 {
-/// RTC timer high 16 bits
-/// Position: 0, Width: 16
-/// Access: read-only
-using TIME_HI = BitField<0, 16>;
-constexpr uint32_t TIME_HI_Pos = 0;
-constexpr uint32_t TIME_HI_Msk = TIME_HI::mask;
+    /// RTC timer high 16 bits
+    /// Position: 0, Width: 16
+    /// Access: read-only
+    using TIME_HI = BitField<0, 16>;
+    constexpr uint32_t TIME_HI_Pos = 0;
+    constexpr uint32_t TIME_HI_Msk = TIME_HI::mask;
 
 }  // namespace time1
 
 /// STATE0 - STATE0
 namespace state0 {
-/// touch controller force wake up
-/// Position: 20, Width: 1
-/// Access: read-write
-using TOUCH_WAKEUP_FORCE_EN = BitField<20, 1>;
-constexpr uint32_t TOUCH_WAKEUP_FORCE_EN_Pos = 20;
-constexpr uint32_t TOUCH_WAKEUP_FORCE_EN_Msk = TOUCH_WAKEUP_FORCE_EN::mask;
+    /// touch controller force wake up
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using TOUCH_WAKEUP_FORCE_EN = BitField<20, 1>;
+    constexpr uint32_t TOUCH_WAKEUP_FORCE_EN_Pos = 20;
+    constexpr uint32_t TOUCH_WAKEUP_FORCE_EN_Msk = TOUCH_WAKEUP_FORCE_EN::mask;
 
-/// ULP-coprocessor force wake up
-/// Position: 21, Width: 1
-/// Access: read-write
-using ULP_CP_WAKEUP_FORCE_EN = BitField<21, 1>;
-constexpr uint32_t ULP_CP_WAKEUP_FORCE_EN_Pos = 21;
-constexpr uint32_t ULP_CP_WAKEUP_FORCE_EN_Msk = ULP_CP_WAKEUP_FORCE_EN::mask;
+    /// ULP-coprocessor force wake up
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using ULP_CP_WAKEUP_FORCE_EN = BitField<21, 1>;
+    constexpr uint32_t ULP_CP_WAKEUP_FORCE_EN_Pos = 21;
+    constexpr uint32_t ULP_CP_WAKEUP_FORCE_EN_Msk = ULP_CP_WAKEUP_FORCE_EN::mask;
 
-/// 1: APB to RTC using bridge 0: APB to RTC using sync
-/// Position: 22, Width: 1
-/// Access: read-write
-using APB2RTC_BRIDGE_SEL = BitField<22, 1>;
-constexpr uint32_t APB2RTC_BRIDGE_SEL_Pos = 22;
-constexpr uint32_t APB2RTC_BRIDGE_SEL_Msk = APB2RTC_BRIDGE_SEL::mask;
+    /// 1: APB to RTC using bridge 0: APB to RTC using sync
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using APB2RTC_BRIDGE_SEL = BitField<22, 1>;
+    constexpr uint32_t APB2RTC_BRIDGE_SEL_Pos = 22;
+    constexpr uint32_t APB2RTC_BRIDGE_SEL_Msk = APB2RTC_BRIDGE_SEL::mask;
 
-/// touch timer enable bit
-/// Position: 23, Width: 1
-/// Access: read-write
-using TOUCH_SLP_TIMER_EN = BitField<23, 1>;
-constexpr uint32_t TOUCH_SLP_TIMER_EN_Pos = 23;
-constexpr uint32_t TOUCH_SLP_TIMER_EN_Msk = TOUCH_SLP_TIMER_EN::mask;
+    /// touch timer enable bit
+    /// Position: 23, Width: 1
+    /// Access: read-write
+    using TOUCH_SLP_TIMER_EN = BitField<23, 1>;
+    constexpr uint32_t TOUCH_SLP_TIMER_EN_Pos = 23;
+    constexpr uint32_t TOUCH_SLP_TIMER_EN_Msk = TOUCH_SLP_TIMER_EN::mask;
 
-/// ULP-coprocessor timer enable bit
-/// Position: 24, Width: 1
-/// Access: read-write
-using ULP_CP_SLP_TIMER_EN = BitField<24, 1>;
-constexpr uint32_t ULP_CP_SLP_TIMER_EN_Pos = 24;
-constexpr uint32_t ULP_CP_SLP_TIMER_EN_Msk = ULP_CP_SLP_TIMER_EN::mask;
+    /// ULP-coprocessor timer enable bit
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using ULP_CP_SLP_TIMER_EN = BitField<24, 1>;
+    constexpr uint32_t ULP_CP_SLP_TIMER_EN_Pos = 24;
+    constexpr uint32_t ULP_CP_SLP_TIMER_EN_Msk = ULP_CP_SLP_TIMER_EN::mask;
 
-/// SDIO active indication
-/// Position: 28, Width: 1
-/// Access: read-only
-using SDIO_ACTIVE_IND = BitField<28, 1>;
-constexpr uint32_t SDIO_ACTIVE_IND_Pos = 28;
-constexpr uint32_t SDIO_ACTIVE_IND_Msk = SDIO_ACTIVE_IND::mask;
+    /// SDIO active indication
+    /// Position: 28, Width: 1
+    /// Access: read-only
+    using SDIO_ACTIVE_IND = BitField<28, 1>;
+    constexpr uint32_t SDIO_ACTIVE_IND_Pos = 28;
+    constexpr uint32_t SDIO_ACTIVE_IND_Msk = SDIO_ACTIVE_IND::mask;
 
-/// sleep wakeup bit
-/// Position: 29, Width: 1
-/// Access: read-write
-using SLP_WAKEUP = BitField<29, 1>;
-constexpr uint32_t SLP_WAKEUP_Pos = 29;
-constexpr uint32_t SLP_WAKEUP_Msk = SLP_WAKEUP::mask;
+    /// sleep wakeup bit
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using SLP_WAKEUP = BitField<29, 1>;
+    constexpr uint32_t SLP_WAKEUP_Pos = 29;
+    constexpr uint32_t SLP_WAKEUP_Msk = SLP_WAKEUP::mask;
 
-/// sleep reject bit
-/// Position: 30, Width: 1
-/// Access: read-write
-using SLP_REJECT = BitField<30, 1>;
-constexpr uint32_t SLP_REJECT_Pos = 30;
-constexpr uint32_t SLP_REJECT_Msk = SLP_REJECT::mask;
+    /// sleep reject bit
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using SLP_REJECT = BitField<30, 1>;
+    constexpr uint32_t SLP_REJECT_Pos = 30;
+    constexpr uint32_t SLP_REJECT_Msk = SLP_REJECT::mask;
 
-/// sleep enable bit
-/// Position: 31, Width: 1
-/// Access: read-write
-using SLEEP_EN = BitField<31, 1>;
-constexpr uint32_t SLEEP_EN_Pos = 31;
-constexpr uint32_t SLEEP_EN_Msk = SLEEP_EN::mask;
+    /// sleep enable bit
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using SLEEP_EN = BitField<31, 1>;
+    constexpr uint32_t SLEEP_EN_Pos = 31;
+    constexpr uint32_t SLEEP_EN_Msk = SLEEP_EN::mask;
 
 }  // namespace state0
 
 /// TIMER1 - TIMER1
 namespace timer1 {
-/// CPU stall enable bit
-/// Position: 0, Width: 1
-/// Access: read-write
-using CPU_STALL_EN = BitField<0, 1>;
-constexpr uint32_t CPU_STALL_EN_Pos = 0;
-constexpr uint32_t CPU_STALL_EN_Msk = CPU_STALL_EN::mask;
+    /// CPU stall enable bit
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using CPU_STALL_EN = BitField<0, 1>;
+    constexpr uint32_t CPU_STALL_EN_Pos = 0;
+    constexpr uint32_t CPU_STALL_EN_Msk = CPU_STALL_EN::mask;
 
-/// CPU stall wait cycles in fast_clk_rtc
-/// Position: 1, Width: 5
-/// Access: read-write
-using CPU_STALL_WAIT = BitField<1, 5>;
-constexpr uint32_t CPU_STALL_WAIT_Pos = 1;
-constexpr uint32_t CPU_STALL_WAIT_Msk = CPU_STALL_WAIT::mask;
+    /// CPU stall wait cycles in fast_clk_rtc
+    /// Position: 1, Width: 5
+    /// Access: read-write
+    using CPU_STALL_WAIT = BitField<1, 5>;
+    constexpr uint32_t CPU_STALL_WAIT_Pos = 1;
+    constexpr uint32_t CPU_STALL_WAIT_Msk = CPU_STALL_WAIT::mask;
 
-/// CK8M wait cycles in slow_clk_rtc
-/// Position: 6, Width: 8
-/// Access: read-write
-using CK8M_WAIT = BitField<6, 8>;
-constexpr uint32_t CK8M_WAIT_Pos = 6;
-constexpr uint32_t CK8M_WAIT_Msk = CK8M_WAIT::mask;
+    /// CK8M wait cycles in slow_clk_rtc
+    /// Position: 6, Width: 8
+    /// Access: read-write
+    using CK8M_WAIT = BitField<6, 8>;
+    constexpr uint32_t CK8M_WAIT_Pos = 6;
+    constexpr uint32_t CK8M_WAIT_Msk = CK8M_WAIT::mask;
 
-/// XTAL wait cycles in slow_clk_rtc
-/// Position: 14, Width: 10
-/// Access: read-write
-using XTL_BUF_WAIT = BitField<14, 10>;
-constexpr uint32_t XTL_BUF_WAIT_Pos = 14;
-constexpr uint32_t XTL_BUF_WAIT_Msk = XTL_BUF_WAIT::mask;
+    /// XTAL wait cycles in slow_clk_rtc
+    /// Position: 14, Width: 10
+    /// Access: read-write
+    using XTL_BUF_WAIT = BitField<14, 10>;
+    constexpr uint32_t XTL_BUF_WAIT_Pos = 14;
+    constexpr uint32_t XTL_BUF_WAIT_Msk = XTL_BUF_WAIT::mask;
 
-/// PLL wait cycles in slow_clk_rtc
-/// Position: 24, Width: 8
-/// Access: read-write
-using PLL_BUF_WAIT = BitField<24, 8>;
-constexpr uint32_t PLL_BUF_WAIT_Pos = 24;
-constexpr uint32_t PLL_BUF_WAIT_Msk = PLL_BUF_WAIT::mask;
+    /// PLL wait cycles in slow_clk_rtc
+    /// Position: 24, Width: 8
+    /// Access: read-write
+    using PLL_BUF_WAIT = BitField<24, 8>;
+    constexpr uint32_t PLL_BUF_WAIT_Pos = 24;
+    constexpr uint32_t PLL_BUF_WAIT_Msk = PLL_BUF_WAIT::mask;
 
 }  // namespace timer1
 
 /// TIMER2 - TIMER2
 namespace timer2 {
-/// wait cycles in slow_clk_rtc before ULP-coprocessor / touch controller start to work
-/// Position: 15, Width: 9
-/// Access: read-write
-using ULPCP_TOUCH_START_WAIT = BitField<15, 9>;
-constexpr uint32_t ULPCP_TOUCH_START_WAIT_Pos = 15;
-constexpr uint32_t ULPCP_TOUCH_START_WAIT_Msk = ULPCP_TOUCH_START_WAIT::mask;
+    /// wait cycles in slow_clk_rtc before ULP-coprocessor / touch controller start to work
+    /// Position: 15, Width: 9
+    /// Access: read-write
+    using ULPCP_TOUCH_START_WAIT = BitField<15, 9>;
+    constexpr uint32_t ULPCP_TOUCH_START_WAIT_Pos = 15;
+    constexpr uint32_t ULPCP_TOUCH_START_WAIT_Msk = ULPCP_TOUCH_START_WAIT::mask;
 
-/// minimal cycles in slow_clk_rtc for CK8M in power down state
-/// Position: 24, Width: 8
-/// Access: read-write
-using MIN_TIME_CK8M_OFF = BitField<24, 8>;
-constexpr uint32_t MIN_TIME_CK8M_OFF_Pos = 24;
-constexpr uint32_t MIN_TIME_CK8M_OFF_Msk = MIN_TIME_CK8M_OFF::mask;
+    /// minimal cycles in slow_clk_rtc for CK8M in power down state
+    /// Position: 24, Width: 8
+    /// Access: read-write
+    using MIN_TIME_CK8M_OFF = BitField<24, 8>;
+    constexpr uint32_t MIN_TIME_CK8M_OFF_Pos = 24;
+    constexpr uint32_t MIN_TIME_CK8M_OFF_Msk = MIN_TIME_CK8M_OFF::mask;
 
 }  // namespace timer2
 
 /// TIMER3 - TIMER3
 namespace timer3 {
-/// Position: 0, Width: 9
-/// Access: read-write
-using WIFI_WAIT_TIMER = BitField<0, 9>;
-constexpr uint32_t WIFI_WAIT_TIMER_Pos = 0;
-constexpr uint32_t WIFI_WAIT_TIMER_Msk = WIFI_WAIT_TIMER::mask;
+    /// Position: 0, Width: 9
+    /// Access: read-write
+    using WIFI_WAIT_TIMER = BitField<0, 9>;
+    constexpr uint32_t WIFI_WAIT_TIMER_Pos = 0;
+    constexpr uint32_t WIFI_WAIT_TIMER_Msk = WIFI_WAIT_TIMER::mask;
 
-/// Position: 9, Width: 7
-/// Access: read-write
-using WIFI_POWERUP_TIMER = BitField<9, 7>;
-constexpr uint32_t WIFI_POWERUP_TIMER_Pos = 9;
-constexpr uint32_t WIFI_POWERUP_TIMER_Msk = WIFI_POWERUP_TIMER::mask;
+    /// Position: 9, Width: 7
+    /// Access: read-write
+    using WIFI_POWERUP_TIMER = BitField<9, 7>;
+    constexpr uint32_t WIFI_POWERUP_TIMER_Pos = 9;
+    constexpr uint32_t WIFI_POWERUP_TIMER_Msk = WIFI_POWERUP_TIMER::mask;
 
-/// Position: 16, Width: 9
-/// Access: read-write
-using ROM_RAM_WAIT_TIMER = BitField<16, 9>;
-constexpr uint32_t ROM_RAM_WAIT_TIMER_Pos = 16;
-constexpr uint32_t ROM_RAM_WAIT_TIMER_Msk = ROM_RAM_WAIT_TIMER::mask;
+    /// Position: 16, Width: 9
+    /// Access: read-write
+    using ROM_RAM_WAIT_TIMER = BitField<16, 9>;
+    constexpr uint32_t ROM_RAM_WAIT_TIMER_Pos = 16;
+    constexpr uint32_t ROM_RAM_WAIT_TIMER_Msk = ROM_RAM_WAIT_TIMER::mask;
 
-/// Position: 25, Width: 7
-/// Access: read-write
-using ROM_RAM_POWERUP_TIMER = BitField<25, 7>;
-constexpr uint32_t ROM_RAM_POWERUP_TIMER_Pos = 25;
-constexpr uint32_t ROM_RAM_POWERUP_TIMER_Msk = ROM_RAM_POWERUP_TIMER::mask;
+    /// Position: 25, Width: 7
+    /// Access: read-write
+    using ROM_RAM_POWERUP_TIMER = BitField<25, 7>;
+    constexpr uint32_t ROM_RAM_POWERUP_TIMER_Pos = 25;
+    constexpr uint32_t ROM_RAM_POWERUP_TIMER_Msk = ROM_RAM_POWERUP_TIMER::mask;
 
 }  // namespace timer3
 
 /// TIMER4 - TIMER4
 namespace timer4 {
-/// Position: 0, Width: 9
-/// Access: read-write
-using WAIT_TIMER = BitField<0, 9>;
-constexpr uint32_t WAIT_TIMER_Pos = 0;
-constexpr uint32_t WAIT_TIMER_Msk = WAIT_TIMER::mask;
+    /// Position: 0, Width: 9
+    /// Access: read-write
+    using WAIT_TIMER = BitField<0, 9>;
+    constexpr uint32_t WAIT_TIMER_Pos = 0;
+    constexpr uint32_t WAIT_TIMER_Msk = WAIT_TIMER::mask;
 
-/// Position: 9, Width: 7
-/// Access: read-write
-using POWERUP_TIMER = BitField<9, 7>;
-constexpr uint32_t POWERUP_TIMER_Pos = 9;
-constexpr uint32_t POWERUP_TIMER_Msk = POWERUP_TIMER::mask;
+    /// Position: 9, Width: 7
+    /// Access: read-write
+    using POWERUP_TIMER = BitField<9, 7>;
+    constexpr uint32_t POWERUP_TIMER_Pos = 9;
+    constexpr uint32_t POWERUP_TIMER_Msk = POWERUP_TIMER::mask;
 
-/// Position: 16, Width: 9
-/// Access: read-write
-using DG_WRAP_WAIT_TIMER = BitField<16, 9>;
-constexpr uint32_t DG_WRAP_WAIT_TIMER_Pos = 16;
-constexpr uint32_t DG_WRAP_WAIT_TIMER_Msk = DG_WRAP_WAIT_TIMER::mask;
+    /// Position: 16, Width: 9
+    /// Access: read-write
+    using DG_WRAP_WAIT_TIMER = BitField<16, 9>;
+    constexpr uint32_t DG_WRAP_WAIT_TIMER_Pos = 16;
+    constexpr uint32_t DG_WRAP_WAIT_TIMER_Msk = DG_WRAP_WAIT_TIMER::mask;
 
-/// Position: 25, Width: 7
-/// Access: read-write
-using DG_WRAP_POWERUP_TIMER = BitField<25, 7>;
-constexpr uint32_t DG_WRAP_POWERUP_TIMER_Pos = 25;
-constexpr uint32_t DG_WRAP_POWERUP_TIMER_Msk = DG_WRAP_POWERUP_TIMER::mask;
+    /// Position: 25, Width: 7
+    /// Access: read-write
+    using DG_WRAP_POWERUP_TIMER = BitField<25, 7>;
+    constexpr uint32_t DG_WRAP_POWERUP_TIMER_Pos = 25;
+    constexpr uint32_t DG_WRAP_POWERUP_TIMER_Msk = DG_WRAP_POWERUP_TIMER::mask;
 
 }  // namespace timer4
 
 /// TIMER5 - TIMER5
 namespace timer5 {
-/// Position: 0, Width: 8
-/// Access: read-write
-using ULP_CP_SUBTIMER_PREDIV = BitField<0, 8>;
-constexpr uint32_t ULP_CP_SUBTIMER_PREDIV_Pos = 0;
-constexpr uint32_t ULP_CP_SUBTIMER_PREDIV_Msk = ULP_CP_SUBTIMER_PREDIV::mask;
+    /// Position: 0, Width: 8
+    /// Access: read-write
+    using ULP_CP_SUBTIMER_PREDIV = BitField<0, 8>;
+    constexpr uint32_t ULP_CP_SUBTIMER_PREDIV_Pos = 0;
+    constexpr uint32_t ULP_CP_SUBTIMER_PREDIV_Msk = ULP_CP_SUBTIMER_PREDIV::mask;
 
-/// minimal sleep cycles in slow_clk_rtc
-/// Position: 8, Width: 8
-/// Access: read-write
-using MIN_SLP_VAL = BitField<8, 8>;
-constexpr uint32_t MIN_SLP_VAL_Pos = 8;
-constexpr uint32_t MIN_SLP_VAL_Msk = MIN_SLP_VAL::mask;
+    /// minimal sleep cycles in slow_clk_rtc
+    /// Position: 8, Width: 8
+    /// Access: read-write
+    using MIN_SLP_VAL = BitField<8, 8>;
+    constexpr uint32_t MIN_SLP_VAL_Pos = 8;
+    constexpr uint32_t MIN_SLP_VAL_Msk = MIN_SLP_VAL::mask;
 
-/// Position: 16, Width: 9
-/// Access: read-write
-using RTCMEM_WAIT_TIMER = BitField<16, 9>;
-constexpr uint32_t RTCMEM_WAIT_TIMER_Pos = 16;
-constexpr uint32_t RTCMEM_WAIT_TIMER_Msk = RTCMEM_WAIT_TIMER::mask;
+    /// Position: 16, Width: 9
+    /// Access: read-write
+    using RTCMEM_WAIT_TIMER = BitField<16, 9>;
+    constexpr uint32_t RTCMEM_WAIT_TIMER_Pos = 16;
+    constexpr uint32_t RTCMEM_WAIT_TIMER_Msk = RTCMEM_WAIT_TIMER::mask;
 
-/// Position: 25, Width: 7
-/// Access: read-write
-using RTCMEM_POWERUP_TIMER = BitField<25, 7>;
-constexpr uint32_t RTCMEM_POWERUP_TIMER_Pos = 25;
-constexpr uint32_t RTCMEM_POWERUP_TIMER_Msk = RTCMEM_POWERUP_TIMER::mask;
+    /// Position: 25, Width: 7
+    /// Access: read-write
+    using RTCMEM_POWERUP_TIMER = BitField<25, 7>;
+    constexpr uint32_t RTCMEM_POWERUP_TIMER_Pos = 25;
+    constexpr uint32_t RTCMEM_POWERUP_TIMER_Msk = RTCMEM_POWERUP_TIMER::mask;
 
 }  // namespace timer5
 
 /// ANA_CONF - ANA_CONF
 namespace ana_conf {
-/// PLLA force power down
-/// Position: 23, Width: 1
-/// Access: read-write
-using PLLA_FORCE_PD = BitField<23, 1>;
-constexpr uint32_t PLLA_FORCE_PD_Pos = 23;
-constexpr uint32_t PLLA_FORCE_PD_Msk = PLLA_FORCE_PD::mask;
+    /// PLLA force power down
+    /// Position: 23, Width: 1
+    /// Access: read-write
+    using PLLA_FORCE_PD = BitField<23, 1>;
+    constexpr uint32_t PLLA_FORCE_PD_Pos = 23;
+    constexpr uint32_t PLLA_FORCE_PD_Msk = PLLA_FORCE_PD::mask;
 
-/// PLLA force power up
-/// Position: 24, Width: 1
-/// Access: read-write
-using PLLA_FORCE_PU = BitField<24, 1>;
-constexpr uint32_t PLLA_FORCE_PU_Pos = 24;
-constexpr uint32_t PLLA_FORCE_PU_Msk = PLLA_FORCE_PU::mask;
+    /// PLLA force power up
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using PLLA_FORCE_PU = BitField<24, 1>;
+    constexpr uint32_t PLLA_FORCE_PU_Pos = 24;
+    constexpr uint32_t PLLA_FORCE_PU_Msk = PLLA_FORCE_PU::mask;
 
-/// start BBPLL calibration during sleep
-/// Position: 25, Width: 1
-/// Access: read-write
-using BBPLL_CAL_SLP_START = BitField<25, 1>;
-constexpr uint32_t BBPLL_CAL_SLP_START_Pos = 25;
-constexpr uint32_t BBPLL_CAL_SLP_START_Msk = BBPLL_CAL_SLP_START::mask;
+    /// start BBPLL calibration during sleep
+    /// Position: 25, Width: 1
+    /// Access: read-write
+    using BBPLL_CAL_SLP_START = BitField<25, 1>;
+    constexpr uint32_t BBPLL_CAL_SLP_START_Pos = 25;
+    constexpr uint32_t BBPLL_CAL_SLP_START_Msk = BBPLL_CAL_SLP_START::mask;
 
-/// 1: PVTMON power up otherwise power down
-/// Position: 26, Width: 1
-/// Access: read-write
-using PVTMON_PU = BitField<26, 1>;
-constexpr uint32_t PVTMON_PU_Pos = 26;
-constexpr uint32_t PVTMON_PU_Msk = PVTMON_PU::mask;
+    /// 1: PVTMON power up otherwise power down
+    /// Position: 26, Width: 1
+    /// Access: read-write
+    using PVTMON_PU = BitField<26, 1>;
+    constexpr uint32_t PVTMON_PU_Pos = 26;
+    constexpr uint32_t PVTMON_PU_Msk = PVTMON_PU::mask;
 
-/// 1: TXRF_I2C power up otherwise power down
-/// Position: 27, Width: 1
-/// Access: read-write
-using TXRF_I2C_PU = BitField<27, 1>;
-constexpr uint32_t TXRF_I2C_PU_Pos = 27;
-constexpr uint32_t TXRF_I2C_PU_Msk = TXRF_I2C_PU::mask;
+    /// 1: TXRF_I2C power up otherwise power down
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using TXRF_I2C_PU = BitField<27, 1>;
+    constexpr uint32_t TXRF_I2C_PU_Pos = 27;
+    constexpr uint32_t TXRF_I2C_PU_Msk = TXRF_I2C_PU::mask;
 
-/// 1: RFRX_PBUS power up otherwise power down
-/// Position: 28, Width: 1
-/// Access: read-write
-using RFRX_PBUS_PU = BitField<28, 1>;
-constexpr uint32_t RFRX_PBUS_PU_Pos = 28;
-constexpr uint32_t RFRX_PBUS_PU_Msk = RFRX_PBUS_PU::mask;
+    /// 1: RFRX_PBUS power up otherwise power down
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using RFRX_PBUS_PU = BitField<28, 1>;
+    constexpr uint32_t RFRX_PBUS_PU_Pos = 28;
+    constexpr uint32_t RFRX_PBUS_PU_Msk = RFRX_PBUS_PU::mask;
 
-/// 1: CKGEN_I2C power up otherwise power down
-/// Position: 30, Width: 1
-/// Access: read-write
-using CKGEN_I2C_PU = BitField<30, 1>;
-constexpr uint32_t CKGEN_I2C_PU_Pos = 30;
-constexpr uint32_t CKGEN_I2C_PU_Msk = CKGEN_I2C_PU::mask;
+    /// 1: CKGEN_I2C power up otherwise power down
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using CKGEN_I2C_PU = BitField<30, 1>;
+    constexpr uint32_t CKGEN_I2C_PU_Pos = 30;
+    constexpr uint32_t CKGEN_I2C_PU_Msk = CKGEN_I2C_PU::mask;
 
-/// 1: PLL_I2C power up otherwise power down
-/// Position: 31, Width: 1
-/// Access: read-write
-using PLL_I2C_PU = BitField<31, 1>;
-constexpr uint32_t PLL_I2C_PU_Pos = 31;
-constexpr uint32_t PLL_I2C_PU_Msk = PLL_I2C_PU::mask;
+    /// 1: PLL_I2C power up otherwise power down
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using PLL_I2C_PU = BitField<31, 1>;
+    constexpr uint32_t PLL_I2C_PU_Pos = 31;
+    constexpr uint32_t PLL_I2C_PU_Msk = PLL_I2C_PU::mask;
 
 }  // namespace ana_conf
 
 /// RESET_STATE - RESET_STATE
 namespace reset_state {
-/// reset cause of PRO CPU
-/// Position: 0, Width: 6
-/// Access: read-only
-using RESET_CAUSE_PROCPU = BitField<0, 6>;
-constexpr uint32_t RESET_CAUSE_PROCPU_Pos = 0;
-constexpr uint32_t RESET_CAUSE_PROCPU_Msk = RESET_CAUSE_PROCPU::mask;
+    /// reset cause of PRO CPU
+    /// Position: 0, Width: 6
+    /// Access: read-only
+    using RESET_CAUSE_PROCPU = BitField<0, 6>;
+    constexpr uint32_t RESET_CAUSE_PROCPU_Pos = 0;
+    constexpr uint32_t RESET_CAUSE_PROCPU_Msk = RESET_CAUSE_PROCPU::mask;
 
-/// reset cause of APP CPU
-/// Position: 6, Width: 6
-/// Access: read-only
-using RESET_CAUSE_APPCPU = BitField<6, 6>;
-constexpr uint32_t RESET_CAUSE_APPCPU_Pos = 6;
-constexpr uint32_t RESET_CAUSE_APPCPU_Msk = RESET_CAUSE_APPCPU::mask;
+    /// reset cause of APP CPU
+    /// Position: 6, Width: 6
+    /// Access: read-only
+    using RESET_CAUSE_APPCPU = BitField<6, 6>;
+    constexpr uint32_t RESET_CAUSE_APPCPU_Pos = 6;
+    constexpr uint32_t RESET_CAUSE_APPCPU_Msk = RESET_CAUSE_APPCPU::mask;
 
-/// APP CPU state vector sel
-/// Position: 12, Width: 1
-/// Access: read-write
-using APPCPU_STAT_VECTOR_SEL = BitField<12, 1>;
-constexpr uint32_t APPCPU_STAT_VECTOR_SEL_Pos = 12;
-constexpr uint32_t APPCPU_STAT_VECTOR_SEL_Msk = APPCPU_STAT_VECTOR_SEL::mask;
+    /// APP CPU state vector sel
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using APPCPU_STAT_VECTOR_SEL = BitField<12, 1>;
+    constexpr uint32_t APPCPU_STAT_VECTOR_SEL_Pos = 12;
+    constexpr uint32_t APPCPU_STAT_VECTOR_SEL_Msk = APPCPU_STAT_VECTOR_SEL::mask;
 
-/// PRO CPU state vector sel
-/// Position: 13, Width: 1
-/// Access: read-write
-using PROCPU_STAT_VECTOR_SEL = BitField<13, 1>;
-constexpr uint32_t PROCPU_STAT_VECTOR_SEL_Pos = 13;
-constexpr uint32_t PROCPU_STAT_VECTOR_SEL_Msk = PROCPU_STAT_VECTOR_SEL::mask;
+    /// PRO CPU state vector sel
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using PROCPU_STAT_VECTOR_SEL = BitField<13, 1>;
+    constexpr uint32_t PROCPU_STAT_VECTOR_SEL_Pos = 13;
+    constexpr uint32_t PROCPU_STAT_VECTOR_SEL_Msk = PROCPU_STAT_VECTOR_SEL::mask;
 
 }  // namespace reset_state
 
 /// WAKEUP_STATE - WAKEUP_STATE
 namespace wakeup_state {
-/// wakeup cause
-/// Position: 0, Width: 11
-/// Access: read-only
-using WAKEUP_CAUSE = BitField<0, 11>;
-constexpr uint32_t WAKEUP_CAUSE_Pos = 0;
-constexpr uint32_t WAKEUP_CAUSE_Msk = WAKEUP_CAUSE::mask;
+    /// wakeup cause
+    /// Position: 0, Width: 11
+    /// Access: read-only
+    using WAKEUP_CAUSE = BitField<0, 11>;
+    constexpr uint32_t WAKEUP_CAUSE_Pos = 0;
+    constexpr uint32_t WAKEUP_CAUSE_Msk = WAKEUP_CAUSE::mask;
 
-/// wakeup enable bitmap
-/// Position: 11, Width: 11
-/// Access: read-write
-using WAKEUP_ENA = BitField<11, 11>;
-constexpr uint32_t WAKEUP_ENA_Pos = 11;
-constexpr uint32_t WAKEUP_ENA_Msk = WAKEUP_ENA::mask;
+    /// wakeup enable bitmap
+    /// Position: 11, Width: 11
+    /// Access: read-write
+    using WAKEUP_ENA = BitField<11, 11>;
+    constexpr uint32_t WAKEUP_ENA_Pos = 11;
+    constexpr uint32_t WAKEUP_ENA_Msk = WAKEUP_ENA::mask;
 
-/// enable filter for gpio wakeup event
-/// Position: 22, Width: 1
-/// Access: read-write
-using GPIO_WAKEUP_FILTER = BitField<22, 1>;
-constexpr uint32_t GPIO_WAKEUP_FILTER_Pos = 22;
-constexpr uint32_t GPIO_WAKEUP_FILTER_Msk = GPIO_WAKEUP_FILTER::mask;
+    /// enable filter for gpio wakeup event
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using GPIO_WAKEUP_FILTER = BitField<22, 1>;
+    constexpr uint32_t GPIO_WAKEUP_FILTER_Pos = 22;
+    constexpr uint32_t GPIO_WAKEUP_FILTER_Msk = GPIO_WAKEUP_FILTER::mask;
 
 }  // namespace wakeup_state
 
 /// INT_ENA - INT_ENA
 namespace int_ena {
-/// enable sleep wakeup interrupt
-/// Position: 0, Width: 1
-/// Access: read-write
-using SLP_WAKEUP_INT_ENA = BitField<0, 1>;
-constexpr uint32_t SLP_WAKEUP_INT_ENA_Pos = 0;
-constexpr uint32_t SLP_WAKEUP_INT_ENA_Msk = SLP_WAKEUP_INT_ENA::mask;
+    /// enable sleep wakeup interrupt
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using SLP_WAKEUP_INT_ENA = BitField<0, 1>;
+    constexpr uint32_t SLP_WAKEUP_INT_ENA_Pos = 0;
+    constexpr uint32_t SLP_WAKEUP_INT_ENA_Msk = SLP_WAKEUP_INT_ENA::mask;
 
-/// enable sleep reject interrupt
-/// Position: 1, Width: 1
-/// Access: read-write
-using SLP_REJECT_INT_ENA = BitField<1, 1>;
-constexpr uint32_t SLP_REJECT_INT_ENA_Pos = 1;
-constexpr uint32_t SLP_REJECT_INT_ENA_Msk = SLP_REJECT_INT_ENA::mask;
+    /// enable sleep reject interrupt
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using SLP_REJECT_INT_ENA = BitField<1, 1>;
+    constexpr uint32_t SLP_REJECT_INT_ENA_Pos = 1;
+    constexpr uint32_t SLP_REJECT_INT_ENA_Msk = SLP_REJECT_INT_ENA::mask;
 
-/// enable SDIO idle interrupt
-/// Position: 2, Width: 1
-/// Access: read-write
-using SDIO_IDLE_INT_ENA = BitField<2, 1>;
-constexpr uint32_t SDIO_IDLE_INT_ENA_Pos = 2;
-constexpr uint32_t SDIO_IDLE_INT_ENA_Msk = SDIO_IDLE_INT_ENA::mask;
+    /// enable SDIO idle interrupt
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using SDIO_IDLE_INT_ENA = BitField<2, 1>;
+    constexpr uint32_t SDIO_IDLE_INT_ENA_Pos = 2;
+    constexpr uint32_t SDIO_IDLE_INT_ENA_Msk = SDIO_IDLE_INT_ENA::mask;
 
-/// enable RTC WDT interrupt
-/// Position: 3, Width: 1
-/// Access: read-write
-using WDT_INT_ENA = BitField<3, 1>;
-constexpr uint32_t WDT_INT_ENA_Pos = 3;
-constexpr uint32_t WDT_INT_ENA_Msk = WDT_INT_ENA::mask;
+    /// enable RTC WDT interrupt
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using WDT_INT_ENA = BitField<3, 1>;
+    constexpr uint32_t WDT_INT_ENA_Pos = 3;
+    constexpr uint32_t WDT_INT_ENA_Msk = WDT_INT_ENA::mask;
 
-/// enable RTC time valid interrupt
-/// Position: 4, Width: 1
-/// Access: read-write
-using TIME_VALID_INT_ENA = BitField<4, 1>;
-constexpr uint32_t TIME_VALID_INT_ENA_Pos = 4;
-constexpr uint32_t TIME_VALID_INT_ENA_Msk = TIME_VALID_INT_ENA::mask;
+    /// enable RTC time valid interrupt
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using TIME_VALID_INT_ENA = BitField<4, 1>;
+    constexpr uint32_t TIME_VALID_INT_ENA_Pos = 4;
+    constexpr uint32_t TIME_VALID_INT_ENA_Msk = TIME_VALID_INT_ENA::mask;
 
-/// enable ULP-coprocessor interrupt
-/// Position: 5, Width: 1
-/// Access: read-write
-using ULP_CP_INT_ENA = BitField<5, 1>;
-constexpr uint32_t ULP_CP_INT_ENA_Pos = 5;
-constexpr uint32_t ULP_CP_INT_ENA_Msk = ULP_CP_INT_ENA::mask;
+    /// enable ULP-coprocessor interrupt
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using ULP_CP_INT_ENA = BitField<5, 1>;
+    constexpr uint32_t ULP_CP_INT_ENA_Pos = 5;
+    constexpr uint32_t ULP_CP_INT_ENA_Msk = ULP_CP_INT_ENA::mask;
 
-/// enable touch interrupt
-/// Position: 6, Width: 1
-/// Access: read-write
-using TOUCH_INT_ENA = BitField<6, 1>;
-constexpr uint32_t TOUCH_INT_ENA_Pos = 6;
-constexpr uint32_t TOUCH_INT_ENA_Msk = TOUCH_INT_ENA::mask;
+    /// enable touch interrupt
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using TOUCH_INT_ENA = BitField<6, 1>;
+    constexpr uint32_t TOUCH_INT_ENA_Pos = 6;
+    constexpr uint32_t TOUCH_INT_ENA_Msk = TOUCH_INT_ENA::mask;
 
-/// enable brown out interrupt
-/// Position: 7, Width: 1
-/// Access: read-write
-using BROWN_OUT_INT_ENA = BitField<7, 1>;
-constexpr uint32_t BROWN_OUT_INT_ENA_Pos = 7;
-constexpr uint32_t BROWN_OUT_INT_ENA_Msk = BROWN_OUT_INT_ENA::mask;
+    /// enable brown out interrupt
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using BROWN_OUT_INT_ENA = BitField<7, 1>;
+    constexpr uint32_t BROWN_OUT_INT_ENA_Pos = 7;
+    constexpr uint32_t BROWN_OUT_INT_ENA_Msk = BROWN_OUT_INT_ENA::mask;
 
-/// enable RTC main timer interrupt
-/// Position: 8, Width: 1
-/// Access: read-write
-using MAIN_TIMER_INT_ENA = BitField<8, 1>;
-constexpr uint32_t MAIN_TIMER_INT_ENA_Pos = 8;
-constexpr uint32_t MAIN_TIMER_INT_ENA_Msk = MAIN_TIMER_INT_ENA::mask;
+    /// enable RTC main timer interrupt
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using MAIN_TIMER_INT_ENA = BitField<8, 1>;
+    constexpr uint32_t MAIN_TIMER_INT_ENA_Pos = 8;
+    constexpr uint32_t MAIN_TIMER_INT_ENA_Msk = MAIN_TIMER_INT_ENA::mask;
 
 }  // namespace int_ena
 
 /// INT_RAW - INT_RAW
 namespace int_raw {
-/// sleep wakeup interrupt raw
-/// Position: 0, Width: 1
-/// Access: read-only
-using SLP_WAKEUP_INT_RAW = BitField<0, 1>;
-constexpr uint32_t SLP_WAKEUP_INT_RAW_Pos = 0;
-constexpr uint32_t SLP_WAKEUP_INT_RAW_Msk = SLP_WAKEUP_INT_RAW::mask;
+    /// sleep wakeup interrupt raw
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using SLP_WAKEUP_INT_RAW = BitField<0, 1>;
+    constexpr uint32_t SLP_WAKEUP_INT_RAW_Pos = 0;
+    constexpr uint32_t SLP_WAKEUP_INT_RAW_Msk = SLP_WAKEUP_INT_RAW::mask;
 
-/// sleep reject interrupt raw
-/// Position: 1, Width: 1
-/// Access: read-only
-using SLP_REJECT_INT_RAW = BitField<1, 1>;
-constexpr uint32_t SLP_REJECT_INT_RAW_Pos = 1;
-constexpr uint32_t SLP_REJECT_INT_RAW_Msk = SLP_REJECT_INT_RAW::mask;
+    /// sleep reject interrupt raw
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using SLP_REJECT_INT_RAW = BitField<1, 1>;
+    constexpr uint32_t SLP_REJECT_INT_RAW_Pos = 1;
+    constexpr uint32_t SLP_REJECT_INT_RAW_Msk = SLP_REJECT_INT_RAW::mask;
 
-/// SDIO idle interrupt raw
-/// Position: 2, Width: 1
-/// Access: read-only
-using SDIO_IDLE_INT_RAW = BitField<2, 1>;
-constexpr uint32_t SDIO_IDLE_INT_RAW_Pos = 2;
-constexpr uint32_t SDIO_IDLE_INT_RAW_Msk = SDIO_IDLE_INT_RAW::mask;
+    /// SDIO idle interrupt raw
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using SDIO_IDLE_INT_RAW = BitField<2, 1>;
+    constexpr uint32_t SDIO_IDLE_INT_RAW_Pos = 2;
+    constexpr uint32_t SDIO_IDLE_INT_RAW_Msk = SDIO_IDLE_INT_RAW::mask;
 
-/// RTC WDT interrupt raw
-/// Position: 3, Width: 1
-/// Access: read-only
-using WDT_INT_RAW = BitField<3, 1>;
-constexpr uint32_t WDT_INT_RAW_Pos = 3;
-constexpr uint32_t WDT_INT_RAW_Msk = WDT_INT_RAW::mask;
+    /// RTC WDT interrupt raw
+    /// Position: 3, Width: 1
+    /// Access: read-only
+    using WDT_INT_RAW = BitField<3, 1>;
+    constexpr uint32_t WDT_INT_RAW_Pos = 3;
+    constexpr uint32_t WDT_INT_RAW_Msk = WDT_INT_RAW::mask;
 
-/// RTC time valid interrupt raw
-/// Position: 4, Width: 1
-/// Access: read-only
-using TIME_VALID_INT_RAW = BitField<4, 1>;
-constexpr uint32_t TIME_VALID_INT_RAW_Pos = 4;
-constexpr uint32_t TIME_VALID_INT_RAW_Msk = TIME_VALID_INT_RAW::mask;
+    /// RTC time valid interrupt raw
+    /// Position: 4, Width: 1
+    /// Access: read-only
+    using TIME_VALID_INT_RAW = BitField<4, 1>;
+    constexpr uint32_t TIME_VALID_INT_RAW_Pos = 4;
+    constexpr uint32_t TIME_VALID_INT_RAW_Msk = TIME_VALID_INT_RAW::mask;
 
-/// ULP-coprocessor interrupt raw
-/// Position: 5, Width: 1
-/// Access: read-only
-using ULP_CP_INT_RAW = BitField<5, 1>;
-constexpr uint32_t ULP_CP_INT_RAW_Pos = 5;
-constexpr uint32_t ULP_CP_INT_RAW_Msk = ULP_CP_INT_RAW::mask;
+    /// ULP-coprocessor interrupt raw
+    /// Position: 5, Width: 1
+    /// Access: read-only
+    using ULP_CP_INT_RAW = BitField<5, 1>;
+    constexpr uint32_t ULP_CP_INT_RAW_Pos = 5;
+    constexpr uint32_t ULP_CP_INT_RAW_Msk = ULP_CP_INT_RAW::mask;
 
-/// touch interrupt raw
-/// Position: 6, Width: 1
-/// Access: read-only
-using TOUCH_INT_RAW = BitField<6, 1>;
-constexpr uint32_t TOUCH_INT_RAW_Pos = 6;
-constexpr uint32_t TOUCH_INT_RAW_Msk = TOUCH_INT_RAW::mask;
+    /// touch interrupt raw
+    /// Position: 6, Width: 1
+    /// Access: read-only
+    using TOUCH_INT_RAW = BitField<6, 1>;
+    constexpr uint32_t TOUCH_INT_RAW_Pos = 6;
+    constexpr uint32_t TOUCH_INT_RAW_Msk = TOUCH_INT_RAW::mask;
 
-/// brown out interrupt raw
-/// Position: 7, Width: 1
-/// Access: read-only
-using BROWN_OUT_INT_RAW = BitField<7, 1>;
-constexpr uint32_t BROWN_OUT_INT_RAW_Pos = 7;
-constexpr uint32_t BROWN_OUT_INT_RAW_Msk = BROWN_OUT_INT_RAW::mask;
+    /// brown out interrupt raw
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using BROWN_OUT_INT_RAW = BitField<7, 1>;
+    constexpr uint32_t BROWN_OUT_INT_RAW_Pos = 7;
+    constexpr uint32_t BROWN_OUT_INT_RAW_Msk = BROWN_OUT_INT_RAW::mask;
 
-/// RTC main timer interrupt raw
-/// Position: 8, Width: 1
-/// Access: read-only
-using MAIN_TIMER_INT_RAW = BitField<8, 1>;
-constexpr uint32_t MAIN_TIMER_INT_RAW_Pos = 8;
-constexpr uint32_t MAIN_TIMER_INT_RAW_Msk = MAIN_TIMER_INT_RAW::mask;
+    /// RTC main timer interrupt raw
+    /// Position: 8, Width: 1
+    /// Access: read-only
+    using MAIN_TIMER_INT_RAW = BitField<8, 1>;
+    constexpr uint32_t MAIN_TIMER_INT_RAW_Pos = 8;
+    constexpr uint32_t MAIN_TIMER_INT_RAW_Msk = MAIN_TIMER_INT_RAW::mask;
 
 }  // namespace int_raw
 
 /// INT_ST - INT_ST
 namespace int_st {
-/// sleep wakeup interrupt state
-/// Position: 0, Width: 1
-/// Access: read-only
-using SLP_WAKEUP_INT_ST = BitField<0, 1>;
-constexpr uint32_t SLP_WAKEUP_INT_ST_Pos = 0;
-constexpr uint32_t SLP_WAKEUP_INT_ST_Msk = SLP_WAKEUP_INT_ST::mask;
+    /// sleep wakeup interrupt state
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using SLP_WAKEUP_INT_ST = BitField<0, 1>;
+    constexpr uint32_t SLP_WAKEUP_INT_ST_Pos = 0;
+    constexpr uint32_t SLP_WAKEUP_INT_ST_Msk = SLP_WAKEUP_INT_ST::mask;
 
-/// sleep reject interrupt state
-/// Position: 1, Width: 1
-/// Access: read-only
-using SLP_REJECT_INT_ST = BitField<1, 1>;
-constexpr uint32_t SLP_REJECT_INT_ST_Pos = 1;
-constexpr uint32_t SLP_REJECT_INT_ST_Msk = SLP_REJECT_INT_ST::mask;
+    /// sleep reject interrupt state
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using SLP_REJECT_INT_ST = BitField<1, 1>;
+    constexpr uint32_t SLP_REJECT_INT_ST_Pos = 1;
+    constexpr uint32_t SLP_REJECT_INT_ST_Msk = SLP_REJECT_INT_ST::mask;
 
-/// SDIO idle interrupt state
-/// Position: 2, Width: 1
-/// Access: read-only
-using SDIO_IDLE_INT_ST = BitField<2, 1>;
-constexpr uint32_t SDIO_IDLE_INT_ST_Pos = 2;
-constexpr uint32_t SDIO_IDLE_INT_ST_Msk = SDIO_IDLE_INT_ST::mask;
+    /// SDIO idle interrupt state
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using SDIO_IDLE_INT_ST = BitField<2, 1>;
+    constexpr uint32_t SDIO_IDLE_INT_ST_Pos = 2;
+    constexpr uint32_t SDIO_IDLE_INT_ST_Msk = SDIO_IDLE_INT_ST::mask;
 
-/// RTC WDT interrupt state
-/// Position: 3, Width: 1
-/// Access: read-only
-using WDT_INT_ST = BitField<3, 1>;
-constexpr uint32_t WDT_INT_ST_Pos = 3;
-constexpr uint32_t WDT_INT_ST_Msk = WDT_INT_ST::mask;
+    /// RTC WDT interrupt state
+    /// Position: 3, Width: 1
+    /// Access: read-only
+    using WDT_INT_ST = BitField<3, 1>;
+    constexpr uint32_t WDT_INT_ST_Pos = 3;
+    constexpr uint32_t WDT_INT_ST_Msk = WDT_INT_ST::mask;
 
-/// RTC time valid interrupt state
-/// Position: 4, Width: 1
-/// Access: read-only
-using TIME_VALID_INT_ST = BitField<4, 1>;
-constexpr uint32_t TIME_VALID_INT_ST_Pos = 4;
-constexpr uint32_t TIME_VALID_INT_ST_Msk = TIME_VALID_INT_ST::mask;
+    /// RTC time valid interrupt state
+    /// Position: 4, Width: 1
+    /// Access: read-only
+    using TIME_VALID_INT_ST = BitField<4, 1>;
+    constexpr uint32_t TIME_VALID_INT_ST_Pos = 4;
+    constexpr uint32_t TIME_VALID_INT_ST_Msk = TIME_VALID_INT_ST::mask;
 
-/// ULP-coprocessor interrupt state
-/// Position: 5, Width: 1
-/// Access: read-only
-using SAR_INT_ST = BitField<5, 1>;
-constexpr uint32_t SAR_INT_ST_Pos = 5;
-constexpr uint32_t SAR_INT_ST_Msk = SAR_INT_ST::mask;
+    /// ULP-coprocessor interrupt state
+    /// Position: 5, Width: 1
+    /// Access: read-only
+    using SAR_INT_ST = BitField<5, 1>;
+    constexpr uint32_t SAR_INT_ST_Pos = 5;
+    constexpr uint32_t SAR_INT_ST_Msk = SAR_INT_ST::mask;
 
-/// touch interrupt state
-/// Position: 6, Width: 1
-/// Access: read-only
-using TOUCH_INT_ST = BitField<6, 1>;
-constexpr uint32_t TOUCH_INT_ST_Pos = 6;
-constexpr uint32_t TOUCH_INT_ST_Msk = TOUCH_INT_ST::mask;
+    /// touch interrupt state
+    /// Position: 6, Width: 1
+    /// Access: read-only
+    using TOUCH_INT_ST = BitField<6, 1>;
+    constexpr uint32_t TOUCH_INT_ST_Pos = 6;
+    constexpr uint32_t TOUCH_INT_ST_Msk = TOUCH_INT_ST::mask;
 
-/// brown out interrupt state
-/// Position: 7, Width: 1
-/// Access: read-only
-using BROWN_OUT_INT_ST = BitField<7, 1>;
-constexpr uint32_t BROWN_OUT_INT_ST_Pos = 7;
-constexpr uint32_t BROWN_OUT_INT_ST_Msk = BROWN_OUT_INT_ST::mask;
+    /// brown out interrupt state
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using BROWN_OUT_INT_ST = BitField<7, 1>;
+    constexpr uint32_t BROWN_OUT_INT_ST_Pos = 7;
+    constexpr uint32_t BROWN_OUT_INT_ST_Msk = BROWN_OUT_INT_ST::mask;
 
-/// RTC main timer interrupt state
-/// Position: 8, Width: 1
-/// Access: read-only
-using MAIN_TIMER_INT_ST = BitField<8, 1>;
-constexpr uint32_t MAIN_TIMER_INT_ST_Pos = 8;
-constexpr uint32_t MAIN_TIMER_INT_ST_Msk = MAIN_TIMER_INT_ST::mask;
+    /// RTC main timer interrupt state
+    /// Position: 8, Width: 1
+    /// Access: read-only
+    using MAIN_TIMER_INT_ST = BitField<8, 1>;
+    constexpr uint32_t MAIN_TIMER_INT_ST_Pos = 8;
+    constexpr uint32_t MAIN_TIMER_INT_ST_Msk = MAIN_TIMER_INT_ST::mask;
 
 }  // namespace int_st
 
 /// INT_CLR - INT_CLR
 namespace int_clr {
-/// Clear sleep wakeup interrupt state
-/// Position: 0, Width: 1
-/// Access: write-only
-using SLP_WAKEUP_INT_CLR = BitField<0, 1>;
-constexpr uint32_t SLP_WAKEUP_INT_CLR_Pos = 0;
-constexpr uint32_t SLP_WAKEUP_INT_CLR_Msk = SLP_WAKEUP_INT_CLR::mask;
+    /// Clear sleep wakeup interrupt state
+    /// Position: 0, Width: 1
+    /// Access: write-only
+    using SLP_WAKEUP_INT_CLR = BitField<0, 1>;
+    constexpr uint32_t SLP_WAKEUP_INT_CLR_Pos = 0;
+    constexpr uint32_t SLP_WAKEUP_INT_CLR_Msk = SLP_WAKEUP_INT_CLR::mask;
 
-/// Clear sleep reject interrupt state
-/// Position: 1, Width: 1
-/// Access: write-only
-using SLP_REJECT_INT_CLR = BitField<1, 1>;
-constexpr uint32_t SLP_REJECT_INT_CLR_Pos = 1;
-constexpr uint32_t SLP_REJECT_INT_CLR_Msk = SLP_REJECT_INT_CLR::mask;
+    /// Clear sleep reject interrupt state
+    /// Position: 1, Width: 1
+    /// Access: write-only
+    using SLP_REJECT_INT_CLR = BitField<1, 1>;
+    constexpr uint32_t SLP_REJECT_INT_CLR_Pos = 1;
+    constexpr uint32_t SLP_REJECT_INT_CLR_Msk = SLP_REJECT_INT_CLR::mask;
 
-/// Clear SDIO idle interrupt state
-/// Position: 2, Width: 1
-/// Access: write-only
-using SDIO_IDLE_INT_CLR = BitField<2, 1>;
-constexpr uint32_t SDIO_IDLE_INT_CLR_Pos = 2;
-constexpr uint32_t SDIO_IDLE_INT_CLR_Msk = SDIO_IDLE_INT_CLR::mask;
+    /// Clear SDIO idle interrupt state
+    /// Position: 2, Width: 1
+    /// Access: write-only
+    using SDIO_IDLE_INT_CLR = BitField<2, 1>;
+    constexpr uint32_t SDIO_IDLE_INT_CLR_Pos = 2;
+    constexpr uint32_t SDIO_IDLE_INT_CLR_Msk = SDIO_IDLE_INT_CLR::mask;
 
-/// Clear RTC WDT interrupt state
-/// Position: 3, Width: 1
-/// Access: write-only
-using WDT_INT_CLR = BitField<3, 1>;
-constexpr uint32_t WDT_INT_CLR_Pos = 3;
-constexpr uint32_t WDT_INT_CLR_Msk = WDT_INT_CLR::mask;
+    /// Clear RTC WDT interrupt state
+    /// Position: 3, Width: 1
+    /// Access: write-only
+    using WDT_INT_CLR = BitField<3, 1>;
+    constexpr uint32_t WDT_INT_CLR_Pos = 3;
+    constexpr uint32_t WDT_INT_CLR_Msk = WDT_INT_CLR::mask;
 
-/// Clear RTC time valid interrupt state
-/// Position: 4, Width: 1
-/// Access: write-only
-using TIME_VALID_INT_CLR = BitField<4, 1>;
-constexpr uint32_t TIME_VALID_INT_CLR_Pos = 4;
-constexpr uint32_t TIME_VALID_INT_CLR_Msk = TIME_VALID_INT_CLR::mask;
+    /// Clear RTC time valid interrupt state
+    /// Position: 4, Width: 1
+    /// Access: write-only
+    using TIME_VALID_INT_CLR = BitField<4, 1>;
+    constexpr uint32_t TIME_VALID_INT_CLR_Pos = 4;
+    constexpr uint32_t TIME_VALID_INT_CLR_Msk = TIME_VALID_INT_CLR::mask;
 
-/// Clear ULP-coprocessor interrupt state
-/// Position: 5, Width: 1
-/// Access: write-only
-using SAR_INT_CLR = BitField<5, 1>;
-constexpr uint32_t SAR_INT_CLR_Pos = 5;
-constexpr uint32_t SAR_INT_CLR_Msk = SAR_INT_CLR::mask;
+    /// Clear ULP-coprocessor interrupt state
+    /// Position: 5, Width: 1
+    /// Access: write-only
+    using SAR_INT_CLR = BitField<5, 1>;
+    constexpr uint32_t SAR_INT_CLR_Pos = 5;
+    constexpr uint32_t SAR_INT_CLR_Msk = SAR_INT_CLR::mask;
 
-/// Clear touch interrupt state
-/// Position: 6, Width: 1
-/// Access: write-only
-using TOUCH_INT_CLR = BitField<6, 1>;
-constexpr uint32_t TOUCH_INT_CLR_Pos = 6;
-constexpr uint32_t TOUCH_INT_CLR_Msk = TOUCH_INT_CLR::mask;
+    /// Clear touch interrupt state
+    /// Position: 6, Width: 1
+    /// Access: write-only
+    using TOUCH_INT_CLR = BitField<6, 1>;
+    constexpr uint32_t TOUCH_INT_CLR_Pos = 6;
+    constexpr uint32_t TOUCH_INT_CLR_Msk = TOUCH_INT_CLR::mask;
 
-/// Clear brown out interrupt state
-/// Position: 7, Width: 1
-/// Access: write-only
-using BROWN_OUT_INT_CLR = BitField<7, 1>;
-constexpr uint32_t BROWN_OUT_INT_CLR_Pos = 7;
-constexpr uint32_t BROWN_OUT_INT_CLR_Msk = BROWN_OUT_INT_CLR::mask;
+    /// Clear brown out interrupt state
+    /// Position: 7, Width: 1
+    /// Access: write-only
+    using BROWN_OUT_INT_CLR = BitField<7, 1>;
+    constexpr uint32_t BROWN_OUT_INT_CLR_Pos = 7;
+    constexpr uint32_t BROWN_OUT_INT_CLR_Msk = BROWN_OUT_INT_CLR::mask;
 
-/// Clear RTC main timer interrupt state
-/// Position: 8, Width: 1
-/// Access: write-only
-using MAIN_TIMER_INT_CLR = BitField<8, 1>;
-constexpr uint32_t MAIN_TIMER_INT_CLR_Pos = 8;
-constexpr uint32_t MAIN_TIMER_INT_CLR_Msk = MAIN_TIMER_INT_CLR::mask;
+    /// Clear RTC main timer interrupt state
+    /// Position: 8, Width: 1
+    /// Access: write-only
+    using MAIN_TIMER_INT_CLR = BitField<8, 1>;
+    constexpr uint32_t MAIN_TIMER_INT_CLR_Pos = 8;
+    constexpr uint32_t MAIN_TIMER_INT_CLR_Msk = MAIN_TIMER_INT_CLR::mask;
 
 }  // namespace int_clr
 
 /// STORE0 - STORE0
 namespace store0 {
-/// 32-bit general purpose retention register
-/// Position: 0, Width: 32
-/// Access: read-write
-using SCRATCH0 = BitField<0, 32>;
-constexpr uint32_t SCRATCH0_Pos = 0;
-constexpr uint32_t SCRATCH0_Msk = SCRATCH0::mask;
+    /// 32-bit general purpose retention register
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using SCRATCH0 = BitField<0, 32>;
+    constexpr uint32_t SCRATCH0_Pos = 0;
+    constexpr uint32_t SCRATCH0_Msk = SCRATCH0::mask;
 
 }  // namespace store0
 
 /// STORE1 - STORE1
 namespace store1 {
-/// 32-bit general purpose retention register
-/// Position: 0, Width: 32
-/// Access: read-write
-using SCRATCH1 = BitField<0, 32>;
-constexpr uint32_t SCRATCH1_Pos = 0;
-constexpr uint32_t SCRATCH1_Msk = SCRATCH1::mask;
+    /// 32-bit general purpose retention register
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using SCRATCH1 = BitField<0, 32>;
+    constexpr uint32_t SCRATCH1_Pos = 0;
+    constexpr uint32_t SCRATCH1_Msk = SCRATCH1::mask;
 
 }  // namespace store1
 
 /// STORE2 - STORE2
 namespace store2 {
-/// 32-bit general purpose retention register
-/// Position: 0, Width: 32
-/// Access: read-write
-using SCRATCH2 = BitField<0, 32>;
-constexpr uint32_t SCRATCH2_Pos = 0;
-constexpr uint32_t SCRATCH2_Msk = SCRATCH2::mask;
+    /// 32-bit general purpose retention register
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using SCRATCH2 = BitField<0, 32>;
+    constexpr uint32_t SCRATCH2_Pos = 0;
+    constexpr uint32_t SCRATCH2_Msk = SCRATCH2::mask;
 
 }  // namespace store2
 
 /// STORE3 - STORE3
 namespace store3 {
-/// 32-bit general purpose retention register
-/// Position: 0, Width: 32
-/// Access: read-write
-using SCRATCH3 = BitField<0, 32>;
-constexpr uint32_t SCRATCH3_Pos = 0;
-constexpr uint32_t SCRATCH3_Msk = SCRATCH3::mask;
+    /// 32-bit general purpose retention register
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using SCRATCH3 = BitField<0, 32>;
+    constexpr uint32_t SCRATCH3_Pos = 0;
+    constexpr uint32_t SCRATCH3_Msk = SCRATCH3::mask;
 
 }  // namespace store3
 
 /// EXT_XTL_CONF - EXT_XTL_CONF
 namespace ext_xtl_conf {
-/// 0: power down XTAL at high level 1: power down XTAL at low level
-/// Position: 30, Width: 1
-/// Access: read-write
-using XTL_EXT_CTR_LV = BitField<30, 1>;
-constexpr uint32_t XTL_EXT_CTR_LV_Pos = 30;
-constexpr uint32_t XTL_EXT_CTR_LV_Msk = XTL_EXT_CTR_LV::mask;
+    /// 0: power down XTAL at high level 1: power down XTAL at low level
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using XTL_EXT_CTR_LV = BitField<30, 1>;
+    constexpr uint32_t XTL_EXT_CTR_LV_Pos = 30;
+    constexpr uint32_t XTL_EXT_CTR_LV_Msk = XTL_EXT_CTR_LV::mask;
 
-/// enable control XTAL by external pads
-/// Position: 31, Width: 1
-/// Access: read-write
-using XTL_EXT_CTR_EN = BitField<31, 1>;
-constexpr uint32_t XTL_EXT_CTR_EN_Pos = 31;
-constexpr uint32_t XTL_EXT_CTR_EN_Msk = XTL_EXT_CTR_EN::mask;
+    /// enable control XTAL by external pads
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using XTL_EXT_CTR_EN = BitField<31, 1>;
+    constexpr uint32_t XTL_EXT_CTR_EN_Pos = 31;
+    constexpr uint32_t XTL_EXT_CTR_EN_Msk = XTL_EXT_CTR_EN::mask;
 
 }  // namespace ext_xtl_conf
 
 /// EXT_WAKEUP_CONF - EXT_WAKEUP_CONF
 namespace ext_wakeup_conf {
-/// 0: external wakeup at low level 1: external wakeup at high level
-/// Position: 30, Width: 1
-/// Access: read-write
-using EXT_WAKEUP0_LV = BitField<30, 1>;
-constexpr uint32_t EXT_WAKEUP0_LV_Pos = 30;
-constexpr uint32_t EXT_WAKEUP0_LV_Msk = EXT_WAKEUP0_LV::mask;
+    /// 0: external wakeup at low level 1: external wakeup at high level
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using EXT_WAKEUP0_LV = BitField<30, 1>;
+    constexpr uint32_t EXT_WAKEUP0_LV_Pos = 30;
+    constexpr uint32_t EXT_WAKEUP0_LV_Msk = EXT_WAKEUP0_LV::mask;
 
-/// 0: external wakeup at low level 1: external wakeup at high level
-/// Position: 31, Width: 1
-/// Access: read-write
-using EXT_WAKEUP1_LV = BitField<31, 1>;
-constexpr uint32_t EXT_WAKEUP1_LV_Pos = 31;
-constexpr uint32_t EXT_WAKEUP1_LV_Msk = EXT_WAKEUP1_LV::mask;
+    /// 0: external wakeup at low level 1: external wakeup at high level
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using EXT_WAKEUP1_LV = BitField<31, 1>;
+    constexpr uint32_t EXT_WAKEUP1_LV_Pos = 31;
+    constexpr uint32_t EXT_WAKEUP1_LV_Msk = EXT_WAKEUP1_LV::mask;
 
 }  // namespace ext_wakeup_conf
 
 /// SLP_REJECT_CONF - SLP_REJECT_CONF
 namespace slp_reject_conf {
-/// enable GPIO reject
-/// Position: 24, Width: 1
-/// Access: read-write
-using GPIO_REJECT_EN = BitField<24, 1>;
-constexpr uint32_t GPIO_REJECT_EN_Pos = 24;
-constexpr uint32_t GPIO_REJECT_EN_Msk = GPIO_REJECT_EN::mask;
+    /// enable GPIO reject
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using GPIO_REJECT_EN = BitField<24, 1>;
+    constexpr uint32_t GPIO_REJECT_EN_Pos = 24;
+    constexpr uint32_t GPIO_REJECT_EN_Msk = GPIO_REJECT_EN::mask;
 
-/// enable SDIO reject
-/// Position: 25, Width: 1
-/// Access: read-write
-using SDIO_REJECT_EN = BitField<25, 1>;
-constexpr uint32_t SDIO_REJECT_EN_Pos = 25;
-constexpr uint32_t SDIO_REJECT_EN_Msk = SDIO_REJECT_EN::mask;
+    /// enable SDIO reject
+    /// Position: 25, Width: 1
+    /// Access: read-write
+    using SDIO_REJECT_EN = BitField<25, 1>;
+    constexpr uint32_t SDIO_REJECT_EN_Pos = 25;
+    constexpr uint32_t SDIO_REJECT_EN_Msk = SDIO_REJECT_EN::mask;
 
-/// enable reject for light sleep
-/// Position: 26, Width: 1
-/// Access: read-write
-using LIGHT_SLP_REJECT_EN = BitField<26, 1>;
-constexpr uint32_t LIGHT_SLP_REJECT_EN_Pos = 26;
-constexpr uint32_t LIGHT_SLP_REJECT_EN_Msk = LIGHT_SLP_REJECT_EN::mask;
+    /// enable reject for light sleep
+    /// Position: 26, Width: 1
+    /// Access: read-write
+    using LIGHT_SLP_REJECT_EN = BitField<26, 1>;
+    constexpr uint32_t LIGHT_SLP_REJECT_EN_Pos = 26;
+    constexpr uint32_t LIGHT_SLP_REJECT_EN_Msk = LIGHT_SLP_REJECT_EN::mask;
 
-/// enable reject for deep sleep
-/// Position: 27, Width: 1
-/// Access: read-write
-using DEEP_SLP_REJECT_EN = BitField<27, 1>;
-constexpr uint32_t DEEP_SLP_REJECT_EN_Pos = 27;
-constexpr uint32_t DEEP_SLP_REJECT_EN_Msk = DEEP_SLP_REJECT_EN::mask;
+    /// enable reject for deep sleep
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using DEEP_SLP_REJECT_EN = BitField<27, 1>;
+    constexpr uint32_t DEEP_SLP_REJECT_EN_Pos = 27;
+    constexpr uint32_t DEEP_SLP_REJECT_EN_Msk = DEEP_SLP_REJECT_EN::mask;
 
-/// sleep reject cause
-/// Position: 28, Width: 4
-/// Access: read-only
-using REJECT_CAUSE = BitField<28, 4>;
-constexpr uint32_t REJECT_CAUSE_Pos = 28;
-constexpr uint32_t REJECT_CAUSE_Msk = REJECT_CAUSE::mask;
+    /// sleep reject cause
+    /// Position: 28, Width: 4
+    /// Access: read-only
+    using REJECT_CAUSE = BitField<28, 4>;
+    constexpr uint32_t REJECT_CAUSE_Pos = 28;
+    constexpr uint32_t REJECT_CAUSE_Msk = REJECT_CAUSE::mask;
 
 }  // namespace slp_reject_conf
 
 /// CPU_PERIOD_CONF - CPU_PERIOD_CONF
 namespace cpu_period_conf {
-/// CPU sel option
-/// Position: 29, Width: 1
-/// Access: read-write
-using CPUSEL_CONF = BitField<29, 1>;
-constexpr uint32_t CPUSEL_CONF_Pos = 29;
-constexpr uint32_t CPUSEL_CONF_Msk = CPUSEL_CONF::mask;
+    /// CPU sel option
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using CPUSEL_CONF = BitField<29, 1>;
+    constexpr uint32_t CPUSEL_CONF_Pos = 29;
+    constexpr uint32_t CPUSEL_CONF_Msk = CPUSEL_CONF::mask;
 
-/// CPU period sel
-/// Position: 30, Width: 2
-/// Access: read-write
-using CPUPERIOD_SEL = BitField<30, 2>;
-constexpr uint32_t CPUPERIOD_SEL_Pos = 30;
-constexpr uint32_t CPUPERIOD_SEL_Msk = CPUPERIOD_SEL::mask;
+    /// CPU period sel
+    /// Position: 30, Width: 2
+    /// Access: read-write
+    using CPUPERIOD_SEL = BitField<30, 2>;
+    constexpr uint32_t CPUPERIOD_SEL_Pos = 30;
+    constexpr uint32_t CPUPERIOD_SEL_Msk = CPUPERIOD_SEL::mask;
 
 }  // namespace cpu_period_conf
 
 /// SDIO_ACT_CONF - SDIO_ACT_CONF
 namespace sdio_act_conf {
-/// Position: 22, Width: 10
-/// Access: read-write
-using SDIO_ACT_DNUM = BitField<22, 10>;
-constexpr uint32_t SDIO_ACT_DNUM_Pos = 22;
-constexpr uint32_t SDIO_ACT_DNUM_Msk = SDIO_ACT_DNUM::mask;
+    /// Position: 22, Width: 10
+    /// Access: read-write
+    using SDIO_ACT_DNUM = BitField<22, 10>;
+    constexpr uint32_t SDIO_ACT_DNUM_Pos = 22;
+    constexpr uint32_t SDIO_ACT_DNUM_Msk = SDIO_ACT_DNUM::mask;
 
 }  // namespace sdio_act_conf
 
 /// CLK_CONF - CLK_CONF
 namespace clk_conf {
-/// CK8M_D256_OUT divider. 00: div128 01: div256 10: div512 11: div1024.
-/// Position: 4, Width: 2
-/// Access: read-write
-using CK8M_DIV = BitField<4, 2>;
-constexpr uint32_t CK8M_DIV_Pos = 4;
-constexpr uint32_t CK8M_DIV_Msk = CK8M_DIV::mask;
-/// Enumerated values for CK8M_DIV
-namespace ck8m_div {
-constexpr uint32_t DIV128 = 0;
-constexpr uint32_t DIV256 = 1;
-constexpr uint32_t DIV512 = 2;
-constexpr uint32_t DIV1024 = 3;
-}  // namespace ck8m_div
+    /// CK8M_D256_OUT divider. 00: div128 01: div256 10: div512 11: div1024.
+    /// Position: 4, Width: 2
+    /// Access: read-write
+    using CK8M_DIV = BitField<4, 2>;
+    constexpr uint32_t CK8M_DIV_Pos = 4;
+    constexpr uint32_t CK8M_DIV_Msk = CK8M_DIV::mask;
+    /// Enumerated values for CK8M_DIV
+    namespace ck8m_div {
+        constexpr uint32_t DIV128 = 0;
+        constexpr uint32_t DIV256 = 1;
+        constexpr uint32_t DIV512 = 2;
+        constexpr uint32_t DIV1024 = 3;
+    }
 
-/// disable CK8M and CK8M_D256_OUT
-/// Position: 6, Width: 1
-/// Access: read-write
-using ENB_CK8M = BitField<6, 1>;
-constexpr uint32_t ENB_CK8M_Pos = 6;
-constexpr uint32_t ENB_CK8M_Msk = ENB_CK8M::mask;
+    /// disable CK8M and CK8M_D256_OUT
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using ENB_CK8M = BitField<6, 1>;
+    constexpr uint32_t ENB_CK8M_Pos = 6;
+    constexpr uint32_t ENB_CK8M_Msk = ENB_CK8M::mask;
 
-/// 1: CK8M_D256_OUT is actually CK8M 0: CK8M_D256_OUT is CK8M divided by 256
-/// Position: 7, Width: 1
-/// Access: read-write
-using ENB_CK8M_DIV = BitField<7, 1>;
-constexpr uint32_t ENB_CK8M_DIV_Pos = 7;
-constexpr uint32_t ENB_CK8M_DIV_Msk = ENB_CK8M_DIV::mask;
-/// Enumerated values for ENB_CK8M_DIV
-namespace enb_ck8m_div {
-constexpr uint32_t CK8M_DIV_256 = 0;
-constexpr uint32_t CK8M = 1;
-}  // namespace enb_ck8m_div
+    /// 1: CK8M_D256_OUT is actually CK8M 0: CK8M_D256_OUT is CK8M divided by 256
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using ENB_CK8M_DIV = BitField<7, 1>;
+    constexpr uint32_t ENB_CK8M_DIV_Pos = 7;
+    constexpr uint32_t ENB_CK8M_DIV_Msk = ENB_CK8M_DIV::mask;
+    /// Enumerated values for ENB_CK8M_DIV
+    namespace enb_ck8m_div {
+        constexpr uint32_t CK8M_DIV_256 = 0;
+        constexpr uint32_t CK8M = 1;
+    }
 
-/// enable CK_XTAL_32K for digital core (no relationship with RTC core)
-/// Position: 8, Width: 1
-/// Access: read-write
-using DIG_XTAL32K_EN = BitField<8, 1>;
-constexpr uint32_t DIG_XTAL32K_EN_Pos = 8;
-constexpr uint32_t DIG_XTAL32K_EN_Msk = DIG_XTAL32K_EN::mask;
+    /// enable CK_XTAL_32K for digital core (no relationship with RTC core)
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using DIG_XTAL32K_EN = BitField<8, 1>;
+    constexpr uint32_t DIG_XTAL32K_EN_Pos = 8;
+    constexpr uint32_t DIG_XTAL32K_EN_Msk = DIG_XTAL32K_EN::mask;
 
-/// enable CK8M_D256_OUT for digital core (no relationship with RTC core)
-/// Position: 9, Width: 1
-/// Access: read-write
-using DIG_CLK8M_D256_EN = BitField<9, 1>;
-constexpr uint32_t DIG_CLK8M_D256_EN_Pos = 9;
-constexpr uint32_t DIG_CLK8M_D256_EN_Msk = DIG_CLK8M_D256_EN::mask;
+    /// enable CK8M_D256_OUT for digital core (no relationship with RTC core)
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using DIG_CLK8M_D256_EN = BitField<9, 1>;
+    constexpr uint32_t DIG_CLK8M_D256_EN_Pos = 9;
+    constexpr uint32_t DIG_CLK8M_D256_EN_Msk = DIG_CLK8M_D256_EN::mask;
 
-/// enable CK8M for digital core (no relationship with RTC core)
-/// Position: 10, Width: 1
-/// Access: read-write
-using DIG_CLK8M_EN = BitField<10, 1>;
-constexpr uint32_t DIG_CLK8M_EN_Pos = 10;
-constexpr uint32_t DIG_CLK8M_EN_Msk = DIG_CLK8M_EN::mask;
+    /// enable CK8M for digital core (no relationship with RTC core)
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using DIG_CLK8M_EN = BitField<10, 1>;
+    constexpr uint32_t DIG_CLK8M_EN_Pos = 10;
+    constexpr uint32_t DIG_CLK8M_EN_Msk = DIG_CLK8M_EN::mask;
 
-/// Position: 11, Width: 1
-/// Access: read-write
-using CK8M_DFREQ_FORCE = BitField<11, 1>;
-constexpr uint32_t CK8M_DFREQ_FORCE_Pos = 11;
-constexpr uint32_t CK8M_DFREQ_FORCE_Msk = CK8M_DFREQ_FORCE::mask;
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using CK8M_DFREQ_FORCE = BitField<11, 1>;
+    constexpr uint32_t CK8M_DFREQ_FORCE_Pos = 11;
+    constexpr uint32_t CK8M_DFREQ_FORCE_Msk = CK8M_DFREQ_FORCE::mask;
 
-/// divider = reg_ck8m_div_sel + 1
-/// Position: 12, Width: 3
-/// Access: read-write
-using CK8M_DIV_SEL = BitField<12, 3>;
-constexpr uint32_t CK8M_DIV_SEL_Pos = 12;
-constexpr uint32_t CK8M_DIV_SEL_Msk = CK8M_DIV_SEL::mask;
+    /// divider = reg_ck8m_div_sel + 1
+    /// Position: 12, Width: 3
+    /// Access: read-write
+    using CK8M_DIV_SEL = BitField<12, 3>;
+    constexpr uint32_t CK8M_DIV_SEL_Pos = 12;
+    constexpr uint32_t CK8M_DIV_SEL_Msk = CK8M_DIV_SEL::mask;
 
-/// XTAL force no gating during sleep
-/// Position: 15, Width: 1
-/// Access: read-write
-using XTAL_FORCE_NOGATING = BitField<15, 1>;
-constexpr uint32_t XTAL_FORCE_NOGATING_Pos = 15;
-constexpr uint32_t XTAL_FORCE_NOGATING_Msk = XTAL_FORCE_NOGATING::mask;
+    /// XTAL force no gating during sleep
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using XTAL_FORCE_NOGATING = BitField<15, 1>;
+    constexpr uint32_t XTAL_FORCE_NOGATING_Pos = 15;
+    constexpr uint32_t XTAL_FORCE_NOGATING_Msk = XTAL_FORCE_NOGATING::mask;
 
-/// CK8M force no gating during sleep
-/// Position: 16, Width: 1
-/// Access: read-write
-using CK8M_FORCE_NOGATING = BitField<16, 1>;
-constexpr uint32_t CK8M_FORCE_NOGATING_Pos = 16;
-constexpr uint32_t CK8M_FORCE_NOGATING_Msk = CK8M_FORCE_NOGATING::mask;
+    /// CK8M force no gating during sleep
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using CK8M_FORCE_NOGATING = BitField<16, 1>;
+    constexpr uint32_t CK8M_FORCE_NOGATING_Pos = 16;
+    constexpr uint32_t CK8M_FORCE_NOGATING_Msk = CK8M_FORCE_NOGATING::mask;
 
-/// CK8M_DFREQ
-/// Position: 17, Width: 8
-/// Access: read-write
-using CK8M_DFREQ = BitField<17, 8>;
-constexpr uint32_t CK8M_DFREQ_Pos = 17;
-constexpr uint32_t CK8M_DFREQ_Msk = CK8M_DFREQ::mask;
+    /// CK8M_DFREQ
+    /// Position: 17, Width: 8
+    /// Access: read-write
+    using CK8M_DFREQ = BitField<17, 8>;
+    constexpr uint32_t CK8M_DFREQ_Pos = 17;
+    constexpr uint32_t CK8M_DFREQ_Msk = CK8M_DFREQ::mask;
 
-/// CK8M force power down
-/// Position: 25, Width: 1
-/// Access: read-write
-using CK8M_FORCE_PD = BitField<25, 1>;
-constexpr uint32_t CK8M_FORCE_PD_Pos = 25;
-constexpr uint32_t CK8M_FORCE_PD_Msk = CK8M_FORCE_PD::mask;
+    /// CK8M force power down
+    /// Position: 25, Width: 1
+    /// Access: read-write
+    using CK8M_FORCE_PD = BitField<25, 1>;
+    constexpr uint32_t CK8M_FORCE_PD_Pos = 25;
+    constexpr uint32_t CK8M_FORCE_PD_Msk = CK8M_FORCE_PD::mask;
 
-/// CK8M force power up
-/// Position: 26, Width: 1
-/// Access: read-write
-using CK8M_FORCE_PU = BitField<26, 1>;
-constexpr uint32_t CK8M_FORCE_PU_Pos = 26;
-constexpr uint32_t CK8M_FORCE_PU_Msk = CK8M_FORCE_PU::mask;
+    /// CK8M force power up
+    /// Position: 26, Width: 1
+    /// Access: read-write
+    using CK8M_FORCE_PU = BitField<26, 1>;
+    constexpr uint32_t CK8M_FORCE_PU_Pos = 26;
+    constexpr uint32_t CK8M_FORCE_PU_Msk = CK8M_FORCE_PU::mask;
 
-/// SOC clock sel. 0: XTAL 1: PLL 2: CK8M 3: APLL
-/// Position: 27, Width: 2
-/// Access: read-write
-using SOC_CLK_SEL = BitField<27, 2>;
-constexpr uint32_t SOC_CLK_SEL_Pos = 27;
-constexpr uint32_t SOC_CLK_SEL_Msk = SOC_CLK_SEL::mask;
-/// Enumerated values for SOC_CLK_SEL
-namespace soc_clk_sel {
-constexpr uint32_t XTAL = 0;
-constexpr uint32_t PLL = 1;
-constexpr uint32_t CK8M = 2;
-constexpr uint32_t APLL = 3;
-}  // namespace soc_clk_sel
+    /// SOC clock sel. 0: XTAL 1: PLL 2: CK8M 3: APLL
+    /// Position: 27, Width: 2
+    /// Access: read-write
+    using SOC_CLK_SEL = BitField<27, 2>;
+    constexpr uint32_t SOC_CLK_SEL_Pos = 27;
+    constexpr uint32_t SOC_CLK_SEL_Msk = SOC_CLK_SEL::mask;
+    /// Enumerated values for SOC_CLK_SEL
+    namespace soc_clk_sel {
+        constexpr uint32_t XTAL = 0;
+        constexpr uint32_t PLL = 1;
+        constexpr uint32_t CK8M = 2;
+        constexpr uint32_t APLL = 3;
+    }
 
-/// fast_clk_rtc sel. 0: XTAL div 4 1: CK8M
-/// Position: 29, Width: 1
-/// Access: read-write
-using FAST_CLK_RTC_SEL = BitField<29, 1>;
-constexpr uint32_t FAST_CLK_RTC_SEL_Pos = 29;
-constexpr uint32_t FAST_CLK_RTC_SEL_Msk = FAST_CLK_RTC_SEL::mask;
-/// Enumerated values for FAST_CLK_RTC_SEL
-namespace fast_clk_rtc_sel {
-constexpr uint32_t XTAL_DIV_4 = 0;
-constexpr uint32_t CK8M = 1;
-}  // namespace fast_clk_rtc_sel
+    /// fast_clk_rtc sel. 0: XTAL div 4 1: CK8M
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using FAST_CLK_RTC_SEL = BitField<29, 1>;
+    constexpr uint32_t FAST_CLK_RTC_SEL_Pos = 29;
+    constexpr uint32_t FAST_CLK_RTC_SEL_Msk = FAST_CLK_RTC_SEL::mask;
+    /// Enumerated values for FAST_CLK_RTC_SEL
+    namespace fast_clk_rtc_sel {
+        constexpr uint32_t XTAL_DIV_4 = 0;
+        constexpr uint32_t CK8M = 1;
+    }
 
-/// slow_clk_rtc sel. 0: SLOW_CK 1: CK_XTAL_32K 2: CK8M_D256_OUT
-/// Position: 30, Width: 2
-/// Access: read-write
-using ANA_CLK_RTC_SEL = BitField<30, 2>;
-constexpr uint32_t ANA_CLK_RTC_SEL_Pos = 30;
-constexpr uint32_t ANA_CLK_RTC_SEL_Msk = ANA_CLK_RTC_SEL::mask;
-/// Enumerated values for ANA_CLK_RTC_SEL
-namespace ana_clk_rtc_sel {
-constexpr uint32_t SLOW_CK = 0;
-constexpr uint32_t CK_XTAL_32K = 1;
-constexpr uint32_t CK8M_D256_OUT = 2;
-}  // namespace ana_clk_rtc_sel
+    /// slow_clk_rtc sel. 0: SLOW_CK 1: CK_XTAL_32K 2: CK8M_D256_OUT
+    /// Position: 30, Width: 2
+    /// Access: read-write
+    using ANA_CLK_RTC_SEL = BitField<30, 2>;
+    constexpr uint32_t ANA_CLK_RTC_SEL_Pos = 30;
+    constexpr uint32_t ANA_CLK_RTC_SEL_Msk = ANA_CLK_RTC_SEL::mask;
+    /// Enumerated values for ANA_CLK_RTC_SEL
+    namespace ana_clk_rtc_sel {
+        constexpr uint32_t SLOW_CK = 0;
+        constexpr uint32_t CK_XTAL_32K = 1;
+        constexpr uint32_t CK8M_D256_OUT = 2;
+    }
 
 }  // namespace clk_conf
 
 /// SDIO_CONF - SDIO_CONF
 namespace sdio_conf {
-/// power down SDIO_REG in sleep. Only active when reg_sdio_force = 0
-/// Position: 21, Width: 1
-/// Access: read-write
-using SDIO_PD_EN = BitField<21, 1>;
-constexpr uint32_t SDIO_PD_EN_Pos = 21;
-constexpr uint32_t SDIO_PD_EN_Msk = SDIO_PD_EN::mask;
+    /// power down SDIO_REG in sleep. Only active when reg_sdio_force = 0
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using SDIO_PD_EN = BitField<21, 1>;
+    constexpr uint32_t SDIO_PD_EN_Pos = 21;
+    constexpr uint32_t SDIO_PD_EN_Msk = SDIO_PD_EN::mask;
 
-/// 1: use SW option to control SDIO_REG 0: use state machine
-/// Position: 22, Width: 1
-/// Access: read-write
-using SDIO_FORCE = BitField<22, 1>;
-constexpr uint32_t SDIO_FORCE_Pos = 22;
-constexpr uint32_t SDIO_FORCE_Msk = SDIO_FORCE::mask;
+    /// 1: use SW option to control SDIO_REG 0: use state machine
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using SDIO_FORCE = BitField<22, 1>;
+    constexpr uint32_t SDIO_FORCE_Pos = 22;
+    constexpr uint32_t SDIO_FORCE_Msk = SDIO_FORCE::mask;
 
-/// SW option for SDIO_TIEH. Only active when reg_sdio_force = 1
-/// Position: 23, Width: 1
-/// Access: read-write
-using SDIO_TIEH = BitField<23, 1>;
-constexpr uint32_t SDIO_TIEH_Pos = 23;
-constexpr uint32_t SDIO_TIEH_Msk = SDIO_TIEH::mask;
+    /// SW option for SDIO_TIEH. Only active when reg_sdio_force = 1
+    /// Position: 23, Width: 1
+    /// Access: read-write
+    using SDIO_TIEH = BitField<23, 1>;
+    constexpr uint32_t SDIO_TIEH_Pos = 23;
+    constexpr uint32_t SDIO_TIEH_Msk = SDIO_TIEH::mask;
 
-/// read only register for REG1P8_READY
-/// Position: 24, Width: 1
-/// Access: read-only
-using REG1P8_READY = BitField<24, 1>;
-constexpr uint32_t REG1P8_READY_Pos = 24;
-constexpr uint32_t REG1P8_READY_Msk = REG1P8_READY::mask;
+    /// read only register for REG1P8_READY
+    /// Position: 24, Width: 1
+    /// Access: read-only
+    using REG1P8_READY = BitField<24, 1>;
+    constexpr uint32_t REG1P8_READY_Pos = 24;
+    constexpr uint32_t REG1P8_READY_Msk = REG1P8_READY::mask;
 
-/// SW option for DREFL_SDIO. Only active when reg_sdio_force = 1
-/// Position: 25, Width: 2
-/// Access: read-write
-using DREFL_SDIO = BitField<25, 2>;
-constexpr uint32_t DREFL_SDIO_Pos = 25;
-constexpr uint32_t DREFL_SDIO_Msk = DREFL_SDIO::mask;
+    /// SW option for DREFL_SDIO. Only active when reg_sdio_force = 1
+    /// Position: 25, Width: 2
+    /// Access: read-write
+    using DREFL_SDIO = BitField<25, 2>;
+    constexpr uint32_t DREFL_SDIO_Pos = 25;
+    constexpr uint32_t DREFL_SDIO_Msk = DREFL_SDIO::mask;
 
-/// SW option for DREFM_SDIO. Only active when reg_sdio_force = 1
-/// Position: 27, Width: 2
-/// Access: read-write
-using DREFM_SDIO = BitField<27, 2>;
-constexpr uint32_t DREFM_SDIO_Pos = 27;
-constexpr uint32_t DREFM_SDIO_Msk = DREFM_SDIO::mask;
+    /// SW option for DREFM_SDIO. Only active when reg_sdio_force = 1
+    /// Position: 27, Width: 2
+    /// Access: read-write
+    using DREFM_SDIO = BitField<27, 2>;
+    constexpr uint32_t DREFM_SDIO_Pos = 27;
+    constexpr uint32_t DREFM_SDIO_Msk = DREFM_SDIO::mask;
 
-/// SW option for DREFH_SDIO. Only active when reg_sdio_force = 1
-/// Position: 29, Width: 2
-/// Access: read-write
-using DREFH_SDIO = BitField<29, 2>;
-constexpr uint32_t DREFH_SDIO_Pos = 29;
-constexpr uint32_t DREFH_SDIO_Msk = DREFH_SDIO::mask;
+    /// SW option for DREFH_SDIO. Only active when reg_sdio_force = 1
+    /// Position: 29, Width: 2
+    /// Access: read-write
+    using DREFH_SDIO = BitField<29, 2>;
+    constexpr uint32_t DREFH_SDIO_Pos = 29;
+    constexpr uint32_t DREFH_SDIO_Msk = DREFH_SDIO::mask;
 
-/// SW option for XPD_SDIO_REG. Only active when reg_sdio_force = 1
-/// Position: 31, Width: 1
-/// Access: read-write
-using XPD_SDIO = BitField<31, 1>;
-constexpr uint32_t XPD_SDIO_Pos = 31;
-constexpr uint32_t XPD_SDIO_Msk = XPD_SDIO::mask;
+    /// SW option for XPD_SDIO_REG. Only active when reg_sdio_force = 1
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using XPD_SDIO = BitField<31, 1>;
+    constexpr uint32_t XPD_SDIO_Pos = 31;
+    constexpr uint32_t XPD_SDIO_Msk = XPD_SDIO::mask;
 
 }  // namespace sdio_conf
 
 /// BIAS_CONF - BIAS_CONF
 namespace bias_conf {
-/// DBG_ATTEN
-/// Position: 24, Width: 2
-/// Access: read-write
-using DBG_ATTEN = BitField<24, 2>;
-constexpr uint32_t DBG_ATTEN_Pos = 24;
-constexpr uint32_t DBG_ATTEN_Msk = DBG_ATTEN::mask;
+    /// DBG_ATTEN
+    /// Position: 24, Width: 2
+    /// Access: read-write
+    using DBG_ATTEN = BitField<24, 2>;
+    constexpr uint32_t DBG_ATTEN_Pos = 24;
+    constexpr uint32_t DBG_ATTEN_Msk = DBG_ATTEN::mask;
 
-/// ENB_SCK_XTAL
-/// Position: 26, Width: 1
-/// Access: read-write
-using ENB_SCK_XTAL = BitField<26, 1>;
-constexpr uint32_t ENB_SCK_XTAL_Pos = 26;
-constexpr uint32_t ENB_SCK_XTAL_Msk = ENB_SCK_XTAL::mask;
+    /// ENB_SCK_XTAL
+    /// Position: 26, Width: 1
+    /// Access: read-write
+    using ENB_SCK_XTAL = BitField<26, 1>;
+    constexpr uint32_t ENB_SCK_XTAL_Pos = 26;
+    constexpr uint32_t ENB_SCK_XTAL_Msk = ENB_SCK_XTAL::mask;
 
-/// INC_HEARTBEAT_REFRESH
-/// Position: 27, Width: 1
-/// Access: read-write
-using INC_HEARTBEAT_REFRESH = BitField<27, 1>;
-constexpr uint32_t INC_HEARTBEAT_REFRESH_Pos = 27;
-constexpr uint32_t INC_HEARTBEAT_REFRESH_Msk = INC_HEARTBEAT_REFRESH::mask;
+    /// INC_HEARTBEAT_REFRESH
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using INC_HEARTBEAT_REFRESH = BitField<27, 1>;
+    constexpr uint32_t INC_HEARTBEAT_REFRESH_Pos = 27;
+    constexpr uint32_t INC_HEARTBEAT_REFRESH_Msk = INC_HEARTBEAT_REFRESH::mask;
 
-/// DEC_HEARTBEAT_PERIOD
-/// Position: 28, Width: 1
-/// Access: read-write
-using DEC_HEARTBEAT_PERIOD = BitField<28, 1>;
-constexpr uint32_t DEC_HEARTBEAT_PERIOD_Pos = 28;
-constexpr uint32_t DEC_HEARTBEAT_PERIOD_Msk = DEC_HEARTBEAT_PERIOD::mask;
+    /// DEC_HEARTBEAT_PERIOD
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using DEC_HEARTBEAT_PERIOD = BitField<28, 1>;
+    constexpr uint32_t DEC_HEARTBEAT_PERIOD_Pos = 28;
+    constexpr uint32_t DEC_HEARTBEAT_PERIOD_Msk = DEC_HEARTBEAT_PERIOD::mask;
 
-/// INC_HEARTBEAT_PERIOD
-/// Position: 29, Width: 1
-/// Access: read-write
-using INC_HEARTBEAT_PERIOD = BitField<29, 1>;
-constexpr uint32_t INC_HEARTBEAT_PERIOD_Pos = 29;
-constexpr uint32_t INC_HEARTBEAT_PERIOD_Msk = INC_HEARTBEAT_PERIOD::mask;
+    /// INC_HEARTBEAT_PERIOD
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using INC_HEARTBEAT_PERIOD = BitField<29, 1>;
+    constexpr uint32_t INC_HEARTBEAT_PERIOD_Pos = 29;
+    constexpr uint32_t INC_HEARTBEAT_PERIOD_Msk = INC_HEARTBEAT_PERIOD::mask;
 
-/// DEC_HEARTBEAT_WIDTH
-/// Position: 30, Width: 1
-/// Access: read-write
-using DEC_HEARTBEAT_WIDTH = BitField<30, 1>;
-constexpr uint32_t DEC_HEARTBEAT_WIDTH_Pos = 30;
-constexpr uint32_t DEC_HEARTBEAT_WIDTH_Msk = DEC_HEARTBEAT_WIDTH::mask;
+    /// DEC_HEARTBEAT_WIDTH
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using DEC_HEARTBEAT_WIDTH = BitField<30, 1>;
+    constexpr uint32_t DEC_HEARTBEAT_WIDTH_Pos = 30;
+    constexpr uint32_t DEC_HEARTBEAT_WIDTH_Msk = DEC_HEARTBEAT_WIDTH::mask;
 
-/// RST_BIAS_I2C
-/// Position: 31, Width: 1
-/// Access: read-write
-using RST_BIAS_I2C = BitField<31, 1>;
-constexpr uint32_t RST_BIAS_I2C_Pos = 31;
-constexpr uint32_t RST_BIAS_I2C_Msk = RST_BIAS_I2C::mask;
+    /// RST_BIAS_I2C
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using RST_BIAS_I2C = BitField<31, 1>;
+    constexpr uint32_t RST_BIAS_I2C_Pos = 31;
+    constexpr uint32_t RST_BIAS_I2C_Msk = RST_BIAS_I2C::mask;
 
 }  // namespace bias_conf
 
 /// REG - REG
 namespace reg {
-/// N/A
-/// Position: 7, Width: 1
-/// Access: read-write
-using SCK_DCAP_FORCE = BitField<7, 1>;
-constexpr uint32_t SCK_DCAP_FORCE_Pos = 7;
-constexpr uint32_t SCK_DCAP_FORCE_Msk = SCK_DCAP_FORCE::mask;
+    /// N/A
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using SCK_DCAP_FORCE = BitField<7, 1>;
+    constexpr uint32_t SCK_DCAP_FORCE_Pos = 7;
+    constexpr uint32_t SCK_DCAP_FORCE_Msk = SCK_DCAP_FORCE::mask;
 
-/// DIG_REG_DBIAS during sleep
-/// Position: 8, Width: 3
-/// Access: read-write
-using DIG_DBIAS_SLP = BitField<8, 3>;
-constexpr uint32_t DIG_DBIAS_SLP_Pos = 8;
-constexpr uint32_t DIG_DBIAS_SLP_Msk = DIG_DBIAS_SLP::mask;
+    /// DIG_REG_DBIAS during sleep
+    /// Position: 8, Width: 3
+    /// Access: read-write
+    using DIG_DBIAS_SLP = BitField<8, 3>;
+    constexpr uint32_t DIG_DBIAS_SLP_Pos = 8;
+    constexpr uint32_t DIG_DBIAS_SLP_Msk = DIG_DBIAS_SLP::mask;
 
-/// DIG_REG_DBIAS during wakeup
-/// Position: 11, Width: 3
-/// Access: read-write
-using DIG_DBIAS_WAK = BitField<11, 3>;
-constexpr uint32_t DIG_DBIAS_WAK_Pos = 11;
-constexpr uint32_t DIG_DBIAS_WAK_Msk = DIG_DBIAS_WAK::mask;
+    /// DIG_REG_DBIAS during wakeup
+    /// Position: 11, Width: 3
+    /// Access: read-write
+    using DIG_DBIAS_WAK = BitField<11, 3>;
+    constexpr uint32_t DIG_DBIAS_WAK_Pos = 11;
+    constexpr uint32_t DIG_DBIAS_WAK_Msk = DIG_DBIAS_WAK::mask;
 
-/// SCK_DCAP
-/// Position: 14, Width: 8
-/// Access: read-write
-using SCK_DCAP = BitField<14, 8>;
-constexpr uint32_t SCK_DCAP_Pos = 14;
-constexpr uint32_t SCK_DCAP_Msk = SCK_DCAP::mask;
+    /// SCK_DCAP
+    /// Position: 14, Width: 8
+    /// Access: read-write
+    using SCK_DCAP = BitField<14, 8>;
+    constexpr uint32_t SCK_DCAP_Pos = 14;
+    constexpr uint32_t SCK_DCAP_Msk = SCK_DCAP::mask;
 
-/// RTC_DBIAS during sleep
-/// Position: 22, Width: 3
-/// Access: read-write
-using DBIAS_SLP = BitField<22, 3>;
-constexpr uint32_t DBIAS_SLP_Pos = 22;
-constexpr uint32_t DBIAS_SLP_Msk = DBIAS_SLP::mask;
+    /// RTC_DBIAS during sleep
+    /// Position: 22, Width: 3
+    /// Access: read-write
+    using DBIAS_SLP = BitField<22, 3>;
+    constexpr uint32_t DBIAS_SLP_Pos = 22;
+    constexpr uint32_t DBIAS_SLP_Msk = DBIAS_SLP::mask;
 
-/// RTC_DBIAS during wakeup
-/// Position: 25, Width: 3
-/// Access: read-write
-using DBIAS_WAK = BitField<25, 3>;
-constexpr uint32_t DBIAS_WAK_Pos = 25;
-constexpr uint32_t DBIAS_WAK_Msk = DBIAS_WAK::mask;
+    /// RTC_DBIAS during wakeup
+    /// Position: 25, Width: 3
+    /// Access: read-write
+    using DBIAS_WAK = BitField<25, 3>;
+    constexpr uint32_t DBIAS_WAK_Pos = 25;
+    constexpr uint32_t DBIAS_WAK_Msk = DBIAS_WAK::mask;
 
-/// RTC_DBOOST force power down
-/// Position: 28, Width: 1
-/// Access: read-write
-using DBOOST_FORCE_PD = BitField<28, 1>;
-constexpr uint32_t DBOOST_FORCE_PD_Pos = 28;
-constexpr uint32_t DBOOST_FORCE_PD_Msk = DBOOST_FORCE_PD::mask;
+    /// RTC_DBOOST force power down
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using DBOOST_FORCE_PD = BitField<28, 1>;
+    constexpr uint32_t DBOOST_FORCE_PD_Pos = 28;
+    constexpr uint32_t DBOOST_FORCE_PD_Msk = DBOOST_FORCE_PD::mask;
 
-/// RTC_DBOOST force power up
-/// Position: 29, Width: 1
-/// Access: read-write
-using DBOOST_FORCE_PU = BitField<29, 1>;
-constexpr uint32_t DBOOST_FORCE_PU_Pos = 29;
-constexpr uint32_t DBOOST_FORCE_PU_Msk = DBOOST_FORCE_PU::mask;
+    /// RTC_DBOOST force power up
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using DBOOST_FORCE_PU = BitField<29, 1>;
+    constexpr uint32_t DBOOST_FORCE_PU_Pos = 29;
+    constexpr uint32_t DBOOST_FORCE_PU_Msk = DBOOST_FORCE_PU::mask;
 
-/// RTC_REG force power down (for RTC_REG power down means decrease the voltage to 0.8v or lower )
-/// Position: 30, Width: 1
-/// Access: read-write
-using FORCE_PD = BitField<30, 1>;
-constexpr uint32_t FORCE_PD_Pos = 30;
-constexpr uint32_t FORCE_PD_Msk = FORCE_PD::mask;
+    /// RTC_REG force power down (for RTC_REG power down means decrease the voltage to 0.8v or lower )
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using FORCE_PD = BitField<30, 1>;
+    constexpr uint32_t FORCE_PD_Pos = 30;
+    constexpr uint32_t FORCE_PD_Msk = FORCE_PD::mask;
 
-/// RTC_REG force power up
-/// Position: 31, Width: 1
-/// Access: read-write
-using FORCE_PU = BitField<31, 1>;
-constexpr uint32_t FORCE_PU_Pos = 31;
-constexpr uint32_t FORCE_PU_Msk = FORCE_PU::mask;
+    /// RTC_REG force power up
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using FORCE_PU = BitField<31, 1>;
+    constexpr uint32_t FORCE_PU_Pos = 31;
+    constexpr uint32_t FORCE_PU_Msk = FORCE_PU::mask;
 
 }  // namespace reg
 
 /// PWC - PWC
 namespace pwc {
-/// Fast RTC memory force no ISO
-/// Position: 0, Width: 1
-/// Access: read-write
-using FASTMEM_FORCE_NOISO = BitField<0, 1>;
-constexpr uint32_t FASTMEM_FORCE_NOISO_Pos = 0;
-constexpr uint32_t FASTMEM_FORCE_NOISO_Msk = FASTMEM_FORCE_NOISO::mask;
+    /// Fast RTC memory force no ISO
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using FASTMEM_FORCE_NOISO = BitField<0, 1>;
+    constexpr uint32_t FASTMEM_FORCE_NOISO_Pos = 0;
+    constexpr uint32_t FASTMEM_FORCE_NOISO_Msk = FASTMEM_FORCE_NOISO::mask;
 
-/// Fast RTC memory force ISO
-/// Position: 1, Width: 1
-/// Access: read-write
-using FASTMEM_FORCE_ISO = BitField<1, 1>;
-constexpr uint32_t FASTMEM_FORCE_ISO_Pos = 1;
-constexpr uint32_t FASTMEM_FORCE_ISO_Msk = FASTMEM_FORCE_ISO::mask;
+    /// Fast RTC memory force ISO
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using FASTMEM_FORCE_ISO = BitField<1, 1>;
+    constexpr uint32_t FASTMEM_FORCE_ISO_Pos = 1;
+    constexpr uint32_t FASTMEM_FORCE_ISO_Msk = FASTMEM_FORCE_ISO::mask;
 
-/// RTC memory force no ISO
-/// Position: 2, Width: 1
-/// Access: read-write
-using SLOWMEM_FORCE_NOISO = BitField<2, 1>;
-constexpr uint32_t SLOWMEM_FORCE_NOISO_Pos = 2;
-constexpr uint32_t SLOWMEM_FORCE_NOISO_Msk = SLOWMEM_FORCE_NOISO::mask;
+    /// RTC memory force no ISO
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using SLOWMEM_FORCE_NOISO = BitField<2, 1>;
+    constexpr uint32_t SLOWMEM_FORCE_NOISO_Pos = 2;
+    constexpr uint32_t SLOWMEM_FORCE_NOISO_Msk = SLOWMEM_FORCE_NOISO::mask;
 
-/// RTC memory force ISO
-/// Position: 3, Width: 1
-/// Access: read-write
-using SLOWMEM_FORCE_ISO = BitField<3, 1>;
-constexpr uint32_t SLOWMEM_FORCE_ISO_Pos = 3;
-constexpr uint32_t SLOWMEM_FORCE_ISO_Msk = SLOWMEM_FORCE_ISO::mask;
+    /// RTC memory force ISO
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using SLOWMEM_FORCE_ISO = BitField<3, 1>;
+    constexpr uint32_t SLOWMEM_FORCE_ISO_Pos = 3;
+    constexpr uint32_t SLOWMEM_FORCE_ISO_Msk = SLOWMEM_FORCE_ISO::mask;
 
-/// rtc_peri force ISO
-/// Position: 4, Width: 1
-/// Access: read-write
-using FORCE_ISO = BitField<4, 1>;
-constexpr uint32_t FORCE_ISO_Pos = 4;
-constexpr uint32_t FORCE_ISO_Msk = FORCE_ISO::mask;
+    /// rtc_peri force ISO
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using FORCE_ISO = BitField<4, 1>;
+    constexpr uint32_t FORCE_ISO_Pos = 4;
+    constexpr uint32_t FORCE_ISO_Msk = FORCE_ISO::mask;
 
-/// rtc_peri force no ISO
-/// Position: 5, Width: 1
-/// Access: read-write
-using FORCE_NOISO = BitField<5, 1>;
-constexpr uint32_t FORCE_NOISO_Pos = 5;
-constexpr uint32_t FORCE_NOISO_Msk = FORCE_NOISO::mask;
+    /// rtc_peri force no ISO
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using FORCE_NOISO = BitField<5, 1>;
+    constexpr uint32_t FORCE_NOISO_Pos = 5;
+    constexpr uint32_t FORCE_NOISO_Msk = FORCE_NOISO::mask;
 
-/// 1: Fast RTC memory PD following CPU 0: fast RTC memory PD following RTC state machine
-/// Position: 6, Width: 1
-/// Access: read-write
-using FASTMEM_FOLW_CPU = BitField<6, 1>;
-constexpr uint32_t FASTMEM_FOLW_CPU_Pos = 6;
-constexpr uint32_t FASTMEM_FOLW_CPU_Msk = FASTMEM_FOLW_CPU::mask;
+    /// 1: Fast RTC memory PD following CPU 0: fast RTC memory PD following RTC state machine
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using FASTMEM_FOLW_CPU = BitField<6, 1>;
+    constexpr uint32_t FASTMEM_FOLW_CPU_Pos = 6;
+    constexpr uint32_t FASTMEM_FOLW_CPU_Msk = FASTMEM_FOLW_CPU::mask;
 
-/// Fast RTC memory force PD
-/// Position: 7, Width: 1
-/// Access: read-write
-using FASTMEM_FORCE_LPD = BitField<7, 1>;
-constexpr uint32_t FASTMEM_FORCE_LPD_Pos = 7;
-constexpr uint32_t FASTMEM_FORCE_LPD_Msk = FASTMEM_FORCE_LPD::mask;
+    /// Fast RTC memory force PD
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using FASTMEM_FORCE_LPD = BitField<7, 1>;
+    constexpr uint32_t FASTMEM_FORCE_LPD_Pos = 7;
+    constexpr uint32_t FASTMEM_FORCE_LPD_Msk = FASTMEM_FORCE_LPD::mask;
 
-/// Fast RTC memory force no PD
-/// Position: 8, Width: 1
-/// Access: read-write
-using FASTMEM_FORCE_LPU = BitField<8, 1>;
-constexpr uint32_t FASTMEM_FORCE_LPU_Pos = 8;
-constexpr uint32_t FASTMEM_FORCE_LPU_Msk = FASTMEM_FORCE_LPU::mask;
+    /// Fast RTC memory force no PD
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using FASTMEM_FORCE_LPU = BitField<8, 1>;
+    constexpr uint32_t FASTMEM_FORCE_LPU_Pos = 8;
+    constexpr uint32_t FASTMEM_FORCE_LPU_Msk = FASTMEM_FORCE_LPU::mask;
 
-/// 1: RTC memory PD following CPU 0: RTC memory PD following RTC state machine
-/// Position: 9, Width: 1
-/// Access: read-write
-using SLOWMEM_FOLW_CPU = BitField<9, 1>;
-constexpr uint32_t SLOWMEM_FOLW_CPU_Pos = 9;
-constexpr uint32_t SLOWMEM_FOLW_CPU_Msk = SLOWMEM_FOLW_CPU::mask;
+    /// 1: RTC memory PD following CPU 0: RTC memory PD following RTC state machine
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using SLOWMEM_FOLW_CPU = BitField<9, 1>;
+    constexpr uint32_t SLOWMEM_FOLW_CPU_Pos = 9;
+    constexpr uint32_t SLOWMEM_FOLW_CPU_Msk = SLOWMEM_FOLW_CPU::mask;
 
-/// RTC memory force PD
-/// Position: 10, Width: 1
-/// Access: read-write
-using SLOWMEM_FORCE_LPD = BitField<10, 1>;
-constexpr uint32_t SLOWMEM_FORCE_LPD_Pos = 10;
-constexpr uint32_t SLOWMEM_FORCE_LPD_Msk = SLOWMEM_FORCE_LPD::mask;
+    /// RTC memory force PD
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using SLOWMEM_FORCE_LPD = BitField<10, 1>;
+    constexpr uint32_t SLOWMEM_FORCE_LPD_Pos = 10;
+    constexpr uint32_t SLOWMEM_FORCE_LPD_Msk = SLOWMEM_FORCE_LPD::mask;
 
-/// RTC memory force no PD
-/// Position: 11, Width: 1
-/// Access: read-write
-using SLOWMEM_FORCE_LPU = BitField<11, 1>;
-constexpr uint32_t SLOWMEM_FORCE_LPU_Pos = 11;
-constexpr uint32_t SLOWMEM_FORCE_LPU_Msk = SLOWMEM_FORCE_LPU::mask;
+    /// RTC memory force no PD
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using SLOWMEM_FORCE_LPU = BitField<11, 1>;
+    constexpr uint32_t SLOWMEM_FORCE_LPU_Pos = 11;
+    constexpr uint32_t SLOWMEM_FORCE_LPU_Msk = SLOWMEM_FORCE_LPU::mask;
 
-/// Fast RTC memory force power down
-/// Position: 12, Width: 1
-/// Access: read-write
-using FASTMEM_FORCE_PD = BitField<12, 1>;
-constexpr uint32_t FASTMEM_FORCE_PD_Pos = 12;
-constexpr uint32_t FASTMEM_FORCE_PD_Msk = FASTMEM_FORCE_PD::mask;
+    /// Fast RTC memory force power down
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using FASTMEM_FORCE_PD = BitField<12, 1>;
+    constexpr uint32_t FASTMEM_FORCE_PD_Pos = 12;
+    constexpr uint32_t FASTMEM_FORCE_PD_Msk = FASTMEM_FORCE_PD::mask;
 
-/// Fast RTC memory force power up
-/// Position: 13, Width: 1
-/// Access: read-write
-using FASTMEM_FORCE_PU = BitField<13, 1>;
-constexpr uint32_t FASTMEM_FORCE_PU_Pos = 13;
-constexpr uint32_t FASTMEM_FORCE_PU_Msk = FASTMEM_FORCE_PU::mask;
+    /// Fast RTC memory force power up
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using FASTMEM_FORCE_PU = BitField<13, 1>;
+    constexpr uint32_t FASTMEM_FORCE_PU_Pos = 13;
+    constexpr uint32_t FASTMEM_FORCE_PU_Msk = FASTMEM_FORCE_PU::mask;
 
-/// enable power down fast RTC memory in sleep
-/// Position: 14, Width: 1
-/// Access: read-write
-using FASTMEM_PD_EN = BitField<14, 1>;
-constexpr uint32_t FASTMEM_PD_EN_Pos = 14;
-constexpr uint32_t FASTMEM_PD_EN_Msk = FASTMEM_PD_EN::mask;
+    /// enable power down fast RTC memory in sleep
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using FASTMEM_PD_EN = BitField<14, 1>;
+    constexpr uint32_t FASTMEM_PD_EN_Pos = 14;
+    constexpr uint32_t FASTMEM_PD_EN_Msk = FASTMEM_PD_EN::mask;
 
-/// RTC memory force power down
-/// Position: 15, Width: 1
-/// Access: read-write
-using SLOWMEM_FORCE_PD = BitField<15, 1>;
-constexpr uint32_t SLOWMEM_FORCE_PD_Pos = 15;
-constexpr uint32_t SLOWMEM_FORCE_PD_Msk = SLOWMEM_FORCE_PD::mask;
+    /// RTC memory force power down
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using SLOWMEM_FORCE_PD = BitField<15, 1>;
+    constexpr uint32_t SLOWMEM_FORCE_PD_Pos = 15;
+    constexpr uint32_t SLOWMEM_FORCE_PD_Msk = SLOWMEM_FORCE_PD::mask;
 
-/// RTC memory force power up
-/// Position: 16, Width: 1
-/// Access: read-write
-using SLOWMEM_FORCE_PU = BitField<16, 1>;
-constexpr uint32_t SLOWMEM_FORCE_PU_Pos = 16;
-constexpr uint32_t SLOWMEM_FORCE_PU_Msk = SLOWMEM_FORCE_PU::mask;
+    /// RTC memory force power up
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using SLOWMEM_FORCE_PU = BitField<16, 1>;
+    constexpr uint32_t SLOWMEM_FORCE_PU_Pos = 16;
+    constexpr uint32_t SLOWMEM_FORCE_PU_Msk = SLOWMEM_FORCE_PU::mask;
 
-/// enable power down RTC memory in sleep
-/// Position: 17, Width: 1
-/// Access: read-write
-using SLOWMEM_PD_EN = BitField<17, 1>;
-constexpr uint32_t SLOWMEM_PD_EN_Pos = 17;
-constexpr uint32_t SLOWMEM_PD_EN_Msk = SLOWMEM_PD_EN::mask;
+    /// enable power down RTC memory in sleep
+    /// Position: 17, Width: 1
+    /// Access: read-write
+    using SLOWMEM_PD_EN = BitField<17, 1>;
+    constexpr uint32_t SLOWMEM_PD_EN_Pos = 17;
+    constexpr uint32_t SLOWMEM_PD_EN_Msk = SLOWMEM_PD_EN::mask;
 
-/// rtc_peri force power down
-/// Position: 18, Width: 1
-/// Access: read-write
-using FORCE_PD = BitField<18, 1>;
-constexpr uint32_t FORCE_PD_Pos = 18;
-constexpr uint32_t FORCE_PD_Msk = FORCE_PD::mask;
+    /// rtc_peri force power down
+    /// Position: 18, Width: 1
+    /// Access: read-write
+    using FORCE_PD = BitField<18, 1>;
+    constexpr uint32_t FORCE_PD_Pos = 18;
+    constexpr uint32_t FORCE_PD_Msk = FORCE_PD::mask;
 
-/// rtc_peri force power up
-/// Position: 19, Width: 1
-/// Access: read-write
-using FORCE_PU = BitField<19, 1>;
-constexpr uint32_t FORCE_PU_Pos = 19;
-constexpr uint32_t FORCE_PU_Msk = FORCE_PU::mask;
+    /// rtc_peri force power up
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using FORCE_PU = BitField<19, 1>;
+    constexpr uint32_t FORCE_PU_Pos = 19;
+    constexpr uint32_t FORCE_PU_Msk = FORCE_PU::mask;
 
-/// enable power down rtc_peri in sleep
-/// Position: 20, Width: 1
-/// Access: read-write
-using PD_EN = BitField<20, 1>;
-constexpr uint32_t PD_EN_Pos = 20;
-constexpr uint32_t PD_EN_Msk = PD_EN::mask;
+    /// enable power down rtc_peri in sleep
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using PD_EN = BitField<20, 1>;
+    constexpr uint32_t PD_EN_Pos = 20;
+    constexpr uint32_t PD_EN_Msk = PD_EN::mask;
 
 }  // namespace pwc
 
 /// DIG_PWC - DIG_PWC
 namespace dig_pwc {
-/// memories in digital core force PD in sleep
-/// Position: 3, Width: 1
-/// Access: read-write
-using LSLP_MEM_FORCE_PD = BitField<3, 1>;
-constexpr uint32_t LSLP_MEM_FORCE_PD_Pos = 3;
-constexpr uint32_t LSLP_MEM_FORCE_PD_Msk = LSLP_MEM_FORCE_PD::mask;
+    /// memories in digital core force PD in sleep
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using LSLP_MEM_FORCE_PD = BitField<3, 1>;
+    constexpr uint32_t LSLP_MEM_FORCE_PD_Pos = 3;
+    constexpr uint32_t LSLP_MEM_FORCE_PD_Msk = LSLP_MEM_FORCE_PD::mask;
 
-/// memories in digital core force no PD in sleep
-/// Position: 4, Width: 1
-/// Access: read-write
-using LSLP_MEM_FORCE_PU = BitField<4, 1>;
-constexpr uint32_t LSLP_MEM_FORCE_PU_Pos = 4;
-constexpr uint32_t LSLP_MEM_FORCE_PU_Msk = LSLP_MEM_FORCE_PU::mask;
+    /// memories in digital core force no PD in sleep
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using LSLP_MEM_FORCE_PU = BitField<4, 1>;
+    constexpr uint32_t LSLP_MEM_FORCE_PU_Pos = 4;
+    constexpr uint32_t LSLP_MEM_FORCE_PU_Msk = LSLP_MEM_FORCE_PU::mask;
 
-/// ROM force power down
-/// Position: 5, Width: 1
-/// Access: read-write
-using ROM0_FORCE_PD = BitField<5, 1>;
-constexpr uint32_t ROM0_FORCE_PD_Pos = 5;
-constexpr uint32_t ROM0_FORCE_PD_Msk = ROM0_FORCE_PD::mask;
+    /// ROM force power down
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using ROM0_FORCE_PD = BitField<5, 1>;
+    constexpr uint32_t ROM0_FORCE_PD_Pos = 5;
+    constexpr uint32_t ROM0_FORCE_PD_Msk = ROM0_FORCE_PD::mask;
 
-/// ROM force power up
-/// Position: 6, Width: 1
-/// Access: read-write
-using ROM0_FORCE_PU = BitField<6, 1>;
-constexpr uint32_t ROM0_FORCE_PU_Pos = 6;
-constexpr uint32_t ROM0_FORCE_PU_Msk = ROM0_FORCE_PU::mask;
+    /// ROM force power up
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using ROM0_FORCE_PU = BitField<6, 1>;
+    constexpr uint32_t ROM0_FORCE_PU_Pos = 6;
+    constexpr uint32_t ROM0_FORCE_PU_Msk = ROM0_FORCE_PU::mask;
 
-/// internal SRAM 0 force power down
-/// Position: 7, Width: 1
-/// Access: read-write
-using INTER_RAM0_FORCE_PD = BitField<7, 1>;
-constexpr uint32_t INTER_RAM0_FORCE_PD_Pos = 7;
-constexpr uint32_t INTER_RAM0_FORCE_PD_Msk = INTER_RAM0_FORCE_PD::mask;
+    /// internal SRAM 0 force power down
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using INTER_RAM0_FORCE_PD = BitField<7, 1>;
+    constexpr uint32_t INTER_RAM0_FORCE_PD_Pos = 7;
+    constexpr uint32_t INTER_RAM0_FORCE_PD_Msk = INTER_RAM0_FORCE_PD::mask;
 
-/// internal SRAM 0 force power up
-/// Position: 8, Width: 1
-/// Access: read-write
-using INTER_RAM0_FORCE_PU = BitField<8, 1>;
-constexpr uint32_t INTER_RAM0_FORCE_PU_Pos = 8;
-constexpr uint32_t INTER_RAM0_FORCE_PU_Msk = INTER_RAM0_FORCE_PU::mask;
+    /// internal SRAM 0 force power up
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using INTER_RAM0_FORCE_PU = BitField<8, 1>;
+    constexpr uint32_t INTER_RAM0_FORCE_PU_Pos = 8;
+    constexpr uint32_t INTER_RAM0_FORCE_PU_Msk = INTER_RAM0_FORCE_PU::mask;
 
-/// internal SRAM 1 force power down
-/// Position: 9, Width: 1
-/// Access: read-write
-using INTER_RAM1_FORCE_PD = BitField<9, 1>;
-constexpr uint32_t INTER_RAM1_FORCE_PD_Pos = 9;
-constexpr uint32_t INTER_RAM1_FORCE_PD_Msk = INTER_RAM1_FORCE_PD::mask;
+    /// internal SRAM 1 force power down
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using INTER_RAM1_FORCE_PD = BitField<9, 1>;
+    constexpr uint32_t INTER_RAM1_FORCE_PD_Pos = 9;
+    constexpr uint32_t INTER_RAM1_FORCE_PD_Msk = INTER_RAM1_FORCE_PD::mask;
 
-/// internal SRAM 1 force power up
-/// Position: 10, Width: 1
-/// Access: read-write
-using INTER_RAM1_FORCE_PU = BitField<10, 1>;
-constexpr uint32_t INTER_RAM1_FORCE_PU_Pos = 10;
-constexpr uint32_t INTER_RAM1_FORCE_PU_Msk = INTER_RAM1_FORCE_PU::mask;
+    /// internal SRAM 1 force power up
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using INTER_RAM1_FORCE_PU = BitField<10, 1>;
+    constexpr uint32_t INTER_RAM1_FORCE_PU_Pos = 10;
+    constexpr uint32_t INTER_RAM1_FORCE_PU_Msk = INTER_RAM1_FORCE_PU::mask;
 
-/// internal SRAM 2 force power down
-/// Position: 11, Width: 1
-/// Access: read-write
-using INTER_RAM2_FORCE_PD = BitField<11, 1>;
-constexpr uint32_t INTER_RAM2_FORCE_PD_Pos = 11;
-constexpr uint32_t INTER_RAM2_FORCE_PD_Msk = INTER_RAM2_FORCE_PD::mask;
+    /// internal SRAM 2 force power down
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using INTER_RAM2_FORCE_PD = BitField<11, 1>;
+    constexpr uint32_t INTER_RAM2_FORCE_PD_Pos = 11;
+    constexpr uint32_t INTER_RAM2_FORCE_PD_Msk = INTER_RAM2_FORCE_PD::mask;
 
-/// internal SRAM 2 force power up
-/// Position: 12, Width: 1
-/// Access: read-write
-using INTER_RAM2_FORCE_PU = BitField<12, 1>;
-constexpr uint32_t INTER_RAM2_FORCE_PU_Pos = 12;
-constexpr uint32_t INTER_RAM2_FORCE_PU_Msk = INTER_RAM2_FORCE_PU::mask;
+    /// internal SRAM 2 force power up
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using INTER_RAM2_FORCE_PU = BitField<12, 1>;
+    constexpr uint32_t INTER_RAM2_FORCE_PU_Pos = 12;
+    constexpr uint32_t INTER_RAM2_FORCE_PU_Msk = INTER_RAM2_FORCE_PU::mask;
 
-/// internal SRAM 3 force power down
-/// Position: 13, Width: 1
-/// Access: read-write
-using INTER_RAM3_FORCE_PD = BitField<13, 1>;
-constexpr uint32_t INTER_RAM3_FORCE_PD_Pos = 13;
-constexpr uint32_t INTER_RAM3_FORCE_PD_Msk = INTER_RAM3_FORCE_PD::mask;
+    /// internal SRAM 3 force power down
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using INTER_RAM3_FORCE_PD = BitField<13, 1>;
+    constexpr uint32_t INTER_RAM3_FORCE_PD_Pos = 13;
+    constexpr uint32_t INTER_RAM3_FORCE_PD_Msk = INTER_RAM3_FORCE_PD::mask;
 
-/// internal SRAM 3 force power up
-/// Position: 14, Width: 1
-/// Access: read-write
-using INTER_RAM3_FORCE_PU = BitField<14, 1>;
-constexpr uint32_t INTER_RAM3_FORCE_PU_Pos = 14;
-constexpr uint32_t INTER_RAM3_FORCE_PU_Msk = INTER_RAM3_FORCE_PU::mask;
+    /// internal SRAM 3 force power up
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using INTER_RAM3_FORCE_PU = BitField<14, 1>;
+    constexpr uint32_t INTER_RAM3_FORCE_PU_Pos = 14;
+    constexpr uint32_t INTER_RAM3_FORCE_PU_Msk = INTER_RAM3_FORCE_PU::mask;
 
-/// internal SRAM 4 force power down
-/// Position: 15, Width: 1
-/// Access: read-write
-using INTER_RAM4_FORCE_PD = BitField<15, 1>;
-constexpr uint32_t INTER_RAM4_FORCE_PD_Pos = 15;
-constexpr uint32_t INTER_RAM4_FORCE_PD_Msk = INTER_RAM4_FORCE_PD::mask;
+    /// internal SRAM 4 force power down
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using INTER_RAM4_FORCE_PD = BitField<15, 1>;
+    constexpr uint32_t INTER_RAM4_FORCE_PD_Pos = 15;
+    constexpr uint32_t INTER_RAM4_FORCE_PD_Msk = INTER_RAM4_FORCE_PD::mask;
 
-/// internal SRAM 4 force power up
-/// Position: 16, Width: 1
-/// Access: read-write
-using INTER_RAM4_FORCE_PU = BitField<16, 1>;
-constexpr uint32_t INTER_RAM4_FORCE_PU_Pos = 16;
-constexpr uint32_t INTER_RAM4_FORCE_PU_Msk = INTER_RAM4_FORCE_PU::mask;
+    /// internal SRAM 4 force power up
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using INTER_RAM4_FORCE_PU = BitField<16, 1>;
+    constexpr uint32_t INTER_RAM4_FORCE_PU_Pos = 16;
+    constexpr uint32_t INTER_RAM4_FORCE_PU_Msk = INTER_RAM4_FORCE_PU::mask;
 
-/// wifi force power down
-/// Position: 17, Width: 1
-/// Access: read-write
-using WIFI_FORCE_PD = BitField<17, 1>;
-constexpr uint32_t WIFI_FORCE_PD_Pos = 17;
-constexpr uint32_t WIFI_FORCE_PD_Msk = WIFI_FORCE_PD::mask;
+    /// wifi force power down
+    /// Position: 17, Width: 1
+    /// Access: read-write
+    using WIFI_FORCE_PD = BitField<17, 1>;
+    constexpr uint32_t WIFI_FORCE_PD_Pos = 17;
+    constexpr uint32_t WIFI_FORCE_PD_Msk = WIFI_FORCE_PD::mask;
 
-/// wifi force power up
-/// Position: 18, Width: 1
-/// Access: read-write
-using WIFI_FORCE_PU = BitField<18, 1>;
-constexpr uint32_t WIFI_FORCE_PU_Pos = 18;
-constexpr uint32_t WIFI_FORCE_PU_Msk = WIFI_FORCE_PU::mask;
+    /// wifi force power up
+    /// Position: 18, Width: 1
+    /// Access: read-write
+    using WIFI_FORCE_PU = BitField<18, 1>;
+    constexpr uint32_t WIFI_FORCE_PU_Pos = 18;
+    constexpr uint32_t WIFI_FORCE_PU_Msk = WIFI_FORCE_PU::mask;
 
-/// digital core force power down
-/// Position: 19, Width: 1
-/// Access: read-write
-using DG_WRAP_FORCE_PD = BitField<19, 1>;
-constexpr uint32_t DG_WRAP_FORCE_PD_Pos = 19;
-constexpr uint32_t DG_WRAP_FORCE_PD_Msk = DG_WRAP_FORCE_PD::mask;
+    /// digital core force power down
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using DG_WRAP_FORCE_PD = BitField<19, 1>;
+    constexpr uint32_t DG_WRAP_FORCE_PD_Pos = 19;
+    constexpr uint32_t DG_WRAP_FORCE_PD_Msk = DG_WRAP_FORCE_PD::mask;
 
-/// digital core force power up
-/// Position: 20, Width: 1
-/// Access: read-write
-using DG_WRAP_FORCE_PU = BitField<20, 1>;
-constexpr uint32_t DG_WRAP_FORCE_PU_Pos = 20;
-constexpr uint32_t DG_WRAP_FORCE_PU_Msk = DG_WRAP_FORCE_PU::mask;
+    /// digital core force power up
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using DG_WRAP_FORCE_PU = BitField<20, 1>;
+    constexpr uint32_t DG_WRAP_FORCE_PU_Pos = 20;
+    constexpr uint32_t DG_WRAP_FORCE_PU_Msk = DG_WRAP_FORCE_PU::mask;
 
-/// enable power down ROM in sleep
-/// Position: 24, Width: 1
-/// Access: read-write
-using ROM0_PD_EN = BitField<24, 1>;
-constexpr uint32_t ROM0_PD_EN_Pos = 24;
-constexpr uint32_t ROM0_PD_EN_Msk = ROM0_PD_EN::mask;
+    /// enable power down ROM in sleep
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using ROM0_PD_EN = BitField<24, 1>;
+    constexpr uint32_t ROM0_PD_EN_Pos = 24;
+    constexpr uint32_t ROM0_PD_EN_Msk = ROM0_PD_EN::mask;
 
-/// enable power down internal SRAM 0 in sleep
-/// Position: 25, Width: 1
-/// Access: read-write
-using INTER_RAM0_PD_EN = BitField<25, 1>;
-constexpr uint32_t INTER_RAM0_PD_EN_Pos = 25;
-constexpr uint32_t INTER_RAM0_PD_EN_Msk = INTER_RAM0_PD_EN::mask;
+    /// enable power down internal SRAM 0 in sleep
+    /// Position: 25, Width: 1
+    /// Access: read-write
+    using INTER_RAM0_PD_EN = BitField<25, 1>;
+    constexpr uint32_t INTER_RAM0_PD_EN_Pos = 25;
+    constexpr uint32_t INTER_RAM0_PD_EN_Msk = INTER_RAM0_PD_EN::mask;
 
-/// enable power down internal SRAM 1 in sleep
-/// Position: 26, Width: 1
-/// Access: read-write
-using INTER_RAM1_PD_EN = BitField<26, 1>;
-constexpr uint32_t INTER_RAM1_PD_EN_Pos = 26;
-constexpr uint32_t INTER_RAM1_PD_EN_Msk = INTER_RAM1_PD_EN::mask;
+    /// enable power down internal SRAM 1 in sleep
+    /// Position: 26, Width: 1
+    /// Access: read-write
+    using INTER_RAM1_PD_EN = BitField<26, 1>;
+    constexpr uint32_t INTER_RAM1_PD_EN_Pos = 26;
+    constexpr uint32_t INTER_RAM1_PD_EN_Msk = INTER_RAM1_PD_EN::mask;
 
-/// enable power down internal SRAM 2 in sleep
-/// Position: 27, Width: 1
-/// Access: read-write
-using INTER_RAM2_PD_EN = BitField<27, 1>;
-constexpr uint32_t INTER_RAM2_PD_EN_Pos = 27;
-constexpr uint32_t INTER_RAM2_PD_EN_Msk = INTER_RAM2_PD_EN::mask;
+    /// enable power down internal SRAM 2 in sleep
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using INTER_RAM2_PD_EN = BitField<27, 1>;
+    constexpr uint32_t INTER_RAM2_PD_EN_Pos = 27;
+    constexpr uint32_t INTER_RAM2_PD_EN_Msk = INTER_RAM2_PD_EN::mask;
 
-/// enable power down internal SRAM 3 in sleep
-/// Position: 28, Width: 1
-/// Access: read-write
-using INTER_RAM3_PD_EN = BitField<28, 1>;
-constexpr uint32_t INTER_RAM3_PD_EN_Pos = 28;
-constexpr uint32_t INTER_RAM3_PD_EN_Msk = INTER_RAM3_PD_EN::mask;
+    /// enable power down internal SRAM 3 in sleep
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using INTER_RAM3_PD_EN = BitField<28, 1>;
+    constexpr uint32_t INTER_RAM3_PD_EN_Pos = 28;
+    constexpr uint32_t INTER_RAM3_PD_EN_Msk = INTER_RAM3_PD_EN::mask;
 
-/// enable power down internal SRAM 4 in sleep
-/// Position: 29, Width: 1
-/// Access: read-write
-using INTER_RAM4_PD_EN = BitField<29, 1>;
-constexpr uint32_t INTER_RAM4_PD_EN_Pos = 29;
-constexpr uint32_t INTER_RAM4_PD_EN_Msk = INTER_RAM4_PD_EN::mask;
+    /// enable power down internal SRAM 4 in sleep
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using INTER_RAM4_PD_EN = BitField<29, 1>;
+    constexpr uint32_t INTER_RAM4_PD_EN_Pos = 29;
+    constexpr uint32_t INTER_RAM4_PD_EN_Msk = INTER_RAM4_PD_EN::mask;
 
-/// enable power down wifi in sleep
-/// Position: 30, Width: 1
-/// Access: read-write
-using WIFI_PD_EN = BitField<30, 1>;
-constexpr uint32_t WIFI_PD_EN_Pos = 30;
-constexpr uint32_t WIFI_PD_EN_Msk = WIFI_PD_EN::mask;
+    /// enable power down wifi in sleep
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using WIFI_PD_EN = BitField<30, 1>;
+    constexpr uint32_t WIFI_PD_EN_Pos = 30;
+    constexpr uint32_t WIFI_PD_EN_Msk = WIFI_PD_EN::mask;
 
-/// enable power down digital core in sleep
-/// Position: 31, Width: 1
-/// Access: read-write
-using DG_WRAP_PD_EN = BitField<31, 1>;
-constexpr uint32_t DG_WRAP_PD_EN_Pos = 31;
-constexpr uint32_t DG_WRAP_PD_EN_Msk = DG_WRAP_PD_EN::mask;
+    /// enable power down digital core in sleep
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using DG_WRAP_PD_EN = BitField<31, 1>;
+    constexpr uint32_t DG_WRAP_PD_EN_Pos = 31;
+    constexpr uint32_t DG_WRAP_PD_EN_Msk = DG_WRAP_PD_EN::mask;
 
 }  // namespace dig_pwc
 
 /// DIG_ISO - DIG_ISO
 namespace dig_iso {
-/// Position: 7, Width: 1
-/// Access: read-write
-using FORCE_OFF = BitField<7, 1>;
-constexpr uint32_t FORCE_OFF_Pos = 7;
-constexpr uint32_t FORCE_OFF_Msk = FORCE_OFF::mask;
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using FORCE_OFF = BitField<7, 1>;
+    constexpr uint32_t FORCE_OFF_Pos = 7;
+    constexpr uint32_t FORCE_OFF_Msk = FORCE_OFF::mask;
 
-/// Position: 8, Width: 1
-/// Access: read-write
-using FORCE_ON = BitField<8, 1>;
-constexpr uint32_t FORCE_ON_Pos = 8;
-constexpr uint32_t FORCE_ON_Msk = FORCE_ON::mask;
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using FORCE_ON = BitField<8, 1>;
+    constexpr uint32_t FORCE_ON_Pos = 8;
+    constexpr uint32_t FORCE_ON_Msk = FORCE_ON::mask;
 
-/// read only register to indicate digital pad auto-hold status
-/// Position: 9, Width: 1
-/// Access: read-only
-using DG_PAD_AUTOHOLD = BitField<9, 1>;
-constexpr uint32_t DG_PAD_AUTOHOLD_Pos = 9;
-constexpr uint32_t DG_PAD_AUTOHOLD_Msk = DG_PAD_AUTOHOLD::mask;
+    /// read only register to indicate digital pad auto-hold status
+    /// Position: 9, Width: 1
+    /// Access: read-only
+    using DG_PAD_AUTOHOLD = BitField<9, 1>;
+    constexpr uint32_t DG_PAD_AUTOHOLD_Pos = 9;
+    constexpr uint32_t DG_PAD_AUTOHOLD_Msk = DG_PAD_AUTOHOLD::mask;
 
-/// wtite only register to clear digital pad auto-hold
-/// Position: 10, Width: 1
-/// Access: write-only
-using CLR_DG_PAD_AUTOHOLD = BitField<10, 1>;
-constexpr uint32_t CLR_DG_PAD_AUTOHOLD_Pos = 10;
-constexpr uint32_t CLR_DG_PAD_AUTOHOLD_Msk = CLR_DG_PAD_AUTOHOLD::mask;
+    /// wtite only register to clear digital pad auto-hold
+    /// Position: 10, Width: 1
+    /// Access: write-only
+    using CLR_DG_PAD_AUTOHOLD = BitField<10, 1>;
+    constexpr uint32_t CLR_DG_PAD_AUTOHOLD_Pos = 10;
+    constexpr uint32_t CLR_DG_PAD_AUTOHOLD_Msk = CLR_DG_PAD_AUTOHOLD::mask;
 
-/// digital pad enable auto-hold
-/// Position: 11, Width: 1
-/// Access: read-write
-using DG_PAD_AUTOHOLD_EN = BitField<11, 1>;
-constexpr uint32_t DG_PAD_AUTOHOLD_EN_Pos = 11;
-constexpr uint32_t DG_PAD_AUTOHOLD_EN_Msk = DG_PAD_AUTOHOLD_EN::mask;
+    /// digital pad enable auto-hold
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using DG_PAD_AUTOHOLD_EN = BitField<11, 1>;
+    constexpr uint32_t DG_PAD_AUTOHOLD_EN_Pos = 11;
+    constexpr uint32_t DG_PAD_AUTOHOLD_EN_Msk = DG_PAD_AUTOHOLD_EN::mask;
 
-/// digital pad force no ISO
-/// Position: 12, Width: 1
-/// Access: read-write
-using DG_PAD_FORCE_NOISO = BitField<12, 1>;
-constexpr uint32_t DG_PAD_FORCE_NOISO_Pos = 12;
-constexpr uint32_t DG_PAD_FORCE_NOISO_Msk = DG_PAD_FORCE_NOISO::mask;
+    /// digital pad force no ISO
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using DG_PAD_FORCE_NOISO = BitField<12, 1>;
+    constexpr uint32_t DG_PAD_FORCE_NOISO_Pos = 12;
+    constexpr uint32_t DG_PAD_FORCE_NOISO_Msk = DG_PAD_FORCE_NOISO::mask;
 
-/// digital pad force ISO
-/// Position: 13, Width: 1
-/// Access: read-write
-using DG_PAD_FORCE_ISO = BitField<13, 1>;
-constexpr uint32_t DG_PAD_FORCE_ISO_Pos = 13;
-constexpr uint32_t DG_PAD_FORCE_ISO_Msk = DG_PAD_FORCE_ISO::mask;
+    /// digital pad force ISO
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using DG_PAD_FORCE_ISO = BitField<13, 1>;
+    constexpr uint32_t DG_PAD_FORCE_ISO_Pos = 13;
+    constexpr uint32_t DG_PAD_FORCE_ISO_Msk = DG_PAD_FORCE_ISO::mask;
 
-/// digital pad force un-hold
-/// Position: 14, Width: 1
-/// Access: read-write
-using DG_PAD_FORCE_UNHOLD = BitField<14, 1>;
-constexpr uint32_t DG_PAD_FORCE_UNHOLD_Pos = 14;
-constexpr uint32_t DG_PAD_FORCE_UNHOLD_Msk = DG_PAD_FORCE_UNHOLD::mask;
+    /// digital pad force un-hold
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using DG_PAD_FORCE_UNHOLD = BitField<14, 1>;
+    constexpr uint32_t DG_PAD_FORCE_UNHOLD_Pos = 14;
+    constexpr uint32_t DG_PAD_FORCE_UNHOLD_Msk = DG_PAD_FORCE_UNHOLD::mask;
 
-/// digital pad force hold
-/// Position: 15, Width: 1
-/// Access: read-write
-using DG_PAD_FORCE_HOLD = BitField<15, 1>;
-constexpr uint32_t DG_PAD_FORCE_HOLD_Pos = 15;
-constexpr uint32_t DG_PAD_FORCE_HOLD_Msk = DG_PAD_FORCE_HOLD::mask;
+    /// digital pad force hold
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using DG_PAD_FORCE_HOLD = BitField<15, 1>;
+    constexpr uint32_t DG_PAD_FORCE_HOLD_Pos = 15;
+    constexpr uint32_t DG_PAD_FORCE_HOLD_Msk = DG_PAD_FORCE_HOLD::mask;
 
-/// ROM force ISO
-/// Position: 16, Width: 1
-/// Access: read-write
-using ROM0_FORCE_ISO = BitField<16, 1>;
-constexpr uint32_t ROM0_FORCE_ISO_Pos = 16;
-constexpr uint32_t ROM0_FORCE_ISO_Msk = ROM0_FORCE_ISO::mask;
+    /// ROM force ISO
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using ROM0_FORCE_ISO = BitField<16, 1>;
+    constexpr uint32_t ROM0_FORCE_ISO_Pos = 16;
+    constexpr uint32_t ROM0_FORCE_ISO_Msk = ROM0_FORCE_ISO::mask;
 
-/// ROM force no ISO
-/// Position: 17, Width: 1
-/// Access: read-write
-using ROM0_FORCE_NOISO = BitField<17, 1>;
-constexpr uint32_t ROM0_FORCE_NOISO_Pos = 17;
-constexpr uint32_t ROM0_FORCE_NOISO_Msk = ROM0_FORCE_NOISO::mask;
+    /// ROM force no ISO
+    /// Position: 17, Width: 1
+    /// Access: read-write
+    using ROM0_FORCE_NOISO = BitField<17, 1>;
+    constexpr uint32_t ROM0_FORCE_NOISO_Pos = 17;
+    constexpr uint32_t ROM0_FORCE_NOISO_Msk = ROM0_FORCE_NOISO::mask;
 
-/// internal SRAM 0 force ISO
-/// Position: 18, Width: 1
-/// Access: read-write
-using INTER_RAM0_FORCE_ISO = BitField<18, 1>;
-constexpr uint32_t INTER_RAM0_FORCE_ISO_Pos = 18;
-constexpr uint32_t INTER_RAM0_FORCE_ISO_Msk = INTER_RAM0_FORCE_ISO::mask;
+    /// internal SRAM 0 force ISO
+    /// Position: 18, Width: 1
+    /// Access: read-write
+    using INTER_RAM0_FORCE_ISO = BitField<18, 1>;
+    constexpr uint32_t INTER_RAM0_FORCE_ISO_Pos = 18;
+    constexpr uint32_t INTER_RAM0_FORCE_ISO_Msk = INTER_RAM0_FORCE_ISO::mask;
 
-/// internal SRAM 0 force no ISO
-/// Position: 19, Width: 1
-/// Access: read-write
-using INTER_RAM0_FORCE_NOISO = BitField<19, 1>;
-constexpr uint32_t INTER_RAM0_FORCE_NOISO_Pos = 19;
-constexpr uint32_t INTER_RAM0_FORCE_NOISO_Msk = INTER_RAM0_FORCE_NOISO::mask;
+    /// internal SRAM 0 force no ISO
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using INTER_RAM0_FORCE_NOISO = BitField<19, 1>;
+    constexpr uint32_t INTER_RAM0_FORCE_NOISO_Pos = 19;
+    constexpr uint32_t INTER_RAM0_FORCE_NOISO_Msk = INTER_RAM0_FORCE_NOISO::mask;
 
-/// internal SRAM 1 force ISO
-/// Position: 20, Width: 1
-/// Access: read-write
-using INTER_RAM1_FORCE_ISO = BitField<20, 1>;
-constexpr uint32_t INTER_RAM1_FORCE_ISO_Pos = 20;
-constexpr uint32_t INTER_RAM1_FORCE_ISO_Msk = INTER_RAM1_FORCE_ISO::mask;
+    /// internal SRAM 1 force ISO
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using INTER_RAM1_FORCE_ISO = BitField<20, 1>;
+    constexpr uint32_t INTER_RAM1_FORCE_ISO_Pos = 20;
+    constexpr uint32_t INTER_RAM1_FORCE_ISO_Msk = INTER_RAM1_FORCE_ISO::mask;
 
-/// internal SRAM 1 force no ISO
-/// Position: 21, Width: 1
-/// Access: read-write
-using INTER_RAM1_FORCE_NOISO = BitField<21, 1>;
-constexpr uint32_t INTER_RAM1_FORCE_NOISO_Pos = 21;
-constexpr uint32_t INTER_RAM1_FORCE_NOISO_Msk = INTER_RAM1_FORCE_NOISO::mask;
+    /// internal SRAM 1 force no ISO
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using INTER_RAM1_FORCE_NOISO = BitField<21, 1>;
+    constexpr uint32_t INTER_RAM1_FORCE_NOISO_Pos = 21;
+    constexpr uint32_t INTER_RAM1_FORCE_NOISO_Msk = INTER_RAM1_FORCE_NOISO::mask;
 
-/// internal SRAM 2 force ISO
-/// Position: 22, Width: 1
-/// Access: read-write
-using INTER_RAM2_FORCE_ISO = BitField<22, 1>;
-constexpr uint32_t INTER_RAM2_FORCE_ISO_Pos = 22;
-constexpr uint32_t INTER_RAM2_FORCE_ISO_Msk = INTER_RAM2_FORCE_ISO::mask;
+    /// internal SRAM 2 force ISO
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using INTER_RAM2_FORCE_ISO = BitField<22, 1>;
+    constexpr uint32_t INTER_RAM2_FORCE_ISO_Pos = 22;
+    constexpr uint32_t INTER_RAM2_FORCE_ISO_Msk = INTER_RAM2_FORCE_ISO::mask;
 
-/// internal SRAM 2 force no ISO
-/// Position: 23, Width: 1
-/// Access: read-write
-using INTER_RAM2_FORCE_NOISO = BitField<23, 1>;
-constexpr uint32_t INTER_RAM2_FORCE_NOISO_Pos = 23;
-constexpr uint32_t INTER_RAM2_FORCE_NOISO_Msk = INTER_RAM2_FORCE_NOISO::mask;
+    /// internal SRAM 2 force no ISO
+    /// Position: 23, Width: 1
+    /// Access: read-write
+    using INTER_RAM2_FORCE_NOISO = BitField<23, 1>;
+    constexpr uint32_t INTER_RAM2_FORCE_NOISO_Pos = 23;
+    constexpr uint32_t INTER_RAM2_FORCE_NOISO_Msk = INTER_RAM2_FORCE_NOISO::mask;
 
-/// internal SRAM 3 force ISO
-/// Position: 24, Width: 1
-/// Access: read-write
-using INTER_RAM3_FORCE_ISO = BitField<24, 1>;
-constexpr uint32_t INTER_RAM3_FORCE_ISO_Pos = 24;
-constexpr uint32_t INTER_RAM3_FORCE_ISO_Msk = INTER_RAM3_FORCE_ISO::mask;
+    /// internal SRAM 3 force ISO
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using INTER_RAM3_FORCE_ISO = BitField<24, 1>;
+    constexpr uint32_t INTER_RAM3_FORCE_ISO_Pos = 24;
+    constexpr uint32_t INTER_RAM3_FORCE_ISO_Msk = INTER_RAM3_FORCE_ISO::mask;
 
-/// internal SRAM 3 force no ISO
-/// Position: 25, Width: 1
-/// Access: read-write
-using INTER_RAM3_FORCE_NOISO = BitField<25, 1>;
-constexpr uint32_t INTER_RAM3_FORCE_NOISO_Pos = 25;
-constexpr uint32_t INTER_RAM3_FORCE_NOISO_Msk = INTER_RAM3_FORCE_NOISO::mask;
+    /// internal SRAM 3 force no ISO
+    /// Position: 25, Width: 1
+    /// Access: read-write
+    using INTER_RAM3_FORCE_NOISO = BitField<25, 1>;
+    constexpr uint32_t INTER_RAM3_FORCE_NOISO_Pos = 25;
+    constexpr uint32_t INTER_RAM3_FORCE_NOISO_Msk = INTER_RAM3_FORCE_NOISO::mask;
 
-/// internal SRAM 4 force ISO
-/// Position: 26, Width: 1
-/// Access: read-write
-using INTER_RAM4_FORCE_ISO = BitField<26, 1>;
-constexpr uint32_t INTER_RAM4_FORCE_ISO_Pos = 26;
-constexpr uint32_t INTER_RAM4_FORCE_ISO_Msk = INTER_RAM4_FORCE_ISO::mask;
+    /// internal SRAM 4 force ISO
+    /// Position: 26, Width: 1
+    /// Access: read-write
+    using INTER_RAM4_FORCE_ISO = BitField<26, 1>;
+    constexpr uint32_t INTER_RAM4_FORCE_ISO_Pos = 26;
+    constexpr uint32_t INTER_RAM4_FORCE_ISO_Msk = INTER_RAM4_FORCE_ISO::mask;
 
-/// internal SRAM 4 force no ISO
-/// Position: 27, Width: 1
-/// Access: read-write
-using INTER_RAM4_FORCE_NOISO = BitField<27, 1>;
-constexpr uint32_t INTER_RAM4_FORCE_NOISO_Pos = 27;
-constexpr uint32_t INTER_RAM4_FORCE_NOISO_Msk = INTER_RAM4_FORCE_NOISO::mask;
+    /// internal SRAM 4 force no ISO
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using INTER_RAM4_FORCE_NOISO = BitField<27, 1>;
+    constexpr uint32_t INTER_RAM4_FORCE_NOISO_Pos = 27;
+    constexpr uint32_t INTER_RAM4_FORCE_NOISO_Msk = INTER_RAM4_FORCE_NOISO::mask;
 
-/// wifi force ISO
-/// Position: 28, Width: 1
-/// Access: read-write
-using WIFI_FORCE_ISO = BitField<28, 1>;
-constexpr uint32_t WIFI_FORCE_ISO_Pos = 28;
-constexpr uint32_t WIFI_FORCE_ISO_Msk = WIFI_FORCE_ISO::mask;
+    /// wifi force ISO
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using WIFI_FORCE_ISO = BitField<28, 1>;
+    constexpr uint32_t WIFI_FORCE_ISO_Pos = 28;
+    constexpr uint32_t WIFI_FORCE_ISO_Msk = WIFI_FORCE_ISO::mask;
 
-/// wifi force no ISO
-/// Position: 29, Width: 1
-/// Access: read-write
-using WIFI_FORCE_NOISO = BitField<29, 1>;
-constexpr uint32_t WIFI_FORCE_NOISO_Pos = 29;
-constexpr uint32_t WIFI_FORCE_NOISO_Msk = WIFI_FORCE_NOISO::mask;
+    /// wifi force no ISO
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using WIFI_FORCE_NOISO = BitField<29, 1>;
+    constexpr uint32_t WIFI_FORCE_NOISO_Pos = 29;
+    constexpr uint32_t WIFI_FORCE_NOISO_Msk = WIFI_FORCE_NOISO::mask;
 
-/// digital core force ISO
-/// Position: 30, Width: 1
-/// Access: read-write
-using DG_WRAP_FORCE_ISO = BitField<30, 1>;
-constexpr uint32_t DG_WRAP_FORCE_ISO_Pos = 30;
-constexpr uint32_t DG_WRAP_FORCE_ISO_Msk = DG_WRAP_FORCE_ISO::mask;
+    /// digital core force ISO
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using DG_WRAP_FORCE_ISO = BitField<30, 1>;
+    constexpr uint32_t DG_WRAP_FORCE_ISO_Pos = 30;
+    constexpr uint32_t DG_WRAP_FORCE_ISO_Msk = DG_WRAP_FORCE_ISO::mask;
 
-/// digital core force no ISO
-/// Position: 31, Width: 1
-/// Access: read-write
-using DG_WRAP_FORCE_NOISO = BitField<31, 1>;
-constexpr uint32_t DG_WRAP_FORCE_NOISO_Pos = 31;
-constexpr uint32_t DG_WRAP_FORCE_NOISO_Msk = DG_WRAP_FORCE_NOISO::mask;
+    /// digital core force no ISO
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using DG_WRAP_FORCE_NOISO = BitField<31, 1>;
+    constexpr uint32_t DG_WRAP_FORCE_NOISO_Pos = 31;
+    constexpr uint32_t DG_WRAP_FORCE_NOISO_Msk = DG_WRAP_FORCE_NOISO::mask;
 
 }  // namespace dig_iso
 
 /// WDTCONFIG0 - WDTCONFIG0
 namespace wdtconfig0 {
-/// pause WDT in sleep
-/// Position: 7, Width: 1
-/// Access: read-write
-using WDT_PAUSE_IN_SLP = BitField<7, 1>;
-constexpr uint32_t WDT_PAUSE_IN_SLP_Pos = 7;
-constexpr uint32_t WDT_PAUSE_IN_SLP_Msk = WDT_PAUSE_IN_SLP::mask;
+    /// pause WDT in sleep
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using WDT_PAUSE_IN_SLP = BitField<7, 1>;
+    constexpr uint32_t WDT_PAUSE_IN_SLP_Pos = 7;
+    constexpr uint32_t WDT_PAUSE_IN_SLP_Msk = WDT_PAUSE_IN_SLP::mask;
 
-/// enable WDT reset APP CPU
-/// Position: 8, Width: 1
-/// Access: read-write
-using WDT_APPCPU_RESET_EN = BitField<8, 1>;
-constexpr uint32_t WDT_APPCPU_RESET_EN_Pos = 8;
-constexpr uint32_t WDT_APPCPU_RESET_EN_Msk = WDT_APPCPU_RESET_EN::mask;
+    /// enable WDT reset APP CPU
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using WDT_APPCPU_RESET_EN = BitField<8, 1>;
+    constexpr uint32_t WDT_APPCPU_RESET_EN_Pos = 8;
+    constexpr uint32_t WDT_APPCPU_RESET_EN_Msk = WDT_APPCPU_RESET_EN::mask;
 
-/// enable WDT reset PRO CPU
-/// Position: 9, Width: 1
-/// Access: read-write
-using WDT_PROCPU_RESET_EN = BitField<9, 1>;
-constexpr uint32_t WDT_PROCPU_RESET_EN_Pos = 9;
-constexpr uint32_t WDT_PROCPU_RESET_EN_Msk = WDT_PROCPU_RESET_EN::mask;
+    /// enable WDT reset PRO CPU
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using WDT_PROCPU_RESET_EN = BitField<9, 1>;
+    constexpr uint32_t WDT_PROCPU_RESET_EN_Pos = 9;
+    constexpr uint32_t WDT_PROCPU_RESET_EN_Msk = WDT_PROCPU_RESET_EN::mask;
 
-/// enable WDT in flash boot
-/// Position: 10, Width: 1
-/// Access: read-write
-using WDT_FLASHBOOT_MOD_EN = BitField<10, 1>;
-constexpr uint32_t WDT_FLASHBOOT_MOD_EN_Pos = 10;
-constexpr uint32_t WDT_FLASHBOOT_MOD_EN_Msk = WDT_FLASHBOOT_MOD_EN::mask;
+    /// enable WDT in flash boot
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using WDT_FLASHBOOT_MOD_EN = BitField<10, 1>;
+    constexpr uint32_t WDT_FLASHBOOT_MOD_EN_Pos = 10;
+    constexpr uint32_t WDT_FLASHBOOT_MOD_EN_Msk = WDT_FLASHBOOT_MOD_EN::mask;
 
-/// system reset counter length
-/// Position: 11, Width: 3
-/// Access: read-write
-using WDT_SYS_RESET_LENGTH = BitField<11, 3>;
-constexpr uint32_t WDT_SYS_RESET_LENGTH_Pos = 11;
-constexpr uint32_t WDT_SYS_RESET_LENGTH_Msk = WDT_SYS_RESET_LENGTH::mask;
+    /// system reset counter length
+    /// Position: 11, Width: 3
+    /// Access: read-write
+    using WDT_SYS_RESET_LENGTH = BitField<11, 3>;
+    constexpr uint32_t WDT_SYS_RESET_LENGTH_Pos = 11;
+    constexpr uint32_t WDT_SYS_RESET_LENGTH_Msk = WDT_SYS_RESET_LENGTH::mask;
 
-/// CPU reset counter length
-/// Position: 14, Width: 3
-/// Access: read-write
-using WDT_CPU_RESET_LENGTH = BitField<14, 3>;
-constexpr uint32_t WDT_CPU_RESET_LENGTH_Pos = 14;
-constexpr uint32_t WDT_CPU_RESET_LENGTH_Msk = WDT_CPU_RESET_LENGTH::mask;
+    /// CPU reset counter length
+    /// Position: 14, Width: 3
+    /// Access: read-write
+    using WDT_CPU_RESET_LENGTH = BitField<14, 3>;
+    constexpr uint32_t WDT_CPU_RESET_LENGTH_Pos = 14;
+    constexpr uint32_t WDT_CPU_RESET_LENGTH_Msk = WDT_CPU_RESET_LENGTH::mask;
 
-/// N/A
-/// Position: 17, Width: 1
-/// Access: read-write
-using WDT_LEVEL_INT_EN = BitField<17, 1>;
-constexpr uint32_t WDT_LEVEL_INT_EN_Pos = 17;
-constexpr uint32_t WDT_LEVEL_INT_EN_Msk = WDT_LEVEL_INT_EN::mask;
+    /// N/A
+    /// Position: 17, Width: 1
+    /// Access: read-write
+    using WDT_LEVEL_INT_EN = BitField<17, 1>;
+    constexpr uint32_t WDT_LEVEL_INT_EN_Pos = 17;
+    constexpr uint32_t WDT_LEVEL_INT_EN_Msk = WDT_LEVEL_INT_EN::mask;
 
-/// N/A
-/// Position: 18, Width: 1
-/// Access: read-write
-using WDT_EDGE_INT_EN = BitField<18, 1>;
-constexpr uint32_t WDT_EDGE_INT_EN_Pos = 18;
-constexpr uint32_t WDT_EDGE_INT_EN_Msk = WDT_EDGE_INT_EN::mask;
+    /// N/A
+    /// Position: 18, Width: 1
+    /// Access: read-write
+    using WDT_EDGE_INT_EN = BitField<18, 1>;
+    constexpr uint32_t WDT_EDGE_INT_EN_Pos = 18;
+    constexpr uint32_t WDT_EDGE_INT_EN_Msk = WDT_EDGE_INT_EN::mask;
 
-/// 1: interrupt stage en 2: CPU reset stage en 3: system reset stage en 4: RTC reset stage en
-/// Position: 19, Width: 3
-/// Access: read-write
-using WDT_STG3 = BitField<19, 3>;
-constexpr uint32_t WDT_STG3_Pos = 19;
-constexpr uint32_t WDT_STG3_Msk = WDT_STG3::mask;
+    /// 1: interrupt stage en 2: CPU reset stage en 3: system reset stage en 4: RTC reset stage en
+    /// Position: 19, Width: 3
+    /// Access: read-write
+    using WDT_STG3 = BitField<19, 3>;
+    constexpr uint32_t WDT_STG3_Pos = 19;
+    constexpr uint32_t WDT_STG3_Msk = WDT_STG3::mask;
 
-/// 1: interrupt stage en 2: CPU reset stage en 3: system reset stage en 4: RTC reset stage en
-/// Position: 22, Width: 3
-/// Access: read-write
-using WDT_STG2 = BitField<22, 3>;
-constexpr uint32_t WDT_STG2_Pos = 22;
-constexpr uint32_t WDT_STG2_Msk = WDT_STG2::mask;
+    /// 1: interrupt stage en 2: CPU reset stage en 3: system reset stage en 4: RTC reset stage en
+    /// Position: 22, Width: 3
+    /// Access: read-write
+    using WDT_STG2 = BitField<22, 3>;
+    constexpr uint32_t WDT_STG2_Pos = 22;
+    constexpr uint32_t WDT_STG2_Msk = WDT_STG2::mask;
 
-/// 1: interrupt stage en 2: CPU reset stage en 3: system reset stage en 4: RTC reset stage en
-/// Position: 25, Width: 3
-/// Access: read-write
-using WDT_STG1 = BitField<25, 3>;
-constexpr uint32_t WDT_STG1_Pos = 25;
-constexpr uint32_t WDT_STG1_Msk = WDT_STG1::mask;
+    /// 1: interrupt stage en 2: CPU reset stage en 3: system reset stage en 4: RTC reset stage en
+    /// Position: 25, Width: 3
+    /// Access: read-write
+    using WDT_STG1 = BitField<25, 3>;
+    constexpr uint32_t WDT_STG1_Pos = 25;
+    constexpr uint32_t WDT_STG1_Msk = WDT_STG1::mask;
 
-/// 1: interrupt stage en 2: CPU reset stage en 3: system reset stage en 4: RTC reset stage en
-/// Position: 28, Width: 3
-/// Access: read-write
-using WDT_STG0 = BitField<28, 3>;
-constexpr uint32_t WDT_STG0_Pos = 28;
-constexpr uint32_t WDT_STG0_Msk = WDT_STG0::mask;
+    /// 1: interrupt stage en 2: CPU reset stage en 3: system reset stage en 4: RTC reset stage en
+    /// Position: 28, Width: 3
+    /// Access: read-write
+    using WDT_STG0 = BitField<28, 3>;
+    constexpr uint32_t WDT_STG0_Pos = 28;
+    constexpr uint32_t WDT_STG0_Msk = WDT_STG0::mask;
 
-/// enable RTC WDT
-/// Position: 31, Width: 1
-/// Access: read-write
-using WDT_EN = BitField<31, 1>;
-constexpr uint32_t WDT_EN_Pos = 31;
-constexpr uint32_t WDT_EN_Msk = WDT_EN::mask;
+    /// enable RTC WDT
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using WDT_EN = BitField<31, 1>;
+    constexpr uint32_t WDT_EN_Pos = 31;
+    constexpr uint32_t WDT_EN_Msk = WDT_EN::mask;
 
 }  // namespace wdtconfig0
 
 /// WDTCONFIG1 - WDTCONFIG1
 namespace wdtconfig1 {
-/// Position: 0, Width: 32
-/// Access: read-write
-using WDT_STG0_HOLD = BitField<0, 32>;
-constexpr uint32_t WDT_STG0_HOLD_Pos = 0;
-constexpr uint32_t WDT_STG0_HOLD_Msk = WDT_STG0_HOLD::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using WDT_STG0_HOLD = BitField<0, 32>;
+    constexpr uint32_t WDT_STG0_HOLD_Pos = 0;
+    constexpr uint32_t WDT_STG0_HOLD_Msk = WDT_STG0_HOLD::mask;
 
 }  // namespace wdtconfig1
 
 /// WDTCONFIG2 - WDTCONFIG2
 namespace wdtconfig2 {
-/// Position: 0, Width: 32
-/// Access: read-write
-using WDT_STG1_HOLD = BitField<0, 32>;
-constexpr uint32_t WDT_STG1_HOLD_Pos = 0;
-constexpr uint32_t WDT_STG1_HOLD_Msk = WDT_STG1_HOLD::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using WDT_STG1_HOLD = BitField<0, 32>;
+    constexpr uint32_t WDT_STG1_HOLD_Pos = 0;
+    constexpr uint32_t WDT_STG1_HOLD_Msk = WDT_STG1_HOLD::mask;
 
 }  // namespace wdtconfig2
 
 /// WDTCONFIG3 - WDTCONFIG3
 namespace wdtconfig3 {
-/// Position: 0, Width: 32
-/// Access: read-write
-using WDT_STG2_HOLD = BitField<0, 32>;
-constexpr uint32_t WDT_STG2_HOLD_Pos = 0;
-constexpr uint32_t WDT_STG2_HOLD_Msk = WDT_STG2_HOLD::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using WDT_STG2_HOLD = BitField<0, 32>;
+    constexpr uint32_t WDT_STG2_HOLD_Pos = 0;
+    constexpr uint32_t WDT_STG2_HOLD_Msk = WDT_STG2_HOLD::mask;
 
 }  // namespace wdtconfig3
 
 /// WDTCONFIG4 - WDTCONFIG4
 namespace wdtconfig4 {
-/// Position: 0, Width: 32
-/// Access: read-write
-using WDT_STG3_HOLD = BitField<0, 32>;
-constexpr uint32_t WDT_STG3_HOLD_Pos = 0;
-constexpr uint32_t WDT_STG3_HOLD_Msk = WDT_STG3_HOLD::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using WDT_STG3_HOLD = BitField<0, 32>;
+    constexpr uint32_t WDT_STG3_HOLD_Pos = 0;
+    constexpr uint32_t WDT_STG3_HOLD_Msk = WDT_STG3_HOLD::mask;
 
 }  // namespace wdtconfig4
 
 /// WDTFEED - WDTFEED
 namespace wdtfeed {
-/// Position: 31, Width: 1
-/// Access: write-only
-using WDT_FEED = BitField<31, 1>;
-constexpr uint32_t WDT_FEED_Pos = 31;
-constexpr uint32_t WDT_FEED_Msk = WDT_FEED::mask;
+    /// Position: 31, Width: 1
+    /// Access: write-only
+    using WDT_FEED = BitField<31, 1>;
+    constexpr uint32_t WDT_FEED_Pos = 31;
+    constexpr uint32_t WDT_FEED_Msk = WDT_FEED::mask;
 
 }  // namespace wdtfeed
 
 /// WDTWPROTECT - WDTWPROTECT
 namespace wdtwprotect {
-/// Position: 0, Width: 32
-/// Access: read-write
-using WDT_WKEY = BitField<0, 32>;
-constexpr uint32_t WDT_WKEY_Pos = 0;
-constexpr uint32_t WDT_WKEY_Msk = WDT_WKEY::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using WDT_WKEY = BitField<0, 32>;
+    constexpr uint32_t WDT_WKEY_Pos = 0;
+    constexpr uint32_t WDT_WKEY_Msk = WDT_WKEY::mask;
 
 }  // namespace wdtwprotect
 
 /// TEST_MUX - TEST_MUX
 namespace test_mux {
-/// ENT_RTC
-/// Position: 29, Width: 1
-/// Access: read-write
-using ENT_RTC = BitField<29, 1>;
-constexpr uint32_t ENT_RTC_Pos = 29;
-constexpr uint32_t ENT_RTC_Msk = ENT_RTC::mask;
+    /// ENT_RTC
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using ENT_RTC = BitField<29, 1>;
+    constexpr uint32_t ENT_RTC_Pos = 29;
+    constexpr uint32_t ENT_RTC_Msk = ENT_RTC::mask;
 
-/// DTEST_RTC
-/// Position: 30, Width: 2
-/// Access: read-write
-using DTEST_RTC = BitField<30, 2>;
-constexpr uint32_t DTEST_RTC_Pos = 30;
-constexpr uint32_t DTEST_RTC_Msk = DTEST_RTC::mask;
+    /// DTEST_RTC
+    /// Position: 30, Width: 2
+    /// Access: read-write
+    using DTEST_RTC = BitField<30, 2>;
+    constexpr uint32_t DTEST_RTC_Pos = 30;
+    constexpr uint32_t DTEST_RTC_Msk = DTEST_RTC::mask;
 
 }  // namespace test_mux
 
 /// SW_CPU_STALL - SW_CPU_STALL
 namespace sw_cpu_stall {
-/// {reg_sw_stall_appcpu_c1[5:0] reg_sw_stall_appcpu_c0[1:0]} == 0x86 will stall APP CPU
-/// Position: 20, Width: 6
-/// Access: read-write
-using SW_STALL_APPCPU_C1 = BitField<20, 6>;
-constexpr uint32_t SW_STALL_APPCPU_C1_Pos = 20;
-constexpr uint32_t SW_STALL_APPCPU_C1_Msk = SW_STALL_APPCPU_C1::mask;
+    /// {reg_sw_stall_appcpu_c1[5:0] reg_sw_stall_appcpu_c0[1:0]} == 0x86 will stall APP CPU
+    /// Position: 20, Width: 6
+    /// Access: read-write
+    using SW_STALL_APPCPU_C1 = BitField<20, 6>;
+    constexpr uint32_t SW_STALL_APPCPU_C1_Pos = 20;
+    constexpr uint32_t SW_STALL_APPCPU_C1_Msk = SW_STALL_APPCPU_C1::mask;
 
-/// {reg_sw_stall_procpu_c1[5:0] reg_sw_stall_procpu_c0[1:0]} == 0x86 will stall PRO CPU
-/// Position: 26, Width: 6
-/// Access: read-write
-using SW_STALL_PROCPU_C1 = BitField<26, 6>;
-constexpr uint32_t SW_STALL_PROCPU_C1_Pos = 26;
-constexpr uint32_t SW_STALL_PROCPU_C1_Msk = SW_STALL_PROCPU_C1::mask;
+    /// {reg_sw_stall_procpu_c1[5:0] reg_sw_stall_procpu_c0[1:0]} == 0x86 will stall PRO CPU
+    /// Position: 26, Width: 6
+    /// Access: read-write
+    using SW_STALL_PROCPU_C1 = BitField<26, 6>;
+    constexpr uint32_t SW_STALL_PROCPU_C1_Pos = 26;
+    constexpr uint32_t SW_STALL_PROCPU_C1_Msk = SW_STALL_PROCPU_C1::mask;
 
 }  // namespace sw_cpu_stall
 
 /// STORE4 - STORE4
 namespace store4 {
-/// 32-bit general purpose retention register
-/// Position: 0, Width: 32
-/// Access: read-write
-using SCRATCH4 = BitField<0, 32>;
-constexpr uint32_t SCRATCH4_Pos = 0;
-constexpr uint32_t SCRATCH4_Msk = SCRATCH4::mask;
+    /// 32-bit general purpose retention register
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using SCRATCH4 = BitField<0, 32>;
+    constexpr uint32_t SCRATCH4_Pos = 0;
+    constexpr uint32_t SCRATCH4_Msk = SCRATCH4::mask;
 
 }  // namespace store4
 
 /// STORE5 - STORE5
 namespace store5 {
-/// 32-bit general purpose retention register
-/// Position: 0, Width: 32
-/// Access: read-write
-using SCRATCH5 = BitField<0, 32>;
-constexpr uint32_t SCRATCH5_Pos = 0;
-constexpr uint32_t SCRATCH5_Msk = SCRATCH5::mask;
+    /// 32-bit general purpose retention register
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using SCRATCH5 = BitField<0, 32>;
+    constexpr uint32_t SCRATCH5_Pos = 0;
+    constexpr uint32_t SCRATCH5_Msk = SCRATCH5::mask;
 
 }  // namespace store5
 
 /// STORE6 - STORE6
 namespace store6 {
-/// 32-bit general purpose retention register
-/// Position: 0, Width: 32
-/// Access: read-write
-using SCRATCH6 = BitField<0, 32>;
-constexpr uint32_t SCRATCH6_Pos = 0;
-constexpr uint32_t SCRATCH6_Msk = SCRATCH6::mask;
+    /// 32-bit general purpose retention register
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using SCRATCH6 = BitField<0, 32>;
+    constexpr uint32_t SCRATCH6_Pos = 0;
+    constexpr uint32_t SCRATCH6_Msk = SCRATCH6::mask;
 
 }  // namespace store6
 
 /// STORE7 - STORE7
 namespace store7 {
-/// 32-bit general purpose retention register
-/// Position: 0, Width: 32
-/// Access: read-write
-using SCRATCH7 = BitField<0, 32>;
-constexpr uint32_t SCRATCH7_Pos = 0;
-constexpr uint32_t SCRATCH7_Msk = SCRATCH7::mask;
+    /// 32-bit general purpose retention register
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using SCRATCH7 = BitField<0, 32>;
+    constexpr uint32_t SCRATCH7_Pos = 0;
+    constexpr uint32_t SCRATCH7_Msk = SCRATCH7::mask;
 
 }  // namespace store7
 
 /// LOW_POWER_ST - LOW_POWER_ST
 namespace low_power_st {
-/// Position: 0, Width: 32
-/// Access: read-only
-using LOW_POWER_DIAG0 = BitField<0, 32>;
-constexpr uint32_t LOW_POWER_DIAG0_Pos = 0;
-constexpr uint32_t LOW_POWER_DIAG0_Msk = LOW_POWER_DIAG0::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using LOW_POWER_DIAG0 = BitField<0, 32>;
+    constexpr uint32_t LOW_POWER_DIAG0_Pos = 0;
+    constexpr uint32_t LOW_POWER_DIAG0_Msk = LOW_POWER_DIAG0::mask;
 
-/// 1 if RTC controller is ready to execute WAKE instruction, 0 otherwise
-/// Position: 19, Width: 1
-/// Access: read-only
-using RDY_FOR_WAKEUP = BitField<19, 1>;
-constexpr uint32_t RDY_FOR_WAKEUP_Pos = 19;
-constexpr uint32_t RDY_FOR_WAKEUP_Msk = RDY_FOR_WAKEUP::mask;
+    /// 1 if RTC controller is ready to execute WAKE instruction, 0 otherwise
+    /// Position: 19, Width: 1
+    /// Access: read-only
+    using RDY_FOR_WAKEUP = BitField<19, 1>;
+    constexpr uint32_t RDY_FOR_WAKEUP_Pos = 19;
+    constexpr uint32_t RDY_FOR_WAKEUP_Msk = RDY_FOR_WAKEUP::mask;
 
 }  // namespace low_power_st
 
 /// DIAG1 - DIAG1
 namespace diag1 {
-/// Position: 0, Width: 32
-/// Access: read-only
-using LOW_POWER_DIAG1 = BitField<0, 32>;
-constexpr uint32_t LOW_POWER_DIAG1_Pos = 0;
-constexpr uint32_t LOW_POWER_DIAG1_Msk = LOW_POWER_DIAG1::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using LOW_POWER_DIAG1 = BitField<0, 32>;
+    constexpr uint32_t LOW_POWER_DIAG1_Pos = 0;
+    constexpr uint32_t LOW_POWER_DIAG1_Msk = LOW_POWER_DIAG1::mask;
 
 }  // namespace diag1
 
 /// HOLD_FORCE - HOLD_FORCE
 namespace hold_force {
-/// Position: 0, Width: 1
-/// Access: read-write
-using ADC1_HOLD_FORCE = BitField<0, 1>;
-constexpr uint32_t ADC1_HOLD_FORCE_Pos = 0;
-constexpr uint32_t ADC1_HOLD_FORCE_Msk = ADC1_HOLD_FORCE::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using ADC1_HOLD_FORCE = BitField<0, 1>;
+    constexpr uint32_t ADC1_HOLD_FORCE_Pos = 0;
+    constexpr uint32_t ADC1_HOLD_FORCE_Msk = ADC1_HOLD_FORCE::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-write
-using ADC2_HOLD_FORCE = BitField<1, 1>;
-constexpr uint32_t ADC2_HOLD_FORCE_Pos = 1;
-constexpr uint32_t ADC2_HOLD_FORCE_Msk = ADC2_HOLD_FORCE::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using ADC2_HOLD_FORCE = BitField<1, 1>;
+    constexpr uint32_t ADC2_HOLD_FORCE_Pos = 1;
+    constexpr uint32_t ADC2_HOLD_FORCE_Msk = ADC2_HOLD_FORCE::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-write
-using PDAC1_HOLD_FORCE = BitField<2, 1>;
-constexpr uint32_t PDAC1_HOLD_FORCE_Pos = 2;
-constexpr uint32_t PDAC1_HOLD_FORCE_Msk = PDAC1_HOLD_FORCE::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using PDAC1_HOLD_FORCE = BitField<2, 1>;
+    constexpr uint32_t PDAC1_HOLD_FORCE_Pos = 2;
+    constexpr uint32_t PDAC1_HOLD_FORCE_Msk = PDAC1_HOLD_FORCE::mask;
 
-/// Position: 3, Width: 1
-/// Access: read-write
-using PDAC2_HOLD_FORCE = BitField<3, 1>;
-constexpr uint32_t PDAC2_HOLD_FORCE_Pos = 3;
-constexpr uint32_t PDAC2_HOLD_FORCE_Msk = PDAC2_HOLD_FORCE::mask;
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using PDAC2_HOLD_FORCE = BitField<3, 1>;
+    constexpr uint32_t PDAC2_HOLD_FORCE_Pos = 3;
+    constexpr uint32_t PDAC2_HOLD_FORCE_Msk = PDAC2_HOLD_FORCE::mask;
 
-/// Position: 4, Width: 1
-/// Access: read-write
-using SENSE1_HOLD_FORCE = BitField<4, 1>;
-constexpr uint32_t SENSE1_HOLD_FORCE_Pos = 4;
-constexpr uint32_t SENSE1_HOLD_FORCE_Msk = SENSE1_HOLD_FORCE::mask;
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using SENSE1_HOLD_FORCE = BitField<4, 1>;
+    constexpr uint32_t SENSE1_HOLD_FORCE_Pos = 4;
+    constexpr uint32_t SENSE1_HOLD_FORCE_Msk = SENSE1_HOLD_FORCE::mask;
 
-/// Position: 5, Width: 1
-/// Access: read-write
-using SENSE2_HOLD_FORCE = BitField<5, 1>;
-constexpr uint32_t SENSE2_HOLD_FORCE_Pos = 5;
-constexpr uint32_t SENSE2_HOLD_FORCE_Msk = SENSE2_HOLD_FORCE::mask;
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using SENSE2_HOLD_FORCE = BitField<5, 1>;
+    constexpr uint32_t SENSE2_HOLD_FORCE_Pos = 5;
+    constexpr uint32_t SENSE2_HOLD_FORCE_Msk = SENSE2_HOLD_FORCE::mask;
 
-/// Position: 6, Width: 1
-/// Access: read-write
-using SENSE3_HOLD_FORCE = BitField<6, 1>;
-constexpr uint32_t SENSE3_HOLD_FORCE_Pos = 6;
-constexpr uint32_t SENSE3_HOLD_FORCE_Msk = SENSE3_HOLD_FORCE::mask;
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using SENSE3_HOLD_FORCE = BitField<6, 1>;
+    constexpr uint32_t SENSE3_HOLD_FORCE_Pos = 6;
+    constexpr uint32_t SENSE3_HOLD_FORCE_Msk = SENSE3_HOLD_FORCE::mask;
 
-/// Position: 7, Width: 1
-/// Access: read-write
-using SENSE4_HOLD_FORCE = BitField<7, 1>;
-constexpr uint32_t SENSE4_HOLD_FORCE_Pos = 7;
-constexpr uint32_t SENSE4_HOLD_FORCE_Msk = SENSE4_HOLD_FORCE::mask;
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using SENSE4_HOLD_FORCE = BitField<7, 1>;
+    constexpr uint32_t SENSE4_HOLD_FORCE_Pos = 7;
+    constexpr uint32_t SENSE4_HOLD_FORCE_Msk = SENSE4_HOLD_FORCE::mask;
 
-/// Position: 8, Width: 1
-/// Access: read-write
-using TOUCH_PAD0_HOLD_FORCE = BitField<8, 1>;
-constexpr uint32_t TOUCH_PAD0_HOLD_FORCE_Pos = 8;
-constexpr uint32_t TOUCH_PAD0_HOLD_FORCE_Msk = TOUCH_PAD0_HOLD_FORCE::mask;
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using TOUCH_PAD0_HOLD_FORCE = BitField<8, 1>;
+    constexpr uint32_t TOUCH_PAD0_HOLD_FORCE_Pos = 8;
+    constexpr uint32_t TOUCH_PAD0_HOLD_FORCE_Msk = TOUCH_PAD0_HOLD_FORCE::mask;
 
-/// Position: 9, Width: 1
-/// Access: read-write
-using TOUCH_PAD1_HOLD_FORCE = BitField<9, 1>;
-constexpr uint32_t TOUCH_PAD1_HOLD_FORCE_Pos = 9;
-constexpr uint32_t TOUCH_PAD1_HOLD_FORCE_Msk = TOUCH_PAD1_HOLD_FORCE::mask;
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using TOUCH_PAD1_HOLD_FORCE = BitField<9, 1>;
+    constexpr uint32_t TOUCH_PAD1_HOLD_FORCE_Pos = 9;
+    constexpr uint32_t TOUCH_PAD1_HOLD_FORCE_Msk = TOUCH_PAD1_HOLD_FORCE::mask;
 
-/// Position: 10, Width: 1
-/// Access: read-write
-using TOUCH_PAD2_HOLD_FORCE = BitField<10, 1>;
-constexpr uint32_t TOUCH_PAD2_HOLD_FORCE_Pos = 10;
-constexpr uint32_t TOUCH_PAD2_HOLD_FORCE_Msk = TOUCH_PAD2_HOLD_FORCE::mask;
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using TOUCH_PAD2_HOLD_FORCE = BitField<10, 1>;
+    constexpr uint32_t TOUCH_PAD2_HOLD_FORCE_Pos = 10;
+    constexpr uint32_t TOUCH_PAD2_HOLD_FORCE_Msk = TOUCH_PAD2_HOLD_FORCE::mask;
 
-/// Position: 11, Width: 1
-/// Access: read-write
-using TOUCH_PAD3_HOLD_FORCE = BitField<11, 1>;
-constexpr uint32_t TOUCH_PAD3_HOLD_FORCE_Pos = 11;
-constexpr uint32_t TOUCH_PAD3_HOLD_FORCE_Msk = TOUCH_PAD3_HOLD_FORCE::mask;
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using TOUCH_PAD3_HOLD_FORCE = BitField<11, 1>;
+    constexpr uint32_t TOUCH_PAD3_HOLD_FORCE_Pos = 11;
+    constexpr uint32_t TOUCH_PAD3_HOLD_FORCE_Msk = TOUCH_PAD3_HOLD_FORCE::mask;
 
-/// Position: 12, Width: 1
-/// Access: read-write
-using TOUCH_PAD4_HOLD_FORCE = BitField<12, 1>;
-constexpr uint32_t TOUCH_PAD4_HOLD_FORCE_Pos = 12;
-constexpr uint32_t TOUCH_PAD4_HOLD_FORCE_Msk = TOUCH_PAD4_HOLD_FORCE::mask;
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using TOUCH_PAD4_HOLD_FORCE = BitField<12, 1>;
+    constexpr uint32_t TOUCH_PAD4_HOLD_FORCE_Pos = 12;
+    constexpr uint32_t TOUCH_PAD4_HOLD_FORCE_Msk = TOUCH_PAD4_HOLD_FORCE::mask;
 
-/// Position: 13, Width: 1
-/// Access: read-write
-using TOUCH_PAD5_HOLD_FORCE = BitField<13, 1>;
-constexpr uint32_t TOUCH_PAD5_HOLD_FORCE_Pos = 13;
-constexpr uint32_t TOUCH_PAD5_HOLD_FORCE_Msk = TOUCH_PAD5_HOLD_FORCE::mask;
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using TOUCH_PAD5_HOLD_FORCE = BitField<13, 1>;
+    constexpr uint32_t TOUCH_PAD5_HOLD_FORCE_Pos = 13;
+    constexpr uint32_t TOUCH_PAD5_HOLD_FORCE_Msk = TOUCH_PAD5_HOLD_FORCE::mask;
 
-/// Position: 14, Width: 1
-/// Access: read-write
-using TOUCH_PAD6_HOLD_FORCE = BitField<14, 1>;
-constexpr uint32_t TOUCH_PAD6_HOLD_FORCE_Pos = 14;
-constexpr uint32_t TOUCH_PAD6_HOLD_FORCE_Msk = TOUCH_PAD6_HOLD_FORCE::mask;
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using TOUCH_PAD6_HOLD_FORCE = BitField<14, 1>;
+    constexpr uint32_t TOUCH_PAD6_HOLD_FORCE_Pos = 14;
+    constexpr uint32_t TOUCH_PAD6_HOLD_FORCE_Msk = TOUCH_PAD6_HOLD_FORCE::mask;
 
-/// Position: 15, Width: 1
-/// Access: read-write
-using TOUCH_PAD7_HOLD_FORCE = BitField<15, 1>;
-constexpr uint32_t TOUCH_PAD7_HOLD_FORCE_Pos = 15;
-constexpr uint32_t TOUCH_PAD7_HOLD_FORCE_Msk = TOUCH_PAD7_HOLD_FORCE::mask;
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using TOUCH_PAD7_HOLD_FORCE = BitField<15, 1>;
+    constexpr uint32_t TOUCH_PAD7_HOLD_FORCE_Pos = 15;
+    constexpr uint32_t TOUCH_PAD7_HOLD_FORCE_Msk = TOUCH_PAD7_HOLD_FORCE::mask;
 
-/// Position: 16, Width: 1
-/// Access: read-write
-using X32P_HOLD_FORCE = BitField<16, 1>;
-constexpr uint32_t X32P_HOLD_FORCE_Pos = 16;
-constexpr uint32_t X32P_HOLD_FORCE_Msk = X32P_HOLD_FORCE::mask;
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using X32P_HOLD_FORCE = BitField<16, 1>;
+    constexpr uint32_t X32P_HOLD_FORCE_Pos = 16;
+    constexpr uint32_t X32P_HOLD_FORCE_Msk = X32P_HOLD_FORCE::mask;
 
-/// Position: 17, Width: 1
-/// Access: read-write
-using X32N_HOLD_FORCE = BitField<17, 1>;
-constexpr uint32_t X32N_HOLD_FORCE_Pos = 17;
-constexpr uint32_t X32N_HOLD_FORCE_Msk = X32N_HOLD_FORCE::mask;
+    /// Position: 17, Width: 1
+    /// Access: read-write
+    using X32N_HOLD_FORCE = BitField<17, 1>;
+    constexpr uint32_t X32N_HOLD_FORCE_Pos = 17;
+    constexpr uint32_t X32N_HOLD_FORCE_Msk = X32N_HOLD_FORCE::mask;
 
 }  // namespace hold_force
 
 /// EXT_WAKEUP1 - EXT_WAKEUP1
 namespace ext_wakeup1 {
-/// Bitmap to select RTC pads for ext wakeup1
-/// Position: 0, Width: 18
-/// Access: read-write
-using SEL = BitField<0, 18>;
-constexpr uint32_t SEL_Pos = 0;
-constexpr uint32_t SEL_Msk = SEL::mask;
+    /// Bitmap to select RTC pads for ext wakeup1
+    /// Position: 0, Width: 18
+    /// Access: read-write
+    using SEL = BitField<0, 18>;
+    constexpr uint32_t SEL_Pos = 0;
+    constexpr uint32_t SEL_Msk = SEL::mask;
 
-/// clear ext wakeup1 status
-/// Position: 18, Width: 1
-/// Access: write-only
-using STATUS_CLR = BitField<18, 1>;
-constexpr uint32_t STATUS_CLR_Pos = 18;
-constexpr uint32_t STATUS_CLR_Msk = STATUS_CLR::mask;
+    /// clear ext wakeup1 status
+    /// Position: 18, Width: 1
+    /// Access: write-only
+    using STATUS_CLR = BitField<18, 1>;
+    constexpr uint32_t STATUS_CLR_Pos = 18;
+    constexpr uint32_t STATUS_CLR_Msk = STATUS_CLR::mask;
 
 }  // namespace ext_wakeup1
 
 /// EXT_WAKEUP1_STATUS - EXT_WAKEUP1_STATUS
 namespace ext_wakeup1_status {
-/// ext wakeup1 status
-/// Position: 0, Width: 18
-/// Access: read-only
-using EXT_WAKEUP1_STATUS = BitField<0, 18>;
-constexpr uint32_t EXT_WAKEUP1_STATUS_Pos = 0;
-constexpr uint32_t EXT_WAKEUP1_STATUS_Msk = EXT_WAKEUP1_STATUS::mask;
+    /// ext wakeup1 status
+    /// Position: 0, Width: 18
+    /// Access: read-only
+    using EXT_WAKEUP1_STATUS = BitField<0, 18>;
+    constexpr uint32_t EXT_WAKEUP1_STATUS_Pos = 0;
+    constexpr uint32_t EXT_WAKEUP1_STATUS_Msk = EXT_WAKEUP1_STATUS::mask;
 
 }  // namespace ext_wakeup1_status
 
 /// BROWN_OUT - BROWN_OUT
 namespace brown_out {
-/// Position: 0, Width: 8
-/// Access: read-write
-using RTC_MEM_PID_CONF = BitField<0, 8>;
-constexpr uint32_t RTC_MEM_PID_CONF_Pos = 0;
-constexpr uint32_t RTC_MEM_PID_CONF_Msk = RTC_MEM_PID_CONF::mask;
+    /// Position: 0, Width: 8
+    /// Access: read-write
+    using RTC_MEM_PID_CONF = BitField<0, 8>;
+    constexpr uint32_t RTC_MEM_PID_CONF_Pos = 0;
+    constexpr uint32_t RTC_MEM_PID_CONF_Msk = RTC_MEM_PID_CONF::mask;
 
-/// Position: 8, Width: 1
-/// Access: read-write
-using RTC_MEM_CRC_START = BitField<8, 1>;
-constexpr uint32_t RTC_MEM_CRC_START_Pos = 8;
-constexpr uint32_t RTC_MEM_CRC_START_Msk = RTC_MEM_CRC_START::mask;
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using RTC_MEM_CRC_START = BitField<8, 1>;
+    constexpr uint32_t RTC_MEM_CRC_START_Pos = 8;
+    constexpr uint32_t RTC_MEM_CRC_START_Msk = RTC_MEM_CRC_START::mask;
 
-/// Position: 9, Width: 11
-/// Access: read-write
-using RTC_MEM_CRC_ADDR = BitField<9, 11>;
-constexpr uint32_t RTC_MEM_CRC_ADDR_Pos = 9;
-constexpr uint32_t RTC_MEM_CRC_ADDR_Msk = RTC_MEM_CRC_ADDR::mask;
+    /// Position: 9, Width: 11
+    /// Access: read-write
+    using RTC_MEM_CRC_ADDR = BitField<9, 11>;
+    constexpr uint32_t RTC_MEM_CRC_ADDR_Pos = 9;
+    constexpr uint32_t RTC_MEM_CRC_ADDR_Msk = RTC_MEM_CRC_ADDR::mask;
 
-/// enable close flash when brown out happens
-/// Position: 14, Width: 1
-/// Access: read-write
-using CLOSE_FLASH_ENA = BitField<14, 1>;
-constexpr uint32_t CLOSE_FLASH_ENA_Pos = 14;
-constexpr uint32_t CLOSE_FLASH_ENA_Msk = CLOSE_FLASH_ENA::mask;
+    /// enable close flash when brown out happens
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using CLOSE_FLASH_ENA = BitField<14, 1>;
+    constexpr uint32_t CLOSE_FLASH_ENA_Pos = 14;
+    constexpr uint32_t CLOSE_FLASH_ENA_Msk = CLOSE_FLASH_ENA::mask;
 
-/// enable power down RF when brown out happens
-/// Position: 15, Width: 1
-/// Access: read-write
-using PD_RF_ENA = BitField<15, 1>;
-constexpr uint32_t PD_RF_ENA_Pos = 15;
-constexpr uint32_t PD_RF_ENA_Msk = PD_RF_ENA::mask;
+    /// enable power down RF when brown out happens
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using PD_RF_ENA = BitField<15, 1>;
+    constexpr uint32_t PD_RF_ENA_Pos = 15;
+    constexpr uint32_t PD_RF_ENA_Msk = PD_RF_ENA::mask;
 
-/// brown out reset wait cycles
-/// Position: 16, Width: 10
-/// Access: read-write
-using RST_WAIT = BitField<16, 10>;
-constexpr uint32_t RST_WAIT_Pos = 16;
-constexpr uint32_t RST_WAIT_Msk = RST_WAIT::mask;
+    /// brown out reset wait cycles
+    /// Position: 16, Width: 10
+    /// Access: read-write
+    using RST_WAIT = BitField<16, 10>;
+    constexpr uint32_t RST_WAIT_Pos = 16;
+    constexpr uint32_t RST_WAIT_Msk = RST_WAIT::mask;
 
-/// Position: 20, Width: 11
-/// Access: read-write
-using RTC_MEM_CRC_LEN = BitField<20, 11>;
-constexpr uint32_t RTC_MEM_CRC_LEN_Pos = 20;
-constexpr uint32_t RTC_MEM_CRC_LEN_Msk = RTC_MEM_CRC_LEN::mask;
+    /// Position: 20, Width: 11
+    /// Access: read-write
+    using RTC_MEM_CRC_LEN = BitField<20, 11>;
+    constexpr uint32_t RTC_MEM_CRC_LEN_Pos = 20;
+    constexpr uint32_t RTC_MEM_CRC_LEN_Msk = RTC_MEM_CRC_LEN::mask;
 
-/// enable brown out reset
-/// Position: 26, Width: 1
-/// Access: read-write
-using RST_ENA = BitField<26, 1>;
-constexpr uint32_t RST_ENA_Pos = 26;
-constexpr uint32_t RST_ENA_Msk = RST_ENA::mask;
+    /// enable brown out reset
+    /// Position: 26, Width: 1
+    /// Access: read-write
+    using RST_ENA = BitField<26, 1>;
+    constexpr uint32_t RST_ENA_Pos = 26;
+    constexpr uint32_t RST_ENA_Msk = RST_ENA::mask;
 
-/// brown out threshold
-/// Position: 27, Width: 3
-/// Access: read-write
-using DBROWN_OUT_THRES = BitField<27, 3>;
-constexpr uint32_t DBROWN_OUT_THRES_Pos = 27;
-constexpr uint32_t DBROWN_OUT_THRES_Msk = DBROWN_OUT_THRES::mask;
+    /// brown out threshold
+    /// Position: 27, Width: 3
+    /// Access: read-write
+    using DBROWN_OUT_THRES = BitField<27, 3>;
+    constexpr uint32_t DBROWN_OUT_THRES_Pos = 27;
+    constexpr uint32_t DBROWN_OUT_THRES_Msk = DBROWN_OUT_THRES::mask;
 
-/// enable brown out
-/// Position: 30, Width: 1
-/// Access: read-write
-using ENA = BitField<30, 1>;
-constexpr uint32_t ENA_Pos = 30;
-constexpr uint32_t ENA_Msk = ENA::mask;
+    /// enable brown out
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using ENA = BitField<30, 1>;
+    constexpr uint32_t ENA_Pos = 30;
+    constexpr uint32_t ENA_Msk = ENA::mask;
 
-/// brown out detect
-/// Position: 31, Width: 1
-/// Access: read-only
-using DET = BitField<31, 1>;
-constexpr uint32_t DET_Pos = 31;
-constexpr uint32_t DET_Msk = DET::mask;
+    /// brown out detect
+    /// Position: 31, Width: 1
+    /// Access: read-only
+    using DET = BitField<31, 1>;
+    constexpr uint32_t DET_Pos = 31;
+    constexpr uint32_t DET_Msk = DET::mask;
 
-/// Position: 31, Width: 1
-/// Access: read-write
-using RTC_MEM_CRC_FINISH = BitField<31, 1>;
-constexpr uint32_t RTC_MEM_CRC_FINISH_Pos = 31;
-constexpr uint32_t RTC_MEM_CRC_FINISH_Msk = RTC_MEM_CRC_FINISH::mask;
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using RTC_MEM_CRC_FINISH = BitField<31, 1>;
+    constexpr uint32_t RTC_MEM_CRC_FINISH_Pos = 31;
+    constexpr uint32_t RTC_MEM_CRC_FINISH_Msk = RTC_MEM_CRC_FINISH::mask;
 
 }  // namespace brown_out
 
 /// DATE - DATE
 namespace date {
-/// Position: 0, Width: 28
-/// Access: read-write
-using CNTL_DATE = BitField<0, 28>;
-constexpr uint32_t CNTL_DATE_Pos = 0;
-constexpr uint32_t CNTL_DATE_Msk = CNTL_DATE::mask;
+    /// Position: 0, Width: 28
+    /// Access: read-write
+    using CNTL_DATE = BitField<0, 28>;
+    constexpr uint32_t CNTL_DATE_Pos = 0;
+    constexpr uint32_t CNTL_DATE_Msk = CNTL_DATE::mask;
 
 }  // namespace date
 

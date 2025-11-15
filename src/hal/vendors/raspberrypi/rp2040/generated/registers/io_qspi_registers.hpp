@@ -17,6 +17,7 @@ namespace alloy::hal::raspberrypi::rp2040::io_qspi {
 
 /// IO_QSPI Register Structure
 struct IO_QSPI_Registers {
+
     /// GPIO status
     /// Offset: 0x0000
     /// Reset value: 0x00000000

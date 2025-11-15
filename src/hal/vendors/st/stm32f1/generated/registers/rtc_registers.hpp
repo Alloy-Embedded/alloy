@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f1::rtc {
 
 /// RTC Register Structure
 struct RTC_Registers {
+
     /// RTC Control Register High
     /// Offset: 0x0000
     /// Reset value: 0x00000000

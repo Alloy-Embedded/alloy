@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::dac {
@@ -20,261 +19,261 @@ using namespace alloy::hal::bitfields;
 
 /// CR - control register
 namespace cr {
-/// DAC channel1 enable
-/// Position: 0, Width: 1
-using EN1 = BitField<0, 1>;
-constexpr uint32_t EN1_Pos = 0;
-constexpr uint32_t EN1_Msk = EN1::mask;
+    /// DAC channel1 enable
+    /// Position: 0, Width: 1
+    using EN1 = BitField<0, 1>;
+    constexpr uint32_t EN1_Pos = 0;
+    constexpr uint32_t EN1_Msk = EN1::mask;
 
-/// DAC channel1 output buffer disable
-/// Position: 1, Width: 1
-using BOFF1 = BitField<1, 1>;
-constexpr uint32_t BOFF1_Pos = 1;
-constexpr uint32_t BOFF1_Msk = BOFF1::mask;
+    /// DAC channel1 output buffer disable
+    /// Position: 1, Width: 1
+    using BOFF1 = BitField<1, 1>;
+    constexpr uint32_t BOFF1_Pos = 1;
+    constexpr uint32_t BOFF1_Msk = BOFF1::mask;
 
-/// DAC channel1 trigger enable
-/// Position: 2, Width: 1
-using TEN1 = BitField<2, 1>;
-constexpr uint32_t TEN1_Pos = 2;
-constexpr uint32_t TEN1_Msk = TEN1::mask;
+    /// DAC channel1 trigger enable
+    /// Position: 2, Width: 1
+    using TEN1 = BitField<2, 1>;
+    constexpr uint32_t TEN1_Pos = 2;
+    constexpr uint32_t TEN1_Msk = TEN1::mask;
 
-/// DAC channel1 trigger selection
-/// Position: 3, Width: 3
-using TSEL1 = BitField<3, 3>;
-constexpr uint32_t TSEL1_Pos = 3;
-constexpr uint32_t TSEL1_Msk = TSEL1::mask;
+    /// DAC channel1 trigger selection
+    /// Position: 3, Width: 3
+    using TSEL1 = BitField<3, 3>;
+    constexpr uint32_t TSEL1_Pos = 3;
+    constexpr uint32_t TSEL1_Msk = TSEL1::mask;
 
-/// DAC channel1 noise/triangle wave generation enable
-/// Position: 6, Width: 2
-using WAVE1 = BitField<6, 2>;
-constexpr uint32_t WAVE1_Pos = 6;
-constexpr uint32_t WAVE1_Msk = WAVE1::mask;
+    /// DAC channel1 noise/triangle wave generation enable
+    /// Position: 6, Width: 2
+    using WAVE1 = BitField<6, 2>;
+    constexpr uint32_t WAVE1_Pos = 6;
+    constexpr uint32_t WAVE1_Msk = WAVE1::mask;
 
-/// DAC channel1 mask/amplitude selector
-/// Position: 8, Width: 4
-using MAMP1 = BitField<8, 4>;
-constexpr uint32_t MAMP1_Pos = 8;
-constexpr uint32_t MAMP1_Msk = MAMP1::mask;
+    /// DAC channel1 mask/amplitude selector
+    /// Position: 8, Width: 4
+    using MAMP1 = BitField<8, 4>;
+    constexpr uint32_t MAMP1_Pos = 8;
+    constexpr uint32_t MAMP1_Msk = MAMP1::mask;
 
-/// DAC channel1 DMA enable
-/// Position: 12, Width: 1
-using DMAEN1 = BitField<12, 1>;
-constexpr uint32_t DMAEN1_Pos = 12;
-constexpr uint32_t DMAEN1_Msk = DMAEN1::mask;
+    /// DAC channel1 DMA enable
+    /// Position: 12, Width: 1
+    using DMAEN1 = BitField<12, 1>;
+    constexpr uint32_t DMAEN1_Pos = 12;
+    constexpr uint32_t DMAEN1_Msk = DMAEN1::mask;
 
-/// DAC channel1 DMA Underrun Interrupt enable
-/// Position: 13, Width: 1
-using DMAUDRIE1 = BitField<13, 1>;
-constexpr uint32_t DMAUDRIE1_Pos = 13;
-constexpr uint32_t DMAUDRIE1_Msk = DMAUDRIE1::mask;
+    /// DAC channel1 DMA Underrun Interrupt enable
+    /// Position: 13, Width: 1
+    using DMAUDRIE1 = BitField<13, 1>;
+    constexpr uint32_t DMAUDRIE1_Pos = 13;
+    constexpr uint32_t DMAUDRIE1_Msk = DMAUDRIE1::mask;
 
-/// DAC channel2 enable
-/// Position: 16, Width: 1
-using EN2 = BitField<16, 1>;
-constexpr uint32_t EN2_Pos = 16;
-constexpr uint32_t EN2_Msk = EN2::mask;
+    /// DAC channel2 enable
+    /// Position: 16, Width: 1
+    using EN2 = BitField<16, 1>;
+    constexpr uint32_t EN2_Pos = 16;
+    constexpr uint32_t EN2_Msk = EN2::mask;
 
-/// DAC channel2 output buffer disable
-/// Position: 17, Width: 1
-using BOFF2 = BitField<17, 1>;
-constexpr uint32_t BOFF2_Pos = 17;
-constexpr uint32_t BOFF2_Msk = BOFF2::mask;
+    /// DAC channel2 output buffer disable
+    /// Position: 17, Width: 1
+    using BOFF2 = BitField<17, 1>;
+    constexpr uint32_t BOFF2_Pos = 17;
+    constexpr uint32_t BOFF2_Msk = BOFF2::mask;
 
-/// DAC channel2 trigger enable
-/// Position: 18, Width: 1
-using TEN2 = BitField<18, 1>;
-constexpr uint32_t TEN2_Pos = 18;
-constexpr uint32_t TEN2_Msk = TEN2::mask;
+    /// DAC channel2 trigger enable
+    /// Position: 18, Width: 1
+    using TEN2 = BitField<18, 1>;
+    constexpr uint32_t TEN2_Pos = 18;
+    constexpr uint32_t TEN2_Msk = TEN2::mask;
 
-/// DAC channel2 trigger selection
-/// Position: 19, Width: 3
-using TSEL2 = BitField<19, 3>;
-constexpr uint32_t TSEL2_Pos = 19;
-constexpr uint32_t TSEL2_Msk = TSEL2::mask;
+    /// DAC channel2 trigger selection
+    /// Position: 19, Width: 3
+    using TSEL2 = BitField<19, 3>;
+    constexpr uint32_t TSEL2_Pos = 19;
+    constexpr uint32_t TSEL2_Msk = TSEL2::mask;
 
-/// DAC channel2 noise/triangle wave generation enable
-/// Position: 22, Width: 2
-using WAVE2 = BitField<22, 2>;
-constexpr uint32_t WAVE2_Pos = 22;
-constexpr uint32_t WAVE2_Msk = WAVE2::mask;
+    /// DAC channel2 noise/triangle wave generation enable
+    /// Position: 22, Width: 2
+    using WAVE2 = BitField<22, 2>;
+    constexpr uint32_t WAVE2_Pos = 22;
+    constexpr uint32_t WAVE2_Msk = WAVE2::mask;
 
-/// DAC channel2 mask/amplitude selector
-/// Position: 24, Width: 4
-using MAMP2 = BitField<24, 4>;
-constexpr uint32_t MAMP2_Pos = 24;
-constexpr uint32_t MAMP2_Msk = MAMP2::mask;
+    /// DAC channel2 mask/amplitude selector
+    /// Position: 24, Width: 4
+    using MAMP2 = BitField<24, 4>;
+    constexpr uint32_t MAMP2_Pos = 24;
+    constexpr uint32_t MAMP2_Msk = MAMP2::mask;
 
-/// DAC channel2 DMA enable
-/// Position: 28, Width: 1
-using DMAEN2 = BitField<28, 1>;
-constexpr uint32_t DMAEN2_Pos = 28;
-constexpr uint32_t DMAEN2_Msk = DMAEN2::mask;
+    /// DAC channel2 DMA enable
+    /// Position: 28, Width: 1
+    using DMAEN2 = BitField<28, 1>;
+    constexpr uint32_t DMAEN2_Pos = 28;
+    constexpr uint32_t DMAEN2_Msk = DMAEN2::mask;
 
-/// DAC channel2 DMA underrun interrupt enable
-/// Position: 29, Width: 1
-using DMAUDRIE2 = BitField<29, 1>;
-constexpr uint32_t DMAUDRIE2_Pos = 29;
-constexpr uint32_t DMAUDRIE2_Msk = DMAUDRIE2::mask;
+    /// DAC channel2 DMA underrun interrupt enable
+    /// Position: 29, Width: 1
+    using DMAUDRIE2 = BitField<29, 1>;
+    constexpr uint32_t DMAUDRIE2_Pos = 29;
+    constexpr uint32_t DMAUDRIE2_Msk = DMAUDRIE2::mask;
 
 }  // namespace cr
 
 /// SWTRIGR - software trigger register
 namespace swtrigr {
-/// DAC channel1 software trigger
-/// Position: 0, Width: 1
-using SWTRIG1 = BitField<0, 1>;
-constexpr uint32_t SWTRIG1_Pos = 0;
-constexpr uint32_t SWTRIG1_Msk = SWTRIG1::mask;
+    /// DAC channel1 software trigger
+    /// Position: 0, Width: 1
+    using SWTRIG1 = BitField<0, 1>;
+    constexpr uint32_t SWTRIG1_Pos = 0;
+    constexpr uint32_t SWTRIG1_Msk = SWTRIG1::mask;
 
-/// DAC channel2 software trigger
-/// Position: 1, Width: 1
-using SWTRIG2 = BitField<1, 1>;
-constexpr uint32_t SWTRIG2_Pos = 1;
-constexpr uint32_t SWTRIG2_Msk = SWTRIG2::mask;
+    /// DAC channel2 software trigger
+    /// Position: 1, Width: 1
+    using SWTRIG2 = BitField<1, 1>;
+    constexpr uint32_t SWTRIG2_Pos = 1;
+    constexpr uint32_t SWTRIG2_Msk = SWTRIG2::mask;
 
 }  // namespace swtrigr
 
 /// DHR12R1 - channel1 12-bit right-aligned data holding register
 namespace dhr12r1 {
-/// DAC channel1 12-bit right-aligned data
-/// Position: 0, Width: 12
-using DACC1DHR = BitField<0, 12>;
-constexpr uint32_t DACC1DHR_Pos = 0;
-constexpr uint32_t DACC1DHR_Msk = DACC1DHR::mask;
+    /// DAC channel1 12-bit right-aligned data
+    /// Position: 0, Width: 12
+    using DACC1DHR = BitField<0, 12>;
+    constexpr uint32_t DACC1DHR_Pos = 0;
+    constexpr uint32_t DACC1DHR_Msk = DACC1DHR::mask;
 
 }  // namespace dhr12r1
 
 /// DHR12L1 - channel1 12-bit left aligned data holding register
 namespace dhr12l1 {
-/// DAC channel1 12-bit left-aligned data
-/// Position: 4, Width: 12
-using DACC1DHR = BitField<4, 12>;
-constexpr uint32_t DACC1DHR_Pos = 4;
-constexpr uint32_t DACC1DHR_Msk = DACC1DHR::mask;
+    /// DAC channel1 12-bit left-aligned data
+    /// Position: 4, Width: 12
+    using DACC1DHR = BitField<4, 12>;
+    constexpr uint32_t DACC1DHR_Pos = 4;
+    constexpr uint32_t DACC1DHR_Msk = DACC1DHR::mask;
 
 }  // namespace dhr12l1
 
 /// DHR8R1 - channel1 8-bit right aligned data holding register
 namespace dhr8r1 {
-/// DAC channel1 8-bit right-aligned data
-/// Position: 0, Width: 8
-using DACC1DHR = BitField<0, 8>;
-constexpr uint32_t DACC1DHR_Pos = 0;
-constexpr uint32_t DACC1DHR_Msk = DACC1DHR::mask;
+    /// DAC channel1 8-bit right-aligned data
+    /// Position: 0, Width: 8
+    using DACC1DHR = BitField<0, 8>;
+    constexpr uint32_t DACC1DHR_Pos = 0;
+    constexpr uint32_t DACC1DHR_Msk = DACC1DHR::mask;
 
 }  // namespace dhr8r1
 
 /// DHR12R2 - channel2 12-bit right aligned data holding register
 namespace dhr12r2 {
-/// DAC channel2 12-bit right-aligned data
-/// Position: 0, Width: 12
-using DACC2DHR = BitField<0, 12>;
-constexpr uint32_t DACC2DHR_Pos = 0;
-constexpr uint32_t DACC2DHR_Msk = DACC2DHR::mask;
+    /// DAC channel2 12-bit right-aligned data
+    /// Position: 0, Width: 12
+    using DACC2DHR = BitField<0, 12>;
+    constexpr uint32_t DACC2DHR_Pos = 0;
+    constexpr uint32_t DACC2DHR_Msk = DACC2DHR::mask;
 
 }  // namespace dhr12r2
 
 /// DHR12L2 - channel2 12-bit left aligned data holding register
 namespace dhr12l2 {
-/// DAC channel2 12-bit left-aligned data
-/// Position: 4, Width: 12
-using DACC2DHR = BitField<4, 12>;
-constexpr uint32_t DACC2DHR_Pos = 4;
-constexpr uint32_t DACC2DHR_Msk = DACC2DHR::mask;
+    /// DAC channel2 12-bit left-aligned data
+    /// Position: 4, Width: 12
+    using DACC2DHR = BitField<4, 12>;
+    constexpr uint32_t DACC2DHR_Pos = 4;
+    constexpr uint32_t DACC2DHR_Msk = DACC2DHR::mask;
 
 }  // namespace dhr12l2
 
 /// DHR8R2 - channel2 8-bit right-aligned data holding register
 namespace dhr8r2 {
-/// DAC channel2 8-bit right-aligned data
-/// Position: 0, Width: 8
-using DACC2DHR = BitField<0, 8>;
-constexpr uint32_t DACC2DHR_Pos = 0;
-constexpr uint32_t DACC2DHR_Msk = DACC2DHR::mask;
+    /// DAC channel2 8-bit right-aligned data
+    /// Position: 0, Width: 8
+    using DACC2DHR = BitField<0, 8>;
+    constexpr uint32_t DACC2DHR_Pos = 0;
+    constexpr uint32_t DACC2DHR_Msk = DACC2DHR::mask;
 
 }  // namespace dhr8r2
 
 /// DHR12RD - Dual DAC 12-bit right-aligned data holding register
 namespace dhr12rd {
-/// DAC channel1 12-bit right-aligned data
-/// Position: 0, Width: 12
-using DACC1DHR = BitField<0, 12>;
-constexpr uint32_t DACC1DHR_Pos = 0;
-constexpr uint32_t DACC1DHR_Msk = DACC1DHR::mask;
+    /// DAC channel1 12-bit right-aligned data
+    /// Position: 0, Width: 12
+    using DACC1DHR = BitField<0, 12>;
+    constexpr uint32_t DACC1DHR_Pos = 0;
+    constexpr uint32_t DACC1DHR_Msk = DACC1DHR::mask;
 
-/// DAC channel2 12-bit right-aligned data
-/// Position: 16, Width: 12
-using DACC2DHR = BitField<16, 12>;
-constexpr uint32_t DACC2DHR_Pos = 16;
-constexpr uint32_t DACC2DHR_Msk = DACC2DHR::mask;
+    /// DAC channel2 12-bit right-aligned data
+    /// Position: 16, Width: 12
+    using DACC2DHR = BitField<16, 12>;
+    constexpr uint32_t DACC2DHR_Pos = 16;
+    constexpr uint32_t DACC2DHR_Msk = DACC2DHR::mask;
 
 }  // namespace dhr12rd
 
 /// DHR12LD - DUAL DAC 12-bit left aligned data holding register
 namespace dhr12ld {
-/// DAC channel1 12-bit left-aligned data
-/// Position: 4, Width: 12
-using DACC1DHR = BitField<4, 12>;
-constexpr uint32_t DACC1DHR_Pos = 4;
-constexpr uint32_t DACC1DHR_Msk = DACC1DHR::mask;
+    /// DAC channel1 12-bit left-aligned data
+    /// Position: 4, Width: 12
+    using DACC1DHR = BitField<4, 12>;
+    constexpr uint32_t DACC1DHR_Pos = 4;
+    constexpr uint32_t DACC1DHR_Msk = DACC1DHR::mask;
 
-/// DAC channel2 12-bit left-aligned data
-/// Position: 20, Width: 12
-using DACC2DHR = BitField<20, 12>;
-constexpr uint32_t DACC2DHR_Pos = 20;
-constexpr uint32_t DACC2DHR_Msk = DACC2DHR::mask;
+    /// DAC channel2 12-bit left-aligned data
+    /// Position: 20, Width: 12
+    using DACC2DHR = BitField<20, 12>;
+    constexpr uint32_t DACC2DHR_Pos = 20;
+    constexpr uint32_t DACC2DHR_Msk = DACC2DHR::mask;
 
 }  // namespace dhr12ld
 
 /// DHR8RD - DUAL DAC 8-bit right aligned data holding register
 namespace dhr8rd {
-/// DAC channel1 8-bit right-aligned data
-/// Position: 0, Width: 8
-using DACC1DHR = BitField<0, 8>;
-constexpr uint32_t DACC1DHR_Pos = 0;
-constexpr uint32_t DACC1DHR_Msk = DACC1DHR::mask;
+    /// DAC channel1 8-bit right-aligned data
+    /// Position: 0, Width: 8
+    using DACC1DHR = BitField<0, 8>;
+    constexpr uint32_t DACC1DHR_Pos = 0;
+    constexpr uint32_t DACC1DHR_Msk = DACC1DHR::mask;
 
-/// DAC channel2 8-bit right-aligned data
-/// Position: 8, Width: 8
-using DACC2DHR = BitField<8, 8>;
-constexpr uint32_t DACC2DHR_Pos = 8;
-constexpr uint32_t DACC2DHR_Msk = DACC2DHR::mask;
+    /// DAC channel2 8-bit right-aligned data
+    /// Position: 8, Width: 8
+    using DACC2DHR = BitField<8, 8>;
+    constexpr uint32_t DACC2DHR_Pos = 8;
+    constexpr uint32_t DACC2DHR_Msk = DACC2DHR::mask;
 
 }  // namespace dhr8rd
 
 /// DOR1 - channel1 data output register
 namespace dor1 {
-/// DAC channel1 data output
-/// Position: 0, Width: 12
-using DACC1DOR = BitField<0, 12>;
-constexpr uint32_t DACC1DOR_Pos = 0;
-constexpr uint32_t DACC1DOR_Msk = DACC1DOR::mask;
+    /// DAC channel1 data output
+    /// Position: 0, Width: 12
+    using DACC1DOR = BitField<0, 12>;
+    constexpr uint32_t DACC1DOR_Pos = 0;
+    constexpr uint32_t DACC1DOR_Msk = DACC1DOR::mask;
 
 }  // namespace dor1
 
 /// DOR2 - channel2 data output register
 namespace dor2 {
-/// DAC channel2 data output
-/// Position: 0, Width: 12
-using DACC2DOR = BitField<0, 12>;
-constexpr uint32_t DACC2DOR_Pos = 0;
-constexpr uint32_t DACC2DOR_Msk = DACC2DOR::mask;
+    /// DAC channel2 data output
+    /// Position: 0, Width: 12
+    using DACC2DOR = BitField<0, 12>;
+    constexpr uint32_t DACC2DOR_Pos = 0;
+    constexpr uint32_t DACC2DOR_Msk = DACC2DOR::mask;
 
 }  // namespace dor2
 
 /// SR - status register
 namespace sr {
-/// DAC channel1 DMA underrun flag
-/// Position: 13, Width: 1
-using DMAUDR1 = BitField<13, 1>;
-constexpr uint32_t DMAUDR1_Pos = 13;
-constexpr uint32_t DMAUDR1_Msk = DMAUDR1::mask;
+    /// DAC channel1 DMA underrun flag
+    /// Position: 13, Width: 1
+    using DMAUDR1 = BitField<13, 1>;
+    constexpr uint32_t DMAUDR1_Pos = 13;
+    constexpr uint32_t DMAUDR1_Msk = DMAUDR1::mask;
 
-/// DAC channel2 DMA underrun flag
-/// Position: 29, Width: 1
-using DMAUDR2 = BitField<29, 1>;
-constexpr uint32_t DMAUDR2_Pos = 29;
-constexpr uint32_t DMAUDR2_Msk = DMAUDR2::mask;
+    /// DAC channel2 DMA underrun flag
+    /// Position: 29, Width: 1
+    using DMAUDR2 = BitField<29, 1>;
+    constexpr uint32_t DMAUDR2_Pos = 29;
+    constexpr uint32_t DMAUDR2_Msk = DMAUDR2::mask;
 
 }  // namespace sr
 

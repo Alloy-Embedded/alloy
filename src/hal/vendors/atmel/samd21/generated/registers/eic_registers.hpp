@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::eic {
 
 /// EIC Register Structure
 struct EIC_Registers {
+
     /// Control
     /// Offset: 0x0000
     volatile uint8_t CTRL;

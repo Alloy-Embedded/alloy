@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f1::dac {
 
 /// DAC Register Structure
 struct DAC_Registers {
+
     /// Control register (DAC_CR)
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -65,12 +66,16 @@ struct DAC_Registers {
     /// Access: read-write
     volatile uint32_t DHR8R2;
 
-    /// Dual DAC 12-bit right-aligned data holding register (DAC_DHR12RD), Bits 31:28 Reserved, Bits
-    /// 15:12 Reserved Offset: 0x0020 Reset value: 0x00000000 Access: read-write
+    /// Dual DAC 12-bit right-aligned data holding register (DAC_DHR12RD), Bits 31:28 Reserved, Bits 15:12 Reserved
+    /// Offset: 0x0020
+    /// Reset value: 0x00000000
+    /// Access: read-write
     volatile uint32_t DHR12RD;
 
-    /// DUAL DAC 12-bit left aligned data holding register (DAC_DHR12LD), Bits 19:16 Reserved, Bits
-    /// 3:0 Reserved Offset: 0x0024 Reset value: 0x00000000 Access: read-write
+    /// DUAL DAC 12-bit left aligned data holding register (DAC_DHR12LD), Bits 19:16 Reserved, Bits 3:0 Reserved
+    /// Offset: 0x0024
+    /// Reset value: 0x00000000
+    /// Access: read-write
     volatile uint32_t DHR12LD;
 
     /// DUAL DAC 8-bit right aligned data holding register (DAC_DHR8RD), Bits 31:16 Reserved

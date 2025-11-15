@@ -17,6 +17,7 @@ namespace alloy::hal::raspberrypi::rp2040::pads_bank0 {
 
 /// PADS_BANK0 Register Structure
 struct PADS_BANK0_Registers {
+
     /// Voltage select. Per bank control
     /// Offset: 0x0000
     /// Reset value: 0x00000000

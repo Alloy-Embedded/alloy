@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f1::adc2 {
 
 /// ADC2 Register Structure
 struct ADC2_Registers {
+
     /// status register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

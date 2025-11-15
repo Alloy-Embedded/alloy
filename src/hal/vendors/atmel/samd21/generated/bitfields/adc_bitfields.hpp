@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::adc {
@@ -20,463 +19,463 @@ using namespace alloy::hal::bitfields;
 
 /// CTRLA - Control A
 namespace ctrla {
-/// Software Reset
-/// Position: 0, Width: 1
-using SWRST = BitField<0, 1>;
-constexpr uint32_t SWRST_Pos = 0;
-constexpr uint32_t SWRST_Msk = SWRST::mask;
+    /// Software Reset
+    /// Position: 0, Width: 1
+    using SWRST = BitField<0, 1>;
+    constexpr uint32_t SWRST_Pos = 0;
+    constexpr uint32_t SWRST_Msk = SWRST::mask;
 
-/// Enable
-/// Position: 1, Width: 1
-using ENABLE = BitField<1, 1>;
-constexpr uint32_t ENABLE_Pos = 1;
-constexpr uint32_t ENABLE_Msk = ENABLE::mask;
+    /// Enable
+    /// Position: 1, Width: 1
+    using ENABLE = BitField<1, 1>;
+    constexpr uint32_t ENABLE_Pos = 1;
+    constexpr uint32_t ENABLE_Msk = ENABLE::mask;
 
-/// Run in Standby
-/// Position: 2, Width: 1
-using RUNSTDBY = BitField<2, 1>;
-constexpr uint32_t RUNSTDBY_Pos = 2;
-constexpr uint32_t RUNSTDBY_Msk = RUNSTDBY::mask;
+    /// Run in Standby
+    /// Position: 2, Width: 1
+    using RUNSTDBY = BitField<2, 1>;
+    constexpr uint32_t RUNSTDBY_Pos = 2;
+    constexpr uint32_t RUNSTDBY_Msk = RUNSTDBY::mask;
 
 }  // namespace ctrla
 
 /// REFCTRL - Reference Control
 namespace refctrl {
-/// Reference Selection
-/// Position: 0, Width: 4
-using REFSEL = BitField<0, 4>;
-constexpr uint32_t REFSEL_Pos = 0;
-constexpr uint32_t REFSEL_Msk = REFSEL::mask;
-/// Enumerated values for REFSEL
-namespace refsel {
-constexpr uint32_t INT1V = 0;
-constexpr uint32_t INTVCC0 = 1;
-constexpr uint32_t INTVCC1 = 2;
-constexpr uint32_t AREFA = 3;
-constexpr uint32_t AREFB = 4;
-}  // namespace refsel
+    /// Reference Selection
+    /// Position: 0, Width: 4
+    using REFSEL = BitField<0, 4>;
+    constexpr uint32_t REFSEL_Pos = 0;
+    constexpr uint32_t REFSEL_Msk = REFSEL::mask;
+    /// Enumerated values for REFSEL
+    namespace refsel {
+        constexpr uint32_t INT1V = 0;
+        constexpr uint32_t INTVCC0 = 1;
+        constexpr uint32_t INTVCC1 = 2;
+        constexpr uint32_t AREFA = 3;
+        constexpr uint32_t AREFB = 4;
+    }
 
-/// Reference Buffer Offset Compensation Enable
-/// Position: 7, Width: 1
-using REFCOMP = BitField<7, 1>;
-constexpr uint32_t REFCOMP_Pos = 7;
-constexpr uint32_t REFCOMP_Msk = REFCOMP::mask;
+    /// Reference Buffer Offset Compensation Enable
+    /// Position: 7, Width: 1
+    using REFCOMP = BitField<7, 1>;
+    constexpr uint32_t REFCOMP_Pos = 7;
+    constexpr uint32_t REFCOMP_Msk = REFCOMP::mask;
 
 }  // namespace refctrl
 
 /// AVGCTRL - Average Control
 namespace avgctrl {
-/// Number of Samples to be Collected
-/// Position: 0, Width: 4
-using SAMPLENUM = BitField<0, 4>;
-constexpr uint32_t SAMPLENUM_Pos = 0;
-constexpr uint32_t SAMPLENUM_Msk = SAMPLENUM::mask;
-/// Enumerated values for SAMPLENUM
-namespace samplenum {
-constexpr uint32_t _1 = 0;
-constexpr uint32_t _2 = 1;
-constexpr uint32_t _4 = 2;
-constexpr uint32_t _8 = 3;
-constexpr uint32_t _16 = 4;
-constexpr uint32_t _32 = 5;
-constexpr uint32_t _64 = 6;
-constexpr uint32_t _128 = 7;
-constexpr uint32_t _256 = 8;
-constexpr uint32_t _512 = 9;
-constexpr uint32_t _1024 = 10;
-}  // namespace samplenum
+    /// Number of Samples to be Collected
+    /// Position: 0, Width: 4
+    using SAMPLENUM = BitField<0, 4>;
+    constexpr uint32_t SAMPLENUM_Pos = 0;
+    constexpr uint32_t SAMPLENUM_Msk = SAMPLENUM::mask;
+    /// Enumerated values for SAMPLENUM
+    namespace samplenum {
+        constexpr uint32_t _1 = 0;
+        constexpr uint32_t _2 = 1;
+        constexpr uint32_t _4 = 2;
+        constexpr uint32_t _8 = 3;
+        constexpr uint32_t _16 = 4;
+        constexpr uint32_t _32 = 5;
+        constexpr uint32_t _64 = 6;
+        constexpr uint32_t _128 = 7;
+        constexpr uint32_t _256 = 8;
+        constexpr uint32_t _512 = 9;
+        constexpr uint32_t _1024 = 10;
+    }
 
-/// Adjusting Result / Division Coefficient
-/// Position: 4, Width: 3
-using ADJRES = BitField<4, 3>;
-constexpr uint32_t ADJRES_Pos = 4;
-constexpr uint32_t ADJRES_Msk = ADJRES::mask;
+    /// Adjusting Result / Division Coefficient
+    /// Position: 4, Width: 3
+    using ADJRES = BitField<4, 3>;
+    constexpr uint32_t ADJRES_Pos = 4;
+    constexpr uint32_t ADJRES_Msk = ADJRES::mask;
 
 }  // namespace avgctrl
 
 /// SAMPCTRL - Sampling Time Control
 namespace sampctrl {
-/// Sampling Time Length
-/// Position: 0, Width: 6
-using SAMPLEN = BitField<0, 6>;
-constexpr uint32_t SAMPLEN_Pos = 0;
-constexpr uint32_t SAMPLEN_Msk = SAMPLEN::mask;
+    /// Sampling Time Length
+    /// Position: 0, Width: 6
+    using SAMPLEN = BitField<0, 6>;
+    constexpr uint32_t SAMPLEN_Pos = 0;
+    constexpr uint32_t SAMPLEN_Msk = SAMPLEN::mask;
 
 }  // namespace sampctrl
 
 /// CTRLB - Control B
 namespace ctrlb {
-/// Differential Mode
-/// Position: 0, Width: 1
-using DIFFMODE = BitField<0, 1>;
-constexpr uint32_t DIFFMODE_Pos = 0;
-constexpr uint32_t DIFFMODE_Msk = DIFFMODE::mask;
+    /// Differential Mode
+    /// Position: 0, Width: 1
+    using DIFFMODE = BitField<0, 1>;
+    constexpr uint32_t DIFFMODE_Pos = 0;
+    constexpr uint32_t DIFFMODE_Msk = DIFFMODE::mask;
 
-/// Left-Adjusted Result
-/// Position: 1, Width: 1
-using LEFTADJ = BitField<1, 1>;
-constexpr uint32_t LEFTADJ_Pos = 1;
-constexpr uint32_t LEFTADJ_Msk = LEFTADJ::mask;
+    /// Left-Adjusted Result
+    /// Position: 1, Width: 1
+    using LEFTADJ = BitField<1, 1>;
+    constexpr uint32_t LEFTADJ_Pos = 1;
+    constexpr uint32_t LEFTADJ_Msk = LEFTADJ::mask;
 
-/// Free Running Mode
-/// Position: 2, Width: 1
-using FREERUN = BitField<2, 1>;
-constexpr uint32_t FREERUN_Pos = 2;
-constexpr uint32_t FREERUN_Msk = FREERUN::mask;
+    /// Free Running Mode
+    /// Position: 2, Width: 1
+    using FREERUN = BitField<2, 1>;
+    constexpr uint32_t FREERUN_Pos = 2;
+    constexpr uint32_t FREERUN_Msk = FREERUN::mask;
 
-/// Digital Correction Logic Enabled
-/// Position: 3, Width: 1
-using CORREN = BitField<3, 1>;
-constexpr uint32_t CORREN_Pos = 3;
-constexpr uint32_t CORREN_Msk = CORREN::mask;
+    /// Digital Correction Logic Enabled
+    /// Position: 3, Width: 1
+    using CORREN = BitField<3, 1>;
+    constexpr uint32_t CORREN_Pos = 3;
+    constexpr uint32_t CORREN_Msk = CORREN::mask;
 
-/// Conversion Result Resolution
-/// Position: 4, Width: 2
-using RESSEL = BitField<4, 2>;
-constexpr uint32_t RESSEL_Pos = 4;
-constexpr uint32_t RESSEL_Msk = RESSEL::mask;
-/// Enumerated values for RESSEL
-namespace ressel {
-constexpr uint32_t _12BIT = 0;
-constexpr uint32_t _16BIT = 1;
-constexpr uint32_t _10BIT = 2;
-constexpr uint32_t _8BIT = 3;
-}  // namespace ressel
+    /// Conversion Result Resolution
+    /// Position: 4, Width: 2
+    using RESSEL = BitField<4, 2>;
+    constexpr uint32_t RESSEL_Pos = 4;
+    constexpr uint32_t RESSEL_Msk = RESSEL::mask;
+    /// Enumerated values for RESSEL
+    namespace ressel {
+        constexpr uint32_t _12BIT = 0;
+        constexpr uint32_t _16BIT = 1;
+        constexpr uint32_t _10BIT = 2;
+        constexpr uint32_t _8BIT = 3;
+    }
 
-/// Prescaler Configuration
-/// Position: 8, Width: 3
-using PRESCALER = BitField<8, 3>;
-constexpr uint32_t PRESCALER_Pos = 8;
-constexpr uint32_t PRESCALER_Msk = PRESCALER::mask;
-/// Enumerated values for PRESCALER
-namespace prescaler {
-constexpr uint32_t DIV4 = 0;
-constexpr uint32_t DIV8 = 1;
-constexpr uint32_t DIV16 = 2;
-constexpr uint32_t DIV32 = 3;
-constexpr uint32_t DIV64 = 4;
-constexpr uint32_t DIV128 = 5;
-constexpr uint32_t DIV256 = 6;
-constexpr uint32_t DIV512 = 7;
-}  // namespace prescaler
+    /// Prescaler Configuration
+    /// Position: 8, Width: 3
+    using PRESCALER = BitField<8, 3>;
+    constexpr uint32_t PRESCALER_Pos = 8;
+    constexpr uint32_t PRESCALER_Msk = PRESCALER::mask;
+    /// Enumerated values for PRESCALER
+    namespace prescaler {
+        constexpr uint32_t DIV4 = 0;
+        constexpr uint32_t DIV8 = 1;
+        constexpr uint32_t DIV16 = 2;
+        constexpr uint32_t DIV32 = 3;
+        constexpr uint32_t DIV64 = 4;
+        constexpr uint32_t DIV128 = 5;
+        constexpr uint32_t DIV256 = 6;
+        constexpr uint32_t DIV512 = 7;
+    }
 
 }  // namespace ctrlb
 
 /// WINCTRL - Window Monitor Control
 namespace winctrl {
-/// Window Monitor Mode
-/// Position: 0, Width: 3
-using WINMODE = BitField<0, 3>;
-constexpr uint32_t WINMODE_Pos = 0;
-constexpr uint32_t WINMODE_Msk = WINMODE::mask;
-/// Enumerated values for WINMODE
-namespace winmode {
-constexpr uint32_t DISABLE = 0;
-constexpr uint32_t MODE1 = 1;
-constexpr uint32_t MODE2 = 2;
-constexpr uint32_t MODE3 = 3;
-constexpr uint32_t MODE4 = 4;
-}  // namespace winmode
+    /// Window Monitor Mode
+    /// Position: 0, Width: 3
+    using WINMODE = BitField<0, 3>;
+    constexpr uint32_t WINMODE_Pos = 0;
+    constexpr uint32_t WINMODE_Msk = WINMODE::mask;
+    /// Enumerated values for WINMODE
+    namespace winmode {
+        constexpr uint32_t DISABLE = 0;
+        constexpr uint32_t MODE1 = 1;
+        constexpr uint32_t MODE2 = 2;
+        constexpr uint32_t MODE3 = 3;
+        constexpr uint32_t MODE4 = 4;
+    }
 
 }  // namespace winctrl
 
 /// SWTRIG - Software Trigger
 namespace swtrig {
-/// ADC Conversion Flush
-/// Position: 0, Width: 1
-using FLUSH = BitField<0, 1>;
-constexpr uint32_t FLUSH_Pos = 0;
-constexpr uint32_t FLUSH_Msk = FLUSH::mask;
+    /// ADC Conversion Flush
+    /// Position: 0, Width: 1
+    using FLUSH = BitField<0, 1>;
+    constexpr uint32_t FLUSH_Pos = 0;
+    constexpr uint32_t FLUSH_Msk = FLUSH::mask;
 
-/// ADC Start Conversion
-/// Position: 1, Width: 1
-using START = BitField<1, 1>;
-constexpr uint32_t START_Pos = 1;
-constexpr uint32_t START_Msk = START::mask;
+    /// ADC Start Conversion
+    /// Position: 1, Width: 1
+    using START = BitField<1, 1>;
+    constexpr uint32_t START_Pos = 1;
+    constexpr uint32_t START_Msk = START::mask;
 
 }  // namespace swtrig
 
 /// INPUTCTRL - Input Control
 namespace inputctrl {
-/// Positive Mux Input Selection
-/// Position: 0, Width: 5
-using MUXPOS = BitField<0, 5>;
-constexpr uint32_t MUXPOS_Pos = 0;
-constexpr uint32_t MUXPOS_Msk = MUXPOS::mask;
-/// Enumerated values for MUXPOS
-namespace muxpos {
-constexpr uint32_t PIN0 = 0;
-constexpr uint32_t PIN1 = 1;
-constexpr uint32_t PIN2 = 2;
-constexpr uint32_t PIN3 = 3;
-constexpr uint32_t PIN4 = 4;
-constexpr uint32_t PIN5 = 5;
-constexpr uint32_t PIN6 = 6;
-constexpr uint32_t PIN7 = 7;
-constexpr uint32_t PIN8 = 8;
-constexpr uint32_t PIN9 = 9;
-constexpr uint32_t PIN10 = 10;
-constexpr uint32_t PIN11 = 11;
-constexpr uint32_t PIN12 = 12;
-constexpr uint32_t PIN13 = 13;
-constexpr uint32_t PIN14 = 14;
-constexpr uint32_t PIN15 = 15;
-constexpr uint32_t PIN16 = 16;
-constexpr uint32_t PIN17 = 17;
-constexpr uint32_t PIN18 = 18;
-constexpr uint32_t PIN19 = 19;
-constexpr uint32_t TEMP = 24;
-constexpr uint32_t BANDGAP = 25;
-constexpr uint32_t SCALEDCOREVCC = 26;
-constexpr uint32_t SCALEDIOVCC = 27;
-constexpr uint32_t DAC = 28;
-}  // namespace muxpos
+    /// Positive Mux Input Selection
+    /// Position: 0, Width: 5
+    using MUXPOS = BitField<0, 5>;
+    constexpr uint32_t MUXPOS_Pos = 0;
+    constexpr uint32_t MUXPOS_Msk = MUXPOS::mask;
+    /// Enumerated values for MUXPOS
+    namespace muxpos {
+        constexpr uint32_t PIN0 = 0;
+        constexpr uint32_t PIN1 = 1;
+        constexpr uint32_t PIN2 = 2;
+        constexpr uint32_t PIN3 = 3;
+        constexpr uint32_t PIN4 = 4;
+        constexpr uint32_t PIN5 = 5;
+        constexpr uint32_t PIN6 = 6;
+        constexpr uint32_t PIN7 = 7;
+        constexpr uint32_t PIN8 = 8;
+        constexpr uint32_t PIN9 = 9;
+        constexpr uint32_t PIN10 = 10;
+        constexpr uint32_t PIN11 = 11;
+        constexpr uint32_t PIN12 = 12;
+        constexpr uint32_t PIN13 = 13;
+        constexpr uint32_t PIN14 = 14;
+        constexpr uint32_t PIN15 = 15;
+        constexpr uint32_t PIN16 = 16;
+        constexpr uint32_t PIN17 = 17;
+        constexpr uint32_t PIN18 = 18;
+        constexpr uint32_t PIN19 = 19;
+        constexpr uint32_t TEMP = 24;
+        constexpr uint32_t BANDGAP = 25;
+        constexpr uint32_t SCALEDCOREVCC = 26;
+        constexpr uint32_t SCALEDIOVCC = 27;
+        constexpr uint32_t DAC = 28;
+    }
 
-/// Negative Mux Input Selection
-/// Position: 8, Width: 5
-using MUXNEG = BitField<8, 5>;
-constexpr uint32_t MUXNEG_Pos = 8;
-constexpr uint32_t MUXNEG_Msk = MUXNEG::mask;
-/// Enumerated values for MUXNEG
-namespace muxneg {
-constexpr uint32_t PIN0 = 0;
-constexpr uint32_t PIN1 = 1;
-constexpr uint32_t PIN2 = 2;
-constexpr uint32_t PIN3 = 3;
-constexpr uint32_t PIN4 = 4;
-constexpr uint32_t PIN5 = 5;
-constexpr uint32_t PIN6 = 6;
-constexpr uint32_t PIN7 = 7;
-constexpr uint32_t GND = 24;
-constexpr uint32_t IOGND = 25;
-}  // namespace muxneg
+    /// Negative Mux Input Selection
+    /// Position: 8, Width: 5
+    using MUXNEG = BitField<8, 5>;
+    constexpr uint32_t MUXNEG_Pos = 8;
+    constexpr uint32_t MUXNEG_Msk = MUXNEG::mask;
+    /// Enumerated values for MUXNEG
+    namespace muxneg {
+        constexpr uint32_t PIN0 = 0;
+        constexpr uint32_t PIN1 = 1;
+        constexpr uint32_t PIN2 = 2;
+        constexpr uint32_t PIN3 = 3;
+        constexpr uint32_t PIN4 = 4;
+        constexpr uint32_t PIN5 = 5;
+        constexpr uint32_t PIN6 = 6;
+        constexpr uint32_t PIN7 = 7;
+        constexpr uint32_t GND = 24;
+        constexpr uint32_t IOGND = 25;
+    }
 
-/// Number of Input Channels Included in Scan
-/// Position: 16, Width: 4
-using INPUTSCAN = BitField<16, 4>;
-constexpr uint32_t INPUTSCAN_Pos = 16;
-constexpr uint32_t INPUTSCAN_Msk = INPUTSCAN::mask;
+    /// Number of Input Channels Included in Scan
+    /// Position: 16, Width: 4
+    using INPUTSCAN = BitField<16, 4>;
+    constexpr uint32_t INPUTSCAN_Pos = 16;
+    constexpr uint32_t INPUTSCAN_Msk = INPUTSCAN::mask;
 
-/// Positive Mux Setting Offset
-/// Position: 20, Width: 4
-using INPUTOFFSET = BitField<20, 4>;
-constexpr uint32_t INPUTOFFSET_Pos = 20;
-constexpr uint32_t INPUTOFFSET_Msk = INPUTOFFSET::mask;
+    /// Positive Mux Setting Offset
+    /// Position: 20, Width: 4
+    using INPUTOFFSET = BitField<20, 4>;
+    constexpr uint32_t INPUTOFFSET_Pos = 20;
+    constexpr uint32_t INPUTOFFSET_Msk = INPUTOFFSET::mask;
 
-/// Gain Factor Selection
-/// Position: 24, Width: 4
-using GAIN = BitField<24, 4>;
-constexpr uint32_t GAIN_Pos = 24;
-constexpr uint32_t GAIN_Msk = GAIN::mask;
-/// Enumerated values for GAIN
-namespace gain {
-constexpr uint32_t _1X = 0;
-constexpr uint32_t _2X = 1;
-constexpr uint32_t _4X = 2;
-constexpr uint32_t _8X = 3;
-constexpr uint32_t _16X = 4;
-constexpr uint32_t DIV2 = 15;
-}  // namespace gain
+    /// Gain Factor Selection
+    /// Position: 24, Width: 4
+    using GAIN = BitField<24, 4>;
+    constexpr uint32_t GAIN_Pos = 24;
+    constexpr uint32_t GAIN_Msk = GAIN::mask;
+    /// Enumerated values for GAIN
+    namespace gain {
+        constexpr uint32_t _1X = 0;
+        constexpr uint32_t _2X = 1;
+        constexpr uint32_t _4X = 2;
+        constexpr uint32_t _8X = 3;
+        constexpr uint32_t _16X = 4;
+        constexpr uint32_t DIV2 = 15;
+    }
 
 }  // namespace inputctrl
 
 /// EVCTRL - Event Control
 namespace evctrl {
-/// Start Conversion Event In
-/// Position: 0, Width: 1
-using STARTEI = BitField<0, 1>;
-constexpr uint32_t STARTEI_Pos = 0;
-constexpr uint32_t STARTEI_Msk = STARTEI::mask;
+    /// Start Conversion Event In
+    /// Position: 0, Width: 1
+    using STARTEI = BitField<0, 1>;
+    constexpr uint32_t STARTEI_Pos = 0;
+    constexpr uint32_t STARTEI_Msk = STARTEI::mask;
 
-/// Synchronization Event In
-/// Position: 1, Width: 1
-using SYNCEI = BitField<1, 1>;
-constexpr uint32_t SYNCEI_Pos = 1;
-constexpr uint32_t SYNCEI_Msk = SYNCEI::mask;
+    /// Synchronization Event In
+    /// Position: 1, Width: 1
+    using SYNCEI = BitField<1, 1>;
+    constexpr uint32_t SYNCEI_Pos = 1;
+    constexpr uint32_t SYNCEI_Msk = SYNCEI::mask;
 
-/// Result Ready Event Out
-/// Position: 4, Width: 1
-using RESRDYEO = BitField<4, 1>;
-constexpr uint32_t RESRDYEO_Pos = 4;
-constexpr uint32_t RESRDYEO_Msk = RESRDYEO::mask;
+    /// Result Ready Event Out
+    /// Position: 4, Width: 1
+    using RESRDYEO = BitField<4, 1>;
+    constexpr uint32_t RESRDYEO_Pos = 4;
+    constexpr uint32_t RESRDYEO_Msk = RESRDYEO::mask;
 
-/// Window Monitor Event Out
-/// Position: 5, Width: 1
-using WINMONEO = BitField<5, 1>;
-constexpr uint32_t WINMONEO_Pos = 5;
-constexpr uint32_t WINMONEO_Msk = WINMONEO::mask;
+    /// Window Monitor Event Out
+    /// Position: 5, Width: 1
+    using WINMONEO = BitField<5, 1>;
+    constexpr uint32_t WINMONEO_Pos = 5;
+    constexpr uint32_t WINMONEO_Msk = WINMONEO::mask;
 
 }  // namespace evctrl
 
 /// INTENCLR - Interrupt Enable Clear
 namespace intenclr {
-/// Result Ready Interrupt Enable
-/// Position: 0, Width: 1
-using RESRDY = BitField<0, 1>;
-constexpr uint32_t RESRDY_Pos = 0;
-constexpr uint32_t RESRDY_Msk = RESRDY::mask;
+    /// Result Ready Interrupt Enable
+    /// Position: 0, Width: 1
+    using RESRDY = BitField<0, 1>;
+    constexpr uint32_t RESRDY_Pos = 0;
+    constexpr uint32_t RESRDY_Msk = RESRDY::mask;
 
-/// Overrun Interrupt Enable
-/// Position: 1, Width: 1
-using OVERRUN = BitField<1, 1>;
-constexpr uint32_t OVERRUN_Pos = 1;
-constexpr uint32_t OVERRUN_Msk = OVERRUN::mask;
+    /// Overrun Interrupt Enable
+    /// Position: 1, Width: 1
+    using OVERRUN = BitField<1, 1>;
+    constexpr uint32_t OVERRUN_Pos = 1;
+    constexpr uint32_t OVERRUN_Msk = OVERRUN::mask;
 
-/// Window Monitor Interrupt Enable
-/// Position: 2, Width: 1
-using WINMON = BitField<2, 1>;
-constexpr uint32_t WINMON_Pos = 2;
-constexpr uint32_t WINMON_Msk = WINMON::mask;
+    /// Window Monitor Interrupt Enable
+    /// Position: 2, Width: 1
+    using WINMON = BitField<2, 1>;
+    constexpr uint32_t WINMON_Pos = 2;
+    constexpr uint32_t WINMON_Msk = WINMON::mask;
 
-/// Synchronization Ready Interrupt Enable
-/// Position: 3, Width: 1
-using SYNCRDY = BitField<3, 1>;
-constexpr uint32_t SYNCRDY_Pos = 3;
-constexpr uint32_t SYNCRDY_Msk = SYNCRDY::mask;
+    /// Synchronization Ready Interrupt Enable
+    /// Position: 3, Width: 1
+    using SYNCRDY = BitField<3, 1>;
+    constexpr uint32_t SYNCRDY_Pos = 3;
+    constexpr uint32_t SYNCRDY_Msk = SYNCRDY::mask;
 
 }  // namespace intenclr
 
 /// INTENSET - Interrupt Enable Set
 namespace intenset {
-/// Result Ready Interrupt Enable
-/// Position: 0, Width: 1
-using RESRDY = BitField<0, 1>;
-constexpr uint32_t RESRDY_Pos = 0;
-constexpr uint32_t RESRDY_Msk = RESRDY::mask;
+    /// Result Ready Interrupt Enable
+    /// Position: 0, Width: 1
+    using RESRDY = BitField<0, 1>;
+    constexpr uint32_t RESRDY_Pos = 0;
+    constexpr uint32_t RESRDY_Msk = RESRDY::mask;
 
-/// Overrun Interrupt Enable
-/// Position: 1, Width: 1
-using OVERRUN = BitField<1, 1>;
-constexpr uint32_t OVERRUN_Pos = 1;
-constexpr uint32_t OVERRUN_Msk = OVERRUN::mask;
+    /// Overrun Interrupt Enable
+    /// Position: 1, Width: 1
+    using OVERRUN = BitField<1, 1>;
+    constexpr uint32_t OVERRUN_Pos = 1;
+    constexpr uint32_t OVERRUN_Msk = OVERRUN::mask;
 
-/// Window Monitor Interrupt Enable
-/// Position: 2, Width: 1
-using WINMON = BitField<2, 1>;
-constexpr uint32_t WINMON_Pos = 2;
-constexpr uint32_t WINMON_Msk = WINMON::mask;
+    /// Window Monitor Interrupt Enable
+    /// Position: 2, Width: 1
+    using WINMON = BitField<2, 1>;
+    constexpr uint32_t WINMON_Pos = 2;
+    constexpr uint32_t WINMON_Msk = WINMON::mask;
 
-/// Synchronization Ready Interrupt Enable
-/// Position: 3, Width: 1
-using SYNCRDY = BitField<3, 1>;
-constexpr uint32_t SYNCRDY_Pos = 3;
-constexpr uint32_t SYNCRDY_Msk = SYNCRDY::mask;
+    /// Synchronization Ready Interrupt Enable
+    /// Position: 3, Width: 1
+    using SYNCRDY = BitField<3, 1>;
+    constexpr uint32_t SYNCRDY_Pos = 3;
+    constexpr uint32_t SYNCRDY_Msk = SYNCRDY::mask;
 
 }  // namespace intenset
 
 /// INTFLAG - Interrupt Flag Status and Clear
 namespace intflag {
-/// Result Ready
-/// Position: 0, Width: 1
-using RESRDY = BitField<0, 1>;
-constexpr uint32_t RESRDY_Pos = 0;
-constexpr uint32_t RESRDY_Msk = RESRDY::mask;
+    /// Result Ready
+    /// Position: 0, Width: 1
+    using RESRDY = BitField<0, 1>;
+    constexpr uint32_t RESRDY_Pos = 0;
+    constexpr uint32_t RESRDY_Msk = RESRDY::mask;
 
-/// Overrun
-/// Position: 1, Width: 1
-using OVERRUN = BitField<1, 1>;
-constexpr uint32_t OVERRUN_Pos = 1;
-constexpr uint32_t OVERRUN_Msk = OVERRUN::mask;
+    /// Overrun
+    /// Position: 1, Width: 1
+    using OVERRUN = BitField<1, 1>;
+    constexpr uint32_t OVERRUN_Pos = 1;
+    constexpr uint32_t OVERRUN_Msk = OVERRUN::mask;
 
-/// Window Monitor
-/// Position: 2, Width: 1
-using WINMON = BitField<2, 1>;
-constexpr uint32_t WINMON_Pos = 2;
-constexpr uint32_t WINMON_Msk = WINMON::mask;
+    /// Window Monitor
+    /// Position: 2, Width: 1
+    using WINMON = BitField<2, 1>;
+    constexpr uint32_t WINMON_Pos = 2;
+    constexpr uint32_t WINMON_Msk = WINMON::mask;
 
-/// Synchronization Ready
-/// Position: 3, Width: 1
-using SYNCRDY = BitField<3, 1>;
-constexpr uint32_t SYNCRDY_Pos = 3;
-constexpr uint32_t SYNCRDY_Msk = SYNCRDY::mask;
+    /// Synchronization Ready
+    /// Position: 3, Width: 1
+    using SYNCRDY = BitField<3, 1>;
+    constexpr uint32_t SYNCRDY_Pos = 3;
+    constexpr uint32_t SYNCRDY_Msk = SYNCRDY::mask;
 
 }  // namespace intflag
 
 /// STATUS - Status
 namespace status {
-/// Synchronization Busy
-/// Position: 7, Width: 1
-/// Access: read-only
-using SYNCBUSY = BitField<7, 1>;
-constexpr uint32_t SYNCBUSY_Pos = 7;
-constexpr uint32_t SYNCBUSY_Msk = SYNCBUSY::mask;
+    /// Synchronization Busy
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using SYNCBUSY = BitField<7, 1>;
+    constexpr uint32_t SYNCBUSY_Pos = 7;
+    constexpr uint32_t SYNCBUSY_Msk = SYNCBUSY::mask;
 
 }  // namespace status
 
 /// RESULT - Result
 namespace result {
-/// Result Conversion Value
-/// Position: 0, Width: 16
-/// Access: read-only
-using RESULT = BitField<0, 16>;
-constexpr uint32_t RESULT_Pos = 0;
-constexpr uint32_t RESULT_Msk = RESULT::mask;
+    /// Result Conversion Value
+    /// Position: 0, Width: 16
+    /// Access: read-only
+    using RESULT = BitField<0, 16>;
+    constexpr uint32_t RESULT_Pos = 0;
+    constexpr uint32_t RESULT_Msk = RESULT::mask;
 
 }  // namespace result
 
 /// WINLT - Window Monitor Lower Threshold
 namespace winlt {
-/// Window Lower Threshold
-/// Position: 0, Width: 16
-using WINLT = BitField<0, 16>;
-constexpr uint32_t WINLT_Pos = 0;
-constexpr uint32_t WINLT_Msk = WINLT::mask;
+    /// Window Lower Threshold
+    /// Position: 0, Width: 16
+    using WINLT = BitField<0, 16>;
+    constexpr uint32_t WINLT_Pos = 0;
+    constexpr uint32_t WINLT_Msk = WINLT::mask;
 
 }  // namespace winlt
 
 /// WINUT - Window Monitor Upper Threshold
 namespace winut {
-/// Window Upper Threshold
-/// Position: 0, Width: 16
-using WINUT = BitField<0, 16>;
-constexpr uint32_t WINUT_Pos = 0;
-constexpr uint32_t WINUT_Msk = WINUT::mask;
+    /// Window Upper Threshold
+    /// Position: 0, Width: 16
+    using WINUT = BitField<0, 16>;
+    constexpr uint32_t WINUT_Pos = 0;
+    constexpr uint32_t WINUT_Msk = WINUT::mask;
 
 }  // namespace winut
 
 /// GAINCORR - Gain Correction
 namespace gaincorr {
-/// Gain Correction Value
-/// Position: 0, Width: 12
-using GAINCORR = BitField<0, 12>;
-constexpr uint32_t GAINCORR_Pos = 0;
-constexpr uint32_t GAINCORR_Msk = GAINCORR::mask;
+    /// Gain Correction Value
+    /// Position: 0, Width: 12
+    using GAINCORR = BitField<0, 12>;
+    constexpr uint32_t GAINCORR_Pos = 0;
+    constexpr uint32_t GAINCORR_Msk = GAINCORR::mask;
 
 }  // namespace gaincorr
 
 /// OFFSETCORR - Offset Correction
 namespace offsetcorr {
-/// Offset Correction Value
-/// Position: 0, Width: 12
-using OFFSETCORR = BitField<0, 12>;
-constexpr uint32_t OFFSETCORR_Pos = 0;
-constexpr uint32_t OFFSETCORR_Msk = OFFSETCORR::mask;
+    /// Offset Correction Value
+    /// Position: 0, Width: 12
+    using OFFSETCORR = BitField<0, 12>;
+    constexpr uint32_t OFFSETCORR_Pos = 0;
+    constexpr uint32_t OFFSETCORR_Msk = OFFSETCORR::mask;
 
 }  // namespace offsetcorr
 
 /// CALIB - Calibration
 namespace calib {
-/// Linearity Calibration Value
-/// Position: 0, Width: 8
-using LINEARITY_CAL = BitField<0, 8>;
-constexpr uint32_t LINEARITY_CAL_Pos = 0;
-constexpr uint32_t LINEARITY_CAL_Msk = LINEARITY_CAL::mask;
+    /// Linearity Calibration Value
+    /// Position: 0, Width: 8
+    using LINEARITY_CAL = BitField<0, 8>;
+    constexpr uint32_t LINEARITY_CAL_Pos = 0;
+    constexpr uint32_t LINEARITY_CAL_Msk = LINEARITY_CAL::mask;
 
-/// Bias Calibration Value
-/// Position: 8, Width: 3
-using BIAS_CAL = BitField<8, 3>;
-constexpr uint32_t BIAS_CAL_Pos = 8;
-constexpr uint32_t BIAS_CAL_Msk = BIAS_CAL::mask;
+    /// Bias Calibration Value
+    /// Position: 8, Width: 3
+    using BIAS_CAL = BitField<8, 3>;
+    constexpr uint32_t BIAS_CAL_Pos = 8;
+    constexpr uint32_t BIAS_CAL_Msk = BIAS_CAL::mask;
 
 }  // namespace calib
 
 /// DBGCTRL - Debug Control
 namespace dbgctrl {
-/// Debug Run
-/// Position: 0, Width: 1
-using DBGRUN = BitField<0, 1>;
-constexpr uint32_t DBGRUN_Pos = 0;
-constexpr uint32_t DBGRUN_Msk = DBGRUN::mask;
+    /// Debug Run
+    /// Position: 0, Width: 1
+    using DBGRUN = BitField<0, 1>;
+    constexpr uint32_t DBGRUN_Pos = 0;
+    constexpr uint32_t DBGRUN_Msk = DBGRUN::mask;
 
 }  // namespace dbgctrl
 

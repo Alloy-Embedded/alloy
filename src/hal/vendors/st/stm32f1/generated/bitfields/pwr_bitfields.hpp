@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f1::pwr {
@@ -20,79 +19,79 @@ using namespace alloy::hal::bitfields;
 
 /// CR - Power control register (PWR_CR)
 namespace cr {
-/// Low Power Deep Sleep
-/// Position: 0, Width: 1
-using LPDS = BitField<0, 1>;
-constexpr uint32_t LPDS_Pos = 0;
-constexpr uint32_t LPDS_Msk = LPDS::mask;
+    /// Low Power Deep Sleep
+    /// Position: 0, Width: 1
+    using LPDS = BitField<0, 1>;
+    constexpr uint32_t LPDS_Pos = 0;
+    constexpr uint32_t LPDS_Msk = LPDS::mask;
 
-/// Power Down Deep Sleep
-/// Position: 1, Width: 1
-using PDDS = BitField<1, 1>;
-constexpr uint32_t PDDS_Pos = 1;
-constexpr uint32_t PDDS_Msk = PDDS::mask;
+    /// Power Down Deep Sleep
+    /// Position: 1, Width: 1
+    using PDDS = BitField<1, 1>;
+    constexpr uint32_t PDDS_Pos = 1;
+    constexpr uint32_t PDDS_Msk = PDDS::mask;
 
-/// Clear Wake-up Flag
-/// Position: 2, Width: 1
-using CWUF = BitField<2, 1>;
-constexpr uint32_t CWUF_Pos = 2;
-constexpr uint32_t CWUF_Msk = CWUF::mask;
+    /// Clear Wake-up Flag
+    /// Position: 2, Width: 1
+    using CWUF = BitField<2, 1>;
+    constexpr uint32_t CWUF_Pos = 2;
+    constexpr uint32_t CWUF_Msk = CWUF::mask;
 
-/// Clear STANDBY Flag
-/// Position: 3, Width: 1
-using CSBF = BitField<3, 1>;
-constexpr uint32_t CSBF_Pos = 3;
-constexpr uint32_t CSBF_Msk = CSBF::mask;
+    /// Clear STANDBY Flag
+    /// Position: 3, Width: 1
+    using CSBF = BitField<3, 1>;
+    constexpr uint32_t CSBF_Pos = 3;
+    constexpr uint32_t CSBF_Msk = CSBF::mask;
 
-/// Power Voltage Detector Enable
-/// Position: 4, Width: 1
-using PVDE = BitField<4, 1>;
-constexpr uint32_t PVDE_Pos = 4;
-constexpr uint32_t PVDE_Msk = PVDE::mask;
+    /// Power Voltage Detector Enable
+    /// Position: 4, Width: 1
+    using PVDE = BitField<4, 1>;
+    constexpr uint32_t PVDE_Pos = 4;
+    constexpr uint32_t PVDE_Msk = PVDE::mask;
 
-/// PVD Level Selection
-/// Position: 5, Width: 3
-using PLS = BitField<5, 3>;
-constexpr uint32_t PLS_Pos = 5;
-constexpr uint32_t PLS_Msk = PLS::mask;
+    /// PVD Level Selection
+    /// Position: 5, Width: 3
+    using PLS = BitField<5, 3>;
+    constexpr uint32_t PLS_Pos = 5;
+    constexpr uint32_t PLS_Msk = PLS::mask;
 
-/// Disable Backup Domain write protection
-/// Position: 8, Width: 1
-using DBP = BitField<8, 1>;
-constexpr uint32_t DBP_Pos = 8;
-constexpr uint32_t DBP_Msk = DBP::mask;
+    /// Disable Backup Domain write protection
+    /// Position: 8, Width: 1
+    using DBP = BitField<8, 1>;
+    constexpr uint32_t DBP_Pos = 8;
+    constexpr uint32_t DBP_Msk = DBP::mask;
 
 }  // namespace cr
 
 /// CSR - Power control register (PWR_CR)
 namespace csr {
-/// Wake-Up Flag
-/// Position: 0, Width: 1
-/// Access: read-only
-using WUF = BitField<0, 1>;
-constexpr uint32_t WUF_Pos = 0;
-constexpr uint32_t WUF_Msk = WUF::mask;
+    /// Wake-Up Flag
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using WUF = BitField<0, 1>;
+    constexpr uint32_t WUF_Pos = 0;
+    constexpr uint32_t WUF_Msk = WUF::mask;
 
-/// STANDBY Flag
-/// Position: 1, Width: 1
-/// Access: read-only
-using SBF = BitField<1, 1>;
-constexpr uint32_t SBF_Pos = 1;
-constexpr uint32_t SBF_Msk = SBF::mask;
+    /// STANDBY Flag
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using SBF = BitField<1, 1>;
+    constexpr uint32_t SBF_Pos = 1;
+    constexpr uint32_t SBF_Msk = SBF::mask;
 
-/// PVD Output
-/// Position: 2, Width: 1
-/// Access: read-only
-using PVDO = BitField<2, 1>;
-constexpr uint32_t PVDO_Pos = 2;
-constexpr uint32_t PVDO_Msk = PVDO::mask;
+    /// PVD Output
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using PVDO = BitField<2, 1>;
+    constexpr uint32_t PVDO_Pos = 2;
+    constexpr uint32_t PVDO_Msk = PVDO::mask;
 
-/// Enable WKUP pin
-/// Position: 8, Width: 1
-/// Access: read-write
-using EWUP = BitField<8, 1>;
-constexpr uint32_t EWUP_Pos = 8;
-constexpr uint32_t EWUP_Msk = EWUP::mask;
+    /// Enable WKUP pin
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using EWUP = BitField<8, 1>;
+    constexpr uint32_t EWUP_Pos = 8;
+    constexpr uint32_t EWUP_Msk = EWUP::mask;
 
 }  // namespace csr
 

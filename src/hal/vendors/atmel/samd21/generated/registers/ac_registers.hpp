@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::ac {
 
 /// AC Register Structure
 struct AC_Registers {
+
     /// Control A
     /// Offset: 0x0000
     volatile uint8_t CTRLA;
@@ -41,7 +42,7 @@ struct AC_Registers {
     /// Interrupt Flag Status and Clear
     /// Offset: 0x0006
     volatile uint8_t INTFLAG;
-    uint8_t RESERVED_0007[1];  ///< Reserved
+    uint8_t RESERVED_0007[1]; ///< Reserved
 
     /// Status A
     /// Offset: 0x0008
@@ -57,17 +58,17 @@ struct AC_Registers {
     /// Offset: 0x000A
     /// Access: read-only
     volatile uint8_t STATUSC;
-    uint8_t RESERVED_000B[1];  ///< Reserved
+    uint8_t RESERVED_000B[1]; ///< Reserved
 
     /// Window Control
     /// Offset: 0x000C
     volatile uint8_t WINCTRL;
-    uint8_t RESERVED_000D[3];  ///< Reserved
+    uint8_t RESERVED_000D[3]; ///< Reserved
 
     /// Comparator Control n
     /// Offset: 0x0010
     volatile uint32_t COMPCTRL[2][2];
-    uint8_t RESERVED_0018[8];  ///< Reserved
+    uint8_t RESERVED_0018[8]; ///< Reserved
 
     /// Scaler n
     /// Offset: 0x0020

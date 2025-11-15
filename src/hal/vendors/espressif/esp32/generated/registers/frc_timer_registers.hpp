@@ -17,6 +17,7 @@ namespace alloy::hal::espressif::esp32::frc_timer {
 
 /// FRC_TIMER Register Structure
 struct FRC_TIMER_Registers {
+
     /// TIMER_LOAD
     /// Offset: 0x0000
     volatile uint32_t TIMER_LOAD;

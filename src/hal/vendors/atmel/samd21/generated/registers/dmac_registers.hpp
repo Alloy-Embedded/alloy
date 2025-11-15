@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::dmac {
 
 /// DMAC Register Structure
 struct DMAC_Registers {
+
     /// Control
     /// Offset: 0x0000
     volatile uint16_t CTRL;
@@ -45,7 +46,7 @@ struct DMAC_Registers {
     /// Offset: 0x000E
     /// Reset value: 0x00000015
     volatile uint8_t QOSCTRL;
-    uint8_t RESERVED_000F[1];  ///< Reserved
+    uint8_t RESERVED_000F[1]; ///< Reserved
 
     /// Software Trigger Control
     /// Offset: 0x0010
@@ -54,12 +55,12 @@ struct DMAC_Registers {
     /// Priority Control 0
     /// Offset: 0x0014
     volatile uint32_t PRICTRL0;
-    uint8_t RESERVED_0018[8];  ///< Reserved
+    uint8_t RESERVED_0018[8]; ///< Reserved
 
     /// Interrupt Pending
     /// Offset: 0x0020
     volatile uint16_t INTPEND;
-    uint8_t RESERVED_0022[2];  ///< Reserved
+    uint8_t RESERVED_0022[2]; ///< Reserved
 
     /// Interrupt Status
     /// Offset: 0x0024
@@ -88,7 +89,7 @@ struct DMAC_Registers {
     /// Write-Back Memory Section Base Address
     /// Offset: 0x0038
     volatile uint32_t WRBADDR;
-    uint8_t RESERVED_003C[3];  ///< Reserved
+    uint8_t RESERVED_003C[3]; ///< Reserved
 
     /// Channel ID
     /// Offset: 0x003F
@@ -97,12 +98,12 @@ struct DMAC_Registers {
     /// Channel Control A
     /// Offset: 0x0040
     volatile uint8_t CHCTRLA;
-    uint8_t RESERVED_0041[3];  ///< Reserved
+    uint8_t RESERVED_0041[3]; ///< Reserved
 
     /// Channel Control B
     /// Offset: 0x0044
     volatile uint32_t CHCTRLB;
-    uint8_t RESERVED_0048[4];  ///< Reserved
+    uint8_t RESERVED_0048[4]; ///< Reserved
 
     /// Channel Interrupt Enable Clear
     /// Offset: 0x004C

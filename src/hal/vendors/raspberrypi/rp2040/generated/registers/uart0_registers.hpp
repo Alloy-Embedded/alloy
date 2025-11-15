@@ -17,6 +17,7 @@ namespace alloy::hal::raspberrypi::rp2040::uart0 {
 
 /// UART0 Register Structure
 struct UART0_Registers {
+
     /// Data Register, UARTDR
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -26,13 +27,13 @@ struct UART0_Registers {
     /// Offset: 0x0004
     /// Reset value: 0x00000000
     volatile uint32_t UARTRSR;
-    uint8_t RESERVED_0008[16];  ///< Reserved
+    uint8_t RESERVED_0008[16]; ///< Reserved
 
     /// Flag Register, UARTFR
     /// Offset: 0x0018
     /// Reset value: 0x00000090
     volatile uint32_t UARTFR;
-    uint8_t RESERVED_001C[4];  ///< Reserved
+    uint8_t RESERVED_001C[4]; ///< Reserved
 
     /// IrDA Low-Power Counter Register, UARTILPR
     /// Offset: 0x0020
@@ -88,7 +89,7 @@ struct UART0_Registers {
     /// Offset: 0x0048
     /// Reset value: 0x00000000
     volatile uint32_t UARTDMACR;
-    uint8_t RESERVED_004C[3988];  ///< Reserved
+    uint8_t RESERVED_004C[3988]; ///< Reserved
 
     /// UARTPeriphID0 Register
     /// Offset: 0x0FE0

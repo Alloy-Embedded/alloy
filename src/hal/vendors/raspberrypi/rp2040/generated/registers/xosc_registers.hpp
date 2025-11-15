@@ -17,6 +17,7 @@ namespace alloy::hal::raspberrypi::rp2040::xosc {
 
 /// XOSC Register Structure
 struct XOSC_Registers {
+
     /// Crystal Oscillator Control
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -27,21 +28,21 @@ struct XOSC_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t STATUS;
 
-    /// Crystal Oscillator pause control\n This is used to save power by pausing the XOSC\n On
-    /// power-up this field is initialised to WAKE\n An invalid write will also select WAKE\n
-    /// WARNING: stop the PLLs before selecting dormant mode\n WARNING: setup the irq before
-    /// selecting dormant mode Offset: 0x0008 Reset value: 0x00000000 Access: read-write
+    /// Crystal Oscillator pause control\n This is used to save power by pausing the XOSC\n On power-up this field is initialised to WAKE\n An invalid write will also select WAKE\n WARNING: stop the PLLs before selecting dormant mode\n WARNING: setup the irq before selecting dormant mode
+    /// Offset: 0x0008
+    /// Reset value: 0x00000000
+    /// Access: read-write
     volatile uint32_t DORMANT;
 
     /// Controls the startup delay
     /// Offset: 0x000C
     /// Reset value: 0x00000000
     volatile uint32_t STARTUP;
-    uint8_t RESERVED_0010[12];  ///< Reserved
+    uint8_t RESERVED_0010[12]; ///< Reserved
 
-    /// A down counter running at the xosc frequency which counts to zero and stops.\n To start the
-    /// counter write a non-zero value.\n Can be used for short software pauses when setting up time
-    /// sensitive hardware. Offset: 0x001C Reset value: 0x00000000
+    /// A down counter running at the xosc frequency which counts to zero and stops.\n To start the counter write a non-zero value.\n Can be used for short software pauses when setting up time sensitive hardware.
+    /// Offset: 0x001C
+    /// Reset value: 0x00000000
     volatile uint32_t COUNT;
 };
 

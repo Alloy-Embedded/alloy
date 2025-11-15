@@ -17,6 +17,7 @@ namespace alloy::hal::raspberrypi::rp2040::busctrl {
 
 /// BUSCTRL Register Structure
 struct BUSCTRL_Registers {
+
     /// Set the priority of each master for bus arbitration.
     /// Offset: 0x0000
     /// Reset value: 0x00000000

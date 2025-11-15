@@ -17,6 +17,7 @@ namespace alloy::hal::espressif::esp32::spi0 {
 
 /// SPI0 Register Structure
 struct SPI0_Registers {
+
     /// CMD
     /// Offset: 0x0000
     volatile uint32_t CMD;
@@ -131,7 +132,7 @@ struct SPI0_Registers {
     /// SLV_RD_BIT
     /// Offset: 0x0064
     volatile uint32_t SLV_RD_BIT;
-    uint8_t RESERVED_0068[24];  ///< Reserved
+    uint8_t RESERVED_0068[24]; ///< Reserved
 
     /// W0
     /// Offset: 0x0080
@@ -200,7 +201,7 @@ struct SPI0_Registers {
     /// TX_CRC
     /// Offset: 0x00C0
     volatile uint32_t TX_CRC;
-    uint8_t RESERVED_00C4[44];  ///< Reserved
+    uint8_t RESERVED_00C4[44]; ///< Reserved
 
     /// EXT0
     /// Offset: 0x00F0
@@ -300,7 +301,7 @@ struct SPI0_Registers {
     /// DMA_TSTATUS
     /// Offset: 0x014C
     volatile uint32_t DMA_TSTATUS;
-    uint8_t RESERVED_0150[684];  ///< Reserved
+    uint8_t RESERVED_0150[684]; ///< Reserved
 
     /// DATE
     /// Offset: 0x03FC

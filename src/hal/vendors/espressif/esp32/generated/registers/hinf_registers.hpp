@@ -17,6 +17,7 @@ namespace alloy::hal::espressif::esp32::hinf {
 
 /// HINF Register Structure
 struct HINF_Registers {
+
     /// CFG_DATA0
     /// Offset: 0x0000
     /// Reset value: 0x22226666
@@ -26,7 +27,7 @@ struct HINF_Registers {
     /// Offset: 0x0004
     /// Reset value: 0x01110011
     volatile uint32_t CFG_DATA1;
-    uint8_t RESERVED_0008[20];  ///< Reserved
+    uint8_t RESERVED_0008[20]; ///< Reserved
 
     /// CFG_DATA7
     /// Offset: 0x001C
@@ -77,7 +78,7 @@ struct HINF_Registers {
     /// Offset: 0x0040
     /// Reset value: 0x33336666
     volatile uint32_t CFG_DATA16;
-    uint8_t RESERVED_0044[184];  ///< Reserved
+    uint8_t RESERVED_0044[184]; ///< Reserved
 
     /// DATE
     /// Offset: 0x00FC

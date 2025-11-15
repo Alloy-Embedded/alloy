@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f1::tim6 {
@@ -20,111 +19,111 @@ using namespace alloy::hal::bitfields;
 
 /// CR1 - control register 1
 namespace cr1 {
-/// Counter enable
-/// Position: 0, Width: 1
-using CEN = BitField<0, 1>;
-constexpr uint32_t CEN_Pos = 0;
-constexpr uint32_t CEN_Msk = CEN::mask;
+    /// Counter enable
+    /// Position: 0, Width: 1
+    using CEN = BitField<0, 1>;
+    constexpr uint32_t CEN_Pos = 0;
+    constexpr uint32_t CEN_Msk = CEN::mask;
 
-/// Update disable
-/// Position: 1, Width: 1
-using UDIS = BitField<1, 1>;
-constexpr uint32_t UDIS_Pos = 1;
-constexpr uint32_t UDIS_Msk = UDIS::mask;
+    /// Update disable
+    /// Position: 1, Width: 1
+    using UDIS = BitField<1, 1>;
+    constexpr uint32_t UDIS_Pos = 1;
+    constexpr uint32_t UDIS_Msk = UDIS::mask;
 
-/// Update request source
-/// Position: 2, Width: 1
-using URS = BitField<2, 1>;
-constexpr uint32_t URS_Pos = 2;
-constexpr uint32_t URS_Msk = URS::mask;
+    /// Update request source
+    /// Position: 2, Width: 1
+    using URS = BitField<2, 1>;
+    constexpr uint32_t URS_Pos = 2;
+    constexpr uint32_t URS_Msk = URS::mask;
 
-/// One-pulse mode
-/// Position: 3, Width: 1
-using OPM = BitField<3, 1>;
-constexpr uint32_t OPM_Pos = 3;
-constexpr uint32_t OPM_Msk = OPM::mask;
+    /// One-pulse mode
+    /// Position: 3, Width: 1
+    using OPM = BitField<3, 1>;
+    constexpr uint32_t OPM_Pos = 3;
+    constexpr uint32_t OPM_Msk = OPM::mask;
 
-/// Auto-reload preload enable
-/// Position: 7, Width: 1
-using ARPE = BitField<7, 1>;
-constexpr uint32_t ARPE_Pos = 7;
-constexpr uint32_t ARPE_Msk = ARPE::mask;
+    /// Auto-reload preload enable
+    /// Position: 7, Width: 1
+    using ARPE = BitField<7, 1>;
+    constexpr uint32_t ARPE_Pos = 7;
+    constexpr uint32_t ARPE_Msk = ARPE::mask;
 
 }  // namespace cr1
 
 /// CR2 - control register 2
 namespace cr2 {
-/// Master mode selection
-/// Position: 4, Width: 3
-using MMS = BitField<4, 3>;
-constexpr uint32_t MMS_Pos = 4;
-constexpr uint32_t MMS_Msk = MMS::mask;
+    /// Master mode selection
+    /// Position: 4, Width: 3
+    using MMS = BitField<4, 3>;
+    constexpr uint32_t MMS_Pos = 4;
+    constexpr uint32_t MMS_Msk = MMS::mask;
 
 }  // namespace cr2
 
 /// DIER - DMA/Interrupt enable register
 namespace dier {
-/// Update interrupt enable
-/// Position: 0, Width: 1
-using UIE = BitField<0, 1>;
-constexpr uint32_t UIE_Pos = 0;
-constexpr uint32_t UIE_Msk = UIE::mask;
+    /// Update interrupt enable
+    /// Position: 0, Width: 1
+    using UIE = BitField<0, 1>;
+    constexpr uint32_t UIE_Pos = 0;
+    constexpr uint32_t UIE_Msk = UIE::mask;
 
-/// Update DMA request enable
-/// Position: 8, Width: 1
-using UDE = BitField<8, 1>;
-constexpr uint32_t UDE_Pos = 8;
-constexpr uint32_t UDE_Msk = UDE::mask;
+    /// Update DMA request enable
+    /// Position: 8, Width: 1
+    using UDE = BitField<8, 1>;
+    constexpr uint32_t UDE_Pos = 8;
+    constexpr uint32_t UDE_Msk = UDE::mask;
 
 }  // namespace dier
 
 /// SR - status register
 namespace sr {
-/// Update interrupt flag
-/// Position: 0, Width: 1
-using UIF = BitField<0, 1>;
-constexpr uint32_t UIF_Pos = 0;
-constexpr uint32_t UIF_Msk = UIF::mask;
+    /// Update interrupt flag
+    /// Position: 0, Width: 1
+    using UIF = BitField<0, 1>;
+    constexpr uint32_t UIF_Pos = 0;
+    constexpr uint32_t UIF_Msk = UIF::mask;
 
 }  // namespace sr
 
 /// EGR - event generation register
 namespace egr {
-/// Update generation
-/// Position: 0, Width: 1
-using UG = BitField<0, 1>;
-constexpr uint32_t UG_Pos = 0;
-constexpr uint32_t UG_Msk = UG::mask;
+    /// Update generation
+    /// Position: 0, Width: 1
+    using UG = BitField<0, 1>;
+    constexpr uint32_t UG_Pos = 0;
+    constexpr uint32_t UG_Msk = UG::mask;
 
 }  // namespace egr
 
 /// CNT - counter
 namespace cnt {
-/// Low counter value
-/// Position: 0, Width: 16
-using CNT = BitField<0, 16>;
-constexpr uint32_t CNT_Pos = 0;
-constexpr uint32_t CNT_Msk = CNT::mask;
+    /// Low counter value
+    /// Position: 0, Width: 16
+    using CNT = BitField<0, 16>;
+    constexpr uint32_t CNT_Pos = 0;
+    constexpr uint32_t CNT_Msk = CNT::mask;
 
 }  // namespace cnt
 
 /// PSC - prescaler
 namespace psc {
-/// Prescaler value
-/// Position: 0, Width: 16
-using PSC = BitField<0, 16>;
-constexpr uint32_t PSC_Pos = 0;
-constexpr uint32_t PSC_Msk = PSC::mask;
+    /// Prescaler value
+    /// Position: 0, Width: 16
+    using PSC = BitField<0, 16>;
+    constexpr uint32_t PSC_Pos = 0;
+    constexpr uint32_t PSC_Msk = PSC::mask;
 
 }  // namespace psc
 
 /// ARR - auto-reload register
 namespace arr {
-/// Low Auto-reload value
-/// Position: 0, Width: 16
-using ARR = BitField<0, 16>;
-constexpr uint32_t ARR_Pos = 0;
-constexpr uint32_t ARR_Msk = ARR::mask;
+    /// Low Auto-reload value
+    /// Position: 0, Width: 16
+    using ARR = BitField<0, 16>;
+    constexpr uint32_t ARR_Pos = 0;
+    constexpr uint32_t ARR_Msk = ARR::mask;
 
 }  // namespace arr
 

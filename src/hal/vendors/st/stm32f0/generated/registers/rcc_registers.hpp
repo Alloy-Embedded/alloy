@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f0::rcc {
 
 /// RCC Register Structure
 struct RCC_Registers {
+
     /// Clock control register
     /// Offset: 0x0000
     /// Reset value: 0x00000083

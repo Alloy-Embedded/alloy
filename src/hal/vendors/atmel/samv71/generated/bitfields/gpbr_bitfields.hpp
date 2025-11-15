@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samv71::gpbr {
@@ -20,11 +19,11 @@ using namespace alloy::hal::bitfields;
 
 /// SYS_GPBR[8] - General Purpose Backup Register 0
 namespace sys_gpbr {
-/// Value of GPBR x
-/// Position: 0, Width: 32
-using GPBR_VALUE = BitField<0, 32>;
-constexpr uint32_t GPBR_VALUE_Pos = 0;
-constexpr uint32_t GPBR_VALUE_Msk = GPBR_VALUE::mask;
+    /// Value of GPBR x
+    /// Position: 0, Width: 32
+    using GPBR_VALUE = BitField<0, 32>;
+    constexpr uint32_t GPBR_VALUE_Pos = 0;
+    constexpr uint32_t GPBR_VALUE_Msk = GPBR_VALUE::mask;
 
 }  // namespace sys_gpbr
 

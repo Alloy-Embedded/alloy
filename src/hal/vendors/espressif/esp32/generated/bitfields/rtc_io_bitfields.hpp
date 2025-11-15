@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::rtc_io {
@@ -20,1867 +19,1872 @@ using namespace alloy::hal::bitfields;
 
 /// OUT - OUT
 namespace out {
-/// GPIO0~17 output value
-/// Position: 14, Width: 18
-/// Access: read-write
-using DATA = BitField<14, 18>;
-constexpr uint32_t DATA_Pos = 14;
-constexpr uint32_t DATA_Msk = DATA::mask;
+    /// GPIO0~17 output value
+    /// Position: 14, Width: 18
+    /// Access: read-write
+    using DATA = BitField<14, 18>;
+    constexpr uint32_t DATA_Pos = 14;
+    constexpr uint32_t DATA_Msk = DATA::mask;
 
 }  // namespace out
 
 /// OUT_W1TS - OUT_W1TS
 namespace out_w1ts {
-/// GPIO0~17 output value write 1 to set
-/// Position: 14, Width: 18
-/// Access: write-only
-using OUT_DATA_W1TS = BitField<14, 18>;
-constexpr uint32_t OUT_DATA_W1TS_Pos = 14;
-constexpr uint32_t OUT_DATA_W1TS_Msk = OUT_DATA_W1TS::mask;
+    /// GPIO0~17 output value write 1 to set
+    /// Position: 14, Width: 18
+    /// Access: write-only
+    using OUT_DATA_W1TS = BitField<14, 18>;
+    constexpr uint32_t OUT_DATA_W1TS_Pos = 14;
+    constexpr uint32_t OUT_DATA_W1TS_Msk = OUT_DATA_W1TS::mask;
 
 }  // namespace out_w1ts
 
 /// OUT_W1TC - OUT_W1TC
 namespace out_w1tc {
-/// GPIO0~17 output value write 1 to clear
-/// Position: 14, Width: 18
-/// Access: write-only
-using OUT_DATA_W1TC = BitField<14, 18>;
-constexpr uint32_t OUT_DATA_W1TC_Pos = 14;
-constexpr uint32_t OUT_DATA_W1TC_Msk = OUT_DATA_W1TC::mask;
+    /// GPIO0~17 output value write 1 to clear
+    /// Position: 14, Width: 18
+    /// Access: write-only
+    using OUT_DATA_W1TC = BitField<14, 18>;
+    constexpr uint32_t OUT_DATA_W1TC_Pos = 14;
+    constexpr uint32_t OUT_DATA_W1TC_Msk = OUT_DATA_W1TC::mask;
 
 }  // namespace out_w1tc
 
 /// ENABLE - ENABLE
 namespace enable {
-/// GPIO0~17 output enable
-/// Position: 14, Width: 18
-/// Access: read-write
-using ENABLE = BitField<14, 18>;
-constexpr uint32_t ENABLE_Pos = 14;
-constexpr uint32_t ENABLE_Msk = ENABLE::mask;
+    /// GPIO0~17 output enable
+    /// Position: 14, Width: 18
+    /// Access: read-write
+    using ENABLE = BitField<14, 18>;
+    constexpr uint32_t ENABLE_Pos = 14;
+    constexpr uint32_t ENABLE_Msk = ENABLE::mask;
 
 }  // namespace enable
 
 /// ENABLE_W1TS - ENABLE_W1TS
 namespace enable_w1ts {
-/// GPIO0~17 output enable write 1 to set
-/// Position: 14, Width: 18
-/// Access: write-only
-using ENABLE_W1TS = BitField<14, 18>;
-constexpr uint32_t ENABLE_W1TS_Pos = 14;
-constexpr uint32_t ENABLE_W1TS_Msk = ENABLE_W1TS::mask;
+    /// GPIO0~17 output enable write 1 to set
+    /// Position: 14, Width: 18
+    /// Access: write-only
+    using ENABLE_W1TS = BitField<14, 18>;
+    constexpr uint32_t ENABLE_W1TS_Pos = 14;
+    constexpr uint32_t ENABLE_W1TS_Msk = ENABLE_W1TS::mask;
 
 }  // namespace enable_w1ts
 
 /// ENABLE_W1TC - ENABLE_W1TC
 namespace enable_w1tc {
-/// GPIO0~17 output enable write 1 to clear
-/// Position: 14, Width: 18
-/// Access: write-only
-using ENABLE_W1TC = BitField<14, 18>;
-constexpr uint32_t ENABLE_W1TC_Pos = 14;
-constexpr uint32_t ENABLE_W1TC_Msk = ENABLE_W1TC::mask;
+    /// GPIO0~17 output enable write 1 to clear
+    /// Position: 14, Width: 18
+    /// Access: write-only
+    using ENABLE_W1TC = BitField<14, 18>;
+    constexpr uint32_t ENABLE_W1TC_Pos = 14;
+    constexpr uint32_t ENABLE_W1TC_Msk = ENABLE_W1TC::mask;
 
 }  // namespace enable_w1tc
 
 /// STATUS - STATUS
 namespace status {
-/// GPIO0~17 interrupt status
-/// Position: 14, Width: 18
-/// Access: read-write
-using INT = BitField<14, 18>;
-constexpr uint32_t INT_Pos = 14;
-constexpr uint32_t INT_Msk = INT::mask;
+    /// GPIO0~17 interrupt status
+    /// Position: 14, Width: 18
+    /// Access: read-write
+    using INT = BitField<14, 18>;
+    constexpr uint32_t INT_Pos = 14;
+    constexpr uint32_t INT_Msk = INT::mask;
 
 }  // namespace status
 
 /// STATUS_W1TS - STATUS_W1TS
 namespace status_w1ts {
-/// GPIO0~17 interrupt status write 1 to set
-/// Position: 14, Width: 18
-/// Access: write-only
-using STATUS_INT_W1TS = BitField<14, 18>;
-constexpr uint32_t STATUS_INT_W1TS_Pos = 14;
-constexpr uint32_t STATUS_INT_W1TS_Msk = STATUS_INT_W1TS::mask;
+    /// GPIO0~17 interrupt status write 1 to set
+    /// Position: 14, Width: 18
+    /// Access: write-only
+    using STATUS_INT_W1TS = BitField<14, 18>;
+    constexpr uint32_t STATUS_INT_W1TS_Pos = 14;
+    constexpr uint32_t STATUS_INT_W1TS_Msk = STATUS_INT_W1TS::mask;
 
 }  // namespace status_w1ts
 
 /// STATUS_W1TC - STATUS_W1TC
 namespace status_w1tc {
-/// GPIO0~17 interrupt status write 1 to clear
-/// Position: 14, Width: 18
-/// Access: write-only
-using STATUS_INT_W1TC = BitField<14, 18>;
-constexpr uint32_t STATUS_INT_W1TC_Pos = 14;
-constexpr uint32_t STATUS_INT_W1TC_Msk = STATUS_INT_W1TC::mask;
+    /// GPIO0~17 interrupt status write 1 to clear
+    /// Position: 14, Width: 18
+    /// Access: write-only
+    using STATUS_INT_W1TC = BitField<14, 18>;
+    constexpr uint32_t STATUS_INT_W1TC_Pos = 14;
+    constexpr uint32_t STATUS_INT_W1TC_Msk = STATUS_INT_W1TC::mask;
 
 }  // namespace status_w1tc
 
 /// IN - IN
 namespace in {
-/// GPIO0~17 input value
-/// Position: 14, Width: 18
-/// Access: read-only
-using NEXT = BitField<14, 18>;
-constexpr uint32_t NEXT_Pos = 14;
-constexpr uint32_t NEXT_Msk = NEXT::mask;
+    /// GPIO0~17 input value
+    /// Position: 14, Width: 18
+    /// Access: read-only
+    using NEXT = BitField<14, 18>;
+    constexpr uint32_t NEXT_Pos = 14;
+    constexpr uint32_t NEXT_Msk = NEXT::mask;
 
 }  // namespace in
 
 /// PIN[18] - PIN[18]
 namespace pin {
-/// if set to 0: normal output if set to 1: open drain
-/// Position: 2, Width: 1
-/// Access: read-write
-using PAD_DRIVER = BitField<2, 1>;
-constexpr uint32_t PAD_DRIVER_Pos = 2;
-constexpr uint32_t PAD_DRIVER_Msk = PAD_DRIVER::mask;
+    /// if set to 0: normal output if set to 1: open drain
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using PAD_DRIVER = BitField<2, 1>;
+    constexpr uint32_t PAD_DRIVER_Pos = 2;
+    constexpr uint32_t PAD_DRIVER_Msk = PAD_DRIVER::mask;
 
-/// if set to 0: GPIO interrupt disable if set to 1: rising edge trigger if set to 2: falling edge
-/// trigger if set to 3: any edge trigger if set to 4: low level trigger if set to 5: high level
-/// trigger Position: 7, Width: 3 Access: read-write
-using INT_TYPE = BitField<7, 3>;
-constexpr uint32_t INT_TYPE_Pos = 7;
-constexpr uint32_t INT_TYPE_Msk = INT_TYPE::mask;
+    /// if set to 0: GPIO interrupt disable if set to 1: rising edge trigger if set to 2: falling edge trigger if set to 3: any edge trigger if set to 4: low level trigger if set to 5: high level trigger
+    /// Position: 7, Width: 3
+    /// Access: read-write
+    using INT_TYPE = BitField<7, 3>;
+    constexpr uint32_t INT_TYPE_Pos = 7;
+    constexpr uint32_t INT_TYPE_Msk = INT_TYPE::mask;
 
-/// GPIO wake up enable only available in light sleep
-/// Position: 10, Width: 1
-/// Access: read-write
-using WAKEUP_ENABLE = BitField<10, 1>;
-constexpr uint32_t WAKEUP_ENABLE_Pos = 10;
-constexpr uint32_t WAKEUP_ENABLE_Msk = WAKEUP_ENABLE::mask;
+    /// GPIO wake up enable only available in light sleep
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using WAKEUP_ENABLE = BitField<10, 1>;
+    constexpr uint32_t WAKEUP_ENABLE_Pos = 10;
+    constexpr uint32_t WAKEUP_ENABLE_Msk = WAKEUP_ENABLE::mask;
 
 }  // namespace pin
 
 /// RTC_DEBUG_SEL - RTC_DEBUG_SEL
 namespace rtc_debug_sel {
-/// Position: 0, Width: 5
-/// Access: read-write
-using DEBUG_SEL0 = BitField<0, 5>;
-constexpr uint32_t DEBUG_SEL0_Pos = 0;
-constexpr uint32_t DEBUG_SEL0_Msk = DEBUG_SEL0::mask;
+    /// Position: 0, Width: 5
+    /// Access: read-write
+    using DEBUG_SEL0 = BitField<0, 5>;
+    constexpr uint32_t DEBUG_SEL0_Pos = 0;
+    constexpr uint32_t DEBUG_SEL0_Msk = DEBUG_SEL0::mask;
 
-/// Position: 5, Width: 5
-/// Access: read-write
-using DEBUG_SEL1 = BitField<5, 5>;
-constexpr uint32_t DEBUG_SEL1_Pos = 5;
-constexpr uint32_t DEBUG_SEL1_Msk = DEBUG_SEL1::mask;
+    /// Position: 5, Width: 5
+    /// Access: read-write
+    using DEBUG_SEL1 = BitField<5, 5>;
+    constexpr uint32_t DEBUG_SEL1_Pos = 5;
+    constexpr uint32_t DEBUG_SEL1_Msk = DEBUG_SEL1::mask;
 
-/// Position: 10, Width: 5
-/// Access: read-write
-using DEBUG_SEL2 = BitField<10, 5>;
-constexpr uint32_t DEBUG_SEL2_Pos = 10;
-constexpr uint32_t DEBUG_SEL2_Msk = DEBUG_SEL2::mask;
+    /// Position: 10, Width: 5
+    /// Access: read-write
+    using DEBUG_SEL2 = BitField<10, 5>;
+    constexpr uint32_t DEBUG_SEL2_Pos = 10;
+    constexpr uint32_t DEBUG_SEL2_Msk = DEBUG_SEL2::mask;
 
-/// Position: 15, Width: 5
-/// Access: read-write
-using DEBUG_SEL3 = BitField<15, 5>;
-constexpr uint32_t DEBUG_SEL3_Pos = 15;
-constexpr uint32_t DEBUG_SEL3_Msk = DEBUG_SEL3::mask;
+    /// Position: 15, Width: 5
+    /// Access: read-write
+    using DEBUG_SEL3 = BitField<15, 5>;
+    constexpr uint32_t DEBUG_SEL3_Pos = 15;
+    constexpr uint32_t DEBUG_SEL3_Msk = DEBUG_SEL3::mask;
 
-/// Position: 20, Width: 5
-/// Access: read-write
-using DEBUG_SEL4 = BitField<20, 5>;
-constexpr uint32_t DEBUG_SEL4_Pos = 20;
-constexpr uint32_t DEBUG_SEL4_Msk = DEBUG_SEL4::mask;
+    /// Position: 20, Width: 5
+    /// Access: read-write
+    using DEBUG_SEL4 = BitField<20, 5>;
+    constexpr uint32_t DEBUG_SEL4_Pos = 20;
+    constexpr uint32_t DEBUG_SEL4_Msk = DEBUG_SEL4::mask;
 
-/// Position: 25, Width: 1
-/// Access: read-write
-using DEBUG_12M_NO_GATING = BitField<25, 1>;
-constexpr uint32_t DEBUG_12M_NO_GATING_Pos = 25;
-constexpr uint32_t DEBUG_12M_NO_GATING_Msk = DEBUG_12M_NO_GATING::mask;
+    /// Position: 25, Width: 1
+    /// Access: read-write
+    using DEBUG_12M_NO_GATING = BitField<25, 1>;
+    constexpr uint32_t DEBUG_12M_NO_GATING_Pos = 25;
+    constexpr uint32_t DEBUG_12M_NO_GATING_Msk = DEBUG_12M_NO_GATING::mask;
 
 }  // namespace rtc_debug_sel
 
 /// DIG_PAD_HOLD - DIG_PAD_HOLD
 namespace dig_pad_hold {
-/// select the digital pad hold value.
-/// Position: 0, Width: 32
-/// Access: read-write
-using DIG_PAD_HOLD = BitField<0, 32>;
-constexpr uint32_t DIG_PAD_HOLD_Pos = 0;
-constexpr uint32_t DIG_PAD_HOLD_Msk = DIG_PAD_HOLD::mask;
+    /// select the digital pad hold value.
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using DIG_PAD_HOLD = BitField<0, 32>;
+    constexpr uint32_t DIG_PAD_HOLD_Pos = 0;
+    constexpr uint32_t DIG_PAD_HOLD_Msk = DIG_PAD_HOLD::mask;
 
 }  // namespace dig_pad_hold
 
 /// HALL_SENS - HALL_SENS
 namespace hall_sens {
-/// Reverse phase of hall sensor
-/// Position: 30, Width: 1
-/// Access: read-write
-using HALL_PHASE = BitField<30, 1>;
-constexpr uint32_t HALL_PHASE_Pos = 30;
-constexpr uint32_t HALL_PHASE_Msk = HALL_PHASE::mask;
+    /// Reverse phase of hall sensor
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using HALL_PHASE = BitField<30, 1>;
+    constexpr uint32_t HALL_PHASE_Pos = 30;
+    constexpr uint32_t HALL_PHASE_Msk = HALL_PHASE::mask;
 
-/// Power on hall sensor and connect to VP and VN
-/// Position: 31, Width: 1
-/// Access: read-write
-using XPD_HALL = BitField<31, 1>;
-constexpr uint32_t XPD_HALL_Pos = 31;
-constexpr uint32_t XPD_HALL_Msk = XPD_HALL::mask;
+    /// Power on hall sensor and connect to VP and VN
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using XPD_HALL = BitField<31, 1>;
+    constexpr uint32_t XPD_HALL_Pos = 31;
+    constexpr uint32_t XPD_HALL_Msk = XPD_HALL::mask;
 
 }  // namespace hall_sens
 
 /// SENSOR_PADS - SENSOR_PADS
 namespace sensor_pads {
-/// the input enable of the pad
-/// Position: 4, Width: 1
-/// Access: read-write
-using SENSE4_FUN_IE = BitField<4, 1>;
-constexpr uint32_t SENSE4_FUN_IE_Pos = 4;
-constexpr uint32_t SENSE4_FUN_IE_Msk = SENSE4_FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using SENSE4_FUN_IE = BitField<4, 1>;
+    constexpr uint32_t SENSE4_FUN_IE_Pos = 4;
+    constexpr uint32_t SENSE4_FUN_IE_Msk = SENSE4_FUN_IE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 5, Width: 1
-/// Access: read-write
-using SENSE4_SLP_IE = BitField<5, 1>;
-constexpr uint32_t SENSE4_SLP_IE_Pos = 5;
-constexpr uint32_t SENSE4_SLP_IE_Msk = SENSE4_SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using SENSE4_SLP_IE = BitField<5, 1>;
+    constexpr uint32_t SENSE4_SLP_IE_Pos = 5;
+    constexpr uint32_t SENSE4_SLP_IE_Msk = SENSE4_SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 6, Width: 1
-/// Access: read-write
-using SENSE4_SLP_SEL = BitField<6, 1>;
-constexpr uint32_t SENSE4_SLP_SEL_Pos = 6;
-constexpr uint32_t SENSE4_SLP_SEL_Msk = SENSE4_SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using SENSE4_SLP_SEL = BitField<6, 1>;
+    constexpr uint32_t SENSE4_SLP_SEL_Pos = 6;
+    constexpr uint32_t SENSE4_SLP_SEL_Msk = SENSE4_SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 7, Width: 2
-/// Access: read-write
-using SENSE4_FUN_SEL = BitField<7, 2>;
-constexpr uint32_t SENSE4_FUN_SEL_Pos = 7;
-constexpr uint32_t SENSE4_FUN_SEL_Msk = SENSE4_FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 7, Width: 2
+    /// Access: read-write
+    using SENSE4_FUN_SEL = BitField<7, 2>;
+    constexpr uint32_t SENSE4_FUN_SEL_Pos = 7;
+    constexpr uint32_t SENSE4_FUN_SEL_Msk = SENSE4_FUN_SEL::mask;
 
-/// the input enable of the pad
-/// Position: 9, Width: 1
-/// Access: read-write
-using SENSE3_FUN_IE = BitField<9, 1>;
-constexpr uint32_t SENSE3_FUN_IE_Pos = 9;
-constexpr uint32_t SENSE3_FUN_IE_Msk = SENSE3_FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using SENSE3_FUN_IE = BitField<9, 1>;
+    constexpr uint32_t SENSE3_FUN_IE_Pos = 9;
+    constexpr uint32_t SENSE3_FUN_IE_Msk = SENSE3_FUN_IE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 10, Width: 1
-/// Access: read-write
-using SENSE3_SLP_IE = BitField<10, 1>;
-constexpr uint32_t SENSE3_SLP_IE_Pos = 10;
-constexpr uint32_t SENSE3_SLP_IE_Msk = SENSE3_SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using SENSE3_SLP_IE = BitField<10, 1>;
+    constexpr uint32_t SENSE3_SLP_IE_Pos = 10;
+    constexpr uint32_t SENSE3_SLP_IE_Msk = SENSE3_SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 11, Width: 1
-/// Access: read-write
-using SENSE3_SLP_SEL = BitField<11, 1>;
-constexpr uint32_t SENSE3_SLP_SEL_Pos = 11;
-constexpr uint32_t SENSE3_SLP_SEL_Msk = SENSE3_SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using SENSE3_SLP_SEL = BitField<11, 1>;
+    constexpr uint32_t SENSE3_SLP_SEL_Pos = 11;
+    constexpr uint32_t SENSE3_SLP_SEL_Msk = SENSE3_SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 12, Width: 2
-/// Access: read-write
-using SENSE3_FUN_SEL = BitField<12, 2>;
-constexpr uint32_t SENSE3_FUN_SEL_Pos = 12;
-constexpr uint32_t SENSE3_FUN_SEL_Msk = SENSE3_FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 12, Width: 2
+    /// Access: read-write
+    using SENSE3_FUN_SEL = BitField<12, 2>;
+    constexpr uint32_t SENSE3_FUN_SEL_Pos = 12;
+    constexpr uint32_t SENSE3_FUN_SEL_Msk = SENSE3_FUN_SEL::mask;
 
-/// the input enable of the pad
-/// Position: 14, Width: 1
-/// Access: read-write
-using SENSE2_FUN_IE = BitField<14, 1>;
-constexpr uint32_t SENSE2_FUN_IE_Pos = 14;
-constexpr uint32_t SENSE2_FUN_IE_Msk = SENSE2_FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using SENSE2_FUN_IE = BitField<14, 1>;
+    constexpr uint32_t SENSE2_FUN_IE_Pos = 14;
+    constexpr uint32_t SENSE2_FUN_IE_Msk = SENSE2_FUN_IE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 15, Width: 1
-/// Access: read-write
-using SENSE2_SLP_IE = BitField<15, 1>;
-constexpr uint32_t SENSE2_SLP_IE_Pos = 15;
-constexpr uint32_t SENSE2_SLP_IE_Msk = SENSE2_SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using SENSE2_SLP_IE = BitField<15, 1>;
+    constexpr uint32_t SENSE2_SLP_IE_Pos = 15;
+    constexpr uint32_t SENSE2_SLP_IE_Msk = SENSE2_SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 16, Width: 1
-/// Access: read-write
-using SENSE2_SLP_SEL = BitField<16, 1>;
-constexpr uint32_t SENSE2_SLP_SEL_Pos = 16;
-constexpr uint32_t SENSE2_SLP_SEL_Msk = SENSE2_SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using SENSE2_SLP_SEL = BitField<16, 1>;
+    constexpr uint32_t SENSE2_SLP_SEL_Pos = 16;
+    constexpr uint32_t SENSE2_SLP_SEL_Msk = SENSE2_SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 17, Width: 2
-/// Access: read-write
-using SENSE2_FUN_SEL = BitField<17, 2>;
-constexpr uint32_t SENSE2_FUN_SEL_Pos = 17;
-constexpr uint32_t SENSE2_FUN_SEL_Msk = SENSE2_FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 17, Width: 2
+    /// Access: read-write
+    using SENSE2_FUN_SEL = BitField<17, 2>;
+    constexpr uint32_t SENSE2_FUN_SEL_Pos = 17;
+    constexpr uint32_t SENSE2_FUN_SEL_Msk = SENSE2_FUN_SEL::mask;
 
-/// the input enable of the pad
-/// Position: 19, Width: 1
-/// Access: read-write
-using SENSE1_FUN_IE = BitField<19, 1>;
-constexpr uint32_t SENSE1_FUN_IE_Pos = 19;
-constexpr uint32_t SENSE1_FUN_IE_Msk = SENSE1_FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using SENSE1_FUN_IE = BitField<19, 1>;
+    constexpr uint32_t SENSE1_FUN_IE_Pos = 19;
+    constexpr uint32_t SENSE1_FUN_IE_Msk = SENSE1_FUN_IE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 20, Width: 1
-/// Access: read-write
-using SENSE1_SLP_IE = BitField<20, 1>;
-constexpr uint32_t SENSE1_SLP_IE_Pos = 20;
-constexpr uint32_t SENSE1_SLP_IE_Msk = SENSE1_SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using SENSE1_SLP_IE = BitField<20, 1>;
+    constexpr uint32_t SENSE1_SLP_IE_Pos = 20;
+    constexpr uint32_t SENSE1_SLP_IE_Msk = SENSE1_SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 21, Width: 1
-/// Access: read-write
-using SENSE1_SLP_SEL = BitField<21, 1>;
-constexpr uint32_t SENSE1_SLP_SEL_Pos = 21;
-constexpr uint32_t SENSE1_SLP_SEL_Msk = SENSE1_SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using SENSE1_SLP_SEL = BitField<21, 1>;
+    constexpr uint32_t SENSE1_SLP_SEL_Pos = 21;
+    constexpr uint32_t SENSE1_SLP_SEL_Msk = SENSE1_SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 22, Width: 2
-/// Access: read-write
-using SENSE1_FUN_SEL = BitField<22, 2>;
-constexpr uint32_t SENSE1_FUN_SEL_Pos = 22;
-constexpr uint32_t SENSE1_FUN_SEL_Msk = SENSE1_FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 22, Width: 2
+    /// Access: read-write
+    using SENSE1_FUN_SEL = BitField<22, 2>;
+    constexpr uint32_t SENSE1_FUN_SEL_Pos = 22;
+    constexpr uint32_t SENSE1_FUN_SEL_Msk = SENSE1_FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 24, Width: 1
-/// Access: read-write
-using SENSE4_MUX_SEL = BitField<24, 1>;
-constexpr uint32_t SENSE4_MUX_SEL_Pos = 24;
-constexpr uint32_t SENSE4_MUX_SEL_Msk = SENSE4_MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using SENSE4_MUX_SEL = BitField<24, 1>;
+    constexpr uint32_t SENSE4_MUX_SEL_Pos = 24;
+    constexpr uint32_t SENSE4_MUX_SEL_Msk = SENSE4_MUX_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 25, Width: 1
-/// Access: read-write
-using SENSE3_MUX_SEL = BitField<25, 1>;
-constexpr uint32_t SENSE3_MUX_SEL_Pos = 25;
-constexpr uint32_t SENSE3_MUX_SEL_Msk = SENSE3_MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 25, Width: 1
+    /// Access: read-write
+    using SENSE3_MUX_SEL = BitField<25, 1>;
+    constexpr uint32_t SENSE3_MUX_SEL_Pos = 25;
+    constexpr uint32_t SENSE3_MUX_SEL_Msk = SENSE3_MUX_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 26, Width: 1
-/// Access: read-write
-using SENSE2_MUX_SEL = BitField<26, 1>;
-constexpr uint32_t SENSE2_MUX_SEL_Pos = 26;
-constexpr uint32_t SENSE2_MUX_SEL_Msk = SENSE2_MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 26, Width: 1
+    /// Access: read-write
+    using SENSE2_MUX_SEL = BitField<26, 1>;
+    constexpr uint32_t SENSE2_MUX_SEL_Pos = 26;
+    constexpr uint32_t SENSE2_MUX_SEL_Msk = SENSE2_MUX_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 27, Width: 1
-/// Access: read-write
-using SENSE1_MUX_SEL = BitField<27, 1>;
-constexpr uint32_t SENSE1_MUX_SEL_Pos = 27;
-constexpr uint32_t SENSE1_MUX_SEL_Msk = SENSE1_MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using SENSE1_MUX_SEL = BitField<27, 1>;
+    constexpr uint32_t SENSE1_MUX_SEL_Pos = 27;
+    constexpr uint32_t SENSE1_MUX_SEL_Msk = SENSE1_MUX_SEL::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 28, Width: 1
-/// Access: read-write
-using SENSE4_HOLD = BitField<28, 1>;
-constexpr uint32_t SENSE4_HOLD_Pos = 28;
-constexpr uint32_t SENSE4_HOLD_Msk = SENSE4_HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using SENSE4_HOLD = BitField<28, 1>;
+    constexpr uint32_t SENSE4_HOLD_Pos = 28;
+    constexpr uint32_t SENSE4_HOLD_Msk = SENSE4_HOLD::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 29, Width: 1
-/// Access: read-write
-using SENSE3_HOLD = BitField<29, 1>;
-constexpr uint32_t SENSE3_HOLD_Pos = 29;
-constexpr uint32_t SENSE3_HOLD_Msk = SENSE3_HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using SENSE3_HOLD = BitField<29, 1>;
+    constexpr uint32_t SENSE3_HOLD_Pos = 29;
+    constexpr uint32_t SENSE3_HOLD_Msk = SENSE3_HOLD::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 30, Width: 1
-/// Access: read-write
-using SENSE2_HOLD = BitField<30, 1>;
-constexpr uint32_t SENSE2_HOLD_Pos = 30;
-constexpr uint32_t SENSE2_HOLD_Msk = SENSE2_HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using SENSE2_HOLD = BitField<30, 1>;
+    constexpr uint32_t SENSE2_HOLD_Pos = 30;
+    constexpr uint32_t SENSE2_HOLD_Msk = SENSE2_HOLD::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 31, Width: 1
-/// Access: read-write
-using SENSE1_HOLD = BitField<31, 1>;
-constexpr uint32_t SENSE1_HOLD_Pos = 31;
-constexpr uint32_t SENSE1_HOLD_Msk = SENSE1_HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using SENSE1_HOLD = BitField<31, 1>;
+    constexpr uint32_t SENSE1_HOLD_Pos = 31;
+    constexpr uint32_t SENSE1_HOLD_Msk = SENSE1_HOLD::mask;
 
 }  // namespace sensor_pads
 
 /// ADC_PAD - ADC_PAD
 namespace adc_pad {
-/// the input enable of the pad
-/// Position: 18, Width: 1
-/// Access: read-write
-using ADC2_FUN_IE = BitField<18, 1>;
-constexpr uint32_t ADC2_FUN_IE_Pos = 18;
-constexpr uint32_t ADC2_FUN_IE_Msk = ADC2_FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 18, Width: 1
+    /// Access: read-write
+    using ADC2_FUN_IE = BitField<18, 1>;
+    constexpr uint32_t ADC2_FUN_IE_Pos = 18;
+    constexpr uint32_t ADC2_FUN_IE_Msk = ADC2_FUN_IE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 19, Width: 1
-/// Access: read-write
-using ADC2_SLP_IE = BitField<19, 1>;
-constexpr uint32_t ADC2_SLP_IE_Pos = 19;
-constexpr uint32_t ADC2_SLP_IE_Msk = ADC2_SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using ADC2_SLP_IE = BitField<19, 1>;
+    constexpr uint32_t ADC2_SLP_IE_Pos = 19;
+    constexpr uint32_t ADC2_SLP_IE_Msk = ADC2_SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 20, Width: 1
-/// Access: read-write
-using ADC2_SLP_SEL = BitField<20, 1>;
-constexpr uint32_t ADC2_SLP_SEL_Pos = 20;
-constexpr uint32_t ADC2_SLP_SEL_Msk = ADC2_SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using ADC2_SLP_SEL = BitField<20, 1>;
+    constexpr uint32_t ADC2_SLP_SEL_Pos = 20;
+    constexpr uint32_t ADC2_SLP_SEL_Msk = ADC2_SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 21, Width: 2
-/// Access: read-write
-using ADC2_FUN_SEL = BitField<21, 2>;
-constexpr uint32_t ADC2_FUN_SEL_Pos = 21;
-constexpr uint32_t ADC2_FUN_SEL_Msk = ADC2_FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 21, Width: 2
+    /// Access: read-write
+    using ADC2_FUN_SEL = BitField<21, 2>;
+    constexpr uint32_t ADC2_FUN_SEL_Pos = 21;
+    constexpr uint32_t ADC2_FUN_SEL_Msk = ADC2_FUN_SEL::mask;
 
-/// the input enable of the pad
-/// Position: 23, Width: 1
-/// Access: read-write
-using ADC1_FUN_IE = BitField<23, 1>;
-constexpr uint32_t ADC1_FUN_IE_Pos = 23;
-constexpr uint32_t ADC1_FUN_IE_Msk = ADC1_FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 23, Width: 1
+    /// Access: read-write
+    using ADC1_FUN_IE = BitField<23, 1>;
+    constexpr uint32_t ADC1_FUN_IE_Pos = 23;
+    constexpr uint32_t ADC1_FUN_IE_Msk = ADC1_FUN_IE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 24, Width: 1
-/// Access: read-write
-using ADC1_SLP_IE = BitField<24, 1>;
-constexpr uint32_t ADC1_SLP_IE_Pos = 24;
-constexpr uint32_t ADC1_SLP_IE_Msk = ADC1_SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using ADC1_SLP_IE = BitField<24, 1>;
+    constexpr uint32_t ADC1_SLP_IE_Pos = 24;
+    constexpr uint32_t ADC1_SLP_IE_Msk = ADC1_SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 25, Width: 1
-/// Access: read-write
-using ADC1_SLP_SEL = BitField<25, 1>;
-constexpr uint32_t ADC1_SLP_SEL_Pos = 25;
-constexpr uint32_t ADC1_SLP_SEL_Msk = ADC1_SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 25, Width: 1
+    /// Access: read-write
+    using ADC1_SLP_SEL = BitField<25, 1>;
+    constexpr uint32_t ADC1_SLP_SEL_Pos = 25;
+    constexpr uint32_t ADC1_SLP_SEL_Msk = ADC1_SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 26, Width: 2
-/// Access: read-write
-using ADC1_FUN_SEL = BitField<26, 2>;
-constexpr uint32_t ADC1_FUN_SEL_Pos = 26;
-constexpr uint32_t ADC1_FUN_SEL_Msk = ADC1_FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 26, Width: 2
+    /// Access: read-write
+    using ADC1_FUN_SEL = BitField<26, 2>;
+    constexpr uint32_t ADC1_FUN_SEL_Pos = 26;
+    constexpr uint32_t ADC1_FUN_SEL_Msk = ADC1_FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 28, Width: 1
-/// Access: read-write
-using ADC2_MUX_SEL = BitField<28, 1>;
-constexpr uint32_t ADC2_MUX_SEL_Pos = 28;
-constexpr uint32_t ADC2_MUX_SEL_Msk = ADC2_MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using ADC2_MUX_SEL = BitField<28, 1>;
+    constexpr uint32_t ADC2_MUX_SEL_Pos = 28;
+    constexpr uint32_t ADC2_MUX_SEL_Msk = ADC2_MUX_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 29, Width: 1
-/// Access: read-write
-using ADC1_MUX_SEL = BitField<29, 1>;
-constexpr uint32_t ADC1_MUX_SEL_Pos = 29;
-constexpr uint32_t ADC1_MUX_SEL_Msk = ADC1_MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using ADC1_MUX_SEL = BitField<29, 1>;
+    constexpr uint32_t ADC1_MUX_SEL_Pos = 29;
+    constexpr uint32_t ADC1_MUX_SEL_Msk = ADC1_MUX_SEL::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 30, Width: 1
-/// Access: read-write
-using ADC2_HOLD = BitField<30, 1>;
-constexpr uint32_t ADC2_HOLD_Pos = 30;
-constexpr uint32_t ADC2_HOLD_Msk = ADC2_HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using ADC2_HOLD = BitField<30, 1>;
+    constexpr uint32_t ADC2_HOLD_Pos = 30;
+    constexpr uint32_t ADC2_HOLD_Msk = ADC2_HOLD::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 31, Width: 1
-/// Access: read-write
-using ADC1_HOLD = BitField<31, 1>;
-constexpr uint32_t ADC1_HOLD_Pos = 31;
-constexpr uint32_t ADC1_HOLD_Msk = ADC1_HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using ADC1_HOLD = BitField<31, 1>;
+    constexpr uint32_t ADC1_HOLD_Pos = 31;
+    constexpr uint32_t ADC1_HOLD_Msk = ADC1_HOLD::mask;
 
 }  // namespace adc_pad
 
 /// PAD_DAC1 - PAD_DAC1
 namespace pad_dac1 {
-/// Power on DAC1. Usually we need to tristate PDAC1 if we power on the DAC i.e. IE=0 OE=0 RDE=0
-/// RUE=0 Position: 10, Width: 1 Access: read-write
-using PDAC1_DAC_XPD_FORCE = BitField<10, 1>;
-constexpr uint32_t PDAC1_DAC_XPD_FORCE_Pos = 10;
-constexpr uint32_t PDAC1_DAC_XPD_FORCE_Msk = PDAC1_DAC_XPD_FORCE::mask;
+    /// Power on DAC1. Usually we need to tristate PDAC1 if we power on the DAC i.e. IE=0 OE=0 RDE=0 RUE=0
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using PDAC1_DAC_XPD_FORCE = BitField<10, 1>;
+    constexpr uint32_t PDAC1_DAC_XPD_FORCE_Pos = 10;
+    constexpr uint32_t PDAC1_DAC_XPD_FORCE_Msk = PDAC1_DAC_XPD_FORCE::mask;
 
-/// the input enable of the pad
-/// Position: 11, Width: 1
-/// Access: read-write
-using PDAC1_FUN_IE = BitField<11, 1>;
-constexpr uint32_t PDAC1_FUN_IE_Pos = 11;
-constexpr uint32_t PDAC1_FUN_IE_Msk = PDAC1_FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using PDAC1_FUN_IE = BitField<11, 1>;
+    constexpr uint32_t PDAC1_FUN_IE_Pos = 11;
+    constexpr uint32_t PDAC1_FUN_IE_Msk = PDAC1_FUN_IE::mask;
 
-/// the output enable of the pad in sleep status
-/// Position: 12, Width: 1
-/// Access: read-write
-using PDAC1_SLP_OE = BitField<12, 1>;
-constexpr uint32_t PDAC1_SLP_OE_Pos = 12;
-constexpr uint32_t PDAC1_SLP_OE_Msk = PDAC1_SLP_OE::mask;
+    /// the output enable of the pad in sleep status
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using PDAC1_SLP_OE = BitField<12, 1>;
+    constexpr uint32_t PDAC1_SLP_OE_Pos = 12;
+    constexpr uint32_t PDAC1_SLP_OE_Msk = PDAC1_SLP_OE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 13, Width: 1
-/// Access: read-write
-using PDAC1_SLP_IE = BitField<13, 1>;
-constexpr uint32_t PDAC1_SLP_IE_Pos = 13;
-constexpr uint32_t PDAC1_SLP_IE_Msk = PDAC1_SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using PDAC1_SLP_IE = BitField<13, 1>;
+    constexpr uint32_t PDAC1_SLP_IE_Pos = 13;
+    constexpr uint32_t PDAC1_SLP_IE_Msk = PDAC1_SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 14, Width: 1
-/// Access: read-write
-using PDAC1_SLP_SEL = BitField<14, 1>;
-constexpr uint32_t PDAC1_SLP_SEL_Pos = 14;
-constexpr uint32_t PDAC1_SLP_SEL_Msk = PDAC1_SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using PDAC1_SLP_SEL = BitField<14, 1>;
+    constexpr uint32_t PDAC1_SLP_SEL_Pos = 14;
+    constexpr uint32_t PDAC1_SLP_SEL_Msk = PDAC1_SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 15, Width: 2
-/// Access: read-write
-using PDAC1_FUN_SEL = BitField<15, 2>;
-constexpr uint32_t PDAC1_FUN_SEL_Pos = 15;
-constexpr uint32_t PDAC1_FUN_SEL_Msk = PDAC1_FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 15, Width: 2
+    /// Access: read-write
+    using PDAC1_FUN_SEL = BitField<15, 2>;
+    constexpr uint32_t PDAC1_FUN_SEL_Pos = 15;
+    constexpr uint32_t PDAC1_FUN_SEL_Msk = PDAC1_FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 17, Width: 1
-/// Access: read-write
-using PDAC1_MUX_SEL = BitField<17, 1>;
-constexpr uint32_t PDAC1_MUX_SEL_Pos = 17;
-constexpr uint32_t PDAC1_MUX_SEL_Msk = PDAC1_MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 17, Width: 1
+    /// Access: read-write
+    using PDAC1_MUX_SEL = BitField<17, 1>;
+    constexpr uint32_t PDAC1_MUX_SEL_Pos = 17;
+    constexpr uint32_t PDAC1_MUX_SEL_Msk = PDAC1_MUX_SEL::mask;
 
-/// Power on DAC1. Usually we need to tristate PDAC1 if we power on the DAC i.e. IE=0 OE=0 RDE=0
-/// RUE=0 Position: 18, Width: 1 Access: read-write
-using PDAC1_XPD_DAC = BitField<18, 1>;
-constexpr uint32_t PDAC1_XPD_DAC_Pos = 18;
-constexpr uint32_t PDAC1_XPD_DAC_Msk = PDAC1_XPD_DAC::mask;
+    /// Power on DAC1. Usually we need to tristate PDAC1 if we power on the DAC i.e. IE=0 OE=0 RDE=0 RUE=0
+    /// Position: 18, Width: 1
+    /// Access: read-write
+    using PDAC1_XPD_DAC = BitField<18, 1>;
+    constexpr uint32_t PDAC1_XPD_DAC_Pos = 18;
+    constexpr uint32_t PDAC1_XPD_DAC_Msk = PDAC1_XPD_DAC::mask;
 
-/// PAD DAC1 control code.
-/// Position: 19, Width: 8
-/// Access: read-write
-using PDAC1_DAC = BitField<19, 8>;
-constexpr uint32_t PDAC1_DAC_Pos = 19;
-constexpr uint32_t PDAC1_DAC_Msk = PDAC1_DAC::mask;
+    /// PAD DAC1 control code.
+    /// Position: 19, Width: 8
+    /// Access: read-write
+    using PDAC1_DAC = BitField<19, 8>;
+    constexpr uint32_t PDAC1_DAC_Pos = 19;
+    constexpr uint32_t PDAC1_DAC_Msk = PDAC1_DAC::mask;
 
-/// the pull up enable of the pad
-/// Position: 27, Width: 1
-/// Access: read-write
-using PDAC1_RUE = BitField<27, 1>;
-constexpr uint32_t PDAC1_RUE_Pos = 27;
-constexpr uint32_t PDAC1_RUE_Msk = PDAC1_RUE::mask;
+    /// the pull up enable of the pad
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using PDAC1_RUE = BitField<27, 1>;
+    constexpr uint32_t PDAC1_RUE_Pos = 27;
+    constexpr uint32_t PDAC1_RUE_Msk = PDAC1_RUE::mask;
 
-/// the pull down enable of the pad
-/// Position: 28, Width: 1
-/// Access: read-write
-using PDAC1_RDE = BitField<28, 1>;
-constexpr uint32_t PDAC1_RDE_Pos = 28;
-constexpr uint32_t PDAC1_RDE_Msk = PDAC1_RDE::mask;
+    /// the pull down enable of the pad
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using PDAC1_RDE = BitField<28, 1>;
+    constexpr uint32_t PDAC1_RDE_Pos = 28;
+    constexpr uint32_t PDAC1_RDE_Msk = PDAC1_RDE::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 29, Width: 1
-/// Access: read-write
-using PDAC1_HOLD = BitField<29, 1>;
-constexpr uint32_t PDAC1_HOLD_Pos = 29;
-constexpr uint32_t PDAC1_HOLD_Msk = PDAC1_HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using PDAC1_HOLD = BitField<29, 1>;
+    constexpr uint32_t PDAC1_HOLD_Pos = 29;
+    constexpr uint32_t PDAC1_HOLD_Msk = PDAC1_HOLD::mask;
 
-/// the driver strength of the pad
-/// Position: 30, Width: 2
-/// Access: read-write
-using PDAC1_DRV = BitField<30, 2>;
-constexpr uint32_t PDAC1_DRV_Pos = 30;
-constexpr uint32_t PDAC1_DRV_Msk = PDAC1_DRV::mask;
+    /// the driver strength of the pad
+    /// Position: 30, Width: 2
+    /// Access: read-write
+    using PDAC1_DRV = BitField<30, 2>;
+    constexpr uint32_t PDAC1_DRV_Pos = 30;
+    constexpr uint32_t PDAC1_DRV_Msk = PDAC1_DRV::mask;
 
 }  // namespace pad_dac1
 
 /// PAD_DAC2 - PAD_DAC2
 namespace pad_dac2 {
-/// Power on DAC2. Usually we need to tristate PDAC2 if we power on the DAC i.e. IE=0 OE=0 RDE=0
-/// RUE=0 Position: 10, Width: 1 Access: read-write
-using PDAC2_DAC_XPD_FORCE = BitField<10, 1>;
-constexpr uint32_t PDAC2_DAC_XPD_FORCE_Pos = 10;
-constexpr uint32_t PDAC2_DAC_XPD_FORCE_Msk = PDAC2_DAC_XPD_FORCE::mask;
+    /// Power on DAC2. Usually we need to tristate PDAC2 if we power on the DAC i.e. IE=0 OE=0 RDE=0 RUE=0
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using PDAC2_DAC_XPD_FORCE = BitField<10, 1>;
+    constexpr uint32_t PDAC2_DAC_XPD_FORCE_Pos = 10;
+    constexpr uint32_t PDAC2_DAC_XPD_FORCE_Msk = PDAC2_DAC_XPD_FORCE::mask;
 
-/// the input enable of the pad
-/// Position: 11, Width: 1
-/// Access: read-write
-using PDAC2_FUN_IE = BitField<11, 1>;
-constexpr uint32_t PDAC2_FUN_IE_Pos = 11;
-constexpr uint32_t PDAC2_FUN_IE_Msk = PDAC2_FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using PDAC2_FUN_IE = BitField<11, 1>;
+    constexpr uint32_t PDAC2_FUN_IE_Pos = 11;
+    constexpr uint32_t PDAC2_FUN_IE_Msk = PDAC2_FUN_IE::mask;
 
-/// the output enable of the pad in sleep status
-/// Position: 12, Width: 1
-/// Access: read-write
-using PDAC2_SLP_OE = BitField<12, 1>;
-constexpr uint32_t PDAC2_SLP_OE_Pos = 12;
-constexpr uint32_t PDAC2_SLP_OE_Msk = PDAC2_SLP_OE::mask;
+    /// the output enable of the pad in sleep status
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using PDAC2_SLP_OE = BitField<12, 1>;
+    constexpr uint32_t PDAC2_SLP_OE_Pos = 12;
+    constexpr uint32_t PDAC2_SLP_OE_Msk = PDAC2_SLP_OE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 13, Width: 1
-/// Access: read-write
-using PDAC2_SLP_IE = BitField<13, 1>;
-constexpr uint32_t PDAC2_SLP_IE_Pos = 13;
-constexpr uint32_t PDAC2_SLP_IE_Msk = PDAC2_SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using PDAC2_SLP_IE = BitField<13, 1>;
+    constexpr uint32_t PDAC2_SLP_IE_Pos = 13;
+    constexpr uint32_t PDAC2_SLP_IE_Msk = PDAC2_SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 14, Width: 1
-/// Access: read-write
-using PDAC2_SLP_SEL = BitField<14, 1>;
-constexpr uint32_t PDAC2_SLP_SEL_Pos = 14;
-constexpr uint32_t PDAC2_SLP_SEL_Msk = PDAC2_SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using PDAC2_SLP_SEL = BitField<14, 1>;
+    constexpr uint32_t PDAC2_SLP_SEL_Pos = 14;
+    constexpr uint32_t PDAC2_SLP_SEL_Msk = PDAC2_SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 15, Width: 2
-/// Access: read-write
-using PDAC2_FUN_SEL = BitField<15, 2>;
-constexpr uint32_t PDAC2_FUN_SEL_Pos = 15;
-constexpr uint32_t PDAC2_FUN_SEL_Msk = PDAC2_FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 15, Width: 2
+    /// Access: read-write
+    using PDAC2_FUN_SEL = BitField<15, 2>;
+    constexpr uint32_t PDAC2_FUN_SEL_Pos = 15;
+    constexpr uint32_t PDAC2_FUN_SEL_Msk = PDAC2_FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 17, Width: 1
-/// Access: read-write
-using PDAC2_MUX_SEL = BitField<17, 1>;
-constexpr uint32_t PDAC2_MUX_SEL_Pos = 17;
-constexpr uint32_t PDAC2_MUX_SEL_Msk = PDAC2_MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 17, Width: 1
+    /// Access: read-write
+    using PDAC2_MUX_SEL = BitField<17, 1>;
+    constexpr uint32_t PDAC2_MUX_SEL_Pos = 17;
+    constexpr uint32_t PDAC2_MUX_SEL_Msk = PDAC2_MUX_SEL::mask;
 
-/// Power on DAC2. Usually we need to tristate PDAC1 if we power on the DAC i.e. IE=0 OE=0 RDE=0
-/// RUE=0 Position: 18, Width: 1 Access: read-write
-using PDAC2_XPD_DAC = BitField<18, 1>;
-constexpr uint32_t PDAC2_XPD_DAC_Pos = 18;
-constexpr uint32_t PDAC2_XPD_DAC_Msk = PDAC2_XPD_DAC::mask;
+    /// Power on DAC2. Usually we need to tristate PDAC1 if we power on the DAC i.e. IE=0 OE=0 RDE=0 RUE=0
+    /// Position: 18, Width: 1
+    /// Access: read-write
+    using PDAC2_XPD_DAC = BitField<18, 1>;
+    constexpr uint32_t PDAC2_XPD_DAC_Pos = 18;
+    constexpr uint32_t PDAC2_XPD_DAC_Msk = PDAC2_XPD_DAC::mask;
 
-/// PAD DAC2 control code.
-/// Position: 19, Width: 8
-/// Access: read-write
-using PDAC2_DAC = BitField<19, 8>;
-constexpr uint32_t PDAC2_DAC_Pos = 19;
-constexpr uint32_t PDAC2_DAC_Msk = PDAC2_DAC::mask;
+    /// PAD DAC2 control code.
+    /// Position: 19, Width: 8
+    /// Access: read-write
+    using PDAC2_DAC = BitField<19, 8>;
+    constexpr uint32_t PDAC2_DAC_Pos = 19;
+    constexpr uint32_t PDAC2_DAC_Msk = PDAC2_DAC::mask;
 
-/// the pull up enable of the pad
-/// Position: 27, Width: 1
-/// Access: read-write
-using PDAC2_RUE = BitField<27, 1>;
-constexpr uint32_t PDAC2_RUE_Pos = 27;
-constexpr uint32_t PDAC2_RUE_Msk = PDAC2_RUE::mask;
+    /// the pull up enable of the pad
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using PDAC2_RUE = BitField<27, 1>;
+    constexpr uint32_t PDAC2_RUE_Pos = 27;
+    constexpr uint32_t PDAC2_RUE_Msk = PDAC2_RUE::mask;
 
-/// the pull down enable of the pad
-/// Position: 28, Width: 1
-/// Access: read-write
-using PDAC2_RDE = BitField<28, 1>;
-constexpr uint32_t PDAC2_RDE_Pos = 28;
-constexpr uint32_t PDAC2_RDE_Msk = PDAC2_RDE::mask;
+    /// the pull down enable of the pad
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using PDAC2_RDE = BitField<28, 1>;
+    constexpr uint32_t PDAC2_RDE_Pos = 28;
+    constexpr uint32_t PDAC2_RDE_Msk = PDAC2_RDE::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 29, Width: 1
-/// Access: read-write
-using PDAC2_HOLD = BitField<29, 1>;
-constexpr uint32_t PDAC2_HOLD_Pos = 29;
-constexpr uint32_t PDAC2_HOLD_Msk = PDAC2_HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using PDAC2_HOLD = BitField<29, 1>;
+    constexpr uint32_t PDAC2_HOLD_Pos = 29;
+    constexpr uint32_t PDAC2_HOLD_Msk = PDAC2_HOLD::mask;
 
-/// the driver strength of the pad
-/// Position: 30, Width: 2
-/// Access: read-write
-using PDAC2_DRV = BitField<30, 2>;
-constexpr uint32_t PDAC2_DRV_Pos = 30;
-constexpr uint32_t PDAC2_DRV_Msk = PDAC2_DRV::mask;
+    /// the driver strength of the pad
+    /// Position: 30, Width: 2
+    /// Access: read-write
+    using PDAC2_DRV = BitField<30, 2>;
+    constexpr uint32_t PDAC2_DRV_Pos = 30;
+    constexpr uint32_t PDAC2_DRV_Msk = PDAC2_DRV::mask;
 
 }  // namespace pad_dac2
 
 /// XTAL_32K_PAD - XTAL_32K_PAD
 namespace xtal_32k_pad {
-/// 32K XTAL self-bias reference control.
-/// Position: 1, Width: 2
-/// Access: read-write
-using DBIAS_XTAL_32K = BitField<1, 2>;
-constexpr uint32_t DBIAS_XTAL_32K_Pos = 1;
-constexpr uint32_t DBIAS_XTAL_32K_Msk = DBIAS_XTAL_32K::mask;
+    /// 32K XTAL self-bias reference control.
+    /// Position: 1, Width: 2
+    /// Access: read-write
+    using DBIAS_XTAL_32K = BitField<1, 2>;
+    constexpr uint32_t DBIAS_XTAL_32K_Pos = 1;
+    constexpr uint32_t DBIAS_XTAL_32K_Msk = DBIAS_XTAL_32K::mask;
 
-/// 32K XTAL resistor bias control.
-/// Position: 3, Width: 2
-/// Access: read-write
-using DRES_XTAL_32K = BitField<3, 2>;
-constexpr uint32_t DRES_XTAL_32K_Pos = 3;
-constexpr uint32_t DRES_XTAL_32K_Msk = DRES_XTAL_32K::mask;
+    /// 32K XTAL resistor bias control.
+    /// Position: 3, Width: 2
+    /// Access: read-write
+    using DRES_XTAL_32K = BitField<3, 2>;
+    constexpr uint32_t DRES_XTAL_32K_Pos = 3;
+    constexpr uint32_t DRES_XTAL_32K_Msk = DRES_XTAL_32K::mask;
 
-/// the input enable of the pad
-/// Position: 5, Width: 1
-/// Access: read-write
-using X32P_FUN_IE = BitField<5, 1>;
-constexpr uint32_t X32P_FUN_IE_Pos = 5;
-constexpr uint32_t X32P_FUN_IE_Msk = X32P_FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using X32P_FUN_IE = BitField<5, 1>;
+    constexpr uint32_t X32P_FUN_IE_Pos = 5;
+    constexpr uint32_t X32P_FUN_IE_Msk = X32P_FUN_IE::mask;
 
-/// the output enable of the pad in sleep status
-/// Position: 6, Width: 1
-/// Access: read-write
-using X32P_SLP_OE = BitField<6, 1>;
-constexpr uint32_t X32P_SLP_OE_Pos = 6;
-constexpr uint32_t X32P_SLP_OE_Msk = X32P_SLP_OE::mask;
+    /// the output enable of the pad in sleep status
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using X32P_SLP_OE = BitField<6, 1>;
+    constexpr uint32_t X32P_SLP_OE_Pos = 6;
+    constexpr uint32_t X32P_SLP_OE_Msk = X32P_SLP_OE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 7, Width: 1
-/// Access: read-write
-using X32P_SLP_IE = BitField<7, 1>;
-constexpr uint32_t X32P_SLP_IE_Pos = 7;
-constexpr uint32_t X32P_SLP_IE_Msk = X32P_SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using X32P_SLP_IE = BitField<7, 1>;
+    constexpr uint32_t X32P_SLP_IE_Pos = 7;
+    constexpr uint32_t X32P_SLP_IE_Msk = X32P_SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 8, Width: 1
-/// Access: read-write
-using X32P_SLP_SEL = BitField<8, 1>;
-constexpr uint32_t X32P_SLP_SEL_Pos = 8;
-constexpr uint32_t X32P_SLP_SEL_Msk = X32P_SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using X32P_SLP_SEL = BitField<8, 1>;
+    constexpr uint32_t X32P_SLP_SEL_Pos = 8;
+    constexpr uint32_t X32P_SLP_SEL_Msk = X32P_SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 9, Width: 2
-/// Access: read-write
-using X32P_FUN_SEL = BitField<9, 2>;
-constexpr uint32_t X32P_FUN_SEL_Pos = 9;
-constexpr uint32_t X32P_FUN_SEL_Msk = X32P_FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 9, Width: 2
+    /// Access: read-write
+    using X32P_FUN_SEL = BitField<9, 2>;
+    constexpr uint32_t X32P_FUN_SEL_Pos = 9;
+    constexpr uint32_t X32P_FUN_SEL_Msk = X32P_FUN_SEL::mask;
 
-/// the input enable of the pad
-/// Position: 11, Width: 1
-/// Access: read-write
-using X32N_FUN_IE = BitField<11, 1>;
-constexpr uint32_t X32N_FUN_IE_Pos = 11;
-constexpr uint32_t X32N_FUN_IE_Msk = X32N_FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using X32N_FUN_IE = BitField<11, 1>;
+    constexpr uint32_t X32N_FUN_IE_Pos = 11;
+    constexpr uint32_t X32N_FUN_IE_Msk = X32N_FUN_IE::mask;
 
-/// the output enable of the pad in sleep status
-/// Position: 12, Width: 1
-/// Access: read-write
-using X32N_SLP_OE = BitField<12, 1>;
-constexpr uint32_t X32N_SLP_OE_Pos = 12;
-constexpr uint32_t X32N_SLP_OE_Msk = X32N_SLP_OE::mask;
+    /// the output enable of the pad in sleep status
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using X32N_SLP_OE = BitField<12, 1>;
+    constexpr uint32_t X32N_SLP_OE_Pos = 12;
+    constexpr uint32_t X32N_SLP_OE_Msk = X32N_SLP_OE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 13, Width: 1
-/// Access: read-write
-using X32N_SLP_IE = BitField<13, 1>;
-constexpr uint32_t X32N_SLP_IE_Pos = 13;
-constexpr uint32_t X32N_SLP_IE_Msk = X32N_SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using X32N_SLP_IE = BitField<13, 1>;
+    constexpr uint32_t X32N_SLP_IE_Pos = 13;
+    constexpr uint32_t X32N_SLP_IE_Msk = X32N_SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 14, Width: 1
-/// Access: read-write
-using X32N_SLP_SEL = BitField<14, 1>;
-constexpr uint32_t X32N_SLP_SEL_Pos = 14;
-constexpr uint32_t X32N_SLP_SEL_Msk = X32N_SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using X32N_SLP_SEL = BitField<14, 1>;
+    constexpr uint32_t X32N_SLP_SEL_Pos = 14;
+    constexpr uint32_t X32N_SLP_SEL_Msk = X32N_SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 15, Width: 2
-/// Access: read-write
-using X32N_FUN_SEL = BitField<15, 2>;
-constexpr uint32_t X32N_FUN_SEL_Pos = 15;
-constexpr uint32_t X32N_FUN_SEL_Msk = X32N_FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 15, Width: 2
+    /// Access: read-write
+    using X32N_FUN_SEL = BitField<15, 2>;
+    constexpr uint32_t X32N_FUN_SEL_Pos = 15;
+    constexpr uint32_t X32N_FUN_SEL_Msk = X32N_FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 17, Width: 1
-/// Access: read-write
-using X32P_MUX_SEL = BitField<17, 1>;
-constexpr uint32_t X32P_MUX_SEL_Pos = 17;
-constexpr uint32_t X32P_MUX_SEL_Msk = X32P_MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 17, Width: 1
+    /// Access: read-write
+    using X32P_MUX_SEL = BitField<17, 1>;
+    constexpr uint32_t X32P_MUX_SEL_Pos = 17;
+    constexpr uint32_t X32P_MUX_SEL_Msk = X32P_MUX_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 18, Width: 1
-/// Access: read-write
-using X32N_MUX_SEL = BitField<18, 1>;
-constexpr uint32_t X32N_MUX_SEL_Pos = 18;
-constexpr uint32_t X32N_MUX_SEL_Msk = X32N_MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 18, Width: 1
+    /// Access: read-write
+    using X32N_MUX_SEL = BitField<18, 1>;
+    constexpr uint32_t X32N_MUX_SEL_Pos = 18;
+    constexpr uint32_t X32N_MUX_SEL_Msk = X32N_MUX_SEL::mask;
 
-/// Power up 32kHz crystal oscillator
-/// Position: 19, Width: 1
-/// Access: read-write
-using XPD_XTAL_32K = BitField<19, 1>;
-constexpr uint32_t XPD_XTAL_32K_Pos = 19;
-constexpr uint32_t XPD_XTAL_32K_Msk = XPD_XTAL_32K::mask;
+    /// Power up 32kHz crystal oscillator
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using XPD_XTAL_32K = BitField<19, 1>;
+    constexpr uint32_t XPD_XTAL_32K_Pos = 19;
+    constexpr uint32_t XPD_XTAL_32K_Msk = XPD_XTAL_32K::mask;
 
-/// 32K XTAL bias current DAC.
-/// Position: 20, Width: 2
-/// Access: read-write
-using DAC_XTAL_32K = BitField<20, 2>;
-constexpr uint32_t DAC_XTAL_32K_Pos = 20;
-constexpr uint32_t DAC_XTAL_32K_Msk = DAC_XTAL_32K::mask;
+    /// 32K XTAL bias current DAC.
+    /// Position: 20, Width: 2
+    /// Access: read-write
+    using DAC_XTAL_32K = BitField<20, 2>;
+    constexpr uint32_t DAC_XTAL_32K_Pos = 20;
+    constexpr uint32_t DAC_XTAL_32K_Msk = DAC_XTAL_32K::mask;
 
-/// the pull up enable of the pad
-/// Position: 22, Width: 1
-/// Access: read-write
-using X32P_RUE = BitField<22, 1>;
-constexpr uint32_t X32P_RUE_Pos = 22;
-constexpr uint32_t X32P_RUE_Msk = X32P_RUE::mask;
+    /// the pull up enable of the pad
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using X32P_RUE = BitField<22, 1>;
+    constexpr uint32_t X32P_RUE_Pos = 22;
+    constexpr uint32_t X32P_RUE_Msk = X32P_RUE::mask;
 
-/// the pull down enable of the pad
-/// Position: 23, Width: 1
-/// Access: read-write
-using X32P_RDE = BitField<23, 1>;
-constexpr uint32_t X32P_RDE_Pos = 23;
-constexpr uint32_t X32P_RDE_Msk = X32P_RDE::mask;
+    /// the pull down enable of the pad
+    /// Position: 23, Width: 1
+    /// Access: read-write
+    using X32P_RDE = BitField<23, 1>;
+    constexpr uint32_t X32P_RDE_Pos = 23;
+    constexpr uint32_t X32P_RDE_Msk = X32P_RDE::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 24, Width: 1
-/// Access: read-write
-using X32P_HOLD = BitField<24, 1>;
-constexpr uint32_t X32P_HOLD_Pos = 24;
-constexpr uint32_t X32P_HOLD_Msk = X32P_HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using X32P_HOLD = BitField<24, 1>;
+    constexpr uint32_t X32P_HOLD_Pos = 24;
+    constexpr uint32_t X32P_HOLD_Msk = X32P_HOLD::mask;
 
-/// the driver strength of the pad
-/// Position: 25, Width: 2
-/// Access: read-write
-using X32P_DRV = BitField<25, 2>;
-constexpr uint32_t X32P_DRV_Pos = 25;
-constexpr uint32_t X32P_DRV_Msk = X32P_DRV::mask;
+    /// the driver strength of the pad
+    /// Position: 25, Width: 2
+    /// Access: read-write
+    using X32P_DRV = BitField<25, 2>;
+    constexpr uint32_t X32P_DRV_Pos = 25;
+    constexpr uint32_t X32P_DRV_Msk = X32P_DRV::mask;
 
-/// the pull up enable of the pad
-/// Position: 27, Width: 1
-/// Access: read-write
-using X32N_RUE = BitField<27, 1>;
-constexpr uint32_t X32N_RUE_Pos = 27;
-constexpr uint32_t X32N_RUE_Msk = X32N_RUE::mask;
+    /// the pull up enable of the pad
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using X32N_RUE = BitField<27, 1>;
+    constexpr uint32_t X32N_RUE_Pos = 27;
+    constexpr uint32_t X32N_RUE_Msk = X32N_RUE::mask;
 
-/// the pull down enable of the pad
-/// Position: 28, Width: 1
-/// Access: read-write
-using X32N_RDE = BitField<28, 1>;
-constexpr uint32_t X32N_RDE_Pos = 28;
-constexpr uint32_t X32N_RDE_Msk = X32N_RDE::mask;
+    /// the pull down enable of the pad
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using X32N_RDE = BitField<28, 1>;
+    constexpr uint32_t X32N_RDE_Pos = 28;
+    constexpr uint32_t X32N_RDE_Msk = X32N_RDE::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 29, Width: 1
-/// Access: read-write
-using X32N_HOLD = BitField<29, 1>;
-constexpr uint32_t X32N_HOLD_Pos = 29;
-constexpr uint32_t X32N_HOLD_Msk = X32N_HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using X32N_HOLD = BitField<29, 1>;
+    constexpr uint32_t X32N_HOLD_Pos = 29;
+    constexpr uint32_t X32N_HOLD_Msk = X32N_HOLD::mask;
 
-/// the driver strength of the pad
-/// Position: 30, Width: 2
-/// Access: read-write
-using X32N_DRV = BitField<30, 2>;
-constexpr uint32_t X32N_DRV_Pos = 30;
-constexpr uint32_t X32N_DRV_Msk = X32N_DRV::mask;
+    /// the driver strength of the pad
+    /// Position: 30, Width: 2
+    /// Access: read-write
+    using X32N_DRV = BitField<30, 2>;
+    constexpr uint32_t X32N_DRV_Pos = 30;
+    constexpr uint32_t X32N_DRV_Msk = X32N_DRV::mask;
 
 }  // namespace xtal_32k_pad
 
 /// TOUCH_CFG - TOUCH_CFG
 namespace touch_cfg {
-/// touch sensor bias current. Should have option to tie with BIAS_SLEEP(When BIAS_SLEEP this
-/// setting is available Position: 23, Width: 2 Access: read-write
-using TOUCH_DCUR = BitField<23, 2>;
-constexpr uint32_t TOUCH_DCUR_Pos = 23;
-constexpr uint32_t TOUCH_DCUR_Msk = TOUCH_DCUR::mask;
+    /// touch sensor bias current. Should have option to tie with BIAS_SLEEP(When BIAS_SLEEP this setting is available
+    /// Position: 23, Width: 2
+    /// Access: read-write
+    using TOUCH_DCUR = BitField<23, 2>;
+    constexpr uint32_t TOUCH_DCUR_Pos = 23;
+    constexpr uint32_t TOUCH_DCUR_Msk = TOUCH_DCUR::mask;
 
-/// touch sensor saw wave voltage range.
-/// Position: 25, Width: 2
-/// Access: read-write
-using TOUCH_DRANGE = BitField<25, 2>;
-constexpr uint32_t TOUCH_DRANGE_Pos = 25;
-constexpr uint32_t TOUCH_DRANGE_Msk = TOUCH_DRANGE::mask;
+    /// touch sensor saw wave voltage range.
+    /// Position: 25, Width: 2
+    /// Access: read-write
+    using TOUCH_DRANGE = BitField<25, 2>;
+    constexpr uint32_t TOUCH_DRANGE_Pos = 25;
+    constexpr uint32_t TOUCH_DRANGE_Msk = TOUCH_DRANGE::mask;
 
-/// touch sensor saw wave bottom voltage.
-/// Position: 27, Width: 2
-/// Access: read-write
-using TOUCH_DREFL = BitField<27, 2>;
-constexpr uint32_t TOUCH_DREFL_Pos = 27;
-constexpr uint32_t TOUCH_DREFL_Msk = TOUCH_DREFL::mask;
+    /// touch sensor saw wave bottom voltage.
+    /// Position: 27, Width: 2
+    /// Access: read-write
+    using TOUCH_DREFL = BitField<27, 2>;
+    constexpr uint32_t TOUCH_DREFL_Pos = 27;
+    constexpr uint32_t TOUCH_DREFL_Msk = TOUCH_DREFL::mask;
 
-/// touch sensor saw wave top voltage.
-/// Position: 29, Width: 2
-/// Access: read-write
-using TOUCH_DREFH = BitField<29, 2>;
-constexpr uint32_t TOUCH_DREFH_Pos = 29;
-constexpr uint32_t TOUCH_DREFH_Msk = TOUCH_DREFH::mask;
+    /// touch sensor saw wave top voltage.
+    /// Position: 29, Width: 2
+    /// Access: read-write
+    using TOUCH_DREFH = BitField<29, 2>;
+    constexpr uint32_t TOUCH_DREFH_Pos = 29;
+    constexpr uint32_t TOUCH_DREFH_Msk = TOUCH_DREFH::mask;
 
-/// touch sensor bias power on.
-/// Position: 31, Width: 1
-/// Access: read-write
-using TOUCH_XPD_BIAS = BitField<31, 1>;
-constexpr uint32_t TOUCH_XPD_BIAS_Pos = 31;
-constexpr uint32_t TOUCH_XPD_BIAS_Msk = TOUCH_XPD_BIAS::mask;
+    /// touch sensor bias power on.
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using TOUCH_XPD_BIAS = BitField<31, 1>;
+    constexpr uint32_t TOUCH_XPD_BIAS_Pos = 31;
+    constexpr uint32_t TOUCH_XPD_BIAS_Msk = TOUCH_XPD_BIAS::mask;
 
 }  // namespace touch_cfg
 
 /// TOUCH_PAD0 - TOUCH_PAD0
 namespace touch_pad0 {
-/// connect the rtc pad input to digital pad input Ó0Ó is availbale GPIO4
-/// Position: 12, Width: 1
-/// Access: read-write
-using TO_GPIO = BitField<12, 1>;
-constexpr uint32_t TO_GPIO_Pos = 12;
-constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
+    /// connect the rtc pad input to digital pad input Ó0Ó is availbale GPIO4
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using TO_GPIO = BitField<12, 1>;
+    constexpr uint32_t TO_GPIO_Pos = 12;
+    constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
 
-/// the input enable of the pad
-/// Position: 13, Width: 1
-/// Access: read-write
-using FUN_IE = BitField<13, 1>;
-constexpr uint32_t FUN_IE_Pos = 13;
-constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using FUN_IE = BitField<13, 1>;
+    constexpr uint32_t FUN_IE_Pos = 13;
+    constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
 
-/// the output enable of the pad in sleep status
-/// Position: 14, Width: 1
-/// Access: read-write
-using SLP_OE = BitField<14, 1>;
-constexpr uint32_t SLP_OE_Pos = 14;
-constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
+    /// the output enable of the pad in sleep status
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using SLP_OE = BitField<14, 1>;
+    constexpr uint32_t SLP_OE_Pos = 14;
+    constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 15, Width: 1
-/// Access: read-write
-using SLP_IE = BitField<15, 1>;
-constexpr uint32_t SLP_IE_Pos = 15;
-constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using SLP_IE = BitField<15, 1>;
+    constexpr uint32_t SLP_IE_Pos = 15;
+    constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 16, Width: 1
-/// Access: read-write
-using SLP_SEL = BitField<16, 1>;
-constexpr uint32_t SLP_SEL_Pos = 16;
-constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using SLP_SEL = BitField<16, 1>;
+    constexpr uint32_t SLP_SEL_Pos = 16;
+    constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 17, Width: 2
-/// Access: read-write
-using FUN_SEL = BitField<17, 2>;
-constexpr uint32_t FUN_SEL_Pos = 17;
-constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 17, Width: 2
+    /// Access: read-write
+    using FUN_SEL = BitField<17, 2>;
+    constexpr uint32_t FUN_SEL_Pos = 17;
+    constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 19, Width: 1
-/// Access: read-write
-using MUX_SEL = BitField<19, 1>;
-constexpr uint32_t MUX_SEL_Pos = 19;
-constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using MUX_SEL = BitField<19, 1>;
+    constexpr uint32_t MUX_SEL_Pos = 19;
+    constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
 
-/// touch sensor power on.
-/// Position: 20, Width: 1
-/// Access: read-write
-using XPD = BitField<20, 1>;
-constexpr uint32_t XPD_Pos = 20;
-constexpr uint32_t XPD_Msk = XPD::mask;
+    /// touch sensor power on.
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using XPD = BitField<20, 1>;
+    constexpr uint32_t XPD_Pos = 20;
+    constexpr uint32_t XPD_Msk = XPD::mask;
 
-/// default touch sensor tie option. 0: tie low 1: tie high.
-/// Position: 21, Width: 1
-/// Access: read-write
-using TIE_OPT = BitField<21, 1>;
-constexpr uint32_t TIE_OPT_Pos = 21;
-constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
+    /// default touch sensor tie option. 0: tie low 1: tie high.
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using TIE_OPT = BitField<21, 1>;
+    constexpr uint32_t TIE_OPT_Pos = 21;
+    constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
 
-/// start touch sensor.
-/// Position: 22, Width: 1
-/// Access: read-write
-using START = BitField<22, 1>;
-constexpr uint32_t START_Pos = 22;
-constexpr uint32_t START_Msk = START::mask;
+    /// start touch sensor.
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using START = BitField<22, 1>;
+    constexpr uint32_t START_Pos = 22;
+    constexpr uint32_t START_Msk = START::mask;
 
-/// touch sensor slope control. 3-bit for each touch panel default 100.
-/// Position: 23, Width: 3
-/// Access: read-write
-using DAC = BitField<23, 3>;
-constexpr uint32_t DAC_Pos = 23;
-constexpr uint32_t DAC_Msk = DAC::mask;
+    /// touch sensor slope control. 3-bit for each touch panel default 100.
+    /// Position: 23, Width: 3
+    /// Access: read-write
+    using DAC = BitField<23, 3>;
+    constexpr uint32_t DAC_Pos = 23;
+    constexpr uint32_t DAC_Msk = DAC::mask;
 
-/// the pull up enable of the pad
-/// Position: 27, Width: 1
-/// Access: read-write
-using RUE = BitField<27, 1>;
-constexpr uint32_t RUE_Pos = 27;
-constexpr uint32_t RUE_Msk = RUE::mask;
+    /// the pull up enable of the pad
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using RUE = BitField<27, 1>;
+    constexpr uint32_t RUE_Pos = 27;
+    constexpr uint32_t RUE_Msk = RUE::mask;
 
-/// the pull down enable of the pad
-/// Position: 28, Width: 1
-/// Access: read-write
-using RDE = BitField<28, 1>;
-constexpr uint32_t RDE_Pos = 28;
-constexpr uint32_t RDE_Msk = RDE::mask;
+    /// the pull down enable of the pad
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using RDE = BitField<28, 1>;
+    constexpr uint32_t RDE_Pos = 28;
+    constexpr uint32_t RDE_Msk = RDE::mask;
 
-/// the driver strength of the pad
-/// Position: 29, Width: 2
-/// Access: read-write
-using DRV = BitField<29, 2>;
-constexpr uint32_t DRV_Pos = 29;
-constexpr uint32_t DRV_Msk = DRV::mask;
+    /// the driver strength of the pad
+    /// Position: 29, Width: 2
+    /// Access: read-write
+    using DRV = BitField<29, 2>;
+    constexpr uint32_t DRV_Pos = 29;
+    constexpr uint32_t DRV_Msk = DRV::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 31, Width: 1
-/// Access: read-write
-using HOLD = BitField<31, 1>;
-constexpr uint32_t HOLD_Pos = 31;
-constexpr uint32_t HOLD_Msk = HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using HOLD = BitField<31, 1>;
+    constexpr uint32_t HOLD_Pos = 31;
+    constexpr uint32_t HOLD_Msk = HOLD::mask;
 
 }  // namespace touch_pad0
 
 /// TOUCH_PAD1 - TOUCH_PAD1
 namespace touch_pad1 {
-/// connect the rtc pad input to digital pad input Ó0Ó is availbale.GPIO0
-/// Position: 12, Width: 1
-/// Access: read-write
-using TO_GPIO = BitField<12, 1>;
-constexpr uint32_t TO_GPIO_Pos = 12;
-constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
+    /// connect the rtc pad input to digital pad input Ó0Ó is availbale.GPIO0
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using TO_GPIO = BitField<12, 1>;
+    constexpr uint32_t TO_GPIO_Pos = 12;
+    constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
 
-/// the input enable of the pad
-/// Position: 13, Width: 1
-/// Access: read-write
-using FUN_IE = BitField<13, 1>;
-constexpr uint32_t FUN_IE_Pos = 13;
-constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using FUN_IE = BitField<13, 1>;
+    constexpr uint32_t FUN_IE_Pos = 13;
+    constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
 
-/// the output enable of the pad in sleep status
-/// Position: 14, Width: 1
-/// Access: read-write
-using SLP_OE = BitField<14, 1>;
-constexpr uint32_t SLP_OE_Pos = 14;
-constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
+    /// the output enable of the pad in sleep status
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using SLP_OE = BitField<14, 1>;
+    constexpr uint32_t SLP_OE_Pos = 14;
+    constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 15, Width: 1
-/// Access: read-write
-using SLP_IE = BitField<15, 1>;
-constexpr uint32_t SLP_IE_Pos = 15;
-constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using SLP_IE = BitField<15, 1>;
+    constexpr uint32_t SLP_IE_Pos = 15;
+    constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 16, Width: 1
-/// Access: read-write
-using SLP_SEL = BitField<16, 1>;
-constexpr uint32_t SLP_SEL_Pos = 16;
-constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using SLP_SEL = BitField<16, 1>;
+    constexpr uint32_t SLP_SEL_Pos = 16;
+    constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 17, Width: 2
-/// Access: read-write
-using FUN_SEL = BitField<17, 2>;
-constexpr uint32_t FUN_SEL_Pos = 17;
-constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 17, Width: 2
+    /// Access: read-write
+    using FUN_SEL = BitField<17, 2>;
+    constexpr uint32_t FUN_SEL_Pos = 17;
+    constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 19, Width: 1
-/// Access: read-write
-using MUX_SEL = BitField<19, 1>;
-constexpr uint32_t MUX_SEL_Pos = 19;
-constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using MUX_SEL = BitField<19, 1>;
+    constexpr uint32_t MUX_SEL_Pos = 19;
+    constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
 
-/// touch sensor power on.
-/// Position: 20, Width: 1
-/// Access: read-write
-using XPD = BitField<20, 1>;
-constexpr uint32_t XPD_Pos = 20;
-constexpr uint32_t XPD_Msk = XPD::mask;
+    /// touch sensor power on.
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using XPD = BitField<20, 1>;
+    constexpr uint32_t XPD_Pos = 20;
+    constexpr uint32_t XPD_Msk = XPD::mask;
 
-/// default touch sensor tie option. 0: tie low 1: tie high.
-/// Position: 21, Width: 1
-/// Access: read-write
-using TIE_OPT = BitField<21, 1>;
-constexpr uint32_t TIE_OPT_Pos = 21;
-constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
+    /// default touch sensor tie option. 0: tie low 1: tie high.
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using TIE_OPT = BitField<21, 1>;
+    constexpr uint32_t TIE_OPT_Pos = 21;
+    constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
 
-/// start touch sensor.
-/// Position: 22, Width: 1
-/// Access: read-write
-using START = BitField<22, 1>;
-constexpr uint32_t START_Pos = 22;
-constexpr uint32_t START_Msk = START::mask;
+    /// start touch sensor.
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using START = BitField<22, 1>;
+    constexpr uint32_t START_Pos = 22;
+    constexpr uint32_t START_Msk = START::mask;
 
-/// touch sensor slope control. 3-bit for each touch panel default 100.
-/// Position: 23, Width: 3
-/// Access: read-write
-using DAC = BitField<23, 3>;
-constexpr uint32_t DAC_Pos = 23;
-constexpr uint32_t DAC_Msk = DAC::mask;
+    /// touch sensor slope control. 3-bit for each touch panel default 100.
+    /// Position: 23, Width: 3
+    /// Access: read-write
+    using DAC = BitField<23, 3>;
+    constexpr uint32_t DAC_Pos = 23;
+    constexpr uint32_t DAC_Msk = DAC::mask;
 
-/// the pull up enable of the pad
-/// Position: 27, Width: 1
-/// Access: read-write
-using RUE = BitField<27, 1>;
-constexpr uint32_t RUE_Pos = 27;
-constexpr uint32_t RUE_Msk = RUE::mask;
+    /// the pull up enable of the pad
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using RUE = BitField<27, 1>;
+    constexpr uint32_t RUE_Pos = 27;
+    constexpr uint32_t RUE_Msk = RUE::mask;
 
-/// the pull down enable of the pad
-/// Position: 28, Width: 1
-/// Access: read-write
-using RDE = BitField<28, 1>;
-constexpr uint32_t RDE_Pos = 28;
-constexpr uint32_t RDE_Msk = RDE::mask;
+    /// the pull down enable of the pad
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using RDE = BitField<28, 1>;
+    constexpr uint32_t RDE_Pos = 28;
+    constexpr uint32_t RDE_Msk = RDE::mask;
 
-/// the driver strength of the pad
-/// Position: 29, Width: 2
-/// Access: read-write
-using DRV = BitField<29, 2>;
-constexpr uint32_t DRV_Pos = 29;
-constexpr uint32_t DRV_Msk = DRV::mask;
+    /// the driver strength of the pad
+    /// Position: 29, Width: 2
+    /// Access: read-write
+    using DRV = BitField<29, 2>;
+    constexpr uint32_t DRV_Pos = 29;
+    constexpr uint32_t DRV_Msk = DRV::mask;
 
-/// Position: 31, Width: 1
-/// Access: read-write
-using HOLD = BitField<31, 1>;
-constexpr uint32_t HOLD_Pos = 31;
-constexpr uint32_t HOLD_Msk = HOLD::mask;
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using HOLD = BitField<31, 1>;
+    constexpr uint32_t HOLD_Pos = 31;
+    constexpr uint32_t HOLD_Msk = HOLD::mask;
 
 }  // namespace touch_pad1
 
 /// TOUCH_PAD2 - TOUCH_PAD2
 namespace touch_pad2 {
-/// connect the rtc pad input to digital pad input Ó0Ó is availbale.GPIO2
-/// Position: 12, Width: 1
-/// Access: read-write
-using TO_GPIO = BitField<12, 1>;
-constexpr uint32_t TO_GPIO_Pos = 12;
-constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
+    /// connect the rtc pad input to digital pad input Ó0Ó is availbale.GPIO2
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using TO_GPIO = BitField<12, 1>;
+    constexpr uint32_t TO_GPIO_Pos = 12;
+    constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
 
-/// the input enable of the pad
-/// Position: 13, Width: 1
-/// Access: read-write
-using FUN_IE = BitField<13, 1>;
-constexpr uint32_t FUN_IE_Pos = 13;
-constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using FUN_IE = BitField<13, 1>;
+    constexpr uint32_t FUN_IE_Pos = 13;
+    constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
 
-/// the output enable of the pad in sleep status
-/// Position: 14, Width: 1
-/// Access: read-write
-using SLP_OE = BitField<14, 1>;
-constexpr uint32_t SLP_OE_Pos = 14;
-constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
+    /// the output enable of the pad in sleep status
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using SLP_OE = BitField<14, 1>;
+    constexpr uint32_t SLP_OE_Pos = 14;
+    constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 15, Width: 1
-/// Access: read-write
-using SLP_IE = BitField<15, 1>;
-constexpr uint32_t SLP_IE_Pos = 15;
-constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using SLP_IE = BitField<15, 1>;
+    constexpr uint32_t SLP_IE_Pos = 15;
+    constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 16, Width: 1
-/// Access: read-write
-using SLP_SEL = BitField<16, 1>;
-constexpr uint32_t SLP_SEL_Pos = 16;
-constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using SLP_SEL = BitField<16, 1>;
+    constexpr uint32_t SLP_SEL_Pos = 16;
+    constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 17, Width: 2
-/// Access: read-write
-using FUN_SEL = BitField<17, 2>;
-constexpr uint32_t FUN_SEL_Pos = 17;
-constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 17, Width: 2
+    /// Access: read-write
+    using FUN_SEL = BitField<17, 2>;
+    constexpr uint32_t FUN_SEL_Pos = 17;
+    constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 19, Width: 1
-/// Access: read-write
-using MUX_SEL = BitField<19, 1>;
-constexpr uint32_t MUX_SEL_Pos = 19;
-constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using MUX_SEL = BitField<19, 1>;
+    constexpr uint32_t MUX_SEL_Pos = 19;
+    constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
 
-/// touch sensor power on.
-/// Position: 20, Width: 1
-/// Access: read-write
-using XPD = BitField<20, 1>;
-constexpr uint32_t XPD_Pos = 20;
-constexpr uint32_t XPD_Msk = XPD::mask;
+    /// touch sensor power on.
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using XPD = BitField<20, 1>;
+    constexpr uint32_t XPD_Pos = 20;
+    constexpr uint32_t XPD_Msk = XPD::mask;
 
-/// default touch sensor tie option. 0: tie low 1: tie high.
-/// Position: 21, Width: 1
-/// Access: read-write
-using TIE_OPT = BitField<21, 1>;
-constexpr uint32_t TIE_OPT_Pos = 21;
-constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
+    /// default touch sensor tie option. 0: tie low 1: tie high.
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using TIE_OPT = BitField<21, 1>;
+    constexpr uint32_t TIE_OPT_Pos = 21;
+    constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
 
-/// start touch sensor.
-/// Position: 22, Width: 1
-/// Access: read-write
-using START = BitField<22, 1>;
-constexpr uint32_t START_Pos = 22;
-constexpr uint32_t START_Msk = START::mask;
+    /// start touch sensor.
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using START = BitField<22, 1>;
+    constexpr uint32_t START_Pos = 22;
+    constexpr uint32_t START_Msk = START::mask;
 
-/// touch sensor slope control. 3-bit for each touch panel default 100.
-/// Position: 23, Width: 3
-/// Access: read-write
-using DAC = BitField<23, 3>;
-constexpr uint32_t DAC_Pos = 23;
-constexpr uint32_t DAC_Msk = DAC::mask;
+    /// touch sensor slope control. 3-bit for each touch panel default 100.
+    /// Position: 23, Width: 3
+    /// Access: read-write
+    using DAC = BitField<23, 3>;
+    constexpr uint32_t DAC_Pos = 23;
+    constexpr uint32_t DAC_Msk = DAC::mask;
 
-/// the pull up enable of the pad
-/// Position: 27, Width: 1
-/// Access: read-write
-using RUE = BitField<27, 1>;
-constexpr uint32_t RUE_Pos = 27;
-constexpr uint32_t RUE_Msk = RUE::mask;
+    /// the pull up enable of the pad
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using RUE = BitField<27, 1>;
+    constexpr uint32_t RUE_Pos = 27;
+    constexpr uint32_t RUE_Msk = RUE::mask;
 
-/// the pull down enable of the pad
-/// Position: 28, Width: 1
-/// Access: read-write
-using RDE = BitField<28, 1>;
-constexpr uint32_t RDE_Pos = 28;
-constexpr uint32_t RDE_Msk = RDE::mask;
+    /// the pull down enable of the pad
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using RDE = BitField<28, 1>;
+    constexpr uint32_t RDE_Pos = 28;
+    constexpr uint32_t RDE_Msk = RDE::mask;
 
-/// the driver strength of the pad
-/// Position: 29, Width: 2
-/// Access: read-write
-using DRV = BitField<29, 2>;
-constexpr uint32_t DRV_Pos = 29;
-constexpr uint32_t DRV_Msk = DRV::mask;
+    /// the driver strength of the pad
+    /// Position: 29, Width: 2
+    /// Access: read-write
+    using DRV = BitField<29, 2>;
+    constexpr uint32_t DRV_Pos = 29;
+    constexpr uint32_t DRV_Msk = DRV::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 31, Width: 1
-/// Access: read-write
-using HOLD = BitField<31, 1>;
-constexpr uint32_t HOLD_Pos = 31;
-constexpr uint32_t HOLD_Msk = HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using HOLD = BitField<31, 1>;
+    constexpr uint32_t HOLD_Pos = 31;
+    constexpr uint32_t HOLD_Msk = HOLD::mask;
 
 }  // namespace touch_pad2
 
 /// TOUCH_PAD3 - TOUCH_PAD3
 namespace touch_pad3 {
-/// connect the rtc pad input to digital pad input Ó0Ó is availbale.MTDO
-/// Position: 12, Width: 1
-/// Access: read-write
-using TO_GPIO = BitField<12, 1>;
-constexpr uint32_t TO_GPIO_Pos = 12;
-constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
+    /// connect the rtc pad input to digital pad input Ó0Ó is availbale.MTDO
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using TO_GPIO = BitField<12, 1>;
+    constexpr uint32_t TO_GPIO_Pos = 12;
+    constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
 
-/// the input enable of the pad
-/// Position: 13, Width: 1
-/// Access: read-write
-using FUN_IE = BitField<13, 1>;
-constexpr uint32_t FUN_IE_Pos = 13;
-constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using FUN_IE = BitField<13, 1>;
+    constexpr uint32_t FUN_IE_Pos = 13;
+    constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
 
-/// the output enable of the pad in sleep status
-/// Position: 14, Width: 1
-/// Access: read-write
-using SLP_OE = BitField<14, 1>;
-constexpr uint32_t SLP_OE_Pos = 14;
-constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
+    /// the output enable of the pad in sleep status
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using SLP_OE = BitField<14, 1>;
+    constexpr uint32_t SLP_OE_Pos = 14;
+    constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 15, Width: 1
-/// Access: read-write
-using SLP_IE = BitField<15, 1>;
-constexpr uint32_t SLP_IE_Pos = 15;
-constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using SLP_IE = BitField<15, 1>;
+    constexpr uint32_t SLP_IE_Pos = 15;
+    constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 16, Width: 1
-/// Access: read-write
-using SLP_SEL = BitField<16, 1>;
-constexpr uint32_t SLP_SEL_Pos = 16;
-constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using SLP_SEL = BitField<16, 1>;
+    constexpr uint32_t SLP_SEL_Pos = 16;
+    constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 17, Width: 2
-/// Access: read-write
-using FUN_SEL = BitField<17, 2>;
-constexpr uint32_t FUN_SEL_Pos = 17;
-constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 17, Width: 2
+    /// Access: read-write
+    using FUN_SEL = BitField<17, 2>;
+    constexpr uint32_t FUN_SEL_Pos = 17;
+    constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 19, Width: 1
-/// Access: read-write
-using MUX_SEL = BitField<19, 1>;
-constexpr uint32_t MUX_SEL_Pos = 19;
-constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using MUX_SEL = BitField<19, 1>;
+    constexpr uint32_t MUX_SEL_Pos = 19;
+    constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
 
-/// touch sensor power on.
-/// Position: 20, Width: 1
-/// Access: read-write
-using XPD = BitField<20, 1>;
-constexpr uint32_t XPD_Pos = 20;
-constexpr uint32_t XPD_Msk = XPD::mask;
+    /// touch sensor power on.
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using XPD = BitField<20, 1>;
+    constexpr uint32_t XPD_Pos = 20;
+    constexpr uint32_t XPD_Msk = XPD::mask;
 
-/// default touch sensor tie option. 0: tie low 1: tie high.
-/// Position: 21, Width: 1
-/// Access: read-write
-using TIE_OPT = BitField<21, 1>;
-constexpr uint32_t TIE_OPT_Pos = 21;
-constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
+    /// default touch sensor tie option. 0: tie low 1: tie high.
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using TIE_OPT = BitField<21, 1>;
+    constexpr uint32_t TIE_OPT_Pos = 21;
+    constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
 
-/// start touch sensor.
-/// Position: 22, Width: 1
-/// Access: read-write
-using START = BitField<22, 1>;
-constexpr uint32_t START_Pos = 22;
-constexpr uint32_t START_Msk = START::mask;
+    /// start touch sensor.
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using START = BitField<22, 1>;
+    constexpr uint32_t START_Pos = 22;
+    constexpr uint32_t START_Msk = START::mask;
 
-/// touch sensor slope control. 3-bit for each touch panel default 100.
-/// Position: 23, Width: 3
-/// Access: read-write
-using DAC = BitField<23, 3>;
-constexpr uint32_t DAC_Pos = 23;
-constexpr uint32_t DAC_Msk = DAC::mask;
+    /// touch sensor slope control. 3-bit for each touch panel default 100.
+    /// Position: 23, Width: 3
+    /// Access: read-write
+    using DAC = BitField<23, 3>;
+    constexpr uint32_t DAC_Pos = 23;
+    constexpr uint32_t DAC_Msk = DAC::mask;
 
-/// the pull up enable of the pad
-/// Position: 27, Width: 1
-/// Access: read-write
-using RUE = BitField<27, 1>;
-constexpr uint32_t RUE_Pos = 27;
-constexpr uint32_t RUE_Msk = RUE::mask;
+    /// the pull up enable of the pad
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using RUE = BitField<27, 1>;
+    constexpr uint32_t RUE_Pos = 27;
+    constexpr uint32_t RUE_Msk = RUE::mask;
 
-/// the pull down enable of the pad
-/// Position: 28, Width: 1
-/// Access: read-write
-using RDE = BitField<28, 1>;
-constexpr uint32_t RDE_Pos = 28;
-constexpr uint32_t RDE_Msk = RDE::mask;
+    /// the pull down enable of the pad
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using RDE = BitField<28, 1>;
+    constexpr uint32_t RDE_Pos = 28;
+    constexpr uint32_t RDE_Msk = RDE::mask;
 
-/// the driver strength of the pad
-/// Position: 29, Width: 2
-/// Access: read-write
-using DRV = BitField<29, 2>;
-constexpr uint32_t DRV_Pos = 29;
-constexpr uint32_t DRV_Msk = DRV::mask;
+    /// the driver strength of the pad
+    /// Position: 29, Width: 2
+    /// Access: read-write
+    using DRV = BitField<29, 2>;
+    constexpr uint32_t DRV_Pos = 29;
+    constexpr uint32_t DRV_Msk = DRV::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 31, Width: 1
-/// Access: read-write
-using HOLD = BitField<31, 1>;
-constexpr uint32_t HOLD_Pos = 31;
-constexpr uint32_t HOLD_Msk = HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using HOLD = BitField<31, 1>;
+    constexpr uint32_t HOLD_Pos = 31;
+    constexpr uint32_t HOLD_Msk = HOLD::mask;
 
 }  // namespace touch_pad3
 
 /// TOUCH_PAD4 - TOUCH_PAD4
 namespace touch_pad4 {
-/// connect the rtc pad input to digital pad input Ó0Ó is availbale.MTCK
-/// Position: 12, Width: 1
-/// Access: read-write
-using TO_GPIO = BitField<12, 1>;
-constexpr uint32_t TO_GPIO_Pos = 12;
-constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
+    /// connect the rtc pad input to digital pad input Ó0Ó is availbale.MTCK
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using TO_GPIO = BitField<12, 1>;
+    constexpr uint32_t TO_GPIO_Pos = 12;
+    constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
 
-/// the input enable of the pad
-/// Position: 13, Width: 1
-/// Access: read-write
-using FUN_IE = BitField<13, 1>;
-constexpr uint32_t FUN_IE_Pos = 13;
-constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using FUN_IE = BitField<13, 1>;
+    constexpr uint32_t FUN_IE_Pos = 13;
+    constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
 
-/// the output enable of the pad in sleep status
-/// Position: 14, Width: 1
-/// Access: read-write
-using SLP_OE = BitField<14, 1>;
-constexpr uint32_t SLP_OE_Pos = 14;
-constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
+    /// the output enable of the pad in sleep status
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using SLP_OE = BitField<14, 1>;
+    constexpr uint32_t SLP_OE_Pos = 14;
+    constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 15, Width: 1
-/// Access: read-write
-using SLP_IE = BitField<15, 1>;
-constexpr uint32_t SLP_IE_Pos = 15;
-constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using SLP_IE = BitField<15, 1>;
+    constexpr uint32_t SLP_IE_Pos = 15;
+    constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 16, Width: 1
-/// Access: read-write
-using SLP_SEL = BitField<16, 1>;
-constexpr uint32_t SLP_SEL_Pos = 16;
-constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using SLP_SEL = BitField<16, 1>;
+    constexpr uint32_t SLP_SEL_Pos = 16;
+    constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 17, Width: 2
-/// Access: read-write
-using FUN_SEL = BitField<17, 2>;
-constexpr uint32_t FUN_SEL_Pos = 17;
-constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 17, Width: 2
+    /// Access: read-write
+    using FUN_SEL = BitField<17, 2>;
+    constexpr uint32_t FUN_SEL_Pos = 17;
+    constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 19, Width: 1
-/// Access: read-write
-using MUX_SEL = BitField<19, 1>;
-constexpr uint32_t MUX_SEL_Pos = 19;
-constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using MUX_SEL = BitField<19, 1>;
+    constexpr uint32_t MUX_SEL_Pos = 19;
+    constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
 
-/// touch sensor power on.
-/// Position: 20, Width: 1
-/// Access: read-write
-using XPD = BitField<20, 1>;
-constexpr uint32_t XPD_Pos = 20;
-constexpr uint32_t XPD_Msk = XPD::mask;
+    /// touch sensor power on.
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using XPD = BitField<20, 1>;
+    constexpr uint32_t XPD_Pos = 20;
+    constexpr uint32_t XPD_Msk = XPD::mask;
 
-/// default touch sensor tie option. 0: tie low 1: tie high.
-/// Position: 21, Width: 1
-/// Access: read-write
-using TIE_OPT = BitField<21, 1>;
-constexpr uint32_t TIE_OPT_Pos = 21;
-constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
+    /// default touch sensor tie option. 0: tie low 1: tie high.
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using TIE_OPT = BitField<21, 1>;
+    constexpr uint32_t TIE_OPT_Pos = 21;
+    constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
 
-/// start touch sensor.
-/// Position: 22, Width: 1
-/// Access: read-write
-using START = BitField<22, 1>;
-constexpr uint32_t START_Pos = 22;
-constexpr uint32_t START_Msk = START::mask;
+    /// start touch sensor.
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using START = BitField<22, 1>;
+    constexpr uint32_t START_Pos = 22;
+    constexpr uint32_t START_Msk = START::mask;
 
-/// touch sensor slope control. 3-bit for each touch panel default 100.
-/// Position: 23, Width: 3
-/// Access: read-write
-using DAC = BitField<23, 3>;
-constexpr uint32_t DAC_Pos = 23;
-constexpr uint32_t DAC_Msk = DAC::mask;
+    /// touch sensor slope control. 3-bit for each touch panel default 100.
+    /// Position: 23, Width: 3
+    /// Access: read-write
+    using DAC = BitField<23, 3>;
+    constexpr uint32_t DAC_Pos = 23;
+    constexpr uint32_t DAC_Msk = DAC::mask;
 
-/// the pull up enable of the pad
-/// Position: 27, Width: 1
-/// Access: read-write
-using RUE = BitField<27, 1>;
-constexpr uint32_t RUE_Pos = 27;
-constexpr uint32_t RUE_Msk = RUE::mask;
+    /// the pull up enable of the pad
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using RUE = BitField<27, 1>;
+    constexpr uint32_t RUE_Pos = 27;
+    constexpr uint32_t RUE_Msk = RUE::mask;
 
-/// the pull down enable of the pad
-/// Position: 28, Width: 1
-/// Access: read-write
-using RDE = BitField<28, 1>;
-constexpr uint32_t RDE_Pos = 28;
-constexpr uint32_t RDE_Msk = RDE::mask;
+    /// the pull down enable of the pad
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using RDE = BitField<28, 1>;
+    constexpr uint32_t RDE_Pos = 28;
+    constexpr uint32_t RDE_Msk = RDE::mask;
 
-/// the driver strength of the pad
-/// Position: 29, Width: 2
-/// Access: read-write
-using DRV = BitField<29, 2>;
-constexpr uint32_t DRV_Pos = 29;
-constexpr uint32_t DRV_Msk = DRV::mask;
+    /// the driver strength of the pad
+    /// Position: 29, Width: 2
+    /// Access: read-write
+    using DRV = BitField<29, 2>;
+    constexpr uint32_t DRV_Pos = 29;
+    constexpr uint32_t DRV_Msk = DRV::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 31, Width: 1
-/// Access: read-write
-using HOLD = BitField<31, 1>;
-constexpr uint32_t HOLD_Pos = 31;
-constexpr uint32_t HOLD_Msk = HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using HOLD = BitField<31, 1>;
+    constexpr uint32_t HOLD_Pos = 31;
+    constexpr uint32_t HOLD_Msk = HOLD::mask;
 
 }  // namespace touch_pad4
 
 /// TOUCH_PAD5 - TOUCH_PAD5
 namespace touch_pad5 {
-/// connect the rtc pad input to digital pad input Ó0Ó is availbale.MTDI
-/// Position: 12, Width: 1
-/// Access: read-write
-using TO_GPIO = BitField<12, 1>;
-constexpr uint32_t TO_GPIO_Pos = 12;
-constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
+    /// connect the rtc pad input to digital pad input Ó0Ó is availbale.MTDI
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using TO_GPIO = BitField<12, 1>;
+    constexpr uint32_t TO_GPIO_Pos = 12;
+    constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
 
-/// the input enable of the pad
-/// Position: 13, Width: 1
-/// Access: read-write
-using FUN_IE = BitField<13, 1>;
-constexpr uint32_t FUN_IE_Pos = 13;
-constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using FUN_IE = BitField<13, 1>;
+    constexpr uint32_t FUN_IE_Pos = 13;
+    constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
 
-/// the output enable of the pad in sleep status
-/// Position: 14, Width: 1
-/// Access: read-write
-using SLP_OE = BitField<14, 1>;
-constexpr uint32_t SLP_OE_Pos = 14;
-constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
+    /// the output enable of the pad in sleep status
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using SLP_OE = BitField<14, 1>;
+    constexpr uint32_t SLP_OE_Pos = 14;
+    constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 15, Width: 1
-/// Access: read-write
-using SLP_IE = BitField<15, 1>;
-constexpr uint32_t SLP_IE_Pos = 15;
-constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using SLP_IE = BitField<15, 1>;
+    constexpr uint32_t SLP_IE_Pos = 15;
+    constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 16, Width: 1
-/// Access: read-write
-using SLP_SEL = BitField<16, 1>;
-constexpr uint32_t SLP_SEL_Pos = 16;
-constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using SLP_SEL = BitField<16, 1>;
+    constexpr uint32_t SLP_SEL_Pos = 16;
+    constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 17, Width: 2
-/// Access: read-write
-using FUN_SEL = BitField<17, 2>;
-constexpr uint32_t FUN_SEL_Pos = 17;
-constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 17, Width: 2
+    /// Access: read-write
+    using FUN_SEL = BitField<17, 2>;
+    constexpr uint32_t FUN_SEL_Pos = 17;
+    constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 19, Width: 1
-/// Access: read-write
-using MUX_SEL = BitField<19, 1>;
-constexpr uint32_t MUX_SEL_Pos = 19;
-constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using MUX_SEL = BitField<19, 1>;
+    constexpr uint32_t MUX_SEL_Pos = 19;
+    constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
 
-/// touch sensor power on.
-/// Position: 20, Width: 1
-/// Access: read-write
-using XPD = BitField<20, 1>;
-constexpr uint32_t XPD_Pos = 20;
-constexpr uint32_t XPD_Msk = XPD::mask;
+    /// touch sensor power on.
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using XPD = BitField<20, 1>;
+    constexpr uint32_t XPD_Pos = 20;
+    constexpr uint32_t XPD_Msk = XPD::mask;
 
-/// default touch sensor tie option. 0: tie low 1: tie high.
-/// Position: 21, Width: 1
-/// Access: read-write
-using TIE_OPT = BitField<21, 1>;
-constexpr uint32_t TIE_OPT_Pos = 21;
-constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
+    /// default touch sensor tie option. 0: tie low 1: tie high.
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using TIE_OPT = BitField<21, 1>;
+    constexpr uint32_t TIE_OPT_Pos = 21;
+    constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
 
-/// start touch sensor.
-/// Position: 22, Width: 1
-/// Access: read-write
-using START = BitField<22, 1>;
-constexpr uint32_t START_Pos = 22;
-constexpr uint32_t START_Msk = START::mask;
+    /// start touch sensor.
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using START = BitField<22, 1>;
+    constexpr uint32_t START_Pos = 22;
+    constexpr uint32_t START_Msk = START::mask;
 
-/// touch sensor slope control. 3-bit for each touch panel default 100.
-/// Position: 23, Width: 3
-/// Access: read-write
-using DAC = BitField<23, 3>;
-constexpr uint32_t DAC_Pos = 23;
-constexpr uint32_t DAC_Msk = DAC::mask;
+    /// touch sensor slope control. 3-bit for each touch panel default 100.
+    /// Position: 23, Width: 3
+    /// Access: read-write
+    using DAC = BitField<23, 3>;
+    constexpr uint32_t DAC_Pos = 23;
+    constexpr uint32_t DAC_Msk = DAC::mask;
 
-/// the pull up enable of the pad
-/// Position: 27, Width: 1
-/// Access: read-write
-using RUE = BitField<27, 1>;
-constexpr uint32_t RUE_Pos = 27;
-constexpr uint32_t RUE_Msk = RUE::mask;
+    /// the pull up enable of the pad
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using RUE = BitField<27, 1>;
+    constexpr uint32_t RUE_Pos = 27;
+    constexpr uint32_t RUE_Msk = RUE::mask;
 
-/// the pull down enable of the pad
-/// Position: 28, Width: 1
-/// Access: read-write
-using RDE = BitField<28, 1>;
-constexpr uint32_t RDE_Pos = 28;
-constexpr uint32_t RDE_Msk = RDE::mask;
+    /// the pull down enable of the pad
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using RDE = BitField<28, 1>;
+    constexpr uint32_t RDE_Pos = 28;
+    constexpr uint32_t RDE_Msk = RDE::mask;
 
-/// the driver strength of the pad
-/// Position: 29, Width: 2
-/// Access: read-write
-using DRV = BitField<29, 2>;
-constexpr uint32_t DRV_Pos = 29;
-constexpr uint32_t DRV_Msk = DRV::mask;
+    /// the driver strength of the pad
+    /// Position: 29, Width: 2
+    /// Access: read-write
+    using DRV = BitField<29, 2>;
+    constexpr uint32_t DRV_Pos = 29;
+    constexpr uint32_t DRV_Msk = DRV::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 31, Width: 1
-/// Access: read-write
-using HOLD = BitField<31, 1>;
-constexpr uint32_t HOLD_Pos = 31;
-constexpr uint32_t HOLD_Msk = HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using HOLD = BitField<31, 1>;
+    constexpr uint32_t HOLD_Pos = 31;
+    constexpr uint32_t HOLD_Msk = HOLD::mask;
 
 }  // namespace touch_pad5
 
 /// TOUCH_PAD6 - TOUCH_PAD6
 namespace touch_pad6 {
-/// connect the rtc pad input to digital pad input Ó0Ó is availbale.MTMS
-/// Position: 12, Width: 1
-/// Access: read-write
-using TO_GPIO = BitField<12, 1>;
-constexpr uint32_t TO_GPIO_Pos = 12;
-constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
+    /// connect the rtc pad input to digital pad input Ó0Ó is availbale.MTMS
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using TO_GPIO = BitField<12, 1>;
+    constexpr uint32_t TO_GPIO_Pos = 12;
+    constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
 
-/// the input enable of the pad
-/// Position: 13, Width: 1
-/// Access: read-write
-using FUN_IE = BitField<13, 1>;
-constexpr uint32_t FUN_IE_Pos = 13;
-constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using FUN_IE = BitField<13, 1>;
+    constexpr uint32_t FUN_IE_Pos = 13;
+    constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
 
-/// the output enable of the pad in sleep status
-/// Position: 14, Width: 1
-/// Access: read-write
-using SLP_OE = BitField<14, 1>;
-constexpr uint32_t SLP_OE_Pos = 14;
-constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
+    /// the output enable of the pad in sleep status
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using SLP_OE = BitField<14, 1>;
+    constexpr uint32_t SLP_OE_Pos = 14;
+    constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 15, Width: 1
-/// Access: read-write
-using SLP_IE = BitField<15, 1>;
-constexpr uint32_t SLP_IE_Pos = 15;
-constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using SLP_IE = BitField<15, 1>;
+    constexpr uint32_t SLP_IE_Pos = 15;
+    constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 16, Width: 1
-/// Access: read-write
-using SLP_SEL = BitField<16, 1>;
-constexpr uint32_t SLP_SEL_Pos = 16;
-constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using SLP_SEL = BitField<16, 1>;
+    constexpr uint32_t SLP_SEL_Pos = 16;
+    constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 17, Width: 2
-/// Access: read-write
-using FUN_SEL = BitField<17, 2>;
-constexpr uint32_t FUN_SEL_Pos = 17;
-constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 17, Width: 2
+    /// Access: read-write
+    using FUN_SEL = BitField<17, 2>;
+    constexpr uint32_t FUN_SEL_Pos = 17;
+    constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 19, Width: 1
-/// Access: read-write
-using MUX_SEL = BitField<19, 1>;
-constexpr uint32_t MUX_SEL_Pos = 19;
-constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using MUX_SEL = BitField<19, 1>;
+    constexpr uint32_t MUX_SEL_Pos = 19;
+    constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
 
-/// touch sensor power on.
-/// Position: 20, Width: 1
-/// Access: read-write
-using XPD = BitField<20, 1>;
-constexpr uint32_t XPD_Pos = 20;
-constexpr uint32_t XPD_Msk = XPD::mask;
+    /// touch sensor power on.
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using XPD = BitField<20, 1>;
+    constexpr uint32_t XPD_Pos = 20;
+    constexpr uint32_t XPD_Msk = XPD::mask;
 
-/// default touch sensor tie option. 0: tie low 1: tie high.
-/// Position: 21, Width: 1
-/// Access: read-write
-using TIE_OPT = BitField<21, 1>;
-constexpr uint32_t TIE_OPT_Pos = 21;
-constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
+    /// default touch sensor tie option. 0: tie low 1: tie high.
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using TIE_OPT = BitField<21, 1>;
+    constexpr uint32_t TIE_OPT_Pos = 21;
+    constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
 
-/// start touch sensor.
-/// Position: 22, Width: 1
-/// Access: read-write
-using START = BitField<22, 1>;
-constexpr uint32_t START_Pos = 22;
-constexpr uint32_t START_Msk = START::mask;
+    /// start touch sensor.
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using START = BitField<22, 1>;
+    constexpr uint32_t START_Pos = 22;
+    constexpr uint32_t START_Msk = START::mask;
 
-/// touch sensor slope control. 3-bit for each touch panel default 100.
-/// Position: 23, Width: 3
-/// Access: read-write
-using DAC = BitField<23, 3>;
-constexpr uint32_t DAC_Pos = 23;
-constexpr uint32_t DAC_Msk = DAC::mask;
+    /// touch sensor slope control. 3-bit for each touch panel default 100.
+    /// Position: 23, Width: 3
+    /// Access: read-write
+    using DAC = BitField<23, 3>;
+    constexpr uint32_t DAC_Pos = 23;
+    constexpr uint32_t DAC_Msk = DAC::mask;
 
-/// the pull up enable of the pad
-/// Position: 27, Width: 1
-/// Access: read-write
-using RUE = BitField<27, 1>;
-constexpr uint32_t RUE_Pos = 27;
-constexpr uint32_t RUE_Msk = RUE::mask;
+    /// the pull up enable of the pad
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using RUE = BitField<27, 1>;
+    constexpr uint32_t RUE_Pos = 27;
+    constexpr uint32_t RUE_Msk = RUE::mask;
 
-/// the pull down enable of the pad
-/// Position: 28, Width: 1
-/// Access: read-write
-using RDE = BitField<28, 1>;
-constexpr uint32_t RDE_Pos = 28;
-constexpr uint32_t RDE_Msk = RDE::mask;
+    /// the pull down enable of the pad
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using RDE = BitField<28, 1>;
+    constexpr uint32_t RDE_Pos = 28;
+    constexpr uint32_t RDE_Msk = RDE::mask;
 
-/// the driver strength of the pad
-/// Position: 29, Width: 2
-/// Access: read-write
-using DRV = BitField<29, 2>;
-constexpr uint32_t DRV_Pos = 29;
-constexpr uint32_t DRV_Msk = DRV::mask;
+    /// the driver strength of the pad
+    /// Position: 29, Width: 2
+    /// Access: read-write
+    using DRV = BitField<29, 2>;
+    constexpr uint32_t DRV_Pos = 29;
+    constexpr uint32_t DRV_Msk = DRV::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 31, Width: 1
-/// Access: read-write
-using HOLD = BitField<31, 1>;
-constexpr uint32_t HOLD_Pos = 31;
-constexpr uint32_t HOLD_Msk = HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using HOLD = BitField<31, 1>;
+    constexpr uint32_t HOLD_Pos = 31;
+    constexpr uint32_t HOLD_Msk = HOLD::mask;
 
 }  // namespace touch_pad6
 
 /// TOUCH_PAD7 - TOUCH_PAD7
 namespace touch_pad7 {
-/// connect the rtc pad input to digital pad input Ó0Ó is availbale.GPIO27
-/// Position: 12, Width: 1
-/// Access: read-write
-using TO_GPIO = BitField<12, 1>;
-constexpr uint32_t TO_GPIO_Pos = 12;
-constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
+    /// connect the rtc pad input to digital pad input Ó0Ó is availbale.GPIO27
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using TO_GPIO = BitField<12, 1>;
+    constexpr uint32_t TO_GPIO_Pos = 12;
+    constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
 
-/// the input enable of the pad
-/// Position: 13, Width: 1
-/// Access: read-write
-using FUN_IE = BitField<13, 1>;
-constexpr uint32_t FUN_IE_Pos = 13;
-constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
+    /// the input enable of the pad
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using FUN_IE = BitField<13, 1>;
+    constexpr uint32_t FUN_IE_Pos = 13;
+    constexpr uint32_t FUN_IE_Msk = FUN_IE::mask;
 
-/// the output enable of the pad in sleep status
-/// Position: 14, Width: 1
-/// Access: read-write
-using SLP_OE = BitField<14, 1>;
-constexpr uint32_t SLP_OE_Pos = 14;
-constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
+    /// the output enable of the pad in sleep status
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using SLP_OE = BitField<14, 1>;
+    constexpr uint32_t SLP_OE_Pos = 14;
+    constexpr uint32_t SLP_OE_Msk = SLP_OE::mask;
 
-/// the input enable of the pad in sleep status
-/// Position: 15, Width: 1
-/// Access: read-write
-using SLP_IE = BitField<15, 1>;
-constexpr uint32_t SLP_IE_Pos = 15;
-constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
+    /// the input enable of the pad in sleep status
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using SLP_IE = BitField<15, 1>;
+    constexpr uint32_t SLP_IE_Pos = 15;
+    constexpr uint32_t SLP_IE_Msk = SLP_IE::mask;
 
-/// the sleep status selection signal of the pad
-/// Position: 16, Width: 1
-/// Access: read-write
-using SLP_SEL = BitField<16, 1>;
-constexpr uint32_t SLP_SEL_Pos = 16;
-constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
+    /// the sleep status selection signal of the pad
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using SLP_SEL = BitField<16, 1>;
+    constexpr uint32_t SLP_SEL_Pos = 16;
+    constexpr uint32_t SLP_SEL_Msk = SLP_SEL::mask;
 
-/// the functional selection signal of the pad
-/// Position: 17, Width: 2
-/// Access: read-write
-using FUN_SEL = BitField<17, 2>;
-constexpr uint32_t FUN_SEL_Pos = 17;
-constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
+    /// the functional selection signal of the pad
+    /// Position: 17, Width: 2
+    /// Access: read-write
+    using FUN_SEL = BitField<17, 2>;
+    constexpr uint32_t FUN_SEL_Pos = 17;
+    constexpr uint32_t FUN_SEL_Msk = FUN_SEL::mask;
 
-/// Ò1Ó select the digital function Ó0Óslection the rtc function
-/// Position: 19, Width: 1
-/// Access: read-write
-using MUX_SEL = BitField<19, 1>;
-constexpr uint32_t MUX_SEL_Pos = 19;
-constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
+    /// Ò1Ó select the digital function Ó0Óslection the rtc function
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using MUX_SEL = BitField<19, 1>;
+    constexpr uint32_t MUX_SEL_Pos = 19;
+    constexpr uint32_t MUX_SEL_Msk = MUX_SEL::mask;
 
-/// touch sensor power on.
-/// Position: 20, Width: 1
-/// Access: read-write
-using XPD = BitField<20, 1>;
-constexpr uint32_t XPD_Pos = 20;
-constexpr uint32_t XPD_Msk = XPD::mask;
+    /// touch sensor power on.
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using XPD = BitField<20, 1>;
+    constexpr uint32_t XPD_Pos = 20;
+    constexpr uint32_t XPD_Msk = XPD::mask;
 
-/// default touch sensor tie option. 0: tie low 1: tie high.
-/// Position: 21, Width: 1
-/// Access: read-write
-using TIE_OPT = BitField<21, 1>;
-constexpr uint32_t TIE_OPT_Pos = 21;
-constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
+    /// default touch sensor tie option. 0: tie low 1: tie high.
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using TIE_OPT = BitField<21, 1>;
+    constexpr uint32_t TIE_OPT_Pos = 21;
+    constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
 
-/// start touch sensor.
-/// Position: 22, Width: 1
-/// Access: read-write
-using START = BitField<22, 1>;
-constexpr uint32_t START_Pos = 22;
-constexpr uint32_t START_Msk = START::mask;
+    /// start touch sensor.
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using START = BitField<22, 1>;
+    constexpr uint32_t START_Pos = 22;
+    constexpr uint32_t START_Msk = START::mask;
 
-/// touch sensor slope control. 3-bit for each touch panel default 100.
-/// Position: 23, Width: 3
-/// Access: read-write
-using DAC = BitField<23, 3>;
-constexpr uint32_t DAC_Pos = 23;
-constexpr uint32_t DAC_Msk = DAC::mask;
+    /// touch sensor slope control. 3-bit for each touch panel default 100.
+    /// Position: 23, Width: 3
+    /// Access: read-write
+    using DAC = BitField<23, 3>;
+    constexpr uint32_t DAC_Pos = 23;
+    constexpr uint32_t DAC_Msk = DAC::mask;
 
-/// the pull up enable of the pad
-/// Position: 27, Width: 1
-/// Access: read-write
-using RUE = BitField<27, 1>;
-constexpr uint32_t RUE_Pos = 27;
-constexpr uint32_t RUE_Msk = RUE::mask;
+    /// the pull up enable of the pad
+    /// Position: 27, Width: 1
+    /// Access: read-write
+    using RUE = BitField<27, 1>;
+    constexpr uint32_t RUE_Pos = 27;
+    constexpr uint32_t RUE_Msk = RUE::mask;
 
-/// the pull down enable of the pad
-/// Position: 28, Width: 1
-/// Access: read-write
-using RDE = BitField<28, 1>;
-constexpr uint32_t RDE_Pos = 28;
-constexpr uint32_t RDE_Msk = RDE::mask;
+    /// the pull down enable of the pad
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using RDE = BitField<28, 1>;
+    constexpr uint32_t RDE_Pos = 28;
+    constexpr uint32_t RDE_Msk = RDE::mask;
 
-/// the driver strength of the pad
-/// Position: 29, Width: 2
-/// Access: read-write
-using DRV = BitField<29, 2>;
-constexpr uint32_t DRV_Pos = 29;
-constexpr uint32_t DRV_Msk = DRV::mask;
+    /// the driver strength of the pad
+    /// Position: 29, Width: 2
+    /// Access: read-write
+    using DRV = BitField<29, 2>;
+    constexpr uint32_t DRV_Pos = 29;
+    constexpr uint32_t DRV_Msk = DRV::mask;
 
-/// hold the current value of the output when setting the hold to Ò1Ó
-/// Position: 31, Width: 1
-/// Access: read-write
-using HOLD = BitField<31, 1>;
-constexpr uint32_t HOLD_Pos = 31;
-constexpr uint32_t HOLD_Msk = HOLD::mask;
+    /// hold the current value of the output when setting the hold to Ò1Ó
+    /// Position: 31, Width: 1
+    /// Access: read-write
+    using HOLD = BitField<31, 1>;
+    constexpr uint32_t HOLD_Pos = 31;
+    constexpr uint32_t HOLD_Msk = HOLD::mask;
 
 }  // namespace touch_pad7
 
 /// TOUCH_PAD8 - TOUCH_PAD8
 namespace touch_pad8 {
-/// connect the rtc pad input to digital pad input Ó0Ó is availbale
-/// Position: 19, Width: 1
-/// Access: read-write
-using TO_GPIO = BitField<19, 1>;
-constexpr uint32_t TO_GPIO_Pos = 19;
-constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
+    /// connect the rtc pad input to digital pad input Ó0Ó is availbale
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using TO_GPIO = BitField<19, 1>;
+    constexpr uint32_t TO_GPIO_Pos = 19;
+    constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
 
-/// touch sensor power on.
-/// Position: 20, Width: 1
-/// Access: read-write
-using XPD = BitField<20, 1>;
-constexpr uint32_t XPD_Pos = 20;
-constexpr uint32_t XPD_Msk = XPD::mask;
+    /// touch sensor power on.
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using XPD = BitField<20, 1>;
+    constexpr uint32_t XPD_Pos = 20;
+    constexpr uint32_t XPD_Msk = XPD::mask;
 
-/// default touch sensor tie option. 0: tie low 1: tie high.
-/// Position: 21, Width: 1
-/// Access: read-write
-using TIE_OPT = BitField<21, 1>;
-constexpr uint32_t TIE_OPT_Pos = 21;
-constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
+    /// default touch sensor tie option. 0: tie low 1: tie high.
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using TIE_OPT = BitField<21, 1>;
+    constexpr uint32_t TIE_OPT_Pos = 21;
+    constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
 
-/// start touch sensor.
-/// Position: 22, Width: 1
-/// Access: read-write
-using START = BitField<22, 1>;
-constexpr uint32_t START_Pos = 22;
-constexpr uint32_t START_Msk = START::mask;
+    /// start touch sensor.
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using START = BitField<22, 1>;
+    constexpr uint32_t START_Pos = 22;
+    constexpr uint32_t START_Msk = START::mask;
 
-/// touch sensor slope control. 3-bit for each touch panel default 100.
-/// Position: 23, Width: 3
-/// Access: read-write
-using DAC = BitField<23, 3>;
-constexpr uint32_t DAC_Pos = 23;
-constexpr uint32_t DAC_Msk = DAC::mask;
+    /// touch sensor slope control. 3-bit for each touch panel default 100.
+    /// Position: 23, Width: 3
+    /// Access: read-write
+    using DAC = BitField<23, 3>;
+    constexpr uint32_t DAC_Pos = 23;
+    constexpr uint32_t DAC_Msk = DAC::mask;
 
 }  // namespace touch_pad8
 
 /// TOUCH_PAD9 - TOUCH_PAD9
 namespace touch_pad9 {
-/// connect the rtc pad input to digital pad input Ó0Ó is availbale
-/// Position: 19, Width: 1
-/// Access: read-write
-using TO_GPIO = BitField<19, 1>;
-constexpr uint32_t TO_GPIO_Pos = 19;
-constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
+    /// connect the rtc pad input to digital pad input Ó0Ó is availbale
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using TO_GPIO = BitField<19, 1>;
+    constexpr uint32_t TO_GPIO_Pos = 19;
+    constexpr uint32_t TO_GPIO_Msk = TO_GPIO::mask;
 
-/// touch sensor power on.
-/// Position: 20, Width: 1
-/// Access: read-write
-using XPD = BitField<20, 1>;
-constexpr uint32_t XPD_Pos = 20;
-constexpr uint32_t XPD_Msk = XPD::mask;
+    /// touch sensor power on.
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using XPD = BitField<20, 1>;
+    constexpr uint32_t XPD_Pos = 20;
+    constexpr uint32_t XPD_Msk = XPD::mask;
 
-/// default touch sensor tie option. 0: tie low 1: tie high.
-/// Position: 21, Width: 1
-/// Access: read-write
-using TIE_OPT = BitField<21, 1>;
-constexpr uint32_t TIE_OPT_Pos = 21;
-constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
+    /// default touch sensor tie option. 0: tie low 1: tie high.
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using TIE_OPT = BitField<21, 1>;
+    constexpr uint32_t TIE_OPT_Pos = 21;
+    constexpr uint32_t TIE_OPT_Msk = TIE_OPT::mask;
 
-/// start touch sensor.
-/// Position: 22, Width: 1
-/// Access: read-write
-using START = BitField<22, 1>;
-constexpr uint32_t START_Pos = 22;
-constexpr uint32_t START_Msk = START::mask;
+    /// start touch sensor.
+    /// Position: 22, Width: 1
+    /// Access: read-write
+    using START = BitField<22, 1>;
+    constexpr uint32_t START_Pos = 22;
+    constexpr uint32_t START_Msk = START::mask;
 
-/// touch sensor slope control. 3-bit for each touch panel default 100.
-/// Position: 23, Width: 3
-/// Access: read-write
-using DAC = BitField<23, 3>;
-constexpr uint32_t DAC_Pos = 23;
-constexpr uint32_t DAC_Msk = DAC::mask;
+    /// touch sensor slope control. 3-bit for each touch panel default 100.
+    /// Position: 23, Width: 3
+    /// Access: read-write
+    using DAC = BitField<23, 3>;
+    constexpr uint32_t DAC_Pos = 23;
+    constexpr uint32_t DAC_Msk = DAC::mask;
 
 }  // namespace touch_pad9
 
 /// EXT_WAKEUP0 - EXT_WAKEUP0
 namespace ext_wakeup0 {
-/// select the wakeup source Ó0Ó select GPIO0 Ó1Ó select GPIO2 ...Ò17Ó select GPIO17
-/// Position: 27, Width: 5
-/// Access: read-write
-using SEL = BitField<27, 5>;
-constexpr uint32_t SEL_Pos = 27;
-constexpr uint32_t SEL_Msk = SEL::mask;
+    /// select the wakeup source Ó0Ó select GPIO0 Ó1Ó select GPIO2 ...Ò17Ó select GPIO17
+    /// Position: 27, Width: 5
+    /// Access: read-write
+    using SEL = BitField<27, 5>;
+    constexpr uint32_t SEL_Pos = 27;
+    constexpr uint32_t SEL_Msk = SEL::mask;
 
 }  // namespace ext_wakeup0
 
 /// XTL_EXT_CTR - XTL_EXT_CTR
 namespace xtl_ext_ctr {
-/// select the external xtl power source Ó0Ó select GPIO0 Ó1Ó select GPIO2 ...Ò17Ó select GPIO17
-/// Position: 27, Width: 5
-/// Access: read-write
-using SEL = BitField<27, 5>;
-constexpr uint32_t SEL_Pos = 27;
-constexpr uint32_t SEL_Msk = SEL::mask;
+    /// select the external xtl power source Ó0Ó select GPIO0 Ó1Ó select GPIO2 ...Ò17Ó select GPIO17
+    /// Position: 27, Width: 5
+    /// Access: read-write
+    using SEL = BitField<27, 5>;
+    constexpr uint32_t SEL_Pos = 27;
+    constexpr uint32_t SEL_Msk = SEL::mask;
 
 }  // namespace xtl_ext_ctr
 
 /// SAR_I2C_IO - SAR_I2C_IO
 namespace sar_i2c_io {
-/// Position: 23, Width: 5
-/// Access: read-write
-using SAR_DEBUG_BIT_SEL = BitField<23, 5>;
-constexpr uint32_t SAR_DEBUG_BIT_SEL_Pos = 23;
-constexpr uint32_t SAR_DEBUG_BIT_SEL_Msk = SAR_DEBUG_BIT_SEL::mask;
+    /// Position: 23, Width: 5
+    /// Access: read-write
+    using SAR_DEBUG_BIT_SEL = BitField<23, 5>;
+    constexpr uint32_t SAR_DEBUG_BIT_SEL_Pos = 23;
+    constexpr uint32_t SAR_DEBUG_BIT_SEL_Msk = SAR_DEBUG_BIT_SEL::mask;
 
-/// Ò0Ó using TOUCH_PAD[0] as i2c clk Ò1Ó using TOUCH_PAD[2] as i2c clk
-/// Position: 28, Width: 2
-/// Access: read-write
-using SAR_I2C_SCL_SEL = BitField<28, 2>;
-constexpr uint32_t SAR_I2C_SCL_SEL_Pos = 28;
-constexpr uint32_t SAR_I2C_SCL_SEL_Msk = SAR_I2C_SCL_SEL::mask;
+    /// Ò0Ó using TOUCH_PAD[0] as i2c clk Ò1Ó using TOUCH_PAD[2] as i2c clk
+    /// Position: 28, Width: 2
+    /// Access: read-write
+    using SAR_I2C_SCL_SEL = BitField<28, 2>;
+    constexpr uint32_t SAR_I2C_SCL_SEL_Pos = 28;
+    constexpr uint32_t SAR_I2C_SCL_SEL_Msk = SAR_I2C_SCL_SEL::mask;
 
-/// Ò0Ó using TOUCH_PAD[1] as i2c sda Ò1Ó using TOUCH_PAD[3] as i2c sda
-/// Position: 30, Width: 2
-/// Access: read-write
-using SAR_I2C_SDA_SEL = BitField<30, 2>;
-constexpr uint32_t SAR_I2C_SDA_SEL_Pos = 30;
-constexpr uint32_t SAR_I2C_SDA_SEL_Msk = SAR_I2C_SDA_SEL::mask;
+    /// Ò0Ó using TOUCH_PAD[1] as i2c sda Ò1Ó using TOUCH_PAD[3] as i2c sda
+    /// Position: 30, Width: 2
+    /// Access: read-write
+    using SAR_I2C_SDA_SEL = BitField<30, 2>;
+    constexpr uint32_t SAR_I2C_SDA_SEL_Pos = 30;
+    constexpr uint32_t SAR_I2C_SDA_SEL_Msk = SAR_I2C_SDA_SEL::mask;
 
 }  // namespace sar_i2c_io
 
 /// DATE - DATE
 namespace date {
-/// date
-/// Position: 0, Width: 28
-/// Access: read-write
-using IO_DATE = BitField<0, 28>;
-constexpr uint32_t IO_DATE_Pos = 0;
-constexpr uint32_t IO_DATE_Msk = IO_DATE::mask;
+    /// date
+    /// Position: 0, Width: 28
+    /// Access: read-write
+    using IO_DATE = BitField<0, 28>;
+    constexpr uint32_t IO_DATE_Pos = 0;
+    constexpr uint32_t IO_DATE_Msk = IO_DATE::mask;
 
 }  // namespace date
 

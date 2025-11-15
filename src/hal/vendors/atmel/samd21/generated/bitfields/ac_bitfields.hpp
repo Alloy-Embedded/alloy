@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::ac {
@@ -20,365 +19,365 @@ using namespace alloy::hal::bitfields;
 
 /// CTRLA - Control A
 namespace ctrla {
-/// Software Reset
-/// Position: 0, Width: 1
-/// Access: write-only
-using SWRST = BitField<0, 1>;
-constexpr uint32_t SWRST_Pos = 0;
-constexpr uint32_t SWRST_Msk = SWRST::mask;
+    /// Software Reset
+    /// Position: 0, Width: 1
+    /// Access: write-only
+    using SWRST = BitField<0, 1>;
+    constexpr uint32_t SWRST_Pos = 0;
+    constexpr uint32_t SWRST_Msk = SWRST::mask;
 
-/// Enable
-/// Position: 1, Width: 1
-using ENABLE = BitField<1, 1>;
-constexpr uint32_t ENABLE_Pos = 1;
-constexpr uint32_t ENABLE_Msk = ENABLE::mask;
+    /// Enable
+    /// Position: 1, Width: 1
+    using ENABLE = BitField<1, 1>;
+    constexpr uint32_t ENABLE_Pos = 1;
+    constexpr uint32_t ENABLE_Msk = ENABLE::mask;
 
-/// Run in Standby
-/// Position: 2, Width: 1
-using RUNSTDBY = BitField<2, 1>;
-constexpr uint32_t RUNSTDBY_Pos = 2;
-constexpr uint32_t RUNSTDBY_Msk = RUNSTDBY::mask;
+    /// Run in Standby
+    /// Position: 2, Width: 1
+    using RUNSTDBY = BitField<2, 1>;
+    constexpr uint32_t RUNSTDBY_Pos = 2;
+    constexpr uint32_t RUNSTDBY_Msk = RUNSTDBY::mask;
 
-/// Low-Power Mux
-/// Position: 7, Width: 1
-using LPMUX = BitField<7, 1>;
-constexpr uint32_t LPMUX_Pos = 7;
-constexpr uint32_t LPMUX_Msk = LPMUX::mask;
+    /// Low-Power Mux
+    /// Position: 7, Width: 1
+    using LPMUX = BitField<7, 1>;
+    constexpr uint32_t LPMUX_Pos = 7;
+    constexpr uint32_t LPMUX_Msk = LPMUX::mask;
 
 }  // namespace ctrla
 
 /// CTRLB - Control B
 namespace ctrlb {
-/// Comparator 0 Start Comparison
-/// Position: 0, Width: 1
-using START0 = BitField<0, 1>;
-constexpr uint32_t START0_Pos = 0;
-constexpr uint32_t START0_Msk = START0::mask;
+    /// Comparator 0 Start Comparison
+    /// Position: 0, Width: 1
+    using START0 = BitField<0, 1>;
+    constexpr uint32_t START0_Pos = 0;
+    constexpr uint32_t START0_Msk = START0::mask;
 
-/// Comparator 1 Start Comparison
-/// Position: 1, Width: 1
-using START1 = BitField<1, 1>;
-constexpr uint32_t START1_Pos = 1;
-constexpr uint32_t START1_Msk = START1::mask;
+    /// Comparator 1 Start Comparison
+    /// Position: 1, Width: 1
+    using START1 = BitField<1, 1>;
+    constexpr uint32_t START1_Pos = 1;
+    constexpr uint32_t START1_Msk = START1::mask;
 
 }  // namespace ctrlb
 
 /// EVCTRL - Event Control
 namespace evctrl {
-/// Comparator 0 Event Output Enable
-/// Position: 0, Width: 1
-using COMPEO0 = BitField<0, 1>;
-constexpr uint32_t COMPEO0_Pos = 0;
-constexpr uint32_t COMPEO0_Msk = COMPEO0::mask;
+    /// Comparator 0 Event Output Enable
+    /// Position: 0, Width: 1
+    using COMPEO0 = BitField<0, 1>;
+    constexpr uint32_t COMPEO0_Pos = 0;
+    constexpr uint32_t COMPEO0_Msk = COMPEO0::mask;
 
-/// Comparator 1 Event Output Enable
-/// Position: 1, Width: 1
-using COMPEO1 = BitField<1, 1>;
-constexpr uint32_t COMPEO1_Pos = 1;
-constexpr uint32_t COMPEO1_Msk = COMPEO1::mask;
+    /// Comparator 1 Event Output Enable
+    /// Position: 1, Width: 1
+    using COMPEO1 = BitField<1, 1>;
+    constexpr uint32_t COMPEO1_Pos = 1;
+    constexpr uint32_t COMPEO1_Msk = COMPEO1::mask;
 
-/// Window 0 Event Output Enable
-/// Position: 4, Width: 1
-using WINEO0 = BitField<4, 1>;
-constexpr uint32_t WINEO0_Pos = 4;
-constexpr uint32_t WINEO0_Msk = WINEO0::mask;
+    /// Window 0 Event Output Enable
+    /// Position: 4, Width: 1
+    using WINEO0 = BitField<4, 1>;
+    constexpr uint32_t WINEO0_Pos = 4;
+    constexpr uint32_t WINEO0_Msk = WINEO0::mask;
 
-/// Comparator 0 Event Input
-/// Position: 8, Width: 1
-using COMPEI0 = BitField<8, 1>;
-constexpr uint32_t COMPEI0_Pos = 8;
-constexpr uint32_t COMPEI0_Msk = COMPEI0::mask;
+    /// Comparator 0 Event Input
+    /// Position: 8, Width: 1
+    using COMPEI0 = BitField<8, 1>;
+    constexpr uint32_t COMPEI0_Pos = 8;
+    constexpr uint32_t COMPEI0_Msk = COMPEI0::mask;
 
-/// Comparator 1 Event Input
-/// Position: 9, Width: 1
-using COMPEI1 = BitField<9, 1>;
-constexpr uint32_t COMPEI1_Pos = 9;
-constexpr uint32_t COMPEI1_Msk = COMPEI1::mask;
+    /// Comparator 1 Event Input
+    /// Position: 9, Width: 1
+    using COMPEI1 = BitField<9, 1>;
+    constexpr uint32_t COMPEI1_Pos = 9;
+    constexpr uint32_t COMPEI1_Msk = COMPEI1::mask;
 
 }  // namespace evctrl
 
 /// INTENCLR - Interrupt Enable Clear
 namespace intenclr {
-/// Comparator 0 Interrupt Enable
-/// Position: 0, Width: 1
-using COMP0 = BitField<0, 1>;
-constexpr uint32_t COMP0_Pos = 0;
-constexpr uint32_t COMP0_Msk = COMP0::mask;
+    /// Comparator 0 Interrupt Enable
+    /// Position: 0, Width: 1
+    using COMP0 = BitField<0, 1>;
+    constexpr uint32_t COMP0_Pos = 0;
+    constexpr uint32_t COMP0_Msk = COMP0::mask;
 
-/// Comparator 1 Interrupt Enable
-/// Position: 1, Width: 1
-using COMP1 = BitField<1, 1>;
-constexpr uint32_t COMP1_Pos = 1;
-constexpr uint32_t COMP1_Msk = COMP1::mask;
+    /// Comparator 1 Interrupt Enable
+    /// Position: 1, Width: 1
+    using COMP1 = BitField<1, 1>;
+    constexpr uint32_t COMP1_Pos = 1;
+    constexpr uint32_t COMP1_Msk = COMP1::mask;
 
-/// Window 0 Interrupt Enable
-/// Position: 4, Width: 1
-using WIN0 = BitField<4, 1>;
-constexpr uint32_t WIN0_Pos = 4;
-constexpr uint32_t WIN0_Msk = WIN0::mask;
+    /// Window 0 Interrupt Enable
+    /// Position: 4, Width: 1
+    using WIN0 = BitField<4, 1>;
+    constexpr uint32_t WIN0_Pos = 4;
+    constexpr uint32_t WIN0_Msk = WIN0::mask;
 
 }  // namespace intenclr
 
 /// INTENSET - Interrupt Enable Set
 namespace intenset {
-/// Comparator 0 Interrupt Enable
-/// Position: 0, Width: 1
-using COMP0 = BitField<0, 1>;
-constexpr uint32_t COMP0_Pos = 0;
-constexpr uint32_t COMP0_Msk = COMP0::mask;
+    /// Comparator 0 Interrupt Enable
+    /// Position: 0, Width: 1
+    using COMP0 = BitField<0, 1>;
+    constexpr uint32_t COMP0_Pos = 0;
+    constexpr uint32_t COMP0_Msk = COMP0::mask;
 
-/// Comparator 1 Interrupt Enable
-/// Position: 1, Width: 1
-using COMP1 = BitField<1, 1>;
-constexpr uint32_t COMP1_Pos = 1;
-constexpr uint32_t COMP1_Msk = COMP1::mask;
+    /// Comparator 1 Interrupt Enable
+    /// Position: 1, Width: 1
+    using COMP1 = BitField<1, 1>;
+    constexpr uint32_t COMP1_Pos = 1;
+    constexpr uint32_t COMP1_Msk = COMP1::mask;
 
-/// Window 0 Interrupt Enable
-/// Position: 4, Width: 1
-using WIN0 = BitField<4, 1>;
-constexpr uint32_t WIN0_Pos = 4;
-constexpr uint32_t WIN0_Msk = WIN0::mask;
+    /// Window 0 Interrupt Enable
+    /// Position: 4, Width: 1
+    using WIN0 = BitField<4, 1>;
+    constexpr uint32_t WIN0_Pos = 4;
+    constexpr uint32_t WIN0_Msk = WIN0::mask;
 
 }  // namespace intenset
 
 /// INTFLAG - Interrupt Flag Status and Clear
 namespace intflag {
-/// Comparator 0
-/// Position: 0, Width: 1
-using COMP0 = BitField<0, 1>;
-constexpr uint32_t COMP0_Pos = 0;
-constexpr uint32_t COMP0_Msk = COMP0::mask;
+    /// Comparator 0
+    /// Position: 0, Width: 1
+    using COMP0 = BitField<0, 1>;
+    constexpr uint32_t COMP0_Pos = 0;
+    constexpr uint32_t COMP0_Msk = COMP0::mask;
 
-/// Comparator 1
-/// Position: 1, Width: 1
-using COMP1 = BitField<1, 1>;
-constexpr uint32_t COMP1_Pos = 1;
-constexpr uint32_t COMP1_Msk = COMP1::mask;
+    /// Comparator 1
+    /// Position: 1, Width: 1
+    using COMP1 = BitField<1, 1>;
+    constexpr uint32_t COMP1_Pos = 1;
+    constexpr uint32_t COMP1_Msk = COMP1::mask;
 
-/// Window 0
-/// Position: 4, Width: 1
-using WIN0 = BitField<4, 1>;
-constexpr uint32_t WIN0_Pos = 4;
-constexpr uint32_t WIN0_Msk = WIN0::mask;
+    /// Window 0
+    /// Position: 4, Width: 1
+    using WIN0 = BitField<4, 1>;
+    constexpr uint32_t WIN0_Pos = 4;
+    constexpr uint32_t WIN0_Msk = WIN0::mask;
 
 }  // namespace intflag
 
 /// STATUSA - Status A
 namespace statusa {
-/// Comparator 0 Current State
-/// Position: 0, Width: 1
-using STATE0 = BitField<0, 1>;
-constexpr uint32_t STATE0_Pos = 0;
-constexpr uint32_t STATE0_Msk = STATE0::mask;
+    /// Comparator 0 Current State
+    /// Position: 0, Width: 1
+    using STATE0 = BitField<0, 1>;
+    constexpr uint32_t STATE0_Pos = 0;
+    constexpr uint32_t STATE0_Msk = STATE0::mask;
 
-/// Comparator 1 Current State
-/// Position: 1, Width: 1
-using STATE1 = BitField<1, 1>;
-constexpr uint32_t STATE1_Pos = 1;
-constexpr uint32_t STATE1_Msk = STATE1::mask;
+    /// Comparator 1 Current State
+    /// Position: 1, Width: 1
+    using STATE1 = BitField<1, 1>;
+    constexpr uint32_t STATE1_Pos = 1;
+    constexpr uint32_t STATE1_Msk = STATE1::mask;
 
-/// Window 0 Current State
-/// Position: 4, Width: 2
-using WSTATE0 = BitField<4, 2>;
-constexpr uint32_t WSTATE0_Pos = 4;
-constexpr uint32_t WSTATE0_Msk = WSTATE0::mask;
-/// Enumerated values for WSTATE0
-namespace wstate0 {
-constexpr uint32_t ABOVE = 0;
-constexpr uint32_t INSIDE = 1;
-constexpr uint32_t BELOW = 2;
-}  // namespace wstate0
+    /// Window 0 Current State
+    /// Position: 4, Width: 2
+    using WSTATE0 = BitField<4, 2>;
+    constexpr uint32_t WSTATE0_Pos = 4;
+    constexpr uint32_t WSTATE0_Msk = WSTATE0::mask;
+    /// Enumerated values for WSTATE0
+    namespace wstate0 {
+        constexpr uint32_t ABOVE = 0;
+        constexpr uint32_t INSIDE = 1;
+        constexpr uint32_t BELOW = 2;
+    }
 
 }  // namespace statusa
 
 /// STATUSB - Status B
 namespace statusb {
-/// Comparator 0 Ready
-/// Position: 0, Width: 1
-/// Access: read-only
-using READY0 = BitField<0, 1>;
-constexpr uint32_t READY0_Pos = 0;
-constexpr uint32_t READY0_Msk = READY0::mask;
+    /// Comparator 0 Ready
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using READY0 = BitField<0, 1>;
+    constexpr uint32_t READY0_Pos = 0;
+    constexpr uint32_t READY0_Msk = READY0::mask;
 
-/// Comparator 1 Ready
-/// Position: 1, Width: 1
-/// Access: read-only
-using READY1 = BitField<1, 1>;
-constexpr uint32_t READY1_Pos = 1;
-constexpr uint32_t READY1_Msk = READY1::mask;
+    /// Comparator 1 Ready
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using READY1 = BitField<1, 1>;
+    constexpr uint32_t READY1_Pos = 1;
+    constexpr uint32_t READY1_Msk = READY1::mask;
 
-/// Synchronization Busy
-/// Position: 7, Width: 1
-using SYNCBUSY = BitField<7, 1>;
-constexpr uint32_t SYNCBUSY_Pos = 7;
-constexpr uint32_t SYNCBUSY_Msk = SYNCBUSY::mask;
+    /// Synchronization Busy
+    /// Position: 7, Width: 1
+    using SYNCBUSY = BitField<7, 1>;
+    constexpr uint32_t SYNCBUSY_Pos = 7;
+    constexpr uint32_t SYNCBUSY_Msk = SYNCBUSY::mask;
 
 }  // namespace statusb
 
 /// STATUSC - Status C
 namespace statusc {
-/// Comparator 0 Current State
-/// Position: 0, Width: 1
-using STATE0 = BitField<0, 1>;
-constexpr uint32_t STATE0_Pos = 0;
-constexpr uint32_t STATE0_Msk = STATE0::mask;
+    /// Comparator 0 Current State
+    /// Position: 0, Width: 1
+    using STATE0 = BitField<0, 1>;
+    constexpr uint32_t STATE0_Pos = 0;
+    constexpr uint32_t STATE0_Msk = STATE0::mask;
 
-/// Comparator 1 Current State
-/// Position: 1, Width: 1
-using STATE1 = BitField<1, 1>;
-constexpr uint32_t STATE1_Pos = 1;
-constexpr uint32_t STATE1_Msk = STATE1::mask;
+    /// Comparator 1 Current State
+    /// Position: 1, Width: 1
+    using STATE1 = BitField<1, 1>;
+    constexpr uint32_t STATE1_Pos = 1;
+    constexpr uint32_t STATE1_Msk = STATE1::mask;
 
-/// Window 0 Current State
-/// Position: 4, Width: 2
-using WSTATE0 = BitField<4, 2>;
-constexpr uint32_t WSTATE0_Pos = 4;
-constexpr uint32_t WSTATE0_Msk = WSTATE0::mask;
-/// Enumerated values for WSTATE0
-namespace wstate0 {
-constexpr uint32_t ABOVE = 0;
-constexpr uint32_t INSIDE = 1;
-constexpr uint32_t BELOW = 2;
-}  // namespace wstate0
+    /// Window 0 Current State
+    /// Position: 4, Width: 2
+    using WSTATE0 = BitField<4, 2>;
+    constexpr uint32_t WSTATE0_Pos = 4;
+    constexpr uint32_t WSTATE0_Msk = WSTATE0::mask;
+    /// Enumerated values for WSTATE0
+    namespace wstate0 {
+        constexpr uint32_t ABOVE = 0;
+        constexpr uint32_t INSIDE = 1;
+        constexpr uint32_t BELOW = 2;
+    }
 
 }  // namespace statusc
 
 /// WINCTRL - Window Control
 namespace winctrl {
-/// Window 0 Mode Enable
-/// Position: 0, Width: 1
-using WEN0 = BitField<0, 1>;
-constexpr uint32_t WEN0_Pos = 0;
-constexpr uint32_t WEN0_Msk = WEN0::mask;
+    /// Window 0 Mode Enable
+    /// Position: 0, Width: 1
+    using WEN0 = BitField<0, 1>;
+    constexpr uint32_t WEN0_Pos = 0;
+    constexpr uint32_t WEN0_Msk = WEN0::mask;
 
-/// Window 0 Interrupt Selection
-/// Position: 1, Width: 2
-using WINTSEL0 = BitField<1, 2>;
-constexpr uint32_t WINTSEL0_Pos = 1;
-constexpr uint32_t WINTSEL0_Msk = WINTSEL0::mask;
-/// Enumerated values for WINTSEL0
-namespace wintsel0 {
-constexpr uint32_t ABOVE = 0;
-constexpr uint32_t INSIDE = 1;
-constexpr uint32_t BELOW = 2;
-constexpr uint32_t OUTSIDE = 3;
-}  // namespace wintsel0
+    /// Window 0 Interrupt Selection
+    /// Position: 1, Width: 2
+    using WINTSEL0 = BitField<1, 2>;
+    constexpr uint32_t WINTSEL0_Pos = 1;
+    constexpr uint32_t WINTSEL0_Msk = WINTSEL0::mask;
+    /// Enumerated values for WINTSEL0
+    namespace wintsel0 {
+        constexpr uint32_t ABOVE = 0;
+        constexpr uint32_t INSIDE = 1;
+        constexpr uint32_t BELOW = 2;
+        constexpr uint32_t OUTSIDE = 3;
+    }
 
 }  // namespace winctrl
 
 /// COMPCTRL[2] - Comparator Control n
 namespace compctrl {
-/// Enable
-/// Position: 0, Width: 1
-using ENABLE = BitField<0, 1>;
-constexpr uint32_t ENABLE_Pos = 0;
-constexpr uint32_t ENABLE_Msk = ENABLE::mask;
+    /// Enable
+    /// Position: 0, Width: 1
+    using ENABLE = BitField<0, 1>;
+    constexpr uint32_t ENABLE_Pos = 0;
+    constexpr uint32_t ENABLE_Msk = ENABLE::mask;
 
-/// Single-Shot Mode
-/// Position: 1, Width: 1
-using SINGLE = BitField<1, 1>;
-constexpr uint32_t SINGLE_Pos = 1;
-constexpr uint32_t SINGLE_Msk = SINGLE::mask;
+    /// Single-Shot Mode
+    /// Position: 1, Width: 1
+    using SINGLE = BitField<1, 1>;
+    constexpr uint32_t SINGLE_Pos = 1;
+    constexpr uint32_t SINGLE_Msk = SINGLE::mask;
 
-/// Speed Selection
-/// Position: 2, Width: 2
-using SPEED = BitField<2, 2>;
-constexpr uint32_t SPEED_Pos = 2;
-constexpr uint32_t SPEED_Msk = SPEED::mask;
-/// Enumerated values for SPEED
-namespace speed {
-constexpr uint32_t LOW = 0;
-constexpr uint32_t HIGH = 1;
-}  // namespace speed
+    /// Speed Selection
+    /// Position: 2, Width: 2
+    using SPEED = BitField<2, 2>;
+    constexpr uint32_t SPEED_Pos = 2;
+    constexpr uint32_t SPEED_Msk = SPEED::mask;
+    /// Enumerated values for SPEED
+    namespace speed {
+        constexpr uint32_t LOW = 0;
+        constexpr uint32_t HIGH = 1;
+    }
 
-/// Interrupt Selection
-/// Position: 5, Width: 2
-using INTSEL = BitField<5, 2>;
-constexpr uint32_t INTSEL_Pos = 5;
-constexpr uint32_t INTSEL_Msk = INTSEL::mask;
-/// Enumerated values for INTSEL
-namespace intsel {
-constexpr uint32_t TOGGLE = 0;
-constexpr uint32_t RISING = 1;
-constexpr uint32_t FALLING = 2;
-constexpr uint32_t EOC = 3;
-}  // namespace intsel
+    /// Interrupt Selection
+    /// Position: 5, Width: 2
+    using INTSEL = BitField<5, 2>;
+    constexpr uint32_t INTSEL_Pos = 5;
+    constexpr uint32_t INTSEL_Msk = INTSEL::mask;
+    /// Enumerated values for INTSEL
+    namespace intsel {
+        constexpr uint32_t TOGGLE = 0;
+        constexpr uint32_t RISING = 1;
+        constexpr uint32_t FALLING = 2;
+        constexpr uint32_t EOC = 3;
+    }
 
-/// Negative Input Mux Selection
-/// Position: 8, Width: 3
-using MUXNEG = BitField<8, 3>;
-constexpr uint32_t MUXNEG_Pos = 8;
-constexpr uint32_t MUXNEG_Msk = MUXNEG::mask;
-/// Enumerated values for MUXNEG
-namespace muxneg {
-constexpr uint32_t PIN0 = 0;
-constexpr uint32_t PIN1 = 1;
-constexpr uint32_t PIN2 = 2;
-constexpr uint32_t PIN3 = 3;
-constexpr uint32_t GND = 4;
-constexpr uint32_t VSCALE = 5;
-constexpr uint32_t BANDGAP = 6;
-constexpr uint32_t DAC = 7;
-}  // namespace muxneg
+    /// Negative Input Mux Selection
+    /// Position: 8, Width: 3
+    using MUXNEG = BitField<8, 3>;
+    constexpr uint32_t MUXNEG_Pos = 8;
+    constexpr uint32_t MUXNEG_Msk = MUXNEG::mask;
+    /// Enumerated values for MUXNEG
+    namespace muxneg {
+        constexpr uint32_t PIN0 = 0;
+        constexpr uint32_t PIN1 = 1;
+        constexpr uint32_t PIN2 = 2;
+        constexpr uint32_t PIN3 = 3;
+        constexpr uint32_t GND = 4;
+        constexpr uint32_t VSCALE = 5;
+        constexpr uint32_t BANDGAP = 6;
+        constexpr uint32_t DAC = 7;
+    }
 
-/// Positive Input Mux Selection
-/// Position: 12, Width: 2
-using MUXPOS = BitField<12, 2>;
-constexpr uint32_t MUXPOS_Pos = 12;
-constexpr uint32_t MUXPOS_Msk = MUXPOS::mask;
-/// Enumerated values for MUXPOS
-namespace muxpos {
-constexpr uint32_t PIN0 = 0;
-constexpr uint32_t PIN1 = 1;
-constexpr uint32_t PIN2 = 2;
-constexpr uint32_t PIN3 = 3;
-}  // namespace muxpos
+    /// Positive Input Mux Selection
+    /// Position: 12, Width: 2
+    using MUXPOS = BitField<12, 2>;
+    constexpr uint32_t MUXPOS_Pos = 12;
+    constexpr uint32_t MUXPOS_Msk = MUXPOS::mask;
+    /// Enumerated values for MUXPOS
+    namespace muxpos {
+        constexpr uint32_t PIN0 = 0;
+        constexpr uint32_t PIN1 = 1;
+        constexpr uint32_t PIN2 = 2;
+        constexpr uint32_t PIN3 = 3;
+    }
 
-/// Swap Inputs and Invert
-/// Position: 15, Width: 1
-using SWAP = BitField<15, 1>;
-constexpr uint32_t SWAP_Pos = 15;
-constexpr uint32_t SWAP_Msk = SWAP::mask;
+    /// Swap Inputs and Invert
+    /// Position: 15, Width: 1
+    using SWAP = BitField<15, 1>;
+    constexpr uint32_t SWAP_Pos = 15;
+    constexpr uint32_t SWAP_Msk = SWAP::mask;
 
-/// Output
-/// Position: 16, Width: 2
-using OUT = BitField<16, 2>;
-constexpr uint32_t OUT_Pos = 16;
-constexpr uint32_t OUT_Msk = OUT::mask;
-/// Enumerated values for OUT
-namespace out {
-constexpr uint32_t OFF = 0;
-constexpr uint32_t ASYNC = 1;
-constexpr uint32_t SYNC = 2;
-}  // namespace out
+    /// Output
+    /// Position: 16, Width: 2
+    using OUT = BitField<16, 2>;
+    constexpr uint32_t OUT_Pos = 16;
+    constexpr uint32_t OUT_Msk = OUT::mask;
+    /// Enumerated values for OUT
+    namespace out {
+        constexpr uint32_t OFF = 0;
+        constexpr uint32_t ASYNC = 1;
+        constexpr uint32_t SYNC = 2;
+    }
 
-/// Hysteresis Enable
-/// Position: 19, Width: 1
-using HYST = BitField<19, 1>;
-constexpr uint32_t HYST_Pos = 19;
-constexpr uint32_t HYST_Msk = HYST::mask;
+    /// Hysteresis Enable
+    /// Position: 19, Width: 1
+    using HYST = BitField<19, 1>;
+    constexpr uint32_t HYST_Pos = 19;
+    constexpr uint32_t HYST_Msk = HYST::mask;
 
-/// Filter Length
-/// Position: 24, Width: 3
-using FLEN = BitField<24, 3>;
-constexpr uint32_t FLEN_Pos = 24;
-constexpr uint32_t FLEN_Msk = FLEN::mask;
-/// Enumerated values for FLEN
-namespace flen {
-constexpr uint32_t OFF = 0;
-constexpr uint32_t MAJ3 = 1;
-constexpr uint32_t MAJ5 = 2;
-}  // namespace flen
+    /// Filter Length
+    /// Position: 24, Width: 3
+    using FLEN = BitField<24, 3>;
+    constexpr uint32_t FLEN_Pos = 24;
+    constexpr uint32_t FLEN_Msk = FLEN::mask;
+    /// Enumerated values for FLEN
+    namespace flen {
+        constexpr uint32_t OFF = 0;
+        constexpr uint32_t MAJ3 = 1;
+        constexpr uint32_t MAJ5 = 2;
+    }
 
 }  // namespace compctrl
 
 /// SCALER[2] - Scaler n
 namespace scaler {
-/// Scaler Value
-/// Position: 0, Width: 6
-using VALUE = BitField<0, 6>;
-constexpr uint32_t VALUE_Pos = 0;
-constexpr uint32_t VALUE_Msk = VALUE::mask;
+    /// Scaler Value
+    /// Position: 0, Width: 6
+    using VALUE = BitField<0, 6>;
+    constexpr uint32_t VALUE_Pos = 0;
+    constexpr uint32_t VALUE_Msk = VALUE::mask;
 
 }  // namespace scaler
 

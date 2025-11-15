@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samv71::systick {
 
 /// SysTick Register Structure
 struct SysTick_Registers {
+
     /// Control and Status Register
     /// Offset: 0x0000
     /// Reset value: 0x00000004

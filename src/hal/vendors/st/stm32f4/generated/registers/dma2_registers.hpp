@@ -33,13 +33,13 @@ struct DMA2_Registers {
     /// low interrupt flag clear register
     /// Offset: 0x0008
     /// Reset value: 0x00000000
-    /// Access: write-only
+    /// Access: read-write
     volatile uint32_t LIFCR;
 
     /// high interrupt flag clear register
     /// Offset: 0x000C
     /// Reset value: 0x00000000
-    /// Access: write-only
+    /// Access: read-write
     volatile uint32_t HIFCR;
 
     /// stream x configuration register

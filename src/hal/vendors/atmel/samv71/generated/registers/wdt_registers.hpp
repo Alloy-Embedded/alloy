@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samv71::wdt {
 
 /// WDT Register Structure
 struct WDT_Registers {
+
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only

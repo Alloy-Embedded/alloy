@@ -65,6 +65,36 @@ namespace dbgmcu_cr {
     constexpr uint32_t TRACE_MODE_Pos = 6;
     constexpr uint32_t TRACE_MODE_Msk = TRACE_MODE::mask;
 
+    /// DBG_I2C2_SMBUS_TIMEOUT
+    /// Position: 16, Width: 1
+    using DBG_I2C2_SMBUS_TIMEOUT = BitField<16, 1>;
+    constexpr uint32_t DBG_I2C2_SMBUS_TIMEOUT_Pos = 16;
+    constexpr uint32_t DBG_I2C2_SMBUS_TIMEOUT_Msk = DBG_I2C2_SMBUS_TIMEOUT::mask;
+
+    /// DBG_TIM8_STOP
+    /// Position: 17, Width: 1
+    using DBG_TIM8_STOP = BitField<17, 1>;
+    constexpr uint32_t DBG_TIM8_STOP_Pos = 17;
+    constexpr uint32_t DBG_TIM8_STOP_Msk = DBG_TIM8_STOP::mask;
+
+    /// DBG_TIM5_STOP
+    /// Position: 18, Width: 1
+    using DBG_TIM5_STOP = BitField<18, 1>;
+    constexpr uint32_t DBG_TIM5_STOP_Pos = 18;
+    constexpr uint32_t DBG_TIM5_STOP_Msk = DBG_TIM5_STOP::mask;
+
+    /// DBG_TIM6_STOP
+    /// Position: 19, Width: 1
+    using DBG_TIM6_STOP = BitField<19, 1>;
+    constexpr uint32_t DBG_TIM6_STOP_Pos = 19;
+    constexpr uint32_t DBG_TIM6_STOP_Msk = DBG_TIM6_STOP::mask;
+
+    /// DBG_TIM7_STOP
+    /// Position: 20, Width: 1
+    using DBG_TIM7_STOP = BitField<20, 1>;
+    constexpr uint32_t DBG_TIM7_STOP_Pos = 20;
+    constexpr uint32_t DBG_TIM7_STOP_Msk = DBG_TIM7_STOP::mask;
+
 }  // namespace dbgmcu_cr
 
 /// DBGMCU_APB1_FZ - Debug MCU APB1 Freeze registe
@@ -93,11 +123,35 @@ namespace dbgmcu_apb1_fz {
     constexpr uint32_t DBG_TIM5_STOP_Pos = 3;
     constexpr uint32_t DBG_TIM5_STOP_Msk = DBG_TIM5_STOP::mask;
 
-    /// RTC stopped when Core is halted
-    /// Position: 10, Width: 1
-    using DBG_RTC_Stop = BitField<10, 1>;
-    constexpr uint32_t DBG_RTC_Stop_Pos = 10;
-    constexpr uint32_t DBG_RTC_Stop_Msk = DBG_RTC_Stop::mask;
+    /// DBG_TIM6_STOP
+    /// Position: 4, Width: 1
+    using DBG_TIM6_STOP = BitField<4, 1>;
+    constexpr uint32_t DBG_TIM6_STOP_Pos = 4;
+    constexpr uint32_t DBG_TIM6_STOP_Msk = DBG_TIM6_STOP::mask;
+
+    /// DBG_TIM7_STOP
+    /// Position: 5, Width: 1
+    using DBG_TIM7_STOP = BitField<5, 1>;
+    constexpr uint32_t DBG_TIM7_STOP_Pos = 5;
+    constexpr uint32_t DBG_TIM7_STOP_Msk = DBG_TIM7_STOP::mask;
+
+    /// DBG_TIM12_STOP
+    /// Position: 6, Width: 1
+    using DBG_TIM12_STOP = BitField<6, 1>;
+    constexpr uint32_t DBG_TIM12_STOP_Pos = 6;
+    constexpr uint32_t DBG_TIM12_STOP_Msk = DBG_TIM12_STOP::mask;
+
+    /// DBG_TIM13_STOP
+    /// Position: 7, Width: 1
+    using DBG_TIM13_STOP = BitField<7, 1>;
+    constexpr uint32_t DBG_TIM13_STOP_Pos = 7;
+    constexpr uint32_t DBG_TIM13_STOP_Msk = DBG_TIM13_STOP::mask;
+
+    /// DBG_TIM14_STOP
+    /// Position: 8, Width: 1
+    using DBG_TIM14_STOP = BitField<8, 1>;
+    constexpr uint32_t DBG_TIM14_STOP_Pos = 8;
+    constexpr uint32_t DBG_TIM14_STOP_Msk = DBG_TIM14_STOP::mask;
 
     /// DBG_WWDG_STOP
     /// Position: 11, Width: 1
@@ -113,21 +167,33 @@ namespace dbgmcu_apb1_fz {
 
     /// DBG_J2C1_SMBUS_TIMEOUT
     /// Position: 21, Width: 1
-    using DBG_I2C1_SMBUS_TIMEOUT = BitField<21, 1>;
-    constexpr uint32_t DBG_I2C1_SMBUS_TIMEOUT_Pos = 21;
-    constexpr uint32_t DBG_I2C1_SMBUS_TIMEOUT_Msk = DBG_I2C1_SMBUS_TIMEOUT::mask;
+    using DBG_J2C1_SMBUS_TIMEOUT = BitField<21, 1>;
+    constexpr uint32_t DBG_J2C1_SMBUS_TIMEOUT_Pos = 21;
+    constexpr uint32_t DBG_J2C1_SMBUS_TIMEOUT_Msk = DBG_J2C1_SMBUS_TIMEOUT::mask;
 
     /// DBG_J2C2_SMBUS_TIMEOUT
     /// Position: 22, Width: 1
-    using DBG_I2C2_SMBUS_TIMEOUT = BitField<22, 1>;
-    constexpr uint32_t DBG_I2C2_SMBUS_TIMEOUT_Pos = 22;
-    constexpr uint32_t DBG_I2C2_SMBUS_TIMEOUT_Msk = DBG_I2C2_SMBUS_TIMEOUT::mask;
+    using DBG_J2C2_SMBUS_TIMEOUT = BitField<22, 1>;
+    constexpr uint32_t DBG_J2C2_SMBUS_TIMEOUT_Pos = 22;
+    constexpr uint32_t DBG_J2C2_SMBUS_TIMEOUT_Msk = DBG_J2C2_SMBUS_TIMEOUT::mask;
 
     /// DBG_J2C3SMBUS_TIMEOUT
     /// Position: 23, Width: 1
-    using DBG_I2C3SMBUS_TIMEOUT = BitField<23, 1>;
-    constexpr uint32_t DBG_I2C3SMBUS_TIMEOUT_Pos = 23;
-    constexpr uint32_t DBG_I2C3SMBUS_TIMEOUT_Msk = DBG_I2C3SMBUS_TIMEOUT::mask;
+    using DBG_J2C3SMBUS_TIMEOUT = BitField<23, 1>;
+    constexpr uint32_t DBG_J2C3SMBUS_TIMEOUT_Pos = 23;
+    constexpr uint32_t DBG_J2C3SMBUS_TIMEOUT_Msk = DBG_J2C3SMBUS_TIMEOUT::mask;
+
+    /// DBG_CAN1_STOP
+    /// Position: 25, Width: 1
+    using DBG_CAN1_STOP = BitField<25, 1>;
+    constexpr uint32_t DBG_CAN1_STOP_Pos = 25;
+    constexpr uint32_t DBG_CAN1_STOP_Msk = DBG_CAN1_STOP::mask;
+
+    /// DBG_CAN2_STOP
+    /// Position: 26, Width: 1
+    using DBG_CAN2_STOP = BitField<26, 1>;
+    constexpr uint32_t DBG_CAN2_STOP_Pos = 26;
+    constexpr uint32_t DBG_CAN2_STOP_Msk = DBG_CAN2_STOP::mask;
 
 }  // namespace dbgmcu_apb1_fz
 
@@ -138,6 +204,12 @@ namespace dbgmcu_apb2_fz {
     using DBG_TIM1_STOP = BitField<0, 1>;
     constexpr uint32_t DBG_TIM1_STOP_Pos = 0;
     constexpr uint32_t DBG_TIM1_STOP_Msk = DBG_TIM1_STOP::mask;
+
+    /// TIM8 counter stopped when core is halted
+    /// Position: 1, Width: 1
+    using DBG_TIM8_STOP = BitField<1, 1>;
+    constexpr uint32_t DBG_TIM8_STOP_Pos = 1;
+    constexpr uint32_t DBG_TIM8_STOP_Msk = DBG_TIM8_STOP::mask;
 
     /// TIM9 counter stopped when core is halted
     /// Position: 16, Width: 1

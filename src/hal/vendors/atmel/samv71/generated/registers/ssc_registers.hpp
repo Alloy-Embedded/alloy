@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samv71::ssc {
 
 /// SSC Register Structure
 struct SSC_Registers {
+
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -25,7 +26,7 @@ struct SSC_Registers {
     /// Clock Mode Register
     /// Offset: 0x0004
     volatile uint32_t CMR;
-    uint8_t RESERVED_0008[8];  ///< Reserved
+    uint8_t RESERVED_0008[8]; ///< Reserved
 
     /// Receive Clock Mode Register
     /// Offset: 0x0010
@@ -52,7 +53,7 @@ struct SSC_Registers {
     /// Offset: 0x0024
     /// Access: write-only
     volatile uint32_t THR;
-    uint8_t RESERVED_0028[8];  ///< Reserved
+    uint8_t RESERVED_0028[8]; ///< Reserved
 
     /// Receive Sync. Holding Register
     /// Offset: 0x0030
@@ -90,7 +91,7 @@ struct SSC_Registers {
     /// Offset: 0x004C
     /// Access: read-only
     volatile uint32_t IMR;
-    uint8_t RESERVED_0050[148];  ///< Reserved
+    uint8_t RESERVED_0050[148]; ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4

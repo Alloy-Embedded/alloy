@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f1::bkp {
 
 /// BKP Register Structure
 struct BKP_Registers {
+
     /// Backup data register (BKP_DR)
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -93,7 +94,7 @@ struct BKP_Registers {
     /// Offset: 0x0030
     /// Reset value: 0x00000000
     volatile uint32_t CSR;
-    uint8_t RESERVED_0034[8];  ///< Reserved
+    uint8_t RESERVED_0034[8]; ///< Reserved
 
     /// Backup data register (BKP_DR)
     /// Offset: 0x003C

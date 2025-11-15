@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::wdt {
 
 /// WDT Register Structure
 struct WDT_Registers {
+
     /// Control
     /// Offset: 0x0000
     volatile uint8_t CTRL;
@@ -30,7 +31,7 @@ struct WDT_Registers {
     /// Offset: 0x0002
     /// Reset value: 0x0000000B
     volatile uint8_t EWCTRL;
-    uint8_t RESERVED_0003[1];  ///< Reserved
+    uint8_t RESERVED_0003[1]; ///< Reserved
 
     /// Interrupt Enable Clear
     /// Offset: 0x0004

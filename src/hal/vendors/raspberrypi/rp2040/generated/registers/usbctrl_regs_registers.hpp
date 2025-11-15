@@ -17,6 +17,7 @@ namespace alloy::hal::raspberrypi::rp2040::usbctrl_regs {
 
 /// USBCTRL_REGS Register Structure
 struct USBCTRL_REGS_Registers {
+
     /// Device address and endpoint control
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -102,14 +103,14 @@ struct USBCTRL_REGS_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t MAIN_CTRL;
 
-    /// Set the SOF (Start of Frame) frame number in the host controller. The SOF packet is sent
-    /// every 1ms and the host will increment the frame number by 1 each time. Offset: 0x0044 Reset
-    /// value: 0x00000000
+    /// Set the SOF (Start of Frame) frame number in the host controller. The SOF packet is sent every 1ms and the host will increment the frame number by 1 each time.
+    /// Offset: 0x0044
+    /// Reset value: 0x00000000
     volatile uint32_t SOF_WR;
 
-    /// Read the last SOF (Start of Frame) frame number seen. In device mode the last SOF received
-    /// from the host. In host mode the last SOF sent by the host. Offset: 0x0048 Reset value:
-    /// 0x00000000
+    /// Read the last SOF (Start of Frame) frame number seen. In device mode the last SOF received from the host. In host mode the last SOF sent by the host.
+    /// Offset: 0x0048
+    /// Reset value: 0x00000000
     volatile uint32_t SOF_RD;
 
     /// SIE control register
@@ -127,40 +128,37 @@ struct USBCTRL_REGS_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t INT_EP_CTRL;
 
-    /// Buffer status register. A bit set here indicates that a buffer has completed on the endpoint
-    /// (if the buffer interrupt is enabled). It is possible for 2 buffers to be completed, so
-    /// clearing the buffer status bit may instantly re set it on the next clock cycle. Offset:
-    /// 0x0058 Reset value: 0x00000000
+    /// Buffer status register. A bit set here indicates that a buffer has completed on the endpoint (if the buffer interrupt is enabled). It is possible for 2 buffers to be completed, so clearing the buffer status bit may instantly re set it on the next clock cycle.
+    /// Offset: 0x0058
+    /// Reset value: 0x00000000
     volatile uint32_t BUFF_STATUS;
 
-    /// Which of the double buffers should be handled. Only valid if using an interrupt per buffer
-    /// (i.e. not per 2 buffers). Not valid for host interrupt endpoint polling because they are
-    /// only single buffered. Offset: 0x005C Reset value: 0x00000000
+    /// Which of the double buffers should be handled. Only valid if using an interrupt per buffer (i.e. not per 2 buffers). Not valid for host interrupt endpoint polling because they are only single buffered.
+    /// Offset: 0x005C
+    /// Reset value: 0x00000000
     volatile uint32_t BUFF_CPU_SHOULD_HANDLE;
 
-    /// Device only: Can be set to ignore the buffer control register for this endpoint in case you
-    /// would like to revoke a buffer. A NAK will be sent for every access to the endpoint until
-    /// this bit is cleared. A corresponding bit in `EP_ABORT_DONE` is set when it is safe to modify
-    /// the buffer control register. Offset: 0x0060 Reset value: 0x00000000
+    /// Device only: Can be set to ignore the buffer control register for this endpoint in case you would like to revoke a buffer. A NAK will be sent for every access to the endpoint until this bit is cleared. A corresponding bit in `EP_ABORT_DONE` is set when it is safe to modify the buffer control register.
+    /// Offset: 0x0060
+    /// Reset value: 0x00000000
     volatile uint32_t EP_ABORT;
 
-    /// Device only: Used in conjunction with `EP_ABORT`. Set once an endpoint is idle so the
-    /// programmer knows it is safe to modify the buffer control register. Offset: 0x0064 Reset
-    /// value: 0x00000000
+    /// Device only: Used in conjunction with `EP_ABORT`. Set once an endpoint is idle so the programmer knows it is safe to modify the buffer control register.
+    /// Offset: 0x0064
+    /// Reset value: 0x00000000
     volatile uint32_t EP_ABORT_DONE;
 
-    /// Device: this bit must be set in conjunction with the `STALL` bit in the buffer control
-    /// register to send a STALL on EP0. The device controller clears these bits when a SETUP packet
-    /// is received because the USB spec requires that a STALL condition is cleared when a SETUP
-    /// packet is received. Offset: 0x0068 Reset value: 0x00000000
+    /// Device: this bit must be set in conjunction with the `STALL` bit in the buffer control register to send a STALL on EP0. The device controller clears these bits when a SETUP packet is received because the USB spec requires that a STALL condition is cleared when a SETUP packet is received.
+    /// Offset: 0x0068
+    /// Reset value: 0x00000000
     volatile uint32_t EP_STALL_ARM;
 
-    /// Used by the host controller. Sets the wait time in microseconds before trying again if the
-    /// device replies with a NAK. Offset: 0x006C Reset value: 0x00100010
+    /// Used by the host controller. Sets the wait time in microseconds before trying again if the device replies with a NAK.
+    /// Offset: 0x006C
+    /// Reset value: 0x00100010
     volatile uint32_t NAK_POLL;
 
-    /// Device: bits are set when the `IRQ_ON_NAK` or `IRQ_ON_STALL` bits are set. For EP0 this
-    /// comes from `SIE_CTRL`. For all other endpoints it comes from the endpoint control register.
+    /// Device: bits are set when the `IRQ_ON_NAK` or `IRQ_ON_STALL` bits are set. For EP0 this comes from `SIE_CTRL`. For all other endpoints it comes from the endpoint control register.
     /// Offset: 0x0070
     /// Reset value: 0x00000000
     volatile uint32_t EP_STATUS_STALL_NAK;
@@ -170,14 +168,14 @@ struct USBCTRL_REGS_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t USB_MUXING;
 
-    /// Overrides for the power signals in the event that the VBUS signals are not hooked up to
-    /// GPIO. Set the value of the override and then the override enable to switch over to the
-    /// override value. Offset: 0x0078 Reset value: 0x00000000
+    /// Overrides for the power signals in the event that the VBUS signals are not hooked up to GPIO. Set the value of the override and then the override enable to switch over to the override value.
+    /// Offset: 0x0078
+    /// Reset value: 0x00000000
     volatile uint32_t USB_PWR;
 
-    /// This register allows for direct control of the USB phy. Use in conjunction with
-    /// usbphy_direct_override register to enable each override bit. Offset: 0x007C Reset value:
-    /// 0x00000000
+    /// This register allows for direct control of the USB phy. Use in conjunction with usbphy_direct_override register to enable each override bit.
+    /// Offset: 0x007C
+    /// Reset value: 0x00000000
     volatile uint32_t USBPHY_DIRECT;
 
     /// Override enable for each control in usbphy_direct
@@ -189,7 +187,7 @@ struct USBCTRL_REGS_Registers {
     /// Offset: 0x0084
     /// Reset value: 0x00001F1F
     volatile uint32_t USBPHY_TRIM;
-    uint8_t RESERVED_0088[4];  ///< Reserved
+    uint8_t RESERVED_0088[4]; ///< Reserved
 
     /// Raw Interrupts
     /// Offset: 0x008C

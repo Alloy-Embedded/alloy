@@ -17,6 +17,7 @@ namespace alloy::hal::raspberrypi::rp2040::rtc {
 
 /// RTC Register Structure
 struct RTC_Registers {
+
     /// Divider minus 1 for the 1 second counter. Safe to change the value when RTC is not enabled.
     /// Offset: 0x0000
     /// Reset value: 0x00000000

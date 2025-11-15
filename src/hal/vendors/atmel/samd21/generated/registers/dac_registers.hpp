@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::dac {
 
 /// DAC Register Structure
 struct DAC_Registers {
+
     /// Control A
     /// Offset: 0x0000
     volatile uint8_t CTRLA;
@@ -28,7 +29,7 @@ struct DAC_Registers {
     /// Event Control
     /// Offset: 0x0002
     volatile uint8_t EVCTRL;
-    uint8_t RESERVED_0003[1];  ///< Reserved
+    uint8_t RESERVED_0003[1]; ///< Reserved
 
     /// Interrupt Enable Clear
     /// Offset: 0x0004
@@ -50,7 +51,7 @@ struct DAC_Registers {
     /// Data
     /// Offset: 0x0008
     volatile uint16_t DATA;
-    uint8_t RESERVED_000A[2];  ///< Reserved
+    uint8_t RESERVED_000A[2]; ///< Reserved
 
     /// Data Buffer
     /// Offset: 0x000C

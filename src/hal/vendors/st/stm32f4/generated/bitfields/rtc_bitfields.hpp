@@ -129,12 +129,6 @@ namespace cr {
     constexpr uint32_t REFCKON_Pos = 4;
     constexpr uint32_t REFCKON_Msk = REFCKON::mask;
 
-    /// Bypass the shadow registers
-    /// Position: 5, Width: 1
-    using BYPSHAD = BitField<5, 1>;
-    constexpr uint32_t BYPSHAD_Pos = 5;
-    constexpr uint32_t BYPSHAD_Msk = BYPSHAD::mask;
-
     /// Hour format
     /// Position: 6, Width: 1
     using FMT = BitField<6, 1>;
@@ -212,12 +206,6 @@ namespace cr {
     using BKP = BitField<18, 1>;
     constexpr uint32_t BKP_Pos = 18;
     constexpr uint32_t BKP_Msk = BKP::mask;
-
-    /// Calibration Output selection
-    /// Position: 19, Width: 1
-    using COSEL = BitField<19, 1>;
-    constexpr uint32_t COSEL_Pos = 19;
-    constexpr uint32_t COSEL_Msk = COSEL::mask;
 
     /// Output polarity
     /// Position: 20, Width: 1
@@ -611,47 +599,41 @@ namespace shiftr {
 
 /// TSTR - time stamp time register
 namespace tstr {
-    /// Second units in BCD format
-    /// Position: 0, Width: 4
-    using SU = BitField<0, 4>;
-    constexpr uint32_t SU_Pos = 0;
-    constexpr uint32_t SU_Msk = SU::mask;
+    /// Tamper 1 detection enable
+    /// Position: 0, Width: 1
+    using TAMP1E = BitField<0, 1>;
+    constexpr uint32_t TAMP1E_Pos = 0;
+    constexpr uint32_t TAMP1E_Msk = TAMP1E::mask;
 
-    /// Second tens in BCD format
-    /// Position: 4, Width: 3
-    using ST = BitField<4, 3>;
-    constexpr uint32_t ST_Pos = 4;
-    constexpr uint32_t ST_Msk = ST::mask;
+    /// Active level for tamper 1
+    /// Position: 1, Width: 1
+    using TAMP1TRG = BitField<1, 1>;
+    constexpr uint32_t TAMP1TRG_Pos = 1;
+    constexpr uint32_t TAMP1TRG_Msk = TAMP1TRG::mask;
 
-    /// Minute units in BCD format
-    /// Position: 8, Width: 4
-    using MNU = BitField<8, 4>;
-    constexpr uint32_t MNU_Pos = 8;
-    constexpr uint32_t MNU_Msk = MNU::mask;
+    /// Tamper interrupt enable
+    /// Position: 2, Width: 1
+    using TAMPIE = BitField<2, 1>;
+    constexpr uint32_t TAMPIE_Pos = 2;
+    constexpr uint32_t TAMPIE_Msk = TAMPIE::mask;
 
-    /// Minute tens in BCD format
-    /// Position: 12, Width: 3
-    using MNT = BitField<12, 3>;
-    constexpr uint32_t MNT_Pos = 12;
-    constexpr uint32_t MNT_Msk = MNT::mask;
+    /// TAMPER1 mapping
+    /// Position: 16, Width: 1
+    using TAMP1INSEL = BitField<16, 1>;
+    constexpr uint32_t TAMP1INSEL_Pos = 16;
+    constexpr uint32_t TAMP1INSEL_Msk = TAMP1INSEL::mask;
 
-    /// Hour units in BCD format
-    /// Position: 16, Width: 4
-    using HU = BitField<16, 4>;
-    constexpr uint32_t HU_Pos = 16;
-    constexpr uint32_t HU_Msk = HU::mask;
+    /// TIMESTAMP mapping
+    /// Position: 17, Width: 1
+    using TSINSEL = BitField<17, 1>;
+    constexpr uint32_t TSINSEL_Pos = 17;
+    constexpr uint32_t TSINSEL_Msk = TSINSEL::mask;
 
-    /// Hour tens in BCD format
-    /// Position: 20, Width: 2
-    using HT = BitField<20, 2>;
-    constexpr uint32_t HT_Pos = 20;
-    constexpr uint32_t HT_Msk = HT::mask;
-
-    /// AM/PM notation
-    /// Position: 22, Width: 1
-    using PM = BitField<22, 1>;
-    constexpr uint32_t PM_Pos = 22;
-    constexpr uint32_t PM_Msk = PM::mask;
+    /// AFO_ALARM output type
+    /// Position: 18, Width: 1
+    using ALARMOUTTYPE = BitField<18, 1>;
+    constexpr uint32_t ALARMOUTTYPE_Pos = 18;
+    constexpr uint32_t ALARMOUTTYPE_Msk = ALARMOUTTYPE::mask;
 
 }  // namespace tstr
 

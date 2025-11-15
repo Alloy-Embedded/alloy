@@ -17,16 +17,19 @@ namespace alloy::hal::raspberrypi::rp2040::resets {
 
 /// RESETS Register Structure
 struct RESETS_Registers {
-    /// Reset control. If a bit is set it means the peripheral is in reset. 0 means the peripheral's
-    /// reset is deasserted. Offset: 0x0000 Reset value: 0x01FFFFFF
+
+    /// Reset control. If a bit is set it means the peripheral is in reset. 0 means the peripheral's reset is deasserted.
+    /// Offset: 0x0000
+    /// Reset value: 0x01FFFFFF
     volatile uint32_t RESET;
 
-    /// Watchdog select. If a bit is set then the watchdog will reset this peripheral when the
-    /// watchdog fires. Offset: 0x0004 Reset value: 0x00000000
+    /// Watchdog select. If a bit is set then the watchdog will reset this peripheral when the watchdog fires.
+    /// Offset: 0x0004
+    /// Reset value: 0x00000000
     volatile uint32_t WDSEL;
 
-    /// Reset done. If a bit is set then a reset done signal has been returned by the peripheral.
-    /// This indicates that the peripheral's registers are ready to be accessed. Offset: 0x0008
+    /// Reset done. If a bit is set then a reset done signal has been returned by the peripheral. This indicates that the peripheral's registers are ready to be accessed.
+    /// Offset: 0x0008
     /// Reset value: 0x00000000
     volatile uint32_t RESET_DONE;
 };

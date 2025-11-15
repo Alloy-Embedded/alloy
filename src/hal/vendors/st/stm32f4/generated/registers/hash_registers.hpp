@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f4::hash {
 
 /// HASH Register Structure
 struct HASH_Registers {
+
     /// control register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -73,7 +74,7 @@ struct HASH_Registers {
     /// Offset: 0x0024
     /// Reset value: 0x00000001
     volatile uint32_t SR;
-    uint8_t RESERVED_0028[208];  ///< Reserved
+    uint8_t RESERVED_0028[208]; ///< Reserved
 
     /// context swap registers
     /// Offset: 0x00F8
@@ -398,7 +399,7 @@ struct HASH_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CSR53;
-    uint8_t RESERVED_01D0[320];  ///< Reserved
+    uint8_t RESERVED_01D0[320]; ///< Reserved
 
     /// HASH digest register
     /// Offset: 0x0310

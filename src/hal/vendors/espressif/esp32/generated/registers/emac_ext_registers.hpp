@@ -17,6 +17,7 @@ namespace alloy::hal::espressif::esp32::emac_ext {
 
 /// EMAC_EXT Register Structure
 struct EMAC_EXT_Registers {
+
     /// RMII clock divider setting
     /// Offset: 0x0000
     volatile uint32_t EX_CLKOUT_CONF;
@@ -36,7 +37,7 @@ struct EMAC_EXT_Registers {
     /// Ethernet RAM power-down enable
     /// Offset: 0x0010
     volatile uint32_t PD_SEL;
-    uint8_t RESERVED_0014[232];  ///< Reserved
+    uint8_t RESERVED_0014[232]; ///< Reserved
 
     /// EX_DATE
     /// Offset: 0x00FC

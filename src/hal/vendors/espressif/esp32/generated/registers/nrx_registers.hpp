@@ -17,7 +17,7 @@ namespace alloy::hal::espressif::esp32::nrx {
 
 /// NRX Register Structure
 struct NRX_Registers {
-    uint8_t RESERVED_0000[212];  ///< Reserved
+    uint8_t RESERVED_0000[212]; ///< Reserved
 
     /// WiFi RX control register
     /// Offset: 0x00D4

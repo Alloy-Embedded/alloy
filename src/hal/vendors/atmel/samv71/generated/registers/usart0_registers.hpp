@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samv71::usart0 {
 
 /// USART0 Register Structure
 struct USART0_Registers {
+
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -145,7 +146,7 @@ struct USART0_Registers {
     /// Transmitter Timeguard Register
     /// Offset: 0x0028
     volatile uint32_t US_TTGR_LON_MODE;
-    uint8_t RESERVED_002C[20];  ///< Reserved
+    uint8_t RESERVED_002C[20]; ///< Reserved
 
     /// FI DI Ratio Register
     /// Offset: 0x0040
@@ -159,7 +160,7 @@ struct USART0_Registers {
     /// Offset: 0x0044
     /// Access: read-only
     volatile uint32_t US_NER;
-    uint8_t RESERVED_0048[4];  ///< Reserved
+    uint8_t RESERVED_0048[4]; ///< Reserved
 
     /// IrDA Filter Register
     /// Offset: 0x004C
@@ -226,7 +227,7 @@ struct USART0_Registers {
     /// IC DIFF Register
     /// Offset: 0x0088
     volatile uint32_t US_ICDIFF;
-    uint8_t RESERVED_008C[88];  ///< Reserved
+    uint8_t RESERVED_008C[88]; ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4

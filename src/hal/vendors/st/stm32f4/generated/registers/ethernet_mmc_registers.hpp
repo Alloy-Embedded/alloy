@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f4::ethernet_mmc {
 
 /// Ethernet_MMC Register Structure
 struct Ethernet_MMC_Registers {
+
     /// Ethernet MMC control register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -46,7 +47,7 @@ struct Ethernet_MMC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t MMCTIMR;
-    uint8_t RESERVED_0014[56];  ///< Reserved
+    uint8_t RESERVED_0014[56]; ///< Reserved
 
     /// Ethernet MMC transmitted good frames after a single collision counter
     /// Offset: 0x004C
@@ -59,14 +60,14 @@ struct Ethernet_MMC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t MMCTGFMSCCR;
-    uint8_t RESERVED_0054[20];  ///< Reserved
+    uint8_t RESERVED_0054[20]; ///< Reserved
 
     /// Ethernet MMC transmitted good frames counter register
     /// Offset: 0x0068
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t MMCTGFCR;
-    uint8_t RESERVED_006C[40];  ///< Reserved
+    uint8_t RESERVED_006C[40]; ///< Reserved
 
     /// Ethernet MMC received frames with CRC error counter register
     /// Offset: 0x0094
@@ -79,7 +80,7 @@ struct Ethernet_MMC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t MMCRFAECR;
-    uint8_t RESERVED_009C[40];  ///< Reserved
+    uint8_t RESERVED_009C[40]; ///< Reserved
 
     /// MMC received good unicast frames counter register
     /// Offset: 0x00C4

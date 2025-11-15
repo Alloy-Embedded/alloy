@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::mtb {
 
 /// MTB Register Structure
 struct MTB_Registers {
+
     /// MTB Position
     /// Offset: 0x0000
     volatile uint32_t POSITION;
@@ -33,12 +34,12 @@ struct MTB_Registers {
     /// Offset: 0x000C
     /// Access: read-only
     volatile uint32_t BASE;
-    uint8_t RESERVED_0010[3824];  ///< Reserved
+    uint8_t RESERVED_0010[3824]; ///< Reserved
 
     /// MTB Integration Mode Control
     /// Offset: 0x0F00
     volatile uint32_t ITCTRL;
-    uint8_t RESERVED_0F04[156];  ///< Reserved
+    uint8_t RESERVED_0F04[156]; ///< Reserved
 
     /// MTB Claim Set
     /// Offset: 0x0FA0
@@ -47,7 +48,7 @@ struct MTB_Registers {
     /// MTB Claim Clear
     /// Offset: 0x0FA4
     volatile uint32_t CLAIMCLR;
-    uint8_t RESERVED_0FA8[8];  ///< Reserved
+    uint8_t RESERVED_0FA8[8]; ///< Reserved
 
     /// MTB Lock Access
     /// Offset: 0x0FB0
@@ -67,7 +68,7 @@ struct MTB_Registers {
     /// Offset: 0x0FBC
     /// Access: read-only
     volatile uint32_t DEVARCH;
-    uint8_t RESERVED_0FC0[8];  ///< Reserved
+    uint8_t RESERVED_0FC0[8]; ///< Reserved
 
     /// MTB Device Configuration
     /// Offset: 0x0FC8

@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::sysctrl {
 
 /// SYSCTRL Register Structure
 struct SYSCTRL_Registers {
+
     /// Interrupt Enable Clear
     /// Offset: 0x0000
     volatile uint32_t INTENCLR;
@@ -38,13 +39,13 @@ struct SYSCTRL_Registers {
     /// Offset: 0x0010
     /// Reset value: 0x00000080
     volatile uint16_t XOSC;
-    uint8_t RESERVED_0012[2];  ///< Reserved
+    uint8_t RESERVED_0012[2]; ///< Reserved
 
     /// 32kHz External Crystal Oscillator (XOSC32K) Control
     /// Offset: 0x0014
     /// Reset value: 0x00000080
     volatile uint16_t XOSC32K;
-    uint8_t RESERVED_0016[2];  ///< Reserved
+    uint8_t RESERVED_0016[2]; ///< Reserved
 
     /// 32kHz Internal Oscillator (OSC32K) Control
     /// Offset: 0x0018
@@ -55,7 +56,7 @@ struct SYSCTRL_Registers {
     /// Offset: 0x001C
     /// Reset value: 0x0000001F
     volatile uint8_t OSCULP32K;
-    uint8_t RESERVED_001D[3];  ///< Reserved
+    uint8_t RESERVED_001D[3]; ///< Reserved
 
     /// 8MHz Internal Oscillator (OSC8M) Control
     /// Offset: 0x0020
@@ -66,7 +67,7 @@ struct SYSCTRL_Registers {
     /// Offset: 0x0024
     /// Reset value: 0x00000080
     volatile uint16_t DFLLCTRL;
-    uint8_t RESERVED_0026[2];  ///< Reserved
+    uint8_t RESERVED_0026[2]; ///< Reserved
 
     /// DFLL48M Value
     /// Offset: 0x0028
@@ -79,17 +80,17 @@ struct SYSCTRL_Registers {
     /// DFLL48M Synchronization
     /// Offset: 0x0030
     volatile uint8_t DFLLSYNC;
-    uint8_t RESERVED_0031[3];  ///< Reserved
+    uint8_t RESERVED_0031[3]; ///< Reserved
 
     /// 3.3V Brown-Out Detector (BOD33) Control
     /// Offset: 0x0034
     volatile uint32_t BOD33;
-    uint8_t RESERVED_0038[4];  ///< Reserved
+    uint8_t RESERVED_0038[4]; ///< Reserved
 
     /// Voltage Regulator System (VREG) Control
     /// Offset: 0x003C
     volatile uint16_t VREG;
-    uint8_t RESERVED_003E[2];  ///< Reserved
+    uint8_t RESERVED_003E[2]; ///< Reserved
 
     /// Voltage References System (VREF) Control
     /// Offset: 0x0040
@@ -99,7 +100,7 @@ struct SYSCTRL_Registers {
     /// Offset: 0x0044
     /// Reset value: 0x00000080
     volatile uint8_t DPLLCTRLA;
-    uint8_t RESERVED_0045[3];  ///< Reserved
+    uint8_t RESERVED_0045[3]; ///< Reserved
 
     /// DPLL Ratio Control
     /// Offset: 0x0048

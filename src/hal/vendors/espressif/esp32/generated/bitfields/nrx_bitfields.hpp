@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::nrx {
@@ -20,53 +19,53 @@ using namespace alloy::hal::bitfields;
 
 /// NRXPD_CTRL - WiFi RX control register
 namespace nrxpd_ctrl {
-/// Position: 0, Width: 1
-/// Access: read-write
-using DEMAP_FORCE_PD = BitField<0, 1>;
-constexpr uint32_t DEMAP_FORCE_PD_Pos = 0;
-constexpr uint32_t DEMAP_FORCE_PD_Msk = DEMAP_FORCE_PD::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using DEMAP_FORCE_PD = BitField<0, 1>;
+    constexpr uint32_t DEMAP_FORCE_PD_Pos = 0;
+    constexpr uint32_t DEMAP_FORCE_PD_Msk = DEMAP_FORCE_PD::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-write
-using DEMAP_FORCE_PU = BitField<1, 1>;
-constexpr uint32_t DEMAP_FORCE_PU_Pos = 1;
-constexpr uint32_t DEMAP_FORCE_PU_Msk = DEMAP_FORCE_PU::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using DEMAP_FORCE_PU = BitField<1, 1>;
+    constexpr uint32_t DEMAP_FORCE_PU_Pos = 1;
+    constexpr uint32_t DEMAP_FORCE_PU_Msk = DEMAP_FORCE_PU::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-write
-using VIT_FORCE_PD = BitField<2, 1>;
-constexpr uint32_t VIT_FORCE_PD_Pos = 2;
-constexpr uint32_t VIT_FORCE_PD_Msk = VIT_FORCE_PD::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using VIT_FORCE_PD = BitField<2, 1>;
+    constexpr uint32_t VIT_FORCE_PD_Pos = 2;
+    constexpr uint32_t VIT_FORCE_PD_Msk = VIT_FORCE_PD::mask;
 
-/// Position: 3, Width: 1
-/// Access: read-write
-using VIT_FORCE_PU = BitField<3, 1>;
-constexpr uint32_t VIT_FORCE_PU_Pos = 3;
-constexpr uint32_t VIT_FORCE_PU_Msk = VIT_FORCE_PU::mask;
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using VIT_FORCE_PU = BitField<3, 1>;
+    constexpr uint32_t VIT_FORCE_PU_Pos = 3;
+    constexpr uint32_t VIT_FORCE_PU_Msk = VIT_FORCE_PU::mask;
 
-/// Position: 4, Width: 1
-/// Access: read-write
-using RX_ROT_FORCE_PD = BitField<4, 1>;
-constexpr uint32_t RX_ROT_FORCE_PD_Pos = 4;
-constexpr uint32_t RX_ROT_FORCE_PD_Msk = RX_ROT_FORCE_PD::mask;
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using RX_ROT_FORCE_PD = BitField<4, 1>;
+    constexpr uint32_t RX_ROT_FORCE_PD_Pos = 4;
+    constexpr uint32_t RX_ROT_FORCE_PD_Msk = RX_ROT_FORCE_PD::mask;
 
-/// Position: 5, Width: 1
-/// Access: read-write
-using RX_ROT_FORCE_PU = BitField<5, 1>;
-constexpr uint32_t RX_ROT_FORCE_PU_Pos = 5;
-constexpr uint32_t RX_ROT_FORCE_PU_Msk = RX_ROT_FORCE_PU::mask;
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using RX_ROT_FORCE_PU = BitField<5, 1>;
+    constexpr uint32_t RX_ROT_FORCE_PU_Pos = 5;
+    constexpr uint32_t RX_ROT_FORCE_PU_Msk = RX_ROT_FORCE_PU::mask;
 
-/// Position: 6, Width: 1
-/// Access: read-write
-using CHAN_EST_FORCE_PD = BitField<6, 1>;
-constexpr uint32_t CHAN_EST_FORCE_PD_Pos = 6;
-constexpr uint32_t CHAN_EST_FORCE_PD_Msk = CHAN_EST_FORCE_PD::mask;
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using CHAN_EST_FORCE_PD = BitField<6, 1>;
+    constexpr uint32_t CHAN_EST_FORCE_PD_Pos = 6;
+    constexpr uint32_t CHAN_EST_FORCE_PD_Msk = CHAN_EST_FORCE_PD::mask;
 
-/// Position: 7, Width: 1
-/// Access: read-write
-using CHAN_EST_FORCE_PU = BitField<7, 1>;
-constexpr uint32_t CHAN_EST_FORCE_PU_Pos = 7;
-constexpr uint32_t CHAN_EST_FORCE_PU_Msk = CHAN_EST_FORCE_PU::mask;
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using CHAN_EST_FORCE_PU = BitField<7, 1>;
+    constexpr uint32_t CHAN_EST_FORCE_PU_Pos = 7;
+    constexpr uint32_t CHAN_EST_FORCE_PU_Msk = CHAN_EST_FORCE_PU::mask;
 
 }  // namespace nrxpd_ctrl
 

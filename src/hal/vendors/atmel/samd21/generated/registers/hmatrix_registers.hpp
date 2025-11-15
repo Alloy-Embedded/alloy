@@ -17,7 +17,7 @@ namespace alloy::hal::atmel::samd21::hmatrix {
 
 /// HMATRIX Register Structure
 struct HMATRIX_Registers {
-    uint8_t RESERVED_0000[128];  ///< Reserved
+    uint8_t RESERVED_0000[128]; ///< Reserved
 
     /// Priority A for Slave
     /// Offset: 0x0080
@@ -26,7 +26,7 @@ struct HMATRIX_Registers {
     /// Priority B for Slave
     /// Offset: 0x0084
     volatile uint32_t PRBS[16][16];
-    uint8_t RESERVED_00C4[76];  ///< Reserved
+    uint8_t RESERVED_00C4[76]; ///< Reserved
 
     /// Special Function
     /// Offset: 0x0110
