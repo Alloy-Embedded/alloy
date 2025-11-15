@@ -52,6 +52,10 @@
 #include "hal/vendors/st/stm32f4/generated/bitfields/flash_bitfields.hpp"
 #include <cstdint>
 
+#if __cplusplus >= 202002L
+#include "hal/core/concepts.hpp"
+#endif
+
 namespace alloy::hal::st::stm32f4 {
 
 using namespace alloy::core;
@@ -364,10 +368,8 @@ public:
 // ============================================================================
 
 #if __cplusplus >= 202002L
-// Verify that Stm32f4Clock satisfies the ClockPlatform concept
-// This provides compile-time validation with clear error messages
 // Example config for validation:
-struct ExampleClockConfig {
+struct ExampleF4ClockConfig {
     static constexpr uint32_t hse_hz = 8'000'000;
     static constexpr uint32_t system_clock_hz = 84'000'000;
     static constexpr uint32_t pll_m = 4;
@@ -380,9 +382,9 @@ struct ExampleClockConfig {
     static constexpr uint32_t apb2_prescaler = 1;
 };
 
-// Uncomment when concepts.hpp is included
-// static_assert(alloy::hal::concepts::ClockPlatform<Stm32f4Clock<ExampleClockConfig>>,
-//               "Stm32f4Clock must satisfy ClockPlatform concept");
+// Compile-time validation: Verify that Stm32f4Clock satisfies ClockPlatform concept
+static_assert(alloy::hal::concepts::ClockPlatform<Stm32f4Clock<ExampleF4ClockConfig>>,
+              "Stm32f4Clock must satisfy ClockPlatform concept - missing required methods");
 #endif
 
 } // namespace alloy::hal::st::stm32f4

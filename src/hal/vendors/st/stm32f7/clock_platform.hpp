@@ -52,6 +52,10 @@
 #include "hal/vendors/st/stm32f7/generated/bitfields/flash_bitfields.hpp"
 #include <cstdint>
 
+#if __cplusplus >= 202002L
+#include "hal/core/concepts.hpp"
+#endif
+
 namespace alloy::hal::st::stm32f7 {
 
 using namespace alloy::core;
@@ -376,5 +380,29 @@ public:
         return get_ahb_clock_hz() / Config::apb2_prescaler;
     }
 };
+
+// ============================================================================
+// Concept Validation (C++20)
+// ============================================================================
+
+#if __cplusplus >= 202002L
+// Example config for validation:
+struct ExampleF7ClockConfig {
+    static constexpr uint32_t hse_hz = 8'000'000;
+    static constexpr uint32_t system_clock_hz = 180'000'000;
+    static constexpr uint32_t pll_m = 4;
+    static constexpr uint32_t pll_n = 180;
+    static constexpr uint32_t pll_p_div = 2;
+    static constexpr uint32_t pll_q = 8;
+    static constexpr uint32_t flash_latency = 5;
+    static constexpr uint32_t ahb_prescaler = 1;
+    static constexpr uint32_t apb1_prescaler = 4;
+    static constexpr uint32_t apb2_prescaler = 2;
+};
+
+// Compile-time validation: Verify that Stm32f7Clock satisfies ClockPlatform concept
+static_assert(alloy::hal::concepts::ClockPlatform<Stm32f7Clock<ExampleF7ClockConfig>>,
+              "Stm32f7Clock must satisfy ClockPlatform concept - missing required methods");
+#endif
 
 } // namespace alloy::hal::st::stm32f7

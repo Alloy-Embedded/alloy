@@ -44,6 +44,10 @@
 #include "hal/vendors/st/stm32g0/generated/bitfields/flash_bitfields.hpp"
 #include <cstdint>
 
+#if __cplusplus >= 202002L
+#include "hal/core/concepts.hpp"
+#endif
+
 namespace alloy::hal::st::stm32g0 {
 
 using namespace alloy::core;
@@ -230,9 +234,9 @@ struct ExampleG0ClockConfig {
     static constexpr uint32_t flash_latency = 2;
 };
 
-// Uncomment when concepts.hpp is included
-// static_assert(alloy::hal::concepts::ClockPlatform<Stm32g0Clock<ExampleG0ClockConfig>>,
-//               "Stm32g0Clock must satisfy ClockPlatform concept");
+// Compile-time validation: Verify that Stm32g0Clock satisfies ClockPlatform concept
+static_assert(alloy::hal::concepts::ClockPlatform<Stm32g0Clock<ExampleG0ClockConfig>>,
+              "Stm32g0Clock must satisfy ClockPlatform concept - missing required methods");
 #endif
 
 } // namespace alloy::hal::st::stm32g0
