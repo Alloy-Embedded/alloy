@@ -44,8 +44,10 @@
 #include "rtos/platform/critical_section.hpp"
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
+#include "rtos/error.hpp"
 
 #include "core/types.hpp"
+#include "core/result.hpp"
 
 namespace alloy::rtos {
 
@@ -115,36 +117,41 @@ class Mutex {
     /// Implements priority inheritance: if blocked, boosts owner's priority.
     ///
     /// @param timeout_ms Timeout in milliseconds (INFINITE = wait forever)
-    /// @return true if locked successfully, false if timeout
+    /// @return Ok(void) if locked successfully, Err(RTOSError) on failure
     ///
     /// Example:
     /// ```cpp
-    /// if (mutex.lock(1000)) {
+    /// auto result = mutex.lock(1000);
+    /// if (result.is_ok()) {
     ///     // Got mutex, access shared resource
     ///     shared_resource.write(data);
     ///     mutex.unlock();
     /// } else {
-    ///     // Timeout - couldn't get mutex
+    ///     // Handle error
+    ///     if (result.unwrap_err() == RTOSError::Timeout) {
+    ///         // Timeout - couldn't get mutex in 1 second
+    ///     }
     /// }
     /// ```
-    bool lock(core::u32 timeout_ms = INFINITE);
+    core::Result<void, RTOSError> lock(core::u32 timeout_ms = INFINITE);
 
     /// Try to lock mutex (non-blocking)
     ///
     /// Returns immediately whether or not mutex was acquired.
     ///
-    /// @return true if locked, false if already held
+    /// @return Ok(void) if locked, Err(RTOSError::Busy) if already held
     ///
     /// Example:
     /// ```cpp
-    /// if (mutex.try_lock()) {
+    /// auto result = mutex.try_lock();
+    /// if (result.is_ok()) {
     ///     shared_resource.write(data);
     ///     mutex.unlock();
     /// } else {
     ///     // Mutex busy, do something else
     /// }
     /// ```
-    bool try_lock();
+    core::Result<void, RTOSError> try_lock();
 
     /// Unlock mutex (release)
     ///
@@ -152,15 +159,18 @@ class Mutex {
     /// Restores original priority if it was boosted.
     /// Wakes up one waiting task if any.
     ///
-    /// @return true if unlocked successfully, false if not owner
+    /// @return Ok(void) if unlocked successfully, Err(RTOSError::NotOwner) if not owner
     ///
     /// Example:
     /// ```cpp
     /// mutex.lock();
     /// access_shared_resource();
-    /// mutex.unlock();  // Must unlock!
+    /// auto result = mutex.unlock();  // Must unlock!
+    /// if (result.is_err()) {
+    ///     // Error: not owner or other issue
+    /// }
     /// ```
-    bool unlock();
+    core::Result<void, RTOSError> unlock();
 
     /// Check if mutex is locked
     ///
@@ -243,14 +253,18 @@ class LockGuard {
 
 // Mutex implementation
 
-inline bool Mutex::lock(core::u32 timeout_ms) {
+inline core::Result<void, RTOSError> Mutex::lock(core::u32 timeout_ms) {
+    using core::Ok;
+    using core::Err;
+
     core::u32 start_time = systick::micros();
     TaskControlBlock* current = RTOS::current_task();
 
     while (true) {
         // Try to acquire without blocking
-        if (try_lock()) {
-            return true;  // Success
+        auto try_result = try_lock();
+        if (try_result.is_ok()) {
+            return Ok();  // Success
         }
 
         // Check if we already own it (recursive lock)
@@ -258,7 +272,7 @@ inline bool Mutex::lock(core::u32 timeout_ms) {
         if (owner_ == current) {
             lock_count_++;
             enable_interrupts();
-            return true;
+            return Ok();
         }
         enable_interrupts();
 
@@ -266,7 +280,7 @@ inline bool Mutex::lock(core::u32 timeout_ms) {
         if (timeout_ms != INFINITE) {
             core::u32 elapsed = systick::micros_since(start_time);
             if (elapsed >= (timeout_ms * 1000)) {
-                return false;  // Timeout
+                return Err(RTOSError::Timeout);
             }
         }
 
@@ -284,7 +298,10 @@ inline bool Mutex::lock(core::u32 timeout_ms) {
     }
 }
 
-inline bool Mutex::try_lock() {
+inline core::Result<void, RTOSError> Mutex::try_lock() {
+    using core::Ok;
+    using core::Err;
+
     TaskControlBlock* current = RTOS::current_task();
 
     disable_interrupts();
@@ -295,21 +312,24 @@ inline bool Mutex::try_lock() {
         original_priority_ = current->priority;
         lock_count_ = 1;
         enable_interrupts();
-        return true;
+        return Ok();
     }
 
     // Check if we already own it (recursive)
     if (owner_ == current) {
         lock_count_++;
         enable_interrupts();
-        return true;
+        return Ok();
     }
 
     enable_interrupts();
-    return false;
+    return Err(RTOSError::Timeout);  // Busy - using Timeout for compatibility
 }
 
-inline bool Mutex::unlock() {
+inline core::Result<void, RTOSError> Mutex::unlock() {
+    using core::Ok;
+    using core::Err;
+
     TaskControlBlock* current = RTOS::current_task();
 
     disable_interrupts();
@@ -317,7 +337,7 @@ inline bool Mutex::unlock() {
     // Check if we own the mutex
     if (owner_ != current) {
         enable_interrupts();
-        return false;  // Not owner - error
+        return Err(RTOSError::NotOwner);
     }
 
     // Decrement lock count (for recursive locks)
@@ -326,7 +346,7 @@ inline bool Mutex::unlock() {
     // If still locked (recursive), don't release yet
     if (lock_count_ > 0) {
         enable_interrupts();
-        return true;
+        return Ok();
     }
 
     // Restore original priority
@@ -342,7 +362,7 @@ inline bool Mutex::unlock() {
         scheduler::unblock_one_task(&wait_list_);
     }
 
-    return true;
+    return Ok();
 }
 
 inline void Mutex::apply_priority_inheritance() {
