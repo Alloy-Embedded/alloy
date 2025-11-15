@@ -216,16 +216,30 @@ message(STATUS "========================================")
 # Create HAL library with platform-specific sources
 # Sources are collected by platform_selection.cmake
 
-# Collect common HAL sources (platform-independent)
-file(GLOB_RECURSE ALLOY_HAL_COMMON_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/concepts/*.hpp
+# Common HAL sources (platform-independent, header-only)
+# Note: Using explicit lists instead of GLOB for better CMake incremental builds
+# These are header-only files used for type definitions and interfaces
+set(ALLOY_HAL_COMMON_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/types.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/core/concepts.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/core/types.hpp
 )
 
-# Collect core sources (Result, Error, etc.)
-file(GLOB_RECURSE ALLOY_CORE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/*.hpp
+# Core sources (Result, Error, etc. - header-only library)
+# Note: Using explicit lists instead of GLOB for better CMake incremental builds
+set(ALLOY_CORE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/circular_buffer.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/concepts.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/error.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/error_code.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/esp_error.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/memory.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/result.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scoped_device.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scoped_i2c.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scoped_spi.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/types.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/units.hpp
 )
 
 # Create HAL library (INTERFACE for header-only, or STATIC if platform has .cpp files)
