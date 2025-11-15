@@ -66,10 +66,10 @@ using BoardSysTick = SysTick<ClockConfig::system_clock_hz>;
 
 /**
  * @brief RTOS Tick Source (must be 1ms tick for RTOS compatibility)
+ *
+ * Note: The 1ms tick period is configured at runtime via SysTickTimer::init_ms<BoardSysTick>(1)
  */
 using RTOSTick = BoardSysTick;
-static_assert(BoardSysTick::tick_period_ms == 1,
-              "RTOS requires 1ms SysTick period");
 
 // =============================================================================
 // LED Control

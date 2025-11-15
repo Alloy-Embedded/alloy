@@ -8,10 +8,10 @@
 
 #include "board.hpp"
 #include "hal/api/systick_simple.hpp"
-#include "hal/vendors/st/stm32g0/registers/rcc_registers.hpp"
-#include "hal/vendors/st/stm32g0/registers/flash_registers.hpp"
-#include "hal/vendors/st/stm32g0/bitfields/rcc_bitfields.hpp"
-#include "hal/vendors/st/stm32g0/bitfields/flash_bitfields.hpp"
+#include "hal/vendors/st/stm32g0/generated/registers/rcc_registers.hpp"
+#include "hal/vendors/st/stm32g0/generated/registers/flash_registers.hpp"
+#include "hal/vendors/st/stm32g0/generated/bitfields/rcc_bitfields.hpp"
+#include "hal/vendors/st/stm32g0/generated/bitfields/flash_bitfields.hpp"
 #include <cstdint>
 
 using namespace alloy::hal::st::stm32g0;
