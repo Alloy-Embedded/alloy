@@ -146,15 +146,15 @@
 - [x] 3.5.6 Build validated (✅ blink builds successfully - 2632 bytes)
 
 ### 3.6 Refactor same70_xplained Board
-- [ ] 3.6.1 Create `boards/same70_xplained/board_config.hpp`
-- [ ] 3.6.2 Define platform type aliases
-- [ ] 3.6.3 Define pin aliases
-- [ ] 3.6.4 Refactor `board.cpp` to remove #ifdef blocks
-- [ ] 3.6.5 Build and test on hardware
+- [x] 3.6.1 Create `boards/same70_xplained/board_config.hpp` (already exists with comprehensive config)
+- [x] 3.6.2 Define platform type aliases (LedConfig, ButtonConfig, UartConsoleConfig, etc.)
+- [x] 3.6.3 Define pin aliases (led_green, button0, tx_pin, rx_pin using GpioPin templates)
+- [x] 3.6.4 Refactor `board.cpp` to remove #ifdef blocks (only ALLOY_RTOS_ENABLED remains - acceptable)
+- [ ] 3.6.5 Build and test on hardware (build fails due to pre-existing startup_impl.hpp issue - NOT board refactoring related)
 
 ### 3.7 Validation Phase 3
 - [x] 3.7.1 Verify no #ifdef STM32* in board.cpp files (verified - boards use board_config.hpp)
-- [ ] 3.7.2 Verify no #ifdef SAME70 in board.cpp files (deferred - same70 board needs separate fix)
+- [x] 3.7.2 Verify no #ifdef SAME70 in board.cpp files (verified - only ALLOY_RTOS_ENABLED, which is acceptable)
 - [x] 3.7.3 Build all STM32 boards (✅ nucleo_f401re, f722ze, g071rb, g0b1re all build)
 - [ ] 3.7.4 Run all examples on all boards (requires hardware - deferred)
 - [ ] 3.7.5 Create board porting checklist (deferred - existing boards serve as templates)
