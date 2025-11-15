@@ -328,3 +328,32 @@ endif()
 
 # Export compile commands for IDEs
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# ==============================================================================
+# Build System Validation Targets
+# ==============================================================================
+
+# Add custom target for validating source files
+add_custom_target(validate-build-system
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_CURRENT_SOURCE_DIR=${CMAKE_SOURCE_DIR} -P ${CMAKE_SOURCE_DIR}/cmake/validate_sources.cmake
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Validating build system source files..."
+    VERBATIM
+)
+
+# Add custom target for testing board/platform validation
+# This intentionally tries invalid combinations to verify error detection
+add_custom_target(test-platform-validation
+    COMMAND ${CMAKE_COMMAND} -E echo "Testing Board/Platform Validation..."
+    COMMAND ${CMAKE_COMMAND} -E echo ""
+    COMMAND ${CMAKE_COMMAND} -E echo "Test 1: Valid combination (nucleo_g0b1re + stm32g0)"
+    COMMAND ${CMAKE_COMMAND} -DALLOY_BOARD=nucleo_g0b1re -DALLOY_PLATFORM=stm32g0 -B build-validation-test1 -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake > /dev/null 2>&1 && echo "✓ PASS" || echo "✗ FAIL"
+    COMMAND ${CMAKE_COMMAND} -E echo ""
+    COMMAND ${CMAKE_COMMAND} -E echo "Test 2: Invalid combination (nucleo_g0b1re + stm32f4) - should FAIL"
+    COMMAND ${CMAKE_COMMAND} -DALLOY_BOARD=nucleo_g0b1re -DALLOY_PLATFORM=stm32f4 -B build-validation-test2 -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake > /dev/null 2>&1 && echo "✗ FAIL (should have detected mismatch)" || echo "✓ PASS (correctly rejected)"
+    COMMAND ${CMAKE_COMMAND} -E echo ""
+    COMMAND ${CMAKE_COMMAND} -E echo "Validation test complete!"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Testing platform validation logic..."
+    VERBATIM
+)
