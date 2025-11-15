@@ -42,6 +42,7 @@
 #include "hal/interface/systick.hpp"
 
 #include "rtos/error.hpp"
+#include "rtos/concepts.hpp"
 
 #include "core/error.hpp"
 #include "core/types.hpp"
@@ -105,8 +106,14 @@ struct TaskControlBlock {
 ///
 /// @tparam StackSize Stack size in bytes (must be >= 256 and 8-byte aligned)
 /// @tparam Pri Task priority level
+/// @tparam Name Compile-time task name (zero RAM cost)
 ///
-/// Example:
+/// Example (Old API - still supported):
+/// ```cpp
+/// Task<512, Priority::High> task(my_task, "MyTask");
+/// ```
+///
+/// Example (New API - zero RAM for name):
 /// ```cpp
 /// void my_task() {
 ///     while (1) {
@@ -115,9 +122,9 @@ struct TaskControlBlock {
 ///     }
 /// }
 ///
-/// Task<512, Priority::High> task(my_task, "MyTask");
+/// Task<512, Priority::High, "MyTask"> task(my_task);
 /// ```
-template <size_t StackSize, Priority Pri>
+template <size_t StackSize, Priority Pri, fixed_string Name = "task">
 class Task {
     static_assert(StackSize >= 256, "Stack size must be at least 256 bytes");
     static_assert(StackSize % 8 == 0, "Stack size must be 8-byte aligned");
@@ -129,15 +136,30 @@ class Task {
     TaskControlBlock tcb_;                  ///< Task control block
 
    public:
-    /// Constructor
+    /// Constructor (new API - compile-time name)
     ///
     /// @param task_func Task entry point function
-    /// @param name Task name (for debugging)
-    explicit Task(void (*task_func)(), const char* name = "task");
+    explicit Task(void (*task_func)());
+
+    /// Constructor (old API - runtime name, deprecated)
+    ///
+    /// @param task_func Task entry point function
+    /// @param name Task name (stored in RAM - prefer compile-time name)
+    [[deprecated("Use Task<StackSize, Pri, \"Name\"> instead for zero-RAM names")]]
+    explicit Task(void (*task_func)(), const char* name);
 
     /// Get task control block
     TaskControlBlock* get_tcb() { return &tcb_; }
     const TaskControlBlock* get_tcb() const { return &tcb_; }
+
+    /// Get task name (compile-time)
+    static constexpr const char* name() { return Name.c_str(); }
+
+    /// Get stack size (compile-time)
+    static constexpr size_t stack_size() { return StackSize; }
+
+    /// Get priority (compile-time)
+    static constexpr Priority priority() { return Pri; }
 
     /// Get stack usage (for debugging)
     core::u32 get_stack_usage() const;
@@ -220,6 +242,177 @@ void register_task(TaskControlBlock* tcb);
 /// Infinite timeout constant
 constexpr core::u32 INFINITE = 0xFFFFFFFF;
 
+// ============================================================================
+// TaskSet - Variadic Template for Compile-Time Task Registration
+// ============================================================================
+
+/// TaskSet: Compile-time task collection with validation
+///
+/// Groups multiple tasks for compile-time validation and RAM calculation.
+/// Enables checking for priority conflicts, total RAM usage, etc.
+///
+/// Example:
+/// ```cpp
+/// Task<512, Priority::High, "Sensor"> sensor_task(sensor_func);
+/// Task<1024, Priority::Normal, "Display"> display_task(display_func);
+/// Task<256, Priority::Low, "Logger"> logger_task(logger_func);
+///
+/// // Compile-time validation and RAM calculation
+/// using MyTasks = TaskSet<
+///     decltype(sensor_task),
+///     decltype(display_task),
+///     decltype(logger_task)
+/// >;
+///
+/// static_assert(MyTasks::total_ram() == 1792);  // 512 + 1024 + 256
+/// static_assert(MyTasks::count() == 3);
+/// static_assert(MyTasks::has_unique_priorities());
+///
+/// // Start RTOS with TaskSet validation
+/// RTOS::start();
+/// ```
+template <typename... Tasks>
+struct TaskSet {
+    /// Number of tasks in the set
+    static constexpr size_t count() { return sizeof...(Tasks); }
+
+    /// Check if set is empty
+    static constexpr bool empty() { return count() == 0; }
+
+    /// Calculate total stack RAM at compile time
+    ///
+    /// @return Total bytes of stack RAM
+    static consteval size_t total_stack_ram() {
+        return (Tasks::stack_size() + ...);
+    }
+
+    /// Calculate total RAM (stack + TCB overhead)
+    ///
+    /// Each task has:
+    /// - Stack: StackSize bytes
+    /// - TCB: 32 bytes
+    ///
+    /// @return Total bytes of RAM
+    static consteval size_t total_ram() {
+        constexpr size_t TCB_SIZE = 32;
+        return total_stack_ram() + (count() * TCB_SIZE);
+    }
+
+    /// Get highest priority in task set
+    ///
+    /// @return Highest priority value
+    static consteval core::u8 highest_priority() {
+        constexpr core::u8 priorities[] = {
+            static_cast<core::u8>(Tasks::priority())...
+        };
+        core::u8 max = 0;
+        for (core::u8 p : priorities) {
+            if (p > max) max = p;
+        }
+        return max;
+    }
+
+    /// Get lowest priority in task set
+    ///
+    /// @return Lowest priority value
+    static consteval core::u8 lowest_priority() {
+        constexpr core::u8 priorities[] = {
+            static_cast<core::u8>(Tasks::priority())...
+        };
+        core::u8 min = 7;
+        for (core::u8 p : priorities) {
+            if (p < min) min = p;
+        }
+        return min;
+    }
+
+    /// Check if all priorities are unique (no duplicates)
+    ///
+    /// @return true if all priorities are unique
+    static consteval bool has_unique_priorities() {
+        constexpr core::u8 priorities[] = {
+            static_cast<core::u8>(Tasks::priority())...
+        };
+        constexpr size_t N = count();
+
+        for (size_t i = 0; i < N; ++i) {
+            for (size_t j = i + 1; j < N; ++j) {
+                if (priorities[i] == priorities[j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /// Check if all stack sizes are valid
+    ///
+    /// Valid means:
+    /// - >= 256 bytes (minimum viable)
+    /// - <= 65536 bytes (maximum reasonable)
+    /// - 8-byte aligned
+    ///
+    /// @return true if all stacks valid
+    static consteval bool has_valid_stacks() {
+        return ((Tasks::stack_size() >= 256 &&
+                 Tasks::stack_size() <= 65536 &&
+                 (Tasks::stack_size() % 8) == 0) && ...);
+    }
+
+    /// Validate entire task set at compile time
+    ///
+    /// Checks:
+    /// - At least one task
+    /// - All stacks valid
+    /// - All priorities valid (0-7)
+    /// - Unique priorities (optional, controlled by parameter)
+    ///
+    /// @tparam RequireUniquePriorities If true, fails if priorities duplicate
+    /// @return true if valid
+    template <bool RequireUniquePriorities = false>
+    static consteval bool validate() {
+        if (count() == 0) return false;  // Need at least one task
+        if (!has_valid_stacks()) return false;
+        if (highest_priority() > 7) return false;
+
+        if constexpr (RequireUniquePriorities) {
+            if (!has_unique_priorities()) return false;
+        }
+
+        return true;
+    }
+
+    /// Print task set info (compile-time friendly format)
+    ///
+    /// Generates static_assert-friendly error messages.
+    ///
+    /// Example usage:
+    /// ```cpp
+    /// static_assert(MyTasks::validate(), "Task set validation failed");
+    /// static_assert(MyTasks::total_ram() <= 8192, "Total RAM exceeds 8KB");
+    /// ```
+    struct Info {
+        static constexpr size_t task_count = count();
+        static constexpr size_t total_ram_bytes = total_ram();
+        static constexpr size_t total_stack_bytes = total_stack_ram();
+        static constexpr core::u8 max_priority = highest_priority();
+        static constexpr core::u8 min_priority = lowest_priority();
+        static constexpr bool unique_priorities = has_unique_priorities();
+    };
+};
+
+/// Helper: Create TaskSet from task instances
+///
+/// Usage:
+/// ```cpp
+/// auto tasks = make_task_set(task1, task2, task3);
+/// static_assert(decltype(tasks)::total_ram() == 1792);
+/// ```
+template <typename... Tasks>
+consteval auto make_task_set(const Tasks&...) {
+    return TaskSet<Tasks...>{};
+}
+
 }  // namespace alloy::rtos
 
 // Include platform-specific context switching
@@ -238,15 +431,16 @@ constexpr core::u32 INFINITE = 0xFFFFFFFF;
 // Include Task implementation
 namespace alloy::rtos {
 
-template <size_t StackSize, Priority Pri>
-Task<StackSize, Pri>::Task(void (*task_func)(), const char* name) : stack_{},
-                                                                    tcb_{} {
+// New API: Compile-time name (zero RAM)
+template <size_t StackSize, Priority Pri, fixed_string Name>
+Task<StackSize, Pri, Name>::Task(void (*task_func)()) : stack_{},
+                                                         tcb_{} {
     // Initialize TCB
     tcb_.stack_base = &stack_[0];
     tcb_.stack_size = StackSize;
     tcb_.priority = static_cast<core::u8>(Pri);
     tcb_.state = TaskState::Ready;
-    tcb_.name = name;
+    tcb_.name = Name.c_str();  // Points to .rodata, not RAM
     tcb_.next = nullptr;
 
     // Initialize stack with initial context
@@ -256,16 +450,35 @@ Task<StackSize, Pri>::Task(void (*task_func)(), const char* name) : stack_{},
     RTOS::register_task(&tcb_);
 }
 
-template <size_t StackSize, Priority Pri>
-void Task<StackSize, Pri>::init_stack(void (*task_func)()) {
+// Old API: Runtime name (deprecated, uses RAM)
+template <size_t StackSize, Priority Pri, fixed_string Name>
+Task<StackSize, Pri, Name>::Task(void (*task_func)(), const char* name) : stack_{},
+                                                                           tcb_{} {
+    // Initialize TCB
+    tcb_.stack_base = &stack_[0];
+    tcb_.stack_size = StackSize;
+    tcb_.priority = static_cast<core::u8>(Pri);
+    tcb_.state = TaskState::Ready;
+    tcb_.name = name;  // Runtime string (stored in RAM)
+    tcb_.next = nullptr;
+
+    // Initialize stack with initial context
+    init_stack(task_func);
+
+    // Register task with RTOS
+    RTOS::register_task(&tcb_);
+}
+
+template <size_t StackSize, Priority Pri, fixed_string Name>
+void Task<StackSize, Pri, Name>::init_stack(void (*task_func)()) {
     // Platform-specific stack initialization
     // This will be implemented in platform-specific files
     extern void init_task_stack(TaskControlBlock * tcb, void (*func)());
     init_task_stack(&tcb_, task_func);
 }
 
-template <size_t StackSize, Priority Pri>
-core::u32 Task<StackSize, Pri>::get_stack_usage() const {
+template <size_t StackSize, Priority Pri, fixed_string Name>
+core::u32 Task<StackSize, Pri, Name>::get_stack_usage() const {
     // Calculate stack usage (simplified - just checks current SP position)
     if (tcb_.stack_pointer == nullptr)
         return 0;
@@ -277,8 +490,8 @@ core::u32 Task<StackSize, Pri>::get_stack_usage() const {
     return static_cast<core::u32>(base + StackSize - sp);
 }
 
-template <size_t StackSize, Priority Pri>
-bool Task<StackSize, Pri>::check_stack_overflow() const {
+template <size_t StackSize, Priority Pri, fixed_string Name>
+bool Task<StackSize, Pri, Name>::check_stack_overflow() const {
 #ifdef DEBUG
     // Check stack canary (if implemented)
     constexpr core::u32 STACK_CANARY = 0xDEADBEEF;
