@@ -122,12 +122,19 @@ void init() {
  *
  * @note This overrides the weak default handler in startup code.
  */
+/// SysTick Interrupt Handler
+///
+/// Called every 1ms by hardware SysTick timer.
+/// Updates HAL tick counter and forwards to RTOS scheduler if enabled.
 extern "C" void SysTick_Handler() {
-    // Update HAL tick (always)
+    // Update HAL tick (always - required for HAL timing functions)
     board::BoardSysTick::increment_tick();
 
-    // Forward to RTOS scheduler (if enabled)
+    // Forward to RTOS scheduler (if enabled at compile time)
     #ifdef ALLOY_RTOS_ENABLED
-        alloy::rtos::RTOS::tick();
+        // RTOS::tick() returns Result<void, RTOSError>
+        // In ISR context, we can't handle errors gracefully, so we unwrap
+        // If tick fails, it indicates a serious system error
+        alloy::rtos::RTOS::tick().unwrap();
     #endif
 }
