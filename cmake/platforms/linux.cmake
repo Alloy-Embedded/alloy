@@ -154,11 +154,14 @@ endif()
 # Platform Source Requirements
 # ------------------------------------------------------------------------------
 
+# Set platform directory (required by platform_selection.cmake)
+set(ALLOY_PLATFORM_DIR ${CMAKE_SOURCE_DIR}/src/hal/vendors/linux)
+
 # Linux platform requires these source files (verified at build time):
-#   - src/hal/platform/linux/uart.cpp      (uses termios for serial ports)
-#   - src/hal/platform/linux/gpio.cpp      (uses sysfs or simulation)
-#   - src/hal/platform/linux/i2c.cpp       (uses /dev/i2c-* devices)
-#   - src/hal/platform/linux/spi.cpp       (uses /dev/spidev* devices)
+#   - src/hal/vendors/linux/uart.cpp      (uses termios for serial ports)
+#   - src/hal/vendors/linux/gpio.cpp      (uses sysfs or simulation)
+#   - src/hal/vendors/linux/i2c.cpp       (uses /dev/i2c-* devices)
+#   - src/hal/vendors/linux/spi.cpp       (uses /dev/spidev* devices)
 #
 # These will be automatically collected by platform_selection.cmake
 
