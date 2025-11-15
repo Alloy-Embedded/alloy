@@ -28,10 +28,10 @@
 #include "core/result.hpp"
 
 // Register definitions
-#include "hal/vendors/st/stm32f4/registers/gpioa_registers.hpp"
+#include "hal/vendors/st/stm32f4/generated/registers/gpioa_registers.hpp"
 
 // Bitfield definitions
-#include "hal/vendors/st/stm32f4/bitfields/gpioa_bitfields.hpp"
+#include "hal/vendors/st/stm32f4/generated/bitfields/gpioa_bitfields.hpp"
 
 namespace alloy::hal::st::stm32f4 {
 

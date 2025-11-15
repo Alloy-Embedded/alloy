@@ -41,7 +41,7 @@
 #include "same70_xplained/board.hpp"
 #include "hal/api/systick_simple.hpp"
 #include "hal/api/uart_simple.hpp"
-#include "hal/platform/same70/gpio.hpp"
+#include "hal/vendors/arm/same70/gpio.hpp"
 #include "hal/vendors/atmel/same70/uart_hardware_policy.hpp"
 #include "logger/logger.hpp"
 #include "logger/sinks/uart_sink.hpp"

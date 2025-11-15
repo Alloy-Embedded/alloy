@@ -13,7 +13,7 @@
 
 #include "board_config.hpp"
 #include "hal/api/systick_simple.hpp"
-#include "hal/platform/st/stm32f7/systick_platform.hpp"
+#include "hal/vendors/st/stm32f7/systick_platform.hpp"
 
 namespace board {
 

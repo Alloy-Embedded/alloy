@@ -28,10 +28,10 @@
 #include "core/result.hpp"
 
 // Register definitions
-#include "hal/vendors/st/stm32f4/registers/usart1_registers.hpp"
+#include "hal/vendors/st/stm32f4/generated/registers/usart1_registers.hpp"
 
 // Bitfield definitions
-#include "hal/vendors/st/stm32f4/bitfields/usart1_bitfields.hpp"
+#include "hal/vendors/st/stm32f4/generated/bitfields/usart1_bitfields.hpp"
 
 namespace alloy::hal::st::stm32f4 {
 

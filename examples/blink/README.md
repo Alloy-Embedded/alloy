@@ -2,7 +2,7 @@
 
 ## Overview
 
-This example demonstrates the **power of the CoreZero HAL abstraction** - a single source file that compiles and runs on multiple microcontroller architectures without modification.
+This example demonstrates the **power of the Alloy HAL abstraction** - a single source file that compiles and runs on multiple microcontroller architectures without modification.
 
 ## Supported Boards
 
@@ -151,4 +151,4 @@ Both should compile without warnings or errors.
 
 ## License
 
-Copyright (c) 2025 CoreZero Project
+Copyright (c) 2025 Alloy Project

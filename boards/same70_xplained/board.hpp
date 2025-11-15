@@ -38,8 +38,8 @@
 
 #include "board_config.hpp"
 #include "hal/api/gpio_simple.hpp"
-#include "hal/platform/same70/gpio.hpp"
-#include "hal/platform/same70/systick_platform.hpp"
+#include "hal/vendors/arm/same70/gpio.hpp"
+#include "hal/vendors/arm/same70/systick_platform.hpp"
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 #include <cstdint>
 

@@ -1,6 +1,6 @@
 # UART Logger Example
 
-Demonstrates how to use the CoreZero logger system with UART output for embedded systems.
+Demonstrates how to use the Alloy logger system with UART output for embedded systems.
 
 ## Overview
 
@@ -208,4 +208,4 @@ Logger::add_sink(&memory_sink);
 
 ## License
 
-Part of the CoreZero HAL Framework.
+Part of the Alloy HAL Framework.

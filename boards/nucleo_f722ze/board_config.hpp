@@ -8,7 +8,7 @@
  * development board (MB1136).
  */
 
-#include "hal/platform/st/stm32f7/gpio.hpp"
+#include "hal/vendors/st/stm32f7/gpio.hpp"
 #include "hal/vendors/st/stm32f7/stm32f722/peripherals.hpp"
 #include <cstdint>
 

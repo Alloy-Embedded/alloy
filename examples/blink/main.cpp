@@ -2,7 +2,7 @@
  * @file main.cpp
  * @brief Universal LED Blink Example
  *
- * Demonstrates board-independent LED control using the CoreZero HAL framework.
+ * Demonstrates board-independent LED control using the Alloy HAL framework.
  * This example works on any supported board by simply changing the ALLOY_BOARD define.
  *
  * ## What This Example Shows
@@ -30,7 +30,7 @@
  * All board-specific details (clock, pins, peripherals) are handled by the board
  * layer, keeping the application code completely portable.
  *
- * @note This demonstrates the power of the CoreZero HAL abstraction -
+ * @note This demonstrates the power of the Alloy HAL abstraction -
  *       **one codebase runs on multiple architectures** without modifications.
  */
 
