@@ -45,6 +45,7 @@
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
 #include "rtos/error.hpp"
+#include "rtos/concepts.hpp"
 
 #include "core/types.hpp"
 #include "core/result.hpp"
@@ -398,6 +399,9 @@ inline void Mutex::restore_priority() {
         owner_->priority = original_priority_;
     }
 }
+
+// Compile-time concept validation
+static_assert(Lockable<Mutex>, "Mutex must satisfy Lockable concept");
 
 }  // namespace alloy::rtos
 
