@@ -24,6 +24,10 @@ using namespace alloy::hal::st::stm32f7;
 // Board-specific SysTick type (180 MHz)
 using BoardSysTick = SysTick<ClockConfig::system_clock_hz>;
 
+// RTOS Tick Source (must be 1ms tick for RTOS compatibility)
+// Note: The 1ms tick period is configured at runtime via SysTickTimer::init_ms<BoardSysTick>(1)
+using RTOSTick = BoardSysTick;
+
 /**
  * @brief Initialize all board hardware
  *

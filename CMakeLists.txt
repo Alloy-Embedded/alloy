@@ -285,6 +285,11 @@ if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re
     add_subdirectory(examples/blink)
 endif()
 
+# Universal RTOS example - demonstrates RTOS with multi-task scheduling
+if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD STREQUAL "nucleo_f401re" OR ALLOY_BOARD STREQUAL "nucleo_f722ze")
+    add_subdirectory(examples/rtos/simple_tasks)
+endif()
+
 # Board-specific examples
 if(ALLOY_BOARD STREQUAL "same70_xplained")
     add_subdirectory(examples/uart_logger)
