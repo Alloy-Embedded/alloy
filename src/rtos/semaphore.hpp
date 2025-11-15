@@ -54,8 +54,10 @@
 #include "rtos/platform/critical_section.hpp"
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
+#include "rtos/error.hpp"
 
 #include "core/types.hpp"
+#include "core/result.hpp"
 
 namespace alloy::rtos {
 
@@ -107,11 +109,13 @@ class BinarySemaphore {
     ///
     /// Safe to call from ISR.
     ///
+    /// @return Ok(void) always (cannot fail)
+    ///
     /// Example:
     /// ```cpp
     /// data_ready.give();  // Signal from ISR or task
     /// ```
-    void give();
+    core::Result<void, RTOSError> give();
 
     /// Take semaphore (decrement count, block if 0)
     ///
@@ -119,33 +123,35 @@ class BinarySemaphore {
     /// If count is 0, blocks until give() is called or timeout.
     ///
     /// @param timeout_ms Timeout in milliseconds (INFINITE = wait forever)
-    /// @return true if semaphore taken, false if timeout
+    /// @return Ok(void) if semaphore taken, Err(RTOSError::Timeout) if timeout
     ///
     /// Example:
     /// ```cpp
-    /// if (data_ready.take(1000)) {
+    /// auto result = data_ready.take(1000);
+    /// if (result.is_ok()) {
     ///     // Got semaphore within 1 second
     ///     process_data();
     /// } else {
     ///     // Timeout
     /// }
     /// ```
-    bool take(core::u32 timeout_ms = INFINITE);
+    core::Result<void, RTOSError> take(core::u32 timeout_ms = INFINITE);
 
     /// Try to take semaphore (non-blocking)
     ///
     /// Returns immediately regardless of count.
     ///
-    /// @return true if semaphore was taken, false if count was 0
+    /// @return Ok(void) if semaphore was taken, Err(RTOSError::Timeout) if count was 0
     ///
     /// Example:
     /// ```cpp
-    /// if (data_ready.try_take()) {
+    /// auto result = data_ready.try_take();
+    /// if (result.is_ok()) {
     ///     process_data();  // Data available
     /// }
     /// // Continue immediately either way
     /// ```
-    bool try_take();
+    core::Result<void, RTOSError> try_take();
 
     /// Get current count (0 or 1)
     ///
@@ -228,11 +234,13 @@ class CountingSemaphore {
     ///
     /// Safe to call from ISR.
     ///
+    /// @return Ok(void) always (cannot fail)
+    ///
     /// Example:
     /// ```cpp
     /// buffers.give();  // Return resource to pool
     /// ```
-    void give();
+    core::Result<void, RTOSError> give();
 
     /// Take semaphore (decrement count, block if 0)
     ///
@@ -240,32 +248,34 @@ class CountingSemaphore {
     /// If count is 0, blocks until give() is called or timeout.
     ///
     /// @param timeout_ms Timeout in milliseconds (INFINITE = wait forever)
-    /// @return true if semaphore taken, false if timeout
+    /// @return Ok(void) if semaphore taken, Err(RTOSError::Timeout) if timeout
     ///
     /// Example:
     /// ```cpp
-    /// if (buffers.take(1000)) {
+    /// auto result = buffers.take(1000);
+    /// if (result.is_ok()) {
     ///     // Got resource
     ///     use_resource();
     ///     buffers.give();  // Return when done
     /// }
     /// ```
-    bool take(core::u32 timeout_ms = INFINITE);
+    core::Result<void, RTOSError> take(core::u32 timeout_ms = INFINITE);
 
     /// Try to take semaphore (non-blocking)
     ///
     /// Returns immediately regardless of count.
     ///
-    /// @return true if semaphore was taken, false if count was 0
+    /// @return Ok(void) if semaphore was taken, Err(RTOSError::Timeout) if count was 0
     ///
     /// Example:
     /// ```cpp
-    /// if (buffers.try_take()) {
+    /// auto result = buffers.try_take();
+    /// if (result.is_ok()) {
     ///     use_resource();
     ///     buffers.give();
     /// }
     /// ```
-    bool try_take();
+    core::Result<void, RTOSError> try_take();
 
     /// Get current count
     ///
@@ -292,7 +302,9 @@ class CountingSemaphore {
 
 // BinarySemaphore implementation
 
-inline void BinarySemaphore::give() {
+inline core::Result<void, RTOSError> BinarySemaphore::give() {
+    using core::Ok;
+
     disable_interrupts();
 
     // Set count to 1 (binary property - multiple gives don't accumulate)
@@ -304,22 +316,28 @@ inline void BinarySemaphore::give() {
     if (wait_list_ != nullptr) {
         scheduler::unblock_one_task(&wait_list_);
     }
+
+    return Ok();
 }
 
-inline bool BinarySemaphore::take(core::u32 timeout_ms) {
+inline core::Result<void, RTOSError> BinarySemaphore::take(core::u32 timeout_ms) {
+    using core::Ok;
+    using core::Err;
+
     core::u32 start_time = systick::micros();
 
     while (true) {
         // Try to take without blocking
-        if (try_take()) {
-            return true;  // Success
+        auto try_result = try_take();
+        if (try_result.is_ok()) {
+            return Ok();  // Success
         }
 
         // Check timeout
         if (timeout_ms != INFINITE) {
             core::u32 elapsed = systick::micros_since(start_time);
             if (elapsed >= (timeout_ms * 1000)) {
-                return false;  // Timeout
+                return Err(RTOSError::Timeout);
             }
         }
 
@@ -334,23 +352,28 @@ inline bool BinarySemaphore::take(core::u32 timeout_ms) {
     }
 }
 
-inline bool BinarySemaphore::try_take() {
+inline core::Result<void, RTOSError> BinarySemaphore::try_take() {
+    using core::Ok;
+    using core::Err;
+
     disable_interrupts();
 
     if (count_ > 0) {
         count_ = 0;
         enable_interrupts();
-        return true;
+        return Ok();
     }
 
     enable_interrupts();
-    return false;
+    return Err(RTOSError::Timeout);
 }
 
 // CountingSemaphore implementation
 
 template <core::u8 MaxCount>
-void CountingSemaphore<MaxCount>::give() {
+core::Result<void, RTOSError> CountingSemaphore<MaxCount>::give() {
+    using core::Ok;
+
     disable_interrupts();
 
     // Increment count (up to max)
@@ -364,23 +387,29 @@ void CountingSemaphore<MaxCount>::give() {
     if (wait_list_ != nullptr) {
         scheduler::unblock_one_task(&wait_list_);
     }
+
+    return Ok();
 }
 
 template <core::u8 MaxCount>
-bool CountingSemaphore<MaxCount>::take(core::u32 timeout_ms) {
+core::Result<void, RTOSError> CountingSemaphore<MaxCount>::take(core::u32 timeout_ms) {
+    using core::Ok;
+    using core::Err;
+
     core::u32 start_time = systick::micros();
 
     while (true) {
         // Try to take without blocking
-        if (try_take()) {
-            return true;  // Success
+        auto try_result = try_take();
+        if (try_result.is_ok()) {
+            return Ok();  // Success
         }
 
         // Check timeout
         if (timeout_ms != INFINITE) {
             core::u32 elapsed = systick::micros_since(start_time);
             if (elapsed >= (timeout_ms * 1000)) {
-                return false;  // Timeout
+                return Err(RTOSError::Timeout);
             }
         }
 
@@ -396,17 +425,20 @@ bool CountingSemaphore<MaxCount>::take(core::u32 timeout_ms) {
 }
 
 template <core::u8 MaxCount>
-bool CountingSemaphore<MaxCount>::try_take() {
+core::Result<void, RTOSError> CountingSemaphore<MaxCount>::try_take() {
+    using core::Ok;
+    using core::Err;
+
     disable_interrupts();
 
     if (count_ > 0) {
         count_--;
         enable_interrupts();
-        return true;
+        return Ok();
     }
 
     enable_interrupts();
-    return false;
+    return Err(RTOSError::Timeout);
 }
 
 }  // namespace alloy::rtos
