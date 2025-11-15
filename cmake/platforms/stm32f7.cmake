@@ -17,12 +17,11 @@ message(STATUS "Configuring platform: STM32F7 (ARM Cortex-M7)")
 
 # Collect STM32F7-specific platform sources
 file(GLOB_RECURSE ALLOY_PLATFORM_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/st/stm32f4/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/platform/st/stm32f4/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/st/stm32f7/*.cpp
 )
 
-# Platform headers are header-only, no .cpp files needed for platform layer
-set(ALLOY_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/platform/st/stm32f4)
+# Platform headers are in vendors directory (consolidated architecture)
+set(ALLOY_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/st/stm32f7)
 
 message(STATUS "  Platform sources: ${ALLOY_PLATFORM_SOURCES}")
 message(STATUS "  Platform headers: ${ALLOY_PLATFORM_DIR}")
