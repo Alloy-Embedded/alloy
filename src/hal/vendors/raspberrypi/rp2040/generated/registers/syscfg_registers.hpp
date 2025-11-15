@@ -17,6 +17,7 @@ namespace alloy::hal::raspberrypi::rp2040::syscfg {
 
 /// SYSCFG Register Structure
 struct SYSCFG_Registers {
+
     /// Processor core 0 NMI source mask\n Set a bit high to enable NMI from that IRQ
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -34,18 +35,14 @@ struct SYSCFG_Registers {
     /// Reset value: 0x10000000
     volatile uint32_t PROC_CONFIG;
 
-    /// For each bit, if 1, bypass the input synchronizer between that GPIO\n and the GPIO input
-    /// register in the SIO. The input synchronizers should\n generally be unbypassed, to avoid
-    /// injecting metastabilities into processors.\n If you're feeling brave, you can bypass to save
-    /// two cycles of input\n latency. This register applies to GPIO 0...29. Offset: 0x000C Reset
-    /// value: 0x00000000
+    /// For each bit, if 1, bypass the input synchronizer between that GPIO\n and the GPIO input register in the SIO. The input synchronizers should\n generally be unbypassed, to avoid injecting metastabilities into processors.\n If you're feeling brave, you can bypass to save two cycles of input\n latency. This register applies to GPIO 0...29.
+    /// Offset: 0x000C
+    /// Reset value: 0x00000000
     volatile uint32_t PROC_IN_SYNC_BYPASS;
 
-    /// For each bit, if 1, bypass the input synchronizer between that GPIO\n and the GPIO input
-    /// register in the SIO. The input synchronizers should\n generally be unbypassed, to avoid
-    /// injecting metastabilities into processors.\n If you're feeling brave, you can bypass to save
-    /// two cycles of input\n latency. This register applies to GPIO 30...35 (the QSPI IOs). Offset:
-    /// 0x0010 Reset value: 0x00000000
+    /// For each bit, if 1, bypass the input synchronizer between that GPIO\n and the GPIO input register in the SIO. The input synchronizers should\n generally be unbypassed, to avoid injecting metastabilities into processors.\n If you're feeling brave, you can bypass to save two cycles of input\n latency. This register applies to GPIO 30...35 (the QSPI IOs).
+    /// Offset: 0x0010
+    /// Reset value: 0x00000000
     volatile uint32_t PROC_IN_SYNC_BYPASS_HI;
 
     /// Directly control the SWD debug port of either processor

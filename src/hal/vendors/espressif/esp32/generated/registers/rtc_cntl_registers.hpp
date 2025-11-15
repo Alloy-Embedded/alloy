@@ -17,6 +17,7 @@ namespace alloy::hal::espressif::esp32::rtc_cntl {
 
 /// RTC_CNTL Register Structure
 struct RTC_CNTL_Registers {
+
     /// OPTIONS0
     /// Offset: 0x0000
     /// Reset value: 0x1C492000
@@ -255,7 +256,7 @@ struct RTC_CNTL_Registers {
     /// Offset: 0x00D4
     /// Reset value: 0x13FF0000
     volatile uint32_t BROWN_OUT;
-    uint8_t RESERVED_00D8[100];  ///< Reserved
+    uint8_t RESERVED_00D8[100]; ///< Reserved
 
     /// DATE
     /// Offset: 0x013C

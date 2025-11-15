@@ -17,12 +17,13 @@ namespace alloy::hal::st::stm32f0::syscfg {
 
 /// SYSCFG Register Structure
 struct SYSCFG_Registers {
+
     /// configuration register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CFGR1;
-    uint8_t RESERVED_0004[4];  ///< Reserved
+    uint8_t RESERVED_0004[4]; ///< Reserved
 
     /// external interrupt configuration register 1
     /// Offset: 0x0008

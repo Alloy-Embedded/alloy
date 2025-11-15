@@ -17,17 +17,15 @@ namespace alloy::hal::raspberrypi::rp2040::rosc {
 
 /// ROSC Register Structure
 struct ROSC_Registers {
+
     /// Ring Oscillator control
     /// Offset: 0x0000
     /// Reset value: 0x00000AA0
     volatile uint32_t CTRL;
 
-    /// The FREQA & FREQB registers control the frequency by controlling the drive strength of each
-    /// stage\n The drive strength has 4 levels determined by the number of bits set\n Increasing
-    /// the number of bits set increases the drive strength and increases the oscillation
-    /// frequency\n 0 bits set is the default drive strength\n 1 bit set doubles the drive
-    /// strength\n 2 bits set triples drive strength\n 3 bits set quadruples drive strength Offset:
-    /// 0x0004 Reset value: 0x00000000
+    /// The FREQA & FREQB registers control the frequency by controlling the drive strength of each stage\n The drive strength has 4 levels determined by the number of bits set\n Increasing the number of bits set increases the drive strength and increases the oscillation frequency\n 0 bits set is the default drive strength\n 1 bit set doubles the drive strength\n 2 bits set triples drive strength\n 3 bits set quadruples drive strength
+    /// Offset: 0x0004
+    /// Reset value: 0x00000000
     volatile uint32_t FREQA;
 
     /// For a detailed description see freqa register
@@ -35,10 +33,10 @@ struct ROSC_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t FREQB;
 
-    /// Ring Oscillator pause control\n This is used to save power by pausing the ROSC\n On power-up
-    /// this field is initialised to WAKE\n An invalid write will also select WAKE\n Warning: setup
-    /// the irq before selecting dormant mode Offset: 0x000C Reset value: 0x00000000 Access:
-    /// read-write
+    /// Ring Oscillator pause control\n This is used to save power by pausing the ROSC\n On power-up this field is initialised to WAKE\n An invalid write will also select WAKE\n Warning: setup the irq before selecting dormant mode
+    /// Offset: 0x000C
+    /// Reset value: 0x00000000
+    /// Access: read-write
     volatile uint32_t DORMANT;
 
     /// Controls the output divider
@@ -56,14 +54,14 @@ struct ROSC_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t STATUS;
 
-    /// This just reads the state of the oscillator output so randomness is compromised if the ring
-    /// oscillator is stopped or run at a harmonic of the bus frequency Offset: 0x001C Reset value:
-    /// 0x00000001
+    /// This just reads the state of the oscillator output so randomness is compromised if the ring oscillator is stopped or run at a harmonic of the bus frequency
+    /// Offset: 0x001C
+    /// Reset value: 0x00000001
     volatile uint32_t RANDOMBIT;
 
-    /// A down counter running at the ROSC frequency which counts to zero and stops.\n To start the
-    /// counter write a non-zero value.\n Can be used for short software pauses when setting up time
-    /// sensitive hardware. Offset: 0x0020 Reset value: 0x00000000
+    /// A down counter running at the ROSC frequency which counts to zero and stops.\n To start the counter write a non-zero value.\n Can be used for short software pauses when setting up time sensitive hardware.
+    /// Offset: 0x0020
+    /// Reset value: 0x00000000
     volatile uint32_t COUNT;
 };
 

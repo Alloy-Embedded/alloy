@@ -26,6 +26,126 @@
 // ============================================================================
 
 // ============================================================================
+// Peripheral Register Structures (Family Level)
+// ============================================================================
+
+#include "../generated/registers/ac_registers.hpp"
+#include "../generated/registers/adc2_registers.hpp"
+#include "../generated/registers/aes_registers.hpp"
+#include "../generated/registers/c_adc_registers.hpp"
+#include "../generated/registers/can1_registers.hpp"
+#include "../generated/registers/crc_registers.hpp"
+#include "../generated/registers/dac_registers.hpp"
+#include "../generated/registers/dbg_registers.hpp"
+#include "../generated/registers/dma2_registers.hpp"
+#include "../generated/registers/exti_registers.hpp"
+#include "../generated/registers/flash_registers.hpp"
+#include "../generated/registers/fmc_registers.hpp"
+#include "../generated/registers/fpu_cpacr_registers.hpp"
+#include "../generated/registers/fpu_registers.hpp"
+#include "../generated/registers/gpioa_registers.hpp"
+#include "../generated/registers/gpiob_registers.hpp"
+#include "../generated/registers/gpioh_registers.hpp"
+#include "../generated/registers/i2c1_registers.hpp"
+#include "../generated/registers/iwdg_registers.hpp"
+#include "../generated/registers/lptim1_registers.hpp"
+#include "../generated/registers/mpu_registers.hpp"
+#include "../generated/registers/nvic_registers.hpp"
+#include "../generated/registers/nvic_stir_registers.hpp"
+#include "../generated/registers/otg_fs_device_registers.hpp"
+#include "../generated/registers/otg_fs_global_registers.hpp"
+#include "../generated/registers/otg_fs_host_registers.hpp"
+#include "../generated/registers/otg_fs_pwrclk_registers.hpp"
+#include "../generated/registers/otg_hs_device_registers.hpp"
+#include "../generated/registers/otg_hs_global_registers.hpp"
+#include "../generated/registers/otg_hs_host_registers.hpp"
+#include "../generated/registers/otg_hs_pwrclk_registers.hpp"
+#include "../generated/registers/pf_registers.hpp"
+#include "../generated/registers/pwr_registers.hpp"
+#include "../generated/registers/quadspi_registers.hpp"
+#include "../generated/registers/rcc_registers.hpp"
+#include "../generated/registers/rng_registers.hpp"
+#include "../generated/registers/rtc_registers.hpp"
+#include "../generated/registers/sai1_registers.hpp"
+#include "../generated/registers/scb_actrl_registers.hpp"
+#include "../generated/registers/scb_registers.hpp"
+#include "../generated/registers/sdmmc1_registers.hpp"
+#include "../generated/registers/spi5_registers.hpp"
+#include "../generated/registers/stk_registers.hpp"
+#include "../generated/registers/syscfg_registers.hpp"
+#include "../generated/registers/tim13_registers.hpp"
+#include "../generated/registers/tim1_registers.hpp"
+#include "../generated/registers/tim2_registers.hpp"
+#include "../generated/registers/tim3_registers.hpp"
+#include "../generated/registers/tim5_registers.hpp"
+#include "../generated/registers/tim6_registers.hpp"
+#include "../generated/registers/tim9_registers.hpp"
+#include "../generated/registers/usart1_registers.hpp"
+#include "../generated/registers/usart3_registers.hpp"
+#include "../generated/registers/usbphyc_registers.hpp"
+#include "../generated/registers/wwdg_registers.hpp"
+
+// ============================================================================
+// Peripheral Bit Field Definitions (Family Level)
+// ============================================================================
+
+#include "../generated/bitfields/ac_bitfields.hpp"
+#include "../generated/bitfields/adc2_bitfields.hpp"
+#include "../generated/bitfields/aes_bitfields.hpp"
+#include "../generated/bitfields/c_adc_bitfields.hpp"
+#include "../generated/bitfields/can1_bitfields.hpp"
+#include "../generated/bitfields/crc_bitfields.hpp"
+#include "../generated/bitfields/dac_bitfields.hpp"
+#include "../generated/bitfields/dbg_bitfields.hpp"
+#include "../generated/bitfields/dma2_bitfields.hpp"
+#include "../generated/bitfields/exti_bitfields.hpp"
+#include "../generated/bitfields/flash_bitfields.hpp"
+#include "../generated/bitfields/fmc_bitfields.hpp"
+#include "../generated/bitfields/fpu_bitfields.hpp"
+#include "../generated/bitfields/fpu_cpacr_bitfields.hpp"
+#include "../generated/bitfields/gpioa_bitfields.hpp"
+#include "../generated/bitfields/gpiob_bitfields.hpp"
+#include "../generated/bitfields/gpioh_bitfields.hpp"
+#include "../generated/bitfields/i2c1_bitfields.hpp"
+#include "../generated/bitfields/iwdg_bitfields.hpp"
+#include "../generated/bitfields/lptim1_bitfields.hpp"
+#include "../generated/bitfields/mpu_bitfields.hpp"
+#include "../generated/bitfields/nvic_bitfields.hpp"
+#include "../generated/bitfields/nvic_stir_bitfields.hpp"
+#include "../generated/bitfields/otg_fs_device_bitfields.hpp"
+#include "../generated/bitfields/otg_fs_global_bitfields.hpp"
+#include "../generated/bitfields/otg_fs_host_bitfields.hpp"
+#include "../generated/bitfields/otg_fs_pwrclk_bitfields.hpp"
+#include "../generated/bitfields/otg_hs_device_bitfields.hpp"
+#include "../generated/bitfields/otg_hs_global_bitfields.hpp"
+#include "../generated/bitfields/otg_hs_host_bitfields.hpp"
+#include "../generated/bitfields/otg_hs_pwrclk_bitfields.hpp"
+#include "../generated/bitfields/pf_bitfields.hpp"
+#include "../generated/bitfields/pwr_bitfields.hpp"
+#include "../generated/bitfields/quadspi_bitfields.hpp"
+#include "../generated/bitfields/rcc_bitfields.hpp"
+#include "../generated/bitfields/rng_bitfields.hpp"
+#include "../generated/bitfields/rtc_bitfields.hpp"
+#include "../generated/bitfields/sai1_bitfields.hpp"
+#include "../generated/bitfields/scb_actrl_bitfields.hpp"
+#include "../generated/bitfields/scb_bitfields.hpp"
+#include "../generated/bitfields/sdmmc1_bitfields.hpp"
+#include "../generated/bitfields/spi5_bitfields.hpp"
+#include "../generated/bitfields/stk_bitfields.hpp"
+#include "../generated/bitfields/syscfg_bitfields.hpp"
+#include "../generated/bitfields/tim13_bitfields.hpp"
+#include "../generated/bitfields/tim1_bitfields.hpp"
+#include "../generated/bitfields/tim2_bitfields.hpp"
+#include "../generated/bitfields/tim3_bitfields.hpp"
+#include "../generated/bitfields/tim5_bitfields.hpp"
+#include "../generated/bitfields/tim6_bitfields.hpp"
+#include "../generated/bitfields/tim9_bitfields.hpp"
+#include "../generated/bitfields/usart1_bitfields.hpp"
+#include "../generated/bitfields/usart3_bitfields.hpp"
+#include "../generated/bitfields/usbphyc_bitfields.hpp"
+#include "../generated/bitfields/wwdg_bitfields.hpp"
+
+// ============================================================================
 // Enumerated Value Definitions
 // ============================================================================
 
@@ -61,11 +181,11 @@ namespace alloy::hal::st::stm32f7::stm32f7x7 {
 // ============================================================================
 //
 // This header includes:
-//   - 0 peripheral register structures
-//   - 0 peripheral bit field definitions
+//   - 55 peripheral register structures
+//   - 55 peripheral bit field definitions
 //   - Enumeration definitions
 //
-// Total peripherals with registers: 0
+// Total peripherals with registers: 55
 //
 // For detailed documentation, see:
 //   - REGISTER_USAGE.md (register access patterns)

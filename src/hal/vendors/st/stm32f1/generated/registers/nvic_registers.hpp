@@ -17,14 +17,14 @@ namespace alloy::hal::st::stm32f1::nvic {
 
 /// NVIC Register Structure
 struct NVIC_Registers {
-    uint8_t RESERVED_0000[4];  ///< Reserved
+    uint8_t RESERVED_0000[4]; ///< Reserved
 
     /// Interrupt Controller Type Register
     /// Offset: 0x0004
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t ICTR;
-    uint8_t RESERVED_0008[248];  ///< Reserved
+    uint8_t RESERVED_0008[248]; ///< Reserved
 
     /// Interrupt Set-Enable Register
     /// Offset: 0x0100
@@ -37,7 +37,7 @@ struct NVIC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ISER1;
-    uint8_t RESERVED_0108[120];  ///< Reserved
+    uint8_t RESERVED_0108[120]; ///< Reserved
 
     /// Interrupt Clear-Enable Register
     /// Offset: 0x0180
@@ -50,7 +50,7 @@ struct NVIC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ICER1;
-    uint8_t RESERVED_0188[120];  ///< Reserved
+    uint8_t RESERVED_0188[120]; ///< Reserved
 
     /// Interrupt Set-Pending Register
     /// Offset: 0x0200
@@ -63,7 +63,7 @@ struct NVIC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ISPR1;
-    uint8_t RESERVED_0208[120];  ///< Reserved
+    uint8_t RESERVED_0208[120]; ///< Reserved
 
     /// Interrupt Clear-Pending Register
     /// Offset: 0x0280
@@ -76,7 +76,7 @@ struct NVIC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ICPR1;
-    uint8_t RESERVED_0288[120];  ///< Reserved
+    uint8_t RESERVED_0288[120]; ///< Reserved
 
     /// Interrupt Active Bit Register
     /// Offset: 0x0300
@@ -89,7 +89,7 @@ struct NVIC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t IABR1;
-    uint8_t RESERVED_0308[248];  ///< Reserved
+    uint8_t RESERVED_0308[248]; ///< Reserved
 
     /// Interrupt Priority Register
     /// Offset: 0x0400
@@ -180,7 +180,7 @@ struct NVIC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t IPR14;
-    uint8_t RESERVED_043C[2756];  ///< Reserved
+    uint8_t RESERVED_043C[2756]; ///< Reserved
 
     /// Software Triggered Interrupt Register
     /// Offset: 0x0F00

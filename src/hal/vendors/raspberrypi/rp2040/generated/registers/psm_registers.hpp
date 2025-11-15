@@ -17,6 +17,7 @@ namespace alloy::hal::raspberrypi::rp2040::psm {
 
 /// PSM Register Structure
 struct PSM_Registers {
+
     /// Force block out of reset (i.e. power it on)
     /// Offset: 0x0000
     /// Reset value: 0x00000000

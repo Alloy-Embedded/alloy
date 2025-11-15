@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::c_adc {
@@ -20,175 +19,175 @@ using namespace alloy::hal::bitfields;
 
 /// CSR - ADC Common status register
 namespace csr {
-/// Analog watchdog flag of ADC 1
-/// Position: 0, Width: 1
-using AWD1 = BitField<0, 1>;
-constexpr uint32_t AWD1_Pos = 0;
-constexpr uint32_t AWD1_Msk = AWD1::mask;
+    /// Analog watchdog flag of ADC 1
+    /// Position: 0, Width: 1
+    using AWD1 = BitField<0, 1>;
+    constexpr uint32_t AWD1_Pos = 0;
+    constexpr uint32_t AWD1_Msk = AWD1::mask;
 
-/// End of conversion of ADC 1
-/// Position: 1, Width: 1
-using EOC1 = BitField<1, 1>;
-constexpr uint32_t EOC1_Pos = 1;
-constexpr uint32_t EOC1_Msk = EOC1::mask;
+    /// End of conversion of ADC 1
+    /// Position: 1, Width: 1
+    using EOC1 = BitField<1, 1>;
+    constexpr uint32_t EOC1_Pos = 1;
+    constexpr uint32_t EOC1_Msk = EOC1::mask;
 
-/// Injected channel end of conversion of ADC 1
-/// Position: 2, Width: 1
-using JEOC1 = BitField<2, 1>;
-constexpr uint32_t JEOC1_Pos = 2;
-constexpr uint32_t JEOC1_Msk = JEOC1::mask;
+    /// Injected channel end of conversion of ADC 1
+    /// Position: 2, Width: 1
+    using JEOC1 = BitField<2, 1>;
+    constexpr uint32_t JEOC1_Pos = 2;
+    constexpr uint32_t JEOC1_Msk = JEOC1::mask;
 
-/// Injected channel Start flag of ADC 1
-/// Position: 3, Width: 1
-using JSTRT1 = BitField<3, 1>;
-constexpr uint32_t JSTRT1_Pos = 3;
-constexpr uint32_t JSTRT1_Msk = JSTRT1::mask;
+    /// Injected channel Start flag of ADC 1
+    /// Position: 3, Width: 1
+    using JSTRT1 = BitField<3, 1>;
+    constexpr uint32_t JSTRT1_Pos = 3;
+    constexpr uint32_t JSTRT1_Msk = JSTRT1::mask;
 
-/// Regular channel Start flag of ADC 1
-/// Position: 4, Width: 1
-using STRT1 = BitField<4, 1>;
-constexpr uint32_t STRT1_Pos = 4;
-constexpr uint32_t STRT1_Msk = STRT1::mask;
+    /// Regular channel Start flag of ADC 1
+    /// Position: 4, Width: 1
+    using STRT1 = BitField<4, 1>;
+    constexpr uint32_t STRT1_Pos = 4;
+    constexpr uint32_t STRT1_Msk = STRT1::mask;
 
-/// Overrun flag of ADC 1
-/// Position: 5, Width: 1
-using OVR1 = BitField<5, 1>;
-constexpr uint32_t OVR1_Pos = 5;
-constexpr uint32_t OVR1_Msk = OVR1::mask;
+    /// Overrun flag of ADC 1
+    /// Position: 5, Width: 1
+    using OVR1 = BitField<5, 1>;
+    constexpr uint32_t OVR1_Pos = 5;
+    constexpr uint32_t OVR1_Msk = OVR1::mask;
 
-/// Analog watchdog flag of ADC 2
-/// Position: 8, Width: 1
-using AWD2 = BitField<8, 1>;
-constexpr uint32_t AWD2_Pos = 8;
-constexpr uint32_t AWD2_Msk = AWD2::mask;
+    /// Analog watchdog flag of ADC 2
+    /// Position: 8, Width: 1
+    using AWD2 = BitField<8, 1>;
+    constexpr uint32_t AWD2_Pos = 8;
+    constexpr uint32_t AWD2_Msk = AWD2::mask;
 
-/// End of conversion of ADC 2
-/// Position: 9, Width: 1
-using EOC2 = BitField<9, 1>;
-constexpr uint32_t EOC2_Pos = 9;
-constexpr uint32_t EOC2_Msk = EOC2::mask;
+    /// End of conversion of ADC 2
+    /// Position: 9, Width: 1
+    using EOC2 = BitField<9, 1>;
+    constexpr uint32_t EOC2_Pos = 9;
+    constexpr uint32_t EOC2_Msk = EOC2::mask;
 
-/// Injected channel end of conversion of ADC 2
-/// Position: 10, Width: 1
-using JEOC2 = BitField<10, 1>;
-constexpr uint32_t JEOC2_Pos = 10;
-constexpr uint32_t JEOC2_Msk = JEOC2::mask;
+    /// Injected channel end of conversion of ADC 2
+    /// Position: 10, Width: 1
+    using JEOC2 = BitField<10, 1>;
+    constexpr uint32_t JEOC2_Pos = 10;
+    constexpr uint32_t JEOC2_Msk = JEOC2::mask;
 
-/// Injected channel Start flag of ADC 2
-/// Position: 11, Width: 1
-using JSTRT2 = BitField<11, 1>;
-constexpr uint32_t JSTRT2_Pos = 11;
-constexpr uint32_t JSTRT2_Msk = JSTRT2::mask;
+    /// Injected channel Start flag of ADC 2
+    /// Position: 11, Width: 1
+    using JSTRT2 = BitField<11, 1>;
+    constexpr uint32_t JSTRT2_Pos = 11;
+    constexpr uint32_t JSTRT2_Msk = JSTRT2::mask;
 
-/// Regular channel Start flag of ADC 2
-/// Position: 12, Width: 1
-using STRT2 = BitField<12, 1>;
-constexpr uint32_t STRT2_Pos = 12;
-constexpr uint32_t STRT2_Msk = STRT2::mask;
+    /// Regular channel Start flag of ADC 2
+    /// Position: 12, Width: 1
+    using STRT2 = BitField<12, 1>;
+    constexpr uint32_t STRT2_Pos = 12;
+    constexpr uint32_t STRT2_Msk = STRT2::mask;
 
-/// Overrun flag of ADC 2
-/// Position: 13, Width: 1
-using OVR2 = BitField<13, 1>;
-constexpr uint32_t OVR2_Pos = 13;
-constexpr uint32_t OVR2_Msk = OVR2::mask;
+    /// Overrun flag of ADC 2
+    /// Position: 13, Width: 1
+    using OVR2 = BitField<13, 1>;
+    constexpr uint32_t OVR2_Pos = 13;
+    constexpr uint32_t OVR2_Msk = OVR2::mask;
 
-/// Analog watchdog flag of ADC 3
-/// Position: 16, Width: 1
-using AWD3 = BitField<16, 1>;
-constexpr uint32_t AWD3_Pos = 16;
-constexpr uint32_t AWD3_Msk = AWD3::mask;
+    /// Analog watchdog flag of ADC 3
+    /// Position: 16, Width: 1
+    using AWD3 = BitField<16, 1>;
+    constexpr uint32_t AWD3_Pos = 16;
+    constexpr uint32_t AWD3_Msk = AWD3::mask;
 
-/// End of conversion of ADC 3
-/// Position: 17, Width: 1
-using EOC3 = BitField<17, 1>;
-constexpr uint32_t EOC3_Pos = 17;
-constexpr uint32_t EOC3_Msk = EOC3::mask;
+    /// End of conversion of ADC 3
+    /// Position: 17, Width: 1
+    using EOC3 = BitField<17, 1>;
+    constexpr uint32_t EOC3_Pos = 17;
+    constexpr uint32_t EOC3_Msk = EOC3::mask;
 
-/// Injected channel end of conversion of ADC 3
-/// Position: 18, Width: 1
-using JEOC3 = BitField<18, 1>;
-constexpr uint32_t JEOC3_Pos = 18;
-constexpr uint32_t JEOC3_Msk = JEOC3::mask;
+    /// Injected channel end of conversion of ADC 3
+    /// Position: 18, Width: 1
+    using JEOC3 = BitField<18, 1>;
+    constexpr uint32_t JEOC3_Pos = 18;
+    constexpr uint32_t JEOC3_Msk = JEOC3::mask;
 
-/// Injected channel Start flag of ADC 3
-/// Position: 19, Width: 1
-using JSTRT3 = BitField<19, 1>;
-constexpr uint32_t JSTRT3_Pos = 19;
-constexpr uint32_t JSTRT3_Msk = JSTRT3::mask;
+    /// Injected channel Start flag of ADC 3
+    /// Position: 19, Width: 1
+    using JSTRT3 = BitField<19, 1>;
+    constexpr uint32_t JSTRT3_Pos = 19;
+    constexpr uint32_t JSTRT3_Msk = JSTRT3::mask;
 
-/// Regular channel Start flag of ADC 3
-/// Position: 20, Width: 1
-using STRT3 = BitField<20, 1>;
-constexpr uint32_t STRT3_Pos = 20;
-constexpr uint32_t STRT3_Msk = STRT3::mask;
+    /// Regular channel Start flag of ADC 3
+    /// Position: 20, Width: 1
+    using STRT3 = BitField<20, 1>;
+    constexpr uint32_t STRT3_Pos = 20;
+    constexpr uint32_t STRT3_Msk = STRT3::mask;
 
-/// Overrun flag of ADC3
-/// Position: 21, Width: 1
-using OVR3 = BitField<21, 1>;
-constexpr uint32_t OVR3_Pos = 21;
-constexpr uint32_t OVR3_Msk = OVR3::mask;
+    /// Overrun flag of ADC3
+    /// Position: 21, Width: 1
+    using OVR3 = BitField<21, 1>;
+    constexpr uint32_t OVR3_Pos = 21;
+    constexpr uint32_t OVR3_Msk = OVR3::mask;
 
 }  // namespace csr
 
 /// CCR - ADC common control register
 namespace ccr {
-/// Multi ADC mode selection
-/// Position: 0, Width: 5
-using MULT = BitField<0, 5>;
-constexpr uint32_t MULT_Pos = 0;
-constexpr uint32_t MULT_Msk = MULT::mask;
+    /// Multi ADC mode selection
+    /// Position: 0, Width: 5
+    using MULT = BitField<0, 5>;
+    constexpr uint32_t MULT_Pos = 0;
+    constexpr uint32_t MULT_Msk = MULT::mask;
 
-/// Delay between 2 sampling phases
-/// Position: 8, Width: 4
-using DELAY = BitField<8, 4>;
-constexpr uint32_t DELAY_Pos = 8;
-constexpr uint32_t DELAY_Msk = DELAY::mask;
+    /// Delay between 2 sampling phases
+    /// Position: 8, Width: 4
+    using DELAY = BitField<8, 4>;
+    constexpr uint32_t DELAY_Pos = 8;
+    constexpr uint32_t DELAY_Msk = DELAY::mask;
 
-/// DMA disable selection for multi-ADC mode
-/// Position: 13, Width: 1
-using DDS = BitField<13, 1>;
-constexpr uint32_t DDS_Pos = 13;
-constexpr uint32_t DDS_Msk = DDS::mask;
+    /// DMA disable selection for multi-ADC mode
+    /// Position: 13, Width: 1
+    using DDS = BitField<13, 1>;
+    constexpr uint32_t DDS_Pos = 13;
+    constexpr uint32_t DDS_Msk = DDS::mask;
 
-/// Direct memory access mode for multi ADC mode
-/// Position: 14, Width: 2
-using DMA = BitField<14, 2>;
-constexpr uint32_t DMA_Pos = 14;
-constexpr uint32_t DMA_Msk = DMA::mask;
+    /// Direct memory access mode for multi ADC mode
+    /// Position: 14, Width: 2
+    using DMA = BitField<14, 2>;
+    constexpr uint32_t DMA_Pos = 14;
+    constexpr uint32_t DMA_Msk = DMA::mask;
 
-/// ADC prescaler
-/// Position: 16, Width: 2
-using ADCPRE = BitField<16, 2>;
-constexpr uint32_t ADCPRE_Pos = 16;
-constexpr uint32_t ADCPRE_Msk = ADCPRE::mask;
+    /// ADC prescaler
+    /// Position: 16, Width: 2
+    using ADCPRE = BitField<16, 2>;
+    constexpr uint32_t ADCPRE_Pos = 16;
+    constexpr uint32_t ADCPRE_Msk = ADCPRE::mask;
 
-/// VBAT enable
-/// Position: 22, Width: 1
-using VBATE = BitField<22, 1>;
-constexpr uint32_t VBATE_Pos = 22;
-constexpr uint32_t VBATE_Msk = VBATE::mask;
+    /// VBAT enable
+    /// Position: 22, Width: 1
+    using VBATE = BitField<22, 1>;
+    constexpr uint32_t VBATE_Pos = 22;
+    constexpr uint32_t VBATE_Msk = VBATE::mask;
 
-/// Temperature sensor and VREFINT enable
-/// Position: 23, Width: 1
-using TSVREFE = BitField<23, 1>;
-constexpr uint32_t TSVREFE_Pos = 23;
-constexpr uint32_t TSVREFE_Msk = TSVREFE::mask;
+    /// Temperature sensor and VREFINT enable
+    /// Position: 23, Width: 1
+    using TSVREFE = BitField<23, 1>;
+    constexpr uint32_t TSVREFE_Pos = 23;
+    constexpr uint32_t TSVREFE_Msk = TSVREFE::mask;
 
 }  // namespace ccr
 
 /// CDR - ADC common regular data register for dual and triple modes
 namespace cdr {
-/// 1st data item of a pair of regular conversions
-/// Position: 0, Width: 16
-using DATA1 = BitField<0, 16>;
-constexpr uint32_t DATA1_Pos = 0;
-constexpr uint32_t DATA1_Msk = DATA1::mask;
+    /// 1st data item of a pair of regular conversions
+    /// Position: 0, Width: 16
+    using DATA1 = BitField<0, 16>;
+    constexpr uint32_t DATA1_Pos = 0;
+    constexpr uint32_t DATA1_Msk = DATA1::mask;
 
-/// 2nd data item of a pair of regular conversions
-/// Position: 16, Width: 16
-using DATA2 = BitField<16, 16>;
-constexpr uint32_t DATA2_Pos = 16;
-constexpr uint32_t DATA2_Msk = DATA2::mask;
+    /// 2nd data item of a pair of regular conversions
+    /// Position: 16, Width: 16
+    using DATA2 = BitField<16, 16>;
+    constexpr uint32_t DATA2_Pos = 16;
+    constexpr uint32_t DATA2_Msk = DATA2::mask;
 
 }  // namespace cdr
 

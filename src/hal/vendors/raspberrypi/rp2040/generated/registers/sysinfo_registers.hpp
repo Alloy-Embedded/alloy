@@ -17,6 +17,7 @@ namespace alloy::hal::raspberrypi::rp2040::sysinfo {
 
 /// SYSINFO Register Structure
 struct SYSINFO_Registers {
+
     /// JEDEC JEP-106 compliant chip identifier.
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -26,7 +27,7 @@ struct SYSINFO_Registers {
     /// Offset: 0x0004
     /// Reset value: 0x00000000
     volatile uint32_t PLATFORM;
-    uint8_t RESERVED_0008[56];  ///< Reserved
+    uint8_t RESERVED_0008[56]; ///< Reserved
 
     /// Git hash of the chip source. Used to identify chip version.
     /// Offset: 0x0040

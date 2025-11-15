@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f1::sdio {
 
 /// SDIO Register Structure
 struct SDIO_Registers {
+
     /// Bits 1:0 = PWRCTRL: Power supply control bits
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -112,14 +113,14 @@ struct SDIO_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t MASK;
-    uint8_t RESERVED_0040[8];  ///< Reserved
+    uint8_t RESERVED_0040[8]; ///< Reserved
 
     /// Bits 23:0 = FIFOCOUNT: Remaining number of words to be written to or read from the FIFO
     /// Offset: 0x0048
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t FIFOCNT;
-    uint8_t RESERVED_004C[52];  ///< Reserved
+    uint8_t RESERVED_004C[52]; ///< Reserved
 
     /// bits 31:0 = FIFOData: Receive and transmit FIFO data
     /// Offset: 0x0080

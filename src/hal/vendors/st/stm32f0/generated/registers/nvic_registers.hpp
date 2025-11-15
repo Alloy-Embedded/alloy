@@ -17,33 +17,34 @@ namespace alloy::hal::st::stm32f0::nvic {
 
 /// NVIC Register Structure
 struct NVIC_Registers {
+
     /// Interrupt Set Enable Register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ISER;
-    uint8_t RESERVED_0004[124];  ///< Reserved
+    uint8_t RESERVED_0004[124]; ///< Reserved
 
     /// Interrupt Clear Enable Register
     /// Offset: 0x0080
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ICER;
-    uint8_t RESERVED_0084[124];  ///< Reserved
+    uint8_t RESERVED_0084[124]; ///< Reserved
 
     /// Interrupt Set-Pending Register
     /// Offset: 0x0100
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ISPR;
-    uint8_t RESERVED_0104[124];  ///< Reserved
+    uint8_t RESERVED_0104[124]; ///< Reserved
 
     /// Interrupt Clear-Pending Register
     /// Offset: 0x0180
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t ICPR;
-    uint8_t RESERVED_0184[380];  ///< Reserved
+    uint8_t RESERVED_0184[380]; ///< Reserved
 
     /// Interrupt Priority Register 0
     /// Offset: 0x0300

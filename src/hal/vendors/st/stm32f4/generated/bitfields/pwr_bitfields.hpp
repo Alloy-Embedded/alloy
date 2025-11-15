@@ -67,18 +67,6 @@ namespace cr {
     constexpr uint32_t FPDS_Pos = 9;
     constexpr uint32_t FPDS_Msk = FPDS::mask;
 
-    /// ADCDC1
-    /// Position: 13, Width: 1
-    using ADCDC1 = BitField<13, 1>;
-    constexpr uint32_t ADCDC1_Pos = 13;
-    constexpr uint32_t ADCDC1_Msk = ADCDC1::mask;
-
-    /// Regulator voltage scaling output selection
-    /// Position: 14, Width: 2
-    using VOS = BitField<14, 2>;
-    constexpr uint32_t VOS_Pos = 14;
-    constexpr uint32_t VOS_Msk = VOS::mask;
-
 }  // namespace cr
 
 /// CSR - power control/status register

@@ -11,12 +11,13 @@
 namespace alloy::hal::raspberrypi::rp2040::tbman {
 
 // ============================================================================
-// TBMAN - Testbench manager. Allows the programmer to know what platform their software is running
-// on. Base Address: 0x4006C000
+// TBMAN - Testbench manager. Allows the programmer to know what platform their software is running on.
+// Base Address: 0x4006C000
 // ============================================================================
 
 /// TBMAN Register Structure
 struct TBMAN_Registers {
+
     /// Indicates the type of platform in use
     /// Offset: 0x0000
     /// Reset value: 0x00000005

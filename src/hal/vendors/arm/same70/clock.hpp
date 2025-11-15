@@ -46,10 +46,10 @@
 // ============================================================================
 
 // Register definitions from vendor (family-level)
-#include "hal/vendors/atmel/same70/registers/pmc_registers.hpp"
+#include "hal/vendors/atmel/same70/generated/registers/pmc_registers.hpp"
 
 // Bitfields (family-level)
-#include "hal/vendors/atmel/same70/bitfields/pmc_bitfields.hpp"
+#include "hal/vendors/atmel/same70/generated/bitfields/pmc_bitfields.hpp"
 
 // Peripheral addresses (device-specific)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"

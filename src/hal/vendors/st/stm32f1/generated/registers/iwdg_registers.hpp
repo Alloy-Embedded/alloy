@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f1::iwdg {
 
 /// IWDG Register Structure
 struct IWDG_Registers {
+
     /// Key register (IWDG_KR)
     /// Offset: 0x0000
     /// Reset value: 0x00000000

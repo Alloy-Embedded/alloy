@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::gclk {
@@ -20,181 +19,181 @@ using namespace alloy::hal::bitfields;
 
 /// CTRL - Control
 namespace ctrl {
-/// Software Reset
-/// Position: 0, Width: 1
-using SWRST = BitField<0, 1>;
-constexpr uint32_t SWRST_Pos = 0;
-constexpr uint32_t SWRST_Msk = SWRST::mask;
+    /// Software Reset
+    /// Position: 0, Width: 1
+    using SWRST = BitField<0, 1>;
+    constexpr uint32_t SWRST_Pos = 0;
+    constexpr uint32_t SWRST_Msk = SWRST::mask;
 
 }  // namespace ctrl
 
 /// STATUS - Status
 namespace status {
-/// Synchronization Busy Status
-/// Position: 7, Width: 1
-/// Access: read-only
-using SYNCBUSY = BitField<7, 1>;
-constexpr uint32_t SYNCBUSY_Pos = 7;
-constexpr uint32_t SYNCBUSY_Msk = SYNCBUSY::mask;
+    /// Synchronization Busy Status
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using SYNCBUSY = BitField<7, 1>;
+    constexpr uint32_t SYNCBUSY_Pos = 7;
+    constexpr uint32_t SYNCBUSY_Msk = SYNCBUSY::mask;
 
 }  // namespace status
 
 /// CLKCTRL - Generic Clock Control
 namespace clkctrl {
-/// Generic Clock Selection ID
-/// Position: 0, Width: 6
-using ID = BitField<0, 6>;
-constexpr uint32_t ID_Pos = 0;
-constexpr uint32_t ID_Msk = ID::mask;
-/// Enumerated values for ID
-namespace id {
-constexpr uint32_t DFLL48 = 0;
-constexpr uint32_t FDPLL = 1;
-constexpr uint32_t FDPLL32K = 2;
-constexpr uint32_t WDT = 3;
-constexpr uint32_t RTC = 4;
-constexpr uint32_t EIC = 5;
-constexpr uint32_t USB = 6;
-constexpr uint32_t EVSYS_0 = 7;
-constexpr uint32_t EVSYS_1 = 8;
-constexpr uint32_t EVSYS_2 = 9;
-constexpr uint32_t EVSYS_3 = 10;
-constexpr uint32_t EVSYS_4 = 11;
-constexpr uint32_t EVSYS_5 = 12;
-constexpr uint32_t EVSYS_6 = 13;
-constexpr uint32_t EVSYS_7 = 14;
-constexpr uint32_t EVSYS_8 = 15;
-constexpr uint32_t EVSYS_9 = 16;
-constexpr uint32_t EVSYS_10 = 17;
-constexpr uint32_t EVSYS_11 = 18;
-constexpr uint32_t SERCOMX_SLOW = 19;
-constexpr uint32_t SERCOM0_CORE = 20;
-constexpr uint32_t SERCOM1_CORE = 21;
-constexpr uint32_t SERCOM2_CORE = 22;
-constexpr uint32_t SERCOM3_CORE = 23;
-constexpr uint32_t SERCOM4_CORE = 24;
-constexpr uint32_t SERCOM5_CORE = 25;
-constexpr uint32_t TCC0_TCC1 = 26;
-constexpr uint32_t TCC2_TC3 = 27;
-constexpr uint32_t TC4_TC5 = 28;
-constexpr uint32_t TC6_TC7 = 29;
-constexpr uint32_t ADC = 30;
-constexpr uint32_t AC_DIG = 31;
-constexpr uint32_t AC_ANA = 32;
-constexpr uint32_t DAC = 33;
-constexpr uint32_t I2S_0 = 35;
-constexpr uint32_t I2S_1 = 36;
-}  // namespace id
+    /// Generic Clock Selection ID
+    /// Position: 0, Width: 6
+    using ID = BitField<0, 6>;
+    constexpr uint32_t ID_Pos = 0;
+    constexpr uint32_t ID_Msk = ID::mask;
+    /// Enumerated values for ID
+    namespace id {
+        constexpr uint32_t DFLL48 = 0;
+        constexpr uint32_t FDPLL = 1;
+        constexpr uint32_t FDPLL32K = 2;
+        constexpr uint32_t WDT = 3;
+        constexpr uint32_t RTC = 4;
+        constexpr uint32_t EIC = 5;
+        constexpr uint32_t USB = 6;
+        constexpr uint32_t EVSYS_0 = 7;
+        constexpr uint32_t EVSYS_1 = 8;
+        constexpr uint32_t EVSYS_2 = 9;
+        constexpr uint32_t EVSYS_3 = 10;
+        constexpr uint32_t EVSYS_4 = 11;
+        constexpr uint32_t EVSYS_5 = 12;
+        constexpr uint32_t EVSYS_6 = 13;
+        constexpr uint32_t EVSYS_7 = 14;
+        constexpr uint32_t EVSYS_8 = 15;
+        constexpr uint32_t EVSYS_9 = 16;
+        constexpr uint32_t EVSYS_10 = 17;
+        constexpr uint32_t EVSYS_11 = 18;
+        constexpr uint32_t SERCOMX_SLOW = 19;
+        constexpr uint32_t SERCOM0_CORE = 20;
+        constexpr uint32_t SERCOM1_CORE = 21;
+        constexpr uint32_t SERCOM2_CORE = 22;
+        constexpr uint32_t SERCOM3_CORE = 23;
+        constexpr uint32_t SERCOM4_CORE = 24;
+        constexpr uint32_t SERCOM5_CORE = 25;
+        constexpr uint32_t TCC0_TCC1 = 26;
+        constexpr uint32_t TCC2_TC3 = 27;
+        constexpr uint32_t TC4_TC5 = 28;
+        constexpr uint32_t TC6_TC7 = 29;
+        constexpr uint32_t ADC = 30;
+        constexpr uint32_t AC_DIG = 31;
+        constexpr uint32_t AC_ANA = 32;
+        constexpr uint32_t DAC = 33;
+        constexpr uint32_t I2S_0 = 35;
+        constexpr uint32_t I2S_1 = 36;
+    }
 
-/// Generic Clock Generator
-/// Position: 8, Width: 4
-using GEN = BitField<8, 4>;
-constexpr uint32_t GEN_Pos = 8;
-constexpr uint32_t GEN_Msk = GEN::mask;
-/// Enumerated values for GEN
-namespace gen {
-constexpr uint32_t GCLK0 = 0;
-constexpr uint32_t GCLK1 = 1;
-constexpr uint32_t GCLK2 = 2;
-constexpr uint32_t GCLK3 = 3;
-constexpr uint32_t GCLK4 = 4;
-constexpr uint32_t GCLK5 = 5;
-constexpr uint32_t GCLK6 = 6;
-constexpr uint32_t GCLK7 = 7;
-constexpr uint32_t GCLK8 = 8;
-}  // namespace gen
+    /// Generic Clock Generator
+    /// Position: 8, Width: 4
+    using GEN = BitField<8, 4>;
+    constexpr uint32_t GEN_Pos = 8;
+    constexpr uint32_t GEN_Msk = GEN::mask;
+    /// Enumerated values for GEN
+    namespace gen {
+        constexpr uint32_t GCLK0 = 0;
+        constexpr uint32_t GCLK1 = 1;
+        constexpr uint32_t GCLK2 = 2;
+        constexpr uint32_t GCLK3 = 3;
+        constexpr uint32_t GCLK4 = 4;
+        constexpr uint32_t GCLK5 = 5;
+        constexpr uint32_t GCLK6 = 6;
+        constexpr uint32_t GCLK7 = 7;
+        constexpr uint32_t GCLK8 = 8;
+    }
 
-/// Clock Enable
-/// Position: 14, Width: 1
-using CLKEN = BitField<14, 1>;
-constexpr uint32_t CLKEN_Pos = 14;
-constexpr uint32_t CLKEN_Msk = CLKEN::mask;
+    /// Clock Enable
+    /// Position: 14, Width: 1
+    using CLKEN = BitField<14, 1>;
+    constexpr uint32_t CLKEN_Pos = 14;
+    constexpr uint32_t CLKEN_Msk = CLKEN::mask;
 
-/// Write Lock
-/// Position: 15, Width: 1
-using WRTLOCK = BitField<15, 1>;
-constexpr uint32_t WRTLOCK_Pos = 15;
-constexpr uint32_t WRTLOCK_Msk = WRTLOCK::mask;
+    /// Write Lock
+    /// Position: 15, Width: 1
+    using WRTLOCK = BitField<15, 1>;
+    constexpr uint32_t WRTLOCK_Pos = 15;
+    constexpr uint32_t WRTLOCK_Msk = WRTLOCK::mask;
 
 }  // namespace clkctrl
 
 /// GENCTRL - Generic Clock Generator Control
 namespace genctrl {
-/// Generic Clock Generator Selection
-/// Position: 0, Width: 4
-using ID = BitField<0, 4>;
-constexpr uint32_t ID_Pos = 0;
-constexpr uint32_t ID_Msk = ID::mask;
+    /// Generic Clock Generator Selection
+    /// Position: 0, Width: 4
+    using ID = BitField<0, 4>;
+    constexpr uint32_t ID_Pos = 0;
+    constexpr uint32_t ID_Msk = ID::mask;
 
-/// Source Select
-/// Position: 8, Width: 5
-using SRC = BitField<8, 5>;
-constexpr uint32_t SRC_Pos = 8;
-constexpr uint32_t SRC_Msk = SRC::mask;
-/// Enumerated values for SRC
-namespace src {
-constexpr uint32_t XOSC = 0;
-constexpr uint32_t GCLKIN = 1;
-constexpr uint32_t GCLKGEN1 = 2;
-constexpr uint32_t OSCULP32K = 3;
-constexpr uint32_t OSC32K = 4;
-constexpr uint32_t XOSC32K = 5;
-constexpr uint32_t OSC8M = 6;
-constexpr uint32_t DFLL48M = 7;
-constexpr uint32_t DPLL96M = 8;
-}  // namespace src
+    /// Source Select
+    /// Position: 8, Width: 5
+    using SRC = BitField<8, 5>;
+    constexpr uint32_t SRC_Pos = 8;
+    constexpr uint32_t SRC_Msk = SRC::mask;
+    /// Enumerated values for SRC
+    namespace src {
+        constexpr uint32_t XOSC = 0;
+        constexpr uint32_t GCLKIN = 1;
+        constexpr uint32_t GCLKGEN1 = 2;
+        constexpr uint32_t OSCULP32K = 3;
+        constexpr uint32_t OSC32K = 4;
+        constexpr uint32_t XOSC32K = 5;
+        constexpr uint32_t OSC8M = 6;
+        constexpr uint32_t DFLL48M = 7;
+        constexpr uint32_t DPLL96M = 8;
+    }
 
-/// Generic Clock Generator Enable
-/// Position: 16, Width: 1
-using GENEN = BitField<16, 1>;
-constexpr uint32_t GENEN_Pos = 16;
-constexpr uint32_t GENEN_Msk = GENEN::mask;
+    /// Generic Clock Generator Enable
+    /// Position: 16, Width: 1
+    using GENEN = BitField<16, 1>;
+    constexpr uint32_t GENEN_Pos = 16;
+    constexpr uint32_t GENEN_Msk = GENEN::mask;
 
-/// Improve Duty Cycle
-/// Position: 17, Width: 1
-using IDC = BitField<17, 1>;
-constexpr uint32_t IDC_Pos = 17;
-constexpr uint32_t IDC_Msk = IDC::mask;
+    /// Improve Duty Cycle
+    /// Position: 17, Width: 1
+    using IDC = BitField<17, 1>;
+    constexpr uint32_t IDC_Pos = 17;
+    constexpr uint32_t IDC_Msk = IDC::mask;
 
-/// Output Off Value
-/// Position: 18, Width: 1
-using OOV = BitField<18, 1>;
-constexpr uint32_t OOV_Pos = 18;
-constexpr uint32_t OOV_Msk = OOV::mask;
+    /// Output Off Value
+    /// Position: 18, Width: 1
+    using OOV = BitField<18, 1>;
+    constexpr uint32_t OOV_Pos = 18;
+    constexpr uint32_t OOV_Msk = OOV::mask;
 
-/// Output Enable
-/// Position: 19, Width: 1
-using OE = BitField<19, 1>;
-constexpr uint32_t OE_Pos = 19;
-constexpr uint32_t OE_Msk = OE::mask;
+    /// Output Enable
+    /// Position: 19, Width: 1
+    using OE = BitField<19, 1>;
+    constexpr uint32_t OE_Pos = 19;
+    constexpr uint32_t OE_Msk = OE::mask;
 
-/// Divide Selection
-/// Position: 20, Width: 1
-using DIVSEL = BitField<20, 1>;
-constexpr uint32_t DIVSEL_Pos = 20;
-constexpr uint32_t DIVSEL_Msk = DIVSEL::mask;
+    /// Divide Selection
+    /// Position: 20, Width: 1
+    using DIVSEL = BitField<20, 1>;
+    constexpr uint32_t DIVSEL_Pos = 20;
+    constexpr uint32_t DIVSEL_Msk = DIVSEL::mask;
 
-/// Run in Standby
-/// Position: 21, Width: 1
-using RUNSTDBY = BitField<21, 1>;
-constexpr uint32_t RUNSTDBY_Pos = 21;
-constexpr uint32_t RUNSTDBY_Msk = RUNSTDBY::mask;
+    /// Run in Standby
+    /// Position: 21, Width: 1
+    using RUNSTDBY = BitField<21, 1>;
+    constexpr uint32_t RUNSTDBY_Pos = 21;
+    constexpr uint32_t RUNSTDBY_Msk = RUNSTDBY::mask;
 
 }  // namespace genctrl
 
 /// GENDIV - Generic Clock Generator Division
 namespace gendiv {
-/// Generic Clock Generator Selection
-/// Position: 0, Width: 4
-using ID = BitField<0, 4>;
-constexpr uint32_t ID_Pos = 0;
-constexpr uint32_t ID_Msk = ID::mask;
+    /// Generic Clock Generator Selection
+    /// Position: 0, Width: 4
+    using ID = BitField<0, 4>;
+    constexpr uint32_t ID_Pos = 0;
+    constexpr uint32_t ID_Msk = ID::mask;
 
-/// Division Factor
-/// Position: 8, Width: 16
-using DIV = BitField<8, 16>;
-constexpr uint32_t DIV_Pos = 8;
-constexpr uint32_t DIV_Msk = DIV::mask;
+    /// Division Factor
+    /// Position: 8, Width: 16
+    using DIV = BitField<8, 16>;
+    constexpr uint32_t DIV_Pos = 8;
+    constexpr uint32_t DIV_Msk = DIV::mask;
 
 }  // namespace gendiv
 

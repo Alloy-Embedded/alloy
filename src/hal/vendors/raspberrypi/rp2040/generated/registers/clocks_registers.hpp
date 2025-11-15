@@ -17,6 +17,7 @@ namespace alloy::hal::raspberrypi::rp2040::clocks {
 
 /// CLOCKS Register Structure
 struct CLOCKS_Registers {
+
     /// Clock control, can be changed on-the-fly (except for auxsrc)
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -117,7 +118,7 @@ struct CLOCKS_Registers {
     /// Offset: 0x0048
     /// Reset value: 0x00000000
     volatile uint32_t CLK_PERI_CTRL;
-    uint8_t RESERVED_004C[4];  ///< Reserved
+    uint8_t RESERVED_004C[4]; ///< Reserved
 
     /// Indicates which src is currently selected (one-hot)
     /// Offset: 0x0050
@@ -188,24 +189,29 @@ struct CLOCKS_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t FC0_REF_KHZ;
 
-    /// Minimum pass frequency in kHz. This is optional. Set to 0 if you are not using the pass/fail
-    /// flags Offset: 0x0084 Reset value: 0x00000000
+    /// Minimum pass frequency in kHz. This is optional. Set to 0 if you are not using the pass/fail flags
+    /// Offset: 0x0084
+    /// Reset value: 0x00000000
     volatile uint32_t FC0_MIN_KHZ;
 
-    /// Maximum pass frequency in kHz. This is optional. Set to 0x1ffffff if you are not using the
-    /// pass/fail flags Offset: 0x0088 Reset value: 0x01FFFFFF
+    /// Maximum pass frequency in kHz. This is optional. Set to 0x1ffffff if you are not using the pass/fail flags
+    /// Offset: 0x0088
+    /// Reset value: 0x01FFFFFF
     volatile uint32_t FC0_MAX_KHZ;
 
-    /// Delays the start of frequency counting to allow the mux to settle\n Delay is measured in
-    /// multiples of the reference clock period Offset: 0x008C Reset value: 0x00000001
+    /// Delays the start of frequency counting to allow the mux to settle\n Delay is measured in multiples of the reference clock period
+    /// Offset: 0x008C
+    /// Reset value: 0x00000001
     volatile uint32_t FC0_DELAY;
 
-    /// The test interval is 0.98us * 2**interval, but let's call it 1us * 2**interval\n The default
-    /// gives a test interval of 250us Offset: 0x0090 Reset value: 0x00000008
+    /// The test interval is 0.98us * 2**interval, but let's call it 1us * 2**interval\n The default gives a test interval of 250us
+    /// Offset: 0x0090
+    /// Reset value: 0x00000008
     volatile uint32_t FC0_INTERVAL;
 
-    /// Clock sent to frequency counter, set to 0 when not required\n Writing to this register
-    /// initiates the frequency count Offset: 0x0094 Reset value: 0x00000000
+    /// Clock sent to frequency counter, set to 0 when not required\n Writing to this register initiates the frequency count
+    /// Offset: 0x0094
+    /// Reset value: 0x00000000
     volatile uint32_t FC0_SRC;
 
     /// Frequency counter status

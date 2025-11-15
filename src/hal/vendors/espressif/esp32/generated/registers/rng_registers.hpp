@@ -17,7 +17,7 @@ namespace alloy::hal::espressif::esp32::rng {
 
 /// RNG Register Structure
 struct RNG_Registers {
-    uint8_t RESERVED_0000[324];  ///< Reserved
+    uint8_t RESERVED_0000[324]; ///< Reserved
 
     /// Random number data
     /// Offset: 0x0144

@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::adc {
 
 /// ADC Register Structure
 struct ADC_Registers {
+
     /// Control A
     /// Offset: 0x0000
     volatile uint8_t CTRLA;
@@ -36,17 +37,17 @@ struct ADC_Registers {
     /// Control B
     /// Offset: 0x0004
     volatile uint16_t CTRLB;
-    uint8_t RESERVED_0006[2];  ///< Reserved
+    uint8_t RESERVED_0006[2]; ///< Reserved
 
     /// Window Monitor Control
     /// Offset: 0x0008
     volatile uint8_t WINCTRL;
-    uint8_t RESERVED_0009[3];  ///< Reserved
+    uint8_t RESERVED_0009[3]; ///< Reserved
 
     /// Software Trigger
     /// Offset: 0x000C
     volatile uint8_t SWTRIG;
-    uint8_t RESERVED_000D[3];  ///< Reserved
+    uint8_t RESERVED_000D[3]; ///< Reserved
 
     /// Input Control
     /// Offset: 0x0010
@@ -55,7 +56,7 @@ struct ADC_Registers {
     /// Event Control
     /// Offset: 0x0014
     volatile uint8_t EVCTRL;
-    uint8_t RESERVED_0015[1];  ///< Reserved
+    uint8_t RESERVED_0015[1]; ///< Reserved
 
     /// Interrupt Enable Clear
     /// Offset: 0x0016
@@ -82,12 +83,12 @@ struct ADC_Registers {
     /// Window Monitor Lower Threshold
     /// Offset: 0x001C
     volatile uint16_t WINLT;
-    uint8_t RESERVED_001E[2];  ///< Reserved
+    uint8_t RESERVED_001E[2]; ///< Reserved
 
     /// Window Monitor Upper Threshold
     /// Offset: 0x0020
     volatile uint16_t WINUT;
-    uint8_t RESERVED_0022[2];  ///< Reserved
+    uint8_t RESERVED_0022[2]; ///< Reserved
 
     /// Gain Correction
     /// Offset: 0x0024

@@ -17,14 +17,15 @@ namespace alloy::hal::raspberrypi::rp2040::watchdog {
 
 /// WATCHDOG Register Structure
 struct WATCHDOG_Registers {
-    /// Watchdog control\n The rst_wdsel register determines which subsystems are reset when the
-    /// watchdog is triggered.\n The watchdog can be triggered in software. Offset: 0x0000 Reset
-    /// value: 0x07000000
+
+    /// Watchdog control\n The rst_wdsel register determines which subsystems are reset when the watchdog is triggered.\n The watchdog can be triggered in software.
+    /// Offset: 0x0000
+    /// Reset value: 0x07000000
     volatile uint32_t CTRL;
 
-    /// Load the watchdog timer. The maximum setting is 0xffffff which corresponds to 0xffffff / 2
-    /// ticks before triggering a watchdog reset (see errata RP2040-E1). Offset: 0x0004 Reset value:
-    /// 0x00000000
+    /// Load the watchdog timer. The maximum setting is 0xffffff which corresponds to 0xffffff / 2 ticks before triggering a watchdog reset (see errata RP2040-E1).
+    /// Offset: 0x0004
+    /// Reset value: 0x00000000
     volatile uint32_t LOAD;
 
     /// Logs the reason for the last reset. Both bits are zero for the case of a hardware reset.

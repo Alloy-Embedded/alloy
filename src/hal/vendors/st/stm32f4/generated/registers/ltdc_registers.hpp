@@ -17,7 +17,7 @@ namespace alloy::hal::st::stm32f4::ltdc {
 
 /// LTDC Register Structure
 struct LTDC_Registers {
-    uint8_t RESERVED_0000[8];  ///< Reserved
+    uint8_t RESERVED_0000[8]; ///< Reserved
 
     /// Synchronization Size Configuration Register
     /// Offset: 0x0008
@@ -47,21 +47,21 @@ struct LTDC_Registers {
     /// Offset: 0x0018
     /// Reset value: 0x00002220
     volatile uint32_t GCR;
-    uint8_t RESERVED_001C[8];  ///< Reserved
+    uint8_t RESERVED_001C[8]; ///< Reserved
 
     /// Shadow Reload Configuration Register
     /// Offset: 0x0024
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t SRCR;
-    uint8_t RESERVED_0028[4];  ///< Reserved
+    uint8_t RESERVED_0028[4]; ///< Reserved
 
     /// Background Color Configuration Register
     /// Offset: 0x002C
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t BCCR;
-    uint8_t RESERVED_0030[4];  ///< Reserved
+    uint8_t RESERVED_0030[4]; ///< Reserved
 
     /// Interrupt Enable Register
     /// Offset: 0x0034
@@ -98,7 +98,7 @@ struct LTDC_Registers {
     /// Reset value: 0x0000000F
     /// Access: read-only
     volatile uint32_t CDSR;
-    uint8_t RESERVED_004C[56];  ///< Reserved
+    uint8_t RESERVED_004C[56]; ///< Reserved
 
     /// Layerx Control Register
     /// Offset: 0x0084
@@ -147,7 +147,7 @@ struct LTDC_Registers {
     /// Reset value: 0x00000607
     /// Access: read-write
     volatile uint32_t L1BFCR;
-    uint8_t RESERVED_00A4[8];  ///< Reserved
+    uint8_t RESERVED_00A4[8]; ///< Reserved
 
     /// Layerx Color Frame Buffer Address Register
     /// Offset: 0x00AC
@@ -166,14 +166,14 @@ struct LTDC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t L1CFBLNR;
-    uint8_t RESERVED_00B8[12];  ///< Reserved
+    uint8_t RESERVED_00B8[12]; ///< Reserved
 
     /// Layerx CLUT Write Register
     /// Offset: 0x00C4
     /// Reset value: 0x00000000
     /// Access: write-only
     volatile uint32_t L1CLUTWR;
-    uint8_t RESERVED_00C8[60];  ///< Reserved
+    uint8_t RESERVED_00C8[60]; ///< Reserved
 
     /// Layerx Control Register
     /// Offset: 0x0104
@@ -222,7 +222,7 @@ struct LTDC_Registers {
     /// Reset value: 0x00000607
     /// Access: read-write
     volatile uint32_t L2BFCR;
-    uint8_t RESERVED_0124[8];  ///< Reserved
+    uint8_t RESERVED_0124[8]; ///< Reserved
 
     /// Layerx Color Frame Buffer Address Register
     /// Offset: 0x012C
@@ -241,7 +241,7 @@ struct LTDC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t L2CFBLNR;
-    uint8_t RESERVED_0138[12];  ///< Reserved
+    uint8_t RESERVED_0138[12]; ///< Reserved
 
     /// Layerx CLUT Write Register
     /// Offset: 0x0144

@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f0::dma {
 
 /// DMA Register Structure
 struct DMA_Registers {
+
     /// DMA interrupt status register (DMA_ISR)
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -52,7 +53,7 @@ struct DMA_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CMAR1;
-    uint8_t RESERVED_0018[4];  ///< Reserved
+    uint8_t RESERVED_0018[4]; ///< Reserved
 
     /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x001C
@@ -77,7 +78,7 @@ struct DMA_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CMAR2;
-    uint8_t RESERVED_002C[4];  ///< Reserved
+    uint8_t RESERVED_002C[4]; ///< Reserved
 
     /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x0030
@@ -102,7 +103,7 @@ struct DMA_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CMAR3;
-    uint8_t RESERVED_0040[4];  ///< Reserved
+    uint8_t RESERVED_0040[4]; ///< Reserved
 
     /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x0044
@@ -127,7 +128,7 @@ struct DMA_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CMAR4;
-    uint8_t RESERVED_0054[4];  ///< Reserved
+    uint8_t RESERVED_0054[4]; ///< Reserved
 
     /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x0058
@@ -152,7 +153,7 @@ struct DMA_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CMAR5;
-    uint8_t RESERVED_0068[4];  ///< Reserved
+    uint8_t RESERVED_0068[4]; ///< Reserved
 
     /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x006C
@@ -177,7 +178,7 @@ struct DMA_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CMAR6;
-    uint8_t RESERVED_007C[4];  ///< Reserved
+    uint8_t RESERVED_007C[4]; ///< Reserved
 
     /// DMA channel configuration register (DMA_CCR)
     /// Offset: 0x0080

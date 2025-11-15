@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f4::rng {
@@ -20,66 +19,66 @@ using namespace alloy::hal::bitfields;
 
 /// CR - control register
 namespace cr {
-/// Random number generator enable
-/// Position: 2, Width: 1
-using RNGEN = BitField<2, 1>;
-constexpr uint32_t RNGEN_Pos = 2;
-constexpr uint32_t RNGEN_Msk = RNGEN::mask;
+    /// Random number generator enable
+    /// Position: 2, Width: 1
+    using RNGEN = BitField<2, 1>;
+    constexpr uint32_t RNGEN_Pos = 2;
+    constexpr uint32_t RNGEN_Msk = RNGEN::mask;
 
-/// Interrupt enable
-/// Position: 3, Width: 1
-using IE = BitField<3, 1>;
-constexpr uint32_t IE_Pos = 3;
-constexpr uint32_t IE_Msk = IE::mask;
+    /// Interrupt enable
+    /// Position: 3, Width: 1
+    using IE = BitField<3, 1>;
+    constexpr uint32_t IE_Pos = 3;
+    constexpr uint32_t IE_Msk = IE::mask;
 
 }  // namespace cr
 
 /// SR - status register
 namespace sr {
-/// Data ready
-/// Position: 0, Width: 1
-/// Access: read-only
-using DRDY = BitField<0, 1>;
-constexpr uint32_t DRDY_Pos = 0;
-constexpr uint32_t DRDY_Msk = DRDY::mask;
+    /// Data ready
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using DRDY = BitField<0, 1>;
+    constexpr uint32_t DRDY_Pos = 0;
+    constexpr uint32_t DRDY_Msk = DRDY::mask;
 
-/// Clock error current status
-/// Position: 1, Width: 1
-/// Access: read-only
-using CECS = BitField<1, 1>;
-constexpr uint32_t CECS_Pos = 1;
-constexpr uint32_t CECS_Msk = CECS::mask;
+    /// Clock error current status
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using CECS = BitField<1, 1>;
+    constexpr uint32_t CECS_Pos = 1;
+    constexpr uint32_t CECS_Msk = CECS::mask;
 
-/// Seed error current status
-/// Position: 2, Width: 1
-/// Access: read-only
-using SECS = BitField<2, 1>;
-constexpr uint32_t SECS_Pos = 2;
-constexpr uint32_t SECS_Msk = SECS::mask;
+    /// Seed error current status
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using SECS = BitField<2, 1>;
+    constexpr uint32_t SECS_Pos = 2;
+    constexpr uint32_t SECS_Msk = SECS::mask;
 
-/// Clock error interrupt status
-/// Position: 5, Width: 1
-/// Access: read-write
-using CEIS = BitField<5, 1>;
-constexpr uint32_t CEIS_Pos = 5;
-constexpr uint32_t CEIS_Msk = CEIS::mask;
+    /// Clock error interrupt status
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using CEIS = BitField<5, 1>;
+    constexpr uint32_t CEIS_Pos = 5;
+    constexpr uint32_t CEIS_Msk = CEIS::mask;
 
-/// Seed error interrupt status
-/// Position: 6, Width: 1
-/// Access: read-write
-using SEIS = BitField<6, 1>;
-constexpr uint32_t SEIS_Pos = 6;
-constexpr uint32_t SEIS_Msk = SEIS::mask;
+    /// Seed error interrupt status
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using SEIS = BitField<6, 1>;
+    constexpr uint32_t SEIS_Pos = 6;
+    constexpr uint32_t SEIS_Msk = SEIS::mask;
 
 }  // namespace sr
 
 /// DR - data register
 namespace dr {
-/// Random data
-/// Position: 0, Width: 32
-using RNDATA = BitField<0, 32>;
-constexpr uint32_t RNDATA_Pos = 0;
-constexpr uint32_t RNDATA_Msk = RNDATA::mask;
+    /// Random data
+    /// Position: 0, Width: 32
+    using RNDATA = BitField<0, 32>;
+    constexpr uint32_t RNDATA_Pos = 0;
+    constexpr uint32_t RNDATA_Msk = RNDATA::mask;
 
 }  // namespace dr
 

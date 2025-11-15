@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samv71::isi {
 
 /// ISI Register Structure
 struct ISI_Registers {
+
     /// ISI Configuration 1 Register
     /// Offset: 0x0000
     volatile uint32_t CFG1;
@@ -116,7 +117,7 @@ struct ISI_Registers {
     /// DMA Codec Descriptor Address Register
     /// Offset: 0x0058
     volatile uint32_t DMA_C_DSCR;
-    uint8_t RESERVED_005C[136];  ///< Reserved
+    uint8_t RESERVED_005C[136]; ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00E4

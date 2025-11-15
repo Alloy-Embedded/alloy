@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f0::dbgmcu {
@@ -20,119 +19,119 @@ using namespace alloy::hal::bitfields;
 
 /// IDCODE - MCU Device ID Code Register
 namespace idcode {
-/// Device Identifier
-/// Position: 0, Width: 12
-using DEV_ID = BitField<0, 12>;
-constexpr uint32_t DEV_ID_Pos = 0;
-constexpr uint32_t DEV_ID_Msk = DEV_ID::mask;
+    /// Device Identifier
+    /// Position: 0, Width: 12
+    using DEV_ID = BitField<0, 12>;
+    constexpr uint32_t DEV_ID_Pos = 0;
+    constexpr uint32_t DEV_ID_Msk = DEV_ID::mask;
 
-/// Division Identifier
-/// Position: 12, Width: 4
-using DIV_ID = BitField<12, 4>;
-constexpr uint32_t DIV_ID_Pos = 12;
-constexpr uint32_t DIV_ID_Msk = DIV_ID::mask;
+    /// Division Identifier
+    /// Position: 12, Width: 4
+    using DIV_ID = BitField<12, 4>;
+    constexpr uint32_t DIV_ID_Pos = 12;
+    constexpr uint32_t DIV_ID_Msk = DIV_ID::mask;
 
-/// Revision Identifier
-/// Position: 16, Width: 16
-using REV_ID = BitField<16, 16>;
-constexpr uint32_t REV_ID_Pos = 16;
-constexpr uint32_t REV_ID_Msk = REV_ID::mask;
+    /// Revision Identifier
+    /// Position: 16, Width: 16
+    using REV_ID = BitField<16, 16>;
+    constexpr uint32_t REV_ID_Pos = 16;
+    constexpr uint32_t REV_ID_Msk = REV_ID::mask;
 
 }  // namespace idcode
 
 /// CR - Debug MCU Configuration Register
 namespace cr {
-/// Debug Stop Mode
-/// Position: 1, Width: 1
-using DBG_STOP = BitField<1, 1>;
-constexpr uint32_t DBG_STOP_Pos = 1;
-constexpr uint32_t DBG_STOP_Msk = DBG_STOP::mask;
+    /// Debug Stop Mode
+    /// Position: 1, Width: 1
+    using DBG_STOP = BitField<1, 1>;
+    constexpr uint32_t DBG_STOP_Pos = 1;
+    constexpr uint32_t DBG_STOP_Msk = DBG_STOP::mask;
 
-/// Debug Standby Mode
-/// Position: 2, Width: 1
-using DBG_STANDBY = BitField<2, 1>;
-constexpr uint32_t DBG_STANDBY_Pos = 2;
-constexpr uint32_t DBG_STANDBY_Msk = DBG_STANDBY::mask;
+    /// Debug Standby Mode
+    /// Position: 2, Width: 1
+    using DBG_STANDBY = BitField<2, 1>;
+    constexpr uint32_t DBG_STANDBY_Pos = 2;
+    constexpr uint32_t DBG_STANDBY_Msk = DBG_STANDBY::mask;
 
 }  // namespace cr
 
 /// APBLFZ - APB Low Freeze Register
 namespace apblfz {
-/// Debug Timer 2 stopped when Core is halted
-/// Position: 0, Width: 1
-using DBG_TIMER2_STOP = BitField<0, 1>;
-constexpr uint32_t DBG_TIMER2_STOP_Pos = 0;
-constexpr uint32_t DBG_TIMER2_STOP_Msk = DBG_TIMER2_STOP::mask;
+    /// Debug Timer 2 stopped when Core is halted
+    /// Position: 0, Width: 1
+    using DBG_TIMER2_STOP = BitField<0, 1>;
+    constexpr uint32_t DBG_TIMER2_STOP_Pos = 0;
+    constexpr uint32_t DBG_TIMER2_STOP_Msk = DBG_TIMER2_STOP::mask;
 
-/// Debug Timer 3 stopped when Core is halted
-/// Position: 1, Width: 1
-using DBG_TIMER3_STOP = BitField<1, 1>;
-constexpr uint32_t DBG_TIMER3_STOP_Pos = 1;
-constexpr uint32_t DBG_TIMER3_STOP_Msk = DBG_TIMER3_STOP::mask;
+    /// Debug Timer 3 stopped when Core is halted
+    /// Position: 1, Width: 1
+    using DBG_TIMER3_STOP = BitField<1, 1>;
+    constexpr uint32_t DBG_TIMER3_STOP_Pos = 1;
+    constexpr uint32_t DBG_TIMER3_STOP_Msk = DBG_TIMER3_STOP::mask;
 
-/// Debug Timer 6 stopped when Core is halted
-/// Position: 4, Width: 1
-using DBG_TIMER6_STOP = BitField<4, 1>;
-constexpr uint32_t DBG_TIMER6_STOP_Pos = 4;
-constexpr uint32_t DBG_TIMER6_STOP_Msk = DBG_TIMER6_STOP::mask;
+    /// Debug Timer 6 stopped when Core is halted
+    /// Position: 4, Width: 1
+    using DBG_TIMER6_STOP = BitField<4, 1>;
+    constexpr uint32_t DBG_TIMER6_STOP_Pos = 4;
+    constexpr uint32_t DBG_TIMER6_STOP_Msk = DBG_TIMER6_STOP::mask;
 
-/// Debug Timer 14 stopped when Core is halted
-/// Position: 8, Width: 1
-using DBG_TIMER14_STOP = BitField<8, 1>;
-constexpr uint32_t DBG_TIMER14_STOP_Pos = 8;
-constexpr uint32_t DBG_TIMER14_STOP_Msk = DBG_TIMER14_STOP::mask;
+    /// Debug Timer 14 stopped when Core is halted
+    /// Position: 8, Width: 1
+    using DBG_TIMER14_STOP = BitField<8, 1>;
+    constexpr uint32_t DBG_TIMER14_STOP_Pos = 8;
+    constexpr uint32_t DBG_TIMER14_STOP_Msk = DBG_TIMER14_STOP::mask;
 
-/// Debug RTC stopped when Core is halted
-/// Position: 10, Width: 1
-using DBG_RTC_STOP = BitField<10, 1>;
-constexpr uint32_t DBG_RTC_STOP_Pos = 10;
-constexpr uint32_t DBG_RTC_STOP_Msk = DBG_RTC_STOP::mask;
+    /// Debug RTC stopped when Core is halted
+    /// Position: 10, Width: 1
+    using DBG_RTC_STOP = BitField<10, 1>;
+    constexpr uint32_t DBG_RTC_STOP_Pos = 10;
+    constexpr uint32_t DBG_RTC_STOP_Msk = DBG_RTC_STOP::mask;
 
-/// Debug Window Wachdog stopped when Core is halted
-/// Position: 11, Width: 1
-using DBG_WWDG_STOP = BitField<11, 1>;
-constexpr uint32_t DBG_WWDG_STOP_Pos = 11;
-constexpr uint32_t DBG_WWDG_STOP_Msk = DBG_WWDG_STOP::mask;
+    /// Debug Window Wachdog stopped when Core is halted
+    /// Position: 11, Width: 1
+    using DBG_WWDG_STOP = BitField<11, 1>;
+    constexpr uint32_t DBG_WWDG_STOP_Pos = 11;
+    constexpr uint32_t DBG_WWDG_STOP_Msk = DBG_WWDG_STOP::mask;
 
-/// Debug Independent Wachdog stopped when Core is halted
-/// Position: 12, Width: 1
-using DBG_IWDG_STOP = BitField<12, 1>;
-constexpr uint32_t DBG_IWDG_STOP_Pos = 12;
-constexpr uint32_t DBG_IWDG_STOP_Msk = DBG_IWDG_STOP::mask;
+    /// Debug Independent Wachdog stopped when Core is halted
+    /// Position: 12, Width: 1
+    using DBG_IWDG_STOP = BitField<12, 1>;
+    constexpr uint32_t DBG_IWDG_STOP_Pos = 12;
+    constexpr uint32_t DBG_IWDG_STOP_Msk = DBG_IWDG_STOP::mask;
 
-/// SMBUS timeout mode stopped when Core is halted
-/// Position: 21, Width: 1
-using I2C1_SMBUS_TIMEOUT = BitField<21, 1>;
-constexpr uint32_t I2C1_SMBUS_TIMEOUT_Pos = 21;
-constexpr uint32_t I2C1_SMBUS_TIMEOUT_Msk = I2C1_SMBUS_TIMEOUT::mask;
+    /// SMBUS timeout mode stopped when Core is halted
+    /// Position: 21, Width: 1
+    using I2C1_SMBUS_TIMEOUT = BitField<21, 1>;
+    constexpr uint32_t I2C1_SMBUS_TIMEOUT_Pos = 21;
+    constexpr uint32_t I2C1_SMBUS_TIMEOUT_Msk = I2C1_SMBUS_TIMEOUT::mask;
 
 }  // namespace apblfz
 
 /// APBHFZ - APB High Freeze Register
 namespace apbhfz {
-/// Debug Timer 1 stopped when Core is halted
-/// Position: 11, Width: 1
-using DBG_TIMER1_STOP = BitField<11, 1>;
-constexpr uint32_t DBG_TIMER1_STOP_Pos = 11;
-constexpr uint32_t DBG_TIMER1_STOP_Msk = DBG_TIMER1_STOP::mask;
+    /// Debug Timer 1 stopped when Core is halted
+    /// Position: 11, Width: 1
+    using DBG_TIMER1_STOP = BitField<11, 1>;
+    constexpr uint32_t DBG_TIMER1_STOP_Pos = 11;
+    constexpr uint32_t DBG_TIMER1_STOP_Msk = DBG_TIMER1_STOP::mask;
 
-/// Debug Timer 15 stopped when Core is halted
-/// Position: 16, Width: 1
-using DBG_TIMER15_STO = BitField<16, 1>;
-constexpr uint32_t DBG_TIMER15_STO_Pos = 16;
-constexpr uint32_t DBG_TIMER15_STO_Msk = DBG_TIMER15_STO::mask;
+    /// Debug Timer 15 stopped when Core is halted
+    /// Position: 16, Width: 1
+    using DBG_TIMER15_STO = BitField<16, 1>;
+    constexpr uint32_t DBG_TIMER15_STO_Pos = 16;
+    constexpr uint32_t DBG_TIMER15_STO_Msk = DBG_TIMER15_STO::mask;
 
-/// Debug Timer 16 stopped when Core is halted
-/// Position: 17, Width: 1
-using DBG_TIMER16_STO = BitField<17, 1>;
-constexpr uint32_t DBG_TIMER16_STO_Pos = 17;
-constexpr uint32_t DBG_TIMER16_STO_Msk = DBG_TIMER16_STO::mask;
+    /// Debug Timer 16 stopped when Core is halted
+    /// Position: 17, Width: 1
+    using DBG_TIMER16_STO = BitField<17, 1>;
+    constexpr uint32_t DBG_TIMER16_STO_Pos = 17;
+    constexpr uint32_t DBG_TIMER16_STO_Msk = DBG_TIMER16_STO::mask;
 
-/// Debug Timer 17 stopped when Core is halted
-/// Position: 18, Width: 1
-using DBG_TIMER17_STO = BitField<18, 1>;
-constexpr uint32_t DBG_TIMER17_STO_Pos = 18;
-constexpr uint32_t DBG_TIMER17_STO_Msk = DBG_TIMER17_STO::mask;
+    /// Debug Timer 17 stopped when Core is halted
+    /// Position: 18, Width: 1
+    using DBG_TIMER17_STO = BitField<18, 1>;
+    constexpr uint32_t DBG_TIMER17_STO_Pos = 18;
+    constexpr uint32_t DBG_TIMER17_STO_Msk = DBG_TIMER17_STO::mask;
 
 }  // namespace apbhfz
 

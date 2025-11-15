@@ -17,10 +17,11 @@ namespace alloy::hal::espressif::esp32::sdhost {
 
 /// SDHOST Register Structure
 struct SDHOST_Registers {
+
     /// Control register
     /// Offset: 0x0000
     volatile uint32_t CTRL;
-    uint8_t RESERVED_0004[4];  ///< Reserved
+    uint8_t RESERVED_0004[4]; ///< Reserved
 
     /// Clock divider configuration register
     /// Offset: 0x0008
@@ -106,7 +107,7 @@ struct SDHOST_Registers {
     /// Card write protection (WP) status register
     /// Offset: 0x0054
     volatile uint32_t WRTPRT;
-    uint8_t RESERVED_0058[4];  ///< Reserved
+    uint8_t RESERVED_0058[4]; ///< Reserved
 
     /// Transferred byte count register
     /// Offset: 0x005C
@@ -142,7 +143,7 @@ struct SDHOST_Registers {
     /// Offset: 0x0078
     /// Reset value: 0x00000001
     volatile uint32_t RST_N;
-    uint8_t RESERVED_007C[4];  ///< Reserved
+    uint8_t RESERVED_007C[4]; ///< Reserved
 
     /// Burst mode transfer configuration register
     /// Offset: 0x0080
@@ -171,12 +172,12 @@ struct SDHOST_Registers {
     /// Host buffer address pointer register
     /// Offset: 0x0098
     volatile uint32_t BUFADDR;
-    uint8_t RESERVED_009C[100];  ///< Reserved
+    uint8_t RESERVED_009C[100]; ///< Reserved
 
     /// Card Threshold Control register
     /// Offset: 0x0100
     volatile uint32_t CARDTHRCTL;
-    uint8_t RESERVED_0104[8];  ///< Reserved
+    uint8_t RESERVED_0104[8]; ///< Reserved
 
     /// eMMC DDR register
     /// Offset: 0x010C
@@ -185,12 +186,12 @@ struct SDHOST_Registers {
     /// Enable Phase Shift register
     /// Offset: 0x0110
     volatile uint32_t ENSHIFT;
-    uint8_t RESERVED_0114[236];  ///< Reserved
+    uint8_t RESERVED_0114[236]; ///< Reserved
 
     /// CPU write and read transmit data by FIFO
     /// Offset: 0x0200
     volatile uint32_t BUFFIFO;
-    uint8_t RESERVED_0204[1532];  ///< Reserved
+    uint8_t RESERVED_0204[1532]; ///< Reserved
 
     /// SDIO control register.
     /// Offset: 0x0800

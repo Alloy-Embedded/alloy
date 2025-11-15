@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::atmel::samd21::dmac {
@@ -20,885 +19,885 @@ using namespace alloy::hal::bitfields;
 
 /// CTRL - Control
 namespace ctrl {
-/// Software Reset
-/// Position: 0, Width: 1
-using SWRST = BitField<0, 1>;
-constexpr uint32_t SWRST_Pos = 0;
-constexpr uint32_t SWRST_Msk = SWRST::mask;
+    /// Software Reset
+    /// Position: 0, Width: 1
+    using SWRST = BitField<0, 1>;
+    constexpr uint32_t SWRST_Pos = 0;
+    constexpr uint32_t SWRST_Msk = SWRST::mask;
 
-/// DMA Enable
-/// Position: 1, Width: 1
-using DMAENABLE = BitField<1, 1>;
-constexpr uint32_t DMAENABLE_Pos = 1;
-constexpr uint32_t DMAENABLE_Msk = DMAENABLE::mask;
+    /// DMA Enable
+    /// Position: 1, Width: 1
+    using DMAENABLE = BitField<1, 1>;
+    constexpr uint32_t DMAENABLE_Pos = 1;
+    constexpr uint32_t DMAENABLE_Msk = DMAENABLE::mask;
 
-/// CRC Enable
-/// Position: 2, Width: 1
-using CRCENABLE = BitField<2, 1>;
-constexpr uint32_t CRCENABLE_Pos = 2;
-constexpr uint32_t CRCENABLE_Msk = CRCENABLE::mask;
+    /// CRC Enable
+    /// Position: 2, Width: 1
+    using CRCENABLE = BitField<2, 1>;
+    constexpr uint32_t CRCENABLE_Pos = 2;
+    constexpr uint32_t CRCENABLE_Msk = CRCENABLE::mask;
 
-/// Priority Level 0 Enable
-/// Position: 8, Width: 1
-using LVLEN0 = BitField<8, 1>;
-constexpr uint32_t LVLEN0_Pos = 8;
-constexpr uint32_t LVLEN0_Msk = LVLEN0::mask;
+    /// Priority Level 0 Enable
+    /// Position: 8, Width: 1
+    using LVLEN0 = BitField<8, 1>;
+    constexpr uint32_t LVLEN0_Pos = 8;
+    constexpr uint32_t LVLEN0_Msk = LVLEN0::mask;
 
-/// Priority Level 1 Enable
-/// Position: 9, Width: 1
-using LVLEN1 = BitField<9, 1>;
-constexpr uint32_t LVLEN1_Pos = 9;
-constexpr uint32_t LVLEN1_Msk = LVLEN1::mask;
+    /// Priority Level 1 Enable
+    /// Position: 9, Width: 1
+    using LVLEN1 = BitField<9, 1>;
+    constexpr uint32_t LVLEN1_Pos = 9;
+    constexpr uint32_t LVLEN1_Msk = LVLEN1::mask;
 
-/// Priority Level 2 Enable
-/// Position: 10, Width: 1
-using LVLEN2 = BitField<10, 1>;
-constexpr uint32_t LVLEN2_Pos = 10;
-constexpr uint32_t LVLEN2_Msk = LVLEN2::mask;
+    /// Priority Level 2 Enable
+    /// Position: 10, Width: 1
+    using LVLEN2 = BitField<10, 1>;
+    constexpr uint32_t LVLEN2_Pos = 10;
+    constexpr uint32_t LVLEN2_Msk = LVLEN2::mask;
 
-/// Priority Level 3 Enable
-/// Position: 11, Width: 1
-using LVLEN3 = BitField<11, 1>;
-constexpr uint32_t LVLEN3_Pos = 11;
-constexpr uint32_t LVLEN3_Msk = LVLEN3::mask;
+    /// Priority Level 3 Enable
+    /// Position: 11, Width: 1
+    using LVLEN3 = BitField<11, 1>;
+    constexpr uint32_t LVLEN3_Pos = 11;
+    constexpr uint32_t LVLEN3_Msk = LVLEN3::mask;
 
 }  // namespace ctrl
 
 /// CRCCTRL - CRC Control
 namespace crcctrl {
-/// CRC Beat Size
-/// Position: 0, Width: 2
-using CRCBEATSIZE = BitField<0, 2>;
-constexpr uint32_t CRCBEATSIZE_Pos = 0;
-constexpr uint32_t CRCBEATSIZE_Msk = CRCBEATSIZE::mask;
-/// Enumerated values for CRCBEATSIZE
-namespace crcbeatsize {
-constexpr uint32_t BYTE = 0;
-constexpr uint32_t HWORD = 1;
-constexpr uint32_t WORD = 2;
-}  // namespace crcbeatsize
+    /// CRC Beat Size
+    /// Position: 0, Width: 2
+    using CRCBEATSIZE = BitField<0, 2>;
+    constexpr uint32_t CRCBEATSIZE_Pos = 0;
+    constexpr uint32_t CRCBEATSIZE_Msk = CRCBEATSIZE::mask;
+    /// Enumerated values for CRCBEATSIZE
+    namespace crcbeatsize {
+        constexpr uint32_t BYTE = 0;
+        constexpr uint32_t HWORD = 1;
+        constexpr uint32_t WORD = 2;
+    }
 
-/// CRC Polynomial Type
-/// Position: 2, Width: 2
-using CRCPOLY = BitField<2, 2>;
-constexpr uint32_t CRCPOLY_Pos = 2;
-constexpr uint32_t CRCPOLY_Msk = CRCPOLY::mask;
-/// Enumerated values for CRCPOLY
-namespace crcpoly {
-constexpr uint32_t CRC16 = 0;
-constexpr uint32_t CRC32 = 1;
-}  // namespace crcpoly
+    /// CRC Polynomial Type
+    /// Position: 2, Width: 2
+    using CRCPOLY = BitField<2, 2>;
+    constexpr uint32_t CRCPOLY_Pos = 2;
+    constexpr uint32_t CRCPOLY_Msk = CRCPOLY::mask;
+    /// Enumerated values for CRCPOLY
+    namespace crcpoly {
+        constexpr uint32_t CRC16 = 0;
+        constexpr uint32_t CRC32 = 1;
+    }
 
-/// CRC Input Source
-/// Position: 8, Width: 6
-using CRCSRC = BitField<8, 6>;
-constexpr uint32_t CRCSRC_Pos = 8;
-constexpr uint32_t CRCSRC_Msk = CRCSRC::mask;
-/// Enumerated values for CRCSRC
-namespace crcsrc {
-constexpr uint32_t NOACT = 0;
-constexpr uint32_t IO = 1;
-}  // namespace crcsrc
+    /// CRC Input Source
+    /// Position: 8, Width: 6
+    using CRCSRC = BitField<8, 6>;
+    constexpr uint32_t CRCSRC_Pos = 8;
+    constexpr uint32_t CRCSRC_Msk = CRCSRC::mask;
+    /// Enumerated values for CRCSRC
+    namespace crcsrc {
+        constexpr uint32_t NOACT = 0;
+        constexpr uint32_t IO = 1;
+    }
 
 }  // namespace crcctrl
 
 /// CRCDATAIN - CRC Data Input
 namespace crcdatain {
-/// CRC Data Input
-/// Position: 0, Width: 32
-using CRCDATAIN = BitField<0, 32>;
-constexpr uint32_t CRCDATAIN_Pos = 0;
-constexpr uint32_t CRCDATAIN_Msk = CRCDATAIN::mask;
+    /// CRC Data Input
+    /// Position: 0, Width: 32
+    using CRCDATAIN = BitField<0, 32>;
+    constexpr uint32_t CRCDATAIN_Pos = 0;
+    constexpr uint32_t CRCDATAIN_Msk = CRCDATAIN::mask;
 
 }  // namespace crcdatain
 
 /// CRCCHKSUM - CRC Checksum
 namespace crcchksum {
-/// CRC Checksum
-/// Position: 0, Width: 32
-using CRCCHKSUM = BitField<0, 32>;
-constexpr uint32_t CRCCHKSUM_Pos = 0;
-constexpr uint32_t CRCCHKSUM_Msk = CRCCHKSUM::mask;
+    /// CRC Checksum
+    /// Position: 0, Width: 32
+    using CRCCHKSUM = BitField<0, 32>;
+    constexpr uint32_t CRCCHKSUM_Pos = 0;
+    constexpr uint32_t CRCCHKSUM_Msk = CRCCHKSUM::mask;
 
 }  // namespace crcchksum
 
 /// CRCSTATUS - CRC Status
 namespace crcstatus {
-/// CRC Module Busy
-/// Position: 0, Width: 1
-using CRCBUSY = BitField<0, 1>;
-constexpr uint32_t CRCBUSY_Pos = 0;
-constexpr uint32_t CRCBUSY_Msk = CRCBUSY::mask;
+    /// CRC Module Busy
+    /// Position: 0, Width: 1
+    using CRCBUSY = BitField<0, 1>;
+    constexpr uint32_t CRCBUSY_Pos = 0;
+    constexpr uint32_t CRCBUSY_Msk = CRCBUSY::mask;
 
-/// CRC Zero
-/// Position: 1, Width: 1
-/// Access: read-only
-using CRCZERO = BitField<1, 1>;
-constexpr uint32_t CRCZERO_Pos = 1;
-constexpr uint32_t CRCZERO_Msk = CRCZERO::mask;
+    /// CRC Zero
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using CRCZERO = BitField<1, 1>;
+    constexpr uint32_t CRCZERO_Pos = 1;
+    constexpr uint32_t CRCZERO_Msk = CRCZERO::mask;
 
 }  // namespace crcstatus
 
 /// DBGCTRL - Debug Control
 namespace dbgctrl {
-/// Debug Run
-/// Position: 0, Width: 1
-using DBGRUN = BitField<0, 1>;
-constexpr uint32_t DBGRUN_Pos = 0;
-constexpr uint32_t DBGRUN_Msk = DBGRUN::mask;
+    /// Debug Run
+    /// Position: 0, Width: 1
+    using DBGRUN = BitField<0, 1>;
+    constexpr uint32_t DBGRUN_Pos = 0;
+    constexpr uint32_t DBGRUN_Msk = DBGRUN::mask;
 
 }  // namespace dbgctrl
 
 /// QOSCTRL - QOS Control
 namespace qosctrl {
-/// Write-Back Quality of Service
-/// Position: 0, Width: 2
-using WRBQOS = BitField<0, 2>;
-constexpr uint32_t WRBQOS_Pos = 0;
-constexpr uint32_t WRBQOS_Msk = WRBQOS::mask;
-/// Enumerated values for WRBQOS
-namespace wrbqos {
-constexpr uint32_t DISABLE = 0;
-constexpr uint32_t LOW = 1;
-constexpr uint32_t MEDIUM = 2;
-constexpr uint32_t HIGH = 3;
-}  // namespace wrbqos
+    /// Write-Back Quality of Service
+    /// Position: 0, Width: 2
+    using WRBQOS = BitField<0, 2>;
+    constexpr uint32_t WRBQOS_Pos = 0;
+    constexpr uint32_t WRBQOS_Msk = WRBQOS::mask;
+    /// Enumerated values for WRBQOS
+    namespace wrbqos {
+        constexpr uint32_t DISABLE = 0;
+        constexpr uint32_t LOW = 1;
+        constexpr uint32_t MEDIUM = 2;
+        constexpr uint32_t HIGH = 3;
+    }
 
-/// Fetch Quality of Service
-/// Position: 2, Width: 2
-using FQOS = BitField<2, 2>;
-constexpr uint32_t FQOS_Pos = 2;
-constexpr uint32_t FQOS_Msk = FQOS::mask;
-/// Enumerated values for FQOS
-namespace fqos {
-constexpr uint32_t DISABLE = 0;
-constexpr uint32_t LOW = 1;
-constexpr uint32_t MEDIUM = 2;
-constexpr uint32_t HIGH = 3;
-}  // namespace fqos
+    /// Fetch Quality of Service
+    /// Position: 2, Width: 2
+    using FQOS = BitField<2, 2>;
+    constexpr uint32_t FQOS_Pos = 2;
+    constexpr uint32_t FQOS_Msk = FQOS::mask;
+    /// Enumerated values for FQOS
+    namespace fqos {
+        constexpr uint32_t DISABLE = 0;
+        constexpr uint32_t LOW = 1;
+        constexpr uint32_t MEDIUM = 2;
+        constexpr uint32_t HIGH = 3;
+    }
 
-/// Data Transfer Quality of Service
-/// Position: 4, Width: 2
-using DQOS = BitField<4, 2>;
-constexpr uint32_t DQOS_Pos = 4;
-constexpr uint32_t DQOS_Msk = DQOS::mask;
-/// Enumerated values for DQOS
-namespace dqos {
-constexpr uint32_t DISABLE = 0;
-constexpr uint32_t LOW = 1;
-constexpr uint32_t MEDIUM = 2;
-constexpr uint32_t HIGH = 3;
-}  // namespace dqos
+    /// Data Transfer Quality of Service
+    /// Position: 4, Width: 2
+    using DQOS = BitField<4, 2>;
+    constexpr uint32_t DQOS_Pos = 4;
+    constexpr uint32_t DQOS_Msk = DQOS::mask;
+    /// Enumerated values for DQOS
+    namespace dqos {
+        constexpr uint32_t DISABLE = 0;
+        constexpr uint32_t LOW = 1;
+        constexpr uint32_t MEDIUM = 2;
+        constexpr uint32_t HIGH = 3;
+    }
 
 }  // namespace qosctrl
 
 /// SWTRIGCTRL - Software Trigger Control
 namespace swtrigctrl {
-/// Channel 0 Software Trigger
-/// Position: 0, Width: 1
-using SWTRIG0 = BitField<0, 1>;
-constexpr uint32_t SWTRIG0_Pos = 0;
-constexpr uint32_t SWTRIG0_Msk = SWTRIG0::mask;
+    /// Channel 0 Software Trigger
+    /// Position: 0, Width: 1
+    using SWTRIG0 = BitField<0, 1>;
+    constexpr uint32_t SWTRIG0_Pos = 0;
+    constexpr uint32_t SWTRIG0_Msk = SWTRIG0::mask;
 
-/// Channel 1 Software Trigger
-/// Position: 1, Width: 1
-using SWTRIG1 = BitField<1, 1>;
-constexpr uint32_t SWTRIG1_Pos = 1;
-constexpr uint32_t SWTRIG1_Msk = SWTRIG1::mask;
+    /// Channel 1 Software Trigger
+    /// Position: 1, Width: 1
+    using SWTRIG1 = BitField<1, 1>;
+    constexpr uint32_t SWTRIG1_Pos = 1;
+    constexpr uint32_t SWTRIG1_Msk = SWTRIG1::mask;
 
-/// Channel 2 Software Trigger
-/// Position: 2, Width: 1
-using SWTRIG2 = BitField<2, 1>;
-constexpr uint32_t SWTRIG2_Pos = 2;
-constexpr uint32_t SWTRIG2_Msk = SWTRIG2::mask;
+    /// Channel 2 Software Trigger
+    /// Position: 2, Width: 1
+    using SWTRIG2 = BitField<2, 1>;
+    constexpr uint32_t SWTRIG2_Pos = 2;
+    constexpr uint32_t SWTRIG2_Msk = SWTRIG2::mask;
 
-/// Channel 3 Software Trigger
-/// Position: 3, Width: 1
-using SWTRIG3 = BitField<3, 1>;
-constexpr uint32_t SWTRIG3_Pos = 3;
-constexpr uint32_t SWTRIG3_Msk = SWTRIG3::mask;
+    /// Channel 3 Software Trigger
+    /// Position: 3, Width: 1
+    using SWTRIG3 = BitField<3, 1>;
+    constexpr uint32_t SWTRIG3_Pos = 3;
+    constexpr uint32_t SWTRIG3_Msk = SWTRIG3::mask;
 
-/// Channel 4 Software Trigger
-/// Position: 4, Width: 1
-using SWTRIG4 = BitField<4, 1>;
-constexpr uint32_t SWTRIG4_Pos = 4;
-constexpr uint32_t SWTRIG4_Msk = SWTRIG4::mask;
+    /// Channel 4 Software Trigger
+    /// Position: 4, Width: 1
+    using SWTRIG4 = BitField<4, 1>;
+    constexpr uint32_t SWTRIG4_Pos = 4;
+    constexpr uint32_t SWTRIG4_Msk = SWTRIG4::mask;
 
-/// Channel 5 Software Trigger
-/// Position: 5, Width: 1
-using SWTRIG5 = BitField<5, 1>;
-constexpr uint32_t SWTRIG5_Pos = 5;
-constexpr uint32_t SWTRIG5_Msk = SWTRIG5::mask;
+    /// Channel 5 Software Trigger
+    /// Position: 5, Width: 1
+    using SWTRIG5 = BitField<5, 1>;
+    constexpr uint32_t SWTRIG5_Pos = 5;
+    constexpr uint32_t SWTRIG5_Msk = SWTRIG5::mask;
 
-/// Channel 6 Software Trigger
-/// Position: 6, Width: 1
-using SWTRIG6 = BitField<6, 1>;
-constexpr uint32_t SWTRIG6_Pos = 6;
-constexpr uint32_t SWTRIG6_Msk = SWTRIG6::mask;
+    /// Channel 6 Software Trigger
+    /// Position: 6, Width: 1
+    using SWTRIG6 = BitField<6, 1>;
+    constexpr uint32_t SWTRIG6_Pos = 6;
+    constexpr uint32_t SWTRIG6_Msk = SWTRIG6::mask;
 
-/// Channel 7 Software Trigger
-/// Position: 7, Width: 1
-using SWTRIG7 = BitField<7, 1>;
-constexpr uint32_t SWTRIG7_Pos = 7;
-constexpr uint32_t SWTRIG7_Msk = SWTRIG7::mask;
+    /// Channel 7 Software Trigger
+    /// Position: 7, Width: 1
+    using SWTRIG7 = BitField<7, 1>;
+    constexpr uint32_t SWTRIG7_Pos = 7;
+    constexpr uint32_t SWTRIG7_Msk = SWTRIG7::mask;
 
-/// Channel 8 Software Trigger
-/// Position: 8, Width: 1
-using SWTRIG8 = BitField<8, 1>;
-constexpr uint32_t SWTRIG8_Pos = 8;
-constexpr uint32_t SWTRIG8_Msk = SWTRIG8::mask;
+    /// Channel 8 Software Trigger
+    /// Position: 8, Width: 1
+    using SWTRIG8 = BitField<8, 1>;
+    constexpr uint32_t SWTRIG8_Pos = 8;
+    constexpr uint32_t SWTRIG8_Msk = SWTRIG8::mask;
 
-/// Channel 9 Software Trigger
-/// Position: 9, Width: 1
-using SWTRIG9 = BitField<9, 1>;
-constexpr uint32_t SWTRIG9_Pos = 9;
-constexpr uint32_t SWTRIG9_Msk = SWTRIG9::mask;
+    /// Channel 9 Software Trigger
+    /// Position: 9, Width: 1
+    using SWTRIG9 = BitField<9, 1>;
+    constexpr uint32_t SWTRIG9_Pos = 9;
+    constexpr uint32_t SWTRIG9_Msk = SWTRIG9::mask;
 
-/// Channel 10 Software Trigger
-/// Position: 10, Width: 1
-using SWTRIG10 = BitField<10, 1>;
-constexpr uint32_t SWTRIG10_Pos = 10;
-constexpr uint32_t SWTRIG10_Msk = SWTRIG10::mask;
+    /// Channel 10 Software Trigger
+    /// Position: 10, Width: 1
+    using SWTRIG10 = BitField<10, 1>;
+    constexpr uint32_t SWTRIG10_Pos = 10;
+    constexpr uint32_t SWTRIG10_Msk = SWTRIG10::mask;
 
-/// Channel 11 Software Trigger
-/// Position: 11, Width: 1
-using SWTRIG11 = BitField<11, 1>;
-constexpr uint32_t SWTRIG11_Pos = 11;
-constexpr uint32_t SWTRIG11_Msk = SWTRIG11::mask;
+    /// Channel 11 Software Trigger
+    /// Position: 11, Width: 1
+    using SWTRIG11 = BitField<11, 1>;
+    constexpr uint32_t SWTRIG11_Pos = 11;
+    constexpr uint32_t SWTRIG11_Msk = SWTRIG11::mask;
 
 }  // namespace swtrigctrl
 
 /// PRICTRL0 - Priority Control 0
 namespace prictrl0 {
-/// Level 0 Channel Priority Number
-/// Position: 0, Width: 4
-using LVLPRI0 = BitField<0, 4>;
-constexpr uint32_t LVLPRI0_Pos = 0;
-constexpr uint32_t LVLPRI0_Msk = LVLPRI0::mask;
+    /// Level 0 Channel Priority Number
+    /// Position: 0, Width: 4
+    using LVLPRI0 = BitField<0, 4>;
+    constexpr uint32_t LVLPRI0_Pos = 0;
+    constexpr uint32_t LVLPRI0_Msk = LVLPRI0::mask;
 
-/// Level 0 Round-Robin Scheduling Enable
-/// Position: 7, Width: 1
-using RRLVLEN0 = BitField<7, 1>;
-constexpr uint32_t RRLVLEN0_Pos = 7;
-constexpr uint32_t RRLVLEN0_Msk = RRLVLEN0::mask;
+    /// Level 0 Round-Robin Scheduling Enable
+    /// Position: 7, Width: 1
+    using RRLVLEN0 = BitField<7, 1>;
+    constexpr uint32_t RRLVLEN0_Pos = 7;
+    constexpr uint32_t RRLVLEN0_Msk = RRLVLEN0::mask;
 
-/// Level 1 Channel Priority Number
-/// Position: 8, Width: 4
-using LVLPRI1 = BitField<8, 4>;
-constexpr uint32_t LVLPRI1_Pos = 8;
-constexpr uint32_t LVLPRI1_Msk = LVLPRI1::mask;
+    /// Level 1 Channel Priority Number
+    /// Position: 8, Width: 4
+    using LVLPRI1 = BitField<8, 4>;
+    constexpr uint32_t LVLPRI1_Pos = 8;
+    constexpr uint32_t LVLPRI1_Msk = LVLPRI1::mask;
 
-/// Level 1 Round-Robin Scheduling Enable
-/// Position: 15, Width: 1
-using RRLVLEN1 = BitField<15, 1>;
-constexpr uint32_t RRLVLEN1_Pos = 15;
-constexpr uint32_t RRLVLEN1_Msk = RRLVLEN1::mask;
+    /// Level 1 Round-Robin Scheduling Enable
+    /// Position: 15, Width: 1
+    using RRLVLEN1 = BitField<15, 1>;
+    constexpr uint32_t RRLVLEN1_Pos = 15;
+    constexpr uint32_t RRLVLEN1_Msk = RRLVLEN1::mask;
 
-/// Level 2 Channel Priority Number
-/// Position: 16, Width: 4
-using LVLPRI2 = BitField<16, 4>;
-constexpr uint32_t LVLPRI2_Pos = 16;
-constexpr uint32_t LVLPRI2_Msk = LVLPRI2::mask;
+    /// Level 2 Channel Priority Number
+    /// Position: 16, Width: 4
+    using LVLPRI2 = BitField<16, 4>;
+    constexpr uint32_t LVLPRI2_Pos = 16;
+    constexpr uint32_t LVLPRI2_Msk = LVLPRI2::mask;
 
-/// Level 2 Round-Robin Scheduling Enable
-/// Position: 23, Width: 1
-using RRLVLEN2 = BitField<23, 1>;
-constexpr uint32_t RRLVLEN2_Pos = 23;
-constexpr uint32_t RRLVLEN2_Msk = RRLVLEN2::mask;
+    /// Level 2 Round-Robin Scheduling Enable
+    /// Position: 23, Width: 1
+    using RRLVLEN2 = BitField<23, 1>;
+    constexpr uint32_t RRLVLEN2_Pos = 23;
+    constexpr uint32_t RRLVLEN2_Msk = RRLVLEN2::mask;
 
-/// Level 3 Channel Priority Number
-/// Position: 24, Width: 4
-using LVLPRI3 = BitField<24, 4>;
-constexpr uint32_t LVLPRI3_Pos = 24;
-constexpr uint32_t LVLPRI3_Msk = LVLPRI3::mask;
+    /// Level 3 Channel Priority Number
+    /// Position: 24, Width: 4
+    using LVLPRI3 = BitField<24, 4>;
+    constexpr uint32_t LVLPRI3_Pos = 24;
+    constexpr uint32_t LVLPRI3_Msk = LVLPRI3::mask;
 
-/// Level 3 Round-Robin Scheduling Enable
-/// Position: 31, Width: 1
-using RRLVLEN3 = BitField<31, 1>;
-constexpr uint32_t RRLVLEN3_Pos = 31;
-constexpr uint32_t RRLVLEN3_Msk = RRLVLEN3::mask;
+    /// Level 3 Round-Robin Scheduling Enable
+    /// Position: 31, Width: 1
+    using RRLVLEN3 = BitField<31, 1>;
+    constexpr uint32_t RRLVLEN3_Pos = 31;
+    constexpr uint32_t RRLVLEN3_Msk = RRLVLEN3::mask;
 
 }  // namespace prictrl0
 
 /// INTPEND - Interrupt Pending
 namespace intpend {
-/// Channel ID
-/// Position: 0, Width: 4
-using ID = BitField<0, 4>;
-constexpr uint32_t ID_Pos = 0;
-constexpr uint32_t ID_Msk = ID::mask;
+    /// Channel ID
+    /// Position: 0, Width: 4
+    using ID = BitField<0, 4>;
+    constexpr uint32_t ID_Pos = 0;
+    constexpr uint32_t ID_Msk = ID::mask;
 
-/// Transfer Error
-/// Position: 8, Width: 1
-using TERR = BitField<8, 1>;
-constexpr uint32_t TERR_Pos = 8;
-constexpr uint32_t TERR_Msk = TERR::mask;
+    /// Transfer Error
+    /// Position: 8, Width: 1
+    using TERR = BitField<8, 1>;
+    constexpr uint32_t TERR_Pos = 8;
+    constexpr uint32_t TERR_Msk = TERR::mask;
 
-/// Transfer Complete
-/// Position: 9, Width: 1
-using TCMPL = BitField<9, 1>;
-constexpr uint32_t TCMPL_Pos = 9;
-constexpr uint32_t TCMPL_Msk = TCMPL::mask;
+    /// Transfer Complete
+    /// Position: 9, Width: 1
+    using TCMPL = BitField<9, 1>;
+    constexpr uint32_t TCMPL_Pos = 9;
+    constexpr uint32_t TCMPL_Msk = TCMPL::mask;
 
-/// Channel Suspend
-/// Position: 10, Width: 1
-using SUSP = BitField<10, 1>;
-constexpr uint32_t SUSP_Pos = 10;
-constexpr uint32_t SUSP_Msk = SUSP::mask;
+    /// Channel Suspend
+    /// Position: 10, Width: 1
+    using SUSP = BitField<10, 1>;
+    constexpr uint32_t SUSP_Pos = 10;
+    constexpr uint32_t SUSP_Msk = SUSP::mask;
 
-/// Fetch Error
-/// Position: 13, Width: 1
-/// Access: read-only
-using FERR = BitField<13, 1>;
-constexpr uint32_t FERR_Pos = 13;
-constexpr uint32_t FERR_Msk = FERR::mask;
+    /// Fetch Error
+    /// Position: 13, Width: 1
+    /// Access: read-only
+    using FERR = BitField<13, 1>;
+    constexpr uint32_t FERR_Pos = 13;
+    constexpr uint32_t FERR_Msk = FERR::mask;
 
-/// Busy
-/// Position: 14, Width: 1
-/// Access: read-only
-using BUSY = BitField<14, 1>;
-constexpr uint32_t BUSY_Pos = 14;
-constexpr uint32_t BUSY_Msk = BUSY::mask;
+    /// Busy
+    /// Position: 14, Width: 1
+    /// Access: read-only
+    using BUSY = BitField<14, 1>;
+    constexpr uint32_t BUSY_Pos = 14;
+    constexpr uint32_t BUSY_Msk = BUSY::mask;
 
-/// Pending
-/// Position: 15, Width: 1
-/// Access: read-only
-using PEND = BitField<15, 1>;
-constexpr uint32_t PEND_Pos = 15;
-constexpr uint32_t PEND_Msk = PEND::mask;
+    /// Pending
+    /// Position: 15, Width: 1
+    /// Access: read-only
+    using PEND = BitField<15, 1>;
+    constexpr uint32_t PEND_Pos = 15;
+    constexpr uint32_t PEND_Msk = PEND::mask;
 
 }  // namespace intpend
 
 /// INTSTATUS - Interrupt Status
 namespace intstatus {
-/// Channel 0 Pending Interrupt
-/// Position: 0, Width: 1
-/// Access: read-only
-using CHINT0 = BitField<0, 1>;
-constexpr uint32_t CHINT0_Pos = 0;
-constexpr uint32_t CHINT0_Msk = CHINT0::mask;
+    /// Channel 0 Pending Interrupt
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using CHINT0 = BitField<0, 1>;
+    constexpr uint32_t CHINT0_Pos = 0;
+    constexpr uint32_t CHINT0_Msk = CHINT0::mask;
 
-/// Channel 1 Pending Interrupt
-/// Position: 1, Width: 1
-/// Access: read-only
-using CHINT1 = BitField<1, 1>;
-constexpr uint32_t CHINT1_Pos = 1;
-constexpr uint32_t CHINT1_Msk = CHINT1::mask;
+    /// Channel 1 Pending Interrupt
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using CHINT1 = BitField<1, 1>;
+    constexpr uint32_t CHINT1_Pos = 1;
+    constexpr uint32_t CHINT1_Msk = CHINT1::mask;
 
-/// Channel 2 Pending Interrupt
-/// Position: 2, Width: 1
-/// Access: read-only
-using CHINT2 = BitField<2, 1>;
-constexpr uint32_t CHINT2_Pos = 2;
-constexpr uint32_t CHINT2_Msk = CHINT2::mask;
+    /// Channel 2 Pending Interrupt
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using CHINT2 = BitField<2, 1>;
+    constexpr uint32_t CHINT2_Pos = 2;
+    constexpr uint32_t CHINT2_Msk = CHINT2::mask;
 
-/// Channel 3 Pending Interrupt
-/// Position: 3, Width: 1
-/// Access: read-only
-using CHINT3 = BitField<3, 1>;
-constexpr uint32_t CHINT3_Pos = 3;
-constexpr uint32_t CHINT3_Msk = CHINT3::mask;
+    /// Channel 3 Pending Interrupt
+    /// Position: 3, Width: 1
+    /// Access: read-only
+    using CHINT3 = BitField<3, 1>;
+    constexpr uint32_t CHINT3_Pos = 3;
+    constexpr uint32_t CHINT3_Msk = CHINT3::mask;
 
-/// Channel 4 Pending Interrupt
-/// Position: 4, Width: 1
-/// Access: read-only
-using CHINT4 = BitField<4, 1>;
-constexpr uint32_t CHINT4_Pos = 4;
-constexpr uint32_t CHINT4_Msk = CHINT4::mask;
+    /// Channel 4 Pending Interrupt
+    /// Position: 4, Width: 1
+    /// Access: read-only
+    using CHINT4 = BitField<4, 1>;
+    constexpr uint32_t CHINT4_Pos = 4;
+    constexpr uint32_t CHINT4_Msk = CHINT4::mask;
 
-/// Channel 5 Pending Interrupt
-/// Position: 5, Width: 1
-/// Access: read-only
-using CHINT5 = BitField<5, 1>;
-constexpr uint32_t CHINT5_Pos = 5;
-constexpr uint32_t CHINT5_Msk = CHINT5::mask;
+    /// Channel 5 Pending Interrupt
+    /// Position: 5, Width: 1
+    /// Access: read-only
+    using CHINT5 = BitField<5, 1>;
+    constexpr uint32_t CHINT5_Pos = 5;
+    constexpr uint32_t CHINT5_Msk = CHINT5::mask;
 
-/// Channel 6 Pending Interrupt
-/// Position: 6, Width: 1
-/// Access: read-only
-using CHINT6 = BitField<6, 1>;
-constexpr uint32_t CHINT6_Pos = 6;
-constexpr uint32_t CHINT6_Msk = CHINT6::mask;
+    /// Channel 6 Pending Interrupt
+    /// Position: 6, Width: 1
+    /// Access: read-only
+    using CHINT6 = BitField<6, 1>;
+    constexpr uint32_t CHINT6_Pos = 6;
+    constexpr uint32_t CHINT6_Msk = CHINT6::mask;
 
-/// Channel 7 Pending Interrupt
-/// Position: 7, Width: 1
-/// Access: read-only
-using CHINT7 = BitField<7, 1>;
-constexpr uint32_t CHINT7_Pos = 7;
-constexpr uint32_t CHINT7_Msk = CHINT7::mask;
+    /// Channel 7 Pending Interrupt
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using CHINT7 = BitField<7, 1>;
+    constexpr uint32_t CHINT7_Pos = 7;
+    constexpr uint32_t CHINT7_Msk = CHINT7::mask;
 
-/// Channel 8 Pending Interrupt
-/// Position: 8, Width: 1
-/// Access: read-only
-using CHINT8 = BitField<8, 1>;
-constexpr uint32_t CHINT8_Pos = 8;
-constexpr uint32_t CHINT8_Msk = CHINT8::mask;
+    /// Channel 8 Pending Interrupt
+    /// Position: 8, Width: 1
+    /// Access: read-only
+    using CHINT8 = BitField<8, 1>;
+    constexpr uint32_t CHINT8_Pos = 8;
+    constexpr uint32_t CHINT8_Msk = CHINT8::mask;
 
-/// Channel 9 Pending Interrupt
-/// Position: 9, Width: 1
-/// Access: read-only
-using CHINT9 = BitField<9, 1>;
-constexpr uint32_t CHINT9_Pos = 9;
-constexpr uint32_t CHINT9_Msk = CHINT9::mask;
+    /// Channel 9 Pending Interrupt
+    /// Position: 9, Width: 1
+    /// Access: read-only
+    using CHINT9 = BitField<9, 1>;
+    constexpr uint32_t CHINT9_Pos = 9;
+    constexpr uint32_t CHINT9_Msk = CHINT9::mask;
 
-/// Channel 10 Pending Interrupt
-/// Position: 10, Width: 1
-/// Access: read-only
-using CHINT10 = BitField<10, 1>;
-constexpr uint32_t CHINT10_Pos = 10;
-constexpr uint32_t CHINT10_Msk = CHINT10::mask;
+    /// Channel 10 Pending Interrupt
+    /// Position: 10, Width: 1
+    /// Access: read-only
+    using CHINT10 = BitField<10, 1>;
+    constexpr uint32_t CHINT10_Pos = 10;
+    constexpr uint32_t CHINT10_Msk = CHINT10::mask;
 
-/// Channel 11 Pending Interrupt
-/// Position: 11, Width: 1
-/// Access: read-only
-using CHINT11 = BitField<11, 1>;
-constexpr uint32_t CHINT11_Pos = 11;
-constexpr uint32_t CHINT11_Msk = CHINT11::mask;
+    /// Channel 11 Pending Interrupt
+    /// Position: 11, Width: 1
+    /// Access: read-only
+    using CHINT11 = BitField<11, 1>;
+    constexpr uint32_t CHINT11_Pos = 11;
+    constexpr uint32_t CHINT11_Msk = CHINT11::mask;
 
 }  // namespace intstatus
 
 /// BUSYCH - Busy Channels
 namespace busych {
-/// Busy Channel 0
-/// Position: 0, Width: 1
-/// Access: read-only
-using BUSYCH0 = BitField<0, 1>;
-constexpr uint32_t BUSYCH0_Pos = 0;
-constexpr uint32_t BUSYCH0_Msk = BUSYCH0::mask;
+    /// Busy Channel 0
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using BUSYCH0 = BitField<0, 1>;
+    constexpr uint32_t BUSYCH0_Pos = 0;
+    constexpr uint32_t BUSYCH0_Msk = BUSYCH0::mask;
 
-/// Busy Channel 1
-/// Position: 1, Width: 1
-/// Access: read-only
-using BUSYCH1 = BitField<1, 1>;
-constexpr uint32_t BUSYCH1_Pos = 1;
-constexpr uint32_t BUSYCH1_Msk = BUSYCH1::mask;
+    /// Busy Channel 1
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using BUSYCH1 = BitField<1, 1>;
+    constexpr uint32_t BUSYCH1_Pos = 1;
+    constexpr uint32_t BUSYCH1_Msk = BUSYCH1::mask;
 
-/// Busy Channel 2
-/// Position: 2, Width: 1
-/// Access: read-only
-using BUSYCH2 = BitField<2, 1>;
-constexpr uint32_t BUSYCH2_Pos = 2;
-constexpr uint32_t BUSYCH2_Msk = BUSYCH2::mask;
+    /// Busy Channel 2
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using BUSYCH2 = BitField<2, 1>;
+    constexpr uint32_t BUSYCH2_Pos = 2;
+    constexpr uint32_t BUSYCH2_Msk = BUSYCH2::mask;
 
-/// Busy Channel 3
-/// Position: 3, Width: 1
-/// Access: read-only
-using BUSYCH3 = BitField<3, 1>;
-constexpr uint32_t BUSYCH3_Pos = 3;
-constexpr uint32_t BUSYCH3_Msk = BUSYCH3::mask;
+    /// Busy Channel 3
+    /// Position: 3, Width: 1
+    /// Access: read-only
+    using BUSYCH3 = BitField<3, 1>;
+    constexpr uint32_t BUSYCH3_Pos = 3;
+    constexpr uint32_t BUSYCH3_Msk = BUSYCH3::mask;
 
-/// Busy Channel 4
-/// Position: 4, Width: 1
-/// Access: read-only
-using BUSYCH4 = BitField<4, 1>;
-constexpr uint32_t BUSYCH4_Pos = 4;
-constexpr uint32_t BUSYCH4_Msk = BUSYCH4::mask;
+    /// Busy Channel 4
+    /// Position: 4, Width: 1
+    /// Access: read-only
+    using BUSYCH4 = BitField<4, 1>;
+    constexpr uint32_t BUSYCH4_Pos = 4;
+    constexpr uint32_t BUSYCH4_Msk = BUSYCH4::mask;
 
-/// Busy Channel 5
-/// Position: 5, Width: 1
-/// Access: read-only
-using BUSYCH5 = BitField<5, 1>;
-constexpr uint32_t BUSYCH5_Pos = 5;
-constexpr uint32_t BUSYCH5_Msk = BUSYCH5::mask;
+    /// Busy Channel 5
+    /// Position: 5, Width: 1
+    /// Access: read-only
+    using BUSYCH5 = BitField<5, 1>;
+    constexpr uint32_t BUSYCH5_Pos = 5;
+    constexpr uint32_t BUSYCH5_Msk = BUSYCH5::mask;
 
-/// Busy Channel 6
-/// Position: 6, Width: 1
-/// Access: read-only
-using BUSYCH6 = BitField<6, 1>;
-constexpr uint32_t BUSYCH6_Pos = 6;
-constexpr uint32_t BUSYCH6_Msk = BUSYCH6::mask;
+    /// Busy Channel 6
+    /// Position: 6, Width: 1
+    /// Access: read-only
+    using BUSYCH6 = BitField<6, 1>;
+    constexpr uint32_t BUSYCH6_Pos = 6;
+    constexpr uint32_t BUSYCH6_Msk = BUSYCH6::mask;
 
-/// Busy Channel 7
-/// Position: 7, Width: 1
-/// Access: read-only
-using BUSYCH7 = BitField<7, 1>;
-constexpr uint32_t BUSYCH7_Pos = 7;
-constexpr uint32_t BUSYCH7_Msk = BUSYCH7::mask;
+    /// Busy Channel 7
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using BUSYCH7 = BitField<7, 1>;
+    constexpr uint32_t BUSYCH7_Pos = 7;
+    constexpr uint32_t BUSYCH7_Msk = BUSYCH7::mask;
 
-/// Busy Channel 8
-/// Position: 8, Width: 1
-/// Access: read-only
-using BUSYCH8 = BitField<8, 1>;
-constexpr uint32_t BUSYCH8_Pos = 8;
-constexpr uint32_t BUSYCH8_Msk = BUSYCH8::mask;
+    /// Busy Channel 8
+    /// Position: 8, Width: 1
+    /// Access: read-only
+    using BUSYCH8 = BitField<8, 1>;
+    constexpr uint32_t BUSYCH8_Pos = 8;
+    constexpr uint32_t BUSYCH8_Msk = BUSYCH8::mask;
 
-/// Busy Channel 9
-/// Position: 9, Width: 1
-/// Access: read-only
-using BUSYCH9 = BitField<9, 1>;
-constexpr uint32_t BUSYCH9_Pos = 9;
-constexpr uint32_t BUSYCH9_Msk = BUSYCH9::mask;
+    /// Busy Channel 9
+    /// Position: 9, Width: 1
+    /// Access: read-only
+    using BUSYCH9 = BitField<9, 1>;
+    constexpr uint32_t BUSYCH9_Pos = 9;
+    constexpr uint32_t BUSYCH9_Msk = BUSYCH9::mask;
 
-/// Busy Channel 10
-/// Position: 10, Width: 1
-/// Access: read-only
-using BUSYCH10 = BitField<10, 1>;
-constexpr uint32_t BUSYCH10_Pos = 10;
-constexpr uint32_t BUSYCH10_Msk = BUSYCH10::mask;
+    /// Busy Channel 10
+    /// Position: 10, Width: 1
+    /// Access: read-only
+    using BUSYCH10 = BitField<10, 1>;
+    constexpr uint32_t BUSYCH10_Pos = 10;
+    constexpr uint32_t BUSYCH10_Msk = BUSYCH10::mask;
 
-/// Busy Channel 11
-/// Position: 11, Width: 1
-/// Access: read-only
-using BUSYCH11 = BitField<11, 1>;
-constexpr uint32_t BUSYCH11_Pos = 11;
-constexpr uint32_t BUSYCH11_Msk = BUSYCH11::mask;
+    /// Busy Channel 11
+    /// Position: 11, Width: 1
+    /// Access: read-only
+    using BUSYCH11 = BitField<11, 1>;
+    constexpr uint32_t BUSYCH11_Pos = 11;
+    constexpr uint32_t BUSYCH11_Msk = BUSYCH11::mask;
 
 }  // namespace busych
 
 /// PENDCH - Pending Channels
 namespace pendch {
-/// Pending Channel 0
-/// Position: 0, Width: 1
-/// Access: read-only
-using PENDCH0 = BitField<0, 1>;
-constexpr uint32_t PENDCH0_Pos = 0;
-constexpr uint32_t PENDCH0_Msk = PENDCH0::mask;
+    /// Pending Channel 0
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using PENDCH0 = BitField<0, 1>;
+    constexpr uint32_t PENDCH0_Pos = 0;
+    constexpr uint32_t PENDCH0_Msk = PENDCH0::mask;
 
-/// Pending Channel 1
-/// Position: 1, Width: 1
-/// Access: read-only
-using PENDCH1 = BitField<1, 1>;
-constexpr uint32_t PENDCH1_Pos = 1;
-constexpr uint32_t PENDCH1_Msk = PENDCH1::mask;
+    /// Pending Channel 1
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using PENDCH1 = BitField<1, 1>;
+    constexpr uint32_t PENDCH1_Pos = 1;
+    constexpr uint32_t PENDCH1_Msk = PENDCH1::mask;
 
-/// Pending Channel 2
-/// Position: 2, Width: 1
-/// Access: read-only
-using PENDCH2 = BitField<2, 1>;
-constexpr uint32_t PENDCH2_Pos = 2;
-constexpr uint32_t PENDCH2_Msk = PENDCH2::mask;
+    /// Pending Channel 2
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using PENDCH2 = BitField<2, 1>;
+    constexpr uint32_t PENDCH2_Pos = 2;
+    constexpr uint32_t PENDCH2_Msk = PENDCH2::mask;
 
-/// Pending Channel 3
-/// Position: 3, Width: 1
-/// Access: read-only
-using PENDCH3 = BitField<3, 1>;
-constexpr uint32_t PENDCH3_Pos = 3;
-constexpr uint32_t PENDCH3_Msk = PENDCH3::mask;
+    /// Pending Channel 3
+    /// Position: 3, Width: 1
+    /// Access: read-only
+    using PENDCH3 = BitField<3, 1>;
+    constexpr uint32_t PENDCH3_Pos = 3;
+    constexpr uint32_t PENDCH3_Msk = PENDCH3::mask;
 
-/// Pending Channel 4
-/// Position: 4, Width: 1
-/// Access: read-only
-using PENDCH4 = BitField<4, 1>;
-constexpr uint32_t PENDCH4_Pos = 4;
-constexpr uint32_t PENDCH4_Msk = PENDCH4::mask;
+    /// Pending Channel 4
+    /// Position: 4, Width: 1
+    /// Access: read-only
+    using PENDCH4 = BitField<4, 1>;
+    constexpr uint32_t PENDCH4_Pos = 4;
+    constexpr uint32_t PENDCH4_Msk = PENDCH4::mask;
 
-/// Pending Channel 5
-/// Position: 5, Width: 1
-/// Access: read-only
-using PENDCH5 = BitField<5, 1>;
-constexpr uint32_t PENDCH5_Pos = 5;
-constexpr uint32_t PENDCH5_Msk = PENDCH5::mask;
+    /// Pending Channel 5
+    /// Position: 5, Width: 1
+    /// Access: read-only
+    using PENDCH5 = BitField<5, 1>;
+    constexpr uint32_t PENDCH5_Pos = 5;
+    constexpr uint32_t PENDCH5_Msk = PENDCH5::mask;
 
-/// Pending Channel 6
-/// Position: 6, Width: 1
-/// Access: read-only
-using PENDCH6 = BitField<6, 1>;
-constexpr uint32_t PENDCH6_Pos = 6;
-constexpr uint32_t PENDCH6_Msk = PENDCH6::mask;
+    /// Pending Channel 6
+    /// Position: 6, Width: 1
+    /// Access: read-only
+    using PENDCH6 = BitField<6, 1>;
+    constexpr uint32_t PENDCH6_Pos = 6;
+    constexpr uint32_t PENDCH6_Msk = PENDCH6::mask;
 
-/// Pending Channel 7
-/// Position: 7, Width: 1
-/// Access: read-only
-using PENDCH7 = BitField<7, 1>;
-constexpr uint32_t PENDCH7_Pos = 7;
-constexpr uint32_t PENDCH7_Msk = PENDCH7::mask;
+    /// Pending Channel 7
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using PENDCH7 = BitField<7, 1>;
+    constexpr uint32_t PENDCH7_Pos = 7;
+    constexpr uint32_t PENDCH7_Msk = PENDCH7::mask;
 
-/// Pending Channel 8
-/// Position: 8, Width: 1
-/// Access: read-only
-using PENDCH8 = BitField<8, 1>;
-constexpr uint32_t PENDCH8_Pos = 8;
-constexpr uint32_t PENDCH8_Msk = PENDCH8::mask;
+    /// Pending Channel 8
+    /// Position: 8, Width: 1
+    /// Access: read-only
+    using PENDCH8 = BitField<8, 1>;
+    constexpr uint32_t PENDCH8_Pos = 8;
+    constexpr uint32_t PENDCH8_Msk = PENDCH8::mask;
 
-/// Pending Channel 9
-/// Position: 9, Width: 1
-/// Access: read-only
-using PENDCH9 = BitField<9, 1>;
-constexpr uint32_t PENDCH9_Pos = 9;
-constexpr uint32_t PENDCH9_Msk = PENDCH9::mask;
+    /// Pending Channel 9
+    /// Position: 9, Width: 1
+    /// Access: read-only
+    using PENDCH9 = BitField<9, 1>;
+    constexpr uint32_t PENDCH9_Pos = 9;
+    constexpr uint32_t PENDCH9_Msk = PENDCH9::mask;
 
-/// Pending Channel 10
-/// Position: 10, Width: 1
-/// Access: read-only
-using PENDCH10 = BitField<10, 1>;
-constexpr uint32_t PENDCH10_Pos = 10;
-constexpr uint32_t PENDCH10_Msk = PENDCH10::mask;
+    /// Pending Channel 10
+    /// Position: 10, Width: 1
+    /// Access: read-only
+    using PENDCH10 = BitField<10, 1>;
+    constexpr uint32_t PENDCH10_Pos = 10;
+    constexpr uint32_t PENDCH10_Msk = PENDCH10::mask;
 
-/// Pending Channel 11
-/// Position: 11, Width: 1
-/// Access: read-only
-using PENDCH11 = BitField<11, 1>;
-constexpr uint32_t PENDCH11_Pos = 11;
-constexpr uint32_t PENDCH11_Msk = PENDCH11::mask;
+    /// Pending Channel 11
+    /// Position: 11, Width: 1
+    /// Access: read-only
+    using PENDCH11 = BitField<11, 1>;
+    constexpr uint32_t PENDCH11_Pos = 11;
+    constexpr uint32_t PENDCH11_Msk = PENDCH11::mask;
 
 }  // namespace pendch
 
 /// ACTIVE - Active Channel and Levels
 namespace active {
-/// Level 0 Channel Trigger Request Executing
-/// Position: 0, Width: 1
-/// Access: read-only
-using LVLEX0 = BitField<0, 1>;
-constexpr uint32_t LVLEX0_Pos = 0;
-constexpr uint32_t LVLEX0_Msk = LVLEX0::mask;
+    /// Level 0 Channel Trigger Request Executing
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using LVLEX0 = BitField<0, 1>;
+    constexpr uint32_t LVLEX0_Pos = 0;
+    constexpr uint32_t LVLEX0_Msk = LVLEX0::mask;
 
-/// Level 1 Channel Trigger Request Executing
-/// Position: 1, Width: 1
-/// Access: read-only
-using LVLEX1 = BitField<1, 1>;
-constexpr uint32_t LVLEX1_Pos = 1;
-constexpr uint32_t LVLEX1_Msk = LVLEX1::mask;
+    /// Level 1 Channel Trigger Request Executing
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using LVLEX1 = BitField<1, 1>;
+    constexpr uint32_t LVLEX1_Pos = 1;
+    constexpr uint32_t LVLEX1_Msk = LVLEX1::mask;
 
-/// Level 2 Channel Trigger Request Executing
-/// Position: 2, Width: 1
-/// Access: read-only
-using LVLEX2 = BitField<2, 1>;
-constexpr uint32_t LVLEX2_Pos = 2;
-constexpr uint32_t LVLEX2_Msk = LVLEX2::mask;
+    /// Level 2 Channel Trigger Request Executing
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using LVLEX2 = BitField<2, 1>;
+    constexpr uint32_t LVLEX2_Pos = 2;
+    constexpr uint32_t LVLEX2_Msk = LVLEX2::mask;
 
-/// Level 3 Channel Trigger Request Executing
-/// Position: 3, Width: 1
-/// Access: read-only
-using LVLEX3 = BitField<3, 1>;
-constexpr uint32_t LVLEX3_Pos = 3;
-constexpr uint32_t LVLEX3_Msk = LVLEX3::mask;
+    /// Level 3 Channel Trigger Request Executing
+    /// Position: 3, Width: 1
+    /// Access: read-only
+    using LVLEX3 = BitField<3, 1>;
+    constexpr uint32_t LVLEX3_Pos = 3;
+    constexpr uint32_t LVLEX3_Msk = LVLEX3::mask;
 
-/// Active Channel ID
-/// Position: 8, Width: 5
-/// Access: read-only
-using ID = BitField<8, 5>;
-constexpr uint32_t ID_Pos = 8;
-constexpr uint32_t ID_Msk = ID::mask;
+    /// Active Channel ID
+    /// Position: 8, Width: 5
+    /// Access: read-only
+    using ID = BitField<8, 5>;
+    constexpr uint32_t ID_Pos = 8;
+    constexpr uint32_t ID_Msk = ID::mask;
 
-/// Active Channel Busy
-/// Position: 15, Width: 1
-/// Access: read-only
-using ABUSY = BitField<15, 1>;
-constexpr uint32_t ABUSY_Pos = 15;
-constexpr uint32_t ABUSY_Msk = ABUSY::mask;
+    /// Active Channel Busy
+    /// Position: 15, Width: 1
+    /// Access: read-only
+    using ABUSY = BitField<15, 1>;
+    constexpr uint32_t ABUSY_Pos = 15;
+    constexpr uint32_t ABUSY_Msk = ABUSY::mask;
 
-/// Active Channel Block Transfer Count
-/// Position: 16, Width: 16
-/// Access: read-only
-using BTCNT = BitField<16, 16>;
-constexpr uint32_t BTCNT_Pos = 16;
-constexpr uint32_t BTCNT_Msk = BTCNT::mask;
+    /// Active Channel Block Transfer Count
+    /// Position: 16, Width: 16
+    /// Access: read-only
+    using BTCNT = BitField<16, 16>;
+    constexpr uint32_t BTCNT_Pos = 16;
+    constexpr uint32_t BTCNT_Msk = BTCNT::mask;
 
 }  // namespace active
 
 /// BASEADDR - Descriptor Memory Section Base Address
 namespace baseaddr {
-/// Descriptor Memory Base Address
-/// Position: 0, Width: 32
-using BASEADDR = BitField<0, 32>;
-constexpr uint32_t BASEADDR_Pos = 0;
-constexpr uint32_t BASEADDR_Msk = BASEADDR::mask;
+    /// Descriptor Memory Base Address
+    /// Position: 0, Width: 32
+    using BASEADDR = BitField<0, 32>;
+    constexpr uint32_t BASEADDR_Pos = 0;
+    constexpr uint32_t BASEADDR_Msk = BASEADDR::mask;
 
 }  // namespace baseaddr
 
 /// WRBADDR - Write-Back Memory Section Base Address
 namespace wrbaddr {
-/// Write-Back Memory Base Address
-/// Position: 0, Width: 32
-using WRBADDR = BitField<0, 32>;
-constexpr uint32_t WRBADDR_Pos = 0;
-constexpr uint32_t WRBADDR_Msk = WRBADDR::mask;
+    /// Write-Back Memory Base Address
+    /// Position: 0, Width: 32
+    using WRBADDR = BitField<0, 32>;
+    constexpr uint32_t WRBADDR_Pos = 0;
+    constexpr uint32_t WRBADDR_Msk = WRBADDR::mask;
 
 }  // namespace wrbaddr
 
 /// CHID - Channel ID
 namespace chid {
-/// Channel ID
-/// Position: 0, Width: 4
-using ID = BitField<0, 4>;
-constexpr uint32_t ID_Pos = 0;
-constexpr uint32_t ID_Msk = ID::mask;
+    /// Channel ID
+    /// Position: 0, Width: 4
+    using ID = BitField<0, 4>;
+    constexpr uint32_t ID_Pos = 0;
+    constexpr uint32_t ID_Msk = ID::mask;
 
 }  // namespace chid
 
 /// CHCTRLA - Channel Control A
 namespace chctrla {
-/// Channel Software Reset
-/// Position: 0, Width: 1
-using SWRST = BitField<0, 1>;
-constexpr uint32_t SWRST_Pos = 0;
-constexpr uint32_t SWRST_Msk = SWRST::mask;
+    /// Channel Software Reset
+    /// Position: 0, Width: 1
+    using SWRST = BitField<0, 1>;
+    constexpr uint32_t SWRST_Pos = 0;
+    constexpr uint32_t SWRST_Msk = SWRST::mask;
 
-/// Channel Enable
-/// Position: 1, Width: 1
-using ENABLE = BitField<1, 1>;
-constexpr uint32_t ENABLE_Pos = 1;
-constexpr uint32_t ENABLE_Msk = ENABLE::mask;
+    /// Channel Enable
+    /// Position: 1, Width: 1
+    using ENABLE = BitField<1, 1>;
+    constexpr uint32_t ENABLE_Pos = 1;
+    constexpr uint32_t ENABLE_Msk = ENABLE::mask;
 
 }  // namespace chctrla
 
 /// CHCTRLB - Channel Control B
 namespace chctrlb {
-/// Event Input Action
-/// Position: 0, Width: 3
-using EVACT = BitField<0, 3>;
-constexpr uint32_t EVACT_Pos = 0;
-constexpr uint32_t EVACT_Msk = EVACT::mask;
-/// Enumerated values for EVACT
-namespace evact {
-constexpr uint32_t NOACT = 0;
-constexpr uint32_t TRIG = 1;
-constexpr uint32_t CTRIG = 2;
-constexpr uint32_t CBLOCK = 3;
-constexpr uint32_t SUSPEND = 4;
-constexpr uint32_t RESUME = 5;
-constexpr uint32_t SSKIP = 6;
-}  // namespace evact
+    /// Event Input Action
+    /// Position: 0, Width: 3
+    using EVACT = BitField<0, 3>;
+    constexpr uint32_t EVACT_Pos = 0;
+    constexpr uint32_t EVACT_Msk = EVACT::mask;
+    /// Enumerated values for EVACT
+    namespace evact {
+        constexpr uint32_t NOACT = 0;
+        constexpr uint32_t TRIG = 1;
+        constexpr uint32_t CTRIG = 2;
+        constexpr uint32_t CBLOCK = 3;
+        constexpr uint32_t SUSPEND = 4;
+        constexpr uint32_t RESUME = 5;
+        constexpr uint32_t SSKIP = 6;
+    }
 
-/// Channel Event Input Enable
-/// Position: 3, Width: 1
-using EVIE = BitField<3, 1>;
-constexpr uint32_t EVIE_Pos = 3;
-constexpr uint32_t EVIE_Msk = EVIE::mask;
+    /// Channel Event Input Enable
+    /// Position: 3, Width: 1
+    using EVIE = BitField<3, 1>;
+    constexpr uint32_t EVIE_Pos = 3;
+    constexpr uint32_t EVIE_Msk = EVIE::mask;
 
-/// Channel Event Output Enable
-/// Position: 4, Width: 1
-using EVOE = BitField<4, 1>;
-constexpr uint32_t EVOE_Pos = 4;
-constexpr uint32_t EVOE_Msk = EVOE::mask;
+    /// Channel Event Output Enable
+    /// Position: 4, Width: 1
+    using EVOE = BitField<4, 1>;
+    constexpr uint32_t EVOE_Pos = 4;
+    constexpr uint32_t EVOE_Msk = EVOE::mask;
 
-/// Channel Arbitration Level
-/// Position: 5, Width: 2
-using LVL = BitField<5, 2>;
-constexpr uint32_t LVL_Pos = 5;
-constexpr uint32_t LVL_Msk = LVL::mask;
-/// Enumerated values for LVL
-namespace lvl {
-constexpr uint32_t LVL0 = 0;
-constexpr uint32_t LVL1 = 1;
-constexpr uint32_t LVL2 = 2;
-constexpr uint32_t LVL3 = 3;
-}  // namespace lvl
+    /// Channel Arbitration Level
+    /// Position: 5, Width: 2
+    using LVL = BitField<5, 2>;
+    constexpr uint32_t LVL_Pos = 5;
+    constexpr uint32_t LVL_Msk = LVL::mask;
+    /// Enumerated values for LVL
+    namespace lvl {
+        constexpr uint32_t LVL0 = 0;
+        constexpr uint32_t LVL1 = 1;
+        constexpr uint32_t LVL2 = 2;
+        constexpr uint32_t LVL3 = 3;
+    }
 
-/// Trigger Source
-/// Position: 8, Width: 6
-using TRIGSRC = BitField<8, 6>;
-constexpr uint32_t TRIGSRC_Pos = 8;
-constexpr uint32_t TRIGSRC_Msk = TRIGSRC::mask;
-/// Enumerated values for TRIGSRC
-namespace trigsrc {
-constexpr uint32_t DISABLE = 0;
-}
+    /// Trigger Source
+    /// Position: 8, Width: 6
+    using TRIGSRC = BitField<8, 6>;
+    constexpr uint32_t TRIGSRC_Pos = 8;
+    constexpr uint32_t TRIGSRC_Msk = TRIGSRC::mask;
+    /// Enumerated values for TRIGSRC
+    namespace trigsrc {
+        constexpr uint32_t DISABLE = 0;
+    }
 
-/// Trigger Action
-/// Position: 22, Width: 2
-using TRIGACT = BitField<22, 2>;
-constexpr uint32_t TRIGACT_Pos = 22;
-constexpr uint32_t TRIGACT_Msk = TRIGACT::mask;
-/// Enumerated values for TRIGACT
-namespace trigact {
-constexpr uint32_t BLOCK = 0;
-constexpr uint32_t BEAT = 2;
-constexpr uint32_t TRANSACTION = 3;
-}  // namespace trigact
+    /// Trigger Action
+    /// Position: 22, Width: 2
+    using TRIGACT = BitField<22, 2>;
+    constexpr uint32_t TRIGACT_Pos = 22;
+    constexpr uint32_t TRIGACT_Msk = TRIGACT::mask;
+    /// Enumerated values for TRIGACT
+    namespace trigact {
+        constexpr uint32_t BLOCK = 0;
+        constexpr uint32_t BEAT = 2;
+        constexpr uint32_t TRANSACTION = 3;
+    }
 
-/// Software Command
-/// Position: 24, Width: 2
-using CMD = BitField<24, 2>;
-constexpr uint32_t CMD_Pos = 24;
-constexpr uint32_t CMD_Msk = CMD::mask;
-/// Enumerated values for CMD
-namespace cmd {
-constexpr uint32_t NOACT = 0;
-constexpr uint32_t SUSPEND = 1;
-constexpr uint32_t RESUME = 2;
-}  // namespace cmd
+    /// Software Command
+    /// Position: 24, Width: 2
+    using CMD = BitField<24, 2>;
+    constexpr uint32_t CMD_Pos = 24;
+    constexpr uint32_t CMD_Msk = CMD::mask;
+    /// Enumerated values for CMD
+    namespace cmd {
+        constexpr uint32_t NOACT = 0;
+        constexpr uint32_t SUSPEND = 1;
+        constexpr uint32_t RESUME = 2;
+    }
 
 }  // namespace chctrlb
 
 /// CHINTENCLR - Channel Interrupt Enable Clear
 namespace chintenclr {
-/// Channel Transfer Error Interrupt Enable
-/// Position: 0, Width: 1
-using TERR = BitField<0, 1>;
-constexpr uint32_t TERR_Pos = 0;
-constexpr uint32_t TERR_Msk = TERR::mask;
+    /// Channel Transfer Error Interrupt Enable
+    /// Position: 0, Width: 1
+    using TERR = BitField<0, 1>;
+    constexpr uint32_t TERR_Pos = 0;
+    constexpr uint32_t TERR_Msk = TERR::mask;
 
-/// Channel Transfer Complete Interrupt Enable
-/// Position: 1, Width: 1
-using TCMPL = BitField<1, 1>;
-constexpr uint32_t TCMPL_Pos = 1;
-constexpr uint32_t TCMPL_Msk = TCMPL::mask;
+    /// Channel Transfer Complete Interrupt Enable
+    /// Position: 1, Width: 1
+    using TCMPL = BitField<1, 1>;
+    constexpr uint32_t TCMPL_Pos = 1;
+    constexpr uint32_t TCMPL_Msk = TCMPL::mask;
 
-/// Channel Suspend Interrupt Enable
-/// Position: 2, Width: 1
-using SUSP = BitField<2, 1>;
-constexpr uint32_t SUSP_Pos = 2;
-constexpr uint32_t SUSP_Msk = SUSP::mask;
+    /// Channel Suspend Interrupt Enable
+    /// Position: 2, Width: 1
+    using SUSP = BitField<2, 1>;
+    constexpr uint32_t SUSP_Pos = 2;
+    constexpr uint32_t SUSP_Msk = SUSP::mask;
 
 }  // namespace chintenclr
 
 /// CHINTENSET - Channel Interrupt Enable Set
 namespace chintenset {
-/// Channel Transfer Error Interrupt Enable
-/// Position: 0, Width: 1
-using TERR = BitField<0, 1>;
-constexpr uint32_t TERR_Pos = 0;
-constexpr uint32_t TERR_Msk = TERR::mask;
+    /// Channel Transfer Error Interrupt Enable
+    /// Position: 0, Width: 1
+    using TERR = BitField<0, 1>;
+    constexpr uint32_t TERR_Pos = 0;
+    constexpr uint32_t TERR_Msk = TERR::mask;
 
-/// Channel Transfer Complete Interrupt Enable
-/// Position: 1, Width: 1
-using TCMPL = BitField<1, 1>;
-constexpr uint32_t TCMPL_Pos = 1;
-constexpr uint32_t TCMPL_Msk = TCMPL::mask;
+    /// Channel Transfer Complete Interrupt Enable
+    /// Position: 1, Width: 1
+    using TCMPL = BitField<1, 1>;
+    constexpr uint32_t TCMPL_Pos = 1;
+    constexpr uint32_t TCMPL_Msk = TCMPL::mask;
 
-/// Channel Suspend Interrupt Enable
-/// Position: 2, Width: 1
-using SUSP = BitField<2, 1>;
-constexpr uint32_t SUSP_Pos = 2;
-constexpr uint32_t SUSP_Msk = SUSP::mask;
+    /// Channel Suspend Interrupt Enable
+    /// Position: 2, Width: 1
+    using SUSP = BitField<2, 1>;
+    constexpr uint32_t SUSP_Pos = 2;
+    constexpr uint32_t SUSP_Msk = SUSP::mask;
 
 }  // namespace chintenset
 
 /// CHINTFLAG - Channel Interrupt Flag Status and Clear
 namespace chintflag {
-/// Channel Transfer Error
-/// Position: 0, Width: 1
-using TERR = BitField<0, 1>;
-constexpr uint32_t TERR_Pos = 0;
-constexpr uint32_t TERR_Msk = TERR::mask;
+    /// Channel Transfer Error
+    /// Position: 0, Width: 1
+    using TERR = BitField<0, 1>;
+    constexpr uint32_t TERR_Pos = 0;
+    constexpr uint32_t TERR_Msk = TERR::mask;
 
-/// Channel Transfer Complete
-/// Position: 1, Width: 1
-using TCMPL = BitField<1, 1>;
-constexpr uint32_t TCMPL_Pos = 1;
-constexpr uint32_t TCMPL_Msk = TCMPL::mask;
+    /// Channel Transfer Complete
+    /// Position: 1, Width: 1
+    using TCMPL = BitField<1, 1>;
+    constexpr uint32_t TCMPL_Pos = 1;
+    constexpr uint32_t TCMPL_Msk = TCMPL::mask;
 
-/// Channel Suspend
-/// Position: 2, Width: 1
-using SUSP = BitField<2, 1>;
-constexpr uint32_t SUSP_Pos = 2;
-constexpr uint32_t SUSP_Msk = SUSP::mask;
+    /// Channel Suspend
+    /// Position: 2, Width: 1
+    using SUSP = BitField<2, 1>;
+    constexpr uint32_t SUSP_Pos = 2;
+    constexpr uint32_t SUSP_Msk = SUSP::mask;
 
 }  // namespace chintflag
 
 /// CHSTATUS - Channel Status
 namespace chstatus {
-/// Channel Pending
-/// Position: 0, Width: 1
-/// Access: read-only
-using PEND = BitField<0, 1>;
-constexpr uint32_t PEND_Pos = 0;
-constexpr uint32_t PEND_Msk = PEND::mask;
+    /// Channel Pending
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using PEND = BitField<0, 1>;
+    constexpr uint32_t PEND_Pos = 0;
+    constexpr uint32_t PEND_Msk = PEND::mask;
 
-/// Channel Busy
-/// Position: 1, Width: 1
-/// Access: read-only
-using BUSY = BitField<1, 1>;
-constexpr uint32_t BUSY_Pos = 1;
-constexpr uint32_t BUSY_Msk = BUSY::mask;
+    /// Channel Busy
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using BUSY = BitField<1, 1>;
+    constexpr uint32_t BUSY_Pos = 1;
+    constexpr uint32_t BUSY_Msk = BUSY::mask;
 
-/// Channel Fetch Error
-/// Position: 2, Width: 1
-/// Access: read-only
-using FERR = BitField<2, 1>;
-constexpr uint32_t FERR_Pos = 2;
-constexpr uint32_t FERR_Msk = FERR::mask;
+    /// Channel Fetch Error
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using FERR = BitField<2, 1>;
+    constexpr uint32_t FERR_Pos = 2;
+    constexpr uint32_t FERR_Msk = FERR::mask;
 
 }  // namespace chstatus
 

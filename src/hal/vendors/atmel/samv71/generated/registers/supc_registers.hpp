@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samv71::supc {
 
 /// SUPC Register Structure
 struct SUPC_Registers {
+
     /// Supply Controller Control Register
     /// Offset: 0x0000
     /// Access: write-only
@@ -42,7 +43,7 @@ struct SUPC_Registers {
     /// Offset: 0x0014
     /// Access: read-only
     volatile uint32_t SR;
-    uint8_t RESERVED_0018[188];  ///< Reserved
+    uint8_t RESERVED_0018[188]; ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x00D4

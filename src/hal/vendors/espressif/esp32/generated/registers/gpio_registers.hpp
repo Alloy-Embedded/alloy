@@ -17,6 +17,7 @@ namespace alloy::hal::espressif::esp32::gpio {
 
 /// GPIO Register Structure
 struct GPIO_Registers {
+
     /// BT_SELECT
     /// Offset: 0x0000
     volatile uint32_t BT_SELECT;
@@ -108,7 +109,7 @@ struct GPIO_Registers {
     /// STATUS1_W1TC
     /// Offset: 0x0058
     volatile uint32_t STATUS1_W1TC;
-    uint8_t RESERVED_005C[4];  ///< Reserved
+    uint8_t RESERVED_005C[4]; ///< Reserved
 
     /// ACPU_INT
     /// Offset: 0x0060
@@ -164,11 +165,11 @@ struct GPIO_Registers {
 
     /// FUNC[256]_IN_SEL_CFG
     /// Offset: 0x0130
-    volatile uint32_t FUNC[256] _IN_SEL_CFG[256];
+    volatile uint32_t FUNC[256]_IN_SEL_CFG[256];
 
     /// FUNC[40]_OUT_SEL_CFG
     /// Offset: 0x0530
-    volatile uint32_t FUNC[40] _OUT_SEL_CFG[40];
+    volatile uint32_t FUNC[40]_OUT_SEL_CFG[40];
 };
 
 static_assert(sizeof(GPIO_Registers) >= 1488, "GPIO_Registers size mismatch");

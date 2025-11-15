@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samv71::matrix {
 
 /// MATRIX Register Structure
 struct MATRIX_Registers {
+
     /// Master Configuration Register 0
     /// Offset: 0x0000
     volatile uint32_t MCFG[13][13];
@@ -28,17 +29,17 @@ struct MATRIX_Registers {
     /// Priority Register B for Slave 0
     /// Offset: 0x0004
     volatile uint32_t PRBS;
-    uint8_t RESERVED_0008[56];  ///< Reserved
+    uint8_t RESERVED_0008[56]; ///< Reserved
 
     /// Slave Configuration Register 0
     /// Offset: 0x0040
     volatile uint32_t SCFG[9][9];
-    uint8_t RESERVED_0064[156];  ///< Reserved
+    uint8_t RESERVED_0064[156]; ///< Reserved
 
     /// Master Remap Control Register
     /// Offset: 0x0100
     volatile uint32_t MRCR;
-    uint8_t RESERVED_0104[12];  ///< Reserved
+    uint8_t RESERVED_0104[12]; ///< Reserved
 
     /// CAN0 Configuration Register
     /// Offset: 0x0110
@@ -55,12 +56,12 @@ struct MATRIX_Registers {
     /// Dynamic Clock Gating Register
     /// Offset: 0x011C
     volatile uint32_t CCFG_DYNCKG;
-    uint8_t RESERVED_0120[4];  ///< Reserved
+    uint8_t RESERVED_0120[4]; ///< Reserved
 
     /// SMC NAND Flash Chip Select Configuration Register
     /// Offset: 0x0124
     volatile uint32_t CCFG_SMCNFCS;
-    uint8_t RESERVED_0128[188];  ///< Reserved
+    uint8_t RESERVED_0128[188]; ///< Reserved
 
     /// Write Protection Mode Register
     /// Offset: 0x01E4

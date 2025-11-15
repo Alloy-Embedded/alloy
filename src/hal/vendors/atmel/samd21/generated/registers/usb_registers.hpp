@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::usb {
 
 /// USB Register Structure
 struct USB_Registers {
+
     /// Control A
     /// Offset: 0x0000
     volatile uint8_t CTRLA;
@@ -24,7 +25,7 @@ struct USB_Registers {
     /// Control A
     /// Offset: 0x0000
     volatile uint8_t CTRLA;
-    uint8_t RESERVED_0001[1];  ///< Reserved
+    uint8_t RESERVED_0001[1]; ///< Reserved
 
     /// Synchronization Busy
     /// Offset: 0x0002
@@ -45,7 +46,7 @@ struct USB_Registers {
     /// Offset: 0x0003
     /// Reset value: 0x00000005
     volatile uint8_t QOSCTRL;
-    uint8_t RESERVED_0004[4];  ///< Reserved
+    uint8_t RESERVED_0004[4]; ///< Reserved
 
     /// DEVICE Control B
     /// Offset: 0x0008
@@ -63,7 +64,7 @@ struct USB_Registers {
     /// HOST Host Start Of Frame Control
     /// Offset: 0x000A
     volatile uint8_t HSOFC;
-    uint8_t RESERVED_000B[1];  ///< Reserved
+    uint8_t RESERVED_000B[1]; ///< Reserved
 
     /// DEVICE Status
     /// Offset: 0x000C
@@ -86,7 +87,7 @@ struct USB_Registers {
     /// Reset value: 0x00000001
     /// Access: read-only
     volatile uint8_t FSMSTATUS;
-    uint8_t RESERVED_000E[2];  ///< Reserved
+    uint8_t RESERVED_000E[2]; ///< Reserved
 
     /// DEVICE Device Frame Number
     /// Offset: 0x0010
@@ -101,7 +102,7 @@ struct USB_Registers {
     /// Offset: 0x0012
     /// Access: read-only
     volatile uint8_t FLENHIGH;
-    uint8_t RESERVED_0013[1];  ///< Reserved
+    uint8_t RESERVED_0013[1]; ///< Reserved
 
     /// DEVICE Device Interrupt Enable Clear
     /// Offset: 0x0014
@@ -110,7 +111,7 @@ struct USB_Registers {
     /// HOST Host Interrupt Enable Clear
     /// Offset: 0x0014
     volatile uint16_t INTENCLR;
-    uint8_t RESERVED_0016[2];  ///< Reserved
+    uint8_t RESERVED_0016[2]; ///< Reserved
 
     /// DEVICE Device Interrupt Enable Set
     /// Offset: 0x0018
@@ -119,7 +120,7 @@ struct USB_Registers {
     /// HOST Host Interrupt Enable Set
     /// Offset: 0x0018
     volatile uint16_t INTENSET;
-    uint8_t RESERVED_001A[2];  ///< Reserved
+    uint8_t RESERVED_001A[2]; ///< Reserved
 
     /// DEVICE Device Interrupt Flag
     /// Offset: 0x001C
@@ -128,7 +129,7 @@ struct USB_Registers {
     /// HOST Host Interrupt Flag
     /// Offset: 0x001C
     volatile uint16_t INTFLAG;
-    uint8_t RESERVED_001E[2];  ///< Reserved
+    uint8_t RESERVED_001E[2]; ///< Reserved
 
     /// DEVICE End Point Interrupt Summary
     /// Offset: 0x0020
@@ -139,7 +140,7 @@ struct USB_Registers {
     /// Offset: 0x0020
     /// Access: read-only
     volatile uint16_t PINTSMRY;
-    uint8_t RESERVED_0022[2];  ///< Reserved
+    uint8_t RESERVED_0022[2]; ///< Reserved
 
     /// Descriptor Address
     /// Offset: 0x0024
@@ -156,7 +157,7 @@ struct USB_Registers {
     /// USB PAD Calibration
     /// Offset: 0x0028
     volatile uint16_t PADCAL;
-    uint8_t RESERVED_002A[214];  ///< Reserved
+    uint8_t RESERVED_002A[214]; ///< Reserved
 
     /// DEVICE End Point Configuration
     /// Offset: 0x0100

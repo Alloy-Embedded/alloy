@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::tc3 {
 
 /// TC3 Register Structure
 struct TC3_Registers {
+
     /// Control A
     /// Offset: 0x0000
     volatile uint16_t CTRLA;
@@ -79,7 +80,7 @@ struct TC3_Registers {
     /// Control C
     /// Offset: 0x0006
     volatile uint8_t CTRLC;
-    uint8_t RESERVED_0007[1];  ///< Reserved
+    uint8_t RESERVED_0007[1]; ///< Reserved
 
     /// Debug Control
     /// Offset: 0x0008
@@ -92,7 +93,7 @@ struct TC3_Registers {
     /// Debug Control
     /// Offset: 0x0008
     volatile uint8_t DBGCTRL;
-    uint8_t RESERVED_0009[1];  ///< Reserved
+    uint8_t RESERVED_0009[1]; ///< Reserved
 
     /// Event Control
     /// Offset: 0x000A
@@ -176,7 +177,7 @@ struct TC3_Registers {
     /// Offset: 0x0014
     /// Reset value: 0x000000FF
     volatile uint8_t PER;
-    uint8_t RESERVED_0015[3];  ///< Reserved
+    uint8_t RESERVED_0015[3]; ///< Reserved
 
     /// COUNT8 Compare/Capture
     /// Offset: 0x0018

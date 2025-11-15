@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f1::uart4 {
 
 /// UART4 Register Structure
 struct UART4_Registers {
+
     /// UART4_SR
     /// Offset: 0x0000
     /// Reset value: 0x00000000

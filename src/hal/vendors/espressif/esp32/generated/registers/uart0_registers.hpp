@@ -17,6 +17,7 @@ namespace alloy::hal::espressif::esp32::uart0 {
 
 /// UART0 Register Structure
 struct UART0_Registers {
+
     /// FIFO
     /// Offset: 0x0000
     volatile uint32_t FIFO;
@@ -144,7 +145,7 @@ struct UART0_Registers {
     /// Offset: 0x006C
     /// Reset value: 0x000FFFFF
     volatile uint32_t NEGPULSE;
-    uint8_t RESERVED_0070[8];  ///< Reserved
+    uint8_t RESERVED_0070[8]; ///< Reserved
 
     /// DATE
     /// Offset: 0x0078

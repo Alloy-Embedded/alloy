@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::dsu {
 
 /// DSU Register Structure
 struct DSU_Registers {
+
     /// Control
     /// Offset: 0x0000
     /// Access: write-only
@@ -31,7 +32,7 @@ struct DSU_Registers {
     /// Reset value: 0x00000010
     /// Access: read-only
     volatile uint8_t STATUSB;
-    uint8_t RESERVED_0003[1];  ///< Reserved
+    uint8_t RESERVED_0003[1]; ///< Reserved
 
     /// Address
     /// Offset: 0x0004
@@ -54,7 +55,7 @@ struct DSU_Registers {
     /// Reset value: 0x10010305
     /// Access: read-only
     volatile uint32_t DID;
-    uint8_t RESERVED_001C[4068];  ///< Reserved
+    uint8_t RESERVED_001C[4068]; ///< Reserved
 
     /// CoreSight ROM Table Entry 0
     /// Offset: 0x1000
@@ -72,7 +73,7 @@ struct DSU_Registers {
     /// Offset: 0x1008
     /// Access: read-only
     volatile uint32_t END;
-    uint8_t RESERVED_100C[4032];  ///< Reserved
+    uint8_t RESERVED_100C[4032]; ///< Reserved
 
     /// CoreSight ROM Table Memory Type
     /// Offset: 0x1FCC
@@ -83,7 +84,7 @@ struct DSU_Registers {
     /// Offset: 0x1FD0
     /// Access: read-only
     volatile uint32_t PID4;
-    uint8_t RESERVED_1FD4[12];  ///< Reserved
+    uint8_t RESERVED_1FD4[12]; ///< Reserved
 
     /// Peripheral Identification 0
     /// Offset: 0x1FE0

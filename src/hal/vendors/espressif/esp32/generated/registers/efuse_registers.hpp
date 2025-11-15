@@ -17,6 +17,7 @@ namespace alloy::hal::espressif::esp32::efuse {
 
 /// EFUSE Register Structure
 struct EFUSE_Registers {
+
     /// BLK0_RDATA0
     /// Offset: 0x0000
     volatile uint32_t BLK0_RDATA0;
@@ -307,7 +308,7 @@ struct EFUSE_Registers {
     /// DEC_STATUS
     /// Offset: 0x011C
     volatile uint32_t DEC_STATUS;
-    uint8_t RESERVED_0120[220];  ///< Reserved
+    uint8_t RESERVED_0120[220]; ///< Reserved
 
     /// DATE
     /// Offset: 0x01FC

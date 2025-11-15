@@ -17,10 +17,11 @@ namespace alloy::hal::atmel::samd21::i2s {
 
 /// I2S Register Structure
 struct I2S_Registers {
+
     /// Control A
     /// Offset: 0x0000
     volatile uint8_t CTRLA;
-    uint8_t RESERVED_0001[3];  ///< Reserved
+    uint8_t RESERVED_0001[3]; ///< Reserved
 
     /// Clock Unit n Control
     /// Offset: 0x0004
@@ -29,28 +30,28 @@ struct I2S_Registers {
     /// Interrupt Enable Clear
     /// Offset: 0x000C
     volatile uint16_t INTENCLR;
-    uint8_t RESERVED_000E[2];  ///< Reserved
+    uint8_t RESERVED_000E[2]; ///< Reserved
 
     /// Interrupt Enable Set
     /// Offset: 0x0010
     volatile uint16_t INTENSET;
-    uint8_t RESERVED_0012[2];  ///< Reserved
+    uint8_t RESERVED_0012[2]; ///< Reserved
 
     /// Interrupt Flag Status and Clear
     /// Offset: 0x0014
     volatile uint16_t INTFLAG;
-    uint8_t RESERVED_0016[2];  ///< Reserved
+    uint8_t RESERVED_0016[2]; ///< Reserved
 
     /// Synchronization Status
     /// Offset: 0x0018
     /// Access: read-only
     volatile uint16_t SYNCBUSY;
-    uint8_t RESERVED_001A[6];  ///< Reserved
+    uint8_t RESERVED_001A[6]; ///< Reserved
 
     /// Serializer n Control
     /// Offset: 0x0020
     volatile uint32_t SERCTRL[2][2];
-    uint8_t RESERVED_0028[8];  ///< Reserved
+    uint8_t RESERVED_0028[8]; ///< Reserved
 
     /// Data n
     /// Offset: 0x0030

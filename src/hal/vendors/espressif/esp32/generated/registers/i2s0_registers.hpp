@@ -17,7 +17,7 @@ namespace alloy::hal::espressif::esp32::i2s0 {
 
 /// I2S0 Register Structure
 struct I2S0_Registers {
-    uint8_t RESERVED_0000[8];  ///< Reserved
+    uint8_t RESERVED_0000[8]; ///< Reserved
 
     /// CONF
     /// Offset: 0x0008
@@ -135,7 +135,7 @@ struct I2S0_Registers {
     /// Offset: 0x0074
     /// Reset value: 0x00000810
     volatile uint32_t LC_HUNG_CONF;
-    uint8_t RESERVED_0078[8];  ///< Reserved
+    uint8_t RESERVED_0078[8]; ///< Reserved
 
     /// CVSD_CONF0
     /// Offset: 0x0080
@@ -213,7 +213,7 @@ struct I2S0_Registers {
     /// Offset: 0x00BC
     /// Reset value: 0x00000007
     volatile uint32_t STATE;
-    uint8_t RESERVED_00C0[60];  ///< Reserved
+    uint8_t RESERVED_00C0[60]; ///< Reserved
 
     /// DATE
     /// Offset: 0x00FC

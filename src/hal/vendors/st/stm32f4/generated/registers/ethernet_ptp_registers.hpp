@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f4::ethernet_ptp {
 
 /// Ethernet_PTP Register Structure
 struct Ethernet_PTP_Registers {
+
     /// Ethernet PTP time stamp control register
     /// Offset: 0x0000
     /// Reset value: 0x00002000
@@ -70,7 +71,7 @@ struct Ethernet_PTP_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t PTPTTLR;
-    uint8_t RESERVED_0024[4];  ///< Reserved
+    uint8_t RESERVED_0024[4]; ///< Reserved
 
     /// Ethernet PTP time stamp status register
     /// Offset: 0x0028

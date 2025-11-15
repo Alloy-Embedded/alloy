@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samd21::gclk {
 
 /// GCLK Register Structure
 struct GCLK_Registers {
+
     /// Control
     /// Offset: 0x0000
     volatile uint8_t CTRL;

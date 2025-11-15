@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f4::dcmi {
 
 /// DCMI Register Structure
 struct DCMI_Registers {
+
     /// control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000

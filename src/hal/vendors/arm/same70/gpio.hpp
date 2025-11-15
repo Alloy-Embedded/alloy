@@ -37,10 +37,10 @@
 // ============================================================================
 
 // Register definitions from vendor (family-level)
-#include "hal/vendors/atmel/same70/registers/pioa_registers.hpp"
+#include "hal/vendors/atmel/same70/generated/registers/pioa_registers.hpp"
 
 // Bitfields (family-level, if available)
-// #include "hal/vendors/atmel/same70/bitfields/pioa_bitfields.hpp"
+// #include "hal/vendors/atmel/same70/generated/bitfields/pioa_bitfields.hpp"
 
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"

@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::espressif::esp32::i2s0 {
@@ -20,1591 +19,1591 @@ using namespace alloy::hal::bitfields;
 
 /// CONF - CONF
 namespace conf {
-/// Position: 0, Width: 1
-/// Access: read-write
-using TX_RESET = BitField<0, 1>;
-constexpr uint32_t TX_RESET_Pos = 0;
-constexpr uint32_t TX_RESET_Msk = TX_RESET::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using TX_RESET = BitField<0, 1>;
+    constexpr uint32_t TX_RESET_Pos = 0;
+    constexpr uint32_t TX_RESET_Msk = TX_RESET::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-write
-using RX_RESET = BitField<1, 1>;
-constexpr uint32_t RX_RESET_Pos = 1;
-constexpr uint32_t RX_RESET_Msk = RX_RESET::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using RX_RESET = BitField<1, 1>;
+    constexpr uint32_t RX_RESET_Pos = 1;
+    constexpr uint32_t RX_RESET_Msk = RX_RESET::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-write
-using TX_FIFO_RESET = BitField<2, 1>;
-constexpr uint32_t TX_FIFO_RESET_Pos = 2;
-constexpr uint32_t TX_FIFO_RESET_Msk = TX_FIFO_RESET::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using TX_FIFO_RESET = BitField<2, 1>;
+    constexpr uint32_t TX_FIFO_RESET_Pos = 2;
+    constexpr uint32_t TX_FIFO_RESET_Msk = TX_FIFO_RESET::mask;
 
-/// Position: 3, Width: 1
-/// Access: read-write
-using RX_FIFO_RESET = BitField<3, 1>;
-constexpr uint32_t RX_FIFO_RESET_Pos = 3;
-constexpr uint32_t RX_FIFO_RESET_Msk = RX_FIFO_RESET::mask;
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using RX_FIFO_RESET = BitField<3, 1>;
+    constexpr uint32_t RX_FIFO_RESET_Pos = 3;
+    constexpr uint32_t RX_FIFO_RESET_Msk = RX_FIFO_RESET::mask;
 
-/// Position: 4, Width: 1
-/// Access: read-write
-using TX_START = BitField<4, 1>;
-constexpr uint32_t TX_START_Pos = 4;
-constexpr uint32_t TX_START_Msk = TX_START::mask;
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using TX_START = BitField<4, 1>;
+    constexpr uint32_t TX_START_Pos = 4;
+    constexpr uint32_t TX_START_Msk = TX_START::mask;
 
-/// Position: 5, Width: 1
-/// Access: read-write
-using RX_START = BitField<5, 1>;
-constexpr uint32_t RX_START_Pos = 5;
-constexpr uint32_t RX_START_Msk = RX_START::mask;
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using RX_START = BitField<5, 1>;
+    constexpr uint32_t RX_START_Pos = 5;
+    constexpr uint32_t RX_START_Msk = RX_START::mask;
 
-/// Position: 6, Width: 1
-/// Access: read-write
-using TX_SLAVE_MOD = BitField<6, 1>;
-constexpr uint32_t TX_SLAVE_MOD_Pos = 6;
-constexpr uint32_t TX_SLAVE_MOD_Msk = TX_SLAVE_MOD::mask;
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using TX_SLAVE_MOD = BitField<6, 1>;
+    constexpr uint32_t TX_SLAVE_MOD_Pos = 6;
+    constexpr uint32_t TX_SLAVE_MOD_Msk = TX_SLAVE_MOD::mask;
 
-/// Position: 7, Width: 1
-/// Access: read-write
-using RX_SLAVE_MOD = BitField<7, 1>;
-constexpr uint32_t RX_SLAVE_MOD_Pos = 7;
-constexpr uint32_t RX_SLAVE_MOD_Msk = RX_SLAVE_MOD::mask;
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using RX_SLAVE_MOD = BitField<7, 1>;
+    constexpr uint32_t RX_SLAVE_MOD_Pos = 7;
+    constexpr uint32_t RX_SLAVE_MOD_Msk = RX_SLAVE_MOD::mask;
 
-/// Position: 8, Width: 1
-/// Access: read-write
-using TX_RIGHT_FIRST = BitField<8, 1>;
-constexpr uint32_t TX_RIGHT_FIRST_Pos = 8;
-constexpr uint32_t TX_RIGHT_FIRST_Msk = TX_RIGHT_FIRST::mask;
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using TX_RIGHT_FIRST = BitField<8, 1>;
+    constexpr uint32_t TX_RIGHT_FIRST_Pos = 8;
+    constexpr uint32_t TX_RIGHT_FIRST_Msk = TX_RIGHT_FIRST::mask;
 
-/// Position: 9, Width: 1
-/// Access: read-write
-using RX_RIGHT_FIRST = BitField<9, 1>;
-constexpr uint32_t RX_RIGHT_FIRST_Pos = 9;
-constexpr uint32_t RX_RIGHT_FIRST_Msk = RX_RIGHT_FIRST::mask;
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using RX_RIGHT_FIRST = BitField<9, 1>;
+    constexpr uint32_t RX_RIGHT_FIRST_Pos = 9;
+    constexpr uint32_t RX_RIGHT_FIRST_Msk = RX_RIGHT_FIRST::mask;
 
-/// Position: 10, Width: 1
-/// Access: read-write
-using TX_MSB_SHIFT = BitField<10, 1>;
-constexpr uint32_t TX_MSB_SHIFT_Pos = 10;
-constexpr uint32_t TX_MSB_SHIFT_Msk = TX_MSB_SHIFT::mask;
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using TX_MSB_SHIFT = BitField<10, 1>;
+    constexpr uint32_t TX_MSB_SHIFT_Pos = 10;
+    constexpr uint32_t TX_MSB_SHIFT_Msk = TX_MSB_SHIFT::mask;
 
-/// Position: 11, Width: 1
-/// Access: read-write
-using RX_MSB_SHIFT = BitField<11, 1>;
-constexpr uint32_t RX_MSB_SHIFT_Pos = 11;
-constexpr uint32_t RX_MSB_SHIFT_Msk = RX_MSB_SHIFT::mask;
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using RX_MSB_SHIFT = BitField<11, 1>;
+    constexpr uint32_t RX_MSB_SHIFT_Pos = 11;
+    constexpr uint32_t RX_MSB_SHIFT_Msk = RX_MSB_SHIFT::mask;
 
-/// Position: 12, Width: 1
-/// Access: read-write
-using TX_SHORT_SYNC = BitField<12, 1>;
-constexpr uint32_t TX_SHORT_SYNC_Pos = 12;
-constexpr uint32_t TX_SHORT_SYNC_Msk = TX_SHORT_SYNC::mask;
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using TX_SHORT_SYNC = BitField<12, 1>;
+    constexpr uint32_t TX_SHORT_SYNC_Pos = 12;
+    constexpr uint32_t TX_SHORT_SYNC_Msk = TX_SHORT_SYNC::mask;
 
-/// Position: 13, Width: 1
-/// Access: read-write
-using RX_SHORT_SYNC = BitField<13, 1>;
-constexpr uint32_t RX_SHORT_SYNC_Pos = 13;
-constexpr uint32_t RX_SHORT_SYNC_Msk = RX_SHORT_SYNC::mask;
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using RX_SHORT_SYNC = BitField<13, 1>;
+    constexpr uint32_t RX_SHORT_SYNC_Pos = 13;
+    constexpr uint32_t RX_SHORT_SYNC_Msk = RX_SHORT_SYNC::mask;
 
-/// Position: 14, Width: 1
-/// Access: read-write
-using TX_MONO = BitField<14, 1>;
-constexpr uint32_t TX_MONO_Pos = 14;
-constexpr uint32_t TX_MONO_Msk = TX_MONO::mask;
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using TX_MONO = BitField<14, 1>;
+    constexpr uint32_t TX_MONO_Pos = 14;
+    constexpr uint32_t TX_MONO_Msk = TX_MONO::mask;
 
-/// Position: 15, Width: 1
-/// Access: read-write
-using RX_MONO = BitField<15, 1>;
-constexpr uint32_t RX_MONO_Pos = 15;
-constexpr uint32_t RX_MONO_Msk = RX_MONO::mask;
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using RX_MONO = BitField<15, 1>;
+    constexpr uint32_t RX_MONO_Pos = 15;
+    constexpr uint32_t RX_MONO_Msk = RX_MONO::mask;
 
-/// Position: 16, Width: 1
-/// Access: read-write
-using TX_MSB_RIGHT = BitField<16, 1>;
-constexpr uint32_t TX_MSB_RIGHT_Pos = 16;
-constexpr uint32_t TX_MSB_RIGHT_Msk = TX_MSB_RIGHT::mask;
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using TX_MSB_RIGHT = BitField<16, 1>;
+    constexpr uint32_t TX_MSB_RIGHT_Pos = 16;
+    constexpr uint32_t TX_MSB_RIGHT_Msk = TX_MSB_RIGHT::mask;
 
-/// Position: 17, Width: 1
-/// Access: read-write
-using RX_MSB_RIGHT = BitField<17, 1>;
-constexpr uint32_t RX_MSB_RIGHT_Pos = 17;
-constexpr uint32_t RX_MSB_RIGHT_Msk = RX_MSB_RIGHT::mask;
+    /// Position: 17, Width: 1
+    /// Access: read-write
+    using RX_MSB_RIGHT = BitField<17, 1>;
+    constexpr uint32_t RX_MSB_RIGHT_Pos = 17;
+    constexpr uint32_t RX_MSB_RIGHT_Msk = RX_MSB_RIGHT::mask;
 
-/// Position: 18, Width: 1
-/// Access: read-write
-using SIG_LOOPBACK = BitField<18, 1>;
-constexpr uint32_t SIG_LOOPBACK_Pos = 18;
-constexpr uint32_t SIG_LOOPBACK_Msk = SIG_LOOPBACK::mask;
+    /// Position: 18, Width: 1
+    /// Access: read-write
+    using SIG_LOOPBACK = BitField<18, 1>;
+    constexpr uint32_t SIG_LOOPBACK_Pos = 18;
+    constexpr uint32_t SIG_LOOPBACK_Msk = SIG_LOOPBACK::mask;
 
 }  // namespace conf
 
 /// INT_RAW - INT_RAW
 namespace int_raw {
-/// Position: 0, Width: 1
-/// Access: read-only
-using RX_TAKE_DATA_INT_RAW = BitField<0, 1>;
-constexpr uint32_t RX_TAKE_DATA_INT_RAW_Pos = 0;
-constexpr uint32_t RX_TAKE_DATA_INT_RAW_Msk = RX_TAKE_DATA_INT_RAW::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using RX_TAKE_DATA_INT_RAW = BitField<0, 1>;
+    constexpr uint32_t RX_TAKE_DATA_INT_RAW_Pos = 0;
+    constexpr uint32_t RX_TAKE_DATA_INT_RAW_Msk = RX_TAKE_DATA_INT_RAW::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-only
-using TX_PUT_DATA_INT_RAW = BitField<1, 1>;
-constexpr uint32_t TX_PUT_DATA_INT_RAW_Pos = 1;
-constexpr uint32_t TX_PUT_DATA_INT_RAW_Msk = TX_PUT_DATA_INT_RAW::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using TX_PUT_DATA_INT_RAW = BitField<1, 1>;
+    constexpr uint32_t TX_PUT_DATA_INT_RAW_Pos = 1;
+    constexpr uint32_t TX_PUT_DATA_INT_RAW_Msk = TX_PUT_DATA_INT_RAW::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-only
-using RX_WFULL_INT_RAW = BitField<2, 1>;
-constexpr uint32_t RX_WFULL_INT_RAW_Pos = 2;
-constexpr uint32_t RX_WFULL_INT_RAW_Msk = RX_WFULL_INT_RAW::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using RX_WFULL_INT_RAW = BitField<2, 1>;
+    constexpr uint32_t RX_WFULL_INT_RAW_Pos = 2;
+    constexpr uint32_t RX_WFULL_INT_RAW_Msk = RX_WFULL_INT_RAW::mask;
 
-/// Position: 3, Width: 1
-/// Access: read-only
-using RX_REMPTY_INT_RAW = BitField<3, 1>;
-constexpr uint32_t RX_REMPTY_INT_RAW_Pos = 3;
-constexpr uint32_t RX_REMPTY_INT_RAW_Msk = RX_REMPTY_INT_RAW::mask;
+    /// Position: 3, Width: 1
+    /// Access: read-only
+    using RX_REMPTY_INT_RAW = BitField<3, 1>;
+    constexpr uint32_t RX_REMPTY_INT_RAW_Pos = 3;
+    constexpr uint32_t RX_REMPTY_INT_RAW_Msk = RX_REMPTY_INT_RAW::mask;
 
-/// Position: 4, Width: 1
-/// Access: read-only
-using TX_WFULL_INT_RAW = BitField<4, 1>;
-constexpr uint32_t TX_WFULL_INT_RAW_Pos = 4;
-constexpr uint32_t TX_WFULL_INT_RAW_Msk = TX_WFULL_INT_RAW::mask;
+    /// Position: 4, Width: 1
+    /// Access: read-only
+    using TX_WFULL_INT_RAW = BitField<4, 1>;
+    constexpr uint32_t TX_WFULL_INT_RAW_Pos = 4;
+    constexpr uint32_t TX_WFULL_INT_RAW_Msk = TX_WFULL_INT_RAW::mask;
 
-/// Position: 5, Width: 1
-/// Access: read-only
-using TX_REMPTY_INT_RAW = BitField<5, 1>;
-constexpr uint32_t TX_REMPTY_INT_RAW_Pos = 5;
-constexpr uint32_t TX_REMPTY_INT_RAW_Msk = TX_REMPTY_INT_RAW::mask;
+    /// Position: 5, Width: 1
+    /// Access: read-only
+    using TX_REMPTY_INT_RAW = BitField<5, 1>;
+    constexpr uint32_t TX_REMPTY_INT_RAW_Pos = 5;
+    constexpr uint32_t TX_REMPTY_INT_RAW_Msk = TX_REMPTY_INT_RAW::mask;
 
-/// Position: 6, Width: 1
-/// Access: read-only
-using RX_HUNG_INT_RAW = BitField<6, 1>;
-constexpr uint32_t RX_HUNG_INT_RAW_Pos = 6;
-constexpr uint32_t RX_HUNG_INT_RAW_Msk = RX_HUNG_INT_RAW::mask;
+    /// Position: 6, Width: 1
+    /// Access: read-only
+    using RX_HUNG_INT_RAW = BitField<6, 1>;
+    constexpr uint32_t RX_HUNG_INT_RAW_Pos = 6;
+    constexpr uint32_t RX_HUNG_INT_RAW_Msk = RX_HUNG_INT_RAW::mask;
 
-/// Position: 7, Width: 1
-/// Access: read-only
-using TX_HUNG_INT_RAW = BitField<7, 1>;
-constexpr uint32_t TX_HUNG_INT_RAW_Pos = 7;
-constexpr uint32_t TX_HUNG_INT_RAW_Msk = TX_HUNG_INT_RAW::mask;
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using TX_HUNG_INT_RAW = BitField<7, 1>;
+    constexpr uint32_t TX_HUNG_INT_RAW_Pos = 7;
+    constexpr uint32_t TX_HUNG_INT_RAW_Msk = TX_HUNG_INT_RAW::mask;
 
-/// Position: 8, Width: 1
-/// Access: read-only
-using IN_DONE_INT_RAW = BitField<8, 1>;
-constexpr uint32_t IN_DONE_INT_RAW_Pos = 8;
-constexpr uint32_t IN_DONE_INT_RAW_Msk = IN_DONE_INT_RAW::mask;
+    /// Position: 8, Width: 1
+    /// Access: read-only
+    using IN_DONE_INT_RAW = BitField<8, 1>;
+    constexpr uint32_t IN_DONE_INT_RAW_Pos = 8;
+    constexpr uint32_t IN_DONE_INT_RAW_Msk = IN_DONE_INT_RAW::mask;
 
-/// Position: 9, Width: 1
-/// Access: read-only
-using IN_SUC_EOF_INT_RAW = BitField<9, 1>;
-constexpr uint32_t IN_SUC_EOF_INT_RAW_Pos = 9;
-constexpr uint32_t IN_SUC_EOF_INT_RAW_Msk = IN_SUC_EOF_INT_RAW::mask;
+    /// Position: 9, Width: 1
+    /// Access: read-only
+    using IN_SUC_EOF_INT_RAW = BitField<9, 1>;
+    constexpr uint32_t IN_SUC_EOF_INT_RAW_Pos = 9;
+    constexpr uint32_t IN_SUC_EOF_INT_RAW_Msk = IN_SUC_EOF_INT_RAW::mask;
 
-/// Position: 10, Width: 1
-/// Access: read-only
-using IN_ERR_EOF_INT_RAW = BitField<10, 1>;
-constexpr uint32_t IN_ERR_EOF_INT_RAW_Pos = 10;
-constexpr uint32_t IN_ERR_EOF_INT_RAW_Msk = IN_ERR_EOF_INT_RAW::mask;
+    /// Position: 10, Width: 1
+    /// Access: read-only
+    using IN_ERR_EOF_INT_RAW = BitField<10, 1>;
+    constexpr uint32_t IN_ERR_EOF_INT_RAW_Pos = 10;
+    constexpr uint32_t IN_ERR_EOF_INT_RAW_Msk = IN_ERR_EOF_INT_RAW::mask;
 
-/// Position: 11, Width: 1
-/// Access: read-only
-using OUT_DONE_INT_RAW = BitField<11, 1>;
-constexpr uint32_t OUT_DONE_INT_RAW_Pos = 11;
-constexpr uint32_t OUT_DONE_INT_RAW_Msk = OUT_DONE_INT_RAW::mask;
+    /// Position: 11, Width: 1
+    /// Access: read-only
+    using OUT_DONE_INT_RAW = BitField<11, 1>;
+    constexpr uint32_t OUT_DONE_INT_RAW_Pos = 11;
+    constexpr uint32_t OUT_DONE_INT_RAW_Msk = OUT_DONE_INT_RAW::mask;
 
-/// Position: 12, Width: 1
-/// Access: read-only
-using OUT_EOF_INT_RAW = BitField<12, 1>;
-constexpr uint32_t OUT_EOF_INT_RAW_Pos = 12;
-constexpr uint32_t OUT_EOF_INT_RAW_Msk = OUT_EOF_INT_RAW::mask;
+    /// Position: 12, Width: 1
+    /// Access: read-only
+    using OUT_EOF_INT_RAW = BitField<12, 1>;
+    constexpr uint32_t OUT_EOF_INT_RAW_Pos = 12;
+    constexpr uint32_t OUT_EOF_INT_RAW_Msk = OUT_EOF_INT_RAW::mask;
 
-/// Position: 13, Width: 1
-/// Access: read-only
-using IN_DSCR_ERR_INT_RAW = BitField<13, 1>;
-constexpr uint32_t IN_DSCR_ERR_INT_RAW_Pos = 13;
-constexpr uint32_t IN_DSCR_ERR_INT_RAW_Msk = IN_DSCR_ERR_INT_RAW::mask;
+    /// Position: 13, Width: 1
+    /// Access: read-only
+    using IN_DSCR_ERR_INT_RAW = BitField<13, 1>;
+    constexpr uint32_t IN_DSCR_ERR_INT_RAW_Pos = 13;
+    constexpr uint32_t IN_DSCR_ERR_INT_RAW_Msk = IN_DSCR_ERR_INT_RAW::mask;
 
-/// Position: 14, Width: 1
-/// Access: read-only
-using OUT_DSCR_ERR_INT_RAW = BitField<14, 1>;
-constexpr uint32_t OUT_DSCR_ERR_INT_RAW_Pos = 14;
-constexpr uint32_t OUT_DSCR_ERR_INT_RAW_Msk = OUT_DSCR_ERR_INT_RAW::mask;
+    /// Position: 14, Width: 1
+    /// Access: read-only
+    using OUT_DSCR_ERR_INT_RAW = BitField<14, 1>;
+    constexpr uint32_t OUT_DSCR_ERR_INT_RAW_Pos = 14;
+    constexpr uint32_t OUT_DSCR_ERR_INT_RAW_Msk = OUT_DSCR_ERR_INT_RAW::mask;
 
-/// Position: 15, Width: 1
-/// Access: read-only
-using IN_DSCR_EMPTY_INT_RAW = BitField<15, 1>;
-constexpr uint32_t IN_DSCR_EMPTY_INT_RAW_Pos = 15;
-constexpr uint32_t IN_DSCR_EMPTY_INT_RAW_Msk = IN_DSCR_EMPTY_INT_RAW::mask;
+    /// Position: 15, Width: 1
+    /// Access: read-only
+    using IN_DSCR_EMPTY_INT_RAW = BitField<15, 1>;
+    constexpr uint32_t IN_DSCR_EMPTY_INT_RAW_Pos = 15;
+    constexpr uint32_t IN_DSCR_EMPTY_INT_RAW_Msk = IN_DSCR_EMPTY_INT_RAW::mask;
 
-/// Position: 16, Width: 1
-/// Access: read-only
-using OUT_TOTAL_EOF_INT_RAW = BitField<16, 1>;
-constexpr uint32_t OUT_TOTAL_EOF_INT_RAW_Pos = 16;
-constexpr uint32_t OUT_TOTAL_EOF_INT_RAW_Msk = OUT_TOTAL_EOF_INT_RAW::mask;
+    /// Position: 16, Width: 1
+    /// Access: read-only
+    using OUT_TOTAL_EOF_INT_RAW = BitField<16, 1>;
+    constexpr uint32_t OUT_TOTAL_EOF_INT_RAW_Pos = 16;
+    constexpr uint32_t OUT_TOTAL_EOF_INT_RAW_Msk = OUT_TOTAL_EOF_INT_RAW::mask;
 
 }  // namespace int_raw
 
 /// INT_ST - INT_ST
 namespace int_st {
-/// Position: 0, Width: 1
-/// Access: read-only
-using RX_TAKE_DATA_INT_ST = BitField<0, 1>;
-constexpr uint32_t RX_TAKE_DATA_INT_ST_Pos = 0;
-constexpr uint32_t RX_TAKE_DATA_INT_ST_Msk = RX_TAKE_DATA_INT_ST::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using RX_TAKE_DATA_INT_ST = BitField<0, 1>;
+    constexpr uint32_t RX_TAKE_DATA_INT_ST_Pos = 0;
+    constexpr uint32_t RX_TAKE_DATA_INT_ST_Msk = RX_TAKE_DATA_INT_ST::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-only
-using TX_PUT_DATA_INT_ST = BitField<1, 1>;
-constexpr uint32_t TX_PUT_DATA_INT_ST_Pos = 1;
-constexpr uint32_t TX_PUT_DATA_INT_ST_Msk = TX_PUT_DATA_INT_ST::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using TX_PUT_DATA_INT_ST = BitField<1, 1>;
+    constexpr uint32_t TX_PUT_DATA_INT_ST_Pos = 1;
+    constexpr uint32_t TX_PUT_DATA_INT_ST_Msk = TX_PUT_DATA_INT_ST::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-only
-using RX_WFULL_INT_ST = BitField<2, 1>;
-constexpr uint32_t RX_WFULL_INT_ST_Pos = 2;
-constexpr uint32_t RX_WFULL_INT_ST_Msk = RX_WFULL_INT_ST::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using RX_WFULL_INT_ST = BitField<2, 1>;
+    constexpr uint32_t RX_WFULL_INT_ST_Pos = 2;
+    constexpr uint32_t RX_WFULL_INT_ST_Msk = RX_WFULL_INT_ST::mask;
 
-/// Position: 3, Width: 1
-/// Access: read-only
-using RX_REMPTY_INT_ST = BitField<3, 1>;
-constexpr uint32_t RX_REMPTY_INT_ST_Pos = 3;
-constexpr uint32_t RX_REMPTY_INT_ST_Msk = RX_REMPTY_INT_ST::mask;
+    /// Position: 3, Width: 1
+    /// Access: read-only
+    using RX_REMPTY_INT_ST = BitField<3, 1>;
+    constexpr uint32_t RX_REMPTY_INT_ST_Pos = 3;
+    constexpr uint32_t RX_REMPTY_INT_ST_Msk = RX_REMPTY_INT_ST::mask;
 
-/// Position: 4, Width: 1
-/// Access: read-only
-using TX_WFULL_INT_ST = BitField<4, 1>;
-constexpr uint32_t TX_WFULL_INT_ST_Pos = 4;
-constexpr uint32_t TX_WFULL_INT_ST_Msk = TX_WFULL_INT_ST::mask;
+    /// Position: 4, Width: 1
+    /// Access: read-only
+    using TX_WFULL_INT_ST = BitField<4, 1>;
+    constexpr uint32_t TX_WFULL_INT_ST_Pos = 4;
+    constexpr uint32_t TX_WFULL_INT_ST_Msk = TX_WFULL_INT_ST::mask;
 
-/// Position: 5, Width: 1
-/// Access: read-only
-using TX_REMPTY_INT_ST = BitField<5, 1>;
-constexpr uint32_t TX_REMPTY_INT_ST_Pos = 5;
-constexpr uint32_t TX_REMPTY_INT_ST_Msk = TX_REMPTY_INT_ST::mask;
+    /// Position: 5, Width: 1
+    /// Access: read-only
+    using TX_REMPTY_INT_ST = BitField<5, 1>;
+    constexpr uint32_t TX_REMPTY_INT_ST_Pos = 5;
+    constexpr uint32_t TX_REMPTY_INT_ST_Msk = TX_REMPTY_INT_ST::mask;
 
-/// Position: 6, Width: 1
-/// Access: read-only
-using RX_HUNG_INT_ST = BitField<6, 1>;
-constexpr uint32_t RX_HUNG_INT_ST_Pos = 6;
-constexpr uint32_t RX_HUNG_INT_ST_Msk = RX_HUNG_INT_ST::mask;
+    /// Position: 6, Width: 1
+    /// Access: read-only
+    using RX_HUNG_INT_ST = BitField<6, 1>;
+    constexpr uint32_t RX_HUNG_INT_ST_Pos = 6;
+    constexpr uint32_t RX_HUNG_INT_ST_Msk = RX_HUNG_INT_ST::mask;
 
-/// Position: 7, Width: 1
-/// Access: read-only
-using TX_HUNG_INT_ST = BitField<7, 1>;
-constexpr uint32_t TX_HUNG_INT_ST_Pos = 7;
-constexpr uint32_t TX_HUNG_INT_ST_Msk = TX_HUNG_INT_ST::mask;
+    /// Position: 7, Width: 1
+    /// Access: read-only
+    using TX_HUNG_INT_ST = BitField<7, 1>;
+    constexpr uint32_t TX_HUNG_INT_ST_Pos = 7;
+    constexpr uint32_t TX_HUNG_INT_ST_Msk = TX_HUNG_INT_ST::mask;
 
-/// Position: 8, Width: 1
-/// Access: read-only
-using IN_DONE_INT_ST = BitField<8, 1>;
-constexpr uint32_t IN_DONE_INT_ST_Pos = 8;
-constexpr uint32_t IN_DONE_INT_ST_Msk = IN_DONE_INT_ST::mask;
+    /// Position: 8, Width: 1
+    /// Access: read-only
+    using IN_DONE_INT_ST = BitField<8, 1>;
+    constexpr uint32_t IN_DONE_INT_ST_Pos = 8;
+    constexpr uint32_t IN_DONE_INT_ST_Msk = IN_DONE_INT_ST::mask;
 
-/// Position: 9, Width: 1
-/// Access: read-only
-using IN_SUC_EOF_INT_ST = BitField<9, 1>;
-constexpr uint32_t IN_SUC_EOF_INT_ST_Pos = 9;
-constexpr uint32_t IN_SUC_EOF_INT_ST_Msk = IN_SUC_EOF_INT_ST::mask;
+    /// Position: 9, Width: 1
+    /// Access: read-only
+    using IN_SUC_EOF_INT_ST = BitField<9, 1>;
+    constexpr uint32_t IN_SUC_EOF_INT_ST_Pos = 9;
+    constexpr uint32_t IN_SUC_EOF_INT_ST_Msk = IN_SUC_EOF_INT_ST::mask;
 
-/// Position: 10, Width: 1
-/// Access: read-only
-using IN_ERR_EOF_INT_ST = BitField<10, 1>;
-constexpr uint32_t IN_ERR_EOF_INT_ST_Pos = 10;
-constexpr uint32_t IN_ERR_EOF_INT_ST_Msk = IN_ERR_EOF_INT_ST::mask;
+    /// Position: 10, Width: 1
+    /// Access: read-only
+    using IN_ERR_EOF_INT_ST = BitField<10, 1>;
+    constexpr uint32_t IN_ERR_EOF_INT_ST_Pos = 10;
+    constexpr uint32_t IN_ERR_EOF_INT_ST_Msk = IN_ERR_EOF_INT_ST::mask;
 
-/// Position: 11, Width: 1
-/// Access: read-only
-using OUT_DONE_INT_ST = BitField<11, 1>;
-constexpr uint32_t OUT_DONE_INT_ST_Pos = 11;
-constexpr uint32_t OUT_DONE_INT_ST_Msk = OUT_DONE_INT_ST::mask;
+    /// Position: 11, Width: 1
+    /// Access: read-only
+    using OUT_DONE_INT_ST = BitField<11, 1>;
+    constexpr uint32_t OUT_DONE_INT_ST_Pos = 11;
+    constexpr uint32_t OUT_DONE_INT_ST_Msk = OUT_DONE_INT_ST::mask;
 
-/// Position: 12, Width: 1
-/// Access: read-only
-using OUT_EOF_INT_ST = BitField<12, 1>;
-constexpr uint32_t OUT_EOF_INT_ST_Pos = 12;
-constexpr uint32_t OUT_EOF_INT_ST_Msk = OUT_EOF_INT_ST::mask;
+    /// Position: 12, Width: 1
+    /// Access: read-only
+    using OUT_EOF_INT_ST = BitField<12, 1>;
+    constexpr uint32_t OUT_EOF_INT_ST_Pos = 12;
+    constexpr uint32_t OUT_EOF_INT_ST_Msk = OUT_EOF_INT_ST::mask;
 
-/// Position: 13, Width: 1
-/// Access: read-only
-using IN_DSCR_ERR_INT_ST = BitField<13, 1>;
-constexpr uint32_t IN_DSCR_ERR_INT_ST_Pos = 13;
-constexpr uint32_t IN_DSCR_ERR_INT_ST_Msk = IN_DSCR_ERR_INT_ST::mask;
+    /// Position: 13, Width: 1
+    /// Access: read-only
+    using IN_DSCR_ERR_INT_ST = BitField<13, 1>;
+    constexpr uint32_t IN_DSCR_ERR_INT_ST_Pos = 13;
+    constexpr uint32_t IN_DSCR_ERR_INT_ST_Msk = IN_DSCR_ERR_INT_ST::mask;
 
-/// Position: 14, Width: 1
-/// Access: read-only
-using OUT_DSCR_ERR_INT_ST = BitField<14, 1>;
-constexpr uint32_t OUT_DSCR_ERR_INT_ST_Pos = 14;
-constexpr uint32_t OUT_DSCR_ERR_INT_ST_Msk = OUT_DSCR_ERR_INT_ST::mask;
+    /// Position: 14, Width: 1
+    /// Access: read-only
+    using OUT_DSCR_ERR_INT_ST = BitField<14, 1>;
+    constexpr uint32_t OUT_DSCR_ERR_INT_ST_Pos = 14;
+    constexpr uint32_t OUT_DSCR_ERR_INT_ST_Msk = OUT_DSCR_ERR_INT_ST::mask;
 
-/// Position: 15, Width: 1
-/// Access: read-only
-using IN_DSCR_EMPTY_INT_ST = BitField<15, 1>;
-constexpr uint32_t IN_DSCR_EMPTY_INT_ST_Pos = 15;
-constexpr uint32_t IN_DSCR_EMPTY_INT_ST_Msk = IN_DSCR_EMPTY_INT_ST::mask;
+    /// Position: 15, Width: 1
+    /// Access: read-only
+    using IN_DSCR_EMPTY_INT_ST = BitField<15, 1>;
+    constexpr uint32_t IN_DSCR_EMPTY_INT_ST_Pos = 15;
+    constexpr uint32_t IN_DSCR_EMPTY_INT_ST_Msk = IN_DSCR_EMPTY_INT_ST::mask;
 
-/// Position: 16, Width: 1
-/// Access: read-only
-using OUT_TOTAL_EOF_INT_ST = BitField<16, 1>;
-constexpr uint32_t OUT_TOTAL_EOF_INT_ST_Pos = 16;
-constexpr uint32_t OUT_TOTAL_EOF_INT_ST_Msk = OUT_TOTAL_EOF_INT_ST::mask;
+    /// Position: 16, Width: 1
+    /// Access: read-only
+    using OUT_TOTAL_EOF_INT_ST = BitField<16, 1>;
+    constexpr uint32_t OUT_TOTAL_EOF_INT_ST_Pos = 16;
+    constexpr uint32_t OUT_TOTAL_EOF_INT_ST_Msk = OUT_TOTAL_EOF_INT_ST::mask;
 
 }  // namespace int_st
 
 /// INT_ENA - INT_ENA
 namespace int_ena {
-/// Position: 0, Width: 1
-/// Access: read-write
-using RX_TAKE_DATA_INT_ENA = BitField<0, 1>;
-constexpr uint32_t RX_TAKE_DATA_INT_ENA_Pos = 0;
-constexpr uint32_t RX_TAKE_DATA_INT_ENA_Msk = RX_TAKE_DATA_INT_ENA::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using RX_TAKE_DATA_INT_ENA = BitField<0, 1>;
+    constexpr uint32_t RX_TAKE_DATA_INT_ENA_Pos = 0;
+    constexpr uint32_t RX_TAKE_DATA_INT_ENA_Msk = RX_TAKE_DATA_INT_ENA::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-write
-using TX_PUT_DATA_INT_ENA = BitField<1, 1>;
-constexpr uint32_t TX_PUT_DATA_INT_ENA_Pos = 1;
-constexpr uint32_t TX_PUT_DATA_INT_ENA_Msk = TX_PUT_DATA_INT_ENA::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using TX_PUT_DATA_INT_ENA = BitField<1, 1>;
+    constexpr uint32_t TX_PUT_DATA_INT_ENA_Pos = 1;
+    constexpr uint32_t TX_PUT_DATA_INT_ENA_Msk = TX_PUT_DATA_INT_ENA::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-write
-using RX_WFULL_INT_ENA = BitField<2, 1>;
-constexpr uint32_t RX_WFULL_INT_ENA_Pos = 2;
-constexpr uint32_t RX_WFULL_INT_ENA_Msk = RX_WFULL_INT_ENA::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using RX_WFULL_INT_ENA = BitField<2, 1>;
+    constexpr uint32_t RX_WFULL_INT_ENA_Pos = 2;
+    constexpr uint32_t RX_WFULL_INT_ENA_Msk = RX_WFULL_INT_ENA::mask;
 
-/// Position: 3, Width: 1
-/// Access: read-write
-using RX_REMPTY_INT_ENA = BitField<3, 1>;
-constexpr uint32_t RX_REMPTY_INT_ENA_Pos = 3;
-constexpr uint32_t RX_REMPTY_INT_ENA_Msk = RX_REMPTY_INT_ENA::mask;
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using RX_REMPTY_INT_ENA = BitField<3, 1>;
+    constexpr uint32_t RX_REMPTY_INT_ENA_Pos = 3;
+    constexpr uint32_t RX_REMPTY_INT_ENA_Msk = RX_REMPTY_INT_ENA::mask;
 
-/// Position: 4, Width: 1
-/// Access: read-write
-using TX_WFULL_INT_ENA = BitField<4, 1>;
-constexpr uint32_t TX_WFULL_INT_ENA_Pos = 4;
-constexpr uint32_t TX_WFULL_INT_ENA_Msk = TX_WFULL_INT_ENA::mask;
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using TX_WFULL_INT_ENA = BitField<4, 1>;
+    constexpr uint32_t TX_WFULL_INT_ENA_Pos = 4;
+    constexpr uint32_t TX_WFULL_INT_ENA_Msk = TX_WFULL_INT_ENA::mask;
 
-/// Position: 5, Width: 1
-/// Access: read-write
-using TX_REMPTY_INT_ENA = BitField<5, 1>;
-constexpr uint32_t TX_REMPTY_INT_ENA_Pos = 5;
-constexpr uint32_t TX_REMPTY_INT_ENA_Msk = TX_REMPTY_INT_ENA::mask;
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using TX_REMPTY_INT_ENA = BitField<5, 1>;
+    constexpr uint32_t TX_REMPTY_INT_ENA_Pos = 5;
+    constexpr uint32_t TX_REMPTY_INT_ENA_Msk = TX_REMPTY_INT_ENA::mask;
 
-/// Position: 6, Width: 1
-/// Access: read-write
-using RX_HUNG_INT_ENA = BitField<6, 1>;
-constexpr uint32_t RX_HUNG_INT_ENA_Pos = 6;
-constexpr uint32_t RX_HUNG_INT_ENA_Msk = RX_HUNG_INT_ENA::mask;
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using RX_HUNG_INT_ENA = BitField<6, 1>;
+    constexpr uint32_t RX_HUNG_INT_ENA_Pos = 6;
+    constexpr uint32_t RX_HUNG_INT_ENA_Msk = RX_HUNG_INT_ENA::mask;
 
-/// Position: 7, Width: 1
-/// Access: read-write
-using TX_HUNG_INT_ENA = BitField<7, 1>;
-constexpr uint32_t TX_HUNG_INT_ENA_Pos = 7;
-constexpr uint32_t TX_HUNG_INT_ENA_Msk = TX_HUNG_INT_ENA::mask;
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using TX_HUNG_INT_ENA = BitField<7, 1>;
+    constexpr uint32_t TX_HUNG_INT_ENA_Pos = 7;
+    constexpr uint32_t TX_HUNG_INT_ENA_Msk = TX_HUNG_INT_ENA::mask;
 
-/// Position: 8, Width: 1
-/// Access: read-write
-using IN_DONE_INT_ENA = BitField<8, 1>;
-constexpr uint32_t IN_DONE_INT_ENA_Pos = 8;
-constexpr uint32_t IN_DONE_INT_ENA_Msk = IN_DONE_INT_ENA::mask;
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using IN_DONE_INT_ENA = BitField<8, 1>;
+    constexpr uint32_t IN_DONE_INT_ENA_Pos = 8;
+    constexpr uint32_t IN_DONE_INT_ENA_Msk = IN_DONE_INT_ENA::mask;
 
-/// Position: 9, Width: 1
-/// Access: read-write
-using IN_SUC_EOF_INT_ENA = BitField<9, 1>;
-constexpr uint32_t IN_SUC_EOF_INT_ENA_Pos = 9;
-constexpr uint32_t IN_SUC_EOF_INT_ENA_Msk = IN_SUC_EOF_INT_ENA::mask;
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using IN_SUC_EOF_INT_ENA = BitField<9, 1>;
+    constexpr uint32_t IN_SUC_EOF_INT_ENA_Pos = 9;
+    constexpr uint32_t IN_SUC_EOF_INT_ENA_Msk = IN_SUC_EOF_INT_ENA::mask;
 
-/// Position: 10, Width: 1
-/// Access: read-write
-using IN_ERR_EOF_INT_ENA = BitField<10, 1>;
-constexpr uint32_t IN_ERR_EOF_INT_ENA_Pos = 10;
-constexpr uint32_t IN_ERR_EOF_INT_ENA_Msk = IN_ERR_EOF_INT_ENA::mask;
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using IN_ERR_EOF_INT_ENA = BitField<10, 1>;
+    constexpr uint32_t IN_ERR_EOF_INT_ENA_Pos = 10;
+    constexpr uint32_t IN_ERR_EOF_INT_ENA_Msk = IN_ERR_EOF_INT_ENA::mask;
 
-/// Position: 11, Width: 1
-/// Access: read-write
-using OUT_DONE_INT_ENA = BitField<11, 1>;
-constexpr uint32_t OUT_DONE_INT_ENA_Pos = 11;
-constexpr uint32_t OUT_DONE_INT_ENA_Msk = OUT_DONE_INT_ENA::mask;
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using OUT_DONE_INT_ENA = BitField<11, 1>;
+    constexpr uint32_t OUT_DONE_INT_ENA_Pos = 11;
+    constexpr uint32_t OUT_DONE_INT_ENA_Msk = OUT_DONE_INT_ENA::mask;
 
-/// Position: 12, Width: 1
-/// Access: read-write
-using OUT_EOF_INT_ENA = BitField<12, 1>;
-constexpr uint32_t OUT_EOF_INT_ENA_Pos = 12;
-constexpr uint32_t OUT_EOF_INT_ENA_Msk = OUT_EOF_INT_ENA::mask;
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using OUT_EOF_INT_ENA = BitField<12, 1>;
+    constexpr uint32_t OUT_EOF_INT_ENA_Pos = 12;
+    constexpr uint32_t OUT_EOF_INT_ENA_Msk = OUT_EOF_INT_ENA::mask;
 
-/// Position: 13, Width: 1
-/// Access: read-write
-using IN_DSCR_ERR_INT_ENA = BitField<13, 1>;
-constexpr uint32_t IN_DSCR_ERR_INT_ENA_Pos = 13;
-constexpr uint32_t IN_DSCR_ERR_INT_ENA_Msk = IN_DSCR_ERR_INT_ENA::mask;
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using IN_DSCR_ERR_INT_ENA = BitField<13, 1>;
+    constexpr uint32_t IN_DSCR_ERR_INT_ENA_Pos = 13;
+    constexpr uint32_t IN_DSCR_ERR_INT_ENA_Msk = IN_DSCR_ERR_INT_ENA::mask;
 
-/// Position: 14, Width: 1
-/// Access: read-write
-using OUT_DSCR_ERR_INT_ENA = BitField<14, 1>;
-constexpr uint32_t OUT_DSCR_ERR_INT_ENA_Pos = 14;
-constexpr uint32_t OUT_DSCR_ERR_INT_ENA_Msk = OUT_DSCR_ERR_INT_ENA::mask;
+    /// Position: 14, Width: 1
+    /// Access: read-write
+    using OUT_DSCR_ERR_INT_ENA = BitField<14, 1>;
+    constexpr uint32_t OUT_DSCR_ERR_INT_ENA_Pos = 14;
+    constexpr uint32_t OUT_DSCR_ERR_INT_ENA_Msk = OUT_DSCR_ERR_INT_ENA::mask;
 
-/// Position: 15, Width: 1
-/// Access: read-write
-using IN_DSCR_EMPTY_INT_ENA = BitField<15, 1>;
-constexpr uint32_t IN_DSCR_EMPTY_INT_ENA_Pos = 15;
-constexpr uint32_t IN_DSCR_EMPTY_INT_ENA_Msk = IN_DSCR_EMPTY_INT_ENA::mask;
+    /// Position: 15, Width: 1
+    /// Access: read-write
+    using IN_DSCR_EMPTY_INT_ENA = BitField<15, 1>;
+    constexpr uint32_t IN_DSCR_EMPTY_INT_ENA_Pos = 15;
+    constexpr uint32_t IN_DSCR_EMPTY_INT_ENA_Msk = IN_DSCR_EMPTY_INT_ENA::mask;
 
-/// Position: 16, Width: 1
-/// Access: read-write
-using OUT_TOTAL_EOF_INT_ENA = BitField<16, 1>;
-constexpr uint32_t OUT_TOTAL_EOF_INT_ENA_Pos = 16;
-constexpr uint32_t OUT_TOTAL_EOF_INT_ENA_Msk = OUT_TOTAL_EOF_INT_ENA::mask;
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using OUT_TOTAL_EOF_INT_ENA = BitField<16, 1>;
+    constexpr uint32_t OUT_TOTAL_EOF_INT_ENA_Pos = 16;
+    constexpr uint32_t OUT_TOTAL_EOF_INT_ENA_Msk = OUT_TOTAL_EOF_INT_ENA::mask;
 
 }  // namespace int_ena
 
 /// INT_CLR - INT_CLR
 namespace int_clr {
-/// Position: 0, Width: 1
-/// Access: write-only
-using TAKE_DATA_INT_CLR = BitField<0, 1>;
-constexpr uint32_t TAKE_DATA_INT_CLR_Pos = 0;
-constexpr uint32_t TAKE_DATA_INT_CLR_Msk = TAKE_DATA_INT_CLR::mask;
+    /// Position: 0, Width: 1
+    /// Access: write-only
+    using TAKE_DATA_INT_CLR = BitField<0, 1>;
+    constexpr uint32_t TAKE_DATA_INT_CLR_Pos = 0;
+    constexpr uint32_t TAKE_DATA_INT_CLR_Msk = TAKE_DATA_INT_CLR::mask;
 
-/// Position: 1, Width: 1
-/// Access: write-only
-using PUT_DATA_INT_CLR = BitField<1, 1>;
-constexpr uint32_t PUT_DATA_INT_CLR_Pos = 1;
-constexpr uint32_t PUT_DATA_INT_CLR_Msk = PUT_DATA_INT_CLR::mask;
+    /// Position: 1, Width: 1
+    /// Access: write-only
+    using PUT_DATA_INT_CLR = BitField<1, 1>;
+    constexpr uint32_t PUT_DATA_INT_CLR_Pos = 1;
+    constexpr uint32_t PUT_DATA_INT_CLR_Msk = PUT_DATA_INT_CLR::mask;
 
-/// Position: 2, Width: 1
-/// Access: write-only
-using RX_WFULL_INT_CLR = BitField<2, 1>;
-constexpr uint32_t RX_WFULL_INT_CLR_Pos = 2;
-constexpr uint32_t RX_WFULL_INT_CLR_Msk = RX_WFULL_INT_CLR::mask;
+    /// Position: 2, Width: 1
+    /// Access: write-only
+    using RX_WFULL_INT_CLR = BitField<2, 1>;
+    constexpr uint32_t RX_WFULL_INT_CLR_Pos = 2;
+    constexpr uint32_t RX_WFULL_INT_CLR_Msk = RX_WFULL_INT_CLR::mask;
 
-/// Position: 3, Width: 1
-/// Access: write-only
-using RX_REMPTY_INT_CLR = BitField<3, 1>;
-constexpr uint32_t RX_REMPTY_INT_CLR_Pos = 3;
-constexpr uint32_t RX_REMPTY_INT_CLR_Msk = RX_REMPTY_INT_CLR::mask;
+    /// Position: 3, Width: 1
+    /// Access: write-only
+    using RX_REMPTY_INT_CLR = BitField<3, 1>;
+    constexpr uint32_t RX_REMPTY_INT_CLR_Pos = 3;
+    constexpr uint32_t RX_REMPTY_INT_CLR_Msk = RX_REMPTY_INT_CLR::mask;
 
-/// Position: 4, Width: 1
-/// Access: write-only
-using TX_WFULL_INT_CLR = BitField<4, 1>;
-constexpr uint32_t TX_WFULL_INT_CLR_Pos = 4;
-constexpr uint32_t TX_WFULL_INT_CLR_Msk = TX_WFULL_INT_CLR::mask;
+    /// Position: 4, Width: 1
+    /// Access: write-only
+    using TX_WFULL_INT_CLR = BitField<4, 1>;
+    constexpr uint32_t TX_WFULL_INT_CLR_Pos = 4;
+    constexpr uint32_t TX_WFULL_INT_CLR_Msk = TX_WFULL_INT_CLR::mask;
 
-/// Position: 5, Width: 1
-/// Access: write-only
-using TX_REMPTY_INT_CLR = BitField<5, 1>;
-constexpr uint32_t TX_REMPTY_INT_CLR_Pos = 5;
-constexpr uint32_t TX_REMPTY_INT_CLR_Msk = TX_REMPTY_INT_CLR::mask;
+    /// Position: 5, Width: 1
+    /// Access: write-only
+    using TX_REMPTY_INT_CLR = BitField<5, 1>;
+    constexpr uint32_t TX_REMPTY_INT_CLR_Pos = 5;
+    constexpr uint32_t TX_REMPTY_INT_CLR_Msk = TX_REMPTY_INT_CLR::mask;
 
-/// Position: 6, Width: 1
-/// Access: write-only
-using RX_HUNG_INT_CLR = BitField<6, 1>;
-constexpr uint32_t RX_HUNG_INT_CLR_Pos = 6;
-constexpr uint32_t RX_HUNG_INT_CLR_Msk = RX_HUNG_INT_CLR::mask;
+    /// Position: 6, Width: 1
+    /// Access: write-only
+    using RX_HUNG_INT_CLR = BitField<6, 1>;
+    constexpr uint32_t RX_HUNG_INT_CLR_Pos = 6;
+    constexpr uint32_t RX_HUNG_INT_CLR_Msk = RX_HUNG_INT_CLR::mask;
 
-/// Position: 7, Width: 1
-/// Access: write-only
-using TX_HUNG_INT_CLR = BitField<7, 1>;
-constexpr uint32_t TX_HUNG_INT_CLR_Pos = 7;
-constexpr uint32_t TX_HUNG_INT_CLR_Msk = TX_HUNG_INT_CLR::mask;
+    /// Position: 7, Width: 1
+    /// Access: write-only
+    using TX_HUNG_INT_CLR = BitField<7, 1>;
+    constexpr uint32_t TX_HUNG_INT_CLR_Pos = 7;
+    constexpr uint32_t TX_HUNG_INT_CLR_Msk = TX_HUNG_INT_CLR::mask;
 
-/// Position: 8, Width: 1
-/// Access: write-only
-using IN_DONE_INT_CLR = BitField<8, 1>;
-constexpr uint32_t IN_DONE_INT_CLR_Pos = 8;
-constexpr uint32_t IN_DONE_INT_CLR_Msk = IN_DONE_INT_CLR::mask;
+    /// Position: 8, Width: 1
+    /// Access: write-only
+    using IN_DONE_INT_CLR = BitField<8, 1>;
+    constexpr uint32_t IN_DONE_INT_CLR_Pos = 8;
+    constexpr uint32_t IN_DONE_INT_CLR_Msk = IN_DONE_INT_CLR::mask;
 
-/// Position: 9, Width: 1
-/// Access: write-only
-using IN_SUC_EOF_INT_CLR = BitField<9, 1>;
-constexpr uint32_t IN_SUC_EOF_INT_CLR_Pos = 9;
-constexpr uint32_t IN_SUC_EOF_INT_CLR_Msk = IN_SUC_EOF_INT_CLR::mask;
+    /// Position: 9, Width: 1
+    /// Access: write-only
+    using IN_SUC_EOF_INT_CLR = BitField<9, 1>;
+    constexpr uint32_t IN_SUC_EOF_INT_CLR_Pos = 9;
+    constexpr uint32_t IN_SUC_EOF_INT_CLR_Msk = IN_SUC_EOF_INT_CLR::mask;
 
-/// Position: 10, Width: 1
-/// Access: write-only
-using IN_ERR_EOF_INT_CLR = BitField<10, 1>;
-constexpr uint32_t IN_ERR_EOF_INT_CLR_Pos = 10;
-constexpr uint32_t IN_ERR_EOF_INT_CLR_Msk = IN_ERR_EOF_INT_CLR::mask;
+    /// Position: 10, Width: 1
+    /// Access: write-only
+    using IN_ERR_EOF_INT_CLR = BitField<10, 1>;
+    constexpr uint32_t IN_ERR_EOF_INT_CLR_Pos = 10;
+    constexpr uint32_t IN_ERR_EOF_INT_CLR_Msk = IN_ERR_EOF_INT_CLR::mask;
 
-/// Position: 11, Width: 1
-/// Access: write-only
-using OUT_DONE_INT_CLR = BitField<11, 1>;
-constexpr uint32_t OUT_DONE_INT_CLR_Pos = 11;
-constexpr uint32_t OUT_DONE_INT_CLR_Msk = OUT_DONE_INT_CLR::mask;
+    /// Position: 11, Width: 1
+    /// Access: write-only
+    using OUT_DONE_INT_CLR = BitField<11, 1>;
+    constexpr uint32_t OUT_DONE_INT_CLR_Pos = 11;
+    constexpr uint32_t OUT_DONE_INT_CLR_Msk = OUT_DONE_INT_CLR::mask;
 
-/// Position: 12, Width: 1
-/// Access: write-only
-using OUT_EOF_INT_CLR = BitField<12, 1>;
-constexpr uint32_t OUT_EOF_INT_CLR_Pos = 12;
-constexpr uint32_t OUT_EOF_INT_CLR_Msk = OUT_EOF_INT_CLR::mask;
+    /// Position: 12, Width: 1
+    /// Access: write-only
+    using OUT_EOF_INT_CLR = BitField<12, 1>;
+    constexpr uint32_t OUT_EOF_INT_CLR_Pos = 12;
+    constexpr uint32_t OUT_EOF_INT_CLR_Msk = OUT_EOF_INT_CLR::mask;
 
-/// Position: 13, Width: 1
-/// Access: write-only
-using IN_DSCR_ERR_INT_CLR = BitField<13, 1>;
-constexpr uint32_t IN_DSCR_ERR_INT_CLR_Pos = 13;
-constexpr uint32_t IN_DSCR_ERR_INT_CLR_Msk = IN_DSCR_ERR_INT_CLR::mask;
+    /// Position: 13, Width: 1
+    /// Access: write-only
+    using IN_DSCR_ERR_INT_CLR = BitField<13, 1>;
+    constexpr uint32_t IN_DSCR_ERR_INT_CLR_Pos = 13;
+    constexpr uint32_t IN_DSCR_ERR_INT_CLR_Msk = IN_DSCR_ERR_INT_CLR::mask;
 
-/// Position: 14, Width: 1
-/// Access: write-only
-using OUT_DSCR_ERR_INT_CLR = BitField<14, 1>;
-constexpr uint32_t OUT_DSCR_ERR_INT_CLR_Pos = 14;
-constexpr uint32_t OUT_DSCR_ERR_INT_CLR_Msk = OUT_DSCR_ERR_INT_CLR::mask;
+    /// Position: 14, Width: 1
+    /// Access: write-only
+    using OUT_DSCR_ERR_INT_CLR = BitField<14, 1>;
+    constexpr uint32_t OUT_DSCR_ERR_INT_CLR_Pos = 14;
+    constexpr uint32_t OUT_DSCR_ERR_INT_CLR_Msk = OUT_DSCR_ERR_INT_CLR::mask;
 
-/// Position: 15, Width: 1
-/// Access: write-only
-using IN_DSCR_EMPTY_INT_CLR = BitField<15, 1>;
-constexpr uint32_t IN_DSCR_EMPTY_INT_CLR_Pos = 15;
-constexpr uint32_t IN_DSCR_EMPTY_INT_CLR_Msk = IN_DSCR_EMPTY_INT_CLR::mask;
+    /// Position: 15, Width: 1
+    /// Access: write-only
+    using IN_DSCR_EMPTY_INT_CLR = BitField<15, 1>;
+    constexpr uint32_t IN_DSCR_EMPTY_INT_CLR_Pos = 15;
+    constexpr uint32_t IN_DSCR_EMPTY_INT_CLR_Msk = IN_DSCR_EMPTY_INT_CLR::mask;
 
-/// Position: 16, Width: 1
-/// Access: write-only
-using OUT_TOTAL_EOF_INT_CLR = BitField<16, 1>;
-constexpr uint32_t OUT_TOTAL_EOF_INT_CLR_Pos = 16;
-constexpr uint32_t OUT_TOTAL_EOF_INT_CLR_Msk = OUT_TOTAL_EOF_INT_CLR::mask;
+    /// Position: 16, Width: 1
+    /// Access: write-only
+    using OUT_TOTAL_EOF_INT_CLR = BitField<16, 1>;
+    constexpr uint32_t OUT_TOTAL_EOF_INT_CLR_Pos = 16;
+    constexpr uint32_t OUT_TOTAL_EOF_INT_CLR_Msk = OUT_TOTAL_EOF_INT_CLR::mask;
 
 }  // namespace int_clr
 
 /// TIMING - TIMING
 namespace timing {
-/// Position: 0, Width: 2
-/// Access: read-write
-using TX_BCK_IN_DELAY = BitField<0, 2>;
-constexpr uint32_t TX_BCK_IN_DELAY_Pos = 0;
-constexpr uint32_t TX_BCK_IN_DELAY_Msk = TX_BCK_IN_DELAY::mask;
+    /// Position: 0, Width: 2
+    /// Access: read-write
+    using TX_BCK_IN_DELAY = BitField<0, 2>;
+    constexpr uint32_t TX_BCK_IN_DELAY_Pos = 0;
+    constexpr uint32_t TX_BCK_IN_DELAY_Msk = TX_BCK_IN_DELAY::mask;
 
-/// Position: 2, Width: 2
-/// Access: read-write
-using TX_WS_IN_DELAY = BitField<2, 2>;
-constexpr uint32_t TX_WS_IN_DELAY_Pos = 2;
-constexpr uint32_t TX_WS_IN_DELAY_Msk = TX_WS_IN_DELAY::mask;
+    /// Position: 2, Width: 2
+    /// Access: read-write
+    using TX_WS_IN_DELAY = BitField<2, 2>;
+    constexpr uint32_t TX_WS_IN_DELAY_Pos = 2;
+    constexpr uint32_t TX_WS_IN_DELAY_Msk = TX_WS_IN_DELAY::mask;
 
-/// Position: 4, Width: 2
-/// Access: read-write
-using RX_BCK_IN_DELAY = BitField<4, 2>;
-constexpr uint32_t RX_BCK_IN_DELAY_Pos = 4;
-constexpr uint32_t RX_BCK_IN_DELAY_Msk = RX_BCK_IN_DELAY::mask;
+    /// Position: 4, Width: 2
+    /// Access: read-write
+    using RX_BCK_IN_DELAY = BitField<4, 2>;
+    constexpr uint32_t RX_BCK_IN_DELAY_Pos = 4;
+    constexpr uint32_t RX_BCK_IN_DELAY_Msk = RX_BCK_IN_DELAY::mask;
 
-/// Position: 6, Width: 2
-/// Access: read-write
-using RX_WS_IN_DELAY = BitField<6, 2>;
-constexpr uint32_t RX_WS_IN_DELAY_Pos = 6;
-constexpr uint32_t RX_WS_IN_DELAY_Msk = RX_WS_IN_DELAY::mask;
+    /// Position: 6, Width: 2
+    /// Access: read-write
+    using RX_WS_IN_DELAY = BitField<6, 2>;
+    constexpr uint32_t RX_WS_IN_DELAY_Pos = 6;
+    constexpr uint32_t RX_WS_IN_DELAY_Msk = RX_WS_IN_DELAY::mask;
 
-/// Position: 8, Width: 2
-/// Access: read-write
-using RX_SD_IN_DELAY = BitField<8, 2>;
-constexpr uint32_t RX_SD_IN_DELAY_Pos = 8;
-constexpr uint32_t RX_SD_IN_DELAY_Msk = RX_SD_IN_DELAY::mask;
+    /// Position: 8, Width: 2
+    /// Access: read-write
+    using RX_SD_IN_DELAY = BitField<8, 2>;
+    constexpr uint32_t RX_SD_IN_DELAY_Pos = 8;
+    constexpr uint32_t RX_SD_IN_DELAY_Msk = RX_SD_IN_DELAY::mask;
 
-/// Position: 10, Width: 2
-/// Access: read-write
-using TX_BCK_OUT_DELAY = BitField<10, 2>;
-constexpr uint32_t TX_BCK_OUT_DELAY_Pos = 10;
-constexpr uint32_t TX_BCK_OUT_DELAY_Msk = TX_BCK_OUT_DELAY::mask;
+    /// Position: 10, Width: 2
+    /// Access: read-write
+    using TX_BCK_OUT_DELAY = BitField<10, 2>;
+    constexpr uint32_t TX_BCK_OUT_DELAY_Pos = 10;
+    constexpr uint32_t TX_BCK_OUT_DELAY_Msk = TX_BCK_OUT_DELAY::mask;
 
-/// Position: 12, Width: 2
-/// Access: read-write
-using TX_WS_OUT_DELAY = BitField<12, 2>;
-constexpr uint32_t TX_WS_OUT_DELAY_Pos = 12;
-constexpr uint32_t TX_WS_OUT_DELAY_Msk = TX_WS_OUT_DELAY::mask;
+    /// Position: 12, Width: 2
+    /// Access: read-write
+    using TX_WS_OUT_DELAY = BitField<12, 2>;
+    constexpr uint32_t TX_WS_OUT_DELAY_Pos = 12;
+    constexpr uint32_t TX_WS_OUT_DELAY_Msk = TX_WS_OUT_DELAY::mask;
 
-/// Position: 14, Width: 2
-/// Access: read-write
-using TX_SD_OUT_DELAY = BitField<14, 2>;
-constexpr uint32_t TX_SD_OUT_DELAY_Pos = 14;
-constexpr uint32_t TX_SD_OUT_DELAY_Msk = TX_SD_OUT_DELAY::mask;
+    /// Position: 14, Width: 2
+    /// Access: read-write
+    using TX_SD_OUT_DELAY = BitField<14, 2>;
+    constexpr uint32_t TX_SD_OUT_DELAY_Pos = 14;
+    constexpr uint32_t TX_SD_OUT_DELAY_Msk = TX_SD_OUT_DELAY::mask;
 
-/// Position: 16, Width: 2
-/// Access: read-write
-using RX_WS_OUT_DELAY = BitField<16, 2>;
-constexpr uint32_t RX_WS_OUT_DELAY_Pos = 16;
-constexpr uint32_t RX_WS_OUT_DELAY_Msk = RX_WS_OUT_DELAY::mask;
+    /// Position: 16, Width: 2
+    /// Access: read-write
+    using RX_WS_OUT_DELAY = BitField<16, 2>;
+    constexpr uint32_t RX_WS_OUT_DELAY_Pos = 16;
+    constexpr uint32_t RX_WS_OUT_DELAY_Msk = RX_WS_OUT_DELAY::mask;
 
-/// Position: 18, Width: 2
-/// Access: read-write
-using RX_BCK_OUT_DELAY = BitField<18, 2>;
-constexpr uint32_t RX_BCK_OUT_DELAY_Pos = 18;
-constexpr uint32_t RX_BCK_OUT_DELAY_Msk = RX_BCK_OUT_DELAY::mask;
+    /// Position: 18, Width: 2
+    /// Access: read-write
+    using RX_BCK_OUT_DELAY = BitField<18, 2>;
+    constexpr uint32_t RX_BCK_OUT_DELAY_Pos = 18;
+    constexpr uint32_t RX_BCK_OUT_DELAY_Msk = RX_BCK_OUT_DELAY::mask;
 
-/// Position: 20, Width: 1
-/// Access: read-write
-using TX_DSYNC_SW = BitField<20, 1>;
-constexpr uint32_t TX_DSYNC_SW_Pos = 20;
-constexpr uint32_t TX_DSYNC_SW_Msk = TX_DSYNC_SW::mask;
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using TX_DSYNC_SW = BitField<20, 1>;
+    constexpr uint32_t TX_DSYNC_SW_Pos = 20;
+    constexpr uint32_t TX_DSYNC_SW_Msk = TX_DSYNC_SW::mask;
 
-/// Position: 21, Width: 1
-/// Access: read-write
-using RX_DSYNC_SW = BitField<21, 1>;
-constexpr uint32_t RX_DSYNC_SW_Pos = 21;
-constexpr uint32_t RX_DSYNC_SW_Msk = RX_DSYNC_SW::mask;
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using RX_DSYNC_SW = BitField<21, 1>;
+    constexpr uint32_t RX_DSYNC_SW_Pos = 21;
+    constexpr uint32_t RX_DSYNC_SW_Msk = RX_DSYNC_SW::mask;
 
-/// Position: 22, Width: 2
-/// Access: read-write
-using DATA_ENABLE_DELAY = BitField<22, 2>;
-constexpr uint32_t DATA_ENABLE_DELAY_Pos = 22;
-constexpr uint32_t DATA_ENABLE_DELAY_Msk = DATA_ENABLE_DELAY::mask;
+    /// Position: 22, Width: 2
+    /// Access: read-write
+    using DATA_ENABLE_DELAY = BitField<22, 2>;
+    constexpr uint32_t DATA_ENABLE_DELAY_Pos = 22;
+    constexpr uint32_t DATA_ENABLE_DELAY_Msk = DATA_ENABLE_DELAY::mask;
 
-/// Position: 24, Width: 1
-/// Access: read-write
-using TX_BCK_IN_INV = BitField<24, 1>;
-constexpr uint32_t TX_BCK_IN_INV_Pos = 24;
-constexpr uint32_t TX_BCK_IN_INV_Msk = TX_BCK_IN_INV::mask;
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using TX_BCK_IN_INV = BitField<24, 1>;
+    constexpr uint32_t TX_BCK_IN_INV_Pos = 24;
+    constexpr uint32_t TX_BCK_IN_INV_Msk = TX_BCK_IN_INV::mask;
 
 }  // namespace timing
 
 /// FIFO_CONF - FIFO_CONF
 namespace fifo_conf {
-/// Position: 0, Width: 6
-/// Access: read-write
-using RX_DATA_NUM = BitField<0, 6>;
-constexpr uint32_t RX_DATA_NUM_Pos = 0;
-constexpr uint32_t RX_DATA_NUM_Msk = RX_DATA_NUM::mask;
+    /// Position: 0, Width: 6
+    /// Access: read-write
+    using RX_DATA_NUM = BitField<0, 6>;
+    constexpr uint32_t RX_DATA_NUM_Pos = 0;
+    constexpr uint32_t RX_DATA_NUM_Msk = RX_DATA_NUM::mask;
 
-/// Position: 6, Width: 6
-/// Access: read-write
-using TX_DATA_NUM = BitField<6, 6>;
-constexpr uint32_t TX_DATA_NUM_Pos = 6;
-constexpr uint32_t TX_DATA_NUM_Msk = TX_DATA_NUM::mask;
+    /// Position: 6, Width: 6
+    /// Access: read-write
+    using TX_DATA_NUM = BitField<6, 6>;
+    constexpr uint32_t TX_DATA_NUM_Pos = 6;
+    constexpr uint32_t TX_DATA_NUM_Msk = TX_DATA_NUM::mask;
 
-/// Position: 12, Width: 1
-/// Access: read-write
-using DSCR_EN = BitField<12, 1>;
-constexpr uint32_t DSCR_EN_Pos = 12;
-constexpr uint32_t DSCR_EN_Msk = DSCR_EN::mask;
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using DSCR_EN = BitField<12, 1>;
+    constexpr uint32_t DSCR_EN_Pos = 12;
+    constexpr uint32_t DSCR_EN_Msk = DSCR_EN::mask;
 
-/// Position: 13, Width: 3
-/// Access: read-write
-using TX_FIFO_MOD = BitField<13, 3>;
-constexpr uint32_t TX_FIFO_MOD_Pos = 13;
-constexpr uint32_t TX_FIFO_MOD_Msk = TX_FIFO_MOD::mask;
+    /// Position: 13, Width: 3
+    /// Access: read-write
+    using TX_FIFO_MOD = BitField<13, 3>;
+    constexpr uint32_t TX_FIFO_MOD_Pos = 13;
+    constexpr uint32_t TX_FIFO_MOD_Msk = TX_FIFO_MOD::mask;
 
-/// Position: 16, Width: 3
-/// Access: read-write
-using RX_FIFO_MOD = BitField<16, 3>;
-constexpr uint32_t RX_FIFO_MOD_Pos = 16;
-constexpr uint32_t RX_FIFO_MOD_Msk = RX_FIFO_MOD::mask;
+    /// Position: 16, Width: 3
+    /// Access: read-write
+    using RX_FIFO_MOD = BitField<16, 3>;
+    constexpr uint32_t RX_FIFO_MOD_Pos = 16;
+    constexpr uint32_t RX_FIFO_MOD_Msk = RX_FIFO_MOD::mask;
 
-/// Position: 19, Width: 1
-/// Access: read-write
-using TX_FIFO_MOD_FORCE_EN = BitField<19, 1>;
-constexpr uint32_t TX_FIFO_MOD_FORCE_EN_Pos = 19;
-constexpr uint32_t TX_FIFO_MOD_FORCE_EN_Msk = TX_FIFO_MOD_FORCE_EN::mask;
+    /// Position: 19, Width: 1
+    /// Access: read-write
+    using TX_FIFO_MOD_FORCE_EN = BitField<19, 1>;
+    constexpr uint32_t TX_FIFO_MOD_FORCE_EN_Pos = 19;
+    constexpr uint32_t TX_FIFO_MOD_FORCE_EN_Msk = TX_FIFO_MOD_FORCE_EN::mask;
 
-/// Position: 20, Width: 1
-/// Access: read-write
-using RX_FIFO_MOD_FORCE_EN = BitField<20, 1>;
-constexpr uint32_t RX_FIFO_MOD_FORCE_EN_Pos = 20;
-constexpr uint32_t RX_FIFO_MOD_FORCE_EN_Msk = RX_FIFO_MOD_FORCE_EN::mask;
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using RX_FIFO_MOD_FORCE_EN = BitField<20, 1>;
+    constexpr uint32_t RX_FIFO_MOD_FORCE_EN_Pos = 20;
+    constexpr uint32_t RX_FIFO_MOD_FORCE_EN_Msk = RX_FIFO_MOD_FORCE_EN::mask;
 
 }  // namespace fifo_conf
 
 /// RXEOF_NUM - RXEOF_NUM
 namespace rxeof_num {
-/// Position: 0, Width: 32
-/// Access: read-write
-using RX_EOF_NUM = BitField<0, 32>;
-constexpr uint32_t RX_EOF_NUM_Pos = 0;
-constexpr uint32_t RX_EOF_NUM_Msk = RX_EOF_NUM::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using RX_EOF_NUM = BitField<0, 32>;
+    constexpr uint32_t RX_EOF_NUM_Pos = 0;
+    constexpr uint32_t RX_EOF_NUM_Msk = RX_EOF_NUM::mask;
 
 }  // namespace rxeof_num
 
 /// CONF_SIGLE_DATA - CONF_SIGLE_DATA
 namespace conf_sigle_data {
-/// Position: 0, Width: 32
-/// Access: read-write
-using SIGLE_DATA = BitField<0, 32>;
-constexpr uint32_t SIGLE_DATA_Pos = 0;
-constexpr uint32_t SIGLE_DATA_Msk = SIGLE_DATA::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using SIGLE_DATA = BitField<0, 32>;
+    constexpr uint32_t SIGLE_DATA_Pos = 0;
+    constexpr uint32_t SIGLE_DATA_Msk = SIGLE_DATA::mask;
 
 }  // namespace conf_sigle_data
 
 /// CONF_CHAN - CONF_CHAN
 namespace conf_chan {
-/// Position: 0, Width: 3
-/// Access: read-write
-using TX_CHAN_MOD = BitField<0, 3>;
-constexpr uint32_t TX_CHAN_MOD_Pos = 0;
-constexpr uint32_t TX_CHAN_MOD_Msk = TX_CHAN_MOD::mask;
+    /// Position: 0, Width: 3
+    /// Access: read-write
+    using TX_CHAN_MOD = BitField<0, 3>;
+    constexpr uint32_t TX_CHAN_MOD_Pos = 0;
+    constexpr uint32_t TX_CHAN_MOD_Msk = TX_CHAN_MOD::mask;
 
-/// Position: 3, Width: 2
-/// Access: read-write
-using RX_CHAN_MOD = BitField<3, 2>;
-constexpr uint32_t RX_CHAN_MOD_Pos = 3;
-constexpr uint32_t RX_CHAN_MOD_Msk = RX_CHAN_MOD::mask;
+    /// Position: 3, Width: 2
+    /// Access: read-write
+    using RX_CHAN_MOD = BitField<3, 2>;
+    constexpr uint32_t RX_CHAN_MOD_Pos = 3;
+    constexpr uint32_t RX_CHAN_MOD_Msk = RX_CHAN_MOD::mask;
 
 }  // namespace conf_chan
 
 /// OUT_LINK - OUT_LINK
 namespace out_link {
-/// Position: 0, Width: 20
-/// Access: read-write
-using OUTLINK_ADDR = BitField<0, 20>;
-constexpr uint32_t OUTLINK_ADDR_Pos = 0;
-constexpr uint32_t OUTLINK_ADDR_Msk = OUTLINK_ADDR::mask;
+    /// Position: 0, Width: 20
+    /// Access: read-write
+    using OUTLINK_ADDR = BitField<0, 20>;
+    constexpr uint32_t OUTLINK_ADDR_Pos = 0;
+    constexpr uint32_t OUTLINK_ADDR_Msk = OUTLINK_ADDR::mask;
 
-/// Position: 28, Width: 1
-/// Access: read-write
-using OUTLINK_STOP = BitField<28, 1>;
-constexpr uint32_t OUTLINK_STOP_Pos = 28;
-constexpr uint32_t OUTLINK_STOP_Msk = OUTLINK_STOP::mask;
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using OUTLINK_STOP = BitField<28, 1>;
+    constexpr uint32_t OUTLINK_STOP_Pos = 28;
+    constexpr uint32_t OUTLINK_STOP_Msk = OUTLINK_STOP::mask;
 
-/// Position: 29, Width: 1
-/// Access: read-write
-using OUTLINK_START = BitField<29, 1>;
-constexpr uint32_t OUTLINK_START_Pos = 29;
-constexpr uint32_t OUTLINK_START_Msk = OUTLINK_START::mask;
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using OUTLINK_START = BitField<29, 1>;
+    constexpr uint32_t OUTLINK_START_Pos = 29;
+    constexpr uint32_t OUTLINK_START_Msk = OUTLINK_START::mask;
 
-/// Position: 30, Width: 1
-/// Access: read-write
-using OUTLINK_RESTART = BitField<30, 1>;
-constexpr uint32_t OUTLINK_RESTART_Pos = 30;
-constexpr uint32_t OUTLINK_RESTART_Msk = OUTLINK_RESTART::mask;
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using OUTLINK_RESTART = BitField<30, 1>;
+    constexpr uint32_t OUTLINK_RESTART_Pos = 30;
+    constexpr uint32_t OUTLINK_RESTART_Msk = OUTLINK_RESTART::mask;
 
-/// Position: 31, Width: 1
-/// Access: read-only
-using OUTLINK_PARK = BitField<31, 1>;
-constexpr uint32_t OUTLINK_PARK_Pos = 31;
-constexpr uint32_t OUTLINK_PARK_Msk = OUTLINK_PARK::mask;
+    /// Position: 31, Width: 1
+    /// Access: read-only
+    using OUTLINK_PARK = BitField<31, 1>;
+    constexpr uint32_t OUTLINK_PARK_Pos = 31;
+    constexpr uint32_t OUTLINK_PARK_Msk = OUTLINK_PARK::mask;
 
 }  // namespace out_link
 
 /// IN_LINK - IN_LINK
 namespace in_link {
-/// Position: 0, Width: 20
-/// Access: read-write
-using INLINK_ADDR = BitField<0, 20>;
-constexpr uint32_t INLINK_ADDR_Pos = 0;
-constexpr uint32_t INLINK_ADDR_Msk = INLINK_ADDR::mask;
+    /// Position: 0, Width: 20
+    /// Access: read-write
+    using INLINK_ADDR = BitField<0, 20>;
+    constexpr uint32_t INLINK_ADDR_Pos = 0;
+    constexpr uint32_t INLINK_ADDR_Msk = INLINK_ADDR::mask;
 
-/// Position: 28, Width: 1
-/// Access: read-write
-using INLINK_STOP = BitField<28, 1>;
-constexpr uint32_t INLINK_STOP_Pos = 28;
-constexpr uint32_t INLINK_STOP_Msk = INLINK_STOP::mask;
+    /// Position: 28, Width: 1
+    /// Access: read-write
+    using INLINK_STOP = BitField<28, 1>;
+    constexpr uint32_t INLINK_STOP_Pos = 28;
+    constexpr uint32_t INLINK_STOP_Msk = INLINK_STOP::mask;
 
-/// Position: 29, Width: 1
-/// Access: read-write
-using INLINK_START = BitField<29, 1>;
-constexpr uint32_t INLINK_START_Pos = 29;
-constexpr uint32_t INLINK_START_Msk = INLINK_START::mask;
+    /// Position: 29, Width: 1
+    /// Access: read-write
+    using INLINK_START = BitField<29, 1>;
+    constexpr uint32_t INLINK_START_Pos = 29;
+    constexpr uint32_t INLINK_START_Msk = INLINK_START::mask;
 
-/// Position: 30, Width: 1
-/// Access: read-write
-using INLINK_RESTART = BitField<30, 1>;
-constexpr uint32_t INLINK_RESTART_Pos = 30;
-constexpr uint32_t INLINK_RESTART_Msk = INLINK_RESTART::mask;
+    /// Position: 30, Width: 1
+    /// Access: read-write
+    using INLINK_RESTART = BitField<30, 1>;
+    constexpr uint32_t INLINK_RESTART_Pos = 30;
+    constexpr uint32_t INLINK_RESTART_Msk = INLINK_RESTART::mask;
 
-/// Position: 31, Width: 1
-/// Access: read-only
-using INLINK_PARK = BitField<31, 1>;
-constexpr uint32_t INLINK_PARK_Pos = 31;
-constexpr uint32_t INLINK_PARK_Msk = INLINK_PARK::mask;
+    /// Position: 31, Width: 1
+    /// Access: read-only
+    using INLINK_PARK = BitField<31, 1>;
+    constexpr uint32_t INLINK_PARK_Pos = 31;
+    constexpr uint32_t INLINK_PARK_Msk = INLINK_PARK::mask;
 
 }  // namespace in_link
 
 /// OUT_EOF_DES_ADDR - OUT_EOF_DES_ADDR
 namespace out_eof_des_addr {
-/// Position: 0, Width: 32
-/// Access: read-only
-using OUT_EOF_DES_ADDR = BitField<0, 32>;
-constexpr uint32_t OUT_EOF_DES_ADDR_Pos = 0;
-constexpr uint32_t OUT_EOF_DES_ADDR_Msk = OUT_EOF_DES_ADDR::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using OUT_EOF_DES_ADDR = BitField<0, 32>;
+    constexpr uint32_t OUT_EOF_DES_ADDR_Pos = 0;
+    constexpr uint32_t OUT_EOF_DES_ADDR_Msk = OUT_EOF_DES_ADDR::mask;
 
 }  // namespace out_eof_des_addr
 
 /// IN_EOF_DES_ADDR - IN_EOF_DES_ADDR
 namespace in_eof_des_addr {
-/// Position: 0, Width: 32
-/// Access: read-only
-using IN_SUC_EOF_DES_ADDR = BitField<0, 32>;
-constexpr uint32_t IN_SUC_EOF_DES_ADDR_Pos = 0;
-constexpr uint32_t IN_SUC_EOF_DES_ADDR_Msk = IN_SUC_EOF_DES_ADDR::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using IN_SUC_EOF_DES_ADDR = BitField<0, 32>;
+    constexpr uint32_t IN_SUC_EOF_DES_ADDR_Pos = 0;
+    constexpr uint32_t IN_SUC_EOF_DES_ADDR_Msk = IN_SUC_EOF_DES_ADDR::mask;
 
 }  // namespace in_eof_des_addr
 
 /// OUT_EOF_BFR_DES_ADDR - OUT_EOF_BFR_DES_ADDR
 namespace out_eof_bfr_des_addr {
-/// Position: 0, Width: 32
-/// Access: read-only
-using OUT_EOF_BFR_DES_ADDR = BitField<0, 32>;
-constexpr uint32_t OUT_EOF_BFR_DES_ADDR_Pos = 0;
-constexpr uint32_t OUT_EOF_BFR_DES_ADDR_Msk = OUT_EOF_BFR_DES_ADDR::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using OUT_EOF_BFR_DES_ADDR = BitField<0, 32>;
+    constexpr uint32_t OUT_EOF_BFR_DES_ADDR_Pos = 0;
+    constexpr uint32_t OUT_EOF_BFR_DES_ADDR_Msk = OUT_EOF_BFR_DES_ADDR::mask;
 
 }  // namespace out_eof_bfr_des_addr
 
 /// AHB_TEST - AHB_TEST
 namespace ahb_test {
-/// Position: 0, Width: 3
-/// Access: read-write
-using AHB_TESTMODE = BitField<0, 3>;
-constexpr uint32_t AHB_TESTMODE_Pos = 0;
-constexpr uint32_t AHB_TESTMODE_Msk = AHB_TESTMODE::mask;
+    /// Position: 0, Width: 3
+    /// Access: read-write
+    using AHB_TESTMODE = BitField<0, 3>;
+    constexpr uint32_t AHB_TESTMODE_Pos = 0;
+    constexpr uint32_t AHB_TESTMODE_Msk = AHB_TESTMODE::mask;
 
-/// Position: 4, Width: 2
-/// Access: read-write
-using AHB_TESTADDR = BitField<4, 2>;
-constexpr uint32_t AHB_TESTADDR_Pos = 4;
-constexpr uint32_t AHB_TESTADDR_Msk = AHB_TESTADDR::mask;
+    /// Position: 4, Width: 2
+    /// Access: read-write
+    using AHB_TESTADDR = BitField<4, 2>;
+    constexpr uint32_t AHB_TESTADDR_Pos = 4;
+    constexpr uint32_t AHB_TESTADDR_Msk = AHB_TESTADDR::mask;
 
 }  // namespace ahb_test
 
 /// INLINK_DSCR - INLINK_DSCR
 namespace inlink_dscr {
-/// Position: 0, Width: 32
-/// Access: read-only
-using INLINK_DSCR = BitField<0, 32>;
-constexpr uint32_t INLINK_DSCR_Pos = 0;
-constexpr uint32_t INLINK_DSCR_Msk = INLINK_DSCR::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using INLINK_DSCR = BitField<0, 32>;
+    constexpr uint32_t INLINK_DSCR_Pos = 0;
+    constexpr uint32_t INLINK_DSCR_Msk = INLINK_DSCR::mask;
 
 }  // namespace inlink_dscr
 
 /// INLINK_DSCR_BF0 - INLINK_DSCR_BF0
 namespace inlink_dscr_bf0 {
-/// Position: 0, Width: 32
-/// Access: read-only
-using INLINK_DSCR_BF0 = BitField<0, 32>;
-constexpr uint32_t INLINK_DSCR_BF0_Pos = 0;
-constexpr uint32_t INLINK_DSCR_BF0_Msk = INLINK_DSCR_BF0::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using INLINK_DSCR_BF0 = BitField<0, 32>;
+    constexpr uint32_t INLINK_DSCR_BF0_Pos = 0;
+    constexpr uint32_t INLINK_DSCR_BF0_Msk = INLINK_DSCR_BF0::mask;
 
 }  // namespace inlink_dscr_bf0
 
 /// INLINK_DSCR_BF1 - INLINK_DSCR_BF1
 namespace inlink_dscr_bf1 {
-/// Position: 0, Width: 32
-/// Access: read-only
-using INLINK_DSCR_BF1 = BitField<0, 32>;
-constexpr uint32_t INLINK_DSCR_BF1_Pos = 0;
-constexpr uint32_t INLINK_DSCR_BF1_Msk = INLINK_DSCR_BF1::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using INLINK_DSCR_BF1 = BitField<0, 32>;
+    constexpr uint32_t INLINK_DSCR_BF1_Pos = 0;
+    constexpr uint32_t INLINK_DSCR_BF1_Msk = INLINK_DSCR_BF1::mask;
 
 }  // namespace inlink_dscr_bf1
 
 /// OUTLINK_DSCR - OUTLINK_DSCR
 namespace outlink_dscr {
-/// Position: 0, Width: 32
-/// Access: read-only
-using OUTLINK_DSCR = BitField<0, 32>;
-constexpr uint32_t OUTLINK_DSCR_Pos = 0;
-constexpr uint32_t OUTLINK_DSCR_Msk = OUTLINK_DSCR::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using OUTLINK_DSCR = BitField<0, 32>;
+    constexpr uint32_t OUTLINK_DSCR_Pos = 0;
+    constexpr uint32_t OUTLINK_DSCR_Msk = OUTLINK_DSCR::mask;
 
 }  // namespace outlink_dscr
 
 /// OUTLINK_DSCR_BF0 - OUTLINK_DSCR_BF0
 namespace outlink_dscr_bf0 {
-/// Position: 0, Width: 32
-/// Access: read-only
-using OUTLINK_DSCR_BF0 = BitField<0, 32>;
-constexpr uint32_t OUTLINK_DSCR_BF0_Pos = 0;
-constexpr uint32_t OUTLINK_DSCR_BF0_Msk = OUTLINK_DSCR_BF0::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using OUTLINK_DSCR_BF0 = BitField<0, 32>;
+    constexpr uint32_t OUTLINK_DSCR_BF0_Pos = 0;
+    constexpr uint32_t OUTLINK_DSCR_BF0_Msk = OUTLINK_DSCR_BF0::mask;
 
 }  // namespace outlink_dscr_bf0
 
 /// OUTLINK_DSCR_BF1 - OUTLINK_DSCR_BF1
 namespace outlink_dscr_bf1 {
-/// Position: 0, Width: 32
-/// Access: read-only
-using OUTLINK_DSCR_BF1 = BitField<0, 32>;
-constexpr uint32_t OUTLINK_DSCR_BF1_Pos = 0;
-constexpr uint32_t OUTLINK_DSCR_BF1_Msk = OUTLINK_DSCR_BF1::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using OUTLINK_DSCR_BF1 = BitField<0, 32>;
+    constexpr uint32_t OUTLINK_DSCR_BF1_Pos = 0;
+    constexpr uint32_t OUTLINK_DSCR_BF1_Msk = OUTLINK_DSCR_BF1::mask;
 
 }  // namespace outlink_dscr_bf1
 
 /// LC_CONF - LC_CONF
 namespace lc_conf {
-/// Position: 0, Width: 1
-/// Access: read-write
-using IN_RST = BitField<0, 1>;
-constexpr uint32_t IN_RST_Pos = 0;
-constexpr uint32_t IN_RST_Msk = IN_RST::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using IN_RST = BitField<0, 1>;
+    constexpr uint32_t IN_RST_Pos = 0;
+    constexpr uint32_t IN_RST_Msk = IN_RST::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-write
-using OUT_RST = BitField<1, 1>;
-constexpr uint32_t OUT_RST_Pos = 1;
-constexpr uint32_t OUT_RST_Msk = OUT_RST::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using OUT_RST = BitField<1, 1>;
+    constexpr uint32_t OUT_RST_Pos = 1;
+    constexpr uint32_t OUT_RST_Msk = OUT_RST::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-write
-using AHBM_FIFO_RST = BitField<2, 1>;
-constexpr uint32_t AHBM_FIFO_RST_Pos = 2;
-constexpr uint32_t AHBM_FIFO_RST_Msk = AHBM_FIFO_RST::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using AHBM_FIFO_RST = BitField<2, 1>;
+    constexpr uint32_t AHBM_FIFO_RST_Pos = 2;
+    constexpr uint32_t AHBM_FIFO_RST_Msk = AHBM_FIFO_RST::mask;
 
-/// Position: 3, Width: 1
-/// Access: read-write
-using AHBM_RST = BitField<3, 1>;
-constexpr uint32_t AHBM_RST_Pos = 3;
-constexpr uint32_t AHBM_RST_Msk = AHBM_RST::mask;
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using AHBM_RST = BitField<3, 1>;
+    constexpr uint32_t AHBM_RST_Pos = 3;
+    constexpr uint32_t AHBM_RST_Msk = AHBM_RST::mask;
 
-/// Position: 4, Width: 1
-/// Access: read-write
-using OUT_LOOP_TEST = BitField<4, 1>;
-constexpr uint32_t OUT_LOOP_TEST_Pos = 4;
-constexpr uint32_t OUT_LOOP_TEST_Msk = OUT_LOOP_TEST::mask;
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using OUT_LOOP_TEST = BitField<4, 1>;
+    constexpr uint32_t OUT_LOOP_TEST_Pos = 4;
+    constexpr uint32_t OUT_LOOP_TEST_Msk = OUT_LOOP_TEST::mask;
 
-/// Position: 5, Width: 1
-/// Access: read-write
-using IN_LOOP_TEST = BitField<5, 1>;
-constexpr uint32_t IN_LOOP_TEST_Pos = 5;
-constexpr uint32_t IN_LOOP_TEST_Msk = IN_LOOP_TEST::mask;
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using IN_LOOP_TEST = BitField<5, 1>;
+    constexpr uint32_t IN_LOOP_TEST_Pos = 5;
+    constexpr uint32_t IN_LOOP_TEST_Msk = IN_LOOP_TEST::mask;
 
-/// Position: 6, Width: 1
-/// Access: read-write
-using OUT_AUTO_WRBACK = BitField<6, 1>;
-constexpr uint32_t OUT_AUTO_WRBACK_Pos = 6;
-constexpr uint32_t OUT_AUTO_WRBACK_Msk = OUT_AUTO_WRBACK::mask;
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using OUT_AUTO_WRBACK = BitField<6, 1>;
+    constexpr uint32_t OUT_AUTO_WRBACK_Pos = 6;
+    constexpr uint32_t OUT_AUTO_WRBACK_Msk = OUT_AUTO_WRBACK::mask;
 
-/// Position: 7, Width: 1
-/// Access: read-write
-using OUT_NO_RESTART_CLR = BitField<7, 1>;
-constexpr uint32_t OUT_NO_RESTART_CLR_Pos = 7;
-constexpr uint32_t OUT_NO_RESTART_CLR_Msk = OUT_NO_RESTART_CLR::mask;
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using OUT_NO_RESTART_CLR = BitField<7, 1>;
+    constexpr uint32_t OUT_NO_RESTART_CLR_Pos = 7;
+    constexpr uint32_t OUT_NO_RESTART_CLR_Msk = OUT_NO_RESTART_CLR::mask;
 
-/// Position: 8, Width: 1
-/// Access: read-write
-using OUT_EOF_MODE = BitField<8, 1>;
-constexpr uint32_t OUT_EOF_MODE_Pos = 8;
-constexpr uint32_t OUT_EOF_MODE_Msk = OUT_EOF_MODE::mask;
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using OUT_EOF_MODE = BitField<8, 1>;
+    constexpr uint32_t OUT_EOF_MODE_Pos = 8;
+    constexpr uint32_t OUT_EOF_MODE_Msk = OUT_EOF_MODE::mask;
 
-/// Position: 9, Width: 1
-/// Access: read-write
-using OUTDSCR_BURST_EN = BitField<9, 1>;
-constexpr uint32_t OUTDSCR_BURST_EN_Pos = 9;
-constexpr uint32_t OUTDSCR_BURST_EN_Msk = OUTDSCR_BURST_EN::mask;
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using OUTDSCR_BURST_EN = BitField<9, 1>;
+    constexpr uint32_t OUTDSCR_BURST_EN_Pos = 9;
+    constexpr uint32_t OUTDSCR_BURST_EN_Msk = OUTDSCR_BURST_EN::mask;
 
-/// Position: 10, Width: 1
-/// Access: read-write
-using INDSCR_BURST_EN = BitField<10, 1>;
-constexpr uint32_t INDSCR_BURST_EN_Pos = 10;
-constexpr uint32_t INDSCR_BURST_EN_Msk = INDSCR_BURST_EN::mask;
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using INDSCR_BURST_EN = BitField<10, 1>;
+    constexpr uint32_t INDSCR_BURST_EN_Pos = 10;
+    constexpr uint32_t INDSCR_BURST_EN_Msk = INDSCR_BURST_EN::mask;
 
-/// Position: 11, Width: 1
-/// Access: read-write
-using OUT_DATA_BURST_EN = BitField<11, 1>;
-constexpr uint32_t OUT_DATA_BURST_EN_Pos = 11;
-constexpr uint32_t OUT_DATA_BURST_EN_Msk = OUT_DATA_BURST_EN::mask;
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using OUT_DATA_BURST_EN = BitField<11, 1>;
+    constexpr uint32_t OUT_DATA_BURST_EN_Pos = 11;
+    constexpr uint32_t OUT_DATA_BURST_EN_Msk = OUT_DATA_BURST_EN::mask;
 
-/// Position: 12, Width: 1
-/// Access: read-write
-using CHECK_OWNER = BitField<12, 1>;
-constexpr uint32_t CHECK_OWNER_Pos = 12;
-constexpr uint32_t CHECK_OWNER_Msk = CHECK_OWNER::mask;
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using CHECK_OWNER = BitField<12, 1>;
+    constexpr uint32_t CHECK_OWNER_Pos = 12;
+    constexpr uint32_t CHECK_OWNER_Msk = CHECK_OWNER::mask;
 
-/// Position: 13, Width: 1
-/// Access: read-write
-using MEM_TRANS_EN = BitField<13, 1>;
-constexpr uint32_t MEM_TRANS_EN_Pos = 13;
-constexpr uint32_t MEM_TRANS_EN_Msk = MEM_TRANS_EN::mask;
+    /// Position: 13, Width: 1
+    /// Access: read-write
+    using MEM_TRANS_EN = BitField<13, 1>;
+    constexpr uint32_t MEM_TRANS_EN_Pos = 13;
+    constexpr uint32_t MEM_TRANS_EN_Msk = MEM_TRANS_EN::mask;
 
 }  // namespace lc_conf
 
 /// OUTFIFO_PUSH - OUTFIFO_PUSH
 namespace outfifo_push {
-/// Position: 0, Width: 9
-/// Access: read-write
-using OUTFIFO_WDATA = BitField<0, 9>;
-constexpr uint32_t OUTFIFO_WDATA_Pos = 0;
-constexpr uint32_t OUTFIFO_WDATA_Msk = OUTFIFO_WDATA::mask;
+    /// Position: 0, Width: 9
+    /// Access: read-write
+    using OUTFIFO_WDATA = BitField<0, 9>;
+    constexpr uint32_t OUTFIFO_WDATA_Pos = 0;
+    constexpr uint32_t OUTFIFO_WDATA_Msk = OUTFIFO_WDATA::mask;
 
-/// Position: 16, Width: 1
-/// Access: read-write
-using OUTFIFO_PUSH = BitField<16, 1>;
-constexpr uint32_t OUTFIFO_PUSH_Pos = 16;
-constexpr uint32_t OUTFIFO_PUSH_Msk = OUTFIFO_PUSH::mask;
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using OUTFIFO_PUSH = BitField<16, 1>;
+    constexpr uint32_t OUTFIFO_PUSH_Pos = 16;
+    constexpr uint32_t OUTFIFO_PUSH_Msk = OUTFIFO_PUSH::mask;
 
 }  // namespace outfifo_push
 
 /// INFIFO_POP - INFIFO_POP
 namespace infifo_pop {
-/// Position: 0, Width: 12
-/// Access: read-only
-using INFIFO_RDATA = BitField<0, 12>;
-constexpr uint32_t INFIFO_RDATA_Pos = 0;
-constexpr uint32_t INFIFO_RDATA_Msk = INFIFO_RDATA::mask;
+    /// Position: 0, Width: 12
+    /// Access: read-only
+    using INFIFO_RDATA = BitField<0, 12>;
+    constexpr uint32_t INFIFO_RDATA_Pos = 0;
+    constexpr uint32_t INFIFO_RDATA_Msk = INFIFO_RDATA::mask;
 
-/// Position: 16, Width: 1
-/// Access: read-write
-using INFIFO_POP = BitField<16, 1>;
-constexpr uint32_t INFIFO_POP_Pos = 16;
-constexpr uint32_t INFIFO_POP_Msk = INFIFO_POP::mask;
+    /// Position: 16, Width: 1
+    /// Access: read-write
+    using INFIFO_POP = BitField<16, 1>;
+    constexpr uint32_t INFIFO_POP_Pos = 16;
+    constexpr uint32_t INFIFO_POP_Msk = INFIFO_POP::mask;
 
 }  // namespace infifo_pop
 
 /// LC_STATE0 - LC_STATE0
 namespace lc_state0 {
-/// Position: 0, Width: 32
-/// Access: read-only
-using LC_STATE0 = BitField<0, 32>;
-constexpr uint32_t LC_STATE0_Pos = 0;
-constexpr uint32_t LC_STATE0_Msk = LC_STATE0::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using LC_STATE0 = BitField<0, 32>;
+    constexpr uint32_t LC_STATE0_Pos = 0;
+    constexpr uint32_t LC_STATE0_Msk = LC_STATE0::mask;
 
 }  // namespace lc_state0
 
 /// LC_STATE1 - LC_STATE1
 namespace lc_state1 {
-/// Position: 0, Width: 32
-/// Access: read-only
-using LC_STATE1 = BitField<0, 32>;
-constexpr uint32_t LC_STATE1_Pos = 0;
-constexpr uint32_t LC_STATE1_Msk = LC_STATE1::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-only
+    using LC_STATE1 = BitField<0, 32>;
+    constexpr uint32_t LC_STATE1_Pos = 0;
+    constexpr uint32_t LC_STATE1_Msk = LC_STATE1::mask;
 
 }  // namespace lc_state1
 
 /// LC_HUNG_CONF - LC_HUNG_CONF
 namespace lc_hung_conf {
-/// Position: 0, Width: 8
-/// Access: read-write
-using LC_FIFO_TIMEOUT = BitField<0, 8>;
-constexpr uint32_t LC_FIFO_TIMEOUT_Pos = 0;
-constexpr uint32_t LC_FIFO_TIMEOUT_Msk = LC_FIFO_TIMEOUT::mask;
+    /// Position: 0, Width: 8
+    /// Access: read-write
+    using LC_FIFO_TIMEOUT = BitField<0, 8>;
+    constexpr uint32_t LC_FIFO_TIMEOUT_Pos = 0;
+    constexpr uint32_t LC_FIFO_TIMEOUT_Msk = LC_FIFO_TIMEOUT::mask;
 
-/// Position: 8, Width: 3
-/// Access: read-write
-using LC_FIFO_TIMEOUT_SHIFT = BitField<8, 3>;
-constexpr uint32_t LC_FIFO_TIMEOUT_SHIFT_Pos = 8;
-constexpr uint32_t LC_FIFO_TIMEOUT_SHIFT_Msk = LC_FIFO_TIMEOUT_SHIFT::mask;
+    /// Position: 8, Width: 3
+    /// Access: read-write
+    using LC_FIFO_TIMEOUT_SHIFT = BitField<8, 3>;
+    constexpr uint32_t LC_FIFO_TIMEOUT_SHIFT_Pos = 8;
+    constexpr uint32_t LC_FIFO_TIMEOUT_SHIFT_Msk = LC_FIFO_TIMEOUT_SHIFT::mask;
 
-/// Position: 11, Width: 1
-/// Access: read-write
-using LC_FIFO_TIMEOUT_ENA = BitField<11, 1>;
-constexpr uint32_t LC_FIFO_TIMEOUT_ENA_Pos = 11;
-constexpr uint32_t LC_FIFO_TIMEOUT_ENA_Msk = LC_FIFO_TIMEOUT_ENA::mask;
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using LC_FIFO_TIMEOUT_ENA = BitField<11, 1>;
+    constexpr uint32_t LC_FIFO_TIMEOUT_ENA_Pos = 11;
+    constexpr uint32_t LC_FIFO_TIMEOUT_ENA_Msk = LC_FIFO_TIMEOUT_ENA::mask;
 
 }  // namespace lc_hung_conf
 
 /// CVSD_CONF0 - CVSD_CONF0
 namespace cvsd_conf0 {
-/// Position: 0, Width: 16
-/// Access: read-write
-using CVSD_Y_MAX = BitField<0, 16>;
-constexpr uint32_t CVSD_Y_MAX_Pos = 0;
-constexpr uint32_t CVSD_Y_MAX_Msk = CVSD_Y_MAX::mask;
+    /// Position: 0, Width: 16
+    /// Access: read-write
+    using CVSD_Y_MAX = BitField<0, 16>;
+    constexpr uint32_t CVSD_Y_MAX_Pos = 0;
+    constexpr uint32_t CVSD_Y_MAX_Msk = CVSD_Y_MAX::mask;
 
-/// Position: 16, Width: 16
-/// Access: read-write
-using CVSD_Y_MIN = BitField<16, 16>;
-constexpr uint32_t CVSD_Y_MIN_Pos = 16;
-constexpr uint32_t CVSD_Y_MIN_Msk = CVSD_Y_MIN::mask;
+    /// Position: 16, Width: 16
+    /// Access: read-write
+    using CVSD_Y_MIN = BitField<16, 16>;
+    constexpr uint32_t CVSD_Y_MIN_Pos = 16;
+    constexpr uint32_t CVSD_Y_MIN_Msk = CVSD_Y_MIN::mask;
 
 }  // namespace cvsd_conf0
 
 /// CVSD_CONF1 - CVSD_CONF1
 namespace cvsd_conf1 {
-/// Position: 0, Width: 16
-/// Access: read-write
-using CVSD_SIGMA_MAX = BitField<0, 16>;
-constexpr uint32_t CVSD_SIGMA_MAX_Pos = 0;
-constexpr uint32_t CVSD_SIGMA_MAX_Msk = CVSD_SIGMA_MAX::mask;
+    /// Position: 0, Width: 16
+    /// Access: read-write
+    using CVSD_SIGMA_MAX = BitField<0, 16>;
+    constexpr uint32_t CVSD_SIGMA_MAX_Pos = 0;
+    constexpr uint32_t CVSD_SIGMA_MAX_Msk = CVSD_SIGMA_MAX::mask;
 
-/// Position: 16, Width: 16
-/// Access: read-write
-using CVSD_SIGMA_MIN = BitField<16, 16>;
-constexpr uint32_t CVSD_SIGMA_MIN_Pos = 16;
-constexpr uint32_t CVSD_SIGMA_MIN_Msk = CVSD_SIGMA_MIN::mask;
+    /// Position: 16, Width: 16
+    /// Access: read-write
+    using CVSD_SIGMA_MIN = BitField<16, 16>;
+    constexpr uint32_t CVSD_SIGMA_MIN_Pos = 16;
+    constexpr uint32_t CVSD_SIGMA_MIN_Msk = CVSD_SIGMA_MIN::mask;
 
 }  // namespace cvsd_conf1
 
 /// CVSD_CONF2 - CVSD_CONF2
 namespace cvsd_conf2 {
-/// Position: 0, Width: 3
-/// Access: read-write
-using CVSD_K = BitField<0, 3>;
-constexpr uint32_t CVSD_K_Pos = 0;
-constexpr uint32_t CVSD_K_Msk = CVSD_K::mask;
+    /// Position: 0, Width: 3
+    /// Access: read-write
+    using CVSD_K = BitField<0, 3>;
+    constexpr uint32_t CVSD_K_Pos = 0;
+    constexpr uint32_t CVSD_K_Msk = CVSD_K::mask;
 
-/// Position: 3, Width: 3
-/// Access: read-write
-using CVSD_J = BitField<3, 3>;
-constexpr uint32_t CVSD_J_Pos = 3;
-constexpr uint32_t CVSD_J_Msk = CVSD_J::mask;
+    /// Position: 3, Width: 3
+    /// Access: read-write
+    using CVSD_J = BitField<3, 3>;
+    constexpr uint32_t CVSD_J_Pos = 3;
+    constexpr uint32_t CVSD_J_Msk = CVSD_J::mask;
 
-/// Position: 6, Width: 10
-/// Access: read-write
-using CVSD_BETA = BitField<6, 10>;
-constexpr uint32_t CVSD_BETA_Pos = 6;
-constexpr uint32_t CVSD_BETA_Msk = CVSD_BETA::mask;
+    /// Position: 6, Width: 10
+    /// Access: read-write
+    using CVSD_BETA = BitField<6, 10>;
+    constexpr uint32_t CVSD_BETA_Pos = 6;
+    constexpr uint32_t CVSD_BETA_Msk = CVSD_BETA::mask;
 
-/// Position: 16, Width: 3
-/// Access: read-write
-using CVSD_H = BitField<16, 3>;
-constexpr uint32_t CVSD_H_Pos = 16;
-constexpr uint32_t CVSD_H_Msk = CVSD_H::mask;
+    /// Position: 16, Width: 3
+    /// Access: read-write
+    using CVSD_H = BitField<16, 3>;
+    constexpr uint32_t CVSD_H_Pos = 16;
+    constexpr uint32_t CVSD_H_Msk = CVSD_H::mask;
 
 }  // namespace cvsd_conf2
 
 /// PLC_CONF0 - PLC_CONF0
 namespace plc_conf0 {
-/// Position: 0, Width: 6
-/// Access: read-write
-using GOOD_PACK_MAX = BitField<0, 6>;
-constexpr uint32_t GOOD_PACK_MAX_Pos = 0;
-constexpr uint32_t GOOD_PACK_MAX_Msk = GOOD_PACK_MAX::mask;
+    /// Position: 0, Width: 6
+    /// Access: read-write
+    using GOOD_PACK_MAX = BitField<0, 6>;
+    constexpr uint32_t GOOD_PACK_MAX_Pos = 0;
+    constexpr uint32_t GOOD_PACK_MAX_Msk = GOOD_PACK_MAX::mask;
 
-/// Position: 6, Width: 3
-/// Access: read-write
-using N_ERR_SEG = BitField<6, 3>;
-constexpr uint32_t N_ERR_SEG_Pos = 6;
-constexpr uint32_t N_ERR_SEG_Msk = N_ERR_SEG::mask;
+    /// Position: 6, Width: 3
+    /// Access: read-write
+    using N_ERR_SEG = BitField<6, 3>;
+    constexpr uint32_t N_ERR_SEG_Pos = 6;
+    constexpr uint32_t N_ERR_SEG_Msk = N_ERR_SEG::mask;
 
-/// Position: 9, Width: 3
-/// Access: read-write
-using SHIFT_RATE = BitField<9, 3>;
-constexpr uint32_t SHIFT_RATE_Pos = 9;
-constexpr uint32_t SHIFT_RATE_Msk = SHIFT_RATE::mask;
+    /// Position: 9, Width: 3
+    /// Access: read-write
+    using SHIFT_RATE = BitField<9, 3>;
+    constexpr uint32_t SHIFT_RATE_Pos = 9;
+    constexpr uint32_t SHIFT_RATE_Msk = SHIFT_RATE::mask;
 
-/// Position: 12, Width: 8
-/// Access: read-write
-using MAX_SLIDE_SAMPLE = BitField<12, 8>;
-constexpr uint32_t MAX_SLIDE_SAMPLE_Pos = 12;
-constexpr uint32_t MAX_SLIDE_SAMPLE_Msk = MAX_SLIDE_SAMPLE::mask;
+    /// Position: 12, Width: 8
+    /// Access: read-write
+    using MAX_SLIDE_SAMPLE = BitField<12, 8>;
+    constexpr uint32_t MAX_SLIDE_SAMPLE_Pos = 12;
+    constexpr uint32_t MAX_SLIDE_SAMPLE_Msk = MAX_SLIDE_SAMPLE::mask;
 
-/// Position: 20, Width: 5
-/// Access: read-write
-using PACK_LEN_8K = BitField<20, 5>;
-constexpr uint32_t PACK_LEN_8K_Pos = 20;
-constexpr uint32_t PACK_LEN_8K_Msk = PACK_LEN_8K::mask;
+    /// Position: 20, Width: 5
+    /// Access: read-write
+    using PACK_LEN_8K = BitField<20, 5>;
+    constexpr uint32_t PACK_LEN_8K_Pos = 20;
+    constexpr uint32_t PACK_LEN_8K_Msk = PACK_LEN_8K::mask;
 
-/// Position: 25, Width: 3
-/// Access: read-write
-using N_MIN_ERR = BitField<25, 3>;
-constexpr uint32_t N_MIN_ERR_Pos = 25;
-constexpr uint32_t N_MIN_ERR_Msk = N_MIN_ERR::mask;
+    /// Position: 25, Width: 3
+    /// Access: read-write
+    using N_MIN_ERR = BitField<25, 3>;
+    constexpr uint32_t N_MIN_ERR_Pos = 25;
+    constexpr uint32_t N_MIN_ERR_Msk = N_MIN_ERR::mask;
 
 }  // namespace plc_conf0
 
 /// PLC_CONF1 - PLC_CONF1
 namespace plc_conf1 {
-/// Position: 0, Width: 8
-/// Access: read-write
-using BAD_CEF_ATTEN_PARA = BitField<0, 8>;
-constexpr uint32_t BAD_CEF_ATTEN_PARA_Pos = 0;
-constexpr uint32_t BAD_CEF_ATTEN_PARA_Msk = BAD_CEF_ATTEN_PARA::mask;
+    /// Position: 0, Width: 8
+    /// Access: read-write
+    using BAD_CEF_ATTEN_PARA = BitField<0, 8>;
+    constexpr uint32_t BAD_CEF_ATTEN_PARA_Pos = 0;
+    constexpr uint32_t BAD_CEF_ATTEN_PARA_Msk = BAD_CEF_ATTEN_PARA::mask;
 
-/// Position: 8, Width: 4
-/// Access: read-write
-using BAD_CEF_ATTEN_PARA_SHIFT = BitField<8, 4>;
-constexpr uint32_t BAD_CEF_ATTEN_PARA_SHIFT_Pos = 8;
-constexpr uint32_t BAD_CEF_ATTEN_PARA_SHIFT_Msk = BAD_CEF_ATTEN_PARA_SHIFT::mask;
+    /// Position: 8, Width: 4
+    /// Access: read-write
+    using BAD_CEF_ATTEN_PARA_SHIFT = BitField<8, 4>;
+    constexpr uint32_t BAD_CEF_ATTEN_PARA_SHIFT_Pos = 8;
+    constexpr uint32_t BAD_CEF_ATTEN_PARA_SHIFT_Msk = BAD_CEF_ATTEN_PARA_SHIFT::mask;
 
-/// Position: 12, Width: 4
-/// Access: read-write
-using BAD_OLA_WIN2_PARA_SHIFT = BitField<12, 4>;
-constexpr uint32_t BAD_OLA_WIN2_PARA_SHIFT_Pos = 12;
-constexpr uint32_t BAD_OLA_WIN2_PARA_SHIFT_Msk = BAD_OLA_WIN2_PARA_SHIFT::mask;
+    /// Position: 12, Width: 4
+    /// Access: read-write
+    using BAD_OLA_WIN2_PARA_SHIFT = BitField<12, 4>;
+    constexpr uint32_t BAD_OLA_WIN2_PARA_SHIFT_Pos = 12;
+    constexpr uint32_t BAD_OLA_WIN2_PARA_SHIFT_Msk = BAD_OLA_WIN2_PARA_SHIFT::mask;
 
-/// Position: 16, Width: 8
-/// Access: read-write
-using BAD_OLA_WIN2_PARA = BitField<16, 8>;
-constexpr uint32_t BAD_OLA_WIN2_PARA_Pos = 16;
-constexpr uint32_t BAD_OLA_WIN2_PARA_Msk = BAD_OLA_WIN2_PARA::mask;
+    /// Position: 16, Width: 8
+    /// Access: read-write
+    using BAD_OLA_WIN2_PARA = BitField<16, 8>;
+    constexpr uint32_t BAD_OLA_WIN2_PARA_Pos = 16;
+    constexpr uint32_t BAD_OLA_WIN2_PARA_Msk = BAD_OLA_WIN2_PARA::mask;
 
-/// Position: 24, Width: 8
-/// Access: read-write
-using SLIDE_WIN_LEN = BitField<24, 8>;
-constexpr uint32_t SLIDE_WIN_LEN_Pos = 24;
-constexpr uint32_t SLIDE_WIN_LEN_Msk = SLIDE_WIN_LEN::mask;
+    /// Position: 24, Width: 8
+    /// Access: read-write
+    using SLIDE_WIN_LEN = BitField<24, 8>;
+    constexpr uint32_t SLIDE_WIN_LEN_Pos = 24;
+    constexpr uint32_t SLIDE_WIN_LEN_Msk = SLIDE_WIN_LEN::mask;
 
 }  // namespace plc_conf1
 
 /// PLC_CONF2 - PLC_CONF2
 namespace plc_conf2 {
-/// Position: 0, Width: 2
-/// Access: read-write
-using CVSD_SEG_MOD = BitField<0, 2>;
-constexpr uint32_t CVSD_SEG_MOD_Pos = 0;
-constexpr uint32_t CVSD_SEG_MOD_Msk = CVSD_SEG_MOD::mask;
+    /// Position: 0, Width: 2
+    /// Access: read-write
+    using CVSD_SEG_MOD = BitField<0, 2>;
+    constexpr uint32_t CVSD_SEG_MOD_Pos = 0;
+    constexpr uint32_t CVSD_SEG_MOD_Msk = CVSD_SEG_MOD::mask;
 
-/// Position: 2, Width: 5
-/// Access: read-write
-using MIN_PERIOD = BitField<2, 5>;
-constexpr uint32_t MIN_PERIOD_Pos = 2;
-constexpr uint32_t MIN_PERIOD_Msk = MIN_PERIOD::mask;
+    /// Position: 2, Width: 5
+    /// Access: read-write
+    using MIN_PERIOD = BitField<2, 5>;
+    constexpr uint32_t MIN_PERIOD_Pos = 2;
+    constexpr uint32_t MIN_PERIOD_Msk = MIN_PERIOD::mask;
 
 }  // namespace plc_conf2
 
 /// ESCO_CONF0 - ESCO_CONF0
 namespace esco_conf0 {
-/// Position: 0, Width: 1
-/// Access: read-write
-using ESCO_EN = BitField<0, 1>;
-constexpr uint32_t ESCO_EN_Pos = 0;
-constexpr uint32_t ESCO_EN_Msk = ESCO_EN::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using ESCO_EN = BitField<0, 1>;
+    constexpr uint32_t ESCO_EN_Pos = 0;
+    constexpr uint32_t ESCO_EN_Msk = ESCO_EN::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-write
-using ESCO_CHAN_MOD = BitField<1, 1>;
-constexpr uint32_t ESCO_CHAN_MOD_Pos = 1;
-constexpr uint32_t ESCO_CHAN_MOD_Msk = ESCO_CHAN_MOD::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using ESCO_CHAN_MOD = BitField<1, 1>;
+    constexpr uint32_t ESCO_CHAN_MOD_Pos = 1;
+    constexpr uint32_t ESCO_CHAN_MOD_Msk = ESCO_CHAN_MOD::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-write
-using ESCO_CVSD_DEC_PACK_ERR = BitField<2, 1>;
-constexpr uint32_t ESCO_CVSD_DEC_PACK_ERR_Pos = 2;
-constexpr uint32_t ESCO_CVSD_DEC_PACK_ERR_Msk = ESCO_CVSD_DEC_PACK_ERR::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using ESCO_CVSD_DEC_PACK_ERR = BitField<2, 1>;
+    constexpr uint32_t ESCO_CVSD_DEC_PACK_ERR_Pos = 2;
+    constexpr uint32_t ESCO_CVSD_DEC_PACK_ERR_Msk = ESCO_CVSD_DEC_PACK_ERR::mask;
 
-/// Position: 3, Width: 5
-/// Access: read-write
-using ESCO_CVSD_PACK_LEN_8K = BitField<3, 5>;
-constexpr uint32_t ESCO_CVSD_PACK_LEN_8K_Pos = 3;
-constexpr uint32_t ESCO_CVSD_PACK_LEN_8K_Msk = ESCO_CVSD_PACK_LEN_8K::mask;
+    /// Position: 3, Width: 5
+    /// Access: read-write
+    using ESCO_CVSD_PACK_LEN_8K = BitField<3, 5>;
+    constexpr uint32_t ESCO_CVSD_PACK_LEN_8K_Pos = 3;
+    constexpr uint32_t ESCO_CVSD_PACK_LEN_8K_Msk = ESCO_CVSD_PACK_LEN_8K::mask;
 
-/// Position: 8, Width: 1
-/// Access: read-write
-using ESCO_CVSD_INF_EN = BitField<8, 1>;
-constexpr uint32_t ESCO_CVSD_INF_EN_Pos = 8;
-constexpr uint32_t ESCO_CVSD_INF_EN_Msk = ESCO_CVSD_INF_EN::mask;
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using ESCO_CVSD_INF_EN = BitField<8, 1>;
+    constexpr uint32_t ESCO_CVSD_INF_EN_Pos = 8;
+    constexpr uint32_t ESCO_CVSD_INF_EN_Msk = ESCO_CVSD_INF_EN::mask;
 
-/// Position: 9, Width: 1
-/// Access: read-write
-using CVSD_DEC_START = BitField<9, 1>;
-constexpr uint32_t CVSD_DEC_START_Pos = 9;
-constexpr uint32_t CVSD_DEC_START_Msk = CVSD_DEC_START::mask;
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using CVSD_DEC_START = BitField<9, 1>;
+    constexpr uint32_t CVSD_DEC_START_Pos = 9;
+    constexpr uint32_t CVSD_DEC_START_Msk = CVSD_DEC_START::mask;
 
-/// Position: 10, Width: 1
-/// Access: read-write
-using CVSD_DEC_RESET = BitField<10, 1>;
-constexpr uint32_t CVSD_DEC_RESET_Pos = 10;
-constexpr uint32_t CVSD_DEC_RESET_Msk = CVSD_DEC_RESET::mask;
+    /// Position: 10, Width: 1
+    /// Access: read-write
+    using CVSD_DEC_RESET = BitField<10, 1>;
+    constexpr uint32_t CVSD_DEC_RESET_Pos = 10;
+    constexpr uint32_t CVSD_DEC_RESET_Msk = CVSD_DEC_RESET::mask;
 
-/// Position: 11, Width: 1
-/// Access: read-write
-using PLC_EN = BitField<11, 1>;
-constexpr uint32_t PLC_EN_Pos = 11;
-constexpr uint32_t PLC_EN_Msk = PLC_EN::mask;
+    /// Position: 11, Width: 1
+    /// Access: read-write
+    using PLC_EN = BitField<11, 1>;
+    constexpr uint32_t PLC_EN_Pos = 11;
+    constexpr uint32_t PLC_EN_Msk = PLC_EN::mask;
 
-/// Position: 12, Width: 1
-/// Access: read-write
-using PLC2DMA_EN = BitField<12, 1>;
-constexpr uint32_t PLC2DMA_EN_Pos = 12;
-constexpr uint32_t PLC2DMA_EN_Msk = PLC2DMA_EN::mask;
+    /// Position: 12, Width: 1
+    /// Access: read-write
+    using PLC2DMA_EN = BitField<12, 1>;
+    constexpr uint32_t PLC2DMA_EN_Pos = 12;
+    constexpr uint32_t PLC2DMA_EN_Msk = PLC2DMA_EN::mask;
 
 }  // namespace esco_conf0
 
 /// SCO_CONF0 - SCO_CONF0
 namespace sco_conf0 {
-/// Position: 0, Width: 1
-/// Access: read-write
-using SCO_WITH_I2S_EN = BitField<0, 1>;
-constexpr uint32_t SCO_WITH_I2S_EN_Pos = 0;
-constexpr uint32_t SCO_WITH_I2S_EN_Msk = SCO_WITH_I2S_EN::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using SCO_WITH_I2S_EN = BitField<0, 1>;
+    constexpr uint32_t SCO_WITH_I2S_EN_Pos = 0;
+    constexpr uint32_t SCO_WITH_I2S_EN_Msk = SCO_WITH_I2S_EN::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-write
-using SCO_NO_I2S_EN = BitField<1, 1>;
-constexpr uint32_t SCO_NO_I2S_EN_Pos = 1;
-constexpr uint32_t SCO_NO_I2S_EN_Msk = SCO_NO_I2S_EN::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using SCO_NO_I2S_EN = BitField<1, 1>;
+    constexpr uint32_t SCO_NO_I2S_EN_Pos = 1;
+    constexpr uint32_t SCO_NO_I2S_EN_Msk = SCO_NO_I2S_EN::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-write
-using CVSD_ENC_START = BitField<2, 1>;
-constexpr uint32_t CVSD_ENC_START_Pos = 2;
-constexpr uint32_t CVSD_ENC_START_Msk = CVSD_ENC_START::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using CVSD_ENC_START = BitField<2, 1>;
+    constexpr uint32_t CVSD_ENC_START_Pos = 2;
+    constexpr uint32_t CVSD_ENC_START_Msk = CVSD_ENC_START::mask;
 
-/// Position: 3, Width: 1
-/// Access: read-write
-using CVSD_ENC_RESET = BitField<3, 1>;
-constexpr uint32_t CVSD_ENC_RESET_Pos = 3;
-constexpr uint32_t CVSD_ENC_RESET_Msk = CVSD_ENC_RESET::mask;
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using CVSD_ENC_RESET = BitField<3, 1>;
+    constexpr uint32_t CVSD_ENC_RESET_Pos = 3;
+    constexpr uint32_t CVSD_ENC_RESET_Msk = CVSD_ENC_RESET::mask;
 
 }  // namespace sco_conf0
 
 /// CONF1 - CONF1
 namespace conf1 {
-/// Position: 0, Width: 3
-/// Access: read-write
-using TX_PCM_CONF = BitField<0, 3>;
-constexpr uint32_t TX_PCM_CONF_Pos = 0;
-constexpr uint32_t TX_PCM_CONF_Msk = TX_PCM_CONF::mask;
+    /// Position: 0, Width: 3
+    /// Access: read-write
+    using TX_PCM_CONF = BitField<0, 3>;
+    constexpr uint32_t TX_PCM_CONF_Pos = 0;
+    constexpr uint32_t TX_PCM_CONF_Msk = TX_PCM_CONF::mask;
 
-/// Position: 3, Width: 1
-/// Access: read-write
-using TX_PCM_BYPASS = BitField<3, 1>;
-constexpr uint32_t TX_PCM_BYPASS_Pos = 3;
-constexpr uint32_t TX_PCM_BYPASS_Msk = TX_PCM_BYPASS::mask;
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using TX_PCM_BYPASS = BitField<3, 1>;
+    constexpr uint32_t TX_PCM_BYPASS_Pos = 3;
+    constexpr uint32_t TX_PCM_BYPASS_Msk = TX_PCM_BYPASS::mask;
 
-/// Position: 4, Width: 3
-/// Access: read-write
-using RX_PCM_CONF = BitField<4, 3>;
-constexpr uint32_t RX_PCM_CONF_Pos = 4;
-constexpr uint32_t RX_PCM_CONF_Msk = RX_PCM_CONF::mask;
+    /// Position: 4, Width: 3
+    /// Access: read-write
+    using RX_PCM_CONF = BitField<4, 3>;
+    constexpr uint32_t RX_PCM_CONF_Pos = 4;
+    constexpr uint32_t RX_PCM_CONF_Msk = RX_PCM_CONF::mask;
 
-/// Position: 7, Width: 1
-/// Access: read-write
-using RX_PCM_BYPASS = BitField<7, 1>;
-constexpr uint32_t RX_PCM_BYPASS_Pos = 7;
-constexpr uint32_t RX_PCM_BYPASS_Msk = RX_PCM_BYPASS::mask;
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using RX_PCM_BYPASS = BitField<7, 1>;
+    constexpr uint32_t RX_PCM_BYPASS_Pos = 7;
+    constexpr uint32_t RX_PCM_BYPASS_Msk = RX_PCM_BYPASS::mask;
 
-/// Position: 8, Width: 1
-/// Access: read-write
-using TX_STOP_EN = BitField<8, 1>;
-constexpr uint32_t TX_STOP_EN_Pos = 8;
-constexpr uint32_t TX_STOP_EN_Msk = TX_STOP_EN::mask;
+    /// Position: 8, Width: 1
+    /// Access: read-write
+    using TX_STOP_EN = BitField<8, 1>;
+    constexpr uint32_t TX_STOP_EN_Pos = 8;
+    constexpr uint32_t TX_STOP_EN_Msk = TX_STOP_EN::mask;
 
-/// Position: 9, Width: 1
-/// Access: read-write
-using TX_ZEROS_RM_EN = BitField<9, 1>;
-constexpr uint32_t TX_ZEROS_RM_EN_Pos = 9;
-constexpr uint32_t TX_ZEROS_RM_EN_Msk = TX_ZEROS_RM_EN::mask;
+    /// Position: 9, Width: 1
+    /// Access: read-write
+    using TX_ZEROS_RM_EN = BitField<9, 1>;
+    constexpr uint32_t TX_ZEROS_RM_EN_Pos = 9;
+    constexpr uint32_t TX_ZEROS_RM_EN_Msk = TX_ZEROS_RM_EN::mask;
 
 }  // namespace conf1
 
 /// PD_CONF - PD_CONF
 namespace pd_conf {
-/// Position: 0, Width: 1
-/// Access: read-write
-using FIFO_FORCE_PD = BitField<0, 1>;
-constexpr uint32_t FIFO_FORCE_PD_Pos = 0;
-constexpr uint32_t FIFO_FORCE_PD_Msk = FIFO_FORCE_PD::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using FIFO_FORCE_PD = BitField<0, 1>;
+    constexpr uint32_t FIFO_FORCE_PD_Pos = 0;
+    constexpr uint32_t FIFO_FORCE_PD_Msk = FIFO_FORCE_PD::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-write
-using FIFO_FORCE_PU = BitField<1, 1>;
-constexpr uint32_t FIFO_FORCE_PU_Pos = 1;
-constexpr uint32_t FIFO_FORCE_PU_Msk = FIFO_FORCE_PU::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using FIFO_FORCE_PU = BitField<1, 1>;
+    constexpr uint32_t FIFO_FORCE_PU_Pos = 1;
+    constexpr uint32_t FIFO_FORCE_PU_Msk = FIFO_FORCE_PU::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-write
-using PLC_MEM_FORCE_PD = BitField<2, 1>;
-constexpr uint32_t PLC_MEM_FORCE_PD_Pos = 2;
-constexpr uint32_t PLC_MEM_FORCE_PD_Msk = PLC_MEM_FORCE_PD::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using PLC_MEM_FORCE_PD = BitField<2, 1>;
+    constexpr uint32_t PLC_MEM_FORCE_PD_Pos = 2;
+    constexpr uint32_t PLC_MEM_FORCE_PD_Msk = PLC_MEM_FORCE_PD::mask;
 
-/// Position: 3, Width: 1
-/// Access: read-write
-using PLC_MEM_FORCE_PU = BitField<3, 1>;
-constexpr uint32_t PLC_MEM_FORCE_PU_Pos = 3;
-constexpr uint32_t PLC_MEM_FORCE_PU_Msk = PLC_MEM_FORCE_PU::mask;
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using PLC_MEM_FORCE_PU = BitField<3, 1>;
+    constexpr uint32_t PLC_MEM_FORCE_PU_Pos = 3;
+    constexpr uint32_t PLC_MEM_FORCE_PU_Msk = PLC_MEM_FORCE_PU::mask;
 
 }  // namespace pd_conf
 
 /// CONF2 - CONF2
 namespace conf2 {
-/// Position: 0, Width: 1
-/// Access: read-write
-using CAMERA_EN = BitField<0, 1>;
-constexpr uint32_t CAMERA_EN_Pos = 0;
-constexpr uint32_t CAMERA_EN_Msk = CAMERA_EN::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using CAMERA_EN = BitField<0, 1>;
+    constexpr uint32_t CAMERA_EN_Pos = 0;
+    constexpr uint32_t CAMERA_EN_Msk = CAMERA_EN::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-write
-using LCD_TX_WRX2_EN = BitField<1, 1>;
-constexpr uint32_t LCD_TX_WRX2_EN_Pos = 1;
-constexpr uint32_t LCD_TX_WRX2_EN_Msk = LCD_TX_WRX2_EN::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using LCD_TX_WRX2_EN = BitField<1, 1>;
+    constexpr uint32_t LCD_TX_WRX2_EN_Pos = 1;
+    constexpr uint32_t LCD_TX_WRX2_EN_Msk = LCD_TX_WRX2_EN::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-write
-using LCD_TX_SDX2_EN = BitField<2, 1>;
-constexpr uint32_t LCD_TX_SDX2_EN_Pos = 2;
-constexpr uint32_t LCD_TX_SDX2_EN_Msk = LCD_TX_SDX2_EN::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using LCD_TX_SDX2_EN = BitField<2, 1>;
+    constexpr uint32_t LCD_TX_SDX2_EN_Pos = 2;
+    constexpr uint32_t LCD_TX_SDX2_EN_Msk = LCD_TX_SDX2_EN::mask;
 
-/// Position: 3, Width: 1
-/// Access: read-write
-using DATA_ENABLE_TEST_EN = BitField<3, 1>;
-constexpr uint32_t DATA_ENABLE_TEST_EN_Pos = 3;
-constexpr uint32_t DATA_ENABLE_TEST_EN_Msk = DATA_ENABLE_TEST_EN::mask;
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using DATA_ENABLE_TEST_EN = BitField<3, 1>;
+    constexpr uint32_t DATA_ENABLE_TEST_EN_Pos = 3;
+    constexpr uint32_t DATA_ENABLE_TEST_EN_Msk = DATA_ENABLE_TEST_EN::mask;
 
-/// Position: 4, Width: 1
-/// Access: read-write
-using DATA_ENABLE = BitField<4, 1>;
-constexpr uint32_t DATA_ENABLE_Pos = 4;
-constexpr uint32_t DATA_ENABLE_Msk = DATA_ENABLE::mask;
+    /// Position: 4, Width: 1
+    /// Access: read-write
+    using DATA_ENABLE = BitField<4, 1>;
+    constexpr uint32_t DATA_ENABLE_Pos = 4;
+    constexpr uint32_t DATA_ENABLE_Msk = DATA_ENABLE::mask;
 
-/// Position: 5, Width: 1
-/// Access: read-write
-using LCD_EN = BitField<5, 1>;
-constexpr uint32_t LCD_EN_Pos = 5;
-constexpr uint32_t LCD_EN_Msk = LCD_EN::mask;
+    /// Position: 5, Width: 1
+    /// Access: read-write
+    using LCD_EN = BitField<5, 1>;
+    constexpr uint32_t LCD_EN_Pos = 5;
+    constexpr uint32_t LCD_EN_Msk = LCD_EN::mask;
 
-/// Position: 6, Width: 1
-/// Access: read-write
-using EXT_ADC_START_EN = BitField<6, 1>;
-constexpr uint32_t EXT_ADC_START_EN_Pos = 6;
-constexpr uint32_t EXT_ADC_START_EN_Msk = EXT_ADC_START_EN::mask;
+    /// Position: 6, Width: 1
+    /// Access: read-write
+    using EXT_ADC_START_EN = BitField<6, 1>;
+    constexpr uint32_t EXT_ADC_START_EN_Pos = 6;
+    constexpr uint32_t EXT_ADC_START_EN_Msk = EXT_ADC_START_EN::mask;
 
-/// Position: 7, Width: 1
-/// Access: read-write
-using INTER_VALID_EN = BitField<7, 1>;
-constexpr uint32_t INTER_VALID_EN_Pos = 7;
-constexpr uint32_t INTER_VALID_EN_Msk = INTER_VALID_EN::mask;
+    /// Position: 7, Width: 1
+    /// Access: read-write
+    using INTER_VALID_EN = BitField<7, 1>;
+    constexpr uint32_t INTER_VALID_EN_Pos = 7;
+    constexpr uint32_t INTER_VALID_EN_Msk = INTER_VALID_EN::mask;
 
 }  // namespace conf2
 
 /// CLKM_CONF - CLKM_CONF
 namespace clkm_conf {
-/// Position: 0, Width: 8
-/// Access: read-write
-using CLKM_DIV_NUM = BitField<0, 8>;
-constexpr uint32_t CLKM_DIV_NUM_Pos = 0;
-constexpr uint32_t CLKM_DIV_NUM_Msk = CLKM_DIV_NUM::mask;
+    /// Position: 0, Width: 8
+    /// Access: read-write
+    using CLKM_DIV_NUM = BitField<0, 8>;
+    constexpr uint32_t CLKM_DIV_NUM_Pos = 0;
+    constexpr uint32_t CLKM_DIV_NUM_Msk = CLKM_DIV_NUM::mask;
 
-/// Position: 8, Width: 6
-/// Access: read-write
-using CLKM_DIV_B = BitField<8, 6>;
-constexpr uint32_t CLKM_DIV_B_Pos = 8;
-constexpr uint32_t CLKM_DIV_B_Msk = CLKM_DIV_B::mask;
+    /// Position: 8, Width: 6
+    /// Access: read-write
+    using CLKM_DIV_B = BitField<8, 6>;
+    constexpr uint32_t CLKM_DIV_B_Pos = 8;
+    constexpr uint32_t CLKM_DIV_B_Msk = CLKM_DIV_B::mask;
 
-/// Position: 14, Width: 6
-/// Access: read-write
-using CLKM_DIV_A = BitField<14, 6>;
-constexpr uint32_t CLKM_DIV_A_Pos = 14;
-constexpr uint32_t CLKM_DIV_A_Msk = CLKM_DIV_A::mask;
+    /// Position: 14, Width: 6
+    /// Access: read-write
+    using CLKM_DIV_A = BitField<14, 6>;
+    constexpr uint32_t CLKM_DIV_A_Pos = 14;
+    constexpr uint32_t CLKM_DIV_A_Msk = CLKM_DIV_A::mask;
 
-/// Position: 20, Width: 1
-/// Access: read-write
-using CLK_EN = BitField<20, 1>;
-constexpr uint32_t CLK_EN_Pos = 20;
-constexpr uint32_t CLK_EN_Msk = CLK_EN::mask;
+    /// Position: 20, Width: 1
+    /// Access: read-write
+    using CLK_EN = BitField<20, 1>;
+    constexpr uint32_t CLK_EN_Pos = 20;
+    constexpr uint32_t CLK_EN_Msk = CLK_EN::mask;
 
-/// Position: 21, Width: 1
-/// Access: read-write
-using CLKA_ENA = BitField<21, 1>;
-constexpr uint32_t CLKA_ENA_Pos = 21;
-constexpr uint32_t CLKA_ENA_Msk = CLKA_ENA::mask;
+    /// Position: 21, Width: 1
+    /// Access: read-write
+    using CLKA_ENA = BitField<21, 1>;
+    constexpr uint32_t CLKA_ENA_Pos = 21;
+    constexpr uint32_t CLKA_ENA_Msk = CLKA_ENA::mask;
 
 }  // namespace clkm_conf
 
 /// SAMPLE_RATE_CONF - SAMPLE_RATE_CONF
 namespace sample_rate_conf {
-/// Position: 0, Width: 6
-/// Access: read-write
-using TX_BCK_DIV_NUM = BitField<0, 6>;
-constexpr uint32_t TX_BCK_DIV_NUM_Pos = 0;
-constexpr uint32_t TX_BCK_DIV_NUM_Msk = TX_BCK_DIV_NUM::mask;
+    /// Position: 0, Width: 6
+    /// Access: read-write
+    using TX_BCK_DIV_NUM = BitField<0, 6>;
+    constexpr uint32_t TX_BCK_DIV_NUM_Pos = 0;
+    constexpr uint32_t TX_BCK_DIV_NUM_Msk = TX_BCK_DIV_NUM::mask;
 
-/// Position: 6, Width: 6
-/// Access: read-write
-using RX_BCK_DIV_NUM = BitField<6, 6>;
-constexpr uint32_t RX_BCK_DIV_NUM_Pos = 6;
-constexpr uint32_t RX_BCK_DIV_NUM_Msk = RX_BCK_DIV_NUM::mask;
+    /// Position: 6, Width: 6
+    /// Access: read-write
+    using RX_BCK_DIV_NUM = BitField<6, 6>;
+    constexpr uint32_t RX_BCK_DIV_NUM_Pos = 6;
+    constexpr uint32_t RX_BCK_DIV_NUM_Msk = RX_BCK_DIV_NUM::mask;
 
-/// Position: 12, Width: 6
-/// Access: read-write
-using TX_BITS_MOD = BitField<12, 6>;
-constexpr uint32_t TX_BITS_MOD_Pos = 12;
-constexpr uint32_t TX_BITS_MOD_Msk = TX_BITS_MOD::mask;
+    /// Position: 12, Width: 6
+    /// Access: read-write
+    using TX_BITS_MOD = BitField<12, 6>;
+    constexpr uint32_t TX_BITS_MOD_Pos = 12;
+    constexpr uint32_t TX_BITS_MOD_Msk = TX_BITS_MOD::mask;
 
-/// Position: 18, Width: 6
-/// Access: read-write
-using RX_BITS_MOD = BitField<18, 6>;
-constexpr uint32_t RX_BITS_MOD_Pos = 18;
-constexpr uint32_t RX_BITS_MOD_Msk = RX_BITS_MOD::mask;
+    /// Position: 18, Width: 6
+    /// Access: read-write
+    using RX_BITS_MOD = BitField<18, 6>;
+    constexpr uint32_t RX_BITS_MOD_Pos = 18;
+    constexpr uint32_t RX_BITS_MOD_Msk = RX_BITS_MOD::mask;
 
 }  // namespace sample_rate_conf
 
 /// PDM_CONF - PDM_CONF
 namespace pdm_conf {
-/// Position: 0, Width: 1
-/// Access: read-write
-using TX_PDM_EN = BitField<0, 1>;
-constexpr uint32_t TX_PDM_EN_Pos = 0;
-constexpr uint32_t TX_PDM_EN_Msk = TX_PDM_EN::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-write
+    using TX_PDM_EN = BitField<0, 1>;
+    constexpr uint32_t TX_PDM_EN_Pos = 0;
+    constexpr uint32_t TX_PDM_EN_Msk = TX_PDM_EN::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-write
-using RX_PDM_EN = BitField<1, 1>;
-constexpr uint32_t RX_PDM_EN_Pos = 1;
-constexpr uint32_t RX_PDM_EN_Msk = RX_PDM_EN::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-write
+    using RX_PDM_EN = BitField<1, 1>;
+    constexpr uint32_t RX_PDM_EN_Pos = 1;
+    constexpr uint32_t RX_PDM_EN_Msk = RX_PDM_EN::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-write
-using PCM2PDM_CONV_EN = BitField<2, 1>;
-constexpr uint32_t PCM2PDM_CONV_EN_Pos = 2;
-constexpr uint32_t PCM2PDM_CONV_EN_Msk = PCM2PDM_CONV_EN::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-write
+    using PCM2PDM_CONV_EN = BitField<2, 1>;
+    constexpr uint32_t PCM2PDM_CONV_EN_Pos = 2;
+    constexpr uint32_t PCM2PDM_CONV_EN_Msk = PCM2PDM_CONV_EN::mask;
 
-/// Position: 3, Width: 1
-/// Access: read-write
-using PDM2PCM_CONV_EN = BitField<3, 1>;
-constexpr uint32_t PDM2PCM_CONV_EN_Pos = 3;
-constexpr uint32_t PDM2PCM_CONV_EN_Msk = PDM2PCM_CONV_EN::mask;
+    /// Position: 3, Width: 1
+    /// Access: read-write
+    using PDM2PCM_CONV_EN = BitField<3, 1>;
+    constexpr uint32_t PDM2PCM_CONV_EN_Pos = 3;
+    constexpr uint32_t PDM2PCM_CONV_EN_Msk = PDM2PCM_CONV_EN::mask;
 
-/// Position: 4, Width: 4
-/// Access: read-write
-using TX_PDM_SINC_OSR2 = BitField<4, 4>;
-constexpr uint32_t TX_PDM_SINC_OSR2_Pos = 4;
-constexpr uint32_t TX_PDM_SINC_OSR2_Msk = TX_PDM_SINC_OSR2::mask;
+    /// Position: 4, Width: 4
+    /// Access: read-write
+    using TX_PDM_SINC_OSR2 = BitField<4, 4>;
+    constexpr uint32_t TX_PDM_SINC_OSR2_Pos = 4;
+    constexpr uint32_t TX_PDM_SINC_OSR2_Msk = TX_PDM_SINC_OSR2::mask;
 
-/// Position: 8, Width: 8
-/// Access: read-write
-using TX_PDM_PRESCALE = BitField<8, 8>;
-constexpr uint32_t TX_PDM_PRESCALE_Pos = 8;
-constexpr uint32_t TX_PDM_PRESCALE_Msk = TX_PDM_PRESCALE::mask;
+    /// Position: 8, Width: 8
+    /// Access: read-write
+    using TX_PDM_PRESCALE = BitField<8, 8>;
+    constexpr uint32_t TX_PDM_PRESCALE_Pos = 8;
+    constexpr uint32_t TX_PDM_PRESCALE_Msk = TX_PDM_PRESCALE::mask;
 
-/// Position: 16, Width: 2
-/// Access: read-write
-using TX_PDM_HP_IN_SHIFT = BitField<16, 2>;
-constexpr uint32_t TX_PDM_HP_IN_SHIFT_Pos = 16;
-constexpr uint32_t TX_PDM_HP_IN_SHIFT_Msk = TX_PDM_HP_IN_SHIFT::mask;
+    /// Position: 16, Width: 2
+    /// Access: read-write
+    using TX_PDM_HP_IN_SHIFT = BitField<16, 2>;
+    constexpr uint32_t TX_PDM_HP_IN_SHIFT_Pos = 16;
+    constexpr uint32_t TX_PDM_HP_IN_SHIFT_Msk = TX_PDM_HP_IN_SHIFT::mask;
 
-/// Position: 18, Width: 2
-/// Access: read-write
-using TX_PDM_LP_IN_SHIFT = BitField<18, 2>;
-constexpr uint32_t TX_PDM_LP_IN_SHIFT_Pos = 18;
-constexpr uint32_t TX_PDM_LP_IN_SHIFT_Msk = TX_PDM_LP_IN_SHIFT::mask;
+    /// Position: 18, Width: 2
+    /// Access: read-write
+    using TX_PDM_LP_IN_SHIFT = BitField<18, 2>;
+    constexpr uint32_t TX_PDM_LP_IN_SHIFT_Pos = 18;
+    constexpr uint32_t TX_PDM_LP_IN_SHIFT_Msk = TX_PDM_LP_IN_SHIFT::mask;
 
-/// Position: 20, Width: 2
-/// Access: read-write
-using TX_PDM_SINC_IN_SHIFT = BitField<20, 2>;
-constexpr uint32_t TX_PDM_SINC_IN_SHIFT_Pos = 20;
-constexpr uint32_t TX_PDM_SINC_IN_SHIFT_Msk = TX_PDM_SINC_IN_SHIFT::mask;
+    /// Position: 20, Width: 2
+    /// Access: read-write
+    using TX_PDM_SINC_IN_SHIFT = BitField<20, 2>;
+    constexpr uint32_t TX_PDM_SINC_IN_SHIFT_Pos = 20;
+    constexpr uint32_t TX_PDM_SINC_IN_SHIFT_Msk = TX_PDM_SINC_IN_SHIFT::mask;
 
-/// Position: 22, Width: 2
-/// Access: read-write
-using TX_PDM_SIGMADELTA_IN_SHIFT = BitField<22, 2>;
-constexpr uint32_t TX_PDM_SIGMADELTA_IN_SHIFT_Pos = 22;
-constexpr uint32_t TX_PDM_SIGMADELTA_IN_SHIFT_Msk = TX_PDM_SIGMADELTA_IN_SHIFT::mask;
+    /// Position: 22, Width: 2
+    /// Access: read-write
+    using TX_PDM_SIGMADELTA_IN_SHIFT = BitField<22, 2>;
+    constexpr uint32_t TX_PDM_SIGMADELTA_IN_SHIFT_Pos = 22;
+    constexpr uint32_t TX_PDM_SIGMADELTA_IN_SHIFT_Msk = TX_PDM_SIGMADELTA_IN_SHIFT::mask;
 
-/// Position: 24, Width: 1
-/// Access: read-write
-using RX_PDM_SINC_DSR_16_EN = BitField<24, 1>;
-constexpr uint32_t RX_PDM_SINC_DSR_16_EN_Pos = 24;
-constexpr uint32_t RX_PDM_SINC_DSR_16_EN_Msk = RX_PDM_SINC_DSR_16_EN::mask;
+    /// Position: 24, Width: 1
+    /// Access: read-write
+    using RX_PDM_SINC_DSR_16_EN = BitField<24, 1>;
+    constexpr uint32_t RX_PDM_SINC_DSR_16_EN_Pos = 24;
+    constexpr uint32_t RX_PDM_SINC_DSR_16_EN_Msk = RX_PDM_SINC_DSR_16_EN::mask;
 
-/// Position: 25, Width: 1
-/// Access: read-write
-using TX_PDM_HP_BYPASS = BitField<25, 1>;
-constexpr uint32_t TX_PDM_HP_BYPASS_Pos = 25;
-constexpr uint32_t TX_PDM_HP_BYPASS_Msk = TX_PDM_HP_BYPASS::mask;
+    /// Position: 25, Width: 1
+    /// Access: read-write
+    using TX_PDM_HP_BYPASS = BitField<25, 1>;
+    constexpr uint32_t TX_PDM_HP_BYPASS_Pos = 25;
+    constexpr uint32_t TX_PDM_HP_BYPASS_Msk = TX_PDM_HP_BYPASS::mask;
 
 }  // namespace pdm_conf
 
 /// PDM_FREQ_CONF - PDM_FREQ_CONF
 namespace pdm_freq_conf {
-/// Position: 0, Width: 10
-/// Access: read-write
-using TX_PDM_FS = BitField<0, 10>;
-constexpr uint32_t TX_PDM_FS_Pos = 0;
-constexpr uint32_t TX_PDM_FS_Msk = TX_PDM_FS::mask;
+    /// Position: 0, Width: 10
+    /// Access: read-write
+    using TX_PDM_FS = BitField<0, 10>;
+    constexpr uint32_t TX_PDM_FS_Pos = 0;
+    constexpr uint32_t TX_PDM_FS_Msk = TX_PDM_FS::mask;
 
-/// Position: 10, Width: 10
-/// Access: read-write
-using TX_PDM_FP = BitField<10, 10>;
-constexpr uint32_t TX_PDM_FP_Pos = 10;
-constexpr uint32_t TX_PDM_FP_Msk = TX_PDM_FP::mask;
+    /// Position: 10, Width: 10
+    /// Access: read-write
+    using TX_PDM_FP = BitField<10, 10>;
+    constexpr uint32_t TX_PDM_FP_Pos = 10;
+    constexpr uint32_t TX_PDM_FP_Msk = TX_PDM_FP::mask;
 
 }  // namespace pdm_freq_conf
 
 /// STATE - STATE
 namespace state {
-/// Position: 0, Width: 1
-/// Access: read-only
-using TX_IDLE = BitField<0, 1>;
-constexpr uint32_t TX_IDLE_Pos = 0;
-constexpr uint32_t TX_IDLE_Msk = TX_IDLE::mask;
+    /// Position: 0, Width: 1
+    /// Access: read-only
+    using TX_IDLE = BitField<0, 1>;
+    constexpr uint32_t TX_IDLE_Pos = 0;
+    constexpr uint32_t TX_IDLE_Msk = TX_IDLE::mask;
 
-/// Position: 1, Width: 1
-/// Access: read-only
-using TX_FIFO_RESET_BACK = BitField<1, 1>;
-constexpr uint32_t TX_FIFO_RESET_BACK_Pos = 1;
-constexpr uint32_t TX_FIFO_RESET_BACK_Msk = TX_FIFO_RESET_BACK::mask;
+    /// Position: 1, Width: 1
+    /// Access: read-only
+    using TX_FIFO_RESET_BACK = BitField<1, 1>;
+    constexpr uint32_t TX_FIFO_RESET_BACK_Pos = 1;
+    constexpr uint32_t TX_FIFO_RESET_BACK_Msk = TX_FIFO_RESET_BACK::mask;
 
-/// Position: 2, Width: 1
-/// Access: read-only
-using RX_FIFO_RESET_BACK = BitField<2, 1>;
-constexpr uint32_t RX_FIFO_RESET_BACK_Pos = 2;
-constexpr uint32_t RX_FIFO_RESET_BACK_Msk = RX_FIFO_RESET_BACK::mask;
+    /// Position: 2, Width: 1
+    /// Access: read-only
+    using RX_FIFO_RESET_BACK = BitField<2, 1>;
+    constexpr uint32_t RX_FIFO_RESET_BACK_Pos = 2;
+    constexpr uint32_t RX_FIFO_RESET_BACK_Msk = RX_FIFO_RESET_BACK::mask;
 
 }  // namespace state
 
 /// DATE - DATE
 namespace date {
-/// Position: 0, Width: 32
-/// Access: read-write
-using I2SDATE = BitField<0, 32>;
-constexpr uint32_t I2SDATE_Pos = 0;
-constexpr uint32_t I2SDATE_Msk = I2SDATE::mask;
+    /// Position: 0, Width: 32
+    /// Access: read-write
+    using I2SDATE = BitField<0, 32>;
+    constexpr uint32_t I2SDATE_Pos = 0;
+    constexpr uint32_t I2SDATE_Msk = I2SDATE::mask;
 
 }  // namespace date
 

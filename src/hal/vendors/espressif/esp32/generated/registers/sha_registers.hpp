@@ -17,6 +17,7 @@ namespace alloy::hal::espressif::esp32::sha {
 
 /// SHA Register Structure
 struct SHA_Registers {
+
     /// TEXT[32]
     /// Offset: 0x0000
     volatile uint32_t TEXT[32][32];

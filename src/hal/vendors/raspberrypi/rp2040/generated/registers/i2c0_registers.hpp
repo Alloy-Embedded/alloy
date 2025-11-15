@@ -17,35 +17,26 @@ namespace alloy::hal::raspberrypi::rp2040::i2c0 {
 
 /// I2C0 Register Structure
 struct I2C0_Registers {
-    /// I2C Control Register. This register can be written only when the DW_apb_i2c is disabled,
-    /// which corresponds to the IC_ENABLE[0] register being set to 0. Writes at other times have no
-    /// effect.\n\n Read/Write Access: - bit 10 is read only. - bit 11 is read only - bit 16 is read
-    /// only - bit 17 is read only - bits 18 and 19 are read only. Offset: 0x0000 Reset value:
-    /// 0x00000065
+
+    /// I2C Control Register. This register can be written only when the DW_apb_i2c is disabled, which corresponds to the IC_ENABLE[0] register being set to 0. Writes at other times have no effect.\n\n Read/Write Access: - bit 10 is read only. - bit 11 is read only - bit 16 is read only - bit 17 is read only - bits 18 and 19 are read only.
+    /// Offset: 0x0000
+    /// Reset value: 0x00000065
     volatile uint32_t IC_CON;
 
-    /// I2C Target Address Register\n\n This register is 12 bits wide, and bits 31:12 are reserved.
-    /// This register can be written to only when IC_ENABLE[0] is set to 0.\n\n Note: If the
-    /// software or application is aware that the DW_apb_i2c is not using the TAR address for the
-    /// pending commands in the Tx FIFO, then it is possible to update the TAR address even while
-    /// the Tx FIFO has entries (IC_STATUS[2]= 0). - It is not necessary to perform any write to
-    /// this register if DW_apb_i2c is enabled as an I2C slave only. Offset: 0x0004 Reset value:
-    /// 0x00000055
+    /// I2C Target Address Register\n\n This register is 12 bits wide, and bits 31:12 are reserved. This register can be written to only when IC_ENABLE[0] is set to 0.\n\n Note: If the software or application is aware that the DW_apb_i2c is not using the TAR address for the pending commands in the Tx FIFO, then it is possible to update the TAR address even while the Tx FIFO has entries (IC_STATUS[2]= 0). - It is not necessary to perform any write to this register if DW_apb_i2c is enabled as an I2C slave only.
+    /// Offset: 0x0004
+    /// Reset value: 0x00000055
     volatile uint32_t IC_TAR;
 
     /// I2C Slave Address Register
     /// Offset: 0x0008
     /// Reset value: 0x00000055
     volatile uint32_t IC_SAR;
-    uint8_t RESERVED_000C[4];  ///< Reserved
+    uint8_t RESERVED_000C[4]; ///< Reserved
 
-    /// I2C Rx/Tx Data Buffer and Command Register; this is the register the CPU writes to when
-    /// filling the TX FIFO and the CPU reads from when retrieving bytes from RX FIFO.\n\n The size
-    /// of the register changes as follows:\n\n Write: - 11 bits when IC_EMPTYFIFO_HOLD_MASTER_EN=1
-    /// - 9 bits when IC_EMPTYFIFO_HOLD_MASTER_EN=0 Read: - 12 bits when IC_FIRST_DATA_BYTE_STATUS =
-    /// 1 - 8 bits when IC_FIRST_DATA_BYTE_STATUS = 0 Note: In order for the DW_apb_i2c to continue
-    /// acknowledging reads, a read command should be written for every byte that is to be received;
-    /// otherwise the DW_apb_i2c will stop acknowledging. Offset: 0x0010 Reset value: 0x00000000
+    /// I2C Rx/Tx Data Buffer and Command Register; this is the register the CPU writes to when filling the TX FIFO and the CPU reads from when retrieving bytes from RX FIFO.\n\n The size of the register changes as follows:\n\n Write: - 11 bits when IC_EMPTYFIFO_HOLD_MASTER_EN=1 - 9 bits when IC_EMPTYFIFO_HOLD_MASTER_EN=0 Read: - 12 bits when IC_FIRST_DATA_BYTE_STATUS = 1 - 8 bits when IC_FIRST_DATA_BYTE_STATUS = 0 Note: In order for the DW_apb_i2c to continue acknowledging reads, a read command should be written for every byte that is to be received; otherwise the DW_apb_i2c will stop acknowledging.
+    /// Offset: 0x0010
+    /// Reset value: 0x00000000
     volatile uint32_t IC_DATA_CMD;
 
     /// Standard Speed I2C Clock SCL High Count Register
@@ -67,22 +58,21 @@ struct I2C0_Registers {
     /// Offset: 0x0020
     /// Reset value: 0x0000000D
     volatile uint32_t IC_FS_SCL_LCNT;
-    uint8_t RESERVED_0024[8];  ///< Reserved
+    uint8_t RESERVED_0024[8]; ///< Reserved
 
-    /// I2C Interrupt Status Register\n\n Each bit in this register has a corresponding mask bit in
-    /// the IC_INTR_MASK register. These bits are cleared by reading the matching interrupt clear
-    /// register. The unmasked raw versions of these bits are available in the IC_RAW_INTR_STAT
-    /// register. Offset: 0x002C Reset value: 0x00000000
+    /// I2C Interrupt Status Register\n\n Each bit in this register has a corresponding mask bit in the IC_INTR_MASK register. These bits are cleared by reading the matching interrupt clear register. The unmasked raw versions of these bits are available in the IC_RAW_INTR_STAT register.
+    /// Offset: 0x002C
+    /// Reset value: 0x00000000
     volatile uint32_t IC_INTR_STAT;
 
-    /// I2C Interrupt Mask Register.\n\n These bits mask their corresponding interrupt status bits.
-    /// This register is active low; a value of 0 masks the interrupt, whereas a value of 1 unmasks
-    /// the interrupt. Offset: 0x0030 Reset value: 0x000008FF
+    /// I2C Interrupt Mask Register.\n\n These bits mask their corresponding interrupt status bits. This register is active low; a value of 0 masks the interrupt, whereas a value of 1 unmasks the interrupt.
+    /// Offset: 0x0030
+    /// Reset value: 0x000008FF
     volatile uint32_t IC_INTR_MASK;
 
-    /// I2C Raw Interrupt Status Register\n\n Unlike the IC_INTR_STAT register, these bits are not
-    /// masked so they always show the true status of the DW_apb_i2c. Offset: 0x0034 Reset value:
-    /// 0x00000000
+    /// I2C Raw Interrupt Status Register\n\n Unlike the IC_INTR_STAT register, these bits are not masked so they always show the true status of the DW_apb_i2c.
+    /// Offset: 0x0034
+    /// Reset value: 0x00000000
     volatile uint32_t IC_RAW_INTR_STAT;
 
     /// I2C Receive FIFO Threshold Register
@@ -155,67 +145,39 @@ struct I2C0_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t IC_ENABLE;
 
-    /// I2C Status Register\n\n This is a read-only register used to indicate the current transfer
-    /// status and FIFO status. The status register may be read at any time. None of the bits in
-    /// this register request an interrupt.\n\n When the I2C is disabled by writing 0 in bit 0 of
-    /// the IC_ENABLE register: - Bits 1 and 2 are set to 1 - Bits 3 and 10 are set to 0 When the
-    /// master or slave state machines goes to idle and ic_en=0: - Bits 5 and 6 are set to 0 Offset:
-    /// 0x0070 Reset value: 0x00000006
+    /// I2C Status Register\n\n This is a read-only register used to indicate the current transfer status and FIFO status. The status register may be read at any time. None of the bits in this register request an interrupt.\n\n When the I2C is disabled by writing 0 in bit 0 of the IC_ENABLE register: - Bits 1 and 2 are set to 1 - Bits 3 and 10 are set to 0 When the master or slave state machines goes to idle and ic_en=0: - Bits 5 and 6 are set to 0
+    /// Offset: 0x0070
+    /// Reset value: 0x00000006
     volatile uint32_t IC_STATUS;
 
-    /// I2C Transmit FIFO Level Register This register contains the number of valid data entries in
-    /// the transmit FIFO buffer. It is cleared whenever: - The I2C is disabled - There is a
-    /// transmit abort - that is, TX_ABRT bit is set in the IC_RAW_INTR_STAT register - The slave
-    /// bulk transmit mode is aborted The register increments whenever data is placed into the
-    /// transmit FIFO and decrements when data is taken from the transmit FIFO. Offset: 0x0074 Reset
-    /// value: 0x00000000
+    /// I2C Transmit FIFO Level Register This register contains the number of valid data entries in the transmit FIFO buffer. It is cleared whenever: - The I2C is disabled - There is a transmit abort - that is, TX_ABRT bit is set in the IC_RAW_INTR_STAT register - The slave bulk transmit mode is aborted The register increments whenever data is placed into the transmit FIFO and decrements when data is taken from the transmit FIFO.
+    /// Offset: 0x0074
+    /// Reset value: 0x00000000
     volatile uint32_t IC_TXFLR;
 
-    /// I2C Receive FIFO Level Register This register contains the number of valid data entries in
-    /// the receive FIFO buffer. It is cleared whenever: - The I2C is disabled - Whenever there is a
-    /// transmit abort caused by any of the events tracked in IC_TX_ABRT_SOURCE The register
-    /// increments whenever data is placed into the receive FIFO and decrements when data is taken
-    /// from the receive FIFO. Offset: 0x0078 Reset value: 0x00000000
+    /// I2C Receive FIFO Level Register This register contains the number of valid data entries in the receive FIFO buffer. It is cleared whenever: - The I2C is disabled - Whenever there is a transmit abort caused by any of the events tracked in IC_TX_ABRT_SOURCE The register increments whenever data is placed into the receive FIFO and decrements when data is taken from the receive FIFO.
+    /// Offset: 0x0078
+    /// Reset value: 0x00000000
     volatile uint32_t IC_RXFLR;
 
-    /// I2C SDA Hold Time Length Register\n\n The bits [15:0] of this register are used to control
-    /// the hold time of SDA during transmit in both slave and master mode (after SCL goes from HIGH
-    /// to LOW).\n\n The bits [23:16] of this register are used to extend the SDA transition (if
-    /// any) whenever SCL is HIGH in the receiver in either master or slave mode.\n\n Writes to this
-    /// register succeed only when IC_ENABLE[0]=0.\n\n The values in this register are in units of
-    /// ic_clk period. The value programmed in IC_SDA_TX_HOLD must be greater than the minimum hold
-    /// time in each mode one cycle in master mode, seven cycles in slave mode for the value to be
-    /// implemented.\n\n The programmed SDA hold time during transmit (IC_SDA_TX_HOLD) cannot exceed
-    /// at any time the duration of the low part of scl. Therefore the programmed value cannot be
-    /// larger than N_SCL_LOW-2, where N_SCL_LOW is the duration of the low part of the scl period
-    /// measured in ic_clk cycles. Offset: 0x007C Reset value: 0x00000001
+    /// I2C SDA Hold Time Length Register\n\n The bits [15:0] of this register are used to control the hold time of SDA during transmit in both slave and master mode (after SCL goes from HIGH to LOW).\n\n The bits [23:16] of this register are used to extend the SDA transition (if any) whenever SCL is HIGH in the receiver in either master or slave mode.\n\n Writes to this register succeed only when IC_ENABLE[0]=0.\n\n The values in this register are in units of ic_clk period. The value programmed in IC_SDA_TX_HOLD must be greater than the minimum hold time in each mode one cycle in master mode, seven cycles in slave mode for the value to be implemented.\n\n The programmed SDA hold time during transmit (IC_SDA_TX_HOLD) cannot exceed at any time the duration of the low part of scl. Therefore the programmed value cannot be larger than N_SCL_LOW-2, where N_SCL_LOW is the duration of the low part of the scl period measured in ic_clk cycles.
+    /// Offset: 0x007C
+    /// Reset value: 0x00000001
     volatile uint32_t IC_SDA_HOLD;
 
-    /// I2C Transmit Abort Source Register\n\n This register has 32 bits that indicate the source of
-    /// the TX_ABRT bit. Except for Bit 9, this register is cleared whenever the IC_CLR_TX_ABRT
-    /// register or the IC_CLR_INTR register is read. To clear Bit 9, the source of the
-    /// ABRT_SBYTE_NORSTRT must be fixed first; RESTART must be enabled (IC_CON[5]=1), the SPECIAL
-    /// bit must be cleared (IC_TAR[11]), or the GC_OR_START bit must be cleared (IC_TAR[10]).\n\n
-    /// Once the source of the ABRT_SBYTE_NORSTRT is fixed, then this bit can be cleared in the same
-    /// manner as other bits in this register. If the source of the ABRT_SBYTE_NORSTRT is not fixed
-    /// before attempting to clear this bit, Bit 9 clears for one cycle and is then re-asserted.
+    /// I2C Transmit Abort Source Register\n\n This register has 32 bits that indicate the source of the TX_ABRT bit. Except for Bit 9, this register is cleared whenever the IC_CLR_TX_ABRT register or the IC_CLR_INTR register is read. To clear Bit 9, the source of the ABRT_SBYTE_NORSTRT must be fixed first; RESTART must be enabled (IC_CON[5]=1), the SPECIAL bit must be cleared (IC_TAR[11]), or the GC_OR_START bit must be cleared (IC_TAR[10]).\n\n Once the source of the ABRT_SBYTE_NORSTRT is fixed, then this bit can be cleared in the same manner as other bits in this register. If the source of the ABRT_SBYTE_NORSTRT is not fixed before attempting to clear this bit, Bit 9 clears for one cycle and is then re-asserted.
     /// Offset: 0x0080
     /// Reset value: 0x00000000
     volatile uint32_t IC_TX_ABRT_SOURCE;
 
-    /// Generate Slave Data NACK Register\n\n The register is used to generate a NACK for the data
-    /// part of a transfer when DW_apb_i2c is acting as a slave-receiver. This register only exists
-    /// when the IC_SLV_DATA_NACK_ONLY parameter is set to 1. When this parameter disabled, this
-    /// register does not exist and writing to the register's address has no effect.\n\n A write can
-    /// occur on this register if both of the following conditions are met: - DW_apb_i2c is disabled
-    /// (IC_ENABLE[0] = 0) - Slave part is inactive (IC_STATUS[6] = 0) Note: The IC_STATUS[6] is a
-    /// register read-back location for the internal slv_activity signal; the user should poll this
-    /// before writing the ic_slv_data_nack_only bit. Offset: 0x0084 Reset value: 0x00000000
+    /// Generate Slave Data NACK Register\n\n The register is used to generate a NACK for the data part of a transfer when DW_apb_i2c is acting as a slave-receiver. This register only exists when the IC_SLV_DATA_NACK_ONLY parameter is set to 1. When this parameter disabled, this register does not exist and writing to the register's address has no effect.\n\n A write can occur on this register if both of the following conditions are met: - DW_apb_i2c is disabled (IC_ENABLE[0] = 0) - Slave part is inactive (IC_STATUS[6] = 0) Note: The IC_STATUS[6] is a register read-back location for the internal slv_activity signal; the user should poll this before writing the ic_slv_data_nack_only bit.
+    /// Offset: 0x0084
+    /// Reset value: 0x00000000
     volatile uint32_t IC_SLV_DATA_NACK_ONLY;
 
-    /// DMA Control Register\n\n The register is used to enable the DMA Controller interface
-    /// operation. There is a separate bit for transmit and receive. This can be programmed
-    /// regardless of the state of IC_ENABLE. Offset: 0x0088 Reset value: 0x00000000
+    /// DMA Control Register\n\n The register is used to enable the DMA Controller interface operation. There is a separate bit for transmit and receive. This can be programmed regardless of the state of IC_ENABLE.
+    /// Offset: 0x0088
+    /// Reset value: 0x00000000
     volatile uint32_t IC_DMA_CR;
 
     /// DMA Transmit Data Level Register
@@ -228,50 +190,36 @@ struct I2C0_Registers {
     /// Reset value: 0x00000000
     volatile uint32_t IC_DMA_RDLR;
 
-    /// I2C SDA Setup Register\n\n This register controls the amount of time delay (in terms of
-    /// number of ic_clk clock periods) introduced in the rising edge of SCL - relative to SDA
-    /// changing - when DW_apb_i2c services a read request in a slave-transmitter operation. The
-    /// relevant I2C requirement is tSU:DAT (note 4) as detailed in the I2C Bus Specification. This
-    /// register must be programmed with a value equal to or greater than 2.\n\n Writes to this
-    /// register succeed only when IC_ENABLE[0] = 0.\n\n Note: The length of setup time is
-    /// calculated using [(IC_SDA_SETUP - 1) * (ic_clk_period)], so if the user requires 10 ic_clk
-    /// periods of setup time, they should program a value of 11. The IC_SDA_SETUP register is only
-    /// used by the DW_apb_i2c when operating as a slave transmitter. Offset: 0x0094 Reset value:
-    /// 0x00000064
+    /// I2C SDA Setup Register\n\n This register controls the amount of time delay (in terms of number of ic_clk clock periods) introduced in the rising edge of SCL - relative to SDA changing - when DW_apb_i2c services a read request in a slave-transmitter operation. The relevant I2C requirement is tSU:DAT (note 4) as detailed in the I2C Bus Specification. This register must be programmed with a value equal to or greater than 2.\n\n Writes to this register succeed only when IC_ENABLE[0] = 0.\n\n Note: The length of setup time is calculated using [(IC_SDA_SETUP - 1) * (ic_clk_period)], so if the user requires 10 ic_clk periods of setup time, they should program a value of 11. The IC_SDA_SETUP register is only used by the DW_apb_i2c when operating as a slave transmitter.
+    /// Offset: 0x0094
+    /// Reset value: 0x00000064
     volatile uint32_t IC_SDA_SETUP;
 
-    /// I2C ACK General Call Register\n\n The register controls whether DW_apb_i2c responds with a
-    /// ACK or NACK when it receives an I2C General Call address.\n\n This register is applicable
-    /// only when the DW_apb_i2c is in slave mode. Offset: 0x0098 Reset value: 0x00000001
+    /// I2C ACK General Call Register\n\n The register controls whether DW_apb_i2c responds with a ACK or NACK when it receives an I2C General Call address.\n\n This register is applicable only when the DW_apb_i2c is in slave mode.
+    /// Offset: 0x0098
+    /// Reset value: 0x00000001
     volatile uint32_t IC_ACK_GENERAL_CALL;
 
-    /// I2C Enable Status Register\n\n The register is used to report the DW_apb_i2c hardware status
-    /// when the IC_ENABLE[0] register is set from 1 to 0; that is, when DW_apb_i2c is disabled.\n\n
-    /// If IC_ENABLE[0] has been set to 1, bits 2:1 are forced to 0, and bit 0 is forced to 1.\n\n
-    /// If IC_ENABLE[0] has been set to 0, bits 2:1 is only be valid as soon as bit 0 is read as
-    /// '0'.\n\n Note: When IC_ENABLE[0] has been set to 0, a delay occurs for bit 0 to be read as 0
-    /// because disabling the DW_apb_i2c depends on I2C bus activities. Offset: 0x009C Reset value:
-    /// 0x00000000
+    /// I2C Enable Status Register\n\n The register is used to report the DW_apb_i2c hardware status when the IC_ENABLE[0] register is set from 1 to 0; that is, when DW_apb_i2c is disabled.\n\n If IC_ENABLE[0] has been set to 1, bits 2:1 are forced to 0, and bit 0 is forced to 1.\n\n If IC_ENABLE[0] has been set to 0, bits 2:1 is only be valid as soon as bit 0 is read as '0'.\n\n Note: When IC_ENABLE[0] has been set to 0, a delay occurs for bit 0 to be read as 0 because disabling the DW_apb_i2c depends on I2C bus activities.
+    /// Offset: 0x009C
+    /// Reset value: 0x00000000
     volatile uint32_t IC_ENABLE_STATUS;
 
-    /// I2C SS, FS or FM+ spike suppression limit\n\n This register is used to store the duration,
-    /// measured in ic_clk cycles, of the longest spike that is filtered out by the spike
-    /// suppression logic when the component is operating in SS, FS or FM+ modes. The relevant I2C
-    /// requirement is tSP (table 4) as detailed in the I2C Bus Specification. This register must be
-    /// programmed with a minimum value of 1. Offset: 0x00A0 Reset value: 0x00000007
+    /// I2C SS, FS or FM+ spike suppression limit\n\n This register is used to store the duration, measured in ic_clk cycles, of the longest spike that is filtered out by the spike suppression logic when the component is operating in SS, FS or FM+ modes. The relevant I2C requirement is tSP (table 4) as detailed in the I2C Bus Specification. This register must be programmed with a minimum value of 1.
+    /// Offset: 0x00A0
+    /// Reset value: 0x00000007
     volatile uint32_t IC_FS_SPKLEN;
-    uint8_t RESERVED_00A4[4];  ///< Reserved
+    uint8_t RESERVED_00A4[4]; ///< Reserved
 
     /// Clear RESTART_DET Interrupt Register
     /// Offset: 0x00A8
     /// Reset value: 0x00000000
     volatile uint32_t IC_CLR_RESTART_DET;
-    uint8_t RESERVED_00AC[72];  ///< Reserved
+    uint8_t RESERVED_00AC[72]; ///< Reserved
 
-    /// Component Parameter Register 1\n\n Note This register is not implemented and therefore reads
-    /// as 0. If it was implemented it would be a constant read-only register that contains encoded
-    /// information about the component's parameter settings. Fields shown below are the settings
-    /// for those parameters Offset: 0x00F4 Reset value: 0x00000000
+    /// Component Parameter Register 1\n\n Note This register is not implemented and therefore reads as 0. If it was implemented it would be a constant read-only register that contains encoded information about the component's parameter settings. Fields shown below are the settings for those parameters
+    /// Offset: 0x00F4
+    /// Reset value: 0x00000000
     volatile uint32_t IC_COMP_PARAM_1;
 
     /// I2C Component Version Register

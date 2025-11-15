@@ -50,7 +50,13 @@ struct RCC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t AHB2RSTR;
-    uint8_t RESERVED_0018[8]; ///< Reserved
+
+    /// AHB3 peripheral reset register
+    /// Offset: 0x0018
+    /// Reset value: 0x00000000
+    /// Access: read-write
+    volatile uint32_t AHB3RSTR;
+    uint8_t RESERVED_001C[4]; ///< Reserved
 
     /// APB1 peripheral reset register
     /// Offset: 0x0020
@@ -76,7 +82,13 @@ struct RCC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t AHB2ENR;
-    uint8_t RESERVED_0038[8]; ///< Reserved
+
+    /// AHB3 peripheral clock enable register
+    /// Offset: 0x0038
+    /// Reset value: 0x00000000
+    /// Access: read-write
+    volatile uint32_t AHB3ENR;
+    uint8_t RESERVED_003C[4]; ///< Reserved
 
     /// APB1 peripheral clock enable register
     /// Offset: 0x0040
@@ -102,7 +114,13 @@ struct RCC_Registers {
     /// Reset value: 0x000000F1
     /// Access: read-write
     volatile uint32_t AHB2LPENR;
-    uint8_t RESERVED_0058[8]; ///< Reserved
+
+    /// AHB3 peripheral clock enable in low power mode register
+    /// Offset: 0x0058
+    /// Reset value: 0x00000001
+    /// Access: read-write
+    volatile uint32_t AHB3LPENR;
+    uint8_t RESERVED_005C[4]; ///< Reserved
 
     /// APB1 peripheral clock enable in low power mode register
     /// Offset: 0x0060

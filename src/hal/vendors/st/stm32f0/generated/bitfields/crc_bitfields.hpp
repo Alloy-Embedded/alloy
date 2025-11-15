@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f0::crc {
@@ -20,53 +19,53 @@ using namespace alloy::hal::bitfields;
 
 /// DR - Data register
 namespace dr {
-/// Data register bits
-/// Position: 0, Width: 32
-using DR = BitField<0, 32>;
-constexpr uint32_t DR_Pos = 0;
-constexpr uint32_t DR_Msk = DR::mask;
+    /// Data register bits
+    /// Position: 0, Width: 32
+    using DR = BitField<0, 32>;
+    constexpr uint32_t DR_Pos = 0;
+    constexpr uint32_t DR_Msk = DR::mask;
 
 }  // namespace dr
 
 /// IDR - Independent data register
 namespace idr {
-/// General-purpose 8-bit data register bits
-/// Position: 0, Width: 8
-using IDR = BitField<0, 8>;
-constexpr uint32_t IDR_Pos = 0;
-constexpr uint32_t IDR_Msk = IDR::mask;
+    /// General-purpose 8-bit data register bits
+    /// Position: 0, Width: 8
+    using IDR = BitField<0, 8>;
+    constexpr uint32_t IDR_Pos = 0;
+    constexpr uint32_t IDR_Msk = IDR::mask;
 
 }  // namespace idr
 
 /// CR - Control register
 namespace cr {
-/// reset bit
-/// Position: 0, Width: 1
-using RESET = BitField<0, 1>;
-constexpr uint32_t RESET_Pos = 0;
-constexpr uint32_t RESET_Msk = RESET::mask;
+    /// reset bit
+    /// Position: 0, Width: 1
+    using RESET = BitField<0, 1>;
+    constexpr uint32_t RESET_Pos = 0;
+    constexpr uint32_t RESET_Msk = RESET::mask;
 
-/// Reverse input data
-/// Position: 5, Width: 2
-using REV_IN = BitField<5, 2>;
-constexpr uint32_t REV_IN_Pos = 5;
-constexpr uint32_t REV_IN_Msk = REV_IN::mask;
+    /// Reverse input data
+    /// Position: 5, Width: 2
+    using REV_IN = BitField<5, 2>;
+    constexpr uint32_t REV_IN_Pos = 5;
+    constexpr uint32_t REV_IN_Msk = REV_IN::mask;
 
-/// Reverse output data
-/// Position: 7, Width: 1
-using REV_OUT = BitField<7, 1>;
-constexpr uint32_t REV_OUT_Pos = 7;
-constexpr uint32_t REV_OUT_Msk = REV_OUT::mask;
+    /// Reverse output data
+    /// Position: 7, Width: 1
+    using REV_OUT = BitField<7, 1>;
+    constexpr uint32_t REV_OUT_Pos = 7;
+    constexpr uint32_t REV_OUT_Msk = REV_OUT::mask;
 
 }  // namespace cr
 
 /// INIT - Initial CRC value
 namespace init {
-/// Programmable initial CRC value
-/// Position: 0, Width: 32
-using INIT = BitField<0, 32>;
-constexpr uint32_t INIT_Pos = 0;
-constexpr uint32_t INIT_Msk = INIT::mask;
+    /// Programmable initial CRC value
+    /// Position: 0, Width: 32
+    using INIT = BitField<0, 32>;
+    constexpr uint32_t INIT_Pos = 0;
+    constexpr uint32_t INIT_Msk = INIT::mask;
 
 }  // namespace init
 

@@ -19,7 +19,7 @@ using namespace alloy::hal::bitfields;
 
 /// KR - Key register
 namespace kr {
-    /// Key value
+    /// Key value (write only, read 0000h)
     /// Position: 0, Width: 16
     using KEY = BitField<0, 16>;
     constexpr uint32_t KEY_Pos = 0;

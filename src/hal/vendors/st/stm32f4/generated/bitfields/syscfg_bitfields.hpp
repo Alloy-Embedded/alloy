@@ -29,11 +29,11 @@ namespace memrm {
 
 /// PMC - peripheral mode configuration register
 namespace pmc {
-    /// ADC1DC2
-    /// Position: 16, Width: 1
-    using ADC1DC2 = BitField<16, 1>;
-    constexpr uint32_t ADC1DC2_Pos = 16;
-    constexpr uint32_t ADC1DC2_Msk = ADC1DC2::mask;
+    /// Ethernet PHY interface selection
+    /// Position: 23, Width: 1
+    using MII_RMII_SEL = BitField<23, 1>;
+    constexpr uint32_t MII_RMII_SEL_Pos = 23;
+    constexpr uint32_t MII_RMII_SEL_Msk = MII_RMII_SEL::mask;
 
 }  // namespace pmc
 

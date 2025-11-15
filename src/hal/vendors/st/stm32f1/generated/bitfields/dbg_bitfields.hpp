@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include "hal/utils/bitfield.hpp"
 
 namespace alloy::hal::st::stm32f1::dbg {
@@ -20,135 +19,135 @@ using namespace alloy::hal::bitfields;
 
 /// IDCODE - DBGMCU_IDCODE
 namespace idcode {
-/// DEV_ID
-/// Position: 0, Width: 12
-using DEV_ID = BitField<0, 12>;
-constexpr uint32_t DEV_ID_Pos = 0;
-constexpr uint32_t DEV_ID_Msk = DEV_ID::mask;
+    /// DEV_ID
+    /// Position: 0, Width: 12
+    using DEV_ID = BitField<0, 12>;
+    constexpr uint32_t DEV_ID_Pos = 0;
+    constexpr uint32_t DEV_ID_Msk = DEV_ID::mask;
 
-/// REV_ID
-/// Position: 16, Width: 16
-using REV_ID = BitField<16, 16>;
-constexpr uint32_t REV_ID_Pos = 16;
-constexpr uint32_t REV_ID_Msk = REV_ID::mask;
+    /// REV_ID
+    /// Position: 16, Width: 16
+    using REV_ID = BitField<16, 16>;
+    constexpr uint32_t REV_ID_Pos = 16;
+    constexpr uint32_t REV_ID_Msk = REV_ID::mask;
 
 }  // namespace idcode
 
 /// CR - DBGMCU_CR
 namespace cr {
-/// DBG_SLEEP
-/// Position: 0, Width: 1
-using DBG_SLEEP = BitField<0, 1>;
-constexpr uint32_t DBG_SLEEP_Pos = 0;
-constexpr uint32_t DBG_SLEEP_Msk = DBG_SLEEP::mask;
+    /// DBG_SLEEP
+    /// Position: 0, Width: 1
+    using DBG_SLEEP = BitField<0, 1>;
+    constexpr uint32_t DBG_SLEEP_Pos = 0;
+    constexpr uint32_t DBG_SLEEP_Msk = DBG_SLEEP::mask;
 
-/// DBG_STOP
-/// Position: 1, Width: 1
-using DBG_STOP = BitField<1, 1>;
-constexpr uint32_t DBG_STOP_Pos = 1;
-constexpr uint32_t DBG_STOP_Msk = DBG_STOP::mask;
+    /// DBG_STOP
+    /// Position: 1, Width: 1
+    using DBG_STOP = BitField<1, 1>;
+    constexpr uint32_t DBG_STOP_Pos = 1;
+    constexpr uint32_t DBG_STOP_Msk = DBG_STOP::mask;
 
-/// DBG_STANDBY
-/// Position: 2, Width: 1
-using DBG_STANDBY = BitField<2, 1>;
-constexpr uint32_t DBG_STANDBY_Pos = 2;
-constexpr uint32_t DBG_STANDBY_Msk = DBG_STANDBY::mask;
+    /// DBG_STANDBY
+    /// Position: 2, Width: 1
+    using DBG_STANDBY = BitField<2, 1>;
+    constexpr uint32_t DBG_STANDBY_Pos = 2;
+    constexpr uint32_t DBG_STANDBY_Msk = DBG_STANDBY::mask;
 
-/// TRACE_IOEN
-/// Position: 5, Width: 1
-using TRACE_IOEN = BitField<5, 1>;
-constexpr uint32_t TRACE_IOEN_Pos = 5;
-constexpr uint32_t TRACE_IOEN_Msk = TRACE_IOEN::mask;
+    /// TRACE_IOEN
+    /// Position: 5, Width: 1
+    using TRACE_IOEN = BitField<5, 1>;
+    constexpr uint32_t TRACE_IOEN_Pos = 5;
+    constexpr uint32_t TRACE_IOEN_Msk = TRACE_IOEN::mask;
 
-/// TRACE_MODE
-/// Position: 6, Width: 2
-using TRACE_MODE = BitField<6, 2>;
-constexpr uint32_t TRACE_MODE_Pos = 6;
-constexpr uint32_t TRACE_MODE_Msk = TRACE_MODE::mask;
+    /// TRACE_MODE
+    /// Position: 6, Width: 2
+    using TRACE_MODE = BitField<6, 2>;
+    constexpr uint32_t TRACE_MODE_Pos = 6;
+    constexpr uint32_t TRACE_MODE_Msk = TRACE_MODE::mask;
 
-/// DBG_IWDG_STOP
-/// Position: 8, Width: 1
-using DBG_IWDG_STOP = BitField<8, 1>;
-constexpr uint32_t DBG_IWDG_STOP_Pos = 8;
-constexpr uint32_t DBG_IWDG_STOP_Msk = DBG_IWDG_STOP::mask;
+    /// DBG_IWDG_STOP
+    /// Position: 8, Width: 1
+    using DBG_IWDG_STOP = BitField<8, 1>;
+    constexpr uint32_t DBG_IWDG_STOP_Pos = 8;
+    constexpr uint32_t DBG_IWDG_STOP_Msk = DBG_IWDG_STOP::mask;
 
-/// DBG_WWDG_STOP
-/// Position: 9, Width: 1
-using DBG_WWDG_STOP = BitField<9, 1>;
-constexpr uint32_t DBG_WWDG_STOP_Pos = 9;
-constexpr uint32_t DBG_WWDG_STOP_Msk = DBG_WWDG_STOP::mask;
+    /// DBG_WWDG_STOP
+    /// Position: 9, Width: 1
+    using DBG_WWDG_STOP = BitField<9, 1>;
+    constexpr uint32_t DBG_WWDG_STOP_Pos = 9;
+    constexpr uint32_t DBG_WWDG_STOP_Msk = DBG_WWDG_STOP::mask;
 
-/// DBG_TIM1_STOP
-/// Position: 10, Width: 1
-using DBG_TIM1_STOP = BitField<10, 1>;
-constexpr uint32_t DBG_TIM1_STOP_Pos = 10;
-constexpr uint32_t DBG_TIM1_STOP_Msk = DBG_TIM1_STOP::mask;
+    /// DBG_TIM1_STOP
+    /// Position: 10, Width: 1
+    using DBG_TIM1_STOP = BitField<10, 1>;
+    constexpr uint32_t DBG_TIM1_STOP_Pos = 10;
+    constexpr uint32_t DBG_TIM1_STOP_Msk = DBG_TIM1_STOP::mask;
 
-/// DBG_TIM2_STOP
-/// Position: 11, Width: 1
-using DBG_TIM2_STOP = BitField<11, 1>;
-constexpr uint32_t DBG_TIM2_STOP_Pos = 11;
-constexpr uint32_t DBG_TIM2_STOP_Msk = DBG_TIM2_STOP::mask;
+    /// DBG_TIM2_STOP
+    /// Position: 11, Width: 1
+    using DBG_TIM2_STOP = BitField<11, 1>;
+    constexpr uint32_t DBG_TIM2_STOP_Pos = 11;
+    constexpr uint32_t DBG_TIM2_STOP_Msk = DBG_TIM2_STOP::mask;
 
-/// DBG_TIM3_STOP
-/// Position: 12, Width: 1
-using DBG_TIM3_STOP = BitField<12, 1>;
-constexpr uint32_t DBG_TIM3_STOP_Pos = 12;
-constexpr uint32_t DBG_TIM3_STOP_Msk = DBG_TIM3_STOP::mask;
+    /// DBG_TIM3_STOP
+    /// Position: 12, Width: 1
+    using DBG_TIM3_STOP = BitField<12, 1>;
+    constexpr uint32_t DBG_TIM3_STOP_Pos = 12;
+    constexpr uint32_t DBG_TIM3_STOP_Msk = DBG_TIM3_STOP::mask;
 
-/// DBG_TIM4_STOP
-/// Position: 13, Width: 1
-using DBG_TIM4_STOP = BitField<13, 1>;
-constexpr uint32_t DBG_TIM4_STOP_Pos = 13;
-constexpr uint32_t DBG_TIM4_STOP_Msk = DBG_TIM4_STOP::mask;
+    /// DBG_TIM4_STOP
+    /// Position: 13, Width: 1
+    using DBG_TIM4_STOP = BitField<13, 1>;
+    constexpr uint32_t DBG_TIM4_STOP_Pos = 13;
+    constexpr uint32_t DBG_TIM4_STOP_Msk = DBG_TIM4_STOP::mask;
 
-/// DBG_CAN1_STOP
-/// Position: 14, Width: 1
-using DBG_CAN1_STOP = BitField<14, 1>;
-constexpr uint32_t DBG_CAN1_STOP_Pos = 14;
-constexpr uint32_t DBG_CAN1_STOP_Msk = DBG_CAN1_STOP::mask;
+    /// DBG_CAN1_STOP
+    /// Position: 14, Width: 1
+    using DBG_CAN1_STOP = BitField<14, 1>;
+    constexpr uint32_t DBG_CAN1_STOP_Pos = 14;
+    constexpr uint32_t DBG_CAN1_STOP_Msk = DBG_CAN1_STOP::mask;
 
-/// DBG_I2C1_SMBUS_TIMEOUT
-/// Position: 15, Width: 1
-using DBG_I2C1_SMBUS_TIMEOUT = BitField<15, 1>;
-constexpr uint32_t DBG_I2C1_SMBUS_TIMEOUT_Pos = 15;
-constexpr uint32_t DBG_I2C1_SMBUS_TIMEOUT_Msk = DBG_I2C1_SMBUS_TIMEOUT::mask;
+    /// DBG_I2C1_SMBUS_TIMEOUT
+    /// Position: 15, Width: 1
+    using DBG_I2C1_SMBUS_TIMEOUT = BitField<15, 1>;
+    constexpr uint32_t DBG_I2C1_SMBUS_TIMEOUT_Pos = 15;
+    constexpr uint32_t DBG_I2C1_SMBUS_TIMEOUT_Msk = DBG_I2C1_SMBUS_TIMEOUT::mask;
 
-/// DBG_I2C2_SMBUS_TIMEOUT
-/// Position: 16, Width: 1
-using DBG_I2C2_SMBUS_TIMEOUT = BitField<16, 1>;
-constexpr uint32_t DBG_I2C2_SMBUS_TIMEOUT_Pos = 16;
-constexpr uint32_t DBG_I2C2_SMBUS_TIMEOUT_Msk = DBG_I2C2_SMBUS_TIMEOUT::mask;
+    /// DBG_I2C2_SMBUS_TIMEOUT
+    /// Position: 16, Width: 1
+    using DBG_I2C2_SMBUS_TIMEOUT = BitField<16, 1>;
+    constexpr uint32_t DBG_I2C2_SMBUS_TIMEOUT_Pos = 16;
+    constexpr uint32_t DBG_I2C2_SMBUS_TIMEOUT_Msk = DBG_I2C2_SMBUS_TIMEOUT::mask;
 
-/// DBG_TIM8_STOP
-/// Position: 17, Width: 1
-using DBG_TIM8_STOP = BitField<17, 1>;
-constexpr uint32_t DBG_TIM8_STOP_Pos = 17;
-constexpr uint32_t DBG_TIM8_STOP_Msk = DBG_TIM8_STOP::mask;
+    /// DBG_TIM8_STOP
+    /// Position: 17, Width: 1
+    using DBG_TIM8_STOP = BitField<17, 1>;
+    constexpr uint32_t DBG_TIM8_STOP_Pos = 17;
+    constexpr uint32_t DBG_TIM8_STOP_Msk = DBG_TIM8_STOP::mask;
 
-/// DBG_TIM5_STOP
-/// Position: 18, Width: 1
-using DBG_TIM5_STOP = BitField<18, 1>;
-constexpr uint32_t DBG_TIM5_STOP_Pos = 18;
-constexpr uint32_t DBG_TIM5_STOP_Msk = DBG_TIM5_STOP::mask;
+    /// DBG_TIM5_STOP
+    /// Position: 18, Width: 1
+    using DBG_TIM5_STOP = BitField<18, 1>;
+    constexpr uint32_t DBG_TIM5_STOP_Pos = 18;
+    constexpr uint32_t DBG_TIM5_STOP_Msk = DBG_TIM5_STOP::mask;
 
-/// DBG_TIM6_STOP
-/// Position: 19, Width: 1
-using DBG_TIM6_STOP = BitField<19, 1>;
-constexpr uint32_t DBG_TIM6_STOP_Pos = 19;
-constexpr uint32_t DBG_TIM6_STOP_Msk = DBG_TIM6_STOP::mask;
+    /// DBG_TIM6_STOP
+    /// Position: 19, Width: 1
+    using DBG_TIM6_STOP = BitField<19, 1>;
+    constexpr uint32_t DBG_TIM6_STOP_Pos = 19;
+    constexpr uint32_t DBG_TIM6_STOP_Msk = DBG_TIM6_STOP::mask;
 
-/// DBG_TIM7_STOP
-/// Position: 20, Width: 1
-using DBG_TIM7_STOP = BitField<20, 1>;
-constexpr uint32_t DBG_TIM7_STOP_Pos = 20;
-constexpr uint32_t DBG_TIM7_STOP_Msk = DBG_TIM7_STOP::mask;
+    /// DBG_TIM7_STOP
+    /// Position: 20, Width: 1
+    using DBG_TIM7_STOP = BitField<20, 1>;
+    constexpr uint32_t DBG_TIM7_STOP_Pos = 20;
+    constexpr uint32_t DBG_TIM7_STOP_Msk = DBG_TIM7_STOP::mask;
 
-/// DBG_CAN2_STOP
-/// Position: 21, Width: 1
-using DBG_CAN2_STOP = BitField<21, 1>;
-constexpr uint32_t DBG_CAN2_STOP_Pos = 21;
-constexpr uint32_t DBG_CAN2_STOP_Msk = DBG_CAN2_STOP::mask;
+    /// DBG_CAN2_STOP
+    /// Position: 21, Width: 1
+    using DBG_CAN2_STOP = BitField<21, 1>;
+    constexpr uint32_t DBG_CAN2_STOP_Pos = 21;
+    constexpr uint32_t DBG_CAN2_STOP_Msk = DBG_CAN2_STOP::mask;
 
 }  // namespace cr
 

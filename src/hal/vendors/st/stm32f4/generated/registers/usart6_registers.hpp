@@ -17,6 +17,7 @@ namespace alloy::hal::st::stm32f4::usart6 {
 
 /// USART6 Register Structure
 struct USART6_Registers {
+
     /// Status register
     /// Offset: 0x0000
     /// Reset value: 0x00C00000

@@ -17,6 +17,7 @@ namespace alloy::hal::atmel::samv71::lockbit {
 
 /// LOCKBIT Register Structure
 struct LOCKBIT_Registers {
+
     /// Lock Bits Word 0
     /// Offset: 0x0000
     volatile uint32_t WORD0;
