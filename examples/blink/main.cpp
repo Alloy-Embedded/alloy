@@ -43,6 +43,8 @@
     #include "nucleo_g071rb/board.hpp"
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
     #include "nucleo_f401re/board.hpp"
+#elif defined(ALLOY_BOARD_NUCLEO_F722ZE)
+    #include "nucleo_f722ze/board.hpp"
 #else
     #error "Unsupported board! Define ALLOY_BOARD_* in your build system."
 #endif

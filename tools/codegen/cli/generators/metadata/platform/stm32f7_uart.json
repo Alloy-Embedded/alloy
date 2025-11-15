@@ -1,0 +1,295 @@
+{
+  "family": "stm32f7",
+  "mcu": "stm32f701",
+  "vendor": "st",
+  "peripheral_name": "UART",
+  "description": "Universal Asynchronous Receiver Transmitter",
+  "register_type": "USART1_Registers",
+  "register_namespace": "usart1",
+  "register_include": "hal/vendors/st/stm32f7/registers/usart1_registers.hpp",
+  "bitfield_include": "hal/vendors/st/stm32f7/bitfields/usart1_bitfields.hpp",
+  "platform_namespace": "alloy::hal::st::stm32f7",
+  "vendor_namespace": "alloy::hal::st::stm32f7",
+
+  "features": {
+    "hardware_flow_control": true,
+    "dma_support": true,
+    "fifo": false,
+    "9bit_mode": true,
+    "synchronous_mode": true,
+    "smartcard_mode": true,
+    "irda_mode": true,
+    "lin_mode": true
+  },
+
+  "uart_bases": {
+    "USART1": "0x40011000",
+    "USART2": "0x40004400",
+    "USART6": "0x40011400"
+  },
+
+  "template_params": [
+    {
+      "name": "BASE_ADDR",
+      "type": "uint32_t",
+      "description": "Peripheral base address"
+    },
+    {
+      "name": "PERIPH_CLOCK_HZ",
+      "type": "uint32_t",
+      "description": "Peripheral clock frequency in Hz"
+    }
+  ],
+
+  "policy_methods": {
+    "description": "Hardware Policy methods for UART on STM32F7",
+    "peripheral_clock_hz": 84000000,
+    "mock_hook_prefix": "ALLOY_UART_MOCK_HW",
+
+    "hw_accessor": {
+      "description": "Get pointer to hardware registers",
+      "return_type": "volatile RegisterType*",
+      "code": "return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);"
+    },
+
+    "enable_uart": {
+      "description": "Enable UART peripheral",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 |= (1U << 13);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_UE",
+      "notes": "UE bit in CR1"
+    },
+
+    "disable_uart": {
+      "description": "Disable UART peripheral",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 &= ~(1U << 13);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_UE"
+    },
+
+    "enable_transmitter": {
+      "description": "Enable transmitter",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 |= (1U << 3);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_TE",
+      "notes": "TE bit in CR1"
+    },
+
+    "enable_receiver": {
+      "description": "Enable receiver",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 |= (1U << 2);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RE",
+      "notes": "RE bit in CR1"
+    },
+
+    "disable_transmitter": {
+      "description": "Disable transmitter",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 &= ~(1U << 3);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_TE"
+    },
+
+    "disable_receiver": {
+      "description": "Disable receiver",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 &= ~(1U << 2);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RE"
+    },
+
+    "set_baudrate": {
+      "description": "Set baud rate",
+      "parameters": [
+        {"name": "baudrate", "type": "uint32_t", "description": "Desired baud rate"}
+      ],
+      "return_type": "void",
+      "code": "uint32_t usartdiv = (PERIPH_CLOCK_HZ + baudrate / 2) / baudrate;\nhw()->BRR = usartdiv;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_BRR",
+      "notes": "BRR = PCLK / baudrate"
+    },
+
+    "set_word_length_8bit": {
+      "description": "Set word length to 8 bits",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 &= ~(1U << 12);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_M",
+      "notes": "M=0"
+    },
+
+    "set_word_length_9bit": {
+      "description": "Set word length to 9 bits",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 |= (1U << 12);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_M",
+      "notes": "M=1"
+    },
+
+    "set_parity_none": {
+      "description": "Disable parity",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 &= ~(1U << 10);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_PCE",
+      "notes": "PCE=0"
+    },
+
+    "set_parity_even": {
+      "description": "Enable even parity",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 |= (1U << 10);\nhw()->CR1 &= ~(1U << 9);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_PCE",
+      "notes": "PCE=1, PS=0"
+    },
+
+    "set_parity_odd": {
+      "description": "Enable odd parity",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 |= (1U << 10);\nhw()->CR1 |= (1U << 9);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_PCE",
+      "notes": "PCE=1, PS=1"
+    },
+
+    "set_stop_bits_1": {
+      "description": "Set 1 stop bit",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR2 &= ~(0x3U << 12);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_STOP",
+      "notes": "STOP=00"
+    },
+
+    "set_stop_bits_2": {
+      "description": "Set 2 stop bits",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR2 = (hw()->CR2 & ~(0x3U << 12)) | (0x2U << 12);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_STOP",
+      "notes": "STOP=10"
+    },
+
+    "write_data": {
+      "description": "Write data to transmit register",
+      "parameters": [
+        {"name": "data", "type": "uint8_t", "description": "Data byte to transmit"}
+      ],
+      "return_type": "void",
+      "code": "hw()->DR = data;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_DR"
+    },
+
+    "read_data": {
+      "description": "Read data from receive register",
+      "parameters": [],
+      "return_type": "uint8_t",
+      "code": "return static_cast<uint8_t>(hw()->DR & 0xFF);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_DR"
+    },
+
+    "is_tx_empty": {
+      "description": "Check if transmit register is empty",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->SR & (1U << 7)) != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_TXE",
+      "notes": "TXE bit in SR"
+    },
+
+    "is_tx_complete": {
+      "description": "Check if transmission is complete",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->SR & (1U << 6)) != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_TC",
+      "notes": "TC bit in SR"
+    },
+
+    "is_rx_not_empty": {
+      "description": "Check if receive register has data",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->SR & (1U << 5)) != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RXNE",
+      "notes": "RXNE bit in SR"
+    },
+
+    "clear_overrun_error": {
+      "description": "Clear overrun error flag",
+      "parameters": [],
+      "return_type": "void",
+      "code": "(void)hw()->SR; (void)hw()->DR;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_ORE",
+      "notes": "Read SR then DR to clear"
+    },
+
+    "has_overrun_error": {
+      "description": "Check for overrun error",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->SR & (1U << 3)) != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_ORE",
+      "notes": "ORE bit in SR"
+    },
+
+    "has_framing_error": {
+      "description": "Check for framing error",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->SR & (1U << 1)) != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_FE",
+      "notes": "FE bit in SR"
+    },
+
+    "has_parity_error": {
+      "description": "Check for parity error",
+      "parameters": [],
+      "return_type": "bool",
+      "code": "return (hw()->SR & (1U << 0)) != 0;",
+      "test_hook": "ALLOY_UART_TEST_HOOK_PE",
+      "notes": "PE bit in SR"
+    },
+
+    "enable_rx_interrupt": {
+      "description": "Enable receive interrupt",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 |= (1U << 5);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RXNEIE",
+      "notes": "RXNEIE bit in CR1"
+    },
+
+    "enable_tx_interrupt": {
+      "description": "Enable transmit interrupt",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 |= (1U << 7);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_TXEIE",
+      "notes": "TXEIE bit in CR1"
+    },
+
+    "disable_rx_interrupt": {
+      "description": "Disable receive interrupt",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 &= ~(1U << 5);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_RXNEIE"
+    },
+
+    "disable_tx_interrupt": {
+      "description": "Disable transmit interrupt",
+      "parameters": [],
+      "return_type": "void",
+      "code": "hw()->CR1 &= ~(1U << 7);",
+      "test_hook": "ALLOY_UART_TEST_HOOK_TXEIE"
+    }
+  }
+}

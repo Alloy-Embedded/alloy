@@ -617,3 +617,40 @@ nucleo-f401re-clean: ## Clean Nucleo-F401RE build directory
 
 nucleo-f401re-rebuild: nucleo-f401re-clean nucleo-f401re-blink-build ## Clean and rebuild Nucleo-F401RE
 
+
+# ==============================================================================
+# STM32 Nucleo-F722ZE Board (STM32F7 Family - Cortex-M7 @ 216 MHz)
+# ==============================================================================
+
+NUCLEO_F722ZE_BUILD_DIR := build-nucleo-f722ze
+NUCLEO_F722ZE_BLINK := blink
+
+nucleo-f722ze-blink: nucleo-f722ze-blink-flash ## 🎯 Build and flash universal blink LED for Nucleo-F722ZE
+
+nucleo-f722ze-blink-build: ## Build blink example for Nucleo-F722ZE
+	@echo "$(CYAN)🔨 Building blink for Nucleo-F722ZE (STM32F722ZET6 @ 216 MHz)...$(NC)"
+	@cmake -S . -B $(NUCLEO_F722ZE_BUILD_DIR) \
+		-DALLOY_BOARD=nucleo_f722ze \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
+		-GNinja
+	@cmake --build $(NUCLEO_F722ZE_BUILD_DIR) --target $(NUCLEO_F722ZE_BLINK)
+	@echo ""
+	@echo "$(GREEN)✅ Build complete! Binary ready:$(NC)"
+	@echo "  $(NUCLEO_F722ZE_BUILD_DIR)/examples/blink/blink.elf"
+	@echo "  $(NUCLEO_F722ZE_BUILD_DIR)/examples/blink/blink.hex"
+	@echo "  $(NUCLEO_F722ZE_BUILD_DIR)/examples/blink/blink.bin"
+
+nucleo-f722ze-blink-flash: nucleo-f722ze-blink-build ## Flash blink to Nucleo-F722ZE
+	@echo "$(CYAN)📡 Flashing Nucleo-F722ZE via ST-Link...$(NC)"
+	@openocd -f interface/stlink.cfg -f target/stm32f7x.cfg \
+		-c "program {$(PWD)/$(NUCLEO_F722ZE_BUILD_DIR)/examples/blink/blink} verify reset exit"
+	@echo "$(GREEN)✅ LED should now be blinking!$(NC)"
+
+nucleo-f722ze-clean: ## Clean Nucleo-F722ZE build directory
+	@echo "$(YELLOW)🧹 Cleaning Nucleo-F722ZE build...$(NC)"
+	@rm -rf $(NUCLEO_F722ZE_BUILD_DIR)
+	@echo "$(GREEN)✓ Clean complete$(NC)"
+
+nucleo-f722ze-rebuild: nucleo-f722ze-clean nucleo-f722ze-blink-build ## Clean and rebuild Nucleo-F722ZE
+
