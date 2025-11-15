@@ -93,10 +93,37 @@ public:
     }
 
     /**
-     * @brief Read pin state
+     * @brief Write pin state (HIGH or LOW)
+     *
+     * @param value true = HIGH, false = LOW
      */
-    bool read() const {
-        return HwPolicy::read_input(pin_mask);
+    Result<void, ErrorCode> write(bool value) {
+        if (value) {
+            return set();
+        } else {
+            return clear();
+        }
+    }
+
+    /**
+     * @brief Read pin state
+     *
+     * @return Result containing pin state (true = HIGH, false = LOW)
+     */
+    Result<bool, ErrorCode> read() const {
+        return Ok(HwPolicy::read_input(pin_mask));
+    }
+
+    /**
+     * @brief Check if pin is configured as output
+     *
+     * @return Result containing true if output, false if input
+     */
+    Result<bool, ErrorCode> isOutput() const {
+        // Read MODER register (2 bits per pin)
+        uint32_t mode = HwPolicy::read_mode(PIN_NUM);
+        // Mode 01 = Output, 00 = Input, 10 = Alternate, 11 = Analog
+        return Ok(mode == 1);
     }
 
     /**
