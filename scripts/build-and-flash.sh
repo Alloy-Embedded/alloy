@@ -407,7 +407,7 @@ flash() {
 ###############################################################################
 
 main() {
-    log_header "CoreZero Framework - Build & Flash"
+    log_header "Alloy Framework - Build & Flash"
 
     echo "Board:   $BOARD"
     echo "Example: $EXAMPLE"
