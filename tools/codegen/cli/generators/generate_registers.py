@@ -21,7 +21,7 @@ sys.path.insert(0, str(CODEGEN_DIR))
 
 from cli.core.logger import print_header, print_success, print_error, print_info, logger
 from cli.core.config import normalize_name
-from cli.core.paths import get_mcu_output_dir, ensure_dir, get_family_dir
+from cli.core.paths import get_mcu_output_dir, ensure_dir, get_family_dir, get_generated_output_dir
 from cli.parsers.generic_svd import parse_svd, SVDDevice, Peripheral, Register, RegisterField
 from cli.core.progress import get_global_tracker
 import re
@@ -404,13 +404,15 @@ def generate_for_device(svd_path: Path, family_level: bool = True, tracker=None)
 
     # Determine output directory based on generation level
     if family_level:
-        # Generate at family level: vendors/{vendor}/{family}/
-        output_dir = ensure_dir(get_family_dir(device.vendor_normalized, device.family))
+        # Generate at family level: vendors/{vendor}/{family}/generated/
+        output_dir = ensure_dir(
+            get_generated_output_dir(device.vendor_normalized, device.family)
+        )
         logger.info(f"Generating family-level registers for {device.family} -> {output_dir}")
     else:
-        # Generate at MCU level: vendors/{vendor}/{family}/{mcu}/
+        # Generate at MCU level: vendors/{vendor}/{family}/{mcu}/generated/
         output_dir = ensure_dir(
-            get_mcu_output_dir(
+            get_generated_output_dir(
                 device.vendor_normalized,
                 device.family,
                 device.name.lower()

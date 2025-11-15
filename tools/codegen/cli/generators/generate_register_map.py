@@ -29,16 +29,17 @@ def get_generated_peripheral_files(output_dir: Path) -> tuple[List[str], List[st
     Scan family directory for generated peripheral files.
 
     With family-level architecture, registers and bitfields are stored at
-    the family level, not the MCU level. This function looks for them in
-    the parent directory (family level).
+    the family level in the /generated/ subdirectory. This function looks
+    for them in the parent directory's /generated/ subdirectory.
 
     Returns:
         Tuple of (register_files, bitfield_files) lists with peripheral names
     """
-    # Look for registers/bitfields at family level (parent directory)
+    # Look for registers/bitfields at family level (parent directory) in /generated/ subdir
     family_dir = output_dir.parent
-    registers_dir = family_dir / "registers"
-    bitfields_dir = family_dir / "bitfields"
+    generated_dir = family_dir / "generated"
+    registers_dir = generated_dir / "registers"
+    bitfields_dir = generated_dir / "bitfields"
 
     register_files = []
     bitfield_files = []
@@ -115,24 +116,24 @@ def generate_register_map_header(device: SVDDevice, output_dir: Path) -> str:
     if has_bitfield_utils:
         content += '#include "bitfield_utils.hpp"\n\n'
 
-    # Include all peripheral registers (at family level)
+    # Include all peripheral registers (at family level in /generated/)
     if register_files:
         content += "// ============================================================================\n"
         content += "// Peripheral Register Structures (Family Level)\n"
         content += "// ============================================================================\n\n"
 
         for periph in register_files:
-            content += f'#include "../registers/{periph}_registers.hpp"\n'
+            content += f'#include "../generated/registers/{periph}_registers.hpp"\n'
         content += "\n"
 
-    # Include all peripheral bitfields (at family level)
+    # Include all peripheral bitfields (at family level in /generated/)
     if bitfield_files:
         content += "// ============================================================================\n"
         content += "// Peripheral Bit Field Definitions (Family Level)\n"
         content += "// ============================================================================\n\n"
 
         for periph in bitfield_files:
-            content += f'#include "../bitfields/{periph}_bitfields.hpp"\n'
+            content += f'#include "../generated/bitfields/{periph}_bitfields.hpp"\n'
         content += "\n"
 
     # Include enumerations

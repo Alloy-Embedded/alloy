@@ -28,10 +28,10 @@
 #include "core/result.hpp"
 
 // Register definitions
-#include "hal/vendors/atmel/same70/registers/tc0_registers.hpp"
+#include "hal/vendors/atmel/same70/generated/registers/tc0_registers.hpp"
 
 // Bitfield definitions
-#include "hal/vendors/atmel/same70/bitfields/tc0_bitfields.hpp"
+#include "hal/vendors/atmel/same70/generated/bitfields/tc0_bitfields.hpp"
 
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"

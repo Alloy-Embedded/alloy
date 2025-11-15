@@ -11,10 +11,10 @@
 #pragma once
 
 #include "core/types.hpp"
-#include "hal/vendors/atmel/same70/registers/wdt_registers.hpp"
-#include "hal/vendors/atmel/same70/registers/rswdt_registers.hpp"
-#include "hal/vendors/atmel/same70/bitfields/wdt_bitfields.hpp"
-#include "hal/vendors/atmel/same70/bitfields/rswdt_bitfields.hpp"
+#include "hal/vendors/atmel/same70/generated/registers/wdt_registers.hpp"
+#include "hal/vendors/atmel/same70/generated/registers/rswdt_registers.hpp"
+#include "hal/vendors/atmel/same70/generated/bitfields/wdt_bitfields.hpp"
+#include "hal/vendors/atmel/same70/generated/bitfields/rswdt_bitfields.hpp"
 
 namespace alloy::hal::atmel::same70 {
 

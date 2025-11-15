@@ -28,10 +28,10 @@
 #include "core/result.hpp"
 
 // Register definitions
-#include "hal/vendors/st/stm32g0/registers/tim1_registers.hpp"
+#include "hal/vendors/st/stm32g0/generated/registers/tim1_registers.hpp"
 
 // Bitfield definitions
-#include "hal/vendors/st/stm32g0/bitfields/tim1_bitfields.hpp"
+#include "hal/vendors/st/stm32g0/generated/bitfields/tim1_bitfields.hpp"
 
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
