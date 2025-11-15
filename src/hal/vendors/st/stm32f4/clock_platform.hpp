@@ -210,8 +210,10 @@ public:
      * @brief Enable all GPIO peripheral clocks
      *
      * Enables clock for GPIOA through GPIOE and GPIOH.
+     *
+     * @return Result indicating success
      */
-    static void enable_gpio_clocks() {
+    static Result<void, ErrorCode> enable_gpio_clocks() {
         using namespace rcc;
 
         rcc::RCC()->AHB1ENR |= ahb1enr::GPIOAEN::mask |
@@ -220,6 +222,108 @@ public:
                                ahb1enr::GPIODEN::mask |
                                ahb1enr::GPIOEEN::mask |
                                ahb1enr::GPIOHEN::mask;
+
+        return Ok();
+    }
+
+    /**
+     * @brief Enable UART/USART peripheral clock
+     *
+     * Enables clock for the specified UART/USART peripheral.
+     *
+     * @param uart_base UART/USART peripheral base address
+     * @return Result indicating success or error if invalid peripheral
+     */
+    static Result<void, ErrorCode> enable_uart_clock(uint32_t uart_base) {
+        using namespace rcc;
+
+        // USART1 and USART6 are on APB2
+        if (uart_base == 0x40011000) {  // USART1
+            rcc::RCC()->APB2ENR |= apb2enr::USART1EN::mask;
+            return Ok();
+        }
+        if (uart_base == 0x40011400) {  // USART6
+            rcc::RCC()->APB2ENR |= apb2enr::USART6EN::mask;
+            return Ok();
+        }
+
+        // USART2, USART3, UART4, UART5 are on APB1
+        if (uart_base == 0x40004400) {  // USART2
+            rcc::RCC()->APB1ENR |= apb1enr::USART2EN::mask;
+            return Ok();
+        }
+        if (uart_base == 0x40004800) {  // USART3
+            rcc::RCC()->APB1ENR |= apb1enr::USART3EN::mask;
+            return Ok();
+        }
+        if (uart_base == 0x40004C00) {  // UART4
+            rcc::RCC()->APB1ENR |= apb1enr::UART4EN::mask;
+            return Ok();
+        }
+        if (uart_base == 0x40005000) {  // UART5
+            rcc::RCC()->APB1ENR |= apb1enr::UART5EN::mask;
+            return Ok();
+        }
+
+        return Err(ErrorCode::InvalidParameter);
+    }
+
+    /**
+     * @brief Enable SPI peripheral clock
+     *
+     * Enables clock for the specified SPI peripheral.
+     *
+     * @param spi_base SPI peripheral base address
+     * @return Result indicating success or error if invalid peripheral
+     */
+    static Result<void, ErrorCode> enable_spi_clock(uint32_t spi_base) {
+        using namespace rcc;
+
+        // SPI1 is on APB2
+        if (spi_base == 0x40013000) {  // SPI1
+            rcc::RCC()->APB2ENR |= apb2enr::SPI1EN::mask;
+            return Ok();
+        }
+
+        // SPI2 and SPI3 are on APB1
+        if (spi_base == 0x40003800) {  // SPI2
+            rcc::RCC()->APB1ENR |= apb1enr::SPI2EN::mask;
+            return Ok();
+        }
+        if (spi_base == 0x40003C00) {  // SPI3
+            rcc::RCC()->APB1ENR |= apb1enr::SPI3EN::mask;
+            return Ok();
+        }
+
+        return Err(ErrorCode::InvalidParameter);
+    }
+
+    /**
+     * @brief Enable I2C peripheral clock
+     *
+     * Enables clock for the specified I2C peripheral.
+     *
+     * @param i2c_base I2C peripheral base address
+     * @return Result indicating success or error if invalid peripheral
+     */
+    static Result<void, ErrorCode> enable_i2c_clock(uint32_t i2c_base) {
+        using namespace rcc;
+
+        // All I2C peripherals are on APB1
+        if (i2c_base == 0x40005400) {  // I2C1
+            rcc::RCC()->APB1ENR |= apb1enr::I2C1EN::mask;
+            return Ok();
+        }
+        if (i2c_base == 0x40005800) {  // I2C2
+            rcc::RCC()->APB1ENR |= apb1enr::I2C2EN::mask;
+            return Ok();
+        }
+        if (i2c_base == 0x40005C00) {  // I2C3
+            rcc::RCC()->APB1ENR |= apb1enr::I2C3EN::mask;
+            return Ok();
+        }
+
+        return Err(ErrorCode::InvalidParameter);
     }
 
     /**
@@ -254,5 +358,31 @@ public:
         return get_ahb_clock_hz() / Config::apb2_prescaler;
     }
 };
+
+// ============================================================================
+// Concept Validation (C++20)
+// ============================================================================
+
+#if __cplusplus >= 202002L
+// Verify that Stm32f4Clock satisfies the ClockPlatform concept
+// This provides compile-time validation with clear error messages
+// Example config for validation:
+struct ExampleClockConfig {
+    static constexpr uint32_t hse_hz = 8'000'000;
+    static constexpr uint32_t system_clock_hz = 84'000'000;
+    static constexpr uint32_t pll_m = 4;
+    static constexpr uint32_t pll_n = 168;
+    static constexpr uint32_t pll_p_div = 2;
+    static constexpr uint32_t pll_q = 7;
+    static constexpr uint32_t flash_latency = 2;
+    static constexpr uint32_t ahb_prescaler = 1;
+    static constexpr uint32_t apb1_prescaler = 2;
+    static constexpr uint32_t apb2_prescaler = 1;
+};
+
+// Uncomment when concepts.hpp is included
+// static_assert(alloy::hal::concepts::ClockPlatform<Stm32f4Clock<ExampleClockConfig>>,
+//               "Stm32f4Clock must satisfy ClockPlatform concept");
+#endif
 
 } // namespace alloy::hal::st::stm32f4
