@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################
-# CoreZero Framework - Build and Flash Helper Script
+# Alloy Framework - Build and Flash Helper Script
 #
 # Usage:
 #   ./scripts/build-and-flash.sh <board> <example>
