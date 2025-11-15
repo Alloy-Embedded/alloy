@@ -57,7 +57,7 @@
 - [x] 1.7.1 Build nucleo_f401re board (tested successfully)
 - [x] 1.7.2 Build nucleo_f722ze board (tested successfully)
 - [x] 1.7.3 Build nucleo_g071rb board (tested successfully)
-- [ ] 1.7.4 Build nucleo_g0b1re board (not yet tested)
+- [ ] 1.7.4 Build nucleo_g0b1re board (build error - wrong startup code included, needs separate fix)
 - [x] 1.7.5 Build same70_xplained board (tested successfully)
 - [ ] 1.7.6 Run blink example on F401RE hardware (requires physical hardware)
 - [ ] 1.7.7 Run blink example on F722ZE hardware (requires physical hardware)
@@ -68,9 +68,9 @@
 ## Phase 2: Naming Standardization (Week 2, Days 1-2)
 
 ### 2.1 Choose Canonical Name
-- [ ] 2.1.1 Document decision: "Alloy" is canonical name
-- [ ] 2.1.2 Create NAMING_CONVENTION.md explaining rationale
-- [ ] 2.1.3 Update project README title to "Alloy Framework"
+- [x] 2.1.1 Document decision: "Alloy" is canonical name (adopted 2025-11-15)
+- [x] 2.1.2 Create NAMING_CONVENTION.md explaining rationale (created with full migration guide)
+- [ ] 2.1.3 Update project README title to "Alloy Framework" (deferred - repository level change)
 
 ### 2.2 Update Source Code
 - [x] 2.2.1 Replace all "CoreZero" → "Alloy" in source files (src/) (no references found in src/)
