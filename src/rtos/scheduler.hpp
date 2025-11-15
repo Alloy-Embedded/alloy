@@ -16,8 +16,10 @@
 #define ALLOY_RTOS_SCHEDULER_HPP
 
 #include "rtos/rtos.hpp"
+#include "rtos/error.hpp"
 
 #include "core/types.hpp"
+#include "core/result.hpp"
 
 namespace alloy::rtos {
 
@@ -111,7 +113,9 @@ void init();
 [[noreturn]] void start();
 
 /// Scheduler tick - called from SysTick ISR every 1ms
-void tick();
+///
+/// @return Ok(void) on success, Err(RTOSError) on failure
+core::Result<void, RTOSError> tick();
 
 /// Delay current task
 void delay(core::u32 ms);
@@ -132,7 +136,9 @@ void unblock_all_tasks(TaskControlBlock** wait_list);
 void reschedule();
 
 /// Wake delayed tasks (called from tick)
-void wake_delayed_tasks();
+///
+/// @return Ok(void) on success, Err(RTOSError) on failure
+core::Result<void, RTOSError> wake_delayed_tasks();
 
 }  // namespace scheduler
 
