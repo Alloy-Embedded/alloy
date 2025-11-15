@@ -35,6 +35,41 @@ using namespace alloy::core;
 // ============================================================================
 
 /**
+ * @brief Clock Platform Concept
+ *
+ * Validates that a type implements the clock platform interface.
+ * All clock implementations must satisfy this concept.
+ *
+ * Requirements:
+ * - initialize() to configure system clock
+ * - enable_gpio_clocks() to enable GPIO peripheral clocks
+ * - enable_uart_clock() to enable UART/USART peripheral clocks
+ * - enable_spi_clock() to enable SPI peripheral clocks
+ * - enable_i2c_clock() to enable I2C peripheral clocks
+ *
+ * Error messages will specify which method is missing.
+ *
+ * Example usage:
+ * @code
+ * template<ClockPlatform Clock>
+ * void init_system(Clock& clock) {
+ *     clock.initialize();  // Guaranteed to exist
+ * }
+ * @endcode
+ */
+template <typename T>
+concept ClockPlatform = requires {
+    // System clock initialization
+    { T::initialize() } -> std::same_as<Result<void, ErrorCode>>;
+
+    // Peripheral clock enable functions
+    { T::enable_gpio_clocks() } -> std::same_as<Result<void, ErrorCode>>;
+    { T::enable_uart_clock(u32{}) } -> std::same_as<Result<void, ErrorCode>>;
+    { T::enable_spi_clock(u32{}) } -> std::same_as<Result<void, ErrorCode>>;
+    { T::enable_i2c_clock(u32{}) } -> std::same_as<Result<void, ErrorCode>>;
+};
+
+/**
  * @brief GPIO Pin Concept
  *
  * Validates that a type implements the complete GPIO pin interface.
