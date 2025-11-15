@@ -10,7 +10,10 @@
 - [x] 1.1.5 Create migration map (completed - all files migrated to vendors/{vendor}/{family}/generated/)
 
 ### 1.2 Create New Directory Structure
-- [ ] 1.2.1 Create `src/hal/vendors/st/common/` for shared STM32 code
+- [x] 1.2.1 Create `src/hal/vendors/st/common/` for shared STM32 code
+  - Created `src/hal/vendors/st/common/systick_platform.hpp` (shared across F4, F7, G0)
+  - Created comprehensive `README.md` explaining common code strategy
+  - Template-based design for zero runtime overhead
 - [x] 1.2.2 Create `src/hal/vendors/st/stm32f4/generated/` subdirectories
 - [x] 1.2.3 Create `src/hal/vendors/st/stm32f7/generated/` subdirectories
 - [x] 1.2.4 Create `src/hal/vendors/st/stm32g0/generated/` subdirectories
