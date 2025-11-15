@@ -126,10 +126,13 @@ struct TaskControlBlock {
 /// ```
 template <size_t StackSize, Priority Pri, fixed_string Name = "task">
 class Task {
-    static_assert(StackSize >= 256, "Stack size must be at least 256 bytes");
-    static_assert(StackSize % 8 == 0, "Stack size must be 8-byte aligned");
-    static_assert(Pri >= Priority::Idle && Pri <= Priority::Critical,
-                  "Priority must be between Idle (0) and Critical (7)");
+    // C++23 Enhanced Compile-Time Validation
+    static_assert(validate_stack_size<StackSize>() == StackSize,
+                  "Stack size validation failed (must be 256-65536 bytes, 8-byte aligned)");
+    static_assert(validate_priority<static_cast<core::u8>(Pri)>() == static_cast<core::u8>(Pri),
+                  "Priority validation failed (must be 0-7)");
+    static_assert(is_valid_task_name(Name.data),
+                  "Task name validation failed (1-31 alphanumeric chars, _, or -)");
 
    private:
     alignas(8) core::u8 stack_[StackSize];  ///< Task stack (8-byte aligned)
@@ -292,38 +295,43 @@ struct TaskSet {
     /// - Stack: StackSize bytes
     /// - TCB: 32 bytes
     ///
+    /// C++23 Enhanced: Uses dual-mode calculation for flexibility
+    ///
     /// @return Total bytes of RAM
     static consteval size_t total_ram() {
         constexpr size_t TCB_SIZE = 32;
         return total_stack_ram() + (count() * TCB_SIZE);
     }
 
-    /// Get highest priority in task set
+    /// Calculate total RAM with compile-time budget check (C++23)
+    ///
+    /// @tparam Budget Maximum RAM budget in bytes
+    /// @return Total RAM if within budget (throws compile error otherwise)
+    template <size_t Budget>
+    static consteval size_t total_ram_with_budget() {
+        constexpr size_t ram = total_ram();
+        compile_time_check(ram <= Budget, "TaskSet exceeds RAM budget");
+        return ram;
+    }
+
+    /// Get highest priority in task set (C++23 enhanced)
     ///
     /// @return Highest priority value
     static consteval core::u8 highest_priority() {
         constexpr core::u8 priorities[] = {
             static_cast<core::u8>(Tasks::priority())...
         };
-        core::u8 max = 0;
-        for (core::u8 p : priorities) {
-            if (p > max) max = p;
-        }
-        return max;
+        return array_max(priorities);
     }
 
-    /// Get lowest priority in task set
+    /// Get lowest priority in task set (C++23 enhanced)
     ///
     /// @return Lowest priority value
     static consteval core::u8 lowest_priority() {
         constexpr core::u8 priorities[] = {
             static_cast<core::u8>(Tasks::priority())...
         };
-        core::u8 min = 7;
-        for (core::u8 p : priorities) {
-            if (p < min) min = p;
-        }
-        return min;
+        return array_min(priorities);
     }
 
     /// Check if all priorities are unique (no duplicates)

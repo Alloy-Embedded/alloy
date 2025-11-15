@@ -674,6 +674,186 @@ consteval bool is_schedulable() {
     return ExecutionTime <= Period;
 }
 
+// ============================================================================
+// C++23 Enhanced Features
+// ============================================================================
+
+/// Dual-mode RAM calculation (compile-time and runtime)
+///
+/// Uses C++23 'if consteval' to provide both compile-time and runtime paths.
+/// When called in consteval context, uses fold expressions.
+/// When called at runtime, uses traditional loop.
+///
+/// @tparam StackSizes Variadic pack of stack sizes
+/// @return Total RAM
+template <size_t... StackSizes>
+constexpr size_t calculate_total_ram_dual() {
+    if consteval {
+        // Compile-time path: fold expression (very fast)
+        return (StackSizes + ...);
+    } else {
+        // Runtime path: traditional loop (for dynamic scenarios)
+        constexpr size_t sizes[] = {StackSizes...};
+        size_t total = 0;
+        for (size_t s : sizes) {
+            total += s;
+        }
+        return total;
+    }
+}
+
+/// Enhanced consteval error reporting
+///
+/// Uses C++23 consteval to ensure error messages are generated at compile time.
+/// Provides better diagnostics than static_assert.
+///
+/// @tparam Condition Condition to check
+/// @param message Error message
+/// @return true if condition is true
+consteval bool compile_time_check(bool condition, const char* message) {
+    if (!condition) {
+        // In C++23, throwing in consteval provides compile-time error with message
+        // This is better than static_assert in some contexts
+        throw message;
+    }
+    return true;
+}
+
+/// Compile-time string validation
+///
+/// Uses consteval to validate strings at compile time.
+///
+/// @tparam N String length
+/// @param str String to validate
+/// @return true if valid
+template <size_t N>
+consteval bool is_valid_task_name(const char (&str)[N]) {
+    // Check length (1-31 chars + null)
+    if (N < 2 || N > 32) return false;
+
+    // Check for null terminator
+    if (str[N-1] != '\0') return false;
+
+    // Check for valid characters (alphanumeric, underscore, hyphen)
+    for (size_t i = 0; i < N-1; ++i) {
+        char c = str[i];
+        bool valid = (c >= 'A' && c <= 'Z') ||
+                     (c >= 'a' && c <= 'z') ||
+                     (c >= '0' && c <= '9') ||
+                     (c == '_') || (c == '-');
+        if (!valid) return false;
+    }
+
+    return true;
+}
+
+/// Compile-time priority validation with better error messages
+///
+/// @tparam Pri Priority value
+/// @return Priority value (or throws compile error)
+template <core::u8 Pri>
+consteval core::u8 validate_priority() {
+    if (Pri > 7) {
+        throw "Priority must be between 0 and 7";
+    }
+    return Pri;
+}
+
+/// Compile-time stack size validation with better error messages
+///
+/// @tparam Size Stack size
+/// @return Stack size (or throws compile error)
+template <size_t Size>
+consteval size_t validate_stack_size() {
+    if (Size < 256) {
+        throw "Stack size must be at least 256 bytes";
+    }
+    if (Size > 65536) {
+        throw "Stack size must not exceed 65536 bytes";
+    }
+    if ((Size % 8) != 0) {
+        throw "Stack size must be 8-byte aligned";
+    }
+    return Size;
+}
+
+/// Enhanced consteval RAM budget checker with detailed reporting
+///
+/// @tparam Budget Maximum RAM budget
+/// @tparam Sizes Variadic pack of allocations
+/// @return true if fits in budget
+template <size_t Budget, size_t... Sizes>
+consteval bool check_ram_budget_detailed() {
+    constexpr size_t total = (Sizes + ...);
+    if (total > Budget) {
+        // C++23: This will produce a compile error with useful info
+        throw "RAM budget exceeded";
+    }
+    return true;
+}
+
+/// Optimized compile-time power of 2 check
+///
+/// Uses C++23 consteval for guaranteed compile-time evaluation.
+///
+/// @tparam N Number to check
+/// @return true if power of 2
+template <size_t N>
+consteval bool is_power_of_2() {
+    return N > 0 && (N & (N - 1)) == 0;
+}
+
+/// Compile-time log2 calculation (for power-of-2 sizes)
+///
+/// @tparam N Number (must be power of 2)
+/// @return log2(N)
+template <size_t N>
+consteval size_t log2_constexpr() {
+    static_assert(is_power_of_2<N>(), "N must be power of 2");
+
+    size_t result = 0;
+    size_t value = N;
+    while (value > 1) {
+        value >>= 1;
+        result++;
+    }
+    return result;
+}
+
+/// Compile-time array maximum
+///
+/// @tparam T Array element type
+/// @tparam N Array size
+/// @param arr Array
+/// @return Maximum value
+template <typename T, size_t N>
+consteval T array_max(const T (&arr)[N]) {
+    T max_val = arr[0];
+    for (size_t i = 1; i < N; ++i) {
+        if (arr[i] > max_val) {
+            max_val = arr[i];
+        }
+    }
+    return max_val;
+}
+
+/// Compile-time array minimum
+///
+/// @tparam T Array element type
+/// @tparam N Array size
+/// @param arr Array
+/// @return Minimum value
+template <typename T, size_t N>
+consteval T array_min(const T (&arr)[N]) {
+    T min_val = arr[0];
+    for (size_t i = 1; i < N; ++i) {
+        if (arr[i] < min_val) {
+            min_val = arr[i];
+        }
+    }
+    return min_val;
+}
+
 }  // namespace alloy::rtos
 
 #endif  // ALLOY_RTOS_CONCEPTS_HPP

@@ -10,8 +10,9 @@ project(alloy
     LANGUAGES CXX C ASM
 )
 
-# Require C++20 standard (no modules)
-set(CMAKE_CXX_STANDARD 20)
+# Require C++23 standard (Phase 5: C++23 Enhancements)
+# Enables: consteval, if consteval, deducing this, and other C++23 features
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -269,7 +270,7 @@ if(ALLOY_PLATFORM_SOURCES)
             ${CMAKE_CURRENT_SOURCE_DIR}/src
             ${ALLOY_PLATFORM_DIR}
     )
-    target_compile_features(alloy-hal PUBLIC cxx_std_20)
+    target_compile_features(alloy-hal PUBLIC cxx_std_23)
 else()
     # INTERFACE library - use INTERFACE
     target_include_directories(alloy-hal
@@ -277,7 +278,7 @@ else()
             ${CMAKE_CURRENT_SOURCE_DIR}/src
             ${ALLOY_PLATFORM_DIR}
     )
-    target_compile_features(alloy-hal INTERFACE cxx_std_20)
+    target_compile_features(alloy-hal INTERFACE cxx_std_23)
 endif()
 
 # Export HAL library for use by examples and tests
