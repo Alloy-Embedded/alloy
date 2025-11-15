@@ -119,9 +119,16 @@ void init() {
  *
  * Called automatically every 1ms by the SysTick timer.
  * Updates the system time counter used by timing functions.
+ * If RTOS is enabled, also forwards tick to RTOS scheduler.
  *
  * @note This overrides the weak default handler in startup code.
  */
 extern "C" void SysTick_Handler() {
+    // Update HAL tick (always)
     board::BoardSysTick::increment_tick();
+
+    // Forward to RTOS scheduler (if enabled)
+    #ifdef ALLOY_RTOS_ENABLED
+        alloy::rtos::RTOS::tick();
+    #endif
 }

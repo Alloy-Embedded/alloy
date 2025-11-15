@@ -11,6 +11,10 @@
 #include "hal/platform/st/stm32f7/clock_platform.hpp"
 #include <cstdint>
 
+#ifdef ALLOY_RTOS_ENABLED
+    #include "rtos/rtos.hpp"
+#endif
+
 using namespace alloy::hal::st::stm32f7;
 using namespace alloy::generated::stm32f722;
 using namespace alloy::hal;
@@ -131,9 +135,16 @@ void init() {
  *
  * Called automatically every 1ms by the SysTick timer.
  * Updates the system time counter used by timing functions.
+ * If RTOS is enabled, also forwards tick to RTOS scheduler.
  *
  * @note This overrides the weak default handler in startup code.
  */
 extern "C" void SysTick_Handler() {
+    // Update HAL tick (always)
     board::BoardSysTick::increment_tick();
+
+    // Forward to RTOS scheduler (if enabled)
+    #ifdef ALLOY_RTOS_ENABLED
+        alloy::rtos::RTOS::tick();
+    #endif
 }

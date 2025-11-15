@@ -52,37 +52,38 @@ void trigger_context_switch() {
 }
 
 [[noreturn]] void start_first_task() {
-    // Disable interrupts during setup
-    __asm volatile("cpsid i");
-
     // Get first task's stack pointer
-    void* sp = g_scheduler.current_task->stack_pointer;
+    core::u32* sp = static_cast<core::u32*>(g_scheduler.current_task->stack_pointer);
 
-    // Set PSP to task's stack pointer
-    __asm volatile("msr psp, %0    \n"  // Set PSP to task stack
-                   :
-                   : "r"(sp));
+    // Stack layout after init_task_stack:
+    // sp[0..7]  = r4-r11 (software saved)
+    // sp[8..11] = r0-r3  (hardware frame)
+    // sp[12]    = r12    (hardware frame)
+    // sp[13]    = lr     (hardware frame)
+    // sp[14]    = pc     (hardware frame) <- task entry point
+    // sp[15]    = xpsr   (hardware frame)
 
-    // Set CONTROL register to use PSP and unprivileged mode
-    __asm volatile("mov r0, #2     \n"  // CONTROL = 2 (use PSP, unprivileged)
-                   "msr control, r0\n"
-                   "isb            \n"  // Ensure change takes effect
-    );
+    // Get task entry point (PC)
+    void (*task_entry)() = reinterpret_cast<void (*)()>(sp[14]);
 
-    // Pop registers from stack
-    __asm volatile("pop {r4-r11}   \n"  // Restore r4-r11
-                   "pop {r0-r3}    \n"  // Restore r0-r3
-                   "pop {r12}      \n"  // Restore r12
-                   "add sp, sp, #4 \n"  // Skip LR
-                   "pop {lr}       \n"  // Restore PC to LR
-                   "add sp, sp, #4 \n"  // Skip xPSR
-    );
+    // Set PSP to task stack (skip r4-r11, point to hardware frame)
+    void* psp = &sp[8];
 
-    // Enable interrupts
-    __asm volatile("cpsie i");
-
-    // Jump to task
-    __asm volatile("bx lr          \n"  // Branch to task entry point
+    __asm volatile(
+        "cpsid i                \n"  // Disable interrupts
+        "msr psp, %0            \n"  // Set PSP to hardware frame
+        "movs r0, #2            \n"  // CONTROL = 2 (use PSP)
+        "msr control, r0        \n"
+        "isb                    \n"  // Ensure CONTROL change
+        "mov r0, #0             \n"  // Clear r0
+        "mov r1, #0             \n"  // Clear r1
+        "mov r2, #0             \n"  // Clear r2
+        "mov r3, #0             \n"  // Clear r3
+        "cpsie i                \n"  // Enable interrupts
+        "bx %1                  \n"  // Jump to task entry point
+        :
+        : "r"(psp), "r"(task_entry)
+        : "r0", "r1", "r2", "r3", "memory"
     );
 
     // Never reached

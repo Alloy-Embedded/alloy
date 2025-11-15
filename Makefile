@@ -654,3 +654,161 @@ nucleo-f722ze-clean: ## Clean Nucleo-F722ZE build directory
 
 nucleo-f722ze-rebuild: nucleo-f722ze-clean nucleo-f722ze-blink-build ## Clean and rebuild Nucleo-F722ZE
 
+# =============================================================================
+# RTOS Simple Tasks Example - All Boards
+# =============================================================================
+
+##@ RTOS Simple Tasks - Nucleo-F401RE
+
+.PHONY: nucleo-f401re-rtos nucleo-f401re-rtos-build nucleo-f401re-rtos-flash nucleo-f401re-rtos-clean
+
+nucleo-f401re-rtos: nucleo-f401re-rtos-flash ## 🎯 Build and flash RTOS example for Nucleo-F401RE
+
+nucleo-f401re-rtos-build: ## Build RTOS simple tasks for Nucleo-F401RE
+	@echo "$(BLUE)========================================$(NC)"
+	@echo "$(BLUE)Building RTOS Simple Tasks - Nucleo-F401RE$(NC)"
+	@echo "$(BLUE)========================================$(NC)"
+	@echo ""
+	@mkdir -p $(NUCLEO_F401RE_BUILD_DIR)
+	@cd $(NUCLEO_F401RE_BUILD_DIR) && cmake \
+		-DALLOY_BOARD=nucleo_f401re \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_TOOLCHAIN_FILE=$(PWD)/cmake/toolchains/arm-none-eabi.cmake \
+		$(PWD)/examples/rtos/simple_tasks
+	@cmake --build $(NUCLEO_F401RE_BUILD_DIR) -j$(JOBS)
+	@echo "$(GREEN)✅ RTOS build successful!$(NC)"
+
+nucleo-f401re-rtos-flash: nucleo-f401re-rtos-build ## Flash RTOS to Nucleo-F401RE
+	@echo "$(CYAN)📡 Flashing RTOS to Nucleo-F401RE...$(NC)"
+	@openocd -f interface/stlink.cfg -f target/stm32f4x.cfg \
+		-c "program {$(PWD)/$(NUCLEO_F401RE_BUILD_DIR)/rtos_simple_tasks.elf} verify reset exit"
+	@echo "$(GREEN)✅ RTOS running!$(NC)"
+
+nucleo-f401re-rtos-clean: ## Clean RTOS build for Nucleo-F401RE
+	@echo "$(YELLOW)🧹 Cleaning RTOS build...$(NC)"
+	@rm -rf $(NUCLEO_F401RE_BUILD_DIR)
+	@echo "$(GREEN)✓ Clean complete$(NC)"
+
+##@ RTOS Simple Tasks - Nucleo-F722ZE
+
+.PHONY: nucleo-f722ze-rtos nucleo-f722ze-rtos-build nucleo-f722ze-rtos-flash nucleo-f722ze-rtos-clean
+
+nucleo-f722ze-rtos: nucleo-f722ze-rtos-flash ## 🎯 Build and flash RTOS example for Nucleo-F722ZE
+
+nucleo-f722ze-rtos-build: ## Build RTOS simple tasks for Nucleo-F722ZE
+	@echo "$(BLUE)========================================$(NC)"
+	@echo "$(BLUE)Building RTOS Simple Tasks - Nucleo-F722ZE$(NC)"
+	@echo "$(BLUE)========================================$(NC)"
+	@echo ""
+	@cmake -S . -B $(NUCLEO_F722ZE_BUILD_DIR) \
+		-DALLOY_BOARD=nucleo_f722ze \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
+		-GNinja
+	@cmake --build $(NUCLEO_F722ZE_BUILD_DIR) --target rtos_simple_tasks -j$(JOBS)
+	@echo "$(GREEN)✅ RTOS build successful!$(NC)"
+
+nucleo-f722ze-rtos-flash: nucleo-f722ze-rtos-build ## Flash RTOS to Nucleo-F722ZE
+	@echo "$(CYAN)📡 Flashing RTOS to Nucleo-F722ZE...$(NC)"
+	@openocd -f interface/stlink.cfg -f target/stm32f7x.cfg \
+		-c "program {$(PWD)/$(NUCLEO_F722ZE_BUILD_DIR)/examples/rtos/simple_tasks/rtos_simple_tasks} verify reset exit"
+	@echo "$(GREEN)✅ RTOS running!$(NC)"
+
+nucleo-f722ze-rtos-clean: ## Clean RTOS build for Nucleo-F722ZE
+	@echo "$(YELLOW)🧹 Cleaning RTOS build...$(NC)"
+	@rm -rf $(NUCLEO_F722ZE_BUILD_DIR)
+	@echo "$(GREEN)✓ Clean complete$(NC)"
+
+##@ RTOS Simple Tasks - Nucleo-G071RB
+
+.PHONY: nucleo-g071rb-rtos nucleo-g071rb-rtos-build nucleo-g071rb-rtos-flash nucleo-g071rb-rtos-clean
+
+nucleo-g071rb-rtos: nucleo-g071rb-rtos-flash ## 🎯 Build and flash RTOS example for Nucleo-G071RB
+
+nucleo-g071rb-rtos-build: ## Build RTOS simple tasks for Nucleo-G071RB
+	@echo "$(BLUE)========================================$(NC)"
+	@echo "$(BLUE)Building RTOS Simple Tasks - Nucleo-G071RB$(NC)"
+	@echo "$(BLUE)========================================$(NC)"
+	@echo ""
+	@mkdir -p $(NUCLEO_G071RB_BUILD_DIR)
+	@cd $(NUCLEO_G071RB_BUILD_DIR) && cmake \
+		-DALLOY_BOARD=nucleo_g071rb \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_TOOLCHAIN_FILE=$(PWD)/cmake/toolchains/arm-none-eabi.cmake \
+		$(PWD)/examples/rtos/simple_tasks
+	@cmake --build $(NUCLEO_G071RB_BUILD_DIR) -j$(JOBS)
+	@echo "$(GREEN)✅ RTOS build successful!$(NC)"
+
+nucleo-g071rb-rtos-flash: nucleo-g071rb-rtos-build ## Flash RTOS to Nucleo-G071RB
+	@echo "$(CYAN)📡 Flashing RTOS to Nucleo-G071RB...$(NC)"
+	@openocd -f interface/stlink.cfg -f target/stm32g0x.cfg \
+		-c "program {$(PWD)/$(NUCLEO_G071RB_BUILD_DIR)/rtos_simple_tasks.elf} verify reset exit"
+	@echo "$(GREEN)✅ RTOS running!$(NC)"
+
+nucleo-g071rb-rtos-clean: ## Clean RTOS build for Nucleo-G071RB
+	@echo "$(YELLOW)🧹 Cleaning RTOS build...$(NC)"
+	@rm -rf $(NUCLEO_G071RB_BUILD_DIR)
+	@echo "$(GREEN)✓ Clean complete$(NC)"
+
+##@ RTOS Simple Tasks - Nucleo-G0B1RE
+
+.PHONY: nucleo-g0b1re-rtos nucleo-g0b1re-rtos-build nucleo-g0b1re-rtos-flash nucleo-g0b1re-rtos-clean
+
+nucleo-g0b1re-rtos: nucleo-g0b1re-rtos-flash ## 🎯 Build and flash RTOS example for Nucleo-G0B1RE
+
+nucleo-g0b1re-rtos-build: ## Build RTOS simple tasks for Nucleo-G0B1RE
+	@echo "$(BLUE)========================================$(NC)"
+	@echo "$(BLUE)Building RTOS Simple Tasks - Nucleo-G0B1RE$(NC)"
+	@echo "$(BLUE)========================================$(NC)"
+	@echo ""
+	@mkdir -p $(NUCLEO_G0B1RE_BUILD_DIR)
+	@cd $(NUCLEO_G0B1RE_BUILD_DIR) && cmake \
+		-DALLOY_BOARD=nucleo_g0b1re \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_TOOLCHAIN_FILE=$(PWD)/cmake/toolchains/arm-none-eabi.cmake \
+		$(PWD)/examples/rtos/simple_tasks
+	@cmake --build $(NUCLEO_G0B1RE_BUILD_DIR) -j$(JOBS)
+	@echo "$(GREEN)✅ RTOS build successful!$(NC)"
+
+nucleo-g0b1re-rtos-flash: nucleo-g0b1re-rtos-build ## Flash RTOS to Nucleo-G0B1RE
+	@echo "$(CYAN)📡 Flashing RTOS to Nucleo-G0B1RE...$(NC)"
+	@openocd -f interface/stlink.cfg -f target/stm32g0x.cfg \
+		-c "program {$(PWD)/$(NUCLEO_G0B1RE_BUILD_DIR)/rtos_simple_tasks.elf} verify reset exit"
+	@echo "$(GREEN)✅ RTOS running!$(NC)"
+
+nucleo-g0b1re-rtos-clean: ## Clean RTOS build for Nucleo-G0B1RE
+	@echo "$(YELLOW)🧹 Cleaning RTOS build...$(NC)"
+	@rm -rf $(NUCLEO_G0B1RE_BUILD_DIR)
+	@echo "$(GREEN)✓ Clean complete$(NC)"
+
+##@ RTOS Simple Tasks - SAME70 Xplained
+
+.PHONY: same70-rtos same70-rtos-build same70-rtos-flash same70-rtos-clean
+
+same70-rtos: same70-rtos-flash ## 🎯 Build and flash RTOS example for SAME70
+
+same70-rtos-build: ## Build RTOS simple tasks for SAME70 Xplained
+	@echo "$(BLUE)========================================$(NC)"
+	@echo "$(BLUE)Building RTOS Simple Tasks - SAME70 Xplained$(NC)"
+	@echo "$(BLUE)========================================$(NC)"
+	@echo ""
+	@mkdir -p $(SAME70_BUILD_DIR)
+	@cd $(SAME70_BUILD_DIR) && cmake \
+		-DALLOY_BOARD=same70_xplained \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_TOOLCHAIN_FILE=$(PWD)/cmake/toolchains/arm-none-eabi.cmake \
+		$(PWD)/examples/rtos/simple_tasks
+	@cmake --build $(SAME70_BUILD_DIR) -j$(JOBS)
+	@echo "$(GREEN)✅ RTOS build successful!$(NC)"
+
+same70-rtos-flash: same70-rtos-build ## Flash RTOS to SAME70 Xplained
+	@echo "$(CYAN)📡 Flashing RTOS to SAME70 Xplained...$(NC)"
+	@openocd -f board/atmel_same70_xplained.cfg \
+		-c "program {$(PWD)/$(SAME70_BUILD_DIR)/rtos_simple_tasks.elf} verify reset exit"
+	@echo "$(GREEN)✅ RTOS running!$(NC)"
+
+same70-rtos-clean: ## Clean RTOS build for SAME70
+	@echo "$(YELLOW)🧹 Cleaning RTOS build...$(NC)"
+	@rm -rf $(SAME70_BUILD_DIR)
+	@echo "$(GREEN)✓ Clean complete$(NC)"
+

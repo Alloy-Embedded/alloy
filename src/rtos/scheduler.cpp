@@ -108,7 +108,7 @@ void init() {
     g_scheduler.current_task->state = TaskState::Running;
 
     // Start first task (platform-specific)
-    platform::start_first_task();
+    alloy::rtos::start_first_task();
 
     // Never reached
     while (1)
@@ -134,8 +134,8 @@ void delay(core::u32 ms) {
     if (current == nullptr)
         return;
 
-    // Calculate wake time
-    current->wake_time = systick::micros() + (ms * 1000);
+    // Calculate wake time using RTOS tick counter (1ms resolution)
+    current->wake_time = g_scheduler.tick_counter + ms;
     current->state = TaskState::Delayed;
 
     // Remove from ready queue
@@ -244,10 +244,10 @@ void reschedule() {
 
 void wake_delayed_tasks() {
     TaskControlBlock** current = &g_scheduler.delayed_tasks;
-    core::u32 now = systick::micros();
+    core::u32 now = g_scheduler.tick_counter;
 
     while (*current != nullptr) {
-        if (systick::micros_since((*current)->wake_time) == 0 || now >= (*current)->wake_time) {
+        if (now >= (*current)->wake_time) {
             // Time to wake up this task
             TaskControlBlock* task = *current;
             *current = task->next;  // Remove from delayed list
