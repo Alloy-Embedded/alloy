@@ -315,7 +315,14 @@
   - **ALREADY COMPLETE** - discovered all methods already implemented (src/hal/vendors/st/stm32g0/clock_platform.hpp)
   - Has all required methods: initialize(), enable_gpio_clocks(), enable_uart_clock(), enable_spi_clock(), enable_i2c_clock()
   - Has concept validation with static_assert at line 238
-- [ ] 6.2.4 Refactor SAME70 Clock to satisfy ClockPlatform concept (deferred)
+- [x] 6.2.4 Refactor SAME70 Clock to satisfy ClockPlatform concept
+  - ✅ **COMPLETE** - Added all required ClockPlatform methods (src/hal/vendors/arm/same70/clock.hpp)
+  - Added enable_gpio_clocks() - enables PIOA-PIOE peripheral clocks
+  - Added enable_uart_clock(u32) - supports UART0-4 and USART0-2
+  - Added enable_spi_clock(u32) - supports SPI0-1
+  - Added enable_i2c_clock(u32) - supports TWIHS0-2 (I2C)
+  - Added concept validation with static_assert at line 584
+  - alloy-hal library builds successfully ✅
 - [x] 6.2.5 Add static_assert for concept validation (added with C++20 guard)
 - [x] 6.2.6 Test STM32F4 platform (nucleo_f401re builds successfully)
 
@@ -333,7 +340,13 @@
   - **ALREADY COMPLETE** - discovered all methods already implemented (src/hal/vendors/st/stm32g0/gpio.hpp)
   - Has all required methods: set(), clear(), toggle(), write(bool), read() → Result<bool, ErrorCode>
   - Has concept validation with static_assert at line 201
-- [ ] 6.3.4 Refactor SAME70 GPIO to satisfy GpioPin concept (deferred)
+- [x] 6.3.4 Refactor SAME70 GPIO to satisfy GpioPin concept
+  - ✅ **COMPLETE** - Added missing methods to satisfy GpioPin concept (src/hal/vendors/arm/same70/gpio.hpp)
+  - Completed write(bool) method implementation (was incomplete)
+  - Added isOutput() → Result<bool, ErrorCode> method (reads OSR register)
+  - Has all required methods: set(), clear(), toggle(), write(bool), read(), isOutput()
+  - Added concept validation with static_assert at line 359
+  - alloy-hal library builds successfully ✅
 - [x] 6.3.5 Test STM32F4 platform (nucleo_f401re, nucleo_g0b1re build successfully)
 
 ### 6.4 Standardize UART APIs

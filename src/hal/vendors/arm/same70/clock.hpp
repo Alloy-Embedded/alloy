@@ -375,6 +375,113 @@ public:
     }
 
     /**
+     * @brief Enable all GPIO port clocks
+     *
+     * Enables clocks for all GPIO ports (PIOA-PIOE).
+     * Required by ClockPlatform concept.
+     *
+     * @return Result<void, ErrorCode>
+     */
+    static Result<void, ErrorCode> enable_gpio_clocks() {
+        if (!s_initialized) {
+            return Err(ErrorCode::NotInitialized);
+        }
+
+        // Enable PIOA, PIOB, PIOC, PIOD, PIOE clocks
+        auto* pmc = get_pmc();
+        pmc->PCER0 = (1u << alloy::generated::atsame70q21b::id::PIOA) |
+                     (1u << alloy::generated::atsame70q21b::id::PIOB) |
+                     (1u << alloy::generated::atsame70q21b::id::PIOC) |
+                     (1u << alloy::generated::atsame70q21b::id::PIOD) |
+                     (1u << alloy::generated::atsame70q21b::id::PIOE);
+
+        return Ok();
+    }
+
+    /**
+     * @brief Enable UART peripheral clock
+     *
+     * Enables clock for specified UART/USART peripheral.
+     * Required by ClockPlatform concept.
+     *
+     * @param uart_id UART instance (0-4 for UART0-4, 100-102 for USART0-2)
+     * @return Result<void, ErrorCode>
+     */
+    static Result<void, ErrorCode> enable_uart_clock(uint32_t uart_id) {
+        if (!s_initialized) {
+            return Err(ErrorCode::NotInitialized);
+        }
+
+        uint8_t peripheral_id;
+
+        // Map UART/USART ID to peripheral ID
+        switch (uart_id) {
+            case 0: peripheral_id = alloy::generated::atsame70q21b::id::UART0; break;
+            case 1: peripheral_id = alloy::generated::atsame70q21b::id::UART1; break;
+            case 2: peripheral_id = alloy::generated::atsame70q21b::id::UART2; break;
+            case 3: peripheral_id = alloy::generated::atsame70q21b::id::UART3; break;
+            case 4: peripheral_id = alloy::generated::atsame70q21b::id::UART4; break;
+            case 100: peripheral_id = alloy::generated::atsame70q21b::id::USART0; break;
+            case 101: peripheral_id = alloy::generated::atsame70q21b::id::USART1; break;
+            case 102: peripheral_id = alloy::generated::atsame70q21b::id::USART2; break;
+            default: return Err(ErrorCode::InvalidParameter);
+        }
+
+        return enablePeripheralClock(peripheral_id);
+    }
+
+    /**
+     * @brief Enable SPI peripheral clock
+     *
+     * Enables clock for specified SPI peripheral.
+     * Required by ClockPlatform concept.
+     *
+     * @param spi_id SPI instance (0 or 1)
+     * @return Result<void, ErrorCode>
+     */
+    static Result<void, ErrorCode> enable_spi_clock(uint32_t spi_id) {
+        if (!s_initialized) {
+            return Err(ErrorCode::NotInitialized);
+        }
+
+        uint8_t peripheral_id;
+
+        switch (spi_id) {
+            case 0: peripheral_id = alloy::generated::atsame70q21b::id::SPI0; break;
+            case 1: peripheral_id = alloy::generated::atsame70q21b::id::SPI1; break;
+            default: return Err(ErrorCode::InvalidParameter);
+        }
+
+        return enablePeripheralClock(peripheral_id);
+    }
+
+    /**
+     * @brief Enable I2C peripheral clock
+     *
+     * Enables clock for specified TWI/I2C peripheral (TWIHS).
+     * Required by ClockPlatform concept.
+     *
+     * @param i2c_id I2C instance (0-2 for TWIHS0-2)
+     * @return Result<void, ErrorCode>
+     */
+    static Result<void, ErrorCode> enable_i2c_clock(uint32_t i2c_id) {
+        if (!s_initialized) {
+            return Err(ErrorCode::NotInitialized);
+        }
+
+        uint8_t peripheral_id;
+
+        switch (i2c_id) {
+            case 0: peripheral_id = alloy::generated::atsame70q21b::id::TWIHS0; break;
+            case 1: peripheral_id = alloy::generated::atsame70q21b::id::TWIHS1; break;
+            case 2: peripheral_id = alloy::generated::atsame70q21b::id::TWIHS2; break;
+            default: return Err(ErrorCode::InvalidParameter);
+        }
+
+        return enablePeripheralClock(peripheral_id);
+    }
+
+    /**
      * @brief Check if clocks are initialized
      *
      * @return bool     */
@@ -465,5 +572,17 @@ constexpr ClockConfig CLOCK_CONFIG_12MHZ_RC = {
 inline const ClockConfig& Clock::CLOCK_CONFIG_SAFE_DEFAULT = CLOCK_CONFIG_12MHZ_RC;
 inline const ClockConfig& Clock::CLOCK_CONFIG_HIGH_PERFORMANCE = CLOCK_CONFIG_150MHZ;
 inline const ClockConfig& Clock::CLOCK_CONFIG_MEDIUM_PERFORMANCE = CLOCK_CONFIG_120MHZ;
+
+// ============================================================================
+// Concept Validation (C++20)
+// ============================================================================
+
+#if __cplusplus >= 202002L && __has_include("hal/core/concepts.hpp")
+#include "hal/core/concepts.hpp"
+
+// Validate that SAME70 Clock satisfies the ClockPlatform concept
+static_assert(alloy::hal::concepts::ClockPlatform<Clock>,
+              "SAME70 Clock must satisfy ClockPlatform concept - missing required methods");
+#endif
 
 } // namespace alloy::hal::same70

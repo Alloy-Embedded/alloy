@@ -167,11 +167,11 @@ public:
      * @param value true for HIGH, false for LOW
      * @return Result<void, ErrorCode>     */
     Result<void, ErrorCode> write(bool value) {
-        auto* port = get_port();
-
         if (value) {
+            return set();
+        } else {
+            return clear();
         }
-        return Ok();
     }
 
     /**
@@ -186,6 +186,23 @@ public:
         bool value = (pin_state & pin_mask) != 0;
 
         return Ok(bool(value));
+    }
+
+    /**
+     * @brief Check if pin is configured as output
+     *
+     * Reads the OSR (Output Status Register) to check if pin is output.
+     * Required by GpioPin concept.
+     *
+     * @return Result<bool, ErrorCode> true if pin is output, false if input
+     */
+    Result<bool, ErrorCode> isOutput() const {
+        auto* port = get_port();
+
+        // OSR (Output Status Register) has bit set if pin is output
+        bool is_output = (port->OSR & pin_mask) != 0;
+
+        return Ok(is_output);
     }
 
     /**
@@ -330,5 +347,17 @@ constexpr uint32_t PIOE_BASE = alloy::generated::atsame70q21b::peripherals::PIOE
 //     led.clear();   // Turn off
 //     led.toggle();  // Toggle state
 // }
+
+// ==============================================================================
+// Concept Validation (C++20)
+// ==============================================================================
+
+#if __cplusplus >= 202002L && __has_include("hal/core/concepts.hpp")
+#include "hal/core/concepts.hpp"
+
+// Validate that SAME70 GpioPin satisfies the GpioPin concept
+static_assert(alloy::hal::concepts::GpioPin<GpioPin<PIOC_BASE, 8>>,
+              "SAME70 GpioPin must satisfy GpioPin concept - missing required methods");
+#endif
 
 } // namespace alloy::hal::same70
