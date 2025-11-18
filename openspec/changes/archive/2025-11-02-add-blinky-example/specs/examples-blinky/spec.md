@@ -1,31 +1,47 @@
+# Blinky Example Specification
+
+Simple LED blink example demonstrating basic GPIO usage.
+
 ## ADDED Requirements
 
-### Requirement: Blinky Example
+### Requirement: EXAMPLE-BLINK-001 - Basic LED Blink
 
-The system SHALL provide a blinky example that demonstrates GPIO usage on the host platform.
+The example SHALL demonstrate basic GPIO output by blinking an LED.
 
-#### Scenario: Example compiles
-- **WHEN** running `cmake --build build`
-- **THEN** blinky executable SHALL be created without errors
+#### Scenario: LED blinks at 1Hz
 
-#### Scenario: Example runs on host
-- **WHEN** running `./build/examples/blinky/blinky`
-- **THEN** it SHALL print GPIO toggle messages to console
-- **AND** messages SHALL alternate between HIGH and LOW
+```cpp
+#include "board.hpp"
 
-#### Scenario: Example uses GPIO interface
-- **WHEN** reviewing blinky source code
-- **THEN** it SHALL use ConfiguredGpioPin from hal/interface/gpio.hpp
-- **AND** it SHALL NOT directly depend on host implementation details
+int main() {
+    Board::initialize();
+    Board::Led::init();
 
-### Requirement: Platform Delay
+    while (true) {
+        Board::Led::toggle();
+        delay_ms(500);
+    }
+}
+```
 
-The system SHALL provide a delay_ms() function for host platform.
+**Output**: LED blinks on/off every 500ms (1Hz)
 
-#### Scenario: Delay function exists
-- **WHEN** including `platform/delay.hpp`
-- **THEN** delay_ms(uint32_t) function SHALL be available
+---
 
-#### Scenario: Delay blocks execution
-- **WHEN** calling delay_ms(500)
-- **THEN** execution SHALL pause for approximately 500 milliseconds
+### Requirement: EXAMPLE-BLINK-002 - Multiple Boards
+
+The example SHALL work on multiple target boards without code changes.
+
+**Supported boards**:
+- STM32F103C8 (Blue Pill)
+- STM32F407VG (Discovery)
+- ESP32
+- RP2040
+- SAMD21
+
+---
+
+## Related Specifications
+
+- GPIO Interface
+- Board Abstraction
