@@ -203,7 +203,94 @@
   - [x] Display results table with rank
   - [x] Show search summary and hint
 
-### 1.6 Testing (4h)
+### 1.6 Configuration System (6h) ✅ COMPLETED
+- [x] Create `.alloy.yaml` schema
+  - [x] Define YAML schema (database/schema/config.schema.yaml)
+  - [x] Document all configuration sections (general, paths, discovery, build, validation, metadata, project)
+  - [x] Support environment variable expansion (${ALLOY_*:-default})
+  - [x] Document configuration hierarchy (CLI > env > project > user > system > defaults)
+- [x] Implement Pydantic config models
+  - [x] AlloyConfig root model (cli/models/config.py)
+  - [x] GeneralConfig, PathsConfig, DiscoveryConfig models
+  - [x] BuildConfig, ValidationConfig, MetadataConfig models
+  - [x] ProjectConfig model for project-specific settings
+  - [x] merge() method for hierarchical config merging
+  - [x] to_yaml_dict() for clean YAML export
+- [x] Implement ConfigLoader class (cli/loaders/config_loader.py)
+  - [x] Support multiple config locations (system, user, project)
+  - [x] Hierarchical loading with proper precedence
+  - [x] Environment variable support (ALLOY_* prefix)
+  - [x] CLI override support
+  - [x] LRU caching for performance
+  - [x] save() method for writing configs
+  - [x] find_project_config() to search up directory tree
+  - [x] Global config singleton (get_config, set_config)
+- [x] Configuration hierarchy implementation
+  - [x] 1. CLI arguments (highest priority)
+  - [x] 2. Environment variables (ALLOY_*)
+  - [x] 3. Project config (.alloy.yaml in current dir)
+  - [x] 4. User config (~/.config/alloy/config.yaml)
+  - [x] 5. System config (/etc/alloy/config.yaml)
+  - [x] 6. Defaults (lowest priority)
+- [x] Environment variable overrides
+  - [x] ALLOY_VERBOSE, ALLOY_OUTPUT_FORMAT mapping
+  - [x] ALLOY_DATABASE_PATH, ALLOY_TEMPLATES_PATH mapping
+  - [x] ALLOY_DEFAULT_VENDOR, ALLOY_BUILD_TYPE mapping
+  - [x] Type conversion (string → bool, int)
+  - [x] Full mapping documentation
+- [x] CLI config commands (cli/commands/config_cmd.py)
+  - [x] `alloy config show` - Display merged or scoped config
+  - [x] `alloy config show --scope user/project/system/all`
+  - [x] `alloy config show --section paths` - Show specific section
+  - [x] `alloy config set <key> <value>` - Set config value
+  - [x] `alloy config set --scope user/project` - Scope selection
+  - [x] `alloy config unset <key>` - Reset to default
+  - [x] `alloy config edit` - Open in editor ($EDITOR)
+  - [x] `alloy config init` - Create new config file
+  - [x] `alloy config init --force` - Overwrite existing
+  - [x] `alloy config path` - Show config file locations
+  - [x] Rich formatting with tables and syntax highlighting
+- [x] Create example config files
+  - [x] Project config example (examples/.alloy.yaml)
+  - [x] User config example (examples/user-config.yaml)
+  - [x] Full configuration documentation
+- [x] Create configuration guide
+  - [x] Comprehensive guide (docs/guides/CONFIGURATION_GUIDE.md)
+  - [x] Document all config options with examples
+  - [x] Document configuration hierarchy
+  - [x] Document environment variable mapping
+  - [x] Common workflows (init project, set preferences, etc.)
+  - [x] Team configuration best practices
+  - [x] Troubleshooting section
+- [x] Integration with CLI
+  - [x] Register config command group in main.py
+  - [x] Export ConfigLoader in loaders/__init__.py
+  - [x] Export config models in models/__init__.py
+  - [x] Update help text to reference config system
+
+### 1.7 Enhanced Metadata Commands (6h)
+- [ ] Implement `alloy metadata validate`
+  - [ ] Validate YAML/JSON syntax
+  - [ ] Validate against schema
+  - [ ] Check for required fields
+  - [ ] Report errors with line numbers
+  - [ ] --strict mode for additional checks
+- [ ] Implement `alloy metadata create`
+  - [ ] --template option (mcu, board, peripheral)
+  - [ ] Interactive prompts for required fields
+  - [ ] Generate valid YAML with comments
+  - [ ] Auto-format output
+- [ ] Implement `alloy metadata diff`
+  - [ ] Compare two metadata files
+  - [ ] Show added/removed/modified fields
+  - [ ] Colored diff output
+  - [ ] Support for YAML and JSON
+- [ ] Better error messages
+  - [ ] Suggest fixes for common errors
+  - [ ] Link to documentation
+  - [ ] Show examples of correct format
+
+### 1.8 Testing (4h)
 - [ ] Set up pytest framework
   - [ ] Install pytest and pytest-cov
   - [ ] Configure pytest.ini
@@ -228,10 +315,15 @@
   - [ ] Add missing tests
 
 **Phase 1 Deliverables**:
-- ✅ MCU/board database (JSON files)
-- ✅ MCU and Board services (Python)
-- ✅ 5 CLI commands (list mcus, list boards, show mcu, show board, search mcu)
-- ✅ Test suite (80% coverage)
+- ✅ MCU/board database (YAML files) - Phase 0
+- ✅ MCU and Board services (Python) - Phase 1.3, 1.4
+- ✅ 5 CLI discovery commands (list mcus, list boards, show mcu, show board, search mcu) - Phase 1.5
+- ✅ Configuration system (.alloy.yaml with hierarchy) - Phase 1.6
+- ✅ 6 config commands (show, set, unset, edit, init, path) - Phase 1.6
+- ⏳ 3 metadata commands (validate, create, diff) - Phase 1.7 (pending)
+- ⏳ Test suite (80% coverage) - Phase 1.8 (pending)
+
+**Phase 1 Progress**: 34h/52h completed (65%)
 
 ---
 

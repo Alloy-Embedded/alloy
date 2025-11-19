@@ -1,0 +1,59 @@
+# Alloy CLI Project Configuration Example
+# Place this file in your project root as .alloy.yaml
+# Configuration hierarchy: CLI args > env vars > project > user > system > defaults
+
+schema_version: "1.0"
+
+# General CLI settings
+general:
+  output_format: table  # table, json, yaml, compact
+  color: true
+  verbose: false
+
+# Paths (relative to project root)
+paths:
+  database: ./database
+  templates: ./database/templates
+  svd: ./svd
+  output: ./generated
+
+# Discovery preferences
+discovery:
+  default_vendor: st           # Default to STMicroelectronics
+  default_family: stm32f4      # Default to STM32F4 family
+  show_deprecated: false
+  max_results: 50
+  default_sort: part_number
+
+# Build configuration
+build:
+  system: cmake
+  build_type: Debug
+  jobs: 0  # 0 = auto-detect CPU cores
+  toolchain: null
+  cmake_generator: null
+
+# Validation settings
+validation:
+  strict: false
+  syntax: true
+  semantic: true
+  compile: false
+  clang_path: clang++
+  gcc_arm_path: arm-none-eabi-gcc
+
+# Metadata preferences
+metadata:
+  format: yaml  # yaml is 25-30% smaller than json
+  auto_format: true
+  include_comments: true
+
+# Project-specific settings
+project:
+  name: my-embedded-project
+  board: nucleo_f401re  # or specify mcu directly
+  peripherals:
+    - gpio
+    - uart
+    - i2c
+  build_dir: build

@@ -1,0 +1,46 @@
+# Alloy CLI User Configuration Example
+# Place this file at: ~/.config/alloy/config.yaml
+# This configuration applies to all your Alloy projects
+
+schema_version: "1.0"
+
+# Personal preferences
+general:
+  output_format: table
+  color: true
+  verbose: false
+  editor: code  # Use VS Code as editor (or vim, nano, etc.)
+
+# Default paths (can use ~ for home directory)
+paths:
+  database: ~/alloy/database
+  templates: ~/alloy/templates
+  svd: ~/alloy/svd
+  output: ./generated
+
+# Discovery preferences
+discovery:
+  show_deprecated: false
+  max_results: 100
+  default_sort: part_number
+
+# Build preferences
+build:
+  system: cmake
+  build_type: Debug
+  jobs: 8  # Use 8 parallel jobs
+
+# Validation tools
+validation:
+  strict: false
+  syntax: true
+  semantic: true
+  compile: false
+  clang_path: /usr/bin/clang++
+  gcc_arm_path: /usr/local/bin/arm-none-eabi-gcc
+
+# Metadata preferences
+metadata:
+  format: yaml
+  auto_format: true
+  include_comments: true
