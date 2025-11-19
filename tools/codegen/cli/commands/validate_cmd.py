@@ -28,6 +28,7 @@ def validate_file(
     stage: Optional[str] = typer.Option(None, "--stage", "-s", help="Validation stage (syntax, semantic, compile, test)"),
     include_path: List[Path] = typer.Option([], "--include", "-I", help="Include directory"),
     std: str = typer.Option("c++23", "--std", help="C++ standard"),
+    mcu: str = typer.Option("cortex-m4", "--mcu", help="Target MCU for compile validation"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
 ):
     """
@@ -73,7 +74,8 @@ def validate_file(
         file_path,
         stages=stages,
         include_paths=include_path,
-        std=std
+        std=std,
+        mcu=mcu
     )
 
     # Display results
@@ -91,6 +93,7 @@ def validate_directory(
     stage: Optional[str] = typer.Option(None, "--stage", "-s", help="Validation stage"),
     include_path: List[Path] = typer.Option([], "--include", "-I", help="Include directory"),
     std: str = typer.Option("c++23", "--std", help="C++ standard"),
+    mcu: str = typer.Option("cortex-m4", "--mcu", help="Target MCU for compile validation"),
 ):
     """
     Validate all C++ files in a directory.
@@ -135,7 +138,8 @@ def validate_directory(
             pattern=pattern,
             stages=stages,
             include_paths=include_path,
-            std=std
+            std=std,
+            mcu=mcu
         )
 
         progress.remove_task(task)
