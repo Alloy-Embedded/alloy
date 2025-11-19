@@ -32,6 +32,8 @@ from .flash_service import (
     FlashStatus,
     FlashResult,
 )
+from .pinout_service import PinoutRenderer
+from .documentation_service import DocumentationService, DocumentationLink
 
 __all__ = [
     "MCUService",
@@ -58,4 +60,7 @@ __all__ = [
     "FlashTool",
     "FlashStatus",
     "FlashResult",
+    "PinoutRenderer",
+    "DocumentationService",
+    "DocumentationLink",
 ]

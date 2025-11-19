@@ -12,6 +12,7 @@ from rich.text import Text
 
 from ..services.mcu_service import MCUService
 from ..services.board_service import BoardService
+from ..services.pinout_service import PinoutRenderer
 
 app = typer.Typer()
 console = Console()
@@ -221,5 +222,40 @@ def show_board(
     # Detailed pinout if requested
     if show_pinout:
         console.print("\n" + "="*60)
-        console.print(Panel("[bold cyan]Detailed Pinout[/bold cyan] (Coming in Phase 5)", border_style="yellow"))
-        console.print("[dim]Use --pinout to see full ASCII art pinout diagram[/dim]")
+        renderer = PinoutRenderer(console)
+        renderer.render_board_pinout(board)
+        renderer.render_pin_legend()
+
+
+@app.command("pinout")
+def show_pinout(
+    board_name: str = typer.Argument(..., help="Board name (e.g., nucleo-f401re)"),
+    peripheral: str = typer.Option(None, "--peripheral", "-p", help="Highlight peripheral pins"),
+    search: str = typer.Option(None, "--search", "-s", help="Search for pins"),
+):
+    """
+    Show detailed board pinout with ASCII art and color highlighting.
+
+    Examples:
+        alloy show pinout nucleo-f401re
+        alloy show pinout nucleo-f401re --peripheral UART
+        alloy show pinout nucleo-f401re --search SPI
+    """
+    service = BoardService()
+    board = service.get_board_by_id(board_name)
+
+    if not board:
+        console.print(f"[red]Board not found: {board_name}[/red]")
+        console.print("[yellow]Tip: Use 'alloy list boards' to see available boards[/yellow]")
+        raise typer.Exit(1)
+
+    renderer = PinoutRenderer(console)
+
+    if search:
+        # Search mode
+        results = renderer.search_pins(board, search)
+        renderer.render_search_results(results, search)
+    else:
+        # Normal pinout mode
+        renderer.render_board_pinout(board, highlight_peripheral=peripheral)
+        renderer.render_pin_legend()
