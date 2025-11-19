@@ -24,13 +24,14 @@ app = typer.Typer(
 )
 
 # Import command groups
-from .commands import list_cmd, show_cmd, search_cmd, config_cmd
+from .commands import list_cmd, show_cmd, search_cmd, config_cmd, metadata_cmd
 
 # Register command groups
 app.add_typer(list_cmd.app, name="list", help="List MCUs, boards, and peripherals")
 app.add_typer(show_cmd.app, name="show", help="Show detailed information")
 app.add_typer(search_cmd.app, name="search", help="Search MCUs and boards")
 app.add_typer(config_cmd.app, name="config", help="Manage configuration")
+app.add_typer(metadata_cmd.app, name="metadata", help="Validate and manage metadata files")
 
 
 @app.callback()
