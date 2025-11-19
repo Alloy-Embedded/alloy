@@ -1,0 +1,106 @@
+# YAML Schema for Peripheral Metadata Files
+# This schema defines peripheral implementation status and metadata
+# Owner: enhance-cli-professional-tool (CLI Spec)
+# Consumed by: library-quality-improvements (peripheral template generation)
+
+schema_version: "1.0"
+
+type: object
+required:
+  - schema_version
+  - peripheral
+  - implementations
+
+properties:
+  schema_version:
+    type: string
+    pattern: "^\\d+\\.\\d+$"
+
+  peripheral:
+    type: object
+    required:
+      - id
+      - display_name
+      - type
+    properties:
+      id:
+        type: string
+        pattern: "^[a-z0-9_]+$"
+        description: "Peripheral identifier (e.g., 'uart', 'spi')"
+
+      display_name:
+        type: string
+        description: "Human-readable peripheral name"
+
+      type:
+        type: string
+        enum: [communication, analog, digital, timer, system]
+
+      description:
+        type: string
+
+  implementations:
+    type: array
+    items:
+      type: object
+      required:
+        - family
+        - status
+      properties:
+        family:
+          type: string
+          description: "MCU family this implementation supports"
+
+        status:
+          type: string
+          enum: [implemented, in_progress, planned, not_supported]
+
+        api_levels:
+          type: array
+          items:
+            type: string
+            enum: [simple, fluent, expert]
+          description: "Which API levels are implemented"
+
+        features:
+          type: array
+          items:
+            type: string
+          description: "Supported features for this family"
+
+        limitations:
+          type: array
+          items:
+            type: string
+          description: "Known limitations or quirks"
+
+        template:
+          type: string
+          description: "Path to peripheral template (owned by Library Quality)"
+
+        tests:
+          type: object
+          properties:
+            unit_tests:
+              type: boolean
+            hardware_tests:
+              type: boolean
+            coverage_percent:
+              type: integer
+              minimum: 0
+              maximum: 100
+
+  documentation:
+    type: object
+    properties:
+      api_reference:
+        type: string
+        format: uri
+      examples:
+        type: array
+        items:
+          type: string
+      tutorials:
+        type: array
+        items:
+          type: string

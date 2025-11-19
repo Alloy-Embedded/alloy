@@ -1,0 +1,156 @@
+# YAML Schema for MCU Database Files
+# This schema defines the structure for MCU metadata files
+# Owner: enhance-cli-professional-tool (CLI Spec)
+# Consumer: library-quality-improvements (for template generation)
+
+schema_version: "1.0"
+
+# Schema definition using JSON Schema concepts in YAML
+type: object
+required:
+  - schema_version
+  - family
+  - mcus
+
+properties:
+  schema_version:
+    type: string
+    pattern: "^\\d+\\.\\d+$"
+    description: "Version of this schema format (e.g., '1.0')"
+
+  family:
+    type: object
+    required:
+      - id
+      - vendor
+      - display_name
+      - core
+    properties:
+      id:
+        type: string
+        description: "Family identifier (e.g., 'stm32f4')"
+        pattern: "^[a-z0-9_]+$"
+
+      vendor:
+        type: string
+        description: "Vendor identifier (e.g., 'st', 'atmel')"
+        enum: [st, atmel, nordic, espressif, raspberrypi, nxp]
+
+      display_name:
+        type: string
+        description: "Human-readable family name"
+
+      description:
+        type: string
+        description: "Detailed family description (multiline allowed)"
+
+      core:
+        type: string
+        description: "CPU core (e.g., 'Cortex-M4F')"
+
+      features:
+        type: array
+        items:
+          type: string
+        description: "Key features (e.g., 'FPU', 'DSP Instructions')"
+
+  mcus:
+    type: array
+    items:
+      type: object
+      required:
+        - part_number
+        - core
+        - max_freq_mhz
+        - memory
+        - package
+        - peripherals
+      properties:
+        part_number:
+          type: string
+          description: "Official MCU part number"
+
+        display_name:
+          type: string
+          description: "Short name for display"
+
+        core:
+          type: string
+
+        max_freq_mhz:
+          type: integer
+          minimum: 1
+          description: "Maximum CPU frequency in MHz"
+
+        memory:
+          type: object
+          required:
+            - flash_kb
+            - sram_kb
+          properties:
+            flash_kb:
+              type: integer
+              minimum: 0
+            sram_kb:
+              type: integer
+              minimum: 0
+            eeprom_kb:
+              type: integer
+              minimum: 0
+              default: 0
+
+        package:
+          type: object
+          required:
+            - type
+            - pins
+          properties:
+            type:
+              type: string
+              description: "Package type (e.g., 'LQFP64')"
+            pins:
+              type: integer
+              minimum: 1
+            io_pins:
+              type: integer
+              minimum: 0
+
+        peripherals:
+          type: object
+          description: "Peripheral counts and instances"
+          # Flexible schema - peripheral types vary by family
+
+        documentation:
+          type: object
+          properties:
+            datasheet:
+              type: string
+              format: uri
+            reference_manual:
+              type: string
+              format: uri
+            errata:
+              type: string
+              format: uri
+            svd_file:
+              type: string
+              description: "Path to SVD file relative to repo root"
+
+        boards:
+          type: array
+          items:
+            type: string
+          description: "Board IDs that use this MCU"
+
+        status:
+          type: string
+          enum: [production, preview, deprecated, obsolete]
+          default: production
+
+        tags:
+          type: array
+          items:
+            type: string
+          description: "Tags for categorization"
+
+# Examples of valid YAML adhering to this schema are shown in the proposal.md
