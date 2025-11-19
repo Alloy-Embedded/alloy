@@ -5,6 +5,7 @@
 **Priority**: HIGH
 **Complexity**: HIGH
 **Estimated Duration**: 10 weeks (232 hours)
+**⚠️ CRITICAL PATH**: Phase 4 (1 week) MUST complete first to unblock CLI development
 **Last Updated**: 2025-01-17 (Integrated with Enhanced CLI)
 **Coordination**: See `openspec/changes/INTEGRATION_LIBRARY_CLI.md`
 
@@ -19,7 +20,9 @@
 - **CLI Spec Owns**: YAML schemas, metadata commands, ValidationService wrapper, project templates
 - **Shared**: Metadata database structure, template engine infrastructure
 
-**Timeline Coordination**: This spec's Phase 4 (Codegen Reorg) MUST complete before CLI Phase 0 (YAML Migration). See integration document for parallel execution plan (12 weeks total vs 21.5 sequential).
+**Timeline Coordination**: This spec's **Phase 4 (Codegen Reorg) is CRITICAL and MUST complete before CLI implementation can begin**. See integration document for parallel execution plan (12 weeks total vs 21.5 sequential).
+
+**⚠️ PREREQUISITE FOR CLI**: CLI development is blocked until Phase 4 completes. Phase 4 reorganizes the codegen system to provide the clean plugin architecture that CLI Phase 0 (YAML Migration) depends on.
 
 ---
 
@@ -1191,11 +1194,20 @@ tools/codegen/tests/
 
 ---
 
-### Phase 4: Codegen Reorganization (1 week, 24 hours)
+### Phase 4: Codegen Reorganization (1 week, 24 hours) ⚠️ CRITICAL - BLOCKS CLI
 
 #### 4.1 Directory Restructure
 
 **Goal**: Clear separation of concerns
+
+**⚠️ WHY THIS IS CRITICAL FOR CLI**:
+The Enhanced CLI (`enhance-cli-professional-tool`) requires a clean plugin architecture to implement YAML schemas, metadata commands, and project templates. Without this reorganization:
+- CLI cannot safely add YAML schema validators (needs `core/schema_validator.py`)
+- CLI metadata commands cannot locate generators (needs `generators/` structure)
+- CLI project templates conflict with peripheral templates (needs separation)
+- ValidationService wrapper cannot import validators (needs `core/validators/`)
+
+**This phase MUST complete before CLI Phase 0 can begin.**
 
 **New Structure**:
 

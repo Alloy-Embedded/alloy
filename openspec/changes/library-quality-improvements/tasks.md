@@ -33,6 +33,11 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 
 **Goal**: Transform Alloy from 7.3/10 to 9.0+/10 through systematic quality improvements
 
+**⚠️ IMPLEMENTATION ORDER**:
+1. **START HERE**: Phase 4 (Codegen Reorganization) - BLOCKS CLI development
+2. After Phase 4 completes, CLI can start Phase 0 (YAML Migration)
+3. Then Phases 1-3, 5-6 can run in parallel with CLI development
+
 ---
 
 ## Phase 1: API Layer Refactoring (3 weeks, 72 hours)
@@ -546,9 +551,19 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 
 ---
 
-## Phase 4: Codegen Reorganization (1 week, 24 hours)
+## ⚠️ Phase 4: Codegen Reorganization (1 week, 24 hours) - START HERE
 
-**⚠️ CRITICAL DEPENDENCY**: This phase MUST complete before CLI Phase 0 (YAML Migration) begins.
+**🚨 CRITICAL - BLOCKS CLI DEVELOPMENT 🚨**
+
+**This is the FIRST phase to implement**. All other phases can wait, but CLI development cannot start until this completes.
+
+**Why this blocks CLI**:
+- CLI needs `core/validators/` structure to add ValidationService wrapper
+- CLI needs `generators/` structure to locate peripheral generators for metadata commands
+- CLI needs separation of peripheral templates (this spec) from project templates (CLI spec)
+- CLI needs `core/schema_validator.py` foundation to add YAML schema validation
+
+**After Phase 4 completion**: CLI team can immediately begin Phase 0 (YAML Migration), while Library Quality continues with Phases 1-3, 5-6 in parallel.
 
 ### 4.1 Design New Structure (2h)
 
