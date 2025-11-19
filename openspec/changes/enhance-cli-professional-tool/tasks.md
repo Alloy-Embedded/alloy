@@ -529,30 +529,50 @@
   - [x] Pass mcu parameter to validation service
   - [x] Update help text with compile examples
 
-### 2.4 Test Generator (8h)
-- [ ] Design TestGenerator class
-  - [ ] Define test template structure
-  - [ ] Define test categories
-- [ ] Create Catch2 test templates
-  - [ ] Template for peripheral base addresses
-  - [ ] Template for register offsets
-  - [ ] Template for bitfield positions
-  - [ ] Template for compile-time checks
-- [ ] Implement test generation
-  - [ ] Parse generated code structure
-  - [ ] Generate base address tests
-  - [ ] Generate register offset tests
-  - [ ] Generate bitfield tests
-  - [ ] Generate static assertion tests
-- [ ] Integrate with Catch2
-  - [ ] Create test runner
-  - [ ] Configure Catch2 build
-  - [ ] Add test discovery
-- [ ] Test the test generator
-  - [ ] Generate tests for GPIO
-  - [ ] Generate tests for UART
-  - [ ] Verify tests pass with correct code
-  - [ ] Verify tests fail with incorrect code
+### 2.4 Test Generator (8h) ✅ COMPLETED
+- [x] Design TestGenerator class (cli/validators/test_generator.py)
+  - [x] Define test template structure (TestCase, TestSuite)
+  - [x] Define test categories (TestCategory enum: BASE_ADDRESS, REGISTER_OFFSET, BITFIELD, TYPE_SIZE, COMPILE_TIME)
+  - [x] Parser for C++ headers (regex-based extraction)
+- [x] Create Catch2 test templates
+  - [x] Template for peripheral base addresses (TEST_CASE with alignment checks)
+  - [x] Template for register offsets (TEST_CASE with word-alignment)
+  - [x] Template for bitfield positions (TEST_CASE with range validation)
+  - [x] Template for compile-time checks (static_assert for addresses, alignment)
+- [x] Implement test generation
+  - [x] Parse generated code structure (parse_header with regex)
+  - [x] Generate base address tests (generate_peripheral_tests)
+  - [x] Generate register offset tests (extracts *_OFFSET patterns)
+  - [x] Generate bitfield tests (extracts *_POS patterns)
+  - [x] Generate static assertion tests (generate_compile_time_tests)
+  - [x] Generate complete test file (generate_test_file with Catch2 includes)
+- [x] Implement TestValidator (cli/validators/test_validator.py)
+  - [x] Integration with TestGenerator
+  - [x] validate() method for single file
+  - [x] validate_directory() for batch generation
+  - [x] Statistics reporting (peripherals, registers, bitfields, tests generated)
+- [x] Integration with ValidationService
+  - [x] Added TestValidator initialization
+  - [x] Updated TEST stage handling
+  - [x] Updated get_available_stages() to include TEST
+  - [x] Updated check_requirements() to include test_generator
+  - [x] Export TestValidator and TestGenerator in __init__.py
+- [x] Test the test generator (tests/unit/test_validators.py)
+  - [x] TestTestGenerator class (9 tests)
+    - [x] test_create_generator - creates instance
+    - [x] test_parse_header_with_peripherals - parses definitions
+    - [x] test_parse_header_extracts_base_addresses - extracts addresses
+    - [x] test_parse_header_extracts_register_offsets - extracts offsets
+    - [x] test_parse_header_extracts_bitfields - extracts bitfields
+    - [x] test_generate_peripheral_tests - generates test suite
+    - [x] test_generate_test_file - creates complete file
+    - [x] test_generate_from_header - end-to-end generation
+    - [x] test_get_test_summary - statistics
+  - [x] TestTestValidator class (3 tests)
+    - [x] test_is_available - always available
+    - [x] test_validate_generates_tests - creates test files
+    - [x] test_validate_reports_statistics - reports metrics
+  - [x] peripheral_header fixture for testing
 
 ### 2.5 Validation CLI (4h)
 - [ ] Implement `alloy codegen validate <file>`

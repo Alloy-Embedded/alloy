@@ -16,6 +16,9 @@ from cli.validators import (
     ValidationResult,
     SyntaxValidator,
     CompileValidator,
+    TestValidator,
+    TestGenerator,
+    TestCategory,
     ValidationService
 )
 
@@ -290,6 +293,158 @@ class TestValidationService:
         assert summary.total_errors == 0
 
 
+class TestTestGenerator:
+    """Test TestGenerator for Catch2 test generation."""
+
+    def test_create_generator(self):
+        """Test creating test generator."""
+        generator = TestGenerator()
+        assert generator is not None
+
+    def test_parse_header_with_peripherals(self, peripheral_header):
+        """Test parsing header with peripheral definitions."""
+        generator = TestGenerator()
+        definitions = generator.parse_header(peripheral_header)
+
+        assert 'peripherals' in definitions
+        assert 'registers' in definitions
+        assert 'bitfields' in definitions
+        assert len(definitions['peripherals']) > 0
+
+    def test_parse_header_extracts_base_addresses(self, peripheral_header):
+        """Test extracting peripheral base addresses."""
+        generator = TestGenerator()
+        definitions = generator.parse_header(peripheral_header)
+
+        # Should find GPIOA_BASE
+        assert 'GPIOA' in definitions['peripherals']
+        assert definitions['peripherals']['GPIOA'] == 0x40020000
+
+    def test_parse_header_extracts_register_offsets(self, peripheral_header):
+        """Test extracting register offsets."""
+        generator = TestGenerator()
+        definitions = generator.parse_header(peripheral_header)
+
+        # Should find register offsets
+        assert len(definitions['registers']) > 0
+
+    def test_parse_header_extracts_bitfields(self, peripheral_header):
+        """Test extracting bitfield positions."""
+        generator = TestGenerator()
+        definitions = generator.parse_header(peripheral_header)
+
+        # Should find bitfield positions
+        assert len(definitions['bitfields']) > 0
+
+    def test_generate_peripheral_tests(self, peripheral_header):
+        """Test generating test suite for peripheral."""
+        generator = TestGenerator()
+        definitions = generator.parse_header(peripheral_header)
+
+        suite = generator.generate_peripheral_tests(definitions, "GPIO")
+
+        assert suite.name == "GPIO_Tests"
+        assert len(suite.test_cases) > 0
+
+    def test_generate_test_file(self, temp_dir, peripheral_header):
+        """Test generating complete test file."""
+        generator = TestGenerator()
+        definitions = generator.parse_header(peripheral_header)
+
+        suite = generator.generate_peripheral_tests(definitions, "GPIO")
+
+        output_file = temp_dir / "test_gpio.cpp"
+        result = generator.generate_test_file(suite, output_file)
+
+        assert result.exists()
+        assert result.stat().st_size > 0
+
+        # Check file contains Catch2 includes
+        content = result.read_text()
+        assert "#include <catch2/catch_test_macros.hpp>" in content
+        assert "TEST_CASE" in content
+
+    def test_generate_from_header(self, temp_dir, peripheral_header):
+        """Test generating test from header file."""
+        generator = TestGenerator()
+
+        output_file = generator.generate_from_header(
+            peripheral_header,
+            temp_dir,
+            "GPIO"
+        )
+
+        assert output_file.exists()
+        assert output_file.name == "test_peripheral.hpp"
+
+    def test_get_test_summary(self, peripheral_header):
+        """Test getting test summary statistics."""
+        generator = TestGenerator()
+        definitions = generator.parse_header(peripheral_header)
+        suite = generator.generate_peripheral_tests(definitions, "GPIO")
+
+        summary = generator.get_test_summary(suite)
+
+        assert 'total' in summary
+        assert 'base_address' in summary
+        assert 'register_offset' in summary
+        assert 'bitfield' in summary
+        assert summary['total'] == len(suite.test_cases)
+
+
+class TestTestValidator:
+    """Test TestValidator for test generation validation."""
+
+    def test_is_available(self):
+        """Test checking if test validator is available."""
+        validator = TestValidator()
+        # Test generation is always available
+        assert validator.is_available() is True
+
+    def test_validate_generates_tests(self, temp_dir, peripheral_header):
+        """Test that validate generates test files."""
+        validator = TestValidator()
+
+        result = validator.validate(
+            peripheral_header,
+            output_dir=temp_dir,
+            peripheral_name="GPIO",
+            generate_only=True
+        )
+
+        # Should succeed
+        assert not result.has_errors()
+        assert result.stage == ValidationStage.TEST
+
+        # Should report test file generation
+        assert "test_file" in result.metadata
+        assert result.metadata["tests_generated"] > 0
+
+    def test_validate_reports_statistics(self, peripheral_header, temp_dir):
+        """Test that validate reports generation statistics."""
+        validator = TestValidator()
+
+        result = validator.validate(
+            peripheral_header,
+            output_dir=temp_dir,
+            generate_only=True
+        )
+
+        # Should report statistics
+        assert "peripherals_found" in result.metadata
+        assert "registers_found" in result.metadata
+        assert "bitfields_found" in result.metadata
+        assert "tests_generated" in result.metadata
+
+    def test_get_generator(self):
+        """Test getting TestGenerator instance."""
+        validator = TestValidator()
+        generator = validator.get_generator()
+
+        assert generator is not None
+        assert isinstance(generator, TestGenerator)
+
+
 # Fixtures
 
 @pytest.fixture
@@ -341,6 +496,38 @@ template<>
 class Empty;
 
 #endif // INVALID_HPP
+""")
+    return file_path
+
+
+@pytest.fixture
+def peripheral_header(temp_dir):
+    """Create a peripheral header file for testing."""
+    file_path = temp_dir / "peripheral.hpp"
+    file_path.write_text("""
+#ifndef PERIPHERAL_HPP
+#define PERIPHERAL_HPP
+
+#include <cstdint>
+#include <cstddef>
+
+// Peripheral base addresses
+namespace gpio {
+    constexpr std::uintptr_t GPIOA_BASE = 0x40020000;
+    constexpr std::uintptr_t GPIOB_BASE = 0x40020400;
+
+    // Register offsets
+    static constexpr std::size_t MODER_OFFSET = 0x00;
+    static constexpr std::size_t ODR_OFFSET = 0x14;
+    static constexpr std::size_t IDR_OFFSET = 0x10;
+
+    // Bitfield positions
+    static constexpr std::uint32_t PIN0_POS = 0;
+    static constexpr std::uint32_t PIN1_POS = 1;
+    static constexpr std::uint32_t PIN2_POS = 2;
+}
+
+#endif // PERIPHERAL_HPP
 """)
     return file_path
 
