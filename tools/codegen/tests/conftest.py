@@ -107,3 +107,106 @@ def parsed_svd_data(test_svd_file):
     """Parse test SVD file"""
     parser = SVDParser(test_svd_file)
     return parser.parse()
+
+
+# New fixtures for CLI testing
+
+@pytest.fixture
+def sample_mcu_yaml(temp_dir):
+    """Sample MCU metadata YAML file."""
+    import yaml
+    mcu_data = {
+        "schema_version": "1.0",
+        "family": {
+            "id": "test_family",
+            "vendor": "test",
+            "display_name": "Test Family"
+        },
+        "mcus": [
+            {
+                "part_number": "TEST_MCU_001",
+                "core": "Cortex-M4F",
+                "max_freq_mhz": 100,
+                "memory": {
+                    "flash_kb": 512,
+                    "sram_kb": 128
+                },
+                "package": {
+                    "type": "LQFP",
+                    "pins": 64
+                },
+                "peripherals": {
+                    "uart": {"count": 3},
+                    "gpio": {"count": 5}
+                },
+                "status": "production"
+            }
+        ]
+    }
+
+    yaml_file = temp_dir / "test_mcu.yaml"
+    with open(yaml_file, 'w') as f:
+        yaml.safe_dump(mcu_data, f)
+
+    return yaml_file
+
+
+@pytest.fixture
+def sample_board_yaml(temp_dir):
+    """Sample board metadata YAML file."""
+    import yaml
+    board_data = {
+        "schema_version": "1.0",
+        "board": {
+            "id": "test_board",
+            "name": "Test Board",
+            "vendor": "Test Vendor"
+        },
+        "mcu": {
+            "part_number": "TEST_MCU_001",
+            "family": "test_family"
+        },
+        "clock": {
+            "system_freq_hz": 100000000,
+            "xtal_freq_hz": 8000000
+        },
+        "pinout": {
+            "leds": [
+                {
+                    "name": "LED1",
+                    "gpio": "PA5",
+                    "active": "high"
+                }
+            ],
+            "buttons": []
+        },
+        "status": "supported"
+    }
+
+    yaml_file = temp_dir / "test_board.yaml"
+    with open(yaml_file, 'w') as f:
+        yaml.safe_dump(board_data, f)
+
+    return yaml_file
+
+
+@pytest.fixture
+def sample_config_yaml(temp_dir):
+    """Sample config YAML file."""
+    import yaml
+    config_data = {
+        "schema_version": "1.0",
+        "general": {
+            "verbose": True,
+            "color": True
+        },
+        "paths": {
+            "database": "./database"
+        }
+    }
+
+    yaml_file = temp_dir / ".alloy.yaml"
+    with open(yaml_file, 'w') as f:
+        yaml.safe_dump(config_data, f)
+
+    return yaml_file
