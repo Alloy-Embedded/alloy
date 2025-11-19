@@ -17,6 +17,21 @@ from .pin_recommendation import (
     ConflictType,
     create_stm32_pin_database,
 )
+from .build_service import (
+    BuildService,
+    BuildSystem,
+    BuildStatus,
+    BuildResult,
+    BuildError,
+    BuildProgress,
+    SizeInfo,
+)
+from .flash_service import (
+    FlashService,
+    FlashTool,
+    FlashStatus,
+    FlashResult,
+)
 
 __all__ = [
     "MCUService",
@@ -32,4 +47,15 @@ __all__ = [
     "PinConflict",
     "ConflictType",
     "create_stm32_pin_database",
+    "BuildService",
+    "BuildSystem",
+    "BuildStatus",
+    "BuildResult",
+    "BuildError",
+    "BuildProgress",
+    "SizeInfo",
+    "FlashService",
+    "FlashTool",
+    "FlashStatus",
+    "FlashResult",
 ]
