@@ -493,35 +493,54 @@
   - [ ] Test with missing peripherals
   - [ ] Test with multiple SVD files
 
-### 2.3 Compile Validator (8h)
-- [ ] Design CompileValidator class
-  - [ ] Define validation interface
-  - [ ] Define test program templates
-- [ ] Implement test program generator
-  - [ ] Create minimal main() template
-  - [ ] Instantiate peripheral templates
-  - [ ] Include generated headers
-  - [ ] Add compilation flags
-- [ ] Integrate ARM GCC
-  - [ ] Check arm-none-eabi-gcc availability
-  - [ ] Build compilation command
-  - [ ] Add MCU-specific flags (cortex-m4, etc.)
-  - [ ] Configure include paths
-- [ ] Parse GCC output
-  - [ ] Parse stderr for errors
-  - [ ] Extract error messages
-  - [ ] Extract warnings
-  - [ ] Get object file size
-- [ ] Create compilation reports
-  - [ ] Show compilation status
-  - [ ] Display errors with context
-  - [ ] Show object file size
-  - [ ] Show compiler version
-- [ ] Test compile validator
-  - [ ] Test with valid generated code
-  - [ ] Test with compilation errors
-  - [ ] Test with different MCU targets
-  - [ ] Test with missing dependencies
+### 2.3 Compile Validator (8h) ✅ COMPLETED
+- [x] Design CompileValidator class (cli/validators/compile_validator.py)
+  - [x] Define validation interface
+  - [x] Define test program templates
+  - [x] validate() method for direct compilation
+  - [x] validate_with_test_program() for header files
+- [x] Implement test program generator
+  - [x] Create minimal main() template
+  - [x] Include generated headers
+  - [x] Add compilation flags
+  - [x] Temporary file management
+- [x] Integrate ARM GCC
+  - [x] Check arm-none-eabi-gcc availability
+  - [x] Build compilation command with _build_gcc_command()
+  - [x] Add MCU-specific flags (-mcpu=cortex-m4, -mthumb)
+  - [x] Add embedded flags (-fno-exceptions, -fno-rtti)
+  - [x] Configure include paths with -I flags
+  - [x] Configure defines with -D flags
+  - [x] Compile to object file with -c flag
+- [x] Parse GCC output
+  - [x] Parse stderr for errors with _parse_gcc_output()
+  - [x] Extract error messages with regex (file:line:col: severity: message)
+  - [x] Extract warnings
+  - [x] Get object file size
+  - [x] Report compilation timeout (60s)
+- [x] Create compilation reports
+  - [x] Show compilation status (✓ success)
+  - [x] Display errors with file paths and line numbers
+  - [x] Show object file size in bytes
+  - [x] Store compiler info in metadata
+- [x] Test compile validator (tests/unit/test_validators.py)
+  - [x] test_is_available - checks ARM GCC availability
+  - [x] test_validate_valid_cpp_file - validates correct code
+  - [x] test_validate_invalid_cpp_file - catches compile errors
+  - [x] test_validate_nonexistent_file - handles missing files
+  - [x] test_validate_different_mcus - tests cortex-m0/m3/m4/m7
+  - [x] test_get_compiler_info - gets GCC version info
+- [x] Integration with ValidationService
+  - [x] Added CompileValidator initialization
+  - [x] Updated COMPILE stage handling in validate_file()
+  - [x] Updated get_available_stages() to include COMPILE
+  - [x] Updated check_requirements() to check arm-none-eabi-gcc
+  - [x] Export CompileValidator in __init__.py
+- [x] CLI enhancements
+  - [x] Added --mcu option to validate file command
+  - [x] Added --mcu option to validate dir command
+  - [x] Pass mcu parameter to validation service
+  - [x] Update help text with compile examples
 
 ### 2.4 Test Generator (8h)
 - [ ] Design TestGenerator class

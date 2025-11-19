@@ -10,6 +10,7 @@ from dataclasses import dataclass
 
 from .base import ValidationStage, ValidationResult
 from .syntax_validator import SyntaxValidator
+from .compile_validator import CompileValidator
 
 
 @dataclass
@@ -58,6 +59,9 @@ class ValidationService:
         # Initialize validators
         self.syntax_validator = SyntaxValidator(
             clang_path=self.config.get("clang_path", "clang++")
+        )
+        self.compile_validator = CompileValidator(
+            gcc_path=self.config.get("gcc_arm_path", "arm-none-eabi-gcc")
         )
 
     def validate_file(
@@ -108,11 +112,22 @@ class ValidationService:
                 results.append(result)
 
             elif stage == ValidationStage.COMPILE:
-                # Placeholder for compile validation
-                result = ValidationResult(stage=stage)
-                result.add_info("Compile validation not yet implemented")
-                result.metadata["status"] = "coming_soon"
-                results.append(result)
+                if self.compile_validator.is_available():
+                    result = self.compile_validator.validate(
+                        file_path,
+                        mcu=options.get("mcu", "cortex-m4"),
+                        include_paths=options.get("include_paths", []),
+                        defines=options.get("defines", {})
+                    )
+                    results.append(result)
+                else:
+                    # Create error result for unavailable validator
+                    result = ValidationResult(stage=stage)
+                    result.add_error(
+                        "Compile validator not available (arm-none-eabi-gcc not found)",
+                        suggestion="Install arm-none-eabi-gcc or set ALLOY_GCC_ARM_PATH"
+                    )
+                    results.append(result)
 
             elif stage == ValidationStage.TEST:
                 # Placeholder for test generation
@@ -187,6 +202,9 @@ class ValidationService:
         if self.syntax_validator.is_available():
             available.append(ValidationStage.SYNTAX)
 
+        if self.compile_validator.is_available():
+            available.append(ValidationStage.COMPILE)
+
         # Add other stages as they're implemented
         # if self.semantic_validator and self.semantic_validator.is_available():
         #     available.append(ValidationStage.SEMANTIC)
@@ -202,6 +220,6 @@ class ValidationService:
         """
         return {
             "clang++": self.syntax_validator.is_available(),
-            "arm-none-eabi-gcc": False,  # Not implemented yet
+            "arm-none-eabi-gcc": self.compile_validator.is_available(),
             "svd_files": False,  # Not implemented yet
         }
