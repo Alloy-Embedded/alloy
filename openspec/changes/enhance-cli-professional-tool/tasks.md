@@ -268,27 +268,63 @@
   - [x] Export config models in models/__init__.py
   - [x] Update help text to reference config system
 
-### 1.7 Enhanced Metadata Commands (6h)
-- [ ] Implement `alloy metadata validate`
-  - [ ] Validate YAML/JSON syntax
-  - [ ] Validate against schema
-  - [ ] Check for required fields
-  - [ ] Report errors with line numbers
-  - [ ] --strict mode for additional checks
-- [ ] Implement `alloy metadata create`
-  - [ ] --template option (mcu, board, peripheral)
-  - [ ] Interactive prompts for required fields
-  - [ ] Generate valid YAML with comments
-  - [ ] Auto-format output
-- [ ] Implement `alloy metadata diff`
-  - [ ] Compare two metadata files
-  - [ ] Show added/removed/modified fields
-  - [ ] Colored diff output
-  - [ ] Support for YAML and JSON
-- [ ] Better error messages
-  - [ ] Suggest fixes for common errors
-  - [ ] Link to documentation
-  - [ ] Show examples of correct format
+### 1.7 Enhanced Metadata Commands (6h) ✅ COMPLETED
+- [x] Implement MetadataService (cli/services/metadata_service.py)
+  - [x] MetadataType enum (MCU, BOARD, PERIPHERAL, TEMPLATE)
+  - [x] ValidationSeverity enum (ERROR, WARNING, INFO)
+  - [x] ValidationMessage and ValidationResult classes
+  - [x] validate_file() - comprehensive validation
+  - [x] create_template() - generate from templates
+  - [x] diff_files() - deep comparison of metadata
+  - [x] Auto-detection of metadata type from path/content
+- [x] Validation functionality
+  - [x] YAML/JSON syntax validation (parse errors)
+  - [x] Structure validation (required sections)
+  - [x] Required fields validation (per metadata type)
+  - [x] Field type validation (integers, strings, etc.)
+  - [x] Strict mode (empty strings, TODO comments)
+  - [x] Error messages with line numbers
+  - [x] Suggestions for common errors
+- [x] Implement `alloy metadata validate` (cli/commands/metadata_cmd.py)
+  - [x] Validate YAML/JSON syntax
+  - [x] Validate against schema requirements
+  - [x] Check for required fields
+  - [x] Report errors with line numbers and suggestions
+  - [x] --strict mode for additional checks
+  - [x] --type option to specify metadata type
+  - [x] Rich table output for errors
+  - [x] Colored severity indicators (ERROR, WARN, INFO)
+- [x] Implement `alloy metadata create`
+  - [x] Template support for mcu, board, peripheral, template
+  - [x] --output option for custom path
+  - [x] --format option (yaml or json)
+  - [x] Generate valid metadata with proper structure
+  - [x] Include comments in YAML templates
+  - [x] Preview template after creation
+  - [x] Built-in templates for all metadata types
+- [x] Implement `alloy metadata diff`
+  - [x] Compare two metadata files (YAML or JSON)
+  - [x] Show added fields (in file2, not in file1)
+  - [x] Show removed fields (in file1, not in file2)
+  - [x] Show modified fields with diff indicators
+  - [x] Colored diff output (+green, -red, ~yellow)
+  - [x] Support for nested structures
+  - [x] Summary with change counts
+- [x] Implement `alloy metadata format` (bonus feature)
+  - [x] Auto-format and prettify metadata files
+  - [x] Consistent indentation and spacing
+  - [x] --format option for conversion (YAML ↔ JSON)
+  - [x] --sort-keys option for alphabetical ordering
+  - [x] --output option to save to different file
+- [x] Better error messages
+  - [x] Suggest fixes for common errors (missing fields, wrong types)
+  - [x] Show field path for nested errors (e.g., "MCU[0].memory.flash_kb")
+  - [x] Validation summary with error/warning counts
+  - [x] Info messages for successful checks
+- [x] Integration
+  - [x] Register metadata command group in main.py
+  - [x] Export MetadataService in services/__init__.py
+  - [x] 4 commands: validate, create, diff, format
 
 ### 1.8 Testing (4h)
 - [ ] Set up pytest framework
@@ -320,10 +356,11 @@
 - ✅ 5 CLI discovery commands (list mcus, list boards, show mcu, show board, search mcu) - Phase 1.5
 - ✅ Configuration system (.alloy.yaml with hierarchy) - Phase 1.6
 - ✅ 6 config commands (show, set, unset, edit, init, path) - Phase 1.6
-- ⏳ 3 metadata commands (validate, create, diff) - Phase 1.7 (pending)
+- ✅ 4 metadata commands (validate, create, diff, format) - Phase 1.7
+- ✅ MetadataService with validation and templates - Phase 1.7
 - ⏳ Test suite (80% coverage) - Phase 1.8 (pending)
 
-**Phase 1 Progress**: 34h/52h completed (65%)
+**Phase 1 Progress**: 40h/52h completed (77%)
 
 ---
 
