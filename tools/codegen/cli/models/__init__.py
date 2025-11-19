@@ -7,6 +7,7 @@ Pydantic models for type-safe database operations.
 from .mcu import MCU, MCUFamily, Memory, Package, PeripheralSet, Documentation
 from .board import Board, BoardInfo, MCUReference, ClockConfig, Pinout, LED, Button
 from .peripheral import Peripheral, PeripheralImplementation, PeripheralTests
+from .config import AlloyConfig, GeneralConfig, PathsConfig, DiscoveryConfig, BuildConfig, ValidationConfig, MetadataConfig, ProjectConfig
 
 __all__ = [
     # MCU models
@@ -28,4 +29,13 @@ __all__ = [
     "Peripheral",
     "PeripheralImplementation",
     "PeripheralTests",
+    # Config models
+    "AlloyConfig",
+    "GeneralConfig",
+    "PathsConfig",
+    "DiscoveryConfig",
+    "BuildConfig",
+    "ValidationConfig",
+    "MetadataConfig",
+    "ProjectConfig",
 ]

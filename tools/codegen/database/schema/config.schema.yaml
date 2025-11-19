@@ -1,0 +1,225 @@
+# Configuration Schema for Alloy CLI
+# Version: 1.0
+# Last Updated: 2025-01-19
+#
+# This schema defines the structure of .alloy.yaml configuration files.
+# Configuration files can exist at multiple levels:
+# - System: /etc/alloy/config.yaml (lowest priority)
+# - User: ~/.config/alloy/config.yaml
+# - Project: <project>/.alloy.yaml (highest priority)
+# - CLI args and environment variables override all file-based configs
+
+schema_version: "1.0"
+
+# Root configuration object
+type: object
+properties:
+
+  # General CLI settings
+  general:
+    type: object
+    properties:
+      # Default output format for commands
+      output_format:
+        type: string
+        enum: [table, json, yaml, compact]
+        default: table
+
+      # Enable/disable colored output
+      color:
+        type: boolean
+        default: true
+
+      # Verbosity level
+      verbose:
+        type: boolean
+        default: false
+
+      # Editor to use for 'alloy config edit'
+      editor:
+        type: string
+        default: "${EDITOR:-vim}"
+
+  # Paths configuration
+  paths:
+    type: object
+    properties:
+      # Database directory (MCU, board, peripheral metadata)
+      database:
+        type: string
+        default: "${ALLOY_DATABASE_PATH:-./database}"
+
+      # Templates directory
+      templates:
+        type: string
+        default: "${ALLOY_TEMPLATES_PATH:-./database/templates}"
+
+      # SVD files directory
+      svd:
+        type: string
+        default: "${ALLOY_SVD_PATH:-./svd}"
+
+      # Output directory for generated code
+      output:
+        type: string
+        default: "${ALLOY_OUTPUT_PATH:-./generated}"
+
+  # Discovery settings
+  discovery:
+    type: object
+    properties:
+      # Default vendor filter
+      default_vendor:
+        type: string
+        nullable: true
+        default: null
+
+      # Default MCU family
+      default_family:
+        type: string
+        nullable: true
+        default: null
+
+      # Show deprecated MCUs/boards by default
+      show_deprecated:
+        type: boolean
+        default: false
+
+      # Maximum results to show in list commands
+      max_results:
+        type: integer
+        default: 50
+
+      # Default sort order for MCU listings
+      default_sort:
+        type: string
+        enum: [part_number, flash, sram, freq, vendor]
+        default: part_number
+
+  # Build settings
+  build:
+    type: object
+    properties:
+      # Build system to use
+      system:
+        type: string
+        enum: [cmake, meson]
+        default: cmake
+
+      # Default build type
+      build_type:
+        type: string
+        enum: [Debug, Release, RelWithDebInfo, MinSizeRel]
+        default: Debug
+
+      # Number of parallel jobs
+      jobs:
+        type: integer
+        default: 0  # 0 = auto-detect
+
+      # Toolchain file path
+      toolchain:
+        type: string
+        nullable: true
+        default: null
+
+      # CMake generator
+      cmake_generator:
+        type: string
+        nullable: true
+        default: null
+
+  # Validation settings
+  validation:
+    type: object
+    properties:
+      # Enable strict validation mode
+      strict:
+        type: boolean
+        default: false
+
+      # Enable syntax validation
+      syntax:
+        type: boolean
+        default: true
+
+      # Enable semantic validation
+      semantic:
+        type: boolean
+        default: true
+
+      # Enable compilation check
+      compile:
+        type: boolean
+        default: false
+
+      # Clang path for syntax validation
+      clang_path:
+        type: string
+        default: clang++
+
+      # GCC ARM path for compilation
+      gcc_arm_path:
+        type: string
+        default: arm-none-eabi-gcc
+
+  # Metadata settings
+  metadata:
+    type: object
+    properties:
+      # Preferred metadata format
+      format:
+        type: string
+        enum: [yaml, json]
+        default: yaml
+
+      # Auto-format on save
+      auto_format:
+        type: boolean
+        default: true
+
+      # Include comments in generated metadata
+      include_comments:
+        type: boolean
+        default: true
+
+  # Project-specific settings (only valid in project .alloy.yaml)
+  project:
+    type: object
+    properties:
+      # Project name
+      name:
+        type: string
+        nullable: true
+        default: null
+
+      # Target board
+      board:
+        type: string
+        nullable: true
+        default: null
+
+      # Target MCU (if no board specified)
+      mcu:
+        type: string
+        nullable: true
+        default: null
+
+      # Configured peripherals
+      peripherals:
+        type: array
+        items:
+          type: string
+        default: []
+
+      # Build directory
+      build_dir:
+        type: string
+        default: build
+
+# Environment variable mapping
+# These can override any config value:
+# ALLOY_OUTPUT_FORMAT -> general.output_format
+# ALLOY_DATABASE_PATH -> paths.database
+# ALLOY_VERBOSE -> general.verbose
+# etc.
