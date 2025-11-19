@@ -3,13 +3,14 @@ Validate command - Validate generated code.
 """
 
 import typer
+import json
 from pathlib import Path
 from typing import Optional, List
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich import box
-from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 
 app = typer.Typer()
 console = Console()
@@ -29,6 +30,8 @@ def validate_file(
     include_path: List[Path] = typer.Option([], "--include", "-I", help="Include directory"),
     std: str = typer.Option("c++23", "--std", help="C++ standard"),
     mcu: str = typer.Option("cortex-m4", "--mcu", help="Target MCU for compile validation"),
+    test_output: Optional[Path] = typer.Option(None, "--test-output", help="Output directory for generated tests"),
+    json_output: bool = typer.Option(False, "--json", help="Output results as JSON"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
 ):
     """
@@ -63,11 +66,12 @@ def validate_file(
     # Create service
     service = ValidationService()
 
-    # Show what will be validated
-    console.print(f"[cyan]Validating:[/cyan] {file_path}")
-    if include_path:
-        console.print(f"[dim]Include paths: {', '.join(str(p) for p in include_path)}[/dim]")
-    console.print()
+    # Show what will be validated (unless JSON mode)
+    if not json_output:
+        console.print(f"[cyan]Validating:[/cyan] {file_path}")
+        if include_path:
+            console.print(f"[dim]Include paths: {', '.join(str(p) for p in include_path)}[/dim]")
+        console.print()
 
     # Validate
     results = service.validate_file(
@@ -75,11 +79,15 @@ def validate_file(
         stages=stages,
         include_paths=include_path,
         std=std,
-        mcu=mcu
+        mcu=mcu,
+        test_output_dir=test_output
     )
 
     # Display results
-    _display_results(results, verbose=verbose)
+    if json_output:
+        _display_json_results(results, file_path)
+    else:
+        _display_results(results, verbose=verbose)
 
     # Exit with error if validation failed
     if any(r.has_errors() for r in results):
@@ -94,6 +102,9 @@ def validate_directory(
     include_path: List[Path] = typer.Option([], "--include", "-I", help="Include directory"),
     std: str = typer.Option("c++23", "--std", help="C++ standard"),
     mcu: str = typer.Option("cortex-m4", "--mcu", help="Target MCU for compile validation"),
+    test_output: Optional[Path] = typer.Option(None, "--test-output", help="Output directory for generated tests"),
+    json_output: bool = typer.Option(False, "--json", help="Output results as JSON"),
+    save_report: Optional[Path] = typer.Option(None, "--save-report", help="Save validation report to file"),
 ):
     """
     Validate all C++ files in a directory.
@@ -120,32 +131,61 @@ def validate_directory(
     # Create service
     service = ValidationService()
 
-    # Show what will be validated
-    console.print(f"[cyan]Validating directory:[/cyan] {directory}")
-    console.print(f"[dim]Pattern: {pattern}[/dim]")
-    console.print()
+    # Show what will be validated (unless JSON mode)
+    if not json_output:
+        console.print(f"[cyan]Validating directory:[/cyan] {directory}")
+        console.print(f"[dim]Pattern: {pattern}[/dim]")
+        console.print()
 
-    # Validate with progress bar
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        console=console
-    ) as progress:
-        task = progress.add_task("Validating files...", total=None)
+    # Count files first for progress bar
+    files = list(directory.glob(pattern))
+    total_files = len([f for f in files if f.is_file()])
 
+    # Validate with enhanced progress bar
+    if not json_output:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+            console=console
+        ) as progress:
+            task = progress.add_task("Validating files...", total=total_files)
+
+            summary = service.validate_directory(
+                directory,
+                pattern=pattern,
+                stages=stages,
+                include_paths=include_path,
+                std=std,
+                mcu=mcu,
+                test_output_dir=test_output
+            )
+
+            progress.update(task, completed=total_files)
+    else:
+        # No progress bar in JSON mode
         summary = service.validate_directory(
             directory,
             pattern=pattern,
             stages=stages,
             include_paths=include_path,
             std=std,
-            mcu=mcu
+            mcu=mcu,
+            test_output_dir=test_output
         )
 
-        progress.remove_task(task)
+    # Display or save results
+    if json_output:
+        _display_json_summary(summary, directory)
+    else:
+        _display_summary(summary)
 
-    # Display summary
-    _display_summary(summary)
+    # Save report if requested
+    if save_report:
+        _save_validation_report(summary, save_report, directory, pattern)
+        if not json_output:
+            console.print(f"\n[green]✓[/green] Report saved to: {save_report}")
 
     # Exit with error if any files failed
     if summary.failed_files > 0:
@@ -182,6 +222,7 @@ def check_requirements():
         purpose = {
             "clang++": "Syntax validation",
             "arm-none-eabi-gcc": "Compilation validation",
+            "test_generator": "Test generation",
             "svd_files": "Semantic validation"
         }.get(tool, "")
 
@@ -252,3 +293,110 @@ def _display_summary(summary):
         failed_count = sum(1 for r in results if r.has_errors())
         if failed_count > 0:
             console.print(f"[yellow]{stage.value.capitalize()}:[/yellow] {failed_count} files failed")
+
+
+def _display_json_results(results, file_path):
+    """Display validation results as JSON."""
+    output = {
+        "file": str(file_path),
+        "results": []
+    }
+
+    for result in results:
+        result_data = {
+            "stage": result.stage.value,
+            "passed": result.passed,
+            "errors": result.error_count(),
+            "warnings": result.warning_count(),
+            "duration_ms": result.duration_ms,
+            "messages": [
+                {
+                    "severity": msg.severity.value,
+                    "message": msg.message,
+                    "file": str(msg.file_path) if msg.file_path else None,
+                    "line": msg.line,
+                    "suggestion": msg.suggestion
+                }
+                for msg in result.messages
+            ],
+            "metadata": result.metadata
+        }
+        output["results"].append(result_data)
+
+    print(json.dumps(output, indent=2))
+
+
+def _display_json_summary(summary, directory):
+    """Display validation summary as JSON."""
+    output = {
+        "directory": str(directory),
+        "summary": {
+            "total_files": summary.total_files,
+            "passed_files": summary.passed_files,
+            "failed_files": summary.failed_files,
+            "total_errors": summary.total_errors,
+            "total_warnings": summary.total_warnings,
+            "success_rate": summary.success_rate,
+            "total_duration_ms": summary.total_duration_ms
+        },
+        "results_by_stage": {}
+    }
+
+    for stage, results in summary.results_by_stage.items():
+        stage_data = {
+            "total": len(results),
+            "passed": sum(1 for r in results if not r.has_errors()),
+            "failed": sum(1 for r in results if r.has_errors())
+        }
+        output["results_by_stage"][stage.value] = stage_data
+
+    print(json.dumps(output, indent=2))
+
+
+def _save_validation_report(summary, report_path: Path, directory: Path, pattern: str):
+    """Save validation report to JSON file."""
+    report = {
+        "timestamp": __import__("datetime").datetime.now().isoformat(),
+        "directory": str(directory),
+        "pattern": pattern,
+        "summary": {
+            "total_files": summary.total_files,
+            "passed_files": summary.passed_files,
+            "failed_files": summary.failed_files,
+            "total_errors": summary.total_errors,
+            "total_warnings": summary.total_warnings,
+            "success_rate": summary.success_rate,
+            "total_duration_ms": summary.total_duration_ms
+        },
+        "results_by_stage": {}
+    }
+
+    for stage, results in summary.results_by_stage.items():
+        stage_results = []
+        for result in results:
+            result_data = {
+                "passed": result.passed,
+                "errors": result.error_count(),
+                "warnings": result.warning_count(),
+                "duration_ms": result.duration_ms,
+                "messages": [
+                    {
+                        "severity": msg.severity.value,
+                        "message": msg.message,
+                        "file": str(msg.file_path) if msg.file_path else None,
+                        "line": msg.line
+                    }
+                    for msg in result.messages
+                ]
+            }
+            stage_results.append(result_data)
+
+        report["results_by_stage"][stage.value] = {
+            "total": len(results),
+            "passed": sum(1 for r in results if not r.has_errors()),
+            "failed": sum(1 for r in results if r.has_errors()),
+            "results": stage_results
+        }
+
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(json.dumps(report, indent=2))
