@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from .base import ValidationStage, ValidationResult
 from .syntax_validator import SyntaxValidator
 from .compile_validator import CompileValidator
+from .test_validator import TestValidator
 
 
 @dataclass
@@ -62,6 +63,9 @@ class ValidationService:
         )
         self.compile_validator = CompileValidator(
             gcc_path=self.config.get("gcc_arm_path", "arm-none-eabi-gcc")
+        )
+        self.test_validator = TestValidator(
+            catch2_path=self.config.get("catch2_path")
         )
 
     def validate_file(
@@ -130,11 +134,19 @@ class ValidationService:
                     results.append(result)
 
             elif stage == ValidationStage.TEST:
-                # Placeholder for test generation
-                result = ValidationResult(stage=stage)
-                result.add_info("Test generation not yet implemented")
-                result.metadata["status"] = "coming_soon"
-                results.append(result)
+                if self.test_validator.is_available():
+                    result = self.test_validator.validate(
+                        file_path,
+                        output_dir=options.get("test_output_dir"),
+                        peripheral_name=options.get("peripheral_name"),
+                        generate_only=options.get("generate_only", True)
+                    )
+                    results.append(result)
+                else:
+                    # Test generation is always available, but include this for consistency
+                    result = ValidationResult(stage=stage)
+                    result.add_error("Test validator not available")
+                    results.append(result)
 
         return results
 
@@ -205,6 +217,9 @@ class ValidationService:
         if self.compile_validator.is_available():
             available.append(ValidationStage.COMPILE)
 
+        if self.test_validator.is_available():
+            available.append(ValidationStage.TEST)
+
         # Add other stages as they're implemented
         # if self.semantic_validator and self.semantic_validator.is_available():
         #     available.append(ValidationStage.SEMANTIC)
@@ -221,5 +236,6 @@ class ValidationService:
         return {
             "clang++": self.syntax_validator.is_available(),
             "arm-none-eabi-gcc": self.compile_validator.is_available(),
+            "test_generator": self.test_validator.is_available(),
             "svd_files": False,  # Not implemented yet
         }
