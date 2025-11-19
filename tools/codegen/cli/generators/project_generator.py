@@ -175,7 +175,7 @@ class ProjectGenerator:
 
         # Special handling for specific files
         if output_name == "gitignore":
-            output_name = ".gitignore"
+            output_path = project_dir / ".gitignore"
         elif output_name == "main.cpp":
             output_path = project_dir / "src" / output_name
         else:
@@ -213,7 +213,7 @@ class ProjectGenerator:
         output_name = template_file.stem  # Remove .j2 extension
 
         if output_name == "gitignore":
-            output_name = ".gitignore"
+            output_path = project_dir / ".gitignore"
         elif output_name == "main.cpp":
             output_path = project_dir / "src" / output_name
         else:
