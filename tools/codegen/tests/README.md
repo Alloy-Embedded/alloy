@@ -1,259 +1,141 @@
-# Code Generator Test Suite
+# Alloy CLI Tests
 
-Comprehensive test suite for the Alloy HAL code generators.
+Comprehensive test suite for the Alloy CLI tool.
 
-## Quick Start
+## Structure
 
-```bash
-# Run all unit tests (49 tests in 0.03s)
-pytest tests/test_*.py -v
-
-# Run specific test file
-pytest tests/test_register_generation.py -v  # 13 tests
-pytest tests/test_enum_generation.py -v      # 21 tests
-pytest tests/test_pin_generation.py -v       # 15 tests
-
-# Run with coverage
-pytest tests/test_*.py --cov=cli/generators --cov-report=html
-open htmlcov/index.html
+```
+tests/
+├── conftest.py           # Shared pytest fixtures
+├── unit/                 # Unit tests for individual components
+│   └── test_services.py  # Tests for MetadataService, ConfigLoader
+├── integration/          # Integration tests for CLI commands
+│   └── test_cli_commands.py
+└── fixtures/             # Test data and fixtures
 ```
 
-## Test Files
+## Running Tests
 
-### `test_register_generation.py`
-Unit tests for register structure generation.
+### All Tests
+```bash
+cd tools/codegen
+pytest
+```
 
-**Test Classes**:
-- `TestRegisterStructGeneration` - Basic functionality
-- `TestPIOARegression` - PIOA RESERVED field bug regression tests
-- `TestRegisterArrays` - Register array handling
-- `TestNamespaceGeneration` - Namespace creation
-- `TestStaticAssertions` - Static assertion generation
-- `TestAccessorFunction` - Peripheral accessor functions
+### Unit Tests Only
+```bash
+pytest tests/unit/
+```
 
-**Coverage**: 13 tests, 30% generator coverage, 99% test code coverage
+### Integration Tests Only
+```bash
+pytest tests/integration/
+```
 
-### `test_enum_generation.py`
-Unit tests for enumeration generation.
+### With Coverage
+```bash
+pytest --cov=cli --cov-report=html
+```
 
-**Test Classes**:
-- `TestEnumHelperFunctions` - Helper function tests
-- `TestEnumGeneration` - Enum code generation
-- `TestEnumEdgeCases` - Edge cases and special scenarios
+### Specific Test
+```bash
+pytest tests/unit/test_services.py::TestMetadataService::test_validate_valid_mcu_yaml -v
+```
 
-**Coverage**: 21 tests, 58% generator coverage, 99% test code coverage
+## Test Markers
 
-### `test_pin_generation.py`
-Unit tests for pin function generation.
+- `@pytest.mark.unit` - Unit tests (fast, no I/O)
+- `@pytest.mark.integration` - Integration tests (CLI commands)
+- `@pytest.mark.slow` - Slow running tests
+- `@pytest.mark.requires_network` - Tests requiring network access
 
-**Test Classes**:
-- `TestPinFunctionDataStructures` - Data structure tests
-- `TestPinFunctionGeneration` - Pin function header generation
-- `TestPinGlobalNumbering` - Global pin numbering (PC8 bug regression)
-- `TestPinEdgeCases` - Edge cases and special scenarios
+### Run Specific Markers
+```bash
+pytest -m unit          # Only unit tests
+pytest -m integration   # Only integration tests
+pytest -m "not slow"    # Skip slow tests
+```
 
-**Coverage**: 15 tests, 42% generator coverage, 99% test code coverage
+## Coverage Goals
 
-### `test_helpers.py`
-Reusable test fixtures and helper functions.
-
-**Key Functions**:
-- `create_test_register()` - Create Register objects for testing
-- `create_test_peripheral()` - Create Peripheral objects
-- `create_test_device()` - Create SVDDevice objects
-- `create_pioa_test_peripheral()` - PIOA with ABCDSR[2] bug scenario
-- `create_same70_test_device()` - SAME70 test device
-
-**Assertion Helpers**:
-- `AssertHelpers.assert_compiles()` - Compile C++ code
-- `AssertHelpers.assert_contains_all()` - Check multiple patterns
-- `AssertHelpers.assert_not_contains_any()` - Check patterns absent
+- **Target**: 80% code coverage
+- **Current**: Run `pytest --cov` to see current coverage
+- **HTML Report**: Open `htmlcov/index.html` after running with `--cov-report=html`
 
 ## Writing Tests
 
-### Example: Simple Register Test
+### Unit Test Example
 ```python
-from tests.test_helpers import create_test_register, create_test_peripheral, create_test_device
-from cli.generators.generate_registers import generate_register_struct
+import pytest
 
-def test_simple_register():
-    """Test basic register generation"""
-    peripheral = create_test_peripheral(
-        name="TEST",
-        base_address=0x40000000,
-        registers=[
-            create_test_register("REG1", 0x0000, description="Test Register"),
-        ]
-    )
-    device = create_test_device()
-
-    output = generate_register_struct(peripheral, device)
-
-    assert "struct TEST_Registers" in output
-    assert "volatile uint32_t REG1" in output
-    assert "Test Register" in output
+class TestMyService:
+    def test_something(self):
+        """Test description."""
+        result = my_function()
+        assert result == expected
 ```
 
-### Example: Array Register Test
+### Using Fixtures
 ```python
-def test_register_array():
-    """Test register array generation"""
-    peripheral = create_test_peripheral(
-        name="TEST",
-        base_address=0x40000000,
-        registers=[
-            create_test_register("ARRAY", 0x0000, size=32, dim=4),
-        ]
-    )
-    device = create_test_device()
-
-    output = generate_register_struct(peripheral, device)
-
-    assert "volatile uint32_t ARRAY[4]" in output
+def test_with_temp_dir(temp_dir):
+    """Temp dir is auto-created and cleaned up."""
+    test_file = temp_dir / "test.yaml"
+    # ... test code ...
 ```
 
-### Example: Compilation Test
+### Integration Test Example
 ```python
-def test_code_compiles():
-    """Test that generated code actually compiles"""
-    peripheral = create_test_peripheral(...)
-    device = create_test_device()
+from typer.testing import CliRunner
+from cli.main import app
 
-    output = generate_register_struct(peripheral, device)
+runner = CliRunner()
 
-    # This will compile the code and raise AssertionError if it fails
-    AssertHelpers.assert_compiles(output)
+def test_cli_command():
+    result = runner.invoke(app, ["config", "show"])
+    assert result.exit_code == 0
 ```
 
-## Regression Tests
+## Available Fixtures
 
-### PIOA RESERVED Field Bug
-**Problem**: RESERVED_0074[12] should be RESERVED_0078[8]
-**Root Cause**: ABCDSR[2] array dimension not accounted for
-**Test**: `test_pioa_reserved_field_size()`
+- `temp_dir` - Temporary directory (auto-cleanup)
+- `fixtures_dir` - Path to fixtures directory
+- `sample_mcu_yaml` - Sample MCU metadata YAML file
+- `sample_board_yaml` - Sample board metadata YAML file
+- `sample_config_yaml` - Sample config YAML file
+- `example_database` - Example MCU database dict
+- `example_database_file` - Example database as JSON file
 
-### Pin Numbering Bug
-**Problem**: PC8 = 8 should be PC8 = 72
-**Root Cause**: Port-relative instead of global numbering
-**Formula**: GlobalPin = (Port * 32) + Pin
-**Test**: `test_pin_numbering_global()`
+## Continuous Integration
 
-## Test Coverage
+Tests run automatically on:
+- Push to main branch
+- Pull requests
+- Pre-commit hooks (if configured)
 
-Current coverage for `cli/generators/generate_registers.py`:
-- **30% line coverage** (54/180 lines)
-- **100% of tests passing**
+Minimum requirements:
+- All tests must pass
+- Coverage must be >= 80%
+- No lint errors
 
-### Covered:
-- ✅ Basic register generation
-- ✅ Register arrays
-- ✅ RESERVED field calculation
-- ✅ Different register sizes
-- ✅ Namespace generation
-- ✅ Static assertions
-- ✅ Accessor functions
+## Troubleshooting
 
-### Not Covered Yet:
-- ⏸️ Bitfield generation
-- ⏸️ Enum generation
-- ⏸️ Error handling
-- ⏸️ Edge cases (empty peripherals, invalid offsets, etc.)
+### Import Errors
+Make sure you're in the `tools/codegen` directory when running tests.
 
-## Best Practices
-
-### 1. Use Test Helpers
-Don't create objects manually - use the helper functions:
-```python
-# Good ✅
-peripheral = create_test_peripheral("PIOA", 0x400E0E00)
-
-# Bad ❌
-peripheral = Peripheral(name="PIOA", base_address=0x400E0E00, ...)
+### Coverage Too Low
+```bash
+# See which files need more tests
+pytest --cov=cli --cov-report=term-missing
 ```
 
-### 2. Test One Thing
-Each test should verify one specific behavior:
-```python
-# Good ✅
-def test_array_syntax():
-    """Test that arrays use bracket syntax"""
-    output = generate_register_struct(...)
-    assert "ARRAY[4]" in output
+### Fixture Not Found
+Check that the fixture is defined in `conftest.py` or imported properly.
 
-# Bad ❌
-def test_everything():
-    """Test arrays, RESERVED, namespaces, etc."""
-    # Too much in one test!
+### Tests Failing Locally
+```bash
+# Run with verbose output
+pytest -vv
+
+# Run specific failing test
+pytest tests/unit/test_services.py::test_name -vv
 ```
-
-### 3. Name Tests Descriptively
-```python
-# Good ✅
-def test_pioa_reserved_field_size():
-    """Test that PIOA RESERVED field has correct size"""
-
-# Bad ❌
-def test_pioa():
-    """Test PIOA"""
-```
-
-### 4. Document Regression Tests
-Always explain the bug being prevented:
-```python
-def test_array_offset_regression():
-    """
-    REGRESSION: Array offsets were calculated incorrectly
-
-    Bug: next_offset = current_offset + size
-    Fix: next_offset = current_offset + (size * dim)
-    """
-```
-
-### 5. Use Assertion Helpers
-```python
-# Good ✅
-AssertHelpers.assert_contains_all(
-    output,
-    "expected pattern 1",
-    "expected pattern 2"
-)
-
-# Less clear ❌
-assert "expected pattern 1" in output
-assert "expected pattern 2" in output
-```
-
-## CI Integration (TODO)
-
-```yaml
-# .github/workflows/test.yml
-name: Tests
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - run: pip install pytest pytest-cov
-      - run: pytest tests/ --cov=. --cov-report=xml
-      - uses: codecov/codecov-action@v2
-```
-
-## Next Steps
-
-1. **Add bitfield generator tests** - Test bit field generation
-2. **Add enum generator tests** - Test enumeration generation
-3. **Add compilation tests** - Actually compile generated code
-4. **Increase coverage to 95%** - Test edge cases
-5. **Setup CI** - Run tests on every commit
-
-## References
-
-- [TESTING.md](../TESTING.md) - Testing strategy
-- [REFACTORING_PLAN.md](../REFACTORING_PLAN.md) - Refactoring plan
-- [TEST_RESULTS.md](../TEST_RESULTS.md) - Current test results
-
----
-Last updated: 2025-11-07
