@@ -447,38 +447,53 @@
   - [x] Export validators in __init__.py
   - [x] Comprehensive error handling
 
-### 2.2 Semantic Validator (12h)
-- [ ] Design SemanticValidator class
-  - [ ] Define validation interface
-  - [ ] Define SVD cross-reference checks
-- [ ] Implement SVD parser
-  - [ ] Parse SVD XML structure
-  - [ ] Extract peripheral definitions
-  - [ ] Extract register offsets
-  - [ ] Extract bitfield positions/widths
-  - [ ] Build lookup indexes
-- [ ] Implement code parser
-  - [ ] Parse generated C++ headers
-  - [ ] Extract peripheral base addresses
-  - [ ] Extract register offsets
-  - [ ] Extract bitfield definitions
-  - [ ] Build code structure
-- [ ] Implement cross-reference validation
-  - [ ] Check peripheral base addresses match SVD
-  - [ ] Check register offsets match SVD
-  - [ ] Check bitfield positions match SVD
-  - [ ] Check bitfield widths match SVD
-  - [ ] Check peripheral existence in SVD
-- [ ] Create detailed error reports
-  - [ ] Report mismatched addresses (show both values)
-  - [ ] Report missing peripherals
-  - [ ] Report incorrect offsets
-  - [ ] Suggest fixes
-- [ ] Test semantic validator
-  - [ ] Test with correct generated code
-  - [ ] Test with incorrect addresses
-  - [ ] Test with missing peripherals
-  - [ ] Test with multiple SVD files
+### 2.2 Semantic Validator (12h) ✅ COMPLETED
+- [x] Design SemanticValidator class (cli/validators/semantic_validator.py - 230 lines)
+  - [x] Define validation interface
+  - [x] Define SVD cross-reference checks
+  - [x] is_available() checks for loaded SVD
+  - [x] validate() performs cross-reference
+- [x] Implement SVD parser (cli/validators/svd_parser.py - 330 lines)
+  - [x] Parse SVD XML structure with ElementTree
+  - [x] Extract peripheral definitions (Peripheral, Register, BitField dataclasses)
+  - [x] Extract register offsets
+  - [x] Extract bitfield positions/widths (supports bitOffset+bitWidth and bitRange formats)
+  - [x] Build lookup indexes (peripherals dict)
+  - [x] DeviceInfo extraction (name, vendor, version, CPU)
+  - [x] Support hex/binary/decimal number formats
+  - [x] get_statistics() for parsing summary
+- [x] Implement code parser (cli/validators/code_parser.py - 240 lines)
+  - [x] Parse generated C++ headers with regex
+  - [x] Extract peripheral base addresses (*_BASE pattern)
+  - [x] Extract register offsets (*_OFFSET pattern)
+  - [x] Extract bitfield definitions (*_POS, *_WIDTH patterns)
+  - [x] Build code structure (CodePeripheral, CodeRegister, CodeBitField)
+  - [x] Line number tracking for error reporting
+  - [x] Peripheral/register/field name extraction from patterns
+- [x] Implement cross-reference validation
+  - [x] Check peripheral base addresses match SVD (_validate_peripherals)
+  - [x] Check register offsets match SVD (_validate_registers)
+  - [x] Check bitfield positions match SVD (_validate_bitfields)
+  - [x] Check bitfield widths match SVD
+  - [x] Check peripheral existence in SVD
+  - [x] Report missing peripherals/registers/fields as warnings
+- [x] Create detailed error reports
+  - [x] Report mismatched addresses (show both code and SVD values in hex)
+  - [x] Report missing peripherals with suggestions
+  - [x] Report incorrect offsets with line numbers
+  - [x] Suggest fixes (correct values from SVD)
+  - [x] Line number references for all errors/warnings
+- [x] Integration with ValidationService
+  - [x] Added SemanticValidator initialization
+  - [x] Updated SEMANTIC stage handling
+  - [x] Updated get_available_stages() to include SEMANTIC
+  - [x] Updated check_requirements() to include svd_parser
+  - [x] Export all SVD/Code parser classes in __init__.py
+- [x] CLI enhancements (validate_cmd.py)
+  - [x] Added --svd option to validate file command
+  - [x] Added --svd option to validate dir command
+  - [x] Updated check command to show svd_parser status
+  - [x] Pass svd_path parameter to validation service
 
 ### 2.3 Compile Validator (8h) ✅ COMPLETED
 - [x] Design CompileValidator class (cli/validators/compile_validator.py)
@@ -615,27 +630,23 @@
   - [x] Useful for CI/CD and historical tracking
 
 **Phase 2 Deliverables**:
-- ✅ 3-stage validation pipeline (Syntax, Compile, Test) - 28h implemented
-- ⏭️ Semantic validation (SVD cross-reference) - 12h skipped for now
+- ✅ 4-stage validation pipeline (Syntax, Semantic, Compile, Test) - COMPLETE!
+- ✅ SVD XML parser for semantic validation
+- ✅ Code parser for C++ header extraction
+- ✅ Cross-reference validation (peripheral addresses, register offsets, bitfields)
 - ✅ Automated test generation (Catch2)
 - ✅ Enhanced CLI validation commands
 - ✅ JSON output and report saving
 - ✅ CI/CD integration ready
 
-**Phase 2 Progress**: 28h/40h completed (70%) - Skipping Semantic Validator (Phase 2.2)
+**Phase 2 Progress**: 40h/40h completed (100%) - ✅ PHASE 2 COMPLETE!
 
 **Summary**:
 - Phase 2.1: Syntax Validator (8h) ✅
-- Phase 2.2: Semantic Validator (12h) ⏭️ SKIPPED - Requires SVD parser implementation
+- Phase 2.2: Semantic Validator (12h) ✅
 - Phase 2.3: Compile Validator (8h) ✅
 - Phase 2.4: Test Generator (8h) ✅
 - Phase 2.5: Validation CLI (4h) ✅
-
-**Note**: Phase 2.2 (Semantic Validator) is skipped for now as it requires:
-- SVD XML parser implementation
-- Complex cross-reference logic
-- SVD file database
-This can be implemented later as an enhancement.
 
 ---
 

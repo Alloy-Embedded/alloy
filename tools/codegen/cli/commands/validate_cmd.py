@@ -30,6 +30,7 @@ def validate_file(
     include_path: List[Path] = typer.Option([], "--include", "-I", help="Include directory"),
     std: str = typer.Option("c++23", "--std", help="C++ standard"),
     mcu: str = typer.Option("cortex-m4", "--mcu", help="Target MCU for compile validation"),
+    svd: Optional[Path] = typer.Option(None, "--svd", help="SVD file for semantic validation"),
     test_output: Optional[Path] = typer.Option(None, "--test-output", help="Output directory for generated tests"),
     json_output: bool = typer.Option(False, "--json", help="Output results as JSON"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
@@ -80,6 +81,7 @@ def validate_file(
         include_paths=include_path,
         std=std,
         mcu=mcu,
+        svd_path=svd,
         test_output_dir=test_output
     )
 
@@ -102,6 +104,7 @@ def validate_directory(
     include_path: List[Path] = typer.Option([], "--include", "-I", help="Include directory"),
     std: str = typer.Option("c++23", "--std", help="C++ standard"),
     mcu: str = typer.Option("cortex-m4", "--mcu", help="Target MCU for compile validation"),
+    svd: Optional[Path] = typer.Option(None, "--svd", help="SVD file for semantic validation"),
     test_output: Optional[Path] = typer.Option(None, "--test-output", help="Output directory for generated tests"),
     json_output: bool = typer.Option(False, "--json", help="Output results as JSON"),
     save_report: Optional[Path] = typer.Option(None, "--save-report", help="Save validation report to file"),
@@ -159,6 +162,7 @@ def validate_directory(
                 include_paths=include_path,
                 std=std,
                 mcu=mcu,
+                svd_path=svd,
                 test_output_dir=test_output
             )
 
@@ -172,6 +176,7 @@ def validate_directory(
             include_paths=include_path,
             std=std,
             mcu=mcu,
+            svd_path=svd,
             test_output_dir=test_output
         )
 
@@ -221,9 +226,9 @@ def check_requirements():
         status = "[green]✓ Available[/green]" if available else "[red]✗ Not found[/red]"
         purpose = {
             "clang++": "Syntax validation",
+            "svd_parser": "Semantic validation (SVD cross-reference)",
             "arm-none-eabi-gcc": "Compilation validation",
-            "test_generator": "Test generation",
-            "svd_files": "Semantic validation"
+            "test_generator": "Test generation"
         }.get(tool, "")
 
         table.add_row(tool, status, purpose)
