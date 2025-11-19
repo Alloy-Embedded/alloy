@@ -1,0 +1,77 @@
+cmake_minimum_required(VERSION 3.20)
+
+# Project configuration
+project({{ project_name }} VERSION 1.0.0 LANGUAGES C CXX ASM)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# MCU configuration
+set(MCU {{ mcu_name }})
+set(MCU_FAMILY {{ mcu_family }})
+set(MCU_CORE {{ mcu_core }})
+
+# Toolchain configuration
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR arm)
+
+# Compiler flags
+add_compile_options(
+    -mcpu={{ mcu_core }}
+    -mthumb
+    -fno-exceptions
+    -fno-rtti
+    -ffunction-sections
+    -fdata-sections
+    -Wall
+    -Wextra
+    -Wpedantic
+    $<$<CONFIG:Debug>:-Og -g3>
+    $<$<CONFIG:Release>:-O2>
+)
+
+# Linker flags
+add_link_options(
+    -mcpu={{ mcu_core }}
+    -mthumb
+    -specs=nano.specs
+    -specs=nosys.specs
+    -Wl,--gc-sections
+    -Wl,-Map=${PROJECT_NAME}.map
+)
+
+# Source files
+set(SOURCES
+    src/main.cpp
+    # Add more sources here
+)
+
+# Include directories
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/boards
+)
+
+# Create executable
+add_executable(${PROJECT_NAME}.elf ${SOURCES})
+
+# Generate hex and bin files
+add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${PROJECT_NAME}.hex
+    COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${PROJECT_NAME}.elf> ${PROJECT_NAME}.bin
+    COMMENT "Generating HEX and BIN files"
+)
+
+# Size command
+add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
+    COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${PROJECT_NAME}.elf>
+    COMMENT "Binary size:"
+)
+
+# Flash target (requires openocd or st-flash)
+add_custom_target(flash
+    COMMAND st-flash write ${PROJECT_NAME}.bin 0x8000000
+    DEPENDS ${PROJECT_NAME}.elf
+    COMMENT "Flashing ${PROJECT_NAME}.bin to device"
+)
