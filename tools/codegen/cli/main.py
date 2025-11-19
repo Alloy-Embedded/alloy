@@ -24,10 +24,11 @@ app = typer.Typer(
 )
 
 # Import command groups
-from .commands import list_cmd, show_cmd, search_cmd, config_cmd, metadata_cmd, validate_cmd, init_cmd
+from .commands import list_cmd, show_cmd, search_cmd, config_cmd, metadata_cmd, validate_cmd, init_cmd, build_cmd
 
 # Register command groups
 app.add_typer(init_cmd.app, name="init", help="Initialize new embedded project")
+app.add_typer(build_cmd.app, name="build", help="Build, compile, and flash projects")
 app.add_typer(list_cmd.app, name="list", help="List MCUs, boards, and peripherals")
 app.add_typer(show_cmd.app, name="show", help="Show detailed information")
 app.add_typer(search_cmd.app, name="search", help="Search MCUs and boards")
