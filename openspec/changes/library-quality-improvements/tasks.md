@@ -350,7 +350,7 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 - Supports both read/write and repeated start operations
 - Convenience methods for common patterns (register access)
 
-### 1.11 Refactor I2C APIs (8h)
+### 1.11 Refactor I2C APIs (8h) ✅ COMPLETE
 
 - [x] Refactor I2cSimple (3h) ✅ COMPLETE
   - [x] Make SimpleI2cConfig inherit from I2cBase via CRTP
@@ -360,18 +360,46 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
   - [x] Maintain preset methods (quick_setup_fast, quick_setup_fast_plus)
   - [x] Create compile test
   - [x] Validate zero-overhead guarantee
-- [ ] Refactor I2cFluent (2h)
-- [ ] Refactor I2cExpert (3h)
+- [x] Refactor I2cFluent (2h) ✅ COMPLETE
+  - [x] Make FluentI2cConfig inherit from I2cBase via CRTP
+  - [x] Implement all *_impl() methods
+  - [x] Fix initialize() to work with protected base constructor
+  - [x] Fix error handling (.err() instead of .error())
+  - [x] Keep fluent builder pattern (I2cBuilder)
+  - [x] Maintain method chaining
+  - [x] Keep preset configurations (standard_mode, fast_mode, fast_plus_mode)
+  - [x] Create compile test
+  - [x] Validate zero-overhead guarantee
+- [x] Refactor I2cExpert (3h) ✅ COMPLETE
+  - [x] Create ExpertI2cInstance class inheriting from I2cBase via CRTP
+  - [x] Implement all *_impl() methods
+  - [x] Add create_instance() factory function
+  - [x] Keep I2cExpertConfig as configuration struct
+  - [x] Maintain compile-time validation (is_valid(), error_message())
+  - [x] Keep preset configurations (standard, fast, dma)
+  - [x] Add DMA query methods (has_dma_tx, has_dma_rx, has_interrupts)
+  - [x] Create compile test with validation tests
+  - [x] Validate zero-overhead guarantee
 - [ ] Test on all platforms
 
 **Deliverables (Phase 1.11.1)**:
-- `src/hal/api/i2c_simple.hpp` (refactored with CRTP, 340 lines)
-- `tests/compile_tests/test_i2c_simple_crtp.cpp` (420 lines)
+- `src/hal/api/i2c_simple.hpp` (refactored with CRTP, 360 lines)
+- `tests/compile_tests/test_i2c_simple_crtp.cpp` (451 lines)
+
+**Deliverables (Phase 1.11.2)**:
+- `src/hal/api/i2c_fluent.hpp` (refactored with CRTP, 374 lines)
+- `tests/compile_tests/test_i2c_fluent_crtp.cpp` (520 lines)
+
+**Deliverables (Phase 1.11.3)**:
+- `src/hal/api/i2c_expert.hpp` (refactored with CRTP, 372 lines)
+- `tests/compile_tests/test_i2c_expert_crtp.cpp` (625 lines)
 
 **Benefits**:
-- SimpleI2cConfig now shares common I2C interface from I2cBase
+- All I2C APIs (Simple, Fluent, Expert) now share common I2C interface from I2cBase
 - Zero runtime overhead maintained via CRTP
-- Consistent API with UART, GPIO, and SPI Simple APIs
+- Consistent API across all I2C configuration types (Simple, Fluent, and Expert)
+- Expert configuration maintains compile-time validation while gaining transfer methods
+- Code duplication eliminated across all three API levels
 
 ### 1.12 Validation and Testing (8h)
 
