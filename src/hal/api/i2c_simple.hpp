@@ -10,6 +10,7 @@
  * - Common speed presets (Standard 100kHz, Fast 400kHz)
  * - 7-bit addressing (most common)
  * - Zero configuration for typical use cases
+ * - Built on I2cBase CRTP for code reuse
  *
  * Example Usage:
  * @code
@@ -18,6 +19,7 @@
  *     I2c0_SDA,
  *     I2c0_SCL
  * >();  // Defaults: Standard mode (100kHz), 7-bit addressing
+ * i2c.read_register(0x50, 0x10);  // Now has I2C methods from I2cBase!
  *
  * // With custom speed
  * constexpr auto fast_i2c = I2c<PeripheralId::I2C0>::quick_setup<
@@ -26,8 +28,8 @@
  * >(I2cSpeed::Fast);  // 400kHz
  * @endcode
  *
- * @note Part of Phase 6.3: I2C Implementation
- * @see openspec/changes/modernize-peripheral-architecture/specs/multi-level-api/spec.md
+ * @note Part of Phase 1.11.1: Refactor I2cSimple (library-quality-improvements)
+ * @see docs/architecture/CRTP_PATTERN.md
  */
 
 #pragma once
@@ -37,6 +39,9 @@
 #include "core/types.hpp"
 #include "hal/interface/i2c.hpp"
 #include "hal/core/signals.hpp"
+#include "hal/api/i2c_base.hpp"
+
+#include <span>
 
 namespace alloy::hal {
 
@@ -67,16 +72,45 @@ struct I2cDefaults {
  * @brief Simple I2C configuration result
  *
  * Contains validated pin configuration from quick_setup.
+ * Inherits from I2cBase to provide all I2C transfer methods.
  *
  * @tparam SdaPin SDA (data) pin type
  * @tparam SclPin SCL (clock) pin type
  */
 template <typename SdaPin, typename SclPin>
-struct SimpleI2cConfig {
+struct SimpleI2cConfig : public I2cBase<SimpleI2cConfig<SdaPin, SclPin>> {
+    using Base = I2cBase<SimpleI2cConfig<SdaPin, SclPin>>;
+    friend Base;
+
     PinId sda_pin_id;
     PinId scl_pin_id;
     I2cSpeed speed;
     I2cAddressing addressing;
+
+    // Constructor to allow initialization (protected base prevents aggregate init)
+    constexpr SimpleI2cConfig(
+        PinId sda,
+        PinId scl,
+        I2cSpeed spd,
+        I2cAddressing addr
+    ) : sda_pin_id(sda), scl_pin_id(scl), speed(spd), addressing(addr) {}
+
+    // ========================================================================
+    // Inherited Interface from I2cBase (CRTP)
+    // ========================================================================
+
+    // Inherit all common I2C methods from base
+    using Base::read;             // Read from device
+    using Base::write;            // Write to device
+    using Base::write_read;       // Write then read (repeated start)
+    using Base::read_byte;        // Single-byte read
+    using Base::write_byte;       // Single-byte write
+    using Base::read_register;    // Register read
+    using Base::write_register;   // Register write
+    using Base::scan_bus;         // Bus scanning
+    using Base::configure;        // Configuration
+    using Base::set_speed;        // Set bus speed
+    using Base::set_addressing;   // Set addressing mode
 
     /**
      * @brief Apply configuration to hardware
@@ -89,6 +123,73 @@ struct SimpleI2cConfig {
         // - Set I2C speed (calculate timing parameters)
         // - Set addressing mode
         // - Enable I2C peripheral
+        return Ok();
+    }
+
+    // ========================================================================
+    // Implementation Methods (public for concept checking)
+    // ========================================================================
+
+    /**
+     * @brief Read implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> read_impl(
+        u16 address,
+        std::span<u8> buffer
+    ) noexcept {
+        // TODO: Implement hardware read
+        (void)address;
+        (void)buffer;
+        return Ok();
+    }
+
+    /**
+     * @brief Write implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> write_impl(
+        u16 address,
+        std::span<const u8> buffer
+    ) noexcept {
+        // TODO: Implement hardware write
+        (void)address;
+        (void)buffer;
+        return Ok();
+    }
+
+    /**
+     * @brief Write-read implementation (repeated start)
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> write_read_impl(
+        u16 address,
+        std::span<const u8> write_buffer,
+        std::span<u8> read_buffer
+    ) noexcept {
+        // TODO: Implement hardware write-read
+        (void)address;
+        (void)write_buffer;
+        (void)read_buffer;
+        return Ok();
+    }
+
+    /**
+     * @brief Scan bus implementation
+     */
+    [[nodiscard]] constexpr Result<usize, ErrorCode> scan_bus_impl(
+        std::span<u8> found_devices
+    ) noexcept {
+        // TODO: Implement bus scanning
+        (void)found_devices;
+        return Ok(usize{0});
+    }
+
+    /**
+     * @brief Configure I2C implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> configure_impl(
+        const I2cConfig& config
+    ) noexcept {
+        // TODO: Apply configuration to hardware
+        (void)config;
         return Ok();
     }
 };
@@ -128,12 +229,12 @@ public:
         static_assert(is_valid_scl_pin<SclPin>(),
                      "SCL pin is not compatible with this I2C peripheral");
 
-        return SimpleI2cConfig<SdaPin, SclPin>{
+        return SimpleI2cConfig<SdaPin, SclPin>(
             SdaPin::get_pin_id(),
             SclPin::get_pin_id(),
             speed,
             addressing
-        };
+        );
     }
 
     /**

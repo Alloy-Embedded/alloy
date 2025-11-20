@@ -352,10 +352,26 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 
 ### 1.11 Refactor I2C APIs (8h)
 
-- [ ] Refactor I2cSimple (3h)
+- [x] Refactor I2cSimple (3h) ✅ COMPLETE
+  - [x] Make SimpleI2cConfig inherit from I2cBase via CRTP
+  - [x] Implement all *_impl() methods
+  - [x] Add constructor (protected base prevents aggregate init)
+  - [x] Update quick_setup() to use constructor
+  - [x] Maintain preset methods (quick_setup_fast, quick_setup_fast_plus)
+  - [x] Create compile test
+  - [x] Validate zero-overhead guarantee
 - [ ] Refactor I2cFluent (2h)
 - [ ] Refactor I2cExpert (3h)
 - [ ] Test on all platforms
+
+**Deliverables (Phase 1.11.1)**:
+- `src/hal/api/i2c_simple.hpp` (refactored with CRTP, 340 lines)
+- `tests/compile_tests/test_i2c_simple_crtp.cpp` (420 lines)
+
+**Benefits**:
+- SimpleI2cConfig now shares common I2C interface from I2cBase
+- Zero runtime overhead maintained via CRTP
+- Consistent API with UART, GPIO, and SPI Simple APIs
 
 ### 1.12 Validation and Testing (8h)
 
