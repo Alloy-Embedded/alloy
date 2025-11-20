@@ -11,6 +11,7 @@
  * - Preset configurations (Mode0, Mode3, etc)
  * - Flexible parameter control
  * - State tracking for validation
+ * - Built on SpiBase CRTP for code reuse
  *
  * Example Usage:
  * @code
@@ -22,10 +23,11 @@
  *     .mode(SpiMode::Mode0)
  *     .msb_first()
  *     .initialize();
+ * spi.value().transfer_byte(0x55);  // Now has transfer methods from SpiBase!
  * @endcode
  *
- * @note Part of Phase 6.2: SPI Implementation
- * @see openspec/changes/modernize-peripheral-architecture/specs/multi-level-api/spec.md
+ * @note Part of Phase 1.9.2: Refactor SpiFluent (library-quality-improvements)
+ * @see docs/architecture/CRTP_PATTERN.md
  */
 
 #pragma once
@@ -36,6 +38,9 @@
 #include "hal/interface/spi.hpp"
 #include "hal/core/signals.hpp"
 #include "hal/api/spi_simple.hpp"
+#include "hal/api/spi_base.hpp"
+
+#include <span>
 
 namespace alloy::hal {
 
@@ -94,14 +99,35 @@ struct SpiBuilderState {
  * @brief Fluent SPI configuration result
  *
  * Contains validated configuration from builder.
+ * Inherits from SpiBase to provide all SPI transfer methods.
  */
-struct FluentSpiConfig {
+struct FluentSpiConfig : public SpiBase<FluentSpiConfig> {
+    using Base = SpiBase<FluentSpiConfig>;
+    friend Base;
+
     PeripheralId peripheral;
     PinId mosi_pin;
     PinId miso_pin;
     PinId sck_pin;
     SpiConfig config;
     bool tx_only;
+
+    // ========================================================================
+    // Inherited Interface from SpiBase (CRTP)
+    // ========================================================================
+
+    // Inherit all common SPI methods from base
+    using Base::transfer;         // Full-duplex transfer
+    using Base::transmit;         // TX-only
+    using Base::receive;          // RX-only
+    using Base::transfer_byte;    // Single-byte transfer
+    using Base::transmit_byte;    // Single-byte TX
+    using Base::receive_byte;     // Single-byte RX
+    using Base::configure;        // Configuration
+    using Base::set_mode;         // Set SPI mode
+    using Base::set_speed;        // Set clock speed
+    using Base::is_busy;          // Check if busy
+    using Base::is_ready;         // Check if ready
 
     /**
      * @brief Apply configuration to hardware
@@ -110,7 +136,78 @@ struct FluentSpiConfig {
      */
     Result<void, ErrorCode> apply() const {
         // TODO: Apply configuration to hardware
+        // - Configure GPIO pins with alternate functions
+        // - Set SPI mode, clock speed, bit order, data size
+        // - Enable SPI peripheral
         return Ok();
+    }
+
+    // ========================================================================
+    // Implementation Methods (public for concept checking)
+    // ========================================================================
+
+    /**
+     * @brief Full-duplex transfer implementation
+     *
+     * @note TX-only configuration returns NotSupported
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> transfer_impl(
+        std::span<const u8> tx_buffer,
+        std::span<u8> rx_buffer
+    ) noexcept {
+        if (tx_only) {
+            return Err(ErrorCode::NotSupported);
+        }
+        // TODO: Implement hardware transfer
+        (void)tx_buffer;
+        (void)rx_buffer;
+        return Ok();
+    }
+
+    /**
+     * @brief Transmit-only implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> transmit_impl(
+        std::span<const u8> tx_buffer
+    ) noexcept {
+        // TODO: Implement hardware transmit
+        (void)tx_buffer;
+        return Ok();
+    }
+
+    /**
+     * @brief Receive-only implementation
+     *
+     * @note TX-only configuration returns NotSupported
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> receive_impl(
+        std::span<u8> rx_buffer
+    ) noexcept {
+        if (tx_only) {
+            return Err(ErrorCode::NotSupported);
+        }
+        // TODO: Implement hardware receive
+        (void)rx_buffer;
+        return Ok();
+    }
+
+    /**
+     * @brief Configure SPI implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> configure_impl(
+        const SpiConfig& new_config
+    ) noexcept {
+        // TODO: Apply configuration to hardware
+        (void)new_config;
+        return Ok();
+    }
+
+    /**
+     * @brief Check if busy implementation
+     */
+    [[nodiscard]] constexpr bool is_busy_impl() const noexcept {
+        // TODO: Check hardware busy status
+        return false;
     }
 };
 
@@ -325,20 +422,18 @@ public:
     Result<FluentSpiConfig, ErrorCode> initialize() const {
         // Validate
         auto validation = validate();
-        if (!validation.is_ok()) {
-            ErrorCode error_copy = validation.error();
-            return Err(std::move(error_copy));
+        if (validation.is_err()) {
+            return Err(std::move(validation).err());
         }
 
-        // Create configuration
-        FluentSpiConfig config{
-            PeriphId,
-            mosi_pin_id_,
-            miso_pin_id_,
-            sck_pin_id_,
-            SpiConfig{mode_, clock_speed_, bit_order_, data_size_},
-            !state_.has_miso  // TX-only if no MISO
-        };
+        // Create configuration (can't use aggregate init due to protected base constructor)
+        FluentSpiConfig config;
+        config.peripheral = PeriphId;
+        config.mosi_pin = mosi_pin_id_;
+        config.miso_pin = miso_pin_id_;
+        config.sck_pin = sck_pin_id_;
+        config.config = SpiConfig{mode_, clock_speed_, bit_order_, data_size_};
+        config.tx_only = !state_.has_miso;  // TX-only if no MISO
 
         return Ok(std::move(config));
     }

@@ -271,7 +271,17 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
   - [x] Handle TX-only limitations (transfer/receive return NotSupported)
   - [x] Create compile test
   - [x] Validate zero-overhead guarantee
-- [ ] Refactor SpiFluent (2h)
+- [x] Refactor SpiFluent (2h) ✅ COMPLETE
+  - [x] Make FluentSpiConfig inherit from SpiBase via CRTP
+  - [x] Implement all *_impl() methods
+  - [x] Handle TX-only mode (returns NotSupported for unsupported ops)
+  - [x] Fix initialize() to work with protected base constructor
+  - [x] Fix error handling (.err() instead of .error())
+  - [x] Keep fluent builder pattern (SpiBuilder)
+  - [x] Maintain method chaining
+  - [x] Keep preset configurations (standard_mode0, standard_mode3)
+  - [x] Create compile test
+  - [x] Validate zero-overhead guarantee
 - [ ] Refactor SpiExpert (3h)
 - [ ] Test on all platforms
 
@@ -279,11 +289,15 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 - `src/hal/api/spi_simple.hpp` (refactored with CRTP, 425 lines)
 - `tests/compile_tests/test_spi_simple_crtp.cpp` (390 lines)
 
+**Deliverables (Phase 1.9.2)**:
+- `src/hal/api/spi_fluent.hpp` (refactored with CRTP, 455 lines)
+- `tests/compile_tests/test_spi_fluent_crtp.cpp` (460 lines)
+
 **Benefits**:
-- SimpleSpiConfig and SimpleSpiTxConfig now share common SPI interface from SpiBase
+- SimpleSpiConfig, SimpleSpiTxConfig, and FluentSpiConfig now share common SPI interface from SpiBase
 - Zero runtime overhead maintained via CRTP
 - TX-only configuration properly restricts unsupported operations
-- Consistent API across SPI configuration types
+- Consistent API across all SPI configuration types (Simple and Fluent)
 
 ### 1.10 Implement I2cBase (6h)
 
