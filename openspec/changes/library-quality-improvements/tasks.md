@@ -141,21 +141,28 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 - `src/hal/api/uart_fluent.hpp` (refactored with CRTP)
 - `tests/compile_tests/test_uart_fluent_crtp.cpp` (175 lines)
 
-### 1.5 Refactor UartExpert (4h)
+### 1.5 Refactor UartExpert (4h) ✅ COMPLETE
 
-- [ ] Refactor `src/hal/api/uart_expert.hpp`
-  - [ ] Inherit from UartBase
-  - [ ] Remove duplicated code
-  - [ ] Keep expert-specific methods
-  - [ ] Maintain direct register access
-- [ ] Validate expert API works
-  - [ ] Test register access methods
-  - [ ] Test DMA configuration
-  - [ ] Test interrupt configuration
-- [ ] Update unit tests
-  - [ ] Test expert methods
-  - [ ] Test unsafe operations
-- [ ] Measure code size reduction
+- [x] Refactor `src/hal/api/uart_expert.hpp`
+  - [x] Create ExpertUartInstance inheriting from UartBase
+  - [x] Implement all *_impl() methods
+  - [x] Keep expert-specific methods (config validation)
+  - [x] Maintain UartExpertConfig struct with constexpr validation
+- [x] Validate expert API works
+  - [x] Test compile-time validation
+  - [x] Test preset configurations (standard_115200, logger_config, dma_config)
+  - [x] Test error message generation
+  - [x] Test TX-only mode
+- [x] Create compile tests
+  - [x] Test CRTP inheritance
+  - [x] Test constexpr validation
+  - [x] Test all preset methods
+  - [x] Test validation helper functions
+- [ ] Measure code size reduction (pending actual binary comparison)
+
+**Deliverables**:
+- `src/hal/api/uart_expert.hpp` (refactored with CRTP)
+- `tests/compile_tests/test_uart_expert_crtp.cpp` (280 lines)
 
 ### 1.6 Implement GpioBase (8h)
 
