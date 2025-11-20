@@ -261,10 +261,29 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 
 ### 1.9 Refactor SPI APIs (8h)
 
-- [ ] Refactor SpiSimple (3h)
+- [x] Refactor SpiSimple (3h) ✅ COMPLETE
+  - [x] Make SimpleSpiConfig inherit from SpiBase via CRTP
+  - [x] Make SimpleSpiTxConfig inherit from SpiBase via CRTP
+  - [x] Implement all *_impl() methods for both configs
+  - [x] Add constructors (protected base prevents aggregate init)
+  - [x] Update quick_setup() to use constructors
+  - [x] Update quick_setup_master_tx() to use constructors
+  - [x] Handle TX-only limitations (transfer/receive return NotSupported)
+  - [x] Create compile test
+  - [x] Validate zero-overhead guarantee
 - [ ] Refactor SpiFluent (2h)
 - [ ] Refactor SpiExpert (3h)
 - [ ] Test on all platforms
+
+**Deliverables (Phase 1.9.1)**:
+- `src/hal/api/spi_simple.hpp` (refactored with CRTP, 425 lines)
+- `tests/compile_tests/test_spi_simple_crtp.cpp` (390 lines)
+
+**Benefits**:
+- SimpleSpiConfig and SimpleSpiTxConfig now share common SPI interface from SpiBase
+- Zero runtime overhead maintained via CRTP
+- TX-only configuration properly restricts unsupported operations
+- Consistent API across SPI configuration types
 
 ### 1.10 Implement I2cBase (6h)
 
