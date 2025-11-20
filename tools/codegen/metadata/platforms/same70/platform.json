@@ -1,0 +1,85 @@
+{
+  "$schema": "../../schema/platform.schema.json",
+  "platform": {
+    "name": "SAME70",
+    "version": "1.0.0",
+    "description": "SAM E70 Series - High-performance Cortex-M7 MCUs"
+  },
+  "vendor": {
+    "name": "Microchip Technology",
+    "namespace": "microchip",
+    "website": "https://www.microchip.com"
+  },
+  "family": {
+    "name": "SAM E70",
+    "series": "E70",
+    "description": "High-performance 32-bit MCUs based on ARM Cortex-M7"
+  },
+  "mcu": {
+    "name": "ATSAME70Q21B",
+    "part_number": "ATSAME70Q21B",
+    "package": "LQFP144",
+    "description": "ARM Cortex-M7 MCU with 2 Mbyte Flash, 384 KB SRAM, 300 MHz CPU"
+  },
+  "architecture": {
+    "core": "Cortex-M7",
+    "endianness": "little",
+    "word_size": 32,
+    "fpu": true,
+    "fpu_type": "FPv5-DP",
+    "mpu": true,
+    "dsp": true,
+    "frequency_max": {
+      "value": 300,
+      "unit": "MHz"
+    }
+  },
+  "memory": {
+    "flash": {
+      "start": "0x00400000",
+      "size": "2048K",
+      "size_bytes": 2097152,
+      "description": "Internal Flash memory"
+    },
+    "ram": {
+      "start": "0x20400000",
+      "size": "384K",
+      "size_bytes": 393216,
+      "description": "Internal SRAM"
+    }
+  },
+  "peripherals": {
+    "gpio": {
+      "count": 5,
+      "instances": ["PIOA", "PIOB", "PIOC", "PIOD", "PIOE"]
+    },
+    "uart": {
+      "count": 5,
+      "instances": ["UART0", "UART1", "UART2", "UART3", "UART4"]
+    },
+    "usart": {
+      "count": 3,
+      "instances": ["USART0", "USART1", "USART2"]
+    },
+    "spi": {
+      "count": 2,
+      "instances": ["SPI0", "SPI1"]
+    },
+    "i2c": {
+      "count": 3,
+      "instances": ["TWIHS0", "TWIHS1", "TWIHS2"]
+    },
+    "timer": {
+      "count": 12,
+      "instances": ["TC0", "TC1", "TC2", "TC3", "TC4", "TC5", "TC6", "TC7", "TC8", "TC9", "TC10", "TC11"]
+    },
+    "adc": {
+      "count": 1,
+      "instances": ["AFEC0", "AFEC1"]
+    },
+    "dma": {
+      "count": 1,
+      "instances": ["XDMAC"]
+    }
+  }
+}

@@ -1,0 +1,483 @@
+{
+  "$schema": "../../schema/peripheral.schema.json",
+  "peripheral": {
+    "name": "PIO",
+    "type": "GPIO",
+    "description": "Parallel I/O Controller",
+    "version": "1.0"
+  },
+  "instances": [
+    {
+      "name": "PIOA",
+      "base_address": "0x400E0E00",
+      "port_char": "A",
+      "irq_number": 10,
+      "clock_enable": {
+        "register": "PMC_PCER0",
+        "bit": 10
+      }
+    },
+    {
+      "name": "PIOB",
+      "base_address": "0x400E1000",
+      "port_char": "B",
+      "irq_number": 11,
+      "clock_enable": {
+        "register": "PMC_PCER0",
+        "bit": 11
+      }
+    },
+    {
+      "name": "PIOC",
+      "base_address": "0x400E1200",
+      "port_char": "C",
+      "irq_number": 12,
+      "clock_enable": {
+        "register": "PMC_PCER0",
+        "bit": 12
+      }
+    },
+    {
+      "name": "PIOD",
+      "base_address": "0x400E1400",
+      "port_char": "D",
+      "irq_number": 16,
+      "clock_enable": {
+        "register": "PMC_PCER0",
+        "bit": 16
+      }
+    },
+    {
+      "name": "PIOE",
+      "base_address": "0x400E1600",
+      "port_char": "E",
+      "irq_number": 17,
+      "clock_enable": {
+        "register": "PMC_PCER0",
+        "bit": 17
+      }
+    }
+  ],
+  "registers": {
+    "PER": {
+      "offset": "0x00",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "PIO Enable Register"
+    },
+    "PDR": {
+      "offset": "0x04",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "PIO Disable Register"
+    },
+    "PSR": {
+      "offset": "0x08",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "PIO Status Register"
+    },
+    "OER": {
+      "offset": "0x10",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Output Enable Register"
+    },
+    "ODR": {
+      "offset": "0x14",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Output Disable Register"
+    },
+    "OSR": {
+      "offset": "0x18",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Output Status Register"
+    },
+    "IFER": {
+      "offset": "0x20",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Glitch Input Filter Enable Register"
+    },
+    "IFDR": {
+      "offset": "0x24",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Glitch Input Filter Disable Register"
+    },
+    "IFSR": {
+      "offset": "0x28",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Glitch Input Filter Status Register"
+    },
+    "SODR": {
+      "offset": "0x30",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Set Output Data Register"
+    },
+    "CODR": {
+      "offset": "0x34",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Clear Output Data Register"
+    },
+    "ODSR": {
+      "offset": "0x38",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Output Data Status Register"
+    },
+    "PDSR": {
+      "offset": "0x3C",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Pin Data Status Register"
+    },
+    "IER": {
+      "offset": "0x40",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Enable Register"
+    },
+    "IDR": {
+      "offset": "0x44",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Disable Register"
+    },
+    "IMR": {
+      "offset": "0x48",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Mask Register"
+    },
+    "ISR": {
+      "offset": "0x4C",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Status Register"
+    },
+    "MDER": {
+      "offset": "0x50",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Multi-driver Enable Register"
+    },
+    "MDDR": {
+      "offset": "0x54",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Multi-driver Disable Register"
+    },
+    "MDSR": {
+      "offset": "0x58",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Multi-driver Status Register"
+    },
+    "PUDR": {
+      "offset": "0x60",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Pull-up Disable Register"
+    },
+    "PUER": {
+      "offset": "0x64",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Pull-up Enable Register"
+    },
+    "PUSR": {
+      "offset": "0x68",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Pull-up Status Register"
+    },
+    "ABCDSR1": {
+      "offset": "0x70",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Peripheral Select Register 1"
+    },
+    "ABCDSR2": {
+      "offset": "0x74",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Peripheral Select Register 2"
+    },
+    "IFSCDR": {
+      "offset": "0x80",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Input Filter Slow Clock Disable Register"
+    },
+    "IFSCER": {
+      "offset": "0x84",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Input Filter Slow Clock Enable Register"
+    },
+    "IFSCSR": {
+      "offset": "0x88",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Input Filter Slow Clock Status Register"
+    },
+    "SCDR": {
+      "offset": "0x8C",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Slow Clock Divider Debouncing Register"
+    },
+    "PPDDR": {
+      "offset": "0x90",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Pad Pull-down Disable Register"
+    },
+    "PPDER": {
+      "offset": "0x94",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Pad Pull-down Enable Register"
+    },
+    "PPDSR": {
+      "offset": "0x98",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Pad Pull-down Status Register"
+    },
+    "OWER": {
+      "offset": "0xA0",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Output Write Enable Register"
+    },
+    "OWDR": {
+      "offset": "0xA4",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Output Write Disable Register"
+    },
+    "OWSR": {
+      "offset": "0xA8",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Output Write Status Register"
+    },
+    "AIMER": {
+      "offset": "0xB0",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Additional Interrupt Modes Enable Register"
+    },
+    "AIMDR": {
+      "offset": "0xB4",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Additional Interrupt Modes Disable Register"
+    },
+    "AIMMR": {
+      "offset": "0xB8",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Additional Interrupt Modes Mask Register"
+    },
+    "ESR": {
+      "offset": "0xC0",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Edge Select Register"
+    },
+    "LSR": {
+      "offset": "0xC4",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Level Select Register"
+    },
+    "ELSR": {
+      "offset": "0xC8",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Edge/Level Status Register"
+    },
+    "FELLSR": {
+      "offset": "0xD0",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Falling Edge/Low-Level Select Register"
+    },
+    "REHLSR": {
+      "offset": "0xD4",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Rising Edge/High-Level Select Register"
+    },
+    "FRLHSR": {
+      "offset": "0xD8",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Fall/Rise - Low/High Status Register"
+    },
+    "LOCKSR": {
+      "offset": "0xE0",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Lock Status Register"
+    },
+    "WPMR": {
+      "offset": "0xE4",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Write Protection Mode Register"
+    },
+    "WPSR": {
+      "offset": "0xE8",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Write Protection Status Register"
+    },
+    "SCHMITT": {
+      "offset": "0x100",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Schmitt Trigger Register"
+    },
+    "DRIVER": {
+      "offset": "0x118",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "I/O Drive Register"
+    },
+    "PCMR": {
+      "offset": "0x150",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Parallel Capture Mode Register"
+    },
+    "PCIER": {
+      "offset": "0x154",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Parallel Capture Interrupt Enable Register"
+    },
+    "PCIDR": {
+      "offset": "0x158",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Parallel Capture Interrupt Disable Register"
+    },
+    "PCIMR": {
+      "offset": "0x15C",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Parallel Capture Interrupt Mask Register"
+    },
+    "PCISR": {
+      "offset": "0x160",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Parallel Capture Interrupt Status Register"
+    },
+    "PCRHR": {
+      "offset": "0x164",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Parallel Capture Reception Holding Register"
+    }
+  },
+  "capabilities": {
+    "modes": ["input", "output", "peripheral"],
+    "features": ["multi_driver", "pull_up", "pull_down", "glitch_filter", "debouncing", "interrupt", "schmitt_trigger"]
+  },
+  "gpio_specific": {
+    "pins_per_port": 32,
+    "peripheral_select": {
+      "A": {
+        "abcdsr1": 0,
+        "abcdsr2": 0,
+        "description": "Peripheral A"
+      },
+      "B": {
+        "abcdsr1": 1,
+        "abcdsr2": 0,
+        "description": "Peripheral B"
+      },
+      "C": {
+        "abcdsr1": 0,
+        "abcdsr2": 1,
+        "description": "Peripheral C"
+      },
+      "D": {
+        "abcdsr1": 1,
+        "abcdsr2": 1,
+        "description": "Peripheral D"
+      }
+    }
+  },
+  "template_variables": {
+    "style": "sam",
+    "register_type": "Pio",
+    "register_include": "hal/vendors/microchip/same70/generated/registers/pio_registers.hpp",
+    "bitfield_include": "hal/vendors/microchip/same70/generated/bitfields/pio_bitfields.hpp"
+  }
+}

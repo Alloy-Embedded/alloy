@@ -1,0 +1,517 @@
+{% include 'common/header.j2' %}
+/**
+ * @file gpio.hpp
+ * @brief GPIO Hardware Policy for {{ platform.name }}
+ *
+ * This file provides platform-specific GPIO hardware access using
+ * the Policy-Based Design pattern. All methods are static inline for
+ * zero runtime overhead.
+ *
+ * Design Pattern: Policy-Based Design
+ * - Generic APIs accept this policy as template parameter
+ * - All methods are static inline (zero overhead)
+ * - Direct register access with compile-time addresses
+ * - Type-safe via C++20 concepts
+ *
+ * Platform: {{ platform.name }}
+ * Vendor: {{ vendor.name }}
+ * Architecture: {{ architecture.core }}
+ * GPIO Style: {% if gpio.style == 'stm32' %}STM32 (MODER, BSRR){% elif gpio.style == 'sam' %}SAM (PER, OER, SODR){% else %}{{ gpio.style }}{% endif %}
+ *
+ * Auto-generated from: {{ metadata_file }}
+ * Generator: gpio_template_generator.py
+ * Generated: {{ generation_date }}
+ *
+ * @note Part of Alloy HAL Vendor Layer
+ * @see docs/codegen/TEMPLATE_CONVENTIONS.md
+ */
+
+#pragma once
+
+#include "core/types.hpp"
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+
+// Register definitions
+#include "{{ register_include }}"
+
+{% if bitfield_include %}
+// Bitfield definitions
+#include "{{ bitfield_include }}"
+{% endif %}
+
+namespace {{ platform_namespace }} {
+
+using namespace alloy::core;
+
+// Import register types
+using namespace {{ vendor_namespace }};
+
+{% if gpio.style == 'stm32' %}
+// ============================================================================
+// STM32-Style GPIO Hardware Policy
+// ============================================================================
+
+/**
+ * @brief GPIO Hardware Policy for STM32-style GPIO
+ *
+ * Register Layout (STM32):
+ * - MODER:   Mode register (input/output/AF/analog)
+ * - OTYPER:  Output type (push-pull/open-drain)
+ * - OSPEEDR: Output speed
+ * - PUPDR:   Pull-up/pull-down
+ * - IDR:     Input data register
+ * - ODR:     Output data register
+ * - BSRR:    Bit set/reset register (atomic)
+ * - LCKR:    Lock register
+ * - AFRL/H:  Alternate function registers
+ *
+ * @tparam BASE_ADDR GPIO port base address
+ * @tparam PORT_CHAR Port character ('A', 'B', 'C', etc.)
+ */
+template <uint32_t BASE_ADDR, char PORT_CHAR>
+struct {{ platform.name }}GpioHardwarePolicy {
+    // ========================================================================
+    // Type Definitions
+    // ========================================================================
+
+    using RegisterType = {{ gpio.register_type }};
+
+    // ========================================================================
+    // Compile-Time Constants
+    // ========================================================================
+
+    static constexpr uint32_t base_address = BASE_ADDR;
+    static constexpr char port_char = PORT_CHAR;
+    static constexpr uint32_t pins_per_port = {{ gpio.pins_per_port }};
+
+    // Mode values
+    static constexpr uint32_t MODE_INPUT = 0;
+    static constexpr uint32_t MODE_OUTPUT = 1;
+    static constexpr uint32_t MODE_AF = 2;
+    static constexpr uint32_t MODE_ANALOG = 3;
+
+    // Output type values
+    static constexpr uint32_t OTYPE_PUSH_PULL = 0;
+    static constexpr uint32_t OTYPE_OPEN_DRAIN = 1;
+
+    // Output speed values
+    static constexpr uint32_t OSPEED_LOW = 0;
+    static constexpr uint32_t OSPEED_MEDIUM = 1;
+    static constexpr uint32_t OSPEED_HIGH = 2;
+    static constexpr uint32_t OSPEED_VERY_HIGH = 3;
+
+    // Pull-up/pull-down values
+    static constexpr uint32_t PUPD_NONE = 0;
+    static constexpr uint32_t PUPD_PULL_UP = 1;
+    static constexpr uint32_t PUPD_PULL_DOWN = 2;
+
+    // ========================================================================
+    // Hardware Accessor
+    // ========================================================================
+
+    /**
+     * @brief Get pointer to GPIO registers
+     *
+     * @return Pointer to hardware registers
+     */
+    static inline volatile RegisterType* hw() {
+        #ifdef ALLOY_GPIO_MOCK_HW
+            return ALLOY_GPIO_MOCK_HW();  // Test hook
+        #else
+            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        #endif
+    }
+
+    // ========================================================================
+    // Pin Configuration Methods
+    // ========================================================================
+
+    /**
+     * @brief Set pin mode (input/output/AF/analog)
+     *
+     * @param pin Pin number (0-15)
+     * @param mode Mode value (MODE_INPUT, MODE_OUTPUT, MODE_AF, MODE_ANALOG)
+     */
+    static inline void set_mode(u8 pin, u32 mode) {
+        const u32 shift = pin * 2;
+        const u32 mask = 0x3 << shift;
+        hw()->MODER = (hw()->MODER & ~mask) | ((mode & 0x3) << shift);
+    }
+
+    /**
+     * @brief Set output type (push-pull/open-drain)
+     *
+     * @param pin Pin number (0-15)
+     * @param otype Output type (OTYPE_PUSH_PULL, OTYPE_OPEN_DRAIN)
+     */
+    static inline void set_output_type(u8 pin, u32 otype) {
+        if (otype == OTYPE_OPEN_DRAIN) {
+            hw()->OTYPER |= (1 << pin);
+        } else {
+            hw()->OTYPER &= ~(1 << pin);
+        }
+    }
+
+    /**
+     * @brief Set output speed
+     *
+     * @param pin Pin number (0-15)
+     * @param speed Speed value (OSPEED_LOW, OSPEED_MEDIUM, OSPEED_HIGH, OSPEED_VERY_HIGH)
+     */
+    static inline void set_output_speed(u8 pin, u32 speed) {
+        const u32 shift = pin * 2;
+        const u32 mask = 0x3 << shift;
+        hw()->OSPEEDR = (hw()->OSPEEDR & ~mask) | ((speed & 0x3) << shift);
+    }
+
+    /**
+     * @brief Set pull-up/pull-down
+     *
+     * @param pin Pin number (0-15)
+     * @param pupd Pull-up/down value (PUPD_NONE, PUPD_PULL_UP, PUPD_PULL_DOWN)
+     */
+    static inline void set_pull(u8 pin, u32 pupd) {
+        const u32 shift = pin * 2;
+        const u32 mask = 0x3 << shift;
+        hw()->PUPDR = (hw()->PUPDR & ~mask) | ((pupd & 0x3) << shift);
+    }
+
+    /**
+     * @brief Set alternate function
+     *
+     * @param pin Pin number (0-15)
+     * @param af Alternate function number (0-15)
+     */
+    static inline void set_alternate_function(u8 pin, u8 af) {
+        if (pin < 8) {
+            // AFRL (pins 0-7)
+            const u32 shift = pin * 4;
+            const u32 mask = 0xF << shift;
+            hw()->AFRL = (hw()->AFRL & ~mask) | ((af & 0xF) << shift);
+        } else {
+            // AFRH (pins 8-15)
+            const u32 shift = (pin - 8) * 4;
+            const u32 mask = 0xF << shift;
+            hw()->AFRH = (hw()->AFRH & ~mask) | ((af & 0xF) << shift);
+        }
+    }
+
+    // ========================================================================
+    // Pin I/O Methods
+    // ========================================================================
+
+    /**
+     * @brief Set pin high
+     *
+     * @param pin Pin number (0-15)
+     */
+    static inline void set(u8 pin) {
+        hw()->BSRR = (1 << pin);  // Atomic set
+    }
+
+    /**
+     * @brief Set pin low
+     *
+     * @param pin Pin number (0-15)
+     */
+    static inline void clear(u8 pin) {
+        hw()->BSRR = (1 << (pin + 16));  // Atomic reset
+    }
+
+    /**
+     * @brief Toggle pin
+     *
+     * @param pin Pin number (0-15)
+     */
+    static inline void toggle(u8 pin) {
+        hw()->ODR ^= (1 << pin);
+    }
+
+    /**
+     * @brief Read pin state
+     *
+     * @param pin Pin number (0-15)
+     * @return true if pin is high, false if low
+     */
+    static inline bool read(u8 pin) {
+        return (hw()->IDR & (1 << pin)) != 0;
+    }
+
+    /**
+     * @brief Write pin state
+     *
+     * @param pin Pin number (0-15)
+     * @param value true for high, false for low
+     */
+    static inline void write(u8 pin, bool value) {
+        if (value) {
+            set(pin);
+        } else {
+            clear(pin);
+        }
+    }
+
+    // ========================================================================
+    // Port-Wide Methods
+    // ========================================================================
+
+    /**
+     * @brief Read entire port
+     *
+     * @return Port state (16 bits)
+     */
+    static inline u16 read_port() {
+        return static_cast<u16>(hw()->IDR & 0xFFFF);
+    }
+
+    /**
+     * @brief Write entire port
+     *
+     * @param value Port value (16 bits)
+     */
+    static inline void write_port(u16 value) {
+        hw()->ODR = value;
+    }
+
+    /**
+     * @brief Set multiple pins high
+     *
+     * @param mask Bit mask of pins to set
+     */
+    static inline void set_mask(u16 mask) {
+        hw()->BSRR = mask;
+    }
+
+    /**
+     * @brief Clear multiple pins low
+     *
+     * @param mask Bit mask of pins to clear
+     */
+    static inline void clear_mask(u16 mask) {
+        hw()->BSRR = (static_cast<u32>(mask) << 16);
+    }
+};
+
+{% elif gpio.style == 'sam' %}
+// ============================================================================
+// SAM-Style GPIO Hardware Policy (SAME70, etc.)
+// ============================================================================
+
+/**
+ * @brief GPIO Hardware Policy for SAM-style GPIO (PIO)
+ *
+ * Register Layout (SAM):
+ * - PER:   PIO Enable Register
+ * - PDR:   PIO Disable Register
+ * - PSR:   PIO Status Register
+ * - OER:   Output Enable Register
+ * - ODR:   Output Disable Register
+ * - OSR:   Output Status Register
+ * - SODR:  Set Output Data Register
+ * - CODR:  Clear Output Data Register
+ * - ODSR:  Output Data Status Register
+ * - PDSR:  Pin Data Status Register
+ *
+ * @tparam BASE_ADDR PIO port base address
+ * @tparam PORT_CHAR Port character ('A', 'B', 'C', 'D', etc.)
+ */
+template <uint32_t BASE_ADDR, char PORT_CHAR>
+struct {{ platform.name }}GpioHardwarePolicy {
+    // ========================================================================
+    // Type Definitions
+    // ========================================================================
+
+    using RegisterType = {{ gpio.register_type }};
+
+    // ========================================================================
+    // Compile-Time Constants
+    // ========================================================================
+
+    static constexpr uint32_t base_address = BASE_ADDR;
+    static constexpr char port_char = PORT_CHAR;
+    static constexpr uint32_t pins_per_port = {{ gpio.pins_per_port }};
+
+    // ========================================================================
+    // Hardware Accessor
+    // ========================================================================
+
+    /**
+     * @brief Get pointer to PIO registers
+     *
+     * @return Pointer to hardware registers
+     */
+    static inline volatile RegisterType* hw() {
+        #ifdef ALLOY_GPIO_MOCK_HW
+            return ALLOY_GPIO_MOCK_HW();  // Test hook
+        #else
+            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        #endif
+    }
+
+    // ========================================================================
+    // Pin Configuration Methods
+    // ========================================================================
+
+    /**
+     * @brief Enable PIO control on pin
+     *
+     * @param pin Pin number (0-31)
+     */
+    static inline void enable_pio(u8 pin) {
+        hw()->PER = (1 << pin);  // Write-only, set bit
+    }
+
+    /**
+     * @brief Disable PIO control on pin (peripheral control)
+     *
+     * @param pin Pin number (0-31)
+     */
+    static inline void disable_pio(u8 pin) {
+        hw()->PDR = (1 << pin);  // Write-only, clear bit
+    }
+
+    /**
+     * @brief Set pin as output
+     *
+     * @param pin Pin number (0-31)
+     */
+    static inline void set_output(u8 pin) {
+        hw()->OER = (1 << pin);  // Write-only, enable output
+    }
+
+    /**
+     * @brief Set pin as input
+     *
+     * @param pin Pin number (0-31)
+     */
+    static inline void set_input(u8 pin) {
+        hw()->ODR = (1 << pin);  // Write-only, disable output
+    }
+
+    // ========================================================================
+    // Pin I/O Methods
+    // ========================================================================
+
+    /**
+     * @brief Set pin high
+     *
+     * @param pin Pin number (0-31)
+     */
+    static inline void set(u8 pin) {
+        hw()->SODR = (1 << pin);  // Write-only, set output
+    }
+
+    /**
+     * @brief Set pin low
+     *
+     * @param pin Pin number (0-31)
+     */
+    static inline void clear(u8 pin) {
+        hw()->CODR = (1 << pin);  // Write-only, clear output
+    }
+
+    /**
+     * @brief Toggle pin
+     *
+     * @param pin Pin number (0-31)
+     */
+    static inline void toggle(u8 pin) {
+        if (hw()->ODSR & (1 << pin)) {
+            clear(pin);
+        } else {
+            set(pin);
+        }
+    }
+
+    /**
+     * @brief Read pin state
+     *
+     * @param pin Pin number (0-31)
+     * @return true if pin is high, false if low
+     */
+    static inline bool read(u8 pin) {
+        return (hw()->PDSR & (1 << pin)) != 0;
+    }
+
+    /**
+     * @brief Write pin state
+     *
+     * @param pin Pin number (0-31)
+     * @param value true for high, false for low
+     */
+    static inline void write(u8 pin, bool value) {
+        if (value) {
+            set(pin);
+        } else {
+            clear(pin);
+        }
+    }
+
+    // ========================================================================
+    // Port-Wide Methods
+    // ========================================================================
+
+    /**
+     * @brief Read entire port
+     *
+     * @return Port state (32 bits)
+     */
+    static inline u32 read_port() {
+        return hw()->PDSR;
+    }
+
+    /**
+     * @brief Set multiple pins high
+     *
+     * @param mask Bit mask of pins to set
+     */
+    static inline void set_mask(u32 mask) {
+        hw()->SODR = mask;
+    }
+
+    /**
+     * @brief Clear multiple pins low
+     *
+     * @param mask Bit mask of pins to clear
+     */
+    static inline void clear_mask(u32 mask) {
+        hw()->CODR = mask;
+    }
+};
+
+{% endif %}
+
+// ============================================================================
+// Type Aliases for GPIO Ports
+// ============================================================================
+
+{% for instance in gpio.instances %}
+/// @brief Hardware policy for {{ instance.name }}
+using {{ instance.name }}Hardware = {{ platform.name }}GpioHardwarePolicy<{{ instance.base_address }}, '{{ instance.port_char }}'>;
+
+{% endfor %}
+
+}  // namespace {{ platform_namespace }}
+
+/**
+ * @example
+ * Using the GPIO hardware policy with generic GPIO API:
+ *
+ * @code
+ * #include "hal/api/gpio_simple.hpp"
+ * #include "hal/vendors/{{ vendor.namespace }}/{{ platform.family }}/gpio.hpp"
+ *
+ * using namespace alloy::hal;
+ * using namespace {{ platform_namespace }};
+ *
+ * // Create GPIO pin with hardware policy
+ * auto led = Gpio::output<GPIOAHardware, 5>();  // PA5
+ *
+ * int main() {
+ *     led.on();    // Turn on LED
+ *     led.off();   // Turn off LED
+ *     led.toggle();  // Toggle LED
+ * }
+ * @endcode
+ */

@@ -1,0 +1,81 @@
+{
+  "$schema": "../../schema/platform.schema.json",
+  "platform": {
+    "name": "STM32F4",
+    "version": "1.0.0",
+    "description": "STM32F4 Series - High-performance Cortex-M4 MCUs"
+  },
+  "vendor": {
+    "name": "STMicroelectronics",
+    "namespace": "st",
+    "website": "https://www.st.com"
+  },
+  "family": {
+    "name": "STM32F4",
+    "series": "F4",
+    "description": "High-performance foundation line"
+  },
+  "mcu": {
+    "name": "STM32F407VGT6",
+    "part_number": "STM32F407VGT6",
+    "package": "LQFP100",
+    "description": "High-performance and DSP with FPU, ARM Cortex-M4 MCU with 1 Mbyte Flash, 168 MHz CPU"
+  },
+  "architecture": {
+    "core": "Cortex-M4",
+    "endianness": "little",
+    "word_size": 32,
+    "fpu": true,
+    "fpu_type": "FPv4-SP",
+    "mpu": true,
+    "dsp": true,
+    "frequency_max": {
+      "value": 168,
+      "unit": "MHz"
+    }
+  },
+  "memory": {
+    "flash": {
+      "start": "0x08000000",
+      "size": "1024K",
+      "size_bytes": 1048576,
+      "description": "Main Flash memory"
+    },
+    "ram": {
+      "start": "0x20000000",
+      "size": "192K",
+      "size_bytes": 196608,
+      "description": "Main SRAM (112K + 16K + 64K CCM)"
+    }
+  },
+  "peripherals": {
+    "gpio": {
+      "count": 8,
+      "instances": ["GPIOA", "GPIOB", "GPIOC", "GPIOD", "GPIOE", "GPIOF", "GPIOG", "GPIOH"]
+    },
+    "uart": {
+      "count": 6,
+      "instances": ["USART1", "USART2", "USART3", "UART4", "UART5", "USART6"]
+    },
+    "spi": {
+      "count": 3,
+      "instances": ["SPI1", "SPI2", "SPI3"]
+    },
+    "i2c": {
+      "count": 3,
+      "instances": ["I2C1", "I2C2", "I2C3"]
+    },
+    "timer": {
+      "count": 14,
+      "instances": ["TIM1", "TIM2", "TIM3", "TIM4", "TIM5", "TIM6", "TIM7", "TIM8", "TIM9", "TIM10", "TIM11", "TIM12", "TIM13", "TIM14"]
+    },
+    "adc": {
+      "count": 3,
+      "instances": ["ADC1", "ADC2", "ADC3"]
+    },
+    "dma": {
+      "count": 2,
+      "instances": ["DMA1", "DMA2"]
+    }
+  }
+}

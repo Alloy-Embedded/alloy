@@ -1,0 +1,204 @@
+{
+  "$schema": "../../schema/peripheral.schema.json",
+  "peripheral": {
+    "name": "GPIO",
+    "type": "GPIO",
+    "description": "General-purpose I/O",
+    "version": "2.0"
+  },
+  "instances": [
+    {
+      "name": "GPIOA",
+      "base_address": "0x40020000",
+      "port_char": "A",
+      "clock_enable": {
+        "register": "RCC_AHB1ENR",
+        "bit": 0
+      }
+    },
+    {
+      "name": "GPIOB",
+      "base_address": "0x40020400",
+      "port_char": "B",
+      "clock_enable": {
+        "register": "RCC_AHB1ENR",
+        "bit": 1
+      }
+    },
+    {
+      "name": "GPIOC",
+      "base_address": "0x40020800",
+      "port_char": "C",
+      "clock_enable": {
+        "register": "RCC_AHB1ENR",
+        "bit": 2
+      }
+    },
+    {
+      "name": "GPIOD",
+      "base_address": "0x40020C00",
+      "port_char": "D",
+      "clock_enable": {
+        "register": "RCC_AHB1ENR",
+        "bit": 3
+      }
+    },
+    {
+      "name": "GPIOE",
+      "base_address": "0x40021000",
+      "port_char": "E",
+      "clock_enable": {
+        "register": "RCC_AHB1ENR",
+        "bit": 4
+      }
+    },
+    {
+      "name": "GPIOF",
+      "base_address": "0x40021400",
+      "port_char": "F",
+      "clock_enable": {
+        "register": "RCC_AHB1ENR",
+        "bit": 5
+      }
+    },
+    {
+      "name": "GPIOG",
+      "base_address": "0x40021800",
+      "port_char": "G",
+      "clock_enable": {
+        "register": "RCC_AHB1ENR",
+        "bit": 6
+      }
+    },
+    {
+      "name": "GPIOH",
+      "base_address": "0x40021C00",
+      "port_char": "H",
+      "clock_enable": {
+        "register": "RCC_AHB1ENR",
+        "bit": 7
+      }
+    }
+  ],
+  "registers": {
+    "MODER": {
+      "offset": "0x00",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0xA8000000",
+      "description": "GPIO port mode register",
+      "fields": {
+        "MODE0": { "bits": "1:0", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE1": { "bits": "3:2", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE2": { "bits": "5:4", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE3": { "bits": "7:6", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE4": { "bits": "9:8", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE5": { "bits": "11:10", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE6": { "bits": "13:12", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE7": { "bits": "15:14", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE8": { "bits": "17:16", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE9": { "bits": "19:18", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE10": { "bits": "21:20", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE11": { "bits": "23:22", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE12": { "bits": "25:24", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE13": { "bits": "27:26", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE14": { "bits": "29:28", "access": "RW", "description": "Port x configuration bits (y = 0..15)" },
+        "MODE15": { "bits": "31:30", "access": "RW", "description": "Port x configuration bits (y = 0..15)" }
+      }
+    },
+    "OTYPER": {
+      "offset": "0x04",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "GPIO port output type register"
+    },
+    "OSPEEDR": {
+      "offset": "0x08",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "GPIO port output speed register"
+    },
+    "PUPDR": {
+      "offset": "0x0C",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x64000000",
+      "description": "GPIO port pull-up/pull-down register"
+    },
+    "IDR": {
+      "offset": "0x10",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "GPIO port input data register"
+    },
+    "ODR": {
+      "offset": "0x14",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "GPIO port output data register"
+    },
+    "BSRR": {
+      "offset": "0x18",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "GPIO port bit set/reset register"
+    },
+    "LCKR": {
+      "offset": "0x1C",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "GPIO port configuration lock register"
+    },
+    "AFRL": {
+      "offset": "0x20",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "GPIO alternate function low register"
+    },
+    "AFRH": {
+      "offset": "0x24",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "GPIO alternate function high register"
+    }
+  },
+  "capabilities": {
+    "modes": ["input", "output", "alternate_function", "analog"],
+    "features": ["push_pull", "open_drain", "pull_up", "pull_down", "speed_control", "alternate_function"]
+  },
+  "gpio_specific": {
+    "pins_per_port": 16,
+    "alternate_functions": {
+      "AF0": { "af_number": 0, "function": "System" },
+      "AF1": { "af_number": 1, "function": "TIM1/TIM2" },
+      "AF2": { "af_number": 2, "function": "TIM3/TIM4/TIM5" },
+      "AF3": { "af_number": 3, "function": "TIM8/TIM9/TIM10/TIM11" },
+      "AF4": { "af_number": 4, "function": "I2C1/I2C2/I2C3" },
+      "AF5": { "af_number": 5, "function": "SPI1/SPI2/I2S2/I2S2ext" },
+      "AF6": { "af_number": 6, "function": "SPI3/I2S3/I2S3ext" },
+      "AF7": { "af_number": 7, "function": "USART1/USART2/USART3/I2S3ext" },
+      "AF8": { "af_number": 8, "function": "UART4/UART5/USART6" },
+      "AF9": { "af_number": 9, "function": "CAN1/CAN2/TIM12/TIM13/TIM14" },
+      "AF10": { "af_number": 10, "function": "OTG_FS/OTG_HS" },
+      "AF11": { "af_number": 11, "function": "ETH" },
+      "AF12": { "af_number": 12, "function": "FSMC/SDIO/OTG_HS" },
+      "AF13": { "af_number": 13, "function": "DCMI" },
+      "AF14": { "af_number": 14, "function": "Reserved" },
+      "AF15": { "af_number": 15, "function": "EVENTOUT" }
+    }
+  },
+  "template_variables": {
+    "style": "stm32",
+    "register_type": "GPIO_TypeDef",
+    "register_include": "hal/vendors/st/stm32f4/generated/registers/gpio_registers.hpp",
+    "bitfield_include": "hal/vendors/st/stm32f4/generated/bitfields/gpio_bitfields.hpp"
+  }
+}
