@@ -17,12 +17,14 @@
  * // Simple UART setup - one line!
  * auto uart = Uart<PeripheralId::USART0>::quick_setup<PinD4, PinD3>(BaudRate{115200});
  *
- * // Use it
+ * // Initialize and use it
+ * uart.initialize().expect("UART init failed");
+ * uart.send('A').expect("Send failed");
  * uart.write("Hello World!");
  * @endcode
  *
- * @note Part of Phase 4.1: Simple API
- * @see openspec/changes/modernize-peripheral-architecture/specs/multi-level-api/spec.md
+ * @note Part of Phase 1.3: CRTP Refactoring
+ * @see docs/architecture/UART_SIMPLE_REFACTORING_PLAN.md
  */
 
 #pragma once
@@ -31,6 +33,7 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 #include "core/units.hpp"
+#include "hal/api/uart_base.hpp"
 #include "hal/core/signals.hpp"
 #include "hal/core/signal_registry.hpp"
 
@@ -249,13 +252,18 @@ private:
  * @brief Simple UART configuration (TX + RX)
  *
  * Holds validated configuration for full-duplex UART.
+ * Now inherits from UartBase using CRTP pattern for zero-overhead code reuse.
  *
  * @tparam TxPin TX pin type
  * @tparam RxPin RX pin type
  * @tparam HardwarePolicy Hardware policy for platform-specific operations
  */
 template <typename TxPin, typename RxPin, typename HardwarePolicy>
-struct SimpleUartConfig {
+struct SimpleUartConfig : public UartBase<SimpleUartConfig<TxPin, RxPin, HardwarePolicy>> {
+    using Base = UartBase<SimpleUartConfig<TxPin, RxPin, HardwarePolicy>>;
+    friend Base;
+
+    // Configuration state
     PeripheralId peripheral;
     BaudRate baudrate;
     u8 data_bits;
@@ -265,6 +273,25 @@ struct SimpleUartConfig {
 
     constexpr SimpleUartConfig(PeripheralId p, BaudRate br, u8 db, UartParity par, u8 sb, bool fc)
         : peripheral(p), baudrate(br), data_bits(db), parity(par), stop_bits(sb), flow_control(fc) {}
+
+    // ========================================================================
+    // Inherited Interface from UartBase (CRTP)
+    // ========================================================================
+
+    // Inherit all common UART methods from base
+    using Base::send;           // Send single character
+    using Base::receive;        // Receive single character
+    using Base::write;          // Write null-terminated string
+    using Base::send_buffer;    // Send buffer of bytes
+    using Base::receive_buffer; // Receive buffer of bytes
+    using Base::flush;          // Wait for transmission complete
+    using Base::available;      // Number of bytes available
+    using Base::has_data;       // Check if data available
+    using Base::set_baud_rate;  // Change baud rate
+
+    // ========================================================================
+    // Simple API Specific Methods
+    // ========================================================================
 
     /**
      * @brief Initialize the UART with this configuration
@@ -289,10 +316,100 @@ struct SimpleUartConfig {
         HardwarePolicy::set_baudrate(baudrate.value());
 
         // Enable TX and RX
-        HardwarePolicy::enable_tx();
-        HardwarePolicy::enable_rx();
+        HardwarePolicy::enable_transmitter();
+        HardwarePolicy::enable_receiver();
+        HardwarePolicy::enable_uart();
 
         return Ok(); // Success
+    }
+
+private:
+    // ========================================================================
+    // Implementation Methods (called by UartBase via CRTP)
+    // ========================================================================
+
+    /**
+     * @brief Send implementation - called by Base::send()
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> send_impl(char c) noexcept {
+        // Wait for TX ready
+        while (!HardwarePolicy::is_tx_empty()) {
+            // TODO: Add timeout handling
+        }
+        HardwarePolicy::write_data(static_cast<u8>(c));
+        return Ok();
+    }
+
+    /**
+     * @brief Receive implementation - called by Base::receive()
+     */
+    [[nodiscard]] constexpr Result<char, ErrorCode> receive_impl() noexcept {
+        // Wait for RX ready
+        while (!HardwarePolicy::is_rx_not_empty()) {
+            // TODO: Add timeout handling
+        }
+        return Ok(static_cast<char>(HardwarePolicy::read_data()));
+    }
+
+    /**
+     * @brief Send buffer implementation - called by Base::send_buffer()
+     */
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer_impl(
+        const char* buffer,
+        size_t length
+    ) noexcept {
+        for (size_t i = 0; i < length; ++i) {
+            auto result = send_impl(buffer[i]);
+            if (result.is_err()) {
+                return Ok(static_cast<size_t>(i)); // Return bytes sent before error
+            }
+        }
+        return Ok(static_cast<size_t>(length));
+    }
+
+    /**
+     * @brief Receive buffer implementation - called by Base::receive_buffer()
+     */
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer_impl(
+        char* buffer,
+        size_t length
+    ) noexcept {
+        for (size_t i = 0; i < length; ++i) {
+            auto result = receive_impl();
+            if (result.is_err()) {
+                return Ok(static_cast<size_t>(i)); // Return bytes received before error
+            }
+            buffer[i] = result.unwrap();
+        }
+        return Ok(static_cast<size_t>(length));
+    }
+
+    /**
+     * @brief Flush implementation - called by Base::flush()
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> flush_impl() noexcept {
+        // Wait for transmission complete
+        while (!HardwarePolicy::is_tx_complete()) {
+            // TODO: Add timeout handling
+        }
+        return Ok();
+    }
+
+    /**
+     * @brief Available implementation - called by Base::available()
+     */
+    [[nodiscard]] constexpr size_t available_impl() const noexcept {
+        // Check if RX has data
+        return HardwarePolicy::is_rx_not_empty() ? 1 : 0;
+    }
+
+    /**
+     * @brief Set baud rate implementation - called by Base::set_baud_rate()
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> set_baud_rate_impl(BaudRate baud) noexcept {
+        HardwarePolicy::set_baudrate(baud.value());
+        baudrate = baud;
+        return Ok();
     }
 };
 
@@ -300,12 +417,17 @@ struct SimpleUartConfig {
  * @brief Simple UART configuration (TX only)
  *
  * Simplified configuration for TX-only operation.
+ * Inherits from UartBase using CRTP, but only implements TX methods.
  *
  * @tparam TxPin TX pin type
  * @tparam HardwarePolicy Hardware policy for platform-specific operations
  */
 template <typename TxPin, typename HardwarePolicy>
-struct SimpleUartConfigTxOnly {
+struct SimpleUartConfigTxOnly : public UartBase<SimpleUartConfigTxOnly<TxPin, HardwarePolicy>> {
+    using Base = UartBase<SimpleUartConfigTxOnly<TxPin, HardwarePolicy>>;
+    friend Base;
+
+    // Configuration state
     PeripheralId peripheral;
     BaudRate baudrate;
     u8 data_bits;
@@ -314,6 +436,21 @@ struct SimpleUartConfigTxOnly {
 
     constexpr SimpleUartConfigTxOnly(PeripheralId p, BaudRate br, u8 db, UartParity par, u8 sb)
         : peripheral(p), baudrate(br), data_bits(db), parity(par), stop_bits(sb) {}
+
+    // ========================================================================
+    // Inherited Interface from UartBase (CRTP)
+    // ========================================================================
+
+    // Inherit TX methods from base
+    using Base::send;           // Send single character
+    using Base::write;          // Write null-terminated string
+    using Base::send_buffer;    // Send buffer of bytes
+    using Base::flush;          // Wait for transmission complete
+    using Base::set_baud_rate;  // Change baud rate
+
+    // ========================================================================
+    // Simple API Specific Methods
+    // ========================================================================
 
     Result<void, ErrorCode> initialize() const {
         // TODO: Configure TX pin using GPIO configuration
@@ -330,53 +467,102 @@ struct SimpleUartConfigTxOnly {
         HardwarePolicy::set_baudrate(baudrate.value());
 
         // Enable TX only
-        HardwarePolicy::enable_tx();
+        HardwarePolicy::enable_transmitter();
+        HardwarePolicy::enable_uart();
 
         return Ok(); // Success
     }
 
     /**
-     * @brief Write a single byte (blocking)
+     * @brief Write a single byte (blocking) - Legacy compatibility method
      *
      * Waits until the transmitter is ready, then sends the byte.
      *
      * @param byte Byte to transmit
+     *
+     * @deprecated Use send() for Result-based error handling
      */
     void write_byte(u8 byte) const {
-        // Wait for transmitter ready
-        while (!HardwarePolicy::is_tx_ready()) {
-            // Busy wait
+        send(static_cast<char>(byte)).expect("Write byte failed");
+    }
+
+private:
+    // ========================================================================
+    // Implementation Methods (called by UartBase via CRTP)
+    // ========================================================================
+
+    /**
+     * @brief Send implementation - called by Base::send()
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> send_impl(char c) noexcept {
+        // Wait for TX ready
+        while (!HardwarePolicy::is_tx_empty()) {
+            // TODO: Add timeout handling
         }
-        HardwarePolicy::write_byte(byte);
+        HardwarePolicy::write_data(static_cast<u8>(c));
+        return Ok();
     }
 
     /**
-     * @brief Write a null-terminated string (blocking)
-     *
-     * @param str Null-terminated string to transmit
+     * @brief Receive implementation - TX-only, returns error
      */
-    void write(const char* str) const {
-        if (str == nullptr) {
-            return;
-        }
-        while (*str) {
-            write_byte(static_cast<u8>(*str++));
-        }
+    [[nodiscard]] constexpr Result<char, ErrorCode> receive_impl() noexcept {
+        return Err(ErrorCode::NotSupported); // TX-only mode
     }
 
     /**
-     * @brief Write a buffer of bytes (blocking)
-     *
-     * @param data Pointer to data buffer
-     * @param size Number of bytes to transmit
+     * @brief Send buffer implementation - called by Base::send_buffer()
      */
-    void write(const u8* data, size_t size) const {
-        if (data == nullptr) {
-            return;
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer_impl(
+        const char* buffer,
+        size_t length
+    ) noexcept {
+        for (size_t i = 0; i < length; ++i) {
+            auto result = send_impl(buffer[i]);
+            if (result.is_err()) {
+                return Ok(static_cast<size_t>(i)); // Return bytes sent before error
+            }
         }
-        for (size_t i = 0; i < size; ++i) {
-            write_byte(data[i]);
+        return Ok(static_cast<size_t>(length));
+    }
+
+    /**
+     * @brief Receive buffer implementation - TX-only, returns error
+     */
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer_impl(
+        char* buffer,
+        size_t length
+    ) noexcept {
+        (void)buffer;
+        (void)length;
+        return Err(ErrorCode::NotSupported); // TX-only mode
+    }
+
+    /**
+     * @brief Flush implementation - called by Base::flush()
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> flush_impl() noexcept {
+        // Wait for transmission complete
+        while (!HardwarePolicy::is_tx_complete()) {
+            // TODO: Add timeout handling
         }
+        return Ok();
+    }
+
+    /**
+     * @brief Available implementation - TX-only, always returns 0
+     */
+    [[nodiscard]] constexpr size_t available_impl() const noexcept {
+        return 0; // TX-only mode, no RX data
+    }
+
+    /**
+     * @brief Set baud rate implementation - called by Base::set_baud_rate()
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> set_baud_rate_impl(BaudRate baud) noexcept {
+        HardwarePolicy::set_baudrate(baud.value());
+        baudrate = baud;
+        return Ok();
     }
 };
 
