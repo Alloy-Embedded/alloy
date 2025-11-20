@@ -1,21 +1,33 @@
 """
-Core utilities for Alloy CLI
+Core utilities for Alloy CLI (Legacy - Use 'core' module instead)
 
-This module provides core functionality for code generation:
-- SVD parsing (svd_parser)
-- Template rendering (template_engine)
-- Schema validation (schema_validator)
-- File utilities (file_utils)
-- Validators (validators/)
+DEPRECATED: This module is kept for backward compatibility only.
+New code should import from 'core' module directly.
 
-Owned by: library-quality-improvements spec
-Consumed by: CLI commands and generators
+Migration:
+    from cli.core import SVDParser       # OLD
+    from core import SVDParser           # NEW
+
+    from cli.core.validators import ...  # OLD
+    from core.validators import ...      # NEW
+
+This file simply re-exports everything from the new 'core' module.
 """
 
-from .svd_parser import *
-from .template_engine import TemplateEngine
-from .schema_validator import SchemaValidator, SchemaFormat, SchemaValidationResult
-from .file_utils import (
+# Re-export everything from new 'core' module
+import sys
+from pathlib import Path
+
+# Add parent to path
+CODEGEN_DIR = Path(__file__).parent.parent.parent
+if str(CODEGEN_DIR) not in sys.path:
+    sys.path.insert(0, str(CODEGEN_DIR))
+
+# Import from new core module
+from core.svd_parser import *
+from core.template_engine import TemplateEngine
+from core.schema_validator import SchemaValidator, SchemaFormat, SchemaValidationResult
+from core.file_utils import (
     ensure_directory,
     clean_directory,
     copy_file,
@@ -26,8 +38,8 @@ from .file_utils import (
     files_identical
 )
 
-# Validators are in their own submodule
-from . import validators
+# Validators are now in core.validators
+from core import validators
 
 __all__ = [
     'TemplateEngine',
