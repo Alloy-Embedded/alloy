@@ -224,18 +224,40 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 - Zero runtime overhead maintained via CRTP
 - Consistent API across GPIO levels
 
-### 1.8 Implement SpiBase (6h)
+### 1.8 Implement SpiBase (6h) ✅ COMPLETE
 
-- [ ] Create `src/hal/api/spi_base.hpp`
-  - [ ] Implement CRTP base class
-  - [ ] Add configure_impl() method
-  - [ ] Add transfer_impl() method
-  - [ ] Add send_impl() method
-  - [ ] Add receive_impl() method
-  - [ ] Add set_mode_impl() method
-  - [ ] Add set_speed_impl() method
-- [ ] Handle full-duplex vs half-duplex
-- [ ] Add DMA support hooks
+- [x] Create `src/hal/api/spi_base.hpp`
+  - [x] Implement CRTP base class
+  - [x] Add transfer_impl() method (full-duplex)
+  - [x] Add transmit_impl() method (TX-only)
+  - [x] Add receive_impl() method (RX-only)
+  - [x] Add configure_impl() method
+  - [x] Add is_busy_impl() method
+- [x] Add convenience single-byte methods
+  - [x] transfer_byte(), transmit_byte(), receive_byte()
+- [x] Add configuration convenience methods
+  - [x] set_mode(), set_speed()
+- [x] Handle full-duplex vs half-duplex (transfer vs transmit/receive)
+- [x] Create compile tests
+  - [x] Test CRTP inheritance
+  - [x] Test all transfer operations
+  - [x] Test single-byte operations
+  - [x] Test configuration methods
+  - [x] Test zero-overhead guarantee
+  - [x] Test SpiImplementation concept
+
+**Deliverables**:
+- `src/hal/api/spi_base.hpp` (370 lines)
+- `tests/compile_tests/test_spi_base_crtp.cpp` (300 lines)
+
+**Benefits**:
+- Provides common SPI interface for all API levels
+- Zero runtime overhead via CRTP
+- Type-safe via C++20 concepts
+- Comprehensive error handling with Result<T, E>
+- Ready for SPI API refactoring
+
+**Note**: DMA support hooks deferred to individual implementations
 
 ### 1.9 Refactor SPI APIs (8h)
 
