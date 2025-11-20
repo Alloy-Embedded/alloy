@@ -12,6 +12,7 @@
  * - Support both compile-time and runtime configs
  * - Zero runtime overhead when used at compile-time
  * - Expert-level control over all hardware details
+ * - Built on SpiBase CRTP for code reuse
  *
  * Example Usage:
  * @code
@@ -34,12 +35,13 @@
  * // Validate at compile-time
  * static_assert(config.is_valid(), config.error_message());
  *
- * // Apply configuration
- * auto result = expert::configure(config);
+ * // Create SPI instance with transfer methods
+ * auto spi_instance = expert::create_instance(config);
+ * spi_instance.transfer_byte(0x55);  // Has all SpiBase methods!
  * @endcode
  *
- * @note Part of Phase 6.2: SPI Expert API
- * @see openspec/changes/modernize-peripheral-architecture/specs/multi-level-api/spec.md
+ * @note Part of Phase 1.9.3: Refactor SpiExpert (library-quality-improvements)
+ * @see docs/architecture/CRTP_PATTERN.md
  */
 
 #pragma once
@@ -49,6 +51,9 @@
 #include "core/types.hpp"
 #include "hal/interface/spi.hpp"
 #include "hal/core/signals.hpp"
+#include "hal/api/spi_base.hpp"
+
+#include <span>
 
 namespace alloy::hal {
 
@@ -331,6 +336,150 @@ struct SpiExpertConfig {
 };
 
 // ============================================================================
+// Expert SPI Instance (CRTP)
+// ============================================================================
+
+/**
+ * @brief Expert SPI instance with CRTP inheritance
+ *
+ * Wraps SpiExpertConfig and provides all SPI transfer methods via SpiBase.
+ * Inherits from SpiBase to provide common interface while maintaining
+ * expert-level configuration control.
+ */
+class ExpertSpiInstance : public SpiBase<ExpertSpiInstance> {
+    using Base = SpiBase<ExpertSpiInstance>;
+    friend Base;
+
+public:
+    // Inherit all common SPI methods from base
+    using Base::transfer;         // Full-duplex transfer
+    using Base::transmit;         // TX-only
+    using Base::receive;          // RX-only
+    using Base::transfer_byte;    // Single-byte transfer
+    using Base::transmit_byte;    // Single-byte TX
+    using Base::receive_byte;     // Single-byte RX
+    using Base::configure;        // Configuration
+    using Base::set_mode;         // Set SPI mode
+    using Base::set_speed;        // Set clock speed
+    using Base::is_busy;          // Check if busy
+    using Base::is_ready;         // Check if ready
+
+    /**
+     * @brief Constructor from expert configuration
+     *
+     * @param config Expert configuration (must be valid)
+     */
+    constexpr explicit ExpertSpiInstance(const SpiExpertConfig& config)
+        : config_(config) {}
+
+    /**
+     * @brief Get configuration
+     *
+     * @return Reference to configuration
+     */
+    constexpr const SpiExpertConfig& config() const { return config_; }
+
+    /**
+     * @brief Apply configuration to hardware
+     *
+     * @return Result indicating success or error
+     */
+    Result<void, ErrorCode> apply() const {
+        // Validate configuration
+        if (!config_.is_valid()) {
+            return Err(ErrorCode::InvalidParameter);
+        }
+
+        // TODO: Apply configuration to hardware
+        // - Configure GPIO pins with alternate functions
+        // - Set SPI mode, clock speed, bit order, data size
+        // - Configure frame format (Motorola/TI)
+        // - Enable MOSI/MISO as needed
+        // - Configure DMA if enabled
+        // - Enable interrupts if needed
+        // - Configure CRC if enabled
+
+        return Ok();
+    }
+
+    // ========================================================================
+    // Implementation Methods (public for concept checking)
+    // ========================================================================
+
+    /**
+     * @brief Full-duplex transfer implementation
+     *
+     * @note Returns NotSupported if MISO is disabled
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> transfer_impl(
+        std::span<const u8> tx_buffer,
+        std::span<u8> rx_buffer
+    ) noexcept {
+        if (!config_.enable_miso) {
+            return Err(ErrorCode::NotSupported);
+        }
+        // TODO: Implement hardware transfer
+        (void)tx_buffer;
+        (void)rx_buffer;
+        return Ok();
+    }
+
+    /**
+     * @brief Transmit-only implementation
+     *
+     * @note Returns NotSupported if MOSI is disabled
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> transmit_impl(
+        std::span<const u8> tx_buffer
+    ) noexcept {
+        if (!config_.enable_mosi) {
+            return Err(ErrorCode::NotSupported);
+        }
+        // TODO: Implement hardware transmit
+        (void)tx_buffer;
+        return Ok();
+    }
+
+    /**
+     * @brief Receive-only implementation
+     *
+     * @note Returns NotSupported if MISO is disabled
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> receive_impl(
+        std::span<u8> rx_buffer
+    ) noexcept {
+        if (!config_.enable_miso) {
+            return Err(ErrorCode::NotSupported);
+        }
+        // TODO: Implement hardware receive
+        (void)rx_buffer;
+        return Ok();
+    }
+
+    /**
+     * @brief Configure SPI implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> configure_impl(
+        const SpiConfig& new_config
+    ) noexcept {
+        // TODO: Apply configuration to hardware
+        (void)new_config;
+        return Ok();
+    }
+
+    /**
+     * @brief Check if busy implementation
+     */
+    [[nodiscard]] constexpr bool is_busy_impl() const noexcept {
+        // TODO: Check hardware busy status
+        return false;
+    }
+
+private:
+    SpiExpertConfig config_;
+};
+
+// ============================================================================
 // Expert Configuration API
 // ============================================================================
 
@@ -340,6 +489,20 @@ struct SpiExpertConfig {
  * Provides functions for working with expert configurations.
  */
 namespace expert {
+
+/**
+ * @brief Create expert SPI instance from configuration
+ *
+ * Creates an instance that has all SPI transfer methods from SpiBase.
+ *
+ * @param config Expert configuration (must be valid)
+ * @return SPI instance with transfer methods
+ *
+ * @note Configuration must be valid (config.is_valid() == true)
+ */
+constexpr ExpertSpiInstance create_instance(const SpiExpertConfig& config) {
+    return ExpertSpiInstance(config);
+}
 
 /**
  * @brief Configure SPI with expert configuration
