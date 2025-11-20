@@ -14,18 +14,22 @@
  *
  * Example Usage:
  * @code
- * auto uart = UartBuilder<PeripheralId::USART0>()
+ * auto config = UartBuilder<PeripheralId::USART0, HardwarePolicy>()
  *     .with_tx_pin<PinD3>()
  *     .with_rx_pin<PinD4>()
  *     .baudrate(BaudRate{115200})
  *     .parity(UartParity::EVEN)
  *     .data_bits(8)
  *     .stop_bits(1)
- *     .initialize();
+ *     .initialize()
+ *     .expect("UART init failed");
+ *
+ * config.apply().expect("UART apply failed");
+ * config.send('A').expect("Send failed");  // Now has send/receive from UartBase!
  * @endcode
  *
- * @note Part of Phase 4.2: Fluent API
- * @see openspec/changes/modernize-peripheral-architecture/specs/multi-level-api/spec.md
+ * @note Part of Phase 1.4: CRTP Refactoring
+ * @see docs/architecture/UART_CRTP_INTEGRATION.md
  */
 
 #pragma once
@@ -34,6 +38,7 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 #include "core/units.hpp"
+#include "hal/api/uart_base.hpp"
 #include "hal/core/signals.hpp"
 #include "hal/core/signal_registry.hpp"
 #include "hal/api/uart_simple.hpp"  // For UartParity and defaults
@@ -51,11 +56,16 @@ using namespace alloy::hal::signals;
  * @brief UART configuration from fluent builder
  *
  * Holds the complete validated configuration from the builder.
+ * Now inherits from UartBase using CRTP for zero-overhead code reuse.
  *
  * @tparam HardwarePolicy Hardware policy for platform-specific operations
  */
 template <typename HardwarePolicy>
-struct FluentUartConfig {
+struct FluentUartConfig : public UartBase<FluentUartConfig<HardwarePolicy>> {
+    using Base = UartBase<FluentUartConfig<HardwarePolicy>>;
+    friend Base;
+
+    // Configuration state
     PeripheralId peripheral;
     PinId tx_pin;
     PinId rx_pin;
@@ -66,6 +76,41 @@ struct FluentUartConfig {
     bool flow_control;
     bool has_tx;
     bool has_rx;
+
+    // Constructor to allow initialization from UartBuilder
+    constexpr FluentUartConfig(
+        PeripheralId p,
+        PinId tx,
+        PinId rx,
+        BaudRate baud,
+        UartParity par,
+        u8 db,
+        u8 sb,
+        bool fc,
+        bool tx_enabled,
+        bool rx_enabled
+    ) : peripheral(p), tx_pin(tx), rx_pin(rx), baudrate(baud),
+        parity(par), data_bits(db), stop_bits(sb), flow_control(fc),
+        has_tx(tx_enabled), has_rx(rx_enabled) {}
+
+    // ========================================================================
+    // Inherited Interface from UartBase (CRTP)
+    // ========================================================================
+
+    // Inherit all common UART methods from base
+    using Base::send;           // Send single character
+    using Base::receive;        // Receive single character
+    using Base::write;          // Write null-terminated string
+    using Base::send_buffer;    // Send buffer of bytes
+    using Base::receive_buffer; // Receive buffer of bytes
+    using Base::flush;          // Wait for transmission complete
+    using Base::available;      // Number of bytes available
+    using Base::has_data;       // Check if data available
+    using Base::set_baud_rate;  // Change baud rate
+
+    // ========================================================================
+    // Fluent API Specific Methods
+    // ========================================================================
 
     /**
      * @brief Apply configuration to hardware
@@ -92,12 +137,125 @@ struct FluentUartConfig {
 
         // Enable TX and/or RX based on configuration
         if (has_tx) {
-            HardwarePolicy::enable_tx();
+            HardwarePolicy::enable_transmitter();
         }
         if (has_rx) {
-            HardwarePolicy::enable_rx();
+            HardwarePolicy::enable_receiver();
+        }
+        HardwarePolicy::enable_uart();
+
+        return Ok();
+    }
+
+private:
+    // ========================================================================
+    // Implementation Methods (called by UartBase via CRTP)
+    // ========================================================================
+
+    /**
+     * @brief Send implementation - called by Base::send()
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> send_impl(char c) noexcept {
+        if (!has_tx) {
+            return Err(ErrorCode::NotSupported);
         }
 
+        // Wait for TX ready
+        while (!HardwarePolicy::is_tx_empty()) {
+            // TODO: Add timeout handling
+        }
+        HardwarePolicy::write_data(static_cast<u8>(c));
+        return Ok();
+    }
+
+    /**
+     * @brief Receive implementation - called by Base::receive()
+     */
+    [[nodiscard]] constexpr Result<char, ErrorCode> receive_impl() noexcept {
+        if (!has_rx) {
+            return Err(ErrorCode::NotSupported);
+        }
+
+        // Wait for RX ready
+        while (!HardwarePolicy::is_rx_not_empty()) {
+            // TODO: Add timeout handling
+        }
+        return Ok(static_cast<char>(HardwarePolicy::read_data()));
+    }
+
+    /**
+     * @brief Send buffer implementation - called by Base::send_buffer()
+     */
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer_impl(
+        const char* buffer,
+        size_t length
+    ) noexcept {
+        if (!has_tx) {
+            return Err(ErrorCode::NotSupported);
+        }
+
+        for (size_t i = 0; i < length; ++i) {
+            auto result = send_impl(buffer[i]);
+            if (result.is_err()) {
+                return Ok(static_cast<size_t>(i)); // Return bytes sent before error
+            }
+        }
+        return Ok(static_cast<size_t>(length));
+    }
+
+    /**
+     * @brief Receive buffer implementation - called by Base::receive_buffer()
+     */
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer_impl(
+        char* buffer,
+        size_t length
+    ) noexcept {
+        if (!has_rx) {
+            return Err(ErrorCode::NotSupported);
+        }
+
+        for (size_t i = 0; i < length; ++i) {
+            auto result = receive_impl();
+            if (result.is_err()) {
+                return Ok(static_cast<size_t>(i)); // Return bytes received before error
+            }
+            buffer[i] = result.unwrap();
+        }
+        return Ok(static_cast<size_t>(length));
+    }
+
+    /**
+     * @brief Flush implementation - called by Base::flush()
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> flush_impl() noexcept {
+        if (!has_tx) {
+            return Err(ErrorCode::NotSupported);
+        }
+
+        // Wait for transmission complete
+        while (!HardwarePolicy::is_tx_complete()) {
+            // TODO: Add timeout handling
+        }
+        return Ok();
+    }
+
+    /**
+     * @brief Available implementation - called by Base::available()
+     */
+    [[nodiscard]] constexpr size_t available_impl() const noexcept {
+        if (!has_rx) {
+            return 0;
+        }
+        // Check if RX has data
+        return HardwarePolicy::is_rx_not_empty() ? 1 : 0;
+    }
+
+    /**
+     * @brief Set baud rate implementation - called by Base::set_baud_rate()
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> set_baud_rate_impl(BaudRate baud) noexcept {
+        HardwarePolicy::set_baudrate(baud.value());
+        baudrate = baud;
         return Ok();
     }
 };
@@ -380,18 +538,18 @@ public:
             return Err(std::move(error_copy));
         }
 
-        return Ok(FluentUartConfig<HardwarePolicy>{
-            .peripheral = PeriphId,
-            .tx_pin = tx_pin_id_,
-            .rx_pin = rx_pin_id_,
-            .baudrate = baudrate_,
-            .parity = parity_,
-            .data_bits = data_bits_,
-            .stop_bits = stop_bits_,
-            .flow_control = flow_control_,
-            .has_tx = state_.has_tx_pin,
-            .has_rx = state_.has_rx_pin
-        });
+        return Ok(FluentUartConfig<HardwarePolicy>(
+            PeriphId,
+            tx_pin_id_,
+            rx_pin_id_,
+            baudrate_,
+            parity_,
+            data_bits_,
+            stop_bits_,
+            flow_control_,
+            state_.has_tx_pin,
+            state_.has_rx_pin
+        ));
     }
 
     /**

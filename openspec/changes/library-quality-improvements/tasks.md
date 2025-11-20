@@ -118,21 +118,28 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 - `tests/compile_tests/test_uart_simple_crtp.cpp` (130 lines)
 - `docs/architecture/UART_SIMPLE_REFACTORING_PLAN.md` (276 lines)
 
-### 1.4 Refactor UartFluent (4h)
+### 1.4 Refactor UartFluent (4h) ✅ COMPLETE
 
-- [ ] Refactor `src/hal/api/uart_fluent.hpp`
-  - [ ] Inherit from UartBase
-  - [ ] Remove duplicated code
-  - [ ] Keep fluent-specific methods (with_*)
-  - [ ] Maintain method chaining
-- [ ] Validate fluent API works
-  - [ ] Test method chaining
-  - [ ] Test configuration accumulation
-  - [ ] Test begin() applies config
-- [ ] Update unit tests
-  - [ ] Test fluent pattern
-  - [ ] Test error handling in chain
-- [ ] Measure code size reduction
+- [x] Refactor `src/hal/api/uart_fluent.hpp`
+  - [x] Make FluentUartConfig inherit from UartBase
+  - [x] Implement all *_impl() methods
+  - [x] Keep fluent-specific methods (with_*, apply)
+  - [x] Keep builder pattern (UartBuilder)
+  - [x] Maintain method chaining
+- [x] Validate fluent API works
+  - [x] Test method chaining
+  - [x] Test configuration accumulation
+  - [x] Test preset methods (8n1, 8e1, 8o1)
+  - [x] Test TX-only and RX-only modes
+- [x] Create compile tests
+  - [x] Test fluent pattern
+  - [x] Test error handling
+  - [x] Test CRTP inheritance
+- [ ] Measure code size reduction (pending actual binary comparison)
+
+**Deliverables**:
+- `src/hal/api/uart_fluent.hpp` (refactored with CRTP)
+- `tests/compile_tests/test_uart_fluent_crtp.cpp` (175 lines)
 
 ### 1.5 Refactor UartExpert (4h)
 
