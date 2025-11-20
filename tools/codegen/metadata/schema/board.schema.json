@@ -1,0 +1,340 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://alloy-hal.dev/schemas/board.schema.json",
+  "title": "Board Metadata Schema",
+  "description": "Schema for board-specific metadata (pin assignments, peripherals, components)",
+  "type": "object",
+  "required": [
+    "board",
+    "mcu",
+    "pins"
+  ],
+  "properties": {
+    "board": {
+      "type": "object",
+      "description": "Board identification",
+      "required": ["name", "version"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Board name (e.g., 'Nucleo-F446RE', 'Arduino Due')"
+        },
+        "version": {
+          "type": "string",
+          "description": "Board revision",
+          "pattern": "^[0-9]+\\.[0-9]+$"
+        },
+        "manufacturer": {
+          "type": "string",
+          "description": "Board manufacturer"
+        },
+        "description": {
+          "type": "string",
+          "description": "Board description"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Board documentation URL"
+        }
+      }
+    },
+    "mcu": {
+      "type": "object",
+      "description": "MCU mounted on this board",
+      "required": ["platform", "part_number"],
+      "properties": {
+        "platform": {
+          "type": "string",
+          "description": "Platform name (must match a platform.json)"
+        },
+        "part_number": {
+          "type": "string",
+          "description": "Specific MCU part number"
+        },
+        "frequency_hz": {
+          "type": "number",
+          "description": "MCU operating frequency in Hz"
+        }
+      }
+    },
+    "pins": {
+      "type": "object",
+      "description": "Pin definitions and mappings",
+      "properties": {
+        "gpio": {
+          "type": "object",
+          "description": "GPIO pin mappings",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["port", "pin"],
+            "properties": {
+              "port": {
+                "type": "string",
+                "description": "GPIO port (e.g., 'GPIOA', 'PORTA')"
+              },
+              "pin": {
+                "type": "number",
+                "description": "Pin number within port",
+                "minimum": 0,
+                "maximum": 31
+              },
+              "arduino_pin": {
+                "type": "string",
+                "description": "Arduino-style pin number (e.g., 'D13', 'A0')"
+              },
+              "connector": {
+                "type": "string",
+                "description": "Physical connector name"
+              },
+              "label": {
+                "type": "string",
+                "description": "Silkscreen label on board"
+              },
+              "default_function": {
+                "type": "string",
+                "description": "Default pin function (e.g., 'LED', 'Button')"
+              },
+              "alternate_functions": {
+                "type": "array",
+                "description": "Available alternate functions",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "af_number": { "type": "number" },
+                    "function": { "type": "string" },
+                    "peripheral": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "analog": {
+          "type": "object",
+          "description": "Analog pin mappings",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "adc_instance": { "type": "string" },
+              "adc_channel": { "type": "number" },
+              "gpio_port": { "type": "string" },
+              "gpio_pin": { "type": "number" }
+            }
+          }
+        },
+        "special": {
+          "type": "object",
+          "description": "Special function pins",
+          "properties": {
+            "led": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "port": { "type": "string" },
+                  "pin": { "type": "number" },
+                  "active_low": { "type": "boolean" }
+                }
+              }
+            },
+            "button": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "port": { "type": "string" },
+                  "pin": { "type": "number" },
+                  "active_low": { "type": "boolean" },
+                  "pull_up": { "type": "boolean" }
+                }
+              }
+            },
+            "swd": {
+              "type": "object",
+              "properties": {
+                "swdio": { "type": "object" },
+                "swclk": { "type": "object" }
+              }
+            },
+            "usb": {
+              "type": "object",
+              "properties": {
+                "dp": { "type": "object" },
+                "dm": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "peripherals": {
+      "type": "object",
+      "description": "Peripheral configurations for this board",
+      "properties": {
+        "uart": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["instance", "tx_pin", "rx_pin"],
+            "properties": {
+              "instance": { "type": "string" },
+              "name": { "type": "string" },
+              "tx_pin": { "type": "string" },
+              "rx_pin": { "type": "string" },
+              "rts_pin": { "type": "string" },
+              "cts_pin": { "type": "string" },
+              "default_baud": { "type": "number" },
+              "usage": { "type": "string", "description": "e.g., 'console', 'debug'" }
+            }
+          }
+        },
+        "spi": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["instance", "sck_pin", "mosi_pin", "miso_pin"],
+            "properties": {
+              "instance": { "type": "string" },
+              "name": { "type": "string" },
+              "sck_pin": { "type": "string" },
+              "mosi_pin": { "type": "string" },
+              "miso_pin": { "type": "string" },
+              "nss_pin": { "type": "string" },
+              "usage": { "type": "string" }
+            }
+          }
+        },
+        "i2c": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["instance", "scl_pin", "sda_pin"],
+            "properties": {
+              "instance": { "type": "string" },
+              "name": { "type": "string" },
+              "scl_pin": { "type": "string" },
+              "sda_pin": { "type": "string" },
+              "usage": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "type": "object",
+      "description": "Onboard components",
+      "properties": {
+        "oscillators": {
+          "type": "object",
+          "properties": {
+            "hse": {
+              "type": "object",
+              "properties": {
+                "frequency_hz": { "type": "number" },
+                "type": { "type": "string", "enum": ["crystal", "oscillator"] }
+              }
+            },
+            "lse": {
+              "type": "object",
+              "properties": {
+                "frequency_hz": { "type": "number" },
+                "type": { "type": "string" }
+              }
+            }
+          }
+        },
+        "power": {
+          "type": "object",
+          "properties": {
+            "usb_powered": { "type": "boolean" },
+            "external_power": { "type": "boolean" },
+            "battery_backup": { "type": "boolean" },
+            "voltage_regulator": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "output_voltage": { "type": "number" }
+              }
+            }
+          }
+        },
+        "sensors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "type": { "type": "string" },
+              "interface": { "type": "string", "enum": ["I2C", "SPI", "UART", "Analog"] },
+              "address": { "type": "string" },
+              "pins": { "type": "object" }
+            }
+          }
+        },
+        "memory": {
+          "type": "object",
+          "properties": {
+            "external_flash": {
+              "type": "object",
+              "properties": {
+                "size_bytes": { "type": "number" },
+                "interface": { "type": "string" }
+              }
+            },
+            "external_ram": {
+              "type": "object",
+              "properties": {
+                "size_bytes": { "type": "number" },
+                "interface": { "type": "string" }
+              }
+            },
+            "sd_card": {
+              "type": "object",
+              "properties": {
+                "interface": { "type": "string", "enum": ["SPI", "SDIO"] },
+                "detect_pin": { "type": "string" }
+              }
+            }
+          }
+        },
+        "ethernet": {
+          "type": "object",
+          "properties": {
+            "phy_type": { "type": "string" },
+            "phy_address": { "type": "string" },
+            "mii_pins": { "type": "object" },
+            "rmii_pins": { "type": "object" }
+          }
+        }
+      }
+    },
+    "features": {
+      "type": "object",
+      "description": "Board features and capabilities",
+      "properties": {
+        "arduino_compatible": { "type": "boolean" },
+        "st_morpho_headers": { "type": "boolean" },
+        "debug_probe": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string", "enum": ["ST-Link", "J-Link", "CMSIS-DAP", "None"] },
+            "version": { "type": "string" }
+          }
+        }
+      }
+    },
+    "namespaces": {
+      "type": "object",
+      "description": "C++ namespace configuration",
+      "properties": {
+        "board_namespace": {
+          "type": "string",
+          "description": "Board-specific namespace (e.g., 'alloy::boards::nucleo_f446re')"
+        }
+      }
+    }
+  }
+}

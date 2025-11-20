@@ -444,24 +444,42 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 
 ## Phase 2: Template System Completion (2 weeks, 48 hours)
 
-### 2.1 Template Architecture Design (4h)
+### 2.1 Template Architecture Design (4h) ✅ COMPLETE
 
-- [ ] Define template variable schema
-  - [ ] Platform metadata (name, vendor, family)
-  - [ ] Peripheral metadata (base_address, registers)
-  - [ ] Board metadata (pins, peripherals)
-- [ ] Design template hierarchy
-  - [ ] Base templates (common patterns)
-  - [ ] Platform templates (peripheral-specific)
-  - [ ] Board templates (board-specific)
-- [ ] Create JSON schemas for validation
-  - [ ] platform.schema.json
-  - [ ] peripheral.schema.json
-  - [ ] board.schema.json
-- [ ] Document template conventions
-  - [ ] Naming conventions
-  - [ ] Directory structure
-  - [ ] Variable naming
+- [x] Define template variable schema ✅ COMPLETE
+  - [x] Platform metadata (name, vendor, family, architecture, memory, peripherals)
+  - [x] Peripheral metadata (base_address, registers, capabilities)
+  - [x] Board metadata (pins, peripherals, components)
+- [x] Design template hierarchy ✅ COMPLETE
+  - [x] Base templates (common patterns - headers, namespaces)
+  - [x] Platform templates (peripheral-specific - GPIO, UART, SPI, I2C)
+  - [x] Board templates (board-specific - pin mappings, configurations)
+  - [x] Startup templates (reset handler, vector table)
+  - [x] Linker templates (memory layout)
+- [x] Create JSON schemas for validation ✅ COMPLETE
+  - [x] platform.schema.json (platform/MCU definitions)
+  - [x] peripheral.schema.json (peripheral register definitions)
+  - [x] board.schema.json (board pin mappings and components)
+- [x] Document template conventions ✅ COMPLETE
+  - [x] Naming conventions (templates, metadata, variables, generated code)
+  - [x] Directory structure (templates/, metadata/, generators/)
+  - [x] Variable naming (snake_case for Jinja2, PascalCase/snake_case for C++)
+  - [x] Template patterns (include, macro, conditional, loop)
+  - [x] Best practices (validation, generation, performance)
+
+**Deliverables**:
+- `tools/codegen/metadata/schema/platform.schema.json` (341 lines) - Platform metadata schema
+- `tools/codegen/metadata/schema/peripheral.schema.json` (359 lines) - Peripheral metadata schema
+- `tools/codegen/metadata/schema/board.schema.json` (310 lines) - Board metadata schema
+- `docs/codegen/TEMPLATE_CONVENTIONS.md` (623 lines) - Comprehensive template conventions guide
+- `docs/codegen/TEMPLATE_ARCHITECTURE.md` (557 lines) - Template system architecture document
+
+**Benefits**:
+- ✅ Comprehensive JSON schemas for validation
+- ✅ Well-documented template hierarchy (6 levels: Base, Platform, Peripheral, Startup, Linker, Board)
+- ✅ Clear naming conventions for all artifacts
+- ✅ Extensible architecture for new platforms/peripherals
+- ✅ Best practices for template design and code generation
 
 ### 2.2 Create GPIO Template (8h)
 

@@ -1,0 +1,335 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://alloy-hal.dev/schemas/peripheral.schema.json",
+  "title": "Peripheral Metadata Schema",
+  "description": "Schema for peripheral-specific metadata (GPIO, UART, SPI, I2C, etc.)",
+  "type": "object",
+  "required": [
+    "peripheral",
+    "instances",
+    "registers"
+  ],
+  "properties": {
+    "peripheral": {
+      "type": "object",
+      "description": "Peripheral identification",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Peripheral name (e.g., 'GPIO', 'USART')",
+          "pattern": "^[A-Z][A-Z0-9]*$"
+        },
+        "type": {
+          "type": "string",
+          "description": "Peripheral type",
+          "enum": ["GPIO", "UART", "USART", "SPI", "I2C", "ADC", "DAC", "TIMER", "DMA", "RTC", "WATCHDOG", "CAN", "USB", "ETHERNET"]
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description"
+        },
+        "version": {
+          "type": "string",
+          "description": "Peripheral IP version"
+        }
+      }
+    },
+    "instances": {
+      "type": "array",
+      "description": "Peripheral instances available on this platform",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "base_address"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Instance name (e.g., 'USART1', 'SPI2', 'GPIOA')"
+          },
+          "base_address": {
+            "type": "string",
+            "description": "Base address in hex",
+            "pattern": "^0x[0-9A-Fa-f]+$"
+          },
+          "irq_number": {
+            "type": "number",
+            "description": "Interrupt request number"
+          },
+          "irq_name": {
+            "type": "string",
+            "description": "Interrupt name"
+          },
+          "clock_enable": {
+            "type": "object",
+            "description": "Clock enable configuration",
+            "properties": {
+              "register": { "type": "string" },
+              "bit": { "type": "number" }
+            }
+          },
+          "dma_support": {
+            "type": "object",
+            "description": "DMA support configuration",
+            "properties": {
+              "tx_channel": { "type": "number" },
+              "rx_channel": { "type": "number" },
+              "dma_controller": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "registers": {
+      "type": "object",
+      "description": "Register definitions",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["offset", "size"],
+        "properties": {
+          "offset": {
+            "type": "string",
+            "description": "Offset from base address (hex)",
+            "pattern": "^0x[0-9A-Fa-f]+$"
+          },
+          "size": {
+            "type": "number",
+            "description": "Register size in bits",
+            "enum": [8, 16, 32, 64]
+          },
+          "access": {
+            "type": "string",
+            "description": "Access mode",
+            "enum": ["RO", "WO", "RW"]
+          },
+          "reset_value": {
+            "type": "string",
+            "description": "Reset value (hex)",
+            "pattern": "^0x[0-9A-Fa-f]+$"
+          },
+          "description": {
+            "type": "string",
+            "description": "Register description"
+          },
+          "fields": {
+            "type": "object",
+            "description": "Bitfield definitions",
+            "additionalProperties": {
+              "type": "object",
+              "required": ["bits"],
+              "properties": {
+                "bits": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "description": "Single bit position"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Bit range (e.g., '7:0', '15:8')",
+                      "pattern": "^[0-9]+:[0-9]+$"
+                    }
+                  ]
+                },
+                "access": {
+                  "type": "string",
+                  "enum": ["RO", "WO", "RW"]
+                },
+                "description": {
+                  "type": "string"
+                },
+                "values": {
+                  "type": "object",
+                  "description": "Enumerated values for this field",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "value": { "type": "number" },
+                      "description": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "description": "Peripheral capabilities",
+      "properties": {
+        "fifo": {
+          "type": "object",
+          "properties": {
+            "tx_depth": { "type": "number" },
+            "rx_depth": { "type": "number" }
+          }
+        },
+        "modes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "features": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "gpio_specific": {
+      "type": "object",
+      "description": "GPIO-specific configuration",
+      "properties": {
+        "pins_per_port": { "type": "number" },
+        "alternate_functions": {
+          "type": "object",
+          "description": "Alternate function mapping",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "af_number": { "type": "number" },
+              "function": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "uart_specific": {
+      "type": "object",
+      "description": "UART-specific configuration",
+      "properties": {
+        "baud_rates": {
+          "type": "object",
+          "properties": {
+            "min": { "type": "number" },
+            "max": { "type": "number" }
+          }
+        },
+        "data_bits": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "stop_bits": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "parity": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["none", "even", "odd"] }
+        },
+        "flow_control": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["none", "rts", "cts", "rts_cts"] }
+        }
+      }
+    },
+    "spi_specific": {
+      "type": "object",
+      "description": "SPI-specific configuration",
+      "properties": {
+        "modes": {
+          "type": "array",
+          "items": { "type": "number", "minimum": 0, "maximum": 3 }
+        },
+        "data_sizes": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "max_frequency_hz": { "type": "number" },
+        "nss_modes": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["software", "hardware_input", "hardware_output"] }
+        }
+      }
+    },
+    "i2c_specific": {
+      "type": "object",
+      "description": "I2C-specific configuration",
+      "properties": {
+        "speeds": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["standard", "fast", "fast_plus", "high_speed"] }
+        },
+        "addressing_modes": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["7bit", "10bit"] }
+        },
+        "clock_stretching": { "type": "boolean" },
+        "multi_master": { "type": "boolean" }
+      }
+    },
+    "adc_specific": {
+      "type": "object",
+      "description": "ADC-specific configuration",
+      "properties": {
+        "resolution_bits": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "channels": { "type": "number" },
+        "conversion_modes": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["single", "continuous", "scan", "discontinuous"] }
+        },
+        "sampling_rates": {
+          "type": "object",
+          "properties": {
+            "min_sps": { "type": "number" },
+            "max_sps": { "type": "number" }
+          }
+        }
+      }
+    },
+    "timer_specific": {
+      "type": "object",
+      "description": "Timer-specific configuration",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["basic", "general_purpose", "advanced"]
+        },
+        "bit_width": {
+          "type": "number",
+          "enum": [16, 32]
+        },
+        "channels": { "type": "number" },
+        "pwm_capable": { "type": "boolean" },
+        "input_capture_capable": { "type": "boolean" },
+        "output_compare_capable": { "type": "boolean" }
+      }
+    },
+    "dma_specific": {
+      "type": "object",
+      "description": "DMA-specific configuration",
+      "properties": {
+        "channels": { "type": "number" },
+        "streams": { "type": "number" },
+        "transfer_sizes": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["byte", "halfword", "word"] }
+        },
+        "circular_mode": { "type": "boolean" },
+        "memory_to_memory": { "type": "boolean" }
+      }
+    },
+    "constants": {
+      "type": "array",
+      "description": "Peripheral-specific constants",
+      "items": {
+        "type": "object",
+        "required": ["name", "type", "value"],
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "value": {},
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "template_variables": {
+      "type": "object",
+      "description": "Additional variables for template rendering",
+      "additionalProperties": true
+    }
+  }
+}

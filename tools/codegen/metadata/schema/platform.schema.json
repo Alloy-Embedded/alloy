@@ -1,0 +1,355 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://alloy-hal.dev/schemas/platform.schema.json",
+  "title": "Platform Metadata Schema",
+  "description": "Schema for platform-level metadata (MCU/SoC definitions)",
+  "type": "object",
+  "required": [
+    "platform",
+    "vendor",
+    "family",
+    "mcu",
+    "architecture",
+    "memory",
+    "peripherals"
+  ],
+  "properties": {
+    "platform": {
+      "type": "object",
+      "description": "Platform identification",
+      "required": ["name", "version"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Platform name (e.g., 'STM32F4', 'SAME70')",
+          "pattern": "^[A-Z][A-Za-z0-9]+$"
+        },
+        "version": {
+          "type": "string",
+          "description": "Platform version (e.g., '1.0.0')",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description"
+        }
+      }
+    },
+    "vendor": {
+      "type": "object",
+      "description": "Vendor information",
+      "required": ["name", "namespace"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Vendor name (e.g., 'STMicroelectronics', 'Microchip')"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "C++ namespace for vendor-specific code",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Vendor website URL"
+        }
+      }
+    },
+    "family": {
+      "type": "object",
+      "description": "MCU family information",
+      "required": ["name", "series"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Family name (e.g., 'STM32F4', 'SAM E70')"
+        },
+        "series": {
+          "type": "string",
+          "description": "Series name (e.g., 'F4', 'E70')"
+        },
+        "line": {
+          "type": "string",
+          "description": "Product line (e.g., 'F407', 'E70Q21')"
+        }
+      }
+    },
+    "mcu": {
+      "type": "object",
+      "description": "Specific MCU variant",
+      "required": ["name", "part_number"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "MCU name (e.g., 'STM32F407VGT6')"
+        },
+        "part_number": {
+          "type": "string",
+          "description": "Full part number"
+        },
+        "package": {
+          "type": "string",
+          "description": "Package type (e.g., 'LQFP100', 'TFBGA144')"
+        },
+        "temperature_range": {
+          "type": "object",
+          "properties": {
+            "min": { "type": "number" },
+            "max": { "type": "number" },
+            "unit": { "type": "string", "enum": ["celsius"] }
+          }
+        }
+      }
+    },
+    "architecture": {
+      "type": "object",
+      "description": "CPU architecture details",
+      "required": ["core", "endianness"],
+      "properties": {
+        "core": {
+          "type": "string",
+          "description": "CPU core type",
+          "enum": [
+            "Cortex-M0",
+            "Cortex-M0+",
+            "Cortex-M3",
+            "Cortex-M4",
+            "Cortex-M7",
+            "Cortex-M23",
+            "Cortex-M33",
+            "Cortex-M55"
+          ]
+        },
+        "endianness": {
+          "type": "string",
+          "enum": ["little", "big"]
+        },
+        "fpu": {
+          "type": "boolean",
+          "description": "Has Floating Point Unit"
+        },
+        "fpu_type": {
+          "type": "string",
+          "description": "FPU type (e.g., 'FPv4-SP', 'FPv5-DP')"
+        },
+        "mpu": {
+          "type": "boolean",
+          "description": "Has Memory Protection Unit"
+        },
+        "dsp": {
+          "type": "boolean",
+          "description": "Has DSP extensions"
+        },
+        "frequency_max": {
+          "type": "object",
+          "properties": {
+            "value": { "type": "number" },
+            "unit": { "type": "string", "enum": ["MHz", "Hz"] }
+          }
+        }
+      }
+    },
+    "memory": {
+      "type": "object",
+      "description": "Memory configuration",
+      "required": ["flash", "ram"],
+      "properties": {
+        "flash": {
+          "type": "object",
+          "required": ["start", "size"],
+          "properties": {
+            "start": {
+              "type": "string",
+              "description": "Flash start address (hex)",
+              "pattern": "^0x[0-9A-Fa-f]+$"
+            },
+            "size": {
+              "type": "string",
+              "description": "Flash size (e.g., '1024K', '512K')"
+            },
+            "size_bytes": {
+              "type": "number",
+              "description": "Flash size in bytes"
+            }
+          }
+        },
+        "ram": {
+          "type": "object",
+          "required": ["start", "size"],
+          "properties": {
+            "start": {
+              "type": "string",
+              "description": "RAM start address (hex)",
+              "pattern": "^0x[0-9A-Fa-f]+$"
+            },
+            "size": {
+              "type": "string",
+              "description": "RAM size (e.g., '192K', '128K')"
+            },
+            "size_bytes": {
+              "type": "number",
+              "description": "RAM size in bytes"
+            }
+          }
+        },
+        "ccm": {
+          "type": "object",
+          "description": "Core Coupled Memory (if available)",
+          "properties": {
+            "start": { "type": "string", "pattern": "^0x[0-9A-Fa-f]+$" },
+            "size": { "type": "string" },
+            "size_bytes": { "type": "number" }
+          }
+        }
+      }
+    },
+    "peripherals": {
+      "type": "object",
+      "description": "Available peripherals",
+      "properties": {
+        "gpio": {
+          "type": "object",
+          "properties": {
+            "count": { "type": "number" },
+            "ports": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "uart": {
+          "type": "object",
+          "properties": {
+            "count": { "type": "number" },
+            "instances": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "spi": {
+          "type": "object",
+          "properties": {
+            "count": { "type": "number" },
+            "instances": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "i2c": {
+          "type": "object",
+          "properties": {
+            "count": { "type": "number" },
+            "instances": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "adc": {
+          "type": "object",
+          "properties": {
+            "count": { "type": "number" },
+            "instances": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "resolution_bits": {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          }
+        },
+        "timer": {
+          "type": "object",
+          "properties": {
+            "count": { "type": "number" },
+            "instances": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "dma": {
+          "type": "object",
+          "properties": {
+            "count": { "type": "number" },
+            "instances": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "channels_per_controller": { "type": "number" }
+          }
+        }
+      }
+    },
+    "clocks": {
+      "type": "object",
+      "description": "Clock configuration",
+      "properties": {
+        "hse": {
+          "type": "object",
+          "description": "High-Speed External oscillator",
+          "properties": {
+            "frequency_hz": { "type": "number" },
+            "available": { "type": "boolean" }
+          }
+        },
+        "hsi": {
+          "type": "object",
+          "description": "High-Speed Internal oscillator",
+          "properties": {
+            "frequency_hz": { "type": "number" },
+            "available": { "type": "boolean" }
+          }
+        },
+        "pll": {
+          "type": "object",
+          "description": "Phase-Locked Loop",
+          "properties": {
+            "available": { "type": "boolean" },
+            "max_frequency_hz": { "type": "number" }
+          }
+        }
+      }
+    },
+    "includes": {
+      "type": "object",
+      "description": "Include paths for generated code",
+      "properties": {
+        "register_include": {
+          "type": "string",
+          "description": "Path to register definitions"
+        },
+        "bitfield_include": {
+          "type": "string",
+          "description": "Path to bitfield definitions"
+        },
+        "peripheral_include": {
+          "type": "string",
+          "description": "Path to peripheral definitions"
+        }
+      }
+    },
+    "namespaces": {
+      "type": "object",
+      "description": "C++ namespace configuration",
+      "properties": {
+        "platform_namespace": {
+          "type": "string",
+          "description": "Platform namespace (e.g., 'alloy::hal::stm32f4')"
+        },
+        "vendor_namespace": {
+          "type": "string",
+          "description": "Vendor namespace (e.g., 'stm32')"
+        },
+        "register_namespace": {
+          "type": "string",
+          "description": "Register namespace"
+        }
+      }
+    }
+  }
+}
