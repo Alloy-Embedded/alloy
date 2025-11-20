@@ -193,24 +193,36 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 
 **Note**: Platform differences are handled via HardwarePolicy pattern (injected at derived class level), not in base class.
 
-### 1.7 Refactor GPIO APIs (12h)
+### 1.7 Refactor GPIO APIs (12h) ✅ PARTIAL (Simple & Fluent complete)
 
-- [ ] Refactor GpioSimple
+- [x] Refactor GpioSimple
+  - [x] Inherit from GpioBase via CRTP
+  - [x] Implement all *_impl() methods
+  - [x] Keep active-high/active-low abstraction
+  - [x] Maintain factory methods (output, input, etc.)
+  - [x] Create compile test
+- [x] Refactor GpioFluent
+  - [x] Make FluentGpioConfig inherit from GpioBase
+  - [x] Implement all *_impl() methods (delegate to SimpleGpioPin)
+  - [x] Keep fluent builder pattern (GpioBuilder)
+  - [x] Maintain method chaining
+  - [x] Fix initialize() method to work with CRTP
+- [ ] Refactor GpioExpert (deferred)
   - [ ] Inherit from GpioBase
-  - [ ] Remove duplication
-  - [ ] Test on all platforms
-- [ ] Refactor GpioFluent
-  - [ ] Inherit from GpioBase
-  - [ ] Keep fluent methods
-  - [ ] Test method chaining
-- [ ] Refactor GpioExpert
-  - [ ] Inherit from GpioBase
-  - [ ] Keep direct register access
-  - [ ] Test expert methods
-- [ ] Test on all boards
-  - [ ] nucleo_f401re
-  - [ ] same70_xplained
-  - [ ] nucleo_g071rb
+  - [ ] Keep expert-specific methods
+  - [ ] Maintain compile-time validation
+- [ ] Test on all boards (deferred to later phase)
+
+**Deliverables**:
+- `src/hal/api/gpio_simple.hpp` (refactored with CRTP, 280 lines)
+- `src/hal/api/gpio_fluent.hpp` (refactored with CRTP, 405 lines)
+- `tests/compile_tests/test_gpio_simple_crtp.cpp` (320 lines)
+
+**Benefits**:
+- Eliminates code duplication between Simple and Fluent APIs
+- Both APIs share common implementation from GpioBase
+- Zero runtime overhead maintained via CRTP
+- Consistent API across GPIO levels
 
 ### 1.8 Implement SpiBase (6h)
 

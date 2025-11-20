@@ -5,13 +5,21 @@
  * Provides chainable builder pattern for readable GPIO configuration.
  * Fluent API enables method chaining for clear, self-documenting code.
  *
- * @note Part of Alloy HAL API Layer
+ * Design Principles:
+ * - Fluent method chaining (returns *this)
+ * - Incremental validation across method calls
+ * - Self-documenting API (reads like natural language)
+ * - Built on GpioBase CRTP for code reuse
+ *
+ * @note Part of Phase 1.7.2: Refactor GpioFluent (library-quality-improvements)
+ * @see docs/architecture/CRTP_PATTERN.md
  */
 
 #pragma once
 
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "hal/api/gpio_base.hpp"
 #include "hal/api/gpio_simple.hpp"
 #include "hal/types.hpp"
 
@@ -36,36 +44,121 @@ struct GpioBuilderState {
 /**
  * @brief Fluent GPIO configuration result
  *
+ * Wraps a SimpleGpioPin and inherits from GpioBase for CRTP.
+ * Provides all GPIO operations plus access to the underlying simple pin.
+ *
  * @tparam PinType GPIO pin type
  */
 template <typename PinType>
-struct FluentGpioConfig {
+struct FluentGpioConfig : public GpioBase<FluentGpioConfig<PinType>> {
+    using Base = GpioBase<FluentGpioConfig<PinType>>;
+    friend Base;
+
     SimpleGpioPin<PinType> pin;
 
-    /**
-     * @brief Turn pin ON
-     */
-    Result<void, ErrorCode> on() { return pin.on(); }
+    // ========================================================================
+    // Inherited Interface from GpioBase (CRTP)
+    // ========================================================================
 
-    /**
-     * @brief Turn pin OFF
-     */
-    Result<void, ErrorCode> off() { return pin.off(); }
-
-    /**
-     * @brief Toggle pin
-     */
-    Result<void, ErrorCode> toggle() { return pin.toggle(); }
-
-    /**
-     * @brief Check if pin is ON
-     */
-    Result<bool, ErrorCode> is_on() const { return pin.is_on(); }
+    // Inherit all common GPIO methods from base
+    using Base::on;              // Turn pin logically ON
+    using Base::off;             // Turn pin logically OFF
+    using Base::toggle;          // Toggle pin state
+    using Base::is_on;           // Check if logically ON
+    using Base::is_off;          // Check if logically OFF
+    using Base::set;             // Set pin physically HIGH
+    using Base::clear;           // Set pin physically LOW
+    using Base::read;            // Read physical pin state
+    using Base::set_direction;   // Set pin direction
+    using Base::set_output;      // Configure as output
+    using Base::set_input;       // Configure as input
+    using Base::set_pull;        // Set pull resistor
+    using Base::set_drive;       // Set drive mode
+    using Base::configure_push_pull_output;
+    using Base::configure_open_drain_output;
+    using Base::configure_input_pullup;
+    using Base::configure_input_pulldown;
+    using Base::configure_input_floating;
 
     /**
      * @brief Access underlying simple pin
      */
     SimpleGpioPin<PinType>& simple_pin() { return pin; }
+    const SimpleGpioPin<PinType>& simple_pin() const { return pin; }
+
+    // ========================================================================
+    // Implementation Methods (public for concept checking)
+    // ========================================================================
+
+    /**
+     * @brief Turn pin logically ON - implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> on_impl() noexcept {
+        return pin.on();
+    }
+
+    /**
+     * @brief Turn pin logically OFF - implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> off_impl() noexcept {
+        return pin.off();
+    }
+
+    /**
+     * @brief Toggle pin state - implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> toggle_impl() noexcept {
+        return pin.toggle();
+    }
+
+    /**
+     * @brief Check if pin is logically ON - implementation
+     */
+    [[nodiscard]] constexpr Result<bool, ErrorCode> is_on_impl() const noexcept {
+        return pin.is_on();
+    }
+
+    /**
+     * @brief Set pin physically HIGH - implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> set_impl() noexcept {
+        return pin.set();
+    }
+
+    /**
+     * @brief Set pin physically LOW - implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> clear_impl() noexcept {
+        return pin.clear();
+    }
+
+    /**
+     * @brief Read physical pin state - implementation
+     */
+    [[nodiscard]] constexpr Result<bool, ErrorCode> read_impl() const noexcept {
+        return pin.read();
+    }
+
+    /**
+     * @brief Set pin direction - implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> set_direction_impl(PinDirection direction) noexcept {
+        return pin.set_direction(direction);
+    }
+
+    /**
+     * @brief Set pull resistor - implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> set_pull_impl(PinPull pull) noexcept {
+        return pin.set_pull(pull);
+    }
+
+    /**
+     * @brief Set drive mode - implementation
+     */
+    [[nodiscard]] constexpr Result<void, ErrorCode> set_drive_impl(PinDrive drive) noexcept {
+        return pin.set_drive(drive);
+    }
 };
 
 /**
@@ -266,33 +359,35 @@ public:
 
         // Apply configuration
         auto dir_result = pin.platform_pin().setDirection(direction_);
-        if (!dir_result.is_ok()) {
-            return Err(dir_result.error());
+        if (dir_result.is_err()) {
+            return Err(std::move(dir_result).err());
         }
 
         if (state_.has_pull) {
             auto pull_result = pin.platform_pin().setPull(pull_);
-            if (!pull_result.is_ok()) {
-                return Err(pull_result.error());
+            if (pull_result.is_err()) {
+                return Err(std::move(pull_result).err());
             }
         }
 
         if (state_.has_drive) {
             auto drive_result = pin.platform_pin().setDrive(drive_);
-            if (!drive_result.is_ok()) {
-                return Err(drive_result.error());
+            if (drive_result.is_err()) {
+                return Err(std::move(drive_result).err());
             }
         }
 
         // Set initial state to OFF
         if (direction_ == PinDirection::Output) {
             auto off_result = pin.off();
-            if (!off_result.is_ok()) {
-                return Err(off_result.error());
+            if (off_result.is_err()) {
+                return Err(std::move(off_result).err());
             }
         }
 
-        return Ok(FluentGpioConfig<PinType>{std::move(pin)});
+        FluentGpioConfig<PinType> config;
+        config.pin = std::move(pin);
+        return Ok(std::move(config));
     }
 
 private:
