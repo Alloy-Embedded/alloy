@@ -23,9 +23,9 @@
 #include "hal/api/gpio_simple.hpp"
 #include "hal/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Builder state tracking for compile-time validation
@@ -398,4 +398,4 @@ private:
     GpioBuilderState state_;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

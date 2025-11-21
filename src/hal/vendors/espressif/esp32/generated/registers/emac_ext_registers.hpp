@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::emac_ext {
+namespace ucore::hal::espressif::esp32::emac_ext {
 
 // ============================================================================
 // EMAC_EXT - Ethernet Clock, PHY type, and SRAM configuration registers
@@ -51,4 +51,4 @@ inline EMAC_EXT_Registers* EMAC_EXT() {
     return reinterpret_cast<EMAC_EXT_Registers*>(0x3FF69800);
 }
 
-}  // namespace alloy::hal::espressif::esp32::emac_ext
+}  // namespace ucore::hal::espressif::esp32::emac_ext

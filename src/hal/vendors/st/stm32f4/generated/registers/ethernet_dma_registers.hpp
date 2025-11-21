@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::ethernet_dma {
+namespace ucore::hal::st::stm32f4::ethernet_dma {
 
 // ============================================================================
 // Ethernet_DMA - Ethernet: DMA controller operation
@@ -110,4 +110,4 @@ inline Ethernet_DMA_Registers* Ethernet_DMA() {
     return reinterpret_cast<Ethernet_DMA_Registers*>(0x40029000);
 }
 
-}  // namespace alloy::hal::st::stm32f4::ethernet_dma
+}  // namespace ucore::hal::st::stm32f4::ethernet_dma

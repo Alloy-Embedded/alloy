@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::pf {
+namespace ucore::hal::st::stm32f7::pf {
 
 // ============================================================================
 // PF - Processor features
@@ -44,4 +44,4 @@ inline PF_Registers* PF() {
     return reinterpret_cast<PF_Registers*>(0xE000ED78);
 }
 
-}  // namespace alloy::hal::st::stm32f7::pf
+}  // namespace ucore::hal::st::stm32f7::pf

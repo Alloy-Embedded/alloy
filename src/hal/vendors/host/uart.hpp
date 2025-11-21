@@ -2,12 +2,12 @@
 ///
 /// Provides UART simulation using stdin/stdout for testing without hardware.
 
-#ifndef ALLOY_HAL_HOST_UART_HPP
-#define ALLOY_HAL_HOST_UART_HPP
+#ifndef UCORE_HAL_HOST_UART_HPP
+#define UCORE_HAL_HOST_UART_HPP
 
 #include "hal/interface/uart.hpp"
 
-namespace alloy::hal::host {
+namespace ucore::hal::host {
 
 /// Host UART implementation using stdin/stdout
 ///
@@ -50,10 +50,10 @@ class Uart {
     UartConfig config_;
 };
 
-}  // namespace alloy::hal::host
+}  // namespace ucore::hal::host
 
 // Validate that host UART satisfies UartDevice concept
-static_assert(alloy::hal::UartDevice<alloy::hal::host::Uart>,
+static_assert(ucore::hal::UartDevice<ucore::hal::host::Uart>,
               "Host Uart must satisfy UartDevice concept");
 
 #endif  // ALLOY_HAL_HOST_UART_HPP

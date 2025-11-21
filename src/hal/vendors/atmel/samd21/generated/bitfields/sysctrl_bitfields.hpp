@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::sysctrl {
+namespace ucore::hal::atmel::samd21::sysctrl {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SYSCTRL Bit Field Definitions
@@ -1020,4 +1020,4 @@ namespace dpllstatus {
 
 }  // namespace dpllstatus
 
-}  // namespace alloy::hal::atmel::samd21::sysctrl
+}  // namespace ucore::hal::atmel::samd21::sysctrl

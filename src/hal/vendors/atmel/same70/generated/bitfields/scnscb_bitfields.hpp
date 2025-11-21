@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::scnscb {
+namespace ucore::hal::atmel::same70::scnscb {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SCnSCB Bit Field Definitions
@@ -99,4 +99,4 @@ constexpr uint32_t DISFPUISSOPT_Msk = DISFPUISSOPT::mask;
 
 }  // namespace actlr
 
-}  // namespace alloy::hal::atmel::same70::scnscb
+}  // namespace ucore::hal::atmel::same70::scnscb

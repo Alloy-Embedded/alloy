@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::dsu {
+namespace ucore::hal::atmel::samd21::dsu {
 
 // ============================================================================
 // DSU - Device Service Unit
@@ -141,4 +141,4 @@ inline DSU_Registers* DSU() {
     return reinterpret_cast<DSU_Registers*>(0x41002000);
 }
 
-}  // namespace alloy::hal::atmel::samd21::dsu
+}  // namespace ucore::hal::atmel::samd21::dsu

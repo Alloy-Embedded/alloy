@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f1::dbg {
+namespace ucore::hal::st::stm32f1::dbg {
 
 // ============================================================================
 // DBG - Debug support
@@ -38,4 +38,4 @@ inline DBG_Registers* DBG() {
     return reinterpret_cast<DBG_Registers*>(0xE0042000);
 }
 
-}  // namespace alloy::hal::st::stm32f1::dbg
+}  // namespace ucore::hal::st::stm32f1::dbg

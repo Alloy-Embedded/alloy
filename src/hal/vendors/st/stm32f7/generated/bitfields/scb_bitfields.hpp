@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::scb {
+namespace ucore::hal::st::stm32f7::scb {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SCB Bit Field Definitions
@@ -535,4 +535,4 @@ namespace bfar {
 
 }  // namespace bfar
 
-}  // namespace alloy::hal::st::stm32f7::scb
+}  // namespace ucore::hal::st::stm32f7::scb

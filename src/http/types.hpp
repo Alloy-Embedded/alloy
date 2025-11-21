@@ -11,7 +11,7 @@
 
 #include "core/types.hpp"
 
-namespace alloy::http {
+namespace ucore::http {
 
 /**
  * @brief HTTP request methods
@@ -198,4 +198,4 @@ inline const char* status_description(Status status) {
     }
 }
 
-}  // namespace alloy::http
+}  // namespace ucore::http

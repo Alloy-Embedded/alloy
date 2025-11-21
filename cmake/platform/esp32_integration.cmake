@@ -4,7 +4,7 @@
 # Users don't need to install or configure ESP-IDF manually.
 #
 # Usage (automatic):
-#   cmake -B build -DALLOY_BOARD=esp32_devkit
+#   cmake -B build -DMICROCORE_BOARD=esp32_devkit
 #   cmake --build build
 #
 # The system will:
@@ -14,10 +14,10 @@
 # 4. Configure ESP-IDF build system transparently
 
 # Guard against multiple inclusion
-if(ALLOY_ESP32_INTEGRATION_INCLUDED)
+if(MICROCORE_ESP32_INTEGRATION_INCLUDED)
     return()
 endif()
-set(ALLOY_ESP32_INTEGRATION_INCLUDED TRUE)
+set(MICROCORE_ESP32_INTEGRATION_INCLUDED TRUE)
 
 message(STATUS "========================================")
 message(STATUS "ESP32 Build System Integration")

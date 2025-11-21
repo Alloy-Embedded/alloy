@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::dma {
+namespace ucore::hal::raspberrypi::rp2040::dma {
 
 // ============================================================================
 // DMA - DMA with separate read and write masters
@@ -1390,4 +1390,4 @@ inline DMA_Registers* DMA() {
     return reinterpret_cast<DMA_Registers*>(0x50000000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::dma
+}  // namespace ucore::hal::raspberrypi::rp2040::dma

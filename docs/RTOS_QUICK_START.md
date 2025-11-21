@@ -634,7 +634,7 @@ add_subdirectory(alloy)
 
 # Your executable
 add_executable(my_app src/main.cpp)
-target_link_libraries(my_app PRIVATE alloy-hal)
+target_link_libraries(my_app PRIVATE microcore-hal)
 ```
 
 ---

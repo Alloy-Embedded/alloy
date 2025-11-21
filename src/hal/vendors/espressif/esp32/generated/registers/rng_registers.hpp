@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::rng {
+namespace ucore::hal::espressif::esp32::rng {
 
 // ============================================================================
 // RNG - Hardware Random Number Generator
@@ -32,4 +32,4 @@ inline RNG_Registers* RNG() {
     return reinterpret_cast<RNG_Registers*>(0x60035000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::rng
+}  // namespace ucore::hal::espressif::esp32::rng

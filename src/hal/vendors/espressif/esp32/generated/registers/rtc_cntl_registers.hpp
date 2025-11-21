@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::rtc_cntl {
+namespace ucore::hal::espressif::esp32::rtc_cntl {
 
 // ============================================================================
 // RTC_CNTL - Real-Time Clock Control
@@ -271,4 +271,4 @@ inline RTC_CNTL_Registers* RTC_CNTL() {
     return reinterpret_cast<RTC_CNTL_Registers*>(0x3FF48000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::rtc_cntl
+}  // namespace ucore::hal::espressif::esp32::rtc_cntl

@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 
-namespace alloy::startup {
+namespace ucore::startup {
 
 /// Linker script symbols that must be defined in each board's linker script
 extern "C" {
@@ -101,9 +101,9 @@ inline void call_fini_array() {
 /// ```cpp
 /// extern "C" [[noreturn]] void Reset_Handler() {
 ///     // Optional: Early hardware init (e.g., FPU enable)
-///     alloy::startup::initialize_runtime();
+///     ucore::startup::initialize_runtime();
 ///     main();
-///     alloy::startup::infinite_loop();
+///     ucore::startup::infinite_loop();
 /// }
 /// ```
 inline void initialize_runtime() {
@@ -138,7 +138,7 @@ inline void cleanup_runtime() {
     }
 }
 
-}  // namespace alloy::startup
+}  // namespace ucore::startup
 
 // Default exception handler for unhandled interrupts
 // Boards can override this by providing their own Default_Handler

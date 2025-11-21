@@ -29,7 +29,7 @@
 #include "core/error.hpp"
 #include "core/types.hpp"
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ==============================================================================
 // Platform-Specific Includes
@@ -40,21 +40,21 @@ using namespace alloy::core;
     #include "hal/vendors/st/stm32f4/gpio.hpp"
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = alloy::hal::st::stm32f4::Stm32f4Clock<
-        alloy::hal::st::stm32f4::ExampleF4ClockConfig
+    using ClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
+        ucore::hal::st::stm32f4::ExampleF4ClockConfig
     >;
-    using LedPin = alloy::boards::LedGreen;
-    using ButtonPin = alloy::boards::UserButton;  // Usually PC13 on Nucleo
+    using LedPin = ucore::boards::LedGreen;
+    using ButtonPin = ucore::boards::UserButton;  // Usually PC13 on Nucleo
 
 #elif defined(ALLOY_BOARD_SAME70_XPLAINED)
     #include "hal/vendors/microchip/same70/clock_platform.hpp"
     #include "hal/vendors/microchip/same70/gpio.hpp"
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = alloy::hal::microchip::same70::Same70Clock<
-        alloy::hal::microchip::same70::ExampleSame70ClockConfig
+    using ClockPlatform = ucore::hal::microchip::same70::Same70Clock<
+        ucore::hal::microchip::same70::ExampleSame70ClockConfig
     >;
-    using LedPin = alloy::boards::LedGreen;
+    using LedPin = ucore::boards::LedGreen;
 
 #else
     #error "Unsupported board for interrupt test"

@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::mlb {
+namespace ucore::hal::atmel::samv71::mlb {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // MLB Bit Field Definitions
@@ -445,4 +445,4 @@ namespace acmr {
 
 }  // namespace acmr
 
-}  // namespace alloy::hal::atmel::samv71::mlb
+}  // namespace ucore::hal::atmel::samv71::mlb

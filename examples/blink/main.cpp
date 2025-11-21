@@ -51,7 +51,7 @@
 
 #include "hal/api/systick_simple.hpp"
 
-using namespace alloy::hal;
+using namespace ucore::hal;
 
 int main() {
     // Initialize all board hardware (clock, GPIO, SysTick, etc.)

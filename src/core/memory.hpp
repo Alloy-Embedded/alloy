@@ -10,22 +10,22 @@
 /// Usage:
 /// ```cpp
 /// // Ensure Task struct fits within budget
-/// ALLOY_ASSERT_MAX_SIZE(Task<256>, 512);
+/// UCORE_ASSERT_MAX_SIZE(Task<256>, 512);
 ///
 /// // Verify GPIO register is zero-overhead
-/// ALLOY_ASSERT_ZERO_OVERHEAD(GPIO_Port);
+/// UCORE_ASSERT_ZERO_OVERHEAD(GPIO_Port);
 ///
 /// // Ensure proper alignment for DMA
-/// ALLOY_ASSERT_ALIGNMENT(DMA_Buffer, 32);
+/// UCORE_ASSERT_ALIGNMENT(DMA_Buffer, 32);
 /// ```
 
-#ifndef ALLOY_CORE_MEMORY_HPP
-#define ALLOY_CORE_MEMORY_HPP
+#ifndef UCORE_CORE_MEMORY_HPP
+#define UCORE_CORE_MEMORY_HPP
 
 #include <cstddef>
 #include <type_traits>
 
-namespace alloy::core {
+namespace ucore::core {
 
 /// Assert that a type's size does not exceed a maximum
 ///
@@ -38,9 +38,9 @@ namespace alloy::core {
 /// Example:
 /// ```cpp
 /// // Ensure Task control block fits within 64 bytes
-/// ALLOY_ASSERT_MAX_SIZE(TaskControlBlock, 64);
+/// UCORE_ASSERT_MAX_SIZE(TaskControlBlock, 64);
 /// ```
-#define ALLOY_ASSERT_MAX_SIZE(T, MaxSize)                                               \
+#define UCORE_ASSERT_MAX_SIZE(T, MaxSize)                                               \
     static_assert(sizeof(T) <= (MaxSize), #T " exceeds maximum size: sizeof(" #T ") = " \
                                              "actual bytes, max = " #MaxSize " bytes")
 
@@ -55,12 +55,12 @@ namespace alloy::core {
 /// Example:
 /// ```cpp
 /// // Ensure GPIO wrapper has no overhead vs raw pointer
-/// ALLOY_ASSERT_ZERO_OVERHEAD(GPIO_Port, sizeof(void*));
+/// UCORE_ASSERT_ZERO_OVERHEAD(GPIO_Port, sizeof(void*));
 ///
 /// // Ensure Register<T> has no overhead
-/// ALLOY_ASSERT_ZERO_OVERHEAD(Register<uint32_t>, sizeof(uint32_t));
+/// UCORE_ASSERT_ZERO_OVERHEAD(Register<uint32_t>, sizeof(uint32_t));
 /// ```
-#define ALLOY_ASSERT_ZERO_OVERHEAD(T, ExpectedSize)                          \
+#define UCORE_ASSERT_ZERO_OVERHEAD(T, ExpectedSize)                          \
     static_assert(sizeof(T) == (ExpectedSize),                               \
                   #T " has memory overhead: sizeof(" #T ") = actual bytes, " \
                      "expected = " #ExpectedSize " bytes (zero overhead)")
@@ -76,12 +76,12 @@ namespace alloy::core {
 /// Example:
 /// ```cpp
 /// // Ensure DMA buffer is 32-byte aligned for cache coherency
-/// ALLOY_ASSERT_ALIGNMENT(DMA_Buffer, 32);
+/// UCORE_ASSERT_ALIGNMENT(DMA_Buffer, 32);
 ///
 /// // Ensure atomic variable is naturally aligned
-/// ALLOY_ASSERT_ALIGNMENT(Atomic<uint64_t>, 8);
+/// UCORE_ASSERT_ALIGNMENT(Atomic<uint64_t>, 8);
 /// ```
-#define ALLOY_ASSERT_ALIGNMENT(T, RequiredAlignment)                            \
+#define UCORE_ASSERT_ALIGNMENT(T, RequiredAlignment)                            \
     static_assert(alignof(T) >= (RequiredAlignment),                            \
                   #T " does not meet alignment requirement: alignof(" #T ") = " \
                      "actual bytes, required = " #RequiredAlignment " bytes")
@@ -165,6 +165,6 @@ constexpr bool is_trivially_copyable() {
     return std::is_trivially_copyable_v<T>;
 }
 
-}  // namespace alloy::core
+}  // namespace ucore::core
 
 #endif  // ALLOY_CORE_MEMORY_HPP

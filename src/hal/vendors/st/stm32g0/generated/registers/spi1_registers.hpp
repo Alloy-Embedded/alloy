@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::spi1 {
+namespace ucore::hal::st::stm32g0::spi1 {
 
 // ============================================================================
 // SPI1 - Serial peripheral interface
@@ -79,4 +79,4 @@ inline SPI1_Registers* SPI1() {
     return reinterpret_cast<SPI1_Registers*>(0x40013000);
 }
 
-}  // namespace alloy::hal::st::stm32g0::spi1
+}  // namespace ucore::hal::st::stm32g0::spi1

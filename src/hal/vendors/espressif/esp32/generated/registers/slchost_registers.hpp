@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::slchost {
+namespace ucore::hal::espressif::esp32::slchost {
 
 // ============================================================================
 // SLCHOST - SLCHOST Peripheral
@@ -298,4 +298,4 @@ inline SLCHOST_Registers* SLCHOST() {
     return reinterpret_cast<SLCHOST_Registers*>(0x3FF55000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::slchost
+}  // namespace ucore::hal::espressif::esp32::slchost

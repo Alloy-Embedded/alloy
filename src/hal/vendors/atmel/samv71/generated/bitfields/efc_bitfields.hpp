@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::efc {
+namespace ucore::hal::atmel::samv71::efc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // EFC Bit Field Definitions
@@ -177,4 +177,4 @@ namespace eefc_wpmr {
 
 }  // namespace eefc_wpmr
 
-}  // namespace alloy::hal::atmel::samv71::efc
+}  // namespace ucore::hal::atmel::samv71::efc

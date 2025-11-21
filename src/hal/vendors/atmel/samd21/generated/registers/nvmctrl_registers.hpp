@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::nvmctrl {
+namespace ucore::hal::atmel::samd21::nvmctrl {
 
 // ============================================================================
 // NVMCTRL - Non-Volatile Memory Controller
@@ -67,4 +67,4 @@ inline NVMCTRL_Registers* NVMCTRL() {
     return reinterpret_cast<NVMCTRL_Registers*>(0x41004000);
 }
 
-}  // namespace alloy::hal::atmel::samd21::nvmctrl
+}  // namespace ucore::hal::atmel::samd21::nvmctrl

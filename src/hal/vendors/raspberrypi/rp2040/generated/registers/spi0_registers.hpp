@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::spi0 {
+namespace ucore::hal::raspberrypi::rp2040::spi0 {
 
 // ============================================================================
 // SPI0 - Peripheral Registers
@@ -117,4 +117,4 @@ inline SPI0_Registers* SPI0() {
     return reinterpret_cast<SPI0_Registers*>(0x4003C000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::spi0
+}  // namespace ucore::hal::raspberrypi::rp2040::spi0

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::fpu_cpacr {
+namespace ucore::hal::st::stm32f4::fpu_cpacr {
 
 // ============================================================================
 // FPU_CPACR - Floating point unit CPACR
@@ -32,4 +32,4 @@ inline FPU_CPACR_Registers* FPU_CPACR() {
     return reinterpret_cast<FPU_CPACR_Registers*>(0xE000ED88);
 }
 
-}  // namespace alloy::hal::st::stm32f4::fpu_cpacr
+}  // namespace ucore::hal::st::stm32f4::fpu_cpacr

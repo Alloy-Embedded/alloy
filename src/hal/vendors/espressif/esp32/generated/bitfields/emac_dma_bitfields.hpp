@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::emac_dma {
+namespace ucore::hal::espressif::esp32::emac_dma {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // EMAC_DMA Bit Field Definitions
@@ -496,4 +496,4 @@ namespace dmarintwdtimer {
 
 }  // namespace dmarintwdtimer
 
-}  // namespace alloy::hal::espressif::esp32::emac_dma
+}  // namespace ucore::hal::espressif::esp32::emac_dma

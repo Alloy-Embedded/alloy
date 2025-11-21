@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace alloy::hal::stm32f407::stm32f407zg::pins {
+namespace ucore::hal::stm32f407::stm32f407zg::pins {
 
 // ============================================================================
 // Auto-generated pin definitions for STM32F407ZG
@@ -185,4 +185,4 @@ constexpr void validate_pin() {
 constexpr size_t TOTAL_PIN_COUNT = detail::PIN_COUNT;  // 112 pins
 constexpr size_t GPIO_PORT_COUNT = 7;                  // 7 ports
 
-}  // namespace alloy::hal::stm32f407::stm32f407zg::pins
+}  // namespace ucore::hal::stm32f407::stm32f407zg::pins

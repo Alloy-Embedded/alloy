@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::gpio {
+namespace ucore::hal::espressif::esp32::gpio {
 
 // ============================================================================
 // GPIO - General Purpose Input/Output
@@ -179,4 +179,4 @@ inline GPIO_Registers* GPIO() {
     return reinterpret_cast<GPIO_Registers*>(0x3FF44000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::gpio
+}  // namespace ucore::hal::espressif::esp32::gpio

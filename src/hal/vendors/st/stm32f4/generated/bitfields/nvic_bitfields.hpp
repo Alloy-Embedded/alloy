@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::nvic {
+namespace ucore::hal::st::stm32f4::nvic {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // NVIC Bit Field Definitions
@@ -727,4 +727,4 @@ namespace ipr19 {
 
 }  // namespace ipr19
 
-}  // namespace alloy::hal::st::stm32f4::nvic
+}  // namespace ucore::hal::st::stm32f4::nvic

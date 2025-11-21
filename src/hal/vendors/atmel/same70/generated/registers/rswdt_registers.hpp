@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::rswdt {
+namespace ucore::hal::atmel::same70::rswdt {
 
 // ============================================================================
 // RSWDT - Reinforced Safety Watchdog Timer
@@ -39,4 +39,4 @@ inline RSWDT_Registers* RSWDT() {
     return reinterpret_cast<RSWDT_Registers*>(0x400E1900);
 }
 
-}  // namespace alloy::hal::atmel::same70::rswdt
+}  // namespace ucore::hal::atmel::same70::rswdt

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::usart0 {
+namespace ucore::hal::atmel::same70::usart0 {
 
 // ============================================================================
 // USART0 - Universal Synchronous Asynchronous Receiver Transmitter
@@ -245,4 +245,4 @@ inline USART0_Registers* USART0() {
     return reinterpret_cast<USART0_Registers*>(0x40024000);
 }
 
-}  // namespace alloy::hal::atmel::same70::usart0
+}  // namespace ucore::hal::atmel::same70::usart0

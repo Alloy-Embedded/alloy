@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::cryp {
+namespace ucore::hal::st::stm32f4::cryp {
 
 // ============================================================================
 // CRYP - Cryptographic processor
@@ -241,4 +241,4 @@ inline CRYP_Registers* CRYP() {
     return reinterpret_cast<CRYP_Registers*>(0x50060000);
 }
 
-}  // namespace alloy::hal::st::stm32f4::cryp
+}  // namespace ucore::hal::st::stm32f4::cryp

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::tc3 {
+namespace ucore::hal::atmel::samd21::tc3 {
 
 // ============================================================================
 // TC3 - Basic Timer Counter 3
@@ -199,4 +199,4 @@ inline TC3_Registers* TC3() {
     return reinterpret_cast<TC3_Registers*>(0x42002C00);
 }
 
-}  // namespace alloy::hal::atmel::samd21::tc3
+}  // namespace ucore::hal::atmel::samd21::tc3

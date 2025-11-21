@@ -28,10 +28,10 @@
 #include "hal/core/concepts.hpp"
 #endif
 
-namespace alloy::hal::st::stm32f4 {
+namespace ucore::hal::st::stm32f4 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 /**
  * @brief Template-based GPIO pin for STM32F4
@@ -198,8 +198,8 @@ public:
 #if __cplusplus >= 202002L
 // Compile-time validation: Verify that GpioPin satisfies the GpioPin concept
 // Using GPIOA pin 5 as example (LED on most Nucleo boards)
-static_assert(alloy::hal::concepts::GpioPin<GpioPin<0x40020000, 5>>,
+static_assert(ucore::hal::concepts::GpioPin<GpioPin<0x40020000, 5>>,
               "STM32F4 GpioPin must satisfy GpioPin concept - missing required methods");
 #endif
 
-} // namespace alloy::hal::st::stm32f4
+} // namespace ucore::hal::st::stm32f4

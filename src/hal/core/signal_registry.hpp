@@ -24,10 +24,10 @@
 #include "core/types.hpp"
 #include "hal/core/signals.hpp"
 
-namespace alloy::hal::signal_registry {
+namespace ucore::hal::signal_registry {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 // ============================================================================
 // Registry Entry Types
@@ -211,7 +211,7 @@ using AddAllocation_t = typename AddAllocation<Registry, Alloc>::type;
  * @endcode
  */
 #define ALLOC_PIN(pin, peripheral, signal_type) \
-    alloy::hal::signal_registry::PinAllocation(pin, peripheral, signal_type)
+    ucore::hal::signal_registry::PinAllocation(pin, peripheral, signal_type)
 
 /**
  * @brief Register a signal allocation with compile-time validation
@@ -326,4 +326,4 @@ static_assert(Registry2::is_signal_allocated(PeripheralId::USART0, SignalType::T
 static_assert(Registry2::count_pin_allocations(PinId::PD4) == 1);
 */
 
-}  // namespace alloy::hal::signal_registry
+}  // namespace ucore::hal::signal_registry

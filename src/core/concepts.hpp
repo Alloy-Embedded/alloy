@@ -1,5 +1,5 @@
-#ifndef ALLOY_CORE_CONCEPTS_HPP
-#define ALLOY_CORE_CONCEPTS_HPP
+#ifndef UCORE_CORE_CONCEPTS_HPP
+#define UCORE_CORE_CONCEPTS_HPP
 
 #include <concepts>
 #include <type_traits>
@@ -8,7 +8,7 @@
 ///
 /// Defines utility concepts used for template constraints and validation.
 
-namespace alloy::core {
+namespace ucore::core {
 
 /// Concept for types that are trivially copyable (zero overhead types)
 template <typename T>
@@ -30,6 +30,6 @@ concept Arithmetic = Integral<T> || FloatingPoint<T>;
 template <typename T>
 concept Enum = std::is_enum_v<T>;
 
-}  // namespace alloy::core
+}  // namespace ucore::core
 
 #endif  // ALLOY_CORE_CONCEPTS_HPP

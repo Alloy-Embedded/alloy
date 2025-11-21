@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::mpu {
+namespace ucore::hal::atmel::samv71::mpu {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // MPU Bit Field Definitions
@@ -151,4 +151,4 @@ namespace rasr {
 
 }  // namespace rasr
 
-}  // namespace alloy::hal::atmel::samv71::mpu
+}  // namespace ucore::hal::atmel::samv71::mpu

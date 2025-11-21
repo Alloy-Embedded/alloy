@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::tamp {
+namespace ucore::hal::st::stm32g0::tamp {
 
 // ============================================================================
 // TAMP - Tamper and backup registers
@@ -90,4 +90,4 @@ inline TAMP_Registers* TAMP() {
     return reinterpret_cast<TAMP_Registers*>(0x4000B000);
 }
 
-}  // namespace alloy::hal::st::stm32g0::tamp
+}  // namespace ucore::hal::st::stm32g0::tamp

@@ -1,5 +1,5 @@
-#ifndef ALLOY_CORE_ERROR_HPP
-#define ALLOY_CORE_ERROR_HPP
+#ifndef UCORE_CORE_ERROR_HPP
+#define UCORE_CORE_ERROR_HPP
 
 #include "error_code.hpp"
 
@@ -9,11 +9,11 @@
 /// see result.hpp which provides a full implementation with two template
 /// parameters for flexible error handling.
 
-namespace alloy::core {
+namespace ucore::core {
 
 // ErrorCode enum is imported from error_code.hpp
 // No Result implementation here - use result.hpp instead
 
-}  // namespace alloy::core
+}  // namespace ucore::core
 
 #endif  // ALLOY_CORE_ERROR_HPP

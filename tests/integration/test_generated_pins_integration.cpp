@@ -10,7 +10,7 @@
 #include "../../src/hal/st/stm32f103/generated/stm32f103c8/traits.hpp"
 
 int main() {
-    using namespace alloy::hal::stm32f103::stm32f103c8;
+    using namespace ucore::hal::stm32f103::stm32f103c8;
 
     // Test 1: Verify pin constants
     printf("Test 1: Verifying pin constants...\n");

@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::dcmi {
+namespace ucore::hal::st::stm32f4::dcmi {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // DCMI Bit Field Definitions
@@ -361,4 +361,4 @@ namespace dr {
 
 }  // namespace dr
 
-}  // namespace alloy::hal::st::stm32f4::dcmi
+}  // namespace ucore::hal::st::stm32f4::dcmi

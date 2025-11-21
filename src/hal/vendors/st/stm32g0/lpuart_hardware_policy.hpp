@@ -36,12 +36,12 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
 
-namespace alloy::hal::st::stm32g0 {
+namespace ucore::hal::st::stm32g0 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::st::stm32g0::lpuart1;
+using namespace ucore::hal::st::stm32g0::lpuart1;
 
 /**
  * @brief Hardware Policy for LPUART on STM32G0
@@ -429,7 +429,7 @@ struct Stm32g0LPUARTHardwarePolicy {
 // ============================================================================
 
 
-}  // namespace alloy::hal::st::stm32g0
+}  // namespace ucore::hal::st::stm32g0
 
 /**
  * @example
@@ -439,8 +439,8 @@ struct Stm32g0LPUARTHardwarePolicy {
  * #include "hal/api/lpuart_simple.hpp"
  * #include "hal/vendors/st/stm32g0/lpuart_hardware_policy.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::st::stm32g0;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::st::stm32g0;
  *
  * // Create LPUART with hardware policy
  * using Uart0 = UartImpl<Stm32g0LPUARTHardwarePolicy<UART0_BASE, 150000000>>;

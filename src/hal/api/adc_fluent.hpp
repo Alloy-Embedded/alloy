@@ -11,10 +11,10 @@
 #include "hal/interface/adc.hpp"
 #include "hal/adc_simple.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 
 struct AdcBuilderState {
@@ -78,4 +78,4 @@ private:
     AdcBuilderState state_;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f1::afio {
+namespace ucore::hal::st::stm32f1::afio {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // AFIO Bit Field Definitions
@@ -314,4 +314,4 @@ namespace mapr2 {
 
 }  // namespace mapr2
 
-}  // namespace alloy::hal::st::stm32f1::afio
+}  // namespace ucore::hal::st::stm32f1::afio

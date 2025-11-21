@@ -2,8 +2,8 @@
 ///
 /// Defines I2C concepts and configuration types for all platforms.
 
-#ifndef ALLOY_HAL_INTERFACE_I2C_HPP
-#define ALLOY_HAL_INTERFACE_I2C_HPP
+#ifndef UCORE_HAL_INTERFACE_I2C_HPP
+#define UCORE_HAL_INTERFACE_I2C_HPP
 
 #include <concepts>
 #include <span>
@@ -13,9 +13,9 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /// I2C addressing mode
 enum class I2cAddressing : u8 {
@@ -173,6 +173,6 @@ Result<void, ErrorCode> i2c_write_register(Device& device, u16 address, u8 reg_a
     return device.write(address, std::span(buffer, 2));
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal
 
 #endif  // ALLOY_HAL_INTERFACE_I2C_HPP

@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::rp2040::pin_functions {
+namespace ucore::hal::raspberrypi::rp2040::rp2040::pin_functions {
 
 // ============================================================================
 // PERIPHERAL SIGNAL TAG TYPES
@@ -59,4 +59,4 @@ concept HasAF = requires {
     { AlternateFunction<Pin, Function>::af_number } -> std::same_as<const uint8_t&>;
 };
 
-}  // namespace alloy::hal::raspberrypi::rp2040::rp2040::pin_functions
+}  // namespace ucore::hal::raspberrypi::rp2040::rp2040::pin_functions

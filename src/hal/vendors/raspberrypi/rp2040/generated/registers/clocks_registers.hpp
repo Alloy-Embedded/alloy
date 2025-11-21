@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::clocks {
+namespace ucore::hal::raspberrypi::rp2040::clocks {
 
 // ============================================================================
 // CLOCKS - Peripheral Registers
@@ -282,4 +282,4 @@ inline CLOCKS_Registers* CLOCKS() {
     return reinterpret_cast<CLOCKS_Registers*>(0x40008000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::clocks
+}  // namespace ucore::hal::raspberrypi::rp2040::clocks

@@ -4,7 +4,7 @@
 
 #include "pins.hpp"
 
-namespace alloy::hal::atmel::samv71::atsamv71n20b::pin_functions {
+namespace ucore::hal::atmel::samv71::atsamv71n20b::pin_functions {
 
 // ============================================================================
 // Pin Alternate Functions for ATSAMV71N20B
@@ -1471,4 +1471,4 @@ struct PinFunction<pins::PD26, PeripheralFunction::A> {
 };
 
 
-}  // namespace alloy::hal::atmel::samv71::atsamv71n20b::pin_functions
+}  // namespace ucore::hal::atmel::samv71::atsamv71n20b::pin_functions

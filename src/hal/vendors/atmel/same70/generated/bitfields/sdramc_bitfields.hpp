@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::sdramc {
+namespace ucore::hal::atmel::same70::sdramc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SDRAMC Bit Field Definitions
@@ -295,4 +295,4 @@ constexpr uint32_t KEY2_Msk = KEY2::mask;
 
 }  // namespace ocms_key2
 
-}  // namespace alloy::hal::atmel::same70::sdramc
+}  // namespace ucore::hal::atmel::same70::sdramc

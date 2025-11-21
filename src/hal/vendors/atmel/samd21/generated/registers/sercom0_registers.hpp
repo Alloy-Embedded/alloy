@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::sercom0 {
+namespace ucore::hal::atmel::samd21::sercom0 {
 
 // ============================================================================
 // SERCOM0 - Serial Communication Interface 0
@@ -217,4 +217,4 @@ inline SERCOM0_Registers* SERCOM0() {
     return reinterpret_cast<SERCOM0_Registers*>(0x42000800);
 }
 
-}  // namespace alloy::hal::atmel::samd21::sercom0
+}  // namespace ucore::hal::atmel::samd21::sercom0

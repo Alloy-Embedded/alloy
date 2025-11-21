@@ -99,7 +99,7 @@
   - ✅ Add hal library with platform sources
   - ✅ Set up proper include paths
   - ✅ Auto-detect platform from board
-  - ✅ Create alloy-hal library (STATIC or INTERFACE)
+  - ✅ Create microcore-hal library (STATIC or INTERFACE)
 - **Acceptance**: Clean CMake configuration, no errors
 
 **Week 2 Total**: 15 hours

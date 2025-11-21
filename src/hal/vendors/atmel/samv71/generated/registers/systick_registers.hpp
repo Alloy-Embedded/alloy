@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::systick {
+namespace ucore::hal::atmel::samv71::systick {
 
 // ============================================================================
 // SysTick - System timer
@@ -47,4 +47,4 @@ inline SysTick_Registers* SysTick() {
     return reinterpret_cast<SysTick_Registers*>(0xE000E010);
 }
 
-}  // namespace alloy::hal::atmel::samv71::systick
+}  // namespace ucore::hal::atmel::samv71::systick

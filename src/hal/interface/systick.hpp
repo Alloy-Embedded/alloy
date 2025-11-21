@@ -3,8 +3,8 @@
 /// Provides global microsecond time tracking for all platforms.
 /// This serves as the foundation for RTOS scheduling and timing operations.
 
-#ifndef ALLOY_HAL_INTERFACE_SYSTICK_HPP
-#define ALLOY_HAL_INTERFACE_SYSTICK_HPP
+#ifndef UCORE_HAL_INTERFACE_SYSTICK_HPP
+#define UCORE_HAL_INTERFACE_SYSTICK_HPP
 
 #include <concepts>
 
@@ -13,9 +13,9 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /// SysTick configuration parameters
 ///
@@ -44,15 +44,15 @@ struct SysTickConfig {
 /// Example usage:
 /// @code
 /// // Get current time
-/// uint32_t now = alloy::systick::micros();
+/// uint32_t now = ucore::systick::micros();
 ///
 /// // Measure elapsed time
-/// uint32_t start = alloy::systick::micros();
+/// uint32_t start = ucore::systick::micros();
 /// do_work();
-/// uint32_t elapsed = alloy::systick::micros_since(start);
+/// uint32_t elapsed = ucore::systick::micros_since(start);
 ///
 /// // Check for timeout
-/// if (alloy::systick::is_timeout(start, 1000)) {
+/// if (ucore::systick::is_timeout(start, 1000)) {
 ///     // 1ms timeout expired
 /// }
 /// @endcode
@@ -90,7 +90,7 @@ concept SystemTick = requires(T device, const T const_device) {
     { T::is_initialized() } -> std::convertible_to<bool>;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal
 
 /// Global namespace API for convenient access
 ///
@@ -101,21 +101,21 @@ concept SystemTick = requires(T device, const T const_device) {
 /// @code
 /// #include "hal/interface/systick.hpp"
 ///
-/// uint32_t start = alloy::systick::micros();
+/// uint32_t start = ucore::systick::micros();
 /// delay(10);
-/// uint32_t elapsed = alloy::systick::micros_since(start);
+/// uint32_t elapsed = ucore::systick::micros_since(start);
 /// @endcode
-namespace alloy::systick {
+namespace ucore::systick {
 
 // Forward declaration - implemented by platform-specific code
 namespace detail {
-alloy::core::u32 get_micros();
+ucore::core::u32 get_micros();
 }
 
 /// Get current time in microseconds
 ///
 /// @return Microseconds since SysTick initialization
-inline alloy::core::u32 micros() {
+inline ucore::core::u32 micros() {
     return detail::get_micros();
 }
 
@@ -128,11 +128,11 @@ inline alloy::core::u32 micros() {
 ///
 /// Example:
 /// @code
-/// uint32_t start = alloy::systick::micros();
+/// uint32_t start = ucore::systick::micros();
 /// // ... time passes, possibly with overflow ...
-/// uint32_t elapsed = alloy::systick::micros_since(start);
+/// uint32_t elapsed = ucore::systick::micros_since(start);
 /// @endcode
-inline alloy::core::u32 micros_since(alloy::core::u32 start_time) {
+inline ucore::core::u32 micros_since(ucore::core::u32 start_time) {
     // Unsigned arithmetic handles wraparound correctly
     // Example: start=0xFFFFFF00, now=0x00000100
     // elapsed = 0x00000100 - 0xFFFFFF00 = 0x00000200 (512us) ✓
@@ -149,13 +149,13 @@ inline alloy::core::u32 micros_since(alloy::core::u32 start_time) {
 ///
 /// Example:
 /// @code
-/// uint32_t start = alloy::systick::micros();
-/// while (!alloy::systick::is_timeout(start, 1000)) {
+/// uint32_t start = ucore::systick::micros();
+/// while (!ucore::systick::is_timeout(start, 1000)) {
 ///     // Wait up to 1ms
 ///     if (data_ready()) break;
 /// }
 /// @endcode
-inline bool is_timeout(alloy::core::u32 start_time, alloy::core::u32 timeout_us) {
+inline bool is_timeout(ucore::core::u32 start_time, ucore::core::u32 timeout_us) {
     return micros_since(start_time) >= timeout_us;
 }
 
@@ -168,15 +168,15 @@ inline bool is_timeout(alloy::core::u32 start_time, alloy::core::u32 timeout_us)
 ///
 /// Example:
 /// @code
-/// alloy::systick::delay_us(100);  // 100us delay
+/// ucore::systick::delay_us(100);  // 100us delay
 /// @endcode
-inline void delay_us(alloy::core::u32 delay_us) {
-    alloy::core::u32 start = micros();
+inline void delay_us(ucore::core::u32 delay_us) {
+    ucore::core::u32 start = micros();
     while (!is_timeout(start, delay_us)) {
         // Busy wait
     }
 }
 
-}  // namespace alloy::systick
+}  // namespace ucore::systick
 
 #endif  // ALLOY_HAL_INTERFACE_SYSTICK_HPP

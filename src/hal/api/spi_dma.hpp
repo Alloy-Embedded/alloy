@@ -55,9 +55,9 @@
 #include "hal/dma/registry.hpp"
 #include "hal/api/spi_expert.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ============================================================================
 // SPI DMA Configuration
@@ -460,4 +460,4 @@ constexpr auto create_spi_high_speed_dma(
     );
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

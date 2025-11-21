@@ -42,9 +42,9 @@
 // Bitfield definitions
 #include ""
 
-namespace alloy::hal::microchip::same70 {
+namespace ucore::hal::microchip::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
 using namespace ;
@@ -235,7 +235,7 @@ using TWI1Hardware = SAME70I2cHardwarePolicy<0x4001C000>;
 using TWI2Hardware = SAME70I2cHardwarePolicy<0x40060000>;
 
 
-}  // namespace alloy::hal::microchip::same70
+}  // namespace ucore::hal::microchip::same70
 
 /**
  * @example
@@ -244,7 +244,7 @@ using TWI2Hardware = SAME70I2cHardwarePolicy<0x40060000>;
  * @code
  * #include "hal/vendors//SAME70/i2c.hpp"
  *
- * using namespace alloy::hal::microchip::same70;
+ * using namespace ucore::hal::microchip::same70;
  *
  * int main() {
  *     // Initialize I2C

@@ -22,10 +22,10 @@
 
 #include "../arm_cortex_m/core_common.hpp"
 
-namespace alloy::arm::cortex_m7::cache {
+namespace ucore::arm::cortex_m7::cache {
 
 // Import from parent namespace
-using namespace alloy::arm::cortex_m;
+using namespace ucore::arm::cortex_m;
 
 // ============================================================================
 // Cache Control Functions
@@ -342,4 +342,4 @@ inline void initialize(bool enable_icache_flag = true, bool enable_dcache_flag =
 #endif
 }
 
-}  // namespace alloy::arm::cortex_m7::cache
+}  // namespace ucore::arm::cortex_m7::cache

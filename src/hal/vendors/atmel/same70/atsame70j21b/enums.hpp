@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::atsame70j21b::enums {
+namespace ucore::hal::atmel::same70::atsame70j21b::enums {
 
 // ============================================================================
 // ENUMERATED VALUE DEFINITIONS
@@ -4137,4 +4137,4 @@ enum class XDMAC_CC_PERID : uint32_t {
 
 /// Total enumerated types: 436
 
-}  // namespace alloy::hal::atmel::same70::atsame70j21b::enums
+}  // namespace ucore::hal::atmel::same70::atsame70j21b::enums

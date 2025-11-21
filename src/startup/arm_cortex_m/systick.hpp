@@ -20,7 +20,7 @@
 
 #include "core_common.hpp"
 
-namespace alloy::arm::cortex_m::systick {
+namespace ucore::arm::cortex_m::systick {
 
 /// Configure SysTick timer
 /// @param ticks: Reload value (1-0xFFFFFF). Timer counts down from this value.
@@ -140,4 +140,4 @@ inline void delay_ticks(uint32_t ticks) {
     }
 }
 
-}  // namespace alloy::arm::cortex_m::systick
+}  // namespace ucore::arm::cortex_m::systick

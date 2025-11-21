@@ -1,23 +1,23 @@
-#ifndef ALLOY_BLE_TYPES_HPP
-#define ALLOY_BLE_TYPES_HPP
+#ifndef UCORE_BLE_TYPES_HPP
+#define UCORE_BLE_TYPES_HPP
 
 #include <cstring>
 
 #include "core/types.hpp"
 
-using alloy::core::i16;
-using alloy::core::i32;
-using alloy::core::i8;
-using alloy::core::u16;
-using alloy::core::u32;
-using alloy::core::u8;
+using ucore::core::i16;
+using ucore::core::i32;
+using ucore::core::i8;
+using ucore::core::u16;
+using ucore::core::u32;
+using ucore::core::u8;
 
 /// BLE (Bluetooth Low Energy) types for Alloy framework
 ///
 /// Provides common types and structures for BLE communication including
 /// device addresses, UUIDs, advertisement data, and GATT attributes.
 
-namespace alloy::ble {
+namespace ucore::ble {
 
 // ============================================================================
 // Core BLE Types
@@ -324,6 +324,6 @@ inline bool CharHandle::is_valid() const {
     return handle != INVALID_ATTR_HANDLE;
 }
 
-}  // namespace alloy::ble
+}  // namespace ucore::ble
 
 #endif  // ALLOY_BLE_TYPES_HPP

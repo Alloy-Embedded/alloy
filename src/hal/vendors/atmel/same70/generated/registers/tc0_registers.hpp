@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::tc0 {
+namespace ucore::hal::atmel::same70::tc0 {
 
 // ============================================================================
 // TC0 - Timer Counter
@@ -127,4 +127,4 @@ inline TC0_Registers* TC0() {
     return reinterpret_cast<TC0_Registers*>(0x4000C000);
 }
 
-}  // namespace alloy::hal::atmel::same70::tc0
+}  // namespace ucore::hal::atmel::same70::tc0

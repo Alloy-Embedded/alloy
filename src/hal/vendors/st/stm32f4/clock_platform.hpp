@@ -56,9 +56,9 @@
 #include "hal/core/concepts.hpp"
 #endif
 
-namespace alloy::hal::st::stm32f4 {
+namespace ucore::hal::st::stm32f4 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief STM32F4 Clock Policy Template
@@ -383,8 +383,8 @@ struct ExampleF4ClockConfig {
 };
 
 // Compile-time validation: Verify that Stm32f4Clock satisfies ClockPlatform concept
-static_assert(alloy::hal::concepts::ClockPlatform<Stm32f4Clock<ExampleF4ClockConfig>>,
+static_assert(ucore::hal::concepts::ClockPlatform<Stm32f4Clock<ExampleF4ClockConfig>>,
               "Stm32f4Clock must satisfy ClockPlatform concept - missing required methods");
 #endif
 
-} // namespace alloy::hal::st::stm32f4
+} // namespace ucore::hal::st::stm32f4

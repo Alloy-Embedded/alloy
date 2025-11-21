@@ -44,16 +44,16 @@
 #include "hal/vendors/st/stm32f4/bitfields/dma2_bitfields.hpp"
 
 
-namespace alloy::hal::stm32f4 {
+namespace ucore::hal::stm32f4 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::st::stm32f4;
+using namespace ucore::hal::st::stm32f4;
 
 // Namespace alias for bitfield access
-namespace dma = alloy::hal::st::stm32f4::dma2;
+namespace dma = ucore::hal::st::stm32f4::dma2;
 
 // ============================================================================
 // Platform-Specific Enums
@@ -256,4 +256,4 @@ using Dma1Stream5 = DmaChannel<5>;  ///< DMA1 Stream 5
 using Dma1Stream6 = DmaChannel<6>;  ///< DMA1 Stream 6
 using Dma1Stream7 = DmaChannel<7>;  ///< DMA1 Stream 7
 
-}  // namespace alloy::hal::stm32f4
+}  // namespace ucore::hal::stm32f4

@@ -15,7 +15,7 @@
 
 // Test STM32F103C8 (LQFP48)
 namespace test_c8 {
-using namespace alloy::hal::stm32f103::stm32f103c8;
+using namespace ucore::hal::stm32f103::stm32f103c8;
 
 // Test basic pin constants
 static_assert(pins::PA0 == 0, "PA0 should be 0");
@@ -55,7 +55,7 @@ static_assert(pins::ValidPin<pins::PC13>);
 
 // Test STM32F103CB (LQFP48 with more flash)
 namespace test_cb {
-using namespace alloy::hal::stm32f103::stm32f103cb;
+using namespace ucore::hal::stm32f103::stm32f103cb;
 
 // Test traits differences
 static_assert(Traits::PIN_COUNT == 37, "CB package should have 37 pins");
@@ -65,7 +65,7 @@ static_assert(Traits::SRAM_SIZE == 20 * 1024, "CB should have 20KB SRAM");
 
 // Test STM32F103RE (LQFP64)
 namespace test_re {
-using namespace alloy::hal::stm32f103::stm32f103re;
+using namespace ucore::hal::stm32f103::stm32f103re;
 
 // Test pin count for larger package
 static_assert(pins::TOTAL_PIN_COUNT == 67, "RE should have 67 GPIO pins");
@@ -85,7 +85,7 @@ static_assert(pins::PE15 == 79, "PE15 should be available in LQFP64");
 
 int main() {
     // Runtime tests
-    using namespace alloy::hal::stm32f103::stm32f103c8;
+    using namespace ucore::hal::stm32f103::stm32f103c8;
 
     // Test constexpr pin validation at runtime
     constexpr bool pa0_valid = pins::is_valid_pin_v<pins::PA0>;

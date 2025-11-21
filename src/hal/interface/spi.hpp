@@ -2,8 +2,8 @@
 ///
 /// Defines SPI concepts and configuration types for all platforms.
 
-#ifndef ALLOY_HAL_INTERFACE_SPI_HPP
-#define ALLOY_HAL_INTERFACE_SPI_HPP
+#ifndef UCORE_HAL_INTERFACE_SPI_HPP
+#define UCORE_HAL_INTERFACE_SPI_HPP
 
 #include <concepts>
 #include <span>
@@ -13,9 +13,9 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /// SPI clock mode (CPOL/CPHA)
 ///
@@ -194,6 +194,6 @@ class SpiChipSelect {
     GpioPin& pin_;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal
 
 #endif  // ALLOY_HAL_INTERFACE_SPI_HPP

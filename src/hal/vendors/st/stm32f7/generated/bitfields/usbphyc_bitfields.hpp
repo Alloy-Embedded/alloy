@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::usbphyc {
+namespace ucore::hal::st::stm32f7::usbphyc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // USBPHYC Bit Field Definitions
@@ -170,4 +170,4 @@ namespace ldo {
 
 }  // namespace ldo
 
-}  // namespace alloy::hal::st::stm32f7::usbphyc
+}  // namespace ucore::hal::st::stm32f7::usbphyc

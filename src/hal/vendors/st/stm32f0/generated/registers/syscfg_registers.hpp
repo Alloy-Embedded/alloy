@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f0::syscfg {
+namespace ucore::hal::st::stm32f0::syscfg {
 
 // ============================================================================
 // SYSCFG - System configuration controller
@@ -63,4 +63,4 @@ inline SYSCFG_Registers* SYSCFG() {
     return reinterpret_cast<SYSCFG_Registers*>(0x40010000);
 }
 
-}  // namespace alloy::hal::st::stm32f0::syscfg
+}  // namespace ucore::hal::st::stm32f0::syscfg

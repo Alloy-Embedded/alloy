@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::gclk {
+namespace ucore::hal::atmel::samd21::gclk {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // GCLK Bit Field Definitions
@@ -197,4 +197,4 @@ namespace gendiv {
 
 }  // namespace gendiv
 
-}  // namespace alloy::hal::atmel::samd21::gclk
+}  // namespace ucore::hal::atmel::samd21::gclk

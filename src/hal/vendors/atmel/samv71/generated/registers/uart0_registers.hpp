@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::uart0 {
+namespace ucore::hal::atmel::samv71::uart0 {
 
 // ============================================================================
 // UART0 - Universal Asynchronous Receiver Transmitter
@@ -78,4 +78,4 @@ inline UART0_Registers* UART0() {
     return reinterpret_cast<UART0_Registers*>(0x400E0800);
 }
 
-}  // namespace alloy::hal::atmel::samv71::uart0
+}  // namespace ucore::hal::atmel::samv71::uart0

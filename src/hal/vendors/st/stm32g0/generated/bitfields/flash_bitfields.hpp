@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32g0::flash {
+namespace ucore::hal::st::stm32g0::flash {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // FLASH Bit Field Definitions
@@ -564,4 +564,4 @@ namespace secr {
 
 }  // namespace secr
 
-}  // namespace alloy::hal::st::stm32g0::flash
+}  // namespace ucore::hal::st::stm32g0::flash

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::gpiob {
+namespace ucore::hal::st::stm32g0::gpiob {
 
 // ============================================================================
 // GPIOB - General-purpose I/Os
@@ -92,4 +92,4 @@ inline GPIOB_Registers* GPIOB() {
     return reinterpret_cast<GPIOB_Registers*>(0x50000400);
 }
 
-}  // namespace alloy::hal::st::stm32g0::gpiob
+}  // namespace ucore::hal::st::stm32g0::gpiob

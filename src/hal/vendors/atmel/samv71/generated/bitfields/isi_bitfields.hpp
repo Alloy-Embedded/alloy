@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::isi {
+namespace ucore::hal::atmel::samv71::isi {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // ISI Bit Field Definitions
@@ -795,4 +795,4 @@ namespace wpsr {
 
 }  // namespace wpsr
 
-}  // namespace alloy::hal::atmel::samv71::isi
+}  // namespace ucore::hal::atmel::samv71::isi

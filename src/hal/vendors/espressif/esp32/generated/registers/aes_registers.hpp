@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::aes {
+namespace ucore::hal::espressif::esp32::aes {
 
 // ============================================================================
 // AES - AES (Advanced Encryption Standard) Accelerator
@@ -51,4 +51,4 @@ inline AES_Registers* AES() {
     return reinterpret_cast<AES_Registers*>(0x3FF01000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::aes
+}  // namespace ucore::hal::espressif::esp32::aes

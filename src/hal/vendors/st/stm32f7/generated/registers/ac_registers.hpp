@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::ac {
+namespace ucore::hal::st::stm32f7::ac {
 
 // ============================================================================
 // AC - Access control
@@ -63,4 +63,4 @@ inline AC_Registers* AC() {
     return reinterpret_cast<AC_Registers*>(0xE000EF90);
 }
 
-}  // namespace alloy::hal::st::stm32f7::ac
+}  // namespace ucore::hal::st::stm32f7::ac

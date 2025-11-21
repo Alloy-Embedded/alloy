@@ -13,7 +13,7 @@
 
 #include "core/types.hpp"
 
-namespace alloy::wifi {
+namespace ucore::wifi {
 
 /**
  * @brief WiFi authentication mode
@@ -154,4 +154,4 @@ enum class WiFiEvent : uint8_t {
     ScanDone,               ///< WiFi scan completed
 };
 
-}  // namespace alloy::wifi
+}  // namespace ucore::wifi

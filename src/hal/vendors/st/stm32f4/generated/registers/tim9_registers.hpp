@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::tim9 {
+namespace ucore::hal::st::stm32f4::tim9 {
 
 // ============================================================================
 // TIM9 - General purpose timers
@@ -112,4 +112,4 @@ inline TIM9_Registers* TIM9() {
     return reinterpret_cast<TIM9_Registers*>(0x40014000);
 }
 
-}  // namespace alloy::hal::st::stm32f4::tim9
+}  // namespace ucore::hal::st::stm32f4::tim9

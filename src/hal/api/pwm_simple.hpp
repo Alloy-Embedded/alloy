@@ -14,9 +14,9 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief PWM frequency presets for common use cases
@@ -199,4 +199,4 @@ public:
     }
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

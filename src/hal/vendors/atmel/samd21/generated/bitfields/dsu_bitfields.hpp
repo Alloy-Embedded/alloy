@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::dsu {
+namespace ucore::hal::atmel::samd21::dsu {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // DSU Bit Field Definitions
@@ -382,4 +382,4 @@ namespace cid3 {
 
 }  // namespace cid3
 
-}  // namespace alloy::hal::atmel::samd21::dsu
+}  // namespace ucore::hal::atmel::samd21::dsu

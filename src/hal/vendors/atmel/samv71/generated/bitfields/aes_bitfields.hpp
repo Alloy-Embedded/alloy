@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::aes {
+namespace ucore::hal::atmel::samv71::aes {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // AES Bit Field Definitions
@@ -344,4 +344,4 @@ namespace gcmhr {
 
 }  // namespace gcmhr
 
-}  // namespace alloy::hal::atmel::samv71::aes
+}  // namespace ucore::hal::atmel::samv71::aes

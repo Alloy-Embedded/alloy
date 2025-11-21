@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::rng {
+namespace ucore::hal::st::stm32f4::rng {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // RNG Bit Field Definitions
@@ -82,4 +82,4 @@ namespace dr {
 
 }  // namespace dr
 
-}  // namespace alloy::hal::st::stm32f4::rng
+}  // namespace ucore::hal::st::stm32f4::rng

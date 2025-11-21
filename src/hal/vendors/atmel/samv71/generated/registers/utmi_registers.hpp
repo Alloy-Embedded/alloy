@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::utmi {
+namespace ucore::hal::atmel::samv71::utmi {
 
 // ============================================================================
 // UTMI - USB Transmitter Interface Macrocell
@@ -36,4 +36,4 @@ inline UTMI_Registers* UTMI() {
     return reinterpret_cast<UTMI_Registers*>(0x400E0400);
 }
 
-}  // namespace alloy::hal::atmel::samv71::utmi
+}  // namespace ucore::hal::atmel::samv71::utmi

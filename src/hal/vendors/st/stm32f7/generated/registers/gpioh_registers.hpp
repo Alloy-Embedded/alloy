@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::gpioh {
+namespace ucore::hal::st::stm32f7::gpioh {
 
 // ============================================================================
 // GPIOH - General-purpose I/Os
@@ -86,4 +86,4 @@ inline GPIOH_Registers* GPIOH() {
     return reinterpret_cast<GPIOH_Registers*>(0x40021C00);
 }
 
-}  // namespace alloy::hal::st::stm32f7::gpioh
+}  // namespace ucore::hal::st::stm32f7::gpioh

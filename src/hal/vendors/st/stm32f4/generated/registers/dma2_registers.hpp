@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::dma2 {
+namespace ucore::hal::st::stm32f4::dma2 {
 
 // ============================================================================
 // DMA2 - DMA controller
@@ -330,4 +330,4 @@ inline DMA2_Registers* DMA2() {
     return reinterpret_cast<DMA2_Registers*>(0x40026400);
 }
 
-}  // namespace alloy::hal::st::stm32f4::dma2
+}  // namespace ucore::hal::st::stm32f4::dma2

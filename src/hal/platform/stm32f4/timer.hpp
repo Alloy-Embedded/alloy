@@ -44,16 +44,16 @@
 #include "hal/vendors/st/stm32f4/bitfields/tim2_bitfields.hpp"
 
 
-namespace alloy::hal::stm32f4 {
+namespace ucore::hal::stm32f4 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::st::stm32f4;
+using namespace ucore::hal::st::stm32f4;
 
 // Namespace alias for bitfield access
-namespace tim = alloy::hal::st::stm32f4::tim2;
+namespace tim = ucore::hal::st::stm32f4::tim2;
 
 // Note: Timer uses common I2cMode from hal/types.hpp:
 // - Mode0: CPOL=0, CPHA=0
@@ -147,12 +147,12 @@ class Timer {
      * Returns pointer to TIM registers. Uses conditional compilation
      * for test hook injection.
      */
-    static inline volatile alloy::hal::st::stm32f4::tim2::TIM2_Registers* get_hw() {
+    static inline volatile ucore::hal::st::stm32f4::tim2::TIM2_Registers* get_hw() {
 #ifdef ALLOY_TIMER_MOCK_HW
         // In tests, use the mock hardware pointer
         return ALLOY_TIMER_MOCK_HW();
 #else
-        return reinterpret_cast<volatile alloy::hal::st::stm32f4::tim2::TIM2_Registers*>(BASE_ADDR);
+        return reinterpret_cast<volatile ucore::hal::st::stm32f4::tim2::TIM2_Registers*>(BASE_ADDR);
 #endif
     }
 
@@ -472,4 +472,4 @@ using Timer9 = Timer<TIMER9_BASE, TIMER9_IRQ>;     ///< General-purpose timer TI
 using Timer10 = Timer<TIMER10_BASE, TIMER10_IRQ>;  ///< General-purpose timer TIM10
 using Timer11 = Timer<TIMER11_BASE, TIMER11_IRQ>;  ///< General-purpose timer TIM11
 
-}  // namespace alloy::hal::stm32f4
+}  // namespace ucore::hal::stm32f4

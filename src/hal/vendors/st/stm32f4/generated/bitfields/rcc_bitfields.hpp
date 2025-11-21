@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::rcc {
+namespace ucore::hal::st::stm32f4::rcc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // RCC Bit Field Definitions
@@ -1749,4 +1749,4 @@ namespace plli2scfgr {
 
 }  // namespace plli2scfgr
 
-}  // namespace alloy::hal::st::stm32f4::rcc
+}  // namespace ucore::hal::st::stm32f4::rcc

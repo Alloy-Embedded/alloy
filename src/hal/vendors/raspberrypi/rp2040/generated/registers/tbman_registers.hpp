@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::tbman {
+namespace ucore::hal::raspberrypi::rp2040::tbman {
 
 // ============================================================================
 // TBMAN - Testbench manager. Allows the programmer to know what platform their software is running on.
@@ -31,4 +31,4 @@ inline TBMAN_Registers* TBMAN() {
     return reinterpret_cast<TBMAN_Registers*>(0x4006C000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::tbman
+}  // namespace ucore::hal::raspberrypi::rp2040::tbman

@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::aes {
+namespace ucore::hal::espressif::esp32::aes {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // AES Bit Field Definitions
@@ -83,4 +83,4 @@ namespace endian {
 
 }  // namespace endian
 
-}  // namespace alloy::hal::espressif::esp32::aes
+}  // namespace ucore::hal::espressif::esp32::aes

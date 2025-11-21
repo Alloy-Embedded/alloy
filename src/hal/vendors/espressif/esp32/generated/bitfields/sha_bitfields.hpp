@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::sha {
+namespace ucore::hal::espressif::esp32::sha {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SHA Bit Field Definitions
@@ -204,4 +204,4 @@ namespace sha512_busy {
 
 }  // namespace sha512_busy
 
-}  // namespace alloy::hal::espressif::esp32::sha
+}  // namespace ucore::hal::espressif::esp32::sha

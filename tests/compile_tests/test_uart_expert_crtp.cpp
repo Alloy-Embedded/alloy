@@ -30,8 +30,8 @@ struct MockUartHardwarePolicy {
     static inline uint8_t read_data() { return 0; }
 };
 
-using namespace alloy::hal;
-using namespace alloy::core;
+using namespace ucore::hal;
+using namespace ucore::core;
 
 // Test aliases
 using TestPolicy = MockUartHardwarePolicy<0x40011000>;

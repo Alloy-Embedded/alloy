@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::usart6 {
+namespace ucore::hal::st::stm32f4::usart6 {
 
 // ============================================================================
 // USART6 - Universal synchronous asynchronous receiver transmitter
@@ -67,4 +67,4 @@ inline USART6_Registers* USART6() {
     return reinterpret_cast<USART6_Registers*>(0x40011400);
 }
 
-}  // namespace alloy::hal::st::stm32f4::usart6
+}  // namespace ucore::hal::st::stm32f4::usart6

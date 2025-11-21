@@ -17,7 +17,7 @@
 #include <type_traits>
 #include <cstdint>
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ==============================================================================
 // BaudRate Wrapper Tests (units.hpp)
@@ -135,7 +135,7 @@ static_assert(std::is_standard_layout_v<BaudRate>, "BaudRate should be standard 
 namespace memory_tests {
 
 /**
- * @brief Test ALLOY_ASSERT_MAX_SIZE macro
+ * @brief Test UCORE_ASSERT_MAX_SIZE macro
  */
 struct SmallStruct {
     uint8_t data[16];
@@ -146,32 +146,32 @@ struct MediumStruct {
 };
 
 // Should pass: SmallStruct is 16 bytes, max is 64
-ALLOY_ASSERT_MAX_SIZE(SmallStruct, 64);
+UCORE_ASSERT_MAX_SIZE(SmallStruct, 64);
 
 // Should pass: MediumStruct is 128 bytes, max is 256
-ALLOY_ASSERT_MAX_SIZE(MediumStruct, 256);
+UCORE_ASSERT_MAX_SIZE(MediumStruct, 256);
 
 // Would fail if uncommented:
-// ALLOY_ASSERT_MAX_SIZE(MediumStruct, 64);  // Error: 128 > 64
+// UCORE_ASSERT_MAX_SIZE(MediumStruct, 64);  // Error: 128 > 64
 
 /**
- * @brief Test ALLOY_ASSERT_ZERO_OVERHEAD macro
+ * @brief Test UCORE_ASSERT_ZERO_OVERHEAD macro
  */
 struct ZeroOverheadWrapper {
     uint32_t* ptr;  // Just a pointer, should be 4 or 8 bytes
 };
 
 // Should pass: wrapper has no overhead beyond the pointer
-ALLOY_ASSERT_ZERO_OVERHEAD(ZeroOverheadWrapper, sizeof(void*));
+UCORE_ASSERT_ZERO_OVERHEAD(ZeroOverheadWrapper, sizeof(void*));
 
 // Test that simple types have expected sizes
-ALLOY_ASSERT_ZERO_OVERHEAD(uint8_t, 1);
-ALLOY_ASSERT_ZERO_OVERHEAD(uint16_t, 2);
-ALLOY_ASSERT_ZERO_OVERHEAD(uint32_t, 4);
-ALLOY_ASSERT_ZERO_OVERHEAD(uint64_t, 8);
+UCORE_ASSERT_ZERO_OVERHEAD(uint8_t, 1);
+UCORE_ASSERT_ZERO_OVERHEAD(uint16_t, 2);
+UCORE_ASSERT_ZERO_OVERHEAD(uint32_t, 4);
+UCORE_ASSERT_ZERO_OVERHEAD(uint64_t, 8);
 
 /**
- * @brief Test ALLOY_ASSERT_ALIGNMENT macro
+ * @brief Test UCORE_ASSERT_ALIGNMENT macro
  */
 struct alignas(8) Aligned8 {
     uint64_t value;
@@ -187,16 +187,16 @@ struct alignas(32) Aligned32 {
 };
 
 // Should pass: properly aligned structs
-ALLOY_ASSERT_ALIGNMENT(Aligned8, 8);
-ALLOY_ASSERT_ALIGNMENT(Aligned16, 16);
-ALLOY_ASSERT_ALIGNMENT(Aligned32, 32);
+UCORE_ASSERT_ALIGNMENT(Aligned8, 8);
+UCORE_ASSERT_ALIGNMENT(Aligned16, 16);
+UCORE_ASSERT_ALIGNMENT(Aligned32, 32);
 
 // Natural alignment should also work
-ALLOY_ASSERT_ALIGNMENT(uint32_t, 4);
-ALLOY_ASSERT_ALIGNMENT(uint64_t, 8);
+UCORE_ASSERT_ALIGNMENT(uint32_t, 4);
+UCORE_ASSERT_ALIGNMENT(uint64_t, 8);
 
 // Would fail if uncommented:
-// ALLOY_ASSERT_ALIGNMENT(uint8_t, 16);  // Error: uint8_t is only 1-byte aligned
+// UCORE_ASSERT_ALIGNMENT(uint8_t, 16);  // Error: uint8_t is only 1-byte aligned
 
 /**
  * @brief Test that assertions work at compile-time
@@ -413,9 +413,9 @@ static_assert(test_power_of_two(), "Constexpr power of 2 check must work");
  * ✅ Zero-overhead verification (sizeof == u32)
  *
  * Memory Assertion Macros (3 tests):
- * ✅ ALLOY_ASSERT_MAX_SIZE - enforces size limits
- * ✅ ALLOY_ASSERT_ZERO_OVERHEAD - verifies no overhead
- * ✅ ALLOY_ASSERT_ALIGNMENT - checks alignment requirements
+ * ✅ UCORE_ASSERT_MAX_SIZE - enforces size limits
+ * ✅ UCORE_ASSERT_ZERO_OVERHEAD - verifies no overhead
+ * ✅ UCORE_ASSERT_ALIGNMENT - checks alignment requirements
  * ✅ All assertions work at compile-time
  *
  * Constexpr Helpers (6 tests):

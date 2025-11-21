@@ -12,7 +12,7 @@
 //   #include "startup/arm_cortex_m7/cortex_m7_init.hpp"
 //
 //   void SystemInit() {
-//       alloy::arm::cortex_m7::initialize();
+//       ucore::arm::cortex_m7::initialize();
 //       // ... vendor-specific initialization
 //   }
 
@@ -22,10 +22,10 @@
 #include "cache_m7.hpp"
 #include "fpu_m7.hpp"
 
-namespace alloy::arm::cortex_m7 {
+namespace ucore::arm::cortex_m7 {
 
 // Import from parent namespace
-using namespace alloy::arm::cortex_m;
+using namespace ucore::arm::cortex_m;
 
 /// Initialize Cortex-M7 core features
 /// @param enable_fpu: Enable FPU if present (default: true)
@@ -90,4 +90,4 @@ inline void initialize_minimal() {
     initialize(false, false, false, false);
 }
 
-}  // namespace alloy::arm::cortex_m7
+}  // namespace ucore::arm::cortex_m7

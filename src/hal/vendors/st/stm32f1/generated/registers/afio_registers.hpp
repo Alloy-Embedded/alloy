@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f1::afio {
+namespace ucore::hal::st::stm32f1::afio {
 
 // ============================================================================
 // AFIO - Alternate function I/O
@@ -68,4 +68,4 @@ inline AFIO_Registers* AFIO() {
     return reinterpret_cast<AFIO_Registers*>(0x40010000);
 }
 
-}  // namespace alloy::hal::st::stm32f1::afio
+}  // namespace ucore::hal::st::stm32f1::afio

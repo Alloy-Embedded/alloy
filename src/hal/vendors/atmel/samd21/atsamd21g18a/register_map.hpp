@@ -12,7 +12,7 @@
 /// Usage:
 ///   #include <hal/atmel/samd21/atsamd21g18a/register_map.hpp>
 ///
-///   using namespace alloy::hal::atmel::samd21::atsamd21g18a;
+///   using namespace ucore::hal::atmel::samd21::atsamd21g18a;
 ///
 ///   // Access registers
 ///   rcc::RCC->CR = rcc::cr::HSEON::set(rcc::RCC->CR);
@@ -95,15 +95,15 @@
 // Namespace Convenience Aliases
 // ============================================================================
 
-namespace alloy::hal::atmel::samd21::atsamd21g18a {
+namespace ucore::hal::atmel::samd21::atsamd21g18a {
 
 /// Main namespace alias for this MCU
 ///
 /// Usage:
-///   using namespace alloy::hal::atmel::samd21::atsamd21g18a;
+///   using namespace ucore::hal::atmel::samd21::atsamd21g18a;
 ///   // Now you can use rcc::RCC, gpio::GPIOA, etc.
 
-}  // namespace alloy::hal::atmel::samd21::atsamd21g18a
+}  // namespace ucore::hal::atmel::samd21::atsamd21g18a
 
 // ============================================================================
 // Global Namespace Aliases (Optional)
@@ -111,7 +111,7 @@ namespace alloy::hal::atmel::samd21::atsamd21g18a {
 
 /// You can define shorter aliases if desired:
 ///
-/// namespace mcu = alloy::hal::atmel::samd21::atsamd21g18a;
+/// namespace mcu = ucore::hal::atmel::samd21::atsamd21g18a;
 ///
 /// Then use:
 ///   mcu::rcc::RCC->CR = ...

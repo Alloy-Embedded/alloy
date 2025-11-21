@@ -16,9 +16,9 @@
 #include "rtos/rtos.hpp"
 #include "board/board.hpp"
 
-using namespace alloy;
-using namespace alloy::rtos;
-using namespace alloy::rtos::test;
+using namespace ucore;
+using namespace ucore::rtos;
+using namespace ucore::rtos::test;
 
 // External test suite declarations
 extern void test_suite_Queue();

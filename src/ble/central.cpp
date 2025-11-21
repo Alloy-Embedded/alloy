@@ -1,9 +1,9 @@
 #include "central.hpp"
 
-using alloy::core::i8;
-using alloy::core::u16;
-using alloy::core::u32;
-using alloy::core::u8;
+using ucore::core::i8;
+using ucore::core::u16;
+using ucore::core::u32;
+using ucore::core::u8;
 
 #ifdef ESP_PLATFORM
     #include <cstring>
@@ -23,7 +23,7 @@ static const char* TAG = "BLE_Central";
 
 #endif  // ESP_PLATFORM
 
-namespace alloy::ble {
+namespace ucore::ble {
 
 #ifdef ESP_PLATFORM
 
@@ -587,4 +587,4 @@ void Central::set_notify_callback(WriteCallback callback) {
     impl_->data.notify_callback = callback;
 }
 
-}  // namespace alloy::ble
+}  // namespace ucore::ble

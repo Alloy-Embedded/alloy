@@ -46,13 +46,13 @@
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfield access
 namespace spi = atmel::same70::spi0;
@@ -381,13 +381,13 @@ private:
 // Predefined SPI Instances (from generated peripherals.hpp)
 // ==============================================================================
 
-constexpr uint32_t SPI0_BASE = alloy::generated::atsame70q21b::peripherals::SPI0;
-constexpr uint32_t SPI0_IRQ = alloy::generated::atsame70q21b::id::SPI0;
+constexpr uint32_t SPI0_BASE = ucore::generated::atsame70q21b::peripherals::SPI0;
+constexpr uint32_t SPI0_IRQ = ucore::generated::atsame70q21b::id::SPI0;
 
-constexpr uint32_t SPI1_BASE = alloy::generated::atsame70q21b::peripherals::SPI1;
-constexpr uint32_t SPI1_IRQ = alloy::generated::atsame70q21b::id::SPI1;
+constexpr uint32_t SPI1_BASE = ucore::generated::atsame70q21b::peripherals::SPI1;
+constexpr uint32_t SPI1_IRQ = ucore::generated::atsame70q21b::id::SPI1;
 
 using Spi0 = Spi<SPI0_BASE, SPI0_IRQ>;  ///< SPI0 instance
 using Spi1 = Spi<SPI1_BASE, SPI1_IRQ>;  ///< SPI1 instance
 
-} // namespace alloy::hal::same70
+} // namespace ucore::hal::same70

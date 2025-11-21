@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::evsys {
+namespace ucore::hal::atmel::samd21::evsys {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // EVSYS Bit Field Definitions
@@ -717,4 +717,4 @@ namespace intflag {
 
 }  // namespace intflag
 
-}  // namespace alloy::hal::atmel::samd21::evsys
+}  // namespace ucore::hal::atmel::samd21::evsys

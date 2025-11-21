@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::watchdog {
+namespace ucore::hal::raspberrypi::rp2040::watchdog {
 
 // ============================================================================
 // WATCHDOG - Peripheral Registers
@@ -94,4 +94,4 @@ inline WATCHDOG_Registers* WATCHDOG() {
     return reinterpret_cast<WATCHDOG_Registers*>(0x40058000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::watchdog
+}  // namespace ucore::hal::raspberrypi::rp2040::watchdog

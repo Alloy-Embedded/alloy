@@ -1,11 +1,11 @@
-#ifndef ALLOY_HAL_INTERFACE_GPIO_HPP
-#define ALLOY_HAL_INTERFACE_GPIO_HPP
+#ifndef UCORE_HAL_INTERFACE_GPIO_HPP
+#define UCORE_HAL_INTERFACE_GPIO_HPP
 
 #include <concepts>
 
 #include <stdint.h>
 
-namespace alloy::hal {
+namespace ucore::hal {
 
 /// Pin configuration mode
 enum class PinMode : uint8_t {
@@ -138,6 +138,6 @@ using InputPinPullUp = ConfiguredGpioPin<PIN, PinMode::InputPullUp>;
 template <uint8_t PIN>
 using InputPinPullDown = ConfiguredGpioPin<PIN, PinMode::InputPullDown>;
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal
 
 #endif  // ALLOY_HAL_INTERFACE_GPIO_HPP

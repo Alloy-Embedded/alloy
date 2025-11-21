@@ -48,9 +48,9 @@
 #include "hal/core/concepts.hpp"
 #endif
 
-namespace alloy::hal::st::stm32g0 {
+namespace ucore::hal::st::stm32g0 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief STM32G0 Clock Policy Template
@@ -235,8 +235,8 @@ struct ExampleG0ClockConfig {
 };
 
 // Compile-time validation: Verify that Stm32g0Clock satisfies ClockPlatform concept
-static_assert(alloy::hal::concepts::ClockPlatform<Stm32g0Clock<ExampleG0ClockConfig>>,
+static_assert(ucore::hal::concepts::ClockPlatform<Stm32g0Clock<ExampleG0ClockConfig>>,
               "Stm32g0Clock must satisfy ClockPlatform concept - missing required methods");
 #endif
 
-} // namespace alloy::hal::st::stm32g0
+} // namespace ucore::hal::st::stm32g0

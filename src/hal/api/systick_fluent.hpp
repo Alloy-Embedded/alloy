@@ -11,9 +11,9 @@
 #include "hal/interface/systick.hpp"
 #include "hal/systick_simple.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 struct SysTickBuilderState {
     bool has_frequency = false;
@@ -116,4 +116,4 @@ private:
     SysTickBuilderState state_;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

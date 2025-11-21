@@ -187,38 +187,38 @@ function(alloy_add_flash_target target_name)
     endif()
 
     # Detect board and create appropriate flash target
-    if(ALLOY_BOARD STREQUAL "bluepill")
+    if(MICROCORE_BOARD STREQUAL "bluepill")
         # STM32F103C8 Blue Pill
         if(NOT ARG_TARGET)
             set(ARG_TARGET "target/stm32f1x.cfg")
         endif()
         alloy_add_flash_target_stm32(${target_name} ${ARG_INTERFACE} ${ARG_TARGET})
 
-    elseif(ALLOY_BOARD STREQUAL "stm32f407vg")
+    elseif(MICROCORE_BOARD STREQUAL "stm32f407vg")
         # STM32F407VG Discovery
         if(NOT ARG_TARGET)
             set(ARG_TARGET "target/stm32f4x.cfg")
         endif()
         alloy_add_flash_target_stm32(${target_name} ${ARG_INTERFACE} ${ARG_TARGET})
 
-    elseif(ALLOY_BOARD STREQUAL "esp32_devkit")
+    elseif(MICROCORE_BOARD STREQUAL "esp32_devkit")
         # ESP32 DevKit
         alloy_add_flash_target_esp32(${target_name} ${ARG_PORT} ${ARG_BAUD})
 
-    elseif(ALLOY_BOARD STREQUAL "rp_pico")
+    elseif(MICROCORE_BOARD STREQUAL "rp_pico")
         # Raspberry Pi Pico
         alloy_add_flash_target_rp2040(${target_name})
 
-    elseif(ALLOY_BOARD STREQUAL "arduino_zero")
+    elseif(MICROCORE_BOARD STREQUAL "arduino_zero")
         # Arduino Zero (ATSAMD21)
         alloy_add_flash_target_samd21(${target_name} ${ARG_PORT})
 
-    elseif(ALLOY_BOARD STREQUAL "host")
+    elseif(MICROCORE_BOARD STREQUAL "host")
         # Host board doesn't need flash target
         message(STATUS "Host board selected, no flash target needed")
 
     else()
-        message(WARNING "Unknown board '${ALLOY_BOARD}', cannot create flash target")
+        message(WARNING "Unknown board '${MICROCORE_BOARD}', cannot create flash target")
     endif()
 
     # Create convenient "flash" alias if this is the only target
@@ -237,7 +237,7 @@ function(alloy_add_binary_outputs target_name)
     endif()
 
     # Skip for host builds
-    if(ALLOY_BOARD STREQUAL "host")
+    if(MICROCORE_BOARD STREQUAL "host")
         return()
     endif()
 

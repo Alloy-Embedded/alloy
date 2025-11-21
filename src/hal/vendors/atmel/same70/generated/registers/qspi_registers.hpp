@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::qspi {
+namespace ucore::hal::atmel::same70::qspi {
 
 // ============================================================================
 // QSPI - Quad Serial Peripheral Interface
@@ -101,4 +101,4 @@ inline QSPI_Registers* QSPI() {
     return reinterpret_cast<QSPI_Registers*>(0x4007C000);
 }
 
-}  // namespace alloy::hal::atmel::same70::qspi
+}  // namespace ucore::hal::atmel::same70::qspi

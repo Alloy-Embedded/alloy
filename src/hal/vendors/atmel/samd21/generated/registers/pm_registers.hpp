@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::pm {
+namespace ucore::hal::atmel::samd21::pm {
 
 // ============================================================================
 // PM - Power Manager
@@ -92,4 +92,4 @@ inline PM_Registers* PM() {
     return reinterpret_cast<PM_Registers*>(0x40000400);
 }
 
-}  // namespace alloy::hal::atmel::samd21::pm
+}  // namespace ucore::hal::atmel::samd21::pm

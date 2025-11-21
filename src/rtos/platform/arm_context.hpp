@@ -35,14 +35,14 @@
 /// Low memory
 /// ```
 
-#ifndef ALLOY_RTOS_ARM_CONTEXT_HPP
-#define ALLOY_RTOS_ARM_CONTEXT_HPP
+#ifndef UCORE_RTOS_ARM_CONTEXT_HPP
+#define UCORE_RTOS_ARM_CONTEXT_HPP
 
 #include "rtos/rtos.hpp"
 
 #include "core/types.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 /// Initialize task stack for ARM Cortex-M
 ///
@@ -101,6 +101,6 @@ constexpr core::u32 SCB_ICSR_PENDSVSET_Msk = (1UL << SCB_ICSR_PENDSVSET_Pos);
 
 }  // namespace arm_regs
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ALLOY_RTOS_ARM_CONTEXT_HPP

@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::mpu {
+namespace ucore::hal::atmel::same70::mpu {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // MPU Bit Field Definitions
@@ -152,4 +152,4 @@ constexpr uint32_t XN_Msk = XN::mask;
 
 }  // namespace rasr
 
-}  // namespace alloy::hal::atmel::same70::mpu
+}  // namespace ucore::hal::atmel::same70::mpu

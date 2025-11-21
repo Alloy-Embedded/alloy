@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::i2s0 {
+namespace ucore::hal::espressif::esp32::i2s0 {
 
 // ============================================================================
 // I2S0 - I2S (Inter-IC Sound) Controller 0
@@ -228,4 +228,4 @@ inline I2S0_Registers* I2S0() {
     return reinterpret_cast<I2S0_Registers*>(0x3FF4F000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::i2s0
+}  // namespace ucore::hal::espressif::esp32::i2s0

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::ledc {
+namespace ucore::hal::espressif::esp32::ledc {
 
 // ============================================================================
 // LEDC - LED Control PWM (Pulse Width Modulation)
@@ -117,4 +117,4 @@ inline LEDC_Registers* LEDC() {
     return reinterpret_cast<LEDC_Registers*>(0x3FF59000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::ledc
+}  // namespace ucore::hal::espressif::esp32::ledc

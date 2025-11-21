@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::sdhost {
+namespace ucore::hal::espressif::esp32::sdhost {
 
 // ============================================================================
 // SDHOST - SD/MMC Host Controller
@@ -206,4 +206,4 @@ inline SDHOST_Registers* SDHOST() {
     return reinterpret_cast<SDHOST_Registers*>(0x3FF68000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::sdhost
+}  // namespace ucore::hal::espressif::esp32::sdhost

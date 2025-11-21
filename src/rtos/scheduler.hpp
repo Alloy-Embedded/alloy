@@ -12,8 +12,8 @@
 /// - make_ready(): ~5-10 cycles
 /// - make_not_ready(): ~10-20 cycles
 
-#ifndef ALLOY_RTOS_SCHEDULER_HPP
-#define ALLOY_RTOS_SCHEDULER_HPP
+#ifndef UCORE_RTOS_SCHEDULER_HPP
+#define UCORE_RTOS_SCHEDULER_HPP
 
 #include "rtos/rtos.hpp"
 #include "rtos/error.hpp"
@@ -21,7 +21,7 @@
 #include "core/types.hpp"
 #include "core/result.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 /// Ready Queue
 ///
@@ -142,6 +142,6 @@ core::Result<void, RTOSError> wake_delayed_tasks();
 
 }  // namespace scheduler
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ALLOY_RTOS_SCHEDULER_HPP

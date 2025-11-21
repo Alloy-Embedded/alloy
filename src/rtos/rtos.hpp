@@ -33,8 +33,8 @@
 /// }
 /// ```
 
-#ifndef ALLOY_RTOS_HPP
-#define ALLOY_RTOS_HPP
+#ifndef UCORE_RTOS_HPP
+#define UCORE_RTOS_HPP
 
 #include <cstddef>
 #include <type_traits>
@@ -48,7 +48,7 @@
 #include "core/types.hpp"
 #include "core/result.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 /// Task priority levels (0 = lowest, 7 = highest)
 enum class Priority : core::u8 {
@@ -478,7 +478,7 @@ consteval auto make_task_set(const Tasks&...) {
     return TaskSet<Tasks...>{};
 }
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 // Include platform-specific context switching
 #if defined(__ARM_ARCH_6M__) || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__) || \
@@ -494,7 +494,7 @@ consteval auto make_task_set(const Tasks&...) {
 #endif
 
 // Include Task implementation
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 // New API: Compile-time name (zero RAM)
 template <size_t StackSize, Priority Pri, fixed_string Name>
@@ -567,6 +567,6 @@ bool Task<StackSize, Pri, Name>::check_stack_overflow() const {
 #endif
 }
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ALLOY_RTOS_HPP

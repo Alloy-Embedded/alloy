@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f1::can {
+namespace ucore::hal::st::stm32f1::can {
 
 // ============================================================================
 // CAN - Controller area network
@@ -393,4 +393,4 @@ inline CAN_Registers* CAN() {
     return reinterpret_cast<CAN_Registers*>(0x40006400);
 }
 
-}  // namespace alloy::hal::st::stm32f1::can
+}  // namespace ucore::hal::st::stm32f1::can

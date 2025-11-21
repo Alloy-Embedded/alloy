@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::rng {
+namespace ucore::hal::st::stm32f4::rng {
 
 // ============================================================================
 // RNG - Random number generator
@@ -43,4 +43,4 @@ inline RNG_Registers* RNG() {
     return reinterpret_cast<RNG_Registers*>(0x50060800);
 }
 
-}  // namespace alloy::hal::st::stm32f4::rng
+}  // namespace ucore::hal::st::stm32f4::rng

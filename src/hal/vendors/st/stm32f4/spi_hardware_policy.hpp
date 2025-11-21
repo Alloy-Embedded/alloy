@@ -33,12 +33,12 @@
 // Bitfield definitions
 #include "hal/vendors/st/stm32f4/generated/bitfields/spi1_bitfields.hpp"
 
-namespace alloy::hal::stm32f4 {
+namespace ucore::hal::stm32f4 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::st::stm32f4;
+using namespace ucore::hal::st::stm32f4;
 
 // Namespace alias for bitfields
 namespace spi = st::stm32f4::spi1;
@@ -243,7 +243,7 @@ using Spi2Hardware = Stm32f4UartHardwarePolicy<0x40003800, 84000000>;
 using Spi3Hardware = Stm32f4UartHardwarePolicy<0x40003C00, 84000000>;
 
 
-}  // namespace alloy::hal::stm32f4
+}  // namespace ucore::hal::stm32f4
 
 /**
  * @example
@@ -253,8 +253,8 @@ using Spi3Hardware = Stm32f4UartHardwarePolicy<0x40003C00, 84000000>;
  * #include "hal/api/uart_simple.hpp"
  * #include "hal/vendors/atmel/same70/uart_hardware_policy.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create UART with hardware policy
  * using Uart0 = UartImpl<PeripheralId::USART0, Uart0Hardware>;

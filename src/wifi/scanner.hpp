@@ -9,7 +9,7 @@
  * @code
  * #include "wifi/scanner.hpp"
  *
- * using alloy::wifi::Scanner;
+ * using ucore::wifi::Scanner;
  *
  * Scanner scanner;
  * scanner.init();
@@ -40,7 +40,7 @@
     #include "esp_wifi.h"
 #endif
 
-namespace alloy::wifi {
+namespace ucore::wifi {
 
 using core::ErrorCode;
 using core::Result;
@@ -181,4 +181,4 @@ class Scanner {
 #endif
 };
 
-}  // namespace alloy::wifi
+}  // namespace ucore::wifi

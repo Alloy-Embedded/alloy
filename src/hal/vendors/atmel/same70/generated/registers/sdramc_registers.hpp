@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::sdramc {
+namespace ucore::hal::atmel::same70::sdramc {
 
 // ============================================================================
 // SDRAMC - SDRAM Controller
@@ -84,4 +84,4 @@ inline SDRAMC_Registers* SDRAMC() {
     return reinterpret_cast<SDRAMC_Registers*>(0x40084000);
 }
 
-}  // namespace alloy::hal::atmel::same70::sdramc
+}  // namespace ucore::hal::atmel::same70::sdramc

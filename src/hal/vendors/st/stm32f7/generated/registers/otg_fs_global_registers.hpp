@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::otg_fs_global {
+namespace ucore::hal::st::stm32f7::otg_fs_global {
 
 // ============================================================================
 // OTG_FS_GLOBAL - USB on the go full speed
@@ -173,4 +173,4 @@ inline OTG_FS_GLOBAL_Registers* OTG_FS_GLOBAL() {
     return reinterpret_cast<OTG_FS_GLOBAL_Registers*>(0x50000000);
 }
 
-}  // namespace alloy::hal::st::stm32f7::otg_fs_global
+}  // namespace ucore::hal::st::stm32f7::otg_fs_global

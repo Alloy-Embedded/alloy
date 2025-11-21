@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::mlb {
+namespace ucore::hal::atmel::samv71::mlb {
 
 // ============================================================================
 // MLB - MediaLB
@@ -111,4 +111,4 @@ inline MLB_Registers* MLB() {
     return reinterpret_cast<MLB_Registers*>(0x40068000);
 }
 
-}  // namespace alloy::hal::atmel::samv71::mlb
+}  // namespace ucore::hal::atmel::samv71::mlb

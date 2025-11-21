@@ -4,7 +4,7 @@
 
 #include "pins.hpp"
 
-namespace alloy::hal::stm32f4::stm32f429zi::pin_functions {
+namespace ucore::hal::stm32f4::stm32f429zi::pin_functions {
 
 // ============================================================================
 // Pin Alternate Functions for STM32F429ZI
@@ -540,4 +540,4 @@ constexpr uint8_t OTG_HS_ULPI_NXT = pins::PC3;
 constexpr uint8_t OTG_HS_ULPI_STP = pins::PC0;
 
 }  // namespace usb
-}  // namespace alloy::hal::stm32f4::stm32f429zi::pin_functions
+}  // namespace ucore::hal::stm32f4::stm32f429zi::pin_functions

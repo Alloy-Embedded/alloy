@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::i2s0 {
+namespace ucore::hal::espressif::esp32::i2s0 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // I2S0 Bit Field Definitions
@@ -1607,4 +1607,4 @@ namespace date {
 
 }  // namespace date
 
-}  // namespace alloy::hal::espressif::esp32::i2s0
+}  // namespace ucore::hal::espressif::esp32::i2s0

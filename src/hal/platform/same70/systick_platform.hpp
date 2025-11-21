@@ -18,9 +18,9 @@
 #include "core/types.hpp"
 #include "hal/vendors/atmel/same70/systick_hardware_policy.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief SysTick Platform Implementation for SAME70
@@ -158,4 +158,4 @@ public:
 template <u32 CPU_FREQ_HZ = 12000000>
 using SysTick = SysTickPlatform<Same70SysTickHardwarePolicy<0xE000E010, CPU_FREQ_HZ>>;
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70

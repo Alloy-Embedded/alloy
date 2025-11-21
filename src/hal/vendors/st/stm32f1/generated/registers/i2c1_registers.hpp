@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f1::i2c1 {
+namespace ucore::hal::st::stm32f1::i2c1 {
 
 // ============================================================================
 // I2C1 - Inter integrated circuit
@@ -79,4 +79,4 @@ inline I2C1_Registers* I2C1() {
     return reinterpret_cast<I2C1_Registers*>(0x40005400);
 }
 
-}  // namespace alloy::hal::st::stm32f1::i2c1
+}  // namespace ucore::hal::st::stm32f1::i2c1

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::rtt {
+namespace ucore::hal::atmel::samv71::rtt {
 
 // ============================================================================
 // RTT - Real-time Timer
@@ -44,4 +44,4 @@ inline RTT_Registers* RTT() {
     return reinterpret_cast<RTT_Registers*>(0x400E1830);
 }
 
-}  // namespace alloy::hal::atmel::samv71::rtt
+}  // namespace ucore::hal::atmel::samv71::rtt

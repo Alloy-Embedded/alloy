@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::aes {
+namespace ucore::hal::atmel::same70::aes {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // AES Bit Field Definitions
@@ -345,4 +345,4 @@ constexpr uint32_t H_Msk = H::mask;
 
 }  // namespace gcmhr
 
-}  // namespace alloy::hal::atmel::same70::aes
+}  // namespace ucore::hal::atmel::same70::aes

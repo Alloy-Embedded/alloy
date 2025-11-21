@@ -4,7 +4,7 @@
 
 #include "pins.hpp"
 
-namespace alloy::hal::stm32f1::stm32f103rc::pin_functions {
+namespace ucore::hal::stm32f1::stm32f103rc::pin_functions {
 
 // ============================================================================
 // Pin Alternate Functions for STM32F103RC
@@ -290,4 +290,4 @@ struct SPISCKPinConfig {
     static constexpr PinConfig config = PinConfig::AltFunctionPushPull;
 };
 
-}  // namespace alloy::hal::stm32f1::stm32f103rc::pin_functions
+}  // namespace ucore::hal::stm32f1::stm32f103rc::pin_functions

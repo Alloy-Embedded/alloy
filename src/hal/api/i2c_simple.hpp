@@ -43,10 +43,10 @@
 
 #include <span>
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 // ============================================================================
 // Default I2C Configuration
@@ -357,4 +357,4 @@ constexpr auto create_i2c_fast_plus() {
     );
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

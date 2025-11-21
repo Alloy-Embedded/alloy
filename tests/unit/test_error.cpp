@@ -9,7 +9,7 @@
 
 #include "core/error.hpp"
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ==============================================================================
 // ErrorCode Tests

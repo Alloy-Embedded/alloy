@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::xdmac {
+namespace ucore::hal::atmel::samv71::xdmac {
 
 // ============================================================================
 // XDMAC - Extensible DMA Controller
@@ -167,4 +167,4 @@ inline XDMAC_Registers* XDMAC() {
     return reinterpret_cast<XDMAC_Registers*>(0x40078000);
 }
 
-}  // namespace alloy::hal::atmel::samv71::xdmac
+}  // namespace ucore::hal::atmel::samv71::xdmac

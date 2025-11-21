@@ -44,9 +44,9 @@
 #include "hal/dma/connection.hpp"
 #include "hal/interface/dma.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ============================================================================
 // Peripheral Address Helpers
@@ -326,4 +326,4 @@ constexpr auto create_adc_dma(void* buffer, usize sample_count, bool circular = 
     );
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

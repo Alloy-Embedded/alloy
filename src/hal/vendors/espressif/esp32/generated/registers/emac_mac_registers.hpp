@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::emac_mac {
+namespace ucore::hal::espressif::esp32::emac_mac {
 
 // ============================================================================
 // EMAC_MAC - Ethernet MAC configuration and control registers
@@ -156,4 +156,4 @@ inline EMAC_MAC_Registers* EMAC_MAC() {
     return reinterpret_cast<EMAC_MAC_Registers*>(0x3FF6A000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::emac_mac
+}  // namespace ucore::hal::espressif::esp32::emac_mac

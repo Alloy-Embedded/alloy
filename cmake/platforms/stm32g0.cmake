@@ -24,7 +24,7 @@ message(STATUS "Configuring for STM32G0 platform (ARM Cortex-M0+)")
 # ------------------------------------------------------------------------------
 
 # Set platform directory for this family
-set(ALLOY_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/st/stm32g0)
+set(MICROCORE_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/st/stm32g0)
 
 # ------------------------------------------------------------------------------
 # Toolchain Requirements
@@ -162,11 +162,11 @@ link_libraries(m)
 # ------------------------------------------------------------------------------
 
 # If a specific board is selected (e.g., nucleo_g0b1re), include board config
-if(DEFINED ALLOY_BOARD)
-    set(BOARD_CONFIG_FILE "${CMAKE_SOURCE_DIR}/cmake/boards/${ALLOY_BOARD}.cmake")
+if(DEFINED MICROCORE_BOARD)
+    set(BOARD_CONFIG_FILE "${CMAKE_SOURCE_DIR}/cmake/boards/${MICROCORE_BOARD}.cmake")
     if(EXISTS "${BOARD_CONFIG_FILE}")
         include("${BOARD_CONFIG_FILE}")
-        message(STATUS "  Board: ${ALLOY_BOARD}")
+        message(STATUS "  Board: ${MICROCORE_BOARD}")
     else()
         message(WARNING "Board configuration file not found: ${BOARD_CONFIG_FILE}")
     endif()

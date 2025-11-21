@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::adc {
+namespace ucore::hal::raspberrypi::rp2040::adc {
 
 // ============================================================================
 // ADC - Control and data interface to SAR ADC
@@ -71,4 +71,4 @@ inline ADC_Registers* ADC() {
     return reinterpret_cast<ADC_Registers*>(0x4004C000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::adc
+}  // namespace ucore::hal::raspberrypi::rp2040::adc

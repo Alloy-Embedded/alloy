@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::tcc0 {
+namespace ucore::hal::atmel::samd21::tcc0 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // TCC0 Bit Field Definitions
@@ -1984,4 +1984,4 @@ namespace ccb_dith6 {
 
 }  // namespace ccb_dith6
 
-}  // namespace alloy::hal::atmel::samd21::tcc0
+}  // namespace ucore::hal::atmel::samd21::tcc0

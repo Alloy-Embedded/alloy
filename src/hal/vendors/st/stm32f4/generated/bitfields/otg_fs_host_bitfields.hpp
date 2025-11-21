@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::otg_fs_host {
+namespace ucore::hal::st::stm32f4::otg_fs_host {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // OTG_FS_HOST Bit Field Definitions
@@ -1865,4 +1865,4 @@ namespace fs_hctsiz7 {
 
 }  // namespace fs_hctsiz7
 
-}  // namespace alloy::hal::st::stm32f4::otg_fs_host
+}  // namespace ucore::hal::st::stm32f4::otg_fs_host

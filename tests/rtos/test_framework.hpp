@@ -22,8 +22,8 @@
 /// }
 /// ```
 
-#ifndef ALLOY_RTOS_TEST_FRAMEWORK_HPP
-#define ALLOY_RTOS_TEST_FRAMEWORK_HPP
+#ifndef UCORE_RTOS_TEST_FRAMEWORK_HPP
+#define UCORE_RTOS_TEST_FRAMEWORK_HPP
 
 #include <cstddef>
 #include <cstdio>
@@ -31,7 +31,7 @@
 #include "core/types.hpp"
 #include "hal/interface/systick.hpp"
 
-namespace alloy::rtos::test {
+namespace ucore::rtos::test {
 
 // ============================================================================
 // Test Statistics
@@ -84,7 +84,7 @@ struct TestContext {
         }; \
     } \
     void test_suite_##name() { \
-        auto& ctx = alloy::rtos::test::TestContext::instance(); \
+        auto& ctx = ucore::rtos::test::TestContext::instance(); \
         ctx.current_suite = #name; \
         printf("\n=== Test Suite: %s ===\n", #name); \
         TestSuite_##name::run_all_tests(); \
@@ -97,16 +97,16 @@ struct TestContext {
     namespace { \
         struct TestRunner_##name { \
             TestRunner_##name() { \
-                auto& ctx = alloy::rtos::test::TestContext::instance(); \
+                auto& ctx = ucore::rtos::test::TestContext::instance(); \
                 ctx.current_test = #name; \
                 ctx.test_failed = false; \
                 ctx.stats.total_tests++; \
                 \
                 printf("  [TEST] %s ... ", #name); \
                 \
-                core::u32 start = alloy::hal::SysTick::micros(); \
+                core::u32 start = ucore::hal::SysTick::micros(); \
                 test_##name(); \
-                core::u32 duration = alloy::hal::SysTick::micros() - start; \
+                core::u32 duration = ucore::hal::SysTick::micros() - start; \
                 \
                 if (!ctx.test_failed) { \
                     ctx.stats.passed_tests++; \
@@ -125,7 +125,7 @@ struct TestContext {
 #define TEST_ASSERT(condition) \
     do { \
         if (!(condition)) { \
-            auto& ctx = alloy::rtos::test::TestContext::instance(); \
+            auto& ctx = ucore::rtos::test::TestContext::instance(); \
             ctx.test_failed = true; \
             printf("\n    ASSERTION FAILED: %s\n", #condition); \
             printf("    at %s:%d\n", __FILE__, __LINE__); \
@@ -139,7 +139,7 @@ struct TestContext {
         auto _actual = (actual); \
         auto _expected = (expected); \
         if (_actual != _expected) { \
-            auto& ctx = alloy::rtos::test::TestContext::instance(); \
+            auto& ctx = ucore::rtos::test::TestContext::instance(); \
             ctx.test_failed = true; \
             printf("\n    ASSERTION FAILED: Expected %s == %s\n", #actual, #expected); \
             printf("    Actual: %lu, Expected: %lu\n", \
@@ -156,7 +156,7 @@ struct TestContext {
         auto _actual = (actual); \
         auto _expected = (expected); \
         if (_actual == _expected) { \
-            auto& ctx = alloy::rtos::test::TestContext::instance(); \
+            auto& ctx = ucore::rtos::test::TestContext::instance(); \
             ctx.test_failed = true; \
             printf("\n    ASSERTION FAILED: Expected %s != %s\n", #actual, #expected); \
             printf("    Both values: %lu\n", static_cast<unsigned long>(_actual)); \
@@ -170,7 +170,7 @@ struct TestContext {
     do { \
         auto _result = (result); \
         if (_result.is_err()) { \
-            auto& ctx = alloy::rtos::test::TestContext::instance(); \
+            auto& ctx = ucore::rtos::test::TestContext::instance(); \
             ctx.test_failed = true; \
             printf("\n    ASSERTION FAILED: Expected Ok, got Err\n"); \
             printf("    at %s:%d\n", __FILE__, __LINE__); \
@@ -183,7 +183,7 @@ struct TestContext {
     do { \
         auto _result = (result); \
         if (_result.is_ok()) { \
-            auto& ctx = alloy::rtos::test::TestContext::instance(); \
+            auto& ctx = ucore::rtos::test::TestContext::instance(); \
             ctx.test_failed = true; \
             printf("\n    ASSERTION FAILED: Expected Err, got Ok\n"); \
             printf("    at %s:%d\n", __FILE__, __LINE__); \
@@ -198,7 +198,7 @@ struct TestContext {
         auto _min = (min); \
         auto _max = (max); \
         if (_value < _min || _value > _max) { \
-            auto& ctx = alloy::rtos::test::TestContext::instance(); \
+            auto& ctx = ucore::rtos::test::TestContext::instance(); \
             ctx.test_failed = true; \
             printf("\n    ASSERTION FAILED: Value out of range\n"); \
             printf("    Value: %lu, Min: %lu, Max: %lu\n", \
@@ -213,7 +213,7 @@ struct TestContext {
 /// Skip test
 #define TEST_SKIP() \
     do { \
-        auto& ctx = alloy::rtos::test::TestContext::instance(); \
+        auto& ctx = ucore::rtos::test::TestContext::instance(); \
         ctx.stats.skipped_tests++; \
         printf("SKIP\n"); \
         return; \
@@ -273,6 +273,6 @@ inline void reset_test_stats() {
     TestContext::instance().stats.reset();
 }
 
-}  // namespace alloy::rtos::test
+}  // namespace ucore::rtos::test
 
 #endif  // ALLOY_RTOS_TEST_FRAMEWORK_HPP

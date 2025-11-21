@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::rtc_io {
+namespace ucore::hal::espressif::esp32::rtc_io {
 
 // ============================================================================
 // RTC_IO - Low-power Input/Output
@@ -177,4 +177,4 @@ inline RTC_IO_Registers* RTC_IO() {
     return reinterpret_cast<RTC_IO_Registers*>(0x3FF48400);
 }
 
-}  // namespace alloy::hal::espressif::esp32::rtc_io
+}  // namespace ucore::hal::espressif::esp32::rtc_io

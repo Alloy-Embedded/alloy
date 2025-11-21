@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::tim6 {
+namespace ucore::hal::st::stm32f7::tim6 {
 
 // ============================================================================
 // TIM6 - Basic timers
@@ -75,4 +75,4 @@ inline TIM6_Registers* TIM6() {
     return reinterpret_cast<TIM6_Registers*>(0x40001000);
 }
 
-}  // namespace alloy::hal::st::stm32f7::tim6
+}  // namespace ucore::hal::st::stm32f7::tim6

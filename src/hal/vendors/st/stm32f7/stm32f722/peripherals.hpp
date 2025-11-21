@@ -21,7 +21,7 @@
 
 #include <cstdint>
 
-namespace alloy::generated::stm32f722 {
+namespace ucore::generated::stm32f722 {
 
 /**
  * @brief STM32F722 Peripheral Base Addresses
@@ -141,4 +141,4 @@ constexpr uintptr_t CACHE       = 0xE000EF50;  ///< Cache Control
 
 } // namespace peripherals
 
-} // namespace alloy::generated::stm32f722
+} // namespace ucore::generated::stm32f722

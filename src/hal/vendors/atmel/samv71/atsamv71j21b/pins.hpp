@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::atsamv71j21b::pins {
+namespace ucore::hal::atmel::samv71::atsamv71j21b::pins {
 
 // ============================================================================
 // Pin Definitions for ATSAMV71J21B
@@ -112,4 +112,4 @@ constexpr Port get_port() {
         static_assert(PortChar >= 'A' && PortChar <= 'E', "Invalid port");
 }
 
-}  // namespace alloy::hal::atmel::samv71::atsamv71j21b::pins
+}  // namespace ucore::hal::atmel::samv71::atsamv71j21b::pins

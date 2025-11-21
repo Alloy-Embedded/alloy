@@ -18,8 +18,8 @@
 #include "rtos/rtos.hpp"
 #include "rtos/semaphore.hpp"
 
-using namespace alloy;
-using namespace alloy::rtos;
+using namespace ucore;
+using namespace ucore::rtos;
 
 // ============================================================================
 // Integration Test 1: Producer-Consumer with Multiple IPC Primitives

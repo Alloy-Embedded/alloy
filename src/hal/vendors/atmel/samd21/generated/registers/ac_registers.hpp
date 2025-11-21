@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::ac {
+namespace ucore::hal::atmel::samd21::ac {
 
 // ============================================================================
 // AC - Analog Comparators
@@ -82,4 +82,4 @@ inline AC_Registers* AC() {
     return reinterpret_cast<AC_Registers*>(0x42004400);
 }
 
-}  // namespace alloy::hal::atmel::samd21::ac
+}  // namespace ucore::hal::atmel::samd21::ac

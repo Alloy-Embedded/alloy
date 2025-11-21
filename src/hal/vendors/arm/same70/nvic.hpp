@@ -7,7 +7,7 @@
 
 #include "hal/vendors/atmel/same70/nvic_hardware_policy.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
 // NVIC instance (ARM Cortex-M7)
 using Nvic = NvicHardware;
@@ -67,4 +67,4 @@ namespace irq {
     constexpr uint8_t RSWDT   = 63;  ///< Reinforced Safety Watchdog Timer
 } // namespace irq
 
-} // namespace alloy::hal::same70
+} // namespace ucore::hal::same70

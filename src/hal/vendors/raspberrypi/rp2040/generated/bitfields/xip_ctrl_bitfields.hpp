@@ -9,12 +9,12 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::raspberrypi::rp2040::xip_ctrl {
+namespace ucore::hal::raspberrypi::rp2040::xip_ctrl {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // XIP_CTRL Bit Field Definitions
 // ============================================================================
 
-}  // namespace alloy::hal::raspberrypi::rp2040::xip_ctrl
+}  // namespace ucore::hal::raspberrypi::rp2040::xip_ctrl

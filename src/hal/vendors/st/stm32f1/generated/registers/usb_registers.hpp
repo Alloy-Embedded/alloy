@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f1::usb {
+namespace ucore::hal::st::stm32f1::usb {
 
 // ============================================================================
 // USB - Universal serial bus full-speed device interface
@@ -105,4 +105,4 @@ inline USB_Registers* USB() {
     return reinterpret_cast<USB_Registers*>(0x40005C00);
 }
 
-}  // namespace alloy::hal::st::stm32f1::usb
+}  // namespace ucore::hal::st::stm32f1::usb

@@ -35,8 +35,8 @@
 /// }
 /// ```
 
-#ifndef ALLOY_RTOS_MEMORY_POOL_HPP
-#define ALLOY_RTOS_MEMORY_POOL_HPP
+#ifndef UCORE_RTOS_MEMORY_POOL_HPP
+#define UCORE_RTOS_MEMORY_POOL_HPP
 
 #include <cstddef>
 #include <atomic>
@@ -47,7 +47,7 @@
 #include "core/types.hpp"
 #include "core/result.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 // ============================================================================
 // StaticPool - Fixed-Size Memory Pool
@@ -433,6 +433,6 @@ consteval size_t optimal_pool_capacity() {
     return Budget / total_per_block;
 }
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ALLOY_RTOS_MEMORY_POOL_HPP

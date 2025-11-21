@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace alloy::hal::stm32f411::stm32f411ce::pins {
+namespace ucore::hal::stm32f411::stm32f411ce::pins {
 
 // ============================================================================
 // Auto-generated pin definitions for STM32F411CE
@@ -96,4 +96,4 @@ constexpr void validate_pin() {
 constexpr size_t TOTAL_PIN_COUNT = detail::PIN_COUNT;  // 35 pins
 constexpr size_t GPIO_PORT_COUNT = 3;                  // 3 ports
 
-}  // namespace alloy::hal::stm32f411::stm32f411ce::pins
+}  // namespace ucore::hal::stm32f411::stm32f411ce::pins

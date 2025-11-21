@@ -4,9 +4,9 @@
 #include "rtos/task_notification.hpp"
 #include "rtos/rtos.hpp"
 
-using namespace alloy;
-using namespace alloy::rtos;
-using namespace alloy::rtos::test;
+using namespace ucore;
+using namespace ucore::rtos;
+using namespace ucore::rtos::test;
 
 // Test tasks
 static TaskControlBlock test_task_tcb;

@@ -24,10 +24,10 @@
 // ARM CMSIS headers (would be included in real implementation)
 // #include "same70q21b.h"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 /**
  * @brief SAME70 NVIC Implementation
@@ -234,9 +234,9 @@ public:
 // Verify that Nvic satisfies InterruptController concept
 static_assert(InterruptController<Nvic>, "Nvic must satisfy InterruptController concept");
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 // Make SAME70 NVIC the default platform implementation
-namespace alloy::hal {
+namespace ucore::hal {
     using PlatformInterruptController = same70::Nvic;
 }

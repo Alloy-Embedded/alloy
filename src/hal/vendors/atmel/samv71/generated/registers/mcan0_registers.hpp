@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::mcan0 {
+namespace ucore::hal::atmel::samv71::mcan0 {
 
 // ============================================================================
 // MCAN0 - Controller Area Network
@@ -231,4 +231,4 @@ inline MCAN0_Registers* MCAN0() {
     return reinterpret_cast<MCAN0_Registers*>(0x40030000);
 }
 
-}  // namespace alloy::hal::atmel::samv71::mcan0
+}  // namespace ucore::hal::atmel::samv71::mcan0

@@ -1,13 +1,13 @@
-#ifndef ALLOY_BLE_CENTRAL_HPP
-#define ALLOY_BLE_CENTRAL_HPP
+#ifndef UCORE_BLE_CENTRAL_HPP
+#define UCORE_BLE_CENTRAL_HPP
 
 #include "core/error.hpp"
 #include "core/result.hpp"
 
 #include "types.hpp"
 
-using alloy::core::u16;
-using alloy::core::u8;
+using ucore::core::u16;
+using ucore::core::u8;
 
 /// BLE Central (Client/Scanner) API for Alloy framework
 ///
@@ -19,10 +19,10 @@ using alloy::core::u8;
 ///
 /// Uses RAII pattern for automatic resource cleanup.
 
-namespace alloy::ble {
+namespace ucore::ble {
 
-using alloy::core::ErrorCode;
-using alloy::core::Result;
+using ucore::core::ErrorCode;
+using ucore::core::Result;
 
 /// BLE scan configuration
 struct ScanConfig {
@@ -315,6 +315,6 @@ class Central {
     Impl* impl_;
 };
 
-}  // namespace alloy::ble
+}  // namespace ucore::ble
 
 #endif  // ALLOY_BLE_CENTRAL_HPP

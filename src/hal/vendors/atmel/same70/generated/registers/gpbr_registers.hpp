@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::gpbr {
+namespace ucore::hal::atmel::same70::gpbr {
 
 // ============================================================================
 // GPBR - General Purpose Backup Registers
@@ -29,4 +29,4 @@ inline GPBR_Registers* GPBR() {
     return reinterpret_cast<GPBR_Registers*>(0x400E1890);
 }
 
-}  // namespace alloy::hal::atmel::same70::gpbr
+}  // namespace ucore::hal::atmel::same70::gpbr

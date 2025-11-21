@@ -53,16 +53,16 @@
 #include "hal/vendors/st/stm32f4/bitfields/rcc_bitfields.hpp"
 
 
-namespace alloy::hal::stm32f4 {
+namespace ucore::hal::stm32f4 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::st::stm32f4;
+using namespace ucore::hal::st::stm32f4;
 
 // Namespace alias for bitfield access
-namespace rcc = alloy::hal::st::stm32f4::rcc;
+namespace rcc = ucore::hal::st::stm32f4::rcc;
 
 // ============================================================================
 // Platform-Specific Enums
@@ -450,4 +450,4 @@ constexpr ClockConfig CLOCK_CONFIG_16MHZ_HSI = {
     .apb2_prescaler = ApbPrescaler::DIV_1  // PLL not used
 };
 
-}  // namespace alloy::hal::stm32f4
+}  // namespace ucore::hal::stm32f4

@@ -1,11 +1,11 @@
-#ifndef ALLOY_CORE_ERROR_CODE_HPP
-#define ALLOY_CORE_ERROR_CODE_HPP
+#ifndef UCORE_CORE_ERROR_CODE_HPP
+#define UCORE_CORE_ERROR_CODE_HPP
 
 #include "types.hpp"
 
 /// Error code definitions for Alloy framework
 
-namespace alloy::core {
+namespace ucore::core {
 
 /// Standard error codes for Alloy operations
 ///
@@ -49,6 +49,6 @@ enum class ErrorCode : u8 {
     Unknown  ///< Unknown error occurred
 };
 
-}  // namespace alloy::core
+}  // namespace ucore::core
 
 #endif  // ALLOY_CORE_ERROR_CODE_HPP

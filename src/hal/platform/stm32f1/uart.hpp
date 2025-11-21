@@ -19,10 +19,10 @@
 #include "hal/api/uart_expert.hpp"
 #include "hal/vendors/st/stm32f1/usart_hardware_policy.hpp"
 
-namespace alloy::hal::stm32f1 {
+namespace ucore::hal::stm32f1 {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 // ============================================================================
 // Hardware Policy Type Aliases (STM32F1 USART)
@@ -68,14 +68,14 @@ using Usart1ExpertConfig = UartExpertConfig<Usart1Hardware>;
 using Usart2ExpertConfig = UartExpertConfig<Usart2Hardware>;
 using Usart3ExpertConfig = UartExpertConfig<Usart3Hardware>;
 
-}  // namespace alloy::hal::stm32f1
+}  // namespace ucore::hal::stm32f1
 
 /**
  * @example Blue Pill UART Example
  * @code
  * #include "hal/platform/stm32f1/uart.hpp"
  *
- * using namespace alloy::hal::stm32f1;
+ * using namespace ucore::hal::stm32f1;
  *
  * // Blue Pill default pins
  * struct Usart1TxPin {

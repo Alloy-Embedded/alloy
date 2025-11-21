@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::mpu {
+namespace ucore::hal::st::stm32f7::mpu {
 
 // ============================================================================
 // MPU - Memory protection unit
@@ -56,4 +56,4 @@ inline MPU_Registers* MPU() {
     return reinterpret_cast<MPU_Registers*>(0xE000ED90);
 }
 
-}  // namespace alloy::hal::st::stm32f7::mpu
+}  // namespace ucore::hal::st::stm32f7::mpu

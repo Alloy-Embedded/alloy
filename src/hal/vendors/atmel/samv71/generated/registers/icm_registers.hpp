@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::icm {
+namespace ucore::hal::atmel::samv71::icm {
 
 // ============================================================================
 // ICM - Integrity Check Monitor
@@ -80,4 +80,4 @@ inline ICM_Registers* ICM() {
     return reinterpret_cast<ICM_Registers*>(0x40048000);
 }
 
-}  // namespace alloy::hal::atmel::samv71::icm
+}  // namespace ucore::hal::atmel::samv71::icm

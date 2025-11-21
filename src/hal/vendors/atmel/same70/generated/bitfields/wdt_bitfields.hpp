@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::wdt {
+namespace ucore::hal::atmel::same70::wdt {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // WDT Bit Field Definitions
@@ -100,4 +100,4 @@ constexpr uint32_t WDERR_Msk = WDERR::mask;
 
 }  // namespace sr
 
-}  // namespace alloy::hal::atmel::same70::wdt
+}  // namespace ucore::hal::atmel::same70::wdt

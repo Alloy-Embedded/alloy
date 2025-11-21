@@ -25,7 +25,7 @@ message(STATUS "Configuring for SAME70 platform (ARM Cortex-M7)")
 # ------------------------------------------------------------------------------
 
 # Set platform directory for this family
-set(ALLOY_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/atmel/same70)
+set(MICROCORE_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/atmel/same70)
 
 # Add src/ to include path so startup code can find headers
 # This is needed because target_include_directories() in CMakeLists.txt
@@ -187,11 +187,11 @@ link_libraries(m)
 # ------------------------------------------------------------------------------
 
 # If a specific board is selected (e.g., SAME70-XPLAINED), include board config
-if(DEFINED ALLOY_BOARD)
-    set(BOARD_CONFIG_FILE "${CMAKE_SOURCE_DIR}/cmake/boards/${ALLOY_BOARD}.cmake")
+if(DEFINED MICROCORE_BOARD)
+    set(BOARD_CONFIG_FILE "${CMAKE_SOURCE_DIR}/cmake/boards/${MICROCORE_BOARD}.cmake")
     if(EXISTS "${BOARD_CONFIG_FILE}")
         include("${BOARD_CONFIG_FILE}")
-        message(STATUS "  Board: ${ALLOY_BOARD}")
+        message(STATUS "  Board: ${MICROCORE_BOARD}")
     else()
         message(WARNING "Board configuration file not found: ${BOARD_CONFIG_FILE}")
     endif()

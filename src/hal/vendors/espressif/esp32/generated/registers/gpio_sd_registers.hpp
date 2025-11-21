@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::gpio_sd {
+namespace ucore::hal::espressif::esp32::gpio_sd {
 
 // ============================================================================
 // GPIO_SD - Sigma-Delta Modulation
@@ -44,4 +44,4 @@ inline GPIO_SD_Registers* GPIO_SD() {
     return reinterpret_cast<GPIO_SD_Registers*>(0x3FF44F00);
 }
 
-}  // namespace alloy::hal::espressif::esp32::gpio_sd
+}  // namespace ucore::hal::espressif::esp32::gpio_sd

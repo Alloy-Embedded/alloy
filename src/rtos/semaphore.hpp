@@ -46,8 +46,8 @@
 /// }
 /// ```
 
-#ifndef ALLOY_RTOS_SEMAPHORE_HPP
-#define ALLOY_RTOS_SEMAPHORE_HPP
+#ifndef UCORE_RTOS_SEMAPHORE_HPP
+#define UCORE_RTOS_SEMAPHORE_HPP
 
 #include "hal/interface/systick.hpp"
 
@@ -60,7 +60,7 @@
 #include "core/types.hpp"
 #include "core/result.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 /// Binary Semaphore
 ///
@@ -446,6 +446,6 @@ core::Result<void, RTOSError> CountingSemaphore<MaxCount>::try_take() {
 static_assert(Semaphore<BinarySemaphore>, "BinarySemaphore must satisfy Semaphore concept");
 static_assert(Semaphore<CountingSemaphore<10>>, "CountingSemaphore must satisfy Semaphore concept");
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ALLOY_RTOS_SEMAPHORE_HPP

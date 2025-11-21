@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::pwm {
+namespace ucore::hal::raspberrypi::rp2040::pwm {
 
 // ============================================================================
 // PWM - Simple PWM
@@ -251,4 +251,4 @@ inline PWM_Registers* PWM() {
     return reinterpret_cast<PWM_Registers*>(0x40050000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::pwm
+}  // namespace ucore::hal::raspberrypi::rp2040::pwm

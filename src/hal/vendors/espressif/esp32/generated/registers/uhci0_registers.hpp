@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::uhci0 {
+namespace ucore::hal::espressif::esp32::uhci0 {
 
 // ============================================================================
 // UHCI0 - Universal Host Controller Interface 0
@@ -240,4 +240,4 @@ inline UHCI0_Registers* UHCI0() {
     return reinterpret_cast<UHCI0_Registers*>(0x3FF54000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::uhci0
+}  // namespace ucore::hal::espressif::esp32::uhci0

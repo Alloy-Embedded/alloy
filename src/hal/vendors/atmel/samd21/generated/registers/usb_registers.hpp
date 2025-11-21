@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::usb {
+namespace ucore::hal::atmel::samd21::usb {
 
 // ============================================================================
 // USB - Universal Serial Bus
@@ -233,4 +233,4 @@ inline USB_Registers* USB() {
     return reinterpret_cast<USB_Registers*>(0x41005000);
 }
 
-}  // namespace alloy::hal::atmel::samd21::usb
+}  // namespace ucore::hal::atmel::samd21::usb

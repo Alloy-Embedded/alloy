@@ -12,9 +12,9 @@
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Expert PWM configuration
@@ -127,4 +127,4 @@ Result<void, ErrorCode> configure(const PwmExpertConfig& config) {
 
 }  // namespace expert
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

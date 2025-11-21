@@ -26,7 +26,7 @@
 #include "core/error.hpp"
 #include "core/types.hpp"
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ==============================================================================
 // Platform-Specific Includes
@@ -38,13 +38,13 @@ using namespace alloy::core;
     #include "hal/api/uart_simple.hpp"
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = alloy::hal::st::stm32f4::Stm32f4Clock<
-        alloy::hal::st::stm32f4::ExampleF4ClockConfig
+    using ClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
+        ucore::hal::st::stm32f4::ExampleF4ClockConfig
     >;
-    using LedPin = alloy::boards::LedGreen;
+    using LedPin = ucore::boards::LedGreen;
 
     // UART configuration for STM32F4
-    using UartConfig = alloy::hal::api::SimpleUartConfig<
+    using UartConfig = ucore::hal::api::SimpleUartConfig<
         /* Hardware */ void,  // Placeholder - would use actual UART hardware
         /* TxPin */ void,
         /* RxPin */ void
@@ -55,10 +55,10 @@ using namespace alloy::core;
     #include "hal/vendors/microchip/same70/gpio.hpp"
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = alloy::hal::microchip::same70::Same70Clock<
-        alloy::hal::microchip::same70::ExampleSame70ClockConfig
+    using ClockPlatform = ucore::hal::microchip::same70::Same70Clock<
+        ucore::hal::microchip::same70::ExampleSame70ClockConfig
     >;
-    using LedPin = alloy::boards::LedGreen;
+    using LedPin = ucore::boards::LedGreen;
 
 #else
     #error "Unsupported board for UART echo test"

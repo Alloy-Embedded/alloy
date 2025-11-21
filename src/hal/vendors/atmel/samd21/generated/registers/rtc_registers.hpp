@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::rtc {
+namespace ucore::hal::atmel::samd21::rtc {
 
 // ============================================================================
 // RTC - Real-Time Counter
@@ -172,4 +172,4 @@ inline RTC_Registers* RTC() {
     return reinterpret_cast<RTC_Registers*>(0x40001400);
 }
 
-}  // namespace alloy::hal::atmel::samd21::rtc
+}  // namespace ucore::hal::atmel::samd21::rtc

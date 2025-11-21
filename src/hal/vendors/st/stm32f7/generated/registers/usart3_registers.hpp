@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::usart3 {
+namespace ucore::hal::st::stm32f7::usart3 {
 
 // ============================================================================
 // USART3 - Universal synchronous asynchronous receiver transmitter
@@ -92,4 +92,4 @@ inline USART3_Registers* USART3() {
     return reinterpret_cast<USART3_Registers*>(0x40004800);
 }
 
-}  // namespace alloy::hal::st::stm32f7::usart3
+}  // namespace ucore::hal::st::stm32f7::usart3

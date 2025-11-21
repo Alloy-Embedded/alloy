@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::frc_timer {
+namespace ucore::hal::espressif::esp32::frc_timer {
 
 // ============================================================================
 // FRC_TIMER - FRC_TIMER Peripheral
@@ -46,4 +46,4 @@ inline FRC_TIMER_Registers* FRC_TIMER() {
     return reinterpret_cast<FRC_TIMER_Registers*>(0x3FF47000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::frc_timer
+}  // namespace ucore::hal::espressif::esp32::frc_timer

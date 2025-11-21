@@ -14,8 +14,8 @@
 
 #include <span>
 
-using namespace alloy::hal;
-using namespace alloy::core;
+using namespace ucore::hal;
+using namespace ucore::core;
 
 // ============================================================================
 // Compile-Time Tests

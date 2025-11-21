@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::rosc {
+namespace ucore::hal::raspberrypi::rp2040::rosc {
 
 // ============================================================================
 // ROSC - Peripheral Registers
@@ -72,4 +72,4 @@ inline ROSC_Registers* ROSC() {
     return reinterpret_cast<ROSC_Registers*>(0x40060000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::rosc
+}  // namespace ucore::hal::raspberrypi::rp2040::rosc

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::pmc {
+namespace ucore::hal::atmel::samv71::pmc {
 
 // ============================================================================
 // PMC - Power Management Controller
@@ -205,4 +205,4 @@ inline PMC_Registers* PMC() {
     return reinterpret_cast<PMC_Registers*>(0x400E0600);
 }
 
-}  // namespace alloy::hal::atmel::samv71::pmc
+}  // namespace ucore::hal::atmel::samv71::pmc

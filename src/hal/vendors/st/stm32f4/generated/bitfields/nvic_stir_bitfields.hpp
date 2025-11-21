@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::nvic_stir {
+namespace ucore::hal::st::stm32f4::nvic_stir {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // NVIC_STIR Bit Field Definitions
@@ -27,4 +27,4 @@ namespace stir {
 
 }  // namespace stir
 
-}  // namespace alloy::hal::st::stm32f4::nvic_stir
+}  // namespace ucore::hal::st::stm32f4::nvic_stir

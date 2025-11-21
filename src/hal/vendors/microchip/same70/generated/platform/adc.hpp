@@ -42,9 +42,9 @@
 // Bitfield definitions
 #include ""
 
-namespace alloy::hal::microchip::same70 {
+namespace ucore::hal::microchip::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
 using namespace ;
@@ -164,7 +164,7 @@ using AFEC0Hardware = SAME70AdcHardwarePolicy<0x4003C000>;
 using AFEC1Hardware = SAME70AdcHardwarePolicy<0x40064000>;
 
 
-}  // namespace alloy::hal::microchip::same70
+}  // namespace ucore::hal::microchip::same70
 
 /**
  * @example
@@ -173,7 +173,7 @@ using AFEC1Hardware = SAME70AdcHardwarePolicy<0x40064000>;
  * @code
  * #include "hal/vendors//SAME70/adc.hpp"
  *
- * using namespace alloy::hal::microchip::same70;
+ * using namespace ucore::hal::microchip::same70;
  *
  * int main() {
  *     // Initialize ADC

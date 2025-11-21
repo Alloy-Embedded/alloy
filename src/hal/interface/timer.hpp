@@ -2,8 +2,8 @@
 ///
 /// Defines Timer concepts and configuration types for all platforms.
 
-#ifndef ALLOY_HAL_INTERFACE_TIMER_HPP
-#define ALLOY_HAL_INTERFACE_TIMER_HPP
+#ifndef UCORE_HAL_INTERFACE_TIMER_HPP
+#define UCORE_HAL_INTERFACE_TIMER_HPP
 
 #include <concepts>
 #include <functional>
@@ -13,9 +13,9 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /// Timer operating mode
 enum class TimerMode : u8 {
@@ -185,6 +185,6 @@ inline constexpr u32 calculate_frequency(u32 timer_clock_hz, u32 captured_ticks)
     return timer_clock_hz / captured_ticks;
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal
 
 #endif  // ALLOY_HAL_INTERFACE_TIMER_HPP

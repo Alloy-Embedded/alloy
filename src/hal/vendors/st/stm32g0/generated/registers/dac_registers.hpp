@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::dac {
+namespace ucore::hal::st::stm32g0::dac {
 
 // ============================================================================
 // DAC - DAC
@@ -145,4 +145,4 @@ inline DAC_Registers* DAC() {
     return reinterpret_cast<DAC_Registers*>(0x40007400);
 }
 
-}  // namespace alloy::hal::st::stm32g0::dac
+}  // namespace ucore::hal::st::stm32g0::dac

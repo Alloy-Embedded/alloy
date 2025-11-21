@@ -1,7 +1,7 @@
 #include "peripheral.hpp"
 
-using alloy::core::u16;
-using alloy::core::u8;
+using ucore::core::u16;
+using ucore::core::u8;
 
 /// BLE Peripheral implementation - STUB
 ///
@@ -10,7 +10,7 @@ using alloy::core::u8;
 ///
 /// For now, we're focusing on BLE Central (Scanner) functionality.
 
-namespace alloy::ble {
+namespace ucore::ble {
 
 struct Peripheral::Impl {
     bool initialized;
@@ -137,4 +137,4 @@ void Peripheral::set_write_callback(WriteCallback callback) {
     (void)callback;
 }
 
-}  // namespace alloy::ble
+}  // namespace ucore::ble

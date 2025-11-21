@@ -43,10 +43,10 @@
 #include "hal/core/signal_registry.hpp"
 #include "hal/api/uart_simple.hpp"  // For UartParity and defaults
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 // ============================================================================
 // Fluent Configuration Result
@@ -574,4 +574,4 @@ private:
     BuilderState state_;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

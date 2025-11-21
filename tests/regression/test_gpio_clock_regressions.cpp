@@ -11,8 +11,8 @@
 #include "core/error.hpp"
 #include "hal/types.hpp"
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // ==============================================================================
 // Mock System for Regression Testing

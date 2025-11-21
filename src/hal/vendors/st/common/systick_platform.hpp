@@ -14,9 +14,9 @@
 #include "core/types.hpp"
 #include <cstdint>
 
-namespace alloy::hal::st::common {
+namespace ucore::hal::st::common {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief SysTick timer platform implementation (shared across all STM32)
@@ -89,4 +89,4 @@ private:
     static inline volatile uint32_t tick_count = 0;
 };
 
-} // namespace alloy::hal::st::common
+} // namespace ucore::hal::st::common

@@ -22,7 +22,7 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::core {
+namespace ucore::core {
 
 /**
  * @brief RAII wrapper for I2C bus locking
@@ -202,4 +202,4 @@ template <typename I2cDevice>
     return ScopedI2c<I2cDevice>::create(device, timeout_ms);
 }
 
-}  // namespace alloy::core
+}  // namespace ucore::core

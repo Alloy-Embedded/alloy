@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::frc_timer {
+namespace ucore::hal::espressif::esp32::frc_timer {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // FRC_TIMER Bit Field Definitions
@@ -67,4 +67,4 @@ namespace timer_alarm {
 
 }  // namespace timer_alarm
 
-}  // namespace alloy::hal::espressif::esp32::frc_timer
+}  // namespace ucore::hal::espressif::esp32::frc_timer

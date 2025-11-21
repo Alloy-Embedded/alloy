@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::hmatrix {
+namespace ucore::hal::atmel::samd21::hmatrix {
 
 // ============================================================================
 // HMATRIX - HSB Matrix
@@ -40,4 +40,4 @@ inline HMATRIX_Registers* HMATRIX() {
     return reinterpret_cast<HMATRIX_Registers*>(0x41007000);
 }
 
-}  // namespace alloy::hal::atmel::samd21::hmatrix
+}  // namespace ucore::hal::atmel::samd21::hmatrix

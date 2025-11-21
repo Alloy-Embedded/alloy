@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f0::gpiof {
+namespace ucore::hal::st::stm32f0::gpiof {
 
 // ============================================================================
 // GPIOF - General-purpose I/Os
@@ -92,4 +92,4 @@ inline GPIOF_Registers* GPIOF() {
     return reinterpret_cast<GPIOF_Registers*>(0x48001400);
 }
 
-}  // namespace alloy::hal::st::stm32f0::gpiof
+}  // namespace ucore::hal::st::stm32f0::gpiof

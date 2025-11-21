@@ -13,9 +13,9 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Simple DMA transfer wrapper
@@ -119,4 +119,4 @@ public:
     }
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

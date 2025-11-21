@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::systick {
+namespace ucore::hal::atmel::samv71::systick {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SysTick Bit Field Definitions
@@ -112,4 +112,4 @@ namespace calib {
 
 }  // namespace calib
 
-}  // namespace alloy::hal::atmel::samv71::systick
+}  // namespace ucore::hal::atmel::samv71::systick

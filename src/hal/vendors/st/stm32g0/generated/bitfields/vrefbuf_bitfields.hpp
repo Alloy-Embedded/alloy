@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32g0::vrefbuf {
+namespace ucore::hal::st::stm32g0::vrefbuf {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // VREFBUF Bit Field Definitions
@@ -80,4 +80,4 @@ namespace vrefbuf_ccr {
 
 }  // namespace vrefbuf_ccr
 
-}  // namespace alloy::hal::st::stm32g0::vrefbuf
+}  // namespace ucore::hal::st::stm32g0::vrefbuf

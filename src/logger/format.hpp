@@ -6,7 +6,7 @@
 
 #include "types.hpp"
 
-namespace alloy::logger {
+namespace ucore::logger {
 
 /**
  * Format utilities for logger messages
@@ -171,4 +171,4 @@ class Formatter {
     }
 };
 
-}  // namespace alloy::logger
+}  // namespace ucore::logger

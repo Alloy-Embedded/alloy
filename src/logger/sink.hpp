@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace alloy::logger {
+namespace ucore::logger {
 
 /**
  * Base class for logger output sinks
@@ -59,4 +59,4 @@ class Sink {
     virtual bool is_ready() const { return true; }
 };
 
-}  // namespace alloy::logger
+}  // namespace ucore::logger

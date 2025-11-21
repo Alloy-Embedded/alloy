@@ -30,7 +30,7 @@
 #include <type_traits>  // std::enable_if, std::is_same
 #include <utility>      // std::move, std::forward
 
-namespace alloy::core {
+namespace ucore::core {
 
 // Forward declarations
 template <typename T, typename E>
@@ -549,4 +549,4 @@ class Result<void, E> {
     E error_;  // Only valid when is_ok_ == false
 };
 
-}  // namespace alloy::core
+}  // namespace ucore::core

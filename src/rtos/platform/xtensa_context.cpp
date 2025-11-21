@@ -8,7 +8,7 @@
 
     #include "core/types.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 void init_task_stack(TaskControlBlock* tcb, void (*func)()) {
     // Get pointer to top of stack (stacks grow downward)
@@ -90,22 +90,22 @@ void trigger_context_switch() {
         ;
 }
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 // Context switch handler (software interrupt)
 extern "C" void context_switch_handler(void* arg) {
     (void)arg;  // Unused
 
     // Save current task context
-    if (alloy::rtos::g_scheduler.current_task != nullptr) {
+    if (ucore::rtos::g_scheduler.current_task != nullptr) {
         // Context is already saved by interrupt entry
     }
 
     // Get next task
-    alloy::rtos::TaskControlBlock* next = alloy::rtos::g_scheduler.current_task;
+    ucore::rtos::TaskControlBlock* next = ucore::rtos::g_scheduler.current_task;
 
     // Clear context switch flag
-    alloy::rtos::g_scheduler.need_context_switch = false;
+    ucore::rtos::g_scheduler.need_context_switch = false;
 
     // Restore next task's context
     // This would be done in assembly for a full implementation

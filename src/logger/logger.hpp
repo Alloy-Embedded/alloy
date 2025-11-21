@@ -12,7 +12,7 @@
 
 #include <cstdarg>
 
-namespace alloy::logger {
+namespace ucore::logger {
 
 /**
  * Core logging engine
@@ -164,7 +164,7 @@ class Logger {
         // Get timestamp
         uint64_t timestamp_us = 0;
 #if LOG_ENABLE_TIMESTAMPS
-        timestamp_us = static_cast<uint64_t>(alloy::systick::micros());
+        timestamp_us = static_cast<uint64_t>(ucore::systick::micros());
 #endif
 
         // Format prefix
@@ -219,7 +219,7 @@ class Logger {
 #endif
 };
 
-}  // namespace alloy::logger
+}  // namespace ucore::logger
 
 // ============================================================================
 // Logging Macros
@@ -239,11 +239,11 @@ class Logger {
 #if LOG_MIN_LEVEL <= LOG_LEVEL_TRACE
     #if LOG_ENABLE_SOURCE_LOCATION
         #define LOG_TRACE(fmt, ...)                                                             \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Trace, LOG_FILENAME(__FILE__), \
+            ::ucore::logger::Logger::log(::ucore::logger::Level::Trace, LOG_FILENAME(__FILE__), \
                                          __LINE__, fmt, ##__VA_ARGS__)
     #else
         #define LOG_TRACE(fmt, ...)                                                      \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Trace, nullptr, 0, fmt, \
+            ::ucore::logger::Logger::log(::ucore::logger::Level::Trace, nullptr, 0, fmt, \
                                          ##__VA_ARGS__)
     #endif
 #else
@@ -257,11 +257,11 @@ class Logger {
 #if LOG_MIN_LEVEL <= LOG_LEVEL_DEBUG
     #if LOG_ENABLE_SOURCE_LOCATION
         #define LOG_DEBUG(fmt, ...)                                                             \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Debug, LOG_FILENAME(__FILE__), \
+            ::ucore::logger::Logger::log(::ucore::logger::Level::Debug, LOG_FILENAME(__FILE__), \
                                          __LINE__, fmt, ##__VA_ARGS__)
     #else
         #define LOG_DEBUG(fmt, ...)                                                      \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Debug, nullptr, 0, fmt, \
+            ::ucore::logger::Logger::log(::ucore::logger::Level::Debug, nullptr, 0, fmt, \
                                          ##__VA_ARGS__)
     #endif
 #else
@@ -275,11 +275,11 @@ class Logger {
 #if LOG_MIN_LEVEL <= LOG_LEVEL_INFO
     #if LOG_ENABLE_SOURCE_LOCATION
         #define LOG_INFO(fmt, ...)                                                             \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Info, LOG_FILENAME(__FILE__), \
+            ::ucore::logger::Logger::log(::ucore::logger::Level::Info, LOG_FILENAME(__FILE__), \
                                          __LINE__, fmt, ##__VA_ARGS__)
     #else
         #define LOG_INFO(fmt, ...)                                                      \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Info, nullptr, 0, fmt, \
+            ::ucore::logger::Logger::log(::ucore::logger::Level::Info, nullptr, 0, fmt, \
                                          ##__VA_ARGS__)
     #endif
 #else
@@ -293,11 +293,11 @@ class Logger {
 #if LOG_MIN_LEVEL <= LOG_LEVEL_WARN
     #if LOG_ENABLE_SOURCE_LOCATION
         #define LOG_WARN(fmt, ...)                                                             \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Warn, LOG_FILENAME(__FILE__), \
+            ::ucore::logger::Logger::log(::ucore::logger::Level::Warn, LOG_FILENAME(__FILE__), \
                                          __LINE__, fmt, ##__VA_ARGS__)
     #else
         #define LOG_WARN(fmt, ...)                                                      \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Warn, nullptr, 0, fmt, \
+            ::ucore::logger::Logger::log(::ucore::logger::Level::Warn, nullptr, 0, fmt, \
                                          ##__VA_ARGS__)
     #endif
 #else
@@ -311,11 +311,11 @@ class Logger {
 #if LOG_MIN_LEVEL <= LOG_LEVEL_ERROR
     #if LOG_ENABLE_SOURCE_LOCATION
         #define LOG_ERROR(fmt, ...)                                                             \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Error, LOG_FILENAME(__FILE__), \
+            ::ucore::logger::Logger::log(::ucore::logger::Level::Error, LOG_FILENAME(__FILE__), \
                                          __LINE__, fmt, ##__VA_ARGS__)
     #else
         #define LOG_ERROR(fmt, ...)                                                      \
-            ::alloy::logger::Logger::log(::alloy::logger::Level::Error, nullptr, 0, fmt, \
+            ::ucore::logger::Logger::log(::ucore::logger::Level::Error, nullptr, 0, fmt, \
                                          ##__VA_ARGS__)
     #endif
 #else

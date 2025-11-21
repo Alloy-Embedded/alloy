@@ -26,9 +26,9 @@
 #include "core/types.hpp"
 #include "hal/types.hpp"
 
-namespace alloy::hal::concepts {
+namespace ucore::hal::concepts {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ============================================================================
 // Core Peripheral Concepts
@@ -340,7 +340,7 @@ concept ValidConfiguration = requires(const T config) {
 // They will be uncommented once we have concrete implementations to test.
 
 // Example test (uncomment when implementations exist):
-// static_assert(GpioPin<alloy::hal::same70::GpioPin<0x400E0E00, 0>>);
+// static_assert(GpioPin<ucore::hal::same70::GpioPin<0x400E0E00, 0>>);
 // static_assert(!GpioPin<int>, "int should not satisfy GpioPin concept");
 
-}  // namespace alloy::hal::concepts
+}  // namespace ucore::hal::concepts

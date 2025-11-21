@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32g0::gpiob {
+namespace ucore::hal::st::stm32g0::gpiob {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // GPIOB Bit Field Definitions
@@ -1123,4 +1123,4 @@ namespace brr {
 
 }  // namespace brr
 
-}  // namespace alloy::hal::st::stm32g0::gpiob
+}  // namespace ucore::hal::st::stm32g0::gpiob

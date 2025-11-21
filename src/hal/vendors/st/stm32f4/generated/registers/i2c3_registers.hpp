@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::i2c3 {
+namespace ucore::hal::st::stm32f4::i2c3 {
 
 // ============================================================================
 // I2C3 - Inter-integrated circuit
@@ -79,4 +79,4 @@ inline I2C3_Registers* I2C3() {
     return reinterpret_cast<I2C3_Registers*>(0x40005C00);
 }
 
-}  // namespace alloy::hal::st::stm32f4::i2c3
+}  // namespace ucore::hal::st::stm32f4::i2c3

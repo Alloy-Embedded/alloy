@@ -23,7 +23,7 @@
 #include "core/error.hpp"
 #include "core/result.hpp"
 
-namespace alloy::core {
+namespace ucore::core {
 
 /**
  * @brief Generic RAII wrapper for device resources
@@ -132,4 +132,4 @@ class ScopedDevice {
     Device* m_device;  ///< Pointer to the managed device
 };
 
-}  // namespace alloy::core
+}  // namespace ucore::core

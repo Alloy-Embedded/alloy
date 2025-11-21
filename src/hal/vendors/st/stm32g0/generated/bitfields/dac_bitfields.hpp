@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32g0::dac {
+namespace ucore::hal::st::stm32g0::dac {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // DAC Bit Field Definitions
@@ -597,4 +597,4 @@ namespace dac_shrr {
 
 }  // namespace dac_shrr
 
-}  // namespace alloy::hal::st::stm32g0::dac
+}  // namespace ucore::hal::st::stm32g0::dac

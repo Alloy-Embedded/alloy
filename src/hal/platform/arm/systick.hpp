@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-namespace alloy::hal::platform::arm {
+namespace ucore::hal::platform::arm {
 
 /**
  * @brief SysTick timer for system time tracking (RTOS timebase)
@@ -151,4 +151,4 @@ class SysTick {
     static inline uint32_t tick_period_us = 1000;  // Default 1ms
 };
 
-}  // namespace alloy::hal::platform::arm
+}  // namespace ucore::hal::platform::arm

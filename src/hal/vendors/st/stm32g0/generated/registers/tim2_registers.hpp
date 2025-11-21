@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::tim2 {
+namespace ucore::hal::st::stm32g0::tim2 {
 
 // ============================================================================
 // TIM2 - General-purpose-timers
@@ -174,4 +174,4 @@ inline TIM2_Registers* TIM2() {
     return reinterpret_cast<TIM2_Registers*>(0x40000000);
 }
 
-}  // namespace alloy::hal::st::stm32g0::tim2
+}  // namespace ucore::hal::st::stm32g0::tim2

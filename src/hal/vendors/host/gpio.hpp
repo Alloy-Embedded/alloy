@@ -1,12 +1,12 @@
-#ifndef ALLOY_HAL_HOST_GPIO_HPP
-#define ALLOY_HAL_HOST_GPIO_HPP
+#ifndef UCORE_HAL_HOST_GPIO_HPP
+#define UCORE_HAL_HOST_GPIO_HPP
 
 #include <array>
 #include <cstdint>
 
 #include "../interface/gpio.hpp"
 
-namespace alloy::hal::host {
+namespace ucore::hal::host {
 
 /// Host (PC) GPIO pin mock implementation
 ///
@@ -20,7 +20,7 @@ namespace alloy::hal::host {
 /// \code
 /// #include "hal/host/gpio.hpp"
 ///
-/// alloy::hal::host::GpioPin<13> led;
+/// ucore::hal::host::GpioPin<13> led;
 /// led.configure(PinMode::Output);
 /// led.set_high();   // Prints: [GPIO Mock] Pin 13 set HIGH
 /// led.toggle();     // Prints: [GPIO Mock] Pin 13 set LOW
@@ -63,8 +63,8 @@ class GpioPin {
 };
 
 // Static assertion to verify concept compliance
-static_assert(alloy::hal::GpioPin<GpioPin<0>>, "host::GpioPin must satisfy GpioPin concept");
+static_assert(ucore::hal::GpioPin<GpioPin<0>>, "host::GpioPin must satisfy GpioPin concept");
 
-}  // namespace alloy::hal::host
+}  // namespace ucore::hal::host
 
 #endif  // ALLOY_HAL_HOST_GPIO_HPP

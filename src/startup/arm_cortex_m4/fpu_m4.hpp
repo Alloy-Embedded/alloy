@@ -17,7 +17,7 @@
 
 #include "../arm_cortex_m/core_common.hpp"
 
-namespace alloy::arm::cortex_m4::fpu {
+namespace ucore::arm::cortex_m4::fpu {
 
 // ============================================================================
 // FPU Context Control Register (FPCCR)
@@ -191,4 +191,4 @@ inline void clear_exceptions() {
 #endif
 }
 
-}  // namespace alloy::arm::cortex_m4::fpu
+}  // namespace ucore::arm::cortex_m4::fpu

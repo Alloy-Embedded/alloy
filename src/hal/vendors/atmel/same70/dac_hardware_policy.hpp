@@ -36,12 +36,12 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfields
 namespace dacc = atmel::same70::dacc;
@@ -228,7 +228,7 @@ struct Same70DACHardwarePolicy {
 /// @brief Hardware policy for Dac
 using DacHardware = Same70DACHardwarePolicy<0x40040000, 150000000>;
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 /**
  * @example
@@ -238,8 +238,8 @@ using DacHardware = Same70DACHardwarePolicy<0x40040000, 150000000>;
  * #include "hal/api/dac_simple.hpp"
  * #include "hal/platform/same70/dac.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create DAC with hardware policy
  * using Instance0 = DacHardware;

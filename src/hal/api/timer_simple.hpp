@@ -12,10 +12,10 @@
 #include "hal/interface/timer.hpp"
 #include "hal/core/signals.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::hal::signals;
-using namespace alloy::core;
+using namespace ucore::hal::signals;
+using namespace ucore::core;
 
 struct TimerDefaults {
     static constexpr TimerMode mode = TimerMode::Periodic;
@@ -70,4 +70,4 @@ public:
     }
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

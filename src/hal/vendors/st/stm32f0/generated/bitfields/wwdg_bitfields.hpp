@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f0::wwdg {
+namespace ucore::hal::st::stm32f0::wwdg {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // WWDG Bit Field Definitions
@@ -65,4 +65,4 @@ namespace sr {
 
 }  // namespace sr
 
-}  // namespace alloy::hal::st::stm32f0::wwdg
+}  // namespace ucore::hal::st::stm32f0::wwdg

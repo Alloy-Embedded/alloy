@@ -16,7 +16,7 @@
 
 #include <stdint.h>
 
-namespace alloy::arm::cortex_m {
+namespace ucore::arm::cortex_m {
 
 // ============================================================================
 // System Control Block (SCB) Registers
@@ -270,4 +270,4 @@ constexpr uint32_t COUNTFLAG = (1UL << 16);  // Counter flag
     }
 }
 
-}  // namespace alloy::arm::cortex_m
+}  // namespace ucore::arm::cortex_m

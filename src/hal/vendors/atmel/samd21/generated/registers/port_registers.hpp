@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::port {
+namespace ucore::hal::atmel::samd21::port {
 
 // ============================================================================
 // PORT - Port Module
@@ -89,4 +89,4 @@ inline PORT_Registers* PORT() {
     return reinterpret_cast<PORT_Registers*>(0x41004400);
 }
 
-}  // namespace alloy::hal::atmel::samd21::port
+}  // namespace ucore::hal::atmel::samd21::port

@@ -8,7 +8,7 @@
 #ifdef ESP_PLATFORM
     #include <cstring>
 
-namespace alloy::wifi {
+namespace ucore::wifi {
 
 static AccessPoint* s_ap_instance = nullptr;
 
@@ -283,11 +283,11 @@ void AccessPoint::handle_wifi_event(int32_t event_id, void* event_data) {
     }
 }
 
-}  // namespace alloy::wifi
+}  // namespace ucore::wifi
 
 #else  // !ESP_PLATFORM
 
-namespace alloy::wifi {
+namespace ucore::wifi {
 
 // Stub implementation for non-ESP platforms
 AccessPoint::AccessPoint()
@@ -346,6 +346,6 @@ const char* AccessPoint::ssid() const {
     return "";
 }
 
-}  // namespace alloy::wifi
+}  // namespace ucore::wifi
 
 #endif  // ESP_PLATFORM

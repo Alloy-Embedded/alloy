@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::efc {
+namespace ucore::hal::atmel::samv71::efc {
 
 // ============================================================================
 // EFC - Embedded Flash Controller
@@ -50,4 +50,4 @@ inline EFC_Registers* EFC() {
     return reinterpret_cast<EFC_Registers*>(0x400E0C00);
 }
 
-}  // namespace alloy::hal::atmel::samv71::efc
+}  // namespace ucore::hal::atmel::samv71::efc

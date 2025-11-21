@@ -1,5 +1,5 @@
-#ifndef ALLOY_CORE_TYPES_HPP
-#define ALLOY_CORE_TYPES_HPP
+#ifndef UCORE_CORE_TYPES_HPP
+#define UCORE_CORE_TYPES_HPP
 
 #include <cstddef>
 #include <cstdint>
@@ -8,7 +8,7 @@
 ///
 /// Defines fundamental type aliases and constants used throughout the framework.
 
-namespace alloy::core {
+namespace ucore::core {
 
 // Fixed-width integer types (aliased for clarity)
 using u8 = uint8_t;
@@ -31,6 +31,6 @@ using f64 = double;
 // Byte type
 using byte = uint8_t;
 
-}  // namespace alloy::core
+}  // namespace ucore::core
 
 #endif  // ALLOY_CORE_TYPES_HPP

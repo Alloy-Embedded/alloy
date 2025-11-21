@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::eic {
+namespace ucore::hal::atmel::samd21::eic {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // EIC Bit Field Definitions
@@ -751,4 +751,4 @@ namespace config {
 
 }  // namespace config
 
-}  // namespace alloy::hal::atmel::samd21::eic
+}  // namespace ucore::hal::atmel::samd21::eic

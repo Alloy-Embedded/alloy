@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::i2s {
+namespace ucore::hal::atmel::samd21::i2s {
 
 // ============================================================================
 // I2S - Inter-IC Sound Interface
@@ -65,4 +65,4 @@ inline I2S_Registers* I2S() {
     return reinterpret_cast<I2S_Registers*>(0x42005000);
 }
 
-}  // namespace alloy::hal::atmel::samd21::i2s
+}  // namespace ucore::hal::atmel::samd21::i2s

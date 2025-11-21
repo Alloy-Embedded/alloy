@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::rstc {
+namespace ucore::hal::atmel::same70::rstc {
 
 // ============================================================================
 // RSTC - Reset Controller
@@ -39,4 +39,4 @@ inline RSTC_Registers* RSTC() {
     return reinterpret_cast<RSTC_Registers*>(0x400E1800);
 }
 
-}  // namespace alloy::hal::atmel::same70::rstc
+}  // namespace ucore::hal::atmel::same70::rstc

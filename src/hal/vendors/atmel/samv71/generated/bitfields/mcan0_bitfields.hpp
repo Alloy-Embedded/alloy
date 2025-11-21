@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::mcan0 {
+namespace ucore::hal::atmel::samv71::mcan0 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // MCAN0 Bit Field Definitions
@@ -3321,4 +3321,4 @@ namespace txefa {
 
 }  // namespace txefa
 
-}  // namespace alloy::hal::atmel::samv71::mcan0
+}  // namespace ucore::hal::atmel::samv71::mcan0

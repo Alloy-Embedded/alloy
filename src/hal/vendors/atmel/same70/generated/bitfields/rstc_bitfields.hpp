@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::rstc {
+namespace ucore::hal::atmel::same70::rstc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // RSTC Bit Field Definitions
@@ -112,4 +112,4 @@ constexpr uint32_t PASSWD = 165;
 
 }  // namespace mr
 
-}  // namespace alloy::hal::atmel::same70::rstc
+}  // namespace ucore::hal::atmel::same70::rstc

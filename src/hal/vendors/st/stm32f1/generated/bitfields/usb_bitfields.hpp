@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f1::usb {
+namespace ucore::hal::st::stm32f1::usb {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // USB Bit Field Definitions
@@ -735,4 +735,4 @@ namespace btable {
 
 }  // namespace btable
 
-}  // namespace alloy::hal::st::stm32f1::usb
+}  // namespace ucore::hal::st::stm32f1::usb

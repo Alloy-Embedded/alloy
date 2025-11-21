@@ -23,7 +23,7 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::core {
+namespace ucore::core {
 
 /**
  * @brief RAII wrapper for SPI bus locking with chip select management
@@ -249,4 +249,4 @@ template <typename SpiDevice, typename ChipSelect>
     return ScopedSpi<SpiDevice, ChipSelect>::create(device, cs, timeout_ms);
 }
 
-}  // namespace alloy::core
+}  // namespace ucore::core

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::mtb {
+namespace ucore::hal::atmel::samd21::mtb {
 
 // ============================================================================
 // MTB - Cortex-M0+ Micro-Trace Buffer
@@ -148,4 +148,4 @@ inline MTB_Registers* MTB() {
     return reinterpret_cast<MTB_Registers*>(0x41006000);
 }
 
-}  // namespace alloy::hal::atmel::samd21::mtb
+}  // namespace ucore::hal::atmel::samd21::mtb

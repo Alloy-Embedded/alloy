@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::tim13 {
+namespace ucore::hal::st::stm32f7::tim13 {
 
 // ============================================================================
 // TIM13 - General-purpose-timers
@@ -108,4 +108,4 @@ inline TIM13_Registers* TIM13() {
     return reinterpret_cast<TIM13_Registers*>(0x40001C00);
 }
 
-}  // namespace alloy::hal::st::stm32f7::tim13
+}  // namespace ucore::hal::st::stm32f7::tim13

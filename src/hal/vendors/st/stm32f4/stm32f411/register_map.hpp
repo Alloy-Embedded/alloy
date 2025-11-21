@@ -12,7 +12,7 @@
 /// Usage:
 ///   #include <hal/st/stm32f4/stm32f411/register_map.hpp>
 ///
-///   using namespace alloy::hal::st::stm32f4::stm32f411;
+///   using namespace ucore::hal::st::stm32f4::stm32f411;
 ///
 ///   // Access registers
 ///   rcc::RCC->CR = rcc::cr::HSEON::set(rcc::RCC->CR);
@@ -169,15 +169,15 @@
 // Namespace Convenience Aliases
 // ============================================================================
 
-namespace alloy::hal::st::stm32f4::stm32f411 {
+namespace ucore::hal::st::stm32f4::stm32f411 {
 
 /// Main namespace alias for this MCU
 ///
 /// Usage:
-///   using namespace alloy::hal::st::stm32f4::stm32f411;
+///   using namespace ucore::hal::st::stm32f4::stm32f411;
 ///   // Now you can use rcc::RCC, gpio::GPIOA, etc.
 
-}  // namespace alloy::hal::st::stm32f4::stm32f411
+}  // namespace ucore::hal::st::stm32f4::stm32f411
 
 // ============================================================================
 // Global Namespace Aliases (Optional)
@@ -185,7 +185,7 @@ namespace alloy::hal::st::stm32f4::stm32f411 {
 
 /// You can define shorter aliases if desired:
 ///
-/// namespace mcu = alloy::hal::st::stm32f4::stm32f411;
+/// namespace mcu = ucore::hal::st::stm32f4::stm32f411;
 ///
 /// Then use:
 ///   mcu::rcc::RCC->CR = ...

@@ -16,7 +16,7 @@
     #define FILENO fileno
 #endif
 
-namespace alloy::logger {
+namespace ucore::logger {
 
 /**
  * Console output sink with ANSI color support
@@ -155,4 +155,4 @@ class SimpleConsoleSink : public Sink {
     void flush() override { (void)fflush(stdout); }
 };
 
-}  // namespace alloy::logger
+}  // namespace ucore::logger

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::iwdg {
+namespace ucore::hal::st::stm32f7::iwdg {
 
 // ============================================================================
 // IWDG - Independent watchdog
@@ -56,4 +56,4 @@ inline IWDG_Registers* IWDG() {
     return reinterpret_cast<IWDG_Registers*>(0x40003000);
 }
 
-}  // namespace alloy::hal::st::stm32f7::iwdg
+}  // namespace ucore::hal::st::stm32f7::iwdg

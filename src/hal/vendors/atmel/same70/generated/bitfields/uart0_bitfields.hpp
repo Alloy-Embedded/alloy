@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::uart0 {
+namespace ucore::hal::atmel::same70::uart0 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // UART0 Bit Field Definitions
@@ -390,4 +390,4 @@ constexpr uint32_t PASSWD = 5587282;
 
 }  // namespace wpmr
 
-}  // namespace alloy::hal::atmel::same70::uart0
+}  // namespace ucore::hal::atmel::same70::uart0

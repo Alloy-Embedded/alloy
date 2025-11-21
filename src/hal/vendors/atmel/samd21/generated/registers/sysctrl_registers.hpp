@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::sysctrl {
+namespace ucore::hal::atmel::samd21::sysctrl {
 
 // ============================================================================
 // SYSCTRL - System Control
@@ -123,4 +123,4 @@ inline SYSCTRL_Registers* SYSCTRL() {
     return reinterpret_cast<SYSCTRL_Registers*>(0x40000800);
 }
 
-}  // namespace alloy::hal::atmel::samd21::sysctrl
+}  // namespace ucore::hal::atmel::samd21::sysctrl

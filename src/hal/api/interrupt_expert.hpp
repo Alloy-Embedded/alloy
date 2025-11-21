@@ -10,9 +10,9 @@
 #include "core/result.hpp"
 #include "hal/interface/interrupt.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Expert interrupt configuration
@@ -181,4 +181,4 @@ inline Result<void, ErrorCode> set_priority_grouping(u8 grouping) {
 
 }  // namespace expert
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

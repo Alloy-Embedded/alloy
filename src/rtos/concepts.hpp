@@ -27,8 +27,8 @@
 /// void integrate_tick_source() { ... }
 /// ```
 
-#ifndef ALLOY_RTOS_CONCEPTS_HPP
-#define ALLOY_RTOS_CONCEPTS_HPP
+#ifndef UCORE_RTOS_CONCEPTS_HPP
+#define UCORE_RTOS_CONCEPTS_HPP
 
 #include <concepts>
 #include <type_traits>
@@ -37,7 +37,7 @@
 
 #include "core/types.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 // ============================================================================
 // fixed_string - Zero-RAM Compile-Time String (C++20 NTTP)
@@ -854,6 +854,6 @@ consteval T array_min(const T (&arr)[N]) {
     return min_val;
 }
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ALLOY_RTOS_CONCEPTS_HPP

@@ -31,21 +31,21 @@ struct MockUartHardwarePolicy {
 };
 
 // Mock GPIO pins
-template <alloy::hal::signals::PinId PIN>
+template <ucore::hal::signals::PinId PIN>
 struct MockGpioPin {
-    static constexpr alloy::hal::signals::PinId pin = PIN;
+    static constexpr ucore::hal::signals::PinId pin = PIN;
 
-    static constexpr alloy::hal::signals::PinId get_pin_id() {
+    static constexpr ucore::hal::signals::PinId get_pin_id() {
         return PIN;
     }
 };
 
-using namespace alloy::hal;
-using namespace alloy::core;
+using namespace ucore::hal;
+using namespace ucore::core;
 
 // Test aliases
-using TestTxPin = MockGpioPin<alloy::hal::signals::PinId::PA3>;
-using TestRxPin = MockGpioPin<alloy::hal::signals::PinId::PA4>;
+using TestTxPin = MockGpioPin<ucore::hal::signals::PinId::PA3>;
+using TestRxPin = MockGpioPin<ucore::hal::signals::PinId::PA4>;
 using TestPolicy = MockUartHardwarePolicy<0x40011000>;
 
 // ============================================================================

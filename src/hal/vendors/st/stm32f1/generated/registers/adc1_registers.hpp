@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f1::adc1 {
+namespace ucore::hal::st::stm32f1::adc1 {
 
 // ============================================================================
 // ADC1 - Analog to digital converter
@@ -146,4 +146,4 @@ inline ADC1_Registers* ADC1() {
     return reinterpret_cast<ADC1_Registers*>(0x40012400);
 }
 
-}  // namespace alloy::hal::st::stm32f1::adc1
+}  // namespace ucore::hal::st::stm32f1::adc1

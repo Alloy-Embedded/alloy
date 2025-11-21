@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::pcnt {
+namespace ucore::hal::espressif::esp32::pcnt {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // PCNT Bit Field Definitions
@@ -591,4 +591,4 @@ namespace date {
 
 }  // namespace date
 
-}  // namespace alloy::hal::espressif::esp32::pcnt
+}  // namespace ucore::hal::espressif::esp32::pcnt

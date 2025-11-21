@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::usb {
+namespace ucore::hal::atmel::samd21::usb {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // USB Bit Field Definitions
@@ -1607,4 +1607,4 @@ namespace pintenset {
 
 }  // namespace pintenset
 
-}  // namespace alloy::hal::atmel::samd21::usb
+}  // namespace ucore::hal::atmel::samd21::usb

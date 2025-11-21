@@ -91,7 +91,7 @@
 ### 2.3 Update Build System
 - [x] 2.3.1 Verify CMake project() already uses "alloy" (confirmed - project(alloy))
 - [x] 2.3.2 Update CMake comments referencing CoreZero (none found - already using Alloy)
-- [x] 2.3.3 Update target names (verified - all use "alloy-hal", "alloy_*")
+- [x] 2.3.3 Update target names (verified - all use "microcore-hal", "alloy_*")
 
 ### 2.4 Update Documentation
 - [x] 2.4.1 Update README.md to use "Alloy" consistently (confirmed - no CoreZero references)
@@ -322,7 +322,7 @@
   - Added enable_spi_clock(u32) - supports SPI0-1
   - Added enable_i2c_clock(u32) - supports TWIHS0-2 (I2C)
   - Added concept validation with static_assert at line 584
-  - alloy-hal library builds successfully ✅
+  - microcore-hal library builds successfully ✅
 - [x] 6.2.5 Add static_assert for concept validation (added with C++20 guard)
 - [x] 6.2.6 Test STM32F4 platform (nucleo_f401re builds successfully)
 
@@ -346,7 +346,7 @@
   - Added isOutput() → Result<bool, ErrorCode> method (reads OSR register)
   - Has all required methods: set(), clear(), toggle(), write(bool), read(), isOutput()
   - Added concept validation with static_assert at line 359
-  - alloy-hal library builds successfully ✅
+  - microcore-hal library builds successfully ✅
 - [x] 6.3.5 Test STM32F4 platform (nucleo_f401re, nucleo_g0b1re build successfully)
 
 ### 6.4 Standardize UART APIs
@@ -382,7 +382,7 @@
   - Clock: Added all ClockPlatform methods (enable_gpio_clocks, enable_uart_clock, enable_spi_clock, enable_i2c_clock)
   - GPIO: Completed write(bool) and added isOutput() method
   - Concept validation with static_assert added
-  - alloy-hal builds successfully
+  - microcore-hal builds successfully
 - Concept validation framework in place (C++20 static_assert ready)
 - All platforms build successfully (STM32F4, STM32F7, STM32G0, SAME70)
 

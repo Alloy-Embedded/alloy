@@ -25,7 +25,7 @@
 #include "board/board.hpp"
 #include "hal/api/systick_simple.hpp"
 
-using namespace alloy::hal;
+using namespace ucore::hal;
 
 // =============================================================================
 // RTOS Integration Hooks (Example - not a real RTOS)

@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::gpbr {
+namespace ucore::hal::atmel::same70::gpbr {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // GPBR Bit Field Definitions
@@ -28,4 +28,4 @@ constexpr uint32_t GPBR_VALUE_Msk = GPBR_VALUE::mask;
 
 }  // namespace sys_gpbr
 
-}  // namespace alloy::hal::atmel::same70::gpbr
+}  // namespace ucore::hal::atmel::same70::gpbr

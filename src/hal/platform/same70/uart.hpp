@@ -46,13 +46,13 @@
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfield access
 namespace uart = atmel::same70::uart0;
@@ -320,20 +320,20 @@ private:
 // Predefined UART Instances
 // ==============================================================================
 
-constexpr uint32_t UART0_BASE = alloy::generated::atsame70q21b::peripherals::UART0;
-constexpr uint32_t UART0_IRQ = alloy::generated::atsame70q21b::id::UART0;
+constexpr uint32_t UART0_BASE = ucore::generated::atsame70q21b::peripherals::UART0;
+constexpr uint32_t UART0_IRQ = ucore::generated::atsame70q21b::id::UART0;
 
-constexpr uint32_t UART1_BASE = alloy::generated::atsame70q21b::peripherals::UART1;
-constexpr uint32_t UART1_IRQ = alloy::generated::atsame70q21b::id::UART1;
+constexpr uint32_t UART1_BASE = ucore::generated::atsame70q21b::peripherals::UART1;
+constexpr uint32_t UART1_IRQ = ucore::generated::atsame70q21b::id::UART1;
 
-constexpr uint32_t UART2_BASE = alloy::generated::atsame70q21b::peripherals::UART2;
-constexpr uint32_t UART2_IRQ = alloy::generated::atsame70q21b::id::UART2;
+constexpr uint32_t UART2_BASE = ucore::generated::atsame70q21b::peripherals::UART2;
+constexpr uint32_t UART2_IRQ = ucore::generated::atsame70q21b::id::UART2;
 
-constexpr uint32_t UART3_BASE = alloy::generated::atsame70q21b::peripherals::UART3;
-constexpr uint32_t UART3_IRQ = alloy::generated::atsame70q21b::id::UART3;
+constexpr uint32_t UART3_BASE = ucore::generated::atsame70q21b::peripherals::UART3;
+constexpr uint32_t UART3_IRQ = ucore::generated::atsame70q21b::id::UART3;
 
-constexpr uint32_t UART4_BASE = alloy::generated::atsame70q21b::peripherals::UART4;
-constexpr uint32_t UART4_IRQ = alloy::generated::atsame70q21b::id::UART4;
+constexpr uint32_t UART4_BASE = ucore::generated::atsame70q21b::peripherals::UART4;
+constexpr uint32_t UART4_IRQ = ucore::generated::atsame70q21b::id::UART4;
 
 using Uart0 = Uart<UART0_BASE, UART0_IRQ>;  ///< UART0 instance
 using Uart1 = Uart<UART1_BASE, UART1_IRQ>;  ///< UART1 instance
@@ -341,4 +341,4 @@ using Uart2 = Uart<UART2_BASE, UART2_IRQ>;  ///< UART2 instance
 using Uart3 = Uart<UART3_BASE, UART3_IRQ>;  ///< UART3 instance
 using Uart4 = Uart<UART4_BASE, UART4_IRQ>;  ///< UART4 instance
 
-} // namespace alloy::hal::same70
+} // namespace ucore::hal::same70

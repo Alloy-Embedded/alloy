@@ -56,9 +56,9 @@
 #include "hal/core/concepts.hpp"
 #endif
 
-namespace alloy::hal::st::stm32f7 {
+namespace ucore::hal::st::stm32f7 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief STM32F7 Clock Policy Template
@@ -401,8 +401,8 @@ struct ExampleF7ClockConfig {
 };
 
 // Compile-time validation: Verify that Stm32f7Clock satisfies ClockPlatform concept
-static_assert(alloy::hal::concepts::ClockPlatform<Stm32f7Clock<ExampleF7ClockConfig>>,
+static_assert(ucore::hal::concepts::ClockPlatform<Stm32f7Clock<ExampleF7ClockConfig>>,
               "Stm32f7Clock must satisfy ClockPlatform concept - missing required methods");
 #endif
 
-} // namespace alloy::hal::st::stm32f7
+} // namespace ucore::hal::st::stm32f7

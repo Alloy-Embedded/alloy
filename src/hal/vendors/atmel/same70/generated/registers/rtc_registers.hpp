@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::rtc {
+namespace ucore::hal::atmel::same70::rtc {
 
 // ============================================================================
 // RTC - Real-time Clock
@@ -79,4 +79,4 @@ inline RTC_Registers* RTC() {
     return reinterpret_cast<RTC_Registers*>(0x400E1860);
 }
 
-}  // namespace alloy::hal::atmel::same70::rtc
+}  // namespace ucore::hal::atmel::same70::rtc

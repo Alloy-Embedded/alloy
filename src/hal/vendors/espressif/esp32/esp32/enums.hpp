@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::esp32::enums {
+namespace ucore::hal::espressif::esp32::esp32::enums {
 
 // ============================================================================
 // ENUMERATED VALUE DEFINITIONS
@@ -108,4 +108,4 @@ enum class TIMG0_WDTCONFIG0_WDT_STG3 : uint32_t {
 
 /// Total enumerated types: 8
 
-}  // namespace alloy::hal::espressif::esp32::esp32::enums
+}  // namespace ucore::hal::espressif::esp32::esp32::enums

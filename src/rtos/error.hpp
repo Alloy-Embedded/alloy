@@ -20,12 +20,12 @@
 /// }
 /// ```
 
-#ifndef ALLOY_RTOS_ERROR_HPP
-#define ALLOY_RTOS_ERROR_HPP
+#ifndef UCORE_RTOS_ERROR_HPP
+#define UCORE_RTOS_ERROR_HPP
 
 #include "core/types.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 /// RTOS-specific error codes
 ///
@@ -229,6 +229,6 @@ constexpr const char* to_string(RTOSError error) {
     }
 }
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ALLOY_RTOS_ERROR_HPP

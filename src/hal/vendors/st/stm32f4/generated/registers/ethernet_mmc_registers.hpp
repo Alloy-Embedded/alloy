@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::ethernet_mmc {
+namespace ucore::hal::st::stm32f4::ethernet_mmc {
 
 // ============================================================================
 // Ethernet_MMC - Ethernet: MAC management counters
@@ -96,4 +96,4 @@ inline Ethernet_MMC_Registers* Ethernet_MMC() {
     return reinterpret_cast<Ethernet_MMC_Registers*>(0x40028100);
 }
 
-}  // namespace alloy::hal::st::stm32f4::ethernet_mmc
+}  // namespace ucore::hal::st::stm32f4::ethernet_mmc

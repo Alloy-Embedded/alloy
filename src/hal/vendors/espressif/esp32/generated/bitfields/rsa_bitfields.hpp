@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::rsa {
+namespace ucore::hal::espressif::esp32::rsa {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // RSA Bit Field Definitions
@@ -94,4 +94,4 @@ namespace clean {
 
 }  // namespace clean
 
-}  // namespace alloy::hal::espressif::esp32::rsa
+}  // namespace ucore::hal::espressif::esp32::rsa

@@ -14,9 +14,9 @@
 #include "core/result.hpp"
 #include "hal/api/clock_simple.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 struct ClockBuilderState {
     bool has_config = false;
@@ -139,4 +139,4 @@ private:
     u8 peripheral_count_ = 0;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

@@ -56,7 +56,7 @@ A unified SysTick interface solves these problems with:
 
 ## Dependencies
 - **Builds on**: `add-multi-vendor-clock-boards` (needs clock frequency for timer config)
-- **Required by**: Future `add-alloy-rtos` (scheduler needs systick)
+- **Required by**: Future `add-microcore-rtos` (scheduler needs systick)
 - **Blocks**: None (standalone feature)
 
 ## Timeline

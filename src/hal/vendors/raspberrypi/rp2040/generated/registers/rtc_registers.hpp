@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::rtc {
+namespace ucore::hal::raspberrypi::rp2040::rtc {
 
 // ============================================================================
 // RTC - Register block to control RTC
@@ -86,4 +86,4 @@ inline RTC_Registers* RTC() {
     return reinterpret_cast<RTC_Registers*>(0x4005C000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::rtc
+}  // namespace ucore::hal::raspberrypi::rp2040::rtc

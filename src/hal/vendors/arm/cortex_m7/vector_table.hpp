@@ -12,7 +12,7 @@
 #include <array>
 #include <concepts>
 
-namespace alloy::hal::arm {
+namespace ucore::hal::arm {
 
 /**
  * @brief Concept for interrupt handlers
@@ -258,4 +258,4 @@ namespace VectorTableSizes {
     static constexpr size_t STM32F4 = 16 + 82;  // 98 total vectors
 }
 
-} // namespace alloy::hal::arm
+} // namespace ucore::hal::arm

@@ -11,7 +11,7 @@
     #include "freertos/FreeRTOS.h"
     #include "freertos/event_groups.h"
 
-namespace alloy::wifi {
+namespace ucore::wifi {
 
 // Event bits for WiFi connection
 static constexpr int WIFI_CONNECTED_BIT = BIT0;
@@ -285,11 +285,11 @@ void Station::handle_ip_event(int32_t event_id, void* event_data) {
     }
 }
 
-}  // namespace alloy::wifi
+}  // namespace ucore::wifi
 
 #else  // !ESP_PLATFORM
 
-namespace alloy::wifi {
+namespace ucore::wifi {
 
 // Stub implementation for non-ESP platforms
 Station::Station()
@@ -342,6 +342,6 @@ const char* Station::ssid() const {
     return "";
 }
 
-}  // namespace alloy::wifi
+}  // namespace ucore::wifi
 
 #endif  // ESP_PLATFORM

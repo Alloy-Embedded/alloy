@@ -36,15 +36,15 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/arm/same70/atsame70q21b/peripherals.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::arm::cortex_m7;
+using namespace ucore::hal::arm::cortex_m7;
 
 // Namespace alias for bitfields
-namespace nvic = alloy::hal::arm::cortex_m7;
+namespace nvic = ucore::hal::arm::cortex_m7;
 
 /**
  * @brief Hardware Policy for NVIC on SAME70
@@ -246,7 +246,7 @@ struct Same70NVICHardwarePolicy {
 /// @brief Hardware policy for Nvic
 using NvicHardware = Same70NVICHardwarePolicy<0xE000E100, 300000000>;
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 /**
  * @example
@@ -256,8 +256,8 @@ using NvicHardware = Same70NVICHardwarePolicy<0xE000E100, 300000000>;
  * #include "hal/api/nvic_simple.hpp"
  * #include "hal/platform/same70/nvic.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create NVIC with hardware policy
  * using Instance0 = NvicHardware;

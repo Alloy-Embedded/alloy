@@ -17,7 +17,7 @@
 #include "core/result.hpp"
 #include "core/error.hpp"
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ==============================================================================
 // Platform-Specific Includes
@@ -28,31 +28,31 @@ using namespace alloy::core;
     #include "hal/vendors/st/stm32g0/gpio.hpp"
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = alloy::hal::st::stm32g0::Stm32g0Clock<
-        alloy::hal::st::stm32g0::ExampleG0ClockConfig
+    using ClockPlatform = ucore::hal::st::stm32g0::Stm32g0Clock<
+        ucore::hal::st::stm32g0::ExampleG0ClockConfig
     >;
     // Use board-specific LED pin from board_config.hpp
-    using LedPin = alloy::boards::LedGreen;
+    using LedPin = ucore::boards::LedGreen;
 
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
     #include "hal/vendors/st/stm32f4/clock_platform.hpp"
     #include "hal/vendors/st/stm32f4/gpio.hpp"
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = alloy::hal::st::stm32f4::Stm32f4Clock<
-        alloy::hal::st::stm32f4::ExampleF4ClockConfig
+    using ClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
+        ucore::hal::st::stm32f4::ExampleF4ClockConfig
     >;
-    using LedPin = alloy::boards::LedGreen;
+    using LedPin = ucore::boards::LedGreen;
 
 #elif defined(ALLOY_BOARD_NUCLEO_F722ZE)
     #include "hal/vendors/st/stm32f7/clock_platform.hpp"
     #include "hal/vendors/st/stm32f7/gpio.hpp"
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = alloy::hal::st::stm32f7::Stm32f7Clock<
-        alloy::hal::st::stm32f7::ExampleF7ClockConfig
+    using ClockPlatform = ucore::hal::st::stm32f7::Stm32f7Clock<
+        ucore::hal::st::stm32f7::ExampleF7ClockConfig
     >;
-    using LedPin = alloy::boards::LedGreen;
+    using LedPin = ucore::boards::LedGreen;
 
 #else
     #error "Unsupported board for hardware LED test"
@@ -133,10 +133,10 @@ int main() {
     HW_ASSERT(gpio_clocks_result.is_ok());
 
     // Step 3: Configure LED pin as output
-    auto direction_result = led.setDirection(alloy::hal::PinDirection::Output);
+    auto direction_result = led.setDirection(ucore::hal::PinDirection::Output);
     HW_ASSERT(direction_result.is_ok());
 
-    auto drive_result = led.setDrive(alloy::hal::PinDrive::PushPull);
+    auto drive_result = led.setDrive(ucore::hal::PinDrive::PushPull);
     HW_ASSERT(drive_result.is_ok());
 
     // Step 4: Initial state - LED OFF

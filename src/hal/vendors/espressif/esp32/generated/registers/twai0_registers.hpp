@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::twai0 {
+namespace ucore::hal::espressif::esp32::twai0 {
 
 // ============================================================================
 // TWAI0 - Two-Wire Automotive Interface
@@ -139,4 +139,4 @@ inline TWAI0_Registers* TWAI0() {
     return reinterpret_cast<TWAI0_Registers*>(0x3FF6B000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::twai0
+}  // namespace ucore::hal::espressif::esp32::twai0

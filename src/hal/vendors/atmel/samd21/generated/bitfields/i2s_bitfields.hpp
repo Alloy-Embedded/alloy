@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::i2s {
+namespace ucore::hal::atmel::samd21::i2s {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // I2S Bit Field Definitions
@@ -586,4 +586,4 @@ namespace data {
 
 }  // namespace data
 
-}  // namespace alloy::hal::atmel::samd21::i2s
+}  // namespace ucore::hal::atmel::samd21::i2s

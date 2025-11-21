@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::hsmci {
+namespace ucore::hal::atmel::samv71::hsmci {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // HSMCI Bit Field Definitions
@@ -1051,4 +1051,4 @@ namespace fifo {
 
 }  // namespace fifo
 
-}  // namespace alloy::hal::atmel::samv71::hsmci
+}  // namespace ucore::hal::atmel::samv71::hsmci

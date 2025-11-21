@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::dac {
+namespace ucore::hal::st::stm32f7::dac {
 
 // ============================================================================
 // DAC - Digital-to-analog converter
@@ -110,4 +110,4 @@ inline DAC_Registers* DAC() {
     return reinterpret_cast<DAC_Registers*>(0x40007400);
 }
 
-}  // namespace alloy::hal::st::stm32f7::dac
+}  // namespace ucore::hal::st::stm32f7::dac

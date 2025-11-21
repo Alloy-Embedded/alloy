@@ -46,16 +46,16 @@
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfield access
-namespace twihs = alloy::hal::atmel::same70::twihs0;
+namespace twihs = ucore::hal::atmel::same70::twihs0;
 
 // Note: I2C uses common I2cMode from hal/types.hpp:
 // - Mode0: CPOL=0, CPHA=0
@@ -105,12 +105,12 @@ public:
      * Returns pointer to TWIHS registers. Uses conditional compilation
      * for test hook injection.
      */
-    static inline volatile alloy::hal::atmel::same70::twihs0::TWIHS0_Registers* get_hw() {
+    static inline volatile ucore::hal::atmel::same70::twihs0::TWIHS0_Registers* get_hw() {
 #ifdef ALLOY_I2C_MOCK_HW
         // In tests, use the mock hardware pointer
         return ALLOY_I2C_MOCK_HW();
 #else
-        return reinterpret_cast<volatile alloy::hal::atmel::same70::twihs0::TWIHS0_Registers*>(BASE_ADDR);
+        return reinterpret_cast<volatile ucore::hal::atmel::same70::twihs0::TWIHS0_Registers*>(BASE_ADDR);
 #endif
     }
 
@@ -407,17 +407,17 @@ private:
 // Predefined I2C Instances (from generated peripherals.hpp)
 // ==============================================================================
 
-constexpr uint32_t I2C0_BASE = alloy::generated::atsame70q21b::peripherals::TWIHS0;
-constexpr uint32_t I2C0_IRQ = alloy::generated::atsame70q21b::id::TWIHS0;
+constexpr uint32_t I2C0_BASE = ucore::generated::atsame70q21b::peripherals::TWIHS0;
+constexpr uint32_t I2C0_IRQ = ucore::generated::atsame70q21b::id::TWIHS0;
 
-constexpr uint32_t I2C1_BASE = alloy::generated::atsame70q21b::peripherals::TWIHS1;
-constexpr uint32_t I2C1_IRQ = alloy::generated::atsame70q21b::id::TWIHS1;
+constexpr uint32_t I2C1_BASE = ucore::generated::atsame70q21b::peripherals::TWIHS1;
+constexpr uint32_t I2C1_IRQ = ucore::generated::atsame70q21b::id::TWIHS1;
 
-constexpr uint32_t I2C2_BASE = alloy::generated::atsame70q21b::peripherals::TWIHS2;
-constexpr uint32_t I2C2_IRQ = alloy::generated::atsame70q21b::id::TWIHS2;
+constexpr uint32_t I2C2_BASE = ucore::generated::atsame70q21b::peripherals::TWIHS2;
+constexpr uint32_t I2C2_IRQ = ucore::generated::atsame70q21b::id::TWIHS2;
 
 using I2c0 = I2c<I2C0_BASE, I2C0_IRQ>;  ///< TWIHS0 instance (I2C0)
 using I2c1 = I2c<I2C1_BASE, I2C1_IRQ>;  ///< TWIHS1 instance (I2C1)
 using I2c2 = I2c<I2C2_BASE, I2C2_IRQ>;  ///< TWIHS2 instance (I2C2)
 
-} // namespace alloy::hal::same70
+} // namespace ucore::hal::same70

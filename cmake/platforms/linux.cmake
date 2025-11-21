@@ -155,7 +155,7 @@ endif()
 # ------------------------------------------------------------------------------
 
 # Set platform directory (required by platform_selection.cmake)
-set(ALLOY_PLATFORM_DIR ${CMAKE_SOURCE_DIR}/src/hal/vendors/linux)
+set(MICROCORE_PLATFORM_DIR ${CMAKE_SOURCE_DIR}/src/hal/vendors/linux)
 
 # Linux platform requires these source files (verified at build time):
 #   - src/hal/vendors/linux/uart.cpp      (uses termios for serial ports)

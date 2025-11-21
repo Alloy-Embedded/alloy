@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::timg0 {
+namespace ucore::hal::espressif::esp32::timg0 {
 
 // ============================================================================
 // TIMG0 - Timer Group 0
@@ -215,4 +215,4 @@ inline TIMG0_Registers* TIMG0() {
     return reinterpret_cast<TIMG0_Registers*>(0x3FF5F000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::timg0
+}  // namespace ucore::hal::espressif::esp32::timg0

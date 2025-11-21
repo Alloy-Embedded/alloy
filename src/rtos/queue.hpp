@@ -49,8 +49,8 @@
 /// }
 /// ```
 
-#ifndef ALLOY_RTOS_QUEUE_HPP
-#define ALLOY_RTOS_QUEUE_HPP
+#ifndef UCORE_RTOS_QUEUE_HPP
+#define UCORE_RTOS_QUEUE_HPP
 
 #include <cstring>
 #include <type_traits>
@@ -65,7 +65,7 @@
 #include "core/types.hpp"
 #include "core/result.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 /// Message Queue
 ///
@@ -380,6 +380,6 @@ static_assert(BlockingQueue<TestQueue, TestMessage>, "Must support blocking");
 static_assert(NonBlockingQueue<TestQueue, TestMessage>, "Must support non-blocking");
 static_assert(TimestampedQueue<TestQueue, TestMessage>, "Must support timestamps");
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ALLOY_RTOS_QUEUE_HPP

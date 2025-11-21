@@ -20,8 +20,8 @@
 #include "rtos/semaphore.hpp"
 #include "rtos/concepts.hpp"
 
-using namespace alloy;
-using namespace alloy::rtos;
+using namespace ucore;
+using namespace ucore::rtos;
 
 // ============================================================================
 // Compile-Time Type Safety with Concepts

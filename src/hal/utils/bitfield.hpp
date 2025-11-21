@@ -15,7 +15,7 @@
 // are not available in bare-metal ARM GCC toolchain from Homebrew.
 // Using pure C++17 features only.
 
-namespace alloy::hal::bitfields {
+namespace ucore::hal::bitfields {
 
 // ============================================================================
 // BIT FIELD TEMPLATE
@@ -247,4 +247,4 @@ struct BitField8 {
     [[nodiscard]] static constexpr uint8_t toggle(uint8_t reg) noexcept { return reg ^ mask; }
 };
 
-}  // namespace alloy::hal::bitfields
+}  // namespace ucore::hal::bitfields

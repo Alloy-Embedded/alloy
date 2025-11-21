@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::eic {
+namespace ucore::hal::atmel::samd21::eic {
 
 // ============================================================================
 // EIC - External Interrupt Controller
@@ -67,4 +67,4 @@ inline EIC_Registers* EIC() {
     return reinterpret_cast<EIC_Registers*>(0x40001800);
 }
 
-}  // namespace alloy::hal::atmel::samd21::eic
+}  // namespace ucore::hal::atmel::samd21::eic

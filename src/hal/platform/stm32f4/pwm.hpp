@@ -43,16 +43,16 @@
 #include "hal/vendors/st/stm32f4/bitfields/tim2_bitfields.hpp"
 
 
-namespace alloy::hal::stm32f4 {
+namespace ucore::hal::stm32f4 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::st::stm32f4;
+using namespace ucore::hal::st::stm32f4;
 
 // Namespace alias for bitfield access
-namespace tim = alloy::hal::st::stm32f4::tim2;
+namespace tim = ucore::hal::st::stm32f4::tim2;
 
 // ============================================================================
 // Platform-Specific Enums
@@ -134,12 +134,12 @@ class Pwm {
      * Returns pointer to PWM (TIM-based) registers. Uses conditional compilation
      * for test hook injection.
      */
-    static inline volatile alloy::hal::st::stm32f4::tim2::TIM2_Registers* get_hw() {
+    static inline volatile ucore::hal::st::stm32f4::tim2::TIM2_Registers* get_hw() {
 #ifdef ALLOY_PWM_MOCK_HW
         // In tests, use the mock hardware pointer
         return ALLOY_PWM_MOCK_HW();
 #else
-        return reinterpret_cast<volatile alloy::hal::st::stm32f4::tim2::TIM2_Registers*>(BASE_ADDR);
+        return reinterpret_cast<volatile ucore::hal::st::stm32f4::tim2::TIM2_Registers*>(BASE_ADDR);
 #endif
     }
 
@@ -465,4 +465,4 @@ using Pwm4Ch2 = Pwm<PWM4CH2_BASE, 2, PWM4CH2_IRQ>;  ///< TIM4 Channel 2 (PWM)
 using Pwm4Ch3 = Pwm<PWM4CH3_BASE, 3, PWM4CH3_IRQ>;  ///< TIM4 Channel 3 (PWM)
 using Pwm4Ch4 = Pwm<PWM4CH4_BASE, 4, PWM4CH4_IRQ>;  ///< TIM4 Channel 4 (PWM)
 
-}  // namespace alloy::hal::stm32f4
+}  // namespace ucore::hal::stm32f4

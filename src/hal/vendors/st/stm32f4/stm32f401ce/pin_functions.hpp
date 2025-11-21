@@ -4,7 +4,7 @@
 
 #include "pins.hpp"
 
-namespace alloy::hal::stm32f4::stm32f401ce::pin_functions {
+namespace ucore::hal::stm32f4::stm32f401ce::pin_functions {
 
 // ============================================================================
 // Pin Alternate Functions for STM32F401CE
@@ -333,4 +333,4 @@ constexpr uint8_t OTG_HS_ULPI_D6 = pins::PB13;
 constexpr uint8_t OTG_HS_ULPI_D7 = pins::PB5;
 
 }  // namespace usb
-}  // namespace alloy::hal::stm32f4::stm32f401ce::pin_functions
+}  // namespace ucore::hal::stm32f4::stm32f401ce::pin_functions

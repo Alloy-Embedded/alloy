@@ -5,7 +5,7 @@
 
 #include "../sink.hpp"
 
-namespace alloy::logger {
+namespace ucore::logger {
 
 /**
  * File output sink for logger
@@ -241,4 +241,4 @@ class RotatingFileSink : public Sink {
     FILE* file_;
 };
 
-}  // namespace alloy::logger
+}  // namespace ucore::logger

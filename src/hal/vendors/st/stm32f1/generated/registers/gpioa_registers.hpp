@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f1::gpioa {
+namespace ucore::hal::st::stm32f1::gpioa {
 
 // ============================================================================
 // GPIOA - General purpose I/O
@@ -68,4 +68,4 @@ inline GPIOA_Registers* GPIOA() {
     return reinterpret_cast<GPIOA_Registers*>(0x40010800);
 }
 
-}  // namespace alloy::hal::st::stm32f1::gpioa
+}  // namespace ucore::hal::st::stm32f1::gpioa

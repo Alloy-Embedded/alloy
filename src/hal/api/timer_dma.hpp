@@ -11,9 +11,9 @@
 #include "hal/dma/connection.hpp"
 #include "hal/timer_expert.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Timer DMA configuration
@@ -131,4 +131,4 @@ inline Result<void, ErrorCode> timer_dma_stop() {
     return Ok();
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::crc {
+namespace ucore::hal::st::stm32g0::crc {
 
 // ============================================================================
 // CRC - Cyclic redundancy check calculation unit
@@ -56,4 +56,4 @@ inline CRC_Registers* CRC() {
     return reinterpret_cast<CRC_Registers*>(0x40023000);
 }
 
-}  // namespace alloy::hal::st::stm32g0::crc
+}  // namespace ucore::hal::st::stm32g0::crc

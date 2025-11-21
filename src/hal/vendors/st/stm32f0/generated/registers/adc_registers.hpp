@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f0::adc {
+namespace ucore::hal::st::stm32f0::adc {
 
 // ============================================================================
 // ADC - Analog-to-digital converter
@@ -90,4 +90,4 @@ inline ADC_Registers* ADC() {
     return reinterpret_cast<ADC_Registers*>(0x40012400);
 }
 
-}  // namespace alloy::hal::st::stm32f0::adc
+}  // namespace ucore::hal::st::stm32f0::adc

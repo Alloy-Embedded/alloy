@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::ethernet_mac {
+namespace ucore::hal::st::stm32f4::ethernet_mac {
 
 // ============================================================================
 // Ethernet_MAC - Ethernet: media access control (MAC)
@@ -146,4 +146,4 @@ inline Ethernet_MAC_Registers* Ethernet_MAC() {
     return reinterpret_cast<Ethernet_MAC_Registers*>(0x40028000);
 }
 
-}  // namespace alloy::hal::st::stm32f4::ethernet_mac
+}  // namespace ucore::hal::st::stm32f4::ethernet_mac

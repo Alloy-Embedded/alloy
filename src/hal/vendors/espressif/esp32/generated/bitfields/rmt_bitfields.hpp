@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::rmt {
+namespace ucore::hal::espressif::esp32::rmt {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // RMT Bit Field Definitions
@@ -429,4 +429,4 @@ namespace date {
 
 }  // namespace date
 
-}  // namespace alloy::hal::espressif::esp32::rmt
+}  // namespace ucore::hal::espressif::esp32::rmt

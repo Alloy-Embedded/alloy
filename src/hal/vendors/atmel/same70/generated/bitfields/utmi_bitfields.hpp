@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::utmi {
+namespace ucore::hal::atmel::same70::utmi {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // UTMI Bit Field Definitions
@@ -60,4 +60,4 @@ constexpr uint32_t XTAL16 = 1;
 
 }  // namespace cktrim
 
-}  // namespace alloy::hal::atmel::same70::utmi
+}  // namespace ucore::hal::atmel::same70::utmi

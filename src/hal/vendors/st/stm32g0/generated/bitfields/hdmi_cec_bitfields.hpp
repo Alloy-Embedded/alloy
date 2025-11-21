@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32g0::hdmi_cec {
+namespace ucore::hal::st::stm32g0::hdmi_cec {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // HDMI_CEC Bit Field Definitions
@@ -431,4 +431,4 @@ namespace cec_ier {
 
 }  // namespace cec_ier
 
-}  // namespace alloy::hal::st::stm32g0::hdmi_cec
+}  // namespace ucore::hal::st::stm32g0::hdmi_cec

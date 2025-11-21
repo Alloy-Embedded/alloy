@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::mcpwm0 {
+namespace ucore::hal::espressif::esp32::mcpwm0 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // MCPWM0 Bit Field Definitions
@@ -3055,4 +3055,4 @@ namespace version {
 
 }  // namespace version
 
-}  // namespace alloy::hal::espressif::esp32::mcpwm0
+}  // namespace ucore::hal::espressif::esp32::mcpwm0

@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::sai1 {
+namespace ucore::hal::st::stm32f7::sai1 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SAI1 Bit Field Definitions
@@ -709,4 +709,4 @@ namespace bdr {
 
 }  // namespace bdr
 
-}  // namespace alloy::hal::st::stm32f7::sai1
+}  // namespace ucore::hal::st::stm32f7::sai1

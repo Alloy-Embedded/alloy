@@ -2,8 +2,8 @@
 ///
 /// Defines PWM concepts and configuration types for all platforms.
 
-#ifndef ALLOY_HAL_INTERFACE_PWM_HPP
-#define ALLOY_HAL_INTERFACE_PWM_HPP
+#ifndef UCORE_HAL_INTERFACE_PWM_HPP
+#define UCORE_HAL_INTERFACE_PWM_HPP
 
 #include <concepts>
 #include <span>
@@ -12,7 +12,7 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
 /// PWM channel identifier
 enum class PwmChannel : core::u8 { Channel1 = 0, Channel2 = 1, Channel3 = 2, Channel4 = 3 };
@@ -189,6 +189,6 @@ inline constexpr core::u32 frequency_to_period_us(core::u32 frequency_hz) {
     return 1000000u / frequency_hz;
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal
 
 #endif  // ALLOY_HAL_INTERFACE_PWM_HPP

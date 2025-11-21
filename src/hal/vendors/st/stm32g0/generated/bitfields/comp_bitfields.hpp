@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32g0::comp {
+namespace ucore::hal::st::stm32g0::comp {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // COMP Bit Field Definitions
@@ -440,4 +440,4 @@ namespace comp3_csr {
 
 }  // namespace comp3_csr
 
-}  // namespace alloy::hal::st::stm32g0::comp
+}  // namespace ucore::hal::st::stm32g0::comp

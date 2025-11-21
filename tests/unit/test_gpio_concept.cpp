@@ -12,8 +12,8 @@
 #include "core/error.hpp"
 #include "hal/types.hpp"
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // ==============================================================================
 // Mock GPIO Pin for Testing
@@ -110,7 +110,7 @@ public:
 
 // #if __cplusplus >= 202002L
 // TEST_CASE("MockGpioPin satisfies GpioPin concept", "[gpio][concept][c++20]") {
-//     STATIC_REQUIRE(alloy::hal::concepts::GpioPin<MockGpioPin>);
+//     STATIC_REQUIRE(ucore::hal::concepts::GpioPin<MockGpioPin>);
 // }
 // #endif
 
@@ -340,7 +340,7 @@ public:
 };
 
 // Would fail if uncommented:
-// static_assert(alloy::hal::concepts::GpioPin<BadGpioNoSet>);
+// static_assert(ucore::hal::concepts::GpioPin<BadGpioNoSet>);
 // Error: BadGpioNoSet does not satisfy GpioPin (missing set() method)
 
 // Test 2: Wrong return type for set()
@@ -356,7 +356,7 @@ public:
 };
 
 // Would fail if uncommented:
-// static_assert(alloy::hal::concepts::GpioPin<BadGpioWrongReturn>);
+// static_assert(ucore::hal::concepts::GpioPin<BadGpioWrongReturn>);
 // Error: set() must return Result<void, ErrorCode>
 
 // Test 3: Missing required metadata
@@ -373,14 +373,14 @@ public:
 };
 
 // Would fail if uncommented:
-// static_assert(alloy::hal::concepts::GpioPin<BadGpioNoMetadata>);
+// static_assert(ucore::hal::concepts::GpioPin<BadGpioNoMetadata>);
 // Error: Missing compile-time metadata (port_base, pin_number, pin_mask)
 
 // Test 4: Primitive types should NOT satisfy concept
 // Would fail if uncommented:
-// static_assert(alloy::hal::concepts::GpioPin<int>);
-// static_assert(alloy::hal::concepts::GpioPin<void*>);
-// static_assert(alloy::hal::concepts::GpioPin<bool>);
+// static_assert(ucore::hal::concepts::GpioPin<int>);
+// static_assert(ucore::hal::concepts::GpioPin<void*>);
+// static_assert(ucore::hal::concepts::GpioPin<bool>);
 // Error: Primitive types do not satisfy GpioPin
 
 // Test 5: Incomplete interface
@@ -392,7 +392,7 @@ public:
 };
 
 // Would fail if uncommented:
-// static_assert(alloy::hal::concepts::GpioPin<BadGpioIncomplete>);
+// static_assert(ucore::hal::concepts::GpioPin<BadGpioIncomplete>);
 // Error: BadGpioIncomplete does not implement full GpioPin interface
 
 TEST_CASE("Concept failure tests are documented", "[gpio][concept][negative]") {

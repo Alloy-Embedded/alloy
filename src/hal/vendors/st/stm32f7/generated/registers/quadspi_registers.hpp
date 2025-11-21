@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::quadspi {
+namespace ucore::hal::st::stm32f7::quadspi {
 
 // ============================================================================
 // QUADSPI - QuadSPI interface
@@ -104,4 +104,4 @@ inline QUADSPI_Registers* QUADSPI() {
     return reinterpret_cast<QUADSPI_Registers*>(0xA0001000);
 }
 
-}  // namespace alloy::hal::st::stm32f7::quadspi
+}  // namespace ucore::hal::st::stm32f7::quadspi

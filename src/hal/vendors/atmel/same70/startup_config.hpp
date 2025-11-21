@@ -20,7 +20,7 @@ extern "C" {
     extern void (*__init_array_end)();    // End of constructor array
 }
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
 /**
  * @brief SAME70-specific startup configuration
@@ -194,4 +194,4 @@ struct StartupConfig {
     static constexpr uint32_t SLOW_CLOCK_FREQ_HZ = 32'768;
 };
 
-} // namespace alloy::hal::same70
+} // namespace ucore::hal::same70

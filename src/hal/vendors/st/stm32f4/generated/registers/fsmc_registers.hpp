@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::fsmc {
+namespace ucore::hal::st::stm32f4::fsmc {
 
 // ============================================================================
 // FSMC - Flexible static memory controller
@@ -194,4 +194,4 @@ inline FSMC_Registers* FSMC() {
     return reinterpret_cast<FSMC_Registers*>(0xA0000000);
 }
 
-}  // namespace alloy::hal::st::stm32f4::fsmc
+}  // namespace ucore::hal::st::stm32f4::fsmc

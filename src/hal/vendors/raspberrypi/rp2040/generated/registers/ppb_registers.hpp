@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::ppb {
+namespace ucore::hal::raspberrypi::rp2040::ppb {
 
 // ============================================================================
 // PPB - Peripheral Registers
@@ -185,4 +185,4 @@ inline PPB_Registers* PPB() {
     return reinterpret_cast<PPB_Registers*>(0xE0000000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::ppb
+}  // namespace ucore::hal::raspberrypi::rp2040::ppb

@@ -43,13 +43,13 @@
 // Bitfields (family-level, if available)
 // #include "hal/vendors/st/stm32f4/bitfields/gpioa_bitfields.hpp"
 
-namespace alloy::hal::stm32f4 {
+namespace ucore::hal::stm32f4 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types (now from family-level namespace)
-using namespace alloy::hal::st::stm32f4;
+using namespace ucore::hal::st::stm32f4;
 
 // Note: GPIO configuration uses common HAL types from hal/types.hpp:
 // - PinDirection (Input, Output)
@@ -322,4 +322,4 @@ constexpr uint32_t GPIOI_BASE = 0x40022000;
 // led.setSpeed(GpioSpeed::Medium);
 // led.set();
 
-}  // namespace alloy::hal::stm32f4
+}  // namespace ucore::hal::stm32f4

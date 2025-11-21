@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace alloy::hal::stm32f745::stm32f746vg::pins {
+namespace ucore::hal::stm32f745::stm32f746vg::pins {
 
 // ============================================================================
 // Auto-generated pin definitions for STM32F746VG
@@ -147,4 +147,4 @@ constexpr void validate_pin() {
 constexpr size_t TOTAL_PIN_COUNT = detail::PIN_COUNT;  // 80 pins
 constexpr size_t GPIO_PORT_COUNT = 5;                  // 5 ports
 
-}  // namespace alloy::hal::stm32f745::stm32f746vg::pins
+}  // namespace ucore::hal::stm32f745::stm32f746vg::pins

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::trng {
+namespace ucore::hal::atmel::samv71::trng {
 
 // ============================================================================
 // TRNG - True Random Number Generator
@@ -58,4 +58,4 @@ inline TRNG_Registers* TRNG() {
     return reinterpret_cast<TRNG_Registers*>(0x40070000);
 }
 
-}  // namespace alloy::hal::atmel::samv71::trng
+}  // namespace ucore::hal::atmel::samv71::trng

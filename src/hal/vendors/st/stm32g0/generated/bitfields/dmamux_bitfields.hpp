@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32g0::dmamux {
+namespace ucore::hal::st::stm32g0::dmamux {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // DMAMUX Bit Field Definitions
@@ -936,4 +936,4 @@ namespace dmamux_rgcfr {
 
 }  // namespace dmamux_rgcfr
 
-}  // namespace alloy::hal::st::stm32g0::dmamux
+}  // namespace ucore::hal::st::stm32g0::dmamux

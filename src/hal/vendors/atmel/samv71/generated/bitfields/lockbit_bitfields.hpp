@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::lockbit {
+namespace ucore::hal::atmel::samv71::lockbit {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // LOCKBIT Bit Field Definitions
@@ -213,4 +213,4 @@ namespace word0 {
 
 }  // namespace word0
 
-}  // namespace alloy::hal::atmel::samv71::lockbit
+}  // namespace ucore::hal::atmel::samv71::lockbit

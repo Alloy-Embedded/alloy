@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::icm {
+namespace ucore::hal::atmel::same70::icm {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // ICM Bit Field Definitions
@@ -370,4 +370,4 @@ constexpr uint32_t VAL_Msk = VAL::mask;
 
 }  // namespace uihval
 
-}  // namespace alloy::hal::atmel::same70::icm
+}  // namespace ucore::hal::atmel::same70::icm

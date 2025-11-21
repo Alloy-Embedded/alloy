@@ -15,8 +15,8 @@
 #include "core/error.hpp"
 #include "hal/types.hpp"
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // ==============================================================================
 // BUG #21: Concepts header included inside namespace
@@ -38,7 +38,7 @@ TEST_CASE("BUG #21: Concepts header include order", "[regression][concept][bug21
     INFO("#include \"hal/core/concepts.hpp\"");
     INFO("#endif");
     INFO("");
-    INFO("namespace alloy::hal { ... }");
+    INFO("namespace ucore::hal { ... }");
 #endif
 
     REQUIRE(true); // Documentation test
@@ -90,7 +90,7 @@ TEST_CASE("BUG #23: ClockPlatform needs peripheral enables", "[regression][conce
 
 #if __cplusplus >= 202002L
     SECTION("MockClock satisfies ClockPlatform concept") {
-        STATIC_REQUIRE(alloy::hal::concepts::ClockPlatform<MockClock>);
+        STATIC_REQUIRE(ucore::hal::concepts::ClockPlatform<MockClock>);
     }
 #endif
 
@@ -119,7 +119,7 @@ TEST_CASE("BUG #24: Concept validation with clear errors", "[regression][concept
     INFO("Example pattern:");
     INFO("#if __cplusplus >= 202002L");
     INFO("static_assert(");
-    INFO("    alloy::hal::concepts::GpioPin<MyGpioPin>,");
+    INFO("    ucore::hal::concepts::GpioPin<MyGpioPin>,");
     INFO("    \"MyGpioPin must satisfy GpioPin concept\"");
     INFO(");");
     INFO("#endif");

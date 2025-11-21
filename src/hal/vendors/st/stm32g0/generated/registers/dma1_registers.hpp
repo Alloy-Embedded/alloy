@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::dma1 {
+namespace ucore::hal::st::stm32g0::dma1 {
 
 // ============================================================================
 // DMA1 - Direct memory access controller
@@ -182,4 +182,4 @@ inline DMA1_Registers* DMA1() {
     return reinterpret_cast<DMA1_Registers*>(0x40020000);
 }
 
-}  // namespace alloy::hal::st::stm32g0::dma1
+}  // namespace ucore::hal::st::stm32g0::dma1

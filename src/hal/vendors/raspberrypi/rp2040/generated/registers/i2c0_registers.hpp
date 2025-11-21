@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::i2c0 {
+namespace ucore::hal::raspberrypi::rp2040::i2c0 {
 
 // ============================================================================
 // I2C0 - DW_apb_i2c address block
@@ -240,4 +240,4 @@ inline I2C0_Registers* I2C0() {
     return reinterpret_cast<I2C0_Registers*>(0x40044000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::i2c0
+}  // namespace ucore::hal::raspberrypi::rp2040::i2c0

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f0::dbgmcu {
+namespace ucore::hal::st::stm32f0::dbgmcu {
 
 // ============================================================================
 // DBGMCU - Debug support
@@ -50,4 +50,4 @@ inline DBGMCU_Registers* DBGMCU() {
     return reinterpret_cast<DBGMCU_Registers*>(0x40015800);
 }
 
-}  // namespace alloy::hal::st::stm32f0::dbgmcu
+}  // namespace ucore::hal::st::stm32f0::dbgmcu

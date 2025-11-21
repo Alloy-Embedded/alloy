@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::mpu {
+namespace ucore::hal::atmel::samv71::mpu {
 
 // ============================================================================
 // MPU - Memory Protection Unit
@@ -72,4 +72,4 @@ inline MPU_Registers* MPU() {
     return reinterpret_cast<MPU_Registers*>(0xE000ED90);
 }
 
-}  // namespace alloy::hal::atmel::samv71::mpu
+}  // namespace ucore::hal::atmel::samv71::mpu

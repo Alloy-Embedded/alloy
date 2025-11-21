@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::i2c0 {
+namespace ucore::hal::espressif::esp32::i2c0 {
 
 // ============================================================================
 // I2C0 - I2C (Inter-Integrated Circuit) Controller 0
@@ -132,4 +132,4 @@ inline I2C0_Registers* I2C0() {
     return reinterpret_cast<I2C0_Registers*>(0x3FF53000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::i2c0
+}  // namespace ucore::hal::espressif::esp32::i2c0

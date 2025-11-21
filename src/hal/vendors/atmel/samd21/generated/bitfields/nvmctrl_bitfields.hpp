@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::nvmctrl {
+namespace ucore::hal::atmel::samd21::nvmctrl {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // NVMCTRL Bit Field Definitions
@@ -246,4 +246,4 @@ namespace lock {
 
 }  // namespace lock
 
-}  // namespace alloy::hal::atmel::samd21::nvmctrl
+}  // namespace ucore::hal::atmel::samd21::nvmctrl

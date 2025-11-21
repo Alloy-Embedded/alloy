@@ -44,16 +44,16 @@
 #include "hal/vendors/st/stm32f4/bitfields/adc1_bitfields.hpp"
 
 
-namespace alloy::hal::stm32f4 {
+namespace ucore::hal::stm32f4 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::st::stm32f4;
+using namespace ucore::hal::st::stm32f4;
 
 // Namespace alias for bitfield access
-namespace adc = alloy::hal::st::stm32f4::adc1;
+namespace adc = ucore::hal::st::stm32f4::adc1;
 
 // ============================================================================
 // Platform-Specific Enums
@@ -145,12 +145,12 @@ class Adc {
      * Returns pointer to ADC registers. Uses conditional compilation
      * for test hook injection.
      */
-    static inline volatile alloy::hal::st::stm32f4::adc1::ADC1_Registers* get_hw() {
+    static inline volatile ucore::hal::st::stm32f4::adc1::ADC1_Registers* get_hw() {
 #ifdef ALLOY_ADC_MOCK_HW
         // In tests, use the mock hardware pointer
         return ALLOY_ADC_MOCK_HW();
 #else
-        return reinterpret_cast<volatile alloy::hal::st::stm32f4::adc1::ADC1_Registers*>(BASE_ADDR);
+        return reinterpret_cast<volatile ucore::hal::st::stm32f4::adc1::ADC1_Registers*>(BASE_ADDR);
 #endif
     }
 
@@ -383,4 +383,4 @@ using Adc1 = Adc<ADC1_BASE, ADC1_IRQ>;  ///< ADC1 - 19 channels (CH0-CH18)
 using Adc2 = Adc<ADC2_BASE, ADC2_IRQ>;  ///< ADC2 - 19 channels (CH0-CH18)
 using Adc3 = Adc<ADC3_BASE, ADC3_IRQ>;  ///< ADC3 - 19 channels (CH0-CH18)
 
-}  // namespace alloy::hal::stm32f4
+}  // namespace ucore::hal::stm32f4

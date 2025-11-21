@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::spi5 {
+namespace ucore::hal::st::stm32f7::spi5 {
 
 // ============================================================================
 // SPI5 - Serial peripheral interface
@@ -78,4 +78,4 @@ inline SPI5_Registers* SPI5() {
     return reinterpret_cast<SPI5_Registers*>(0x40015000);
 }
 
-}  // namespace alloy::hal::st::stm32f7::spi5
+}  // namespace ucore::hal::st::stm32f7::spi5

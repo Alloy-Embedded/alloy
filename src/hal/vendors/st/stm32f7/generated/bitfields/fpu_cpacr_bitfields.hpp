@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::fpu_cpacr {
+namespace ucore::hal::st::stm32f7::fpu_cpacr {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // FPU_CPACR Bit Field Definitions
@@ -27,4 +27,4 @@ namespace cpacr {
 
 }  // namespace cpacr
 
-}  // namespace alloy::hal::st::stm32f7::fpu_cpacr
+}  // namespace ucore::hal::st::stm32f7::fpu_cpacr

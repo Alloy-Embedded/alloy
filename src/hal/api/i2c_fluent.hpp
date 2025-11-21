@@ -40,10 +40,10 @@
 
 #include <span>
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 // ============================================================================
 // Builder State Tracking
@@ -371,4 +371,4 @@ private:
     I2cBuilderState state_;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

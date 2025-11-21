@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::uart0 {
+namespace ucore::hal::raspberrypi::rp2040::uart0 {
 
 // ============================================================================
 // UART0 - Peripheral Registers
@@ -139,4 +139,4 @@ inline UART0_Registers* UART0() {
     return reinterpret_cast<UART0_Registers*>(0x40034000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::uart0
+}  // namespace ucore::hal::raspberrypi::rp2040::uart0

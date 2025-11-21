@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::busctrl {
+namespace ucore::hal::raspberrypi::rp2040::busctrl {
 
 // ============================================================================
 // BUSCTRL - Register block for busfabric control signals and performance counters
@@ -76,4 +76,4 @@ inline BUSCTRL_Registers* BUSCTRL() {
     return reinterpret_cast<BUSCTRL_Registers*>(0x40030000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::busctrl
+}  // namespace ucore::hal::raspberrypi::rp2040::busctrl

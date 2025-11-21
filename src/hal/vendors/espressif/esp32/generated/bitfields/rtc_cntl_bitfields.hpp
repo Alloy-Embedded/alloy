@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::rtc_cntl {
+namespace ucore::hal::espressif::esp32::rtc_cntl {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // RTC_CNTL Bit Field Definitions
@@ -2377,4 +2377,4 @@ namespace date {
 
 }  // namespace date
 
-}  // namespace alloy::hal::espressif::esp32::rtc_cntl
+}  // namespace ucore::hal::espressif::esp32::rtc_cntl

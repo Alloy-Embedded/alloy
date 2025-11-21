@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::pwm0 {
+namespace ucore::hal::atmel::samv71::pwm0 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // PWM0 Bit Field Definitions
@@ -2198,4 +2198,4 @@ namespace cmupd3 {
 
 }  // namespace cmupd3
 
-}  // namespace alloy::hal::atmel::samv71::pwm0
+}  // namespace ucore::hal::atmel::samv71::pwm0

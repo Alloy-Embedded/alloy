@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f1::uart5 {
+namespace ucore::hal::st::stm32f1::uart5 {
 
 // ============================================================================
 // UART5 - Universal asynchronous receiver transmitter
@@ -61,4 +61,4 @@ inline UART5_Registers* UART5() {
     return reinterpret_cast<UART5_Registers*>(0x40005000);
 }
 
-}  // namespace alloy::hal::st::stm32f1::uart5
+}  // namespace ucore::hal::st::stm32f1::uart5

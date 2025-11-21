@@ -16,9 +16,9 @@
 #include "hal/vendors/atmel/same70/generated/bitfields/wdt_bitfields.hpp"
 #include "hal/vendors/atmel/same70/generated/bitfields/rswdt_bitfields.hpp"
 
-namespace alloy::hal::atmel::same70 {
+namespace ucore::hal::atmel::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief SAME70 Watchdog Hardware Policy
@@ -170,4 +170,4 @@ private:
     }
 };
 
-}  // namespace alloy::hal::atmel::same70
+}  // namespace ucore::hal::atmel::same70

@@ -18,7 +18,7 @@
  *
  * Usage Example:
  * @code
- * using namespace alloy::hal::stm32f4;
+ * using namespace ucore::hal::stm32f4;
  *
  * // Level 1: Simple API - One-liner setup
  * auto uart = Usart1::quick_setup<TxPin, RxPin>(BaudRate{115200});
@@ -49,10 +49,10 @@
 #include "hal/api/uart_expert.hpp"
 #include "hal/vendors/st/stm32f4/usart_hardware_policy.hpp"
 
-namespace alloy::hal::stm32f4 {
+namespace ucore::hal::stm32f4 {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 // ============================================================================
 // Hardware Policy Type Aliases (STM32F4 USART)
@@ -153,7 +153,7 @@ using Uart4ExpertConfig = UartExpertConfig<Uart4Hardware>;
 using Uart5ExpertConfig = UartExpertConfig<Uart5Hardware>;
 using Usart6ExpertConfig = UartExpertConfig<Usart6Hardware>;
 
-}  // namespace alloy::hal::stm32f4
+}  // namespace ucore::hal::stm32f4
 
 /**
  * @example
@@ -163,7 +163,7 @@ using Usart6ExpertConfig = UartExpertConfig<Usart6Hardware>;
  * #include "hal/uart.hpp"  // Platform dispatch header
  * #include "hal/platform/stm32f4/uart.hpp"
  *
- * using namespace alloy::hal::stm32f4;
+ * using namespace ucore::hal::stm32f4;
  *
  * // Define pin types (from board config)
  * struct Usart1TxPin {

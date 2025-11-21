@@ -10,8 +10,8 @@
 #include "hal/vendors/arm/cortex_m7/vector_table.hpp"
 #include "startup_config.hpp"
 
-using namespace alloy::hal::arm;
-using namespace alloy::hal::same70;
+using namespace ucore::hal::arm;
+using namespace ucore::hal::same70;
 
 // =============================================================================
 // Forward Declarations

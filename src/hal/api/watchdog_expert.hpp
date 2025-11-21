@@ -13,9 +13,9 @@
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Expert watchdog configuration
@@ -138,4 +138,4 @@ Result<void, ErrorCode> configure(const WatchdogExpertConfig& config) {
 
 }  // namespace expert
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

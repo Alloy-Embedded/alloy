@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::nvic {
+namespace ucore::hal::atmel::same70::nvic {
 
 // ============================================================================
 // NVIC - Nested Vectored Interrupt Controller
@@ -67,4 +67,4 @@ inline NVIC_Registers* NVIC() {
     return reinterpret_cast<NVIC_Registers*>(0xE000E100);
 }
 
-}  // namespace alloy::hal::atmel::same70::nvic
+}  // namespace ucore::hal::atmel::same70::nvic

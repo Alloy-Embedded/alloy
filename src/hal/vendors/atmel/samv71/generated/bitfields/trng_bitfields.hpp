@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::trng {
+namespace ucore::hal::atmel::samv71::trng {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // TRNG Bit Field Definitions
@@ -87,4 +87,4 @@ namespace odata {
 
 }  // namespace odata
 
-}  // namespace alloy::hal::atmel::samv71::trng
+}  // namespace ucore::hal::atmel::samv71::trng

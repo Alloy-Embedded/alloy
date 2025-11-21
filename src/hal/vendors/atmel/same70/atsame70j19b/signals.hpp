@@ -21,9 +21,9 @@
 
 #include "hal/core/signals.hpp"
 
-namespace alloy::hal::atmel::same70 {
+namespace ucore::hal::atmel::same70 {
 
-using namespace alloy::hal::signals;
+using namespace ucore::hal::signals;
 
 // ============================================================================
 // Peripheral Signal Specializations
@@ -560,4 +560,4 @@ struct CAN0DATASignal {
     };
 };
 
-} // namespace alloy::hal::atmel::same70
+} // namespace ucore::hal::atmel::same70

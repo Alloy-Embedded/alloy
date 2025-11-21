@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::pioa {
+namespace ucore::hal::atmel::samv71::pioa {
 
 // ============================================================================
 // PIOA - Parallel Input/Output Controller
@@ -303,4 +303,4 @@ inline PIOA_Registers* PIOA() {
     return reinterpret_cast<PIOA_Registers*>(0x400E0E00);
 }
 
-}  // namespace alloy::hal::atmel::samv71::pioa
+}  // namespace ucore::hal::atmel::samv71::pioa

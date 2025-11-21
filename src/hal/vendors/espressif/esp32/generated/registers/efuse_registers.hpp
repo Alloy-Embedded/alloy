@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::efuse {
+namespace ucore::hal::espressif::esp32::efuse {
 
 // ============================================================================
 // EFUSE - eFuse Controller
@@ -323,4 +323,4 @@ inline EFUSE_Registers* EFUSE() {
     return reinterpret_cast<EFUSE_Registers*>(0x3FF5A000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::efuse
+}  // namespace ucore::hal::espressif::esp32::efuse

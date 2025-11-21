@@ -11,8 +11,8 @@
 #include "core/result.hpp"
 #include "core/error.hpp"
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // ==============================================================================
 // Mock Clock Platform for Testing
@@ -71,7 +71,7 @@ public:
 
 // #if __cplusplus >= 202002L
 // TEST_CASE("MockClockPlatform satisfies ClockPlatform concept", "[clock][concept][c++20]") {
-//     STATIC_REQUIRE(alloy::hal::concepts::ClockPlatform<MockClockPlatform>);
+//     STATIC_REQUIRE(ucore::hal::concepts::ClockPlatform<MockClockPlatform>);
 // }
 // #endif
 
@@ -229,7 +229,7 @@ public:
 };
 
 // Would fail if uncommented:
-// static_assert(alloy::hal::concepts::ClockPlatform<BadClockNoInit>);
+// static_assert(ucore::hal::concepts::ClockPlatform<BadClockNoInit>);
 // Error: Missing initialize() method
 
 // Test 2: Non-static methods (wrong)
@@ -241,7 +241,7 @@ public:
 };
 
 // Would fail if uncommented:
-// static_assert(alloy::hal::concepts::ClockPlatform<BadClockNonStatic>);
+// static_assert(ucore::hal::concepts::ClockPlatform<BadClockNonStatic>);
 // Error: initialize() must be static
 
 // Test 3: Wrong return type
@@ -253,7 +253,7 @@ public:
 };
 
 // Would fail if uncommented:
-// static_assert(alloy::hal::concepts::ClockPlatform<BadClockWrongReturn>);
+// static_assert(ucore::hal::concepts::ClockPlatform<BadClockWrongReturn>);
 // Error: initialize() must return Result<void, ErrorCode>
 
 // Test 4: get_system_clock_hz() not constexpr
@@ -265,7 +265,7 @@ public:
 };
 
 // Would fail if uncommented:
-// static_assert(alloy::hal::concepts::ClockPlatform<BadClockNotConstexpr>);
+// static_assert(ucore::hal::concepts::ClockPlatform<BadClockNotConstexpr>);
 // Error: get_system_clock_hz() must be constexpr
 
 // Test 5: Missing peripheral clock enable methods
@@ -277,13 +277,13 @@ public:
 };
 
 // Would fail if uncommented:
-// static_assert(alloy::hal::concepts::ClockPlatform<BadClockIncomplete>);
+// static_assert(ucore::hal::concepts::ClockPlatform<BadClockIncomplete>);
 // Error: Missing peripheral clock enable methods
 
 // Test 6: Primitive types should NOT satisfy concept
 // Would fail if uncommented:
-// static_assert(alloy::hal::concepts::ClockPlatform<int>);
-// static_assert(alloy::hal::concepts::ClockPlatform<void*>);
+// static_assert(ucore::hal::concepts::ClockPlatform<int>);
+// static_assert(ucore::hal::concepts::ClockPlatform<void*>);
 // Error: Primitive types do not satisfy ClockPlatform
 
 TEST_CASE("Clock concept failure tests are documented", "[clock][concept][negative]") {

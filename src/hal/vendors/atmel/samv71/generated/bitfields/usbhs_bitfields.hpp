@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::usbhs {
+namespace ucore::hal::atmel::samv71::usbhs {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // USBHS Bit Field Definitions
@@ -6334,4 +6334,4 @@ namespace sfr {
 
 }  // namespace sfr
 
-}  // namespace alloy::hal::atmel::samv71::usbhs
+}  // namespace ucore::hal::atmel::samv71::usbhs

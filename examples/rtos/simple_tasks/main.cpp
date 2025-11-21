@@ -25,8 +25,8 @@
 #include "board.hpp"
 #include "rtos/rtos.hpp"
 
-using namespace alloy::rtos;
-using namespace alloy::core;
+using namespace ucore::rtos;
+using namespace ucore::core;
 
 // =============================================================================
 // Task Functions

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::emac_dma {
+namespace ucore::hal::espressif::esp32::emac_dma {
 
 // ============================================================================
 // EMAC_DMA - Ethernet DMA configuration and control registers
@@ -89,4 +89,4 @@ inline EMAC_DMA_Registers* EMAC_DMA() {
     return reinterpret_cast<EMAC_DMA_Registers*>(0x3FF69000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::emac_dma
+}  // namespace ucore::hal::espressif::esp32::emac_dma

@@ -15,8 +15,8 @@
 #include "core/result.hpp"
 #include "core/error.hpp"
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // ==============================================================================
 // Platform-Specific Includes (conditional compilation)
@@ -27,11 +27,11 @@ using namespace alloy::hal;
 #include "hal/vendors/st/stm32f4/clock_platform.hpp"
 #include "hal/vendors/st/stm32f4/gpio.hpp"
 
-using TestClockPlatform = alloy::hal::st::stm32f4::Stm32f4Clock<
-    alloy::hal::st::stm32f4::ExampleF4ClockConfig
+using TestClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
+    ucore::hal::st::stm32f4::ExampleF4ClockConfig
 >;
-using TestGpioPin = alloy::hal::st::stm32f4::GpioPin<
-    alloy::hal::st::stm32f4::gpio::PortA, 5
+using TestGpioPin = ucore::hal::st::stm32f4::GpioPin<
+    ucore::hal::st::stm32f4::gpio::PortA, 5
 >;
 #endif
 
@@ -40,11 +40,11 @@ using TestGpioPin = alloy::hal::st::stm32f4::GpioPin<
 #include "hal/vendors/st/stm32f7/clock_platform.hpp"
 #include "hal/vendors/st/stm32f7/gpio.hpp"
 
-using TestClockPlatform = alloy::hal::st::stm32f7::Stm32f7Clock<
-    alloy::hal::st::stm32f7::ExampleF7ClockConfig
+using TestClockPlatform = ucore::hal::st::stm32f7::Stm32f7Clock<
+    ucore::hal::st::stm32f7::ExampleF7ClockConfig
 >;
-using TestGpioPin = alloy::hal::st::stm32f7::GpioPin<
-    alloy::hal::st::stm32f7::gpio::PortA, 5
+using TestGpioPin = ucore::hal::st::stm32f7::GpioPin<
+    ucore::hal::st::stm32f7::gpio::PortA, 5
 >;
 #endif
 
@@ -53,11 +53,11 @@ using TestGpioPin = alloy::hal::st::stm32f7::GpioPin<
 #include "hal/vendors/st/stm32g0/clock_platform.hpp"
 #include "hal/vendors/st/stm32g0/gpio.hpp"
 
-using TestClockPlatform = alloy::hal::st::stm32g0::Stm32g0Clock<
-    alloy::hal::st::stm32g0::ExampleG0ClockConfig
+using TestClockPlatform = ucore::hal::st::stm32g0::Stm32g0Clock<
+    ucore::hal::st::stm32g0::ExampleG0ClockConfig
 >;
-using TestGpioPin = alloy::hal::st::stm32g0::GpioPin<
-    alloy::hal::st::stm32g0::gpio::PortA, 5
+using TestGpioPin = ucore::hal::st::stm32g0::GpioPin<
+    ucore::hal::st::stm32g0::gpio::PortA, 5
 >;
 #endif
 
@@ -70,7 +70,7 @@ using TestGpioPin = alloy::hal::st::stm32g0::GpioPin<
 #if defined(ALLOY_PLATFORM_STM32F4) || defined(ALLOY_PLATFORM_STM32F7) || defined(ALLOY_PLATFORM_STM32G0)
 
 TEST_CASE("Platform Clock satisfies ClockPlatform concept", "[integration][concept][clock]") {
-    STATIC_REQUIRE(alloy::hal::concepts::ClockPlatform<TestClockPlatform>);
+    STATIC_REQUIRE(ucore::hal::concepts::ClockPlatform<TestClockPlatform>);
 }
 
 TEST_CASE("Platform GPIO has required metadata", "[integration][concept][gpio]") {

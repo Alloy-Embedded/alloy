@@ -17,8 +17,8 @@
 #include "core/result.hpp"
 #include "core/error.hpp"
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // ==============================================================================
 // Platform-Specific Includes
@@ -31,16 +31,16 @@ using namespace alloy::hal;
     #include "hal/vendors/st/stm32g0/clock_platform.hpp"
     #include "hal/vendors/st/stm32g0/gpio.hpp"
 
-    using ClockPlatform = alloy::hal::st::stm32g0::Stm32g0Clock<
-        alloy::hal::st::stm32g0::ExampleG0ClockConfig
+    using ClockPlatform = ucore::hal::st::stm32g0::Stm32g0Clock<
+        ucore::hal::st::stm32g0::ExampleG0ClockConfig
     >;
 
     // Nucleo-G0B1RE has 1 LED (PA5 - Green) and 1 Button (PC13)
-    using LedGreen = alloy::hal::st::stm32g0::GpioPin<
-        alloy::hal::st::stm32g0::gpio::PortA, 5
+    using LedGreen = ucore::hal::st::stm32g0::GpioPin<
+        ucore::hal::st::stm32g0::gpio::PortA, 5
     >;
-    using ButtonUser = alloy::hal::st::stm32g0::GpioPin<
-        alloy::hal::st::stm32g0::gpio::PortC, 13
+    using ButtonUser = ucore::hal::st::stm32g0::GpioPin<
+        ucore::hal::st::stm32g0::gpio::PortC, 13
     >;
 
     constexpr int LED_COUNT = 1;
@@ -52,15 +52,15 @@ using namespace alloy::hal;
     #include "hal/vendors/st/stm32g0/clock_platform.hpp"
     #include "hal/vendors/st/stm32g0/gpio.hpp"
 
-    using ClockPlatform = alloy::hal::st::stm32g0::Stm32g0Clock<
-        alloy::hal::st::stm32g0::ExampleG0ClockConfig
+    using ClockPlatform = ucore::hal::st::stm32g0::Stm32g0Clock<
+        ucore::hal::st::stm32g0::ExampleG0ClockConfig
     >;
 
-    using LedGreen = alloy::hal::st::stm32g0::GpioPin<
-        alloy::hal::st::stm32g0::gpio::PortA, 5
+    using LedGreen = ucore::hal::st::stm32g0::GpioPin<
+        ucore::hal::st::stm32g0::gpio::PortA, 5
     >;
-    using ButtonUser = alloy::hal::st::stm32g0::GpioPin<
-        alloy::hal::st::stm32g0::gpio::PortC, 13
+    using ButtonUser = ucore::hal::st::stm32g0::GpioPin<
+        ucore::hal::st::stm32g0::gpio::PortC, 13
     >;
 
     constexpr int LED_COUNT = 1;
@@ -72,15 +72,15 @@ using namespace alloy::hal;
     #include "hal/vendors/st/stm32f4/clock_platform.hpp"
     #include "hal/vendors/st/stm32f4/gpio.hpp"
 
-    using ClockPlatform = alloy::hal::st::stm32f4::Stm32f4Clock<
-        alloy::hal::st::stm32f4::ExampleF4ClockConfig
+    using ClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
+        ucore::hal::st::stm32f4::ExampleF4ClockConfig
     >;
 
-    using LedGreen = alloy::hal::st::stm32f4::GpioPin<
-        alloy::hal::st::stm32f4::gpio::PortA, 5
+    using LedGreen = ucore::hal::st::stm32f4::GpioPin<
+        ucore::hal::st::stm32f4::gpio::PortA, 5
     >;
-    using ButtonUser = alloy::hal::st::stm32f4::GpioPin<
-        alloy::hal::st::stm32f4::gpio::PortC, 13
+    using ButtonUser = ucore::hal::st::stm32f4::GpioPin<
+        ucore::hal::st::stm32f4::gpio::PortC, 13
     >;
 
     constexpr int LED_COUNT = 1;
@@ -92,22 +92,22 @@ using namespace alloy::hal;
     #include "hal/vendors/st/stm32f7/clock_platform.hpp"
     #include "hal/vendors/st/stm32f7/gpio.hpp"
 
-    using ClockPlatform = alloy::hal::st::stm32f7::Stm32f7Clock<
-        alloy::hal::st::stm32f7::ExampleF7ClockConfig
+    using ClockPlatform = ucore::hal::st::stm32f7::Stm32f7Clock<
+        ucore::hal::st::stm32f7::ExampleF7ClockConfig
     >;
 
     // Nucleo-F722ZE has 3 LEDs
-    using LedGreen  = alloy::hal::st::stm32f7::GpioPin<
-        alloy::hal::st::stm32f7::gpio::PortB, 0
+    using LedGreen  = ucore::hal::st::stm32f7::GpioPin<
+        ucore::hal::st::stm32f7::gpio::PortB, 0
     >;
-    using LedBlue   = alloy::hal::st::stm32f7::GpioPin<
-        alloy::hal::st::stm32f7::gpio::PortB, 7
+    using LedBlue   = ucore::hal::st::stm32f7::GpioPin<
+        ucore::hal::st::stm32f7::gpio::PortB, 7
     >;
-    using LedRed    = alloy::hal::st::stm32f7::GpioPin<
-        alloy::hal::st::stm32f7::gpio::PortB, 14
+    using LedRed    = ucore::hal::st::stm32f7::GpioPin<
+        ucore::hal::st::stm32f7::gpio::PortB, 14
     >;
-    using ButtonUser = alloy::hal::st::stm32f7::GpioPin<
-        alloy::hal::st::stm32f7::gpio::PortC, 13
+    using ButtonUser = ucore::hal::st::stm32f7::GpioPin<
+        ucore::hal::st::stm32f7::gpio::PortC, 13
     >;
 
     constexpr int LED_COUNT = 3;

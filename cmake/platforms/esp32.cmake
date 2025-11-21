@@ -22,7 +22,7 @@
 #
 # Usage:
 #   source $IDF_PATH/export.sh
-#   cmake -DALLOY_PLATFORM=esp32 -B build-esp32
+#   cmake -DMICROCORE_PLATFORM=esp32 -B build-esp32
 #
 # @see openspec/changes/platform-abstraction/specs/platform-interface-layer/spec.md
 # ==============================================================================
@@ -156,7 +156,7 @@ add_link_options(
 # List of ESP-IDF components required by Alloy HAL
 # These will be linked into the final application
 
-set(ALLOY_ESP32_IDF_COMPONENTS
+set(MICROCORE_ESP32_IDF_COMPONENTS
     driver          # Hardware driver components (UART, GPIO, I2C, SPI, etc.)
     esp_common      # Common ESP32 functionality
     esp_system      # System initialization
@@ -167,9 +167,9 @@ set(ALLOY_ESP32_IDF_COMPONENTS
 )
 
 # Export components for use by ESP-IDF build system
-set(ALLOY_ESP32_IDF_COMPONENTS ${ALLOY_ESP32_IDF_COMPONENTS} PARENT_SCOPE)
+set(MICROCORE_ESP32_IDF_COMPONENTS ${MICROCORE_ESP32_IDF_COMPONENTS} PARENT_SCOPE)
 
-message(STATUS "  Required ESP-IDF components: ${ALLOY_ESP32_IDF_COMPONENTS}")
+message(STATUS "  Required ESP-IDF components: ${MICROCORE_ESP32_IDF_COMPONENTS}")
 
 # ------------------------------------------------------------------------------
 # Platform Source Requirements

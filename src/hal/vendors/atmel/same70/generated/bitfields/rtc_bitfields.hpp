@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::rtc {
+namespace ucore::hal::atmel::same70::rtc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // RTC Bit Field Definitions
@@ -551,4 +551,4 @@ constexpr uint32_t NVCALALR_Msk = NVCALALR::mask;
 
 }  // namespace ver
 
-}  // namespace alloy::hal::atmel::same70::rtc
+}  // namespace ucore::hal::atmel::same70::rtc

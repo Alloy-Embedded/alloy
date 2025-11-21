@@ -2,8 +2,8 @@
 ///
 /// Defines DMA concepts and configuration types for all platforms.
 
-#ifndef ALLOY_HAL_INTERFACE_DMA_HPP
-#define ALLOY_HAL_INTERFACE_DMA_HPP
+#ifndef UCORE_HAL_INTERFACE_DMA_HPP
+#define UCORE_HAL_INTERFACE_DMA_HPP
 
 #include <concepts>
 #include <functional>
@@ -14,9 +14,9 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /// DMA transfer direction
 enum class DmaDirection : u8 {
@@ -187,6 +187,6 @@ inline constexpr DmaDataWidth get_dma_width_for_type() {
     }
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal
 
 #endif  // ALLOY_HAL_INTERFACE_DMA_HPP

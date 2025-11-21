@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::nvic_stir {
+namespace ucore::hal::st::stm32f7::nvic_stir {
 
 // ============================================================================
 // NVIC_STIR - Nested vectored interrupt controller
@@ -32,4 +32,4 @@ inline NVIC_STIR_Registers* NVIC_STIR() {
     return reinterpret_cast<NVIC_STIR_Registers*>(0xE000EF00);
 }
 
-}  // namespace alloy::hal::st::stm32f7::nvic_stir
+}  // namespace ucore::hal::st::stm32f7::nvic_stir

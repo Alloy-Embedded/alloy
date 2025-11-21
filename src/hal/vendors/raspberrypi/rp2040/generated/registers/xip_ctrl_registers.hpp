@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::xip_ctrl {
+namespace ucore::hal::raspberrypi::rp2040::xip_ctrl {
 
 // ============================================================================
 // XIP_CTRL - QSPI flash execute-in-place block
@@ -69,4 +69,4 @@ inline XIP_CTRL_Registers* XIP_CTRL() {
     return reinterpret_cast<XIP_CTRL_Registers*>(0x14000000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::xip_ctrl
+}  // namespace ucore::hal::raspberrypi::rp2040::xip_ctrl

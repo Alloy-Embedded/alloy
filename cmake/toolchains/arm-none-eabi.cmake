@@ -28,7 +28,7 @@ set(CMAKE_RANLIB ${TOOLCHAIN_PREFIX}arm-none-eabi-ranlib)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 # Alloy-specific configuration
-# Note: ALLOY_PLATFORM should be set by the board configuration, not the toolchain
+# Note: MICROCORE_PLATFORM should be set by the board configuration, not the toolchain
 # The toolchain is generic for all ARM Cortex-M targets
 
 # Common ARM flags (will be specialized per board/MCU)

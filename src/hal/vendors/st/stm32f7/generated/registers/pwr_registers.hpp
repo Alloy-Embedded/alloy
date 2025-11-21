@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::pwr {
+namespace ucore::hal::st::stm32f7::pwr {
 
 // ============================================================================
 // PWR - Power control
@@ -47,4 +47,4 @@ inline PWR_Registers* PWR() {
     return reinterpret_cast<PWR_Registers*>(0x40007000);
 }
 
-}  // namespace alloy::hal::st::stm32f7::pwr
+}  // namespace ucore::hal::st::stm32f7::pwr

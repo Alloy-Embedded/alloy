@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::io_mux {
+namespace ucore::hal::espressif::esp32::io_mux {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // IO_MUX Bit Field Definitions
@@ -2958,4 +2958,4 @@ namespace gpio24 {
 
 }  // namespace gpio24
 
-}  // namespace alloy::hal::espressif::esp32::io_mux
+}  // namespace ucore::hal::espressif::esp32::io_mux

@@ -42,9 +42,9 @@
 // Bitfield definitions
 #include "hal/vendors/st/stm32f4/generated/bitfields/spi_bitfields.hpp"
 
-namespace alloy::hal::st::stm32f4 {
+namespace ucore::hal::st::stm32f4 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
 using namespace st;
@@ -419,7 +419,7 @@ using SPI2Hardware = STM32F4SpiHardwarePolicy<0x40003800>;
 using SPI3Hardware = STM32F4SpiHardwarePolicy<0x40003C00>;
 
 
-}  // namespace alloy::hal::st::stm32f4
+}  // namespace ucore::hal::st::stm32f4
 
 /**
  * @example
@@ -428,7 +428,7 @@ using SPI3Hardware = STM32F4SpiHardwarePolicy<0x40003C00>;
  * @code
  * #include "hal/vendors/st//spi.hpp"
  *
- * using namespace alloy::hal::st::stm32f4;
+ * using namespace ucore::hal::st::stm32f4;
  *
  * int main() {
  *     // Initialize SPI

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::fpu {
+namespace ucore::hal::st::stm32f7::fpu {
 
 // ============================================================================
 // FPU - Floting point unit
@@ -44,4 +44,4 @@ inline FPU_Registers* FPU() {
     return reinterpret_cast<FPU_Registers*>(0xE000EF34);
 }
 
-}  // namespace alloy::hal::st::stm32f7::fpu
+}  // namespace ucore::hal::st::stm32f7::fpu

@@ -44,16 +44,16 @@
 #include "hal/vendors/st/stm32f4/bitfields/spi1_bitfields.hpp"
 
 
-namespace alloy::hal::stm32f4 {
+namespace ucore::hal::stm32f4 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::st::stm32f4;
+using namespace ucore::hal::st::stm32f4;
 
 // Namespace alias for bitfield access
-namespace spi = alloy::hal::st::stm32f4::spi1;
+namespace spi = ucore::hal::st::stm32f4::spi1;
 
 // Note: SPI uses common SpiMode from hal/types.hpp:
 // - Mode0: CPOL=0, CPHA=0
@@ -107,12 +107,12 @@ class Spi {
      * Returns pointer to SPI registers. Uses conditional compilation
      * for test hook injection.
      */
-    static inline volatile alloy::hal::st::stm32f4::spi1::SPI1_Registers* get_hw() {
+    static inline volatile ucore::hal::st::stm32f4::spi1::SPI1_Registers* get_hw() {
 #ifdef ALLOY_SPI_MOCK_HW
         // In tests, use the mock hardware pointer
         return ALLOY_SPI_MOCK_HW();
 #else
-        return reinterpret_cast<volatile alloy::hal::st::stm32f4::spi1::SPI1_Registers*>(BASE_ADDR);
+        return reinterpret_cast<volatile ucore::hal::st::stm32f4::spi1::SPI1_Registers*>(BASE_ADDR);
 #endif
     }
 
@@ -375,4 +375,4 @@ using Spi1 = Spi<SPI1_BASE, SPI1_IRQ>;  ///< SPI1 instance
 using Spi2 = Spi<SPI2_BASE, SPI2_IRQ>;  ///< SPI2 instance
 using Spi3 = Spi<SPI3_BASE, SPI3_IRQ>;  ///< SPI3 instance
 
-}  // namespace alloy::hal::stm32f4
+}  // namespace ucore::hal::stm32f4

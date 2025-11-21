@@ -12,7 +12,7 @@
 /// Usage:
 ///   #include <hal/st/stm32f7/stm32f7x7/register_map.hpp>
 ///
-///   using namespace alloy::hal::st::stm32f7::stm32f7x7;
+///   using namespace ucore::hal::st::stm32f7::stm32f7x7;
 ///
 ///   // Access registers
 ///   rcc::RCC->CR = rcc::cr::HSEON::set(rcc::RCC->CR);
@@ -155,15 +155,15 @@
 // Namespace Convenience Aliases
 // ============================================================================
 
-namespace alloy::hal::st::stm32f7::stm32f7x7 {
+namespace ucore::hal::st::stm32f7::stm32f7x7 {
 
 /// Main namespace alias for this MCU
 ///
 /// Usage:
-///   using namespace alloy::hal::st::stm32f7::stm32f7x7;
+///   using namespace ucore::hal::st::stm32f7::stm32f7x7;
 ///   // Now you can use rcc::RCC, gpio::GPIOA, etc.
 
-}  // namespace alloy::hal::st::stm32f7::stm32f7x7
+}  // namespace ucore::hal::st::stm32f7::stm32f7x7
 
 // ============================================================================
 // Global Namespace Aliases (Optional)
@@ -171,7 +171,7 @@ namespace alloy::hal::st::stm32f7::stm32f7x7 {
 
 /// You can define shorter aliases if desired:
 ///
-/// namespace mcu = alloy::hal::st::stm32f7::stm32f7x7;
+/// namespace mcu = ucore::hal::st::stm32f7::stm32f7x7;
 ///
 /// Then use:
 ///   mcu::rcc::RCC->CR = ...

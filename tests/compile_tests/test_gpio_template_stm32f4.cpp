@@ -13,7 +13,7 @@
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Mock GPIO registers for STM32F4
 namespace st {
@@ -32,9 +32,9 @@ namespace st {
 }
 
 // Manually include the GPIO hardware policy (skip the includes)
-namespace alloy::hal::st::stm32f4 {
+namespace ucore::hal::st::stm32f4 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 template <uint32_t BASE_ADDR, char PORT_CHAR>
 struct STM32F4GpioHardwarePolicy {
@@ -154,9 +154,9 @@ using GPIOFHardware = STM32F4GpioHardwarePolicy<0x40021400, 'F'>;
 using GPIOGHardware = STM32F4GpioHardwarePolicy<0x40021800, 'G'>;
 using GPIOHHardware = STM32F4GpioHardwarePolicy<0x40021C00, 'H'>;
 
-}  // namespace alloy::hal::st::stm32f4
+}  // namespace ucore::hal::st::stm32f4
 
-using namespace alloy::hal::st::stm32f4;
+using namespace ucore::hal::st::stm32f4;
 
 // Test compile-time constants
 static_assert(GPIOAHardware::base_address == 0x40020000, "GPIOA base address");

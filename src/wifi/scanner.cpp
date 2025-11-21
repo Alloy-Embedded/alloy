@@ -13,7 +13,7 @@
     #include "freertos/event_groups.h"
     #include "nvs_flash.h"
 
-namespace alloy::wifi {
+namespace ucore::wifi {
 
 // Event bit for scan completion
 static constexpr int SCAN_DONE_BIT = BIT0;
@@ -273,11 +273,11 @@ void Scanner::handle_scan_done() {
     }
 }
 
-}  // namespace alloy::wifi
+}  // namespace ucore::wifi
 
 #else  // !ESP_PLATFORM
 
-namespace alloy::wifi {
+namespace ucore::wifi {
 
 // Stub implementation for non-ESP platforms
 Scanner::Scanner() : initialized_(false), scanning_(false), result_count_(0), callback_(nullptr) {}
@@ -319,6 +319,6 @@ bool Scanner::is_scanning() const {
 
 void Scanner::set_scan_callback([[maybe_unused]] ScanCallback callback) {}
 
-}  // namespace alloy::wifi
+}  // namespace ucore::wifi
 
 #endif  // ESP_PLATFORM

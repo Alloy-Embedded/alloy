@@ -131,7 +131,7 @@ consteval T array_max(const T (&arr)[N]) {
 **Before (C++20)**:
 ```cmake
 set(CMAKE_CXX_STANDARD 20)
-target_compile_features(alloy-hal PUBLIC cxx_std_20)
+target_compile_features(microcore-hal PUBLIC cxx_std_20)
 ```
 
 **After (C++23)**:
@@ -142,8 +142,8 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-target_compile_features(alloy-hal PUBLIC cxx_std_23)
-target_compile_features(alloy-hal INTERFACE cxx_std_23)
+target_compile_features(microcore-hal PUBLIC cxx_std_23)
+target_compile_features(microcore-hal INTERFACE cxx_std_23)
 ```
 
 **Benefits**:

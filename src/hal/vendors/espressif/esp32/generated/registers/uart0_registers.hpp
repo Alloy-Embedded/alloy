@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::uart0 {
+namespace ucore::hal::espressif::esp32::uart0 {
 
 // ============================================================================
 // UART0 - UART (Universal Asynchronous Receiver-Transmitter) Controller 0
@@ -165,4 +165,4 @@ inline UART0_Registers* UART0() {
     return reinterpret_cast<UART0_Registers*>(0x3FF40000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::uart0
+}  // namespace ucore::hal::espressif::esp32::uart0

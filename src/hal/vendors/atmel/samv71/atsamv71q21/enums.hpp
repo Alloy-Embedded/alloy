@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::atsamv71q21::enums {
+namespace ucore::hal::atmel::samv71::atsamv71q21::enums {
 
 // ============================================================================
 // ENUMERATED VALUE DEFINITIONS
@@ -4329,4 +4329,4 @@ enum class XDMAC_CC_WRIP : uint32_t {
 
 /// Total enumerated types: 457
 
-}  // namespace alloy::hal::atmel::samv71::atsamv71q21::enums
+}  // namespace ucore::hal::atmel::samv71::atsamv71q21::enums

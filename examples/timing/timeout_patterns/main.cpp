@@ -27,7 +27,7 @@
 #include "board/board.hpp"
 #include "hal/api/systick_simple.hpp"
 
-using namespace alloy::hal;
+using namespace ucore::hal;
 
 /**
  * @brief Simulate an operation that might fail

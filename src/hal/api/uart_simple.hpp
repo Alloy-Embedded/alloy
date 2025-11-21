@@ -37,11 +37,11 @@
 #include "hal/core/signals.hpp"
 #include "hal/core/signal_registry.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
-using namespace alloy::hal::signal_registry;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
+using namespace ucore::hal::signal_registry;
 
 // ============================================================================
 // UART Types
@@ -566,4 +566,4 @@ private:
     }
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

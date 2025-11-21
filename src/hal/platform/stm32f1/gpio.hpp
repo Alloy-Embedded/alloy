@@ -50,13 +50,13 @@
 // Note: These should be included by board files as they're MCU-specific
 // Example: #include "hal/vendors/st/stm32f1/stm32f407vg/pins.hpp"
 
-namespace alloy::hal::stm32f1 {
+namespace ucore::hal::stm32f1 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types (now from family-level namespace)
-using namespace alloy::hal::st::stm32f1;
+using namespace ucore::hal::st::stm32f1;
 
 /**
  * @brief GPIO pin modes
@@ -378,4 +378,4 @@ constexpr uint32_t GPIOA_BASE = 0x40010800;
 // using LedGreen = GpioPin<GPIOC_BASE, 13>;
 // using Button0 = GpioPin<GPIOA_BASE, 0>;
 
-}  // namespace alloy::hal::stm32f1
+}  // namespace ucore::hal::stm32f1

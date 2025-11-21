@@ -42,10 +42,10 @@
 
 #include <array>
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 // ============================================================================
 // DMA Stream and Request Identifiers
@@ -314,4 +314,4 @@ constexpr bool validate_dma_connection() {
     return Connection::is_compatible();
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

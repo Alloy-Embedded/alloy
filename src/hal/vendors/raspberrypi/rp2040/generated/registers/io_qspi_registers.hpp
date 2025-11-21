@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::io_qspi {
+namespace ucore::hal::raspberrypi::rp2040::io_qspi {
 
 // ============================================================================
 // IO_QSPI - Peripheral Registers
@@ -136,4 +136,4 @@ inline IO_QSPI_Registers* IO_QSPI() {
     return reinterpret_cast<IO_QSPI_Registers*>(0x40018000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::io_qspi
+}  // namespace ucore::hal::raspberrypi::rp2040::io_qspi

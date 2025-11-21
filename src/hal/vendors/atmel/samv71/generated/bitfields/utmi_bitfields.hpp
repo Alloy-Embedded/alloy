@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::utmi {
+namespace ucore::hal::atmel::samv71::utmi {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // UTMI Bit Field Definitions
@@ -59,4 +59,4 @@ namespace cktrim {
 
 }  // namespace cktrim
 
-}  // namespace alloy::hal::atmel::samv71::utmi
+}  // namespace ucore::hal::atmel::samv71::utmi

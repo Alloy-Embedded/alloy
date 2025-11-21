@@ -46,11 +46,11 @@
 #include "logger/logger.hpp"
 #include "logger/sinks/uart_sink.hpp"
 
-using namespace alloy::hal;
-using namespace alloy::hal::same70;
-using namespace alloy::hal::atmel::same70;
-using namespace alloy::logger;
-using namespace alloy::generated::atsame70q21b;
+using namespace ucore::hal;
+using namespace ucore::hal::same70;
+using namespace ucore::hal::atmel::same70;
+using namespace ucore::logger;
+using namespace ucore::generated::atsame70q21b;
 
 int main() {
     // Step 1: Initialize board hardware

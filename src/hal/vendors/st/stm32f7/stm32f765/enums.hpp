@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::stm32f765::enums {
+namespace ucore::hal::st::stm32f7::stm32f765::enums {
 
 // ============================================================================
 // ENUMERATED VALUE DEFINITIONS
@@ -19,4 +19,4 @@ namespace alloy::hal::st::stm32f7::stm32f765::enums {
 
 // No enumerated values found in SVD file
 
-}  // namespace alloy::hal::st::stm32f7::stm32f765::enums
+}  // namespace ucore::hal::st::stm32f7::stm32f765::enums

@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::fpu {
+namespace ucore::hal::atmel::same70::fpu {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // FPU Bit Field Definitions
@@ -205,4 +205,4 @@ constexpr uint32_t VFP_Misc_Msk = VFP_Misc::mask;
 
 }  // namespace mvfr2
 
-}  // namespace alloy::hal::atmel::same70::fpu
+}  // namespace ucore::hal::atmel::same70::fpu

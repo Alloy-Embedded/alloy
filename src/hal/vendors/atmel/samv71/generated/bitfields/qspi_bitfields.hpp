@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::qspi {
+namespace ucore::hal::atmel::samv71::qspi {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // QSPI Bit Field Definitions
@@ -546,4 +546,4 @@ namespace wpsr {
 
 }  // namespace wpsr
 
-}  // namespace alloy::hal::atmel::samv71::qspi
+}  // namespace ucore::hal::atmel::samv71::qspi

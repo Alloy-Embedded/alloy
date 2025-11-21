@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::gpioi {
+namespace ucore::hal::st::stm32f4::gpioi {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // GPIOI Bit Field Definitions
@@ -1023,4 +1023,4 @@ namespace afrh {
 
 }  // namespace afrh
 
-}  // namespace alloy::hal::st::stm32f4::gpioi
+}  // namespace ucore::hal::st::stm32f4::gpioi

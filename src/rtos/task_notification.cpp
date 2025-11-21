@@ -5,7 +5,7 @@
 #include "rtos/task_notification.hpp"
 #include "rtos/scheduler.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 // ============================================================================
 // Helper Functions
@@ -263,4 +263,4 @@ bool TaskNotification::is_pending() {
     return state->pending_count.load(std::memory_order_acquire) > 0;
 }
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos

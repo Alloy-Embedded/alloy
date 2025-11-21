@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::acc {
+namespace ucore::hal::atmel::same70::acc {
 
 // ============================================================================
 // ACC - Analog Comparator Controller
@@ -70,4 +70,4 @@ inline ACC_Registers* ACC() {
     return reinterpret_cast<ACC_Registers*>(0x40044000);
 }
 
-}  // namespace alloy::hal::atmel::same70::acc
+}  // namespace ucore::hal::atmel::same70::acc

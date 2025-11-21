@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-namespace alloy::hal::atmel::same70::atsame70q21b::pioa {
+namespace ucore::hal::atmel::same70::atsame70q21b::pioa {
 
 // ============================================================================
 // PIOC - Parallel Input/Output Controller
@@ -300,4 +300,4 @@ static_assert(sizeof(PIOC_Registers) >= 360, "PIOC_Registers size mismatch");
 /// PIOC peripheral instance
 constexpr PIOC_Registers* PIOC = reinterpret_cast<PIOC_Registers*>(0x400E1200);
 
-}  // namespace alloy::hal::atmel::same70::atsame70q21b::pioa
+}  // namespace ucore::hal::atmel::same70::atsame70q21b::pioa

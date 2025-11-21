@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::nrx {
+namespace ucore::hal::espressif::esp32::nrx {
 
 // ============================================================================
 // NRX - NRX Peripheral
@@ -31,4 +31,4 @@ inline NRX_Registers* NRX() {
     return reinterpret_cast<NRX_Registers*>(0x3FF5CC00);
 }
 
-}  // namespace alloy::hal::espressif::esp32::nrx
+}  // namespace ucore::hal::espressif::esp32::nrx

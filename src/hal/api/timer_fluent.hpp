@@ -11,10 +11,10 @@
 #include "hal/interface/timer.hpp"
 #include "hal/timer_simple.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 struct TimerBuilderState {
     bool has_mode = false;
@@ -140,4 +140,4 @@ private:
     TimerBuilderState state_;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

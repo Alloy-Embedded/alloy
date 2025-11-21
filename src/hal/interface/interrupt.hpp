@@ -18,9 +18,9 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Interrupt Request Number
@@ -188,4 +188,4 @@ concept InterruptController = requires(T controller, IrqNumber irq, IrqPriority 
     { T::clear_pending(irq) } -> std::same_as<Result<void, ErrorCode>>;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

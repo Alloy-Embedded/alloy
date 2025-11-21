@@ -16,7 +16,7 @@
 // Forward declare main (must be in global scope)
 extern "C" int main();
 
-namespace alloy::hal::arm {
+namespace ucore::hal::arm {
 
 /**
  * @brief Modern C++23 startup implementation
@@ -298,4 +298,4 @@ constexpr size_t bss_section_size(const void* start, const void* end) {
 
 } // namespace startup_utils
 
-} // namespace alloy::hal::arm
+} // namespace ucore::hal::arm

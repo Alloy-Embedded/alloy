@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::usart3 {
+namespace ucore::hal::st::stm32f7::usart3 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // USART3 Bit Field Definitions
@@ -721,4 +721,4 @@ namespace tdr {
 
 }  // namespace tdr
 
-}  // namespace alloy::hal::st::stm32f7::usart3
+}  // namespace ucore::hal::st::stm32f7::usart3

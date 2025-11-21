@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::sha {
+namespace ucore::hal::espressif::esp32::sha {
 
 // ============================================================================
 // SHA - SHA (Secure Hash Algorithm) Accelerator
@@ -94,4 +94,4 @@ inline SHA_Registers* SHA() {
     return reinterpret_cast<SHA_Registers*>(0x3FF03000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::sha
+}  // namespace ucore::hal::espressif::esp32::sha

@@ -10,11 +10,11 @@
 #include "core/result.hpp"
 #include "hal/interface/adc.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
-using namespace alloy::hal::signals;
+using namespace ucore::hal::signals;
 
 struct AdcExpertConfig {
     PeripheralId peripheral;
@@ -78,4 +78,4 @@ inline Result<void, ErrorCode> configure(const AdcExpertConfig& config) {
 
 }  // namespace expert
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

@@ -16,7 +16,7 @@
 
     #include "hal/st/stm32f1/uart.hpp"
 
-using namespace alloy::hal::stm32f1;
+using namespace ucore::hal::stm32f1;
 
 // ============================================================================
 // Valid USART Tests (these should compile successfully)

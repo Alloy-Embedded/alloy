@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::quadspi {
+namespace ucore::hal::st::stm32f7::quadspi {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // QUADSPI Bit Field Definitions
@@ -369,4 +369,4 @@ namespace lptr {
 
 }  // namespace lptr
 
-}  // namespace alloy::hal::st::stm32f7::quadspi
+}  // namespace ucore::hal::st::stm32f7::quadspi

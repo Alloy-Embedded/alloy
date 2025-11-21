@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::nvic {
+namespace ucore::hal::atmel::same70::nvic {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // NVIC Bit Field Definitions
@@ -88,4 +88,4 @@ constexpr uint32_t INTID_Msk = INTID::mask;
 
 }  // namespace stir
 
-}  // namespace alloy::hal::atmel::same70::nvic
+}  // namespace ucore::hal::atmel::same70::nvic

@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-namespace alloy::hal::atmel::same70::atsame70q21b::pioa {
+namespace ucore::hal::atmel::same70::atsame70q21b::pioa {
 
 // ============================================================================
 // PIOE - Parallel Input/Output Controller
@@ -300,4 +300,4 @@ static_assert(sizeof(PIOE_Registers) >= 360, "PIOE_Registers size mismatch");
 /// PIOE peripheral instance
 constexpr PIOE_Registers* PIOE = reinterpret_cast<PIOE_Registers*>(0x400E1600);
 
-}  // namespace alloy::hal::atmel::same70::atsame70q21b::pioa
+}  // namespace ucore::hal::atmel::same70::atsame70q21b::pioa

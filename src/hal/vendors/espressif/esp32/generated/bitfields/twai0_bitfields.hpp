@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::twai0 {
+namespace ucore::hal::espressif::esp32::twai0 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // TWAI0 Bit Field Definitions
@@ -545,4 +545,4 @@ namespace clock_divider {
 
 }  // namespace clock_divider
 
-}  // namespace alloy::hal::espressif::esp32::twai0
+}  // namespace ucore::hal::espressif::esp32::twai0

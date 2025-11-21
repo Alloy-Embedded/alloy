@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::sdmmc1 {
+namespace ucore::hal::st::stm32f7::sdmmc1 {
 
 // ============================================================================
 // SDMMC1 - Secure digital input/output interface
@@ -136,4 +136,4 @@ inline SDMMC1_Registers* SDMMC1() {
     return reinterpret_cast<SDMMC1_Registers*>(0x40012C00);
 }
 
-}  // namespace alloy::hal::st::stm32f7::sdmmc1
+}  // namespace ucore::hal::st::stm32f7::sdmmc1

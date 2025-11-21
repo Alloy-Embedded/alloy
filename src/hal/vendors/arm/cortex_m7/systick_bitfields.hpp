@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::arm::cortex_m7::systick {
+namespace ucore::hal::arm::cortex_m7::systick {
 
 namespace ctrl {
     constexpr uint32_t ENABLE    = (1u << 0);  ///< Counter enable
@@ -11,4 +11,4 @@ namespace ctrl {
     constexpr uint32_t COUNTFLAG = (1u << 16); ///< Count to zero flag
 }
 
-} // namespace alloy::hal::arm::cortex_m7::systick
+} // namespace ucore::hal::arm::cortex_m7::systick

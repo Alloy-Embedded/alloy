@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::evsys {
+namespace ucore::hal::atmel::samd21::evsys {
 
 // ============================================================================
 // EVSYS - Event System Interface
@@ -59,4 +59,4 @@ inline EVSYS_Registers* EVSYS() {
     return reinterpret_cast<EVSYS_Registers*>(0x42000400);
 }
 
-}  // namespace alloy::hal::atmel::samd21::evsys
+}  // namespace ucore::hal::atmel::samd21::evsys

@@ -20,8 +20,8 @@
 /// - CI/CD integration without hardware
 /// - Rapid development iteration
 
-#ifndef ALLOY_RTOS_PLATFORM_HOST_CONTEXT_HPP
-#define ALLOY_RTOS_PLATFORM_HOST_CONTEXT_HPP
+#ifndef UCORE_RTOS_PLATFORM_HOST_CONTEXT_HPP
+#define UCORE_RTOS_PLATFORM_HOST_CONTEXT_HPP
 
 #include <atomic>
 #include <condition_variable>
@@ -32,7 +32,7 @@
 
 #include "core/types.hpp"
 
-namespace alloy::rtos::platform {
+namespace ucore::rtos::platform {
 
 /// Host-specific task context
 ///
@@ -98,6 +98,6 @@ HostTaskContext* get_host_context(TaskControlBlock* tcb);
 /// This simulates the SysTick interrupt on embedded platforms.
 void scheduler_tick_thread();
 
-}  // namespace alloy::rtos::platform
+}  // namespace ucore::rtos::platform
 
 #endif  // ALLOY_RTOS_PLATFORM_HOST_CONTEXT_HPP

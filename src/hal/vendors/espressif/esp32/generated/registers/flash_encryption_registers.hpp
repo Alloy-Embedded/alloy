@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::flash_encryption {
+namespace ucore::hal::espressif::esp32::flash_encryption {
 
 // ============================================================================
 // FLASH_ENCRYPTION - FLASH_ENCRYPTION Peripheral
@@ -42,4 +42,4 @@ inline FLASH_ENCRYPTION_Registers* FLASH_ENCRYPTION() {
     return reinterpret_cast<FLASH_ENCRYPTION_Registers*>(0x3FF46000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::flash_encryption
+}  // namespace ucore::hal::espressif::esp32::flash_encryption

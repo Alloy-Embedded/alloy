@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::dac {
+namespace ucore::hal::atmel::samd21::dac {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // DAC Bit Field Definitions
@@ -198,4 +198,4 @@ namespace databuf {
 
 }  // namespace databuf
 
-}  // namespace alloy::hal::atmel::samd21::dac
+}  // namespace ucore::hal::atmel::samd21::dac

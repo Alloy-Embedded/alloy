@@ -4,9 +4,9 @@
 #include "rtos/queue.hpp"
 #include "rtos/rtos.hpp"
 
-using namespace alloy;
-using namespace alloy::rtos;
-using namespace alloy::rtos::test;
+using namespace ucore;
+using namespace ucore::rtos;
+using namespace ucore::rtos::test;
 
 TEST_SUITE(Queue) {
     TEST_CASE(queue_construction) {

@@ -42,9 +42,9 @@
 // Bitfield definitions
 #include ""
 
-namespace alloy::hal::st::stm32f4 {
+namespace ucore::hal::st::stm32f4 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
 using namespace ;
@@ -448,7 +448,7 @@ using ADC2Hardware = STM32F4AdcHardwarePolicy<0x40012100>;
 using ADC3Hardware = STM32F4AdcHardwarePolicy<0x40012200>;
 
 
-}  // namespace alloy::hal::st::stm32f4
+}  // namespace ucore::hal::st::stm32f4
 
 /**
  * @example
@@ -457,7 +457,7 @@ using ADC3Hardware = STM32F4AdcHardwarePolicy<0x40012200>;
  * @code
  * #include "hal/vendors//STM32F4/adc.hpp"
  *
- * using namespace alloy::hal::st::stm32f4;
+ * using namespace ucore::hal::st::stm32f4;
  *
  * int main() {
  *     // Initialize ADC

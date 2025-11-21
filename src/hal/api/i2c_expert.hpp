@@ -48,10 +48,10 @@
 
 #include <span>
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 /**
  * @brief Expert-level I2C configuration
@@ -368,4 +368,4 @@ inline Result<void, ErrorCode> configure(const I2cExpertConfig& config) {
 
 }  // namespace expert
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

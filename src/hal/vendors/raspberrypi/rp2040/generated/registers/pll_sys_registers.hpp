@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::pll_sys {
+namespace ucore::hal::raspberrypi::rp2040::pll_sys {
 
 // ============================================================================
 // PLL_SYS - Peripheral Registers
@@ -46,4 +46,4 @@ inline PLL_SYS_Registers* PLL_SYS() {
     return reinterpret_cast<PLL_SYS_Registers*>(0x40028000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::pll_sys
+}  // namespace ucore::hal::raspberrypi::rp2040::pll_sys

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::sens {
+namespace ucore::hal::espressif::esp32::sens {
 
 // ============================================================================
 // SENS - SENS Peripheral
@@ -217,4 +217,4 @@ inline SENS_Registers* SENS() {
     return reinterpret_cast<SENS_Registers*>(0x3FF48800);
 }
 
-}  // namespace alloy::hal::espressif::esp32::sens
+}  // namespace ucore::hal::espressif::esp32::sens

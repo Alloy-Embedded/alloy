@@ -47,9 +47,9 @@
 #include <span>
 #include <type_traits>
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ============================================================================
 // CRTP Concepts
@@ -370,4 +370,4 @@ protected:
 // using static_assert on sizeof(SpiBase) and std::is_empty_v<SpiBase>.
 // This ensures validation only occurs when SpiBase is properly used with CRTP.
 
-} // namespace alloy::hal
+} // namespace ucore::hal

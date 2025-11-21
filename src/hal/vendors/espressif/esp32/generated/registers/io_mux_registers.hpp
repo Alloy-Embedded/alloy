@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::io_mux {
+namespace ucore::hal::espressif::esp32::io_mux {
 
 // ============================================================================
 // IO_MUX - Input/Output Multiplexer
@@ -174,4 +174,4 @@ inline IO_MUX_Registers* IO_MUX() {
     return reinterpret_cast<IO_MUX_Registers*>(0x3FF49000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::io_mux
+}  // namespace ucore::hal::espressif::esp32::io_mux

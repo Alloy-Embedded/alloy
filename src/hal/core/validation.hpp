@@ -26,10 +26,10 @@
 #include "core/types.hpp"
 #include "hal/core/signals.hpp"
 
-namespace alloy::hal::validation {
+namespace ucore::hal::validation {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 // ============================================================================
 // Validation Result Types
@@ -445,4 +445,4 @@ consteval std::string_view format_error(std::string_view field_name,
     return result.error_message;
 }
 
-}  // namespace alloy::hal::validation
+}  // namespace ucore::hal::validation

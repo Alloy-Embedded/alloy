@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <iostream>
 
-namespace alloy::hal::host {
+namespace ucore::hal::host {
 
 // Helper function to convert PinMode to string
 static const char* pin_mode_to_string(PinMode mode) {
@@ -91,4 +91,4 @@ template class GpioPin<29>;
 template class GpioPin<30>;
 template class GpioPin<31>;
 
-}  // namespace alloy::hal::host
+}  // namespace ucore::hal::host

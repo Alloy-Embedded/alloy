@@ -46,9 +46,9 @@
 
 #include <array>
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ============================================================================
 // DMA Allocation Record
@@ -266,4 +266,4 @@ using AddDmaAllocation_t = typename AddDmaAllocation<Registry, Connection>::type
  */
 using EmptyDmaRegistry = DmaRegistry<>;
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

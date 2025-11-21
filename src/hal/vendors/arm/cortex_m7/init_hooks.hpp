@@ -8,7 +8,7 @@
  * Applications can define these hooks to customize startup behavior.
  */
 
-namespace alloy::hal::arm {
+namespace ucore::hal::arm {
 
 /**
  * @brief Initialization hook interface
@@ -164,4 +164,4 @@ void late_init() {
  * Most applications should use late_init() only.
  */
 
-} // namespace alloy::hal::arm
+} // namespace ucore::hal::arm

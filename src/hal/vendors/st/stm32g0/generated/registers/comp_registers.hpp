@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::comp {
+namespace ucore::hal::st::stm32g0::comp {
 
 // ============================================================================
 // COMP - Comparator
@@ -41,4 +41,4 @@ inline COMP_Registers* COMP() {
     return reinterpret_cast<COMP_Registers*>(0x40010200);
 }
 
-}  // namespace alloy::hal::st::stm32g0::comp
+}  // namespace ucore::hal::st::stm32g0::comp

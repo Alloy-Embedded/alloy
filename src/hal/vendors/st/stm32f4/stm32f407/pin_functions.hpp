@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::stm32f407::pin_functions {
+namespace ucore::hal::st::stm32f4::stm32f407::pin_functions {
 
 // ============================================================================
 // PERIPHERAL SIGNAL TAG TYPES
@@ -87,4 +87,4 @@ concept HasAF = requires {
     { AlternateFunction<Pin, Function>::af_number } -> std::same_as<const uint8_t&>;
 };
 
-}  // namespace alloy::hal::st::stm32f4::stm32f407::pin_functions
+}  // namespace ucore::hal::st::stm32f4::stm32f407::pin_functions

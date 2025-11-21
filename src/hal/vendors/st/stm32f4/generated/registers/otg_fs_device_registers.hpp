@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::otg_fs_device {
+namespace ucore::hal::st::stm32f4::otg_fs_device {
 
 // ============================================================================
 // OTG_FS_DEVICE - USB on the go full speed
@@ -272,4 +272,4 @@ inline OTG_FS_DEVICE_Registers* OTG_FS_DEVICE() {
     return reinterpret_cast<OTG_FS_DEVICE_Registers*>(0x50000800);
 }
 
-}  // namespace alloy::hal::st::stm32f4::otg_fs_device
+}  // namespace ucore::hal::st::stm32f4::otg_fs_device

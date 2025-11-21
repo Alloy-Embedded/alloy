@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::timg0 {
+namespace ucore::hal::espressif::esp32::timg0 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // TIMG0 Bit Field Definitions
@@ -823,4 +823,4 @@ namespace timgclk {
 
 }  // namespace timgclk
 
-}  // namespace alloy::hal::espressif::esp32::timg0
+}  // namespace ucore::hal::espressif::esp32::timg0

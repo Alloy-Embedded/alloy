@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::gpioi {
+namespace ucore::hal::st::stm32f4::gpioi {
 
 // ============================================================================
 // GPIOI - General-purpose I/Os
@@ -86,4 +86,4 @@ inline GPIOI_Registers* GPIOI() {
     return reinterpret_cast<GPIOI_Registers*>(0x40022000);
 }
 
-}  // namespace alloy::hal::st::stm32f4::gpioi
+}  // namespace ucore::hal::st::stm32f4::gpioi

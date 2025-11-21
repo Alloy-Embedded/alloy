@@ -2,8 +2,8 @@
 ///
 /// Defines ADC concepts and configuration types for all platforms.
 
-#ifndef ALLOY_HAL_INTERFACE_ADC_HPP
-#define ALLOY_HAL_INTERFACE_ADC_HPP
+#ifndef UCORE_HAL_INTERFACE_ADC_HPP
+#define UCORE_HAL_INTERFACE_ADC_HPP
 
 #include <concepts>
 #include <functional>
@@ -14,9 +14,9 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /// ADC resolution options
 enum class AdcResolution : u8 {
@@ -199,6 +199,6 @@ inline constexpr u16 get_max_adc_value(AdcResolution resolution) {
     return (1u << static_cast<u8>(resolution)) - 1;
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal
 
 #endif  // ALLOY_HAL_INTERFACE_ADC_HPP

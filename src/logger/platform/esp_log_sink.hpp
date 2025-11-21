@@ -5,7 +5,7 @@
 #ifdef ESP_PLATFORM
     #include "esp_log.h"
 
-namespace alloy::logger {
+namespace ucore::logger {
 
 /**
  * ESP-IDF logging integration sink
@@ -105,6 +105,6 @@ class EspLogSinkWithLevel : public Sink {
     const char* tag_;
 };
 
-}  // namespace alloy::logger
+}  // namespace ucore::logger
 
 #endif  // ESP_PLATFORM

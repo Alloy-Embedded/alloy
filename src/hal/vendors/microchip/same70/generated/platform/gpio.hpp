@@ -42,9 +42,9 @@
 // Bitfield definitions
 #include "hal/vendors/microchip/same70/generated/bitfields/pio_bitfields.hpp"
 
-namespace alloy::hal::microchip::same70 {
+namespace ucore::hal::microchip::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
 using namespace microchip;
@@ -256,7 +256,7 @@ using PIODHardware = SAME70GpioHardwarePolicy<0x400E1400, 'D'>;
 using PIOEHardware = SAME70GpioHardwarePolicy<0x400E1600, 'E'>;
 
 
-}  // namespace alloy::hal::microchip::same70
+}  // namespace ucore::hal::microchip::same70
 
 /**
  * @example
@@ -266,8 +266,8 @@ using PIOEHardware = SAME70GpioHardwarePolicy<0x400E1600, 'E'>;
  * #include "hal/api/gpio_simple.hpp"
  * #include "hal/vendors/microchip//gpio.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::microchip::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::microchip::same70;
  *
  * // Create GPIO pin with hardware policy
  * auto led = Gpio::output<GPIOAHardware, 5>();  // PA5

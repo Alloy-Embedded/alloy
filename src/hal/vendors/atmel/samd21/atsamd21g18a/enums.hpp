@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::atsamd21g18a::enums {
+namespace ucore::hal::atmel::samd21::atsamd21g18a::enums {
 
 // ============================================================================
 // ENUMERATED VALUE DEFINITIONS
@@ -1562,4 +1562,4 @@ enum class WDT_CLEAR_CLEAR : uint8_t {
 
 /// Total enumerated types: 157
 
-}  // namespace alloy::hal::atmel::samd21::atsamd21g18a::enums
+}  // namespace ucore::hal::atmel::samd21::atsamd21g18a::enums

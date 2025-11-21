@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::pac0 {
+namespace ucore::hal::atmel::samd21::pac0 {
 
 // ============================================================================
 // PAC0 - Peripheral Access Controller 0
@@ -34,4 +34,4 @@ inline PAC0_Registers* PAC0() {
     return reinterpret_cast<PAC0_Registers*>(0x40000000);
 }
 
-}  // namespace alloy::hal::atmel::samd21::pac0
+}  // namespace ucore::hal::atmel::samd21::pac0

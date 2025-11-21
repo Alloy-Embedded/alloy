@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32g0::ucpd1 {
+namespace ucore::hal::st::stm32g0::ucpd1 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // UCPD1 Bit Field Definitions
@@ -1065,4 +1065,4 @@ namespace ucpd_rx_ordextr2 {
 
 }  // namespace ucpd_rx_ordextr2
 
-}  // namespace alloy::hal::st::stm32g0::ucpd1
+}  // namespace ucore::hal::st::stm32g0::ucpd1

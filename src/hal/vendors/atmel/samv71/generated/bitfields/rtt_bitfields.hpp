@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::rtt {
+namespace ucore::hal::atmel::samv71::rtt {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // RTT Bit Field Definitions
@@ -93,4 +93,4 @@ namespace sr {
 
 }  // namespace sr
 
-}  // namespace alloy::hal::atmel::samv71::rtt
+}  // namespace ucore::hal::atmel::samv71::rtt

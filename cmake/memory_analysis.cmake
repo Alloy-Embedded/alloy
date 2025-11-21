@@ -7,8 +7,8 @@
 # - alloy_apply_minimal_flags(target) - Apply size optimization flags
 #
 # Variables set by this module:
-# - ALLOY_RAM_SIZE - Target RAM size in bytes (set by board config)
-# - ALLOY_FLASH_SIZE - Target Flash size in bytes (set by board config)
+# - MICROCORE_RAM_SIZE - Target RAM size in bytes (set by board config)
+# - MICROCORE_FLASH_SIZE - Target Flash size in bytes (set by board config)
 
 # Apply minimal build flags for size optimization
 #
@@ -93,9 +93,9 @@ function(alloy_add_memory_analysis TARGET_NAME)
         COMMAND ${Python3_EXECUTABLE} ${ANALYZER_SCRIPT}
                 --elf ${TARGET_BINARY}
                 --map ${MAP_FILE}
-                --mcu "${ALLOY_MCU}"
-                --ram-size ${ALLOY_RAM_SIZE}
-                --flash-size ${ALLOY_FLASH_SIZE}
+                --mcu "${MICROCORE_MCU}"
+                --ram-size ${MICROCORE_RAM_SIZE}
+                --flash-size ${MICROCORE_FLASH_SIZE}
         DEPENDS ${TARGET_NAME}
         COMMENT "Generating memory report for ${TARGET_NAME}"
         VERBATIM
@@ -116,12 +116,12 @@ function(alloy_add_memory_analysis TARGET_NAME)
 endfunction()
 
 # Set memory size defaults (can be overridden by board configs)
-if(NOT ALLOY_RAM_SIZE)
-    set(ALLOY_RAM_SIZE 0 CACHE STRING "Target RAM size in bytes")
+if(NOT MICROCORE_RAM_SIZE)
+    set(MICROCORE_RAM_SIZE 0 CACHE STRING "Target RAM size in bytes")
 endif()
 
-if(NOT ALLOY_FLASH_SIZE)
-    set(ALLOY_FLASH_SIZE 0 CACHE STRING "Target Flash size in bytes")
+if(NOT MICROCORE_FLASH_SIZE)
+    set(MICROCORE_FLASH_SIZE 0 CACHE STRING "Target Flash size in bytes")
 endif()
 
 message(STATUS "Memory analysis module loaded")

@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::efc {
+namespace ucore::hal::atmel::same70::efc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // EFC Bit Field Definitions
@@ -178,4 +178,4 @@ constexpr uint32_t PASSWD = 4539971;
 
 }  // namespace eefc_wpmr
 
-}  // namespace alloy::hal::atmel::same70::efc
+}  // namespace ucore::hal::atmel::same70::efc

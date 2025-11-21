@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::adc {
+namespace ucore::hal::atmel::samd21::adc {
 
 // ============================================================================
 // ADC - Analog Digital Converter
@@ -114,4 +114,4 @@ inline ADC_Registers* ADC() {
     return reinterpret_cast<ADC_Registers*>(0x42004000);
 }
 
-}  // namespace alloy::hal::atmel::samd21::adc
+}  // namespace ucore::hal::atmel::samd21::adc

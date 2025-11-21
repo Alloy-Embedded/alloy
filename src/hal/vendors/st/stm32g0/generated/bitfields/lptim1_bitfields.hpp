@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32g0::lptim1 {
+namespace ucore::hal::st::stm32g0::lptim1 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // LPTIM1 Bit Field Definitions
@@ -497,4 +497,4 @@ namespace lptim_cfgr2 {
 
 }  // namespace lptim_cfgr2
 
-}  // namespace alloy::hal::st::stm32g0::lptim1
+}  // namespace ucore::hal::st::stm32g0::lptim1

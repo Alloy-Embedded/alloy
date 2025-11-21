@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::rmt {
+namespace ucore::hal::espressif::esp32::rmt {
 
 // ============================================================================
 // RMT - Remote Control
@@ -85,4 +85,4 @@ inline RMT_Registers* RMT() {
     return reinterpret_cast<RMT_Registers*>(0x3FF56000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::rmt
+}  // namespace ucore::hal::espressif::esp32::rmt

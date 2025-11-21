@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::pcnt {
+namespace ucore::hal::espressif::esp32::pcnt {
 
 // ============================================================================
 // PCNT - Pulse Count Controller
@@ -75,4 +75,4 @@ inline PCNT_Registers* PCNT() {
     return reinterpret_cast<PCNT_Registers*>(0x3FF57000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::pcnt
+}  // namespace ucore::hal::espressif::esp32::pcnt

@@ -31,7 +31,7 @@
     #include "esp_log.h"
 #endif
 
-namespace alloy::core {
+namespace ucore::core {
 
 #ifdef ESP_PLATFORM
 
@@ -167,7 +167,7 @@ inline Result<void> esp_check(esp_err_t esp_error) {
         do {                                                        \
             esp_err_t __err = (expr);                               \
             if (__err != ESP_OK) {                                  \
-                return ::alloy::core::esp_result_error_void(__err); \
+                return ::ucore::core::esp_result_error_void(__err); \
             }                                                       \
         } while (0)
 
@@ -191,7 +191,7 @@ inline Result<void> esp_check(esp_err_t esp_error) {
         do {                                                      \
             esp_err_t __err = (expr);                             \
             if (__err != ESP_OK) {                                \
-                return ::alloy::core::esp_result_error<T>(__err); \
+                return ::ucore::core::esp_result_error<T>(__err); \
             }                                                     \
         } while (0)
 
@@ -226,4 +226,4 @@ inline void esp_log_error(const char* tag, esp_err_t esp_error, const char* mess
 
 #endif  // ESP_PLATFORM
 
-}  // namespace alloy::core
+}  // namespace ucore::core

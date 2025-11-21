@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::flash_encryption {
+namespace ucore::hal::espressif::esp32::flash_encryption {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // FLASH_ENCRYPTION Bit Field Definitions
@@ -61,4 +61,4 @@ namespace done {
 
 }  // namespace done
 
-}  // namespace alloy::hal::espressif::esp32::flash_encryption
+}  // namespace ucore::hal::espressif::esp32::flash_encryption

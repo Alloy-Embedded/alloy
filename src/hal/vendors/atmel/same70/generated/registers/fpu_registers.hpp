@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::fpu {
+namespace ucore::hal::atmel::same70::fpu {
 
 // ============================================================================
 // FPU - Floating Point Unit
@@ -59,4 +59,4 @@ inline FPU_Registers* FPU() {
     return reinterpret_cast<FPU_Registers*>(0xE000EF30);
 }
 
-}  // namespace alloy::hal::atmel::same70::fpu
+}  // namespace ucore::hal::atmel::same70::fpu

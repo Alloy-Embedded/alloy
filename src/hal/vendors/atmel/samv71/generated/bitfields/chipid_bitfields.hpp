@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::chipid {
+namespace ucore::hal::atmel::samv71::chipid {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // CHIPID Bit Field Definitions
@@ -151,4 +151,4 @@ namespace exid {
 
 }  // namespace exid
 
-}  // namespace alloy::hal::atmel::samv71::chipid
+}  // namespace ucore::hal::atmel::samv71::chipid

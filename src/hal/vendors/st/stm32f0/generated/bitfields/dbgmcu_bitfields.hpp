@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f0::dbgmcu {
+namespace ucore::hal::st::stm32f0::dbgmcu {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // DBGMCU Bit Field Definitions
@@ -135,4 +135,4 @@ namespace apbhfz {
 
 }  // namespace apbhfz
 
-}  // namespace alloy::hal::st::stm32f0::dbgmcu
+}  // namespace ucore::hal::st::stm32f0::dbgmcu

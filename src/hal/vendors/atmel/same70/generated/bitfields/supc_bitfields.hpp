@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::supc {
+namespace ucore::hal::atmel::same70::supc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SUPC Bit Field Definitions
@@ -855,4 +855,4 @@ constexpr uint32_t PASSWD = 5395523;
 
 }  // namespace sysc_wpmr
 
-}  // namespace alloy::hal::atmel::same70::supc
+}  // namespace ucore::hal::atmel::same70::supc

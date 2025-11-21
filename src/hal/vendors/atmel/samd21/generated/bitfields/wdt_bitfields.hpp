@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::wdt {
+namespace ucore::hal::atmel::samd21::wdt {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // WDT Bit Field Definitions
@@ -166,4 +166,4 @@ namespace clear {
 
 }  // namespace clear
 
-}  // namespace alloy::hal::atmel::samd21::wdt
+}  // namespace ucore::hal::atmel::samd21::wdt

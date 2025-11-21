@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::nrx {
+namespace ucore::hal::espressif::esp32::nrx {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // NRX Bit Field Definitions
@@ -69,4 +69,4 @@ namespace nrxpd_ctrl {
 
 }  // namespace nrxpd_ctrl
 
-}  // namespace alloy::hal::espressif::esp32::nrx
+}  // namespace ucore::hal::espressif::esp32::nrx

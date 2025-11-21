@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::rp2040::enums {
+namespace ucore::hal::raspberrypi::rp2040::rp2040::enums {
 
 // ============================================================================
 // ENUMERATED VALUE DEFINITIONS
@@ -19,4 +19,4 @@ namespace alloy::hal::raspberrypi::rp2040::rp2040::enums {
 
 // No enumerated values found in SVD file
 
-}  // namespace alloy::hal::raspberrypi::rp2040::rp2040::enums
+}  // namespace ucore::hal::raspberrypi::rp2040::rp2040::enums

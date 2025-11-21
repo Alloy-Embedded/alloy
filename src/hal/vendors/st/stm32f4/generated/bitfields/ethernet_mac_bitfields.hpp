@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::ethernet_mac {
+namespace ucore::hal::st::stm32f4::ethernet_mac {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // Ethernet_MAC Bit Field Definitions
@@ -596,4 +596,4 @@ namespace maca3lr {
 
 }  // namespace maca3lr
 
-}  // namespace alloy::hal::st::stm32f4::ethernet_mac
+}  // namespace ucore::hal::st::stm32f4::ethernet_mac

@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::supc {
+namespace ucore::hal::atmel::samv71::supc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SUPC Bit Field Definitions
@@ -854,4 +854,4 @@ namespace sysc_wpmr {
 
 }  // namespace sysc_wpmr
 
-}  // namespace alloy::hal::atmel::samv71::supc
+}  // namespace ucore::hal::atmel::samv71::supc

@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::syscfg {
+namespace ucore::hal::st::stm32f7::syscfg {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SYSCFG Bit Field Definitions
@@ -213,4 +213,4 @@ namespace cmpcr {
 
 }  // namespace cmpcr
 
-}  // namespace alloy::hal::st::stm32f7::syscfg
+}  // namespace ucore::hal::st::stm32f7::syscfg

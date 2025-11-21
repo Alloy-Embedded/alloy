@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::wdt {
+namespace ucore::hal::atmel::samd21::wdt {
 
 // ============================================================================
 // WDT - Watchdog Timer
@@ -63,4 +63,4 @@ inline WDT_Registers* WDT() {
     return reinterpret_cast<WDT_Registers*>(0x40001000);
 }
 
-}  // namespace alloy::hal::atmel::samd21::wdt
+}  // namespace ucore::hal::atmel::samd21::wdt

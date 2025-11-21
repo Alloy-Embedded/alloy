@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::ethernet_mmc {
+namespace ucore::hal::st::stm32f4::ethernet_mmc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // Ethernet_MMC Bit Field Definitions
@@ -205,4 +205,4 @@ namespace mmcrgufcr {
 
 }  // namespace mmcrgufcr
 
-}  // namespace alloy::hal::st::stm32f4::ethernet_mmc
+}  // namespace ucore::hal::st::stm32f4::ethernet_mmc

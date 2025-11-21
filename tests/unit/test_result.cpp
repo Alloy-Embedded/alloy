@@ -10,7 +10,7 @@
 #include "core/result.hpp"
 #include "core/error.hpp"
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ==============================================================================
 // Helper Functions

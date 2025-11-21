@@ -2,8 +2,8 @@
 ///
 /// Defines UART concepts and configuration types for all platforms.
 
-#ifndef ALLOY_HAL_INTERFACE_UART_HPP
-#define ALLOY_HAL_INTERFACE_UART_HPP
+#ifndef UCORE_HAL_INTERFACE_UART_HPP
+#define UCORE_HAL_INTERFACE_UART_HPP
 
 #include <concepts>
 
@@ -12,7 +12,7 @@
 #include "core/types.hpp"
 #include "core/units.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
 /// UART data bits configuration
 enum class DataBits : core::u8 {
@@ -118,6 +118,6 @@ class ConfiguredUart {
     UartImpl device_;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal
 
 #endif  // ALLOY_HAL_INTERFACE_UART_HPP

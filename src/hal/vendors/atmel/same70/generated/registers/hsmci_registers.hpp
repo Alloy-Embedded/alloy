@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::hsmci {
+namespace ucore::hal::atmel::same70::hsmci {
 
 // ============================================================================
 // HSMCI - High Speed MultiMedia Card Interface
@@ -118,4 +118,4 @@ inline HSMCI_Registers* HSMCI() {
     return reinterpret_cast<HSMCI_Registers*>(0x40000000);
 }
 
-}  // namespace alloy::hal::atmel::same70::hsmci
+}  // namespace ucore::hal::atmel::same70::hsmci

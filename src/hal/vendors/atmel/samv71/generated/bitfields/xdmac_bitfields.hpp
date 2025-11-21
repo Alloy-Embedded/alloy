@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::xdmac {
+namespace ucore::hal::atmel::samv71::xdmac {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // XDMAC Bit Field Definitions
@@ -2722,4 +2722,4 @@ namespace gswf {
 
 }  // namespace gswf
 
-}  // namespace alloy::hal::atmel::samv71::xdmac
+}  // namespace ucore::hal::atmel::samv71::xdmac

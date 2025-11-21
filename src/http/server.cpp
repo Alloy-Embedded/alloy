@@ -10,7 +10,7 @@
 
     #include "esp_log.h"
 
-namespace alloy::http {
+namespace ucore::http {
 
 static const char* TAG = "http_server";
 
@@ -375,11 +375,11 @@ httpd_req_t* Response::native_handle() const {
     return req_;
 }
 
-}  // namespace alloy::http
+}  // namespace ucore::http
 
 #else  // !ESP_PLATFORM
 
-namespace alloy::http {
+namespace ucore::http {
 
 // Stub implementations for non-ESP platforms
 
@@ -472,6 +472,6 @@ Result<void> Response::html([[maybe_unused]] const char* html) {
     return Err(ErrorCode::NotSupported);
 }
 
-}  // namespace alloy::http
+}  // namespace ucore::http
 
 #endif  // ESP_PLATFORM

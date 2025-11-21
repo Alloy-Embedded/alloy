@@ -25,9 +25,9 @@
 #include "core/types.hpp"
 #include "hal/types.hpp"
 
-namespace alloy::hal::signals {
+namespace ucore::hal::signals {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ============================================================================
 // Core Signal Types
@@ -445,4 +445,4 @@ constexpr auto get_compatible_pins() {
     }
 }
 
-}  // namespace alloy::hal::signals
+}  // namespace ucore::hal::signals

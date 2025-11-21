@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::dmac {
+namespace ucore::hal::atmel::samd21::dmac {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // DMAC Bit Field Definitions
@@ -901,4 +901,4 @@ namespace chstatus {
 
 }  // namespace chstatus
 
-}  // namespace alloy::hal::atmel::samd21::dmac
+}  // namespace ucore::hal::atmel::samd21::dmac

@@ -12,7 +12,7 @@
 
     #include "core/types.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 namespace xtensa {
 
@@ -113,22 +113,22 @@ void stop_rtos_timer() {
 
 }  // namespace xtensa
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 // Timer ISR handler - called every 1ms
 extern "C" void timer_isr_handler(void* arg) {
     (void)arg;  // Unused
 
     // Clear interrupt
-    alloy::rtos::xtensa::write_timer_reg(alloy::rtos::xtensa::TIMG0_INT_CLR_REG,
-                                         alloy::rtos::xtensa::TIMG_T0_INT_ENA);
+    ucore::rtos::xtensa::write_timer_reg(ucore::rtos::xtensa::TIMG0_INT_CLR_REG,
+                                         ucore::rtos::xtensa::TIMG_T0_INT_ENA);
 
     // Call RTOS scheduler tick
-    alloy::rtos::RTOS::tick();
+    ucore::rtos::RTOS::tick();
 
     // Trigger context switch if needed
-    if (alloy::rtos::RTOS::need_context_switch()) {
-        alloy::rtos::trigger_context_switch();
+    if (ucore::rtos::RTOS::need_context_switch()) {
+        ucore::rtos::trigger_context_switch();
     }
 }
 

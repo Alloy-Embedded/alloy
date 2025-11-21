@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::dmamux {
+namespace ucore::hal::st::stm32g0::dmamux {
 
 // ============================================================================
 // DMAMUX - DMAMUX
@@ -119,4 +119,4 @@ inline DMAMUX_Registers* DMAMUX() {
     return reinterpret_cast<DMAMUX_Registers*>(0x40020800);
 }
 
-}  // namespace alloy::hal::st::stm32g0::dmamux
+}  // namespace ucore::hal::st::stm32g0::dmamux

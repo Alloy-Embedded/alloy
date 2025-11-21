@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f0::dma {
+namespace ucore::hal::st::stm32f0::dma {
 
 // ============================================================================
 // DMA - DMA controller
@@ -212,4 +212,4 @@ inline DMA_Registers* DMA() {
     return reinterpret_cast<DMA_Registers*>(0x40020000);
 }
 
-}  // namespace alloy::hal::st::stm32f0::dma
+}  // namespace ucore::hal::st::stm32f0::dma

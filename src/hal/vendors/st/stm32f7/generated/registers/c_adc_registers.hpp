@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::c_adc {
+namespace ucore::hal::st::stm32f7::c_adc {
 
 // ============================================================================
 // C_ADC - Common ADC registers
@@ -44,4 +44,4 @@ inline C_ADC_Registers* C_ADC() {
     return reinterpret_cast<C_ADC_Registers*>(0x40012300);
 }
 
-}  // namespace alloy::hal::st::stm32f7::c_adc
+}  // namespace ucore::hal::st::stm32f7::c_adc

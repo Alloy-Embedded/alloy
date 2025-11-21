@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::syscfg {
+namespace ucore::hal::raspberrypi::rp2040::syscfg {
 
 // ============================================================================
 // SYSCFG - Register block for various chip control signals
@@ -63,4 +63,4 @@ inline SYSCFG_Registers* SYSCFG() {
     return reinterpret_cast<SYSCFG_Registers*>(0x40004000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::syscfg
+}  // namespace ucore::hal::raspberrypi::rp2040::syscfg

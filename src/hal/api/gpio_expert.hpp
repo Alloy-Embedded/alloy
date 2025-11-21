@@ -18,9 +18,9 @@
 #include "hal/types.hpp"
 #include "hal/api/gpio_base.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Expert GPIO configuration
@@ -530,4 +530,4 @@ Result<void, ErrorCode> configure(PinType& pin, const GpioExpertConfig& config) 
 
 }  // namespace expert
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

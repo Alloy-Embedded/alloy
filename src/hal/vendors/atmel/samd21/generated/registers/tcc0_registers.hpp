@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::tcc0 {
+namespace ucore::hal::atmel::samd21::tcc0 {
 
 // ============================================================================
 // TCC0 - Timer Counter Control 0
@@ -194,4 +194,4 @@ inline TCC0_Registers* TCC0() {
     return reinterpret_cast<TCC0_Registers*>(0x42002000);
 }
 
-}  // namespace alloy::hal::atmel::samd21::tcc0
+}  // namespace ucore::hal::atmel::samd21::tcc0

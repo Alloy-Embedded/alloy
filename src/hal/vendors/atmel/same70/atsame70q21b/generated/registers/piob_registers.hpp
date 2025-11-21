@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-namespace alloy::hal::atmel::same70::atsame70q21b::pioa {
+namespace ucore::hal::atmel::same70::atsame70q21b::pioa {
 
 // ============================================================================
 // PIOB - Parallel Input/Output Controller
@@ -300,4 +300,4 @@ static_assert(sizeof(PIOB_Registers) >= 360, "PIOB_Registers size mismatch");
 /// PIOB peripheral instance
 constexpr PIOB_Registers* PIOB = reinterpret_cast<PIOB_Registers*>(0x400E1000);
 
-}  // namespace alloy::hal::atmel::same70::atsame70q21b::pioa
+}  // namespace ucore::hal::atmel::same70::atsame70q21b::pioa

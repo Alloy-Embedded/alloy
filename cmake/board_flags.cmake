@@ -57,14 +57,14 @@ function(alloy_target_board_flags target_name)
     endif()
 
     # Get board architecture
-    if(NOT DEFINED ALLOY_ARCH)
-        message(WARNING "ALLOY_ARCH not defined, skipping board-specific flags")
+    if(NOT DEFINED MICROCORE_ARCH)
+        message(WARNING "MICROCORE_ARCH not defined, skipping board-specific flags")
         return()
     endif()
 
     # ARM Cortex-M architectures
-    if(ALLOY_ARCH MATCHES "arm-cortex")
-        alloy_get_arm_cpu_flags("${ALLOY_ARCH}" cpu_flags fpu_flags)
+    if(MICROCORE_ARCH MATCHES "arm-cortex")
+        alloy_get_arm_cpu_flags("${MICROCORE_ARCH}" cpu_flags fpu_flags)
 
         target_compile_options(${target_name} PRIVATE
             ${cpu_flags}
@@ -79,20 +79,20 @@ function(alloy_target_board_flags target_name)
         message(STATUS "Applied ARM flags to ${target_name}: ${cpu_flags} ${fpu_flags}")
 
     # Xtensa architectures
-    elseif(ALLOY_ARCH MATCHES "xtensa")
+    elseif(MICROCORE_ARCH MATCHES "xtensa")
         # Xtensa flags are already set in toolchain file
         message(STATUS "Xtensa architecture detected for ${target_name}")
 
     # RISC-V architectures (future support)
-    elseif(ALLOY_ARCH MATCHES "riscv")
+    elseif(MICROCORE_ARCH MATCHES "riscv")
         message(STATUS "RISC-V architecture detected for ${target_name} (not yet implemented)")
 
     # Host architecture
-    elseif(ALLOY_ARCH MATCHES "host" OR NOT DEFINED ALLOY_ARCH)
+    elseif(MICROCORE_ARCH MATCHES "host" OR NOT DEFINED MICROCORE_ARCH)
         message(STATUS "Host architecture for ${target_name}, using native flags")
 
     else()
-        message(WARNING "Unknown architecture '${ALLOY_ARCH}' for ${target_name}")
+        message(WARNING "Unknown architecture '${MICROCORE_ARCH}' for ${target_name}")
     endif()
 endfunction()
 
@@ -104,14 +104,14 @@ endfunction()
 function(alloy_get_board_compile_flags out_flags)
     set(flags "")
 
-    if(NOT DEFINED ALLOY_ARCH)
+    if(NOT DEFINED MICROCORE_ARCH)
         set(${out_flags} "" PARENT_SCOPE)
         return()
     endif()
 
     # ARM Cortex-M architectures
-    if(ALLOY_ARCH MATCHES "arm-cortex")
-        alloy_get_arm_cpu_flags("${ALLOY_ARCH}" cpu_flags fpu_flags)
+    if(MICROCORE_ARCH MATCHES "arm-cortex")
+        alloy_get_arm_cpu_flags("${MICROCORE_ARCH}" cpu_flags fpu_flags)
         set(flags "${cpu_flags} ${fpu_flags}")
     endif()
 
@@ -122,28 +122,28 @@ endfunction()
 # Get linker script for current board
 #
 function(alloy_get_linker_script out_linker_script)
-    if(NOT DEFINED ALLOY_MCU)
+    if(NOT DEFINED MICROCORE_MCU)
         set(${out_linker_script} "" PARENT_SCOPE)
         return()
     endif()
 
     # Board-specific linker scripts
-    set(boards_dir "${ALLOY_ROOT}/boards")
+    set(boards_dir "${MICROCORE_ROOT}/boards")
 
     # Map board names to linker script locations
-    if(ALLOY_BOARD STREQUAL "bluepill")
+    if(MICROCORE_BOARD STREQUAL "bluepill")
         set(linker_script "${boards_dir}/stm32f103c8/STM32F103C8.ld")
-    elseif(ALLOY_BOARD STREQUAL "esp32_devkit")
+    elseif(MICROCORE_BOARD STREQUAL "esp32_devkit")
         set(linker_script "${boards_dir}/esp32_devkit/esp32.ld")
-    elseif(ALLOY_BOARD STREQUAL "stm32f407vg")
+    elseif(MICROCORE_BOARD STREQUAL "stm32f407vg")
         set(linker_script "${boards_dir}/stm32f407vg/STM32F407VG.ld")
-    elseif(ALLOY_BOARD STREQUAL "arduino_zero")
+    elseif(MICROCORE_BOARD STREQUAL "arduino_zero")
         set(linker_script "${boards_dir}/arduino_zero/ATSAMD21G18.ld")
-    elseif(ALLOY_BOARD STREQUAL "rp_pico")
+    elseif(MICROCORE_BOARD STREQUAL "rp_pico")
         set(linker_script "${boards_dir}/raspberry_pi_pico/RP2040.ld")
-    elseif(ALLOY_BOARD STREQUAL "rp2040_zero")
+    elseif(MICROCORE_BOARD STREQUAL "rp2040_zero")
         set(linker_script "${boards_dir}/waveshare_rp2040_zero/RP2040.ld")
-    elseif(ALLOY_BOARD STREQUAL "same70_xpld")
+    elseif(MICROCORE_BOARD STREQUAL "same70_xpld")
         set(linker_script "${boards_dir}/atmel_same70_xpld/ATSAME70Q21.ld")
     else()
         set(linker_script "")
@@ -172,7 +172,7 @@ function(alloy_target_linker_script target_name)
         )
         message(STATUS "Applied linker script to ${target_name}: ${linker_script}")
     else()
-        message(WARNING "No linker script found for board '${ALLOY_BOARD}'")
+        message(WARNING "No linker script found for board '${MICROCORE_BOARD}'")
     endif()
 endfunction()
 
@@ -188,7 +188,7 @@ function(alloy_target_arm_libraries target_name)
     endif()
 
     # Only apply to ARM targets
-    if(ALLOY_ARCH MATCHES "arm")
+    if(MICROCORE_ARCH MATCHES "arm")
         # Disable default libraries and link explicitly to avoid conflicts
         # -nodefaultlibs: Don't link standard system libraries automatically
         # Then we manually link only what we need in the right order

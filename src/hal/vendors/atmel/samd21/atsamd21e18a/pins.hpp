@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::atsamd21e18a::pins {
+namespace ucore::hal::atmel::samd21::atsamd21e18a::pins {
 
 // ============================================================================
 // Pin Definitions for ATSAMD21E18A
@@ -38,4 +38,4 @@ enum class Port : uint8_t {
     B = 1,
 };
 
-}  // namespace alloy::hal::atmel::samd21::atsamd21e18a::pins
+}  // namespace ucore::hal::atmel::samd21::atsamd21e18a::pins

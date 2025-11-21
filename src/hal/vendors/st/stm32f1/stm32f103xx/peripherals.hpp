@@ -7,12 +7,12 @@
 ///
 /// DO NOT EDIT - Regenerate from SVD if needed
 
-#ifndef ALLOY_GENERATED_STM32F103XX_PERIPHERALS_HPP
-#define ALLOY_GENERATED_STM32F103XX_PERIPHERALS_HPP
+#ifndef UCORE_GENERATED_STM32F103XX_PERIPHERALS_HPP
+#define UCORE_GENERATED_STM32F103XX_PERIPHERALS_HPP
 
 #include <cstdint>
 
-namespace alloy::generated::stm32f103xx {
+namespace ucore::generated::stm32f103xx {
 
 // ============================================================================
 // PERIPHERAL BASE ADDRESSES
@@ -128,6 +128,6 @@ namespace memory {
 constexpr uintptr_t FLASH = 0x40022000;
 }  // namespace memory
 
-}  // namespace alloy::generated::stm32f103xx
+}  // namespace ucore::generated::stm32f103xx
 
 #endif  // ALLOY_GENERATED_STM32F103XX_PERIPHERALS_HPP

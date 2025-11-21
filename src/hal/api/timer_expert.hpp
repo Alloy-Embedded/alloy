@@ -10,10 +10,10 @@
 #include "core/result.hpp"
 #include "hal/interface/timer.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 struct TimerExpertConfig {
     PeripheralId peripheral;
@@ -128,4 +128,4 @@ inline Result<void, ErrorCode> configure(const TimerExpertConfig& config) {
 
 }  // namespace expert
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

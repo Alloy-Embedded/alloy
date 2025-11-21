@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::pwr {
+namespace ucore::hal::st::stm32f7::pwr {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // PWR Bit Field Definitions
@@ -355,4 +355,4 @@ namespace csr2 {
 
 }  // namespace csr2
 
-}  // namespace alloy::hal::st::stm32f7::pwr
+}  // namespace ucore::hal::st::stm32f7::pwr

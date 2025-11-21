@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f1::uart5 {
+namespace ucore::hal::st::stm32f1::uart5 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // UART5 Bit Field Definitions
@@ -266,4 +266,4 @@ namespace cr3 {
 
 }  // namespace cr3
 
-}  // namespace alloy::hal::st::stm32f1::uart5
+}  // namespace ucore::hal::st::stm32f1::uart5

@@ -29,10 +29,10 @@ extern "C" void SysTick_Handler() {
 #endif
 
     // Call RTOS scheduler tick
-    alloy::rtos::RTOS::tick();
+    ucore::rtos::RTOS::tick();
 
     // Trigger context switch if needed
-    if (alloy::rtos::RTOS::need_context_switch()) {
-        alloy::rtos::trigger_context_switch();
+    if (ucore::rtos::RTOS::need_context_switch()) {
+        ucore::rtos::trigger_context_switch();
     }
 }

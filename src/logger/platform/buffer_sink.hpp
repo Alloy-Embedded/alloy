@@ -4,7 +4,7 @@
 
 #include "../sink.hpp"
 
-namespace alloy::logger {
+namespace ucore::logger {
 
 /**
  * Memory buffer sink for logger
@@ -103,4 +103,4 @@ class BufferSink : public Sink {
     size_t size_;
 };
 
-}  // namespace alloy::logger
+}  // namespace ucore::logger

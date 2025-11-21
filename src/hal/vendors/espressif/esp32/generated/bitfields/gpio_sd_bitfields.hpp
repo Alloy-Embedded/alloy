@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::gpio_sd {
+namespace ucore::hal::espressif::esp32::gpio_sd {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // GPIO_SD Bit Field Definitions
@@ -63,4 +63,4 @@ namespace version {
 
 }  // namespace version
 
-}  // namespace alloy::hal::espressif::esp32::gpio_sd
+}  // namespace ucore::hal::espressif::esp32::gpio_sd

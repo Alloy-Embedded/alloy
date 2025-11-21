@@ -19,8 +19,8 @@
 #include "rtos/semaphore.hpp"
 #include "hal/interface/systick.hpp"
 
-using namespace alloy;
-using namespace alloy::rtos;
+using namespace ucore;
+using namespace ucore::rtos;
 
 // ============================================================================
 // Example 1: Enhanced Task Validation with C++23

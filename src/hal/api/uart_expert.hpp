@@ -45,10 +45,10 @@
 #include "hal/core/signals.hpp"
 #include "hal/api/uart_simple.hpp"  // For UartParity
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 // ============================================================================
 // Expert Configuration Structure
@@ -568,4 +568,4 @@ constexpr bool has_enabled_direction(const UartExpertConfig<HardwarePolicy>& con
     return config.enable_tx || config.enable_rx;
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

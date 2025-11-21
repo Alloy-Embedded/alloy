@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::lockbit {
+namespace ucore::hal::atmel::same70::lockbit {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // LOCKBIT Bit Field Definitions
@@ -214,4 +214,4 @@ constexpr uint32_t LOCK_REGION_31_Msk = LOCK_REGION_31::mask;
 
 }  // namespace word0
 
-}  // namespace alloy::hal::atmel::same70::lockbit
+}  // namespace ucore::hal::atmel::same70::lockbit

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::io_bank0 {
+namespace ucore::hal::raspberrypi::rp2040::io_bank0 {
 
 // ============================================================================
 // IO_BANK0 - Peripheral Registers
@@ -526,4 +526,4 @@ inline IO_BANK0_Registers* IO_BANK0() {
     return reinterpret_cast<IO_BANK0_Registers*>(0x40014000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::io_bank0
+}  // namespace ucore::hal::raspberrypi::rp2040::io_bank0

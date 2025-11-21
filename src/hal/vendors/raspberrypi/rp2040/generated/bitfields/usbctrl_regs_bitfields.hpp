@@ -9,12 +9,12 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::raspberrypi::rp2040::usbctrl_regs {
+namespace ucore::hal::raspberrypi::rp2040::usbctrl_regs {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // USBCTRL_REGS Bit Field Definitions
 // ============================================================================
 
-}  // namespace alloy::hal::raspberrypi::rp2040::usbctrl_regs
+}  // namespace ucore::hal::raspberrypi::rp2040::usbctrl_regs

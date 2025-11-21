@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f1::nvic {
+namespace ucore::hal::st::stm32f1::nvic {
 
 // ============================================================================
 // NVIC - Nested Vectored Interrupt Controller
@@ -196,4 +196,4 @@ inline NVIC_Registers* NVIC() {
     return reinterpret_cast<NVIC_Registers*>(0xE000E000);
 }
 
-}  // namespace alloy::hal::st::stm32f1::nvic
+}  // namespace ucore::hal::st::stm32f1::nvic

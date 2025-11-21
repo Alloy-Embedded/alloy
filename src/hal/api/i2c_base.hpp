@@ -47,9 +47,9 @@
 #include <span>
 #include <type_traits>
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ============================================================================
 // CRTP Concepts
@@ -429,4 +429,4 @@ protected:
 // using static_assert on sizeof(I2cBase) and std::is_empty_v<I2cBase>.
 // This ensures validation only occurs when I2cBase is properly used with CRTP.
 
-} // namespace alloy::hal
+} // namespace ucore::hal

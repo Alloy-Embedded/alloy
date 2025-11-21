@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::spi0 {
+namespace ucore::hal::espressif::esp32::spi0 {
 
 // ============================================================================
 // SPI0 - SPI (Serial Peripheral Interface) Controller 0
@@ -316,4 +316,4 @@ inline SPI0_Registers* SPI0() {
     return reinterpret_cast<SPI0_Registers*>(0x3FF43000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::spi0
+}  // namespace ucore::hal::espressif::esp32::spi0

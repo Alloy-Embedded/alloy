@@ -42,9 +42,9 @@
 // Bitfield definitions
 #include "hal/vendors/st/stm32f4/generated/bitfields/gpio_bitfields.hpp"
 
-namespace alloy::hal::st::stm32f4 {
+namespace ucore::hal::st::stm32f4 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
 using namespace st;
@@ -324,7 +324,7 @@ using GPIOGHardware = STM32F4GpioHardwarePolicy<0x40021800, 'G'>;
 using GPIOHHardware = STM32F4GpioHardwarePolicy<0x40021C00, 'H'>;
 
 
-}  // namespace alloy::hal::st::stm32f4
+}  // namespace ucore::hal::st::stm32f4
 
 /**
  * @example
@@ -334,8 +334,8 @@ using GPIOHHardware = STM32F4GpioHardwarePolicy<0x40021C00, 'H'>;
  * #include "hal/api/gpio_simple.hpp"
  * #include "hal/vendors/st//gpio.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::st::stm32f4;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::st::stm32f4;
  *
  * // Create GPIO pin with hardware policy
  * auto led = Gpio::output<GPIOAHardware, 5>();  // PA5

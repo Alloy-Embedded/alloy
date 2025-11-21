@@ -9,7 +9,7 @@
  * @code
  * #include "wifi/access_point.hpp"
  *
- * using alloy::wifi::AccessPoint;
+ * using ucore::wifi::AccessPoint;
  *
  * AccessPoint ap;
  * auto result = ap.start("MyESP32", "password123");
@@ -35,7 +35,7 @@
     #include "nvs_flash.h"
 #endif
 
-namespace alloy::wifi {
+namespace ucore::wifi {
 
 using core::ErrorCode;
 using core::Result;
@@ -191,4 +191,4 @@ class AccessPoint {
 #endif
 };
 
-}  // namespace alloy::wifi
+}  // namespace ucore::wifi

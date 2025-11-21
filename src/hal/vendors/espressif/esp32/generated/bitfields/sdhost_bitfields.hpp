@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::sdhost {
+namespace ucore::hal::espressif::esp32::sdhost {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SDHOST Bit Field Definitions
@@ -1042,4 +1042,4 @@ namespace clk_edge_sel {
 
 }  // namespace clk_edge_sel
 
-}  // namespace alloy::hal::espressif::esp32::sdhost
+}  // namespace ucore::hal::espressif::esp32::sdhost

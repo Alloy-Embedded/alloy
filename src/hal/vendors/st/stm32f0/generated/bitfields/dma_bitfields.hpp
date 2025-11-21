@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f0::dma {
+namespace ucore::hal::st::stm32f0::dma {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // DMA Bit Field Definitions
@@ -1103,4 +1103,4 @@ namespace cmar7 {
 
 }  // namespace cmar7
 
-}  // namespace alloy::hal::st::stm32f0::dma
+}  // namespace ucore::hal::st::stm32f0::dma

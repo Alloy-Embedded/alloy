@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::ltdc {
+namespace ucore::hal::st::stm32f4::ltdc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // LTDC Bit Field Definitions
@@ -720,4 +720,4 @@ namespace l2clutwr {
 
 }  // namespace l2clutwr
 
-}  // namespace alloy::hal::st::stm32f4::ltdc
+}  // namespace ucore::hal::st::stm32f4::ltdc

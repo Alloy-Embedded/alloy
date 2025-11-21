@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::hinf {
+namespace ucore::hal::espressif::esp32::hinf {
 
 // ============================================================================
 // HINF - HINF Peripheral
@@ -93,4 +93,4 @@ inline HINF_Registers* HINF() {
     return reinterpret_cast<HINF_Registers*>(0x3FF4B000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::hinf
+}  // namespace ucore::hal::espressif::esp32::hinf

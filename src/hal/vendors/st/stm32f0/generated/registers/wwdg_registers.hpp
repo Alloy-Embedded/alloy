@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f0::wwdg {
+namespace ucore::hal::st::stm32f0::wwdg {
 
 // ============================================================================
 // WWDG - Window watchdog
@@ -44,4 +44,4 @@ inline WWDG_Registers* WWDG() {
     return reinterpret_cast<WWDG_Registers*>(0x40002C00);
 }
 
-}  // namespace alloy::hal::st::stm32f0::wwdg
+}  // namespace ucore::hal::st::stm32f0::wwdg

@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::hsmci {
+namespace ucore::hal::atmel::same70::hsmci {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // HSMCI Bit Field Definitions
@@ -1052,4 +1052,4 @@ constexpr uint32_t DATA_Msk = DATA::mask;
 
 }  // namespace fifo
 
-}  // namespace alloy::hal::atmel::same70::hsmci
+}  // namespace ucore::hal::atmel::same70::hsmci

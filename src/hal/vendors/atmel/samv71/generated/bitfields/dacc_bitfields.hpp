@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::dacc {
+namespace ucore::hal::atmel::samv71::dacc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // DACC Bit Field Definitions
@@ -417,4 +417,4 @@ namespace wpsr {
 
 }  // namespace wpsr
 
-}  // namespace alloy::hal::atmel::samv71::dacc
+}  // namespace ucore::hal::atmel::samv71::dacc

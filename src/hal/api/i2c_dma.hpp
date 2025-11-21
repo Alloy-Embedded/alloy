@@ -29,9 +29,9 @@
 #include "hal/dma/connection.hpp"
 #include "hal/i2c_expert.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief I2C configuration with DMA support
@@ -169,4 +169,4 @@ constexpr auto create_i2c_fast_dma(
     );
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

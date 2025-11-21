@@ -31,17 +31,17 @@ struct MockUartHardwarePolicy {
 };
 
 // Mock GPIO pins
-template <alloy::hal::signals::PinId PIN>
+template <ucore::hal::signals::PinId PIN>
 struct MockGpioPin {
-    static constexpr alloy::hal::signals::PinId pin = PIN;
+    static constexpr ucore::hal::signals::PinId pin = PIN;
 
-    static constexpr alloy::hal::signals::PinId get_pin_id() {
+    static constexpr ucore::hal::signals::PinId get_pin_id() {
         return PIN;
     }
 };
 
-using namespace alloy::hal;
-using namespace alloy::core;
+using namespace ucore::hal;
+using namespace ucore::core;
 
 // Test aliases
 using TestTxPin = MockGpioPin<signals::PinId::PA3>;

@@ -36,8 +36,8 @@
 /// }
 /// ```
 
-#ifndef ALLOY_RTOS_MUTEX_HPP
-#define ALLOY_RTOS_MUTEX_HPP
+#ifndef UCORE_RTOS_MUTEX_HPP
+#define UCORE_RTOS_MUTEX_HPP
 
 #include "hal/interface/systick.hpp"
 
@@ -50,7 +50,7 @@
 #include "core/types.hpp"
 #include "core/result.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 /// Mutex (Mutual Exclusion Lock)
 ///
@@ -403,6 +403,6 @@ inline void Mutex::restore_priority() {
 // Compile-time concept validation
 static_assert(Lockable<Mutex>, "Mutex must satisfy Lockable concept");
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ALLOY_RTOS_MUTEX_HPP

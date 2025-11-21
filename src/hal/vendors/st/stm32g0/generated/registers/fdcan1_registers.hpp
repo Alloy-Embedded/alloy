@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::fdcan1 {
+namespace ucore::hal::st::stm32g0::fdcan1 {
 
 // ============================================================================
 // FDCAN1 - FD controller area network
@@ -218,4 +218,4 @@ inline FDCAN1_Registers* FDCAN1() {
     return reinterpret_cast<FDCAN1_Registers*>(0x40006400);
 }
 
-}  // namespace alloy::hal::st::stm32g0::fdcan1
+}  // namespace ucore::hal::st::stm32g0::fdcan1

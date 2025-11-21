@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::slc {
+namespace ucore::hal::espressif::esp32::slc {
 
 // ============================================================================
 // SLC - SLC Peripheral
@@ -373,4 +373,4 @@ inline SLC_Registers* SLC() {
     return reinterpret_cast<SLC_Registers*>(0x3FF58000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::slc
+}  // namespace ucore::hal::espressif::esp32::slc

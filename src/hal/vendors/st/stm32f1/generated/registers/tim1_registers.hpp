@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f1::tim1 {
+namespace ucore::hal::st::stm32f1::tim1 {
 
 // ============================================================================
 // TIM1 - Advanced timer
@@ -158,4 +158,4 @@ inline TIM1_Registers* TIM1() {
     return reinterpret_cast<TIM1_Registers*>(0x40012C00);
 }
 
-}  // namespace alloy::hal::st::stm32f1::tim1
+}  // namespace ucore::hal::st::stm32f1::tim1

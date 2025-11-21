@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::bb {
+namespace ucore::hal::espressif::esp32::bb {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // BB Bit Field Definitions
@@ -45,4 +45,4 @@ namespace bbpd_ctrl {
 
 }  // namespace bbpd_ctrl
 
-}  // namespace alloy::hal::espressif::esp32::bb
+}  // namespace ucore::hal::espressif::esp32::bb

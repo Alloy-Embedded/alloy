@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f1::can {
+namespace ucore::hal::st::stm32f1::can {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // CAN Bit Field Definitions
@@ -6942,4 +6942,4 @@ namespace f13r2 {
 
 }  // namespace f13r2
 
-}  // namespace alloy::hal::st::stm32f1::can
+}  // namespace ucore::hal::st::stm32f1::can

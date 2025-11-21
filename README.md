@@ -1,4 +1,4 @@
-# Alloy
+# MicroCore
 
 **The modern C++20 framework for bare-metal embedded systems**
 
@@ -80,7 +80,7 @@ export PATH="$HOME/.local/xpack-arm-toolchain/bin:$PATH"
 
 ```bash
 # Configure for your board
-cmake -B build -DALLOY_BOARD=bluepill
+cmake -B build -DMICROCORE_BOARD=bluepill
 
 # Build
 cmake --build build
@@ -97,11 +97,11 @@ cmake --build build --target flash
 #include "stm32f103c8/board.hpp"
 
 int main() {
-    alloy::board::init();  // 72MHz system clock
+    ucore::board::init();  // 72MHz system clock
 
     while (true) {
-        alloy::board::led.toggle();
-        alloy::board::delay_ms(500);
+        ucore::board::led.toggle();
+        ucore::board::delay_ms(500);
     }
 }
 ```
@@ -498,7 +498,7 @@ This table shows the implementation status of peripheral drivers (hardware polic
 #include <alloy/hal/gpio.hpp>
 #include <alloy/platform/delay.hpp>
 
-using namespace alloy::hal;
+using namespace ucore::hal;
 
 int main() {
     // Create an output pin (compile-time configured)
@@ -507,7 +507,7 @@ int main() {
 
     while (true) {
         led.toggle();
-        alloy::platform::delay_ms(500);
+        ucore::platform::delay_ms(500);
     }
 }
 ```
@@ -526,7 +526,7 @@ add_subdirectory(external/alloy)
 project(blinky CXX)
 
 add_executable(blinky src/main.cpp)
-target_link_libraries(blinky PRIVATE alloy::hal::gpio)
+target_link_libraries(blinky PRIVATE ucore::hal::gpio)
 ```
 
 ---
@@ -711,7 +711,7 @@ cd build && ctest
 - **Functions/Methods**: `snake_case()`
 - **Variables**: `snake_case`
 - **Constants**: `UPPER_SNAKE_CASE`
-- **Namespaces**: `alloy::hal::`
+- **Namespaces**: `ucore::hal::`
 - **CMake variables**: `ALLOY_BOARD`, `ALLOY_MCU`
 
 See [ADR-011](decisions.md#adr-011-naming-conventions-snake_case) for complete conventions.

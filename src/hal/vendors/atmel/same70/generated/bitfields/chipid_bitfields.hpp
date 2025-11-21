@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::chipid {
+namespace ucore::hal::atmel::same70::chipid {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // CHIPID Bit Field Definitions
@@ -152,4 +152,4 @@ constexpr uint32_t EXID_Msk = EXID::mask;
 
 }  // namespace exid
 
-}  // namespace alloy::hal::atmel::same70::chipid
+}  // namespace ucore::hal::atmel::same70::chipid

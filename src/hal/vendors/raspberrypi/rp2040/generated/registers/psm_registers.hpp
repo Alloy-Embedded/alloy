@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::psm {
+namespace ucore::hal::raspberrypi::rp2040::psm {
 
 // ============================================================================
 // PSM - Peripheral Registers
@@ -46,4 +46,4 @@ inline PSM_Registers* PSM() {
     return reinterpret_cast<PSM_Registers*>(0x40010000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::psm
+}  // namespace ucore::hal::raspberrypi::rp2040::psm

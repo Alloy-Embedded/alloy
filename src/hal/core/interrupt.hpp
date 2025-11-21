@@ -14,10 +14,10 @@
 #include "hal/api/interrupt_expert.hpp"
 #include "hal/core/signals.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 /**
  * @brief Map PeripheralId to IrqNumber
@@ -147,4 +147,4 @@ inline bool is_peripheral_interrupt_enabled(PeripheralId peripheral) {
     return Interrupt::is_enabled(irq);
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

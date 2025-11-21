@@ -9,12 +9,12 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::raspberrypi::rp2040::busctrl {
+namespace ucore::hal::raspberrypi::rp2040::busctrl {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // BUSCTRL Bit Field Definitions
 // ============================================================================
 
-}  // namespace alloy::hal::raspberrypi::rp2040::busctrl
+}  // namespace ucore::hal::raspberrypi::rp2040::busctrl

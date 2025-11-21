@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::bb {
+namespace ucore::hal::espressif::esp32::bb {
 
 // ============================================================================
 // BB - BB Peripheral
@@ -31,4 +31,4 @@ inline BB_Registers* BB() {
     return reinterpret_cast<BB_Registers*>(0x3FF5D000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::bb
+}  // namespace ucore::hal::espressif::esp32::bb

@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::mcan0 {
+namespace ucore::hal::atmel::same70::mcan0 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // MCAN0 Bit Field Definitions
@@ -3322,4 +3322,4 @@ constexpr uint32_t EFAI_Msk = EFAI::mask;
 
 }  // namespace txefa
 
-}  // namespace alloy::hal::atmel::same70::mcan0
+}  // namespace ucore::hal::atmel::same70::mcan0

@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f0::crc {
+namespace ucore::hal::st::stm32f0::crc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // CRC Bit Field Definitions
@@ -69,4 +69,4 @@ namespace init {
 
 }  // namespace init
 
-}  // namespace alloy::hal::st::stm32f0::crc
+}  // namespace ucore::hal::st::stm32f0::crc

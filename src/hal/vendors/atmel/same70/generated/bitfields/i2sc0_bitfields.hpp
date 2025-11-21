@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::i2sc0 {
+namespace ucore::hal::atmel::same70::i2sc0 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // I2SC0 Bit Field Definitions
@@ -383,4 +383,4 @@ constexpr uint32_t THR_Msk = THR::mask;
 
 }  // namespace thr
 
-}  // namespace alloy::hal::atmel::same70::i2sc0
+}  // namespace ucore::hal::atmel::same70::i2sc0

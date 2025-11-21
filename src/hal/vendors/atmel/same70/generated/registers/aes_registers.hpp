@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::aes {
+namespace ucore::hal::atmel::same70::aes {
 
 // ============================================================================
 // AES - Advanced Encryption Standard
@@ -101,4 +101,4 @@ inline AES_Registers* AES() {
     return reinterpret_cast<AES_Registers*>(0x4006C000);
 }
 
-}  // namespace alloy::hal::atmel::same70::aes
+}  // namespace ucore::hal::atmel::same70::aes

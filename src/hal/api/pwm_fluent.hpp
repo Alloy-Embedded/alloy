@@ -13,9 +13,9 @@
 #include "core/result.hpp"
 #include "hal/api/pwm_simple.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Builder state tracking
@@ -120,4 +120,4 @@ private:
     PwmBuilderState state_;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

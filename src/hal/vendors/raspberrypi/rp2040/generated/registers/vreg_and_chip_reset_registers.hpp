@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::vreg_and_chip_reset {
+namespace ucore::hal::raspberrypi::rp2040::vreg_and_chip_reset {
 
 // ============================================================================
 // VREG_AND_CHIP_RESET - control and status for on-chip voltage regulator and chip level reset subsystem
@@ -41,4 +41,4 @@ inline VREG_AND_CHIP_RESET_Registers* VREG_AND_CHIP_RESET() {
     return reinterpret_cast<VREG_AND_CHIP_RESET_Registers*>(0x40064000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::vreg_and_chip_reset
+}  // namespace ucore::hal::raspberrypi::rp2040::vreg_and_chip_reset

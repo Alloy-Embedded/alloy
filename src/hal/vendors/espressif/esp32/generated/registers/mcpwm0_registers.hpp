@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::mcpwm0 {
+namespace ucore::hal::espressif::esp32::mcpwm0 {
 
 // ============================================================================
 // MCPWM0 - Motor Control Pulse-Width Modulation 0
@@ -333,4 +333,4 @@ inline MCPWM0_Registers* MCPWM0() {
     return reinterpret_cast<MCPWM0_Registers*>(0x3FF5E000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::mcpwm0
+}  // namespace ucore::hal::espressif::esp32::mcpwm0

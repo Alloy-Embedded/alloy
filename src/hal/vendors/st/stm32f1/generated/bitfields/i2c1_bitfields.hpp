@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f1::i2c1 {
+namespace ucore::hal::st::stm32f1::i2c1 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // I2C1 Bit Field Definitions
@@ -385,4 +385,4 @@ namespace trise {
 
 }  // namespace trise
 
-}  // namespace alloy::hal::st::stm32f1::i2c1
+}  // namespace ucore::hal::st::stm32f1::i2c1

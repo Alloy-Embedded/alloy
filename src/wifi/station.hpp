@@ -9,7 +9,7 @@
  * @code
  * #include "wifi/station.hpp"
  *
- * using alloy::wifi::Station;
+ * using ucore::wifi::Station;
  *
  * Station wifi;
  * auto result = wifi.connect("MyNetwork", "password123");
@@ -35,7 +35,7 @@
     #include "nvs_flash.h"
 #endif
 
-namespace alloy::wifi {
+namespace ucore::wifi {
 
 using core::ErrorCode;
 using core::Result;
@@ -163,4 +163,4 @@ class Station {
 #endif
 };
 
-}  // namespace alloy::wifi
+}  // namespace ucore::wifi

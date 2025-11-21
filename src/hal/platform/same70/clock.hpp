@@ -55,16 +55,16 @@
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfield access
-namespace pmc = alloy::hal::atmel::same70::pmc;
+namespace pmc = ucore::hal::atmel::same70::pmc;
 
 // ============================================================================
 // Platform-Specific Enums
@@ -135,7 +135,7 @@ struct ClockConfig {
 class Clock {
 public:
     // Compile-time constants
-    static constexpr uintptr_t PMC_BASE = alloy::generated::atsame70q21b::peripherals::PMC;  ///< PMC base address (using generated peripheral addresses)
+    static constexpr uintptr_t PMC_BASE = ucore::generated::atsame70q21b::peripherals::PMC;  ///< PMC base address (using generated peripheral addresses)
     static constexpr uint32_t SLOW_CLOCK_FREQ = 32768;  ///< 32.768 kHz
 
     // API Layer constants - defined after preset configurations
@@ -397,11 +397,11 @@ private:
     /**
      * @brief Get register pointer
      */
-static inline volatile alloy::hal::atmel::same70::pmc::PMC_Registers* get_pmc() {
+static inline volatile ucore::hal::atmel::same70::pmc::PMC_Registers* get_pmc() {
         #ifdef ALLOY_CLOCK_MOCK_HW
                 return ALLOY_CLOCK_MOCK_HW();
         #else
-                return reinterpret_cast<volatile alloy::hal::atmel::same70::pmc::PMC_Registers*>(PMC_BASE);
+                return reinterpret_cast<volatile ucore::hal::atmel::same70::pmc::PMC_Registers*>(PMC_BASE);
         #endif
     }
 
@@ -466,4 +466,4 @@ inline const ClockConfig& Clock::CLOCK_CONFIG_SAFE_DEFAULT = CLOCK_CONFIG_12MHZ_
 inline const ClockConfig& Clock::CLOCK_CONFIG_HIGH_PERFORMANCE = CLOCK_CONFIG_150MHZ;
 inline const ClockConfig& Clock::CLOCK_CONFIG_MEDIUM_PERFORMANCE = CLOCK_CONFIG_120MHZ;
 
-} // namespace alloy::hal::same70
+} // namespace ucore::hal::same70

@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::pmc {
+namespace ucore::hal::atmel::samv71::pmc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // PMC Bit Field Definitions
@@ -3243,4 +3243,4 @@ namespace slpwk_aipr {
 
 }  // namespace slpwk_aipr
 
-}  // namespace alloy::hal::atmel::samv71::pmc
+}  // namespace ucore::hal::atmel::samv71::pmc

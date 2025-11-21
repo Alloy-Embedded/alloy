@@ -55,10 +55,10 @@
 
 #include <span>
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
-using namespace alloy::hal::signals;
+using namespace ucore::core;
+using namespace ucore::hal::signals;
 
 // ============================================================================
 // Expert Configuration Structure
@@ -578,4 +578,4 @@ constexpr bool has_valid_dma_config(const SpiExpertConfig& config) {
     return true;
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

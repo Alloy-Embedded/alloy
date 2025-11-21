@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::twihs0 {
+namespace ucore::hal::atmel::samv71::twihs0 {
 
 // ============================================================================
 // TWIHS0 - Two-wire Interface High Speed
@@ -102,4 +102,4 @@ inline TWIHS0_Registers* TWIHS0() {
     return reinterpret_cast<TWIHS0_Registers*>(0x40018000);
 }
 
-}  // namespace alloy::hal::atmel::samv71::twihs0
+}  // namespace ucore::hal::atmel::samv71::twihs0

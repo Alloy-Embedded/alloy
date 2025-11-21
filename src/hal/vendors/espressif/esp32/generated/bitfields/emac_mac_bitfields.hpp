@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::emac_mac {
+namespace ucore::hal::espressif::esp32::emac_mac {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // EMAC_MAC Bit Field Definitions
@@ -878,4 +878,4 @@ namespace emacwdogto {
 
 }  // namespace emacwdogto
 
-}  // namespace alloy::hal::espressif::esp32::emac_mac
+}  // namespace ucore::hal::espressif::esp32::emac_mac

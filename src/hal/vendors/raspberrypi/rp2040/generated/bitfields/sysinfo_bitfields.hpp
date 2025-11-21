@@ -9,12 +9,12 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::raspberrypi::rp2040::sysinfo {
+namespace ucore::hal::raspberrypi::rp2040::sysinfo {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SYSINFO Bit Field Definitions
 // ============================================================================
 
-}  // namespace alloy::hal::raspberrypi::rp2040::sysinfo
+}  // namespace ucore::hal::raspberrypi::rp2040::sysinfo

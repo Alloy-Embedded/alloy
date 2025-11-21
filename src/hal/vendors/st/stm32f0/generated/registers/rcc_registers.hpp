@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f0::rcc {
+namespace ucore::hal::st::stm32f0::rcc {
 
 // ============================================================================
 // RCC - Reset and clock control
@@ -104,4 +104,4 @@ inline RCC_Registers* RCC() {
     return reinterpret_cast<RCC_Registers*>(0x40021000);
 }
 
-}  // namespace alloy::hal::st::stm32f0::rcc
+}  // namespace ucore::hal::st::stm32f0::rcc

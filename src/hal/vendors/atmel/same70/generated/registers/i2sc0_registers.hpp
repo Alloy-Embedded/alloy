@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::i2sc0 {
+namespace ucore::hal::atmel::same70::i2sc0 {
 
 // ============================================================================
 // I2SC0 - Inter-IC Sound Controller
@@ -74,4 +74,4 @@ inline I2SC0_Registers* I2SC0() {
     return reinterpret_cast<I2SC0_Registers*>(0x4008C000);
 }
 
-}  // namespace alloy::hal::atmel::same70::i2sc0
+}  // namespace ucore::hal::atmel::same70::i2sc0

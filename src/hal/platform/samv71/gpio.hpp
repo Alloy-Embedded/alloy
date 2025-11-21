@@ -50,13 +50,13 @@
 // Note: These should be included by board files as they're MCU-specific
 // Example: #include "hal/vendors/atmel/samv71/stm32f407vg/pins.hpp"
 
-namespace alloy::hal::samv71 {
+namespace ucore::hal::samv71 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types (now from family-level namespace)
-using namespace alloy::hal::atmel::samv71;
+using namespace ucore::hal::atmel::samv71;
 
 /**
  * @brief GPIO pin modes
@@ -359,4 +359,4 @@ constexpr uint32_t PIOA_BASE = 0x400E0E00;
 // using LedGreen = GpioPin<PIOC_BASE, 8>;
 // using Button0 = GpioPin<PIOA_BASE, 11>;
 
-}  // namespace alloy::hal::samv71
+}  // namespace ucore::hal::samv71

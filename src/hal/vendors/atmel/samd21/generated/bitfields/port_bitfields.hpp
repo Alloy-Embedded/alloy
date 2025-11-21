@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::port {
+namespace ucore::hal::atmel::samd21::port {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // PORT Bit Field Definitions
@@ -243,4 +243,4 @@ namespace pincfg0_ {
 
 }  // namespace pincfg0_
 
-}  // namespace alloy::hal::atmel::samd21::port
+}  // namespace ucore::hal::atmel::samd21::port

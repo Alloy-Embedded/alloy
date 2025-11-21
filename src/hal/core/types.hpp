@@ -20,7 +20,7 @@
 
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
 // ============================================================================
 // UART Types
@@ -253,4 +253,4 @@ struct PwmConfig {
 // - AdcChannel (Channel0-Channel18)
 // - AdcConfig
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

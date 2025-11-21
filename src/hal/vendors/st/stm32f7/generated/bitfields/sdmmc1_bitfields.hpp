@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::sdmmc1 {
+namespace ucore::hal::st::stm32f7::sdmmc1 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SDMMC1 Bit Field Definitions
@@ -623,4 +623,4 @@ namespace fifo {
 
 }  // namespace fifo
 
-}  // namespace alloy::hal::st::stm32f7::sdmmc1
+}  // namespace ucore::hal::st::stm32f7::sdmmc1

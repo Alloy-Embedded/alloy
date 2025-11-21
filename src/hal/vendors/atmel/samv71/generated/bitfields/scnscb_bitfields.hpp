@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::scnscb {
+namespace ucore::hal::atmel::samv71::scnscb {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SCnSCB Bit Field Definitions
@@ -98,4 +98,4 @@ namespace actlr {
 
 }  // namespace actlr
 
-}  // namespace alloy::hal::atmel::samv71::scnscb
+}  // namespace ucore::hal::atmel::samv71::scnscb

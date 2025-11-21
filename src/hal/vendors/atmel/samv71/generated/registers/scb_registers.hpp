@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::scb {
+namespace ucore::hal::atmel::samv71::scb {
 
 // ============================================================================
 // SCB - System Control Block
@@ -214,4 +214,4 @@ inline SCB_Registers* SCB() {
     return reinterpret_cast<SCB_Registers*>(0xE000ED00);
 }
 
-}  // namespace alloy::hal::atmel::samv71::scb
+}  // namespace ucore::hal::atmel::samv71::scb

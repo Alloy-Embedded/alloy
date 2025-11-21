@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::usbhs {
+namespace ucore::hal::atmel::same70::usbhs {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // USBHS Bit Field Definitions
@@ -6335,4 +6335,4 @@ constexpr uint32_t VBUSRQS_Msk = VBUSRQS::mask;
 
 }  // namespace sfr
 
-}  // namespace alloy::hal::atmel::same70::usbhs
+}  // namespace ucore::hal::atmel::same70::usbhs

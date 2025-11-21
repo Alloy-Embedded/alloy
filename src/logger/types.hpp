@@ -4,7 +4,7 @@
 
 #include <cstdint>
 
-namespace alloy::logger {
+namespace ucore::logger {
 
 /**
  * Log severity levels (in order of increasing severity)
@@ -77,7 +77,7 @@ struct Config {
     TimestampPrecision timestamp_precision = TimestampPrecision::Microseconds;
 };
 
-}  // namespace alloy::logger
+}  // namespace ucore::logger
 
 // ============================================================================
 // Compile-Time Configuration Macros

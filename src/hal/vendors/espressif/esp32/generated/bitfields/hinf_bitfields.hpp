@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::hinf {
+namespace ucore::hal::espressif::esp32::hinf {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // HINF Bit Field Definitions
@@ -267,4 +267,4 @@ namespace date {
 
 }  // namespace date
 
-}  // namespace alloy::hal::espressif::esp32::hinf
+}  // namespace ucore::hal::espressif::esp32::hinf

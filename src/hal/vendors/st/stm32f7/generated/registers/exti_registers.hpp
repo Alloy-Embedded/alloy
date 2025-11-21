@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::exti {
+namespace ucore::hal::st::stm32f7::exti {
 
 // ============================================================================
 // EXTI - External interrupt/event controller
@@ -62,4 +62,4 @@ inline EXTI_Registers* EXTI() {
     return reinterpret_cast<EXTI_Registers*>(0x40013C00);
 }
 
-}  // namespace alloy::hal::st::stm32f7::exti
+}  // namespace ucore::hal::st::stm32f7::exti

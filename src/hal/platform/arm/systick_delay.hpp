@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-namespace alloy::hal::platform::arm {
+namespace ucore::hal::platform::arm {
 
 /**
  * @brief Shared SysTick-based delay implementation for ARM Cortex-M
@@ -131,4 +131,4 @@ class SysTickDelay {
     }
 };
 
-}  // namespace alloy::hal::platform::arm
+}  // namespace ucore::hal::platform::arm

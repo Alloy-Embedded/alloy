@@ -6,7 +6,7 @@
 #include "hal/api/interrupt_simple.hpp"
 #include "hal/interface/interrupt.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
 // ============================================================================
 // CriticalSection Implementation
@@ -73,4 +73,4 @@ Result<void, ErrorCode> Interrupt::set_priority(
     return Ok();
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

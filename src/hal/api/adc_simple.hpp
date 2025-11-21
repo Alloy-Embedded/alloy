@@ -12,11 +12,11 @@
 #include "hal/interface/adc.hpp"
 #include "hal/core/signals.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::hal::signals;
+using namespace ucore::hal::signals;
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 struct AdcDefaults {
     static constexpr AdcResolution resolution = AdcResolution::Bits12;
@@ -36,4 +36,4 @@ public:
     }
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

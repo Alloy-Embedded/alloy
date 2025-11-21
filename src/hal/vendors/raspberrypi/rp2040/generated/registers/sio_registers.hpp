@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::sio {
+namespace ucore::hal::raspberrypi::rp2040::sio {
 
 // ============================================================================
 // SIO - Single-cycle IO block\n Provides core-local and inter-core hardware for the two processors, with single-cycle access.
@@ -564,4 +564,4 @@ inline SIO_Registers* SIO() {
     return reinterpret_cast<SIO_Registers*>(0xD0000000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::sio
+}  // namespace ucore::hal::raspberrypi::rp2040::sio

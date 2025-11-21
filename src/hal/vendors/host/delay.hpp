@@ -10,14 +10,14 @@
 ///
 /// Note: Unlike embedded busy-wait delays, this yields CPU time to other threads.
 
-#ifndef ALLOY_HAL_HOST_DELAY_HPP
-#define ALLOY_HAL_HOST_DELAY_HPP
+#ifndef UCORE_HAL_HOST_DELAY_HPP
+#define UCORE_HAL_HOST_DELAY_HPP
 
 #include <chrono>
 #include <cstdint>
 #include <thread>
 
-namespace alloy::hal::host {
+namespace ucore::hal::host {
 
 /// Sleep for specified milliseconds
 ///
@@ -39,6 +39,6 @@ inline void delay_us(uint32_t microseconds) {
     std::this_thread::sleep_for(std::chrono::microseconds(microseconds));
 }
 
-}  // namespace alloy::hal::host
+}  // namespace ucore::hal::host
 
 #endif  // ALLOY_HAL_HOST_DELAY_HPP

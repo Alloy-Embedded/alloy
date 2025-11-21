@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::gmac {
+namespace ucore::hal::atmel::samv71::gmac {
 
 // ============================================================================
 // GMAC - Gigabit Ethernet MAC
@@ -586,4 +586,4 @@ inline GMAC_Registers* GMAC() {
     return reinterpret_cast<GMAC_Registers*>(0x40050000);
 }
 
-}  // namespace alloy::hal::atmel::samv71::gmac
+}  // namespace ucore::hal::atmel::samv71::gmac

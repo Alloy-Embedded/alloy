@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::nvic {
+namespace ucore::hal::atmel::samv71::nvic {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // NVIC Bit Field Definitions
@@ -87,4 +87,4 @@ namespace stir {
 
 }  // namespace stir
 
-}  // namespace alloy::hal::atmel::samv71::nvic
+}  // namespace ucore::hal::atmel::samv71::nvic

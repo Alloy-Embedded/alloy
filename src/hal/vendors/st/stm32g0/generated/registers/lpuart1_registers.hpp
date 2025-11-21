@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::lpuart1 {
+namespace ucore::hal::st::stm32g0::lpuart1 {
 
 // ============================================================================
 // LPUART1 - Low-power universal asynchronous receiver transmitter
@@ -87,4 +87,4 @@ inline LPUART1_Registers* LPUART1() {
     return reinterpret_cast<LPUART1_Registers*>(0x40008000);
 }
 
-}  // namespace alloy::hal::st::stm32g0::lpuart1
+}  // namespace ucore::hal::st::stm32g0::lpuart1

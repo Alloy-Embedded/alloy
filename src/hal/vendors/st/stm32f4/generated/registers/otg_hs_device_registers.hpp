@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::otg_hs_device {
+namespace ucore::hal::st::stm32f4::otg_hs_device {
 
 // ============================================================================
 // OTG_HS_DEVICE - USB on the go high speed
@@ -438,4 +438,4 @@ inline OTG_HS_DEVICE_Registers* OTG_HS_DEVICE() {
     return reinterpret_cast<OTG_HS_DEVICE_Registers*>(0x40040800);
 }
 
-}  // namespace alloy::hal::st::stm32f4::otg_hs_device
+}  // namespace ucore::hal::st::stm32f4::otg_hs_device

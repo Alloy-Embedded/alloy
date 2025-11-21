@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::stk {
+namespace ucore::hal::st::stm32f4::stk {
 
 // ============================================================================
 // STK - SysTick timer
@@ -50,4 +50,4 @@ inline STK_Registers* STK() {
     return reinterpret_cast<STK_Registers*>(0xE000E010);
 }
 
-}  // namespace alloy::hal::st::stm32f4::stk
+}  // namespace ucore::hal::st::stm32f4::stk

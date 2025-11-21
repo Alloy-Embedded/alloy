@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::twihs0 {
+namespace ucore::hal::atmel::same70::twihs0 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // TWIHS0 Bit Field Definitions
@@ -843,4 +843,4 @@ constexpr uint32_t WPVSRC_Msk = WPVSRC::mask;
 
 }  // namespace wpsr
 
-}  // namespace alloy::hal::atmel::same70::twihs0
+}  // namespace ucore::hal::atmel::same70::twihs0

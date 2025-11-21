@@ -17,8 +17,8 @@
 /// - ~24 bytes RAM (timepoint storage)
 /// - ~300 bytes code
 
-#ifndef ALLOY_HAL_HOST_SYSTICK_HPP
-#define ALLOY_HAL_HOST_SYSTICK_HPP
+#ifndef UCORE_HAL_HOST_SYSTICK_HPP
+#define UCORE_HAL_HOST_SYSTICK_HPP
 
 #include <chrono>
 
@@ -28,7 +28,7 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::hal::host {
+namespace ucore::hal::host {
 
 /// Host platform SysTick implementation using std::chrono
 ///
@@ -91,16 +91,16 @@ class SystemTick {
 };
 
 // Validate concept compliance at compile time
-static_assert(alloy::hal::SystemTick<SystemTick>,
+static_assert(ucore::hal::SystemTick<SystemTick>,
               "Host SystemTick must satisfy SystemTick concept");
 
-}  // namespace alloy::hal::host
+}  // namespace ucore::hal::host
 
 /// Global namespace implementation for host
-namespace alloy::systick::detail {
+namespace ucore::systick::detail {
 inline core::u32 get_micros() {
-    return alloy::hal::host::SystemTick::micros();
+    return ucore::hal::host::SystemTick::micros();
 }
-}  // namespace alloy::systick::detail
+}  // namespace ucore::systick::detail
 
 #endif  // ALLOY_HAL_HOST_SYSTICK_HPP

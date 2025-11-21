@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::usbphyc {
+namespace ucore::hal::st::stm32f7::usbphyc {
 
 // ============================================================================
 // USBPHYC - USBPHYC register interface
@@ -45,4 +45,4 @@ inline USBPHYC_Registers* USBPHYC() {
     return reinterpret_cast<USBPHYC_Registers*>(0x40017C00);
 }
 
-}  // namespace alloy::hal::st::stm32f7::usbphyc
+}  // namespace ucore::hal::st::stm32f7::usbphyc

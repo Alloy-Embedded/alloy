@@ -10,9 +10,9 @@
 #include "core/result.hpp"
 #include "hal/interface/interrupt.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Simple interrupt management API
@@ -136,4 +136,4 @@ private:
     CriticalSection cs_;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

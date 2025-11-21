@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::sysinfo {
+namespace ucore::hal::raspberrypi::rp2040::sysinfo {
 
 // ============================================================================
 // SYSINFO - Peripheral Registers
@@ -43,4 +43,4 @@ inline SYSINFO_Registers* SYSINFO() {
     return reinterpret_cast<SYSINFO_Registers*>(0x40000000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::sysinfo
+}  // namespace ucore::hal::raspberrypi::rp2040::sysinfo

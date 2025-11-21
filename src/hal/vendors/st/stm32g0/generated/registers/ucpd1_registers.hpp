@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::ucpd1 {
+namespace ucore::hal::st::stm32g0::ucpd1 {
 
 // ============================================================================
 // UCPD1 - USB Power Delivery interface
@@ -101,4 +101,4 @@ inline UCPD1_Registers* UCPD1() {
     return reinterpret_cast<UCPD1_Registers*>(0x4000A000);
 }
 
-}  // namespace alloy::hal::st::stm32g0::ucpd1
+}  // namespace ucore::hal::st::stm32g0::ucpd1

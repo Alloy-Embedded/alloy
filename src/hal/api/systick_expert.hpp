@@ -10,9 +10,9 @@
 #include "core/result.hpp"
 #include "hal/interface/systick.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Expert SysTick configuration
@@ -138,4 +138,4 @@ inline Result<void, ErrorCode> configure(const SysTickExpertConfig& config) {
 
 }  // namespace expert
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

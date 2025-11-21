@@ -33,13 +33,13 @@
 // Bitfield definitions
 #include "hal/vendors/st/stm32f7/generated/bitfields/gpioa_bitfields.hpp"
 
-namespace alloy::hal::st::stm32f7 {
+namespace ucore::hal::st::stm32f7 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::st::stm32f7;
-using namespace alloy::hal::st::stm32f7::gpioa;
+using namespace ucore::hal::st::stm32f7;
+using namespace ucore::hal::st::stm32f7::gpioa;
 
 
 /**
@@ -381,7 +381,7 @@ struct Stm32f7GPIOHardwarePolicy {
 // ============================================================================
 
 
-}  // namespace alloy::hal::st::stm32f7
+}  // namespace ucore::hal::st::stm32f7
 
 /**
  * @example
@@ -391,8 +391,8 @@ struct Stm32f7GPIOHardwarePolicy {
  * #include "hal/api/uart_simple.hpp"
  * #include "hal/vendors/atmel/same70/uart_hardware_policy.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create UART with hardware policy
  * using Uart0 = UartImpl<PeripheralId::USART0, Uart0Hardware>;

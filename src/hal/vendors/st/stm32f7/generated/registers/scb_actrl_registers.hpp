@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::scb_actrl {
+namespace ucore::hal::st::stm32f7::scb_actrl {
 
 // ============================================================================
 // SCB_ACTRL - System control block ACTLR
@@ -32,4 +32,4 @@ inline SCB_ACTRL_Registers* SCB_ACTRL() {
     return reinterpret_cast<SCB_ACTRL_Registers*>(0xE000E008);
 }
 
-}  // namespace alloy::hal::st::stm32f7::scb_actrl
+}  // namespace ucore::hal::st::stm32f7::scb_actrl

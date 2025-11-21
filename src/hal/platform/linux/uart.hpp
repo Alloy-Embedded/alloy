@@ -48,12 +48,12 @@
     #define B230400 230400
 #endif
 
-namespace alloy::hal::linux {
+namespace ucore::hal::linux {
 
 // Import types from core and hal namespaces
-using alloy::core::ErrorCode;
-using alloy::core::Result;
-using alloy::hal::Baudrate;
+using ucore::core::ErrorCode;
+using ucore::core::Result;
+using ucore::hal::Baudrate;
 
 /**
  * @brief Template-based UART peripheral for Linux
@@ -400,4 +400,4 @@ using UartAcm1 = Uart<ttyACM1_path>;  // USB CDC/ACM device 1
 using UartS0 = Uart<ttyS0_path>;      // Hardware serial port 0
 using UartS1 = Uart<ttyS1_path>;      // Hardware serial port 1
 
-}  // namespace alloy::hal::linux
+}  // namespace ucore::hal::linux

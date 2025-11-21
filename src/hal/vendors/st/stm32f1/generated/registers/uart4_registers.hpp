@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f1::uart4 {
+namespace ucore::hal::st::stm32f1::uart4 {
 
 // ============================================================================
 // UART4 - Universal asynchronous receiver transmitter
@@ -61,4 +61,4 @@ inline UART4_Registers* UART4() {
     return reinterpret_cast<UART4_Registers*>(0x40004C00);
 }
 
-}  // namespace alloy::hal::st::stm32f1::uart4
+}  // namespace ucore::hal::st::stm32f1::uart4

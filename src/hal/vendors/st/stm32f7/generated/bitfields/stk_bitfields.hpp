@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::stk {
+namespace ucore::hal::st::stm32f7::stk {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // STK Bit Field Definitions
@@ -87,4 +87,4 @@ namespace calib {
 
 }  // namespace calib
 
-}  // namespace alloy::hal::st::stm32f7::stk
+}  // namespace ucore::hal::st::stm32f7::stk

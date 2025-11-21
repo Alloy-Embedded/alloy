@@ -36,15 +36,15 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfields
-namespace xdmac = alloy::hal::atmel::same70::xdmac;
+namespace xdmac = ucore::hal::atmel::same70::xdmac;
 
 /**
  * @brief Hardware Policy for DMA on SAME70
@@ -303,9 +303,9 @@ struct Same70DMAHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Dma
-using DmaHardware = Same70DMAHardwarePolicy<alloy::generated::atsame70q21b::peripherals::XDMAC, 150000000>;
+using DmaHardware = Same70DMAHardwarePolicy<ucore::generated::atsame70q21b::peripherals::XDMAC, 150000000>;
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 /**
  * @example
@@ -315,8 +315,8 @@ using DmaHardware = Same70DMAHardwarePolicy<alloy::generated::atsame70q21b::peri
  * #include "hal/api/dma_simple.hpp"
  * #include "hal/platform/same70/dma.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create DMA with hardware policy
  * using Instance0 = DmaHardware;

@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::hash {
+namespace ucore::hal::st::stm32f4::hash {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // HASH Bit Field Definitions
@@ -837,4 +837,4 @@ namespace hash_hr7 {
 
 }  // namespace hash_hr7
 
-}  // namespace alloy::hal::st::stm32f4::hash
+}  // namespace ucore::hal::st::stm32f4::hash

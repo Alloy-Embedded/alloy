@@ -10,7 +10,7 @@
 
 #include <sys/select.h>
 
-namespace alloy::hal::host {
+namespace ucore::hal::host {
 
 Uart::Uart() : configured_(false), config_(core::baud_rates::Baud115200) {}
 
@@ -78,4 +78,4 @@ core::usize Uart::available() const {
     return 0;
 }
 
-}  // namespace alloy::hal::host
+}  // namespace ucore::hal::host

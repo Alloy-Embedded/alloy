@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::aes {
+namespace ucore::hal::st::stm32f7::aes {
 
 // ============================================================================
 // AES - Advanced encryption standard hardware accelerator 1
@@ -170,4 +170,4 @@ inline AES_Registers* AES() {
     return reinterpret_cast<AES_Registers*>(0x50060000);
 }
 
-}  // namespace alloy::hal::st::stm32f7::aes
+}  // namespace ucore::hal::st::stm32f7::aes

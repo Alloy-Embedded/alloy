@@ -36,15 +36,15 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfields
-namespace twihs = alloy::hal::atmel::same70::twihs0;
+namespace twihs = ucore::hal::atmel::same70::twihs0;
 
 /**
  * @brief Hardware Policy for TWIHS on SAME70
@@ -314,13 +314,13 @@ if (read_count == 1) {
 // ============================================================================
 
 /// @brief Hardware policy for I2c0
-using I2c0Hardware = Same70TWIHSHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TWIHS0, >;
+using I2c0Hardware = Same70TWIHSHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TWIHS0, >;
 /// @brief Hardware policy for I2c1
-using I2c1Hardware = Same70TWIHSHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TWIHS1, >;
+using I2c1Hardware = Same70TWIHSHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TWIHS1, >;
 /// @brief Hardware policy for I2c2
-using I2c2Hardware = Same70TWIHSHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TWIHS2, >;
+using I2c2Hardware = Same70TWIHSHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TWIHS2, >;
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 /**
  * @example
@@ -330,8 +330,8 @@ using I2c2Hardware = Same70TWIHSHardwarePolicy<alloy::generated::atsame70q21b::p
  * #include "hal/api/twihs_simple.hpp"
  * #include "hal/platform/same70/twihs.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create TWIHS with hardware policy
  * using Instance0 = I2c0Hardware;

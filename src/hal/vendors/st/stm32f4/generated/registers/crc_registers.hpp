@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::crc {
+namespace ucore::hal::st::stm32f4::crc {
 
 // ============================================================================
 // CRC - Cryptographic processor
@@ -44,4 +44,4 @@ inline CRC_Registers* CRC() {
     return reinterpret_cast<CRC_Registers*>(0x40023000);
 }
 
-}  // namespace alloy::hal::st::stm32f4::crc
+}  // namespace ucore::hal::st::stm32f4::crc

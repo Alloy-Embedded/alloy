@@ -36,13 +36,13 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::atmel::same70;
-using namespace alloy::hal::atmel::same70::uart0;
+using namespace ucore::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70::uart0;
 
 // Namespace alias for bitfields
 namespace uart = atmel::same70::uart0;
@@ -321,7 +321,7 @@ using Uart3Hardware = Same70UARTHardwarePolicy<0x400E1C00, 42>;
 /// @brief Hardware policy for Uart4
 using Uart4Hardware = Same70UARTHardwarePolicy<0x400E1E00, 43>;
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 /**
  * @example
@@ -331,8 +331,8 @@ using Uart4Hardware = Same70UARTHardwarePolicy<0x400E1E00, 43>;
  * #include "hal/api/uart_simple.hpp"
  * #include "hal/platform/same70/uart.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create UART with hardware policy
  * using Instance0 = Uart0Hardware;

@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::exti {
+namespace ucore::hal::st::stm32f4::exti {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // EXTI Bit Field Definitions
@@ -869,4 +869,4 @@ namespace pr {
 
 }  // namespace pr
 
-}  // namespace alloy::hal::st::stm32f4::exti
+}  // namespace ucore::hal::st::stm32f4::exti

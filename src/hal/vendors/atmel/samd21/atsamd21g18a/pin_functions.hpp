@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::atsamd21g18a::pin_functions {
+namespace ucore::hal::atmel::samd21::atsamd21g18a::pin_functions {
 
 // ============================================================================
 // PERIPHERAL SIGNAL TAG TYPES
@@ -73,4 +73,4 @@ concept HasAF = requires {
     { AlternateFunction<Pin, Function>::af_number } -> std::same_as<const uint8_t&>;
 };
 
-}  // namespace alloy::hal::atmel::samd21::atsamd21g18a::pin_functions
+}  // namespace ucore::hal::atmel::samd21::atsamd21g18a::pin_functions

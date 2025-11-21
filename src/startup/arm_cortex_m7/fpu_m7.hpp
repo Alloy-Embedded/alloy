@@ -17,10 +17,10 @@
 
 #include "../arm_cortex_m/core_common.hpp"
 
-namespace alloy::arm::cortex_m7::fpu {
+namespace ucore::arm::cortex_m7::fpu {
 
 // Import from parent namespace
-using namespace alloy::arm::cortex_m;
+using namespace ucore::arm::cortex_m;
 
 // ============================================================================
 // FPU Context Control Register (FPCCR)
@@ -206,4 +206,4 @@ inline void clear_exceptions() {
 #endif
 }
 
-}  // namespace alloy::arm::cortex_m7::fpu
+}  // namespace ucore::arm::cortex_m7::fpu

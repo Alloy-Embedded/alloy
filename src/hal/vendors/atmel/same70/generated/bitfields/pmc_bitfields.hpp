@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::pmc {
+namespace ucore::hal::atmel::same70::pmc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // PMC Bit Field Definitions
@@ -3370,4 +3370,4 @@ constexpr uint32_t AIP_Msk = AIP::mask;
 
 }  // namespace slpwk_aipr
 
-}  // namespace alloy::hal::atmel::same70::pmc
+}  // namespace ucore::hal::atmel::same70::pmc

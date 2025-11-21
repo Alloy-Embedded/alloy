@@ -46,9 +46,9 @@
 #include <concepts>
 #include <type_traits>
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ============================================================================
 // CRTP Concepts
@@ -382,4 +382,4 @@ protected:
 // using static_assert on sizeof(UartBase) and std::is_empty_v<UartBase>.
 // This ensures validation only occurs when UartBase is properly used with CRTP.
 
-} // namespace alloy::hal
+} // namespace ucore::hal

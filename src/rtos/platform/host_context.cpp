@@ -11,7 +11,7 @@
 
 #include "rtos/scheduler.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 // Forward declare platform functions
 namespace platform {
@@ -37,9 +37,9 @@ void trigger_context_switch() {
 }
 }  // namespace scheduler
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
-namespace alloy::rtos::platform {
+namespace ucore::rtos::platform {
 
 // Global task context storage
 // Maps TCB pointer to host-specific context
@@ -269,4 +269,4 @@ void start_first_task() {
     std::exit(0);  // Exit cleanly
 }
 
-}  // namespace alloy::rtos::platform
+}  // namespace ucore::rtos::platform

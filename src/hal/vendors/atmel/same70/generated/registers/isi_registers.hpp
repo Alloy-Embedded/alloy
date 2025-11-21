@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::isi {
+namespace ucore::hal::atmel::same70::isi {
 
 // ============================================================================
 // ISI - Image Sensor Interface
@@ -135,4 +135,4 @@ inline ISI_Registers* ISI() {
     return reinterpret_cast<ISI_Registers*>(0x4004C000);
 }
 
-}  // namespace alloy::hal::atmel::same70::isi
+}  // namespace ucore::hal::atmel::same70::isi

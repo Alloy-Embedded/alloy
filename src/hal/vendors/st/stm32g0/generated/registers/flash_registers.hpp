@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::flash {
+namespace ucore::hal::st::stm32g0::flash {
 
 // ============================================================================
 // FLASH - Flash
@@ -149,4 +149,4 @@ inline FLASH_Registers* FLASH() {
     return reinterpret_cast<FLASH_Registers*>(0x40022000);
 }
 
-}  // namespace alloy::hal::st::stm32g0::flash
+}  // namespace ucore::hal::st::stm32g0::flash

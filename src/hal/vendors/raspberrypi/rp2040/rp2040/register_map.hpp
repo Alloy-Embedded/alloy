@@ -12,7 +12,7 @@
 /// Usage:
 ///   #include <hal/raspberrypi/rp2040/rp2040/register_map.hpp>
 ///
-///   using namespace alloy::hal::raspberrypi::rp2040::rp2040;
+///   using namespace ucore::hal::raspberrypi::rp2040::rp2040;
 ///
 ///   // Access registers
 ///   rcc::RCC->CR = rcc::cr::HSEON::set(rcc::RCC->CR);
@@ -111,15 +111,15 @@
 // Namespace Convenience Aliases
 // ============================================================================
 
-namespace alloy::hal::raspberrypi::rp2040::rp2040 {
+namespace ucore::hal::raspberrypi::rp2040::rp2040 {
 
 /// Main namespace alias for this MCU
 ///
 /// Usage:
-///   using namespace alloy::hal::raspberrypi::rp2040::rp2040;
+///   using namespace ucore::hal::raspberrypi::rp2040::rp2040;
 ///   // Now you can use rcc::RCC, gpio::GPIOA, etc.
 
-}  // namespace alloy::hal::raspberrypi::rp2040::rp2040
+}  // namespace ucore::hal::raspberrypi::rp2040::rp2040
 
 // ============================================================================
 // Global Namespace Aliases (Optional)
@@ -127,7 +127,7 @@ namespace alloy::hal::raspberrypi::rp2040::rp2040 {
 
 /// You can define shorter aliases if desired:
 ///
-/// namespace mcu = alloy::hal::raspberrypi::rp2040::rp2040;
+/// namespace mcu = ucore::hal::raspberrypi::rp2040::rp2040;
 ///
 /// Then use:
 ///   mcu::rcc::RCC->CR = ...

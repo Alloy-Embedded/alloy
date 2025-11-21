@@ -36,12 +36,12 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfields
 namespace afec = atmel::same70::afec0;
@@ -323,11 +323,11 @@ struct Same70ADCHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Adc0
-using Adc0Hardware = Same70ADCHardwarePolicy<alloy::generated::atsame70q21b::peripherals::AFEC0, 150000000>;
+using Adc0Hardware = Same70ADCHardwarePolicy<ucore::generated::atsame70q21b::peripherals::AFEC0, 150000000>;
 /// @brief Hardware policy for Adc1
-using Adc1Hardware = Same70ADCHardwarePolicy<alloy::generated::atsame70q21b::peripherals::AFEC1, 150000000>;
+using Adc1Hardware = Same70ADCHardwarePolicy<ucore::generated::atsame70q21b::peripherals::AFEC1, 150000000>;
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 /**
  * @example
@@ -337,8 +337,8 @@ using Adc1Hardware = Same70ADCHardwarePolicy<alloy::generated::atsame70q21b::per
  * #include "hal/api/adc_simple.hpp"
  * #include "hal/platform/same70/adc.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create ADC with hardware policy
  * using Instance0 = Adc0Hardware;

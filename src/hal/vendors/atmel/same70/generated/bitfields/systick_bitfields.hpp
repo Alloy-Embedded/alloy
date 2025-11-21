@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::systick {
+namespace ucore::hal::atmel::same70::systick {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SysTick Bit Field Definitions
@@ -113,4 +113,4 @@ constexpr uint32_t VALUE_1 = 1;
 
 }  // namespace calib
 
-}  // namespace alloy::hal::atmel::same70::systick
+}  // namespace ucore::hal::atmel::same70::systick

@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32g0::rtc {
+namespace ucore::hal::st::stm32g0::rtc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // RTC Bit Field Definitions
@@ -1224,4 +1224,4 @@ namespace rtc_scr {
 
 }  // namespace rtc_scr
 
-}  // namespace alloy::hal::st::stm32g0::rtc
+}  // namespace ucore::hal::st::stm32g0::rtc

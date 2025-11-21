@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::lockbit {
+namespace ucore::hal::atmel::samv71::lockbit {
 
 // ============================================================================
 // LOCKBIT - Peripheral Registers
@@ -30,4 +30,4 @@ inline LOCKBIT_Registers* LOCKBIT() {
     return reinterpret_cast<LOCKBIT_Registers*>(0x00000000);
 }
 
-}  // namespace alloy::hal::atmel::samv71::lockbit
+}  // namespace ucore::hal::atmel::samv71::lockbit

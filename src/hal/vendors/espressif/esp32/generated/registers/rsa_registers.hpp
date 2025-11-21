@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::rsa {
+namespace ucore::hal::espressif::esp32::rsa {
 
 // ============================================================================
 // RSA - RSA (Rivest Shamir Adleman) Accelerator
@@ -78,4 +78,4 @@ inline RSA_Registers* RSA() {
     return reinterpret_cast<RSA_Registers*>(0x3FF02000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::rsa
+}  // namespace ucore::hal::espressif::esp32::rsa

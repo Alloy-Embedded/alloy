@@ -82,23 +82,23 @@ endfunction()
 # Auto-detect and validate toolchain based on board
 #
 function(alloy_validate_toolchain)
-    if(NOT DEFINED ALLOY_BOARD)
+    if(NOT DEFINED MICROCORE_BOARD)
         message(STATUS "No board specified, skipping toolchain validation")
         return()
     endif()
 
     # Host board doesn't need cross-compilation toolchain
-    if(ALLOY_BOARD STREQUAL "host")
+    if(MICROCORE_BOARD STREQUAL "host")
         message(STATUS "Host board selected, using native compiler")
         return()
     endif()
 
     # Determine required toolchain based on board
-    if(ALLOY_BOARD STREQUAL "esp32_devkit")
+    if(MICROCORE_BOARD STREQUAL "esp32_devkit")
         alloy_validate_xtensa_toolchain()
-    elseif(ALLOY_BOARD MATCHES "^(bluepill|stm32f407vg|arduino_zero|rp_pico)$")
+    elseif(MICROCORE_BOARD MATCHES "^(bluepill|stm32f407vg|arduino_zero|rp_pico)$")
         alloy_validate_arm_toolchain()
     else()
-        message(WARNING "Unknown board '${ALLOY_BOARD}', cannot validate toolchain")
+        message(WARNING "Unknown board '${MICROCORE_BOARD}', cannot validate toolchain")
     endif()
 endfunction()

@@ -2,30 +2,30 @@
 # RP2040 dual ARM Cortex-M0+
 
 # Board identification
-set(ALLOY_BOARD_NAME "Raspberry Pi Pico" CACHE STRING "Board name" FORCE)
-set(ALLOY_MCU "RP2040" CACHE STRING "MCU model" FORCE)
-set(ALLOY_ARCH "arm-cortex-m0plus" CACHE STRING "CPU architecture" FORCE)
+set(MICROCORE_BOARD_NAME "Raspberry Pi Pico" CACHE STRING "Board name" FORCE)
+set(MICROCORE_MCU "RP2040" CACHE STRING "MCU model" FORCE)
+set(MICROCORE_ARCH "arm-cortex-m0plus" CACHE STRING "CPU architecture" FORCE)
 
 # Clock configuration
-set(ALLOY_CLOCK_FREQ_HZ 125000000 CACHE STRING "System clock frequency (125 MHz)")
+set(MICROCORE_CLOCK_FREQ_HZ 125000000 CACHE STRING "System clock frequency (125 MHz)")
 
 # Peripherals available
-set(ALLOY_HAS_GPIO ON)
-set(ALLOY_HAS_UART ON)
-set(ALLOY_HAS_I2C ON)
-set(ALLOY_HAS_SPI ON)
-set(ALLOY_HAS_ADC ON)
-set(ALLOY_HAS_PWM ON)
-set(ALLOY_HAS_PIO ON)   # Programmable IO
-set(ALLOY_HAS_USB ON)
-set(ALLOY_HAS_DUAL_CORE ON)
+set(MICROCORE_HAS_GPIO ON)
+set(MICROCORE_HAS_UART ON)
+set(MICROCORE_HAS_I2C ON)
+set(MICROCORE_HAS_SPI ON)
+set(MICROCORE_HAS_ADC ON)
+set(MICROCORE_HAS_PWM ON)
+set(MICROCORE_HAS_PIO ON)   # Programmable IO
+set(MICROCORE_HAS_USB ON)
+set(MICROCORE_HAS_DUAL_CORE ON)
 
 # Pinout
-set(ALLOY_LED_PIN "GPIO25" CACHE STRING "On-board LED pin (GPIO25)")
+set(MICROCORE_LED_PIN "GPIO25" CACHE STRING "On-board LED pin (GPIO25)")
 
 # Memory
-set(ALLOY_FLASH_SIZE "2MB" CACHE STRING "Flash size (external)")
-set(ALLOY_RAM_SIZE "264KB" CACHE STRING "RAM size")
+set(MICROCORE_FLASH_SIZE "2MB" CACHE STRING "Flash size (external)")
+set(MICROCORE_RAM_SIZE "264KB" CACHE STRING "RAM size")
 
 # Toolchain
 set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/../toolchains/arm-none-eabi.cmake" CACHE FILEPATH "Toolchain file")
@@ -41,11 +41,11 @@ alloy_generate_code(
 )
 
 # Use generated code if available
-if(ALLOY_CODEGEN_AVAILABLE)
-    include_directories(${ALLOY_GENERATED_DIR})
-    add_compile_definitions(ALLOY_GENERATED_NAMESPACE=alloy::hal::raspberrypi::rp2040)
+if(MICROCORE_CODEGEN_AVAILABLE)
+    include_directories(${MICROCORE_GENERATED_DIR})
+    add_compile_definitions(MICROCORE_GENERATED_NAMESPACE=alloy::hal::raspberrypi::rp2040)
 endif()
 
-message(STATUS "Board configured: ${ALLOY_BOARD_NAME}")
-message(STATUS "  MCU: ${ALLOY_MCU}")
-message(STATUS "  Flash: ${ALLOY_FLASH_SIZE}, RAM: ${ALLOY_RAM_SIZE}")
+message(STATUS "Board configured: ${MICROCORE_BOARD_NAME}")
+message(STATUS "  MCU: ${MICROCORE_MCU}")
+message(STATUS "  Flash: ${MICROCORE_FLASH_SIZE}, RAM: ${MICROCORE_RAM_SIZE}")

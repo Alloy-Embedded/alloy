@@ -12,9 +12,9 @@
 
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Simple SysTick API for timing and delays
@@ -168,4 +168,4 @@ public:
     }
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

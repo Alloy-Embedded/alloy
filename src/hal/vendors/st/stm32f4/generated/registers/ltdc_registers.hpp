@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::ltdc {
+namespace ucore::hal::st::stm32f4::ltdc {
 
 // ============================================================================
 // LTDC - LCD-TFT Controller
@@ -257,4 +257,4 @@ inline LTDC_Registers* LTDC() {
     return reinterpret_cast<LTDC_Registers*>(0x40016800);
 }
 
-}  // namespace alloy::hal::st::stm32f4::ltdc
+}  // namespace ucore::hal::st::stm32f4::ltdc

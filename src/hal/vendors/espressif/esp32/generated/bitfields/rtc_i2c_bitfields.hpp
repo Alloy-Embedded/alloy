@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::rtc_i2c {
+namespace ucore::hal::espressif::esp32::rtc_i2c {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // RTC_I2C Bit Field Definitions
@@ -304,4 +304,4 @@ namespace cmd {
 
 }  // namespace cmd
 
-}  // namespace alloy::hal::espressif::esp32::rtc_i2c
+}  // namespace ucore::hal::espressif::esp32::rtc_i2c

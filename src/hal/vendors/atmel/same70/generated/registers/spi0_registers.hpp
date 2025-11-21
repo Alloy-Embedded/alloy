@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::spi0 {
+namespace ucore::hal::atmel::same70::spi0 {
 
 // ============================================================================
 // SPI0 - Serial Peripheral Interface
@@ -79,4 +79,4 @@ inline SPI0_Registers* SPI0() {
     return reinterpret_cast<SPI0_Registers*>(0x40008000);
 }
 
-}  // namespace alloy::hal::atmel::same70::spi0
+}  // namespace ucore::hal::atmel::same70::spi0

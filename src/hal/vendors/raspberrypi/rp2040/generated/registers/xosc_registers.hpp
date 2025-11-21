@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::xosc {
+namespace ucore::hal::raspberrypi::rp2040::xosc {
 
 // ============================================================================
 // XOSC - Controls the crystal oscillator
@@ -53,4 +53,4 @@ inline XOSC_Registers* XOSC() {
     return reinterpret_cast<XOSC_Registers*>(0x40024000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::xosc
+}  // namespace ucore::hal::raspberrypi::rp2040::xosc

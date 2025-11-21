@@ -42,9 +42,9 @@
 // Bitfield definitions
 #include "hal/vendors/microchip/same70/generated/bitfields/uart_bitfields.hpp"
 
-namespace alloy::hal::microchip::same70 {
+namespace ucore::hal::microchip::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
 using namespace microchip;
@@ -348,7 +348,7 @@ using UART3Hardware = SAME70UartHardwarePolicy<0x400E1C00, 150000000>;
 using UART4Hardware = SAME70UartHardwarePolicy<0x400E1E00, 150000000>;
 
 
-}  // namespace alloy::hal::microchip::same70
+}  // namespace ucore::hal::microchip::same70
 
 /**
  * @example
@@ -358,8 +358,8 @@ using UART4Hardware = SAME70UartHardwarePolicy<0x400E1E00, 150000000>;
  * #include "hal/api/uart_simple.hpp"
  * #include "hal/vendors/microchip//uart.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::microchip::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::microchip::same70;
  *
  * int main() {
  *     // Initialize UART

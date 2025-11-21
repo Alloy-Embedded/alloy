@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::adc_common {
+namespace ucore::hal::st::stm32f4::adc_common {
 
 // ============================================================================
 // ADC_Common - ADC common registers
@@ -38,4 +38,4 @@ inline ADC_Common_Registers* ADC_Common() {
     return reinterpret_cast<ADC_Common_Registers*>(0x40012300);
 }
 
-}  // namespace alloy::hal::st::stm32f4::adc_common
+}  // namespace ucore::hal::st::stm32f4::adc_common

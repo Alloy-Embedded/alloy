@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::usbctrl_regs {
+namespace ucore::hal::raspberrypi::rp2040::usbctrl_regs {
 
 // ============================================================================
 // USBCTRL_REGS - USB FS/LS controller device registers
@@ -217,4 +217,4 @@ inline USBCTRL_REGS_Registers* USBCTRL_REGS() {
     return reinterpret_cast<USBCTRL_REGS_Registers*>(0x50110000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::usbctrl_regs
+}  // namespace ucore::hal::raspberrypi::rp2040::usbctrl_regs

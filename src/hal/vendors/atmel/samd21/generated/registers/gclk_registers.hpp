@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::gclk {
+namespace ucore::hal::atmel::samd21::gclk {
 
 // ============================================================================
 // GCLK - Generic Clock Generator
@@ -47,4 +47,4 @@ inline GCLK_Registers* GCLK() {
     return reinterpret_cast<GCLK_Registers*>(0x40000C00);
 }
 
-}  // namespace alloy::hal::atmel::samd21::gclk
+}  // namespace ucore::hal::atmel::samd21::gclk

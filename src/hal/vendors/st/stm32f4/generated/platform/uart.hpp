@@ -42,9 +42,9 @@
 // Bitfield definitions
 #include "hal/vendors/st/stm32f4/generated/bitfields/usart_bitfields.hpp"
 
-namespace alloy::hal::st::stm32f4 {
+namespace ucore::hal::st::stm32f4 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
 using namespace st;
@@ -350,7 +350,7 @@ using UART5Hardware = STM32F4UartHardwarePolicy<0x40005000, 42000000>;
 using USART6Hardware = STM32F4UartHardwarePolicy<0x40011400, 84000000>;
 
 
-}  // namespace alloy::hal::st::stm32f4
+}  // namespace ucore::hal::st::stm32f4
 
 /**
  * @example
@@ -360,8 +360,8 @@ using USART6Hardware = STM32F4UartHardwarePolicy<0x40011400, 84000000>;
  * #include "hal/api/uart_simple.hpp"
  * #include "hal/vendors/st//uart.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::st::stm32f4;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::st::stm32f4;
  *
  * int main() {
  *     // Initialize UART

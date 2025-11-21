@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f1::fsmc {
+namespace ucore::hal::st::stm32f1::fsmc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // FSMC Bit Field Definitions
@@ -1238,4 +1238,4 @@ namespace bwtr4 {
 
 }  // namespace bwtr4
 
-}  // namespace alloy::hal::st::stm32f1::fsmc
+}  // namespace ucore::hal::st::stm32f1::fsmc

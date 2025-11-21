@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::rtc_i2c {
+namespace ucore::hal::espressif::esp32::rtc_i2c {
 
 // ============================================================================
 // RTC_I2C - Low-power I2C (Inter-Integrated Circuit) Controller
@@ -89,4 +89,4 @@ inline RTC_I2C_Registers* RTC_I2C() {
     return reinterpret_cast<RTC_I2C_Registers*>(0x3FF48C00);
 }
 
-}  // namespace alloy::hal::espressif::esp32::rtc_i2c
+}  // namespace ucore::hal::espressif::esp32::rtc_i2c

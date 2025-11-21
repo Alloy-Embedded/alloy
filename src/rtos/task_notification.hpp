@@ -40,8 +40,8 @@
 /// }
 /// ```
 
-#ifndef ALLOY_RTOS_TASK_NOTIFICATION_HPP
-#define ALLOY_RTOS_TASK_NOTIFICATION_HPP
+#ifndef UCORE_RTOS_TASK_NOTIFICATION_HPP
+#define UCORE_RTOS_TASK_NOTIFICATION_HPP
 
 #include <cstddef>
 #include <atomic>
@@ -51,7 +51,7 @@
 #include "core/types.hpp"
 #include "core/result.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 // ============================================================================
 // Task Notification Types
@@ -357,6 +357,6 @@ consteval bool notification_memory_fits_budget() {
     return total <= Budget;
 }
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ALLOY_RTOS_TASK_NOTIFICATION_HPP

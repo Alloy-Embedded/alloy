@@ -42,9 +42,9 @@
 // Bitfield definitions
 #include ""
 
-namespace alloy::hal::st::stm32f4 {
+namespace ucore::hal::st::stm32f4 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
 using namespace ;
@@ -502,7 +502,7 @@ using I2C2Hardware = STM32F4I2cHardwarePolicy<0x40005800, 42000000>;
 using I2C3Hardware = STM32F4I2cHardwarePolicy<0x40005C00, 42000000>;
 
 
-}  // namespace alloy::hal::st::stm32f4
+}  // namespace ucore::hal::st::stm32f4
 
 /**
  * @example
@@ -511,7 +511,7 @@ using I2C3Hardware = STM32F4I2cHardwarePolicy<0x40005C00, 42000000>;
  * @code
  * #include "hal/vendors//STM32F4/i2c.hpp"
  *
- * using namespace alloy::hal::st::stm32f4;
+ * using namespace ucore::hal::st::stm32f4;
  *
  * int main() {
  *     // Initialize I2C

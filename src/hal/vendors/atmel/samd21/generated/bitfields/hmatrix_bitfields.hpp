@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::hmatrix {
+namespace ucore::hal::atmel::samd21::hmatrix {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // HMATRIX Bit Field Definitions
@@ -27,4 +27,4 @@ namespace sfr {
 
 }  // namespace sfr
 
-}  // namespace alloy::hal::atmel::samd21::hmatrix
+}  // namespace ucore::hal::atmel::samd21::hmatrix

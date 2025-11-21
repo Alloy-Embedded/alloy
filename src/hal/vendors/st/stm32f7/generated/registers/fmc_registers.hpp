@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::fmc {
+namespace ucore::hal::st::stm32f7::fmc {
 
 // ============================================================================
 // FMC - Flexible memory controller
@@ -174,4 +174,4 @@ inline FMC_Registers* FMC() {
     return reinterpret_cast<FMC_Registers*>(0xA0000000);
 }
 
-}  // namespace alloy::hal::st::stm32f7::fmc
+}  // namespace ucore::hal::st::stm32f7::fmc

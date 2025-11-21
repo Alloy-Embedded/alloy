@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::dacc {
+namespace ucore::hal::atmel::same70::dacc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // DACC Bit Field Definitions
@@ -418,4 +418,4 @@ constexpr uint32_t WPVSRC_Msk = WPVSRC::mask;
 
 }  // namespace wpsr
 
-}  // namespace alloy::hal::atmel::same70::dacc
+}  // namespace ucore::hal::atmel::same70::dacc

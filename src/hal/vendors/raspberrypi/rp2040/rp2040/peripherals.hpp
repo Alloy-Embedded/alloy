@@ -7,12 +7,12 @@
 ///
 /// DO NOT EDIT - Regenerate from SVD if needed
 
-#ifndef ALLOY_GENERATED_RP2040_PERIPHERALS_HPP
-#define ALLOY_GENERATED_RP2040_PERIPHERALS_HPP
+#ifndef UCORE_GENERATED_RP2040_PERIPHERALS_HPP
+#define UCORE_GENERATED_RP2040_PERIPHERALS_HPP
 
 #include <cstdint>
 
-namespace alloy::generated::rp2040 {
+namespace ucore::generated::rp2040 {
 
 // ============================================================================
 // PERIPHERAL BASE ADDRESSES
@@ -141,6 +141,6 @@ constexpr uint8_t CLOCKS               =  17;  // CLOCKS
         // Memory regions not defined in SVD
         }  // namespace memory
 
-        }  // namespace alloy::generated::rp2040
+        }  // namespace ucore::generated::rp2040
 
 #endif  // ALLOY_GENERATED_RP2040_PERIPHERALS_HPP

@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::xdmac {
+namespace ucore::hal::atmel::same70::xdmac {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // XDMAC Bit Field Definitions
@@ -2729,4 +2729,4 @@ constexpr uint32_t SWF23_Msk = SWF23::mask;
 
 }  // namespace gswf
 
-}  // namespace alloy::hal::atmel::same70::xdmac
+}  // namespace ucore::hal::atmel::same70::xdmac

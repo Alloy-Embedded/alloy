@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::rtc {
+namespace ucore::hal::st::stm32f7::rtc {
 
 // ============================================================================
 // RTC - Real-time clock
@@ -332,4 +332,4 @@ inline RTC_Registers* RTC() {
     return reinterpret_cast<RTC_Registers*>(0x40002800);
 }
 
-}  // namespace alloy::hal::st::stm32f7::rtc
+}  // namespace ucore::hal::st::stm32f7::rtc

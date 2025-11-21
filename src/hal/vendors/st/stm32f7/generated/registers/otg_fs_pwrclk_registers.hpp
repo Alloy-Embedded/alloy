@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::otg_fs_pwrclk {
+namespace ucore::hal::st::stm32f7::otg_fs_pwrclk {
 
 // ============================================================================
 // OTG_FS_PWRCLK - USB on the go full speed
@@ -32,4 +32,4 @@ inline OTG_FS_PWRCLK_Registers* OTG_FS_PWRCLK() {
     return reinterpret_cast<OTG_FS_PWRCLK_Registers*>(0x50000E00);
 }
 
-}  // namespace alloy::hal::st::stm32f7::otg_fs_pwrclk
+}  // namespace ucore::hal::st::stm32f7::otg_fs_pwrclk

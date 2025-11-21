@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32g0::lpuart1 {
+namespace ucore::hal::st::stm32g0::lpuart1 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // LPUART1 Bit Field Definitions
@@ -1369,4 +1369,4 @@ namespace lpuart_presc {
 
 }  // namespace lpuart_presc
 
-}  // namespace alloy::hal::st::stm32g0::lpuart1
+}  // namespace ucore::hal::st::stm32g0::lpuart1

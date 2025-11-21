@@ -33,12 +33,12 @@
 // Bitfield definitions
 #include "hal/vendors/st/stm32f1/generated/bitfields/usart1_bitfields.hpp"
 
-namespace alloy::hal::stm32f1 {
+namespace ucore::hal::stm32f1 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::st::stm32f1;
+using namespace ucore::hal::st::stm32f1;
 
 // Namespace alias for bitfields
 namespace usart = st::stm32f1::usart1;
@@ -313,7 +313,7 @@ using Usart2Hardware = Stm32f1UartHardwarePolicy<0x40004400, 72000000>;
 using Usart3Hardware = Stm32f1UartHardwarePolicy<0x40004800, 72000000>;
 
 
-}  // namespace alloy::hal::stm32f1
+}  // namespace ucore::hal::stm32f1
 
 /**
  * @example
@@ -323,8 +323,8 @@ using Usart3Hardware = Stm32f1UartHardwarePolicy<0x40004800, 72000000>;
  * #include "hal/api/uart_simple.hpp"
  * #include "hal/vendors/atmel/same70/uart_hardware_policy.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create UART with hardware policy
  * using Uart0 = UartImpl<PeripheralId::USART0, Uart0Hardware>;

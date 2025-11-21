@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::dcmi {
+namespace ucore::hal::st::stm32f4::dcmi {
 
 // ============================================================================
 // DCMI - Digital camera interface
@@ -92,4 +92,4 @@ inline DCMI_Registers* DCMI() {
     return reinterpret_cast<DCMI_Registers*>(0x50050000);
 }
 
-}  // namespace alloy::hal::st::stm32f4::dcmi
+}  // namespace ucore::hal::st::stm32f4::dcmi

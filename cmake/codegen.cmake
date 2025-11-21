@@ -12,14 +12,14 @@
 #   )
 #
 # Exports:
-#   ALLOY_GENERATED_DIR         - Directory containing generated files
-#   ALLOY_GENERATED_SOURCES     - List of generated source files
-#   ALLOY_GENERATED_HEADERS     - List of generated header files
-#   ALLOY_CODEGEN_AVAILABLE     - TRUE if generated code found
+#   MICROCORE_GENERATED_DIR         - Directory containing generated files
+#   MICROCORE_GENERATED_SOURCES     - List of generated source files
+#   MICROCORE_GENERATED_HEADERS     - List of generated header files
+#   MICROCORE_CODEGEN_AVAILABLE     - TRUE if generated code found
 #
 
 # Base directory for generated code
-set(ALLOY_GENERATED_BASE "${ALLOY_ROOT}/src/generated" CACHE PATH "Generated code base directory")
+set(MICROCORE_GENERATED_BASE "${MICROCORE_ROOT}/src/generated" CACHE PATH "Generated code base directory")
 
 #
 # Auto-detect vendor from MCU name
@@ -98,7 +98,7 @@ function(alloy_use_generated_code)
     endif()
 
     # Construct path to generated code
-    set(gen_dir "${ALLOY_GENERATED_BASE}/${ARG_VENDOR}/${ARG_FAMILY}/${mcu_lower}")
+    set(gen_dir "${MICROCORE_GENERATED_BASE}/${ARG_VENDOR}/${ARG_FAMILY}/${mcu_lower}")
 
     # Check if generated code exists
     if(NOT EXISTS "${gen_dir}")
@@ -110,7 +110,7 @@ function(alloy_use_generated_code)
             "    cd tools/codegen\n"
             "    python3 generate_all.py --vendor ${ARG_VENDOR}\n"
         )
-        set(ALLOY_CODEGEN_AVAILABLE FALSE PARENT_SCOPE)
+        set(MICROCORE_CODEGEN_AVAILABLE FALSE PARENT_SCOPE)
         return()
     endif()
 
@@ -120,26 +120,26 @@ function(alloy_use_generated_code)
 
     if(NOT EXISTS "${startup_file}")
         message(WARNING "startup.cpp not found in: ${gen_dir}")
-        set(ALLOY_CODEGEN_AVAILABLE FALSE PARENT_SCOPE)
+        set(MICROCORE_CODEGEN_AVAILABLE FALSE PARENT_SCOPE)
         return()
     endif()
 
     if(NOT EXISTS "${peripherals_file}")
         message(WARNING "peripherals.hpp not found in: ${gen_dir}")
-        set(ALLOY_CODEGEN_AVAILABLE FALSE PARENT_SCOPE)
+        set(MICROCORE_CODEGEN_AVAILABLE FALSE PARENT_SCOPE)
         return()
     endif()
 
     # Export variables
-    set(ALLOY_GENERATED_DIR "${gen_dir}" PARENT_SCOPE)
-    set(ALLOY_GENERATED_SOURCES "${startup_file}" PARENT_SCOPE)
-    set(ALLOY_GENERATED_HEADERS "${peripherals_file}" PARENT_SCOPE)
-    set(ALLOY_CODEGEN_AVAILABLE TRUE PARENT_SCOPE)
+    set(MICROCORE_GENERATED_DIR "${gen_dir}" PARENT_SCOPE)
+    set(MICROCORE_GENERATED_SOURCES "${startup_file}" PARENT_SCOPE)
+    set(MICROCORE_GENERATED_HEADERS "${peripherals_file}" PARENT_SCOPE)
+    set(MICROCORE_CODEGEN_AVAILABLE TRUE PARENT_SCOPE)
 
     # Export to cache for other CMakeLists.txt files
-    set(ALLOY_GENERATED_DIR "${gen_dir}" CACHE PATH "Generated code directory" FORCE)
-    set(ALLOY_GENERATED_SOURCES "${startup_file}" CACHE STRING "Generated source files" FORCE)
-    set(ALLOY_GENERATED_HEADERS "${peripherals_file}" CACHE STRING "Generated header files" FORCE)
+    set(MICROCORE_GENERATED_DIR "${gen_dir}" CACHE PATH "Generated code directory" FORCE)
+    set(MICROCORE_GENERATED_SOURCES "${startup_file}" CACHE STRING "Generated source files" FORCE)
+    set(MICROCORE_GENERATED_HEADERS "${peripherals_file}" CACHE STRING "Generated header files" FORCE)
 
     message(STATUS "Code generation: Using pre-generated code from ${gen_dir}")
     message(STATUS "  Startup: ${startup_file}")
@@ -153,10 +153,10 @@ function(alloy_generate_code)
     alloy_use_generated_code(${ARGN})
 
     # Re-export to parent scope
-    set(ALLOY_GENERATED_DIR "${ALLOY_GENERATED_DIR}" PARENT_SCOPE)
-    set(ALLOY_GENERATED_SOURCES "${ALLOY_GENERATED_SOURCES}" PARENT_SCOPE)
-    set(ALLOY_GENERATED_HEADERS "${ALLOY_GENERATED_HEADERS}" PARENT_SCOPE)
-    set(ALLOY_CODEGEN_AVAILABLE "${ALLOY_CODEGEN_AVAILABLE}" PARENT_SCOPE)
+    set(MICROCORE_GENERATED_DIR "${MICROCORE_GENERATED_DIR}" PARENT_SCOPE)
+    set(MICROCORE_GENERATED_SOURCES "${MICROCORE_GENERATED_SOURCES}" PARENT_SCOPE)
+    set(MICROCORE_GENERATED_HEADERS "${MICROCORE_GENERATED_HEADERS}" PARENT_SCOPE)
+    set(MICROCORE_CODEGEN_AVAILABLE "${MICROCORE_CODEGEN_AVAILABLE}" PARENT_SCOPE)
 endfunction()
 
 message(STATUS "Code generation module loaded (using pre-generated code from src/generated/)")

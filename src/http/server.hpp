@@ -9,7 +9,7 @@
  * @code
  * #include "http/server.hpp"
  *
- * using alloy::http::Server;
+ * using ucore::http::Server;
  *
  * Server server(80);
  * auto result = server.start();
@@ -33,7 +33,7 @@
     #include "esp_http_server.h"
 #endif
 
-namespace alloy::http {
+namespace ucore::http {
 
 using core::ErrorCode;
 using core::Result;
@@ -371,4 +371,4 @@ class Response {
     Status status_;
 };
 
-}  // namespace alloy::http
+}  // namespace ucore::http

@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::arm::cortex_m7 {
+namespace ucore::hal::arm::cortex_m7 {
 
 /**
  * @brief NVIC (Nested Vectored Interrupt Controller) registers
@@ -23,4 +23,4 @@ struct NVIC_Type {
     volatile uint8_t  IP[240];    ///< 0x300-0x3EF: Interrupt Priority Registers
 };
 
-} // namespace alloy::hal::arm::cortex_m7
+} // namespace ucore::hal::arm::cortex_m7

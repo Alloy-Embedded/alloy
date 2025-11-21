@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::cryp {
+namespace ucore::hal::st::stm32f4::cryp {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // CRYP Bit Field Definitions
@@ -2707,4 +2707,4 @@ namespace csgcm7r {
 
 }  // namespace csgcm7r
 
-}  // namespace alloy::hal::st::stm32f4::cryp
+}  // namespace ucore::hal::st::stm32f4::cryp

@@ -12,9 +12,9 @@
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 enum class DmaTransferWidth : u8 {
     Byte = 0,      ///< 8-bit transfers
@@ -174,4 +174,4 @@ Result<void, ErrorCode> configure(const DmaExpertConfig& config) {
 
 }  // namespace expert
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

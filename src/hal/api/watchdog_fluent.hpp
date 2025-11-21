@@ -14,9 +14,9 @@
 #include "core/result.hpp"
 #include "hal/api/watchdog_simple.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Fluent watchdog configuration builder
@@ -98,4 +98,4 @@ private:
     bool enable_interrupt_;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

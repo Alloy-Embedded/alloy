@@ -2,8 +2,8 @@
 ///
 /// Defines Clock concepts and configuration types for all platforms.
 
-#ifndef ALLOY_HAL_INTERFACE_CLOCK_HPP
-#define ALLOY_HAL_INTERFACE_CLOCK_HPP
+#ifndef UCORE_HAL_INTERFACE_CLOCK_HPP
+#define UCORE_HAL_INTERFACE_CLOCK_HPP
 
 #include <concepts>
 
@@ -11,7 +11,7 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
 /// Clock source selection
 enum class ClockSource : core::u8 {
@@ -271,6 +271,6 @@ inline constexpr core::u32 calculate_bus_frequency(core::u32 system_frequency_hz
     return system_frequency_hz / divider;
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal
 
 #endif  // ALLOY_HAL_INTERFACE_CLOCK_HPP

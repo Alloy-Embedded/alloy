@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f1::bkp {
+namespace ucore::hal::st::stm32f1::bkp {
 
 // ============================================================================
 // BKP - Backup registers
@@ -296,4 +296,4 @@ inline BKP_Registers* BKP() {
     return reinterpret_cast<BKP_Registers*>(0x40006C04);
 }
 
-}  // namespace alloy::hal::st::stm32f1::bkp
+}  // namespace ucore::hal::st::stm32f1::bkp

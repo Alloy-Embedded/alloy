@@ -9,12 +9,12 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::rng {
+namespace ucore::hal::espressif::esp32::rng {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // RNG Bit Field Definitions
 // ============================================================================
 
-}  // namespace alloy::hal::espressif::esp32::rng
+}  // namespace ucore::hal::espressif::esp32::rng

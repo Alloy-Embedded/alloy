@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::pio0 {
+namespace ucore::hal::raspberrypi::rp2040::pio0 {
 
 // ============================================================================
 // PIO0 - Programmable IO block
@@ -442,4 +442,4 @@ inline PIO0_Registers* PIO0() {
     return reinterpret_cast<PIO0_Registers*>(0x50200000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::pio0
+}  // namespace ucore::hal::raspberrypi::rp2040::pio0

@@ -11,9 +11,9 @@
 #include "core/types.hpp"
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0 {
+namespace ucore::hal::st::stm32g0 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief ARM Cortex-M SysTick Register Structure
@@ -95,4 +95,4 @@ private:
     static inline volatile uint32_t tick_count = 0;
 };
 
-} // namespace alloy::hal::st::stm32g0
+} // namespace ucore::hal::st::stm32g0

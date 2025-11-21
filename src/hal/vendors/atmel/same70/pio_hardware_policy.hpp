@@ -33,12 +33,12 @@
 // Bitfield definitions
 #include "hal/vendors/atmel/same70/generated/bitfields/pioa_bitfields.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 
 /**
@@ -350,7 +350,7 @@ struct Same70UartHardwarePolicy {
 // ============================================================================
 
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 /**
  * @example
@@ -360,8 +360,8 @@ struct Same70UartHardwarePolicy {
  * #include "hal/api/uart_simple.hpp"
  * #include "hal/vendors/atmel/same70/uart_hardware_policy.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create UART with hardware policy
  * using Uart0 = UartImpl<PeripheralId::USART0, Uart0Hardware>;

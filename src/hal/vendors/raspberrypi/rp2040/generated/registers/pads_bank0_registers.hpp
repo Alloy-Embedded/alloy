@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::pads_bank0 {
+namespace ucore::hal::raspberrypi::rp2040::pads_bank0 {
 
 // ============================================================================
 // PADS_BANK0 - Peripheral Registers
@@ -191,4 +191,4 @@ inline PADS_BANK0_Registers* PADS_BANK0() {
     return reinterpret_cast<PADS_BANK0_Registers*>(0x4001C000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::pads_bank0
+}  // namespace ucore::hal::raspberrypi::rp2040::pads_bank0

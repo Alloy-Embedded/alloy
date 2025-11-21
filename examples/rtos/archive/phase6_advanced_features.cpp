@@ -17,8 +17,8 @@
 #include "rtos/queue.hpp"
 #include "hal/interface/systick.hpp"
 
-using namespace alloy;
-using namespace alloy::rtos;
+using namespace ucore;
+using namespace ucore::rtos;
 
 // ============================================================================
 // Example 1: Task Notifications for ISR → Task Communication

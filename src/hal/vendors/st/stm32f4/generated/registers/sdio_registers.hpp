@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::sdio {
+namespace ucore::hal::st::stm32f4::sdio {
 
 // ============================================================================
 // SDIO - Secure digital input/output interface
@@ -136,4 +136,4 @@ inline SDIO_Registers* SDIO() {
     return reinterpret_cast<SDIO_Registers*>(0x40012C00);
 }
 
-}  // namespace alloy::hal::st::stm32f4::sdio
+}  // namespace ucore::hal::st::stm32f4::sdio

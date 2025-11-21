@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::vrefbuf {
+namespace ucore::hal::st::stm32g0::vrefbuf {
 
 // ============================================================================
 // VREFBUF - System configuration controller
@@ -37,4 +37,4 @@ inline VREFBUF_Registers* VREFBUF() {
     return reinterpret_cast<VREFBUF_Registers*>(0x40010030);
 }
 
-}  // namespace alloy::hal::st::stm32g0::vrefbuf
+}  // namespace ucore::hal::st::stm32g0::vrefbuf

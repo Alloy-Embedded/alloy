@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::scb {
+namespace ucore::hal::st::stm32f4::scb {
 
 // ============================================================================
 // SCB - System control block
@@ -117,4 +117,4 @@ inline SCB_Registers* SCB() {
     return reinterpret_cast<SCB_Registers*>(0xE000ED00);
 }
 
-}  // namespace alloy::hal::st::stm32f4::scb
+}  // namespace ucore::hal::st::stm32f4::scb

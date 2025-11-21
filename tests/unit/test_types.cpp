@@ -16,8 +16,8 @@
 #include <type_traits>
 #include <cstdint>
 
-using namespace alloy::hal;
-using namespace alloy::core;
+using namespace ucore::hal;
+using namespace ucore::core;
 
 // ==============================================================================
 // GPIO Types Tests

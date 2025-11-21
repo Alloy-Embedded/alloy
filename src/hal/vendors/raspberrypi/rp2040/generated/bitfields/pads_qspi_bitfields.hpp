@@ -9,12 +9,12 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::raspberrypi::rp2040::pads_qspi {
+namespace ucore::hal::raspberrypi::rp2040::pads_qspi {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // PADS_QSPI Bit Field Definitions
 // ============================================================================
 
-}  // namespace alloy::hal::raspberrypi::rp2040::pads_qspi
+}  // namespace ucore::hal::raspberrypi::rp2040::pads_qspi

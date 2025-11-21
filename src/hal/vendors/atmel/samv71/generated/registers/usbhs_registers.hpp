@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::usbhs {
+namespace ucore::hal::atmel::samv71::usbhs {
 
 // ============================================================================
 // USBHS - USB High-Speed Interface
@@ -452,4 +452,4 @@ inline USBHS_Registers* USBHS() {
     return reinterpret_cast<USBHS_Registers*>(0x40038000);
 }
 
-}  // namespace alloy::hal::atmel::samv71::usbhs
+}  // namespace ucore::hal::atmel::samv71::usbhs

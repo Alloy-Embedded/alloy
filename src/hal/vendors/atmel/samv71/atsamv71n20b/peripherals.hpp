@@ -7,12 +7,12 @@
 ///
 /// DO NOT EDIT - Regenerate from SVD if needed
 
-#ifndef ALLOY_GENERATED_ATSAMV71N20B_PERIPHERALS_HPP
-#define ALLOY_GENERATED_ATSAMV71N20B_PERIPHERALS_HPP
+#ifndef UCORE_GENERATED_ATSAMV71N20B_PERIPHERALS_HPP
+#define UCORE_GENERATED_ATSAMV71N20B_PERIPHERALS_HPP
 
 #include <cstdint>
 
-namespace alloy::generated::atsamv71n20b {
+namespace ucore::generated::atsamv71n20b {
 
 // ============================================================================
 // PERIPHERAL BASE ADDRESSES
@@ -143,6 +143,6 @@ namespace memory {
 // Memory regions not defined in SVD
 }  // namespace memory
 
-}  // namespace alloy::generated::atsamv71n20b
+}  // namespace ucore::generated::atsamv71n20b
 
 #endif  // ALLOY_GENERATED_ATSAMV71N20B_PERIPHERALS_HPP

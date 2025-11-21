@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::apb_ctrl {
+namespace ucore::hal::espressif::esp32::apb_ctrl {
 
 // ============================================================================
 // APB_CTRL - APB (Advanced Peripheral Bus) Controller
@@ -82,4 +82,4 @@ inline APB_CTRL_Registers* APB_CTRL() {
     return reinterpret_cast<APB_CTRL_Registers*>(0x3FF66000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::apb_ctrl
+}  // namespace ucore::hal::espressif::esp32::apb_ctrl

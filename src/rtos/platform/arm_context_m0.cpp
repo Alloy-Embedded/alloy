@@ -16,7 +16,7 @@
     #include "rtos/platform/arm_context.hpp"
     #include "rtos/scheduler.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 void init_task_stack(TaskControlBlock* tcb, void (*func)()) {
     // Get pointer to top of stack (stacks grow downward)
@@ -128,7 +128,7 @@ void trigger_context_switch() {
 
 }  // namespace scheduler
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 // PendSV Handler - Called when context switch is needed
 // This must be naked function (no prologue/epilogue)
@@ -183,7 +183,7 @@ extern "C" __attribute__((naked)) void PendSV_Handler() {
 // C function called by PendSV_Handler
 // Takes current PSP, returns new PSP
 extern "C" void* PendSV_Handler_C(void* current_psp) {
-    using namespace alloy::rtos;
+    using namespace ucore::rtos;
 
     // Save current task's stack pointer
     if (g_scheduler.current_task != nullptr) {

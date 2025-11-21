@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f1::adc2 {
+namespace ucore::hal::st::stm32f1::adc2 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // ADC2 Bit Field Definitions
@@ -583,4 +583,4 @@ namespace dr {
 
 }  // namespace dr
 
-}  // namespace alloy::hal::st::stm32f1::adc2
+}  // namespace ucore::hal::st::stm32f1::adc2

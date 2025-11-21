@@ -10,7 +10,7 @@
 //   #include "startup/arm_cortex_m4/cortex_m4_init.hpp"
 //
 //   void SystemInit() {
-//       alloy::arm::cortex_m4::initialize();
+//       ucore::arm::cortex_m4::initialize();
 //       // ... vendor-specific initialization
 //   }
 
@@ -19,7 +19,7 @@
 #include "../arm_cortex_m/core_common.hpp"
 #include "fpu_m4.hpp"
 
-namespace alloy::arm::cortex_m4 {
+namespace ucore::arm::cortex_m4 {
 
 /// Initialize Cortex-M4 core features
 /// @param enable_fpu: Enable FPU if present (default: true)
@@ -52,4 +52,4 @@ inline void initialize_without_fpu() {
     initialize(false, false);
 }
 
-}  // namespace alloy::arm::cortex_m4
+}  // namespace ucore::arm::cortex_m4

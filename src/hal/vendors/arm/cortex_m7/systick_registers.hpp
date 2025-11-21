@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::arm::cortex_m7 {
+namespace ucore::hal::arm::cortex_m7 {
 
 /**
  * @brief SysTick Timer registers (ARM Cortex-M standard)
@@ -16,4 +16,4 @@ struct SysTick_Type {
     volatile uint32_t CALIB;  ///< 0x0C: Calibration Value Register
 };
 
-} // namespace alloy::hal::arm::cortex_m7
+} // namespace ucore::hal::arm::cortex_m7

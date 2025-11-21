@@ -7,12 +7,12 @@
 ///
 /// DO NOT EDIT - Regenerate from SVD if needed
 
-#ifndef ALLOY_GENERATED_ESP32_PERIPHERALS_HPP
-#define ALLOY_GENERATED_ESP32_PERIPHERALS_HPP
+#ifndef UCORE_GENERATED_ESP32_PERIPHERALS_HPP
+#define UCORE_GENERATED_ESP32_PERIPHERALS_HPP
 
 #include <cstdint>
 
-namespace alloy::generated::esp32 {
+namespace ucore::generated::esp32 {
 
 // ============================================================================
 // PERIPHERAL BASE ADDRESSES
@@ -111,6 +111,6 @@ namespace memory {
 constexpr uintptr_t FLASH_ENCRYPTION = 0x3FF46000;
 }  // namespace memory
 
-}  // namespace alloy::generated::esp32
+}  // namespace ucore::generated::esp32
 
 #endif  // ALLOY_GENERATED_ESP32_PERIPHERALS_HPP

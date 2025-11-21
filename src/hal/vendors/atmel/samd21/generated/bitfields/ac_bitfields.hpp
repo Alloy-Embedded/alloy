@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::ac {
+namespace ucore::hal::atmel::samd21::ac {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // AC Bit Field Definitions
@@ -381,4 +381,4 @@ namespace scaler {
 
 }  // namespace scaler
 
-}  // namespace alloy::hal::atmel::samd21::ac
+}  // namespace ucore::hal::atmel::samd21::ac

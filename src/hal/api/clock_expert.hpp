@@ -12,9 +12,9 @@
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief Expert clock configuration
@@ -157,4 +157,4 @@ Result<void, ErrorCode> configure(const ClockExpertConfig& config) {
 
 }  // namespace expert
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

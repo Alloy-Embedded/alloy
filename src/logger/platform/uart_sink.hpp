@@ -2,7 +2,7 @@
 
 #include "../sink.hpp"
 
-namespace alloy::logger {
+namespace ucore::logger {
 
 /**
  * UART output sink for logger
@@ -56,4 +56,4 @@ class UartSink : public Sink {
     UartImpl& uart_;
 };
 
-}  // namespace alloy::logger
+}  // namespace ucore::logger

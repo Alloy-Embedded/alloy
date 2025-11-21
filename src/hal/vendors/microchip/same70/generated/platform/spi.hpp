@@ -42,9 +42,9 @@
 // Bitfield definitions
 #include "hal/vendors/microchip/same70/generated/bitfields/spi_bitfields.hpp"
 
-namespace alloy::hal::microchip::same70 {
+namespace ucore::hal::microchip::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
 using namespace microchip;
@@ -347,7 +347,7 @@ using SPI0Hardware = SAME70SpiHardwarePolicy<0x40008000>;
 using SPI1Hardware = SAME70SpiHardwarePolicy<0x40058000>;
 
 
-}  // namespace alloy::hal::microchip::same70
+}  // namespace ucore::hal::microchip::same70
 
 /**
  * @example
@@ -356,7 +356,7 @@ using SPI1Hardware = SAME70SpiHardwarePolicy<0x40058000>;
  * @code
  * #include "hal/vendors/microchip//spi.hpp"
  *
- * using namespace alloy::hal::microchip::same70;
+ * using namespace ucore::hal::microchip::same70;
  *
  * int main() {
  *     // Initialize SPI

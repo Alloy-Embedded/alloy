@@ -11,7 +11,7 @@
 #include <hal/st/stm32f1/generated/stm32f103c8/traits.hpp>
 
 // Test namespace imports
-using namespace alloy::hal::stm32f1::stm32f103c8;
+using namespace ucore::hal::stm32f1::stm32f103c8;
 
 // Compile-time tests
 static_assert(pins::PA0 == 0, "PA0 should be 0");

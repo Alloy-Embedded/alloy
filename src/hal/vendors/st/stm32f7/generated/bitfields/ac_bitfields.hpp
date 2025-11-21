@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::ac {
+namespace ucore::hal::st::stm32f7::ac {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // AC Bit Field Definitions
@@ -173,4 +173,4 @@ namespace abfsr {
 
 }  // namespace abfsr
 
-}  // namespace alloy::hal::st::stm32f7::ac
+}  // namespace ucore::hal::st::stm32f7::ac

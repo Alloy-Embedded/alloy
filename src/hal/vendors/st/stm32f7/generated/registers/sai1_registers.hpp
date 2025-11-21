@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::sai1 {
+namespace ucore::hal::st::stm32f7::sai1 {
 
 // ============================================================================
 // SAI1 - Serial audio interface
@@ -128,4 +128,4 @@ inline SAI1_Registers* SAI1() {
     return reinterpret_cast<SAI1_Registers*>(0x40015800);
 }
 
-}  // namespace alloy::hal::st::stm32f7::sai1
+}  // namespace ucore::hal::st::stm32f7::sai1

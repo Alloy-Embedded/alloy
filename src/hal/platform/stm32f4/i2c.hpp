@@ -44,16 +44,16 @@
 #include "hal/vendors/st/stm32f4/bitfields/i2c3_bitfields.hpp"
 
 
-namespace alloy::hal::stm32f4 {
+namespace ucore::hal::stm32f4 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::st::stm32f4;
+using namespace ucore::hal::st::stm32f4;
 
 // Namespace alias for bitfield access
-namespace i2c = alloy::hal::st::stm32f4::i2c3;
+namespace i2c = ucore::hal::st::stm32f4::i2c3;
 
 // Note: I2C uses common I2cMode from hal/types.hpp:
 // - Mode0: CPOL=0, CPHA=0
@@ -104,12 +104,12 @@ class I2c {
      * Returns pointer to I2C registers. Uses conditional compilation
      * for test hook injection.
      */
-    static inline volatile alloy::hal::st::stm32f4::i2c3::I2C3_Registers* get_hw() {
+    static inline volatile ucore::hal::st::stm32f4::i2c3::I2C3_Registers* get_hw() {
 #ifdef ALLOY_I2C_MOCK_HW
         // In tests, use the mock hardware pointer
         return ALLOY_I2C_MOCK_HW();
 #else
-        return reinterpret_cast<volatile alloy::hal::st::stm32f4::i2c3::I2C3_Registers*>(BASE_ADDR);
+        return reinterpret_cast<volatile ucore::hal::st::stm32f4::i2c3::I2C3_Registers*>(BASE_ADDR);
 #endif
     }
 
@@ -431,4 +431,4 @@ using I2c1 = I2c<I2C1_BASE, I2C1_IRQ>;  ///< I2C1 instance
 using I2c2 = I2c<I2C2_BASE, I2C2_IRQ>;  ///< I2C2 instance
 using I2c3 = I2c<I2C3_BASE, I2C3_IRQ>;  ///< I2C3 instance
 
-}  // namespace alloy::hal::stm32f4
+}  // namespace ucore::hal::stm32f4

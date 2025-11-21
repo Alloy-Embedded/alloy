@@ -11,7 +11,7 @@
 #include "logger/sink.hpp"
 #include <cstring>
 
-namespace alloy::logger {
+namespace ucore::logger {
 
 /**
  * @brief UART sink for logger output
@@ -110,4 +110,4 @@ UartSink<UartImpl> make_uart_sink(UartImpl& uart) {
     return UartSink<UartImpl>(uart);
 }
 
-}  // namespace alloy::logger
+}  // namespace ucore::logger

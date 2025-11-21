@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::pwm0 {
+namespace ucore::hal::atmel::same70::pwm0 {
 
 // ============================================================================
 // PWM0 - Pulse Width Modulation Controller
@@ -288,4 +288,4 @@ inline PWM0_Registers* PWM0() {
     return reinterpret_cast<PWM0_Registers*>(0x40020000);
 }
 
-}  // namespace alloy::hal::atmel::same70::pwm0
+}  // namespace ucore::hal::atmel::same70::pwm0

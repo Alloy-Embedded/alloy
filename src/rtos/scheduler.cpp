@@ -24,7 +24,7 @@
     #include "hal/vendors/host/systick.hpp"
 #endif
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 // Global scheduler state
 SchedulerState g_scheduler;
@@ -108,7 +108,7 @@ void init() {
     g_scheduler.current_task->state = TaskState::Running;
 
     // Start first task (platform-specific)
-    alloy::rtos::start_first_task();
+    ucore::rtos::start_first_task();
 
     // Never reached
     while (1)
@@ -306,4 +306,4 @@ void register_task(TaskControlBlock* tcb) {
 
 }  // namespace RTOS
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos

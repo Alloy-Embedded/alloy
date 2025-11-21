@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::scb_actrl {
+namespace ucore::hal::st::stm32f4::scb_actrl {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SCB_ACTRL Bit Field Definitions
@@ -51,4 +51,4 @@ namespace actrl {
 
 }  // namespace actrl
 
-}  // namespace alloy::hal::st::stm32f4::scb_actrl
+}  // namespace ucore::hal::st::stm32f4::scb_actrl

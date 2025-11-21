@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::rtt {
+namespace ucore::hal::atmel::same70::rtt {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // RTT Bit Field Definitions
@@ -94,4 +94,4 @@ constexpr uint32_t RTTINC_Msk = RTTINC::mask;
 
 }  // namespace sr
 
-}  // namespace alloy::hal::atmel::same70::rtt
+}  // namespace ucore::hal::atmel::same70::rtt

@@ -3,9 +3,9 @@
 #include "tests/rtos/test_framework.hpp"
 #include "rtos/memory_pool.hpp"
 
-using namespace alloy;
-using namespace alloy::rtos;
-using namespace alloy::rtos::test;
+using namespace ucore;
+using namespace ucore::rtos;
+using namespace ucore::rtos::test;
 
 // Test types
 struct SmallBlock {

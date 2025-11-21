@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::dmac {
+namespace ucore::hal::atmel::samd21::dmac {
 
 // ============================================================================
 // DMAC - Direct Memory Access Controller
@@ -130,4 +130,4 @@ inline DMAC_Registers* DMAC() {
     return reinterpret_cast<DMAC_Registers*>(0x41004800);
 }
 
-}  // namespace alloy::hal::atmel::samd21::dmac
+}  // namespace ucore::hal::atmel::samd21::dmac

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::scnscb {
+namespace ucore::hal::atmel::same70::scnscb {
 
 // ============================================================================
 // SCnSCB - System control not in SCB
@@ -38,4 +38,4 @@ inline SCnSCB_Registers* SCnSCB() {
     return reinterpret_cast<SCnSCB_Registers*>(0xE000E000);
 }
 
-}  // namespace alloy::hal::atmel::same70::scnscb
+}  // namespace ucore::hal::atmel::same70::scnscb

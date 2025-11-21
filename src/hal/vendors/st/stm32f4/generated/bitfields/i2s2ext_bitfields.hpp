@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::i2s2ext {
+namespace ucore::hal::st::stm32f4::i2s2ext {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // I2S2ext Bit Field Definitions
@@ -332,4 +332,4 @@ namespace i2spr {
 
 }  // namespace i2spr
 
-}  // namespace alloy::hal::st::stm32f4::i2s2ext
+}  // namespace ucore::hal::st::stm32f4::i2s2ext

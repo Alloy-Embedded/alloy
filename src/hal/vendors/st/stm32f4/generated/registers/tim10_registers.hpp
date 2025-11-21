@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::tim10 {
+namespace ucore::hal::st::stm32f4::tim10 {
 
 // ============================================================================
 // TIM10 - General-purpose-timers
@@ -95,4 +95,4 @@ inline TIM10_Registers* TIM10() {
     return reinterpret_cast<TIM10_Registers*>(0x40014400);
 }
 
-}  // namespace alloy::hal::st::stm32f4::tim10
+}  // namespace ucore::hal::st::stm32f4::tim10

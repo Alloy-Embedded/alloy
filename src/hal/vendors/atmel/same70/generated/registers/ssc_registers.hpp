@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::ssc {
+namespace ucore::hal::atmel::same70::ssc {
 
 // ============================================================================
 // SSC - Synchronous Serial Controller
@@ -109,4 +109,4 @@ inline SSC_Registers* SSC() {
     return reinterpret_cast<SSC_Registers*>(0x40004000);
 }
 
-}  // namespace alloy::hal::atmel::same70::ssc
+}  // namespace ucore::hal::atmel::same70::ssc

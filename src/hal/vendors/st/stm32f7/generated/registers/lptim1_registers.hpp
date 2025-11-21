@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::lptim1 {
+namespace ucore::hal::st::stm32f7::lptim1 {
 
 // ============================================================================
 // LPTIM1 - Low power timer
@@ -74,4 +74,4 @@ inline LPTIM1_Registers* LPTIM1() {
     return reinterpret_cast<LPTIM1_Registers*>(0x40002400);
 }
 
-}  // namespace alloy::hal::st::stm32f7::lptim1
+}  // namespace ucore::hal::st::stm32f7::lptim1

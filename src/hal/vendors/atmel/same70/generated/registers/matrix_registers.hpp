@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::matrix {
+namespace ucore::hal::atmel::same70::matrix {
 
 // ============================================================================
 // MATRIX - AHB Bus Matrix
@@ -79,4 +79,4 @@ inline MATRIX_Registers* MATRIX() {
     return reinterpret_cast<MATRIX_Registers*>(0x40088000);
 }
 
-}  // namespace alloy::hal::atmel::same70::matrix
+}  // namespace ucore::hal::atmel::same70::matrix

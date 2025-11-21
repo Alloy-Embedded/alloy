@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::slc {
+namespace ucore::hal::espressif::esp32::slc {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SLC Bit Field Definitions
@@ -3403,4 +3403,4 @@ namespace id {
 
 }  // namespace id
 
-}  // namespace alloy::hal::espressif::esp32::slc
+}  // namespace ucore::hal::espressif::esp32::slc

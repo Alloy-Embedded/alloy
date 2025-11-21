@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::apb_ctrl {
+namespace ucore::hal::espressif::esp32::apb_ctrl {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // APB_CTRL Bit Field Definitions
@@ -275,4 +275,4 @@ namespace date {
 
 }  // namespace date
 
-}  // namespace alloy::hal::espressif::esp32::apb_ctrl
+}  // namespace ucore::hal::espressif::esp32::apb_ctrl

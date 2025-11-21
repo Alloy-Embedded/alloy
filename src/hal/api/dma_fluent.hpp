@@ -13,9 +13,9 @@
 #include "core/result.hpp"
 #include "hal/api/dma_simple.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 struct DmaBuilderState {
     bool has_channel = false;
@@ -120,4 +120,4 @@ private:
     DmaBuilderState state_;
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

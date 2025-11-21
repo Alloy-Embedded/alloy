@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::mtb {
+namespace ucore::hal::atmel::samd21::mtb {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // MTB Bit Field Definitions
@@ -101,4 +101,4 @@ namespace flow {
 
 }  // namespace flow
 
-}  // namespace alloy::hal::atmel::samd21::mtb
+}  // namespace ucore::hal::atmel::samd21::mtb

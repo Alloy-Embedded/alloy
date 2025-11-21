@@ -55,16 +55,16 @@
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfield access
-namespace pmc = alloy::hal::atmel::same70::pmc;
+namespace pmc = ucore::hal::atmel::same70::pmc;
 
 // ============================================================================
 // Platform-Specific Enums
@@ -135,7 +135,7 @@ struct ClockConfig {
 class Clock {
 public:
     // Compile-time constants
-    static constexpr uintptr_t PMC_BASE = alloy::generated::atsame70q21b::peripherals::PMC;  ///< PMC base address (using generated peripheral addresses)
+    static constexpr uintptr_t PMC_BASE = ucore::generated::atsame70q21b::peripherals::PMC;  ///< PMC base address (using generated peripheral addresses)
     static constexpr uint32_t SLOW_CLOCK_FREQ = 32768;  ///< 32.768 kHz
 
     // API Layer constants - defined after preset configurations
@@ -389,11 +389,11 @@ public:
 
         // Enable PIOA, PIOB, PIOC, PIOD, PIOE clocks
         auto* pmc = get_pmc();
-        pmc->PCER0 = (1u << alloy::generated::atsame70q21b::id::PIOA) |
-                     (1u << alloy::generated::atsame70q21b::id::PIOB) |
-                     (1u << alloy::generated::atsame70q21b::id::PIOC) |
-                     (1u << alloy::generated::atsame70q21b::id::PIOD) |
-                     (1u << alloy::generated::atsame70q21b::id::PIOE);
+        pmc->PCER0 = (1u << ucore::generated::atsame70q21b::id::PIOA) |
+                     (1u << ucore::generated::atsame70q21b::id::PIOB) |
+                     (1u << ucore::generated::atsame70q21b::id::PIOC) |
+                     (1u << ucore::generated::atsame70q21b::id::PIOD) |
+                     (1u << ucore::generated::atsame70q21b::id::PIOE);
 
         return Ok();
     }
@@ -416,14 +416,14 @@ public:
 
         // Map UART/USART ID to peripheral ID
         switch (uart_id) {
-            case 0: peripheral_id = alloy::generated::atsame70q21b::id::UART0; break;
-            case 1: peripheral_id = alloy::generated::atsame70q21b::id::UART1; break;
-            case 2: peripheral_id = alloy::generated::atsame70q21b::id::UART2; break;
-            case 3: peripheral_id = alloy::generated::atsame70q21b::id::UART3; break;
-            case 4: peripheral_id = alloy::generated::atsame70q21b::id::UART4; break;
-            case 100: peripheral_id = alloy::generated::atsame70q21b::id::USART0; break;
-            case 101: peripheral_id = alloy::generated::atsame70q21b::id::USART1; break;
-            case 102: peripheral_id = alloy::generated::atsame70q21b::id::USART2; break;
+            case 0: peripheral_id = ucore::generated::atsame70q21b::id::UART0; break;
+            case 1: peripheral_id = ucore::generated::atsame70q21b::id::UART1; break;
+            case 2: peripheral_id = ucore::generated::atsame70q21b::id::UART2; break;
+            case 3: peripheral_id = ucore::generated::atsame70q21b::id::UART3; break;
+            case 4: peripheral_id = ucore::generated::atsame70q21b::id::UART4; break;
+            case 100: peripheral_id = ucore::generated::atsame70q21b::id::USART0; break;
+            case 101: peripheral_id = ucore::generated::atsame70q21b::id::USART1; break;
+            case 102: peripheral_id = ucore::generated::atsame70q21b::id::USART2; break;
             default: return Err(ErrorCode::InvalidParameter);
         }
 
@@ -447,8 +447,8 @@ public:
         uint8_t peripheral_id;
 
         switch (spi_id) {
-            case 0: peripheral_id = alloy::generated::atsame70q21b::id::SPI0; break;
-            case 1: peripheral_id = alloy::generated::atsame70q21b::id::SPI1; break;
+            case 0: peripheral_id = ucore::generated::atsame70q21b::id::SPI0; break;
+            case 1: peripheral_id = ucore::generated::atsame70q21b::id::SPI1; break;
             default: return Err(ErrorCode::InvalidParameter);
         }
 
@@ -472,9 +472,9 @@ public:
         uint8_t peripheral_id;
 
         switch (i2c_id) {
-            case 0: peripheral_id = alloy::generated::atsame70q21b::id::TWIHS0; break;
-            case 1: peripheral_id = alloy::generated::atsame70q21b::id::TWIHS1; break;
-            case 2: peripheral_id = alloy::generated::atsame70q21b::id::TWIHS2; break;
+            case 0: peripheral_id = ucore::generated::atsame70q21b::id::TWIHS0; break;
+            case 1: peripheral_id = ucore::generated::atsame70q21b::id::TWIHS1; break;
+            case 2: peripheral_id = ucore::generated::atsame70q21b::id::TWIHS2; break;
             default: return Err(ErrorCode::InvalidParameter);
         }
 
@@ -504,11 +504,11 @@ private:
     /**
      * @brief Get register pointer
      */
-static inline volatile alloy::hal::atmel::same70::pmc::PMC_Registers* get_pmc() {
+static inline volatile ucore::hal::atmel::same70::pmc::PMC_Registers* get_pmc() {
         #ifdef ALLOY_CLOCK_MOCK_HW
                 return ALLOY_CLOCK_MOCK_HW();
         #else
-                return reinterpret_cast<volatile alloy::hal::atmel::same70::pmc::PMC_Registers*>(PMC_BASE);
+                return reinterpret_cast<volatile ucore::hal::atmel::same70::pmc::PMC_Registers*>(PMC_BASE);
         #endif
     }
 
@@ -581,8 +581,8 @@ inline const ClockConfig& Clock::CLOCK_CONFIG_MEDIUM_PERFORMANCE = CLOCK_CONFIG_
 #include "hal/core/concepts.hpp"
 
 // Validate that SAME70 Clock satisfies the ClockPlatform concept
-static_assert(alloy::hal::concepts::ClockPlatform<Clock>,
+static_assert(ucore::hal::concepts::ClockPlatform<Clock>,
               "SAME70 Clock must satisfy ClockPlatform concept - missing required methods");
 #endif
 
-} // namespace alloy::hal::same70
+} // namespace ucore::hal::same70

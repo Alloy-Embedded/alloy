@@ -45,13 +45,13 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ucore::core;
+using namespace ucore::hal;
 
 // Import vendor-specific register types (now from family-level namespace)
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Note: GPIO configuration uses common HAL types from hal/types.hpp:
 // - PinDirection (Input, Output)
@@ -326,11 +326,11 @@ public:
 // Port Base Address Constants (from generated peripherals.hpp)
 // ==============================================================================
 
-constexpr uint32_t PIOA_BASE = alloy::generated::atsame70q21b::peripherals::PIOA;
-constexpr uint32_t PIOB_BASE = alloy::generated::atsame70q21b::peripherals::PIOB;
-constexpr uint32_t PIOC_BASE = alloy::generated::atsame70q21b::peripherals::PIOC;
-constexpr uint32_t PIOD_BASE = alloy::generated::atsame70q21b::peripherals::PIOD;
-constexpr uint32_t PIOE_BASE = alloy::generated::atsame70q21b::peripherals::PIOE;
+constexpr uint32_t PIOA_BASE = ucore::generated::atsame70q21b::peripherals::PIOA;
+constexpr uint32_t PIOB_BASE = ucore::generated::atsame70q21b::peripherals::PIOB;
+constexpr uint32_t PIOC_BASE = ucore::generated::atsame70q21b::peripherals::PIOC;
+constexpr uint32_t PIOD_BASE = ucore::generated::atsame70q21b::peripherals::PIOD;
+constexpr uint32_t PIOE_BASE = ucore::generated::atsame70q21b::peripherals::PIOE;
 
 // ==============================================================================
 // Common Pin Type Aliases
@@ -356,8 +356,8 @@ constexpr uint32_t PIOE_BASE = alloy::generated::atsame70q21b::peripherals::PIOE
 #include "hal/core/concepts.hpp"
 
 // Validate that SAME70 GpioPin satisfies the GpioPin concept
-static_assert(alloy::hal::concepts::GpioPin<GpioPin<PIOC_BASE, 8>>,
+static_assert(ucore::hal::concepts::GpioPin<GpioPin<PIOC_BASE, 8>>,
               "SAME70 GpioPin must satisfy GpioPin concept - missing required methods");
 #endif
 
-} // namespace alloy::hal::same70
+} // namespace ucore::hal::same70

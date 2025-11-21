@@ -32,8 +32,8 @@
 /// RTOS::start();
 /// ```
 
-#ifndef ALLOY_RTOS_TICKLESS_IDLE_HPP
-#define ALLOY_RTOS_TICKLESS_IDLE_HPP
+#ifndef UCORE_RTOS_TICKLESS_IDLE_HPP
+#define UCORE_RTOS_TICKLESS_IDLE_HPP
 
 #include <cstddef>
 
@@ -41,7 +41,7 @@
 #include "core/types.hpp"
 #include "core/result.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 // ============================================================================
 // Tickless Idle Configuration
@@ -317,6 +317,6 @@ consteval core::u32 estimated_power_savings_uw() {
     return without_tickless - with_tickless;
 }
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ALLOY_RTOS_TICKLESS_IDLE_HPP

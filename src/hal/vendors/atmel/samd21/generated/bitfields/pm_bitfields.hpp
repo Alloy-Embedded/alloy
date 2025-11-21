@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samd21::pm {
+namespace ucore::hal::atmel::samd21::pm {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // PM Bit Field Definitions
@@ -443,4 +443,4 @@ namespace rcause {
 
 }  // namespace rcause
 
-}  // namespace alloy::hal::atmel::samd21::pm
+}  // namespace ucore::hal::atmel::samd21::pm

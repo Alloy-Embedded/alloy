@@ -10,7 +10,7 @@
 
 #include "hal/vendors/atmel/same70/adc_hardware_policy.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
 // ============================================================================
 // Hardware Policy Type Aliases
@@ -19,14 +19,14 @@ namespace alloy::hal::same70 {
 using Adc0 = Adc0Hardware;
 using Adc1 = Adc1Hardware;
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 /**
  * @example ADC usage on SAME70
  *
  * @code
  * #include "hal/platform/same70/adc.hpp"
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal::same70;
  *
  * int main() {
  *     // Initialize ADC0

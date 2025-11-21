@@ -36,12 +36,12 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
 
-namespace alloy::hal::st::stm32g0 {
+namespace ucore::hal::st::stm32g0 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::st::stm32g0::adc;
+using namespace ucore::hal::st::stm32g0::adc;
 
 /**
  * @brief Hardware Policy for ADC on STM32G0
@@ -336,7 +336,7 @@ struct Stm32g0ADCHardwarePolicy {
 // ============================================================================
 
 
-}  // namespace alloy::hal::st::stm32g0
+}  // namespace ucore::hal::st::stm32g0
 
 /**
  * @example
@@ -346,8 +346,8 @@ struct Stm32g0ADCHardwarePolicy {
  * #include "hal/api/adc_simple.hpp"
  * #include "hal/vendors/st/stm32g0/adc_hardware_policy.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::st::stm32g0;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::st::stm32g0;
  *
  * // Create ADC with hardware policy
  * using Uart0 = UartImpl<Stm32g0ADCHardwarePolicy<UART0_BASE, 150000000>>;

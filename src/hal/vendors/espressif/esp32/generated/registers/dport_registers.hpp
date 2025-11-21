@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::espressif::esp32::dport {
+namespace ucore::hal::espressif::esp32::dport {
 
 // ============================================================================
 // DPORT - DPORT Peripheral
@@ -1717,4 +1717,4 @@ inline DPORT_Registers* DPORT() {
     return reinterpret_cast<DPORT_Registers*>(0x3FF00000);
 }
 
-}  // namespace alloy::hal::espressif::esp32::dport
+}  // namespace ucore::hal::espressif::esp32::dport

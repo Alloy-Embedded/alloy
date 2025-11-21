@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f1::dbg {
+namespace ucore::hal::st::stm32f1::dbg {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // DBG Bit Field Definitions
@@ -151,4 +151,4 @@ namespace cr {
 
 }  // namespace cr
 
-}  // namespace alloy::hal::st::stm32f1::dbg
+}  // namespace ucore::hal::st::stm32f1::dbg

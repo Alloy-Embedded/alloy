@@ -36,12 +36,12 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfields
 namespace spi = atmel::same70::spi0;
@@ -295,7 +295,7 @@ using Spi0Hardware = Same70SPIHardwarePolicy<0x40008000, >;
 /// @brief Hardware policy for Spi1
 using Spi1Hardware = Same70SPIHardwarePolicy<0x40058000, >;
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 /**
  * @example
@@ -305,8 +305,8 @@ using Spi1Hardware = Same70SPIHardwarePolicy<0x40058000, >;
  * #include "hal/api/spi_simple.hpp"
  * #include "hal/platform/same70/spi.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create SPI with hardware policy
  * using Instance0 = Spi0Hardware;

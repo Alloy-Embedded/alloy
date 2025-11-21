@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::supc {
+namespace ucore::hal::atmel::samv71::supc {
 
 // ============================================================================
 // SUPC - Supply Controller
@@ -57,4 +57,4 @@ inline SUPC_Registers* SUPC() {
     return reinterpret_cast<SUPC_Registers*>(0x400E1810);
 }
 
-}  // namespace alloy::hal::atmel::samv71::supc
+}  // namespace ucore::hal::atmel::samv71::supc

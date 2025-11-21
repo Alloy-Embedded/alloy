@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::isi {
+namespace ucore::hal::atmel::same70::isi {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // ISI Bit Field Definitions
@@ -796,4 +796,4 @@ constexpr uint32_t WPVSRC_Msk = WPVSRC::mask;
 
 }  // namespace wpsr
 
-}  // namespace alloy::hal::atmel::same70::isi
+}  // namespace ucore::hal::atmel::same70::isi

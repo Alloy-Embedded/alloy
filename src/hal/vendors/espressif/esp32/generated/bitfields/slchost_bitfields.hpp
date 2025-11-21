@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::slchost {
+namespace ucore::hal::espressif::esp32::slchost {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SLCHOST Bit Field Definitions
@@ -3264,4 +3264,4 @@ namespace host_slchost_inf_st {
 
 }  // namespace host_slchost_inf_st
 
-}  // namespace alloy::hal::espressif::esp32::slchost
+}  // namespace ucore::hal::espressif::esp32::slchost

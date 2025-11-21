@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::ethernet_ptp {
+namespace ucore::hal::st::stm32f4::ethernet_ptp {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // Ethernet_PTP Bit Field Definitions
@@ -241,4 +241,4 @@ namespace ptpppscr {
 
 }  // namespace ptpppscr
 
-}  // namespace alloy::hal::st::stm32f4::ethernet_ptp
+}  // namespace ucore::hal::st::stm32f4::ethernet_ptp

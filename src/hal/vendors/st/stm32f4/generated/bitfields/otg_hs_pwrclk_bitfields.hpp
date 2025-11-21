@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::otg_hs_pwrclk {
+namespace ucore::hal::st::stm32f4::otg_hs_pwrclk {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // OTG_HS_PWRCLK Bit Field Definitions
@@ -39,4 +39,4 @@ namespace otg_hs_pcgcr {
 
 }  // namespace otg_hs_pcgcr
 
-}  // namespace alloy::hal::st::stm32f4::otg_hs_pwrclk
+}  // namespace ucore::hal::st::stm32f4::otg_hs_pwrclk

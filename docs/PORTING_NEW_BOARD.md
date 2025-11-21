@@ -529,7 +529,7 @@ cmake --build build-my-board --target blink
 
 **Expected output:**
 ```
-[ 28%] Built target alloy-hal
+[ 28%] Built target microcore-hal
 [100%] Built target blink
 Memory region         Used Size  Region Size  %age Used
            FLASH:        3088 B       512 KB      0.59%

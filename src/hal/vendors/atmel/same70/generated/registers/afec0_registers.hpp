@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::afec0 {
+namespace ucore::hal::atmel::same70::afec0 {
 
 // ============================================================================
 // AFEC0 - Analog Front-End Controller
@@ -159,4 +159,4 @@ inline AFEC0_Registers* AFEC0() {
     return reinterpret_cast<AFEC0_Registers*>(0x4003C000);
 }
 
-}  // namespace alloy::hal::atmel::same70::afec0
+}  // namespace ucore::hal::atmel::same70::afec0

@@ -7,12 +7,12 @@
 ///
 /// DO NOT EDIT - Regenerate from SVD if needed
 
-#ifndef ALLOY_GENERATED_STM32G0B1_PERIPHERALS_HPP
-#define ALLOY_GENERATED_STM32G0B1_PERIPHERALS_HPP
+#ifndef UCORE_GENERATED_STM32G0B1_PERIPHERALS_HPP
+#define UCORE_GENERATED_STM32G0B1_PERIPHERALS_HPP
 
 #include <cstdint>
 
-namespace alloy::generated::stm32g0b1 {
+namespace ucore::generated::stm32g0b1 {
 
 // ============================================================================
 // PERIPHERAL BASE ADDRESSES
@@ -102,6 +102,6 @@ namespace memory {
 constexpr uintptr_t SDRAMC = 0x40084000;
 }  // namespace memory
 
-}  // namespace alloy::generated::stm32g0b1
+}  // namespace ucore::generated::stm32g0b1
 
 #endif  // ALLOY_GENERATED_STM32G0B1_PERIPHERALS_HPP

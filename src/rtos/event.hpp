@@ -46,8 +46,8 @@
 /// }
 /// ```
 
-#ifndef ALLOY_RTOS_EVENT_HPP
-#define ALLOY_RTOS_EVENT_HPP
+#ifndef UCORE_RTOS_EVENT_HPP
+#define UCORE_RTOS_EVENT_HPP
 
 #include "hal/interface/systick.hpp"
 
@@ -57,7 +57,7 @@
 
 #include "core/types.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 /// Event Flags
 ///
@@ -319,6 +319,6 @@ inline core::u32 EventFlags::wait_all(core::u32 flags, core::u32 timeout_ms, boo
     }
 }
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ALLOY_RTOS_EVENT_HPP

@@ -9,12 +9,12 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::raspberrypi::rp2040::vreg_and_chip_reset {
+namespace ucore::hal::raspberrypi::rp2040::vreg_and_chip_reset {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // VREG_AND_CHIP_RESET Bit Field Definitions
 // ============================================================================
 
-}  // namespace alloy::hal::raspberrypi::rp2040::vreg_and_chip_reset
+}  // namespace ucore::hal::raspberrypi::rp2040::vreg_and_chip_reset

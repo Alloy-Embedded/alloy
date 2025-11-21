@@ -12,14 +12,14 @@
 /// Note: On host, clock configuration is managed by the OS.
 /// This implementation exists only to satisfy the HAL interface.
 
-#ifndef ALLOY_HAL_HOST_CLOCK_HPP
-#define ALLOY_HAL_HOST_CLOCK_HPP
+#ifndef UCORE_HAL_HOST_CLOCK_HPP
+#define UCORE_HAL_HOST_CLOCK_HPP
 
 #include "hal/interface/clock.hpp"
 
 #include "core/types.hpp"
 
-namespace alloy::hal::host {
+namespace ucore::hal::host {
 
 /// Host platform System Clock stub implementation
 ///
@@ -145,6 +145,6 @@ class SystemClock {
 // Static assertion to verify concept compliance
 static_assert(hal::SystemClock<SystemClock>, "Host SystemClock must satisfy SystemClock concept");
 
-}  // namespace alloy::hal::host
+}  // namespace ucore::hal::host
 
 #endif  // ALLOY_HAL_HOST_CLOCK_HPP

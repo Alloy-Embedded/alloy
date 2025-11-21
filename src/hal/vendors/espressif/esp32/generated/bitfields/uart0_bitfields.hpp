@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::uart0 {
+namespace ucore::hal::espressif::esp32::uart0 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // UART0 Bit Field Definitions
@@ -1331,4 +1331,4 @@ namespace id {
 
 }  // namespace id
 
-}  // namespace alloy::hal::espressif::esp32::uart0
+}  // namespace ucore::hal::espressif::esp32::uart0

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::timer {
+namespace ucore::hal::raspberrypi::rp2040::timer {
 
 // ============================================================================
 // TIMER - Controls time and alarms\n time is a 64 bit value indicating the time in usec since power-on\n timeh is the top 32 bits of time & timel is the bottom 32 bits\n to change time write to timelw before timehw\n to read time read from timelr before timehr\n An alarm is set by setting alarm_enable and writing to the corresponding alarm register\n When an alarm is pending, the corresponding alarm_running signal will be high\n An alarm can be cancelled before it has finished by clearing the alarm_enable\n When an alarm fires, the corresponding alarm_irq is set and alarm_running is cleared\n To clear the interrupt write a 1 to the corresponding alarm_irq
@@ -121,4 +121,4 @@ inline TIMER_Registers* TIMER() {
     return reinterpret_cast<TIMER_Registers*>(0x40054000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::timer
+}  // namespace ucore::hal::raspberrypi::rp2040::timer

@@ -23,9 +23,9 @@
 #include "hal/types.hpp"
 #include "hal/api/gpio_base.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /**
  * @brief GPIO pin wrapper with simple interface
@@ -278,4 +278,4 @@ public:
     }
 };
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

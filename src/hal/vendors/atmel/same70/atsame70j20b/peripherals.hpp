@@ -7,12 +7,12 @@
 ///
 /// DO NOT EDIT - Regenerate from SVD if needed
 
-#ifndef ALLOY_GENERATED_ATSAME70J20B_PERIPHERALS_HPP
-#define ALLOY_GENERATED_ATSAME70J20B_PERIPHERALS_HPP
+#ifndef UCORE_GENERATED_ATSAME70J20B_PERIPHERALS_HPP
+#define UCORE_GENERATED_ATSAME70J20B_PERIPHERALS_HPP
 
 #include <cstdint>
 
-namespace alloy::generated::atsame70j20b {
+namespace ucore::generated::atsame70j20b {
 
 // ============================================================================
 // PERIPHERAL BASE ADDRESSES
@@ -125,6 +125,6 @@ namespace memory {
 // Memory regions not defined in SVD
 }  // namespace memory
 
-}  // namespace alloy::generated::atsame70j20b
+}  // namespace ucore::generated::atsame70j20b
 
 #endif  // ALLOY_GENERATED_ATSAME70J20B_PERIPHERALS_HPP

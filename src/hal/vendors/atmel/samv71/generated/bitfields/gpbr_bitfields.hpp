@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::gpbr {
+namespace ucore::hal::atmel::samv71::gpbr {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // GPBR Bit Field Definitions
@@ -27,4 +27,4 @@ namespace sys_gpbr {
 
 }  // namespace sys_gpbr
 
-}  // namespace alloy::hal::atmel::samv71::gpbr
+}  // namespace ucore::hal::atmel::samv71::gpbr

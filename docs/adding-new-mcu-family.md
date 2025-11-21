@@ -546,7 +546,7 @@ add_executable(blink
     ${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/board.cpp
 )
 
-target_link_libraries(blink PRIVATE alloy-hal)
+target_link_libraries(blink PRIVATE microcore-hal)
 
 # Add startup code
 target_sources(blink PRIVATE ${STARTUP_SOURCE})

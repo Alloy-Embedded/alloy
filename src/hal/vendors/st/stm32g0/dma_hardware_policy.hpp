@@ -36,12 +36,12 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
 
-namespace alloy::hal::st::stm32g0 {
+namespace ucore::hal::st::stm32g0 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::st::stm32g0::dma1;
+using namespace ucore::hal::st::stm32g0::dma1;
 
 /**
  * @brief Hardware Policy for DMA on STM32G0
@@ -467,7 +467,7 @@ struct Stm32g0DMAHardwarePolicy {
 // ============================================================================
 
 
-}  // namespace alloy::hal::st::stm32g0
+}  // namespace ucore::hal::st::stm32g0
 
 /**
  * @example
@@ -477,8 +477,8 @@ struct Stm32g0DMAHardwarePolicy {
  * #include "hal/api/dma_simple.hpp"
  * #include "hal/vendors/st/stm32g0/dma_hardware_policy.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::st::stm32g0;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::st::stm32g0;
  *
  * // Create DMA with hardware policy
  * using Uart0 = UartImpl<Stm32g0DMAHardwarePolicy<UART0_BASE, 150000000>>;

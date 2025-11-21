@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32g0::tamp {
+namespace ucore::hal::st::stm32g0::tamp {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // TAMP Bit Field Definitions
@@ -500,4 +500,4 @@ namespace tamp_bkp4r {
 
 }  // namespace tamp_bkp4r
 
-}  // namespace alloy::hal::st::stm32g0::tamp
+}  // namespace ucore::hal::st::stm32g0::tamp

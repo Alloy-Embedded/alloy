@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::ethernet_dma {
+namespace ucore::hal::st::stm32f4::ethernet_dma {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // Ethernet_DMA Bit Field Definitions
@@ -532,4 +532,4 @@ namespace dmachrbar {
 
 }  // namespace dmachrbar
 
-}  // namespace alloy::hal::st::stm32f4::ethernet_dma
+}  // namespace ucore::hal::st::stm32f4::ethernet_dma

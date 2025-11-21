@@ -15,7 +15,7 @@
 #   - Board defines: led_green = GpioPin<PIOC, 8>, uart_console = Uart0, etc.
 #
 # Usage:
-#   cmake -DALLOY_BOARD=same70_xplained -B build
+#   cmake -DMICROCORE_BOARD=same70_xplained -B build
 #
 # @see openspec/changes/platform-abstraction/specs/platform-interface-layer/spec.md
 # ==============================================================================
@@ -25,7 +25,7 @@
 # ------------------------------------------------------------------------------
 
 # This function maps board names to platforms
-# It's used when ALLOY_PLATFORM is not explicitly set
+# It's used when MICROCORE_PLATFORM is not explicitly set
 function(alloy_board_to_platform BOARD_NAME OUT_PLATFORM)
     # Map board names to platforms
     if(BOARD_NAME STREQUAL "same70_xplained" OR BOARD_NAME STREQUAL "same70_xpld")
@@ -77,30 +77,30 @@ endfunction()
 #   }
 
 # Check if board configuration directory exists
-if(DEFINED ALLOY_BOARD)
-    set(ALLOY_BOARD_DIR "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}")
+if(DEFINED MICROCORE_BOARD)
+    set(MICROCORE_BOARD_DIR "${CMAKE_SOURCE_DIR}/boards/${MICROCORE_BOARD}")
 
-    if(EXISTS "${ALLOY_BOARD_DIR}")
-        message(STATUS "Board directory found: ${ALLOY_BOARD_DIR}")
+    if(EXISTS "${MICROCORE_BOARD_DIR}")
+        message(STATUS "Board directory found: ${MICROCORE_BOARD_DIR}")
 
         # Check for board.hpp header
-        if(EXISTS "${ALLOY_BOARD_DIR}/board.hpp")
-            message(STATUS "  Board header: ${ALLOY_BOARD_DIR}/board.hpp")
+        if(EXISTS "${MICROCORE_BOARD_DIR}/board.hpp")
+            message(STATUS "  Board header: ${MICROCORE_BOARD_DIR}/board.hpp")
         else()
             message(STATUS "  Board header: NOT FOUND (board.hpp missing)")
         endif()
 
         # Check for board.cmake (optional board-specific CMake config)
-        if(EXISTS "${ALLOY_BOARD_DIR}/board.cmake")
-            message(STATUS "  Board CMake: ${ALLOY_BOARD_DIR}/board.cmake")
-            include("${ALLOY_BOARD_DIR}/board.cmake")
+        if(EXISTS "${MICROCORE_BOARD_DIR}/board.cmake")
+            message(STATUS "  Board CMake: ${MICROCORE_BOARD_DIR}/board.cmake")
+            include("${MICROCORE_BOARD_DIR}/board.cmake")
         endif()
 
         # Export board directory for use by applications
-        set(ALLOY_BOARD_DIR ${ALLOY_BOARD_DIR} PARENT_SCOPE)
+        set(MICROCORE_BOARD_DIR ${MICROCORE_BOARD_DIR} PARENT_SCOPE)
 
     else()
-        message(STATUS "Board directory not found: ${ALLOY_BOARD_DIR}")
+        message(STATUS "Board directory not found: ${MICROCORE_BOARD_DIR}")
         message(STATUS "  Board configuration will use platform defaults")
     endif()
 endif()
@@ -116,11 +116,11 @@ endif()
 #   auto led = board::led_green{};
 #   auto uart = board::uart_console{};
 
-if(DEFINED ALLOY_BOARD_DIR AND EXISTS "${ALLOY_BOARD_DIR}")
+if(DEFINED MICROCORE_BOARD_DIR AND EXISTS "${MICROCORE_BOARD_DIR}")
     # Add to global include directories
-    include_directories(${ALLOY_BOARD_DIR})
+    include_directories(${MICROCORE_BOARD_DIR})
 
-    message(STATUS "Added board include path: ${ALLOY_BOARD_DIR}")
+    message(STATUS "Added board include path: ${MICROCORE_BOARD_DIR}")
 endif()
 
 # ------------------------------------------------------------------------------
@@ -128,16 +128,16 @@ endif()
 # ------------------------------------------------------------------------------
 
 # Verify board is compatible with selected platform
-if(DEFINED ALLOY_BOARD AND DEFINED ALLOY_PLATFORM)
+if(DEFINED MICROCORE_BOARD AND DEFINED MICROCORE_PLATFORM)
     # Get expected platform for this board
-    alloy_board_to_platform(${ALLOY_BOARD} EXPECTED_PLATFORM)
+    alloy_board_to_platform(${MICROCORE_BOARD} EXPECTED_PLATFORM)
 
     # Check if platform matches (some boards support multiple platforms)
-    if(NOT "${ALLOY_PLATFORM}" STREQUAL "${EXPECTED_PLATFORM}")
+    if(NOT "${MICROCORE_PLATFORM}" STREQUAL "${EXPECTED_PLATFORM}")
         message(WARNING
             "Platform mismatch detected:\n"
-            "  Board '${ALLOY_BOARD}' typically uses platform '${EXPECTED_PLATFORM}'\n"
-            "  But ALLOY_PLATFORM is set to '${ALLOY_PLATFORM}'\n"
+            "  Board '${MICROCORE_BOARD}' typically uses platform '${EXPECTED_PLATFORM}'\n"
+            "  But MICROCORE_PLATFORM is set to '${MICROCORE_PLATFORM}'\n"
             "This may work if the board supports multiple platforms, but verify carefully."
         )
     endif()
@@ -147,12 +147,12 @@ endif()
 # Board Information Summary
 # ------------------------------------------------------------------------------
 
-if(DEFINED ALLOY_BOARD)
+if(DEFINED MICROCORE_BOARD)
     message(STATUS "------------------------------------------------------------------------------")
-    message(STATUS "Board Configuration: ${ALLOY_BOARD}")
-    message(STATUS "  Platform: ${ALLOY_PLATFORM}")
-    if(DEFINED ALLOY_BOARD_DIR)
-        message(STATUS "  Location: ${ALLOY_BOARD_DIR}")
+    message(STATUS "Board Configuration: ${MICROCORE_BOARD}")
+    message(STATUS "  Platform: ${MICROCORE_PLATFORM}")
+    if(DEFINED MICROCORE_BOARD_DIR)
+        message(STATUS "  Location: ${MICROCORE_BOARD_DIR}")
     endif()
     message(STATUS "------------------------------------------------------------------------------")
 endif()

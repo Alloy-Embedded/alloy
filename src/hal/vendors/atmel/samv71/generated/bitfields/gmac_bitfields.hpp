@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::samv71::gmac {
+namespace ucore::hal::atmel::samv71::gmac {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // GMAC Bit Field Definitions
@@ -2529,4 +2529,4 @@ namespace st2er {
 
 }  // namespace st2er
 
-}  // namespace alloy::hal::atmel::samv71::gmac
+}  // namespace ucore::hal::atmel::samv71::gmac

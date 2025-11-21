@@ -15,7 +15,7 @@
 
 #include "core_common.hpp"
 
-namespace alloy::arm::cortex_m::nvic {
+namespace ucore::arm::cortex_m::nvic {
 
 /// Enable an interrupt
 /// @param irqn: Interrupt number (0-239)
@@ -145,4 +145,4 @@ inline uint8_t encode_priority(uint32_t priority_group, uint32_t preempt_priorit
     return static_cast<uint8_t>((preempt_priority << sub_bits) | sub_priority) << 4;
 }
 
-}  // namespace alloy::arm::cortex_m::nvic
+}  // namespace ucore::arm::cortex_m::nvic

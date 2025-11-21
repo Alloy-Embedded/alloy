@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::smc {
+namespace ucore::hal::atmel::same70::smc {
 
 // ============================================================================
 // SMC - Static Memory Controller
@@ -66,4 +66,4 @@ inline SMC_Registers* SMC() {
     return reinterpret_cast<SMC_Registers*>(0x40080000);
 }
 
-}  // namespace alloy::hal::atmel::same70::smc
+}  // namespace ucore::hal::atmel::same70::smc

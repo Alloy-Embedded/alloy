@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32g0::hdmi_cec {
+namespace ucore::hal::st::stm32g0::hdmi_cec {
 
 // ============================================================================
 // HDMI_CEC - HDMI-CEC
@@ -62,4 +62,4 @@ inline HDMI_CEC_Registers* HDMI_CEC() {
     return reinterpret_cast<HDMI_CEC_Registers*>(0x40007800);
 }
 
-}  // namespace alloy::hal::st::stm32g0::hdmi_cec
+}  // namespace ucore::hal::st::stm32g0::hdmi_cec

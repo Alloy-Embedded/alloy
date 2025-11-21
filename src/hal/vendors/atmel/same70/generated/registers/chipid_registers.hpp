@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::same70::chipid {
+namespace ucore::hal::atmel::same70::chipid {
 
 // ============================================================================
 // CHIPID - Chip Identifier
@@ -35,4 +35,4 @@ inline CHIPID_Registers* CHIPID() {
     return reinterpret_cast<CHIPID_Registers*>(0x400E0940);
 }
 
-}  // namespace alloy::hal::atmel::same70::chipid
+}  // namespace ucore::hal::atmel::same70::chipid

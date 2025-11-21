@@ -4,7 +4,7 @@
 #include "rtos/scheduler.hpp"
 #include "hal/interface/systick.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 // ============================================================================
 // Static Members
@@ -153,4 +153,4 @@ PowerStats& get_power_stats() noexcept {
     return power_stats_;
 }
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos

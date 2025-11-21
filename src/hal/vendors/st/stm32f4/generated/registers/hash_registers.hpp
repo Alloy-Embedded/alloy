@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::hash {
+namespace ucore::hal::st::stm32f4::hash {
 
 // ============================================================================
 // HASH - Hash processor
@@ -457,4 +457,4 @@ inline HASH_Registers* HASH() {
     return reinterpret_cast<HASH_Registers*>(0x50060400);
 }
 
-}  // namespace alloy::hal::st::stm32f4::hash
+}  // namespace ucore::hal::st::stm32f4::hash

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::raspberrypi::rp2040::resets {
+namespace ucore::hal::raspberrypi::rp2040::resets {
 
 // ============================================================================
 // RESETS - Peripheral Registers
@@ -41,4 +41,4 @@ inline RESETS_Registers* RESETS() {
     return reinterpret_cast<RESETS_Registers*>(0x4000C000);
 }
 
-}  // namespace alloy::hal::raspberrypi::rp2040::resets
+}  // namespace ucore::hal::raspberrypi::rp2040::resets

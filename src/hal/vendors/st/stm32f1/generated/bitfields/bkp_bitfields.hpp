@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f1::bkp {
+namespace ucore::hal::st::stm32f1::bkp {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // BKP Bit Field Definitions
@@ -520,4 +520,4 @@ namespace dr42 {
 
 }  // namespace dr42
 
-}  // namespace alloy::hal::st::stm32f1::bkp
+}  // namespace ucore::hal::st::stm32f1::bkp

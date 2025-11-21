@@ -36,15 +36,15 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfields
-namespace tc = alloy::hal::atmel::same70::tc0;
+namespace tc = ucore::hal::atmel::same70::tc0;
 
 /**
  * @brief Hardware Policy for Timer on SAME70
@@ -316,15 +316,15 @@ struct Same70TimerHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Timer0Ch0
-using Timer0Ch0Hardware = Same70TimerHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TC0, 150000000>;
+using Timer0Ch0Hardware = Same70TimerHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TC0, 150000000>;
 /// @brief Hardware policy for Timer1Ch0
-using Timer1Ch0Hardware = Same70TimerHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TC1, 150000000>;
+using Timer1Ch0Hardware = Same70TimerHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TC1, 150000000>;
 /// @brief Hardware policy for Timer2Ch0
-using Timer2Ch0Hardware = Same70TimerHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TC2, 150000000>;
+using Timer2Ch0Hardware = Same70TimerHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TC2, 150000000>;
 /// @brief Hardware policy for Timer3Ch0
-using Timer3Ch0Hardware = Same70TimerHardwarePolicy<alloy::generated::atsame70q21b::peripherals::TC3, 150000000>;
+using Timer3Ch0Hardware = Same70TimerHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TC3, 150000000>;
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 /**
  * @example
@@ -334,8 +334,8 @@ using Timer3Ch0Hardware = Same70TimerHardwarePolicy<alloy::generated::atsame70q2
  * #include "hal/api/timer_simple.hpp"
  * #include "hal/platform/same70/timer.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create Timer with hardware policy
  * using Instance0 = Timer0Ch0Hardware;

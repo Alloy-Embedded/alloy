@@ -2,12 +2,12 @@
 ///
 /// Provides compile-time type safety for physical units.
 
-#ifndef ALLOY_CORE_UNITS_HPP
-#define ALLOY_CORE_UNITS_HPP
+#ifndef UCORE_CORE_UNITS_HPP
+#define UCORE_CORE_UNITS_HPP
 
 #include "types.hpp"
 
-namespace alloy::core {
+namespace ucore::core {
 
 /// Type-safe baud rate wrapper
 ///
@@ -55,6 +55,6 @@ constexpr BaudRate Baud460800 = BaudRate(460800);
 constexpr BaudRate Baud921600 = BaudRate(921600);
 }  // namespace baud_rates
 
-}  // namespace alloy::core
+}  // namespace ucore::core
 
 #endif  // ALLOY_CORE_UNITS_HPP

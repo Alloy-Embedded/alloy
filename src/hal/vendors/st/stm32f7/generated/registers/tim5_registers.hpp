@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::tim5 {
+namespace ucore::hal::st::stm32f7::tim5 {
 
 // ============================================================================
 // TIM5 - General purpose timers
@@ -154,4 +154,4 @@ inline TIM5_Registers* TIM5() {
     return reinterpret_cast<TIM5_Registers*>(0x40000C00);
 }
 
-}  // namespace alloy::hal::st::stm32f7::tim5
+}  // namespace ucore::hal::st::stm32f7::tim5

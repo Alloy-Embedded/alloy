@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::gmac {
+namespace ucore::hal::atmel::same70::gmac {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // GMAC Bit Field Definitions
@@ -2530,4 +2530,4 @@ constexpr uint32_t COMPVAL_Msk = COMPVAL::mask;
 
 }  // namespace st2er
 
-}  // namespace alloy::hal::atmel::same70::gmac
+}  // namespace ucore::hal::atmel::same70::gmac

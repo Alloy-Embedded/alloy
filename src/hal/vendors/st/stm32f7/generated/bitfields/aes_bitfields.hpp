@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::aes {
+namespace ucore::hal::st::stm32f7::aes {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // AES Bit Field Definitions
@@ -347,4 +347,4 @@ namespace susp7r {
 
 }  // namespace susp7r
 
-}  // namespace alloy::hal::st::stm32f7::aes
+}  // namespace ucore::hal::st::stm32f7::aes

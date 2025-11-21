@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::trng {
+namespace ucore::hal::atmel::same70::trng {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // TRNG Bit Field Definitions
@@ -88,4 +88,4 @@ constexpr uint32_t ODATA_Msk = ODATA::mask;
 
 }  // namespace odata
 
-}  // namespace alloy::hal::atmel::same70::trng
+}  // namespace ucore::hal::atmel::same70::trng

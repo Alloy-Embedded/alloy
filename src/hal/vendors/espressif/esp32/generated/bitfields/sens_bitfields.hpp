@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::sens {
+namespace ucore::hal::espressif::esp32::sens {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SENS Bit Field Definitions
@@ -1206,4 +1206,4 @@ namespace sardate {
 
 }  // namespace sardate
 
-}  // namespace alloy::hal::espressif::esp32::sens
+}  // namespace ucore::hal::espressif::esp32::sens

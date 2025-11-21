@@ -13,7 +13,7 @@
 
 #include <string>
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ==============================================================================
 // Helper Functions

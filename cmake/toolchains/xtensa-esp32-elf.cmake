@@ -18,7 +18,7 @@ set(CMAKE_RANLIB xtensa-esp32-elf-ranlib)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 # Alloy-specific configuration
-set(ALLOY_PLATFORM "xtensa" CACHE STRING "Target platform")
+set(MICROCORE_PLATFORM "xtensa" CACHE STRING "Target platform")
 
 # Common Xtensa ESP32 flags
 # -mlongcalls: Use long calls for function calls (required for ESP32 memory layout)

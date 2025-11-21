@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f7::otg_hs_host {
+namespace ucore::hal::st::stm32f7::otg_hs_host {
 
 // ============================================================================
 // OTG_HS_HOST - USB on the go high speed
@@ -659,4 +659,4 @@ inline OTG_HS_HOST_Registers* OTG_HS_HOST() {
     return reinterpret_cast<OTG_HS_HOST_Registers*>(0x40040400);
 }
 
-}  // namespace alloy::hal::st::stm32f7::otg_hs_host
+}  // namespace ucore::hal::st::stm32f7::otg_hs_host

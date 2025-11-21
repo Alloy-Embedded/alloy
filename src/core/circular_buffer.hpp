@@ -41,7 +41,7 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
-namespace alloy::core {
+namespace ucore::core {
 
 /**
  * @brief Fixed-size circular buffer with compile-time capacity
@@ -537,4 +537,4 @@ class CircularBuffer {
 // Note: Power-of-2 optimization can be added later with template specialization
 // For now, the modulo operator is used which modern compilers optimize well
 
-}  // namespace alloy::core
+}  // namespace ucore::core

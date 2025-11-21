@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f7::tim6 {
+namespace ucore::hal::st::stm32f7::tim6 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // TIM6 Bit Field Definitions
@@ -135,4 +135,4 @@ namespace arr {
 
 }  // namespace arr
 
-}  // namespace alloy::hal::st::stm32f7::tim6
+}  // namespace ucore::hal::st::stm32f7::tim6

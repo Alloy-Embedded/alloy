@@ -54,9 +54,9 @@
 #include "hal/dma/registry.hpp"
 #include "hal/api/uart_expert.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // ============================================================================
 // UART DMA Configuration
@@ -385,4 +385,4 @@ constexpr auto create_uart_rx_only_dma(PinId rx_pin, BaudRate baudrate) {
     );
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

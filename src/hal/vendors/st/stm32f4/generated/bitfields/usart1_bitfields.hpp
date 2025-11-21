@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::usart1 {
+namespace ucore::hal::st::stm32f4::usart1 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // USART1 Bit Field Definitions
@@ -361,4 +361,4 @@ namespace gtpr {
 
 }  // namespace gtpr
 
-}  // namespace alloy::hal::st::stm32f4::usart1
+}  // namespace ucore::hal::st::stm32f4::usart1

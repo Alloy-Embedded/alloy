@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f4::spi1 {
+namespace ucore::hal::st::stm32f4::spi1 {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // SPI1 Bit Field Definitions
@@ -332,4 +332,4 @@ namespace i2spr {
 
 }  // namespace i2spr
 
-}  // namespace alloy::hal::st::stm32f4::spi1
+}  // namespace ucore::hal::st::stm32f4::spi1

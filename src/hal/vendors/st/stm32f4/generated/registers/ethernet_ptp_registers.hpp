@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::ethernet_ptp {
+namespace ucore::hal::st::stm32f4::ethernet_ptp {
 
 // ============================================================================
 // Ethernet_PTP - Ethernet: Precision time protocol
@@ -93,4 +93,4 @@ inline Ethernet_PTP_Registers* Ethernet_PTP() {
     return reinterpret_cast<Ethernet_PTP_Registers*>(0x40028700);
 }
 
-}  // namespace alloy::hal::st::stm32f4::ethernet_ptp
+}  // namespace ucore::hal::st::stm32f4::ethernet_ptp

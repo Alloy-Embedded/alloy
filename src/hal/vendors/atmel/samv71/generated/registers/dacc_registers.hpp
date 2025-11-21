@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samv71::dacc {
+namespace ucore::hal::atmel::samv71::dacc {
 
 // ============================================================================
 // DACC - Digital-to-Analog Converter Controller
@@ -95,4 +95,4 @@ inline DACC_Registers* DACC() {
     return reinterpret_cast<DACC_Registers*>(0x40040000);
 }
 
-}  // namespace alloy::hal::atmel::samv71::dacc
+}  // namespace ucore::hal::atmel::samv71::dacc

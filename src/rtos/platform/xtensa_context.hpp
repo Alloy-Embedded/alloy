@@ -28,8 +28,8 @@
 /// Note: Xtensa register windows make this more complex than ARM.
 /// We need to handle window overflow/underflow.
 
-#ifndef ALLOY_RTOS_XTENSA_CONTEXT_HPP
-#define ALLOY_RTOS_XTENSA_CONTEXT_HPP
+#ifndef UCORE_RTOS_XTENSA_CONTEXT_HPP
+#define UCORE_RTOS_XTENSA_CONTEXT_HPP
 
 #include "rtos/rtos.hpp"
 
@@ -37,7 +37,7 @@
 
 #ifdef ESP32
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 /// Initialize task stack for Xtensa
 ///
@@ -125,7 +125,7 @@ void stop_rtos_timer();
 
 }  // namespace xtensa
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 #endif  // ESP32
 

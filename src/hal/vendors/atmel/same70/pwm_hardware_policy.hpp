@@ -36,15 +36,15 @@
 // Peripheral addresses (generated from SVD)
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfields
-namespace pwm = alloy::hal::atmel::same70::pwm0;
+namespace pwm = ucore::hal::atmel::same70::pwm0;
 
 /**
  * @brief Hardware Policy for PWM on SAME70
@@ -217,11 +217,11 @@ struct Same70PWMHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Pwm0
-using Pwm0Hardware = Same70PWMHardwarePolicy<alloy::generated::atsame70q21b::peripherals::PWM0, 150000000>;
+using Pwm0Hardware = Same70PWMHardwarePolicy<ucore::generated::atsame70q21b::peripherals::PWM0, 150000000>;
 /// @brief Hardware policy for Pwm1
-using Pwm1Hardware = Same70PWMHardwarePolicy<alloy::generated::atsame70q21b::peripherals::PWM1, 150000000>;
+using Pwm1Hardware = Same70PWMHardwarePolicy<ucore::generated::atsame70q21b::peripherals::PWM1, 150000000>;
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 /**
  * @example
@@ -231,8 +231,8 @@ using Pwm1Hardware = Same70PWMHardwarePolicy<alloy::generated::atsame70q21b::per
  * #include "hal/api/pwm_simple.hpp"
  * #include "hal/platform/same70/pwm.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create PWM with hardware policy
  * using Instance0 = Pwm0Hardware;

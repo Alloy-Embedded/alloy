@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::st::stm32f4::i2s2ext {
+namespace ucore::hal::st::stm32f4::i2s2ext {
 
 // ============================================================================
 // I2S2ext - Serial peripheral interface
@@ -78,4 +78,4 @@ inline I2S2ext_Registers* I2S2ext() {
     return reinterpret_cast<I2S2ext_Registers*>(0x40003400);
 }
 
-}  // namespace alloy::hal::st::stm32f4::i2s2ext
+}  // namespace ucore::hal::st::stm32f4::i2s2ext

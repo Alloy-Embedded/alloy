@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace alloy::hal::stm32f7::stm32f722re::pins {
+namespace ucore::hal::stm32f7::stm32f722re::pins {
 
 // ============================================================================
 // Auto-generated pin definitions for STM32F722RE
@@ -115,4 +115,4 @@ constexpr void validate_pin() {
 constexpr size_t TOTAL_PIN_COUNT = detail::PIN_COUNT;  // 51 pins
 constexpr size_t GPIO_PORT_COUNT = 4;                  // 4 ports
 
-}  // namespace alloy::hal::stm32f7::stm32f722re::pins
+}  // namespace ucore::hal::stm32f7::stm32f722re::pins

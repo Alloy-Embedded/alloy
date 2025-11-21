@@ -33,15 +33,15 @@
 // Bitfield definitions
 #include "hal/vendors/atmel/same70/generated/bitfields/twihs0_bitfields.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 // Import register types
-using namespace alloy::hal::atmel::same70;
+using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfields
-namespace twihs = alloy::hal::atmel::same70::twihs0;
+namespace twihs = ucore::hal::atmel::same70::twihs0;
 
 /**
  * @brief Hardware Policy for TWIHS on SAME70
@@ -334,7 +334,7 @@ using I2c1Hardware = Same70UartHardwarePolicy<0x4001C000, 150000000>;
 using I2c2Hardware = Same70UartHardwarePolicy<0x40060000, 150000000>;
 
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 /**
  * @example
@@ -344,8 +344,8 @@ using I2c2Hardware = Same70UartHardwarePolicy<0x40060000, 150000000>;
  * #include "hal/api/uart_simple.hpp"
  * #include "hal/vendors/atmel/same70/uart_hardware_policy.hpp"
  *
- * using namespace alloy::hal;
- * using namespace alloy::hal::same70;
+ * using namespace ucore::hal;
+ * using namespace ucore::hal::same70;
  *
  * // Create UART with hardware policy
  * using Uart0 = UartImpl<PeripheralId::USART0, Uart0Hardware>;

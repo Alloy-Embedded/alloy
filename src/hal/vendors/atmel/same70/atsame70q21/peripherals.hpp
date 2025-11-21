@@ -7,12 +7,12 @@
 ///
 /// DO NOT EDIT - Regenerate from SVD if needed
 
-#ifndef ALLOY_GENERATED_ATSAME70Q21_PERIPHERALS_HPP
-#define ALLOY_GENERATED_ATSAME70Q21_PERIPHERALS_HPP
+#ifndef UCORE_GENERATED_ATSAME70Q21_PERIPHERALS_HPP
+#define UCORE_GENERATED_ATSAME70Q21_PERIPHERALS_HPP
 
 #include <cstdint>
 
-namespace alloy::generated::atsame70q21 {
+namespace ucore::generated::atsame70q21 {
 
 // ============================================================================
 // PERIPHERAL BASE ADDRESSES
@@ -147,6 +147,6 @@ namespace memory {
 constexpr uintptr_t SDRAMC = 0x40084000;
 }  // namespace memory
 
-}  // namespace alloy::generated::atsame70q21
+}  // namespace ucore::generated::atsame70q21
 
 #endif  // ALLOY_GENERATED_ATSAME70Q21_PERIPHERALS_HPP

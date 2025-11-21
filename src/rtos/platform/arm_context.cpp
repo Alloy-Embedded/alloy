@@ -4,7 +4,7 @@
 
 #include "rtos/scheduler.hpp"
 
-namespace alloy::rtos {
+namespace ucore::rtos {
 
 void init_task_stack(TaskControlBlock* tcb, void (*func)()) {
     // Get pointer to top of stack (stacks grow downward)
@@ -91,7 +91,7 @@ void trigger_context_switch() {
         ;
 }
 
-}  // namespace alloy::rtos
+}  // namespace ucore::rtos
 
 // PendSV Handler - Context Switch
 //
@@ -126,15 +126,15 @@ extern "C" __attribute__((naked)) void PendSV_Handler() {
 // @return Next task's stack pointer
 extern "C" void* PendSV_Handler_C(void* sp) {
     // Save current task's stack pointer
-    if (alloy::rtos::g_scheduler.current_task != nullptr) {
-        alloy::rtos::g_scheduler.current_task->stack_pointer = sp;
+    if (ucore::rtos::g_scheduler.current_task != nullptr) {
+        ucore::rtos::g_scheduler.current_task->stack_pointer = sp;
     }
 
     // Get next task (already selected by scheduler)
-    alloy::rtos::TaskControlBlock* next = alloy::rtos::g_scheduler.current_task;
+    ucore::rtos::TaskControlBlock* next = ucore::rtos::g_scheduler.current_task;
 
     // Clear context switch flag
-    alloy::rtos::g_scheduler.need_context_switch = false;
+    ucore::rtos::g_scheduler.need_context_switch = false;
 
     // Return next task's stack pointer
     return next->stack_pointer;

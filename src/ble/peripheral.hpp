@@ -1,5 +1,5 @@
-#ifndef ALLOY_BLE_PERIPHERAL_HPP
-#define ALLOY_BLE_PERIPHERAL_HPP
+#ifndef UCORE_BLE_PERIPHERAL_HPP
+#define UCORE_BLE_PERIPHERAL_HPP
 
 #include "core/error.hpp"
 #include "core/result.hpp"
@@ -16,12 +16,12 @@
 ///
 /// Uses RAII pattern for automatic resource cleanup.
 
-namespace alloy::ble {
+namespace ucore::ble {
 
-using alloy::core::ErrorCode;
-using alloy::core::Result;
-using alloy::core::u16;
-using alloy::core::u8;
+using ucore::core::ErrorCode;
+using ucore::core::Result;
+using ucore::core::u16;
+using ucore::core::u8;
 
 /// BLE Peripheral configuration
 struct PeripheralConfig {
@@ -254,6 +254,6 @@ class Peripheral {
     Impl* impl_;
 };
 
-}  // namespace alloy::ble
+}  // namespace ucore::ble
 
 #endif  // ALLOY_BLE_PERIPHERAL_HPP

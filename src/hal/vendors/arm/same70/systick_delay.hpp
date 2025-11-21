@@ -35,16 +35,16 @@
 /// uint32_t uptime_sec = get_uptime_seconds();
 /// @endcode
 
-#ifndef ALLOY_HAL_SAME70_SYSTICK_DELAY_HPP
-#define ALLOY_HAL_SAME70_SYSTICK_DELAY_HPP
+#ifndef UCORE_HAL_SAME70_SYSTICK_DELAY_HPP
+#define UCORE_HAL_SAME70_SYSTICK_DELAY_HPP
 
 #include "hal/platform/same70/systick.hpp"
 
 #include "core/types.hpp"
 
-namespace alloy::hal::same70 {
+namespace ucore::hal::same70 {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 /// Delay for specified microseconds
 ///
@@ -192,22 +192,22 @@ inline u32 get_uptime_hours() {
     return get_uptime_minutes() / 60;
 }
 
-}  // namespace alloy::hal::same70
+}  // namespace ucore::hal::same70
 
 // Export to alloy namespace for convenience
-namespace alloy {
-using alloy::hal::same70::delay_ms;
-using alloy::hal::same70::delay_us;
-using alloy::hal::same70::elapsed_ms;
-using alloy::hal::same70::elapsed_us;
-using alloy::hal::same70::get_uptime_hours;
-using alloy::hal::same70::get_uptime_minutes;
-using alloy::hal::same70::get_uptime_ms;
-using alloy::hal::same70::get_uptime_seconds;
-using alloy::hal::same70::is_timeout;
-using alloy::hal::same70::is_timeout_ms;
-using alloy::hal::same70::micros;
-using alloy::hal::same70::millis;
-}  // namespace alloy
+namespace ucore {
+using ucore::hal::same70::delay_ms;
+using ucore::hal::same70::delay_us;
+using ucore::hal::same70::elapsed_ms;
+using ucore::hal::same70::elapsed_us;
+using ucore::hal::same70::get_uptime_hours;
+using ucore::hal::same70::get_uptime_minutes;
+using ucore::hal::same70::get_uptime_ms;
+using ucore::hal::same70::get_uptime_seconds;
+using ucore::hal::same70::is_timeout;
+using ucore::hal::same70::is_timeout_ms;
+using ucore::hal::same70::micros;
+using ucore::hal::same70::millis;
+}  // namespace ucore
 
 #endif  // ALLOY_HAL_SAME70_SYSTICK_DELAY_HPP

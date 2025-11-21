@@ -12,9 +12,9 @@
 #include "hal/dma/connection.hpp"
 #include "hal/adc_expert.hpp"
 
-namespace alloy::hal {
+namespace ucore::hal {
 
-using namespace alloy::core;
+using namespace ucore::core;
 
 template <typename DmaConnection = void, typename TimerTrigger = void>
 struct AdcDmaConfig {
@@ -75,4 +75,4 @@ inline Result<void, ErrorCode> adc_dma_start(
     return Ok();
 }
 
-}  // namespace alloy::hal
+}  // namespace ucore::hal

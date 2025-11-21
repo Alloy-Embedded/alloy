@@ -10,9 +10,9 @@
 
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::atmel::same70::pioa {
+namespace ucore::hal::atmel::same70::pioa {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // PIOA Bit Field Definitions
@@ -9194,4 +9194,4 @@ constexpr uint32_t RDATA_Msk = RDATA::mask;
 
 }  // namespace pcrhr
 
-}  // namespace alloy::hal::atmel::same70::pioa
+}  // namespace ucore::hal::atmel::same70::pioa

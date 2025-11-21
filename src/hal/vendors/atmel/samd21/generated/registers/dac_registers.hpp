@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace alloy::hal::atmel::samd21::dac {
+namespace ucore::hal::atmel::samd21::dac {
 
 // ============================================================================
 // DAC - Digital Analog Converter
@@ -65,4 +65,4 @@ inline DAC_Registers* DAC() {
     return reinterpret_cast<DAC_Registers*>(0x42004800);
 }
 
-}  // namespace alloy::hal::atmel::samd21::dac
+}  // namespace ucore::hal::atmel::samd21::dac

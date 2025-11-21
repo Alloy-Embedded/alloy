@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::espressif::esp32::dport {
+namespace ucore::hal::espressif::esp32::dport {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // DPORT Bit Field Definitions
@@ -5300,4 +5300,4 @@ namespace date {
 
 }  // namespace date
 
-}  // namespace alloy::hal::espressif::esp32::dport
+}  // namespace ucore::hal::espressif::esp32::dport

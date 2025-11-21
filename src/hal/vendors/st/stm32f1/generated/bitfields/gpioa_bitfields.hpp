@@ -9,9 +9,9 @@
 #include <cstdint>
 #include "hal/utils/bitfield.hpp"
 
-namespace alloy::hal::st::stm32f1::gpioa {
+namespace ucore::hal::st::stm32f1::gpioa {
 
-using namespace alloy::hal::bitfields;
+using namespace ucore::hal::bitfields;
 
 // ============================================================================
 // GPIOA Bit Field Definitions
@@ -819,4 +819,4 @@ namespace lckr {
 
 }  // namespace lckr
 
-}  // namespace alloy::hal::st::stm32f1::gpioa
+}  // namespace ucore::hal::st::stm32f1::gpioa
