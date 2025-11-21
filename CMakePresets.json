@@ -1,0 +1,229 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "debug-base",
+      "hidden": true,
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ALLOY_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "release-base",
+      "hidden": true,
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "ALLOY_BUILD_TESTS": "OFF",
+        "ALLOY_MINIMAL_BUILD": "ON"
+      }
+    },
+    {
+      "name": "host-debug",
+      "displayName": "Host (Debug) - Native development",
+      "description": "Debug build for host platform (Linux/macOS). Fast compilation, includes tests.",
+      "inherits": "debug-base",
+      "cacheVariables": {
+        "ALLOY_BOARD": "host",
+        "ALLOY_PLATFORM": "linux"
+      }
+    },
+    {
+      "name": "host-release",
+      "displayName": "Host (Release) - Optimized native",
+      "description": "Release build for host platform. Optimized, no tests.",
+      "inherits": "release-base",
+      "cacheVariables": {
+        "ALLOY_BOARD": "host",
+        "ALLOY_PLATFORM": "linux"
+      }
+    },
+    {
+      "name": "nucleo-f401re-debug",
+      "displayName": "Nucleo-F401RE (Debug) - STM32F401RE Cortex-M4",
+      "description": "Debug build for STM32 Nucleo-F401RE board (84 MHz, 512KB Flash, 96KB RAM)",
+      "inherits": "debug-base",
+      "cacheVariables": {
+        "ALLOY_BOARD": "nucleo_f401re",
+        "ALLOY_PLATFORM": "stm32f4",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/arm-none-eabi-gcc.cmake"
+      }
+    },
+    {
+      "name": "nucleo-f401re-release",
+      "displayName": "Nucleo-F401RE (Release) - Production ready",
+      "description": "Release build for STM32 Nucleo-F401RE. Minimal size, optimized.",
+      "inherits": "release-base",
+      "cacheVariables": {
+        "ALLOY_BOARD": "nucleo_f401re",
+        "ALLOY_PLATFORM": "stm32f4",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/arm-none-eabi-gcc.cmake"
+      }
+    },
+    {
+      "name": "nucleo-g071rb-debug",
+      "displayName": "Nucleo-G071RB (Debug) - STM32G071RB Cortex-M0+",
+      "description": "Debug build for STM32 Nucleo-G071RB board (64 MHz, 128KB Flash, 36KB RAM)",
+      "inherits": "debug-base",
+      "cacheVariables": {
+        "ALLOY_BOARD": "nucleo_g071rb",
+        "ALLOY_PLATFORM": "stm32g0",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/arm-none-eabi-gcc.cmake"
+      }
+    },
+    {
+      "name": "same70-xpld-debug",
+      "displayName": "SAME70-Xplained (Debug) - ATSAME70Q21B Cortex-M7",
+      "description": "Debug build for Atmel SAME70 Xplained board (300 MHz, 2MB Flash, 384KB RAM)",
+      "inherits": "debug-base",
+      "cacheVariables": {
+        "ALLOY_BOARD": "same70_xpld",
+        "ALLOY_PLATFORM": "same70",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/arm-none-eabi-gcc.cmake"
+      }
+    },
+    {
+      "name": "bluepill-debug",
+      "displayName": "Blue Pill (Debug) - STM32F103C8 Cortex-M3",
+      "description": "Debug build for STM32F103C8 Blue Pill (72 MHz, 64KB Flash, 20KB RAM)",
+      "inherits": "debug-base",
+      "cacheVariables": {
+        "ALLOY_BOARD": "bluepill",
+        "ALLOY_PLATFORM": "stm32f1",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/arm-none-eabi-gcc.cmake"
+      }
+    },
+    {
+      "name": "rp-pico-debug",
+      "displayName": "Raspberry Pi Pico (Debug) - RP2040 Cortex-M0+",
+      "description": "Debug build for Raspberry Pi Pico (133 MHz, 2MB Flash, 264KB RAM)",
+      "inherits": "debug-base",
+      "cacheVariables": {
+        "ALLOY_BOARD": "rp_pico",
+        "ALLOY_PLATFORM": "rp2040",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/arm-none-eabi-gcc.cmake"
+      }
+    },
+    {
+      "name": "tests-all",
+      "displayName": "All Tests (Host) - Comprehensive testing",
+      "description": "Build all tests for host platform. Use for CI/CD.",
+      "inherits": "debug-base",
+      "cacheVariables": {
+        "ALLOY_BOARD": "host",
+        "ALLOY_PLATFORM": "linux",
+        "ALLOY_BUILD_TESTS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "host-debug",
+      "configurePreset": "host-debug",
+      "displayName": "Build Host (Debug)",
+      "description": "Build debug binaries for host platform"
+    },
+    {
+      "name": "host-release",
+      "configurePreset": "host-release",
+      "displayName": "Build Host (Release)",
+      "description": "Build optimized release binaries"
+    },
+    {
+      "name": "nucleo-f401re-debug",
+      "configurePreset": "nucleo-f401re-debug",
+      "displayName": "Build Nucleo-F401RE (Debug)"
+    },
+    {
+      "name": "nucleo-f401re-release",
+      "configurePreset": "nucleo-f401re-release",
+      "displayName": "Build Nucleo-F401RE (Release)"
+    },
+    {
+      "name": "tests-all",
+      "configurePreset": "tests-all",
+      "displayName": "Build All Tests"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "host-debug",
+      "configurePreset": "host-debug",
+      "displayName": "Run All Tests (Host Debug)",
+      "description": "Run all unit and integration tests",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": false
+      }
+    },
+    {
+      "name": "host-debug-verbose",
+      "configurePreset": "host-debug",
+      "displayName": "Run Tests (Verbose)",
+      "description": "Run tests with verbose output",
+      "inherits": "host-debug",
+      "output": {
+        "verbosity": "verbose"
+      }
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "dev",
+      "displayName": "Development Workflow",
+      "description": "Configure, build, and test for host development",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "host-debug"
+        },
+        {
+          "type": "build",
+          "name": "host-debug"
+        },
+        {
+          "type": "test",
+          "name": "host-debug"
+        }
+      ]
+    },
+    {
+      "name": "ci",
+      "displayName": "CI/CD Workflow",
+      "description": "Full test suite for continuous integration",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "tests-all"
+        },
+        {
+          "type": "build",
+          "name": "tests-all"
+        },
+        {
+          "type": "test",
+          "name": "host-debug-verbose"
+        }
+      ]
+    }
+  ]
+}
