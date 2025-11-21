@@ -72,3 +72,8 @@ Testing/
 tmp/
 temp/
 *.tmp
+
+# Vendor register and bitfield files (only generated versions are tracked)
+src/hal/vendors/**/registers/
+src/hal/vendors/**/bitfields/
+!src/hal/vendors/**/generated/

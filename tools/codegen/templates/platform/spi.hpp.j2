@@ -1,0 +1,728 @@
+{% include 'common/header.j2' %}
+/**
+ * @file spi.hpp
+ * @brief SPI Hardware Policy for {{ platform.name }}
+ *
+ * This file provides platform-specific SPI hardware access using
+ * the Policy-Based Design pattern. All methods are static inline for
+ * zero runtime overhead.
+ *
+ * Design Pattern: Policy-Based Design
+ * - Generic APIs accept this policy as template parameter
+ * - All methods are static inline (zero overhead)
+ * - Direct register access with compile-time addresses
+ * - Type-safe via C++20 concepts
+ *
+ * Platform: {{ platform.name }}
+ * Vendor: {{ vendor.name }}
+ * Architecture: {{ architecture.core }}
+ * SPI Style: {% if spi.style == 'stm32' %}STM32 (CR1, CR2, SR, DR){% elif spi.style == 'sam' %}SAM (CR, MR, SR, TDR, RDR, CSR){% else %}{{ spi.style }}{% endif %}
+ *
+ * Auto-generated from: {{ metadata_file }}
+ * Generator: spi_generator.py
+ * Generated: {{ generation_date }}
+ *
+ * @note Part of Alloy HAL Vendor Layer
+ * @see docs/codegen/TEMPLATE_CONVENTIONS.md
+ */
+
+#pragma once
+
+#include "core/types.hpp"
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+
+// Register definitions
+#include "{{ register_include }}"
+
+{% if bitfield_include %}
+// Bitfield definitions
+#include "{{ bitfield_include }}"
+{% endif %}
+
+namespace {{ platform_namespace }} {
+
+using namespace alloy::core;
+
+// Import register types
+using namespace {{ vendor_namespace }};
+
+{% if spi.style == 'stm32' %}
+// ============================================================================
+// STM32-Style SPI Hardware Policy
+// ============================================================================
+
+/**
+ * @brief SPI Hardware Policy for STM32-style SPI
+ *
+ * Register Layout (STM32):
+ * - CR1:   Control register 1 (SPE, BR, CPOL, CPHA, MSTR, etc.)
+ * - CR2:   Control register 2 (RXNEIE, TXEIE, SSOE, etc.)
+ * - SR:    Status register (TXE, RXNE, BSY, etc.)
+ * - DR:    Data register (TX/RX)
+ *
+ * @tparam BASE_ADDR SPI peripheral base address
+ */
+template <uint32_t BASE_ADDR>
+struct {{ platform.name }}SpiHardwarePolicy {
+    // ========================================================================
+    // Type Definitions
+    // ========================================================================
+
+    using RegisterType = {{ spi.register_type }};
+
+    // ========================================================================
+    // Compile-Time Constants
+    // ========================================================================
+
+    static constexpr uint32_t base_address = BASE_ADDR;
+
+    // CR1 bits
+    static constexpr uint32_t CR1_SPE = (1 << 6);      // SPI enable
+    static constexpr uint32_t CR1_MSTR = (1 << 2);     // Master selection
+    static constexpr uint32_t CR1_CPOL = (1 << 1);     // Clock polarity
+    static constexpr uint32_t CR1_CPHA = (1 << 0);     // Clock phase
+    static constexpr uint32_t CR1_SSM = (1 << 9);      // Software slave management
+    static constexpr uint32_t CR1_SSI = (1 << 8);      // Internal slave select
+    static constexpr uint32_t CR1_LSBFIRST = (1 << 7); // Frame format
+    static constexpr uint32_t CR1_DFF = (1 << 11);     // Data frame format (0=8bit, 1=16bit)
+    static constexpr uint32_t CR1_BIDIMODE = (1 << 15);// Bidirectional data mode
+    static constexpr uint32_t CR1_BIDIOE = (1 << 14);  // Output enable in bidirectional mode
+
+    // CR1 baud rate bits (BR[2:0] at bits 5:3)
+    static constexpr uint32_t CR1_BR_DIV2 = (0 << 3);
+    static constexpr uint32_t CR1_BR_DIV4 = (1 << 3);
+    static constexpr uint32_t CR1_BR_DIV8 = (2 << 3);
+    static constexpr uint32_t CR1_BR_DIV16 = (3 << 3);
+    static constexpr uint32_t CR1_BR_DIV32 = (4 << 3);
+    static constexpr uint32_t CR1_BR_DIV64 = (5 << 3);
+    static constexpr uint32_t CR1_BR_DIV128 = (6 << 3);
+    static constexpr uint32_t CR1_BR_DIV256 = (7 << 3);
+
+    // CR2 bits
+    static constexpr uint32_t CR2_RXNEIE = (1 << 6);   // RX buffer not empty interrupt enable
+    static constexpr uint32_t CR2_TXEIE = (1 << 7);    // TX buffer empty interrupt enable
+    static constexpr uint32_t CR2_SSOE = (1 << 2);     // SS output enable
+
+    // SR bits
+    static constexpr uint32_t SR_TXE = (1 << 1);       // Transmit buffer empty
+    static constexpr uint32_t SR_RXNE = (1 << 0);      // Receive buffer not empty
+    static constexpr uint32_t SR_BSY = (1 << 7);       // Busy flag
+    static constexpr uint32_t SR_OVR = (1 << 6);       // Overrun flag
+    static constexpr uint32_t SR_MODF = (1 << 5);      // Mode fault
+
+    // ========================================================================
+    // Hardware Accessor
+    // ========================================================================
+
+    /**
+     * @brief Get pointer to SPI registers
+     *
+     * @return Pointer to hardware registers
+     */
+    static inline volatile RegisterType* hw() {
+        #ifdef ALLOY_SPI_MOCK_HW
+            return ALLOY_SPI_MOCK_HW();  // Test hook
+        #else
+            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        #endif
+    }
+
+    // ========================================================================
+    // Configuration Methods
+    // ========================================================================
+
+    /**
+     * @brief Enable SPI peripheral
+     */
+    static inline void enable() {
+        hw()->CR1 |= CR1_SPE;
+    }
+
+    /**
+     * @brief Disable SPI peripheral
+     */
+    static inline void disable() {
+        hw()->CR1 &= ~CR1_SPE;
+    }
+
+    /**
+     * @brief Configure as master
+     */
+    static inline void set_master_mode() {
+        hw()->CR1 |= CR1_MSTR;
+    }
+
+    /**
+     * @brief Configure as slave
+     */
+    static inline void set_slave_mode() {
+        hw()->CR1 &= ~CR1_MSTR;
+    }
+
+    /**
+     * @brief Set clock polarity
+     *
+     * @param cpol Clock polarity (0 = low when idle, 1 = high when idle)
+     */
+    static inline void set_clock_polarity(bool cpol) {
+        if (cpol) {
+            hw()->CR1 |= CR1_CPOL;
+        } else {
+            hw()->CR1 &= ~CR1_CPOL;
+        }
+    }
+
+    /**
+     * @brief Set clock phase
+     *
+     * @param cpha Clock phase (0 = first edge, 1 = second edge)
+     */
+    static inline void set_clock_phase(bool cpha) {
+        if (cpha) {
+            hw()->CR1 |= CR1_CPHA;
+        } else {
+            hw()->CR1 &= ~CR1_CPHA;
+        }
+    }
+
+    /**
+     * @brief Set SPI mode (CPOL/CPHA combination)
+     *
+     * @param mode SPI mode (0-3)
+     *   - Mode 0: CPOL=0, CPHA=0
+     *   - Mode 1: CPOL=0, CPHA=1
+     *   - Mode 2: CPOL=1, CPHA=0
+     *   - Mode 3: CPOL=1, CPHA=1
+     */
+    static inline void set_mode(u8 mode) {
+        hw()->CR1 &= ~(CR1_CPOL | CR1_CPHA);
+        if (mode & 0x02) hw()->CR1 |= CR1_CPOL;
+        if (mode & 0x01) hw()->CR1 |= CR1_CPHA;
+    }
+
+    /**
+     * @brief Set baud rate prescaler
+     *
+     * @param prescaler Prescaler value (BR_DIV2, BR_DIV4, etc.)
+     */
+    static inline void set_prescaler(u32 prescaler) {
+        hw()->CR1 &= ~(7 << 3);  // Clear BR[2:0]
+        hw()->CR1 |= prescaler;
+    }
+
+    /**
+     * @brief Set data frame format
+     *
+     * @param bits Data bits (8 or 16)
+     */
+    static inline void set_data_size(u8 bits) {
+        if (bits == 16) {
+            hw()->CR1 |= CR1_DFF;
+        } else {
+            hw()->CR1 &= ~CR1_DFF;
+        }
+    }
+
+    /**
+     * @brief Set frame format
+     *
+     * @param lsb_first true for LSB first, false for MSB first
+     */
+    static inline void set_bit_order(bool lsb_first) {
+        if (lsb_first) {
+            hw()->CR1 |= CR1_LSBFIRST;
+        } else {
+            hw()->CR1 &= ~CR1_LSBFIRST;
+        }
+    }
+
+    /**
+     * @brief Enable software NSS management
+     */
+    static inline void set_software_nss() {
+        hw()->CR1 |= CR1_SSM | CR1_SSI;
+    }
+
+    /**
+     * @brief Enable hardware NSS management
+     */
+    static inline void set_hardware_nss() {
+        hw()->CR1 &= ~CR1_SSM;
+        hw()->CR2 |= CR2_SSOE;
+    }
+
+    // ========================================================================
+    // Data Transfer Methods
+    // ========================================================================
+
+    /**
+     * @brief Check if transmit buffer is empty
+     *
+     * @return true if TXE flag is set
+     */
+    static inline bool is_tx_ready() {
+        return (hw()->SR & SR_TXE) != 0;
+    }
+
+    /**
+     * @brief Check if receive buffer has data
+     *
+     * @return true if RXNE flag is set
+     */
+    static inline bool is_rx_ready() {
+        return (hw()->SR & SR_RXNE) != 0;
+    }
+
+    /**
+     * @brief Check if SPI is busy
+     *
+     * @return true if BSY flag is set
+     */
+    static inline bool is_busy() {
+        return (hw()->SR & SR_BSY) != 0;
+    }
+
+    /**
+     * @brief Write data to SPI (8-bit)
+     *
+     * @param data Data to transmit
+     *
+     * @note Does not check TXE flag - caller must ensure TX is ready
+     */
+    static inline void write_byte(u8 data) {
+        *reinterpret_cast<volatile u8*>(&hw()->DR) = data;
+    }
+
+    /**
+     * @brief Write data to SPI (16-bit)
+     *
+     * @param data Data to transmit
+     *
+     * @note Does not check TXE flag - caller must ensure TX is ready
+     */
+    static inline void write_word(u16 data) {
+        hw()->DR = data;
+    }
+
+    /**
+     * @brief Read data from SPI (8-bit)
+     *
+     * @return Received data
+     *
+     * @note Does not check RXNE flag - caller must ensure RX has data
+     */
+    static inline u8 read_byte() {
+        return *reinterpret_cast<volatile u8*>(&hw()->DR);
+    }
+
+    /**
+     * @brief Read data from SPI (16-bit)
+     *
+     * @return Received data
+     *
+     * @note Does not check RXNE flag - caller must ensure RX has data
+     */
+    static inline u16 read_word() {
+        return static_cast<u16>(hw()->DR);
+    }
+
+    /**
+     * @brief Transfer single byte (full-duplex)
+     *
+     * @param tx_data Data to transmit
+     * @return Received data
+     */
+    static inline u8 transfer_byte(u8 tx_data) {
+        while (!is_tx_ready());
+        write_byte(tx_data);
+        while (!is_rx_ready());
+        return read_byte();
+    }
+
+    // ========================================================================
+    // Error Handling
+    // ========================================================================
+
+    /**
+     * @brief Check for overrun error
+     *
+     * @return true if overrun occurred
+     */
+    static inline bool has_overrun_error() {
+        return (hw()->SR & SR_OVR) != 0;
+    }
+
+    /**
+     * @brief Check for mode fault
+     *
+     * @return true if mode fault occurred
+     */
+    static inline bool has_mode_fault() {
+        return (hw()->SR & SR_MODF) != 0;
+    }
+
+    /**
+     * @brief Clear overrun flag
+     */
+    static inline void clear_overrun() {
+        [[maybe_unused]] volatile u32 dummy = hw()->DR;
+        dummy = hw()->SR;
+    }
+
+    // ========================================================================
+    // Interrupt Management
+    // ========================================================================
+
+    /**
+     * @brief Enable RX interrupt
+     */
+    static inline void enable_rx_interrupt() {
+        hw()->CR2 |= CR2_RXNEIE;
+    }
+
+    /**
+     * @brief Disable RX interrupt
+     */
+    static inline void disable_rx_interrupt() {
+        hw()->CR2 &= ~CR2_RXNEIE;
+    }
+
+    /**
+     * @brief Enable TX interrupt
+     */
+    static inline void enable_tx_interrupt() {
+        hw()->CR2 |= CR2_TXEIE;
+    }
+
+    /**
+     * @brief Disable TX interrupt
+     */
+    static inline void disable_tx_interrupt() {
+        hw()->CR2 &= ~CR2_TXEIE;
+    }
+};
+
+{% elif spi.style == 'sam' %}
+// ============================================================================
+// SAM-Style SPI Hardware Policy
+// ============================================================================
+
+/**
+ * @brief SPI Hardware Policy for SAM-style SPI
+ *
+ * Register Layout (SAM):
+ * - CR:    Control register (write-only commands)
+ * - MR:    Mode register (master/slave, mode fault, etc.)
+ * - SR:    Status register (RDRF, TDRE, etc.)
+ * - TDR:   Transmit data register (write-only)
+ * - RDR:   Receive data register (read-only)
+ * - CSR:   Chip select registers (per-chip configuration)
+ *
+ * @tparam BASE_ADDR SPI peripheral base address
+ */
+template <uint32_t BASE_ADDR>
+struct {{ platform.name }}SpiHardwarePolicy {
+    // ========================================================================
+    // Type Definitions
+    // ========================================================================
+
+    using RegisterType = {{ spi.register_type }};
+
+    // ========================================================================
+    // Compile-Time Constants
+    // ========================================================================
+
+    static constexpr uint32_t base_address = BASE_ADDR;
+
+    // CR commands (write-only)
+    static constexpr uint32_t CR_SPIEN = (1 << 0);     // SPI enable
+    static constexpr uint32_t CR_SPIDIS = (1 << 1);    // SPI disable
+    static constexpr uint32_t CR_SWRST = (1 << 7);     // Software reset
+
+    // MR bits
+    static constexpr uint32_t MR_MSTR = (1 << 0);      // Master/Slave mode
+    static constexpr uint32_t MR_PS = (1 << 1);        // Peripheral select
+    static constexpr uint32_t MR_PCSDEC = (1 << 2);    // Chip select decode
+    static constexpr uint32_t MR_MODFDIS = (1 << 4);   // Mode fault detection disable
+    static constexpr uint32_t MR_LLB = (1 << 7);       // Local loopback enable
+
+    // SR bits
+    static constexpr uint32_t SR_RDRF = (1 << 0);      // Receive data register full
+    static constexpr uint32_t SR_TDRE = (1 << 1);      // Transmit data register empty
+    static constexpr uint32_t SR_MODF = (1 << 2);      // Mode fault error
+    static constexpr uint32_t SR_OVRES = (1 << 3);     // Overrun error
+    static constexpr uint32_t SR_NSSR = (1 << 8);      // NSS rising
+    static constexpr uint32_t SR_TXEMPTY = (1 << 9);   // Transmission registers empty
+    static constexpr uint32_t SR_SPIENS = (1 << 16);   // SPI enable status
+
+    // CSR bits (per chip select)
+    static constexpr uint32_t CSR_CPOL = (1 << 0);     // Clock polarity
+    static constexpr uint32_t CSR_NCPHA = (1 << 1);    // Clock phase (inverted)
+    static constexpr uint32_t CSR_BITS_8 = (0 << 4);   // 8 bits per transfer
+    static constexpr uint32_t CSR_BITS_16 = (8 << 4);  // 16 bits per transfer
+
+    // Interrupt bits
+    static constexpr uint32_t INT_RDRF = (1 << 0);
+    static constexpr uint32_t INT_TDRE = (1 << 1);
+    static constexpr uint32_t INT_MODF = (1 << 2);
+    static constexpr uint32_t INT_OVRES = (1 << 3);
+
+    // ========================================================================
+    // Hardware Accessor
+    // ========================================================================
+
+    /**
+     * @brief Get pointer to SPI registers
+     *
+     * @return Pointer to hardware registers
+     */
+    static inline volatile RegisterType* hw() {
+        #ifdef ALLOY_SPI_MOCK_HW
+            return ALLOY_SPI_MOCK_HW();  // Test hook
+        #else
+            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+        #endif
+    }
+
+    // ========================================================================
+    // Configuration Methods
+    // ========================================================================
+
+    /**
+     * @brief Enable SPI peripheral
+     */
+    static inline void enable() {
+        hw()->CR = CR_SPIEN;
+    }
+
+    /**
+     * @brief Disable SPI peripheral
+     */
+    static inline void disable() {
+        hw()->CR = CR_SPIDIS;
+    }
+
+    /**
+     * @brief Reset SPI peripheral
+     */
+    static inline void reset() {
+        hw()->CR = CR_SWRST;
+    }
+
+    /**
+     * @brief Configure as master
+     */
+    static inline void set_master_mode() {
+        hw()->MR |= MR_MSTR;
+    }
+
+    /**
+     * @brief Configure as slave
+     */
+    static inline void set_slave_mode() {
+        hw()->MR &= ~MR_MSTR;
+    }
+
+    /**
+     * @brief Set SPI mode for chip select (CPOL/CPHA combination)
+     *
+     * @param cs Chip select number (0-3)
+     * @param mode SPI mode (0-3)
+     *   - Mode 0: CPOL=0, CPHA=0
+     *   - Mode 1: CPOL=0, CPHA=1
+     *   - Mode 2: CPOL=1, CPHA=0
+     *   - Mode 3: CPOL=1, CPHA=1
+     */
+    static inline void set_mode(u8 cs, u8 mode) {
+        volatile u32* csr = &hw()->CSR[cs][0];
+        *csr &= ~(CSR_CPOL | CSR_NCPHA);
+        if (mode & 0x02) *csr |= CSR_CPOL;      // CPOL
+        if (!(mode & 0x01)) *csr |= CSR_NCPHA;  // NCPHA (inverted CPHA)
+    }
+
+    /**
+     * @brief Set data frame format for chip select
+     *
+     * @param cs Chip select number (0-3)
+     * @param bits Data bits (8 or 16)
+     */
+    static inline void set_data_size(u8 cs, u8 bits) {
+        volatile u32* csr = &hw()->CSR[cs][0];
+        *csr &= ~(0xF << 4);  // Clear BITS field
+        if (bits == 16) {
+            *csr |= CSR_BITS_16;
+        } else {
+            *csr |= CSR_BITS_8;
+        }
+    }
+
+    /**
+     * @brief Set baud rate for chip select
+     *
+     * @param cs Chip select number (0-3)
+     * @param scbr Serial clock baud rate divider
+     */
+    static inline void set_baudrate_divider(u8 cs, u8 scbr) {
+        volatile u32* csr = &hw()->CSR[cs][0];
+        *csr &= ~(0xFF << 8);  // Clear SCBR field
+        *csr |= (scbr << 8);
+    }
+
+    // ========================================================================
+    // Data Transfer Methods
+    // ========================================================================
+
+    /**
+     * @brief Check if transmit data register is empty
+     *
+     * @return true if TDRE flag is set
+     */
+    static inline bool is_tx_ready() {
+        return (hw()->SR & SR_TDRE) != 0;
+    }
+
+    /**
+     * @brief Check if receive data register is full
+     *
+     * @return true if RDRF flag is set
+     */
+    static inline bool is_rx_ready() {
+        return (hw()->SR & SR_RDRF) != 0;
+    }
+
+    /**
+     * @brief Check if transmission is complete
+     *
+     * @return true if TXEMPTY flag is set
+     */
+    static inline bool is_tx_complete() {
+        return (hw()->SR & SR_TXEMPTY) != 0;
+    }
+
+    /**
+     * @brief Write data to SPI
+     *
+     * @param data Data to transmit
+     *
+     * @note Does not check TDRE flag - caller must ensure TX is ready
+     */
+    static inline void write_data(u16 data) {
+        hw()->TDR = data;
+    }
+
+    /**
+     * @brief Read data from SPI
+     *
+     * @return Received data
+     *
+     * @note Does not check RDRF flag - caller must ensure RX has data
+     */
+    static inline u16 read_data() {
+        return static_cast<u16>(hw()->RDR);
+    }
+
+    /**
+     * @brief Transfer data (full-duplex)
+     *
+     * @param tx_data Data to transmit
+     * @return Received data
+     */
+    static inline u16 transfer(u16 tx_data) {
+        while (!is_tx_ready());
+        write_data(tx_data);
+        while (!is_rx_ready());
+        return read_data();
+    }
+
+    // ========================================================================
+    // Error Handling
+    // ========================================================================
+
+    /**
+     * @brief Check for overrun error
+     *
+     * @return true if overrun occurred
+     */
+    static inline bool has_overrun_error() {
+        return (hw()->SR & SR_OVRES) != 0;
+    }
+
+    /**
+     * @brief Check for mode fault
+     *
+     * @return true if mode fault occurred
+     */
+    static inline bool has_mode_fault() {
+        return (hw()->SR & SR_MODF) != 0;
+    }
+
+    // ========================================================================
+    // Interrupt Management
+    // ========================================================================
+
+    /**
+     * @brief Enable RX interrupt
+     */
+    static inline void enable_rx_interrupt() {
+        hw()->IER = INT_RDRF;
+    }
+
+    /**
+     * @brief Disable RX interrupt
+     */
+    static inline void disable_rx_interrupt() {
+        hw()->IDR = INT_RDRF;
+    }
+
+    /**
+     * @brief Enable TX interrupt
+     */
+    static inline void enable_tx_interrupt() {
+        hw()->IER = INT_TDRE;
+    }
+
+    /**
+     * @brief Disable TX interrupt
+     */
+    static inline void disable_tx_interrupt() {
+        hw()->IDR = INT_TDRE;
+    }
+};
+
+{% endif %}
+
+// ============================================================================
+// Type Aliases for SPI Instances
+// ============================================================================
+
+{% for instance in spi.instances %}
+/// @brief Hardware policy for {{ instance.name }}
+using {{ instance.name }}Hardware = {{ platform.name }}SpiHardwarePolicy<{{ instance.base_address }}>;
+
+{% endfor %}
+
+}  // namespace {{ platform_namespace }}
+
+/**
+ * @example
+ * Using the SPI hardware policy:
+ *
+ * @code
+ * #include "hal/vendors/{{ vendor.namespace }}/{{ platform.family }}/spi.hpp"
+ *
+ * using namespace {{ platform_namespace }};
+ *
+ * int main() {
+ *     // Initialize SPI
+ *     SPI1Hardware::set_master_mode();
+ *     SPI1Hardware::set_mode(0);  // Mode 0 (CPOL=0, CPHA=0)
+ *     SPI1Hardware::set_prescaler(SPI1Hardware::CR1_BR_DIV16);
+ *     SPI1Hardware::set_software_nss();
+ *     SPI1Hardware::enable();
+ *
+ *     // Transfer data
+ *     u8 rx = SPI1Hardware::transfer_byte(0x42);
+ * }
+ * @endcode
+ */
