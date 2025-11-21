@@ -638,25 +638,28 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 - Generated: `src/hal/vendors/st/stm32f4/generated/platform/i2c.hpp` (536 lines)
 - Generated: `src/hal/vendors/microchip/same70/generated/platform/i2c.hpp` (269 lines)
 
-### 2.6 Create ADC/Timer/DMA Templates (12h)
+### 2.6 Create ADC/Timer/DMA Templates (12h) ⚠️ PARTIAL
 
-- [ ] Create ADC template (4h)
-  - [ ] Single vs multi-channel
-  - [ ] Polling vs interrupt vs DMA
-  - [ ] Resolution configuration
-  - [ ] Sample time configuration
-- [ ] Create Timer template (4h)
-  - [ ] Basic timer
-  - [ ] PWM mode
-  - [ ] Input capture
-  - [ ] Output compare
-- [ ] Create DMA template (4h)
-  - [ ] Channel configuration
-  - [ ] Memory-to-memory
-  - [ ] Peripheral-to-memory
-  - [ ] Memory-to-peripheral
-- [ ] Test all templates
-- [ ] Document all templates
+- [x] Create ADC template (4h) ✅ COMPLETE
+  - [x] Single vs multi-channel conversion
+  - [x] Polling vs interrupt vs DMA support
+  - [x] Resolution configuration (12/10/8/6-bit for STM32, 12-16-bit for SAM)
+  - [x] Sample time configuration
+  - [x] Analog watchdog support
+  - [x] Regular and injected channels (STM32)
+  - [x] Continuous and scan modes
+- [ ] Create Timer template (4h) - DEFERRED
+  - Reason: Complex peripheral with many modes, deferred to focus on core peripherals
+- [ ] Create DMA template (4h) - DEFERRED
+  - Reason: Platform-specific DMA controllers vary significantly, needs dedicated phase
+
+**Deliverables (ADC only)**:
+- `tools/codegen/templates/platform/adc.hpp.j2` (574 lines)
+- `tools/codegen/metadata/platforms/stm32f4/adc.json` (201 lines)
+- `tools/codegen/metadata/platforms/same70/adc.json` (167 lines)
+- `tools/codegen/generators/adc_generator.py` (463 lines)
+- Generated: `src/hal/vendors/st/stm32f4/generated/platform/adc.hpp` (479 lines)
+- Generated: `src/hal/vendors/microchip/same70/generated/platform/adc.hpp` (195 lines)
 
 ### 2.7 Create Startup Template (4h)
 

@@ -1,0 +1,193 @@
+{
+  "$schema": "../../schema/peripheral.schema.json",
+  "peripheral": {
+    "name": "ADC",
+    "type": "ADC",
+    "description": "Analog-to-Digital Converter",
+    "version": "1.0"
+  },
+  "instances": [
+    {
+      "name": "ADC1",
+      "base_address": "0x40012000",
+      "irq_number": 18,
+      "clock_enable": {
+        "register": "RCC_APB2ENR",
+        "bit": 8
+      },
+      "dma_support": {
+        "channel": {"controller": "DMA2", "stream": 0, "channel": 0}
+      }
+    },
+    {
+      "name": "ADC2",
+      "base_address": "0x40012100",
+      "irq_number": 18,
+      "clock_enable": {
+        "register": "RCC_APB2ENR",
+        "bit": 9
+      },
+      "dma_support": {
+        "channel": {"controller": "DMA2", "stream": 2, "channel": 1}
+      }
+    },
+    {
+      "name": "ADC3",
+      "base_address": "0x40012200",
+      "irq_number": 18,
+      "clock_enable": {
+        "register": "RCC_APB2ENR",
+        "bit": 10
+      },
+      "dma_support": {
+        "channel": {"controller": "DMA2", "stream": 1, "channel": 2}
+      }
+    }
+  ],
+  "registers": {
+    "SR": {
+      "offset": "0x00",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Status register",
+      "fields": {
+        "AWD": {"bits": "0", "access": "RW", "description": "Analog watchdog flag"},
+        "EOC": {"bits": "1", "access": "RW", "description": "End of conversion"},
+        "JEOC": {"bits": "2", "access": "RW", "description": "Injected channel end of conversion"},
+        "JSTRT": {"bits": "3", "access": "RW", "description": "Injected channel start flag"},
+        "STRT": {"bits": "4", "access": "RW", "description": "Regular channel start flag"},
+        "OVR": {"bits": "5", "access": "RW", "description": "Overrun"}
+      }
+    },
+    "CR1": {
+      "offset": "0x04",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Control register 1",
+      "fields": {
+        "AWDCH": {"bits": "4:0", "access": "RW", "description": "Analog watchdog channel select"},
+        "EOCIE": {"bits": "5", "access": "RW", "description": "EOC interrupt enable"},
+        "AWDIE": {"bits": "6", "access": "RW", "description": "Analog watchdog interrupt enable"},
+        "JEOCIE": {"bits": "7", "access": "RW", "description": "Injected EOC interrupt enable"},
+        "SCAN": {"bits": "8", "access": "RW", "description": "Scan mode"},
+        "AWDSGL": {"bits": "9", "access": "RW", "description": "Watchdog on single channel"},
+        "JAUTO": {"bits": "10", "access": "RW", "description": "Automatic injected group conversion"},
+        "DISCEN": {"bits": "11", "access": "RW", "description": "Discontinuous mode on regular channels"},
+        "JDISCEN": {"bits": "12", "access": "RW", "description": "Discontinuous mode on injected channels"},
+        "DISCNUM": {"bits": "15:13", "access": "RW", "description": "Discontinuous mode channel count"},
+        "JAWDEN": {"bits": "22", "access": "RW", "description": "Analog watchdog enable on injected channels"},
+        "AWDEN": {"bits": "23", "access": "RW", "description": "Analog watchdog enable on regular channels"},
+        "RES": {"bits": "25:24", "access": "RW", "description": "Resolution"},
+        "OVRIE": {"bits": "26", "access": "RW", "description": "Overrun interrupt enable"}
+      }
+    },
+    "CR2": {
+      "offset": "0x08",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Control register 2",
+      "fields": {
+        "ADON": {"bits": "0", "access": "RW", "description": "ADC on"},
+        "CONT": {"bits": "1", "access": "RW", "description": "Continuous conversion"},
+        "DMA": {"bits": "8", "access": "RW", "description": "DMA enable"},
+        "DDS": {"bits": "9", "access": "RW", "description": "DMA disable selection"},
+        "EOCS": {"bits": "10", "access": "RW", "description": "End of conversion selection"},
+        "ALIGN": {"bits": "11", "access": "RW", "description": "Data alignment"},
+        "JEXTSEL": {"bits": "19:16", "access": "RW", "description": "External event select for injected group"},
+        "JEXTEN": {"bits": "21:20", "access": "RW", "description": "External trigger enable for injected channels"},
+        "JSWSTART": {"bits": "22", "access": "RW", "description": "Start conversion of injected channels"},
+        "EXTSEL": {"bits": "27:24", "access": "RW", "description": "External event select for regular group"},
+        "EXTEN": {"bits": "29:28", "access": "RW", "description": "External trigger enable for regular channels"},
+        "SWSTART": {"bits": "30", "access": "RW", "description": "Start conversion of regular channels"}
+      }
+    },
+    "SMPR1": {
+      "offset": "0x0C",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Sample time register 1 (channels 10-18)"
+    },
+    "SMPR2": {
+      "offset": "0x10",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Sample time register 2 (channels 0-9)"
+    },
+    "HTR": {
+      "offset": "0x24",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000FFF",
+      "description": "Watchdog higher threshold register",
+      "fields": {
+        "HT": {"bits": "11:0", "access": "RW", "description": "Analog watchdog higher threshold"}
+      }
+    },
+    "LTR": {
+      "offset": "0x28",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Watchdog lower threshold register",
+      "fields": {
+        "LT": {"bits": "11:0", "access": "RW", "description": "Analog watchdog lower threshold"}
+      }
+    },
+    "SQR1": {
+      "offset": "0x2C",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Regular sequence register 1 (conversions 13-16)",
+      "fields": {
+        "L": {"bits": "23:20", "access": "RW", "description": "Regular channel sequence length"}
+      }
+    },
+    "SQR2": {
+      "offset": "0x30",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Regular sequence register 2 (conversions 7-12)"
+    },
+    "SQR3": {
+      "offset": "0x34",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Regular sequence register 3 (conversions 1-6)"
+    },
+    "DR": {
+      "offset": "0x4C",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Regular data register",
+      "fields": {
+        "DATA": {"bits": "15:0", "access": "RO", "description": "Regular data"}
+      }
+    }
+  },
+  "capabilities": {
+    "modes": ["single", "continuous", "scan", "discontinuous"],
+    "features": ["dma", "watchdog", "injected_channels", "dual_mode", "triple_mode"]
+  },
+  "adc_specific": {
+    "resolution_bits": [12, 10, 8, 6],
+    "channels": 19,
+    "conversion_time_us": 0.084,
+    "sample_times_cycles": [3, 15, 28, 56, 84, 112, 144, 480],
+    "max_sample_rate_sps": 2400000
+  },
+  "template_variables": {
+    "style": "stm32",
+    "register_type": "ADC_TypeDef",
+    "register_include": "hal/vendors/st/stm32f4/generated/registers/adc_registers.hpp",
+    "bitfield_include": "hal/vendors/st/stm32f4/generated/bitfields/adc_bitfields.hpp"
+  }
+}

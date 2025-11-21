@@ -1,0 +1,188 @@
+{
+  "$schema": "../../schema/peripheral.schema.json",
+  "peripheral": {
+    "name": "ADC",
+    "type": "ADC",
+    "description": "Analog Front-End Controller (AFEC)",
+    "version": "1.0"
+  },
+  "instances": [
+    {
+      "name": "AFEC0",
+      "base_address": "0x4003C000",
+      "irq_number": 29,
+      "clock_enable": {
+        "register": "PMC_PCER0",
+        "bit": 29
+      },
+      "dma_support": {
+        "channel": {"controller": "XDMAC", "channel": 11}
+      }
+    },
+    {
+      "name": "AFEC1",
+      "base_address": "0x40064000",
+      "irq_number": 40,
+      "clock_enable": {
+        "register": "PMC_PCER1",
+        "bit": 8
+      },
+      "dma_support": {
+        "channel": {"controller": "XDMAC", "channel": 12}
+      }
+    }
+  ],
+  "registers": {
+    "CR": {
+      "offset": "0x00",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Control Register",
+      "fields": {
+        "SWRST": {"bits": "0", "access": "WO", "description": "Software reset"},
+        "START": {"bits": "1", "access": "WO", "description": "Start conversion"}
+      }
+    },
+    "MR": {
+      "offset": "0x04",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Mode Register",
+      "fields": {
+        "TRGEN": {"bits": "0", "access": "RW", "description": "Trigger enable"},
+        "TRGSEL": {"bits": "3:1", "access": "RW", "description": "Trigger selection"},
+        "SLEEP": {"bits": "5", "access": "RW", "description": "Sleep mode"},
+        "FWUP": {"bits": "6", "access": "RW", "description": "Fast wake-up"},
+        "FREERUN": {"bits": "7", "access": "RW", "description": "Free run mode"},
+        "PRESCAL": {"bits": "15:8", "access": "RW", "description": "Prescaler rate selection"},
+        "STARTUP": {"bits": "19:16", "access": "RW", "description": "Start-up time"},
+        "SETTLING": {"bits": "21:20", "access": "RW", "description": "Analog settling time"},
+        "ANACH": {"bits": "23", "access": "RW", "description": "Analog change"},
+        "TRACKTIM": {"bits": "27:24", "access": "RW", "description": "Tracking time"},
+        "TRANSFER": {"bits": "29:28", "access": "RW", "description": "Transfer period"},
+        "USEQ": {"bits": "31", "access": "RW", "description": "User sequence enable"}
+      }
+    },
+    "EMR": {
+      "offset": "0x08",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Extended Mode Register",
+      "fields": {
+        "CMPMODE": {"bits": "1:0", "access": "RW", "description": "Comparison mode"},
+        "CMPSEL": {"bits": "8:4", "access": "RW", "description": "Comparison selected channel"},
+        "CMPALL": {"bits": "9", "access": "RW", "description": "Compare all channels"},
+        "CMPFILTER": {"bits": "13:12", "access": "RW", "description": "Compare event filtering"},
+        "RES": {"bits": "18:16", "access": "RW", "description": "Resolution"},
+        "TAG": {"bits": "24", "access": "RW", "description": "TAG of ADC_LDCR register"},
+        "STM": {"bits": "25", "access": "RW", "description": "Single trigger mode"}
+      }
+    },
+    "SEQ1R": {
+      "offset": "0x0C",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Channel Sequence 1 Register"
+    },
+    "SEQ2R": {
+      "offset": "0x10",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Channel Sequence 2 Register"
+    },
+    "CHER": {
+      "offset": "0x14",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Channel Enable Register"
+    },
+    "CHDR": {
+      "offset": "0x18",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Channel Disable Register"
+    },
+    "CHSR": {
+      "offset": "0x1C",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Channel Status Register"
+    },
+    "LCDR": {
+      "offset": "0x20",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Last Converted Data Register",
+      "fields": {
+        "LDATA": {"bits": "11:0", "access": "RO", "description": "Last data converted"},
+        "CHNB": {"bits": "15:12", "access": "RO", "description": "Channel number"}
+      }
+    },
+    "IER": {
+      "offset": "0x24",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Enable Register"
+    },
+    "IDR": {
+      "offset": "0x28",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Disable Register"
+    },
+    "IMR": {
+      "offset": "0x2C",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Mask Register"
+    },
+    "ISR": {
+      "offset": "0x30",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Status Register"
+    },
+    "CDR": {
+      "offset": "0x50",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Channel Data Registers",
+      "array_size": 12,
+      "array_stride": 4,
+      "fields": {
+        "DATA": {"bits": "11:0", "access": "RO", "description": "Converted data"}
+      }
+    }
+  },
+  "capabilities": {
+    "modes": ["single", "freerun", "triggered", "user_sequence"],
+    "features": ["dma", "comparison", "offset_correction", "gain_correction"]
+  },
+  "adc_specific": {
+    "resolution_bits": [12, 13, 14, 15, 16],
+    "channels": 12,
+    "conversion_time_us": 0.42,
+    "sample_times_cycles": [3, 9, 17],
+    "max_sample_rate_sps": 1000000
+  },
+  "template_variables": {
+    "style": "sam",
+    "register_type": "Afec",
+    "register_include": "hal/vendors/microchip/same70/generated/registers/afec_registers.hpp",
+    "bitfield_include": "hal/vendors/microchip/same70/generated/bitfields/afec_bitfields.hpp"
+  }
+}
