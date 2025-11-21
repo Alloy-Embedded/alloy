@@ -193,7 +193,7 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 
 **Note**: Platform differences are handled via HardwarePolicy pattern (injected at derived class level), not in base class.
 
-### 1.7 Refactor GPIO APIs (12h) ✅ PARTIAL (Simple & Fluent complete)
+### 1.7 Refactor GPIO APIs (12h) ✅ COMPLETE
 
 - [x] Refactor GpioSimple
   - [x] Inherit from GpioBase via CRTP
@@ -207,22 +207,31 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
   - [x] Keep fluent builder pattern (GpioBuilder)
   - [x] Maintain method chaining
   - [x] Fix initialize() method to work with CRTP
-- [ ] Refactor GpioExpert (deferred)
-  - [ ] Inherit from GpioBase
-  - [ ] Keep expert-specific methods
-  - [ ] Maintain compile-time validation
+- [x] Refactor GpioExpert ✅ COMPLETE
+  - [x] Inherit from GpioBase via CRTP
+  - [x] Implement all *_impl() methods
+  - [x] Keep expert-specific methods (initialize, reconfigure, validate_config)
+  - [x] Maintain compile-time validation
+  - [x] Create ExpertGpioPin template class
+  - [x] Keep backward compatibility (expert::configure)
+  - [x] Create comprehensive compile test
 - [ ] Test on all boards (deferred to later phase)
 
 **Deliverables**:
 - `src/hal/api/gpio_simple.hpp` (refactored with CRTP, 280 lines)
 - `src/hal/api/gpio_fluent.hpp` (refactored with CRTP, 405 lines)
+- `src/hal/api/gpio_expert.hpp` (refactored with CRTP, 534 lines) ✅
 - `tests/compile_tests/test_gpio_simple_crtp.cpp` (320 lines)
+- `tests/compile_tests/test_gpio_expert_crtp.cpp` (450+ lines, 12 tests) ✅
 
 **Benefits**:
-- Eliminates code duplication between Simple and Fluent APIs
-- Both APIs share common implementation from GpioBase
+- Eliminates code duplication across all GPIO API levels (Simple, Fluent, Expert)
+- All three APIs share common implementation from GpioBase
 - Zero runtime overhead maintained via CRTP
-- Consistent API across GPIO levels
+- Consistent API across all GPIO levels
+- Compile-time validation throughout
+- ExpertGpioPin provides full control with type safety
+- Backward compatibility maintained
 
 ### 1.8 Implement SpiBase (6h) ✅ COMPLETE
 
