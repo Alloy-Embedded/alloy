@@ -1,0 +1,217 @@
+{
+  "$schema": "../../schema/peripheral.schema.json",
+  "peripheral": {
+    "name": "I2C",
+    "type": "I2C",
+    "description": "Two-Wire Interface (TWI/I2C)",
+    "version": "1.0"
+  },
+  "instances": [
+    {
+      "name": "TWI0",
+      "base_address": "0x40018000",
+      "irq_number": 19,
+      "clock_enable": {
+        "register": "PMC_PCER0",
+        "bit": 19
+      },
+      "dma_support": {
+        "tx": {"controller": "XDMAC", "channel": 5},
+        "rx": {"controller": "XDMAC", "channel": 6}
+      }
+    },
+    {
+      "name": "TWI1",
+      "base_address": "0x4001C000",
+      "irq_number": 20,
+      "clock_enable": {
+        "register": "PMC_PCER0",
+        "bit": 20
+      },
+      "dma_support": {
+        "tx": {"controller": "XDMAC", "channel": 7},
+        "rx": {"controller": "XDMAC", "channel": 8}
+      }
+    },
+    {
+      "name": "TWI2",
+      "base_address": "0x40060000",
+      "irq_number": 41,
+      "clock_enable": {
+        "register": "PMC_PCER1",
+        "bit": 9
+      },
+      "dma_support": {
+        "tx": {"controller": "XDMAC", "channel": 9},
+        "rx": {"controller": "XDMAC", "channel": 10}
+      }
+    }
+  ],
+  "registers": {
+    "CR": {
+      "offset": "0x00",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Control Register",
+      "fields": {
+        "START": {"bits": "0", "access": "WO", "description": "Send START condition"},
+        "STOP": {"bits": "1", "access": "WO", "description": "Send STOP condition"},
+        "MSEN": {"bits": "2", "access": "WO", "description": "TWI Master mode enabled"},
+        "MSDIS": {"bits": "3", "access": "WO", "description": "TWI Master mode disabled"},
+        "SVEN": {"bits": "4", "access": "WO", "description": "TWI Slave mode enabled"},
+        "SVDIS": {"bits": "5", "access": "WO", "description": "TWI Slave mode disabled"},
+        "QUICK": {"bits": "6", "access": "WO", "description": "SMBus Quick command"},
+        "SWRST": {"bits": "7", "access": "WO", "description": "Software reset"},
+        "HSEN": {"bits": "8", "access": "WO", "description": "TWI High-Speed mode enabled"},
+        "HSDIS": {"bits": "9", "access": "WO", "description": "TWI High-Speed mode disabled"},
+        "SMBEN": {"bits": "10", "access": "WO", "description": "SMBus mode enabled"},
+        "SMBDIS": {"bits": "11", "access": "WO", "description": "SMBus mode disabled"},
+        "PECEN": {"bits": "12", "access": "WO", "description": "Packet Error Checking enable"},
+        "PECDIS": {"bits": "13", "access": "WO", "description": "Packet Error Checking disable"},
+        "PECRQ": {"bits": "14", "access": "WO", "description": "PEC request"},
+        "CLEAR": {"bits": "15", "access": "WO", "description": "Bus CLEAR command"},
+        "ACMEN": {"bits": "16", "access": "WO", "description": "Alternative Command mode enable"},
+        "ACMDIS": {"bits": "17", "access": "WO", "description": "Alternative Command mode disable"},
+        "THRCLR": {"bits": "24", "access": "WO", "description": "Transmit Holding Register Clear"}
+      }
+    },
+    "MMR": {
+      "offset": "0x04",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Master Mode Register",
+      "fields": {
+        "IADRSZ": {"bits": "9:8", "access": "RW", "description": "Internal device address size"},
+        "MREAD": {"bits": "12", "access": "RW", "description": "Master read direction"},
+        "DADR": {"bits": "22:16", "access": "RW", "description": "Device address"}
+      }
+    },
+    "SMR": {
+      "offset": "0x08",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Slave Mode Register",
+      "fields": {
+        "NACKEN": {"bits": "0", "access": "RW", "description": "Slave Receiver Data Phase NACK enable"},
+        "SMDA": {"bits": "1", "access": "RW", "description": "SMBus Default Address"},
+        "SMHH": {"bits": "2", "access": "RW", "description": "SMBus Host Header"},
+        "SCLWSDIS": {"bits": "6", "access": "RW", "description": "Clock Wait State disable"},
+        "MASK": {"bits": "14:8", "access": "RW", "description": "Slave Address Mask"},
+        "SADR": {"bits": "22:16", "access": "RW", "description": "Slave Address"}
+      }
+    },
+    "IADR": {
+      "offset": "0x0C",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Internal Address Register",
+      "fields": {
+        "IADR": {"bits": "23:0", "access": "RW", "description": "Internal address"}
+      }
+    },
+    "CWGR": {
+      "offset": "0x10",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Clock Waveform Generator Register",
+      "fields": {
+        "CLDIV": {"bits": "7:0", "access": "RW", "description": "Clock Low Divider"},
+        "CHDIV": {"bits": "15:8", "access": "RW", "description": "Clock High Divider"},
+        "CKDIV": {"bits": "18:16", "access": "RW", "description": "Clock Divider"},
+        "HOLD": {"bits": "29:24", "access": "RW", "description": "TWI Hold Time"}
+      }
+    },
+    "SR": {
+      "offset": "0x20",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x0000F009",
+      "description": "Status Register",
+      "fields": {
+        "TXCOMP": {"bits": "0", "access": "R", "description": "Transmission completed"},
+        "RXRDY": {"bits": "1", "access": "R", "description": "Receive Holding Register ready"},
+        "TXRDY": {"bits": "2", "access": "R", "description": "Transmit Holding Register ready"},
+        "SVREAD": {"bits": "3", "access": "R", "description": "Slave read"},
+        "SVACC": {"bits": "4", "access": "R", "description": "Slave access"},
+        "GACC": {"bits": "5", "access": "R", "description": "General call access"},
+        "OVRE": {"bits": "6", "access": "R", "description": "Overrun error"},
+        "UNRE": {"bits": "7", "access": "R", "description": "Underrun error"},
+        "NACK": {"bits": "8", "access": "R", "description": "Not acknowledged"},
+        "ARBLST": {"bits": "9", "access": "R", "description": "Arbitration lost"},
+        "SCLWS": {"bits": "10", "access": "R", "description": "Clock Wait State"},
+        "EOSACC": {"bits": "11", "access": "R", "description": "End Of Slave Access"},
+        "MCACK": {"bits": "16", "access": "R", "description": "Master Code Acknowledge"},
+        "TOUT": {"bits": "18", "access": "R", "description": "Timeout error"},
+        "PECERR": {"bits": "19", "access": "R", "description": "PEC error"},
+        "SMBDAM": {"bits": "20", "access": "R", "description": "SMBus Default Address Match"},
+        "SMBHHM": {"bits": "21", "access": "R", "description": "SMBus Host Header Address Match"}
+      }
+    },
+    "IER": {
+      "offset": "0x24",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Enable Register"
+    },
+    "IDR": {
+      "offset": "0x28",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Disable Register"
+    },
+    "IMR": {
+      "offset": "0x2C",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Mask Register"
+    },
+    "RHR": {
+      "offset": "0x30",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Receive Holding Register",
+      "fields": {
+        "RXDATA": {"bits": "7:0", "access": "R", "description": "Master or Slave Receive Holding Data"}
+      }
+    },
+    "THR": {
+      "offset": "0x34",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Transmit Holding Register",
+      "fields": {
+        "TXDATA": {"bits": "7:0", "access": "WO", "description": "Master or Slave Transmit Holding Data"}
+      }
+    }
+  },
+  "capabilities": {
+    "modes": ["master", "slave", "multi_master"],
+    "features": ["smbus", "dma", "high_speed", "pec", "general_call", "clock_stretching"]
+  },
+  "i2c_specific": {
+    "clock_speeds": {
+      "standard": 100000,
+      "fast": 400000,
+      "fast_plus": 1000000,
+      "high_speed": 3400000
+    },
+    "addressing_modes": ["7bit"],
+    "slave_addresses": 1
+  },
+  "template_variables": {
+    "style": "sam",
+    "register_type": "Twi",
+    "register_include": "hal/vendors/microchip/same70/generated/registers/twi_registers.hpp",
+    "bitfield_include": "hal/vendors/microchip/same70/generated/bitfields/twi_bitfields.hpp"
+  }
+}

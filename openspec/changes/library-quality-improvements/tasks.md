@@ -613,21 +613,30 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 - Generated: `src/hal/vendors/st/stm32f4/generated/platform/spi.hpp` (445 lines)
 - Generated: `src/hal/vendors/microchip/same70/generated/platform/spi.hpp` (373 lines)
 
-### 2.5 Create I2C Template (6h)
+### 2.5 Create I2C Template (6h) ✅ COMPLETE
 
-- [ ] Design I2C template structure
-  - [ ] Master vs slave modes
-  - [ ] 7-bit vs 10-bit addressing
-  - [ ] Clock stretching
-- [ ] Create `templates/platform/i2c.hpp.j2`
-  - [ ] I2C class template
-  - [ ] Configure method
-  - [ ] Write/read methods
-  - [ ] Repeated start support
-  - [ ] Multi-master support
-- [ ] Create I2C metadata
-- [ ] Test template generation
-- [ ] Document I2C template
+- [x] Design I2C template structure
+  - [x] Master vs slave modes
+  - [x] 7-bit vs 10-bit addressing
+  - [x] Clock stretching
+- [x] Create `templates/platform/i2c.hpp.j2`
+  - [x] I2C class template
+  - [x] Configure method
+  - [x] Write/read methods
+  - [x] START/STOP generation
+  - [x] Multi-master support
+  - [x] Error handling
+- [x] Create I2C metadata for STM32F4 and SAME70
+- [x] Create I2C generator script
+- [x] Test template generation
+
+**Deliverables**:
+- `tools/codegen/templates/platform/i2c.hpp.j2` (680 lines)
+- `tools/codegen/metadata/platforms/stm32f4/i2c.json` (202 lines)
+- `tools/codegen/metadata/platforms/same70/i2c.json` (223 lines)
+- `tools/codegen/generators/i2c_generator.py` (463 lines)
+- Generated: `src/hal/vendors/st/stm32f4/generated/platform/i2c.hpp` (536 lines)
+- Generated: `src/hal/vendors/microchip/same70/generated/platform/i2c.hpp` (269 lines)
 
 ### 2.6 Create ADC/Timer/DMA Templates (12h)
 

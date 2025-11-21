@@ -1,0 +1,207 @@
+{
+  "$schema": "../../schema/peripheral.schema.json",
+  "peripheral": {
+    "name": "I2C",
+    "type": "I2C",
+    "description": "Inter-Integrated Circuit",
+    "version": "1.0"
+  },
+  "instances": [
+    {
+      "name": "I2C1",
+      "base_address": "0x40005400",
+      "irq_number": 31,
+      "peripheral_clock_hz": 42000000,
+      "clock_enable": {
+        "register": "RCC_APB1ENR",
+        "bit": 21
+      },
+      "dma_support": {
+        "tx": {"controller": "DMA1", "stream": 6, "channel": 1},
+        "rx": {"controller": "DMA1", "stream": 5, "channel": 1}
+      }
+    },
+    {
+      "name": "I2C2",
+      "base_address": "0x40005800",
+      "irq_number": 33,
+      "peripheral_clock_hz": 42000000,
+      "clock_enable": {
+        "register": "RCC_APB1ENR",
+        "bit": 22
+      },
+      "dma_support": {
+        "tx": {"controller": "DMA1", "stream": 7, "channel": 7},
+        "rx": {"controller": "DMA1", "stream": 2, "channel": 7}
+      }
+    },
+    {
+      "name": "I2C3",
+      "base_address": "0x40005C00",
+      "irq_number": 72,
+      "peripheral_clock_hz": 42000000,
+      "clock_enable": {
+        "register": "RCC_APB1ENR",
+        "bit": 23
+      },
+      "dma_support": {
+        "tx": {"controller": "DMA1", "stream": 4, "channel": 3},
+        "rx": {"controller": "DMA1", "stream": 2, "channel": 3}
+      }
+    }
+  ],
+  "registers": {
+    "CR1": {
+      "offset": "0x00",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Control register 1",
+      "fields": {
+        "PE": {"bits": "0", "access": "RW", "description": "Peripheral enable"},
+        "SMBUS": {"bits": "1", "access": "RW", "description": "SMBus mode"},
+        "SMBTYPE": {"bits": "3", "access": "RW", "description": "SMBus type"},
+        "ENARP": {"bits": "4", "access": "RW", "description": "ARP enable"},
+        "ENPEC": {"bits": "5", "access": "RW", "description": "PEC enable"},
+        "ENGC": {"bits": "6", "access": "RW", "description": "General call enable"},
+        "NOSTRETCH": {"bits": "7", "access": "RW", "description": "Clock stretching disable"},
+        "START": {"bits": "8", "access": "RW", "description": "Start generation"},
+        "STOP": {"bits": "9", "access": "RW", "description": "Stop generation"},
+        "ACK": {"bits": "10", "access": "RW", "description": "Acknowledge enable"},
+        "POS": {"bits": "11", "access": "RW", "description": "Acknowledge/PEC position"},
+        "PEC": {"bits": "12", "access": "RW", "description": "Packet error checking"},
+        "ALERT": {"bits": "13", "access": "RW", "description": "SMBus alert"},
+        "SWRST": {"bits": "15", "access": "RW", "description": "Software reset"}
+      }
+    },
+    "CR2": {
+      "offset": "0x04",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Control register 2",
+      "fields": {
+        "FREQ": {"bits": "5:0", "access": "RW", "description": "Peripheral clock frequency"},
+        "ITERREN": {"bits": "8", "access": "RW", "description": "Error interrupt enable"},
+        "ITEVTEN": {"bits": "9", "access": "RW", "description": "Event interrupt enable"},
+        "ITBUFEN": {"bits": "10", "access": "RW", "description": "Buffer interrupt enable"},
+        "DMAEN": {"bits": "11", "access": "RW", "description": "DMA requests enable"},
+        "LAST": {"bits": "12", "access": "RW", "description": "DMA last transfer"}
+      }
+    },
+    "OAR1": {
+      "offset": "0x08",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Own address register 1",
+      "fields": {
+        "ADD0": {"bits": "0", "access": "RW", "description": "Interface address bit 0"},
+        "ADD7_1": {"bits": "7:1", "access": "RW", "description": "Interface address bits 7:1"},
+        "ADD9_8": {"bits": "9:8", "access": "RW", "description": "Interface address bits 9:8"},
+        "ADDMODE": {"bits": "15", "access": "RW", "description": "Addressing mode (7-bit or 10-bit)"}
+      }
+    },
+    "OAR2": {
+      "offset": "0x0C",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Own address register 2",
+      "fields": {
+        "ENDUAL": {"bits": "0", "access": "RW", "description": "Dual addressing mode enable"},
+        "ADD2": {"bits": "7:1", "access": "RW", "description": "Interface address bits 7:1"}
+      }
+    },
+    "DR": {
+      "offset": "0x10",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Data register",
+      "fields": {
+        "DR": {"bits": "7:0", "access": "RW", "description": "8-bit data register"}
+      }
+    },
+    "SR1": {
+      "offset": "0x14",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Status register 1",
+      "fields": {
+        "SB": {"bits": "0", "access": "R", "description": "Start bit"},
+        "ADDR": {"bits": "1", "access": "R", "description": "Address sent/matched"},
+        "BTF": {"bits": "2", "access": "R", "description": "Byte transfer finished"},
+        "ADD10": {"bits": "3", "access": "R", "description": "10-bit header sent"},
+        "STOPF": {"bits": "4", "access": "R", "description": "Stop detection"},
+        "RXNE": {"bits": "6", "access": "R", "description": "Data register not empty (receivers)"},
+        "TXE": {"bits": "7", "access": "R", "description": "Data register empty (transmitters)"},
+        "BERR": {"bits": "8", "access": "RW", "description": "Bus error"},
+        "ARLO": {"bits": "9", "access": "RW", "description": "Arbitration lost"},
+        "AF": {"bits": "10", "access": "RW", "description": "Acknowledge failure"},
+        "OVR": {"bits": "11", "access": "RW", "description": "Overrun/Underrun"},
+        "PECERR": {"bits": "12", "access": "RW", "description": "PEC error in reception"},
+        "TIMEOUT": {"bits": "14", "access": "RW", "description": "Timeout or Tlow error"},
+        "SMBALERT": {"bits": "15", "access": "RW", "description": "SMBus alert"}
+      }
+    },
+    "SR2": {
+      "offset": "0x18",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Status register 2",
+      "fields": {
+        "MSL": {"bits": "0", "access": "R", "description": "Master/slave"},
+        "BUSY": {"bits": "1", "access": "R", "description": "Bus busy"},
+        "TRA": {"bits": "2", "access": "R", "description": "Transmitter/receiver"},
+        "GENCALL": {"bits": "4", "access": "R", "description": "General call address"},
+        "SMBDEFAULT": {"bits": "5", "access": "R", "description": "SMBus device default address"},
+        "SMBHOST": {"bits": "6", "access": "R", "description": "SMBus host header"},
+        "DUALF": {"bits": "7", "access": "R", "description": "Dual flag"},
+        "PEC": {"bits": "15:8", "access": "R", "description": "Packet error checking register"}
+      }
+    },
+    "CCR": {
+      "offset": "0x1C",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Clock control register",
+      "fields": {
+        "CCR": {"bits": "11:0", "access": "RW", "description": "Clock control register in Fast/Standard mode"},
+        "DUTY": {"bits": "14", "access": "RW", "description": "Fast mode duty cycle"},
+        "FS": {"bits": "15", "access": "RW", "description": "I2C master mode selection"}
+      }
+    },
+    "TRISE": {
+      "offset": "0x20",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000002",
+      "description": "TRISE register",
+      "fields": {
+        "TRISE": {"bits": "5:0", "access": "RW", "description": "Maximum rise time in Fast/Standard mode"}
+      }
+    }
+  },
+  "capabilities": {
+    "modes": ["master", "slave", "multi_master"],
+    "features": ["smbus", "dma", "10bit_addressing", "dual_addressing", "general_call", "pec"]
+  },
+  "i2c_specific": {
+    "clock_speeds": {
+      "standard": 100000,
+      "fast": 400000
+    },
+    "addressing_modes": ["7bit", "10bit"],
+    "slave_addresses": 2
+  },
+  "template_variables": {
+    "style": "stm32",
+    "register_type": "I2C_TypeDef",
+    "register_include": "hal/vendors/st/stm32f4/generated/registers/i2c_registers.hpp",
+    "bitfield_include": "hal/vendors/st/stm32f4/generated/bitfields/i2c_bitfields.hpp"
+  }
+}
