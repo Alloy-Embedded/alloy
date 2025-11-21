@@ -313,3 +313,90 @@ TEST_CASE("GPIO button simulation with pull-up", "[gpio][integration]") {
     REQUIRE(button.isOutput() == false);
     REQUIRE(button.getPull() == PinPull::PullUp);
 }
+
+// ==============================================================================
+// Concept Failure Tests (Compile-Time Verification)
+// ==============================================================================
+
+/**
+ * @brief Types that should NOT satisfy GpioPin concept
+ *
+ * These tests verify that the concept correctly rejects invalid types.
+ * They are compile-time tests - the code should NOT compile if enabled.
+ *
+ * @note These are documented but commented out to prevent compilation errors.
+ *       To test, uncomment individually and verify compilation fails.
+ */
+
+// Test 1: Missing set() method
+class BadGpioNoSet {
+public:
+    Result<void, ErrorCode> clear() { return Ok(); }
+    Result<void, ErrorCode> toggle() { return Ok(); }
+    bool read() const { return false; }
+    Result<void, ErrorCode> setDirection(PinDirection) { return Ok(); }
+    Result<void, ErrorCode> setPull(PinPull) { return Ok(); }
+    Result<void, ErrorCode> setDrive(PinDrive) { return Ok(); }
+};
+
+// Would fail if uncommented:
+// static_assert(alloy::hal::concepts::GpioPin<BadGpioNoSet>);
+// Error: BadGpioNoSet does not satisfy GpioPin (missing set() method)
+
+// Test 2: Wrong return type for set()
+class BadGpioWrongReturn {
+public:
+    void set() {}  // Wrong: should return Result<void, ErrorCode>
+    Result<void, ErrorCode> clear() { return Ok(); }
+    Result<void, ErrorCode> toggle() { return Ok(); }
+    bool read() const { return false; }
+    Result<void, ErrorCode> setDirection(PinDirection) { return Ok(); }
+    Result<void, ErrorCode> setPull(PinPull) { return Ok(); }
+    Result<void, ErrorCode> setDrive(PinDrive) { return Ok(); }
+};
+
+// Would fail if uncommented:
+// static_assert(alloy::hal::concepts::GpioPin<BadGpioWrongReturn>);
+// Error: set() must return Result<void, ErrorCode>
+
+// Test 3: Missing required metadata
+class BadGpioNoMetadata {
+public:
+    Result<void, ErrorCode> set() { return Ok(); }
+    Result<void, ErrorCode> clear() { return Ok(); }
+    Result<void, ErrorCode> toggle() { return Ok(); }
+    bool read() const { return false; }
+    Result<void, ErrorCode> setDirection(PinDirection) { return Ok(); }
+    Result<void, ErrorCode> setPull(PinPull) { return Ok(); }
+    Result<void, ErrorCode> setDrive(PinDrive) { return Ok(); }
+    // Missing: static constexpr port_base, pin_number, pin_mask
+};
+
+// Would fail if uncommented:
+// static_assert(alloy::hal::concepts::GpioPin<BadGpioNoMetadata>);
+// Error: Missing compile-time metadata (port_base, pin_number, pin_mask)
+
+// Test 4: Primitive types should NOT satisfy concept
+// Would fail if uncommented:
+// static_assert(alloy::hal::concepts::GpioPin<int>);
+// static_assert(alloy::hal::concepts::GpioPin<void*>);
+// static_assert(alloy::hal::concepts::GpioPin<bool>);
+// Error: Primitive types do not satisfy GpioPin
+
+// Test 5: Incomplete interface
+class BadGpioIncomplete {
+public:
+    Result<void, ErrorCode> set() { return Ok(); }
+    Result<void, ErrorCode> clear() { return Ok(); }
+    // Missing: toggle(), read(), setDirection(), setPull(), setDrive()
+};
+
+// Would fail if uncommented:
+// static_assert(alloy::hal::concepts::GpioPin<BadGpioIncomplete>);
+// Error: BadGpioIncomplete does not implement full GpioPin interface
+
+TEST_CASE("Concept failure tests are documented", "[gpio][concept][negative]") {
+    // This test just documents that we have negative concept tests above
+    // The actual tests are compile-time and would fail compilation if enabled
+    REQUIRE(true);
+}

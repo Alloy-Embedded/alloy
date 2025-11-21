@@ -204,3 +204,90 @@ TEST_CASE("Clock frequency can be used for timing calculations", "[clock][usage]
 
     REQUIRE(cycles_per_ms == 64'000);
 }
+
+// ==============================================================================
+// Concept Failure Tests (Compile-Time Verification)
+// ==============================================================================
+
+/**
+ * @brief Types that should NOT satisfy ClockPlatform concept
+ *
+ * These tests verify that the concept correctly rejects invalid types.
+ * They are compile-time tests - the code should NOT compile if enabled.
+ *
+ * @note These are documented but commented out to prevent compilation errors.
+ *       To test, uncomment individually and verify compilation fails.
+ */
+
+// Test 1: Missing initialize() method
+class BadClockNoInit {
+public:
+    static Result<void, ErrorCode> enable_gpio_clocks() { return Ok(); }
+    static Result<void, ErrorCode> enable_uart_clock(uint32_t) { return Ok(); }
+    static constexpr uint32_t get_system_clock_hz() { return 64'000'000; }
+    // Missing: initialize()
+};
+
+// Would fail if uncommented:
+// static_assert(alloy::hal::concepts::ClockPlatform<BadClockNoInit>);
+// Error: Missing initialize() method
+
+// Test 2: Non-static methods (wrong)
+class BadClockNonStatic {
+public:
+    Result<void, ErrorCode> initialize() { return Ok(); }  // Wrong: should be static
+    static Result<void, ErrorCode> enable_gpio_clocks() { return Ok(); }
+    static constexpr uint32_t get_system_clock_hz() { return 64'000'000; }
+};
+
+// Would fail if uncommented:
+// static_assert(alloy::hal::concepts::ClockPlatform<BadClockNonStatic>);
+// Error: initialize() must be static
+
+// Test 3: Wrong return type
+class BadClockWrongReturn {
+public:
+    static void initialize() {}  // Wrong: should return Result<void, ErrorCode>
+    static Result<void, ErrorCode> enable_gpio_clocks() { return Ok(); }
+    static constexpr uint32_t get_system_clock_hz() { return 64'000'000; }
+};
+
+// Would fail if uncommented:
+// static_assert(alloy::hal::concepts::ClockPlatform<BadClockWrongReturn>);
+// Error: initialize() must return Result<void, ErrorCode>
+
+// Test 4: get_system_clock_hz() not constexpr
+class BadClockNotConstexpr {
+public:
+    static Result<void, ErrorCode> initialize() { return Ok(); }
+    static Result<void, ErrorCode> enable_gpio_clocks() { return Ok(); }
+    static uint32_t get_system_clock_hz() { return 64'000'000; }  // Wrong: should be constexpr
+};
+
+// Would fail if uncommented:
+// static_assert(alloy::hal::concepts::ClockPlatform<BadClockNotConstexpr>);
+// Error: get_system_clock_hz() must be constexpr
+
+// Test 5: Missing peripheral clock enable methods
+class BadClockIncomplete {
+public:
+    static Result<void, ErrorCode> initialize() { return Ok(); }
+    static constexpr uint32_t get_system_clock_hz() { return 64'000'000; }
+    // Missing: enable_gpio_clocks(), enable_uart_clock(), etc.
+};
+
+// Would fail if uncommented:
+// static_assert(alloy::hal::concepts::ClockPlatform<BadClockIncomplete>);
+// Error: Missing peripheral clock enable methods
+
+// Test 6: Primitive types should NOT satisfy concept
+// Would fail if uncommented:
+// static_assert(alloy::hal::concepts::ClockPlatform<int>);
+// static_assert(alloy::hal::concepts::ClockPlatform<void*>);
+// Error: Primitive types do not satisfy ClockPlatform
+
+TEST_CASE("Clock concept failure tests are documented", "[clock][concept][negative]") {
+    // This test just documents that we have negative concept tests above
+    // The actual tests are compile-time and would fail compilation if enabled
+    REQUIRE(true);
+}

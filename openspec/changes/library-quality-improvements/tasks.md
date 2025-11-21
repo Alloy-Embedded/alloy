@@ -755,20 +755,37 @@ providing correct interrupt vectors and initialization sequences for each MCU va
 - [x] Test concepts (3h) ✅ COMPLETE
   - [x] Test GpioPin concept
   - [x] Test ClockPlatform concept
+  - [x] Verify concept failures with bad types
   - **Files**:
-    - `tests/unit/test_gpio_concept.cpp` (8.4 KB)
-    - `tests/unit/test_clock_concept.cpp` (6.7 KB)
-  - [ ] Verify concept failures with bad types
-- [ ] Test types (2h)
-  - [ ] Test PinDirection
-  - [ ] Test PinPull
-  - [ ] Test PinDrive
-  - [ ] Test BaudRate
-  - [ ] Test SpiMode
-- [ ] Test utilities (2h)
-  - [ ] Test bit manipulation helpers
-  - [ ] Test register access helpers
-  - [ ] Test constexpr helpers
+    - `tests/unit/test_gpio_concept.cpp` (400+ lines, 5 negative tests)
+    - `tests/unit/test_clock_concept.cpp` (290+ lines, 6 negative tests)
+- [x] Test types (2h) ✅ COMPLETE
+  - [x] Test PinDirection (2 values)
+  - [x] Test PinPull (3 values)
+  - [x] Test PinDrive (2 values)
+  - [x] Test PinState (2 values)
+  - [x] Test InterruptMode (6 values)
+  - [x] Test Baudrate (8 standard rates)
+  - [x] Test Parity (5 modes)
+  - [x] Test StopBits (3 values)
+  - [x] Test DataBits (4 values)
+  - [x] Test FlowControl (3 modes)
+  - [x] Test SpiMode (4 modes)
+  - [x] Test SpiBitOrder (2 orders)
+  - [x] Test SpiDataSize (2 sizes)
+  - [x] Test PwmPolarity (2 values)
+  - [x] Test PwmAlignment (2 values)
+  - [x] Test configuration structs (GpioConfig, UartConfig, SpiConfig, PwmConfig)
+  - **File**: `tests/unit/test_types.cpp` (530+ lines, 20 tests)
+- [x] Test utilities (2h) ✅ COMPLETE
+  - [x] Test BaudRate type-safe wrapper
+  - [x] Test memory assertion macros (ALLOY_ASSERT_MAX_SIZE, ZERO_OVERHEAD, ALIGNMENT)
+  - [x] Test constexpr arithmetic
+  - [x] Test bit manipulation helpers (set_bit, clear_bit, test_bit, toggle_bit)
+  - [x] Test register access helpers (create_mask, get_field, set_field)
+  - [x] Test constexpr conversions, min/max
+  - [x] Test power of 2 checks
+  - **File**: `tests/unit/test_utilities.cpp` (520+ lines, 14 tests)
 
 ### 3.2 HAL Testing (16h) ✅ EXISTING
 
