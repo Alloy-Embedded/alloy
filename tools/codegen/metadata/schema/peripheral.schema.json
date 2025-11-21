@@ -126,14 +126,14 @@
                     },
                     {
                       "type": "string",
-                      "description": "Bit range (e.g., '7:0', '15:8')",
-                      "pattern": "^[0-9]+:[0-9]+$"
+                      "description": "Bit position or range (e.g., '0', '7:0', '15:8')",
+                      "pattern": "^[0-9]+(:[0-9]+)?$"
                     }
                   ]
                 },
                 "access": {
                   "type": "string",
-                  "enum": ["RO", "WO", "RW"]
+                  "enum": ["R", "W", "RW", "RO", "WO"]
                 },
                 "description": {
                   "type": "string"
@@ -199,11 +199,21 @@
       "description": "UART-specific configuration",
       "properties": {
         "baud_rates": {
-          "type": "object",
-          "properties": {
-            "min": { "type": "number" },
-            "max": { "type": "number" }
-          }
+          "oneOf": [
+            {
+              "type": "array",
+              "items": { "type": "number" },
+              "description": "List of supported baud rates"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "min": { "type": "number" },
+                "max": { "type": "number" }
+              },
+              "description": "Range of supported baud rates"
+            }
+          ]
         },
         "data_bits": {
           "type": "array",
@@ -215,7 +225,12 @@
         },
         "parity": {
           "type": "array",
-          "items": { "type": "string", "enum": ["none", "even", "odd"] }
+          "items": { "type": "string", "enum": ["none", "even", "odd", "mark", "space"] }
+        },
+        "oversampling": {
+          "type": "array",
+          "items": { "type": "number" },
+          "description": "Supported oversampling values (e.g., 8, 16)"
         },
         "flow_control": {
           "type": "array",

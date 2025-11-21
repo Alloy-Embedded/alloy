@@ -1,0 +1,209 @@
+{
+  "$schema": "../../schema/peripheral.schema.json",
+  "peripheral": {
+    "name": "UART",
+    "type": "UART",
+    "description": "Universal Asynchronous Receiver Transmitter",
+    "version": "1.0"
+  },
+  "instances": [
+    {
+      "name": "USART1",
+      "base_address": "0x40011000",
+      "irq_number": 37,
+      "peripheral_clock_hz": 84000000,
+      "clock_enable": {
+        "register": "RCC_APB2ENR",
+        "bit": 4
+      },
+      "dma_support": {
+        "tx": {"controller": "DMA2", "stream": 7, "channel": 4},
+        "rx": {"controller": "DMA2", "stream": 2, "channel": 4}
+      }
+    },
+    {
+      "name": "USART2",
+      "base_address": "0x40004400",
+      "irq_number": 38,
+      "peripheral_clock_hz": 42000000,
+      "clock_enable": {
+        "register": "RCC_APB1ENR",
+        "bit": 17
+      },
+      "dma_support": {
+        "tx": {"controller": "DMA1", "stream": 6, "channel": 4},
+        "rx": {"controller": "DMA1", "stream": 5, "channel": 4}
+      }
+    },
+    {
+      "name": "USART3",
+      "base_address": "0x40004800",
+      "irq_number": 39,
+      "peripheral_clock_hz": 42000000,
+      "clock_enable": {
+        "register": "RCC_APB1ENR",
+        "bit": 18
+      },
+      "dma_support": {
+        "tx": {"controller": "DMA1", "stream": 3, "channel": 4},
+        "rx": {"controller": "DMA1", "stream": 1, "channel": 4}
+      }
+    },
+    {
+      "name": "UART4",
+      "base_address": "0x40004C00",
+      "irq_number": 52,
+      "peripheral_clock_hz": 42000000,
+      "clock_enable": {
+        "register": "RCC_APB1ENR",
+        "bit": 19
+      }
+    },
+    {
+      "name": "UART5",
+      "base_address": "0x40005000",
+      "irq_number": 53,
+      "peripheral_clock_hz": 42000000,
+      "clock_enable": {
+        "register": "RCC_APB1ENR",
+        "bit": 20
+      }
+    },
+    {
+      "name": "USART6",
+      "base_address": "0x40011400",
+      "irq_number": 71,
+      "peripheral_clock_hz": 84000000,
+      "clock_enable": {
+        "register": "RCC_APB2ENR",
+        "bit": 5
+      },
+      "dma_support": {
+        "tx": {"controller": "DMA2", "stream": 6, "channel": 5},
+        "rx": {"controller": "DMA2", "stream": 1, "channel": 5}
+      }
+    }
+  ],
+  "registers": {
+    "SR": {
+      "offset": "0x00",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00C00000",
+      "description": "Status register",
+      "fields": {
+        "PE": {"bits": "0", "access": "R", "description": "Parity error"},
+        "FE": {"bits": "1", "access": "R", "description": "Framing error"},
+        "NF": {"bits": "2", "access": "R", "description": "Noise detected flag"},
+        "ORE": {"bits": "3", "access": "R", "description": "Overrun error"},
+        "IDLE": {"bits": "4", "access": "R", "description": "IDLE line detected"},
+        "RXNE": {"bits": "5", "access": "R", "description": "Read data register not empty"},
+        "TC": {"bits": "6", "access": "RW", "description": "Transmission complete"},
+        "TXE": {"bits": "7", "access": "R", "description": "Transmit data register empty"},
+        "LBD": {"bits": "8", "access": "RW", "description": "LIN break detection flag"},
+        "CTS": {"bits": "9", "access": "RW", "description": "CTS flag"}
+      }
+    },
+    "DR": {
+      "offset": "0x04",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Data register",
+      "fields": {
+        "DR": {"bits": "8:0", "access": "RW", "description": "Data value"}
+      }
+    },
+    "BRR": {
+      "offset": "0x08",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Baud rate register",
+      "fields": {
+        "DIV_Fraction": {"bits": "3:0", "access": "RW", "description": "Fraction of USARTDIV"},
+        "DIV_Mantissa": {"bits": "15:4", "access": "RW", "description": "Mantissa of USARTDIV"}
+      }
+    },
+    "CR1": {
+      "offset": "0x0C",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Control register 1",
+      "fields": {
+        "SBK": {"bits": "0", "access": "RW", "description": "Send break"},
+        "RWU": {"bits": "1", "access": "RW", "description": "Receiver wakeup"},
+        "RE": {"bits": "2", "access": "RW", "description": "Receiver enable"},
+        "TE": {"bits": "3", "access": "RW", "description": "Transmitter enable"},
+        "IDLEIE": {"bits": "4", "access": "RW", "description": "IDLE interrupt enable"},
+        "RXNEIE": {"bits": "5", "access": "RW", "description": "RXNE interrupt enable"},
+        "TCIE": {"bits": "6", "access": "RW", "description": "Transmission complete interrupt enable"},
+        "TXEIE": {"bits": "7", "access": "RW", "description": "TXE interrupt enable"},
+        "PEIE": {"bits": "8", "access": "RW", "description": "PE interrupt enable"},
+        "PS": {"bits": "9", "access": "RW", "description": "Parity selection"},
+        "PCE": {"bits": "10", "access": "RW", "description": "Parity control enable"},
+        "WAKE": {"bits": "11", "access": "RW", "description": "Wakeup method"},
+        "M": {"bits": "12", "access": "RW", "description": "Word length"},
+        "UE": {"bits": "13", "access": "RW", "description": "USART enable"},
+        "OVER8": {"bits": "15", "access": "RW", "description": "Oversampling mode"}
+      }
+    },
+    "CR2": {
+      "offset": "0x10",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Control register 2",
+      "fields": {
+        "ADD": {"bits": "3:0", "access": "RW", "description": "Address of the USART node"},
+        "LBDL": {"bits": "5", "access": "RW", "description": "lin break detection length"},
+        "LBDIE": {"bits": "6", "access": "RW", "description": "LIN break detection interrupt enable"},
+        "LBCL": {"bits": "8", "access": "RW", "description": "Last bit clock pulse"},
+        "CPHA": {"bits": "9", "access": "RW", "description": "Clock phase"},
+        "CPOL": {"bits": "10", "access": "RW", "description": "Clock polarity"},
+        "CLKEN": {"bits": "11", "access": "RW", "description": "Clock enable"},
+        "STOP": {"bits": "13:12", "access": "RW", "description": "STOP bits"},
+        "LINEN": {"bits": "14", "access": "RW", "description": "LIN mode enable"}
+      }
+    },
+    "CR3": {
+      "offset": "0x14",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Control register 3",
+      "fields": {
+        "EIE": {"bits": "0", "access": "RW", "description": "Error interrupt enable"},
+        "IREN": {"bits": "1", "access": "RW", "description": "IrDA mode enable"},
+        "IRLP": {"bits": "2", "access": "RW", "description": "IrDA low-power"},
+        "HDSEL": {"bits": "3", "access": "RW", "description": "Half-duplex selection"},
+        "NACK": {"bits": "4", "access": "RW", "description": "Smartcard NACK enable"},
+        "SCEN": {"bits": "5", "access": "RW", "description": "Smartcard mode enable"},
+        "DMAR": {"bits": "6", "access": "RW", "description": "DMA enable receiver"},
+        "DMAT": {"bits": "7", "access": "RW", "description": "DMA enable transmitter"},
+        "RTSE": {"bits": "8", "access": "RW", "description": "RTS enable"},
+        "CTSE": {"bits": "9", "access": "RW", "description": "CTS enable"},
+        "CTSIE": {"bits": "10", "access": "RW", "description": "CTS interrupt enable"},
+        "ONEBIT": {"bits": "11", "access": "RW", "description": "One sample bit method enable"}
+      }
+    }
+  },
+  "capabilities": {
+    "modes": ["asynchronous", "synchronous", "smartcard", "irda", "lin"],
+    "features": ["parity", "hardware_flow_control", "dma", "multiprocessor_communication"]
+  },
+  "uart_specific": {
+    "baud_rates": [9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600],
+    "data_bits": [8, 9],
+    "parity": ["none", "even", "odd"],
+    "stop_bits": [1, 2],
+    "oversampling": [8, 16]
+  },
+  "template_variables": {
+    "style": "stm32",
+    "register_type": "USART_TypeDef",
+    "register_include": "hal/vendors/st/stm32f4/generated/registers/usart_registers.hpp",
+    "bitfield_include": "hal/vendors/st/stm32f4/generated/bitfields/usart_bitfields.hpp"
+  }
+}

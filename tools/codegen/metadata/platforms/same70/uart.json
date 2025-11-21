@@ -1,0 +1,236 @@
+{
+  "$schema": "../../schema/peripheral.schema.json",
+  "peripheral": {
+    "name": "UART",
+    "type": "UART",
+    "description": "Universal Asynchronous Receiver Transmitter",
+    "version": "1.0"
+  },
+  "instances": [
+    {
+      "name": "UART0",
+      "base_address": "0x400E0800",
+      "irq_number": 7,
+      "peripheral_clock_hz": 150000000,
+      "clock_enable": {
+        "register": "PMC_PCER0",
+        "bit": 7
+      },
+      "dma_support": {
+        "tx": {"controller": "XDMAC", "channel": 19},
+        "rx": {"controller": "XDMAC", "channel": 18}
+      }
+    },
+    {
+      "name": "UART1",
+      "base_address": "0x400E0A00",
+      "irq_number": 8,
+      "peripheral_clock_hz": 150000000,
+      "clock_enable": {
+        "register": "PMC_PCER0",
+        "bit": 8
+      },
+      "dma_support": {
+        "tx": {"controller": "XDMAC", "channel": 21},
+        "rx": {"controller": "XDMAC", "channel": 20}
+      }
+    },
+    {
+      "name": "UART2",
+      "base_address": "0x400E1A00",
+      "irq_number": 44,
+      "peripheral_clock_hz": 150000000,
+      "clock_enable": {
+        "register": "PMC_PCER1",
+        "bit": 12
+      },
+      "dma_support": {
+        "tx": {"controller": "XDMAC", "channel": 23},
+        "rx": {"controller": "XDMAC", "channel": 22}
+      }
+    },
+    {
+      "name": "UART3",
+      "base_address": "0x400E1C00",
+      "irq_number": 45,
+      "peripheral_clock_hz": 150000000,
+      "clock_enable": {
+        "register": "PMC_PCER1",
+        "bit": 13
+      },
+      "dma_support": {
+        "tx": {"controller": "XDMAC", "channel": 25},
+        "rx": {"controller": "XDMAC", "channel": 24}
+      }
+    },
+    {
+      "name": "UART4",
+      "base_address": "0x400E1E00",
+      "irq_number": 46,
+      "peripheral_clock_hz": 150000000,
+      "clock_enable": {
+        "register": "PMC_PCER1",
+        "bit": 14
+      },
+      "dma_support": {
+        "tx": {"controller": "XDMAC", "channel": 27},
+        "rx": {"controller": "XDMAC", "channel": 26}
+      }
+    }
+  ],
+  "registers": {
+    "CR": {
+      "offset": "0x00",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Control Register",
+      "fields": {
+        "RSTRX": {"bits": "2", "access": "W", "description": "Reset Receiver"},
+        "RSTTX": {"bits": "3", "access": "W", "description": "Reset Transmitter"},
+        "RXEN": {"bits": "4", "access": "W", "description": "Receiver Enable"},
+        "RXDIS": {"bits": "5", "access": "W", "description": "Receiver Disable"},
+        "TXEN": {"bits": "6", "access": "W", "description": "Transmitter Enable"},
+        "TXDIS": {"bits": "7", "access": "W", "description": "Transmitter Disable"},
+        "RSTSTA": {"bits": "8", "access": "W", "description": "Reset Status Bits"}
+      }
+    },
+    "MR": {
+      "offset": "0x04",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Mode Register",
+      "fields": {
+        "PAR": {"bits": "11:9", "access": "RW", "description": "Parity Type"},
+        "CHMODE": {"bits": "15:14", "access": "RW", "description": "Channel Mode"}
+      }
+    },
+    "IER": {
+      "offset": "0x08",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Enable Register",
+      "fields": {
+        "RXRDY": {"bits": "0", "access": "W", "description": "Enable RXRDY Interrupt"},
+        "TXRDY": {"bits": "1", "access": "W", "description": "Enable TXRDY Interrupt"},
+        "OVRE": {"bits": "5", "access": "W", "description": "Enable Overrun Error Interrupt"},
+        "FRAME": {"bits": "6", "access": "W", "description": "Enable Framing Error Interrupt"},
+        "PARE": {"bits": "7", "access": "W", "description": "Enable Parity Error Interrupt"}
+      }
+    },
+    "IDR": {
+      "offset": "0x0C",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Disable Register",
+      "fields": {
+        "RXRDY": {"bits": "0", "access": "W", "description": "Disable RXRDY Interrupt"},
+        "TXRDY": {"bits": "1", "access": "W", "description": "Disable TXRDY Interrupt"},
+        "OVRE": {"bits": "5", "access": "W", "description": "Disable Overrun Error Interrupt"},
+        "FRAME": {"bits": "6", "access": "W", "description": "Disable Framing Error Interrupt"},
+        "PARE": {"bits": "7", "access": "W", "description": "Disable Parity Error Interrupt"}
+      }
+    },
+    "IMR": {
+      "offset": "0x10",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Mask Register",
+      "fields": {
+        "RXRDY": {"bits": "0", "access": "R", "description": "RXRDY Interrupt Mask"},
+        "TXRDY": {"bits": "1", "access": "R", "description": "TXRDY Interrupt Mask"},
+        "OVRE": {"bits": "5", "access": "R", "description": "Overrun Error Interrupt Mask"},
+        "FRAME": {"bits": "6", "access": "R", "description": "Framing Error Interrupt Mask"},
+        "PARE": {"bits": "7", "access": "R", "description": "Parity Error Interrupt Mask"}
+      }
+    },
+    "SR": {
+      "offset": "0x14",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Status Register",
+      "fields": {
+        "RXRDY": {"bits": "0", "access": "R", "description": "Receiver Ready"},
+        "TXRDY": {"bits": "1", "access": "R", "description": "Transmitter Ready"},
+        "OVRE": {"bits": "5", "access": "R", "description": "Overrun Error"},
+        "FRAME": {"bits": "6", "access": "R", "description": "Framing Error"},
+        "PARE": {"bits": "7", "access": "R", "description": "Parity Error"},
+        "TXEMPTY": {"bits": "9", "access": "R", "description": "Transmitter Empty"}
+      }
+    },
+    "RHR": {
+      "offset": "0x18",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Receive Holding Register",
+      "fields": {
+        "RXCHR": {"bits": "7:0", "access": "R", "description": "Received Character"}
+      }
+    },
+    "THR": {
+      "offset": "0x1C",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Transmit Holding Register",
+      "fields": {
+        "TXCHR": {"bits": "7:0", "access": "W", "description": "Character to be Transmitted"}
+      }
+    },
+    "BRGR": {
+      "offset": "0x20",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Baud Rate Generator Register",
+      "fields": {
+        "CD": {"bits": "15:0", "access": "RW", "description": "Clock Divisor"}
+      }
+    },
+    "CMPR": {
+      "offset": "0x24",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Comparison Register",
+      "fields": {
+        "VAL1": {"bits": "7:0", "access": "RW", "description": "First Comparison Value for Received Character"},
+        "VAL2": {"bits": "15:8", "access": "RW", "description": "Second Comparison Value for Received Character"}
+      }
+    },
+    "WPMR": {
+      "offset": "0xE4",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Write Protection Mode Register",
+      "fields": {
+        "WPEN": {"bits": "0", "access": "RW", "description": "Write Protection Enable"},
+        "WPKEY": {"bits": "31:8", "access": "RW", "description": "Write Protection Key"}
+      }
+    }
+  },
+  "capabilities": {
+    "modes": ["asynchronous"],
+    "features": ["parity", "dma", "comparison"]
+  },
+  "uart_specific": {
+    "baud_rates": [9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600, 1000000, 2000000],
+    "data_bits": [8],
+    "parity": ["none", "even", "odd", "mark", "space"],
+    "stop_bits": [1],
+    "oversampling": [16]
+  },
+  "template_variables": {
+    "style": "sam",
+    "register_type": "Uart",
+    "register_include": "hal/vendors/microchip/same70/generated/registers/uart_registers.hpp",
+    "bitfield_include": "hal/vendors/microchip/same70/generated/bitfields/uart_bitfields.hpp"
+  }
+}
