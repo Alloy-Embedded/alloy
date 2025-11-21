@@ -20,7 +20,7 @@ sys.path.insert(0, str(CODEGEN_DIR))
 from core.logger import print_header, print_success, print_error, print_info, logger
 from core.config import normalize_name
 from core.paths import get_mcu_output_dir, ensure_dir
-from cli.parsers.generic_svd import parse_svd, SVDDevice, Peripheral, Register, RegisterField
+from parsers.generic_svd import parse_svd, SVDDevice, Peripheral, Register, RegisterField
 from core.progress import get_global_tracker
 
 
@@ -351,13 +351,13 @@ def generate_for_board_mcus(verbose: bool = False, tracker=None) -> int:
             print_info(f"  • {mcu}")
 
     # Use SVD discovery
-    from cli.parsers.svd_discovery import discover_all_svds
+    from parsers.svd_discovery import discover_all_svds
 
     print_info(f"Discovering SVD files...")
     all_svds = discover_all_svds()
 
     # Find SVD files for MCUs with pins by matching names
-    from cli.parsers.svd_discovery import find_svd_for_mcu
+    from parsers.svd_discovery import find_svd_for_mcu
 
     matching_files = []
     for mcu_name in mcus_with_pins:

@@ -40,8 +40,8 @@ from pathlib import Path
 CODEGEN_DIR = Path(__file__).parent
 sys.path.insert(0, str(CODEGEN_DIR))
 
-from cli.core.logger import print_header, print_success, print_error, print_info
-from cli.core.version import VERSION
+from core.logger import print_header, print_success, print_error, print_info
+from core.version import VERSION
 
 
 # ============================================================================
@@ -50,7 +50,7 @@ from cli.core.version import VERSION
 
 def cmd_generate(args):
     """Generate code for vendors"""
-    from cli.core.progress import ProgressTracker, set_global_tracker
+    from core.progress import ProgressTracker, set_global_tracker
 
     # Quiet mode disables verbose
     if args.quiet:
@@ -75,7 +75,7 @@ def cmd_generate(args):
             if not args.vendor or args.vendor == "st":
                 print_header("Generating STM32 Pin Headers")
                 try:
-                    import cli.vendors.st.generate_all_st_pins as st_gen
+                    import vendors.st.generate_all_st_pins as st_gen
                     st_gen.main()
                 except Exception as e:
                     print_error(f"ST generation failed: {e}")
@@ -88,8 +88,8 @@ def cmd_generate(args):
             if not args.vendor or args.vendor in ["atmel", "microchip"]:
                 print_header("Generating Atmel/Microchip Pin Headers")
                 try:
-                    from cli.vendors.atmel.generate_samd21_pins import main as gen_samd21
-                    from cli.vendors.atmel.generate_same70_pins import main as gen_same70
+                    from vendors.atmel.generate_samd21_pins import main as gen_samd21
+                    from vendors.atmel.generate_same70_pins import main as gen_same70
                     gen_samd21()
                     gen_same70()
                 except Exception as e:
@@ -102,7 +102,7 @@ def cmd_generate(args):
         # Generate pin alternate functions if requested
         if args.all or args.pin_functions:
             print_header("Generating Pin Alternate Function Mappings")
-            from cli.generators.generate_pin_functions import generate_for_board_mcus as gen_pin_funcs
+            from generators.generate_pin_functions import generate_for_board_mcus as gen_pin_funcs
             result = gen_pin_funcs(args.verbose, tracker)
             if result != 0:
                 success = False
@@ -110,7 +110,7 @@ def cmd_generate(args):
         # Generate registers if requested (needs pin_functions.hpp)
         if args.all or args.registers:
             print_header("Generating Register Structures")
-            from cli.generators.generate_registers import generate_for_board_mcus as gen_regs
+            from generators.generate_registers import generate_for_board_mcus as gen_regs
             result = gen_regs(args.verbose, tracker)
             if result != 0:
                 success = False
@@ -118,7 +118,7 @@ def cmd_generate(args):
         # Generate startup if requested (needs pin_functions.hpp)
         if args.all or args.startup:
             print_header("Generating Startup Code")
-            from cli.generators.generate_startup import generate_for_board_mcus
+            from generators.generate_startup import generate_for_board_mcus
             result = generate_for_board_mcus(args.verbose, tracker)
             if result != 0:
                 success = False
@@ -126,7 +126,7 @@ def cmd_generate(args):
         # Generate enumerations if requested (needs pin_functions.hpp)
         if args.all or args.enums:
             print_header("Generating Enumeration Definitions")
-            from cli.generators.generate_enums import generate_for_board_mcus as gen_enums
+            from generators.generate_enums import generate_for_board_mcus as gen_enums
             result = gen_enums(args.verbose, tracker)
             if result != 0:
                 success = False
@@ -134,7 +134,7 @@ def cmd_generate(args):
         # Generate complete register map if requested
         if args.all or args.register_map:
             print_header("Generating Complete Register Maps")
-            from cli.generators.generate_register_map import generate_for_board_mcus as gen_map
+            from generators.generate_register_map import generate_for_board_mcus as gen_map
             result = gen_map(args.verbose, tracker)
             if result != 0:
                 success = False
@@ -173,7 +173,7 @@ def cmd_generate(args):
 
 def cmd_status(args):
     """Show code generation status"""
-    from cli.commands.status import execute
+    from commands.status import execute
     return execute(args)
 
 
@@ -183,7 +183,7 @@ def cmd_status(args):
 
 def cmd_clean(args):
     """Clean generated files"""
-    from cli.commands.clean import execute
+    from commands.clean import execute
     return execute(args)
 
 
@@ -193,7 +193,7 @@ def cmd_clean(args):
 
 def cmd_vendors(args):
     """Show vendor information"""
-    from cli.commands.vendors import execute
+    from commands.vendors import execute
     return execute(args)
 
 
@@ -203,8 +203,8 @@ def cmd_vendors(args):
 
 def cmd_test_parser(args):
     """Test SVD parser on a file"""
-    from cli.parsers.generic_svd import parse_svd
-    from cli.core.config import SVD_DIR
+    from parsers.generic_svd import parse_svd
+    from core.config import SVD_DIR
 
     svd_path = Path(args.svd_file)
     if not svd_path.is_absolute():
@@ -431,7 +431,7 @@ def cmd_generate_complete(args):
 
 def cmd_config(args):
     """Show configuration"""
-    from cli.core.config import (
+    from core.config import (
         BOARD_MCUS,
         VENDOR_NAME_MAP,
         FAMILY_PATTERNS,
