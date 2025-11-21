@@ -905,7 +905,7 @@ providing correct interrupt vectors and initialization sequences for each MCU va
 - ✅ Binary size validation working
 - ✅ Build reproducibility confirmed
 
-### 3.5 Hardware-in-Loop Testing (4h) ✅ EXISTING
+### 3.5 Hardware-in-Loop Testing (4h) ✅ COMPLETE
 
 - [x] Hardware validation tests ✅ EXISTING
   - [x] Board validation (hw_board_validation.cpp)
@@ -913,11 +913,27 @@ providing correct interrupt vectors and initialization sequences for each MCU va
   - [x] GPIO LED test (hw_gpio_led_test.cpp)
   - **Files**: 3 hardware validation tests
 
-- [ ] Extended Hardware Tests - RECOMMENDED
-  - [ ] UART echo server test
-  - [ ] SPI flash test
-  - [ ] I2C sensor test
-  - [ ] Interrupt handling tests
+- [x] Extended Hardware Tests ✅ COMPLETE
+  - [x] UART echo server test (hw_uart_echo_test.cpp)
+  - [x] SPI flash test (hw_spi_flash_test.cpp)
+  - [x] I2C sensor test (hw_i2c_sensor_test.cpp)
+  - [x] Interrupt handling tests (hw_interrupt_test.cpp)
+  - **Files**: 4 additional hardware tests
+
+**Deliverables**:
+- ✅ `tests/hardware/hw_uart_echo_test.cpp` (350+ lines) - UART echo server with 4 test scenarios
+- ✅ `tests/hardware/hw_spi_flash_test.cpp` (450+ lines) - SPI flash operations with JEDEC ID, write/read, erase
+- ✅ `tests/hardware/hw_i2c_sensor_test.cpp` (450+ lines) - I2C MPU6050 sensor with device ID, configuration, continuous read
+- ✅ `tests/hardware/hw_interrupt_test.cpp` (450+ lines) - Interrupt system with external, timer, UART interrupts
+
+**Results**:
+- ✅ UART echo functionality validated
+- ✅ SPI flash read/write/erase operations tested
+- ✅ I2C sensor communication verified
+- ✅ Interrupt priorities and latency measured
+- ✅ All tests follow consistent LED status pattern
+- ✅ Result<T,E> error handling throughout
+- ✅ Multi-board support (STM32F4, SAME70)
 
 ---
 
