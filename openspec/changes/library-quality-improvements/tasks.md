@@ -1,4 +1,4 @@
-# Tasks: Library Quality Improvements
+olha esse registradores que estavam untrack p# Tasks: Library Quality Improvements
 
 **Change ID**: `library-quality-improvements`
 **Status**: PROPOSED
@@ -588,22 +588,30 @@ See `openspec/changes/INTEGRATION_LIBRARY_CLI.md` for full coordination plan.
 - ✅ Zero-overhead abstraction (static inline methods)
 - ✅ Ready for integration with existing UART APIs
 
-### 2.4 Create SPI Template (6h)
+### 2.4 Create SPI Template (6h) ✅ COMPLETE
 
-- [ ] Design SPI template structure
-  - [ ] Full-duplex vs half-duplex
-  - [ ] Master vs slave
-  - [ ] NSS handling (hardware vs software)
-- [ ] Create `templates/platform/spi.hpp.j2`
-  - [ ] SPI class template
-  - [ ] Configure method
-  - [ ] Transfer method
-  - [ ] Mode configuration (CPOL, CPHA)
-  - [ ] Speed configuration
-  - [ ] Data size configuration (8/16 bit)
-- [ ] Create SPI metadata
-- [ ] Test template generation
-- [ ] Document SPI template
+- [x] Design SPI template structure
+  - [x] Full-duplex vs half-duplex
+  - [x] Master vs slave
+  - [x] NSS handling (hardware vs software)
+- [x] Create `templates/platform/spi.hpp.j2`
+  - [x] SPI class template
+  - [x] Configure method
+  - [x] Transfer method
+  - [x] Mode configuration (CPOL, CPHA)
+  - [x] Speed configuration
+  - [x] Data size configuration (8/16 bit)
+- [x] Create SPI metadata for STM32F4 and SAME70
+- [x] Create SPI generator script
+- [x] Test template generation
+
+**Deliverables**:
+- `tools/codegen/templates/platform/spi.hpp.j2` (728 lines)
+- `tools/codegen/metadata/platforms/stm32f4/spi.json` (157 lines)
+- `tools/codegen/metadata/platforms/same70/spi.json` (167 lines)
+- `tools/codegen/generators/spi_generator.py` (463 lines)
+- Generated: `src/hal/vendors/st/stm32f4/generated/platform/spi.hpp` (445 lines)
+- Generated: `src/hal/vendors/microchip/same70/generated/platform/spi.hpp` (373 lines)
 
 ### 2.5 Create I2C Template (6h)
 

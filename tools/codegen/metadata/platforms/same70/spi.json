@@ -1,0 +1,177 @@
+{
+  "$schema": "../../schema/peripheral.schema.json",
+  "peripheral": {
+    "name": "SPI",
+    "type": "SPI",
+    "description": "Serial Peripheral Interface",
+    "version": "1.0"
+  },
+  "instances": [
+    {
+      "name": "SPI0",
+      "base_address": "0x40008000",
+      "irq_number": 21,
+      "clock_enable": {
+        "register": "PMC_PCER0",
+        "bit": 21
+      },
+      "dma_support": {
+        "tx": {"controller": "XDMAC", "channel": 1},
+        "rx": {"controller": "XDMAC", "channel": 2}
+      },
+      "chip_selects": 4
+    },
+    {
+      "name": "SPI1",
+      "base_address": "0x40058000",
+      "irq_number": 42,
+      "clock_enable": {
+        "register": "PMC_PCER1",
+        "bit": 10
+      },
+      "dma_support": {
+        "tx": {"controller": "XDMAC", "channel": 3},
+        "rx": {"controller": "XDMAC", "channel": 4}
+      },
+      "chip_selects": 4
+    }
+  ],
+  "registers": {
+    "CR": {
+      "offset": "0x00",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Control Register",
+      "fields": {
+        "SPIEN": {"bits": "0", "access": "WO", "description": "SPI Enable"},
+        "SPIDIS": {"bits": "1", "access": "WO", "description": "SPI Disable"},
+        "SWRST": {"bits": "7", "access": "WO", "description": "SPI Software Reset"},
+        "LASTXFER": {"bits": "24", "access": "WO", "description": "Last Transfer"}
+      }
+    },
+    "MR": {
+      "offset": "0x04",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Mode Register",
+      "fields": {
+        "MSTR": {"bits": "0", "access": "RW", "description": "Master/Slave Mode"},
+        "PS": {"bits": "1", "access": "RW", "description": "Peripheral Select"},
+        "PCSDEC": {"bits": "2", "access": "RW", "description": "Chip Select Decode"},
+        "MODFDIS": {"bits": "4", "access": "RW", "description": "Mode Fault Detection"},
+        "WDRBT": {"bits": "5", "access": "RW", "description": "Wait Data Read Before Transfer"},
+        "LLB": {"bits": "7", "access": "RW", "description": "Local Loopback Enable"},
+        "PCS": {"bits": "19:16", "access": "RW", "description": "Peripheral Chip Select"},
+        "DLYBCS": {"bits": "31:24", "access": "RW", "description": "Delay Between Chip Selects"}
+      }
+    },
+    "RDR": {
+      "offset": "0x08",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Receive Data Register",
+      "fields": {
+        "RD": {"bits": "15:0", "access": "RO", "description": "Receive Data"},
+        "PCS": {"bits": "19:16", "access": "RO", "description": "Peripheral Chip Select"}
+      }
+    },
+    "TDR": {
+      "offset": "0x0C",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Transmit Data Register",
+      "fields": {
+        "TD": {"bits": "15:0", "access": "WO", "description": "Transmit Data"},
+        "PCS": {"bits": "19:16", "access": "WO", "description": "Peripheral Chip Select"},
+        "LASTXFER": {"bits": "24", "access": "WO", "description": "Last Transfer"}
+      }
+    },
+    "SR": {
+      "offset": "0x10",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x000000F0",
+      "description": "Status Register",
+      "fields": {
+        "RDRF": {"bits": "0", "access": "RO", "description": "Receive Data Register Full"},
+        "TDRE": {"bits": "1", "access": "RO", "description": "Transmit Data Register Empty"},
+        "MODF": {"bits": "2", "access": "RO", "description": "Mode Fault Error"},
+        "OVRES": {"bits": "3", "access": "RO", "description": "Overrun Error Status"},
+        "NSSR": {"bits": "8", "access": "RO", "description": "NSS Rising"},
+        "TXEMPTY": {"bits": "9", "access": "RO", "description": "Transmission Registers Empty"},
+        "UNDES": {"bits": "10", "access": "RO", "description": "Underrun Error Status"},
+        "SPIENS": {"bits": "16", "access": "RO", "description": "SPI Enable Status"}
+      }
+    },
+    "IER": {
+      "offset": "0x14",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Enable Register",
+      "fields": {
+        "RDRF": {"bits": "0", "access": "WO", "description": "Receive Data Register Full Interrupt Enable"},
+        "TDRE": {"bits": "1", "access": "WO", "description": "TX Data Register Empty Interrupt Enable"},
+        "MODF": {"bits": "2", "access": "WO", "description": "Mode Fault Error Interrupt Enable"},
+        "OVRES": {"bits": "3", "access": "WO", "description": "Overrun Error Interrupt Enable"},
+        "NSSR": {"bits": "8", "access": "WO", "description": "NSS Rising Interrupt Enable"},
+        "TXEMPTY": {"bits": "9", "access": "WO", "description": "Transmission Registers Empty Enable"},
+        "UNDES": {"bits": "10", "access": "WO", "description": "Underrun Error Interrupt Enable"}
+      }
+    },
+    "IDR": {
+      "offset": "0x18",
+      "size": 32,
+      "access": "WO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Disable Register"
+    },
+    "IMR": {
+      "offset": "0x1C",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "Interrupt Mask Register"
+    },
+    "CSR": {
+      "offset": "0x30",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Chip Select Register",
+      "array_size": 4,
+      "array_stride": 4,
+      "fields": {
+        "CPOL": {"bits": "0", "access": "RW", "description": "Clock Polarity"},
+        "NCPHA": {"bits": "1", "access": "RW", "description": "Clock Phase (inverted)"},
+        "CSNAAT": {"bits": "2", "access": "RW", "description": "Chip Select Not Active After Transfer"},
+        "CSAAT": {"bits": "3", "access": "RW", "description": "Chip Select Active After Transfer"},
+        "BITS": {"bits": "7:4", "access": "RW", "description": "Bits Per Transfer"},
+        "SCBR": {"bits": "15:8", "access": "RW", "description": "Serial Clock Bit Rate"},
+        "DLYBS": {"bits": "23:16", "access": "RW", "description": "Delay Before SPCK"},
+        "DLYBCT": {"bits": "31:24", "access": "RW", "description": "Delay Between Consecutive Transfers"}
+      }
+    }
+  },
+  "capabilities": {
+    "modes": ["full_duplex", "master", "slave"],
+    "features": ["dma", "hardware_cs", "mode_fault_detection", "loopback"]
+  },
+  "spi_specific": {
+    "max_frequency_hz": 150000000,
+    "data_sizes": [8, 9, 10, 11, 12, 13, 14, 15, 16],
+    "modes": [0, 1, 2, 3],
+    "bit_orders": ["msb_first"],
+    "cs_modes": ["hardware", "decoded"]
+  },
+  "template_variables": {
+    "style": "sam",
+    "register_type": "Spi",
+    "register_include": "hal/vendors/microchip/same70/generated/registers/spi_registers.hpp",
+    "bitfield_include": "hal/vendors/microchip/same70/generated/bitfields/spi_bitfields.hpp"
+  }
+}

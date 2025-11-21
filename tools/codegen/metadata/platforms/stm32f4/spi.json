@@ -1,0 +1,157 @@
+{
+  "$schema": "../../schema/peripheral.schema.json",
+  "peripheral": {
+    "name": "SPI",
+    "type": "SPI",
+    "description": "Serial Peripheral Interface",
+    "version": "1.0"
+  },
+  "instances": [
+    {
+      "name": "SPI1",
+      "base_address": "0x40013000",
+      "irq_number": 35,
+      "clock_enable": {
+        "register": "RCC_APB2ENR",
+        "bit": 12
+      },
+      "dma_support": {
+        "tx": {"controller": "DMA2", "stream": 3, "channel": 3},
+        "rx": {"controller": "DMA2", "stream": 0, "channel": 3}
+      }
+    },
+    {
+      "name": "SPI2",
+      "base_address": "0x40003800",
+      "irq_number": 36,
+      "clock_enable": {
+        "register": "RCC_APB1ENR",
+        "bit": 14
+      },
+      "dma_support": {
+        "tx": {"controller": "DMA1", "stream": 4, "channel": 0},
+        "rx": {"controller": "DMA1", "stream": 3, "channel": 0}
+      }
+    },
+    {
+      "name": "SPI3",
+      "base_address": "0x40003C00",
+      "irq_number": 51,
+      "clock_enable": {
+        "register": "RCC_APB1ENR",
+        "bit": 15
+      },
+      "dma_support": {
+        "tx": {"controller": "DMA1", "stream": 5, "channel": 0},
+        "rx": {"controller": "DMA1", "stream": 0, "channel": 0}
+      }
+    }
+  ],
+  "registers": {
+    "CR1": {
+      "offset": "0x00",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Control register 1",
+      "fields": {
+        "CPHA": {"bits": "0", "access": "RW", "description": "Clock phase"},
+        "CPOL": {"bits": "1", "access": "RW", "description": "Clock polarity"},
+        "MSTR": {"bits": "2", "access": "RW", "description": "Master selection"},
+        "BR": {"bits": "5:3", "access": "RW", "description": "Baud rate control"},
+        "SPE": {"bits": "6", "access": "RW", "description": "SPI enable"},
+        "LSBFIRST": {"bits": "7", "access": "RW", "description": "Frame format"},
+        "SSI": {"bits": "8", "access": "RW", "description": "Internal slave select"},
+        "SSM": {"bits": "9", "access": "RW", "description": "Software slave management"},
+        "RXONLY": {"bits": "10", "access": "RW", "description": "Receive only"},
+        "DFF": {"bits": "11", "access": "RW", "description": "Data frame format"},
+        "CRCNEXT": {"bits": "12", "access": "RW", "description": "CRC transfer next"},
+        "CRCEN": {"bits": "13", "access": "RW", "description": "Hardware CRC calculation enable"},
+        "BIDIOE": {"bits": "14", "access": "RW", "description": "Output enable in bidirectional mode"},
+        "BIDIMODE": {"bits": "15", "access": "RW", "description": "Bidirectional data mode enable"}
+      }
+    },
+    "CR2": {
+      "offset": "0x04",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Control register 2",
+      "fields": {
+        "RXDMAEN": {"bits": "0", "access": "RW", "description": "RX buffer DMA enable"},
+        "TXDMAEN": {"bits": "1", "access": "RW", "description": "TX buffer DMA enable"},
+        "SSOE": {"bits": "2", "access": "RW", "description": "SS output enable"},
+        "FRF": {"bits": "4", "access": "RW", "description": "Frame format"},
+        "ERRIE": {"bits": "5", "access": "RW", "description": "Error interrupt enable"},
+        "RXNEIE": {"bits": "6", "access": "RW", "description": "RX buffer not empty interrupt enable"},
+        "TXEIE": {"bits": "7", "access": "RW", "description": "TX buffer empty interrupt enable"}
+      }
+    },
+    "SR": {
+      "offset": "0x08",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000002",
+      "description": "Status register",
+      "fields": {
+        "RXNE": {"bits": "0", "access": "R", "description": "Receive buffer not empty"},
+        "TXE": {"bits": "1", "access": "R", "description": "Transmit buffer empty"},
+        "CHSIDE": {"bits": "2", "access": "R", "description": "Channel side"},
+        "UDR": {"bits": "3", "access": "R", "description": "Underrun flag"},
+        "CRCERR": {"bits": "4", "access": "RW", "description": "CRC error flag"},
+        "MODF": {"bits": "5", "access": "R", "description": "Mode fault"},
+        "OVR": {"bits": "6", "access": "R", "description": "Overrun flag"},
+        "BSY": {"bits": "7", "access": "R", "description": "Busy flag"},
+        "FRE": {"bits": "8", "access": "R", "description": "Frame format error"}
+      }
+    },
+    "DR": {
+      "offset": "0x0C",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000000",
+      "description": "Data register",
+      "fields": {
+        "DR": {"bits": "15:0", "access": "RW", "description": "Data register"}
+      }
+    },
+    "CRCPR": {
+      "offset": "0x10",
+      "size": 32,
+      "access": "RW",
+      "reset_value": "0x00000007",
+      "description": "CRC polynomial register"
+    },
+    "RXCRCR": {
+      "offset": "0x14",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "RX CRC register"
+    },
+    "TXCRCR": {
+      "offset": "0x18",
+      "size": 32,
+      "access": "RO",
+      "reset_value": "0x00000000",
+      "description": "TX CRC register"
+    }
+  },
+  "capabilities": {
+    "modes": ["full_duplex", "half_duplex", "simplex"],
+    "features": ["master", "slave", "crc", "dma", "hardware_nss", "software_nss", "ti_mode"]
+  },
+  "spi_specific": {
+    "max_frequency_hz": 42000000,
+    "data_sizes": [8, 16],
+    "modes": [0, 1, 2, 3],
+    "bit_orders": ["msb_first", "lsb_first"],
+    "nss_modes": ["software", "hardware_input", "hardware_output"]
+  },
+  "template_variables": {
+    "style": "stm32",
+    "register_type": "SPI_TypeDef",
+    "register_include": "hal/vendors/st/stm32f4/generated/registers/spi_registers.hpp",
+    "bitfield_include": "hal/vendors/st/stm32f4/generated/bitfields/spi_bitfields.hpp"
+  }
+}
