@@ -1,0 +1,214 @@
+#pragma once
+
+/**
+ * @file board_config.hpp
+ * @brief Hardware configuration for {{ board.board.name }}
+ *
+ * Auto-generated from board.yaml
+ * DO NOT EDIT MANUALLY - Run `ucore generate-board` to regenerate
+ *
+ * Board: {{ board.board.name }}
+ * Vendor: {{ board.board.vendor }}
+ * MCU: {{ board.mcu.part_number }}
+ * Platform: {{ board.platform }}
+ */
+
+#include <cstdint>
+{% if board.platform.startswith('stm32') %}
+#include "hal/vendors/st/{{ board.platform }}/gpio.hpp"
+#include "hal/vendors/st/{{ board.platform }}/{{ board.mcu.part_number.lower() | replace('stm32', 'stm32') }}/peripherals.hpp"
+{% elif board.platform == 'same70' %}
+#include "hal/vendors/arm/same70/gpio.hpp"
+#include "hal/vendors/arm/same70/clock.hpp"
+#include "hal/vendors/atmel/same70/{{ board.mcu.part_number.lower() }}/peripherals.hpp"
+{% endif %}
+
+namespace {{ board.board.name.lower().replace('-', '_').replace(' ', '_') }} {
+
+{% if board.platform.startswith('stm32') %}
+using namespace ucore::hal::st::{{ board.platform }};
+using namespace ucore::generated::{{ board.mcu.part_number.lower().replace('stm32', 'stm32') }};
+{% elif board.platform == 'same70' %}
+using namespace ucore::hal::same70;
+using namespace ucore::generated::{{ board.mcu.part_number.lower() }};
+{% endif %}
+
+// =============================================================================
+// Board Information
+// =============================================================================
+
+struct BoardInfo {
+    static constexpr const char* name = "{{ board.board.name }}";
+    static constexpr const char* vendor = "{{ board.board.vendor }}";
+    static constexpr const char* version = "{{ board.board.version }}";
+    static constexpr const char* mcu = "{{ board.mcu.part_number }}";
+    static constexpr const char* architecture = "{{ board.mcu.architecture }}";
+{% if board.board.description %}
+    static constexpr const char* description = "{{ board.board.description }}";
+{% endif %}
+{% if board.board.url %}
+    static constexpr const char* url = "{{ board.board.url }}";
+{% endif %}
+};
+
+// =============================================================================
+// Clock Configuration
+// =============================================================================
+
+/**
+ * @brief Clock configuration for {{ board.board.name }}
+ *
+ * Clock Source: {{ board.clock.source }}
+ * System Clock: {{ board.clock.system_clock_hz }} Hz ({{ (board.clock.system_clock_hz / 1000000) | int }} MHz)
+{% if board.clock.hse_hz %}
+ * HSE: {{ board.clock.hse_hz }} Hz ({{ (board.clock.hse_hz / 1000000) | int }} MHz external crystal)
+{% endif %}
+{% if board.clock.pll %}
+ *
+ * PLL Configuration:
+{% if board.clock.hse_hz %}
+ *   Input:  {{ board.clock.hse_hz }} Hz (HSE)
+ *   PLL input: HSE / M = {{ board.clock.hse_hz }} Hz / {{ board.clock.pll.m }} = {{ (board.clock.hse_hz / board.clock.pll.m) | int }} Hz
+ *   VCO:    {{ (board.clock.hse_hz / board.clock.pll.m) | int }} Hz × {{ board.clock.pll.n }} = {{ ((board.clock.hse_hz / board.clock.pll.m) * board.clock.pll.n) | int }} Hz
+ *   SYSCLK: VCO / P = {{ ((board.clock.hse_hz / board.clock.pll.m) * board.clock.pll.n) | int }} Hz / {{ board.clock.pll.p }} = {{ board.clock.system_clock_hz }} Hz
+{% if board.clock.pll.q %}
+ *   USB:    VCO / Q = {{ ((board.clock.hse_hz / board.clock.pll.m) * board.clock.pll.n) | int }} Hz / {{ board.clock.pll.q }} = {{ (((board.clock.hse_hz / board.clock.pll.m) * board.clock.pll.n) / board.clock.pll.q) | int }} Hz
+{% endif %}
+{% endif %}
+{% endif %}
+ *
+ * Bus Clocks:
+ *   AHB:  {{ board.clock.system_clock_hz }} Hz / {{ board.clock.ahb_prescaler }} = {{ (board.clock.system_clock_hz / board.clock.ahb_prescaler) | int }} Hz
+ *   APB1: {{ (board.clock.system_clock_hz / board.clock.ahb_prescaler) | int }} Hz / {{ board.clock.apb1_prescaler }} = {{ ((board.clock.system_clock_hz / board.clock.ahb_prescaler) / board.clock.apb1_prescaler) | int }} Hz
+ *   APB2: {{ (board.clock.system_clock_hz / board.clock.ahb_prescaler) | int }} Hz / {{ board.clock.apb2_prescaler }} = {{ ((board.clock.system_clock_hz / board.clock.ahb_prescaler) / board.clock.apb2_prescaler) | int }} Hz
+ */
+struct ClockConfig {
+{% if board.clock.hse_hz %}
+    /// HSE crystal frequency
+    static constexpr uint32_t hse_hz = {{ board.clock.hse_hz }};
+{% endif %}
+
+    /// Target system clock frequency
+    static constexpr uint32_t system_clock_hz = {{ board.clock.system_clock_hz }};
+
+{% if board.clock.pll %}
+    /// PLL input divider ({{ board.clock.source }} / pll_m)
+    static constexpr uint32_t pll_m = {{ board.clock.pll.m }};
+
+    /// PLL VCO multiplier (input × pll_n)
+    static constexpr uint32_t pll_n = {{ board.clock.pll.n }};
+
+    /// PLL system clock divider (VCO / pll_p_div)
+    static constexpr uint32_t pll_p_div = {{ board.clock.pll.p }};
+
+{% if board.clock.pll.q %}
+    /// PLL USB/SDMMC divider (VCO / pll_q)
+    static constexpr uint32_t pll_q = {{ board.clock.pll.q }};
+{% endif %}
+{% if board.clock.pll.r %}
+    /// PLL R divider (VCO / pll_r)
+    static constexpr uint32_t pll_r = {{ board.clock.pll.r }};
+{% endif %}
+{% endif %}
+
+    /// Flash latency (wait states) for {{ (board.clock.system_clock_hz / 1000000) | int }} MHz
+    static constexpr uint32_t flash_latency = {{ board.clock.flash_latency }};
+
+    /// AHB prescaler (SYSCLK / ahb_prescaler)
+    static constexpr uint32_t ahb_prescaler = {{ board.clock.ahb_prescaler }};
+
+    /// APB1 prescaler (AHB / apb1_prescaler)
+    static constexpr uint32_t apb1_prescaler = {{ board.clock.apb1_prescaler }};
+
+    /// APB2 prescaler (AHB / apb2_prescaler)
+    static constexpr uint32_t apb2_prescaler = {{ board.clock.apb2_prescaler }};
+};
+
+// =============================================================================
+// LED Configuration
+// =============================================================================
+
+struct LedConfig {
+{% for led in board.leds %}
+    /// {{ led.description if led.description else led.name }}
+    using {{ led.name }} = GpioPin<peripherals::{{ led.port }}, {{ led.pin }}>;
+
+    /// {{ led.name }} is active {{ "HIGH" if led.active_high else "LOW" }}
+    static constexpr bool {{ led.name }}_active_high = {{ "true" if led.active_high else "false" }};
+{% endfor %}
+};
+
+// =============================================================================
+// Button Configuration
+// =============================================================================
+
+{% if board.buttons %}
+struct ButtonConfig {
+{% for button in board.buttons %}
+    /// {{ button.description if button.description else button.name }}
+    using {{ button.name }} = GpioPin<peripherals::{{ button.port }}, {{ button.pin }}>;
+
+    /// {{ button.name }} is active {{ "HIGH" if button.active_high else "LOW" }}
+    static constexpr bool {{ button.name }}_active_high = {{ "true" if button.active_high else "false" }};
+
+{% if button.pull != "none" %}
+    /// {{ button.name }} pull resistor: {{ button.pull }}
+    static constexpr bool {{ button.name }}_pull_{{ button.pull }} = true;
+{% endif %}
+{% endfor %}
+};
+{% endif %}
+
+// =============================================================================
+// UART Configuration
+// =============================================================================
+
+{% if board.uart %}
+struct UartConfig {
+{% for uart in board.uart %}
+    /// {{ uart.description if uart.description else uart.name }}
+    /// Instance: {{ uart.instance }}, Baud: {{ uart.baud_rate }}
+    using {{ uart.name }}_tx = GpioPin<peripherals::{{ uart.tx_port }}, {{ uart.tx_pin }}>;
+{% if uart.rx_port %}
+    using {{ uart.name }}_rx = GpioPin<peripherals::{{ uart.rx_port }}, {{ uart.rx_pin }}>;
+{% endif %}
+
+    static constexpr uint32_t {{ uart.name }}_baud_rate = {{ uart.baud_rate }};
+{% endfor %}
+};
+{% endif %}
+
+// =============================================================================
+// SPI Configuration
+// =============================================================================
+
+{% if board.spi %}
+struct SpiConfig {
+{% for spi in board.spi %}
+    /// {{ spi.description if spi.description else spi.name }}
+    /// Instance: {{ spi.instance }}
+    using {{ spi.name }}_sck = GpioPin<peripherals::{{ spi.sck_port }}, {{ spi.sck_pin }}>;
+    using {{ spi.name }}_mosi = GpioPin<peripherals::{{ spi.mosi_port }}, {{ spi.mosi_pin }}>;
+    using {{ spi.name }}_miso = GpioPin<peripherals::{{ spi.miso_port }}, {{ spi.miso_pin }}>;
+{% endfor %}
+};
+{% endif %}
+
+// =============================================================================
+// I2C Configuration
+// =============================================================================
+
+{% if board.i2c %}
+struct I2cConfig {
+{% for i2c in board.i2c %}
+    /// {{ i2c.description if i2c.description else i2c.name }}
+    /// Instance: {{ i2c.instance }}, Speed: {{ i2c.speed_hz }} Hz
+    using {{ i2c.name }}_scl = GpioPin<peripherals::{{ i2c.scl_port }}, {{ i2c.scl_pin }}>;
+    using {{ i2c.name }}_sda = GpioPin<peripherals::{{ i2c.sda_port }}, {{ i2c.sda_pin }}>;
+
+    static constexpr uint32_t {{ i2c.name }}_speed_hz = {{ i2c.speed_hz }};
+{% endfor %}
+};
+{% endif %}
+
+} // namespace {{ board.board.name.lower().replace('-', '_').replace(' ', '_') }}
