@@ -24,6 +24,7 @@ import argparse
 from pathlib import Path
 from typing import List, Optional, Dict
 import shutil
+import yaml
 
 
 class Colors:
@@ -126,6 +127,7 @@ class UCoreBuilder:
     def __init__(self):
         self.root_dir = Path(__file__).parent.resolve()
         self.examples_dir = self.root_dir / "examples"
+        self.boards_dir = self.root_dir / "boards"
         self.toolchain_file = self.root_dir / "cmake" / "toolchains" / "arm-none-eabi.cmake"
 
     def get_examples(self) -> List[str]:
@@ -145,17 +147,95 @@ class UCoreBuilder:
 
         return sorted(examples)
 
+    def load_board_yaml(self, board_id: str) -> Optional[Dict]:
+        """Load board configuration from YAML file"""
+        yaml_path = self.boards_dir / board_id / "board.yaml"
+        if not yaml_path.exists():
+            return None
+
+        try:
+            with open(yaml_path, 'r') as f:
+                return yaml.safe_load(f)
+        except Exception as e:
+            print_error(f"Failed to load {yaml_path}: {e}")
+            return None
+
+    def get_boards_from_yaml(self) -> Dict[str, Dict]:
+        """Get all boards that have board.yaml files"""
+        boards = {}
+
+        if not self.boards_dir.exists():
+            return boards
+
+        for board_dir in self.boards_dir.iterdir():
+            if not board_dir.is_dir():
+                continue
+
+            yaml_path = board_dir / "board.yaml"
+            if yaml_path.exists():
+                config = self.load_board_yaml(board_dir.name)
+                if config:
+                    boards[board_dir.name] = config
+
+        return boards
+
     def list_boards(self):
         """List all supported boards"""
         print_header("Supported Boards")
 
-        for board_id, info in BOARDS.items():
-            print(f"{Colors.OKBLUE}{Colors.BOLD}{board_id}{Colors.ENDC}")
-            print(f"  Name:         {info['name']}")
-            print(f"  MCU:          {info['mcu']}")
-            print(f"  Architecture: {info['arch']}")
-            print(f"  Frequency:    {info['freq']}")
-            print(f"  Flash tool:   {info['flash_cmd']}")
+        # Get boards from YAML files
+        yaml_boards = self.get_boards_from_yaml()
+
+        # Merge with hardcoded boards (for backward compatibility)
+        all_boards = set(BOARDS.keys()) | set(yaml_boards.keys())
+
+        for board_id in sorted(all_boards):
+            # Try YAML first, fall back to hardcoded
+            yaml_config = yaml_boards.get(board_id)
+            hardcoded_info = BOARDS.get(board_id)
+
+            print(f"{Colors.OKBLUE}{Colors.BOLD}{board_id}{Colors.ENDC}", end="")
+
+            # Indicate source of configuration
+            if yaml_config and hardcoded_info:
+                print(f" {Colors.OKGREEN}[YAML + Build]{Colors.ENDC}")
+            elif yaml_config:
+                print(f" {Colors.OKGREEN}[YAML]{Colors.ENDC}")
+            elif hardcoded_info:
+                print(f" {Colors.WARNING}[Legacy]{Colors.ENDC}")
+
+            if yaml_config:
+                # Display YAML configuration
+                board_info = yaml_config.get('board', {})
+                mcu_info = yaml_config.get('mcu', {})
+                clock_info = yaml_config.get('clock', {})
+
+                print(f"  Name:         {board_info.get('name', 'N/A')}")
+                print(f"  Vendor:       {board_info.get('vendor', 'N/A')}")
+                print(f"  MCU:          {mcu_info.get('part_number', 'N/A')}")
+                print(f"  Architecture: {mcu_info.get('architecture', 'N/A')}")
+                freq_mhz = clock_info.get('system_clock_hz', 0) / 1_000_000
+                print(f"  Frequency:    {freq_mhz:.0f} MHz")
+                print(f"  Platform:     {yaml_config.get('platform', 'N/A')}")
+
+                # Show flash/RAM if available
+                if mcu_info.get('flash_kb'):
+                    print(f"  Flash:        {mcu_info['flash_kb']} KB")
+                if mcu_info.get('ram_kb'):
+                    print(f"  RAM:          {mcu_info['ram_kb']} KB")
+
+                # Show flash tool from hardcoded if available
+                if hardcoded_info:
+                    print(f"  Flash tool:   {hardcoded_info['flash_cmd']}")
+
+            elif hardcoded_info:
+                # Display legacy hardcoded configuration
+                print(f"  Name:         {hardcoded_info['name']}")
+                print(f"  MCU:          {hardcoded_info['mcu']}")
+                print(f"  Architecture: {hardcoded_info['arch']}")
+                print(f"  Frequency:    {hardcoded_info['freq']}")
+                print(f"  Flash tool:   {hardcoded_info['flash_cmd']}")
+
             print()
 
     def list_examples(self):
@@ -428,6 +508,268 @@ class UCoreBuilder:
             else:
                 print_warning("No board build directories found")
 
+    def validate_board(self, board: str) -> int:
+        """Validate board YAML configuration"""
+        print_header(f"Validating Board: {board}")
+
+        yaml_path = self.boards_dir / board / "board.yaml"
+
+        if not yaml_path.exists():
+            print_error(f"Board YAML not found: {yaml_path}")
+            print_info("Run './ucore list boards' to see available boards")
+            return 1
+
+        # Import the board generator for validation
+        try:
+            sys.path.insert(0, str(self.root_dir / "tools" / "codegen"))
+            from cli.generators.board_generator import BoardGenerator
+
+            generator = BoardGenerator()
+            valid = generator.validate_yaml(yaml_path)
+
+            if valid:
+                print()
+                print_success(f"✓ Board configuration is valid!")
+                print()
+
+                # Show summary
+                config = self.load_board_yaml(board)
+                if config:
+                    board_info = config.get('board', {})
+                    mcu_info = config.get('mcu', {})
+                    clock_info = config.get('clock', {})
+
+                    print(f"{Colors.BOLD}Board Summary:{Colors.ENDC}")
+                    print(f"  Name:      {board_info.get('name')}")
+                    print(f"  Vendor:    {board_info.get('vendor')}")
+                    print(f"  MCU:       {mcu_info.get('part_number')}")
+                    print(f"  Platform:  {config.get('platform')}")
+                    print(f"  Clock:     {clock_info.get('system_clock_hz') / 1_000_000:.0f} MHz")
+                    print(f"  LEDs:      {len(config.get('leds', []))}")
+                    print(f"  Buttons:   {len(config.get('buttons', []))}")
+                    print(f"  UART:      {len(config.get('uart', []))}")
+                    print()
+
+                return 0
+            else:
+                return 1
+
+        except ImportError as e:
+            print_error(f"Failed to import board generator: {e}")
+            print_info("Make sure you're running from the project root directory")
+            return 1
+        except Exception as e:
+            print_error(f"Validation failed: {e}")
+            return 1
+
+    def generate_board(self, board: str) -> int:
+        """Generate C++ board configuration from YAML"""
+        print_header(f"Generating Board Config: {board}")
+
+        yaml_path = self.boards_dir / board / "board.yaml"
+
+        if not yaml_path.exists():
+            print_error(f"Board YAML not found: {yaml_path}")
+            print_info("Run './ucore new-board' to create a new board configuration")
+            return 1
+
+        # Import the board generator
+        try:
+            sys.path.insert(0, str(self.root_dir / "tools" / "codegen"))
+            from cli.generators.board_generator import BoardGenerator
+
+            generator = BoardGenerator()
+            generator.generate_board_config(yaml_path)
+
+            print()
+            print_success("✓ Board configuration generated successfully!")
+            print_info(f"Output: {yaml_path.parent / 'board_config.hpp'}")
+            print()
+
+            return 0
+
+        except ImportError as e:
+            print_error(f"Failed to import board generator: {e}")
+            return 1
+        except Exception as e:
+            print_error(f"Generation failed: {e}")
+            return 1
+
+    def new_board(self, board_name: str) -> int:
+        """Interactive wizard to create a new board configuration"""
+        print_header(f"New Board Wizard: {board_name}")
+
+        board_dir = self.boards_dir / board_name
+        yaml_path = board_dir / "board.yaml"
+
+        # Check if board already exists
+        if board_dir.exists():
+            print_error(f"Board directory already exists: {board_dir}")
+            return 1
+
+        # Create board directory
+        board_dir.mkdir(parents=True, exist_ok=True)
+        print_success(f"Created directory: {board_dir}")
+
+        # Interactive prompts
+        print()
+        print(f"{Colors.BOLD}Board Information{Colors.ENDC}")
+        print("Press Enter to use default value shown in [brackets]")
+        print()
+
+        def prompt(question: str, default: str = "") -> str:
+            if default:
+                response = input(f"  {question} [{default}]: ").strip()
+                return response if response else default
+            else:
+                while True:
+                    response = input(f"  {question}: ").strip()
+                    if response:
+                        return response
+                    print_warning("  This field is required!")
+
+        # Collect information
+        board_display_name = prompt("Board name", board_name.replace('_', ' ').title())
+        vendor = prompt("Vendor (e.g., STMicroelectronics)")
+        mcu_part = prompt("MCU part number (e.g., STM32F401RET6)")
+
+        # Platform selection
+        print()
+        print(f"{Colors.BOLD}Select Platform:{Colors.ENDC}")
+        platforms = ['stm32f0', 'stm32f1', 'stm32f4', 'stm32f7', 'stm32g0', 'stm32g4', 'stm32h7', 'same70']
+        for i, plat in enumerate(platforms, 1):
+            print(f"  {i}. {plat}")
+        while True:
+            try:
+                choice = int(prompt("Platform number (1-8)"))
+                if 1 <= choice <= len(platforms):
+                    platform = platforms[choice - 1]
+                    break
+            except ValueError:
+                pass
+            print_warning("  Invalid choice!")
+
+        # Architecture
+        print()
+        print(f"{Colors.BOLD}Select Architecture:{Colors.ENDC}")
+        architectures = ['cortex-m0', 'cortex-m0+', 'cortex-m3', 'cortex-m4', 'cortex-m7', 'cortex-m33']
+        for i, arch in enumerate(architectures, 1):
+            print(f"  {i}. {arch}")
+        while True:
+            try:
+                choice = int(prompt("Architecture number (1-6)"))
+                if 1 <= choice <= len(architectures):
+                    architecture = architectures[choice - 1]
+                    break
+            except ValueError:
+                pass
+            print_warning("  Invalid choice!")
+
+        # Clock configuration
+        print()
+        print(f"{Colors.BOLD}Clock Configuration:{Colors.ENDC}")
+        clock_freq = int(prompt("System clock frequency (MHz)", "84"))
+        has_external_crystal = prompt("Has external crystal? (y/n)", "y").lower() == 'y'
+
+        # LED configuration
+        print()
+        print(f"{Colors.BOLD}LED Configuration:{Colors.ENDC}")
+        led_name = prompt("LED name", "led_green")
+        led_port = prompt("LED GPIO port (e.g., GPIOA)", "GPIOA")
+        led_pin = int(prompt("LED pin number (0-15)", "5"))
+        led_active_high = prompt("LED active high? (y/n)", "y").lower() == 'y'
+
+        # Generate YAML content
+        yaml_content = f"""# MicroCore Board Configuration: {board_display_name}
+
+board:
+  name: "{board_display_name}"
+  vendor: "{vendor}"
+  version: "1.0.0"
+  description: "{board_display_name} development board"
+
+platform: {platform}
+
+mcu:
+  part_number: "{mcu_part}"
+  architecture: {architecture}
+  frequency_mhz: {clock_freq}
+
+clock:
+  source: {"PLL" if has_external_crystal else "HSI"}
+  system_clock_hz: {clock_freq * 1_000_000}
+"""
+
+        if has_external_crystal:
+            yaml_content += f"""  hse_hz: 8000000  # TODO: Update with actual crystal frequency
+  pll:
+    m: 4   # TODO: Calculate PLL parameters
+    n: 168
+    p: 4
+    q: 7
+  ahb_prescaler: 1
+  apb1_prescaler: 2
+  apb2_prescaler: 1
+  flash_latency: 2  # TODO: Update based on frequency
+"""
+
+        yaml_content += f"""
+leds:
+  - name: {led_name}
+    port: {led_port}
+    pin: {led_pin}
+    active_high: {str(led_active_high).lower()}
+    description: "User LED"
+
+buttons: []
+
+uart: []
+"""
+
+        # Write YAML file
+        yaml_path.write_text(yaml_content)
+        print()
+        print_success(f"✓ Created {yaml_path}")
+
+        # Create placeholder board.hpp
+        board_hpp = board_dir / "board.hpp"
+        board_hpp_content = f"""#pragma once
+
+/**
+ * @file board.hpp
+ * @brief Board abstraction for {board_display_name}
+ */
+
+#include "board_config.hpp"
+
+namespace board {{
+
+// TODO: Implement board initialization and helper functions
+
+void init();
+
+namespace led {{
+    void init();
+    void on();
+    void off();
+    void toggle();
+}}
+
+}} // namespace board
+"""
+        board_hpp.write_text(board_hpp_content)
+        print_success(f"✓ Created {board_hpp}")
+
+        print()
+        print(f"{Colors.BOLD}Next Steps:{Colors.ENDC}")
+        print(f"  1. Edit {yaml_path} to complete configuration")
+        print(f"  2. Run './ucore validate-board {board_name}' to validate")
+        print(f"  3. Run './ucore generate-board {board_name}' to generate C++")
+        print(f"  4. Implement board.hpp and board.cpp")
+        print()
+
+        return 0
+
 
 def main():
     """Main entry point"""
@@ -436,12 +778,19 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
+  # Build & Flash
   %(prog)s build nucleo_f401re blink       # Build blink for Nucleo F401RE
   %(prog)s flash nucleo_f401re blink       # Build and flash blink
+  %(prog)s clean nucleo_f401re             # Clean board build directory
+
+  # List & Discover
   %(prog)s list boards                     # Show all supported boards
   %(prog)s list examples                   # Show all available examples
-  %(prog)s clean nucleo_f401re             # Clean board build directory
-  %(prog)s clean                           # Clean all builds
+
+  # Board Configuration (YAML)
+  %(prog)s new-board my_board              # Create new board with wizard
+  %(prog)s validate-board nucleo_f401re    # Validate board YAML config
+  %(prog)s generate-board nucleo_f401re    # Generate C++ from YAML
         """
     )
 
@@ -468,6 +817,18 @@ Examples:
     # Clean command
     clean_parser = subparsers.add_parser('clean', help='Clean build directory')
     clean_parser.add_argument('board', nargs='?', help='Board to clean (or all if omitted)')
+
+    # Validate-board command
+    validate_parser = subparsers.add_parser('validate-board', help='Validate board YAML configuration')
+    validate_parser.add_argument('board', help='Board name to validate')
+
+    # Generate-board command
+    generate_parser = subparsers.add_parser('generate-board', help='Generate C++ config from YAML')
+    generate_parser.add_argument('board', help='Board name to generate')
+
+    # New-board command
+    new_board_parser = subparsers.add_parser('new-board', help='Create new board configuration')
+    new_board_parser.add_argument('board', help='Board name (e.g., my_custom_board)')
 
     args = parser.parse_args()
 
@@ -496,6 +857,15 @@ Examples:
         elif args.command == 'clean':
             builder.clean(args.board)
             return 0
+
+        elif args.command == 'validate-board':
+            return builder.validate_board(args.board)
+
+        elif args.command == 'generate-board':
+            return builder.generate_board(args.board)
+
+        elif args.command == 'new-board':
+            return builder.new_board(args.board)
 
         else:
             parser.print_help()
