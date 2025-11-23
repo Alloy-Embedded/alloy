@@ -152,7 +152,7 @@ int main() {
 
 ## 🤖 Code Generation
 
-Alloy includes an **automated code generation system** that creates startup code, vector tables, and peripheral definitions from CMSIS-SVD files. This allows adding support for new ARM MCUs in minutes instead of weeks.
+MicroCore includes an **automated code generation system** that creates startup code, vector tables, and peripheral definitions from CMSIS-SVD files. This allows adding support for new ARM MCUs in minutes instead of weeks.
 
 ### Features
 
@@ -344,7 +344,7 @@ bash scripts/validate_clang_tidy.sh
 
 ### Currently Supported MCUs
 
-Alloy now supports **4 STM32 families + 1 Atmel SAME70** with **standardized APIs** validated by C++20 concepts:
+MicroCore now supports **4 STM32 families + 1 Atmel SAME70** with **standardized APIs** validated by C++20 concepts:
 
 | Platform | Core | Freq | Flash | RAM | API Validation | Status |
 |----------|------|------|-------|-----|----------------|--------|
@@ -507,8 +507,8 @@ This table shows the implementation status of peripheral drivers (hardware polic
 ### Example: Blinky
 
 ```cpp
-#include <alloy/hal/gpio.hpp>
-#include <alloy/platform/delay.hpp>
+#include "hal/gpio.hpp"
+#include "hal/platform/delay.hpp"
 
 using namespace ucore::hal;
 
@@ -612,7 +612,7 @@ MicroCore uses a **5-layer architecture** with C++20 concepts for interface vali
 ## 🏗️ Project Structure
 
 ```
-alloy/
+corezero/
 ├── cmake/              # CMake scripts and toolchains
 ├── src/
 │   ├── core/          # Core types, concepts, utilities
@@ -673,7 +673,7 @@ alloy/
 - [ ] Examples: blinky, uart_echo, i2c_sensor
 
 ### Phase 2: Ecosystem (4-6 months)
-- [ ] CLI tool (`alloy-cli`)
+- [x] CLI tool (`ucore`)
 - [ ] STM32F4 complete support
 - [ ] 10+ external peripheral drivers
 - [ ] CI/CD with hardware-in-the-loop tests
@@ -703,8 +703,8 @@ MicroCore is in **active development** (Phase 0). Contributions are welcome!
 
 ```bash
 # Clone the repository
-git clone https://github.com/alloy-embedded/alloy.git
-cd alloy
+git clone https://github.com/yourusername/corezero.git
+cd corezero
 
 # Build for host (no hardware needed)
 cmake -B build -S .
