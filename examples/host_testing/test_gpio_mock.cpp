@@ -51,7 +51,7 @@ void test_gpio_set_clear() {
     // Verify pin is HIGH
     auto read_result = led.read();
     assert(read_result.is_ok() && "read() should succeed");
-    assert(read_result.value() == true && "Pin should be HIGH");
+    assert(read_result.unwrap() == true && "Pin should be HIGH");
 
     // Clear pin to LOW
     result = led.clear();
@@ -60,7 +60,7 @@ void test_gpio_set_clear() {
     // Verify pin is LOW
     read_result = led.read();
     assert(read_result.is_ok() && "read() should succeed");
-    assert(read_result.value() == false && "Pin should be LOW");
+    assert(read_result.unwrap() == false && "Pin should be LOW");
 
     std::cout << "✓ PASSED\n";
 }
@@ -80,19 +80,19 @@ void test_gpio_toggle() {
 
     // Initial state: LOW
     led.clear();
-    assert(led.read().value() == false);
+    assert(led.read().unwrap() == false);
 
     // Toggle to HIGH
     led.toggle();
-    assert(led.read().value() == true);
+    assert(led.read().unwrap() == true);
 
     // Toggle back to LOW
     led.toggle();
-    assert(led.read().value() == false);
+    assert(led.read().unwrap() == false);
 
     // Toggle again to HIGH
     led.toggle();
-    assert(led.read().value() == true);
+    assert(led.read().unwrap() == true);
 
     std::cout << "✓ PASSED\n";
 }
@@ -112,15 +112,15 @@ void test_gpio_write() {
 
     // Write HIGH
     led.write(true);
-    assert(led.read().value() == true);
+    assert(led.read().unwrap() == true);
 
     // Write LOW
     led.write(false);
-    assert(led.read().value() == false);
+    assert(led.read().unwrap() == false);
 
     // Write HIGH again
     led.write(true);
-    assert(led.read().value() == true);
+    assert(led.read().unwrap() == true);
 
     std::cout << "✓ PASSED\n";
 }
@@ -138,11 +138,11 @@ void test_gpio_direction() {
 
     // Configure as output
     pin.setDirection(PinDirection::Output);
-    assert(pin.isOutput().value() == true && "Should be output");
+    assert(pin.isOutput().unwrap() == true && "Should be output");
 
     // Configure as input
     pin.setDirection(PinDirection::Input);
-    assert(pin.isOutput().value() == false && "Should be input");
+    assert(pin.isOutput().unwrap() == false && "Should be input");
 
     std::cout << "✓ PASSED\n";
 }
@@ -194,7 +194,7 @@ void test_gpio_drive() {
 
     reset_mock_gpio();
 
-    using Pin = GpioPin<GPIOC_BASE, 7>;
+    using Pin = GpioPin<GPIOC_PORT, 7>;
     Pin pin;
 
     // Test push-pull (default)
@@ -242,16 +242,16 @@ void test_multiple_pins() {
     pin2.set();
 
     // Verify states are independent
-    assert(pin0.read().value() == true);
-    assert(pin1.read().value() == false);
-    assert(pin2.read().value() == true);
+    assert(pin0.read().unwrap() == true);
+    assert(pin1.read().unwrap() == false);
+    assert(pin2.read().unwrap() == true);
 
     // Toggle pin1 should not affect others
     pin1.toggle();
 
-    assert(pin0.read().value() == true);
-    assert(pin1.read().value() == true);
-    assert(pin2.read().value() == true);
+    assert(pin0.read().unwrap() == true);
+    assert(pin1.read().unwrap() == true);
+    assert(pin2.read().unwrap() == true);
 
     std::cout << "✓ PASSED\n";
 }
