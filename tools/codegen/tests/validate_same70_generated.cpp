@@ -17,8 +17,8 @@
 
 // Include generated register definitions for SAME70
 #include "hal/vendors/atmel/same70/generated/registers/pmc_registers.hpp"
-#include "hal/vendors/atmel/same70/generated/registers/pio_registers.hpp"
-#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
+#include "hal/vendors/atmel/same70/generated/registers/pioa_registers.hpp"
+// #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 using namespace ucore::hal::atmel::same70;
 
@@ -37,32 +37,32 @@ namespace test_pio_layout {
 constexpr uintptr_t PIOA_BASE = 0x400E0E00;
 
 // Validate key register offsets (from SAME70 datasheet Table 31-3)
-static_assert(offsetof(pio::PIO_Registers, PER) == 0x00, "PER offset incorrect");
-static_assert(offsetof(pio::PIO_Registers, PDR) == 0x04, "PDR offset incorrect");
-static_assert(offsetof(pio::PIO_Registers, PSR) == 0x08, "PSR offset incorrect");
-static_assert(offsetof(pio::PIO_Registers, OER) == 0x10, "OER offset incorrect");
-static_assert(offsetof(pio::PIO_Registers, ODR) == 0x14, "ODR offset incorrect");
-static_assert(offsetof(pio::PIO_Registers, OSR) == 0x18, "OSR offset incorrect");
-static_assert(offsetof(pio::PIO_Registers, IFER) == 0x20, "IFER offset incorrect");
-static_assert(offsetof(pio::PIO_Registers, IFDR) == 0x24, "IFDR offset incorrect");
-static_assert(offsetof(pio::PIO_Registers, IFSR) == 0x28, "IFSR offset incorrect");
-static_assert(offsetof(pio::PIO_Registers, SODR) == 0x30, "SODR offset incorrect");
-static_assert(offsetof(pio::PIO_Registers, CODR) == 0x34, "CODR offset incorrect");
-static_assert(offsetof(pio::PIO_Registers, ODSR) == 0x38, "ODSR offset incorrect");
-static_assert(offsetof(pio::PIO_Registers, PDSR) == 0x3C, "PDSR offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, PER) == 0x00, "PER offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, PDR) == 0x04, "PDR offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, PSR) == 0x08, "PSR offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, OER) == 0x10, "OER offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, ODR) == 0x14, "ODR offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, OSR) == 0x18, "OSR offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, IFER) == 0x20, "IFER offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, IFDR) == 0x24, "IFDR offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, IFSR) == 0x28, "IFSR offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, SODR) == 0x30, "SODR offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, CODR) == 0x34, "CODR offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, ODSR) == 0x38, "ODSR offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, PDSR) == 0x3C, "PDSR offset incorrect");
 
 // Validate peripheral select registers
-static_assert(offsetof(pio::PIO_Registers, ABCDSR) == 0x70, "ABCDSR offset incorrect");
+static_assert(offsetof(pioa::PIOA_Registers, ABCDSR) == 0x70, "ABCDSR offset incorrect");
 
 // Validate structure fits within memory map (PIO is 0x200 bytes)
-static_assert(sizeof(pio::PIO_Registers) <= 0x200, "PIO_Registers size exceeds memory map");
+static_assert(sizeof(pioa::PIOA_Registers) <= 0x200, "PIOA_Registers size exceeds memory map");
 
 // Validate volatile qualifiers
-static_assert(std::is_volatile_v<decltype(pio::PIO_Registers::SODR)>,
+static_assert(std::is_volatile_v<decltype(pioa::PIOA_Registers::SODR)>,
               "SODR must be volatile");
-static_assert(std::is_volatile_v<decltype(pio::PIO_Registers::CODR)>,
+static_assert(std::is_volatile_v<decltype(pioa::PIOA_Registers::CODR)>,
               "CODR must be volatile");
-static_assert(std::is_volatile_v<decltype(pio::PIO_Registers::PDSR)>,
+static_assert(std::is_volatile_v<decltype(pioa::PIOA_Registers::PDSR)>,
               "PDSR must be volatile");
 
 } // namespace test_pio_layout
