@@ -159,6 +159,26 @@
       "name": "tests-all",
       "configurePreset": "tests-all",
       "displayName": "Build All Tests"
+    },
+    {
+      "name": "nucleo-g071rb-debug",
+      "configurePreset": "nucleo-g071rb-debug",
+      "displayName": "Build Nucleo-G071RB (Debug)"
+    },
+    {
+      "name": "same70-xpld-debug",
+      "configurePreset": "same70-xpld-debug",
+      "displayName": "Build SAME70-Xplained (Debug)"
+    },
+    {
+      "name": "bluepill-debug",
+      "configurePreset": "bluepill-debug",
+      "displayName": "Build Blue Pill (Debug)"
+    },
+    {
+      "name": "rp-pico-debug",
+      "configurePreset": "rp-pico-debug",
+      "displayName": "Build RP Pico (Debug)"
     }
   ],
   "testPresets": [
@@ -213,11 +233,11 @@
       "steps": [
         {
           "type": "configure",
-          "name": "tests-all"
+          "name": "host-debug"
         },
         {
           "type": "build",
-          "name": "tests-all"
+          "name": "host-debug"
         },
         {
           "type": "test",
