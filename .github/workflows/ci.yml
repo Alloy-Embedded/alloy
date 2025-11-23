@@ -128,8 +128,8 @@ jobs:
         cmake -S . -B build-host \
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Debug \
-          -DALLOY_BOARD=host \
-          -DALLOY_BUILD_TESTS=ON \
+          -DMICROCORE_BOARD=host \
+          -DMICROCORE_BUILD_TESTS=ON \
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
     - name: Build
@@ -173,8 +173,8 @@ jobs:
         cmake -S . -B build-sanitizers \
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Debug \
-          -DALLOY_BOARD=host \
-          -DALLOY_BUILD_TESTS=ON \
+          -DMICROCORE_BOARD=host \
+          -DMICROCORE_BUILD_TESTS=ON \
           -DCMAKE_C_COMPILER=clang-14 \
           -DCMAKE_CXX_COMPILER=clang++-14 \
           -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer"

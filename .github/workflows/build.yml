@@ -95,8 +95,8 @@ jobs:
         cmake -B build-host \
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Debug \
-          -DALLOY_PLATFORM=linux \
-          -DALLOY_BUILD_TESTS=ON \
+          -DMICROCORE_PLATFORM=linux \
+          -DMICROCORE_BUILD_TESTS=ON \
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
     - name: Build Host Tests
@@ -176,9 +176,9 @@ jobs:
           -G Ninja \
           -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
           -DCMAKE_BUILD_TYPE=MinSizeRel \
-          -DALLOY_BOARD=${{ matrix.board }} \
-          -DALLOY_PLATFORM=${{ matrix.platform }} \
-          -DALLOY_BUILD_TESTS=OFF
+          -DMICROCORE_BOARD=${{ matrix.board }} \
+          -DMICROCORE_PLATFORM=${{ matrix.platform }} \
+          -DMICROCORE_BUILD_TESTS=OFF
 
     - name: Build Blink Example
       run: |
@@ -230,8 +230,8 @@ jobs:
           -G Ninja \
           -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
           -DCMAKE_BUILD_TYPE=Debug \
-          -DALLOY_BOARD=${{ matrix.board }} \
-          -DALLOY_BUILD_TESTS=ON
+          -DMICROCORE_BOARD=${{ matrix.board }} \
+          -DMICROCORE_BUILD_TESTS=ON
 
     - name: Build Hardware Tests
       run: |
@@ -311,8 +311,8 @@ jobs:
         cmake -B build-validation \
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Debug \
-          -DALLOY_PLATFORM=host \
-          -DALLOY_BUILD_TESTS=ON
+          -DMICROCORE_PLATFORM=host \
+          -DMICROCORE_BUILD_TESTS=ON
 
     - name: Run Build System Validation
       run: |

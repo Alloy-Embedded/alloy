@@ -67,8 +67,8 @@ jobs:
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Debug \
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-          -DALLOY_PLATFORM=host \
-          -DALLOY_BUILD_TESTS=ON
+          -DMICROCORE_PLATFORM=host \
+          -DMICROCORE_BUILD_TESTS=ON
 
     - name: Run clang-tidy on core
       run: |
@@ -135,7 +135,7 @@ jobs:
         echo "=== Checking include guards in header files ==="
 
         find src boards -name "*.hpp" -not -path "*/generated/*" | while read file; do
-          # Expected guard format: ALLOY_<PATH>_<FILE>_HPP
+          # Expected guard format: MICROCORE_<PATH>_<FILE>_HPP
           EXPECTED_GUARD=$(echo "$file" | \
             sed 's|^src/||; s|^boards/||; s|/|_|g; s|\.hpp$||' | \
             tr '[:lower:]' '[:upper:]')_HPP

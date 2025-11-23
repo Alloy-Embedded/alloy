@@ -77,3 +77,4 @@ temp/
 src/hal/vendors/**/registers/
 src/hal/vendors/**/bitfields/
 !src/hal/vendors/**/generated/
+examples/host_testing/test_gpio

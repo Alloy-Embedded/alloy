@@ -1,0 +1,203 @@
+name: Memory Usage Report
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'examples/**'
+      - 'CMakeLists.txt'
+      - 'cmake/**'
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  memory-report:
+    name: Memory Report (${{ matrix.board }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        board:
+          - nucleo_f401re
+          - nucleo_f722ze
+          - nucleo_g071rb
+          - nucleo_g0b1re
+          - same70_xplained
+        include:
+          - board: nucleo_f401re
+            platform: stm32f4
+            flash_kb: 512
+            ram_kb: 96
+          - board: nucleo_f722ze
+            platform: stm32f7
+            flash_kb: 512
+            ram_kb: 256
+          - board: nucleo_g071rb
+            platform: stm32g0
+            flash_kb: 128
+            ram_kb: 36
+          - board: nucleo_g0b1re
+            platform: stm32g0
+            flash_kb: 512
+            ram_kb: 144
+          - board: same70_xplained
+            platform: same70
+            flash_kb: 2048
+            ram_kb: 384
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # For comparison with previous builds
+
+    - name: Install ARM GCC Toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi cmake ninja-build
+
+    - name: Configure CMake
+      run: |
+        cmake -B build-${{ matrix.board }} \
+          -G Ninja \
+          -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
+          -DCMAKE_BUILD_TYPE=MinSizeRel \
+          -DMICROCORE_BOARD=${{ matrix.board }} \
+          -DMICROCORE_PLATFORM=${{ matrix.platform }} \
+          -DMICROCORE_BUILD_TESTS=OFF
+
+    - name: Build Blink Example
+      run: |
+        cmake --build build-${{ matrix.board }} --target blink -j$(nproc)
+
+    - name: Generate Memory Report
+      run: |
+        echo "# Memory Usage Report: ${{ matrix.board }}" > memory-report.md
+        echo "" >> memory-report.md
+        echo "**Board**: ${{ matrix.board }}"  >> memory-report.md
+        echo "**Platform**: ${{ matrix.platform }}"  >> memory-report.md
+        echo "**Flash**: ${{ matrix.flash_kb }} KB"  >> memory-report.md
+        echo "**RAM**: ${{ matrix.ram_kb }} KB"  >> memory-report.md
+        echo "" >> memory-report.md
+        echo "## Blink Example" >> memory-report.md
+        echo "" >> memory-report.md
+        echo '```' >> memory-report.md
+        arm-none-eabi-size build-${{ matrix.board }}/examples/blink/blink.elf >> memory-report.md
+        echo '```' >> memory-report.md
+        echo "" >> memory-report.md
+
+        # Extract sizes
+        SIZE_OUTPUT=$(arm-none-eabi-size build-${{ matrix.board }}/examples/blink/blink.elf | tail -1)
+        TEXT_SIZE=$(echo $SIZE_OUTPUT | awk '{print $1}')
+        DATA_SIZE=$(echo $SIZE_OUTPUT | awk '{print $2}')
+        BSS_SIZE=$(echo $SIZE_OUTPUT | awk '{print $3}')
+
+        FLASH_USED=$(( ($TEXT_SIZE + $DATA_SIZE) ))
+        RAM_USED=$(( ($DATA_SIZE + $BSS_SIZE) ))
+
+        FLASH_TOTAL=$(( ${{ matrix.flash_kb }} * 1024 ))
+        RAM_TOTAL=$(( ${{ matrix.ram_kb }} * 1024 ))
+
+        FLASH_PERCENT=$(( ($FLASH_USED * 100) / $FLASH_TOTAL ))
+        RAM_PERCENT=$(( ($RAM_USED * 100) / $RAM_TOTAL ))
+
+        echo "### Memory Usage" >> memory-report.md
+        echo "" >> memory-report.md
+        echo "| Region | Used | Total | Percentage |" >> memory-report.md
+        echo "|--------|------|-------|------------|" >> memory-report.md
+        echo "| **Flash** | ${FLASH_USED} bytes | ${FLASH_TOTAL} bytes | ${FLASH_PERCENT}% |" >> memory-report.md
+        echo "| **RAM** | ${RAM_USED} bytes | ${RAM_TOTAL} bytes | ${RAM_PERCENT}% |" >> memory-report.md
+        echo "" >> memory-report.md
+
+        # Breakdown
+        echo "### Section Breakdown" >> memory-report.md
+        echo "" >> memory-report.md
+        echo "| Section | Size (bytes) | Description |" >> memory-report.md
+        echo "|---------|--------------|-------------|" >> memory-report.md
+        echo "| .text | ${TEXT_SIZE} | Code |" >> memory-report.md
+        echo "| .data | ${DATA_SIZE} | Initialized data (Flash + RAM) |" >> memory-report.md
+        echo "| .bss | ${BSS_SIZE} | Uninitialized data (RAM) |" >> memory-report.md
+        echo "" >> memory-report.md
+
+        # Warnings
+        if [ $FLASH_PERCENT -gt 80 ]; then
+          echo "⚠️ **WARNING**: Flash usage > 80%" >> memory-report.md
+        elif [ $FLASH_PERCENT -gt 90 ]; then
+          echo "🔴 **CRITICAL**: Flash usage > 90%" >> memory-report.md
+        else
+          echo "✅ **OK**: Flash usage within limits" >> memory-report.md
+        fi
+
+        if [ $RAM_PERCENT -gt 80 ]; then
+          echo "⚠️ **WARNING**: RAM usage > 80%" >> memory-report.md
+        elif [ $RAM_PERCENT -gt 90 ]; then
+          echo "🔴 **CRITICAL**: RAM usage > 90%" >> memory-report.md
+        else
+          echo "✅ **OK**: RAM usage within limits" >> memory-report.md
+        fi
+
+    - name: Display Report
+      run: cat memory-report.md
+
+    - name: Upload Memory Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: memory-report-${{ matrix.board }}
+        path: memory-report.md
+
+    - name: Comment on PR (if pull request)
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const report = fs.readFileSync('memory-report.md', 'utf8');
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: report
+          });
+
+  memory-comparison:
+    name: Memory Comparison Summary
+    runs-on: ubuntu-latest
+    needs: [memory-report]
+    if: always()
+
+    steps:
+    - name: Download all reports
+      uses: actions/download-artifact@v4
+      with:
+        pattern: memory-report-*
+        merge-multiple: true
+
+    - name: Generate Comparison Table
+      run: |
+        echo "# Memory Usage Comparison" > comparison.md
+        echo "" >> comparison.md
+        echo "Comparison of memory usage across all boards:" >> comparison.md
+        echo "" >> comparison.md
+        echo "| Board | Flash Used | Flash % | RAM Used | RAM % |" >> comparison.md
+        echo "|-------|------------|---------|----------|-------|" >> comparison.md
+
+        for file in memory-report-*.md; do
+          if [ -f "$file" ]; then
+            BOARD=$(grep "Board:" "$file" | cut -d ':' -f 2 | tr -d ' ')
+            FLASH_LINE=$(grep "Flash" "$file" | grep "bytes" | head -1)
+            RAM_LINE=$(grep "RAM" "$file" | grep "bytes" | head -1)
+
+            if [ ! -z "$FLASH_LINE" ]; then
+              echo "Processing $BOARD..." >> comparison.md
+            fi
+          fi
+        done
+
+    - name: Upload Comparison
+      uses: actions/upload-artifact@v4
+      with:
+        name: memory-comparison
+        path: comparison.md

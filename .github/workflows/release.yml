@@ -60,8 +60,8 @@ jobs:
           -G Ninja \
           -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
           -DCMAKE_BUILD_TYPE=MinSizeRel \
-          -DALLOY_BOARD=${{ matrix.board }} \
-          -DALLOY_BUILD_TESTS=OFF
+          -DMICROCORE_BOARD=${{ matrix.board }} \
+          -DMICROCORE_BUILD_TESTS=OFF
 
     - name: Build Example
       run: |
@@ -80,7 +80,7 @@ jobs:
 
         # Version file
         cat > version.txt <<EOF
-        Alloy Framework Release
+        MicroCore Framework Release
         Version: ${{ steps.version.outputs.VERSION }}
         Board: ${{ matrix.board }}
         Example: ${{ matrix.example }}
@@ -94,7 +94,7 @@ jobs:
         cd build-${{ matrix.board }}/examples/${{ matrix.example }}
         mkdir -p ../../../release-packages
 
-        tar -czf ../../../release-packages/alloy-${{ steps.version.outputs.VERSION }}-${{ matrix.board }}-${{ matrix.example }}.tar.gz \
+        tar -czf ../../../release-packages/microcore-${{ steps.version.outputs.VERSION }}-${{ matrix.board }}-${{ matrix.example }}.tar.gz \
           ${{ matrix.example }}.elf \
           ${{ matrix.example }}.bin \
           ${{ matrix.example }}.hex \
@@ -132,8 +132,8 @@ jobs:
         cmake -B build-test \
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
-          -DALLOY_PLATFORM=linux \
-          -DALLOY_BUILD_TESTS=ON \
+          -DMICROCORE_PLATFORM=linux \
+          -DMICROCORE_BUILD_TESTS=ON \
           -DCMAKE_C_COMPILER=gcc-11 \
           -DCMAKE_CXX_COMPILER=g++-11
 
@@ -188,7 +188,7 @@ jobs:
           echo "First release - no previous tag"
           CHANGELOG="## First Release
 
-        This is the first official release of Alloy Framework.
+        This is the first official release of MicroCore Framework.
 
         ### Features
         - Modern C++20 Hardware Abstraction Layer
@@ -271,7 +271,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ steps.version.outputs.VERSION }}
-        name: Alloy Framework ${{ steps.version.outputs.VERSION }}
+        name: MicroCore Framework ${{ steps.version.outputs.VERSION }}
         body_path: RELEASE_NOTES.md
         draft: false
         prerelease: ${{ steps.version.outputs.PRERELEASE }}
