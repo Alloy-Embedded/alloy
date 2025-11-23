@@ -196,14 +196,16 @@
 
 **Status**: Completed in Phase 2.3 as part of board configuration system. `ucore new-board` command fully functional with interactive prompts and validation.
 
-### 4.3 Dependency Validation (8 hours)
-- [ ] Check ARM toolchain version in CMake
-- [ ] Check required tools (st-flash, openocd)
-- [ ] Validate CMake version (3.25+)
-- [ ] Check Python version for codegen (3.10+)
-- [ ] Add `ucore doctor` command for diagnostics
-- [ ] Print helpful installation instructions
-- [ ] Document all dependencies
+### 4.3 Dependency Validation (8 hours) ✅ COMPLETE
+- [x] Check ARM toolchain version in CMake (cmake/dependency_validation.cmake)
+- [x] Check required tools (st-flash, openocd) (both CMake and ucore doctor)
+- [x] Validate CMake version (3.25+) (with helpful error messages)
+- [x] Check Python version for codegen (3.10+) (checks PyYAML package too)
+- [x] Add `ucore doctor` command for diagnostics (comprehensive system check)
+- [x] Print helpful installation instructions (platform-specific: macOS/Linux/Windows)
+- [x] Document all dependencies (docs/DEPENDENCIES.md with troubleshooting)
+
+**Status**: Complete dependency validation system with CMake integration and CLI diagnostics. Validates build tools, compilers, flash tools, and code quality tools. Color-coded output with actionable installation instructions. Platform-aware checks (skips ARM toolchain for host builds).
 
 ### 4.4 Benchmarking Suite (24 hours)
 - [ ] Create benchmarking framework
