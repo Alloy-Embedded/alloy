@@ -24,8 +24,8 @@ cmake_minimum_required(VERSION 3.20)
 # =============================================================================
 
 # Get board name from parent scope
-if(NOT DEFINED ALLOY_BOARD)
-    message(FATAL_ERROR "ALLOY_BOARD must be set. Use: cmake -DALLOY_BOARD=nucleo_f401re ..")
+if(NOT DEFINED MICROCORE_BOARD)
+    message(FATAL_ERROR "MICROCORE_BOARD must be set. Use: cmake -DMICROCORE_BOARD=nucleo_f401re ..")
 endif()
 
 # Project definition
@@ -53,7 +53,7 @@ set(EXAMPLE_SOURCES
 # =============================================================================
 
 # Board-specific source files (board.cpp, syscalls.cpp, startup code)
-set(BOARD_DIR ${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD})
+set(BOARD_DIR ${CMAKE_SOURCE_DIR}/boards/${MICROCORE_BOARD})
 
 if(EXISTS ${BOARD_DIR}/board.cpp)
     list(APPEND EXAMPLE_SOURCES ${BOARD_DIR}/board.cpp)
@@ -81,7 +81,7 @@ list(APPEND EXAMPLE_SOURCES
 
 # Platform-specific RTOS sources
 # For ARM Cortex-M platforms
-if(DEFINED __ARM_ARCH_6M__ OR ALLOY_PLATFORM MATCHES "stm32g0")
+if(DEFINED __ARM_ARCH_6M__ OR MICROCORE_PLATFORM MATCHES "stm32g0")
     # Cortex-M0/M0+ - use arm_context_m0.cpp
     if(EXISTS ${RTOS_DIR}/platform/arm_context_m0.cpp)
         list(APPEND EXAMPLE_SOURCES ${RTOS_DIR}/platform/arm_context_m0.cpp)
@@ -107,7 +107,8 @@ add_executable(${PROJECT_NAME}
 
 # Enable RTOS in board SysTick handlers
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    ALLOY_RTOS_ENABLED=1
+    UCORE_RTOS_ENABLED=1
+    ALLOY_RTOS_ENABLED=1  # Legacy compatibility
 )
 
 # =============================================================================
@@ -161,10 +162,15 @@ if(CMAKE_CROSSCOMPILING)
 endif()
 
 # =============================================================================
-# Link alloy-hal (platform-specific HAL library)
+# Link microcore-hal (platform-specific HAL library)
 # =============================================================================
 
-if(DEFINED ALLOY_HAL_LIBRARY)
+if(DEFINED MICROCORE_HAL_LIBRARY)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        ${MICROCORE_HAL_LIBRARY}
+    )
+elseif(DEFINED ALLOY_HAL_LIBRARY)
+    # Legacy compatibility
     target_link_libraries(${PROJECT_NAME} PRIVATE
         ${ALLOY_HAL_LIBRARY}
     )
@@ -188,8 +194,8 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 
 message(STATUS "==============================================")
 message(STATUS "Example: ${PROJECT_NAME}")
-message(STATUS "Board: ${ALLOY_BOARD}")
-message(STATUS "Platform: ${ALLOY_PLATFORM}")
+message(STATUS "Board: ${MICROCORE_BOARD}")
+message(STATUS "Platform: ${MICROCORE_PLATFORM}")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "RTOS: ENABLED")
 message(STATUS "==============================================")

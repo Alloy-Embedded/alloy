@@ -8,6 +8,25 @@ This guide shows you how to build, test, and flash Alloy Framework projects usin
 
 ## 🎯 Quick Start
 
+### 0. **Discovery CLI** (Find MCUs and boards)
+
+```bash
+# List all available MCUs
+./alloy-cli list mcus
+
+# List all development boards
+./alloy-cli list boards
+
+# Show detailed board information
+./alloy-cli show board nucleo-f401re
+
+# Show MCU details
+./alloy-cli show mcu stm32f401re
+
+# Initialize new project
+./alloy-cli init my-project --board nucleo-f401re
+```
+
 ### 1. **Simplest Way: Makefile** (Recommended for most users)
 
 ```bash
@@ -60,6 +79,50 @@ ctest --preset host-debug
 
 # Workflow
 cmake --workflow --preset dev
+```
+
+---
+
+## 🔍 Alloy CLI - Discovery and Project Management
+
+The Alloy CLI (`./alloy-cli`) provides powerful tools for discovering MCUs, boards, and managing projects.
+
+### Available Commands
+
+```bash
+# Discovery commands
+./alloy-cli list mcus              # List all MCUs
+./alloy-cli list boards            # List all boards
+./alloy-cli show mcu <name>        # Show MCU details
+./alloy-cli show board <name>      # Show board details
+./alloy-cli show pinout <board>    # Show board pinout diagram
+./alloy-cli search <query>         # Search MCUs and boards
+
+# Project management
+./alloy-cli init <name>            # Initialize new project
+./alloy-cli build                  # Build current project
+./alloy-cli validate               # Validate generated code
+
+# Configuration
+./alloy-cli config show            # Show current configuration
+./alloy-cli config set <key> <val> # Set configuration value
+
+# Documentation
+./alloy-cli docs                   # Open documentation
+./alloy-cli version                # Show CLI version
+```
+
+### Examples
+
+```bash
+# Find STM32F4 MCUs
+./alloy-cli search stm32f4
+
+# Create new project for Nucleo F401RE
+./alloy-cli init my-project --board nucleo-f401re
+
+# Show detailed pinout with color highlighting
+./alloy-cli show pinout nucleo-f401re
 ```
 
 ---
