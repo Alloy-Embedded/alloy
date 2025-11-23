@@ -76,18 +76,20 @@
 - [x] Document YAML format in docs/BOARD_CONFIGURATION.md
 - [x] Add board wizard: `ucore new-board <name>`
 
-### 2.4 API Reference Documentation (16 hours)
-- [ ] Setup Doxygen configuration (Doxyfile)
-- [ ] Document all C++20 concepts with examples
-- [ ] Document all HAL classes with usage patterns
-- [ ] Document hardware policies and CRTP pattern
-- [ ] Create "Getting Started" tutorial
-- [ ] Create "Adding a New Board" guide
-- [ ] Create "Porting to New Platform" guide
-- [ ] Add CMake target `make docs`
-- [ ] Setup GitHub Pages deployment
-- [ ] Create API stability policy document
-- [ ] Add version compatibility matrix
+### 2.4 API Reference Documentation (16 hours) ✅ SUBSTANTIALLY COMPLETE
+- [x] Setup Doxygen configuration (Doxyfile)
+- [x] Document all C++20 concepts with examples
+- [x] Document STM32F4 GPIO HAL class with comprehensive Doxygen comments (421 lines added)
+- [x] Document STM32F4 Clock HAL class with detailed API documentation
+- [ ] Document remaining HAL classes (UART, SPI, I2C, etc.) - ongoing
+- [x] Document hardware policies and CRTP pattern (in porting guide)
+- [x] Create "Getting Started" tutorial
+- [x] Create "Adding a New Board" guide
+- [x] Create "Porting to New Platform" guide
+- [x] Add CMake target `make docs`
+- [ ] Setup GitHub Pages deployment (requires repo admin access)
+- [x] Create API stability policy document
+- [x] Add version compatibility matrix (in stability policy)
 
 ---
 
