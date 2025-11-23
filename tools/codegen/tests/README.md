@@ -1,6 +1,8 @@
-# Alloy CLI Tests
+# MicroCore Code Generation Tests
 
-Comprehensive test suite for the Alloy CLI tool.
+Comprehensive test suite for MicroCore code generation including:
+- Python CLI tests (pytest)
+- **NEW:** C++ compile-time validation tests for generated code
 
 ## Structure
 
@@ -138,4 +140,111 @@ pytest -vv
 
 # Run specific failing test
 pytest tests/unit/test_services.py::test_name -vv
+```
+
+---
+
+## C++ Generated Code Validation (NEW)
+
+### Purpose
+
+Compile-time validation tests ensure generated register definitions are correct:
+- ✅ Compile without errors/warnings (`-Wall -Wextra -Werror`)
+- ✅ Register offsets match vendor datasheets
+- ✅ Proper types (volatile uint32_t)
+- ✅ Zero-overhead principles (no virtual functions)
+
+### Quick Start
+
+```bash
+cd tools/codegen/tests
+cmake -B build-validation
+cmake --build build-validation --target validate-generated-code
+```
+
+### Expected Output
+
+```
+✓ Validating STM32F4 generated code...
+✓ Validating SAME70 generated code...
+==========================================
+✓ All generated code validation passed!
+==========================================
+```
+
+### What Gets Validated
+
+1. **Register Offsets** - via `static_assert`:
+```cpp
+static_assert(offsetof(GPIO_Registers, MODER) == 0x00);
+static_assert(offsetof(GPIO_Registers, ODR) == 0x14);
+```
+
+2. **Structure Size** - fits memory map:
+```cpp
+static_assert(sizeof(GPIO_Registers) <= 0x400);
+```
+
+3. **Type Safety** - volatile, standard layout:
+```cpp
+static_assert(std::is_volatile_v<decltype(GPIO::ODR)>);
+static_assert(std::is_standard_layout_v<GPIO_Registers>);
+```
+
+4. **Zero-Overhead** - no virtual functions:
+```cpp
+static_assert(!std::is_polymorphic_v<GPIO_Registers>);
+```
+
+### Test Files
+
+- `validate_stm32f4_generated.cpp` - STM32F4 register validation
+- `validate_same70_generated.cpp` - SAME70 register validation
+- `CMakeLists.txt` - Build configuration with strict warnings
+
+### Integration
+
+**After code generation:**
+```bash
+./ucore generate stm32f401
+cd tools/codegen/tests
+cmake --build build-validation --target validate-generated-code
+```
+
+**Future CI Integration:**
+```yaml
+- name: Validate Generated Code
+  run: |
+    cd tools/codegen/tests
+    cmake -B build-validation
+    cmake --build build-validation --target validate-generated-code
+```
+
+### Troubleshooting
+
+**Compilation fails:** Check generated code against datasheet
+
+**Missing headers:** Run `./ucore generate <platform>` first
+
+**Style warnings:** Run `clang-format` on generated files
+
+---
+
+## Complete Testing Workflow
+
+1. **Python Tests** (unit/integration):
+```bash
+pytest
+```
+
+2. **Generated Code Validation** (compile-time):
+```bash
+cd tools/codegen/tests
+cmake --build build-validation --target validate-generated-code
+```
+
+3. **Coverage Report**:
+```bash
+pytest --cov=cli --cov-report=html
+open htmlcov/index.html
 ```
