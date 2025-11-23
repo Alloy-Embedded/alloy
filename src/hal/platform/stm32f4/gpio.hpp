@@ -126,7 +126,21 @@ class GpioPin {
     /**
      * @brief Set pin HIGH (output = 1)
      *
-     * @return Result<void, ErrorCode>     */
+     * Uses the BSRR (Bit Set/Reset Register) for atomic, single-cycle write.
+     * This ensures interrupt-safe operation without read-modify-write.
+     *
+     * @return Result<void, ErrorCode> Ok() on success
+     *
+     * @note Atomic operation - safe to call from interrupts
+     * @note Zero overhead - compiles to single STR instruction
+     *
+     * Example:
+     * @code
+     * using Led = GpioPin<GPIOA_BASE, 5>;
+     * auto led = Led{};
+     * led.set();  // Turn LED on
+     * @endcode
+     */
     Result<void, ErrorCode> set() {
         auto* port = get_port();
 
@@ -137,7 +151,21 @@ class GpioPin {
     /**
      * @brief Set pin LOW (output = 0)
      *
-     * @return Result<void, ErrorCode>     */
+     * Uses the BSRR (Bit Set/Reset Register) for atomic, single-cycle write.
+     * Writes to the upper 16 bits to reset the pin.
+     *
+     * @return Result<void, ErrorCode> Ok() on success
+     *
+     * @note Atomic operation - safe to call from interrupts
+     * @note Zero overhead - compiles to single STR instruction
+     *
+     * Example:
+     * @code
+     * using Led = GpioPin<GPIOA_BASE, 5>;
+     * auto led = Led{};
+     * led.clear();  // Turn LED off
+     * @endcode
+     */
     Result<void, ErrorCode> clear() {
         auto* port = get_port();
 
@@ -146,9 +174,28 @@ class GpioPin {
     }
 
     /**
-     * @brief Toggle pin state
+     * @brief Toggle pin state (HIGH → LOW or LOW → HIGH)
      *
-     * @return Result<void, ErrorCode>     */
+     * Reads current output state from ODR and toggles using BSRR for atomic write.
+     * This is a read-modify-write operation but the final write is atomic.
+     *
+     * @return Result<void, ErrorCode> Ok() on success
+     *
+     * @note Not fully atomic - uses read-modify-write pattern
+     * @note Suitable for application-level toggling (e.g., LED blinking)
+     *
+     * Example:
+     * @code
+     * using Led = GpioPin<GPIOA_BASE, 5>;
+     * auto led = Led{};
+     * led.setDirection(PinDirection::Output);
+     *
+     * while (true) {
+     *     led.toggle();  // Blink LED
+     *     delay_ms(500);
+     * }
+     * @endcode
+     */
     Result<void, ErrorCode> toggle() {
         auto* port = get_port();
 
@@ -163,10 +210,27 @@ class GpioPin {
     }
 
     /**
-     * @brief Write pin value
+     * @brief Write pin value (HIGH or LOW)
+     *
+     * Convenience method that calls set() or clear() based on the boolean value.
+     * Uses atomic BSRR register writes.
      *
      * @param value true for HIGH, false for LOW
-     * @return Result<void, ErrorCode>     */
+     * @return Result<void, ErrorCode> Ok() on success
+     *
+     * @note Atomic operation - safe to call from interrupts
+     * @note Prefer set()/clear() for known values to avoid branch
+     *
+     * Example:
+     * @code
+     * using Led = GpioPin<GPIOA_BASE, 5>;
+     * auto led = Led{};
+     * led.setDirection(PinDirection::Output);
+     *
+     * bool led_state = true;
+     * led.write(led_state);  // Turn LED on
+     * @endcode
+     */
     Result<void, ErrorCode> write(bool value) {
         auto* port = get_port();
 
@@ -177,7 +241,28 @@ class GpioPin {
     /**
      * @brief Read pin input value
      *
-     * @return Result<bool, ErrorCode>     */
+     * Reads the current pin state from the IDR (Input Data Register).
+     * Works for both input and output pins.
+     *
+     * @return Result<bool, ErrorCode> Ok(true) if pin is HIGH, Ok(false) if pin is LOW
+     *
+     * @note Always reads from IDR, which reflects actual pin electrical state
+     * @note For output pins, reads back the actual pin state (useful for open-drain)
+     * @note Zero overhead - compiles to single LDR instruction
+     *
+     * Example:
+     * @code
+     * using Button = GpioPin<GPIOC_BASE, 13>;
+     * auto btn = Button{};
+     * btn.setDirection(PinDirection::Input);
+     * btn.setPull(PinPull::PullUp);
+     *
+     * auto result = btn.read();
+     * if (result.is_ok() && !result.value()) {
+     *     // Button pressed (active low)
+     * }
+     * @endcode
+     */
     Result<bool, ErrorCode> read() const {
         auto* port = get_port();
 
@@ -189,10 +274,27 @@ class GpioPin {
     }
 
     /**
-     * @brief Set GPIO pin direction
+     * @brief Set GPIO pin direction (Input or Output)
      *
-     * @param direction Pin direction (Input or Output)
-     * @return Result<void, ErrorCode>     */
+     * Configures the pin as either input or output by modifying the MODER register.
+     * - Input: Bits = 00
+     * - Output: Bits = 01
+     *
+     * @param direction Pin direction (PinDirection::Input or PinDirection::Output)
+     * @return Result<void, ErrorCode> Ok() on success
+     *
+     * @note Must be called before using the pin
+     * @note Uses read-modify-write pattern to preserve other pins
+     * @note Test hook available for unit testing: ALLOY_GPIO_TEST_HOOK_MODER
+     *
+     * Example:
+     * @code
+     * using Led = GpioPin<GPIOA_BASE, 5>;
+     * auto led = Led{};
+     * led.setDirection(PinDirection::Output);
+     * led.set();
+     * @endcode
+     */
     Result<void, ErrorCode> setDirection(PinDirection direction) {
         auto* port = get_port();
 
@@ -209,10 +311,28 @@ class GpioPin {
     }
 
     /**
-     * @brief Set GPIO pin drive mode
+     * @brief Set GPIO pin drive mode (Push-Pull or Open-Drain)
      *
-     * @param drive Drive mode (PushPull or OpenDrain)
-     * @return Result<void, ErrorCode>     */
+     * Configures the output driver type in the OTYPER register.
+     * - Push-Pull (default): Can drive both HIGH and LOW actively
+     * - Open-Drain: Can only pull LOW, requires external pull-up for HIGH
+     *
+     * @param drive Drive mode (PinDrive::PushPull or PinDrive::OpenDrain)
+     * @return Result<void, ErrorCode> Ok() on success
+     *
+     * @note Only affects output pins (has no effect on inputs)
+     * @note Open-drain useful for I2C, 5V-tolerant outputs, wired-OR
+     * @note Test hook available for unit testing: ALLOY_GPIO_TEST_HOOK_OTYPER
+     *
+     * Example:
+     * @code
+     * using I2cSda = GpioPin<GPIOB_BASE, 9>;
+     * auto sda = I2cSda{};
+     * sda.setDirection(PinDirection::Output);
+     * sda.setDrive(PinDrive::OpenDrain);  // I2C requires open-drain
+     * sda.setPull(PinPull::PullUp);
+     * @endcode
+     */
     Result<void, ErrorCode> setDrive(PinDrive drive) {
         auto* port = get_port();
 
@@ -229,10 +349,33 @@ class GpioPin {
     }
 
     /**
-     * @brief Configure pull resistor
+     * @brief Configure internal pull resistor
      *
-     * @param pull Pull resistor configuration
-     * @return Result<void, ErrorCode>     */
+     * Configures the internal pull-up/pull-down resistors in the PUPDR register.
+     * - None: High-impedance (floating) input
+     * - PullUp: Weak pull to VDD (~40kΩ typical)
+     * - PullDown: Weak pull to GND (~40kΩ typical)
+     *
+     * @param pull Pull resistor configuration (PinPull::None, PinPull::PullUp, or PinPull::PullDown)
+     * @return Result<void, ErrorCode> Ok() on success
+     *
+     * @note Internal resistors are weak (~40kΩ) - use external for critical applications
+     * @note Works for both input and output pins
+     * @note Test hook available for unit testing: ALLOY_GPIO_TEST_HOOK_PUPDR
+     *
+     * Example:
+     * @code
+     * using Button = GpioPin<GPIOC_BASE, 13>;
+     * auto btn = Button{};
+     * btn.setDirection(PinDirection::Input);
+     * btn.setPull(PinPull::PullUp);  // Active-low button
+     *
+     * auto result = btn.read();
+     * if (result.is_ok() && !result.value()) {
+     *     // Button pressed
+     * }
+     * @endcode
+     */
     Result<void, ErrorCode> setPull(PinPull pull) {
         auto* port = get_port();
 
@@ -261,10 +404,30 @@ class GpioPin {
     }
 
     /**
-     * @brief Set GPIO output speed
+     * @brief Set GPIO output speed (slew rate)
      *
-     * @param speed Output speed (Low, Medium, High, VeryHigh)
-     * @return Result<void, ErrorCode>     */
+     * Configures the output slew rate in the OSPEEDR register.
+     * Higher speeds allow faster transitions but increase EMI.
+     * - Low: 2 MHz (default, lowest EMI)
+     * - Medium: 25 MHz
+     * - High: 50 MHz
+     * - VeryHigh: 100 MHz (highest EMI)
+     *
+     * @param speed Output speed (GpioSpeed::Low, Medium, High, or VeryHigh)
+     * @return Result<void, ErrorCode> Ok() on success
+     *
+     * @note Only affects output pins
+     * @note Use lowest speed that meets timing requirements to reduce EMI
+     * @note Test hook available for unit testing: ALLOY_GPIO_TEST_HOOK_OSPEEDR
+     *
+     * Example:
+     * @code
+     * using SpiClk = GpioPin<GPIOA_BASE, 5>;
+     * auto clk = SpiClk{};
+     * clk.setDirection(PinDirection::Output);
+     * clk.setSpeed(GpioSpeed::High);  // SPI needs fast edges
+     * @endcode
+     */
     Result<void, ErrorCode> setSpeed(GpioSpeed speed) {
         auto* port = get_port();
 
@@ -283,7 +446,26 @@ class GpioPin {
     /**
      * @brief Check if pin is configured as output
      *
-     * @return Result<bool, ErrorCode>     */
+     * Reads the MODER register to determine if the pin is configured as output.
+     * Returns false for input, alternate function, or analog modes.
+     *
+     * @return Result<bool, ErrorCode> Ok(true) if output mode, Ok(false) otherwise
+     *
+     * @note Only returns true for general-purpose output (MODER = 01)
+     * @note Returns false for input (00), alternate function (10), or analog (11)
+     *
+     * Example:
+     * @code
+     * using Led = GpioPin<GPIOA_BASE, 5>;
+     * auto led = Led{};
+     * led.setDirection(PinDirection::Output);
+     *
+     * auto result = led.isOutput();
+     * if (result.is_ok() && result.value()) {
+     *     led.set();  // Safe to set output
+     * }
+     * @endcode
+     */
     Result<bool, ErrorCode> isOutput() const {
         auto* port = get_port();
 

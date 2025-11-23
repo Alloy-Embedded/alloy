@@ -144,11 +144,37 @@ class Clock {
     static constexpr uint32_t HSI_FREQ = 16000000;    ///< 16 MHz internal oscillator
 
     /**
-     * @brief Initialize system clocks\n\nConfigures HSE/HSI, PLL, and bus prescalers.\nThis should
-     * be called early in system initialization.
+     * @brief Initialize system clocks
      *
-     * @param config Clock configuration
-     * @return Result<void, ErrorCode>     */
+     * Configures the STM32F4 clock tree including HSE/HSI, PLL, and bus prescalers.
+     * This should be called early in system initialization, before enabling peripherals.
+     *
+     * Steps performed:
+     * 1. Enable HSE if used and wait for ready
+     * 2. Configure and enable PLL (if PLL is the clock source)
+     * 3. Set Flash latency (placeholder - implement based on voltage/frequency)
+     * 4. Configure AHB, APB1, APB2 prescalers
+     * 5. Switch system clock to selected source
+     *
+     * @param config Clock configuration (see ClockConfig struct)
+     * @return Result<void, ErrorCode> Ok() on success, Err(ErrorCode::Timeout) if HSE/PLL fails to start
+     *
+     * @note Must be called before enabling any peripheral clocks
+     * @note Flash wait states should be configured based on SYSCLK frequency
+     * @note APB1 max frequency: 42 MHz, APB2 max frequency: 84 MHz
+     *
+     * Example:
+     * @code
+     * // Configure for 168 MHz from 8 MHz HSE
+     * auto result = Clock::initialize(CLOCK_CONFIG_168MHZ);
+     * if (!result.is_ok()) {
+     *     // Handle clock init error
+     * }
+     *
+     * // Now peripherals can be enabled
+     * Clock::enableAhb1Clock(0);  // Enable GPIOA clock
+     * @endcode
+     */
     static Result<void, ErrorCode> initialize(const ClockConfig& config) {
         auto* rcc_regs = get_rcc();
 
@@ -255,8 +281,34 @@ class Clock {
     /**
      * @brief Enable peripheral clock on AHB1 bus
      *
-     * @param peripheral_bit Peripheral bit position
-     * @return Result<void, ErrorCode>     */
+     * Enables the clock for a peripheral on the AHB1 bus by setting the
+     * corresponding bit in the RCC_AHB1ENR register.
+     *
+     * AHB1 peripherals include: GPIO (A-I), CRC, DMA1/2, etc.
+     *
+     * @param peripheral_bit Peripheral bit position (0-31) in AHB1ENR register
+     * @return Result<void, ErrorCode> Ok() on success, Err(ErrorCode::NotInitialized) if Clock::initialize() not called
+     *
+     * @note Must call Clock::initialize() before enabling peripheral clocks
+     * @note AHB1 runs at SYSCLK frequency (e.g., 168 MHz)
+     *
+     * Common bit positions:
+     * - 0: GPIOA
+     * - 1: GPIOB
+     * - 2: GPIOC
+     * - ...
+     * - 21: DMA1
+     * - 22: DMA2
+     *
+     * Example:
+     * @code
+     * // Enable GPIOA clock
+     * Clock::enableAhb1Clock(0);
+     *
+     * // Enable GPIOC clock
+     * Clock::enableAhb1Clock(2);
+     * @endcode
+     */
     static Result<void, ErrorCode> enableAhb1Clock(uint32_t peripheral_bit) {
         if (!s_initialized) {
             return Err(ErrorCode::NotInitialized);
@@ -268,10 +320,40 @@ class Clock {
     }
 
     /**
-     * @brief Enable peripheral clock on APB1 bus
+     * @brief Enable peripheral clock on APB1 bus (Low-speed peripherals)
      *
-     * @param peripheral_bit Peripheral bit position
-     * @return Result<void, ErrorCode>     */
+     * Enables the clock for a peripheral on the APB1 bus by setting the
+     * corresponding bit in the RCC_APB1ENR register.
+     *
+     * APB1 peripherals include: TIM2-7, USART2/3, UART4/5, I2C1/2/3, SPI2/3, etc.
+     *
+     * @param peripheral_bit Peripheral bit position (0-31) in APB1ENR register
+     * @return Result<void, ErrorCode> Ok() on success, Err(ErrorCode::NotInitialized) if Clock::initialize() not called
+     *
+     * @note Must call Clock::initialize() before enabling peripheral clocks
+     * @note APB1 max frequency: 42 MHz (SYSCLK / 4 for 168 MHz system)
+     * @note Timer clocks are 2× APB1 frequency if APB1 prescaler ≠ 1
+     *
+     * Common bit positions:
+     * - 0-7: TIM2-7
+     * - 17: USART2
+     * - 18: USART3
+     * - 19: UART4
+     * - 20: UART5
+     * - 21: I2C1
+     * - 22: I2C2
+     * - 14: SPI2
+     * - 15: SPI3
+     *
+     * Example:
+     * @code
+     * // Enable USART2 clock (APB1, bit 17)
+     * Clock::enableApb1Clock(17);
+     *
+     * // Enable I2C1 clock (APB1, bit 21)
+     * Clock::enableApb1Clock(21);
+     * @endcode
+     */
     static Result<void, ErrorCode> enableApb1Clock(uint32_t peripheral_bit) {
         if (!s_initialized) {
             return Err(ErrorCode::NotInitialized);
@@ -283,10 +365,39 @@ class Clock {
     }
 
     /**
-     * @brief Enable peripheral clock on APB2 bus
+     * @brief Enable peripheral clock on APB2 bus (High-speed peripherals)
      *
-     * @param peripheral_bit Peripheral bit position
-     * @return Result<void, ErrorCode>     */
+     * Enables the clock for a peripheral on the APB2 bus by setting the
+     * corresponding bit in the RCC_APB2ENR register.
+     *
+     * APB2 peripherals include: TIM1/8-11, USART1/6, ADC1/2/3, SPI1, SYSCFG, etc.
+     *
+     * @param peripheral_bit Peripheral bit position (0-31) in APB2ENR register
+     * @return Result<void, ErrorCode> Ok() on success, Err(ErrorCode::NotInitialized) if Clock::initialize() not called
+     *
+     * @note Must call Clock::initialize() before enabling peripheral clocks
+     * @note APB2 max frequency: 84 MHz (SYSCLK / 2 for 168 MHz system)
+     * @note Timer clocks are 2× APB2 frequency if APB2 prescaler ≠ 1
+     *
+     * Common bit positions:
+     * - 0: TIM1
+     * - 4: USART1
+     * - 5: USART6
+     * - 8: ADC1
+     * - 9: ADC2
+     * - 10: ADC3
+     * - 12: SPI1
+     * - 14: SYSCFG
+     *
+     * Example:
+     * @code
+     * // Enable USART1 clock (APB2, bit 4)
+     * Clock::enableApb2Clock(4);
+     *
+     * // Enable SPI1 clock (APB2, bit 12)
+     * Clock::enableApb2Clock(12);
+     * @endcode
+     */
     static Result<void, ErrorCode> enableApb2Clock(uint32_t peripheral_bit) {
         if (!s_initialized) {
             return Err(ErrorCode::NotInitialized);
@@ -298,9 +409,23 @@ class Clock {
     }
 
     /**
-     * @brief Get system clock frequency in Hz
+     * @brief Get system clock (SYSCLK) frequency in Hz
      *
-     * @return uint32_t     */
+     * Calculates the current system clock frequency based on the active
+     * clock source (HSI, HSE, or PLL) and configuration.
+     *
+     * @return uint32_t System clock frequency in Hz, or 0 if not initialized
+     *
+     * @note Returns 0 if Clock::initialize() has not been called
+     * @note For PLL: SYSCLK = (source / PLLM) * PLLN / PLLP
+     *
+     * Example:
+     * @code
+     * Clock::initialize(CLOCK_CONFIG_168MHZ);
+     * uint32_t freq = Clock::getSystemClockFrequency();
+     * // freq = 168000000 (168 MHz)
+     * @endcode
+     */
     static uint32_t getSystemClockFrequency() {
         if (!s_initialized) {
             return 0;
@@ -331,9 +456,24 @@ class Clock {
     }
 
     /**
-     * @brief Get AHB bus clock frequency in Hz
+     * @brief Get AHB bus clock (HCLK) frequency in Hz
      *
-     * @return uint32_t     */
+     * Calculates the AHB clock frequency by applying the AHB prescaler
+     * to the system clock.
+     *
+     * @return uint32_t AHB clock frequency in Hz
+     *
+     * @note AHB = SYSCLK / AHB_Prescaler
+     * @note Peripherals on AHB: GPIO, DMA, Flash, SRAM
+     * @note Max frequency: 168 MHz (STM32F4)
+     *
+     * Example:
+     * @code
+     * Clock::initialize(CLOCK_CONFIG_168MHZ);
+     * uint32_t ahb_freq = Clock::getAhbClockFrequency();
+     * // ahb_freq = 168000000 (168 MHz, no prescaler)
+     * @endcode
+     */
     static uint32_t getAhbClockFrequency() {
         uint32_t sysclk = getSystemClockFrequency();
 
@@ -347,9 +487,25 @@ class Clock {
     }
 
     /**
-     * @brief Get APB1 bus clock frequency in Hz
+     * @brief Get APB1 bus clock (PCLK1) frequency in Hz
      *
-     * @return uint32_t     */
+     * Calculates the APB1 clock frequency by applying the APB1 prescaler
+     * to the AHB clock.
+     *
+     * @return uint32_t APB1 clock frequency in Hz
+     *
+     * @note APB1 = AHB / APB1_Prescaler
+     * @note Peripherals on APB1: USART2/3, UART4/5, I2C1/2/3, SPI2/3, TIM2-7
+     * @note Max frequency: 42 MHz (STM32F4)
+     * @note Timer clocks are 2× APB1 if APB1 prescaler ≠ 1
+     *
+     * Example:
+     * @code
+     * Clock::initialize(CLOCK_CONFIG_168MHZ);
+     * uint32_t apb1_freq = Clock::getApb1ClockFrequency();
+     * // apb1_freq = 42000000 (42 MHz, prescaler = /4)
+     * @endcode
+     */
     static uint32_t getApb1ClockFrequency() {
         uint32_t ahb_freq = getAhbClockFrequency();
 
@@ -363,9 +519,25 @@ class Clock {
     }
 
     /**
-     * @brief Get APB2 bus clock frequency in Hz
+     * @brief Get APB2 bus clock (PCLK2) frequency in Hz
      *
-     * @return uint32_t     */
+     * Calculates the APB2 clock frequency by applying the APB2 prescaler
+     * to the AHB clock.
+     *
+     * @return uint32_t APB2 clock frequency in Hz
+     *
+     * @note APB2 = AHB / APB2_Prescaler
+     * @note Peripherals on APB2: USART1/6, SPI1, TIM1/8-11, ADC1/2/3, SYSCFG
+     * @note Max frequency: 84 MHz (STM32F4)
+     * @note Timer clocks are 2× APB2 if APB2 prescaler ≠ 1
+     *
+     * Example:
+     * @code
+     * Clock::initialize(CLOCK_CONFIG_168MHZ);
+     * uint32_t apb2_freq = Clock::getApb2ClockFrequency();
+     * // apb2_freq = 84000000 (84 MHz, prescaler = /2)
+     * @endcode
+     */
     static uint32_t getApb2ClockFrequency() {
         uint32_t ahb_freq = getAhbClockFrequency();
 
@@ -381,13 +553,38 @@ class Clock {
     /**
      * @brief Check if clocks are initialized
      *
-     * @return bool     */
+     * Returns whether Clock::initialize() has been successfully called.
+     * This can be used to verify clock initialization before enabling peripherals.
+     *
+     * @return bool true if initialized, false otherwise
+     *
+     * Example:
+     * @code
+     * if (!Clock::isInitialized()) {
+     *     Clock::initialize(CLOCK_CONFIG_168MHZ);
+     * }
+     * @endcode
+     */
     static bool isInitialized() { return s_initialized; }
 
     /**
      * @brief Get current clock configuration
      *
-     * @return const ClockConfig&     */
+     * Returns a const reference to the active clock configuration.
+     * Useful for debugging and runtime clock frequency calculations.
+     *
+     * @return const ClockConfig& Reference to the current clock configuration
+     *
+     * @note Configuration is set by Clock::initialize()
+     * @note Returns default-constructed config if not initialized
+     *
+     * Example:
+     * @code
+     * Clock::initialize(CLOCK_CONFIG_168MHZ);
+     * const auto& config = Clock::getConfig();
+     * // Access config.pll.plln, config.hse_freq_hz, etc.
+     * @endcode
+     */
     static const ClockConfig& getConfig() { return s_config; }
 
 
