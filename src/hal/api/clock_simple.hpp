@@ -5,7 +5,7 @@
  * Provides one-liner setup for common clock configurations.
  * Platform-agnostic API that works with any Clock implementation.
  *
- * @note Part of Alloy HAL API Layer
+ * @note Part of MicroCore HAL API Layer
  */
 
 #pragma once

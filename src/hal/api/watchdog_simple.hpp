@@ -5,7 +5,7 @@
  * Provides one-liner operations for watchdog timers.
  * Platform-agnostic API that uses Hardware Policies.
  *
- * @note Part of Alloy HAL API Layer
+ * @note Part of MicroCore HAL API Layer
  */
 
 #pragma once

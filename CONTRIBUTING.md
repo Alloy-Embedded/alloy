@@ -101,7 +101,7 @@ concept GpioPin = requires(T pin) {
 
 ### 1. Using OpenSpec
 
-Alloy uses [OpenSpec](openspec/AGENTS.md) for spec-driven development. Before implementing features:
+MicroCore uses [OpenSpec](openspec/AGENTS.md) for spec-driven development. Before implementing features:
 
 1. Check existing specs: `openspec list --specs`
 2. Check active changes: `openspec list`
@@ -152,7 +152,7 @@ For each change:
 
 ## Testing
 
-Alloy uses **Catch2 v3** as the testing framework for C++ unit tests. All tests run automatically in CI on every push and pull request.
+MicroCore uses **Catch2 v3** as the testing framework for C++ unit tests. All tests run automatically in CI on every push and pull request.
 
 ### Running Tests Locally
 
@@ -181,7 +181,7 @@ cd build-host && ctest --output-on-failure
 
 ### Writing Unit Tests
 
-Alloy uses **Catch2 v3** for all new tests. Tests should be placed in `tests/unit/test_<component>.cpp`.
+MicroCore uses **Catch2 v3** for all new tests. Tests should be placed in `tests/unit/test_<component>.cpp`.
 
 #### Basic Test Structure
 

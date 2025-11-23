@@ -1,63 +1,90 @@
 /**
  * @file main.cpp
- * @brief UART Logger Example
+ * @brief UART Logger Example - Demonstrates Proper HAL Usage
  *
- * Demonstrates how to use the logger system with UART output on embedded systems.
+ * This example demonstrates the **correct way** to use MicroCore HAL abstractions
+ * for UART communication, avoiding raw register access.
  *
  * ## What This Example Shows
  *
- * - Board initialization
- * - UART configuration for logging output
- * - Logger setup with UART sink
- * - Different log levels (INFO, WARN, ERROR, DEBUG)
- * - Periodic logging with timestamps
+ * - ✅ Board initialization using board abstraction layer
+ * - ✅ UART configuration using SimpleUartConfigTxOnly HAL API
+ * - ✅ Proper error handling with Result<T> pattern
+ * - ✅ Portable code that works across different boards
+ * - ✅ Clear separation between hardware and application logic
+ *
+ * ## Key Principles Demonstrated
+ *
+ * 1. **Use HAL Abstractions**: Never access registers directly
+ * 2. **Handle Errors**: Check Result<T> returns
+ * 3. **Board Abstraction**: Let board layer handle platform specifics
+ * 4. **Portability**: Same code runs on different boards
  *
  * ## Hardware Requirements
  *
- * - **Board:** SAME70 Xplained Ultra
- * - **UART:** Debug UART (EDBG virtual COM port)
- * - **Baud Rate:** 115200
- * - **Connection:** USB cable to PC (EDBG connector)
+ * - **Boards Supported:**
+ *   - SAME70 Xplained Ultra (UART0 via EDBG virtual COM)
+ *   - STM32 Nucleo boards (USART2 via ST-Link)
+ *   - Any board with debug UART configured
+ * - **Baud Rate:** 115200, 8N1
+ * - **Connection:** USB cable (debug connector)
  *
  * ## Expected Behavior
  *
- * The example outputs log messages to UART every second:
- * - System startup message
- * - Periodic INFO messages with uptime
- * - Occasional WARN and ERROR messages for demonstration
- * - LED blinks in sync with logging
+ * 1. LED blinks 3 times (board init OK)
+ * 2. Sends "Hello, MicroCore!" message once
+ * 3. Sends "Counter: N" messages every second
+ * 4. LED toggles with each message
  *
  * ## Viewing Output
  *
- * 1. Connect board via USB (EDBG port)
- * 2. Open serial terminal (115200 baud, 8N1)
- * 3. Flash and run the example
- * 4. Observe formatted log messages with timestamps
+ * ```bash
+ * # macOS
+ * screen /dev/tty.usbmodem* 115200
  *
- * @note UART TX pin must be configured correctly for your board.
- *       Consult board documentation for UART pin mapping.
+ * # Linux
+ * screen /dev/ttyACM0 115200
+ * ```
+ *
+ * ## Anti-Patterns Avoided
+ *
+ * ❌ **Don't do this:**
+ * ```cpp
+ * volatile uint32_t* UART0_THR = (volatile uint32_t*)0x400E081C;
+ * *UART0_THR = 'H';  // Raw register access!
+ * ```
+ *
+ * ✅ **Do this instead:**
+ * ```cpp
+ * uart.write_byte('H');  // Use HAL abstraction
+ * ```
+ *
+ * @note This example serves as a **teaching tool** for proper HAL usage.
+ *       Study this code to learn MicroCore best practices!
  */
 
+#include "board.hpp"
 #include "hal/api/systick_simple.hpp"
 #include "hal/api/uart_simple.hpp"
-#include "hal/vendors/arm/same70/gpio.hpp"
-#include "hal/vendors/atmel/same70/uart_hardware_policy.hpp"
-
-#include "logger/logger.hpp"
-#include "logger/sinks/uart_sink.hpp"
-#include "same70_xplained/board.hpp"
 
 using namespace ucore::hal;
-using namespace ucore::hal::same70;
-using namespace ucore::hal::atmel::same70;
-using namespace ucore::logger;
-using namespace ucore::generated::atsame70q21b;
 
 int main() {
-    // Step 1: Initialize board hardware
+    // ============================================================================
+    // Step 1: Initialize Board Hardware
+    // ============================================================================
+    /**
+     * Board initialization handles:
+     * - Clock configuration (PLL, peripheral clocks)
+     * - SysTick timer setup
+     * - GPIO configuration for LEDs/buttons
+     * - Platform-specific initialization
+     *
+     * ALWAYS use board::init() instead of manual register configuration!
+     */
     board::init();
 
-    // Debug: Blink 3 times to show board init OK
+    // Visual confirmation: blink LED 3 times
     for (int i = 0; i < 3; i++) {
         board::led::on();
         SysTickTimer::delay_ms<board::BoardSysTick>(200);
@@ -65,172 +92,129 @@ int main() {
         SysTickTimer::delay_ms<board::BoardSysTick>(200);
     }
 
-    // Step 2: Configure UART for logging (115200 baud, TX-only)
-    // SAME70 Xplained Ultra: UART0 is connected to EDBG (virtual COM port)
-    // TX pin: PA10 (UART0_TXD), Base: 0x400E0800, IRQ: 7
-    using UartTxPin = GpioPin<peripherals::PIOA, 10>;
-    using UartPolicy = Same70UARTHardwarePolicy<0x400E0800, 7>;
+    // ============================================================================
+    // Step 2: Configure UART for TX-Only Communication
+    // ============================================================================
+    /**
+     * SimpleUartConfigTxOnly provides a minimal UART interface for logging:
+     * - Transmit-only (no RX overhead)
+     * - Board-specific pin and peripheral configuration
+     * - Result<T> error handling
+     *
+     * The board:: namespace provides the correct UART configuration for each board.
+     * You don't need to know register addresses or pin mappings!
+     */
 
-    SimpleUartConfigTxOnly<UartTxPin, UartPolicy> uart{
-        PeripheralId::UART0, BaudRate{115200},
-        8,  // data bits
+    // Create UART configuration (board-specific, defined in board.hpp)
+    using UartConfig = SimpleUartConfigTxOnly<
+        board::uart::TxPin,
+        board::uart::Policy
+    >;
+
+    UartConfig uart{
+        board::uart::peripheral_id,
+        BaudRate{115200},
+        8,                     // data bits
         UartParity::NONE,
-        1  // stop bits
+        1                      // stop bits
     };
 
-    // Step 3: Configure GPIO pin for UART peripheral function
-    // PA10 needs to be configured for UART0_TXD (peripheral A function)
-    // Enable clocks for PIOA and UART0
-    volatile uint32_t* PMC_PCER0 = reinterpret_cast<volatile uint32_t*>(0x400E0610);
-    *PMC_PCER0 = (1 << 10);  // Enable PIOA clock (ID 10)
-    *PMC_PCER0 = (1 << 7);   // Enable UART0 clock (ID 7 - IRQ ID)
+    // ============================================================================
+    // Step 3: Initialize UART with Error Handling
+    // ============================================================================
+    /**
+     * HAL initialization can fail (e.g., invalid baud rate, hardware error).
+     * ALWAYS check Result<T> return values!
+     *
+     * Result<T> pattern:
+     * - is_ok()  → Check if operation succeeded
+     * - error()  → Get error code on failure
+     * - value()  → Get result value on success
+     */
 
-    // Configure PA10 for peripheral A (UART0_TXD)
-    // Peripheral select: ABCDSR[1:0] -> 00=A, 01=B, 10=C, 11=D
-    volatile uint32_t* PIOA_PDR =
-        reinterpret_cast<volatile uint32_t*>(peripherals::PIOA + 0x04);  // Disable PIO
-    volatile uint32_t* PIOA_ABCDSR1 =
-        reinterpret_cast<volatile uint32_t*>(peripherals::PIOA + 0x70);
-    volatile uint32_t* PIOA_ABCDSR2 =
-        reinterpret_cast<volatile uint32_t*>(peripherals::PIOA + 0x74);
-
-    *PIOA_PDR = (1 << 10);        // Disable PIO control on PA10
-    *PIOA_ABCDSR1 &= ~(1 << 10);  // ABCDSR1 bit = 0
-    *PIOA_ABCDSR2 &= ~(1 << 10);  // ABCDSR2 bit = 0 -> Select peripheral A
-
-    // Debug: Blink 2 times to show GPIO config OK
-    for (int i = 0; i < 2; i++) {
-        board::led::on();
-        SysTickTimer::delay_ms<board::BoardSysTick>(200);
-        board::led::off();
-        SysTickTimer::delay_ms<board::BoardSysTick>(200);
-    }
-
-    // Initialize UART
     auto uart_result = uart.initialize();
+
     if (!uart_result.is_ok()) {
-        // UART initialization failed - blink LED rapidly to indicate error
+        // UART initialization failed - indicate error visually
+        // Blink LED rapidly forever to signal error state
         while (true) {
             board::led::toggle();
             SysTickTimer::delay_ms<board::BoardSysTick>(100);
         }
     }
 
-    // Debug: Blink 1 time to show UART init OK
+    // Initialization succeeded - visual confirmation
     board::led::on();
     SysTickTimer::delay_ms<board::BoardSysTick>(500);
     board::led::off();
     SysTickTimer::delay_ms<board::BoardSysTick>(500);
 
-    // Step 4: Send test directly to UART hardware (raw register access)
-    volatile uint32_t* UART0_CR =
-        reinterpret_cast<volatile uint32_t*>(0x400E0800);  // Control Register
-    volatile uint32_t* UART0_MR =
-        reinterpret_cast<volatile uint32_t*>(0x400E0804);  // Mode Register
-    volatile uint32_t* UART0_BRGR =
-        reinterpret_cast<volatile uint32_t*>(0x400E0820);  // Baud Rate Generator
-    volatile uint32_t* UART0_SR =
-        reinterpret_cast<volatile uint32_t*>(0x400E0814);  // Status Register
-    volatile uint32_t* UART0_THR =
-        reinterpret_cast<volatile uint32_t*>(0x400E081C);  // Transmit Holding Register
-
-    // Reset and configure UART0 manually
-    *UART0_CR = (1 << 2) | (1 << 3);  // Reset TX and RX
-    *UART0_CR = (1 << 6) | (1 << 7);  // Disable TX and RX
-
-    // Configure 8N1 mode (no parity)
-    *UART0_MR = (4 << 9);  // PAR field = 4 (no parity)
-
-    // Set baud rate: CD = MCK / (16 * baudrate) = 12000000 / (16 * 115200) = 6.51 ≈ 7
-    *UART0_BRGR = 7;
-
-    // Enable TX
-    *UART0_CR = (1 << 6);  // TXEN
-
-    // Wait for UART to stabilize and EDBG to be ready
-    SysTickTimer::delay_ms<board::BoardSysTick>(500);
-
-    // Check if TXRDY is set (if not, UART is not working)
-    uint32_t status = *UART0_SR;
-    if (!(status & (1 << 1))) {
-        // TXRDY not ready - blink LED 10 times fast to indicate error
-        for (int i = 0; i < 10; i++) {
-            board::led::toggle();
-            SysTickTimer::delay_ms<board::BoardSysTick>(50);
+    // ============================================================================
+    // Step 4: Send Startup Message
+    // ============================================================================
+    /**
+     * Helper function to send strings via UART.
+     * Uses HAL write_byte() abstraction, not raw register access.
+     */
+    auto send_string = [&uart](const char* str) {
+        while (*str) {
+            uart.write_byte(*str++);
         }
-        // Hang here
-        while (true) {
-            SysTickTimer::delay_ms<board::BoardSysTick>(1000);
-        }
-    }
+    };
 
-    // TXRDY is ready - blink 3 times to confirm
-    for (int i = 0; i < 3; i++) {
-        board::led::on();
-        SysTickTimer::delay_ms<board::BoardSysTick>(100);
-        board::led::off();
-        SysTickTimer::delay_ms<board::BoardSysTick>(100);
-    }
+    send_string("Hello, MicroCore!\r\n");
+    send_string("UART Logger Example - Demonstrating Proper HAL Usage\r\n");
+    send_string("=====================================\r\n\r\n");
 
-    // Send test message continuously
-    const char* msg = "UART0 TEST\r\n";
-    for (int loop = 0; loop < 100; loop++) {
-        for (const char* p = msg; *p != '\0'; p++) {
-            // Wait for TX ready
-            while (!((*UART0_SR) & (1 << 1))) {
-                // Busy wait
-            }
-            *UART0_THR = *p;
-        }
+    // ============================================================================
+    // Step 5: Main Loop - Send Periodic Messages
+    // ============================================================================
+    /**
+     * Simple counter demonstration showing:
+     * - String output via HAL
+     * - Number formatting
+     * - Periodic timing with SysTick
+     * - Visual feedback with LED
+     */
 
-        // Blink LED to show message sent
-        board::led::toggle();
-        SysTickTimer::delay_ms<board::BoardSysTick>(200);
-    }
-
-    // Step 5: Main loop - send test messages continuously
-    u32 loop_count = 0;
+    uint32_t counter = 0;
 
     while (true) {
-        // Send simple counter message directly via UART (bypass logger)
-        const char* msg = "Test ";
-        for (const char* p = msg; *p != '\0'; p++) {
-            uart.write_byte(*p);
-        }
+        // Send counter message
+        send_string("Counter: ");
 
-        // Send loop count as decimal number
-        char num[12];
-        u32 n = loop_count;
+        // Convert counter to string (simple decimal conversion)
+        char num_buffer[12];
+        uint32_t n = counter;
         int i = 0;
+
         if (n == 0) {
-            num[i++] = '0';
+            num_buffer[i++] = '0';
         } else {
+            // Extract digits in reverse order
             char temp[12];
             int j = 0;
             while (n > 0) {
                 temp[j++] = '0' + (n % 10);
                 n /= 10;
             }
+            // Reverse to get correct order
             for (int k = j - 1; k >= 0; k--) {
-                num[i++] = temp[k];
+                num_buffer[i++] = temp[k];
             }
         }
-        num[i] = '\0';
+        num_buffer[i] = '\0';
 
-        for (int k = 0; num[k] != '\0'; k++) {
-            uart.write_byte(num[k]);
-        }
+        send_string(num_buffer);
+        send_string("\r\n");
 
-        uart.write_byte('\r');
-        uart.write_byte('\n');
-
-        // Blink LED
+        // Visual feedback: toggle LED
         board::led::toggle();
 
-        // Wait 1 second
+        // Wait 1 second before next message
         SysTickTimer::delay_ms<board::BoardSysTick>(1000);
 
-        loop_count++;
+        counter++;
     }
 
     return 0;

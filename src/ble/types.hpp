@@ -12,7 +12,7 @@ using ucore::core::u16;
 using ucore::core::u32;
 using ucore::core::u8;
 
-/// BLE (Bluetooth Low Energy) types for Alloy framework
+/// BLE (Bluetooth Low Energy) types for MicroCore framework
 ///
 /// Provides common types and structures for BLE communication including
 /// device addresses, UUIDs, advertisement data, and GATT attributes.

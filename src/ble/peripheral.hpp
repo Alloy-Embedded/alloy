@@ -6,7 +6,7 @@
 
 #include "types.hpp"
 
-/// BLE Peripheral (Server) API for Alloy framework
+/// BLE Peripheral (Server) API for MicroCore framework
 ///
 /// Provides a C++ abstraction for BLE GATT server operations including:
 /// - Advertisement and discoverability

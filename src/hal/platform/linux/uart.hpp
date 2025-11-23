@@ -11,7 +11,7 @@
  * - POSIX termios: Uses standard Linux serial I/O
  * - Compatible API: Same interface as SAME70 UART
  *
- * @note Part of Alloy HAL Platform Abstraction Layer
+ * @note Part of MicroCore HAL Platform Abstraction Layer
  * @see openspec/changes/platform-abstraction/specs/platform-interface-layer/spec.md
  */
 

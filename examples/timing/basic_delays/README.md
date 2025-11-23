@@ -4,7 +4,7 @@ Demonstrates accurate millisecond and microsecond delays using the SysTick timer
 
 ## Overview
 
-This example showcases the fundamental timing capabilities of the Alloy HAL framework:
+This example showcases the fundamental timing capabilities of the MicroCore HAL framework:
 - **Millisecond delays** - Human-visible timing (LED blink patterns)
 - **Microsecond delays** - High-precision timing for protocols and sensors
 - **Timing validation** - Measuring actual delay accuracy

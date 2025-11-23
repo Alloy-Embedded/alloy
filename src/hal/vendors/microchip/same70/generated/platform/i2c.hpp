@@ -26,7 +26,7 @@
  * Generator: i2c_generator.py
  * Generated:
  *
- * @note Part of Alloy HAL Vendor Layer
+ * @note Part of MicroCore HAL Vendor Layer
  * @see docs/codegen/TEMPLATE_CONVENTIONS.md
  */
 

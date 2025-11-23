@@ -2,7 +2,7 @@
 
 ## Overview
 
-This example demonstrates the **power of the Alloy HAL abstraction** - a single source file that compiles and runs on multiple microcontroller architectures without modification.
+This example demonstrates the **power of the MicroCore HAL abstraction** - a single source file that compiles and runs on multiple microcontroller architectures without modification.
 
 ## Supported Boards
 

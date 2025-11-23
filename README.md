@@ -20,11 +20,11 @@
 
 ## 🎯 Vision
 
-Alloy is a C++20 framework designed to make embedded systems development **powerful, flexible, and radically easy to use**. We believe developers should spend their time solving domain problems, not fighting build systems or deciphering complex APIs.
+MicroCore is a C++20 framework designed to make embedded systems development **powerful, flexible, and radically easy to use**. We believe developers should spend their time solving domain problems, not fighting build systems or deciphering complex APIs.
 
-### Why "Alloy"?
+### Why "MicroCore"?
 
-Like a metal alloy combines different elements to create something stronger than its parts, **Alloy** combines:
+**MicroCore** represents the essential core of modern embedded development, combining:
 - Modern C++20 (Concepts, Ranges, constexpr)
 - Embedded systems expertise
 - Exceptional developer experience (DX)
@@ -493,7 +493,7 @@ This table shows the implementation status of peripheral drivers (hardware polic
 
 ## 🚀 Quick Start
 
-> **Note**: Alloy is currently in **Phase 0 (Foundation)**. The API shown below represents our design vision and is not yet fully implemented.
+> **Note**: MicroCore is currently in **Phase 0 (Foundation)**. The API shown below represents our design vision and is not yet fully implemented.
 
 ### Prerequisites
 
@@ -530,10 +530,10 @@ int main() {
 cmake_minimum_required(VERSION 3.25)
 
 # Select your board
-set(ALLOY_BOARD "rp_pico")
+set(MICROCORE_BOARD "nucleo_f401re")
 
-# Include Alloy framework
-add_subdirectory(external/alloy)
+# Include MicroCore framework
+add_subdirectory(external/microcore)
 
 project(blinky CXX)
 
@@ -545,7 +545,7 @@ target_link_libraries(blinky PRIVATE ucore::hal::gpio)
 
 ## 🏛️ Architecture Overview
 
-Alloy uses a **5-layer architecture** with C++20 concepts for interface validation:
+MicroCore uses a **5-layer architecture** with C++20 concepts for interface validation:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -689,11 +689,11 @@ alloy/
 
 ## 🤝 Contributing
 
-Alloy is in **active development** (Phase 0). Contributions are welcome!
+MicroCore is in **active development** (Phase 0). Contributions are welcome!
 
 ### How to Contribute
 
-1. Check [open issues](https://github.com/alloy-embedded/alloy/issues)
+1. Check [open issues](https://github.com/microcore-embedded/microcore/issues)
 2. Read our [Architecture](architecture.md) and [Decisions](decisions.md)
 3. Fork the repo and create a feature branch
 4. Follow our [naming conventions](decisions.md#adr-011-naming-conventions-snake_case)
@@ -746,7 +746,7 @@ See [ADR-011](decisions.md#adr-011-naming-conventions-snake_case) for complete c
 
 ## 📜 License
 
-Alloy is released under the **MIT License**. See [LICENSE](LICENSE) for details.
+MicroCore is released under the **MIT License**. See [LICENSE](LICENSE) for details.
 
 ---
 

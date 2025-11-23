@@ -4,7 +4,7 @@
 #include <concepts>
 #include <type_traits>
 
-/// Core concepts for Alloy framework
+/// Core concepts for MicroCore framework
 ///
 /// Defines utility concepts used for template constraints and validation.
 

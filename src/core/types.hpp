@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 
-/// Core types for Alloy framework
+/// Core types for MicroCore framework
 ///
 /// Defines fundamental type aliases and constants used throughout the framework.
 

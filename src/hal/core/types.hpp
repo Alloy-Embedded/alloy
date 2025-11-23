@@ -10,7 +10,7 @@
  * - Zero overhead: Uses enums and type aliases, no virtual functions
  * - Type-safe: Strong typing prevents errors (e.g., can't pass Parity to setBaudrate)
  *
- * @note Part of Alloy HAL Platform Abstraction Layer
+ * @note Part of MicroCore HAL Platform Abstraction Layer
  * @see openspec/changes/platform-abstraction/specs/platform-interface-layer/spec.md
  */
 

@@ -5,7 +5,7 @@
  * Provides platform-specific watchdog control using Hardware Policy pattern.
  * Supports both WDT (standard watchdog) and RSWDT (reinforced watchdog).
  *
- * @note Part of Alloy HAL Vendor Layer
+ * @note Part of MicroCore HAL Vendor Layer
  */
 
 #pragma once

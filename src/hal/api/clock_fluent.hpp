@@ -5,7 +5,7 @@
  * Provides chainable builder pattern for clock configuration.
  * Platform-agnostic API.
  *
- * @note Part of Alloy HAL API Layer
+ * @note Part of MicroCore HAL API Layer
  */
 
 #pragma once

@@ -7,7 +7,7 @@
  *
  * Inherits from GpioBase via CRTP pattern for zero-overhead code reuse.
  *
- * @note Part of Alloy HAL API Layer
+ * @note Part of MicroCore HAL API Layer
  * @note Phase 1.7: Refactored to use CRTP (library-quality-improvements)
  */
 

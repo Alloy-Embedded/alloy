@@ -26,7 +26,7 @@
  * Generator: generate_platform_clock.py
  * Generated:
  *
- * @note Part of Alloy HAL Platform Abstraction Layer
+ * @note Part of MicroCore HAL Platform Abstraction Layer
  */
 
 #pragma once

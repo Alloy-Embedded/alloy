@@ -5,7 +5,7 @@
  * Provides one-liner setup and common presets for PWM channels.
  * Simple API is designed for common use cases like LED dimming and motor control.
  *
- * @note Part of Alloy HAL API Layer
+ * @note Part of MicroCore HAL API Layer
  */
 
 #pragma once

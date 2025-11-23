@@ -8,7 +8,7 @@
  * - Interrupt priority configuration
  * - Interrupt pending/active status
  *
- * @note Part of Alloy HAL Platform Abstraction Layer
+ * @note Part of MicroCore HAL Platform Abstraction Layer
  */
 
 #pragma once

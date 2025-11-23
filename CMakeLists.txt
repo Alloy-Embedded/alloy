@@ -56,6 +56,111 @@ include(board_flags)
 include(flash_targets)
 include(memory_analysis)
 
+# ============================================================================
+# Board-to-Platform Validation
+# ============================================================================
+# Validates that board and platform combinations are correct to prevent
+# build errors from incompatible configurations.
+#
+# This table defines valid board → platform mappings.
+# If MICROCORE_PLATFORM is not set, it will be auto-detected.
+# If it IS set but doesn't match the board, emit a FATAL_ERROR.
+
+set(MICROCORE_BOARD_PLATFORM_MAP
+    "nucleo_f401re:stm32f4"
+    "nucleo_f722ze:stm32f7"
+    "nucleo_g071rb:stm32g0"
+    "nucleo_g0b1re:stm32g0"
+    "same70_xplained:same70"
+    "same70_xpld:same70"
+    "bluepill:stm32f1"
+    "stm32f407vg:stm32f4"
+    "esp32_devkit:esp32"
+    "arduino_zero:samd21"
+    "rp_pico:rp2040"
+    "rp2040_zero:rp2040"
+    "host:linux"
+)
+
+function(validate_board_platform board_name)
+    # Find the expected platform for this board
+    set(expected_platform "")
+    foreach(mapping ${MICROCORE_BOARD_PLATFORM_MAP})
+        string(REGEX MATCH "^${board_name}:(.+)$" match "${mapping}")
+        if(match)
+            set(expected_platform "${CMAKE_MATCH_1}")
+            break()
+        endif()
+    endforeach()
+
+    if(expected_platform STREQUAL "")
+        message(FATAL_ERROR
+            "\n"
+            "===========================================================\n"
+            "❌ ERROR: Unknown board '${board_name}'\n"
+            "===========================================================\n"
+            "\n"
+            "The board '${board_name}' is not recognized.\n"
+            "\n"
+            "Supported boards:\n"
+            "  - nucleo_f401re    (STM32F401RE Cortex-M4 84MHz)\n"
+            "  - nucleo_f722ze    (STM32F722ZE Cortex-M7 216MHz)\n"
+            "  - nucleo_g071rb    (STM32G071RB Cortex-M0+ 64MHz)\n"
+            "  - nucleo_g0b1re    (STM32G0B1RE Cortex-M0+ 64MHz)\n"
+            "  - same70_xplained  (ATSAME70Q21 Cortex-M7 300MHz)\n"
+            "  - host             (Native host platform for testing)\n"
+            "\n"
+            "Usage:\n"
+            "  cmake -DMICROCORE_BOARD=nucleo_f401re ..\n"
+            "  ./ucore build nucleo_f401re blink\n"
+            "\n"
+            "===========================================================\n"
+        )
+    endif()
+
+    # If MICROCORE_PLATFORM is explicitly set, validate it matches
+    if(NOT "${MICROCORE_PLATFORM}" STREQUAL "")
+        if(NOT "${MICROCORE_PLATFORM}" STREQUAL "${expected_platform}")
+            message(FATAL_ERROR
+                "\n"
+                "===========================================================\n"
+                "❌ ERROR: Invalid board/platform combination\n"
+                "===========================================================\n"
+                "\n"
+                "Board:    ${board_name}\n"
+                "Expected: ${expected_platform} platform\n"
+                "Got:      ${MICROCORE_PLATFORM} platform\n"
+                "\n"
+                "The platform '${MICROCORE_PLATFORM}' is not compatible\n"
+                "with board '${board_name}'.\n"
+                "\n"
+                "Valid combinations:\n"
+                "  nucleo_f401re    → stm32f4\n"
+                "  nucleo_f722ze    → stm32f7\n"
+                "  nucleo_g071rb    → stm32g0\n"
+                "  nucleo_g0b1re    → stm32g0\n"
+                "  same70_xplained  → same70\n"
+                "  host             → linux\n"
+                "\n"
+                "Solution:\n"
+                "  1. Remove -DMICROCORE_PLATFORM= (auto-detect)\n"
+                "  2. Or set: -DMICROCORE_PLATFORM=${expected_platform}\n"
+                "\n"
+                "===========================================================\n"
+            )
+        endif()
+    else()
+        # Auto-detect platform from board
+        set(MICROCORE_PLATFORM "${expected_platform}" CACHE STRING "HAL platform (auto-detected)" FORCE)
+        message(STATUS "Platform auto-detected: ${expected_platform} (from board: ${board_name})")
+    endif()
+endfunction()
+
+# Validate board/platform if board is specified
+if(NOT "${MICROCORE_BOARD}" STREQUAL "")
+    validate_board_platform("${MICROCORE_BOARD}")
+endif()
+
 # Build options
 option(MICROCORE_BUILD_TESTS "Build unit tests" ON)
 option(MICROCORE_MINIMAL_BUILD "Optimize for size (enables -Os, -flto, --gc-sections)" OFF)

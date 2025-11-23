@@ -39,8 +39,26 @@ void init(ClockPreset preset) {
     led0_instance.setDirection(PinDirection::Output);
     led0_instance.set();  // OFF (active-low)
 
-    // Initialize Clock based on preset
-    ClockConfig clock_config;
+    /**
+     * SAME70 Clock Configuration
+     *
+     * Crystal: 12 MHz (external XTAL on board)
+     * Target: 300 MHz CPU clock (PLLA output)
+     * Master Clock (MCK): 150 MHz (PLLA/2)
+     *
+     * PLL Configuration:
+     *   Input:  12 MHz crystal
+     *   PLLA:   12 MHz × (24+1) / 1 = 300 MHz
+     *   MCK:    300 MHz / 2 = 150 MHz
+     *
+     * Flash Wait States: Configured automatically by hardware for 150 MHz
+     * Per ATSAME70 datasheet Table 59-50:
+     *   - 150 MHz @ 3.3V requires 6 wait states
+     *
+     * Performance: 300 MHz core, 150 MHz bus
+     * Note: MCK limited to 150 MHz per datasheet, but PLLA can run at 300 MHz
+     */
+    ClockConfig clock_config = Clock::CLOCK_CONFIG_HIGH_PERFORMANCE;  // 300 MHz PLLA -> 150 MHz MCK
     auto clock_result = Clock::initialize(clock_config);
     if (!clock_result.is_ok()) {
         // Clock failed - blink fast forever

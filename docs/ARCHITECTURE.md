@@ -23,7 +23,7 @@
 
 ## Overview
 
-Alloy is a modern C++20 framework for bare-metal embedded systems designed around three core pillars:
+MicroCore is a modern C++20 framework for bare-metal embedded systems designed around three core pillars:
 
 1. **Zero Runtime Overhead** - All abstraction happens at compile-time
 2. **Type Safety** - C++20 concepts validate interfaces at compile-time
@@ -503,7 +503,7 @@ class Gpio {
 4. **Testability** - Easy to mock by swapping policy
 5. **Binary Size** - Only code you use is compiled in
 
-### Hardware Policy Pattern in Alloy
+### Hardware Policy Pattern in MicroCore
 
 ```cpp
 // 1. Define hardware policy (auto-generated)
@@ -729,7 +729,7 @@ cmake --build build --target flash
 
 ### Result<T, E> Pattern
 
-Alloy uses Rust-inspired `Result<T, E>` for all fallible operations:
+MicroCore uses Rust-inspired `Result<T, E>` for all fallible operations:
 
 ```cpp
 template <typename T, typename E>
@@ -800,7 +800,7 @@ enum class ErrorCode {
 
 ## Conclusion
 
-Alloy's architecture achieves:
+MicroCore's architecture achieves:
 
 1. **✅ Zero Overhead** - All abstraction at compile-time
 2. **✅ Type Safety** - C++20 concepts validate everything

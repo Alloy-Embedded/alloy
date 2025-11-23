@@ -5,7 +5,7 @@
  * Provides timing and delay functions using SysTick timer.
  * Platform-agnostic API using template-based Platform Layer.
  *
- * @note Part of Alloy HAL API Layer
+ * @note Part of MicroCore HAL API Layer
  */
 
 #pragma once

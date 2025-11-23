@@ -208,4 +208,4 @@ Logger::add_sink(&memory_sink);
 
 ## License
 
-Part of the Alloy HAL Framework.
+Part of the MicroCore HAL Framework.

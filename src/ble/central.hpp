@@ -9,7 +9,7 @@
 using ucore::core::u16;
 using ucore::core::u8;
 
-/// BLE Central (Client/Scanner) API for Alloy framework
+/// BLE Central (Client/Scanner) API for MicroCore framework
 ///
 /// Provides a C++ abstraction for BLE GATT client operations including:
 /// - Device scanning and discovery

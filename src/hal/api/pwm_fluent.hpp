@@ -4,7 +4,7 @@
  *
  * Provides chainable builder pattern for readable PWM configuration.
  *
- * @note Part of Alloy HAL API Layer
+ * @note Part of MicroCore HAL API Layer
  */
 
 #pragma once

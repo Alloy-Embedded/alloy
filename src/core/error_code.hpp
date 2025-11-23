@@ -3,7 +3,7 @@
 
 #include "types.hpp"
 
-/// Error code definitions for Alloy framework
+/// Error code definitions for MicroCore framework
 
 namespace ucore::core {
 

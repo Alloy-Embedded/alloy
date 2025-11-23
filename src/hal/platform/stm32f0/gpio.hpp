@@ -17,7 +17,7 @@
  * Auto-generated from: stm32f030c6
  * Generator: generate_platform_gpio.py
  *
- * @note Part of Alloy HAL Platform Abstraction Layer
+ * @note Part of MicroCore HAL Platform Abstraction Layer
  */
 
 #pragma once

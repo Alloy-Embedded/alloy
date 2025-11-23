@@ -17,7 +17,7 @@
  * Auto-generated from: atsamv71n19b
  * Generator: generate_platform_gpio.py
  *
- * @note Part of Alloy HAL Platform Abstraction Layer
+ * @note Part of MicroCore HAL Platform Abstraction Layer
  */
 
 #pragma once

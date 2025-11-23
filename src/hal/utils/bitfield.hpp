@@ -1,5 +1,5 @@
 /// Auto-generated BitField Template Utilities
-/// Part of Alloy HAL Code Generator
+/// Part of MicroCore HAL Code Generator
 ///
 /// This file provides zero-overhead bit field manipulation templates
 /// using modern C++20 features. All operations are constexpr and inline,

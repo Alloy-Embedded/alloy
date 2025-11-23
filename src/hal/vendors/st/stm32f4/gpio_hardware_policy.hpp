@@ -16,7 +16,7 @@
  * Generator: hardware_policy_generator.py
  * Generated: 2025-11-14 20:03:58
  *
- * @note Part of Alloy HAL Vendor Layer
+ * @note Part of MicroCore HAL Vendor Layer
  * @note See ARCHITECTURE.md for Policy-Based Design rationale
  */
 

@@ -26,7 +26,7 @@
  * Generator: uart_generator.py
  * Generated: 2025-11-21 08:15:21
  *
- * @note Part of Alloy HAL Vendor Layer
+ * @note Part of MicroCore HAL Vendor Layer
  * @see docs/codegen/TEMPLATE_CONVENTIONS.md
  */
 

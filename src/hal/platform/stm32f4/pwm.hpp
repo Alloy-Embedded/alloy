@@ -16,7 +16,7 @@
  * Generator: generate_platform_pwm.py
  * Generated: 2025-11-07 17:51:30
  *
- * @note Part of Alloy HAL Platform Abstraction Layer
+ * @note Part of MicroCore HAL Platform Abstraction Layer
  */
 
 #pragma once

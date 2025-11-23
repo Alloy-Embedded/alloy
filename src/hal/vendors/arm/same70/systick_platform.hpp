@@ -10,7 +10,7 @@
  * - Provides timing methods (micros, millis)
  * - Uses Hardware Policy for register access
  *
- * @note Part of Alloy HAL Platform Layer
+ * @note Part of MicroCore HAL Platform Layer
  */
 
 #pragma once

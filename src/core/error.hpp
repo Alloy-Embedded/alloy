@@ -3,7 +3,7 @@
 
 #include "error_code.hpp"
 
-/// Error handling for Alloy framework
+/// Error handling for MicroCore framework
 ///
 /// This file only contains the ErrorCode enum. For the Result<T,E> type,
 /// see result.hpp which provides a full implementation with two template

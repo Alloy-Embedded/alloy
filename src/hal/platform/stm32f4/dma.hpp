@@ -17,7 +17,7 @@
  * Generator: generate_platform_dma.py
  * Generated: 2025-11-07 18:04:03
  *
- * @note Part of Alloy HAL Platform Abstraction Layer
+ * @note Part of MicroCore HAL Platform Abstraction Layer
  */
 
 #pragma once

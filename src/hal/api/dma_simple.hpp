@@ -4,7 +4,7 @@
  *
  * Provides one-liner setup for common DMA transfer patterns.
  *
- * @note Part of Alloy HAL API Layer
+ * @note Part of MicroCore HAL API Layer
  */
 
 #pragma once

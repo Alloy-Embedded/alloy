@@ -26,7 +26,7 @@
  * Generator: gpio_template_generator.py
  * Generated: 2025-11-20 08:23:20
  *
- * @note Part of Alloy HAL Vendor Layer
+ * @note Part of MicroCore HAL Vendor Layer
  * @see docs/codegen/TEMPLATE_CONVENTIONS.md
  */
 

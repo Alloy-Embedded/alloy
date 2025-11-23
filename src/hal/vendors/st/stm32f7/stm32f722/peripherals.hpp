@@ -14,7 +14,7 @@
  *
  * Reference: STM32F722xx datasheet (DS11853 Rev 8)
  *
- * @note Part of Alloy HAL Vendor Layer
+ * @note Part of MicroCore HAL Vendor Layer
  */
 
 #pragma once
