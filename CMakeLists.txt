@@ -436,6 +436,12 @@ if(MICROCORE_BUILD_TESTS AND MICROCORE_BOARD STREQUAL "host")
     add_subdirectory(tests)
 endif()
 
+# Benchmarks (embedded targets only)
+option(MICROCORE_BUILD_BENCHMARKS "Build performance benchmarks" OFF)
+if(MICROCORE_BUILD_BENCHMARKS)
+    add_subdirectory(benchmarks)
+endif()
+
 # Export compile commands for IDEs
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
