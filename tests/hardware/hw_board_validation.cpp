@@ -14,8 +14,8 @@
  * @note This test is board-specific and tests actual board features
  */
 
-#include "core/result.hpp"
 #include "core/error.hpp"
+#include "core/result.hpp"
 
 using namespace ucore::core;
 using namespace ucore::hal;
@@ -25,92 +25,68 @@ using namespace ucore::hal;
 // ==============================================================================
 
 #if defined(ALLOY_BOARD_NUCLEO_G0B1RE)
-    #define BOARD_NAME "Nucleo-G0B1RE"
+    #define BOARD_NAME    "Nucleo-G0B1RE"
     #define PLATFORM_NAME "STM32G0"
 
     #include "hal/vendors/st/stm32g0/clock_platform.hpp"
     #include "hal/vendors/st/stm32g0/gpio.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32g0::Stm32g0Clock<
-        ucore::hal::st::stm32g0::ExampleG0ClockConfig
-    >;
+using ClockPlatform =
+    ucore::hal::st::stm32g0::Stm32g0Clock<ucore::hal::st::stm32g0::ExampleG0ClockConfig>;
 
-    // Nucleo-G0B1RE has 1 LED (PA5 - Green) and 1 Button (PC13)
-    using LedGreen = ucore::hal::st::stm32g0::GpioPin<
-        ucore::hal::st::stm32g0::gpio::PortA, 5
-    >;
-    using ButtonUser = ucore::hal::st::stm32g0::GpioPin<
-        ucore::hal::st::stm32g0::gpio::PortC, 13
-    >;
+// Nucleo-G0B1RE has 1 LED (PA5 - Green) and 1 Button (PC13)
+using LedGreen = ucore::hal::st::stm32g0::GpioPin<ucore::hal::st::stm32g0::gpio::PortA, 5>;
+using ButtonUser = ucore::hal::st::stm32g0::GpioPin<ucore::hal::st::stm32g0::gpio::PortC, 13>;
 
-    constexpr int LED_COUNT = 1;
+constexpr int LED_COUNT = 1;
 
 #elif defined(ALLOY_BOARD_NUCLEO_G071RB)
-    #define BOARD_NAME "Nucleo-G071RB"
+    #define BOARD_NAME    "Nucleo-G071RB"
     #define PLATFORM_NAME "STM32G0"
 
     #include "hal/vendors/st/stm32g0/clock_platform.hpp"
     #include "hal/vendors/st/stm32g0/gpio.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32g0::Stm32g0Clock<
-        ucore::hal::st::stm32g0::ExampleG0ClockConfig
-    >;
+using ClockPlatform =
+    ucore::hal::st::stm32g0::Stm32g0Clock<ucore::hal::st::stm32g0::ExampleG0ClockConfig>;
 
-    using LedGreen = ucore::hal::st::stm32g0::GpioPin<
-        ucore::hal::st::stm32g0::gpio::PortA, 5
-    >;
-    using ButtonUser = ucore::hal::st::stm32g0::GpioPin<
-        ucore::hal::st::stm32g0::gpio::PortC, 13
-    >;
+using LedGreen = ucore::hal::st::stm32g0::GpioPin<ucore::hal::st::stm32g0::gpio::PortA, 5>;
+using ButtonUser = ucore::hal::st::stm32g0::GpioPin<ucore::hal::st::stm32g0::gpio::PortC, 13>;
 
-    constexpr int LED_COUNT = 1;
+constexpr int LED_COUNT = 1;
 
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
-    #define BOARD_NAME "Nucleo-F401RE"
+    #define BOARD_NAME    "Nucleo-F401RE"
     #define PLATFORM_NAME "STM32F4"
 
     #include "hal/vendors/st/stm32f4/clock_platform.hpp"
     #include "hal/vendors/st/stm32f4/gpio.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
-        ucore::hal::st::stm32f4::ExampleF4ClockConfig
-    >;
+using ClockPlatform =
+    ucore::hal::st::stm32f4::Stm32f4Clock<ucore::hal::st::stm32f4::ExampleF4ClockConfig>;
 
-    using LedGreen = ucore::hal::st::stm32f4::GpioPin<
-        ucore::hal::st::stm32f4::gpio::PortA, 5
-    >;
-    using ButtonUser = ucore::hal::st::stm32f4::GpioPin<
-        ucore::hal::st::stm32f4::gpio::PortC, 13
-    >;
+using LedGreen = ucore::hal::st::stm32f4::GpioPin<ucore::hal::st::stm32f4::gpio::PortA, 5>;
+using ButtonUser = ucore::hal::st::stm32f4::GpioPin<ucore::hal::st::stm32f4::gpio::PortC, 13>;
 
-    constexpr int LED_COUNT = 1;
+constexpr int LED_COUNT = 1;
 
 #elif defined(ALLOY_BOARD_NUCLEO_F722ZE)
-    #define BOARD_NAME "Nucleo-F722ZE"
+    #define BOARD_NAME    "Nucleo-F722ZE"
     #define PLATFORM_NAME "STM32F7"
 
     #include "hal/vendors/st/stm32f7/clock_platform.hpp"
     #include "hal/vendors/st/stm32f7/gpio.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32f7::Stm32f7Clock<
-        ucore::hal::st::stm32f7::ExampleF7ClockConfig
-    >;
+using ClockPlatform =
+    ucore::hal::st::stm32f7::Stm32f7Clock<ucore::hal::st::stm32f7::ExampleF7ClockConfig>;
 
-    // Nucleo-F722ZE has 3 LEDs
-    using LedGreen  = ucore::hal::st::stm32f7::GpioPin<
-        ucore::hal::st::stm32f7::gpio::PortB, 0
-    >;
-    using LedBlue   = ucore::hal::st::stm32f7::GpioPin<
-        ucore::hal::st::stm32f7::gpio::PortB, 7
-    >;
-    using LedRed    = ucore::hal::st::stm32f7::GpioPin<
-        ucore::hal::st::stm32f7::gpio::PortB, 14
-    >;
-    using ButtonUser = ucore::hal::st::stm32f7::GpioPin<
-        ucore::hal::st::stm32f7::gpio::PortC, 13
-    >;
+// Nucleo-F722ZE has 3 LEDs
+using LedGreen = ucore::hal::st::stm32f7::GpioPin<ucore::hal::st::stm32f7::gpio::PortB, 0>;
+using LedBlue = ucore::hal::st::stm32f7::GpioPin<ucore::hal::st::stm32f7::gpio::PortB, 7>;
+using LedRed = ucore::hal::st::stm32f7::GpioPin<ucore::hal::st::stm32f7::gpio::PortB, 14>;
+using ButtonUser = ucore::hal::st::stm32f7::GpioPin<ucore::hal::st::stm32f7::gpio::PortC, 13>;
 
-    constexpr int LED_COUNT = 3;
+constexpr int LED_COUNT = 3;
 
 #else
     #error "Unsupported board for hardware board validation test"
@@ -121,7 +97,7 @@ using namespace ucore::hal;
 // ==============================================================================
 
 inline void delay_cycles(volatile uint32_t cycles) {
-    while(cycles--) {
+    while (cycles--) {
         __asm__("nop");
     }
 }
@@ -130,7 +106,7 @@ void delay_ms(uint32_t ms) {
     uint32_t freq = ClockPlatform::get_system_clock_hz();
     uint32_t cycles_per_ms = freq / 1000 / 4;
 
-    for(uint32_t i = 0; i < ms; i++) {
+    for (uint32_t i = 0; i < ms; i++) {
         delay_cycles(cycles_per_ms);
     }
 }
@@ -146,12 +122,12 @@ LedRed led_red;
 #endif
 ButtonUser button;
 
-#define HW_ASSERT(condition) \
-    if (!(condition)) { \
-        while(1) { \
+#define HW_ASSERT(condition)    \
+    if (!(condition)) {         \
+        while (1) {             \
             led_green.toggle(); \
-            delay_ms(50); \
-        } \
+            delay_ms(50);       \
+        }                       \
     }
 
 // ==============================================================================
@@ -224,7 +200,7 @@ bool test_button() {
 void led_sequence_pattern() {
 #if LED_COUNT >= 3
     // 3-LED chase pattern
-    for(int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
         led_green.set();
         delay_ms(150);
         led_green.clear();
@@ -239,7 +215,7 @@ void led_sequence_pattern() {
     }
 #else
     // Single LED blink pattern
-    for(int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i++) {
         led_green.set();
         delay_ms(200);
         led_green.clear();
@@ -292,7 +268,7 @@ int main() {
      * This validates button input and LED output simultaneously
      */
 
-    while(1) {
+    while (1) {
         auto button_state = button.read();
 
         if (button_state.is_ok()) {
@@ -315,7 +291,7 @@ int main() {
             }
         }
 
-        delay_ms(10); // Debounce delay
+        delay_ms(10);  // Debounce delay
     }
 
     return 0;

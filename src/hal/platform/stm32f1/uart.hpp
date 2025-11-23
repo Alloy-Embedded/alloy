@@ -3,7 +3,7 @@
  * @brief STM32F1 Platform-Specific UART Type Aliases
  *
  * STM32F1 (Blue Pill) UART/USART integration with policy-based design.
- * 
+ *
  * Clock Configuration (STM32F103):
  * - APB2 (USART1): 72 MHz
  * - APB1 (USART2/3): 36 MHz
@@ -13,11 +13,12 @@
 
 #pragma once
 
-#include "core/types.hpp"
-#include "hal/api/uart_simple.hpp"
-#include "hal/api/uart_fluent.hpp"
 #include "hal/api/uart_expert.hpp"
+#include "hal/api/uart_fluent.hpp"
+#include "hal/api/uart_simple.hpp"
 #include "hal/vendors/st/stm32f1/usart_hardware_policy.hpp"
+
+#include "core/types.hpp"
 
 namespace ucore::hal::stm32f1 {
 

@@ -1,8 +1,10 @@
 /// Alloy RTOS - Tickless Idle Implementation
 
 #include "rtos/tickless_idle.hpp"
-#include "rtos/scheduler.hpp"
+
 #include "hal/interface/systick.hpp"
+
+#include "rtos/scheduler.hpp"
 
 namespace ucore::rtos {
 
@@ -63,25 +65,20 @@ bool TicklessIdle::is_enabled() noexcept {
     return config_.enabled;
 }
 
-core::Result<void, RTOSError> TicklessIdle::configure(
-    SleepMode mode,
-    core::u32 min_sleep_us
-) noexcept {
+core::Result<void, RTOSError> TicklessIdle::configure(SleepMode mode,
+                                                      core::u32 min_sleep_us) noexcept {
     config_.mode = mode;
     config_.min_sleep_duration_us = min_sleep_us;
     return core::Ok();
 }
 
 core::Result<void, RTOSError> TicklessIdle::set_max_sleep_duration(
-    core::u32 max_sleep_us
-) noexcept {
+    core::u32 max_sleep_us) noexcept {
     config_.max_sleep_duration_us = max_sleep_us;
     return core::Ok();
 }
 
-core::Result<void, RTOSError> TicklessIdle::set_wakeup_latency(
-    core::u32 latency_us
-) noexcept {
+core::Result<void, RTOSError> TicklessIdle::set_wakeup_latency(core::u32 latency_us) noexcept {
     config_.wakeup_latency_us = latency_us;
     return core::Ok();
 }
@@ -134,7 +131,8 @@ core::u32 TicklessIdle::enter_sleep() noexcept {
     power_stats_.sleep_count++;
     power_stats_.wakeup_count++;
 
-    if (actual_sleep < power_stats_.min_sleep_duration_us || power_stats_.min_sleep_duration_us == 0) {
+    if (actual_sleep < power_stats_.min_sleep_duration_us ||
+        power_stats_.min_sleep_duration_us == 0) {
         power_stats_.min_sleep_duration_us = actual_sleep;
     }
 

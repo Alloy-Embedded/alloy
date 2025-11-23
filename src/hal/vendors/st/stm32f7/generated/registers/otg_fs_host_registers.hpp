@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::otg_fs_host {
 
 /// OTG_FS_HOST Register Structure
 struct OTG_FS_HOST_Registers {
-
     /// OTG_FS host configuration register (OTG_FS_HCFG)
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -34,7 +33,7 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00003FFF
     /// Access: read-only
     volatile uint32_t OTG_FS_HFNUM;
-    uint8_t RESERVED_000C[4]; ///< Reserved
+    uint8_t RESERVED_000C[4];  ///< Reserved
 
     /// OTG_FS_Host periodic transmit FIFO/queue status register (OTG_FS_HPTXSTS)
     /// Offset: 0x0010
@@ -52,20 +51,20 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HAINTMSK;
-    uint8_t RESERVED_001C[36]; ///< Reserved
+    uint8_t RESERVED_001C[36];  ///< Reserved
 
     /// OTG_FS host port control and status register (OTG_FS_HPRT)
     /// Offset: 0x0040
     /// Reset value: 0x00000000
     volatile uint32_t OTG_FS_HPRT;
-    uint8_t RESERVED_0044[188]; ///< Reserved
+    uint8_t RESERVED_0044[188];  ///< Reserved
 
     /// OTG_FS host channel-0 characteristics register (OTG_FS_HCCHAR0)
     /// Offset: 0x0100
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCCHAR0;
-    uint8_t RESERVED_0104[4]; ///< Reserved
+    uint8_t RESERVED_0104[4];  ///< Reserved
 
     /// OTG_FS host channel-0 interrupt register (OTG_FS_HCINT0)
     /// Offset: 0x0108
@@ -84,14 +83,14 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCTSIZ0;
-    uint8_t RESERVED_0114[12]; ///< Reserved
+    uint8_t RESERVED_0114[12];  ///< Reserved
 
     /// OTG_FS host channel-1 characteristics register (OTG_FS_HCCHAR1)
     /// Offset: 0x0120
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCCHAR1;
-    uint8_t RESERVED_0124[4]; ///< Reserved
+    uint8_t RESERVED_0124[4];  ///< Reserved
 
     /// OTG_FS host channel-1 interrupt register (OTG_FS_HCINT1)
     /// Offset: 0x0128
@@ -110,14 +109,14 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCTSIZ1;
-    uint8_t RESERVED_0134[12]; ///< Reserved
+    uint8_t RESERVED_0134[12];  ///< Reserved
 
     /// OTG_FS host channel-2 characteristics register (OTG_FS_HCCHAR2)
     /// Offset: 0x0140
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCCHAR2;
-    uint8_t RESERVED_0144[4]; ///< Reserved
+    uint8_t RESERVED_0144[4];  ///< Reserved
 
     /// OTG_FS host channel-2 interrupt register (OTG_FS_HCINT2)
     /// Offset: 0x0148
@@ -136,14 +135,14 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCTSIZ2;
-    uint8_t RESERVED_0154[12]; ///< Reserved
+    uint8_t RESERVED_0154[12];  ///< Reserved
 
     /// OTG_FS host channel-3 characteristics register (OTG_FS_HCCHAR3)
     /// Offset: 0x0160
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCCHAR3;
-    uint8_t RESERVED_0164[4]; ///< Reserved
+    uint8_t RESERVED_0164[4];  ///< Reserved
 
     /// OTG_FS host channel-3 interrupt register (OTG_FS_HCINT3)
     /// Offset: 0x0168
@@ -162,14 +161,14 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCTSIZ3;
-    uint8_t RESERVED_0174[12]; ///< Reserved
+    uint8_t RESERVED_0174[12];  ///< Reserved
 
     /// OTG_FS host channel-4 characteristics register (OTG_FS_HCCHAR4)
     /// Offset: 0x0180
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCCHAR4;
-    uint8_t RESERVED_0184[4]; ///< Reserved
+    uint8_t RESERVED_0184[4];  ///< Reserved
 
     /// OTG_FS host channel-4 interrupt register (OTG_FS_HCINT4)
     /// Offset: 0x0188
@@ -188,14 +187,14 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCTSIZ4;
-    uint8_t RESERVED_0194[12]; ///< Reserved
+    uint8_t RESERVED_0194[12];  ///< Reserved
 
     /// OTG_FS host channel-5 characteristics register (OTG_FS_HCCHAR5)
     /// Offset: 0x01A0
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCCHAR5;
-    uint8_t RESERVED_01A4[4]; ///< Reserved
+    uint8_t RESERVED_01A4[4];  ///< Reserved
 
     /// OTG_FS host channel-5 interrupt register (OTG_FS_HCINT5)
     /// Offset: 0x01A8
@@ -214,14 +213,14 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCTSIZ5;
-    uint8_t RESERVED_01B4[12]; ///< Reserved
+    uint8_t RESERVED_01B4[12];  ///< Reserved
 
     /// OTG_FS host channel-6 characteristics register (OTG_FS_HCCHAR6)
     /// Offset: 0x01C0
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCCHAR6;
-    uint8_t RESERVED_01C4[4]; ///< Reserved
+    uint8_t RESERVED_01C4[4];  ///< Reserved
 
     /// OTG_FS host channel-6 interrupt register (OTG_FS_HCINT6)
     /// Offset: 0x01C8
@@ -240,14 +239,14 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCTSIZ6;
-    uint8_t RESERVED_01D4[12]; ///< Reserved
+    uint8_t RESERVED_01D4[12];  ///< Reserved
 
     /// OTG_FS host channel-7 characteristics register (OTG_FS_HCCHAR7)
     /// Offset: 0x01E0
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCCHAR7;
-    uint8_t RESERVED_01E4[4]; ///< Reserved
+    uint8_t RESERVED_01E4[4];  ///< Reserved
 
     /// OTG_FS host channel-7 interrupt register (OTG_FS_HCINT7)
     /// Offset: 0x01E8
@@ -266,14 +265,14 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCTSIZ7;
-    uint8_t RESERVED_01F4[12]; ///< Reserved
+    uint8_t RESERVED_01F4[12];  ///< Reserved
 
     /// OTG_FS host channel-8 characteristics register
     /// Offset: 0x0200
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCCHAR8;
-    uint8_t RESERVED_0204[4]; ///< Reserved
+    uint8_t RESERVED_0204[4];  ///< Reserved
 
     /// OTG_FS host channel-8 interrupt register
     /// Offset: 0x0208
@@ -292,14 +291,14 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCTSIZ8;
-    uint8_t RESERVED_0214[12]; ///< Reserved
+    uint8_t RESERVED_0214[12];  ///< Reserved
 
     /// OTG_FS host channel-9 characteristics register
     /// Offset: 0x0220
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCCHAR9;
-    uint8_t RESERVED_0224[4]; ///< Reserved
+    uint8_t RESERVED_0224[4];  ///< Reserved
 
     /// OTG_FS host channel-9 interrupt register
     /// Offset: 0x0228
@@ -318,14 +317,14 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCTSIZ9;
-    uint8_t RESERVED_0234[12]; ///< Reserved
+    uint8_t RESERVED_0234[12];  ///< Reserved
 
     /// OTG_FS host channel-10 characteristics register
     /// Offset: 0x0240
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCCHAR10;
-    uint8_t RESERVED_0244[4]; ///< Reserved
+    uint8_t RESERVED_0244[4];  ///< Reserved
 
     /// OTG_FS host channel-10 interrupt register
     /// Offset: 0x0248
@@ -344,14 +343,14 @@ struct OTG_FS_HOST_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCTSIZ10;
-    uint8_t RESERVED_0254[12]; ///< Reserved
+    uint8_t RESERVED_0254[12];  ///< Reserved
 
     /// OTG_FS host channel-11 characteristics register
     /// Offset: 0x0260
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_FS_HCCHAR11;
-    uint8_t RESERVED_0264[4]; ///< Reserved
+    uint8_t RESERVED_0264[4];  ///< Reserved
 
     /// OTG_FS host channel-11 interrupt register
     /// Offset: 0x0268

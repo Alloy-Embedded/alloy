@@ -17,11 +17,12 @@
 
 #pragma once
 
-#include "core/error_code.hpp"
-#include "core/result.hpp"
 #include "hal/api/gpio_base.hpp"
 #include "hal/api/gpio_simple.hpp"
 #include "hal/types.hpp"
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"
 
 namespace ucore::hal {
 
@@ -61,24 +62,24 @@ struct FluentGpioConfig : public GpioBase<FluentGpioConfig<PinType>> {
     // ========================================================================
 
     // Inherit all common GPIO methods from base
-    using Base::on;              // Turn pin logically ON
-    using Base::off;             // Turn pin logically OFF
-    using Base::toggle;          // Toggle pin state
-    using Base::is_on;           // Check if logically ON
-    using Base::is_off;          // Check if logically OFF
-    using Base::set;             // Set pin physically HIGH
-    using Base::clear;           // Set pin physically LOW
-    using Base::read;            // Read physical pin state
-    using Base::set_direction;   // Set pin direction
-    using Base::set_output;      // Configure as output
-    using Base::set_input;       // Configure as input
-    using Base::set_pull;        // Set pull resistor
-    using Base::set_drive;       // Set drive mode
-    using Base::configure_push_pull_output;
-    using Base::configure_open_drain_output;
-    using Base::configure_input_pullup;
-    using Base::configure_input_pulldown;
+    using Base::clear;  // Set pin physically LOW
     using Base::configure_input_floating;
+    using Base::configure_input_pulldown;
+    using Base::configure_input_pullup;
+    using Base::configure_open_drain_output;
+    using Base::configure_push_pull_output;
+    using Base::is_off;         // Check if logically OFF
+    using Base::is_on;          // Check if logically ON
+    using Base::off;            // Turn pin logically OFF
+    using Base::on;             // Turn pin logically ON
+    using Base::read;           // Read physical pin state
+    using Base::set;            // Set pin physically HIGH
+    using Base::set_direction;  // Set pin direction
+    using Base::set_drive;      // Set drive mode
+    using Base::set_input;      // Configure as input
+    using Base::set_output;     // Configure as output
+    using Base::set_pull;       // Set pull resistor
+    using Base::toggle;         // Toggle pin state
 
     /**
      * @brief Access underlying simple pin
@@ -93,23 +94,17 @@ struct FluentGpioConfig : public GpioBase<FluentGpioConfig<PinType>> {
     /**
      * @brief Turn pin logically ON - implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> on_impl() noexcept {
-        return pin.on();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> on_impl() noexcept { return pin.on(); }
 
     /**
      * @brief Turn pin logically OFF - implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> off_impl() noexcept {
-        return pin.off();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> off_impl() noexcept { return pin.off(); }
 
     /**
      * @brief Toggle pin state - implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> toggle_impl() noexcept {
-        return pin.toggle();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> toggle_impl() noexcept { return pin.toggle(); }
 
     /**
      * @brief Check if pin is logically ON - implementation
@@ -121,16 +116,12 @@ struct FluentGpioConfig : public GpioBase<FluentGpioConfig<PinType>> {
     /**
      * @brief Set pin physically HIGH - implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> set_impl() noexcept {
-        return pin.set();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> set_impl() noexcept { return pin.set(); }
 
     /**
      * @brief Set pin physically LOW - implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> clear_impl() noexcept {
-        return pin.clear();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> clear_impl() noexcept { return pin.clear(); }
 
     /**
      * @brief Read physical pin state - implementation
@@ -142,7 +133,8 @@ struct FluentGpioConfig : public GpioBase<FluentGpioConfig<PinType>> {
     /**
      * @brief Set pin direction - implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> set_direction_impl(PinDirection direction) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> set_direction_impl(
+        PinDirection direction) noexcept {
         return pin.set_direction(direction);
     }
 
@@ -198,7 +190,7 @@ struct FluentGpioConfig : public GpioBase<FluentGpioConfig<PinType>> {
  */
 template <typename PinType>
 class GpioBuilder {
-public:
+   public:
     constexpr GpioBuilder()
         : direction_(PinDirection::Input),
           pull_(PinPull::None),
@@ -390,7 +382,7 @@ public:
         return Ok(std::move(config));
     }
 
-private:
+   private:
     PinDirection direction_;
     PinPull pull_;
     PinDrive drive_;

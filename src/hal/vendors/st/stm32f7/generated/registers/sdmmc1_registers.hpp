@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::sdmmc1 {
 
 /// SDMMC1 Register Structure
 struct SDMMC1_Registers {
-
     /// power control register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -113,14 +112,14 @@ struct SDMMC1_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t MASK;
-    uint8_t RESERVED_0040[8]; ///< Reserved
+    uint8_t RESERVED_0040[8];  ///< Reserved
 
     /// FIFO counter register
     /// Offset: 0x0048
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t FIFOCNT;
-    uint8_t RESERVED_004C[52]; ///< Reserved
+    uint8_t RESERVED_004C[52];  ///< Reserved
 
     /// data FIFO register
     /// Offset: 0x0080

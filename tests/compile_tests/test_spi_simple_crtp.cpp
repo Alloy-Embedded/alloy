@@ -8,11 +8,12 @@
  * @note Part of Phase 1.9.1: Refactor SpiSimple
  */
 
+#include <span>
+
 #include "hal/api/spi_simple.hpp"
-#include "core/types.hpp"
 #include "hal/interface/spi.hpp"
 
-#include <span>
+#include "core/types.hpp"
 
 using namespace ucore::hal;
 using namespace ucore::core;
@@ -76,8 +77,7 @@ void test_simple_spi_tx_inheritance() {
 void test_full_duplex_spi() {
     auto spi = Spi<PeripheralId::SPI0>::quick_setup<MockMosiPin, MockMisoPin, MockSckPin>(
         1000000,  // 1 MHz
-        SpiMode::Mode0
-    );
+        SpiMode::Mode0);
 
     // Verify type
     using ConfigType = decltype(spi);
@@ -89,10 +89,9 @@ void test_full_duplex_spi() {
  * @brief Test TX-only SPI configuration
  */
 void test_tx_only_spi() {
-    auto spi = Spi<PeripheralId::SPI0>::quick_setup_master_tx<MockMosiPin, MockSckPin>(
-        2000000,  // 2 MHz
-        SpiMode::Mode3
-    );
+    auto spi =
+        Spi<PeripheralId::SPI0>::quick_setup_master_tx<MockMosiPin, MockSckPin>(2000000,  // 2 MHz
+                                                                                SpiMode::Mode3);
 
     // Verify type
     using ConfigType = decltype(spi);
@@ -110,10 +109,7 @@ void test_transfer_operations() {
     u8 rx_data[3] = {0};
 
     // Test full-duplex transfer
-    [[maybe_unused]] auto transfer_result = spi.transfer(
-        std::span(tx_data),
-        std::span(rx_data)
-    );
+    [[maybe_unused]] auto transfer_result = spi.transfer(std::span(tx_data), std::span(rx_data));
 
     // Test transmit-only
     [[maybe_unused]] auto transmit_result = spi.transmit(std::span(tx_data));
@@ -216,10 +212,8 @@ void test_status() {
     [[maybe_unused]] bool ready = spi.is_ready();
 
     // Verify return types
-    static_assert(std::is_same_v<decltype(busy), bool>,
-                  "is_busy() must return bool");
-    static_assert(std::is_same_v<decltype(ready), bool>,
-                  "is_ready() must return bool");
+    static_assert(std::is_same_v<decltype(busy), bool>, "is_busy() must return bool");
+    static_assert(std::is_same_v<decltype(ready), bool>, "is_ready() must return bool");
 }
 
 /**
@@ -230,10 +224,8 @@ void test_defaults() {
     auto spi = Spi<PeripheralId::SPI0>::quick_setup<MockMosiPin, MockMisoPin, MockSckPin>();
 
     // Verify configuration
-    static_assert(SpiDefaults::mode == SpiMode::Mode0,
-                  "Default mode should be Mode0");
-    static_assert(SpiDefaults::clock_speed == 1000000,
-                  "Default clock speed should be 1 MHz");
+    static_assert(SpiDefaults::mode == SpiMode::Mode0, "Default mode should be Mode0");
+    static_assert(SpiDefaults::clock_speed == 1000000, "Default clock speed should be 1 MHz");
     static_assert(SpiDefaults::bit_order == SpiBitOrder::MsbFirst,
                   "Default bit order should be MSB first");
     static_assert(SpiDefaults::data_size == SpiDataSize::Bits8,
@@ -245,9 +237,7 @@ void test_defaults() {
  */
 void test_quick_setup_with_mode() {
     auto spi = Spi<PeripheralId::SPI0>::quick_setup_with_mode<MockMosiPin, MockMisoPin, MockSckPin>(
-        2000000,
-        SpiMode::Mode3
-    );
+        2000000, SpiMode::Mode3);
 
     // Verify type
     using ConfigType = decltype(spi);
@@ -311,10 +301,7 @@ void test_buffer_size_handling() {
     u8 rx_data[3] = {0};
 
     // Transfer should handle different buffer sizes
-    [[maybe_unused]] auto result = spi.transfer(
-        std::span(tx_data),
-        std::span(rx_data)
-    );
+    [[maybe_unused]] auto result = spi.transfer(std::span(tx_data), std::span(rx_data));
 }
 
 /**
@@ -341,8 +328,7 @@ constexpr bool test_constexpr_construction() {
     return true;
 }
 
-static_assert(test_constexpr_construction(),
-              "SimpleSpiConfig must be constexpr constructible");
+static_assert(test_constexpr_construction(), "SimpleSpiConfig must be constexpr constructible");
 
 /**
  * @brief Test TX-only NotSupported errors at compile time

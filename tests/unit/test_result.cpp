@@ -7,8 +7,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "core/result.hpp"
 #include "core/error.hpp"
+#include "core/result.hpp"
 
 using namespace ucore::core;
 
@@ -163,7 +163,7 @@ TEST_CASE("Chaining operations with manual checks", "[result][core][integration]
     // Manual chaining - check and extract
     if (username_result.is_ok()) {
         std::string name = username_result.unwrap();
-        REQUIRE(name.length() == 5); // "alice"
+        REQUIRE(name.length() == 5);  // "alice"
     }
 }
 
@@ -189,7 +189,7 @@ TEST_CASE("Early return on error pattern", "[result][core][pattern]") {
     auto process_user = [](bool valid) -> int {
         auto result = get_username(valid);
         if (result.is_err()) {
-            return -1; // Error indicator
+            return -1;  // Error indicator
         }
         return result.unwrap().length();
     };

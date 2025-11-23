@@ -6,9 +6,10 @@
 
 #pragma once
 
+#include "hal/interface/adc.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/interface/adc.hpp"
 
 namespace ucore::hal {
 
@@ -30,40 +31,28 @@ struct AdcExpertConfig {
         return true;  // Basic validation
     }
 
-    constexpr const char* error_message() const {
-        return "Valid";
+    constexpr const char* error_message() const { return "Valid"; }
+
+    static constexpr AdcExpertConfig standard(PeripheralId periph, AdcChannel ch) {
+        return AdcExpertConfig{.peripheral = periph,
+                               .channel = ch,
+                               .resolution = AdcResolution::Bits12,
+                               .reference = AdcReference::Vdd,
+                               .sample_time = AdcSampleTime::Cycles84,
+                               .enable_dma = false,
+                               .enable_continuous = false,
+                               .enable_timer_trigger = false};
     }
 
-    static constexpr AdcExpertConfig standard(
-        PeripheralId periph,
-        AdcChannel ch) {
-        
-        return AdcExpertConfig{
-            .peripheral = periph,
-            .channel = ch,
-            .resolution = AdcResolution::Bits12,
-            .reference = AdcReference::Vdd,
-            .sample_time = AdcSampleTime::Cycles84,
-            .enable_dma = false,
-            .enable_continuous = false,
-            .enable_timer_trigger = false
-        };
-    }
-
-    static constexpr AdcExpertConfig with_dma(
-        PeripheralId periph,
-        AdcChannel ch) {
-        
-        return AdcExpertConfig{
-            .peripheral = periph,
-            .channel = ch,
-            .resolution = AdcResolution::Bits12,
-            .reference = AdcReference::Vdd,
-            .sample_time = AdcSampleTime::Cycles84,
-            .enable_dma = true,
-            .enable_continuous = true,
-            .enable_timer_trigger = false
-        };
+    static constexpr AdcExpertConfig with_dma(PeripheralId periph, AdcChannel ch) {
+        return AdcExpertConfig{.peripheral = periph,
+                               .channel = ch,
+                               .resolution = AdcResolution::Bits12,
+                               .reference = AdcReference::Vdd,
+                               .sample_time = AdcSampleTime::Cycles84,
+                               .enable_dma = true,
+                               .enable_continuous = true,
+                               .enable_timer_trigger = false};
     }
 };
 

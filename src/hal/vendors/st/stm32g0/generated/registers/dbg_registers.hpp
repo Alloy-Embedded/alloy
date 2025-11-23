@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::dbg {
 
 /// DBG Register Structure
 struct DBG_Registers {
-
     /// MCU Device ID Code Register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

@@ -17,17 +17,14 @@ namespace ucore::hal::st::stm32g0::hdmi_cec {
 
 /// HDMI_CEC Register Structure
 struct HDMI_CEC_Registers {
-
     /// CEC control register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CEC_CR;
 
-    /// This register is used to configure the HDMI-CEC controller. It is mandatory to write CEC_CFGR only when CECEN=0.
-    /// Offset: 0x0004
-    /// Reset value: 0x00000000
-    /// Access: read-write
+    /// This register is used to configure the HDMI-CEC controller. It is mandatory to write
+    /// CEC_CFGR only when CECEN=0. Offset: 0x0004 Reset value: 0x00000000 Access: read-write
     volatile uint32_t CEC_CFGR;
 
     /// CEC Tx data register

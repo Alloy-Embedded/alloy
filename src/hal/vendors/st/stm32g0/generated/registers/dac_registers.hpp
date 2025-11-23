@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::dac {
 
 /// DAC Register Structure
 struct DAC_Registers {
-
     /// DAC control register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

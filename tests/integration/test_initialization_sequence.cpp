@@ -11,9 +11,10 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "core/result.hpp"
-#include "core/error.hpp"
 #include "hal/types.hpp"
+
+#include "core/error.hpp"
+#include "core/result.hpp"
 
 using namespace ucore::core;
 using namespace ucore::hal;
@@ -26,11 +27,11 @@ using namespace ucore::hal;
  * @brief System initialization states
  */
 enum class SystemState {
-    PowerOn,        // Just powered on, nothing initialized
-    ClockReady,     // System clock configured
-    PeripheralsReady, // Peripheral clocks enabled
-    GpioReady,      // GPIO configured
-    FullyInitialized // All systems ready
+    PowerOn,           // Just powered on, nothing initialized
+    ClockReady,        // System clock configured
+    PeripheralsReady,  // Peripheral clocks enabled
+    GpioReady,         // GPIO configured
+    FullyInitialized   // All systems ready
 };
 
 /**
@@ -39,14 +40,14 @@ enum class SystemState {
  * Tracks the initialization sequence and enforces proper ordering.
  */
 class SystemInitializer {
-private:
+   private:
     SystemState state = SystemState::PowerOn;
     uint32_t system_freq = 0;
     bool gpio_clocks_enabled = false;
     bool uart_clocks_enabled = false;
     bool spi_clocks_enabled = false;
 
-public:
+   public:
     /**
      * @brief Initialize system clock
      */
@@ -103,23 +104,17 @@ public:
     /**
      * @brief Get current state
      */
-    SystemState get_state() const {
-        return state;
-    }
+    SystemState get_state() const { return state; }
 
     /**
      * @brief Get system frequency
      */
-    uint32_t get_frequency() const {
-        return system_freq;
-    }
+    uint32_t get_frequency() const { return system_freq; }
 
     /**
      * @brief Check if peripheral clocks are enabled
      */
-    bool are_gpio_clocks_enabled() const {
-        return gpio_clocks_enabled;
-    }
+    bool are_gpio_clocks_enabled() const { return gpio_clocks_enabled; }
 
     /**
      * @brief Reset to power-on state

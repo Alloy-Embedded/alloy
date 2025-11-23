@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/atmel/same70/generated/registers/uart0_registers.hpp"
@@ -75,7 +75,8 @@ struct Same70UARTHardwarePolicy {
 
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t irq_id = IRQ_ID;
-    static constexpr uint32_t UART_TIMEOUT = 100000;  ///< UART timeout in loop iterations (~10ms at 150MHz)
+    static constexpr uint32_t UART_TIMEOUT =
+        100000;  ///< UART timeout in loop iterations (~10ms at 150MHz)
 
     // ========================================================================
     // Hardware Accessor (with Mock Hook)
@@ -90,11 +91,11 @@ struct Same70UARTHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_UART_MOCK_HW
-            return ALLOY_UART_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_UART_MOCK_HW
+        return ALLOY_UART_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -115,12 +116,13 @@ struct Same70UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_RESET
      */
     static inline void reset() {
-        #ifdef ALLOY_UART_TEST_HOOK_RESET
-            ALLOY_UART_TEST_HOOK_RESET();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RESET
+        ALLOY_UART_TEST_HOOK_RESET();
+#endif
 
         auto* regs = reinterpret_cast<volatile UART0_Registers*>(BASE_ADDR);
-        regs->CR = uart::cr::RSTRX::mask | uart::cr::RSTTX::mask | uart::cr::RXDIS::mask | uart::cr::TXDIS::mask;
+        regs->CR = uart::cr::RSTRX::mask | uart::cr::RSTTX::mask | uart::cr::RXDIS::mask |
+                   uart::cr::TXDIS::mask;
     }
 
     /**
@@ -129,9 +131,9 @@ struct Same70UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_CONFIGURE
      */
     static inline void configure_8n1() {
-        #ifdef ALLOY_UART_TEST_HOOK_CONFIGURE
-            ALLOY_UART_TEST_HOOK_CONFIGURE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_CONFIGURE
+        ALLOY_UART_TEST_HOOK_CONFIGURE();
+#endif
 
         auto* regs = reinterpret_cast<volatile UART0_Registers*>(BASE_ADDR);
         regs->MR = uart::mr::PAR::write(0, uart::mr::par::NO);
@@ -144,9 +146,9 @@ struct Same70UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_BAUDRATE
      */
     static inline void set_baudrate(uint32_t baud) {
-        #ifdef ALLOY_UART_TEST_HOOK_BAUDRATE
-            ALLOY_UART_TEST_HOOK_BAUDRATE(baud);
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_BAUDRATE
+        ALLOY_UART_TEST_HOOK_BAUDRATE(baud);
+#endif
 
         constexpr uint32_t PERIPH_CLOCK_HZ = 12000000;  // 12 MHz RC oscillator
         uint32_t cd = PERIPH_CLOCK_HZ / (16 * baud);
@@ -160,9 +162,9 @@ struct Same70UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_TX_ENABLE
      */
     static inline void enable_tx() {
-        #ifdef ALLOY_UART_TEST_HOOK_TX_ENABLE
-            ALLOY_UART_TEST_HOOK_TX_ENABLE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TX_ENABLE
+        ALLOY_UART_TEST_HOOK_TX_ENABLE();
+#endif
 
         auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         regs->CR = uart::cr::TXEN::mask;
@@ -174,9 +176,9 @@ struct Same70UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_RX_ENABLE
      */
     static inline void enable_rx() {
-        #ifdef ALLOY_UART_TEST_HOOK_RX_ENABLE
-            ALLOY_UART_TEST_HOOK_RX_ENABLE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RX_ENABLE
+        ALLOY_UART_TEST_HOOK_RX_ENABLE();
+#endif
 
         auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         regs->CR = uart::cr::RXEN::mask;
@@ -188,9 +190,9 @@ struct Same70UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_TX_DISABLE
      */
     static inline void disable_tx() {
-        #ifdef ALLOY_UART_TEST_HOOK_TX_DISABLE
-            ALLOY_UART_TEST_HOOK_TX_DISABLE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TX_DISABLE
+        ALLOY_UART_TEST_HOOK_TX_DISABLE();
+#endif
 
         auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         regs->CR = uart::cr::TXDIS::mask;
@@ -202,9 +204,9 @@ struct Same70UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_RX_DISABLE
      */
     static inline void disable_rx() {
-        #ifdef ALLOY_UART_TEST_HOOK_RX_DISABLE
-            ALLOY_UART_TEST_HOOK_RX_DISABLE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RX_DISABLE
+        ALLOY_UART_TEST_HOOK_RX_DISABLE();
+#endif
 
         auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         regs->CR = uart::cr::RXDIS::mask;
@@ -217,9 +219,9 @@ struct Same70UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_TX_READY
      */
     static inline bool is_tx_ready() {
-        #ifdef ALLOY_UART_TEST_HOOK_TX_READY
-            ALLOY_UART_TEST_HOOK_TX_READY();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TX_READY
+        ALLOY_UART_TEST_HOOK_TX_READY();
+#endif
 
         auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         return (regs->SR & uart::sr::TXRDY::mask) != 0;
@@ -232,9 +234,9 @@ struct Same70UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_RX_READY
      */
     static inline bool is_rx_ready() {
-        #ifdef ALLOY_UART_TEST_HOOK_RX_READY
-            ALLOY_UART_TEST_HOOK_RX_READY();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RX_READY
+        ALLOY_UART_TEST_HOOK_RX_READY();
+#endif
 
         auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         return (regs->SR & uart::sr::RXRDY::mask) != 0;
@@ -247,9 +249,9 @@ struct Same70UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_WRITE
      */
     static inline void write_byte(uint8_t byte) {
-        #ifdef ALLOY_UART_TEST_HOOK_WRITE
-            ALLOY_UART_TEST_HOOK_WRITE(byte);
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_WRITE
+        ALLOY_UART_TEST_HOOK_WRITE(byte);
+#endif
 
         auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         regs->THR = byte;
@@ -262,9 +264,9 @@ struct Same70UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_READ
      */
     static inline uint8_t read_byte() {
-        #ifdef ALLOY_UART_TEST_HOOK_READ
-            ALLOY_UART_TEST_HOOK_READ();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_READ
+        ALLOY_UART_TEST_HOOK_READ();
+#endif
 
         auto* regs = reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
         return static_cast<uint8_t>(regs->RHR);
@@ -278,13 +280,14 @@ struct Same70UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_WAIT_TX
      */
     static inline bool wait_tx_ready(uint32_t timeout_loops) {
-        #ifdef ALLOY_UART_TEST_HOOK_WAIT_TX
-            ALLOY_UART_TEST_HOOK_WAIT_TX(timeout_loops);
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_WAIT_TX
+        ALLOY_UART_TEST_HOOK_WAIT_TX(timeout_loops);
+#endif
 
         uint32_t timeout = timeout_loops;
-while (!is_tx_ready() && --timeout);
-return timeout != 0;
+        while (!is_tx_ready() && --timeout)
+            ;
+        return timeout != 0;
     }
 
     /**
@@ -295,15 +298,15 @@ return timeout != 0;
      * @note Test hook: ALLOY_UART_TEST_HOOK_WAIT_RX
      */
     static inline bool wait_rx_ready(uint32_t timeout_loops) {
-        #ifdef ALLOY_UART_TEST_HOOK_WAIT_RX
-            ALLOY_UART_TEST_HOOK_WAIT_RX(timeout_loops);
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_WAIT_RX
+        ALLOY_UART_TEST_HOOK_WAIT_RX(timeout_loops);
+#endif
 
         uint32_t timeout = timeout_loops;
-while (!is_rx_ready() && --timeout);
-return timeout != 0;
+        while (!is_rx_ready() && --timeout)
+            ;
+        return timeout != 0;
     }
-
 };
 
 // ============================================================================

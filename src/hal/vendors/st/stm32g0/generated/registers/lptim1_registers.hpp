@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::lptim1 {
 
 /// LPTIM1 Register Structure
 struct LPTIM1_Registers {
-
     /// Interrupt and Status Register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -65,7 +64,7 @@ struct LPTIM1_Registers {
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t LPTIM_CNT;
-    uint8_t RESERVED_0020[4]; ///< Reserved
+    uint8_t RESERVED_0020[4];  ///< Reserved
 
     /// LPTIM configuration register 2
     /// Offset: 0x0024

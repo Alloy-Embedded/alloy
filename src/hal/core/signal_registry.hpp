@@ -21,8 +21,9 @@
 #include <array>
 #include <type_traits>
 
-#include "core/types.hpp"
 #include "hal/core/signals.hpp"
+
+#include "core/types.hpp"
 
 namespace ucore::hal::signal_registry {
 
@@ -50,7 +51,9 @@ struct PinAllocation {
           signal_type(SignalType::TX) {}
 
     constexpr PinAllocation(PinId p, PeripheralId per, SignalType sig)
-        : pin(p), peripheral(per), signal_type(sig) {}
+        : pin(p),
+          peripheral(per),
+          signal_type(sig) {}
 };
 
 /**
@@ -64,7 +67,8 @@ struct PinAllocation {
 template <PinAllocation... Allocations>
 struct SignalRegistry {
     // Store allocations in a constexpr array
-    static constexpr std::array<PinAllocation, sizeof...(Allocations)> allocations = {Allocations...};
+    static constexpr std::array<PinAllocation, sizeof...(Allocations)> allocations = {
+        Allocations...};
     static constexpr usize size = sizeof...(Allocations);
 
     /**

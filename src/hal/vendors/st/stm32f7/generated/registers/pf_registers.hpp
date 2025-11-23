@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::pf {
 
 /// PF Register Structure
 struct PF_Registers {
-
     /// Cache Level ID register
     /// Offset: 0x0000
     /// Reset value: 0x09000003

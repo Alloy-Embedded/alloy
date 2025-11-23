@@ -131,110 +131,109 @@ extern "C" [[noreturn]] void Reset_Handler() {
 }
 
 // Vector table
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     // Cortex-M4 System Exceptions
     reinterpret_cast<void (*)()>(&_estack),  // 0: Initial stack pointer
-    Reset_Handler,                            // 1: Reset handler
-    NMI_Handler,                              // 2: NMI
-    HardFault_Handler,                        // 3: HardFault
-    MemManage_Handler,                        // 4: MemManage
-    BusFault_Handler,                         // 5: BusFault
-    UsageFault_Handler,                       // 6: UsageFault
-    nullptr,                                  // 7: Reserved
-    nullptr,                                  // 8: Reserved
-    nullptr,                                  // 9: Reserved
-    nullptr,                                  // 10: Reserved
-    SVC_Handler,                              // 11: SVCall
-    DebugMon_Handler,                         // 12: DebugMon
-    nullptr,                                  // 13: Reserved
-    PendSV_Handler,                           // 14: PendSV
-    SysTick_Handler,                          // 15: SysTick
+    Reset_Handler,                           // 1: Reset handler
+    NMI_Handler,                             // 2: NMI
+    HardFault_Handler,                       // 3: HardFault
+    MemManage_Handler,                       // 4: MemManage
+    BusFault_Handler,                        // 5: BusFault
+    UsageFault_Handler,                      // 6: UsageFault
+    nullptr,                                 // 7: Reserved
+    nullptr,                                 // 8: Reserved
+    nullptr,                                 // 9: Reserved
+    nullptr,                                 // 10: Reserved
+    SVC_Handler,                             // 11: SVCall
+    DebugMon_Handler,                        // 12: DebugMon
+    nullptr,                                 // 13: Reserved
+    PendSV_Handler,                          // 14: PendSV
+    SysTick_Handler,                         // 15: SysTick
 
     // STM32F401 External Interrupts
-    WWDG_IRQHandler,                    // IRQ 0
-    PVD_IRQHandler,                     // IRQ 1
-    TAMP_STAMP_IRQHandler,              // IRQ 2
-    RTC_WKUP_IRQHandler,                // IRQ 3
-    FLASH_IRQHandler,                   // IRQ 4
-    RCC_IRQHandler,                     // IRQ 5
-    EXTI0_IRQHandler,                   // IRQ 6
-    EXTI1_IRQHandler,                   // IRQ 7
-    EXTI2_IRQHandler,                   // IRQ 8
-    EXTI3_IRQHandler,                   // IRQ 9
-    EXTI4_IRQHandler,                   // IRQ 10
-    DMA1_Stream0_IRQHandler,            // IRQ 11
-    DMA1_Stream1_IRQHandler,            // IRQ 12
-    DMA1_Stream2_IRQHandler,            // IRQ 13
-    DMA1_Stream3_IRQHandler,            // IRQ 14
-    DMA1_Stream4_IRQHandler,            // IRQ 15
-    DMA1_Stream5_IRQHandler,            // IRQ 16
-    DMA1_Stream6_IRQHandler,            // IRQ 17
-    ADC_IRQHandler,                     // IRQ 18
-    nullptr,                            // IRQ 19: Reserved
-    nullptr,                            // IRQ 20: Reserved
-    nullptr,                            // IRQ 21: Reserved
-    nullptr,                            // IRQ 22: Reserved
-    EXTI9_5_IRQHandler,                 // IRQ 23
-    TIM1_BRK_TIM9_IRQHandler,           // IRQ 24
-    TIM1_UP_TIM10_IRQHandler,           // IRQ 25
-    TIM1_TRG_COM_TIM11_IRQHandler,      // IRQ 26
-    TIM1_CC_IRQHandler,                 // IRQ 27
-    TIM2_IRQHandler,                    // IRQ 28
-    TIM3_IRQHandler,                    // IRQ 29
-    TIM4_IRQHandler,                    // IRQ 30
-    I2C1_EV_IRQHandler,                 // IRQ 31
-    I2C1_ER_IRQHandler,                 // IRQ 32
-    I2C2_EV_IRQHandler,                 // IRQ 33
-    I2C2_ER_IRQHandler,                 // IRQ 34
-    SPI1_IRQHandler,                    // IRQ 35
-    SPI2_IRQHandler,                    // IRQ 36
-    USART1_IRQHandler,                  // IRQ 37
-    USART2_IRQHandler,                  // IRQ 38
-    nullptr,                            // IRQ 39: Reserved
-    EXTI15_10_IRQHandler,               // IRQ 40
-    RTC_Alarm_IRQHandler,               // IRQ 41
-    OTG_FS_WKUP_IRQHandler,             // IRQ 42
-    nullptr,                            // IRQ 43: Reserved
-    nullptr,                            // IRQ 44: Reserved
-    nullptr,                            // IRQ 45: Reserved
-    nullptr,                            // IRQ 46: Reserved
-    DMA1_Stream7_IRQHandler,            // IRQ 47
-    nullptr,                            // IRQ 48: Reserved
-    SDIO_IRQHandler,                    // IRQ 49
-    TIM5_IRQHandler,                    // IRQ 50
-    SPI3_IRQHandler,                    // IRQ 51
-    nullptr,                            // IRQ 52: Reserved
-    nullptr,                            // IRQ 53: Reserved
-    nullptr,                            // IRQ 54: Reserved
-    nullptr,                            // IRQ 55: Reserved
-    DMA2_Stream0_IRQHandler,            // IRQ 56
-    DMA2_Stream1_IRQHandler,            // IRQ 57
-    DMA2_Stream2_IRQHandler,            // IRQ 58
-    DMA2_Stream3_IRQHandler,            // IRQ 59
-    DMA2_Stream4_IRQHandler,            // IRQ 60
-    nullptr,                            // IRQ 61: Reserved
-    nullptr,                            // IRQ 62: Reserved
-    nullptr,                            // IRQ 63: Reserved
-    nullptr,                            // IRQ 64: Reserved
-    nullptr,                            // IRQ 65: Reserved
-    nullptr,                            // IRQ 66: Reserved
-    OTG_FS_IRQHandler,                  // IRQ 67
-    DMA2_Stream5_IRQHandler,            // IRQ 68
-    DMA2_Stream6_IRQHandler,            // IRQ 69
-    DMA2_Stream7_IRQHandler,            // IRQ 70
-    USART6_IRQHandler,                  // IRQ 71
-    I2C3_EV_IRQHandler,                 // IRQ 72
-    I2C3_ER_IRQHandler,                 // IRQ 73
-    nullptr,                            // IRQ 74: Reserved
-    nullptr,                            // IRQ 75: Reserved
-    nullptr,                            // IRQ 76: Reserved
-    nullptr,                            // IRQ 77: Reserved
-    nullptr,                            // IRQ 78: Reserved
-    nullptr,                            // IRQ 79: Reserved
-    nullptr,                            // IRQ 80: Reserved
-    FPU_IRQHandler,                     // IRQ 81
-    nullptr,                            // IRQ 82: Reserved
-    nullptr,                            // IRQ 83: Reserved
-    SPI4_IRQHandler,                    // IRQ 84
+    WWDG_IRQHandler,                // IRQ 0
+    PVD_IRQHandler,                 // IRQ 1
+    TAMP_STAMP_IRQHandler,          // IRQ 2
+    RTC_WKUP_IRQHandler,            // IRQ 3
+    FLASH_IRQHandler,               // IRQ 4
+    RCC_IRQHandler,                 // IRQ 5
+    EXTI0_IRQHandler,               // IRQ 6
+    EXTI1_IRQHandler,               // IRQ 7
+    EXTI2_IRQHandler,               // IRQ 8
+    EXTI3_IRQHandler,               // IRQ 9
+    EXTI4_IRQHandler,               // IRQ 10
+    DMA1_Stream0_IRQHandler,        // IRQ 11
+    DMA1_Stream1_IRQHandler,        // IRQ 12
+    DMA1_Stream2_IRQHandler,        // IRQ 13
+    DMA1_Stream3_IRQHandler,        // IRQ 14
+    DMA1_Stream4_IRQHandler,        // IRQ 15
+    DMA1_Stream5_IRQHandler,        // IRQ 16
+    DMA1_Stream6_IRQHandler,        // IRQ 17
+    ADC_IRQHandler,                 // IRQ 18
+    nullptr,                        // IRQ 19: Reserved
+    nullptr,                        // IRQ 20: Reserved
+    nullptr,                        // IRQ 21: Reserved
+    nullptr,                        // IRQ 22: Reserved
+    EXTI9_5_IRQHandler,             // IRQ 23
+    TIM1_BRK_TIM9_IRQHandler,       // IRQ 24
+    TIM1_UP_TIM10_IRQHandler,       // IRQ 25
+    TIM1_TRG_COM_TIM11_IRQHandler,  // IRQ 26
+    TIM1_CC_IRQHandler,             // IRQ 27
+    TIM2_IRQHandler,                // IRQ 28
+    TIM3_IRQHandler,                // IRQ 29
+    TIM4_IRQHandler,                // IRQ 30
+    I2C1_EV_IRQHandler,             // IRQ 31
+    I2C1_ER_IRQHandler,             // IRQ 32
+    I2C2_EV_IRQHandler,             // IRQ 33
+    I2C2_ER_IRQHandler,             // IRQ 34
+    SPI1_IRQHandler,                // IRQ 35
+    SPI2_IRQHandler,                // IRQ 36
+    USART1_IRQHandler,              // IRQ 37
+    USART2_IRQHandler,              // IRQ 38
+    nullptr,                        // IRQ 39: Reserved
+    EXTI15_10_IRQHandler,           // IRQ 40
+    RTC_Alarm_IRQHandler,           // IRQ 41
+    OTG_FS_WKUP_IRQHandler,         // IRQ 42
+    nullptr,                        // IRQ 43: Reserved
+    nullptr,                        // IRQ 44: Reserved
+    nullptr,                        // IRQ 45: Reserved
+    nullptr,                        // IRQ 46: Reserved
+    DMA1_Stream7_IRQHandler,        // IRQ 47
+    nullptr,                        // IRQ 48: Reserved
+    SDIO_IRQHandler,                // IRQ 49
+    TIM5_IRQHandler,                // IRQ 50
+    SPI3_IRQHandler,                // IRQ 51
+    nullptr,                        // IRQ 52: Reserved
+    nullptr,                        // IRQ 53: Reserved
+    nullptr,                        // IRQ 54: Reserved
+    nullptr,                        // IRQ 55: Reserved
+    DMA2_Stream0_IRQHandler,        // IRQ 56
+    DMA2_Stream1_IRQHandler,        // IRQ 57
+    DMA2_Stream2_IRQHandler,        // IRQ 58
+    DMA2_Stream3_IRQHandler,        // IRQ 59
+    DMA2_Stream4_IRQHandler,        // IRQ 60
+    nullptr,                        // IRQ 61: Reserved
+    nullptr,                        // IRQ 62: Reserved
+    nullptr,                        // IRQ 63: Reserved
+    nullptr,                        // IRQ 64: Reserved
+    nullptr,                        // IRQ 65: Reserved
+    nullptr,                        // IRQ 66: Reserved
+    OTG_FS_IRQHandler,              // IRQ 67
+    DMA2_Stream5_IRQHandler,        // IRQ 68
+    DMA2_Stream6_IRQHandler,        // IRQ 69
+    DMA2_Stream7_IRQHandler,        // IRQ 70
+    USART6_IRQHandler,              // IRQ 71
+    I2C3_EV_IRQHandler,             // IRQ 72
+    I2C3_ER_IRQHandler,             // IRQ 73
+    nullptr,                        // IRQ 74: Reserved
+    nullptr,                        // IRQ 75: Reserved
+    nullptr,                        // IRQ 76: Reserved
+    nullptr,                        // IRQ 77: Reserved
+    nullptr,                        // IRQ 78: Reserved
+    nullptr,                        // IRQ 79: Reserved
+    nullptr,                        // IRQ 80: Reserved
+    FPU_IRQHandler,                 // IRQ 81
+    nullptr,                        // IRQ 82: Reserved
+    nullptr,                        // IRQ 83: Reserved
+    SPI4_IRQHandler,                // IRQ 84
 };

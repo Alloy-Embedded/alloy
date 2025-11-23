@@ -13,11 +13,12 @@
 /// cmake --build build --target phase5_example
 /// ```
 
-#include "rtos/rtos.hpp"
-#include "rtos/queue.hpp"
-#include "rtos/mutex.hpp"
-#include "rtos/semaphore.hpp"
 #include "hal/interface/systick.hpp"
+
+#include "rtos/mutex.hpp"
+#include "rtos/queue.hpp"
+#include "rtos/rtos.hpp"
+#include "rtos/semaphore.hpp"
 
 using namespace ucore;
 using namespace ucore::rtos;
@@ -29,9 +30,9 @@ using namespace ucore::rtos;
 /// Sensor data message
 struct SensorData {
     core::u32 timestamp;
-    core::i16 temperature;   // °C * 100
-    core::i16 humidity;      // % * 100
-    core::u16 pressure;      // hPa
+    core::i16 temperature;  // °C * 100
+    core::i16 humidity;     // % * 100
+    core::u16 pressure;     // hPa
 };
 
 static_assert(IPCMessage<SensorData>, "SensorData must be IPCMessage");
@@ -88,11 +89,7 @@ Task<256, Priority::Low, "Logger"> logger_task(logger_task_func);
 // Example 3: TaskSet with C++23 Budget Validation
 // ============================================================================
 
-using MyTasks = TaskSet<
-    decltype(sensor_task),
-    decltype(display_task),
-    decltype(logger_task)
->;
+using MyTasks = TaskSet<decltype(sensor_task), decltype(display_task), decltype(logger_task)>;
 
 // Compile-time assertions using C++23 enhanced features
 static_assert(MyTasks::count() == 3, "Should have 3 tasks");
@@ -107,8 +104,7 @@ static_assert(MyTasks::total_ram() == 1888,  // 1792 + 96
 
 // C++23: RAM budget validation with enhanced error reporting
 // This will produce a compile-time error if budget is exceeded
-static_assert(MyTasks::total_ram_with_budget<4096>() == 1888,
-              "RAM calculation with budget check");
+static_assert(MyTasks::total_ram_with_budget<4096>() == 1888, "RAM calculation with budget check");
 
 // Priority analysis (C++23: uses array_max/array_min)
 static_assert(MyTasks::highest_priority() == static_cast<core::u8>(Priority::High),
@@ -145,8 +141,9 @@ static_assert(validate_stack_size<1024>() == 1024, "1024 bytes is valid");
 
 // These would fail at compile time with descriptive error messages:
 // static_assert(validate_stack_size<128>() == 128);  // ❌ "Stack size must be at least 256 bytes"
-// static_assert(validate_stack_size<100000>() == 100000);  // ❌ "Stack size must not exceed 65536 bytes"
-// static_assert(validate_stack_size<513>() == 513);  // ❌ "Stack size must be 8-byte aligned"
+// static_assert(validate_stack_size<100000>() == 100000);  // ❌ "Stack size must not exceed 65536
+// bytes" static_assert(validate_stack_size<513>() == 513);  // ❌ "Stack size must be 8-byte
+// aligned"
 
 // Priority validation (C++23: enhanced error messages)
 static_assert(validate_priority<0>() == 0, "Priority 0 is valid");
@@ -219,7 +216,7 @@ consteval void check_system_ram_budget() {
 
     // C++23: compile_time_check with custom error message
     compile_time_check(total_ram <= Budget,
-                      "System RAM exceeds budget - reduce stack sizes or increase budget");
+                       "System RAM exceeds budget - reduce stack sizes or increase budget");
 }
 
 // Verify our system fits in 4KB RAM
@@ -265,11 +262,9 @@ consteval bool validate_task_configuration() {
 }
 
 // Validate our configuration
-static_assert(validate_task_configuration<
-    decltype(sensor_task),
-    decltype(display_task),
-    decltype(logger_task)
->(), "Task configuration validation");
+static_assert(validate_task_configuration<decltype(sensor_task), decltype(display_task),
+                                          decltype(logger_task)>(),
+              "Task configuration validation");
 
 // ============================================================================
 // Example 9: C++23 Performance Analysis
@@ -277,13 +272,9 @@ static_assert(validate_task_configuration<
 
 /// Compile-time performance metrics
 struct SystemMetrics {
-    static consteval size_t total_ram() {
-        return MyTasks::total_ram();
-    }
+    static consteval size_t total_ram() { return MyTasks::total_ram(); }
 
-    static consteval core::u8 task_count() {
-        return MyTasks::count();
-    }
+    static consteval core::u8 task_count() { return MyTasks::count(); }
 
     static consteval size_t average_stack_size() {
         return MyTasks::total_stack_ram() / MyTasks::count();

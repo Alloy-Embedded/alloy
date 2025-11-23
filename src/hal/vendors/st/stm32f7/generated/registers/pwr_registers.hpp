@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::pwr {
 
 /// PWR Register Structure
 struct PWR_Registers {
-
     /// power control register
     /// Offset: 0x0000
     /// Reset value: 0x0000C000

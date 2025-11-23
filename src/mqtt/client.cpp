@@ -178,7 +178,8 @@ Client::Client(const Config& config) : impl_(std::make_unique<Impl>()) {
     if (config.lwt_topic != nullptr) {
         mqtt_cfg.session.last_will.topic = config.lwt_topic;
         mqtt_cfg.session.last_will.msg = config.lwt_message;
-        mqtt_cfg.session.last_will.msg_len = config.lwt_message != nullptr ? strlen(config.lwt_message) : 0;
+        mqtt_cfg.session.last_will.msg_len =
+            config.lwt_message != nullptr ? strlen(config.lwt_message) : 0;
         mqtt_cfg.session.last_will.qos = static_cast<int>(config.lwt_qos);
         mqtt_cfg.session.last_will.retain = config.lwt_retain;
     }

@@ -8,9 +8,10 @@
  * All operations use standard library algorithms for clarity and safety.
  */
 
+#include <algorithm>
 #include <cstdint>
 #include <cstring>
-#include <algorithm>
+
 #include "init_hooks.hpp"
 
 // Forward declare main (must be in global scope)
@@ -28,7 +29,7 @@ namespace ucore::hal::arm {
  * - Type-safe, readable, maintainable
  */
 class StartupImpl {
-public:
+   public:
     /**
      * @brief Initialize .data section (copy from flash to RAM)
      *
@@ -44,19 +45,11 @@ public:
      * StartupImpl::init_data_section(&_sidata, &_sdata, &_edata);
      * @endcode
      */
-    static void init_data_section(
-        uint32_t* src_start,
-        uint32_t* dst_start,
-        uint32_t* dst_end
-    ) {
+    static void init_data_section(uint32_t* src_start, uint32_t* dst_start, uint32_t* dst_end) {
         // Modern C++: use std::copy
         // Guard against empty section to avoid array-bounds warnings
         if (dst_start != dst_end) {
-            std::copy(
-                src_start,
-                src_start + (dst_end - dst_start),
-                dst_start
-            );
+            std::copy(src_start, src_start + (dst_end - dst_start), dst_start);
         }
     }
 
@@ -74,10 +67,7 @@ public:
      * StartupImpl::init_bss_section(&_sbss, &_ebss);
      * @endcode
      */
-    static void init_bss_section(
-        uint32_t* start,
-        uint32_t* end
-    ) {
+    static void init_bss_section(uint32_t* start, uint32_t* end) {
         // Modern C++: use std::fill
         // Guard against empty section to avoid array-bounds warnings
         if (start != end) {
@@ -100,13 +90,11 @@ public:
      * StartupImpl::call_init_array(&__init_array_start, &__init_array_end);
      * @endcode
      */
-    static void call_init_array(
-        void (**start)(),
-        void (**end)()
-    ) {
+    static void call_init_array(void (**start)(), void (**end)()) {
         // Call each constructor in order
         std::for_each(start, end, [](auto fn) {
-            if (fn) fn();
+            if (fn)
+                fn();
         });
     }
 
@@ -133,30 +121,21 @@ public:
      * }
      * @endcode
      */
-    template<typename Config>
+    template <typename Config>
     [[noreturn]]
     static void startup_sequence() {
         // 1. Early initialization (before .data/.bss)
         early_init();
 
         // 2. Initialize .data section
-        init_data_section(
-            Config::data_src_start(),
-            Config::data_dst_start(),
-            Config::data_dst_end()
-        );
+        init_data_section(Config::data_src_start(), Config::data_dst_start(),
+                          Config::data_dst_end());
 
         // 3. Initialize .bss section
-        init_bss_section(
-            Config::bss_start(),
-            Config::bss_end()
-        );
+        init_bss_section(Config::bss_start(), Config::bss_end());
 
         // 4. Call static constructors
-        call_init_array(
-            Config::init_array_start(),
-            Config::init_array_end()
-        );
+        call_init_array(Config::init_array_start(), Config::init_array_end());
 
         // 5. Pre-main initialization
         pre_main_init();
@@ -178,26 +157,17 @@ public:
      *
      * @tparam Config Configuration providing memory layout information
      */
-    template<typename Config>
+    template <typename Config>
     [[noreturn]]
     static void minimal_startup_sequence() {
         // Initialize .data and .bss
-        init_data_section(
-            Config::data_src_start(),
-            Config::data_dst_start(),
-            Config::data_dst_end()
-        );
+        init_data_section(Config::data_src_start(), Config::data_dst_start(),
+                          Config::data_dst_end());
 
-        init_bss_section(
-            Config::bss_start(),
-            Config::bss_end()
-        );
+        init_bss_section(Config::bss_start(), Config::bss_end());
 
         // Call static constructors
-        call_init_array(
-            Config::init_array_start(),
-            Config::init_array_end()
-        );
+        call_init_array(Config::init_array_start(), Config::init_array_end());
 
         // Call main
         (void)main();
@@ -218,32 +188,24 @@ public:
      * @tparam PostDataFn Function to call after .data/.bss init
      * @tparam PreMainFn Function to call before main
      */
-    template<typename Config, typename PreDataFn, typename PostDataFn, typename PreMainFn>
+    template <typename Config, typename PreDataFn, typename PostDataFn, typename PreMainFn>
     [[noreturn]]
-    static void custom_startup_sequence(PreDataFn pre_data, PostDataFn post_data, PreMainFn pre_main) {
+    static void custom_startup_sequence(PreDataFn pre_data, PostDataFn post_data,
+                                        PreMainFn pre_main) {
         // Custom pre-data hook
         pre_data();
 
         // Initialize .data and .bss
-        init_data_section(
-            Config::data_src_start(),
-            Config::data_dst_start(),
-            Config::data_dst_end()
-        );
+        init_data_section(Config::data_src_start(), Config::data_dst_start(),
+                          Config::data_dst_end());
 
-        init_bss_section(
-            Config::bss_start(),
-            Config::bss_end()
-        );
+        init_bss_section(Config::bss_start(), Config::bss_end());
 
         // Custom post-data hook
         post_data();
 
         // Call static constructors
-        call_init_array(
-            Config::init_array_start(),
-            Config::init_array_end()
-        );
+        call_init_array(Config::init_array_start(), Config::init_array_end());
 
         // Custom pre-main hook
         pre_main();
@@ -296,6 +258,6 @@ constexpr size_t bss_section_size(const void* start, const void* end) {
     return static_cast<const uint8_t*>(end) - static_cast<const uint8_t*>(start);
 }
 
-} // namespace startup_utils
+}  // namespace startup_utils
 
-} // namespace ucore::hal::arm
+}  // namespace ucore::hal::arm

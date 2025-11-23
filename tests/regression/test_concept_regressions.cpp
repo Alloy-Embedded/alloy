@@ -8,12 +8,13 @@
 #include <catch2/catch_test_macros.hpp>
 
 #if __cplusplus >= 202002L
-#include "hal/core/concepts.hpp"
+    #include "hal/core/concepts.hpp"
 #endif
 
-#include "core/result.hpp"
-#include "core/error.hpp"
 #include "hal/types.hpp"
+
+#include "core/error.hpp"
+#include "core/result.hpp"
 
 using namespace ucore::core;
 using namespace ucore::hal;
@@ -41,7 +42,7 @@ TEST_CASE("BUG #21: Concepts header include order", "[regression][concept][bug21
     INFO("namespace ucore::hal { ... }");
 #endif
 
-    REQUIRE(true); // Documentation test
+    REQUIRE(true);  // Documentation test
 }
 
 // ==============================================================================
@@ -64,7 +65,7 @@ TEST_CASE("BUG #22: GPIO requires compile-time metadata", "[regression][concept]
     INFO("");
     INFO("These enable compile-time pin validation and zero-overhead abstractions");
 
-    REQUIRE(true); // Documentation test
+    REQUIRE(true);  // Documentation test
 }
 
 // ==============================================================================
@@ -79,7 +80,7 @@ TEST_CASE("BUG #22: GPIO requires compile-time metadata", "[regression][concept]
  */
 TEST_CASE("BUG #23: ClockPlatform needs peripheral enables", "[regression][concept][bug23]") {
     class MockClock {
-    public:
+       public:
         static Result<void, ErrorCode> initialize() { return Ok(); }
         static Result<void, ErrorCode> enable_gpio_clocks() { return Ok(); }
         static Result<void, ErrorCode> enable_uart_clock(uint32_t) { return Ok(); }
@@ -124,7 +125,7 @@ TEST_CASE("BUG #24: Concept validation with clear errors", "[regression][concept
     INFO(");");
     INFO("#endif");
 
-    REQUIRE(true); // Documentation test
+    REQUIRE(true);  // Documentation test
 }
 
 // ==============================================================================
@@ -147,7 +148,7 @@ TEST_CASE("BUG #25: GPIO template parameter deduction", "[regression][template][
     INFO("Usage:");
     INFO("using MyPin = GpioPin<PortA, 5>;");
 
-    REQUIRE(true); // Documentation test
+    REQUIRE(true);  // Documentation test
 }
 
 // ==============================================================================
@@ -177,7 +178,7 @@ TEST_CASE("BUG #26: Concept syntax clarity", "[regression][concept][bug26]") {
     INFO("- Ambiguous type constraints");
 #endif
 
-    REQUIRE(true); // Documentation test
+    REQUIRE(true);  // Documentation test
 }
 
 // ==============================================================================
@@ -218,7 +219,7 @@ TEST_CASE("BUG #28: Platform directory configuration", "[regression][cmake][bug2
     INFO("Required in platform cmake file:");
     INFO("set(ALLOY_PLATFORM_DIR ${CMAKE_SOURCE_DIR}/src/hal/vendors/PLATFORM)");
 
-    REQUIRE(true); // Documentation test
+    REQUIRE(true);  // Documentation test
 }
 
 // ==============================================================================
@@ -239,7 +240,7 @@ TEST_CASE("BUG #29: Catch2 test discovery", "[regression][cmake][bug29]") {
     INFO("target_link_libraries(my_test Catch2::Catch2WithMain)");
     INFO("catch_discover_tests(my_test)");
 
-    REQUIRE(true); // Documentation test
+    REQUIRE(true);  // Documentation test
 }
 
 // ==============================================================================
@@ -261,7 +262,7 @@ TEST_CASE("BUG #30: Catch2 version compatibility", "[regression][test][bug30]") 
     INFO("- CATCH_REQUIRE → REQUIRE");
     INFO("- Include: <catch2/catch_test_macros.hpp>");
 
-    REQUIRE(true); // Documentation test
+    REQUIRE(true);  // Documentation test
 }
 
 // ==============================================================================

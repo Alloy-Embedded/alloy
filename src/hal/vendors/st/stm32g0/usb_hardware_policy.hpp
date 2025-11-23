@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/st/stm32g0/generated/registers/usb_registers.hpp"
@@ -85,11 +85,11 @@ struct Stm32g0USBHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_USB_MOCK_HW
-            return ALLOY_USB_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_USB_MOCK_HW
+        return ALLOY_USB_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -110,9 +110,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_PDWN
      */
     static inline void enable_usb() {
-        #ifdef ALLOY_USB_TEST_HOOK_PDWN
-            ALLOY_USB_TEST_HOOK_PDWN();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_PDWN
+        ALLOY_USB_TEST_HOOK_PDWN();
+#endif
 
         hw()->USB_CNTR &= ~(1U << 1);
     }
@@ -123,9 +123,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_PDWN
      */
     static inline void disable_usb() {
-        #ifdef ALLOY_USB_TEST_HOOK_PDWN
-            ALLOY_USB_TEST_HOOK_PDWN();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_PDWN
+        ALLOY_USB_TEST_HOOK_PDWN();
+#endif
 
         hw()->USB_CNTR |= (1U << 1);
     }
@@ -136,9 +136,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_FRES
      */
     static inline void force_reset() {
-        #ifdef ALLOY_USB_TEST_HOOK_FRES
-            ALLOY_USB_TEST_HOOK_FRES();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_FRES
+        ALLOY_USB_TEST_HOOK_FRES();
+#endif
 
         hw()->USB_CNTR |= (1U << 0);
     }
@@ -149,9 +149,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_FRES
      */
     static inline void clear_reset() {
-        #ifdef ALLOY_USB_TEST_HOOK_FRES
-            ALLOY_USB_TEST_HOOK_FRES();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_FRES
+        ALLOY_USB_TEST_HOOK_FRES();
+#endif
 
         hw()->USB_CNTR &= ~(1U << 0);
     }
@@ -163,9 +163,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_ADD
      */
     static inline void set_device_address(uint8_t address) {
-        #ifdef ALLOY_USB_TEST_HOOK_ADD
-            ALLOY_USB_TEST_HOOK_ADD(address);
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_ADD
+        ALLOY_USB_TEST_HOOK_ADD(address);
+#endif
 
         hw()->USB_DADDR = (hw()->USB_DADDR & ~0x7F) | (address & 0x7F);
     }
@@ -176,9 +176,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_EF
      */
     static inline void enable_function() {
-        #ifdef ALLOY_USB_TEST_HOOK_EF
-            ALLOY_USB_TEST_HOOK_EF();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_EF
+        ALLOY_USB_TEST_HOOK_EF();
+#endif
 
         hw()->USB_DADDR |= (1U << 7);
     }
@@ -189,9 +189,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_EF
      */
     static inline void disable_function() {
-        #ifdef ALLOY_USB_TEST_HOOK_EF
-            ALLOY_USB_TEST_HOOK_EF();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_EF
+        ALLOY_USB_TEST_HOOK_EF();
+#endif
 
         hw()->USB_DADDR &= ~(1U << 7);
     }
@@ -202,9 +202,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_RESETM
      */
     static inline void enable_reset_interrupt() {
-        #ifdef ALLOY_USB_TEST_HOOK_RESETM
-            ALLOY_USB_TEST_HOOK_RESETM();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_RESETM
+        ALLOY_USB_TEST_HOOK_RESETM();
+#endif
 
         hw()->USB_CNTR |= (1U << 10);
     }
@@ -215,9 +215,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_SUSPM
      */
     static inline void enable_suspend_interrupt() {
-        #ifdef ALLOY_USB_TEST_HOOK_SUSPM
-            ALLOY_USB_TEST_HOOK_SUSPM();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_SUSPM
+        ALLOY_USB_TEST_HOOK_SUSPM();
+#endif
 
         hw()->USB_CNTR |= (1U << 11);
     }
@@ -228,9 +228,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_WKUPM
      */
     static inline void enable_wakeup_interrupt() {
-        #ifdef ALLOY_USB_TEST_HOOK_WKUPM
-            ALLOY_USB_TEST_HOOK_WKUPM();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_WKUPM
+        ALLOY_USB_TEST_HOOK_WKUPM();
+#endif
 
         hw()->USB_CNTR |= (1U << 12);
     }
@@ -241,9 +241,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_CTRM
      */
     static inline void enable_correct_transfer_interrupt() {
-        #ifdef ALLOY_USB_TEST_HOOK_CTRM
-            ALLOY_USB_TEST_HOOK_CTRM();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_CTRM
+        ALLOY_USB_TEST_HOOK_CTRM();
+#endif
 
         hw()->USB_CNTR |= (1U << 15);
     }
@@ -255,9 +255,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_RESET
      */
     static inline bool is_reset_flag_set() {
-        #ifdef ALLOY_USB_TEST_HOOK_RESET
-            ALLOY_USB_TEST_HOOK_RESET();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_RESET
+        ALLOY_USB_TEST_HOOK_RESET();
+#endif
 
         return (hw()->USB_ISTR & (1U << 10)) != 0;
     }
@@ -269,9 +269,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_SUSP
      */
     static inline bool is_suspend_flag_set() {
-        #ifdef ALLOY_USB_TEST_HOOK_SUSP
-            ALLOY_USB_TEST_HOOK_SUSP();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_SUSP
+        ALLOY_USB_TEST_HOOK_SUSP();
+#endif
 
         return (hw()->USB_ISTR & (1U << 11)) != 0;
     }
@@ -283,9 +283,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_CTR
      */
     static inline bool is_correct_transfer_flag_set() {
-        #ifdef ALLOY_USB_TEST_HOOK_CTR
-            ALLOY_USB_TEST_HOOK_CTR();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_CTR
+        ALLOY_USB_TEST_HOOK_CTR();
+#endif
 
         return (hw()->USB_ISTR & (1U << 15)) != 0;
     }
@@ -296,9 +296,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_RESET
      */
     static inline void clear_reset_flag() {
-        #ifdef ALLOY_USB_TEST_HOOK_RESET
-            ALLOY_USB_TEST_HOOK_RESET();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_RESET
+        ALLOY_USB_TEST_HOOK_RESET();
+#endif
 
         hw()->USB_ISTR &= ~(1U << 10);
     }
@@ -309,9 +309,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_SUSP
      */
     static inline void clear_suspend_flag() {
-        #ifdef ALLOY_USB_TEST_HOOK_SUSP
-            ALLOY_USB_TEST_HOOK_SUSP();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_SUSP
+        ALLOY_USB_TEST_HOOK_SUSP();
+#endif
 
         hw()->USB_ISTR &= ~(1U << 11);
     }
@@ -323,9 +323,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_EP_ID
      */
     static inline uint8_t get_endpoint_id() {
-        #ifdef ALLOY_USB_TEST_HOOK_EP_ID
-            ALLOY_USB_TEST_HOOK_EP_ID();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_EP_ID
+        ALLOY_USB_TEST_HOOK_EP_ID();
+#endif
 
         return static_cast<uint8_t>(hw()->USB_ISTR & 0xF);
     }
@@ -337,9 +337,9 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_BTABLE
      */
     static inline uint16_t get_buffer_table_address() {
-        #ifdef ALLOY_USB_TEST_HOOK_BTABLE
-            ALLOY_USB_TEST_HOOK_BTABLE();
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_BTABLE
+        ALLOY_USB_TEST_HOOK_BTABLE();
+#endif
 
         return static_cast<uint16_t>(hw()->USB_BTABLE & 0xFFF8);
     }
@@ -351,13 +351,12 @@ struct Stm32g0USBHardwarePolicy {
      * @note Test hook: ALLOY_USB_TEST_HOOK_BTABLE
      */
     static inline void set_buffer_table_address(uint16_t offset) {
-        #ifdef ALLOY_USB_TEST_HOOK_BTABLE
-            ALLOY_USB_TEST_HOOK_BTABLE(offset);
-        #endif
+#ifdef ALLOY_USB_TEST_HOOK_BTABLE
+        ALLOY_USB_TEST_HOOK_BTABLE(offset);
+#endif
 
         hw()->USB_BTABLE = offset & 0xFFF8;
     }
-
 };
 
 // ============================================================================

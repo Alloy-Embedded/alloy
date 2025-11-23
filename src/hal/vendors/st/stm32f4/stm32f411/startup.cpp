@@ -189,52 +189,46 @@ extern "C" [[noreturn]] void Reset_Handler() {
 // VECTOR TABLE
 // ============================================================================
 
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     // Core system handlers
-    reinterpret_cast<void (*)()>(&_estack), // Initial stack pointer
-    Reset_Handler, // Reset handler
-    PVD_Handler, // IRQ 1: PVD - PVD through EXTI line detection
-        interrupt
-    TAMP_STAMP_Handler, // IRQ 2: TAMP_STAMP - Tamper and TimeStamp interrupts through the
-        EXTI line
-    RTC_WKUP_Handler, // IRQ 3: RTC_WKUP - RTC Wakeup interrupt through the EXTI
-        line
-    FLASH_Handler, // IRQ 4: FLASH - FLASH global interrupt
-    RCC_Handler, // IRQ 5: RCC - RCC global interrupt
-    EXTI0_Handler, // IRQ 6: EXTI0 - EXTI Line0 interrupt
-    EXTI1_Handler, // IRQ 7: EXTI1 - EXTI Line1 interrupt
-    EXTI2_Handler, // IRQ 8: EXTI2 - EXTI Line2 interrupt
-    EXTI3_Handler, // IRQ 9: EXTI3 - EXTI Line3 interrupt
-    EXTI4_Handler, // IRQ 10: EXTI4 - EXTI Line4 interrupt
-    ADC_Handler, // IRQ 18: ADC - ADC1 global interrupt
-    EXTI9_5_Handler, // IRQ 23: EXTI9_5 - EXTI Line[9:5] interrupts
-    TIM1_BRK_TIM9_Handler, // IRQ 24: TIM1_BRK_TIM9 - TIM1 Break interrupt and TIM9 global
-        interrupt
-    TIM1_UP_TIM10_Handler, // IRQ 25: TIM1_UP_TIM10 - TIM1 Update interrupt and TIM10 global
-        interrupt
-    TIM1_TRG_COM_TIM11_Handler, // IRQ 26: TIM1_TRG_COM_TIM11 - TIM1 Trigger and Commutation interrupts and
-        TIM11 global interrupt
-    TIM1_CC_Handler, // IRQ 27: TIM1_CC - TIM1 Capture Compare interrupt
-    TIM2_Handler, // IRQ 28: TIM2 - TIM2 global interrupt
-    TIM3_Handler, // IRQ 29: TIM3 - TIM3 global interrupt
-    I2C1_EV_Handler, // IRQ 31: I2C1_EV - I2C1 event interrupt
-    I2C1_ER_Handler, // IRQ 32: I2C1_ER - I2C1 error interrupt
-    I2C2_EV_Handler, // IRQ 33: I2C2_EV - I2C2 event interrupt
-    I2C2_ER_Handler, // IRQ 34: I2C2_ER - I2C2 error interrupt
-    SPI1_Handler, // IRQ 35: SPI1 - SPI1 global interrupt
-    SPI2_Handler, // IRQ 36: SPI2 - SPI2 global interrupt
-    EXTI15_10_Handler, // IRQ 40: EXTI15_10 - EXTI Line[15:10] interrupts
-    RTC_Alarm_Handler, // IRQ 41: RTC_Alarm - RTC Alarms (A and B) through EXTI line
-        interrupt
-    OTG_FS_WKUP_Handler, // IRQ 42: OTG_FS_WKUP - USB On-The-Go FS Wakeup through EXTI line
-        interrupt
-    SDIO_Handler, // IRQ 49: SDIO - SDIO global interrupt
-    SPI3_Handler, // IRQ 51: SPI3 - SPI3 global interrupt
-    OTG_FS_Handler, // IRQ 67: OTG_FS - USB On The Go FS global
-        interrupt
-    I2C3_EV_Handler, // IRQ 72: I2C3_EV - I2C3 event interrupt
-    I2C3_ER_Handler, // IRQ 73: I2C3_ER - I2C3 error interrupt
-    FPU_Handler, // IRQ 81: FPU - FPU interrupt
-    SPI4_Handler, // IRQ 84: SPI4 - SPI4 global interrupt
+    reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
+    Reset_Handler,                           // Reset handler
+    PVD_Handler,                             // IRQ 1: PVD - PVD through EXTI line detection
+    interrupt
+        TAMP_STAMP_Handler,      // IRQ 2: TAMP_STAMP - Tamper and TimeStamp interrupts through the
+    EXTI line RTC_WKUP_Handler,  // IRQ 3: RTC_WKUP - RTC Wakeup interrupt through the EXTI
+    line FLASH_Handler,          // IRQ 4: FLASH - FLASH global interrupt
+    RCC_Handler,                 // IRQ 5: RCC - RCC global interrupt
+    EXTI0_Handler,               // IRQ 6: EXTI0 - EXTI Line0 interrupt
+    EXTI1_Handler,               // IRQ 7: EXTI1 - EXTI Line1 interrupt
+    EXTI2_Handler,               // IRQ 8: EXTI2 - EXTI Line2 interrupt
+    EXTI3_Handler,               // IRQ 9: EXTI3 - EXTI Line3 interrupt
+    EXTI4_Handler,               // IRQ 10: EXTI4 - EXTI Line4 interrupt
+    ADC_Handler,                 // IRQ 18: ADC - ADC1 global interrupt
+    EXTI9_5_Handler,             // IRQ 23: EXTI9_5 - EXTI Line[9:5] interrupts
+    TIM1_BRK_TIM9_Handler,       // IRQ 24: TIM1_BRK_TIM9 - TIM1 Break interrupt and TIM9 global
+    interrupt
+        TIM1_UP_TIM10_Handler,  // IRQ 25: TIM1_UP_TIM10 - TIM1 Update interrupt and TIM10 global
+    interrupt TIM1_TRG_COM_TIM11_Handler,    // IRQ 26: TIM1_TRG_COM_TIM11 - TIM1 Trigger and
+                                             // Commutation interrupts and
+    TIM11 global interrupt TIM1_CC_Handler,  // IRQ 27: TIM1_CC - TIM1 Capture Compare interrupt
+    TIM2_Handler,                            // IRQ 28: TIM2 - TIM2 global interrupt
+    TIM3_Handler,                            // IRQ 29: TIM3 - TIM3 global interrupt
+    I2C1_EV_Handler,                         // IRQ 31: I2C1_EV - I2C1 event interrupt
+    I2C1_ER_Handler,                         // IRQ 32: I2C1_ER - I2C1 error interrupt
+    I2C2_EV_Handler,                         // IRQ 33: I2C2_EV - I2C2 event interrupt
+    I2C2_ER_Handler,                         // IRQ 34: I2C2_ER - I2C2 error interrupt
+    SPI1_Handler,                            // IRQ 35: SPI1 - SPI1 global interrupt
+    SPI2_Handler,                            // IRQ 36: SPI2 - SPI2 global interrupt
+    EXTI15_10_Handler,                       // IRQ 40: EXTI15_10 - EXTI Line[15:10] interrupts
+    RTC_Alarm_Handler,  // IRQ 41: RTC_Alarm - RTC Alarms (A and B) through EXTI line
+    interrupt
+        OTG_FS_WKUP_Handler,    // IRQ 42: OTG_FS_WKUP - USB On-The-Go FS Wakeup through EXTI line
+    interrupt SDIO_Handler,     // IRQ 49: SDIO - SDIO global interrupt
+    SPI3_Handler,               // IRQ 51: SPI3 - SPI3 global interrupt
+    OTG_FS_Handler,             // IRQ 67: OTG_FS - USB On The Go FS global
+    interrupt I2C3_EV_Handler,  // IRQ 72: I2C3_EV - I2C3 event interrupt
+    I2C3_ER_Handler,            // IRQ 73: I2C3_ER - I2C3 error interrupt
+    FPU_Handler,                // IRQ 81: FPU - FPU interrupt
+    SPI4_Handler,               // IRQ 84: SPI4 - SPI4 global interrupt
 };

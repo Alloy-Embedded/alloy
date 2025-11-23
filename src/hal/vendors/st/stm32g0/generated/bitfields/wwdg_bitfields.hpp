@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cstdint>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace ucore::hal::st::stm32g0::wwdg {
@@ -19,70 +20,69 @@ using namespace ucore::hal::bitfields;
 
 /// WWDG_CR - Control register
 namespace wwdg_cr {
-    /// 7-bit counter (MSB to LSB) These bits contain the value of the watchdog counter, decremented every (4096 x 2WDGTB[1:0]) PCLK cycles. A reset is produced when it is decremented from 0x40 to 0x3F (T6 becomes cleared).
-    /// Position: 0, Width: 7
-    /// Access: read-write
-    using T = BitField<0, 7>;
-    constexpr uint32_t T_Pos = 0;
-    constexpr uint32_t T_Msk = T::mask;
+/// 7-bit counter (MSB to LSB) These bits contain the value of the watchdog counter, decremented
+/// every (4096 x 2WDGTB[1:0]) PCLK cycles. A reset is produced when it is decremented from 0x40 to
+/// 0x3F (T6 becomes cleared). Position: 0, Width: 7 Access: read-write
+using T = BitField<0, 7>;
+constexpr uint32_t T_Pos = 0;
+constexpr uint32_t T_Msk = T::mask;
 
-    /// Activation bit This bit is set by software and only cleared by hardware after a reset. When WDGAÂ =Â 1, the watchdog can generate a reset.
-    /// Position: 7, Width: 1
-    /// Access: read-write
-    using WDGA = BitField<7, 1>;
-    constexpr uint32_t WDGA_Pos = 7;
-    constexpr uint32_t WDGA_Msk = WDGA::mask;
-    /// Enumerated values for WDGA
-    namespace wdga {
-        constexpr uint32_t B_0x0 = 0;
-        constexpr uint32_t B_0x1 = 1;
-    }
+/// Activation bit This bit is set by software and only cleared by hardware after a reset. When
+/// WDGAÂ =Â 1, the watchdog can generate a reset. Position: 7, Width: 1 Access: read-write
+using WDGA = BitField<7, 1>;
+constexpr uint32_t WDGA_Pos = 7;
+constexpr uint32_t WDGA_Msk = WDGA::mask;
+/// Enumerated values for WDGA
+namespace wdga {
+constexpr uint32_t B_0x0 = 0;
+constexpr uint32_t B_0x1 = 1;
+}  // namespace wdga
 
 }  // namespace wwdg_cr
 
 /// WWDG_CFR - Configuration register
 namespace wwdg_cfr {
-    /// 7-bit window value These bits contain the window value to be compared with the down-counter.
-    /// Position: 0, Width: 7
-    /// Access: read-write
-    using W = BitField<0, 7>;
-    constexpr uint32_t W_Pos = 0;
-    constexpr uint32_t W_Msk = W::mask;
+/// 7-bit window value These bits contain the window value to be compared with the down-counter.
+/// Position: 0, Width: 7
+/// Access: read-write
+using W = BitField<0, 7>;
+constexpr uint32_t W_Pos = 0;
+constexpr uint32_t W_Msk = W::mask;
 
-    /// Early wakeup interrupt When set, an interrupt occurs whenever the counter reaches the value 0x40. This interrupt is only cleared by hardware after a reset.
-    /// Position: 9, Width: 1
-    /// Access: read-write
-    using EWI = BitField<9, 1>;
-    constexpr uint32_t EWI_Pos = 9;
-    constexpr uint32_t EWI_Msk = EWI::mask;
+/// Early wakeup interrupt When set, an interrupt occurs whenever the counter reaches the value
+/// 0x40. This interrupt is only cleared by hardware after a reset. Position: 9, Width: 1 Access:
+/// read-write
+using EWI = BitField<9, 1>;
+constexpr uint32_t EWI_Pos = 9;
+constexpr uint32_t EWI_Msk = EWI::mask;
 
-    /// Timer base The timebase of the prescaler can be modified as follows:
-    /// Position: 11, Width: 3
-    /// Access: read-write
-    using WDGTB = BitField<11, 3>;
-    constexpr uint32_t WDGTB_Pos = 11;
-    constexpr uint32_t WDGTB_Msk = WDGTB::mask;
-    /// Enumerated values for WDGTB
-    namespace wdgtb {
-        constexpr uint32_t B_0x0 = 0;
-        constexpr uint32_t B_0x1 = 1;
-        constexpr uint32_t B_0x2 = 2;
-        constexpr uint32_t B_0x3 = 3;
-        constexpr uint32_t B_0x4 = 4;
-        constexpr uint32_t B_0x5 = 5;
-        constexpr uint32_t B_0x6 = 6;
-        constexpr uint32_t B_0x7 = 7;
-    }
+/// Timer base The timebase of the prescaler can be modified as follows:
+/// Position: 11, Width: 3
+/// Access: read-write
+using WDGTB = BitField<11, 3>;
+constexpr uint32_t WDGTB_Pos = 11;
+constexpr uint32_t WDGTB_Msk = WDGTB::mask;
+/// Enumerated values for WDGTB
+namespace wdgtb {
+constexpr uint32_t B_0x0 = 0;
+constexpr uint32_t B_0x1 = 1;
+constexpr uint32_t B_0x2 = 2;
+constexpr uint32_t B_0x3 = 3;
+constexpr uint32_t B_0x4 = 4;
+constexpr uint32_t B_0x5 = 5;
+constexpr uint32_t B_0x6 = 6;
+constexpr uint32_t B_0x7 = 7;
+}  // namespace wdgtb
 
 }  // namespace wwdg_cfr
 
 /// WWDG_SR - Status register
 namespace wwdg_sr {
-    /// Early wakeup interrupt flag
-    /// Position: 0, Width: 1
-    using EWIF = BitField<0, 1>;
-    constexpr uint32_t EWIF_Pos = 0;
-    constexpr uint32_t EWIF_Msk = EWIF::mask;
+/// Early wakeup interrupt flag
+/// Position: 0, Width: 1
+using EWIF = BitField<0, 1>;
+constexpr uint32_t EWIF_Pos = 0;
+constexpr uint32_t EWIF_Msk = EWIF::mask;
 
 }  // namespace wwdg_sr
 

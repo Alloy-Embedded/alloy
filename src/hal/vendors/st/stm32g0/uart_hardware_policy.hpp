@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/st/stm32g0/generated/registers/usart1_registers.hpp"
@@ -85,11 +85,11 @@ struct Stm32g0UARTHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_UART_MOCK_HW
-            return ALLOY_UART_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_UART_MOCK_HW
+        return ALLOY_UART_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -110,9 +110,9 @@ struct Stm32g0UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_UE
      */
     static inline void enable_uart() {
-        #ifdef ALLOY_UART_TEST_HOOK_UE
-            ALLOY_UART_TEST_HOOK_UE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_UE
+        ALLOY_UART_TEST_HOOK_UE();
+#endif
 
         hw()->CR1_FIFO_DISABLED |= (1U << 0);
     }
@@ -123,9 +123,9 @@ struct Stm32g0UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_UE
      */
     static inline void disable_uart() {
-        #ifdef ALLOY_UART_TEST_HOOK_UE
-            ALLOY_UART_TEST_HOOK_UE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_UE
+        ALLOY_UART_TEST_HOOK_UE();
+#endif
 
         hw()->CR1_FIFO_DISABLED &= ~(1U << 0);
     }
@@ -136,9 +136,9 @@ struct Stm32g0UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_TE
      */
     static inline void enable_transmitter() {
-        #ifdef ALLOY_UART_TEST_HOOK_TE
-            ALLOY_UART_TEST_HOOK_TE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TE
+        ALLOY_UART_TEST_HOOK_TE();
+#endif
 
         hw()->CR1_FIFO_DISABLED |= (1U << 3);
     }
@@ -149,9 +149,9 @@ struct Stm32g0UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_RE
      */
     static inline void enable_receiver() {
-        #ifdef ALLOY_UART_TEST_HOOK_RE
-            ALLOY_UART_TEST_HOOK_RE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RE
+        ALLOY_UART_TEST_HOOK_RE();
+#endif
 
         hw()->CR1_FIFO_DISABLED |= (1U << 2);
     }
@@ -162,9 +162,9 @@ struct Stm32g0UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_TE
      */
     static inline void disable_transmitter() {
-        #ifdef ALLOY_UART_TEST_HOOK_TE
-            ALLOY_UART_TEST_HOOK_TE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TE
+        ALLOY_UART_TEST_HOOK_TE();
+#endif
 
         hw()->CR1_FIFO_DISABLED &= ~(1U << 3);
     }
@@ -175,9 +175,9 @@ struct Stm32g0UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_RE
      */
     static inline void disable_receiver() {
-        #ifdef ALLOY_UART_TEST_HOOK_RE
-            ALLOY_UART_TEST_HOOK_RE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RE
+        ALLOY_UART_TEST_HOOK_RE();
+#endif
 
         hw()->CR1_FIFO_DISABLED &= ~(1U << 2);
     }
@@ -189,12 +189,12 @@ struct Stm32g0UARTHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_BRR
      */
     static inline void set_baudrate(uint32_t baudrate) {
-        #ifdef ALLOY_UART_TEST_HOOK_BRR
-            ALLOY_UART_TEST_HOOK_BRR(baudrate);
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_BRR
+        ALLOY_UART_TEST_HOOK_BRR(baudrate);
+#endif
 
         uint32_t usartdiv = (PERIPH_CLOCK_HZ + baudrate / 2) / baudrate;
-hw()->BRR = usartdiv;
+        hw()->BRR = usartdiv;
     }
 
     /**
@@ -203,12 +203,12 @@ hw()->BRR = usartdiv;
      * @note Test hook: ALLOY_UART_TEST_HOOK_M
      */
     static inline void set_word_length_8bit() {
-        #ifdef ALLOY_UART_TEST_HOOK_M
-            ALLOY_UART_TEST_HOOK_M();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_M
+        ALLOY_UART_TEST_HOOK_M();
+#endif
 
         hw()->CR1_FIFO_DISABLED &= ~(1U << 28);
-hw()->CR1_FIFO_DISABLED &= ~(1U << 12);
+        hw()->CR1_FIFO_DISABLED &= ~(1U << 12);
     }
 
     /**
@@ -217,12 +217,12 @@ hw()->CR1_FIFO_DISABLED &= ~(1U << 12);
      * @note Test hook: ALLOY_UART_TEST_HOOK_M
      */
     static inline void set_word_length_9bit() {
-        #ifdef ALLOY_UART_TEST_HOOK_M
-            ALLOY_UART_TEST_HOOK_M();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_M
+        ALLOY_UART_TEST_HOOK_M();
+#endif
 
         hw()->CR1_FIFO_DISABLED &= ~(1U << 28);
-hw()->CR1_FIFO_DISABLED |= (1U << 12);
+        hw()->CR1_FIFO_DISABLED |= (1U << 12);
     }
 
     /**
@@ -231,9 +231,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 12);
      * @note Test hook: ALLOY_UART_TEST_HOOK_PCE
      */
     static inline void set_parity_none() {
-        #ifdef ALLOY_UART_TEST_HOOK_PCE
-            ALLOY_UART_TEST_HOOK_PCE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_PCE
+        ALLOY_UART_TEST_HOOK_PCE();
+#endif
 
         hw()->CR1_FIFO_DISABLED &= ~(1U << 10);
     }
@@ -244,12 +244,12 @@ hw()->CR1_FIFO_DISABLED |= (1U << 12);
      * @note Test hook: ALLOY_UART_TEST_HOOK_PCE
      */
     static inline void set_parity_even() {
-        #ifdef ALLOY_UART_TEST_HOOK_PCE
-            ALLOY_UART_TEST_HOOK_PCE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_PCE
+        ALLOY_UART_TEST_HOOK_PCE();
+#endif
 
         hw()->CR1_FIFO_DISABLED |= (1U << 10);
-hw()->CR1_FIFO_DISABLED &= ~(1U << 9);
+        hw()->CR1_FIFO_DISABLED &= ~(1U << 9);
     }
 
     /**
@@ -258,12 +258,12 @@ hw()->CR1_FIFO_DISABLED &= ~(1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_PCE
      */
     static inline void set_parity_odd() {
-        #ifdef ALLOY_UART_TEST_HOOK_PCE
-            ALLOY_UART_TEST_HOOK_PCE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_PCE
+        ALLOY_UART_TEST_HOOK_PCE();
+#endif
 
         hw()->CR1_FIFO_DISABLED |= (1U << 10);
-hw()->CR1_FIFO_DISABLED |= (1U << 9);
+        hw()->CR1_FIFO_DISABLED |= (1U << 9);
     }
 
     /**
@@ -272,9 +272,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_STOP
      */
     static inline void set_stop_bits_1() {
-        #ifdef ALLOY_UART_TEST_HOOK_STOP
-            ALLOY_UART_TEST_HOOK_STOP();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_STOP
+        ALLOY_UART_TEST_HOOK_STOP();
+#endif
 
         hw()->CR2 &= ~(0x3U << 12);
     }
@@ -285,9 +285,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_STOP
      */
     static inline void set_stop_bits_2() {
-        #ifdef ALLOY_UART_TEST_HOOK_STOP
-            ALLOY_UART_TEST_HOOK_STOP();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_STOP
+        ALLOY_UART_TEST_HOOK_STOP();
+#endif
 
         hw()->CR2 = (hw()->CR2 & ~(0x3U << 12)) | (0x2U << 12);
     }
@@ -299,9 +299,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_TDR
      */
     static inline void write_data(uint8_t data) {
-        #ifdef ALLOY_UART_TEST_HOOK_TDR
-            ALLOY_UART_TEST_HOOK_TDR(data);
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TDR
+        ALLOY_UART_TEST_HOOK_TDR(data);
+#endif
 
         hw()->TDR = data;
     }
@@ -313,9 +313,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_RDR
      */
     static inline uint8_t read_data() {
-        #ifdef ALLOY_UART_TEST_HOOK_RDR
-            ALLOY_UART_TEST_HOOK_RDR();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RDR
+        ALLOY_UART_TEST_HOOK_RDR();
+#endif
 
         return static_cast<uint8_t>(hw()->RDR & 0xFF);
     }
@@ -327,9 +327,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_TXE
      */
     static inline bool is_tx_empty() {
-        #ifdef ALLOY_UART_TEST_HOOK_TXE
-            ALLOY_UART_TEST_HOOK_TXE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TXE
+        ALLOY_UART_TEST_HOOK_TXE();
+#endif
 
         return (hw()->ISR_FIFO_DISABLED & (1U << 7)) != 0;
     }
@@ -341,9 +341,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_TC
      */
     static inline bool is_tx_complete() {
-        #ifdef ALLOY_UART_TEST_HOOK_TC
-            ALLOY_UART_TEST_HOOK_TC();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TC
+        ALLOY_UART_TEST_HOOK_TC();
+#endif
 
         return (hw()->ISR_FIFO_DISABLED & (1U << 6)) != 0;
     }
@@ -355,9 +355,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_RXNE
      */
     static inline bool is_rx_not_empty() {
-        #ifdef ALLOY_UART_TEST_HOOK_RXNE
-            ALLOY_UART_TEST_HOOK_RXNE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RXNE
+        ALLOY_UART_TEST_HOOK_RXNE();
+#endif
 
         return (hw()->ISR_FIFO_DISABLED & (1U << 5)) != 0;
     }
@@ -368,9 +368,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_ORECF
      */
     static inline void clear_overrun_error() {
-        #ifdef ALLOY_UART_TEST_HOOK_ORECF
-            ALLOY_UART_TEST_HOOK_ORECF();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_ORECF
+        ALLOY_UART_TEST_HOOK_ORECF();
+#endif
 
         hw()->ICR = (1U << 3);
     }
@@ -382,9 +382,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_ORE
      */
     static inline bool has_overrun_error() {
-        #ifdef ALLOY_UART_TEST_HOOK_ORE
-            ALLOY_UART_TEST_HOOK_ORE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_ORE
+        ALLOY_UART_TEST_HOOK_ORE();
+#endif
 
         return (hw()->ISR_FIFO_DISABLED & (1U << 3)) != 0;
     }
@@ -396,9 +396,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_FE
      */
     static inline bool has_framing_error() {
-        #ifdef ALLOY_UART_TEST_HOOK_FE
-            ALLOY_UART_TEST_HOOK_FE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_FE
+        ALLOY_UART_TEST_HOOK_FE();
+#endif
 
         return (hw()->ISR_FIFO_DISABLED & (1U << 1)) != 0;
     }
@@ -410,9 +410,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_PE
      */
     static inline bool has_parity_error() {
-        #ifdef ALLOY_UART_TEST_HOOK_PE
-            ALLOY_UART_TEST_HOOK_PE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_PE
+        ALLOY_UART_TEST_HOOK_PE();
+#endif
 
         return (hw()->ISR_FIFO_DISABLED & (1U << 0)) != 0;
     }
@@ -423,9 +423,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_RXNEIE
      */
     static inline void enable_rx_interrupt() {
-        #ifdef ALLOY_UART_TEST_HOOK_RXNEIE
-            ALLOY_UART_TEST_HOOK_RXNEIE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RXNEIE
+        ALLOY_UART_TEST_HOOK_RXNEIE();
+#endif
 
         hw()->CR1_FIFO_DISABLED |= (1U << 5);
     }
@@ -436,9 +436,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_TXEIE
      */
     static inline void enable_tx_interrupt() {
-        #ifdef ALLOY_UART_TEST_HOOK_TXEIE
-            ALLOY_UART_TEST_HOOK_TXEIE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TXEIE
+        ALLOY_UART_TEST_HOOK_TXEIE();
+#endif
 
         hw()->CR1_FIFO_DISABLED |= (1U << 7);
     }
@@ -449,9 +449,9 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_RXNEIE
      */
     static inline void disable_rx_interrupt() {
-        #ifdef ALLOY_UART_TEST_HOOK_RXNEIE
-            ALLOY_UART_TEST_HOOK_RXNEIE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RXNEIE
+        ALLOY_UART_TEST_HOOK_RXNEIE();
+#endif
 
         hw()->CR1_FIFO_DISABLED &= ~(1U << 5);
     }
@@ -462,13 +462,12 @@ hw()->CR1_FIFO_DISABLED |= (1U << 9);
      * @note Test hook: ALLOY_UART_TEST_HOOK_TXEIE
      */
     static inline void disable_tx_interrupt() {
-        #ifdef ALLOY_UART_TEST_HOOK_TXEIE
-            ALLOY_UART_TEST_HOOK_TXEIE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TXEIE
+        ALLOY_UART_TEST_HOOK_TXEIE();
+#endif
 
         hw()->CR1_FIFO_DISABLED &= ~(1U << 7);
     }
-
 };
 
 // ============================================================================

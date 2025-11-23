@@ -21,10 +21,11 @@
 #include <concepts>
 #include <span>
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 namespace ucore::hal::concepts {
 
@@ -98,7 +99,7 @@ concept ClockPlatform = requires {
  */
 template <typename T>
 concept GpioPin = requires(T pin, const T const_pin, PinDirection direction, PinDrive drive,
-                            PinPull pull, bool value) {
+                           PinPull pull, bool value) {
     // State manipulation methods
     { pin.set() } -> std::same_as<Result<void, ErrorCode>>;
     { pin.clear() } -> std::same_as<Result<void, ErrorCode>>;
@@ -181,7 +182,7 @@ concept UartPeripheral = requires(T device, const T const_device, u8 byte) {
  */
 template <typename T>
 concept SpiPeripheral = requires(T device, const T const_device, std::span<u8> rx_buffer,
-                                  std::span<const u8> tx_buffer) {
+                                 std::span<const u8> tx_buffer) {
     // Transfer operations
     { device.transfer(tx_buffer, rx_buffer) } -> std::same_as<Result<void, ErrorCode>>;
     { device.transmit(tx_buffer) } -> std::same_as<Result<void, ErrorCode>>;

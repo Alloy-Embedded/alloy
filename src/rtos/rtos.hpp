@@ -41,12 +41,12 @@
 
 #include "hal/interface/systick.hpp"
 
-#include "rtos/error.hpp"
 #include "rtos/concepts.hpp"
+#include "rtos/error.hpp"
 
 #include "core/error.hpp"
-#include "core/types.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::rtos {
 
@@ -285,9 +285,7 @@ struct TaskSet {
     /// Calculate total stack RAM at compile time
     ///
     /// @return Total bytes of stack RAM
-    static consteval size_t total_stack_ram() {
-        return (Tasks::stack_size() + ...);
-    }
+    static consteval size_t total_stack_ram() { return (Tasks::stack_size() + ...); }
 
     /// Calculate total RAM (stack + TCB overhead)
     ///
@@ -318,9 +316,7 @@ struct TaskSet {
     ///
     /// @return Highest priority value
     static consteval core::u8 highest_priority() {
-        constexpr core::u8 priorities[] = {
-            static_cast<core::u8>(Tasks::priority())...
-        };
+        constexpr core::u8 priorities[] = {static_cast<core::u8>(Tasks::priority())...};
         return array_max(priorities);
     }
 
@@ -328,9 +324,7 @@ struct TaskSet {
     ///
     /// @return Lowest priority value
     static consteval core::u8 lowest_priority() {
-        constexpr core::u8 priorities[] = {
-            static_cast<core::u8>(Tasks::priority())...
-        };
+        constexpr core::u8 priorities[] = {static_cast<core::u8>(Tasks::priority())...};
         return array_min(priorities);
     }
 
@@ -338,9 +332,7 @@ struct TaskSet {
     ///
     /// @return true if all priorities are unique
     static consteval bool has_unique_priorities() {
-        constexpr core::u8 priorities[] = {
-            static_cast<core::u8>(Tasks::priority())...
-        };
+        constexpr core::u8 priorities[] = {static_cast<core::u8>(Tasks::priority())...};
         constexpr size_t N = count();
 
         for (size_t i = 0; i < N; ++i) {
@@ -362,9 +354,9 @@ struct TaskSet {
     ///
     /// @return true if all stacks valid
     static consteval bool has_valid_stacks() {
-        return ((Tasks::stack_size() >= 256 &&
-                 Tasks::stack_size() <= 65536 &&
-                 (Tasks::stack_size() % 8) == 0) && ...);
+        return ((Tasks::stack_size() >= 256 && Tasks::stack_size() <= 65536 &&
+                 (Tasks::stack_size() % 8) == 0) &&
+                ...);
     }
 
     /// Validate entire task set at compile time
@@ -379,12 +371,16 @@ struct TaskSet {
     /// @return true if valid
     template <bool RequireUniquePriorities = false>
     static consteval bool validate() {
-        if (count() == 0) return false;  // Need at least one task
-        if (!has_valid_stacks()) return false;
-        if (highest_priority() > 7) return false;
+        if (count() == 0)
+            return false;  // Need at least one task
+        if (!has_valid_stacks())
+            return false;
+        if (highest_priority() > 7)
+            return false;
 
         if constexpr (RequireUniquePriorities) {
-            if (!has_unique_priorities()) return false;
+            if (!has_unique_priorities())
+                return false;
         }
 
         return true;
@@ -405,9 +401,7 @@ struct TaskSet {
     /// Validate all tasks satisfy ValidTask concept
     ///
     /// @return true if all tasks valid
-    static consteval bool all_tasks_valid() {
-        return (ValidTask<Tasks> && ...);
-    }
+    static consteval bool all_tasks_valid() { return (ValidTask<Tasks> && ...); }
 
     /// Calculate CPU utilization (simplified)
     ///
@@ -425,14 +419,15 @@ struct TaskSet {
     /// @tparam RequireUniquePriorities Enforce unique priorities
     /// @tparam WarnPriorityInversion Warn if priority inversion possible
     /// @return true if all checks pass
-    template <bool RequireUniquePriorities = false,
-              bool WarnPriorityInversion = true>
+    template <bool RequireUniquePriorities = false, bool WarnPriorityInversion = true>
     static consteval bool validate_advanced() {
         // Basic validation
-        if (!validate<RequireUniquePriorities>()) return false;
+        if (!validate<RequireUniquePriorities>())
+            return false;
 
         // Task concept validation
-        if (!all_tasks_valid()) return false;
+        if (!all_tasks_valid())
+            return false;
 
         // Priority inversion warning
         if constexpr (WarnPriorityInversion) {
@@ -499,7 +494,7 @@ namespace ucore::rtos {
 // New API: Compile-time name (zero RAM)
 template <size_t StackSize, Priority Pri, fixed_string Name>
 Task<StackSize, Pri, Name>::Task(void (*task_func)()) : stack_{},
-                                                         tcb_{} {
+                                                        tcb_{} {
     // Initialize TCB
     tcb_.stack_base = &stack_[0];
     tcb_.stack_size = StackSize;
@@ -518,7 +513,7 @@ Task<StackSize, Pri, Name>::Task(void (*task_func)()) : stack_{},
 // Old API: Runtime name (deprecated, uses RAM)
 template <size_t StackSize, Priority Pri, fixed_string Name>
 Task<StackSize, Pri, Name>::Task(void (*task_func)(), const char* name) : stack_{},
-                                                                           tcb_{} {
+                                                                          tcb_{} {
     // Initialize TCB
     tcb_.stack_base = &stack_[0];
     tcb_.stack_size = StackSize;

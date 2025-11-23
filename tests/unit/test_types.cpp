@@ -9,12 +9,13 @@
  * @note Part of Phase 3.1: Core Systems Testing
  */
 
-#include "hal/types.hpp"
-#include "hal/interface/spi.hpp"
-#include "core/types.hpp"
-
-#include <type_traits>
 #include <cstdint>
+#include <type_traits>
+
+#include "hal/interface/spi.hpp"
+#include "hal/types.hpp"
+
+#include "core/types.hpp"
 
 using namespace ucore::hal;
 using namespace ucore::core;
@@ -39,10 +40,12 @@ constexpr bool test_pin_direction() {
 
     // Test usage
     PinDirection dir = PinDirection::Output;
-    if (dir != PinDirection::Output) return false;
+    if (dir != PinDirection::Output)
+        return false;
 
     dir = PinDirection::Input;
-    if (dir != PinDirection::Input) return false;
+    if (dir != PinDirection::Input)
+        return false;
 
     return true;
 }
@@ -64,13 +67,16 @@ constexpr bool test_pin_pull() {
 
     // Test all values
     PinPull pull = PinPull::None;
-    if (pull != PinPull::None) return false;
+    if (pull != PinPull::None)
+        return false;
 
     pull = PinPull::PullUp;
-    if (pull != PinPull::PullUp) return false;
+    if (pull != PinPull::PullUp)
+        return false;
 
     pull = PinPull::PullDown;
-    if (pull != PinPull::PullDown) return false;
+    if (pull != PinPull::PullDown)
+        return false;
 
     return true;
 }
@@ -138,23 +144,29 @@ static_assert(test_interrupt_mode(), "InterruptMode tests must pass");
 constexpr bool test_gpio_config() {
     // Test default construction
     GpioConfig config{};
-    if (config.direction != PinDirection::Input) return false;
-    if (config.drive != PinDrive::PushPull) return false;
-    if (config.pull != PinPull::None) return false;
-    if (config.initial_state != PinState::Low) return false;
+    if (config.direction != PinDirection::Input)
+        return false;
+    if (config.drive != PinDrive::PushPull)
+        return false;
+    if (config.pull != PinPull::None)
+        return false;
+    if (config.initial_state != PinState::Low)
+        return false;
 
     // Test custom configuration
-    GpioConfig custom{
-        .direction = PinDirection::Output,
-        .drive = PinDrive::OpenDrain,
-        .pull = PinPull::PullUp,
-        .initial_state = PinState::High
-    };
+    GpioConfig custom{.direction = PinDirection::Output,
+                      .drive = PinDrive::OpenDrain,
+                      .pull = PinPull::PullUp,
+                      .initial_state = PinState::High};
 
-    if (custom.direction != PinDirection::Output) return false;
-    if (custom.drive != PinDrive::OpenDrain) return false;
-    if (custom.pull != PinPull::PullUp) return false;
-    if (custom.initial_state != PinState::High) return false;
+    if (custom.direction != PinDirection::Output)
+        return false;
+    if (custom.drive != PinDrive::OpenDrain)
+        return false;
+    if (custom.pull != PinPull::PullUp)
+        return false;
+    if (custom.initial_state != PinState::High)
+        return false;
 
     return true;
 }
@@ -273,26 +285,34 @@ static_assert(test_flow_control(), "FlowControl tests must pass");
 constexpr bool test_uart_config() {
     // Test default construction (8N1 at 115200)
     UartConfig config{};
-    if (config.baudrate != Baudrate::e115200) return false;
-    if (config.data_bits != DataBits::Eight) return false;
-    if (config.parity != Parity::None) return false;
-    if (config.stop_bits != StopBits::One) return false;
-    if (config.flow_control != FlowControl::None) return false;
+    if (config.baudrate != Baudrate::e115200)
+        return false;
+    if (config.data_bits != DataBits::Eight)
+        return false;
+    if (config.parity != Parity::None)
+        return false;
+    if (config.stop_bits != StopBits::One)
+        return false;
+    if (config.flow_control != FlowControl::None)
+        return false;
 
     // Test custom configuration
-    UartConfig custom{
-        .baudrate = Baudrate::e9600,
-        .data_bits = DataBits::Seven,
-        .parity = Parity::Even,
-        .stop_bits = StopBits::Two,
-        .flow_control = FlowControl::RtsCts
-    };
+    UartConfig custom{.baudrate = Baudrate::e9600,
+                      .data_bits = DataBits::Seven,
+                      .parity = Parity::Even,
+                      .stop_bits = StopBits::Two,
+                      .flow_control = FlowControl::RtsCts};
 
-    if (custom.baudrate != Baudrate::e9600) return false;
-    if (custom.data_bits != DataBits::Seven) return false;
-    if (custom.parity != Parity::Even) return false;
-    if (custom.stop_bits != StopBits::Two) return false;
-    if (custom.flow_control != FlowControl::RtsCts) return false;
+    if (custom.baudrate != Baudrate::e9600)
+        return false;
+    if (custom.data_bits != DataBits::Seven)
+        return false;
+    if (custom.parity != Parity::Even)
+        return false;
+    if (custom.stop_bits != StopBits::Two)
+        return false;
+    if (custom.flow_control != FlowControl::RtsCts)
+        return false;
 
     return true;
 }
@@ -383,23 +403,28 @@ static_assert(test_spi_cs_mode(), "SpiCsMode tests must pass");
 constexpr bool test_spi_config() {
     // Test default construction
     SpiConfig config{};
-    if (config.mode != SpiMode::Mode0) return false;
-    if (config.clock_speed != 1000000) return false;  // 1 MHz default
-    if (config.bit_order != SpiBitOrder::MsbFirst) return false;
-    if (config.data_size != SpiDataSize::Bits8) return false;
+    if (config.mode != SpiMode::Mode0)
+        return false;
+    if (config.clock_speed != 1000000)
+        return false;  // 1 MHz default
+    if (config.bit_order != SpiBitOrder::MsbFirst)
+        return false;
+    if (config.data_size != SpiDataSize::Bits8)
+        return false;
 
     // Test custom configuration
-    SpiConfig custom{
-        SpiMode::Mode3,
-        4000000,  // 4 MHz
-        SpiBitOrder::LsbFirst,
-        SpiDataSize::Bits16
-    };
+    SpiConfig custom{SpiMode::Mode3,
+                     4000000,  // 4 MHz
+                     SpiBitOrder::LsbFirst, SpiDataSize::Bits16};
 
-    if (custom.mode != SpiMode::Mode3) return false;
-    if (custom.clock_speed != 4000000) return false;
-    if (custom.bit_order != SpiBitOrder::LsbFirst) return false;
-    if (custom.data_size != SpiDataSize::Bits16) return false;
+    if (custom.mode != SpiMode::Mode3)
+        return false;
+    if (custom.clock_speed != 4000000)
+        return false;
+    if (custom.bit_order != SpiBitOrder::LsbFirst)
+        return false;
+    if (custom.data_size != SpiDataSize::Bits16)
+        return false;
 
     return true;
 }
@@ -454,23 +479,29 @@ static_assert(test_pwm_alignment(), "PwmAlignment tests must pass");
 constexpr bool test_pwm_config() {
     // Test default construction (1 kHz, 50% duty)
     PwmConfig config{};
-    if (config.frequency_hz != 1000) return false;
-    if (config.duty_cycle_percent != 50) return false;
-    if (config.polarity != PwmPolarity::Normal) return false;
-    if (config.alignment != PwmAlignment::Edge) return false;
+    if (config.frequency_hz != 1000)
+        return false;
+    if (config.duty_cycle_percent != 50)
+        return false;
+    if (config.polarity != PwmPolarity::Normal)
+        return false;
+    if (config.alignment != PwmAlignment::Edge)
+        return false;
 
     // Test custom configuration
-    PwmConfig custom{
-        .frequency_hz = 10000,         // 10 kHz
-        .duty_cycle_percent = 75,      // 75% duty
-        .polarity = PwmPolarity::Inverted,
-        .alignment = PwmAlignment::Center
-    };
+    PwmConfig custom{.frequency_hz = 10000,     // 10 kHz
+                     .duty_cycle_percent = 75,  // 75% duty
+                     .polarity = PwmPolarity::Inverted,
+                     .alignment = PwmAlignment::Center};
 
-    if (custom.frequency_hz != 10000) return false;
-    if (custom.duty_cycle_percent != 75) return false;
-    if (custom.polarity != PwmPolarity::Inverted) return false;
-    if (custom.alignment != PwmAlignment::Center) return false;
+    if (custom.frequency_hz != 10000)
+        return false;
+    if (custom.duty_cycle_percent != 75)
+        return false;
+    if (custom.polarity != PwmPolarity::Inverted)
+        return false;
+    if (custom.alignment != PwmAlignment::Center)
+        return false;
 
     return true;
 }

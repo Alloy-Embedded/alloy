@@ -38,13 +38,14 @@
  *       Consult board documentation for UART pin mapping.
  */
 
-#include "same70_xplained/board.hpp"
 #include "hal/api/systick_simple.hpp"
 #include "hal/api/uart_simple.hpp"
 #include "hal/vendors/arm/same70/gpio.hpp"
 #include "hal/vendors/atmel/same70/uart_hardware_policy.hpp"
+
 #include "logger/logger.hpp"
 #include "logger/sinks/uart_sink.hpp"
+#include "same70_xplained/board.hpp"
 
 using namespace ucore::hal;
 using namespace ucore::hal::same70;
@@ -71,11 +72,10 @@ int main() {
     using UartPolicy = Same70UARTHardwarePolicy<0x400E0800, 7>;
 
     SimpleUartConfigTxOnly<UartTxPin, UartPolicy> uart{
-        PeripheralId::UART0,
-        BaudRate{115200},
+        PeripheralId::UART0, BaudRate{115200},
         8,  // data bits
         UartParity::NONE,
-        1   // stop bits
+        1  // stop bits
     };
 
     // Step 3: Configure GPIO pin for UART peripheral function
@@ -87,13 +87,16 @@ int main() {
 
     // Configure PA10 for peripheral A (UART0_TXD)
     // Peripheral select: ABCDSR[1:0] -> 00=A, 01=B, 10=C, 11=D
-    volatile uint32_t* PIOA_PDR = reinterpret_cast<volatile uint32_t*>(peripherals::PIOA + 0x04);   // Disable PIO
-    volatile uint32_t* PIOA_ABCDSR1 = reinterpret_cast<volatile uint32_t*>(peripherals::PIOA + 0x70);
-    volatile uint32_t* PIOA_ABCDSR2 = reinterpret_cast<volatile uint32_t*>(peripherals::PIOA + 0x74);
+    volatile uint32_t* PIOA_PDR =
+        reinterpret_cast<volatile uint32_t*>(peripherals::PIOA + 0x04);  // Disable PIO
+    volatile uint32_t* PIOA_ABCDSR1 =
+        reinterpret_cast<volatile uint32_t*>(peripherals::PIOA + 0x70);
+    volatile uint32_t* PIOA_ABCDSR2 =
+        reinterpret_cast<volatile uint32_t*>(peripherals::PIOA + 0x74);
 
-    *PIOA_PDR = (1 << 10);          // Disable PIO control on PA10
-    *PIOA_ABCDSR1 &= ~(1 << 10);    // ABCDSR1 bit = 0
-    *PIOA_ABCDSR2 &= ~(1 << 10);    // ABCDSR2 bit = 0 -> Select peripheral A
+    *PIOA_PDR = (1 << 10);        // Disable PIO control on PA10
+    *PIOA_ABCDSR1 &= ~(1 << 10);  // ABCDSR1 bit = 0
+    *PIOA_ABCDSR2 &= ~(1 << 10);  // ABCDSR2 bit = 0 -> Select peripheral A
 
     // Debug: Blink 2 times to show GPIO config OK
     for (int i = 0; i < 2; i++) {
@@ -120,11 +123,16 @@ int main() {
     SysTickTimer::delay_ms<board::BoardSysTick>(500);
 
     // Step 4: Send test directly to UART hardware (raw register access)
-    volatile uint32_t* UART0_CR = reinterpret_cast<volatile uint32_t*>(0x400E0800);   // Control Register
-    volatile uint32_t* UART0_MR = reinterpret_cast<volatile uint32_t*>(0x400E0804);   // Mode Register
-    volatile uint32_t* UART0_BRGR = reinterpret_cast<volatile uint32_t*>(0x400E0820); // Baud Rate Generator
-    volatile uint32_t* UART0_SR = reinterpret_cast<volatile uint32_t*>(0x400E0814);   // Status Register
-    volatile uint32_t* UART0_THR = reinterpret_cast<volatile uint32_t*>(0x400E081C);  // Transmit Holding Register
+    volatile uint32_t* UART0_CR =
+        reinterpret_cast<volatile uint32_t*>(0x400E0800);  // Control Register
+    volatile uint32_t* UART0_MR =
+        reinterpret_cast<volatile uint32_t*>(0x400E0804);  // Mode Register
+    volatile uint32_t* UART0_BRGR =
+        reinterpret_cast<volatile uint32_t*>(0x400E0820);  // Baud Rate Generator
+    volatile uint32_t* UART0_SR =
+        reinterpret_cast<volatile uint32_t*>(0x400E0814);  // Status Register
+    volatile uint32_t* UART0_THR =
+        reinterpret_cast<volatile uint32_t*>(0x400E081C);  // Transmit Holding Register
 
     // Reset and configure UART0 manually
     *UART0_CR = (1 << 2) | (1 << 3);  // Reset TX and RX
@@ -151,7 +159,7 @@ int main() {
             SysTickTimer::delay_ms<board::BoardSysTick>(50);
         }
         // Hang here
-        while(true) {
+        while (true) {
             SysTickTimer::delay_ms<board::BoardSysTick>(1000);
         }
     }

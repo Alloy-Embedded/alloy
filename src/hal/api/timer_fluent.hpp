@@ -6,10 +6,11 @@
 
 #pragma once
 
-#include "core/error_code.hpp"
-#include "core/result.hpp"
 #include "hal/interface/timer.hpp"
 #include "hal/timer_simple.hpp"
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"
 
 namespace ucore::hal {
 
@@ -19,24 +20,20 @@ using namespace ucore::hal::signals;
 struct TimerBuilderState {
     bool has_mode = false;
     bool has_period = false;
-    
-    constexpr bool is_valid() const { 
-        return has_mode; 
-    }
+
+    constexpr bool is_valid() const { return has_mode; }
 };
 
 struct FluentTimerConfig {
     PeripheralId peripheral;
     TimerConfig config;
-    
-    Result<void, ErrorCode> apply() const { 
-        return Ok(); 
-    }
+
+    Result<void, ErrorCode> apply() const { return Ok(); }
 };
 
 template <PeripheralId PeriphId>
 class TimerBuilder {
-public:
+   public:
     constexpr TimerBuilder()
         : mode_(TimerDefaults::mode),
           period_us_(TimerDefaults::period_us),
@@ -124,14 +121,12 @@ public:
         }
 
         FluentTimerConfig config{
-            PeriphId,
-            TimerConfig{mode_, period_us_, prescaler_, capture_edge_, compare_value_}
-        };
+            PeriphId, TimerConfig{mode_, period_us_, prescaler_, capture_edge_, compare_value_}};
 
         return Ok(std::move(config));
     }
 
-private:
+   private:
     TimerMode mode_;
     u32 period_us_;
     u32 prescaler_;

@@ -6,9 +6,10 @@
 
 #pragma once
 
+#include "hal/interface/interrupt.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/interface/interrupt.hpp"
 
 namespace ucore::hal {
 
@@ -16,7 +17,7 @@ using namespace ucore::core;
 
 /**
  * @brief Expert interrupt configuration
- * 
+ *
  * Provides full control over interrupt configuration including:
  * - Priority grouping
  * - Sub-priority
@@ -25,8 +26,8 @@ using namespace ucore::core;
  */
 struct InterruptExpertConfig {
     IrqNumber irq_number;
-    u8 preempt_priority;   ///< Preemption priority (0-15, lower = higher)
-    u8 sub_priority;       ///< Sub-priority within same preemption level
+    u8 preempt_priority;  ///< Preemption priority (0-15, lower = higher)
+    u8 sub_priority;      ///< Sub-priority within same preemption level
     bool enable;
     bool trigger_pending;  ///< Set pending flag on init
 
@@ -55,39 +56,33 @@ struct InterruptExpertConfig {
      * @brief Standard configuration with normal priority
      */
     static constexpr InterruptExpertConfig standard(IrqNumber irq) {
-        return InterruptExpertConfig{
-            .irq_number = irq,
-            .preempt_priority = 8,
-            .sub_priority = 0,
-            .enable = true,
-            .trigger_pending = false
-        };
+        return InterruptExpertConfig{.irq_number = irq,
+                                     .preempt_priority = 8,
+                                     .sub_priority = 0,
+                                     .enable = true,
+                                     .trigger_pending = false};
     }
 
     /**
      * @brief High priority configuration
      */
     static constexpr InterruptExpertConfig high_priority(IrqNumber irq) {
-        return InterruptExpertConfig{
-            .irq_number = irq,
-            .preempt_priority = 2,
-            .sub_priority = 0,
-            .enable = true,
-            .trigger_pending = false
-        };
+        return InterruptExpertConfig{.irq_number = irq,
+                                     .preempt_priority = 2,
+                                     .sub_priority = 0,
+                                     .enable = true,
+                                     .trigger_pending = false};
     }
 
     /**
      * @brief Low priority configuration
      */
     static constexpr InterruptExpertConfig low_priority(IrqNumber irq) {
-        return InterruptExpertConfig{
-            .irq_number = irq,
-            .preempt_priority = 14,
-            .sub_priority = 0,
-            .enable = true,
-            .trigger_pending = false
-        };
+        return InterruptExpertConfig{.irq_number = irq,
+                                     .preempt_priority = 14,
+                                     .sub_priority = 0,
+                                     .enable = true,
+                                     .trigger_pending = false};
     }
 };
 
@@ -95,7 +90,7 @@ namespace expert {
 
 /**
  * @brief Configure interrupt with expert settings
- * 
+ *
  * @param config Expert configuration
  * @return Result with error code
  */
@@ -109,7 +104,7 @@ inline Result<void, ErrorCode> configure(const InterruptExpertConfig& config) {
 
 /**
  * @brief Get interrupt pending status
- * 
+ *
  * @param irq Interrupt number
  * @return true if pending
  */
@@ -120,7 +115,7 @@ inline bool is_pending(IrqNumber irq) {
 
 /**
  * @brief Set interrupt pending
- * 
+ *
  * @param irq Interrupt number
  * @return Result with error code
  */
@@ -131,7 +126,7 @@ inline Result<void, ErrorCode> set_pending(IrqNumber irq) {
 
 /**
  * @brief Clear interrupt pending
- * 
+ *
  * @param irq Interrupt number
  * @return Result with error code
  */
@@ -142,7 +137,7 @@ inline Result<void, ErrorCode> clear_pending(IrqNumber irq) {
 
 /**
  * @brief Check if interrupt is active (currently executing)
- * 
+ *
  * @param irq Interrupt number
  * @return true if active
  */
@@ -153,7 +148,7 @@ inline bool is_active(IrqNumber irq) {
 
 /**
  * @brief Get current interrupt priority
- * 
+ *
  * @param irq Interrupt number
  * @return Result with priority or error
  */
@@ -164,10 +159,10 @@ inline Result<u8, ErrorCode> get_priority(IrqNumber irq) {
 
 /**
  * @brief Set priority grouping (ARM Cortex-M specific)
- * 
+ *
  * Configures how the 4-bit priority is split between
  * preemption priority and sub-priority.
- * 
+ *
  * @param grouping Priority grouping (0-7)
  * @return Result with error code
  */

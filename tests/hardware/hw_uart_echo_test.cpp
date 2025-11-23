@@ -22,8 +22,8 @@
  * 4. LED blinks on successful echo operations
  */
 
-#include "core/result.hpp"
 #include "core/error.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 
 using namespace ucore::core;
@@ -33,32 +33,31 @@ using namespace ucore::core;
 // ==============================================================================
 
 #if defined(ALLOY_BOARD_NUCLEO_F401RE) || defined(ALLOY_BOARD_NUCLEO_F446RE)
+    #include "hal/api/uart_simple.hpp"
     #include "hal/vendors/st/stm32f4/clock_platform.hpp"
     #include "hal/vendors/st/stm32f4/gpio.hpp"
-    #include "hal/api/uart_simple.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
-        ucore::hal::st::stm32f4::ExampleF4ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform =
+    ucore::hal::st::stm32f4::Stm32f4Clock<ucore::hal::st::stm32f4::ExampleF4ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
 
-    // UART configuration for STM32F4
-    using UartConfig = ucore::hal::api::SimpleUartConfig<
-        /* Hardware */ void,  // Placeholder - would use actual UART hardware
-        /* TxPin */ void,
-        /* RxPin */ void
-    >;
+// UART configuration for STM32F4
+using UartConfig = ucore::hal::api::SimpleUartConfig<
+    /* Hardware */ void,  // Placeholder - would use actual UART hardware
+    /* TxPin */ void,
+    /* RxPin */ void>;
 
 #elif defined(ALLOY_BOARD_SAME70_XPLAINED)
     #include "hal/vendors/microchip/same70/clock_platform.hpp"
     #include "hal/vendors/microchip/same70/gpio.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::microchip::same70::Same70Clock<
-        ucore::hal::microchip::same70::ExampleSame70ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform = ucore::hal::microchip::same70::Same70Clock<
+    ucore::hal::microchip::same70::ExampleSame70ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
 
 #else
     #error "Unsupported board for UART echo test"
@@ -113,7 +112,7 @@ void uart_rx_handler() {
     // In real implementation: u8 byte = uart.receive_byte();
 
     // For simulation:
-    u8 received_byte = 0x41; // 'A'
+    u8 received_byte = 0x41;  // 'A'
 
     // Echo it back
     if (echo_byte(received_byte)) {
@@ -284,10 +283,10 @@ int main() {
         }
     }
 
-    // Run test scenarios (optional - for automated testing)
-    #ifdef RUN_AUTOMATED_TESTS
-        run_test_scenarios();
-    #endif
+// Run test scenarios (optional - for automated testing)
+#ifdef RUN_AUTOMATED_TESTS
+    run_test_scenarios();
+#endif
 
     // Run echo server (main mode)
     echo_server_loop();

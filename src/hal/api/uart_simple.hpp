@@ -29,13 +29,14 @@
 
 #pragma once
 
+#include "hal/api/uart_base.hpp"
+#include "hal/core/signal_registry.hpp"
+#include "hal/core/signals.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
 #include "core/units.hpp"
-#include "hal/api/uart_base.hpp"
-#include "hal/core/signals.hpp"
-#include "hal/core/signal_registry.hpp"
 
 namespace ucore::hal {
 
@@ -101,7 +102,7 @@ struct SimpleUartConfigTxOnly;
  */
 template <PeripheralId PeriphId, typename HardwarePolicy>
 class Uart {
-public:
+   public:
     /**
      * @brief Quick setup with TX and RX pins
      *
@@ -127,22 +128,17 @@ public:
     static constexpr auto quick_setup(BaudRate baudrate) {
         // Compile-time pin validation
         static_assert(is_valid_tx_pin<TxPin>(),
-                     "TX pin is not compatible with this UART peripheral. "
-                     "Check signal routing tables for valid TX pins.");
+                      "TX pin is not compatible with this UART peripheral. "
+                      "Check signal routing tables for valid TX pins.");
 
         static_assert(is_valid_rx_pin<RxPin>(),
-                     "RX pin is not compatible with this UART peripheral. "
-                     "Check signal routing tables for valid RX pins.");
+                      "RX pin is not compatible with this UART peripheral. "
+                      "Check signal routing tables for valid RX pins.");
 
         // Return configuration result
         return SimpleUartConfig<TxPin, RxPin, HardwarePolicy>(
-            PeriphId,
-            baudrate,
-            UartDefaults::data_bits,
-            UartDefaults::parity,
-            UartDefaults::stop_bits,
-            UartDefaults::flow_control
-        );
+            PeriphId, baudrate, UartDefaults::data_bits, UartDefaults::parity,
+            UartDefaults::stop_bits, UartDefaults::flow_control);
     }
 
     /**
@@ -160,13 +156,8 @@ public:
         static_assert(is_valid_rx_pin<RxPin>(), "Invalid RX pin");
 
         return SimpleUartConfig<TxPin, RxPin, HardwarePolicy>(
-            PeriphId,
-            baudrate,
-            UartDefaults::data_bits,
-            parity,
-            UartDefaults::stop_bits,
-            UartDefaults::flow_control
-        );
+            PeriphId, baudrate, UartDefaults::data_bits, parity, UartDefaults::stop_bits,
+            UartDefaults::flow_control);
     }
 
     /**
@@ -183,15 +174,11 @@ public:
         static_assert(is_valid_tx_pin<TxPin>(), "Invalid TX pin");
 
         return SimpleUartConfigTxOnly<TxPin, HardwarePolicy>(
-            PeriphId,
-            baudrate,
-            UartDefaults::data_bits,
-            UartDefaults::parity,
-            UartDefaults::stop_bits
-        );
+            PeriphId, baudrate, UartDefaults::data_bits, UartDefaults::parity,
+            UartDefaults::stop_bits);
     }
 
-private:
+   private:
     // ========================================================================
     // Compile-Time Pin Validation Helpers
     // ========================================================================
@@ -231,10 +218,8 @@ private:
      * @return true if compatible, false otherwise
      */
     template <typename Pin>
-    static constexpr bool check_pin_signal_compatibility(
-        PeripheralId peripheral,
-        SignalType signal) {
-
+    static constexpr bool check_pin_signal_compatibility(PeripheralId peripheral,
+                                                         SignalType signal) {
         constexpr PinId pin_id = Pin::get_pin_id();
 
         // This will be implemented using the signal tables we generated
@@ -272,22 +257,27 @@ struct SimpleUartConfig : public UartBase<SimpleUartConfig<TxPin, RxPin, Hardwar
     bool flow_control;
 
     constexpr SimpleUartConfig(PeripheralId p, BaudRate br, u8 db, UartParity par, u8 sb, bool fc)
-        : peripheral(p), baudrate(br), data_bits(db), parity(par), stop_bits(sb), flow_control(fc) {}
+        : peripheral(p),
+          baudrate(br),
+          data_bits(db),
+          parity(par),
+          stop_bits(sb),
+          flow_control(fc) {}
 
     // ========================================================================
     // Inherited Interface from UartBase (CRTP)
     // ========================================================================
 
     // Inherit all common UART methods from base
-    using Base::send;           // Send single character
-    using Base::receive;        // Receive single character
-    using Base::write;          // Write null-terminated string
-    using Base::send_buffer;    // Send buffer of bytes
-    using Base::receive_buffer; // Receive buffer of bytes
-    using Base::flush;          // Wait for transmission complete
-    using Base::available;      // Number of bytes available
-    using Base::has_data;       // Check if data available
-    using Base::set_baud_rate;  // Change baud rate
+    using Base::available;       // Number of bytes available
+    using Base::flush;           // Wait for transmission complete
+    using Base::has_data;        // Check if data available
+    using Base::receive;         // Receive single character
+    using Base::receive_buffer;  // Receive buffer of bytes
+    using Base::send;            // Send single character
+    using Base::send_buffer;     // Send buffer of bytes
+    using Base::set_baud_rate;   // Change baud rate
+    using Base::write;           // Write null-terminated string
 
     // ========================================================================
     // Simple API Specific Methods
@@ -320,10 +310,10 @@ struct SimpleUartConfig : public UartBase<SimpleUartConfig<TxPin, RxPin, Hardwar
         HardwarePolicy::enable_receiver();
         HardwarePolicy::enable_uart();
 
-        return Ok(); // Success
+        return Ok();  // Success
     }
 
-private:
+   private:
     // ========================================================================
     // Implementation Methods (called by UartBase via CRTP)
     // ========================================================================
@@ -354,14 +344,12 @@ private:
     /**
      * @brief Send buffer implementation - called by Base::send_buffer()
      */
-    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer_impl(
-        const char* buffer,
-        size_t length
-    ) noexcept {
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer_impl(const char* buffer,
+                                                                       size_t length) noexcept {
         for (size_t i = 0; i < length; ++i) {
             auto result = send_impl(buffer[i]);
             if (result.is_err()) {
-                return Ok(static_cast<size_t>(i)); // Return bytes sent before error
+                return Ok(static_cast<size_t>(i));  // Return bytes sent before error
             }
         }
         return Ok(static_cast<size_t>(length));
@@ -370,14 +358,12 @@ private:
     /**
      * @brief Receive buffer implementation - called by Base::receive_buffer()
      */
-    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer_impl(
-        char* buffer,
-        size_t length
-    ) noexcept {
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer_impl(char* buffer,
+                                                                          size_t length) noexcept {
         for (size_t i = 0; i < length; ++i) {
             auto result = receive_impl();
             if (result.is_err()) {
-                return Ok(static_cast<size_t>(i)); // Return bytes received before error
+                return Ok(static_cast<size_t>(i));  // Return bytes received before error
             }
             buffer[i] = result.unwrap();
         }
@@ -435,18 +421,22 @@ struct SimpleUartConfigTxOnly : public UartBase<SimpleUartConfigTxOnly<TxPin, Ha
     u8 stop_bits;
 
     constexpr SimpleUartConfigTxOnly(PeripheralId p, BaudRate br, u8 db, UartParity par, u8 sb)
-        : peripheral(p), baudrate(br), data_bits(db), parity(par), stop_bits(sb) {}
+        : peripheral(p),
+          baudrate(br),
+          data_bits(db),
+          parity(par),
+          stop_bits(sb) {}
 
     // ========================================================================
     // Inherited Interface from UartBase (CRTP)
     // ========================================================================
 
     // Inherit TX methods from base
-    using Base::send;           // Send single character
-    using Base::write;          // Write null-terminated string
-    using Base::send_buffer;    // Send buffer of bytes
     using Base::flush;          // Wait for transmission complete
+    using Base::send;           // Send single character
+    using Base::send_buffer;    // Send buffer of bytes
     using Base::set_baud_rate;  // Change baud rate
+    using Base::write;          // Write null-terminated string
 
     // ========================================================================
     // Simple API Specific Methods
@@ -470,7 +460,7 @@ struct SimpleUartConfigTxOnly : public UartBase<SimpleUartConfigTxOnly<TxPin, Ha
         HardwarePolicy::enable_transmitter();
         HardwarePolicy::enable_uart();
 
-        return Ok(); // Success
+        return Ok();  // Success
     }
 
     /**
@@ -482,11 +472,9 @@ struct SimpleUartConfigTxOnly : public UartBase<SimpleUartConfigTxOnly<TxPin, Ha
      *
      * @deprecated Use send() for Result-based error handling
      */
-    void write_byte(u8 byte) const {
-        send(static_cast<char>(byte)).expect("Write byte failed");
-    }
+    void write_byte(u8 byte) const { send(static_cast<char>(byte)).expect("Write byte failed"); }
 
-private:
+   private:
     // ========================================================================
     // Implementation Methods (called by UartBase via CRTP)
     // ========================================================================
@@ -507,20 +495,18 @@ private:
      * @brief Receive implementation - TX-only, returns error
      */
     [[nodiscard]] constexpr Result<char, ErrorCode> receive_impl() noexcept {
-        return Err(ErrorCode::NotSupported); // TX-only mode
+        return Err(ErrorCode::NotSupported);  // TX-only mode
     }
 
     /**
      * @brief Send buffer implementation - called by Base::send_buffer()
      */
-    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer_impl(
-        const char* buffer,
-        size_t length
-    ) noexcept {
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer_impl(const char* buffer,
+                                                                       size_t length) noexcept {
         for (size_t i = 0; i < length; ++i) {
             auto result = send_impl(buffer[i]);
             if (result.is_err()) {
-                return Ok(static_cast<size_t>(i)); // Return bytes sent before error
+                return Ok(static_cast<size_t>(i));  // Return bytes sent before error
             }
         }
         return Ok(static_cast<size_t>(length));
@@ -529,13 +515,11 @@ private:
     /**
      * @brief Receive buffer implementation - TX-only, returns error
      */
-    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer_impl(
-        char* buffer,
-        size_t length
-    ) noexcept {
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer_impl(char* buffer,
+                                                                          size_t length) noexcept {
         (void)buffer;
         (void)length;
-        return Err(ErrorCode::NotSupported); // TX-only mode
+        return Err(ErrorCode::NotSupported);  // TX-only mode
     }
 
     /**
@@ -553,7 +537,7 @@ private:
      * @brief Available implementation - TX-only, always returns 0
      */
     [[nodiscard]] constexpr size_t available_impl() const noexcept {
-        return 0; // TX-only mode, no RX data
+        return 0;  // TX-only mode, no RX data
     }
 
     /**

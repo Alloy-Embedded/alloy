@@ -9,9 +9,10 @@
 
 #pragma once
 
+#include "hal/api/dma_simple.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/api/dma_simple.hpp"
 
 namespace ucore::hal {
 
@@ -59,7 +60,7 @@ struct FluentDmaConfig {
  */
 template <typename DmaPolicy>
 class DmaBuilder {
-public:
+   public:
     constexpr DmaBuilder() : channel_(0), src_(0), dst_(0), size_(0), state_() {}
 
     constexpr DmaBuilder& channel(u8 ch) {
@@ -112,7 +113,7 @@ public:
         return Ok(FluentDmaConfig<DmaPolicy>{std::move(transfer)});
     }
 
-private:
+   private:
     u8 channel_;
     u32 src_;
     u32 dst_;

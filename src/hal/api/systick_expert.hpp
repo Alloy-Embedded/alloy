@@ -6,9 +6,10 @@
 
 #pragma once
 
+#include "hal/interface/systick.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/interface/systick.hpp"
 
 namespace ucore::hal {
 
@@ -16,7 +17,7 @@ using namespace ucore::core;
 
 /**
  * @brief Expert SysTick configuration
- * 
+ *
  * Full control over SysTick configuration including:
  * - Frequency
  * - Interrupt priority
@@ -53,70 +54,58 @@ struct SysTickExpertConfig {
 
     /**
      * @brief Standard microsecond timer (1MHz, interrupts enabled)
-     * 
+     *
      * @param priority Interrupt priority (0-255)
      * @return SysTickExpertConfig for 1us timing
      */
     static constexpr SysTickExpertConfig micros_timer(u8 priority = 15) {
-        return SysTickExpertConfig{
-            .frequency_hz = 1000000,
-            .interrupt_priority = priority,
-            .enable_interrupt = true,
-            .use_processor_clock = true
-        };
+        return SysTickExpertConfig{.frequency_hz = 1000000,
+                                   .interrupt_priority = priority,
+                                   .enable_interrupt = true,
+                                   .use_processor_clock = true};
     }
 
     /**
      * @brief RTOS time base (1kHz, interrupts enabled)
-     * 
+     *
      * @param priority Interrupt priority (0-255)
      * @return SysTickExpertConfig for RTOS
      */
     static constexpr SysTickExpertConfig rtos_timebase(u8 priority = 15) {
-        return SysTickExpertConfig{
-            .frequency_hz = 1000,
-            .interrupt_priority = priority,
-            .enable_interrupt = true,
-            .use_processor_clock = true
-        };
+        return SysTickExpertConfig{.frequency_hz = 1000,
+                                   .interrupt_priority = priority,
+                                   .enable_interrupt = true,
+                                   .use_processor_clock = true};
     }
 
     /**
      * @brief Polling mode (no interrupts)
-     * 
+     *
      * @param frequency_hz Tick frequency
      * @return SysTickExpertConfig for polling
      */
     static constexpr SysTickExpertConfig polling_mode(u32 frequency_hz) {
-        return SysTickExpertConfig{
-            .frequency_hz = frequency_hz,
-            .interrupt_priority = 0,
-            .enable_interrupt = false,
-            .use_processor_clock = true
-        };
+        return SysTickExpertConfig{.frequency_hz = frequency_hz,
+                                   .interrupt_priority = 0,
+                                   .enable_interrupt = false,
+                                   .use_processor_clock = true};
     }
 
     /**
      * @brief Custom configuration
-     * 
+     *
      * @param freq_hz Frequency in Hz
      * @param priority Interrupt priority
      * @param interrupts Enable interrupts
      * @param proc_clk Use processor clock
      * @return SysTickExpertConfig with custom settings
      */
-    static constexpr SysTickExpertConfig custom(
-        u32 freq_hz,
-        u8 priority = 15,
-        bool interrupts = true,
-        bool proc_clk = true) {
-        
-        return SysTickExpertConfig{
-            .frequency_hz = freq_hz,
-            .interrupt_priority = priority,
-            .enable_interrupt = interrupts,
-            .use_processor_clock = proc_clk
-        };
+    static constexpr SysTickExpertConfig custom(u32 freq_hz, u8 priority = 15,
+                                                bool interrupts = true, bool proc_clk = true) {
+        return SysTickExpertConfig{.frequency_hz = freq_hz,
+                                   .interrupt_priority = priority,
+                                   .enable_interrupt = interrupts,
+                                   .use_processor_clock = proc_clk};
     }
 };
 
@@ -124,7 +113,7 @@ namespace expert {
 
 /**
  * @brief Configure SysTick with expert settings
- * 
+ *
  * @param config Expert configuration
  * @return Result with error code
  */

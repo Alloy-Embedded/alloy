@@ -10,12 +10,12 @@
  * @note Part of Phase 3.1: Core Systems Testing
  */
 
-#include "core/units.hpp"
+#include <cstdint>
+#include <type_traits>
+
 #include "core/memory.hpp"
 #include "core/types.hpp"
-
-#include <type_traits>
-#include <cstdint>
+#include "core/units.hpp"
 
 using namespace ucore::core;
 
@@ -31,11 +31,13 @@ namespace baud_rate_tests {
 constexpr bool test_baud_rate_construction() {
     // Test construction
     BaudRate rate(115200);
-    if (rate.value() != 115200) return false;
+    if (rate.value() != 115200)
+        return false;
 
     // Test copy
     BaudRate copy = rate;
-    if (copy.value() != 115200) return false;
+    if (copy.value() != 115200)
+        return false;
 
     return true;
 }
@@ -51,12 +53,16 @@ constexpr bool test_baud_rate_comparison() {
     BaudRate rate3(9600);
 
     // Test equality
-    if (!(rate1 == rate2)) return false;
-    if (rate1 != rate2) return false;
+    if (!(rate1 == rate2))
+        return false;
+    if (rate1 != rate2)
+        return false;
 
     // Test inequality
-    if (rate1 == rate3) return false;
-    if (!(rate1 != rate3)) return false;
+    if (rate1 == rate3)
+        return false;
+    if (!(rate1 != rate3))
+        return false;
 
     return true;
 }
@@ -70,10 +76,12 @@ constexpr bool test_baud_rate_literals() {
     using namespace literals;
 
     auto rate = 115200_baud;
-    if (rate.value() != 115200) return false;
+    if (rate.value() != 115200)
+        return false;
 
     auto rate2 = 9600_baud;
-    if (rate2.value() != 9600) return false;
+    if (rate2.value() != 9600)
+        return false;
 
     return true;
 }
@@ -86,14 +94,22 @@ static_assert(test_baud_rate_literals(), "BaudRate literals must work");
 constexpr bool test_baud_rate_constants() {
     using namespace baud_rates;
 
-    if (Baud9600.value() != 9600) return false;
-    if (Baud19200.value() != 19200) return false;
-    if (Baud38400.value() != 38400) return false;
-    if (Baud57600.value() != 57600) return false;
-    if (Baud115200.value() != 115200) return false;
-    if (Baud230400.value() != 230400) return false;
-    if (Baud460800.value() != 460800) return false;
-    if (Baud921600.value() != 921600) return false;
+    if (Baud9600.value() != 9600)
+        return false;
+    if (Baud19200.value() != 19200)
+        return false;
+    if (Baud38400.value() != 38400)
+        return false;
+    if (Baud57600.value() != 57600)
+        return false;
+    if (Baud115200.value() != 115200)
+        return false;
+    if (Baud230400.value() != 230400)
+        return false;
+    if (Baud460800.value() != 460800)
+        return false;
+    if (Baud921600.value() != 921600)
+        return false;
 
     return true;
 }
@@ -112,7 +128,8 @@ constexpr bool test_baud_rate_type_safety() {
 
     // Must use explicit construction or literals
     BaudRate explicit_rate(115200);
-    if (explicit_rate.value() != 115200) return false;
+    if (explicit_rate.value() != 115200)
+        return false;
 
     return true;
 }
@@ -228,9 +245,12 @@ constexpr bool test_constexpr_arithmetic() {
     constexpr uint32_t product = a * b;
     constexpr uint32_t quotient = b / a;
 
-    if (sum != 30) return false;
-    if (product != 200) return false;
-    if (quotient != 2) return false;
+    if (sum != 30)
+        return false;
+    if (product != 200)
+        return false;
+    if (quotient != 2)
+        return false;
 
     return true;
 }
@@ -260,24 +280,30 @@ constexpr bool test_bit_manipulation() {
     // Test set_bit
     uint32_t value = 0;
     value = set_bit(value, 3);
-    if (value != 0x08) return false;
+    if (value != 0x08)
+        return false;
 
     // Test clear_bit
     value = 0xFF;
     value = clear_bit(value, 3);
-    if (value != 0xF7) return false;
+    if (value != 0xF7)
+        return false;
 
     // Test test_bit
     value = 0x08;
-    if (!test_bit(value, 3)) return false;
-    if (test_bit(value, 2)) return false;
+    if (!test_bit(value, 3))
+        return false;
+    if (test_bit(value, 2))
+        return false;
 
     // Test toggle_bit
     value = 0x08;
     value = toggle_bit(value, 3);
-    if (value != 0x00) return false;
+    if (value != 0x00)
+        return false;
     value = toggle_bit(value, 3);
-    if (value != 0x08) return false;
+    if (value != 0x08)
+        return false;
 
     return true;
 }
@@ -303,22 +329,26 @@ constexpr uint32_t set_field(uint32_t reg, uint32_t value, uint8_t position, uin
 constexpr bool test_register_access() {
     // Test create_mask
     uint32_t mask = create_mask(4, 3);  // 3 bits at position 4
-    if (mask != 0x70) return false;     // 0b01110000
+    if (mask != 0x70)
+        return false;  // 0b01110000
 
     // Test get_field
     uint32_t reg = 0x1234;
     uint32_t field = get_field(reg, 4, 4);  // Get bits [7:4]
-    if (field != 0x3) return false;          // 0x1234 >> 4 = 0x123, & 0xF = 0x3
+    if (field != 0x3)
+        return false;  // 0x1234 >> 4 = 0x123, & 0xF = 0x3
 
     // Test set_field
     reg = 0x0000;
     reg = set_field(reg, 0x5, 4, 4);  // Set bits [7:4] to 0x5
-    if (reg != 0x50) return false;
+    if (reg != 0x50)
+        return false;
 
     // Test set_field preserves other bits
     reg = 0xFF;
     reg = set_field(reg, 0x0, 4, 4);  // Clear bits [7:4]
-    if (reg != 0x0F) return false;    // Lower bits preserved
+    if (reg != 0x0F)
+        return false;  // Lower bits preserved
 
     return true;
 }
@@ -332,12 +362,14 @@ constexpr bool test_constexpr_conversions() {
     // Test safe narrowing
     uint32_t large = 255;
     uint8_t small = static_cast<uint8_t>(large);
-    if (small != 255) return false;
+    if (small != 255)
+        return false;
 
     // Test widening
     uint8_t byte = 42;
     uint32_t word = byte;
-    if (word != 42) return false;
+    if (word != 42)
+        return false;
 
     return true;
 }
@@ -356,11 +388,15 @@ constexpr uint32_t constexpr_max(uint32_t a, uint32_t b) {
 }
 
 constexpr bool test_constexpr_minmax() {
-    if (constexpr_min(10, 20) != 10) return false;
-    if (constexpr_min(30, 15) != 15) return false;
+    if (constexpr_min(10, 20) != 10)
+        return false;
+    if (constexpr_min(30, 15) != 15)
+        return false;
 
-    if (constexpr_max(10, 20) != 20) return false;
-    if (constexpr_max(30, 15) != 30) return false;
+    if (constexpr_max(10, 20) != 20)
+        return false;
+    if (constexpr_max(30, 15) != 30)
+        return false;
 
     return true;
 }
@@ -376,19 +412,30 @@ constexpr bool is_power_of_two(uint32_t n) {
 
 constexpr bool test_power_of_two() {
     // Powers of 2
-    if (!is_power_of_two(1)) return false;
-    if (!is_power_of_two(2)) return false;
-    if (!is_power_of_two(4)) return false;
-    if (!is_power_of_two(8)) return false;
-    if (!is_power_of_two(16)) return false;
-    if (!is_power_of_two(256)) return false;
+    if (!is_power_of_two(1))
+        return false;
+    if (!is_power_of_two(2))
+        return false;
+    if (!is_power_of_two(4))
+        return false;
+    if (!is_power_of_two(8))
+        return false;
+    if (!is_power_of_two(16))
+        return false;
+    if (!is_power_of_two(256))
+        return false;
 
     // Not powers of 2
-    if (is_power_of_two(0)) return false;
-    if (is_power_of_two(3)) return false;
-    if (is_power_of_two(5)) return false;
-    if (is_power_of_two(15)) return false;
-    if (is_power_of_two(100)) return false;
+    if (is_power_of_two(0))
+        return false;
+    if (is_power_of_two(3))
+        return false;
+    if (is_power_of_two(5))
+        return false;
+    if (is_power_of_two(15))
+        return false;
+    if (is_power_of_two(100))
+        return false;
 
     return true;
 }

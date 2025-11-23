@@ -17,13 +17,12 @@ namespace ucore::hal::st::stm32g0::flash {
 
 /// FLASH Register Structure
 struct FLASH_Registers {
-
     /// Access control register
     /// Offset: 0x0000
     /// Reset value: 0x00000600
     /// Access: read-write
     volatile uint32_t ACR;
-    uint8_t RESERVED_0004[4]; ///< Reserved
+    uint8_t RESERVED_0004[4];  ///< Reserved
 
     /// Flash key register
     /// Offset: 0x0008
@@ -53,7 +52,7 @@ struct FLASH_Registers {
     /// Offset: 0x0018
     /// Reset value: 0x00000000
     volatile uint32_t ECCR;
-    uint8_t RESERVED_001C[4]; ///< Reserved
+    uint8_t RESERVED_001C[4];  ///< Reserved
 
     /// Flash option register
     /// Offset: 0x0020
@@ -96,7 +95,7 @@ struct FLASH_Registers {
     /// Reset value: 0xF0000000
     /// Access: read-write
     volatile uint32_t PCROP1BER;
-    uint8_t RESERVED_003C[8]; ///< Reserved
+    uint8_t RESERVED_003C[8];  ///< Reserved
 
     /// Flash PCROP2 area A start address register
     /// Offset: 0x0044
@@ -133,7 +132,7 @@ struct FLASH_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t PCROP2BER;
-    uint8_t RESERVED_005C[36]; ///< Reserved
+    uint8_t RESERVED_005C[36];  ///< Reserved
 
     /// Flash Security register
     /// Offset: 0x0080

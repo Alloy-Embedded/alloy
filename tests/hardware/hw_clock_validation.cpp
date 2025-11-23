@@ -15,8 +15,8 @@
  * @note Timing can be verified with stopwatch
  */
 
-#include "core/result.hpp"
 #include "core/error.hpp"
+#include "core/result.hpp"
 
 using namespace ucore::core;
 
@@ -27,38 +27,38 @@ using namespace ucore::core;
 #if defined(ALLOY_BOARD_NUCLEO_G0B1RE) || defined(ALLOY_BOARD_NUCLEO_G071RB)
     #include "hal/vendors/st/stm32g0/clock_platform.hpp"
     #include "hal/vendors/st/stm32g0/gpio.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32g0::Stm32g0Clock<
-        ucore::hal::st::stm32g0::ExampleG0ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform =
+    ucore::hal::st::stm32g0::Stm32g0Clock<ucore::hal::st::stm32g0::ExampleG0ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
 
-    constexpr uint32_t EXPECTED_FREQ_HZ = 64'000'000; // 64 MHz
+constexpr uint32_t EXPECTED_FREQ_HZ = 64'000'000;  // 64 MHz
 
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
     #include "hal/vendors/st/stm32f4/clock_platform.hpp"
     #include "hal/vendors/st/stm32f4/gpio.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
-        ucore::hal::st::stm32f4::ExampleF4ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform =
+    ucore::hal::st::stm32f4::Stm32f4Clock<ucore::hal::st::stm32f4::ExampleF4ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
 
-    constexpr uint32_t EXPECTED_FREQ_HZ = 84'000'000; // 84 MHz
+constexpr uint32_t EXPECTED_FREQ_HZ = 84'000'000;  // 84 MHz
 
 #elif defined(ALLOY_BOARD_NUCLEO_F722ZE)
     #include "hal/vendors/st/stm32f7/clock_platform.hpp"
     #include "hal/vendors/st/stm32f7/gpio.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32f7::Stm32f7Clock<
-        ucore::hal::st::stm32f7::ExampleF7ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform =
+    ucore::hal::st::stm32f7::Stm32f7Clock<ucore::hal::st::stm32f7::ExampleF7ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
 
-    constexpr uint32_t EXPECTED_FREQ_HZ = 216'000'000; // 216 MHz
+constexpr uint32_t EXPECTED_FREQ_HZ = 216'000'000;  // 216 MHz
 
 #else
     #error "Unsupported board for hardware clock test"
@@ -73,7 +73,7 @@ using namespace ucore::core;
  * @param cycles Number of CPU cycles to delay
  */
 inline void delay_cycles(volatile uint32_t cycles) {
-    while(cycles--) {
+    while (cycles--) {
         __asm__("nop");
     }
 }
@@ -89,7 +89,7 @@ void delay_ms_accurate(uint32_t ms) {
     // Divide by 4 to account for loop overhead
     uint32_t cycles_per_ms = freq / 1000 / 4;
 
-    for(uint32_t i = 0; i < ms; i++) {
+    for (uint32_t i = 0; i < ms; i++) {
         delay_cycles(cycles_per_ms);
     }
 }
@@ -100,13 +100,13 @@ void delay_ms_accurate(uint32_t ms) {
 
 LedPin led;
 
-#define HW_ASSERT(condition) \
-    if (!(condition)) { \
+#define HW_ASSERT(condition)       \
+    if (!(condition)) {            \
         /* Failure: rapid blink */ \
-        while(1) { \
-            led.toggle(); \
+        while (1) {                \
+            led.toggle();          \
             delay_ms_accurate(50); \
-        } \
+        }                          \
     }
 
 // ==============================================================================
@@ -134,19 +134,19 @@ bool test_peripheral_clocks() {
     }
 
     // Test UART clock (if supported)
-    auto uart_result = ClockPlatform::enable_uart_clock(0x40013800); // USART1 base
+    auto uart_result = ClockPlatform::enable_uart_clock(0x40013800);  // USART1 base
     if (uart_result.is_err()) {
         return false;
     }
 
     // Test SPI clock (if supported)
-    auto spi_result = ClockPlatform::enable_spi_clock(0x40013000); // SPI1 base
+    auto spi_result = ClockPlatform::enable_spi_clock(0x40013000);  // SPI1 base
     if (spi_result.is_err()) {
         return false;
     }
 
     // Test I2C clock (if supported)
-    auto i2c_result = ClockPlatform::enable_i2c_clock(0x40005400); // I2C1 base
+    auto i2c_result = ClockPlatform::enable_i2c_clock(0x40005400);  // I2C1 base
     if (i2c_result.is_err()) {
         return false;
     }
@@ -202,7 +202,7 @@ int main() {
      * Use stopwatch to count: should match real time!
      */
 
-    while(1) {
+    while (1) {
         // LED ON for 1 second
         led.set();
         delay_ms_accurate(1000);

@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/st/stm32g0/generated/registers/dac_registers.hpp"
@@ -85,11 +85,11 @@ struct Stm32g0DACHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_DAC_MOCK_HW
-            return ALLOY_DAC_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_DAC_MOCK_HW
+        return ALLOY_DAC_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -110,9 +110,9 @@ struct Stm32g0DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_EN1
      */
     static inline void enable_channel_1() {
-        #ifdef ALLOY_DAC_TEST_HOOK_EN1
-            ALLOY_DAC_TEST_HOOK_EN1();
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_EN1
+        ALLOY_DAC_TEST_HOOK_EN1();
+#endif
 
         hw()->DAC_CR |= (1U << 0);
     }
@@ -123,9 +123,9 @@ struct Stm32g0DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_EN1
      */
     static inline void disable_channel_1() {
-        #ifdef ALLOY_DAC_TEST_HOOK_EN1
-            ALLOY_DAC_TEST_HOOK_EN1();
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_EN1
+        ALLOY_DAC_TEST_HOOK_EN1();
+#endif
 
         hw()->DAC_CR &= ~(1U << 0);
     }
@@ -136,9 +136,9 @@ struct Stm32g0DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_EN2
      */
     static inline void enable_channel_2() {
-        #ifdef ALLOY_DAC_TEST_HOOK_EN2
-            ALLOY_DAC_TEST_HOOK_EN2();
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_EN2
+        ALLOY_DAC_TEST_HOOK_EN2();
+#endif
 
         hw()->DAC_CR |= (1U << 16);
     }
@@ -149,9 +149,9 @@ struct Stm32g0DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_EN2
      */
     static inline void disable_channel_2() {
-        #ifdef ALLOY_DAC_TEST_HOOK_EN2
-            ALLOY_DAC_TEST_HOOK_EN2();
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_EN2
+        ALLOY_DAC_TEST_HOOK_EN2();
+#endif
 
         hw()->DAC_CR &= ~(1U << 16);
     }
@@ -163,9 +163,9 @@ struct Stm32g0DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_DHR12R1
      */
     static inline void set_data_channel_1_12bit(uint16_t data) {
-        #ifdef ALLOY_DAC_TEST_HOOK_DHR12R1
-            ALLOY_DAC_TEST_HOOK_DHR12R1(data);
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_DHR12R1
+        ALLOY_DAC_TEST_HOOK_DHR12R1(data);
+#endif
 
         hw()->DAC_DHR12R1 = data & 0xFFF;
     }
@@ -177,9 +177,9 @@ struct Stm32g0DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_DHR12R2
      */
     static inline void set_data_channel_2_12bit(uint16_t data) {
-        #ifdef ALLOY_DAC_TEST_HOOK_DHR12R2
-            ALLOY_DAC_TEST_HOOK_DHR12R2(data);
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_DHR12R2
+        ALLOY_DAC_TEST_HOOK_DHR12R2(data);
+#endif
 
         hw()->DAC_DHR12R2 = data & 0xFFF;
     }
@@ -191,9 +191,9 @@ struct Stm32g0DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_DHR8R1
      */
     static inline void set_data_channel_1_8bit(uint8_t data) {
-        #ifdef ALLOY_DAC_TEST_HOOK_DHR8R1
-            ALLOY_DAC_TEST_HOOK_DHR8R1(data);
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_DHR8R1
+        ALLOY_DAC_TEST_HOOK_DHR8R1(data);
+#endif
 
         hw()->DAC_DHR8R1 = data;
     }
@@ -205,9 +205,9 @@ struct Stm32g0DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_DHR8R2
      */
     static inline void set_data_channel_2_8bit(uint8_t data) {
-        #ifdef ALLOY_DAC_TEST_HOOK_DHR8R2
-            ALLOY_DAC_TEST_HOOK_DHR8R2(data);
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_DHR8R2
+        ALLOY_DAC_TEST_HOOK_DHR8R2(data);
+#endif
 
         hw()->DAC_DHR8R2 = data;
     }
@@ -218,9 +218,9 @@ struct Stm32g0DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_SWTRIG1
      */
     static inline void trigger_channel_1() {
-        #ifdef ALLOY_DAC_TEST_HOOK_SWTRIG1
-            ALLOY_DAC_TEST_HOOK_SWTRIG1();
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_SWTRIG1
+        ALLOY_DAC_TEST_HOOK_SWTRIG1();
+#endif
 
         hw()->DAC_SWTRIGR |= (1U << 0);
     }
@@ -231,9 +231,9 @@ struct Stm32g0DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_SWTRIG2
      */
     static inline void trigger_channel_2() {
-        #ifdef ALLOY_DAC_TEST_HOOK_SWTRIG2
-            ALLOY_DAC_TEST_HOOK_SWTRIG2();
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_SWTRIG2
+        ALLOY_DAC_TEST_HOOK_SWTRIG2();
+#endif
 
         hw()->DAC_SWTRIGR |= (1U << 1);
     }
@@ -244,9 +244,9 @@ struct Stm32g0DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_DMAEN1
      */
     static inline void enable_dma_channel_1() {
-        #ifdef ALLOY_DAC_TEST_HOOK_DMAEN1
-            ALLOY_DAC_TEST_HOOK_DMAEN1();
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_DMAEN1
+        ALLOY_DAC_TEST_HOOK_DMAEN1();
+#endif
 
         hw()->DAC_CR |= (1U << 12);
     }
@@ -257,13 +257,12 @@ struct Stm32g0DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_DMAEN2
      */
     static inline void enable_dma_channel_2() {
-        #ifdef ALLOY_DAC_TEST_HOOK_DMAEN2
-            ALLOY_DAC_TEST_HOOK_DMAEN2();
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_DMAEN2
+        ALLOY_DAC_TEST_HOOK_DMAEN2();
+#endif
 
         hw()->DAC_CR |= (1U << 28);
     }
-
 };
 
 // ============================================================================

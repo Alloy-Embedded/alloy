@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::gpiob {
 
 /// GPIOB Register Structure
 struct GPIOB_Registers {
-
     /// GPIO port mode register
     /// Offset: 0x0000
     /// Reset value: 0xFFFFFFFF

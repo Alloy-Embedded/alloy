@@ -38,13 +38,13 @@
 
 #pragma once
 
+#include <concepts>
+#include <type_traits>
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
 #include "core/units.hpp"
-
-#include <concepts>
-#include <type_traits>
 
 namespace ucore::hal {
 
@@ -105,7 +105,7 @@ concept UartImplementation = requires(T uart, char c, const char* str, size_t le
  */
 template <typename Derived>
 class UartBase {
-protected:
+   protected:
     // ========================================================================
     // CRTP Helper Methods
     // ========================================================================
@@ -114,19 +114,15 @@ protected:
      * @brief Get reference to derived instance
      * @return Reference to derived class instance
      */
-    constexpr Derived& impl() noexcept {
-        return static_cast<Derived&>(*this);
-    }
+    constexpr Derived& impl() noexcept { return static_cast<Derived&>(*this); }
 
     /**
      * @brief Get const reference to derived instance
      * @return Const reference to derived class instance
      */
-    constexpr const Derived& impl() const noexcept {
-        return static_cast<const Derived&>(*this);
-    }
+    constexpr const Derived& impl() const noexcept { return static_cast<const Derived&>(*this); }
 
-public:
+   public:
     // ========================================================================
     // Basic Send/Receive Operations
     // ========================================================================
@@ -215,10 +211,8 @@ public:
      * auto sent = uart.send_buffer(data, 3).expect("Send failed");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer(
-        const void* buffer,
-        size_t length
-    ) noexcept {
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer(const void* buffer,
+                                                                  size_t length) noexcept {
         if (buffer == nullptr && length > 0) {
             return Err(ErrorCode::InvalidParameter);
         }
@@ -239,10 +233,8 @@ public:
      * auto received = uart.receive_buffer(buffer, 128).expect("Receive failed");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer(
-        void* buffer,
-        size_t length
-    ) noexcept {
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer(void* buffer,
+                                                                     size_t length) noexcept {
         if (buffer == nullptr && length > 0) {
             return Err(ErrorCode::InvalidParameter);
         }
@@ -267,9 +259,7 @@ public:
      * uart.flush().expect("Flush failed");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> flush() noexcept {
-        return impl().flush_impl();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> flush() noexcept { return impl().flush_impl(); }
 
     /**
      * @brief Get number of bytes available to read
@@ -285,9 +275,7 @@ public:
      * }
      * @endcode
      */
-    [[nodiscard]] constexpr size_t available() const noexcept {
-        return impl().available_impl();
-    }
+    [[nodiscard]] constexpr size_t available() const noexcept { return impl().available_impl(); }
 
     /**
      * @brief Check if data is available to read
@@ -296,9 +284,7 @@ public:
      *
      * @return true if data is available, false otherwise
      */
-    [[nodiscard]] constexpr bool has_data() const noexcept {
-        return available() > 0;
-    }
+    [[nodiscard]] constexpr bool has_data() const noexcept { return available() > 0; }
 
     // ========================================================================
     // Configuration Operations
@@ -360,7 +346,7 @@ public:
      * errors if implementation is incomplete.
      */
 
-protected:
+   protected:
     // Default constructor (protected - only derived can construct)
     constexpr UartBase() noexcept = default;
 
@@ -382,4 +368,4 @@ protected:
 // using static_assert on sizeof(UartBase) and std::is_empty_v<UartBase>.
 // This ensures validation only occurs when UartBase is properly used with CRTP.
 
-} // namespace ucore::hal
+}  // namespace ucore::hal

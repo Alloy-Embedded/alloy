@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/atmel/same70/generated/registers/xdmac_registers.hpp"
@@ -89,11 +89,11 @@ struct Same70DMAHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_DMA_MOCK_HW
-            return ALLOY_DMA_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_DMA_MOCK_HW
+        return ALLOY_DMA_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -115,9 +115,9 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_ENABLE
      */
     static inline void enable_channel(uint8_t channel) {
-        #ifdef ALLOY_DMA_TEST_HOOK_ENABLE
-            ALLOY_DMA_TEST_HOOK_ENABLE(channel);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_ENABLE
+        ALLOY_DMA_TEST_HOOK_ENABLE(channel);
+#endif
 
         hw()->GE = (1u << channel);
     }
@@ -129,9 +129,9 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_DISABLE
      */
     static inline void disable_channel(uint8_t channel) {
-        #ifdef ALLOY_DMA_TEST_HOOK_DISABLE
-            ALLOY_DMA_TEST_HOOK_DISABLE(channel);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_DISABLE
+        ALLOY_DMA_TEST_HOOK_DISABLE(channel);
+#endif
 
         hw()->GD = (1u << channel);
     }
@@ -143,9 +143,9 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_SUSPEND
      */
     static inline void suspend_channel(uint8_t channel) {
-        #ifdef ALLOY_DMA_TEST_HOOK_SUSPEND
-            ALLOY_DMA_TEST_HOOK_SUSPEND(channel);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_SUSPEND
+        ALLOY_DMA_TEST_HOOK_SUSPEND(channel);
+#endif
 
         hw()->GRWS = (1u << channel);
     }
@@ -157,9 +157,9 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_RESUME
      */
     static inline void resume_channel(uint8_t channel) {
-        #ifdef ALLOY_DMA_TEST_HOOK_RESUME
-            ALLOY_DMA_TEST_HOOK_RESUME(channel);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_RESUME
+        ALLOY_DMA_TEST_HOOK_RESUME(channel);
+#endif
 
         hw()->GRWR = (1u << channel);
     }
@@ -171,9 +171,9 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_FLUSH
      */
     static inline void flush_channel(uint8_t channel) {
-        #ifdef ALLOY_DMA_TEST_HOOK_FLUSH
-            ALLOY_DMA_TEST_HOOK_FLUSH(channel);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_FLUSH
+        ALLOY_DMA_TEST_HOOK_FLUSH(channel);
+#endif
 
         hw()->GWS = (1u << channel);
     }
@@ -186,11 +186,15 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_SET_SRC
      */
     static inline void set_source_address(uint8_t channel, uint32_t address) {
-        #ifdef ALLOY_DMA_TEST_HOOK_SET_SRC
-            ALLOY_DMA_TEST_HOOK_SET_SRC(channel, address);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_SET_SRC
+        ALLOY_DMA_TEST_HOOK_SET_SRC(channel, address);
+#endif
 
-        if (channel < 24) { volatile uint32_t* csa = reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x50 + (channel * 0x40) + 0x00); *csa = address; }
+        if (channel < 24) {
+            volatile uint32_t* csa =
+                reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x50 + (channel * 0x40) + 0x00);
+            *csa = address;
+        }
     }
 
     /**
@@ -201,11 +205,15 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_SET_DST
      */
     static inline void set_destination_address(uint8_t channel, uint32_t address) {
-        #ifdef ALLOY_DMA_TEST_HOOK_SET_DST
-            ALLOY_DMA_TEST_HOOK_SET_DST(channel, address);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_SET_DST
+        ALLOY_DMA_TEST_HOOK_SET_DST(channel, address);
+#endif
 
-        if (channel < 24) { volatile uint32_t* cda = reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x50 + (channel * 0x40) + 0x04); *cda = address; }
+        if (channel < 24) {
+            volatile uint32_t* cda =
+                reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x50 + (channel * 0x40) + 0x04);
+            *cda = address;
+        }
     }
 
     /**
@@ -216,11 +224,15 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_SET_SIZE
      */
     static inline void set_transfer_size(uint8_t channel, uint32_t size) {
-        #ifdef ALLOY_DMA_TEST_HOOK_SET_SIZE
-            ALLOY_DMA_TEST_HOOK_SET_SIZE(channel, size);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_SET_SIZE
+        ALLOY_DMA_TEST_HOOK_SET_SIZE(channel, size);
+#endif
 
-        if (channel < 24) { volatile uint32_t* cubc = reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x50 + (channel * 0x40) + 0x10); *cubc = size & 0xFFFFFF; }
+        if (channel < 24) {
+            volatile uint32_t* cubc =
+                reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x50 + (channel * 0x40) + 0x10);
+            *cubc = size & 0xFFFFFF;
+        }
     }
 
     /**
@@ -231,11 +243,15 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_CONFIG
      */
     static inline void configure_channel(uint8_t channel, uint32_t config) {
-        #ifdef ALLOY_DMA_TEST_HOOK_CONFIG
-            ALLOY_DMA_TEST_HOOK_CONFIG(channel, config);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_CONFIG
+        ALLOY_DMA_TEST_HOOK_CONFIG(channel, config);
+#endif
 
-        if (channel < 24) { volatile uint32_t* cc = reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x50 + (channel * 0x40) + 0x08); *cc = config; }
+        if (channel < 24) {
+            volatile uint32_t* cc =
+                reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x50 + (channel * 0x40) + 0x08);
+            *cc = config;
+        }
     }
 
     /**
@@ -246,9 +262,9 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_IS_DONE
      */
     static inline bool is_transfer_complete(uint8_t channel) const {
-        #ifdef ALLOY_DMA_TEST_HOOK_IS_DONE
-            ALLOY_DMA_TEST_HOOK_IS_DONE(channel);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_IS_DONE
+        ALLOY_DMA_TEST_HOOK_IS_DONE(channel);
+#endif
 
         return (hw()->GIS & (1u << channel)) == 0;
     }
@@ -261,9 +277,9 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_IS_BUSY
      */
     static inline bool is_busy(uint8_t channel) const {
-        #ifdef ALLOY_DMA_TEST_HOOK_IS_BUSY
-            ALLOY_DMA_TEST_HOOK_IS_BUSY(channel);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_IS_BUSY
+        ALLOY_DMA_TEST_HOOK_IS_BUSY(channel);
+#endif
 
         return (hw()->GS & (1u << channel)) != 0;
     }
@@ -275,9 +291,9 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_INT_EN
      */
     static inline void enable_interrupt(uint8_t channel) {
-        #ifdef ALLOY_DMA_TEST_HOOK_INT_EN
-            ALLOY_DMA_TEST_HOOK_INT_EN(channel);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_INT_EN
+        ALLOY_DMA_TEST_HOOK_INT_EN(channel);
+#endif
 
         hw()->GIE = (1u << channel);
     }
@@ -289,13 +305,12 @@ struct Same70DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_INT_DIS
      */
     static inline void disable_interrupt(uint8_t channel) {
-        #ifdef ALLOY_DMA_TEST_HOOK_INT_DIS
-            ALLOY_DMA_TEST_HOOK_INT_DIS(channel);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_INT_DIS
+        ALLOY_DMA_TEST_HOOK_INT_DIS(channel);
+#endif
 
         hw()->GID = (1u << channel);
     }
-
 };
 
 // ============================================================================
@@ -303,7 +318,8 @@ struct Same70DMAHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Dma
-using DmaHardware = Same70DMAHardwarePolicy<ucore::generated::atsame70q21b::peripherals::XDMAC, 150000000>;
+using DmaHardware =
+    Same70DMAHardwarePolicy<ucore::generated::atsame70q21b::peripherals::XDMAC, 150000000>;
 
 }  // namespace ucore::hal::same70
 

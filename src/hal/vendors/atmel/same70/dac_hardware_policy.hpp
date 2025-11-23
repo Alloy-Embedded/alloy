@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/atmel/same70/generated/registers/dacc_registers.hpp"
@@ -89,11 +89,11 @@ struct Same70DACHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_DAC_MOCK_HW
-            return ALLOY_DAC_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_DAC_MOCK_HW
+        return ALLOY_DAC_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -114,9 +114,9 @@ struct Same70DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_RESET
      */
     static inline void reset() {
-        #ifdef ALLOY_DAC_TEST_HOOK_RESET
-            ALLOY_DAC_TEST_HOOK_RESET();
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_RESET
+        ALLOY_DAC_TEST_HOOK_RESET();
+#endif
 
         hw()->CR = dacc::cr::SWRST::mask;
     }
@@ -128,9 +128,9 @@ struct Same70DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_ENABLE
      */
     static inline void enable_channel(uint8_t channel) {
-        #ifdef ALLOY_DAC_TEST_HOOK_ENABLE
-            ALLOY_DAC_TEST_HOOK_ENABLE(channel);
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_ENABLE
+        ALLOY_DAC_TEST_HOOK_ENABLE(channel);
+#endif
 
         hw()->CHER = (1u << channel);
     }
@@ -142,9 +142,9 @@ struct Same70DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_DISABLE
      */
     static inline void disable_channel(uint8_t channel) {
-        #ifdef ALLOY_DAC_TEST_HOOK_DISABLE
-            ALLOY_DAC_TEST_HOOK_DISABLE(channel);
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_DISABLE
+        ALLOY_DAC_TEST_HOOK_DISABLE(channel);
+#endif
 
         hw()->CHDR = (1u << channel);
     }
@@ -157,11 +157,15 @@ struct Same70DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_WRITE
      */
     static inline void write_value(uint8_t channel, uint16_t value) {
-        #ifdef ALLOY_DAC_TEST_HOOK_WRITE
-            ALLOY_DAC_TEST_HOOK_WRITE(channel, value);
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_WRITE
+        ALLOY_DAC_TEST_HOOK_WRITE(channel, value);
+#endif
 
-        if (channel == 0) { hw()->CDR0 = value & 0xFFF; } else { hw()->CDR1 = value & 0xFFF; }
+        if (channel == 0) {
+            hw()->CDR0 = value & 0xFFF;
+        } else {
+            hw()->CDR1 = value & 0xFFF;
+        }
     }
 
     /**
@@ -171,9 +175,9 @@ struct Same70DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_MODE
      */
     static inline void configure_mode(uint32_t mode) {
-        #ifdef ALLOY_DAC_TEST_HOOK_MODE
-            ALLOY_DAC_TEST_HOOK_MODE(mode);
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_MODE
+        ALLOY_DAC_TEST_HOOK_MODE(mode);
+#endif
 
         hw()->MR = mode;
     }
@@ -184,9 +188,9 @@ struct Same70DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_TRIG_EN
      */
     static inline void enable_trigger() {
-        #ifdef ALLOY_DAC_TEST_HOOK_TRIG_EN
-            ALLOY_DAC_TEST_HOOK_TRIG_EN();
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_TRIG_EN
+        ALLOY_DAC_TEST_HOOK_TRIG_EN();
+#endif
 
         hw()->MR |= dacc::mr::TRGEN::mask;
     }
@@ -197,9 +201,9 @@ struct Same70DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_TRIG_DIS
      */
     static inline void disable_trigger() {
-        #ifdef ALLOY_DAC_TEST_HOOK_TRIG_DIS
-            ALLOY_DAC_TEST_HOOK_TRIG_DIS();
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_TRIG_DIS
+        ALLOY_DAC_TEST_HOOK_TRIG_DIS();
+#endif
 
         hw()->MR &= ~dacc::mr::TRGEN::mask;
     }
@@ -212,13 +216,12 @@ struct Same70DACHardwarePolicy {
      * @note Test hook: ALLOY_DAC_TEST_HOOK_READY
      */
     static inline bool is_ready(uint8_t channel) const {
-        #ifdef ALLOY_DAC_TEST_HOOK_READY
-            ALLOY_DAC_TEST_HOOK_READY(channel);
-        #endif
+#ifdef ALLOY_DAC_TEST_HOOK_READY
+        ALLOY_DAC_TEST_HOOK_READY(channel);
+#endif
 
         return (hw()->ISR & (dacc::isr::TXRDY0::mask << channel)) != 0;
     }
-
 };
 
 // ============================================================================

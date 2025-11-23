@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include <cstdint>
+
+#include "core/types.hpp"
 
 namespace ucore::hal::st::stm32g0 {
 
@@ -42,7 +43,7 @@ constexpr uintptr_t SYST_BASE = 0xE000E010;
  */
 template <uint32_t CLOCK_HZ>
 class SysTick {
-public:
+   public:
     static constexpr uint32_t clock_hz = CLOCK_HZ;
 
     /**
@@ -66,16 +67,12 @@ public:
     /**
      * @brief Get current tick count (incremented in ISR)
      */
-    static uint32_t get_ticks() {
-        return tick_count;
-    }
+    static uint32_t get_ticks() { return tick_count; }
 
     /**
      * @brief Get milliseconds since initialization
      */
-    static uint32_t millis() {
-        return tick_count;
-    }
+    static uint32_t millis() { return tick_count; }
 
     /**
      * @brief Get microseconds (for delay functions)
@@ -91,8 +88,8 @@ public:
         tick_count = tick_count + 1;  // Avoid deprecated volatile++
     }
 
-private:
+   private:
     static inline volatile uint32_t tick_count = 0;
 };
 
-} // namespace ucore::hal::st::stm32g0
+}  // namespace ucore::hal::st::stm32g0

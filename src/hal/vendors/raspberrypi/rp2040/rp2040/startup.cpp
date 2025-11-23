@@ -165,35 +165,34 @@ extern "C" [[noreturn]] void Reset_Handler() {
 // VECTOR TABLE
 // ============================================================================
 
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     // Core system handlers
-    reinterpret_cast<void (*)()>(&_estack), // Initial stack pointer
-    Reset_Handler, // Reset handler
-    TIMER_IRQ_0_Handler, // IRQ 0: TIMER_IRQ_0
-    TIMER_IRQ_1_Handler, // IRQ 1: TIMER_IRQ_1
-    TIMER_IRQ_2_Handler, // IRQ 2: TIMER_IRQ_2
-    TIMER_IRQ_3_Handler, // IRQ 3: TIMER_IRQ_3
-    PWM_IRQ_WRAP_Handler, // IRQ 4: PWM_IRQ_WRAP
-    USBCTRL_IRQ_Handler, // IRQ 5: USBCTRL_IRQ
-    XIP_IRQ_Handler, // IRQ 6: XIP_IRQ
-    PIO0_IRQ_0_Handler, // IRQ 7: PIO0_IRQ_0
-    PIO0_IRQ_1_Handler, // IRQ 8: PIO0_IRQ_1
-    PIO1_IRQ_0_Handler, // IRQ 9: PIO1_IRQ_0
-    PIO1_IRQ_1_Handler, // IRQ 10: PIO1_IRQ_1
-    DMA_IRQ_0_Handler, // IRQ 11: DMA_IRQ_0
-    DMA_IRQ_1_Handler, // IRQ 12: DMA_IRQ_1
-    IO_IRQ_BANK0_Handler, // IRQ 13: IO_IRQ_BANK0
-    IO_IRQ_QSPI_Handler, // IRQ 14: IO_IRQ_QSPI
-    SIO_IRQ_PROC0_Handler, // IRQ 15: SIO_IRQ_PROC0
-    SIO_IRQ_PROC1_Handler, // IRQ 16: SIO_IRQ_PROC1
-    CLOCKS_IRQ_Handler, // IRQ 17: CLOCKS_IRQ
-    SPI0_IRQ_Handler, // IRQ 18: SPI0_IRQ
-    SPI1_IRQ_Handler, // IRQ 19: SPI1_IRQ
-    UART0_IRQ_Handler, // IRQ 20: UART0_IRQ
-    UART1_IRQ_Handler, // IRQ 21: UART1_IRQ
-    ADC_IRQ_FIFO_Handler, // IRQ 22: ADC_IRQ_FIFO
-    I2C0_IRQ_Handler, // IRQ 23: I2C0_IRQ
-    I2C1_IRQ_Handler, // IRQ 24: I2C1_IRQ
-    RTC_IRQ_Handler, // IRQ 25: RTC_IRQ
+    reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
+    Reset_Handler,                           // Reset handler
+    TIMER_IRQ_0_Handler,                     // IRQ 0: TIMER_IRQ_0
+    TIMER_IRQ_1_Handler,                     // IRQ 1: TIMER_IRQ_1
+    TIMER_IRQ_2_Handler,                     // IRQ 2: TIMER_IRQ_2
+    TIMER_IRQ_3_Handler,                     // IRQ 3: TIMER_IRQ_3
+    PWM_IRQ_WRAP_Handler,                    // IRQ 4: PWM_IRQ_WRAP
+    USBCTRL_IRQ_Handler,                     // IRQ 5: USBCTRL_IRQ
+    XIP_IRQ_Handler,                         // IRQ 6: XIP_IRQ
+    PIO0_IRQ_0_Handler,                      // IRQ 7: PIO0_IRQ_0
+    PIO0_IRQ_1_Handler,                      // IRQ 8: PIO0_IRQ_1
+    PIO1_IRQ_0_Handler,                      // IRQ 9: PIO1_IRQ_0
+    PIO1_IRQ_1_Handler,                      // IRQ 10: PIO1_IRQ_1
+    DMA_IRQ_0_Handler,                       // IRQ 11: DMA_IRQ_0
+    DMA_IRQ_1_Handler,                       // IRQ 12: DMA_IRQ_1
+    IO_IRQ_BANK0_Handler,                    // IRQ 13: IO_IRQ_BANK0
+    IO_IRQ_QSPI_Handler,                     // IRQ 14: IO_IRQ_QSPI
+    SIO_IRQ_PROC0_Handler,                   // IRQ 15: SIO_IRQ_PROC0
+    SIO_IRQ_PROC1_Handler,                   // IRQ 16: SIO_IRQ_PROC1
+    CLOCKS_IRQ_Handler,                      // IRQ 17: CLOCKS_IRQ
+    SPI0_IRQ_Handler,                        // IRQ 18: SPI0_IRQ
+    SPI1_IRQ_Handler,                        // IRQ 19: SPI1_IRQ
+    UART0_IRQ_Handler,                       // IRQ 20: UART0_IRQ
+    UART1_IRQ_Handler,                       // IRQ 21: UART1_IRQ
+    ADC_IRQ_FIFO_Handler,                    // IRQ 22: ADC_IRQ_FIFO
+    I2C0_IRQ_Handler,                        // IRQ 23: I2C0_IRQ
+    I2C1_IRQ_Handler,                        // IRQ 24: I2C1_IRQ
+    RTC_IRQ_Handler,                         // IRQ 25: RTC_IRQ
 };

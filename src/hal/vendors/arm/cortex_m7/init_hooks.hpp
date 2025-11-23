@@ -106,7 +106,7 @@ void pre_main_init();
 [[gnu::weak]]
 void late_init();
 
-} // extern "C"
+}  // extern "C"
 
 /**
  * @brief Default implementations
@@ -116,20 +116,17 @@ void late_init();
  */
 
 // Default early_init (does nothing)
-__attribute__((weak))
-void early_init() {
+__attribute__((weak)) void early_init() {
     // Default: no early initialization
 }
 
 // Default pre_main_init (does nothing)
-__attribute__((weak))
-void pre_main_init() {
+__attribute__((weak)) void pre_main_init() {
     // Default: no pre-main initialization
 }
 
 // Default late_init (does nothing)
-__attribute__((weak))
-void late_init() {
+__attribute__((weak)) void late_init() {
     // Default: no late initialization
 }
 
@@ -164,4 +161,4 @@ void late_init() {
  * Most applications should use late_init() only.
  */
 
-} // namespace ucore::hal::arm
+}  // namespace ucore::hal::arm

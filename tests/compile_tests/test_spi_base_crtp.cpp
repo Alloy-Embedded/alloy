@@ -8,11 +8,12 @@
  * @note Part of Phase 1.8: Implement SpiBase
  */
 
+#include <span>
+
 #include "hal/api/spi_base.hpp"
-#include "core/types.hpp"
 #include "hal/interface/spi.hpp"
 
-#include <span>
+#include "core/types.hpp"
 
 using namespace ucore::hal;
 using namespace ucore::core;
@@ -29,7 +30,7 @@ using namespace ucore::core;
 class MockSpiDevice : public SpiBase<MockSpiDevice> {
     friend SpiBase<MockSpiDevice>;
 
-public:
+   public:
     constexpr MockSpiDevice() : config_{}, busy_(false) {}
 
     // Allow access to base class methods
@@ -53,9 +54,7 @@ public:
      * @brief Full-duplex transfer implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> transfer_impl(
-        std::span<const u8> tx_buffer,
-        std::span<u8> rx_buffer
-    ) noexcept {
+        std::span<const u8> tx_buffer, std::span<u8> rx_buffer) noexcept {
         // Mock implementation: copy tx to rx for testing
         size_t len = tx_buffer.size() < rx_buffer.size() ? tx_buffer.size() : rx_buffer.size();
         for (size_t i = 0; i < len; ++i) {
@@ -68,8 +67,7 @@ public:
      * @brief Transmit-only implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> transmit_impl(
-        std::span<const u8> tx_buffer
-    ) noexcept {
+        std::span<const u8> tx_buffer) noexcept {
         // Mock implementation
         (void)tx_buffer;
         return Ok();
@@ -78,9 +76,7 @@ public:
     /**
      * @brief Receive-only implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> receive_impl(
-        std::span<u8> rx_buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> receive_impl(std::span<u8> rx_buffer) noexcept {
         // Mock implementation: fill with zeros
         for (auto& byte : rx_buffer) {
             byte = 0;
@@ -92,8 +88,7 @@ public:
      * @brief Configure SPI implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> configure_impl(
-        const SpiConfig& config
-    ) noexcept {
+        const SpiConfig& config) noexcept {
         config_ = config;
         return Ok();
     }
@@ -101,11 +96,9 @@ public:
     /**
      * @brief Check if busy implementation
      */
-    [[nodiscard]] constexpr bool is_busy_impl() const noexcept {
-        return busy_;
-    }
+    [[nodiscard]] constexpr bool is_busy_impl() const noexcept { return busy_; }
 
-private:
+   private:
     SpiConfig config_;
     bool busy_;
 };
@@ -136,10 +129,7 @@ void test_transfer_operations() {
     u8 rx_data[3] = {0};
 
     // Test full-duplex transfer
-    [[maybe_unused]] auto transfer_result = spi.transfer(
-        std::span(tx_data),
-        std::span(rx_data)
-    );
+    [[maybe_unused]] auto transfer_result = spi.transfer(std::span(tx_data), std::span(rx_data));
 
     // Test transmit-only
     [[maybe_unused]] auto transmit_result = spi.transmit(std::span(tx_data));
@@ -218,10 +208,8 @@ void test_status() {
     [[maybe_unused]] bool ready = spi.is_ready();
 
     // Verify return types
-    static_assert(std::is_same_v<decltype(busy), bool>,
-                  "is_busy() must return bool");
-    static_assert(std::is_same_v<decltype(ready), bool>,
-                  "is_ready() must return bool");
+    static_assert(std::is_same_v<decltype(busy), bool>, "is_busy() must return bool");
+    static_assert(std::is_same_v<decltype(ready), bool>, "is_ready() must return bool");
 }
 
 /**
@@ -232,11 +220,9 @@ void test_zero_overhead() {
     using BaseType = SpiBase<DeviceType>;
 
     // Verify empty base optimization
-    static_assert(sizeof(BaseType) == 1,
-                  "SpiBase must be empty (sizeof == 1)");
+    static_assert(sizeof(BaseType) == 1, "SpiBase must be empty (sizeof == 1)");
 
-    static_assert(std::is_empty_v<BaseType>,
-                  "SpiBase must have no data members");
+    static_assert(std::is_empty_v<BaseType>, "SpiBase must have no data members");
 }
 
 /**
@@ -256,8 +242,7 @@ constexpr bool test_constexpr_construction() {
     return true;
 }
 
-static_assert(test_constexpr_construction(),
-              "MockSpiDevice must be constexpr constructible");
+static_assert(test_constexpr_construction(), "MockSpiDevice must be constexpr constructible");
 
 /**
  * @brief Test transfer with different buffer sizes
@@ -269,10 +254,7 @@ void test_buffer_size_handling() {
     u8 rx_data[3] = {0};
 
     // Transfer should handle different buffer sizes
-    [[maybe_unused]] auto result = spi.transfer(
-        std::span(tx_data),
-        std::span(rx_data)
-    );
+    [[maybe_unused]] auto result = spi.transfer(std::span(tx_data), std::span(rx_data));
 }
 
 /**

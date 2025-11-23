@@ -8,11 +8,12 @@
  * @note Part of Phase 1.9.3: Refactor SpiExpert
  */
 
+#include <span>
+
 #include "hal/api/spi_expert.hpp"
-#include "core/types.hpp"
 #include "hal/interface/spi.hpp"
 
-#include <span>
+#include "core/types.hpp"
 
 using namespace ucore::hal;
 using namespace ucore::core;
@@ -37,12 +38,8 @@ void test_expert_spi_inheritance() {
  * @brief Test standard Mode 0 configuration
  */
 void test_standard_mode0_config() {
-    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5
-    );
+    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(PeripheralId::SPI0, PinId::PA7,
+                                                                 PinId::PA6, PinId::PA5);
 
     // Verify configuration is valid at compile-time
     static_assert(config.is_valid(), "Standard Mode 0 config should be valid");
@@ -59,12 +56,8 @@ void test_standard_mode0_config() {
  * @brief Test TX-only configuration
  */
 void test_tx_only_config() {
-    constexpr auto config = SpiExpertConfig::tx_only_config(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA5,
-        2000000
-    );
+    constexpr auto config =
+        SpiExpertConfig::tx_only_config(PeripheralId::SPI0, PinId::PA7, PinId::PA5, 2000000);
 
     // Verify configuration is valid at compile-time
     static_assert(config.is_valid(), "TX-only config should be valid");
@@ -76,13 +69,8 @@ void test_tx_only_config() {
  * @brief Test DMA configuration
  */
 void test_dma_config() {
-    constexpr auto config = SpiExpertConfig::dma_config(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5,
-        10000000
-    );
+    constexpr auto config = SpiExpertConfig::dma_config(PeripheralId::SPI0, PinId::PA7, PinId::PA6,
+                                                        PinId::PA5, 10000000);
 
     // Verify configuration is valid at compile-time
     static_assert(config.is_valid(), "DMA config should be valid");
@@ -95,13 +83,10 @@ void test_dma_config() {
  * @brief Test high-speed configuration
  */
 void test_high_speed_config() {
-    constexpr auto config = SpiExpertConfig::high_speed_config(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5,
-        25000000  // 25 MHz
-    );
+    constexpr auto config =
+        SpiExpertConfig::high_speed_config(PeripheralId::SPI0, PinId::PA7, PinId::PA6, PinId::PA5,
+                                           25000000  // 25 MHz
+        );
 
     // Verify configuration is valid at compile-time
     static_assert(config.is_valid(), "High-speed config should be valid");
@@ -112,12 +97,8 @@ void test_high_speed_config() {
  * @brief Test transfer operations
  */
 void test_transfer_operations() {
-    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5
-    );
+    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(PeripheralId::SPI0, PinId::PA7,
+                                                                 PinId::PA6, PinId::PA5);
 
     auto spi = expert::create_instance(config);
 
@@ -125,10 +106,7 @@ void test_transfer_operations() {
     u8 rx_data[3] = {0};
 
     // Test full-duplex transfer
-    [[maybe_unused]] auto transfer_result = spi.transfer(
-        std::span(tx_data),
-        std::span(rx_data)
-    );
+    [[maybe_unused]] auto transfer_result = spi.transfer(std::span(tx_data), std::span(rx_data));
 
     // Test transmit-only
     [[maybe_unused]] auto transmit_result = spi.transmit(std::span(tx_data));
@@ -149,12 +127,8 @@ void test_transfer_operations() {
  * @brief Test single-byte convenience methods
  */
 void test_single_byte_operations() {
-    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5
-    );
+    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(PeripheralId::SPI0, PinId::PA7,
+                                                                 PinId::PA6, PinId::PA5);
 
     auto spi = expert::create_instance(config);
 
@@ -180,12 +154,8 @@ void test_single_byte_operations() {
  * @brief Test TX-only operations
  */
 void test_tx_only_operations() {
-    constexpr auto config = SpiExpertConfig::tx_only_config(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA5,
-        2000000
-    );
+    constexpr auto config =
+        SpiExpertConfig::tx_only_config(PeripheralId::SPI0, PinId::PA7, PinId::PA5, 2000000);
 
     auto spi = expert::create_instance(config);
 
@@ -211,12 +181,8 @@ void test_tx_only_operations() {
  * @brief Test configuration methods
  */
 void test_configuration() {
-    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5
-    );
+    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(PeripheralId::SPI0, PinId::PA7,
+                                                                 PinId::PA6, PinId::PA5);
 
     auto spi = expert::create_instance(config);
 
@@ -243,12 +209,8 @@ void test_configuration() {
  * @brief Test status methods
  */
 void test_status() {
-    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5
-    );
+    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(PeripheralId::SPI0, PinId::PA7,
+                                                                 PinId::PA6, PinId::PA5);
 
     const auto spi = expert::create_instance(config);
 
@@ -259,10 +221,8 @@ void test_status() {
     [[maybe_unused]] bool ready = spi.is_ready();
 
     // Verify return types
-    static_assert(std::is_same_v<decltype(busy), bool>,
-                  "is_busy() must return bool");
-    static_assert(std::is_same_v<decltype(ready), bool>,
-                  "is_ready() must return bool");
+    static_assert(std::is_same_v<decltype(busy), bool>, "is_busy() must return bool");
+    static_assert(std::is_same_v<decltype(ready), bool>, "is_ready() must return bool");
 }
 
 /**
@@ -270,11 +230,7 @@ void test_status() {
  */
 void test_validation_helpers() {
     constexpr auto valid_config = SpiExpertConfig::standard_mode0_2mhz(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5
-    );
+        PeripheralId::SPI0, PinId::PA7, PinId::PA6, PinId::PA5);
 
     // Test validation functions
     static_assert(validate_spi_config(valid_config), "Valid config should pass validation");
@@ -289,27 +245,25 @@ void test_validation_helpers() {
  * @brief Test invalid configuration (clock speed too low)
  */
 void test_invalid_clock_speed_low() {
-    constexpr SpiExpertConfig config = {
-        .peripheral = PeripheralId::SPI0,
-        .mosi_pin = PinId::PA7,
-        .miso_pin = PinId::PA6,
-        .sck_pin = PinId::PA5,
-        .nss_pin = PinId::PA0,
-        .mode = SpiMode::Mode0,
-        .clock_speed = 500,  // Too low
-        .bit_order = SpiBitOrder::MsbFirst,
-        .data_size = SpiDataSize::Bits8,
-        .enable_mosi = true,
-        .enable_miso = true,
-        .enable_nss = false,
-        .enable_interrupts = false,
-        .enable_dma_tx = false,
-        .enable_dma_rx = false,
-        .enable_crc = false,
-        .crc_polynomial = 0,
-        .enable_ti_mode = false,
-        .enable_motorola = true
-    };
+    constexpr SpiExpertConfig config = {.peripheral = PeripheralId::SPI0,
+                                        .mosi_pin = PinId::PA7,
+                                        .miso_pin = PinId::PA6,
+                                        .sck_pin = PinId::PA5,
+                                        .nss_pin = PinId::PA0,
+                                        .mode = SpiMode::Mode0,
+                                        .clock_speed = 500,  // Too low
+                                        .bit_order = SpiBitOrder::MsbFirst,
+                                        .data_size = SpiDataSize::Bits8,
+                                        .enable_mosi = true,
+                                        .enable_miso = true,
+                                        .enable_nss = false,
+                                        .enable_interrupts = false,
+                                        .enable_dma_tx = false,
+                                        .enable_dma_rx = false,
+                                        .enable_crc = false,
+                                        .crc_polynomial = 0,
+                                        .enable_ti_mode = false,
+                                        .enable_motorola = true};
 
     static_assert(!config.is_valid(), "Config with low clock speed should be invalid");
 }
@@ -318,27 +272,25 @@ void test_invalid_clock_speed_low() {
  * @brief Test invalid configuration (no enabled directions)
  */
 void test_invalid_no_directions() {
-    constexpr SpiExpertConfig config = {
-        .peripheral = PeripheralId::SPI0,
-        .mosi_pin = PinId::PA7,
-        .miso_pin = PinId::PA6,
-        .sck_pin = PinId::PA5,
-        .nss_pin = PinId::PA0,
-        .mode = SpiMode::Mode0,
-        .clock_speed = 2000000,
-        .bit_order = SpiBitOrder::MsbFirst,
-        .data_size = SpiDataSize::Bits8,
-        .enable_mosi = false,  // Both disabled
-        .enable_miso = false,  // Both disabled
-        .enable_nss = false,
-        .enable_interrupts = false,
-        .enable_dma_tx = false,
-        .enable_dma_rx = false,
-        .enable_crc = false,
-        .crc_polynomial = 0,
-        .enable_ti_mode = false,
-        .enable_motorola = true
-    };
+    constexpr SpiExpertConfig config = {.peripheral = PeripheralId::SPI0,
+                                        .mosi_pin = PinId::PA7,
+                                        .miso_pin = PinId::PA6,
+                                        .sck_pin = PinId::PA5,
+                                        .nss_pin = PinId::PA0,
+                                        .mode = SpiMode::Mode0,
+                                        .clock_speed = 2000000,
+                                        .bit_order = SpiBitOrder::MsbFirst,
+                                        .data_size = SpiDataSize::Bits8,
+                                        .enable_mosi = false,  // Both disabled
+                                        .enable_miso = false,  // Both disabled
+                                        .enable_nss = false,
+                                        .enable_interrupts = false,
+                                        .enable_dma_tx = false,
+                                        .enable_dma_rx = false,
+                                        .enable_crc = false,
+                                        .crc_polynomial = 0,
+                                        .enable_ti_mode = false,
+                                        .enable_motorola = true};
 
     static_assert(!config.is_valid(), "Config with no enabled directions should be invalid");
 }
@@ -365,8 +317,8 @@ void test_invalid_frame_formats() {
         .enable_dma_rx = false,
         .enable_crc = false,
         .crc_polynomial = 0,
-        .enable_ti_mode = true,   // Both enabled
-        .enable_motorola = true   // Both enabled
+        .enable_ti_mode = true,  // Both enabled
+        .enable_motorola = true  // Both enabled
     };
 
     static_assert(!config.is_valid(), "Config with conflicting frame formats should be invalid");
@@ -376,29 +328,28 @@ void test_invalid_frame_formats() {
  * @brief Test invalid DMA configuration
  */
 void test_invalid_dma_config() {
-    constexpr SpiExpertConfig config = {
-        .peripheral = PeripheralId::SPI0,
-        .mosi_pin = PinId::PA7,
-        .miso_pin = PinId::PA6,
-        .sck_pin = PinId::PA5,
-        .nss_pin = PinId::PA0,
-        .mode = SpiMode::Mode0,
-        .clock_speed = 2000000,
-        .bit_order = SpiBitOrder::MsbFirst,
-        .data_size = SpiDataSize::Bits8,
-        .enable_mosi = false,  // MOSI disabled
-        .enable_miso = true,
-        .enable_nss = false,
-        .enable_interrupts = false,
-        .enable_dma_tx = true,  // But DMA TX enabled
-        .enable_dma_rx = false,
-        .enable_crc = false,
-        .crc_polynomial = 0,
-        .enable_ti_mode = false,
-        .enable_motorola = true
-    };
+    constexpr SpiExpertConfig config = {.peripheral = PeripheralId::SPI0,
+                                        .mosi_pin = PinId::PA7,
+                                        .miso_pin = PinId::PA6,
+                                        .sck_pin = PinId::PA5,
+                                        .nss_pin = PinId::PA0,
+                                        .mode = SpiMode::Mode0,
+                                        .clock_speed = 2000000,
+                                        .bit_order = SpiBitOrder::MsbFirst,
+                                        .data_size = SpiDataSize::Bits8,
+                                        .enable_mosi = false,  // MOSI disabled
+                                        .enable_miso = true,
+                                        .enable_nss = false,
+                                        .enable_interrupts = false,
+                                        .enable_dma_tx = true,  // But DMA TX enabled
+                                        .enable_dma_rx = false,
+                                        .enable_crc = false,
+                                        .crc_polynomial = 0,
+                                        .enable_ti_mode = false,
+                                        .enable_motorola = true};
 
-    static_assert(!config.is_valid(), "Config with DMA TX enabled but MOSI disabled should be invalid");
+    static_assert(!config.is_valid(),
+                  "Config with DMA TX enabled but MOSI disabled should be invalid");
 }
 
 /**
@@ -414,12 +365,8 @@ void test_concept() {
  * @brief Test apply method
  */
 void test_apply() {
-    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5
-    );
+    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(PeripheralId::SPI0, PinId::PA7,
+                                                                 PinId::PA6, PinId::PA5);
 
     auto spi = expert::create_instance(config);
     [[maybe_unused]] auto apply_result = spi.apply();
@@ -432,32 +379,23 @@ void test_apply() {
  * @brief Test config accessor
  */
 void test_config_accessor() {
-    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5
-    );
+    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(PeripheralId::SPI0, PinId::PA7,
+                                                                 PinId::PA6, PinId::PA5);
 
     constexpr auto spi = expert::create_instance(config);
     constexpr auto retrieved_config = spi.config();
 
     static_assert(retrieved_config.peripheral == PeripheralId::SPI0,
                   "Should retrieve correct peripheral");
-    static_assert(retrieved_config.clock_speed == 2000000,
-                  "Should retrieve correct clock speed");
+    static_assert(retrieved_config.clock_speed == 2000000, "Should retrieve correct clock speed");
 }
 
 /**
  * @brief Test buffer size handling
  */
 void test_buffer_size_handling() {
-    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5
-    );
+    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(PeripheralId::SPI0, PinId::PA7,
+                                                                 PinId::PA6, PinId::PA5);
 
     auto spi = expert::create_instance(config);
 
@@ -465,22 +403,15 @@ void test_buffer_size_handling() {
     u8 rx_data[3] = {0};
 
     // Transfer should handle different buffer sizes
-    [[maybe_unused]] auto result = spi.transfer(
-        std::span(tx_data),
-        std::span(rx_data)
-    );
+    [[maybe_unused]] auto result = spi.transfer(std::span(tx_data), std::span(rx_data));
 }
 
 /**
  * @brief Test error handling
  */
 void test_error_handling() {
-    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5
-    );
+    constexpr auto config = SpiExpertConfig::standard_mode0_2mhz(PeripheralId::SPI0, PinId::PA7,
+                                                                 PinId::PA6, PinId::PA5);
 
     auto spi = expert::create_instance(config);
     auto result = spi.transfer_byte(0x00);
@@ -497,29 +428,20 @@ void test_error_handling() {
  * @brief Test constexpr construction
  */
 constexpr bool test_constexpr_construction() {
-    auto config = SpiExpertConfig::standard_mode0_2mhz(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA6,
-        PinId::PA5
-    );
+    auto config = SpiExpertConfig::standard_mode0_2mhz(PeripheralId::SPI0, PinId::PA7, PinId::PA6,
+                                                       PinId::PA5);
     auto spi = expert::create_instance(config);
     return true;
 }
 
-static_assert(test_constexpr_construction(),
-              "ExpertSpiInstance must be constexpr constructible");
+static_assert(test_constexpr_construction(), "ExpertSpiInstance must be constexpr constructible");
 
 /**
  * @brief Test TX-only NotSupported errors
  */
 void test_tx_only_not_supported() {
-    constexpr auto config = SpiExpertConfig::tx_only_config(
-        PeripheralId::SPI0,
-        PinId::PA7,
-        PinId::PA5,
-        2000000
-    );
+    constexpr auto config =
+        SpiExpertConfig::tx_only_config(PeripheralId::SPI0, PinId::PA7, PinId::PA5, 2000000);
 
     auto spi = expert::create_instance(config);
 

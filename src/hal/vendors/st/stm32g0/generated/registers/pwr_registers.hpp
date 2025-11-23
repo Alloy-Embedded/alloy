@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::pwr {
 
 /// PWR Register Structure
 struct PWR_Registers {
-
     /// Power control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000208
@@ -59,7 +58,7 @@ struct PWR_Registers {
     /// Reset value: 0x00000000
     /// Access: write-only
     volatile uint32_t SCR;
-    uint8_t RESERVED_001C[4]; ///< Reserved
+    uint8_t RESERVED_001C[4];  ///< Reserved
 
     /// Power Port A pull-up control register
     /// Offset: 0x0020

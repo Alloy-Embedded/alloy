@@ -95,7 +95,9 @@ concept DmaChannel =
         /// @param destination Destination address (or nullptr for peripheral destination)
         /// @param size Number of data elements to transfer
         /// @return Ok on success, error code on failure
-        { device.start_transfer(source, destination, size) } -> std::same_as<Result<void, ErrorCode>>;
+        {
+            device.start_transfer(source, destination, size)
+        } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Stop DMA transfer
         ///
@@ -128,7 +130,9 @@ concept DmaChannel =
         ///
         /// @param callback Function to call on completion
         /// @return Ok on success, error code on failure
-        { device.set_complete_callback(complete_callback) } -> std::same_as<Result<void, ErrorCode>>;
+        {
+            device.set_complete_callback(complete_callback)
+        } -> std::same_as<Result<void, ErrorCode>>;
 
         /// Set transfer error callback
         ///
@@ -164,8 +168,7 @@ inline bool is_dma_aligned(const void* address, DmaDataWidth data_width) {
 /// @param element_count Number of elements
 /// @param data_width Width of each element
 /// @return Total size in bytes
-inline constexpr usize calculate_dma_size(usize element_count,
-                                                DmaDataWidth data_width) {
+inline constexpr usize calculate_dma_size(usize element_count, DmaDataWidth data_width) {
     return element_count * static_cast<u8>(data_width);
 }
 

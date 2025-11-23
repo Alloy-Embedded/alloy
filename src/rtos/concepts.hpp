@@ -30,10 +30,10 @@
 #ifndef UCORE_RTOS_CONCEPTS_HPP
 #define UCORE_RTOS_CONCEPTS_HPP
 
-#include <concepts>
-#include <type_traits>
-#include <cstddef>
 #include <algorithm>
+#include <concepts>
+#include <cstddef>
+#include <type_traits>
 
 #include "core/types.hpp"
 
@@ -66,45 +66,33 @@ struct fixed_string {
     /// Constructor from string literal
     ///
     /// @param str String literal (must be N-1 chars + null)
-    consteval fixed_string(const char (&str)[N]) {
-        std::copy_n(str, N, data);
-    }
+    consteval fixed_string(const char (&str)[N]) { std::copy_n(str, N, data); }
 
     /// Get length (excluding null terminator)
     ///
     /// @return String length
-    consteval size_t size() const {
-        return N - 1;
-    }
+    consteval size_t size() const { return N - 1; }
 
     /// Get length (including null terminator)
     ///
     /// @return Buffer length
-    consteval size_t length() const {
-        return N;
-    }
+    consteval size_t length() const { return N; }
 
     /// Check if empty
     ///
     /// @return true if string is empty
-    consteval bool empty() const {
-        return N <= 1;
-    }
+    consteval bool empty() const { return N <= 1; }
 
     /// Array subscript operator
     ///
     /// @param i Index
     /// @return Character at index
-    consteval char operator[](size_t i) const {
-        return data[i];
-    }
+    consteval char operator[](size_t i) const { return data[i]; }
 
     /// Get C-string pointer
     ///
     /// @return Pointer to null-terminated string
-    consteval const char* c_str() const {
-        return data;
-    }
+    consteval const char* c_str() const { return data; }
 
     /// Compare two fixed_strings
     ///
@@ -112,9 +100,11 @@ struct fixed_string {
     /// @return true if equal
     template <size_t M>
     consteval bool operator==(const fixed_string<M>& other) const {
-        if (N != M) return false;
+        if (N != M)
+            return false;
         for (size_t i = 0; i < N; ++i) {
-            if (data[i] != other.data[i]) return false;
+            if (data[i] != other.data[i])
+                return false;
         }
         return true;
     }
@@ -330,9 +320,9 @@ concept Semaphore = requires(T t) {
 /// @return true if valid
 template <size_t StackSize>
 consteval bool is_valid_stack_size() {
-    return StackSize >= 256 &&        // Minimum viable stack
-           StackSize <= 65536 &&      // Maximum reasonable stack (64KB)
-           (StackSize % 8) == 0;      // Must be 8-byte aligned
+    return StackSize >= 256 &&    // Minimum viable stack
+           StackSize <= 65536 &&  // Maximum reasonable stack (64KB)
+           (StackSize % 8) == 0;  // Must be 8-byte aligned
 }
 
 /// Validate priority at compile time
@@ -399,7 +389,8 @@ consteval core::u8 highest_priority() {
     constexpr core::u8 priorities[] = {Priorities...};
     core::u8 max = 0;
     for (core::u8 p : priorities) {
-        if (p > max) max = p;
+        if (p > max)
+            max = p;
     }
     return max;
 }
@@ -413,7 +404,8 @@ consteval core::u8 lowest_priority() {
     constexpr core::u8 priorities[] = {Priorities...};
     core::u8 min = 7;
     for (core::u8 p : priorities) {
-        if (p < min) min = p;
+        if (p < min)
+            min = p;
     }
     return min;
 }
@@ -430,9 +422,7 @@ consteval core::u8 lowest_priority() {
 /// @tparam MaxSize Maximum allowed size
 template <typename T, size_t MaxSize = 256>
 concept TriviallyCopyableAndSmall =
-    std::is_trivially_copyable_v<T> &&
-    sizeof(T) <= MaxSize &&
-    !std::is_pointer_v<T>;
+    std::is_trivially_copyable_v<T> && sizeof(T) <= MaxSize && !std::is_pointer_v<T>;
 
 /// Concept: PODType<T>
 ///
@@ -440,9 +430,7 @@ concept TriviallyCopyableAndSmall =
 ///
 /// @tparam T Type to check
 template <typename T>
-concept PODType =
-    std::is_standard_layout_v<T> &&
-    std::is_trivial_v<T>;
+concept PODType = std::is_standard_layout_v<T> && std::is_trivial_v<T>;
 
 /// Concept: HasTimestamp<T>
 ///
@@ -477,10 +465,7 @@ concept HasPriority = requires(T t) {
 /// @tparam Q Queue type
 /// @tparam T Message type (must have priority)
 template <typename Q, typename T>
-concept PriorityQueue =
-    QueueProducer<Q, T> &&
-    QueueConsumer<Q, T> &&
-    HasPriority<T>;
+concept PriorityQueue = QueueProducer<Q, T> && QueueConsumer<Q, T> && HasPriority<T>;
 
 /// Concept: TimestampedQueue<Q, T>
 ///
@@ -489,10 +474,7 @@ concept PriorityQueue =
 /// @tparam Q Queue type
 /// @tparam T Message type (must have timestamp)
 template <typename Q, typename T>
-concept TimestampedQueue =
-    QueueProducer<Q, T> &&
-    QueueConsumer<Q, T> &&
-    HasTimestamp<T>;
+concept TimestampedQueue = QueueProducer<Q, T> && QueueConsumer<Q, T> && HasTimestamp<T>;
 
 /// Concept: BlockingQueue<Q, T>
 ///
@@ -540,13 +522,11 @@ concept HasTaskMetadata = requires {
 ///
 /// @tparam T Task type
 template <typename T>
-concept ValidTask =
-    HasTaskMetadata<T> &&
-    requires {
-        requires T::stack_size() >= 256;
-        requires T::stack_size() <= 65536;
-        requires (T::stack_size() % 8) == 0;
-    };
+concept ValidTask = HasTaskMetadata<T> && requires {
+    requires T::stack_size() >= 256;
+    requires T::stack_size() <= 65536;
+    requires(T::stack_size() % 8) == 0;
+};
 
 // ============================================================================
 // Memory Pool Concepts (for Phase 6)
@@ -559,9 +539,8 @@ concept ValidTask =
 /// @tparam T Type to check
 template <typename T>
 concept PoolAllocatable =
-    std::is_trivially_destructible_v<T> &&
-    sizeof(T) <= 4096 &&  // Reasonable size limit
-    alignof(T) <= 64;     // Reasonable alignment
+    std::is_trivially_destructible_v<T> && sizeof(T) <= 4096 &&  // Reasonable size limit
+    alignof(T) <= 64;                                            // Reasonable alignment
 
 /// Concept: MemoryPool<P, T>
 ///
@@ -593,11 +572,7 @@ concept MemoryPool = requires(P p, T* ptr) {
 ///
 /// @tparam F Function type
 template <typename F>
-concept ISRSafe =
-    std::is_invocable_v<F> &&
-    requires {
-        requires noexcept(std::declval<F>()());
-    };
+concept ISRSafe = std::is_invocable_v<F> && requires { requires noexcept(std::declval<F>()()); };
 
 // ============================================================================
 // Compile-Time Deadlock Detection Helpers
@@ -630,7 +605,7 @@ consteval bool has_consistent_lock_order() {
 
     // Check if strictly increasing (consistent order)
     for (size_t i = 1; i < N; ++i) {
-        if (ids[i] <= ids[i-1]) {
+        if (ids[i] <= ids[i - 1]) {
             return false;  // Not strictly increasing
         }
     }
@@ -729,19 +704,20 @@ consteval bool compile_time_check(bool condition, const char* message) {
 template <size_t N>
 consteval bool is_valid_task_name(const char (&str)[N]) {
     // Check length (1-31 chars + null)
-    if (N < 2 || N > 32) return false;
+    if (N < 2 || N > 32)
+        return false;
 
     // Check for null terminator
-    if (str[N-1] != '\0') return false;
+    if (str[N - 1] != '\0')
+        return false;
 
     // Check for valid characters (alphanumeric, underscore, hyphen)
-    for (size_t i = 0; i < N-1; ++i) {
+    for (size_t i = 0; i < N - 1; ++i) {
         char c = str[i];
-        bool valid = (c >= 'A' && c <= 'Z') ||
-                     (c >= 'a' && c <= 'z') ||
-                     (c >= '0' && c <= '9') ||
+        bool valid = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
                      (c == '_') || (c == '-');
-        if (!valid) return false;
+        if (!valid)
+            return false;
     }
 
     return true;

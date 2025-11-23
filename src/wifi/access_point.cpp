@@ -304,7 +304,7 @@ Result<void> AccessPoint::init() {
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Result<ConnectionInfo> AccessPoint::start([[maybe_unused]] const char* ssid,
-                                         [[maybe_unused]] const char* password) {
+                                          [[maybe_unused]] const char* password) {
     return Err(ErrorCode::NotSupported);
 }
 

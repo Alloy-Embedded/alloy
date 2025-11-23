@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::dmamux {
 
 /// DMAMUX Register Structure
 struct DMAMUX_Registers {
-
     /// DMAMUX request line multiplexer channel x configuration register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -59,7 +58,7 @@ struct DMAMUX_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t DMAMUX_C6CR;
-    uint8_t RESERVED_001C[100]; ///< Reserved
+    uint8_t RESERVED_001C[100];  ///< Reserved
 
     /// DMAMUX request line multiplexer interrupt channel status register
     /// Offset: 0x0080
@@ -72,7 +71,7 @@ struct DMAMUX_Registers {
     /// Reset value: 0x00000000
     /// Access: write-only
     volatile uint32_t DMAMUX_CFR;
-    uint8_t RESERVED_0088[120]; ///< Reserved
+    uint8_t RESERVED_0088[120];  ///< Reserved
 
     /// DMAMUX request generator channel x configuration register
     /// Offset: 0x0100
@@ -97,7 +96,7 @@ struct DMAMUX_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t DMAMUX_RG3CR;
-    uint8_t RESERVED_0110[48]; ///< Reserved
+    uint8_t RESERVED_0110[48];  ///< Reserved
 
     /// DMAMUX request generator interrupt status register
     /// Offset: 0x0140

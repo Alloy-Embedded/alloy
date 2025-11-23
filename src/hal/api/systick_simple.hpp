@@ -35,7 +35,7 @@ using namespace ucore::core;
  * @tparam SysTickImpl Platform-specific SysTick implementation
  */
 class SysTickTimer {
-public:
+   public:
     /**
      * @brief Initialize SysTick with millisecond period
      *

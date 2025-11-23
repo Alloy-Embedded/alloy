@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/atmel/same70/generated/registers/twihs0_registers.hpp"
@@ -74,7 +74,8 @@ struct Same70TWIHSHardwarePolicy {
 
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t irq_id = IRQ_ID;
-    static constexpr uint32_t I2C_TIMEOUT = 100000;  ///< I2C timeout in loop iterations (~10ms at 150MHz)
+    static constexpr uint32_t I2C_TIMEOUT =
+        100000;  ///< I2C timeout in loop iterations (~10ms at 150MHz)
 
     // ========================================================================
     // Hardware Accessor (with Mock Hook)
@@ -89,11 +90,11 @@ struct Same70TWIHSHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_I2C_MOCK_HW
-            return ALLOY_I2C_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_I2C_MOCK_HW
+        return ALLOY_I2C_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -114,9 +115,9 @@ struct Same70TWIHSHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_RESET
      */
     static inline void reset() {
-        #ifdef ALLOY_I2C_TEST_HOOK_RESET
-            ALLOY_I2C_TEST_HOOK_RESET();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_RESET
+        ALLOY_I2C_TEST_HOOK_RESET();
+#endif
 
         hw()->CR = twihs::cr::SWRST::mask;
     }
@@ -127,9 +128,9 @@ struct Same70TWIHSHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_ENABLE
      */
     static inline void enable_master() {
-        #ifdef ALLOY_I2C_TEST_HOOK_ENABLE
-            ALLOY_I2C_TEST_HOOK_ENABLE();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_ENABLE
+        ALLOY_I2C_TEST_HOOK_ENABLE();
+#endif
 
         hw()->CR = twihs::cr::MSEN::mask | twihs::cr::SVDIS::mask;
     }
@@ -140,9 +141,9 @@ struct Same70TWIHSHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_DISABLE
      */
     static inline void disable() {
-        #ifdef ALLOY_I2C_TEST_HOOK_DISABLE
-            ALLOY_I2C_TEST_HOOK_DISABLE();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_DISABLE
+        ALLOY_I2C_TEST_HOOK_DISABLE();
+#endif
 
         hw()->CR = twihs::cr::MSDIS::mask;
     }
@@ -154,20 +155,20 @@ struct Same70TWIHSHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_CLOCK
      */
     static inline void set_clock(uint32_t speed_hz) {
-        #ifdef ALLOY_I2C_TEST_HOOK_CLOCK
-            ALLOY_I2C_TEST_HOOK_CLOCK(speed_hz);
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_CLOCK
+        ALLOY_I2C_TEST_HOOK_CLOCK(speed_hz);
+#endif
 
         uint32_t ckdiv = 0;
-uint32_t cldiv = (PERIPH_CLOCK_HZ / (2 * speed_hz)) - 4;
-while (cldiv > 255 && ckdiv < 7) {
-    ckdiv++;
-    cldiv = (PERIPH_CLOCK_HZ / (2 * speed_hz * (1 << ckdiv))) - 4;
-}
-uint32_t cwgr = twihs::cwgr::CLDIV::write(0, cldiv);
-cwgr = twihs::cwgr::CHDIV::write(cwgr, cldiv);
-cwgr = twihs::cwgr::CKDIV::write(cwgr, ckdiv);
-hw()->CWGR = cwgr;
+        uint32_t cldiv = (PERIPH_CLOCK_HZ / (2 * speed_hz)) - 4;
+        while (cldiv > 255 && ckdiv < 7) {
+            ckdiv++;
+            cldiv = (PERIPH_CLOCK_HZ / (2 * speed_hz * (1 << ckdiv))) - 4;
+        }
+        uint32_t cwgr = twihs::cwgr::CLDIV::write(0, cldiv);
+        cwgr = twihs::cwgr::CHDIV::write(cwgr, cldiv);
+        cwgr = twihs::cwgr::CKDIV::write(cwgr, ckdiv);
+        hw()->CWGR = cwgr;
     }
 
     /**
@@ -177,14 +178,14 @@ hw()->CWGR = cwgr;
      * @note Test hook: ALLOY_I2C_TEST_HOOK_START_WRITE
      */
     static inline void start_write(uint8_t device_addr) {
-        #ifdef ALLOY_I2C_TEST_HOOK_START_WRITE
-            ALLOY_I2C_TEST_HOOK_START_WRITE(device_addr);
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_START_WRITE
+        ALLOY_I2C_TEST_HOOK_START_WRITE(device_addr);
+#endif
 
         uint32_t mmr = 0;
-mmr = twihs::mmr::DADR::write(mmr, device_addr);
-mmr = twihs::mmr::MREAD::clear(mmr);
-hw()->MMR = mmr;
+        mmr = twihs::mmr::DADR::write(mmr, device_addr);
+        mmr = twihs::mmr::MREAD::clear(mmr);
+        hw()->MMR = mmr;
     }
 
     /**
@@ -195,19 +196,19 @@ hw()->MMR = mmr;
      * @note Test hook: ALLOY_I2C_TEST_HOOK_START_READ
      */
     static inline void start_read(uint8_t device_addr, uint8_t read_count) {
-        #ifdef ALLOY_I2C_TEST_HOOK_START_READ
-            ALLOY_I2C_TEST_HOOK_START_READ(device_addr, read_count);
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_START_READ
+        ALLOY_I2C_TEST_HOOK_START_READ(device_addr, read_count);
+#endif
 
         uint32_t mmr = 0;
-mmr = twihs::mmr::DADR::write(mmr, device_addr);
-mmr = twihs::mmr::MREAD::set(mmr);
-hw()->MMR = mmr;
-if (read_count == 1) {
-    hw()->CR = twihs::cr::START::mask | twihs::cr::STOP::mask;
-} else {
-    hw()->CR = twihs::cr::START::mask;
-}
+        mmr = twihs::mmr::DADR::write(mmr, device_addr);
+        mmr = twihs::mmr::MREAD::set(mmr);
+        hw()->MMR = mmr;
+        if (read_count == 1) {
+            hw()->CR = twihs::cr::START::mask | twihs::cr::STOP::mask;
+        } else {
+            hw()->CR = twihs::cr::START::mask;
+        }
     }
 
     /**
@@ -216,9 +217,9 @@ if (read_count == 1) {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_STOP
      */
     static inline void send_stop() {
-        #ifdef ALLOY_I2C_TEST_HOOK_STOP
-            ALLOY_I2C_TEST_HOOK_STOP();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_STOP
+        ALLOY_I2C_TEST_HOOK_STOP();
+#endif
 
         hw()->CR = twihs::cr::STOP::mask;
     }
@@ -230,9 +231,9 @@ if (read_count == 1) {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_TX_READY
      */
     static inline bool is_tx_ready() const {
-        #ifdef ALLOY_I2C_TEST_HOOK_TX_READY
-            ALLOY_I2C_TEST_HOOK_TX_READY();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_TX_READY
+        ALLOY_I2C_TEST_HOOK_TX_READY();
+#endif
 
         return (hw()->SR & twihs::sr::TXRDY::mask) != 0;
     }
@@ -244,9 +245,9 @@ if (read_count == 1) {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_RX_READY
      */
     static inline bool is_rx_ready() const {
-        #ifdef ALLOY_I2C_TEST_HOOK_RX_READY
-            ALLOY_I2C_TEST_HOOK_RX_READY();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_RX_READY
+        ALLOY_I2C_TEST_HOOK_RX_READY();
+#endif
 
         return (hw()->SR & twihs::sr::RXRDY::mask) != 0;
     }
@@ -258,9 +259,9 @@ if (read_count == 1) {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_TX_COMPLETE
      */
     static inline bool is_tx_complete() const {
-        #ifdef ALLOY_I2C_TEST_HOOK_TX_COMPLETE
-            ALLOY_I2C_TEST_HOOK_TX_COMPLETE();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_TX_COMPLETE
+        ALLOY_I2C_TEST_HOOK_TX_COMPLETE();
+#endif
 
         return (hw()->SR & twihs::sr::TXCOMP::mask) != 0;
     }
@@ -272,9 +273,9 @@ if (read_count == 1) {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_NACK
      */
     static inline bool has_nack() const {
-        #ifdef ALLOY_I2C_TEST_HOOK_NACK
-            ALLOY_I2C_TEST_HOOK_NACK();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_NACK
+        ALLOY_I2C_TEST_HOOK_NACK();
+#endif
 
         return (hw()->SR & twihs::sr::NACK::mask) != 0;
     }
@@ -286,9 +287,9 @@ if (read_count == 1) {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_WRITE
      */
     static inline void write_byte(uint8_t byte) {
-        #ifdef ALLOY_I2C_TEST_HOOK_WRITE
-            ALLOY_I2C_TEST_HOOK_WRITE(byte);
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_WRITE
+        ALLOY_I2C_TEST_HOOK_WRITE(byte);
+#endif
 
         hw()->THR = byte;
     }
@@ -300,13 +301,12 @@ if (read_count == 1) {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_READ
      */
     static inline uint8_t read_byte() const {
-        #ifdef ALLOY_I2C_TEST_HOOK_READ
-            ALLOY_I2C_TEST_HOOK_READ();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_READ
+        ALLOY_I2C_TEST_HOOK_READ();
+#endif
 
         return static_cast<uint8_t>(hw()->RHR);
     }
-
 };
 
 // ============================================================================
@@ -314,11 +314,14 @@ if (read_count == 1) {
 // ============================================================================
 
 /// @brief Hardware policy for I2c0
-using I2c0Hardware = Same70TWIHSHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TWIHS0, >;
+using I2c0Hardware =
+    Same70TWIHSHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TWIHS0, >;
 /// @brief Hardware policy for I2c1
-using I2c1Hardware = Same70TWIHSHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TWIHS1, >;
+using I2c1Hardware =
+    Same70TWIHSHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TWIHS1, >;
 /// @brief Hardware policy for I2c2
-using I2c2Hardware = Same70TWIHSHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TWIHS2, >;
+using I2c2Hardware =
+    Same70TWIHSHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TWIHS2, >;
 
 }  // namespace ucore::hal::same70
 

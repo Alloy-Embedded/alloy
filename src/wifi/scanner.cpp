@@ -303,7 +303,8 @@ Result<void> Scanner::scan_async([[maybe_unused]] const ScanConfig& config) {
 }
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-Result<uint8_t> Scanner::get_results([[maybe_unused]] AccessPointInfo* results, [[maybe_unused]] uint8_t max_results) {
+Result<uint8_t> Scanner::get_results([[maybe_unused]] AccessPointInfo* results,
+                                     [[maybe_unused]] uint8_t max_results) {
     return Err(ErrorCode::NotSupported);
 }
 

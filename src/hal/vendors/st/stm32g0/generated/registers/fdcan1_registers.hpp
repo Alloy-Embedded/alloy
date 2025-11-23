@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::fdcan1 {
 
 /// FDCAN1 Register Structure
 struct FDCAN1_Registers {
-
     /// FDCAN core release register
     /// Offset: 0x0000
     /// Reset value: 0x32141218
@@ -27,7 +26,7 @@ struct FDCAN1_Registers {
     /// Offset: 0x0004
     /// Reset value: 0x87654321
     volatile uint32_t FDCAN_ENDN;
-    uint8_t RESERVED_0008[4]; ///< Reserved
+    uint8_t RESERVED_0008[4];  ///< Reserved
 
     /// FDCAN data bit timing and prescaler register
     /// Offset: 0x000C
@@ -73,7 +72,7 @@ struct FDCAN1_Registers {
     /// Offset: 0x002C
     /// Reset value: 0x0000FFFF
     volatile uint32_t FDCAN_TOCV;
-    uint8_t RESERVED_0030[16]; ///< Reserved
+    uint8_t RESERVED_0030[16];  ///< Reserved
 
     /// FDCAN error counter register
     /// Offset: 0x0040
@@ -89,7 +88,7 @@ struct FDCAN1_Registers {
     /// Offset: 0x0048
     /// Reset value: 0x00000000
     volatile uint32_t FDCAN_TDCR;
-    uint8_t RESERVED_004C[4]; ///< Reserved
+    uint8_t RESERVED_004C[4];  ///< Reserved
 
     /// FDCAN interrupt register
     /// Offset: 0x0050
@@ -110,7 +109,7 @@ struct FDCAN1_Registers {
     /// Offset: 0x005C
     /// Reset value: 0x00000000
     volatile uint32_t FDCAN_ILE;
-    uint8_t RESERVED_0060[32]; ///< Reserved
+    uint8_t RESERVED_0060[32];  ///< Reserved
 
     /// FDCAN global filter configuration register
     /// Offset: 0x0080
@@ -126,7 +125,7 @@ struct FDCAN1_Registers {
     /// Offset: 0x0088
     /// Reset value: 0x00000000
     volatile uint32_t FDCAN_HPMS;
-    uint8_t RESERVED_008C[4]; ///< Reserved
+    uint8_t RESERVED_008C[4];  ///< Reserved
 
     /// FDCAN Rx FIFO 0 status register
     /// Offset: 0x0090
@@ -147,7 +146,7 @@ struct FDCAN1_Registers {
     /// Offset: 0x009C
     /// Reset value: 0x00000000
     volatile uint32_t FDCAN_RXF1A;
-    uint8_t RESERVED_00A0[32]; ///< Reserved
+    uint8_t RESERVED_00A0[32];  ///< Reserved
 
     /// FDCAN Tx buffer configuration register
     /// Offset: 0x00C0
@@ -203,7 +202,7 @@ struct FDCAN1_Registers {
     /// Offset: 0x00E8
     /// Reset value: 0x00000000
     volatile uint32_t FDCAN_TXEFA;
-    uint8_t RESERVED_00EC[20]; ///< Reserved
+    uint8_t RESERVED_00EC[20];  ///< Reserved
 
     /// FDCAN CFG clock divider register
     /// Offset: 0x0100

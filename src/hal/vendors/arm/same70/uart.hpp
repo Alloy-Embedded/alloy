@@ -26,11 +26,12 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -64,8 +65,6 @@ namespace uart = atmel::same70::uart0;
 // - FlowControl (None, RTS, CTS, RTS_CTS)
 
 
-
-
 /**
  * @brief Template-based UART peripheral for SAME70
  *
@@ -92,14 +91,14 @@ namespace uart = atmel::same70::uart0;
  */
 template <uint32_t BASE_ADDR, uint32_t IRQ_ID>
 class Uart {
-
-public:
+   public:
     // Compile-time constants
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t irq_id = IRQ_ID;
 
     // Configuration constants
-    static constexpr uint32_t UART_TIMEOUT = 100000;  ///< UART timeout in loop iterations (~10ms at 150MHz)
+    static constexpr uint32_t UART_TIMEOUT =
+        100000;  ///< UART timeout in loop iterations (~10ms at 150MHz)
 
     /**
      * @brief Get UART peripheral registers
@@ -135,7 +134,8 @@ public:
         // TODO: Enable peripheral clock via PMC
 
         // Reset and disable TX/RX
-        hw->CR = uart::cr::RSTRX::mask | uart::cr::RSTTX::mask | uart::cr::RXDIS::mask | uart::cr::TXDIS::mask;
+        hw->CR = uart::cr::RSTRX::mask | uart::cr::RSTTX::mask | uart::cr::RXDIS::mask |
+                 uart::cr::TXDIS::mask;
 
         // Configure mode: 8N1 (8 data bits, no parity, 1 stop bit)
         hw->MR = uart::mr::PAR::write(0, uart::mr::par::NO_PARITY);
@@ -197,7 +197,8 @@ public:
         // Transmit each byte with timeout
         for (size_t i = 0; i < size; ++i) {
             uint32_t timeout = UART_TIMEOUT;
-            while (!(hw->SR & uart::sr::TXRDY::mask) && --timeout);
+            while (!(hw->SR & uart::sr::TXRDY::mask) && --timeout)
+                ;
             if (timeout == 0) {
                 return Err(ErrorCode::Timeout);
             }
@@ -228,7 +229,8 @@ public:
         // Receive each byte with timeout
         for (size_t i = 0; i < size; ++i) {
             uint32_t timeout = UART_TIMEOUT;
-            while (!(hw->SR & uart::sr::RXRDY::mask) && --timeout);
+            while (!(hw->SR & uart::sr::RXRDY::mask) && --timeout)
+                ;
             if (timeout == 0) {
                 return Err(ErrorCode::Timeout);
             }
@@ -253,7 +255,8 @@ public:
 
         // Wait for TX ready with timeout
         uint32_t timeout = UART_TIMEOUT;
-        while (!(hw->SR & uart::sr::TXRDY::mask) && --timeout);
+        while (!(hw->SR & uart::sr::TXRDY::mask) && --timeout)
+            ;
         if (timeout == 0) {
             return Err(ErrorCode::Timeout);
         }
@@ -276,7 +279,8 @@ public:
 
         // Wait for RX ready with timeout
         uint32_t timeout = UART_TIMEOUT;
-        while (!(hw->SR & uart::sr::RXRDY::mask) && --timeout);
+        while (!(hw->SR & uart::sr::RXRDY::mask) && --timeout)
+            ;
         if (timeout == 0) {
             return Err(ErrorCode::Timeout);
         }
@@ -289,30 +293,21 @@ public:
      * @brief Check if UART peripheral is open
      *
      * @return bool Check if UART peripheral is open     */
-    bool isOpen() const {
-
-        return m_opened;
-    }
+    bool isOpen() const { return m_opened; }
 
     /**
      * @brief Check if data is available to read
      *
      * @return bool Check if data is available to read     */
-    bool isReadReady() const {
-
-        return (hw->SR & uart::sr::RXRDY::mask) != 0;
-    }
+    bool isReadReady() const { return (hw->SR & uart::sr::RXRDY::mask) != 0; }
 
     /**
      * @brief Check if TX buffer is ready for write
      *
      * @return bool Check if TX buffer is ready for write     */
-    bool isWriteReady() const {
+    bool isWriteReady() const { return (hw->SR & uart::sr::TXRDY::mask) != 0; }
 
-        return (hw->SR & uart::sr::TXRDY::mask) != 0;
-    }
-
-private:
+   private:
     bool m_opened = false;  ///< Tracks if peripheral is initialized
 };
 
@@ -341,4 +336,4 @@ using Uart2 = Uart<UART2_BASE, UART2_IRQ>;  ///< UART2 instance
 using Uart3 = Uart<UART3_BASE, UART3_IRQ>;  ///< UART3 instance
 using Uart4 = Uart<UART4_BASE, UART4_IRQ>;  ///< UART4 instance
 
-} // namespace ucore::hal::same70
+}  // namespace ucore::hal::same70

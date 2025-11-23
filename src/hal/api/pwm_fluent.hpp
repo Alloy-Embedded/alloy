@@ -9,9 +9,10 @@
 
 #pragma once
 
+#include "hal/api/pwm_simple.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/api/pwm_simple.hpp"
 
 namespace ucore::hal {
 
@@ -25,9 +26,7 @@ struct PwmBuilderState {
     bool has_channel = false;
     bool has_duty = false;
 
-    constexpr bool is_valid() const {
-        return has_frequency && has_channel;
-    }
+    constexpr bool is_valid() const { return has_frequency && has_channel; }
 };
 
 /**
@@ -57,7 +56,7 @@ struct FluentPwmConfig {
  */
 template <typename PwmPolicy>
 class PwmBuilder {
-public:
+   public:
     constexpr PwmBuilder() : frequency_hz_(1000), channel_(0), duty_percent_(0.0f), state_() {}
 
     constexpr PwmBuilder& channel(u8 ch) {
@@ -113,7 +112,7 @@ public:
         return Ok(FluentPwmConfig<PwmPolicy>{std::move(ch)});
     }
 
-private:
+   private:
     u32 frequency_hz_;
     u8 channel_;
     float duty_percent_;

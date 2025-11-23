@@ -43,11 +43,12 @@
 
 #pragma once
 
-#include "core/types.hpp"
-#include "hal/api/uart_simple.hpp"
-#include "hal/api/uart_fluent.hpp"
 #include "hal/api/uart_expert.hpp"
+#include "hal/api/uart_fluent.hpp"
+#include "hal/api/uart_simple.hpp"
 #include "hal/vendors/st/stm32f4/usart_hardware_policy.hpp"
+
+#include "core/types.hpp"
 
 namespace ucore::hal::stm32f4 {
 

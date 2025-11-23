@@ -38,14 +38,15 @@
 
 #pragma once
 
-#include "core/error_code.hpp"
-#include "core/result.hpp"
-#include "core/types.hpp"
-#include "hal/interface/i2c.hpp"
-
 #include <concepts>
 #include <span>
 #include <type_traits>
+
+#include "hal/interface/i2c.hpp"
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::hal {
 
@@ -64,17 +65,14 @@ using namespace ucore::core;
  * @tparam T Derived I2C implementation type
  */
 template <typename T>
-concept I2cImplementation = requires(
-    T i2c,
-    u16 address,
-    std::span<const u8> write_buffer,
-    std::span<u8> read_buffer,
-    I2cConfig cfg
-) {
+concept I2cImplementation = requires(T i2c, u16 address, std::span<const u8> write_buffer,
+                                     std::span<u8> read_buffer, I2cConfig cfg) {
     // Data transfer operations
     { i2c.read_impl(address, read_buffer) } -> std::same_as<Result<void, ErrorCode>>;
     { i2c.write_impl(address, write_buffer) } -> std::same_as<Result<void, ErrorCode>>;
-    { i2c.write_read_impl(address, write_buffer, read_buffer) } -> std::same_as<Result<void, ErrorCode>>;
+    {
+        i2c.write_read_impl(address, write_buffer, read_buffer)
+    } -> std::same_as<Result<void, ErrorCode>>;
 
     // Configuration operations
     { i2c.configure_impl(cfg) } -> std::same_as<Result<void, ErrorCode>>;
@@ -108,7 +106,7 @@ concept I2cImplementation = requires(
  */
 template <typename Derived>
 class I2cBase {
-protected:
+   protected:
     // ========================================================================
     // CRTP Helper Methods
     // ========================================================================
@@ -117,19 +115,15 @@ protected:
      * @brief Get reference to derived instance
      * @return Reference to derived class instance
      */
-    constexpr Derived& impl() noexcept {
-        return static_cast<Derived&>(*this);
-    }
+    constexpr Derived& impl() noexcept { return static_cast<Derived&>(*this); }
 
     /**
      * @brief Get const reference to derived instance
      * @return Const reference to derived class instance
      */
-    constexpr const Derived& impl() const noexcept {
-        return static_cast<const Derived&>(*this);
-    }
+    constexpr const Derived& impl() const noexcept { return static_cast<const Derived&>(*this); }
 
-public:
+   public:
     // ========================================================================
     // Data Transfer Operations
     // ========================================================================
@@ -154,10 +148,8 @@ public:
      * i2c.read(0x50, std::span(data)).expect("Read failed");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> read(
-        u16 address,
-        std::span<u8> buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> read(u16 address,
+                                                         std::span<u8> buffer) noexcept {
         return impl().read_impl(address, buffer);
     }
 
@@ -181,10 +173,8 @@ public:
      * i2c.write(0x50, std::span(data)).expect("Write failed");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> write(
-        u16 address,
-        std::span<const u8> buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> write(u16 address,
+                                                          std::span<const u8> buffer) noexcept {
         return impl().write_impl(address, buffer);
     }
 
@@ -213,11 +203,9 @@ public:
      *    .expect("Register read failed");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> write_read(
-        u16 address,
-        std::span<const u8> write_buffer,
-        std::span<u8> read_buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> write_read(u16 address,
+                                                               std::span<const u8> write_buffer,
+                                                               std::span<u8> read_buffer) noexcept {
         return impl().write_read_impl(address, write_buffer, read_buffer);
     }
 
@@ -264,10 +252,7 @@ public:
      * i2c.write_byte(0x50, 0xAA).expect("Write failed");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> write_byte(
-        u16 address,
-        u8 byte
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> write_byte(u16 address, u8 byte) noexcept {
         auto buffer = std::span(&byte, 1);
         return impl().write_impl(address, buffer);
     }
@@ -287,10 +272,7 @@ public:
      * auto value = i2c.read_register(0x50, 0x10).expect("Register read failed");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<u8, ErrorCode> read_register(
-        u16 address,
-        u8 reg_addr
-    ) noexcept {
+    [[nodiscard]] constexpr Result<u8, ErrorCode> read_register(u16 address, u8 reg_addr) noexcept {
         u8 value = 0;
         auto write_buf = std::span(&reg_addr, 1);
         auto read_buf = std::span(&value, 1);
@@ -318,11 +300,8 @@ public:
      * i2c.write_register(0x50, 0x10, 0xAA).expect("Register write failed");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> write_register(
-        u16 address,
-        u8 reg_addr,
-        u8 value
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> write_register(u16 address, u8 reg_addr,
+                                                                   u8 value) noexcept {
         u8 buffer[2] = {reg_addr, value};
         auto span = std::span(buffer, 2);
         return impl().write_impl(address, span);
@@ -349,8 +328,7 @@ public:
      * @endcode
      */
     [[nodiscard]] constexpr Result<usize, ErrorCode> scan_bus(
-        std::span<u8> found_devices
-    ) noexcept {
+        std::span<u8> found_devices) noexcept {
         return impl().scan_bus_impl(found_devices);
     }
 
@@ -373,9 +351,7 @@ public:
      * i2c.configure(cfg).expect("Config failed");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> configure(
-        const I2cConfig& config
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> configure(const I2cConfig& config) noexcept {
         return impl().configure_impl(config);
     }
 
@@ -401,13 +377,12 @@ public:
      * @return Ok() on success, Err(ErrorCode) on failure
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> set_addressing(
-        I2cAddressing addressing
-    ) noexcept {
+        I2cAddressing addressing) noexcept {
         I2cConfig config{I2cSpeed::Standard, addressing};
         return impl().configure_impl(config);
     }
 
-protected:
+   protected:
     // Default constructor (protected - only derived can construct)
     constexpr I2cBase() noexcept = default;
 
@@ -429,4 +404,4 @@ protected:
 // using static_assert on sizeof(I2cBase) and std::is_empty_v<I2cBase>.
 // This ensures validation only occurs when I2cBase is properly used with CRTP.
 
-} // namespace ucore::hal
+}  // namespace ucore::hal

@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/atmel/same70/generated/registers/spi0_registers.hpp"
@@ -74,8 +74,10 @@ struct Same70SPIHardwarePolicy {
 
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t irq_id = IRQ_ID;
-    static constexpr uint32_t SPI_TIMEOUT = 100000;  ///< SPI timeout in loop iterations (~10ms at 150MHz)
-    static constexpr size_t STACK_BUFFER_SIZE = 256;  ///< Stack buffer size for dummy data in write/read operations
+    static constexpr uint32_t SPI_TIMEOUT =
+        100000;  ///< SPI timeout in loop iterations (~10ms at 150MHz)
+    static constexpr size_t STACK_BUFFER_SIZE =
+        256;  ///< Stack buffer size for dummy data in write/read operations
 
     // ========================================================================
     // Hardware Accessor (with Mock Hook)
@@ -90,11 +92,11 @@ struct Same70SPIHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_SPI_MOCK_HW
-            return ALLOY_SPI_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_SPI_MOCK_HW
+        return ALLOY_SPI_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -115,9 +117,9 @@ struct Same70SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_RESET
      */
     static inline void reset() {
-        #ifdef ALLOY_SPI_TEST_HOOK_RESET
-            ALLOY_SPI_TEST_HOOK_RESET();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_RESET
+        ALLOY_SPI_TEST_HOOK_RESET();
+#endif
 
         hw()->CR = spi::cr::SWRST::mask;
     }
@@ -128,9 +130,9 @@ struct Same70SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_ENABLE
      */
     static inline void enable() {
-        #ifdef ALLOY_SPI_TEST_HOOK_ENABLE
-            ALLOY_SPI_TEST_HOOK_ENABLE();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_ENABLE
+        ALLOY_SPI_TEST_HOOK_ENABLE();
+#endif
 
         hw()->CR = spi::cr::SPIEN::mask;
     }
@@ -141,9 +143,9 @@ struct Same70SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_DISABLE
      */
     static inline void disable() {
-        #ifdef ALLOY_SPI_TEST_HOOK_DISABLE
-            ALLOY_SPI_TEST_HOOK_DISABLE();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_DISABLE
+        ALLOY_SPI_TEST_HOOK_DISABLE();
+#endif
 
         hw()->CR = spi::cr::SPIDIS::mask;
     }
@@ -154,9 +156,9 @@ struct Same70SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_MASTER
      */
     static inline void configure_master() {
-        #ifdef ALLOY_SPI_TEST_HOOK_MASTER
-            ALLOY_SPI_TEST_HOOK_MASTER();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_MASTER
+        ALLOY_SPI_TEST_HOOK_MASTER();
+#endif
 
         hw()->MR = spi::mr::MSTR::mask | spi::mr::MODFDIS::mask;
     }
@@ -170,14 +172,16 @@ struct Same70SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_CS_CONFIG
      */
     static inline void configure_chip_select(uint8_t cs, uint32_t scbr, uint8_t mode) {
-        #ifdef ALLOY_SPI_TEST_HOOK_CS_CONFIG
-            ALLOY_SPI_TEST_HOOK_CS_CONFIG(cs, scbr, mode);
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_CS_CONFIG
+        ALLOY_SPI_TEST_HOOK_CS_CONFIG(cs, scbr, mode);
+#endif
 
         uint32_t csr_value = spi::csr::SCBR::write(0, scbr);
-if (mode & 0x01) csr_value |= spi::csr::NCPHA::mask;
-if (mode & 0x02) csr_value |= spi::csr::CPOL::mask;
-hw()->CSR[cs] = csr_value;
+        if (mode & 0x01)
+            csr_value |= spi::csr::NCPHA::mask;
+        if (mode & 0x02)
+            csr_value |= spi::csr::CPOL::mask;
+        hw()->CSR[cs] = csr_value;
     }
 
     /**
@@ -187,9 +191,9 @@ hw()->CSR[cs] = csr_value;
      * @note Test hook: ALLOY_SPI_TEST_HOOK_SELECT
      */
     static inline void select_chip(uint8_t cs) {
-        #ifdef ALLOY_SPI_TEST_HOOK_SELECT
-            ALLOY_SPI_TEST_HOOK_SELECT(cs);
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_SELECT
+        ALLOY_SPI_TEST_HOOK_SELECT(cs);
+#endif
 
         hw()->MR = (hw()->MR & ~spi::mr::PCS::mask) | spi::mr::PCS::write(0, ~(1u << cs));
     }
@@ -201,9 +205,9 @@ hw()->CSR[cs] = csr_value;
      * @note Test hook: ALLOY_SPI_TEST_HOOK_TX_READY
      */
     static inline bool is_tx_ready() const {
-        #ifdef ALLOY_SPI_TEST_HOOK_TX_READY
-            ALLOY_SPI_TEST_HOOK_TX_READY();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_TX_READY
+        ALLOY_SPI_TEST_HOOK_TX_READY();
+#endif
 
         return (hw()->SR & spi::sr::TDRE::mask) != 0;
     }
@@ -215,9 +219,9 @@ hw()->CSR[cs] = csr_value;
      * @note Test hook: ALLOY_SPI_TEST_HOOK_RX_READY
      */
     static inline bool is_rx_ready() const {
-        #ifdef ALLOY_SPI_TEST_HOOK_RX_READY
-            ALLOY_SPI_TEST_HOOK_RX_READY();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_RX_READY
+        ALLOY_SPI_TEST_HOOK_RX_READY();
+#endif
 
         return (hw()->SR & spi::sr::RDRF::mask) != 0;
     }
@@ -229,9 +233,9 @@ hw()->CSR[cs] = csr_value;
      * @note Test hook: ALLOY_SPI_TEST_HOOK_WRITE
      */
     static inline void write_byte(uint8_t byte) {
-        #ifdef ALLOY_SPI_TEST_HOOK_WRITE
-            ALLOY_SPI_TEST_HOOK_WRITE(byte);
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_WRITE
+        ALLOY_SPI_TEST_HOOK_WRITE(byte);
+#endif
 
         hw()->TDR = byte;
     }
@@ -243,9 +247,9 @@ hw()->CSR[cs] = csr_value;
      * @note Test hook: ALLOY_SPI_TEST_HOOK_READ
      */
     static inline uint8_t read_byte() const {
-        #ifdef ALLOY_SPI_TEST_HOOK_READ
-            ALLOY_SPI_TEST_HOOK_READ();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_READ
+        ALLOY_SPI_TEST_HOOK_READ();
+#endif
 
         return static_cast<uint8_t>(hw()->RDR & 0xFF);
     }
@@ -258,13 +262,14 @@ hw()->CSR[cs] = csr_value;
      * @note Test hook: ALLOY_SPI_TEST_HOOK_WAIT_TX
      */
     static inline bool wait_tx_ready(uint32_t timeout_loops) {
-        #ifdef ALLOY_SPI_TEST_HOOK_WAIT_TX
-            ALLOY_SPI_TEST_HOOK_WAIT_TX(timeout_loops);
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_WAIT_TX
+        ALLOY_SPI_TEST_HOOK_WAIT_TX(timeout_loops);
+#endif
 
         uint32_t timeout = timeout_loops;
-while (!is_tx_ready() && --timeout);
-return timeout != 0;
+        while (!is_tx_ready() && --timeout)
+            ;
+        return timeout != 0;
     }
 
     /**
@@ -275,15 +280,15 @@ return timeout != 0;
      * @note Test hook: ALLOY_SPI_TEST_HOOK_WAIT_RX
      */
     static inline bool wait_rx_ready(uint32_t timeout_loops) {
-        #ifdef ALLOY_SPI_TEST_HOOK_WAIT_RX
-            ALLOY_SPI_TEST_HOOK_WAIT_RX(timeout_loops);
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_WAIT_RX
+        ALLOY_SPI_TEST_HOOK_WAIT_RX(timeout_loops);
+#endif
 
         uint32_t timeout = timeout_loops;
-while (!is_rx_ready() && --timeout);
-return timeout != 0;
+        while (!is_rx_ready() && --timeout)
+            ;
+        return timeout != 0;
     }
-
 };
 
 // ============================================================================

@@ -15,11 +15,11 @@
 #ifndef UCORE_RTOS_SCHEDULER_HPP
 #define UCORE_RTOS_SCHEDULER_HPP
 
-#include "rtos/rtos.hpp"
 #include "rtos/error.hpp"
+#include "rtos/rtos.hpp"
 
-#include "core/types.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::rtos {
 

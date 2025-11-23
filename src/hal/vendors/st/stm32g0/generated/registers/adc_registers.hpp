@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::adc {
 
 /// ADC Register Structure
 struct ADC_Registers {
-
     /// ADC interrupt and status register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -47,7 +46,7 @@ struct ADC_Registers {
     /// Offset: 0x0014
     /// Reset value: 0x00000000
     volatile uint32_t ADC_SMPR;
-    uint8_t RESERVED_0018[8]; ///< Reserved
+    uint8_t RESERVED_0018[8];  ///< Reserved
 
     /// ADC watchdog threshold register
     /// Offset: 0x0020
@@ -73,13 +72,13 @@ struct ADC_Registers {
     /// Offset: 0x002C
     /// Reset value: 0x0FFF0000
     volatile uint32_t ADC_AWD3TR;
-    uint8_t RESERVED_0030[16]; ///< Reserved
+    uint8_t RESERVED_0030[16];  ///< Reserved
 
     /// ADC data register
     /// Offset: 0x0040
     /// Reset value: 0x00000000
     volatile uint32_t ADC_DR;
-    uint8_t RESERVED_0044[92]; ///< Reserved
+    uint8_t RESERVED_0044[92];  ///< Reserved
 
     /// ADC Analog Watchdog 2 Configuration register
     /// Offset: 0x00A0
@@ -90,13 +89,13 @@ struct ADC_Registers {
     /// Offset: 0x00A4
     /// Reset value: 0x00000000
     volatile uint32_t ADC_AWD3CR;
-    uint8_t RESERVED_00A8[12]; ///< Reserved
+    uint8_t RESERVED_00A8[12];  ///< Reserved
 
     /// ADC Calibration factor
     /// Offset: 0x00B4
     /// Reset value: 0x00000000
     volatile uint32_t ADC_CALFACT;
-    uint8_t RESERVED_00B8[592]; ///< Reserved
+    uint8_t RESERVED_00B8[592];  ///< Reserved
 
     /// ADC common configuration register
     /// Offset: 0x0308

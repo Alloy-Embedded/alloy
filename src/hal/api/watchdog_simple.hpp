@@ -39,7 +39,7 @@ using namespace ucore::core;
  * @endcode
  */
 class Watchdog {
-public:
+   public:
     /**
      * @brief Disable watchdog timer
      *

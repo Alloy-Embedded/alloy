@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f4::iwdg {
 
 /// IWDG Register Structure
 struct IWDG_Registers {
-
     /// Key register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

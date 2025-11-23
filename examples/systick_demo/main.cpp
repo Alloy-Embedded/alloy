@@ -22,8 +22,9 @@
  * - Measuring interrupt timing with hardware
  */
 
-#include "board/board.hpp"
 #include "hal/api/systick_simple.hpp"
+
+#include "board/board.hpp"
 
 using namespace ucore::hal;
 
@@ -38,75 +39,75 @@ using namespace ucore::hal;
  * We simulate basic tick counting for demonstration.
  */
 namespace rtos {
-    static volatile u32 tick_count = 0;
-    static volatile bool scheduler_enabled = false;
+static volatile u32 tick_count = 0;
+static volatile bool scheduler_enabled = false;
 
-    /**
-     * @brief RTOS tick hook - called from SysTick ISR
-     *
-     * In a real RTOS, this would:
-     * - Increment RTOS tick counter
-     * - Check for sleeping tasks to wake
-     * - Trigger context switch if needed
-     * - Update software timers
-     */
-    void tick() {
-        tick_count++;
+/**
+ * @brief RTOS tick hook - called from SysTick ISR
+ *
+ * In a real RTOS, this would:
+ * - Increment RTOS tick counter
+ * - Check for sleeping tasks to wake
+ * - Trigger context switch if needed
+ * - Update software timers
+ */
+void tick() {
+    tick_count++;
 
-        // In real RTOS: Check if scheduler should run
-        if (scheduler_enabled) {
-            // Would trigger PendSV for context switch
-            // __asm volatile ("DSB");
-            // SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-        }
-    }
-
-    /**
-     * @brief Enable RTOS scheduler
-     */
-    void enable_scheduler() {
-        scheduler_enabled = true;
-    }
-
-    /**
-     * @brief Get RTOS tick count
-     */
-    u32 get_ticks() {
-        return tick_count;
+    // In real RTOS: Check if scheduler should run
+    if (scheduler_enabled) {
+        // Would trigger PendSV for context switch
+        // __asm volatile ("DSB");
+        // SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
     }
 }
+
+/**
+ * @brief Enable RTOS scheduler
+ */
+void enable_scheduler() {
+    scheduler_enabled = true;
+}
+
+/**
+ * @brief Get RTOS tick count
+ */
+u32 get_ticks() {
+    return tick_count;
+}
+}  // namespace rtos
 
 // =============================================================================
 // Interrupt Statistics (for overhead measurement)
 // =============================================================================
 
 namespace stats {
-    static volatile u32 interrupt_count = 0;
-    static volatile u32 max_interrupt_time_us = 0;
+static volatile u32 interrupt_count = 0;
+static volatile u32 max_interrupt_time_us = 0;
 
-    void increment_interrupt() {
-        interrupt_count++;
-    }
+void increment_interrupt() {
+    interrupt_count++;
+}
 
-    void record_interrupt_time(u32 time_us) {
-        if (time_us > max_interrupt_time_us) {
-            max_interrupt_time_us = time_us;
-        }
-    }
-
-    u32 get_interrupt_count() {
-        return interrupt_count;
-    }
-
-    u32 get_max_interrupt_time() {
-        return max_interrupt_time_us;
-    }
-
-    void reset() {
-        interrupt_count = 0;
-        max_interrupt_time_us = 0;
+void record_interrupt_time(u32 time_us) {
+    if (time_us > max_interrupt_time_us) {
+        max_interrupt_time_us = time_us;
     }
 }
+
+u32 get_interrupt_count() {
+    return interrupt_count;
+}
+
+u32 get_max_interrupt_time() {
+    return max_interrupt_time_us;
+}
+
+void reset() {
+    interrupt_count = 0;
+    max_interrupt_time_us = 0;
+}
+}  // namespace stats
 
 // =============================================================================
 // Demo 1: Standard 1ms Tick (RTOS-Compatible)
@@ -320,10 +321,10 @@ void demo_tick_resolution_tradeoffs() {
 
     // Different tick configurations (for demonstration)
     const TickConfig configs[] = {
-        {10000, "10ms tick (low res)",     2000},  // Slow blink = low freq
-        {1000,  "1ms tick (standard)",     500},   // Medium blink = medium freq
-        {100,   "100us tick (high res)",   100},   // Fast blink = high freq
-        {10,    "10us tick (very high)",   50}     // Very fast = very high freq
+        {10000, "10ms tick (low res)", 2000},  // Slow blink = low freq
+        {1000, "1ms tick (standard)", 500},    // Medium blink = medium freq
+        {100, "100us tick (high res)", 100},   // Fast blink = high freq
+        {10, "10us tick (very high)", 50}      // Very fast = very high freq
     };
 
     for (const auto& config : configs) {

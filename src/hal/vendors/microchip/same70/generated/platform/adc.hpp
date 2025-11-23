@@ -3,7 +3,7 @@
 /// Source: tools/codegen/metadata/platforms/same70/adc.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 
+/// Generated:
 /**
  * @file adc.hpp
  * @brief ADC Hardware Policy for SAME70
@@ -19,12 +19,12 @@
  * - Type-safe via C++20 concepts
  *
  * Platform: SAME70
- * Vendor: 
- * Architecture: 
+ * Vendor:
+ * Architecture:
  * ADC Style: SAM (CR, MR, SEQR, CHER, CHDR, CHSR, LCDR, CDR) *
  * Auto-generated from: tools/codegen/metadata/platforms/same70/adc.json
  * Generator: adc_generator.py
- * Generated: 
+ * Generated:
  *
  * @note Part of Alloy HAL Vendor Layer
  * @see docs/codegen/TEMPLATE_CONVENTIONS.md
@@ -32,9 +32,9 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include ""
@@ -47,7 +47,7 @@ namespace ucore::hal::microchip::same70 {
 using namespace ucore::core;
 
 // Import register types
-using namespace ;
+using namespace;
 
 // ============================================================================
 // SAM-Style ADC Hardware Policy (AFEC)
@@ -85,71 +85,55 @@ struct SAME70AdcHardwarePolicy {
     static constexpr uint32_t base_address = BASE_ADDR;
 
     // CR commands (write-only)
-    static constexpr uint32_t CR_SWRST = (1 << 0);   // Software reset
-    static constexpr uint32_t CR_START = (1 << 1);   // Start conversion
+    static constexpr uint32_t CR_SWRST = (1 << 0);  // Software reset
+    static constexpr uint32_t CR_START = (1 << 1);  // Start conversion
 
     // MR bits
-    static constexpr uint32_t MR_TRGEN = (1 << 0);   // Trigger enable
-    static constexpr uint32_t MR_SLEEP = (1 << 5);   // Sleep mode
-    static constexpr uint32_t MR_FWUP = (1 << 6);    // Fast wake-up
-    static constexpr uint32_t MR_FREERUN = (1 << 7); // Free run mode
-    static constexpr uint32_t MR_USEQ = (1 << 31);   // User sequence enable
+    static constexpr uint32_t MR_TRGEN = (1 << 0);    // Trigger enable
+    static constexpr uint32_t MR_SLEEP = (1 << 5);    // Sleep mode
+    static constexpr uint32_t MR_FWUP = (1 << 6);     // Fast wake-up
+    static constexpr uint32_t MR_FREERUN = (1 << 7);  // Free run mode
+    static constexpr uint32_t MR_USEQ = (1 << 31);    // User sequence enable
 
     // ========================================================================
     // Hardware Accessor
     // ========================================================================
 
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_ADC_MOCK_HW
-            return ALLOY_ADC_MOCK_HW();
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_ADC_MOCK_HW
+        return ALLOY_ADC_MOCK_HW();
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
     // Configuration Methods
     // ========================================================================
 
-    static inline void reset() {
-        hw()->CR = CR_SWRST;
-    }
+    static inline void reset() { hw()->CR = CR_SWRST; }
 
-    static inline void enable_channel(u8 channel) {
-        hw()->CHER = (1 << channel);
-    }
+    static inline void enable_channel(u8 channel) { hw()->CHER = (1 << channel); }
 
-    static inline void disable_channel(u8 channel) {
-        hw()->CHDR = (1 << channel);
-    }
+    static inline void disable_channel(u8 channel) { hw()->CHDR = (1 << channel); }
 
-    static inline bool is_channel_enabled(u8 channel) {
-        return (hw()->CHSR & (1 << channel)) != 0;
-    }
+    static inline bool is_channel_enabled(u8 channel) { return (hw()->CHSR & (1 << channel)) != 0; }
 
-    static inline void enable_freerun_mode() {
-        hw()->MR |= MR_FREERUN;
-    }
+    static inline void enable_freerun_mode() { hw()->MR |= MR_FREERUN; }
 
-    static inline void disable_freerun_mode() {
-        hw()->MR &= ~MR_FREERUN;
-    }
+    static inline void disable_freerun_mode() { hw()->MR &= ~MR_FREERUN; }
 
     // ========================================================================
     // Conversion Control
     // ========================================================================
 
-    static inline void start_conversion() {
-        hw()->CR = CR_START;
-    }
+    static inline void start_conversion() { hw()->CR = CR_START; }
 
     static inline u16 read_channel_data(u8 channel) {
         return static_cast<u16>(hw()->CDR[channel] & 0xFFF);
     }
 
-    static inline u16 read_last_data() {
-        return static_cast<u16>(hw()->LCDR & 0xFFF);
-    }
+    static inline u16 read_last_data() { return static_cast<u16>(hw()->LCDR & 0xFFF); }
 };
 
 

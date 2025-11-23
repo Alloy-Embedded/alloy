@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/st/stm32f4/generated/registers/usart6_registers.hpp"
@@ -89,7 +89,8 @@ struct Stm32f4UartHardwarePolicy {
 
     static constexpr uint32_t base_address = BASE_ADDR;
     static constexpr uint32_t peripheral_clock_hz = PERIPH_CLOCK_HZ;
-    static constexpr uint32_t UART_TIMEOUT = 100000;  ///< UART timeout in loop iterations (~10ms at 168MHz)
+    static constexpr uint32_t UART_TIMEOUT =
+        100000;  ///< UART timeout in loop iterations (~10ms at 168MHz)
 
     // ========================================================================
     // Hardware Accessor (with Mock Hook)
@@ -104,11 +105,11 @@ struct Stm32f4UartHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_UART_MOCK_HW
-            return ALLOY_UART_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_UART_MOCK_HW
+        return ALLOY_UART_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -121,9 +122,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_RESET
      */
     static inline void reset() {
-        #ifdef ALLOY_UART_TEST_HOOK_RESET
-            ALLOY_UART_TEST_HOOK_RESET();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RESET
+        ALLOY_UART_TEST_HOOK_RESET();
+#endif
 
         hw()->CR1 &= ~(usart::cr1::TE::mask | usart::cr1::RE::mask | usart::cr1::UE::mask);
     }
@@ -134,9 +135,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_CONFIGURE
      */
     static inline void configure_8n1() {
-        #ifdef ALLOY_UART_TEST_HOOK_CONFIGURE
-            ALLOY_UART_TEST_HOOK_CONFIGURE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_CONFIGURE
+        ALLOY_UART_TEST_HOOK_CONFIGURE();
+#endif
 
         hw()->CR1 &= ~(usart::cr1::M::mask | usart::cr1::PCE::mask);
         hw()->CR2 &= ~(usart::cr2::STOP::mask);
@@ -150,9 +151,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_BAUDRATE
      */
     static inline void set_baudrate(uint32_t baud) {
-        #ifdef ALLOY_UART_TEST_HOOK_BAUDRATE
-            ALLOY_UART_TEST_HOOK_BAUDRATE(baud);
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_BAUDRATE
+        ALLOY_UART_TEST_HOOK_BAUDRATE(baud);
+#endif
 
         uint32_t usartdiv = (PERIPH_CLOCK_HZ + (baud / 2)) / baud;
         uint32_t mantissa = usartdiv >> 4;
@@ -166,9 +167,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_TX_ENABLE
      */
     static inline void enable_tx() {
-        #ifdef ALLOY_UART_TEST_HOOK_TX_ENABLE
-            ALLOY_UART_TEST_HOOK_TX_ENABLE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TX_ENABLE
+        ALLOY_UART_TEST_HOOK_TX_ENABLE();
+#endif
 
         hw()->CR1 |= usart::cr1::TE::mask | usart::cr1::UE::mask;
     }
@@ -179,9 +180,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_RX_ENABLE
      */
     static inline void enable_rx() {
-        #ifdef ALLOY_UART_TEST_HOOK_RX_ENABLE
-            ALLOY_UART_TEST_HOOK_RX_ENABLE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RX_ENABLE
+        ALLOY_UART_TEST_HOOK_RX_ENABLE();
+#endif
 
         hw()->CR1 |= usart::cr1::RE::mask | usart::cr1::UE::mask;
     }
@@ -192,9 +193,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_TX_DISABLE
      */
     static inline void disable_tx() {
-        #ifdef ALLOY_UART_TEST_HOOK_TX_DISABLE
-            ALLOY_UART_TEST_HOOK_TX_DISABLE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TX_DISABLE
+        ALLOY_UART_TEST_HOOK_TX_DISABLE();
+#endif
 
         hw()->CR1 &= ~usart::cr1::TE::mask;
     }
@@ -205,9 +206,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_RX_DISABLE
      */
     static inline void disable_rx() {
-        #ifdef ALLOY_UART_TEST_HOOK_RX_DISABLE
-            ALLOY_UART_TEST_HOOK_RX_DISABLE();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RX_DISABLE
+        ALLOY_UART_TEST_HOOK_RX_DISABLE();
+#endif
 
         hw()->CR1 &= ~usart::cr1::RE::mask;
     }
@@ -219,9 +220,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_TX_READY
      */
     static inline bool is_tx_ready() const {
-        #ifdef ALLOY_UART_TEST_HOOK_TX_READY
-            ALLOY_UART_TEST_HOOK_TX_READY();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_TX_READY
+        ALLOY_UART_TEST_HOOK_TX_READY();
+#endif
 
         return (hw()->SR & usart::sr::TXE::mask) != 0;
     }
@@ -233,9 +234,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_RX_READY
      */
     static inline bool is_rx_ready() const {
-        #ifdef ALLOY_UART_TEST_HOOK_RX_READY
-            ALLOY_UART_TEST_HOOK_RX_READY();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_RX_READY
+        ALLOY_UART_TEST_HOOK_RX_READY();
+#endif
 
         return (hw()->SR & usart::sr::RXNE::mask) != 0;
     }
@@ -248,9 +249,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_WRITE
      */
     static inline void write_byte(uint8_t byte) {
-        #ifdef ALLOY_UART_TEST_HOOK_WRITE
-            ALLOY_UART_TEST_HOOK_WRITE(byte);
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_WRITE
+        ALLOY_UART_TEST_HOOK_WRITE(byte);
+#endif
 
         hw()->DR = byte;
     }
@@ -262,9 +263,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_READ
      */
     static inline uint8_t read_byte() const {
-        #ifdef ALLOY_UART_TEST_HOOK_READ
-            ALLOY_UART_TEST_HOOK_READ();
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_READ
+        ALLOY_UART_TEST_HOOK_READ();
+#endif
 
         return static_cast<uint8_t>(hw()->DR & 0xFF);
     }
@@ -278,12 +279,13 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_WAIT_TX
      */
     static inline bool wait_tx_ready(uint32_t timeout_loops) {
-        #ifdef ALLOY_UART_TEST_HOOK_WAIT_TX
-            ALLOY_UART_TEST_HOOK_WAIT_TX(timeout_loops);
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_WAIT_TX
+        ALLOY_UART_TEST_HOOK_WAIT_TX(timeout_loops);
+#endif
 
         uint32_t timeout = timeout_loops;
-        while (!is_tx_ready() && --timeout);
+        while (!is_tx_ready() && --timeout)
+            ;
         return timeout != 0;
     }
 
@@ -296,15 +298,15 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_UART_TEST_HOOK_WAIT_RX
      */
     static inline bool wait_rx_ready(uint32_t timeout_loops) {
-        #ifdef ALLOY_UART_TEST_HOOK_WAIT_RX
-            ALLOY_UART_TEST_HOOK_WAIT_RX(timeout_loops);
-        #endif
+#ifdef ALLOY_UART_TEST_HOOK_WAIT_RX
+        ALLOY_UART_TEST_HOOK_WAIT_RX(timeout_loops);
+#endif
 
         uint32_t timeout = timeout_loops;
-        while (!is_rx_ready() && --timeout);
+        while (!is_rx_ready() && --timeout)
+            ;
         return timeout != 0;
     }
-
 };
 
 // ============================================================================

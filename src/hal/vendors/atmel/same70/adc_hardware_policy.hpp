@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/atmel/same70/generated/registers/afec0_registers.hpp"
@@ -75,7 +75,7 @@ struct Same70ADCHardwarePolicy {
     static constexpr uint32_t base_addr = BASE_ADDR;
     static constexpr uint32_t periph_clock_hz = PERIPH_CLOCK_HZ;
     static constexpr uint32_t ADC_TIMEOUT = 100000;  ///< ADC timeout in loop iterations
-    static constexpr uint8_t MAX_CHANNELS = 12;  ///< Maximum number of ADC channels
+    static constexpr uint8_t MAX_CHANNELS = 12;      ///< Maximum number of ADC channels
 
     // ========================================================================
     // Hardware Accessor (with Mock Hook)
@@ -90,11 +90,11 @@ struct Same70ADCHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_ADC_MOCK_HW
-            return ALLOY_ADC_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_ADC_MOCK_HW
+        return ALLOY_ADC_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -115,9 +115,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_RESET
      */
     static inline void reset() {
-        #ifdef ALLOY_ADC_TEST_HOOK_RESET
-            ALLOY_ADC_TEST_HOOK_RESET();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_RESET
+        ALLOY_ADC_TEST_HOOK_RESET();
+#endif
 
         hw()->CR = afec::cr::SWRST::mask;
     }
@@ -128,9 +128,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_ENABLE
      */
     static inline void enable() {
-        #ifdef ALLOY_ADC_TEST_HOOK_ENABLE
-            ALLOY_ADC_TEST_HOOK_ENABLE();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_ENABLE
+        ALLOY_ADC_TEST_HOOK_ENABLE();
+#endif
 
         hw()->CR = afec::cr::START::mask;
     }
@@ -141,9 +141,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_DISABLE
      */
     static inline void disable() {
-        #ifdef ALLOY_ADC_TEST_HOOK_DISABLE
-            ALLOY_ADC_TEST_HOOK_DISABLE();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_DISABLE
+        ALLOY_ADC_TEST_HOOK_DISABLE();
+#endif
 
         hw()->MR &= ~afec::mr::FREERUN::mask;
     }
@@ -154,9 +154,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_RESOLUTION
      */
     static inline void configure_resolution() {
-        #ifdef ALLOY_ADC_TEST_HOOK_RESOLUTION
-            ALLOY_ADC_TEST_HOOK_RESOLUTION();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_RESOLUTION
+        ALLOY_ADC_TEST_HOOK_RESOLUTION();
+#endif
 
         hw()->EMR = (hw()->EMR & ~afec::emr::RES::mask) | afec::emr::RES::write(0, 0);
     }
@@ -168,9 +168,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_PRESCALER
      */
     static inline void set_prescaler(uint8_t prescaler) {
-        #ifdef ALLOY_ADC_TEST_HOOK_PRESCALER
-            ALLOY_ADC_TEST_HOOK_PRESCALER(prescaler);
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_PRESCALER
+        ALLOY_ADC_TEST_HOOK_PRESCALER(prescaler);
+#endif
 
         hw()->MR = (hw()->MR & ~afec::mr::PRESCAL::mask) | afec::mr::PRESCAL::write(0, prescaler);
     }
@@ -182,9 +182,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_ENABLE_CH
      */
     static inline void enable_channel(uint8_t channel) {
-        #ifdef ALLOY_ADC_TEST_HOOK_ENABLE_CH
-            ALLOY_ADC_TEST_HOOK_ENABLE_CH(channel);
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_ENABLE_CH
+        ALLOY_ADC_TEST_HOOK_ENABLE_CH(channel);
+#endif
 
         hw()->CHER = (1u << channel);
     }
@@ -196,9 +196,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_DISABLE_CH
      */
     static inline void disable_channel(uint8_t channel) {
-        #ifdef ALLOY_ADC_TEST_HOOK_DISABLE_CH
-            ALLOY_ADC_TEST_HOOK_DISABLE_CH(channel);
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_DISABLE_CH
+        ALLOY_ADC_TEST_HOOK_DISABLE_CH(channel);
+#endif
 
         hw()->CHDR = (1u << channel);
     }
@@ -210,9 +210,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_SELECT_CH
      */
     static inline void select_channel(uint8_t channel) {
-        #ifdef ALLOY_ADC_TEST_HOOK_SELECT_CH
-            ALLOY_ADC_TEST_HOOK_SELECT_CH(channel);
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_SELECT_CH
+        ALLOY_ADC_TEST_HOOK_SELECT_CH(channel);
+#endif
 
         hw()->CSELR = afec::cselr::CSEL::write(0, channel);
     }
@@ -223,9 +223,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_START
      */
     static inline void start_conversion() {
-        #ifdef ALLOY_ADC_TEST_HOOK_START
-            ALLOY_ADC_TEST_HOOK_START();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_START
+        ALLOY_ADC_TEST_HOOK_START();
+#endif
 
         hw()->CR = afec::cr::START::mask;
     }
@@ -238,9 +238,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_IS_DONE
      */
     static inline bool is_conversion_done(uint8_t channel) const {
-        #ifdef ALLOY_ADC_TEST_HOOK_IS_DONE
-            ALLOY_ADC_TEST_HOOK_IS_DONE(channel);
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_IS_DONE
+        ALLOY_ADC_TEST_HOOK_IS_DONE(channel);
+#endif
 
         return (hw()->ISR & (1u << channel)) != 0;
     }
@@ -252,9 +252,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_READ
      */
     static inline uint16_t read_value() const {
-        #ifdef ALLOY_ADC_TEST_HOOK_READ
-            ALLOY_ADC_TEST_HOOK_READ();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_READ
+        ALLOY_ADC_TEST_HOOK_READ();
+#endif
 
         return static_cast<uint16_t>(hw()->CDR & 0xFFF);
     }
@@ -266,9 +266,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_READ_LAST
      */
     static inline uint16_t read_last_value() const {
-        #ifdef ALLOY_ADC_TEST_HOOK_READ_LAST
-            ALLOY_ADC_TEST_HOOK_READ_LAST();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_READ_LAST
+        ALLOY_ADC_TEST_HOOK_READ_LAST();
+#endif
 
         return static_cast<uint16_t>(hw()->LCDR & 0xFFF);
     }
@@ -279,9 +279,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_FREERUN
      */
     static inline void enable_freerun_mode() {
-        #ifdef ALLOY_ADC_TEST_HOOK_FREERUN
-            ALLOY_ADC_TEST_HOOK_FREERUN();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_FREERUN
+        ALLOY_ADC_TEST_HOOK_FREERUN();
+#endif
 
         hw()->MR |= afec::mr::FREERUN::mask;
     }
@@ -293,9 +293,9 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_TRIGGER
      */
     static inline void set_trigger(uint8_t trigger) {
-        #ifdef ALLOY_ADC_TEST_HOOK_TRIGGER
-            ALLOY_ADC_TEST_HOOK_TRIGGER(trigger);
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_TRIGGER
+        ALLOY_ADC_TEST_HOOK_TRIGGER(trigger);
+#endif
 
         hw()->MR = (hw()->MR & ~afec::mr::TRGSEL::mask) | afec::mr::TRGSEL::write(0, trigger);
     }
@@ -309,13 +309,15 @@ struct Same70ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_WAIT
      */
     static inline bool wait_conversion(uint8_t channel, uint32_t timeout_loops) {
-        #ifdef ALLOY_ADC_TEST_HOOK_WAIT
-            ALLOY_ADC_TEST_HOOK_WAIT(channel, timeout_loops);
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_WAIT
+        ALLOY_ADC_TEST_HOOK_WAIT(channel, timeout_loops);
+#endif
 
-        uint32_t timeout = timeout_loops; while (!is_conversion_done(channel) && --timeout); return timeout != 0;
+        uint32_t timeout = timeout_loops;
+        while (!is_conversion_done(channel) && --timeout)
+            ;
+        return timeout != 0;
     }
-
 };
 
 // ============================================================================
@@ -323,9 +325,11 @@ struct Same70ADCHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Adc0
-using Adc0Hardware = Same70ADCHardwarePolicy<ucore::generated::atsame70q21b::peripherals::AFEC0, 150000000>;
+using Adc0Hardware =
+    Same70ADCHardwarePolicy<ucore::generated::atsame70q21b::peripherals::AFEC0, 150000000>;
 /// @brief Hardware policy for Adc1
-using Adc1Hardware = Same70ADCHardwarePolicy<ucore::generated::atsame70q21b::peripherals::AFEC1, 150000000>;
+using Adc1Hardware =
+    Same70ADCHardwarePolicy<ucore::generated::atsame70q21b::peripherals::AFEC1, 150000000>;
 
 }  // namespace ucore::hal::same70
 

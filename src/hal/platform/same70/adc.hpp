@@ -34,7 +34,7 @@ using Adc1 = Adc1Hardware;
  *     Adc0::configure_resolution();
  *     Adc0::set_prescaler(9);  // 150MHz / (9+1) / 2 = 7.5MHz
  *     Adc0::enable_channel(0);
- *     
+ *
  *     // Start conversion and read
  *     Adc0::select_channel(0);
  *     Adc0::start_conversion();

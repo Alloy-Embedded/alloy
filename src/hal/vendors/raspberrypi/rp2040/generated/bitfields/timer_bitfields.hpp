@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cstdint>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace ucore::hal::raspberrypi::rp2040::timer {

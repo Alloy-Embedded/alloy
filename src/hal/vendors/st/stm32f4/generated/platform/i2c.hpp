@@ -3,7 +3,7 @@
 /// Source: tools/codegen/metadata/platforms/stm32f4/i2c.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 
+/// Generated:
 /**
  * @file i2c.hpp
  * @brief I2C Hardware Policy for STM32F4
@@ -19,12 +19,12 @@
  * - Type-safe via C++20 concepts
  *
  * Platform: STM32F4
- * Vendor: 
- * Architecture: 
+ * Vendor:
+ * Architecture:
  * I2C Style: STM32 (CR1, CR2, SR1, SR2, DR) *
  * Auto-generated from: tools/codegen/metadata/platforms/stm32f4/i2c.json
  * Generator: i2c_generator.py
- * Generated: 
+ * Generated:
  *
  * @note Part of Alloy HAL Vendor Layer
  * @see docs/codegen/TEMPLATE_CONVENTIONS.md
@@ -32,9 +32,9 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include ""
@@ -47,7 +47,7 @@ namespace ucore::hal::st::stm32f4 {
 using namespace ucore::core;
 
 // Import register types
-using namespace ;
+using namespace;
 
 // ============================================================================
 // STM32-Style I2C Hardware Policy
@@ -86,56 +86,56 @@ struct STM32F4I2cHardwarePolicy {
     static constexpr uint32_t peripheral_clock_hz = PERIPH_CLOCK_HZ;
 
     // CR1 bits
-    static constexpr uint32_t CR1_PE = (1 << 0);       // Peripheral enable
-    static constexpr uint32_t CR1_SMBUS = (1 << 1);    // SMBus mode
-    static constexpr uint32_t CR1_SMBTYPE = (1 << 3);  // SMBus type
-    static constexpr uint32_t CR1_ENARP = (1 << 4);    // ARP enable
-    static constexpr uint32_t CR1_ENPEC = (1 << 5);    // PEC enable
-    static constexpr uint32_t CR1_ENGC = (1 << 6);     // General call enable
-    static constexpr uint32_t CR1_NOSTRETCH = (1 << 7); // Clock stretching disable
-    static constexpr uint32_t CR1_START = (1 << 8);    // Start generation
-    static constexpr uint32_t CR1_STOP = (1 << 9);     // Stop generation
-    static constexpr uint32_t CR1_ACK = (1 << 10);     // Acknowledge enable
-    static constexpr uint32_t CR1_POS = (1 << 11);     // Acknowledge position
-    static constexpr uint32_t CR1_PEC = (1 << 12);     // Packet error checking
-    static constexpr uint32_t CR1_ALERT = (1 << 13);   // SMBus alert
-    static constexpr uint32_t CR1_SWRST = (1 << 15);   // Software reset
+    static constexpr uint32_t CR1_PE = (1 << 0);         // Peripheral enable
+    static constexpr uint32_t CR1_SMBUS = (1 << 1);      // SMBus mode
+    static constexpr uint32_t CR1_SMBTYPE = (1 << 3);    // SMBus type
+    static constexpr uint32_t CR1_ENARP = (1 << 4);      // ARP enable
+    static constexpr uint32_t CR1_ENPEC = (1 << 5);      // PEC enable
+    static constexpr uint32_t CR1_ENGC = (1 << 6);       // General call enable
+    static constexpr uint32_t CR1_NOSTRETCH = (1 << 7);  // Clock stretching disable
+    static constexpr uint32_t CR1_START = (1 << 8);      // Start generation
+    static constexpr uint32_t CR1_STOP = (1 << 9);       // Stop generation
+    static constexpr uint32_t CR1_ACK = (1 << 10);       // Acknowledge enable
+    static constexpr uint32_t CR1_POS = (1 << 11);       // Acknowledge position
+    static constexpr uint32_t CR1_PEC = (1 << 12);       // Packet error checking
+    static constexpr uint32_t CR1_ALERT = (1 << 13);     // SMBus alert
+    static constexpr uint32_t CR1_SWRST = (1 << 15);     // Software reset
 
     // CR2 bits
-    static constexpr uint32_t CR2_ITERREN = (1 << 8);  // Error interrupt enable
-    static constexpr uint32_t CR2_ITEVTEN = (1 << 9);  // Event interrupt enable
-    static constexpr uint32_t CR2_ITBUFEN = (1 << 10); // Buffer interrupt enable
-    static constexpr uint32_t CR2_DMAEN = (1 << 11);   // DMA requests enable
-    static constexpr uint32_t CR2_LAST = (1 << 12);    // DMA last transfer
+    static constexpr uint32_t CR2_ITERREN = (1 << 8);   // Error interrupt enable
+    static constexpr uint32_t CR2_ITEVTEN = (1 << 9);   // Event interrupt enable
+    static constexpr uint32_t CR2_ITBUFEN = (1 << 10);  // Buffer interrupt enable
+    static constexpr uint32_t CR2_DMAEN = (1 << 11);    // DMA requests enable
+    static constexpr uint32_t CR2_LAST = (1 << 12);     // DMA last transfer
 
     // SR1 bits
-    static constexpr uint32_t SR1_SB = (1 << 0);       // Start bit
-    static constexpr uint32_t SR1_ADDR = (1 << 1);     // Address sent/matched
-    static constexpr uint32_t SR1_BTF = (1 << 2);      // Byte transfer finished
-    static constexpr uint32_t SR1_ADD10 = (1 << 3);    // 10-bit header sent
-    static constexpr uint32_t SR1_STOPF = (1 << 4);    // Stop detection
-    static constexpr uint32_t SR1_RXNE = (1 << 6);     // RX not empty
-    static constexpr uint32_t SR1_TXE = (1 << 7);      // TX empty
-    static constexpr uint32_t SR1_BERR = (1 << 8);     // Bus error
-    static constexpr uint32_t SR1_ARLO = (1 << 9);     // Arbitration lost
-    static constexpr uint32_t SR1_AF = (1 << 10);      // Acknowledge failure
-    static constexpr uint32_t SR1_OVR = (1 << 11);     // Overrun/Underrun
-    static constexpr uint32_t SR1_PECERR = (1 << 12);  // PEC error
-    static constexpr uint32_t SR1_TIMEOUT = (1 << 14); // Timeout error
-    static constexpr uint32_t SR1_SMBALERT = (1 << 15);// SMBus alert
+    static constexpr uint32_t SR1_SB = (1 << 0);         // Start bit
+    static constexpr uint32_t SR1_ADDR = (1 << 1);       // Address sent/matched
+    static constexpr uint32_t SR1_BTF = (1 << 2);        // Byte transfer finished
+    static constexpr uint32_t SR1_ADD10 = (1 << 3);      // 10-bit header sent
+    static constexpr uint32_t SR1_STOPF = (1 << 4);      // Stop detection
+    static constexpr uint32_t SR1_RXNE = (1 << 6);       // RX not empty
+    static constexpr uint32_t SR1_TXE = (1 << 7);        // TX empty
+    static constexpr uint32_t SR1_BERR = (1 << 8);       // Bus error
+    static constexpr uint32_t SR1_ARLO = (1 << 9);       // Arbitration lost
+    static constexpr uint32_t SR1_AF = (1 << 10);        // Acknowledge failure
+    static constexpr uint32_t SR1_OVR = (1 << 11);       // Overrun/Underrun
+    static constexpr uint32_t SR1_PECERR = (1 << 12);    // PEC error
+    static constexpr uint32_t SR1_TIMEOUT = (1 << 14);   // Timeout error
+    static constexpr uint32_t SR1_SMBALERT = (1 << 15);  // SMBus alert
 
     // SR2 bits
-    static constexpr uint32_t SR2_MSL = (1 << 0);      // Master/Slave
-    static constexpr uint32_t SR2_BUSY = (1 << 1);     // Bus busy
-    static constexpr uint32_t SR2_TRA = (1 << 2);      // Transmitter/Receiver
-    static constexpr uint32_t SR2_GENCALL = (1 << 4);  // General call address
-    static constexpr uint32_t SR2_SMBDEFAULT = (1 << 5); // SMBus device default
-    static constexpr uint32_t SR2_SMBHOST = (1 << 6);  // SMBus host header
-    static constexpr uint32_t SR2_DUALF = (1 << 7);    // Dual flag
+    static constexpr uint32_t SR2_MSL = (1 << 0);         // Master/Slave
+    static constexpr uint32_t SR2_BUSY = (1 << 1);        // Bus busy
+    static constexpr uint32_t SR2_TRA = (1 << 2);         // Transmitter/Receiver
+    static constexpr uint32_t SR2_GENCALL = (1 << 4);     // General call address
+    static constexpr uint32_t SR2_SMBDEFAULT = (1 << 5);  // SMBus device default
+    static constexpr uint32_t SR2_SMBHOST = (1 << 6);     // SMBus host header
+    static constexpr uint32_t SR2_DUALF = (1 << 7);       // Dual flag
 
     // CCR bits
-    static constexpr uint32_t CCR_FS = (1 << 15);      // Fast mode selection
-    static constexpr uint32_t CCR_DUTY = (1 << 14);    // Fast mode duty cycle
+    static constexpr uint32_t CCR_FS = (1 << 15);    // Fast mode selection
+    static constexpr uint32_t CCR_DUTY = (1 << 14);  // Fast mode duty cycle
 
     // ========================================================================
     // Hardware Accessor
@@ -147,11 +147,11 @@ struct STM32F4I2cHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_I2C_MOCK_HW
-            return ALLOY_I2C_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_I2C_MOCK_HW
+        return ALLOY_I2C_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -161,16 +161,12 @@ struct STM32F4I2cHardwarePolicy {
     /**
      * @brief Enable I2C peripheral
      */
-    static inline void enable() {
-        hw()->CR1 |= CR1_PE;
-    }
+    static inline void enable() { hw()->CR1 |= CR1_PE; }
 
     /**
      * @brief Disable I2C peripheral
      */
-    static inline void disable() {
-        hw()->CR1 &= ~CR1_PE;
-    }
+    static inline void disable() { hw()->CR1 &= ~CR1_PE; }
 
     /**
      * @brief Software reset
@@ -228,16 +224,12 @@ struct STM32F4I2cHardwarePolicy {
     /**
      * @brief Enable ACK
      */
-    static inline void enable_ack() {
-        hw()->CR1 |= CR1_ACK;
-    }
+    static inline void enable_ack() { hw()->CR1 |= CR1_ACK; }
 
     /**
      * @brief Disable ACK
      */
-    static inline void disable_ack() {
-        hw()->CR1 &= ~CR1_ACK;
-    }
+    static inline void disable_ack() { hw()->CR1 &= ~CR1_ACK; }
 
     // ========================================================================
     // Master Mode Operations
@@ -246,16 +238,12 @@ struct STM32F4I2cHardwarePolicy {
     /**
      * @brief Generate START condition
      */
-    static inline void generate_start() {
-        hw()->CR1 |= CR1_START;
-    }
+    static inline void generate_start() { hw()->CR1 |= CR1_START; }
 
     /**
      * @brief Generate STOP condition
      */
-    static inline void generate_stop() {
-        hw()->CR1 |= CR1_STOP;
-    }
+    static inline void generate_stop() { hw()->CR1 |= CR1_STOP; }
 
     /**
      * @brief Send slave address
@@ -272,18 +260,14 @@ struct STM32F4I2cHardwarePolicy {
      *
      * @param data Byte to transmit
      */
-    static inline void write_byte(u8 data) {
-        hw()->DR = data;
-    }
+    static inline void write_byte(u8 data) { hw()->DR = data; }
 
     /**
      * @brief Read byte from data register
      *
      * @return Received byte
      */
-    static inline u8 read_byte() {
-        return static_cast<u8>(hw()->DR & 0xFF);
-    }
+    static inline u8 read_byte() { return static_cast<u8>(hw()->DR & 0xFF); }
 
     // ========================================================================
     // Status Methods
@@ -294,63 +278,49 @@ struct STM32F4I2cHardwarePolicy {
      *
      * @return true if START bit set
      */
-    static inline bool is_start_generated() {
-        return (hw()->SR1 & SR1_SB) != 0;
-    }
+    static inline bool is_start_generated() { return (hw()->SR1 & SR1_SB) != 0; }
 
     /**
      * @brief Check if address sent/matched
      *
      * @return true if ADDR bit set
      */
-    static inline bool is_address_sent() {
-        return (hw()->SR1 & SR1_ADDR) != 0;
-    }
+    static inline bool is_address_sent() { return (hw()->SR1 & SR1_ADDR) != 0; }
 
     /**
      * @brief Check if TX buffer empty
      *
      * @return true if TXE flag set
      */
-    static inline bool is_tx_empty() {
-        return (hw()->SR1 & SR1_TXE) != 0;
-    }
+    static inline bool is_tx_empty() { return (hw()->SR1 & SR1_TXE) != 0; }
 
     /**
      * @brief Check if RX buffer not empty
      *
      * @return true if RXNE flag set
      */
-    static inline bool is_rx_not_empty() {
-        return (hw()->SR1 & SR1_RXNE) != 0;
-    }
+    static inline bool is_rx_not_empty() { return (hw()->SR1 & SR1_RXNE) != 0; }
 
     /**
      * @brief Check if byte transfer finished
      *
      * @return true if BTF flag set
      */
-    static inline bool is_byte_transfer_finished() {
-        return (hw()->SR1 & SR1_BTF) != 0;
-    }
+    static inline bool is_byte_transfer_finished() { return (hw()->SR1 & SR1_BTF) != 0; }
 
     /**
      * @brief Check if bus is busy
      *
      * @return true if BUSY flag set
      */
-    static inline bool is_busy() {
-        return (hw()->SR2 & SR2_BUSY) != 0;
-    }
+    static inline bool is_busy() { return (hw()->SR2 & SR2_BUSY) != 0; }
 
     /**
      * @brief Check if in master mode
      *
      * @return true if MSL flag set
      */
-    static inline bool is_master() {
-        return (hw()->SR2 & SR2_MSL) != 0;
-    }
+    static inline bool is_master() { return (hw()->SR2 & SR2_MSL) != 0; }
 
     /**
      * @brief Clear ADDR flag (by reading SR1 then SR2)
@@ -369,43 +339,33 @@ struct STM32F4I2cHardwarePolicy {
      *
      * @return true if AF flag set
      */
-    static inline bool has_ack_failure() {
-        return (hw()->SR1 & SR1_AF) != 0;
-    }
+    static inline bool has_ack_failure() { return (hw()->SR1 & SR1_AF) != 0; }
 
     /**
      * @brief Check for bus error
      *
      * @return true if BERR flag set
      */
-    static inline bool has_bus_error() {
-        return (hw()->SR1 & SR1_BERR) != 0;
-    }
+    static inline bool has_bus_error() { return (hw()->SR1 & SR1_BERR) != 0; }
 
     /**
      * @brief Check for arbitration lost
      *
      * @return true if ARLO flag set
      */
-    static inline bool has_arbitration_lost() {
-        return (hw()->SR1 & SR1_ARLO) != 0;
-    }
+    static inline bool has_arbitration_lost() { return (hw()->SR1 & SR1_ARLO) != 0; }
 
     /**
      * @brief Check for overrun error
      *
      * @return true if OVR flag set
      */
-    static inline bool has_overrun_error() {
-        return (hw()->SR1 & SR1_OVR) != 0;
-    }
+    static inline bool has_overrun_error() { return (hw()->SR1 & SR1_OVR) != 0; }
 
     /**
      * @brief Clear acknowledge failure flag
      */
-    static inline void clear_ack_failure() {
-        hw()->SR1 &= ~SR1_AF;
-    }
+    static inline void clear_ack_failure() { hw()->SR1 &= ~SR1_AF; }
 
     /**
      * @brief Clear all error flags
@@ -421,44 +381,32 @@ struct STM32F4I2cHardwarePolicy {
     /**
      * @brief Enable event interrupt
      */
-    static inline void enable_event_interrupt() {
-        hw()->CR2 |= CR2_ITEVTEN;
-    }
+    static inline void enable_event_interrupt() { hw()->CR2 |= CR2_ITEVTEN; }
 
     /**
      * @brief Disable event interrupt
      */
-    static inline void disable_event_interrupt() {
-        hw()->CR2 &= ~CR2_ITEVTEN;
-    }
+    static inline void disable_event_interrupt() { hw()->CR2 &= ~CR2_ITEVTEN; }
 
     /**
      * @brief Enable error interrupt
      */
-    static inline void enable_error_interrupt() {
-        hw()->CR2 |= CR2_ITERREN;
-    }
+    static inline void enable_error_interrupt() { hw()->CR2 |= CR2_ITERREN; }
 
     /**
      * @brief Disable error interrupt
      */
-    static inline void disable_error_interrupt() {
-        hw()->CR2 &= ~CR2_ITERREN;
-    }
+    static inline void disable_error_interrupt() { hw()->CR2 &= ~CR2_ITERREN; }
 
     /**
      * @brief Enable buffer interrupt
      */
-    static inline void enable_buffer_interrupt() {
-        hw()->CR2 |= CR2_ITBUFEN;
-    }
+    static inline void enable_buffer_interrupt() { hw()->CR2 |= CR2_ITBUFEN; }
 
     /**
      * @brief Disable buffer interrupt
      */
-    static inline void disable_buffer_interrupt() {
-        hw()->CR2 &= ~CR2_ITBUFEN;
-    }
+    static inline void disable_buffer_interrupt() { hw()->CR2 &= ~CR2_ITBUFEN; }
 
     // ========================================================================
     // DMA Support
@@ -467,25 +415,18 @@ struct STM32F4I2cHardwarePolicy {
     /**
      * @brief Enable DMA requests
      */
-    static inline void enable_dma() {
-        hw()->CR2 |= CR2_DMAEN;
-    }
+    static inline void enable_dma() { hw()->CR2 |= CR2_DMAEN; }
 
     /**
      * @brief Disable DMA requests
      */
-    static inline void disable_dma() {
-        hw()->CR2 &= ~CR2_DMAEN;
-    }
+    static inline void disable_dma() { hw()->CR2 &= ~CR2_DMAEN; }
 
     /**
      * @brief Set DMA last transfer
      */
-    static inline void set_dma_last_transfer() {
-        hw()->CR2 |= CR2_LAST;
-    }
+    static inline void set_dma_last_transfer() { hw()->CR2 |= CR2_LAST; }
 };
-
 
 
 // ============================================================================

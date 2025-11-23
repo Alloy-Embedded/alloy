@@ -26,8 +26,8 @@
  * - ADXL345: Accelerometer (Address: 0x53 or 0x1D)
  */
 
-#include "core/result.hpp"
 #include "core/error.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 
 using namespace ucore::core;
@@ -37,25 +37,25 @@ using namespace ucore::core;
 // ==============================================================================
 
 #if defined(ALLOY_BOARD_NUCLEO_F401RE) || defined(ALLOY_BOARD_NUCLEO_F446RE)
+    #include "hal/api/i2c_simple.hpp"
     #include "hal/vendors/st/stm32f4/clock_platform.hpp"
     #include "hal/vendors/st/stm32f4/gpio.hpp"
-    #include "hal/api/i2c_simple.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
-        ucore::hal::st::stm32f4::ExampleF4ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform =
+    ucore::hal::st::stm32f4::Stm32f4Clock<ucore::hal::st::stm32f4::ExampleF4ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
 
 #elif defined(ALLOY_BOARD_SAME70_XPLAINED)
     #include "hal/vendors/microchip/same70/clock_platform.hpp"
     #include "hal/vendors/microchip/same70/gpio.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::microchip::same70::Same70Clock<
-        ucore::hal::microchip::same70::ExampleSame70ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform = ucore::hal::microchip::same70::Same70Clock<
+    ucore::hal::microchip::same70::ExampleSame70ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
 
 #else
     #error "Unsupported board for I2C sensor test"
@@ -66,38 +66,38 @@ using namespace ucore::core;
 // ==============================================================================
 
 namespace i2c_config {
-    // MPU6050 Accelerometer/Gyroscope
-    constexpr u8 MPU6050_ADDR           = 0x68;
-    constexpr u8 MPU6050_WHO_AM_I_REG   = 0x75;
-    constexpr u8 MPU6050_WHO_AM_I_VAL   = 0x68;
-    constexpr u8 MPU6050_PWR_MGMT_1     = 0x6B;
-    constexpr u8 MPU6050_ACCEL_XOUT_H   = 0x3B;
-    constexpr u8 MPU6050_GYRO_XOUT_H    = 0x43;
-    constexpr u8 MPU6050_TEMP_OUT_H     = 0x41;
+// MPU6050 Accelerometer/Gyroscope
+constexpr u8 MPU6050_ADDR = 0x68;
+constexpr u8 MPU6050_WHO_AM_I_REG = 0x75;
+constexpr u8 MPU6050_WHO_AM_I_VAL = 0x68;
+constexpr u8 MPU6050_PWR_MGMT_1 = 0x6B;
+constexpr u8 MPU6050_ACCEL_XOUT_H = 0x3B;
+constexpr u8 MPU6050_GYRO_XOUT_H = 0x43;
+constexpr u8 MPU6050_TEMP_OUT_H = 0x41;
 
-    // BME280 Environmental Sensor
-    constexpr u8 BME280_ADDR            = 0x76;
-    constexpr u8 BME280_CHIP_ID_REG     = 0xD0;
-    constexpr u8 BME280_CHIP_ID_VAL     = 0x60;
-    constexpr u8 BME280_CTRL_MEAS_REG   = 0xF4;
-    constexpr u8 BME280_TEMP_MSB        = 0xFA;
+// BME280 Environmental Sensor
+constexpr u8 BME280_ADDR = 0x76;
+constexpr u8 BME280_CHIP_ID_REG = 0xD0;
+constexpr u8 BME280_CHIP_ID_VAL = 0x60;
+constexpr u8 BME280_CTRL_MEAS_REG = 0xF4;
+constexpr u8 BME280_TEMP_MSB = 0xFA;
 
-    // LM75 Temperature Sensor
-    constexpr u8 LM75_ADDR              = 0x48;
-    constexpr u8 LM75_TEMP_REG          = 0x00;
-    constexpr u8 LM75_CONFIG_REG        = 0x01;
+// LM75 Temperature Sensor
+constexpr u8 LM75_ADDR = 0x48;
+constexpr u8 LM75_TEMP_REG = 0x00;
+constexpr u8 LM75_CONFIG_REG = 0x01;
 
-    // I2C timing
-    constexpr u32 I2C_TIMEOUT           = 10000;
-    constexpr u32 MAX_RETRY             = 3;
-}
+// I2C timing
+constexpr u32 I2C_TIMEOUT = 10000;
+constexpr u32 MAX_RETRY = 3;
+}  // namespace i2c_config
 
 // ==============================================================================
 // I2C Driver (Abstract Interface)
 // ==============================================================================
 
 class I2CDriver {
-public:
+   public:
     /**
      * @brief Initialize I2C peripheral
      */
@@ -174,8 +174,8 @@ public:
      * @param buffer Output buffer
      * @param length Number of bytes to read
      */
-    static Result<void, ErrorCode> read_multiple(u8 device_addr, u8 reg_addr,
-                                                   u8* buffer, u32 length) {
+    static Result<void, ErrorCode> read_multiple(u8 device_addr, u8 reg_addr, u8* buffer,
+                                                 u32 length) {
         // In real implementation:
         // 1. Send START + device address (write) + register address
         // 2. Send repeated START + device address (read)
@@ -226,17 +226,16 @@ struct MPU6050Data {
 };
 
 class MPU6050 {
-public:
+   public:
     /**
      * @brief Initialize MPU6050 sensor
      */
     static Result<void, ErrorCode> initialize() {
         // Wake up device (clear sleep bit)
-        auto result = I2CDriver::write_register(
-            i2c_config::MPU6050_ADDR,
-            i2c_config::MPU6050_PWR_MGMT_1,
-            0x00  // Clear sleep mode
-        );
+        auto result =
+            I2CDriver::write_register(i2c_config::MPU6050_ADDR, i2c_config::MPU6050_PWR_MGMT_1,
+                                      0x00  // Clear sleep mode
+            );
 
         if (!result.is_ok()) {
             return result;
@@ -252,10 +251,8 @@ public:
      * @brief Verify device ID
      */
     static Result<void, ErrorCode> verify_device_id() {
-        auto id_result = I2CDriver::read_register(
-            i2c_config::MPU6050_ADDR,
-            i2c_config::MPU6050_WHO_AM_I_REG
-        );
+        auto id_result =
+            I2CDriver::read_register(i2c_config::MPU6050_ADDR, i2c_config::MPU6050_WHO_AM_I_REG);
 
         if (!id_result.is_ok()) {
             return Err(ErrorCode::COMMUNICATION_ERROR);
@@ -277,12 +274,8 @@ public:
 
         // Read 14 bytes starting from ACCEL_XOUT_H
         u8 raw_data[14];
-        auto result = I2CDriver::read_multiple(
-            i2c_config::MPU6050_ADDR,
-            i2c_config::MPU6050_ACCEL_XOUT_H,
-            raw_data,
-            14
-        );
+        auto result = I2CDriver::read_multiple(i2c_config::MPU6050_ADDR,
+                                               i2c_config::MPU6050_ACCEL_XOUT_H, raw_data, 14);
 
         if (!result.is_ok()) {
             return Err(ErrorCode::COMMUNICATION_ERROR);
@@ -417,9 +410,8 @@ Result<void, ErrorCode> test_continuous_read() {
         constexpr i16 MAX_ACCEL = 32767;
         constexpr i16 MIN_ACCEL = -32768;
 
-        if (data.accel_x < MIN_ACCEL || data.accel_x > MAX_ACCEL ||
-            data.accel_y < MIN_ACCEL || data.accel_y > MAX_ACCEL ||
-            data.accel_z < MIN_ACCEL || data.accel_z > MAX_ACCEL) {
+        if (data.accel_x < MIN_ACCEL || data.accel_x > MAX_ACCEL || data.accel_y < MIN_ACCEL ||
+            data.accel_y > MAX_ACCEL || data.accel_z < MIN_ACCEL || data.accel_z > MAX_ACCEL) {
             return Err(ErrorCode::DATA_OUT_OF_RANGE);
         }
 
@@ -461,9 +453,7 @@ Result<void, ErrorCode> test_data_sanity() {
 
     // 2. At least one axis should show gravity (~1g) when stationary
     // Total acceleration magnitude should be close to 1g
-    float magnitude = accel_x_g * accel_x_g +
-                      accel_y_g * accel_y_g +
-                      accel_z_g * accel_z_g;
+    float magnitude = accel_x_g * accel_x_g + accel_y_g * accel_y_g + accel_z_g * accel_z_g;
 
     // Magnitude should be between 0.5 and 1.5g² (accounting for noise/movement)
     if (magnitude < 0.25f || magnitude > 2.25f) {
@@ -509,7 +499,7 @@ int main() {
 
     // Test 1: Bus Scan
     if (test_bus_scan().is_ok()) {
-        LedPin::set(); // Turn on LED briefly
+        LedPin::set();  // Turn on LED briefly
         for (volatile u32 i = 0; i < 500000; i++) {}
         LedPin::clear();
     } else {

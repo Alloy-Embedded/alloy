@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/arm/cortex_m7/nvic_registers.hpp"
@@ -89,11 +89,11 @@ struct Same70NVICHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_NVIC_MOCK_HW
-            return ALLOY_NVIC_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_NVIC_MOCK_HW
+        return ALLOY_NVIC_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -115,11 +115,13 @@ struct Same70NVICHardwarePolicy {
      * @note Test hook: ALLOY_NVIC_TEST_HOOK_ENABLE
      */
     static inline void enable_irq(uint8_t irq_num) {
-        #ifdef ALLOY_NVIC_TEST_HOOK_ENABLE
-            ALLOY_NVIC_TEST_HOOK_ENABLE(irq_num);
-        #endif
+#ifdef ALLOY_NVIC_TEST_HOOK_ENABLE
+        ALLOY_NVIC_TEST_HOOK_ENABLE(irq_num);
+#endif
 
-        if (irq_num < 240) { hw()->ISER[irq_num / 32] = (1u << (irq_num % 32)); }
+        if (irq_num < 240) {
+            hw()->ISER[irq_num / 32] = (1u << (irq_num % 32));
+        }
     }
 
     /**
@@ -129,11 +131,13 @@ struct Same70NVICHardwarePolicy {
      * @note Test hook: ALLOY_NVIC_TEST_HOOK_DISABLE
      */
     static inline void disable_irq(uint8_t irq_num) {
-        #ifdef ALLOY_NVIC_TEST_HOOK_DISABLE
-            ALLOY_NVIC_TEST_HOOK_DISABLE(irq_num);
-        #endif
+#ifdef ALLOY_NVIC_TEST_HOOK_DISABLE
+        ALLOY_NVIC_TEST_HOOK_DISABLE(irq_num);
+#endif
 
-        if (irq_num < 240) { hw()->ICER[irq_num / 32] = (1u << (irq_num % 32)); }
+        if (irq_num < 240) {
+            hw()->ICER[irq_num / 32] = (1u << (irq_num % 32));
+        }
     }
 
     /**
@@ -143,11 +147,13 @@ struct Same70NVICHardwarePolicy {
      * @note Test hook: ALLOY_NVIC_TEST_HOOK_SET_PEND
      */
     static inline void set_pending(uint8_t irq_num) {
-        #ifdef ALLOY_NVIC_TEST_HOOK_SET_PEND
-            ALLOY_NVIC_TEST_HOOK_SET_PEND(irq_num);
-        #endif
+#ifdef ALLOY_NVIC_TEST_HOOK_SET_PEND
+        ALLOY_NVIC_TEST_HOOK_SET_PEND(irq_num);
+#endif
 
-        if (irq_num < 240) { hw()->ISPR[irq_num / 32] = (1u << (irq_num % 32)); }
+        if (irq_num < 240) {
+            hw()->ISPR[irq_num / 32] = (1u << (irq_num % 32));
+        }
     }
 
     /**
@@ -157,11 +163,13 @@ struct Same70NVICHardwarePolicy {
      * @note Test hook: ALLOY_NVIC_TEST_HOOK_CLR_PEND
      */
     static inline void clear_pending(uint8_t irq_num) {
-        #ifdef ALLOY_NVIC_TEST_HOOK_CLR_PEND
-            ALLOY_NVIC_TEST_HOOK_CLR_PEND(irq_num);
-        #endif
+#ifdef ALLOY_NVIC_TEST_HOOK_CLR_PEND
+        ALLOY_NVIC_TEST_HOOK_CLR_PEND(irq_num);
+#endif
 
-        if (irq_num < 240) { hw()->ICPR[irq_num / 32] = (1u << (irq_num % 32)); }
+        if (irq_num < 240) {
+            hw()->ICPR[irq_num / 32] = (1u << (irq_num % 32));
+        }
     }
 
     /**
@@ -172,11 +180,14 @@ struct Same70NVICHardwarePolicy {
      * @note Test hook: ALLOY_NVIC_TEST_HOOK_IS_PEND
      */
     static inline bool is_pending(uint8_t irq_num) const {
-        #ifdef ALLOY_NVIC_TEST_HOOK_IS_PEND
-            ALLOY_NVIC_TEST_HOOK_IS_PEND(irq_num);
-        #endif
+#ifdef ALLOY_NVIC_TEST_HOOK_IS_PEND
+        ALLOY_NVIC_TEST_HOOK_IS_PEND(irq_num);
+#endif
 
-        if (irq_num < 240) { return (hw()->ISPR[irq_num / 32] & (1u << (irq_num % 32))) != 0; } return false;
+        if (irq_num < 240) {
+            return (hw()->ISPR[irq_num / 32] & (1u << (irq_num % 32))) != 0;
+        }
+        return false;
     }
 
     /**
@@ -187,11 +198,14 @@ struct Same70NVICHardwarePolicy {
      * @note Test hook: ALLOY_NVIC_TEST_HOOK_IS_ACTIVE
      */
     static inline bool is_active(uint8_t irq_num) const {
-        #ifdef ALLOY_NVIC_TEST_HOOK_IS_ACTIVE
-            ALLOY_NVIC_TEST_HOOK_IS_ACTIVE(irq_num);
-        #endif
+#ifdef ALLOY_NVIC_TEST_HOOK_IS_ACTIVE
+        ALLOY_NVIC_TEST_HOOK_IS_ACTIVE(irq_num);
+#endif
 
-        if (irq_num < 240) { return (hw()->IABR[irq_num / 32] & (1u << (irq_num % 32))) != 0; } return false;
+        if (irq_num < 240) {
+            return (hw()->IABR[irq_num / 32] & (1u << (irq_num % 32))) != 0;
+        }
+        return false;
     }
 
     /**
@@ -202,11 +216,13 @@ struct Same70NVICHardwarePolicy {
      * @note Test hook: ALLOY_NVIC_TEST_HOOK_SET_PRIO
      */
     static inline void set_priority(uint8_t irq_num, uint8_t priority) {
-        #ifdef ALLOY_NVIC_TEST_HOOK_SET_PRIO
-            ALLOY_NVIC_TEST_HOOK_SET_PRIO(irq_num, priority);
-        #endif
+#ifdef ALLOY_NVIC_TEST_HOOK_SET_PRIO
+        ALLOY_NVIC_TEST_HOOK_SET_PRIO(irq_num, priority);
+#endif
 
-        if (irq_num < 240) { hw()->IP[irq_num] = (priority << 4) & 0xF0; }
+        if (irq_num < 240) {
+            hw()->IP[irq_num] = (priority << 4) & 0xF0;
+        }
     }
 
     /**
@@ -217,11 +233,14 @@ struct Same70NVICHardwarePolicy {
      * @note Test hook: ALLOY_NVIC_TEST_HOOK_GET_PRIO
      */
     static inline uint8_t get_priority(uint8_t irq_num) const {
-        #ifdef ALLOY_NVIC_TEST_HOOK_GET_PRIO
-            ALLOY_NVIC_TEST_HOOK_GET_PRIO(irq_num);
-        #endif
+#ifdef ALLOY_NVIC_TEST_HOOK_GET_PRIO
+        ALLOY_NVIC_TEST_HOOK_GET_PRIO(irq_num);
+#endif
 
-        if (irq_num < 240) { return (hw()->IP[irq_num] >> 4) & 0x0F; } return 0;
+        if (irq_num < 240) {
+            return (hw()->IP[irq_num] >> 4) & 0x0F;
+        }
+        return 0;
     }
 
     /**
@@ -230,13 +249,13 @@ struct Same70NVICHardwarePolicy {
      * @note Test hook: ALLOY_NVIC_TEST_HOOK_RESET
      */
     static inline void system_reset() {
-        #ifdef ALLOY_NVIC_TEST_HOOK_RESET
-            ALLOY_NVIC_TEST_HOOK_RESET();
-        #endif
+#ifdef ALLOY_NVIC_TEST_HOOK_RESET
+        ALLOY_NVIC_TEST_HOOK_RESET();
+#endif
 
-        volatile uint32_t* AIRCR = reinterpret_cast<volatile uint32_t*>(0xE000ED0C); *AIRCR = (0x05FA << 16) | (1u << 2);
+        volatile uint32_t* AIRCR = reinterpret_cast<volatile uint32_t*>(0xE000ED0C);
+        *AIRCR = (0x05FA << 16) | (1u << 2);
     }
-
 };
 
 // ============================================================================

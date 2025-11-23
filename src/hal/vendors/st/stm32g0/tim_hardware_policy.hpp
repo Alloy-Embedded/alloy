@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/st/stm32g0/generated/registers/tim1_registers.hpp"
@@ -85,11 +85,11 @@ struct Stm32g0TIMHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_TIM_MOCK_HW
-            return ALLOY_TIM_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_TIM_MOCK_HW
+        return ALLOY_TIM_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -110,9 +110,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_CEN
      */
     static inline void enable_counter() {
-        #ifdef ALLOY_TIM_TEST_HOOK_CEN
-            ALLOY_TIM_TEST_HOOK_CEN();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_CEN
+        ALLOY_TIM_TEST_HOOK_CEN();
+#endif
 
         hw()->TIM1_CR1 |= (1U << 0);
     }
@@ -123,9 +123,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_CEN
      */
     static inline void disable_counter() {
-        #ifdef ALLOY_TIM_TEST_HOOK_CEN
-            ALLOY_TIM_TEST_HOOK_CEN();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_CEN
+        ALLOY_TIM_TEST_HOOK_CEN();
+#endif
 
         hw()->TIM1_CR1 &= ~(1U << 0);
     }
@@ -137,9 +137,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_PSC
      */
     static inline void set_prescaler(uint16_t prescaler) {
-        #ifdef ALLOY_TIM_TEST_HOOK_PSC
-            ALLOY_TIM_TEST_HOOK_PSC(prescaler);
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_PSC
+        ALLOY_TIM_TEST_HOOK_PSC(prescaler);
+#endif
 
         hw()->TIM1_PSC = prescaler;
     }
@@ -151,9 +151,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_ARR
      */
     static inline void set_auto_reload(uint32_t value) {
-        #ifdef ALLOY_TIM_TEST_HOOK_ARR
-            ALLOY_TIM_TEST_HOOK_ARR(value);
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_ARR
+        ALLOY_TIM_TEST_HOOK_ARR(value);
+#endif
 
         hw()->TIM1_ARR = value;
     }
@@ -165,9 +165,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_CNT
      */
     static inline uint32_t get_counter() {
-        #ifdef ALLOY_TIM_TEST_HOOK_CNT
-            ALLOY_TIM_TEST_HOOK_CNT();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_CNT
+        ALLOY_TIM_TEST_HOOK_CNT();
+#endif
 
         return hw()->TIM1_CNT;
     }
@@ -179,9 +179,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_CNT
      */
     static inline void set_counter(uint32_t value) {
-        #ifdef ALLOY_TIM_TEST_HOOK_CNT
-            ALLOY_TIM_TEST_HOOK_CNT(value);
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_CNT
+        ALLOY_TIM_TEST_HOOK_CNT(value);
+#endif
 
         hw()->TIM1_CNT = value;
     }
@@ -192,9 +192,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_UIE
      */
     static inline void enable_update_interrupt() {
-        #ifdef ALLOY_TIM_TEST_HOOK_UIE
-            ALLOY_TIM_TEST_HOOK_UIE();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_UIE
+        ALLOY_TIM_TEST_HOOK_UIE();
+#endif
 
         hw()->TIM1_DIER |= (1U << 0);
     }
@@ -205,9 +205,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_UIE
      */
     static inline void disable_update_interrupt() {
-        #ifdef ALLOY_TIM_TEST_HOOK_UIE
-            ALLOY_TIM_TEST_HOOK_UIE();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_UIE
+        ALLOY_TIM_TEST_HOOK_UIE();
+#endif
 
         hw()->TIM1_DIER &= ~(1U << 0);
     }
@@ -219,9 +219,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_UIF
      */
     static inline bool is_update_flag_set() {
-        #ifdef ALLOY_TIM_TEST_HOOK_UIF
-            ALLOY_TIM_TEST_HOOK_UIF();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_UIF
+        ALLOY_TIM_TEST_HOOK_UIF();
+#endif
 
         return (hw()->TIM1_SR & (1U << 0)) != 0;
     }
@@ -232,9 +232,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_UIF
      */
     static inline void clear_update_flag() {
-        #ifdef ALLOY_TIM_TEST_HOOK_UIF
-            ALLOY_TIM_TEST_HOOK_UIF();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_UIF
+        ALLOY_TIM_TEST_HOOK_UIF();
+#endif
 
         hw()->TIM1_SR &= ~(1U << 0);
     }
@@ -245,9 +245,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_OC1M
      */
     static inline void set_pwm_mode_1() {
-        #ifdef ALLOY_TIM_TEST_HOOK_OC1M
-            ALLOY_TIM_TEST_HOOK_OC1M();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_OC1M
+        ALLOY_TIM_TEST_HOOK_OC1M();
+#endif
 
         hw()->TIM1_CCMR1_OUTPUT = (hw()->TIM1_CCMR1_OUTPUT & ~(0x7U << 4)) | (0x6U << 4);
     }
@@ -258,9 +258,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_OC1M
      */
     static inline void set_pwm_mode_2() {
-        #ifdef ALLOY_TIM_TEST_HOOK_OC1M
-            ALLOY_TIM_TEST_HOOK_OC1M();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_OC1M
+        ALLOY_TIM_TEST_HOOK_OC1M();
+#endif
 
         hw()->TIM1_CCMR1_OUTPUT = (hw()->TIM1_CCMR1_OUTPUT & ~(0x7U << 4)) | (0x7U << 4);
     }
@@ -271,9 +271,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_CC1E
      */
     static inline void enable_channel_1_output() {
-        #ifdef ALLOY_TIM_TEST_HOOK_CC1E
-            ALLOY_TIM_TEST_HOOK_CC1E();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_CC1E
+        ALLOY_TIM_TEST_HOOK_CC1E();
+#endif
 
         hw()->TIM1_CCER |= (1U << 0);
     }
@@ -284,9 +284,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_CC1E
      */
     static inline void disable_channel_1_output() {
-        #ifdef ALLOY_TIM_TEST_HOOK_CC1E
-            ALLOY_TIM_TEST_HOOK_CC1E();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_CC1E
+        ALLOY_TIM_TEST_HOOK_CC1E();
+#endif
 
         hw()->TIM1_CCER &= ~(1U << 0);
     }
@@ -298,9 +298,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_CCR1
      */
     static inline void set_compare_1(uint32_t value) {
-        #ifdef ALLOY_TIM_TEST_HOOK_CCR1
-            ALLOY_TIM_TEST_HOOK_CCR1(value);
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_CCR1
+        ALLOY_TIM_TEST_HOOK_CCR1(value);
+#endif
 
         hw()->TIM1_CCR1 = value;
     }
@@ -312,9 +312,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_CCR2
      */
     static inline void set_compare_2(uint32_t value) {
-        #ifdef ALLOY_TIM_TEST_HOOK_CCR2
-            ALLOY_TIM_TEST_HOOK_CCR2(value);
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_CCR2
+        ALLOY_TIM_TEST_HOOK_CCR2(value);
+#endif
 
         hw()->TIM1_CCR2 = value;
     }
@@ -326,9 +326,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_CCR3
      */
     static inline void set_compare_3(uint32_t value) {
-        #ifdef ALLOY_TIM_TEST_HOOK_CCR3
-            ALLOY_TIM_TEST_HOOK_CCR3(value);
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_CCR3
+        ALLOY_TIM_TEST_HOOK_CCR3(value);
+#endif
 
         hw()->TIM1_CCR3 = value;
     }
@@ -340,9 +340,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_CCR4
      */
     static inline void set_compare_4(uint32_t value) {
-        #ifdef ALLOY_TIM_TEST_HOOK_CCR4
-            ALLOY_TIM_TEST_HOOK_CCR4(value);
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_CCR4
+        ALLOY_TIM_TEST_HOOK_CCR4(value);
+#endif
 
         hw()->TIM1_CCR4 = value;
     }
@@ -353,9 +353,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_ARPE
      */
     static inline void enable_auto_reload_preload() {
-        #ifdef ALLOY_TIM_TEST_HOOK_ARPE
-            ALLOY_TIM_TEST_HOOK_ARPE();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_ARPE
+        ALLOY_TIM_TEST_HOOK_ARPE();
+#endif
 
         hw()->TIM1_CR1 |= (1U << 7);
     }
@@ -366,9 +366,9 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_ARPE
      */
     static inline void disable_auto_reload_preload() {
-        #ifdef ALLOY_TIM_TEST_HOOK_ARPE
-            ALLOY_TIM_TEST_HOOK_ARPE();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_ARPE
+        ALLOY_TIM_TEST_HOOK_ARPE();
+#endif
 
         hw()->TIM1_CR1 &= ~(1U << 7);
     }
@@ -379,13 +379,12 @@ struct Stm32g0TIMHardwarePolicy {
      * @note Test hook: ALLOY_TIM_TEST_HOOK_UG
      */
     static inline void generate_update_event() {
-        #ifdef ALLOY_TIM_TEST_HOOK_UG
-            ALLOY_TIM_TEST_HOOK_UG();
-        #endif
+#ifdef ALLOY_TIM_TEST_HOOK_UG
+        ALLOY_TIM_TEST_HOOK_UG();
+#endif
 
         hw()->TIM1_EGR = (1U << 0);
     }
-
 };
 
 // ============================================================================

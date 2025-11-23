@@ -17,11 +17,12 @@
 
 #pragma once
 
+#include "hal/api/gpio_base.hpp"
+#include "hal/types.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
-#include "hal/api/gpio_base.hpp"
 
 namespace ucore::hal {
 
@@ -41,33 +42,32 @@ class SimpleGpioPin : public GpioBase<SimpleGpioPin<PinType>> {
     using Base = GpioBase<SimpleGpioPin<PinType>>;
     friend Base;
 
-public:
-    constexpr SimpleGpioPin(bool active_high = true)
-        : active_high_(active_high), pin_() {}
+   public:
+    constexpr SimpleGpioPin(bool active_high = true) : active_high_(active_high), pin_() {}
 
     // ========================================================================
     // Inherited Interface from GpioBase (CRTP)
     // ========================================================================
 
     // Inherit all common GPIO methods from base
-    using Base::on;              // Turn pin logically ON
-    using Base::off;             // Turn pin logically OFF
-    using Base::toggle;          // Toggle pin state
-    using Base::is_on;           // Check if logically ON
-    using Base::is_off;          // Check if logically OFF
-    using Base::set;             // Set pin physically HIGH
-    using Base::clear;           // Set pin physically LOW
-    using Base::read;            // Read physical pin state
-    using Base::set_direction;   // Set pin direction
-    using Base::set_output;      // Configure as output
-    using Base::set_input;       // Configure as input
-    using Base::set_pull;        // Set pull resistor
-    using Base::set_drive;       // Set drive mode
-    using Base::configure_push_pull_output;
-    using Base::configure_open_drain_output;
-    using Base::configure_input_pullup;
-    using Base::configure_input_pulldown;
+    using Base::clear;  // Set pin physically LOW
     using Base::configure_input_floating;
+    using Base::configure_input_pulldown;
+    using Base::configure_input_pullup;
+    using Base::configure_open_drain_output;
+    using Base::configure_push_pull_output;
+    using Base::is_off;         // Check if logically OFF
+    using Base::is_on;          // Check if logically ON
+    using Base::off;            // Turn pin logically OFF
+    using Base::on;             // Turn pin logically ON
+    using Base::read;           // Read physical pin state
+    using Base::set;            // Set pin physically HIGH
+    using Base::set_direction;  // Set pin direction
+    using Base::set_drive;      // Set drive mode
+    using Base::set_input;      // Configure as input
+    using Base::set_output;     // Configure as output
+    using Base::set_pull;       // Set pull resistor
+    using Base::toggle;         // Toggle pin state
 
     /**
      * @brief Access underlying platform pin
@@ -96,9 +96,7 @@ public:
     /**
      * @brief Toggle pin state - implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> toggle_impl() noexcept {
-        return pin_.toggle();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> toggle_impl() noexcept { return pin_.toggle(); }
 
     /**
      * @brief Check if pin is logically ON - implementation
@@ -115,16 +113,12 @@ public:
     /**
      * @brief Set pin physically HIGH - implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> set_impl() noexcept {
-        return pin_.set();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> set_impl() noexcept { return pin_.set(); }
 
     /**
      * @brief Set pin physically LOW - implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> clear_impl() noexcept {
-        return pin_.clear();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> clear_impl() noexcept { return pin_.clear(); }
 
     /**
      * @brief Read physical pin state - implementation
@@ -136,7 +130,8 @@ public:
     /**
      * @brief Set pin direction - implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> set_direction_impl(PinDirection direction) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> set_direction_impl(
+        PinDirection direction) noexcept {
         return pin_.setDirection(direction);
     }
 
@@ -154,7 +149,7 @@ public:
         return pin_.setDrive(drive);
     }
 
-private:
+   private:
     bool active_high_;
     PinType pin_;
 };
@@ -185,7 +180,7 @@ private:
  * @endcode
  */
 class Gpio {
-public:
+   public:
     /**
      * @brief Create output pin (active-high)
      *

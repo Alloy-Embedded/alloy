@@ -1,7 +1,8 @@
 /// Unit tests for RTOS StaticPool
 
-#include "tests/rtos/test_framework.hpp"
 #include "rtos/memory_pool.hpp"
+
+#include "tests/rtos/test_framework.hpp"
 
 using namespace ucore;
 using namespace ucore::rtos;
@@ -160,8 +161,7 @@ TEST_SUITE(StaticPool) {
             // Verify data
             for (int i = 0; i < blocks_per_iter; i++) {
                 for (int j = 0; j < 16; j++) {
-                    TEST_ASSERT_EQUAL(blocks[i]->data[j],
-                                      iter * 100 + i * 10 + j);
+                    TEST_ASSERT_EQUAL(blocks[i]->data[j], iter * 100 + i * 10 + j);
                 }
             }
 
@@ -271,8 +271,7 @@ TEST_SUITE(StaticPool) {
 
     TEST_CASE(pool_budget_validation) {
         // Verify pool fits in budget
-        static_assert(pool_fits_budget<SmallBlock, 16, 2048>(),
-                      "Pool should fit in 2KB");
+        static_assert(pool_fits_budget<SmallBlock, 16, 2048>(), "Pool should fit in 2KB");
 
         StaticPool<SmallBlock, 16> pool;
         printf("\n    Pool size: %zu bytes\n", pool.total_size());

@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/st/stm32g0/generated/registers/gpioa_registers.hpp"
@@ -85,11 +85,11 @@ struct Stm32g0GPIOHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_GPIO_MOCK_HW
-            return ALLOY_GPIO_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_GPIO_MOCK_HW
+        return ALLOY_GPIO_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -111,9 +111,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_MODER
      */
     static inline void set_mode_output(uint8_t pin_number) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_MODER
-            ALLOY_GPIO_TEST_HOOK_MODER(pin_number);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_MODER
+        ALLOY_GPIO_TEST_HOOK_MODER(pin_number);
+#endif
 
         hw()->MODER = (hw()->MODER & ~(0x3U << (pin_number * 2))) | (0x1U << (pin_number * 2));
     }
@@ -125,9 +125,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_MODER
      */
     static inline void set_mode_input(uint8_t pin_number) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_MODER
-            ALLOY_GPIO_TEST_HOOK_MODER(pin_number);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_MODER
+        ALLOY_GPIO_TEST_HOOK_MODER(pin_number);
+#endif
 
         hw()->MODER = (hw()->MODER & ~(0x3U << (pin_number * 2)));
     }
@@ -139,9 +139,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_MODER
      */
     static inline void set_mode_alternate(uint8_t pin_number) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_MODER
-            ALLOY_GPIO_TEST_HOOK_MODER(pin_number);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_MODER
+        ALLOY_GPIO_TEST_HOOK_MODER(pin_number);
+#endif
 
         hw()->MODER = (hw()->MODER & ~(0x3U << (pin_number * 2))) | (0x2U << (pin_number * 2));
     }
@@ -153,9 +153,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_MODER
      */
     static inline void set_mode_analog(uint8_t pin_number) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_MODER
-            ALLOY_GPIO_TEST_HOOK_MODER(pin_number);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_MODER
+        ALLOY_GPIO_TEST_HOOK_MODER(pin_number);
+#endif
 
         hw()->MODER = (hw()->MODER & ~(0x3U << (pin_number * 2))) | (0x3U << (pin_number * 2));
     }
@@ -167,9 +167,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_OTYPER
      */
     static inline void set_output_type_pushpull(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_OTYPER
-            ALLOY_GPIO_TEST_HOOK_OTYPER(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_OTYPER
+        ALLOY_GPIO_TEST_HOOK_OTYPER(pin_mask);
+#endif
 
         hw()->OTYPER &= ~pin_mask;
     }
@@ -181,9 +181,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_OTYPER
      */
     static inline void set_output_type_opendrain(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_OTYPER
-            ALLOY_GPIO_TEST_HOOK_OTYPER(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_OTYPER
+        ALLOY_GPIO_TEST_HOOK_OTYPER(pin_mask);
+#endif
 
         hw()->OTYPER |= pin_mask;
     }
@@ -195,9 +195,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_PUPDR
      */
     static inline void set_pull_none(uint8_t pin_number) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_PUPDR
-            ALLOY_GPIO_TEST_HOOK_PUPDR(pin_number);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_PUPDR
+        ALLOY_GPIO_TEST_HOOK_PUPDR(pin_number);
+#endif
 
         hw()->PUPDR = (hw()->PUPDR & ~(0x3U << (pin_number * 2)));
     }
@@ -209,9 +209,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_PUPDR
      */
     static inline void set_pull_up(uint8_t pin_number) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_PUPDR
-            ALLOY_GPIO_TEST_HOOK_PUPDR(pin_number);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_PUPDR
+        ALLOY_GPIO_TEST_HOOK_PUPDR(pin_number);
+#endif
 
         hw()->PUPDR = (hw()->PUPDR & ~(0x3U << (pin_number * 2))) | (0x1U << (pin_number * 2));
     }
@@ -223,9 +223,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_PUPDR
      */
     static inline void set_pull_down(uint8_t pin_number) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_PUPDR
-            ALLOY_GPIO_TEST_HOOK_PUPDR(pin_number);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_PUPDR
+        ALLOY_GPIO_TEST_HOOK_PUPDR(pin_number);
+#endif
 
         hw()->PUPDR = (hw()->PUPDR & ~(0x3U << (pin_number * 2))) | (0x2U << (pin_number * 2));
     }
@@ -237,9 +237,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_BSRR
      */
     static inline void set_output(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_BSRR
-            ALLOY_GPIO_TEST_HOOK_BSRR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_BSRR
+        ALLOY_GPIO_TEST_HOOK_BSRR(pin_mask);
+#endif
 
         hw()->BSRR = pin_mask;
     }
@@ -251,9 +251,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_BRR
      */
     static inline void clear_output(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_BRR
-            ALLOY_GPIO_TEST_HOOK_BRR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_BRR
+        ALLOY_GPIO_TEST_HOOK_BRR(pin_mask);
+#endif
 
         hw()->BRR = pin_mask;
     }
@@ -265,9 +265,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_ODR
      */
     static inline void toggle_output(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_ODR
-            ALLOY_GPIO_TEST_HOOK_ODR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_ODR
+        ALLOY_GPIO_TEST_HOOK_ODR(pin_mask);
+#endif
 
         hw()->ODR ^= pin_mask;
     }
@@ -280,9 +280,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_IDR
      */
     static inline bool read_input(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_IDR
-            ALLOY_GPIO_TEST_HOOK_IDR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_IDR
+        ALLOY_GPIO_TEST_HOOK_IDR(pin_mask);
+#endif
 
         return (hw()->IDR & pin_mask) != 0;
     }
@@ -295,9 +295,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_ODR
      */
     static inline bool read_output(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_ODR
-            ALLOY_GPIO_TEST_HOOK_ODR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_ODR
+        ALLOY_GPIO_TEST_HOOK_ODR(pin_mask);
+#endif
 
         return (hw()->ODR & pin_mask) != 0;
     }
@@ -309,9 +309,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_ODR
      */
     static inline void write_port(uint32_t value) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_ODR
-            ALLOY_GPIO_TEST_HOOK_ODR(value);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_ODR
+        ALLOY_GPIO_TEST_HOOK_ODR(value);
+#endif
 
         hw()->ODR = value;
     }
@@ -323,9 +323,9 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_IDR
      */
     static inline uint32_t read_port() {
-        #ifdef ALLOY_GPIO_TEST_HOOK_IDR
-            ALLOY_GPIO_TEST_HOOK_IDR();
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_IDR
+        ALLOY_GPIO_TEST_HOOK_IDR();
+#endif
 
         return hw()->IDR;
     }
@@ -338,17 +338,18 @@ struct Stm32g0GPIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_AFR
      */
     static inline void set_alternate_function(uint8_t pin_number, uint8_t af_number) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_AFR
-            ALLOY_GPIO_TEST_HOOK_AFR(pin_number, af_number);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_AFR
+        ALLOY_GPIO_TEST_HOOK_AFR(pin_number, af_number);
+#endif
 
         if (pin_number < 8) {
-    hw()->AFRL = (hw()->AFRL & ~(0xFU << (pin_number * 4))) | (af_number << (pin_number * 4));
-} else {
-    hw()->AFRH = (hw()->AFRH & ~(0xFU << ((pin_number - 8) * 4))) | (af_number << ((pin_number - 8) * 4));
-}
+            hw()->AFRL =
+                (hw()->AFRL & ~(0xFU << (pin_number * 4))) | (af_number << (pin_number * 4));
+        } else {
+            hw()->AFRH = (hw()->AFRH & ~(0xFU << ((pin_number - 8) * 4))) |
+                         (af_number << ((pin_number - 8) * 4));
+        }
     }
-
 };
 
 // ============================================================================

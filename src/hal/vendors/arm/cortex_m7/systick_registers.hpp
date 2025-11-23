@@ -6,7 +6,7 @@ namespace ucore::hal::arm::cortex_m7 {
 
 /**
  * @brief SysTick Timer registers (ARM Cortex-M standard)
- * 
+ *
  * Base address: 0xE000E010
  */
 struct SysTick_Type {
@@ -16,4 +16,4 @@ struct SysTick_Type {
     volatile uint32_t CALIB;  ///< 0x0C: Calibration Value Register
 };
 
-} // namespace ucore::hal::arm::cortex_m7
+}  // namespace ucore::hal::arm::cortex_m7

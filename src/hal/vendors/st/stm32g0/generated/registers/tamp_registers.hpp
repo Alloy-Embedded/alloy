@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::tamp {
 
 /// TAMP Register Structure
 struct TAMP_Registers {
-
     /// TAMP control register 1
     /// Offset: 0x0000
     /// Reset value: 0xFFFF0000
@@ -27,13 +26,13 @@ struct TAMP_Registers {
     /// Offset: 0x0004
     /// Reset value: 0x00000000
     volatile uint32_t TAMP_CR2;
-    uint8_t RESERVED_0008[4]; ///< Reserved
+    uint8_t RESERVED_0008[4];  ///< Reserved
 
     /// TAMP filter control register
     /// Offset: 0x000C
     /// Reset value: 0x00000000
     volatile uint32_t TAMP_FLTCR;
-    uint8_t RESERVED_0010[28]; ///< Reserved
+    uint8_t RESERVED_0010[28];  ///< Reserved
 
     /// TAMP interrupt enable register
     /// Offset: 0x002C
@@ -49,13 +48,13 @@ struct TAMP_Registers {
     /// Offset: 0x0034
     /// Reset value: 0x00000000
     volatile uint32_t TAMP_MISR;
-    uint8_t RESERVED_0038[4]; ///< Reserved
+    uint8_t RESERVED_0038[4];  ///< Reserved
 
     /// TAMP status clear register
     /// Offset: 0x003C
     /// Reset value: 0x00000000
     volatile uint32_t TAMP_SCR;
-    uint8_t RESERVED_0040[192]; ///< Reserved
+    uint8_t RESERVED_0040[192];  ///< Reserved
 
     /// TAMP backup 0 register
     /// Offset: 0x0100

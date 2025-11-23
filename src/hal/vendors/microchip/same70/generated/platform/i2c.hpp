@@ -3,7 +3,7 @@
 /// Source: tools/codegen/metadata/platforms/same70/i2c.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 
+/// Generated:
 /**
  * @file i2c.hpp
  * @brief I2C Hardware Policy for SAME70
@@ -19,12 +19,12 @@
  * - Type-safe via C++20 concepts
  *
  * Platform: SAME70
- * Vendor: 
- * Architecture: 
+ * Vendor:
+ * Architecture:
  * I2C Style: SAM (CR, MMR, SMR, SR, RHR, THR) *
  * Auto-generated from: tools/codegen/metadata/platforms/same70/i2c.json
  * Generator: i2c_generator.py
- * Generated: 
+ * Generated:
  *
  * @note Part of Alloy HAL Vendor Layer
  * @see docs/codegen/TEMPLATE_CONVENTIONS.md
@@ -32,9 +32,9 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include ""
@@ -47,7 +47,7 @@ namespace ucore::hal::microchip::same70 {
 using namespace ucore::core;
 
 // Import register types
-using namespace ;
+using namespace;
 
 // ============================================================================
 // SAM-Style TWI/I2C Hardware Policy
@@ -110,36 +110,26 @@ struct SAME70I2cHardwarePolicy {
     // ========================================================================
 
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_I2C_MOCK_HW
-            return ALLOY_I2C_MOCK_HW();
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_I2C_MOCK_HW
+        return ALLOY_I2C_MOCK_HW();
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
     // Configuration Methods
     // ========================================================================
 
-    static inline void enable_master() {
-        hw()->CR = CR_MSEN;
-    }
+    static inline void enable_master() { hw()->CR = CR_MSEN; }
 
-    static inline void disable_master() {
-        hw()->CR = CR_MSDIS;
-    }
+    static inline void disable_master() { hw()->CR = CR_MSDIS; }
 
-    static inline void enable_slave() {
-        hw()->CR = CR_SVEN;
-    }
+    static inline void enable_slave() { hw()->CR = CR_SVEN; }
 
-    static inline void disable_slave() {
-        hw()->CR = CR_SVDIS;
-    }
+    static inline void disable_slave() { hw()->CR = CR_SVDIS; }
 
-    static inline void reset() {
-        hw()->CR = CR_SWRST;
-    }
+    static inline void reset() { hw()->CR = CR_SWRST; }
 
     static inline void set_clock(u32 clock_speed_hz, u32 mck_hz) {
         // CWGR calculation (simplified)
@@ -147,77 +137,49 @@ struct SAME70I2cHardwarePolicy {
         hw()->CWGR = (cldiv << 8) | cldiv;
     }
 
-    static inline void set_slave_address(u8 address) {
-        hw()->SMR = (address & 0x7F) << 16;
-    }
+    static inline void set_slave_address(u8 address) { hw()->SMR = (address & 0x7F) << 16; }
 
     // ========================================================================
     // Master Mode Operations
     // ========================================================================
 
-    static inline void generate_start() {
-        hw()->CR = CR_START;
-    }
+    static inline void generate_start() { hw()->CR = CR_START; }
 
-    static inline void generate_stop() {
-        hw()->CR = CR_STOP;
-    }
+    static inline void generate_stop() { hw()->CR = CR_STOP; }
 
     static inline void set_master_read(u8 address) {
         hw()->MMR = ((address & 0x7F) << 16) | (1 << 12);  // MREAD bit
     }
 
-    static inline void set_master_write(u8 address) {
-        hw()->MMR = ((address & 0x7F) << 16);
-    }
+    static inline void set_master_write(u8 address) { hw()->MMR = ((address & 0x7F) << 16); }
 
-    static inline void write_byte(u8 data) {
-        hw()->THR = data;
-    }
+    static inline void write_byte(u8 data) { hw()->THR = data; }
 
-    static inline u8 read_byte() {
-        return static_cast<u8>(hw()->RHR & 0xFF);
-    }
+    static inline u8 read_byte() { return static_cast<u8>(hw()->RHR & 0xFF); }
 
     // ========================================================================
     // Status Methods
     // ========================================================================
 
-    static inline bool is_tx_ready() {
-        return (hw()->SR & SR_TXRDY) != 0;
-    }
+    static inline bool is_tx_ready() { return (hw()->SR & SR_TXRDY) != 0; }
 
-    static inline bool is_rx_ready() {
-        return (hw()->SR & SR_RXRDY) != 0;
-    }
+    static inline bool is_rx_ready() { return (hw()->SR & SR_RXRDY) != 0; }
 
-    static inline bool is_transmission_complete() {
-        return (hw()->SR & SR_TXCOMP) != 0;
-    }
+    static inline bool is_transmission_complete() { return (hw()->SR & SR_TXCOMP) != 0; }
 
-    static inline bool has_nack() {
-        return (hw()->SR & SR_NACK) != 0;
-    }
+    static inline bool has_nack() { return (hw()->SR & SR_NACK) != 0; }
 
-    static inline bool has_arbitration_lost() {
-        return (hw()->SR & SR_ARBLST) != 0;
-    }
+    static inline bool has_arbitration_lost() { return (hw()->SR & SR_ARBLST) != 0; }
 
-    static inline bool has_overrun_error() {
-        return (hw()->SR & SR_OVRE) != 0;
-    }
+    static inline bool has_overrun_error() { return (hw()->SR & SR_OVRE) != 0; }
 
     // ========================================================================
     // Interrupt Management
     // ========================================================================
 
-    static inline void enable_interrupt(u32 mask) {
-        hw()->IER = mask;
-    }
+    static inline void enable_interrupt(u32 mask) { hw()->IER = mask; }
 
-    static inline void disable_interrupt(u32 mask) {
-        hw()->IDR = mask;
-    }
+    static inline void disable_interrupt(u32 mask) { hw()->IDR = mask; }
 };
 
 

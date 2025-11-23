@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/st/stm32g0/generated/registers/i2c1_registers.hpp"
@@ -85,11 +85,11 @@ struct Stm32g0I2CHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_I2C_MOCK_HW
-            return ALLOY_I2C_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_I2C_MOCK_HW
+        return ALLOY_I2C_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -110,9 +110,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_PE
      */
     static inline void enable_i2c() {
-        #ifdef ALLOY_I2C_TEST_HOOK_PE
-            ALLOY_I2C_TEST_HOOK_PE();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_PE
+        ALLOY_I2C_TEST_HOOK_PE();
+#endif
 
         hw()->I2C_CR1 |= (1U << 0);
     }
@@ -123,9 +123,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_PE
      */
     static inline void disable_i2c() {
-        #ifdef ALLOY_I2C_TEST_HOOK_PE
-            ALLOY_I2C_TEST_HOOK_PE();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_PE
+        ALLOY_I2C_TEST_HOOK_PE();
+#endif
 
         hw()->I2C_CR1 &= ~(1U << 0);
     }
@@ -137,9 +137,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_TIMINGR
      */
     static inline void set_timing(uint32_t timing) {
-        #ifdef ALLOY_I2C_TEST_HOOK_TIMINGR
-            ALLOY_I2C_TEST_HOOK_TIMINGR(timing);
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_TIMINGR
+        ALLOY_I2C_TEST_HOOK_TIMINGR(timing);
+#endif
 
         hw()->I2C_TIMINGR = timing;
     }
@@ -151,9 +151,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_SADD
      */
     static inline void set_slave_address_7bit(uint8_t address) {
-        #ifdef ALLOY_I2C_TEST_HOOK_SADD
-            ALLOY_I2C_TEST_HOOK_SADD(address);
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_SADD
+        ALLOY_I2C_TEST_HOOK_SADD(address);
+#endif
 
         hw()->I2C_CR2 = (hw()->I2C_CR2 & ~(0x3FFU << 0)) | ((address & 0x7FU) << 1);
     }
@@ -164,9 +164,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_RD_WRN
      */
     static inline void set_transfer_direction_write() {
-        #ifdef ALLOY_I2C_TEST_HOOK_RD_WRN
-            ALLOY_I2C_TEST_HOOK_RD_WRN();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_RD_WRN
+        ALLOY_I2C_TEST_HOOK_RD_WRN();
+#endif
 
         hw()->I2C_CR2 &= ~(1U << 10);
     }
@@ -177,9 +177,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_RD_WRN
      */
     static inline void set_transfer_direction_read() {
-        #ifdef ALLOY_I2C_TEST_HOOK_RD_WRN
-            ALLOY_I2C_TEST_HOOK_RD_WRN();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_RD_WRN
+        ALLOY_I2C_TEST_HOOK_RD_WRN();
+#endif
 
         hw()->I2C_CR2 |= (1U << 10);
     }
@@ -191,9 +191,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_NBYTES
      */
     static inline void set_number_of_bytes(uint8_t nbytes) {
-        #ifdef ALLOY_I2C_TEST_HOOK_NBYTES
-            ALLOY_I2C_TEST_HOOK_NBYTES(nbytes);
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_NBYTES
+        ALLOY_I2C_TEST_HOOK_NBYTES(nbytes);
+#endif
 
         hw()->I2C_CR2 = (hw()->I2C_CR2 & ~(0xFFU << 16)) | ((nbytes & 0xFFU) << 16);
     }
@@ -204,9 +204,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_START
      */
     static inline void generate_start() {
-        #ifdef ALLOY_I2C_TEST_HOOK_START
-            ALLOY_I2C_TEST_HOOK_START();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_START
+        ALLOY_I2C_TEST_HOOK_START();
+#endif
 
         hw()->I2C_CR2 |= (1U << 13);
     }
@@ -217,9 +217,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_STOP
      */
     static inline void generate_stop() {
-        #ifdef ALLOY_I2C_TEST_HOOK_STOP
-            ALLOY_I2C_TEST_HOOK_STOP();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_STOP
+        ALLOY_I2C_TEST_HOOK_STOP();
+#endif
 
         hw()->I2C_CR2 |= (1U << 14);
     }
@@ -231,9 +231,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_TXDR
      */
     static inline void write_data(uint8_t data) {
-        #ifdef ALLOY_I2C_TEST_HOOK_TXDR
-            ALLOY_I2C_TEST_HOOK_TXDR(data);
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_TXDR
+        ALLOY_I2C_TEST_HOOK_TXDR(data);
+#endif
 
         hw()->I2C_TXDR = data;
     }
@@ -245,9 +245,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_RXDR
      */
     static inline uint8_t read_data() {
-        #ifdef ALLOY_I2C_TEST_HOOK_RXDR
-            ALLOY_I2C_TEST_HOOK_RXDR();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_RXDR
+        ALLOY_I2C_TEST_HOOK_RXDR();
+#endif
 
         return static_cast<uint8_t>(hw()->I2C_RXDR & 0xFF);
     }
@@ -259,9 +259,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_TXE
      */
     static inline bool is_tx_empty() {
-        #ifdef ALLOY_I2C_TEST_HOOK_TXE
-            ALLOY_I2C_TEST_HOOK_TXE();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_TXE
+        ALLOY_I2C_TEST_HOOK_TXE();
+#endif
 
         return (hw()->I2C_ISR & (1U << 0)) != 0;
     }
@@ -273,9 +273,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_RXNE
      */
     static inline bool is_rx_not_empty() {
-        #ifdef ALLOY_I2C_TEST_HOOK_RXNE
-            ALLOY_I2C_TEST_HOOK_RXNE();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_RXNE
+        ALLOY_I2C_TEST_HOOK_RXNE();
+#endif
 
         return (hw()->I2C_ISR & (1U << 2)) != 0;
     }
@@ -287,9 +287,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_TC
      */
     static inline bool is_transfer_complete() {
-        #ifdef ALLOY_I2C_TEST_HOOK_TC
-            ALLOY_I2C_TEST_HOOK_TC();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_TC
+        ALLOY_I2C_TEST_HOOK_TC();
+#endif
 
         return (hw()->I2C_ISR & (1U << 6)) != 0;
     }
@@ -301,9 +301,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_STOPF
      */
     static inline bool is_stop_detected() {
-        #ifdef ALLOY_I2C_TEST_HOOK_STOPF
-            ALLOY_I2C_TEST_HOOK_STOPF();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_STOPF
+        ALLOY_I2C_TEST_HOOK_STOPF();
+#endif
 
         return (hw()->I2C_ISR & (1U << 5)) != 0;
     }
@@ -315,9 +315,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_NACKF
      */
     static inline bool is_nack_received() {
-        #ifdef ALLOY_I2C_TEST_HOOK_NACKF
-            ALLOY_I2C_TEST_HOOK_NACKF();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_NACKF
+        ALLOY_I2C_TEST_HOOK_NACKF();
+#endif
 
         return (hw()->I2C_ISR & (1U << 4)) != 0;
     }
@@ -328,9 +328,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_STOPCF
      */
     static inline void clear_stop_flag() {
-        #ifdef ALLOY_I2C_TEST_HOOK_STOPCF
-            ALLOY_I2C_TEST_HOOK_STOPCF();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_STOPCF
+        ALLOY_I2C_TEST_HOOK_STOPCF();
+#endif
 
         hw()->I2C_ICR = (1U << 5);
     }
@@ -341,9 +341,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_NACKCF
      */
     static inline void clear_nack_flag() {
-        #ifdef ALLOY_I2C_TEST_HOOK_NACKCF
-            ALLOY_I2C_TEST_HOOK_NACKCF();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_NACKCF
+        ALLOY_I2C_TEST_HOOK_NACKCF();
+#endif
 
         hw()->I2C_ICR = (1U << 4);
     }
@@ -354,9 +354,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_RXDMAEN
      */
     static inline void enable_rx_dma() {
-        #ifdef ALLOY_I2C_TEST_HOOK_RXDMAEN
-            ALLOY_I2C_TEST_HOOK_RXDMAEN();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_RXDMAEN
+        ALLOY_I2C_TEST_HOOK_RXDMAEN();
+#endif
 
         hw()->I2C_CR1 |= (1U << 15);
     }
@@ -367,9 +367,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_TXDMAEN
      */
     static inline void enable_tx_dma() {
-        #ifdef ALLOY_I2C_TEST_HOOK_TXDMAEN
-            ALLOY_I2C_TEST_HOOK_TXDMAEN();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_TXDMAEN
+        ALLOY_I2C_TEST_HOOK_TXDMAEN();
+#endif
 
         hw()->I2C_CR1 |= (1U << 14);
     }
@@ -380,9 +380,9 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_RXDMAEN
      */
     static inline void disable_rx_dma() {
-        #ifdef ALLOY_I2C_TEST_HOOK_RXDMAEN
-            ALLOY_I2C_TEST_HOOK_RXDMAEN();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_RXDMAEN
+        ALLOY_I2C_TEST_HOOK_RXDMAEN();
+#endif
 
         hw()->I2C_CR1 &= ~(1U << 15);
     }
@@ -393,13 +393,12 @@ struct Stm32g0I2CHardwarePolicy {
      * @note Test hook: ALLOY_I2C_TEST_HOOK_TXDMAEN
      */
     static inline void disable_tx_dma() {
-        #ifdef ALLOY_I2C_TEST_HOOK_TXDMAEN
-            ALLOY_I2C_TEST_HOOK_TXDMAEN();
-        #endif
+#ifdef ALLOY_I2C_TEST_HOOK_TXDMAEN
+        ALLOY_I2C_TEST_HOOK_TXDMAEN();
+#endif
 
         hw()->I2C_CR1 &= ~(1U << 14);
     }
-
 };
 
 // ============================================================================

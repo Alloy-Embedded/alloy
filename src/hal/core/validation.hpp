@@ -23,8 +23,9 @@
 #include <concepts>
 #include <string_view>
 
-#include "core/types.hpp"
 #include "hal/core/signals.hpp"
+
+#include "core/types.hpp"
 
 namespace ucore::hal::validation {
 
@@ -46,9 +47,10 @@ struct ValidationResult {
     std::string_view error_message;
     std::string_view suggestion;
 
-    constexpr ValidationResult(bool valid, std::string_view error = "",
-                               std::string_view hint = "")
-        : is_valid(valid), error_message(error), suggestion(hint) {}
+    constexpr ValidationResult(bool valid, std::string_view error = "", std::string_view hint = "")
+        : is_valid(valid),
+          error_message(error),
+          suggestion(hint) {}
 
     constexpr operator bool() const { return is_valid; }
 };
@@ -99,16 +101,12 @@ consteval ValidationResult validate_pin_signal(PinId pin) {
 
         // Pin not found - generate helpful error message
         // Note: In a real implementation, we'd list compatible pins here
-        return Err(
-            "Pin does not support this peripheral signal",
-            "Check datasheet for compatible pins or use signal routing tables"
-        );
+        return Err("Pin does not support this peripheral signal",
+                   "Check datasheet for compatible pins or use signal routing tables");
     }
 
-    return Err(
-        "Signal type does not have pin compatibility information",
-        "This signal may need to be generated from SVD first"
-    );
+    return Err("Signal type does not have pin compatibility information",
+               "This signal may need to be generated from SVD first");
 }
 
 /**
@@ -154,10 +152,7 @@ template <typename T>
     requires std::integral<T> || std::floating_point<T>
 consteval ValidationResult validate_range(T value, T min, T max, std::string_view field_name) {
     if (value < min || value > max) {
-        return Err(
-            "Value out of valid range",
-            "Check peripheral datasheet for valid range"
-        );
+        return Err("Value out of valid range", "Check peripheral datasheet for valid range");
     }
     return Ok();
 }
@@ -183,10 +178,7 @@ consteval ValidationResult validate_allowed(T value, const std::array<T, N>& all
         }
     }
 
-    return Err(
-        "Value not in allowed set",
-        "Use one of the predefined constants"
-    );
+    return Err("Value not in allowed set", "Use one of the predefined constants");
 }
 
 /**
@@ -202,10 +194,7 @@ consteval ValidationResult validate_allowed(T value, const std::array<T, N>& all
 template <typename T>
 consteval ValidationResult validate_required(T value, std::string_view field_name) {
     if (value == T{}) {
-        return Err(
-            "Required field not set",
-            "This field must be explicitly configured"
-        );
+        return Err("Required field not set", "This field must be explicitly configured");
     }
     return Ok();
 }
@@ -225,12 +214,9 @@ consteval ValidationResult validate_required(T value, std::string_view field_nam
  * @param request_type Type of DMA request (TX, RX, DATA)
  * @return ValidationResult with status and error details
  */
-consteval ValidationResult validate_dma_compatibility(
-    PeripheralId dma_peripheral,
-    u8 dma_channel,
-    PeripheralId peripheral,
-    DmaRequestType request_type) {
-
+consteval ValidationResult validate_dma_compatibility(PeripheralId dma_peripheral, u8 dma_channel,
+                                                      PeripheralId peripheral,
+                                                      DmaRequestType request_type) {
     // Placeholder for future implementation when DMA compatibility tables are generated
     // This will check if the DMA channel supports the peripheral's request type
 
@@ -247,10 +233,7 @@ consteval ValidationResult validate_dma_compatibility(
  * @param dma_channel DMA channel/stream number
  * @return ValidationResult with status and error details
  */
-consteval ValidationResult validate_dma_not_allocated(
-    PeripheralId dma_peripheral,
-    u8 dma_channel) {
-
+consteval ValidationResult validate_dma_not_allocated(PeripheralId dma_peripheral, u8 dma_channel) {
     // Placeholder for future implementation with DMA registry
     // This will check a compile-time list of allocated DMA channels
 
@@ -272,42 +255,27 @@ consteval ValidationResult validate_dma_not_allocated(
  * @param stop_bits Number of stop bits (1 or 2)
  * @return ValidationResult with status and error details
  */
-consteval ValidationResult validate_uart_config(
-    u32 baudrate,
-    u8 data_bits,
-    u8 parity,
-    u8 stop_bits) {
-
+consteval ValidationResult validate_uart_config(u32 baudrate, u8 data_bits, u8 parity,
+                                                u8 stop_bits) {
     // Validate baudrate (common range: 1200 to 4000000)
     if (baudrate < 1200 || baudrate > 4000000) {
-        return Err(
-            "Invalid baud rate",
-            "Use standard baud rates: 9600, 19200, 38400, 57600, 115200, etc."
-        );
+        return Err("Invalid baud rate",
+                   "Use standard baud rates: 9600, 19200, 38400, 57600, 115200, etc.");
     }
 
     // Validate data bits (7, 8, or 9)
     if (data_bits < 7 || data_bits > 9) {
-        return Err(
-            "Invalid data bits",
-            "Use 7, 8, or 9 data bits"
-        );
+        return Err("Invalid data bits", "Use 7, 8, or 9 data bits");
     }
 
     // Validate parity (0=None, 1=Even, 2=Odd)
     if (parity > 2) {
-        return Err(
-            "Invalid parity setting",
-            "Use Parity::None, Parity::Even, or Parity::Odd"
-        );
+        return Err("Invalid parity setting", "Use Parity::None, Parity::Even, or Parity::Odd");
     }
 
     // Validate stop bits (1 or 2)
     if (stop_bits < 1 || stop_bits > 2) {
-        return Err(
-            "Invalid stop bits",
-            "Use StopBits::One or StopBits::Two"
-        );
+        return Err("Invalid stop bits", "Use StopBits::One or StopBits::Two");
     }
 
     return Ok();
@@ -323,33 +291,20 @@ consteval ValidationResult validate_uart_config(
  * @param data_size Data frame size in bits (8 or 16)
  * @return ValidationResult with status and error details
  */
-consteval ValidationResult validate_spi_config(
-    u32 clock_speed,
-    u8 mode,
-    u8 data_size) {
-
+consteval ValidationResult validate_spi_config(u32 clock_speed, u8 mode, u8 data_size) {
     // Validate clock speed (typically up to 50 MHz for most MCUs)
     if (clock_speed == 0 || clock_speed > 50000000) {
-        return Err(
-            "Invalid SPI clock speed",
-            "Use a value between 1 Hz and 50 MHz"
-        );
+        return Err("Invalid SPI clock speed", "Use a value between 1 Hz and 50 MHz");
     }
 
     // Validate mode (0-3)
     if (mode > 3) {
-        return Err(
-            "Invalid SPI mode",
-            "Use SpiMode::Mode0, Mode1, Mode2, or Mode3"
-        );
+        return Err("Invalid SPI mode", "Use SpiMode::Mode0, Mode1, Mode2, or Mode3");
     }
 
     // Validate data size (8 or 16)
     if (data_size != 8 && data_size != 16) {
-        return Err(
-            "Invalid SPI data size",
-            "Use SpiDataSize::Bits8 or SpiDataSize::Bits16"
-        );
+        return Err("Invalid SPI data size", "Use SpiDataSize::Bits8 or SpiDataSize::Bits16");
     }
 
     return Ok();
@@ -367,18 +322,12 @@ consteval ValidationResult validate_spi_config(
 consteval ValidationResult validate_timer_config(u32 period, u16 prescaler) {
     // Validate period (must be > 0 and < max 32-bit value)
     if (period == 0) {
-        return Err(
-            "Invalid timer period",
-            "Period must be greater than 0"
-        );
+        return Err("Invalid timer period", "Period must be greater than 0");
     }
 
     // Validate prescaler (typically 16-bit)
     if (prescaler == 0) {
-        return Err(
-            "Invalid prescaler",
-            "Prescaler must be greater than 0"
-        );
+        return Err("Invalid prescaler", "Prescaler must be greater than 0");
     }
 
     return Ok();

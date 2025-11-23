@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/atmel/same70/generated/registers/tc0_registers.hpp"
@@ -88,11 +88,11 @@ struct Same70TimerHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_TIMER_MOCK_HW
-            return ALLOY_TIMER_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_TIMER_MOCK_HW
+        return ALLOY_TIMER_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -113,9 +113,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_ENABLE_CLOCK
      */
     static inline void enable_clock() {
-        #ifdef ALLOY_TIMER_TEST_HOOK_ENABLE_CLOCK
-            ALLOY_TIMER_TEST_HOOK_ENABLE_CLOCK();
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_ENABLE_CLOCK
+        ALLOY_TIMER_TEST_HOOK_ENABLE_CLOCK();
+#endif
 
         hw()->CCR = tc::ccr::CLKEN::mask;
     }
@@ -126,9 +126,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_DISABLE_CLOCK
      */
     static inline void disable_clock() {
-        #ifdef ALLOY_TIMER_TEST_HOOK_DISABLE_CLOCK
-            ALLOY_TIMER_TEST_HOOK_DISABLE_CLOCK();
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_DISABLE_CLOCK
+        ALLOY_TIMER_TEST_HOOK_DISABLE_CLOCK();
+#endif
 
         hw()->CCR = tc::ccr::CLKDIS::mask;
     }
@@ -139,9 +139,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_START
      */
     static inline void start() {
-        #ifdef ALLOY_TIMER_TEST_HOOK_START
-            ALLOY_TIMER_TEST_HOOK_START();
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_START
+        ALLOY_TIMER_TEST_HOOK_START();
+#endif
 
         hw()->CCR = tc::ccr::SWTRG::mask;
     }
@@ -152,9 +152,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_STOP
      */
     static inline void stop() {
-        #ifdef ALLOY_TIMER_TEST_HOOK_STOP
-            ALLOY_TIMER_TEST_HOOK_STOP();
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_STOP
+        ALLOY_TIMER_TEST_HOOK_STOP();
+#endif
 
         hw()->CCR = tc::ccr::CLKDIS::mask;
     }
@@ -165,9 +165,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_WAVEFORM
      */
     static inline void set_waveform_mode() {
-        #ifdef ALLOY_TIMER_TEST_HOOK_WAVEFORM
-            ALLOY_TIMER_TEST_HOOK_WAVEFORM();
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_WAVEFORM
+        ALLOY_TIMER_TEST_HOOK_WAVEFORM();
+#endif
 
         hw()->CMR_WAVEFORM_MODE |= tc::cmr_waveform_mode::WAVE::mask;
     }
@@ -178,9 +178,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_CAPTURE
      */
     static inline void set_capture_mode() {
-        #ifdef ALLOY_TIMER_TEST_HOOK_CAPTURE
-            ALLOY_TIMER_TEST_HOOK_CAPTURE();
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_CAPTURE
+        ALLOY_TIMER_TEST_HOOK_CAPTURE();
+#endif
 
         hw()->CMR_CAPTURE_MODE &= ~tc::cmr_waveform_mode::WAVE::mask;
     }
@@ -192,11 +192,12 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_CLOCK_SRC
      */
     static inline void set_clock_source(uint8_t clock_source) {
-        #ifdef ALLOY_TIMER_TEST_HOOK_CLOCK_SRC
-            ALLOY_TIMER_TEST_HOOK_CLOCK_SRC(clock_source);
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_CLOCK_SRC
+        ALLOY_TIMER_TEST_HOOK_CLOCK_SRC(clock_source);
+#endif
 
-        hw()->CMR_WAVEFORM_MODE = (hw()->CMR_WAVEFORM_MODE & ~tc::cmr_waveform_mode::TCCLKS::mask) | tc::cmr_waveform_mode::TCCLKS::write(0, clock_source);
+        hw()->CMR_WAVEFORM_MODE = (hw()->CMR_WAVEFORM_MODE & ~tc::cmr_waveform_mode::TCCLKS::mask) |
+                                  tc::cmr_waveform_mode::TCCLKS::write(0, clock_source);
     }
 
     /**
@@ -206,9 +207,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_SET_RA
      */
     static inline void set_ra(uint32_t value) {
-        #ifdef ALLOY_TIMER_TEST_HOOK_SET_RA
-            ALLOY_TIMER_TEST_HOOK_SET_RA(value);
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_SET_RA
+        ALLOY_TIMER_TEST_HOOK_SET_RA(value);
+#endif
 
         hw()->RA = value;
     }
@@ -220,9 +221,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_SET_RB
      */
     static inline void set_rb(uint32_t value) {
-        #ifdef ALLOY_TIMER_TEST_HOOK_SET_RB
-            ALLOY_TIMER_TEST_HOOK_SET_RB(value);
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_SET_RB
+        ALLOY_TIMER_TEST_HOOK_SET_RB(value);
+#endif
 
         hw()->RB = value;
     }
@@ -234,9 +235,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_SET_RC
      */
     static inline void set_rc(uint32_t value) {
-        #ifdef ALLOY_TIMER_TEST_HOOK_SET_RC
-            ALLOY_TIMER_TEST_HOOK_SET_RC(value);
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_SET_RC
+        ALLOY_TIMER_TEST_HOOK_SET_RC(value);
+#endif
 
         hw()->RC = value;
     }
@@ -248,9 +249,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_GET_COUNT
      */
     static inline uint32_t get_counter() const {
-        #ifdef ALLOY_TIMER_TEST_HOOK_GET_COUNT
-            ALLOY_TIMER_TEST_HOOK_GET_COUNT();
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_GET_COUNT
+        ALLOY_TIMER_TEST_HOOK_GET_COUNT();
+#endif
 
         return hw()->CV;
     }
@@ -262,9 +263,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_OVERFLOW
      */
     static inline bool is_overflow() const {
-        #ifdef ALLOY_TIMER_TEST_HOOK_OVERFLOW
-            ALLOY_TIMER_TEST_HOOK_OVERFLOW();
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_OVERFLOW
+        ALLOY_TIMER_TEST_HOOK_OVERFLOW();
+#endif
 
         return (hw()->SR & tc::sr::COVFS::mask) != 0;
     }
@@ -275,9 +276,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_INT_EN
      */
     static inline void enable_rc_interrupt() {
-        #ifdef ALLOY_TIMER_TEST_HOOK_INT_EN
-            ALLOY_TIMER_TEST_HOOK_INT_EN();
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_INT_EN
+        ALLOY_TIMER_TEST_HOOK_INT_EN();
+#endif
 
         hw()->IER = tc::ier::CPCS::mask;
     }
@@ -288,9 +289,9 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_INT_DIS
      */
     static inline void disable_rc_interrupt() {
-        #ifdef ALLOY_TIMER_TEST_HOOK_INT_DIS
-            ALLOY_TIMER_TEST_HOOK_INT_DIS();
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_INT_DIS
+        ALLOY_TIMER_TEST_HOOK_INT_DIS();
+#endif
 
         hw()->IDR = tc::idr::CPCS::mask;
     }
@@ -302,13 +303,12 @@ struct Same70TimerHardwarePolicy {
      * @note Test hook: ALLOY_TIMER_TEST_HOOK_RC_CMP
      */
     static inline bool is_rc_compare() const {
-        #ifdef ALLOY_TIMER_TEST_HOOK_RC_CMP
-            ALLOY_TIMER_TEST_HOOK_RC_CMP();
-        #endif
+#ifdef ALLOY_TIMER_TEST_HOOK_RC_CMP
+        ALLOY_TIMER_TEST_HOOK_RC_CMP();
+#endif
 
         return (hw()->SR & tc::sr::CPCS::mask) != 0;
     }
-
 };
 
 // ============================================================================
@@ -316,13 +316,17 @@ struct Same70TimerHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Timer0Ch0
-using Timer0Ch0Hardware = Same70TimerHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TC0, 150000000>;
+using Timer0Ch0Hardware =
+    Same70TimerHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TC0, 150000000>;
 /// @brief Hardware policy for Timer1Ch0
-using Timer1Ch0Hardware = Same70TimerHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TC1, 150000000>;
+using Timer1Ch0Hardware =
+    Same70TimerHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TC1, 150000000>;
 /// @brief Hardware policy for Timer2Ch0
-using Timer2Ch0Hardware = Same70TimerHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TC2, 150000000>;
+using Timer2Ch0Hardware =
+    Same70TimerHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TC2, 150000000>;
 /// @brief Hardware policy for Timer3Ch0
-using Timer3Ch0Hardware = Same70TimerHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TC3, 150000000>;
+using Timer3Ch0Hardware =
+    Same70TimerHardwarePolicy<ucore::generated::atsame70q21b::peripherals::TC3, 150000000>;
 
 }  // namespace ucore::hal::same70
 

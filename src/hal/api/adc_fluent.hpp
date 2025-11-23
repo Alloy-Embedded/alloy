@@ -6,10 +6,11 @@
 
 #pragma once
 
+#include "hal/adc_simple.hpp"
+#include "hal/interface/adc.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/interface/adc.hpp"
-#include "hal/adc_simple.hpp"
 
 namespace ucore::hal {
 
@@ -26,13 +27,13 @@ struct FluentAdcConfig {
     PeripheralId peripheral;
     AdcChannel channel;
     AdcConfig config;
-    
+
     Result<void, ErrorCode> apply() const { return Ok(); }
 };
 
 template <PeripheralId PeriphId>
 class AdcBuilder {
-public:
+   public:
     constexpr AdcBuilder()
         : channel_(AdcChannel::Channel0),
           resolution_(AdcDefaults::resolution),
@@ -61,16 +62,13 @@ public:
             return Err(ErrorCode::InvalidParameter);
         }
 
-        FluentAdcConfig config{
-            PeriphId,
-            channel_,
-            AdcConfig{resolution_, reference_, sample_time_}
-        };
+        FluentAdcConfig config{PeriphId, channel_,
+                               AdcConfig{resolution_, reference_, sample_time_}};
 
         return Ok(std::move(config));
     }
 
-private:
+   private:
     AdcChannel channel_;
     AdcResolution resolution_;
     AdcReference reference_;

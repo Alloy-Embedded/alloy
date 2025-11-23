@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/st/stm32f4/generated/registers/spi1_registers.hpp"
@@ -104,11 +104,11 @@ struct Stm32f4UartHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_SPI_MOCK_HW
-            return ALLOY_SPI_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_SPI_MOCK_HW
+        return ALLOY_SPI_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -121,9 +121,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_RESET
      */
     static inline void reset() {
-        #ifdef ALLOY_SPI_TEST_HOOK_RESET
-            ALLOY_SPI_TEST_HOOK_RESET();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_RESET
+        ALLOY_SPI_TEST_HOOK_RESET();
+#endif
 
         hw()->CR1 &= ~spi::cr1::SPE::mask;
     }
@@ -134,9 +134,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_ENABLE
      */
     static inline void enable() {
-        #ifdef ALLOY_SPI_TEST_HOOK_ENABLE
-            ALLOY_SPI_TEST_HOOK_ENABLE();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_ENABLE
+        ALLOY_SPI_TEST_HOOK_ENABLE();
+#endif
 
         hw()->CR1 |= spi::cr1::SPE::mask;
     }
@@ -147,9 +147,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_DISABLE
      */
     static inline void disable() {
-        #ifdef ALLOY_SPI_TEST_HOOK_DISABLE
-            ALLOY_SPI_TEST_HOOK_DISABLE();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_DISABLE
+        ALLOY_SPI_TEST_HOOK_DISABLE();
+#endif
 
         hw()->CR1 &= ~spi::cr1::SPE::mask;
     }
@@ -163,11 +163,17 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_MASTER
      */
     static inline void configure_master(uint8_t clock_div, uint8_t mode) {
-        #ifdef ALLOY_SPI_TEST_HOOK_MASTER
-            ALLOY_SPI_TEST_HOOK_MASTER(clock_div, mode);
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_MASTER
+        ALLOY_SPI_TEST_HOOK_MASTER(clock_div, mode);
+#endif
 
-        uint32_t cr1 = spi::cr1::MSTR::mask | spi::cr1::SSM::mask | spi::cr1::SSI::mask | spi::cr1::BR::write(0, clock_div); if (mode & 0x01) cr1 |= spi::cr1::CPHA::mask; if (mode & 0x02) cr1 |= spi::cr1::CPOL::mask; hw()->CR1 = cr1;
+        uint32_t cr1 = spi::cr1::MSTR::mask | spi::cr1::SSM::mask | spi::cr1::SSI::mask |
+                       spi::cr1::BR::write(0, clock_div);
+        if (mode & 0x01)
+            cr1 |= spi::cr1::CPHA::mask;
+        if (mode & 0x02)
+            cr1 |= spi::cr1::CPOL::mask;
+        hw()->CR1 = cr1;
     }
 
     /**
@@ -177,9 +183,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_TX_READY
      */
     static inline bool is_tx_ready() const {
-        #ifdef ALLOY_SPI_TEST_HOOK_TX_READY
-            ALLOY_SPI_TEST_HOOK_TX_READY();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_TX_READY
+        ALLOY_SPI_TEST_HOOK_TX_READY();
+#endif
 
         return (hw()->SR & spi::sr::TXE::mask) != 0;
     }
@@ -191,9 +197,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_RX_READY
      */
     static inline bool is_rx_ready() const {
-        #ifdef ALLOY_SPI_TEST_HOOK_RX_READY
-            ALLOY_SPI_TEST_HOOK_RX_READY();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_RX_READY
+        ALLOY_SPI_TEST_HOOK_RX_READY();
+#endif
 
         return (hw()->SR & spi::sr::RXNE::mask) != 0;
     }
@@ -206,9 +212,9 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_WRITE
      */
     static inline void write_byte(uint8_t byte) {
-        #ifdef ALLOY_SPI_TEST_HOOK_WRITE
-            ALLOY_SPI_TEST_HOOK_WRITE(byte);
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_WRITE
+        ALLOY_SPI_TEST_HOOK_WRITE(byte);
+#endif
 
         hw()->DR = byte;
     }
@@ -220,13 +226,12 @@ struct Stm32f4UartHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_READ
      */
     static inline uint8_t read_byte() const {
-        #ifdef ALLOY_SPI_TEST_HOOK_READ
-            ALLOY_SPI_TEST_HOOK_READ();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_READ
+        ALLOY_SPI_TEST_HOOK_READ();
+#endif
 
         return static_cast<uint8_t>(hw()->DR & 0xFF);
     }
-
 };
 
 // ============================================================================

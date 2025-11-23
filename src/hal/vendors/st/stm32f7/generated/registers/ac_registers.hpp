@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::ac {
 
 /// AC Register Structure
 struct AC_Registers {
-
     /// Instruction and Data Tightly-Coupled Memory Control Registers
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -47,7 +46,7 @@ struct AC_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t AHBSCR;
-    uint8_t RESERVED_0014[4]; ///< Reserved
+    uint8_t RESERVED_0014[4];  ///< Reserved
 
     /// Auxiliary Bus Fault Status register
     /// Offset: 0x0018

@@ -8,9 +8,9 @@
  * All configuration happens at compile time with zero runtime overhead.
  */
 
-#include <cstdint>
 #include <array>
 #include <concepts>
+#include <cstdint>
 
 namespace ucore::hal::arm {
 
@@ -19,7 +19,7 @@ namespace ucore::hal::arm {
  *
  * Ensures handlers are callable with no arguments and return void.
  */
-template<typename T>
+template <typename T>
 concept InterruptHandler = requires(T t) {
     { t() } -> std::same_as<void>;
 };
@@ -36,8 +36,8 @@ concept InterruptHandler = requires(T t) {
  * entries as function pointers to jump to.
  */
 union VectorEntry {
-    uintptr_t address;      // For stack pointer (entry 0)
-    void (*handler)();      // For exception/interrupt handlers (entries 1+)
+    uintptr_t address;  // For stack pointer (entry 0)
+    void (*handler)();  // For exception/interrupt handlers (entries 1+)
 
     // Default constructor for handler
     constexpr VectorEntry() : handler(nullptr) {}
@@ -66,10 +66,10 @@ union VectorEntry {
  *     .get();
  * @endcode
  */
-template<size_t VectorCount>
+template <size_t VectorCount>
 class VectorTableBuilder {
-public:
-    using HandlerType = void(*)();
+   public:
+    using HandlerType = void (*)();
 
     // Standard Cortex-M exception indices (0-15)
     static constexpr size_t STACK_POINTER_IDX = 0;
@@ -188,20 +188,16 @@ public:
      *
      * @return Const reference to vector array
      */
-    constexpr const auto& get() const {
-        return vectors_;
-    }
+    constexpr const auto& get() const { return vectors_; }
 
     /**
      * @brief Get vector count
      *
      * @return Total number of vectors
      */
-    static constexpr size_t size() {
-        return VectorCount;
-    }
+    static constexpr size_t size() { return VectorCount; }
 
-private:
+   private:
     std::array<VectorEntry, VectorCount> vectors_{};
 
     /**
@@ -232,7 +228,7 @@ private:
  *     .get();
  * @endcode
  */
-template<size_t VectorCount>
+template <size_t VectorCount>
 consteval auto make_vector_table() {
     return VectorTableBuilder<VectorCount>{};
 }
@@ -241,21 +237,21 @@ consteval auto make_vector_table() {
  * @brief Common vector table sizes for different Cortex-M cores
  */
 namespace VectorTableSizes {
-    // Standard exceptions
-    static constexpr size_t CORTEX_M_EXCEPTIONS = 16;
+// Standard exceptions
+static constexpr size_t CORTEX_M_EXCEPTIONS = 16;
 
-    // Common configurations
-    static constexpr size_t CORTEX_M0_TYPICAL = 16 + 32;   // 16 exceptions + 32 IRQs
-    static constexpr size_t CORTEX_M3_TYPICAL = 16 + 68;   // 16 exceptions + 68 IRQs
-    static constexpr size_t CORTEX_M4_TYPICAL = 16 + 82;   // 16 exceptions + 82 IRQs
-    static constexpr size_t CORTEX_M7_TYPICAL = 16 + 80;   // 16 exceptions + 80 IRQs (SAME70)
+// Common configurations
+static constexpr size_t CORTEX_M0_TYPICAL = 16 + 32;  // 16 exceptions + 32 IRQs
+static constexpr size_t CORTEX_M3_TYPICAL = 16 + 68;  // 16 exceptions + 68 IRQs
+static constexpr size_t CORTEX_M4_TYPICAL = 16 + 82;  // 16 exceptions + 82 IRQs
+static constexpr size_t CORTEX_M7_TYPICAL = 16 + 80;  // 16 exceptions + 80 IRQs (SAME70)
 
-    // SAME70 specific
-    static constexpr size_t SAME70 = 16 + 80;  // 96 total vectors
+// SAME70 specific
+static constexpr size_t SAME70 = 16 + 80;  // 96 total vectors
 
-    // STM32 common
-    static constexpr size_t STM32F1 = 16 + 60;  // 76 total vectors
-    static constexpr size_t STM32F4 = 16 + 82;  // 98 total vectors
-}
+// STM32 common
+static constexpr size_t STM32F1 = 16 + 60;  // 76 total vectors
+static constexpr size_t STM32F4 = 16 + 82;  // 98 total vectors
+}  // namespace VectorTableSizes
 
-} // namespace ucore::hal::arm
+}  // namespace ucore::hal::arm

@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::sai1 {
 
 /// SAI1 Register Structure
 struct SAI1_Registers {
-
     /// Global configuration register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

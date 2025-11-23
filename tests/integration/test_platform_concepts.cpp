@@ -9,11 +9,11 @@
 #include <catch2/catch_test_macros.hpp>
 
 #if __cplusplus >= 202002L
-#include "hal/core/concepts.hpp"
+    #include "hal/core/concepts.hpp"
 #endif
 
-#include "core/result.hpp"
 #include "core/error.hpp"
+#include "core/result.hpp"
 
 using namespace ucore::core;
 using namespace ucore::hal;
@@ -24,41 +24,32 @@ using namespace ucore::hal;
 
 // STM32F4 Platform
 #ifdef ALLOY_PLATFORM_STM32F4
-#include "hal/vendors/st/stm32f4/clock_platform.hpp"
-#include "hal/vendors/st/stm32f4/gpio.hpp"
+    #include "hal/vendors/st/stm32f4/clock_platform.hpp"
+    #include "hal/vendors/st/stm32f4/gpio.hpp"
 
-using TestClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
-    ucore::hal::st::stm32f4::ExampleF4ClockConfig
->;
-using TestGpioPin = ucore::hal::st::stm32f4::GpioPin<
-    ucore::hal::st::stm32f4::gpio::PortA, 5
->;
+using TestClockPlatform =
+    ucore::hal::st::stm32f4::Stm32f4Clock<ucore::hal::st::stm32f4::ExampleF4ClockConfig>;
+using TestGpioPin = ucore::hal::st::stm32f4::GpioPin<ucore::hal::st::stm32f4::gpio::PortA, 5>;
 #endif
 
 // STM32F7 Platform
 #ifdef ALLOY_PLATFORM_STM32F7
-#include "hal/vendors/st/stm32f7/clock_platform.hpp"
-#include "hal/vendors/st/stm32f7/gpio.hpp"
+    #include "hal/vendors/st/stm32f7/clock_platform.hpp"
+    #include "hal/vendors/st/stm32f7/gpio.hpp"
 
-using TestClockPlatform = ucore::hal::st::stm32f7::Stm32f7Clock<
-    ucore::hal::st::stm32f7::ExampleF7ClockConfig
->;
-using TestGpioPin = ucore::hal::st::stm32f7::GpioPin<
-    ucore::hal::st::stm32f7::gpio::PortA, 5
->;
+using TestClockPlatform =
+    ucore::hal::st::stm32f7::Stm32f7Clock<ucore::hal::st::stm32f7::ExampleF7ClockConfig>;
+using TestGpioPin = ucore::hal::st::stm32f7::GpioPin<ucore::hal::st::stm32f7::gpio::PortA, 5>;
 #endif
 
 // STM32G0 Platform
 #ifdef ALLOY_PLATFORM_STM32G0
-#include "hal/vendors/st/stm32g0/clock_platform.hpp"
-#include "hal/vendors/st/stm32g0/gpio.hpp"
+    #include "hal/vendors/st/stm32g0/clock_platform.hpp"
+    #include "hal/vendors/st/stm32g0/gpio.hpp"
 
-using TestClockPlatform = ucore::hal::st::stm32g0::Stm32g0Clock<
-    ucore::hal::st::stm32g0::ExampleG0ClockConfig
->;
-using TestGpioPin = ucore::hal::st::stm32g0::GpioPin<
-    ucore::hal::st::stm32g0::gpio::PortA, 5
->;
+using TestClockPlatform =
+    ucore::hal::st::stm32g0::Stm32g0Clock<ucore::hal::st::stm32g0::ExampleG0ClockConfig>;
+using TestGpioPin = ucore::hal::st::stm32g0::GpioPin<ucore::hal::st::stm32g0::gpio::PortA, 5>;
 #endif
 
 // ==============================================================================
@@ -67,7 +58,8 @@ using TestGpioPin = ucore::hal::st::stm32g0::GpioPin<
 
 #if __cplusplus >= 202002L
 
-#if defined(ALLOY_PLATFORM_STM32F4) || defined(ALLOY_PLATFORM_STM32F7) || defined(ALLOY_PLATFORM_STM32G0)
+    #if defined(ALLOY_PLATFORM_STM32F4) || defined(ALLOY_PLATFORM_STM32F7) || \
+        defined(ALLOY_PLATFORM_STM32G0)
 
 TEST_CASE("Platform Clock satisfies ClockPlatform concept", "[integration][concept][clock]") {
     STATIC_REQUIRE(ucore::hal::concepts::ClockPlatform<TestClockPlatform>);
@@ -80,15 +72,16 @@ TEST_CASE("Platform GPIO has required metadata", "[integration][concept][gpio]")
     STATIC_REQUIRE(TestGpioPin::pin_mask > 0);
 }
 
-#endif // Platform check
+    #endif  // Platform check
 
-#endif // C++20 check
+#endif  // C++20 check
 
 // ==============================================================================
 // API Validation Tests (all C++ versions)
 // ==============================================================================
 
-#if defined(ALLOY_PLATFORM_STM32F4) || defined(ALLOY_PLATFORM_STM32F7) || defined(ALLOY_PLATFORM_STM32G0)
+#if defined(ALLOY_PLATFORM_STM32F4) || defined(ALLOY_PLATFORM_STM32F7) || \
+    defined(ALLOY_PLATFORM_STM32G0)
 
 TEST_CASE("Platform Clock has required methods", "[integration][api][clock]") {
     // Test that all required methods exist and return correct types
@@ -176,7 +169,7 @@ TEST_CASE("Platform uses consistent error codes", "[integration][error]") {
 // Fallback test when no platform is defined
 TEST_CASE("Platform concept tests require a platform", "[integration][skip]") {
     WARN("No platform defined - skipping platform-specific concept tests");
-    REQUIRE(true); // Always pass
+    REQUIRE(true);  // Always pass
 }
 
 #endif
@@ -225,8 +218,7 @@ TEST_CASE("HAL types are properly defined", "[integration][types]") {
 
     SECTION("PinPull enum") {
         PinPull pull = PinPull::PullUp;
-        REQUIRE((pull == PinPull::None || pull == PinPull::PullUp ||
-                 pull == PinPull::PullDown));
+        REQUIRE((pull == PinPull::None || pull == PinPull::PullUp || pull == PinPull::PullDown));
     }
 
     SECTION("PinDrive enum") {

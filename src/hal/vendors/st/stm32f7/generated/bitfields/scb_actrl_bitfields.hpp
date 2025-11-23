@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cstdint>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace ucore::hal::st::stm32f7::scb_actrl {
@@ -19,29 +20,29 @@ using namespace ucore::hal::bitfields;
 
 /// ACTRL - Auxiliary control register
 namespace actrl {
-    /// DISFOLD
-    /// Position: 2, Width: 1
-    using DISFOLD = BitField<2, 1>;
-    constexpr uint32_t DISFOLD_Pos = 2;
-    constexpr uint32_t DISFOLD_Msk = DISFOLD::mask;
+/// DISFOLD
+/// Position: 2, Width: 1
+using DISFOLD = BitField<2, 1>;
+constexpr uint32_t DISFOLD_Pos = 2;
+constexpr uint32_t DISFOLD_Msk = DISFOLD::mask;
 
-    /// FPEXCODIS
-    /// Position: 10, Width: 1
-    using FPEXCODIS = BitField<10, 1>;
-    constexpr uint32_t FPEXCODIS_Pos = 10;
-    constexpr uint32_t FPEXCODIS_Msk = FPEXCODIS::mask;
+/// FPEXCODIS
+/// Position: 10, Width: 1
+using FPEXCODIS = BitField<10, 1>;
+constexpr uint32_t FPEXCODIS_Pos = 10;
+constexpr uint32_t FPEXCODIS_Msk = FPEXCODIS::mask;
 
-    /// DISRAMODE
-    /// Position: 11, Width: 1
-    using DISRAMODE = BitField<11, 1>;
-    constexpr uint32_t DISRAMODE_Pos = 11;
-    constexpr uint32_t DISRAMODE_Msk = DISRAMODE::mask;
+/// DISRAMODE
+/// Position: 11, Width: 1
+using DISRAMODE = BitField<11, 1>;
+constexpr uint32_t DISRAMODE_Pos = 11;
+constexpr uint32_t DISRAMODE_Msk = DISRAMODE::mask;
 
-    /// DISITMATBFLUSH
-    /// Position: 12, Width: 1
-    using DISITMATBFLUSH = BitField<12, 1>;
-    constexpr uint32_t DISITMATBFLUSH_Pos = 12;
-    constexpr uint32_t DISITMATBFLUSH_Msk = DISITMATBFLUSH::mask;
+/// DISITMATBFLUSH
+/// Position: 12, Width: 1
+using DISITMATBFLUSH = BitField<12, 1>;
+constexpr uint32_t DISITMATBFLUSH_Pos = 12;
+constexpr uint32_t DISITMATBFLUSH_Msk = DISITMATBFLUSH::mask;
 
 }  // namespace actrl
 

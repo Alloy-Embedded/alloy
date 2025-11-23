@@ -24,8 +24,9 @@
  * - Writing responsive embedded code
  */
 
-#include "board/board.hpp"
 #include "hal/api/systick_simple.hpp"
+
+#include "board/board.hpp"
 
 using namespace ucore::hal;
 
@@ -57,8 +58,8 @@ bool simulate_operation(int attempt) {
  * Use case: Polling for peripheral ready state
  */
 void demo_blocking_timeout_with_retry() {
-    const u32 TIMEOUT_MS = 500;      // Wait up to 500ms per attempt
-    const int MAX_RETRIES = 3;       // Try up to 3 times
+    const u32 TIMEOUT_MS = 500;  // Wait up to 500ms per attempt
+    const int MAX_RETRIES = 3;   // Try up to 3 times
 
     board::led::off();
 
@@ -112,11 +113,7 @@ void demo_blocking_timeout_with_retry() {
 void demo_nonblocking_timeout() {
     const u32 TIMEOUT_MS = 3000;  // 3 second timeout
 
-    enum class State {
-        WAITING,
-        SUCCESS,
-        TIMEOUT
-    };
+    enum class State { WAITING, SUCCESS, TIMEOUT };
 
     State state = State::WAITING;
     u32 start = SysTickTimer::millis<board::BoardSysTick>();
@@ -184,8 +181,8 @@ void demo_nonblocking_timeout() {
  * Use case: Sensor polling with watchdog timer
  */
 void demo_multiple_timeouts() {
-    const u32 FAST_BLINK_PERIOD = 200;   // 200ms LED blink
-    const u32 SLOW_TIMEOUT = 5000;       // 5 second overall timeout
+    const u32 FAST_BLINK_PERIOD = 200;  // 200ms LED blink
+    const u32 SLOW_TIMEOUT = 5000;      // 5 second overall timeout
 
     u32 overall_start = SysTickTimer::millis<board::BoardSysTick>();
     u32 blink_start = overall_start;
@@ -225,8 +222,8 @@ void demo_multiple_timeouts() {
  * Use case: GPS with fallback to cell tower positioning
  */
 void demo_timeout_with_fallback() {
-    const u32 PRIMARY_TIMEOUT_MS = 1000;    // Try primary method for 1s
-    const u32 FALLBACK_TIMEOUT_MS = 2000;   // Try fallback for 2s
+    const u32 PRIMARY_TIMEOUT_MS = 1000;   // Try primary method for 1s
+    const u32 FALLBACK_TIMEOUT_MS = 2000;  // Try fallback for 2s
 
     // Try primary method
     board::led::on();

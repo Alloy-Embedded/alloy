@@ -1,8 +1,9 @@
 /// Unit tests for RTOS Queue
 
-#include "tests/rtos/test_framework.hpp"
 #include "rtos/queue.hpp"
 #include "rtos/rtos.hpp"
+
+#include "tests/rtos/test_framework.hpp"
 
 using namespace ucore;
 using namespace ucore::rtos;

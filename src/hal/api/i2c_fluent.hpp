@@ -30,15 +30,16 @@
 
 #pragma once
 
+#include <span>
+
+#include "hal/api/i2c_base.hpp"
+#include "hal/api/i2c_simple.hpp"
+#include "hal/core/signals.hpp"
+#include "hal/interface/i2c.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/interface/i2c.hpp"
-#include "hal/core/signals.hpp"
-#include "hal/api/i2c_simple.hpp"
-#include "hal/api/i2c_base.hpp"
-
-#include <span>
 
 namespace ucore::hal {
 
@@ -64,9 +65,7 @@ struct I2cBuilderState {
      *
      * @return true if all required pins configured
      */
-    constexpr bool is_valid() const {
-        return has_sda && has_scl;
-    }
+    constexpr bool is_valid() const { return has_sda && has_scl; }
 };
 
 // ============================================================================
@@ -93,17 +92,17 @@ struct FluentI2cConfig : public I2cBase<FluentI2cConfig> {
     // ========================================================================
 
     // Inherit all common I2C methods from base
-    using Base::read;             // Read from device
-    using Base::write;            // Write to device
-    using Base::write_read;       // Write then read (repeated start)
-    using Base::read_byte;        // Single-byte read
-    using Base::write_byte;       // Single-byte write
-    using Base::read_register;    // Register read
-    using Base::write_register;   // Register write
-    using Base::scan_bus;         // Bus scanning
-    using Base::configure;        // Configuration
-    using Base::set_speed;        // Set bus speed
-    using Base::set_addressing;   // Set addressing mode
+    using Base::configure;       // Configuration
+    using Base::read;            // Read from device
+    using Base::read_byte;       // Single-byte read
+    using Base::read_register;   // Register read
+    using Base::scan_bus;        // Bus scanning
+    using Base::set_addressing;  // Set addressing mode
+    using Base::set_speed;       // Set bus speed
+    using Base::write;           // Write to device
+    using Base::write_byte;      // Single-byte write
+    using Base::write_read;      // Write then read (repeated start)
+    using Base::write_register;  // Register write
 
     /**
      * @brief Apply configuration to hardware
@@ -126,10 +125,8 @@ struct FluentI2cConfig : public I2cBase<FluentI2cConfig> {
     /**
      * @brief Read implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> read_impl(
-        u16 address,
-        std::span<u8> buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> read_impl(u16 address,
+                                                              std::span<u8> buffer) noexcept {
         // TODO: Implement hardware read
         (void)address;
         (void)buffer;
@@ -140,9 +137,7 @@ struct FluentI2cConfig : public I2cBase<FluentI2cConfig> {
      * @brief Write implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> write_impl(
-        u16 address,
-        std::span<const u8> buffer
-    ) noexcept {
+        u16 address, std::span<const u8> buffer) noexcept {
         // TODO: Implement hardware write
         (void)address;
         (void)buffer;
@@ -153,10 +148,7 @@ struct FluentI2cConfig : public I2cBase<FluentI2cConfig> {
      * @brief Write-read implementation (repeated start)
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> write_read_impl(
-        u16 address,
-        std::span<const u8> write_buffer,
-        std::span<u8> read_buffer
-    ) noexcept {
+        u16 address, std::span<const u8> write_buffer, std::span<u8> read_buffer) noexcept {
         // TODO: Implement hardware write-read
         (void)address;
         (void)write_buffer;
@@ -168,8 +160,7 @@ struct FluentI2cConfig : public I2cBase<FluentI2cConfig> {
      * @brief Scan bus implementation
      */
     [[nodiscard]] constexpr Result<usize, ErrorCode> scan_bus_impl(
-        std::span<u8> found_devices
-    ) noexcept {
+        std::span<u8> found_devices) noexcept {
         // TODO: Implement bus scanning
         (void)found_devices;
         return Ok(usize{0});
@@ -179,8 +170,7 @@ struct FluentI2cConfig : public I2cBase<FluentI2cConfig> {
      * @brief Configure I2C implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> configure_impl(
-        const I2cConfig& new_config
-    ) noexcept {
+        const I2cConfig& new_config) noexcept {
         // TODO: Apply configuration to hardware
         (void)new_config;
         return Ok();
@@ -200,7 +190,7 @@ struct FluentI2cConfig : public I2cBase<FluentI2cConfig> {
  */
 template <PeripheralId PeriphId>
 class I2cBuilder {
-public:
+   public:
     /**
      * @brief Constructor - initialize with defaults
      */
@@ -246,8 +236,7 @@ public:
      */
     template <typename SdaPin, typename SclPin>
     constexpr I2cBuilder& with_pins() {
-        return with_sda<SdaPin>()
-               .template with_scl<SclPin>();
+        return with_sda<SdaPin>().template with_scl<SclPin>();
     }
 
     /**
@@ -363,7 +352,7 @@ public:
         return Ok(std::move(config));
     }
 
-private:
+   private:
     PinId sda_pin_id_;
     PinId scl_pin_id_;
     I2cSpeed speed_;

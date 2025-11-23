@@ -41,10 +41,11 @@
 
 #pragma once
 
-#include "core/types.hpp"
+#include <array>
+
 #include "hal/dma/connection.hpp"
 
-#include <array>
+#include "core/types.hpp"
 
 namespace ucore::hal {
 
@@ -65,7 +66,9 @@ struct DmaAllocation {
     DmaStream stream;
 
     constexpr DmaAllocation(PeripheralId p, DmaRequest r, DmaStream s)
-        : peripheral(p), request(r), stream(s) {}
+        : peripheral(p),
+          request(r),
+          stream(s) {}
 };
 
 // ============================================================================
@@ -82,7 +85,8 @@ struct DmaAllocation {
  */
 template <DmaAllocation... Allocations>
 struct DmaRegistry {
-    static constexpr std::array<DmaAllocation, sizeof...(Allocations)> allocations = {Allocations...};
+    static constexpr std::array<DmaAllocation, sizeof...(Allocations)> allocations = {
+        Allocations...};
     static constexpr usize size = sizeof...(Allocations);
 
     /**
@@ -176,7 +180,7 @@ struct DmaRegistry {
                 return alloc.stream;
             }
         }
-        return DmaStream::Stream0; // Not found
+        return DmaStream::Stream0;  // Not found
     }
 
     /**
@@ -184,9 +188,7 @@ struct DmaRegistry {
      *
      * @return true if valid, false if conflicts exist
      */
-    static constexpr bool is_valid() {
-        return !has_conflicts();
-    }
+    static constexpr bool is_valid() { return !has_conflicts(); }
 
     /**
      * @brief Get error message if invalid
@@ -218,11 +220,8 @@ struct AddDmaAllocation;
 
 template <DmaAllocation... Existing, typename Connection>
 struct AddDmaAllocation<DmaRegistry<Existing...>, Connection> {
-    static constexpr DmaAllocation new_alloc{
-        Connection::peripheral,
-        Connection::request,
-        Connection::stream
-    };
+    static constexpr DmaAllocation new_alloc{Connection::peripheral, Connection::request,
+                                             Connection::stream};
 
     using type = DmaRegistry<Existing..., new_alloc>;
 };
@@ -242,8 +241,10 @@ using AddDmaAllocation_t = typename AddDmaAllocation<Registry, Connection>::type
  *
  * Convenience macro for creating allocation records.
  */
-#define ALLOC_DMA(periph, req, strm) \
-    DmaAllocation{PeripheralId::periph, DmaRequest::req, DmaStream::strm}
+#define ALLOC_DMA(periph, req, strm)                           \
+    DmaAllocation {                                            \
+        PeripheralId::periph, DmaRequest::req, DmaStream::strm \
+    }
 
 /**
  * @brief Create DMA connection and add to registry
@@ -252,8 +253,8 @@ using AddDmaAllocation_t = typename AddDmaAllocation<Registry, Connection>::type
  * and adding it to a registry.
  */
 #define ADD_DMA_CONNECTION(Registry, Periph, Request, Stream) \
-    AddDmaAllocation_t<Registry, \
-        DmaConnection<PeripheralId::Periph, DmaRequest::Request, DmaStream::Stream>>
+    AddDmaAllocation_t<                                       \
+        Registry, DmaConnection<PeripheralId::Periph, DmaRequest::Request, DmaStream::Stream>>
 
 // ============================================================================
 // Empty Registry Type

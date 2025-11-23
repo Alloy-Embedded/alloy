@@ -23,12 +23,12 @@ using namespace ucore::core;
  * Use this when predefined configurations don't meet your needs.
  */
 struct ClockExpertConfig {
-    u32 target_frequency_hz;  ///< Target CPU frequency
+    u32 target_frequency_hz;    ///< Target CPU frequency
     bool use_external_crystal;  ///< true = external crystal, false = internal RC
-    bool enable_pll;  ///< Enable PLL for frequency multiplication
-    u8 pll_multiplier;  ///< PLL multiplier (1-62)
-    u8 pll_divider;  ///< PLL divider (1-255)
-    u8 mck_prescaler;  ///< Master clock prescaler divider
+    bool enable_pll;            ///< Enable PLL for frequency multiplication
+    u8 pll_multiplier;          ///< PLL multiplier (1-62)
+    u8 pll_divider;             ///< PLL divider (1-255)
+    u8 mck_prescaler;           ///< Master clock prescaler divider
 
     constexpr bool is_valid() const {
         if (target_frequency_hz == 0 || target_frequency_hz > 300000000) {
@@ -44,11 +44,16 @@ struct ClockExpertConfig {
     }
 
     constexpr const char* error_message() const {
-        if (target_frequency_hz == 0) return "Frequency cannot be zero";
-        if (target_frequency_hz > 300000000) return "Frequency too high (max 300 MHz)";
-        if (enable_pll && pll_multiplier == 0) return "PLL multiplier cannot be zero";
-        if (enable_pll && pll_multiplier > 62) return "PLL multiplier max is 62";
-        if (enable_pll && pll_divider == 0) return "PLL divider cannot be zero";
+        if (target_frequency_hz == 0)
+            return "Frequency cannot be zero";
+        if (target_frequency_hz > 300000000)
+            return "Frequency too high (max 300 MHz)";
+        if (enable_pll && pll_multiplier == 0)
+            return "PLL multiplier cannot be zero";
+        if (enable_pll && pll_multiplier > 62)
+            return "PLL multiplier max is 62";
+        if (enable_pll && pll_divider == 0)
+            return "PLL divider cannot be zero";
         return "Valid";
     }
 
@@ -58,14 +63,12 @@ struct ClockExpertConfig {
      * @brief 12 MHz using internal RC (no PLL) - safest option
      */
     static constexpr ClockExpertConfig internal_rc_12mhz() {
-        return ClockExpertConfig{
-            .target_frequency_hz = 12000000,
-            .use_external_crystal = false,
-            .enable_pll = false,
-            .pll_multiplier = 0,
-            .pll_divider = 1,
-            .mck_prescaler = 1
-        };
+        return ClockExpertConfig{.target_frequency_hz = 12000000,
+                                 .use_external_crystal = false,
+                                 .enable_pll = false,
+                                 .pll_multiplier = 0,
+                                 .pll_divider = 1,
+                                 .mck_prescaler = 1};
     }
 
     /**
@@ -74,14 +77,12 @@ struct ClockExpertConfig {
      * Formula: (12 MHz crystal * 25) / 1 / 2 = 150 MHz
      */
     static constexpr ClockExpertConfig crystal_pll_150mhz() {
-        return ClockExpertConfig{
-            .target_frequency_hz = 150000000,
-            .use_external_crystal = true,
-            .enable_pll = true,
-            .pll_multiplier = 25,
-            .pll_divider = 1,
-            .mck_prescaler = 2
-        };
+        return ClockExpertConfig{.target_frequency_hz = 150000000,
+                                 .use_external_crystal = true,
+                                 .enable_pll = true,
+                                 .pll_multiplier = 25,
+                                 .pll_divider = 1,
+                                 .mck_prescaler = 2};
     }
 
     /**
@@ -90,14 +91,12 @@ struct ClockExpertConfig {
      * Formula: (12 MHz RC * 24) / 1 / 2 = 144 MHz
      */
     static constexpr ClockExpertConfig rc_pll_144mhz() {
-        return ClockExpertConfig{
-            .target_frequency_hz = 144000000,
-            .use_external_crystal = false,
-            .enable_pll = true,
-            .pll_multiplier = 24,
-            .pll_divider = 1,
-            .mck_prescaler = 2
-        };
+        return ClockExpertConfig{.target_frequency_hz = 144000000,
+                                 .use_external_crystal = false,
+                                 .enable_pll = true,
+                                 .pll_multiplier = 24,
+                                 .pll_divider = 1,
+                                 .mck_prescaler = 2};
     }
 
     /**
@@ -120,14 +119,12 @@ struct ClockExpertConfig {
             prescaler = static_cast<u8>((multiplier * source_freq) / target_freq);
         }
 
-        return ClockExpertConfig{
-            .target_frequency_hz = target_freq,
-            .use_external_crystal = use_crystal,
-            .enable_pll = (target_freq > source_freq),
-            .pll_multiplier = multiplier,
-            .pll_divider = 1,
-            .mck_prescaler = prescaler
-        };
+        return ClockExpertConfig{.target_frequency_hz = target_freq,
+                                 .use_external_crystal = use_crystal,
+                                 .enable_pll = (target_freq > source_freq),
+                                 .pll_multiplier = multiplier,
+                                 .pll_divider = 1,
+                                 .mck_prescaler = prescaler};
     }
 };
 

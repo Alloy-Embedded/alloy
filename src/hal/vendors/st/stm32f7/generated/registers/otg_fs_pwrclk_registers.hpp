@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::otg_fs_pwrclk {
 
 /// OTG_FS_PWRCLK Register Structure
 struct OTG_FS_PWRCLK_Registers {
-
     /// OTG_FS power and clock gating control register (OTG_FS_PCGCCTL)
     /// Offset: 0x0000
     /// Reset value: 0x00000000

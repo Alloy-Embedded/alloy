@@ -6,9 +6,10 @@
 
 #pragma once
 
+#include "hal/interface/timer.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/interface/timer.hpp"
 
 namespace ucore::hal {
 
@@ -45,75 +46,55 @@ struct TimerExpertConfig {
     }
 
     // Preset: Standard periodic timer with interrupts
-    static constexpr TimerExpertConfig periodic_interrupt(
-        PeripheralId periph,
-        u32 period_us) {
-        
-        return TimerExpertConfig{
-            .peripheral = periph,
-            .mode = TimerMode::Periodic,
-            .period_us = period_us,
-            .prescaler = 1,
-            .capture_edge = CaptureEdge::Rising,
-            .compare_value = 0,
-            .enable_interrupts = true,
-            .enable_dma = false,
-            .auto_reload = true
-        };
+    static constexpr TimerExpertConfig periodic_interrupt(PeripheralId periph, u32 period_us) {
+        return TimerExpertConfig{.peripheral = periph,
+                                 .mode = TimerMode::Periodic,
+                                 .period_us = period_us,
+                                 .prescaler = 1,
+                                 .capture_edge = CaptureEdge::Rising,
+                                 .compare_value = 0,
+                                 .enable_interrupts = true,
+                                 .enable_dma = false,
+                                 .auto_reload = true};
     }
 
     // Preset: One-shot timer
-    static constexpr TimerExpertConfig one_shot(
-        PeripheralId periph,
-        u32 period_us) {
-        
-        return TimerExpertConfig{
-            .peripheral = periph,
-            .mode = TimerMode::OneShot,
-            .period_us = period_us,
-            .prescaler = 1,
-            .capture_edge = CaptureEdge::Rising,
-            .compare_value = 0,
-            .enable_interrupts = true,
-            .enable_dma = false,
-            .auto_reload = false
-        };
+    static constexpr TimerExpertConfig one_shot(PeripheralId periph, u32 period_us) {
+        return TimerExpertConfig{.peripheral = periph,
+                                 .mode = TimerMode::OneShot,
+                                 .period_us = period_us,
+                                 .prescaler = 1,
+                                 .capture_edge = CaptureEdge::Rising,
+                                 .compare_value = 0,
+                                 .enable_interrupts = true,
+                                 .enable_dma = false,
+                                 .auto_reload = false};
     }
 
     // Preset: Input capture with DMA
-    static constexpr TimerExpertConfig input_capture_dma(
-        PeripheralId periph,
-        CaptureEdge edge) {
-        
-        return TimerExpertConfig{
-            .peripheral = periph,
-            .mode = TimerMode::InputCapture,
-            .period_us = 0,
-            .prescaler = 1,
-            .capture_edge = edge,
-            .compare_value = 0,
-            .enable_interrupts = false,
-            .enable_dma = true,
-            .auto_reload = false
-        };
+    static constexpr TimerExpertConfig input_capture_dma(PeripheralId periph, CaptureEdge edge) {
+        return TimerExpertConfig{.peripheral = periph,
+                                 .mode = TimerMode::InputCapture,
+                                 .period_us = 0,
+                                 .prescaler = 1,
+                                 .capture_edge = edge,
+                                 .compare_value = 0,
+                                 .enable_interrupts = false,
+                                 .enable_dma = true,
+                                 .auto_reload = false};
     }
 
     // Preset: Output compare
-    static constexpr TimerExpertConfig output_compare(
-        PeripheralId periph,
-        u32 compare_value) {
-        
-        return TimerExpertConfig{
-            .peripheral = periph,
-            .mode = TimerMode::OutputCompare,
-            .period_us = 0,
-            .prescaler = 1,
-            .capture_edge = CaptureEdge::Rising,
-            .compare_value = compare_value,
-            .enable_interrupts = true,
-            .enable_dma = false,
-            .auto_reload = false
-        };
+    static constexpr TimerExpertConfig output_compare(PeripheralId periph, u32 compare_value) {
+        return TimerExpertConfig{.peripheral = periph,
+                                 .mode = TimerMode::OutputCompare,
+                                 .period_us = 0,
+                                 .prescaler = 1,
+                                 .capture_edge = CaptureEdge::Rising,
+                                 .compare_value = compare_value,
+                                 .enable_interrupts = true,
+                                 .enable_dma = false,
+                                 .auto_reload = false};
     }
 };
 

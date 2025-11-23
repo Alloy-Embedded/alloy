@@ -37,13 +37,14 @@
 
 #pragma once
 
+#include "hal/api/uart_base.hpp"
+#include "hal/api/uart_simple.hpp"  // For UartParity
+#include "hal/core/signals.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
 #include "core/units.hpp"
-#include "hal/api/uart_base.hpp"
-#include "hal/core/signals.hpp"
-#include "hal/api/uart_simple.hpp"  // For UartParity
 
 namespace ucore::hal {
 
@@ -199,28 +200,24 @@ struct UartExpertConfig {
      *
      * Common configuration for most UART applications.
      */
-    static constexpr UartExpertConfig<HardwarePolicy> standard_115200(
-        PeripheralId peripheral,
-        PinId tx_pin,
-        PinId rx_pin) {
-        return UartExpertConfig<HardwarePolicy>{
-            .peripheral = peripheral,
-            .tx_pin = tx_pin,
-            .rx_pin = rx_pin,
-            .baudrate = BaudRate{115200},
-            .data_bits = 8,
-            .parity = UartParity::NONE,
-            .stop_bits = 1,
-            .flow_control = false,
-            .enable_tx = true,
-            .enable_rx = true,
-            .enable_interrupts = false,
-            .enable_dma_tx = false,
-            .enable_dma_rx = false,
-            .enable_oversampling = true,
-            .enable_rx_timeout = false,
-            .rx_timeout_value = 0
-        };
+    static constexpr UartExpertConfig<HardwarePolicy> standard_115200(PeripheralId peripheral,
+                                                                      PinId tx_pin, PinId rx_pin) {
+        return UartExpertConfig<HardwarePolicy>{.peripheral = peripheral,
+                                                .tx_pin = tx_pin,
+                                                .rx_pin = rx_pin,
+                                                .baudrate = BaudRate{115200},
+                                                .data_bits = 8,
+                                                .parity = UartParity::NONE,
+                                                .stop_bits = 1,
+                                                .flow_control = false,
+                                                .enable_tx = true,
+                                                .enable_rx = true,
+                                                .enable_interrupts = false,
+                                                .enable_dma_tx = false,
+                                                .enable_dma_rx = false,
+                                                .enable_oversampling = true,
+                                                .enable_rx_timeout = false,
+                                                .rx_timeout_value = 0};
     }
 
     /**
@@ -229,27 +226,23 @@ struct UartExpertConfig {
      * Optimized for logging/debug output.
      */
     static constexpr UartExpertConfig<HardwarePolicy> logger_config(
-        PeripheralId peripheral,
-        PinId tx_pin,
-        BaudRate baudrate = BaudRate{115200}) {
-        return UartExpertConfig<HardwarePolicy>{
-            .peripheral = peripheral,
-            .tx_pin = tx_pin,
-            .rx_pin = PinId::PA0,  // Unused
-            .baudrate = baudrate,
-            .data_bits = 8,
-            .parity = UartParity::NONE,
-            .stop_bits = 1,
-            .flow_control = false,
-            .enable_tx = true,
-            .enable_rx = false,  // TX only
-            .enable_interrupts = false,
-            .enable_dma_tx = false,
-            .enable_dma_rx = false,
-            .enable_oversampling = true,
-            .enable_rx_timeout = false,
-            .rx_timeout_value = 0
-        };
+        PeripheralId peripheral, PinId tx_pin, BaudRate baudrate = BaudRate{115200}) {
+        return UartExpertConfig<HardwarePolicy>{.peripheral = peripheral,
+                                                .tx_pin = tx_pin,
+                                                .rx_pin = PinId::PA0,  // Unused
+                                                .baudrate = baudrate,
+                                                .data_bits = 8,
+                                                .parity = UartParity::NONE,
+                                                .stop_bits = 1,
+                                                .flow_control = false,
+                                                .enable_tx = true,
+                                                .enable_rx = false,  // TX only
+                                                .enable_interrupts = false,
+                                                .enable_dma_tx = false,
+                                                .enable_dma_rx = false,
+                                                .enable_oversampling = true,
+                                                .enable_rx_timeout = false,
+                                                .rx_timeout_value = 0};
     }
 
     /**
@@ -257,29 +250,25 @@ struct UartExpertConfig {
      *
      * High-performance configuration with DMA.
      */
-    static constexpr UartExpertConfig<HardwarePolicy> dma_config(
-        PeripheralId peripheral,
-        PinId tx_pin,
-        PinId rx_pin,
-        BaudRate baudrate) {
-        return UartExpertConfig<HardwarePolicy>{
-            .peripheral = peripheral,
-            .tx_pin = tx_pin,
-            .rx_pin = rx_pin,
-            .baudrate = baudrate,
-            .data_bits = 8,
-            .parity = UartParity::NONE,
-            .stop_bits = 1,
-            .flow_control = false,
-            .enable_tx = true,
-            .enable_rx = true,
-            .enable_interrupts = true,  // DMA needs interrupts
-            .enable_dma_tx = true,
-            .enable_dma_rx = true,
-            .enable_oversampling = true,
-            .enable_rx_timeout = false,
-            .rx_timeout_value = 0
-        };
+    static constexpr UartExpertConfig<HardwarePolicy> dma_config(PeripheralId peripheral,
+                                                                 PinId tx_pin, PinId rx_pin,
+                                                                 BaudRate baudrate) {
+        return UartExpertConfig<HardwarePolicy>{.peripheral = peripheral,
+                                                .tx_pin = tx_pin,
+                                                .rx_pin = rx_pin,
+                                                .baudrate = baudrate,
+                                                .data_bits = 8,
+                                                .parity = UartParity::NONE,
+                                                .stop_bits = 1,
+                                                .flow_control = false,
+                                                .enable_tx = true,
+                                                .enable_rx = true,
+                                                .enable_interrupts = true,  // DMA needs interrupts
+                                                .enable_dma_tx = true,
+                                                .enable_dma_rx = true,
+                                                .enable_oversampling = true,
+                                                .enable_rx_timeout = false,
+                                                .rx_timeout_value = 0};
     }
 };
 
@@ -366,21 +355,21 @@ class ExpertUartInstance : public UartBase<ExpertUartInstance<HardwarePolicy>> {
     using Base = UartBase<ExpertUartInstance<HardwarePolicy>>;
     friend Base;
 
-public:
+   public:
     // ========================================================================
     // Inherited Interface from UartBase (CRTP)
     // ========================================================================
 
     // Inherit all common UART methods from base
-    using Base::send;           // Send single character
-    using Base::receive;        // Receive single character
-    using Base::write;          // Write null-terminated string
-    using Base::send_buffer;    // Send buffer of bytes
-    using Base::receive_buffer; // Receive buffer of bytes
-    using Base::flush;          // Wait for transmission complete
-    using Base::available;      // Number of bytes available
-    using Base::has_data;       // Check if data available
-    using Base::set_baud_rate;  // Change baud rate
+    using Base::available;       // Number of bytes available
+    using Base::flush;           // Wait for transmission complete
+    using Base::has_data;        // Check if data available
+    using Base::receive;         // Receive single character
+    using Base::receive_buffer;  // Receive buffer of bytes
+    using Base::send;            // Send single character
+    using Base::send_buffer;     // Send buffer of bytes
+    using Base::set_baud_rate;   // Change baud rate
+    using Base::write;           // Write null-terminated string
 
     /**
      * @brief Construct expert UART instance from configuration
@@ -397,20 +386,16 @@ public:
      *
      * @return Result indicating success or error
      */
-    Result<void, ErrorCode> apply() const {
-        return expert::configure(config_);
-    }
+    Result<void, ErrorCode> apply() const { return expert::configure(config_); }
 
     /**
      * @brief Get current configuration
      *
      * @return Reference to expert configuration
      */
-    constexpr const UartExpertConfig<HardwarePolicy>& config() const {
-        return config_;
-    }
+    constexpr const UartExpertConfig<HardwarePolicy>& config() const { return config_; }
 
-private:
+   private:
     UartExpertConfig<HardwarePolicy> config_;
 
     // ========================================================================
@@ -451,10 +436,8 @@ private:
     /**
      * @brief Send buffer implementation - called by Base::send_buffer()
      */
-    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer_impl(
-        const char* buffer,
-        size_t length
-    ) noexcept {
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer_impl(const char* buffer,
+                                                                       size_t length) noexcept {
         if (!config_.enable_tx) {
             return Err(ErrorCode::NotSupported);
         }
@@ -471,10 +454,8 @@ private:
     /**
      * @brief Receive buffer implementation - called by Base::receive_buffer()
      */
-    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer_impl(
-        char* buffer,
-        size_t length
-    ) noexcept {
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer_impl(char* buffer,
+                                                                          size_t length) noexcept {
         if (!config_.enable_rx) {
             return Err(ErrorCode::NotSupported);
         }

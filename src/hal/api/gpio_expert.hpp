@@ -13,10 +13,11 @@
 
 #pragma once
 
+#include "hal/api/gpio_base.hpp"
+#include "hal/types.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/types.hpp"
-#include "hal/api/gpio_base.hpp"
 
 namespace ucore::hal {
 
@@ -29,17 +30,17 @@ using namespace ucore::core;
  * Use this when you need fine-grained control over pin behavior.
  */
 struct GpioExpertConfig {
-    PinDirection direction;       ///< Pin direction (Input/Output)
-    PinPull pull;                ///< Pull resistor configuration
-    PinDrive drive;              ///< Output drive mode (PushPull/OpenDrain)
-    bool active_high;            ///< true = active-high, false = active-low
-    bool initial_state_on;       ///< Initial logical state (for outputs)
+    PinDirection direction;  ///< Pin direction (Input/Output)
+    PinPull pull;            ///< Pull resistor configuration
+    PinDrive drive;          ///< Output drive mode (PushPull/OpenDrain)
+    bool active_high;        ///< true = active-high, false = active-low
+    bool initial_state_on;   ///< Initial logical state (for outputs)
 
     // Advanced features (platform-dependent)
-    uint8_t drive_strength;      ///< Drive strength (0-3, platform-specific)
-    bool slew_rate_fast;         ///< Fast slew rate (reduces EMI if false)
-    bool input_filter_enable;    ///< Enable input glitch filter
-    uint8_t filter_clock_div;    ///< Filter clock divider (0-7)
+    uint8_t drive_strength;    ///< Drive strength (0-3, platform-specific)
+    bool slew_rate_fast;       ///< Fast slew rate (reduces EMI if false)
+    bool input_filter_enable;  ///< Enable input glitch filter
+    uint8_t filter_clock_div;  ///< Filter clock divider (0-7)
 
     /**
      * @brief Validate configuration at compile-time
@@ -87,17 +88,15 @@ struct GpioExpertConfig {
      * @return GpioExpertConfig for standard output
      */
     static constexpr GpioExpertConfig standard_output(bool initial_on = false) {
-        return GpioExpertConfig{
-            .direction = PinDirection::Output,
-            .pull = PinPull::None,
-            .drive = PinDrive::PushPull,
-            .active_high = true,
-            .initial_state_on = initial_on,
-            .drive_strength = 2,      // Medium strength
-            .slew_rate_fast = false,  // Reduced EMI
-            .input_filter_enable = false,
-            .filter_clock_div = 0
-        };
+        return GpioExpertConfig{.direction = PinDirection::Output,
+                                .pull = PinPull::None,
+                                .drive = PinDrive::PushPull,
+                                .active_high = true,
+                                .initial_state_on = initial_on,
+                                .drive_strength = 2,      // Medium strength
+                                .slew_rate_fast = false,  // Reduced EMI
+                                .input_filter_enable = false,
+                                .filter_clock_div = 0};
     }
 
     /**
@@ -108,17 +107,15 @@ struct GpioExpertConfig {
      * @return GpioExpertConfig for LED
      */
     static constexpr GpioExpertConfig led(bool active_low = true, bool initial_on = false) {
-        return GpioExpertConfig{
-            .direction = PinDirection::Output,
-            .pull = PinPull::None,
-            .drive = PinDrive::PushPull,
-            .active_high = !active_low,
-            .initial_state_on = initial_on,
-            .drive_strength = 1,      // Low strength (LED doesn't need much)
-            .slew_rate_fast = false,
-            .input_filter_enable = false,
-            .filter_clock_div = 0
-        };
+        return GpioExpertConfig{.direction = PinDirection::Output,
+                                .pull = PinPull::None,
+                                .drive = PinDrive::PushPull,
+                                .active_high = !active_low,
+                                .initial_state_on = initial_on,
+                                .drive_strength = 1,  // Low strength (LED doesn't need much)
+                                .slew_rate_fast = false,
+                                .input_filter_enable = false,
+                                .filter_clock_div = 0};
     }
 
     /**
@@ -147,17 +144,15 @@ struct GpioExpertConfig {
      * @return GpioExpertConfig for open-drain
      */
     static constexpr GpioExpertConfig open_drain(bool enable_pullup = true) {
-        return GpioExpertConfig{
-            .direction = PinDirection::Output,
-            .pull = enable_pullup ? PinPull::PullUp : PinPull::None,
-            .drive = PinDrive::OpenDrain,
-            .active_high = true,
-            .initial_state_on = false,  // Start HIGH (released)
-            .drive_strength = 2,
-            .slew_rate_fast = false,
-            .input_filter_enable = false,
-            .filter_clock_div = 0
-        };
+        return GpioExpertConfig{.direction = PinDirection::Output,
+                                .pull = enable_pullup ? PinPull::PullUp : PinPull::None,
+                                .drive = PinDrive::OpenDrain,
+                                .active_high = true,
+                                .initial_state_on = false,  // Start HIGH (released)
+                                .drive_strength = 2,
+                                .slew_rate_fast = false,
+                                .input_filter_enable = false,
+                                .filter_clock_div = 0};
     }
 
     /**
@@ -168,17 +163,15 @@ struct GpioExpertConfig {
      * @return GpioExpertConfig for high-speed output
      */
     static constexpr GpioExpertConfig high_speed_output() {
-        return GpioExpertConfig{
-            .direction = PinDirection::Output,
-            .pull = PinPull::None,
-            .drive = PinDrive::PushPull,
-            .active_high = true,
-            .initial_state_on = false,
-            .drive_strength = 3,      // Maximum strength
-            .slew_rate_fast = true,   // Fast edges
-            .input_filter_enable = false,
-            .filter_clock_div = 0
-        };
+        return GpioExpertConfig{.direction = PinDirection::Output,
+                                .pull = PinPull::None,
+                                .drive = PinDrive::PushPull,
+                                .active_high = true,
+                                .initial_state_on = false,
+                                .drive_strength = 3,     // Maximum strength
+                                .slew_rate_fast = true,  // Fast edges
+                                .input_filter_enable = false,
+                                .filter_clock_div = 0};
     }
 
     /**
@@ -187,17 +180,15 @@ struct GpioExpertConfig {
      * @return GpioExpertConfig for analog input
      */
     static constexpr GpioExpertConfig analog_input() {
-        return GpioExpertConfig{
-            .direction = PinDirection::Input,
-            .pull = PinPull::None,           // No pull for analog
-            .drive = PinDrive::PushPull,     // N/A
-            .active_high = true,
-            .initial_state_on = false,
-            .drive_strength = 0,
-            .slew_rate_fast = false,
-            .input_filter_enable = false,    // No digital filter
-            .filter_clock_div = 0
-        };
+        return GpioExpertConfig{.direction = PinDirection::Input,
+                                .pull = PinPull::None,        // No pull for analog
+                                .drive = PinDrive::PushPull,  // N/A
+                                .active_high = true,
+                                .initial_state_on = false,
+                                .drive_strength = 0,
+                                .slew_rate_fast = false,
+                                .input_filter_enable = false,  // No digital filter
+                                .filter_clock_div = 0};
     }
 
     /**
@@ -209,23 +200,18 @@ struct GpioExpertConfig {
      * @param active_hi Active-high if true
      * @return GpioExpertConfig with custom settings
      */
-    static constexpr GpioExpertConfig custom(
-        PinDirection dir,
-        PinPull pull_cfg = PinPull::None,
-        PinDrive drive_mode = PinDrive::PushPull,
-        bool active_hi = true) {
-
-        return GpioExpertConfig{
-            .direction = dir,
-            .pull = pull_cfg,
-            .drive = drive_mode,
-            .active_high = active_hi,
-            .initial_state_on = false,
-            .drive_strength = 2,
-            .slew_rate_fast = false,
-            .input_filter_enable = false,
-            .filter_clock_div = 0
-        };
+    static constexpr GpioExpertConfig custom(PinDirection dir, PinPull pull_cfg = PinPull::None,
+                                             PinDrive drive_mode = PinDrive::PushPull,
+                                             bool active_hi = true) {
+        return GpioExpertConfig{.direction = dir,
+                                .pull = pull_cfg,
+                                .drive = drive_mode,
+                                .active_high = active_hi,
+                                .initial_state_on = false,
+                                .drive_strength = 2,
+                                .slew_rate_fast = false,
+                                .input_filter_enable = false,
+                                .filter_clock_div = 0};
     }
 };
 
@@ -254,7 +240,7 @@ template <typename PinType>
 class ExpertGpioPin : public GpioBase<ExpertGpioPin<PinType>> {
     friend GpioBase<ExpertGpioPin<PinType>>;
 
-private:
+   private:
     PinType pin_;
     GpioExpertConfig config_;
 
@@ -289,9 +275,7 @@ private:
     /**
      * @brief Toggle pin logical state
      */
-    constexpr Result<void, ErrorCode> toggle_impl() noexcept {
-        return pin_.toggle();
-    }
+    constexpr Result<void, ErrorCode> toggle_impl() noexcept { return pin_.toggle(); }
 
     /**
      * @brief Check if pin is logically ON
@@ -310,23 +294,17 @@ private:
     /**
      * @brief Set pin physically HIGH
      */
-    constexpr Result<void, ErrorCode> set_impl() noexcept {
-        return pin_.set();
-    }
+    constexpr Result<void, ErrorCode> set_impl() noexcept { return pin_.set(); }
 
     /**
      * @brief Set pin physically LOW
      */
-    constexpr Result<void, ErrorCode> clear_impl() noexcept {
-        return pin_.clear();
-    }
+    constexpr Result<void, ErrorCode> clear_impl() noexcept { return pin_.clear(); }
 
     /**
      * @brief Read pin physical state
      */
-    constexpr Result<bool, ErrorCode> read_impl() const noexcept {
-        return pin_.read();
-    }
+    constexpr Result<bool, ErrorCode> read_impl() const noexcept { return pin_.read(); }
 
     /**
      * @brief Set pin direction
@@ -352,7 +330,7 @@ private:
         return pin_.setDrive(drive);
     }
 
-public:
+   public:
     // ========================================================================
     // Expert-Specific Methods
     // ========================================================================
@@ -398,7 +376,8 @@ public:
             }
 
             // Set initial state
-            bool physical_state = config.active_high ? config.initial_state_on : !config.initial_state_on;
+            bool physical_state =
+                config.active_high ? config.initial_state_on : !config.initial_state_on;
             if (physical_state) {
                 auto set_result = pin_.set();
                 if (!set_result.is_ok()) {
@@ -421,9 +400,7 @@ public:
     /**
      * @brief Get current configuration
      */
-    constexpr const GpioExpertConfig& get_config() const noexcept {
-        return config_;
-    }
+    constexpr const GpioExpertConfig& get_config() const noexcept { return config_; }
 
     /**
      * @brief Reconfigure pin
@@ -508,7 +485,8 @@ Result<void, ErrorCode> configure(PinType& pin, const GpioExpertConfig& config) 
         }
 
         // Set initial state
-        bool physical_state = config.active_high ? config.initial_state_on : !config.initial_state_on;
+        bool physical_state =
+            config.active_high ? config.initial_state_on : !config.initial_state_on;
         if (physical_state) {
             auto set_result = pin.set();
             if (!set_result.is_ok()) {

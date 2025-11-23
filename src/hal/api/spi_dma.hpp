@@ -47,13 +47,14 @@
 
 #pragma once
 
-#include "core/error_code.hpp"
-#include "core/result.hpp"
-#include "core/types.hpp"
+#include "hal/api/spi_expert.hpp"
 #include "hal/dma/config.hpp"
 #include "hal/dma/connection.hpp"
 #include "hal/dma/registry.hpp"
-#include "hal/api/spi_expert.hpp"
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::hal {
 
@@ -82,16 +83,12 @@ struct SpiDmaConfig {
     /**
      * @brief Check if TX DMA is enabled
      */
-    static constexpr bool has_tx_dma() {
-        return !std::is_void_v<TxDmaConnection>;
-    }
+    static constexpr bool has_tx_dma() { return !std::is_void_v<TxDmaConnection>; }
 
     /**
      * @brief Check if RX DMA is enabled
      */
-    static constexpr bool has_rx_dma() {
-        return !std::is_void_v<RxDmaConnection>;
-    }
+    static constexpr bool has_rx_dma() { return !std::is_void_v<RxDmaConnection>; }
 
     /**
      * @brief Create SPI DMA configuration
@@ -105,22 +102,15 @@ struct SpiDmaConfig {
      * @param mode SPI mode
      * @return SPI DMA configuration
      */
-    static constexpr SpiDmaConfig create(
-        PinId mosi_pin,
-        PinId miso_pin,
-        PinId sck_pin,
-        u32 clock_speed,
-        SpiMode mode = SpiMode::Mode0) {
-
+    static constexpr SpiDmaConfig create(PinId mosi_pin, PinId miso_pin, PinId sck_pin,
+                                         u32 clock_speed, SpiMode mode = SpiMode::Mode0) {
         // Validate DMA connections at compile-time
         if constexpr (has_tx_dma()) {
-            static_assert(TxDmaConnection::is_compatible(),
-                         "Invalid TX DMA connection");
+            static_assert(TxDmaConnection::is_compatible(), "Invalid TX DMA connection");
         }
 
         if constexpr (has_rx_dma()) {
-            static_assert(RxDmaConnection::is_compatible(),
-                         "Invalid RX DMA connection");
+            static_assert(RxDmaConnection::is_compatible(), "Invalid RX DMA connection");
         }
 
         // Get peripheral ID from DMA connection
@@ -130,7 +120,7 @@ struct SpiDmaConfig {
             } else if constexpr (has_rx_dma()) {
                 return RxDmaConnection::peripheral;
             } else {
-                return PeripheralId::SPI0; // Default
+                return PeripheralId::SPI0;  // Default
             }
         }();
 
@@ -148,15 +138,13 @@ struct SpiDmaConfig {
                 .enable_mosi = has_tx_dma() || mosi_pin != PinId::PA0,
                 .enable_miso = has_rx_dma() || miso_pin != PinId::PA0,
                 .enable_nss = false,
-                .enable_interrupts = has_tx_dma() || has_rx_dma(), // DMA needs interrupts
+                .enable_interrupts = has_tx_dma() || has_rx_dma(),  // DMA needs interrupts
                 .enable_dma_tx = has_tx_dma(),
                 .enable_dma_rx = has_rx_dma(),
                 .enable_crc = false,
                 .crc_polynomial = 0,
                 .enable_ti_mode = false,
-                .enable_motorola = true
-            }
-        };
+                .enable_motorola = true}};
     }
 
     /**
@@ -231,20 +219,16 @@ struct SpiDmaConfig {
  * @return Result indicating success or error
  */
 template <typename TxConnection, typename RxConnection>
-inline Result<void, ErrorCode> spi_dma_transfer(
-    const void* tx_data,
-    void* rx_data,
-    usize size) {
-
+inline Result<void, ErrorCode> spi_dma_transfer(const void* tx_data, void* rx_data, usize size) {
     // Validate connections at compile-time
     static_assert(TxConnection::is_compatible(), "Invalid DMA connection");
     static_assert(RxConnection::is_compatible(), "Invalid DMA connection");
 
     // Create DMA configurations
-    auto tx_config = DmaTransferConfig<TxConnection>::memory_to_peripheral(
-        tx_data, size, DmaDataWidth::Bits8);
-    auto rx_config = DmaTransferConfig<RxConnection>::peripheral_to_memory(
-        rx_data, size, DmaDataWidth::Bits8);
+    auto tx_config =
+        DmaTransferConfig<TxConnection>::memory_to_peripheral(tx_data, size, DmaDataWidth::Bits8);
+    auto rx_config =
+        DmaTransferConfig<RxConnection>::peripheral_to_memory(rx_data, size, DmaDataWidth::Bits8);
 
     // Validate
     auto tx_validation = tx_config.validate();
@@ -284,8 +268,8 @@ inline Result<void, ErrorCode> spi_dma_transmit(const void* data, usize size) {
     static_assert(Connection::is_compatible(), "Invalid DMA connection");
 
     // Create DMA configuration
-    auto dma_config = DmaTransferConfig<Connection>::memory_to_peripheral(
-        data, size, DmaDataWidth::Bits8);
+    auto dma_config =
+        DmaTransferConfig<Connection>::memory_to_peripheral(data, size, DmaDataWidth::Bits8);
 
     // Validate
     auto validation = dma_config.validate();
@@ -320,8 +304,8 @@ inline Result<void, ErrorCode> spi_dma_receive(void* buffer, usize size) {
     static_assert(Connection::is_compatible(), "Invalid DMA connection");
 
     // Create DMA configuration
-    auto dma_config = DmaTransferConfig<Connection>::peripheral_to_memory(
-        buffer, size, DmaDataWidth::Bits8);
+    auto dma_config =
+        DmaTransferConfig<Connection>::peripheral_to_memory(buffer, size, DmaDataWidth::Bits8);
 
     // Validate
     auto validation = dma_config.validate();
@@ -390,19 +374,10 @@ inline Result<void, ErrorCode> spi_dma_stop_rx() {
  * @return SPI DMA configuration
  */
 template <typename TxDma, typename RxDma>
-constexpr auto create_spi_full_duplex_dma(
-    PinId mosi_pin,
-    PinId miso_pin,
-    PinId sck_pin,
-    u32 clock_speed) {
-
-    return SpiDmaConfig<TxDma, RxDma>::create(
-        mosi_pin,
-        miso_pin,
-        sck_pin,
-        clock_speed,
-        SpiMode::Mode0
-    );
+constexpr auto create_spi_full_duplex_dma(PinId mosi_pin, PinId miso_pin, PinId sck_pin,
+                                          u32 clock_speed) {
+    return SpiDmaConfig<TxDma, RxDma>::create(mosi_pin, miso_pin, sck_pin, clock_speed,
+                                              SpiMode::Mode0);
 }
 
 /**
@@ -417,18 +392,10 @@ constexpr auto create_spi_full_duplex_dma(
  * @return SPI DMA configuration
  */
 template <typename TxDma>
-constexpr auto create_spi_tx_only_dma(
-    PinId mosi_pin,
-    PinId sck_pin,
-    u32 clock_speed) {
-
-    return SpiDmaConfig<TxDma, void>::create(
-        mosi_pin,
-        PinId::PA0,  // Unused MISO
-        sck_pin,
-        clock_speed,
-        SpiMode::Mode0
-    );
+constexpr auto create_spi_tx_only_dma(PinId mosi_pin, PinId sck_pin, u32 clock_speed) {
+    return SpiDmaConfig<TxDma, void>::create(mosi_pin,
+                                             PinId::PA0,  // Unused MISO
+                                             sck_pin, clock_speed, SpiMode::Mode0);
 }
 
 /**
@@ -445,19 +412,10 @@ constexpr auto create_spi_tx_only_dma(
  * @return SPI DMA configuration
  */
 template <typename TxDma, typename RxDma>
-constexpr auto create_spi_high_speed_dma(
-    PinId mosi_pin,
-    PinId miso_pin,
-    PinId sck_pin,
-    u32 clock_speed) {
-
-    return SpiDmaConfig<TxDma, RxDma>::create(
-        mosi_pin,
-        miso_pin,
-        sck_pin,
-        clock_speed,
-        SpiMode::Mode0
-    );
+constexpr auto create_spi_high_speed_dma(PinId mosi_pin, PinId miso_pin, PinId sck_pin,
+                                         u32 clock_speed) {
+    return SpiDmaConfig<TxDma, RxDma>::create(mosi_pin, miso_pin, sck_pin, clock_speed,
+                                              SpiMode::Mode0);
 }
 
 }  // namespace ucore::hal

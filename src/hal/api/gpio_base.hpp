@@ -38,13 +38,14 @@
 
 #pragma once
 
+#include <concepts>
+#include <type_traits>
+
+#include "hal/types.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
-
-#include <concepts>
-#include <type_traits>
 
 namespace ucore::hal {
 
@@ -106,7 +107,7 @@ concept GpioImplementation = requires(T gpio) {
  */
 template <typename Derived>
 class GpioBase {
-protected:
+   protected:
     // ========================================================================
     // CRTP Helper Methods
     // ========================================================================
@@ -115,19 +116,15 @@ protected:
      * @brief Get reference to derived instance
      * @return Reference to derived class instance
      */
-    constexpr Derived& impl() noexcept {
-        return static_cast<Derived&>(*this);
-    }
+    constexpr Derived& impl() noexcept { return static_cast<Derived&>(*this); }
 
     /**
      * @brief Get const reference to derived instance
      * @return Const reference to derived class instance
      */
-    constexpr const Derived& impl() const noexcept {
-        return static_cast<const Derived&>(*this);
-    }
+    constexpr const Derived& impl() const noexcept { return static_cast<const Derived&>(*this); }
 
-public:
+   public:
     // ========================================================================
     // Logical Digital Operations
     // ========================================================================
@@ -144,9 +141,7 @@ public:
      * led.on().expect("Failed to turn LED on");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> on() noexcept {
-        return impl().on_impl();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> on() noexcept { return impl().on_impl(); }
 
     /**
      * @brief Turn pin OFF (logical low)
@@ -160,9 +155,7 @@ public:
      * led.off().expect("Failed to turn LED off");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> off() noexcept {
-        return impl().off_impl();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> off() noexcept { return impl().off_impl(); }
 
     /**
      * @brief Toggle pin state
@@ -231,9 +224,7 @@ public:
      * pin.set().expect("Failed to set pin high");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> set() noexcept {
-        return impl().set_impl();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> set() noexcept { return impl().set_impl(); }
 
     /**
      * @brief Set pin to physical LOW
@@ -248,9 +239,7 @@ public:
      * pin.clear().expect("Failed to clear pin");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> clear() noexcept {
-        return impl().clear_impl();
-    }
+    [[nodiscard]] constexpr Result<void, ErrorCode> clear() noexcept { return impl().clear_impl(); }
 
     /**
      * @brief Read physical pin state
@@ -415,7 +404,7 @@ public:
         return set_pull(PinPull::None);
     }
 
-protected:
+   protected:
     // Default constructor (protected - only derived can construct)
     constexpr GpioBase() noexcept = default;
 
@@ -437,4 +426,4 @@ protected:
 // using static_assert on sizeof(GpioBase) and std::is_empty_v<GpioBase>.
 // This ensures validation only occurs when GpioBase is properly used with CRTP.
 
-} // namespace ucore::hal
+}  // namespace ucore::hal

@@ -31,8 +31,8 @@
  * - 0xC7: Chip Erase
  */
 
-#include "core/result.hpp"
 #include "core/error.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 
 using namespace ucore::core;
@@ -42,25 +42,25 @@ using namespace ucore::core;
 // ==============================================================================
 
 #if defined(ALLOY_BOARD_NUCLEO_F401RE) || defined(ALLOY_BOARD_NUCLEO_F446RE)
+    #include "hal/api/spi_simple.hpp"
     #include "hal/vendors/st/stm32f4/clock_platform.hpp"
     #include "hal/vendors/st/stm32f4/gpio.hpp"
-    #include "hal/api/spi_simple.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
-        ucore::hal::st::stm32f4::ExampleF4ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform =
+    ucore::hal::st::stm32f4::Stm32f4Clock<ucore::hal::st::stm32f4::ExampleF4ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
 
 #elif defined(ALLOY_BOARD_SAME70_XPLAINED)
     #include "hal/vendors/microchip/same70/clock_platform.hpp"
     #include "hal/vendors/microchip/same70/gpio.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::microchip::same70::Same70Clock<
-        ucore::hal::microchip::same70::ExampleSame70ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform = ucore::hal::microchip::same70::Same70Clock<
+    ucore::hal::microchip::same70::ExampleSame70ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
 
 #else
     #error "Unsupported board for SPI flash test"
@@ -71,32 +71,32 @@ using namespace ucore::core;
 // ==============================================================================
 
 namespace spi_flash {
-    // Command definitions
-    constexpr u8 CMD_READ_JEDEC_ID      = 0x9F;
-    constexpr u8 CMD_WRITE_ENABLE       = 0x06;
-    constexpr u8 CMD_WRITE_DISABLE      = 0x04;
-    constexpr u8 CMD_READ_STATUS_REG    = 0x05;
-    constexpr u8 CMD_PAGE_PROGRAM       = 0x02;
-    constexpr u8 CMD_READ_DATA          = 0x03;
-    constexpr u8 CMD_SECTOR_ERASE       = 0x20;
-    constexpr u8 CMD_CHIP_ERASE         = 0xC7;
+// Command definitions
+constexpr u8 CMD_READ_JEDEC_ID = 0x9F;
+constexpr u8 CMD_WRITE_ENABLE = 0x06;
+constexpr u8 CMD_WRITE_DISABLE = 0x04;
+constexpr u8 CMD_READ_STATUS_REG = 0x05;
+constexpr u8 CMD_PAGE_PROGRAM = 0x02;
+constexpr u8 CMD_READ_DATA = 0x03;
+constexpr u8 CMD_SECTOR_ERASE = 0x20;
+constexpr u8 CMD_CHIP_ERASE = 0xC7;
 
-    // Status register bits
-    constexpr u8 STATUS_BUSY            = 0x01;
-    constexpr u8 STATUS_WEL             = 0x02;
+// Status register bits
+constexpr u8 STATUS_BUSY = 0x01;
+constexpr u8 STATUS_WEL = 0x02;
 
-    // Flash parameters
-    constexpr u32 PAGE_SIZE             = 256;
-    constexpr u32 SECTOR_SIZE           = 4096;
-    constexpr u32 MAX_BUSY_WAIT         = 1000000;
-}
+// Flash parameters
+constexpr u32 PAGE_SIZE = 256;
+constexpr u32 SECTOR_SIZE = 4096;
+constexpr u32 MAX_BUSY_WAIT = 1000000;
+}  // namespace spi_flash
 
 // ==============================================================================
 // SPI Flash Driver
 // ==============================================================================
 
 class SpiFlash {
-public:
+   public:
     /**
      * @brief Initialize SPI flash driver
      */
@@ -276,7 +276,7 @@ public:
         return Ok();
     }
 
-private:
+   private:
     static void cs_low() {
         // In real implementation: pull CS pin low
     }
@@ -288,7 +288,7 @@ private:
     static u8 spi_transfer(u8 data) {
         // In real implementation: transfer byte via SPI
         // Return received byte
-        return 0xFF; // Dummy return
+        return 0xFF;  // Dummy return
     }
 };
 
@@ -320,7 +320,7 @@ Result<void, ErrorCode> test_read_flash_id() {
  * @brief Test Scenario 2: Write and Read Back
  */
 Result<void, ErrorCode> test_write_read() {
-    constexpr u32 TEST_ADDRESS = 0x001000; // 4KB into flash
+    constexpr u32 TEST_ADDRESS = 0x001000;  // 4KB into flash
     constexpr u32 TEST_LENGTH = 64;
 
     // Prepare test pattern
@@ -471,7 +471,7 @@ int main() {
 
     // Test 1: Read ID
     if (test_read_flash_id().is_ok()) {
-        LedPin::set(); // Turn on LED briefly
+        LedPin::set();  // Turn on LED briefly
         for (volatile u32 i = 0; i < 500000; i++) {}
         LedPin::clear();
     } else {

@@ -6,12 +6,12 @@
  * and ensures they don't reoccur.
  */
 
+#include <string>
+
 #include <catch2/catch_test_macros.hpp>
 
-#include "core/result.hpp"
 #include "core/error.hpp"
-
-#include <string>
+#include "core/result.hpp"
 
 using namespace ucore::core;
 
@@ -90,7 +90,9 @@ TEST_CASE("BUG #2: Result<bool,E> template ambiguity", "[regression][result][bug
 
     SECTION("Workaround: Use plain bool for simple cases") {
         // For read-only operations, plain bool is acceptable
-        auto get_state = []() -> bool { return true; };
+        auto get_state = []() -> bool {
+            return true;
+        };
 
         bool state = get_state();
         REQUIRE(state == true);
@@ -256,7 +258,7 @@ TEST_CASE("BUG #8: Result<void> unwrap() is callable", "[regression][result][bug
         REQUIRE(result.is_ok());
         // This should compile and not crash
         result.unwrap();
-        REQUIRE(true); // If we got here, unwrap() worked
+        REQUIRE(true);  // If we got here, unwrap() worked
     }
 
     SECTION("void Result error access") {

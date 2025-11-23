@@ -9,6 +9,7 @@
  */
 
 #include "hal/api/uart_expert.hpp"
+
 #include "core/types.hpp"
 #include "core/units.hpp"
 
@@ -58,10 +59,7 @@ void test_inheritance() {
 void test_expert_config() {
     // Create configuration using factory method
     constexpr auto config = UartExpertConfig<TestPolicy>::standard_115200(
-        signals::PeripheralId::USART0,
-        signals::PinId::PD3,
-        signals::PinId::PD4
-    );
+        signals::PeripheralId::USART0, signals::PinId::PD3, signals::PinId::PD4);
 
     // Validate at compile-time
     static_assert(config.is_valid(), "Standard 115200 config must be valid");
@@ -87,31 +85,27 @@ void test_expert_config() {
 void test_constexpr_validation() {
     // Valid configuration
     constexpr auto valid_config = UartExpertConfig<TestPolicy>::standard_115200(
-        signals::PeripheralId::USART0,
-        signals::PinId::PD3,
-        signals::PinId::PD4
-    );
+        signals::PeripheralId::USART0, signals::PinId::PD3, signals::PinId::PD4);
     static_assert(valid_config.is_valid(), "Standard config must be valid");
 
     // Invalid configuration (no TX or RX enabled)
-    constexpr auto invalid_config = UartExpertConfig<TestPolicy>{
-        .peripheral = signals::PeripheralId::USART0,
-        .tx_pin = signals::PinId::PD3,
-        .rx_pin = signals::PinId::PD4,
-        .baudrate = BaudRate{115200},
-        .data_bits = 8,
-        .parity = UartParity::NONE,
-        .stop_bits = 1,
-        .flow_control = false,
-        .enable_tx = false,  // Both disabled
-        .enable_rx = false,  // Both disabled
-        .enable_interrupts = false,
-        .enable_dma_tx = false,
-        .enable_dma_rx = false,
-        .enable_oversampling = true,
-        .enable_rx_timeout = false,
-        .rx_timeout_value = 0
-    };
+    constexpr auto invalid_config =
+        UartExpertConfig<TestPolicy>{.peripheral = signals::PeripheralId::USART0,
+                                     .tx_pin = signals::PinId::PD3,
+                                     .rx_pin = signals::PinId::PD4,
+                                     .baudrate = BaudRate{115200},
+                                     .data_bits = 8,
+                                     .parity = UartParity::NONE,
+                                     .stop_bits = 1,
+                                     .flow_control = false,
+                                     .enable_tx = false,  // Both disabled
+                                     .enable_rx = false,  // Both disabled
+                                     .enable_interrupts = false,
+                                     .enable_dma_tx = false,
+                                     .enable_dma_rx = false,
+                                     .enable_oversampling = true,
+                                     .enable_rx_timeout = false,
+                                     .rx_timeout_value = 0};
     static_assert(!invalid_config.is_valid(), "Config with no TX/RX must be invalid");
 }
 
@@ -121,29 +115,19 @@ void test_constexpr_validation() {
 void test_presets() {
     // Standard 115200
     constexpr auto standard = UartExpertConfig<TestPolicy>::standard_115200(
-        signals::PeripheralId::USART0,
-        signals::PinId::PD3,
-        signals::PinId::PD4
-    );
+        signals::PeripheralId::USART0, signals::PinId::PD3, signals::PinId::PD4);
     static_assert(standard.is_valid(), "Standard preset must be valid");
     static_assert(standard.enable_tx && standard.enable_rx, "Standard preset must have TX and RX");
 
     // Logger (TX-only)
     constexpr auto logger = UartExpertConfig<TestPolicy>::logger_config(
-        signals::PeripheralId::USART0,
-        signals::PinId::PD3,
-        BaudRate{115200}
-    );
+        signals::PeripheralId::USART0, signals::PinId::PD3, BaudRate{115200});
     static_assert(logger.is_valid(), "Logger preset must be valid");
     static_assert(logger.enable_tx && !logger.enable_rx, "Logger preset must be TX-only");
 
     // DMA configuration
     constexpr auto dma = UartExpertConfig<TestPolicy>::dma_config(
-        signals::PeripheralId::USART0,
-        signals::PinId::PD3,
-        signals::PinId::PD4,
-        BaudRate{115200}
-    );
+        signals::PeripheralId::USART0, signals::PinId::PD3, signals::PinId::PD4, BaudRate{115200});
     static_assert(dma.is_valid(), "DMA preset must be valid");
     static_assert(dma.enable_dma_tx && dma.enable_dma_rx, "DMA preset must enable DMA");
 }
@@ -153,9 +137,7 @@ void test_presets() {
  */
 void test_tx_only() {
     constexpr auto config = UartExpertConfig<TestPolicy>::logger_config(
-        signals::PeripheralId::USART0,
-        signals::PinId::PD3
-    );
+        signals::PeripheralId::USART0, signals::PinId::PD3);
 
     auto uart = ExpertUartInstance<TestPolicy>(config);
 
@@ -176,32 +158,28 @@ void test_tx_only() {
 void test_error_messages() {
     // Valid config
     constexpr auto valid = UartExpertConfig<TestPolicy>::standard_115200(
-        signals::PeripheralId::USART0,
-        signals::PinId::PD3,
-        signals::PinId::PD4
-    );
+        signals::PeripheralId::USART0, signals::PinId::PD3, signals::PinId::PD4);
     constexpr auto valid_msg = valid.error_message();
     static_assert(valid_msg[0] == 'V', "Valid config should return 'Valid' message");
 
     // Invalid baud rate (too high)
-    constexpr auto invalid_baud = UartExpertConfig<TestPolicy>{
-        .peripheral = signals::PeripheralId::USART0,
-        .tx_pin = signals::PinId::PD3,
-        .rx_pin = signals::PinId::PD4,
-        .baudrate = BaudRate{20000000},  // Too high (>10MHz)
-        .data_bits = 8,
-        .parity = UartParity::NONE,
-        .stop_bits = 1,
-        .flow_control = false,
-        .enable_tx = true,
-        .enable_rx = true,
-        .enable_interrupts = false,
-        .enable_dma_tx = false,
-        .enable_dma_rx = false,
-        .enable_oversampling = true,
-        .enable_rx_timeout = false,
-        .rx_timeout_value = 0
-    };
+    constexpr auto invalid_baud =
+        UartExpertConfig<TestPolicy>{.peripheral = signals::PeripheralId::USART0,
+                                     .tx_pin = signals::PinId::PD3,
+                                     .rx_pin = signals::PinId::PD4,
+                                     .baudrate = BaudRate{20000000},  // Too high (>10MHz)
+                                     .data_bits = 8,
+                                     .parity = UartParity::NONE,
+                                     .stop_bits = 1,
+                                     .flow_control = false,
+                                     .enable_tx = true,
+                                     .enable_rx = true,
+                                     .enable_interrupts = false,
+                                     .enable_dma_tx = false,
+                                     .enable_dma_rx = false,
+                                     .enable_oversampling = true,
+                                     .enable_rx_timeout = false,
+                                     .rx_timeout_value = 0};
     static_assert(!invalid_baud.is_valid(), "High baud rate must be invalid");
 }
 
@@ -213,11 +191,9 @@ void test_zero_overhead() {
     using BaseType = UartBase<InstanceType>;
 
     // Verify empty base optimization
-    static_assert(sizeof(BaseType) == 1,
-                  "UartBase must be empty (sizeof == 1)");
+    static_assert(sizeof(BaseType) == 1, "UartBase must be empty (sizeof == 1)");
 
-    static_assert(std::is_empty_v<BaseType>,
-                  "UartBase must have no data members");
+    static_assert(std::is_empty_v<BaseType>, "UartBase must have no data members");
 }
 
 /**
@@ -225,10 +201,7 @@ void test_zero_overhead() {
  */
 void test_validation_helpers() {
     constexpr auto config = UartExpertConfig<TestPolicy>::standard_115200(
-        signals::PeripheralId::USART0,
-        signals::PinId::PD3,
-        signals::PinId::PD4
-    );
+        signals::PeripheralId::USART0, signals::PinId::PD3, signals::PinId::PD4);
 
     // Test validation functions
     static_assert(validate_uart_config(config), "Standard config must validate");
@@ -243,17 +216,13 @@ void test_validation_helpers() {
  */
 void test_get_config() {
     constexpr auto config = UartExpertConfig<TestPolicy>::standard_115200(
-        signals::PeripheralId::USART0,
-        signals::PinId::PD3,
-        signals::PinId::PD4
-    );
+        signals::PeripheralId::USART0, signals::PinId::PD3, signals::PinId::PD4);
 
     auto uart = ExpertUartInstance<TestPolicy>(config);
 
     // Should be able to retrieve configuration
     const auto& retrieved_config = uart.config();
-    static_assert(std::is_same_v<decltype(uart.config()),
-                  const UartExpertConfig<TestPolicy>&>,
+    static_assert(std::is_same_v<decltype(uart.config()), const UartExpertConfig<TestPolicy>&>,
                   "config() must return const reference");
 
     // Verify we can access config properties

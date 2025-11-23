@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::rtc {
 
 /// RTC Register Structure
 struct RTC_Registers {
-
     /// RTC time register
     /// Offset: 0x0000
     /// Reset value: 0x00000007
@@ -52,7 +51,7 @@ struct RTC_Registers {
     /// Offset: 0x0018
     /// Reset value: 0x00000000
     volatile uint32_t RTC_CR;
-    uint8_t RESERVED_001C[8]; ///< Reserved
+    uint8_t RESERVED_001C[8];  ///< Reserved
 
     /// RTC write protection register
     /// Offset: 0x0024
@@ -83,7 +82,7 @@ struct RTC_Registers {
     /// Offset: 0x0038
     /// Reset value: 0x00000000
     volatile uint32_t RTC_TSSSR;
-    uint8_t RESERVED_003C[4]; ///< Reserved
+    uint8_t RESERVED_003C[4];  ///< Reserved
 
     /// RTC alarm A register
     /// Offset: 0x0040
@@ -114,7 +113,7 @@ struct RTC_Registers {
     /// Offset: 0x0054
     /// Reset value: 0x00000000
     volatile uint32_t RTC_MISR;
-    uint8_t RESERVED_0058[4]; ///< Reserved
+    uint8_t RESERVED_0058[4];  ///< Reserved
 
     /// RTC status clear register
     /// Offset: 0x005C

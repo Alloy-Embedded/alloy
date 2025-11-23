@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::usb {
 
 /// USB Register Structure
 struct USB_Registers {
-
     /// USB endpoint/channel 0 register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -57,7 +56,7 @@ struct USB_Registers {
     /// Offset: 0x001C
     /// Reset value: 0x00000000
     volatile uint32_t USB_CHEP7R;
-    uint8_t RESERVED_0020[32]; ///< Reserved
+    uint8_t RESERVED_0020[32];  ///< Reserved
 
     /// USB control register
     /// Offset: 0x0040
@@ -78,7 +77,7 @@ struct USB_Registers {
     /// Offset: 0x004C
     /// Reset value: 0x00000000
     volatile uint32_t USB_DADDR;
-    uint8_t RESERVED_0050[4]; ///< Reserved
+    uint8_t RESERVED_0050[4];  ///< Reserved
 
     /// LPM control and status register
     /// Offset: 0x0054

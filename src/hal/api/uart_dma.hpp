@@ -46,13 +46,14 @@
 
 #pragma once
 
-#include "core/error_code.hpp"
-#include "core/result.hpp"
-#include "core/types.hpp"
+#include "hal/api/uart_expert.hpp"
 #include "hal/dma/config.hpp"
 #include "hal/dma/connection.hpp"
 #include "hal/dma/registry.hpp"
-#include "hal/api/uart_expert.hpp"
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::hal {
 
@@ -81,16 +82,12 @@ struct UartDmaConfig {
     /**
      * @brief Check if TX DMA is enabled
      */
-    static constexpr bool has_tx_dma() {
-        return !std::is_void_v<TxDmaConnection>;
-    }
+    static constexpr bool has_tx_dma() { return !std::is_void_v<TxDmaConnection>; }
 
     /**
      * @brief Check if RX DMA is enabled
      */
-    static constexpr bool has_rx_dma() {
-        return !std::is_void_v<RxDmaConnection>;
-    }
+    static constexpr bool has_rx_dma() { return !std::is_void_v<RxDmaConnection>; }
 
     /**
      * @brief Create UART DMA configuration
@@ -103,21 +100,15 @@ struct UartDmaConfig {
      * @param parity Parity setting
      * @return UART DMA configuration
      */
-    static constexpr UartDmaConfig create(
-        PinId tx_pin,
-        PinId rx_pin,
-        BaudRate baudrate,
-        UartParity parity = UartParity::NONE) {
-
+    static constexpr UartDmaConfig create(PinId tx_pin, PinId rx_pin, BaudRate baudrate,
+                                          UartParity parity = UartParity::NONE) {
         // Validate DMA connections at compile-time
         if constexpr (has_tx_dma()) {
-            static_assert(TxDmaConnection::is_compatible(),
-                         "Invalid TX DMA connection");
+            static_assert(TxDmaConnection::is_compatible(), "Invalid TX DMA connection");
         }
 
         if constexpr (has_rx_dma()) {
-            static_assert(RxDmaConnection::is_compatible(),
-                         "Invalid RX DMA connection");
+            static_assert(RxDmaConnection::is_compatible(), "Invalid RX DMA connection");
         }
 
         // Get peripheral ID from DMA connection
@@ -127,7 +118,7 @@ struct UartDmaConfig {
             } else if constexpr (has_rx_dma()) {
                 return RxDmaConnection::peripheral;
             } else {
-                return PeripheralId::USART0; // Default
+                return PeripheralId::USART0;  // Default
             }
         }();
 
@@ -143,14 +134,12 @@ struct UartDmaConfig {
                 .flow_control = false,
                 .enable_tx = has_tx_dma() || tx_pin != PinId::PA0,
                 .enable_rx = has_rx_dma() || rx_pin != PinId::PA0,
-                .enable_interrupts = has_tx_dma() || has_rx_dma(), // DMA needs interrupts
+                .enable_interrupts = has_tx_dma() || has_rx_dma(),  // DMA needs interrupts
                 .enable_dma_tx = has_tx_dma(),
                 .enable_dma_rx = has_rx_dma(),
                 .enable_oversampling = true,
                 .enable_rx_timeout = false,
-                .rx_timeout_value = 0
-            }
-        };
+                .rx_timeout_value = 0}};
     }
 
     /**
@@ -332,17 +321,8 @@ inline Result<void, ErrorCode> uart_dma_stop_rx() {
  * @return UART DMA configuration
  */
 template <typename TxDma, typename RxDma>
-constexpr auto create_uart_full_duplex_dma(
-    PinId tx_pin,
-    PinId rx_pin,
-    BaudRate baudrate) {
-
-    return UartDmaConfig<TxDma, RxDma>::create(
-        tx_pin,
-        rx_pin,
-        baudrate,
-        UartParity::NONE
-    );
+constexpr auto create_uart_full_duplex_dma(PinId tx_pin, PinId rx_pin, BaudRate baudrate) {
+    return UartDmaConfig<TxDma, RxDma>::create(tx_pin, rx_pin, baudrate, UartParity::NONE);
 }
 
 /**
@@ -357,12 +337,9 @@ constexpr auto create_uart_full_duplex_dma(
  */
 template <typename TxDma>
 constexpr auto create_uart_tx_only_dma(PinId tx_pin, BaudRate baudrate) {
-    return UartDmaConfig<TxDma, void>::create(
-        tx_pin,
-        PinId::PA0, // Unused RX pin
-        baudrate,
-        UartParity::NONE
-    );
+    return UartDmaConfig<TxDma, void>::create(tx_pin,
+                                              PinId::PA0,  // Unused RX pin
+                                              baudrate, UartParity::NONE);
 }
 
 /**
@@ -377,12 +354,8 @@ constexpr auto create_uart_tx_only_dma(PinId tx_pin, BaudRate baudrate) {
  */
 template <typename RxDma>
 constexpr auto create_uart_rx_only_dma(PinId rx_pin, BaudRate baudrate) {
-    return UartDmaConfig<void, RxDma>::create(
-        PinId::PA0, // Unused TX pin
-        rx_pin,
-        baudrate,
-        UartParity::NONE
-    );
+    return UartDmaConfig<void, RxDma>::create(PinId::PA0,  // Unused TX pin
+                                              rx_pin, baudrate, UartParity::NONE);
 }
 
 }  // namespace ucore::hal

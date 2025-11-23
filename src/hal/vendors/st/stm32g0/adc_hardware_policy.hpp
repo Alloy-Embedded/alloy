@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/st/stm32g0/generated/registers/adc_registers.hpp"
@@ -85,11 +85,11 @@ struct Stm32g0ADCHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_ADC_MOCK_HW
-            return ALLOY_ADC_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_ADC_MOCK_HW
+        return ALLOY_ADC_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -110,9 +110,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_ADEN
      */
     static inline void enable_adc() {
-        #ifdef ALLOY_ADC_TEST_HOOK_ADEN
-            ALLOY_ADC_TEST_HOOK_ADEN();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_ADEN
+        ALLOY_ADC_TEST_HOOK_ADEN();
+#endif
 
         hw()->ADC_CR |= (1U << 0);
     }
@@ -123,9 +123,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_ADDIS
      */
     static inline void disable_adc() {
-        #ifdef ALLOY_ADC_TEST_HOOK_ADDIS
-            ALLOY_ADC_TEST_HOOK_ADDIS();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_ADDIS
+        ALLOY_ADC_TEST_HOOK_ADDIS();
+#endif
 
         hw()->ADC_CR |= (1U << 1);
     }
@@ -136,9 +136,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_ADSTART
      */
     static inline void start_conversion() {
-        #ifdef ALLOY_ADC_TEST_HOOK_ADSTART
-            ALLOY_ADC_TEST_HOOK_ADSTART();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_ADSTART
+        ALLOY_ADC_TEST_HOOK_ADSTART();
+#endif
 
         hw()->ADC_CR |= (1U << 2);
     }
@@ -149,9 +149,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_ADSTP
      */
     static inline void stop_conversion() {
-        #ifdef ALLOY_ADC_TEST_HOOK_ADSTP
-            ALLOY_ADC_TEST_HOOK_ADSTP();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_ADSTP
+        ALLOY_ADC_TEST_HOOK_ADSTP();
+#endif
 
         hw()->ADC_CR |= (1U << 4);
     }
@@ -162,9 +162,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_ADCAL
      */
     static inline void calibrate() {
-        #ifdef ALLOY_ADC_TEST_HOOK_ADCAL
-            ALLOY_ADC_TEST_HOOK_ADCAL();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_ADCAL
+        ALLOY_ADC_TEST_HOOK_ADCAL();
+#endif
 
         hw()->ADC_CR |= (1U << 31);
     }
@@ -175,9 +175,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_RES
      */
     static inline void set_resolution_12bit() {
-        #ifdef ALLOY_ADC_TEST_HOOK_RES
-            ALLOY_ADC_TEST_HOOK_RES();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_RES
+        ALLOY_ADC_TEST_HOOK_RES();
+#endif
 
         hw()->ADC_CFGR1 &= ~(0x3U << 3);
     }
@@ -188,9 +188,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_RES
      */
     static inline void set_resolution_10bit() {
-        #ifdef ALLOY_ADC_TEST_HOOK_RES
-            ALLOY_ADC_TEST_HOOK_RES();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_RES
+        ALLOY_ADC_TEST_HOOK_RES();
+#endif
 
         hw()->ADC_CFGR1 = (hw()->ADC_CFGR1 & ~(0x3U << 3)) | (0x1U << 3);
     }
@@ -201,9 +201,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_RES
      */
     static inline void set_resolution_8bit() {
-        #ifdef ALLOY_ADC_TEST_HOOK_RES
-            ALLOY_ADC_TEST_HOOK_RES();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_RES
+        ALLOY_ADC_TEST_HOOK_RES();
+#endif
 
         hw()->ADC_CFGR1 = (hw()->ADC_CFGR1 & ~(0x3U << 3)) | (0x2U << 3);
     }
@@ -214,9 +214,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_CONT
      */
     static inline void set_continuous_mode() {
-        #ifdef ALLOY_ADC_TEST_HOOK_CONT
-            ALLOY_ADC_TEST_HOOK_CONT();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_CONT
+        ALLOY_ADC_TEST_HOOK_CONT();
+#endif
 
         hw()->ADC_CFGR1 |= (1U << 13);
     }
@@ -227,9 +227,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_CONT
      */
     static inline void set_single_mode() {
-        #ifdef ALLOY_ADC_TEST_HOOK_CONT
-            ALLOY_ADC_TEST_HOOK_CONT();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_CONT
+        ALLOY_ADC_TEST_HOOK_CONT();
+#endif
 
         hw()->ADC_CFGR1 &= ~(1U << 13);
     }
@@ -241,9 +241,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_CHSEL
      */
     static inline void select_channel(uint8_t channel) {
-        #ifdef ALLOY_ADC_TEST_HOOK_CHSEL
-            ALLOY_ADC_TEST_HOOK_CHSEL(channel);
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_CHSEL
+        ALLOY_ADC_TEST_HOOK_CHSEL(channel);
+#endif
 
         hw()->ADC_CHSELR = (1U << channel);
     }
@@ -255,9 +255,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_DR
      */
     static inline uint16_t read_data() {
-        #ifdef ALLOY_ADC_TEST_HOOK_DR
-            ALLOY_ADC_TEST_HOOK_DR();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_DR
+        ALLOY_ADC_TEST_HOOK_DR();
+#endif
 
         return static_cast<uint16_t>(hw()->ADC_DR & 0xFFFF);
     }
@@ -269,9 +269,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_EOC
      */
     static inline bool is_conversion_complete() {
-        #ifdef ALLOY_ADC_TEST_HOOK_EOC
-            ALLOY_ADC_TEST_HOOK_EOC();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_EOC
+        ALLOY_ADC_TEST_HOOK_EOC();
+#endif
 
         return (hw()->ADC_ISR & (1U << 2)) != 0;
     }
@@ -283,9 +283,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_ADRDY
      */
     static inline bool is_ready() {
-        #ifdef ALLOY_ADC_TEST_HOOK_ADRDY
-            ALLOY_ADC_TEST_HOOK_ADRDY();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_ADRDY
+        ALLOY_ADC_TEST_HOOK_ADRDY();
+#endif
 
         return (hw()->ADC_ISR & (1U << 0)) != 0;
     }
@@ -296,9 +296,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_ADRDY
      */
     static inline void clear_ready_flag() {
-        #ifdef ALLOY_ADC_TEST_HOOK_ADRDY
-            ALLOY_ADC_TEST_HOOK_ADRDY();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_ADRDY
+        ALLOY_ADC_TEST_HOOK_ADRDY();
+#endif
 
         hw()->ADC_ISR = (1U << 0);
     }
@@ -309,9 +309,9 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_DMAEN
      */
     static inline void enable_dma() {
-        #ifdef ALLOY_ADC_TEST_HOOK_DMAEN
-            ALLOY_ADC_TEST_HOOK_DMAEN();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_DMAEN
+        ALLOY_ADC_TEST_HOOK_DMAEN();
+#endif
 
         hw()->ADC_CFGR1 |= (1U << 0);
     }
@@ -322,13 +322,12 @@ struct Stm32g0ADCHardwarePolicy {
      * @note Test hook: ALLOY_ADC_TEST_HOOK_DMAEN
      */
     static inline void disable_dma() {
-        #ifdef ALLOY_ADC_TEST_HOOK_DMAEN
-            ALLOY_ADC_TEST_HOOK_DMAEN();
-        #endif
+#ifdef ALLOY_ADC_TEST_HOOK_DMAEN
+        ALLOY_ADC_TEST_HOOK_DMAEN();
+#endif
 
         hw()->ADC_CFGR1 &= ~(1U << 0);
     }
-
 };
 
 // ============================================================================

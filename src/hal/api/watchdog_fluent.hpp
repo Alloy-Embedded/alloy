@@ -10,9 +10,10 @@
 
 #pragma once
 
+#include "hal/api/watchdog_simple.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/api/watchdog_simple.hpp"
 
 namespace ucore::hal {
 
@@ -33,9 +34,11 @@ using namespace ucore::core;
  */
 template <typename WatchdogPolicy>
 class WatchdogBuilder {
-public:
+   public:
     constexpr WatchdogBuilder()
-        : timeout_ms_(1000), enable_reset_(true), enable_interrupt_(false) {}
+        : timeout_ms_(1000),
+          enable_reset_(true),
+          enable_interrupt_(false) {}
 
     /**
      * @brief Set watchdog timeout
@@ -92,7 +95,7 @@ public:
         WatchdogPolicy::configure(timeout_ms_, enable_reset_, enable_interrupt_);
     }
 
-private:
+   private:
     u16 timeout_ms_;
     bool enable_reset_;
     bool enable_interrupt_;

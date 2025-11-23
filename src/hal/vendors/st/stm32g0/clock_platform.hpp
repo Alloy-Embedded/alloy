@@ -36,16 +36,18 @@
 
 #pragma once
 
-#include "core/result.hpp"
-#include "core/error.hpp"
-#include "hal/vendors/st/stm32g0/generated/registers/rcc_registers.hpp"
-#include "hal/vendors/st/stm32g0/generated/registers/flash_registers.hpp"
-#include "hal/vendors/st/stm32g0/generated/bitfields/rcc_bitfields.hpp"
-#include "hal/vendors/st/stm32g0/generated/bitfields/flash_bitfields.hpp"
 #include <cstdint>
 
+#include "hal/vendors/st/stm32g0/generated/bitfields/flash_bitfields.hpp"
+#include "hal/vendors/st/stm32g0/generated/bitfields/rcc_bitfields.hpp"
+#include "hal/vendors/st/stm32g0/generated/registers/flash_registers.hpp"
+#include "hal/vendors/st/stm32g0/generated/registers/rcc_registers.hpp"
+
+#include "core/error.hpp"
+#include "core/result.hpp"
+
 #if __cplusplus >= 202002L
-#include "hal/core/concepts.hpp"
+    #include "hal/core/concepts.hpp"
 #endif
 
 namespace ucore::hal::st::stm32g0 {
@@ -60,7 +62,7 @@ using namespace ucore::core;
  */
 template <typename Config>
 class Stm32g0Clock {
-public:
+   public:
     /**
      * @brief Initialize system clock with configured parameters
      *
@@ -73,37 +75,40 @@ public:
 
         // 1. Enable HSI16 (should already be enabled after reset)
         rcc::RCC()->CR |= cr::HSION::mask;
-        
+
         uint32_t timeout = 10000;
-        while (!(rcc::RCC()->CR & cr::HSIRDY::mask) && --timeout);
+        while (!(rcc::RCC()->CR & cr::HSIRDY::mask) && --timeout)
+            ;
         if (timeout == 0) {
             return Err(ErrorCode::Timeout);
         }
 
         // 2. Configure flash latency BEFORE increasing frequency
-        flash::FLASH()->ACR = flash::acr::LATENCY::write(flash::FLASH()->ACR, Config::flash_latency);
+        flash::FLASH()->ACR =
+            flash::acr::LATENCY::write(flash::FLASH()->ACR, Config::flash_latency);
 
         // 3. Configure PLL: HSI16 as source
-        rcc::RCC()->PLLCFGR = pllcfgr::PLLSRC::write(0, 2) |   // HSI16 = 0b10
-                              pllcfgr::PLLM::write(0, Config::pll_m) |
-                              pllcfgr::PLLN::write(0, Config::pll_n) |
-                              pllcfgr::PLLR::write(0, Config::pll_r) |
-                              pllcfgr::PLLREN::mask;           // Enable PLLR output
+        rcc::RCC()->PLLCFGR =
+            pllcfgr::PLLSRC::write(0, 2) |  // HSI16 = 0b10
+            pllcfgr::PLLM::write(0, Config::pll_m) | pllcfgr::PLLN::write(0, Config::pll_n) |
+            pllcfgr::PLLR::write(0, Config::pll_r) | pllcfgr::PLLREN::mask;  // Enable PLLR output
 
         // 4. Enable PLL
         rcc::RCC()->CR |= cr::PLLON::mask;
-        
+
         timeout = 10000;
-        while (!(rcc::RCC()->CR & cr::PLLRDY::mask) && --timeout);
+        while (!(rcc::RCC()->CR & cr::PLLRDY::mask) && --timeout)
+            ;
         if (timeout == 0) {
             return Err(ErrorCode::Timeout);
         }
 
         // 5. Switch system clock to PLL
         rcc::RCC()->CFGR = cfgr::SW::write(rcc::RCC()->CFGR, 2);  // SW = 2 (PLL)
-        
+
         timeout = 10000;
-        while (cfgr::SWS::read(rcc::RCC()->CFGR) != 2 && --timeout);  // Wait for SWS = PLL
+        while (cfgr::SWS::read(rcc::RCC()->CFGR) != 2 && --timeout)
+            ;  // Wait for SWS = PLL
         if (timeout == 0) {
             return Err(ErrorCode::Timeout);
         }
@@ -119,12 +124,9 @@ public:
     static Result<void, ErrorCode> enable_gpio_clocks() {
         using namespace rcc;
 
-        rcc::RCC()->IOPENR |= iopenr::GPIOAEN::mask |
-                              iopenr::GPIOBEN::mask |
-                              iopenr::GPIOCEN::mask |
-                              iopenr::GPIODEN::mask |
-                              iopenr::GPIOEEN::mask |
-                              iopenr::GPIOFEN::mask;
+        rcc::RCC()->IOPENR |= iopenr::GPIOAEN::mask | iopenr::GPIOBEN::mask |
+                              iopenr::GPIOCEN::mask | iopenr::GPIODEN::mask |
+                              iopenr::GPIOEEN::mask | iopenr::GPIOFEN::mask;
 
         return Ok();
     }
@@ -215,9 +217,7 @@ public:
      * @brief Get system clock frequency
      * @return Frequency in Hz
      */
-    static constexpr uint32_t get_system_clock_hz() {
-        return Config::system_clock_hz;
-    }
+    static constexpr uint32_t get_system_clock_hz() { return Config::system_clock_hz; }
 };
 
 // ============================================================================
@@ -239,4 +239,4 @@ static_assert(ucore::hal::concepts::ClockPlatform<Stm32g0Clock<ExampleG0ClockCon
               "Stm32g0Clock must satisfy ClockPlatform concept - missing required methods");
 #endif
 
-} // namespace ucore::hal::st::stm32g0
+}  // namespace ucore::hal::st::stm32g0

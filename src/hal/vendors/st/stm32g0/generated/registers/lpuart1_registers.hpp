@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::lpuart1 {
 
 /// LPUART1 Register Structure
 struct LPUART1_Registers {
-
     /// LPUART control register 1 [alternate]
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -42,7 +41,7 @@ struct LPUART1_Registers {
     /// Offset: 0x000C
     /// Reset value: 0x00000000
     volatile uint32_t LPUART_BRR;
-    uint8_t RESERVED_0010[8]; ///< Reserved
+    uint8_t RESERVED_0010[8];  ///< Reserved
 
     /// LPUART request register
     /// Offset: 0x0018

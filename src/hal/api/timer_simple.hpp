@@ -6,11 +6,12 @@
 
 #pragma once
 
+#include "hal/core/signals.hpp"
+#include "hal/interface/timer.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/interface/timer.hpp"
-#include "hal/core/signals.hpp"
 
 namespace ucore::hal {
 
@@ -25,16 +26,11 @@ struct TimerDefaults {
 
 template <PeripheralId PeriphId>
 class Timer {
-public:
-    static constexpr auto quick_setup(
-        TimerMode mode = TimerDefaults::mode,
-        u32 period_us = TimerDefaults::period_us) {
-        
+   public:
+    static constexpr auto quick_setup(TimerMode mode = TimerDefaults::mode,
+                                      u32 period_us = TimerDefaults::period_us) {
         return TimerConfig{
-            mode,
-            period_us,
-            TimerDefaults::prescaler,
-            CaptureEdge::Rising,
+            mode, period_us, TimerDefaults::prescaler, CaptureEdge::Rising,
             0  // compare_value
         };
     }

@@ -25,8 +25,8 @@
  * @note UART terminal shows interrupt statistics (optional)
  */
 
-#include "core/result.hpp"
 #include "core/error.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 
 using namespace ucore::core;
@@ -38,23 +38,23 @@ using namespace ucore::core;
 #if defined(ALLOY_BOARD_NUCLEO_F401RE) || defined(ALLOY_BOARD_NUCLEO_F446RE)
     #include "hal/vendors/st/stm32f4/clock_platform.hpp"
     #include "hal/vendors/st/stm32f4/gpio.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
-        ucore::hal::st::stm32f4::ExampleF4ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
-    using ButtonPin = ucore::boards::UserButton;  // Usually PC13 on Nucleo
+using ClockPlatform =
+    ucore::hal::st::stm32f4::Stm32f4Clock<ucore::hal::st::stm32f4::ExampleF4ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
+using ButtonPin = ucore::boards::UserButton;  // Usually PC13 on Nucleo
 
 #elif defined(ALLOY_BOARD_SAME70_XPLAINED)
     #include "hal/vendors/microchip/same70/clock_platform.hpp"
     #include "hal/vendors/microchip/same70/gpio.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::microchip::same70::Same70Clock<
-        ucore::hal::microchip::same70::ExampleSame70ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform = ucore::hal::microchip::same70::Same70Clock<
+    ucore::hal::microchip::same70::ExampleSame70ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
 
 #else
     #error "Unsupported board for interrupt test"
@@ -126,20 +126,20 @@ inline void update_latency(u32 start_time, u32 end_time) {
 // ==============================================================================
 
 namespace interrupt_config {
-    // Priority levels (lower number = higher priority on ARM Cortex-M)
-    constexpr u8 PRIORITY_HIGHEST = 0;
-    constexpr u8 PRIORITY_HIGH = 1;
-    constexpr u8 PRIORITY_MEDIUM = 2;
-    constexpr u8 PRIORITY_LOW = 3;
+// Priority levels (lower number = higher priority on ARM Cortex-M)
+constexpr u8 PRIORITY_HIGHEST = 0;
+constexpr u8 PRIORITY_HIGH = 1;
+constexpr u8 PRIORITY_MEDIUM = 2;
+constexpr u8 PRIORITY_LOW = 3;
 
-    // Timer configuration
-    constexpr u32 TIMER_FREQUENCY_HZ = 1000;  // 1kHz = 1ms period
+// Timer configuration
+constexpr u32 TIMER_FREQUENCY_HZ = 1000;  // 1kHz = 1ms period
 
-    // Test parameters
-    constexpr u32 MIN_ACCEPTABLE_LATENCY = 10;    // cycles
-    constexpr u32 MAX_ACCEPTABLE_LATENCY = 1000;  // cycles
-    constexpr u32 EXPECTED_TIMER_COUNT = 100;     // For 100ms test
-}
+// Test parameters
+constexpr u32 MIN_ACCEPTABLE_LATENCY = 10;    // cycles
+constexpr u32 MAX_ACCEPTABLE_LATENCY = 1000;  // cycles
+constexpr u32 EXPECTED_TIMER_COUNT = 100;     // For 100ms test
+}  // namespace interrupt_config
 
 // ==============================================================================
 // Interrupt Handlers
@@ -240,7 +240,7 @@ extern "C" void USART_IRQHandler() {
 // ==============================================================================
 
 class InterruptSystem {
-public:
+   public:
     /**
      * @brief Initialize NVIC (Nested Vectored Interrupt Controller)
      */
@@ -505,7 +505,7 @@ int main() {
 
     // Test 1: Configuration
     if (test_interrupt_config().is_ok()) {
-        LedPin::set(); // Turn on LED briefly
+        LedPin::set();  // Turn on LED briefly
         for (volatile u32 i = 0; i < 500000; i++) {}
         LedPin::clear();
     } else {

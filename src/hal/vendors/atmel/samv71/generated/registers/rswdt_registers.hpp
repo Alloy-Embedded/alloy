@@ -17,7 +17,6 @@ namespace ucore::hal::atmel::samv71::rswdt {
 
 /// RSWDT Register Structure
 struct RSWDT_Registers {
-
     /// Control Register
     /// Offset: 0x0000
     /// Access: write-only

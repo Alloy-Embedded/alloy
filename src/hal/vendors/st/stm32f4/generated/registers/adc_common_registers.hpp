@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f4::adc_common {
 
 /// ADC_Common Register Structure
 struct ADC_Common_Registers {
-
     /// ADC Common status register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

@@ -11,11 +11,12 @@
 /// cmake --build build --target phase6_example
 /// ```
 
-#include "rtos/rtos.hpp"
-#include "rtos/task_notification.hpp"
+#include "hal/interface/systick.hpp"
+
 #include "rtos/memory_pool.hpp"
 #include "rtos/queue.hpp"
-#include "hal/interface/systick.hpp"
+#include "rtos/rtos.hpp"
+#include "rtos/task_notification.hpp"
 
 using namespace ucore;
 using namespace ucore::rtos;
@@ -67,11 +68,9 @@ void sensor_task_func() {
 extern "C" void EXTI_IRQHandler() {
     // Notify sensor task that data is ready
     // Use SetBits to accumulate multiple events
-    TaskNotification::notify_from_isr(
-        sensor_task_tcb,
-        0x01,  // Bit 0 = Sensor 1 ready
-        NotifyAction::SetBits
-    );
+    TaskNotification::notify_from_isr(sensor_task_tcb,
+                                      0x01,  // Bit 0 = Sensor 1 ready
+                                      NotifyAction::SetBits);
 }
 
 // ============================================================================
@@ -95,11 +94,9 @@ void worker_task_func() {
 void producer_task_func() {
     while (1) {
         // "Give" semaphore by incrementing notification
-        TaskNotification::notify(
-            worker_task_tcb,
-            1,  // Increment by 1
-            NotifyAction::Increment
-        );
+        TaskNotification::notify(worker_task_tcb,
+                                 1,  // Increment by 1
+                                 NotifyAction::Increment);
 
         RTOS::delay(500);
     }
@@ -225,38 +222,23 @@ void notification_demo_task() {
 void notification_sender_task() {
     while (1) {
         // 1. SetBits - OR with existing value
-        TaskNotification::notify(
-            notification_demo_tcb,
-            0x01,
-            NotifyAction::SetBits
-        );
+        TaskNotification::notify(notification_demo_tcb, 0x01, NotifyAction::SetBits);
 
         RTOS::delay(100);
 
         // 2. Increment - add to existing value
-        TaskNotification::notify(
-            notification_demo_tcb,
-            1,
-            NotifyAction::Increment
-        );
+        TaskNotification::notify(notification_demo_tcb, 1, NotifyAction::Increment);
 
         RTOS::delay(100);
 
         // 3. Overwrite - replace value
-        TaskNotification::notify(
-            notification_demo_tcb,
-            0x1234,
-            NotifyAction::Overwrite
-        );
+        TaskNotification::notify(notification_demo_tcb, 0x1234, NotifyAction::Overwrite);
 
         RTOS::delay(100);
 
         // 4. OverwriteIfEmpty - only if no pending notification
-        auto result = TaskNotification::notify(
-            notification_demo_tcb,
-            0x5678,
-            NotifyAction::OverwriteIfEmpty
-        );
+        auto result =
+            TaskNotification::notify(notification_demo_tcb, 0x5678, NotifyAction::OverwriteIfEmpty);
 
         if (result.is_err()) {
             // Notification was already pending
@@ -302,8 +284,7 @@ constexpr size_t optimal_capacity = optimal_pool_capacity<Message, 1024>();
 StaticPool<Message, optimal_capacity> optimized_pool;
 
 // Verify it fits
-static_assert(optimized_pool.total_size() <= 1024,
-              "Optimized pool should fit in 1KB");
+static_assert(optimized_pool.total_size() <= 1024, "Optimized pool should fit in 1KB");
 
 // ============================================================================
 // Example 8: Non-Blocking Operations
@@ -340,8 +321,7 @@ void non_blocking_task() {
 // ============================================================================
 
 // Notification overhead per task
-static_assert(notification_overhead_per_task() == 8,
-              "Notification overhead should be 8 bytes");
+static_assert(notification_overhead_per_task() == 8, "Notification overhead should be 8 bytes");
 
 // Validate notification memory for task set
 template <typename... Tasks>
@@ -355,17 +335,12 @@ struct TaskSetWithNotifications {
 };
 
 // Example task set
-using MyTasks = TaskSetWithNotifications<
-    decltype(sensor_task_func),
-    decltype(worker_task_func),
-    decltype(sender_task_func)
->;
+using MyTasks = TaskSetWithNotifications<decltype(sensor_task_func), decltype(worker_task_func),
+                                         decltype(sender_task_func)>;
 
-static_assert(MyTasks::notification_overhead == 24,
-              "3 tasks * 8 bytes = 24 bytes");
+static_assert(MyTasks::notification_overhead == 24, "3 tasks * 8 bytes = 24 bytes");
 
-static_assert(MyTasks::fits_in_budget(1024),
-              "Notification overhead should fit in 1KB");
+static_assert(MyTasks::fits_in_budget(1024), "Notification overhead should fit in 1KB");
 
 // ============================================================================
 // Task Definitions

@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::quadspi {
 
 /// QUADSPI Register Structure
 struct QUADSPI_Registers {
-
     /// control register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

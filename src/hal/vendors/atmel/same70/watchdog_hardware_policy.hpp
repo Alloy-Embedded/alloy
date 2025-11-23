@@ -10,11 +10,12 @@
 
 #pragma once
 
-#include "core/types.hpp"
-#include "hal/vendors/atmel/same70/generated/registers/wdt_registers.hpp"
-#include "hal/vendors/atmel/same70/generated/registers/rswdt_registers.hpp"
-#include "hal/vendors/atmel/same70/generated/bitfields/wdt_bitfields.hpp"
 #include "hal/vendors/atmel/same70/generated/bitfields/rswdt_bitfields.hpp"
+#include "hal/vendors/atmel/same70/generated/bitfields/wdt_bitfields.hpp"
+#include "hal/vendors/atmel/same70/generated/registers/rswdt_registers.hpp"
+#include "hal/vendors/atmel/same70/generated/registers/wdt_registers.hpp"
+
+#include "core/types.hpp"
 
 namespace ucore::hal::atmel::same70 {
 
@@ -78,8 +79,10 @@ struct Same70WatchdogHardwarePolicy {
 
         // Calculate counter value
         u16 wdv = (timeout_ms * WDT_FREQ_HZ) / 1000;
-        if (wdv > 0xFFF) wdv = 0xFFF;  // Max 12 bits
-        if (wdv == 0) wdv = 1;  // Minimum
+        if (wdv > 0xFFF)
+            wdv = 0xFFF;  // Max 12 bits
+        if (wdv == 0)
+            wdv = 1;  // Minimum
 
         u32 mr = 0;
         mr = wdt::mr::WDV::write(mr, wdv);
@@ -123,8 +126,10 @@ struct Same70WatchdogHardwarePolicy {
         constexpr u32 WDT_FREQ_HZ = 128;
 
         u16 wdv = (timeout_ms * WDT_FREQ_HZ) / 1000;
-        if (wdv > 0xFFF) wdv = 0xFFF;
-        if (wdv == 0) wdv = 1;
+        if (wdv > 0xFFF)
+            wdv = 0xFFF;
+        if (wdv == 0)
+            wdv = 1;
 
         u32 mr = 0;
         mr = wdt::mr::WDV::write(mr, wdv);
@@ -164,7 +169,7 @@ struct Same70WatchdogHardwarePolicy {
         return 0;
     }
 
-private:
+   private:
     static inline auto* get_wdt() {
         return reinterpret_cast<volatile wdt::WDT_Registers*>(WDT_BASE);
     }

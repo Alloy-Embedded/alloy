@@ -12,4 +12,4 @@ namespace ucore::hal::same70 {
 // SysTick instance (ARM Cortex-M7 @ 300MHz)
 using SysTick = SysTickHardware;
 
-} // namespace ucore::hal::same70
+}  // namespace ucore::hal::same70

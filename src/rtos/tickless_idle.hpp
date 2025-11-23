@@ -38,8 +38,9 @@
 #include <cstddef>
 
 #include "rtos/error.hpp"
-#include "core/types.hpp"
+
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::rtos {
 
@@ -163,7 +164,7 @@ extern "C" core::u32 tickless_get_next_wakeup_us() __attribute__((weak));
 /// RTOS::start();
 /// ```
 class TicklessIdle {
-public:
+   public:
     /// Enable tickless idle mode
     ///
     /// @return Ok(void) on success
@@ -190,26 +191,22 @@ public:
     /// // Configure for deep sleep, minimum 10ms
     /// TicklessIdle::configure(SleepMode::Deep, 10000);
     /// ```
-    [[nodiscard]] static core::Result<void, RTOSError> configure(
-        SleepMode mode,
-        core::u32 min_sleep_us
-    ) noexcept;
+    [[nodiscard]] static core::Result<void, RTOSError> configure(SleepMode mode,
+                                                                 core::u32 min_sleep_us) noexcept;
 
     /// Set maximum sleep duration
     ///
     /// @param max_sleep_us Maximum sleep duration (microseconds)
     /// @return Ok(void) on success
     [[nodiscard]] static core::Result<void, RTOSError> set_max_sleep_duration(
-        core::u32 max_sleep_us
-    ) noexcept;
+        core::u32 max_sleep_us) noexcept;
 
     /// Set wake-up latency compensation
     ///
     /// @param latency_us Wake-up latency in microseconds
     /// @return Ok(void) on success
     [[nodiscard]] static core::Result<void, RTOSError> set_wakeup_latency(
-        core::u32 latency_us
-    ) noexcept;
+        core::u32 latency_us) noexcept;
 
     /// Get current configuration
     ///
@@ -228,7 +225,7 @@ public:
     /// @return Actual sleep duration in microseconds
     [[nodiscard]] static core::u32 enter_sleep() noexcept;
 
-private:
+   private:
     static TicklessConfig config_;
 };
 
@@ -240,23 +237,22 @@ private:
 struct PowerStats {
     core::u32 total_sleep_time_us{0};    ///< Total time spent sleeping
     core::u32 total_active_time_us{0};   ///< Total time spent active
-    core::u32 sleep_count{0};             ///< Number of sleep events
-    core::u32 wakeup_count{0};            ///< Number of wake-ups
-    core::u32 min_sleep_duration_us{0};   ///< Shortest sleep
-    core::u32 max_sleep_duration_us{0};   ///< Longest sleep
-    core::u32 avg_sleep_duration_us{0};   ///< Average sleep duration
+    core::u32 sleep_count{0};            ///< Number of sleep events
+    core::u32 wakeup_count{0};           ///< Number of wake-ups
+    core::u32 min_sleep_duration_us{0};  ///< Shortest sleep
+    core::u32 max_sleep_duration_us{0};  ///< Longest sleep
+    core::u32 avg_sleep_duration_us{0};  ///< Average sleep duration
 
     /// Calculate power efficiency (% time sleeping)
     [[nodiscard]] constexpr core::u8 efficiency_percent() const noexcept {
         core::u32 total = total_sleep_time_us + total_active_time_us;
-        if (total == 0) return 0;
+        if (total == 0)
+            return 0;
         return static_cast<core::u8>((total_sleep_time_us * 100) / total);
     }
 
     /// Reset statistics
-    constexpr void reset() noexcept {
-        *this = PowerStats{};
-    }
+    constexpr void reset() noexcept { *this = PowerStats{}; }
 };
 
 /// Get power management statistics
@@ -283,8 +279,8 @@ consteval bool is_valid_sleep_mode() {
 /// @return true if valid
 template <core::u32 DurationUs>
 consteval bool is_valid_sleep_duration() {
-    return DurationUs >= 100 &&        // Min 100µs
-           DurationUs <= 10000000;     // Max 10s
+    return DurationUs >= 100 &&     // Min 100µs
+           DurationUs <= 10000000;  // Max 10s
 }
 
 /// Calculate power savings estimate

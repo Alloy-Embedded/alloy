@@ -3,6 +3,7 @@
 /// Implementation of lightweight task notification mechanism.
 
 #include "rtos/task_notification.hpp"
+
 #include "rtos/scheduler.hpp"
 
 namespace ucore::rtos {
@@ -29,9 +30,8 @@ TaskNotificationState* TaskNotification::get_state(TaskControlBlock* tcb) {
     // Notification state is stored after TCB in memory
     // Layout: [TCB][TaskNotificationState]
     // This is allocated when task is created
-    auto* state = reinterpret_cast<TaskNotificationState*>(
-        reinterpret_cast<core::u8*>(tcb) + sizeof(TaskControlBlock)
-    );
+    auto* state = reinterpret_cast<TaskNotificationState*>(reinterpret_cast<core::u8*>(tcb) +
+                                                           sizeof(TaskControlBlock));
 
     return state;
 }
@@ -40,28 +40,21 @@ TaskNotificationState* TaskNotification::get_state(TaskControlBlock* tcb) {
 // Notification API Implementation
 // ============================================================================
 
-core::Result<core::u32, RTOSError> TaskNotification::notify(
-    TaskControlBlock* tcb,
-    core::u32 value,
-    NotifyAction action
-) noexcept {
+core::Result<core::u32, RTOSError> TaskNotification::notify(TaskControlBlock* tcb, core::u32 value,
+                                                            NotifyAction action) noexcept {
     return notify_internal(tcb, value, action, false);
 }
 
-core::Result<core::u32, RTOSError> TaskNotification::notify_from_isr(
-    TaskControlBlock* tcb,
-    core::u32 value,
-    NotifyAction action
-) noexcept {
+core::Result<core::u32, RTOSError> TaskNotification::notify_from_isr(TaskControlBlock* tcb,
+                                                                     core::u32 value,
+                                                                     NotifyAction action) noexcept {
     return notify_internal(tcb, value, action, true);
 }
 
-core::Result<core::u32, RTOSError> TaskNotification::notify_internal(
-    TaskControlBlock* tcb,
-    core::u32 value,
-    NotifyAction action,
-    bool from_isr
-) noexcept {
+core::Result<core::u32, RTOSError> TaskNotification::notify_internal(TaskControlBlock* tcb,
+                                                                     core::u32 value,
+                                                                     NotifyAction action,
+                                                                     bool from_isr) noexcept {
     // Validate task
     if (tcb == nullptr) {
         return core::Err(RTOSError::InvalidPointer);
@@ -127,10 +120,8 @@ core::Result<core::u32, RTOSError> TaskNotification::notify_internal(
     return core::Ok(previous_value);
 }
 
-core::Result<core::u32, RTOSError> TaskNotification::wait(
-    core::u32 timeout_ms,
-    NotifyClearMode clear_mode
-) {
+core::Result<core::u32, RTOSError> TaskNotification::wait(core::u32 timeout_ms,
+                                                          NotifyClearMode clear_mode) {
     // Get current task notification state
     TaskNotificationState* state = get_current_state();
     if (state == nullptr) {
@@ -199,9 +190,7 @@ core::Result<core::u32, RTOSError> TaskNotification::wait(
     return core::Err(RTOSError::Timeout);
 }
 
-core::Result<core::u32, RTOSError> TaskNotification::try_wait(
-    NotifyClearMode clear_mode
-) {
+core::Result<core::u32, RTOSError> TaskNotification::try_wait(NotifyClearMode clear_mode) {
     // Get current task notification state
     TaskNotificationState* state = get_current_state();
     if (state == nullptr) {

@@ -17,15 +17,16 @@
 
 #pragma once
 
-#include "core/error.hpp"
-#include "core/result.hpp"
-#include "core/types.hpp"
 #include "hal/types.hpp"
 #include "hal/vendors/st/stm32g0/gpio_hardware_policy.hpp"
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
 
+#include "core/error.hpp"
+#include "core/result.hpp"
+#include "core/types.hpp"
+
 #if __cplusplus >= 202002L
-#include "hal/core/concepts.hpp"
+    #include "hal/core/concepts.hpp"
 #endif
 
 namespace ucore::hal::st::stm32g0 {
@@ -60,7 +61,7 @@ using namespace ucore::hal;
  */
 template <uint32_t PORT_BASE, uint8_t PIN_NUM>
 class GpioPin {
-public:
+   public:
     // Compile-time constants
     static constexpr uint32_t port_base = PORT_BASE;
     static constexpr uint8_t pin_number = PIN_NUM;
@@ -114,9 +115,7 @@ public:
      *
      * @return Result containing pin state (true = HIGH, false = LOW)
      */
-    Result<bool, ErrorCode> read() const {
-        return Ok(HwPolicy::read_input(pin_mask));
-    }
+    Result<bool, ErrorCode> read() const { return Ok(HwPolicy::read_input(pin_mask)); }
 
     /**
      * @brief Check if pin is configured as output
@@ -202,4 +201,4 @@ static_assert(ucore::hal::concepts::GpioPin<GpioPin<0x50000000, 5>>,
               "STM32G0 GpioPin must satisfy GpioPin concept - missing required methods");
 #endif
 
-} // namespace ucore::hal::st::stm32g0
+}  // namespace ucore::hal::st::stm32g0

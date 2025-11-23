@@ -9,8 +9,9 @@
  */
 
 #include "hal/api/gpio_base.hpp"
-#include "core/types.hpp"
 #include "hal/types.hpp"
+
+#include "core/types.hpp"
 
 using namespace ucore::hal;
 using namespace ucore::core;
@@ -27,7 +28,7 @@ using namespace ucore::core;
 class MockGpioPin : public GpioBase<MockGpioPin> {
     friend GpioBase<MockGpioPin>;
 
-public:
+   public:
     constexpr MockGpioPin(bool active_high = true)
         : active_high_(active_high),
           physical_state_(false),
@@ -133,7 +134,8 @@ public:
     /**
      * @brief Set pin direction
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> set_direction_impl(PinDirection direction) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> set_direction_impl(
+        PinDirection direction) noexcept {
         direction_ = direction;
         return Ok();
     }
@@ -154,7 +156,7 @@ public:
         return Ok();
     }
 
-private:
+   private:
     bool active_high_;
     bool physical_state_;
     PinDirection direction_;
@@ -174,8 +176,7 @@ void test_inheritance() {
     using BaseType = GpioBase<PinType>;
 
     // Verify inheritance
-    static_assert(std::is_base_of_v<BaseType, PinType>,
-                  "MockGpioPin must inherit from GpioBase");
+    static_assert(std::is_base_of_v<BaseType, PinType>, "MockGpioPin must inherit from GpioBase");
 }
 
 /**
@@ -342,11 +343,9 @@ void test_zero_overhead() {
     using BaseType = GpioBase<PinType>;
 
     // Verify empty base optimization
-    static_assert(sizeof(BaseType) == 1,
-                  "GpioBase must be empty (sizeof == 1)");
+    static_assert(sizeof(BaseType) == 1, "GpioBase must be empty (sizeof == 1)");
 
-    static_assert(std::is_empty_v<BaseType>,
-                  "GpioBase must have no data members");
+    static_assert(std::is_empty_v<BaseType>, "GpioBase must have no data members");
 }
 
 /**

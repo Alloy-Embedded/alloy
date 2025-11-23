@@ -14,8 +14,8 @@
  * @note Visual verification required - watch the LED!
  */
 
-#include "core/result.hpp"
 #include "core/error.hpp"
+#include "core/result.hpp"
 
 using namespace ucore::core;
 
@@ -26,33 +26,33 @@ using namespace ucore::core;
 #if defined(ALLOY_BOARD_NUCLEO_G0B1RE) || defined(ALLOY_BOARD_NUCLEO_G071RB)
     #include "hal/vendors/st/stm32g0/clock_platform.hpp"
     #include "hal/vendors/st/stm32g0/gpio.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32g0::Stm32g0Clock<
-        ucore::hal::st::stm32g0::ExampleG0ClockConfig
-    >;
-    // Use board-specific LED pin from board_config.hpp
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform =
+    ucore::hal::st::stm32g0::Stm32g0Clock<ucore::hal::st::stm32g0::ExampleG0ClockConfig>;
+// Use board-specific LED pin from board_config.hpp
+using LedPin = ucore::boards::LedGreen;
 
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
     #include "hal/vendors/st/stm32f4/clock_platform.hpp"
     #include "hal/vendors/st/stm32f4/gpio.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32f4::Stm32f4Clock<
-        ucore::hal::st::stm32f4::ExampleF4ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform =
+    ucore::hal::st::stm32f4::Stm32f4Clock<ucore::hal::st::stm32f4::ExampleF4ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
 
 #elif defined(ALLOY_BOARD_NUCLEO_F722ZE)
     #include "hal/vendors/st/stm32f7/clock_platform.hpp"
     #include "hal/vendors/st/stm32f7/gpio.hpp"
+
     #include "boards/board_config.hpp"
 
-    using ClockPlatform = ucore::hal::st::stm32f7::Stm32f7Clock<
-        ucore::hal::st::stm32f7::ExampleF7ClockConfig
-    >;
-    using LedPin = ucore::boards::LedGreen;
+using ClockPlatform =
+    ucore::hal::st::stm32f7::Stm32f7Clock<ucore::hal::st::stm32f7::ExampleF7ClockConfig>;
+using LedPin = ucore::boards::LedGreen;
 
 #else
     #error "Unsupported board for hardware LED test"
@@ -68,7 +68,7 @@ using namespace ucore::core;
  * @note This is not accurate timing - for visual LED blinking only
  */
 inline void delay_cycles(volatile uint32_t cycles) {
-    while(cycles--) {
+    while (cycles--) {
         __asm__("nop");
     }
 }
@@ -80,9 +80,9 @@ inline void delay_cycles(volatile uint32_t cycles) {
 void delay_ms(uint32_t ms) {
     // Rough approximation: adjust based on actual clock speed
     uint32_t freq = ClockPlatform::get_system_clock_hz();
-    uint32_t cycles_per_ms = freq / 1000 / 4; // Divide by 4 for instruction overhead
+    uint32_t cycles_per_ms = freq / 1000 / 4;  // Divide by 4 for instruction overhead
 
-    for(uint32_t i = 0; i < ms; i++) {
+    for (uint32_t i = 0; i < ms; i++) {
         delay_cycles(cycles_per_ms);
     }
 }
@@ -96,20 +96,20 @@ void delay_ms(uint32_t ms) {
  * @param condition Condition to check
  * @note On embedded, we can't print - just hang with LED pattern
  */
-#define HW_ASSERT(condition) \
-    if (!(condition)) { \
+#define HW_ASSERT(condition)               \
+    if (!(condition)) {                    \
         /* Failure pattern: rapid blink */ \
-        while(1) { \
-            led.toggle(); \
-            delay_ms(100); \
-        } \
+        while (1) {                        \
+            led.toggle();                  \
+            delay_ms(100);                 \
+        }                                  \
     }
 
 // ==============================================================================
 // Hardware Test Main
 // ==============================================================================
 
-LedPin led; // Global LED instance
+LedPin led;  // Global LED instance
 
 /**
  * @brief Main hardware test entry point
@@ -143,15 +143,15 @@ int main() {
     auto clear_result = led.clear();
     HW_ASSERT(clear_result.is_ok());
 
-    delay_ms(500); // Initial pause
+    delay_ms(500);  // Initial pause
 
     // ==============================================================================
     // Main Test Loop: Blink Pattern
     // ==============================================================================
 
-    while(1) {
+    while (1) {
         // Pattern: 3 fast blinks (test passed!)
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             auto set_result = led.set();
             HW_ASSERT(set_result.is_ok());
             delay_ms(100);
@@ -165,7 +165,7 @@ int main() {
         delay_ms(1000);
     }
 
-    return 0; // Never reached
+    return 0;  // Never reached
 }
 
 // ==============================================================================

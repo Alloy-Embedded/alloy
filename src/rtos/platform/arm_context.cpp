@@ -69,22 +69,20 @@ void trigger_context_switch() {
     // Set PSP to task stack (skip r4-r11, point to hardware frame)
     void* psp = &sp[8];
 
-    __asm volatile(
-        "cpsid i                \n"  // Disable interrupts
-        "msr psp, %0            \n"  // Set PSP to hardware frame
-        "movs r0, #2            \n"  // CONTROL = 2 (use PSP)
-        "msr control, r0        \n"
-        "isb                    \n"  // Ensure CONTROL change
-        "mov r0, #0             \n"  // Clear r0
-        "mov r1, #0             \n"  // Clear r1
-        "mov r2, #0             \n"  // Clear r2
-        "mov r3, #0             \n"  // Clear r3
-        "cpsie i                \n"  // Enable interrupts
-        "bx %1                  \n"  // Jump to task entry point
-        :
-        : "r"(psp), "r"(task_entry)
-        : "r0", "r1", "r2", "r3", "memory"
-    );
+    __asm volatile("cpsid i                \n"  // Disable interrupts
+                   "msr psp, %0            \n"  // Set PSP to hardware frame
+                   "movs r0, #2            \n"  // CONTROL = 2 (use PSP)
+                   "msr control, r0        \n"
+                   "isb                    \n"  // Ensure CONTROL change
+                   "mov r0, #0             \n"  // Clear r0
+                   "mov r1, #0             \n"  // Clear r1
+                   "mov r2, #0             \n"  // Clear r2
+                   "mov r3, #0             \n"  // Clear r3
+                   "cpsie i                \n"  // Enable interrupts
+                   "bx %1                  \n"  // Jump to task entry point
+                   :
+                   : "r"(psp), "r"(task_entry)
+                   : "r0", "r1", "r2", "r3", "memory");
 
     // Never reached
     while (1)

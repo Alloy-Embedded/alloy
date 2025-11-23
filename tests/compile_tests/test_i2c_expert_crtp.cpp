@@ -8,11 +8,12 @@
  * @note Part of Phase 1.11.3: Refactor I2cExpert
  */
 
+#include <span>
+
 #include "hal/api/i2c_expert.hpp"
-#include "core/types.hpp"
 #include "hal/interface/i2c.hpp"
 
-#include <span>
+#include "core/types.hpp"
 
 using namespace ucore::hal;
 using namespace ucore::core;
@@ -38,22 +39,19 @@ void test_expert_i2c_inheritance() {
  */
 void test_expert_config_validation() {
     // Valid configuration
-    constexpr I2cExpertConfig valid_config = {
-        .peripheral = PeripheralId::I2C0,
-        .sda_pin = PinId{10},
-        .scl_pin = PinId{9},
-        .speed = I2cSpeed::Fast,
-        .addressing = I2cAddressing::SevenBit,
-        .enable_interrupts = false,
-        .enable_dma_tx = false,
-        .enable_dma_rx = false,
-        .enable_analog_filter = true,
-        .enable_digital_filter = false,
-        .digital_filter_coefficient = 0
-    };
+    constexpr I2cExpertConfig valid_config = {.peripheral = PeripheralId::I2C0,
+                                              .sda_pin = PinId{10},
+                                              .scl_pin = PinId{9},
+                                              .speed = I2cSpeed::Fast,
+                                              .addressing = I2cAddressing::SevenBit,
+                                              .enable_interrupts = false,
+                                              .enable_dma_tx = false,
+                                              .enable_dma_rx = false,
+                                              .enable_analog_filter = true,
+                                              .enable_digital_filter = false,
+                                              .digital_filter_coefficient = 0};
 
-    static_assert(valid_config.is_valid(),
-                  "Valid configuration should pass validation");
+    static_assert(valid_config.is_valid(), "Valid configuration should pass validation");
 
     // Invalid configuration - digital filter coefficient out of range
     constexpr I2cExpertConfig invalid_config = {
@@ -70,24 +68,17 @@ void test_expert_config_validation() {
         .digital_filter_coefficient = 16  // Invalid - must be 0-15
     };
 
-    static_assert(!invalid_config.is_valid(),
-                  "Invalid configuration should fail validation");
+    static_assert(!invalid_config.is_valid(), "Invalid configuration should fail validation");
 }
 
 /**
  * @brief Test standard preset configuration
  */
 void test_standard_preset() {
-    constexpr auto config = I2cExpertConfig::standard(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr auto config = I2cExpertConfig::standard(PeripheralId::I2C0, PinId{10}, PinId{9});
 
-    static_assert(config.is_valid(),
-                  "Standard preset should be valid");
-    static_assert(config.speed == I2cSpeed::Standard,
-                  "Standard preset should use Standard speed");
+    static_assert(config.is_valid(), "Standard preset should be valid");
+    static_assert(config.speed == I2cSpeed::Standard, "Standard preset should use Standard speed");
     static_assert(config.addressing == I2cAddressing::SevenBit,
                   "Standard preset should use 7-bit addressing");
 }
@@ -96,56 +87,40 @@ void test_standard_preset() {
  * @brief Test fast preset configuration
  */
 void test_fast_preset() {
-    constexpr auto config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr auto config = I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
-    static_assert(config.is_valid(),
-                  "Fast preset should be valid");
-    static_assert(config.speed == I2cSpeed::Fast,
-                  "Fast preset should use Fast speed");
+    static_assert(config.is_valid(), "Fast preset should be valid");
+    static_assert(config.speed == I2cSpeed::Fast, "Fast preset should use Fast speed");
 }
 
 /**
  * @brief Test DMA preset configuration
  */
 void test_dma_preset() {
-    constexpr auto config = I2cExpertConfig::dma(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9},
-        I2cSpeed::Fast
-    );
+    constexpr auto config =
+        I2cExpertConfig::dma(PeripheralId::I2C0, PinId{10}, PinId{9}, I2cSpeed::Fast);
 
-    static_assert(config.is_valid(),
-                  "DMA preset should be valid");
-    static_assert(config.enable_dma_tx,
-                  "DMA preset should enable DMA TX");
-    static_assert(config.enable_dma_rx,
-                  "DMA preset should enable DMA RX");
-    static_assert(config.enable_interrupts,
-                  "DMA preset should enable interrupts");
+    static_assert(config.is_valid(), "DMA preset should be valid");
+    static_assert(config.enable_dma_tx, "DMA preset should enable DMA TX");
+    static_assert(config.enable_dma_rx, "DMA preset should enable DMA RX");
+    static_assert(config.enable_interrupts, "DMA preset should enable interrupts");
 }
 
 /**
  * @brief Test create_instance factory
  */
 void test_create_instance() {
-    constexpr I2cExpertConfig config = {
-        .peripheral = PeripheralId::I2C0,
-        .sda_pin = PinId{10},
-        .scl_pin = PinId{9},
-        .speed = I2cSpeed::Fast,
-        .addressing = I2cAddressing::SevenBit,
-        .enable_interrupts = false,
-        .enable_dma_tx = false,
-        .enable_dma_rx = false,
-        .enable_analog_filter = true,
-        .enable_digital_filter = false,
-        .digital_filter_coefficient = 0
-    };
+    constexpr I2cExpertConfig config = {.peripheral = PeripheralId::I2C0,
+                                        .sda_pin = PinId{10},
+                                        .scl_pin = PinId{9},
+                                        .speed = I2cSpeed::Fast,
+                                        .addressing = I2cAddressing::SevenBit,
+                                        .enable_interrupts = false,
+                                        .enable_dma_tx = false,
+                                        .enable_dma_rx = false,
+                                        .enable_analog_filter = true,
+                                        .enable_digital_filter = false,
+                                        .digital_filter_coefficient = 0};
 
     auto i2c = expert::create_instance(config);
 
@@ -158,11 +133,8 @@ void test_create_instance() {
  * @brief Test read operations
  */
 void test_read_operations() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c = expert::create_instance(config);
 
@@ -178,11 +150,8 @@ void test_read_operations() {
  * @brief Test write operations
  */
 void test_write_operations() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c = expert::create_instance(config);
 
@@ -198,22 +167,16 @@ void test_write_operations() {
  * @brief Test write-read operation
  */
 void test_write_read_operation() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c = expert::create_instance(config);
 
     u8 write_data[] = {0x10};
     u8 read_data[2] = {0};
 
-    [[maybe_unused]] auto result = i2c.write_read(
-        0x50,
-        std::span(write_data),
-        std::span(read_data)
-    );
+    [[maybe_unused]] auto result =
+        i2c.write_read(0x50, std::span(write_data), std::span(read_data));
 
     // Verify return type
     static_assert(std::is_same_v<decltype(result), Result<void, ErrorCode>>,
@@ -224,11 +187,8 @@ void test_write_read_operation() {
  * @brief Test single-byte convenience methods
  */
 void test_single_byte_operations() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c = expert::create_instance(config);
 
@@ -246,11 +206,8 @@ void test_single_byte_operations() {
  * @brief Test register convenience methods
  */
 void test_register_operations() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c = expert::create_instance(config);
 
@@ -268,11 +225,8 @@ void test_register_operations() {
  * @brief Test bus scanning
  */
 void test_scan_bus() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c = expert::create_instance(config);
 
@@ -288,11 +242,8 @@ void test_scan_bus() {
  * @brief Test configuration methods
  */
 void test_configuration() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c = expert::create_instance(config);
 
@@ -328,11 +279,8 @@ void test_concept() {
  * @brief Test apply method
  */
 void test_apply() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c = expert::create_instance(config);
 
@@ -346,11 +294,8 @@ void test_apply() {
  * @brief Test config accessor
  */
 void test_config_accessor() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c = expert::create_instance(config);
 
@@ -365,12 +310,8 @@ void test_config_accessor() {
  * @brief Test DMA query methods
  */
 void test_dma_queries() {
-    constexpr I2cExpertConfig dma_config = I2cExpertConfig::dma(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9},
-        I2cSpeed::Fast
-    );
+    constexpr I2cExpertConfig dma_config =
+        I2cExpertConfig::dma(PeripheralId::I2C0, PinId{10}, PinId{9}, I2cSpeed::Fast);
 
     auto i2c_dma = expert::create_instance(dma_config);
 
@@ -380,11 +321,8 @@ void test_dma_queries() {
     }
 
     // Non-DMA config
-    constexpr I2cExpertConfig no_dma_config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig no_dma_config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c_no_dma = expert::create_instance(no_dma_config);
 
@@ -397,11 +335,8 @@ void test_dma_queries() {
  * @brief Test error messages
  */
 void test_error_messages() {
-    constexpr I2cExpertConfig valid_config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig valid_config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     // Valid config should have "Valid" message
     constexpr const char* valid_msg = valid_config.error_message();
@@ -431,19 +366,11 @@ void test_error_messages() {
  */
 void test_i2c_speeds() {
     // Standard (100 kHz)
-    constexpr auto std_config = I2cExpertConfig::standard(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr auto std_config = I2cExpertConfig::standard(PeripheralId::I2C0, PinId{10}, PinId{9});
     auto std_i2c = expert::create_instance(std_config);
 
     // Fast (400 kHz)
-    constexpr auto fast_config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr auto fast_config = I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
     auto fast_i2c = expert::create_instance(fast_config);
 
     // All should return same type
@@ -456,36 +383,32 @@ void test_i2c_speeds() {
  */
 void test_addressing_modes() {
     // 7-bit addressing
-    constexpr I2cExpertConfig addr7_config = {
-        .peripheral = PeripheralId::I2C0,
-        .sda_pin = PinId{10},
-        .scl_pin = PinId{9},
-        .speed = I2cSpeed::Standard,
-        .addressing = I2cAddressing::SevenBit,
-        .enable_interrupts = false,
-        .enable_dma_tx = false,
-        .enable_dma_rx = false,
-        .enable_analog_filter = true,
-        .enable_digital_filter = false,
-        .digital_filter_coefficient = 0
-    };
+    constexpr I2cExpertConfig addr7_config = {.peripheral = PeripheralId::I2C0,
+                                              .sda_pin = PinId{10},
+                                              .scl_pin = PinId{9},
+                                              .speed = I2cSpeed::Standard,
+                                              .addressing = I2cAddressing::SevenBit,
+                                              .enable_interrupts = false,
+                                              .enable_dma_tx = false,
+                                              .enable_dma_rx = false,
+                                              .enable_analog_filter = true,
+                                              .enable_digital_filter = false,
+                                              .digital_filter_coefficient = 0};
 
     auto i2c_7bit = expert::create_instance(addr7_config);
 
     // 10-bit addressing
-    constexpr I2cExpertConfig addr10_config = {
-        .peripheral = PeripheralId::I2C0,
-        .sda_pin = PinId{10},
-        .scl_pin = PinId{9},
-        .speed = I2cSpeed::Standard,
-        .addressing = I2cAddressing::TenBit,
-        .enable_interrupts = false,
-        .enable_dma_tx = false,
-        .enable_dma_rx = false,
-        .enable_analog_filter = true,
-        .enable_digital_filter = false,
-        .digital_filter_coefficient = 0
-    };
+    constexpr I2cExpertConfig addr10_config = {.peripheral = PeripheralId::I2C0,
+                                               .sda_pin = PinId{10},
+                                               .scl_pin = PinId{9},
+                                               .speed = I2cSpeed::Standard,
+                                               .addressing = I2cAddressing::TenBit,
+                                               .enable_interrupts = false,
+                                               .enable_dma_tx = false,
+                                               .enable_dma_rx = false,
+                                               .enable_analog_filter = true,
+                                               .enable_digital_filter = false,
+                                               .digital_filter_coefficient = 0};
 
     auto i2c_10bit = expert::create_instance(addr10_config);
 
@@ -501,86 +424,71 @@ void test_addressing_modes() {
  */
 void test_filter_configurations() {
     // Analog filter only
-    constexpr I2cExpertConfig analog_config = {
-        .peripheral = PeripheralId::I2C0,
-        .sda_pin = PinId{10},
-        .scl_pin = PinId{9},
-        .speed = I2cSpeed::Fast,
-        .addressing = I2cAddressing::SevenBit,
-        .enable_interrupts = false,
-        .enable_dma_tx = false,
-        .enable_dma_rx = false,
-        .enable_analog_filter = true,
-        .enable_digital_filter = false,
-        .digital_filter_coefficient = 0
-    };
+    constexpr I2cExpertConfig analog_config = {.peripheral = PeripheralId::I2C0,
+                                               .sda_pin = PinId{10},
+                                               .scl_pin = PinId{9},
+                                               .speed = I2cSpeed::Fast,
+                                               .addressing = I2cAddressing::SevenBit,
+                                               .enable_interrupts = false,
+                                               .enable_dma_tx = false,
+                                               .enable_dma_rx = false,
+                                               .enable_analog_filter = true,
+                                               .enable_digital_filter = false,
+                                               .digital_filter_coefficient = 0};
 
-    static_assert(analog_config.is_valid(),
-                  "Analog filter config should be valid");
+    static_assert(analog_config.is_valid(), "Analog filter config should be valid");
 
     // Digital filter with valid coefficient
-    constexpr I2cExpertConfig digital_config = {
-        .peripheral = PeripheralId::I2C0,
-        .sda_pin = PinId{10},
-        .scl_pin = PinId{9},
-        .speed = I2cSpeed::Fast,
-        .addressing = I2cAddressing::SevenBit,
-        .enable_interrupts = false,
-        .enable_dma_tx = false,
-        .enable_dma_rx = false,
-        .enable_analog_filter = false,
-        .enable_digital_filter = true,
-        .digital_filter_coefficient = 8
-    };
+    constexpr I2cExpertConfig digital_config = {.peripheral = PeripheralId::I2C0,
+                                                .sda_pin = PinId{10},
+                                                .scl_pin = PinId{9},
+                                                .speed = I2cSpeed::Fast,
+                                                .addressing = I2cAddressing::SevenBit,
+                                                .enable_interrupts = false,
+                                                .enable_dma_tx = false,
+                                                .enable_dma_rx = false,
+                                                .enable_analog_filter = false,
+                                                .enable_digital_filter = true,
+                                                .digital_filter_coefficient = 8};
 
     static_assert(digital_config.is_valid(),
                   "Digital filter config with valid coefficient should be valid");
 
     // Both filters enabled
-    constexpr I2cExpertConfig both_config = {
-        .peripheral = PeripheralId::I2C0,
-        .sda_pin = PinId{10},
-        .scl_pin = PinId{9},
-        .speed = I2cSpeed::Fast,
-        .addressing = I2cAddressing::SevenBit,
-        .enable_interrupts = false,
-        .enable_dma_tx = false,
-        .enable_dma_rx = false,
-        .enable_analog_filter = true,
-        .enable_digital_filter = true,
-        .digital_filter_coefficient = 4
-    };
+    constexpr I2cExpertConfig both_config = {.peripheral = PeripheralId::I2C0,
+                                             .sda_pin = PinId{10},
+                                             .scl_pin = PinId{9},
+                                             .speed = I2cSpeed::Fast,
+                                             .addressing = I2cAddressing::SevenBit,
+                                             .enable_interrupts = false,
+                                             .enable_dma_tx = false,
+                                             .enable_dma_rx = false,
+                                             .enable_analog_filter = true,
+                                             .enable_digital_filter = true,
+                                             .digital_filter_coefficient = 4};
 
-    static_assert(both_config.is_valid(),
-                  "Both filters config should be valid");
+    static_assert(both_config.is_valid(), "Both filters config should be valid");
 }
 
 /**
  * @brief Test constexpr construction
  */
 constexpr bool test_constexpr_construction() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c = expert::create_instance(config);
     return true;
 }
 
-static_assert(test_constexpr_construction(),
-              "ExpertI2cInstance must be constexpr constructible");
+static_assert(test_constexpr_construction(), "ExpertI2cInstance must be constexpr constructible");
 
 /**
  * @brief Test error handling
  */
 void test_error_handling() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c = expert::create_instance(config);
 
@@ -598,11 +506,8 @@ void test_error_handling() {
  * @brief Test buffer size handling
  */
 void test_buffer_size_handling() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     auto i2c = expert::create_instance(config);
 
@@ -610,22 +515,16 @@ void test_buffer_size_handling() {
     u8 read_data[3] = {0};
 
     // write_read should handle different buffer sizes
-    [[maybe_unused]] auto result = i2c.write_read(
-        0x50,
-        std::span(write_data),
-        std::span(read_data)
-    );
+    [[maybe_unused]] auto result =
+        i2c.write_read(0x50, std::span(write_data), std::span(read_data));
 }
 
 /**
  * @brief Test deprecated configure function
  */
 void test_deprecated_configure() {
-    constexpr I2cExpertConfig config = I2cExpertConfig::fast(
-        PeripheralId::I2C0,
-        PinId{10},
-        PinId{9}
-    );
+    constexpr I2cExpertConfig config =
+        I2cExpertConfig::fast(PeripheralId::I2C0, PinId{10}, PinId{9});
 
     [[maybe_unused]] auto result = expert::configure(config);
 

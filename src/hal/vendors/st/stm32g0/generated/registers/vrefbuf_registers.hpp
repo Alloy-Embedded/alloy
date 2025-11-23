@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::vrefbuf {
 
 /// VREFBUF Register Structure
 struct VREFBUF_Registers {
-
     /// VREFBUF control and status register
     /// Offset: 0x0000
     /// Reset value: 0x00000002

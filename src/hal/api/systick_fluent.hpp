@@ -6,10 +6,11 @@
 
 #pragma once
 
-#include "core/error_code.hpp"
-#include "core/result.hpp"
 #include "hal/interface/systick.hpp"
 #include "hal/systick_simple.hpp"
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"
 
 namespace ucore::hal {
 
@@ -17,25 +18,21 @@ using namespace ucore::core;
 
 struct SysTickBuilderState {
     bool has_frequency = false;
-    
-    constexpr bool is_valid() const { 
-        return has_frequency; 
-    }
+
+    constexpr bool is_valid() const { return has_frequency; }
 };
 
 struct FluentSysTickConfig {
     SysTickConfig config;
-    
-    Result<void, ErrorCode> apply() const { 
-        return Ok(); 
-    }
+
+    Result<void, ErrorCode> apply() const { return Ok(); }
 };
 
 /**
  * @brief Fluent SysTick configuration builder
- * 
+ *
  * Provides chainable methods for readable SysTick configuration.
- * 
+ *
  * Example:
  * @code
  * auto config = SysTickBuilder()
@@ -44,14 +41,12 @@ struct FluentSysTickConfig {
  * @endcode
  */
 class SysTickBuilder {
-public:
-    constexpr SysTickBuilder()
-        : frequency_hz_(SysTickDefaults::frequency_hz),
-          state_() {}
+   public:
+    constexpr SysTickBuilder() : frequency_hz_(SysTickDefaults::frequency_hz), state_() {}
 
     /**
      * @brief Set tick frequency in Hz
-     * 
+     *
      * @param freq_hz Frequency in Hz
      * @return Reference to builder for chaining
      */
@@ -63,7 +58,7 @@ public:
 
     /**
      * @brief Configure for 1us resolution (1MHz)
-     * 
+     *
      * @return Reference to builder for chaining
      */
     constexpr SysTickBuilder& micros() {
@@ -74,7 +69,7 @@ public:
 
     /**
      * @brief Configure for 1ms resolution (1kHz)
-     * 
+     *
      * @return Reference to builder for chaining
      */
     constexpr SysTickBuilder& millis() {
@@ -85,7 +80,7 @@ public:
 
     /**
      * @brief Configure for RTOS use (1kHz = 1ms ticks)
-     * 
+     *
      * @return Reference to builder for chaining
      */
     constexpr SysTickBuilder& rtos() {
@@ -96,7 +91,7 @@ public:
 
     /**
      * @brief Initialize with configured settings
-     * 
+     *
      * @return Result with FluentSysTickConfig or error
      */
     Result<FluentSysTickConfig, ErrorCode> initialize() const {
@@ -104,14 +99,12 @@ public:
             return Err(ErrorCode::InvalidParameter);
         }
 
-        FluentSysTickConfig config{
-            SysTickConfig{frequency_hz_}
-        };
+        FluentSysTickConfig config{SysTickConfig{frequency_hz_}};
 
         return Ok(std::move(config));
     }
 
-private:
+   private:
     u32 frequency_hz_;
     SysTickBuilderState state_;
 };

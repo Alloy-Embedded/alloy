@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::ucpd1 {
 
 /// UCPD1 Register Structure
 struct UCPD1_Registers {
-
     /// UCPD configuration register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000

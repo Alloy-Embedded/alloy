@@ -34,13 +34,14 @@
 
 #pragma once
 
-#include "core/error_code.hpp"
-#include "core/result.hpp"
-#include "core/types.hpp"
+#include <array>
+
 #include "hal/core/signals.hpp"
 #include "hal/interface/dma.hpp"
 
-#include <array>
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::hal {
 
@@ -166,50 +167,42 @@ struct DmaConnection {
     static constexpr bool is_request_for_peripheral() {
         // USART0 requests
         if (Peripheral == PeripheralId::USART0) {
-            return Request == DmaRequest::USART0_TX ||
-                   Request == DmaRequest::USART0_RX;
+            return Request == DmaRequest::USART0_TX || Request == DmaRequest::USART0_RX;
         }
 
         // USART1 requests
         if (Peripheral == PeripheralId::USART1) {
-            return Request == DmaRequest::USART1_TX ||
-                   Request == DmaRequest::USART1_RX;
+            return Request == DmaRequest::USART1_TX || Request == DmaRequest::USART1_RX;
         }
 
         // USART2 requests
         if (Peripheral == PeripheralId::USART2) {
-            return Request == DmaRequest::USART2_TX ||
-                   Request == DmaRequest::USART2_RX;
+            return Request == DmaRequest::USART2_TX || Request == DmaRequest::USART2_RX;
         }
 
         // SPI0 requests
         if (Peripheral == PeripheralId::SPI0) {
-            return Request == DmaRequest::SPI0_TX ||
-                   Request == DmaRequest::SPI0_RX;
+            return Request == DmaRequest::SPI0_TX || Request == DmaRequest::SPI0_RX;
         }
 
         // SPI1 requests
         if (Peripheral == PeripheralId::SPI1) {
-            return Request == DmaRequest::SPI1_TX ||
-                   Request == DmaRequest::SPI1_RX;
+            return Request == DmaRequest::SPI1_TX || Request == DmaRequest::SPI1_RX;
         }
 
         // I2C0 requests
         if (Peripheral == PeripheralId::I2C0) {
-            return Request == DmaRequest::I2C0_TX ||
-                   Request == DmaRequest::I2C0_RX;
+            return Request == DmaRequest::I2C0_TX || Request == DmaRequest::I2C0_RX;
         }
 
         // I2C1 requests
         if (Peripheral == PeripheralId::I2C1) {
-            return Request == DmaRequest::I2C1_TX ||
-                   Request == DmaRequest::I2C1_RX;
+            return Request == DmaRequest::I2C1_TX || Request == DmaRequest::I2C1_RX;
         }
 
         // I2C2 requests
         if (Peripheral == PeripheralId::I2C2) {
-            return Request == DmaRequest::I2C2_TX ||
-                   Request == DmaRequest::I2C2_RX;
+            return Request == DmaRequest::I2C2_TX || Request == DmaRequest::I2C2_RX;
         }
 
         // ADC0 requests
@@ -265,14 +258,22 @@ struct DmaConnection {
  */
 constexpr DmaRequest get_tx_request(PeripheralId peripheral) {
     switch (peripheral) {
-        case PeripheralId::USART0: return DmaRequest::USART0_TX;
-        case PeripheralId::USART1: return DmaRequest::USART1_TX;
-        case PeripheralId::USART2: return DmaRequest::USART2_TX;
-        case PeripheralId::SPI0: return DmaRequest::SPI0_TX;
-        case PeripheralId::SPI1: return DmaRequest::SPI1_TX;
-        case PeripheralId::I2C1: return DmaRequest::I2C1_TX;
-        case PeripheralId::I2C2: return DmaRequest::I2C2_TX;
-        default: return DmaRequest::USART0_TX; // Should never happen
+        case PeripheralId::USART0:
+            return DmaRequest::USART0_TX;
+        case PeripheralId::USART1:
+            return DmaRequest::USART1_TX;
+        case PeripheralId::USART2:
+            return DmaRequest::USART2_TX;
+        case PeripheralId::SPI0:
+            return DmaRequest::SPI0_TX;
+        case PeripheralId::SPI1:
+            return DmaRequest::SPI1_TX;
+        case PeripheralId::I2C1:
+            return DmaRequest::I2C1_TX;
+        case PeripheralId::I2C2:
+            return DmaRequest::I2C2_TX;
+        default:
+            return DmaRequest::USART0_TX;  // Should never happen
     }
 }
 
@@ -283,14 +284,22 @@ constexpr DmaRequest get_tx_request(PeripheralId peripheral) {
  */
 constexpr DmaRequest get_rx_request(PeripheralId peripheral) {
     switch (peripheral) {
-        case PeripheralId::USART0: return DmaRequest::USART0_RX;
-        case PeripheralId::USART1: return DmaRequest::USART1_RX;
-        case PeripheralId::USART2: return DmaRequest::USART2_RX;
-        case PeripheralId::SPI0: return DmaRequest::SPI0_RX;
-        case PeripheralId::SPI1: return DmaRequest::SPI1_RX;
-        case PeripheralId::I2C1: return DmaRequest::I2C1_RX;
-        case PeripheralId::I2C2: return DmaRequest::I2C2_RX;
-        default: return DmaRequest::USART0_RX; // Should never happen
+        case PeripheralId::USART0:
+            return DmaRequest::USART0_RX;
+        case PeripheralId::USART1:
+            return DmaRequest::USART1_RX;
+        case PeripheralId::USART2:
+            return DmaRequest::USART2_RX;
+        case PeripheralId::SPI0:
+            return DmaRequest::SPI0_RX;
+        case PeripheralId::SPI1:
+            return DmaRequest::SPI1_RX;
+        case PeripheralId::I2C1:
+            return DmaRequest::I2C1_RX;
+        case PeripheralId::I2C2:
+            return DmaRequest::I2C2_RX;
+        default:
+            return DmaRequest::USART0_RX;  // Should never happen
     }
 }
 

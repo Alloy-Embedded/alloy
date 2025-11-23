@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::crc {
 
 /// CRC Register Structure
 struct CRC_Registers {
-
     /// Data register
     /// Offset: 0x0000
     /// Reset value: 0xFFFFFFFF
@@ -34,7 +33,7 @@ struct CRC_Registers {
     /// Offset: 0x0008
     /// Reset value: 0x00000000
     volatile uint32_t CRC_CR;
-    uint8_t RESERVED_000C[4]; ///< Reserved
+    uint8_t RESERVED_000C[4];  ///< Reserved
 
     /// Initial CRC value
     /// Offset: 0x0010

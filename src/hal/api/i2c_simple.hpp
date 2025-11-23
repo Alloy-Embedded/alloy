@@ -34,14 +34,15 @@
 
 #pragma once
 
+#include <span>
+
+#include "hal/api/i2c_base.hpp"
+#include "hal/core/signals.hpp"
+#include "hal/interface/i2c.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/interface/i2c.hpp"
-#include "hal/core/signals.hpp"
-#include "hal/api/i2c_base.hpp"
-
-#include <span>
 
 namespace ucore::hal {
 
@@ -88,29 +89,28 @@ struct SimpleI2cConfig : public I2cBase<SimpleI2cConfig<SdaPin, SclPin>> {
     I2cAddressing addressing;
 
     // Constructor to allow initialization (protected base prevents aggregate init)
-    constexpr SimpleI2cConfig(
-        PinId sda,
-        PinId scl,
-        I2cSpeed spd,
-        I2cAddressing addr
-    ) : sda_pin_id(sda), scl_pin_id(scl), speed(spd), addressing(addr) {}
+    constexpr SimpleI2cConfig(PinId sda, PinId scl, I2cSpeed spd, I2cAddressing addr)
+        : sda_pin_id(sda),
+          scl_pin_id(scl),
+          speed(spd),
+          addressing(addr) {}
 
     // ========================================================================
     // Inherited Interface from I2cBase (CRTP)
     // ========================================================================
 
     // Inherit all common I2C methods from base
-    using Base::read;             // Read from device
-    using Base::write;            // Write to device
-    using Base::write_read;       // Write then read (repeated start)
-    using Base::read_byte;        // Single-byte read
-    using Base::write_byte;       // Single-byte write
-    using Base::read_register;    // Register read
-    using Base::write_register;   // Register write
-    using Base::scan_bus;         // Bus scanning
-    using Base::configure;        // Configuration
-    using Base::set_speed;        // Set bus speed
-    using Base::set_addressing;   // Set addressing mode
+    using Base::configure;       // Configuration
+    using Base::read;            // Read from device
+    using Base::read_byte;       // Single-byte read
+    using Base::read_register;   // Register read
+    using Base::scan_bus;        // Bus scanning
+    using Base::set_addressing;  // Set addressing mode
+    using Base::set_speed;       // Set bus speed
+    using Base::write;           // Write to device
+    using Base::write_byte;      // Single-byte write
+    using Base::write_read;      // Write then read (repeated start)
+    using Base::write_register;  // Register write
 
     /**
      * @brief Apply configuration to hardware
@@ -133,10 +133,8 @@ struct SimpleI2cConfig : public I2cBase<SimpleI2cConfig<SdaPin, SclPin>> {
     /**
      * @brief Read implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> read_impl(
-        u16 address,
-        std::span<u8> buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> read_impl(u16 address,
+                                                              std::span<u8> buffer) noexcept {
         // TODO: Implement hardware read
         (void)address;
         (void)buffer;
@@ -147,9 +145,7 @@ struct SimpleI2cConfig : public I2cBase<SimpleI2cConfig<SdaPin, SclPin>> {
      * @brief Write implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> write_impl(
-        u16 address,
-        std::span<const u8> buffer
-    ) noexcept {
+        u16 address, std::span<const u8> buffer) noexcept {
         // TODO: Implement hardware write
         (void)address;
         (void)buffer;
@@ -160,10 +156,7 @@ struct SimpleI2cConfig : public I2cBase<SimpleI2cConfig<SdaPin, SclPin>> {
      * @brief Write-read implementation (repeated start)
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> write_read_impl(
-        u16 address,
-        std::span<const u8> write_buffer,
-        std::span<u8> read_buffer
-    ) noexcept {
+        u16 address, std::span<const u8> write_buffer, std::span<u8> read_buffer) noexcept {
         // TODO: Implement hardware write-read
         (void)address;
         (void)write_buffer;
@@ -175,8 +168,7 @@ struct SimpleI2cConfig : public I2cBase<SimpleI2cConfig<SdaPin, SclPin>> {
      * @brief Scan bus implementation
      */
     [[nodiscard]] constexpr Result<usize, ErrorCode> scan_bus_impl(
-        std::span<u8> found_devices
-    ) noexcept {
+        std::span<u8> found_devices) noexcept {
         // TODO: Implement bus scanning
         (void)found_devices;
         return Ok(usize{0});
@@ -186,8 +178,7 @@ struct SimpleI2cConfig : public I2cBase<SimpleI2cConfig<SdaPin, SclPin>> {
      * @brief Configure I2C implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> configure_impl(
-        const I2cConfig& config
-    ) noexcept {
+        const I2cConfig& config) noexcept {
         // TODO: Apply configuration to hardware
         (void)config;
         return Ok();
@@ -207,7 +198,7 @@ struct SimpleI2cConfig : public I2cBase<SimpleI2cConfig<SdaPin, SclPin>> {
  */
 template <PeripheralId PeriphId>
 class I2c {
-public:
+   public:
     /**
      * @brief Quick setup with default configuration
      *
@@ -222,19 +213,15 @@ public:
      */
     template <typename SdaPin, typename SclPin>
     static constexpr auto quick_setup(I2cSpeed speed = I2cDefaults::speed,
-                                       I2cAddressing addressing = I2cDefaults::addressing) {
+                                      I2cAddressing addressing = I2cDefaults::addressing) {
         // Compile-time pin validation
         static_assert(is_valid_sda_pin<SdaPin>(),
-                     "SDA pin is not compatible with this I2C peripheral");
+                      "SDA pin is not compatible with this I2C peripheral");
         static_assert(is_valid_scl_pin<SclPin>(),
-                     "SCL pin is not compatible with this I2C peripheral");
+                      "SCL pin is not compatible with this I2C peripheral");
 
-        return SimpleI2cConfig<SdaPin, SclPin>(
-            SdaPin::get_pin_id(),
-            SclPin::get_pin_id(),
-            speed,
-            addressing
-        );
+        return SimpleI2cConfig<SdaPin, SclPin>(SdaPin::get_pin_id(), SclPin::get_pin_id(), speed,
+                                               addressing);
     }
 
     /**
@@ -248,8 +235,7 @@ public:
      */
     template <typename SdaPin, typename SclPin>
     static constexpr auto quick_setup_fast() {
-        return quick_setup<SdaPin, SclPin>(I2cSpeed::Fast,
-                                           I2cDefaults::addressing);
+        return quick_setup<SdaPin, SclPin>(I2cSpeed::Fast, I2cDefaults::addressing);
     }
 
     /**
@@ -263,11 +249,10 @@ public:
      */
     template <typename SdaPin, typename SclPin>
     static constexpr auto quick_setup_fast_plus() {
-        return quick_setup<SdaPin, SclPin>(I2cSpeed::FastPlus,
-                                           I2cDefaults::addressing);
+        return quick_setup<SdaPin, SclPin>(I2cSpeed::FastPlus, I2cDefaults::addressing);
     }
 
-private:
+   private:
     /**
      * @brief Validate SDA pin at compile-time
      *
@@ -315,10 +300,8 @@ private:
  */
 template <PeripheralId PeriphId, typename SdaPin, typename SclPin>
 constexpr auto create_i2c_standard() {
-    return I2c<PeriphId>::template quick_setup<SdaPin, SclPin>(
-        I2cSpeed::Standard,
-        I2cAddressing::SevenBit
-    );
+    return I2c<PeriphId>::template quick_setup<SdaPin, SclPin>(I2cSpeed::Standard,
+                                                               I2cAddressing::SevenBit);
 }
 
 /**
@@ -333,10 +316,8 @@ constexpr auto create_i2c_standard() {
  */
 template <PeripheralId PeriphId, typename SdaPin, typename SclPin>
 constexpr auto create_i2c_fast() {
-    return I2c<PeriphId>::template quick_setup<SdaPin, SclPin>(
-        I2cSpeed::Fast,
-        I2cAddressing::SevenBit
-    );
+    return I2c<PeriphId>::template quick_setup<SdaPin, SclPin>(I2cSpeed::Fast,
+                                                               I2cAddressing::SevenBit);
 }
 
 /**
@@ -351,10 +332,8 @@ constexpr auto create_i2c_fast() {
  */
 template <PeripheralId PeriphId, typename SdaPin, typename SclPin>
 constexpr auto create_i2c_fast_plus() {
-    return I2c<PeriphId>::template quick_setup<SdaPin, SclPin>(
-        I2cSpeed::FastPlus,
-        I2cAddressing::SevenBit
-    );
+    return I2c<PeriphId>::template quick_setup<SdaPin, SclPin>(I2cSpeed::FastPlus,
+                                                               I2cAddressing::SevenBit);
 }
 
 }  // namespace ucore::hal

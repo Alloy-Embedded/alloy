@@ -15,8 +15,9 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "hal/vendors/atmel/same70/systick_hardware_policy.hpp"
+
+#include "core/types.hpp"
 
 namespace ucore::hal::same70 {
 
@@ -31,7 +32,7 @@ using namespace ucore::core;
  */
 template <typename SysTickPolicy>
 class SysTickPlatform {
-public:
+   public:
     /**
      * @brief Global tick counter in microseconds
      *
@@ -112,36 +113,28 @@ public:
      *
      * @return Milliseconds since initialization
      */
-    static u32 millis() {
-        return static_cast<u32>(tick_counter_us / 1000);
-    }
+    static u32 millis() { return static_cast<u32>(tick_counter_us / 1000); }
 
     /**
      * @brief Increment tick counter (called by ISR)
      *
      * This should be called by the SysTick_Handler ISR in board.cpp.
      */
-    static void increment_tick() {
-        tick_counter_us += tick_period_us;
-    }
+    static void increment_tick() { tick_counter_us += tick_period_us; }
 
     /**
      * @brief Reset tick counter
      *
      * Useful for resetting uptime or testing.
      */
-    static void reset_counter() {
-        tick_counter_us = 0;
-    }
+    static void reset_counter() { tick_counter_us = 0; }
 
     /**
      * @brief Get configured tick period in microseconds
      *
      * @return Tick period in microseconds
      */
-    static u32 get_tick_period_us() {
-        return tick_period_us;
-    }
+    static u32 get_tick_period_us() { return tick_period_us; }
 
     // Forward hardware policy methods for convenience
     static void enable() { SysTickPolicy::enable(); }

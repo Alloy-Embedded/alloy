@@ -3,7 +3,7 @@
 /// Source: tools/codegen/metadata/platforms/stm32f4/adc.json
 /// DO NOT EDIT - Changes will be overwritten
 ///
-/// Generated: 
+/// Generated:
 /**
  * @file adc.hpp
  * @brief ADC Hardware Policy for STM32F4
@@ -19,12 +19,12 @@
  * - Type-safe via C++20 concepts
  *
  * Platform: STM32F4
- * Vendor: 
- * Architecture: 
+ * Vendor:
+ * Architecture:
  * ADC Style: STM32 (SR, CR1, CR2, SMPR, SQR, DR) *
  * Auto-generated from: tools/codegen/metadata/platforms/stm32f4/adc.json
  * Generator: adc_generator.py
- * Generated: 
+ * Generated:
  *
  * @note Part of Alloy HAL Vendor Layer
  * @see docs/codegen/TEMPLATE_CONVENTIONS.md
@@ -32,9 +32,9 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include ""
@@ -47,7 +47,7 @@ namespace ucore::hal::st::stm32f4 {
 using namespace ucore::core;
 
 // Import register types
-using namespace ;
+using namespace;
 
 // ============================================================================
 // STM32-Style ADC Hardware Policy
@@ -86,13 +86,13 @@ struct STM32F4AdcHardwarePolicy {
     static constexpr uint32_t base_address = BASE_ADDR;
 
     // CR1 bits
-    static constexpr uint32_t CR1_SCAN = (1 << 8);      // Scan mode
-    static constexpr uint32_t CR1_EOCIE = (1 << 5);     // EOC interrupt enable
-    static constexpr uint32_t CR1_AWDIE = (1 << 6);     // Analog watchdog interrupt enable
-    static constexpr uint32_t CR1_JEOCIE = (1 << 7);    // Injected EOC interrupt enable
-    static constexpr uint32_t CR1_DISCEN = (1 << 11);   // Discontinuous mode
-    static constexpr uint32_t CR1_JAWDEN = (1 << 22);   // Analog watchdog on injected channels
-    static constexpr uint32_t CR1_AWDEN = (1 << 23);    // Analog watchdog on regular channels
+    static constexpr uint32_t CR1_SCAN = (1 << 8);     // Scan mode
+    static constexpr uint32_t CR1_EOCIE = (1 << 5);    // EOC interrupt enable
+    static constexpr uint32_t CR1_AWDIE = (1 << 6);    // Analog watchdog interrupt enable
+    static constexpr uint32_t CR1_JEOCIE = (1 << 7);   // Injected EOC interrupt enable
+    static constexpr uint32_t CR1_DISCEN = (1 << 11);  // Discontinuous mode
+    static constexpr uint32_t CR1_JAWDEN = (1 << 22);  // Analog watchdog on injected channels
+    static constexpr uint32_t CR1_AWDEN = (1 << 23);   // Analog watchdog on regular channels
 
     // CR2 bits
     static constexpr uint32_t CR2_ADON = (1 << 0);      // ADC on
@@ -104,12 +104,12 @@ struct STM32F4AdcHardwarePolicy {
     static constexpr uint32_t CR2_SWSTART = (1 << 30);  // Start conversion
 
     // SR bits
-    static constexpr uint32_t SR_AWD = (1 << 0);        // Analog watchdog flag
-    static constexpr uint32_t SR_EOC = (1 << 1);        // End of conversion
-    static constexpr uint32_t SR_JEOC = (1 << 2);       // Injected end of conversion
-    static constexpr uint32_t SR_JSTRT = (1 << 3);      // Injected start flag
-    static constexpr uint32_t SR_STRT = (1 << 4);       // Regular start flag
-    static constexpr uint32_t SR_OVR = (1 << 5);        // Overrun
+    static constexpr uint32_t SR_AWD = (1 << 0);    // Analog watchdog flag
+    static constexpr uint32_t SR_EOC = (1 << 1);    // End of conversion
+    static constexpr uint32_t SR_JEOC = (1 << 2);   // Injected end of conversion
+    static constexpr uint32_t SR_JSTRT = (1 << 3);  // Injected start flag
+    static constexpr uint32_t SR_STRT = (1 << 4);   // Regular start flag
+    static constexpr uint32_t SR_OVR = (1 << 5);    // Overrun
 
     // Resolution settings (CR1[25:24])
     static constexpr uint32_t RES_12BIT = (0 << 24);
@@ -127,11 +127,11 @@ struct STM32F4AdcHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_ADC_MOCK_HW
-            return ALLOY_ADC_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_ADC_MOCK_HW
+        return ALLOY_ADC_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -141,16 +141,12 @@ struct STM32F4AdcHardwarePolicy {
     /**
      * @brief Enable ADC peripheral
      */
-    static inline void enable() {
-        hw()->CR2 |= CR2_ADON;
-    }
+    static inline void enable() { hw()->CR2 |= CR2_ADON; }
 
     /**
      * @brief Disable ADC peripheral
      */
-    static inline void disable() {
-        hw()->CR2 &= ~CR2_ADON;
-    }
+    static inline void disable() { hw()->CR2 &= ~CR2_ADON; }
 
     /**
      * @brief Set resolution
@@ -164,30 +160,22 @@ struct STM32F4AdcHardwarePolicy {
     /**
      * @brief Enable continuous conversion mode
      */
-    static inline void enable_continuous_mode() {
-        hw()->CR2 |= CR2_CONT;
-    }
+    static inline void enable_continuous_mode() { hw()->CR2 |= CR2_CONT; }
 
     /**
      * @brief Disable continuous conversion mode
      */
-    static inline void disable_continuous_mode() {
-        hw()->CR2 &= ~CR2_CONT;
-    }
+    static inline void disable_continuous_mode() { hw()->CR2 &= ~CR2_CONT; }
 
     /**
      * @brief Enable scan mode
      */
-    static inline void enable_scan_mode() {
-        hw()->CR1 |= CR1_SCAN;
-    }
+    static inline void enable_scan_mode() { hw()->CR1 |= CR1_SCAN; }
 
     /**
      * @brief Disable scan mode
      */
-    static inline void disable_scan_mode() {
-        hw()->CR1 &= ~CR1_SCAN;
-    }
+    static inline void disable_scan_mode() { hw()->CR1 &= ~CR1_SCAN; }
 
     /**
      * @brief Set data alignment
@@ -255,18 +243,14 @@ struct STM32F4AdcHardwarePolicy {
     /**
      * @brief Start conversion
      */
-    static inline void start_conversion() {
-        hw()->CR2 |= CR2_SWSTART;
-    }
+    static inline void start_conversion() { hw()->CR2 |= CR2_SWSTART; }
 
     /**
      * @brief Check if conversion is complete
      *
      * @return true if EOC flag is set
      */
-    static inline bool is_conversion_complete() {
-        return (hw()->SR & SR_EOC) != 0;
-    }
+    static inline bool is_conversion_complete() { return (hw()->SR & SR_EOC) != 0; }
 
     /**
      * @brief Read conversion result
@@ -275,25 +259,19 @@ struct STM32F4AdcHardwarePolicy {
      *
      * @note Reading DR clears EOC flag
      */
-    static inline u16 read_data() {
-        return static_cast<u16>(hw()->DR & 0xFFFF);
-    }
+    static inline u16 read_data() { return static_cast<u16>(hw()->DR & 0xFFFF); }
 
     /**
      * @brief Read conversion result without clearing EOC
      *
      * @return ADC data value
      */
-    static inline u16 peek_data() {
-        return static_cast<u16>(hw()->DR & 0xFFFF);
-    }
+    static inline u16 peek_data() { return static_cast<u16>(hw()->DR & 0xFFFF); }
 
     /**
      * @brief Clear EOC flag
      */
-    static inline void clear_eoc_flag() {
-        hw()->SR &= ~SR_EOC;
-    }
+    static inline void clear_eoc_flag() { hw()->SR &= ~SR_EOC; }
 
     // ========================================================================
     // Watchdog Configuration
@@ -304,48 +282,36 @@ struct STM32F4AdcHardwarePolicy {
      *
      * @param threshold High threshold value (12-bit)
      */
-    static inline void set_watchdog_high_threshold(u16 threshold) {
-        hw()->HTR = threshold & 0xFFF;
-    }
+    static inline void set_watchdog_high_threshold(u16 threshold) { hw()->HTR = threshold & 0xFFF; }
 
     /**
      * @brief Set watchdog low threshold
      *
      * @param threshold Low threshold value (12-bit)
      */
-    static inline void set_watchdog_low_threshold(u16 threshold) {
-        hw()->LTR = threshold & 0xFFF;
-    }
+    static inline void set_watchdog_low_threshold(u16 threshold) { hw()->LTR = threshold & 0xFFF; }
 
     /**
      * @brief Enable analog watchdog
      */
-    static inline void enable_watchdog() {
-        hw()->CR1 |= CR1_AWDEN;
-    }
+    static inline void enable_watchdog() { hw()->CR1 |= CR1_AWDEN; }
 
     /**
      * @brief Disable analog watchdog
      */
-    static inline void disable_watchdog() {
-        hw()->CR1 &= ~CR1_AWDEN;
-    }
+    static inline void disable_watchdog() { hw()->CR1 &= ~CR1_AWDEN; }
 
     /**
      * @brief Check watchdog flag
      *
      * @return true if watchdog event occurred
      */
-    static inline bool has_watchdog_event() {
-        return (hw()->SR & SR_AWD) != 0;
-    }
+    static inline bool has_watchdog_event() { return (hw()->SR & SR_AWD) != 0; }
 
     /**
      * @brief Clear watchdog flag
      */
-    static inline void clear_watchdog_flag() {
-        hw()->SR &= ~SR_AWD;
-    }
+    static inline void clear_watchdog_flag() { hw()->SR &= ~SR_AWD; }
 
     // ========================================================================
     // Error Handling
@@ -356,16 +322,12 @@ struct STM32F4AdcHardwarePolicy {
      *
      * @return true if overrun occurred
      */
-    static inline bool has_overrun_error() {
-        return (hw()->SR & SR_OVR) != 0;
-    }
+    static inline bool has_overrun_error() { return (hw()->SR & SR_OVR) != 0; }
 
     /**
      * @brief Clear overrun flag
      */
-    static inline void clear_overrun_flag() {
-        hw()->SR &= ~SR_OVR;
-    }
+    static inline void clear_overrun_flag() { hw()->SR &= ~SR_OVR; }
 
     // ========================================================================
     // Interrupt Management
@@ -374,30 +336,22 @@ struct STM32F4AdcHardwarePolicy {
     /**
      * @brief Enable end of conversion interrupt
      */
-    static inline void enable_eoc_interrupt() {
-        hw()->CR1 |= CR1_EOCIE;
-    }
+    static inline void enable_eoc_interrupt() { hw()->CR1 |= CR1_EOCIE; }
 
     /**
      * @brief Disable end of conversion interrupt
      */
-    static inline void disable_eoc_interrupt() {
-        hw()->CR1 &= ~CR1_EOCIE;
-    }
+    static inline void disable_eoc_interrupt() { hw()->CR1 &= ~CR1_EOCIE; }
 
     /**
      * @brief Enable watchdog interrupt
      */
-    static inline void enable_watchdog_interrupt() {
-        hw()->CR1 |= CR1_AWDIE;
-    }
+    static inline void enable_watchdog_interrupt() { hw()->CR1 |= CR1_AWDIE; }
 
     /**
      * @brief Disable watchdog interrupt
      */
-    static inline void disable_watchdog_interrupt() {
-        hw()->CR1 &= ~CR1_AWDIE;
-    }
+    static inline void disable_watchdog_interrupt() { hw()->CR1 &= ~CR1_AWDIE; }
 
     // ========================================================================
     // DMA Support
@@ -406,32 +360,23 @@ struct STM32F4AdcHardwarePolicy {
     /**
      * @brief Enable DMA mode
      */
-    static inline void enable_dma() {
-        hw()->CR2 |= CR2_DMA;
-    }
+    static inline void enable_dma() { hw()->CR2 |= CR2_DMA; }
 
     /**
      * @brief Disable DMA mode
      */
-    static inline void disable_dma() {
-        hw()->CR2 &= ~CR2_DMA;
-    }
+    static inline void disable_dma() { hw()->CR2 &= ~CR2_DMA; }
 
     /**
      * @brief Enable DMA disable selection (continuous requests)
      */
-    static inline void enable_dma_continuous() {
-        hw()->CR2 |= CR2_DDS;
-    }
+    static inline void enable_dma_continuous() { hw()->CR2 |= CR2_DDS; }
 
     /**
      * @brief Disable DMA disable selection
      */
-    static inline void disable_dma_continuous() {
-        hw()->CR2 &= ~CR2_DDS;
-    }
+    static inline void disable_dma_continuous() { hw()->CR2 &= ~CR2_DDS; }
 };
-
 
 
 // ============================================================================

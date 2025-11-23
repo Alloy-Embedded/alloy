@@ -267,79 +267,73 @@ extern "C" [[noreturn]] void Reset_Handler() {
 // VECTOR TABLE
 // ============================================================================
 
-__attribute__((section(".isr_vector"), used))
-void (* const vector_table[])() = {
+__attribute__((section(".isr_vector"), used)) void (*const vector_table[])() = {
     // Core system handlers
-    reinterpret_cast<void (*)()>(&_estack), // Initial stack pointer
-    Reset_Handler, // Reset handler
-    WWDG_Handler, // IRQ 0: WWDG - Window Watchdog interrupt
-    PVD_Handler, // IRQ 1: PVD - PVD through EXTI line detection
-        interrupt
-    TAMPER_Handler, // IRQ 2: TAMPER - Tamper interrupt
-    RTC_Handler, // IRQ 3: RTC - RTC global interrupt
-    FLASH_Handler, // IRQ 4: FLASH - Flash global interrupt
-    RCC_Handler, // IRQ 5: RCC - RCC global interrupt
-    EXTI0_Handler, // IRQ 6: EXTI0 - EXTI Line0 interrupt
-    EXTI1_Handler, // IRQ 7: EXTI1 - EXTI Line1 interrupt
-    EXTI2_Handler, // IRQ 8: EXTI2 - EXTI Line2 interrupt
-    EXTI3_Handler, // IRQ 9: EXTI3 - EXTI Line3 interrupt
-    EXTI4_Handler, // IRQ 10: EXTI4 - EXTI Line4 interrupt
-    DMA1_Channel1_Handler, // IRQ 11: DMA1_Channel1 - DMA1 Channel1 global interrupt
-    DMA1_Channel2_Handler, // IRQ 12: DMA1_Channel2 - DMA1 Channel2 global interrupt
-    DMA1_Channel3_Handler, // IRQ 13: DMA1_Channel3 - DMA1 Channel3 global interrupt
-    DMA1_Channel4_Handler, // IRQ 14: DMA1_Channel4 - DMA1 Channel4 global interrupt
-    DMA1_Channel5_Handler, // IRQ 15: DMA1_Channel5 - DMA1 Channel5 global interrupt
-    DMA1_Channel6_Handler, // IRQ 16: DMA1_Channel6 - DMA1 Channel6 global interrupt
-    DMA1_Channel7_Handler, // IRQ 17: DMA1_Channel7 - DMA1 Channel7 global interrupt
-    ADC_Handler, // IRQ 18: ADC - ADC1 global interrupt
-    CAN1_TX_Handler, // IRQ 19: CAN1_TX - CAN1 TX interrupts
-    CAN1_RX0_Handler, // IRQ 20: CAN1_RX0 - CAN1 RX0 interrupts
-    CAN1_RX1_Handler, // IRQ 21: CAN1_RX1 - CAN1 RX1 interrupt
-    CAN1_SCE_Handler, // IRQ 22: CAN1_SCE - CAN1 SCE interrupt
-    EXTI9_5_Handler, // IRQ 23: EXTI9_5 - EXTI Line[9:5] interrupts
-    TIM1_BRK_TIM9_Handler, // IRQ 24: TIM1_BRK_TIM9 - TIM1 Break interrupt and TIM9 global
-        interrupt
-    TIM1_UP_TIM10_Handler, // IRQ 25: TIM1_UP_TIM10 - TIM1 Update interrupt and TIM10 global
-        interrupt
-    TIM1_TRG_COM_TIM11_Handler, // IRQ 26: TIM1_TRG_COM_TIM11 - TIM1 Trigger and Commutation interrupts and
-        TIM11 global interrupt
-    TIM1_CC_Handler, // IRQ 27: TIM1_CC - TIM1 Capture Compare interrupt
-    TIM2_Handler, // IRQ 28: TIM2 - TIM2 global interrupt
-    TIM3_Handler, // IRQ 29: TIM3 - TIM3 global interrupt
-    TIM4_Handler, // IRQ 30: TIM4 - TIM4 global interrupt
-    I2C1_EV_Handler, // IRQ 31: I2C1_EV - I2C1 event interrupt
-    I2C1_ER_Handler, // IRQ 32: I2C1_ER - I2C1 error interrupt
-    I2C2_EV_Handler, // IRQ 33: I2C2_EV - I2C2 event interrupt
-    I2C2_ER_Handler, // IRQ 34: I2C2_ER - I2C2 error interrupt
-    SPI1_Handler, // IRQ 35: SPI1 - SPI1 global interrupt
-    SPI2_Handler, // IRQ 36: SPI2 - SPI2 global interrupt
-    USART1_Handler, // IRQ 37: USART1 - USART1 global interrupt
-    USART2_Handler, // IRQ 38: USART2 - USART2 global interrupt
-    USART3_Handler, // IRQ 39: USART3 - USART3 global interrupt
-    EXTI15_10_Handler, // IRQ 40: EXTI15_10 - EXTI Line[15:10] interrupts
-    RTCAlarm_Handler, // IRQ 41: RTCAlarm - RTC Alarms through EXTI line
-        interrupt
-    USB_FS_WKUP_Handler, // IRQ 42: USB_FS_WKUP - USB Device FS Wakeup through EXTI line
-        interrupt
-    TIM8_BRK_TIM12_Handler, // IRQ 43: TIM8_BRK_TIM12 - TIM8 Break interrupt and TIM12 global
-        interrupt
-    TIM8_UP_TIM13_Handler, // IRQ 44: TIM8_UP_TIM13 - TIM8 Update interrupt and TIM13 global
-        interrupt
-    TIM8_TRG_COM_TIM14_Handler, // IRQ 45: TIM8_TRG_COM_TIM14 - TIM8 Trigger and Commutation interrupts and
-        TIM14 global interrupt
-    TIM8_CC_Handler, // IRQ 46: TIM8_CC - TIM8 Capture Compare interrupt
-    ADC3_Handler, // IRQ 47: ADC3 - ADC3 global interrupt
-    FSMC_Handler, // IRQ 48: FSMC - FSMC global interrupt
-    SDIO_Handler, // IRQ 49: SDIO - SDIO global interrupt
-    TIM5_Handler, // IRQ 50: TIM5 - TIM5 global interrupt
-    SPI3_Handler, // IRQ 51: SPI3 - SPI3 global interrupt
-    UART4_Handler, // IRQ 52: UART4 - UART4 global interrupt
-    UART5_Handler, // IRQ 53: UART5 - UART5 global interrupt
-    TIM6_Handler, // IRQ 54: TIM6 - TIM6 global interrupt
-    TIM7_Handler, // IRQ 55: TIM7 - TIM7 global interrupt
-    DMA2_Channel1_Handler, // IRQ 56: DMA2_Channel1 - DMA2 Channel1 global interrupt
-    DMA2_Channel2_Handler, // IRQ 57: DMA2_Channel2 - DMA2 Channel2 global interrupt
-    DMA2_Channel3_Handler, // IRQ 58: DMA2_Channel3 - DMA2 Channel3 global interrupt
-    DMA2_Channel4_5_Handler, // IRQ 59: DMA2_Channel4_5 - DMA2 Channel4 and DMA2 Channel5 global
-        interrupt
-};
+    reinterpret_cast<void (*)()>(&_estack),  // Initial stack pointer
+    Reset_Handler,                           // Reset handler
+    WWDG_Handler,                            // IRQ 0: WWDG - Window Watchdog interrupt
+    PVD_Handler,                             // IRQ 1: PVD - PVD through EXTI line detection
+    interrupt TAMPER_Handler,                // IRQ 2: TAMPER - Tamper interrupt
+    RTC_Handler,                             // IRQ 3: RTC - RTC global interrupt
+    FLASH_Handler,                           // IRQ 4: FLASH - Flash global interrupt
+    RCC_Handler,                             // IRQ 5: RCC - RCC global interrupt
+    EXTI0_Handler,                           // IRQ 6: EXTI0 - EXTI Line0 interrupt
+    EXTI1_Handler,                           // IRQ 7: EXTI1 - EXTI Line1 interrupt
+    EXTI2_Handler,                           // IRQ 8: EXTI2 - EXTI Line2 interrupt
+    EXTI3_Handler,                           // IRQ 9: EXTI3 - EXTI Line3 interrupt
+    EXTI4_Handler,                           // IRQ 10: EXTI4 - EXTI Line4 interrupt
+    DMA1_Channel1_Handler,  // IRQ 11: DMA1_Channel1 - DMA1 Channel1 global interrupt
+    DMA1_Channel2_Handler,  // IRQ 12: DMA1_Channel2 - DMA1 Channel2 global interrupt
+    DMA1_Channel3_Handler,  // IRQ 13: DMA1_Channel3 - DMA1 Channel3 global interrupt
+    DMA1_Channel4_Handler,  // IRQ 14: DMA1_Channel4 - DMA1 Channel4 global interrupt
+    DMA1_Channel5_Handler,  // IRQ 15: DMA1_Channel5 - DMA1 Channel5 global interrupt
+    DMA1_Channel6_Handler,  // IRQ 16: DMA1_Channel6 - DMA1 Channel6 global interrupt
+    DMA1_Channel7_Handler,  // IRQ 17: DMA1_Channel7 - DMA1 Channel7 global interrupt
+    ADC_Handler,            // IRQ 18: ADC - ADC1 global interrupt
+    CAN1_TX_Handler,        // IRQ 19: CAN1_TX - CAN1 TX interrupts
+    CAN1_RX0_Handler,       // IRQ 20: CAN1_RX0 - CAN1 RX0 interrupts
+    CAN1_RX1_Handler,       // IRQ 21: CAN1_RX1 - CAN1 RX1 interrupt
+    CAN1_SCE_Handler,       // IRQ 22: CAN1_SCE - CAN1 SCE interrupt
+    EXTI9_5_Handler,        // IRQ 23: EXTI9_5 - EXTI Line[9:5] interrupts
+    TIM1_BRK_TIM9_Handler,  // IRQ 24: TIM1_BRK_TIM9 - TIM1 Break interrupt and TIM9 global
+    interrupt
+        TIM1_UP_TIM10_Handler,  // IRQ 25: TIM1_UP_TIM10 - TIM1 Update interrupt and TIM10 global
+    interrupt TIM1_TRG_COM_TIM11_Handler,    // IRQ 26: TIM1_TRG_COM_TIM11 - TIM1 Trigger and
+                                             // Commutation interrupts and
+    TIM11 global interrupt TIM1_CC_Handler,  // IRQ 27: TIM1_CC - TIM1 Capture Compare interrupt
+    TIM2_Handler,                            // IRQ 28: TIM2 - TIM2 global interrupt
+    TIM3_Handler,                            // IRQ 29: TIM3 - TIM3 global interrupt
+    TIM4_Handler,                            // IRQ 30: TIM4 - TIM4 global interrupt
+    I2C1_EV_Handler,                         // IRQ 31: I2C1_EV - I2C1 event interrupt
+    I2C1_ER_Handler,                         // IRQ 32: I2C1_ER - I2C1 error interrupt
+    I2C2_EV_Handler,                         // IRQ 33: I2C2_EV - I2C2 event interrupt
+    I2C2_ER_Handler,                         // IRQ 34: I2C2_ER - I2C2 error interrupt
+    SPI1_Handler,                            // IRQ 35: SPI1 - SPI1 global interrupt
+    SPI2_Handler,                            // IRQ 36: SPI2 - SPI2 global interrupt
+    USART1_Handler,                          // IRQ 37: USART1 - USART1 global interrupt
+    USART2_Handler,                          // IRQ 38: USART2 - USART2 global interrupt
+    USART3_Handler,                          // IRQ 39: USART3 - USART3 global interrupt
+    EXTI15_10_Handler,                       // IRQ 40: EXTI15_10 - EXTI Line[15:10] interrupts
+    RTCAlarm_Handler,                        // IRQ 41: RTCAlarm - RTC Alarms through EXTI line
+    interrupt USB_FS_WKUP_Handler,  // IRQ 42: USB_FS_WKUP - USB Device FS Wakeup through EXTI line
+    interrupt
+        TIM8_BRK_TIM12_Handler,  // IRQ 43: TIM8_BRK_TIM12 - TIM8 Break interrupt and TIM12 global
+    interrupt
+        TIM8_UP_TIM13_Handler,  // IRQ 44: TIM8_UP_TIM13 - TIM8 Update interrupt and TIM13 global
+    interrupt TIM8_TRG_COM_TIM14_Handler,    // IRQ 45: TIM8_TRG_COM_TIM14 - TIM8 Trigger and
+                                             // Commutation interrupts and
+    TIM14 global interrupt TIM8_CC_Handler,  // IRQ 46: TIM8_CC - TIM8 Capture Compare interrupt
+    ADC3_Handler,                            // IRQ 47: ADC3 - ADC3 global interrupt
+    FSMC_Handler,                            // IRQ 48: FSMC - FSMC global interrupt
+    SDIO_Handler,                            // IRQ 49: SDIO - SDIO global interrupt
+    TIM5_Handler,                            // IRQ 50: TIM5 - TIM5 global interrupt
+    SPI3_Handler,                            // IRQ 51: SPI3 - SPI3 global interrupt
+    UART4_Handler,                           // IRQ 52: UART4 - UART4 global interrupt
+    UART5_Handler,                           // IRQ 53: UART5 - UART5 global interrupt
+    TIM6_Handler,                            // IRQ 54: TIM6 - TIM6 global interrupt
+    TIM7_Handler,                            // IRQ 55: TIM7 - TIM7 global interrupt
+    DMA2_Channel1_Handler,    // IRQ 56: DMA2_Channel1 - DMA2 Channel1 global interrupt
+    DMA2_Channel2_Handler,    // IRQ 57: DMA2_Channel2 - DMA2 Channel2 global interrupt
+    DMA2_Channel3_Handler,    // IRQ 58: DMA2_Channel3 - DMA2 Channel3 global interrupt
+    DMA2_Channel4_5_Handler,  // IRQ 59: DMA2_Channel4_5 - DMA2 Channel4 and DMA2 Channel5 global
+    interrupt};

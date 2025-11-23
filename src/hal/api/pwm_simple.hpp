@@ -22,12 +22,12 @@ using namespace ucore::core;
  * @brief PWM frequency presets for common use cases
  */
 struct PwmPresets {
-    static constexpr u32 LED_DIMMING_HZ = 1000;      ///< 1 kHz - LED dimming (no flicker)
-    static constexpr u32 SERVO_MOTOR_HZ = 50;        ///< 50 Hz - Standard servo PWM
-    static constexpr u32 BUZZER_1KHZ = 1000;         ///< 1 kHz - Audible buzzer
-    static constexpr u32 BUZZER_2KHZ = 2000;         ///< 2 kHz - High-pitched buzzer
-    static constexpr u32 DC_MOTOR_HZ = 20000;        ///< 20 kHz - DC motor (silent)
-    static constexpr u32 FAST_SWITCHING_HZ = 100000; ///< 100 kHz - Fast switching
+    static constexpr u32 LED_DIMMING_HZ = 1000;       ///< 1 kHz - LED dimming (no flicker)
+    static constexpr u32 SERVO_MOTOR_HZ = 50;         ///< 50 Hz - Standard servo PWM
+    static constexpr u32 BUZZER_1KHZ = 1000;          ///< 1 kHz - Audible buzzer
+    static constexpr u32 BUZZER_2KHZ = 2000;          ///< 2 kHz - High-pitched buzzer
+    static constexpr u32 DC_MOTOR_HZ = 20000;         ///< 20 kHz - DC motor (silent)
+    static constexpr u32 FAST_SWITCHING_HZ = 100000;  ///< 100 kHz - Fast switching
 };
 
 /**
@@ -39,9 +39,11 @@ struct PwmPresets {
  */
 template <typename PwmPolicy>
 class SimplePwmChannel {
-public:
+   public:
     constexpr SimplePwmChannel(u8 channel, u32 frequency_hz)
-        : channel_(channel), frequency_hz_(frequency_hz), duty_percent_(0) {}
+        : channel_(channel),
+          frequency_hz_(frequency_hz),
+          duty_percent_(0) {}
 
     /**
      * @brief Start PWM output
@@ -97,7 +99,7 @@ public:
      */
     u8 get_channel() const { return channel_; }
 
-private:
+   private:
     u8 channel_;
     u32 frequency_hz_;
     float duty_percent_;
@@ -131,7 +133,7 @@ private:
  */
 template <typename PwmPolicy>
 class Pwm {
-public:
+   public:
     /**
      * @brief Create PWM for LED dimming (1 kHz, no flicker)
      *

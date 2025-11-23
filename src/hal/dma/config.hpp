@@ -38,11 +38,12 @@
 
 #pragma once
 
+#include "hal/dma/connection.hpp"
+#include "hal/interface/dma.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/dma/connection.hpp"
-#include "hal/interface/dma.hpp"
 
 namespace ucore::hal {
 
@@ -110,30 +111,17 @@ struct DmaTransferConfig {
      * @return Transfer configuration
      */
     static constexpr DmaTransferConfig memory_to_peripheral(
-        const void* source,
-        usize size,
-        DmaDataWidth width = DmaDataWidth::Bits8,
-        DmaMode mode = DmaMode::Normal,
-        DmaPriority priority = DmaPriority::Medium) {
-
+        const void* source, usize size, DmaDataWidth width = DmaDataWidth::Bits8,
+        DmaMode mode = DmaMode::Normal, DmaPriority priority = DmaPriority::Medium) {
         // Validate connection
-        static_assert(Connection::is_compatible(),
-                     "Invalid DMA connection");
+        static_assert(Connection::is_compatible(), "Invalid DMA connection");
 
-        DmaConfig dma_conf(
-            DmaDirection::MemoryToPeripheral,
-            mode,
-            priority,
-            width,
-            get_peripheral_dma_address(Connection::peripheral, Connection::request)
-        );
+        DmaConfig dma_conf(DmaDirection::MemoryToPeripheral, mode, priority, width,
+                           get_peripheral_dma_address(Connection::peripheral, Connection::request));
 
-        return DmaTransferConfig{
-            dma_conf,
-            source,
-            nullptr, // Peripheral address in config
-            size
-        };
+        return DmaTransferConfig{dma_conf, source,
+                                 nullptr,  // Peripheral address in config
+                                 size};
     }
 
     /**
@@ -149,30 +137,17 @@ struct DmaTransferConfig {
      * @return Transfer configuration
      */
     static constexpr DmaTransferConfig peripheral_to_memory(
-        void* destination,
-        usize size,
-        DmaDataWidth width = DmaDataWidth::Bits8,
-        DmaMode mode = DmaMode::Normal,
-        DmaPriority priority = DmaPriority::Medium) {
-
+        void* destination, usize size, DmaDataWidth width = DmaDataWidth::Bits8,
+        DmaMode mode = DmaMode::Normal, DmaPriority priority = DmaPriority::Medium) {
         // Validate connection
-        static_assert(Connection::is_compatible(),
-                     "Invalid DMA connection");
+        static_assert(Connection::is_compatible(), "Invalid DMA connection");
 
-        DmaConfig dma_conf(
-            DmaDirection::PeripheralToMemory,
-            mode,
-            priority,
-            width,
-            get_peripheral_dma_address(Connection::peripheral, Connection::request)
-        );
+        DmaConfig dma_conf(DmaDirection::PeripheralToMemory, mode, priority, width,
+                           get_peripheral_dma_address(Connection::peripheral, Connection::request));
 
-        return DmaTransferConfig{
-            dma_conf,
-            nullptr, // Peripheral address in config
-            destination,
-            size
-        };
+        return DmaTransferConfig{dma_conf,
+                                 nullptr,  // Peripheral address in config
+                                 destination, size};
     }
 
     /**
@@ -187,27 +162,15 @@ struct DmaTransferConfig {
      * @param priority Channel priority
      * @return Transfer configuration
      */
-    static constexpr DmaTransferConfig memory_to_memory(
-        const void* source,
-        void* destination,
-        usize size,
-        DmaDataWidth width = DmaDataWidth::Bits32,
-        DmaPriority priority = DmaPriority::Low) {
+    static constexpr DmaTransferConfig memory_to_memory(const void* source, void* destination,
+                                                        usize size,
+                                                        DmaDataWidth width = DmaDataWidth::Bits32,
+                                                        DmaPriority priority = DmaPriority::Low) {
+        DmaConfig dma_conf(DmaDirection::MemoryToMemory,
+                           DmaMode::Normal,  // Always normal for mem-to-mem
+                           priority, width, nullptr);
 
-        DmaConfig dma_conf(
-            DmaDirection::MemoryToMemory,
-            DmaMode::Normal, // Always normal for mem-to-mem
-            priority,
-            width,
-            nullptr
-        );
-
-        return DmaTransferConfig{
-            dma_conf,
-            source,
-            destination,
-            size
-        };
+        return DmaTransferConfig{dma_conf, source, destination, size};
     }
 
     /**
@@ -252,9 +215,7 @@ struct DmaTransferConfig {
      *
      * @return true if valid, false otherwise
      */
-    bool is_valid() const {
-        return validate().is_ok();
-    }
+    bool is_valid() const { return validate().is_ok(); }
 };
 
 // ============================================================================
@@ -274,12 +235,7 @@ struct DmaTransferConfig {
 template <typename Connection>
 constexpr auto create_uart_tx_dma(const void* buffer, usize size) {
     return DmaTransferConfig<Connection>::memory_to_peripheral(
-        buffer,
-        size,
-        DmaDataWidth::Bits8,
-        DmaMode::Normal,
-        DmaPriority::Medium
-    );
+        buffer, size, DmaDataWidth::Bits8, DmaMode::Normal, DmaPriority::Medium);
 }
 
 /**
@@ -296,12 +252,8 @@ constexpr auto create_uart_tx_dma(const void* buffer, usize size) {
 template <typename Connection>
 constexpr auto create_uart_rx_dma(void* buffer, usize size, bool circular = false) {
     return DmaTransferConfig<Connection>::peripheral_to_memory(
-        buffer,
-        size,
-        DmaDataWidth::Bits8,
-        circular ? DmaMode::Circular : DmaMode::Normal,
-        DmaPriority::Medium
-    );
+        buffer, size, DmaDataWidth::Bits8, circular ? DmaMode::Circular : DmaMode::Normal,
+        DmaPriority::Medium);
 }
 
 /**
@@ -318,11 +270,10 @@ constexpr auto create_uart_rx_dma(void* buffer, usize size, bool circular = fals
 template <typename Connection>
 constexpr auto create_adc_dma(void* buffer, usize sample_count, bool circular = false) {
     return DmaTransferConfig<Connection>::peripheral_to_memory(
-        buffer,
-        sample_count,
-        DmaDataWidth::Bits16, // Most ADCs use 16-bit samples
+        buffer, sample_count,
+        DmaDataWidth::Bits16,  // Most ADCs use 16-bit samples
         circular ? DmaMode::Circular : DmaMode::Normal,
-        DmaPriority::High // ADC often needs high priority
+        DmaPriority::High  // ADC often needs high priority
     );
 }
 

@@ -27,8 +27,9 @@
  * - Compile-time clock frequency configuration
  */
 
-#include "board/board.hpp"
 #include "hal/api/systick_simple.hpp"
+
+#include "board/board.hpp"
 
 using namespace ucore::hal;
 

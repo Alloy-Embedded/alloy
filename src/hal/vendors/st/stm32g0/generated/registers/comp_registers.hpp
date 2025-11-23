@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::comp {
 
 /// COMP Register Structure
 struct COMP_Registers {
-
     /// Comparator 1 control and status register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

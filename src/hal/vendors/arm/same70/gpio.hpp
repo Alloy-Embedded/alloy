@@ -27,10 +27,11 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -90,7 +91,7 @@ if (result.is_ok()) {
  */
 template <uint32_t PORT_BASE, uint8_t PIN_NUM>
 class GpioPin {
-public:
+   public:
     // Compile-time constants
     static constexpr uint32_t port_base = PORT_BASE;
     static constexpr uint8_t pin_number = PIN_NUM;
@@ -254,8 +255,10 @@ public:
      * @brief Configure pull resistor
      *
      * @param pull Pull resistor configuration
-     * @return Result<void, ErrorCode> SAME70 only supports pull-up, not pull-down. PullDown will return ErrorCode::NotSupported.     *
-     * @note SAME70 only supports pull-up, not pull-down. PullDown will return ErrorCode::NotSupported.
+     * @return Result<void, ErrorCode> SAME70 only supports pull-up, not pull-down. PullDown will
+     * return ErrorCode::NotSupported.     *
+     * @note SAME70 only supports pull-up, not pull-down. PullDown will return
+     * ErrorCode::NotSupported.
      */
     Result<void, ErrorCode> setPull(PinPull pull) {
         auto* port = get_port();
@@ -278,7 +281,6 @@ public:
             case PinPull::PullDown:
                 return Err(ErrorCode::NotSupported);
                 break;
-
         }
 
         return Ok();
@@ -313,13 +315,12 @@ public:
     Result<bool, ErrorCode> isOutput() const {
         auto* port = get_port();
 
-        uint32_t status = port->OSR;  // 
+        uint32_t status = port->OSR;  //
 
         bool is_output = (status & pin_mask) != 0;
 
         return Ok(bool(is_output));
     }
-
 };
 
 // ==============================================================================
@@ -353,11 +354,11 @@ constexpr uint32_t PIOE_BASE = ucore::generated::atsame70q21b::peripherals::PIOE
 // ==============================================================================
 
 #if __cplusplus >= 202002L && __has_include("hal/core/concepts.hpp")
-#include "hal/core/concepts.hpp"
+    #include "hal/core/concepts.hpp"
 
 // Validate that SAME70 GpioPin satisfies the GpioPin concept
 static_assert(ucore::hal::concepts::GpioPin<GpioPin<PIOC_BASE, 8>>,
               "SAME70 GpioPin must satisfy GpioPin concept - missing required methods");
 #endif
 
-} // namespace ucore::hal::same70
+}  // namespace ucore::hal::same70

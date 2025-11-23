@@ -37,7 +37,7 @@ using namespace ucore::core;
  * @endcode
  */
 class SystemClock {
-public:
+   public:
     /**
      * @brief Configure with platform's safe default configuration
      *

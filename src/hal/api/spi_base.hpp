@@ -38,14 +38,15 @@
 
 #pragma once
 
-#include "core/error_code.hpp"
-#include "core/result.hpp"
-#include "core/types.hpp"
-#include "hal/interface/spi.hpp"
-
 #include <concepts>
 #include <span>
 #include <type_traits>
+
+#include "hal/interface/spi.hpp"
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::hal {
 
@@ -64,16 +65,17 @@ using namespace ucore::core;
  * @tparam T Derived SPI implementation type
  */
 template <typename T>
-concept SpiImplementation = requires(T spi, std::span<const u8> tx, std::span<u8> rx, SpiConfig cfg) {
-    // Data transfer operations
-    { spi.transfer_impl(tx, rx) } -> std::same_as<Result<void, ErrorCode>>;
-    { spi.transmit_impl(tx) } -> std::same_as<Result<void, ErrorCode>>;
-    { spi.receive_impl(rx) } -> std::same_as<Result<void, ErrorCode>>;
+concept SpiImplementation =
+    requires(T spi, std::span<const u8> tx, std::span<u8> rx, SpiConfig cfg) {
+        // Data transfer operations
+        { spi.transfer_impl(tx, rx) } -> std::same_as<Result<void, ErrorCode>>;
+        { spi.transmit_impl(tx) } -> std::same_as<Result<void, ErrorCode>>;
+        { spi.receive_impl(rx) } -> std::same_as<Result<void, ErrorCode>>;
 
-    // Configuration operations
-    { spi.configure_impl(cfg) } -> std::same_as<Result<void, ErrorCode>>;
-    { spi.is_busy_impl() } -> std::same_as<bool>;
-};
+        // Configuration operations
+        { spi.configure_impl(cfg) } -> std::same_as<Result<void, ErrorCode>>;
+        { spi.is_busy_impl() } -> std::same_as<bool>;
+    };
 
 // ============================================================================
 // CRTP Base Class
@@ -100,7 +102,7 @@ concept SpiImplementation = requires(T spi, std::span<const u8> tx, std::span<u8
  */
 template <typename Derived>
 class SpiBase {
-protected:
+   protected:
     // ========================================================================
     // CRTP Helper Methods
     // ========================================================================
@@ -109,19 +111,15 @@ protected:
      * @brief Get reference to derived instance
      * @return Reference to derived class instance
      */
-    constexpr Derived& impl() noexcept {
-        return static_cast<Derived&>(*this);
-    }
+    constexpr Derived& impl() noexcept { return static_cast<Derived&>(*this); }
 
     /**
      * @brief Get const reference to derived instance
      * @return Const reference to derived class instance
      */
-    constexpr const Derived& impl() const noexcept {
-        return static_cast<const Derived&>(*this);
-    }
+    constexpr const Derived& impl() const noexcept { return static_cast<const Derived&>(*this); }
 
-public:
+   public:
     // ========================================================================
     // Data Transfer Operations
     // ========================================================================
@@ -143,10 +141,8 @@ public:
      * spi.transfer(std::span(tx_data), std::span(rx_data)).expect("Transfer failed");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> transfer(
-        std::span<const u8> tx_buffer,
-        std::span<u8> rx_buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> transfer(std::span<const u8> tx_buffer,
+                                                             std::span<u8> rx_buffer) noexcept {
         return impl().transfer_impl(tx_buffer, rx_buffer);
     }
 
@@ -166,8 +162,7 @@ public:
      * @endcode
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> transmit(
-        std::span<const u8> tx_buffer
-    ) noexcept {
+        std::span<const u8> tx_buffer) noexcept {
         return impl().transmit_impl(tx_buffer);
     }
 
@@ -185,9 +180,7 @@ public:
      * spi.receive(std::span(data)).expect("Receive failed");
      * @endcode
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> receive(
-        std::span<u8> rx_buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> receive(std::span<u8> rx_buffer) noexcept {
         return impl().receive_impl(rx_buffer);
     }
 
@@ -333,9 +326,7 @@ public:
      * }
      * @endcode
      */
-    [[nodiscard]] constexpr bool is_busy() const noexcept {
-        return impl().is_busy_impl();
-    }
+    [[nodiscard]] constexpr bool is_busy() const noexcept { return impl().is_busy_impl(); }
 
     /**
      * @brief Check if SPI is ready
@@ -344,11 +335,9 @@ public:
      *
      * @return true if ready, false if busy
      */
-    [[nodiscard]] constexpr bool is_ready() const noexcept {
-        return !impl().is_busy_impl();
-    }
+    [[nodiscard]] constexpr bool is_ready() const noexcept { return !impl().is_busy_impl(); }
 
-protected:
+   protected:
     // Default constructor (protected - only derived can construct)
     constexpr SpiBase() noexcept = default;
 
@@ -370,4 +359,4 @@ protected:
 // using static_assert on sizeof(SpiBase) and std::is_empty_v<SpiBase>.
 // This ensures validation only occurs when SpiBase is properly used with CRTP.
 
-} // namespace ucore::hal
+}  // namespace ucore::hal

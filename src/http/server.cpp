@@ -402,7 +402,8 @@ bool Server::is_running() const {
     return false;
 }
 
-Result<void> Server::on([[maybe_unused]] Method method, [[maybe_unused]] const char* uri, [[maybe_unused]] Handler handler) {
+Result<void> Server::on([[maybe_unused]] Method method, [[maybe_unused]] const char* uri,
+                        [[maybe_unused]] Handler handler) {
     return Err(ErrorCode::NotSupported);
 }
 
@@ -434,13 +435,16 @@ Method Request::method() const {
 const char* Request::uri() const {
     return "";
 }
-Result<size_t> Request::query([[maybe_unused]] const char* key, [[maybe_unused]] char* buffer, [[maybe_unused]] size_t buffer_size) const {
+Result<size_t> Request::query([[maybe_unused]] const char* key, [[maybe_unused]] char* buffer,
+                              [[maybe_unused]] size_t buffer_size) const {
     return Err(ErrorCode::NotSupported);
 }
-Result<size_t> Request::header([[maybe_unused]] const char* key, [[maybe_unused]] char* buffer, [[maybe_unused]] size_t buffer_size) const {
+Result<size_t> Request::header([[maybe_unused]] const char* key, [[maybe_unused]] char* buffer,
+                               [[maybe_unused]] size_t buffer_size) const {
     return Err(ErrorCode::NotSupported);
 }
-Result<size_t> Request::body([[maybe_unused]] char* buffer, [[maybe_unused]] size_t buffer_size) const {
+Result<size_t> Request::body([[maybe_unused]] char* buffer,
+                             [[maybe_unused]] size_t buffer_size) const {
     return Err(ErrorCode::NotSupported);
 }
 size_t Request::content_length() const {

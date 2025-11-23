@@ -9,27 +9,27 @@
  * - Zero-overhead (no vtables)
  */
 
-#include "core/types.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 using namespace ucore::core;
 
 // Mock GPIO registers for STM32F4
 namespace st {
-    struct GPIO_TypeDef {
-        volatile uint32_t MODER;
-        volatile uint32_t OTYPER;
-        volatile uint32_t OSPEEDR;
-        volatile uint32_t PUPDR;
-        volatile uint32_t IDR;
-        volatile uint32_t ODR;
-        volatile uint32_t BSRR;
-        volatile uint32_t LCKR;
-        volatile uint32_t AFRL;
-        volatile uint32_t AFRH;
-    };
-}
+struct GPIO_TypeDef {
+    volatile uint32_t MODER;
+    volatile uint32_t OTYPER;
+    volatile uint32_t OSPEEDR;
+    volatile uint32_t PUPDR;
+    volatile uint32_t IDR;
+    volatile uint32_t ODR;
+    volatile uint32_t BSRR;
+    volatile uint32_t LCKR;
+    volatile uint32_t AFRL;
+    volatile uint32_t AFRH;
+};
+}  // namespace st
 
 // Manually include the GPIO hardware policy (skip the includes)
 namespace ucore::hal::st::stm32f4 {
@@ -103,21 +103,13 @@ struct STM32F4GpioHardwarePolicy {
         }
     }
 
-    static inline void set(u8 pin) {
-        hw()->BSRR = (1 << pin);
-    }
+    static inline void set(u8 pin) { hw()->BSRR = (1 << pin); }
 
-    static inline void clear(u8 pin) {
-        hw()->BSRR = (1 << (pin + 16));
-    }
+    static inline void clear(u8 pin) { hw()->BSRR = (1 << (pin + 16)); }
 
-    static inline void toggle(u8 pin) {
-        hw()->ODR ^= (1 << pin);
-    }
+    static inline void toggle(u8 pin) { hw()->ODR ^= (1 << pin); }
 
-    static inline bool read(u8 pin) {
-        return (hw()->IDR & (1 << pin)) != 0;
-    }
+    static inline bool read(u8 pin) { return (hw()->IDR & (1 << pin)) != 0; }
 
     static inline void write(u8 pin, bool value) {
         if (value) {
@@ -127,21 +119,13 @@ struct STM32F4GpioHardwarePolicy {
         }
     }
 
-    static inline u16 read_port() {
-        return static_cast<u16>(hw()->IDR & 0xFFFF);
-    }
+    static inline u16 read_port() { return static_cast<u16>(hw()->IDR & 0xFFFF); }
 
-    static inline void write_port(u16 value) {
-        hw()->ODR = value;
-    }
+    static inline void write_port(u16 value) { hw()->ODR = value; }
 
-    static inline void set_mask(u16 mask) {
-        hw()->BSRR = mask;
-    }
+    static inline void set_mask(u16 mask) { hw()->BSRR = mask; }
 
-    static inline void clear_mask(u16 mask) {
-        hw()->BSRR = (static_cast<u32>(mask) << 16);
-    }
+    static inline void clear_mask(u16 mask) { hw()->BSRR = (static_cast<u32>(mask) << 16); }
 };
 
 // Type aliases

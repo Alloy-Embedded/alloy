@@ -8,11 +8,12 @@
  * @note Part of Phase 1.11.1: Refactor I2cSimple
  */
 
+#include <span>
+
 #include "hal/api/i2c_simple.hpp"
-#include "core/types.hpp"
 #include "hal/interface/i2c.hpp"
 
-#include <span>
+#include "core/types.hpp"
 
 using namespace ucore::hal;
 using namespace ucore::core;
@@ -68,9 +69,7 @@ void test_quick_setup_defaults() {
  */
 void test_quick_setup_custom_speed() {
     auto i2c = I2c<PeripheralId::I2C0>::quick_setup<MockSdaPin, MockSclPin>(
-        I2cSpeed::Fast,
-        I2cAddressing::SevenBit
-    );
+        I2cSpeed::Fast, I2cAddressing::SevenBit);
 
     // Verify type
     using ConfigType = decltype(i2c);
@@ -144,11 +143,8 @@ void test_write_read_operation() {
     u8 read_data[2] = {0};
 
     // Test write_read
-    [[maybe_unused]] auto result = i2c.write_read(
-        0x50,
-        std::span(write_data),
-        std::span(read_data)
-    );
+    [[maybe_unused]] auto result =
+        i2c.write_read(0x50, std::span(write_data), std::span(read_data));
 
     // Verify return type
     static_assert(std::is_same_v<decltype(result), Result<void, ErrorCode>>,
@@ -290,11 +286,8 @@ void test_buffer_size_handling() {
     u8 read_data[3] = {0};
 
     // write_read should handle different buffer sizes
-    [[maybe_unused]] auto result = i2c.write_read(
-        0x50,
-        std::span(write_data),
-        std::span(read_data)
-    );
+    [[maybe_unused]] auto result =
+        i2c.write_read(0x50, std::span(write_data), std::span(read_data));
 }
 
 /**
@@ -321,32 +314,24 @@ constexpr bool test_constexpr_construction() {
     return true;
 }
 
-static_assert(test_constexpr_construction(),
-              "SimpleI2cConfig must be constexpr constructible");
+static_assert(test_constexpr_construction(), "SimpleI2cConfig must be constexpr constructible");
 
 /**
  * @brief Test different I2C speeds
  */
 void test_i2c_speeds() {
     // Standard (100 kHz)
-    auto std_i2c = I2c<PeripheralId::I2C0>::quick_setup<MockSdaPin, MockSclPin>(
-        I2cSpeed::Standard
-    );
+    auto std_i2c = I2c<PeripheralId::I2C0>::quick_setup<MockSdaPin, MockSclPin>(I2cSpeed::Standard);
 
     // Fast (400 kHz)
-    auto fast_i2c = I2c<PeripheralId::I2C0>::quick_setup<MockSdaPin, MockSclPin>(
-        I2cSpeed::Fast
-    );
+    auto fast_i2c = I2c<PeripheralId::I2C0>::quick_setup<MockSdaPin, MockSclPin>(I2cSpeed::Fast);
 
     // Fast Plus (1 MHz)
-    auto fastplus_i2c = I2c<PeripheralId::I2C0>::quick_setup<MockSdaPin, MockSclPin>(
-        I2cSpeed::FastPlus
-    );
+    auto fastplus_i2c =
+        I2c<PeripheralId::I2C0>::quick_setup<MockSdaPin, MockSclPin>(I2cSpeed::FastPlus);
 
     // High Speed (3.4 MHz)
-    auto hs_i2c = I2c<PeripheralId::I2C0>::quick_setup<MockSdaPin, MockSclPin>(
-        I2cSpeed::HighSpeed
-    );
+    auto hs_i2c = I2c<PeripheralId::I2C0>::quick_setup<MockSdaPin, MockSclPin>(I2cSpeed::HighSpeed);
 
     // All should return same type
     using ConfigType = SimpleI2cConfig<MockSdaPin, MockSclPin>;
@@ -360,15 +345,11 @@ void test_i2c_speeds() {
 void test_addressing_modes() {
     // 7-bit addressing
     auto i2c_7bit = I2c<PeripheralId::I2C0>::quick_setup<MockSdaPin, MockSclPin>(
-        I2cSpeed::Standard,
-        I2cAddressing::SevenBit
-    );
+        I2cSpeed::Standard, I2cAddressing::SevenBit);
 
     // 10-bit addressing
     auto i2c_10bit = I2c<PeripheralId::I2C0>::quick_setup<MockSdaPin, MockSclPin>(
-        I2cSpeed::Standard,
-        I2cAddressing::TenBit
-    );
+        I2cSpeed::Standard, I2cAddressing::TenBit);
 
     // Both should return same type
     using ConfigType = SimpleI2cConfig<MockSdaPin, MockSclPin>;

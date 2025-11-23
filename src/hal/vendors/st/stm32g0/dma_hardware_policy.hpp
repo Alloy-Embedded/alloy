@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/st/stm32g0/generated/registers/dma1_registers.hpp"
@@ -85,11 +85,11 @@ struct Stm32g0DMAHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_DMA_MOCK_HW
-            return ALLOY_DMA_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_DMA_MOCK_HW
+        return ALLOY_DMA_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -110,9 +110,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_EN1
      */
     static inline void enable_channel_1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_EN1
-            ALLOY_DMA_TEST_HOOK_EN1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_EN1
+        ALLOY_DMA_TEST_HOOK_EN1();
+#endif
 
         hw()->DMA_CCR1 |= (1U << 0);
     }
@@ -123,9 +123,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_EN1
      */
     static inline void disable_channel_1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_EN1
-            ALLOY_DMA_TEST_HOOK_EN1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_EN1
+        ALLOY_DMA_TEST_HOOK_EN1();
+#endif
 
         hw()->DMA_CCR1 &= ~(1U << 0);
     }
@@ -137,9 +137,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_NDT1
      */
     static inline void set_transfer_count_ch1(uint16_t count) {
-        #ifdef ALLOY_DMA_TEST_HOOK_NDT1
-            ALLOY_DMA_TEST_HOOK_NDT1(count);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_NDT1
+        ALLOY_DMA_TEST_HOOK_NDT1(count);
+#endif
 
         hw()->DMA_CNDTR1 = count & 0xFFFF;
     }
@@ -151,9 +151,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_PA1
      */
     static inline void set_peripheral_address_ch1(uint32_t address) {
-        #ifdef ALLOY_DMA_TEST_HOOK_PA1
-            ALLOY_DMA_TEST_HOOK_PA1(address);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_PA1
+        ALLOY_DMA_TEST_HOOK_PA1(address);
+#endif
 
         hw()->DMA_CPAR1 = address;
     }
@@ -165,9 +165,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_MA1
      */
     static inline void set_memory_address_ch1(uint32_t address) {
-        #ifdef ALLOY_DMA_TEST_HOOK_MA1
-            ALLOY_DMA_TEST_HOOK_MA1(address);
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_MA1
+        ALLOY_DMA_TEST_HOOK_MA1(address);
+#endif
 
         hw()->DMA_CMAR1 = address;
     }
@@ -178,9 +178,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_DIR1
      */
     static inline void set_direction_periph_to_mem_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_DIR1
-            ALLOY_DMA_TEST_HOOK_DIR1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_DIR1
+        ALLOY_DMA_TEST_HOOK_DIR1();
+#endif
 
         hw()->DMA_CCR1 &= ~(1U << 4);
     }
@@ -191,9 +191,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_DIR1
      */
     static inline void set_direction_mem_to_periph_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_DIR1
-            ALLOY_DMA_TEST_HOOK_DIR1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_DIR1
+        ALLOY_DMA_TEST_HOOK_DIR1();
+#endif
 
         hw()->DMA_CCR1 |= (1U << 4);
     }
@@ -204,9 +204,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_CIRC1
      */
     static inline void enable_circular_mode_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_CIRC1
-            ALLOY_DMA_TEST_HOOK_CIRC1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_CIRC1
+        ALLOY_DMA_TEST_HOOK_CIRC1();
+#endif
 
         hw()->DMA_CCR1 |= (1U << 5);
     }
@@ -217,9 +217,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_CIRC1
      */
     static inline void disable_circular_mode_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_CIRC1
-            ALLOY_DMA_TEST_HOOK_CIRC1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_CIRC1
+        ALLOY_DMA_TEST_HOOK_CIRC1();
+#endif
 
         hw()->DMA_CCR1 &= ~(1U << 5);
     }
@@ -230,9 +230,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_MINC1
      */
     static inline void enable_memory_increment_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_MINC1
-            ALLOY_DMA_TEST_HOOK_MINC1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_MINC1
+        ALLOY_DMA_TEST_HOOK_MINC1();
+#endif
 
         hw()->DMA_CCR1 |= (1U << 7);
     }
@@ -243,9 +243,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_MINC1
      */
     static inline void disable_memory_increment_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_MINC1
-            ALLOY_DMA_TEST_HOOK_MINC1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_MINC1
+        ALLOY_DMA_TEST_HOOK_MINC1();
+#endif
 
         hw()->DMA_CCR1 &= ~(1U << 7);
     }
@@ -256,9 +256,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_PINC1
      */
     static inline void enable_peripheral_increment_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_PINC1
-            ALLOY_DMA_TEST_HOOK_PINC1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_PINC1
+        ALLOY_DMA_TEST_HOOK_PINC1();
+#endif
 
         hw()->DMA_CCR1 |= (1U << 6);
     }
@@ -269,9 +269,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_MSIZE1
      */
     static inline void set_memory_size_8bit_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_MSIZE1
-            ALLOY_DMA_TEST_HOOK_MSIZE1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_MSIZE1
+        ALLOY_DMA_TEST_HOOK_MSIZE1();
+#endif
 
         hw()->DMA_CCR1 &= ~(0x3U << 10);
     }
@@ -282,9 +282,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_MSIZE1
      */
     static inline void set_memory_size_16bit_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_MSIZE1
-            ALLOY_DMA_TEST_HOOK_MSIZE1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_MSIZE1
+        ALLOY_DMA_TEST_HOOK_MSIZE1();
+#endif
 
         hw()->DMA_CCR1 = (hw()->DMA_CCR1 & ~(0x3U << 10)) | (0x1U << 10);
     }
@@ -295,9 +295,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_MSIZE1
      */
     static inline void set_memory_size_32bit_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_MSIZE1
-            ALLOY_DMA_TEST_HOOK_MSIZE1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_MSIZE1
+        ALLOY_DMA_TEST_HOOK_MSIZE1();
+#endif
 
         hw()->DMA_CCR1 = (hw()->DMA_CCR1 & ~(0x3U << 10)) | (0x2U << 10);
     }
@@ -308,9 +308,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_PSIZE1
      */
     static inline void set_peripheral_size_8bit_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_PSIZE1
-            ALLOY_DMA_TEST_HOOK_PSIZE1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_PSIZE1
+        ALLOY_DMA_TEST_HOOK_PSIZE1();
+#endif
 
         hw()->DMA_CCR1 &= ~(0x3U << 8);
     }
@@ -321,9 +321,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_PSIZE1
      */
     static inline void set_peripheral_size_16bit_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_PSIZE1
-            ALLOY_DMA_TEST_HOOK_PSIZE1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_PSIZE1
+        ALLOY_DMA_TEST_HOOK_PSIZE1();
+#endif
 
         hw()->DMA_CCR1 = (hw()->DMA_CCR1 & ~(0x3U << 8)) | (0x1U << 8);
     }
@@ -334,9 +334,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_PSIZE1
      */
     static inline void set_peripheral_size_32bit_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_PSIZE1
-            ALLOY_DMA_TEST_HOOK_PSIZE1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_PSIZE1
+        ALLOY_DMA_TEST_HOOK_PSIZE1();
+#endif
 
         hw()->DMA_CCR1 = (hw()->DMA_CCR1 & ~(0x3U << 8)) | (0x2U << 8);
     }
@@ -347,9 +347,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_PL1
      */
     static inline void set_priority_low_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_PL1
-            ALLOY_DMA_TEST_HOOK_PL1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_PL1
+        ALLOY_DMA_TEST_HOOK_PL1();
+#endif
 
         hw()->DMA_CCR1 &= ~(0x3U << 12);
     }
@@ -360,9 +360,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_PL1
      */
     static inline void set_priority_medium_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_PL1
-            ALLOY_DMA_TEST_HOOK_PL1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_PL1
+        ALLOY_DMA_TEST_HOOK_PL1();
+#endif
 
         hw()->DMA_CCR1 = (hw()->DMA_CCR1 & ~(0x3U << 12)) | (0x1U << 12);
     }
@@ -373,9 +373,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_PL1
      */
     static inline void set_priority_high_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_PL1
-            ALLOY_DMA_TEST_HOOK_PL1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_PL1
+        ALLOY_DMA_TEST_HOOK_PL1();
+#endif
 
         hw()->DMA_CCR1 = (hw()->DMA_CCR1 & ~(0x3U << 12)) | (0x2U << 12);
     }
@@ -386,9 +386,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_PL1
      */
     static inline void set_priority_very_high_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_PL1
-            ALLOY_DMA_TEST_HOOK_PL1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_PL1
+        ALLOY_DMA_TEST_HOOK_PL1();
+#endif
 
         hw()->DMA_CCR1 |= (0x3U << 12);
     }
@@ -399,9 +399,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_TCIE1
      */
     static inline void enable_transfer_complete_interrupt_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_TCIE1
-            ALLOY_DMA_TEST_HOOK_TCIE1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_TCIE1
+        ALLOY_DMA_TEST_HOOK_TCIE1();
+#endif
 
         hw()->DMA_CCR1 |= (1U << 1);
     }
@@ -413,9 +413,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_TCIF1
      */
     static inline bool is_transfer_complete_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_TCIF1
-            ALLOY_DMA_TEST_HOOK_TCIF1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_TCIF1
+        ALLOY_DMA_TEST_HOOK_TCIF1();
+#endif
 
         return (hw()->DMA_ISR & (1U << 1)) != 0;
     }
@@ -426,9 +426,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_CTCIF1
      */
     static inline void clear_transfer_complete_flag_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_CTCIF1
-            ALLOY_DMA_TEST_HOOK_CTCIF1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_CTCIF1
+        ALLOY_DMA_TEST_HOOK_CTCIF1();
+#endif
 
         hw()->DMA_IFCR = (1U << 1);
     }
@@ -440,9 +440,9 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_TEIF1
      */
     static inline bool is_transfer_error_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_TEIF1
-            ALLOY_DMA_TEST_HOOK_TEIF1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_TEIF1
+        ALLOY_DMA_TEST_HOOK_TEIF1();
+#endif
 
         return (hw()->DMA_ISR & (1U << 3)) != 0;
     }
@@ -453,13 +453,12 @@ struct Stm32g0DMAHardwarePolicy {
      * @note Test hook: ALLOY_DMA_TEST_HOOK_CTEIF1
      */
     static inline void clear_transfer_error_flag_ch1() {
-        #ifdef ALLOY_DMA_TEST_HOOK_CTEIF1
-            ALLOY_DMA_TEST_HOOK_CTEIF1();
-        #endif
+#ifdef ALLOY_DMA_TEST_HOOK_CTEIF1
+        ALLOY_DMA_TEST_HOOK_CTEIF1();
+#endif
 
         hw()->DMA_IFCR = (1U << 3);
     }
-
 };
 
 // ============================================================================

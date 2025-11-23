@@ -34,14 +34,15 @@
 
 #pragma once
 
+#include "hal/api/uart_base.hpp"
+#include "hal/api/uart_simple.hpp"  // For UartParity and defaults
+#include "hal/core/signal_registry.hpp"
+#include "hal/core/signals.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
 #include "core/units.hpp"
-#include "hal/api/uart_base.hpp"
-#include "hal/core/signals.hpp"
-#include "hal/core/signal_registry.hpp"
-#include "hal/api/uart_simple.hpp"  // For UartParity and defaults
 
 namespace ucore::hal {
 
@@ -78,35 +79,33 @@ struct FluentUartConfig : public UartBase<FluentUartConfig<HardwarePolicy>> {
     bool has_rx;
 
     // Constructor to allow initialization from UartBuilder
-    constexpr FluentUartConfig(
-        PeripheralId p,
-        PinId tx,
-        PinId rx,
-        BaudRate baud,
-        UartParity par,
-        u8 db,
-        u8 sb,
-        bool fc,
-        bool tx_enabled,
-        bool rx_enabled
-    ) : peripheral(p), tx_pin(tx), rx_pin(rx), baudrate(baud),
-        parity(par), data_bits(db), stop_bits(sb), flow_control(fc),
-        has_tx(tx_enabled), has_rx(rx_enabled) {}
+    constexpr FluentUartConfig(PeripheralId p, PinId tx, PinId rx, BaudRate baud, UartParity par,
+                               u8 db, u8 sb, bool fc, bool tx_enabled, bool rx_enabled)
+        : peripheral(p),
+          tx_pin(tx),
+          rx_pin(rx),
+          baudrate(baud),
+          parity(par),
+          data_bits(db),
+          stop_bits(sb),
+          flow_control(fc),
+          has_tx(tx_enabled),
+          has_rx(rx_enabled) {}
 
     // ========================================================================
     // Inherited Interface from UartBase (CRTP)
     // ========================================================================
 
     // Inherit all common UART methods from base
-    using Base::send;           // Send single character
-    using Base::receive;        // Receive single character
-    using Base::write;          // Write null-terminated string
-    using Base::send_buffer;    // Send buffer of bytes
-    using Base::receive_buffer; // Receive buffer of bytes
-    using Base::flush;          // Wait for transmission complete
-    using Base::available;      // Number of bytes available
-    using Base::has_data;       // Check if data available
-    using Base::set_baud_rate;  // Change baud rate
+    using Base::available;       // Number of bytes available
+    using Base::flush;           // Wait for transmission complete
+    using Base::has_data;        // Check if data available
+    using Base::receive;         // Receive single character
+    using Base::receive_buffer;  // Receive buffer of bytes
+    using Base::send;            // Send single character
+    using Base::send_buffer;     // Send buffer of bytes
+    using Base::set_baud_rate;   // Change baud rate
+    using Base::write;           // Write null-terminated string
 
     // ========================================================================
     // Fluent API Specific Methods
@@ -147,7 +146,7 @@ struct FluentUartConfig : public UartBase<FluentUartConfig<HardwarePolicy>> {
         return Ok();
     }
 
-private:
+   private:
     // ========================================================================
     // Implementation Methods (called by UartBase via CRTP)
     // ========================================================================
@@ -186,10 +185,8 @@ private:
     /**
      * @brief Send buffer implementation - called by Base::send_buffer()
      */
-    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer_impl(
-        const char* buffer,
-        size_t length
-    ) noexcept {
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> send_buffer_impl(const char* buffer,
+                                                                       size_t length) noexcept {
         if (!has_tx) {
             return Err(ErrorCode::NotSupported);
         }
@@ -197,7 +194,7 @@ private:
         for (size_t i = 0; i < length; ++i) {
             auto result = send_impl(buffer[i]);
             if (result.is_err()) {
-                return Ok(static_cast<size_t>(i)); // Return bytes sent before error
+                return Ok(static_cast<size_t>(i));  // Return bytes sent before error
             }
         }
         return Ok(static_cast<size_t>(length));
@@ -206,10 +203,8 @@ private:
     /**
      * @brief Receive buffer implementation - called by Base::receive_buffer()
      */
-    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer_impl(
-        char* buffer,
-        size_t length
-    ) noexcept {
+    [[nodiscard]] constexpr Result<size_t, ErrorCode> receive_buffer_impl(char* buffer,
+                                                                          size_t length) noexcept {
         if (!has_rx) {
             return Err(ErrorCode::NotSupported);
         }
@@ -217,7 +212,7 @@ private:
         for (size_t i = 0; i < length; ++i) {
             auto result = receive_impl();
             if (result.is_err()) {
-                return Ok(static_cast<size_t>(i)); // Return bytes received before error
+                return Ok(static_cast<size_t>(i));  // Return bytes received before error
             }
             buffer[i] = result.unwrap();
         }
@@ -278,17 +273,11 @@ struct BuilderState {
     bool has_data_bits = false;
     bool has_stop_bits = false;
 
-    constexpr bool is_tx_only_valid() const {
-        return has_tx_pin && !has_rx_pin && has_baudrate;
-    }
+    constexpr bool is_tx_only_valid() const { return has_tx_pin && !has_rx_pin && has_baudrate; }
 
-    constexpr bool is_rx_only_valid() const {
-        return !has_tx_pin && has_rx_pin && has_baudrate;
-    }
+    constexpr bool is_rx_only_valid() const { return !has_tx_pin && has_rx_pin && has_baudrate; }
 
-    constexpr bool is_full_duplex_valid() const {
-        return has_tx_pin && has_rx_pin && has_baudrate;
-    }
+    constexpr bool is_full_duplex_valid() const { return has_tx_pin && has_rx_pin && has_baudrate; }
 
     constexpr bool is_valid() const {
         return is_tx_only_valid() || is_rx_only_valid() || is_full_duplex_valid();
@@ -310,7 +299,7 @@ struct BuilderState {
  */
 template <PeripheralId PeriphId, typename HardwarePolicy>
 class UartBuilder {
-public:
+   public:
     /**
      * @brief Construct a new UART builder
      *
@@ -538,18 +527,9 @@ public:
             return Err(std::move(error_copy));
         }
 
-        return Ok(FluentUartConfig<HardwarePolicy>(
-            PeriphId,
-            tx_pin_id_,
-            rx_pin_id_,
-            baudrate_,
-            parity_,
-            data_bits_,
-            stop_bits_,
-            flow_control_,
-            state_.has_tx_pin,
-            state_.has_rx_pin
-        ));
+        return Ok(FluentUartConfig<HardwarePolicy>(PeriphId, tx_pin_id_, rx_pin_id_, baudrate_,
+                                                   parity_, data_bits_, stop_bits_, flow_control_,
+                                                   state_.has_tx_pin, state_.has_rx_pin));
     }
 
     /**
@@ -559,11 +539,9 @@ public:
      *
      * @return Current builder state
      */
-    constexpr BuilderState get_state() const {
-        return state_;
-    }
+    constexpr BuilderState get_state() const { return state_; }
 
-private:
+   private:
     BaudRate baudrate_;
     UartParity parity_;
     u8 data_bits_;

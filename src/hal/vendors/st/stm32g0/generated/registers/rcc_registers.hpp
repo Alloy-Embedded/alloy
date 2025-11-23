@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::rcc {
 
 /// RCC Register Structure
 struct RCC_Registers {
-
     /// Clock control register
     /// Offset: 0x0000
     /// Reset value: 0x00000500
@@ -39,7 +38,7 @@ struct RCC_Registers {
     /// Reset value: 0x00001000
     /// Access: read-write
     volatile uint32_t PLLCFGR;
-    uint8_t RESERVED_0010[4]; ///< Reserved
+    uint8_t RESERVED_0010[4];  ///< Reserved
 
     /// RCC clock recovery RC register
     /// Offset: 0x0014

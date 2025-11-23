@@ -44,16 +44,18 @@
 
 #pragma once
 
-#include "core/result.hpp"
-#include "core/error.hpp"
-#include "hal/vendors/st/stm32f7/generated/registers/rcc_registers.hpp"
-#include "hal/vendors/st/stm32f7/generated/registers/flash_registers.hpp"
-#include "hal/vendors/st/stm32f7/generated/bitfields/rcc_bitfields.hpp"
-#include "hal/vendors/st/stm32f7/generated/bitfields/flash_bitfields.hpp"
 #include <cstdint>
 
+#include "hal/vendors/st/stm32f7/generated/bitfields/flash_bitfields.hpp"
+#include "hal/vendors/st/stm32f7/generated/bitfields/rcc_bitfields.hpp"
+#include "hal/vendors/st/stm32f7/generated/registers/flash_registers.hpp"
+#include "hal/vendors/st/stm32f7/generated/registers/rcc_registers.hpp"
+
+#include "core/error.hpp"
+#include "core/result.hpp"
+
 #if __cplusplus >= 202002L
-#include "hal/core/concepts.hpp"
+    #include "hal/core/concepts.hpp"
 #endif
 
 namespace ucore::hal::st::stm32f7 {
@@ -79,32 +81,36 @@ using namespace ucore::core;
  */
 template <typename Config>
 class Stm32f7Clock {
-private:
+   private:
     // Validate configuration at compile-time
     static_assert(Config::pll_m >= 2 && Config::pll_m <= 63, "PLL_M must be 2-63");
     static_assert(Config::pll_n >= 50 && Config::pll_n <= 432, "PLL_N must be 50-432");
-    static_assert(Config::pll_p_div == 2 || Config::pll_p_div == 4 ||
-                  Config::pll_p_div == 6 || Config::pll_p_div == 8,
+    static_assert(Config::pll_p_div == 2 || Config::pll_p_div == 4 || Config::pll_p_div == 6 ||
+                      Config::pll_p_div == 8,
                   "PLL_P must be 2, 4, 6, or 8");
     static_assert(Config::pll_q >= 2 && Config::pll_q <= 15, "PLL_Q must be 2-15");
     static_assert(Config::flash_latency <= 15, "Flash latency must be 0-15");
 
     // Convert PLL_P divider to register value
     // Register encoding: 0=/2, 1=/4, 2=/6, 3=/8
-    static constexpr uint32_t pll_p_reg_value() {
-        return (Config::pll_p_div / 2) - 1;
-    }
+    static constexpr uint32_t pll_p_reg_value() { return (Config::pll_p_div / 2) - 1; }
 
     // Convert prescaler values to register values
     // APB prescaler encoding: 0=div1, 4=div2, 5=div4, 6=div8, 7=div16
     static constexpr uint32_t apb_prescaler_to_reg(uint32_t div) {
         switch (div) {
-            case 1:  return 0;
-            case 2:  return 4;
-            case 4:  return 5;
-            case 8:  return 6;
-            case 16: return 7;
-            default: return 0;  // Will trigger static_assert
+            case 1:
+                return 0;
+            case 2:
+                return 4;
+            case 4:
+                return 5;
+            case 8:
+                return 6;
+            case 16:
+                return 7;
+            default:
+                return 0;  // Will trigger static_assert
         }
     }
 
@@ -138,7 +144,7 @@ private:
     static constexpr uint32_t PPRE1_MASK = 0x7 << PPRE1_POS;
     static constexpr uint32_t PPRE2_MASK = 0x7 << PPRE2_POS;
 
-public:
+   public:
     /**
      * @brief Initialize system clock with configured parameters
      *
@@ -160,20 +166,20 @@ public:
 
         // Wait for HSE ready with timeout
         uint32_t timeout = 10000;
-        while (!(rcc::RCC()->CR & cr::HSERDY::mask) && --timeout);
+        while (!(rcc::RCC()->CR & cr::HSERDY::mask) && --timeout)
+            ;
         if (timeout == 0) {
             return Err(ErrorCode::Timeout);
         }
 
         // 2. Configure Flash latency BEFORE increasing frequency
-        flash::FLASH()->ACR = flash::acr::LATENCY::write(flash::FLASH()->ACR, Config::flash_latency);
+        flash::FLASH()->ACR =
+            flash::acr::LATENCY::write(flash::FLASH()->ACR, Config::flash_latency);
 
         // 3. Configure PLL
-        uint32_t pllcfgr_value = (Config::pll_m << PLLM_POS) |
-                                  (Config::pll_n << PLLN_POS) |
-                                  (pll_p_reg_value() << PLLP_POS) |
-                                  (PLL_SRC_HSE << PLLSRC_POS) |
-                                  (Config::pll_q << PLLQ_POS);
+        uint32_t pllcfgr_value = (Config::pll_m << PLLM_POS) | (Config::pll_n << PLLN_POS) |
+                                 (pll_p_reg_value() << PLLP_POS) | (PLL_SRC_HSE << PLLSRC_POS) |
+                                 (Config::pll_q << PLLQ_POS);
         rcc::RCC()->PLLCFGR = pllcfgr_value;
 
         // 4. Enable PLL
@@ -181,7 +187,8 @@ public:
 
         // Wait for PLL ready with timeout
         timeout = 10000;
-        while (!(rcc::RCC()->CR & cr::PLLRDY::mask) && --timeout);
+        while (!(rcc::RCC()->CR & cr::PLLRDY::mask) && --timeout)
+            ;
         if (timeout == 0) {
             return Err(ErrorCode::Timeout);
         }
@@ -202,7 +209,8 @@ public:
 
         // Wait for clock switch with timeout
         timeout = 10000;
-        while (((rcc::RCC()->CFGR & SWS_MASK) >> SWS_POS) != SW_PLL && --timeout);
+        while (((rcc::RCC()->CFGR & SWS_MASK) >> SWS_POS) != SW_PLL && --timeout)
+            ;
         if (timeout == 0) {
             return Err(ErrorCode::Timeout);
         }
@@ -220,14 +228,10 @@ public:
     static Result<void, ErrorCode> enable_gpio_clocks() {
         using namespace rcc;
 
-        rcc::RCC()->AHB1ENR |= ahb1enr::GPIOAEN::mask |
-                               ahb1enr::GPIOBEN::mask |
-                               ahb1enr::GPIOCEN::mask |
-                               ahb1enr::GPIODEN::mask |
-                               ahb1enr::GPIOEEN::mask |
-                               ahb1enr::GPIOFEN::mask |
-                               ahb1enr::GPIOGEN::mask |
-                               ahb1enr::GPIOHEN::mask;
+        rcc::RCC()->AHB1ENR |= ahb1enr::GPIOAEN::mask | ahb1enr::GPIOBEN::mask |
+                               ahb1enr::GPIOCEN::mask | ahb1enr::GPIODEN::mask |
+                               ahb1enr::GPIOEEN::mask | ahb1enr::GPIOFEN::mask |
+                               ahb1enr::GPIOGEN::mask | ahb1enr::GPIOHEN::mask;
 
         return Ok();
     }
@@ -352,9 +356,7 @@ public:
      * @brief Get system clock frequency
      * @return Frequency in Hz
      */
-    static constexpr uint32_t get_system_clock_hz() {
-        return Config::system_clock_hz;
-    }
+    static constexpr uint32_t get_system_clock_hz() { return Config::system_clock_hz; }
 
     /**
      * @brief Get AHB clock frequency
@@ -405,4 +407,4 @@ static_assert(ucore::hal::concepts::ClockPlatform<Stm32f7Clock<ExampleF7ClockCon
               "Stm32f7Clock must satisfy ClockPlatform concept - missing required methods");
 #endif
 
-} // namespace ucore::hal::st::stm32f7
+}  // namespace ucore::hal::st::stm32f7

@@ -10,9 +10,10 @@
 
 #pragma once
 
+#include "hal/api/clock_simple.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/api/clock_simple.hpp"
 
 namespace ucore::hal {
 
@@ -21,9 +22,7 @@ using namespace ucore::core;
 struct ClockBuilderState {
     bool has_config = false;
 
-    constexpr bool is_valid() const {
-        return has_config;
-    }
+    constexpr bool is_valid() const { return has_config; }
 };
 
 /**
@@ -41,7 +40,7 @@ struct ClockBuilderState {
  */
 template <typename ClockImpl, typename ConfigType>
 class ClockBuilder {
-public:
+   public:
     constexpr ClockBuilder() : config_ptr_(nullptr), state_() {}
 
     /**
@@ -130,7 +129,7 @@ public:
         return Ok();
     }
 
-private:
+   private:
     static constexpr u8 MAX_PERIPHERALS = 32;  // Maximum peripherals to track
 
     const ConfigType* config_ptr_;

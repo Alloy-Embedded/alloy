@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::otg_hs_global {
 
 /// OTG_HS_GLOBAL Register Structure
 struct OTG_HS_GLOBAL_Registers {
-
     /// OTG_HS control and status register
     /// Offset: 0x0000
     /// Reset value: 0x00000800
@@ -108,7 +107,7 @@ struct OTG_HS_GLOBAL_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OTG_HS_GI2CCTL;
-    uint8_t RESERVED_0034[4]; ///< Reserved
+    uint8_t RESERVED_0034[4];  ///< Reserved
 
     /// OTG_HS general core configuration register
     /// Offset: 0x0038
@@ -121,13 +120,13 @@ struct OTG_HS_GLOBAL_Registers {
     /// Reset value: 0x00001200
     /// Access: read-write
     volatile uint32_t OTG_HS_CID;
-    uint8_t RESERVED_0040[20]; ///< Reserved
+    uint8_t RESERVED_0040[20];  ///< Reserved
 
     /// OTG core LPM configuration register
     /// Offset: 0x0054
     /// Reset value: 0x00000000
     volatile uint32_t OTG_HS_GLPMCFG;
-    uint8_t RESERVED_0058[168]; ///< Reserved
+    uint8_t RESERVED_0058[168];  ///< Reserved
 
     /// OTG_HS Host periodic transmit FIFO size register
     /// Offset: 0x0100

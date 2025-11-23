@@ -8,9 +8,10 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "hal/core/concepts.hpp"
-#include "core/result.hpp"
-#include "core/error.hpp"
 #include "hal/types.hpp"
+
+#include "core/error.hpp"
+#include "core/result.hpp"
 
 using namespace ucore::core;
 using namespace ucore::hal;
@@ -25,13 +26,13 @@ using namespace ucore::hal;
  * Used for testing concept compliance without hardware.
  */
 class MockGpioPin {
-private:
+   private:
     bool output_state = false;
     bool is_output_mode = false;
     PinPull pull_config = PinPull::None;
     PinDrive drive_config = PinDrive::PushPull;
 
-public:
+   public:
     // Compile-time metadata required by GpioPin concept
     static constexpr uint32_t port_base = 0x50000000;
     static constexpr uint8_t pin_number = 0;
@@ -71,13 +72,9 @@ public:
     }
 
     // Note: Result<bool> has implementation issues, so we test without it
-    bool read() const {
-        return output_state;
-    }
+    bool read() const { return output_state; }
 
-    bool isOutput() const {
-        return is_output_mode;
-    }
+    bool isOutput() const { return is_output_mode; }
 
     Result<void, ErrorCode> setDirection(PinDirection direction) {
         is_output_mode = (direction == PinDirection::Output);
@@ -330,7 +327,7 @@ TEST_CASE("GPIO button simulation with pull-up", "[gpio][integration]") {
 
 // Test 1: Missing set() method
 class BadGpioNoSet {
-public:
+   public:
     Result<void, ErrorCode> clear() { return Ok(); }
     Result<void, ErrorCode> toggle() { return Ok(); }
     bool read() const { return false; }
@@ -345,7 +342,7 @@ public:
 
 // Test 2: Wrong return type for set()
 class BadGpioWrongReturn {
-public:
+   public:
     void set() {}  // Wrong: should return Result<void, ErrorCode>
     Result<void, ErrorCode> clear() { return Ok(); }
     Result<void, ErrorCode> toggle() { return Ok(); }
@@ -361,7 +358,7 @@ public:
 
 // Test 3: Missing required metadata
 class BadGpioNoMetadata {
-public:
+   public:
     Result<void, ErrorCode> set() { return Ok(); }
     Result<void, ErrorCode> clear() { return Ok(); }
     Result<void, ErrorCode> toggle() { return Ok(); }
@@ -385,7 +382,7 @@ public:
 
 // Test 5: Incomplete interface
 class BadGpioIncomplete {
-public:
+   public:
     Result<void, ErrorCode> set() { return Ok(); }
     Result<void, ErrorCode> clear() { return Ok(); }
     // Missing: toggle(), read(), setDirection(), setPull(), setDrive()

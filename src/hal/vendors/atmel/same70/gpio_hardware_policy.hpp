@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/atmel/same70/generated/registers/pioa_registers.hpp"
@@ -44,7 +44,7 @@ using namespace ucore::core;
 using namespace ucore::hal::atmel::same70;
 
 // Namespace alias for bitfields
-namespace  = pioa;
+namespace = pioa;
 
 /**
  * @brief Hardware Policy for PIO on SAME70
@@ -88,11 +88,11 @@ struct Same70PIOHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_GPIO_MOCK_HW
-            return ALLOY_GPIO_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_GPIO_MOCK_HW
+        return ALLOY_GPIO_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -114,9 +114,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_PER
      */
     static inline void enable_pio(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_PER
-            ALLOY_GPIO_TEST_HOOK_PER(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_PER
+        ALLOY_GPIO_TEST_HOOK_PER(pin_mask);
+#endif
 
         hw()->PER = pin_mask;
     }
@@ -128,9 +128,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_PDR
      */
     static inline void disable_pio(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_PDR
-            ALLOY_GPIO_TEST_HOOK_PDR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_PDR
+        ALLOY_GPIO_TEST_HOOK_PDR(pin_mask);
+#endif
 
         hw()->PDR = pin_mask;
     }
@@ -142,9 +142,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_OER
      */
     static inline void enable_output(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_OER
-            ALLOY_GPIO_TEST_HOOK_OER(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_OER
+        ALLOY_GPIO_TEST_HOOK_OER(pin_mask);
+#endif
 
         hw()->OER = pin_mask;
     }
@@ -156,9 +156,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_ODR
      */
     static inline void disable_output(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_ODR
-            ALLOY_GPIO_TEST_HOOK_ODR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_ODR
+        ALLOY_GPIO_TEST_HOOK_ODR(pin_mask);
+#endif
 
         hw()->ODR = pin_mask;
     }
@@ -170,9 +170,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_SODR
      */
     static inline void set_output(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_SODR
-            ALLOY_GPIO_TEST_HOOK_SODR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_SODR
+        ALLOY_GPIO_TEST_HOOK_SODR(pin_mask);
+#endif
 
         hw()->SODR = pin_mask;
     }
@@ -184,9 +184,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_CODR
      */
     static inline void clear_output(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_CODR
-            ALLOY_GPIO_TEST_HOOK_CODR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_CODR
+        ALLOY_GPIO_TEST_HOOK_CODR(pin_mask);
+#endif
 
         hw()->CODR = pin_mask;
     }
@@ -198,15 +198,15 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_TOGGLE
      */
     static inline void toggle_output(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_TOGGLE
-            ALLOY_GPIO_TEST_HOOK_TOGGLE(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_TOGGLE
+        ALLOY_GPIO_TEST_HOOK_TOGGLE(pin_mask);
+#endif
 
         if (hw()->ODSR & pin_mask) {
-    hw()->CODR = pin_mask;
-} else {
-    hw()->SODR = pin_mask;
-}
+            hw()->CODR = pin_mask;
+        } else {
+            hw()->SODR = pin_mask;
+        }
     }
 
     /**
@@ -217,9 +217,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_PDSR
      */
     static inline bool read_pin(uint32_t pin_mask) const {
-        #ifdef ALLOY_GPIO_TEST_HOOK_PDSR
-            ALLOY_GPIO_TEST_HOOK_PDSR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_PDSR
+        ALLOY_GPIO_TEST_HOOK_PDSR(pin_mask);
+#endif
 
         return (hw()->PDSR & pin_mask) != 0;
     }
@@ -232,9 +232,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_OSR
      */
     static inline bool is_output(uint32_t pin_mask) const {
-        #ifdef ALLOY_GPIO_TEST_HOOK_OSR
-            ALLOY_GPIO_TEST_HOOK_OSR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_OSR
+        ALLOY_GPIO_TEST_HOOK_OSR(pin_mask);
+#endif
 
         return (hw()->OSR & pin_mask) != 0;
     }
@@ -246,9 +246,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_PUER
      */
     static inline void enable_pull_up(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_PUER
-            ALLOY_GPIO_TEST_HOOK_PUER(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_PUER
+        ALLOY_GPIO_TEST_HOOK_PUER(pin_mask);
+#endif
 
         hw()->PUER = pin_mask;
     }
@@ -260,9 +260,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_PUDR
      */
     static inline void disable_pull_up(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_PUDR
-            ALLOY_GPIO_TEST_HOOK_PUDR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_PUDR
+        ALLOY_GPIO_TEST_HOOK_PUDR(pin_mask);
+#endif
 
         hw()->PUDR = pin_mask;
     }
@@ -274,9 +274,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_MDER
      */
     static inline void enable_multi_driver(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_MDER
-            ALLOY_GPIO_TEST_HOOK_MDER(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_MDER
+        ALLOY_GPIO_TEST_HOOK_MDER(pin_mask);
+#endif
 
         hw()->MDER = pin_mask;
     }
@@ -288,9 +288,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_MDDR
      */
     static inline void disable_multi_driver(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_MDDR
-            ALLOY_GPIO_TEST_HOOK_MDDR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_MDDR
+        ALLOY_GPIO_TEST_HOOK_MDDR(pin_mask);
+#endif
 
         hw()->MDDR = pin_mask;
     }
@@ -302,9 +302,9 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_IFER
      */
     static inline void enable_input_filter(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_IFER
-            ALLOY_GPIO_TEST_HOOK_IFER(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_IFER
+        ALLOY_GPIO_TEST_HOOK_IFER(pin_mask);
+#endif
 
         hw()->IFER = pin_mask;
     }
@@ -316,13 +316,12 @@ struct Same70PIOHardwarePolicy {
      * @note Test hook: ALLOY_GPIO_TEST_HOOK_IFDR
      */
     static inline void disable_input_filter(uint32_t pin_mask) {
-        #ifdef ALLOY_GPIO_TEST_HOOK_IFDR
-            ALLOY_GPIO_TEST_HOOK_IFDR(pin_mask);
-        #endif
+#ifdef ALLOY_GPIO_TEST_HOOK_IFDR
+        ALLOY_GPIO_TEST_HOOK_IFDR(pin_mask);
+#endif
 
         hw()->IFDR = pin_mask;
     }
-
 };
 
 // ============================================================================

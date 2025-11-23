@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/atmel/same70/generated/registers/pwm0_registers.hpp"
@@ -89,11 +89,11 @@ struct Same70PWMHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_PWM_MOCK_HW
-            return ALLOY_PWM_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_PWM_MOCK_HW
+        return ALLOY_PWM_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -115,9 +115,9 @@ struct Same70PWMHardwarePolicy {
      * @note Test hook: ALLOY_PWM_TEST_HOOK_ENABLE
      */
     static inline void enable_channel(uint8_t channel) {
-        #ifdef ALLOY_PWM_TEST_HOOK_ENABLE
-            ALLOY_PWM_TEST_HOOK_ENABLE(channel);
-        #endif
+#ifdef ALLOY_PWM_TEST_HOOK_ENABLE
+        ALLOY_PWM_TEST_HOOK_ENABLE(channel);
+#endif
 
         hw()->ENA = (1u << channel);
     }
@@ -129,9 +129,9 @@ struct Same70PWMHardwarePolicy {
      * @note Test hook: ALLOY_PWM_TEST_HOOK_DISABLE
      */
     static inline void disable_channel(uint8_t channel) {
-        #ifdef ALLOY_PWM_TEST_HOOK_DISABLE
-            ALLOY_PWM_TEST_HOOK_DISABLE(channel);
-        #endif
+#ifdef ALLOY_PWM_TEST_HOOK_DISABLE
+        ALLOY_PWM_TEST_HOOK_DISABLE(channel);
+#endif
 
         hw()->DIS = (1u << channel);
     }
@@ -144,11 +144,15 @@ struct Same70PWMHardwarePolicy {
      * @note Test hook: ALLOY_PWM_TEST_HOOK_PERIOD
      */
     static inline void set_period(uint8_t channel, uint32_t period) {
-        #ifdef ALLOY_PWM_TEST_HOOK_PERIOD
-            ALLOY_PWM_TEST_HOOK_PERIOD(channel, period);
-        #endif
+#ifdef ALLOY_PWM_TEST_HOOK_PERIOD
+        ALLOY_PWM_TEST_HOOK_PERIOD(channel, period);
+#endif
 
-        if (channel < 4) { volatile uint32_t* cprd = reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x200 + (channel * 0x20) + 0x0C); *cprd = period; }
+        if (channel < 4) {
+            volatile uint32_t* cprd =
+                reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x200 + (channel * 0x20) + 0x0C);
+            *cprd = period;
+        }
     }
 
     /**
@@ -159,11 +163,15 @@ struct Same70PWMHardwarePolicy {
      * @note Test hook: ALLOY_PWM_TEST_HOOK_DUTY
      */
     static inline void set_duty_cycle(uint8_t channel, uint32_t duty) {
-        #ifdef ALLOY_PWM_TEST_HOOK_DUTY
-            ALLOY_PWM_TEST_HOOK_DUTY(channel, duty);
-        #endif
+#ifdef ALLOY_PWM_TEST_HOOK_DUTY
+        ALLOY_PWM_TEST_HOOK_DUTY(channel, duty);
+#endif
 
-        if (channel < 4) { volatile uint32_t* cdty = reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x200 + (channel * 0x20) + 0x04); *cdty = duty; }
+        if (channel < 4) {
+            volatile uint32_t* cdty =
+                reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x200 + (channel * 0x20) + 0x04);
+            *cdty = duty;
+        }
     }
 
     /**
@@ -173,9 +181,9 @@ struct Same70PWMHardwarePolicy {
      * @note Test hook: ALLOY_PWM_TEST_HOOK_PRESCALER
      */
     static inline void set_prescaler(uint8_t prescaler) {
-        #ifdef ALLOY_PWM_TEST_HOOK_PRESCALER
-            ALLOY_PWM_TEST_HOOK_PRESCALER(prescaler);
-        #endif
+#ifdef ALLOY_PWM_TEST_HOOK_PRESCALER
+        ALLOY_PWM_TEST_HOOK_PRESCALER(prescaler);
+#endif
 
         hw()->CLK = (hw()->CLK & ~0x0FF) | (prescaler & 0xFF);
     }
@@ -188,11 +196,19 @@ struct Same70PWMHardwarePolicy {
      * @note Test hook: ALLOY_PWM_TEST_HOOK_POLARITY
      */
     static inline void set_polarity(uint8_t channel, bool inverted) {
-        #ifdef ALLOY_PWM_TEST_HOOK_POLARITY
-            ALLOY_PWM_TEST_HOOK_POLARITY(channel, inverted);
-        #endif
+#ifdef ALLOY_PWM_TEST_HOOK_POLARITY
+        ALLOY_PWM_TEST_HOOK_POLARITY(channel, inverted);
+#endif
 
-        if (channel < 4) { volatile uint32_t* cmr = reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x200 + (channel * 0x20)); if (inverted) { *cmr |= (1u << 9); } else { *cmr &= ~(1u << 9); } }
+        if (channel < 4) {
+            volatile uint32_t* cmr =
+                reinterpret_cast<volatile uint32_t*>(BASE_ADDR + 0x200 + (channel * 0x20));
+            if (inverted) {
+                *cmr |= (1u << 9);
+            } else {
+                *cmr &= ~(1u << 9);
+            }
+        }
     }
 
     /**
@@ -203,13 +219,12 @@ struct Same70PWMHardwarePolicy {
      * @note Test hook: ALLOY_PWM_TEST_HOOK_IS_ENABLED
      */
     static inline bool is_channel_enabled(uint8_t channel) const {
-        #ifdef ALLOY_PWM_TEST_HOOK_IS_ENABLED
-            ALLOY_PWM_TEST_HOOK_IS_ENABLED(channel);
-        #endif
+#ifdef ALLOY_PWM_TEST_HOOK_IS_ENABLED
+        ALLOY_PWM_TEST_HOOK_IS_ENABLED(channel);
+#endif
 
         return (hw()->SR & (1u << channel)) != 0;
     }
-
 };
 
 // ============================================================================
@@ -217,9 +232,11 @@ struct Same70PWMHardwarePolicy {
 // ============================================================================
 
 /// @brief Hardware policy for Pwm0
-using Pwm0Hardware = Same70PWMHardwarePolicy<ucore::generated::atsame70q21b::peripherals::PWM0, 150000000>;
+using Pwm0Hardware =
+    Same70PWMHardwarePolicy<ucore::generated::atsame70q21b::peripherals::PWM0, 150000000>;
 /// @brief Hardware policy for Pwm1
-using Pwm1Hardware = Same70PWMHardwarePolicy<ucore::generated::atsame70q21b::peripherals::PWM1, 150000000>;
+using Pwm1Hardware =
+    Same70PWMHardwarePolicy<ucore::generated::atsame70q21b::peripherals::PWM1, 150000000>;
 
 }  // namespace ucore::hal::same70
 

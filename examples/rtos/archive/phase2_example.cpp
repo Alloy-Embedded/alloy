@@ -14,11 +14,12 @@
 // The static_asserts below will work in any context once headers are included.
 
 #include "hal/interface/systick.hpp"
-#include "rtos/rtos.hpp"
-#include "rtos/queue.hpp"
-#include "rtos/mutex.hpp"
-#include "rtos/semaphore.hpp"
+
 #include "rtos/concepts.hpp"
+#include "rtos/mutex.hpp"
+#include "rtos/queue.hpp"
+#include "rtos/rtos.hpp"
+#include "rtos/semaphore.hpp"
 
 using namespace ucore;
 using namespace ucore::rtos;
@@ -82,12 +83,10 @@ void sensor_task_func() {
 
     while (true) {
         // Simulate sensor reading
-        SensorData data{
-            .timestamp = RTOS::get_tick_count(),
-            .temperature = static_cast<core::i16>(2500 + (counter % 100)),
-            .humidity = static_cast<core::i16>(6000 + (counter % 200)),
-            .pressure = static_cast<core::u16>(101325 + (counter % 500))
-        };
+        SensorData data{.timestamp = RTOS::get_tick_count(),
+                        .temperature = static_cast<core::i16>(2500 + (counter % 100)),
+                        .humidity = static_cast<core::i16>(6000 + (counter % 200)),
+                        .pressure = static_cast<core::u16>(101325 + (counter % 500))};
 
         // Send to queue (type-safe with Result)
         auto result = sensor_queue.send(data, 1000);
@@ -178,12 +177,8 @@ Task<256, Priority::Low, "Logger"> logger_task(logger_task_func);
 // ============================================================================
 
 // Create TaskSet for compile-time validation
-using MyTaskSet = TaskSet<
-    decltype(sensor_task),
-    decltype(display_task),
-    decltype(command_task),
-    decltype(logger_task)
->;
+using MyTaskSet = TaskSet<decltype(sensor_task), decltype(display_task), decltype(command_task),
+                          decltype(logger_task)>;
 
 // Compile-time assertions (all evaluated at compile time!)
 static_assert(MyTaskSet::count() == 4, "Must have 4 tasks");
@@ -216,8 +211,8 @@ using TaskInfo = MyTaskSet::Info;
 static_assert(TaskInfo::task_count == 4);
 static_assert(TaskInfo::total_ram_bytes == 2432);
 static_assert(TaskInfo::total_stack_bytes == 2304);
-static_assert(TaskInfo::max_priority == 4);  // High = 4
-static_assert(TaskInfo::min_priority == 2);  // Low = 2
+static_assert(TaskInfo::max_priority == 4);   // High = 4
+static_assert(TaskInfo::min_priority == 2);   // Low = 2
 static_assert(!TaskInfo::unique_priorities);  // We have duplicates
 
 // ============================================================================

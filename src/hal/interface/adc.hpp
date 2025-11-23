@@ -100,76 +100,76 @@ struct AdcConfig {
 /// - ErrorCode::InvalidParameter: Invalid channel or configuration
 /// - ErrorCode::NotSupported: Feature not supported by hardware
 template <typename T>
-concept AdcDevice = requires(T device, const T const_device, AdcChannel channel,
-                             std::span<u16> buffer, std::span<AdcChannel> channels,
-                             AdcConfig config, std::function<void(u16)> callback) {
-    /// Read single ADC channel (blocking)
-    ///
-    /// Performs a single conversion on the specified channel and returns
-    /// the raw ADC value.
-    ///
-    /// @param channel ADC channel to read
-    /// @return Raw ADC value (0 to 2^resolution-1), or error code
-    { device.read_single(channel) } -> std::same_as<Result<u16, ErrorCode>>;
+concept AdcDevice =
+    requires(T device, const T const_device, AdcChannel channel, std::span<u16> buffer,
+             std::span<AdcChannel> channels, AdcConfig config, std::function<void(u16)> callback) {
+        /// Read single ADC channel (blocking)
+        ///
+        /// Performs a single conversion on the specified channel and returns
+        /// the raw ADC value.
+        ///
+        /// @param channel ADC channel to read
+        /// @return Raw ADC value (0 to 2^resolution-1), or error code
+        { device.read_single(channel) } -> std::same_as<Result<u16, ErrorCode>>;
 
-    /// Read multiple ADC channels in sequence
-    ///
-    /// Scans multiple channels and stores results in the buffer.
-    /// Buffer size must match number of channels.
-    ///
-    /// @param channels Array of channels to scan
-    /// @param values Buffer to store ADC values
-    /// @return Ok on success, error code on failure
-    { device.read_multi_channel(channels, buffer) } -> std::same_as<Result<void, ErrorCode>>;
+        /// Read multiple ADC channels in sequence
+        ///
+        /// Scans multiple channels and stores results in the buffer.
+        /// Buffer size must match number of channels.
+        ///
+        /// @param channels Array of channels to scan
+        /// @param values Buffer to store ADC values
+        /// @return Ok on success, error code on failure
+        { device.read_multi_channel(channels, buffer) } -> std::same_as<Result<void, ErrorCode>>;
 
-    /// Start continuous conversion mode
-    ///
-    /// Continuously converts the specified channel and calls the callback
-    /// for each new value. Call stop_continuous() to stop.
-    ///
-    /// @param channel ADC channel to monitor
-    /// @param callback Function called for each conversion
-    /// @return Ok on success, error code on failure
-    { device.start_continuous(channel, callback) } -> std::same_as<Result<void, ErrorCode>>;
+        /// Start continuous conversion mode
+        ///
+        /// Continuously converts the specified channel and calls the callback
+        /// for each new value. Call stop_continuous() to stop.
+        ///
+        /// @param channel ADC channel to monitor
+        /// @param callback Function called for each conversion
+        /// @return Ok on success, error code on failure
+        { device.start_continuous(channel, callback) } -> std::same_as<Result<void, ErrorCode>>;
 
-    /// Stop continuous conversion mode
-    ///
-    /// @return Ok on success, error code on failure
-    { device.stop_continuous() } -> std::same_as<Result<void, ErrorCode>>;
+        /// Stop continuous conversion mode
+        ///
+        /// @return Ok on success, error code on failure
+        { device.stop_continuous() } -> std::same_as<Result<void, ErrorCode>>;
 
-    /// Start DMA-based data acquisition
-    ///
-    /// Continuously converts the specified channel and stores results
-    /// in the buffer using DMA (no CPU intervention).
-    ///
-    /// @param channel ADC channel to sample
-    /// @param buffer Buffer to store ADC values (filled by DMA)
-    /// @return Ok on success, error code on failure
-    { device.start_dma(channel, buffer) } -> std::same_as<Result<void, ErrorCode>>;
+        /// Start DMA-based data acquisition
+        ///
+        /// Continuously converts the specified channel and stores results
+        /// in the buffer using DMA (no CPU intervention).
+        ///
+        /// @param channel ADC channel to sample
+        /// @param buffer Buffer to store ADC values (filled by DMA)
+        /// @return Ok on success, error code on failure
+        { device.start_dma(channel, buffer) } -> std::same_as<Result<void, ErrorCode>>;
 
-    /// Stop DMA-based data acquisition
-    ///
-    /// @return Ok on success, error code on failure
-    { device.stop_dma() } -> std::same_as<Result<void, ErrorCode>>;
+        /// Stop DMA-based data acquisition
+        ///
+        /// @return Ok on success, error code on failure
+        { device.stop_dma() } -> std::same_as<Result<void, ErrorCode>>;
 
-    /// Check if DMA transfer is complete
-    ///
-    /// @return true if buffer is full, false if still acquiring
-    { const_device.is_dma_complete() } -> std::same_as<bool>;
+        /// Check if DMA transfer is complete
+        ///
+        /// @return true if buffer is full, false if still acquiring
+        { const_device.is_dma_complete() } -> std::same_as<bool>;
 
-    /// Calibrate ADC for improved accuracy
-    ///
-    /// Performs self-calibration if supported by hardware.
-    ///
-    /// @return Ok on success, error code on failure or if not supported
-    { device.calibrate() } -> std::same_as<Result<void, ErrorCode>>;
+        /// Calibrate ADC for improved accuracy
+        ///
+        /// Performs self-calibration if supported by hardware.
+        ///
+        /// @return Ok on success, error code on failure or if not supported
+        { device.calibrate() } -> std::same_as<Result<void, ErrorCode>>;
 
-    /// Configure ADC parameters
-    ///
-    /// @param config ADC configuration (resolution, reference, sample time)
-    /// @return Ok on success, error code on failure
-    { device.configure(config) } -> std::same_as<Result<void, ErrorCode>>;
-};
+        /// Configure ADC parameters
+        ///
+        /// @param config ADC configuration (resolution, reference, sample time)
+        /// @return Ok on success, error code on failure
+        { device.configure(config) } -> std::same_as<Result<void, ErrorCode>>;
+    };
 
 /// Helper function to convert raw ADC value to voltage
 ///
@@ -177,8 +177,7 @@ concept AdcDevice = requires(T device, const T const_device, AdcChannel channel,
 /// @param max_value Maximum ADC value (2^resolution - 1)
 /// @param reference_voltage Reference voltage in volts (e.g., 3.3V)
 /// @return Voltage in volts
-inline constexpr float raw_to_voltage(u16 raw_value, u16 max_value,
-                                      float reference_voltage) {
+inline constexpr float raw_to_voltage(u16 raw_value, u16 max_value, float reference_voltage) {
     return (static_cast<float>(raw_value) / static_cast<float>(max_value)) * reference_voltage;
 }
 

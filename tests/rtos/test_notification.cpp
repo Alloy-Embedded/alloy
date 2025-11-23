@@ -1,8 +1,9 @@
 /// Unit tests for RTOS TaskNotification
 
-#include "tests/rtos/test_framework.hpp"
-#include "rtos/task_notification.hpp"
 #include "rtos/rtos.hpp"
+#include "rtos/task_notification.hpp"
+
+#include "tests/rtos/test_framework.hpp"
 
 using namespace ucore;
 using namespace ucore::rtos;
@@ -35,20 +36,12 @@ TEST_SUITE(TaskNotification) {
         TaskNotification::clear().unwrap();
 
         // Set bit 0
-        auto r1 = TaskNotification::notify(
-            &test_task_tcb,
-            0x01,
-            NotifyAction::SetBits
-        );
+        auto r1 = TaskNotification::notify(&test_task_tcb, 0x01, NotifyAction::SetBits);
         TEST_ASSERT_OK(r1);
         TEST_ASSERT_EQUAL(r1.unwrap(), 0);  // Previous value was 0
 
         // Set bit 1
-        auto r2 = TaskNotification::notify(
-            &test_task_tcb,
-            0x02,
-            NotifyAction::SetBits
-        );
+        auto r2 = TaskNotification::notify(&test_task_tcb, 0x02, NotifyAction::SetBits);
         TEST_ASSERT_OK(r2);
         TEST_ASSERT_EQUAL(r2.unwrap(), 0x01);  // Previous value was 0x01
 
@@ -62,20 +55,12 @@ TEST_SUITE(TaskNotification) {
         TaskNotification::clear().unwrap();
 
         // Increment by 1
-        auto r1 = TaskNotification::notify(
-            &test_task_tcb,
-            1,
-            NotifyAction::Increment
-        );
+        auto r1 = TaskNotification::notify(&test_task_tcb, 1, NotifyAction::Increment);
         TEST_ASSERT_OK(r1);
         TEST_ASSERT_EQUAL(r1.unwrap(), 0);
 
         // Increment by 5
-        auto r2 = TaskNotification::notify(
-            &test_task_tcb,
-            5,
-            NotifyAction::Increment
-        );
+        auto r2 = TaskNotification::notify(&test_task_tcb, 5, NotifyAction::Increment);
         TEST_ASSERT_OK(r2);
         TEST_ASSERT_EQUAL(r2.unwrap(), 1);
 
@@ -89,20 +74,12 @@ TEST_SUITE(TaskNotification) {
         TaskNotification::clear().unwrap();
 
         // Set initial value
-        TaskNotification::notify(
-            &test_task_tcb,
-            100,
-            NotifyAction::Overwrite
-        ).unwrap();
+        TaskNotification::notify(&test_task_tcb, 100, NotifyAction::Overwrite).unwrap();
 
         TEST_ASSERT_EQUAL(TaskNotification::peek(), 100);
 
         // Overwrite with new value
-        auto r = TaskNotification::notify(
-            &test_task_tcb,
-            200,
-            NotifyAction::Overwrite
-        );
+        auto r = TaskNotification::notify(&test_task_tcb, 200, NotifyAction::Overwrite);
         TEST_ASSERT_OK(r);
         TEST_ASSERT_EQUAL(r.unwrap(), 100);  // Previous value
 
@@ -115,19 +92,11 @@ TEST_SUITE(TaskNotification) {
         TaskNotification::clear().unwrap();
 
         // Should succeed on empty
-        auto r1 = TaskNotification::notify(
-            &test_task_tcb,
-            42,
-            NotifyAction::OverwriteIfEmpty
-        );
+        auto r1 = TaskNotification::notify(&test_task_tcb, 42, NotifyAction::OverwriteIfEmpty);
         TEST_ASSERT_OK(r1);
 
         // Should fail if already pending
-        auto r2 = TaskNotification::notify(
-            &test_task_tcb,
-            99,
-            NotifyAction::OverwriteIfEmpty
-        );
+        auto r2 = TaskNotification::notify(&test_task_tcb, 99, NotifyAction::OverwriteIfEmpty);
         TEST_ASSERT_ERR(r2);
         TEST_ASSERT_EQUAL(r2.unwrap_err(), RTOSError::QueueFull);
 
@@ -141,11 +110,7 @@ TEST_SUITE(TaskNotification) {
         TaskNotification::clear().unwrap();
 
         // Set a value
-        TaskNotification::notify(
-            &test_task_tcb,
-            0xFF,
-            NotifyAction::Overwrite
-        ).unwrap();
+        TaskNotification::notify(&test_task_tcb, 0xFF, NotifyAction::Overwrite).unwrap();
 
         TEST_ASSERT_EQUAL(TaskNotification::peek(), 0xFF);
 
@@ -171,11 +136,7 @@ TEST_SUITE(TaskNotification) {
         TaskNotification::clear().unwrap();
 
         // Set notification
-        TaskNotification::notify(
-            &test_task_tcb,
-            123,
-            NotifyAction::Overwrite
-        ).unwrap();
+        TaskNotification::notify(&test_task_tcb, 123, NotifyAction::Overwrite).unwrap();
 
         // Try wait should succeed
         auto result = TaskNotification::try_wait();
@@ -192,11 +153,7 @@ TEST_SUITE(TaskNotification) {
         TEST_ASSERT(!TaskNotification::is_pending());
 
         // Send notification
-        TaskNotification::notify(
-            &test_task_tcb,
-            42,
-            NotifyAction::Overwrite
-        ).unwrap();
+        TaskNotification::notify(&test_task_tcb, 42, NotifyAction::Overwrite).unwrap();
 
         TEST_ASSERT(TaskNotification::is_pending());
 
@@ -213,11 +170,7 @@ TEST_SUITE(TaskNotification) {
 
         // Measure 1000 notify operations
         for (core::u32 i = 0; i < 1000; i++) {
-            TaskNotification::notify(
-                &test_task_tcb,
-                i,
-                NotifyAction::Overwrite
-            ).unwrap();
+            TaskNotification::notify(&test_task_tcb, i, NotifyAction::Overwrite).unwrap();
             TaskNotification::clear();
         }
 
@@ -234,34 +187,31 @@ TEST_SUITE(TaskNotification) {
         TaskNotification::clear().unwrap();
 
         // Simulate multiple event sources
-        TaskNotification::notify(
-            &test_task_tcb,
-            0x01,  // Event 1
-            NotifyAction::SetBits
-        ).unwrap();
+        TaskNotification::notify(&test_task_tcb,
+                                 0x01,  // Event 1
+                                 NotifyAction::SetBits)
+            .unwrap();
 
-        TaskNotification::notify(
-            &test_task_tcb,
-            0x04,  // Event 3
-            NotifyAction::SetBits
-        ).unwrap();
+        TaskNotification::notify(&test_task_tcb,
+                                 0x04,  // Event 3
+                                 NotifyAction::SetBits)
+            .unwrap();
 
-        TaskNotification::notify(
-            &test_task_tcb,
-            0x10,  // Event 5
-            NotifyAction::SetBits
-        ).unwrap();
+        TaskNotification::notify(&test_task_tcb,
+                                 0x10,  // Event 5
+                                 NotifyAction::SetBits)
+            .unwrap();
 
         // All flags should be set
         core::u32 flags = TaskNotification::peek();
         TEST_ASSERT_EQUAL(flags, 0x15);  // 0x01 | 0x04 | 0x10
 
         // Check individual flags
-        TEST_ASSERT(flags & 0x01);  // Event 1 set
+        TEST_ASSERT(flags & 0x01);     // Event 1 set
         TEST_ASSERT(!(flags & 0x02));  // Event 2 not set
-        TEST_ASSERT(flags & 0x04);  // Event 3 set
+        TEST_ASSERT(flags & 0x04);     // Event 3 set
         TEST_ASSERT(!(flags & 0x08));  // Event 4 not set
-        TEST_ASSERT(flags & 0x10);  // Event 5 set
+        TEST_ASSERT(flags & 0x10);     // Event 5 set
 
         TaskNotification::clear();
     }
@@ -271,11 +221,10 @@ TEST_SUITE(TaskNotification) {
 
         // Use as counting semaphore
         for (int i = 0; i < 5; i++) {
-            TaskNotification::notify(
-                &test_task_tcb,
-                1,  // Increment count
-                NotifyAction::Increment
-            ).unwrap();
+            TaskNotification::notify(&test_task_tcb,
+                                     1,  // Increment count
+                                     NotifyAction::Increment)
+                .unwrap();
         }
 
         // Should have count of 5
@@ -290,11 +239,10 @@ TEST_SUITE(TaskNotification) {
             TEST_ASSERT(count > 0);
 
             // Decrement
-            TaskNotification::notify(
-                &test_task_tcb,
-                static_cast<core::u32>(-1),  // Decrement
-                NotifyAction::Increment
-            ).unwrap();
+            TaskNotification::notify(&test_task_tcb,
+                                     static_cast<core::u32>(-1),  // Decrement
+                                     NotifyAction::Increment)
+                .unwrap();
         }
 
         // Should have count of 2

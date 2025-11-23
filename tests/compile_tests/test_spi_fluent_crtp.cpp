@@ -8,11 +8,12 @@
  * @note Part of Phase 1.9.2: Refactor SpiFluent
  */
 
+#include <span>
+
 #include "hal/api/spi_fluent.hpp"
-#include "core/types.hpp"
 #include "hal/interface/spi.hpp"
 
-#include <span>
+#include "core/types.hpp"
 
 using namespace ucore::hal;
 using namespace ucore::core;
@@ -63,13 +64,13 @@ void test_fluent_spi_inheritance() {
  */
 void test_builder_full_duplex() {
     auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_mosi<MockMosiPin>()
-        .with_miso<MockMisoPin>()
-        .with_sck<MockSckPin>()
-        .clock_speed(2000000)
-        .mode(SpiMode::Mode0)
-        .msb_first()
-        .initialize();
+                      .with_mosi<MockMosiPin>()
+                      .with_miso<MockMisoPin>()
+                      .with_sck<MockSckPin>()
+                      .clock_speed(2000000)
+                      .mode(SpiMode::Mode0)
+                      .msb_first()
+                      .initialize();
 
     // Verify type
     static_assert(std::is_same_v<decltype(result), Result<FluentSpiConfig, ErrorCode>>,
@@ -81,12 +82,12 @@ void test_builder_full_duplex() {
  */
 void test_builder_tx_only() {
     auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_mosi<MockMosiPin>()
-        // No MISO pin - TX-only
-        .with_sck<MockSckPin>()
-        .clock_speed(1000000)
-        .mode(SpiMode::Mode3)
-        .initialize();
+                      .with_mosi<MockMosiPin>()
+                      // No MISO pin - TX-only
+                      .with_sck<MockSckPin>()
+                      .clock_speed(1000000)
+                      .mode(SpiMode::Mode3)
+                      .initialize();
 
     // Verify type
     static_assert(std::is_same_v<decltype(result), Result<FluentSpiConfig, ErrorCode>>,
@@ -98,9 +99,9 @@ void test_builder_tx_only() {
  */
 void test_transfer_operations() {
     auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .initialize();
+                      .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                      .clock_speed(1000000)
+                      .initialize();
 
     // Assuming success for compile test
     if (result.is_ok()) {
@@ -110,10 +111,8 @@ void test_transfer_operations() {
         u8 rx_data[3] = {0};
 
         // Test full-duplex transfer
-        [[maybe_unused]] auto transfer_result = spi.transfer(
-            std::span(tx_data),
-            std::span(rx_data)
-        );
+        [[maybe_unused]] auto transfer_result =
+            spi.transfer(std::span(tx_data), std::span(rx_data));
 
         // Test transmit-only
         [[maybe_unused]] auto transmit_result = spi.transmit(std::span(tx_data));
@@ -136,9 +135,9 @@ void test_transfer_operations() {
  */
 void test_single_byte_operations() {
     auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .initialize();
+                      .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                      .clock_speed(1000000)
+                      .initialize();
 
     if (result.is_ok()) {
         auto spi = result.unwrap();
@@ -167,10 +166,10 @@ void test_single_byte_operations() {
  */
 void test_tx_only_operations() {
     auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_mosi<MockMosiPin>()
-        .with_sck<MockSckPin>()
-        .clock_speed(2000000)
-        .initialize();
+                      .with_mosi<MockMosiPin>()
+                      .with_sck<MockSckPin>()
+                      .clock_speed(2000000)
+                      .initialize();
 
     if (result.is_ok()) {
         auto spi = result.unwrap();
@@ -199,9 +198,9 @@ void test_tx_only_operations() {
  */
 void test_configuration() {
     auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .initialize();
+                      .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                      .clock_speed(1000000)
+                      .initialize();
 
     if (result.is_ok()) {
         auto spi = result.unwrap();
@@ -231,9 +230,9 @@ void test_configuration() {
  */
 void test_status() {
     auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .initialize();
+                      .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                      .clock_speed(1000000)
+                      .initialize();
 
     if (result.is_ok()) {
         const auto spi = result.unwrap();
@@ -245,10 +244,8 @@ void test_status() {
         [[maybe_unused]] bool ready = spi.is_ready();
 
         // Verify return types
-        static_assert(std::is_same_v<decltype(busy), bool>,
-                      "is_busy() must return bool");
-        static_assert(std::is_same_v<decltype(ready), bool>,
-                      "is_ready() must return bool");
+        static_assert(std::is_same_v<decltype(busy), bool>, "is_busy() must return bool");
+        static_assert(std::is_same_v<decltype(ready), bool>, "is_ready() must return bool");
     }
 }
 
@@ -257,14 +254,14 @@ void test_status() {
  */
 void test_method_chaining() {
     auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_mosi<MockMosiPin>()
-        .with_miso<MockMisoPin>()
-        .with_sck<MockSckPin>()
-        .clock_speed(2000000)
-        .mode(SpiMode::Mode0)
-        .msb_first()
-        .data_8bit()
-        .initialize();
+                      .with_mosi<MockMosiPin>()
+                      .with_miso<MockMisoPin>()
+                      .with_sck<MockSckPin>()
+                      .clock_speed(2000000)
+                      .mode(SpiMode::Mode0)
+                      .msb_first()
+                      .data_8bit()
+                      .initialize();
 
     // Verify type
     static_assert(std::is_same_v<decltype(result), Result<FluentSpiConfig, ErrorCode>>,
@@ -277,17 +274,17 @@ void test_method_chaining() {
 void test_presets() {
     // Test standard_mode0
     auto result0 = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .standard_mode0()
-        .initialize();
+                       .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                       .clock_speed(1000000)
+                       .standard_mode0()
+                       .initialize();
 
     // Test standard_mode3
     auto result3 = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .standard_mode3()
-        .initialize();
+                       .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                       .clock_speed(1000000)
+                       .standard_mode3()
+                       .initialize();
 
     // Verify types
     static_assert(std::is_same_v<decltype(result0), Result<FluentSpiConfig, ErrorCode>>,
@@ -301,16 +298,16 @@ void test_presets() {
  */
 void test_bit_order() {
     auto result_msb = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .msb_first()
-        .initialize();
+                          .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                          .clock_speed(1000000)
+                          .msb_first()
+                          .initialize();
 
     auto result_lsb = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .lsb_first()
-        .initialize();
+                          .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                          .clock_speed(1000000)
+                          .lsb_first()
+                          .initialize();
 
     // Verify types
     static_assert(std::is_same_v<decltype(result_msb), Result<FluentSpiConfig, ErrorCode>>,
@@ -324,16 +321,16 @@ void test_bit_order() {
  */
 void test_data_size() {
     auto result_8bit = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .data_8bit()
-        .initialize();
+                           .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                           .clock_speed(1000000)
+                           .data_8bit()
+                           .initialize();
 
     auto result_16bit = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .data_16bit()
-        .initialize();
+                            .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                            .clock_speed(1000000)
+                            .data_16bit()
+                            .initialize();
 
     // Verify types
     static_assert(std::is_same_v<decltype(result_8bit), Result<FluentSpiConfig, ErrorCode>>,
@@ -347,10 +344,8 @@ void test_data_size() {
  */
 void test_validation_failure() {
     // Missing MISO and MOSI - should fail validation
-    auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_sck<MockSckPin>()
-        .clock_speed(1000000)
-        .initialize();
+    auto result =
+        SpiBuilder<PeripheralId::SPI0>().with_sck<MockSckPin>().clock_speed(1000000).initialize();
 
     // Should return error due to missing MOSI
     static_assert(std::is_same_v<decltype(result), Result<FluentSpiConfig, ErrorCode>>,
@@ -371,9 +366,9 @@ void test_concept() {
  */
 void test_apply() {
     auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .initialize();
+                      .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                      .clock_speed(1000000)
+                      .initialize();
 
     if (result.is_ok()) {
         auto spi = result.unwrap();
@@ -389,9 +384,9 @@ void test_apply() {
  */
 void test_buffer_size_handling() {
     auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .initialize();
+                      .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                      .clock_speed(1000000)
+                      .initialize();
 
     if (result.is_ok()) {
         auto spi = result.unwrap();
@@ -400,10 +395,8 @@ void test_buffer_size_handling() {
         u8 rx_data[3] = {0};
 
         // Transfer should handle different buffer sizes
-        [[maybe_unused]] auto transfer_result = spi.transfer(
-            std::span(tx_data),
-            std::span(rx_data)
-        );
+        [[maybe_unused]] auto transfer_result =
+            spi.transfer(std::span(tx_data), std::span(rx_data));
     }
 }
 
@@ -412,9 +405,9 @@ void test_buffer_size_handling() {
  */
 void test_error_handling() {
     auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
-        .clock_speed(1000000)
-        .initialize();
+                      .with_pins<MockMosiPin, MockMisoPin, MockSckPin>()
+                      .clock_speed(1000000)
+                      .initialize();
 
     if (result.is_ok()) {
         auto spi = result.unwrap();
@@ -434,10 +427,10 @@ void test_error_handling() {
  */
 void test_tx_only_not_supported() {
     auto result = SpiBuilder<PeripheralId::SPI0>()
-        .with_mosi<MockMosiPin>()
-        .with_sck<MockSckPin>()
-        .clock_speed(1000000)
-        .initialize();
+                      .with_mosi<MockMosiPin>()
+                      .with_sck<MockSckPin>()
+                      .clock_speed(1000000)
+                      .initialize();
 
     if (result.is_ok()) {
         auto spi = result.unwrap();
@@ -446,7 +439,8 @@ void test_tx_only_not_supported() {
         u8 rx_data[1] = {0};
 
         // These operations should compile but return NotSupported at runtime
-        [[maybe_unused]] auto transfer_result = spi.transfer(std::span(tx_data), std::span(rx_data));
+        [[maybe_unused]] auto transfer_result =
+            spi.transfer(std::span(tx_data), std::span(rx_data));
         [[maybe_unused]] auto receive_result = spi.receive(std::span(rx_data));
         [[maybe_unused]] auto receive_byte_result = spi.receive_byte();
 

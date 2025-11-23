@@ -11,13 +11,13 @@
 
 // Linker script symbols (must be in global scope)
 extern "C" {
-    extern uint32_t _sidata;  // Source of .data in flash
-    extern uint32_t _sdata;   // Start of .data in RAM
-    extern uint32_t _edata;   // End of .data in RAM
-    extern uint32_t _sbss;    // Start of .bss
-    extern uint32_t _ebss;    // End of .bss
-    extern void (*__init_array_start)();  // Start of constructor array
-    extern void (*__init_array_end)();    // End of constructor array
+extern uint32_t _sidata;              // Source of .data in flash
+extern uint32_t _sdata;               // Start of .data in RAM
+extern uint32_t _edata;               // End of .data in RAM
+extern uint32_t _sbss;                // Start of .bss
+extern uint32_t _ebss;                // End of .bss
+extern void (*__init_array_start)();  // Start of constructor array
+extern void (*__init_array_end)();    // End of constructor array
 }
 
 namespace ucore::hal::same70 {
@@ -44,45 +44,35 @@ struct StartupConfig {
      *
      * @return Pointer to .data source (in flash)
      */
-    static uint32_t* data_src_start() {
-        return &::_sidata;
-    }
+    static uint32_t* data_src_start() { return &::_sidata; }
 
     /**
      * @brief Get destination start of .data section in RAM
      *
      * @return Pointer to .data start (in RAM)
      */
-    static uint32_t* data_dst_start() {
-        return &::_sdata;
-    }
+    static uint32_t* data_dst_start() { return &::_sdata; }
 
     /**
      * @brief Get destination end of .data section in RAM
      *
      * @return Pointer to .data end (in RAM)
      */
-    static uint32_t* data_dst_end() {
-        return &::_edata;
-    }
+    static uint32_t* data_dst_end() { return &::_edata; }
 
     /**
      * @brief Get start of .bss section
      *
      * @return Pointer to .bss start
      */
-    static uint32_t* bss_start() {
-        return &::_sbss;
-    }
+    static uint32_t* bss_start() { return &::_sbss; }
 
     /**
      * @brief Get end of .bss section
      *
      * @return Pointer to .bss end
      */
-    static uint32_t* bss_end() {
-        return &::_ebss;
-    }
+    static uint32_t* bss_end() { return &::_ebss; }
 
     /**
      * @brief Get top of stack
@@ -100,18 +90,14 @@ struct StartupConfig {
      *
      * @return Pointer to constructor array start
      */
-    static auto init_array_start() -> void (**)() {
-        return &::__init_array_start;
-    }
+    static auto init_array_start() -> void (**)() { return &::__init_array_start; }
 
     /**
      * @brief Get end of .init_array (C++ constructors)
      *
      * @return Pointer to constructor array end
      */
-    static auto init_array_end() -> void (**)() {
-        return &::__init_array_end;
-    }
+    static auto init_array_end() -> void (**)() { return &::__init_array_end; }
 
     // Memory configuration constants (from SAME70 datasheet)
 
@@ -194,4 +180,4 @@ struct StartupConfig {
     static constexpr uint32_t SLOW_CLOCK_FREQ_HZ = 32'768;
 };
 
-} // namespace ucore::hal::same70
+}  // namespace ucore::hal::same70

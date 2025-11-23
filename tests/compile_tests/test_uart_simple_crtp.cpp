@@ -9,6 +9,7 @@
  */
 
 #include "hal/api/uart_simple.hpp"
+
 #include "core/types.hpp"
 #include "core/units.hpp"
 
@@ -35,9 +36,7 @@ template <ucore::hal::signals::PinId PIN>
 struct MockGpioPin {
     static constexpr ucore::hal::signals::PinId pin = PIN;
 
-    static constexpr ucore::hal::signals::PinId get_pin_id() {
-        return PIN;
-    }
+    static constexpr ucore::hal::signals::PinId get_pin_id() { return PIN; }
 };
 
 using namespace ucore::hal;
@@ -69,9 +68,8 @@ void test_inheritance() {
  */
 void test_basic_api() {
     // Create UART configuration using factory method
-    auto uart = Uart<PeripheralId::USART0, TestPolicy>::quick_setup<TestTxPin, TestRxPin>(
-        BaudRate{115200}
-    );
+    auto uart =
+        Uart<PeripheralId::USART0, TestPolicy>::quick_setup<TestTxPin, TestRxPin>(BaudRate{115200});
 
     // Test that we can call inherited methods
     // Note: These don't execute (no main), just verify they compile
@@ -95,9 +93,8 @@ void test_tx_only_api() {
                   "SimpleUartConfigTxOnly must inherit from UartBase");
 
     // Create TX-only configuration
-    auto uart = Uart<PeripheralId::USART0, TestPolicy>::quick_setup_tx_only<TestTxPin>(
-        BaudRate{115200}
-    );
+    auto uart =
+        Uart<PeripheralId::USART0, TestPolicy>::quick_setup_tx_only<TestTxPin>(BaudRate{115200});
 
     // Test TX methods compile
     [[maybe_unused]] auto send_result = uart.send('A');
@@ -118,11 +115,9 @@ void test_zero_overhead() {
     using BaseType = UartBase<ConfigType>;
 
     // Verify empty base optimization
-    static_assert(sizeof(BaseType) == 1,
-                  "UartBase must be empty (sizeof == 1)");
+    static_assert(sizeof(BaseType) == 1, "UartBase must be empty (sizeof == 1)");
 
-    static_assert(std::is_empty_v<BaseType>,
-                  "UartBase must have no data members");
+    static_assert(std::is_empty_v<BaseType>, "UartBase must have no data members");
 }
 
 // ============================================================================

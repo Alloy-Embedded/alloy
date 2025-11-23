@@ -51,14 +51,14 @@
 
 #include "hal/interface/systick.hpp"
 
+#include "rtos/concepts.hpp"
+#include "rtos/error.hpp"
 #include "rtos/platform/critical_section.hpp"
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
-#include "rtos/error.hpp"
-#include "rtos/concepts.hpp"
 
-#include "core/types.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::rtos {
 
@@ -322,8 +322,8 @@ inline core::Result<void, RTOSError> BinarySemaphore::give() {
 }
 
 inline core::Result<void, RTOSError> BinarySemaphore::take(core::u32 timeout_ms) {
-    using core::Ok;
     using core::Err;
+    using core::Ok;
 
     core::u32 start_time = systick::micros();
 
@@ -354,8 +354,8 @@ inline core::Result<void, RTOSError> BinarySemaphore::take(core::u32 timeout_ms)
 }
 
 inline core::Result<void, RTOSError> BinarySemaphore::try_take() {
-    using core::Ok;
     using core::Err;
+    using core::Ok;
 
     disable_interrupts();
 
@@ -394,8 +394,8 @@ core::Result<void, RTOSError> CountingSemaphore<MaxCount>::give() {
 
 template <core::u8 MaxCount>
 core::Result<void, RTOSError> CountingSemaphore<MaxCount>::take(core::u32 timeout_ms) {
-    using core::Ok;
     using core::Err;
+    using core::Ok;
 
     core::u32 start_time = systick::micros();
 
@@ -427,8 +427,8 @@ core::Result<void, RTOSError> CountingSemaphore<MaxCount>::take(core::u32 timeou
 
 template <core::u8 MaxCount>
 core::Result<void, RTOSError> CountingSemaphore<MaxCount>::try_take() {
-    using core::Ok;
     using core::Err;
+    using core::Ok;
 
     disable_interrupts();
 

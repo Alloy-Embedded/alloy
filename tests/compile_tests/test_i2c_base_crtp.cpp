@@ -8,11 +8,12 @@
  * @note Part of Phase 1.10: Implement I2cBase
  */
 
+#include <span>
+
 #include "hal/api/i2c_base.hpp"
-#include "core/types.hpp"
 #include "hal/interface/i2c.hpp"
 
-#include <span>
+#include "core/types.hpp"
 
 using namespace ucore::hal;
 using namespace ucore::core;
@@ -29,7 +30,7 @@ using namespace ucore::core;
 class MockI2cDevice : public I2cBase<MockI2cDevice> {
     friend I2cBase<MockI2cDevice>;
 
-public:
+   public:
     constexpr MockI2cDevice() : config_{}, last_address_(0) {}
 
     // Allow access to base class methods
@@ -52,10 +53,8 @@ public:
     /**
      * @brief Read implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> read_impl(
-        u16 address,
-        std::span<u8> buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> read_impl(u16 address,
+                                                              std::span<u8> buffer) noexcept {
         last_address_ = address;
         // Mock: fill buffer with zeros
         for (auto& byte : buffer) {
@@ -68,9 +67,7 @@ public:
      * @brief Write implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> write_impl(
-        u16 address,
-        std::span<const u8> buffer
-    ) noexcept {
+        u16 address, std::span<const u8> buffer) noexcept {
         last_address_ = address;
         // Mock: just store address
         (void)buffer;
@@ -81,14 +78,11 @@ public:
      * @brief Write-read implementation (repeated start)
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> write_read_impl(
-        u16 address,
-        std::span<const u8> write_buffer,
-        std::span<u8> read_buffer
-    ) noexcept {
+        u16 address, std::span<const u8> write_buffer, std::span<u8> read_buffer) noexcept {
         last_address_ = address;
         // Mock: copy write to read for testing
-        size_t len = write_buffer.size() < read_buffer.size() ?
-                     write_buffer.size() : read_buffer.size();
+        size_t len =
+            write_buffer.size() < read_buffer.size() ? write_buffer.size() : read_buffer.size();
         for (size_t i = 0; i < len; ++i) {
             read_buffer[i] = write_buffer[i];
         }
@@ -99,8 +93,7 @@ public:
      * @brief Scan bus implementation
      */
     [[nodiscard]] constexpr Result<usize, ErrorCode> scan_bus_impl(
-        std::span<u8> found_devices
-    ) noexcept {
+        std::span<u8> found_devices) noexcept {
         // Mock: return a few test addresses
         if (found_devices.size() >= 3) {
             found_devices[0] = 0x50;
@@ -115,13 +108,12 @@ public:
      * @brief Configure I2C implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> configure_impl(
-        const I2cConfig& config
-    ) noexcept {
+        const I2cConfig& config) noexcept {
         config_ = config;
         return Ok();
     }
 
-private:
+   private:
     I2cConfig config_;
     u16 last_address_;
 };
@@ -184,11 +176,8 @@ void test_write_read_operation() {
     u8 read_data[2] = {0};
 
     // Test write_read
-    [[maybe_unused]] auto result = i2c.write_read(
-        0x50,
-        std::span(write_data),
-        std::span(read_data)
-    );
+    [[maybe_unused]] auto result =
+        i2c.write_read(0x50, std::span(write_data), std::span(read_data));
 
     // Verify return type
     static_assert(std::is_same_v<decltype(result), Result<void, ErrorCode>>,
@@ -282,11 +271,9 @@ void test_zero_overhead() {
     using BaseType = I2cBase<DeviceType>;
 
     // Verify empty base optimization
-    static_assert(sizeof(BaseType) == 1,
-                  "I2cBase must be empty (sizeof == 1)");
+    static_assert(sizeof(BaseType) == 1, "I2cBase must be empty (sizeof == 1)");
 
-    static_assert(std::is_empty_v<BaseType>,
-                  "I2cBase must have no data members");
+    static_assert(std::is_empty_v<BaseType>, "I2cBase must have no data members");
 }
 
 /**
@@ -306,8 +293,7 @@ constexpr bool test_constexpr_construction() {
     return true;
 }
 
-static_assert(test_constexpr_construction(),
-              "MockI2cDevice must be constexpr constructible");
+static_assert(test_constexpr_construction(), "MockI2cDevice must be constexpr constructible");
 
 /**
  * @brief Test buffer size handling
@@ -319,11 +305,8 @@ void test_buffer_size_handling() {
     u8 read_data[3] = {0};
 
     // write_read should handle different buffer sizes
-    [[maybe_unused]] auto result = i2c.write_read(
-        0x50,
-        std::span(write_data),
-        std::span(read_data)
-    );
+    [[maybe_unused]] auto result =
+        i2c.write_read(0x50, std::span(write_data), std::span(read_data));
 }
 
 /**

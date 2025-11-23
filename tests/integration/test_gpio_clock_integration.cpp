@@ -9,9 +9,10 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "hal/core/concepts.hpp"
-#include "core/result.hpp"
-#include "core/error.hpp"
 #include "hal/types.hpp"
+
+#include "core/error.hpp"
+#include "core/result.hpp"
 
 using namespace ucore::core;
 using namespace ucore::hal;
@@ -29,12 +30,12 @@ using namespace ucore::hal;
  * 3. GPIO pins are configured
  */
 class MockEmbeddedSystem {
-private:
+   private:
     static inline bool clock_initialized = false;
     static inline bool gpio_clocks_enabled = false;
     static inline uint32_t system_freq_hz = 0;
 
-public:
+   public:
     static constexpr uint32_t TARGET_FREQ_HZ = 64'000'000;
 
     /**
@@ -63,16 +64,12 @@ public:
     /**
      * @brief Get system frequency
      */
-    static uint32_t get_system_frequency() {
-        return system_freq_hz;
-    }
+    static uint32_t get_system_frequency() { return system_freq_hz; }
 
     /**
      * @brief Check if GPIO clocks are enabled
      */
-    static bool are_gpio_clocks_enabled() {
-        return gpio_clocks_enabled;
-    }
+    static bool are_gpio_clocks_enabled() { return gpio_clocks_enabled; }
 
     /**
      * @brief Reset system state (for testing)
@@ -88,12 +85,12 @@ public:
  * @brief Mock GPIO pin that requires clock initialization
  */
 class MockSystemGpioPin {
-private:
+   private:
     bool configured = false;
     bool state = false;
     PinDirection direction = PinDirection::Input;
 
-public:
+   public:
     static constexpr uint32_t port_base = 0x50000000;
     static constexpr uint8_t pin_number = 5;
     static constexpr uint32_t pin_mask = (1U << pin_number);
@@ -142,16 +139,12 @@ public:
     /**
      * @brief Read pin state
      */
-    bool read() const {
-        return state;
-    }
+    bool read() const { return state; }
 
     /**
      * @brief Check if configured
      */
-    bool is_configured() const {
-        return configured;
-    }
+    bool is_configured() const { return configured; }
 };
 
 // ==============================================================================

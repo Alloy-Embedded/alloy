@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::lptim1 {
 
 /// LPTIM1 Register Structure
 struct LPTIM1_Registers {
-
     /// Interrupt and Status Register
     /// Offset: 0x0000
     /// Reset value: 0x00000000

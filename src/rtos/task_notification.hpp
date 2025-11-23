@@ -43,13 +43,14 @@
 #ifndef UCORE_RTOS_TASK_NOTIFICATION_HPP
 #define UCORE_RTOS_TASK_NOTIFICATION_HPP
 
-#include <cstddef>
 #include <atomic>
+#include <cstddef>
 
-#include "rtos/rtos.hpp"
 #include "rtos/error.hpp"
-#include "core/types.hpp"
+#include "rtos/rtos.hpp"
+
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::rtos {
 
@@ -120,9 +121,7 @@ struct TaskNotificationState {
     }
 
     /// Check if notification is pending
-    bool is_pending() const {
-        return pending_count.load(std::memory_order_acquire) > 0;
-    }
+    bool is_pending() const { return pending_count.load(std::memory_order_acquire) > 0; }
 };
 
 // ============================================================================
@@ -156,7 +155,7 @@ struct TaskNotificationState {
 /// TaskNotification::notify(receiver_tcb, 0x01, NotifyAction::SetBits);
 /// ```
 class TaskNotification {
-public:
+   public:
     /// Notify a task
     ///
     /// Sends a notification to the specified task.
@@ -178,11 +177,9 @@ public:
     /// // Send data value
     /// TaskNotification::notify(task, 0x1234, NotifyAction::Overwrite);
     /// ```
-    [[nodiscard]] static core::Result<core::u32, RTOSError> notify(
-        TaskControlBlock* tcb,
-        core::u32 value,
-        NotifyAction action
-    ) noexcept;
+    [[nodiscard]] static core::Result<core::u32, RTOSError> notify(TaskControlBlock* tcb,
+                                                                   core::u32 value,
+                                                                   NotifyAction action) noexcept;
 
     /// Notify a task from ISR
     ///
@@ -194,10 +191,7 @@ public:
     /// @param action Notification action
     /// @return Ok(previous_value) on success, Err(RTOSError) on failure
     [[nodiscard]] static core::Result<core::u32, RTOSError> notify_from_isr(
-        TaskControlBlock* tcb,
-        core::u32 value,
-        NotifyAction action
-    ) noexcept;
+        TaskControlBlock* tcb, core::u32 value, NotifyAction action) noexcept;
 
     /// Wait for notification
     ///
@@ -220,9 +214,7 @@ public:
     /// auto result = TaskNotification::wait(INFINITE, NotifyClearMode::ClearOnExit);
     /// ```
     [[nodiscard]] static core::Result<core::u32, RTOSError> wait(
-        core::u32 timeout_ms,
-        NotifyClearMode clear_mode = NotifyClearMode::ClearOnExit
-    );
+        core::u32 timeout_ms, NotifyClearMode clear_mode = NotifyClearMode::ClearOnExit);
 
     /// Try to receive notification (non-blocking)
     ///
@@ -242,8 +234,7 @@ public:
     /// }
     /// ```
     [[nodiscard]] static core::Result<core::u32, RTOSError> try_wait(
-        NotifyClearMode clear_mode = NotifyClearMode::ClearOnExit
-    );
+        NotifyClearMode clear_mode = NotifyClearMode::ClearOnExit);
 
     /// Clear notification value
     ///
@@ -277,7 +268,7 @@ public:
     /// @return true if notification is pending
     [[nodiscard]] static bool is_pending();
 
-private:
+   private:
     /// Get notification state for current task
     static TaskNotificationState* get_current_state();
 
@@ -285,12 +276,10 @@ private:
     static TaskNotificationState* get_state(TaskControlBlock* tcb);
 
     /// Internal notify implementation
-    [[nodiscard]] static core::Result<core::u32, RTOSError> notify_internal(
-        TaskControlBlock* tcb,
-        core::u32 value,
-        NotifyAction action,
-        bool from_isr
-    ) noexcept;
+    [[nodiscard]] static core::Result<core::u32, RTOSError> notify_internal(TaskControlBlock* tcb,
+                                                                            core::u32 value,
+                                                                            NotifyAction action,
+                                                                            bool from_isr) noexcept;
 };
 
 // ============================================================================

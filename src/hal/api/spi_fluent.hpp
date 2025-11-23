@@ -32,15 +32,16 @@
 
 #pragma once
 
+#include <span>
+
+#include "hal/api/spi_base.hpp"
+#include "hal/api/spi_simple.hpp"
+#include "hal/core/signals.hpp"
+#include "hal/interface/spi.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/interface/spi.hpp"
-#include "hal/core/signals.hpp"
-#include "hal/api/spi_simple.hpp"
-#include "hal/api/spi_base.hpp"
-
-#include <span>
 
 namespace ucore::hal {
 
@@ -86,9 +87,7 @@ struct SpiBuilderState {
      *
      * @return true if either full-duplex or TX-only valid
      */
-    constexpr bool is_valid() const {
-        return is_full_duplex_valid() || is_tx_only_valid();
-    }
+    constexpr bool is_valid() const { return is_full_duplex_valid() || is_tx_only_valid(); }
 };
 
 // ============================================================================
@@ -117,17 +116,17 @@ struct FluentSpiConfig : public SpiBase<FluentSpiConfig> {
     // ========================================================================
 
     // Inherit all common SPI methods from base
-    using Base::transfer;         // Full-duplex transfer
-    using Base::transmit;         // TX-only
-    using Base::receive;          // RX-only
-    using Base::transfer_byte;    // Single-byte transfer
-    using Base::transmit_byte;    // Single-byte TX
-    using Base::receive_byte;     // Single-byte RX
-    using Base::configure;        // Configuration
-    using Base::set_mode;         // Set SPI mode
-    using Base::set_speed;        // Set clock speed
-    using Base::is_busy;          // Check if busy
-    using Base::is_ready;         // Check if ready
+    using Base::configure;      // Configuration
+    using Base::is_busy;        // Check if busy
+    using Base::is_ready;       // Check if ready
+    using Base::receive;        // RX-only
+    using Base::receive_byte;   // Single-byte RX
+    using Base::set_mode;       // Set SPI mode
+    using Base::set_speed;      // Set clock speed
+    using Base::transfer;       // Full-duplex transfer
+    using Base::transfer_byte;  // Single-byte transfer
+    using Base::transmit;       // TX-only
+    using Base::transmit_byte;  // Single-byte TX
 
     /**
      * @brief Apply configuration to hardware
@@ -152,9 +151,7 @@ struct FluentSpiConfig : public SpiBase<FluentSpiConfig> {
      * @note TX-only configuration returns NotSupported
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> transfer_impl(
-        std::span<const u8> tx_buffer,
-        std::span<u8> rx_buffer
-    ) noexcept {
+        std::span<const u8> tx_buffer, std::span<u8> rx_buffer) noexcept {
         if (tx_only) {
             return Err(ErrorCode::NotSupported);
         }
@@ -168,8 +165,7 @@ struct FluentSpiConfig : public SpiBase<FluentSpiConfig> {
      * @brief Transmit-only implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> transmit_impl(
-        std::span<const u8> tx_buffer
-    ) noexcept {
+        std::span<const u8> tx_buffer) noexcept {
         // TODO: Implement hardware transmit
         (void)tx_buffer;
         return Ok();
@@ -180,9 +176,7 @@ struct FluentSpiConfig : public SpiBase<FluentSpiConfig> {
      *
      * @note TX-only configuration returns NotSupported
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> receive_impl(
-        std::span<u8> rx_buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> receive_impl(std::span<u8> rx_buffer) noexcept {
         if (tx_only) {
             return Err(ErrorCode::NotSupported);
         }
@@ -195,8 +189,7 @@ struct FluentSpiConfig : public SpiBase<FluentSpiConfig> {
      * @brief Configure SPI implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> configure_impl(
-        const SpiConfig& new_config
-    ) noexcept {
+        const SpiConfig& new_config) noexcept {
         // TODO: Apply configuration to hardware
         (void)new_config;
         return Ok();
@@ -224,7 +217,7 @@ struct FluentSpiConfig : public SpiBase<FluentSpiConfig> {
  */
 template <PeripheralId PeriphId>
 class SpiBuilder {
-public:
+   public:
     /**
      * @brief Constructor - initialize with defaults
      */
@@ -287,9 +280,7 @@ public:
      */
     template <typename MosiPin, typename MisoPin, typename SckPin>
     constexpr SpiBuilder& with_pins() {
-        return with_mosi<MosiPin>()
-               .template with_miso<MisoPin>()
-               .template with_sck<SckPin>();
+        return with_mosi<MosiPin>().template with_miso<MisoPin>().template with_sck<SckPin>();
     }
 
     /**
@@ -438,7 +429,7 @@ public:
         return Ok(std::move(config));
     }
 
-private:
+   private:
     PinId mosi_pin_id_;
     PinId miso_pin_id_;
     PinId sck_pin_id_;

@@ -46,14 +46,15 @@
 
 #pragma once
 
+#include <span>
+
+#include "hal/api/spi_base.hpp"
+#include "hal/core/signals.hpp"
+#include "hal/interface/spi.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/interface/spi.hpp"
-#include "hal/core/signals.hpp"
-#include "hal/api/spi_base.hpp"
-
-#include <span>
 
 namespace ucore::hal {
 
@@ -85,16 +86,16 @@ struct SpiExpertConfig {
     // Advanced options
     bool enable_mosi;
     bool enable_miso;
-    bool enable_nss;        // Hardware NSS control
+    bool enable_nss;  // Hardware NSS control
     bool enable_interrupts;
     bool enable_dma_tx;
     bool enable_dma_rx;
 
     // Hardware-specific options
-    bool enable_crc;        // CRC calculation
-    u16 crc_polynomial;     // CRC polynomial (if enabled)
-    bool enable_ti_mode;    // TI frame format
-    bool enable_motorola;   // Motorola frame format (default)
+    bool enable_crc;       // CRC calculation
+    u16 crc_polynomial;    // CRC polynomial (if enabled)
+    bool enable_ti_mode;   // TI frame format
+    bool enable_motorola;  // Motorola frame format (default)
 
     // ========================================================================
     // Constexpr Validation
@@ -205,32 +206,27 @@ struct SpiExpertConfig {
      *
      * Common configuration for most SPI devices.
      */
-    static constexpr SpiExpertConfig standard_mode0_2mhz(
-        PeripheralId peripheral,
-        PinId mosi_pin,
-        PinId miso_pin,
-        PinId sck_pin) {
-        return SpiExpertConfig{
-            .peripheral = peripheral,
-            .mosi_pin = mosi_pin,
-            .miso_pin = miso_pin,
-            .sck_pin = sck_pin,
-            .nss_pin = PinId::PA0,  // Unused
-            .mode = SpiMode::Mode0,
-            .clock_speed = 2000000,  // 2 MHz
-            .bit_order = SpiBitOrder::MsbFirst,
-            .data_size = SpiDataSize::Bits8,
-            .enable_mosi = true,
-            .enable_miso = true,
-            .enable_nss = false,
-            .enable_interrupts = false,
-            .enable_dma_tx = false,
-            .enable_dma_rx = false,
-            .enable_crc = false,
-            .crc_polynomial = 0,
-            .enable_ti_mode = false,
-            .enable_motorola = true
-        };
+    static constexpr SpiExpertConfig standard_mode0_2mhz(PeripheralId peripheral, PinId mosi_pin,
+                                                         PinId miso_pin, PinId sck_pin) {
+        return SpiExpertConfig{.peripheral = peripheral,
+                               .mosi_pin = mosi_pin,
+                               .miso_pin = miso_pin,
+                               .sck_pin = sck_pin,
+                               .nss_pin = PinId::PA0,  // Unused
+                               .mode = SpiMode::Mode0,
+                               .clock_speed = 2000000,  // 2 MHz
+                               .bit_order = SpiBitOrder::MsbFirst,
+                               .data_size = SpiDataSize::Bits8,
+                               .enable_mosi = true,
+                               .enable_miso = true,
+                               .enable_nss = false,
+                               .enable_interrupts = false,
+                               .enable_dma_tx = false,
+                               .enable_dma_rx = false,
+                               .enable_crc = false,
+                               .crc_polynomial = 0,
+                               .enable_ti_mode = false,
+                               .enable_motorola = true};
     }
 
     /**
@@ -238,32 +234,27 @@ struct SpiExpertConfig {
      *
      * Optimized for output-only devices (displays, DACs).
      */
-    static constexpr SpiExpertConfig tx_only_config(
-        PeripheralId peripheral,
-        PinId mosi_pin,
-        PinId sck_pin,
-        u32 clock_speed) {
-        return SpiExpertConfig{
-            .peripheral = peripheral,
-            .mosi_pin = mosi_pin,
-            .miso_pin = PinId::PA0,  // Unused
-            .sck_pin = sck_pin,
-            .nss_pin = PinId::PA0,  // Unused
-            .mode = SpiMode::Mode0,
-            .clock_speed = clock_speed,
-            .bit_order = SpiBitOrder::MsbFirst,
-            .data_size = SpiDataSize::Bits8,
-            .enable_mosi = true,
-            .enable_miso = false,  // TX only
-            .enable_nss = false,
-            .enable_interrupts = false,
-            .enable_dma_tx = false,
-            .enable_dma_rx = false,
-            .enable_crc = false,
-            .crc_polynomial = 0,
-            .enable_ti_mode = false,
-            .enable_motorola = true
-        };
+    static constexpr SpiExpertConfig tx_only_config(PeripheralId peripheral, PinId mosi_pin,
+                                                    PinId sck_pin, u32 clock_speed) {
+        return SpiExpertConfig{.peripheral = peripheral,
+                               .mosi_pin = mosi_pin,
+                               .miso_pin = PinId::PA0,  // Unused
+                               .sck_pin = sck_pin,
+                               .nss_pin = PinId::PA0,  // Unused
+                               .mode = SpiMode::Mode0,
+                               .clock_speed = clock_speed,
+                               .bit_order = SpiBitOrder::MsbFirst,
+                               .data_size = SpiDataSize::Bits8,
+                               .enable_mosi = true,
+                               .enable_miso = false,  // TX only
+                               .enable_nss = false,
+                               .enable_interrupts = false,
+                               .enable_dma_tx = false,
+                               .enable_dma_rx = false,
+                               .enable_crc = false,
+                               .crc_polynomial = 0,
+                               .enable_ti_mode = false,
+                               .enable_motorola = true};
     }
 
     /**
@@ -271,33 +262,27 @@ struct SpiExpertConfig {
      *
      * High-performance configuration with DMA.
      */
-    static constexpr SpiExpertConfig dma_config(
-        PeripheralId peripheral,
-        PinId mosi_pin,
-        PinId miso_pin,
-        PinId sck_pin,
-        u32 clock_speed) {
-        return SpiExpertConfig{
-            .peripheral = peripheral,
-            .mosi_pin = mosi_pin,
-            .miso_pin = miso_pin,
-            .sck_pin = sck_pin,
-            .nss_pin = PinId::PA0,  // Unused
-            .mode = SpiMode::Mode0,
-            .clock_speed = clock_speed,
-            .bit_order = SpiBitOrder::MsbFirst,
-            .data_size = SpiDataSize::Bits8,
-            .enable_mosi = true,
-            .enable_miso = true,
-            .enable_nss = false,
-            .enable_interrupts = true,  // DMA needs interrupts
-            .enable_dma_tx = true,
-            .enable_dma_rx = true,
-            .enable_crc = false,
-            .crc_polynomial = 0,
-            .enable_ti_mode = false,
-            .enable_motorola = true
-        };
+    static constexpr SpiExpertConfig dma_config(PeripheralId peripheral, PinId mosi_pin,
+                                                PinId miso_pin, PinId sck_pin, u32 clock_speed) {
+        return SpiExpertConfig{.peripheral = peripheral,
+                               .mosi_pin = mosi_pin,
+                               .miso_pin = miso_pin,
+                               .sck_pin = sck_pin,
+                               .nss_pin = PinId::PA0,  // Unused
+                               .mode = SpiMode::Mode0,
+                               .clock_speed = clock_speed,
+                               .bit_order = SpiBitOrder::MsbFirst,
+                               .data_size = SpiDataSize::Bits8,
+                               .enable_mosi = true,
+                               .enable_miso = true,
+                               .enable_nss = false,
+                               .enable_interrupts = true,  // DMA needs interrupts
+                               .enable_dma_tx = true,
+                               .enable_dma_rx = true,
+                               .enable_crc = false,
+                               .crc_polynomial = 0,
+                               .enable_ti_mode = false,
+                               .enable_motorola = true};
     }
 
     /**
@@ -305,33 +290,28 @@ struct SpiExpertConfig {
      *
      * For fast devices (10+ MHz).
      */
-    static constexpr SpiExpertConfig high_speed_config(
-        PeripheralId peripheral,
-        PinId mosi_pin,
-        PinId miso_pin,
-        PinId sck_pin,
-        u32 clock_speed) {
-        return SpiExpertConfig{
-            .peripheral = peripheral,
-            .mosi_pin = mosi_pin,
-            .miso_pin = miso_pin,
-            .sck_pin = sck_pin,
-            .nss_pin = PinId::PA0,  // Unused
-            .mode = SpiMode::Mode0,
-            .clock_speed = clock_speed,
-            .bit_order = SpiBitOrder::MsbFirst,
-            .data_size = SpiDataSize::Bits8,
-            .enable_mosi = true,
-            .enable_miso = true,
-            .enable_nss = false,
-            .enable_interrupts = true,
-            .enable_dma_tx = true,
-            .enable_dma_rx = true,
-            .enable_crc = false,
-            .crc_polynomial = 0,
-            .enable_ti_mode = false,
-            .enable_motorola = true
-        };
+    static constexpr SpiExpertConfig high_speed_config(PeripheralId peripheral, PinId mosi_pin,
+                                                       PinId miso_pin, PinId sck_pin,
+                                                       u32 clock_speed) {
+        return SpiExpertConfig{.peripheral = peripheral,
+                               .mosi_pin = mosi_pin,
+                               .miso_pin = miso_pin,
+                               .sck_pin = sck_pin,
+                               .nss_pin = PinId::PA0,  // Unused
+                               .mode = SpiMode::Mode0,
+                               .clock_speed = clock_speed,
+                               .bit_order = SpiBitOrder::MsbFirst,
+                               .data_size = SpiDataSize::Bits8,
+                               .enable_mosi = true,
+                               .enable_miso = true,
+                               .enable_nss = false,
+                               .enable_interrupts = true,
+                               .enable_dma_tx = true,
+                               .enable_dma_rx = true,
+                               .enable_crc = false,
+                               .crc_polynomial = 0,
+                               .enable_ti_mode = false,
+                               .enable_motorola = true};
     }
 };
 
@@ -350,27 +330,26 @@ class ExpertSpiInstance : public SpiBase<ExpertSpiInstance> {
     using Base = SpiBase<ExpertSpiInstance>;
     friend Base;
 
-public:
+   public:
     // Inherit all common SPI methods from base
-    using Base::transfer;         // Full-duplex transfer
-    using Base::transmit;         // TX-only
-    using Base::receive;          // RX-only
-    using Base::transfer_byte;    // Single-byte transfer
-    using Base::transmit_byte;    // Single-byte TX
-    using Base::receive_byte;     // Single-byte RX
-    using Base::configure;        // Configuration
-    using Base::set_mode;         // Set SPI mode
-    using Base::set_speed;        // Set clock speed
-    using Base::is_busy;          // Check if busy
-    using Base::is_ready;         // Check if ready
+    using Base::configure;      // Configuration
+    using Base::is_busy;        // Check if busy
+    using Base::is_ready;       // Check if ready
+    using Base::receive;        // RX-only
+    using Base::receive_byte;   // Single-byte RX
+    using Base::set_mode;       // Set SPI mode
+    using Base::set_speed;      // Set clock speed
+    using Base::transfer;       // Full-duplex transfer
+    using Base::transfer_byte;  // Single-byte transfer
+    using Base::transmit;       // TX-only
+    using Base::transmit_byte;  // Single-byte TX
 
     /**
      * @brief Constructor from expert configuration
      *
      * @param config Expert configuration (must be valid)
      */
-    constexpr explicit ExpertSpiInstance(const SpiExpertConfig& config)
-        : config_(config) {}
+    constexpr explicit ExpertSpiInstance(const SpiExpertConfig& config) : config_(config) {}
 
     /**
      * @brief Get configuration
@@ -412,9 +391,7 @@ public:
      * @note Returns NotSupported if MISO is disabled
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> transfer_impl(
-        std::span<const u8> tx_buffer,
-        std::span<u8> rx_buffer
-    ) noexcept {
+        std::span<const u8> tx_buffer, std::span<u8> rx_buffer) noexcept {
         if (!config_.enable_miso) {
             return Err(ErrorCode::NotSupported);
         }
@@ -430,8 +407,7 @@ public:
      * @note Returns NotSupported if MOSI is disabled
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> transmit_impl(
-        std::span<const u8> tx_buffer
-    ) noexcept {
+        std::span<const u8> tx_buffer) noexcept {
         if (!config_.enable_mosi) {
             return Err(ErrorCode::NotSupported);
         }
@@ -445,9 +421,7 @@ public:
      *
      * @note Returns NotSupported if MISO is disabled
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> receive_impl(
-        std::span<u8> rx_buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> receive_impl(std::span<u8> rx_buffer) noexcept {
         if (!config_.enable_miso) {
             return Err(ErrorCode::NotSupported);
         }
@@ -460,8 +434,7 @@ public:
      * @brief Configure SPI implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> configure_impl(
-        const SpiConfig& new_config
-    ) noexcept {
+        const SpiConfig& new_config) noexcept {
         // TODO: Apply configuration to hardware
         (void)new_config;
         return Ok();
@@ -475,7 +448,7 @@ public:
         return false;
     }
 
-private:
+   private:
     SpiExpertConfig config_;
 };
 
@@ -573,8 +546,10 @@ constexpr bool has_valid_frame_format(const SpiExpertConfig& config) {
 }
 
 constexpr bool has_valid_dma_config(const SpiExpertConfig& config) {
-    if (config.enable_dma_tx && !config.enable_mosi) return false;
-    if (config.enable_dma_rx && !config.enable_miso) return false;
+    if (config.enable_dma_tx && !config.enable_mosi)
+        return false;
+    if (config.enable_dma_rx && !config.enable_miso)
+        return false;
     return true;
 }
 

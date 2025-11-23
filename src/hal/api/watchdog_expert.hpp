@@ -24,11 +24,11 @@ using namespace ucore::core;
  * Actual implementation details handled by Hardware Policy.
  */
 struct WatchdogExpertConfig {
-    bool enable;               ///< Enable watchdog
-    u16 timeout_ms;            ///< Timeout in milliseconds
-    bool reset_enable;         ///< Enable reset on timeout
-    bool interrupt_enable;     ///< Enable interrupt on timeout
-    u8 priority;               ///< Interrupt priority (if interrupts enabled)
+    bool enable;            ///< Enable watchdog
+    u16 timeout_ms;         ///< Timeout in milliseconds
+    bool reset_enable;      ///< Enable reset on timeout
+    bool interrupt_enable;  ///< Enable interrupt on timeout
+    u8 priority;            ///< Interrupt priority (if interrupts enabled)
 
     constexpr bool is_valid() const {
         // Timeout must be reasonable (1ms - 60 seconds)
@@ -39,8 +39,10 @@ struct WatchdogExpertConfig {
     }
 
     constexpr const char* error_message() const {
-        if (enable && timeout_ms == 0) return "Timeout cannot be zero";
-        if (enable && timeout_ms > 60000) return "Timeout max is 60 seconds";
+        if (enable && timeout_ms == 0)
+            return "Timeout cannot be zero";
+        if (enable && timeout_ms > 60000)
+            return "Timeout max is 60 seconds";
         return "Valid";
     }
 
@@ -48,57 +50,45 @@ struct WatchdogExpertConfig {
      * @brief Disabled watchdog (typical for development)
      */
     static constexpr WatchdogExpertConfig disabled() {
-        return WatchdogExpertConfig{
-            .enable = false,
-            .timeout_ms = 0,
-            .reset_enable = false,
-            .interrupt_enable = false,
-            .priority = 0
-        };
+        return WatchdogExpertConfig{.enable = false,
+                                    .timeout_ms = 0,
+                                    .reset_enable = false,
+                                    .interrupt_enable = false,
+                                    .priority = 0};
     }
 
     /**
      * @brief Standard 1-second watchdog (production)
      */
     static constexpr WatchdogExpertConfig standard_1s() {
-        return WatchdogExpertConfig{
-            .enable = true,
-            .timeout_ms = 1000,
-            .reset_enable = true,
-            .interrupt_enable = false,
-            .priority = 0
-        };
+        return WatchdogExpertConfig{.enable = true,
+                                    .timeout_ms = 1000,
+                                    .reset_enable = true,
+                                    .interrupt_enable = false,
+                                    .priority = 0};
     }
 
     /**
      * @brief Watchdog with interrupt-before-reset
      */
     static constexpr WatchdogExpertConfig with_early_warning(u16 timeout_ms, u8 priority = 15) {
-        return WatchdogExpertConfig{
-            .enable = true,
-            .timeout_ms = timeout_ms,
-            .reset_enable = true,
-            .interrupt_enable = true,
-            .priority = priority
-        };
+        return WatchdogExpertConfig{.enable = true,
+                                    .timeout_ms = timeout_ms,
+                                    .reset_enable = true,
+                                    .interrupt_enable = true,
+                                    .priority = priority};
     }
 
     /**
      * @brief Custom configuration
      */
-    static constexpr WatchdogExpertConfig custom(
-        u16 timeout_ms,
-        bool reset = true,
-        bool interrupt = false,
-        u8 priority = 15) {
-
-        return WatchdogExpertConfig{
-            .enable = true,
-            .timeout_ms = timeout_ms,
-            .reset_enable = reset,
-            .interrupt_enable = interrupt,
-            .priority = priority
-        };
+    static constexpr WatchdogExpertConfig custom(u16 timeout_ms, bool reset = true,
+                                                 bool interrupt = false, u8 priority = 15) {
+        return WatchdogExpertConfig{.enable = true,
+                                    .timeout_ms = timeout_ms,
+                                    .reset_enable = reset,
+                                    .interrupt_enable = interrupt,
+                                    .priority = priority};
     }
 };
 

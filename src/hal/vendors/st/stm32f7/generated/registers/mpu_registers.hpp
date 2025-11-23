@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::mpu {
 
 /// MPU Register Structure
 struct MPU_Registers {
-
     /// MPU type register
     /// Offset: 0x0000
     /// Reset value: 0x00000800

@@ -24,7 +24,7 @@ using namespace ucore::core;
  */
 template <typename DmaPolicy>
 class SimpleDmaTransfer {
-public:
+   public:
     constexpr SimpleDmaTransfer(u8 channel) : channel_(channel) {}
 
     /**
@@ -41,7 +41,8 @@ public:
     /**
      * @brief Start memory-to-peripheral transfer
      */
-    Result<void, ErrorCode> transfer_mem_to_periph(const void* src, volatile void* periph, u32 size) {
+    Result<void, ErrorCode> transfer_mem_to_periph(const void* src, volatile void* periph,
+                                                   u32 size) {
         DmaPolicy::set_source_address(channel_, reinterpret_cast<u32>(src));
         DmaPolicy::set_destination_address(channel_, reinterpret_cast<u32>(periph));
         DmaPolicy::set_transfer_size(channel_, size);
@@ -52,7 +53,8 @@ public:
     /**
      * @brief Start peripheral-to-memory transfer
      */
-    Result<void, ErrorCode> transfer_periph_to_mem(volatile const void* periph, void* dst, u32 size) {
+    Result<void, ErrorCode> transfer_periph_to_mem(volatile const void* periph, void* dst,
+                                                   u32 size) {
         DmaPolicy::set_source_address(channel_, reinterpret_cast<u32>(periph));
         DmaPolicy::set_destination_address(channel_, reinterpret_cast<u32>(dst));
         DmaPolicy::set_transfer_size(channel_, size);
@@ -71,20 +73,16 @@ public:
     /**
      * @brief Check if transfer complete
      */
-    bool is_complete() const {
-        return DmaPolicy::is_transfer_complete(channel_);
-    }
+    bool is_complete() const { return DmaPolicy::is_transfer_complete(channel_); }
 
     /**
      * @brief Check if busy
      */
-    bool is_busy() const {
-        return DmaPolicy::is_busy(channel_);
-    }
+    bool is_busy() const { return DmaPolicy::is_busy(channel_); }
 
     u8 get_channel() const { return channel_; }
 
-private:
+   private:
     u8 channel_;
 };
 
@@ -101,7 +99,7 @@ private:
  */
 template <typename DmaPolicy>
 class Dma {
-public:
+   public:
     static SimpleDmaTransfer<DmaPolicy> mem_to_mem(u8 channel) {
         return SimpleDmaTransfer<DmaPolicy>(channel);
     }
@@ -114,9 +112,7 @@ public:
         return SimpleDmaTransfer<DmaPolicy>(channel);
     }
 
-    static SimpleDmaTransfer<DmaPolicy> channel(u8 ch) {
-        return SimpleDmaTransfer<DmaPolicy>(ch);
-    }
+    static SimpleDmaTransfer<DmaPolicy> channel(u8 ch) { return SimpleDmaTransfer<DmaPolicy>(ch); }
 };
 
 }  // namespace ucore::hal

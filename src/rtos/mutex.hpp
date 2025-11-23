@@ -41,14 +41,14 @@
 
 #include "hal/interface/systick.hpp"
 
+#include "rtos/concepts.hpp"
+#include "rtos/error.hpp"
 #include "rtos/platform/critical_section.hpp"
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
-#include "rtos/error.hpp"
-#include "rtos/concepts.hpp"
 
-#include "core/types.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::rtos {
 
@@ -256,8 +256,8 @@ class LockGuard {
 // Mutex implementation
 
 inline core::Result<void, RTOSError> Mutex::lock(core::u32 timeout_ms) {
-    using core::Ok;
     using core::Err;
+    using core::Ok;
 
     core::u32 start_time = systick::micros();
     TaskControlBlock* current = RTOS::current_task();
@@ -301,8 +301,8 @@ inline core::Result<void, RTOSError> Mutex::lock(core::u32 timeout_ms) {
 }
 
 inline core::Result<void, RTOSError> Mutex::try_lock() {
-    using core::Ok;
     using core::Err;
+    using core::Ok;
 
     TaskControlBlock* current = RTOS::current_task();
 
@@ -329,8 +329,8 @@ inline core::Result<void, RTOSError> Mutex::try_lock() {
 }
 
 inline core::Result<void, RTOSError> Mutex::unlock() {
-    using core::Ok;
     using core::Err;
+    using core::Ok;
 
     TaskControlBlock* current = RTOS::current_task();
 

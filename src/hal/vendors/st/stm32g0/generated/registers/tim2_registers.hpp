@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::tim2 {
 
 /// TIM2 Register Structure
 struct TIM2_Registers {
-
     /// control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -107,7 +106,7 @@ struct TIM2_Registers {
     /// Reset value: 0xFFFFFFFF
     /// Access: read-write
     volatile uint32_t ARR;
-    uint8_t RESERVED_0030[4]; ///< Reserved
+    uint8_t RESERVED_0030[4];  ///< Reserved
 
     /// capture/compare register 1
     /// Offset: 0x0034
@@ -132,7 +131,7 @@ struct TIM2_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t CCR4;
-    uint8_t RESERVED_0044[4]; ///< Reserved
+    uint8_t RESERVED_0044[4];  ///< Reserved
 
     /// DMA control register
     /// Offset: 0x0048
@@ -151,14 +150,14 @@ struct TIM2_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t OR1;
-    uint8_t RESERVED_0054[12]; ///< Reserved
+    uint8_t RESERVED_0054[12];  ///< Reserved
 
     /// TIM alternate function option register 1
     /// Offset: 0x0060
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t AF1;
-    uint8_t RESERVED_0064[4]; ///< Reserved
+    uint8_t RESERVED_0064[4];  ///< Reserved
 
     /// TIM alternate function option register 1
     /// Offset: 0x0068

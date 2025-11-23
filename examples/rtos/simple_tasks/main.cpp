@@ -22,8 +22,9 @@
  * preempt lower priority tasks.
  */
 
-#include "board.hpp"
 #include "rtos/rtos.hpp"
+
+#include "board.hpp"
 
 using namespace ucore::rtos;
 using namespace ucore::core;
@@ -41,9 +42,11 @@ using namespace ucore::core;
 void high_priority_task_func() {
     // Signal we entered the task (1 very fast blink)
     board::led::on();
-    for (volatile int j = 0; j < 100000; j++);
+    for (volatile int j = 0; j < 100000; j++)
+        ;
     board::led::off();
-    for (volatile int j = 0; j < 100000; j++);
+    for (volatile int j = 0; j < 100000; j++)
+        ;
 
     while (true) {
         board::led::toggle();
@@ -90,10 +93,10 @@ void low_priority_task_func() {
  */
 void idle_task_func() {
     while (true) {
-        // Put CPU to sleep to save power
-        #if defined(__ARM_ARCH)
-            __asm volatile("wfi");  // Wait for interrupt
-        #endif
+// Put CPU to sleep to save power
+#if defined(__ARM_ARCH)
+        __asm volatile("wfi");  // Wait for interrupt
+#endif
 
         // Could also do background work here:
         // - Check for stack overflow
@@ -145,20 +148,25 @@ int main() {
     // Test 1: Board init works (3 quick blinks)
     for (int i = 0; i < 3; i++) {
         board::led::on();
-        for (volatile int j = 0; j < 500000; j++);
+        for (volatile int j = 0; j < 500000; j++)
+            ;
         board::led::off();
-        for (volatile int j = 0; j < 500000; j++);
+        for (volatile int j = 0; j < 500000; j++)
+            ;
     }
 
     // Delay before starting RTOS
-    for (volatile int j = 0; j < 2000000; j++);
+    for (volatile int j = 0; j < 2000000; j++)
+        ;
 
     // Test 2: About to start RTOS (2 slow blinks)
     for (int i = 0; i < 2; i++) {
         board::led::on();
-        for (volatile int j = 0; j < 1000000; j++);
+        for (volatile int j = 0; j < 1000000; j++)
+            ;
         board::led::off();
-        for (volatile int j = 0; j < 1000000; j++);
+        for (volatile int j = 0; j < 1000000; j++)
+            ;
     }
 
     // Start RTOS scheduler - should never return
@@ -167,7 +175,8 @@ int main() {
     // Test 3: If we get here, RTOS didn't start (fast blinking forever)
     while (1) {
         board::led::toggle();
-        for (volatile int j = 0; j < 200000; j++);
+        for (volatile int j = 0; j < 200000; j++)
+            ;
     }
 
     return 0;

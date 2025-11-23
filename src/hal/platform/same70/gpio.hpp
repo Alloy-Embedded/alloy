@@ -27,10 +27,11 @@
 // Core Types
 // ============================================================================
 
+#include "hal/types.hpp"
+
 #include "core/error.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/types.hpp"
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -90,7 +91,7 @@ if (result.is_ok()) {
  */
 template <uint32_t PORT_BASE, uint8_t PIN_NUM>
 class GpioPin {
-public:
+   public:
     // Compile-time constants
     static constexpr uint32_t port_base = PORT_BASE;
     static constexpr uint8_t pin_number = PIN_NUM;
@@ -169,8 +170,7 @@ public:
     Result<void, ErrorCode> write(bool value) {
         auto* port = get_port();
 
-        if (value) {
-        }
+        if (value) {}
         return Ok();
     }
 
@@ -237,8 +237,10 @@ public:
      * @brief Configure pull resistor
      *
      * @param pull Pull resistor configuration
-     * @return Result<void, ErrorCode> SAME70 only supports pull-up, not pull-down. PullDown will return ErrorCode::NotSupported.     *
-     * @note SAME70 only supports pull-up, not pull-down. PullDown will return ErrorCode::NotSupported.
+     * @return Result<void, ErrorCode> SAME70 only supports pull-up, not pull-down. PullDown will
+     * return ErrorCode::NotSupported.     *
+     * @note SAME70 only supports pull-up, not pull-down. PullDown will return
+     * ErrorCode::NotSupported.
      */
     Result<void, ErrorCode> setPull(PinPull pull) {
         auto* port = get_port();
@@ -261,7 +263,6 @@ public:
             case PinPull::PullDown:
                 return Err(ErrorCode::NotSupported);
                 break;
-
         }
 
         return Ok();
@@ -296,13 +297,12 @@ public:
     Result<bool, ErrorCode> isOutput() const {
         auto* port = get_port();
 
-        uint32_t status = port->OSR;  // 
+        uint32_t status = port->OSR;  //
 
         bool is_output = (status & pin_mask) != 0;
 
         return Ok(bool(is_output));
     }
-
 };
 
 // ==============================================================================
@@ -331,4 +331,4 @@ constexpr uint32_t PIOE_BASE = ucore::generated::atsame70q21b::peripherals::PIOE
 //     led.toggle();  // Toggle state
 // }
 
-} // namespace ucore::hal::same70
+}  // namespace ucore::hal::same70

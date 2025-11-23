@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::tim1 {
 
 /// TIM1 Register Structure
 struct TIM1_Registers {
-
     /// control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -148,7 +147,7 @@ struct TIM1_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t DMAR;
-    uint8_t RESERVED_0050[4]; ///< Reserved
+    uint8_t RESERVED_0050[4];  ///< Reserved
 
     /// capture/compare mode register 3 (output mode)
     /// Offset: 0x0054

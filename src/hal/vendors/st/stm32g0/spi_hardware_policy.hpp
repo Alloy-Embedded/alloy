@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/types.hpp"
 #include "core/error.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 // Register definitions
 #include "hal/vendors/st/stm32g0/generated/registers/spi1_registers.hpp"
@@ -85,11 +85,11 @@ struct Stm32g0SPIHardwarePolicy {
      * @return Pointer to hardware registers
      */
     static inline volatile RegisterType* hw() {
-        #ifdef ALLOY_SPI_MOCK_HW
-            return ALLOY_SPI_MOCK_HW();  // Test hook
-        #else
-            return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
-        #endif
+#ifdef ALLOY_SPI_MOCK_HW
+        return ALLOY_SPI_MOCK_HW();  // Test hook
+#else
+        return reinterpret_cast<volatile RegisterType*>(BASE_ADDR);
+#endif
     }
 
     // ========================================================================
@@ -110,9 +110,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_SPE
      */
     static inline void enable_spi() {
-        #ifdef ALLOY_SPI_TEST_HOOK_SPE
-            ALLOY_SPI_TEST_HOOK_SPE();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_SPE
+        ALLOY_SPI_TEST_HOOK_SPE();
+#endif
 
         hw()->SPI_CR1 |= (1U << 6);
     }
@@ -123,9 +123,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_SPE
      */
     static inline void disable_spi() {
-        #ifdef ALLOY_SPI_TEST_HOOK_SPE
-            ALLOY_SPI_TEST_HOOK_SPE();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_SPE
+        ALLOY_SPI_TEST_HOOK_SPE();
+#endif
 
         hw()->SPI_CR1 &= ~(1U << 6);
     }
@@ -136,9 +136,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_MSTR
      */
     static inline void set_master_mode() {
-        #ifdef ALLOY_SPI_TEST_HOOK_MSTR
-            ALLOY_SPI_TEST_HOOK_MSTR();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_MSTR
+        ALLOY_SPI_TEST_HOOK_MSTR();
+#endif
 
         hw()->SPI_CR1 |= (1U << 2);
     }
@@ -149,9 +149,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_MSTR
      */
     static inline void set_slave_mode() {
-        #ifdef ALLOY_SPI_TEST_HOOK_MSTR
-            ALLOY_SPI_TEST_HOOK_MSTR();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_MSTR
+        ALLOY_SPI_TEST_HOOK_MSTR();
+#endif
 
         hw()->SPI_CR1 &= ~(1U << 2);
     }
@@ -162,9 +162,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_CPOL
      */
     static inline void set_clock_polarity_low() {
-        #ifdef ALLOY_SPI_TEST_HOOK_CPOL
-            ALLOY_SPI_TEST_HOOK_CPOL();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_CPOL
+        ALLOY_SPI_TEST_HOOK_CPOL();
+#endif
 
         hw()->SPI_CR1 &= ~(1U << 1);
     }
@@ -175,9 +175,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_CPOL
      */
     static inline void set_clock_polarity_high() {
-        #ifdef ALLOY_SPI_TEST_HOOK_CPOL
-            ALLOY_SPI_TEST_HOOK_CPOL();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_CPOL
+        ALLOY_SPI_TEST_HOOK_CPOL();
+#endif
 
         hw()->SPI_CR1 |= (1U << 1);
     }
@@ -188,9 +188,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_CPHA
      */
     static inline void set_clock_phase_first_edge() {
-        #ifdef ALLOY_SPI_TEST_HOOK_CPHA
-            ALLOY_SPI_TEST_HOOK_CPHA();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_CPHA
+        ALLOY_SPI_TEST_HOOK_CPHA();
+#endif
 
         hw()->SPI_CR1 &= ~(1U << 0);
     }
@@ -201,9 +201,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_CPHA
      */
     static inline void set_clock_phase_second_edge() {
-        #ifdef ALLOY_SPI_TEST_HOOK_CPHA
-            ALLOY_SPI_TEST_HOOK_CPHA();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_CPHA
+        ALLOY_SPI_TEST_HOOK_CPHA();
+#endif
 
         hw()->SPI_CR1 |= (1U << 0);
     }
@@ -215,9 +215,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_BR
      */
     static inline void set_baud_rate_prescaler(uint8_t prescaler) {
-        #ifdef ALLOY_SPI_TEST_HOOK_BR
-            ALLOY_SPI_TEST_HOOK_BR(prescaler);
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_BR
+        ALLOY_SPI_TEST_HOOK_BR(prescaler);
+#endif
 
         hw()->SPI_CR1 = (hw()->SPI_CR1 & ~(0x7U << 3)) | ((prescaler & 0x7U) << 3);
     }
@@ -228,11 +228,12 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_DS
      */
     static inline void set_data_size_8bit() {
-        #ifdef ALLOY_SPI_TEST_HOOK_DS
-            ALLOY_SPI_TEST_HOOK_DS();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_DS
+        ALLOY_SPI_TEST_HOOK_DS();
+#endif
 
-        hw()->SPI_CR2 &= ~(0xFU << 8);\nhw()->SPI_CR2 |= (0x7U << 8);
+        hw()->SPI_CR2 &= ~(0xFU << 8);
+        \nhw()->SPI_CR2 |= (0x7U << 8);
     }
 
     /**
@@ -241,11 +242,12 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_DS
      */
     static inline void set_data_size_16bit() {
-        #ifdef ALLOY_SPI_TEST_HOOK_DS
-            ALLOY_SPI_TEST_HOOK_DS();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_DS
+        ALLOY_SPI_TEST_HOOK_DS();
+#endif
 
-        hw()->SPI_CR2 &= ~(0xFU << 8);\nhw()->SPI_CR2 |= (0xFU << 8);
+        hw()->SPI_CR2 &= ~(0xFU << 8);
+        \nhw()->SPI_CR2 |= (0xFU << 8);
     }
 
     /**
@@ -254,9 +256,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_LSBFIRST
      */
     static inline void set_msb_first() {
-        #ifdef ALLOY_SPI_TEST_HOOK_LSBFIRST
-            ALLOY_SPI_TEST_HOOK_LSBFIRST();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_LSBFIRST
+        ALLOY_SPI_TEST_HOOK_LSBFIRST();
+#endif
 
         hw()->SPI_CR1 &= ~(1U << 7);
     }
@@ -267,9 +269,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_LSBFIRST
      */
     static inline void set_lsb_first() {
-        #ifdef ALLOY_SPI_TEST_HOOK_LSBFIRST
-            ALLOY_SPI_TEST_HOOK_LSBFIRST();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_LSBFIRST
+        ALLOY_SPI_TEST_HOOK_LSBFIRST();
+#endif
 
         hw()->SPI_CR1 |= (1U << 7);
     }
@@ -281,9 +283,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_DR
      */
     static inline void write_data(uint16_t data) {
-        #ifdef ALLOY_SPI_TEST_HOOK_DR
-            ALLOY_SPI_TEST_HOOK_DR(data);
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_DR
+        ALLOY_SPI_TEST_HOOK_DR(data);
+#endif
 
         hw()->SPI_DR = data;
     }
@@ -295,9 +297,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_DR
      */
     static inline uint16_t read_data() {
-        #ifdef ALLOY_SPI_TEST_HOOK_DR
-            ALLOY_SPI_TEST_HOOK_DR();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_DR
+        ALLOY_SPI_TEST_HOOK_DR();
+#endif
 
         return hw()->SPI_DR;
     }
@@ -309,9 +311,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_TXE
      */
     static inline bool is_tx_buffer_empty() {
-        #ifdef ALLOY_SPI_TEST_HOOK_TXE
-            ALLOY_SPI_TEST_HOOK_TXE();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_TXE
+        ALLOY_SPI_TEST_HOOK_TXE();
+#endif
 
         return (hw()->SPI_SR & (1U << 1)) != 0;
     }
@@ -323,9 +325,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_RXNE
      */
     static inline bool is_rx_buffer_not_empty() {
-        #ifdef ALLOY_SPI_TEST_HOOK_RXNE
-            ALLOY_SPI_TEST_HOOK_RXNE();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_RXNE
+        ALLOY_SPI_TEST_HOOK_RXNE();
+#endif
 
         return (hw()->SPI_SR & (1U << 0)) != 0;
     }
@@ -337,9 +339,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_BSY
      */
     static inline bool is_busy() {
-        #ifdef ALLOY_SPI_TEST_HOOK_BSY
-            ALLOY_SPI_TEST_HOOK_BSY();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_BSY
+        ALLOY_SPI_TEST_HOOK_BSY();
+#endif
 
         return (hw()->SPI_SR & (1U << 7)) != 0;
     }
@@ -350,9 +352,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_RXDMAEN
      */
     static inline void enable_rx_dma() {
-        #ifdef ALLOY_SPI_TEST_HOOK_RXDMAEN
-            ALLOY_SPI_TEST_HOOK_RXDMAEN();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_RXDMAEN
+        ALLOY_SPI_TEST_HOOK_RXDMAEN();
+#endif
 
         hw()->SPI_CR2 |= (1U << 0);
     }
@@ -363,9 +365,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_TXDMAEN
      */
     static inline void enable_tx_dma() {
-        #ifdef ALLOY_SPI_TEST_HOOK_TXDMAEN
-            ALLOY_SPI_TEST_HOOK_TXDMAEN();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_TXDMAEN
+        ALLOY_SPI_TEST_HOOK_TXDMAEN();
+#endif
 
         hw()->SPI_CR2 |= (1U << 1);
     }
@@ -376,9 +378,9 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_RXDMAEN
      */
     static inline void disable_rx_dma() {
-        #ifdef ALLOY_SPI_TEST_HOOK_RXDMAEN
-            ALLOY_SPI_TEST_HOOK_RXDMAEN();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_RXDMAEN
+        ALLOY_SPI_TEST_HOOK_RXDMAEN();
+#endif
 
         hw()->SPI_CR2 &= ~(1U << 0);
     }
@@ -389,13 +391,12 @@ struct Stm32g0SPIHardwarePolicy {
      * @note Test hook: ALLOY_SPI_TEST_HOOK_TXDMAEN
      */
     static inline void disable_tx_dma() {
-        #ifdef ALLOY_SPI_TEST_HOOK_TXDMAEN
-            ALLOY_SPI_TEST_HOOK_TXDMAEN();
-        #endif
+#ifdef ALLOY_SPI_TEST_HOOK_TXDMAEN
+        ALLOY_SPI_TEST_HOOK_TXDMAEN();
+#endif
 
         hw()->SPI_CR2 &= ~(1U << 1);
     }
-
 };
 
 // ============================================================================

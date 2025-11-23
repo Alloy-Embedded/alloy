@@ -8,11 +8,12 @@
  * @note Part of Phase 1.11.2: Refactor I2cFluent
  */
 
+#include <span>
+
 #include "hal/api/i2c_fluent.hpp"
-#include "core/types.hpp"
 #include "hal/interface/i2c.hpp"
 
-#include <span>
+#include "core/types.hpp"
 
 using namespace ucore::hal;
 using namespace ucore::core;
@@ -56,9 +57,9 @@ void test_fluent_i2c_inheritance() {
  */
 void test_builder_defaults() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .initialize();
 
     // Verify return type
     static_assert(std::is_same_v<decltype(result), Result<FluentI2cConfig, ErrorCode>>,
@@ -70,10 +71,10 @@ void test_builder_defaults() {
  */
 void test_builder_with_speed() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .speed(I2cSpeed::Fast)
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .speed(I2cSpeed::Fast)
+                      .initialize();
 
     // Verify type
     static_assert(std::is_same_v<decltype(result), Result<FluentI2cConfig, ErrorCode>>,
@@ -85,10 +86,10 @@ void test_builder_with_speed() {
  */
 void test_builder_with_addressing() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .addressing_7bit()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .addressing_7bit()
+                      .initialize();
 
     // Verify type
     static_assert(std::is_same_v<decltype(result), Result<FluentI2cConfig, ErrorCode>>,
@@ -100,22 +101,22 @@ void test_builder_with_addressing() {
  */
 void test_builder_10bit_addressing() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .addressing_10bit()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .addressing_10bit()
+                      .initialize();
 
-    static_assert(std::is_same_v<decltype(result), Result<FluentI2cConfig, ErrorCode>>,
-                  "Builder with 10-bit addressing should return Result<FluentI2cConfig, ErrorCode>");
+    static_assert(
+        std::is_same_v<decltype(result), Result<FluentI2cConfig, ErrorCode>>,
+        "Builder with 10-bit addressing should return Result<FluentI2cConfig, ErrorCode>");
 }
 
 /**
  * @brief Test builder with both pins at once
  */
 void test_builder_with_pins() {
-    auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_pins<MockI2c0SdaPin, MockI2c0SclPin>()
-        .initialize();
+    auto result =
+        I2cBuilder<PeripheralId::I2C0>().with_pins<MockI2c0SdaPin, MockI2c0SclPin>().initialize();
 
     static_assert(std::is_same_v<decltype(result), Result<FluentI2cConfig, ErrorCode>>,
                   "Builder with_pins() should return Result<FluentI2cConfig, ErrorCode>");
@@ -126,10 +127,10 @@ void test_builder_with_pins() {
  */
 void test_standard_mode_preset() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .standard_mode()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .standard_mode()
+                      .initialize();
 
     static_assert(std::is_same_v<decltype(result), Result<FluentI2cConfig, ErrorCode>>,
                   "standard_mode() should return Result<FluentI2cConfig, ErrorCode>");
@@ -140,10 +141,10 @@ void test_standard_mode_preset() {
  */
 void test_fast_mode_preset() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .fast_mode()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .fast_mode()
+                      .initialize();
 
     static_assert(std::is_same_v<decltype(result), Result<FluentI2cConfig, ErrorCode>>,
                   "fast_mode() should return Result<FluentI2cConfig, ErrorCode>");
@@ -154,10 +155,10 @@ void test_fast_mode_preset() {
  */
 void test_fast_plus_mode_preset() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .fast_plus_mode()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .fast_plus_mode()
+                      .initialize();
 
     static_assert(std::is_same_v<decltype(result), Result<FluentI2cConfig, ErrorCode>>,
                   "fast_plus_mode() should return Result<FluentI2cConfig, ErrorCode>");
@@ -168,11 +169,11 @@ void test_fast_plus_mode_preset() {
  */
 void test_complete_configuration() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .speed(I2cSpeed::Fast)
-        .addressing_7bit()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .speed(I2cSpeed::Fast)
+                      .addressing_7bit()
+                      .initialize();
 
     if (result.is_ok()) {
         auto i2c = std::move(result).unwrap();
@@ -188,9 +189,7 @@ void test_complete_configuration() {
  */
 void test_validation_incomplete() {
     // Missing SCL pin - should fail validation
-    auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .initialize();
+    auto result = I2cBuilder<PeripheralId::I2C0>().with_sda<MockI2c0SdaPin>().initialize();
 
     // Should return error
     static_assert(std::is_same_v<decltype(result), Result<FluentI2cConfig, ErrorCode>>,
@@ -202,9 +201,9 @@ void test_validation_incomplete() {
  */
 void test_read_operations() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .initialize();
 
     if (result.is_ok()) {
         auto i2c = std::move(result).unwrap();
@@ -222,9 +221,9 @@ void test_read_operations() {
  */
 void test_write_operations() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .initialize();
 
     if (result.is_ok()) {
         auto i2c = std::move(result).unwrap();
@@ -242,9 +241,9 @@ void test_write_operations() {
  */
 void test_write_read_operation() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .initialize();
 
     if (result.is_ok()) {
         auto i2c = std::move(result).unwrap();
@@ -252,11 +251,8 @@ void test_write_read_operation() {
         u8 write_data[] = {0x10};
         u8 read_data[2] = {0};
 
-        [[maybe_unused]] auto result = i2c.write_read(
-            0x50,
-            std::span(write_data),
-            std::span(read_data)
-        );
+        [[maybe_unused]] auto result =
+            i2c.write_read(0x50, std::span(write_data), std::span(read_data));
 
         static_assert(std::is_same_v<decltype(result), Result<void, ErrorCode>>,
                       "write_read() must return Result<void, ErrorCode>");
@@ -268,9 +264,9 @@ void test_write_read_operation() {
  */
 void test_single_byte_operations() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .initialize();
 
     if (result.is_ok()) {
         auto i2c = std::move(result).unwrap();
@@ -290,9 +286,9 @@ void test_single_byte_operations() {
  */
 void test_register_operations() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .initialize();
 
     if (result.is_ok()) {
         auto i2c = std::move(result).unwrap();
@@ -312,9 +308,9 @@ void test_register_operations() {
  */
 void test_scan_bus() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .initialize();
 
     if (result.is_ok()) {
         auto i2c = std::move(result).unwrap();
@@ -332,9 +328,9 @@ void test_scan_bus() {
  */
 void test_configuration() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .initialize();
 
     if (result.is_ok()) {
         auto i2c = std::move(result).unwrap();
@@ -367,9 +363,9 @@ void test_concept() {
  */
 void test_apply() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .initialize();
 
     if (result.is_ok()) {
         auto i2c = std::move(result).unwrap();
@@ -386,10 +382,10 @@ void test_apply() {
 void test_method_chaining() {
     // All methods should return reference for chaining
     auto builder = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .speed(I2cSpeed::Fast)
-        .addressing_7bit();
+                       .with_sda<MockI2c0SdaPin>()
+                       .with_scl<MockI2c0SclPin>()
+                       .speed(I2cSpeed::Fast)
+                       .addressing_7bit();
 
     [[maybe_unused]] auto result = builder.initialize();
 }
@@ -400,24 +396,24 @@ void test_method_chaining() {
 void test_i2c_speeds() {
     // Standard (100 kHz)
     auto std_result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .speed(I2cSpeed::Standard)
-        .initialize();
+                          .with_sda<MockI2c0SdaPin>()
+                          .with_scl<MockI2c0SclPin>()
+                          .speed(I2cSpeed::Standard)
+                          .initialize();
 
     // Fast (400 kHz)
     auto fast_result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .speed(I2cSpeed::Fast)
-        .initialize();
+                           .with_sda<MockI2c0SdaPin>()
+                           .with_scl<MockI2c0SclPin>()
+                           .speed(I2cSpeed::Fast)
+                           .initialize();
 
     // Fast Plus (1 MHz)
     auto fastplus_result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .speed(I2cSpeed::FastPlus)
-        .initialize();
+                               .with_sda<MockI2c0SdaPin>()
+                               .with_scl<MockI2c0SclPin>()
+                               .speed(I2cSpeed::FastPlus)
+                               .initialize();
 
     // All should return same type
     static_assert(std::is_same_v<decltype(std_result), Result<FluentI2cConfig, ErrorCode>>,
@@ -430,17 +426,17 @@ void test_i2c_speeds() {
 void test_addressing_modes() {
     // 7-bit addressing
     auto addr7_result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .addressing_7bit()
-        .initialize();
+                            .with_sda<MockI2c0SdaPin>()
+                            .with_scl<MockI2c0SclPin>()
+                            .addressing_7bit()
+                            .initialize();
 
     // 10-bit addressing
     auto addr10_result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .addressing_10bit()
-        .initialize();
+                             .with_sda<MockI2c0SdaPin>()
+                             .with_scl<MockI2c0SclPin>()
+                             .addressing_10bit()
+                             .initialize();
 
     // Both should return same type
     static_assert(std::is_same_v<decltype(addr7_result), Result<FluentI2cConfig, ErrorCode>>,
@@ -454,9 +450,9 @@ void test_addressing_modes() {
  */
 void test_error_handling() {
     auto result = I2cBuilder<PeripheralId::I2C0>()
-        .with_sda<MockI2c0SdaPin>()
-        .with_scl<MockI2c0SclPin>()
-        .initialize();
+                      .with_sda<MockI2c0SdaPin>()
+                      .with_scl<MockI2c0SclPin>()
+                      .initialize();
 
     if (result.is_ok()) {
         auto i2c = std::move(result).unwrap();
@@ -477,8 +473,7 @@ void test_builder_state() {
     I2cBuilderState state;
 
     // Initial state
-    static_assert(!I2cBuilderState{}.is_valid(),
-                  "Empty state should not be valid");
+    static_assert(!I2cBuilderState{}.is_valid(), "Empty state should not be valid");
 
     // Check state members
     state.has_sda = true;

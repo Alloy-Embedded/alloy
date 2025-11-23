@@ -12,9 +12,10 @@
 /// ./build/tests/rtos_tests
 /// ```
 
-#include "tests/rtos/test_framework.hpp"
 #include "rtos/rtos.hpp"
+
 #include "board/board.hpp"
+#include "tests/rtos/test_framework.hpp"
 
 using namespace ucore;
 using namespace ucore::rtos;

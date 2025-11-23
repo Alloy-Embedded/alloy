@@ -7,9 +7,10 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "core/result.hpp"
-#include "core/error.hpp"
 #include "hal/types.hpp"
+
+#include "core/error.hpp"
+#include "core/result.hpp"
 
 using namespace ucore::core;
 using namespace ucore::hal;
@@ -19,7 +20,7 @@ using namespace ucore::hal;
 // ==============================================================================
 
 class RegressionSystemState {
-public:
+   public:
     static inline bool clock_initialized = false;
     static inline bool gpio_clocks_enabled = false;
 
@@ -42,7 +43,7 @@ TEST_CASE("BUG #11: GPIO requires clock initialization", "[regression][gpio][bug
     RegressionSystemState::reset();
 
     class TestGpio {
-    public:
+       public:
         Result<void, ErrorCode> configure() {
             if (!RegressionSystemState::gpio_clocks_enabled) {
                 return Err(ErrorCode::NotInitialized);
@@ -82,7 +83,7 @@ TEST_CASE("BUG #12: Clock prevents double initialization", "[regression][clock][
     RegressionSystemState::reset();
 
     class TestClock {
-    public:
+       public:
         static Result<void, ErrorCode> initialize() {
             if (RegressionSystemState::clock_initialized) {
                 return Err(ErrorCode::AlreadyInitialized);
@@ -119,7 +120,7 @@ TEST_CASE("BUG #13: GPIO clocks require system clock first", "[regression][clock
     RegressionSystemState::reset();
 
     class TestClock {
-    public:
+       public:
         static Result<void, ErrorCode> enable_gpio_clocks() {
             if (!RegressionSystemState::clock_initialized) {
                 return Err(ErrorCode::NotInitialized);
@@ -156,14 +157,12 @@ TEST_CASE("BUG #13: GPIO clocks require system clock first", "[regression][clock
  */
 TEST_CASE("BUG #14: GPIO set/clear require output mode", "[regression][gpio][bug14]") {
     class TestGpio {
-    private:
+       private:
         PinDirection direction = PinDirection::Input;
         bool state = false;
 
-    public:
-        void set_direction(PinDirection dir) {
-            direction = dir;
-        }
+       public:
+        void set_direction(PinDirection dir) { direction = dir; }
 
         Result<void, ErrorCode> set() {
             if (direction != PinDirection::Output) {
@@ -222,7 +221,7 @@ TEST_CASE("BUG #14: GPIO set/clear require output mode", "[regression][gpio][bug
  */
 TEST_CASE("BUG #15: Peripheral clock enable validates addresses", "[regression][clock][bug15]") {
     class TestClock {
-    public:
+       public:
         static Result<void, ErrorCode> enable_uart_clock(uint32_t uart_base) {
             if (uart_base == 0) {
                 return Err(ErrorCode::InvalidParameter);
@@ -269,14 +268,12 @@ TEST_CASE("BUG #15: Peripheral clock enable validates addresses", "[regression][
  */
 TEST_CASE("BUG #16: GPIO toggle requires output mode", "[regression][gpio][bug16]") {
     class TestGpio {
-    private:
+       private:
         PinDirection direction = PinDirection::Input;
         bool state = false;
 
-    public:
-        void set_direction(PinDirection dir) {
-            direction = dir;
-        }
+       public:
+        void set_direction(PinDirection dir) { direction = dir; }
 
         Result<void, ErrorCode> toggle() {
             if (direction != PinDirection::Output) {
@@ -322,7 +319,7 @@ TEST_CASE("BUG #17: System frequency is 0 before init", "[regression][clock][bug
     INFO("This prevents undefined behavior when code checks frequency before init");
     INFO("Real implementations should track initialization state");
 
-    REQUIRE(true); // Documentation test
+    REQUIRE(true);  // Documentation test
 }
 
 // ==============================================================================
@@ -348,8 +345,7 @@ TEST_CASE("BUG #18: Pin configuration uses type-safe enums", "[regression][gpio]
     SECTION("PinPull is type-safe") {
         PinPull pull = PinPull::PullUp;
 
-        REQUIRE((pull == PinPull::None || pull == PinPull::PullUp ||
-                 pull == PinPull::PullDown));
+        REQUIRE((pull == PinPull::None || pull == PinPull::PullUp || pull == PinPull::PullDown));
     }
 
     SECTION("PinDrive is type-safe") {
@@ -378,7 +374,7 @@ TEST_CASE("BUG #19: Initialization sequence is enforced", "[regression][system][
     INFO("");
     INFO("Use state machine pattern to enforce ordering");
 
-    REQUIRE(true); // Documentation test
+    REQUIRE(true);  // Documentation test
 }
 
 // ==============================================================================
@@ -400,6 +396,6 @@ TEST_CASE("BUG #20: Platform-specific peripheral availability", "[regression][cl
         INFO("Valid STM32F722 peripherals: SPI1-5, I2C1-3");
         INFO("Invalid STM32F722 peripherals: SPI6, I2C4");
 
-        REQUIRE(true); // Documentation test
+        REQUIRE(true);  // Documentation test
     }
 }

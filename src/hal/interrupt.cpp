@@ -3,8 +3,9 @@
  * @brief Platform-agnostic interrupt management implementation
  */
 
-#include "hal/api/interrupt_simple.hpp"
 #include "hal/interface/interrupt.hpp"
+
+#include "hal/api/interrupt_simple.hpp"
 
 namespace ucore::hal {
 
@@ -65,9 +66,7 @@ bool Interrupt::is_enabled(IrqNumber irq) noexcept {
     return false;
 }
 
-Result<void, ErrorCode> Interrupt::set_priority(
-    IrqNumber irq,
-    IrqPriority priority) noexcept {
+Result<void, ErrorCode> Interrupt::set_priority(IrqNumber irq, IrqPriority priority) noexcept {
     // Platform-specific priority setting
     // ARM Cortex-M: NVIC_SetPriority()
     return Ok();

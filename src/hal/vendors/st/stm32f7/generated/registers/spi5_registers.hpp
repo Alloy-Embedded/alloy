@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::spi5 {
 
 /// SPI5 Register Structure
 struct SPI5_Registers {
-
     /// control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000

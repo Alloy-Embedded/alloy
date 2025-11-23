@@ -38,15 +38,14 @@ enum class CaptureEdge : u8 {
 /// Contains all parameters needed to configure a timer peripheral.
 struct TimerConfig {
     TimerMode mode;            ///< Timer operating mode
-    u32 period_us;       ///< Period in microseconds (for periodic/one-shot)
-    u32 prescaler;       ///< Clock prescaler value
+    u32 period_us;             ///< Period in microseconds (for periodic/one-shot)
+    u32 prescaler;             ///< Clock prescaler value
     CaptureEdge capture_edge;  ///< Edge selection for input capture mode
-    u32 compare_value;   ///< Compare value for output compare mode
+    u32 compare_value;         ///< Compare value for output compare mode
 
     /// Constructor with default configuration (1ms periodic)
-    constexpr TimerConfig(TimerMode m = TimerMode::Periodic, u32 period = 1000,
-                          u32 presc = 1, CaptureEdge edge = CaptureEdge::Rising,
-                          u32 compare = 0)
+    constexpr TimerConfig(TimerMode m = TimerMode::Periodic, u32 period = 1000, u32 presc = 1,
+                          CaptureEdge edge = CaptureEdge::Rising, u32 compare = 0)
         : mode(m),
           period_us(period),
           prescaler(presc),
@@ -64,86 +63,85 @@ struct TimerConfig {
 /// - ErrorCode::NotSupported: Feature not supported by hardware
 /// - ErrorCode::Busy: Timer already running
 template <typename T>
-concept TimerDevice =
-    requires(T device, const T const_device, TimerConfig config, u32 counter_value,
-             u32 period_us, std::function<void()> callback) {
-        /// Start timer
-        ///
-        /// Begins timer operation according to configured mode.
-        ///
-        /// @return Ok on success, error code on failure
-        { device.start() } -> std::same_as<Result<void, ErrorCode>>;
+concept TimerDevice = requires(T device, const T const_device, TimerConfig config,
+                               u32 counter_value, u32 period_us, std::function<void()> callback) {
+    /// Start timer
+    ///
+    /// Begins timer operation according to configured mode.
+    ///
+    /// @return Ok on success, error code on failure
+    { device.start() } -> std::same_as<Result<void, ErrorCode>>;
 
-        /// Stop timer
-        ///
-        /// Halts timer operation immediately.
-        ///
-        /// @return Ok on success, error code on failure
-        { device.stop() } -> std::same_as<Result<void, ErrorCode>>;
+    /// Stop timer
+    ///
+    /// Halts timer operation immediately.
+    ///
+    /// @return Ok on success, error code on failure
+    { device.stop() } -> std::same_as<Result<void, ErrorCode>>;
 
-        /// Get current counter value
-        ///
-        /// Reads the current timer counter. Useful for measuring elapsed time.
-        ///
-        /// @return Current counter value in timer ticks
-        { const_device.get_counter() } -> std::same_as<u32>;
+    /// Get current counter value
+    ///
+    /// Reads the current timer counter. Useful for measuring elapsed time.
+    ///
+    /// @return Current counter value in timer ticks
+    { const_device.get_counter() } -> std::same_as<u32>;
 
-        /// Set counter value
-        ///
-        /// Manually sets the timer counter value.
-        ///
-        /// @param value New counter value
-        /// @return Ok on success, error code on failure
-        { device.set_counter(counter_value) } -> std::same_as<Result<void, ErrorCode>>;
+    /// Set counter value
+    ///
+    /// Manually sets the timer counter value.
+    ///
+    /// @param value New counter value
+    /// @return Ok on success, error code on failure
+    { device.set_counter(counter_value) } -> std::same_as<Result<void, ErrorCode>>;
 
-        /// Set timer period
-        ///
-        /// Changes the timer period (interval between events).
-        ///
-        /// @param period_us Period in microseconds
-        /// @return Ok on success, error code on failure
-        { device.set_period(period_us) } -> std::same_as<Result<void, ErrorCode>>;
+    /// Set timer period
+    ///
+    /// Changes the timer period (interval between events).
+    ///
+    /// @param period_us Period in microseconds
+    /// @return Ok on success, error code on failure
+    { device.set_period(period_us) } -> std::same_as<Result<void, ErrorCode>>;
 
-        /// Set timer callback
-        ///
-        /// Sets function to be called on timer events (overflow, compare match, etc).
-        /// Callback executes in interrupt context.
-        ///
-        /// @param callback Function to call on timer event
-        /// @return Ok on success, error code on failure
-        { device.set_callback(callback) } -> std::same_as<Result<void, ErrorCode>>;
+    /// Set timer callback
+    ///
+    /// Sets function to be called on timer events (overflow, compare match, etc).
+    /// Callback executes in interrupt context.
+    ///
+    /// @param callback Function to call on timer event
+    /// @return Ok on success, error code on failure
+    { device.set_callback(callback) } -> std::same_as<Result<void, ErrorCode>>;
 
-        /// Get captured value (input capture mode)
-        ///
-        /// Returns the timer value captured on the configured edge event.
-        /// Useful for measuring frequency or pulse width.
-        ///
-        /// @return Captured timer value, or error code
-        { const_device.get_captured_value() } -> std::same_as<Result<u32, ErrorCode>>;
+    /// Get captured value (input capture mode)
+    ///
+    /// Returns the timer value captured on the configured edge event.
+    /// Useful for measuring frequency or pulse width.
+    ///
+    /// @return Captured timer value, or error code
+    { const_device.get_captured_value() } -> std::same_as<Result<u32, ErrorCode>>;
 
-        /// Configure input capture mode
-        ///
-        /// Sets up timer to capture counter value on external pin events.
-        ///
-        /// @param edge Edge to trigger capture (rising, falling, or both)
-        /// @return Ok on success, error code on failure
-        { device.configure_capture(config.capture_edge) } -> std::same_as<Result<void, ErrorCode>>;
+    /// Configure input capture mode
+    ///
+    /// Sets up timer to capture counter value on external pin events.
+    ///
+    /// @param edge Edge to trigger capture (rising, falling, or both)
+    /// @return Ok on success, error code on failure
+    { device.configure_capture(config.capture_edge) } -> std::same_as<Result<void, ErrorCode>>;
 
-        /// Configure output compare mode
-        ///
-        /// Sets up timer to trigger event when counter matches compare value.
-        /// Useful for precise timing events.
-        ///
-        /// @param compare_value Value to compare against counter
-        /// @return Ok on success, error code on failure
-        { device.configure_compare(counter_value) } -> std::same_as<Result<void, ErrorCode>>;
+    /// Configure output compare mode
+    ///
+    /// Sets up timer to trigger event when counter matches compare value.
+    /// Useful for precise timing events.
+    ///
+    /// @param compare_value Value to compare against counter
+    /// @return Ok on success, error code on failure
+    { device.configure_compare(counter_value) } -> std::same_as<Result<void, ErrorCode>>;
 
-        /// Configure timer parameters
-        ///
-        /// @param config Timer configuration (mode, period, prescaler, etc)
-        /// @return Ok on success, error code on failure
-        { device.configure(config) } -> std::same_as<Result<void, ErrorCode>>;
-    };
+    /// Configure timer parameters
+    ///
+    /// @param config Timer configuration (mode, period, prescaler, etc)
+    /// @return Ok on success, error code on failure
+    { device.configure(config) } -> std::same_as<Result<void, ErrorCode>>;
+};
 
 /// Helper function to calculate prescaler for desired timer frequency
 ///

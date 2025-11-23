@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cstdint>
+
 #include "hal/utils/bitfield.hpp"
 
 namespace ucore::hal::st::stm32f7::crc {
@@ -19,69 +20,69 @@ using namespace ucore::hal::bitfields;
 
 /// DR - Data register
 namespace dr {
-    /// Data Register
-    /// Position: 0, Width: 32
-    using DR = BitField<0, 32>;
-    constexpr uint32_t DR_Pos = 0;
-    constexpr uint32_t DR_Msk = DR::mask;
+/// Data Register
+/// Position: 0, Width: 32
+using DR = BitField<0, 32>;
+constexpr uint32_t DR_Pos = 0;
+constexpr uint32_t DR_Msk = DR::mask;
 
 }  // namespace dr
 
 /// IDR - Independent Data register
 namespace idr {
-    /// Independent Data register
-    /// Position: 0, Width: 8
-    using IDR = BitField<0, 8>;
-    constexpr uint32_t IDR_Pos = 0;
-    constexpr uint32_t IDR_Msk = IDR::mask;
+/// Independent Data register
+/// Position: 0, Width: 8
+using IDR = BitField<0, 8>;
+constexpr uint32_t IDR_Pos = 0;
+constexpr uint32_t IDR_Msk = IDR::mask;
 
 }  // namespace idr
 
 /// CR - Control register
 namespace cr {
-    /// RESET bit
-    /// Position: 0, Width: 1
-    using RESET = BitField<0, 1>;
-    constexpr uint32_t RESET_Pos = 0;
-    constexpr uint32_t RESET_Msk = RESET::mask;
+/// RESET bit
+/// Position: 0, Width: 1
+using RESET = BitField<0, 1>;
+constexpr uint32_t RESET_Pos = 0;
+constexpr uint32_t RESET_Msk = RESET::mask;
 
-    /// Polynomial size
-    /// Position: 3, Width: 2
-    using POLYSIZE = BitField<3, 2>;
-    constexpr uint32_t POLYSIZE_Pos = 3;
-    constexpr uint32_t POLYSIZE_Msk = POLYSIZE::mask;
+/// Polynomial size
+/// Position: 3, Width: 2
+using POLYSIZE = BitField<3, 2>;
+constexpr uint32_t POLYSIZE_Pos = 3;
+constexpr uint32_t POLYSIZE_Msk = POLYSIZE::mask;
 
-    /// Reverse input data
-    /// Position: 5, Width: 2
-    using REV_IN = BitField<5, 2>;
-    constexpr uint32_t REV_IN_Pos = 5;
-    constexpr uint32_t REV_IN_Msk = REV_IN::mask;
+/// Reverse input data
+/// Position: 5, Width: 2
+using REV_IN = BitField<5, 2>;
+constexpr uint32_t REV_IN_Pos = 5;
+constexpr uint32_t REV_IN_Msk = REV_IN::mask;
 
-    /// Reverse output data
-    /// Position: 7, Width: 1
-    using REV_OUT = BitField<7, 1>;
-    constexpr uint32_t REV_OUT_Pos = 7;
-    constexpr uint32_t REV_OUT_Msk = REV_OUT::mask;
+/// Reverse output data
+/// Position: 7, Width: 1
+using REV_OUT = BitField<7, 1>;
+constexpr uint32_t REV_OUT_Pos = 7;
+constexpr uint32_t REV_OUT_Msk = REV_OUT::mask;
 
 }  // namespace cr
 
 /// INIT - Initial CRC value
 namespace init {
-    /// Programmable initial CRC value
-    /// Position: 0, Width: 32
-    using CRC_INIT = BitField<0, 32>;
-    constexpr uint32_t CRC_INIT_Pos = 0;
-    constexpr uint32_t CRC_INIT_Msk = CRC_INIT::mask;
+/// Programmable initial CRC value
+/// Position: 0, Width: 32
+using CRC_INIT = BitField<0, 32>;
+constexpr uint32_t CRC_INIT_Pos = 0;
+constexpr uint32_t CRC_INIT_Msk = CRC_INIT::mask;
 
 }  // namespace init
 
 /// POL - CRC polynomial
 namespace pol {
-    /// Programmable polynomial
-    /// Position: 0, Width: 32
-    using POL = BitField<0, 32>;
-    constexpr uint32_t POL_Pos = 0;
-    constexpr uint32_t POL_Msk = POL::mask;
+/// Programmable polynomial
+/// Position: 0, Width: 32
+using POL = BitField<0, 32>;
+constexpr uint32_t POL_Pos = 0;
+constexpr uint32_t POL_Msk = POL::mask;
 
 }  // namespace pol
 

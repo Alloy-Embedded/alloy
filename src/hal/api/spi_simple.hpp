@@ -35,14 +35,15 @@
 
 #pragma once
 
+#include <span>
+
+#include "hal/api/spi_base.hpp"
+#include "hal/core/signals.hpp"
+#include "hal/interface/spi.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/interface/spi.hpp"
-#include "hal/core/signals.hpp"
-#include "hal/api/spi_base.hpp"
-
-#include <span>
 
 namespace ucore::hal {
 
@@ -95,30 +96,30 @@ struct SimpleSpiConfig : public SpiBase<SimpleSpiConfig<MosiPin, MisoPin, SckPin
     PinId sck_pin_id;
 
     // Constructor to allow initialization (protected base constructor prevents aggregate init)
-    constexpr SimpleSpiConfig(
-        PeripheralId periph,
-        const SpiConfig& cfg,
-        PinId mosi,
-        PinId miso,
-        PinId sck
-    ) : peripheral(periph), config(cfg), mosi_pin_id(mosi), miso_pin_id(miso), sck_pin_id(sck) {}
+    constexpr SimpleSpiConfig(PeripheralId periph, const SpiConfig& cfg, PinId mosi, PinId miso,
+                              PinId sck)
+        : peripheral(periph),
+          config(cfg),
+          mosi_pin_id(mosi),
+          miso_pin_id(miso),
+          sck_pin_id(sck) {}
 
     // ========================================================================
     // Inherited Interface from SpiBase (CRTP)
     // ========================================================================
 
     // Inherit all common SPI methods from base
-    using Base::transfer;         // Full-duplex transfer
-    using Base::transmit;         // TX-only
-    using Base::receive;          // RX-only
-    using Base::transfer_byte;    // Single-byte transfer
-    using Base::transmit_byte;    // Single-byte TX
-    using Base::receive_byte;     // Single-byte RX
-    using Base::configure;        // Configuration
-    using Base::set_mode;         // Set SPI mode
-    using Base::set_speed;        // Set clock speed
-    using Base::is_busy;          // Check if busy
-    using Base::is_ready;         // Check if ready
+    using Base::configure;      // Configuration
+    using Base::is_busy;        // Check if busy
+    using Base::is_ready;       // Check if ready
+    using Base::receive;        // RX-only
+    using Base::receive_byte;   // Single-byte RX
+    using Base::set_mode;       // Set SPI mode
+    using Base::set_speed;      // Set clock speed
+    using Base::transfer;       // Full-duplex transfer
+    using Base::transfer_byte;  // Single-byte transfer
+    using Base::transmit;       // TX-only
+    using Base::transmit_byte;  // Single-byte TX
 
     /**
      * @brief Initialize SPI peripheral
@@ -144,9 +145,7 @@ struct SimpleSpiConfig : public SpiBase<SimpleSpiConfig<MosiPin, MisoPin, SckPin
      * @brief Full-duplex transfer implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> transfer_impl(
-        std::span<const u8> tx_buffer,
-        std::span<u8> rx_buffer
-    ) noexcept {
+        std::span<const u8> tx_buffer, std::span<u8> rx_buffer) noexcept {
         // TODO: Implement hardware transfer
         (void)tx_buffer;
         (void)rx_buffer;
@@ -157,8 +156,7 @@ struct SimpleSpiConfig : public SpiBase<SimpleSpiConfig<MosiPin, MisoPin, SckPin
      * @brief Transmit-only implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> transmit_impl(
-        std::span<const u8> tx_buffer
-    ) noexcept {
+        std::span<const u8> tx_buffer) noexcept {
         // TODO: Implement hardware transmit
         (void)tx_buffer;
         return Ok();
@@ -167,9 +165,7 @@ struct SimpleSpiConfig : public SpiBase<SimpleSpiConfig<MosiPin, MisoPin, SckPin
     /**
      * @brief Receive-only implementation
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> receive_impl(
-        std::span<u8> rx_buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> receive_impl(std::span<u8> rx_buffer) noexcept {
         // TODO: Implement hardware receive
         (void)rx_buffer;
         return Ok();
@@ -179,8 +175,7 @@ struct SimpleSpiConfig : public SpiBase<SimpleSpiConfig<MosiPin, MisoPin, SckPin
      * @brief Configure SPI implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> configure_impl(
-        const SpiConfig& new_config
-    ) noexcept {
+        const SpiConfig& new_config) noexcept {
         // TODO: Apply configuration to hardware
         (void)new_config;
         return Ok();
@@ -215,29 +210,28 @@ struct SimpleSpiTxConfig : public SpiBase<SimpleSpiTxConfig<MosiPin, SckPin>> {
     PinId sck_pin_id;
 
     // Constructor to allow initialization (protected base constructor prevents aggregate init)
-    constexpr SimpleSpiTxConfig(
-        PeripheralId periph,
-        const SpiConfig& cfg,
-        PinId mosi,
-        PinId sck
-    ) : peripheral(periph), config(cfg), mosi_pin_id(mosi), sck_pin_id(sck) {}
+    constexpr SimpleSpiTxConfig(PeripheralId periph, const SpiConfig& cfg, PinId mosi, PinId sck)
+        : peripheral(periph),
+          config(cfg),
+          mosi_pin_id(mosi),
+          sck_pin_id(sck) {}
 
     // ========================================================================
     // Inherited Interface from SpiBase (CRTP)
     // ========================================================================
 
     // Inherit all common SPI methods from base
-    using Base::transfer;         // Full-duplex transfer
-    using Base::transmit;         // TX-only
-    using Base::receive;          // RX-only
-    using Base::transfer_byte;    // Single-byte transfer
-    using Base::transmit_byte;    // Single-byte TX
-    using Base::receive_byte;     // Single-byte RX
-    using Base::configure;        // Configuration
-    using Base::set_mode;         // Set SPI mode
-    using Base::set_speed;        // Set clock speed
-    using Base::is_busy;          // Check if busy
-    using Base::is_ready;         // Check if ready
+    using Base::configure;      // Configuration
+    using Base::is_busy;        // Check if busy
+    using Base::is_ready;       // Check if ready
+    using Base::receive;        // RX-only
+    using Base::receive_byte;   // Single-byte RX
+    using Base::set_mode;       // Set SPI mode
+    using Base::set_speed;      // Set clock speed
+    using Base::transfer;       // Full-duplex transfer
+    using Base::transfer_byte;  // Single-byte transfer
+    using Base::transmit;       // TX-only
+    using Base::transmit_byte;  // Single-byte TX
 
     /**
      * @brief Initialize SPI peripheral (TX-only)
@@ -262,9 +256,7 @@ struct SimpleSpiTxConfig : public SpiBase<SimpleSpiTxConfig<MosiPin, SckPin>> {
      * @note TX-only configuration doesn't support full-duplex
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> transfer_impl(
-        std::span<const u8> tx_buffer,
-        std::span<u8> rx_buffer
-    ) noexcept {
+        std::span<const u8> tx_buffer, std::span<u8> rx_buffer) noexcept {
         // TX-only configuration cannot do full-duplex
         (void)tx_buffer;
         (void)rx_buffer;
@@ -275,8 +267,7 @@ struct SimpleSpiTxConfig : public SpiBase<SimpleSpiTxConfig<MosiPin, SckPin>> {
      * @brief Transmit-only implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> transmit_impl(
-        std::span<const u8> tx_buffer
-    ) noexcept {
+        std::span<const u8> tx_buffer) noexcept {
         // TODO: Implement hardware transmit
         (void)tx_buffer;
         return Ok();
@@ -287,9 +278,7 @@ struct SimpleSpiTxConfig : public SpiBase<SimpleSpiTxConfig<MosiPin, SckPin>> {
      *
      * @note TX-only configuration doesn't support receive
      */
-    [[nodiscard]] constexpr Result<void, ErrorCode> receive_impl(
-        std::span<u8> rx_buffer
-    ) noexcept {
+    [[nodiscard]] constexpr Result<void, ErrorCode> receive_impl(std::span<u8> rx_buffer) noexcept {
         // TX-only configuration cannot receive
         (void)rx_buffer;
         return Err(ErrorCode::NotSupported);
@@ -299,8 +288,7 @@ struct SimpleSpiTxConfig : public SpiBase<SimpleSpiTxConfig<MosiPin, SckPin>> {
      * @brief Configure SPI implementation
      */
     [[nodiscard]] constexpr Result<void, ErrorCode> configure_impl(
-        const SpiConfig& new_config
-    ) noexcept {
+        const SpiConfig& new_config) noexcept {
         // TODO: Apply configuration to hardware
         (void)new_config;
         return Ok();
@@ -328,7 +316,7 @@ struct SimpleSpiTxConfig : public SpiBase<SimpleSpiTxConfig<MosiPin, SckPin>> {
  */
 template <PeripheralId PeriphId>
 class Spi {
-public:
+   public:
     /**
      * @brief Quick setup for full-duplex SPI
      *
@@ -343,25 +331,19 @@ public:
      * @return Simple SPI configuration
      */
     template <typename MosiPin, typename MisoPin, typename SckPin>
-    static constexpr auto quick_setup(
-        u32 clock_speed = SpiDefaults::clock_speed,
-        SpiMode mode = SpiDefaults::mode) {
-
+    static constexpr auto quick_setup(u32 clock_speed = SpiDefaults::clock_speed,
+                                      SpiMode mode = SpiDefaults::mode) {
         // Validate pins at compile-time
         static_assert(is_valid_mosi_pin<MosiPin>(),
-                     "MOSI pin is not compatible with this SPI peripheral");
+                      "MOSI pin is not compatible with this SPI peripheral");
         static_assert(is_valid_miso_pin<MisoPin>(),
-                     "MISO pin is not compatible with this SPI peripheral");
+                      "MISO pin is not compatible with this SPI peripheral");
         static_assert(is_valid_sck_pin<SckPin>(),
-                     "SCK pin is not compatible with this SPI peripheral");
+                      "SCK pin is not compatible with this SPI peripheral");
 
         return SimpleSpiConfig<MosiPin, MisoPin, SckPin>(
-            PeriphId,
-            SpiConfig{mode, clock_speed, SpiDefaults::bit_order, SpiDefaults::data_size},
-            MosiPin::get_pin_id(),
-            MisoPin::get_pin_id(),
-            SckPin::get_pin_id()
-        );
+            PeriphId, SpiConfig{mode, clock_speed, SpiDefaults::bit_order, SpiDefaults::data_size},
+            MosiPin::get_pin_id(), MisoPin::get_pin_id(), SckPin::get_pin_id());
     }
 
     /**
@@ -376,21 +358,16 @@ public:
      * @return TX-only SPI configuration
      */
     template <typename MosiPin, typename SckPin>
-    static constexpr auto quick_setup_master_tx(
-        u32 clock_speed = SpiDefaults::clock_speed,
-        SpiMode mode = SpiDefaults::mode) {
-
+    static constexpr auto quick_setup_master_tx(u32 clock_speed = SpiDefaults::clock_speed,
+                                                SpiMode mode = SpiDefaults::mode) {
         static_assert(is_valid_mosi_pin<MosiPin>(),
-                     "MOSI pin is not compatible with this SPI peripheral");
+                      "MOSI pin is not compatible with this SPI peripheral");
         static_assert(is_valid_sck_pin<SckPin>(),
-                     "SCK pin is not compatible with this SPI peripheral");
+                      "SCK pin is not compatible with this SPI peripheral");
 
         return SimpleSpiTxConfig<MosiPin, SckPin>(
-            PeriphId,
-            SpiConfig{mode, clock_speed, SpiDefaults::bit_order, SpiDefaults::data_size},
-            MosiPin::get_pin_id(),
-            SckPin::get_pin_id()
-        );
+            PeriphId, SpiConfig{mode, clock_speed, SpiDefaults::bit_order, SpiDefaults::data_size},
+            MosiPin::get_pin_id(), SckPin::get_pin_id());
     }
 
     /**
@@ -406,14 +383,11 @@ public:
      * @return Simple SPI configuration
      */
     template <typename MosiPin, typename MisoPin, typename SckPin>
-    static constexpr auto quick_setup_with_mode(
-        u32 clock_speed,
-        SpiMode mode) {
-
+    static constexpr auto quick_setup_with_mode(u32 clock_speed, SpiMode mode) {
         return quick_setup<MosiPin, MisoPin, SckPin>(clock_speed, mode);
     }
 
-private:
+   private:
     /**
      * @brief Validate MOSI pin compatibility
      *

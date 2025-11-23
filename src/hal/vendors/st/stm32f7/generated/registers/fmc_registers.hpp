@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::fmc {
 
 /// FMC Register Structure
 struct FMC_Registers {
-
     /// SRAM/NOR-Flash chip-select control register 1
     /// Offset: 0x0000
     /// Reset value: 0x000030D0
@@ -65,7 +64,7 @@ struct FMC_Registers {
     /// Reset value: 0xFFFFFFFF
     /// Access: read-write
     volatile uint32_t BTR4;
-    uint8_t RESERVED_0020[96]; ///< Reserved
+    uint8_t RESERVED_0020[96];  ///< Reserved
 
     /// PC Card/NAND Flash control register
     /// Offset: 0x0080
@@ -89,42 +88,42 @@ struct FMC_Registers {
     /// Reset value: 0xFCFCFCFC
     /// Access: read-write
     volatile uint32_t PATT;
-    uint8_t RESERVED_0090[4]; ///< Reserved
+    uint8_t RESERVED_0090[4];  ///< Reserved
 
     /// ECC result register
     /// Offset: 0x0094
     /// Reset value: 0x00000000
     /// Access: read-only
     volatile uint32_t ECCR;
-    uint8_t RESERVED_0098[108]; ///< Reserved
+    uint8_t RESERVED_0098[108];  ///< Reserved
 
     /// SRAM/NOR-Flash write timing registers 1
     /// Offset: 0x0104
     /// Reset value: 0x0FFFFFFF
     /// Access: read-write
     volatile uint32_t BWTR1;
-    uint8_t RESERVED_0108[4]; ///< Reserved
+    uint8_t RESERVED_0108[4];  ///< Reserved
 
     /// SRAM/NOR-Flash write timing registers 2
     /// Offset: 0x010C
     /// Reset value: 0x0FFFFFFF
     /// Access: read-write
     volatile uint32_t BWTR2;
-    uint8_t RESERVED_0110[4]; ///< Reserved
+    uint8_t RESERVED_0110[4];  ///< Reserved
 
     /// SRAM/NOR-Flash write timing registers 3
     /// Offset: 0x0114
     /// Reset value: 0x0FFFFFFF
     /// Access: read-write
     volatile uint32_t BWTR3;
-    uint8_t RESERVED_0118[4]; ///< Reserved
+    uint8_t RESERVED_0118[4];  ///< Reserved
 
     /// SRAM/NOR-Flash write timing registers 4
     /// Offset: 0x011C
     /// Reset value: 0x0FFFFFFF
     /// Access: read-write
     volatile uint32_t BWTR4;
-    uint8_t RESERVED_0120[32]; ///< Reserved
+    uint8_t RESERVED_0120[32];  ///< Reserved
 
     /// SDRAM Control Register 1
     /// Offset: 0x0140

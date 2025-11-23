@@ -23,126 +23,114 @@ enum class DmaTransferWidth : u8 {
 };
 
 enum class DmaTransferType : u8 {
-    MemToMem = 0,     ///< Memory to memory
-    MemToPeriph = 1,  ///< Memory to peripheral
-    PeriphToMem = 2,  ///< Peripheral to memory
-    PeriphToPeriph = 3 ///< Peripheral to peripheral
+    MemToMem = 0,       ///< Memory to memory
+    MemToPeriph = 1,    ///< Memory to peripheral
+    PeriphToMem = 2,    ///< Peripheral to memory
+    PeriphToPeriph = 3  ///< Peripheral to peripheral
 };
 
-enum class DmaPriority : u8 {
-    Low = 0,
-    Medium = 1,
-    High = 2,
-    VeryHigh = 3
-};
+enum class DmaPriority : u8 { Low = 0, Medium = 1, High = 2, VeryHigh = 3 };
 
 /**
  * @brief Expert DMA configuration
  */
 struct DmaExpertConfig {
-    u8 channel;                    ///< Channel number (0-23)
-    u32 source_addr;               ///< Source address
-    u32 dest_addr;                 ///< Destination address
-    u32 transfer_count;            ///< Number of transfers
-    DmaTransferWidth src_width;    ///< Source data width
-    DmaTransferWidth dst_width;    ///< Destination data width
-    DmaTransferType transfer_type; ///< Transfer type
-    DmaPriority priority;          ///< Channel priority
-    bool src_increment;            ///< Increment source address
-    bool dst_increment;            ///< Increment destination address
-    bool circular_mode;            ///< Circular buffer mode
-    bool enable_interrupt;         ///< Enable transfer complete interrupt
+    u8 channel;                     ///< Channel number (0-23)
+    u32 source_addr;                ///< Source address
+    u32 dest_addr;                  ///< Destination address
+    u32 transfer_count;             ///< Number of transfers
+    DmaTransferWidth src_width;     ///< Source data width
+    DmaTransferWidth dst_width;     ///< Destination data width
+    DmaTransferType transfer_type;  ///< Transfer type
+    DmaPriority priority;           ///< Channel priority
+    bool src_increment;             ///< Increment source address
+    bool dst_increment;             ///< Increment destination address
+    bool circular_mode;             ///< Circular buffer mode
+    bool enable_interrupt;          ///< Enable transfer complete interrupt
 
     constexpr bool is_valid() const {
-        if (channel > 23) return false;
-        if (transfer_count == 0) return false;
-        if (source_addr == 0 || dest_addr == 0) return false;
+        if (channel > 23)
+            return false;
+        if (transfer_count == 0)
+            return false;
+        if (source_addr == 0 || dest_addr == 0)
+            return false;
         return true;
     }
 
     constexpr const char* error_message() const {
-        if (channel > 23) return "Channel must be 0-23";
-        if (transfer_count == 0) return "Transfer count cannot be zero";
-        if (source_addr == 0) return "Source address cannot be NULL";
-        if (dest_addr == 0) return "Destination address cannot be NULL";
+        if (channel > 23)
+            return "Channel must be 0-23";
+        if (transfer_count == 0)
+            return "Transfer count cannot be zero";
+        if (source_addr == 0)
+            return "Source address cannot be NULL";
+        if (dest_addr == 0)
+            return "Destination address cannot be NULL";
         return "Valid";
     }
 
     // Factory methods
-    static constexpr DmaExpertConfig mem_to_mem(
-        u8 ch, const void* src, void* dst, u32 count) {
-
-        return DmaExpertConfig{
-            .channel = ch,
-            .source_addr = reinterpret_cast<u32>(src),
-            .dest_addr = reinterpret_cast<u32>(dst),
-            .transfer_count = count,
-            .src_width = DmaTransferWidth::Word,
-            .dst_width = DmaTransferWidth::Word,
-            .transfer_type = DmaTransferType::MemToMem,
-            .priority = DmaPriority::Medium,
-            .src_increment = true,
-            .dst_increment = true,
-            .circular_mode = false,
-            .enable_interrupt = false
-        };
+    static constexpr DmaExpertConfig mem_to_mem(u8 ch, const void* src, void* dst, u32 count) {
+        return DmaExpertConfig{.channel = ch,
+                               .source_addr = reinterpret_cast<u32>(src),
+                               .dest_addr = reinterpret_cast<u32>(dst),
+                               .transfer_count = count,
+                               .src_width = DmaTransferWidth::Word,
+                               .dst_width = DmaTransferWidth::Word,
+                               .transfer_type = DmaTransferType::MemToMem,
+                               .priority = DmaPriority::Medium,
+                               .src_increment = true,
+                               .dst_increment = true,
+                               .circular_mode = false,
+                               .enable_interrupt = false};
     }
 
-    static constexpr DmaExpertConfig mem_to_periph(
-        u8 ch, const void* src, volatile void* periph, u32 count) {
-
-        return DmaExpertConfig{
-            .channel = ch,
-            .source_addr = reinterpret_cast<u32>(src),
-            .dest_addr = reinterpret_cast<u32>(periph),
-            .transfer_count = count,
-            .src_width = DmaTransferWidth::Byte,
-            .dst_width = DmaTransferWidth::Byte,
-            .transfer_type = DmaTransferType::MemToPeriph,
-            .priority = DmaPriority::High,
-            .src_increment = true,
-            .dst_increment = false,  // Peripheral address fixed
-            .circular_mode = false,
-            .enable_interrupt = true
-        };
+    static constexpr DmaExpertConfig mem_to_periph(u8 ch, const void* src, volatile void* periph,
+                                                   u32 count) {
+        return DmaExpertConfig{.channel = ch,
+                               .source_addr = reinterpret_cast<u32>(src),
+                               .dest_addr = reinterpret_cast<u32>(periph),
+                               .transfer_count = count,
+                               .src_width = DmaTransferWidth::Byte,
+                               .dst_width = DmaTransferWidth::Byte,
+                               .transfer_type = DmaTransferType::MemToPeriph,
+                               .priority = DmaPriority::High,
+                               .src_increment = true,
+                               .dst_increment = false,  // Peripheral address fixed
+                               .circular_mode = false,
+                               .enable_interrupt = true};
     }
 
-    static constexpr DmaExpertConfig periph_to_mem(
-        u8 ch, volatile const void* periph, void* dst, u32 count) {
-
-        return DmaExpertConfig{
-            .channel = ch,
-            .source_addr = reinterpret_cast<u32>(periph),
-            .dest_addr = reinterpret_cast<u32>(dst),
-            .transfer_count = count,
-            .src_width = DmaTransferWidth::Byte,
-            .dst_width = DmaTransferWidth::Byte,
-            .transfer_type = DmaTransferType::PeriphToMem,
-            .priority = DmaPriority::High,
-            .src_increment = false,  // Peripheral address fixed
-            .dst_increment = true,
-            .circular_mode = false,
-            .enable_interrupt = true
-        };
+    static constexpr DmaExpertConfig periph_to_mem(u8 ch, volatile const void* periph, void* dst,
+                                                   u32 count) {
+        return DmaExpertConfig{.channel = ch,
+                               .source_addr = reinterpret_cast<u32>(periph),
+                               .dest_addr = reinterpret_cast<u32>(dst),
+                               .transfer_count = count,
+                               .src_width = DmaTransferWidth::Byte,
+                               .dst_width = DmaTransferWidth::Byte,
+                               .transfer_type = DmaTransferType::PeriphToMem,
+                               .priority = DmaPriority::High,
+                               .src_increment = false,  // Peripheral address fixed
+                               .dst_increment = true,
+                               .circular_mode = false,
+                               .enable_interrupt = true};
     }
 
-    static constexpr DmaExpertConfig circular_buffer(
-        u8 ch, const void* src, void* dst, u32 count) {
-
-        return DmaExpertConfig{
-            .channel = ch,
-            .source_addr = reinterpret_cast<u32>(src),
-            .dest_addr = reinterpret_cast<u32>(dst),
-            .transfer_count = count,
-            .src_width = DmaTransferWidth::Byte,
-            .dst_width = DmaTransferWidth::Byte,
-            .transfer_type = DmaTransferType::MemToMem,
-            .priority = DmaPriority::Medium,
-            .src_increment = true,
-            .dst_increment = true,
-            .circular_mode = true,
-            .enable_interrupt = true
-        };
+    static constexpr DmaExpertConfig circular_buffer(u8 ch, const void* src, void* dst, u32 count) {
+        return DmaExpertConfig{.channel = ch,
+                               .source_addr = reinterpret_cast<u32>(src),
+                               .dest_addr = reinterpret_cast<u32>(dst),
+                               .transfer_count = count,
+                               .src_width = DmaTransferWidth::Byte,
+                               .dst_width = DmaTransferWidth::Byte,
+                               .transfer_type = DmaTransferType::MemToMem,
+                               .priority = DmaPriority::Medium,
+                               .src_increment = true,
+                               .dst_increment = true,
+                               .circular_mode = true,
+                               .enable_interrupt = true};
     }
 };
 

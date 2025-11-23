@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f4::i2s2ext {
 
 /// I2S2ext Register Structure
 struct I2S2ext_Registers {
-
     /// control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000

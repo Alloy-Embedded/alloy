@@ -6,11 +6,12 @@
 
 #pragma once
 
+#include "hal/core/signals.hpp"
+#include "hal/interface/adc.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"
-#include "hal/interface/adc.hpp"
-#include "hal/core/signals.hpp"
 
 namespace ucore::hal {
 
@@ -26,12 +27,10 @@ struct AdcDefaults {
 
 template <PeripheralId PeriphId>
 class Adc {
-public:
+   public:
     template <typename ChannelPin>
-    static constexpr auto quick_setup(
-        AdcChannel channel = AdcChannel::Channel0,
-        AdcResolution res = AdcDefaults::resolution) {
-        
+    static constexpr auto quick_setup(AdcChannel channel = AdcChannel::Channel0,
+                                      AdcResolution res = AdcDefaults::resolution) {
         return AdcConfig{res, AdcDefaults::reference, AdcDefaults::sample_time};
     }
 };

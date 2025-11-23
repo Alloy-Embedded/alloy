@@ -9,6 +9,7 @@
  */
 
 #include "hal/api/uart_fluent.hpp"
+
 #include "core/types.hpp"
 #include "core/units.hpp"
 
@@ -35,9 +36,7 @@ template <ucore::hal::signals::PinId PIN>
 struct MockGpioPin {
     static constexpr ucore::hal::signals::PinId pin = PIN;
 
-    static constexpr ucore::hal::signals::PinId get_pin_id() {
-        return PIN;
-    }
+    static constexpr ucore::hal::signals::PinId get_pin_id() { return PIN; }
 };
 
 using namespace ucore::hal;
@@ -70,13 +69,13 @@ void test_inheritance() {
 void test_fluent_builder() {
     // Create UART configuration using fluent builder
     auto result = UartBuilder<signals::PeripheralId::USART0, TestPolicy>()
-        .with_tx_pin<TestTxPin>()
-        .with_rx_pin<TestRxPin>()
-        .baudrate(BaudRate{115200})
-        .parity(UartParity::EVEN)
-        .data_bits(8)
-        .stop_bits(1)
-        .initialize();
+                      .with_tx_pin<TestTxPin>()
+                      .with_rx_pin<TestRxPin>()
+                      .baudrate(BaudRate{115200})
+                      .parity(UartParity::EVEN)
+                      .data_bits(8)
+                      .stop_bits(1)
+                      .initialize();
 
     // Test that we can use the result
     if (result.is_ok()) {
@@ -101,24 +100,24 @@ void test_fluent_builder() {
 void test_fluent_presets() {
     // Test standard_8n1 preset
     auto result1 = UartBuilder<signals::PeripheralId::USART0, TestPolicy>()
-        .with_pins<TestTxPin, TestRxPin>()
-        .baudrate(BaudRate{115200})
-        .standard_8n1()
-        .initialize();
+                       .with_pins<TestTxPin, TestRxPin>()
+                       .baudrate(BaudRate{115200})
+                       .standard_8n1()
+                       .initialize();
 
     // Test standard_8e1 preset
     auto result2 = UartBuilder<signals::PeripheralId::USART0, TestPolicy>()
-        .with_pins<TestTxPin, TestRxPin>()
-        .baudrate(BaudRate{115200})
-        .standard_8e1()
-        .initialize();
+                       .with_pins<TestTxPin, TestRxPin>()
+                       .baudrate(BaudRate{115200})
+                       .standard_8e1()
+                       .initialize();
 
     // Test standard_8o1 preset
     auto result3 = UartBuilder<signals::PeripheralId::USART0, TestPolicy>()
-        .with_pins<TestTxPin, TestRxPin>()
-        .baudrate(BaudRate{115200})
-        .standard_8o1()
-        .initialize();
+                       .with_pins<TestTxPin, TestRxPin>()
+                       .baudrate(BaudRate{115200})
+                       .standard_8o1()
+                       .initialize();
 
     [[maybe_unused]] auto r1 = result1.is_ok();
     [[maybe_unused]] auto r2 = result2.is_ok();
@@ -130,10 +129,10 @@ void test_fluent_presets() {
  */
 void test_tx_only() {
     auto result = UartBuilder<signals::PeripheralId::USART0, TestPolicy>()
-        .with_tx_pin<TestTxPin>()
-        .baudrate(BaudRate{115200})
-        .standard_8n1()
-        .initialize();
+                      .with_tx_pin<TestTxPin>()
+                      .baudrate(BaudRate{115200})
+                      .standard_8n1()
+                      .initialize();
 
     if (result.is_ok()) {
         auto config = result.unwrap();
@@ -158,11 +157,9 @@ void test_zero_overhead() {
     using BaseType = UartBase<ConfigType>;
 
     // Verify empty base optimization
-    static_assert(sizeof(BaseType) == 1,
-                  "UartBase must be empty (sizeof == 1)");
+    static_assert(sizeof(BaseType) == 1, "UartBase must be empty (sizeof == 1)");
 
-    static_assert(std::is_empty_v<BaseType>,
-                  "UartBase must have no data members");
+    static_assert(std::is_empty_v<BaseType>, "UartBase must have no data members");
 }
 
 /**
@@ -171,13 +168,13 @@ void test_zero_overhead() {
 void test_method_chaining() {
     // All methods should return reference to builder for chaining
     auto builder = UartBuilder<signals::PeripheralId::USART0, TestPolicy>()
-        .with_tx_pin<TestTxPin>()
-        .with_rx_pin<TestRxPin>()
-        .baudrate(BaudRate{115200})
-        .parity(UartParity::NONE)
-        .data_bits(8)
-        .stop_bits(1)
-        .flow_control(false);
+                       .with_tx_pin<TestTxPin>()
+                       .with_rx_pin<TestRxPin>()
+                       .baudrate(BaudRate{115200})
+                       .parity(UartParity::NONE)
+                       .data_bits(8)
+                       .stop_bits(1)
+                       .flow_control(false);
 
     // Should be able to call initialize after chaining
     [[maybe_unused]] auto result = builder.initialize();

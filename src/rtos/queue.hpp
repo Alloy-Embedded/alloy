@@ -55,15 +55,15 @@
 #include <cstring>
 #include <type_traits>
 
+#include "rtos/concepts.hpp"
+#include "rtos/error.hpp"
 #include "rtos/platform/critical_section.hpp"
 #include "rtos/rtos.hpp"
 #include "rtos/scheduler.hpp"
-#include "rtos/error.hpp"
-#include "rtos/concepts.hpp"
 
 #include "core/error.hpp"
-#include "core/types.hpp"
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::rtos {
 
@@ -230,8 +230,8 @@ class Queue {
 
 template <typename T, size_t Capacity>
 core::Result<void, RTOSError> Queue<T, Capacity>::send(const T& message, core::u32 timeout_ms) {
-    using core::Ok;
     using core::Err;
+    using core::Ok;
 
     core::u32 start_time = systick::micros();
 
@@ -263,8 +263,8 @@ core::Result<void, RTOSError> Queue<T, Capacity>::send(const T& message, core::u
 
 template <typename T, size_t Capacity>
 core::Result<T, RTOSError> Queue<T, Capacity>::receive(core::u32 timeout_ms) {
-    using core::Ok;
     using core::Err;
+    using core::Ok;
 
     core::u32 start_time = systick::micros();
 
@@ -296,8 +296,8 @@ core::Result<T, RTOSError> Queue<T, Capacity>::receive(core::u32 timeout_ms) {
 
 template <typename T, size_t Capacity>
 core::Result<void, RTOSError> Queue<T, Capacity>::try_send(const T& message) {
-    using core::Ok;
     using core::Err;
+    using core::Ok;
 
     disable_interrupts();
 
@@ -326,8 +326,8 @@ core::Result<void, RTOSError> Queue<T, Capacity>::try_send(const T& message) {
 
 template <typename T, size_t Capacity>
 core::Result<T, RTOSError> Queue<T, Capacity>::try_receive() {
-    using core::Ok;
     using core::Err;
+    using core::Ok;
 
     disable_interrupts();
 

@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::dma1 {
 
 /// DMA1 Register Structure
 struct DMA1_Registers {
-
     /// DMA interrupt status register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -47,7 +46,7 @@ struct DMA1_Registers {
     /// Offset: 0x0014
     /// Reset value: 0x00000000
     volatile uint32_t DMA_CMAR1;
-    uint8_t RESERVED_0018[4]; ///< Reserved
+    uint8_t RESERVED_0018[4];  ///< Reserved
 
     /// DMA channel 2 configuration register
     /// Offset: 0x001C
@@ -68,7 +67,7 @@ struct DMA1_Registers {
     /// Offset: 0x0028
     /// Reset value: 0x00000000
     volatile uint32_t DMA_CMAR2;
-    uint8_t RESERVED_002C[4]; ///< Reserved
+    uint8_t RESERVED_002C[4];  ///< Reserved
 
     /// DMA channel 3 configuration register
     /// Offset: 0x0030
@@ -89,7 +88,7 @@ struct DMA1_Registers {
     /// Offset: 0x003C
     /// Reset value: 0x00000000
     volatile uint32_t DMA_CMAR3;
-    uint8_t RESERVED_0040[4]; ///< Reserved
+    uint8_t RESERVED_0040[4];  ///< Reserved
 
     /// DMA channel 4 configuration register
     /// Offset: 0x0044
@@ -110,7 +109,7 @@ struct DMA1_Registers {
     /// Offset: 0x0050
     /// Reset value: 0x00000000
     volatile uint32_t DMA_CMAR4;
-    uint8_t RESERVED_0054[4]; ///< Reserved
+    uint8_t RESERVED_0054[4];  ///< Reserved
 
     /// DMA channel 5 configuration register
     /// Offset: 0x0058
@@ -131,7 +130,7 @@ struct DMA1_Registers {
     /// Offset: 0x0064
     /// Reset value: 0x00000000
     volatile uint32_t DMA_CMAR5;
-    uint8_t RESERVED_0068[4]; ///< Reserved
+    uint8_t RESERVED_0068[4];  ///< Reserved
 
     /// DMA channel 6 configuration register
     /// Offset: 0x006C
@@ -152,7 +151,7 @@ struct DMA1_Registers {
     /// Offset: 0x0078
     /// Reset value: 0x00000000
     volatile uint32_t DMA_CMAR6;
-    uint8_t RESERVED_007C[4]; ///< Reserved
+    uint8_t RESERVED_007C[4];  ///< Reserved
 
     /// DMA channel 7 configuration register
     /// Offset: 0x0080

@@ -11,7 +11,7 @@
  *     DmaRequest::I2C0_TX,
  *     DmaStream::Stream6
  * >;
- * 
+ *
  * auto config = I2cDmaConfig<I2c0TxDma, I2c0RxDma>::create(
  *     PinId::PA10, PinId::PA9, I2cSpeed::Fast
  * );
@@ -22,12 +22,13 @@
 
 #pragma once
 
-#include "core/error_code.hpp"
-#include "core/result.hpp"
-#include "core/types.hpp"
 #include "hal/dma/config.hpp"
 #include "hal/dma/connection.hpp"
 #include "hal/i2c_expert.hpp"
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::hal {
 
@@ -43,27 +44,17 @@ struct I2cDmaConfig {
     using TxDma = TxDmaConnection;
     using RxDma = RxDmaConnection;
 
-    static constexpr bool has_tx_dma() {
-        return !std::is_void_v<TxDmaConnection>;
-    }
+    static constexpr bool has_tx_dma() { return !std::is_void_v<TxDmaConnection>; }
 
-    static constexpr bool has_rx_dma() {
-        return !std::is_void_v<RxDmaConnection>;
-    }
+    static constexpr bool has_rx_dma() { return !std::is_void_v<RxDmaConnection>; }
 
-    static constexpr I2cDmaConfig create(
-        PinId sda_pin,
-        PinId scl_pin,
-        I2cSpeed speed) {
-
+    static constexpr I2cDmaConfig create(PinId sda_pin, PinId scl_pin, I2cSpeed speed) {
         if constexpr (has_tx_dma()) {
-            static_assert(TxDmaConnection::is_compatible(),
-                         "Invalid TX DMA connection");
+            static_assert(TxDmaConnection::is_compatible(), "Invalid TX DMA connection");
         }
 
         if constexpr (has_rx_dma()) {
-            static_assert(RxDmaConnection::is_compatible(),
-                         "Invalid RX DMA connection");
+            static_assert(RxDmaConnection::is_compatible(), "Invalid RX DMA connection");
         }
 
         constexpr PeripheralId peripheral = []() {
@@ -76,45 +67,33 @@ struct I2cDmaConfig {
             }
         }();
 
-        return I2cDmaConfig{
-            .i2c_config = {
-                .peripheral = peripheral,
-                .sda_pin = sda_pin,
-                .scl_pin = scl_pin,
-                .speed = speed,
-                .addressing = I2cAddressing::SevenBit,
-                .enable_interrupts = has_tx_dma() || has_rx_dma(),
-                .enable_dma_tx = has_tx_dma(),
-                .enable_dma_rx = has_rx_dma(),
-                .enable_analog_filter = true,
-                .enable_digital_filter = false,
-                .digital_filter_coefficient = 0
-            }
-        };
+        return I2cDmaConfig{.i2c_config = {.peripheral = peripheral,
+                                           .sda_pin = sda_pin,
+                                           .scl_pin = scl_pin,
+                                           .speed = speed,
+                                           .addressing = I2cAddressing::SevenBit,
+                                           .enable_interrupts = has_tx_dma() || has_rx_dma(),
+                                           .enable_dma_tx = has_tx_dma(),
+                                           .enable_dma_rx = has_rx_dma(),
+                                           .enable_analog_filter = true,
+                                           .enable_digital_filter = false,
+                                           .digital_filter_coefficient = 0}};
     }
 
-    constexpr bool is_valid() const {
-        return i2c_config.is_valid();
-    }
+    constexpr bool is_valid() const { return i2c_config.is_valid(); }
 
-    constexpr const char* error_message() const {
-        return i2c_config.error_message();
-    }
+    constexpr const char* error_message() const { return i2c_config.error_message(); }
 };
 
 /**
  * @brief Write data via I2C using DMA
  */
 template <typename TxConnection>
-inline Result<void, ErrorCode> i2c_dma_write(
-    u16 address,
-    const void* data,
-    usize size) {
-
+inline Result<void, ErrorCode> i2c_dma_write(u16 address, const void* data, usize size) {
     static_assert(TxConnection::is_compatible(), "Invalid DMA connection");
 
-    auto dma_config = DmaTransferConfig<TxConnection>::memory_to_peripheral(
-        data, size, DmaDataWidth::Bits8);
+    auto dma_config =
+        DmaTransferConfig<TxConnection>::memory_to_peripheral(data, size, DmaDataWidth::Bits8);
 
     auto validation = dma_config.validate();
     if (!validation.is_ok()) {
@@ -132,15 +111,11 @@ inline Result<void, ErrorCode> i2c_dma_write(
  * @brief Read data via I2C using DMA
  */
 template <typename RxConnection>
-inline Result<void, ErrorCode> i2c_dma_read(
-    u16 address,
-    void* buffer,
-    usize size) {
-
+inline Result<void, ErrorCode> i2c_dma_read(u16 address, void* buffer, usize size) {
     static_assert(RxConnection::is_compatible(), "Invalid DMA connection");
 
-    auto dma_config = DmaTransferConfig<RxConnection>::peripheral_to_memory(
-        buffer, size, DmaDataWidth::Bits8);
+    auto dma_config =
+        DmaTransferConfig<RxConnection>::peripheral_to_memory(buffer, size, DmaDataWidth::Bits8);
 
     auto validation = dma_config.validate();
     if (!validation.is_ok()) {
@@ -158,15 +133,8 @@ inline Result<void, ErrorCode> i2c_dma_read(
  * @brief Preset: Create fast I2C with DMA
  */
 template <typename TxDma, typename RxDma>
-constexpr auto create_i2c_fast_dma(
-    PinId sda_pin,
-    PinId scl_pin) {
-
-    return I2cDmaConfig<TxDma, RxDma>::create(
-        sda_pin,
-        scl_pin,
-        I2cSpeed::Fast
-    );
+constexpr auto create_i2c_fast_dma(PinId sda_pin, PinId scl_pin) {
+    return I2cDmaConfig<TxDma, RxDma>::create(sda_pin, scl_pin, I2cSpeed::Fast);
 }
 
 }  // namespace ucore::hal

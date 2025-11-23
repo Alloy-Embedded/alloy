@@ -38,14 +38,15 @@
 #ifndef UCORE_RTOS_MEMORY_POOL_HPP
 #define UCORE_RTOS_MEMORY_POOL_HPP
 
-#include <cstddef>
 #include <atomic>
+#include <cstddef>
 #include <new>
 
-#include "rtos/error.hpp"
 #include "rtos/concepts.hpp"
-#include "core/types.hpp"
+#include "rtos/error.hpp"
+
 #include "core/result.hpp"
+#include "core/types.hpp"
 
 namespace ucore::rtos {
 
@@ -92,7 +93,7 @@ class StaticPool {
     static_assert(Capacity <= 1024, "Pool capacity must be <= 1024");
     static_assert(sizeof(T) >= sizeof(void*), "Type too small for free list");
 
-public:
+   public:
     /// Constructor
     ///
     /// Initializes the pool with all blocks in the free list.
@@ -141,8 +142,7 @@ public:
             void* next = *reinterpret_cast<void**>(block);
 
             // Try to swap free_list with next
-            if (free_list_.compare_exchange_weak(block, next,
-                                                 std::memory_order_acq_rel,
+            if (free_list_.compare_exchange_weak(block, next, std::memory_order_acq_rel,
                                                  std::memory_order_acquire)) {
                 // Success - we got the block
                 available_count_.fetch_sub(1, std::memory_order_relaxed);
@@ -182,8 +182,7 @@ public:
         while (true) {
             *reinterpret_cast<void**>(block) = head;
 
-            if (free_list_.compare_exchange_weak(head, block,
-                                                 std::memory_order_acq_rel,
+            if (free_list_.compare_exchange_weak(head, block, std::memory_order_acq_rel,
                                                  std::memory_order_acquire)) {
                 // Success
                 available_count_.fetch_add(1, std::memory_order_relaxed);
@@ -203,16 +202,12 @@ public:
     /// Get pool capacity (compile-time constant)
     ///
     /// @return Maximum number of blocks
-    [[nodiscard]] static consteval size_t capacity() noexcept {
-        return Capacity;
-    }
+    [[nodiscard]] static consteval size_t capacity() noexcept { return Capacity; }
 
     /// Get block size (compile-time constant)
     ///
     /// @return Size of each block in bytes
-    [[nodiscard]] static consteval size_t block_size() noexcept {
-        return sizeof(T);
-    }
+    [[nodiscard]] static consteval size_t block_size() noexcept { return sizeof(T); }
 
     /// Get total pool size (compile-time constant)
     ///
@@ -224,16 +219,12 @@ public:
     /// Check if pool is empty
     ///
     /// @return true if all blocks allocated
-    [[nodiscard]] bool is_empty() const noexcept {
-        return available() == 0;
-    }
+    [[nodiscard]] bool is_empty() const noexcept { return available() == 0; }
 
     /// Check if pool is full
     ///
     /// @return true if all blocks free
-    [[nodiscard]] bool is_full() const noexcept {
-        return available() == Capacity;
-    }
+    [[nodiscard]] bool is_full() const noexcept { return available() == Capacity; }
 
     /// Reset pool (free all blocks)
     ///
@@ -253,7 +244,7 @@ public:
         available_count_.store(Capacity, std::memory_order_release);
     }
 
-private:
+   private:
     /// Check if pointer is from this pool
     [[nodiscard]] bool is_from_pool(const T* ptr) const noexcept {
         const auto* p = reinterpret_cast<const core::u8*>(ptr);
@@ -295,7 +286,7 @@ private:
 /// ```
 template <typename T>
 class PoolAllocator {
-public:
+   public:
     /// Constructor - allocates from pool
     template <size_t Capacity>
     explicit PoolAllocator(StaticPool<T, Capacity>& pool)
@@ -303,8 +294,7 @@ public:
           deallocate_fn_([](void* pool_ptr, T* obj) {
               auto* pool = reinterpret_cast<StaticPool<T, Capacity>*>(pool_ptr);
               pool->deallocate(obj);
-          })
-    {
+          }) {
         auto result = pool.allocate();
         if (result.is_ok()) {
             ptr_ = result.unwrap();
@@ -328,8 +318,7 @@ public:
     PoolAllocator(PoolAllocator&& other) noexcept
         : ptr_(other.ptr_),
           pool_base_(other.pool_base_),
-          deallocate_fn_(other.deallocate_fn_)
-    {
+          deallocate_fn_(other.deallocate_fn_) {
         other.ptr_ = nullptr;
     }
 
@@ -348,35 +337,21 @@ public:
     }
 
     /// Check if allocation succeeded
-    [[nodiscard]] bool is_valid() const noexcept {
-        return ptr_ != nullptr;
-    }
+    [[nodiscard]] bool is_valid() const noexcept { return ptr_ != nullptr; }
 
     /// Get raw pointer
-    [[nodiscard]] T* get() noexcept {
-        return ptr_;
-    }
+    [[nodiscard]] T* get() noexcept { return ptr_; }
 
-    [[nodiscard]] const T* get() const noexcept {
-        return ptr_;
-    }
+    [[nodiscard]] const T* get() const noexcept { return ptr_; }
 
     /// Dereference operators
-    T& operator*() noexcept {
-        return *ptr_;
-    }
+    T& operator*() noexcept { return *ptr_; }
 
-    const T& operator*() const noexcept {
-        return *ptr_;
-    }
+    const T& operator*() const noexcept { return *ptr_; }
 
-    T* operator->() noexcept {
-        return ptr_;
-    }
+    T* operator->() noexcept { return ptr_; }
 
-    const T* operator->() const noexcept {
-        return ptr_;
-    }
+    const T* operator->() const noexcept { return ptr_; }
 
     /// Release ownership (manual deallocation required)
     [[nodiscard]] T* release() noexcept {
@@ -385,7 +360,7 @@ public:
         return tmp;
     }
 
-private:
+   private:
     T* ptr_{nullptr};
     void* pool_base_;
     void (*deallocate_fn_)(void*, T*);

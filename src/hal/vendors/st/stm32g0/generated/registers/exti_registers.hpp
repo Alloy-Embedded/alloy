@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32g0::exti {
 
 /// EXTI Register Structure
 struct EXTI_Registers {
-
     /// EXTI rising trigger selection register
     /// Offset: 0x0000
     /// Reset value: 0x00000000
@@ -47,7 +46,7 @@ struct EXTI_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t FPR1;
-    uint8_t RESERVED_0014[20]; ///< Reserved
+    uint8_t RESERVED_0014[20];  ///< Reserved
 
     /// EXTI rising trigger selection register 2
     /// Offset: 0x0028
@@ -78,7 +77,7 @@ struct EXTI_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t FPR2;
-    uint8_t RESERVED_003C[36]; ///< Reserved
+    uint8_t RESERVED_003C[36];  ///< Reserved
 
     /// EXTI external interrupt selection register
     /// Offset: 0x0060
@@ -103,7 +102,7 @@ struct EXTI_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t EXTICR4;
-    uint8_t RESERVED_0070[16]; ///< Reserved
+    uint8_t RESERVED_0070[16];  ///< Reserved
 
     /// EXTI CPU wakeup with interrupt mask register
     /// Offset: 0x0080
@@ -116,7 +115,7 @@ struct EXTI_Registers {
     /// Reset value: 0x00000000
     /// Access: read-write
     volatile uint32_t EMR1;
-    uint8_t RESERVED_0088[8]; ///< Reserved
+    uint8_t RESERVED_0088[8];  ///< Reserved
 
     /// EXTI CPU wakeup with interrupt mask register
     /// Offset: 0x0090

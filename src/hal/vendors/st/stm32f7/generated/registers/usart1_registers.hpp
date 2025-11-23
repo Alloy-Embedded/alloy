@@ -17,7 +17,6 @@ namespace ucore::hal::st::stm32f7::usart1 {
 
 /// USART1 Register Structure
 struct USART1_Registers {
-
     /// Control register 1
     /// Offset: 0x0000
     /// Reset value: 0x00000000
