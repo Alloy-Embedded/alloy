@@ -18,13 +18,13 @@ set(SOURCES
 )
 
 # Add board implementation
-if(EXISTS "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/board.cpp")
-    list(APPEND SOURCES "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/board.cpp")
+if(EXISTS "${CMAKE_SOURCE_DIR}/boards/${MICROCORE_BOARD}/board.cpp")
+    list(APPEND SOURCES "${CMAKE_SOURCE_DIR}/boards/${MICROCORE_BOARD}/board.cpp")
 endif()
 
 # Add syscalls stubs for embedded targets
-if(CMAKE_CROSSCOMPILING AND EXISTS "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/syscalls.cpp")
-    list(APPEND SOURCES "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/syscalls.cpp")
+if(CMAKE_CROSSCOMPILING AND EXISTS "${CMAKE_SOURCE_DIR}/boards/${MICROCORE_BOARD}/syscalls.cpp")
+    list(APPEND SOURCES "${CMAKE_SOURCE_DIR}/boards/${MICROCORE_BOARD}/syscalls.cpp")
 endif()
 
 # Add startup code (board-specific, managed by CMake)
@@ -42,7 +42,12 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 # Link with HAL library (if needed)
-if(DEFINED ALLOY_HAL_LIBRARY)
+if(DEFINED MICROCORE_HAL_LIBRARY)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        ${MICROCORE_HAL_LIBRARY}
+    )
+elseif(DEFINED ALLOY_HAL_LIBRARY)
+    # Legacy compatibility
     target_link_libraries(${PROJECT_NAME} PRIVATE
         ${ALLOY_HAL_LIBRARY}
     )
@@ -91,7 +96,7 @@ if(CMAKE_CROSSCOMPILING)
         COMMENT "Generating HEX and BIN files for ${PROJECT_NAME}"
     )
 
-    message(STATUS "Building ${PROJECT_NAME} for ${ALLOY_BOARD}")
+    message(STATUS "Building ${PROJECT_NAME} for ${MICROCORE_BOARD}")
     message(STATUS "  Board header: ${BOARD_HEADER_PATH}")
     message(STATUS "  Startup code: ${STARTUP_SOURCE}")
     message(STATUS "  Output: ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.elf")
@@ -105,6 +110,6 @@ if(CMAKE_CROSSCOMPILING AND DEFINED FLASH_COMMAND)
         COMMAND ${FLASH_COMMAND}
         DEPENDS ${PROJECT_NAME}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        COMMENT "Flashing ${PROJECT_NAME} to ${ALLOY_BOARD}"
+        COMMENT "Flashing ${PROJECT_NAME} to ${MICROCORE_BOARD}"
     )
 endif()

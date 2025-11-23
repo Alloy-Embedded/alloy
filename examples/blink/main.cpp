@@ -35,18 +35,18 @@
  */
 
 // Include board support based on build configuration
-#if defined(ALLOY_BOARD_SAME70_XPLAINED)
+#if defined(MICROCORE_BOARD_SAME70_XPLAINED)
     #include "same70_xplained/board.hpp"
-#elif defined(ALLOY_BOARD_NUCLEO_G0B1RE)
+#elif defined(MICROCORE_BOARD_NUCLEO_G0B1RE)
     #include "nucleo_g0b1re/board.hpp"
-#elif defined(ALLOY_BOARD_NUCLEO_G071RB)
+#elif defined(MICROCORE_BOARD_NUCLEO_G071RB)
     #include "nucleo_g071rb/board.hpp"
-#elif defined(ALLOY_BOARD_NUCLEO_F401RE)
+#elif defined(MICROCORE_BOARD_NUCLEO_F401RE)
     #include "nucleo_f401re/board.hpp"
-#elif defined(ALLOY_BOARD_NUCLEO_F722ZE)
+#elif defined(MICROCORE_BOARD_NUCLEO_F722ZE)
     #include "nucleo_f722ze/board.hpp"
 #else
-    #error "Unsupported board! Define ALLOY_BOARD_* in your build system."
+    #error "Unsupported board! Define MICROCORE_BOARD_* in your build system."
 #endif
 
 #include "hal/api/systick_simple.hpp"
