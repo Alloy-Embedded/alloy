@@ -71,10 +71,10 @@
 - [x] Generate board.hpp from YAML template
 - [x] Migrate 2 boards to YAML format (nucleo_f401re, same70_xplained)
 - [x] Add JSON schema validation
-- [ ] Update `ucore list boards` to read YAML (deferred - not critical)
-- [ ] Add `ucore validate-board <name>` command (deferred - can use generator directly)
+- [x] Update `ucore list boards` to read YAML
+- [x] Add `ucore validate-board <name>` command
 - [x] Document YAML format in docs/BOARD_CONFIGURATION.md
-- [ ] Add board wizard: `ucore new-board <name>` (deferred - future enhancement)
+- [x] Add board wizard: `ucore new-board <name>`
 
 ### 2.4 API Reference Documentation (16 hours)
 - [ ] Setup Doxygen configuration (Doxyfile)
