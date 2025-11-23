@@ -19,10 +19,10 @@
 #include "hal/vendors/arm/same70/clock.hpp"
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
-namespace board::same70_xplained {
+namespace same70_xplained {
 
-using namespace alloy::hal::same70;
-using namespace alloy::generated::atsame70q21b;
+using namespace ucore::hal::same70;
+using namespace ucore::generated::atsame70q21b;
 
 // =============================================================================
 // Clock Configuration
@@ -36,7 +36,7 @@ struct ClockConfig {
     static constexpr uint32_t pclk_freq_hz = 12'000'000;  // Peripheral clock
 
     // Use the workaround clock config from platform layer
-    static constexpr const alloy::hal::same70::ClockConfig& clock_init_config = CLOCK_CONFIG_12MHZ_RC;
+    static constexpr const ucore::hal::same70::ClockConfig& clock_init_config = CLOCK_CONFIG_12MHZ_RC;
 };
 
 // =============================================================================
@@ -99,4 +99,4 @@ struct BoardInfo {
     static constexpr const char* architecture = "ARM Cortex-M7";
 };
 
-} // namespace board::same70_xplained
+} // namespace same70_xplained

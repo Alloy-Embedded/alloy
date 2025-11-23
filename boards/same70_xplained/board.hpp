@@ -46,9 +46,9 @@
 namespace board {
 
 using namespace same70_xplained;
-using namespace alloy::generated::atsame70q21b;
-using namespace alloy::hal::same70;
-using namespace alloy::hal;
+using namespace ucore::generated::atsame70q21b;
+using namespace ucore::hal::same70;
+using namespace ucore::hal;
 
 // =============================================================================
 // Timing

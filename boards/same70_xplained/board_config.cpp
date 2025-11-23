@@ -13,7 +13,7 @@
 namespace alloy::boards::same70_xplained {
 namespace board {
 
-using namespace alloy::hal::same70;
+using namespace ucore::hal::same70;
 using namespace detail;
 
 // Define the initialization flag
@@ -95,5 +95,5 @@ void init(ClockPreset preset) {
 // SysTick interrupt handler
 // This overrides the weak alias in startup.cpp
 extern "C" void SysTick_Handler() {
-    alloy::hal::same70::SystemTick::irq_handler();
+    ucore::hal::same70::SystemTick::irq_handler();
 }

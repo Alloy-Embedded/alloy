@@ -11,9 +11,9 @@
 #include "hal/vendors/st/stm32f4/clock_platform.hpp"
 #include <cstdint>
 
-using namespace alloy::hal::st::stm32f4;
-using namespace alloy::generated::stm32f401;
-using namespace alloy::hal;
+using namespace ucore::hal::st::stm32f4;
+using namespace ucore::generated::stm32f401;
+using namespace ucore::hal;
 
 // Board clock type using config from board_config.hpp
 using BoardClock = Stm32f4Clock<nucleo_f401re::ClockConfig>;

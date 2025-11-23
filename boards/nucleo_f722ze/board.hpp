@@ -18,8 +18,8 @@
 namespace board {
 
 using namespace nucleo_f722ze;
-using namespace alloy::hal;
-using namespace alloy::hal::st::stm32f7;
+using namespace ucore::hal;
+using namespace ucore::hal::st::stm32f7;
 
 // Board-specific SysTick type (180 MHz)
 using BoardSysTick = SysTick<ClockConfig::system_clock_hz>;

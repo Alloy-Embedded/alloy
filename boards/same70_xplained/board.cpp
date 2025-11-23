@@ -19,9 +19,9 @@
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 #include <cstdint>
 
-using namespace alloy::hal::same70;
-using namespace alloy::generated::atsame70q21b;
-using namespace alloy::hal;
+using namespace ucore::hal::same70;
+using namespace ucore::generated::atsame70q21b;
+using namespace ucore::hal;
 
 namespace board {
 
@@ -74,7 +74,7 @@ void init() {
     Nvic::enable_global();
 
     // Step 7: Call platform-specific late initialization hook
-    alloy::hal::arm::late_init();
+    ucore::hal::arm::late_init();
 
     board_initialized = true;
 }

@@ -14,8 +14,8 @@
 
 namespace nucleo_f722ze {
 
-using namespace alloy::hal::st::stm32f7;
-using namespace alloy::generated::stm32f722;
+using namespace ucore::hal::st::stm32f7;
+using namespace ucore::generated::stm32f722;
 
 // =============================================================================
 // LED Configuration

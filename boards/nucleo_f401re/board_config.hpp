@@ -14,8 +14,8 @@
 
 namespace nucleo_f401re {
 
-using namespace alloy::hal::st::stm32f4;
-using namespace alloy::generated::stm32f401;
+using namespace ucore::hal::st::stm32f4;
+using namespace ucore::generated::stm32f401;
 
 // =============================================================================
 // LED Configuration

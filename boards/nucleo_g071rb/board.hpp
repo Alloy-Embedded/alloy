@@ -46,9 +46,9 @@
 namespace board {
 
 using namespace nucleo_g071rb;
-using namespace alloy::generated::stm32g0b1;
-using namespace alloy::hal::st::stm32g0;
-using namespace alloy::hal;
+using namespace ucore::generated::stm32g0b1;
+using namespace ucore::hal::st::stm32g0;
+using namespace ucore::hal;
 
 // =============================================================================
 // Timing

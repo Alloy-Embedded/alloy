@@ -15,9 +15,9 @@
     #include "rtos/rtos.hpp"
 #endif
 
-using namespace alloy::hal::st::stm32f7;
-using namespace alloy::generated::stm32f722;
-using namespace alloy::hal;
+using namespace ucore::hal::st::stm32f7;
+using namespace ucore::generated::stm32f722;
+using namespace ucore::hal;
 
 // Board clock type using config from board_config.hpp
 using BoardClock = Stm32f7Clock<nucleo_f722ze::ClockConfig>;
