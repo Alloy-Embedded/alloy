@@ -1,6 +1,6 @@
-# Contributing to Alloy
+# Contributing to MicroCore
 
-Thank you for your interest in contributing to Alloy! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to MicroCore! This document provides guidelines for contributing to the project.
 
 ## Getting Started
 
@@ -43,15 +43,15 @@ We follow strict naming conventions as defined in [ADR-011](decisions.md#adr-011
 - Directories: `snake_case` (e.g., `hal/`, `drivers/`)
 
 **C++ Code:**
-- Namespaces: `snake_case` (e.g., `alloy::hal::`)
+- Namespaces: `snake_case` (e.g., `ucore::hal::`)
 - Classes/Structs: `PascalCase` (e.g., `GpioPin`, `UartDriver`)
-- Functions/Methods: `snake_case` (e.g., `set_high()`, `read_byte()`)
+- Functions/Methods: `camelCase` (e.g., `setHigh()`, `readByte()`)
 - Variables: `snake_case` (e.g., `led_pin`, `baud_rate`)
 - Constants: `UPPER_SNAKE_CASE` (e.g., `MAX_BUFFER_SIZE`)
 - Template Parameters: `PascalCase` (e.g., `template<typename PinImpl>`)
 
 **CMake:**
-- Variables: `ALLOY_` prefix + `UPPER_SNAKE_CASE` (e.g., `ALLOY_BOARD`)
+- Variables: `MICROCORE_` prefix + `UPPER_SNAKE_CASE` (e.g., `MICROCORE_BOARD`)
 - Functions: `alloy_` prefix + `snake_case` (e.g., `alloy_target_compile_options()`)
 
 **Macros:**
@@ -158,7 +158,7 @@ MicroCore uses **Catch2 v3** as the testing framework for C++ unit tests. All te
 
 ```bash
 # Configure with tests enabled (host platform)
-cmake -S . -B build-host -DALLOY_BOARD=host -DALLOY_BUILD_TESTS=ON
+cmake -S . -B build-host -DMICROCORE_BOARD=host -DMICROCORE_BUILD_TESTS=ON
 
 # Build tests
 cmake --build build-host
@@ -319,12 +319,145 @@ For hardware-dependent tests:
 - Mark with `[integration]` tag
 - These may be skipped in CI (run manually on hardware)
 
+## Code Generation and Validation
+
+MicroCore uses Python-based code generation to create hardware register definitions from vendor SVD/ATDF files. All generated code must pass validation before being committed.
+
+### Generating Code
+
+```bash
+# Generate register definitions for STM32F4
+python3 tools/codegen/generate_stm32.py --device STM32F401 --output src/hal/vendors/st/stm32f4/generated/
+
+# Generate register definitions for SAME70
+python3 tools/codegen/generate_same70.py --device ATSAME70Q21B --output src/hal/vendors/atmel/same70/generated/
+```
+
+### Validating Generated Code
+
+All generated code must pass compile-time validation tests:
+
+```bash
+# Configure with validation tests
+cmake -S . -B build-validation -DMICROCORE_BOARD=host
+
+# Run validation targets
+cmake --build build-validation --target validate-generated-code
+cmake --build build-validation --target validate-generated-style
+```
+
+#### Validation Tests
+
+The validation system checks:
+
+1. **Compile-time correctness** (`validate_stm32f4_generated.cpp`, `validate_same70_generated.cpp`):
+   - Register struct sizes (using `sizeof`)
+   - Register field offsets (using `offsetof`)
+   - Bitfield positions and widths
+   - Type safety (strong typing, no implicit conversions)
+
+2. **Code style** (`validate-generated-style`):
+   - clang-format compliance
+   - Naming conventions
+   - Comment formatting
+
+3. **Static analysis** (optional, `validate-generated-quality`):
+   - clang-tidy checks
+   - No warnings with `-Wall -Wextra -Wpedantic -Werror`
+
+#### Example Validation Test
+
+```cpp
+// tools/codegen/tests/validate_stm32f4_generated.cpp
+#include "hal/vendors/st/stm32f4/generated/registers/gpio_registers.hpp"
+
+using namespace ucore::hal::stm32f4::gpio;
+
+// Verify register struct size matches hardware
+static_assert(sizeof(GPIO_Registers) == 0x400, "GPIO register block size incorrect");
+
+// Verify individual register offsets
+static_assert(offsetof(GPIO_Registers, MODER) == 0x00, "MODER offset incorrect");
+static_assert(offsetof(GPIO_Registers, ODR) == 0x14, "ODR offset incorrect");
+static_assert(offsetof(GPIO_Registers, BSRR) == 0x18, "BSRR offset incorrect");
+
+// Verify register field sizes
+static_assert(sizeof(GPIO_Registers::MODER) == 4, "MODER should be 32-bit");
+```
+
+### Code Generation Best Practices
+
+When adding or modifying code generators:
+
+1. **Preserve hardware semantics**:
+   - Register sizes must match datasheet exactly
+   - Bit positions must be hardware-accurate
+   - Reserved fields must be marked clearly
+
+2. **Type safety**:
+   - Use `enum class` for register fields
+   - Use `uint32_t`, `uint16_t`, `uint8_t` (never `int`)
+   - Avoid bitfields (use explicit masks instead)
+
+3. **Documentation**:
+   - Generate Doxygen comments from SVD/ATDF descriptions
+   - Include register addresses and reset values
+   - Link to datasheet sections
+
+4. **Validation**:
+   - Add compile-time assertions for all generated code
+   - Test on actual hardware when possible
+   - Compare with vendor HAL implementations
+
+### CI/CD Integration
+
+Generated code validation runs automatically in CI:
+
+```yaml
+# .github/workflows/validate-codegen.yml
+- name: Validate generated code
+  run: |
+    cmake -B build -DMICROCORE_BOARD=host
+    cmake --build build --target validate-generated-code
+```
+
+CI will fail if:
+- Generated code doesn't compile
+- Static assertions fail
+- Code style doesn't match .clang-format
+- Any validation test fails
+
+### Regenerating Code
+
+When updating code generators or vendor files:
+
+1. Regenerate all affected code
+2. Run validation tests locally
+3. Review generated diffs carefully
+4. Update validation tests if hardware definitions changed
+5. Document changes in commit message
+
+```bash
+# Typical workflow
+python3 tools/codegen/generate_stm32.py --device STM32F401 --output src/hal/vendors/st/stm32f4/generated/
+cmake --build build --target validate-generated-code
+git diff src/hal/vendors/st/stm32f4/generated/  # Review changes
+git add src/hal/vendors/st/stm32f4/generated/
+git commit -m "refactor(codegen): regenerate STM32F4 registers
+
+- Updated register definitions from STM32CubeMX v1.2.3
+- Fixed GPIO BSRR register offset
+- Added missing AFRL/AFRH fields
+
+All validation tests pass."
+```
+
 ## Building
 
 ### Host (Native)
 
 ```bash
-cmake -B build -S . -DALLOY_BOARD=host
+cmake -B build -S . -DMICROCORE_BOARD=host
 cmake --build build
 ./build/examples/blinky/blinky
 ```
@@ -332,14 +465,14 @@ cmake --build build
 ### ARM (Cross-compilation)
 
 ```bash
-cmake -B build -S . -DALLOY_BOARD=rp_pico -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake
+cmake -B build -S . -DMICROCORE_BOARD=rp_pico -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake
 cmake --build build
 ```
 
 ## Questions?
 
-- **Bugs/Features**: [GitHub Issues](https://github.com/alloy-embedded/alloy/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/alloy-embedded/alloy/discussions)
+- **Bugs/Features**: [GitHub Issues](https://github.com/microcore-embedded/microcore/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/microcore-embedded/microcore/discussions)
 - **Specs**: Check `openspec/` directory
 
 ## License
