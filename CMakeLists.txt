@@ -50,11 +50,15 @@ endif()
 
 # Include CMake modules
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include(dependency_validation)
 include(compiler_options)
 include(toolchain_check)
 include(board_flags)
 include(flash_targets)
 include(memory_analysis)
+
+# Validate dependencies (checks toolchain, Python, flash tools, etc.)
+validate_dependencies()
 
 # ============================================================================
 # Board-to-Platform Validation

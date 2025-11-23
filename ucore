@@ -770,6 +770,185 @@ namespace led {{
 
         return 0
 
+    def doctor(self) -> int:
+        """Check system dependencies and environment health"""
+        print_header("MicroCore System Diagnostics")
+
+        import platform
+        import shutil
+
+        all_ok = True
+
+        # System Information
+        print(f"{Colors.BOLD}System Information:{Colors.ENDC}")
+        print(f"  OS:           {platform.system()} {platform.release()}")
+        print(f"  Architecture: {platform.machine()}")
+        print(f"  Python:       {platform.python_version()}")
+        print()
+
+        # CMake
+        print(f"{Colors.BOLD}Build Tools:{Colors.ENDC}")
+        cmake_path = shutil.which('cmake')
+        if cmake_path:
+            try:
+                result = subprocess.run(['cmake', '--version'],
+                                      capture_output=True, text=True, check=False)
+                version_line = result.stdout.split('\n')[0]
+                version = version_line.split()[-1] if version_line else "unknown"
+
+                # Check version >= 3.25
+                try:
+                    major, minor, *_ = version.split('.')
+                    major_int = int(major)
+                    minor_int = int(minor) if minor else 0
+
+                    # Check: major > 3 OR (major == 3 AND minor >= 25)
+                    if major_int > 3 or (major_int == 3 and minor_int >= 25):
+                        print(f"  {Colors.OKGREEN}✓{Colors.ENDC} CMake {version} ({cmake_path})")
+                    else:
+                        print(f"  {Colors.WARNING}⚠{Colors.ENDC} CMake {version} (older than 3.25, upgrade recommended)")
+                        all_ok = False
+                except:
+                    print(f"  {Colors.OKGREEN}✓{Colors.ENDC} CMake {version} ({cmake_path})")
+            except Exception as e:
+                print(f"  {Colors.FAIL}✗{Colors.ENDC} CMake found but version check failed: {e}")
+                all_ok = False
+        else:
+            print(f"  {Colors.FAIL}✗{Colors.ENDC} CMake not found")
+            print(f"    Install: brew install cmake (macOS) or apt-get install cmake (Linux)")
+            all_ok = False
+
+        # Make/Ninja
+        make_path = shutil.which('make')
+        ninja_path = shutil.which('ninja')
+        if make_path or ninja_path:
+            if ninja_path:
+                print(f"  {Colors.OKGREEN}✓{Colors.ENDC} Ninja ({ninja_path})")
+            if make_path:
+                print(f"  {Colors.OKGREEN}✓{Colors.ENDC} Make ({make_path})")
+        else:
+            print(f"  {Colors.WARNING}⚠{Colors.ENDC} No build system found (make or ninja)")
+            print(f"    Install: brew install ninja (macOS) or apt-get install ninja-build (Linux)")
+
+        print()
+
+        # Python dependencies
+        print(f"{Colors.BOLD}Python Dependencies:{Colors.ENDC}")
+
+        # Check PyYAML
+        try:
+            import yaml
+            print(f"  {Colors.OKGREEN}✓{Colors.ENDC} pyyaml")
+        except ImportError:
+            print(f"  {Colors.FAIL}✗{Colors.ENDC} pyyaml not installed")
+            print(f"    Install: pip3 install pyyaml")
+            all_ok = False
+
+        print()
+
+        # ARM Toolchain
+        print(f"{Colors.BOLD}ARM Toolchain:{Colors.ENDC}")
+        arm_gcc = shutil.which('arm-none-eabi-gcc')
+        if arm_gcc:
+            try:
+                result = subprocess.run(['arm-none-eabi-gcc', '--version'],
+                                      capture_output=True, text=True, check=False)
+                version_line = result.stdout.split('\n')[0]
+                # Extract version (e.g., "10.3.1")
+                import re
+                match = re.search(r'(\d+\.\d+\.\d+)', version_line)
+                version = match.group(1) if match else "unknown"
+
+                # Check version >= 10.0.0
+                try:
+                    major, *_ = version.split('.')
+                    if int(major) >= 10:
+                        print(f"  {Colors.OKGREEN}✓{Colors.ENDC} arm-none-eabi-gcc {version} ({arm_gcc})")
+                    else:
+                        print(f"  {Colors.WARNING}⚠{Colors.ENDC} arm-none-eabi-gcc {version} (older than 10.0, limited C++20 support)")
+                except:
+                    print(f"  {Colors.OKGREEN}✓{Colors.ENDC} arm-none-eabi-gcc {version} ({arm_gcc})")
+            except Exception as e:
+                print(f"  {Colors.FAIL}✗{Colors.ENDC} arm-none-eabi-gcc found but version check failed")
+                all_ok = False
+        else:
+            print(f"  {Colors.OKCYAN}○{Colors.ENDC} arm-none-eabi-gcc not found (needed for embedded targets)")
+            print(f"    Install: brew install --cask gcc-arm-embedded (macOS)")
+            print(f"             apt-get install gcc-arm-none-eabi (Linux)")
+
+        print()
+
+        # Flash Tools
+        print(f"{Colors.BOLD}Flash/Debug Tools:{Colors.ENDC}")
+
+        # st-flash (STM32)
+        st_flash = shutil.which('st-flash')
+        if st_flash:
+            print(f"  {Colors.OKGREEN}✓{Colors.ENDC} st-flash ({st_flash})")
+        else:
+            print(f"  {Colors.OKCYAN}○{Colors.ENDC} st-flash not found (optional, for STM32)")
+            print(f"    Install: brew install stlink (macOS) or apt-get install stlink-tools (Linux)")
+
+        # OpenOCD
+        openocd = shutil.which('openocd')
+        if openocd:
+            print(f"  {Colors.OKGREEN}✓{Colors.ENDC} OpenOCD ({openocd})")
+        else:
+            print(f"  {Colors.OKCYAN}○{Colors.ENDC} OpenOCD not found (optional, for debugging)")
+            print(f"    Install: brew install openocd (macOS) or apt-get install openocd (Linux)")
+
+        # JLink
+        jlink = shutil.which('JLinkExe')
+        if jlink:
+            print(f"  {Colors.OKGREEN}✓{Colors.ENDC} JLink ({jlink})")
+        else:
+            print(f"  {Colors.OKCYAN}○{Colors.ENDC} JLink not found (optional, commercial debugger)")
+
+        print()
+
+        # Code Quality Tools
+        print(f"{Colors.BOLD}Code Quality Tools (Optional):{Colors.ENDC}")
+
+        # clang-format
+        clang_format = shutil.which('clang-format')
+        if clang_format:
+            print(f"  {Colors.OKGREEN}✓{Colors.ENDC} clang-format ({clang_format})")
+        else:
+            print(f"  {Colors.OKCYAN}○{Colors.ENDC} clang-format not found (optional)")
+
+        # clang-tidy
+        clang_tidy = shutil.which('clang-tidy')
+        if clang_tidy:
+            print(f"  {Colors.OKGREEN}✓{Colors.ENDC} clang-tidy ({clang_tidy})")
+        else:
+            print(f"  {Colors.OKCYAN}○{Colors.ENDC} clang-tidy not found (optional)")
+
+        # Doxygen
+        doxygen = shutil.which('doxygen')
+        if doxygen:
+            print(f"  {Colors.OKGREEN}✓{Colors.ENDC} Doxygen ({doxygen})")
+        else:
+            print(f"  {Colors.OKCYAN}○{Colors.ENDC} Doxygen not found (optional, for documentation)")
+
+        print()
+
+        # Summary
+        print(f"{Colors.BOLD}Legend:{Colors.ENDC}")
+        print(f"  {Colors.OKGREEN}✓{Colors.ENDC} = Found and validated")
+        print(f"  {Colors.FAIL}✗{Colors.ENDC} = Missing (required)")
+        print(f"  {Colors.WARNING}⚠{Colors.ENDC} = Found but outdated/warning")
+        print(f"  {Colors.OKCYAN}○{Colors.ENDC} = Not found (optional)")
+        print()
+
+        if all_ok:
+            print_success("✓ All required dependencies installed!")
+            return 0
+        else:
+            print_warning("⚠ Some required dependencies are missing or outdated")
+            print()
+            print("Run the suggested install commands above to resolve issues.")
+            return 1
+
 
 def main():
     """Main entry point"""
@@ -791,6 +970,9 @@ Examples:
   %(prog)s new-board my_board              # Create new board with wizard
   %(prog)s validate-board nucleo_f401re    # Validate board YAML config
   %(prog)s generate-board nucleo_f401re    # Generate C++ from YAML
+
+  # System Diagnostics
+  %(prog)s doctor                          # Check dependencies and environment
         """
     )
 
@@ -830,6 +1012,9 @@ Examples:
     new_board_parser = subparsers.add_parser('new-board', help='Create new board configuration')
     new_board_parser.add_argument('board', help='Board name (e.g., my_custom_board)')
 
+    # Doctor command
+    doctor_parser = subparsers.add_parser('doctor', help='Check system dependencies and environment')
+
     args = parser.parse_args()
 
     if not args.command:
@@ -866,6 +1051,9 @@ Examples:
 
         elif args.command == 'new-board':
             return builder.new_board(args.board)
+
+        elif args.command == 'doctor':
+            return builder.doctor()
 
         else:
             parser.print_help()
