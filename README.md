@@ -76,20 +76,32 @@ This will download and install the [xPack ARM toolchain](https://xpack-dev-tools
 export PATH="$HOME/.local/xpack-arm-toolchain/bin:$PATH"
 ```
 
-### 3. Build an Example
+### 3. Build and Flash an Example
+
+**Using the unified CLI (recommended):**
 
 ```bash
-# Configure for your board
-cmake -B build -DMICROCORE_BOARD=bluepill
+# List supported boards
+./ucore list boards
 
-# Build
-cmake --build build
+# List available examples
+./ucore list examples
 
-# Flash to hardware (requires OpenOCD)
-cmake --build build --target flash
+# Build blink for Nucleo F401RE
+./ucore build nucleo_f401re blink
+
+# Build and flash in one command
+./ucore flash nucleo_f401re blink
 ```
 
-**Supported boards:** `bluepill`, `stm32f407vg`, `arduino_zero`, `rp_pico`, `esp32_devkit`, `host`
+**Supported boards:**
+- `nucleo_f401re` (STM32F401RE)
+- `nucleo_f722ze` (STM32F722ZE)
+- `nucleo_g071rb` (STM32G071RB)
+- `nucleo_g0b1re` (STM32G0B1RE)
+- `same70_xplained` (ATSAME70Q21B)
+
+📖 **See [QUICKSTART.md](QUICKSTART.md) for complete guide**
 
 ### 4. Your First Blink
 

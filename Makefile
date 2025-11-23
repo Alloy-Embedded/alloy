@@ -16,17 +16,18 @@ PRESET ?= host-debug
 
 help: ## Display this help message
 	@echo "$(BOLD)$(BLUE)═══════════════════════════════════════════════════$(NC)"
-	@echo "$(BOLD)$(BLUE)  🚀 Alloy Framework - Development CLI$(NC)"
+	@echo "$(BOLD)$(BLUE)  🚀 MicroCore (ucore) - Development CLI$(NC)"
 	@echo "$(BOLD)$(BLUE)═══════════════════════════════════════════════════$(NC)"
 	@echo ""
-	@awk 'BEGIN {FS = ":.*##"; printf "$(CYAN)Usage:$(NC)\n  make $(GREEN)<target>$(NC) [PRESET=preset-name]\n\n$(CYAN)Targets:$(NC)\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  $(GREEN)%-18s$(NC) %s\n", $$1, $$2 } /^##@/ { printf "\n$(BOLD)%s$(NC)\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*##"; printf "$(CYAN)Usage:$(NC)\n  make $(GREEN)<target>$(NC)\n\n$(CYAN)Targets:$(NC)\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  $(GREEN)%-18s$(NC) %s\n", $$1, $$2 } /^##@/ { printf "\n$(BOLD)%s$(NC)\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 	@echo ""
-	@echo "$(YELLOW)📝 Examples:$(NC)"
-	@echo "  make build                               # Build host-debug (default)"
-	@echo "  make build PRESET=nucleo-f401re-debug    # Build for Nucleo F401RE"
-	@echo "  make test                                # Run tests"
-	@echo "  make flash PRESET=nucleo-f401re-release  # Flash firmware"
-	@echo "  make dev                                 # Full dev workflow"
+	@echo "$(YELLOW)📝 Quick Start Examples:$(NC)"
+	@echo "  ./ucore list boards                      # List supported boards"
+	@echo "  ./ucore list examples                    # List available examples"
+	@echo "  ./ucore build nucleo_f401re blink        # Build blink example"
+	@echo "  ./ucore flash nucleo_f401re blink        # Build and flash"
+	@echo ""
+	@echo "$(YELLOW)💡 Tip:$(NC) Use the ucore CLI for building examples!"
 	@echo ""
 
 list: ## List all available CMake presets
