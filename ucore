@@ -1,0 +1,516 @@
+#!/usr/bin/env python3
+"""
+MicroCore (ucore) - Unified Build & Flash CLI
+
+Simple, unified interface for building and flashing MicroCore examples.
+
+Usage:
+    ./ucore build <board> <example>         # Build example for board
+    ./ucore flash <board> <example>         # Build and flash to board
+    ./ucore list [boards|examples]          # List available boards or examples
+    ./ucore clean [board]                   # Clean build directory
+
+Examples:
+    ./ucore build nucleo_f401re blink       # Build blink for Nucleo F401RE
+    ./ucore flash nucleo_f401re blink       # Build and flash blink
+    ./ucore list boards                     # Show all supported boards
+    ./ucore list examples                   # Show all available examples
+    ./ucore clean nucleo_f401re             # Clean board build directory
+"""
+
+import subprocess
+import sys
+import argparse
+from pathlib import Path
+from typing import List, Optional, Dict
+import shutil
+
+
+class Colors:
+    """ANSI color codes for terminal output"""
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+def print_header(msg: str):
+    """Print colored header"""
+    print(f"\n{Colors.HEADER}{Colors.BOLD}{'=' * 70}{Colors.ENDC}")
+    print(f"{Colors.HEADER}{Colors.BOLD}{msg:^70}{Colors.ENDC}")
+    print(f"{Colors.HEADER}{Colors.BOLD}{'=' * 70}{Colors.ENDC}\n")
+
+
+def print_success(msg: str):
+    """Print success message"""
+    print(f"{Colors.OKGREEN}✓ {msg}{Colors.ENDC}")
+
+
+def print_error(msg: str):
+    """Print error message"""
+    print(f"{Colors.FAIL}✗ {msg}{Colors.ENDC}")
+
+
+def print_info(msg: str):
+    """Print info message"""
+    print(f"{Colors.OKCYAN}ℹ {msg}{Colors.ENDC}")
+
+
+def print_warning(msg: str):
+    """Print warning message"""
+    print(f"{Colors.WARNING}⚠ {msg}{Colors.ENDC}")
+
+
+# Board configurations with flash commands
+BOARDS = {
+    'nucleo_f401re': {
+        'name': 'STM32 Nucleo-F401RE',
+        'mcu': 'STM32F401RE',
+        'arch': 'Cortex-M4',
+        'freq': '84 MHz',
+        'flash_cmd': 'st-flash',
+        'flash_args': lambda bin_file: ['write', str(bin_file), '0x08000000'],
+        'openocd_target': 'stm32f4x',
+    },
+    'nucleo_f722ze': {
+        'name': 'STM32 Nucleo-F722ZE',
+        'mcu': 'STM32F722ZE',
+        'arch': 'Cortex-M7',
+        'freq': '216 MHz',
+        'flash_cmd': 'st-flash',
+        'flash_args': lambda bin_file: ['write', str(bin_file), '0x08000000'],
+        'openocd_target': 'stm32f7x',
+    },
+    'nucleo_g071rb': {
+        'name': 'STM32 Nucleo-G071RB',
+        'mcu': 'STM32G071RB',
+        'arch': 'Cortex-M0+',
+        'freq': '64 MHz',
+        'flash_cmd': 'st-flash',
+        'flash_args': lambda bin_file: ['write', str(bin_file), '0x08000000'],
+        'openocd_target': 'stm32g0x',
+    },
+    'nucleo_g0b1re': {
+        'name': 'STM32 Nucleo-G0B1RE',
+        'mcu': 'STM32G0B1RE',
+        'arch': 'Cortex-M0+',
+        'freq': '64 MHz',
+        'flash_cmd': 'st-flash',
+        'flash_args': lambda bin_file: ['write', str(bin_file), '0x08000000'],
+        'openocd_target': 'stm32g0x',
+    },
+    'same70_xplained': {
+        'name': 'SAME70 Xplained Ultra',
+        'mcu': 'ATSAME70Q21B',
+        'arch': 'Cortex-M7',
+        'freq': '300 MHz',
+        'flash_cmd': 'openocd',
+        'flash_args': lambda elf_file: [
+            '-f', 'interface/cmsis-dap.cfg',
+            '-f', 'target/atsamv.cfg',
+            '-c', f'program {elf_file} verify reset exit'
+        ],
+        'openocd_target': 'atsamv',
+    },
+}
+
+
+class UCoreBuilder:
+    """MicroCore unified builder"""
+
+    def __init__(self):
+        self.root_dir = Path(__file__).parent.resolve()
+        self.examples_dir = self.root_dir / "examples"
+        self.toolchain_file = self.root_dir / "cmake" / "toolchains" / "arm-none-eabi.cmake"
+
+    def get_examples(self) -> List[str]:
+        """Get list of available examples"""
+        if not self.examples_dir.exists():
+            return []
+
+        examples = []
+        for item in self.examples_dir.iterdir():
+            if item.is_dir() and (item / "CMakeLists.txt").exists():
+                examples.append(item.name)
+            # Also check for nested examples (like rtos/simple_tasks)
+            elif item.is_dir():
+                for subitem in item.iterdir():
+                    if subitem.is_dir() and (subitem / "CMakeLists.txt").exists():
+                        examples.append(f"{item.name}/{subitem.name}")
+
+        return sorted(examples)
+
+    def list_boards(self):
+        """List all supported boards"""
+        print_header("Supported Boards")
+
+        for board_id, info in BOARDS.items():
+            print(f"{Colors.OKBLUE}{Colors.BOLD}{board_id}{Colors.ENDC}")
+            print(f"  Name:         {info['name']}")
+            print(f"  MCU:          {info['mcu']}")
+            print(f"  Architecture: {info['arch']}")
+            print(f"  Frequency:    {info['freq']}")
+            print(f"  Flash tool:   {info['flash_cmd']}")
+            print()
+
+    def list_examples(self):
+        """List all available examples"""
+        print_header("Available Examples")
+
+        examples = self.get_examples()
+        if not examples:
+            print_warning("No examples found")
+            return
+
+        for example in examples:
+            example_path = self.examples_dir / example
+            print(f"  {Colors.OKGREEN}•{Colors.ENDC} {example}")
+
+            # Try to read description from CMakeLists.txt
+            cmake_file = example_path / "CMakeLists.txt"
+            if cmake_file.exists():
+                with open(cmake_file) as f:
+                    for line in f:
+                        if 'DESCRIPTION' in line and '"' in line:
+                            desc = line.split('"')[1]
+                            print(f"    {desc}")
+                            break
+        print()
+
+    def build(self, board: str, example: str, build_type: str = "Release") -> int:
+        """Build example for board"""
+
+        # Validate board
+        if board not in BOARDS:
+            print_error(f"Unknown board: {board}")
+            print_info(f"Available boards: {', '.join(BOARDS.keys())}")
+            return 1
+
+        # Validate example
+        example_path = self.examples_dir / example
+        if not example_path.exists() or not (example_path / "CMakeLists.txt").exists():
+            print_error(f"Example not found: {example}")
+            print_info("Run './ucore list examples' to see available examples")
+            return 1
+
+        print_header(f"Building {example} for {board}")
+
+        board_info = BOARDS[board]
+        print_info(f"Board: {board_info['name']} ({board_info['mcu']})")
+        print_info(f"Example: {example}")
+        print_info(f"Build type: {build_type}")
+        print()
+
+        # Build directory
+        build_dir = self.root_dir / f"build-{board}"
+
+        # Configure
+        print(f"{Colors.BOLD}[1/2] Configuring...{Colors.ENDC}")
+        configure_cmd = [
+            "cmake",
+            "-B", str(build_dir),
+            f"-DMICROCORE_BOARD={board}",
+            "-DMICROCORE_BUILD_TESTS=OFF",
+            f"-DCMAKE_TOOLCHAIN_FILE={self.toolchain_file}",
+            f"-DCMAKE_BUILD_TYPE={build_type}",
+        ]
+
+        result = subprocess.run(configure_cmd, cwd=self.root_dir)
+        if result.returncode != 0:
+            print_error("Configuration failed")
+            return 1
+
+        print_success("Configuration complete")
+        print()
+
+        # Build
+        print(f"{Colors.BOLD}[2/2] Building...{Colors.ENDC}")
+
+        # Extract example target name (last part of path)
+        example_target = example.split('/')[-1]
+
+        build_cmd = [
+            "cmake",
+            "--build", str(build_dir),
+            "--target", example_target,
+            "--", "-j4"  # Parallel build
+        ]
+
+        result = subprocess.run(build_cmd, cwd=self.root_dir)
+        if result.returncode != 0:
+            print_error("Build failed")
+            return 1
+
+        print_success("Build complete")
+
+        # Show binary info
+        bin_file = build_dir / "examples" / example / f"{example_target}.bin"
+        elf_file = build_dir / "examples" / example / example_target
+
+        if elf_file.exists():
+            size = elf_file.stat().st_size
+            print()
+            print_info(f"Binary location: {elf_file}")
+            print_info(f"Binary size: {size:,} bytes ({size/1024:.1f} KB)")
+
+        return 0
+
+    def flash(self, board: str, example: str, build_type: str = "Release", reset: bool = False) -> int:
+        """Build and flash example to board"""
+
+        # Build first
+        if self.build(board, example, build_type) != 0:
+            return 1
+
+        print()
+        print_header(f"Flashing {example} to {board}")
+
+        board_info = BOARDS[board]
+        flash_cmd = board_info['flash_cmd']
+
+        # Check if flash tool is available
+        if not shutil.which(flash_cmd):
+            print_error(f"Flash tool not found: {flash_cmd}")
+            print_info("Install flash tools:")
+            if flash_cmd == 'st-flash':
+                print_info("  macOS:  brew install stlink")
+                print_info("  Linux:  apt-get install stlink-tools")
+            elif flash_cmd == 'openocd':
+                print_info("  macOS:  brew install openocd")
+                print_info("  Linux:  apt-get install openocd")
+            return 1
+
+        # Determine binary file
+        build_dir = self.root_dir / f"build-{board}"
+        example_target = example.split('/')[-1]
+
+        print_warning("Connect your board now and press Enter to continue...")
+        input()
+
+        success = False
+
+        if flash_cmd == 'st-flash':
+            bin_file = build_dir / "examples" / example / f"{example_target}.bin"
+            if not bin_file.exists():
+                print_error(f"Binary not found: {bin_file}")
+                return 1
+
+            # Try normal flash first
+            flash_args = board_info['flash_args'](bin_file)
+            cmd = [flash_cmd] + flash_args
+
+            print()
+            print_info(f"Method 1: Standard flash")
+            print_info(f"Command: {' '.join(cmd)}")
+            result = subprocess.run(cmd, cwd=self.root_dir)
+
+            if result.returncode == 0:
+                success = True
+            else:
+                # If failed, try with --connect-under-reset
+                print()
+                print_warning("Standard flash failed, trying with connect-under-reset...")
+                print_info("Hold the RESET button on your board, then press Enter...")
+                input()
+
+                cmd_reset = [flash_cmd, '--connect-under-reset'] + flash_args
+                print_info(f"Command: {' '.join(cmd_reset)}")
+                print_warning("Release the RESET button NOW!")
+
+                result = subprocess.run(cmd_reset, cwd=self.root_dir)
+
+                if result.returncode == 0:
+                    success = True
+                else:
+                    # Last resort: try OpenOCD if available
+                    if shutil.which('openocd'):
+                        print()
+                        print_warning("st-flash failed, trying OpenOCD as fallback...")
+                        success = self._flash_with_openocd(board_info, bin_file)
+                    else:
+                        print_error("All flash methods failed")
+                        print_info("Troubleshooting tips:")
+                        print_info("  1. Check USB connection")
+                        print_info("  2. Try a different USB port")
+                        print_info("  3. Try holding RESET button while connecting")
+                        print_info("  4. Check if board is detected: st-info --probe")
+                        return 1
+
+        elif flash_cmd == 'openocd':
+            elf_file = build_dir / "examples" / example / example_target
+            if not elf_file.exists():
+                print_error(f"ELF file not found: {elf_file}")
+                return 1
+
+            success = self._flash_with_openocd(board_info, elf_file, is_elf=True)
+
+        else:
+            print_error(f"Unsupported flash command: {flash_cmd}")
+            return 1
+
+        if success:
+            print()
+            print_success("Flash complete!")
+            print()
+            print(f"{Colors.OKGREEN}{Colors.BOLD}🎉 {example} is now running on {board}!{Colors.ENDC}")
+            return 0
+        else:
+            print_error("Flash failed")
+            return 1
+
+    def _flash_with_openocd(self, board_info: dict, bin_or_elf_file: Path, is_elf: bool = False) -> bool:
+        """Flash using OpenOCD (fallback or primary method)"""
+        print()
+        print_info("Using OpenOCD for flashing...")
+
+        target = board_info.get('openocd_target', 'stm32f4x')
+
+        if is_elf:
+            # ELF file - can program directly
+            cmd = [
+                'openocd',
+                '-f', 'interface/stlink.cfg',
+                '-f', f'target/{target}.cfg',
+                '-c', 'init',
+                '-c', 'reset init',
+                '-c', f'program {bin_or_elf_file} verify reset exit'
+            ]
+        else:
+            # Binary file - need to specify address
+            cmd = [
+                'openocd',
+                '-f', 'interface/stlink.cfg',
+                '-f', f'target/{target}.cfg',
+                '-c', 'init',
+                '-c', 'reset init',
+                '-c', f'flash write_image erase {bin_or_elf_file} 0x08000000',
+                '-c', 'verify_image {bin_or_elf_file} 0x08000000',
+                '-c', 'reset run',
+                '-c', 'exit'
+            ]
+
+        print_info(f"Command: {' '.join(cmd)}")
+        result = subprocess.run(cmd, cwd=self.root_dir)
+
+        return result.returncode == 0
+
+    def clean(self, board: Optional[str] = None):
+        """Clean build directory"""
+        if board:
+            if board not in BOARDS:
+                print_error(f"Unknown board: {board}")
+                return 1
+
+            build_dir = self.root_dir / f"build-{board}"
+            if build_dir.exists():
+                print_info(f"Cleaning {build_dir}")
+                shutil.rmtree(build_dir)
+                print_success(f"Cleaned {board} build directory")
+            else:
+                print_warning(f"Build directory not found: {build_dir}")
+        else:
+            # Clean all board build directories
+            cleaned = False
+            for board_id in BOARDS.keys():
+                build_dir = self.root_dir / f"build-{board_id}"
+                if build_dir.exists():
+                    print_info(f"Cleaning {build_dir}")
+                    shutil.rmtree(build_dir)
+                    cleaned = True
+
+            if cleaned:
+                print_success("Cleaned all board build directories")
+            else:
+                print_warning("No board build directories found")
+
+
+def main():
+    """Main entry point"""
+    parser = argparse.ArgumentParser(
+        description="MicroCore (ucore) - Unified Build & Flash CLI",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  %(prog)s build nucleo_f401re blink       # Build blink for Nucleo F401RE
+  %(prog)s flash nucleo_f401re blink       # Build and flash blink
+  %(prog)s list boards                     # Show all supported boards
+  %(prog)s list examples                   # Show all available examples
+  %(prog)s clean nucleo_f401re             # Clean board build directory
+  %(prog)s clean                           # Clean all builds
+        """
+    )
+
+    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+
+    # List command
+    list_parser = subparsers.add_parser('list', help='List boards or examples')
+    list_parser.add_argument('type', nargs='?', choices=['boards', 'examples'],
+                            default='boards', help='What to list (default: boards)')
+
+    # Build command
+    build_parser = subparsers.add_parser('build', help='Build example for board')
+    build_parser.add_argument('board', help='Board name (e.g., nucleo_f401re)')
+    build_parser.add_argument('example', help='Example name (e.g., blink)')
+    build_parser.add_argument('--debug', action='store_true', help='Build debug version')
+
+    # Flash command
+    flash_parser = subparsers.add_parser('flash', help='Build and flash example to board')
+    flash_parser.add_argument('board', help='Board name (e.g., nucleo_f401re)')
+    flash_parser.add_argument('example', help='Example name (e.g., blink)')
+    flash_parser.add_argument('--debug', action='store_true', help='Build debug version')
+    flash_parser.add_argument('--reset', action='store_true', help='Force connect-under-reset mode')
+
+    # Clean command
+    clean_parser = subparsers.add_parser('clean', help='Clean build directory')
+    clean_parser.add_argument('board', nargs='?', help='Board to clean (or all if omitted)')
+
+    args = parser.parse_args()
+
+    if not args.command:
+        parser.print_help()
+        return 0
+
+    builder = UCoreBuilder()
+
+    try:
+        if args.command == 'list':
+            if args.type == 'boards':
+                builder.list_boards()
+            else:
+                builder.list_examples()
+            return 0
+
+        elif args.command == 'build':
+            build_type = "Debug" if args.debug else "Release"
+            return builder.build(args.board, args.example, build_type)
+
+        elif args.command == 'flash':
+            build_type = "Debug" if args.debug else "Release"
+            return builder.flash(args.board, args.example, build_type, args.reset)
+
+        elif args.command == 'clean':
+            builder.clean(args.board)
+            return 0
+
+        else:
+            parser.print_help()
+            return 1
+
+    except KeyboardInterrupt:
+        print_warning("\nOperation cancelled by user")
+        return 130
+
+    except Exception as e:
+        print_error(f"Unexpected error: {e}")
+        import traceback
+        traceback.print_exc()
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
