@@ -463,3 +463,33 @@ add_custom_target(test-platform-validation
     COMMENT "Testing platform validation logic..."
     VERBATIM
 )
+
+# ==============================================================================
+# Documentation (Doxygen)
+# ==============================================================================
+
+find_package(Doxygen OPTIONAL_COMPONENTS dot)
+
+if(DOXYGEN_FOUND)
+    # Custom target to generate documentation
+    add_custom_target(docs
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Doxyfile
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM
+    )
+
+    message(STATUS "Doxygen found: ${DOXYGEN_EXECUTABLE}")
+    message(STATUS "  Run 'make docs' to generate documentation")
+    message(STATUS "  Output: docs/api/html/index.html")
+
+    if(DOXYGEN_DOT_FOUND)
+        message(STATUS "  GraphViz/Dot found: Class diagrams enabled")
+    else()
+        message(STATUS "  GraphViz/Dot not found: Class diagrams disabled")
+    endif()
+else()
+    message(STATUS "Doxygen not found (optional)")
+    message(STATUS "  Install: brew install doxygen (macOS) or apt-get install doxygen (Linux)")
+    message(STATUS "  Documentation generation will be disabled")
+endif()
