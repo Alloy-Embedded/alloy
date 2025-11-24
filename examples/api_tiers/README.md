@@ -283,6 +283,105 @@ expert::spi::transfer(spi_config, tx_buffer, rx_buffer, 512);
 - Expert (DMA @ 16 MHz): ~2 MB/sec, <5% CPU usage
 - **Throughput: 16x faster, CPU usage: 95% lower**
 
+### I2C Examples
+
+#### Simple Tier (Beginner-Friendly)
+
+| Example | Description | Demonstrates |
+|---------|-------------|--------------|
+| `simple_i2c_sensor.cpp` | I2C sensor reading | `I2c::quick_setup<>()`, device scanning, register access |
+
+**API Style**:
+```cpp
+// One-liner I2C setup (100 kHz Standard-mode)
+auto i2c = I2c1::quick_setup<SdaPin, SclPin>(I2cSpeed::Standard_100kHz);
+i2c.initialize();
+
+// Write-then-read pattern
+uint8_t reg = 0x75;  // WHO_AM_I register
+i2c.write(0x68, &reg, 1);
+uint8_t device_id;
+i2c.read(0x68, &device_id, 1);
+```
+
+**When to use**:
+- ✅ Simple I2C sensors (accelerometer, temperature, RTC)
+- ✅ EEPROM reading/writing
+- ✅ Learning I2C protocol
+- ✅ Device discovery and testing
+
+#### Fluent Tier (Production-Ready)
+
+| Example | Description | Demonstrates |
+|---------|-------------|--------------|
+| `fluent_i2c_multi_sensor.cpp` | Multi-sensor data fusion | Builder pattern, 400 kHz, sensor drivers, error handling |
+
+**API Style**:
+```cpp
+// Builder pattern with custom I2C configuration
+auto i2c = I2c1Builder()
+    .with_pins<SdaPin, SclPin>()
+    .speed(I2cSpeed::Fast_400kHz)          // 400 kHz for faster sensors
+    .addressing_mode(I2cAddressing::SevenBit)
+    .enable_clock_stretching()
+    .initialize();
+
+// Result-based error handling
+auto result = i2c.write(0x68, data, length);
+if (result.is_err()) { /* handle error */ }
+```
+
+**When to use**:
+- ✅ Multiple I2C sensors on same bus
+- ✅ Higher speeds (400 kHz Fast-mode)
+- ✅ Sensor data fusion (accel + gyro + mag)
+- ✅ Production sensor interfaces
+
+**I2C Speeds**:
+- 100 kHz (Standard-mode): Most common, widest compatibility
+- 400 kHz (Fast-mode): Modern sensors, faster data acquisition
+- 1 MHz (Fast-mode Plus): High-speed sensors (STM32F7/G0 only)
+
+#### Expert Tier (Performance-Critical)
+
+| Example | Description | Demonstrates |
+|---------|-------------|--------------|
+| `expert_i2c_eeprom_dma.cpp` | EEPROM with error recovery | Compile-time config, page writes, wear leveling, bus recovery |
+
+**API Style**:
+```cpp
+// Compile-time configuration (zero runtime overhead)
+constexpr auto i2c_config = I2c1Expert::configure(
+    I2cSpeed::Fast_400kHz,
+    I2cAddressing::SevenBit,
+    PinId::PB9,  // SDA
+    PinId::PB8   // SCL
+);
+
+expert::i2c::initialize(i2c_config);
+
+// Page write to EEPROM (32 bytes at once)
+uint8_t data[32] = {...};
+eeprom.write_page(0x0000, data, 32);
+```
+
+**When to use**:
+- ✅ EEPROM/Flash memory access
+- ✅ Critical data storage
+- ✅ Error recovery (bus lockup)
+- ✅ Wear leveling for longevity
+
+**Performance Comparison**:
+- Byte-by-byte write: 32 bytes × 5ms = 160ms
+- Page write (Expert): 1 page × 5ms = 5ms
+- **Speedup: 32x faster**
+
+**Error Recovery**:
+- Bus lockup detection
+- GPIO-based recovery (9 clock pulses)
+- Automatic STOP condition
+- Robust for industrial environments
+
 ## Building Examples
 
 ### Prerequisites
