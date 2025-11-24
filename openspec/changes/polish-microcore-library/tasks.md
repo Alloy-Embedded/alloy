@@ -172,16 +172,22 @@ Created comprehensive documentation (docs/API_TIERS.md) and examples (examples/a
 
 **Status**: Core I2C support exists with hardware policies for all 6 platforms (STM32F4/F7/F1/G0, SAME70). STM32F4 and SAME70 have functional platform layers using template-based class approach. Modern tier APIs (Simple/Fluent/Expert) exist but need platform integration. Two register architectures supported: Legacy (F4/F1 with CR1/CR2/SR1/SR2/DR) and Modern (F7/G0 with TIMINGR/ISR/ICR). Hardware policies complete, platform layer modernization and examples remain for future work.
 
-### 3.5 ADC Implementation (12 hours)
-- [ ] Define ADC concept interface
-- [ ] Implement STM32F4 ADC hardware policy
-- [ ] Implement STM32F7 ADC hardware policy
-- [ ] Implement STM32G0 ADC hardware policy
-- [ ] Implement SAME70 ADC hardware policy
-- [ ] Create ADC single-channel example
-- [ ] Create ADC multi-channel example
-- [ ] Add ADC DMA support
-- [ ] Document ADC API
+### 3.5 ADC Implementation (12 hours) ✅ PARTIALLY COMPLETE
+- [x] ADC concept interface already exists (src/hal/interface/adc.hpp)
+- [x] STM32F4 ADC hardware policy created (src/hal/vendors/st/stm32f4/adc_hardware_policy.hpp)
+- [x] STM32F7 ADC hardware policy created (src/hal/vendors/st/stm32f7/adc_hardware_policy.hpp)
+- [x] STM32F1 ADC hardware policy created (src/hal/vendors/st/stm32f1/adc_hardware_policy.hpp)
+- [x] STM32G0 ADC hardware policy exists (src/hal/vendors/st/stm32g0/adc_hardware_policy.hpp)
+- [x] SAME70 ADC hardware policy exists (src/hal/vendors/atmel/same70/adc_hardware_policy.hpp)
+- [x] STM32F4 platform layer exists (src/hal/platform/stm32f4/adc.hpp - template-based class)
+- [x] SAME70 platform layer exists (src/hal/platform/same70/adc.hpp - template-based class)
+- [x] ADC API tiers exist (src/hal/api/adc_simple.hpp, adc_fluent.hpp, adc_expert.hpp)
+- [ ] Create platform layers for STM32F7/F1/G0 using tier APIs (future work)
+- [ ] Create ADC tier examples (simple_adc_read.cpp, etc.) (future work)
+- [ ] Add ADC DMA support examples (future enhancement)
+- [ ] Document ADC tier usage (future work)
+
+**Status**: Core ADC support exists with hardware policies for all 6 platforms (STM32F4/F7/F1/G0, SAME70). STM32F4 and SAME70 have functional platform layers using template-based class approach. Modern tier APIs (Simple/Fluent/Expert) exist but need platform integration. Three resolution architectures supported: Variable resolution (F4/F7 with 12/10/8/6-bit), Fixed resolution (F1 with 12-bit only), Modern (G0). STM32F1 requires calibration after power-on. Hardware policies complete, platform layer modernization and examples remain for future work.
 
 ### 3.6 Testing Improvements (24 hours) ✅ SUBSTANTIALLY COMPLETE
 - [ ] Create hardware-in-loop test framework (requires physical boards - future work)
