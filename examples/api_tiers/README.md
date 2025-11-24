@@ -190,6 +190,99 @@ enter_stop_mode();  // ~1-2 µA vs ~10 mA in RUN mode
 - Expert (STOP mode + LPUART): ~1-2 µA
 - **Power savings: 5000x lower consumption**
 
+### SPI Examples
+
+#### Simple Tier (Beginner-Friendly)
+
+| Example | Description | Demonstrates |
+|---------|-------------|--------------|
+| `simple_spi_master.cpp` | SPI master communication | `Spi::quick_setup<>()`, `transfer_byte()`, `transmit()` |
+
+**API Style**:
+```cpp
+// One-liner SPI setup (Mode0, 1 MHz default)
+auto spi = Spi1::quick_setup<MosiPin, MisoPin, SckPin>(1000000);
+spi.initialize();
+
+// Simple transfers
+spi.transmit_byte(0x55);           // Send byte
+uint8_t data = spi.receive_byte(); // Read byte
+spi.transfer_byte(tx_data);        // Full-duplex
+```
+
+**When to use**:
+- ✅ Simple SPI devices (sensors, accelerometers)
+- ✅ Learning SPI protocol
+- ✅ Quick prototyping
+- ✅ Basic sensor reading
+
+#### Fluent Tier (Production-Ready)
+
+| Example | Description | Demonstrates |
+|---------|-------------|--------------|
+| `fluent_spi_display.cpp` | LCD display driver | Custom SPI mode, higher speed, TX-only, builder pattern |
+
+**API Style**:
+```cpp
+// Builder pattern with custom SPI configuration
+auto spi = Spi1Builder()
+    .with_pins<MosiPin, MisoPin, SckPin>()
+    .clock_speed(8000000)              // 8 MHz for fast updates
+    .mode(SpiMode::Mode3)              // CPOL=1, CPHA=1 (display-specific)
+    .bit_order(SpiBitOrder::MsbFirst)
+    .initialize();
+
+// Bulk transfers for performance
+uint8_t pixel_buffer[256];
+spi.transmit(pixel_buffer, sizeof(pixel_buffer));
+```
+
+**When to use**:
+- ✅ LCD/OLED displays
+- ✅ Custom SPI modes (Mode1-3)
+- ✅ Higher clock speeds (8-16 MHz)
+- ✅ Write-heavy operations
+
+**SPI Modes**:
+- Mode0 (CPOL=0, CPHA=0): Most common (SD cards, sensors)
+- Mode1 (CPOL=0, CPHA=1): Some sensors
+- Mode2 (CPOL=1, CPHA=0): Rare
+- Mode3 (CPOL=1, CPHA=1): Common for displays (ST7735, ILI9341)
+
+#### Expert Tier (Performance-Critical)
+
+| Example | Description | Demonstrates |
+|---------|-------------|--------------|
+| `expert_spi_dma.cpp` | High-throughput DMA transfers | Compile-time config, DMA, zero-copy buffers |
+
+**API Style**:
+```cpp
+// Compile-time configuration (zero runtime overhead)
+constexpr auto spi_config = Spi1Expert::configure(
+    SpiMode::Mode0,
+    16000000,        // 16 MHz max speed
+    SpiBitOrder::MsbFirst,
+    SpiDataSize::Bits8,
+    PinId::PA7, PinId::PA6, PinId::PA5
+);
+
+// Large buffer transfers with DMA
+alignas(4) uint8_t tx_buffer[512];
+alignas(4) uint8_t rx_buffer[512];
+expert::spi::transfer(spi_config, tx_buffer, rx_buffer, 512);
+```
+
+**When to use**:
+- ✅ High-throughput applications (>1 MB/sec)
+- ✅ Large data transfers (>256 bytes)
+- ✅ DMA-driven streaming
+- ✅ Real-time data acquisition
+
+**Performance Comparison**:
+- Simple/Fluent (polling @ 1 MHz): ~125 KB/sec, 100% CPU usage
+- Expert (DMA @ 16 MHz): ~2 MB/sec, <5% CPU usage
+- **Throughput: 16x faster, CPU usage: 95% lower**
+
 ## Building Examples
 
 ### Prerequisites
