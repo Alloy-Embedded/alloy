@@ -382,6 +382,211 @@ eeprom.write_page(0x0000, data, 32);
 - Automatic STOP condition
 - Robust for industrial environments
 
+---
+
+## ADC (Analog-to-Digital Converter) Examples
+
+### Simple Tier - `simple_adc_read.cpp`
+
+**One-liner analog voltage reading**
+
+```cpp
+// One-liner setup (12-bit, Vdd reference)
+auto adc = Adc1Instance::quick_setup<AdcPin>(AdcChannel::CH0);
+adc.initialize();
+
+// Read analog value
+auto result = adc.read();  // Returns 0-4095 (12-bit)
+uint16_t value = result.unwrap();
+uint32_t voltage_mv = (value * 3300) / 4095;
+```
+
+**Use Cases**:
+- Battery voltage monitoring
+- Potentiometer reading
+- Temperature sensors (NTC thermistor)
+- Light sensors (LDR)
+- Analog joystick input
+
+**Features**:
+- Default 12-bit resolution (0-4095)
+- Vdd reference (3.3V typical)
+- Simple polling mode
+- Helper functions for voltage/percentage conversion
+
+**Conversion Examples**:
+- `0` ADC = `0.0V` (GND)
+- `2048` ADC = `1.65V` (half of 3.3V)
+- `4095` ADC = `3.3V` (Vdd)
+- Resolution: `0.806 mV` per count
+
+**Common Sensors**:
+- **Potentiometer**: Direct connection (0V to 3.3V)
+- **NTC Thermistor**: Voltage divider with 10k resistor
+- **LDR**: Voltage divider with 10k resistor
+- **Analog Joystick**: 2 potentiometers (X/Y axes)
+
+---
+
+### Fluent Tier - `fluent_adc_multi_channel.cpp`
+
+**Multi-channel sensor acquisition with builder pattern**
+
+```cpp
+// Configure with builder pattern
+auto adc = Adc1Builder()
+    .channel(AdcChannel::CH1)
+    .resolution(AdcResolution::Bits12)
+    .bits_12()
+    .initialize();
+
+// Multi-channel acquisition
+SensorData data = {
+    .temperature_c = read_ntc_temperature(),  // CH0
+    .light_lux = read_ldr_light(),            // CH1
+    .battery_mv = read_battery_voltage()      // CH2
+};
+```
+
+**Use Cases**:
+- Multi-sensor data logging
+- Environmental monitoring (temp + humidity + pressure)
+- Battery + solar panel monitoring
+- Analog sensor arrays
+- Circular buffer data storage
+
+**Features**:
+- Builder pattern configuration
+- Multi-channel sequential reading
+- Sensor conversion functions (NTC → °C, LDR → lux)
+- Circular buffer for data logging
+- Alert thresholds (temperature, light, battery)
+
+**Sensor Processing**:
+- **Temperature**: NTC thermistor with Beta equation
+- **Light**: LDR with approximate lux mapping
+- **Battery**: Voltage divider with 2x scaling
+
+**Performance**:
+- 3 channels @ 10 Hz = 30 samples/sec
+- 12-bit data: 60 bytes/sec
+- Can log for days on SD card
+
+---
+
+### Expert Tier - `expert_adc_dma_logging.cpp`
+
+**Compile-time config with DMA circular buffering**
+
+```cpp
+// Compile-time configuration
+constexpr auto config = AdcExpertConfig{
+    .peripheral = PeripheralId::ADC1,
+    .channel = AdcChannel::CH0,
+    .resolution = AdcResolution::Bits12,
+    .enable_dma = true,
+    .enable_continuous = true,
+    .enable_oversampling = true,  // STM32G0 only
+    .oversampling_ratio = 16      // 16x → 14-bit effective
+};
+
+expert::adc::configure(config);
+expert::adc::start_dma(PeripheralId::ADC1);
+
+// DMA runs in background - zero CPU overhead!
+// Process data when buffer half-full
+```
+
+**Use Cases**:
+- High-speed data logger (10-100 kSPS)
+- Oscilloscope waveform capture
+- Vibration analysis (accelerometer FFT)
+- Audio recording (44.1 kSPS)
+- Signal quality monitoring
+
+**Features**:
+- Compile-time configuration validation
+- DMA circular mode (ping-pong buffering)
+- Hardware oversampling (STM32G0: up to 16-bit)
+- Zero CPU overhead during acquisition
+- Buffer statistics (min, max, avg, RMS, peak-to-peak)
+
+**DMA Circular Buffer**:
+```
+Buffer: [0...........255|256...........511]
+         ^- First half  ^  ^- Second half ^
+
+1. DMA fills first half → Half-transfer interrupt
+2. CPU processes first half while DMA fills second half
+3. DMA fills second half → Transfer-complete interrupt
+4. CPU processes second half while DMA wraps to first half
+```
+
+**Performance Comparison**:
+
+| Platform | Sample Rate | Resolution | CPU Usage | Notes |
+|----------|-------------|------------|-----------|-------|
+| STM32F4 | 218 kSPS | 12-bit | 0% (DMA) | Max speed |
+| STM32F7 | 2.4 MSPS | 12-bit | 0% (DMA) | Triple ADC mode |
+| STM32G0 | 40 kSPS | 14-bit (16x OS) | 0% (DMA) | Hardware oversampling |
+| STM32G0 | 5 kSPS | 16-bit (256x OS) | 0% (DMA) | Max resolution |
+
+**Oversampling (STM32G0)**:
+- `2x/4x` → +1 bit (13-bit from 12-bit)
+- `16x` → +2 bits (14-bit)
+- `64x` → +3 bits (15-bit)
+- `256x` → +4 bits (16-bit)
+
+**DMA vs Polling/Interrupt**:
+- **Polling**: 100% CPU, blocks other tasks
+- **Interrupt**: ~5% CPU (context switching)
+- **DMA**: ~0% CPU (hardware transfers)
+
+**Buffer Analysis**:
+- Min/Max detection for signal range
+- Average for DC offset
+- RMS for AC signal power
+- Peak-to-peak for noise analysis
+- FFT for frequency analysis (optional)
+
+**Advanced Features**:
+- Timer-triggered ADC (precise sampling rate)
+- Multi-channel scan mode
+- Analog watchdog (hardware threshold)
+- Dual/Triple ADC (simultaneous sampling)
+- Low-power auto-off mode (STM32G0)
+
+---
+
+### ADC API Comparison
+
+| Feature | Simple | Fluent | Expert |
+|---------|--------|--------|--------|
+| **Setup** | 1 line | Builder chain | Compile-time struct |
+| **Resolution** | 12-bit fixed | 12-bit fixed | 6/8/10/12-bit selectable |
+| **Mode** | Polling | Polling | DMA circular |
+| **Channels** | Single | Multi-channel | Multi-channel scan |
+| **Oversampling** | ❌ | ❌ | ✅ (STM32G0) |
+| **CPU usage** | ~5% @ 1 kSPS | ~10% @ multi-ch | 0% (DMA) |
+| **Sample rate** | 1-10 kSPS | 1-10 kSPS | 10-100 kSPS |
+| **Use case** | Quick readings | Sensor arrays | Data logging |
+
+**Resolution Comparison**:
+- **6-bit**: 64 levels, 51.6 mV/count @ 3.3V (coarse)
+- **8-bit**: 256 levels, 12.9 mV/count (Arduino-like)
+- **10-bit**: 1024 levels, 3.22 mV/count (good)
+- **12-bit**: 4096 levels, 0.806 mV/count (standard)
+- **14-bit** (16x OS): 16384 levels, 0.201 mV/count (high-res)
+- **16-bit** (256x OS): 65536 levels, 0.0503 mV/count (precision)
+
+**When to Use Each Tier**:
+
+**Simple** → Quick prototyping, single sensor, battery monitoring
+**Fluent** → Multi-sensor logging, environmental monitoring, data acquisition
+**Expert** → High-speed logging, oscilloscope, vibration analysis, audio
+
+---
+
 ## Building Examples
 
 ### Prerequisites
