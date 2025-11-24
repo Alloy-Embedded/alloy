@@ -172,7 +172,7 @@ Created comprehensive documentation (docs/API_TIERS.md) and examples (examples/a
 
 **Status**: All platforms now have complete I2C support with tier APIs. Platform layers created for STM32F7 (4 I2Cs), STM32F1 (2 I2Cs), and STM32G0 (3 I2Cs with wakeup from STOP). Three comprehensive tier examples demonstrate Simple (sensor reading @ 100 kHz), Fluent (multi-sensor fusion @ 400 kHz), and Expert (EEPROM page writes with error recovery). Documentation complete in README with API styles, I2C speeds, error recovery techniques, and performance comparisons (32x speedup with page writes). Two register architectures supported: Legacy (F4/F1) and Modern (F7/G0). Hardware testing with real sensors remains for future work.
 
-### 3.5 ADC Implementation (12 hours) ✅ PARTIALLY COMPLETE
+### 3.5 ADC Implementation (12 hours) ✅ SUBSTANTIALLY COMPLETE
 - [x] ADC concept interface already exists (src/hal/interface/adc.hpp)
 - [x] STM32F4 ADC hardware policy created (src/hal/vendors/st/stm32f4/adc_hardware_policy.hpp)
 - [x] STM32F7 ADC hardware policy created (src/hal/vendors/st/stm32f7/adc_hardware_policy.hpp)
@@ -182,12 +182,13 @@ Created comprehensive documentation (docs/API_TIERS.md) and examples (examples/a
 - [x] STM32F4 platform layer exists (src/hal/platform/stm32f4/adc.hpp - template-based class)
 - [x] SAME70 platform layer exists (src/hal/platform/same70/adc.hpp - template-based class)
 - [x] ADC API tiers exist (src/hal/api/adc_simple.hpp, adc_fluent.hpp, adc_expert.hpp)
-- [ ] Create platform layers for STM32F7/F1/G0 using tier APIs (future work)
-- [ ] Create ADC tier examples (simple_adc_read.cpp, etc.) (future work)
-- [ ] Add ADC DMA support examples (future enhancement)
-- [ ] Document ADC tier usage (future work)
+- [x] Create platform layers for STM32F7/F1/G0 using tier APIs (src/hal/platform/stm32f7/adc.hpp, stm32f1/adc.hpp, stm32g0/adc.hpp)
+- [x] Create ADC tier examples (simple_adc_read.cpp, fluent_adc_multi_channel.cpp, expert_adc_dma_logging.cpp)
+- [x] Document ADC tier usage (examples/api_tiers/README.md - complete section with all tiers)
+- [ ] Add full DMA implementation in hardware policies (advanced feature - future enhancement)
+- [ ] Test with real sensors and data logging (requires hardware)
 
-**Status**: Core ADC support exists with hardware policies for all 6 platforms (STM32F4/F7/F1/G0, SAME70). STM32F4 and SAME70 have functional platform layers using template-based class approach. Modern tier APIs (Simple/Fluent/Expert) exist but need platform integration. Three resolution architectures supported: Variable resolution (F4/F7 with 12/10/8/6-bit), Fixed resolution (F1 with 12-bit only), Modern (G0). STM32F1 requires calibration after power-on. Hardware policies complete, platform layer modernization and examples remain for future work.
+**Status**: All platforms now have complete ADC support with tier APIs. Platform layers created for STM32F7 (3 ADCs with variable resolution), STM32F1 (2-3 ADCs with fixed 12-bit, requires calibration), and STM32G0 (1 ADC with hardware oversampling up to 16-bit). Three comprehensive tier examples demonstrate Simple (battery/sensor monitoring), Fluent (multi-channel acquisition with NTC/LDR/battery sensors), and Expert (DMA circular buffering @ 10-100 kSPS with statistics). Documentation complete in README with resolution comparisons (6-16 bit), performance metrics (218 kSPS to 2.4 MSPS), oversampling benefits (12→16 bit on G0), and DMA vs polling CPU usage (0% vs 100%). Three resolution architectures supported: Variable (F4/F7), Fixed (F1), Modern with oversampling (G0). Full DMA implementation in hardware policies and hardware testing remain for future work.
 
 ### 3.6 Testing Improvements (24 hours) ✅ SUBSTANTIALLY COMPLETE
 - [ ] Create hardware-in-loop test framework (requires physical boards - future work)
