@@ -16,7 +16,9 @@ Expert API  → Full control, platform-specific features
 
 ## Examples
 
-### Simple Tier (Beginner-Friendly)
+### GPIO Examples
+
+#### Simple Tier (Beginner-Friendly)
 
 | Example | Description | Demonstrates |
 |---------|-------------|--------------|
@@ -40,7 +42,7 @@ if (button.is_on().value()) { /* pressed */ }
 - ✅ Simple applications
 - ✅ Arduino-style projects
 
-### Fluent Tier (Production-Ready)
+#### Fluent Tier (Production-Ready)
 
 | Example | Description | Demonstrates |
 |---------|-------------|--------------|
@@ -65,7 +67,7 @@ led.on().unwrap();  // Result-based error handling
 - ✅ Team development
 - ✅ Complex setup requirements
 
-### Expert Tier (Performance-Critical)
+#### Expert Tier (Performance-Critical)
 
 | Example | Description | Demonstrates |
 |---------|-------------|--------------|
@@ -96,6 +98,98 @@ auto led = GpioExpert<led_green>(config);
 - ✅ Fine-grained hardware control
 - ✅ Real-time systems
 
+### UART Examples
+
+#### Simple Tier (Beginner-Friendly)
+
+| Example | Description | Demonstrates |
+|---------|-------------|--------------|
+| `simple_uart_echo.cpp` | Echo server | `Uart::quick_setup<>()`, `write_str()`, `read()` |
+
+**API Style**:
+```cpp
+// One-liner UART setup
+auto uart = Usart2::quick_setup<TxPin, RxPin>(BaudRate{115200});
+uart.initialize();
+
+// Simple I/O
+uart.write_str("Hello!\r\n");
+uint8_t buffer[64];
+uart.read(buffer, sizeof(buffer));
+```
+
+**When to use**:
+- ✅ Serial communication debugging
+- ✅ Simple data logging
+- ✅ Terminal interfaces
+- ✅ Learning UART basics
+
+#### Fluent Tier (Production-Ready)
+
+| Example | Description | Demonstrates |
+|---------|-------------|--------------|
+| `fluent_uart_config.cpp` | Sensor data transmission | Custom baud rate, parity, builder pattern |
+
+**API Style**:
+```cpp
+// Builder pattern with custom configuration
+auto uart = Usart2Builder()
+    .with_tx_pin<TxPin>()
+    .with_rx_pin<RxPin>()
+    .baudrate(BaudRate{9600})
+    .parity(UartParity::EVEN)     // Error detection
+    .data_bits(8)
+    .stop_bits(1)
+    .initialize();
+
+// Result-based error handling
+auto result = uart.write_str("Sensor data");
+if (result.is_err()) { /* handle error */ }
+```
+
+**When to use**:
+- ✅ Custom serial protocols
+- ✅ Error detection with parity
+- ✅ Non-standard baud rates
+- ✅ Production sensor interfaces
+
+#### Expert Tier (Performance-Critical)
+
+| Example | Description | Demonstrates |
+|---------|-------------|--------------|
+| `expert_uart_lowpower.cpp` | Low-power LPUART (STM32G0) | Wakeup from STOP mode, FIFO, compile-time validation |
+
+**API Style**:
+```cpp
+// Compile-time validated configuration
+constexpr auto config = Lpuart1ExpertConfig::create_config(
+    PeripheralId::LPUART1,
+    PinId::PA2, PinId::PA3,
+    9600, 8, 1, 0
+);
+static_assert(config.is_valid(), config.error_message());
+
+// Platform-specific low-power features (STM32G0)
+auto lpuart = Lpuart1::quick_setup<TxPin, RxPin>(BaudRate{9600});
+lpuart.initialize();
+lpuart.enable_wakeup();  // Wake from STOP mode on RX
+lpuart.enable_fifo();    // 8-byte FIFO
+
+// Ultra-low power operation
+enter_stop_mode();  // ~1-2 µA vs ~10 mA in RUN mode
+```
+
+**When to use**:
+- ✅ Battery-powered applications
+- ✅ Ultra-low power requirements
+- ✅ Wakeup from deep sleep
+- ✅ Platform-specific features (LPUART, FIFO)
+
+**Power Comparison**:
+- Simple/Fluent (continuous RUN): ~10 mA
+- Expert (STOP mode + LPUART): ~1-2 µA
+- **Power savings: 5000x lower consumption**
+
 ## Building Examples
 
 ### Prerequisites
@@ -116,13 +210,21 @@ cmake -B build -G Ninja \
   -DMICROCORE_BOARD=nucleo_f401re \
   -DMICROCORE_PLATFORM=stm32f4
 
+# Build GPIO examples
 cmake --build build --target simple_gpio_blink fluent_gpio_blink expert_gpio_blink
+
+# Build UART examples
+cmake --build build --target simple_uart_echo fluent_uart_config expert_uart_lowpower
 ```
 
 ### Build Single Example
 
 ```bash
+# GPIO example
 cmake --build build --target simple_gpio_blink
+
+# UART example
+cmake --build build --target simple_uart_echo
 ```
 
 ### Flash to Board
