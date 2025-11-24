@@ -136,17 +136,23 @@ Created comprehensive documentation (docs/API_TIERS.md) and examples (examples/a
 
 **Status**: All platforms now have UART support with complete hardware policies. Platform layer created for STM32F7 (8 UARTs) and STM32G0 (5 UARTs including LPUART). Comprehensive tier examples demonstrate Simple/Fluent/Expert APIs with echo server, sensor data, and low-power operation. Hardware testing and advanced features (interrupts, DMA) remain for future work.
 
-### 3.3 SPI Implementation (16 hours)
-- [ ] Define SPI concept interface
-- [ ] Implement STM32F4 SPI hardware policy
-- [ ] Implement STM32F7 SPI hardware policy
-- [ ] Implement STM32G0 SPI hardware policy
-- [ ] Implement SAME70 SPI hardware policy
-- [ ] Create SPI master example
-- [ ] Create SPI slave example
-- [ ] Add SPI DMA support
-- [ ] Test with real SPI devices (SD card, display)
-- [ ] Document SPI API
+### 3.3 SPI Implementation (16 hours) ✅ PARTIALLY COMPLETE
+- [x] SPI concept interface already exists (src/hal/interface/spi.hpp)
+- [x] STM32F4 SPI hardware policy exists (src/hal/vendors/st/stm32f4/spi_hardware_policy.hpp)
+- [x] STM32F7 SPI hardware policy created (src/hal/vendors/st/stm32f7/spi_hardware_policy.hpp)
+- [x] STM32G0 SPI hardware policy exists (src/hal/vendors/st/stm32g0/spi_hardware_policy.hpp)
+- [x] SAME70 SPI hardware policy exists (src/hal/vendors/atmel/same70/spi_hardware_policy.hpp)
+- [x] STM32F1 SPI hardware policy created (src/hal/vendors/st/stm32f1/spi_hardware_policy.hpp)
+- [x] STM32F4 platform layer exists (src/hal/platform/stm32f4/spi.hpp - template-based class)
+- [x] SAME70 platform layer exists (src/hal/platform/same70/spi.hpp - template-based class)
+- [x] SPI API tiers exist (src/hal/api/spi_simple.hpp, spi_fluent.hpp, spi_expert.hpp)
+- [ ] Create platform layers for STM32F7/F1/G0 using tier APIs (future work)
+- [ ] Create SPI tier examples (simple_spi_master.cpp, etc.) (future work)
+- [ ] Add SPI DMA support (advanced feature - future work)
+- [ ] Test with real SPI devices (SD card, display) (requires hardware)
+- [ ] Document SPI tier usage (future work)
+
+**Status**: Core SPI support exists with hardware policies for all platforms (STM32F4/F7/F1/G0, SAME70). STM32F4 and SAME70 have functional platform layers using template-based class approach. Modern tier APIs (Simple/Fluent/Expert) exist but need platform integration similar to UART. Hardware policies complete, platform layer modernization and examples remain for future work.
 
 ### 3.4 I2C Implementation (16 hours)
 - [ ] Define I2C concept interface
