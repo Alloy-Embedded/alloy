@@ -417,6 +417,11 @@ if(MICROCORE_BOARD STREQUAL "same70_xplained" OR MICROCORE_BOARD STREQUAL "nucle
     add_subdirectory(examples/rtos/simple_tasks)
 endif()
 
+# API Tier examples - demonstrates Simple/Fluent/Expert API system
+if(MICROCORE_BOARD STREQUAL "same70_xplained" OR MICROCORE_BOARD STREQUAL "nucleo_g0b1re" OR MICROCORE_BOARD STREQUAL "nucleo_g071rb" OR MICROCORE_BOARD STREQUAL "nucleo_f401re" OR MICROCORE_BOARD STREQUAL "nucleo_f722ze")
+    add_subdirectory(examples/api_tiers)
+endif()
+
 # Board-specific examples
 if(MICROCORE_BOARD STREQUAL "same70_xplained")
     add_subdirectory(examples/uart_logger)
