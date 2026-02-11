@@ -35,7 +35,8 @@ int main() {
     while (true) {
         // is_on() returns true when button is pressed (LOW)
         // because we configured it as active-low
-        if (button.is_on().value()) {
+        auto pressed = button.is_on();
+        if (pressed.is_ok() && pressed.unwrap()) {
             led.on();   // Button pressed - turn LED on
         } else {
             led.off();  // Button released - turn LED off

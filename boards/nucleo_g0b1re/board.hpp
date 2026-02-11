@@ -50,6 +50,12 @@ using namespace ucore::generated::stm32g0b1;
 using namespace ucore::hal::st::stm32g0;
 using namespace ucore::hal;
 
+// Board pin aliases used by portable examples.
+namespace pins {
+using led_green = LedConfig::led_green;
+using button_user = ButtonConfig::button_user;
+} // namespace pins
+
 // =============================================================================
 // Timing
 // =============================================================================

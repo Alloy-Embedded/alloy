@@ -68,7 +68,7 @@ if(PLATFORM_INDEX EQUAL -1)
     )
 endif()
 
-message(STATUS "Alloy Platform: ${MICROCORE_PLATFORM}")
+message(STATUS "MicroCore Platform: ${MICROCORE_PLATFORM}")
 
 # ------------------------------------------------------------------------------
 # Platform-Specific Configuration
@@ -77,9 +77,11 @@ message(STATUS "Alloy Platform: ${MICROCORE_PLATFORM}")
 # Set platform-specific compile definition (used by #ifdef in source code)
 string(TOUPPER "${MICROCORE_PLATFORM}" MICROCORE_PLATFORM_UPPER)
 set(MICROCORE_PLATFORM_DEFINE "MICROCORE_PLATFORM_${MICROCORE_PLATFORM_UPPER}")
+set(ALLOY_PLATFORM_DEFINE "ALLOY_PLATFORM_${MICROCORE_PLATFORM_UPPER}")  # Legacy compatibility
 
 # Add compile definition globally
 add_compile_definitions(${MICROCORE_PLATFORM_DEFINE})
+add_compile_definitions(${ALLOY_PLATFORM_DEFINE})  # Legacy compatibility
 
 message(STATUS "Platform define: ${MICROCORE_PLATFORM_DEFINE}")
 
@@ -107,24 +109,62 @@ message(STATUS "Included platform config: ${PLATFORM_CONFIG_FILE}")
 # Board/MCU Validation
 # ------------------------------------------------------------------------------
 
-# Define valid board-to-platform mappings
-# This ensures users don't accidentally try to build incompatible combinations
-set(BOARD_TO_PLATFORM_nucleo_f401re "stm32f4")
-set(BOARD_TO_PLATFORM_nucleo_f722ze "stm32f7")
-set(BOARD_TO_PLATFORM_nucleo_g071rb "stm32g0")
-set(BOARD_TO_PLATFORM_nucleo_g0b1re "stm32g0")
-set(BOARD_TO_PLATFORM_same70_xplained "same70")
+# Load generated board metadata mapping if available.
+set(_MICROCORE_GENERATED_BOARD_METADATA_FILE "${CMAKE_CURRENT_LIST_DIR}/generated/board_metadata.cmake")
+if(NOT DEFINED MICROCORE_GENERATED_BOARD_PLATFORM_MAP AND EXISTS "${_MICROCORE_GENERATED_BOARD_METADATA_FILE}")
+    include("${_MICROCORE_GENERATED_BOARD_METADATA_FILE}")
+endif()
+
+# Define valid board-to-platform mappings.
+set(_MICROCORE_PLATFORM_SELECTION_BOARD_MAP)
+if(DEFINED MICROCORE_GENERATED_BOARD_PLATFORM_MAP)
+    list(APPEND _MICROCORE_PLATFORM_SELECTION_BOARD_MAP ${MICROCORE_GENERATED_BOARD_PLATFORM_MAP})
+endif()
+list(APPEND _MICROCORE_PLATFORM_SELECTION_BOARD_MAP
+    "nucleo_f401re:stm32f4"
+    "nucleo_f722ze:stm32f7"
+    "nucleo_g071rb:stm32g0"
+    "nucleo_g0b1re:stm32g0"
+    "same70_xplained:same70"
+    "same70_xpld:same70"
+    "bluepill:stm32f1"
+    "stm32f407vg:stm32f4"
+    "esp32_devkit:esp32"
+    "arduino_zero:samd21"
+    "rp_pico:rp2040"
+    "rp2040_zero:rp2040"
+    "host:linux"
+)
+list(REMOVE_DUPLICATES _MICROCORE_PLATFORM_SELECTION_BOARD_MAP)
+
+set(_MICROCORE_PLATFORM_SELECTION_KNOWN_BOARDS "")
+foreach(mapping ${_MICROCORE_PLATFORM_SELECTION_BOARD_MAP})
+    string(REPLACE ":" ";" mapping_parts "${mapping}")
+    list(LENGTH mapping_parts mapping_parts_len)
+    if(mapping_parts_len GREATER 1)
+        list(GET mapping_parts 0 mapping_board)
+        list(GET mapping_parts 1 mapping_platform)
+        set(BOARD_TO_PLATFORM_${mapping_board} "${mapping_platform}")
+        list(APPEND _MICROCORE_PLATFORM_SELECTION_KNOWN_BOARDS "${mapping_board}")
+    endif()
+endforeach()
+list(REMOVE_DUPLICATES _MICROCORE_PLATFORM_SELECTION_KNOWN_BOARDS)
+list(SORT _MICROCORE_PLATFORM_SELECTION_KNOWN_BOARDS)
+string(JOIN ", " _MICROCORE_PLATFORM_SELECTION_KNOWN_BOARDS_CSV ${_MICROCORE_PLATFORM_SELECTION_KNOWN_BOARDS})
 
 # If MICROCORE_BOARD is defined, validate it matches the selected platform
 if(DEFINED MICROCORE_BOARD)
-    set(EXPECTED_PLATFORM ${BOARD_TO_PLATFORM_${MICROCORE_BOARD}})
+    set(EXPECTED_PLATFORM "")
+    if(DEFINED BOARD_TO_PLATFORM_${MICROCORE_BOARD})
+        set(EXPECTED_PLATFORM "${BOARD_TO_PLATFORM_${MICROCORE_BOARD}}")
+    endif()
 
-    if(NOT DEFINED EXPECTED_PLATFORM)
+    if("${EXPECTED_PLATFORM}" STREQUAL "")
         message(WARNING
             "Unknown board: '${MICROCORE_BOARD}'\n"
             "Board-to-platform mapping not defined.\n"
             "Proceeding with platform: ${MICROCORE_PLATFORM}\n"
-            "Known boards: nucleo_f401re, nucleo_f722ze, nucleo_g071rb, nucleo_g0b1re, same70_xplained"
+            "Known boards: ${_MICROCORE_PLATFORM_SELECTION_KNOWN_BOARDS_CSV}"
         )
     elseif(NOT "${EXPECTED_PLATFORM}" STREQUAL "${MICROCORE_PLATFORM}")
         message(FATAL_ERROR
@@ -180,10 +220,15 @@ file(GLOB_RECURSE MICROCORE_PLATFORM_HEADERS
     "${MICROCORE_PLATFORM_DIR}/*.h"
 )
 
-# Export variables for use by parent CMakeLists.txt
-set(MICROCORE_PLATFORM_SOURCES ${MICROCORE_PLATFORM_SOURCES} PARENT_SCOPE)
-set(MICROCORE_PLATFORM_HEADERS ${MICROCORE_PLATFORM_HEADERS} PARENT_SCOPE)
-set(MICROCORE_PLATFORM_DIR ${MICROCORE_PLATFORM_DIR} PARENT_SCOPE)
+# Export variables for use by parent CMakeLists.txt and legacy consumers.
+# This file is included directly by the top-level CMakeLists, so regular set()
+# avoids "current scope has no parent" warnings from PARENT_SCOPE.
+set(MICROCORE_PLATFORM_SOURCES ${MICROCORE_PLATFORM_SOURCES})
+set(MICROCORE_PLATFORM_HEADERS ${MICROCORE_PLATFORM_HEADERS})
+set(MICROCORE_PLATFORM_DIR ${MICROCORE_PLATFORM_DIR})
+set(ALLOY_PLATFORM_SOURCES ${MICROCORE_PLATFORM_SOURCES})  # Legacy compatibility
+set(ALLOY_PLATFORM_HEADERS ${MICROCORE_PLATFORM_HEADERS})  # Legacy compatibility
+set(ALLOY_PLATFORM_DIR ${MICROCORE_PLATFORM_DIR})  # Legacy compatibility
 
 message(STATUS "Platform sources: ${MICROCORE_PLATFORM_SOURCES}")
 message(STATUS "Platform headers: ${MICROCORE_PLATFORM_HEADERS}")

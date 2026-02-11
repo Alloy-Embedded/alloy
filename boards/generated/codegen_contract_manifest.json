@@ -1,0 +1,36 @@
+{
+  "board_schema_version": "1.0",
+  "boards": [
+    "nucleo_f401re",
+    "nucleo_f722ze",
+    "nucleo_g071rb",
+    "nucleo_g0b1re",
+    "same70_xplained"
+  ],
+  "contract_id": "microcore-board-artifacts",
+  "contract_version": "1.0.0",
+  "framework_compatibility": {
+    "compatible_major": 0,
+    "compatible_minor_max": 1,
+    "compatible_minor_min": 1,
+    "policy": "major+minor pinned"
+  },
+  "framework_version": {
+    "major": 0,
+    "minor": 1,
+    "patch": 0,
+    "value": "0.1.0"
+  },
+  "generator": {
+    "name": "microcore-codegen",
+    "version": "1.1.0"
+  },
+  "runtime_artifacts": [
+    "boards/<board>/board_config.hpp",
+    "boards/generated/board_catalog.json",
+    "boards/generated/<board>/board_metadata.hpp",
+    "boards/generated/codegen_contract_manifest.json",
+    "cmake/generated/board_metadata.cmake",
+    "cmake/generated/boards/<board>.cmake"
+  ]
+}

@@ -19,9 +19,13 @@
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 #include <cstdint>
 
+#if defined(UCORE_RTOS_ENABLED) || defined(ALLOY_RTOS_ENABLED)
+#include "rtos/rtos.hpp"
+#endif
+
 using namespace ucore::hal::same70;
-using namespace ucore::generated::atsame70q21b;
 using namespace ucore::hal;
+namespace same70_peripherals = ucore::generated::atsame70q21b::peripherals;
 
 namespace board {
 
@@ -47,8 +51,8 @@ void init() {
 
     // Step 1: Disable watchdog timers
     // SAME70 has two independent watchdogs that must both be disabled for development
-    using WDT_Policy = atmel::same70::Same70WatchdogHardwarePolicy<peripherals::WDT>;
-    using RSWDT_Policy = atmel::same70::Same70WatchdogHardwarePolicy<peripherals::RSWDT>;
+    using WDT_Policy = atmel::same70::Same70WatchdogHardwarePolicy<same70_peripherals::WDT>;
+    using RSWDT_Policy = atmel::same70::Same70WatchdogHardwarePolicy<same70_peripherals::RSWDT>;
     Watchdog::disable<WDT_Policy>();
     Watchdog::disable<RSWDT_Policy>();
 
@@ -103,10 +107,10 @@ extern "C" void SysTick_Handler() {
     board::BoardSysTick::increment_tick();
 
     // Forward to RTOS scheduler (if enabled at compile time)
-    #ifdef ALLOY_RTOS_ENABLED
+    #if defined(UCORE_RTOS_ENABLED) || defined(ALLOY_RTOS_ENABLED)
         // RTOS::tick() returns Result<void, RTOSError>
         // In ISR context, we can't handle errors gracefully, so we unwrap
         // If tick fails, it indicates a serious system error
-        alloy::rtos::RTOS::tick().unwrap();
-    #endif
+        ucore::rtos::RTOS::tick().unwrap();
+    #endif  // UCORE_RTOS_ENABLED || ALLOY_RTOS_ENABLED
 }

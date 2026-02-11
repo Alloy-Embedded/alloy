@@ -35,6 +35,11 @@ endif()
 # Python Version Check (for code generation)
 # ============================================================================
 function(check_python_version)
+    if(DEFINED MICROCORE_CONSUMER_MODE AND MICROCORE_CONSUMER_MODE)
+        message(STATUS "Consumer profile active: skipping Python/codegen dependency checks")
+        return()
+    endif()
+
     find_package(Python3 COMPONENTS Interpreter)
 
     if(NOT Python3_FOUND)

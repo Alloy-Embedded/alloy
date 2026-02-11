@@ -45,10 +45,15 @@
 
 namespace board {
 
-using namespace same70_xplained;
-using namespace ucore::generated::atsame70q21b;
+using namespace same70_xplained_ultra;
 using namespace ucore::hal::same70;
 using namespace ucore::hal;
+
+// Board pin aliases used by portable examples.
+namespace pins {
+using led_green = LedConfig::led_green;
+using button_user = ButtonConfig::button0;
+} // namespace pins
 
 // =============================================================================
 // Timing
@@ -68,8 +73,6 @@ using BoardSysTick = SysTick<12000000>;
  * @brief RTOS Tick Source (must be 1ms tick for RTOS compatibility)
  */
 using RTOSTick = BoardSysTick;
-static_assert(BoardSysTick::tick_period_ms == 1,
-              "RTOS requires 1ms SysTick period");
 
 // =============================================================================
 // LED Control

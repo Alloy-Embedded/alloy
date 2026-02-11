@@ -14,23 +14,24 @@
  */
 
 #include <cstdint>
+{% set generated_ns = board.mcu.generated_namespace if board.mcu.generated_namespace else board.mcu.part_number.lower() %}
 {% if board.platform.startswith('stm32') %}
 #include "hal/vendors/st/{{ board.platform }}/gpio.hpp"
-#include "hal/vendors/st/{{ board.platform }}/{{ board.mcu.part_number.lower() | replace('stm32', 'stm32') }}/peripherals.hpp"
+#include "hal/vendors/st/{{ board.platform }}/{{ generated_ns }}/peripherals.hpp"
 {% elif board.platform == 'same70' %}
 #include "hal/vendors/arm/same70/gpio.hpp"
 #include "hal/vendors/arm/same70/clock.hpp"
-#include "hal/vendors/atmel/same70/{{ board.mcu.part_number.lower() }}/peripherals.hpp"
+#include "hal/vendors/atmel/same70/{{ generated_ns }}/peripherals.hpp"
 {% endif %}
 
 namespace {{ board.board.name.lower().replace('-', '_').replace(' ', '_') }} {
 
 {% if board.platform.startswith('stm32') %}
 using namespace ucore::hal::st::{{ board.platform }};
-using namespace ucore::generated::{{ board.mcu.part_number.lower().replace('stm32', 'stm32') }};
+using namespace ucore::generated::{{ generated_ns }};
 {% elif board.platform == 'same70' %}
 using namespace ucore::hal::same70;
-using namespace ucore::generated::{{ board.mcu.part_number.lower() }};
+using namespace ucore::generated::{{ generated_ns }};
 {% endif %}
 
 // =============================================================================

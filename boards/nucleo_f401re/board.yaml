@@ -1,7 +1,7 @@
-# MicroCore Board Configuration: Nucleo-F401RE
-# https://www.st.com/en/evaluation-tools/nucleo-f401re.html
+schema_version: "1.0"
 
 board:
+  id: nucleo_f401re
   name: "Nucleo-F401RE"
   vendor: "STMicroelectronics"
   version: "1.0.0"
@@ -12,33 +12,49 @@ platform: stm32f4
 
 mcu:
   part_number: "STM32F401RET6"
+  generated_namespace: "stm32f401"
   architecture: cortex-m4
   flash_kb: 512
   ram_kb: 96
   frequency_mhz: 84
 
-# Clock Configuration
-# PLL Configuration:
-# - HSE: 8 MHz external crystal (X3 on board)
-# - PLL input: HSE / M = 8 MHz / 4 = 2 MHz
-# - VCO: 2 MHz × N = 2 MHz × 168 = 336 MHz
-# - System clock: VCO / P = 336 MHz / 4 = 84 MHz
-# - USB clock: VCO / Q = 336 MHz / 7 = 48 MHz
 clock:
   source: PLL
   system_clock_hz: 84000000
   hse_hz: 8000000
   pll:
-    m: 4    # HSE / M = 2 MHz (PLL input)
-    n: 168  # VCO = 336 MHz
-    p: 4    # SYSCLK = 84 MHz
-    q: 7    # USB = 48 MHz
-  ahb_prescaler: 1    # AHB = 84 MHz
-  apb1_prescaler: 2   # APB1 = 42 MHz (max 42 MHz for F401)
-  apb2_prescaler: 1   # APB2 = 84 MHz
-  flash_latency: 2    # 2 wait states for 84 MHz @ 3.3V
+    m: 4
+    n: 168
+    p: 4
+    q: 7
+  ahb_prescaler: 1
+  apb1_prescaler: 2
+  apb2_prescaler: 1
+  flash_latency: 2
 
-# LEDs
+build:
+  linker_script: "boards/nucleo_f401re/STM32F401RET6.ld"
+  startup_source: "src/hal/vendors/st/stm32f4/stm32f401/startup.cpp"
+  toolchain_file: "cmake/toolchains/arm-none-eabi.cmake"
+  default_build_type: "Release"
+  supports_rtos: true
+  supported_examples:
+    - blink
+    - rtos/simple_tasks
+    - api_tiers/simple_gpio_blink
+    - api_tiers/simple_gpio_button
+
+tooling:
+  flash:
+    command: st-flash
+    binary_format: bin
+    load_address: "0x08000000"
+    openocd_interface: stlink
+    openocd_target: stm32f4x
+  debug:
+    transport: stlink
+    probe: "ST-LINK/V2-1"
+
 leds:
   - name: led_green
     color: green
@@ -47,7 +63,6 @@ leds:
     active_high: true
     description: "User LED LD2 (green) - Arduino D13 compatible"
 
-# Buttons
 buttons:
   - name: button_user
     port: GPIOC
@@ -56,7 +71,6 @@ buttons:
     pull: none
     description: "User button B1 (blue) - Active LOW"
 
-# UART Configuration
 uart:
   - name: console
     instance: USART2
@@ -67,7 +81,6 @@ uart:
     baud_rate: 115200
     description: "ST-Link Virtual COM Port (Arduino D1/D0)"
 
-# SPI Configuration (Arduino headers)
 spi:
   - name: arduino_spi
     instance: SPI1
@@ -79,7 +92,6 @@ spi:
     miso_pin: 6
     description: "Arduino SPI header (D13/D11/D12)"
 
-# I2C Configuration (Arduino headers)
 i2c:
   - name: arduino_i2c
     instance: I2C1

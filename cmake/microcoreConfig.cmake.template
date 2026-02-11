@@ -1,0 +1,44 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/microcoreTargets.cmake")
+
+set(MICROCORE_DELIVERY_PROFILE "@MICROCORE_DELIVERY_PROFILE@")
+set(MICROCORE_PACKAGE_BOARD "@MICROCORE_BOARD@")
+set(MICROCORE_PACKAGE_PLATFORM "@MICROCORE_PLATFORM@")
+set(MICROCORE_PACKAGE_VERSION "@PROJECT_VERSION@")
+set(MICROCORE_PACKAGE_HAS_CODEGEN_TOOLING "@MICROCORE_PACKAGE_HAS_CODEGEN_TOOLING@")
+
+set(MICROCORE_BOARD_CATALOG
+    "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_INCLUDEDIR@/microcore/boards/generated/board_catalog.json"
+)
+set(MICROCORE_BOARD_ARTIFACT_CONTRACT_MANIFEST
+    "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_INCLUDEDIR@/microcore/boards/generated/codegen_contract_manifest.json"
+)
+set(MICROCORE_BOARD_SCHEMA
+    "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_INCLUDEDIR@/microcore/boards/board-schema.json"
+)
+set(MICROCORE_BOARD_METADATA_CMAKE
+    "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_DATADIR@/microcore/cmake/generated/board_metadata.cmake"
+)
+set(MICROCORE_CODEGEN_CONTRACT_FILE
+    "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_DATADIR@/microcore/codegen/contracts/board_artifacts_contract.json"
+)
+set(MICROCORE_CODEGEN_VALIDATION_SCRIPT
+    "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_DATADIR@/microcore/codegen/scripts/validate_codegen_contract.py"
+)
+
+# Canonical board alias for the packaged board target.
+if(TARGET microcore::board_@MICROCORE_BOARD@ AND NOT TARGET microcore::board::@MICROCORE_BOARD@)
+    add_library(microcore::board::@MICROCORE_BOARD@ ALIAS microcore::board_@MICROCORE_BOARD@)
+endif()
+
+# Legacy compatibility aliases for migration window.
+if(TARGET microcore::hal AND NOT TARGET alloy::hal)
+    add_library(alloy::hal ALIAS microcore::hal)
+endif()
+if(TARGET microcore::rtos AND NOT TARGET alloy::rtos)
+    add_library(alloy::rtos ALIAS microcore::rtos)
+endif()
+if(TARGET microcore::board_@MICROCORE_BOARD@ AND NOT TARGET alloy::board::@MICROCORE_BOARD@)
+    add_library(alloy::board::@MICROCORE_BOARD@ ALIAS microcore::board_@MICROCORE_BOARD@)
+endif()

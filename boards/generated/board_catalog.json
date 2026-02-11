@@ -1,0 +1,244 @@
+{
+  "artifact_contract": {
+    "board_schema_version": "1.0",
+    "contract_id": "microcore-board-artifacts",
+    "contract_version": "1.0.0",
+    "framework_version": "0.1.0",
+    "generator_name": "microcore-codegen",
+    "generator_version": "1.1.0"
+  },
+  "boards": {
+    "nucleo_f401re": {
+      "build": {
+        "default_build_type": "Release",
+        "linker_script": "boards/nucleo_f401re/STM32F401RET6.ld",
+        "startup_source": "src/hal/vendors/st/stm32f4/stm32f401/startup.cpp",
+        "supported_examples": [
+          "blink",
+          "rtos/simple_tasks",
+          "api_tiers/simple_gpio_blink",
+          "api_tiers/simple_gpio_button"
+        ],
+        "supports_rtos": true,
+        "toolchain_file": "cmake/toolchains/arm-none-eabi.cmake"
+      },
+      "clock": {
+        "frequency_human": "84 MHz",
+        "system_clock_hz": 84000000
+      },
+      "description": "STM32 Nucleo-64 development board with STM32F401RE MCU",
+      "id": "nucleo_f401re",
+      "mcu": {
+        "architecture": "cortex-m4",
+        "architecture_display": "Cortex-M4",
+        "flash_kb": 512,
+        "frequency_mhz": 84,
+        "generated_namespace": "stm32f401",
+        "part_number": "STM32F401RET6",
+        "ram_kb": 96
+      },
+      "name": "Nucleo-F401RE",
+      "platform": "stm32f4",
+      "tooling": {
+        "debug": {
+          "probe": "ST-LINK/V2-1",
+          "transport": "stlink"
+        },
+        "flash": {
+          "binary_format": "bin",
+          "command": "st-flash",
+          "load_address": "0x08000000",
+          "openocd_interface": "stlink",
+          "openocd_target": "stm32f4x"
+        }
+      },
+      "url": "https://www.st.com/en/evaluation-tools/nucleo-f401re.html",
+      "vendor": "STMicroelectronics"
+    },
+    "nucleo_f722ze": {
+      "build": {
+        "default_build_type": "Release",
+        "linker_script": "boards/nucleo_f722ze/STM32F722ZET6.ld",
+        "startup_source": "src/hal/vendors/st/stm32f7/stm32f722/startup.cpp",
+        "supported_examples": [
+          "blink",
+          "rtos/simple_tasks",
+          "api_tiers/simple_gpio_blink",
+          "api_tiers/simple_gpio_button"
+        ],
+        "supports_rtos": true,
+        "toolchain_file": "cmake/toolchains/arm-none-eabi.cmake"
+      },
+      "clock": {
+        "frequency_human": "180 MHz",
+        "system_clock_hz": 180000000
+      },
+      "description": "STM32 Nucleo-144 development board with STM32F722ZE MCU",
+      "id": "nucleo_f722ze",
+      "mcu": {
+        "architecture": "cortex-m7",
+        "architecture_display": "Cortex-M7",
+        "flash_kb": 512,
+        "frequency_mhz": 180,
+        "generated_namespace": "stm32f722",
+        "part_number": "STM32F722ZET6",
+        "ram_kb": 256
+      },
+      "name": "Nucleo-F722ZE",
+      "platform": "stm32f7",
+      "tooling": {
+        "debug": {
+          "probe": "ST-LINK/V2-1",
+          "transport": "stlink"
+        },
+        "flash": {
+          "binary_format": "bin",
+          "command": "st-flash",
+          "load_address": "0x08000000",
+          "openocd_interface": "stlink",
+          "openocd_target": "stm32f7x"
+        }
+      },
+      "url": "https://www.st.com/en/evaluation-tools/nucleo-f722ze.html",
+      "vendor": "STMicroelectronics"
+    },
+    "nucleo_g071rb": {
+      "build": {
+        "default_build_type": "Release",
+        "linker_script": "boards/nucleo_g071rb/STM32G071RBT6.ld",
+        "startup_source": "src/hal/vendors/st/stm32g0/stm32g0b1/startup.cpp",
+        "supported_examples": [
+          "blink",
+          "api_tiers/simple_gpio_blink",
+          "api_tiers/simple_gpio_button"
+        ],
+        "supports_rtos": false,
+        "toolchain_file": "cmake/toolchains/arm-none-eabi.cmake"
+      },
+      "clock": {
+        "frequency_human": "64 MHz",
+        "system_clock_hz": 64000000
+      },
+      "description": "STM32 Nucleo-64 development board with STM32G071RB MCU",
+      "id": "nucleo_g071rb",
+      "mcu": {
+        "architecture": "cortex-m0+",
+        "architecture_display": "Cortex-M0+",
+        "flash_kb": 128,
+        "frequency_mhz": 64,
+        "generated_namespace": "stm32g0b1",
+        "part_number": "STM32G071RBT6",
+        "ram_kb": 36
+      },
+      "name": "Nucleo-G071RB",
+      "platform": "stm32g0",
+      "tooling": {
+        "debug": {
+          "probe": "ST-LINK/V2-1",
+          "transport": "stlink"
+        },
+        "flash": {
+          "binary_format": "bin",
+          "command": "st-flash",
+          "load_address": "0x08000000",
+          "openocd_interface": "stlink",
+          "openocd_target": "stm32g0x"
+        }
+      },
+      "url": "https://www.st.com/en/evaluation-tools/nucleo-g071rb.html",
+      "vendor": "STMicroelectronics"
+    },
+    "nucleo_g0b1re": {
+      "build": {
+        "default_build_type": "Release",
+        "linker_script": "boards/nucleo_g0b1re/STM32G0B1RET6.ld",
+        "startup_source": "src/hal/vendors/st/stm32g0/stm32g0b1/startup.cpp",
+        "supported_examples": [
+          "blink",
+          "api_tiers/simple_gpio_blink",
+          "api_tiers/simple_gpio_button"
+        ],
+        "supports_rtos": false,
+        "toolchain_file": "cmake/toolchains/arm-none-eabi.cmake"
+      },
+      "clock": {
+        "frequency_human": "64 MHz",
+        "system_clock_hz": 64000000
+      },
+      "description": "STM32 Nucleo-64 development board with STM32G0B1RE MCU",
+      "id": "nucleo_g0b1re",
+      "mcu": {
+        "architecture": "cortex-m0+",
+        "architecture_display": "Cortex-M0+",
+        "flash_kb": 512,
+        "frequency_mhz": 64,
+        "generated_namespace": "stm32g0b1",
+        "part_number": "STM32G0B1RET6",
+        "ram_kb": 144
+      },
+      "name": "Nucleo-G0B1RE",
+      "platform": "stm32g0",
+      "tooling": {
+        "debug": {
+          "probe": "ST-LINK/V2-1",
+          "transport": "stlink"
+        },
+        "flash": {
+          "binary_format": "bin",
+          "command": "st-flash",
+          "load_address": "0x08000000",
+          "openocd_interface": "stlink",
+          "openocd_target": "stm32g0x"
+        }
+      },
+      "url": "https://www.st.com/en/evaluation-tools/nucleo-g0b1re.html",
+      "vendor": "STMicroelectronics"
+    },
+    "same70_xplained": {
+      "build": {
+        "default_build_type": "Release",
+        "linker_script": "boards/same70_xplained/ATSAME70Q21.ld",
+        "startup_source": "src/hal/vendors/atmel/same70/startup_same70.cpp",
+        "supported_examples": [
+          "blink",
+          "api_tiers/simple_gpio_blink",
+          "api_tiers/simple_gpio_button"
+        ],
+        "supports_rtos": false,
+        "toolchain_file": "cmake/toolchains/arm-none-eabi.cmake"
+      },
+      "clock": {
+        "frequency_human": "300 MHz",
+        "system_clock_hz": 300000000
+      },
+      "description": "SAME70 Xplained Ultra evaluation board with ATSAME70Q21B MCU",
+      "id": "same70_xplained",
+      "mcu": {
+        "architecture": "cortex-m7",
+        "architecture_display": "Cortex-M7",
+        "flash_kb": 2048,
+        "frequency_mhz": 300,
+        "generated_namespace": "atsame70q21b",
+        "part_number": "ATSAME70Q21B",
+        "ram_kb": 384
+      },
+      "name": "SAME70 Xplained Ultra",
+      "platform": "same70",
+      "tooling": {
+        "debug": {
+          "probe": "EDBG",
+          "transport": "cmsis-dap"
+        },
+        "flash": {
+          "binary_format": "elf",
+          "command": "openocd",
+          "openocd_interface": "cmsis-dap",
+          "openocd_target": "atsamv"
+        }
+      },
+      "url": "https://www.microchip.com/developmenttools/ProductDetails/atsame70-xpld",
+      "vendor": "Microchip/Atmel"
+    }
+  },
+  "schema_version": "1.0"
+}

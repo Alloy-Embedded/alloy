@@ -10,6 +10,9 @@ project(microcore
     LANGUAGES CXX C ASM
 )
 
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
 # Require C++23 standard (Phase 5: C++23 Enhancements)
 # Enables: consteval, if consteval, deducing this, and other C++23 features
 set(CMAKE_CXX_STANDARD 23)
@@ -18,17 +21,126 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # MicroCore configuration variables
 set(MICROCORE_ROOT ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "MicroCore framework root directory")
-set(MICROCORE_BOARD "host" CACHE STRING "Target board (host, bluepill, esp32_devkit, stm32f407vg, arduino_zero, rp_pico)")
+
+# Legacy compatibility defaults (ALLOY_* -> MICROCORE_*)
+set(_MICROCORE_DEFAULT_BOARD "host")
+if(DEFINED ALLOY_BOARD AND NOT DEFINED MICROCORE_BOARD)
+    set(_MICROCORE_DEFAULT_BOARD "${ALLOY_BOARD}")
+    set(_MICROCORE_USED_LEGACY_ALLOY_BOARD ON)
+endif()
+
+set(_MICROCORE_DEFAULT_PLATFORM "")
+if(DEFINED ALLOY_PLATFORM AND NOT DEFINED MICROCORE_PLATFORM)
+    set(_MICROCORE_DEFAULT_PLATFORM "${ALLOY_PLATFORM}")
+    set(_MICROCORE_USED_LEGACY_ALLOY_PLATFORM ON)
+endif()
+
+set(_MICROCORE_DEFAULT_BUILD_TESTS ON)
+if(DEFINED ALLOY_BUILD_TESTS AND NOT DEFINED MICROCORE_BUILD_TESTS)
+    set(_MICROCORE_DEFAULT_BUILD_TESTS "${ALLOY_BUILD_TESTS}")
+    set(_MICROCORE_USED_LEGACY_ALLOY_BUILD_TESTS ON)
+endif()
+
+set(_MICROCORE_DEFAULT_MINIMAL_BUILD OFF)
+if(DEFINED ALLOY_MINIMAL_BUILD AND NOT DEFINED MICROCORE_MINIMAL_BUILD)
+    set(_MICROCORE_DEFAULT_MINIMAL_BUILD "${ALLOY_MINIMAL_BUILD}")
+    set(_MICROCORE_USED_LEGACY_ALLOY_MINIMAL_BUILD ON)
+endif()
+
+set(MICROCORE_BOARD "${_MICROCORE_DEFAULT_BOARD}" CACHE STRING "Target board (host, bluepill, esp32_devkit, stm32f407vg, arduino_zero, rp_pico)")
 set(MICROCORE_MCU "" CACHE STRING "Target MCU (set by board configuration)")
 set(MICROCORE_ARCH "" CACHE STRING "Target architecture (set by board configuration)")
 
 # Platform abstraction configuration (new system)
 # MICROCORE_PLATFORM is the HAL platform (same70, linux, esp32, stm32f4, etc.)
 # It will be auto-detected from MICROCORE_BOARD if not explicitly set
-set(MICROCORE_PLATFORM "" CACHE STRING "HAL platform (same70, linux, esp32, stm32f4, nrf52)")
+set(MICROCORE_PLATFORM "${_MICROCORE_DEFAULT_PLATFORM}" CACHE STRING "HAL platform (same70, linux, esp32, stm32f4, nrf52)")
+
+# Delivery profile controls dependency expectations and packaging behavior.
+# - contributor: full development profile (default)
+# - consumer: packaged SDK consumption profile (no runtime codegen dependency)
+set(MICROCORE_DELIVERY_PROFILE "contributor" CACHE STRING "Delivery profile (contributor|consumer)")
+set_property(CACHE MICROCORE_DELIVERY_PROFILE PROPERTY STRINGS "contributor" "consumer")
+if(NOT MICROCORE_DELIVERY_PROFILE STREQUAL "contributor" AND
+   NOT MICROCORE_DELIVERY_PROFILE STREQUAL "consumer")
+    message(FATAL_ERROR
+        "Invalid MICROCORE_DELIVERY_PROFILE='${MICROCORE_DELIVERY_PROFILE}'. "
+        "Supported: contributor, consumer"
+    )
+endif()
+if(MICROCORE_DELIVERY_PROFILE STREQUAL "consumer")
+    set(MICROCORE_CONSUMER_MODE ON)
+else()
+    set(MICROCORE_CONSUMER_MODE OFF)
+endif()
+
+option(
+    MICROCORE_ENFORCE_CODEGEN_CONTRACT
+    "Fail configure if generated board artifacts are incompatible with framework version"
+    ON
+)
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/codegen_contract.cmake)
+
+# Generated board metadata (canonical source for supported embedded boards).
+set(MICROCORE_GENERATED_BOARD_METADATA_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/generated/board_metadata.cmake")
+if(EXISTS "${MICROCORE_GENERATED_BOARD_METADATA_FILE}")
+    include("${MICROCORE_GENERATED_BOARD_METADATA_FILE}")
+    if(MICROCORE_ENFORCE_CODEGEN_CONTRACT)
+        microcore_validate_codegen_artifact_contract()
+    else()
+        message(STATUS "MICROCORE_ENFORCE_CODEGEN_CONTRACT=OFF: skipping artifact compatibility checks")
+    endif()
+else()
+    message(WARNING
+        "Generated board metadata not found: ${MICROCORE_GENERATED_BOARD_METADATA_FILE}\n"
+        "Run: python3 tools/codegen/scripts/generate_board_artifacts.py"
+    )
+endif()
+
+# Emit compatibility diagnostics when legacy variables are used.
+if(DEFINED ALLOY_BOARD)
+    if(DEFINED MICROCORE_BOARD AND NOT "${MICROCORE_BOARD}" STREQUAL "${ALLOY_BOARD}" AND NOT _MICROCORE_USED_LEGACY_ALLOY_BOARD)
+        message(FATAL_ERROR
+            "Both ALLOY_BOARD ('${ALLOY_BOARD}') and MICROCORE_BOARD ('${MICROCORE_BOARD}') are set with different values.\n"
+            "Use only MICROCORE_BOARD."
+        )
+    endif()
+    message(DEPRECATION "CMake variable ALLOY_BOARD is deprecated; use MICROCORE_BOARD.")
+endif()
+
+if(DEFINED ALLOY_PLATFORM)
+    if(DEFINED MICROCORE_PLATFORM AND NOT "${MICROCORE_PLATFORM}" STREQUAL "" AND NOT "${MICROCORE_PLATFORM}" STREQUAL "${ALLOY_PLATFORM}" AND NOT _MICROCORE_USED_LEGACY_ALLOY_PLATFORM)
+        message(FATAL_ERROR
+            "Both ALLOY_PLATFORM ('${ALLOY_PLATFORM}') and MICROCORE_PLATFORM ('${MICROCORE_PLATFORM}') are set with different values.\n"
+            "Use only MICROCORE_PLATFORM."
+        )
+    endif()
+    message(DEPRECATION "CMake variable ALLOY_PLATFORM is deprecated; use MICROCORE_PLATFORM.")
+endif()
+
+if(DEFINED ALLOY_BUILD_TESTS)
+    if(DEFINED MICROCORE_BUILD_TESTS AND NOT "${MICROCORE_BUILD_TESTS}" STREQUAL "${ALLOY_BUILD_TESTS}" AND NOT _MICROCORE_USED_LEGACY_ALLOY_BUILD_TESTS)
+        message(FATAL_ERROR
+            "Both ALLOY_BUILD_TESTS ('${ALLOY_BUILD_TESTS}') and MICROCORE_BUILD_TESTS ('${MICROCORE_BUILD_TESTS}') differ.\n"
+            "Use only MICROCORE_BUILD_TESTS."
+        )
+    endif()
+    message(DEPRECATION "CMake variable ALLOY_BUILD_TESTS is deprecated; use MICROCORE_BUILD_TESTS.")
+endif()
+
+if(DEFINED ALLOY_MINIMAL_BUILD)
+    if(DEFINED MICROCORE_MINIMAL_BUILD AND NOT "${MICROCORE_MINIMAL_BUILD}" STREQUAL "${ALLOY_MINIMAL_BUILD}" AND NOT _MICROCORE_USED_LEGACY_ALLOY_MINIMAL_BUILD)
+        message(FATAL_ERROR
+            "Both ALLOY_MINIMAL_BUILD ('${ALLOY_MINIMAL_BUILD}') and MICROCORE_MINIMAL_BUILD ('${MICROCORE_MINIMAL_BUILD}') differ.\n"
+            "Use only MICROCORE_MINIMAL_BUILD."
+        )
+    endif()
+    message(DEPRECATION "CMake variable ALLOY_MINIMAL_BUILD is deprecated; use MICROCORE_MINIMAL_BUILD.")
+endif()
 
 # Board options
-set_property(CACHE MICROCORE_BOARD PROPERTY STRINGS
+set(_MICROCORE_LEGACY_SUPPORTED_BOARDS
     "host"
     "bluepill"           # STM32F103C8 Blue Pill
     "esp32_devkit"       # ESP32 DevKit
@@ -36,12 +148,21 @@ set_property(CACHE MICROCORE_BOARD PROPERTY STRINGS
     "arduino_zero"       # ATSAMD21G18 Arduino Zero
     "rp_pico"            # RP2040 Raspberry Pi Pico
     "rp2040_zero"        # Waveshare RP2040-Zero
+    "same70_xplained"    # Atmel SAME70 Xplained
     "same70_xpld"        # Atmel SAME70 Xplained
     "nucleo_g0b1re"      # STM32 Nucleo-G0B1RE
     "nucleo_g071rb"      # STM32 Nucleo-G071RB
     "nucleo_f401re"      # STM32 Nucleo-F401RE
     "nucleo_f722ze"      # STM32 Nucleo-F722ZE
 )
+
+set(_MICROCORE_SUPPORTED_BOARD_STRINGS "")
+if(DEFINED MICROCORE_GENERATED_SUPPORTED_BOARDS)
+    list(APPEND _MICROCORE_SUPPORTED_BOARD_STRINGS ${MICROCORE_GENERATED_SUPPORTED_BOARDS})
+endif()
+list(APPEND _MICROCORE_SUPPORTED_BOARD_STRINGS ${_MICROCORE_LEGACY_SUPPORTED_BOARDS})
+list(REMOVE_DUPLICATES _MICROCORE_SUPPORTED_BOARD_STRINGS)
+set_property(CACHE MICROCORE_BOARD PROPERTY STRINGS ${_MICROCORE_SUPPORTED_BOARD_STRINGS})
 
 # Build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -70,7 +191,11 @@ validate_dependencies()
 # If MICROCORE_PLATFORM is not set, it will be auto-detected.
 # If it IS set but doesn't match the board, emit a FATAL_ERROR.
 
-set(MICROCORE_BOARD_PLATFORM_MAP
+set(MICROCORE_BOARD_PLATFORM_MAP)
+if(DEFINED MICROCORE_GENERATED_BOARD_PLATFORM_MAP)
+    list(APPEND MICROCORE_BOARD_PLATFORM_MAP ${MICROCORE_GENERATED_BOARD_PLATFORM_MAP})
+endif()
+list(APPEND MICROCORE_BOARD_PLATFORM_MAP
     "nucleo_f401re:stm32f4"
     "nucleo_f722ze:stm32f7"
     "nucleo_g071rb:stm32g0"
@@ -85,6 +210,7 @@ set(MICROCORE_BOARD_PLATFORM_MAP
     "rp2040_zero:rp2040"
     "host:linux"
 )
+list(REMOVE_DUPLICATES MICROCORE_BOARD_PLATFORM_MAP)
 
 function(validate_board_platform board_name)
     # Find the expected platform for this board
@@ -97,6 +223,19 @@ function(validate_board_platform board_name)
         endif()
     endforeach()
 
+    set(_known_boards "")
+    foreach(mapping ${MICROCORE_BOARD_PLATFORM_MAP})
+        string(REPLACE ":" ";" mapping_parts "${mapping}")
+        list(LENGTH mapping_parts mapping_parts_len)
+        if(mapping_parts_len GREATER 1)
+            list(GET mapping_parts 0 mapped_board)
+            list(APPEND _known_boards "${mapped_board}")
+        endif()
+    endforeach()
+    list(REMOVE_DUPLICATES _known_boards)
+    list(SORT _known_boards)
+    string(JOIN ", " _known_boards_csv ${_known_boards})
+
     if(expected_platform STREQUAL "")
         message(FATAL_ERROR
             "\n"
@@ -106,17 +245,11 @@ function(validate_board_platform board_name)
             "\n"
             "The board '${board_name}' is not recognized.\n"
             "\n"
-            "Supported boards:\n"
-            "  - nucleo_f401re    (STM32F401RE Cortex-M4 84MHz)\n"
-            "  - nucleo_f722ze    (STM32F722ZE Cortex-M7 216MHz)\n"
-            "  - nucleo_g071rb    (STM32G071RB Cortex-M0+ 64MHz)\n"
-            "  - nucleo_g0b1re    (STM32G0B1RE Cortex-M0+ 64MHz)\n"
-            "  - same70_xplained  (ATSAME70Q21 Cortex-M7 300MHz)\n"
-            "  - host             (Native host platform for testing)\n"
+            "Supported boards: ${_known_boards_csv}\n"
             "\n"
             "Usage:\n"
-            "  cmake -DMICROCORE_BOARD=nucleo_f401re ..\n"
-            "  ./ucore build nucleo_f401re blink\n"
+            "  cmake -DMICROCORE_BOARD=<board> ..\n"
+            "  ./ucore list boards\n"
             "\n"
             "===========================================================\n"
         )
@@ -138,13 +271,7 @@ function(validate_board_platform board_name)
                 "The platform '${MICROCORE_PLATFORM}' is not compatible\n"
                 "with board '${board_name}'.\n"
                 "\n"
-                "Valid combinations:\n"
-                "  nucleo_f401re    → stm32f4\n"
-                "  nucleo_f722ze    → stm32f7\n"
-                "  nucleo_g071rb    → stm32g0\n"
-                "  nucleo_g0b1re    → stm32g0\n"
-                "  same70_xplained  → same70\n"
-                "  host             → linux\n"
+                "Known boards: ${_known_boards_csv}\n"
                 "\n"
                 "Solution:\n"
                 "  1. Remove -DMICROCORE_PLATFORM= (auto-detect)\n"
@@ -166,8 +293,8 @@ if(NOT "${MICROCORE_BOARD}" STREQUAL "")
 endif()
 
 # Build options
-option(MICROCORE_BUILD_TESTS "Build unit tests" ON)
-option(MICROCORE_MINIMAL_BUILD "Optimize for size (enables -Os, -flto, --gc-sections)" OFF)
+option(MICROCORE_BUILD_TESTS "Build unit tests" ${_MICROCORE_DEFAULT_BUILD_TESTS})
+option(MICROCORE_MINIMAL_BUILD "Optimize for size (enables -Os, -flto, --gc-sections)" ${_MICROCORE_DEFAULT_MINIMAL_BUILD})
 
 if(MICROCORE_BUILD_TESTS)
     enable_testing()
@@ -193,71 +320,86 @@ endif()
 
 # Auto-detect platform from board if not explicitly set
 if(NOT MICROCORE_PLATFORM)
-    if(MICROCORE_BOARD STREQUAL "same70_xpld" OR MICROCORE_BOARD STREQUAL "same70_xplained")
-        set(MICROCORE_PLATFORM "same70")
-    elseif(MICROCORE_BOARD STREQUAL "host")
-        set(MICROCORE_PLATFORM "linux")
-    elseif(MICROCORE_BOARD MATCHES "^esp32")
-        set(MICROCORE_PLATFORM "esp32")
-    elseif(MICROCORE_BOARD MATCHES "^stm32f4" OR MICROCORE_BOARD STREQUAL "stm32f407vg")
-        set(MICROCORE_PLATFORM "stm32f4")
-    elseif(MICROCORE_BOARD MATCHES "^stm32f1" OR MICROCORE_BOARD STREQUAL "bluepill")
-        set(MICROCORE_PLATFORM "stm32f1")
-    elseif(MICROCORE_BOARD MATCHES "samd21" OR MICROCORE_BOARD STREQUAL "arduino_zero")
-        set(MICROCORE_PLATFORM "samd21")
-    elseif(MICROCORE_BOARD MATCHES "rp2040" OR MICROCORE_BOARD MATCHES "rp_pico")
-        set(MICROCORE_PLATFORM "rp2040")
-    elseif(MICROCORE_BOARD STREQUAL "nucleo_g0b1re" OR MICROCORE_BOARD STREQUAL "nucleo_g071rb" OR MICROCORE_BOARD MATCHES "^stm32g0")
-        set(MICROCORE_PLATFORM "stm32g0")
-    elseif(MICROCORE_BOARD STREQUAL "nucleo_f401re" OR MICROCORE_BOARD MATCHES "^stm32f4" OR MICROCORE_BOARD MATCHES "^nucleo_f4")
-        set(MICROCORE_PLATFORM "stm32f4")
-    elseif(MICROCORE_BOARD STREQUAL "nucleo_f722ze" OR MICROCORE_BOARD MATCHES "^stm32f7" OR MICROCORE_BOARD MATCHES "^nucleo_f7")
-        set(MICROCORE_PLATFORM "stm32f7")
-    else()
+    set(_detected_platform "")
+    foreach(mapping ${MICROCORE_BOARD_PLATFORM_MAP})
+        string(REGEX MATCH "^${MICROCORE_BOARD}:(.+)$" match "${mapping}")
+        if(match)
+            set(_detected_platform "${CMAKE_MATCH_1}")
+            break()
+        endif()
+    endforeach()
+
+    if(_detected_platform STREQUAL "")
         message(WARNING "Could not auto-detect MICROCORE_PLATFORM from MICROCORE_BOARD='${MICROCORE_BOARD}'. Using 'linux' as fallback.")
         set(MICROCORE_PLATFORM "linux")
+    else()
+        set(MICROCORE_PLATFORM "${_detected_platform}")
     endif()
     message(STATUS "Auto-detected platform: ${MICROCORE_PLATFORM} (from board: ${MICROCORE_BOARD})")
 endif()
+
+# Legacy CMake variable aliases (for migration period).
+# Keep them synchronized with canonical MICROCORE_* values.
+set(ALLOY_ROOT "${MICROCORE_ROOT}")
+set(ALLOY_BOARD "${MICROCORE_BOARD}")
+set(ALLOY_PLATFORM "${MICROCORE_PLATFORM}")
+set(ALLOY_MCU "${MICROCORE_MCU}")
+set(ALLOY_ARCH "${MICROCORE_ARCH}")
+set(ALLOY_BUILD_TESTS "${MICROCORE_BUILD_TESTS}")
+set(ALLOY_MINIMAL_BUILD "${MICROCORE_MINIMAL_BUILD}")
 
 # ============================================================================
 # Board Abstraction Layer Configuration
 # ============================================================================
 
-# Map board to header file and startup code
-if(MICROCORE_BOARD STREQUAL "same70_xpld" OR MICROCORE_BOARD STREQUAL "same70_xplained")
-    set(BOARD_HEADER_PATH "boards/same70_xplained/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/atmel/same70/startup_same70.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/same70_xplained/ATSAME70Q21.ld")
-elseif(MICROCORE_BOARD STREQUAL "arduino_zero")
-    set(BOARD_HEADER_PATH "boards/arduino_zero/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/atsamd21/startup.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/arduino_zero/ATSAMD21G18.ld")
-elseif(MICROCORE_BOARD STREQUAL "waveshare_rp2040_zero" OR MICROCORE_BOARD STREQUAL "rp_pico")
-    set(BOARD_HEADER_PATH "boards/waveshare_rp2040_zero/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/rp2040/startup.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/waveshare_rp2040_zero/RP2040.ld")
-elseif(MICROCORE_BOARD STREQUAL "nucleo_g0b1re")
-    set(BOARD_HEADER_PATH "boards/nucleo_g0b1re/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32g0/stm32g0b1/startup.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/nucleo_g0b1re/STM32G0B1RET6.ld")
-elseif(MICROCORE_BOARD STREQUAL "nucleo_g071rb")
-    set(BOARD_HEADER_PATH "boards/nucleo_g071rb/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32g0/stm32g0b1/startup.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/nucleo_g071rb/STM32G071RBT6.ld")
-elseif(MICROCORE_BOARD STREQUAL "nucleo_f401re")
-    set(BOARD_HEADER_PATH "boards/nucleo_f401re/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32f4/stm32f401/startup.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/nucleo_f401re/STM32F401RET6.ld")
-elseif(MICROCORE_BOARD STREQUAL "nucleo_f722ze")
-    set(BOARD_HEADER_PATH "boards/nucleo_f722ze/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32f7/stm32f722/startup.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/nucleo_f722ze/STM32F722ZET6.ld")
-elseif(MICROCORE_BOARD STREQUAL "host")
-    set(BOARD_HEADER_PATH "boards/linux_host/board.hpp")
-    # No startup code needed for host platform
-else()
-    message(WARNING "Board '${MICROCORE_BOARD}' not configured for board abstraction layer")
+# Map board to header/startup/linker using generated metadata first.
+set(_MICROCORE_METADATA_BOARD_ID "${MICROCORE_BOARD}")
+if(MICROCORE_BOARD STREQUAL "same70_xpld")
+    set(_MICROCORE_METADATA_BOARD_ID "same70_xplained")
+endif()
+
+if(DEFINED MICROCORE_GENERATED_BOARD_HEADER_${_MICROCORE_METADATA_BOARD_ID})
+    set(BOARD_HEADER_PATH "${MICROCORE_GENERATED_BOARD_HEADER_${_MICROCORE_METADATA_BOARD_ID}}")
+endif()
+
+if(DEFINED MICROCORE_GENERATED_BOARD_STARTUP_SOURCE_${_MICROCORE_METADATA_BOARD_ID})
+    set(_MICROCORE_STARTUP_REL "${MICROCORE_GENERATED_BOARD_STARTUP_SOURCE_${_MICROCORE_METADATA_BOARD_ID}}")
+    if(NOT "${_MICROCORE_STARTUP_REL}" STREQUAL "")
+        set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/${_MICROCORE_STARTUP_REL}")
+    endif()
+endif()
+
+if(DEFINED MICROCORE_GENERATED_BOARD_LINKER_SCRIPT_${_MICROCORE_METADATA_BOARD_ID})
+    set(_MICROCORE_LINKER_REL "${MICROCORE_GENERATED_BOARD_LINKER_SCRIPT_${_MICROCORE_METADATA_BOARD_ID}}")
+    if(NOT "${_MICROCORE_LINKER_REL}" STREQUAL "")
+        set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/${_MICROCORE_LINKER_REL}")
+    endif()
+endif()
+
+if(DEFINED MICROCORE_GENERATED_BOARD_MCU_${_MICROCORE_METADATA_BOARD_ID})
+    set(MICROCORE_MCU "${MICROCORE_GENERATED_BOARD_MCU_${_MICROCORE_METADATA_BOARD_ID}}" CACHE STRING "Target MCU (set by board configuration)" FORCE)
+endif()
+
+if(DEFINED MICROCORE_GENERATED_BOARD_ARCH_${_MICROCORE_METADATA_BOARD_ID})
+    set(MICROCORE_ARCH "${MICROCORE_GENERATED_BOARD_ARCH_${_MICROCORE_METADATA_BOARD_ID}}" CACHE STRING "Target architecture (set by board configuration)" FORCE)
+endif()
+
+# Legacy fallback for boards not yet in generated metadata.
+if(NOT DEFINED BOARD_HEADER_PATH)
+    if(MICROCORE_BOARD STREQUAL "arduino_zero")
+        set(BOARD_HEADER_PATH "boards/arduino_zero/board.hpp")
+        set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/atsamd21/startup.cpp")
+        set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/arduino_zero/ATSAMD21G18.ld")
+    elseif(MICROCORE_BOARD STREQUAL "waveshare_rp2040_zero" OR MICROCORE_BOARD STREQUAL "rp_pico")
+        set(BOARD_HEADER_PATH "boards/waveshare_rp2040_zero/board.hpp")
+        set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/rp2040/startup.cpp")
+        set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/waveshare_rp2040_zero/RP2040.ld")
+    elseif(MICROCORE_BOARD STREQUAL "host")
+        set(BOARD_HEADER_PATH "boards/linux_host/board.hpp")
+        # No startup code needed for host platform
+    else()
+        message(WARNING "Board '${MICROCORE_BOARD}' not configured for board abstraction layer")
+    endif()
 endif()
 
 # Define BOARD_HEADER macro for use in examples
@@ -270,6 +412,7 @@ if(DEFINED BOARD_HEADER_PATH)
     # Define MICROCORE_BOARD_* for conditional compilation in examples
     string(TOUPPER "${MICROCORE_BOARD}" MICROCORE_BOARD_UPPER)
     add_compile_definitions(MICROCORE_BOARD_${MICROCORE_BOARD_UPPER})
+    add_compile_definitions(ALLOY_BOARD_${MICROCORE_BOARD_UPPER})  # Legacy compatibility
     message(STATUS "  Board Define: MICROCORE_BOARD_${MICROCORE_BOARD_UPPER}")
 
     if(DEFINED STARTUP_SOURCE)
@@ -361,37 +504,132 @@ if(MICROCORE_PLATFORM_SOURCES OR STARTUP_SOURCE)
         list(APPEND HAL_SOURCES ${STARTUP_SOURCE})
     endif()
 
-    add_library(alloy-hal STATIC ${HAL_SOURCES})
+    add_library(microcore_hal STATIC ${HAL_SOURCES})
 
-    message(STATUS "Created STATIC alloy-hal library with platform sources")
+    message(STATUS "Created STATIC microcore_hal library with platform sources")
 else()
     # Platform is header-only (templates) - create INTERFACE library
-    add_library(alloy-hal INTERFACE)
+    add_library(microcore_hal INTERFACE)
 
-    message(STATUS "Created INTERFACE alloy-hal library (header-only platform)")
+    message(STATUS "Created INTERFACE microcore_hal library (header-only platform)")
 endif()
+
+set_target_properties(microcore_hal PROPERTIES EXPORT_NAME hal)
 
 # Set include directories for HAL library
 if(MICROCORE_PLATFORM_SOURCES)
     # STATIC library - use PUBLIC
-    target_include_directories(alloy-hal
+    target_include_directories(microcore_hal
         PUBLIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/src
-            ${MICROCORE_PLATFORM_DIR}
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+            $<BUILD_INTERFACE:${MICROCORE_PLATFORM_DIR}>
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/microcore/src>
     )
-    target_compile_features(alloy-hal PUBLIC cxx_std_23)
+    target_compile_features(microcore_hal PUBLIC cxx_std_23)
 else()
     # INTERFACE library - use INTERFACE
-    target_include_directories(alloy-hal
+    target_include_directories(microcore_hal
         INTERFACE
-            ${CMAKE_CURRENT_SOURCE_DIR}/src
-            ${MICROCORE_PLATFORM_DIR}
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+            $<BUILD_INTERFACE:${MICROCORE_PLATFORM_DIR}>
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/microcore/src>
     )
-    target_compile_features(alloy-hal INTERFACE cxx_std_23)
+    target_compile_features(microcore_hal INTERFACE cxx_std_23)
 endif()
 
-# Export HAL library for use by examples and tests
-set(MICROCORE_HAL_LIBRARY alloy-hal CACHE INTERNAL "Alloy HAL library target")
+# Public and legacy aliases for migration compatibility.
+if(NOT TARGET microcore::hal)
+    add_library(microcore::hal ALIAS microcore_hal)
+endif()
+if(NOT TARGET alloy::hal)
+    add_library(alloy::hal ALIAS microcore_hal)
+endif()
+if(NOT TARGET alloy-hal)
+    add_library(alloy-hal ALIAS microcore_hal)
+endif()
+
+# Export HAL target variables for use by examples and tests.
+set(MICROCORE_HAL_LIBRARY microcore_hal CACHE INTERNAL "MicroCore HAL library target")
+set(ALLOY_HAL_LIBRARY alloy-hal CACHE INTERNAL "Legacy HAL library target alias")
+
+# Public board target (for selected board) - available as microcore::board::<board>.
+if(DEFINED MICROCORE_BOARD AND NOT "${MICROCORE_BOARD}" STREQUAL "")
+    set(_MICROCORE_BOARD_TARGET "microcore_board_${MICROCORE_BOARD}")
+    set(_MICROCORE_BOARD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/boards/${MICROCORE_BOARD}")
+    set(_MICROCORE_BOARD_CPP "${_MICROCORE_BOARD_DIR}/board.cpp")
+    set(_MICROCORE_SYSCALLS_CPP "${_MICROCORE_BOARD_DIR}/syscalls.cpp")
+
+    if(EXISTS "${_MICROCORE_BOARD_CPP}")
+        add_library(${_MICROCORE_BOARD_TARGET} STATIC "${_MICROCORE_BOARD_CPP}")
+        if(CMAKE_CROSSCOMPILING AND EXISTS "${_MICROCORE_SYSCALLS_CPP}")
+            target_sources(${_MICROCORE_BOARD_TARGET} PRIVATE "${_MICROCORE_SYSCALLS_CPP}")
+        endif()
+        target_include_directories(${_MICROCORE_BOARD_TARGET}
+            PUBLIC
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/boards>
+                $<BUILD_INTERFACE:${_MICROCORE_BOARD_DIR}>
+                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/microcore/src>
+                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/microcore>
+        )
+        target_compile_features(${_MICROCORE_BOARD_TARGET} PUBLIC cxx_std_23)
+        target_link_libraries(${_MICROCORE_BOARD_TARGET} PUBLIC microcore::hal)
+        set(_MICROCORE_BOARD_VISIBILITY PUBLIC)
+    else()
+        add_library(${_MICROCORE_BOARD_TARGET} INTERFACE)
+        target_include_directories(${_MICROCORE_BOARD_TARGET}
+            INTERFACE
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/boards>
+                $<BUILD_INTERFACE:${_MICROCORE_BOARD_DIR}>
+                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/microcore/src>
+                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/microcore>
+        )
+        target_compile_features(${_MICROCORE_BOARD_TARGET} INTERFACE cxx_std_23)
+        target_link_libraries(${_MICROCORE_BOARD_TARGET} INTERFACE microcore::hal)
+        set(_MICROCORE_BOARD_VISIBILITY INTERFACE)
+    endif()
+
+    set_target_properties(${_MICROCORE_BOARD_TARGET} PROPERTIES EXPORT_NAME "board_${MICROCORE_BOARD}")
+
+    if(DEFINED MICROCORE_BOARD_UPPER)
+        target_compile_definitions(${_MICROCORE_BOARD_TARGET} ${_MICROCORE_BOARD_VISIBILITY}
+            MICROCORE_BOARD_${MICROCORE_BOARD_UPPER}
+            ALLOY_BOARD_${MICROCORE_BOARD_UPPER}
+        )
+    endif()
+
+    if(NOT TARGET microcore::board::${MICROCORE_BOARD})
+        add_library(microcore::board::${MICROCORE_BOARD} ALIAS ${_MICROCORE_BOARD_TARGET})
+    endif()
+    if(NOT TARGET alloy::board::${MICROCORE_BOARD})
+        add_library(alloy::board::${MICROCORE_BOARD} ALIAS ${_MICROCORE_BOARD_TARGET})
+    endif()
+endif()
+
+# Public RTOS integration target (header/source users still control concrete source linkage).
+if(NOT TARGET microcore_rtos)
+    add_library(microcore_rtos INTERFACE)
+    target_include_directories(microcore_rtos INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/microcore/src>
+    )
+    target_compile_features(microcore_rtos INTERFACE cxx_std_23)
+    target_compile_definitions(microcore_rtos INTERFACE
+        UCORE_RTOS_ENABLED=1
+        ALLOY_RTOS_ENABLED=1
+    )
+    target_link_libraries(microcore_rtos INTERFACE microcore::hal)
+endif()
+
+set_target_properties(microcore_rtos PROPERTIES EXPORT_NAME rtos)
+
+if(NOT TARGET microcore::rtos)
+    add_library(microcore::rtos ALIAS microcore_rtos)
+endif()
+if(NOT TARGET alloy::rtos)
+    add_library(alloy::rtos ALIAS microcore_rtos)
+endif()
 
 # HAL subdirectories (conditional based on board)
 if(MICROCORE_BOARD STREQUAL "host" AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/host/CMakeLists.txt)
@@ -407,23 +645,66 @@ endif()
 # Generic examples - work on any board with board.hpp abstraction
 # The same code compiles for different boards by including the appropriate board.hpp
 
+function(microcore_board_supports_example example_id out_result)
+    set(_supports OFF)
+    set(_metadata_board_id "${MICROCORE_BOARD}")
+    if(_metadata_board_id STREQUAL "same70_xpld")
+        set(_metadata_board_id "same70_xplained")
+    endif()
+
+    if(DEFINED MICROCORE_GENERATED_BOARD_SUPPORTED_EXAMPLES_${_metadata_board_id})
+        set(_supported_examples "${MICROCORE_GENERATED_BOARD_SUPPORTED_EXAMPLES_${_metadata_board_id}}")
+        if(NOT "${_supported_examples}" STREQUAL "")
+            list(FIND _supported_examples "${example_id}" _example_index)
+            if(NOT _example_index EQUAL -1)
+                set(_supports ON)
+            endif()
+        endif()
+    else()
+        # Legacy fallback when generated metadata is unavailable.
+        if(example_id STREQUAL "blink")
+            if(MICROCORE_BOARD STREQUAL "same70_xplained" OR MICROCORE_BOARD STREQUAL "nucleo_g0b1re" OR MICROCORE_BOARD STREQUAL "nucleo_g071rb" OR MICROCORE_BOARD STREQUAL "nucleo_f401re" OR MICROCORE_BOARD STREQUAL "nucleo_f722ze")
+                set(_supports ON)
+            endif()
+        elseif(example_id STREQUAL "rtos/simple_tasks")
+            if(MICROCORE_BOARD STREQUAL "nucleo_f401re" OR MICROCORE_BOARD STREQUAL "nucleo_f722ze")
+                set(_supports ON)
+            endif()
+        elseif(example_id STREQUAL "api_tiers/simple_gpio_blink")
+            if(MICROCORE_BOARD STREQUAL "same70_xplained" OR MICROCORE_BOARD STREQUAL "nucleo_g0b1re" OR MICROCORE_BOARD STREQUAL "nucleo_g071rb" OR MICROCORE_BOARD STREQUAL "nucleo_f401re" OR MICROCORE_BOARD STREQUAL "nucleo_f722ze")
+                set(_supports ON)
+            endif()
+        elseif(example_id STREQUAL "uart_logger")
+            if(MICROCORE_BOARD STREQUAL "same70_xplained")
+                set(_supports ON)
+            endif()
+        endif()
+    endif()
+
+    set(${out_result} "${_supports}" PARENT_SCOPE)
+endfunction()
+
 # Universal blink example - demonstrates board abstraction power
-if(MICROCORE_BOARD STREQUAL "same70_xplained" OR MICROCORE_BOARD STREQUAL "nucleo_g0b1re" OR MICROCORE_BOARD STREQUAL "nucleo_g071rb" OR MICROCORE_BOARD STREQUAL "nucleo_f401re" OR MICROCORE_BOARD STREQUAL "nucleo_f722ze")
+microcore_board_supports_example("blink" _MICROCORE_SUPPORTS_BLINK)
+if(_MICROCORE_SUPPORTS_BLINK)
     add_subdirectory(examples/blink)
 endif()
 
 # Universal RTOS example - demonstrates RTOS with multi-task scheduling
-if(MICROCORE_BOARD STREQUAL "same70_xplained" OR MICROCORE_BOARD STREQUAL "nucleo_g0b1re" OR MICROCORE_BOARD STREQUAL "nucleo_g071rb" OR MICROCORE_BOARD STREQUAL "nucleo_f401re" OR MICROCORE_BOARD STREQUAL "nucleo_f722ze")
+microcore_board_supports_example("rtos/simple_tasks" _MICROCORE_SUPPORTS_RTOS_SIMPLE_TASKS)
+if(_MICROCORE_SUPPORTS_RTOS_SIMPLE_TASKS)
     add_subdirectory(examples/rtos/simple_tasks)
 endif()
 
 # API Tier examples - demonstrates Simple/Fluent/Expert API system
-if(MICROCORE_BOARD STREQUAL "same70_xplained" OR MICROCORE_BOARD STREQUAL "nucleo_g0b1re" OR MICROCORE_BOARD STREQUAL "nucleo_g071rb" OR MICROCORE_BOARD STREQUAL "nucleo_f401re" OR MICROCORE_BOARD STREQUAL "nucleo_f722ze")
+microcore_board_supports_example("api_tiers/simple_gpio_blink" _MICROCORE_SUPPORTS_API_TIERS)
+if(_MICROCORE_SUPPORTS_API_TIERS)
     add_subdirectory(examples/api_tiers)
 endif()
 
 # Board-specific examples
-if(MICROCORE_BOARD STREQUAL "same70_xplained")
+microcore_board_supports_example("uart_logger" _MICROCORE_SUPPORTS_UART_LOGGER)
+if(_MICROCORE_SUPPORTS_UART_LOGGER)
     add_subdirectory(examples/uart_logger)
 endif()
 
@@ -449,6 +730,164 @@ endif()
 
 # Export compile commands for IDEs
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# ==============================================================================
+# SDK Packaging (install + find_package)
+# ==============================================================================
+
+option(MICROCORE_INSTALL_SDK "Install MicroCore SDK package for external consumers" ON)
+if(MICROCORE_CONSUMER_MODE)
+    set(_MICROCORE_DEFAULT_INSTALL_CODEGEN_TOOLING OFF)
+else()
+    set(_MICROCORE_DEFAULT_INSTALL_CODEGEN_TOOLING ON)
+endif()
+option(
+    MICROCORE_INSTALL_CODEGEN_TOOLING
+    "Install codegen boundary artifacts (contracts/scripts/docs) for contributor SDK bundles"
+    ${_MICROCORE_DEFAULT_INSTALL_CODEGEN_TOOLING}
+)
+
+if(MICROCORE_INSTALL_SDK)
+    set(_MICROCORE_INSTALL_EXPORT_TARGETS
+        microcore_hal
+        microcore_rtos
+    )
+
+    if(DEFINED _MICROCORE_BOARD_TARGET AND TARGET ${_MICROCORE_BOARD_TARGET})
+        list(APPEND _MICROCORE_INSTALL_EXPORT_TARGETS ${_MICROCORE_BOARD_TARGET})
+    endif()
+
+    install(
+        TARGETS ${_MICROCORE_INSTALL_EXPORT_TARGETS}
+        EXPORT microcoreTargets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT runtime
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT runtime
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT runtime
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/microcore/src
+    )
+
+    install(
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/microcore/src
+        COMPONENT runtime
+        FILES_MATCHING
+            PATTERN "*.hpp"
+            PATTERN "*.h"
+    )
+
+    install(
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boards/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/microcore/boards
+        COMPONENT runtime
+        FILES_MATCHING
+            PATTERN "*.hpp"
+            PATTERN "*.h"
+            PATTERN "*.ld"
+            PATTERN "board.yaml"
+    )
+
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/boards/board-schema.json")
+        install(
+            FILES ${CMAKE_CURRENT_SOURCE_DIR}/boards/board-schema.json
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/microcore/boards
+            COMPONENT runtime
+        )
+    endif()
+
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/boards/generated")
+        install(
+            DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boards/generated/
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/microcore/boards/generated
+            COMPONENT runtime
+            FILES_MATCHING
+                PATTERN "*.hpp"
+                PATTERN "*.json"
+        )
+    endif()
+
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/generated/board_metadata.cmake")
+        install(
+            FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generated/board_metadata.cmake
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/microcore/cmake/generated
+            COMPONENT runtime
+        )
+    endif()
+
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/generated/boards")
+        install(
+            DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generated/boards/
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/microcore/cmake/generated/boards
+            COMPONENT runtime
+            FILES_MATCHING
+                PATTERN "*.cmake"
+        )
+    endif()
+
+    set(MICROCORE_PACKAGE_HAS_CODEGEN_TOOLING OFF)
+    if(MICROCORE_INSTALL_CODEGEN_TOOLING)
+        set(MICROCORE_PACKAGE_HAS_CODEGEN_TOOLING ON)
+
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tools/codegen/contracts")
+            install(
+                DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tools/codegen/contracts/
+                DESTINATION ${CMAKE_INSTALL_DATADIR}/microcore/codegen/contracts
+                COMPONENT codegen
+                FILES_MATCHING
+                    PATTERN "*.json"
+            )
+        endif()
+
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tools/codegen/scripts/generate_board_artifacts.py")
+            install(
+                FILES
+                    ${CMAKE_CURRENT_SOURCE_DIR}/tools/codegen/scripts/generate_board_artifacts.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/tools/codegen/scripts/validate_codegen_contract.py
+                DESTINATION ${CMAKE_INSTALL_DATADIR}/microcore/codegen/scripts
+                COMPONENT codegen
+            )
+        endif()
+
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/docs/CODEGEN_INTERFACE_CONTRACT.md")
+            install(
+                FILES
+                    ${CMAKE_CURRENT_SOURCE_DIR}/docs/CODEGEN_INTERFACE_CONTRACT.md
+                    ${CMAKE_CURRENT_SOURCE_DIR}/docs/CODEGEN_EXTRACTION_PLAN.md
+                DESTINATION ${CMAKE_INSTALL_DATADIR}/microcore/docs
+                COMPONENT codegen
+            )
+        endif()
+    endif()
+
+    configure_package_config_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/microcoreConfig.cmake.template
+        ${CMAKE_CURRENT_BINARY_DIR}/microcoreConfig.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/microcore
+        NO_SET_AND_CHECK_MACRO
+        NO_CHECK_REQUIRED_COMPONENTS_MACRO
+    )
+
+    write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/microcoreConfigVersion.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
+
+    install(
+        FILES
+            ${CMAKE_CURRENT_BINARY_DIR}/microcoreConfig.cmake
+            ${CMAKE_CURRENT_BINARY_DIR}/microcoreConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/microcore
+        COMPONENT runtime
+    )
+
+    install(
+        EXPORT microcoreTargets
+        FILE microcoreTargets.cmake
+        NAMESPACE microcore::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/microcore
+        COMPONENT runtime
+    )
+endif()
 
 # ==============================================================================
 # Build System Validation Targets

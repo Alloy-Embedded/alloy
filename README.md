@@ -8,6 +8,8 @@
 
 **Quick Links:**
 [Quick Start](#-quick-start) •
+[Integration Paths](docs/INTEGRATION_PATHS.md) •
+[Codegen Contract](docs/CODEGEN_INTERFACE_CONTRACT.md) •
 [Code Generation](#-code-generation) •
 [Generation Commands](#code-generation-commands) •
 [Supported Hardware](#️-supported-hardware) •
@@ -103,17 +105,30 @@ export PATH="$HOME/.local/xpack-arm-toolchain/bin:$PATH"
 
 📖 **See [QUICKSTART.md](QUICKSTART.md) for complete guide**
 
+### SDK Integration Options
+
+MicroCore supports three integration paths for application projects:
+- `add_subdirectory` (local/monorepo source dependency)
+- `FetchContent` (source fetched by CMake)
+- `find_package(microcore CONFIG REQUIRED)` (installed SDK package)
+
+📖 **Details and examples:** [docs/INTEGRATION_PATHS.md](docs/INTEGRATION_PATHS.md)
+📖 **Codegen boundary + compatibility contract:** [docs/CODEGEN_INTERFACE_CONTRACT.md](docs/CODEGEN_INTERFACE_CONTRACT.md)
+
 ### 4. Your First Blink
 
 ```cpp
-#include "stm32f103c8/board.hpp"
+#include "boards/nucleo_f401re/board.hpp"
+#include "hal/api/systick_simple.hpp"
+
+using namespace ucore::hal;
 
 int main() {
-    ucore::board::init();  // 72MHz system clock
+    board::init();
 
     while (true) {
-        ucore::board::led.toggle();
-        ucore::board::delay_ms(500);
+        board::led::toggle();
+        SysTickTimer::delay_ms<board::BoardSysTick>(500);
     }
 }
 ```
@@ -180,7 +195,7 @@ python3 tools/codegen/generator.py \
 Or let CMake handle it automatically:
 ```cmake
 include(codegen)
-alloy_generate_code(MCU STM32F103C8)
+microcore_generate_code(MCU STM32F103C8)
 ```
 
 ### Code Generation Commands
@@ -724,7 +739,7 @@ cd build && ctest
 - **Variables**: `snake_case`
 - **Constants**: `UPPER_SNAKE_CASE`
 - **Namespaces**: `ucore::hal::`
-- **CMake variables**: `ALLOY_BOARD`, `ALLOY_MCU`
+- **CMake variables**: `MICROCORE_BOARD`, `MICROCORE_MCU`
 
 See [ADR-011](decisions.md#adr-011-naming-conventions-snake_case) for complete conventions.
 
@@ -732,7 +747,7 @@ See [ADR-011](decisions.md#adr-011-naming-conventions-snake_case) for complete c
 
 ## 📊 Comparison with Existing Frameworks
 
-| Feature | Alloy | modm | Arduino |
+| Feature | MicroCore | modm | Arduino |
 |---------|-------|------|---------|
 | **Build System** | Pure CMake | lbuild (custom) | Arduino IDE |
 | **C++ Standard** | C++20 | C++23 | C++11/17 |
@@ -771,6 +786,6 @@ Inspired by:
 
 **Made with ❤️ for the embedded systems community**
 
-*Alloy: Combining the best of C++20 and embedded systems*
+*MicroCore: Combining the best of C++20 and embedded systems*
 
 </div>

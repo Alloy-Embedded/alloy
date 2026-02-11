@@ -95,7 +95,7 @@ struct ClockConfig {
 
 struct LedConfig {
     /// LED0 (Green) - Active LOW
-    using led_green = GpioPin<peripherals::GPIOC, 8>;
+    using led_green = GpioPin<peripherals::PIOC, 8>;
 
     /// led_green is active LOW
     static constexpr bool led_green_active_high = false;
@@ -107,7 +107,7 @@ struct LedConfig {
 
 struct ButtonConfig {
     /// SW0 (User button) - Active LOW
-    using button0 = GpioPin<peripherals::GPIOA, 11>;
+    using button0 = GpioPin<peripherals::PIOA, 11>;
 
     /// button0 is active LOW
     static constexpr bool button0_active_high = false;
@@ -123,8 +123,8 @@ struct ButtonConfig {
 struct UartConfig {
     /// UART1 for console (EDBG virtual COM port)
     /// Instance: UART1, Baud: 115200
-    using console_tx = GpioPin<peripherals::GPIOA, 9>;
-    using console_rx = GpioPin<peripherals::GPIOA, 10>;
+    using console_tx = GpioPin<peripherals::PIOA, 9>;
+    using console_rx = GpioPin<peripherals::PIOA, 10>;
 
     static constexpr uint32_t console_baud_rate = 115200;
 };

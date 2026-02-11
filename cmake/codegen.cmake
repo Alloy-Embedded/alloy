@@ -1,11 +1,11 @@
-# Alloy Code Generator CMake Module
+# MicroCore Code Generator CMake Module
 #
 # Locates pre-generated code for the specified MCU.
 # Code is generated offline by tools/codegen/generate_all.py
 #
 # Usage:
 #   include(codegen)
-#   alloy_use_generated_code(
+#   microcore_use_generated_code(
 #       MCU <mcu_name>              # e.g., STM32F103C8
 #       [VENDOR <vendor>]           # Optional: e.g., st (auto-detected if not provided)
 #       [FAMILY <family>]           # Optional: e.g., stm32f1 (auto-detected if not provided)
@@ -147,9 +147,11 @@ function(alloy_use_generated_code)
 endfunction()
 
 #
-# Legacy compatibility: alloy_generate_code() calls alloy_use_generated_code()
+# microcore_use_generated_code()
 #
-function(alloy_generate_code)
+# Canonical function to locate and use pre-generated code.
+#
+function(microcore_use_generated_code)
     alloy_use_generated_code(${ARGN})
 
     # Re-export to parent scope
@@ -157,6 +159,23 @@ function(alloy_generate_code)
     set(MICROCORE_GENERATED_SOURCES "${MICROCORE_GENERATED_SOURCES}" PARENT_SCOPE)
     set(MICROCORE_GENERATED_HEADERS "${MICROCORE_GENERATED_HEADERS}" PARENT_SCOPE)
     set(MICROCORE_CODEGEN_AVAILABLE "${MICROCORE_CODEGEN_AVAILABLE}" PARENT_SCOPE)
+endfunction()
+
+#
+# microcore_generate_code()
+#
+# Canonical compatibility wrapper used by docs and board config snippets.
+#
+function(microcore_generate_code)
+    microcore_use_generated_code(${ARGN})
+endfunction()
+
+#
+# Legacy compatibility: alloy_generate_code() maps to canonical function.
+#
+function(alloy_generate_code)
+    message(DEPRECATION "CMake function alloy_generate_code() is deprecated; use microcore_generate_code().")
+    microcore_generate_code(${ARGN})
 endfunction()
 
 message(STATUS "Code generation module loaded (using pre-generated code from src/generated/)")

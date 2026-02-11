@@ -1,0 +1,45 @@
+{
+  "contract_id": "microcore-board-artifacts",
+  "contract_version": "1.0.0",
+  "generator": {
+    "name": "microcore-codegen",
+    "version": "1.1.0"
+  },
+  "cli_surface": [
+    {
+      "id": "board-artifacts.generate",
+      "command": "python3 tools/codegen/scripts/generate_board_artifacts.py",
+      "description": "Regenerates board-derived runtime artifacts from boards/*/board.yaml."
+    },
+    {
+      "id": "board-artifacts.check",
+      "command": "python3 tools/codegen/scripts/generate_board_artifacts.py --check",
+      "description": "Validates board-derived runtime artifacts are up-to-date without writing."
+    },
+    {
+      "id": "board-artifacts.compatibility",
+      "command": "python3 tools/codegen/scripts/validate_codegen_contract.py",
+      "description": "Validates framework/version compatibility for generated board artifacts."
+    }
+  ],
+  "inputs": {
+    "board_schema": "boards/board-schema.json",
+    "board_manifests_glob": "boards/*/board.yaml"
+  },
+  "outputs": {
+    "runtime_artifacts": [
+      "boards/<board>/board_config.hpp",
+      "boards/generated/board_catalog.json",
+      "boards/generated/<board>/board_metadata.hpp",
+      "boards/generated/codegen_contract_manifest.json",
+      "cmake/generated/board_metadata.cmake",
+      "cmake/generated/boards/<board>.cmake"
+    ]
+  },
+  "framework_compatibility": {
+    "policy": "major+minor pinned",
+    "compatible_major": 0,
+    "compatible_minor_min": 1,
+    "compatible_minor_max": 1
+  }
+}

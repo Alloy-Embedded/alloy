@@ -1,7 +1,7 @@
-# Alloy Framework Architecture
+# MicroCore Framework Architecture
 
 **Version:** 1.0
-**Last Updated:** 2025-11-15
+**Last Updated:** 2026-02-10
 **Status:** Complete through Phase 6
 
 ---
@@ -117,7 +117,7 @@ static_assert(ClockPlatform<Stm32f4Clock<Config>>,
 ## Directory Structure
 
 ```
-alloy/
+microcore/
 ├── src/
 │   ├── core/                       # Core utilities (Result, types, concepts)
 │   │   ├── error.hpp               # Error codes and ErrorCode enum
@@ -226,7 +226,7 @@ alloy/
 
 **Example:**
 ```cpp
-namespace alloy::hal::st::stm32f4::gpioa {
+namespace ucore::hal::st::stm32f4::gpioa {
 
 // Auto-generated register structure
 struct GPIOA_Registers {
@@ -250,7 +250,7 @@ namespace moder {
     // ... 16 pins
 }
 
-} // namespace alloy::hal::st::stm32f4::gpioa
+} // namespace ucore::hal::st::stm32f4::gpioa
 ```
 
 **Generation:** From CMSIS-SVD XML files via Python code generator
@@ -323,7 +323,7 @@ public:
 };
 
 // Compile-time validation
-static_assert(alloy::hal::concepts::GpioPin<GpioPin<0x40020000, 5>>,
+static_assert(ucore::hal::concepts::GpioPin<GpioPin<0x40020000, 5>>,
               "GpioPin must satisfy GpioPin concept");
 ```
 
@@ -337,9 +337,9 @@ static_assert(alloy::hal::concepts::GpioPin<GpioPin<0x40020000, 5>>,
 
 **Example:**
 ```cpp
-namespace alloy::board {
+namespace board {
 
-using namespace alloy::hal::st::stm32f4;
+using namespace ucore::hal::st::stm32f4;
 
 // Board-specific type aliases
 using LedGreen = GpioPin<peripherals::GPIOA, 5>;
@@ -356,7 +356,7 @@ void init() {
     led.setDirection(PinDirection::Output);
 }
 
-} // namespace alloy::board
+} // namespace board
 ```
 
 ### Layer 5: Application Layer
@@ -370,13 +370,13 @@ void init() {
 #include "boards/nucleo_f401re/board.hpp"
 
 int main() {
-    alloy::board::init();
+    board::init();
 
-    alloy::board::LedGreen led;
+    board::LedGreen led;
 
     while (true) {
         led.toggle();
-        alloy::board::delay_ms(500);
+        board::delay_ms(500);
     }
 }
 ```
@@ -424,7 +424,7 @@ concept ClockPlatform = requires {
 **Validation:**
 ```cpp
 // In stm32f4/clock_platform.hpp
-static_assert(alloy::hal::concepts::ClockPlatform<Stm32f4Clock<ExampleConfig>>,
+static_assert(ucore::hal::concepts::ClockPlatform<Stm32f4Clock<ExampleConfig>>,
               "Stm32f4Clock must satisfy ClockPlatform concept - missing required methods");
 ```
 
@@ -637,7 +637,7 @@ CMakeLists.txt (root)
 
 ```cmake
 # User specifies board
-cmake -B build -DALLOY_BOARD=nucleo_f401re
+cmake -B build -DMICROCORE_BOARD=nucleo_f401re
 
 # CMake auto-detects platform
 board_to_platform(nucleo_f401re → stm32f4)
@@ -646,21 +646,23 @@ board_to_platform(nucleo_f401re → stm32f4)
 include(cmake/platforms/stm32f4.cmake)
 ```
 
+Legacy `ALLOY_BOARD` is still accepted during migration, but emits deprecation warnings.
+
 ### Platform Configuration File
 
 **Example:** `cmake/platforms/stm32f4.cmake`
 
 ```cmake
 # Define platform
-set(ALLOY_PLATFORM "stm32f4")
+set(MICROCORE_PLATFORM "stm32f4")
 
 # Platform directory
-set(ALLOY_PLATFORM_DIR "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32f4")
+set(MICROCORE_PLATFORM_DIR "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32f4")
 
 # Collect platform sources (GLOB within family directory)
-file(GLOB ALLOY_PLATFORM_HEADERS
-    "${ALLOY_PLATFORM_DIR}/*.hpp"
-    "${ALLOY_PLATFORM_DIR}/generated/**/*.hpp"
+file(GLOB MICROCORE_PLATFORM_HEADERS
+    "${MICROCORE_PLATFORM_DIR}/*.hpp"
+    "${MICROCORE_PLATFORM_DIR}/generated/**/*.hpp"
 )
 
 # CPU configuration
@@ -672,7 +674,7 @@ set(CPU_FLAGS
 )
 
 # Linker configuration
-set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/linker.ld")
+set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/${MICROCORE_BOARD}/linker.ld")
 ```
 
 ### Build Targets

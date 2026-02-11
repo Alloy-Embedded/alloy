@@ -78,6 +78,12 @@ function(alloy_validate_xtensa_toolchain)
     endif()
 endfunction()
 
+# Load generated board metadata mapping if available.
+set(_MICROCORE_GENERATED_BOARD_METADATA_FILE "${CMAKE_CURRENT_LIST_DIR}/generated/board_metadata.cmake")
+if(NOT DEFINED MICROCORE_GENERATED_BOARD_PLATFORM_MAP AND EXISTS "${_MICROCORE_GENERATED_BOARD_METADATA_FILE}")
+    include("${_MICROCORE_GENERATED_BOARD_METADATA_FILE}")
+endif()
+
 #
 # Auto-detect and validate toolchain based on board
 #
@@ -87,16 +93,49 @@ function(alloy_validate_toolchain)
         return()
     endif()
 
-    # Host board doesn't need cross-compilation toolchain
-    if(MICROCORE_BOARD STREQUAL "host")
+    set(_alloy_toolchain_board_map)
+    if(DEFINED MICROCORE_GENERATED_BOARD_PLATFORM_MAP)
+        list(APPEND _alloy_toolchain_board_map ${MICROCORE_GENERATED_BOARD_PLATFORM_MAP})
+    endif()
+    list(APPEND _alloy_toolchain_board_map
+        "nucleo_f401re:stm32f4"
+        "nucleo_f722ze:stm32f7"
+        "nucleo_g071rb:stm32g0"
+        "nucleo_g0b1re:stm32g0"
+        "same70_xplained:same70"
+        "same70_xpld:same70"
+        "bluepill:stm32f1"
+        "stm32f407vg:stm32f4"
+        "esp32_devkit:esp32"
+        "arduino_zero:samd21"
+        "rp_pico:rp2040"
+        "rp2040_zero:rp2040"
+        "host:linux"
+    )
+    list(REMOVE_DUPLICATES _alloy_toolchain_board_map)
+
+    set(_toolchain_platform "")
+    foreach(mapping ${_alloy_toolchain_board_map})
+        string(REPLACE ":" ";" mapping_parts "${mapping}")
+        list(LENGTH mapping_parts mapping_parts_len)
+        if(mapping_parts_len GREATER 1)
+            list(GET mapping_parts 0 mapping_board)
+            list(GET mapping_parts 1 mapping_platform)
+            if("${mapping_board}" STREQUAL "${MICROCORE_BOARD}")
+                set(_toolchain_platform "${mapping_platform}")
+                break()
+            endif()
+        endif()
+    endforeach()
+
+    if("${_toolchain_platform}" STREQUAL "linux")
         message(STATUS "Host board selected, using native compiler")
         return()
     endif()
 
-    # Determine required toolchain based on board
-    if(MICROCORE_BOARD STREQUAL "esp32_devkit")
+    if("${_toolchain_platform}" STREQUAL "esp32")
         alloy_validate_xtensa_toolchain()
-    elseif(MICROCORE_BOARD MATCHES "^(bluepill|stm32f407vg|arduino_zero|rp_pico)$")
+    elseif(NOT "${_toolchain_platform}" STREQUAL "")
         alloy_validate_arm_toolchain()
     else()
         message(WARNING "Unknown board '${MICROCORE_BOARD}', cannot validate toolchain")

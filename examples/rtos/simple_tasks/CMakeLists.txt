@@ -162,10 +162,14 @@ if(CMAKE_CROSSCOMPILING)
 endif()
 
 # =============================================================================
-# Link microcore-hal (platform-specific HAL library)
+# Link public MicroCore RTOS target when available, with HAL fallback.
 # =============================================================================
 
-if(DEFINED MICROCORE_HAL_LIBRARY)
+if(TARGET microcore::rtos)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        microcore::rtos
+    )
+elseif(DEFINED MICROCORE_HAL_LIBRARY)
     target_link_libraries(${PROJECT_NAME} PRIVATE
         ${MICROCORE_HAL_LIBRARY}
     )

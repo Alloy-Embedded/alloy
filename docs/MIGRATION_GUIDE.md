@@ -1,7 +1,7 @@
 # Migration Guide: Old Architecture → Policy-Based Design
 
 **Version**: 1.0
-**Last Updated**: 2025-11-11
+**Last Updated**: 2026-02-11
 **Target Audience**: Developers migrating existing code to the new policy-based peripheral architecture
 
 ---
@@ -9,14 +9,16 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Why Migrate?](#why-migrate)
-3. [Breaking Changes](#breaking-changes)
-4. [Migration Strategy](#migration-strategy)
-5. [Step-by-Step Migration](#step-by-step-migration)
-6. [Common Patterns](#common-patterns)
-7. [Platform-Specific Changes](#platform-specific-changes)
-8. [Troubleshooting](#troubleshooting)
-9. [FAQ](#faq)
+2. [Identity Migration](#identity-migration)
+3. [Legacy Identifier Timeline](#legacy-identifier-timeline)
+4. [Why Migrate?](#why-migrate)
+5. [Breaking Changes](#breaking-changes)
+6. [Migration Strategy](#migration-strategy)
+7. [Step-by-Step Migration](#step-by-step-migration)
+8. [Common Patterns](#common-patterns)
+9. [Platform-Specific Changes](#platform-specific-changes)
+10. [Troubleshooting](#troubleshooting)
+11. [FAQ](#faq)
 
 ---
 
@@ -30,6 +32,58 @@ The new **Policy-Based Design** architecture provides:
 - **Auto-generated policies** - Consistent, error-free code generation
 
 This guide will help you migrate from the old template-based architecture to the new policy-based design.
+
+---
+
+## Identity Migration
+
+Canonical naming in current code paths:
+
+| Domain | Legacy | Canonical |
+|--------|--------|-----------|
+| CMake board selector | `ALLOY_BOARD` | `MICROCORE_BOARD` |
+| CMake platform selector | `ALLOY_PLATFORM` | `MICROCORE_PLATFORM` |
+| CMake MCU selector | `ALLOY_MCU` | `MICROCORE_MCU` |
+| Runtime namespace | `alloy::` | `ucore::` |
+| Public HAL target term | `alloy-hal` (internal legacy) | `microcore::hal` |
+
+Build migration example:
+
+```bash
+# Legacy (still works with deprecation warning)
+cmake -S . -B build-nucleo_f401re -DALLOY_BOARD=nucleo_f401re
+
+# Canonical (recommended)
+cmake -S . -B build-nucleo_f401re -DMICROCORE_BOARD=nucleo_f401re
+```
+
+## Legacy Identifier Timeline
+
+This timeline is anchored to the current migration cycle and uses absolute dates.
+
+### Legacy Inputs Covered
+
+- CMake variables: `ALLOY_BOARD`, `ALLOY_PLATFORM`, `ALLOY_BUILD_TESTS`, `ALLOY_MINIMAL_BUILD`
+- Legacy target/namespace aliases: `alloy::hal`, `alloy::rtos`, `alloy::board::<board>`, `alloy-hal`
+
+### Removal Schedule
+
+| Date | Milestone | Policy |
+|------|-----------|--------|
+| **February 11, 2026** | Deprecation window active | Legacy identifiers remain functional, deprecation warnings stay enabled in supported build paths. |
+| **April 15, 2026** | Freeze new legacy usage | New docs/examples/CI entries MUST use canonical identifiers only (`MICROCORE_*`, `microcore::...`). |
+| **June 30, 2026** | Planned hard removal candidate | Legacy CMake input aliases (`ALLOY_*`) are removed in the next scheduled minor release branch cut, unless migration gates fail. |
+| **September 30, 2026** | Final cleanup deadline | Remaining legacy target aliases are removed and unsupported from mainline build/test paths. |
+
+### Gate to Postpone Removal
+
+Removal milestones can be postponed only if one of these is not satisfied:
+
+- CLI smoke matrix is green for supported board/example mappings.
+- External `find_package(microcore)` consumer validation is green.
+- Migration documentation remains current and actionable for canonical paths.
+
+If postponed, the project MUST publish a new date with rationale before the original deadline.
 
 ---
 
@@ -92,7 +146,7 @@ uart.initialize();
 // ✅ NEW
 #include "hal/api/uart_simple.hpp"
 #include "hal/platform/same70/uart.hpp"
-using namespace alloy::hal::same70;
+using namespace ucore::hal::same70;
 
 Usart0::quick_setup<TxPin, RxPin>(BaudRate{115200});
 ```
@@ -190,7 +244,7 @@ target_include_directories(${TARGET_NAME} PRIVATE
 // ❌ OLD: src/app/serial_logger.cpp
 #include "hal/uart.hpp"
 
-using namespace alloy::hal;
+using namespace ucore::hal;
 
 class SerialLogger {
     Uart0 uart_;
@@ -218,8 +272,8 @@ public:
 #include "hal/api/uart_simple.hpp"
 #include "hal/platform/same70/uart.hpp"
 
-using namespace alloy::hal;
-using namespace alloy::hal::same70;
+using namespace ucore::hal;
+using namespace ucore::hal::same70;
 
 class SerialLogger {
     // No member variable needed - static API
@@ -250,8 +304,8 @@ public:
 #include "hal/api/uart_fluent.hpp"
 #include "hal/platform/same70/uart.hpp"
 
-using namespace alloy::hal;
-using namespace alloy::hal::same70;
+using namespace ucore::hal;
+using namespace ucore::hal::same70;
 
 class SerialLogger {
 public:
@@ -354,10 +408,10 @@ config.start_transfer();
 // ✅ NEW: Conditional includes
 #ifdef PLATFORM_SAME70
     #include "hal/platform/same70/uart.hpp"
-    using namespace alloy::hal::same70;
+    using namespace ucore::hal::same70;
 #elif PLATFORM_STM32F4
     #include "hal/platform/stm32f4/uart.hpp"
-    using namespace alloy::hal::stm32f4;
+    using namespace ucore::hal::stm32f4;
 #endif
 
 // Same API on all platforms!
@@ -377,7 +431,7 @@ Same70::Uart0 uart;
 
 // ✅ NEW
 #include "hal/platform/same70/uart.hpp"
-using namespace alloy::hal::same70;
+using namespace ucore::hal::same70;
 auto config = Usart0::quick_setup<TxPin, RxPin>(BaudRate{115200});
 ```
 
@@ -395,7 +449,7 @@ Stm32f4::Usart1 uart;
 
 // ✅ NEW
 #include "hal/platform/stm32f4/uart.hpp"
-using namespace alloy::hal::stm32f4;
+using namespace ucore::hal::stm32f4;
 auto config = Usart1::quick_setup<TxPin, RxPin>(BaudRate{115200});
 ```
 
@@ -413,7 +467,7 @@ Stm32f1::Usart1 uart;
 
 // ✅ NEW
 #include "hal/platform/stm32f1/uart.hpp"
-using namespace alloy::hal::stm32f1;
+using namespace ucore::hal::stm32f1;
 auto config = Usart1::quick_setup<TxPin, RxPin>(BaudRate{115200});
 ```
 
@@ -479,7 +533,7 @@ error: template argument required for 'Uart'
 Uart uart;
 
 // ✅ Correct:
-using namespace alloy::hal::same70;
+using namespace ucore::hal::same70;
 auto config = Usart0::quick_setup<TxPin, RxPin>(BaudRate{115200});
 ```
 

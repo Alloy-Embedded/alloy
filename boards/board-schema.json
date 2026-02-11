@@ -2,26 +2,47 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/lgili/corezero/schemas/board-config.json",
   "title": "MicroCore Board Configuration",
-  "description": "JSON Schema for MicroCore board configuration YAML files",
+  "description": "Canonical schema for MicroCore board metadata (board.yaml).",
   "type": "object",
-  "required": ["board", "platform", "mcu", "clock", "leds"],
+  "required": [
+    "schema_version",
+    "board",
+    "platform",
+    "mcu",
+    "clock",
+    "build",
+    "tooling",
+    "leds"
+  ],
+  "additionalProperties": false,
   "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^1\\.0$",
+      "description": "Board metadata schema version"
+    },
     "board": {
       "type": "object",
-      "required": ["name", "vendor", "version"],
+      "required": ["id", "name", "vendor", "version"],
+      "additionalProperties": false,
       "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$",
+          "description": "Stable board identifier matching directory name"
+        },
         "name": {
           "type": "string",
-          "description": "Board name (e.g., 'Nucleo-F401RE')"
+          "description": "Board display name"
         },
         "vendor": {
           "type": "string",
-          "description": "Board manufacturer (e.g., 'STMicroelectronics')"
+          "description": "Board manufacturer"
         },
         "version": {
           "type": "string",
           "pattern": "^\\d+\\.\\d+\\.\\d+$",
-          "description": "Board hardware revision (semver format)"
+          "description": "Board metadata version (semver)"
         },
         "description": {
           "type": "string",
@@ -30,26 +51,49 @@
         "url": {
           "type": "string",
           "format": "uri",
-          "description": "URL to board documentation/product page"
+          "description": "URL to board docs/product page"
         }
       }
     },
     "platform": {
       "type": "string",
-      "enum": ["stm32f0", "stm32f1", "stm32f4", "stm32f7", "stm32g0", "stm32g4", "stm32h7", "same70", "host"],
-      "description": "MicroCore platform identifier"
+      "enum": [
+        "stm32f0",
+        "stm32f1",
+        "stm32f4",
+        "stm32f7",
+        "stm32g0",
+        "stm32g4",
+        "stm32h7",
+        "same70",
+        "host"
+      ],
+      "description": "Canonical MicroCore platform identifier"
     },
     "mcu": {
       "type": "object",
       "required": ["part_number", "architecture"],
+      "additionalProperties": false,
       "properties": {
         "part_number": {
           "type": "string",
-          "description": "Full MCU part number (e.g., 'STM32F401RET6')"
+          "description": "Full MCU part number"
+        },
+        "generated_namespace": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$",
+          "description": "Override namespace/path used for generated MCU artifacts"
         },
         "architecture": {
           "type": "string",
-          "enum": ["cortex-m0", "cortex-m0+", "cortex-m3", "cortex-m4", "cortex-m7", "cortex-m33"],
+          "enum": [
+            "cortex-m0",
+            "cortex-m0+",
+            "cortex-m3",
+            "cortex-m4",
+            "cortex-m7",
+            "cortex-m33"
+          ],
           "description": "ARM Cortex-M architecture"
         },
         "flash_kb": {
@@ -65,13 +109,14 @@
         "frequency_mhz": {
           "type": "integer",
           "minimum": 1,
-          "description": "Maximum CPU frequency in MHz"
+          "description": "Target CPU frequency in MHz"
         }
       }
     },
     "clock": {
       "type": "object",
       "required": ["source", "system_clock_hz"],
+      "additionalProperties": false,
       "properties": {
         "source": {
           "type": "string",
@@ -81,42 +126,164 @@
         "system_clock_hz": {
           "type": "integer",
           "minimum": 1000000,
-          "description": "Target system clock frequency in Hz"
+          "description": "System clock in Hz"
         },
         "hse_hz": {
           "type": "integer",
-          "description": "External crystal frequency in Hz (if HSE is used)"
+          "minimum": 1000000,
+          "description": "External crystal frequency in Hz"
         },
         "pll": {
           "type": "object",
-          "description": "PLL configuration (platform-specific)",
+          "additionalProperties": false,
           "properties": {
-            "m": {"type": "integer", "minimum": 1},
-            "n": {"type": "integer", "minimum": 1},
-            "p": {"type": "integer", "minimum": 1},
-            "q": {"type": "integer", "minimum": 1},
-            "r": {"type": "integer", "minimum": 1}
+            "m": { "type": "integer", "minimum": 1 },
+            "n": { "type": "integer", "minimum": 1 },
+            "p": { "type": "integer", "minimum": 1 },
+            "q": { "type": "integer", "minimum": 1 },
+            "r": { "type": "integer", "minimum": 1 }
           }
         },
         "ahb_prescaler": {
           "type": "integer",
           "minimum": 1,
-          "description": "AHB bus prescaler"
+          "description": "AHB prescaler"
         },
         "apb1_prescaler": {
           "type": "integer",
           "minimum": 1,
-          "description": "APB1 bus prescaler"
+          "description": "APB1 prescaler"
         },
         "apb2_prescaler": {
           "type": "integer",
           "minimum": 1,
-          "description": "APB2 bus prescaler"
+          "description": "APB2 prescaler"
         },
         "flash_latency": {
           "type": "integer",
           "minimum": 0,
           "description": "Flash wait states"
+        }
+      }
+    },
+    "build": {
+      "type": "object",
+      "required": ["linker_script", "startup_source", "toolchain_file"],
+      "additionalProperties": false,
+      "properties": {
+        "linker_script": {
+          "type": "string",
+          "pattern": "^boards/[a-z0-9_]+/.+\\.(ld|lds)$",
+          "description": "Workspace-relative linker script path"
+        },
+        "startup_source": {
+          "type": "string",
+          "pattern": "^src/.+\\.cpp$",
+          "description": "Workspace-relative startup source path"
+        },
+        "toolchain_file": {
+          "type": "string",
+          "pattern": "^cmake/.+\\.cmake$",
+          "description": "Workspace-relative CMake toolchain file"
+        },
+        "default_build_type": {
+          "type": "string",
+          "enum": ["Debug", "Release", "RelWithDebInfo", "MinSizeRel"],
+          "default": "Release"
+        },
+        "supports_rtos": {
+          "type": "boolean",
+          "default": true
+        },
+        "supported_examples": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9_./-]+$"
+          }
+        }
+      }
+    },
+    "tooling": {
+      "type": "object",
+      "required": ["flash", "debug"],
+      "additionalProperties": false,
+      "properties": {
+        "flash": {
+          "type": "object",
+          "required": ["command"],
+          "additionalProperties": false,
+          "properties": {
+            "command": {
+              "type": "string",
+              "enum": ["st-flash", "openocd"]
+            },
+            "binary_format": {
+              "type": "string",
+              "enum": ["bin", "elf"],
+              "default": "bin"
+            },
+            "load_address": {
+              "type": "string",
+              "pattern": "^0x[0-9A-Fa-f]+$",
+              "description": "Flash load address for raw binaries"
+            },
+            "openocd_target": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+$",
+              "description": "OpenOCD target cfg basename"
+            },
+            "openocd_interface": {
+              "type": "string",
+              "enum": ["stlink", "cmsis-dap", "jlink"],
+              "description": "OpenOCD interface cfg basename"
+            },
+            "openocd_interface_cfg": {
+              "type": "string",
+              "pattern": "^interface/.+\\.cfg$",
+              "description": "Explicit OpenOCD interface cfg path"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": { "command": { "const": "st-flash" } }
+              },
+              "then": {
+                "required": ["load_address"]
+              }
+            },
+            {
+              "if": {
+                "properties": { "command": { "const": "openocd" } }
+              },
+              "then": {
+                "required": ["openocd_target"],
+                "anyOf": [
+                  { "required": ["openocd_interface"] },
+                  { "required": ["openocd_interface_cfg"] }
+                ]
+              }
+            }
+          ]
+        },
+        "debug": {
+          "type": "object",
+          "required": ["transport"],
+          "additionalProperties": false,
+          "properties": {
+            "transport": {
+              "type": "string",
+              "enum": ["stlink", "cmsis-dap", "jlink", "none"]
+            },
+            "probe": {
+              "type": "string"
+            },
+            "swd_frequency_hz": {
+              "type": "integer",
+              "minimum": 1000
+            }
+          }
         }
       }
     },
@@ -126,36 +293,31 @@
       "items": {
         "type": "object",
         "required": ["name", "port", "pin"],
+        "additionalProperties": false,
         "properties": {
           "name": {
             "type": "string",
-            "pattern": "^[a-z_][a-z0-9_]*$",
-            "description": "LED identifier (C++ compatible name)"
+            "pattern": "^[a-z_][a-z0-9_]*$"
           },
           "color": {
             "type": "string",
-            "enum": ["red", "green", "blue", "yellow", "orange", "white"],
-            "description": "LED color"
+            "enum": ["red", "green", "blue", "yellow", "orange", "white"]
           },
           "port": {
             "type": "string",
-            "pattern": "^GPIO[A-K]$",
-            "description": "GPIO port (e.g., 'GPIOA')"
+            "pattern": "^(GPIO[A-K]|PIO[A-E])$"
           },
           "pin": {
             "type": "integer",
             "minimum": 0,
-            "maximum": 15,
-            "description": "GPIO pin number (0-15)"
+            "maximum": 31
           },
           "active_high": {
             "type": "boolean",
-            "default": true,
-            "description": "True if LED is on when pin is HIGH"
+            "default": true
           },
           "description": {
-            "type": "string",
-            "description": "Human-readable description"
+            "type": "string"
           }
         }
       }
@@ -165,37 +327,32 @@
       "items": {
         "type": "object",
         "required": ["name", "port", "pin"],
+        "additionalProperties": false,
         "properties": {
           "name": {
             "type": "string",
-            "pattern": "^[a-z_][a-z0-9_]*$",
-            "description": "Button identifier (C++ compatible name)"
+            "pattern": "^[a-z_][a-z0-9_]*$"
           },
           "port": {
             "type": "string",
-            "pattern": "^GPIO[A-K]$",
-            "description": "GPIO port (e.g., 'GPIOC')"
+            "pattern": "^(GPIO[A-K]|PIO[A-E])$"
           },
           "pin": {
             "type": "integer",
             "minimum": 0,
-            "maximum": 15,
-            "description": "GPIO pin number (0-15)"
+            "maximum": 31
           },
           "active_high": {
             "type": "boolean",
-            "default": false,
-            "description": "True if button pressed = HIGH"
+            "default": false
           },
           "pull": {
             "type": "string",
             "enum": ["none", "up", "down"],
-            "default": "none",
-            "description": "Internal pull resistor configuration"
+            "default": "none"
           },
           "description": {
-            "type": "string",
-            "description": "Human-readable description"
+            "type": "string"
           }
         }
       }
@@ -205,46 +362,39 @@
       "items": {
         "type": "object",
         "required": ["name", "instance", "tx_port", "tx_pin"],
+        "additionalProperties": false,
         "properties": {
           "name": {
             "type": "string",
-            "pattern": "^[a-z_][a-z0-9_]*$",
-            "description": "UART identifier (e.g., 'console', 'debug')"
+            "pattern": "^[a-z_][a-z0-9_]*$"
           },
           "instance": {
-            "type": "string",
-            "description": "UART/USART peripheral instance (e.g., 'USART2')"
+            "type": "string"
           },
           "tx_port": {
             "type": "string",
-            "pattern": "^GPIO[A-K]$",
-            "description": "TX pin GPIO port"
+            "pattern": "^(GPIO[A-K]|PIO[A-E])$"
           },
           "tx_pin": {
             "type": "integer",
             "minimum": 0,
-            "maximum": 15,
-            "description": "TX pin number"
+            "maximum": 31
           },
           "rx_port": {
             "type": "string",
-            "pattern": "^GPIO[A-K]$",
-            "description": "RX pin GPIO port (optional for TX-only)"
+            "pattern": "^(GPIO[A-K]|PIO[A-E])$"
           },
           "rx_pin": {
             "type": "integer",
             "minimum": 0,
-            "maximum": 15,
-            "description": "RX pin number (optional for TX-only)"
+            "maximum": 31
           },
           "baud_rate": {
             "type": "integer",
-            "default": 115200,
-            "description": "Default baud rate"
+            "default": 115200
           },
           "description": {
-            "type": "string",
-            "description": "Human-readable description"
+            "type": "string"
           }
         }
       }
@@ -253,7 +403,17 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "instance", "sck_port", "sck_pin", "mosi_port", "mosi_pin", "miso_port", "miso_pin"],
+        "required": [
+          "name",
+          "instance",
+          "sck_port",
+          "sck_pin",
+          "mosi_port",
+          "mosi_pin",
+          "miso_port",
+          "miso_pin"
+        ],
+        "additionalProperties": false,
         "properties": {
           "name": {
             "type": "string",
@@ -262,13 +422,36 @@
           "instance": {
             "type": "string"
           },
-          "sck_port": {"type": "string", "pattern": "^GPIO[A-K]$"},
-          "sck_pin": {"type": "integer", "minimum": 0, "maximum": 15},
-          "mosi_port": {"type": "string", "pattern": "^GPIO[A-K]$"},
-          "mosi_pin": {"type": "integer", "minimum": 0, "maximum": 15},
-          "miso_port": {"type": "string", "pattern": "^GPIO[A-K]$"},
-          "miso_pin": {"type": "integer", "minimum": 0, "maximum": 15},
-          "description": {"type": "string"}
+          "sck_port": {
+            "type": "string",
+            "pattern": "^(GPIO[A-K]|PIO[A-E])$"
+          },
+          "sck_pin": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 31
+          },
+          "mosi_port": {
+            "type": "string",
+            "pattern": "^(GPIO[A-K]|PIO[A-E])$"
+          },
+          "mosi_pin": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 31
+          },
+          "miso_port": {
+            "type": "string",
+            "pattern": "^(GPIO[A-K]|PIO[A-E])$"
+          },
+          "miso_pin": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 31
+          },
+          "description": {
+            "type": "string"
+          }
         }
       }
     },
@@ -277,6 +460,7 @@
       "items": {
         "type": "object",
         "required": ["name", "instance", "scl_port", "scl_pin", "sda_port", "sda_pin"],
+        "additionalProperties": false,
         "properties": {
           "name": {
             "type": "string",
@@ -285,17 +469,32 @@
           "instance": {
             "type": "string"
           },
-          "scl_port": {"type": "string", "pattern": "^GPIO[A-K]$"},
-          "scl_pin": {"type": "integer", "minimum": 0, "maximum": 15},
-          "sda_port": {"type": "string", "pattern": "^GPIO[A-K]$"},
-          "sda_pin": {"type": "integer", "minimum": 0, "maximum": 15},
+          "scl_port": {
+            "type": "string",
+            "pattern": "^(GPIO[A-K]|PIO[A-E])$"
+          },
+          "scl_pin": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 31
+          },
+          "sda_port": {
+            "type": "string",
+            "pattern": "^(GPIO[A-K]|PIO[A-E])$"
+          },
+          "sda_pin": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 31
+          },
           "speed_hz": {
             "type": "integer",
             "enum": [100000, 400000, 1000000],
-            "default": 100000,
-            "description": "I2C speed: 100kHz (standard), 400kHz (fast), 1MHz (fast+)"
+            "default": 100000
           },
-          "description": {"type": "string"}
+          "description": {
+            "type": "string"
+          }
         }
       }
     }

@@ -1,7 +1,7 @@
-# MicroCore Board Configuration: SAME70 Xplained Ultra
-# https://www.microchip.com/developmenttools/ProductDetails/atsame70-xpld
+schema_version: "1.0"
 
 board:
+  id: same70_xplained
   name: "SAME70 Xplained Ultra"
   vendor: "Microchip/Atmel"
   version: "1.0.0"
@@ -12,58 +12,71 @@ platform: same70
 
 mcu:
   part_number: "ATSAME70Q21B"
+  generated_namespace: "atsame70q21b"
   architecture: cortex-m7
   flash_kb: 2048
   ram_kb: 384
   frequency_mhz: 300
 
-# Clock Configuration
-# IMPORTANT: Using HIGH_PERFORMANCE configuration
-# Crystal: 12 MHz (external XTAL on board)
-# Target: 300 MHz CPU clock (PLLA output)
-# Master Clock (MCK): 150 MHz (PLLA/2)
-# PLL Configuration:
-#   Input:  12 MHz crystal
-#   PLLA:   12 MHz × (24+1) / 1 = 300 MHz
-#   MCK:    300 MHz / 2 = 150 MHz
 clock:
   source: PLL
   system_clock_hz: 300000000
   hse_hz: 12000000
   pll:
-    m: 1    # PLLA input divider
-    n: 25   # PLLA multiplier (25 = 24+1)
-    p: 2    # MCK divider (PLLA/2 = 150 MHz)
-  ahb_prescaler: 1    # AHB = 150 MHz
-  apb1_prescaler: 1   # APB1 = 150 MHz
-  apb2_prescaler: 1   # APB2 = 150 MHz
-  flash_latency: 6    # 6 wait states for 150 MHz
+    m: 1
+    n: 25
+    p: 2
+  ahb_prescaler: 1
+  apb1_prescaler: 1
+  apb2_prescaler: 1
+  flash_latency: 6
 
-# LEDs
+build:
+  linker_script: "boards/same70_xplained/ATSAME70Q21.ld"
+  startup_source: "src/hal/vendors/atmel/same70/startup_same70.cpp"
+  toolchain_file: "cmake/toolchains/arm-none-eabi.cmake"
+  default_build_type: "Release"
+  supports_rtos: false
+  supported_examples:
+    - blink
+    - api_tiers/simple_gpio_blink
+    - api_tiers/simple_gpio_button
+
+tooling:
+  flash:
+    command: openocd
+    binary_format: elf
+    openocd_interface: cmsis-dap
+    openocd_target: atsamv
+  debug:
+    transport: cmsis-dap
+    probe: "EDBG"
+
 leds:
   - name: led_green
     color: green
-    port: GPIOC
+    port: PIOC
     pin: 8
     active_high: false
     description: "LED0 (Green) - Active LOW"
 
-# Buttons
 buttons:
   - name: button0
-    port: GPIOA
+    port: PIOA
     pin: 11
     active_high: false
     pull: up
     description: "SW0 (User button) - Active LOW"
 
-# UART Configuration
 uart:
   - name: console
     instance: UART1
-    tx_port: GPIOA
+    tx_port: PIOA
     tx_pin: 9
-    rx_port: GPIOA
+    rx_port: PIOA
     rx_pin: 10
     baud_rate: 115200
     description: "UART1 for console (EDBG virtual COM port)"
+
+spi: []
+i2c: []

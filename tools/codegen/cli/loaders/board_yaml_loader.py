@@ -16,6 +16,7 @@ from dataclasses import dataclass
 @dataclass
 class BoardInfo:
     """Board metadata"""
+    id: str
     name: str
     vendor: str
     version: str
@@ -28,6 +29,7 @@ class MCUInfo:
     """MCU metadata"""
     part_number: str
     architecture: str
+    generated_namespace: str = ""
     flash_kb: int = 0
     ram_kb: int = 0
     frequency_mhz: int = 0
@@ -195,6 +197,7 @@ class BoardYAMLLoader:
 
         # Board info
         board = BoardInfo(
+            id=data['board']['id'],
             name=data['board']['name'],
             vendor=data['board']['vendor'],
             version=data['board']['version'],
@@ -205,6 +208,7 @@ class BoardYAMLLoader:
         # MCU info
         mcu = MCUInfo(
             part_number=data['mcu']['part_number'],
+            generated_namespace=data['mcu'].get('generated_namespace', ''),
             architecture=data['mcu']['architecture'],
             flash_kb=data['mcu'].get('flash_kb', 0),
             ram_kb=data['mcu'].get('ram_kb', 0),

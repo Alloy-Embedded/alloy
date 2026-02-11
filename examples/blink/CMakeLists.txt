@@ -42,7 +42,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 # Link with HAL library (if needed)
-if(DEFINED MICROCORE_HAL_LIBRARY)
+if(TARGET microcore::hal)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        microcore::hal
+    )
+elseif(DEFINED MICROCORE_HAL_LIBRARY)
     target_link_libraries(${PROJECT_NAME} PRIVATE
         ${MICROCORE_HAL_LIBRARY}
     )

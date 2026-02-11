@@ -1,0 +1,85 @@
+schema_version: "1.0"
+
+board:
+  id: nucleo_f722ze
+  name: "Nucleo-F722ZE"
+  vendor: "STMicroelectronics"
+  version: "1.0.0"
+  description: "STM32 Nucleo-144 development board with STM32F722ZE MCU"
+  url: "https://www.st.com/en/evaluation-tools/nucleo-f722ze.html"
+
+platform: stm32f7
+
+mcu:
+  part_number: "STM32F722ZET6"
+  generated_namespace: "stm32f722"
+  architecture: cortex-m7
+  flash_kb: 512
+  ram_kb: 256
+  frequency_mhz: 180
+
+clock:
+  source: PLL
+  system_clock_hz: 180000000
+  hse_hz: 8000000
+  pll:
+    m: 4
+    n: 180
+    p: 2
+    q: 8
+  ahb_prescaler: 1
+  apb1_prescaler: 4
+  apb2_prescaler: 2
+  flash_latency: 5
+
+build:
+  linker_script: "boards/nucleo_f722ze/STM32F722ZET6.ld"
+  startup_source: "src/hal/vendors/st/stm32f7/stm32f722/startup.cpp"
+  toolchain_file: "cmake/toolchains/arm-none-eabi.cmake"
+  default_build_type: "Release"
+  supports_rtos: true
+  supported_examples:
+    - blink
+    - rtos/simple_tasks
+    - api_tiers/simple_gpio_blink
+    - api_tiers/simple_gpio_button
+
+tooling:
+  flash:
+    command: st-flash
+    binary_format: bin
+    load_address: "0x08000000"
+    openocd_interface: stlink
+    openocd_target: stm32f7x
+  debug:
+    transport: stlink
+    probe: "ST-LINK/V2-1"
+
+leds:
+  - name: led_green
+    color: green
+    port: GPIOB
+    pin: 7
+    active_high: true
+    description: "User LED LD1"
+
+buttons:
+  - name: button_user
+    port: GPIOC
+    pin: 13
+    active_high: false
+    pull: none
+    description: "User button B1 (active LOW)"
+
+uart:
+  - name: console
+    instance: USART2
+    tx_port: GPIOA
+    tx_pin: 2
+    rx_port: GPIOA
+    rx_pin: 3
+    baud_rate: 115200
+    description: "ST-Link Virtual COM Port"
+
+spi: []
+i2c: []

@@ -1,0 +1,78 @@
+schema_version: "1.0"
+
+board:
+  id: nucleo_g0b1re
+  name: "Nucleo-G0B1RE"
+  vendor: "STMicroelectronics"
+  version: "1.0.0"
+  description: "STM32 Nucleo-64 development board with STM32G0B1RE MCU"
+  url: "https://www.st.com/en/evaluation-tools/nucleo-g0b1re.html"
+
+platform: stm32g0
+
+mcu:
+  part_number: "STM32G0B1RET6"
+  generated_namespace: "stm32g0b1"
+  architecture: cortex-m0+
+  flash_kb: 512
+  ram_kb: 144
+  frequency_mhz: 64
+
+clock:
+  source: HSI
+  system_clock_hz: 64000000
+  ahb_prescaler: 1
+  apb1_prescaler: 1
+  apb2_prescaler: 1
+  flash_latency: 2
+
+build:
+  linker_script: "boards/nucleo_g0b1re/STM32G0B1RET6.ld"
+  startup_source: "src/hal/vendors/st/stm32g0/stm32g0b1/startup.cpp"
+  toolchain_file: "cmake/toolchains/arm-none-eabi.cmake"
+  default_build_type: "Release"
+  supports_rtos: false
+  supported_examples:
+    - blink
+    - api_tiers/simple_gpio_blink
+    - api_tiers/simple_gpio_button
+
+tooling:
+  flash:
+    command: st-flash
+    binary_format: bin
+    load_address: "0x08000000"
+    openocd_interface: stlink
+    openocd_target: stm32g0x
+  debug:
+    transport: stlink
+    probe: "ST-LINK/V2-1"
+
+leds:
+  - name: led_green
+    color: green
+    port: GPIOA
+    pin: 5
+    active_high: true
+    description: "User LED LD4"
+
+buttons:
+  - name: button_user
+    port: GPIOC
+    pin: 13
+    active_high: false
+    pull: none
+    description: "User button B1 (active LOW)"
+
+uart:
+  - name: console
+    instance: USART2
+    tx_port: GPIOA
+    tx_pin: 2
+    rx_port: GPIOA
+    rx_pin: 3
+    baud_rate: 115200
+    description: "ST-Link Virtual COM Port"
+
+spi: []
+i2c: []

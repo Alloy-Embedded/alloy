@@ -21,6 +21,12 @@ using namespace nucleo_f401re;
 using namespace ucore::hal;
 using namespace ucore::hal::st::stm32f4;
 
+// Board pin aliases used by portable examples.
+namespace pins {
+using led_green = LedConfig::led_green;
+using button_user = ButtonConfig::button_user;
+} // namespace pins
+
 // Board-specific SysTick type (84 MHz)
 using BoardSysTick = SysTick<ClockConfig::system_clock_hz>;
 

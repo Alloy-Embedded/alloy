@@ -94,6 +94,9 @@ Build and flash in one command:
 
 ```bash
 ./ucore flash <board> <example>
+
+# CI/non-interactive mode
+./ucore flash <board> <example> --non-interactive
 ```
 
 **Examples:**
@@ -108,9 +111,11 @@ Build and flash in one command:
 
 The CLI will:
 1. ✅ Build the example
-2. ⏸️  Prompt you to connect your board
+2. ⏸️  Prompt you to connect your board (interactive mode)
 3. 📡 Flash via ST-Link/OpenOCD
 4. ✅ Verify and reset
+
+For automation/CI, use `--non-interactive` to avoid blocking prompts.
 
 ## 🧹 Clean Builds
 
@@ -152,6 +157,14 @@ The CLI will:
 ./ucore build nucleo_f722ze blink
 ./ucore build nucleo_g071rb blink
 ./ucore build nucleo_g0b1re blink
+```
+
+### CMake fallback (canonical variables):
+```bash
+cmake -S . -B build-nucleo_f401re \
+  -DMICROCORE_BOARD=nucleo_f401re \
+  -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake
+cmake --build build-nucleo_f401re --target blink
 ```
 
 ## 🎯 Example: Blink LED

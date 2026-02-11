@@ -11,6 +11,10 @@
 #include "hal/vendors/st/stm32f4/clock_platform.hpp"
 #include <cstdint>
 
+#if defined(UCORE_RTOS_ENABLED) || defined(ALLOY_RTOS_ENABLED)
+#include "rtos/rtos.hpp"
+#endif
+
 using namespace ucore::hal::st::stm32f4;
 using namespace ucore::generated::stm32f401;
 using namespace ucore::hal;
@@ -144,10 +148,10 @@ extern "C" void SysTick_Handler() {
     board::BoardSysTick::increment_tick();
 
     // Forward to RTOS scheduler (if enabled at compile time)
-    #ifdef ALLOY_RTOS_ENABLED
+    #if defined(UCORE_RTOS_ENABLED) || defined(ALLOY_RTOS_ENABLED)
         // RTOS::tick() returns Result<void, RTOSError>
         // In ISR context, we can't handle errors gracefully, so we unwrap
         // If tick fails, it indicates a serious system error
-        alloy::rtos::RTOS::tick().unwrap();
-    #endif
+        ucore::rtos::RTOS::tick().unwrap();
+    #endif  // UCORE_RTOS_ENABLED || ALLOY_RTOS_ENABLED
 }

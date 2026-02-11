@@ -24,34 +24,62 @@
 # Board to Platform Mapping
 # ------------------------------------------------------------------------------
 
+# Load generated board metadata mapping if available.
+set(_MICROCORE_GENERATED_BOARD_METADATA_FILE "${CMAKE_CURRENT_LIST_DIR}/generated/board_metadata.cmake")
+if(NOT DEFINED MICROCORE_GENERATED_BOARD_PLATFORM_MAP AND EXISTS "${_MICROCORE_GENERATED_BOARD_METADATA_FILE}")
+    include("${_MICROCORE_GENERATED_BOARD_METADATA_FILE}")
+endif()
+
 # This function maps board names to platforms
 # It's used when MICROCORE_PLATFORM is not explicitly set
 function(alloy_board_to_platform BOARD_NAME OUT_PLATFORM)
-    # Map board names to platforms
-    if(BOARD_NAME STREQUAL "same70_xplained" OR BOARD_NAME STREQUAL "same70_xpld")
-        set(${OUT_PLATFORM} "same70" PARENT_SCOPE)
+    set(_microcore_board_map)
+    if(DEFINED MICROCORE_GENERATED_BOARD_PLATFORM_MAP)
+        list(APPEND _microcore_board_map ${MICROCORE_GENERATED_BOARD_PLATFORM_MAP})
+    endif()
+    list(APPEND _microcore_board_map
+        "nucleo_f401re:stm32f4"
+        "nucleo_f722ze:stm32f7"
+        "nucleo_g071rb:stm32g0"
+        "nucleo_g0b1re:stm32g0"
+        "same70_xplained:same70"
+        "same70_xpld:same70"
+        "bluepill:stm32f1"
+        "stm32f407vg:stm32f4"
+        "esp32_devkit:esp32"
+        "arduino_zero:samd21"
+        "rp_pico:rp2040"
+        "rp2040_zero:rp2040"
+        "host:linux"
+    )
+    list(REMOVE_DUPLICATES _microcore_board_map)
 
-    elseif(BOARD_NAME STREQUAL "stm32f407_discovery" OR BOARD_NAME STREQUAL "stm32f407vg")
-        set(${OUT_PLATFORM} "stm32f4" PARENT_SCOPE)
+    foreach(mapping ${_microcore_board_map})
+        string(REPLACE ":" ";" mapping_parts "${mapping}")
+        list(LENGTH mapping_parts mapping_parts_len)
+        if(mapping_parts_len GREATER 1)
+            list(GET mapping_parts 0 mapping_board)
+            list(GET mapping_parts 1 mapping_platform)
+            if("${mapping_board}" STREQUAL "${BOARD_NAME}")
+                set(${OUT_PLATFORM} "${mapping_platform}" PARENT_SCOPE)
+                return()
+            endif()
+        endif()
+    endforeach()
 
-    elseif(BOARD_NAME STREQUAL "bluepill" OR BOARD_NAME STREQUAL "stm32f103c8")
-        set(${OUT_PLATFORM} "stm32f1" PARENT_SCOPE)
-
-    elseif(BOARD_NAME MATCHES "^esp32")
+    # Fallback pattern matching for legacy families.
+    if(BOARD_NAME MATCHES "^esp32")
         set(${OUT_PLATFORM} "esp32" PARENT_SCOPE)
-
-    elseif(BOARD_NAME STREQUAL "arduino_zero" OR BOARD_NAME MATCHES "samd21")
+    elseif(BOARD_NAME MATCHES "samd21")
         set(${OUT_PLATFORM} "samd21" PARENT_SCOPE)
-
-    elseif(BOARD_NAME MATCHES "rp2040" OR BOARD_NAME MATCHES "rp_pico")
+    elseif(BOARD_NAME MATCHES "rp2040")
         set(${OUT_PLATFORM} "rp2040" PARENT_SCOPE)
-
-    elseif(BOARD_NAME STREQUAL "nucleo_g0b1re" OR BOARD_NAME MATCHES "stm32g0")
+    elseif(BOARD_NAME MATCHES "^stm32g0")
         set(${OUT_PLATFORM} "stm32g0" PARENT_SCOPE)
-
-    elseif(BOARD_NAME STREQUAL "host")
-        set(${OUT_PLATFORM} "linux" PARENT_SCOPE)
-
+    elseif(BOARD_NAME MATCHES "^stm32f4")
+        set(${OUT_PLATFORM} "stm32f4" PARENT_SCOPE)
+    elseif(BOARD_NAME MATCHES "^stm32f1")
+        set(${OUT_PLATFORM} "stm32f1" PARENT_SCOPE)
     else()
         # Unknown board - fallback to linux for testing
         message(WARNING "Unknown board '${BOARD_NAME}', using 'linux' platform")
@@ -96,8 +124,10 @@ if(DEFINED MICROCORE_BOARD)
             include("${MICROCORE_BOARD_DIR}/board.cmake")
         endif()
 
-        # Export board directory for use by applications
-        set(MICROCORE_BOARD_DIR ${MICROCORE_BOARD_DIR} PARENT_SCOPE)
+        # Export board directory for use by applications and legacy aliases.
+        # This file is included directly by the top-level CMakeLists.
+        set(MICROCORE_BOARD_DIR ${MICROCORE_BOARD_DIR})
+        set(ALLOY_BOARD_DIR ${MICROCORE_BOARD_DIR})
 
     else()
         message(STATUS "Board directory not found: ${MICROCORE_BOARD_DIR}")
