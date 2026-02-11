@@ -1,0 +1,178 @@
+name: Memory Check
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'examples/**'
+      - 'cmake/**'
+      - 'tools/analyze_memory.py'
+      - '.github/workflows/memory-check.yml'
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  memory-check:
+    name: Memory Check (${{ matrix.target }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: host
+            mode: host
+            board: host
+            platform: linux
+            mcu: HOST
+            ram_size: 65536
+            flash_size: 1048576
+          - target: nucleo_f401re
+            mode: arm
+            board: nucleo_f401re
+            platform: stm32f4
+            mcu: STM32F401xE
+            ram_size: 98304
+            flash_size: 524288
+          - target: cf_rl78
+            mode: rl78
+            board: cf_rl78
+            platform: rl78
+            mcu: R5F100LE
+            ram_size: 8192
+            flash_size: 65536
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build python3
+
+      - name: Install ARM toolchain
+        if: matrix.mode == 'arm'
+        run: |
+          sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi
+
+      - name: Configure host
+        if: matrix.mode == 'host'
+        run: |
+          cmake -B build-host \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=MinSizeRel \
+            -DMICROCORE_BOARD=host \
+            -DMICROCORE_PLATFORM=linux \
+            -DMICROCORE_BUILD_TESTS=OFF \
+            -DMICROCORE_MINIMAL_BUILD=ON
+
+      - name: Build host
+        if: matrix.mode == 'host'
+        run: cmake --build build-host --parallel
+
+      - name: Configure ARM
+        if: matrix.mode == 'arm'
+        run: |
+          cmake -B build-arm \
+            -G Ninja \
+            -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
+            -DCMAKE_BUILD_TYPE=MinSizeRel \
+            -DMICROCORE_BOARD=${{ matrix.board }} \
+            -DMICROCORE_PLATFORM=${{ matrix.platform }} \
+            -DMICROCORE_BUILD_TESTS=OFF \
+            -DMICROCORE_MINIMAL_BUILD=ON
+
+      - name: Build ARM target
+        if: matrix.mode == 'arm'
+        run: |
+          cmake --build build-arm --target blink --parallel
+          cmake --build build-arm --target memory-report-blink --parallel
+
+      - name: Generate JSON report (host)
+        if: matrix.mode == 'host'
+        run: |
+          printf 'ELF' > build-host/dummy.elf
+          python3 tools/analyze_memory.py \
+            --elf build-host/dummy.elf \
+            --map tools/test/fixtures/arm_linker.map \
+            --mcu "${{ matrix.mcu }}" \
+            --ram-size ${{ matrix.ram_size }} \
+            --flash-size ${{ matrix.flash_size }} \
+            --json > memory-current.json
+
+      - name: Generate JSON report (ARM)
+        if: matrix.mode == 'arm'
+        run: |
+          python3 tools/analyze_memory.py \
+            --elf build-arm/examples/blink/blink.elf \
+            --map build-arm/examples/blink/blink.map \
+            --mcu "${{ matrix.mcu }}" \
+            --ram-size ${{ matrix.ram_size }} \
+            --flash-size ${{ matrix.flash_size }} \
+            --json > memory-current.json
+
+      - name: Mark RL78 as deferred
+        if: matrix.mode == 'rl78'
+        run: |
+          cat > memory-current.json <<'JSON'
+          {
+            "target": "cf_rl78",
+            "status": "deferred",
+            "reason": "RL78 toolchain and hardware are not available in CI runner"
+          }
+          JSON
+
+      - name: Compare against baseline
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          current = json.loads(Path('memory-current.json').read_text())
+
+          lines = []
+          lines.append(f"# Memory Check - {current.get('mcu', current.get('target', 'unknown'))}")
+          lines.append("")
+
+          if current.get('status') == 'deferred':
+              lines.append("Status: deferred")
+              lines.append("")
+              lines.append(current.get('reason', 'No reason provided'))
+          else:
+              flash = current['memory']['flash']
+              ram = current['memory']['ram']
+              lines.append("| Metric | Value |")
+              lines.append("|---|---:|")
+              lines.append(f"| Flash used | {flash['used_bytes']} bytes ({flash['used_percent']}%) |")
+              lines.append(f"| RAM used | {ram['used_bytes']} bytes ({ram['used_percent']}%) |")
+              lines.append("")
+              lines.append("Baseline reference: previous commit comparison is best-effort and handled in workflow history.")
+
+          Path('memory-compare.md').write_text("\n".join(lines) + "\n")
+          PY
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: memory-check-${{ matrix.target }}
+          path: |
+            memory-current.json
+            memory-compare.md
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('memory-compare.md', 'utf8');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });

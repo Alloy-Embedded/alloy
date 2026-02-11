@@ -4,7 +4,7 @@
 #
 # Platform: STM32F7 (ARM Cortex-M7)
 # Vendor: STMicroelectronics
-# Architecture: ARM Cortex-M4 with FPU
+# Architecture: ARM Cortex-M7 with FPU and cache
 # Examples: STM32F701, STM32F707, STM32F711, STM32F729
 #
 # ==============================================================================
@@ -34,12 +34,12 @@ message(STATUS "  Platform headers: ${MICROCORE_PLATFORM_DIR}")
 # Compiler Flags for Cortex-M7
 # ------------------------------------------------------------------------------
 
-# CPU-specific flags for STM32F7 (Cortex-M4 with FPU)
+# CPU-specific flags for STM32F7 (Cortex-M7 with FPU)
 set(CPU_FLAGS
     -mcpu=cortex-m7
     -mthumb
     -mfloat-abi=hard
-    -mfpu=fpv4-sp-d16
+    -mfpu=fpv5-sp-d16
 )
 
 # Optimization flags
@@ -77,7 +77,10 @@ add_compile_definitions(
     STM32F7
     ARM_MATH_CM7
     __FPU_PRESENT=1
+    __FPU_USED=1
+    __ICACHE_PRESENT=1
+    __DCACHE_PRESENT=1
 )
 
 message(STATUS "  CPU: Cortex-M7")
-message(STATUS "  FPU: Hard float (FPv4-SP-D16)")
+message(STATUS "  FPU: Hard float (FPv5-SP-D16)")

@@ -459,6 +459,32 @@ message(STATUS "  Build Type  : ${CMAKE_BUILD_TYPE}")
 message(STATUS "  C++ Standard: ${CMAKE_CXX_STANDARD}")
 message(STATUS "========================================")
 
+# Populate board memory sizes for memory-report tooling when board metadata
+# has not yet provided explicit values.
+if((NOT DEFINED MICROCORE_RAM_SIZE OR MICROCORE_RAM_SIZE EQUAL 0) OR
+   (NOT DEFINED MICROCORE_FLASH_SIZE OR MICROCORE_FLASH_SIZE EQUAL 0))
+    if(MICROCORE_BOARD STREQUAL "nucleo_f401re")
+        set(MICROCORE_RAM_SIZE 98304 CACHE STRING "Target RAM size in bytes" FORCE)
+        set(MICROCORE_FLASH_SIZE 524288 CACHE STRING "Target Flash size in bytes" FORCE)
+    elseif(MICROCORE_BOARD STREQUAL "nucleo_f722ze")
+        set(MICROCORE_RAM_SIZE 262144 CACHE STRING "Target RAM size in bytes" FORCE)
+        set(MICROCORE_FLASH_SIZE 524288 CACHE STRING "Target Flash size in bytes" FORCE)
+    elseif(MICROCORE_BOARD STREQUAL "nucleo_g071rb")
+        set(MICROCORE_RAM_SIZE 36864 CACHE STRING "Target RAM size in bytes" FORCE)
+        set(MICROCORE_FLASH_SIZE 131072 CACHE STRING "Target Flash size in bytes" FORCE)
+    elseif(MICROCORE_BOARD STREQUAL "nucleo_g0b1re")
+        set(MICROCORE_RAM_SIZE 147456 CACHE STRING "Target RAM size in bytes" FORCE)
+        set(MICROCORE_FLASH_SIZE 524288 CACHE STRING "Target Flash size in bytes" FORCE)
+    elseif(MICROCORE_BOARD STREQUAL "same70_xplained" OR MICROCORE_BOARD STREQUAL "same70_xpld")
+        set(MICROCORE_RAM_SIZE 393216 CACHE STRING "Target RAM size in bytes" FORCE)
+        set(MICROCORE_FLASH_SIZE 2097152 CACHE STRING "Target Flash size in bytes" FORCE)
+    elseif(MICROCORE_BOARD STREQUAL "host")
+        # Host values are placeholders for report formatting only.
+        set(MICROCORE_RAM_SIZE 67108864 CACHE STRING "Target RAM size in bytes" FORCE)
+        set(MICROCORE_FLASH_SIZE 268435456 CACHE STRING "Target Flash size in bytes" FORCE)
+    endif()
+endif()
+
 # Add subdirectories
 # add_subdirectory(src/core)
 
@@ -716,6 +742,41 @@ endif()
 # if(MICROCORE_BOARD STREQUAL "arduino_zero")
 #     add_subdirectory(examples/blink)
 # endif()
+
+# ==============================================================================
+# Memory Analysis and Minimal-Build Integration
+# ==============================================================================
+
+function(microcore_enable_memory_features target_name)
+    if(NOT TARGET ${target_name})
+        return()
+    endif()
+
+    if(COMMAND alloy_add_memory_analysis)
+        alloy_add_memory_analysis(${target_name})
+    endif()
+
+    if(MICROCORE_MINIMAL_BUILD AND COMMAND alloy_apply_minimal_flags)
+        alloy_apply_minimal_flags(${target_name})
+    endif()
+endfunction()
+
+set(_MICROCORE_MEMORY_TARGETS
+    blink
+    rtos_simple_tasks
+    simple_gpio_blink
+    simple_gpio_button
+    fluent_gpio_blink
+    expert_gpio_blink
+    simple_uart_echo
+    fluent_uart_config
+    expert_uart_lowpower
+    uart_logger
+)
+
+foreach(_target ${_MICROCORE_MEMORY_TARGETS})
+    microcore_enable_memory_features(${_target})
+endforeach()
 
 # Tests
 if(MICROCORE_BUILD_TESTS AND MICROCORE_BOARD STREQUAL "host")

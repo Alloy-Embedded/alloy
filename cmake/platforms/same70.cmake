@@ -65,7 +65,7 @@ set(SAME70_CPU_FLAGS
     -mcpu=cortex-m7
     -mthumb
     -mfloat-abi=hard           # Hardware FPU
-    -mfpu=fpv5-d16             # FPv5 double-precision FPU (16 registers)
+    -mfpu=fpv5-sp-d16          # FPv5 single-precision FPU (16 registers)
 )
 
 # Add CPU flags to compile and link
@@ -73,7 +73,7 @@ add_compile_options(${SAME70_CPU_FLAGS})
 add_link_options(${SAME70_CPU_FLAGS})
 
 message(STATUS "  CPU: ARM Cortex-M7")
-message(STATUS "  FPU: FPv5 double-precision (hard ABI)")
+message(STATUS "  FPU: FPv5 single-precision (hard ABI)")
 
 # ------------------------------------------------------------------------------
 # Platform-Specific Compile Definitions
@@ -83,6 +83,10 @@ message(STATUS "  FPU: FPv5 double-precision (hard ABI)")
 add_compile_definitions(
     __SAME70Q21B__              # Specific variant (adjust as needed)
     ARM_MATH_CM7                # ARM CMSIS DSP library support
+    __FPU_PRESENT=1
+    __FPU_USED=1
+    __ICACHE_PRESENT=1
+    __DCACHE_PRESENT=1
 )
 
 # Optional: Enable ARM CMSIS if available

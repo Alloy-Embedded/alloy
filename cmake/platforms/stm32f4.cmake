@@ -77,6 +77,7 @@ add_compile_definitions(
     STM32F4
     ARM_MATH_CM4
     __FPU_PRESENT=1
+    __FPU_USED=1
 )
 
 message(STATUS "  CPU: Cortex-M4F")

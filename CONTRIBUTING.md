@@ -69,6 +69,36 @@ We follow strict naming conventions as defined in [ADR-011](decisions.md#adr-011
   3. External library headers
   4. Standard library headers
 
+### Memory Budgets
+
+Contributions that introduce new runtime state should include memory budget checks and documentation.
+
+Use compile-time assertions from `src/core/memory.hpp`:
+
+```cpp
+#include "core/memory.hpp"
+
+struct DriverState {
+    std::uint32_t flags;
+    std::uint16_t count;
+};
+
+UCORE_ASSERT_MAX_SIZE(DriverState, 16);
+UCORE_ASSERT_ALIGNMENT(DriverState, 4);
+```
+
+Recommended documentation block for module READMEs:
+
+```markdown
+## Memory Footprint
+
+| Component | RAM (bytes) | Flash (bytes) | Notes |
+|-----------|-------------|---------------|-------|
+| `DriverState` | 8 | ~120 | Per-instance state |
+| `IRQ handlers` | 0 | ~220 | Shared code path |
+| Total | 8 | ~340 | Typical configuration |
+```
+
 ### Example
 
 ```cpp

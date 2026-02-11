@@ -16,6 +16,7 @@ Usage:
 """
 
 import argparse
+import json
 import re
 import subprocess
 import sys
@@ -207,6 +208,75 @@ class MemoryReport:
         self.flash_size = flash_size
         self.elf_file = elf_file
 
+    def _budget_info(self) -> Dict[str, object]:
+        """Return memory budget metadata for the target RAM class."""
+        if self.ram_size <= 8192:
+            budget_name = "Tiny (2-8KB RAM)"
+            budget_overhead = 512
+        elif self.ram_size <= 32768:
+            budget_name = "Small (8-32KB RAM)"
+            budget_overhead = 2048
+        elif self.ram_size <= 131072:
+            budget_name = "Medium (32-128KB RAM)"
+            budget_overhead = 8192
+        else:
+            budget_name = "Large (128+KB RAM)"
+            budget_overhead = 16384
+
+        return {
+            "category": budget_name,
+            "max_overhead_bytes": budget_overhead,
+            "actual_overhead_bytes": self.usage.ram_used,
+            "within_budget": self.usage.ram_used <= budget_overhead,
+        }
+
+    def generate_json_report(self) -> Dict[str, object]:
+        """Generate JSON-serializable report."""
+        flash_pct = (self.usage.flash_used / self.flash_size * 100) if self.flash_size > 0 else 0.0
+        ram_pct = (self.usage.ram_used / self.ram_size * 100) if self.ram_size > 0 else 0.0
+
+        warnings: List[str] = []
+        if flash_pct > 90:
+            warnings.append("Flash usage > 90%. Consider enabling MICROCORE_MINIMAL_BUILD.")
+        if ram_pct > 80:
+            warnings.append("RAM usage > 80%. Review buffer sizes and stack allocation.")
+
+        top_symbols_json = []
+        if self.elf_file and self.elf_file.exists():
+            analyzer = ELFAnalyzer(self.elf_file)
+            for name, size in analyzer.get_top_symbols(10):
+                top_symbols_json.append({"name": name, "size_bytes": size})
+
+        sections_json = []
+        for section in sorted(self.usage.sections.values(), key=lambda s: s.address):
+            sections_json.append({
+                "name": section.name,
+                "address": section.address,
+                "size_bytes": section.size,
+                "source_file": section.source_file,
+            })
+
+        return {
+            "tool": "analyze_memory.py",
+            "mcu": self.mcu,
+            "memory": {
+                "flash": {
+                    "used_bytes": self.usage.flash_used,
+                    "total_bytes": self.flash_size,
+                    "used_percent": round(flash_pct, 2),
+                },
+                "ram": {
+                    "used_bytes": self.usage.ram_used,
+                    "total_bytes": self.ram_size,
+                    "used_percent": round(ram_pct, 2),
+                },
+            },
+            "sections": sections_json,
+            "top_symbols": top_symbols_json,
+            "budget": self._budget_info(),
+            "warnings": warnings,
+        }
+
     def generate_text_report(self) -> str:
         """Generate text report"""
         lines = [
@@ -268,23 +338,13 @@ class MemoryReport:
             "-" * 50,
         ])
 
-        # Determine budget category
-        if self.ram_size <= 8192:
-            budget_name = "Tiny (2-8KB RAM)"
-            budget_overhead = 512
-        elif self.ram_size <= 32768:
-            budget_name = "Small (8-32KB RAM)"
-            budget_overhead = 2048
-        elif self.ram_size <= 131072:
-            budget_name = "Medium (32-128KB RAM)"
-            budget_overhead = 8192
-        else:
-            budget_name = "Large (128+KB RAM)"
-            budget_overhead = 16384
-
-        check_mark = "✅" if self.usage.ram_used <= budget_overhead else "❌"
-        lines.append(f"{check_mark} Target: < {budget_overhead} bytes Alloy overhead ({budget_name})")
-        lines.append(f"   Actual: {self.usage.ram_used:,} bytes")
+        budget = self._budget_info()
+        check_mark = "✅" if budget["within_budget"] else "❌"
+        lines.append(
+            f"{check_mark} Target: < {budget['max_overhead_bytes']} bytes "
+            f"Alloy overhead ({budget['category']})"
+        )
+        lines.append(f"   Actual: {budget['actual_overhead_bytes']:,} bytes")
 
         if flash_pct > 90:
             lines.extend([
@@ -353,9 +413,7 @@ def main():
     )
 
     if args.json:
-        # TODO: Implement JSON output
-        print("JSON output not yet implemented", file=sys.stderr)
-        return 1
+        print(json.dumps(report.generate_json_report(), indent=2))
     else:
         print(report.generate_text_report())
 

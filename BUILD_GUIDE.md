@@ -237,6 +237,44 @@ make codegen-clean
 
 ---
 
+## Memory Analysis and Size Optimization
+
+Use memory reporting to track flash/RAM usage per target executable.
+
+```bash
+# Configure/build with memory analysis enabled by target integration
+cmake -B build-mem \
+  -G Ninja \
+  -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
+  -DMICROCORE_BOARD=nucleo_f401re \
+  -DMICROCORE_PLATFORM=stm32f4 \
+  -DMICROCORE_BUILD_TESTS=OFF
+
+# Build a target and generate its memory report
+cmake --build build-mem --target blink
+cmake --build build-mem --target memory-report-blink
+```
+
+Enable size-first build flags globally:
+
+```bash
+cmake -B build-min \
+  -G Ninja \
+  -DMICROCORE_BOARD=nucleo_f401re \
+  -DMICROCORE_PLATFORM=stm32f4 \
+  -DMICROCORE_MINIMAL_BUILD=ON
+```
+
+`MICROCORE_MINIMAL_BUILD=ON` applies:
+- `-Os`
+- `-flto`
+- `-ffunction-sections`
+- `-fdata-sections`
+- `-Wl,--gc-sections`
+- `-Wl,--print-memory-usage`
+
+---
+
 ## 🎨 Code Quality
 
 ### Format Code
