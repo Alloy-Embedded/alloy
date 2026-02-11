@@ -308,7 +308,7 @@ struct TaskSet {
     template <size_t Budget>
     static consteval size_t total_ram_with_budget() {
         constexpr size_t ram = total_ram();
-        compile_time_check(ram <= Budget, "TaskSet exceeds RAM budget");
+        static_assert(ram <= Budget, "TaskSet exceeds RAM budget");
         return ram;
     }
 

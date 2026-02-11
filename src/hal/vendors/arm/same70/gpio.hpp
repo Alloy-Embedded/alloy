@@ -33,6 +33,10 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 
+#if __cplusplus >= 202002L && __has_include("hal/core/concepts.hpp")
+#include "hal/core/concepts.hpp"
+#endif
+
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
 // ============================================================================
@@ -203,7 +207,7 @@ class GpioPin {
         // OSR (Output Status Register) has bit set if pin is output
         bool is_output = (port->OSR & pin_mask) != 0;
 
-        return Ok(is_output);
+        return Ok(bool(is_output));
     }
 
     /**
@@ -308,19 +312,6 @@ class GpioPin {
         return Ok();
     }
 
-    /**
-     * @brief Check if pin is configured as output
-     *
-     * @return Result<bool, ErrorCode>     */
-    Result<bool, ErrorCode> isOutput() const {
-        auto* port = get_port();
-
-        uint32_t status = port->OSR;  //
-
-        bool is_output = (status & pin_mask) != 0;
-
-        return Ok(bool(is_output));
-    }
 };
 
 // ==============================================================================
@@ -354,8 +345,6 @@ constexpr uint32_t PIOE_BASE = ucore::generated::atsame70q21b::peripherals::PIOE
 // ==============================================================================
 
 #if __cplusplus >= 202002L && __has_include("hal/core/concepts.hpp")
-    #include "hal/core/concepts.hpp"
-
 // Validate that SAME70 GpioPin satisfies the GpioPin concept
 static_assert(ucore::hal::concepts::GpioPin<GpioPin<PIOC_BASE, 8>>,
               "SAME70 GpioPin must satisfy GpioPin concept - missing required methods");

@@ -4,26 +4,6 @@
 
 #include "hal/interface/systick.hpp"
 
-// Include platform-specific systick implementation
-#if defined(__ARM_ARCH_6M__) || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__)
-    #if defined(STM32F103) || defined(STM32F1)
-        #include "hal/st/stm32f1/systick.hpp"
-    #elif defined(STM32F407) || defined(STM32F4)
-        #include "hal/st/stm32f4/systick.hpp"
-    #elif defined(SAMD21)
-        #include "hal/microchip/samd21/systick.hpp"
-    #elif defined(ATSAME70)
-    // SAME70 uses ARM SysTick (TODO: implement)
-    #endif
-#elif defined(ESP32) || defined(ESP_PLATFORM)
-    #include "hal/espressif/esp32/systick.hpp"
-#elif defined(__riscv)
-    // RISC-V platforms (RP2040, etc.)
-    #include "hal/raspberrypi/rp2040/systick.hpp"
-#elif defined(__x86_64__) || defined(__aarch64__) || defined(_WIN64) || defined(__APPLE__)
-    #include "hal/vendors/host/systick.hpp"
-#endif
-
 namespace ucore::rtos {
 
 // Global scheduler state
@@ -115,15 +95,20 @@ void init() {
         ;
 }
 
-void tick() {
+core::Result<void, RTOSError> tick() {
     // Increment tick counter
     g_scheduler.tick_counter++;
 
     // Wake delayed tasks
-    wake_delayed_tasks();
+    auto wake_result = wake_delayed_tasks();
+    if (wake_result.is_err()) {
+        return wake_result;
+    }
 
     // Reschedule if needed
     reschedule();
+
+    return core::Ok();
 }
 
 void delay(core::u32 ms) {
@@ -242,7 +227,7 @@ void reschedule() {
     }
 }
 
-void wake_delayed_tasks() {
+core::Result<void, RTOSError> wake_delayed_tasks() {
     TaskControlBlock** current = &g_scheduler.delayed_tasks;
     core::u32 now = g_scheduler.tick_counter;
 
@@ -259,6 +244,8 @@ void wake_delayed_tasks() {
             current = &((*current)->next);
         }
     }
+
+    return core::Ok();
 }
 
 }  // namespace scheduler
@@ -288,8 +275,8 @@ core::u32 get_tick_count() {
     return g_scheduler.tick_counter;
 }
 
-void tick() {
-    scheduler::tick();
+core::Result<void, RTOSError> tick() {
+    return scheduler::tick();
 }
 
 bool need_context_switch() {

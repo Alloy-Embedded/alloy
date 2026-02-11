@@ -39,6 +39,10 @@
 
 namespace ucore::rtos {
 
+// Forward declarations used by concepts before full enum definitions.
+enum class RTOSError : core::u8;
+enum class Priority : core::u8;
+
 // ============================================================================
 // fixed_string - Zero-RAM Compile-Time String (C++20 NTTP)
 // ============================================================================
@@ -185,7 +189,7 @@ concept IPCMessageWithSize = IPCMessage<T> && (sizeof(T) <= MaxSize);
 /// - Returns Result<void, RTOSError>
 template <typename Q, typename T>
 concept QueueProducer = requires(Q q, const T& msg) {
-    { q.send(msg) } -> std::same_as<core::Result<void, class RTOSError>>;
+    { q.send(msg) } -> std::same_as<core::Result<void, RTOSError>>;
     { q.try_send(msg) } -> std::same_as<core::Result<void, RTOSError>>;
 };
 
@@ -198,8 +202,8 @@ concept QueueProducer = requires(Q q, const T& msg) {
 /// - Has try_receive() method returning Result<T, RTOSError>
 template <typename Q, typename T>
 concept QueueConsumer = requires(Q q) {
-    { q.receive() } -> std::same_as<core::Result<T, class RTOSError>>;
-    { q.try_receive() } -> std::same_as<core::Result<T, class RTOSError>>;
+    { q.receive() } -> std::same_as<core::Result<T, RTOSError>>;
+    { q.try_receive() } -> std::same_as<core::Result<T, RTOSError>>;
 };
 
 /// Concept: BidirectionalQueue<Q, T>
@@ -290,9 +294,9 @@ concept TaskControlBlockLike = requires(T tcb) {
 /// - try_lock() → Result<void, RTOSError>
 template <typename T>
 concept Lockable = requires(T t) {
-    { t.lock() } -> std::same_as<core::Result<void, class RTOSError>>;
-    { t.unlock() } -> std::same_as<core::Result<void, class RTOSError>>;
-    { t.try_lock() } -> std::same_as<core::Result<void, class RTOSError>>;
+    { t.lock() } -> std::same_as<core::Result<void, RTOSError>>;
+    { t.unlock() } -> std::same_as<core::Result<void, RTOSError>>;
+    { t.try_lock() } -> std::same_as<core::Result<void, RTOSError>>;
 };
 
 /// Concept: Semaphore
@@ -305,9 +309,9 @@ concept Lockable = requires(T t) {
 /// - try_take() → Result<void, RTOSError>
 template <typename T>
 concept Semaphore = requires(T t) {
-    { t.give() } -> std::same_as<core::Result<void, class RTOSError>>;
-    { t.take() } -> std::same_as<core::Result<void, class RTOSError>>;
-    { t.try_take() } -> std::same_as<core::Result<void, class RTOSError>>;
+    { t.give() } -> std::same_as<core::Result<void, RTOSError>>;
+    { t.take() } -> std::same_as<core::Result<void, RTOSError>>;
+    { t.try_take() } -> std::same_as<core::Result<void, RTOSError>>;
 };
 
 // ============================================================================
@@ -484,8 +488,8 @@ concept TimestampedQueue = QueueProducer<Q, T> && QueueConsumer<Q, T> && HasTime
 /// @tparam T Message type
 template <typename Q, typename T>
 concept BlockingQueue = requires(Q q, const T& msg, core::u32 timeout) {
-    { q.send(msg, timeout) } -> std::same_as<core::Result<void, class RTOSError>>;
-    { q.receive(timeout) } -> std::same_as<core::Result<T, class RTOSError>>;
+    { q.send(msg, timeout) } -> std::same_as<core::Result<void, RTOSError>>;
+    { q.receive(timeout) } -> std::same_as<core::Result<T, RTOSError>>;
 };
 
 /// Concept: NonBlockingQueue<Q, T>
@@ -496,8 +500,8 @@ concept BlockingQueue = requires(Q q, const T& msg, core::u32 timeout) {
 /// @tparam T Message type
 template <typename Q, typename T>
 concept NonBlockingQueue = requires(Q q, const T& msg) {
-    { q.try_send(msg) } -> std::same_as<core::Result<void, class RTOSError>>;
-    { q.try_receive() } -> std::same_as<core::Result<T, class RTOSError>>;
+    { q.try_send(msg) } -> std::same_as<core::Result<void, RTOSError>>;
+    { q.try_receive() } -> std::same_as<core::Result<T, RTOSError>>;
 };
 
 // ============================================================================
@@ -513,7 +517,7 @@ template <typename T>
 concept HasTaskMetadata = requires {
     { T::name() } -> std::convertible_to<const char*>;
     { T::stack_size() } -> std::convertible_to<size_t>;
-    { T::priority() } -> std::convertible_to<class Priority>;
+    { T::priority() } -> std::convertible_to<Priority>;
 };
 
 /// Concept: ValidTask<T>
@@ -550,8 +554,8 @@ concept PoolAllocatable =
 /// @tparam T Allocated type
 template <typename P, typename T>
 concept MemoryPool = requires(P p, T* ptr) {
-    { p.allocate() } -> std::same_as<core::Result<T*, class RTOSError>>;
-    { p.deallocate(ptr) } -> std::same_as<core::Result<void, class RTOSError>>;
+    { p.allocate() } -> std::same_as<core::Result<T*, RTOSError>>;
+    { p.deallocate(ptr) } -> std::same_as<core::Result<void, RTOSError>>;
     { p.available() } -> std::convertible_to<size_t>;
 };
 
@@ -686,12 +690,8 @@ constexpr size_t calculate_total_ram_dual() {
 /// @param message Error message
 /// @return true if condition is true
 consteval bool compile_time_check(bool condition, const char* message) {
-    if (!condition) {
-        // In C++23, throwing in consteval provides compile-time error with message
-        // This is better than static_assert in some contexts
-        throw message;
-    }
-    return true;
+    (void)message;
+    return condition;
 }
 
 /// Compile-time string validation
@@ -726,30 +726,22 @@ consteval bool is_valid_task_name(const char (&str)[N]) {
 /// Compile-time priority validation with better error messages
 ///
 /// @tparam Pri Priority value
-/// @return Priority value (or throws compile error)
+/// @return Priority value (or static_assert compile error)
 template <core::u8 Pri>
 consteval core::u8 validate_priority() {
-    if (Pri > 7) {
-        throw "Priority must be between 0 and 7";
-    }
+    static_assert(Pri <= 7, "Priority must be between 0 and 7");
     return Pri;
 }
 
 /// Compile-time stack size validation with better error messages
 ///
 /// @tparam Size Stack size
-/// @return Stack size (or throws compile error)
+/// @return Stack size (or static_assert compile error)
 template <size_t Size>
 consteval size_t validate_stack_size() {
-    if (Size < 256) {
-        throw "Stack size must be at least 256 bytes";
-    }
-    if (Size > 65536) {
-        throw "Stack size must not exceed 65536 bytes";
-    }
-    if ((Size % 8) != 0) {
-        throw "Stack size must be 8-byte aligned";
-    }
+    static_assert(Size >= 256, "Stack size must be at least 256 bytes");
+    static_assert(Size <= 65536, "Stack size must not exceed 65536 bytes");
+    static_assert((Size % 8) == 0, "Stack size must be 8-byte aligned");
     return Size;
 }
 
@@ -761,10 +753,7 @@ consteval size_t validate_stack_size() {
 template <size_t Budget, size_t... Sizes>
 consteval bool check_ram_budget_detailed() {
     constexpr size_t total = (Sizes + ...);
-    if (total > Budget) {
-        // C++23: This will produce a compile error with useful info
-        throw "RAM budget exceeded";
-    }
+    static_assert(total <= Budget, "RAM budget exceeded");
     return true;
 }
 

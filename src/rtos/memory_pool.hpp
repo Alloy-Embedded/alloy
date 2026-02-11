@@ -389,7 +389,7 @@ consteval size_t pool_overhead() {
 template <typename T, size_t Capacity, size_t Budget>
 consteval bool pool_fits_budget() {
     constexpr size_t total = sizeof(StaticPool<T, Capacity>);
-    compile_time_check(total <= Budget, "Pool exceeds memory budget");
+    static_assert(total <= Budget, "Pool exceeds memory budget");
     return true;
 }
 
