@@ -1,1 +1,0 @@
-"""Alloy code generator tests"""

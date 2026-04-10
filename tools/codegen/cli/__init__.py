@@ -1,3 +1,0 @@
-"""
-Alloy Code Generation CLI
-"""
