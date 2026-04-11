@@ -25,12 +25,14 @@ inline constexpr auto package_map = std::span{family::kPackageMap};
 inline constexpr auto package_pads = std::span{family::kPackagePads};
 inline constexpr auto pin_constraints = std::span{family::kPinConstraints};
 inline constexpr auto dma_map = std::span{family::kDmaMap};
+inline constexpr auto rcc_map = std::span{family::kRccMap};
 inline constexpr auto clock_nodes = std::span{family::kClockNodes};
 inline constexpr auto clock_selectors = std::span{family::kClockSelectors};
 inline constexpr auto clock_gates = std::span{family::kClockGates};
 inline constexpr auto resets = std::span{family::kResets};
 inline constexpr auto peripheral_clock_bindings =
     std::span{family::kPeripheralClockBindings};
+inline constexpr auto peripheral_bases = std::span{startup::kPeripheralBases};
 inline constexpr auto vector_slots = std::span{startup::kVectorSlots};
 inline constexpr auto startup_descriptors = std::span{startup::kStartupDescriptors};
 

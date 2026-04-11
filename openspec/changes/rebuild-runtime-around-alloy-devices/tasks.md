@@ -36,7 +36,7 @@
 
 ## 4. Single Public HAL API
 
-- [ ] 4.1 Define one public API shape for GPIO with config defaults
+- [x] 4.1 Define one public API shape for GPIO with config defaults
 - [ ] 4.2 Define one public API shape for UART with config defaults
 - [ ] 4.3 Define one public API shape for SPI with config defaults
 - [ ] 4.4 Define one public API shape for I2C with config defaults
