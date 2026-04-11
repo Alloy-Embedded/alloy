@@ -74,6 +74,9 @@ jobs:
           # macOS doesn't have gcc in GitHub Actions
           - os: macos-latest
             compiler: gcc
+          # Known incompatibility on GitHub runners: clang + libstdc++ 14 + Catch2
+          - os: ubuntu-latest
+            compiler: clang
       fail-fast: false
 
     steps:
