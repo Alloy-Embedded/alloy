@@ -347,9 +347,8 @@ class Result {
         using U = decltype(std::forward<F>(fn)(std::declval<T>()));
         if (is_ok_) {
             return Ok(std::forward<F>(fn)(std::move(storage_.value)));
-
         }
-            return Result<U, E>(Err(std::move(storage_.error)));
+        return Result<U, E>(Err(std::move(storage_.error)));
     }
 
     /**
@@ -373,9 +372,8 @@ class Result {
         using ResultType = decltype(std::forward<F>(fn)(std::declval<T>()));
         if (is_ok_) {
             return std::forward<F>(fn)(storage_.value);
-
         }
-            return ResultType(Err(E(storage_.error)));
+        return ResultType(Err(E(storage_.error)));
     }
 
     template <typename F>
@@ -383,9 +381,8 @@ class Result {
         using ResultType = decltype(std::forward<F>(fn)(std::declval<T>()));
         if (is_ok_) {
             return std::forward<F>(fn)(std::move(storage_.value));
-
         }
-            return ResultType(Err(std::move(storage_.error)));
+        return ResultType(Err(std::move(storage_.error)));
     }
 
     /**
@@ -408,9 +405,8 @@ class Result {
         using ResultType = decltype(std::forward<F>(fn)(std::declval<E>()));
         if (is_ok_) {
             return ResultType(Ok(T(storage_.value)));
-
         }
-            return std::forward<F>(fn)(storage_.error);
+        return std::forward<F>(fn)(storage_.error);
     }
 
     template <typename F>
@@ -418,9 +414,8 @@ class Result {
         using ResultType = decltype(std::forward<F>(fn)(std::declval<E>()));
         if (is_ok_) {
             return ResultType(Ok(std::move(storage_.value)));
-
         }
-            return std::forward<F>(fn)(std::move(storage_.error));
+        return std::forward<F>(fn)(std::move(storage_.error));
     }
 
    private:

@@ -6,8 +6,9 @@
  * These are no-op implementations since we don't use standard I/O.
  */
 
-#include <sys/stat.h>
 #include <errno.h>
+
+#include <sys/stat.h>
 
 extern "C" {
 
@@ -90,4 +91,4 @@ int _kill(int, int) {
     return -1;
 }
 
-} // extern "C"
+}  // extern "C"

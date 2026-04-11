@@ -8,16 +8,18 @@
  */
 
 #include "board.hpp"
-#include "hal/vendors/arm/cortex_m7/init_hooks.hpp"
+
+#include <cstdint>
+
 #include "hal/api/clock_simple.hpp"
 #include "hal/api/systick_simple.hpp"
 #include "hal/api/watchdog_simple.hpp"
+#include "hal/vendors/arm/cortex_m7/init_hooks.hpp"
 #include "hal/vendors/arm/same70/clock.hpp"
 #include "hal/vendors/arm/same70/interrupt.hpp"
 #include "hal/vendors/arm/same70/systick_platform.hpp"
-#include "hal/vendors/atmel/same70/watchdog_hardware_policy.hpp"
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
-#include <cstdint>
+#include "hal/vendors/atmel/same70/watchdog_hardware_policy.hpp"
 
 using namespace alloy::hal::same70;
 using namespace alloy::generated::atsame70q21b;
@@ -78,7 +80,7 @@ void toggle() {
     led_handle().toggle().unwrap();
 }
 
-} // namespace led
+}  // namespace led
 
 
 // =============================================================================
@@ -124,7 +126,7 @@ void init() {
     board_initialized = true;
 }
 
-} // namespace board
+}  // namespace board
 
 // =============================================================================
 // Interrupt Service Routines
@@ -147,11 +149,11 @@ extern "C" void SysTick_Handler() {
     // Update HAL tick (always - required for HAL timing functions)
     board::BoardSysTick::increment_tick();
 
-    // Forward to RTOS scheduler (if enabled at compile time)
-    #ifdef ALLOY_RTOS_ENABLED
-        // RTOS::tick() returns Result<void, RTOSError>
-        // In ISR context, we can't handle errors gracefully, so we unwrap
-        // If tick fails, it indicates a serious system error
-        alloy::rtos::RTOS::tick().unwrap();
-    #endif
+// Forward to RTOS scheduler (if enabled at compile time)
+#ifdef ALLOY_RTOS_ENABLED
+    // RTOS::tick() returns Result<void, RTOSError>
+    // In ISR context, we can't handle errors gracefully, so we unwrap
+    // If tick fails, it indicates a serious system error
+    alloy::rtos::RTOS::tick().unwrap();
+#endif
 }

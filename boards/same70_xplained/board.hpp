@@ -36,11 +36,13 @@
  * @note Clock runs at 12 MHz using internal RC oscillator
  */
 
-#include "board_config.hpp"
+#include <cstdint>
+
 #include "hal/gpio.hpp"
 #include "hal/uart.hpp"
 #include "hal/vendors/arm/same70/systick_platform.hpp"
-#include <cstdint>
+
+#include "board_config.hpp"
 
 namespace board {
 
@@ -109,7 +111,7 @@ void off();
  */
 void toggle();
 
-} // namespace led
+}  // namespace led
 
 // =============================================================================
 // Board Initialization
@@ -137,4 +139,4 @@ void toggle();
  */
 void init();
 
-} // namespace board
+}  // namespace board

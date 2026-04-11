@@ -38,10 +38,11 @@
  *       Consult board documentation for UART pin mapping.
  */
 
-#include "same70_xplained/board.hpp"
 #include "hal/api/systick_simple.hpp"
+
 #include "logger/logger.hpp"
 #include "logger/sinks/uart_sink.hpp"
+#include "same70_xplained/board.hpp"
 
 namespace {
 

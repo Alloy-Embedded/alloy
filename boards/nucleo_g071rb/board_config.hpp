@@ -8,8 +8,9 @@
  * development board (MB1360).
  */
 
-#include "hal/connect.hpp"
 #include <cstdint>
+
+#include "hal/connect.hpp"
 
 namespace nucleo_g071rb {
 
@@ -62,8 +63,7 @@ struct UartConfig {
     using usart2_rx = alloy::hal::pin<"PA3">;
 
     using debug_connector =
-        decltype(alloy::hal::connect<alloy::hal::peripheral<"USART2">,
-                                     alloy::hal::tx<usart2_tx>,
+        decltype(alloy::hal::connect<alloy::hal::peripheral<"USART2">, alloy::hal::tx<usart2_tx>,
                                      alloy::hal::rx<usart2_rx>>());
 
     /// Default baud rate for debug UART
@@ -71,4 +71,4 @@ struct UartConfig {
     static constexpr uint32_t peripheral_clock_hz = ClockConfig::apb_clock_hz;
 };
 
-} // namespace nucleo_g071rb
+}  // namespace nucleo_g071rb

@@ -8,8 +8,9 @@
  * development board (MB1136).
  */
 
-#include "hal/connect.hpp"
 #include <cstdint>
+
+#include "hal/connect.hpp"
 
 namespace nucleo_f401re {
 
@@ -100,14 +101,13 @@ struct UartConfig {
     using usart2_rx = alloy::hal::pin<"PA3">;
 
     using debug_connector =
-        decltype(alloy::hal::connect<alloy::hal::peripheral<"USART2">,
-                                     alloy::hal::tx<usart2_tx>,
+        decltype(alloy::hal::connect<alloy::hal::peripheral<"USART2">, alloy::hal::tx<usart2_tx>,
                                      alloy::hal::rx<usart2_rx>>());
 
     /// Default baud rate for debug UART
     static constexpr uint32_t default_baud_rate = 115200;
-    static constexpr uint32_t peripheral_clock_hz = ClockConfig::system_clock_hz /
-                                                    ClockConfig::apb1_prescaler;
+    static constexpr uint32_t peripheral_clock_hz =
+        ClockConfig::system_clock_hz / ClockConfig::apb1_prescaler;
 };
 
-} // namespace nucleo_f401re
+}  // namespace nucleo_f401re

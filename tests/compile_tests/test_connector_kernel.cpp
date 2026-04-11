@@ -1,8 +1,9 @@
-#include "device/traits.hpp"
+#include <string_view>
+
 #include "hal/claim.hpp"
 #include "hal/connect.hpp"
 
-#include <string_view>
+#include "device/traits.hpp"
 
 namespace {
 
@@ -35,7 +36,8 @@ static_assert(connector_is_usable<DebugUart>());
 static_assert(DebugUart::requirements().size() >= 4);
 static_assert(DebugUart::operations().size() >= 3);
 static_assert(!InvalidUart::valid);
-using DebugUartViaFunction = decltype(connect<peripheral<"USART2">, tx<pin<"PA2">>, rx<pin<"PA3">>>());
+using DebugUartViaFunction =
+    decltype(connect<peripheral<"USART2">, tx<pin<"PA2">>, rx<pin<"PA3">>>());
 static_assert(DebugUartViaFunction::valid);
 
 using DebugUartClaim = claim::connector_claim<DebugUart>;
@@ -52,7 +54,8 @@ static_assert(DebugUart::has_group());
 static_assert(DebugUart::package_name == std::string_view{"lqfp64"});
 static_assert(connector_is_usable<DebugUart>());
 static_assert(!InvalidUart::valid);
-using DebugUartViaFunction = decltype(connect<peripheral<"USART2">, tx<pin<"PA2">>, rx<pin<"PA3">>>());
+using DebugUartViaFunction =
+    decltype(connect<peripheral<"USART2">, tx<pin<"PA2">>, rx<pin<"PA3">>>());
 static_assert(DebugUartViaFunction::valid);
 #elif defined(ALLOY_BOARD_SAME70_XPLD)
 using DebugUart = connection::connector<peripheral<"USART0">, tx<pin<"PB1">>, rx<pin<"PB0">>>;
@@ -64,6 +67,7 @@ static_assert(DebugUart::has_group());
 static_assert(DebugUart::package_name == std::string_view{"lqfp144"});
 static_assert(connector_is_usable<DebugUart>());
 static_assert(!InvalidUart::valid);
-using DebugUartViaFunction = decltype(connect<peripheral<"USART0">, tx<pin<"PB1">>, rx<pin<"PB0">>>());
+using DebugUartViaFunction =
+    decltype(connect<peripheral<"USART0">, tx<pin<"PB1">>, rx<pin<"PB0">>>());
 static_assert(DebugUartViaFunction::valid);
 #endif

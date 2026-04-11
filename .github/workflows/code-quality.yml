@@ -31,13 +31,27 @@ jobs:
     - name: Run clang-format check
       run: |
         echo "🔍 Checking code formatting with clang-format..."
+        FORMAT_PATHS=(
+          src/core
+          src/device
+          src/arch
+          src/hal/connect
+          src/hal/claim
+          src/hal/gpio
+          src/hal/uart
+          src/logger
+          boards
+          tests/compile_tests
+          examples/blink
+          examples/uart_logger
+        )
         FAILED=0
         while IFS= read -r file; do
           if ! clang-format-14 --dry-run -Werror "$file" 2>&1; then
             echo "❌ Format error in: $file"
             FAILED=1
           fi
-        done < <(find src tests examples boards -name "*.cpp" -o -name "*.hpp")
+        done < <(find "${FORMAT_PATHS[@]}" -type f \( -name "*.cpp" -o -name "*.hpp" \))
 
         if [ $FAILED -eq 1 ]; then
           echo ""

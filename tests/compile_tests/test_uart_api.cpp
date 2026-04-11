@@ -1,9 +1,10 @@
-#include "device/traits.hpp"
+#include <array>
+#include <string_view>
+
 #include "hal/connect.hpp"
 #include "hal/uart.hpp"
 
-#include <array>
-#include <string_view>
+#include "device/traits.hpp"
 
 namespace {
 
@@ -38,8 +39,7 @@ void exercise_uart_backend(std::uint32_t peripheral_clock_hz) {
     std::array<std::byte, 4> rx_buffer{};
 
     [[maybe_unused]] const auto configure_result = uart.configure();
-    [[maybe_unused]] const auto write_result =
-        uart.write(std::span<const std::byte>{tx_buffer});
+    [[maybe_unused]] const auto write_result = uart.write(std::span<const std::byte>{tx_buffer});
     [[maybe_unused]] const auto write_byte_result = uart.write_byte(std::byte{0x79});
     [[maybe_unused]] const auto read_result = uart.read(std::span<std::byte>{rx_buffer});
     [[maybe_unused]] const auto flush_result = uart.flush();
@@ -50,10 +50,9 @@ void exercise_uart_backend(std::uint32_t peripheral_clock_hz) {
 static_assert(alloy::device::SelectedDeviceTraits::available);
 
 #if defined(ALLOY_BOARD_NUCLEO_G071RB)
-using DebugUartConnector =
-    decltype(alloy::hal::connect<alloy::hal::peripheral<"USART2">,
-                                 alloy::hal::tx<alloy::hal::pin<"PA2">>,
-                                 alloy::hal::rx<alloy::hal::pin<"PA3">>>());
+using DebugUartConnector = decltype(alloy::hal::connect<alloy::hal::peripheral<"USART2">,
+                                                        alloy::hal::tx<alloy::hal::pin<"PA2">>,
+                                                        alloy::hal::rx<alloy::hal::pin<"PA3">>>());
 using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>(
     {.baudrate = alloy::hal::Baudrate::e115200}));
 static_assert(DebugUart::valid);
@@ -64,10 +63,9 @@ static_assert(uart_is_usable<DebugUart>());
     exercise_uart_backend<DebugUart>(64'000'000u);
 }
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
-using DebugUartConnector =
-    decltype(alloy::hal::connect<alloy::hal::peripheral<"USART2">,
-                                 alloy::hal::tx<alloy::hal::pin<"PA2">>,
-                                 alloy::hal::rx<alloy::hal::pin<"PA3">>>());
+using DebugUartConnector = decltype(alloy::hal::connect<alloy::hal::peripheral<"USART2">,
+                                                        alloy::hal::tx<alloy::hal::pin<"PA2">>,
+                                                        alloy::hal::rx<alloy::hal::pin<"PA3">>>());
 using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>(
     {.baudrate = alloy::hal::Baudrate::e115200}));
 static_assert(DebugUart::valid);
@@ -78,10 +76,9 @@ static_assert(uart_is_usable<DebugUart>());
     exercise_uart_backend<DebugUart>(42'000'000u);
 }
 #elif defined(ALLOY_BOARD_SAME70_XPLD)
-using DebugUartConnector =
-    decltype(alloy::hal::connect<alloy::hal::peripheral<"USART0">,
-                                 alloy::hal::tx<alloy::hal::pin<"PB1">>,
-                                 alloy::hal::rx<alloy::hal::pin<"PB0">>>());
+using DebugUartConnector = decltype(alloy::hal::connect<alloy::hal::peripheral<"USART0">,
+                                                        alloy::hal::tx<alloy::hal::pin<"PB1">>,
+                                                        alloy::hal::rx<alloy::hal::pin<"PB0">>>());
 using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>(
     {.baudrate = alloy::hal::Baudrate::e115200}));
 static_assert(DebugUart::valid);

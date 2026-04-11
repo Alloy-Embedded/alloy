@@ -10,7 +10,8 @@ struct SelectedStartupContract {
 
 #if ALLOY_DEVICE_CONTRACT_AVAILABLE
 inline constexpr auto& kVectorSlots = alloy::device::descriptors::startup::kVectorSlots;
-inline constexpr auto& kStartupDescriptors = alloy::device::descriptors::startup::kStartupDescriptors;
+inline constexpr auto& kStartupDescriptors =
+    alloy::device::descriptors::startup::kStartupDescriptors;
 #endif
 
 }  // namespace alloy::arch::cortex_m

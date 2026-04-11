@@ -8,9 +8,10 @@
 
 #pragma once
 
-#include "logger/sink.hpp"
 #include <cstddef>
 #include <cstring>
+
+#include "logger/sink.hpp"
 
 namespace alloy::logger {
 
@@ -36,7 +37,7 @@ namespace alloy::logger {
  */
 template <typename UartImpl>
 class UartSink : public Sink {
-public:
+   public:
     /**
      * @brief Construct UART sink
      *
@@ -49,9 +50,7 @@ public:
      *
      * @return true if UART is ready
      */
-    bool is_ready() const override {
-        return ready_;
-    }
+    bool is_ready() const override { return ready_; }
 
     /**
      * @brief Write data to UART
@@ -95,11 +94,9 @@ public:
      *
      * @param enabled true to enable, false to disable
      */
-    void set_enabled(bool enabled) {
-        ready_ = enabled;
-    }
+    void set_enabled(bool enabled) { ready_ = enabled; }
 
-private:
+   private:
     UartImpl& uart_;
     bool ready_;
 };

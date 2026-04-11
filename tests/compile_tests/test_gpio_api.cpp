@@ -1,8 +1,9 @@
-#include "device/traits.hpp"
+#include <string_view>
+
 #include "hal/connect.hpp"
 #include "hal/gpio.hpp"
 
-#include <string_view>
+#include "device/traits.hpp"
 
 namespace {
 

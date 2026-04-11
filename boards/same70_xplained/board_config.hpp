@@ -15,6 +15,7 @@
  */
 
 #include <cstdint>
+
 #include "hal/connect.hpp"
 
 namespace board::same70_xplained {
@@ -29,7 +30,6 @@ struct ClockConfig {
     static constexpr uint32_t cpu_freq_hz = 12'000'000;   // 12 MHz RC
     static constexpr uint32_t hclk_freq_hz = 12'000'000;  // AHB clock
     static constexpr uint32_t pclk_freq_hz = 12'000'000;  // Peripheral clock
-
 };
 
 // =============================================================================
@@ -65,8 +65,7 @@ struct UartConsoleConfig {
     using tx_pin = alloy::hal::pin<"PB1">;
     using rx_pin = alloy::hal::pin<"PB0">;
     using debug_connector =
-        decltype(alloy::hal::connect<alloy::hal::peripheral<"USART0">,
-                                     alloy::hal::tx<tx_pin>,
+        decltype(alloy::hal::connect<alloy::hal::peripheral<"USART0">, alloy::hal::tx<tx_pin>,
                                      alloy::hal::rx<rx_pin>>());
     static constexpr uint32_t peripheral_clock_hz = ClockConfig::pclk_freq_hz;
 };
@@ -90,4 +89,4 @@ struct BoardInfo {
     static constexpr const char* architecture = "ARM Cortex-M7";
 };
 
-} // namespace board::same70_xplained
+}  // namespace board::same70_xplained

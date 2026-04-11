@@ -11,9 +11,10 @@
  * - SysTick timer
  */
 
-#include "board_config.hpp"
 #include "hal/api/systick_simple.hpp"
 #include "hal/vendors/st/stm32f7/systick_platform.hpp"
+
+#include "board_config.hpp"
 
 namespace board {
 
@@ -44,25 +45,25 @@ void init();
  * @brief LED control namespace
  */
 namespace led {
-    /**
-     * @brief Initialize LED GPIO
-     */
-    void init();
+/**
+ * @brief Initialize LED GPIO
+ */
+void init();
 
-    /**
-     * @brief Turn LED on
-     */
-    void on();
+/**
+ * @brief Turn LED on
+ */
+void on();
 
-    /**
-     * @brief Turn LED off
-     */
-    void off();
+/**
+ * @brief Turn LED off
+ */
+void off();
 
-    /**
-     * @brief Toggle LED state
-     */
-    void toggle();
-}
+/**
+ * @brief Toggle LED state
+ */
+void toggle();
+}  // namespace led
 
-} // namespace board
+}  // namespace board

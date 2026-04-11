@@ -7,6 +7,7 @@
  */
 
 #include "board_config.hpp"
+
 #include "hal/vendors/arm/same70/clock.hpp"
 #include "hal/vendors/arm/same70/systick.hpp"
 
@@ -18,7 +19,7 @@ using namespace detail;
 
 // Define the initialization flag
 namespace detail {
-    bool initialized = false;
+bool initialized = false;
 }
 
 void init(ClockPreset preset) {
@@ -46,7 +47,8 @@ void init(ClockPreset preset) {
         // Clock failed - blink fast forever
         while (1) {
             led0_instance.toggle();
-            for (volatile int i = 0; i < 50000; i++);
+            for (volatile int i = 0; i < 50000; i++)
+                ;
         }
     }
 
@@ -56,16 +58,17 @@ void init(ClockPreset preset) {
         // SysTick failed - blink very fast forever
         while (1) {
             led0_instance.toggle();
-            for (volatile int i = 0; i < 25000; i++);
+            for (volatile int i = 0; i < 25000; i++)
+                ;
         }
     }
 
     // Enable All Peripheral Clocks for GPIO
-    *PMC_PCER0 |= (1u << 10)  // PIOA
-                | (1u << 11)  // PIOB
-                // PIOC already enabled
-                | (1u << 13)  // PIOD
-                | (1u << 14); // PIOE
+    *PMC_PCER0 |= (1u << 10)    // PIOA
+                  | (1u << 11)  // PIOB
+                  // PIOC already enabled
+                  | (1u << 13)   // PIOD
+                  | (1u << 14);  // PIOE
 
     // Configure LEDs (both must be set up for debug)
     led0_instance.setDirection(PinDirection::Output);
@@ -89,8 +92,8 @@ void init(ClockPreset preset) {
     initialized = true;
 }
 
-} // namespace board
-} // namespace alloy::boards::same70_xplained
+}  // namespace board
+}  // namespace alloy::boards::same70_xplained
 
 // SysTick interrupt handler
 // This overrides the weak alias in startup.cpp

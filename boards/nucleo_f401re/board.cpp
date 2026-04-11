@@ -7,9 +7,11 @@
  */
 
 #include "board.hpp"
+
+#include <cstdint>
+
 #include "hal/api/systick_simple.hpp"
 #include "hal/vendors/st/stm32f4/clock_platform.hpp"
-#include <cstdint>
 
 using namespace alloy::hal::st::stm32f4;
 using namespace alloy::generated::stm32f401;
@@ -102,7 +104,7 @@ void toggle() {
     led_handle().toggle().unwrap();
 }
 
-} // namespace led
+}  // namespace led
 
 // =============================================================================
 // Board Initialization
@@ -126,12 +128,12 @@ void init() {
     led::init();
 
     // Step 5: Enable interrupts globally
-    __asm volatile ("cpsie i" ::: "memory");
+    __asm volatile("cpsie i" ::: "memory");
 
     board_initialized = true;
 }
 
-} // namespace board
+}  // namespace board
 
 // =============================================================================
 // Interrupt Service Routines
@@ -154,11 +156,11 @@ extern "C" void SysTick_Handler() {
     // Update HAL tick (always - required for HAL timing functions)
     board::BoardSysTick::increment_tick();
 
-    // Forward to RTOS scheduler (if enabled at compile time)
-    #ifdef ALLOY_RTOS_ENABLED
-        // RTOS::tick() returns Result<void, RTOSError>
-        // In ISR context, we can't handle errors gracefully, so we unwrap
-        // If tick fails, it indicates a serious system error
-        alloy::rtos::RTOS::tick().unwrap();
-    #endif
+// Forward to RTOS scheduler (if enabled at compile time)
+#ifdef ALLOY_RTOS_ENABLED
+    // RTOS::tick() returns Result<void, RTOSError>
+    // In ISR context, we can't handle errors gracefully, so we unwrap
+    // If tick fails, it indicates a serious system error
+    alloy::rtos::RTOS::tick().unwrap();
+#endif
 }

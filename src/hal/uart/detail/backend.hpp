@@ -7,12 +7,14 @@
 #include <string_view>
 #include <utility>
 
+#include "hal/types.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+
 #include "device/descriptors.hpp"
 #include "device/runtime_lookup.hpp"
 #include "device/traits.hpp"
-#include "hal/types.hpp"
 
 namespace alloy::hal::uart::detail {
 
@@ -33,8 +35,8 @@ struct ParsedRegisterTarget {
     return text == nullptr ? std::string_view{} : std::string_view{text};
 }
 
-[[nodiscard]] constexpr auto descriptor_strings_equal(const char* lhs,
-                                                      std::string_view rhs) -> bool {
+[[nodiscard]] constexpr auto descriptor_strings_equal(const char* lhs, std::string_view rhs)
+    -> bool {
     return descriptor_as_string(lhs) == rhs;
 }
 
@@ -150,10 +152,10 @@ struct ParsedRegisterTarget {
     };
 }
 
-[[nodiscard]] constexpr auto parse_register_target(std::string_view target) -> ParsedRegisterTarget {
+[[nodiscard]] constexpr auto parse_register_target(std::string_view target)
+    -> ParsedRegisterTarget {
     const auto separator = target.find('.');
-    if (separator == std::string_view::npos || separator == 0u ||
-        separator + 1u >= target.size()) {
+    if (separator == std::string_view::npos || separator == 0u || separator + 1u >= target.size()) {
         return {};
     }
 
@@ -491,13 +493,13 @@ auto apply_route_operation(
         }
 
         if (schema_id == "alloy.pinmux.stm32-af-v1") {
-            return apply_stm32_pinmux<PortHandle>(pin_target,
-                                                  static_cast<std::uint32_t>(operation_descriptor.value_int));
+            return apply_stm32_pinmux<PortHandle>(
+                pin_target, static_cast<std::uint32_t>(operation_descriptor.value_int));
         }
 
         if (schema_id == "alloy.pinmux.sam-pio-v1") {
-            return apply_same70_pinmux<PortHandle>(pin_target,
-                                                   static_cast<std::uint32_t>(operation_descriptor.value_int));
+            return apply_same70_pinmux<PortHandle>(
+                pin_target, static_cast<std::uint32_t>(operation_descriptor.value_int));
         }
 
         return core::Err(core::ErrorCode::NotSupported);
@@ -510,7 +512,8 @@ auto apply_route_operation(
     }
 
     const auto base = find_mmio_base(register_peripheral);
-    const auto* register_descriptor = device::runtime::find_register(register_peripheral, register_name);
+    const auto* register_descriptor =
+        device::runtime::find_register(register_peripheral, register_name);
     if (base == 0u || register_descriptor == nullptr) {
         return core::Err(core::ErrorCode::NotSupported);
     }
@@ -536,8 +539,7 @@ auto apply_route_operation(
         }
 
         const auto mask = device::runtime::field_mask(*field_descriptor);
-        reg = (reg & ~mask) |
-              ((value << field_descriptor->bit_offset) & mask);
+        reg = (reg & ~mask) | ((value << field_descriptor->bit_offset) & mask);
         return core::Ok();
     }
 
@@ -547,10 +549,11 @@ auto apply_route_operation(
     }
 
     if constexpr (is_same70_family<PortHandle>()) {
-        const auto parsed_target = parse_register_target(
-            descriptor_as_string(operation_descriptor.diagnostic_target));
+        const auto parsed_target =
+            parse_register_target(descriptor_as_string(operation_descriptor.diagnostic_target));
         if (parsed_target.valid && parsed_target.owner == "PMC" && kind == "set-bit") {
-            return enable_same70_pid(parse_pid(descriptor_as_string(operation_descriptor.diagnostic_target)));
+            return enable_same70_pid(
+                parse_pid(descriptor_as_string(operation_descriptor.diagnostic_target)));
         }
     }
 
@@ -635,10 +638,8 @@ auto apply_route_operations() -> core::Result<void, core::ErrorCode> {
 }
 
 template <typename PortHandle>
-auto configure_stm32_uart(const typename PortHandle::connector_type&,
-                          const UartConfig& config,
-                          std::uintptr_t base)
-    -> core::Result<void, core::ErrorCode> {
+auto configure_stm32_uart(const typename PortHandle::connector_type&, const UartConfig& config,
+                          std::uintptr_t base) -> core::Result<void, core::ErrorCode> {
     if (config.peripheral_clock_hz == 0u || baud_value(config.baudrate) == 0u) {
         return core::Err(core::ErrorCode::InvalidParameter);
     }
@@ -736,10 +737,8 @@ auto configure_stm32_uart(const typename PortHandle::connector_type&,
 }
 
 template <typename PortHandle>
-auto configure_same70_uart(const typename PortHandle::connector_type&,
-                           const UartConfig& config,
-                           std::uintptr_t base)
-    -> core::Result<void, core::ErrorCode> {
+auto configure_same70_uart(const typename PortHandle::connector_type&, const UartConfig& config,
+                           std::uintptr_t base) -> core::Result<void, core::ErrorCode> {
     if (config.peripheral_clock_hz == 0u || baud_value(config.baudrate) == 0u) {
         return core::Err(core::ErrorCode::InvalidParameter);
     }
@@ -798,14 +797,12 @@ auto configure_uart(const PortHandle& handle) -> core::Result<void, core::ErrorC
 
     if constexpr (is_stm32g0_family<PortHandle>() || is_stm32f4_family<PortHandle>()) {
         return configure_stm32_uart<PortHandle>(typename PortHandle::connector_type{},
-                                                handle.config(),
-                                                base);
+                                                handle.config(), base);
     }
 
     if constexpr (is_same70_family<PortHandle>()) {
         return configure_same70_uart<PortHandle>(typename PortHandle::connector_type{},
-                                                 handle.config(),
-                                                 base);
+                                                 handle.config(), base);
     }
 
     return core::Err(core::ErrorCode::NotSupported);

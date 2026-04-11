@@ -1,13 +1,13 @@
 #if defined(ALLOY_BOARD_NUCLEO_G0B1RE)
-#include "nucleo_g0b1re/board.hpp"
+    #include "nucleo_g0b1re/board.hpp"
 #elif defined(ALLOY_BOARD_NUCLEO_G071RB)
-#include "nucleo_g071rb/board.hpp"
+    #include "nucleo_g071rb/board.hpp"
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
-#include "nucleo_f401re/board.hpp"
+    #include "nucleo_f401re/board.hpp"
 #elif defined(ALLOY_BOARD_SAME70_XPLD)
-#include "same70_xplained/board.hpp"
+    #include "same70_xplained/board.hpp"
 #else
-#define ALLOY_BOARD_LED_COMPILE_SMOKE_UNAVAILABLE 1
+    #define ALLOY_BOARD_LED_COMPILE_SMOKE_UNAVAILABLE 1
 #endif
 
 namespace {

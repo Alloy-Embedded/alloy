@@ -1,9 +1,9 @@
+#include <iterator>
+
 #include "arch/cortex_m/startup_contract.hpp"
 #include "device/descriptors.hpp"
 #include "device/import.hpp"
 #include "device/traits.hpp"
-
-#include <iterator>
 
 static_assert(alloy::device::SelectedDeviceTraits::available,
               "Selected device contract must be available for the smoke target.");

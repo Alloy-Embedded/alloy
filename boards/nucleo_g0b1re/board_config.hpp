@@ -8,9 +8,10 @@
  * development board (MB1360).
  */
 
+#include <cstdint>
+
 #include "hal/vendors/st/stm32g0/gpio.hpp"
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
-#include <cstdint>
 
 namespace nucleo_g0b1re {
 
@@ -69,4 +70,4 @@ struct UartConfig {
     static constexpr uint32_t default_baud_rate = 115200;
 };
 
-} // namespace nucleo_g0b1re
+}  // namespace nucleo_g0b1re

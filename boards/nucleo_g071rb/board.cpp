@@ -7,12 +7,14 @@
  */
 
 #include "board.hpp"
-#include "hal/api/systick_simple.hpp"
-#include "hal/vendors/st/stm32g0/generated/registers/rcc_registers.hpp"
-#include "hal/vendors/st/stm32g0/generated/registers/flash_registers.hpp"
-#include "hal/vendors/st/stm32g0/generated/bitfields/rcc_bitfields.hpp"
-#include "hal/vendors/st/stm32g0/generated/bitfields/flash_bitfields.hpp"
+
 #include <cstdint>
+
+#include "hal/api/systick_simple.hpp"
+#include "hal/vendors/st/stm32g0/generated/bitfields/flash_bitfields.hpp"
+#include "hal/vendors/st/stm32g0/generated/bitfields/rcc_bitfields.hpp"
+#include "hal/vendors/st/stm32g0/generated/registers/flash_registers.hpp"
+#include "hal/vendors/st/stm32g0/generated/registers/rcc_registers.hpp"
 
 using namespace alloy::hal::st::stm32g0;
 using namespace alloy::generated::stm32g0b1;
@@ -62,7 +64,8 @@ static inline void configure_system_clock() {
 
     // 1. Enable HSI16 (should already be enabled after reset)
     rcc::RCC()->CR |= cr::HSION::mask;
-    while (!(rcc::RCC()->CR & cr::HSIRDY::mask));  // Wait for HSIRDY
+    while (!(rcc::RCC()->CR & cr::HSIRDY::mask))
+        ;  // Wait for HSIRDY
 
     // 2. Configure flash latency BEFORE increasing frequency
     // For 64 MHz on STM32G0, we need 2 wait states
@@ -70,31 +73,29 @@ static inline void configure_system_clock() {
 
     // 3. Configure PLL: HSI16 as source, M=/1, N=×8, R=/2
     // PLLSRC=2 (HSI16), PLLM=0 (div by 1), PLLN=8 (mul by 8), PLLR=0 (div by 2)
-    rcc::RCC()->PLLCFGR = pllcfgr::PLLSRC::write(0, 2) |   // HSI16 = 0b10
-                          pllcfgr::PLLM::write(0, 0) |     // /1 = 0
-                          pllcfgr::PLLN::write(0, 8) |     // ×8 = 8
-                          pllcfgr::PLLR::write(0, 0) |     // /2 = 0
-                          pllcfgr::PLLREN::mask;           // Enable PLLR output
+    rcc::RCC()->PLLCFGR = pllcfgr::PLLSRC::write(0, 2) |  // HSI16 = 0b10
+                          pllcfgr::PLLM::write(0, 0) |    // /1 = 0
+                          pllcfgr::PLLN::write(0, 8) |    // ×8 = 8
+                          pllcfgr::PLLR::write(0, 0) |    // /2 = 0
+                          pllcfgr::PLLREN::mask;          // Enable PLLR output
 
     // 4. Enable PLL
     rcc::RCC()->CR |= cr::PLLON::mask;
-    while (!(rcc::RCC()->CR & cr::PLLRDY::mask));  // Wait for PLLRDY
+    while (!(rcc::RCC()->CR & cr::PLLRDY::mask))
+        ;  // Wait for PLLRDY
 
     // 5. Switch system clock to PLL (SW = 2 means PLL)
     rcc::RCC()->CFGR = cfgr::SW::write(rcc::RCC()->CFGR, 2);
-    while (cfgr::SWS::read(rcc::RCC()->CFGR) != 2);  // Wait for SWS = PLL
+    while (cfgr::SWS::read(rcc::RCC()->CFGR) != 2)
+        ;  // Wait for SWS = PLL
 }
 
 static inline void enable_gpio_clocks() {
     using namespace rcc;  // Use RCC bitfields namespace
 
     // Enable all GPIO port clocks (GPIOA-GPIOF)
-    rcc::RCC()->IOPENR |= iopenr::GPIOAEN::mask |
-                          iopenr::GPIOBEN::mask |
-                          iopenr::GPIOCEN::mask |
-                          iopenr::GPIODEN::mask |
-                          iopenr::GPIOEEN::mask |
-                          iopenr::GPIOFEN::mask;
+    rcc::RCC()->IOPENR |= iopenr::GPIOAEN::mask | iopenr::GPIOBEN::mask | iopenr::GPIOCEN::mask |
+                          iopenr::GPIODEN::mask | iopenr::GPIOEEN::mask | iopenr::GPIOFEN::mask;
 }
 
 namespace led {
@@ -148,12 +149,12 @@ void init() {
     led::init();
 
     // Step 5: Enable interrupts globally (PRIMASK = 0)
-    __asm volatile ("cpsie i" ::: "memory");
+    __asm volatile("cpsie i" ::: "memory");
 
     board_initialized = true;
 }
 
-} // namespace board
+}  // namespace board
 
 // =============================================================================
 // Interrupt Service Routines
@@ -176,11 +177,11 @@ extern "C" void SysTick_Handler() {
     // Update HAL tick (always - required for HAL timing functions)
     board::BoardSysTick::increment_tick();
 
-    // Forward to RTOS scheduler (if enabled at compile time)
-    #ifdef ALLOY_RTOS_ENABLED
-        // RTOS::tick() returns Result<void, RTOSError>
-        // In ISR context, we can't handle errors gracefully, so we unwrap
-        // If tick fails, it indicates a serious system error
-        alloy::rtos::RTOS::tick().unwrap();
-    #endif
+// Forward to RTOS scheduler (if enabled at compile time)
+#ifdef ALLOY_RTOS_ENABLED
+    // RTOS::tick() returns Result<void, RTOSError>
+    // In ISR context, we can't handle errors gracefully, so we unwrap
+    // If tick fails, it indicates a serious system error
+    alloy::rtos::RTOS::tick().unwrap();
+#endif
 }

@@ -55,15 +55,13 @@ struct connector_claim {
 
     [[nodiscard]] static consteval auto pins() {
         return []<std::size_t... Index>(std::index_sequence<Index...>) {
-            return std::array<std::string_view, sizeof...(Index)>{
-                pin_name_at<Index>()...};
+            return std::array<std::string_view, sizeof...(Index)>{pin_name_at<Index>()...};
         }(std::make_index_sequence<Connector::binding_count>{});
     }
 
     [[nodiscard]] static consteval auto signals() {
         return []<std::size_t... Index>(std::index_sequence<Index...>) {
-            return std::array<std::string_view, sizeof...(Index)>{
-                signal_name_at<Index>()...};
+            return std::array<std::string_view, sizeof...(Index)>{signal_name_at<Index>()...};
         }(std::make_index_sequence<Connector::binding_count>{});
     }
 };

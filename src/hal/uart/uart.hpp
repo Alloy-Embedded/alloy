@@ -5,13 +5,15 @@
 #include <span>
 #include <string_view>
 
-#include "core/error_code.hpp"
-#include "core/result.hpp"
-#include "device/descriptors.hpp"
 #include "hal/claim.hpp"
 #include "hal/connect.hpp"
 #include "hal/types.hpp"
 #include "hal/uart/detail/backend.hpp"
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+
+#include "device/descriptors.hpp"
 
 namespace alloy::hal::uart {
 
@@ -42,7 +44,7 @@ namespace detail {
 template <typename Connector>
     requires(Connector::valid)
 class port_handle {
-public:
+   public:
     using connector_type = Connector;
     using connector_claim = claim::connector_claim<Connector>;
 
@@ -85,7 +87,7 @@ public:
         return detail::flush_uart(*this);
     }
 
-private:
+   private:
     Config config_{};
 };
 

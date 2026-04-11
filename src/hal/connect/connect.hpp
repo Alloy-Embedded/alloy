@@ -5,10 +5,11 @@
 #include <string_view>
 #include <tuple>
 
+#include "hal/connect/fixed_string.hpp"
+
 #include "device/descriptors.hpp"
 #include "device/runtime_lookup.hpp"
 #include "device/traits.hpp"
-#include "hal/connect/fixed_string.hpp"
 
 namespace alloy::hal::connection {
 
@@ -85,12 +86,12 @@ struct DescriptorList {
 
     for (const auto& requirement_ref :
          device::descriptors::tables::candidate_requirement_refs.subspan(
-             candidate_descriptor.requirement_offset,
-             candidate_descriptor.requirement_count)) {
+             candidate_descriptor.requirement_offset, candidate_descriptor.requirement_count)) {
         if (requirement_ref.candidate_id != candidate_descriptor.candidate_id) {
             continue;
         }
-        const auto* requirement = device::runtime::find_route_requirement(requirement_ref.requirement_id);
+        const auto* requirement =
+            device::runtime::find_route_requirement(requirement_ref.requirement_id);
         if (requirement == nullptr) {
             continue;
         }
@@ -145,8 +146,7 @@ struct DescriptorList {
 }
 
 [[nodiscard]] consteval auto find_candidate(std::string_view peripheral_name,
-                                            std::string_view pin_name,
-                                            std::string_view signal_name)
+                                            std::string_view pin_name, std::string_view signal_name)
     -> const device::descriptors::family::ConnectionCandidateDescriptor* {
     for (const auto& candidate : device::descriptors::tables::connection_candidates) {
         if (!strings_equal(candidate.device, selected_device())) {
@@ -164,8 +164,7 @@ struct DescriptorList {
         bool signal_match = false;
         for (const auto& capability :
              device::descriptors::tables::candidate_capability_refs.subspan(
-                 candidate.capability_offset,
-                 candidate.capability_count)) {
+                 candidate.capability_offset, candidate.capability_count)) {
             if (capability.candidate_id != candidate.candidate_id) {
                 continue;
             }
@@ -193,8 +192,7 @@ struct DescriptorList {
 
 template <typename Descriptor, std::size_t Capacity, typename Accessor>
 consteval void append_unique(DescriptorList<Descriptor, Capacity>& list,
-                             const Descriptor* descriptor,
-                             Accessor accessor) {
+                             const Descriptor* descriptor, Accessor accessor) {
     if (descriptor == nullptr) {
         return;
     }
@@ -257,9 +255,8 @@ template <std::size_t N>
         return false;
     }
 
-    for (const auto& signal_ref :
-         device::descriptors::tables::connection_group_signals.subspan(group.signal_offset,
-                                                                       group.signal_count)) {
+    for (const auto& signal_ref : device::descriptors::tables::connection_group_signals.subspan(
+             group.signal_offset, group.signal_count)) {
         bool present = false;
         for (const auto expected_signal : signals) {
             if (as_string(signal_ref.signal_name) == expected_signal) {
@@ -276,9 +273,9 @@ template <std::size_t N>
 }
 
 template <std::size_t N>
-[[nodiscard]] consteval auto find_exact_group_index(
-    std::string_view peripheral_name,
-    const std::array<std::string_view, N>& signals) -> int {
+[[nodiscard]] consteval auto find_exact_group_index(std::string_view peripheral_name,
+                                                    const std::array<std::string_view, N>& signals)
+    -> int {
     const auto package = selected_package();
     auto index = 0;
     for (const auto& group : device::descriptors::tables::connection_groups) {
@@ -351,9 +348,7 @@ struct connector {
         return detail::all_candidates_share_group(candidates, group_descriptor_index);
     }();
 
-    [[nodiscard]] static consteval auto has_group() -> bool {
-        return group_descriptor != nullptr;
-    }
+    [[nodiscard]] static consteval auto has_group() -> bool { return group_descriptor != nullptr; }
 
     template <std::size_t Index>
     using binding_type = std::tuple_element_t<Index, binding_tuple>;
@@ -370,8 +365,7 @@ struct connector {
 
             for (const auto& requirement :
                  device::descriptors::tables::candidate_requirement_refs.subspan(
-                     candidate->requirement_offset,
-                     candidate->requirement_count)) {
+                     candidate->requirement_offset, candidate->requirement_count)) {
                 if (requirement.candidate_id != candidate->candidate_id) {
                     continue;
                 }
@@ -380,11 +374,9 @@ struct connector {
                 if (requirement_descriptor == nullptr) {
                     continue;
                 }
-                detail::append_unique(list,
-                                      requirement_descriptor,
-                                      [](const auto& descriptor) {
-                                          return descriptor.requirement_name;
-                                      });
+                detail::append_unique(list, requirement_descriptor, [](const auto& descriptor) {
+                    return descriptor.requirement_name;
+                });
             }
         }
 
@@ -403,8 +395,7 @@ struct connector {
 
             for (const auto& operation :
                  device::descriptors::tables::candidate_operation_refs.subspan(
-                     candidate->operation_offset,
-                     candidate->operation_count)) {
+                     candidate->operation_offset, candidate->operation_count)) {
                 if (operation.candidate_id != candidate->candidate_id) {
                     continue;
                 }
@@ -413,11 +404,9 @@ struct connector {
                 if (operation_descriptor == nullptr) {
                     continue;
                 }
-                detail::append_unique(list,
-                                      operation_descriptor,
-                                      [](const auto& descriptor) {
-                                          return descriptor.operation_name;
-                                      });
+                detail::append_unique(list, operation_descriptor, [](const auto& descriptor) {
+                    return descriptor.operation_name;
+                });
             }
         }
 

@@ -38,8 +38,7 @@ inline constexpr auto clock_nodes = std::span{family::kClockNodes};
 inline constexpr auto clock_selectors = std::span{family::kClockSelectors};
 inline constexpr auto clock_gates = std::span{family::kClockGates};
 inline constexpr auto resets = std::span{family::kResets};
-inline constexpr auto peripheral_clock_bindings =
-    std::span{family::kPeripheralClockBindings};
+inline constexpr auto peripheral_clock_bindings = std::span{family::kPeripheralClockBindings};
 inline constexpr auto device_descriptor = startup::kDeviceDescriptor;
 inline constexpr auto pins = std::span{device_contract::kPins};
 inline constexpr auto pin_signals = std::span{device_contract::kPinSignals};

@@ -6,9 +6,10 @@
  * linking but not fully implemented in bare-metal environment.
  */
 
+#include <errno.h>
+
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <errno.h>
 
 extern "C" {
 
@@ -91,4 +92,4 @@ int _getpid() {
     return 1;
 }
 
-} // extern "C"
+}  // extern "C"

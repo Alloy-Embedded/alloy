@@ -41,8 +41,8 @@ namespace alloy::device::runtime {
 
 template <typename Descriptor, std::size_t Extent>
 [[nodiscard]] constexpr auto find_by_name(std::span<const Descriptor, Extent> descriptors,
-                                          const char* Descriptor::*member,
-                                          std::string_view value) -> const Descriptor* {
+                                          const char* Descriptor::* member, std::string_view value)
+    -> const Descriptor* {
     for (const auto& descriptor : descriptors) {
         if (strings_equal(descriptor.*member, value)) {
             return &descriptor;
@@ -53,11 +53,8 @@ template <typename Descriptor, std::size_t Extent>
 
 template <typename Descriptor, std::size_t Extent>
 [[nodiscard]] constexpr auto find_device_scoped_by_name(
-    std::span<const Descriptor, Extent> descriptors,
-    const char* Descriptor::*device_member,
-    const char* Descriptor::*value_member,
-    std::string_view value)
-    -> const Descriptor* {
+    std::span<const Descriptor, Extent> descriptors, const char* Descriptor::* device_member,
+    const char* Descriptor::* value_member, std::string_view value) -> const Descriptor* {
     for (const auto& descriptor : descriptors) {
         if (!strings_equal(descriptor.*device_member, selected_device())) {
             continue;
@@ -89,8 +86,8 @@ template <typename Descriptor, std::size_t Extent>
 
 [[nodiscard]] constexpr auto find_pin(std::string_view pin_name)
     -> const descriptors::device_contract::PinDescriptor* {
-    return find_by_name(descriptors::tables::pins, &descriptors::device_contract::PinDescriptor::pin_name,
-                        pin_name);
+    return find_by_name(descriptors::tables::pins,
+                        &descriptors::device_contract::PinDescriptor::pin_name, pin_name);
 }
 
 [[nodiscard]] constexpr auto find_peripheral_instance(std::string_view peripheral_name)
@@ -141,10 +138,10 @@ template <typename Descriptor, std::size_t Extent>
     return runtime_field_id.substr(separator + 1u);
 }
 
-[[nodiscard]] constexpr auto find_register_field_by_runtime_id(
-    std::string_view peripheral_name,
-    std::string_view register_name,
-    std::string_view runtime_field_id) -> const descriptors::device_contract::RegisterFieldDescriptor* {
+[[nodiscard]] constexpr auto find_register_field_by_runtime_id(std::string_view peripheral_name,
+                                                               std::string_view register_name,
+                                                               std::string_view runtime_field_id)
+    -> const descriptors::device_contract::RegisterFieldDescriptor* {
     const auto field_suffix = runtime_field_suffix(runtime_field_id);
     if (field_suffix.empty()) {
         return nullptr;
@@ -170,32 +167,28 @@ template <typename Descriptor, std::size_t Extent>
     return find_device_scoped_by_name(
         descriptors::tables::peripheral_clock_bindings,
         &descriptors::family::PeripheralClockBindingDescriptor::device,
-        &descriptors::family::PeripheralClockBindingDescriptor::peripheral,
-        peripheral_name);
+        &descriptors::family::PeripheralClockBindingDescriptor::peripheral, peripheral_name);
 }
 
 [[nodiscard]] constexpr auto find_clock_gate(std::string_view gate_name)
     -> const descriptors::family::ClockGateDescriptor* {
-    return find_device_scoped_by_name(descriptors::tables::clock_gates,
-                                      &descriptors::family::ClockGateDescriptor::device,
-                                      &descriptors::family::ClockGateDescriptor::gate_name,
-                                      gate_name);
+    return find_device_scoped_by_name(
+        descriptors::tables::clock_gates, &descriptors::family::ClockGateDescriptor::device,
+        &descriptors::family::ClockGateDescriptor::gate_name, gate_name);
 }
 
 [[nodiscard]] constexpr auto find_reset(std::string_view reset_name)
     -> const descriptors::family::ResetDescriptor* {
-    return find_device_scoped_by_name(descriptors::tables::resets,
-                                      &descriptors::family::ResetDescriptor::device,
-                                      &descriptors::family::ResetDescriptor::reset_name,
-                                      reset_name);
+    return find_device_scoped_by_name(
+        descriptors::tables::resets, &descriptors::family::ResetDescriptor::device,
+        &descriptors::family::ResetDescriptor::reset_name, reset_name);
 }
 
 [[nodiscard]] constexpr auto find_clock_selector(std::string_view selector_name)
     -> const descriptors::family::ClockSelectorDescriptor* {
-    return find_device_scoped_by_name(descriptors::tables::clock_selectors,
-                                      &descriptors::family::ClockSelectorDescriptor::device,
-                                      &descriptors::family::ClockSelectorDescriptor::selector_name,
-                                      selector_name);
+    return find_device_scoped_by_name(
+        descriptors::tables::clock_selectors, &descriptors::family::ClockSelectorDescriptor::device,
+        &descriptors::family::ClockSelectorDescriptor::selector_name, selector_name);
 }
 
 [[nodiscard]] constexpr auto find_interrupt_bindings(std::string_view peripheral_name)
@@ -231,16 +224,16 @@ template <typename Descriptor, std::size_t Extent>
                                                             instance->capability_overlay_count);
 }
 
-[[nodiscard]] constexpr auto field_mask(std::uint16_t bit_offset,
-                                        std::uint16_t bit_width) -> std::uint32_t {
+[[nodiscard]] constexpr auto field_mask(std::uint16_t bit_offset, std::uint16_t bit_width)
+    -> std::uint32_t {
     if (bit_width == 0u || bit_width >= 32u) {
         return bit_width == 32u ? 0xFFFF'FFFFu : 0u;
     }
     return ((1u << bit_width) - 1u) << bit_offset;
 }
 
-[[nodiscard]] constexpr auto field_mask(const descriptors::device_contract::RegisterFieldDescriptor& field)
-    -> std::uint32_t {
+[[nodiscard]] constexpr auto field_mask(
+    const descriptors::device_contract::RegisterFieldDescriptor& field) -> std::uint32_t {
     return field_mask(field.bit_offset, field.bit_width);
 }
 
@@ -259,8 +252,8 @@ template <typename Descriptor, std::size_t Extent>
     return value;
 }
 
-[[nodiscard]] constexpr auto parse_suffix_decimal(std::string_view text,
-                                                  std::string_view marker) -> int {
+[[nodiscard]] constexpr auto parse_suffix_decimal(std::string_view text, std::string_view marker)
+    -> int {
     const auto position = text.find(marker);
     if (position == std::string_view::npos) {
         return -1;

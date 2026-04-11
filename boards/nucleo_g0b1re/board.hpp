@@ -36,12 +36,14 @@
  * @note Clock runs at 64 MHz using HSI oscillator
  */
 
-#include "board_config.hpp"
+#include <cstdint>
+
 #include "hal/api/gpio_simple.hpp"
 #include "hal/vendors/st/stm32g0/gpio.hpp"
-#include "hal/vendors/st/stm32g0/systick_platform.hpp"
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
-#include <cstdint>
+#include "hal/vendors/st/stm32g0/systick_platform.hpp"
+
+#include "board_config.hpp"
 
 namespace board {
 
@@ -122,7 +124,7 @@ inline void toggle() {
     led_pin.toggle();
 }
 
-} // namespace led
+}  // namespace led
 
 // =============================================================================
 // Board Initialization
@@ -148,4 +150,4 @@ inline void toggle() {
  */
 void init();
 
-} // namespace board
+}  // namespace board

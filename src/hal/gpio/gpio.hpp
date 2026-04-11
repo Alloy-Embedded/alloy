@@ -5,13 +5,15 @@
 #include <cstdint>
 #include <string_view>
 
+#include "hal/gpio/detail/backend.hpp"
+#include "hal/types.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+
 #include "device/descriptors.hpp"
 #include "device/runtime_lookup.hpp"
 #include "device/traits.hpp"
-#include "hal/gpio/detail/backend.hpp"
-#include "hal/types.hpp"
 
 namespace alloy::hal::gpio {
 
@@ -93,9 +95,8 @@ struct DescriptorList {
 [[nodiscard]] consteval auto candidate_is_general_gpio(
     const device::descriptors::family::ConnectionCandidateDescriptor& candidate) -> bool {
     bool has_gpio_capability = false;
-    for (const auto& capability :
-         device::descriptors::tables::candidate_capability_refs.subspan(candidate.capability_offset,
-                                                                        candidate.capability_count)) {
+    for (const auto& capability : device::descriptors::tables::candidate_capability_refs.subspan(
+             candidate.capability_offset, candidate.capability_count)) {
         const auto capability_id = as_string(capability.capability_id);
         if (capability_id.starts_with("capability:gpio:")) {
             has_gpio_capability = true;
@@ -151,8 +152,7 @@ struct DescriptorList {
             bool package_match = false;
             for (const auto& requirement_ref :
                  device::descriptors::tables::candidate_requirement_refs.subspan(
-                     candidate.requirement_offset,
-                     candidate.requirement_count)) {
+                     candidate.requirement_offset, candidate.requirement_count)) {
                 if (requirement_ref.candidate_id != candidate.candidate_id) {
                     continue;
                 }
@@ -248,8 +248,9 @@ struct DescriptorList {
     return nullptr;
 }
 
-[[nodiscard]] consteval auto find_requirement_by_identity(
-    std::string_view kind, std::string_view target, std::string_view value = {})
+[[nodiscard]] consteval auto find_requirement_by_identity(std::string_view kind,
+                                                          std::string_view target,
+                                                          std::string_view value = {})
     -> const device::descriptors::family::RouteRequirementDescriptor* {
     for (const auto& descriptor : device::descriptors::tables::route_requirements) {
         if (!strings_equal(descriptor.device, selected_device())) {
@@ -320,8 +321,7 @@ struct DescriptorList {
 
 template <typename Descriptor, std::size_t Capacity, typename Accessor>
 consteval void append_unique(DescriptorList<Descriptor, Capacity>& list,
-                             const Descriptor* descriptor,
-                             Accessor accessor) {
+                             const Descriptor* descriptor, Accessor accessor) {
     if (descriptor == nullptr) {
         return;
     }
@@ -355,7 +355,8 @@ struct pin_handle {
     static constexpr auto package_name = detail::selected_package();
     static constexpr auto package_pad = detail::find_package_pad(Pin::name);
     static constexpr auto gpio_candidate = detail::find_gpio_candidate(Pin::name);
-    static constexpr auto derived_peripheral_name_storage = detail::derived_gpio_peripheral(Pin::name);
+    static constexpr auto derived_peripheral_name_storage =
+        detail::derived_gpio_peripheral(Pin::name);
 
     static constexpr auto peripheral_name = []() consteval -> std::string_view {
         if (gpio_candidate != nullptr) {
@@ -370,7 +371,8 @@ struct pin_handle {
 
     static constexpr auto line_index = []() consteval -> int {
         if (gpio_candidate != nullptr) {
-            const auto index = detail::parse_trailing_number(detail::as_string(gpio_candidate->signal));
+            const auto index =
+                detail::parse_trailing_number(detail::as_string(gpio_candidate->signal));
             if (index >= 0) {
                 return index;
             }
@@ -397,8 +399,7 @@ struct pin_handle {
         if (gpio_candidate != nullptr) {
             for (const auto& requirement_ref :
                  device::descriptors::tables::candidate_requirement_refs.subspan(
-                     gpio_candidate->requirement_offset,
-                     gpio_candidate->requirement_count)) {
+                     gpio_candidate->requirement_offset, gpio_candidate->requirement_count)) {
                 if (requirement_ref.candidate_id != gpio_candidate->candidate_id) {
                     continue;
                 }
@@ -407,36 +408,31 @@ struct pin_handle {
                 if (requirement == nullptr) {
                     continue;
                 }
-                detail::append_unique(list,
-                                      requirement,
-                                      [](const auto& descriptor) {
-                                          return descriptor.requirement_name;
-                                      });
+                detail::append_unique(list, requirement, [](const auto& descriptor) {
+                    return descriptor.requirement_name;
+                });
             }
             return list;
         }
 
-        detail::append_unique(list,
-                              detail::find_requirement_by_identity("package", package_name, "selected"),
-                              [](const auto& descriptor) { return descriptor.requirement_name; });
-        detail::append_unique(list,
-                              detail::find_requirement_by_identity("bonded-pin", Pin::name, package_name),
-                              [](const auto& descriptor) { return descriptor.requirement_name; });
+        detail::append_unique(
+            list, detail::find_requirement_by_identity("package", package_name, "selected"),
+            [](const auto& descriptor) { return descriptor.requirement_name; });
+        detail::append_unique(
+            list, detail::find_requirement_by_identity("bonded-pin", Pin::name, package_name),
+            [](const auto& descriptor) { return descriptor.requirement_name; });
         if (rcc_descriptor != nullptr) {
-            detail::append_unique(list,
-                                  detail::find_requirement_by_identity(
-                                      "clock-enable", detail::as_string(rcc_descriptor->enable_signal)),
-                                  [](const auto& descriptor) {
-                                      return descriptor.requirement_name;
-                                  });
+            detail::append_unique(
+                list,
+                detail::find_requirement_by_identity(
+                    "clock-enable", detail::as_string(rcc_descriptor->enable_signal)),
+                [](const auto& descriptor) { return descriptor.requirement_name; });
 
             const auto reset_signal = detail::as_string(rcc_descriptor->reset_signal);
             if (!reset_signal.empty()) {
-                detail::append_unique(list,
-                                      detail::find_requirement_by_identity("reset-release", reset_signal),
-                                      [](const auto& descriptor) {
-                                          return descriptor.requirement_name;
-                                      });
+                detail::append_unique(
+                    list, detail::find_requirement_by_identity("reset-release", reset_signal),
+                    [](const auto& descriptor) { return descriptor.requirement_name; });
             }
         }
 
@@ -453,8 +449,7 @@ struct pin_handle {
         if (gpio_candidate != nullptr) {
             for (const auto& operation_ref :
                  device::descriptors::tables::candidate_operation_refs.subspan(
-                     gpio_candidate->operation_offset,
-                     gpio_candidate->operation_count)) {
+                     gpio_candidate->operation_offset, gpio_candidate->operation_count)) {
                 if (operation_ref.candidate_id != gpio_candidate->candidate_id) {
                     continue;
                 }
@@ -463,11 +458,9 @@ struct pin_handle {
                 if (operation == nullptr) {
                     continue;
                 }
-                detail::append_unique(list,
-                                      operation,
-                                      [](const auto& descriptor) {
-                                          return descriptor.operation_name;
-                                      });
+                detail::append_unique(list, operation, [](const auto& descriptor) {
+                    return descriptor.operation_name;
+                });
             }
             return list;
         }
@@ -480,11 +473,9 @@ struct pin_handle {
 
             const auto reset_signal = detail::as_string(rcc_descriptor->reset_signal);
             if (!reset_signal.empty()) {
-                detail::append_unique(list,
-                                      detail::find_operation_by_identity("clear-bit", reset_signal),
-                                      [](const auto& descriptor) {
-                                          return descriptor.operation_name;
-                                      });
+                detail::append_unique(
+                    list, detail::find_operation_by_identity("clear-bit", reset_signal),
+                    [](const auto& descriptor) { return descriptor.operation_name; });
             }
         }
 
@@ -521,7 +512,7 @@ struct pin_handle {
         return detail::read_gpio<pin_handle<Pin>>();
     }
 
-private:
+   private:
     Config config_{};
 };
 

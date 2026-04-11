@@ -8,9 +8,10 @@
  * development board (MB1136).
  */
 
+#include <cstdint>
+
 #include "hal/vendors/st/stm32f7/gpio.hpp"
 #include "hal/vendors/st/stm32f7/stm32f722/peripherals.hpp"
-#include <cstdint>
 
 namespace nucleo_f722ze {
 
@@ -107,4 +108,4 @@ struct UartConfig {
     static constexpr uint32_t default_baud_rate = 115200;
 };
 
-} // namespace nucleo_f722ze
+}  // namespace nucleo_f722ze

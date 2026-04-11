@@ -3,11 +3,13 @@
 #include <cstdint>
 #include <string_view>
 
+#include "hal/types.hpp"
+
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+
 #include "device/descriptors.hpp"
 #include "device/traits.hpp"
-#include "hal/types.hpp"
 
 namespace alloy::hal::gpio::detail {
 
@@ -23,8 +25,7 @@ namespace alloy::hal::gpio::detail {
     return *reinterpret_cast<volatile std::uint32_t*>(address);
 }
 
-[[nodiscard]] consteval auto find_mmio_base(std::string_view peripheral_name)
-    -> std::uintptr_t {
+[[nodiscard]] consteval auto find_mmio_base(std::string_view peripheral_name) -> std::uintptr_t {
     if constexpr (!device::SelectedDescriptors::available) {
         return 0u;
     }
@@ -121,10 +122,10 @@ template <typename PinHandle>
 
     if constexpr (is_same70_family<PinHandle>()) {
         constexpr auto pmc_base = find_mmio_base("PMC");
-        constexpr auto pid = PinHandle::rcc_descriptor == nullptr
-                                 ? -1
-                                 : parse_pid(
-                                       backend_as_string(PinHandle::rcc_descriptor->enable_signal));
+        constexpr auto pid =
+            PinHandle::rcc_descriptor == nullptr
+                ? -1
+                : parse_pid(backend_as_string(PinHandle::rcc_descriptor->enable_signal));
         static_assert(pmc_base != 0u, "SAME70 runtime requires PMC base address.");
         static_assert(pid >= 0, "SAME70 runtime requires a valid PMC peripheral identifier.");
 
@@ -215,7 +216,7 @@ auto configure_gpio(const GpioConfig& config) -> core::Result<void, core::ErrorC
         if (config.direction == PinDirection::Output) {
             reg32(base + 0x30u) = config.initial_state == PinState::High ? mask : 0u;  // SODR
             reg32(base + 0x34u) = config.initial_state == PinState::Low ? mask : 0u;   // CODR
-            reg32(base + 0x10u) = mask;                                                  // OER
+            reg32(base + 0x10u) = mask;                                                // OER
         } else {
             reg32(base + 0x14u) = mask;  // ODR
         }
