@@ -6,6 +6,7 @@
 #include <tuple>
 
 #include "device/descriptors.hpp"
+#include "device/runtime_lookup.hpp"
 #include "device/traits.hpp"
 #include "hal/connect/fixed_string.hpp"
 
@@ -56,72 +57,6 @@ struct DescriptorList {
     return as_string(lhs) == rhs;
 }
 
-template <typename Fn>
-consteval void for_each_csv_token(const char* csv, Fn&& fn) {
-    if (csv == nullptr || csv[0] == '\0') {
-        return;
-    }
-
-    std::string_view remaining{csv};
-    while (!remaining.empty()) {
-        const auto separator = remaining.find(',');
-        const auto token = separator == std::string_view::npos ? remaining
-                                                               : remaining.substr(0, separator);
-        fn(token);
-        if (separator == std::string_view::npos) {
-            break;
-        }
-        remaining.remove_prefix(separator + 1);
-    }
-}
-
-[[nodiscard]] consteval auto csv_contains_token(const char* csv, std::string_view token) -> bool {
-    bool found = false;
-    for_each_csv_token(csv, [&](std::string_view current) {
-        if (current == token) {
-            found = true;
-        }
-    });
-    return found;
-}
-
-template <std::size_t N>
-[[nodiscard]] consteval auto csv_matches_exact_signal_set(
-    const char* csv, const std::array<std::string_view, N>& expected) -> bool {
-    std::size_t count = 0;
-    bool all_expected_present = true;
-
-    for_each_csv_token(csv, [&](std::string_view current) {
-        ++count;
-        bool present = false;
-        for (const auto expected_signal : expected) {
-            if (expected_signal == current) {
-                present = true;
-                break;
-            }
-        }
-        if (!present) {
-            all_expected_present = false;
-        }
-    });
-
-    if (count != N) {
-        return false;
-    }
-
-    if (!all_expected_present) {
-        return false;
-    }
-
-    for (const auto expected_signal : expected) {
-        if (!csv_contains_token(csv, expected_signal)) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 [[nodiscard]] consteval auto selected_device() -> std::string_view {
     return device::SelectedDeviceTraits::name;
 }
@@ -140,59 +75,44 @@ template <std::size_t N>
     return {};
 }
 
-[[nodiscard]] consteval auto canonical_signal_from_capabilities(
-    const char* capability_ids) -> std::string_view {
-    std::string_view resolved{};
-
-    for_each_csv_token(capability_ids, [&](std::string_view token) {
-        if (!resolved.empty()) {
-            return;
-        }
-
-        if (!token.starts_with("capability:")) {
-            return;
-        }
-
-        const auto suffix = token.substr(token.rfind(':') + 1);
-        resolved = suffix;
-    });
-
-    return resolved;
-}
-
-[[nodiscard]] consteval auto requirement_package_token() -> std::array<char, 96> {
-    std::array<char, 96> token{};
-    constexpr std::string_view prefix = "requirement:package:";
-    auto cursor = std::size_t{0};
-
-    for (const char ch : prefix) {
-        token[cursor++] = ch;
-    }
-
-    for (const char ch : selected_package()) {
-        token[cursor++] = ch;
-    }
-
-    token[cursor] = '\0';
-    return token;
-}
-
 [[nodiscard]] consteval auto candidate_matches_selected_package(
-    const auto& candidate_descriptor) -> bool {
+    const device::descriptors::family::ConnectionCandidateDescriptor& candidate_descriptor)
+    -> bool {
     const auto package = selected_package();
     if (package.empty()) {
         return false;
     }
 
-    const auto token = requirement_package_token();
-    return csv_contains_token(candidate_descriptor.requirement_ids, token.data());
+    for (const auto& requirement_ref :
+         device::descriptors::tables::candidate_requirement_refs.subspan(
+             candidate_descriptor.requirement_offset,
+             candidate_descriptor.requirement_count)) {
+        if (requirement_ref.candidate_id != candidate_descriptor.candidate_id) {
+            continue;
+        }
+        const auto* requirement = device::runtime::find_route_requirement(requirement_ref.requirement_id);
+        if (requirement == nullptr) {
+            continue;
+        }
+        if (!strings_equal(requirement->device, selected_device())) {
+            continue;
+        }
+        if (!strings_equal(requirement->kind, "package")) {
+            continue;
+        }
+        if (strings_equal(requirement->target_ref_id, package)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 [[nodiscard]] consteval auto find_requirement(std::string_view requirement_id)
     -> const device::descriptors::family::RouteRequirementDescriptor* {
     for (const auto& requirement : device::descriptors::tables::route_requirements) {
         if (strings_equal(requirement.device, selected_device()) &&
-            strings_equal(requirement.requirement_id, requirement_id)) {
+            strings_equal(requirement.requirement_name, requirement_id)) {
             return &requirement;
         }
     }
@@ -204,7 +124,7 @@ template <std::size_t N>
     -> const device::descriptors::family::RouteOperationDescriptor* {
     for (const auto& operation : device::descriptors::tables::route_operations) {
         if (strings_equal(operation.device, selected_device()) &&
-            strings_equal(operation.operation_id, operation_id)) {
+            strings_equal(operation.operation_name, operation_id)) {
             return &operation;
         }
     }
@@ -216,7 +136,7 @@ template <std::size_t N>
     -> const device::descriptors::family::ConnectionGroupDescriptor* {
     for (const auto& group : device::descriptors::tables::connection_groups) {
         if (strings_equal(group.device, selected_device()) &&
-            strings_equal(group.group_id, group_id)) {
+            strings_equal(group.group_name, group_id)) {
             return &group;
         }
     }
@@ -241,7 +161,28 @@ template <std::size_t N>
         if (!candidate_matches_selected_package(candidate)) {
             continue;
         }
-        if (canonical_signal_from_capabilities(candidate.capability_ids) != signal_name) {
+        bool signal_match = false;
+        for (const auto& capability :
+             device::descriptors::tables::candidate_capability_refs.subspan(
+                 candidate.capability_offset,
+                 candidate.capability_count)) {
+            if (capability.candidate_id != candidate.candidate_id) {
+                continue;
+            }
+            if (!capability.capability_id) {
+                continue;
+            }
+            const auto capability_id = as_string(capability.capability_id);
+            if (!capability_id.starts_with("capability:")) {
+                continue;
+            }
+            const auto suffix = capability_id.substr(capability_id.rfind(':') + 1u);
+            if (suffix == signal_name) {
+                signal_match = true;
+                break;
+            }
+        }
+        if (!signal_match) {
             continue;
         }
         return &candidate;
@@ -296,12 +237,12 @@ template <std::size_t N>
 [[nodiscard]] consteval auto all_candidates_share_group(
     const std::array<const device::descriptors::family::ConnectionCandidateDescriptor*, N>&
         candidates,
-    std::string_view expected_group_id) -> bool {
+    int expected_group_index) -> bool {
     for (const auto* candidate : candidates) {
         if (candidate == nullptr) {
             return false;
         }
-        if (as_string(candidate->route_group_id) != expected_group_id) {
+        if (candidate->route_group_index != expected_group_index) {
             return false;
         }
     }
@@ -309,27 +250,57 @@ template <std::size_t N>
 }
 
 template <std::size_t N>
-[[nodiscard]] consteval auto find_exact_group(
+[[nodiscard]] consteval auto group_matches_exact_signal_set(
+    const device::descriptors::family::ConnectionGroupDescriptor& group,
+    const std::array<std::string_view, N>& signals) -> bool {
+    if (group.signal_count != N) {
+        return false;
+    }
+
+    for (const auto& signal_ref :
+         device::descriptors::tables::connection_group_signals.subspan(group.signal_offset,
+                                                                       group.signal_count)) {
+        bool present = false;
+        for (const auto expected_signal : signals) {
+            if (as_string(signal_ref.signal_name) == expected_signal) {
+                present = true;
+                break;
+            }
+        }
+        if (!present) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+template <std::size_t N>
+[[nodiscard]] consteval auto find_exact_group_index(
     std::string_view peripheral_name,
-    const std::array<std::string_view, N>& signals)
-    -> const device::descriptors::family::ConnectionGroupDescriptor* {
+    const std::array<std::string_view, N>& signals) -> int {
     const auto package = selected_package();
+    auto index = 0;
     for (const auto& group : device::descriptors::tables::connection_groups) {
         if (!strings_equal(group.device, selected_device())) {
+            ++index;
             continue;
         }
         if (!strings_equal(group.peripheral, peripheral_name)) {
+            ++index;
             continue;
         }
         if (!strings_equal(group.package_name, package)) {
+            ++index;
             continue;
         }
-        if (!csv_matches_exact_signal_set(group.signals, signals)) {
+        if (!group_matches_exact_signal_set(group, signals)) {
+            ++index;
             continue;
         }
-        return &group;
+        return index;
     }
-    return nullptr;
+    return -1;
 }
 
 }  // namespace detail
@@ -347,18 +318,21 @@ struct connector {
     static constexpr auto package_name = detail::selected_package();
     static constexpr auto signal_names = detail::make_signal_array<Bindings...>();
     static constexpr auto candidates = detail::resolve_candidates<Bindings...>(Peripheral::name);
-
-    static constexpr auto group_descriptor = []() consteval {
+    static constexpr auto group_descriptor_index = []() consteval -> int {
         if constexpr (binding_count == 1) {
             const auto* candidate = candidates[0];
-            if (candidate == nullptr || candidate->route_group_id == nullptr) {
-                return static_cast<const device::descriptors::family::ConnectionGroupDescriptor*>(
-                    nullptr);
-            }
-            return detail::find_group(candidate->route_group_id);
+            return candidate == nullptr ? -1 : candidate->route_group_index;
         }
 
-        return detail::find_exact_group(Peripheral::name, signal_names);
+        return detail::find_exact_group_index(Peripheral::name, signal_names);
+    }();
+
+    static constexpr auto group_descriptor = []() consteval {
+        if (group_descriptor_index < 0) {
+            return static_cast<const device::descriptors::family::ConnectionGroupDescriptor*>(
+                nullptr);
+        }
+        return &device::descriptors::tables::connection_groups[group_descriptor_index];
     }();
 
     static constexpr auto valid = []() consteval {
@@ -374,7 +348,7 @@ struct connector {
         if (group_descriptor == nullptr) {
             return false;
         }
-        return detail::all_candidates_share_group(candidates, group_descriptor->group_id);
+        return detail::all_candidates_share_group(candidates, group_descriptor_index);
     }();
 
     [[nodiscard]] static consteval auto has_group() -> bool {
@@ -394,13 +368,24 @@ struct connector {
                 continue;
             }
 
-            detail::for_each_csv_token(candidate->requirement_ids, [&](std::string_view token) {
+            for (const auto& requirement :
+                 device::descriptors::tables::candidate_requirement_refs.subspan(
+                     candidate->requirement_offset,
+                     candidate->requirement_count)) {
+                if (requirement.candidate_id != candidate->candidate_id) {
+                    continue;
+                }
+                const auto* requirement_descriptor =
+                    device::runtime::find_route_requirement(requirement.requirement_id);
+                if (requirement_descriptor == nullptr) {
+                    continue;
+                }
                 detail::append_unique(list,
-                                      detail::find_requirement(token),
+                                      requirement_descriptor,
                                       [](const auto& descriptor) {
-                                          return descriptor.requirement_id;
+                                          return descriptor.requirement_name;
                                       });
-            });
+            }
         }
 
         return list;
@@ -416,13 +401,24 @@ struct connector {
                 continue;
             }
 
-            detail::for_each_csv_token(candidate->operation_ids, [&](std::string_view token) {
+            for (const auto& operation :
+                 device::descriptors::tables::candidate_operation_refs.subspan(
+                     candidate->operation_offset,
+                     candidate->operation_count)) {
+                if (operation.candidate_id != candidate->candidate_id) {
+                    continue;
+                }
+                const auto* operation_descriptor =
+                    device::runtime::find_route_operation(operation.operation_id);
+                if (operation_descriptor == nullptr) {
+                    continue;
+                }
                 detail::append_unique(list,
-                                      detail::find_operation(token),
+                                      operation_descriptor,
                                       [](const auto& descriptor) {
-                                          return descriptor.operation_id;
+                                          return descriptor.operation_name;
                                       });
-            });
+            }
         }
 
         return list;

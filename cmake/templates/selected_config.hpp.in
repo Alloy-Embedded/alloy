@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string_view>
 
 #define ALLOY_DEVICE_CONTRACT_AVAILABLE @ALLOY_DEVICE_CONTRACT_AVAILABLE_INT@
@@ -12,6 +13,14 @@
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/memory_map.hpp"
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/package_map.hpp"
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/rcc_map.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime_profiles.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/capability_overlays.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/device_descriptor.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/dma_bindings.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/interrupt_bindings.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/peripheral_instances.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/pins.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/register_fields.hpp"
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/register_map.hpp"
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/startup_descriptors.hpp"
 #endif
@@ -26,7 +35,8 @@ inline constexpr std::string_view arch = "@ALLOY_DEVICE_SELECTED_ARCH@";
 
 #if @ALLOY_DEVICE_CONTRACT_AVAILABLE_INT@
 namespace family_contract = ::@ALLOY_DEVICE_SELECTED_VENDOR@::@ALLOY_DEVICE_SELECTED_FAMILY@::generated;
-namespace startup_contract = family_contract::devices::@ALLOY_DEVICE_SELECTED_NAME@;
+namespace device_contract = family_contract::devices::@ALLOY_DEVICE_SELECTED_NAME@;
+namespace startup_contract = device_contract;
 #endif
 
 }  // namespace alloy::device::selected

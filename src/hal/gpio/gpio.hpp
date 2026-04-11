@@ -8,6 +8,7 @@
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "device/descriptors.hpp"
+#include "device/runtime_lookup.hpp"
 #include "device/traits.hpp"
 #include "hal/gpio/detail/backend.hpp"
 #include "hal/types.hpp"
@@ -62,35 +63,6 @@ struct DescriptorList {
     return {};
 }
 
-template <typename Fn>
-consteval void for_each_csv_token(const char* csv, Fn&& fn) {
-    if (csv == nullptr || csv[0] == '\0') {
-        return;
-    }
-
-    std::string_view remaining{csv};
-    while (!remaining.empty()) {
-        const auto separator = remaining.find(',');
-        const auto token = separator == std::string_view::npos ? remaining
-                                                               : remaining.substr(0, separator);
-        fn(token);
-        if (separator == std::string_view::npos) {
-            break;
-        }
-        remaining.remove_prefix(separator + 1);
-    }
-}
-
-[[nodiscard]] consteval auto csv_contains_token(const char* csv, std::string_view token) -> bool {
-    bool found = false;
-    for_each_csv_token(csv, [&](std::string_view current) {
-        if (current == token) {
-            found = true;
-        }
-    });
-    return found;
-}
-
 [[nodiscard]] consteval auto is_general_gpio_role(std::string_view role) -> bool {
     if (role.size() < 3) {
         return false;
@@ -120,16 +92,19 @@ consteval void for_each_csv_token(const char* csv, Fn&& fn) {
 
 [[nodiscard]] consteval auto candidate_is_general_gpio(
     const device::descriptors::family::ConnectionCandidateDescriptor& candidate) -> bool {
-    if (!csv_contains_token(candidate.capability_ids, "capability:gpio:")) {
-        bool has_gpio_capability = false;
-        for_each_csv_token(candidate.capability_ids, [&](std::string_view token) {
-            if (token.starts_with("capability:gpio:")) {
-                has_gpio_capability = true;
-            }
-        });
-        if (!has_gpio_capability) {
-            return false;
+    bool has_gpio_capability = false;
+    for (const auto& capability :
+         device::descriptors::tables::candidate_capability_refs.subspan(candidate.capability_offset,
+                                                                        candidate.capability_count)) {
+        const auto capability_id = as_string(capability.capability_id);
+        if (capability_id.starts_with("capability:gpio:")) {
+            has_gpio_capability = true;
+            break;
         }
+    }
+
+    if (!has_gpio_capability) {
+        return false;
     }
 
     return is_general_gpio_role(as_string(candidate.signal));
@@ -173,16 +148,29 @@ consteval void for_each_csv_token(const char* csv, Fn&& fn) {
             continue;
         }
         if (!package.empty()) {
-            const auto requirement_prefix = std::string_view{"requirement:package:"};
             bool package_match = false;
-            for_each_csv_token(candidate.requirement_ids, [&](std::string_view token) {
-                if (token == requirement_prefix || !token.starts_with(requirement_prefix)) {
-                    return;
+            for (const auto& requirement_ref :
+                 device::descriptors::tables::candidate_requirement_refs.subspan(
+                     candidate.requirement_offset,
+                     candidate.requirement_count)) {
+                if (requirement_ref.candidate_id != candidate.candidate_id) {
+                    continue;
                 }
-                if (token.substr(requirement_prefix.size()) == package) {
+                const auto* requirement =
+                    device::runtime::find_route_requirement(requirement_ref.requirement_id);
+                if (requirement == nullptr) {
+                    continue;
+                }
+                if (!strings_equal(requirement->device, selected_device())) {
+                    continue;
+                }
+                if (!strings_equal(requirement->kind, "package")) {
+                    continue;
+                }
+                if (strings_equal(requirement->target_ref_id, package)) {
                     package_match = true;
                 }
-            });
+            }
             if (!package_match) {
                 continue;
             }
@@ -270,13 +258,23 @@ consteval void for_each_csv_token(const char* csv, Fn&& fn) {
         if (!strings_equal(descriptor.kind, kind)) {
             continue;
         }
-        if (!strings_equal(descriptor.target, target)) {
+        if (kind == "package") {
+            if (strings_equal(descriptor.target_ref_id, target)) {
+                return &descriptor;
+            }
             continue;
         }
-        if (!value.empty() && !strings_equal(descriptor.value, value)) {
+        if (kind == "bonded-pin") {
+            if (strings_equal(descriptor.target_ref_id, target) &&
+                strings_equal(descriptor.value_ref_id, value)) {
+                return &descriptor;
+            }
             continue;
         }
-        return &descriptor;
+        if (strings_equal(descriptor.diagnostic_target, target) &&
+            (value.empty() || strings_equal(descriptor.diagnostic_value, value))) {
+            return &descriptor;
+        }
     }
     return nullptr;
 }
@@ -291,10 +289,9 @@ consteval void for_each_csv_token(const char* csv, Fn&& fn) {
         if (!strings_equal(descriptor.kind, kind)) {
             continue;
         }
-        if (!strings_equal(descriptor.target, target)) {
-            continue;
+        if (strings_equal(descriptor.diagnostic_target, target)) {
+            return &descriptor;
         }
-        return &descriptor;
     }
     return nullptr;
 }
@@ -303,7 +300,7 @@ consteval void for_each_csv_token(const char* csv, Fn&& fn) {
     -> const device::descriptors::family::RouteRequirementDescriptor* {
     for (const auto& descriptor : device::descriptors::tables::route_requirements) {
         if (strings_equal(descriptor.device, selected_device()) &&
-            strings_equal(descriptor.requirement_id, requirement_id)) {
+            strings_equal(descriptor.requirement_name, requirement_id)) {
             return &descriptor;
         }
     }
@@ -314,7 +311,7 @@ consteval void for_each_csv_token(const char* csv, Fn&& fn) {
     -> const device::descriptors::family::RouteOperationDescriptor* {
     for (const auto& descriptor : device::descriptors::tables::route_operations) {
         if (strings_equal(descriptor.device, selected_device()) &&
-            strings_equal(descriptor.operation_id, operation_id)) {
+            strings_equal(descriptor.operation_name, operation_id)) {
             return &descriptor;
         }
     }
@@ -398,34 +395,47 @@ struct pin_handle {
         }
 
         if (gpio_candidate != nullptr) {
-            detail::for_each_csv_token(gpio_candidate->requirement_ids, [&](std::string_view token) {
+            for (const auto& requirement_ref :
+                 device::descriptors::tables::candidate_requirement_refs.subspan(
+                     gpio_candidate->requirement_offset,
+                     gpio_candidate->requirement_count)) {
+                if (requirement_ref.candidate_id != gpio_candidate->candidate_id) {
+                    continue;
+                }
+                const auto* requirement =
+                    device::runtime::find_route_requirement(requirement_ref.requirement_id);
+                if (requirement == nullptr) {
+                    continue;
+                }
                 detail::append_unique(list,
-                                      detail::find_requirement(token),
+                                      requirement,
                                       [](const auto& descriptor) {
-                                          return descriptor.requirement_id;
+                                          return descriptor.requirement_name;
                                       });
-            });
+            }
             return list;
         }
 
         detail::append_unique(list,
                               detail::find_requirement_by_identity("package", package_name, "selected"),
-                              [](const auto& descriptor) { return descriptor.requirement_id; });
+                              [](const auto& descriptor) { return descriptor.requirement_name; });
         detail::append_unique(list,
                               detail::find_requirement_by_identity("bonded-pin", Pin::name, package_name),
-                              [](const auto& descriptor) { return descriptor.requirement_id; });
+                              [](const auto& descriptor) { return descriptor.requirement_name; });
         if (rcc_descriptor != nullptr) {
             detail::append_unique(list,
                                   detail::find_requirement_by_identity(
                                       "clock-enable", detail::as_string(rcc_descriptor->enable_signal)),
-                                  [](const auto& descriptor) { return descriptor.requirement_id; });
+                                  [](const auto& descriptor) {
+                                      return descriptor.requirement_name;
+                                  });
 
             const auto reset_signal = detail::as_string(rcc_descriptor->reset_signal);
             if (!reset_signal.empty()) {
                 detail::append_unique(list,
                                       detail::find_requirement_by_identity("reset-release", reset_signal),
                                       [](const auto& descriptor) {
-                                          return descriptor.requirement_id;
+                                          return descriptor.requirement_name;
                                       });
             }
         }
@@ -441,11 +451,24 @@ struct pin_handle {
         }
 
         if (gpio_candidate != nullptr) {
-            detail::for_each_csv_token(gpio_candidate->operation_ids, [&](std::string_view token) {
+            for (const auto& operation_ref :
+                 device::descriptors::tables::candidate_operation_refs.subspan(
+                     gpio_candidate->operation_offset,
+                     gpio_candidate->operation_count)) {
+                if (operation_ref.candidate_id != gpio_candidate->candidate_id) {
+                    continue;
+                }
+                const auto* operation =
+                    device::runtime::find_route_operation(operation_ref.operation_id);
+                if (operation == nullptr) {
+                    continue;
+                }
                 detail::append_unique(list,
-                                      detail::find_operation(token),
-                                      [](const auto& descriptor) { return descriptor.operation_id; });
-            });
+                                      operation,
+                                      [](const auto& descriptor) {
+                                          return descriptor.operation_name;
+                                      });
+            }
             return list;
         }
 
@@ -453,14 +476,14 @@ struct pin_handle {
             detail::append_unique(list,
                                   detail::find_operation_by_identity(
                                       "set-bit", detail::as_string(rcc_descriptor->enable_signal)),
-                                  [](const auto& descriptor) { return descriptor.operation_id; });
+                                  [](const auto& descriptor) { return descriptor.operation_name; });
 
             const auto reset_signal = detail::as_string(rcc_descriptor->reset_signal);
             if (!reset_signal.empty()) {
                 detail::append_unique(list,
                                       detail::find_operation_by_identity("clear-bit", reset_signal),
                                       [](const auto& descriptor) {
-                                          return descriptor.operation_id;
+                                          return descriptor.operation_name;
                                       });
             }
         }

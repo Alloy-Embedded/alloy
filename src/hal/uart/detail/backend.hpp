@@ -10,6 +10,7 @@
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "device/descriptors.hpp"
+#include "device/runtime_lookup.hpp"
 #include "device/traits.hpp"
 #include "hal/types.hpp"
 
@@ -123,11 +124,11 @@ struct ParsedRegisterTarget {
 
 [[nodiscard]] constexpr auto parse_pinmux_target(std::string_view target) -> ParsedPinmuxTarget {
     constexpr std::string_view prefix = "pinmux.";
-    if (!target.starts_with(prefix) || target.size() < prefix.size() + 3u) {
+    const auto pin = target.starts_with(prefix) ? target.substr(prefix.size()) : target;
+    if (pin.size() < 3u) {
         return {};
     }
 
-    const auto pin = target.substr(prefix.size());
     if (pin[0] != 'P') {
         return {};
     }
@@ -476,48 +477,80 @@ auto apply_route_operation(
     const device::descriptors::family::RouteOperationDescriptor& operation_descriptor)
     -> core::Result<void, core::ErrorCode> {
     const auto kind = descriptor_as_string(operation_descriptor.kind);
-    const auto target = descriptor_as_string(operation_descriptor.target);
-    const auto value = descriptor_as_string(operation_descriptor.value);
+    const auto schema_id = descriptor_as_string(operation_descriptor.schema_id);
 
     if (kind == "write-selector") {
-        const auto pin_target = parse_pinmux_target(target);
+        const auto pin_target =
+            parse_pinmux_target(descriptor_as_string(operation_descriptor.target_ref_id));
         if (!pin_target.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
 
-        const auto selector = parse_decimal(value);
-        if (selector < 0) {
+        if (operation_descriptor.value_int < 0) {
             return core::Err(core::ErrorCode::InvalidParameter);
         }
 
-        if constexpr (is_stm32g0_family<PortHandle>() || is_stm32f4_family<PortHandle>()) {
+        if (schema_id == "alloy.pinmux.stm32-af-v1") {
             return apply_stm32_pinmux<PortHandle>(pin_target,
-                                                  static_cast<std::uint32_t>(selector));
+                                                  static_cast<std::uint32_t>(operation_descriptor.value_int));
         }
 
-        if constexpr (is_same70_family<PortHandle>()) {
+        if (schema_id == "alloy.pinmux.sam-pio-v1") {
             return apply_same70_pinmux<PortHandle>(pin_target,
-                                                   static_cast<std::uint32_t>(selector));
+                                                   static_cast<std::uint32_t>(operation_descriptor.value_int));
         }
 
         return core::Err(core::ErrorCode::NotSupported);
     }
 
-    const auto parsed_target = parse_register_target(target);
-    if (!parsed_target.valid) {
+    const auto register_peripheral = descriptor_as_string(operation_descriptor.register_peripheral);
+    const auto register_name = descriptor_as_string(operation_descriptor.register_name);
+    if (register_peripheral.empty() || register_name.empty()) {
         return core::Err(core::ErrorCode::NotSupported);
     }
 
-    if constexpr (is_stm32g0_family<PortHandle>() || is_stm32f4_family<PortHandle>()) {
-        if (parsed_target.owner == "RCC" &&
-            (kind == "set-bit" || kind == "clear-bit")) {
-            return apply_stm32_rcc_operation<PortHandle>(parsed_target, kind == "set-bit");
+    const auto base = find_mmio_base(register_peripheral);
+    const auto* register_descriptor = device::runtime::find_register(register_peripheral, register_name);
+    if (base == 0u || register_descriptor == nullptr) {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    const auto register_offset = register_descriptor->offset_bytes;
+    auto& reg = mmio32(base + register_offset);
+
+    if (const auto field_runtime_id = descriptor_as_string(operation_descriptor.register_field_id);
+        !field_runtime_id.empty()) {
+        const auto* field_descriptor = device::runtime::find_register_field_by_runtime_id(
+            register_peripheral, register_name, field_runtime_id);
+        if (field_descriptor == nullptr) {
+            return core::Err(core::ErrorCode::NotSupported);
         }
+
+        auto value = static_cast<std::uint32_t>(operation_descriptor.value_int);
+        if (kind == "set-bit") {
+            value = 1u;
+        } else if (kind == "clear-bit") {
+            value = 0u;
+        } else if (kind != "write-field") {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+
+        const auto mask = device::runtime::field_mask(*field_descriptor);
+        reg = (reg & ~mask) |
+              ((value << field_descriptor->bit_offset) & mask);
+        return core::Ok();
+    }
+
+    if (kind == "write-register") {
+        reg = static_cast<std::uint32_t>(operation_descriptor.value_int);
+        return core::Ok();
     }
 
     if constexpr (is_same70_family<PortHandle>()) {
-        if (parsed_target.owner == "PMC" && kind == "set-bit") {
-            return enable_same70_pid(parse_pid(target));
+        const auto parsed_target = parse_register_target(
+            descriptor_as_string(operation_descriptor.diagnostic_target));
+        if (parsed_target.valid && parsed_target.owner == "PMC" && kind == "set-bit") {
+            return enable_same70_pid(parse_pid(descriptor_as_string(operation_descriptor.diagnostic_target)));
         }
     }
 
