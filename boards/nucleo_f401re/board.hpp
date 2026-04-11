@@ -11,8 +11,8 @@
  * - SysTick timer
  */
 
-#include "hal/api/systick_simple.hpp"
 #include "hal/gpio.hpp"
+#include "hal/systick.hpp"
 #include "hal/uart.hpp"
 #include "hal/vendors/st/stm32f4/systick_platform.hpp"
 
@@ -46,10 +46,9 @@ using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>());
  *
  * This function:
  * 1. Configures system clock to 84 MHz
- * 2. Enables GPIO peripheral clocks
- * 3. Initializes SysTick timer (1ms tick)
- * 4. Initializes LED GPIO
- * 5. Enables interrupts
+ * 2. Initializes SysTick timer (1ms tick)
+ * 3. Initializes board resources through descriptor-driven drivers
+ * 4. Enables interrupts
  */
 void init();
 

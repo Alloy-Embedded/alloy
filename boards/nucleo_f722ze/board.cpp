@@ -10,7 +10,7 @@
 
 #include <cstdint>
 
-#include "hal/api/systick_simple.hpp"
+#include "hal/systick.hpp"
 #include "hal/vendors/st/stm32f7/clock_platform.hpp"
 
 #ifdef ALLOY_RTOS_ENABLED

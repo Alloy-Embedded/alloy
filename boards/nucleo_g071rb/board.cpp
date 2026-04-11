@@ -10,7 +10,7 @@
 
 #include <cstdint>
 
-#include "hal/api/systick_simple.hpp"
+#include "hal/systick.hpp"
 #include "hal/vendors/st/stm32g0/generated/bitfields/flash_bitfields.hpp"
 #include "hal/vendors/st/stm32g0/generated/bitfields/rcc_bitfields.hpp"
 #include "hal/vendors/st/stm32g0/generated/registers/flash_registers.hpp"
@@ -52,13 +52,6 @@ static bool board_initialized = false;
 // RCC (Reset and Clock Control) Helper Functions
 // =============================================================================
 
-/**
- * @brief Configure system clock to 64 MHz using PLL from HSI16
- *
- * Clock tree:
- * - HSI16 (16 MHz internal oscillator) → PLL → 64 MHz system clock
- * - PLL configuration: HSI16 / 1 (M) × 8 (N) / 2 (R) = 64 MHz
- */
 static inline void configure_system_clock() {
     using namespace rcc;  // Use RCC bitfields namespace
 
@@ -88,14 +81,6 @@ static inline void configure_system_clock() {
     rcc::RCC()->CFGR = cfgr::SW::write(rcc::RCC()->CFGR, 2);
     while (cfgr::SWS::read(rcc::RCC()->CFGR) != 2)
         ;  // Wait for SWS = PLL
-}
-
-static inline void enable_gpio_clocks() {
-    using namespace rcc;  // Use RCC bitfields namespace
-
-    // Enable all GPIO port clocks (GPIOA-GPIOF)
-    rcc::RCC()->IOPENR |= iopenr::GPIOAEN::mask | iopenr::GPIOBEN::mask | iopenr::GPIOCEN::mask |
-                          iopenr::GPIODEN::mask | iopenr::GPIOEEN::mask | iopenr::GPIOFEN::mask;
 }
 
 namespace led {
@@ -139,16 +124,13 @@ void init() {
     // Step 1: Configure system clock to 64 MHz
     configure_system_clock();
 
-    // Step 2: Enable GPIO peripheral clocks
-    enable_gpio_clocks();
-
-    // Step 3: Initialize SysTick timer (1ms period)
+    // Step 2: Initialize SysTick timer (1ms period)
     SysTickTimer::init_ms<BoardSysTick>(1);
 
-    // Step 4: Initialize board peripherals
+    // Step 3: Initialize board peripherals
     led::init();
 
-    // Step 5: Enable interrupts globally (PRIMASK = 0)
+    // Step 4: Enable interrupts globally (PRIMASK = 0)
     __asm volatile("cpsie i" ::: "memory");
 
     board_initialized = true;

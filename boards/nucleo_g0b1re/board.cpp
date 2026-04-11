@@ -10,7 +10,7 @@
 
 #include <cstdint>
 
-#include "hal/api/systick_simple.hpp"
+#include "hal/systick.hpp"
 #include "hal/vendors/st/stm32g0/generated/bitfields/flash_bitfields.hpp"
 #include "hal/vendors/st/stm32g0/generated/bitfields/rcc_bitfields.hpp"
 #include "hal/vendors/st/stm32g0/generated/registers/flash_registers.hpp"

@@ -11,9 +11,9 @@
 
 #include <cstdint>
 
-#include "hal/api/clock_simple.hpp"
-#include "hal/api/systick_simple.hpp"
-#include "hal/api/watchdog_simple.hpp"
+#include "hal/clock.hpp"
+#include "hal/systick.hpp"
+#include "hal/watchdog.hpp"
 #include "hal/vendors/arm/cortex_m7/init_hooks.hpp"
 #include "hal/vendors/arm/same70/clock.hpp"
 #include "hal/vendors/arm/same70/interrupt.hpp"
@@ -106,21 +106,16 @@ void init() {
         // Clock initialization failed - system will continue at default frequency
     }
 
-    // Step 3: Enable GPIO peripheral clocks
-    // PIOA-PIOE correspond to peripheral IDs 10-14
-    const u8 gpio_peripherals[] = {10, 11, 12, 13, 14};
-    SystemClock::enable_peripherals<Clock>(gpio_peripherals, 5);
-
-    // Step 4: Initialize SysTick timer (1ms period)
+    // Step 3: Initialize SysTick timer (1ms period)
     SysTickTimer::init_ms<BoardSysTick>(1);
 
-    // Step 5: Initialize board peripherals
+    // Step 4: Initialize board peripherals
     led::init();
 
-    // Step 6: Enable interrupts
+    // Step 5: Enable interrupts
     Nvic::enable_global();
 
-    // Step 7: Call platform-specific late initialization hook
+    // Step 6: Call platform-specific late initialization hook
     alloy::hal::arm::late_init();
 
     board_initialized = true;

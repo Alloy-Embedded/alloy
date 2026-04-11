@@ -38,7 +38,7 @@
  *       Consult board documentation for UART pin mapping.
  */
 
-#include "hal/api/systick_simple.hpp"
+#include "hal/systick.hpp"
 
 #include "logger/logger.hpp"
 #include "logger/sinks/uart_sink.hpp"

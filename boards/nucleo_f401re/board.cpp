@@ -10,7 +10,7 @@
 
 #include <cstdint>
 
-#include "hal/api/systick_simple.hpp"
+#include "hal/systick.hpp"
 #include "hal/vendors/st/stm32f4/clock_platform.hpp"
 
 using namespace alloy::hal::st::stm32f4;
@@ -63,15 +63,6 @@ static inline void configure_system_clock() {
     (void)result;  // Suppress unused warning
 }
 
-/**
- * @brief Enable all GPIO peripheral clocks using BoardClock policy
- *
- * Enables GPIOA through GPIOE and GPIOH clocks via the clock policy interface.
- */
-static inline void enable_gpio_clocks() {
-    BoardClock::enable_gpio_clocks();
-}
-
 // =============================================================================
 // LED Control Implementation
 // =============================================================================
@@ -117,16 +108,13 @@ void init() {
     // Step 1: Configure system clock to 84 MHz
     configure_system_clock();
 
-    // Step 2: Enable GPIO peripheral clocks
-    enable_gpio_clocks();
-
-    // Step 3: Initialize SysTick timer (1ms period)
+    // Step 2: Initialize SysTick timer (1ms period)
     SysTickTimer::init_ms<BoardSysTick>(1);
 
-    // Step 4: Initialize board peripherals
+    // Step 3: Initialize board peripherals
     led::init();
 
-    // Step 5: Enable interrupts globally
+    // Step 4: Enable interrupts globally
     __asm volatile("cpsie i" ::: "memory");
 
     board_initialized = true;

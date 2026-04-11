@@ -20,7 +20,7 @@
  * **Timing Functions:**
  * For delays and timing, use the SysTick API:
  * ```cpp
- * #include "hal/api/systick_simple.hpp"
+ * #include "hal/systick.hpp"
  *
  * SysTickTimer::delay_ms<board::BoardSysTick>(100);  // 100ms delay
  * uint32_t uptime = SysTickTimer::millis<board::BoardSysTick>();
@@ -128,9 +128,8 @@ void toggle();
  * @brief Initialize board hardware
  *
  * Initializes all board peripherals and subsystems:
- * - Enables GPIO peripheral clocks
  * - Initializes SysTick timer (1ms period)
- * - Configures LED GPIO
+ * - Configures board resources through descriptor-driven drivers
  * - Enables interrupts
  *
  * Must be called at the beginning of main() before using any board functions.

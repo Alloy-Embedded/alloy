@@ -20,7 +20,7 @@
  * **Timing Functions:**
  * For delays and timing, use the SysTick API:
  * ```cpp
- * #include "hal/api/systick_simple.hpp"
+ * #include "hal/systick.hpp"
  *
  * SysTickTimer::delay_ms<board::BoardSysTick>(100);  // 100ms delay
  * uint32_t uptime = SysTickTimer::millis<board::BoardSysTick>();

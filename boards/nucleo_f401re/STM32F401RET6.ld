@@ -136,10 +136,14 @@ SECTIONS
     .heap (NOLOAD) :
     {
         . = ALIGN(8);
+        PROVIDE (end = .);
+        PROVIDE (_end = .);
+        PROVIDE (__heap_start = .);
         _heap_start = .;
         . = . + _heap_size;
         . = ALIGN(8);
         _heap_end = .;
+        PROVIDE (__heap_end = .);
     } > RAM
 
     /* Stack (grows downward from end of RAM) */

@@ -25,7 +25,7 @@
  */
 
 #include "board/board.hpp"
-#include "hal/api/systick_simple.hpp"
+#include "hal/systick.hpp"
 
 using namespace alloy::hal;
 

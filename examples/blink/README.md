@@ -16,7 +16,7 @@ This example demonstrates the **power of the Alloy HAL abstraction** - a single 
 The example uses **conditional compilation** to include the correct board header:
 
 ```cpp
-#if defined(ALLOY_BOARD_SAME70_XPLAINED)
+#if defined(ALLOY_BOARD_SAME70_XPLAINED) || defined(ALLOY_BOARD_SAME70_XPLD)
     #include "same70_xplained/board.hpp"
 #elif defined(ALLOY_BOARD_NUCLEO_G0B1RE)
     #include "nucleo_g0b1re/board.hpp"

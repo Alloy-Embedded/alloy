@@ -11,7 +11,7 @@
  * - SysTick timer
  */
 
-#include "hal/api/systick_simple.hpp"
+#include "hal/systick.hpp"
 #include "hal/vendors/st/stm32f7/systick_platform.hpp"
 
 #include "board_config.hpp"
