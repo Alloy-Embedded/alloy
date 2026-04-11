@@ -37,7 +37,7 @@
  */
 
 #include "board_config.hpp"
-#include "hal/api/gpio_simple.hpp"
+#include "hal/gpio.hpp"
 #include "hal/vendors/st/stm32g0/gpio.hpp"
 #include "hal/vendors/st/stm32g0/systick_platform.hpp"
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
@@ -82,45 +82,28 @@ using RTOSTick = BoardSysTick;
  * The LED polarity is automatically handled (active-high on this board).
  */
 namespace led {
-
-static auto led_pin = []() {
-    if (LedConfig::led_green_active_high) {
-        return Gpio::output<LedConfig::led_green>();
-    } else {
-        return Gpio::output_active_low<LedConfig::led_green>();
-    }
-}();
-
 /**
  * @brief Initialize LED GPIO
  *
  * Configures the LED pin as output and ensures it starts in OFF state.
  * Called automatically by board::init().
  */
-inline void init() {
-    led_pin.off();
-}
+void init();
 
 /**
  * @brief Turn LED on
  */
-inline void on() {
-    led_pin.on();
-}
+void on();
 
 /**
  * @brief Turn LED off
  */
-inline void off() {
-    led_pin.off();
-}
+void off();
 
 /**
  * @brief Toggle LED state
  */
-inline void toggle() {
-    led_pin.toggle();
-}
+void toggle();
 
 } // namespace led
 

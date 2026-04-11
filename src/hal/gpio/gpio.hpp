@@ -9,6 +9,7 @@
 #include "core/result.hpp"
 #include "device/descriptors.hpp"
 #include "device/traits.hpp"
+#include "hal/gpio/detail/backend.hpp"
 #include "hal/types.hpp"
 
 namespace alloy::hal::gpio {
@@ -474,11 +475,11 @@ struct pin_handle {
     }
 
     [[nodiscard]] auto configure() const -> core::Result<void, core::ErrorCode> {
-        return core::Err(core::ErrorCode::NotSupported);
+        return detail::configure_gpio<pin_handle<Pin>>(config_);
     }
 
-    [[nodiscard]] auto write(State) const -> core::Result<void, core::ErrorCode> {
-        return core::Err(core::ErrorCode::NotSupported);
+    [[nodiscard]] auto write(State state) const -> core::Result<void, core::ErrorCode> {
+        return detail::write_gpio<pin_handle<Pin>>(config_, state);
     }
 
     [[nodiscard]] auto set_high() const -> core::Result<void, core::ErrorCode> {
@@ -490,11 +491,11 @@ struct pin_handle {
     }
 
     [[nodiscard]] auto toggle() const -> core::Result<void, core::ErrorCode> {
-        return core::Err(core::ErrorCode::NotSupported);
+        return detail::toggle_gpio<pin_handle<Pin>>(config_);
     }
 
     [[nodiscard]] auto read() const -> core::Result<State, core::ErrorCode> {
-        return core::Err(core::ErrorCode::NotSupported);
+        return detail::read_gpio<pin_handle<Pin>>();
     }
 
 private:

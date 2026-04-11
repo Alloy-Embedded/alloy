@@ -51,7 +51,7 @@
 
 ## 5. Descriptor-Driven Drivers
 
-- [ ] 5.1 Rebuild GPIO on top of device descriptors and claims
+- [x] 5.1 Rebuild GPIO on top of device descriptors and claims
 - [ ] 5.2 Rebuild UART on top of instances, capabilities, connectors, and clock/reset descriptors
 - [ ] 5.3 Rebuild SPI on top of the same model
 - [ ] 5.4 Rebuild I2C on top of the same model
@@ -111,5 +111,5 @@
 ## 10. Validation
 
 - [x] 10.1 Run `openspec validate rebuild-runtime-around-alloy-devices --strict`
-- [ ] 10.2 Add compile and smoke tests for the new device-import and driver layers
+- [x] 10.2 Add compile and smoke tests for the new device-import and driver layers
 - [ ] 10.3 Update docs so the public story matches the rebuilt runtime

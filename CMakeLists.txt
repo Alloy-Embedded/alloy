@@ -312,11 +312,13 @@ if(ALLOY_DEVICE_CONTRACT_AVAILABLE)
         tests/compile_tests/test_connector_kernel.cpp
         tests/compile_tests/test_gpio_api.cpp
         tests/compile_tests/test_uart_api.cpp
+        tests/compile_tests/test_board_led_api.cpp
         ${ALLOY_DEVICE_STARTUP_VECTORS_SOURCE}
     )
 
     target_include_directories(alloy-device-contract-smoke PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/boards
         ${ALLOY_DEVICE_INCLUDE_DIRS}
     )
 

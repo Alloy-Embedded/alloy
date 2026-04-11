@@ -12,6 +12,7 @@
  */
 
 #include "board_config.hpp"
+#include "hal/gpio.hpp"
 #include "hal/api/systick_simple.hpp"
 #include "hal/vendors/st/stm32f4/systick_platform.hpp"
 

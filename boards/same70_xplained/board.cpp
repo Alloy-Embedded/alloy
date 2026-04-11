@@ -25,6 +25,22 @@ using namespace alloy::hal;
 
 namespace board {
 
+namespace {
+
+using BoardLed = alloy::hal::pin<"PC8">;
+
+auto& led_handle() {
+    static auto handle = alloy::hal::gpio::open<BoardLed>({
+        .direction = PinDirection::Output,
+        .drive = PinDrive::PushPull,
+        .pull = PinPull::None,
+        .initial_state = LedConfig::led_green_active_high ? PinState::Low : PinState::High,
+    });
+    return handle;
+}
+
+}  // namespace
+
 // =============================================================================
 // Internal State
 // =============================================================================
@@ -34,6 +50,35 @@ using BoardSysTick = SysTick<12000000>;
 
 // Initialization flag to prevent double-init
 static bool board_initialized = false;
+
+namespace led {
+
+void init() {
+    led_handle().configure().unwrap();
+    off();
+}
+
+void on() {
+    if constexpr (LedConfig::led_green_active_high) {
+        led_handle().set_high().unwrap();
+    } else {
+        led_handle().set_low().unwrap();
+    }
+}
+
+void off() {
+    if constexpr (LedConfig::led_green_active_high) {
+        led_handle().set_low().unwrap();
+    } else {
+        led_handle().set_high().unwrap();
+    }
+}
+
+void toggle() {
+    led_handle().toggle().unwrap();
+}
+
+} // namespace led
 
 
 // =============================================================================

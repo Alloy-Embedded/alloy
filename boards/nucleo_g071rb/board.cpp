@@ -20,6 +20,22 @@ using namespace alloy::hal;
 
 namespace board {
 
+namespace {
+
+using BoardLed = alloy::hal::pin<"PA5">;
+
+auto& led_handle() {
+    static auto handle = alloy::hal::gpio::open<BoardLed>({
+        .direction = PinDirection::Output,
+        .drive = PinDrive::PushPull,
+        .pull = PinPull::None,
+        .initial_state = LedConfig::led_green_active_high ? PinState::Low : PinState::High,
+    });
+    return handle;
+}
+
+}  // namespace
+
 // =============================================================================
 // Internal State
 // =============================================================================
@@ -80,6 +96,35 @@ static inline void enable_gpio_clocks() {
                           iopenr::GPIOEEN::mask |
                           iopenr::GPIOFEN::mask;
 }
+
+namespace led {
+
+void init() {
+    led_handle().configure().unwrap();
+    off();
+}
+
+void on() {
+    if constexpr (LedConfig::led_green_active_high) {
+        led_handle().set_high().unwrap();
+    } else {
+        led_handle().set_low().unwrap();
+    }
+}
+
+void off() {
+    if constexpr (LedConfig::led_green_active_high) {
+        led_handle().set_low().unwrap();
+    } else {
+        led_handle().set_high().unwrap();
+    }
+}
+
+void toggle() {
+    led_handle().toggle().unwrap();
+}
+
+}  // namespace led
 
 // =============================================================================
 // Board Initialization

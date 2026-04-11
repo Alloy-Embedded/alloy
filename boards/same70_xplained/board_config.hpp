@@ -15,14 +15,10 @@
  */
 
 #include <cstdint>
-#include "hal/vendors/arm/same70/gpio.hpp"
+#include "hal/connect.hpp"
 #include "hal/vendors/arm/same70/clock.hpp"
-#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 
 namespace board::same70_xplained {
-
-using namespace alloy::hal::same70;
-using namespace alloy::generated::atsame70q21b;
 
 // =============================================================================
 // Clock Configuration
@@ -44,9 +40,7 @@ struct ClockConfig {
 // =============================================================================
 
 struct LedConfig {
-    // LED0 (Green) - PC8, active LOW
-    // Type-safe GPIO pin using platform layer templates
-    using led_green = GpioPin<peripherals::PIOC, 8>;
+    using led_green = alloy::hal::pin<"PC8">;
 
     static constexpr bool led_green_active_high = false;  // Active LOW
 
@@ -58,9 +52,7 @@ struct LedConfig {
 // =============================================================================
 
 struct ButtonConfig {
-    // SW0 (User button) - PA11, active LOW
-    // Type-safe GPIO pin using platform layer templates
-    using button0 = GpioPin<peripherals::PIOA, 11>;
+    using button0 = alloy::hal::pin<"PA11">;
 
     static constexpr bool button0_active_high = false;  // Active LOW
 };
@@ -70,14 +62,11 @@ struct ButtonConfig {
 // =============================================================================
 
 struct UartConsoleConfig {
-    // UART1 for console (EDBG virtual COM port)
-    // Pins: PA9 (TX), PA10 (RX)
-    static constexpr uint8_t uart_instance = 1;  // UART1
+    static constexpr uint8_t uart_instance = 0;  // USART0 on EDBG virtual COM
     static constexpr uint32_t baudrate = 115'200;
 
-    // Type-safe GPIO pins for UART
-    using tx_pin = GpioPin<peripherals::PIOA, 9>;
-    using rx_pin = GpioPin<peripherals::PIOA, 10>;
+    using tx_pin = alloy::hal::pin<"PB1">;
+    using rx_pin = alloy::hal::pin<"PB0">;
 };
 
 // =============================================================================

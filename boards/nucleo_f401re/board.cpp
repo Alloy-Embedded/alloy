@@ -20,15 +20,28 @@ using BoardClock = Stm32f4Clock<nucleo_f401re::ClockConfig>;
 
 namespace board {
 
+namespace {
+
+using BoardLed = alloy::hal::pin<"PA5">;
+
+auto& led_handle() {
+    static auto handle = alloy::hal::gpio::open<BoardLed>({
+        .direction = PinDirection::Output,
+        .drive = PinDrive::PushPull,
+        .pull = PinPull::None,
+        .initial_state = LedConfig::led_green_active_high ? PinState::Low : PinState::High,
+    });
+    return handle;
+}
+
+}  // namespace
+
 // =============================================================================
 // Internal State
 // =============================================================================
 
 // Initialization flag to prevent double-init
 static bool board_initialized = false;
-
-// LED instance
-static LedConfig::led_green led_pin;
 
 // =============================================================================
 // Clock Configuration (using Clock Policy)
@@ -65,30 +78,28 @@ static inline void enable_gpio_clocks() {
 namespace led {
 
 void init() {
-    led_pin.setDirection(PinDirection::Output);
-    led_pin.setPull(PinPull::None);
-    led_pin.setDrive(PinDrive::PushPull);
-    off();  // Start with LED off
+    led_handle().configure().unwrap();
+    off();
 }
 
 void on() {
-    if (LedConfig::led_green_active_high) {
-        led_pin.set();
+    if constexpr (LedConfig::led_green_active_high) {
+        led_handle().set_high().unwrap();
     } else {
-        led_pin.clear();
+        led_handle().set_low().unwrap();
     }
 }
 
 void off() {
-    if (LedConfig::led_green_active_high) {
-        led_pin.clear();
+    if constexpr (LedConfig::led_green_active_high) {
+        led_handle().set_low().unwrap();
     } else {
-        led_pin.set();
+        led_handle().set_high().unwrap();
     }
 }
 
 void toggle() {
-    led_pin.toggle();
+    led_handle().toggle().unwrap();
 }
 
 } // namespace led
