@@ -71,7 +71,7 @@ jobs:
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Debug \
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-          -DALLOY_PLATFORM=host \
+          -DALLOY_BOARD=host \
           -DALLOY_BUILD_TESTS=ON
 
     - name: Run clang-tidy on core
@@ -207,6 +207,8 @@ jobs:
           "docs/PORTING_NEW_BOARD.md"
           "docs/PORTING_NEW_PLATFORM.md"
           "docs/CODE_GENERATION.md"
+          "docs/RUNTIME_CLEANUP_AUDIT.md"
+          "docs/RUNTIME_DEVICE_BOUNDARY.md"
         )
 
         echo "=== Checking required documentation ==="
