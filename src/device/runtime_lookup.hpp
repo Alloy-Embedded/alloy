@@ -41,7 +41,7 @@ namespace alloy::device::runtime {
 
 template <typename Descriptor, std::size_t Extent>
 [[nodiscard]] constexpr auto find_by_name(std::span<const Descriptor, Extent> descriptors,
-                                          const char* Descriptor::* member, std::string_view value)
+                                          const char* Descriptor::*member, std::string_view value)
     -> const Descriptor* {
     for (const auto& descriptor : descriptors) {
         if (strings_equal(descriptor.*member, value)) {
@@ -53,8 +53,8 @@ template <typename Descriptor, std::size_t Extent>
 
 template <typename Descriptor, std::size_t Extent>
 [[nodiscard]] constexpr auto find_device_scoped_by_name(
-    std::span<const Descriptor, Extent> descriptors, const char* Descriptor::* device_member,
-    const char* Descriptor::* value_member, std::string_view value) -> const Descriptor* {
+    std::span<const Descriptor, Extent> descriptors, const char* Descriptor::*device_member,
+    const char* Descriptor::*value_member, std::string_view value) -> const Descriptor* {
     for (const auto& descriptor : descriptors) {
         if (!strings_equal(descriptor.*device_member, selected_device())) {
             continue;

@@ -42,8 +42,7 @@ namespace detail {
 }  // namespace detail
 
 template <typename Connector>
-    requires(Connector::valid)
-class port_handle {
+requires(Connector::valid) class port_handle {
    public:
     using connector_type = Connector;
     using connector_claim = claim::connector_claim<Connector>;

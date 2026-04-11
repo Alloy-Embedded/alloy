@@ -322,7 +322,8 @@ struct connector {
         }
 
         return detail::find_exact_group_index(Peripheral::name, signal_names);
-    }();
+    }
+    ();
 
     static constexpr auto group_descriptor = []() consteval {
         if (group_descriptor_index < 0) {
@@ -330,7 +331,8 @@ struct connector {
                 nullptr);
         }
         return &device::descriptors::tables::connection_groups[group_descriptor_index];
-    }();
+    }
+    ();
 
     static constexpr auto valid = []() consteval {
         if constexpr (!available) {
@@ -346,7 +348,8 @@ struct connector {
             return false;
         }
         return detail::all_candidates_share_group(candidates, group_descriptor_index);
-    }();
+    }
+    ();
 
     [[nodiscard]] static consteval auto has_group() -> bool { return group_descriptor != nullptr; }
 

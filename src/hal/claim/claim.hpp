@@ -32,8 +32,7 @@ struct dma_claim {
 };
 
 template <typename Connector>
-    requires(Connector::valid)
-struct connector_claim {
+requires(Connector::valid) struct connector_claim {
     using connector_type = Connector;
     using peripheral = peripheral_claim<typename Connector::peripheral_type>;
 
@@ -56,13 +55,15 @@ struct connector_claim {
     [[nodiscard]] static consteval auto pins() {
         return []<std::size_t... Index>(std::index_sequence<Index...>) {
             return std::array<std::string_view, sizeof...(Index)>{pin_name_at<Index>()...};
-        }(std::make_index_sequence<Connector::binding_count>{});
+        }
+        (std::make_index_sequence<Connector::binding_count>{});
     }
 
     [[nodiscard]] static consteval auto signals() {
         return []<std::size_t... Index>(std::index_sequence<Index...>) {
             return std::array<std::string_view, sizeof...(Index)>{signal_name_at<Index>()...};
-        }(std::make_index_sequence<Connector::binding_count>{});
+        }
+        (std::make_index_sequence<Connector::binding_count>{});
     }
 };
 

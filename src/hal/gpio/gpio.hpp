@@ -82,7 +82,8 @@ struct DescriptorList {
             }
         }
         return found_digit;
-    }();
+    }
+    ();
 
     if (!has_numeric_suffix) {
         return false;
@@ -364,7 +365,8 @@ struct pin_handle {
         }
 
         return detail::as_string(derived_peripheral_name_storage.data());
-    }();
+    }
+    ();
 
     static constexpr auto peripheral_base = detail::find_peripheral_base(peripheral_name);
     static constexpr auto rcc_descriptor = detail::find_rcc_descriptor(peripheral_name);
@@ -379,7 +381,8 @@ struct pin_handle {
         }
 
         return detail::parse_trailing_number(Pin::name);
-    }();
+    }
+    ();
 
     static constexpr bool valid = available && package_pad != nullptr && !package_name.empty() &&
                                   !peripheral_name.empty() && peripheral_base != nullptr &&
