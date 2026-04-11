@@ -46,8 +46,14 @@ function(alloy_board_to_platform BOARD_NAME OUT_PLATFORM)
     elseif(BOARD_NAME MATCHES "rp2040" OR BOARD_NAME MATCHES "rp_pico")
         set(${OUT_PLATFORM} "rp2040" PARENT_SCOPE)
 
-    elseif(BOARD_NAME STREQUAL "nucleo_g0b1re" OR BOARD_NAME MATCHES "stm32g0")
+    elseif(BOARD_NAME STREQUAL "nucleo_g0b1re" OR BOARD_NAME STREQUAL "nucleo_g071rb" OR BOARD_NAME MATCHES "stm32g0")
         set(${OUT_PLATFORM} "stm32g0" PARENT_SCOPE)
+
+    elseif(BOARD_NAME STREQUAL "nucleo_f401re")
+        set(${OUT_PLATFORM} "stm32f4" PARENT_SCOPE)
+
+    elseif(BOARD_NAME STREQUAL "nucleo_f722ze")
+        set(${OUT_PLATFORM} "stm32f7" PARENT_SCOPE)
 
     elseif(BOARD_NAME STREQUAL "host")
         set(${OUT_PLATFORM} "linux" PARENT_SCOPE)
@@ -78,7 +84,11 @@ endfunction()
 
 # Check if board configuration directory exists
 if(DEFINED ALLOY_BOARD)
-    set(ALLOY_BOARD_DIR "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}")
+    if(ALLOY_BOARD STREQUAL "same70_xpld")
+        set(ALLOY_BOARD_DIR "${CMAKE_SOURCE_DIR}/boards/same70_xplained")
+    else()
+        set(ALLOY_BOARD_DIR "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}")
+    endif()
 
     if(EXISTS "${ALLOY_BOARD_DIR}")
         message(STATUS "Board directory found: ${ALLOY_BOARD_DIR}")
@@ -95,9 +105,6 @@ if(DEFINED ALLOY_BOARD)
             message(STATUS "  Board CMake: ${ALLOY_BOARD_DIR}/board.cmake")
             include("${ALLOY_BOARD_DIR}/board.cmake")
         endif()
-
-        # Export board directory for use by applications
-        set(ALLOY_BOARD_DIR ${ALLOY_BOARD_DIR} PARENT_SCOPE)
 
     else()
         message(STATUS "Board directory not found: ${ALLOY_BOARD_DIR}")

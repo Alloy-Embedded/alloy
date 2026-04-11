@@ -24,6 +24,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y clang-format-14
 
+    - name: Check runtime device boundary
+      run: |
+        python3 scripts/check_runtime_device_boundary.py
+
     - name: Run clang-format check
       run: |
         echo "🔍 Checking code formatting with clang-format..."

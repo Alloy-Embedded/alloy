@@ -162,7 +162,7 @@ link_libraries(m)
 # ------------------------------------------------------------------------------
 
 # If a specific board is selected (e.g., nucleo_g0b1re), include board config
-if(DEFINED ALLOY_BOARD)
+if(DEFINED ALLOY_BOARD AND NOT ALLOY_DESCRIPTOR_RUNTIME_ENABLED)
     set(BOARD_CONFIG_FILE "${CMAKE_SOURCE_DIR}/cmake/boards/${ALLOY_BOARD}.cmake")
     if(EXISTS "${BOARD_CONFIG_FILE}")
         include("${BOARD_CONFIG_FILE}")
@@ -170,6 +170,8 @@ if(DEFINED ALLOY_BOARD)
     else()
         message(WARNING "Board configuration file not found: ${BOARD_CONFIG_FILE}")
     endif()
+elseif(ALLOY_DESCRIPTOR_RUNTIME_ENABLED)
+    message(STATUS "  Board: ${ALLOY_BOARD} (descriptor-driven runtime path)")
 endif()
 
 # ------------------------------------------------------------------------------

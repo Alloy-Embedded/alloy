@@ -17,16 +17,22 @@ set(SOURCES
     main.cpp
 )
 
-# Add board implementation (required for board abstraction)
-if(EXISTS "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/board.cpp")
-    list(APPEND SOURCES "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/board.cpp")
+if(DEFINED ALLOY_BOARD_SOURCE_DIR)
+    set(BOARD_SOURCE_DIR "${ALLOY_BOARD_SOURCE_DIR}")
 else()
-    message(FATAL_ERROR "Board implementation not found: ${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/board.cpp")
+    set(BOARD_SOURCE_DIR "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}")
+endif()
+
+# Add board implementation (required for board abstraction)
+if(EXISTS "${BOARD_SOURCE_DIR}/board.cpp")
+    list(APPEND SOURCES "${BOARD_SOURCE_DIR}/board.cpp")
+else()
+    message(FATAL_ERROR "Board implementation not found: ${BOARD_SOURCE_DIR}/board.cpp")
 endif()
 
 # Add syscalls stubs for embedded targets
-if(CMAKE_CROSSCOMPILING AND EXISTS "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/syscalls.cpp")
-    list(APPEND SOURCES "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}/syscalls.cpp")
+if(CMAKE_CROSSCOMPILING AND EXISTS "${BOARD_SOURCE_DIR}/syscalls.cpp")
+    list(APPEND SOURCES "${BOARD_SOURCE_DIR}/syscalls.cpp")
 endif()
 
 # Add startup code (board-specific, managed by CMake)

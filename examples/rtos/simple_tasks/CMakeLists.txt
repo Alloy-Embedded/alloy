@@ -53,7 +53,11 @@ set(EXAMPLE_SOURCES
 # =============================================================================
 
 # Board-specific source files (board.cpp, syscalls.cpp, startup code)
-set(BOARD_DIR ${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD})
+if(DEFINED ALLOY_BOARD_SOURCE_DIR)
+    set(BOARD_DIR "${ALLOY_BOARD_SOURCE_DIR}")
+else()
+    set(BOARD_DIR "${CMAKE_SOURCE_DIR}/boards/${ALLOY_BOARD}")
+endif()
 
 if(EXISTS ${BOARD_DIR}/board.cpp)
     list(APPEND EXAMPLE_SOURCES ${BOARD_DIR}/board.cpp)

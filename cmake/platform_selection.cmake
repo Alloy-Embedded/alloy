@@ -114,6 +114,8 @@ set(BOARD_TO_PLATFORM_nucleo_f722ze "stm32f7")
 set(BOARD_TO_PLATFORM_nucleo_g071rb "stm32g0")
 set(BOARD_TO_PLATFORM_nucleo_g0b1re "stm32g0")
 set(BOARD_TO_PLATFORM_same70_xplained "same70")
+set(BOARD_TO_PLATFORM_same70_xpld "same70")
+set(BOARD_TO_PLATFORM_host "linux")
 
 # If ALLOY_BOARD is defined, validate it matches the selected platform
 if(DEFINED ALLOY_BOARD)
@@ -179,11 +181,6 @@ file(GLOB_RECURSE ALLOY_PLATFORM_HEADERS
     "${ALLOY_PLATFORM_DIR}/*.hpp"
     "${ALLOY_PLATFORM_DIR}/*.h"
 )
-
-# Export variables for use by parent CMakeLists.txt
-set(ALLOY_PLATFORM_SOURCES ${ALLOY_PLATFORM_SOURCES} PARENT_SCOPE)
-set(ALLOY_PLATFORM_HEADERS ${ALLOY_PLATFORM_HEADERS} PARENT_SCOPE)
-set(ALLOY_PLATFORM_DIR ${ALLOY_PLATFORM_DIR} PARENT_SCOPE)
 
 message(STATUS "Platform sources: ${ALLOY_PLATFORM_SOURCES}")
 message(STATUS "Platform headers: ${ALLOY_PLATFORM_HEADERS}")

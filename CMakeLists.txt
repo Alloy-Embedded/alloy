@@ -55,6 +55,8 @@ include(toolchain_check)
 include(board_flags)
 include(flash_targets)
 include(memory_analysis)
+include(board_manifest)
+include(alloy_devices)
 
 # Build options
 option(ALLOY_BUILD_TESTS "Build unit tests" ON)
@@ -115,11 +117,29 @@ endif()
 # Board Abstraction Layer Configuration
 # ============================================================================
 
-# Map board to header file and startup code
-if(ALLOY_BOARD STREQUAL "same70_xpld" OR ALLOY_BOARD STREQUAL "same70_xplained")
-    set(BOARD_HEADER_PATH "boards/same70_xplained/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/atmel/same70/startup_same70.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/same70_xplained/ATSAME70Q21.ld")
+alloy_resolve_board_manifest(
+    "${ALLOY_BOARD}"
+    ALLOY_BOARD_MANIFEST_FOUND
+    BOARD_HEADER_PATH
+    LINKER_SCRIPT
+    STARTUP_SOURCE
+    ALLOY_BOARD_VENDOR
+    ALLOY_BOARD_FAMILY
+    ALLOY_BOARD_DEVICE
+    ALLOY_BOARD_DEVICE_ARCH
+    ALLOY_BOARD_MCU
+)
+
+if(ALLOY_BOARD_MANIFEST_FOUND)
+    if(ALLOY_BOARD_MCU)
+        set(ALLOY_MCU "${ALLOY_BOARD_MCU}" CACHE STRING "Target MCU (resolved from board manifest)" FORCE)
+    endif()
+
+    if(ALLOY_BOARD_DEVICE_ARCH STREQUAL "native")
+        set(ALLOY_ARCH "native" CACHE STRING "Target architecture (resolved from board manifest)" FORCE)
+    elseif(ALLOY_BOARD_DEVICE_ARCH)
+        set(ALLOY_ARCH "arm-${ALLOY_BOARD_DEVICE_ARCH}" CACHE STRING "Target architecture (resolved from board manifest)" FORCE)
+    endif()
 elseif(ALLOY_BOARD STREQUAL "arduino_zero")
     set(BOARD_HEADER_PATH "boards/arduino_zero/board.hpp")
     set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/atsamd21/startup.cpp")
@@ -128,31 +148,14 @@ elseif(ALLOY_BOARD STREQUAL "waveshare_rp2040_zero" OR ALLOY_BOARD STREQUAL "rp_
     set(BOARD_HEADER_PATH "boards/waveshare_rp2040_zero/board.hpp")
     set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/rp2040/startup.cpp")
     set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/waveshare_rp2040_zero/RP2040.ld")
-elseif(ALLOY_BOARD STREQUAL "nucleo_g0b1re")
-    set(BOARD_HEADER_PATH "boards/nucleo_g0b1re/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32g0/stm32g0b1/startup.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/nucleo_g0b1re/STM32G0B1RET6.ld")
-elseif(ALLOY_BOARD STREQUAL "nucleo_g071rb")
-    set(BOARD_HEADER_PATH "boards/nucleo_g071rb/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32g0/stm32g0b1/startup.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/nucleo_g071rb/STM32G071RBT6.ld")
-elseif(ALLOY_BOARD STREQUAL "nucleo_f401re")
-    set(BOARD_HEADER_PATH "boards/nucleo_f401re/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32f4/stm32f401/startup.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/nucleo_f401re/STM32F401RET6.ld")
-elseif(ALLOY_BOARD STREQUAL "nucleo_f722ze")
-    set(BOARD_HEADER_PATH "boards/nucleo_f722ze/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/src/hal/vendors/st/stm32f7/stm32f722/startup.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/nucleo_f722ze/STM32F722ZET6.ld")
-elseif(ALLOY_BOARD STREQUAL "host")
-    set(BOARD_HEADER_PATH "boards/linux_host/board.hpp")
-    # No startup code needed for host platform
 else()
     message(WARNING "Board '${ALLOY_BOARD}' not configured for board abstraction layer")
 endif()
 
 # Define BOARD_HEADER macro for use in examples
 if(DEFINED BOARD_HEADER_PATH)
+    get_filename_component(ALLOY_BOARD_SOURCE_DIR "${CMAKE_SOURCE_DIR}/${BOARD_HEADER_PATH}" DIRECTORY)
+
     # Define BOARD_HEADER as a macro that expands to the header path
     # Use angle brackets for include: #include BOARD_HEADER expands to #include <boards/...>
     add_compile_definitions(BOARD_HEADER=<${BOARD_HEADER_PATH}>)
@@ -168,6 +171,10 @@ if(DEFINED BOARD_HEADER_PATH)
     endif()
 endif()
 
+# Resolve the selected descriptor contract from alloy-devices before platform and
+# board modules run so they can disable legacy integration paths when possible.
+alloy_configure_selected_device()
+
 # Include platform selection module (new HAL abstraction system)
 # This must come before board configuration
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform_selection.cmake)
@@ -180,11 +187,18 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/board_selection.cmake)
     include(cmake/board_selection.cmake)
 endif()
 
+set(ALLOY_LEGACY_BOARD_CONFIG_ENABLED TRUE)
+if(ALLOY_DESCRIPTOR_RUNTIME_ENABLED)
+    set(ALLOY_LEGACY_BOARD_CONFIG_ENABLED FALSE)
+endif()
+
 # Load legacy board configuration (for backwards compatibility)
 # TODO: Migrate legacy board configs to new board_selection system
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/boards/${ALLOY_BOARD}.cmake)
+if(ALLOY_LEGACY_BOARD_CONFIG_ENABLED AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/boards/${ALLOY_BOARD}.cmake)
     message(STATUS "Loading legacy board config: ${ALLOY_BOARD}")
     include(cmake/boards/${ALLOY_BOARD}.cmake)
+elseif(ALLOY_DESCRIPTOR_RUNTIME_ENABLED)
+    message(STATUS "Skipping legacy board config for descriptor-driven board: ${ALLOY_BOARD}")
 else()
     # Board config not found in legacy location, that's OK
     # Board may use new system (boards/<board>/board.cmake)
@@ -269,6 +283,7 @@ if(ALLOY_PLATFORM_SOURCES)
         PUBLIC
             ${CMAKE_CURRENT_SOURCE_DIR}/src
             ${ALLOY_PLATFORM_DIR}
+            ${ALLOY_DEVICE_INCLUDE_DIRS}
     )
     target_compile_features(alloy-hal PUBLIC cxx_std_23)
 else()
@@ -277,12 +292,34 @@ else()
         INTERFACE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
             ${ALLOY_PLATFORM_DIR}
+            ${ALLOY_DEVICE_INCLUDE_DIRS}
     )
     target_compile_features(alloy-hal INTERFACE cxx_std_23)
 endif()
 
 # Export HAL library for use by examples and tests
 set(ALLOY_HAL_LIBRARY alloy-hal CACHE INTERNAL "Alloy HAL library target")
+
+if(ALLOY_DEVICE_CONTRACT_AVAILABLE)
+    message(STATUS "Selected device contract: ${ALLOY_DEVICE_VENDOR}/${ALLOY_DEVICE_FAMILY}/${ALLOY_DEVICE_NAME}")
+else()
+    message(STATUS "Selected device contract: unavailable for board '${ALLOY_BOARD}'")
+endif()
+
+if(ALLOY_DEVICE_CONTRACT_AVAILABLE)
+    add_library(alloy-device-contract-smoke OBJECT
+        tests/compile_tests/test_device_import_layer.cpp
+        tests/compile_tests/test_connector_kernel.cpp
+        ${ALLOY_DEVICE_STARTUP_VECTORS_SOURCE}
+    )
+
+    target_include_directories(alloy-device-contract-smoke PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${ALLOY_DEVICE_INCLUDE_DIRS}
+    )
+
+    target_compile_features(alloy-device-contract-smoke PRIVATE cxx_std_23)
+endif()
 
 # HAL subdirectories (conditional based on board)
 if(ALLOY_BOARD STREQUAL "host" AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/host/CMakeLists.txt)
@@ -299,17 +336,17 @@ endif()
 # The same code compiles for different boards by including the appropriate board.hpp
 
 # Universal blink example - demonstrates board abstraction power
-if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD STREQUAL "nucleo_f401re" OR ALLOY_BOARD STREQUAL "nucleo_f722ze")
+if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD STREQUAL "nucleo_f401re" OR ALLOY_BOARD STREQUAL "nucleo_f722ze")
     add_subdirectory(examples/blink)
 endif()
 
 # Universal RTOS example - demonstrates RTOS with multi-task scheduling
-if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD STREQUAL "nucleo_f401re" OR ALLOY_BOARD STREQUAL "nucleo_f722ze")
+if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD STREQUAL "nucleo_f401re" OR ALLOY_BOARD STREQUAL "nucleo_f722ze")
     add_subdirectory(examples/rtos/simple_tasks)
 endif()
 
 # Board-specific examples
-if(ALLOY_BOARD STREQUAL "same70_xplained")
+if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld")
     add_subdirectory(examples/uart_logger)
 endif()
 
@@ -341,6 +378,16 @@ add_custom_target(validate-build-system
     COMMENT "Validating build system source files..."
     VERBATIM
 )
+
+find_package(Python3 COMPONENTS Interpreter QUIET)
+if(Python3_Interpreter_FOUND)
+    add_custom_target(validate-runtime-boundary
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/check_runtime_device_boundary.py
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Checking descriptor-runtime boundary imports..."
+        VERBATIM
+    )
+endif()
 
 # Add custom target for testing board/platform validation
 # This intentionally tries invalid combinations to verify error detection

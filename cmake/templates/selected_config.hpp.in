@@ -1,0 +1,32 @@
+#pragma once
+
+#include <string_view>
+
+#define ALLOY_DEVICE_CONTRACT_AVAILABLE @ALLOY_DEVICE_CONTRACT_AVAILABLE_INT@
+
+#if @ALLOY_DEVICE_CONTRACT_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/clock_tree_lite.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/connector_tables.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/dma_map.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/interrupt_map.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/memory_map.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/package_map.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/rcc_map.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/register_map.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/startup_descriptors.hpp"
+#endif
+
+namespace alloy::device::selected {
+
+inline constexpr bool available = @ALLOY_DEVICE_CONTRACT_AVAILABLE_INT@ != 0;
+inline constexpr std::string_view vendor = "@ALLOY_DEVICE_SELECTED_VENDOR@";
+inline constexpr std::string_view family = "@ALLOY_DEVICE_SELECTED_FAMILY@";
+inline constexpr std::string_view name = "@ALLOY_DEVICE_SELECTED_NAME@";
+inline constexpr std::string_view arch = "@ALLOY_DEVICE_SELECTED_ARCH@";
+
+#if @ALLOY_DEVICE_CONTRACT_AVAILABLE_INT@
+namespace family_contract = ::@ALLOY_DEVICE_SELECTED_VENDOR@::@ALLOY_DEVICE_SELECTED_FAMILY@::generated;
+namespace startup_contract = family_contract::devices::@ALLOY_DEVICE_SELECTED_NAME@;
+#endif
+
+}  // namespace alloy::device::selected

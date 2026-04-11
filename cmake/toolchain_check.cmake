@@ -96,7 +96,7 @@ function(alloy_validate_toolchain)
     # Determine required toolchain based on board
     if(ALLOY_BOARD STREQUAL "esp32_devkit")
         alloy_validate_xtensa_toolchain()
-    elseif(ALLOY_BOARD MATCHES "^(bluepill|stm32f407vg|arduino_zero|rp_pico)$")
+    elseif(ALLOY_BOARD MATCHES "^(bluepill|stm32f407vg|arduino_zero|rp_pico|nucleo_g0b1re|nucleo_g071rb|nucleo_f401re|nucleo_f722ze|same70_xplained|same70_xpld)$")
         alloy_validate_arm_toolchain()
     else()
         message(WARNING "Unknown board '${ALLOY_BOARD}', cannot validate toolchain")
