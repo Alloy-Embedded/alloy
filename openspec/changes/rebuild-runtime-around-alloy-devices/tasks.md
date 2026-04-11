@@ -28,7 +28,7 @@
 
 - [x] 3.1 Implement runtime consumption of connector candidates, groups, requirements, and
       operations
-- [ ] 3.2 Implement typed `connect()` over generated descriptors
+- [x] 3.2 Implement typed `connect()` over generated descriptors
 - [x] 3.3 Implement resource claim primitives for pins, peripheral instances, DMA routes, and
       interrupt bindings
 - [x] 3.4 Add compile-time rejection for invalid connector combinations

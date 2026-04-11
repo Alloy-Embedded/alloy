@@ -9,7 +9,7 @@
 #include "device/traits.hpp"
 #include "hal/connect/fixed_string.hpp"
 
-namespace alloy::hal::connect {
+namespace alloy::hal::connection {
 
 template <FixedString Name>
 struct peripheral {
@@ -438,4 +438,4 @@ template <typename Peripheral, typename... Bindings>
     return {};
 }
 
-}  // namespace alloy::hal::connect
+}  // namespace alloy::hal::connection

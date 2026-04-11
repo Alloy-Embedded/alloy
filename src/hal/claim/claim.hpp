@@ -20,12 +20,12 @@ struct peripheral_claim {
     static constexpr auto peripheral_name = Peripheral::name;
 };
 
-template <connect::FixedString InterruptName>
+template <connection::FixedString InterruptName>
 struct interrupt_claim {
     static constexpr auto interrupt_name = std::string_view{InterruptName};
 };
 
-template <connect::FixedString ControllerName, connect::FixedString RequestLineName>
+template <connection::FixedString ControllerName, connection::FixedString RequestLineName>
 struct dma_claim {
     static constexpr auto controller_name = std::string_view{ControllerName};
     static constexpr auto request_line_name = std::string_view{RequestLineName};

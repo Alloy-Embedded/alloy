@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <string_view>
 
-namespace alloy::hal::connect {
+namespace alloy::hal::connection {
 
 template <std::size_t N>
 struct FixedString {
@@ -24,4 +24,4 @@ struct FixedString {
 template <std::size_t N>
 FixedString(const char (&)[N]) -> FixedString<N>;
 
-}  // namespace alloy::hal::connect
+}  // namespace alloy::hal::connection
