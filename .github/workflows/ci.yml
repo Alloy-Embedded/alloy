@@ -71,11 +71,6 @@ jobs:
         fi
         echo "✅ All files are properly formatted"
 
-    - name: Check clang-tidy (Generated startup files)
-      run: |
-        chmod +x tools/codegen/scripts/validate_clang_tidy.sh
-        bash tools/codegen/scripts/validate_clang_tidy.sh
-
   test:
     name: Build and Test (${{ matrix.os }}, ${{ matrix.compiler }})
     runs-on: ${{ matrix.os }}

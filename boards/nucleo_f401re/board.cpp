@@ -14,7 +14,6 @@
 #include "hal/vendors/st/stm32f4/clock_platform.hpp"
 
 using namespace alloy::hal::st::stm32f4;
-using namespace alloy::generated::stm32f401;
 using namespace alloy::hal;
 
 // Board clock type using config from board_config.hpp
