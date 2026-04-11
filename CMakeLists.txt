@@ -311,6 +311,7 @@ if(ALLOY_DEVICE_CONTRACT_AVAILABLE)
         tests/compile_tests/test_device_import_layer.cpp
         tests/compile_tests/test_connector_kernel.cpp
         tests/compile_tests/test_gpio_api.cpp
+        tests/compile_tests/test_uart_api.cpp
         ${ALLOY_DEVICE_STARTUP_VECTORS_SOURCE}
     )
 
