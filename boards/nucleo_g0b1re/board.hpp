@@ -38,7 +38,8 @@
 
 #include <cstdint>
 
-#include "hal/api/gpio_simple.hpp"
+#include "hal/gpio.hpp"
+#include "hal/uart.hpp"
 #include "hal/vendors/st/stm32g0/gpio.hpp"
 #include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
 #include "hal/vendors/st/stm32g0/systick_platform.hpp"
@@ -73,6 +74,16 @@ using BoardSysTick = SysTick<ClockConfig::system_clock_hz>;
  */
 using RTOSTick = BoardSysTick;
 
+using DebugUartConnector = nucleo_g0b1re::UartConfig::debug_connector;
+using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>());
+
+[[nodiscard]] inline auto make_debug_uart(alloy::hal::uart::Config config = {}) -> DebugUart {
+    if (config.peripheral_clock_hz == 0u) {
+        config.peripheral_clock_hz = nucleo_g0b1re::UartConfig::peripheral_clock_hz;
+    }
+    return alloy::hal::uart::open<DebugUartConnector>(config);
+}
+
 // =============================================================================
 // LED Control
 // =============================================================================
@@ -85,44 +96,28 @@ using RTOSTick = BoardSysTick;
  */
 namespace led {
 
-static auto led_pin = []() {
-    if (LedConfig::led_green_active_high) {
-        return Gpio::output<LedConfig::led_green>();
-    } else {
-        return Gpio::output_active_low<LedConfig::led_green>();
-    }
-}();
-
 /**
  * @brief Initialize LED GPIO
  *
  * Configures the LED pin as output and ensures it starts in OFF state.
  * Called automatically by board::init().
  */
-inline void init() {
-    led_pin.off();
-}
+void init();
 
 /**
  * @brief Turn LED on
  */
-inline void on() {
-    led_pin.on();
-}
+void on();
 
 /**
  * @brief Turn LED off
  */
-inline void off() {
-    led_pin.off();
-}
+void off();
 
 /**
  * @brief Toggle LED state
  */
-inline void toggle() {
-    led_pin.toggle();
-}
+void toggle();
 
 }  // namespace led
 

@@ -106,8 +106,9 @@ enum class IrqPriority : u8 {
  */
 struct InterruptConfig {
     IrqNumber irq_number;
-    IrqPriority priority;
-    bool enable;
+    IrqPriority priority = IrqPriority::Normal;
+    bool enable = true;
+    bool trigger_pending = false;
 
     constexpr bool is_valid() const {
         return true;  // Basic validation

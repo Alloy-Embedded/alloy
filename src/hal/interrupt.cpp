@@ -3,8 +3,7 @@
  * @brief Platform-agnostic interrupt management implementation
  */
 
-#include "hal/api/interrupt_simple.hpp"
-#include "hal/interface/interrupt.hpp"
+#include "hal/interrupt.hpp"
 
 namespace alloy::hal {
 
@@ -70,6 +69,30 @@ Result<void, ErrorCode> Interrupt::set_priority(
     IrqPriority priority) noexcept {
     // Platform-specific priority setting
     // ARM Cortex-M: NVIC_SetPriority()
+    return Ok();
+}
+
+Result<IrqPriority, ErrorCode> Interrupt::get_priority(IrqNumber irq) noexcept {
+    // Platform-specific priority readback
+    (void)irq;
+    return Ok(IrqPriority::Normal);
+}
+
+bool Interrupt::is_pending(IrqNumber irq) noexcept {
+    // Platform-specific pending flag readback
+    (void)irq;
+    return false;
+}
+
+Result<void, ErrorCode> Interrupt::set_pending(IrqNumber irq) noexcept {
+    // Platform-specific pending flag set
+    (void)irq;
+    return Ok();
+}
+
+Result<void, ErrorCode> Interrupt::clear_pending(IrqNumber irq) noexcept {
+    // Platform-specific pending flag clear
+    (void)irq;
     return Ok();
 }
 

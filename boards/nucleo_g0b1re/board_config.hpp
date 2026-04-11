@@ -10,8 +10,7 @@
 
 #include <cstdint>
 
-#include "hal/vendors/st/stm32g0/gpio.hpp"
-#include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
+#include "hal/connect.hpp"
 
 namespace nucleo_g0b1re {
 
@@ -24,7 +23,7 @@ using namespace alloy::generated::stm32g0b1;
 
 struct LedConfig {
     /// Green LED (LD4) on PA5 - Arduino D13 compatible pin
-    using led_green = GpioPin<peripherals::GPIOA, 5>;
+    using led_green = alloy::hal::pin<"PA5">;
 
     /// LED is active HIGH (turns on when pin is HIGH)
     static constexpr bool led_green_active_high = true;
@@ -36,7 +35,7 @@ struct LedConfig {
 
 struct ButtonConfig {
     /// User button (B1) on PC13 - Active LOW (pressed = LOW)
-    using button_user = GpioPin<peripherals::GPIOC, 13>;
+    using button_user = alloy::hal::pin<"PC13">;
 
     /// Button is active LOW
     static constexpr bool button_active_high = false;
@@ -61,13 +60,18 @@ struct ClockConfig {
 
 struct UartConfig {
     /// USART2 TX pin - PA2 (ST-Link VCP TX)
-    using usart2_tx = GpioPin<peripherals::GPIOA, 2>;
+    using usart2_tx = alloy::hal::pin<"PA2">;
 
     /// USART2 RX pin - PA3 (ST-Link VCP RX)
-    using usart2_rx = GpioPin<peripherals::GPIOA, 3>;
+    using usart2_rx = alloy::hal::pin<"PA3">;
+
+    using debug_connector =
+        decltype(alloy::hal::connect<alloy::hal::peripheral<"USART2">, alloy::hal::tx<usart2_tx>,
+                                     alloy::hal::rx<usart2_rx>>());
 
     /// Default baud rate for debug UART
     static constexpr uint32_t default_baud_rate = 115200;
+    static constexpr uint32_t peripheral_clock_hz = ClockConfig::apb_clock_hz;
 };
 
 }  // namespace nucleo_g0b1re

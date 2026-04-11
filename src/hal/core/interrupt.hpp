@@ -10,8 +10,7 @@
 
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/api/interrupt_simple.hpp"
-#include "hal/api/interrupt_expert.hpp"
+#include "hal/interrupt.hpp"
 #include "hal/core/signals.hpp"
 
 namespace alloy::hal {
@@ -100,18 +99,20 @@ inline Result<void, ErrorCode> configure_peripheral_interrupt_expert(
     PeripheralId peripheral,
     u8 preempt_priority,
     u8 sub_priority = 0) {
-    
+
     auto irq = peripheral_to_irq(peripheral);
-    
-    InterruptExpertConfig config = {
+
+    const auto raw_priority =
+        static_cast<IrqPriority>(static_cast<u8>((preempt_priority << 4u) | (sub_priority & 0x0Fu)));
+
+    InterruptConfig config = {
         .irq_number = irq,
-        .preempt_priority = preempt_priority,
-        .sub_priority = sub_priority,
+        .priority = raw_priority,
         .enable = true,
         .trigger_pending = false
     };
-    
-    return expert::configure(config);
+
+    return Interrupt::configure(config);
 }
 
 /**

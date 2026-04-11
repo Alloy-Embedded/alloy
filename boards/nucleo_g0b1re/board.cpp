@@ -22,6 +22,22 @@ using namespace alloy::hal;
 
 namespace board {
 
+namespace {
+
+using BoardLed = alloy::hal::pin<"PA5">;
+
+auto& led_handle() {
+    static auto handle = alloy::hal::gpio::open<BoardLed>({
+        .direction = PinDirection::Output,
+        .drive = PinDrive::PushPull,
+        .pull = PinPull::None,
+        .initial_state = LedConfig::led_green_active_high ? PinState::Low : PinState::High,
+    });
+    return handle;
+}
+
+}  // namespace
+
 // =============================================================================
 // Internal State
 // =============================================================================
@@ -73,13 +89,34 @@ static inline void configure_system_clock() {
         ;  // Wait for SWS = PLL
 }
 
-static inline void enable_gpio_clocks() {
-    using namespace rcc;  // Use RCC bitfields namespace
+namespace led {
 
-    // Enable all GPIO port clocks (GPIOA-GPIOF)
-    rcc::RCC()->IOPENR |= iopenr::GPIOAEN::mask | iopenr::GPIOBEN::mask | iopenr::GPIOCEN::mask |
-                          iopenr::GPIODEN::mask | iopenr::GPIOEEN::mask | iopenr::GPIOFEN::mask;
+void init() {
+    led_handle().configure().unwrap();
+    off();
 }
+
+void on() {
+    if constexpr (LedConfig::led_green_active_high) {
+        led_handle().set_high().unwrap();
+    } else {
+        led_handle().set_low().unwrap();
+    }
+}
+
+void off() {
+    if constexpr (LedConfig::led_green_active_high) {
+        led_handle().set_low().unwrap();
+    } else {
+        led_handle().set_high().unwrap();
+    }
+}
+
+void toggle() {
+    led_handle().toggle().unwrap();
+}
+
+}  // namespace led
 
 // =============================================================================
 // Board Initialization
@@ -93,16 +130,13 @@ void init() {
     // Step 1: Configure system clock to 64 MHz
     configure_system_clock();
 
-    // Step 2: Enable GPIO peripheral clocks
-    enable_gpio_clocks();
-
-    // Step 3: Initialize SysTick timer (1ms period)
+    // Step 2: Initialize SysTick timer (1ms period)
     SysTickTimer::init_ms<BoardSysTick>(1);
 
-    // Step 4: Initialize board peripherals
+    // Step 3: Initialize board peripherals
     led::init();
 
-    // Step 5: Enable interrupts globally (PRIMASK = 0)
+    // Step 4: Enable interrupts globally (PRIMASK = 0)
     __asm volatile("cpsie i" ::: "memory");
 
     board_initialized = true;
