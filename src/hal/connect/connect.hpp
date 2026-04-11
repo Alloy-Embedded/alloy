@@ -315,7 +315,8 @@ struct connector {
     static constexpr auto package_name = detail::selected_package();
     static constexpr auto signal_names = detail::make_signal_array<Bindings...>();
     static constexpr auto candidates = detail::resolve_candidates<Bindings...>(Peripheral::name);
-    static constexpr auto group_descriptor_index = []() consteval -> int {
+
+    [[nodiscard]] static consteval auto compute_group_descriptor_index() -> int {
         if constexpr (binding_count == 1) {
             const auto* candidate = candidates[0];
             return candidate == nullptr ? -1 : candidate->route_group_index;
@@ -323,18 +324,19 @@ struct connector {
 
         return detail::find_exact_group_index(Peripheral::name, signal_names);
     }
-    ();
+    static constexpr auto group_descriptor_index = compute_group_descriptor_index();
 
-    static constexpr auto group_descriptor = []() consteval {
+    [[nodiscard]] static consteval auto compute_group_descriptor()
+        -> const device::descriptors::family::ConnectionGroupDescriptor* {
         if (group_descriptor_index < 0) {
             return static_cast<const device::descriptors::family::ConnectionGroupDescriptor*>(
                 nullptr);
         }
         return &device::descriptors::tables::connection_groups[group_descriptor_index];
     }
-    ();
+    static constexpr auto group_descriptor = compute_group_descriptor();
 
-    static constexpr auto valid = []() consteval {
+    [[nodiscard]] static consteval auto compute_valid() -> bool {
         if constexpr (!available) {
             return false;
         }
@@ -349,7 +351,7 @@ struct connector {
         }
         return detail::all_candidates_share_group(candidates, group_descriptor_index);
     }
-    ();
+    static constexpr auto valid = compute_valid();
 
     [[nodiscard]] static consteval auto has_group() -> bool { return group_descriptor != nullptr; }
 

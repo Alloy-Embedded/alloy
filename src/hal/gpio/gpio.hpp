@@ -359,19 +359,19 @@ struct pin_handle {
     static constexpr auto derived_peripheral_name_storage =
         detail::derived_gpio_peripheral(Pin::name);
 
-    static constexpr auto peripheral_name = []() consteval -> std::string_view {
+    [[nodiscard]] static consteval auto compute_peripheral_name() -> std::string_view {
         if (gpio_candidate != nullptr) {
             return detail::as_string(gpio_candidate->peripheral);
         }
 
         return detail::as_string(derived_peripheral_name_storage.data());
     }
-    ();
+    static constexpr auto peripheral_name = compute_peripheral_name();
 
     static constexpr auto peripheral_base = detail::find_peripheral_base(peripheral_name);
     static constexpr auto rcc_descriptor = detail::find_rcc_descriptor(peripheral_name);
 
-    static constexpr auto line_index = []() consteval -> int {
+    [[nodiscard]] static consteval auto compute_line_index() -> int {
         if (gpio_candidate != nullptr) {
             const auto index =
                 detail::parse_trailing_number(detail::as_string(gpio_candidate->signal));
@@ -382,7 +382,7 @@ struct pin_handle {
 
         return detail::parse_trailing_number(Pin::name);
     }
-    ();
+    static constexpr auto line_index = compute_line_index();
 
     static constexpr bool valid = available && package_pad != nullptr && !package_name.empty() &&
                                   !peripheral_name.empty() && peripheral_base != nullptr &&

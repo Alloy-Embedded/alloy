@@ -140,16 +140,12 @@ jobs:
       matrix:
         board:
           - nucleo_f401re
-          - nucleo_f722ze
           - nucleo_g071rb
           - nucleo_g0b1re
         include:
           - board: nucleo_f401re
             platform: stm32f4
             mcu: STM32F401xE
-          - board: nucleo_f722ze
-            platform: stm32f7
-            mcu: STM32F722xx
           - board: nucleo_g071rb
             platform: stm32g0
             mcu: STM32G071xx
@@ -197,14 +193,14 @@ jobs:
     - name: Display Binary Size
       run: |
         echo "=== Binary Size Report for ${{ matrix.board }} ==="
-        arm-none-eabi-size build-${{ matrix.board }}/examples/blink/blink.elf
+        arm-none-eabi-size build-${{ matrix.board }}/examples/blink/blink
 
     - name: Upload Binary Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: binaries-${{ matrix.board }}
         path: |
-          build-${{ matrix.board }}/examples/blink/blink.elf
+          build-${{ matrix.board }}/examples/blink/blink
           build-${{ matrix.board }}/examples/blink/blink.bin
           build-${{ matrix.board }}/examples/blink/blink.hex
 
