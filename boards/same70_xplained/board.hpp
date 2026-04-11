@@ -38,6 +38,7 @@
 
 #include "board_config.hpp"
 #include "hal/gpio.hpp"
+#include "hal/uart.hpp"
 #include "hal/vendors/arm/same70/systick_platform.hpp"
 #include <cstdint>
 
@@ -63,6 +64,16 @@ using BoardSysTick = alloy::hal::same70::SysTick<12000000>;
  * @brief RTOS Tick Source (must be 1ms tick for RTOS compatibility)
  */
 using RTOSTick = BoardSysTick;
+
+using DebugUartConnector = UartConsoleConfig::debug_connector;
+using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>());
+
+[[nodiscard]] inline auto make_debug_uart(alloy::hal::uart::Config config = {}) -> DebugUart {
+    if (config.peripheral_clock_hz == 0u) {
+        config.peripheral_clock_hz = UartConsoleConfig::peripheral_clock_hz;
+    }
+    return alloy::hal::uart::open<DebugUartConnector>(config);
+}
 
 // =============================================================================
 // LED Control

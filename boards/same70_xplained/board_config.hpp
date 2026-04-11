@@ -16,7 +16,6 @@
 
 #include <cstdint>
 #include "hal/connect.hpp"
-#include "hal/vendors/arm/same70/clock.hpp"
 
 namespace board::same70_xplained {
 
@@ -31,8 +30,6 @@ struct ClockConfig {
     static constexpr uint32_t hclk_freq_hz = 12'000'000;  // AHB clock
     static constexpr uint32_t pclk_freq_hz = 12'000'000;  // Peripheral clock
 
-    // Use the workaround clock config from platform layer
-    static constexpr const alloy::hal::same70::ClockConfig& clock_init_config = CLOCK_CONFIG_12MHZ_RC;
 };
 
 // =============================================================================
@@ -67,6 +64,11 @@ struct UartConsoleConfig {
 
     using tx_pin = alloy::hal::pin<"PB1">;
     using rx_pin = alloy::hal::pin<"PB0">;
+    using debug_connector =
+        decltype(alloy::hal::connect<alloy::hal::peripheral<"USART0">,
+                                     alloy::hal::tx<tx_pin>,
+                                     alloy::hal::rx<rx_pin>>());
+    static constexpr uint32_t peripheral_clock_hz = ClockConfig::pclk_freq_hz;
 };
 
 // =============================================================================

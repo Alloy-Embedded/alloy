@@ -11,6 +11,7 @@
 #include "hal/claim.hpp"
 #include "hal/connect.hpp"
 #include "hal/types.hpp"
+#include "hal/uart/detail/backend.hpp"
 
 namespace alloy::hal::uart {
 
@@ -63,25 +64,25 @@ public:
     }
 
     [[nodiscard]] auto configure() const -> core::Result<void, core::ErrorCode> {
-        return core::Err(core::ErrorCode::NotSupported);
+        return detail::configure_uart(*this);
     }
 
-    [[nodiscard]] auto write(std::span<const std::byte>) const
+    [[nodiscard]] auto write(std::span<const std::byte> buffer) const
         -> core::Result<std::size_t, core::ErrorCode> {
-        return core::Err(core::ErrorCode::NotSupported);
+        return detail::write_uart(*this, buffer);
     }
 
-    [[nodiscard]] auto write_byte(std::byte) const -> core::Result<void, core::ErrorCode> {
-        return core::Err(core::ErrorCode::NotSupported);
+    [[nodiscard]] auto write_byte(std::byte value) const -> core::Result<void, core::ErrorCode> {
+        return detail::write_uart_byte(*this, value);
     }
 
-    [[nodiscard]] auto read(std::span<std::byte>) const
+    [[nodiscard]] auto read(std::span<std::byte> buffer) const
         -> core::Result<std::size_t, core::ErrorCode> {
-        return core::Err(core::ErrorCode::NotSupported);
+        return detail::read_uart(*this, buffer);
     }
 
     [[nodiscard]] auto flush() const -> core::Result<void, core::ErrorCode> {
-        return core::Err(core::ErrorCode::NotSupported);
+        return detail::flush_uart(*this);
     }
 
 private:

@@ -313,6 +313,7 @@ if(ALLOY_DEVICE_CONTRACT_AVAILABLE)
         tests/compile_tests/test_gpio_api.cpp
         tests/compile_tests/test_uart_api.cpp
         tests/compile_tests/test_board_led_api.cpp
+        tests/compile_tests/test_board_uart_api.cpp
         ${ALLOY_DEVICE_STARTUP_VECTORS_SOURCE}
     )
 

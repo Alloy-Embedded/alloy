@@ -13,6 +13,7 @@
 
 #include "board_config.hpp"
 #include "hal/gpio.hpp"
+#include "hal/uart.hpp"
 #include "hal/api/systick_simple.hpp"
 #include "hal/vendors/st/stm32f4/systick_platform.hpp"
 
@@ -28,6 +29,16 @@ using BoardSysTick = SysTick<ClockConfig::system_clock_hz>;
 // RTOS Tick Source (must be 1ms tick for RTOS compatibility)
 // Note: The 1ms tick period is configured at runtime via SysTickTimer::init_ms<BoardSysTick>(1)
 using RTOSTick = BoardSysTick;
+
+using DebugUartConnector = nucleo_f401re::UartConfig::debug_connector;
+using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>());
+
+[[nodiscard]] inline auto make_debug_uart(alloy::hal::uart::Config config = {}) -> DebugUart {
+    if (config.peripheral_clock_hz == 0u) {
+        config.peripheral_clock_hz = nucleo_f401re::UartConfig::peripheral_clock_hz;
+    }
+    return alloy::hal::uart::open<DebugUartConnector>(config);
+}
 
 /**
  * @brief Initialize all board hardware

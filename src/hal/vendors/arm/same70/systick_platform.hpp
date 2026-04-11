@@ -20,7 +20,7 @@
 
 namespace alloy::hal::same70 {
 
-using namespace alloy::core;
+using namespace ::alloy::core;
 
 /**
  * @brief SysTick Platform Implementation for SAME70

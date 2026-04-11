@@ -9,6 +9,7 @@
 #pragma once
 
 #include "logger/sink.hpp"
+#include <cstddef>
 #include <cstring>
 
 namespace alloy::logger {
@@ -65,10 +66,13 @@ public:
             return;
         }
 
-        // Write to UART (blocking)
-        // Note: For production, consider adding timeout or non-blocking option
         for (size_t i = 0; i < size; ++i) {
-            uart_.write_byte(data[i]);
+            const auto result =
+                uart_.write_byte(static_cast<std::byte>(static_cast<unsigned char>(data[i])));
+            if (result.is_err()) {
+                ready_ = false;
+                break;
+            }
         }
     }
 
@@ -78,8 +82,12 @@ public:
      * For UART, this is typically a no-op as data is transmitted immediately.
      */
     void flush() override {
-        // UART typically transmits immediately, so nothing to flush
-        // If using buffered UART, implement flushing here
+        if (!ready_) {
+            return;
+        }
+        if (const auto result = uart_.flush(); result.is_err()) {
+            ready_ = false;
+        }
     }
 
     /**

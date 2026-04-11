@@ -108,6 +108,7 @@ struct UartConfig {
     Parity parity = Parity::None;
     StopBits stop_bits = StopBits::One;
     FlowControl flow_control = FlowControl::None;
+    uint32_t peripheral_clock_hz = 0;
 };
 
 // ============================================================================

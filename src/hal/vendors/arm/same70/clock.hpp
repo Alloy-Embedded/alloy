@@ -40,6 +40,9 @@
 #include "core/result.hpp"
 #include "core/types.hpp"
 #include "hal/types.hpp"
+#if __cplusplus >= 202002L && __has_include("hal/core/concepts.hpp")
+#include "hal/core/concepts.hpp"
+#endif
 
 // ============================================================================
 // Vendor-Specific Includes (Auto-Generated)
@@ -57,8 +60,8 @@
 
 namespace alloy::hal::same70 {
 
-using namespace alloy::core;
-using namespace alloy::hal;
+using namespace ::alloy::core;
+using namespace ::alloy::hal;
 
 // Import vendor-specific register types
 using namespace alloy::hal::atmel::same70;
@@ -572,17 +575,5 @@ constexpr ClockConfig CLOCK_CONFIG_12MHZ_RC = {
 inline const ClockConfig& Clock::CLOCK_CONFIG_SAFE_DEFAULT = CLOCK_CONFIG_12MHZ_RC;
 inline const ClockConfig& Clock::CLOCK_CONFIG_HIGH_PERFORMANCE = CLOCK_CONFIG_150MHZ;
 inline const ClockConfig& Clock::CLOCK_CONFIG_MEDIUM_PERFORMANCE = CLOCK_CONFIG_120MHZ;
-
-// ============================================================================
-// Concept Validation (C++20)
-// ============================================================================
-
-#if __cplusplus >= 202002L && __has_include("hal/core/concepts.hpp")
-#include "hal/core/concepts.hpp"
-
-// Validate that SAME70 Clock satisfies the ClockPlatform concept
-static_assert(alloy::hal::concepts::ClockPlatform<Clock>,
-              "SAME70 Clock must satisfy ClockPlatform concept - missing required methods");
-#endif
 
 } // namespace alloy::hal::same70

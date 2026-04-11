@@ -52,11 +52,11 @@
 ## 5. Descriptor-Driven Drivers
 
 - [x] 5.1 Rebuild GPIO on top of device descriptors and claims
-- [ ] 5.2 Rebuild UART on top of instances, capabilities, connectors, and clock/reset descriptors
+- [x] 5.2 Rebuild UART on top of instances, capabilities, connectors, and clock/reset descriptors
 - [ ] 5.3 Rebuild SPI on top of the same model
 - [ ] 5.4 Rebuild I2C on top of the same model
 - [ ] 5.5 Rebuild DMA on top of the same model
-- [ ] 5.6 Add compile coverage for foundational-family driver bring-up using generated descriptors
+- [x] 5.6 Add compile coverage for foundational-family driver bring-up using generated descriptors
 
 ## 6. Startup Runtime and Architecture Layer
 

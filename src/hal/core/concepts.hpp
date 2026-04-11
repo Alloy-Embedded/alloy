@@ -28,7 +28,7 @@
 
 namespace alloy::hal::concepts {
 
-using namespace alloy::core;
+using namespace ::alloy::core;
 
 // ============================================================================
 // Core Peripheral Concepts
