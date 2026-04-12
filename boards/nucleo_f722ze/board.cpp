@@ -10,6 +10,7 @@
 
 #include <cstdint>
 
+#include "hal/clock.hpp"
 #include "hal/systick.hpp"
 #include "hal/vendors/st/stm32f7/clock_platform.hpp"
 
@@ -49,10 +50,7 @@ static LedConfig::led_green led_pin;
  * Clock configuration is defined in ClockConfig struct in board_config.hpp.
  */
 static inline void configure_system_clock() {
-    auto result = BoardClock::initialize();
-    // Note: In a production system, we would handle the error.
-    // For now, if clock init fails, the MCU will run at default HSI speed.
-    (void)result;  // Suppress unused warning
+    static_cast<void>(SystemClock::use_default<BoardClock>());
 }
 
 /**

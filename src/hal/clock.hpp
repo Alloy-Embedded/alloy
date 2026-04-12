@@ -11,6 +11,11 @@ using namespace alloy::core;
 class SystemClock {
    public:
     template <typename ClockImpl>
+    [[nodiscard]] static auto use_default() -> Result<void, ErrorCode> {
+        return ClockImpl::initialize();
+    }
+
+    template <typename ClockImpl>
     [[nodiscard]] static auto use_safe_default() -> Result<void, ErrorCode> {
         return ClockImpl::initialize(ClockImpl::CLOCK_CONFIG_SAFE_DEFAULT);
     }

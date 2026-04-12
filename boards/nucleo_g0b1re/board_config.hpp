@@ -52,6 +52,18 @@ struct ClockConfig {
 
     /// APB bus frequency (same as system clock on Cortex-M0+)
     static constexpr uint32_t apb_clock_hz = system_clock_hz;
+
+    /// PLL input divider (/1)
+    static constexpr uint32_t pll_m = 0;
+
+    /// PLL multiplier (x8)
+    static constexpr uint32_t pll_n = 8;
+
+    /// PLL output divider (/2)
+    static constexpr uint32_t pll_r = 0;
+
+    /// Flash latency for 64 MHz
+    static constexpr uint32_t flash_latency = 2;
 };
 
 // =============================================================================
