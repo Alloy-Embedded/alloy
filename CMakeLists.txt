@@ -128,6 +128,9 @@ alloy_resolve_board_manifest(
     ALLOY_BOARD_DEVICE
     ALLOY_BOARD_DEVICE_ARCH
     ALLOY_BOARD_MCU
+    ALLOY_BOARD_FLASH_SIZE_BYTES
+    ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES
+    ALLOY_BOARD_SUPPORTS_UART_LOGGER
 )
 
 if(ALLOY_BOARD_MANIFEST_FOUND)
@@ -343,8 +346,13 @@ endif()
 # The same code compiles for different boards by including the appropriate board.hpp
 
 # Universal blink example - demonstrates board abstraction power
-if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD STREQUAL "nucleo_f401re" OR ALLOY_BOARD STREQUAL "nucleo_f722ze")
+if(ALLOY_BOARD_MANIFEST_FOUND AND NOT ALLOY_BOARD STREQUAL "host")
     add_subdirectory(examples/blink)
+endif()
+
+if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
+    add_subdirectory(examples/i2c_scan)
+    add_subdirectory(examples/spi_probe)
 endif()
 
 # Universal RTOS example - demonstrates RTOS with multi-task scheduling
@@ -353,7 +361,7 @@ if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld" 
 endif()
 
 # Board-specific examples
-if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld")
+if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_UART_LOGGER)
     add_subdirectory(examples/uart_logger)
 endif()
 

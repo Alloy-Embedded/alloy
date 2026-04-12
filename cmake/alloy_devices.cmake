@@ -33,6 +33,9 @@ function(alloy_map_board_to_device BOARD_NAME OUT_VENDOR OUT_FAMILY OUT_DEVICE O
         _device
         _arch
         _manifest_mcu
+        _manifest_flash_size_bytes
+        _manifest_supports_peripheral_examples
+        _manifest_supports_uart_logger
     )
 
     if(NOT _manifest_found)

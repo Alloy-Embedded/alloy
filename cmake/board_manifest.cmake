@@ -19,6 +19,9 @@ function(
     OUT_DEVICE
     OUT_ARCH
     OUT_MCU
+    OUT_FLASH_SIZE_BYTES
+    OUT_SUPPORTS_PERIPHERAL_EXAMPLES
+    OUT_SUPPORTS_UART_LOGGER
 )
     set(_found FALSE)
     set(_board_header "")
@@ -29,12 +32,16 @@ function(
     set(_device "")
     set(_arch "")
     set(_mcu "")
+    set(_flash_size_bytes 0)
+    set(_supports_peripheral_examples FALSE)
+    set(_supports_uart_logger FALSE)
 
     if(BOARD_NAME STREQUAL "host")
         set(_found TRUE)
         set(_board_header "boards/linux_host/board.hpp")
         set(_arch "native")
         set(_mcu "native")
+        set(_flash_size_bytes 0)
     elseif(BOARD_NAME STREQUAL "nucleo_g071rb")
         set(_found TRUE)
         set(_board_header "boards/nucleo_g071rb/board.hpp")
@@ -45,6 +52,7 @@ function(
         set(_device "stm32g071rb")
         set(_arch "cortex-m0plus")
         set(_mcu "STM32G071RBT6")
+        set(_flash_size_bytes 131072)
     elseif(BOARD_NAME STREQUAL "nucleo_g0b1re")
         set(_found TRUE)
         set(_board_header "boards/nucleo_g0b1re/board.hpp")
@@ -55,6 +63,7 @@ function(
         set(_device "stm32g0b1re")
         set(_arch "cortex-m0plus")
         set(_mcu "STM32G0B1RET6")
+        set(_flash_size_bytes 524288)
     elseif(BOARD_NAME STREQUAL "nucleo_f401re")
         set(_found TRUE)
         set(_board_header "boards/nucleo_f401re/board.hpp")
@@ -65,6 +74,8 @@ function(
         set(_device "stm32f401re")
         set(_arch "cortex-m4")
         set(_mcu "STM32F401RET6")
+        set(_flash_size_bytes 524288)
+        set(_supports_peripheral_examples TRUE)
     elseif(BOARD_NAME STREQUAL "same70_xpld" OR BOARD_NAME STREQUAL "same70_xplained")
         set(_found TRUE)
         set(_board_header "boards/same70_xplained/board.hpp")
@@ -75,6 +86,9 @@ function(
         set(_device "atsame70q21b")
         set(_arch "cortex-m7")
         set(_mcu "ATSAME70Q21B")
+        set(_flash_size_bytes 2097152)
+        set(_supports_peripheral_examples TRUE)
+        set(_supports_uart_logger TRUE)
     endif()
 
     set(${OUT_FOUND} "${_found}" PARENT_SCOPE)
@@ -86,4 +100,7 @@ function(
     set(${OUT_DEVICE} "${_device}" PARENT_SCOPE)
     set(${OUT_ARCH} "${_arch}" PARENT_SCOPE)
     set(${OUT_MCU} "${_mcu}" PARENT_SCOPE)
+    set(${OUT_FLASH_SIZE_BYTES} "${_flash_size_bytes}" PARENT_SCOPE)
+    set(${OUT_SUPPORTS_PERIPHERAL_EXAMPLES} "${_supports_peripheral_examples}" PARENT_SCOPE)
+    set(${OUT_SUPPORTS_UART_LOGGER} "${_supports_uart_logger}" PARENT_SCOPE)
 endfunction()
