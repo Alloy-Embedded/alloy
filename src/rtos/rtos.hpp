@@ -39,7 +39,7 @@
 #include <cstddef>
 #include <type_traits>
 
-#include "hal/interface/systick.hpp"
+#include "hal/systick.hpp"
 
 #include "rtos/error.hpp"
 #include "rtos/concepts.hpp"

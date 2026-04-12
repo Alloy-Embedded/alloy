@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "hal/interface/interrupt.hpp"
+#include "hal/interrupt.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "core/types.hpp"

@@ -11,7 +11,7 @@
 /// Board: Any
 /// Features: Advanced compile-time safety analysis
 
-#include "hal/interface/systick.hpp"
+#include "hal/systick.hpp"
 #include "rtos/rtos.hpp"
 #include "rtos/queue.hpp"
 #include "rtos/mutex.hpp"

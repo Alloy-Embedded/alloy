@@ -15,7 +15,7 @@
 #include "rtos/task_notification.hpp"
 #include "rtos/memory_pool.hpp"
 #include "rtos/queue.hpp"
-#include "hal/interface/systick.hpp"
+#include "hal/systick.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;

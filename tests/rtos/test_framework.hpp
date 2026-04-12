@@ -29,7 +29,7 @@
 #include <cstdio>
 
 #include "core/types.hpp"
-#include "hal/interface/systick.hpp"
+#include "hal/systick.hpp"
 
 namespace alloy::rtos::test {
 

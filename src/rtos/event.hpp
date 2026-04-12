@@ -49,7 +49,7 @@
 #ifndef ALLOY_RTOS_EVENT_HPP
 #define ALLOY_RTOS_EVENT_HPP
 
-#include "hal/interface/systick.hpp"
+#include "hal/systick.hpp"
 
 #include "rtos/platform/critical_section.hpp"
 #include "rtos/rtos.hpp"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hal/interface/systick.hpp"
+#include "hal/systick.hpp"
 
 #include "format.hpp"
 #include "sink.hpp"

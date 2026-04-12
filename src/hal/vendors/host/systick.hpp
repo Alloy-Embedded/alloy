@@ -22,7 +22,7 @@
 
 #include <chrono>
 
-#include "hal/interface/systick.hpp"
+#include "hal/systick.hpp"
 
 #include "core/error.hpp"
 #include "core/result.hpp"

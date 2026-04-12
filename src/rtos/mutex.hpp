@@ -39,7 +39,7 @@
 #ifndef ALLOY_RTOS_MUTEX_HPP
 #define ALLOY_RTOS_MUTEX_HPP
 
-#include "hal/interface/systick.hpp"
+#include "hal/systick.hpp"
 
 #include "rtos/platform/critical_section.hpp"
 #include "rtos/rtos.hpp"

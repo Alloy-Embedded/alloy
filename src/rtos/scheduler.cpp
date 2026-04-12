@@ -2,7 +2,7 @@
 
 #include "rtos/scheduler.hpp"
 
-#include "hal/interface/systick.hpp"
+#include "hal/systick.hpp"
 
 // Include platform-specific systick implementation
 #if defined(__ARM_ARCH_6M__) || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__)

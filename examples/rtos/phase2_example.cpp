@@ -13,7 +13,7 @@
 // To compile, you need to include board-specific headers.
 // The static_asserts below will work in any context once headers are included.
 
-#include "hal/interface/systick.hpp"
+#include "hal/systick.hpp"
 #include "rtos/rtos.hpp"
 #include "rtos/queue.hpp"
 #include "rtos/mutex.hpp"

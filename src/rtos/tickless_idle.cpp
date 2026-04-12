@@ -2,7 +2,7 @@
 
 #include "rtos/tickless_idle.hpp"
 #include "rtos/scheduler.hpp"
-#include "hal/interface/systick.hpp"
+#include "hal/systick.hpp"
 
 namespace alloy::rtos {
 

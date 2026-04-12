@@ -17,7 +17,7 @@
 #include "rtos/queue.hpp"
 #include "rtos/mutex.hpp"
 #include "rtos/semaphore.hpp"
-#include "hal/interface/systick.hpp"
+#include "hal/systick.hpp"
 
 using namespace alloy;
 using namespace alloy::rtos;

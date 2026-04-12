@@ -1,10 +1,29 @@
 #pragma once
 
+#include <concepts>
+
+#include "core/error.hpp"
+#include "core/error_code.hpp"
+#include "core/result.hpp"
 #include "core/types.hpp"
 
 namespace alloy::hal {
 
 using namespace alloy::core;
+
+struct SysTickConfig {
+    u32 tick_frequency_hz;
+
+    constexpr explicit SysTickConfig(u32 freq_hz = 1000000) : tick_frequency_hz(freq_hz) {}
+};
+
+template <typename T>
+concept SystemTick = requires {
+    { T::init() } -> std::convertible_to<Result<void, ErrorCode>>;
+    { T::micros() } -> std::convertible_to<u32>;
+    { T::reset() } -> std::convertible_to<Result<void, ErrorCode>>;
+    { T::is_initialized() } -> std::convertible_to<bool>;
+};
 
 class SysTickTimer {
    public:
@@ -65,3 +84,29 @@ class SysTickTimer {
 };
 
 }  // namespace alloy::hal
+
+namespace alloy::systick {
+
+namespace detail {
+core::u32 get_micros();
+}
+
+inline auto micros() -> core::u32 {
+    return detail::get_micros();
+}
+
+inline auto micros_since(core::u32 start_time) -> core::u32 {
+    return micros() - start_time;
+}
+
+inline auto is_timeout(core::u32 start_time, core::u32 timeout_us) -> bool {
+    return micros_since(start_time) >= timeout_us;
+}
+
+inline void delay_us(core::u32 delay_us) {
+    const core::u32 start = micros();
+    while (!is_timeout(start, delay_us)) {
+    }
+}
+
+}  // namespace alloy::systick
