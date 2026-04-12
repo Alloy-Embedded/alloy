@@ -70,6 +70,29 @@ struct UartConsoleConfig {
     static constexpr uint32_t peripheral_clock_hz = ClockConfig::pclk_freq_hz;
 };
 
+struct I2cConfig {
+    using scl = alloy::hal::pin<"PA4">;
+    using sda = alloy::hal::pin<"PA3">;
+
+    using bus_connector =
+        decltype(alloy::hal::connect<alloy::hal::peripheral<"TWIHS0">, alloy::hal::scl<scl>,
+                                     alloy::hal::sda<sda>>());
+
+    static constexpr uint32_t peripheral_clock_hz = ClockConfig::pclk_freq_hz;
+};
+
+struct SpiConfig {
+    using sck = alloy::hal::pin<"PD22">;
+    using miso = alloy::hal::pin<"PD20">;
+    using mosi = alloy::hal::pin<"PD21">;
+
+    using bus_connector =
+        decltype(alloy::hal::connect<alloy::hal::peripheral<"SPI0">, alloy::hal::sck<sck>,
+                                     alloy::hal::miso<miso>, alloy::hal::mosi<mosi>>());
+
+    static constexpr uint32_t peripheral_clock_hz = ClockConfig::pclk_freq_hz;
+};
+
 // =============================================================================
 // SysTick Configuration
 // =============================================================================

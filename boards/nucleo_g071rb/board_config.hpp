@@ -71,4 +71,27 @@ struct UartConfig {
     static constexpr uint32_t peripheral_clock_hz = ClockConfig::apb_clock_hz;
 };
 
+struct I2cConfig {
+    using scl = alloy::hal::pin<"PB6">;
+    using sda = alloy::hal::pin<"PB7">;
+
+    using bus_connector =
+        decltype(alloy::hal::connect<alloy::hal::peripheral<"I2C1">, alloy::hal::scl<scl>,
+                                     alloy::hal::sda<sda>>());
+
+    static constexpr uint32_t peripheral_clock_hz = ClockConfig::apb_clock_hz;
+};
+
+struct SpiConfig {
+    using sck = alloy::hal::pin<"PA5">;
+    using miso = alloy::hal::pin<"PA6">;
+    using mosi = alloy::hal::pin<"PA7">;
+
+    using bus_connector =
+        decltype(alloy::hal::connect<alloy::hal::peripheral<"SPI1">, alloy::hal::sck<sck>,
+                                     alloy::hal::miso<miso>, alloy::hal::mosi<mosi>>());
+
+    static constexpr uint32_t peripheral_clock_hz = ClockConfig::apb_clock_hz;
+};
+
 }  // namespace nucleo_g071rb

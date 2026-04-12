@@ -177,6 +177,19 @@ template <typename Descriptor, std::size_t Extent>
         &descriptors::family::ClockGateDescriptor::gate_name, gate_name);
 }
 
+[[nodiscard]] constexpr auto find_clock_gate_by_index(int index)
+    -> const descriptors::family::ClockGateDescriptor* {
+    if (index < 0 || static_cast<std::size_t>(index) >= descriptors::tables::clock_gates.size()) {
+        return nullptr;
+    }
+
+    const auto& descriptor = descriptors::tables::clock_gates[static_cast<std::size_t>(index)];
+    if (!strings_equal(descriptor.device, selected_device())) {
+        return nullptr;
+    }
+    return &descriptor;
+}
+
 [[nodiscard]] constexpr auto find_reset(std::string_view reset_name)
     -> const descriptors::family::ResetDescriptor* {
     return find_device_scoped_by_name(
@@ -184,11 +197,39 @@ template <typename Descriptor, std::size_t Extent>
         &descriptors::family::ResetDescriptor::reset_name, reset_name);
 }
 
+[[nodiscard]] constexpr auto find_reset_by_index(int index)
+    -> const descriptors::family::ResetDescriptor* {
+    if (index < 0 || static_cast<std::size_t>(index) >= descriptors::tables::resets.size()) {
+        return nullptr;
+    }
+
+    const auto& descriptor = descriptors::tables::resets[static_cast<std::size_t>(index)];
+    if (!strings_equal(descriptor.device, selected_device())) {
+        return nullptr;
+    }
+    return &descriptor;
+}
+
 [[nodiscard]] constexpr auto find_clock_selector(std::string_view selector_name)
     -> const descriptors::family::ClockSelectorDescriptor* {
     return find_device_scoped_by_name(
         descriptors::tables::clock_selectors, &descriptors::family::ClockSelectorDescriptor::device,
         &descriptors::family::ClockSelectorDescriptor::selector_name, selector_name);
+}
+
+[[nodiscard]] constexpr auto find_clock_selector_by_index(int index)
+    -> const descriptors::family::ClockSelectorDescriptor* {
+    if (index < 0 ||
+        static_cast<std::size_t>(index) >= descriptors::tables::clock_selectors.size()) {
+        return nullptr;
+    }
+
+    const auto& descriptor =
+        descriptors::tables::clock_selectors[static_cast<std::size_t>(index)];
+    if (!strings_equal(descriptor.device, selected_device())) {
+        return nullptr;
+    }
+    return &descriptor;
 }
 
 [[nodiscard]] constexpr auto find_interrupt_bindings(std::string_view peripheral_name)

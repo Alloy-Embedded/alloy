@@ -12,6 +12,8 @@
  */
 
 #include "hal/gpio.hpp"
+#include "hal/i2c.hpp"
+#include "hal/spi.hpp"
 #include "hal/systick.hpp"
 #include "hal/uart.hpp"
 #include "hal/vendors/st/stm32f4/systick_platform.hpp"
@@ -33,12 +35,30 @@ using RTOSTick = BoardSysTick;
 
 using DebugUartConnector = nucleo_f401re::UartConfig::debug_connector;
 using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>());
+using BoardI2cConnector = nucleo_f401re::I2cConfig::bus_connector;
+using BoardI2c = decltype(alloy::hal::i2c::open<BoardI2cConnector>());
+using BoardSpiConnector = nucleo_f401re::SpiConfig::bus_connector;
+using BoardSpi = decltype(alloy::hal::spi::open<BoardSpiConnector>());
 
 [[nodiscard]] inline auto make_debug_uart(alloy::hal::uart::Config config = {}) -> DebugUart {
     if (config.peripheral_clock_hz == 0u) {
         config.peripheral_clock_hz = nucleo_f401re::UartConfig::peripheral_clock_hz;
     }
     return alloy::hal::uart::open<DebugUartConnector>(config);
+}
+
+[[nodiscard]] inline auto make_i2c(alloy::hal::i2c::Config config = {}) -> BoardI2c {
+    if (config.peripheral_clock_hz == 0u) {
+        config.peripheral_clock_hz = nucleo_f401re::I2cConfig::peripheral_clock_hz;
+    }
+    return alloy::hal::i2c::open<BoardI2cConnector>(config);
+}
+
+[[nodiscard]] inline auto make_spi(alloy::hal::spi::Config config = {}) -> BoardSpi {
+    if (config.peripheral_clock_hz == 0u) {
+        config.peripheral_clock_hz = nucleo_f401re::SpiConfig::peripheral_clock_hz;
+    }
+    return alloy::hal::spi::open<BoardSpiConnector>(config);
 }
 
 /**

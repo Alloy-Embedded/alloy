@@ -248,17 +248,14 @@ template <std::size_t N>
 }
 
 template <std::size_t N>
-[[nodiscard]] consteval auto group_matches_exact_signal_set(
+[[nodiscard]] consteval auto group_matches_requested_signal_set(
     const device::descriptors::family::ConnectionGroupDescriptor& group,
     const std::array<std::string_view, N>& signals) -> bool {
-    if (group.signal_count != N) {
-        return false;
-    }
-
-    for (const auto& signal_ref : device::descriptors::tables::connection_group_signals.subspan(
-             group.signal_offset, group.signal_count)) {
+    for (const auto expected_signal : signals) {
         bool present = false;
-        for (const auto expected_signal : signals) {
+        for (const auto& signal_ref :
+             device::descriptors::tables::connection_group_signals.subspan(group.signal_offset,
+                                                                           group.signal_count)) {
             if (as_string(signal_ref.signal_name) == expected_signal) {
                 present = true;
                 break;
@@ -273,8 +270,8 @@ template <std::size_t N>
 }
 
 template <std::size_t N>
-[[nodiscard]] consteval auto find_exact_group_index(std::string_view peripheral_name,
-                                                    const std::array<std::string_view, N>& signals)
+[[nodiscard]] consteval auto find_group_index(std::string_view peripheral_name,
+                                              const std::array<std::string_view, N>& signals)
     -> int {
     const auto package = selected_package();
     auto index = 0;
@@ -291,7 +288,7 @@ template <std::size_t N>
             ++index;
             continue;
         }
-        if (!group_matches_exact_signal_set(group, signals)) {
+        if (!group_matches_requested_signal_set(group, signals)) {
             ++index;
             continue;
         }
@@ -322,7 +319,7 @@ struct connector {
             return candidate == nullptr ? -1 : candidate->route_group_index;
         }
 
-        return detail::find_exact_group_index(Peripheral::name, signal_names);
+        return detail::find_group_index(Peripheral::name, signal_names);
     }
     static constexpr auto group_descriptor_index = compute_group_descriptor_index();
 

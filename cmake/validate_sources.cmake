@@ -42,12 +42,11 @@ set(HAL_VENDORS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors")
 
 # Expected core source files (from CMakeLists.txt)
 # Note: These files don't exist yet - they are planned for future implementation
-# The current build system is header-only for HAL core/API
+# The current build system is header-only for the remaining legacy HAL API layers
 set(EXPECTED_CORE_SOURCES
     # Future implementation files:
     # "src/hal/core/assert.cpp"
     # "src/hal/core/fault_handler.cpp"
-    # "src/hal/api/uart_stream.cpp"
 )
 
 # Platform directories (each platform uses GLOB for its own sources)

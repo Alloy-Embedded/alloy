@@ -191,7 +191,7 @@ After working with this example, you should understand:
 
 ## References
 
-- **HAL API**: `src/hal/api/systick_simple.hpp`
+- **HAL API**: `src/hal/systick.hpp`
 - **Platform Layer**: `src/hal/platform/*/systick_platform.hpp`
 - **Board Support**: `boards/*/board.cpp` (SysTick_Handler)
 - **ARM Documentation**: ARM Cortex-M SysTick Timer

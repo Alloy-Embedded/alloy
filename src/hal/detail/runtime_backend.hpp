@@ -37,6 +37,118 @@ struct FieldRef {
     bool valid = false;
 };
 
+[[nodiscard]] constexpr auto make_register_ref(std::uintptr_t base_address, int register_offset)
+    -> RegisterRef {
+    if (base_address == 0u || register_offset < 0) {
+        return {};
+    }
+
+    return {
+        .base_address = base_address,
+        .offset_bytes = static_cast<std::uint32_t>(register_offset),
+        .valid = true,
+    };
+}
+
+[[nodiscard]] constexpr auto make_register_ref(std::string_view peripheral_name, int register_offset)
+    -> RegisterRef {
+    const auto* peripheral = device::runtime::find_peripheral_instance(peripheral_name);
+    if (peripheral == nullptr) {
+        return {};
+    }
+    return make_register_ref(peripheral->base_address, register_offset);
+}
+
+[[nodiscard]] constexpr auto make_field_ref(RegisterRef reg, std::string_view peripheral_name,
+                                            std::string_view register_name,
+                                            std::string_view runtime_field_id) -> FieldRef {
+    if (!reg.valid || runtime_field_id.empty()) {
+        return {};
+    }
+
+    const auto* field = device::runtime::find_register_field_by_runtime_id(
+        peripheral_name, register_name, runtime_field_id);
+    if (field == nullptr) {
+        return {};
+    }
+
+    return {
+        .reg = reg,
+        .bit_offset = field->bit_offset,
+        .bit_width = field->bit_width,
+        .valid = true,
+    };
+}
+
+[[nodiscard]] constexpr auto make_field_ref(std::string_view peripheral_name, int register_offset,
+                                            std::string_view register_name,
+                                            std::string_view runtime_field_id) -> FieldRef {
+    return make_field_ref(make_register_ref(peripheral_name, register_offset), peripheral_name,
+                          register_name, runtime_field_id);
+}
+
+[[nodiscard]] consteval auto find_peripheral_descriptor(std::string_view peripheral_name)
+    -> const device::descriptors::device_contract::PeripheralInstanceDescriptor* {
+    for (const auto& descriptor : device::descriptors::tables::peripheral_instances) {
+        if (strings_equal(descriptor.name, peripheral_name)) {
+            return &descriptor;
+        }
+    }
+    return nullptr;
+}
+
+[[nodiscard]] consteval auto find_register_ref(std::string_view peripheral_name,
+                                               std::uintptr_t base_address,
+                                               std::string_view register_name) -> RegisterRef {
+    for (const auto& descriptor : device::descriptors::tables::registers) {
+        if (!strings_equal(descriptor.peripheral_name, peripheral_name)) {
+            continue;
+        }
+        if (!strings_equal(descriptor.register_name, register_name)) {
+            continue;
+        }
+
+        return {
+            .base_address = base_address,
+            .offset_bytes = static_cast<std::uint32_t>(descriptor.offset_bytes),
+            .valid = true,
+        };
+    }
+
+    return {};
+}
+
+[[nodiscard]] consteval auto find_field_ref(std::string_view peripheral_name,
+                                            std::uintptr_t base_address,
+                                            std::string_view register_name,
+                                            std::string_view field_name) -> FieldRef {
+    const auto reg = find_register_ref(peripheral_name, base_address, register_name);
+    if (!reg.valid) {
+        return {};
+    }
+
+    for (const auto& descriptor : device::descriptors::tables::register_fields) {
+        if (!strings_equal(descriptor.peripheral_name, peripheral_name)) {
+            continue;
+        }
+        if (!strings_equal(descriptor.register_name, register_name)) {
+            continue;
+        }
+        if (!strings_equal(descriptor.field_name, field_name)) {
+            continue;
+        }
+
+        return {
+            .reg = reg,
+            .bit_offset = descriptor.bit_offset,
+            .bit_width = descriptor.bit_width,
+            .valid = true,
+        };
+    }
+
+    return {};
+}
+
 enum class GpioSchema : std::uint8_t {
     unknown,
     st_gpio,
@@ -54,6 +166,20 @@ enum class UartSchema : std::uint8_t {
     nxp_lpuart_v1,
 };
 
+enum class I2cSchema : std::uint8_t {
+    unknown,
+    st_i2c2_v1_1_cube,
+    st_i2c1_v1_5_cube,
+    microchip_twihs_z,
+};
+
+enum class SpiSchema : std::uint8_t {
+    unknown,
+    st_spi2s1_v3_3_cube,
+    st_spi2s1_v2_2_cube,
+    microchip_spi_zm,
+};
+
 enum class PinmuxSchema : std::uint8_t {
     unknown,
     stm32_af_v1,
@@ -61,11 +187,14 @@ enum class PinmuxSchema : std::uint8_t {
     imxrt_iomuxc_v1,
 };
 
-struct ParsedPinTarget {
-    char port = '\0';
+struct PinTarget {
+    std::string_view pin_name{};
+    std::string_view peripheral_name{};
     std::uint32_t line = 0u;
     bool valid = false;
 };
+
+using RuntimeRefKind = device::descriptors::family::RuntimeRefKind;
 
 [[nodiscard]] constexpr auto parse_decimal(std::string_view text) -> int {
     if (text.empty()) {
@@ -80,15 +209,6 @@ struct ParsedPinTarget {
         value = (value * 10) + (ch - '0');
     }
     return value;
-}
-
-[[nodiscard]] constexpr auto parse_suffix_decimal(std::string_view text, std::string_view marker)
-    -> int {
-    const auto position = text.find(marker);
-    if (position == std::string_view::npos) {
-        return -1;
-    }
-    return parse_decimal(text.substr(position + marker.size()));
 }
 
 [[nodiscard]] constexpr auto gpio_port_index(char port) -> int {
@@ -120,26 +240,26 @@ struct ParsedPinTarget {
     }
 }
 
-[[nodiscard]] constexpr auto parse_pin_target(std::string_view target) -> ParsedPinTarget {
-    constexpr std::string_view prefix = "pinmux.";
-    const auto pin = target.starts_with(prefix) ? target.substr(prefix.size()) : target;
-    if (pin.size() < 3u || pin[0] != 'P') {
+[[nodiscard]] constexpr auto find_pin_target(std::string_view pin_name) -> PinTarget {
+    const auto* descriptor = device::runtime::find_pin(pin_name);
+    if (descriptor == nullptr) {
         return {};
     }
 
-    const auto port = pin[1];
-    if (gpio_port_index(port) < 0) {
+    const auto port = as_string(descriptor->port);
+    if (port.empty()) {
         return {};
     }
 
-    const auto line = parse_decimal(pin.substr(2u));
-    if (line < 0 || line > 31) {
+    const auto peripheral_name = gpio_peripheral_name(port.front());
+    if (peripheral_name.empty() || descriptor->number < 0) {
         return {};
     }
 
     return {
-        .port = port,
-        .line = static_cast<std::uint32_t>(line),
+        .pin_name = pin_name,
+        .peripheral_name = peripheral_name,
+        .line = static_cast<std::uint32_t>(descriptor->number),
         .valid = true,
     };
 }
@@ -165,28 +285,6 @@ struct ParsedPinTarget {
         buffer[write++] = static_cast<char>('0' + (index / 10u));
     }
     buffer[write++] = static_cast<char>('0' + (index % 10u));
-    buffer[write] = '\0';
-    return buffer;
-}
-
-[[nodiscard]] constexpr auto make_lower_gate_name(std::string_view peripheral_name)
-    -> std::array<char, 32> {
-    std::array<char, 32> buffer{};
-    constexpr std::string_view prefix = "gate:";
-    auto write = std::size_t{0};
-
-    for (const char ch : prefix) {
-        buffer[write++] = ch;
-    }
-
-    for (const char ch : peripheral_name) {
-        if (ch >= 'A' && ch <= 'Z') {
-            buffer[write++] = static_cast<char>(ch - 'A' + 'a');
-        } else {
-            buffer[write++] = ch;
-        }
-    }
-
     buffer[write] = '\0';
     return buffer;
 }
@@ -304,6 +402,36 @@ inline auto modify_field(const FieldRef& field, std::uint32_t value)
     return UartSchema::unknown;
 }
 
+[[nodiscard]] constexpr auto i2c_schema_from_id(std::string_view schema_id) -> I2cSchema {
+    if (schema_id == "alloy.i2c1.st-i2c2-v1-1-cube" ||
+        schema_id == "alloy.i2c2.st-i2c2-v1-1-cube" ||
+        schema_id == "alloy.i2c3.st-i2c2-v1-1-cube") {
+        return I2cSchema::st_i2c2_v1_1_cube;
+    }
+    if (schema_id == "alloy.i2c1.st-i2c1-v1-5-cube" ||
+        schema_id == "alloy.i2c2.st-i2c1-v1-5-cube" ||
+        schema_id == "alloy.i2c3.st-i2c1-v1-5-cube") {
+        return I2cSchema::st_i2c1_v1_5_cube;
+    }
+    if (schema_id == "alloy.i2c.microchip-twihs-z") {
+        return I2cSchema::microchip_twihs_z;
+    }
+    return I2cSchema::unknown;
+}
+
+[[nodiscard]] constexpr auto spi_schema_from_id(std::string_view schema_id) -> SpiSchema {
+    if (schema_id == "alloy.spi.st-spi2s1-v3-3-cube") {
+        return SpiSchema::st_spi2s1_v3_3_cube;
+    }
+    if (schema_id == "alloy.spi.st-spi2s1-v2-2-cube") {
+        return SpiSchema::st_spi2s1_v2_2_cube;
+    }
+    if (schema_id == "alloy.spi.microchip-spi-zm") {
+        return SpiSchema::microchip_spi_zm;
+    }
+    return SpiSchema::unknown;
+}
+
 [[nodiscard]] constexpr auto pinmux_schema_from_id(std::string_view schema_id) -> PinmuxSchema {
     if (schema_id == "alloy.pinmux.stm32-af-v1") {
         return PinmuxSchema::stm32_af_v1;
@@ -325,6 +453,16 @@ template <typename Handle>
 template <typename Handle>
 [[nodiscard]] consteval auto uart_schema_for() -> UartSchema {
     return uart_schema_from_id(peripheral_schema_id(Handle::peripheral_name));
+}
+
+template <typename Handle>
+[[nodiscard]] consteval auto i2c_schema_for() -> I2cSchema {
+    return i2c_schema_from_id(peripheral_schema_id(Handle::peripheral_name));
+}
+
+template <typename Handle>
+[[nodiscard]] consteval auto spi_schema_for() -> SpiSchema {
+    return spi_schema_from_id(peripheral_schema_id(Handle::peripheral_name));
 }
 
 [[nodiscard]] inline auto read_register(std::string_view peripheral_name,
@@ -508,8 +646,10 @@ inline auto apply_clock_gate(
         return enable_pmc_pid(parse_pmc_pid(register_name));
     }
 
-    if (!runtime_field_id.empty()) {
-        return modify_field_by_runtime_id(peripheral_name, register_name, runtime_field_id, 1u);
+    const auto field = make_field_ref(peripheral_name, descriptor.register_offset, register_name,
+                                      runtime_field_id);
+    if (field.valid) {
+        return modify_field(field, 1u);
     }
 
     const auto fallback = fallback_register_field(peripheral_name, register_name,
@@ -526,8 +666,10 @@ inline auto release_reset(const device::descriptors::family::ResetDescriptor& de
     const auto peripheral_name = as_string(descriptor.register_peripheral);
     const auto register_name = as_string(descriptor.register_name);
     const auto runtime_field_id = as_string(descriptor.register_field_id);
-    if (!runtime_field_id.empty()) {
-        return modify_field_by_runtime_id(peripheral_name, register_name, runtime_field_id, 0u);
+    const auto field = make_field_ref(peripheral_name, descriptor.register_offset, register_name,
+                                      runtime_field_id);
+    if (field.valid) {
+        return modify_field(field, 0u);
     }
 
     const auto fallback = fallback_register_field(peripheral_name, register_name,
@@ -539,48 +681,30 @@ inline auto release_reset(const device::descriptors::family::ResetDescriptor& de
     return core::Err(core::ErrorCode::NotSupported);
 }
 
-inline auto apply_clock_gate_by_name(std::string_view gate_name)
-    -> core::Result<void, core::ErrorCode> {
-    const auto* descriptor = device::runtime::find_clock_gate(gate_name);
-    if (descriptor == nullptr) {
-        return core::Err(core::ErrorCode::NotSupported);
-    }
-    return apply_clock_gate(*descriptor);
-}
-
-inline auto release_reset_by_name(std::string_view reset_name)
-    -> core::Result<void, core::ErrorCode> {
-    const auto* descriptor = device::runtime::find_reset(reset_name);
-    if (descriptor == nullptr) {
-        return core::Err(core::ErrorCode::NotSupported);
-    }
-    return release_reset(*descriptor);
-}
-
 inline auto enable_gpio_port_runtime(std::string_view peripheral_name)
     -> core::Result<void, core::ErrorCode> {
-    const auto* instance = device::runtime::find_peripheral_instance(peripheral_name);
-    if (instance == nullptr) {
-        return core::Err(core::ErrorCode::NotSupported);
-    }
-
-    const auto gate_name = as_string(instance->clock_gate_id);
-    if (!gate_name.empty()) {
-        const auto gate_result = apply_clock_gate_by_name(gate_name);
-        if (gate_result.is_err()) {
-            return gate_result;
+    if (const auto* binding = device::runtime::find_clock_binding(peripheral_name);
+        binding != nullptr) {
+        if (const auto* gate = device::runtime::find_clock_gate_by_index(binding->clock_gate_index);
+            gate != nullptr) {
+            const auto gate_result = apply_clock_gate(*gate);
+            if (gate_result.is_err()) {
+                return gate_result;
+            }
         }
-    }
 
-    const auto reset_name = as_string(instance->reset_id);
-    if (!reset_name.empty()) {
-        const auto reset_result = release_reset_by_name(reset_name);
-        if (reset_result.is_err()) {
-            return reset_result;
+        if (const auto* reset = device::runtime::find_reset_by_index(binding->reset_index);
+            reset != nullptr) {
+            const auto reset_result = release_reset(*reset);
+            if (reset_result.is_err()) {
+                return reset_result;
+            }
         }
+
+        return core::Ok();
     }
 
-    return core::Ok();
+    return core::Err(core::ErrorCode::NotSupported);
 }
 
 inline auto enable_gpio_port_runtime(char port) -> core::Result<void, core::ErrorCode> {
@@ -591,51 +715,51 @@ inline auto enable_gpio_port_runtime(char port) -> core::Result<void, core::Erro
     return enable_gpio_port_runtime(peripheral_name);
 }
 
-inline auto apply_stm32_pinmux(const ParsedPinTarget& pin_target, std::uint32_t selector)
+inline auto apply_stm32_pinmux(const PinTarget& pin_target, std::uint32_t selector)
     -> core::Result<void, core::ErrorCode> {
-    const auto peripheral_name = gpio_peripheral_name(pin_target.port);
-    const auto enable_result = enable_gpio_port_runtime(peripheral_name);
+    const auto enable_result = enable_gpio_port_runtime(pin_target.peripheral_name);
     if (enable_result.is_err()) {
         return enable_result;
     }
 
     const auto moder_field = make_indexed_field_name("MODER", pin_target.line);
     const auto moder_result =
-        modify_field(peripheral_name, "MODER", moder_field.data(), 0x2u);
+        modify_field(pin_target.peripheral_name, "MODER", moder_field.data(), 0x2u);
     if (moder_result.is_err()) {
         return moder_result;
     }
 
     const auto afr_register = pin_target.line < 8u ? "AFRL" : "AFRH";
     const auto afr_field = make_indexed_field_name("AFSEL", pin_target.line);
-    return modify_field(peripheral_name, afr_register, afr_field.data(), selector);
+    return modify_field(pin_target.peripheral_name, afr_register, afr_field.data(), selector);
 }
 
-inline auto apply_same70_pinmux(const ParsedPinTarget& pin_target, std::uint32_t selector)
+inline auto apply_same70_pinmux(const PinTarget& pin_target, std::uint32_t selector)
     -> core::Result<void, core::ErrorCode> {
     if (selector > 3u) {
         return core::Err(core::ErrorCode::NotSupported);
     }
 
-    const auto peripheral_name = gpio_peripheral_name(pin_target.port);
-    const auto enable_result = enable_gpio_port_runtime(peripheral_name);
+    const auto enable_result = enable_gpio_port_runtime(pin_target.peripheral_name);
     if (enable_result.is_err()) {
         return enable_result;
     }
 
     const auto pin_field = make_indexed_field_name("P", pin_target.line);
-    const auto pdr_bits = field_bits(peripheral_name, "PDR", pin_field.data(), 1u);
+    const auto pdr_bits = field_bits(pin_target.peripheral_name, "PDR", pin_field.data(), 1u);
     if (pdr_bits.is_err()) {
         return core::Err(core::ErrorCode{pdr_bits.unwrap_err()});
     }
-    const auto pdr_result = write_register(peripheral_name, "PDR", pdr_bits.unwrap());
+    const auto pdr_result =
+        write_register(pin_target.peripheral_name, "PDR", pdr_bits.unwrap());
     if (pdr_result.is_err()) {
         return pdr_result;
     }
 
-    const auto* abcdsr = device::runtime::find_register(peripheral_name, "ABCDSR[%s]");
-    const auto* base = device::runtime::find_peripheral_instance(peripheral_name);
-    const auto* field = device::runtime::find_register_field(peripheral_name, "ABCDSR[%s]", pin_field.data());
+    const auto* abcdsr = device::runtime::find_register(pin_target.peripheral_name, "ABCDSR[%s]");
+    const auto* base = device::runtime::find_peripheral_instance(pin_target.peripheral_name);
+    const auto* field = device::runtime::find_register_field(pin_target.peripheral_name,
+                                                             "ABCDSR[%s]", pin_field.data());
     if (abcdsr == nullptr || base == nullptr || field == nullptr) {
         return core::Err(core::ErrorCode::NotSupported);
     }
@@ -655,7 +779,12 @@ inline auto apply_route_operation(
     const auto schema_id = as_string(descriptor.schema_id);
 
     if (kind == "write-selector") {
-        const auto pin_target = parse_pin_target(as_string(descriptor.target_ref_id));
+        if (descriptor.target_ref_kind != RuntimeRefKind::pin ||
+            descriptor.value_ref_kind != RuntimeRefKind::selector) {
+            return core::Err(core::ErrorCode::NotSupported);
+        }
+
+        const auto pin_target = find_pin_target(as_string(descriptor.target_ref_id));
         if (!pin_target.valid || descriptor.value_int < 0) {
             return core::Err(core::ErrorCode::InvalidParameter);
         }
@@ -675,28 +804,25 @@ inline auto apply_route_operation(
     const auto peripheral_name = as_string(descriptor.register_peripheral);
     const auto register_name = as_string(descriptor.register_name);
     const auto runtime_field_id = as_string(descriptor.register_field_id);
+    const auto reg = make_register_ref(peripheral_name, descriptor.register_offset);
+    const auto field = make_field_ref(reg, peripheral_name, register_name, runtime_field_id);
 
     if (kind == "write-register") {
-        if (peripheral_name.empty() || register_name.empty()) {
+        if (!reg.valid) {
             return core::Err(core::ErrorCode::NotSupported);
         }
-        return write_register(peripheral_name, register_name,
-                              static_cast<std::uint32_t>(descriptor.value_int));
+        return write_register(reg, static_cast<std::uint32_t>(descriptor.value_int));
     }
 
-    if (!runtime_field_id.empty()) {
+    if (field.valid) {
         if (kind == "set-bit") {
-            return modify_field_by_runtime_id(peripheral_name, register_name, runtime_field_id,
-                                              1u);
+            return modify_field(field, 1u);
         }
         if (kind == "clear-bit") {
-            return modify_field_by_runtime_id(peripheral_name, register_name, runtime_field_id,
-                                              0u);
+            return modify_field(field, 0u);
         }
         if (kind == "write-field") {
-            return modify_field_by_runtime_id(
-                peripheral_name, register_name, runtime_field_id,
-                static_cast<std::uint32_t>(descriptor.value_int));
+            return modify_field(field, static_cast<std::uint32_t>(descriptor.value_int));
         }
     }
 

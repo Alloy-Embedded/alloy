@@ -43,8 +43,6 @@ struct PinInfo {
 struct PeripheralInfo {
     const char* name = nullptr;
     const char* schema_id = nullptr;
-    const char* clock_gate_id = nullptr;
-    const char* reset_id = nullptr;
     std::uintptr_t base_address = 0u;
     bool valid = false;
 };
@@ -137,8 +135,6 @@ struct PeripheralInfo {
         return {
             .name = descriptor.name,
             .schema_id = descriptor.backend_schema_id,
-            .clock_gate_id = descriptor.clock_gate_id,
-            .reset_id = descriptor.reset_id,
             .base_address = descriptor.base_address,
             .valid = true,
         };
@@ -211,78 +207,74 @@ struct PeripheralInfo {
     return find_field_ref(peripheral_name, base_address, register_name, field_name.data());
 }
 
-[[nodiscard]] consteval auto signal_field_name(std::string_view signal) -> std::array<char, 32> {
-    std::array<char, 32> buffer{};
-
-    const auto signal_start = signal.rfind('.');
-    const auto token = signal_start == std::string_view::npos ? signal : signal.substr(signal_start + 1);
-
-    if ((token.starts_with("GPIO") || token.starts_with("gpio")) && token.size() >= 6u &&
-        (token.substr(5u) == "EN" || token.substr(5u) == "RST")) {
-        buffer[0] = 'I';
-        buffer[1] = 'O';
-        buffer[2] = 'P';
-        buffer[3] = static_cast<char>(token[4] >= 'a' && token[4] <= 'z' ? token[4] - 'a' + 'A'
-                                                                          : token[4]);
-        for (std::size_t index = 5; index < token.size(); ++index) {
-            buffer[index - 1] = token[index];
-        }
-        return buffer;
-    }
-
-    for (std::size_t index = 0; index < token.size() && index < buffer.size() - 1; ++index) {
-        const auto ch = token[index];
-        buffer[index] =
-            static_cast<char>(ch >= 'a' && ch <= 'z' ? ch - 'a' + 'A' : ch);
-    }
-
-    return buffer;
-}
-
-[[nodiscard]] consteval auto find_clock_field_ref(std::string_view gate_name)
-    -> hal::detail::runtime::FieldRef {
-    for (const auto& descriptor : device::descriptors::tables::clock_gates) {
+[[nodiscard]] consteval auto find_clock_binding(std::string_view peripheral_name)
+    -> const device::descriptors::family::PeripheralClockBindingDescriptor* {
+    for (const auto& descriptor : device::descriptors::tables::peripheral_clock_bindings) {
         if (!strings_equal(descriptor.device, selected_device())) {
             continue;
         }
-        if (!strings_equal(descriptor.gate_name, gate_name)) {
-            continue;
+        if (strings_equal(descriptor.peripheral, peripheral_name)) {
+            return &descriptor;
         }
-
-        const auto rcc = find_peripheral(as_string(descriptor.register_peripheral));
-        if (!rcc.valid) {
-            return {};
-        }
-
-        auto field_name = signal_field_name(as_string(descriptor.enable_signal));
-        return find_field_ref(as_string(descriptor.register_peripheral), rcc.base_address,
-                              as_string(descriptor.register_name), field_name.data());
     }
-
-    return {};
+    return nullptr;
 }
 
-[[nodiscard]] consteval auto find_reset_field_ref(std::string_view reset_name)
+[[nodiscard]] consteval auto find_runtime_field_ref(std::string_view peripheral_name,
+                                                    std::uintptr_t base_address,
+                                                    int register_offset,
+                                                    std::string_view register_name,
+                                                    std::string_view runtime_field_id)
     -> hal::detail::runtime::FieldRef {
-    for (const auto& descriptor : device::descriptors::tables::resets) {
-        if (!strings_equal(descriptor.device, selected_device())) {
-            continue;
-        }
-        if (!strings_equal(descriptor.reset_name, reset_name)) {
-            continue;
-        }
+    const auto reg = hal::detail::runtime::make_register_ref(base_address, register_offset);
+    return hal::detail::runtime::make_field_ref(reg, peripheral_name, register_name,
+                                                runtime_field_id);
+}
 
-        const auto rcc = find_peripheral(as_string(descriptor.register_peripheral));
-        if (!rcc.valid) {
-            return {};
-        }
-
-        auto field_name = signal_field_name(as_string(descriptor.reset_signal));
-        return find_field_ref(as_string(descriptor.register_peripheral), rcc.base_address,
-                              as_string(descriptor.register_name), field_name.data());
+[[nodiscard]] consteval auto find_clock_field_ref(std::string_view peripheral_name)
+    -> hal::detail::runtime::FieldRef {
+    const auto* binding = find_clock_binding(peripheral_name);
+    if (binding == nullptr) {
+        return {};
     }
 
-    return {};
+    const auto* descriptor = device::runtime::find_clock_gate_by_index(binding->clock_gate_index);
+    if (descriptor == nullptr) {
+        return {};
+    }
+
+    const auto rcc = find_peripheral(as_string(descriptor->register_peripheral));
+    if (!rcc.valid) {
+        return {};
+    }
+
+    return find_runtime_field_ref(as_string(descriptor->register_peripheral), rcc.base_address,
+                                  descriptor->register_offset,
+                                  as_string(descriptor->register_name),
+                                  as_string(descriptor->register_field_id));
+}
+
+[[nodiscard]] consteval auto find_reset_field_ref(std::string_view peripheral_name)
+    -> hal::detail::runtime::FieldRef {
+    const auto* binding = find_clock_binding(peripheral_name);
+    if (binding == nullptr) {
+        return {};
+    }
+
+    const auto* descriptor = device::runtime::find_reset_by_index(binding->reset_index);
+    if (descriptor == nullptr) {
+        return {};
+    }
+
+    const auto rcc = find_peripheral(as_string(descriptor->register_peripheral));
+    if (!rcc.valid) {
+        return {};
+    }
+
+    return find_runtime_field_ref(as_string(descriptor->register_peripheral), rcc.base_address,
+                                  descriptor->register_offset,
+                                  as_string(descriptor->register_name),
+                                  as_string(descriptor->register_field_id));
 }
 
 }  // namespace detail
@@ -300,10 +292,8 @@ struct pin_handle {
     static constexpr auto schema =
         hal::detail::runtime::gpio_schema_from_id(detail::as_string(peripheral.schema_id));
 
-    static constexpr auto clock_gate_field =
-        detail::find_clock_field_ref(detail::as_string(peripheral.clock_gate_id));
-    static constexpr auto reset_field =
-        detail::find_reset_field_ref(detail::as_string(peripheral.reset_id));
+    static constexpr auto clock_gate_field = detail::find_clock_field_ref(peripheral_name);
+    static constexpr auto reset_field = detail::find_reset_field_ref(peripheral_name);
 
     static constexpr auto mode_field =
         detail::find_indexed_field_ref(peripheral_name, peripheral.base_address, "MODER", "MODER",
@@ -382,18 +372,13 @@ struct pin_handle {
     }();
 
     [[nodiscard]] static consteval auto requirements() {
-        detail::StringList<3> list{};
+        detail::StringList<2> list{};
         if constexpr (!valid) {
             return list;
         }
 
         list.items[list.count++] = "package:selected";
-        if (!detail::as_string(peripheral.clock_gate_id).empty()) {
-            list.items[list.count++] = detail::as_string(peripheral.clock_gate_id);
-        }
-        if (!detail::as_string(peripheral.reset_id).empty()) {
-            list.items[list.count++] = detail::as_string(peripheral.reset_id);
-        }
+        list.items[list.count++] = "runtime:descriptor-clock-binding";
         return list;
     }
 

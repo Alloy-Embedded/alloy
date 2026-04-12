@@ -187,8 +187,8 @@ struct GpioConfig {
 // I2C Types
 // ============================================================================
 
-// NOTE: I2C types moved to hal/interface/i2c.hpp to avoid redefinition
-// Use the types from hal/interface/i2c.hpp instead:
+// NOTE: I2C types live in the unified runtime path now.
+// Use the types from hal/i2c.hpp or hal/i2c/types.hpp instead:
 // - I2cAddressing (SevenBit, TenBit)
 // - I2cSpeed (Standard, Fast, FastPlus, HighSpeed)
 // - I2cConfig
@@ -197,8 +197,8 @@ struct GpioConfig {
 // SPI Types
 // ============================================================================
 
-// NOTE: SPI types moved to hal/interface/spi.hpp to avoid redefinition
-// Use the types from hal/interface/spi.hpp instead:
+// NOTE: SPI types live in the unified runtime path now.
+// Use the types from hal/spi.hpp or hal/spi/types.hpp instead:
 // - SpiMode (Mode0, Mode1, Mode2, Mode3)
 // - SpiBitOrder (MsbFirst, LsbFirst)
 // - SpiDataSize (Bits8, Bits16)
