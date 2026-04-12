@@ -38,8 +38,8 @@
 
 - [x] 4.1 Define one public API shape for GPIO with config defaults
 - [x] 4.2 Define one public API shape for UART with config defaults
-- [ ] 4.3 Define one public API shape for SPI with config defaults
-- [ ] 4.4 Define one public API shape for I2C with config defaults
+- [x] 4.3 Define one public API shape for SPI with config defaults
+- [x] 4.4 Define one public API shape for I2C with config defaults
 - [ ] 4.5 Define one public API shape for DMA with config defaults
 - [ ] 4.6 Remove the public architecture split between `simple`, `expert`, and `fluent`
 - [ ] 4.7 Replace legacy interface headers with the new unified API entrypoints
@@ -53,8 +53,8 @@
 
 - [x] 5.1 Rebuild GPIO on top of device descriptors and claims
 - [x] 5.2 Rebuild UART on top of instances, capabilities, connectors, and clock/reset descriptors
-- [ ] 5.3 Rebuild SPI on top of the same model
-- [ ] 5.4 Rebuild I2C on top of the same model
+- [x] 5.3 Rebuild SPI on top of the same model
+- [x] 5.4 Rebuild I2C on top of the same model
 - [ ] 5.5 Rebuild DMA on top of the same model
 - [x] 5.6 Add compile coverage for foundational-family driver bring-up using generated descriptors
 
