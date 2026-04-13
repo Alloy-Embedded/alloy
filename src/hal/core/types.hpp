@@ -246,8 +246,8 @@ struct PwmConfig {
 // ADC Types
 // ============================================================================
 
-// NOTE: ADC types moved to hal/interface/adc.hpp to avoid redefinition
-// Use the types from hal/interface/adc.hpp instead:
+// ADC keeps its public types alongside the runtime HAL surface. Do not
+// reintroduce legacy interface-layer redirects here.
 // - AdcResolution (Bits6, Bits8, Bits10, Bits12, Bits14, Bits16)
 // - AdcReference (Internal, External, Vdd)
 // - AdcSampleTime (Cycles1_5, Cycles7_5, etc.)

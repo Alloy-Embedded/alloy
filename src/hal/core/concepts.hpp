@@ -151,7 +151,7 @@ concept UartPeripheral = requires(T device, const T const_device, u8 byte) {
     // Status queries
     { const_device.available() } -> std::convertible_to<usize>;
 
-    // Configuration - requires UartConfig from interface/uart.hpp
+    // Configuration - requires the unified public UART config
     // Note: We don't check configure() signature here as it depends on UartConfig
     // which may vary. The interface file already has UartDevice concept for that.
 };
