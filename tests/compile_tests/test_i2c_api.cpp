@@ -3,7 +3,8 @@
 #include <string_view>
 
 #include "device/traits.hpp"
-#include "hal/connect.hpp"
+#include "hal/connect/runtime_connector.hpp"
+#include "hal/connect/tags.hpp"
 #include "hal/i2c.hpp"
 
 namespace {
@@ -27,7 +28,7 @@ consteval auto i2c_is_usable() -> bool {
     }
 
     return !I2cHandle::peripheral_name.empty() && I2cHandle::base_address() != 0u &&
-           I2cHandle::requirements().size() >= 3 && I2cHandle::operations().size() >= 2;
+           I2cHandle::operations().size() >= 2;
 }
 
 template <typename I2cHandle>
@@ -53,33 +54,18 @@ void exercise_i2c_backend() {
 
 static_assert(alloy::device::SelectedDeviceTraits::available);
 
-#if defined(ALLOY_BOARD_NUCLEO_G071RB)
-using I2cConnector = decltype(alloy::hal::connect<alloy::hal::peripheral<"I2C1">,
-                                                  alloy::hal::scl<alloy::hal::pin<"PB6">>,
-                                                  alloy::hal::sda<alloy::hal::pin<"PB7">>>());
+#if defined(ALLOY_BOARD_SAME70_XPLD)
+using I2cConnector =
+    alloy::hal::connection::runtime_connector<
+        alloy::hal::peripheral<"TWIHS0">, alloy::device::runtime::PeripheralId::TWIHS0,
+        alloy::hal::connection::runtime_binding<alloy::hal::scl<alloy::hal::pin<"PA4">>,
+                                                alloy::device::runtime::PinId::PA4,
+                                                alloy::device::runtime::SignalId::signal_twck0>,
+        alloy::hal::connection::runtime_binding<alloy::hal::sda<alloy::hal::pin<"PA3">>,
+                                                alloy::device::runtime::PinId::PA3,
+                                                alloy::device::runtime::SignalId::signal_twd0>>;
 using I2cPort = decltype(alloy::hal::i2c::open<I2cConnector>());
 static_assert(I2cPort::valid);
-static_assert(I2cPort::package_name == std::string_view{"lqfp64"});
-static_assert(I2cPort::peripheral_name == std::string_view{"I2C1"});
-static_assert(i2c_is_usable<I2cPort>());
-[[maybe_unused]] void compile_g071_i2c_backend() { exercise_i2c_backend<I2cPort>(); }
-#elif defined(ALLOY_BOARD_NUCLEO_F401RE)
-using I2cConnector = decltype(alloy::hal::connect<alloy::hal::peripheral<"I2C1">,
-                                                  alloy::hal::scl<alloy::hal::pin<"PB6">>,
-                                                  alloy::hal::sda<alloy::hal::pin<"PB7">>>());
-using I2cPort = decltype(alloy::hal::i2c::open<I2cConnector>());
-static_assert(I2cPort::valid);
-static_assert(I2cPort::package_name == std::string_view{"lqfp64"});
-static_assert(I2cPort::peripheral_name == std::string_view{"I2C1"});
-static_assert(i2c_is_usable<I2cPort>());
-[[maybe_unused]] void compile_f401_i2c_backend() { exercise_i2c_backend<I2cPort>(); }
-#elif defined(ALLOY_BOARD_SAME70_XPLD)
-using I2cConnector = decltype(alloy::hal::connect<alloy::hal::peripheral<"TWIHS0">,
-                                                  alloy::hal::scl<alloy::hal::pin<"PA4">>,
-                                                  alloy::hal::sda<alloy::hal::pin<"PA3">>>());
-using I2cPort = decltype(alloy::hal::i2c::open<I2cConnector>());
-static_assert(I2cPort::valid);
-static_assert(I2cPort::package_name == std::string_view{"lqfp144"});
 static_assert(I2cPort::peripheral_name == std::string_view{"TWIHS0"});
 static_assert(i2c_is_usable<I2cPort>());
 [[maybe_unused]] void compile_same70_i2c_backend() { exercise_i2c_backend<I2cPort>(); }

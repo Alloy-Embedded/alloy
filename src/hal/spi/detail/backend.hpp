@@ -6,12 +6,12 @@
 
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/detail/runtime_backend.hpp"
+#include "hal/detail/runtime_lite_ops.hpp"
 #include "hal/spi/types.hpp"
 
 namespace alloy::hal::spi::detail {
 
-namespace rt = alloy::hal::detail::runtime;
+namespace rt = alloy::hal::detail::runtime_lite;
 using BitOrder = SpiBitOrder;
 using DataSize = SpiDataSize;
 using Mode = SpiMode;
@@ -128,265 +128,232 @@ template <std::size_t N>
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_cr1_reg() -> rt::RegisterRef {
-    return rt::find_register_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR1");
+    return PortHandle::cr1_reg;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_cr2_reg() -> rt::RegisterRef {
-    return rt::find_register_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR2");
+    return PortHandle::cr2_reg;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_sr_reg() -> rt::RegisterRef {
-    return rt::find_register_ref(PortHandle::peripheral_name, PortHandle::base_address(), "SR");
+    return PortHandle::sr_reg;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_dr_reg() -> rt::RegisterRef {
-    return rt::find_register_ref(PortHandle::peripheral_name, PortHandle::base_address(), "DR");
+    return PortHandle::dr_reg;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_cpha_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR1",
-                              "CPHA");
+    return PortHandle::cpha_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_cpol_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR1",
-                              "CPOL");
+    return PortHandle::cpol_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_mstr_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR1",
-                              "MSTR");
+    return PortHandle::mstr_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_br_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR1",
-                              "BR");
+    return PortHandle::br_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_spe_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR1",
-                              "SPE");
+    return PortHandle::spe_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_lsbfirst_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR1",
-                              "LSBFIRST");
+    return PortHandle::lsbfirst_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_ssi_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR1",
-                              "SSI");
+    return PortHandle::ssi_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_ssm_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR1",
-                              "SSM");
+    return PortHandle::ssm_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_dff_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR1",
-                              "DFF");
+    return PortHandle::dff_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_ds_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR2",
-                              "DS");
+    return PortHandle::ds_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_frxth_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR2",
-                              "FRXTH");
+    return PortHandle::frxth_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_txe_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "SR",
-                              "TXE");
+    return PortHandle::txe_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_rxne_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "SR",
-                              "RXNE");
+    return PortHandle::rxne_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_bsy_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "SR",
-                              "BSY");
+    return PortHandle::bsy_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto st_dr_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "DR", "DR");
+    return PortHandle::dr_data_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_cr_reg() -> rt::RegisterRef {
-    return rt::find_register_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR");
+    return PortHandle::cr_reg;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_mr_reg() -> rt::RegisterRef {
-    return rt::find_register_ref(PortHandle::peripheral_name, PortHandle::base_address(), "MR");
+    return PortHandle::mr_reg;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_csr_reg() -> rt::RegisterRef {
-    return rt::find_register_ref(PortHandle::peripheral_name, PortHandle::base_address(),
-                                 "CSR[%s]");
+    return PortHandle::csr_reg;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_sr_reg() -> rt::RegisterRef {
-    return rt::find_register_ref(PortHandle::peripheral_name, PortHandle::base_address(), "SR");
+    return PortHandle::sr_reg;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_tdr_reg() -> rt::RegisterRef {
-    return rt::find_register_ref(PortHandle::peripheral_name, PortHandle::base_address(), "TDR");
+    return PortHandle::tdr_reg;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_rdr_reg() -> rt::RegisterRef {
-    return rt::find_register_ref(PortHandle::peripheral_name, PortHandle::base_address(), "RDR");
+    return PortHandle::rdr_reg;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_spien_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR",
-                              "SPIEN");
+    return PortHandle::spien_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_spidis_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR",
-                              "SPIDIS");
+    return PortHandle::spidis_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_swrst_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CR",
-                              "SWRST");
+    return PortHandle::swrst_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_mstr_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "MR",
-                              "MSTR");
+    return PortHandle::mstr_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_ps_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "MR", "PS");
+    return PortHandle::ps_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_pcsdec_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "MR",
-                              "PCSDEC");
+    return PortHandle::pcsdec_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_modfdis_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "MR",
-                              "MODFDIS");
+    return PortHandle::modfdis_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_pcs_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "MR",
-                              "PCS");
+    return PortHandle::pcs_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_dlybcs_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "MR",
-                              "DLYBCS");
+    return PortHandle::dlybcs_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_cpol_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CSR[%s]",
-                              "CPOL");
+    return PortHandle::cpol_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_ncpha_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CSR[%s]",
-                              "NCPHA");
+    return PortHandle::ncpha_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_bits_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CSR[%s]",
-                              "BITS");
+    return PortHandle::bits_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_scbr_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CSR[%s]",
-                              "SCBR");
+    return PortHandle::scbr_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_dlybs_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CSR[%s]",
-                              "DLYBS");
+    return PortHandle::dlybs_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_dlybct_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "CSR[%s]",
-                              "DLYBCT");
+    return PortHandle::dlybct_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_tdre_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "SR",
-                              "TDRE");
+    return PortHandle::tdre_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_rdrf_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "SR",
-                              "RDRF");
+    return PortHandle::rdrf_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_txempty_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "SR",
-                              "TXEMPTY");
+    return PortHandle::txempty_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_td_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "TDR", "TD");
+    return PortHandle::td_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_tdr_pcs_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "TDR",
-                              "PCS");
+    return PortHandle::tdr_pcs_field;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto mc_rd_field() -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), "RDR", "RD");
+    return PortHandle::rd_field;
 }
 
 template <typename PortHandle>

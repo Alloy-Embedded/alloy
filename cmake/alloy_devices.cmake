@@ -53,6 +53,7 @@ endfunction()
 
 function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_CONTRACT_AVAILABLE FALSE PARENT_SCOPE)
+    set(ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE FALSE PARENT_SCOPE)
     set(ALLOY_DEVICE_INCLUDE_DIRS "" PARENT_SCOPE)
     set(ALLOY_DEVICE_STARTUP_VECTORS_SOURCE "" PARENT_SCOPE)
     set(ALLOY_DESCRIPTOR_RUNTIME_ENABLED FALSE PARENT_SCOPE)
@@ -79,6 +80,7 @@ function(alloy_configure_selected_device)
     set(_selected_config_header "${_selected_config_dir}/selected_config.hpp")
 
     set(_contract_available 0)
+    set(_runtime_lite_available 0)
     set(_descriptor_runtime_enabled 0)
     set(_family_root "")
     set(_startup_vectors "")
@@ -90,16 +92,30 @@ function(alloy_configure_selected_device)
         )
 
         if(
-            EXISTS "${_family_root}/generated/connector_tables.hpp"
-            AND EXISTS "${_family_root}/generated/devices/${_device}/register_map.hpp"
-            AND EXISTS "${_family_root}/generated/devices/${_device}/startup_descriptors.hpp"
+            EXISTS "${_family_root}/generated/runtime/types.hpp"
+            AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/clock_bindings.hpp"
+            AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/driver_semantics/common.hpp"
+            AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/driver_semantics/gpio.hpp"
+            AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/driver_semantics/i2c.hpp"
+            AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/driver_semantics/spi.hpp"
+            AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/driver_semantics/uart.hpp"
+            AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/peripheral_instances.hpp"
+            AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/pins.hpp"
+            AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/register_fields.hpp"
+            AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/registers.hpp"
+            AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/routes.hpp"
         )
+            set(_runtime_lite_available 1)
+        endif()
+
+        if(_runtime_lite_available)
             set(_contract_available 1)
             set(_descriptor_runtime_enabled 1)
         endif()
     endif()
 
     set(ALLOY_DEVICE_CONTRACT_AVAILABLE_INT "${_contract_available}")
+    set(ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE_INT "${_runtime_lite_available}")
     set(ALLOY_DEVICE_SELECTED_VENDOR "${_vendor}")
     set(ALLOY_DEVICE_SELECTED_FAMILY "${_family}")
     set(ALLOY_DEVICE_SELECTED_NAME "${_device}")
@@ -120,6 +136,7 @@ function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_FAMILY_ROOT "${_family_root}" PARENT_SCOPE)
     set(ALLOY_DEVICE_STARTUP_VECTORS_SOURCE "${_startup_vectors}" PARENT_SCOPE)
     set(ALLOY_DEVICE_CONTRACT_AVAILABLE "${_contract_available}" PARENT_SCOPE)
+    set(ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE "${_runtime_lite_available}" PARENT_SCOPE)
     set(ALLOY_DESCRIPTOR_RUNTIME_ENABLED "${_descriptor_runtime_enabled}" PARENT_SCOPE)
 
     if(_device)

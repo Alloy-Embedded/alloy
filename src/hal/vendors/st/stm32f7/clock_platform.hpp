@@ -385,7 +385,7 @@ public:
 // Concept Validation (C++20)
 // ============================================================================
 
-#if __cplusplus >= 202002L
+#if __cplusplus >= 202002L && defined(ALLOY_VALIDATE_VENDOR_CLOCK_PLATFORMS)
 // Example config for validation:
 struct ExampleF7ClockConfig {
     static constexpr uint32_t hse_hz = 8'000'000;

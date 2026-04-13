@@ -6,12 +6,12 @@
 
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/detail/runtime_backend.hpp"
+#include "hal/detail/runtime_lite_ops.hpp"
 #include "hal/i2c/types.hpp"
 
 namespace alloy::hal::i2c::detail {
 
-namespace rt = alloy::hal::detail::runtime;
+namespace rt = alloy::hal::detail::runtime_lite;
 using Addressing = I2cAddressing;
 using Speed = I2cSpeed;
 
@@ -39,14 +39,220 @@ template <std::size_t N>
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto reg(std::string_view name) -> rt::RegisterRef {
-    return rt::find_register_ref(PortHandle::peripheral_name, PortHandle::base_address(), name);
+    if (name == "CR1") {
+        return PortHandle::cr1_reg;
+    }
+    if (name == "CR2") {
+        return PortHandle::cr2_reg;
+    }
+    if (name == "CCR") {
+        return PortHandle::ccr_reg;
+    }
+    if (name == "TRISE") {
+        return PortHandle::trise_reg;
+    }
+    if (name == "SR1") {
+        return PortHandle::sr1_reg;
+    }
+    if (name == "SR2") {
+        return PortHandle::sr2_reg;
+    }
+    if (name == "DR") {
+        return PortHandle::dr_reg;
+    }
+    if (name == "ICR") {
+        return PortHandle::icr_reg;
+    }
+    if (name == "CR") {
+        return PortHandle::cr_reg;
+    }
+    if (name == "MMR") {
+        return PortHandle::mmr_reg;
+    }
+    if (name == "IADR") {
+        return PortHandle::iadr_reg;
+    }
+    if (name == "CWGR") {
+        return PortHandle::cwgr_reg;
+    }
+    if (name == "SR") {
+        return PortHandle::sr_reg;
+    }
+    if (name == "RHR") {
+        return PortHandle::rhr_reg;
+    }
+    if (name == "THR") {
+        return PortHandle::thr_reg;
+    }
+    return rt::kInvalidRegisterRef;
 }
 
 template <typename PortHandle>
 [[nodiscard]] constexpr auto field(std::string_view reg_name, std::string_view field_name)
     -> rt::FieldRef {
-    return rt::find_field_ref(PortHandle::peripheral_name, PortHandle::base_address(), reg_name,
-                              field_name);
+    if (reg_name == "CR1" && field_name == "PE") {
+        return PortHandle::pe_field;
+    }
+    if (reg_name == "CR1" && field_name == "ACK") {
+        return PortHandle::ack_field;
+    }
+    if (reg_name == "CR1" && field_name == "START") {
+        return PortHandle::start_field;
+    }
+    if (reg_name == "CR1" && field_name == "STOP") {
+        return PortHandle::stop_field;
+    }
+    if (reg_name == "CR2" && field_name == "FREQ") {
+        return PortHandle::freq_field;
+    }
+    if (reg_name == "CCR" && field_name == "CCR") {
+        return PortHandle::ccr_field;
+    }
+    if (reg_name == "CCR" && field_name == "F_S") {
+        return PortHandle::fs_field;
+    }
+    if (reg_name == "CCR" && field_name == "DUTY") {
+        return PortHandle::duty_field;
+    }
+    if (reg_name == "TRISE" && field_name == "TRISE") {
+        return PortHandle::trise_field;
+    }
+    if (reg_name == "SR1" && field_name == "SB") {
+        return PortHandle::sb_field;
+    }
+    if (reg_name == "SR1" && field_name == "ADDR") {
+        return PortHandle::addr_field;
+    }
+    if (reg_name == "SR1" && (field_name == "TXE" || field_name == "TxE")) {
+        return PortHandle::txe_field;
+    }
+    if (reg_name == "SR1" && (field_name == "RXNE" || field_name == "RxNE")) {
+        return PortHandle::rxne_field;
+    }
+    if (reg_name == "SR1" && field_name == "BTF") {
+        return PortHandle::btf_field;
+    }
+    if (reg_name == "SR1" && field_name == "AF") {
+        return PortHandle::af_field;
+    }
+    if (reg_name == "SR1" && field_name == "BERR") {
+        return PortHandle::berr_field;
+    }
+    if (reg_name == "SR1" && field_name == "ARLO") {
+        return PortHandle::arlo_field;
+    }
+    if (reg_name == "SR2" && field_name == "BUSY") {
+        return PortHandle::busy_field;
+    }
+    if (reg_name == "DR" && field_name == "DR") {
+        return PortHandle::dr_data_field;
+    }
+    if (reg_name == "CR2" && field_name == "SADD") {
+        return PortHandle::sadd_field;
+    }
+    if (reg_name == "CR2" && field_name == "RD_WRN") {
+        return PortHandle::rd_wrn_field;
+    }
+    if (reg_name == "CR2" && field_name == "NBYTES") {
+        return PortHandle::nbytes_field;
+    }
+    if (reg_name == "CR2" && field_name == "AUTOEND") {
+        return PortHandle::autoend_field;
+    }
+    if (reg_name == "ISR" && field_name == "TXIS") {
+        return PortHandle::txis_field;
+    }
+    if (reg_name == "ISR" && field_name == "TC") {
+        return PortHandle::tc_field;
+    }
+    if (reg_name == "ISR" && field_name == "STOPF") {
+        return PortHandle::stopf_field;
+    }
+    if (reg_name == "TXDR" && field_name == "TXDATA") {
+        return PortHandle::txdata_field;
+    }
+    if (reg_name == "RXDR" && field_name == "RXDATA") {
+        return PortHandle::rxdata_field;
+    }
+    if (reg_name == "THR" && field_name == "TXDATA") {
+        return PortHandle::txdata_field;
+    }
+    if (reg_name == "RHR" && field_name == "RXDATA") {
+        return PortHandle::rxdata_field;
+    }
+    if (reg_name == "ISR" && field_name == "NACKF") {
+        return PortHandle::nackf_field;
+    }
+    if (reg_name == "ISR" && field_name == "BERR") {
+        return PortHandle::berr_isr_field;
+    }
+    if (reg_name == "ISR" && field_name == "ARLO") {
+        return PortHandle::arlo_isr_field;
+    }
+    if (reg_name == "ICR" && field_name == "STOPCF") {
+        return PortHandle::stopcf_field;
+    }
+    if (reg_name == "ICR" && field_name == "NACKCF") {
+        return PortHandle::nackcf_field;
+    }
+    if (reg_name == "ICR" && field_name == "BERRCF") {
+        return PortHandle::berrcf_field;
+    }
+    if (reg_name == "ICR" && field_name == "ARLOCF") {
+        return PortHandle::arlocf_field;
+    }
+    if (reg_name == "CR" && field_name == "MSEN") {
+        return PortHandle::msen_field;
+    }
+    if (reg_name == "CR" && field_name == "MSDIS") {
+        return PortHandle::msdis_field;
+    }
+    if (reg_name == "CR" && field_name == "SVDIS") {
+        return PortHandle::svdis_field;
+    }
+    if (reg_name == "CR" && field_name == "SWRST") {
+        return PortHandle::swrst_field;
+    }
+    if (reg_name == "MMR" && field_name == "IADRSZ") {
+        return PortHandle::iadrsz_field;
+    }
+    if (reg_name == "MMR" && field_name == "MREAD") {
+        return PortHandle::mread_field;
+    }
+    if (reg_name == "MMR" && field_name == "DADR") {
+        return PortHandle::dadr_field;
+    }
+    if (reg_name == "IADR" && field_name == "IADR") {
+        return PortHandle::iadr_field;
+    }
+    if (reg_name == "CWGR" && field_name == "CLDIV") {
+        return PortHandle::cldiv_field;
+    }
+    if (reg_name == "CWGR" && field_name == "CHDIV") {
+        return PortHandle::chdiv_field;
+    }
+    if (reg_name == "CWGR" && field_name == "CKDIV") {
+        return PortHandle::ckdiv_field;
+    }
+    if (reg_name == "CWGR" && field_name == "HOLD") {
+        return PortHandle::hold_field;
+    }
+    if (reg_name == "SR" && field_name == "TXCOMP") {
+        return PortHandle::txcomp_field;
+    }
+    if (reg_name == "SR" && field_name == "RXRDY") {
+        return PortHandle::rxrdy_field;
+    }
+    if (reg_name == "SR" && field_name == "TXRDY") {
+        return PortHandle::txrdy_field;
+    }
+    if (reg_name == "SR" && field_name == "NACK") {
+        return PortHandle::nack_field;
+    }
+    if (reg_name == "SR" && field_name == "ARBLST") {
+        return PortHandle::arblst_field;
+    }
+    return rt::kInvalidFieldRef;
 }
 
 [[nodiscard]] constexpr auto i2c_speed_hz(Speed speed) -> std::uint32_t {

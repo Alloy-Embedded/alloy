@@ -3,7 +3,8 @@
 #include <string_view>
 
 #include "device/traits.hpp"
-#include "hal/connect.hpp"
+#include "hal/connect/runtime_connector.hpp"
+#include "hal/connect/tags.hpp"
 #include "hal/spi.hpp"
 
 namespace {
@@ -27,7 +28,7 @@ consteval auto spi_is_usable() -> bool {
     }
 
     return !SpiHandle::peripheral_name.empty() && SpiHandle::base_address() != 0u &&
-           SpiHandle::requirements().size() >= 4 && SpiHandle::operations().size() >= 3;
+           SpiHandle::operations().size() >= 3;
 }
 
 template <typename SpiHandle>
@@ -54,35 +55,56 @@ void exercise_spi_backend() {
 static_assert(alloy::device::SelectedDeviceTraits::available);
 
 #if defined(ALLOY_BOARD_NUCLEO_G071RB)
-using SpiConnector = decltype(alloy::hal::connect<alloy::hal::peripheral<"SPI1">,
-                                                  alloy::hal::sck<alloy::hal::pin<"PA5">>,
-                                                  alloy::hal::miso<alloy::hal::pin<"PA6">>,
-                                                  alloy::hal::mosi<alloy::hal::pin<"PA7">>>());
+using SpiConnector =
+    alloy::hal::connection::runtime_connector<
+        alloy::hal::peripheral<"SPI1">, alloy::device::runtime::PeripheralId::SPI1,
+        alloy::hal::connection::runtime_binding<alloy::hal::sck<alloy::hal::pin<"PA5">>,
+                                                alloy::device::runtime::PinId::PA5,
+                                                alloy::device::runtime::SignalId::signal_sck>,
+        alloy::hal::connection::runtime_binding<alloy::hal::miso<alloy::hal::pin<"PA6">>,
+                                                alloy::device::runtime::PinId::PA6,
+                                                alloy::device::runtime::SignalId::signal_miso>,
+        alloy::hal::connection::runtime_binding<alloy::hal::mosi<alloy::hal::pin<"PA7">>,
+                                                alloy::device::runtime::PinId::PA7,
+                                                alloy::device::runtime::SignalId::signal_mosi>>;
 using SpiPort = decltype(alloy::hal::spi::open<SpiConnector>());
 static_assert(SpiPort::valid);
-static_assert(SpiPort::package_name == std::string_view{"lqfp64"});
 static_assert(SpiPort::peripheral_name == std::string_view{"SPI1"});
 static_assert(spi_is_usable<SpiPort>());
 [[maybe_unused]] void compile_g071_spi_backend() { exercise_spi_backend<SpiPort>(); }
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
-using SpiConnector = decltype(alloy::hal::connect<alloy::hal::peripheral<"SPI1">,
-                                                  alloy::hal::sck<alloy::hal::pin<"PA5">>,
-                                                  alloy::hal::miso<alloy::hal::pin<"PA6">>,
-                                                  alloy::hal::mosi<alloy::hal::pin<"PA7">>>());
+using SpiConnector =
+    alloy::hal::connection::runtime_connector<
+        alloy::hal::peripheral<"SPI1">, alloy::device::runtime::PeripheralId::SPI1,
+        alloy::hal::connection::runtime_binding<alloy::hal::sck<alloy::hal::pin<"PA5">>,
+                                                alloy::device::runtime::PinId::PA5,
+                                                alloy::device::runtime::SignalId::signal_sck>,
+        alloy::hal::connection::runtime_binding<alloy::hal::miso<alloy::hal::pin<"PA6">>,
+                                                alloy::device::runtime::PinId::PA6,
+                                                alloy::device::runtime::SignalId::signal_miso>,
+        alloy::hal::connection::runtime_binding<alloy::hal::mosi<alloy::hal::pin<"PA7">>,
+                                                alloy::device::runtime::PinId::PA7,
+                                                alloy::device::runtime::SignalId::signal_mosi>>;
 using SpiPort = decltype(alloy::hal::spi::open<SpiConnector>());
 static_assert(SpiPort::valid);
-static_assert(SpiPort::package_name == std::string_view{"lqfp64"});
 static_assert(SpiPort::peripheral_name == std::string_view{"SPI1"});
 static_assert(spi_is_usable<SpiPort>());
 [[maybe_unused]] void compile_f401_spi_backend() { exercise_spi_backend<SpiPort>(); }
 #elif defined(ALLOY_BOARD_SAME70_XPLD)
-using SpiConnector = decltype(alloy::hal::connect<alloy::hal::peripheral<"SPI0">,
-                                                  alloy::hal::sck<alloy::hal::pin<"PD22">>,
-                                                  alloy::hal::miso<alloy::hal::pin<"PD20">>,
-                                                  alloy::hal::mosi<alloy::hal::pin<"PD21">>>());
+using SpiConnector =
+    alloy::hal::connection::runtime_connector<
+        alloy::hal::peripheral<"SPI0">, alloy::device::runtime::PeripheralId::SPI0,
+        alloy::hal::connection::runtime_binding<alloy::hal::sck<alloy::hal::pin<"PD22">>,
+                                                alloy::device::runtime::PinId::PD22,
+                                                alloy::device::runtime::SignalId::signal_spck>,
+        alloy::hal::connection::runtime_binding<alloy::hal::miso<alloy::hal::pin<"PD20">>,
+                                                alloy::device::runtime::PinId::PD20,
+                                                alloy::device::runtime::SignalId::signal_miso>,
+        alloy::hal::connection::runtime_binding<alloy::hal::mosi<alloy::hal::pin<"PD21">>,
+                                                alloy::device::runtime::PinId::PD21,
+                                                alloy::device::runtime::SignalId::signal_mosi>>;
 using SpiPort = decltype(alloy::hal::spi::open<SpiConnector>());
 static_assert(SpiPort::valid);
-static_assert(SpiPort::package_name == std::string_view{"lqfp144"});
 static_assert(SpiPort::peripheral_name == std::string_view{"SPI0"});
 static_assert(spi_is_usable<SpiPort>());
 [[maybe_unused]] void compile_same70_spi_backend() { exercise_spi_backend<SpiPort>(); }

@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "hal/detail/runtime_backend.hpp"
+#include "hal/detail/runtime_lite_ops.hpp"
 #include "hal/types.hpp"
 
 #include "core/error_code.hpp"
@@ -10,7 +10,7 @@
 
 namespace alloy::hal::gpio::detail {
 
-namespace rt = alloy::hal::detail::runtime;
+namespace rt = alloy::hal::detail::runtime_lite;
 
 [[nodiscard]] constexpr auto pull_value(PinPull pull) -> std::uint32_t {
     switch (pull) {
@@ -142,26 +142,33 @@ auto configure_gpio(const GpioConfig& config) -> core::Result<void, core::ErrorC
 
     constexpr auto schema = rt::gpio_schema_for<PinHandle>();
     if constexpr (schema == rt::GpioSchema::st_gpio) {
-        if (PinHandle::clock_gate_field.valid) {
-            const auto clock_result = rt::modify_field(PinHandle::clock_gate_field, 1u);
-            if (clock_result.is_err()) {
-                return clock_result;
-            }
-        }
-        if (PinHandle::reset_field.valid) {
-            const auto reset_result = rt::modify_field(PinHandle::reset_field, 0u);
-            if (reset_result.is_err()) {
-                return reset_result;
-            }
+        const auto enable_result = rt::enable_gpio_port_runtime<PinHandle::peripheral_id>();
+        if (enable_result.is_err()) {
+            return enable_result;
         }
         return configure_st_gpio<PinHandle>(config);
     }
     if constexpr (schema == rt::GpioSchema::microchip_pio_v) {
-        const auto clock_result = rt::enable_gpio_port_runtime(PinHandle::peripheral_name);
+        const auto clock_result = rt::enable_gpio_port_runtime<PinHandle::peripheral_id>();
         if (clock_result.is_err()) {
             return clock_result;
         }
         return configure_microchip_pio<PinHandle>(config);
+    }
+    if constexpr (schema == rt::GpioSchema::nxp_imxrt_gpio_v1) {
+        const auto direction_result =
+            rt::modify_field(PinHandle::direction_field,
+                             config.direction == PinDirection::Output ? 1u : 0u);
+        if (direction_result.is_err()) {
+            return direction_result;
+        }
+
+        if (config.direction == PinDirection::Output) {
+            return rt::modify_field(PinHandle::output_value_field,
+                                    config.initial_state == PinState::High ? 1u : 0u);
+        }
+
+        return core::Ok();
     }
 
     return core::Err(core::ErrorCode::NotSupported);
@@ -198,6 +205,11 @@ auto write_gpio(const GpioConfig& config, PinState state) -> core::Result<void, 
         return rt::write_register(PinHandle::pio_set_field.reg, bits.unwrap());
     }
 
+    if constexpr (schema == rt::GpioSchema::nxp_imxrt_gpio_v1) {
+        return rt::modify_field(PinHandle::output_value_field,
+                                state == PinState::High ? 1u : 0u);
+    }
+
     return core::Err(core::ErrorCode::NotSupported);
 }
 
@@ -219,6 +231,14 @@ auto read_gpio() -> core::Result<PinState, core::ErrorCode> {
 
     if constexpr (schema == rt::GpioSchema::microchip_pio_v) {
         const auto value = rt::read_field(PinHandle::pio_input_state_field);
+        if (value.is_err()) {
+            return core::Err(core::ErrorCode{value.unwrap_err()});
+        }
+        return core::Ok(value.unwrap() != 0u ? PinState::High : PinState::Low);
+    }
+
+    if constexpr (schema == rt::GpioSchema::nxp_imxrt_gpio_v1) {
+        const auto value = rt::read_field(PinHandle::input_field);
         if (value.is_err()) {
             return core::Err(core::ErrorCode{value.unwrap_err()});
         }

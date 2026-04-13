@@ -1,8 +1,7 @@
 #include <iterator>
 
-#include "arch/cortex_m/startup_contract.hpp"
-#include "device/descriptors.hpp"
 #include "device/import.hpp"
+#include "device/runtime.hpp"
 #include "device/traits.hpp"
 
 static_assert(alloy::device::SelectedDeviceTraits::available,
@@ -15,10 +14,10 @@ int main() {
     using namespace alloy::device;
 
     static_assert(imported::available);
-    static_assert(SelectedDescriptors::available);
-    static_assert(alloy::arch::cortex_m::SelectedStartupContract::available);
-    static_assert(std::size(alloy::arch::cortex_m::kVectorSlots) > 0);
-    static_assert(std::size(alloy::arch::cortex_m::kStartupDescriptors) > 0);
+    static_assert(SelectedRuntimeDescriptors::available);
+    static_assert(!runtime::peripherals.empty());
+    static_assert(!runtime::pins.empty());
+    static_assert(!runtime::registers.empty());
 
     return 0;
 }

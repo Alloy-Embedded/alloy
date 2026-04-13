@@ -9,12 +9,12 @@
 
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/detail/runtime_backend.hpp"
+#include "hal/detail/runtime_lite_ops.hpp"
 #include "hal/types.hpp"
 
 namespace alloy::hal::uart::detail {
 
-namespace rt = alloy::hal::detail::runtime;
+namespace rt = alloy::hal::detail::runtime_lite;
 
 struct FieldWrite {
     rt::FieldRef field{};
@@ -310,15 +310,13 @@ auto configure_uart(const PortHandle& handle) -> core::Result<void, core::ErrorC
         return operations_result;
     }
 
-    constexpr auto schema = PortHandle::schema;
-    if constexpr (schema == rt::UartSchema::st_sci3_v2_1_cube ||
-                  schema == rt::UartSchema::st_sci2_v1_2_cube) {
+    if constexpr (PortHandle::is_st_style) {
         return configure_st_uart<PortHandle>(handle.config());
     }
-    if constexpr (schema == rt::UartSchema::microchip_uart_r) {
+    if constexpr (PortHandle::is_microchip_uart_r) {
         return configure_microchip_uart_r<PortHandle>(handle.config());
     }
-    if constexpr (schema == rt::UartSchema::microchip_usart_zw) {
+    if constexpr (PortHandle::is_microchip_usart_zw) {
         return configure_microchip_usart_zw<PortHandle>(handle.config());
     }
 
@@ -331,22 +329,21 @@ auto write_uart_byte(const PortHandle&, std::byte value) -> core::Result<void, c
         return core::Err(core::ErrorCode::InvalidParameter);
     }
 
-    constexpr auto schema = PortHandle::schema;
-    if constexpr (schema == rt::UartSchema::st_sci3_v2_1_cube) {
+    if constexpr (PortHandle::is_st_modern_style) {
         if (const auto ready = wait_for_field(PortHandle::txe_isr_field); ready.is_err()) {
             return ready;
         }
         return rt::modify_field(PortHandle::tdr_field,
                                 static_cast<std::uint32_t>(std::to_integer<std::uint8_t>(value)));
     }
-    if constexpr (schema == rt::UartSchema::st_sci2_v1_2_cube) {
+    if constexpr (PortHandle::is_st_legacy_style) {
         if (const auto ready = wait_for_field(PortHandle::txe_sr_field); ready.is_err()) {
             return ready;
         }
         return rt::modify_field(PortHandle::dr_field,
                                 static_cast<std::uint32_t>(std::to_integer<std::uint8_t>(value)));
     }
-    if constexpr (schema == rt::UartSchema::microchip_uart_r) {
+    if constexpr (PortHandle::is_microchip_uart_r) {
         if (const auto ready = wait_for_field(PortHandle::txrdy_field); ready.is_err()) {
             return ready;
         }
@@ -359,7 +356,7 @@ auto write_uart_byte(const PortHandle&, std::byte value) -> core::Result<void, c
         }
         return rt::write_register(PortHandle::thr_reg, tx_value.unwrap());
     }
-    if constexpr (schema == rt::UartSchema::microchip_usart_zw) {
+    if constexpr (PortHandle::is_microchip_usart_zw) {
         if (const auto ready = wait_for_field(PortHandle::us_txrdy_field); ready.is_err()) {
             return ready;
         }
@@ -401,28 +398,27 @@ auto read_uart(const PortHandle&, std::span<std::byte> buffer)
     }
 
     auto read = std::size_t{0};
-    constexpr auto schema = PortHandle::schema;
     for (; read < buffer.size(); ++read) {
         core::Result<void, core::ErrorCode> ready = core::Err(core::ErrorCode::NotSupported);
         core::Result<std::uint32_t, core::ErrorCode> data =
             core::Err(core::ErrorCode::NotSupported);
 
-        if constexpr (schema == rt::UartSchema::st_sci3_v2_1_cube) {
+        if constexpr (PortHandle::is_st_modern_style) {
             ready = wait_for_field(PortHandle::rxne_isr_field);
             if (ready.is_ok()) {
                 data = rt::read_field(PortHandle::rdr_field);
             }
-        } else if constexpr (schema == rt::UartSchema::st_sci2_v1_2_cube) {
+        } else if constexpr (PortHandle::is_st_legacy_style) {
             ready = wait_for_field(PortHandle::rxne_sr_field);
             if (ready.is_ok()) {
                 data = rt::read_field(PortHandle::dr_field);
             }
-        } else if constexpr (schema == rt::UartSchema::microchip_uart_r) {
+        } else if constexpr (PortHandle::is_microchip_uart_r) {
             ready = wait_for_field(PortHandle::rxrdy_field);
             if (ready.is_ok()) {
                 data = rt::read_field(PortHandle::rxchr_field);
             }
-        } else if constexpr (schema == rt::UartSchema::microchip_usart_zw) {
+        } else if constexpr (PortHandle::is_microchip_usart_zw) {
             ready = wait_for_field(PortHandle::us_rxrdy_field);
             if (ready.is_ok()) {
                 data = rt::read_field(PortHandle::us_rxchr_field);
@@ -454,17 +450,16 @@ auto flush_uart(const PortHandle&) -> core::Result<void, core::ErrorCode> {
         return core::Err(core::ErrorCode::InvalidParameter);
     }
 
-    constexpr auto schema = PortHandle::schema;
-    if constexpr (schema == rt::UartSchema::st_sci3_v2_1_cube) {
+    if constexpr (PortHandle::is_st_modern_style) {
         return wait_for_field(PortHandle::tc_isr_field);
     }
-    if constexpr (schema == rt::UartSchema::st_sci2_v1_2_cube) {
+    if constexpr (PortHandle::is_st_legacy_style) {
         return wait_for_field(PortHandle::tc_sr_field);
     }
-    if constexpr (schema == rt::UartSchema::microchip_uart_r) {
+    if constexpr (PortHandle::is_microchip_uart_r) {
         return wait_for_field(PortHandle::txempty_field);
     }
-    if constexpr (schema == rt::UartSchema::microchip_usart_zw) {
+    if constexpr (PortHandle::is_microchip_usart_zw) {
         return wait_for_field(PortHandle::us_txempty_field);
     }
 

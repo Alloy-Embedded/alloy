@@ -4,7 +4,8 @@
 #include <cstddef>
 #include <string_view>
 
-#include "hal/connect/connect.hpp"
+#include "hal/connect/runtime_connector.hpp"
+#include "hal/connect/tags.hpp"
 
 namespace alloy::hal::claim {
 
@@ -37,8 +38,14 @@ requires(Connector::valid) struct connector_claim {
     using peripheral = peripheral_claim<typename Connector::peripheral_type>;
 
     static constexpr auto pin_count = Connector::binding_count;
-    static constexpr auto requirement_count = Connector::requirements().size();
-    static constexpr auto operation_count = Connector::operations().size();
+
+    [[nodiscard]] static consteval auto requirement_count() -> std::size_t {
+        return Connector::requirements().size();
+    }
+
+    [[nodiscard]] static consteval auto operation_count() -> std::size_t {
+        return Connector::operations().size();
+    }
 
     template <std::size_t Index>
     [[nodiscard]] static consteval auto pin_name_at() -> std::string_view {
