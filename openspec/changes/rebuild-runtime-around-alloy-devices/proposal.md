@@ -50,7 +50,7 @@ cleanup-first reset.
   - `migration-cleanup`
 - Affected code:
   - `src/hal/**`
-  - `src/startup/**`
+  - `src/arch/**`
   - `boards/**`
   - `examples/**`
   - `cmake/**`

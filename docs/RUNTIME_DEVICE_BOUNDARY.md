@@ -67,7 +67,6 @@ not yet fully blocked:
 - `boards/**`
 - `examples/**`
 - `src/hal/**`
-- `src/startup/**`
 
 ## Migration Direction
 
@@ -78,7 +77,7 @@ The cleanup proceeds in this order:
 3. rebuild connector and claim kernel
 4. rebuild drivers on descriptors
 5. rewrite boards and examples
-6. delete legacy vendor-centric glue
+6. delete legacy vendor-centric glue and any dead startup/runtime residue
 
 ## Current Supported Entry Point
 

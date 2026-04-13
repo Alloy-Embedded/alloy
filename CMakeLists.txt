@@ -122,7 +122,6 @@ alloy_resolve_board_manifest(
     ALLOY_BOARD_MANIFEST_FOUND
     BOARD_HEADER_PATH
     LINKER_SCRIPT
-    STARTUP_SOURCE
     ALLOY_BOARD_VENDOR
     ALLOY_BOARD_FAMILY
     ALLOY_BOARD_DEVICE
@@ -158,6 +157,10 @@ endif()
 # Define BOARD_HEADER macro for use in examples
 if(DEFINED BOARD_HEADER_PATH)
     get_filename_component(ALLOY_BOARD_SOURCE_DIR "${CMAKE_SOURCE_DIR}/${BOARD_HEADER_PATH}" DIRECTORY)
+    string(REPLACE "board.hpp" "startup.cpp" _board_startup_path "${BOARD_HEADER_PATH}")
+    if(EXISTS "${CMAKE_SOURCE_DIR}/${_board_startup_path}")
+        set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/${_board_startup_path}")
+    endif()
 
     # Define BOARD_HEADER as a macro that expands to the header path
     # Use angle brackets for include: #include BOARD_HEADER expands to #include <boards/...>
@@ -178,7 +181,7 @@ if(DEFINED BOARD_HEADER_PATH)
     add_compile_definitions(ALLOY_BOARD_${ALLOY_BOARD_UPPER})
     message(STATUS "  Board Define: ALLOY_BOARD_${ALLOY_BOARD_UPPER}")
 
-    if(DEFINED STARTUP_SOURCE)
+    if(DEFINED STARTUP_SOURCE AND EXISTS "${STARTUP_SOURCE}")
         message(STATUS "  Startup Code: ${STARTUP_SOURCE}")
     endif()
 endif()
@@ -270,12 +273,15 @@ set(ALLOY_CORE_SOURCES
 )
 
 # Create HAL library (INTERFACE for header-only, or STATIC if platform has .cpp files)
-if(ALLOY_PLATFORM_SOURCES OR STARTUP_SOURCE)
+if(ALLOY_PLATFORM_SOURCES OR STARTUP_SOURCE OR ALLOY_DEVICE_STARTUP_VECTORS_SOURCE)
     # Platform has .cpp files - create STATIC library
     # Include platform sources + startup code (if board defines one)
     set(HAL_SOURCES ${ALLOY_PLATFORM_SOURCES} ${ALLOY_CORE_SOURCES})
     if(DEFINED STARTUP_SOURCE AND EXISTS "${STARTUP_SOURCE}")
         list(APPEND HAL_SOURCES ${STARTUP_SOURCE})
+    endif()
+    if(ALLOY_DEVICE_STARTUP_VECTORS_SOURCE AND EXISTS "${ALLOY_DEVICE_STARTUP_VECTORS_SOURCE}")
+        list(APPEND HAL_SOURCES ${ALLOY_DEVICE_STARTUP_VECTORS_SOURCE})
     endif()
 
     add_library(alloy-hal STATIC ${HAL_SOURCES})
@@ -289,7 +295,7 @@ else()
 endif()
 
 # Set include directories for HAL library
-if(ALLOY_PLATFORM_SOURCES)
+if(ALLOY_PLATFORM_SOURCES OR STARTUP_SOURCE OR ALLOY_DEVICE_STARTUP_VECTORS_SOURCE)
     # STATIC library - use PUBLIC
     target_include_directories(alloy-hal
         PUBLIC
@@ -321,6 +327,8 @@ endif()
 if(ALLOY_DEVICE_CONTRACT_AVAILABLE)
     add_library(alloy-device-contract-smoke OBJECT
         tests/compile_tests/test_device_import_layer.cpp
+        tests/compile_tests/test_startup_contract.cpp
+        tests/compile_tests/test_dma_api.cpp
         tests/compile_tests/test_connector_kernel.cpp
         tests/compile_tests/test_gpio_api.cpp
         tests/compile_tests/test_uart_api.cpp

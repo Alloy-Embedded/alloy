@@ -10,8 +10,8 @@
       trees directly instead of going through the device import layer
 
 ### Gate R1: Runtime boundary reset
-- [ ] R1.1 `src/device` exists and is the only supported runtime entrypoint into selected device data
-- [ ] R1.2 new runtime code no longer depends on handwritten cross-vendor signal/pin enums
+- [x] R1.1 `src/device` exists and is the only supported runtime entrypoint into selected device data
+- [x] R1.2 new runtime code no longer depends on handwritten cross-vendor signal/pin enums
 
 ## 2. Build and Device Import Layer
 
@@ -41,7 +41,7 @@
 - [x] 4.3 Define one public API shape for SPI with config defaults
 - [x] 4.4 Define one public API shape for I2C with config defaults
 - [ ] 4.5 Define one public API shape for DMA with config defaults
-- [ ] 4.6 Remove the public architecture split between `simple`, `expert`, and `fluent`
+- [x] 4.6 Remove the public architecture split between `simple`, `expert`, and `fluent`
 - [ ] 4.7 Replace legacy interface headers with the new unified API entrypoints
 - [ ] 4.8 Update examples and docs to stop presenting multiple API tiers
 
@@ -61,10 +61,10 @@
 ## 6. Startup Runtime and Architecture Layer
 
 - [x] 6.1 Create `src/arch` runtime for foundational Cortex-M targets
-- [ ] 6.2 Move startup algorithm ownership into `alloy`
+- [x] 6.2 Move startup algorithm ownership into `alloy`
 - [x] 6.3 Consume generated startup vectors from `alloy-devices`
 - [x] 6.4 Replace handwritten family startup selection in CMake
-- [ ] 6.5 Add startup smoke tests for foundational targets
+- [x] 6.5 Add startup smoke tests for foundational targets
 
 ### Gate R4: Startup and build integration
 - [ ] R4.1 startup data is consumed from `alloy-devices`, not handwritten in the runtime repo
@@ -90,7 +90,7 @@
 ## 8. Legacy Removal
 
 - [ ] 8.1 Remove or archive obsolete public vendor/runtime glue under `src/hal/vendors`
-- [ ] 8.2 Remove handwritten cross-vendor signal registries and enum cores that conflict with the
+- [x] 8.2 Remove handwritten cross-vendor signal registries and enum cores that conflict with the
       descriptor model
 - [ ] 8.3 Remove stale universal `hal/*.hpp` platform shims that point to the old architecture
 - [ ] 8.4 Remove dead board/platform selection logic after the new build path is stable

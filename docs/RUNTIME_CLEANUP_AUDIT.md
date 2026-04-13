@@ -19,10 +19,10 @@ The categories are:
 | [`src/core`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/core) | keep | generic runtime utilities still belong in `alloy` | keep pruning only if specific APIs are dead |
 | [`src/device`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/device) | keep | this is the new import boundary | expand around published descriptors |
 | [`src/arch`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/arch) | keep | target home for startup and architecture runtime | continue moving startup ownership here |
-| [`src/hal/api`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/api) | rewrite | still split across `simple`, `expert`, and legacy shapes | replace with one public API per peripheral |
+| [`src/hal/api`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/api) | delete | legacy split API tree has been removed from the active runtime path | keep docs/comments from recreating it |
 | [`src/hal/core`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/core) | rewrite | contains useful concepts mixed with handwritten hardware knowledge | keep generic pieces, remove cross-vendor registries |
 | [`src/hal/dma`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/dma) | rewrite | DMA belongs in the new driver layer but current code is handwritten around legacy enums | rebuild on descriptor contracts |
-| [`src/hal/interface`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/interface) | delete | old abstraction layer that overlaps the new runtime plan | remove after unified API lands |
+| [`src/hal/interface`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/interface) | delete | old abstraction layer only survives as host-compatibility residue | remove after host adapters stop including it |
 | [`src/hal/deprecated`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/deprecated) | delete | explicitly obsolete | delete once no includes remain |
 | [`src/hal/vendors`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/vendors) | rewrite then delete large parts | currently mixes temporary low-level helpers with public runtime behavior | preserve only small private adapters that survive descriptor-driven rebuild |
 | [`src/startup`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/startup) | delete | startup ownership is moving to `src/arch` fed by `alloy-devices` | replace with shared `src/arch/cortex_m` runtime |
@@ -37,13 +37,11 @@ These files or areas actively fight the target architecture:
 
 | Path | Status | Reason |
 |---|---|---|
-| [`src/hal/core/signals.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/core/signals.hpp) | delete | handwritten cross-vendor signal and pin model conflicts with generated descriptor contracts |
-| [`src/hal/core/signal_registry.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/core/signal_registry.hpp) | delete | handwritten allocation registry duplicates the future claim model |
-| [`src/hal/core/validation.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/core/validation.hpp) | rewrite/delete | validation should move to descriptor-driven connect and claim paths |
 | [`boards/nucleo_g071rb/board.cpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/boards/nucleo_g071rb/board.cpp) | rewrite | raw RCC and FLASH register programming bypasses the future runtime |
 | [`boards/nucleo_g0b1re/board.cpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/boards/nucleo_g0b1re/board.cpp) | rewrite | same reason as `nucleo_g071rb` |
 | [`boards/same70_xplained/board.cpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/boards/same70_xplained/board.cpp) | rewrite | watchdog, clock, and interrupt bring-up are still handwritten in the board layer |
-| [`examples/uart_logger/main.cpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/examples/uart_logger/main.cpp) | rewrite | still demonstrates register-level bring-up instead of runtime API |
+| [`src/startup`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/startup) | delete | old startup helper tree still duplicates the new `src/arch/cortex_m` runtime | drain remaining users and remove the tree |
+| [`examples/uart_logger/main.cpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/examples/uart_logger/main.cpp) | keep | already uses `board::make_debug_uart()` and the logger sink on the runtime path | preserve it as the canonical UART example |
 
 ## Keep With Minimal Churn
 

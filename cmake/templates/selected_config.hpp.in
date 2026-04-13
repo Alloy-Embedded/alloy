@@ -5,6 +5,8 @@
 
 #define ALLOY_DEVICE_CONTRACT_AVAILABLE @ALLOY_DEVICE_CONTRACT_AVAILABLE_INT@
 #define ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE @ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE_INT@
+#define ALLOY_DEVICE_STARTUP_AVAILABLE @ALLOY_DEVICE_STARTUP_AVAILABLE_INT@
+#define ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE @ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT@
 
 #if @ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE_INT@
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/types.hpp"
@@ -21,6 +23,14 @@
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/routes.hpp"
 #endif
 
+#if @ALLOY_DEVICE_STARTUP_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/startup_descriptors.hpp"
+#endif
+
+#if @ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/dma_bindings.hpp"
+#endif
+
 namespace alloy::device::selected {
 
 inline constexpr bool available = @ALLOY_DEVICE_CONTRACT_AVAILABLE_INT@ != 0;
@@ -29,12 +39,26 @@ inline constexpr std::string_view vendor = "@ALLOY_DEVICE_SELECTED_VENDOR@";
 inline constexpr std::string_view family = "@ALLOY_DEVICE_SELECTED_FAMILY@";
 inline constexpr std::string_view name = "@ALLOY_DEVICE_SELECTED_NAME@";
 inline constexpr std::string_view arch = "@ALLOY_DEVICE_SELECTED_ARCH@";
+inline constexpr bool startup_available = @ALLOY_DEVICE_STARTUP_AVAILABLE_INT@ != 0;
+inline constexpr bool dma_bindings_available = @ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT@ != 0;
 
 #if @ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE_INT@
 namespace runtime_family_contract =
     ::@ALLOY_DEVICE_SELECTED_VENDOR@::@ALLOY_DEVICE_SELECTED_FAMILY@::generated::runtime;
 namespace runtime_device_contract = runtime_family_contract::devices::@ALLOY_DEVICE_SELECTED_NAME@;
 namespace runtime_driver_contract = runtime_device_contract::driver_semantics;
+#endif
+
+#if @ALLOY_DEVICE_STARTUP_AVAILABLE_INT@
+namespace startup_device_contract =
+    ::@ALLOY_DEVICE_SELECTED_VENDOR@::@ALLOY_DEVICE_SELECTED_FAMILY@::generated::devices::
+        @ALLOY_DEVICE_SELECTED_NAME@;
+#endif
+
+#if @ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT@
+namespace dma_device_contract =
+    ::@ALLOY_DEVICE_SELECTED_VENDOR@::@ALLOY_DEVICE_SELECTED_FAMILY@::generated::devices::
+        @ALLOY_DEVICE_SELECTED_NAME@;
 #endif
 
 }  // namespace alloy::device::selected

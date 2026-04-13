@@ -27,7 +27,6 @@ function(alloy_map_board_to_device BOARD_NAME OUT_VENDOR OUT_FAMILY OUT_DEVICE O
         _manifest_found
         _manifest_board_header
         _manifest_linker_script
-        _manifest_legacy_startup
         _vendor
         _family
         _device
@@ -54,6 +53,8 @@ endfunction()
 function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_CONTRACT_AVAILABLE FALSE PARENT_SCOPE)
     set(ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE FALSE PARENT_SCOPE)
+    set(ALLOY_DEVICE_STARTUP_AVAILABLE FALSE PARENT_SCOPE)
+    set(ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE FALSE PARENT_SCOPE)
     set(ALLOY_DEVICE_INCLUDE_DIRS "" PARENT_SCOPE)
     set(ALLOY_DEVICE_STARTUP_VECTORS_SOURCE "" PARENT_SCOPE)
     set(ALLOY_DESCRIPTOR_RUNTIME_ENABLED FALSE PARENT_SCOPE)
@@ -81,6 +82,8 @@ function(alloy_configure_selected_device)
 
     set(_contract_available 0)
     set(_runtime_lite_available 0)
+    set(_startup_available 0)
+    set(_dma_bindings_available 0)
     set(_descriptor_runtime_enabled 0)
     set(_family_root "")
     set(_startup_vectors "")
@@ -90,6 +93,14 @@ function(alloy_configure_selected_device)
         set(_startup_vectors
             "${_family_root}/generated/devices/${_device}/startup_vectors.cpp"
         )
+
+        if(EXISTS "${_family_root}/generated/devices/${_device}/startup_descriptors.hpp")
+            set(_startup_available 1)
+        endif()
+
+        if(EXISTS "${_family_root}/generated/devices/${_device}/dma_bindings.hpp")
+            set(_dma_bindings_available 1)
+        endif()
 
         if(
             EXISTS "${_family_root}/generated/runtime/types.hpp"
@@ -116,6 +127,8 @@ function(alloy_configure_selected_device)
 
     set(ALLOY_DEVICE_CONTRACT_AVAILABLE_INT "${_contract_available}")
     set(ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE_INT "${_runtime_lite_available}")
+    set(ALLOY_DEVICE_STARTUP_AVAILABLE_INT "${_startup_available}")
+    set(ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT "${_dma_bindings_available}")
     set(ALLOY_DEVICE_SELECTED_VENDOR "${_vendor}")
     set(ALLOY_DEVICE_SELECTED_FAMILY "${_family}")
     set(ALLOY_DEVICE_SELECTED_NAME "${_device}")
@@ -137,6 +150,8 @@ function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_STARTUP_VECTORS_SOURCE "${_startup_vectors}" PARENT_SCOPE)
     set(ALLOY_DEVICE_CONTRACT_AVAILABLE "${_contract_available}" PARENT_SCOPE)
     set(ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE "${_runtime_lite_available}" PARENT_SCOPE)
+    set(ALLOY_DEVICE_STARTUP_AVAILABLE "${_startup_available}" PARENT_SCOPE)
+    set(ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE "${_dma_bindings_available}" PARENT_SCOPE)
     set(ALLOY_DESCRIPTOR_RUNTIME_ENABLED "${_descriptor_runtime_enabled}" PARENT_SCOPE)
 
     if(_device)

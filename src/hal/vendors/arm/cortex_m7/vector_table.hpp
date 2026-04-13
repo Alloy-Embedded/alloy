@@ -8,9 +8,10 @@
  * All configuration happens at compile time with zero runtime overhead.
  */
 
-#include <cstdint>
 #include <array>
+#include <cstddef>
 #include <concepts>
+#include <cstdint>
 
 namespace alloy::hal::arm {
 
