@@ -12,6 +12,7 @@
 #include <cstdint>
 
 #include "hal/clock.hpp"
+#include "hal/gpio.hpp"
 #include "hal/systick.hpp"
 #include "hal/watchdog.hpp"
 #include "hal/vendors/arm/cortex_m7/init_hooks.hpp"

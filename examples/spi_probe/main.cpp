@@ -4,6 +4,17 @@
 
 #include BOARD_HEADER
 
+#ifndef BOARD_UART_HEADER
+    #error "spi_probe requires BOARD_UART_HEADER for the selected board"
+#endif
+
+#ifndef BOARD_SPI_HEADER
+    #error "spi_probe requires BOARD_SPI_HEADER for the selected board"
+#endif
+
+#include BOARD_UART_HEADER
+#include BOARD_SPI_HEADER
+
 #include "hal/systick.hpp"
 
 namespace {

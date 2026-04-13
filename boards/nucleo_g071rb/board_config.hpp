@@ -10,7 +10,7 @@
 
 #include <cstdint>
 
-#include "hal/connect.hpp"
+#include "hal/connect/tags.hpp"
 
 namespace nucleo_g071rb {
 
@@ -61,49 +61,6 @@ struct ClockConfig {
 
     /// Flash latency for 64 MHz
     static constexpr uint32_t flash_latency = 2;
-};
-
-// =============================================================================
-// UART Configuration (ST-Link Virtual COM Port)
-// =============================================================================
-
-struct UartConfig {
-    /// USART2 TX pin - PA2 (ST-Link VCP TX)
-    using usart2_tx = alloy::hal::pin<"PA2">;
-
-    /// USART2 RX pin - PA3 (ST-Link VCP RX)
-    using usart2_rx = alloy::hal::pin<"PA3">;
-
-    using debug_connector =
-        decltype(alloy::hal::connect<alloy::hal::peripheral<"USART2">, alloy::hal::tx<usart2_tx>,
-                                     alloy::hal::rx<usart2_rx>>());
-
-    /// Default baud rate for debug UART
-    static constexpr uint32_t default_baud_rate = 115200;
-    static constexpr uint32_t peripheral_clock_hz = ClockConfig::apb_clock_hz;
-};
-
-struct I2cConfig {
-    using scl = alloy::hal::pin<"PB6">;
-    using sda = alloy::hal::pin<"PB7">;
-
-    using bus_connector =
-        decltype(alloy::hal::connect<alloy::hal::peripheral<"I2C1">, alloy::hal::scl<scl>,
-                                     alloy::hal::sda<sda>>());
-
-    static constexpr uint32_t peripheral_clock_hz = ClockConfig::apb_clock_hz;
-};
-
-struct SpiConfig {
-    using sck = alloy::hal::pin<"PA5">;
-    using miso = alloy::hal::pin<"PA6">;
-    using mosi = alloy::hal::pin<"PA7">;
-
-    using bus_connector =
-        decltype(alloy::hal::connect<alloy::hal::peripheral<"SPI1">, alloy::hal::sck<sck>,
-                                     alloy::hal::miso<miso>, alloy::hal::mosi<mosi>>());
-
-    static constexpr uint32_t peripheral_clock_hz = ClockConfig::apb_clock_hz;
 };
 
 }  // namespace nucleo_g071rb

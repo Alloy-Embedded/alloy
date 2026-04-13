@@ -38,10 +38,6 @@
 
 #include <cstdint>
 
-#include "hal/gpio.hpp"
-#include "hal/uart.hpp"
-#include "hal/vendors/st/stm32g0/gpio.hpp"
-#include "hal/vendors/st/stm32g0/stm32g0b1/peripherals.hpp"
 #include "hal/vendors/st/stm32g0/systick_platform.hpp"
 
 #include "board_config.hpp"
@@ -49,7 +45,6 @@
 namespace board {
 
 using namespace nucleo_g0b1re;
-using namespace alloy::generated::stm32g0b1;
 using namespace alloy::hal::st::stm32g0;
 using namespace alloy::hal;
 
@@ -73,16 +68,6 @@ using BoardSysTick = SysTick<ClockConfig::system_clock_hz>;
  * Note: The 1ms tick period is configured at runtime via SysTickTimer::init_ms<BoardSysTick>(1)
  */
 using RTOSTick = BoardSysTick;
-
-using DebugUartConnector = nucleo_g0b1re::UartConfig::debug_connector;
-using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>());
-
-[[nodiscard]] inline auto make_debug_uart(alloy::hal::uart::Config config = {}) -> DebugUart {
-    if (config.peripheral_clock_hz == 0u) {
-        config.peripheral_clock_hz = nucleo_g0b1re::UartConfig::peripheral_clock_hz;
-    }
-    return alloy::hal::uart::open<DebugUartConnector>(config);
-}
 
 // =============================================================================
 // LED Control

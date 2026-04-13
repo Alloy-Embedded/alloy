@@ -11,11 +11,11 @@
 #include <cstdint>
 
 #include "hal/clock.hpp"
+#include "hal/gpio.hpp"
 #include "hal/systick.hpp"
 #include "hal/vendors/st/stm32g0/clock_platform.hpp"
 
 using namespace alloy::hal::st::stm32g0;
-using namespace alloy::generated::stm32g0b1;
 using namespace alloy::hal;
 
 using BoardClock = Stm32g0Clock<nucleo_g0b1re::ClockConfig>;

@@ -11,6 +11,7 @@
 #include <cstdint>
 
 #include "hal/clock.hpp"
+#include "hal/gpio.hpp"
 #include "hal/systick.hpp"
 #include "hal/vendors/st/stm32f4/clock_platform.hpp"
 

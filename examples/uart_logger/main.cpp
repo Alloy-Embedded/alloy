@@ -14,7 +14,7 @@
  *
  * ## Hardware Requirements
  *
- * - **Board:** SAME70 Xplained Ultra
+ * - **Board:** Supported board with `board_uart.hpp`
  * - **UART:** Debug UART (EDBG virtual COM port)
  * - **Baud Rate:** 115200
  * - **Connection:** USB cable to PC (EDBG connector)
@@ -38,11 +38,17 @@
  *       Consult board documentation for UART pin mapping.
  */
 
-#include "hal/systick.hpp"
+#include BOARD_HEADER
 
+#ifndef BOARD_UART_HEADER
+    #error "uart_logger requires BOARD_UART_HEADER for the selected board"
+#endif
+
+#include BOARD_UART_HEADER
+
+#include "hal/systick.hpp"
 #include "logger/logger.hpp"
 #include "logger/sinks/uart_sink.hpp"
-#include "same70_xplained/board.hpp"
 
 namespace {
 
@@ -77,7 +83,7 @@ int main() {
         blink_error(150);
     }
 
-    LOG_INFO("uart logger ready on SAME70 Xplained");
+    LOG_INFO("uart logger ready");
 
     std::uint32_t loop_count = 0;
     while (true) {

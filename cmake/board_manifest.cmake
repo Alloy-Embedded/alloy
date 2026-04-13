@@ -75,7 +75,7 @@ function(
         set(_arch "cortex-m4")
         set(_mcu "STM32F401RET6")
         set(_flash_size_bytes 524288)
-        set(_supports_peripheral_examples TRUE)
+        set(_supports_peripheral_examples FALSE)
     elseif(BOARD_NAME STREQUAL "same70_xpld" OR BOARD_NAME STREQUAL "same70_xplained")
         set(_found TRUE)
         set(_board_header "boards/same70_xplained/board.hpp")

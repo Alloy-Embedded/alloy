@@ -4,6 +4,17 @@
 
 #include BOARD_HEADER
 
+#ifndef BOARD_UART_HEADER
+    #error "i2c_scan requires BOARD_UART_HEADER for the selected board"
+#endif
+
+#ifndef BOARD_I2C_HEADER
+    #error "i2c_scan requires BOARD_I2C_HEADER for the selected board"
+#endif
+
+#include BOARD_UART_HEADER
+#include BOARD_I2C_HEADER
+
 #include "hal/systick.hpp"
 
 namespace {

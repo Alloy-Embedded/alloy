@@ -16,7 +16,7 @@
 
 #include <cstdint>
 
-#include "hal/connect.hpp"
+#include "hal/connect/tags.hpp"
 
 namespace board::same70_xplained {
 
@@ -52,45 +52,6 @@ struct ButtonConfig {
     using button0 = alloy::hal::pin<"PA11">;
 
     static constexpr bool button0_active_high = false;  // Active LOW
-};
-
-// =============================================================================
-// UART Configuration (Console/Debug)
-// =============================================================================
-
-struct UartConsoleConfig {
-    static constexpr uint8_t uart_instance = 0;  // USART0 on EDBG virtual COM
-    static constexpr uint32_t baudrate = 115'200;
-
-    using tx_pin = alloy::hal::pin<"PB1">;
-    using rx_pin = alloy::hal::pin<"PB0">;
-    using debug_connector =
-        decltype(alloy::hal::connect<alloy::hal::peripheral<"USART0">, alloy::hal::tx<tx_pin>,
-                                     alloy::hal::rx<rx_pin>>());
-    static constexpr uint32_t peripheral_clock_hz = ClockConfig::pclk_freq_hz;
-};
-
-struct I2cConfig {
-    using scl = alloy::hal::pin<"PA4">;
-    using sda = alloy::hal::pin<"PA3">;
-
-    using bus_connector =
-        decltype(alloy::hal::connect<alloy::hal::peripheral<"TWIHS0">, alloy::hal::scl<scl>,
-                                     alloy::hal::sda<sda>>());
-
-    static constexpr uint32_t peripheral_clock_hz = ClockConfig::pclk_freq_hz;
-};
-
-struct SpiConfig {
-    using sck = alloy::hal::pin<"PD22">;
-    using miso = alloy::hal::pin<"PD20">;
-    using mosi = alloy::hal::pin<"PD21">;
-
-    using bus_connector =
-        decltype(alloy::hal::connect<alloy::hal::peripheral<"SPI0">, alloy::hal::sck<sck>,
-                                     alloy::hal::miso<miso>, alloy::hal::mosi<mosi>>());
-
-    static constexpr uint32_t peripheral_clock_hz = ClockConfig::pclk_freq_hz;
 };
 
 // =============================================================================

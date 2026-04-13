@@ -164,6 +164,15 @@ if(DEFINED BOARD_HEADER_PATH)
     add_compile_definitions(BOARD_HEADER=<${BOARD_HEADER_PATH}>)
     message(STATUS "  Board Header: ${BOARD_HEADER_PATH}")
 
+    foreach(_board_aux_header IN ITEMS uart i2c spi)
+        string(REPLACE "board.hpp" "board_${_board_aux_header}.hpp" _board_aux_header_path "${BOARD_HEADER_PATH}")
+        if(EXISTS "${CMAKE_SOURCE_DIR}/${_board_aux_header_path}")
+            string(TOUPPER "${_board_aux_header}" _board_aux_header_define)
+            add_compile_definitions(BOARD_${_board_aux_header_define}_HEADER=<${_board_aux_header_path}>)
+            message(STATUS "  Board ${_board_aux_header} Header: ${_board_aux_header_path}")
+        endif()
+    endforeach()
+
     # Define ALLOY_BOARD_* for conditional compilation in examples
     string(TOUPPER "${ALLOY_BOARD}" ALLOY_BOARD_UPPER)
     add_compile_definitions(ALLOY_BOARD_${ALLOY_BOARD_UPPER})
@@ -323,6 +332,7 @@ if(ALLOY_DEVICE_CONTRACT_AVAILABLE)
     )
 
     target_include_directories(alloy-device-contract-smoke PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/boards
         ${ALLOY_DEVICE_INCLUDE_DIRS}

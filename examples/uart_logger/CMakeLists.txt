@@ -45,6 +45,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Include directories
 target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/src       # HAL and core
     ${CMAKE_SOURCE_DIR}/boards    # Board support
 )

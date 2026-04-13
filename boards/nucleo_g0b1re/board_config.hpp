@@ -10,12 +10,9 @@
 
 #include <cstdint>
 
-#include "hal/connect.hpp"
+#include "hal/connect/tags.hpp"
 
 namespace nucleo_g0b1re {
-
-using namespace alloy::hal::st::stm32g0;
-using namespace alloy::generated::stm32g0b1;
 
 // =============================================================================
 // LED Configuration
@@ -64,26 +61,6 @@ struct ClockConfig {
 
     /// Flash latency for 64 MHz
     static constexpr uint32_t flash_latency = 2;
-};
-
-// =============================================================================
-// UART Configuration (ST-Link Virtual COM Port)
-// =============================================================================
-
-struct UartConfig {
-    /// USART2 TX pin - PA2 (ST-Link VCP TX)
-    using usart2_tx = alloy::hal::pin<"PA2">;
-
-    /// USART2 RX pin - PA3 (ST-Link VCP RX)
-    using usart2_rx = alloy::hal::pin<"PA3">;
-
-    using debug_connector =
-        decltype(alloy::hal::connect<alloy::hal::peripheral<"USART2">, alloy::hal::tx<usart2_tx>,
-                                     alloy::hal::rx<usart2_rx>>());
-
-    /// Default baud rate for debug UART
-    static constexpr uint32_t default_baud_rate = 115200;
-    static constexpr uint32_t peripheral_clock_hz = ClockConfig::apb_clock_hz;
 };
 
 }  // namespace nucleo_g0b1re
