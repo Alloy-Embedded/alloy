@@ -6,21 +6,19 @@
 
 Device data comes from the published `alloy-devices` repository, which exposes:
 
-- family-scoped metadata and generated descriptors
-- device-scoped descriptors such as pins, peripheral instances, register maps, register fields, interrupt bindings, DMA bindings, and startup descriptors
+- typed runtime-lite artifacts for pins, peripheral instances, routes, register maps, register fields, clocks, and driver semantics
 
 ## Consumption Model
 
-The runtime consumes generated headers through `src/device/selected.hpp` and `src/device/descriptors.hpp`.
+The runtime consumes generated headers through `src/device/selected.hpp` and `src/device/runtime.hpp`.
 
 New runtime code should prefer:
 
-- typed runtime profiles
-- typed connector tables
-- typed register and field descriptors
-- typed instance, interrupt, DMA, and startup descriptors
+- typed runtime ids, traits, refs, and driver semantics
+- `runtime_connector`-resolved operation packs
+- compile-time route and clock/reset bindings
 
-It should not parse legacy string payloads when typed descriptors already exist.
+It should not depend on reflection tables or legacy string payloads.
 
 ## Repository Boundary
 

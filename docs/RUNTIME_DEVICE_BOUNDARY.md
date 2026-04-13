@@ -17,11 +17,9 @@ The rule is simple:
 
 `alloy-devices` is the source of truth for:
 
-- connector candidates, groups, requirements, and route operations
-- interrupt, memory, startup, clock/reset, DMA, package, and capability
-  descriptors
-- per-device instance data and per-family descriptor tables
-- generated startup vectors and startup descriptors
+- typed runtime-lite routes, clocks, registers, fields, and driver semantics
+- generated startup vectors
+- optional reflection artifacts that stay outside the `alloy` runtime boundary
 
 ### `alloy`
 
@@ -39,7 +37,7 @@ Runtime code SHALL import selected device data only through:
 
 - [`src/device/selected.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/device/selected.hpp)
 - [`src/device/import.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/device/import.hpp)
-- [`src/device/descriptors.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/device/descriptors.hpp)
+- [`src/device/runtime.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/device/runtime.hpp)
 - [`src/device/traits.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/device/traits.hpp)
 
 Generated vendor and family paths SHALL NOT appear directly in new runtime code.
@@ -76,7 +74,7 @@ not yet fully blocked:
 The cleanup proceeds in this order:
 
 1. stabilize import and build selection
-2. move startup consumption behind `src/device` and `src/arch`
+2. keep startup vectors as generated sources, not reflection imports
 3. rebuild connector and claim kernel
 4. rebuild drivers on descriptors
 5. rewrite boards and examples

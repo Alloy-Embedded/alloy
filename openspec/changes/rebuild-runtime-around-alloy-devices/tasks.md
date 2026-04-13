@@ -19,7 +19,7 @@
 - [x] 2.2 Add device-selection infrastructure that resolves board -> vendor/family/device/arch
 - [x] 2.3 Introduce `src/device/import.hpp`
 - [x] 2.4 Introduce `src/device/selected.hpp`
-- [x] 2.5 Introduce `src/device/descriptors.hpp`
+- [x] 2.5 Introduce the selected device import layer, later collapsed to runtime-lite only
 - [x] 2.6 Introduce `src/device/traits.hpp`
 - [x] 2.7 Add compile smoke tests proving the selected device contract can be included without
       direct vendor-path includes from boards or drivers
@@ -62,7 +62,7 @@
 
 - [x] 6.1 Create `src/arch` runtime for foundational Cortex-M targets
 - [ ] 6.2 Move startup algorithm ownership into `alloy`
-- [x] 6.3 Consume `startup_descriptors.hpp` and `startup_vectors.cpp` from `alloy-devices`
+- [x] 6.3 Consume generated startup vectors from `alloy-devices`
 - [x] 6.4 Replace handwritten family startup selection in CMake
 - [ ] 6.5 Add startup smoke tests for foundational targets
 
