@@ -21,6 +21,7 @@ function(
     OUT_FLASH_SIZE_BYTES
     OUT_SUPPORTS_PERIPHERAL_EXAMPLES
     OUT_SUPPORTS_UART_LOGGER
+    OUT_SUPPORTS_DMA_PROBE
 )
     set(_found FALSE)
     set(_board_header "")
@@ -33,6 +34,7 @@ function(
     set(_flash_size_bytes 0)
     set(_supports_peripheral_examples FALSE)
     set(_supports_uart_logger FALSE)
+    set(_supports_dma_probe FALSE)
 
     if(BOARD_NAME STREQUAL "host")
         set(_found TRUE)
@@ -70,7 +72,7 @@ function(
         set(_arch "cortex-m4")
         set(_mcu "STM32F401RET6")
         set(_flash_size_bytes 524288)
-        set(_supports_peripheral_examples FALSE)
+        set(_supports_dma_probe TRUE)
     elseif(BOARD_NAME STREQUAL "same70_xpld" OR BOARD_NAME STREQUAL "same70_xplained")
         set(_found TRUE)
         set(_board_header "boards/same70_xplained/board.hpp")
@@ -83,6 +85,7 @@ function(
         set(_flash_size_bytes 2097152)
         set(_supports_peripheral_examples TRUE)
         set(_supports_uart_logger TRUE)
+        set(_supports_dma_probe TRUE)
     endif()
 
     set(${OUT_FOUND} "${_found}" PARENT_SCOPE)
@@ -96,4 +99,5 @@ function(
     set(${OUT_FLASH_SIZE_BYTES} "${_flash_size_bytes}" PARENT_SCOPE)
     set(${OUT_SUPPORTS_PERIPHERAL_EXAMPLES} "${_supports_peripheral_examples}" PARENT_SCOPE)
     set(${OUT_SUPPORTS_UART_LOGGER} "${_supports_uart_logger}" PARENT_SCOPE)
+    set(${OUT_SUPPORTS_DMA_PROBE} "${_supports_dma_probe}" PARENT_SCOPE)
 endfunction()

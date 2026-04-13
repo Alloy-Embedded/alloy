@@ -18,7 +18,7 @@ The rule is simple:
 `alloy-devices` is the source of truth for:
 
 - typed runtime-lite routes, clocks, registers, fields, and driver semantics
-- generated startup vectors
+- startup descriptors plus generated startup vector source hooks
 - optional reflection artifacts that stay outside the `alloy` runtime boundary
 
 ### `alloy`
@@ -30,6 +30,11 @@ The rule is simple:
 - startup algorithm and architecture bootstrap
 - board bring-up orchestration
 - public API shape and configuration defaults
+
+Today `DMA` is split into:
+
+- typed binding selection in `alloy`
+- missing transfer semantics still to be published by `alloy-devices`
 
 ## Import Rule
 

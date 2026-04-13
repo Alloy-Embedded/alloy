@@ -3,8 +3,8 @@
 The current runtime still assumes that `alloy` owns too much hardware knowledge.
 
 Evidence in the repo:
-- host-only compatibility headers still exist under `src/hal/interface/`, so the tree still
-  carries a thin residue of the old abstraction layer
+- dead legacy comments and docs still refer to `src/hal/interface/`, even though the tree has
+  already been removed
 - [boards/nucleo_g071rb/board.cpp](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/boards/nucleo_g071rb/board.cpp) handwrites clock and startup-adjacent logic
 - [src/startup](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/startup) still duplicates part of the startup ownership that is moving into `src/arch/cortex_m`
 - [CMakeLists.txt](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/CMakeLists.txt) and [cmake/platform_selection.cmake](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/cmake/platform_selection.cmake) still encode family and startup selection manually

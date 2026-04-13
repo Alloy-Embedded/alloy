@@ -40,14 +40,14 @@
 - [x] 4.2 Define one public API shape for UART with config defaults
 - [x] 4.3 Define one public API shape for SPI with config defaults
 - [x] 4.4 Define one public API shape for I2C with config defaults
-- [ ] 4.5 Define one public API shape for DMA with config defaults
+- [x] 4.5 Define one public API shape for DMA with config defaults
 - [x] 4.6 Remove the public architecture split between `simple`, `expert`, and `fluent`
-- [ ] 4.7 Replace legacy interface headers with the new unified API entrypoints
-- [ ] 4.8 Update examples and docs to stop presenting multiple API tiers
+- [x] 4.7 Replace legacy interface headers with the new unified API entrypoints
+- [x] 4.8 Update examples and docs to stop presenting multiple API tiers
 
 ### Gate R2: Single public API
-- [ ] R2.1 only one public API concept exists for each foundational peripheral class
-- [ ] R2.2 defaults and helper aliases do not form separate public API layers
+- [x] R2.1 only one public API concept exists for each foundational peripheral class
+- [x] R2.2 defaults and helper aliases do not form separate public API layers
 
 ## 5. Descriptor-Driven Drivers
 
@@ -57,6 +57,9 @@
 - [x] 5.4 Rebuild I2C on top of the same model
 - [ ] 5.5 Rebuild DMA on top of the same model
 - [x] 5.6 Add compile coverage for foundational-family driver bring-up using generated descriptors
+
+`5.5` remains open because the current `alloy-devices` publish still exposes typed DMA bindings
+but does not yet publish `generated/runtime/devices/<device>/driver_semantics/dma.hpp`.
 
 ## 6. Startup Runtime and Architecture Layer
 
@@ -72,44 +75,44 @@
 
 ## 7. Board and Example Rebuild
 
-- [ ] 7.1 Rebuild foundational boards to be declarative and side-effect safe
-- [ ] 7.2 Remove hardware initialization side effects from headers
-- [ ] 7.3 Make `board::init()` call runtime bring-up paths instead of raw register code
-- [ ] 7.4 Rebuild canonical examples:
+- [x] 7.1 Rebuild foundational boards to be declarative and side-effect safe
+- [x] 7.2 Remove hardware initialization side effects from headers
+- [x] 7.3 Make `board::init()` call runtime bring-up paths instead of raw register code
+- [x] 7.4 Rebuild canonical examples:
       - blink
       - uart logger
       - spi
       - i2c
       - dma
-- [ ] 7.5 Ensure examples use only the official runtime path
+- [x] 7.5 Ensure examples use only the official runtime path
 
 ### Gate R3: Descriptor-driven bring-up
-- [ ] R3.1 foundational boards initialize through descriptor-driven runtime code
-- [ ] R3.2 canonical examples no longer bypass the library with raw registers
+- [x] R3.1 foundational boards initialize through descriptor-driven runtime code
+- [x] R3.2 canonical examples no longer bypass the library with raw registers
 
 ## 8. Legacy Removal
 
 - [ ] 8.1 Remove or archive obsolete public vendor/runtime glue under `src/hal/vendors`
 - [x] 8.2 Remove handwritten cross-vendor signal registries and enum cores that conflict with the
       descriptor model
-- [ ] 8.3 Remove stale universal `hal/*.hpp` platform shims that point to the old architecture
+- [x] 8.3 Remove stale universal `hal/*.hpp` platform shims that point to the old architecture
 - [ ] 8.4 Remove dead board/platform selection logic after the new build path is stable
-- [ ] 8.5 Delete obsolete examples and docs that teach the wrong path
+- [x] 8.5 Delete obsolete examples and docs that teach the wrong path
 
 ## 9. Foundational Runtime Completion
 
-- [ ] 9.1 Close the new runtime path for `stm32g0`
-- [ ] 9.2 Close the new runtime path for `stm32f4`
-- [ ] 9.3 Close the new runtime path for `same70`
+- [x] 9.1 Close the new runtime path for `stm32g0`
+- [x] 9.2 Close the new runtime path for `stm32f4`
+- [x] 9.3 Close the new runtime path for `same70`
 - [ ] 9.4 Verify that the runtime core remains vendor-light while supporting all three
 - [ ] 9.5 Document vendor-4 admission criteria based on the new runtime architecture
 
 ### Gate R5: Foundational runtime completeness
-- [ ] R5.1 foundational boards on `stm32g0`, `stm32f4`, and `same70` build on the new path
+- [x] R5.1 foundational boards on `stm32g0`, `stm32f4`, and `same70` build on the new path
 - [ ] R5.2 the runtime no longer requires a new public API shape to add another vendor
 
 ## 10. Validation
 
 - [x] 10.1 Run `openspec validate rebuild-runtime-around-alloy-devices --strict`
 - [x] 10.2 Add compile and smoke tests for the new device-import and driver layers
-- [ ] 10.3 Update docs so the public story matches the rebuilt runtime
+- [x] 10.3 Update docs so the public story matches the rebuilt runtime

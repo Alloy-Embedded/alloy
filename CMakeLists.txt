@@ -130,6 +130,7 @@ alloy_resolve_board_manifest(
     ALLOY_BOARD_FLASH_SIZE_BYTES
     ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES
     ALLOY_BOARD_SUPPORTS_UART_LOGGER
+    ALLOY_BOARD_SUPPORTS_DMA_PROBE
 )
 
 if(ALLOY_BOARD_MANIFEST_FOUND)
@@ -167,7 +168,7 @@ if(DEFINED BOARD_HEADER_PATH)
     add_compile_definitions(BOARD_HEADER=<${BOARD_HEADER_PATH}>)
     message(STATUS "  Board Header: ${BOARD_HEADER_PATH}")
 
-    foreach(_board_aux_header IN ITEMS uart i2c spi)
+    foreach(_board_aux_header IN ITEMS uart i2c spi dma)
         string(REPLACE "board.hpp" "board_${_board_aux_header}.hpp" _board_aux_header_path "${BOARD_HEADER_PATH}")
         if(EXISTS "${CMAKE_SOURCE_DIR}/${_board_aux_header_path}")
             string(TOUPPER "${_board_aux_header}" _board_aux_header_define)
@@ -336,6 +337,7 @@ if(ALLOY_DEVICE_CONTRACT_AVAILABLE)
         tests/compile_tests/test_spi_api.cpp
         tests/compile_tests/test_board_led_api.cpp
         tests/compile_tests/test_board_uart_api.cpp
+        tests/compile_tests/test_board_dma_api.cpp
         ${ALLOY_DEVICE_STARTUP_VECTORS_SOURCE}
     )
 
@@ -381,6 +383,11 @@ endif()
 # Board-specific examples
 if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_UART_LOGGER)
     add_subdirectory(examples/uart_logger)
+endif()
+
+if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_DMA_PROBE AND
+   ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE)
+    add_subdirectory(examples/dma_probe)
 endif()
 
 # TODO: Add more boards as they implement board.hpp abstraction:

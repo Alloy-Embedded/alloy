@@ -6,6 +6,7 @@
 
 #include "hal/connect/runtime_connector.hpp"
 #include "hal/connect/tags.hpp"
+#include "hal/dma/bindings.hpp"
 
 namespace alloy::hal::claim {
 
@@ -26,11 +27,19 @@ struct interrupt_claim {
     static constexpr auto interrupt_name = std::string_view{InterruptName};
 };
 
-template <connection::FixedString ControllerName, connection::FixedString RequestLineName>
-struct dma_claim {
-    static constexpr auto controller_name = std::string_view{ControllerName};
-    static constexpr auto request_line_name = std::string_view{RequestLineName};
+#if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
+template <dma::PeripheralId Peripheral, dma::SignalId Signal>
+requires(dma::BindingTraits<Peripheral, Signal>::kPresent) struct dma_claim {
+    static constexpr auto peripheral_id = Peripheral;
+    static constexpr auto signal_id = Signal;
+    static constexpr auto binding_id = dma::BindingTraits<Peripheral, Signal>::descriptor().binding_id;
+    static constexpr auto controller_id = dma::BindingTraits<Peripheral, Signal>::kControllerId;
+    static constexpr auto request_line_id = dma::BindingTraits<Peripheral, Signal>::kRequestLineId;
+    static constexpr auto route_id = dma::BindingTraits<Peripheral, Signal>::kRouteId;
+    static constexpr auto conflict_group_id =
+        dma::BindingTraits<Peripheral, Signal>::kConflictGroupId;
 };
+#endif
 
 template <typename Connector>
 requires(Connector::valid) struct connector_claim {
