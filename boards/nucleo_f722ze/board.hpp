@@ -12,7 +12,6 @@
  */
 
 #include "hal/systick.hpp"
-#include "hal/vendors/st/stm32f7/systick_platform.hpp"
 
 #include "board_config.hpp"
 
@@ -20,10 +19,8 @@ namespace board {
 
 using namespace nucleo_f722ze;
 using namespace alloy::hal;
-using namespace alloy::hal::st::stm32f7;
-
 // Board-specific SysTick type (180 MHz)
-using BoardSysTick = SysTick<ClockConfig::system_clock_hz>;
+using BoardSysTick = alloy::hal::cortex_m::SysTick<ClockConfig::system_clock_hz>;
 
 // RTOS Tick Source (must be 1ms tick for RTOS compatibility)
 // Note: The 1ms tick period is configured at runtime via SysTickTimer::init_ms<BoardSysTick>(1)

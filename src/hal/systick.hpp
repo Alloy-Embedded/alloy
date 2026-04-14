@@ -83,6 +83,62 @@ class SysTickTimer {
     }
 };
 
+namespace cortex_m {
+
+struct SysTickRegisters {
+    volatile std::uint32_t ctrl;
+    volatile std::uint32_t load;
+    volatile std::uint32_t val;
+    volatile std::uint32_t calib;
+};
+
+inline constexpr std::uintptr_t kSysTickBase = 0xE000E010;
+
+template <std::uint32_t ClockHz>
+class SysTick {
+   public:
+    static constexpr std::uint32_t clock_hz = ClockHz;
+
+    static void init_ms(std::uint32_t period_ms) {
+        tick_period_us = period_ms * 1000u;
+        configure_reload(((ClockHz / 1000u) * period_ms) - 1u);
+    }
+
+    static void init_us(std::uint32_t period_us) {
+        tick_period_us = period_us;
+        configure_reload(((ClockHz / 1000000u) * period_us) - 1u);
+    }
+
+    [[nodiscard]] static auto get_ticks() -> std::uint32_t {
+        return tick_count;
+    }
+
+    [[nodiscard]] static auto millis() -> std::uint32_t {
+        return tick_count * (tick_period_us / 1000u);
+    }
+
+    [[nodiscard]] static auto micros() -> std::uint64_t {
+        return static_cast<std::uint64_t>(tick_count) * tick_period_us;
+    }
+
+    static void increment_tick() {
+        tick_count = tick_count + 1u;
+    }
+
+   private:
+    static void configure_reload(std::uint32_t reload) {
+        auto* systick = reinterpret_cast<volatile SysTickRegisters*>(kSysTickBase);
+        systick->load = reload;
+        systick->val = 0u;
+        systick->ctrl = 0x7u;
+    }
+
+    static inline volatile std::uint32_t tick_count = 0u;
+    static inline volatile std::uint32_t tick_period_us = 1000u;
+};
+
+}  // namespace cortex_m
+
 }  // namespace alloy::hal
 
 namespace alloy::systick {

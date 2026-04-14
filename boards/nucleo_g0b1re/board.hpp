@@ -38,14 +38,13 @@
 
 #include <cstdint>
 
-#include "hal/vendors/st/stm32g0/systick_platform.hpp"
+#include "hal/systick.hpp"
 
 #include "board_config.hpp"
 
 namespace board {
 
 using namespace nucleo_g0b1re;
-using namespace alloy::hal::st::stm32g0;
 using namespace alloy::hal;
 
 // =============================================================================
@@ -60,7 +59,7 @@ using namespace alloy::hal;
  * SysTickTimer::delay_ms<board::BoardSysTick>(100);
  * @endcode
  */
-using BoardSysTick = SysTick<ClockConfig::system_clock_hz>;
+using BoardSysTick = alloy::hal::cortex_m::SysTick<ClockConfig::system_clock_hz>;
 
 /**
  * @brief RTOS Tick Source (must be 1ms tick for RTOS compatibility)

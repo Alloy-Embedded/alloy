@@ -42,9 +42,6 @@ auto& led_handle() {
 // Internal State
 // =============================================================================
 
-// SysTick instance for timing (64 MHz clock)
-using BoardSysTick = SysTick<64000000>;
-
 // Initialization flag to prevent double-init
 static bool board_initialized = false;
 
@@ -94,7 +91,7 @@ void init() {
     configure_system_clock();
 
     // Step 2: Initialize SysTick timer (1ms period)
-    SysTickTimer::init_ms<BoardSysTick>(1);
+    SysTickTimer::init_ms<board::BoardSysTick>(1);
 
     // Step 3: Initialize board peripherals
     led::init();
