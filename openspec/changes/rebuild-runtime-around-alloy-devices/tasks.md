@@ -93,7 +93,7 @@
 - [x] 8.2 Remove handwritten cross-vendor signal registries and enum cores that conflict with the
       descriptor model
 - [x] 8.3 Remove stale universal `hal/*.hpp` platform shims that point to the old architecture
-- [ ] 8.4 Remove dead board/platform selection logic after the new build path is stable
+- [x] 8.4 Remove dead board/platform selection logic after the new build path is stable
 - [x] 8.5 Delete obsolete examples and docs that teach the wrong path
 
 ## 9. Foundational Runtime Completion

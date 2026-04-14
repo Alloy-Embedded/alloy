@@ -240,7 +240,6 @@ same70-blink-build: ## Build blink_led for SAME70
 		-DCMAKE_BUILD_TYPE=Release \
 		-DALLOY_BOARD=same70_xplained \
 		-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
-		-DLINKER_SCRIPT="$(PWD)/boards/same70_xplained/ATSAME70Q21.ld" \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 	@echo ""
 	@echo "$(CYAN)Building $(SAME70_BLINK)...$(NC)"
@@ -333,7 +332,6 @@ same70-uart-logger-build: ## Build uart_logger for SAME70
 		-DCMAKE_BUILD_TYPE=Release \
 		-DALLOY_BOARD=same70_xplained \
 		-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
-		-DLINKER_SCRIPT="$(PWD)/boards/same70_xplained/ATSAME70Q21.ld" \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 	@echo ""
 	@echo "$(CYAN)Building $(SAME70_UART_LOGGER)...$(NC)"
@@ -432,8 +430,6 @@ nucleo-g0b1re-blink-build: ## Build blink LED example for Nucleo G0B1RE
 		-DCMAKE_BUILD_TYPE=Release \
 		-DALLOY_BOARD=nucleo_g0b1re \
 		-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
-		-DLINKER_SCRIPT="$(PWD)/boards/nucleo_g0b1re/STM32G0B1RET6.ld" \
-		-DSTARTUP_SOURCE="$(PWD)/src/hal/vendors/st/stm32g0/stm32g0b1/startup.cpp" \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 	@echo ""
 	@echo "$(CYAN)Building $(NUCLEO_G0B1RE_BLINK)...$(NC)"
@@ -520,8 +516,6 @@ nucleo-g071rb-blink-build: ## Build blink LED example for Nucleo G071RB
 		-DCMAKE_BUILD_TYPE=Release \
 		-DALLOY_BOARD=nucleo_g071rb \
 		-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake \
-		-DLINKER_SCRIPT="$(PWD)/boards/nucleo_g071rb/STM32G071RBT6.ld" \
-		-DSTARTUP_SOURCE="$(PWD)/src/hal/vendors/st/stm32g0/stm32g0b1/startup.cpp" \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 	@echo ""
 	@echo "$(CYAN)Building $(NUCLEO_G071RB_BLINK)...$(NC)"
@@ -811,4 +805,3 @@ same70-rtos-clean: ## Clean RTOS build for SAME70
 	@echo "$(YELLOW)🧹 Cleaning RTOS build...$(NC)"
 	@rm -rf $(SAME70_BUILD_DIR)
 	@echo "$(GREEN)✓ Clean complete$(NC)"
-

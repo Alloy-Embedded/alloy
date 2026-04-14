@@ -28,7 +28,7 @@ The categories are:
 | [`src/startup`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/startup) | delete | startup ownership is moving to `src/arch` fed by `alloy-devices` | replace with shared `src/arch/cortex_m` runtime |
 | [`boards`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/boards) | rewrite | boards should stay, but become declarative and side-effect safe | rebuild `board.hpp` and `board.cpp` around runtime APIs |
 | [`examples`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/examples) | rewrite | examples still teach the wrong path in places | rebuild on the single public API |
-| [`cmake/boards`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/cmake/boards) | delete gradually | legacy board CMake glues encode startup and codegen assumptions | replace with manifest-driven selection |
+| [`cmake/boards`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/cmake/boards) | delete gradually | foundational board CMake glue is gone from the active path; only legacy non-manifest boards still need this directory | keep shrinking it until only genuinely unsupported legacy boards remain |
 | [`cmake/platforms`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/cmake/platforms) | rewrite | still useful for toolchain and CPU flags, but not for family startup selection | keep only platform/toolchain concerns |
 
 ## High-Priority Rewrite Targets
