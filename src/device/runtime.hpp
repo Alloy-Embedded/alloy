@@ -34,8 +34,11 @@ using RouteOperation = device_contract::RouteOperation;
 using RouteDescriptor = device_contract::RouteDescriptor;
 using RuntimeRegisterRef = selected::runtime_driver_contract::RuntimeRegisterRef;
 using RuntimeFieldRef = selected::runtime_driver_contract::RuntimeFieldRef;
+using RuntimeIndexedFieldRef = selected::runtime_driver_contract::RuntimeIndexedFieldRef;
 inline constexpr auto invalid_register_ref = selected::runtime_driver_contract::kInvalidRegisterRef;
 inline constexpr auto invalid_field_ref = selected::runtime_driver_contract::kInvalidFieldRef;
+inline constexpr auto invalid_indexed_field_ref =
+    selected::runtime_driver_contract::kInvalidIndexedFieldRef;
 
 inline constexpr auto peripherals = std::span{device_contract::kRuntimePeripherals};
 inline constexpr auto pins = std::span{device_contract::kPins};
@@ -53,6 +56,10 @@ inline constexpr auto i2c_semantic_peripherals =
     std::span{selected::runtime_driver_contract::kI2cSemanticPeripherals};
 inline constexpr auto spi_semantic_peripherals =
     std::span{selected::runtime_driver_contract::kSpiSemanticPeripherals};
+#if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
+inline constexpr auto dma_semantic_peripherals =
+    std::span{selected::runtime_driver_contract::kDmaSemanticPeripherals};
+#endif
 inline constexpr const auto& gpio_semantic_pin_ids =
     selected::runtime_driver_contract::kGpioSemanticPins;
 inline constexpr const auto& uart_semantic_peripheral_ids =
@@ -61,6 +68,10 @@ inline constexpr const auto& i2c_semantic_peripheral_ids =
     selected::runtime_driver_contract::kI2cSemanticPeripherals;
 inline constexpr const auto& spi_semantic_peripheral_ids =
     selected::runtime_driver_contract::kSpiSemanticPeripherals;
+#if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
+inline constexpr const auto& dma_semantic_peripheral_ids =
+    selected::runtime_driver_contract::kDmaSemanticPeripherals;
+#endif
 
 template <PeripheralId Id>
 using PeripheralInstanceTraits = device_contract::PeripheralInstanceTraits<Id>;
@@ -103,6 +114,11 @@ using I2cSemanticTraits = selected::runtime_driver_contract::I2cSemanticTraits<I
 
 template <PeripheralId Id>
 using SpiSemanticTraits = selected::runtime_driver_contract::SpiSemanticTraits<Id>;
+
+#if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
+template <PeripheralId Peripheral, SignalId Signal>
+using DmaSemanticTraits = selected::runtime_driver_contract::DmaSemanticTraits<Peripheral, Signal>;
+#endif
 
 }  // namespace runtime
 #endif

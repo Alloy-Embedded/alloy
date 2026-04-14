@@ -55,4 +55,4 @@ int main() {
 ## Limites Conhecidos
 
 - o bring-up de clock ainda usa backend vendor-specific em [clock.hpp](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/vendors/arm/same70/clock.hpp)
-- `DMA` hoje fecha o binding tipado oficial, mas a semântica completa de transferência ainda depende de `driver_semantics/dma.hpp` ser publicada por `alloy-devices`
+- `DMA` agora usa o contrato `runtime-lite` publicado, e a board fixa canais padrão para o `USART0` de debug

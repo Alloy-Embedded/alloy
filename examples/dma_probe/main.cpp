@@ -30,12 +30,12 @@ template <typename DmaChannel>
 void log_dma_binding(const char* label) {
     constexpr auto descriptor = DmaChannel::descriptor();
     LOG_INFO(
-        "%s binding=%u controller=%u request=%u route=%u conflict=%u",
+        "%s binding=%u controller=%u request=%u route=%u conflict=%u channel=%d",
         label, static_cast<unsigned>(descriptor.binding_id),
         static_cast<unsigned>(descriptor.controller_id),
         static_cast<unsigned>(descriptor.request_line_id),
         static_cast<unsigned>(descriptor.route_id),
-        static_cast<unsigned>(descriptor.conflict_group_id));
+        static_cast<unsigned>(descriptor.conflict_group_id), descriptor.channel_index);
 }
 
 }  // namespace
@@ -69,6 +69,13 @@ int main() {
         .priority = alloy::hal::dma::Priority::medium,
         .data_width = alloy::hal::dma::DataWidth::bits8,
     });
+
+    if (const auto result = tx_dma.configure(); result.is_err()) {
+        blink_error(200);
+    }
+    if (const auto result = rx_dma.configure(); result.is_err()) {
+        blink_error(250);
+    }
 
     LOG_INFO("dma probe ready");
     log_dma_binding<decltype(tx_dma)>("debug-uart-tx");

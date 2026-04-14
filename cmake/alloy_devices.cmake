@@ -99,7 +99,11 @@ function(alloy_configure_selected_device)
             set(_startup_available 1)
         endif()
 
-        if(EXISTS "${_family_root}/generated/devices/${_device}/dma_bindings.hpp")
+        if(
+            EXISTS "${_family_root}/generated/runtime/devices/${_device}/dma_bindings.hpp"
+            AND EXISTS
+                "${_family_root}/generated/runtime/devices/${_device}/driver_semantics/dma.hpp"
+        )
             set(_dma_bindings_available 1)
         endif()
 

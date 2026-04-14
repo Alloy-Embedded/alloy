@@ -107,19 +107,47 @@ message(STATUS "Included platform config: ${PLATFORM_CONFIG_FILE}")
 # Board/MCU Validation
 # ------------------------------------------------------------------------------
 
-# Define valid board-to-platform mappings
-# This ensures users don't accidentally try to build incompatible combinations
-set(BOARD_TO_PLATFORM_nucleo_f401re "stm32f4")
-set(BOARD_TO_PLATFORM_nucleo_f722ze "stm32f7")
-set(BOARD_TO_PLATFORM_nucleo_g071rb "stm32g0")
-set(BOARD_TO_PLATFORM_nucleo_g0b1re "stm32g0")
-set(BOARD_TO_PLATFORM_same70_xplained "same70")
-set(BOARD_TO_PLATFORM_same70_xpld "same70")
-set(BOARD_TO_PLATFORM_host "linux")
-
 # If ALLOY_BOARD is defined, validate it matches the selected platform
 if(DEFINED ALLOY_BOARD)
-    set(EXPECTED_PLATFORM ${BOARD_TO_PLATFORM_${ALLOY_BOARD}})
+    set(EXPECTED_PLATFORM "")
+
+    if(COMMAND alloy_resolve_board_manifest)
+        alloy_resolve_board_manifest(
+            "${ALLOY_BOARD}"
+            _manifest_found
+            _manifest_board_header
+            _manifest_linker_script
+            _manifest_vendor
+            _manifest_family
+            _manifest_device
+            _manifest_arch
+            _manifest_mcu
+            _manifest_flash_size_bytes
+            _manifest_supports_peripheral_examples
+            _manifest_supports_uart_logger
+            _manifest_supports_dma_probe
+        )
+
+        if(_manifest_found)
+            if(_manifest_arch STREQUAL "native")
+                set(EXPECTED_PLATFORM "linux")
+            else()
+                set(EXPECTED_PLATFORM "${_manifest_family}")
+            endif()
+        endif()
+    endif()
+
+    if(NOT EXPECTED_PLATFORM)
+        # Legacy fallback for boards that are not yet in the compact board manifest.
+        set(BOARD_TO_PLATFORM_nucleo_f401re "stm32f4")
+        set(BOARD_TO_PLATFORM_nucleo_f722ze "stm32f7")
+        set(BOARD_TO_PLATFORM_nucleo_g071rb "stm32g0")
+        set(BOARD_TO_PLATFORM_nucleo_g0b1re "stm32g0")
+        set(BOARD_TO_PLATFORM_same70_xplained "same70")
+        set(BOARD_TO_PLATFORM_same70_xpld "same70")
+        set(BOARD_TO_PLATFORM_host "linux")
+        set(EXPECTED_PLATFORM ${BOARD_TO_PLATFORM_${ALLOY_BOARD}})
+    endif()
 
     if(NOT DEFINED EXPECTED_PLATFORM)
         message(WARNING

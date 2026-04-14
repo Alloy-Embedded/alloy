@@ -58,6 +58,24 @@ include(memory_analysis)
 include(board_manifest)
 include(alloy_devices)
 
+# Resolve board metadata early so the descriptor-driven path does not depend on
+# the legacy board/platform switch blocks below.
+alloy_resolve_board_manifest(
+    "${ALLOY_BOARD}"
+    ALLOY_BOARD_MANIFEST_FOUND
+    BOARD_HEADER_PATH
+    LINKER_SCRIPT
+    ALLOY_BOARD_VENDOR
+    ALLOY_BOARD_FAMILY
+    ALLOY_BOARD_DEVICE
+    ALLOY_BOARD_DEVICE_ARCH
+    ALLOY_BOARD_MCU
+    ALLOY_BOARD_FLASH_SIZE_BYTES
+    ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES
+    ALLOY_BOARD_SUPPORTS_UART_LOGGER
+    ALLOY_BOARD_SUPPORTS_DMA_PROBE
+)
+
 # Build options
 option(ALLOY_BUILD_TESTS "Build unit tests" ON)
 option(ALLOY_MINIMAL_BUILD "Optimize for size (enables -Os, -flto, --gc-sections)" OFF)
@@ -86,7 +104,13 @@ endif()
 
 # Auto-detect platform from board if not explicitly set
 if(NOT ALLOY_PLATFORM)
-    if(ALLOY_BOARD STREQUAL "same70_xpld" OR ALLOY_BOARD STREQUAL "same70_xplained")
+    if(ALLOY_BOARD_MANIFEST_FOUND)
+        if(ALLOY_BOARD_DEVICE_ARCH STREQUAL "native")
+            set(ALLOY_PLATFORM "linux")
+        elseif(ALLOY_BOARD_FAMILY)
+            set(ALLOY_PLATFORM "${ALLOY_BOARD_FAMILY}")
+        endif()
+    elseif(ALLOY_BOARD STREQUAL "same70_xpld" OR ALLOY_BOARD STREQUAL "same70_xplained")
         set(ALLOY_PLATFORM "same70")
     elseif(ALLOY_BOARD STREQUAL "host")
         set(ALLOY_PLATFORM "linux")
@@ -116,22 +140,6 @@ endif()
 # ============================================================================
 # Board Abstraction Layer Configuration
 # ============================================================================
-
-alloy_resolve_board_manifest(
-    "${ALLOY_BOARD}"
-    ALLOY_BOARD_MANIFEST_FOUND
-    BOARD_HEADER_PATH
-    LINKER_SCRIPT
-    ALLOY_BOARD_VENDOR
-    ALLOY_BOARD_FAMILY
-    ALLOY_BOARD_DEVICE
-    ALLOY_BOARD_DEVICE_ARCH
-    ALLOY_BOARD_MCU
-    ALLOY_BOARD_FLASH_SIZE_BYTES
-    ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES
-    ALLOY_BOARD_SUPPORTS_UART_LOGGER
-    ALLOY_BOARD_SUPPORTS_DMA_PROBE
-)
 
 if(ALLOY_BOARD_MANIFEST_FOUND)
     if(ALLOY_BOARD_MCU)
@@ -199,7 +207,9 @@ endif()
 
 # Include board selection module (new HAL abstraction system)
 # This creates board-specific type aliases and peripheral mappings
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/board_selection.cmake)
+if(ALLOY_DESCRIPTOR_RUNTIME_ENABLED)
+    message(STATUS "Skipping legacy board_selection.cmake for descriptor-driven board: ${ALLOY_BOARD}")
+elseif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/board_selection.cmake)
     include(cmake/board_selection.cmake)
 endif()
 

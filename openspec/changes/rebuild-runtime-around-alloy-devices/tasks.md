@@ -55,11 +55,8 @@
 - [x] 5.2 Rebuild UART on top of instances, capabilities, connectors, and clock/reset descriptors
 - [x] 5.3 Rebuild SPI on top of the same model
 - [x] 5.4 Rebuild I2C on top of the same model
-- [ ] 5.5 Rebuild DMA on top of the same model
+- [x] 5.5 Rebuild DMA on top of the same model
 - [x] 5.6 Add compile coverage for foundational-family driver bring-up using generated descriptors
-
-`5.5` remains open because the current `alloy-devices` publish still exposes typed DMA bindings
-but does not yet publish `generated/runtime/devices/<device>/driver_semantics/dma.hpp`.
 
 ## 6. Startup Runtime and Architecture Layer
 
@@ -71,7 +68,7 @@ but does not yet publish `generated/runtime/devices/<device>/driver_semantics/dm
 
 ### Gate R4: Startup and build integration
 - [ ] R4.1 startup data is consumed from `alloy-devices`, not handwritten in the runtime repo
-- [ ] R4.2 device/build selection no longer depends on large manual family switch logic
+- [x] R4.2 device/build selection no longer depends on large manual family switch logic
 
 ## 7. Board and Example Rebuild
 
@@ -104,12 +101,12 @@ but does not yet publish `generated/runtime/devices/<device>/driver_semantics/dm
 - [x] 9.1 Close the new runtime path for `stm32g0`
 - [x] 9.2 Close the new runtime path for `stm32f4`
 - [x] 9.3 Close the new runtime path for `same70`
-- [ ] 9.4 Verify that the runtime core remains vendor-light while supporting all three
-- [ ] 9.5 Document vendor-4 admission criteria based on the new runtime architecture
+- [x] 9.4 Verify that the runtime core remains vendor-light while supporting all three
+- [x] 9.5 Document vendor-4 admission criteria based on the new runtime architecture
 
 ### Gate R5: Foundational runtime completeness
 - [x] R5.1 foundational boards on `stm32g0`, `stm32f4`, and `same70` build on the new path
-- [ ] R5.2 the runtime no longer requires a new public API shape to add another vendor
+- [x] R5.2 the runtime no longer requires a new public API shape to add another vendor
 
 ## 10. Validation
 

@@ -15,9 +15,11 @@ namespace alloy::hal::detail::runtime_lite {
 
 using RegisterRef = device::runtime::RuntimeRegisterRef;
 using FieldRef = device::runtime::RuntimeFieldRef;
+using IndexedFieldRef = device::runtime::RuntimeIndexedFieldRef;
 
 inline constexpr auto kInvalidRegisterRef = device::runtime::invalid_register_ref;
 inline constexpr auto kInvalidFieldRef = device::runtime::invalid_field_ref;
+inline constexpr auto kInvalidIndexedFieldRef = device::runtime::invalid_indexed_field_ref;
 
 [[nodiscard]] constexpr auto ascii_lower(char ch) -> char {
     return ch >= 'A' && ch <= 'Z' ? static_cast<char>(ch - 'A' + 'a') : ch;
@@ -594,6 +596,22 @@ template <typename OperationKind>
     return ((1u << field.bit_width) - 1u) << field.bit_offset;
 }
 
+[[nodiscard]] constexpr auto indexed_field_mask(const IndexedFieldRef& field) -> std::uint32_t {
+    if (!field.valid || field.bit_width == 0u) {
+        return 0u;
+    }
+    if (field.bit_width >= 32u) {
+        return 0xFFFF'FFFFu;
+    }
+    return ((1u << field.bit_width) - 1u) << field.bit_offset;
+}
+
+[[nodiscard]] constexpr auto indexed_field_address(const IndexedFieldRef& field,
+                                                   std::size_t index) -> std::uintptr_t {
+    return field.base_address + field.base_offset_bytes +
+           (field.stride_bytes * static_cast<std::uintptr_t>(index));
+}
+
 inline auto write_register(const RegisterRef& reg, std::uint32_t value)
     -> core::Result<void, core::ErrorCode> {
     if (!reg.valid) {
@@ -620,6 +638,14 @@ inline auto write_register(const RegisterRef& reg, std::uint32_t value)
     return core::Ok((value << field.bit_offset) & field_mask(field));
 }
 
+[[nodiscard]] constexpr auto indexed_field_bits(const IndexedFieldRef& field, std::uint32_t value)
+    -> core::Result<std::uint32_t, core::ErrorCode> {
+    if (!field.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+    return core::Ok((value << field.bit_offset) & indexed_field_mask(field));
+}
+
 inline auto modify_field(const FieldRef& field, std::uint32_t value)
     -> core::Result<void, core::ErrorCode> {
     if (!field.valid) {
@@ -630,6 +656,19 @@ inline auto modify_field(const FieldRef& field, std::uint32_t value)
     current &= ~field_mask(field);
     current |= (value << field.bit_offset) & field_mask(field);
     mmio32(field.reg.base_address + field.reg.offset_bytes) = current;
+    return core::Ok();
+}
+
+inline auto modify_indexed_field(const IndexedFieldRef& field, std::size_t index,
+                                 std::uint32_t value)
+    -> core::Result<void, core::ErrorCode> {
+    if (!field.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    auto& current = mmio32(indexed_field_address(field, index));
+    current &= ~indexed_field_mask(field);
+    current |= (value << field.bit_offset) & indexed_field_mask(field);
     return core::Ok();
 }
 
@@ -753,7 +792,7 @@ inline auto release_reset_typed() -> core::Result<void, core::ErrorCode> {
 }
 
 template <device::runtime::PeripheralId PeripheralId>
-inline auto enable_gpio_port_runtime() -> core::Result<void, core::ErrorCode> {
+inline auto enable_peripheral_runtime_typed() -> core::Result<void, core::ErrorCode> {
     using peripheral_traits = device::runtime::PeripheralInstanceTraits<PeripheralId>;
     using binding_traits = device::runtime::PeripheralClockBindingTraits<PeripheralId>;
 
@@ -777,6 +816,19 @@ inline auto enable_gpio_port_runtime() -> core::Result<void, core::ErrorCode> {
         }
 
         return core::Ok();
+    }
+}
+
+template <device::runtime::PeripheralId PeripheralId>
+inline auto enable_gpio_port_runtime() -> core::Result<void, core::ErrorCode> {
+    using peripheral_traits = device::runtime::PeripheralInstanceTraits<PeripheralId>;
+
+    if constexpr (!peripheral_traits::kPresent ||
+                  peripheral_traits::kPeripheralClassId !=
+                      device::runtime::PeripheralClassId::class_gpio) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        return enable_peripheral_runtime_typed<PeripheralId>();
     }
 }
 

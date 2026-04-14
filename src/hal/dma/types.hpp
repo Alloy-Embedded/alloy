@@ -33,6 +33,7 @@ struct Config {
     Mode mode = Mode::normal;
     Priority priority = Priority::medium;
     DataWidth data_width = DataWidth::bits8;
+    int channel_index = -1;
 };
 
 }  // namespace alloy::hal::dma

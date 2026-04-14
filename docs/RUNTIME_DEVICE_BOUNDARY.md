@@ -31,10 +31,11 @@ The rule is simple:
 - board bring-up orchestration
 - public API shape and configuration defaults
 
-Today `DMA` is split into:
+Today `DMA` consumes:
 
-- typed binding selection in `alloy`
-- missing transfer semantics still to be published by `alloy-devices`
+- typed runtime DMA bindings
+- typed DMA driver semantics
+- schema-driven controller configuration in `alloy`
 
 ## Import Rule
 
@@ -88,3 +89,40 @@ The cleanup proceeds in this order:
 
 For the rebuilt runtime path, `src/device` is the only supported source-level
 entry point into selected published descriptors.
+
+## Vendor-Light Validation
+
+The runtime is considered vendor-light only if both of these stay true:
+
+- the runtime boundary check passes:
+  - `python3 scripts/check_runtime_device_boundary.py`
+- foundational descriptor builds pass on the same runtime core without new
+  public API forks:
+  - `nucleo_g071rb`: `alloy-device-contract-smoke`, `blink`
+  - `nucleo_f401re`: `alloy-device-contract-smoke`, `blink`, `dma_probe`
+  - `same70_xpld`: `alloy-device-contract-smoke`, `uart_logger`, `dma_probe`
+
+This is the gate used to verify that one runtime shape still supports `stm32g0`,
+`stm32f4`, and `same70`.
+
+## Vendor-4 Admission Criteria
+
+A fourth vendor is admitted to the rebuilt runtime only if all of the following
+are true:
+
+- the publish provides the same `runtime-lite` surface already consumed by the
+  foundational vendors:
+  - `generated/runtime/types.hpp`
+  - `generated/runtime/devices/<device>/{peripheral_instances,pins,registers,register_fields,routes,clock_bindings,dma_bindings}.hpp`
+  - `generated/runtime/devices/<device>/driver_semantics/{common,gpio,uart,i2c,spi,dma}.hpp`
+- `alloy` consumes that publish only through `src/device/**`
+- the vendor brings no new public HAL tier, no vendor-specific public API, and
+  no reflection fallback in the hot path
+- the foundational validation shape still works unchanged:
+  - compile smoke through `alloy-device-contract-smoke`
+  - one canonical board/example path on the new runtime
+  - zero-overhead behavior remains descriptor-driven rather than table-scanned
+
+If a new vendor needs a new public API shape, a new reflection escape hatch, or
+direct generated-family imports in runtime code, the runtime architecture is not
+ready for that vendor yet.

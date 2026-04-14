@@ -11,7 +11,13 @@
 #if @ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE_INT@
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/types.hpp"
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/clock_bindings.hpp"
+#if @ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/dma_bindings.hpp"
+#endif
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/common.hpp"
+#if @ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/dma.hpp"
+#endif
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/gpio.hpp"
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/i2c.hpp"
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/spi.hpp"
@@ -25,10 +31,6 @@
 
 #if @ALLOY_DEVICE_STARTUP_AVAILABLE_INT@
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/startup_descriptors.hpp"
-#endif
-
-#if @ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT@
-#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/devices/@ALLOY_DEVICE_SELECTED_NAME@/dma_bindings.hpp"
 #endif
 
 namespace alloy::device::selected {
@@ -47,16 +49,14 @@ namespace runtime_family_contract =
     ::@ALLOY_DEVICE_SELECTED_VENDOR@::@ALLOY_DEVICE_SELECTED_FAMILY@::generated::runtime;
 namespace runtime_device_contract = runtime_family_contract::devices::@ALLOY_DEVICE_SELECTED_NAME@;
 namespace runtime_driver_contract = runtime_device_contract::driver_semantics;
+#if @ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT@
+namespace runtime_dma_device_contract = runtime_device_contract;
+namespace runtime_dma_driver_contract = runtime_driver_contract;
+#endif
 #endif
 
 #if @ALLOY_DEVICE_STARTUP_AVAILABLE_INT@
 namespace startup_device_contract =
-    ::@ALLOY_DEVICE_SELECTED_VENDOR@::@ALLOY_DEVICE_SELECTED_FAMILY@::generated::devices::
-        @ALLOY_DEVICE_SELECTED_NAME@;
-#endif
-
-#if @ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT@
-namespace dma_device_contract =
     ::@ALLOY_DEVICE_SELECTED_VENDOR@::@ALLOY_DEVICE_SELECTED_FAMILY@::generated::devices::
         @ALLOY_DEVICE_SELECTED_NAME@;
 #endif
