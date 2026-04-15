@@ -29,8 +29,8 @@ cleanup-first reset.
 - **BREAKING** collapse the public HAL surface to one primary API per peripheral class; remove the
   `simple`/`expert`/`fluent` split as a public architectural concept
 - **BREAKING** move board bring-up to a declarative board layer over shared runtime primitives
-- **BREAKING** replace handwritten per-family startup logic with architecture runtime plus
-  descriptor-fed startup data
+- **BREAKING** replace handwritten per-family startup logic with generated startup and
+  system-clock contracts published by `alloy-devices`
 - **BREAKING** replace manual signal registries and vendor enums in the core with connector and
   claim mechanisms driven by generated descriptors
 - **NEW** define a strict runtime/device boundary:

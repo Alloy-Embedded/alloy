@@ -25,7 +25,7 @@ using DebugUartConnector =
 using DebugUart = alloy::hal::uart::port_handle<DebugUartConnector>;
 
 inline constexpr std::uint32_t kDebugUartPeripheralClockHz =
-    nucleo_f401re::ClockConfig::system_clock_hz / nucleo_f401re::ClockConfig::apb1_prescaler;
+    nucleo_f401re::ClockConfig::apb1_hz;
 
 [[nodiscard]] inline auto make_debug_uart(alloy::hal::uart::Config config = {}) -> DebugUart {
     if (config.peripheral_clock_hz == 0u) {

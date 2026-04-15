@@ -54,5 +54,5 @@ int main() {
 
 ## Limites Conhecidos
 
-- o bring-up de clock ainda usa backend vendor-specific em [clock.hpp](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/vendors/arm/same70/clock.hpp)
+- o profile default continua em `12 MHz`; o próximo passo aqui é promover um profile de desempenho como escolha oficial de board quando o hardware target estiver validado
 - `DMA` agora usa o contrato `runtime-lite` publicado, e a board fixa canais padrão para o `USART0` de debug

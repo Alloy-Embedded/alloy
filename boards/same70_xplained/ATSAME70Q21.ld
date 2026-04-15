@@ -34,6 +34,7 @@ MEMORY
 
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM);  /* Stack at end of RAM */
+PROVIDE(__stack_top = _estack);
 
 /* Minimum heap size */
 _Min_Heap_Size = 0x2000;   /* 8KB */

@@ -40,7 +40,6 @@ set_property(CACHE ALLOY_BOARD PROPERTY STRINGS
     "nucleo_g0b1re"      # STM32 Nucleo-G0B1RE
     "nucleo_g071rb"      # STM32 Nucleo-G071RB
     "nucleo_f401re"      # STM32 Nucleo-F401RE
-    "nucleo_f722ze"      # STM32 Nucleo-F722ZE
 )
 
 # Build type
@@ -128,8 +127,6 @@ if(NOT ALLOY_PLATFORM)
         set(ALLOY_PLATFORM "stm32g0")
     elseif(ALLOY_BOARD STREQUAL "nucleo_f401re" OR ALLOY_BOARD MATCHES "^stm32f4" OR ALLOY_BOARD MATCHES "^nucleo_f4")
         set(ALLOY_PLATFORM "stm32f4")
-    elseif(ALLOY_BOARD STREQUAL "nucleo_f722ze" OR ALLOY_BOARD MATCHES "^stm32f7" OR ALLOY_BOARD MATCHES "^nucleo_f7")
-        set(ALLOY_PLATFORM "stm32f7")
     else()
         message(WARNING "Could not auto-detect ALLOY_PLATFORM from ALLOY_BOARD='${ALLOY_BOARD}'. Using 'linux' as fallback.")
         set(ALLOY_PLATFORM "linux")
@@ -189,15 +186,34 @@ if(DEFINED BOARD_HEADER_PATH)
     string(TOUPPER "${ALLOY_BOARD}" ALLOY_BOARD_UPPER)
     add_compile_definitions(ALLOY_BOARD_${ALLOY_BOARD_UPPER})
     message(STATUS "  Board Define: ALLOY_BOARD_${ALLOY_BOARD_UPPER}")
-
-    if(DEFINED STARTUP_SOURCE AND EXISTS "${STARTUP_SOURCE}")
-        message(STATUS "  Startup Code: ${STARTUP_SOURCE}")
-    endif()
 endif()
 
 # Resolve the selected descriptor contract from alloy-devices before platform and
 # board modules run so they can disable legacy integration paths when possible.
 alloy_configure_selected_device()
+
+set(ALLOY_ACTIVE_STARTUP_SOURCE "")
+set(ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE "")
+if(ALLOY_DESCRIPTOR_RUNTIME_ENABLED
+   AND ALLOY_DEVICE_GENERATED_STARTUP_SOURCE
+   AND EXISTS "${ALLOY_DEVICE_GENERATED_STARTUP_SOURCE}")
+    set(ALLOY_ACTIVE_STARTUP_SOURCE "${ALLOY_DEVICE_GENERATED_STARTUP_SOURCE}")
+elseif(DEFINED STARTUP_SOURCE AND EXISTS "${STARTUP_SOURCE}")
+    set(ALLOY_ACTIVE_STARTUP_SOURCE "${STARTUP_SOURCE}")
+endif()
+
+if(ALLOY_DEVICE_STARTUP_VECTORS_SOURCE
+   AND EXISTS "${ALLOY_DEVICE_STARTUP_VECTORS_SOURCE}"
+   AND NOT ALLOY_ACTIVE_STARTUP_SOURCE)
+    set(ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE "${ALLOY_DEVICE_STARTUP_VECTORS_SOURCE}")
+endif()
+
+if(ALLOY_ACTIVE_STARTUP_SOURCE)
+    set(STARTUP_SOURCE "${ALLOY_ACTIVE_STARTUP_SOURCE}")
+    message(STATUS "  Startup Code: ${STARTUP_SOURCE}")
+elseif(ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE)
+    message(STATUS "  Startup Descriptors: ${ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE}")
+endif()
 
 # Include platform selection module (new HAL abstraction system)
 # This must come before board configuration
@@ -284,15 +300,15 @@ set(ALLOY_CORE_SOURCES
 )
 
 # Create HAL library (INTERFACE for header-only, or STATIC if platform has .cpp files)
-if(ALLOY_PLATFORM_SOURCES OR STARTUP_SOURCE OR ALLOY_DEVICE_STARTUP_VECTORS_SOURCE)
+if(ALLOY_PLATFORM_SOURCES OR ALLOY_ACTIVE_STARTUP_SOURCE OR ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE)
     # Platform has .cpp files - create STATIC library
     # Include platform sources + startup code (if board defines one)
     set(HAL_SOURCES ${ALLOY_PLATFORM_SOURCES} ${ALLOY_CORE_SOURCES})
-    if(DEFINED STARTUP_SOURCE AND EXISTS "${STARTUP_SOURCE}")
-        list(APPEND HAL_SOURCES ${STARTUP_SOURCE})
+    if(ALLOY_ACTIVE_STARTUP_SOURCE AND EXISTS "${ALLOY_ACTIVE_STARTUP_SOURCE}")
+        list(APPEND HAL_SOURCES ${ALLOY_ACTIVE_STARTUP_SOURCE})
     endif()
-    if(ALLOY_DEVICE_STARTUP_VECTORS_SOURCE AND EXISTS "${ALLOY_DEVICE_STARTUP_VECTORS_SOURCE}")
-        list(APPEND HAL_SOURCES ${ALLOY_DEVICE_STARTUP_VECTORS_SOURCE})
+    if(ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE AND EXISTS "${ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE}")
+        list(APPEND HAL_SOURCES ${ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE})
     endif()
 
     add_library(alloy-hal STATIC ${HAL_SOURCES})
@@ -306,7 +322,7 @@ else()
 endif()
 
 # Set include directories for HAL library
-if(ALLOY_PLATFORM_SOURCES OR STARTUP_SOURCE OR ALLOY_DEVICE_STARTUP_VECTORS_SOURCE)
+if(ALLOY_PLATFORM_SOURCES OR ALLOY_ACTIVE_STARTUP_SOURCE OR ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE)
     # STATIC library - use PUBLIC
     target_include_directories(alloy-hal
         PUBLIC
@@ -339,6 +355,7 @@ if(ALLOY_DEVICE_CONTRACT_AVAILABLE)
     add_library(alloy-device-contract-smoke OBJECT
         tests/compile_tests/test_device_import_layer.cpp
         tests/compile_tests/test_startup_contract.cpp
+        tests/compile_tests/test_system_clock_contract.cpp
         tests/compile_tests/test_dma_api.cpp
         tests/compile_tests/test_connector_kernel.cpp
         tests/compile_tests/test_gpio_api.cpp
@@ -348,7 +365,8 @@ if(ALLOY_DEVICE_CONTRACT_AVAILABLE)
         tests/compile_tests/test_board_led_api.cpp
         tests/compile_tests/test_board_uart_api.cpp
         tests/compile_tests/test_board_dma_api.cpp
-        ${ALLOY_DEVICE_STARTUP_VECTORS_SOURCE}
+        ${ALLOY_ACTIVE_STARTUP_SOURCE}
+        ${ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE}
     )
 
     target_include_directories(alloy-device-contract-smoke PRIVATE
@@ -386,7 +404,7 @@ if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
 endif()
 
 # Universal RTOS example - demonstrates RTOS with multi-task scheduling
-if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD STREQUAL "nucleo_f401re" OR ALLOY_BOARD STREQUAL "nucleo_f722ze")
+if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD STREQUAL "nucleo_f401re")
     add_subdirectory(examples/rtos/simple_tasks)
 endif()
 

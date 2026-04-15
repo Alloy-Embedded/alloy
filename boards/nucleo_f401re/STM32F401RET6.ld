@@ -21,6 +21,7 @@ MEMORY
 /* Stack and heap sizes */
 _stack_size = 8K;   /* Stack size: 8 KB */
 _heap_size = 0K;    /* Heap size: 0 KB (not using malloc) */
+PROVIDE(__stack_top = ORIGIN(RAM) + LENGTH(RAM));
 
 /* Sections */
 SECTIONS
@@ -153,6 +154,7 @@ SECTIONS
         . = . + _stack_size;
         . = ALIGN(8);
         _estack = .;       /* Top of stack */
+        PROVIDE (__stack_top = _estack);
     } > RAM
 
     /* Remove unwanted sections */

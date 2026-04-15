@@ -33,7 +33,6 @@ set(ALLOY_SUPPORTED_PLATFORMS
     "esp32"     # Espressif ESP32 (Xtensa LX6 + ESP-IDF)
     "stm32g0"   # STMicroelectronics STM32G0 (ARM Cortex-M0+)
     "stm32f4"   # STMicroelectronics STM32F4 (ARM Cortex-M4)
-    "stm32f7"   # STMicroelectronics STM32F7 (ARM Cortex-M7)
     # Future platforms:
     # "stm32h7"   # STMicroelectronics STM32H7 (ARM Cortex-M7)
     # "nrf52"     # Nordic nRF52 (ARM Cortex-M4)
@@ -140,7 +139,6 @@ if(DEFINED ALLOY_BOARD)
     if(NOT EXPECTED_PLATFORM)
         # Legacy fallback for boards that are not yet in the compact board manifest.
         set(BOARD_TO_PLATFORM_nucleo_f401re "stm32f4")
-        set(BOARD_TO_PLATFORM_nucleo_f722ze "stm32f7")
         set(BOARD_TO_PLATFORM_nucleo_g071rb "stm32g0")
         set(BOARD_TO_PLATFORM_nucleo_g0b1re "stm32g0")
         set(BOARD_TO_PLATFORM_same70_xplained "same70")
@@ -154,7 +152,7 @@ if(DEFINED ALLOY_BOARD)
             "Unknown board: '${ALLOY_BOARD}'\n"
             "Board-to-platform mapping not defined.\n"
             "Proceeding with platform: ${ALLOY_PLATFORM}\n"
-            "Known boards: nucleo_f401re, nucleo_f722ze, nucleo_g071rb, nucleo_g0b1re, same70_xplained"
+            "Known boards: nucleo_f401re, nucleo_g071rb, nucleo_g0b1re, same70_xplained"
         )
     elseif(NOT "${EXPECTED_PLATFORM}" STREQUAL "${ALLOY_PLATFORM}")
         message(FATAL_ERROR

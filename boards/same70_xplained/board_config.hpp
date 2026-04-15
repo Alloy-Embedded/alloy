@@ -16,6 +16,7 @@
 
 #include <cstdint>
 
+#include "device/system_clock.hpp"
 #include "hal/connect/tags.hpp"
 
 namespace board::same70_xplained {
@@ -25,11 +26,20 @@ namespace board::same70_xplained {
 // =============================================================================
 
 struct ClockConfig {
-    // IMPORTANT: PLL is not working (see docs/KNOWN_ISSUES.md)
-    // Using 12 MHz RC oscillator without PLL as workaround
-    static constexpr uint32_t cpu_freq_hz = 12'000'000;   // 12 MHz RC
-    static constexpr uint32_t hclk_freq_hz = 12'000'000;  // AHB clock
-    static constexpr uint32_t pclk_freq_hz = 12'000'000;  // Peripheral clock
+    static_assert(alloy::device::SelectedSystemClockProfiles::available);
+
+    static constexpr auto system_clock_profile =
+        alloy::device::system_clock::ProfileId::default_safe_internal_12mhz;
+    using SystemClockProfile =
+        alloy::device::system_clock::ProfileTraits<system_clock_profile>;
+
+    static_assert(SystemClockProfile::kPresent);
+
+    static constexpr uint32_t cpu_freq_hz = SystemClockProfile::kSysclkHz;
+    static constexpr uint32_t hclk_freq_hz = SystemClockProfile::kHclkHz;
+    static constexpr uint32_t pclk_freq_hz = SystemClockProfile::kPclkHz;
+    static constexpr uint32_t mck_prescaler = SystemClockProfile::kMckPrescaler;
+    static constexpr uint32_t flash_latency = SystemClockProfile::kFlashLatency;
 };
 
 // =============================================================================

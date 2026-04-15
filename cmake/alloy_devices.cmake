@@ -56,8 +56,10 @@ function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE FALSE PARENT_SCOPE)
     set(ALLOY_DEVICE_STARTUP_AVAILABLE FALSE PARENT_SCOPE)
     set(ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE FALSE PARENT_SCOPE)
+    set(ALLOY_DEVICE_SYSTEM_CLOCK_AVAILABLE FALSE PARENT_SCOPE)
     set(ALLOY_DEVICE_INCLUDE_DIRS "" PARENT_SCOPE)
     set(ALLOY_DEVICE_STARTUP_VECTORS_SOURCE "" PARENT_SCOPE)
+    set(ALLOY_DEVICE_GENERATED_STARTUP_SOURCE "" PARENT_SCOPE)
     set(ALLOY_DESCRIPTOR_RUNTIME_ENABLED FALSE PARENT_SCOPE)
 
     get_filename_component(_devices_root "${ALLOY_DEVICES_ROOT}" ABSOLUTE)
@@ -85,14 +87,19 @@ function(alloy_configure_selected_device)
     set(_runtime_lite_available 0)
     set(_startup_available 0)
     set(_dma_bindings_available 0)
+    set(_system_clock_available 0)
     set(_descriptor_runtime_enabled 0)
     set(_family_root "")
     set(_startup_vectors "")
+    set(_generated_startup_source "")
 
     if(ALLOY_USE_ALLOY_DEVICES AND _vendor AND EXISTS "${_devices_root}")
         set(_family_root "${_devices_root}/${_vendor}/${_family}")
         set(_startup_vectors
             "${_family_root}/generated/devices/${_device}/startup_vectors.cpp"
+        )
+        set(_generated_startup_source
+            "${_family_root}/generated/devices/${_device}/startup.cpp"
         )
 
         if(EXISTS "${_family_root}/generated/devices/${_device}/startup_descriptors.hpp")
@@ -110,6 +117,7 @@ function(alloy_configure_selected_device)
         if(
             EXISTS "${_family_root}/generated/runtime/types.hpp"
             AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/clock_bindings.hpp"
+            AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/system_clock.hpp"
             AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/driver_semantics/common.hpp"
             AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/driver_semantics/gpio.hpp"
             AND EXISTS "${_family_root}/generated/runtime/devices/${_device}/driver_semantics/i2c.hpp"
@@ -124,6 +132,10 @@ function(alloy_configure_selected_device)
             set(_runtime_lite_available 1)
         endif()
 
+        if(EXISTS "${_family_root}/generated/runtime/devices/${_device}/system_clock.hpp")
+            set(_system_clock_available 1)
+        endif()
+
         if(_runtime_lite_available)
             set(_contract_available 1)
             set(_descriptor_runtime_enabled 1)
@@ -134,6 +146,7 @@ function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE_INT "${_runtime_lite_available}")
     set(ALLOY_DEVICE_STARTUP_AVAILABLE_INT "${_startup_available}")
     set(ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT "${_dma_bindings_available}")
+    set(ALLOY_DEVICE_SYSTEM_CLOCK_AVAILABLE_INT "${_system_clock_available}")
     set(ALLOY_DEVICE_SELECTED_VENDOR "${_vendor}")
     set(ALLOY_DEVICE_SELECTED_FAMILY "${_family}")
     set(ALLOY_DEVICE_SELECTED_NAME "${_device}")
@@ -153,10 +166,12 @@ function(alloy_configure_selected_device)
     set(ALLOY_DEVICE_SELECTED_CONFIG_HEADER "${_selected_config_header}" PARENT_SCOPE)
     set(ALLOY_DEVICE_FAMILY_ROOT "${_family_root}" PARENT_SCOPE)
     set(ALLOY_DEVICE_STARTUP_VECTORS_SOURCE "${_startup_vectors}" PARENT_SCOPE)
+    set(ALLOY_DEVICE_GENERATED_STARTUP_SOURCE "${_generated_startup_source}" PARENT_SCOPE)
     set(ALLOY_DEVICE_CONTRACT_AVAILABLE "${_contract_available}" PARENT_SCOPE)
     set(ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE "${_runtime_lite_available}" PARENT_SCOPE)
     set(ALLOY_DEVICE_STARTUP_AVAILABLE "${_startup_available}" PARENT_SCOPE)
     set(ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE "${_dma_bindings_available}" PARENT_SCOPE)
+    set(ALLOY_DEVICE_SYSTEM_CLOCK_AVAILABLE "${_system_clock_available}" PARENT_SCOPE)
     set(ALLOY_DESCRIPTOR_RUNTIME_ENABLED "${_descriptor_runtime_enabled}" PARENT_SCOPE)
 
     if(_device)

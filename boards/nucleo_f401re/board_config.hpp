@@ -10,6 +10,7 @@
 
 #include <cstdint>
 
+#include "device/system_clock.hpp"
 #include "hal/connect/tags.hpp"
 
 namespace nucleo_f401re {
@@ -58,35 +59,28 @@ struct ButtonConfig {
  * - APB2: 84 MHz (AHB / 1, max 84 MHz)
  */
 struct ClockConfig {
-    /// HSE crystal frequency
-    static constexpr uint32_t hse_hz = 8'000'000;
+    static_assert(alloy::device::SelectedSystemClockProfiles::available);
 
-    /// Target system clock frequency
-    static constexpr uint32_t system_clock_hz = 84'000'000;
+    static constexpr auto system_clock_profile =
+        alloy::device::system_clock::ProfileId::default_hse_pll_84mhz;
+    using SystemClockProfile =
+        alloy::device::system_clock::ProfileTraits<system_clock_profile>;
 
-    /// PLL input divider (HSE / pll_m)
-    static constexpr uint32_t pll_m = 4;
+    static_assert(SystemClockProfile::kPresent);
 
-    /// PLL VCO multiplier (input × pll_n)
-    static constexpr uint32_t pll_n = 168;
-
-    /// PLL system clock divider (VCO / pll_p_div)
-    static constexpr uint32_t pll_p_div = 4;
-
-    /// PLL USB/SDMMC divider (VCO / pll_q)
-    static constexpr uint32_t pll_q = 7;
-
-    /// Flash latency (wait states) for 84 MHz @ 3.3V
-    static constexpr uint32_t flash_latency = 2;
-
-    /// AHB prescaler (SYSCLK / ahb_prescaler)
-    static constexpr uint32_t ahb_prescaler = 1;
-
-    /// APB1 prescaler (AHB / apb1_prescaler)
-    static constexpr uint32_t apb1_prescaler = 2;
-
-    /// APB2 prescaler (AHB / apb2_prescaler)
-    static constexpr uint32_t apb2_prescaler = 1;
+    static constexpr uint32_t hse_hz = SystemClockProfile::kSourceHz;
+    static constexpr uint32_t system_clock_hz = SystemClockProfile::kSysclkHz;
+    static constexpr uint32_t ahb_clock_hz = SystemClockProfile::kHclkHz;
+    static constexpr uint32_t apb1_hz = SystemClockProfile::kApb1Hz;
+    static constexpr uint32_t apb2_hz = SystemClockProfile::kApb2Hz;
+    static constexpr uint32_t pll_m = SystemClockProfile::kPllM;
+    static constexpr uint32_t pll_n = SystemClockProfile::kPllN;
+    static constexpr uint32_t pll_p_div = SystemClockProfile::kPllP;
+    static constexpr uint32_t pll_q = SystemClockProfile::kPllQ;
+    static constexpr uint32_t flash_latency = SystemClockProfile::kFlashLatency;
+    static constexpr uint32_t ahb_prescaler = SystemClockProfile::kAhbPrescaler;
+    static constexpr uint32_t apb1_prescaler = SystemClockProfile::kApb1Prescaler;
+    static constexpr uint32_t apb2_prescaler = SystemClockProfile::kApb2Prescaler;
 };
 
 }  // namespace nucleo_f401re

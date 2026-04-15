@@ -11,6 +11,7 @@
  * - SysTick timer
  */
 
+#include "device/system_clock.hpp"
 #include "hal/systick.hpp"
 
 #include "board_config.hpp"

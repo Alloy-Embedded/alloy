@@ -44,12 +44,7 @@ add_integration_test(test_gpio_clock_integration
     SOURCES test_gpio_clock_integration.cpp
 )
 
-# Test 2: Platform-specific concept validation
-add_integration_test(test_platform_concepts
-    SOURCES test_platform_concepts.cpp
-)
-
-# Test 3: Complete initialization sequence
+# Test 2: Complete initialization sequence
 add_integration_test(test_initialization_sequence
     SOURCES test_initialization_sequence.cpp
 )
@@ -60,5 +55,4 @@ add_integration_test(test_initialization_sequence
 
 message(STATUS "Integration tests configured:")
 message(STATUS "  - GPIO + Clock integration")
-message(STATUS "  - Platform concept validation")
 message(STATUS "  - Initialization sequence")

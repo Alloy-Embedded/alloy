@@ -18,7 +18,7 @@ The rule is simple:
 `alloy-devices` is the source of truth for:
 
 - typed runtime-lite routes, clocks, registers, fields, and driver semantics
-- startup descriptors plus generated startup vector source hooks
+- generated startup sources, startup descriptors, and typed system-clock profiles
 - optional reflection artifacts that stay outside the `alloy` runtime boundary
 
 ### `alloy`
@@ -27,7 +27,7 @@ The rule is simple:
 
 - `connect()` and claim semantics
 - GPIO, UART, SPI, I2C, and DMA runtime behavior
-- startup algorithm and architecture bootstrap
+- architecture-local hooks that run after generated startup
 - board bring-up orchestration
 - public API shape and configuration defaults
 
@@ -79,7 +79,7 @@ not yet fully blocked:
 The cleanup proceeds in this order:
 
 1. stabilize import and build selection
-2. keep startup vectors as generated sources, not reflection imports
+2. consume generated startup and system-clock sources from `alloy-devices`
 3. rebuild connector and claim kernel
 4. rebuild drivers on descriptors
 5. rewrite boards and examples

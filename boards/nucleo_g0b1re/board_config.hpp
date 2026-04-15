@@ -10,6 +10,7 @@
 
 #include <cstdint>
 
+#include "device/system_clock.hpp"
 #include "hal/connect/tags.hpp"
 
 namespace nucleo_g0b1re {
@@ -43,24 +44,21 @@ struct ButtonConfig {
 // =============================================================================
 
 struct ClockConfig {
-    /// System clock frequency (using HSI 64 MHz oscillator)
-    /// Note: STM32G0B1 has HSI16 that can be multiplied to 64MHz
-    static constexpr uint32_t system_clock_hz = 64'000'000;
+    static_assert(alloy::device::SelectedSystemClockProfiles::available);
 
-    /// APB bus frequency (same as system clock on Cortex-M0+)
-    static constexpr uint32_t apb_clock_hz = system_clock_hz;
+    static constexpr auto system_clock_profile =
+        alloy::device::system_clock::ProfileId::default_pll_64mhz;
+    using SystemClockProfile =
+        alloy::device::system_clock::ProfileTraits<system_clock_profile>;
 
-    /// PLL input divider (/1)
-    static constexpr uint32_t pll_m = 0;
+    static_assert(SystemClockProfile::kPresent);
 
-    /// PLL multiplier (x8)
-    static constexpr uint32_t pll_n = 8;
-
-    /// PLL output divider (/2)
-    static constexpr uint32_t pll_r = 0;
-
-    /// Flash latency for 64 MHz
-    static constexpr uint32_t flash_latency = 2;
+    static constexpr uint32_t system_clock_hz = SystemClockProfile::kSysclkHz;
+    static constexpr uint32_t apb_clock_hz = SystemClockProfile::kPclkHz;
+    static constexpr uint32_t pll_m = SystemClockProfile::kPllM;
+    static constexpr uint32_t pll_n = SystemClockProfile::kPllN;
+    static constexpr uint32_t pll_r = SystemClockProfile::kPllR;
+    static constexpr uint32_t flash_latency = SystemClockProfile::kFlashLatency;
 };
 
 }  // namespace nucleo_g0b1re

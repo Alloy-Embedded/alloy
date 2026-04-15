@@ -52,9 +52,6 @@ function(alloy_board_to_platform BOARD_NAME OUT_PLATFORM)
     elseif(BOARD_NAME STREQUAL "nucleo_f401re")
         set(${OUT_PLATFORM} "stm32f4" PARENT_SCOPE)
 
-    elseif(BOARD_NAME STREQUAL "nucleo_f722ze")
-        set(${OUT_PLATFORM} "stm32f7" PARENT_SCOPE)
-
     elseif(BOARD_NAME STREQUAL "host")
         set(${OUT_PLATFORM} "linux" PARENT_SCOPE)
 

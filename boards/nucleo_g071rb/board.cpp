@@ -10,15 +10,11 @@
 
 #include <cstdint>
 
-#include "hal/clock.hpp"
+#include "device/system_clock.hpp"
 #include "hal/gpio.hpp"
 #include "hal/systick.hpp"
-#include "hal/vendors/st/stm32g0/clock_platform.hpp"
 
-using namespace alloy::hal::st::stm32g0;
 using namespace alloy::hal;
-
-using BoardClock = Stm32g0Clock<nucleo_g071rb::ClockConfig>;
 
 namespace board {
 
@@ -46,7 +42,7 @@ auto& led_handle() {
 static bool board_initialized = false;
 
 static inline void configure_system_clock() {
-    static_cast<void>(SystemClock::use_default<BoardClock>());
+    static_cast<void>(alloy::device::system_clock::apply_default());
 }
 
 namespace led {

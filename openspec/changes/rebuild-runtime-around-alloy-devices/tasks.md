@@ -67,7 +67,7 @@
 - [x] 6.5 Add startup smoke tests for foundational targets
 
 ### Gate R4: Startup and build integration
-- [ ] R4.1 startup data is consumed from `alloy-devices`, not handwritten in the runtime repo
+- [x] R4.1 startup data is consumed from `alloy-devices`, not handwritten in the runtime repo
 - [x] R4.2 device/build selection no longer depends on large manual family switch logic
 
 ## 7. Board and Example Rebuild

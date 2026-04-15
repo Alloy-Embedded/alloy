@@ -10,16 +10,11 @@
 
 #include <cstdint>
 
-#include "hal/clock.hpp"
+#include "device/system_clock.hpp"
 #include "hal/gpio.hpp"
 #include "hal/systick.hpp"
-#include "hal/vendors/st/stm32f4/clock_platform.hpp"
 
-using namespace alloy::hal::st::stm32f4;
 using namespace alloy::hal;
-
-// Board clock type using config from board_config.hpp
-using BoardClock = Stm32f4Clock<nucleo_f401re::ClockConfig>;
 
 namespace board {
 
@@ -59,7 +54,7 @@ static bool board_initialized = false;
  * Clock configuration is defined in ClockConfig struct in board_config.hpp.
  */
 static inline void configure_system_clock() {
-    static_cast<void>(SystemClock::use_default<BoardClock>());
+    static_cast<void>(alloy::device::system_clock::apply_default());
 }
 
 // =============================================================================

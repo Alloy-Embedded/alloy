@@ -11,18 +11,14 @@
 
 #include <cstdint>
 
-#include "hal/clock.hpp"
+#include "device/system_clock.hpp"
 #include "hal/gpio.hpp"
 #include "hal/systick.hpp"
 #include "hal/watchdog.hpp"
 #include "hal/vendors/arm/cortex_m7/init_hooks.hpp"
-#include "hal/vendors/arm/same70/clock.hpp"
-#include "hal/vendors/arm/same70/interrupt.hpp"
-#include "hal/vendors/arm/same70/systick_platform.hpp"
 #include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
 #include "hal/vendors/atmel/same70/watchdog_hardware_policy.hpp"
 
-using namespace alloy::hal::same70;
 using namespace alloy::generated::atsame70q21b;
 using namespace alloy::hal;
 
@@ -47,9 +43,6 @@ auto& led_handle() {
 // =============================================================================
 // Internal State
 // =============================================================================
-
-// SysTick instance for timing (12 MHz clock)
-using BoardSysTick = SysTick<12000000>;
 
 // Initialization flag to prevent double-init
 static bool board_initialized = false;
@@ -100,10 +93,8 @@ void init() {
     Watchdog::disable<WDT_Policy>();
     Watchdog::disable<RSWDT_Policy>();
 
-    // Step 2: Configure system clock
-    // Using 12 MHz internal RC oscillator (safe default)
-    auto clock_result = SystemClock::use_safe_default<Clock>();
-    if (!clock_result.is_ok()) {
+    // Step 2: Configure system clock from the published device contract
+    if (!alloy::device::system_clock::apply_default()) {
         // Clock initialization failed - system will continue at default frequency
     }
 
@@ -114,7 +105,7 @@ void init() {
     led::init();
 
     // Step 5: Enable interrupts
-    Nvic::enable_global();
+    __asm volatile("cpsie i" ::: "memory");
 
     // Step 6: Call platform-specific late initialization hook
     alloy::hal::arm::late_init();

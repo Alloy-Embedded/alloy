@@ -4,6 +4,7 @@
 #include "device/import.hpp"
 #include "device/runtime.hpp"
 #include "device/startup.hpp"
+#include "device/system_clock.hpp"
 #include "device/traits.hpp"
 
 static_assert(alloy::device::SelectedDeviceTraits::available,
@@ -18,6 +19,7 @@ int main() {
     static_assert(imported::available);
     static_assert(SelectedRuntimeDescriptors::available);
     static_assert(SelectedStartupDescriptors::available);
+    static_assert(SelectedSystemClockProfiles::available);
     static_assert(SelectedDmaBindings::available);
     static_assert(!runtime::peripherals.empty());
     static_assert(!runtime::pins.empty());

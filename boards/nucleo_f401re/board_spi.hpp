@@ -29,7 +29,7 @@ using BoardSpiConnector =
 using BoardSpi = alloy::hal::spi::port_handle<BoardSpiConnector>;
 
 inline constexpr std::uint32_t kBoardSpiPeripheralClockHz =
-    nucleo_f401re::ClockConfig::system_clock_hz / nucleo_f401re::ClockConfig::apb2_prescaler;
+    nucleo_f401re::ClockConfig::apb2_hz;
 
 [[nodiscard]] inline auto make_spi(alloy::hal::spi::Config config = {}) -> BoardSpi {
     if (config.peripheral_clock_hz == 0u) {

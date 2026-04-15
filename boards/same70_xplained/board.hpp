@@ -38,7 +38,8 @@
 
 #include <cstdint>
 
-#include "hal/vendors/arm/same70/systick_platform.hpp"
+#include "device/system_clock.hpp"
+#include "hal/systick.hpp"
 
 #include "board_config.hpp"
 
@@ -58,7 +59,7 @@ using namespace same70_xplained;
  * SysTickTimer::delay_ms<board::BoardSysTick>(100);
  * @endcode
  */
-using BoardSysTick = alloy::hal::same70::SysTick<12000000>;
+using BoardSysTick = alloy::hal::cortex_m::SysTick<ClockConfig::cpu_freq_hz>;
 
 /**
  * @brief RTOS Tick Source (must be 1ms tick for RTOS compatibility)
