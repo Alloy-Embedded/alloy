@@ -89,7 +89,7 @@
 
 ## 8. Legacy Removal
 
-- [ ] 8.1 Remove or archive obsolete public vendor/runtime glue under `src/hal/vendors`
+- [x] 8.1 Remove or archive obsolete public vendor/runtime glue under `src/hal/vendors`
 - [x] 8.2 Remove handwritten cross-vendor signal registries and enum cores that conflict with the
       descriptor model
 - [x] 8.3 Remove stale universal `hal/*.hpp` platform shims that point to the old architecture
