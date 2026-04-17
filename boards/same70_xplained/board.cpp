@@ -11,12 +11,12 @@
 
 #include <cstdint>
 
-#include "arch/cortex_m/init_hooks.hpp"
 #include "device/runtime.hpp"
 #include "device/system_clock.hpp"
 #include "hal/detail/runtime_lite_ops.hpp"
 #include "hal/gpio.hpp"
 #include "hal/systick.hpp"
+#include "hal/vendors/arm/cortex_m7/init_hooks.hpp"
 
 using namespace alloy::hal;
 
@@ -132,7 +132,7 @@ void init() {
     __asm volatile("cpsie i" ::: "memory");
 
     // Step 6: Call platform-specific late initialization hook
-    alloy::arch::cortex_m::late_init();
+    alloy::hal::arm::late_init();
 
     board_initialized = true;
 }

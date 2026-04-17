@@ -31,6 +31,12 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Checkout alloy-devices
+      uses: actions/checkout@v4
+      with:
+        repository: Alloy-Embedded/alloy-devices
+        path: alloy-devices
+
     - name: Install dependencies
       run: |
         sudo apt-get update
@@ -148,6 +154,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=Debug \
           -DALLOY_BOARD=host \
           -DALLOY_BUILD_TESTS=ON \
+          -DALLOY_DEVICES_ROOT=${{ github.workspace }}/alloy-devices \
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
     - name: Build
