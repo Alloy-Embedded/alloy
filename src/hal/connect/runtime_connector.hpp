@@ -5,8 +5,9 @@
 #include <cstdint>
 #include <tuple>
 
-#include "device/runtime.hpp"
 #include "hal/detail/resolved_route.hpp"
+
+#include "device/runtime.hpp"
 
 namespace alloy::hal::connection {
 
@@ -73,8 +74,9 @@ struct RuntimePinLocation {
 };
 
 template <std::size_t... Index>
-[[nodiscard]] consteval auto find_runtime_pin_location_impl(
-    device::runtime::PinId pin_id, std::index_sequence<Index...>) -> RuntimePinLocation {
+[[nodiscard]] consteval auto find_runtime_pin_location_impl(device::runtime::PinId pin_id,
+                                                            std::index_sequence<Index...>)
+    -> RuntimePinLocation {
     auto resolved = RuntimePinLocation{};
 
     auto match = [&]<std::size_t I>() consteval {
@@ -109,17 +111,17 @@ template <std::size_t... Index>
 }
 
 template <std::size_t... Index>
-[[nodiscard]] consteval auto find_gpio_peripheral_id_impl(
-    device::runtime::PortId port_id,
-    std::index_sequence<Index...>) -> device::runtime::PeripheralId {
+[[nodiscard]] consteval auto find_gpio_peripheral_id_impl(device::runtime::PortId port_id,
+                                                          std::index_sequence<Index...>)
+    -> device::runtime::PeripheralId {
     const auto target_instance = port_instance(port_id);
     auto resolved = device::runtime::PeripheralId::none;
 
     auto match = [&]<std::size_t I>() consteval {
         constexpr auto peripheral_id = device::runtime::runtime_peripheral_ids[I];
         using traits = device::runtime::PeripheralInstanceTraits<peripheral_id>;
-        if constexpr (traits::kPresent &&
-                      traits::kPeripheralClassId == device::runtime::PeripheralClassId::class_gpio) {
+        if constexpr (traits::kPresent && traits::kPeripheralClassId ==
+                                              device::runtime::PeripheralClassId::class_gpio) {
             if (resolved == device::runtime::PeripheralId::none &&
                 traits::kInstance == target_instance) {
                 resolved = peripheral_id;
@@ -163,9 +165,8 @@ template <std::size_t... Index>
 }
 
 template <std::size_t... Index>
-[[nodiscard]] consteval auto find_gpio_schema_impl(
-    device::runtime::PeripheralId peripheral_id,
-    std::index_sequence<Index...>) -> GpioSchema {
+[[nodiscard]] consteval auto find_gpio_schema_impl(device::runtime::PeripheralId peripheral_id,
+                                                   std::index_sequence<Index...>) -> GpioSchema {
     auto resolved = GpioSchema::unknown;
 
     auto match = [&]<std::size_t I>() consteval {
@@ -230,8 +231,8 @@ template <std::size_t Begin, std::size_t End>
 
 [[nodiscard]] constexpr auto synth_field_ref(std::uintptr_t base_address,
                                              std::uint32_t register_offset_bytes,
-                                             std::uint16_t bit_offset,
-                                             std::uint16_t bit_width) -> FieldRef {
+                                             std::uint16_t bit_offset, std::uint16_t bit_width)
+    -> FieldRef {
     if (base_address == 0u || bit_width == 0u) {
         return kInvalidFieldRef;
     }
@@ -262,16 +263,16 @@ template <std::size_t Begin, std::size_t End>
 
 [[nodiscard]] constexpr auto microchip_pio_pdr_field(std::uintptr_t base_address, int line_index)
     -> FieldRef {
-    return line_index < 0 ? kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x04u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? kInvalidFieldRef
+               : synth_field_ref(base_address, 0x04u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
-[[nodiscard]] constexpr auto microchip_pio_abcdsr_field(std::uintptr_t base_address,
-                                                         int line_index) -> FieldRef {
-    return line_index < 0 ? kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x70u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+[[nodiscard]] constexpr auto microchip_pio_abcdsr_field(std::uintptr_t base_address, int line_index)
+    -> FieldRef {
+    return line_index < 0
+               ? kInvalidFieldRef
+               : synth_field_ref(base_address, 0x70u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] consteval auto make_stm32_pinmux_operation(device::runtime::PinId pin_id,
@@ -400,7 +401,8 @@ template <typename OperationKind>
     };
 }
 
-template <typename Binding, device::runtime::PinId PinIdValue, device::runtime::SignalId SignalIdValue>
+template <typename Binding, device::runtime::PinId PinIdValue,
+          device::runtime::SignalId SignalIdValue>
 struct runtime_binding {
     using binding_type = Binding;
     using signal_type = typename Binding::signal_type;
@@ -415,7 +417,8 @@ consteval void append_operation(route::List<route::Operation, Capacity>& list,
     route::append_unique(list, operation);
 }
 
-template <typename Peripheral, device::runtime::PeripheralId PeripheralIdValue, typename... Bindings>
+template <typename Peripheral, device::runtime::PeripheralId PeripheralIdValue,
+          typename... Bindings>
 struct runtime_connector {
     using peripheral_type = Peripheral;
     using binding_tuple = std::tuple<typename Bindings::binding_type...>;
@@ -437,8 +440,7 @@ struct runtime_connector {
     [[nodiscard]] static consteval auto requirements() -> EmptyRequirements { return {}; }
 
     template <typename Binding, std::size_t Capacity>
-    static consteval void append_binding_operations(
-        route::List<route::Operation, Capacity>& list) {
+    static consteval void append_binding_operations(route::List<route::Operation, Capacity>& list) {
         using route_traits =
             device::runtime::RouteTraits<Binding::pin_id, PeripheralIdValue, Binding::signal_id>;
         static_assert(route_traits::kPresent,
@@ -458,11 +460,13 @@ struct runtime_connector {
 
 }  // namespace detail::runtime_connector_detail
 
-template <typename Binding, device::runtime::PinId PinIdValue, device::runtime::SignalId SignalIdValue>
+template <typename Binding, device::runtime::PinId PinIdValue,
+          device::runtime::SignalId SignalIdValue>
 using runtime_binding =
     detail::runtime_connector_detail::runtime_binding<Binding, PinIdValue, SignalIdValue>;
 
-template <typename Peripheral, device::runtime::PeripheralId PeripheralIdValue, typename... Bindings>
+template <typename Peripheral, device::runtime::PeripheralId PeripheralIdValue,
+          typename... Bindings>
 using runtime_connector =
     detail::runtime_connector_detail::runtime_connector<Peripheral, PeripheralIdValue, Bindings...>;
 

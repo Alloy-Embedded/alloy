@@ -10,9 +10,10 @@
 
 #include <cstdint>
 
-#include "device/system_clock.hpp"
 #include "hal/gpio.hpp"
 #include "hal/systick.hpp"
+
+#include "device/system_clock.hpp"
 
 using namespace alloy::hal;
 

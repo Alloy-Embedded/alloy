@@ -108,9 +108,9 @@ struct st_uart_register_bank : uart_register_bank_base<SemanticTraits> {
         SemanticTraits::kCr1Register.valid && SemanticTraits::kBrrRegister.valid;
     static constexpr bool is_st_legacy_style =
         is_st_style && SemanticTraits::kSrRegister.valid && SemanticTraits::kDrRegister.valid;
-    static constexpr bool is_st_modern_style =
-        is_st_style && SemanticTraits::kIsrRegister.valid && SemanticTraits::kTdrRegister.valid &&
-        SemanticTraits::kRdrRegister.valid;
+    static constexpr bool is_st_modern_style = is_st_style && SemanticTraits::kIsrRegister.valid &&
+                                               SemanticTraits::kTdrRegister.valid &&
+                                               SemanticTraits::kRdrRegister.valid;
 
     static constexpr auto cr1_reg = SemanticTraits::kCr1Register;
     static constexpr auto cr2_reg = SemanticTraits::kCr2Register;
@@ -185,9 +185,9 @@ struct microchip_uart_r_register_bank : uart_register_bank_base<SemanticTraits> 
 
 template <typename SemanticTraits>
 struct microchip_usart_zw_register_bank : uart_register_bank_base<SemanticTraits> {
-    static constexpr bool is_microchip_usart_zw =
-        SemanticTraits::kUsCrRegister.valid && SemanticTraits::kUsMrRegister.valid &&
-        SemanticTraits::kUsBrgrRegister.valid;
+    static constexpr bool is_microchip_usart_zw = SemanticTraits::kUsCrRegister.valid &&
+                                                  SemanticTraits::kUsMrRegister.valid &&
+                                                  SemanticTraits::kUsBrgrRegister.valid;
 
     static constexpr auto us_cr_reg = SemanticTraits::kUsCrRegister;
     static constexpr auto us_mr_reg = SemanticTraits::kUsMrRegister;
@@ -235,7 +235,8 @@ struct uart_register_bank<SemanticTraits, runtime::UartSchema::microchip_usart_z
 }  // namespace detail
 
 template <typename Connector>
-requires(Connector::valid) class port_handle {
+    requires(Connector::valid)
+class port_handle {
    public:
     using connector_type = Connector;
     using runtime_peripheral_id = device::runtime::PeripheralId;
@@ -250,9 +251,9 @@ requires(Connector::valid) class port_handle {
                                   : detail::runtime::to_uart_schema(peripheral_traits::kSchemaId);
     using register_bank = detail::uart_register_bank<semantic_traits, schema>;
 
-    static constexpr auto base =
-        peripheral_id == runtime_peripheral_id::none ? std::uintptr_t{0u}
-                                                     : peripheral_traits::kBaseAddress;
+    static constexpr auto base = peripheral_id == runtime_peripheral_id::none
+                                     ? std::uintptr_t{0u}
+                                     : peripheral_traits::kBaseAddress;
 
     static constexpr bool is_st_style = register_bank::is_st_style;
     static constexpr bool is_st_legacy_style = register_bank::is_st_legacy_style;
@@ -262,8 +263,7 @@ requires(Connector::valid) class port_handle {
 
     static constexpr bool valid =
         Connector::valid && peripheral_id != runtime_peripheral_id::none &&
-        semantic_traits::kPresent &&
-        (is_st_style || is_microchip_uart_r || is_microchip_usart_zw);
+        semantic_traits::kPresent && (is_st_style || is_microchip_uart_r || is_microchip_usart_zw);
 
     static constexpr auto cr1_reg = register_bank::cr1_reg;
     static constexpr auto cr2_reg = register_bank::cr2_reg;
@@ -345,9 +345,7 @@ requires(Connector::valid) class port_handle {
 
     [[nodiscard]] static consteval auto operations() { return Connector::operations(); }
 
-    [[nodiscard]] static constexpr auto base_address() -> std::uintptr_t {
-        return base;
-    }
+    [[nodiscard]] static constexpr auto base_address() -> std::uintptr_t { return base; }
 
     [[nodiscard]] auto configure() const -> core::Result<void, core::ErrorCode> {
         return detail::configure_uart(*this);

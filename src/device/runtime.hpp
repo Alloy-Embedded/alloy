@@ -56,10 +56,10 @@ inline constexpr auto i2c_semantic_peripherals =
     std::span{selected::runtime_driver_contract::kI2cSemanticPeripherals};
 inline constexpr auto spi_semantic_peripherals =
     std::span{selected::runtime_driver_contract::kSpiSemanticPeripherals};
-#if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
+    #if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
 inline constexpr auto dma_semantic_peripherals =
     std::span{selected::runtime_driver_contract::kDmaSemanticPeripherals};
-#endif
+    #endif
 inline constexpr const auto& gpio_semantic_pin_ids =
     selected::runtime_driver_contract::kGpioSemanticPins;
 inline constexpr const auto& uart_semantic_peripheral_ids =
@@ -68,10 +68,10 @@ inline constexpr const auto& i2c_semantic_peripheral_ids =
     selected::runtime_driver_contract::kI2cSemanticPeripherals;
 inline constexpr const auto& spi_semantic_peripheral_ids =
     selected::runtime_driver_contract::kSpiSemanticPeripherals;
-#if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
+    #if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
 inline constexpr const auto& dma_semantic_peripheral_ids =
     selected::runtime_driver_contract::kDmaSemanticPeripherals;
-#endif
+    #endif
 
 template <PeripheralId Id>
 using PeripheralInstanceTraits = device_contract::PeripheralInstanceTraits<Id>;
@@ -115,10 +115,10 @@ using I2cSemanticTraits = selected::runtime_driver_contract::I2cSemanticTraits<I
 template <PeripheralId Id>
 using SpiSemanticTraits = selected::runtime_driver_contract::SpiSemanticTraits<Id>;
 
-#if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
+    #if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
 template <PeripheralId Peripheral, SignalId Signal>
 using DmaSemanticTraits = selected::runtime_driver_contract::DmaSemanticTraits<Peripheral, Signal>;
-#endif
+    #endif
 
 }  // namespace runtime
 #endif

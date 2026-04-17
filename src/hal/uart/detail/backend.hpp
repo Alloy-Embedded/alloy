@@ -7,10 +7,11 @@
 #include <string_view>
 #include <utility>
 
-#include "core/error_code.hpp"
-#include "core/result.hpp"
 #include "hal/detail/runtime_ops.hpp"
 #include "hal/types.hpp"
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"
 
 namespace alloy::hal::uart::detail {
 
@@ -146,8 +147,7 @@ auto configure_st_uart(const UartConfig& config) -> core::Result<void, core::Err
 }
 
 template <typename PortHandle>
-auto configure_microchip_uart_r(const UartConfig& config)
-    -> core::Result<void, core::ErrorCode> {
+auto configure_microchip_uart_r(const UartConfig& config) -> core::Result<void, core::ErrorCode> {
     if (config.peripheral_clock_hz == 0u || baud_value(config.baudrate) == 0u) {
         return core::Err(core::ErrorCode::InvalidParameter);
     }
@@ -230,8 +230,7 @@ auto configure_microchip_uart_r(const UartConfig& config)
 }
 
 template <typename PortHandle>
-auto configure_microchip_usart_zw(const UartConfig& config)
-    -> core::Result<void, core::ErrorCode> {
+auto configure_microchip_usart_zw(const UartConfig& config) -> core::Result<void, core::ErrorCode> {
     if (config.peripheral_clock_hz == 0u || baud_value(config.baudrate) == 0u) {
         return core::Err(core::ErrorCode::InvalidParameter);
     }

@@ -133,9 +133,7 @@ class Logger {
      *
      * @param enable true to enable colors
      */
-    static void enable_colors(bool enable) {
-        instance().config_.enable_colors = enable;
-    }
+    static void enable_colors(bool enable) { instance().config_.enable_colors = enable; }
 
     /**
      * Core logging function (usually called via macros)

@@ -11,12 +11,13 @@
 
 #include <cstdint>
 
-#include "device/runtime.hpp"
-#include "device/system_clock.hpp"
 #include "hal/detail/runtime_ops.hpp"
 #include "hal/gpio.hpp"
 #include "hal/systick.hpp"
 #include "hal/vendors/arm/cortex_m7/init_hooks.hpp"
+
+#include "device/runtime.hpp"
+#include "device/system_clock.hpp"
 
 using namespace alloy::hal;
 

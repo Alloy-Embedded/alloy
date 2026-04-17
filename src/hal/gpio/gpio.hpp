@@ -6,13 +6,15 @@
 #include <string_view>
 #include <utility>
 
-#include "core/error_code.hpp"
-#include "core/result.hpp"
-#include "device/traits.hpp"
-#include "device/runtime.hpp"
 #include "hal/connect/tags.hpp"
 #include "hal/gpio/detail/backend.hpp"
 #include "hal/types.hpp"
+
+#include "core/error_code.hpp"
+#include "core/result.hpp"
+
+#include "device/runtime.hpp"
+#include "device/traits.hpp"
 
 namespace alloy::hal::gpio {
 
@@ -94,7 +96,7 @@ template <auto Value>
     constexpr std::string_view function = __FUNCSIG__;
     constexpr std::string_view needle = "enum_name<";
 #else
-#error Unsupported compiler for compile-time enum name extraction.
+    #error Unsupported compiler for compile-time enum name extraction.
 #endif
 
     const auto start = function.find(needle);
@@ -158,16 +160,16 @@ template <auto Value>
 }
 
 template <std::size_t... Index>
-[[nodiscard]] consteval auto find_gpio_peripheral_id_impl(
-    char port_letter, std::index_sequence<Index...>) -> RuntimePeripheralId {
+[[nodiscard]] consteval auto find_gpio_peripheral_id_impl(char port_letter,
+                                                          std::index_sequence<Index...>)
+    -> RuntimePeripheralId {
     auto resolved = RuntimePeripheralId::none;
 
     auto match = [&]<std::size_t I>() consteval {
         constexpr auto peripheral_id = device::runtime::runtime_peripheral_ids[I];
         using traits = device::runtime::PeripheralInstanceTraits<peripheral_id>;
-        if constexpr (traits::kPresent &&
-                      traits::kPeripheralClassId ==
-                          device::runtime::PeripheralClassId::class_gpio) {
+        if constexpr (traits::kPresent && traits::kPeripheralClassId ==
+                                              device::runtime::PeripheralClassId::class_gpio) {
             constexpr auto peripheral_name = selected_scoped_enum_name<peripheral_id>();
             if (resolved == RuntimePeripheralId::none && !peripheral_name.empty() &&
                 peripheral_name.back() == port_letter) {
@@ -202,10 +204,10 @@ template <std::size_t... Index>
         pin_name, std::make_index_sequence<std::size(device::runtime::runtime_pin_ids)>{});
 }
 
-[[nodiscard]] consteval auto find_gpio_peripheral_id(char port_letter)
-    -> RuntimePeripheralId {
+[[nodiscard]] consteval auto find_gpio_peripheral_id(char port_letter) -> RuntimePeripheralId {
     return find_gpio_peripheral_id_impl(
-        port_letter, std::make_index_sequence<std::size(device::runtime::runtime_peripheral_ids)>{});
+        port_letter,
+        std::make_index_sequence<std::size(device::runtime::runtime_peripheral_ids)>{});
 }
 
 [[nodiscard]] constexpr auto prefer_field(RuntimeFieldRef primary, RuntimeFieldRef fallback)
@@ -214,8 +216,7 @@ template <std::size_t... Index>
 }
 
 [[nodiscard]] constexpr auto synth_register_ref(std::uintptr_t base_address,
-                                                std::uint32_t offset_bytes)
-    -> RuntimeRegisterRef {
+                                                std::uint32_t offset_bytes) -> RuntimeRegisterRef {
     if (base_address == 0u) {
         return rt::kInvalidRegisterRef;
     }
@@ -228,8 +229,8 @@ template <std::size_t... Index>
 
 [[nodiscard]] constexpr auto synth_field_ref(std::uintptr_t base_address,
                                              std::uint32_t register_offset_bytes,
-                                             std::uint16_t bit_offset,
-                                             std::uint16_t bit_width) -> RuntimeFieldRef {
+                                             std::uint16_t bit_offset, std::uint16_t bit_width)
+    -> RuntimeFieldRef {
     if (base_address == 0u || bit_width == 0u) {
         return rt::kInvalidFieldRef;
     }
@@ -250,9 +251,9 @@ template <std::size_t... Index>
 
 [[nodiscard]] constexpr auto st_gpio_output_type_field(std::uintptr_t base_address, int line_index)
     -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x04u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x04u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto st_gpio_pull_field(std::uintptr_t base_address, int line_index)
@@ -264,23 +265,23 @@ template <std::size_t... Index>
 
 [[nodiscard]] constexpr auto st_gpio_input_field(std::uintptr_t base_address, int line_index)
     -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x10u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x10u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto st_gpio_output_value_field(std::uintptr_t base_address, int line_index)
     -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x14u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x14u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto st_gpio_output_set_field(std::uintptr_t base_address, int line_index)
     -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x18u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x18u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto st_gpio_output_reset_field(std::uintptr_t base_address, int line_index)
@@ -292,90 +293,89 @@ template <std::size_t... Index>
 
 [[nodiscard]] constexpr auto microchip_pio_enable_field(std::uintptr_t base_address, int line_index)
     -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x00u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x00u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto microchip_pio_output_enable_field(std::uintptr_t base_address,
                                                                int line_index) -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x10u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x10u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto microchip_pio_output_disable_field(std::uintptr_t base_address,
-                                                                int line_index)
-    -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x14u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+                                                                int line_index) -> RuntimeFieldRef {
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x14u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto microchip_pio_set_field(std::uintptr_t base_address, int line_index)
     -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x30u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x30u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto microchip_pio_clear_field(std::uintptr_t base_address, int line_index)
     -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x34u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x34u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto microchip_pio_input_state_field(std::uintptr_t base_address,
                                                              int line_index) -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x3Cu,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x3Cu, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto microchip_pio_drive_enable_field(std::uintptr_t base_address,
                                                               int line_index) -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x50u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x50u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto microchip_pio_drive_disable_field(std::uintptr_t base_address,
                                                                int line_index) -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x54u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x54u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto microchip_pio_pull_up_disable_field(std::uintptr_t base_address,
                                                                  int line_index)
     -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x60u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x60u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto microchip_pio_pull_up_enable_field(std::uintptr_t base_address,
                                                                 int line_index) -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x64u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x64u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto microchip_pio_pull_down_disable_field(std::uintptr_t base_address,
                                                                    int line_index)
     -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x90u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x90u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 [[nodiscard]] constexpr auto microchip_pio_pull_down_enable_field(std::uintptr_t base_address,
                                                                   int line_index)
     -> RuntimeFieldRef {
-    return line_index < 0 ? rt::kInvalidFieldRef
-                          : synth_field_ref(base_address, 0x94u,
-                                            static_cast<std::uint16_t>(line_index), 1u);
+    return line_index < 0
+               ? rt::kInvalidFieldRef
+               : synth_field_ref(base_address, 0x94u, static_cast<std::uint16_t>(line_index), 1u);
 }
 
 }  // namespace detail
@@ -402,18 +402,16 @@ struct pin_handle {
         if constexpr (!available) {
             return detail::RuntimePinId::none;
         }
-        if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio &&
-                      parsed_pin.valid) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio && parsed_pin.valid) {
             return detail::RuntimePinId::none;
         }
         return detail::find_runtime_pin_id(Pin::name);
     }();
     using semantic_traits = device::runtime::GpioSemanticTraits<pin_id>;
-    static constexpr auto line_index = parsed_pin.valid
-                                           ? parsed_pin.line_index
-                                           : (semantic_traits::kPresent
-                                                  ? static_cast<int>(semantic_traits::kLineIndex)
-                                                  : -1);
+    static constexpr auto line_index =
+        parsed_pin.valid
+            ? parsed_pin.line_index
+            : (semantic_traits::kPresent ? static_cast<int>(semantic_traits::kLineIndex) : -1);
 
     static constexpr auto direction_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::nxp_imxrt_gpio_v1) {
@@ -431,10 +429,9 @@ struct pin_handle {
     }();
     static constexpr auto output_type_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio) {
-            return line_index >= 0
-                       ? detail::st_gpio_output_type_field(peripheral_traits::kBaseAddress,
-                                                           line_index)
-                       : detail::rt::kInvalidFieldRef;
+            return line_index >= 0 ? detail::st_gpio_output_type_field(
+                                         peripheral_traits::kBaseAddress, line_index)
+                                   : detail::rt::kInvalidFieldRef;
         }
         return detail::rt::kInvalidFieldRef;
     }();
@@ -459,10 +456,9 @@ struct pin_handle {
     }();
     static constexpr auto output_value_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio) {
-            return line_index >= 0
-                       ? detail::st_gpio_output_value_field(peripheral_traits::kBaseAddress,
-                                                            line_index)
-                       : detail::rt::kInvalidFieldRef;
+            return line_index >= 0 ? detail::st_gpio_output_value_field(
+                                         peripheral_traits::kBaseAddress, line_index)
+                                   : detail::rt::kInvalidFieldRef;
         }
         if constexpr (schema == hal::detail::runtime::GpioSchema::nxp_imxrt_gpio_v1) {
             return semantic_traits::kOutputValueField;
@@ -471,19 +467,17 @@ struct pin_handle {
     }();
     static constexpr auto output_set_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio) {
-            return line_index >= 0
-                       ? detail::st_gpio_output_set_field(peripheral_traits::kBaseAddress,
-                                                          line_index)
-                       : detail::rt::kInvalidFieldRef;
+            return line_index >= 0 ? detail::st_gpio_output_set_field(
+                                         peripheral_traits::kBaseAddress, line_index)
+                                   : detail::rt::kInvalidFieldRef;
         }
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto output_reset_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio) {
-            return line_index >= 0
-                       ? detail::st_gpio_output_reset_field(peripheral_traits::kBaseAddress,
-                                                            line_index)
-                       : detail::rt::kInvalidFieldRef;
+            return line_index >= 0 ? detail::st_gpio_output_reset_field(
+                                         peripheral_traits::kBaseAddress, line_index)
+                                   : detail::rt::kInvalidFieldRef;
         }
         return detail::rt::kInvalidFieldRef;
     }();
@@ -498,73 +492,65 @@ struct pin_handle {
     }();
     static constexpr auto pio_output_enable_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
-            return detail::prefer_field(
-                semantic_traits::kPioOutputEnableField,
-                detail::microchip_pio_output_enable_field(peripheral_traits::kBaseAddress,
-                                                          line_index));
+            return detail::prefer_field(semantic_traits::kPioOutputEnableField,
+                                        detail::microchip_pio_output_enable_field(
+                                            peripheral_traits::kBaseAddress, line_index));
         }
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_output_disable_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
-            return detail::prefer_field(
-                semantic_traits::kPioOutputDisableField,
-                detail::microchip_pio_output_disable_field(peripheral_traits::kBaseAddress,
-                                                           line_index));
+            return detail::prefer_field(semantic_traits::kPioOutputDisableField,
+                                        detail::microchip_pio_output_disable_field(
+                                            peripheral_traits::kBaseAddress, line_index));
         }
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_drive_enable_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
-            return detail::prefer_field(
-                semantic_traits::kPioDriveEnableField,
-                detail::microchip_pio_drive_enable_field(peripheral_traits::kBaseAddress,
-                                                         line_index));
+            return detail::prefer_field(semantic_traits::kPioDriveEnableField,
+                                        detail::microchip_pio_drive_enable_field(
+                                            peripheral_traits::kBaseAddress, line_index));
         }
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_drive_disable_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
-            return detail::prefer_field(
-                semantic_traits::kPioDriveDisableField,
-                detail::microchip_pio_drive_disable_field(peripheral_traits::kBaseAddress,
-                                                          line_index));
+            return detail::prefer_field(semantic_traits::kPioDriveDisableField,
+                                        detail::microchip_pio_drive_disable_field(
+                                            peripheral_traits::kBaseAddress, line_index));
         }
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_pull_up_enable_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
-            return detail::prefer_field(
-                semantic_traits::kPioPullUpEnableField,
-                detail::microchip_pio_pull_up_enable_field(peripheral_traits::kBaseAddress,
-                                                           line_index));
+            return detail::prefer_field(semantic_traits::kPioPullUpEnableField,
+                                        detail::microchip_pio_pull_up_enable_field(
+                                            peripheral_traits::kBaseAddress, line_index));
         }
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_pull_up_disable_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
-            return detail::prefer_field(
-                semantic_traits::kPioPullUpDisableField,
-                detail::microchip_pio_pull_up_disable_field(peripheral_traits::kBaseAddress,
-                                                            line_index));
+            return detail::prefer_field(semantic_traits::kPioPullUpDisableField,
+                                        detail::microchip_pio_pull_up_disable_field(
+                                            peripheral_traits::kBaseAddress, line_index));
         }
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_pull_down_enable_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
-            return detail::prefer_field(
-                semantic_traits::kPioPullDownEnableField,
-                detail::microchip_pio_pull_down_enable_field(peripheral_traits::kBaseAddress,
-                                                             line_index));
+            return detail::prefer_field(semantic_traits::kPioPullDownEnableField,
+                                        detail::microchip_pio_pull_down_enable_field(
+                                            peripheral_traits::kBaseAddress, line_index));
         }
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_pull_down_disable_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
-            return detail::prefer_field(
-                semantic_traits::kPioPullDownDisableField,
-                detail::microchip_pio_pull_down_disable_field(peripheral_traits::kBaseAddress,
-                                                              line_index));
+            return detail::prefer_field(semantic_traits::kPioPullDownDisableField,
+                                        detail::microchip_pio_pull_down_disable_field(
+                                            peripheral_traits::kBaseAddress, line_index));
         }
         return detail::rt::kInvalidFieldRef;
     }();
@@ -586,10 +572,9 @@ struct pin_handle {
     }();
     static constexpr auto pio_input_state_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
-            return detail::prefer_field(
-                semantic_traits::kPioInputStateField,
-                detail::microchip_pio_input_state_field(peripheral_traits::kBaseAddress,
-                                                        line_index));
+            return detail::prefer_field(semantic_traits::kPioInputStateField,
+                                        detail::microchip_pio_input_state_field(
+                                            peripheral_traits::kBaseAddress, line_index));
         }
         return detail::rt::kInvalidFieldRef;
     }();

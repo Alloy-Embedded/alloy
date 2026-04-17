@@ -1,8 +1,8 @@
 #pragma once
 
-#include "board_uart.hpp"
-
 #include "hal/dma.hpp"
+
+#include "board_uart.hpp"
 
 namespace board {
 
@@ -18,12 +18,10 @@ namespace detail {
 
 }  // namespace detail
 
-using DebugUartTxDma =
-    alloy::hal::dma::channel_handle<alloy::hal::dma::PeripheralId::USART0,
-                                    alloy::hal::dma::SignalId::signal_TX>;
-using DebugUartRxDma =
-    alloy::hal::dma::channel_handle<alloy::hal::dma::PeripheralId::USART0,
-                                    alloy::hal::dma::SignalId::signal_RX>;
+using DebugUartTxDma = alloy::hal::dma::channel_handle<alloy::hal::dma::PeripheralId::USART0,
+                                                       alloy::hal::dma::SignalId::signal_TX>;
+using DebugUartRxDma = alloy::hal::dma::channel_handle<alloy::hal::dma::PeripheralId::USART0,
+                                                       alloy::hal::dma::SignalId::signal_RX>;
 
 [[nodiscard]] inline auto make_debug_uart_tx_dma(alloy::hal::dma::Config config = {})
     -> DebugUartTxDma {

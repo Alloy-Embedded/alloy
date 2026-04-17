@@ -19,7 +19,8 @@ namespace {
     [[maybe_unused]] const auto configure_result = bus.configure();
     [[maybe_unused]] const auto write_result = bus.write(0x50u, write_buffer);
     [[maybe_unused]] const auto read_result = bus.read(0x50u, read_buffer);
-    [[maybe_unused]] const auto write_read_result = bus.write_read(0x50u, write_buffer, read_buffer);
+    [[maybe_unused]] const auto write_read_result =
+        bus.write_read(0x50u, write_buffer, read_buffer);
     [[maybe_unused]] const auto scan_result = bus.scan_bus(found_devices);
 #endif
 }

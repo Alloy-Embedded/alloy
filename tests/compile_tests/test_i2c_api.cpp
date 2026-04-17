@@ -2,10 +2,11 @@
 #include <cstdint>
 #include <string_view>
 
-#include "device/traits.hpp"
 #include "hal/connect/runtime_connector.hpp"
 #include "hal/connect/tags.hpp"
 #include "hal/i2c.hpp"
+
+#include "device/traits.hpp"
 
 namespace {
 
@@ -34,8 +35,7 @@ consteval auto i2c_is_usable() -> bool {
 template <typename I2cHandle>
 void exercise_i2c_backend() {
     auto port = alloy::hal::i2c::open<typename I2cHandle::connector_type>(
-        alloy::hal::i2c::Config{alloy::hal::I2cSpeed::Fast,
-                                alloy::hal::I2cAddressing::SevenBit,
+        alloy::hal::i2c::Config{alloy::hal::I2cSpeed::Fast, alloy::hal::I2cAddressing::SevenBit,
                                 i2c_peripheral_clock_hz()});
 
     std::array<std::uint8_t, 2> write_buffer{0x00u, 0x55u};
@@ -55,18 +55,19 @@ void exercise_i2c_backend() {
 static_assert(alloy::device::SelectedDeviceTraits::available);
 
 #if defined(ALLOY_BOARD_SAME70_XPLD)
-using I2cConnector =
-    alloy::hal::connection::runtime_connector<
-        alloy::hal::peripheral<"TWIHS0">, alloy::device::runtime::PeripheralId::TWIHS0,
-        alloy::hal::connection::runtime_binding<alloy::hal::scl<alloy::hal::pin<"PA4">>,
-                                                alloy::device::runtime::PinId::PA4,
-                                                alloy::device::runtime::SignalId::signal_twck0>,
-        alloy::hal::connection::runtime_binding<alloy::hal::sda<alloy::hal::pin<"PA3">>,
-                                                alloy::device::runtime::PinId::PA3,
-                                                alloy::device::runtime::SignalId::signal_twd0>>;
+using I2cConnector = alloy::hal::connection::runtime_connector<
+    alloy::hal::peripheral<"TWIHS0">, alloy::device::runtime::PeripheralId::TWIHS0,
+    alloy::hal::connection::runtime_binding<alloy::hal::scl<alloy::hal::pin<"PA4">>,
+                                            alloy::device::runtime::PinId::PA4,
+                                            alloy::device::runtime::SignalId::signal_twck0>,
+    alloy::hal::connection::runtime_binding<alloy::hal::sda<alloy::hal::pin<"PA3">>,
+                                            alloy::device::runtime::PinId::PA3,
+                                            alloy::device::runtime::SignalId::signal_twd0>>;
 using I2cPort = decltype(alloy::hal::i2c::open<I2cConnector>());
 static_assert(I2cPort::valid);
 static_assert(I2cPort::peripheral_name == std::string_view{"TWIHS0"});
 static_assert(i2c_is_usable<I2cPort>());
-[[maybe_unused]] void compile_same70_i2c_backend() { exercise_i2c_backend<I2cPort>(); }
+[[maybe_unused]] void compile_same70_i2c_backend() {
+    exercise_i2c_backend<I2cPort>();
+}
 #endif

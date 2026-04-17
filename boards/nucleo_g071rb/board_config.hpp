@@ -10,8 +10,9 @@
 
 #include <cstdint>
 
-#include "device/system_clock.hpp"
 #include "hal/connect/tags.hpp"
+
+#include "device/system_clock.hpp"
 
 namespace nucleo_g071rb {
 
@@ -48,8 +49,7 @@ struct ClockConfig {
 
     static constexpr auto system_clock_profile =
         alloy::device::system_clock::ProfileId::default_pll_64mhz;
-    using SystemClockProfile =
-        alloy::device::system_clock::ProfileTraits<system_clock_profile>;
+    using SystemClockProfile = alloy::device::system_clock::ProfileTraits<system_clock_profile>;
 
     static_assert(SystemClockProfile::kPresent);
 

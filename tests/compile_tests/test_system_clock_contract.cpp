@@ -7,4 +7,6 @@ static_assert(alloy::device::SelectedSystemClockProfiles::available,
 static_assert(!alloy::device::system_clock::profiles.empty());
 #endif
 
-int main() { return 0; }
+int main() {
+    return 0;
+}

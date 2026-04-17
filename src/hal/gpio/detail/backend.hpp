@@ -26,9 +26,8 @@ namespace rt = alloy::hal::detail::runtime;
 
 template <typename PinHandle>
 auto configure_st_gpio(const GpioConfig& config) -> core::Result<void, core::ErrorCode> {
-    const auto otype_result =
-        rt::modify_field(PinHandle::output_type_field,
-                         config.drive == PinDrive::OpenDrain ? 1u : 0u);
+    const auto otype_result = rt::modify_field(PinHandle::output_type_field,
+                                               config.drive == PinDrive::OpenDrain ? 1u : 0u);
     if (otype_result.is_err()) {
         return otype_result;
     }
@@ -39,15 +38,16 @@ auto configure_st_gpio(const GpioConfig& config) -> core::Result<void, core::Err
     }
 
     if (config.direction == PinDirection::Output) {
-        const auto bsrr_bits = rt::field_bits(
-            config.initial_state == PinState::High ? PinHandle::output_set_field
-                                                   : PinHandle::output_reset_field,
-            1u);
+        const auto bsrr_bits =
+            rt::field_bits(config.initial_state == PinState::High ? PinHandle::output_set_field
+                                                                  : PinHandle::output_reset_field,
+                           1u);
         if (bsrr_bits.is_err()) {
             return core::Err(core::ErrorCode{bsrr_bits.unwrap_err()});
         }
 
-        const auto write_result = rt::write_register(PinHandle::output_set_field.reg, bsrr_bits.unwrap());
+        const auto write_result =
+            rt::write_register(PinHandle::output_set_field.reg, bsrr_bits.unwrap());
         if (write_result.is_err()) {
             return write_result;
         }
@@ -100,8 +100,7 @@ auto configure_microchip_pio(const GpioConfig& config) -> core::Result<void, cor
     if (pull_down_bits.is_err()) {
         return core::Err(core::ErrorCode{pull_down_bits.unwrap_err()});
     }
-    const auto pull_down_result =
-        rt::write_register(pull_down_field.reg, pull_down_bits.unwrap());
+    const auto pull_down_result = rt::write_register(pull_down_field.reg, pull_down_bits.unwrap());
     if (pull_down_result.is_err()) {
         return pull_down_result;
     }
@@ -155,9 +154,8 @@ auto configure_gpio(const GpioConfig& config) -> core::Result<void, core::ErrorC
         return configure_microchip_pio<PinHandle>(config);
     }
     if constexpr (schema == rt::GpioSchema::nxp_imxrt_gpio_v1) {
-        const auto direction_result =
-            rt::modify_field(PinHandle::direction_field,
-                             config.direction == PinDirection::Output ? 1u : 0u);
+        const auto direction_result = rt::modify_field(
+            PinHandle::direction_field, config.direction == PinDirection::Output ? 1u : 0u);
         if (direction_result.is_err()) {
             return direction_result;
         }
@@ -206,8 +204,7 @@ auto write_gpio(const GpioConfig& config, PinState state) -> core::Result<void, 
     }
 
     if constexpr (schema == rt::GpioSchema::nxp_imxrt_gpio_v1) {
-        return rt::modify_field(PinHandle::output_value_field,
-                                state == PinState::High ? 1u : 0u);
+        return rt::modify_field(PinHandle::output_value_field, state == PinState::High ? 1u : 0u);
     }
 
     return core::Err(core::ErrorCode::NotSupported);
@@ -265,9 +262,8 @@ auto toggle_gpio(const GpioConfig& config) -> core::Result<void, core::ErrorCode
     if (current.is_err()) {
         return core::Err(core::ErrorCode{current.unwrap_err()});
     }
-    return write_gpio<PinHandle>(config,
-                                 current.unwrap() == PinState::High ? PinState::Low
-                                                                    : PinState::High);
+    return write_gpio<PinHandle>(
+        config, current.unwrap() == PinState::High ? PinState::Low : PinState::High);
 }
 
 }  // namespace alloy::hal::gpio::detail

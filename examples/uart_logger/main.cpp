@@ -47,6 +47,7 @@
 #include BOARD_UART_HEADER
 
 #include "hal/systick.hpp"
+
 #include "logger/logger.hpp"
 #include "logger/sinks/uart_sink.hpp"
 

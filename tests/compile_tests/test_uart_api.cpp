@@ -51,15 +51,14 @@ void exercise_uart_backend(std::uint32_t peripheral_clock_hz) {
 static_assert(alloy::device::SelectedDeviceTraits::available);
 
 #if defined(ALLOY_BOARD_NUCLEO_G071RB)
-using DebugUartConnector =
-    alloy::hal::connection::runtime_connector<
-        alloy::hal::peripheral<"USART2">, alloy::device::runtime::PeripheralId::USART2,
-        alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PA2">>,
-                                                alloy::device::runtime::PinId::PA2,
-                                                alloy::device::runtime::SignalId::signal_tx>,
-        alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PA3">>,
-                                                alloy::device::runtime::PinId::PA3,
-                                                alloy::device::runtime::SignalId::signal_rx>>;
+using DebugUartConnector = alloy::hal::connection::runtime_connector<
+    alloy::hal::peripheral<"USART2">, alloy::device::runtime::PeripheralId::USART2,
+    alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PA2">>,
+                                            alloy::device::runtime::PinId::PA2,
+                                            alloy::device::runtime::SignalId::signal_tx>,
+    alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PA3">>,
+                                            alloy::device::runtime::PinId::PA3,
+                                            alloy::device::runtime::SignalId::signal_rx>>;
 using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>(
     {.baudrate = alloy::hal::Baudrate::e115200}));
 static_assert(DebugUart::valid);
@@ -69,15 +68,14 @@ static_assert(uart_is_usable<DebugUart>());
     exercise_uart_backend<DebugUart>(64'000'000u);
 }
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
-using DebugUartConnector =
-    alloy::hal::connection::runtime_connector<
-        alloy::hal::peripheral<"USART2">, alloy::device::runtime::PeripheralId::USART2,
-        alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PA2">>,
-                                                alloy::device::runtime::PinId::PA2,
-                                                alloy::device::runtime::SignalId::signal_tx>,
-        alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PA3">>,
-                                                alloy::device::runtime::PinId::PA3,
-                                                alloy::device::runtime::SignalId::signal_rx>>;
+using DebugUartConnector = alloy::hal::connection::runtime_connector<
+    alloy::hal::peripheral<"USART2">, alloy::device::runtime::PeripheralId::USART2,
+    alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PA2">>,
+                                            alloy::device::runtime::PinId::PA2,
+                                            alloy::device::runtime::SignalId::signal_tx>,
+    alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PA3">>,
+                                            alloy::device::runtime::PinId::PA3,
+                                            alloy::device::runtime::SignalId::signal_rx>>;
 using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>(
     {.baudrate = alloy::hal::Baudrate::e115200}));
 static_assert(DebugUart::valid);
@@ -87,15 +85,14 @@ static_assert(uart_is_usable<DebugUart>());
     exercise_uart_backend<DebugUart>(42'000'000u);
 }
 #elif defined(ALLOY_BOARD_SAME70_XPLD)
-using DebugUartConnector =
-    alloy::hal::connection::runtime_connector<
-        alloy::hal::peripheral<"USART0">, alloy::device::runtime::PeripheralId::USART0,
-        alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PB1">>,
-                                                alloy::device::runtime::PinId::PB1,
-                                                alloy::device::runtime::SignalId::signal_txd0>,
-        alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PB0">>,
-                                                alloy::device::runtime::PinId::PB0,
-                                                alloy::device::runtime::SignalId::signal_rxd0>>;
+using DebugUartConnector = alloy::hal::connection::runtime_connector<
+    alloy::hal::peripheral<"USART0">, alloy::device::runtime::PeripheralId::USART0,
+    alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PB1">>,
+                                            alloy::device::runtime::PinId::PB1,
+                                            alloy::device::runtime::SignalId::signal_txd0>,
+    alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PB0">>,
+                                            alloy::device::runtime::PinId::PB0,
+                                            alloy::device::runtime::SignalId::signal_rxd0>>;
 using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>(
     {.baudrate = alloy::hal::Baudrate::e115200}));
 static_assert(DebugUart::valid);

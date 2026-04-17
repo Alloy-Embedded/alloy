@@ -29,10 +29,12 @@ struct interrupt_claim {
 
 #if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
 template <dma::PeripheralId Peripheral, dma::SignalId Signal>
-requires(dma::BindingTraits<Peripheral, Signal>::kPresent) struct dma_claim {
+    requires(dma::BindingTraits<Peripheral, Signal>::kPresent)
+struct dma_claim {
     static constexpr auto peripheral_id = Peripheral;
     static constexpr auto signal_id = Signal;
-    static constexpr auto binding_id = dma::BindingTraits<Peripheral, Signal>::descriptor().binding_id;
+    static constexpr auto binding_id =
+        dma::BindingTraits<Peripheral, Signal>::descriptor().binding_id;
     static constexpr auto controller_id = dma::BindingTraits<Peripheral, Signal>::kControllerId;
     static constexpr auto request_line_id = dma::BindingTraits<Peripheral, Signal>::kRequestLineId;
     static constexpr auto route_id = dma::BindingTraits<Peripheral, Signal>::kRouteId;
@@ -42,7 +44,8 @@ requires(dma::BindingTraits<Peripheral, Signal>::kPresent) struct dma_claim {
 #endif
 
 template <typename Connector>
-requires(Connector::valid) struct connector_claim {
+    requires(Connector::valid)
+struct connector_claim {
     using connector_type = Connector;
     using peripheral = peripheral_claim<typename Connector::peripheral_type>;
 
@@ -71,15 +74,13 @@ requires(Connector::valid) struct connector_claim {
     [[nodiscard]] static consteval auto pins() {
         return []<std::size_t... Index>(std::index_sequence<Index...>) {
             return std::array<std::string_view, sizeof...(Index)>{pin_name_at<Index>()...};
-        }
-        (std::make_index_sequence<Connector::binding_count>{});
+        }(std::make_index_sequence<Connector::binding_count>{});
     }
 
     [[nodiscard]] static consteval auto signals() {
         return []<std::size_t... Index>(std::index_sequence<Index...>) {
             return std::array<std::string_view, sizeof...(Index)>{signal_name_at<Index>()...};
-        }
-        (std::make_index_sequence<Connector::binding_count>{});
+        }(std::make_index_sequence<Connector::binding_count>{});
     }
 };
 
