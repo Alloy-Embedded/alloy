@@ -1,6 +1,6 @@
 ## MODIFIED Requirements
 
-### Requirement: The selected device boundary consumes only the runtime contract
+### Requirement: Runtime Must Consume `alloy-devices` Through a Stable Import Layer
 
 `alloy` SHALL consume the published device contract through `generated/runtime/**` as its only
 supported generated C++ boundary.

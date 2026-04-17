@@ -128,7 +128,7 @@ The host path is test-only and may record trace information.
 ## Decision 5: Start By Reusing Existing Descriptor Artifacts
 
 The first implementation SHALL reuse existing published artifacts from `alloy-devices` and the
-current runtime-lite contract.
+current runtime contract.
 
 It SHALL NOT require a new generator format before the first validation target works.
 
@@ -140,7 +140,7 @@ This avoids a common failure mode:
 
 Initial data sources may include:
 
-- selected runtime-lite headers
+- selected runtime headers
 - generated startup source / vectors
 - existing device metadata and reports
 

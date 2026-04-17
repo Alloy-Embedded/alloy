@@ -17,7 +17,7 @@ The rule is simple:
 
 `alloy-devices` is the source of truth for:
 
-- typed runtime-lite routes, clocks, registers, fields, and driver semantics
+- typed runtime routes, clocks, registers, fields, and driver semantics
 - generated startup sources, startup descriptors, and typed system-clock profiles
 - optional reflection artifacts that stay outside the `alloy` runtime boundary
 
@@ -110,7 +110,7 @@ This is the gate used to verify that one runtime shape still supports `stm32g0`,
 A fourth vendor is admitted to the rebuilt runtime only if all of the following
 are true:
 
-- the publish provides the same `runtime-lite` surface already consumed by the
+- the publish provides the same `runtime` surface already consumed by the
   foundational vendors:
   - `generated/runtime/types.hpp`
   - `generated/runtime/devices/<device>/{peripheral_instances,pins,registers,register_fields,routes,clock_bindings,dma_bindings}.hpp`

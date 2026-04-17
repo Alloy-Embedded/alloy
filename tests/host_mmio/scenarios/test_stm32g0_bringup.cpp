@@ -1,11 +1,11 @@
 #include "host_mmio/framework/mmio_space.hpp"
 #include "host_mmio/framework/register_expect.hpp"
-#include "host_mmio/framework/runtime_lite_mmio.hpp"
+#include "host_mmio/framework/runtime_mmio.hpp"
 #include "host_mmio/framework/stm32_gpio_uart_expect.hpp"
 
 #include "boards/nucleo_g071rb/board_uart.hpp"
 #include "device/runtime.hpp"
-#include "hal/detail/runtime_lite_ops.hpp"
+#include "hal/detail/runtime_ops.hpp"
 #include "hal/gpio/detail/backend.hpp"
 #include "hal/types.hpp"
 
@@ -18,7 +18,7 @@
 namespace alloy::test::mmio {
 namespace {
 
-namespace rt = alloy::hal::detail::runtime_lite;
+namespace rt = alloy::hal::detail::runtime;
 namespace gpio_detail = alloy::hal::gpio::detail;
 namespace stm32_mmio = alloy::test::mmio::stm32;
 
@@ -70,7 +70,7 @@ TEST_CASE("host mmio covers descriptor-driven STM32G0 gpio and uart bring-up",
           "[host-mmio][bring-up][stm32g0]") {
     trace_log trace;
     mmio_space mmio{trace};
-    runtime_lite_mmio_scope scope{mmio};
+    runtime_mmio_scope scope{mmio};
 
     mmio.preload(kRccIoprstrAddress, rt::field_mask(rt::field_ref<FieldId::field_rcc_ioprstr_gpioarst>()));
     mmio.preload(kRccApbrstr1Address,

@@ -6,7 +6,7 @@
 
 Device data comes from the published `alloy-devices` repository, which exposes:
 
-- typed runtime-lite artifacts for pins, peripheral instances, routes, register maps, register fields, clocks, and driver semantics
+- typed runtime artifacts for pins, peripheral instances, routes, register maps, register fields, clocks, and driver semantics
 
 ## Consumption Model
 

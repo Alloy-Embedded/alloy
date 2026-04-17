@@ -1,12 +1,12 @@
 # public-hal-api Specification
 
 ## Purpose
-TBD - created by archiving change consume-runtime-lite-device-contract. Update Purpose after archive.
+TBD - created by archiving change consume-runtime-device-contract. Update Purpose after archive.
 ## Requirements
 ### Requirement: Public HAL Shall Hide Compile-Time Runtime-Lite Machinery
 
 The public HAL SHALL remain one coherent API per peripheral class even when the implementation
-uses template specializations and compile-time route packs from the runtime-lite contract.
+uses template specializations and compile-time route packs from the runtime contract.
 
 #### Scenario: User opens SPI through the public HAL
 

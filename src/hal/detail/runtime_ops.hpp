@@ -11,7 +11,7 @@
 #include "device/runtime.hpp"
 #include "hal/detail/resolved_route.hpp"
 
-namespace alloy::hal::detail::runtime_lite {
+namespace alloy::hal::detail::runtime {
 
 #if defined(ALLOY_ENABLE_HOST_MMIO_RUNTIME_HOOKS)
 namespace test_support {
@@ -1087,4 +1087,4 @@ inline auto apply_route_operations(const OperationList& operations)
     return core::Ok();
 }
 
-}  // namespace alloy::hal::detail::runtime_lite
+}  // namespace alloy::hal::detail::runtime

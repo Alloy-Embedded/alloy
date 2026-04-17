@@ -8,12 +8,12 @@
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "device/runtime.hpp"
-#include "hal/detail/runtime_lite_ops.hpp"
+#include "hal/detail/runtime_ops.hpp"
 #include "hal/dma/types.hpp"
 
 namespace alloy::hal::dma::detail {
 
-namespace rt = alloy::hal::detail::runtime_lite;
+namespace rt = alloy::hal::detail::runtime;
 
 enum class DmaSchema : std::uint8_t {
     unknown,

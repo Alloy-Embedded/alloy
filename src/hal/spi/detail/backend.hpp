@@ -6,12 +6,12 @@
 
 #include "core/error_code.hpp"
 #include "core/result.hpp"
-#include "hal/detail/runtime_lite_ops.hpp"
+#include "hal/detail/runtime_ops.hpp"
 #include "hal/spi/types.hpp"
 
 namespace alloy::hal::spi::detail {
 
-namespace rt = alloy::hal::detail::runtime_lite;
+namespace rt = alloy::hal::detail::runtime;
 using BitOrder = SpiBitOrder;
 using DataSize = SpiDataSize;
 using Mode = SpiMode;

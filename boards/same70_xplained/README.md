@@ -1,6 +1,6 @@
 # SAME70 Xplained
 
-Suporte de board no caminho runtime-lite atual.
+Suporte de board no caminho runtime atual.
 
 ## Estado Atual
 
@@ -55,4 +55,4 @@ int main() {
 ## Limites Conhecidos
 
 - o profile default continua em `12 MHz`; o próximo passo aqui é promover um profile de desempenho como escolha oficial de board quando o hardware target estiver validado
-- `DMA` agora usa o contrato `runtime-lite` publicado, e a board fixa canais padrão para o `USART0` de debug
+- `DMA` agora usa o contrato `runtime` publicado, e a board fixa canais padrão para o `USART0` de debug

@@ -1,9 +1,9 @@
 #include "host_mmio/framework/mmio_space.hpp"
 #include "host_mmio/framework/register_expect.hpp"
-#include "host_mmio/framework/runtime_lite_mmio.hpp"
+#include "host_mmio/framework/runtime_mmio.hpp"
 
 #include "hal/detail/resolved_route.hpp"
-#include "hal/detail/runtime_lite_ops.hpp"
+#include "hal/detail/runtime_ops.hpp"
 #include "hal/gpio/detail/backend.hpp"
 #include "hal/uart/detail/backend.hpp"
 #include "hal/types.hpp"
@@ -20,7 +20,7 @@
 namespace alloy::test::mmio {
 namespace {
 
-namespace rt = alloy::hal::detail::runtime_lite;
+namespace rt = alloy::hal::detail::runtime;
 namespace route = alloy::hal::detail::route;
 namespace gpio_detail = alloy::hal::gpio::detail;
 namespace uart_detail = alloy::hal::uart::detail;
@@ -176,11 +176,11 @@ void configure_same70_peripheral_mux(std::uintptr_t pio_base, std::uint16_t line
 
 }  // namespace
 
-TEST_CASE("host mmio migrates foundational SAME70 bring-up into recorded runtime-lite flows",
+TEST_CASE("host mmio migrates foundational SAME70 bring-up into recorded runtime flows",
           "[host-mmio][bring-up][same70]") {
     trace_log trace;
     mmio_space mmio{trace};
-    runtime_lite_mmio_scope scope{mmio};
+    runtime_mmio_scope scope{mmio};
 
     mmio.preload(kResetControllerBase, 0xffff'ffffu);
 
@@ -218,7 +218,7 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
           "[host-mmio][bring-up][same70]") {
     trace_log trace;
     mmio_space mmio{trace};
-    runtime_lite_mmio_scope scope{mmio};
+    runtime_mmio_scope scope{mmio};
 
     configure_same70_peripheral_mux(kPioBBase, kTxLine, kSame70PioSelectorB);
     configure_same70_peripheral_mux(kPioBBase, kRxLine, kSame70PioSelectorB);

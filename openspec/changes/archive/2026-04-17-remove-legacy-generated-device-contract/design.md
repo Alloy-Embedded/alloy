@@ -75,8 +75,8 @@ secondary contract.
 
 Expected direction:
 
-- `ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE` -> `ALLOY_DEVICE_RUNTIME_AVAILABLE`
-- `runtime_lite` internal namespaces/helpers -> `runtime`
+- `ALLOY_DEVICE_RUNTIME_AVAILABLE` is the only selected-import availability macro
+- internal namespaces/helpers use `runtime` as the canonical name
 
 This rename MAY be staged inside the change if it stays mechanical and low-risk. If some internal
 names remain temporarily, they SHALL NOT imply support for a second published C++ contract.

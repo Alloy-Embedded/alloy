@@ -13,7 +13,7 @@
 
 #include "device/runtime.hpp"
 #include "device/system_clock.hpp"
-#include "hal/detail/runtime_lite_ops.hpp"
+#include "hal/detail/runtime_ops.hpp"
 #include "hal/gpio.hpp"
 #include "hal/systick.hpp"
 #include "hal/vendors/arm/cortex_m7/init_hooks.hpp"
@@ -24,10 +24,10 @@ namespace board {
 
 namespace {
 
-using alloy::hal::detail::runtime_lite::field_bits;
-using alloy::hal::detail::runtime_lite::field_ref;
-using alloy::hal::detail::runtime_lite::register_ref;
-using alloy::hal::detail::runtime_lite::write_register;
+using alloy::hal::detail::runtime::field_bits;
+using alloy::hal::detail::runtime::field_ref;
+using alloy::hal::detail::runtime::register_ref;
+using alloy::hal::detail::runtime::write_register;
 
 using BoardLed = alloy::hal::pin<"PC8">;
 template <alloy::device::runtime::RegisterId RegisterId,
@@ -39,11 +39,11 @@ void disable_watchdog() {
     constexpr auto guard_field = field_ref<GuardFieldId>();
     constexpr auto kGuardValue = 0xFFFu;
 
-    static_assert(reg.valid, "Selected SAME70 runtime-lite contract must publish watchdog register.");
+    static_assert(reg.valid, "Selected SAME70 runtime contract must publish watchdog register.");
     static_assert(disable_field.valid,
-                  "Selected SAME70 runtime-lite contract must publish watchdog disable field.");
+                  "Selected SAME70 runtime contract must publish watchdog disable field.");
     static_assert(guard_field.valid,
-                  "Selected SAME70 runtime-lite contract must publish watchdog guard field.");
+                  "Selected SAME70 runtime contract must publish watchdog guard field.");
 
     const auto disable_bits = field_bits(disable_field, 1u).unwrap();
     const auto guard_bits = field_bits(guard_field, kGuardValue).unwrap();

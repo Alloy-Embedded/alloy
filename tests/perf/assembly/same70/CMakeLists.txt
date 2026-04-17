@@ -13,10 +13,10 @@ if(NOT CMAKE_CROSSCOMPILING)
     return()
 endif()
 
-set(ALLOY_ASSEMBLY_SAME70_TARGET same70_runtime_lite_zero_overhead)
+set(ALLOY_ASSEMBLY_SAME70_TARGET same70_runtime_zero_overhead)
 
 add_library(${ALLOY_ASSEMBLY_SAME70_TARGET} STATIC
-    runtime_lite_zero_overhead.cpp
+    runtime_zero_overhead.cpp
 )
 
 target_link_libraries(${ALLOY_ASSEMBLY_SAME70_TARGET} PRIVATE
@@ -43,7 +43,7 @@ target_compile_options(${ALLOY_ASSEMBLY_SAME70_TARGET} PRIVATE
 )
 
 set_target_properties(${ALLOY_ASSEMBLY_SAME70_TARGET} PROPERTIES
-    OUTPUT_NAME "same70_runtime_lite_zero_overhead"
+    OUTPUT_NAME "same70_runtime_zero_overhead"
     FOLDER "tests/perf/assembly"
 )
 
@@ -70,7 +70,7 @@ if(NOT ALLOY_ASSEMBLY_NM)
 endif()
 
 add_test(
-    NAME assembly.same70.runtime_lite_zero_overhead
+    NAME assembly.same70.runtime_zero_overhead
     COMMAND
         ${Python3_EXECUTABLE}
         ${CMAKE_SOURCE_DIR}/tests/perf/assembly/scripts/verify_zero_overhead.py
@@ -81,17 +81,17 @@ add_test(
         --pair manual_set_same70_pioc8_high:runtime_set_same70_pioc8_high
         --pair manual_set_same70_usart0_chrl:runtime_set_same70_usart0_chrl
 )
-set_tests_properties(assembly.same70.runtime_lite_zero_overhead PROPERTIES
+set_tests_properties(assembly.same70.runtime_zero_overhead PROPERTIES
     LABELS "perf;assembly;same70;zero-overhead"
 )
 
-add_custom_target(run_same70_runtime_lite_zero_overhead
-    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -R ^assembly.same70.runtime_lite_zero_overhead$
+add_custom_target(run_same70_runtime_zero_overhead
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -R ^assembly.same70.runtime_zero_overhead$
     DEPENDS ${ALLOY_ASSEMBLY_SAME70_TARGET}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMENT "Running SAME70 runtime-lite zero-overhead validation"
+    COMMENT "Running SAME70 runtime zero-overhead validation"
 )
 
 message(STATUS "Assembly SAME70 zero-overhead validation configured:")
 message(STATUS "  - Target: ${ALLOY_ASSEMBLY_SAME70_TARGET}")
-message(STATUS "  - Test:   assembly.same70.runtime_lite_zero_overhead")
+message(STATUS "  - Test:   assembly.same70.runtime_zero_overhead")

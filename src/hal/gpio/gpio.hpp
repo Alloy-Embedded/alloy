@@ -24,7 +24,7 @@ using Drive = PinDrive;
 
 namespace detail {
 
-namespace rt = alloy::hal::detail::runtime_lite;
+namespace rt = alloy::hal::detail::runtime;
 
 using RuntimeRegisterRef = rt::RegisterRef;
 using RuntimeFieldRef = rt::FieldRef;
@@ -396,13 +396,13 @@ struct pin_handle {
     static constexpr auto package_name = std::string_view{};
     static constexpr auto schema =
         peripheral_id == detail::RuntimePeripheralId::none
-            ? hal::detail::runtime_lite::GpioSchema::unknown
-            : hal::detail::runtime_lite::to_gpio_schema(peripheral_traits::kSchemaId);
+            ? hal::detail::runtime::GpioSchema::unknown
+            : hal::detail::runtime::to_gpio_schema(peripheral_traits::kSchemaId);
     static constexpr auto pin_id = [] {
         if constexpr (!available) {
             return detail::RuntimePinId::none;
         }
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::st_gpio &&
+        if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio &&
                       parsed_pin.valid) {
             return detail::RuntimePinId::none;
         }
@@ -416,13 +416,13 @@ struct pin_handle {
                                                   : -1);
 
     static constexpr auto direction_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::nxp_imxrt_gpio_v1) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::nxp_imxrt_gpio_v1) {
             return semantic_traits::kDirectionField;
         }
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto mode_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::st_gpio) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio) {
             return line_index >= 0
                        ? detail::st_gpio_mode_field(peripheral_traits::kBaseAddress, line_index)
                        : detail::rt::kInvalidFieldRef;
@@ -430,7 +430,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto output_type_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::st_gpio) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio) {
             return line_index >= 0
                        ? detail::st_gpio_output_type_field(peripheral_traits::kBaseAddress,
                                                            line_index)
@@ -439,7 +439,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pull_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::st_gpio) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio) {
             return line_index >= 0
                        ? detail::st_gpio_pull_field(peripheral_traits::kBaseAddress, line_index)
                        : detail::rt::kInvalidFieldRef;
@@ -447,30 +447,30 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto input_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::st_gpio) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio) {
             return line_index >= 0
                        ? detail::st_gpio_input_field(peripheral_traits::kBaseAddress, line_index)
                        : detail::rt::kInvalidFieldRef;
         }
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::nxp_imxrt_gpio_v1) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::nxp_imxrt_gpio_v1) {
             return semantic_traits::kInputField;
         }
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto output_value_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::st_gpio) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio) {
             return line_index >= 0
                        ? detail::st_gpio_output_value_field(peripheral_traits::kBaseAddress,
                                                             line_index)
                        : detail::rt::kInvalidFieldRef;
         }
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::nxp_imxrt_gpio_v1) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::nxp_imxrt_gpio_v1) {
             return semantic_traits::kOutputValueField;
         }
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto output_set_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::st_gpio) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio) {
             return line_index >= 0
                        ? detail::st_gpio_output_set_field(peripheral_traits::kBaseAddress,
                                                           line_index)
@@ -479,7 +479,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto output_reset_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::st_gpio) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio) {
             return line_index >= 0
                        ? detail::st_gpio_output_reset_field(peripheral_traits::kBaseAddress,
                                                             line_index)
@@ -489,7 +489,7 @@ struct pin_handle {
     }();
 
     static constexpr auto pio_enable_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::microchip_pio_v) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
             return detail::prefer_field(
                 semantic_traits::kPioEnableField,
                 detail::microchip_pio_enable_field(peripheral_traits::kBaseAddress, line_index));
@@ -497,7 +497,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_output_enable_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::microchip_pio_v) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
             return detail::prefer_field(
                 semantic_traits::kPioOutputEnableField,
                 detail::microchip_pio_output_enable_field(peripheral_traits::kBaseAddress,
@@ -506,7 +506,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_output_disable_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::microchip_pio_v) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
             return detail::prefer_field(
                 semantic_traits::kPioOutputDisableField,
                 detail::microchip_pio_output_disable_field(peripheral_traits::kBaseAddress,
@@ -515,7 +515,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_drive_enable_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::microchip_pio_v) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
             return detail::prefer_field(
                 semantic_traits::kPioDriveEnableField,
                 detail::microchip_pio_drive_enable_field(peripheral_traits::kBaseAddress,
@@ -524,7 +524,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_drive_disable_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::microchip_pio_v) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
             return detail::prefer_field(
                 semantic_traits::kPioDriveDisableField,
                 detail::microchip_pio_drive_disable_field(peripheral_traits::kBaseAddress,
@@ -533,7 +533,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_pull_up_enable_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::microchip_pio_v) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
             return detail::prefer_field(
                 semantic_traits::kPioPullUpEnableField,
                 detail::microchip_pio_pull_up_enable_field(peripheral_traits::kBaseAddress,
@@ -542,7 +542,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_pull_up_disable_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::microchip_pio_v) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
             return detail::prefer_field(
                 semantic_traits::kPioPullUpDisableField,
                 detail::microchip_pio_pull_up_disable_field(peripheral_traits::kBaseAddress,
@@ -551,7 +551,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_pull_down_enable_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::microchip_pio_v) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
             return detail::prefer_field(
                 semantic_traits::kPioPullDownEnableField,
                 detail::microchip_pio_pull_down_enable_field(peripheral_traits::kBaseAddress,
@@ -560,7 +560,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_pull_down_disable_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::microchip_pio_v) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
             return detail::prefer_field(
                 semantic_traits::kPioPullDownDisableField,
                 detail::microchip_pio_pull_down_disable_field(peripheral_traits::kBaseAddress,
@@ -569,7 +569,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_set_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::microchip_pio_v) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
             return detail::prefer_field(
                 semantic_traits::kPioSetField,
                 detail::microchip_pio_set_field(peripheral_traits::kBaseAddress, line_index));
@@ -577,7 +577,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_clear_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::microchip_pio_v) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
             return detail::prefer_field(
                 semantic_traits::kPioClearField,
                 detail::microchip_pio_clear_field(peripheral_traits::kBaseAddress, line_index));
@@ -585,7 +585,7 @@ struct pin_handle {
         return detail::rt::kInvalidFieldRef;
     }();
     static constexpr auto pio_input_state_field = [] {
-        if constexpr (schema == hal::detail::runtime_lite::GpioSchema::microchip_pio_v) {
+        if constexpr (schema == hal::detail::runtime::GpioSchema::microchip_pio_v) {
             return detail::prefer_field(
                 semantic_traits::kPioInputStateField,
                 detail::microchip_pio_input_state_field(peripheral_traits::kBaseAddress,
@@ -598,7 +598,7 @@ struct pin_handle {
         if constexpr (!available) {
             return false;
         }
-        if ((schema != hal::detail::runtime_lite::GpioSchema::st_gpio &&
+        if ((schema != hal::detail::runtime::GpioSchema::st_gpio &&
              pin_id == detail::RuntimePinId::none) ||
             peripheral_id == detail::RuntimePeripheralId::none || !peripheral_traits::kPresent ||
             line_index < 0) {
@@ -606,14 +606,14 @@ struct pin_handle {
         }
 
         switch (schema) {
-            case hal::detail::runtime_lite::GpioSchema::st_gpio:
+            case hal::detail::runtime::GpioSchema::st_gpio:
                 return mode_field.valid && output_type_field.valid && pull_field.valid &&
                        input_field.valid && output_set_field.valid && output_reset_field.valid;
-            case hal::detail::runtime_lite::GpioSchema::microchip_pio_v:
+            case hal::detail::runtime::GpioSchema::microchip_pio_v:
                 return pio_enable_field.valid && pio_output_enable_field.valid &&
                        pio_output_disable_field.valid && pio_set_field.valid &&
                        pio_clear_field.valid && pio_input_state_field.valid;
-            case hal::detail::runtime_lite::GpioSchema::nxp_imxrt_gpio_v1:
+            case hal::detail::runtime::GpioSchema::nxp_imxrt_gpio_v1:
                 return direction_field.valid && input_field.valid && output_value_field.valid;
             default:
                 return false;
@@ -638,10 +638,10 @@ struct pin_handle {
         }
 
         switch (schema) {
-            case hal::detail::runtime_lite::GpioSchema::st_gpio:
+            case hal::detail::runtime::GpioSchema::st_gpio:
                 list.items[list.count++] = "gpio:st-config";
                 break;
-            case hal::detail::runtime_lite::GpioSchema::microchip_pio_v:
+            case hal::detail::runtime::GpioSchema::microchip_pio_v:
                 list.items[list.count++] = "gpio:microchip-config";
                 break;
             default:

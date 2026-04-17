@@ -6,7 +6,7 @@
 
 namespace alloy::device {
 
-#if ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE
+#if ALLOY_DEVICE_RUNTIME_AVAILABLE
 namespace runtime {
 
 namespace family = selected::runtime_family_contract;

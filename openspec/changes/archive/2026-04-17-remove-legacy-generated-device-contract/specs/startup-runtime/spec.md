@@ -1,6 +1,6 @@
 ## MODIFIED Requirements
 
-### Requirement: Startup descriptors are consumed through the runtime contract
+### Requirement: Startup Data Shall Come from Published Device Descriptors
 
 `alloy` SHALL consume startup descriptors through the typed runtime startup contract.
 

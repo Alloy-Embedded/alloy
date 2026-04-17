@@ -34,7 +34,7 @@
   - representative board spot-check runbooks for silicon validation
 - `perf/assembly/`
   - dedicated zero-overhead assembly/size validation gates
-  - current SAME70 gate compares manual register access and runtime-lite hot paths with `nm` +
+  - current SAME70 gate compares manual register access and runtime hot paths with `nm` +
     `objdump`
 
 ## Current Coverage
@@ -47,7 +47,7 @@ Renode bring-up coverage for every published MCU today.
 | `host_mmio/` | `same70_xplained`, `nucleo_g071rb`, `nucleo_f401re` | Recorded bring-up ordering and final MMIO state for clock/reset/GPIO/UART on native host |
 | `elf/` | `same70_xplained`, `nucleo_g071rb`, `nucleo_f401re` | Vector table, reset entry, required sections, and startup readiness |
 | `emulation/renode/` | `same70_xplained`, `nucleo_g071rb`, `nucleo_f401re` | Boot to `main`, debug UART banner, boot markers, UART byte count, and family-specific register side effects |
-| `perf/assembly/` | `same70_xplained` | Zero-overhead assembly/size checks for runtime-lite hot paths |
+| `perf/assembly/` | `same70_xplained` | Zero-overhead assembly/size checks for runtime hot paths |
 
 Current UART coverage by board:
 
@@ -154,7 +154,7 @@ cmake --build build-tests-host
 ctest --test-dir build-tests-host --output-on-failure
 ```
 
-The current `host_mmio` target overrides the selected runtime contract to `microchip/same70/atsame70q21b`, so the native host run validates real SAME70 runtime-lite GPIO/UART/watchdog bring-up code without switching the whole workspace away from `ALLOY_BOARD=host`.
+The current `host_mmio` target overrides the selected runtime contract to `microchip/same70/atsame70q21b`, so the native host run validates real SAME70 runtime GPIO/UART/watchdog bring-up code without switching the whole workspace away from `ALLOY_BOARD=host`.
 
 The host MMIO layer now also carries an ST descriptor-driven target that overrides the selected
 contract to `st/stm32g0/stm32g071rb`, covering RCC/GPIO/USART bring-up on the native host through

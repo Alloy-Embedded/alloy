@@ -37,7 +37,7 @@ the cut:
   - `cmake/alloy_devices.cmake`
   - `cmake/templates/selected_config.hpp.in`
   - `src/device/startup.hpp`
-  - `src/hal/detail/runtime_lite_ops.hpp` and related internal naming
+- `src/hal/detail/runtime_ops.hpp` and related internal naming
   - host MMIO selected-config overrides and startup validation tests
 - Breaking impact:
   - `alloy` no longer supports consuming legacy generated C++ headers from `alloy-devices`

@@ -122,7 +122,7 @@ def verify_pair(objdump: str, symbol_sizes: dict[str, int], artifact: Path, manu
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Verify that runtime-lite SAME70 hot paths compile to the same assembly as manual register access."
+        description="Verify that runtime SAME70 hot paths compile to the same assembly as manual register access."
     )
     parser.add_argument("--artifact", required=True, type=Path)
     parser.add_argument("--objdump", required=True)

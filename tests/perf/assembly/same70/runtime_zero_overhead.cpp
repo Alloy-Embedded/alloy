@@ -1,9 +1,9 @@
 #include <cstdint>
 
 #include "device/runtime.hpp"
-#include "hal/detail/runtime_lite_ops.hpp"
+#include "hal/detail/runtime_ops.hpp"
 
-namespace rt = alloy::hal::detail::runtime_lite;
+namespace rt = alloy::hal::detail::runtime;
 
 namespace {
 

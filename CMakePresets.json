@@ -86,10 +86,10 @@
     {
       "name": "same70-zero-overhead",
       "displayName": "Build SAME70 Zero-Overhead",
-      "description": "Build the dedicated SAME70 runtime-lite zero-overhead verification artifact.",
+      "description": "Build the dedicated SAME70 runtime zero-overhead verification artifact.",
       "configurePreset": "same70-analysis-debug",
       "targets": [
-        "same70_runtime_lite_zero_overhead"
+        "same70_runtime_zero_overhead"
       ]
     },
     {
@@ -168,14 +168,14 @@
     {
       "name": "same70-zero-overhead",
       "displayName": "Run SAME70 Zero-Overhead",
-      "description": "Run the SAME70 runtime-lite assembly/size verification gate.",
+      "description": "Run the SAME70 runtime assembly/size verification gate.",
       "configurePreset": "same70-analysis-debug",
       "output": {
         "outputOnFailure": true
       },
       "filter": {
         "include": {
-          "name": "^assembly\\.same70\\.runtime_lite_zero_overhead$"
+          "name": "^assembly\\.same70\\.runtime_zero_overhead$"
         }
       }
     },
@@ -287,7 +287,7 @@
     {
       "name": "same70-zero-overhead",
       "displayName": "SAME70 Zero-Overhead",
-      "description": "Configure, build, and run the SAME70 runtime-lite assembly/size verification path.",
+      "description": "Configure, build, and run the SAME70 runtime assembly/size verification path.",
       "steps": [
         {
           "type": "configure",

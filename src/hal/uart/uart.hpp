@@ -19,7 +19,7 @@ using Config = UartConfig;
 
 namespace detail {
 
-namespace runtime = alloy::hal::detail::runtime_lite;
+namespace runtime = alloy::hal::detail::runtime;
 
 template <typename SemanticTraits>
 struct uart_register_bank_base {

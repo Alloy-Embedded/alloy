@@ -20,7 +20,7 @@ using DataSize = SpiDataSize;
 
 namespace detail {
 
-namespace runtime = alloy::hal::detail::runtime_lite;
+namespace runtime = alloy::hal::detail::runtime;
 
 }  // namespace detail
 

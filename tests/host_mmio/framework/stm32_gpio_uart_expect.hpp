@@ -4,7 +4,7 @@
 #include "host_mmio/framework/register_expect.hpp"
 
 #include "device/runtime.hpp"
-#include "hal/detail/runtime_lite_ops.hpp"
+#include "hal/detail/runtime_ops.hpp"
 
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -14,7 +14,7 @@
 
 namespace alloy::test::mmio::stm32 {
 
-namespace rt = alloy::hal::detail::runtime_lite;
+namespace rt = alloy::hal::detail::runtime;
 
 using RegisterId = alloy::device::runtime::RegisterId;
 

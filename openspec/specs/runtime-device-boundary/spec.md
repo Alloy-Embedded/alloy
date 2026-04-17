@@ -1,29 +1,35 @@
 # runtime-device-boundary Specification
 
 ## Purpose
-TBD - created by archiving change consume-runtime-lite-device-contract. Update Purpose after archive.
+TBD - created by archiving change consume-runtime-device-contract. Update Purpose after archive.
 ## Requirements
 ### Requirement: Alloy Hot Path Shall Target Runtime-Lite Contract
 
-`alloy` SHALL consume the runtime-lite device contract as its default hot-path boundary. The
+`alloy` SHALL consume the runtime device contract as its default hot-path boundary. The
 reflection contract SHALL remain available only for smoke, tooling, and optional inspection.
 
-#### Scenario: Runtime includes only runtime-lite device headers
+#### Scenario: Runtime includes only runtime device headers
 
 - **WHEN** a foundational driver implementation includes generated device artifacts for normal
   operation
-- **THEN** it includes runtime-lite device headers
+- **THEN** it includes runtime device headers
 - **AND** it does not require reflection headers as a normal dependency
 
 ### Requirement: Runtime Must Consume `alloy-devices` Through a Stable Import Layer
 
-The runtime SHALL consume selected device descriptors through a stable `src/device` import layer
-rather than scattering direct vendor/family path includes across boards and drivers.
+`alloy` SHALL consume the published device contract through `generated/runtime/**` as its only
+supported generated C++ boundary.
 
-#### Scenario: Driver includes selected device descriptors
-- **WHEN** a foundational driver needs pins, peripheral instances, startup descriptors, or package data
-- **THEN** it imports them through `alloy::device::selected::*`
-- **AND** it does not directly include a vendor/family path from `alloy-devices`
+#### Scenario: Selected config includes only runtime contract headers
+- **WHEN** a board selects a published device from `alloy-devices`
+- **THEN** the generated selected config includes the typed runtime contract headers
+- **AND** it does not include legacy generated descriptor headers from `generated/devices/<device>/`
+  for runtime behavior
+
+#### Scenario: Runtime path does not depend on legacy generated tables
+- **WHEN** GPIO/UART/SPI/I2C/DMA/timer/PWM/ADC/DAC/startup/system clock are compiled
+- **THEN** they consume the typed runtime contract
+- **AND** they do not require table-oriented generated C++ reflection headers
 
 ### Requirement: Runtime Must Not Own Cross-Vendor Hardware Facts
 

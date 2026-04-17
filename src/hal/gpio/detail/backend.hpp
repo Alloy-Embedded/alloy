@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "hal/detail/runtime_lite_ops.hpp"
+#include "hal/detail/runtime_ops.hpp"
 #include "hal/types.hpp"
 
 #include "core/error_code.hpp"
@@ -10,7 +10,7 @@
 
 namespace alloy::hal::gpio::detail {
 
-namespace rt = alloy::hal::detail::runtime_lite;
+namespace rt = alloy::hal::detail::runtime;
 
 [[nodiscard]] constexpr auto pull_value(PinPull pull) -> std::uint32_t {
     switch (pull) {

@@ -19,7 +19,7 @@ using Speed = I2cSpeed;
 
 namespace detail {
 
-namespace runtime = alloy::hal::detail::runtime_lite;
+namespace runtime = alloy::hal::detail::runtime;
 
 }  // namespace detail
 
