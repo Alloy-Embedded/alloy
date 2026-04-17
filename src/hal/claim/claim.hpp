@@ -29,8 +29,9 @@ struct interrupt_claim {
 
 #if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
 template <dma::PeripheralId Peripheral, dma::SignalId Signal>
-requires(dma::BindingTraits<Peripheral, Signal>::kPresent)
 struct dma_claim {
+    static_assert(dma::BindingTraits<Peripheral, Signal>::kPresent);
+
     static constexpr auto peripheral_id = Peripheral;
     static constexpr auto signal_id = Signal;
     static constexpr auto binding_id =
@@ -44,8 +45,9 @@ struct dma_claim {
 #endif
 
 template <typename Connector>
-requires(Connector::valid)
 struct connector_claim {
+    static_assert(Connector::valid);
+
     using connector_type = Connector;
     using peripheral = peripheral_claim<typename Connector::peripheral_type>;
 
@@ -71,19 +73,22 @@ struct connector_claim {
         return binding_type::signal_type::name;
     }
 
+    template <std::size_t... Index>
+    [[nodiscard]] static consteval auto make_pin_names(std::index_sequence<Index...>) {
+        return std::array<std::string_view, sizeof...(Index)>{pin_name_at<Index>()...};
+    }
+
+    template <std::size_t... Index>
+    [[nodiscard]] static consteval auto make_signal_names(std::index_sequence<Index...>) {
+        return std::array<std::string_view, sizeof...(Index)>{signal_name_at<Index>()...};
+    }
+
     [[nodiscard]] static consteval auto pins() {
-        constexpr auto build_pins = []<std::size_t... Index>(std::index_sequence<Index...>) {
-            return std::array<std::string_view, sizeof...(Index)>{pin_name_at<Index>()...};
-        };
-        return build_pins(std::make_index_sequence<Connector::binding_count>{});
+        return make_pin_names(std::make_index_sequence<Connector::binding_count>{});
     }
 
     [[nodiscard]] static consteval auto signals() {
-        constexpr auto build_signals =
-            []<std::size_t... Index>(std::index_sequence<Index...>) {
-            return std::array<std::string_view, sizeof...(Index)>{signal_name_at<Index>()...};
-        };
-        return build_signals(std::make_index_sequence<Connector::binding_count>{});
+        return make_signal_names(std::make_index_sequence<Connector::binding_count>{});
     }
 };
 

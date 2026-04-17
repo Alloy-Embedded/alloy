@@ -235,9 +235,10 @@ struct uart_register_bank<SemanticTraits, runtime::UartSchema::microchip_usart_z
 }  // namespace detail
 
 template <typename Connector>
-requires(Connector::valid)
 class port_handle {
    public:
+    static_assert(Connector::valid);
+
     using connector_type = Connector;
     using runtime_peripheral_id = device::runtime::PeripheralId;
 
