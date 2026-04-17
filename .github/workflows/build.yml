@@ -9,6 +9,7 @@ on:
       - 'examples/**'
       - 'boards/**'
       - 'CMakeLists.txt'
+      - 'CMakePresets.json'
       - 'cmake/**'
       - '.github/workflows/build.yml'
   pull_request:
@@ -19,6 +20,7 @@ on:
       - 'examples/**'
       - 'boards/**'
       - 'CMakeLists.txt'
+      - 'CMakePresets.json'
       - 'cmake/**'
       - '.github/workflows/build.yml'
   workflow_dispatch:
@@ -89,7 +91,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: build-host
-        key: ${{ runner.os }}-${{ matrix.compiler }}-cmake-${{ hashFiles('**/CMakeLists.txt', 'cmake/**') }}
+        key: ${{ runner.os }}-${{ matrix.compiler }}-cmake-${{ hashFiles('**/CMakeLists.txt', 'CMakePresets.json', 'cmake/**') }}
         restore-keys: |
           ${{ runner.os }}-${{ matrix.compiler }}-cmake-
 
@@ -119,6 +121,11 @@ jobs:
       run: |
         cd build-host
         ctest --output-on-failure -R "regression_" --verbose
+
+    - name: Run Host MMIO Tests
+      run: |
+        cd build-host
+        ctest --output-on-failure -L host-mmio --verbose
 
     - name: Upload Test Results
       if: always()
@@ -262,6 +269,95 @@ jobs:
           build-smoke-${{ matrix.board }}/**/*alloy-device-contract-smoke*
 
   # ==============================================================================
+  # Renode Runtime Validation
+  # ==============================================================================
+  renode-runtime-validation:
+    name: Renode Runtime Validation (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: SAME70
+            configure_preset: same70-renode-debug
+            build_preset: same70-runtime-validation
+            test_preset: same70-runtime-validation
+          - name: STM32G0
+            configure_preset: stm32g0-renode-debug
+            build_preset: stm32g0-runtime-validation
+            test_preset: stm32g0-runtime-validation
+          - name: STM32F4
+            configure_preset: stm32f4-renode-debug
+            build_preset: stm32f4-runtime-validation
+            test_preset: stm32f4-runtime-validation
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Checkout alloy-devices
+      uses: actions/checkout@v4
+      with:
+        repository: Alloy-Embedded/alloy-devices
+        path: alloy-devices
+
+    - name: Install validation dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          cmake \
+          ninja-build \
+          gcc-arm-none-eabi \
+          binutils-arm-none-eabi \
+          curl \
+          tar \
+          python3 \
+          python3-pip \
+          libgtk2.0-0 \
+          screen \
+          uml-utilities \
+          gtk-sharp2 \
+          libc6-dev \
+          libicu-dev \
+          gcc
+
+    - name: Install Renode portable
+      run: |
+        mkdir -p "$RUNNER_TEMP/renode"
+        curl -L https://builds.renode.io/renode-latest.linux-portable-dotnet.tar.gz \
+          -o "$RUNNER_TEMP/renode.tar.gz"
+        tar xf "$RUNNER_TEMP/renode.tar.gz" \
+          -C "$RUNNER_TEMP/renode" \
+          --strip-components=1
+        echo "$RUNNER_TEMP/renode" >> "$GITHUB_PATH"
+        python3 -m pip install -r "$RUNNER_TEMP/renode/tests/requirements.txt"
+        "$RUNNER_TEMP/renode/renode" --help > /dev/null
+        "$RUNNER_TEMP/renode/renode-test" --help > /dev/null
+
+    - name: Configure runtime validation
+      run: |
+        cmake --preset ${{ matrix.configure_preset }} \
+          -DALLOY_DEVICES_ROOT=${{ github.workspace }}/alloy-devices
+
+    - name: Build runtime validation
+      run: |
+        cmake --build --preset ${{ matrix.build_preset }} --parallel $(nproc)
+
+    - name: Run runtime validation
+      run: |
+        ctest --preset ${{ matrix.test_preset }}
+
+    - name: Upload Renode validation artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: renode-validation-${{ matrix.name }}
+        path: |
+          build/presets/*/Testing/
+
+  # ==============================================================================
   # Build System Validation
   # ==============================================================================
   build-system-validation:
@@ -298,7 +394,7 @@ jobs:
   summary:
     name: CI Summary
     runs-on: ubuntu-latest
-    needs: [host-tests, embedded-builds, descriptor-contract-smoke, build-system-validation]
+    needs: [host-tests, embedded-builds, descriptor-contract-smoke, renode-runtime-validation, build-system-validation]
     if: always()
 
     steps:
@@ -308,6 +404,7 @@ jobs:
         echo "Host Tests: ${{ needs.host-tests.result }}"
         echo "Embedded Builds: ${{ needs.embedded-builds.result }}"
         echo "Descriptor Contract Smoke: ${{ needs.descriptor-contract-smoke.result }}"
+        echo "Renode Runtime Validation: ${{ needs.renode-runtime-validation.result }}"
         echo "Build System: ${{ needs.build-system-validation.result }}"
 
     - name: Fail if any job failed
@@ -315,5 +412,6 @@ jobs:
         needs.host-tests.result == 'failure' ||
         needs.embedded-builds.result == 'failure' ||
         needs.descriptor-contract-smoke.result == 'failure' ||
+        needs.renode-runtime-validation.result == 'failure' ||
         needs.build-system-validation.result == 'failure'
       run: exit 1

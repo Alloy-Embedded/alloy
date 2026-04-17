@@ -7,6 +7,7 @@ on:
       - 'src/**'
       - 'tests/**'
       - 'CMakeLists.txt'
+      - 'CMakePresets.json'
       - 'cmake/**'
       - '.github/workflows/ci.yml'
   pull_request:
@@ -15,6 +16,7 @@ on:
       - 'src/**'
       - 'tests/**'
       - 'CMakeLists.txt'
+      - 'CMakePresets.json'
       - 'cmake/**'
       - '.github/workflows/ci.yml'
 
@@ -135,7 +137,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: build-host
-        key: ${{ runner.os }}-${{ matrix.compiler }}-cmake-${{ hashFiles('**/CMakeLists.txt', 'cmake/**') }}
+        key: ${{ runner.os }}-${{ matrix.compiler }}-cmake-${{ hashFiles('**/CMakeLists.txt', 'CMakePresets.json', 'cmake/**') }}
         restore-keys: |
           ${{ runner.os }}-${{ matrix.compiler }}-cmake-
 
@@ -151,7 +153,7 @@ jobs:
     - name: Build
       run: cmake --build build-host --parallel
 
-    - name: Run CTest
+    - name: Run CTest (includes host-mmio)
       working-directory: build-host
       run: ctest --output-on-failure --verbose
 
