@@ -12,6 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 MONITORED_ROOTS = (
     Path("src/device"),
     Path("src/arch"),
+    Path("tests/compile"),
     Path("tests/compile_tests"),
 )
 

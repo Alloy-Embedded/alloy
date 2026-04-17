@@ -4,9 +4,7 @@
 
 cmake_minimum_required(VERSION 3.20)
 
-# Catch2 is fetched by parent CMakeLists.txt
 include(CTest)
-include(Catch)
 
 # Include directories
 include_directories(
@@ -14,31 +12,57 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/tests
 )
 
-# ==============================================================================
-# Unit Tests
-# ==============================================================================
+if(ALLOY_BOARD STREQUAL "host")
+    include(Catch)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/alloy_test_helpers.cmake)
 
-# Include unit tests subdirectory
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/unit/CMakeLists.txt)
-    add_subdirectory(unit)
+    # ==========================================================================
+    # Unit Tests
+    # ==========================================================================
+
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/unit/CMakeLists.txt)
+        add_subdirectory(unit)
+    endif()
+
+    # ==========================================================================
+    # Integration Tests
+    # ==========================================================================
+
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/integration/CMakeLists.txt)
+        add_subdirectory(integration)
+    endif()
+
+    # ==========================================================================
+    # Regression Tests
+    # ==========================================================================
+
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/regression/CMakeLists.txt)
+        add_subdirectory(regression)
+    endif()
+
+    # ==========================================================================
+    # Host MMIO Validation
+    # ==========================================================================
+
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/host_mmio/CMakeLists.txt)
+        add_subdirectory(host_mmio)
+    endif()
 endif()
 
 # ==============================================================================
-# Integration Tests
+# ELF / Emulation / Performance Validation Scaffolds
 # ==============================================================================
 
-# Include integration tests subdirectory
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/integration/CMakeLists.txt)
-    add_subdirectory(integration)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/elf/CMakeLists.txt)
+    add_subdirectory(elf)
 endif()
 
-# ==============================================================================
-# Regression Tests
-# ==============================================================================
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/emulation/CMakeLists.txt)
+    add_subdirectory(emulation)
+endif()
 
-# Include regression tests subdirectory
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/regression/CMakeLists.txt)
-    add_subdirectory(regression)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/perf/CMakeLists.txt)
+    add_subdirectory(perf)
 endif()
 
 # ==============================================================================
@@ -57,6 +81,19 @@ endif()
 message(STATUS "========================================")
 message(STATUS "Alloy HAL Test Suite Configured")
 message(STATUS "========================================")
+message(STATUS "Validation categories:")
+if(ALLOY_BOARD STREQUAL "host")
+    message(STATUS "  - unit")
+    message(STATUS "  - integration")
+    message(STATUS "  - regression")
+    message(STATUS "  - host-mmio")
+else()
+    message(STATUS "  - cross-target validation for board ${ALLOY_BOARD}")
+endif()
+message(STATUS "  - elf")
+message(STATUS "  - emulation")
+message(STATUS "  - hardware")
+message(STATUS "  - perf")
 message(STATUS "Run tests:")
-message(STATUS "  cd build-tests && ctest --output-on-failure")
+message(STATUS "  ctest --test-dir ${CMAKE_BINARY_DIR} --output-on-failure")
 message(STATUS "========================================")

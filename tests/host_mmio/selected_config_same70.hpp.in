@@ -1,0 +1,48 @@
+#pragma once
+
+#include <cstdint>
+#include <string_view>
+
+#define ALLOY_DEVICE_CONTRACT_AVAILABLE 1
+#define ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE 1
+#define ALLOY_DEVICE_STARTUP_AVAILABLE 1
+#define ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE 1
+#define ALLOY_DEVICE_SYSTEM_CLOCK_AVAILABLE 1
+
+#include "microchip/same70/generated/runtime/types.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/clock_bindings.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/dma_bindings.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/common.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/dma.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/gpio.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/i2c.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/spi.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/uart.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/peripheral_instances.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/pins.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/register_fields.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/registers.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/routes.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/system_clock.hpp"
+#include "microchip/same70/generated/devices/atsame70q21b/startup_descriptors.hpp"
+
+namespace alloy::device::selected {
+
+inline constexpr bool available = true;
+inline constexpr bool runtime_available = true;
+inline constexpr std::string_view vendor = "microchip";
+inline constexpr std::string_view family = "same70";
+inline constexpr std::string_view name = "atsame70q21b";
+inline constexpr std::string_view arch = "cortex-m7";
+inline constexpr bool startup_available = true;
+inline constexpr bool dma_bindings_available = true;
+inline constexpr bool system_clock_available = true;
+
+namespace runtime_family_contract = ::microchip::same70::generated::runtime;
+namespace runtime_device_contract = runtime_family_contract::devices::atsame70q21b;
+namespace runtime_driver_contract = runtime_device_contract::driver_semantics;
+namespace runtime_dma_device_contract = runtime_device_contract;
+namespace runtime_dma_driver_contract = runtime_driver_contract;
+namespace startup_device_contract = ::microchip::same70::generated::devices::atsame70q21b;
+
+}  // namespace alloy::device::selected

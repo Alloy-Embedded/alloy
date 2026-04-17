@@ -1,0 +1,48 @@
+#pragma once
+
+#include <cstdint>
+#include <string_view>
+
+#define ALLOY_DEVICE_CONTRACT_AVAILABLE 1
+#define ALLOY_DEVICE_RUNTIME_LITE_AVAILABLE 1
+#define ALLOY_DEVICE_STARTUP_AVAILABLE 1
+#define ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE 1
+#define ALLOY_DEVICE_SYSTEM_CLOCK_AVAILABLE 1
+
+#include "st/stm32f4/generated/runtime/types.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/clock_bindings.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/dma_bindings.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/driver_semantics/common.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/driver_semantics/dma.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/driver_semantics/gpio.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/driver_semantics/i2c.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/driver_semantics/spi.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/driver_semantics/uart.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/peripheral_instances.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/pins.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/register_fields.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/registers.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/routes.hpp"
+#include "st/stm32f4/generated/runtime/devices/stm32f401re/system_clock.hpp"
+#include "st/stm32f4/generated/devices/stm32f401re/startup_descriptors.hpp"
+
+namespace alloy::device::selected {
+
+inline constexpr bool available = true;
+inline constexpr bool runtime_available = true;
+inline constexpr std::string_view vendor = "st";
+inline constexpr std::string_view family = "stm32f4";
+inline constexpr std::string_view name = "stm32f401re";
+inline constexpr std::string_view arch = "cortex-m4";
+inline constexpr bool startup_available = true;
+inline constexpr bool dma_bindings_available = true;
+inline constexpr bool system_clock_available = true;
+
+namespace runtime_family_contract = ::st::stm32f4::generated::runtime;
+namespace runtime_device_contract = runtime_family_contract::devices::stm32f401re;
+namespace runtime_driver_contract = runtime_device_contract::driver_semantics;
+namespace runtime_dma_device_contract = runtime_device_contract;
+namespace runtime_dma_driver_contract = runtime_driver_contract;
+namespace startup_device_contract = ::st::stm32f4::generated::devices::stm32f401re;
+
+}  // namespace alloy::device::selected

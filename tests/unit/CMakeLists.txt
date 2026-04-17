@@ -18,41 +18,22 @@
 
 cmake_minimum_required(VERSION 3.20)
 
-# Include Catch2 helpers
-include(Catch)
-
-# ==============================================================================
-# Helper Function: Add Catch2 Test
-# ==============================================================================
-
-function(add_catch2_test TEST_NAME)
-    cmake_parse_arguments(ARG "" "" "SOURCES;LIBS" ${ARGN})
-
-    add_executable(${TEST_NAME} ${ARG_SOURCES})
-    target_link_libraries(${TEST_NAME} PRIVATE
-        Catch2::Catch2WithMain
-        ${ARG_LIBS}
-    )
-    target_compile_options(${TEST_NAME} PRIVATE -std=c++20)
-    target_include_directories(${TEST_NAME} PRIVATE
-        ${CMAKE_SOURCE_DIR}/src
-    )
-
-    catch_discover_tests(${TEST_NAME})
-endfunction()
+include(${CMAKE_SOURCE_DIR}/tests/alloy_test_helpers.cmake)
 
 # ==============================================================================
 # Core Tests
 # ==============================================================================
 
 # Test: Result<T, E> Type
-add_catch2_test(test_result
+alloy_add_catch2_test(test_result
     SOURCES test_result.cpp
+    LABELS unit
 )
 
 # Test: Error Handling
-add_catch2_test(test_error
+alloy_add_catch2_test(test_error
     SOURCES test_error.cpp
+    LABELS unit
 )
 
 # ==============================================================================
@@ -60,13 +41,15 @@ add_catch2_test(test_error
 # ==============================================================================
 
 # Test: GpioPin Concept
-add_catch2_test(test_gpio_concept
+alloy_add_catch2_test(test_gpio_concept
     SOURCES test_gpio_concept.cpp
+    LABELS unit
 )
 
 # Test: ClockPlatform Concept
-add_catch2_test(test_clock_concept
+alloy_add_catch2_test(test_clock_concept
     SOURCES test_clock_concept.cpp
+    LABELS unit
 )
 
 # ==============================================================================

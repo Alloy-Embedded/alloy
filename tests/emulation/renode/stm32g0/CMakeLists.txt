@@ -1,0 +1,28 @@
+include(${CMAKE_SOURCE_DIR}/tests/emulation/renode/common/stm32_renode_helpers.cmake)
+
+alloy_add_stm32_renode_boot_smoke(stm32g0_renode_boot_smoke
+    BOARD_NAME
+        nucleo_g071rb
+    BOARD_DIR
+        ${CMAKE_SOURCE_DIR}/boards/nucleo_g071rb
+    FIRMWARE_SOURCE
+        ${CMAKE_SOURCE_DIR}/tests/firmware/stm32g0/boot_smoke.cpp
+    LINKER_SCRIPT
+        ${CMAKE_SOURCE_DIR}/boards/nucleo_g071rb/STM32G071RBT6.ld
+    CPU_REPL
+        platforms/cpus/stm32g0.repl
+    SYSTICK_FREQUENCY
+        64000000
+    ROBOT_SCRIPT
+        ${CMAKE_CURRENT_SOURCE_DIR}/scripts/boot_smoke.robot
+    TEST_NAME
+        renode.stm32g0.boot_smoke
+    OUTPUT_NAME
+        stm32g0_renode_boot_smoke
+    FAMILY_LABEL
+        stm32g0
+    SYMBOL_VARS
+        BOOT_STAGE_ADDR=alloy_renode_boot_stage
+        BOOT_MARKER_ADDR=alloy_renode_boot_marker
+        BOOT_UART_BYTES_ADDR=alloy_renode_uart_bytes_written
+)

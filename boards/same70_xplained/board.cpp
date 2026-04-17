@@ -11,22 +11,44 @@
 
 #include <cstdint>
 
+#include "arch/cortex_m/init_hooks.hpp"
+#include "device/runtime.hpp"
 #include "device/system_clock.hpp"
+#include "hal/detail/runtime_lite_ops.hpp"
 #include "hal/gpio.hpp"
 #include "hal/systick.hpp"
-#include "hal/watchdog.hpp"
-#include "hal/vendors/arm/cortex_m7/init_hooks.hpp"
-#include "hal/vendors/atmel/same70/atsame70q21b/peripherals.hpp"
-#include "hal/vendors/atmel/same70/watchdog_hardware_policy.hpp"
 
-using namespace alloy::generated::atsame70q21b;
 using namespace alloy::hal;
 
 namespace board {
 
 namespace {
 
+using alloy::hal::detail::runtime_lite::field_bits;
+using alloy::hal::detail::runtime_lite::field_ref;
+using alloy::hal::detail::runtime_lite::register_ref;
+using alloy::hal::detail::runtime_lite::write_register;
+
 using BoardLed = alloy::hal::pin<"PC8">;
+template <alloy::device::runtime::RegisterId RegisterId,
+          alloy::device::runtime::FieldId DisableFieldId,
+          alloy::device::runtime::FieldId GuardFieldId>
+void disable_watchdog() {
+    constexpr auto reg = register_ref<RegisterId>();
+    constexpr auto disable_field = field_ref<DisableFieldId>();
+    constexpr auto guard_field = field_ref<GuardFieldId>();
+    constexpr auto kGuardValue = 0xFFFu;
+
+    static_assert(reg.valid, "Selected SAME70 runtime-lite contract must publish watchdog register.");
+    static_assert(disable_field.valid,
+                  "Selected SAME70 runtime-lite contract must publish watchdog disable field.");
+    static_assert(guard_field.valid,
+                  "Selected SAME70 runtime-lite contract must publish watchdog guard field.");
+
+    const auto disable_bits = field_bits(disable_field, 1u).unwrap();
+    const auto guard_bits = field_bits(guard_field, kGuardValue).unwrap();
+    write_register(reg, disable_bits | guard_bits).unwrap();
+}
 
 auto& led_handle() {
     static auto handle = alloy::hal::gpio::open<BoardLed>({
@@ -87,11 +109,13 @@ void init() {
     }
 
     // Step 1: Disable watchdog timers
-    // SAME70 has two independent watchdogs that must both be disabled for development
-    using WDT_Policy = atmel::same70::Same70WatchdogHardwarePolicy<peripherals::WDT>;
-    using RSWDT_Policy = atmel::same70::Same70WatchdogHardwarePolicy<peripherals::RSWDT>;
-    Watchdog::disable<WDT_Policy>();
-    Watchdog::disable<RSWDT_Policy>();
+    // SAME70 mode registers are write-once after reset, so disable them before other bring-up.
+    disable_watchdog<alloy::device::runtime::RegisterId::register_wdt_mr,
+                     alloy::device::runtime::FieldId::field_wdt_mr_wddis,
+                     alloy::device::runtime::FieldId::field_wdt_mr_wdd>();
+    disable_watchdog<alloy::device::runtime::RegisterId::register_rswdt_mr,
+                     alloy::device::runtime::FieldId::field_rswdt_mr_wddis,
+                     alloy::device::runtime::FieldId::field_rswdt_mr_allones>();
 
     // Step 2: Configure system clock from the published device contract
     if (!alloy::device::system_clock::apply_default()) {
@@ -108,7 +132,7 @@ void init() {
     __asm volatile("cpsie i" ::: "memory");
 
     // Step 6: Call platform-specific late initialization hook
-    alloy::hal::arm::late_init();
+    alloy::arch::cortex_m::late_init();
 
     board_initialized = true;
 }

@@ -1,0 +1,4 @@
+using "@ALLOY_RENODE_ST_CPU_REPL@"
+
+nvic:
+    systickFrequency: @ALLOY_RENODE_ST_SYSTICK_FREQUENCY@

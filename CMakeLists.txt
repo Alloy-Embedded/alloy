@@ -78,17 +78,66 @@ alloy_resolve_board_manifest(
 # Build options
 option(ALLOY_BUILD_TESTS "Build unit tests" ON)
 option(ALLOY_MINIMAL_BUILD "Optimize for size (enables -Os, -flto, --gc-sections)" OFF)
+set(ALLOY_CATCH2_SOURCE_DIR
+    ""
+    CACHE PATH
+    "Optional local Catch2 source checkout used for offline test configuration."
+)
 
 if(ALLOY_BUILD_TESTS)
     enable_testing()
 
-    # Fetch Catch2 v3
-    include(FetchContent)
-    FetchContent_Declare(
-        Catch2
-        URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.0.zip
-        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    set(_alloy_catch2_source_dir "")
+    set(_alloy_catch2_source_candidates)
+    if(ALLOY_CATCH2_SOURCE_DIR)
+        list(APPEND _alloy_catch2_source_candidates "${ALLOY_CATCH2_SOURCE_DIR}")
+    endif()
+    list(APPEND _alloy_catch2_source_candidates
+        "${CMAKE_CURRENT_SOURCE_DIR}/build-tests-host/_deps/catch2-src"
+        "${CMAKE_CURRENT_SOURCE_DIR}/build/presets/host-validation-debug/_deps/catch2-src"
+        "${CMAKE_CURRENT_SOURCE_DIR}/build/presets/same70-analysis-debug/_deps/catch2-src"
+        "${CMAKE_CURRENT_SOURCE_DIR}/build/presets/same70-renode-debug/_deps/catch2-src"
+        "${CMAKE_CURRENT_SOURCE_DIR}/build/presets/stm32g0-renode-debug/_deps/catch2-src"
+        "${CMAKE_CURRENT_SOURCE_DIR}/build/presets/stm32f4-renode-debug/_deps/catch2-src"
     )
+    file(GLOB _alloy_catch2_glob_direct LIST_DIRECTORIES true
+        "${CMAKE_CURRENT_SOURCE_DIR}/build*/_deps/catch2-src"
+    )
+    file(GLOB _alloy_catch2_glob_one_level LIST_DIRECTORIES true
+        "${CMAKE_CURRENT_SOURCE_DIR}/build*/*/_deps/catch2-src"
+    )
+    file(GLOB _alloy_catch2_glob_two_level LIST_DIRECTORIES true
+        "${CMAKE_CURRENT_SOURCE_DIR}/build*/*/*/_deps/catch2-src"
+    )
+    list(APPEND _alloy_catch2_source_candidates
+        ${_alloy_catch2_glob_direct}
+        ${_alloy_catch2_glob_one_level}
+        ${_alloy_catch2_glob_two_level}
+    )
+    list(REMOVE_DUPLICATES _alloy_catch2_source_candidates)
+    foreach(_alloy_catch2_candidate IN LISTS _alloy_catch2_source_candidates)
+        if(EXISTS "${_alloy_catch2_candidate}/CMakeLists.txt")
+            set(_alloy_catch2_source_dir "${_alloy_catch2_candidate}")
+            break()
+        endif()
+    endforeach()
+
+    # Fetch Catch2 v3, but prefer an existing local checkout when available so
+    # host validation can configure offline.
+    include(FetchContent)
+    if(_alloy_catch2_source_dir)
+        message(STATUS "Using local Catch2 source checkout: ${_alloy_catch2_source_dir}")
+        FetchContent_Declare(
+            Catch2
+            SOURCE_DIR "${_alloy_catch2_source_dir}"
+        )
+    else()
+        FetchContent_Declare(
+            Catch2
+            URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.0.zip
+            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+        )
+    endif()
 
     FetchContent_MakeAvailable(Catch2)
 
@@ -352,31 +401,8 @@ else()
 endif()
 
 if(ALLOY_DEVICE_CONTRACT_AVAILABLE)
-    add_library(alloy-device-contract-smoke OBJECT
-        tests/compile_tests/test_device_import_layer.cpp
-        tests/compile_tests/test_startup_contract.cpp
-        tests/compile_tests/test_system_clock_contract.cpp
-        tests/compile_tests/test_dma_api.cpp
-        tests/compile_tests/test_connector_kernel.cpp
-        tests/compile_tests/test_gpio_api.cpp
-        tests/compile_tests/test_uart_api.cpp
-        tests/compile_tests/test_i2c_api.cpp
-        tests/compile_tests/test_spi_api.cpp
-        tests/compile_tests/test_board_led_api.cpp
-        tests/compile_tests/test_board_uart_api.cpp
-        tests/compile_tests/test_board_dma_api.cpp
-        ${ALLOY_ACTIVE_STARTUP_SOURCE}
-        ${ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE}
-    )
-
-    target_include_directories(alloy-device-contract-smoke PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/boards
-        ${ALLOY_DEVICE_INCLUDE_DIRS}
-    )
-
-    target_compile_features(alloy-device-contract-smoke PRIVATE cxx_std_23)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/tests/compile/contract_smoke.cmake)
+    alloy_add_device_contract_smoke(alloy-device-contract-smoke)
 endif()
 
 # HAL subdirectories (conditional based on board)
@@ -428,7 +454,7 @@ endif()
 # endif()
 
 # Tests
-if(ALLOY_BUILD_TESTS AND ALLOY_BOARD STREQUAL "host")
+if(ALLOY_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 

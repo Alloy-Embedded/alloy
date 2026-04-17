@@ -1,0 +1,28 @@
+include(${CMAKE_SOURCE_DIR}/tests/emulation/renode/common/stm32_renode_helpers.cmake)
+
+alloy_add_stm32_renode_boot_smoke(stm32f4_renode_boot_smoke
+    BOARD_NAME
+        nucleo_f401re
+    BOARD_DIR
+        ${CMAKE_SOURCE_DIR}/boards/nucleo_f401re
+    FIRMWARE_SOURCE
+        ${CMAKE_SOURCE_DIR}/tests/firmware/stm32f4/boot_smoke.cpp
+    LINKER_SCRIPT
+        ${CMAKE_SOURCE_DIR}/boards/nucleo_f401re/STM32F401RET6.ld
+    CPU_REPL
+        platforms/cpus/stm32f4.repl
+    SYSTICK_FREQUENCY
+        84000000
+    ROBOT_SCRIPT
+        ${CMAKE_CURRENT_SOURCE_DIR}/scripts/boot_smoke.robot
+    TEST_NAME
+        renode.stm32f4.boot_smoke
+    OUTPUT_NAME
+        stm32f4_renode_boot_smoke
+    FAMILY_LABEL
+        stm32f4
+    SYMBOL_VARS
+        BOOT_STAGE_ADDR=alloy_renode_boot_stage
+        BOOT_MARKER_ADDR=alloy_renode_boot_marker
+        BOOT_UART_BYTES_ADDR=alloy_renode_uart_bytes_written
+)

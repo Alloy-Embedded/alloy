@@ -1,0 +1,421 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 4,
+    "minor": 2,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "host-validation-debug",
+      "displayName": "Host Validation Debug",
+      "description": "Configure Alloy host-side validation, including host MMIO runtime-contract tests.",
+      "binaryDir": "${sourceDir}/build/presets/host-validation-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ALLOY_BOARD": "host",
+        "ALLOY_BUILD_TESTS": "ON",
+        "ALLOY_ENABLE_RENODE_TESTS": "OFF"
+      }
+    },
+    {
+      "name": "same70-analysis-debug",
+      "displayName": "SAME70 Analysis Debug",
+      "description": "Configure Alloy focused validation for SAME70 Xplained without Renode dependencies.",
+      "binaryDir": "${sourceDir}/build/presets/same70-analysis-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/arm-none-eabi.cmake",
+        "ALLOY_BOARD": "same70_xplained",
+        "ALLOY_BUILD_TESTS": "ON",
+        "ALLOY_ENABLE_RENODE_TESTS": "OFF"
+      }
+    },
+    {
+      "name": "same70-renode-debug",
+      "displayName": "SAME70 Renode Debug",
+      "description": "Configure Alloy runtime validation for SAME70 Xplained with Renode enabled.",
+      "binaryDir": "${sourceDir}/build/presets/same70-renode-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/arm-none-eabi.cmake",
+        "ALLOY_BOARD": "same70_xplained",
+        "ALLOY_BUILD_TESTS": "ON",
+        "ALLOY_ENABLE_RENODE_TESTS": "ON"
+      }
+    },
+    {
+      "name": "stm32f4-renode-debug",
+      "displayName": "STM32F4 Renode Debug",
+      "description": "Configure Alloy runtime validation for Nucleo-F401RE with Renode enabled.",
+      "binaryDir": "${sourceDir}/build/presets/stm32f4-renode-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/arm-none-eabi.cmake",
+        "ALLOY_BOARD": "nucleo_f401re",
+        "ALLOY_BUILD_TESTS": "ON",
+        "ALLOY_ENABLE_RENODE_TESTS": "ON"
+      }
+    },
+    {
+      "name": "stm32g0-renode-debug",
+      "displayName": "STM32G0 Renode Debug",
+      "description": "Configure Alloy runtime validation for Nucleo-G071RB with Renode enabled.",
+      "binaryDir": "${sourceDir}/build/presets/stm32g0-renode-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/arm-none-eabi.cmake",
+        "ALLOY_BOARD": "nucleo_g071rb",
+        "ALLOY_BUILD_TESTS": "ON",
+        "ALLOY_ENABLE_RENODE_TESTS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "host-mmio-validation",
+      "displayName": "Build Host MMIO Validation",
+      "description": "Build the host MMIO runtime-contract bring-up suites.",
+      "configurePreset": "host-validation-debug",
+      "targets": [
+        "test_host_mmio_same70",
+        "test_host_mmio_stm32g0",
+        "test_host_mmio_stm32f4"
+      ]
+    },
+    {
+      "name": "same70-zero-overhead",
+      "displayName": "Build SAME70 Zero-Overhead",
+      "description": "Build the dedicated SAME70 runtime-lite zero-overhead verification artifact.",
+      "configurePreset": "same70-analysis-debug",
+      "targets": [
+        "same70_runtime_lite_zero_overhead"
+      ]
+    },
+    {
+      "name": "same70-renode-smoke",
+      "displayName": "Build SAME70 Renode Smoke",
+      "description": "Build the dedicated SAME70 Renode boot smoke firmware.",
+      "configurePreset": "same70-renode-debug",
+      "targets": [
+        "same70_renode_boot_smoke"
+      ]
+    },
+    {
+      "name": "same70-runtime-validation",
+      "displayName": "Build SAME70 Runtime Validation",
+      "description": "Build the SAME70 ELF startup inspection and Renode smoke firmware targets.",
+      "configurePreset": "same70-renode-debug",
+      "targets": [
+        "same70_elf_startup_smoke",
+        "same70_renode_boot_smoke"
+      ]
+    },
+    {
+      "name": "stm32f4-renode-smoke",
+      "displayName": "Build STM32F4 Renode Smoke",
+      "description": "Build the dedicated STM32F4 Renode boot smoke firmware.",
+      "configurePreset": "stm32f4-renode-debug",
+      "targets": [
+        "stm32f4_renode_boot_smoke"
+      ]
+    },
+    {
+      "name": "stm32f4-runtime-validation",
+      "displayName": "Build STM32F4 Runtime Validation",
+      "description": "Build the STM32F4 ELF startup inspection and Renode smoke firmware targets.",
+      "configurePreset": "stm32f4-renode-debug",
+      "targets": [
+        "stm32f4_elf_startup_smoke",
+        "stm32f4_renode_boot_smoke"
+      ]
+    },
+    {
+      "name": "stm32g0-renode-smoke",
+      "displayName": "Build STM32G0 Renode Smoke",
+      "description": "Build the dedicated STM32G0 Renode boot smoke firmware.",
+      "configurePreset": "stm32g0-renode-debug",
+      "targets": [
+        "stm32g0_renode_boot_smoke"
+      ]
+    },
+    {
+      "name": "stm32g0-runtime-validation",
+      "displayName": "Build STM32G0 Runtime Validation",
+      "description": "Build the STM32G0 ELF startup inspection and Renode smoke firmware targets.",
+      "configurePreset": "stm32g0-renode-debug",
+      "targets": [
+        "stm32g0_elf_startup_smoke",
+        "stm32g0_renode_boot_smoke"
+      ]
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "host-mmio-validation",
+      "displayName": "Run Host MMIO Validation",
+      "description": "Run the host MMIO runtime-contract bring-up suites.",
+      "configurePreset": "host-validation-debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "filter": {
+        "include": {
+          "label": "host-mmio"
+        }
+      }
+    },
+    {
+      "name": "same70-zero-overhead",
+      "displayName": "Run SAME70 Zero-Overhead",
+      "description": "Run the SAME70 runtime-lite assembly/size verification gate.",
+      "configurePreset": "same70-analysis-debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "filter": {
+        "include": {
+          "name": "^assembly\\.same70\\.runtime_lite_zero_overhead$"
+        }
+      }
+    },
+    {
+      "name": "same70-renode-smoke",
+      "displayName": "Run SAME70 Renode Smoke",
+      "description": "Run the SAME70 Renode boot smoke validation scenario.",
+      "configurePreset": "same70-renode-debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "filter": {
+        "include": {
+          "name": "^renode.same70.boot_smoke$"
+        }
+      }
+    },
+    {
+      "name": "same70-runtime-validation",
+      "displayName": "Run SAME70 Runtime Validation",
+      "description": "Run the SAME70 ELF startup inspection and Renode boot smoke scenarios.",
+      "configurePreset": "same70-renode-debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "filter": {
+        "include": {
+          "name": "^(elf\\.same70\\.startup_inspection|renode\\.same70\\.boot_smoke)$"
+        }
+      }
+    },
+    {
+      "name": "stm32f4-renode-smoke",
+      "displayName": "Run STM32F4 Renode Smoke",
+      "description": "Run the STM32F4 Renode boot smoke validation scenario.",
+      "configurePreset": "stm32f4-renode-debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "filter": {
+        "include": {
+          "name": "^renode\\.stm32f4\\.boot_smoke$"
+        }
+      }
+    },
+    {
+      "name": "stm32f4-runtime-validation",
+      "displayName": "Run STM32F4 Runtime Validation",
+      "description": "Run the STM32F4 ELF startup inspection and Renode boot smoke scenarios.",
+      "configurePreset": "stm32f4-renode-debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "filter": {
+        "include": {
+          "name": "^(elf\\.stm32f4\\.startup_inspection|renode\\.stm32f4\\.boot_smoke)$"
+        }
+      }
+    },
+    {
+      "name": "stm32g0-renode-smoke",
+      "displayName": "Run STM32G0 Renode Smoke",
+      "description": "Run the STM32G0 Renode boot smoke validation scenario.",
+      "configurePreset": "stm32g0-renode-debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "filter": {
+        "include": {
+          "name": "^renode\\.stm32g0\\.boot_smoke$"
+        }
+      }
+    },
+    {
+      "name": "stm32g0-runtime-validation",
+      "displayName": "Run STM32G0 Runtime Validation",
+      "description": "Run the STM32G0 ELF startup inspection and Renode boot smoke scenarios.",
+      "configurePreset": "stm32g0-renode-debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "filter": {
+        "include": {
+          "name": "^(elf\\.stm32g0\\.startup_inspection|renode\\.stm32g0\\.boot_smoke)$"
+        }
+      }
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "host-mmio-validation",
+      "displayName": "Host MMIO Validation",
+      "description": "Configure, build, and run the host MMIO runtime-contract bring-up suites.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "host-validation-debug"
+        },
+        {
+          "type": "build",
+          "name": "host-mmio-validation"
+        },
+        {
+          "type": "test",
+          "name": "host-mmio-validation"
+        }
+      ]
+    },
+    {
+      "name": "same70-zero-overhead",
+      "displayName": "SAME70 Zero-Overhead",
+      "description": "Configure, build, and run the SAME70 runtime-lite assembly/size verification path.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "same70-analysis-debug"
+        },
+        {
+          "type": "build",
+          "name": "same70-zero-overhead"
+        },
+        {
+          "type": "test",
+          "name": "same70-zero-overhead"
+        }
+      ]
+    },
+    {
+      "name": "same70-renode-smoke",
+      "displayName": "SAME70 Renode Smoke",
+      "description": "Configure, build, and run the SAME70 Renode boot smoke validation path.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "same70-renode-debug"
+        },
+        {
+          "type": "build",
+          "name": "same70-renode-smoke"
+        },
+        {
+          "type": "test",
+          "name": "same70-renode-smoke"
+        }
+      ]
+    },
+    {
+      "name": "same70-runtime-validation",
+      "displayName": "SAME70 Runtime Validation",
+      "description": "Configure, build, and run the SAME70 ELF startup inspection and Renode validation path.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "same70-renode-debug"
+        },
+        {
+          "type": "build",
+          "name": "same70-runtime-validation"
+        },
+        {
+          "type": "test",
+          "name": "same70-runtime-validation"
+        }
+      ]
+    },
+    {
+      "name": "stm32f4-renode-smoke",
+      "displayName": "STM32F4 Renode Smoke",
+      "description": "Configure, build, and run the STM32F4 Renode boot smoke validation path.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "stm32f4-renode-debug"
+        },
+        {
+          "type": "build",
+          "name": "stm32f4-renode-smoke"
+        },
+        {
+          "type": "test",
+          "name": "stm32f4-renode-smoke"
+        }
+      ]
+    },
+    {
+      "name": "stm32f4-runtime-validation",
+      "displayName": "STM32F4 Runtime Validation",
+      "description": "Configure, build, and run the STM32F4 ELF startup inspection and Renode validation path.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "stm32f4-renode-debug"
+        },
+        {
+          "type": "build",
+          "name": "stm32f4-runtime-validation"
+        },
+        {
+          "type": "test",
+          "name": "stm32f4-runtime-validation"
+        }
+      ]
+    },
+    {
+      "name": "stm32g0-renode-smoke",
+      "displayName": "STM32G0 Renode Smoke",
+      "description": "Configure, build, and run the STM32G0 Renode boot smoke validation path.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "stm32g0-renode-debug"
+        },
+        {
+          "type": "build",
+          "name": "stm32g0-renode-smoke"
+        },
+        {
+          "type": "test",
+          "name": "stm32g0-renode-smoke"
+        }
+      ]
+    },
+    {
+      "name": "stm32g0-runtime-validation",
+      "displayName": "STM32G0 Runtime Validation",
+      "description": "Configure, build, and run the STM32G0 ELF startup inspection and Renode validation path.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "stm32g0-renode-debug"
+        },
+        {
+          "type": "build",
+          "name": "stm32g0-runtime-validation"
+        },
+        {
+          "type": "test",
+          "name": "stm32g0-runtime-validation"
+        }
+      ]
+    }
+  ]
+}

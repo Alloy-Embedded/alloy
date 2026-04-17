@@ -13,6 +13,22 @@
 
 namespace alloy::hal::detail::runtime_lite {
 
+#if defined(ALLOY_ENABLE_HOST_MMIO_RUNTIME_HOOKS)
+namespace test_support {
+
+struct MmioHooks {
+    auto (*read32)(std::uintptr_t address) -> std::uint32_t = nullptr;
+    void (*write32)(std::uintptr_t address, std::uint32_t value) = nullptr;
+};
+
+[[nodiscard]] inline auto host_mmio_hooks() -> MmioHooks& {
+    static auto hooks = MmioHooks{};
+    return hooks;
+}
+
+}  // namespace test_support
+#endif
+
 using RegisterRef = device::runtime::RuntimeRegisterRef;
 using FieldRef = device::runtime::RuntimeFieldRef;
 using IndexedFieldRef = device::runtime::RuntimeIndexedFieldRef;
@@ -105,6 +121,27 @@ template <auto Value>
 
 [[nodiscard]] inline auto mmio32(std::uintptr_t address) -> volatile std::uint32_t& {
     return *reinterpret_cast<volatile std::uint32_t*>(address);
+}
+
+[[nodiscard]] inline auto read_mmio32(std::uintptr_t address) -> std::uint32_t {
+#if defined(ALLOY_ENABLE_HOST_MMIO_RUNTIME_HOOKS)
+    const auto& hooks = test_support::host_mmio_hooks();
+    if (hooks.read32 != nullptr) {
+        return hooks.read32(address);
+    }
+#endif
+    return static_cast<std::uint32_t>(mmio32(address));
+}
+
+inline void write_mmio32(std::uintptr_t address, std::uint32_t value) {
+#if defined(ALLOY_ENABLE_HOST_MMIO_RUNTIME_HOOKS)
+    const auto& hooks = test_support::host_mmio_hooks();
+    if (hooks.write32 != nullptr) {
+        hooks.write32(address, value);
+        return;
+    }
+#endif
+    mmio32(address) = value;
 }
 
 template <device::runtime::RegisterId Id>
@@ -617,7 +654,7 @@ inline auto write_register(const RegisterRef& reg, std::uint32_t value)
     if (!reg.valid) {
         return core::Err(core::ErrorCode::NotSupported);
     }
-    mmio32(reg.base_address + reg.offset_bytes) = value;
+    write_mmio32(reg.base_address + reg.offset_bytes, value);
     return core::Ok();
 }
 
@@ -626,7 +663,7 @@ inline auto write_register(const RegisterRef& reg, std::uint32_t value)
     if (!reg.valid) {
         return core::Err(core::ErrorCode::NotSupported);
     }
-    const auto value = static_cast<std::uint32_t>(mmio32(reg.base_address + reg.offset_bytes));
+    const auto value = read_mmio32(reg.base_address + reg.offset_bytes);
     return core::Ok<std::uint32_t>(std::uint32_t{value});
 }
 
@@ -652,10 +689,10 @@ inline auto modify_field(const FieldRef& field, std::uint32_t value)
         return core::Err(core::ErrorCode::NotSupported);
     }
 
-    auto current = mmio32(field.reg.base_address + field.reg.offset_bytes);
+    auto current = read_mmio32(field.reg.base_address + field.reg.offset_bytes);
     current &= ~field_mask(field);
     current |= (value << field.bit_offset) & field_mask(field);
-    mmio32(field.reg.base_address + field.reg.offset_bytes) = current;
+    write_mmio32(field.reg.base_address + field.reg.offset_bytes, current);
     return core::Ok();
 }
 
@@ -666,9 +703,10 @@ inline auto modify_indexed_field(const IndexedFieldRef& field, std::size_t index
         return core::Err(core::ErrorCode::NotSupported);
     }
 
-    auto& current = mmio32(indexed_field_address(field, index));
+    auto current = read_mmio32(indexed_field_address(field, index));
     current &= ~indexed_field_mask(field);
     current |= (value << field.bit_offset) & indexed_field_mask(field);
+    write_mmio32(indexed_field_address(field, index), current);
     return core::Ok();
 }
 
@@ -678,7 +716,7 @@ inline auto modify_indexed_field(const IndexedFieldRef& field, std::size_t index
         return core::Err(core::ErrorCode::NotSupported);
     }
 
-    const auto value = mmio32(field.reg.base_address + field.reg.offset_bytes);
+    const auto value = read_mmio32(field.reg.base_address + field.reg.offset_bytes);
     return core::Ok((value & field_mask(field)) >> field.bit_offset);
 }
 
@@ -688,10 +726,10 @@ inline auto modify_register_bit(const RegisterRef& reg, std::uint32_t bit_index,
         return core::Err(core::ErrorCode::NotSupported);
     }
 
-    auto current = mmio32(reg.base_address + reg.offset_bytes);
+    auto current = read_mmio32(reg.base_address + reg.offset_bytes);
     const auto mask = static_cast<std::uint32_t>(1u << bit_index);
     current = value ? (current | mask) : (current & ~mask);
-    mmio32(reg.base_address + reg.offset_bytes) = current;
+    write_mmio32(reg.base_address + reg.offset_bytes, current);
     return core::Ok();
 }
 
@@ -912,13 +950,15 @@ inline auto apply_route_operation(const ::alloy::hal::detail::route::Operation& 
             }
 
             const auto mask = field_mask(operation.secondary);
-            auto& abcdsr0 =
-                mmio32(operation.secondary.reg.base_address + operation.secondary.reg.offset_bytes);
-            auto& abcdsr1 = mmio32(operation.secondary.reg.base_address +
-                                  operation.secondary.reg.offset_bytes +
-                                  sizeof(std::uint32_t));
+            const auto abcdsr0_address =
+                operation.secondary.reg.base_address + operation.secondary.reg.offset_bytes;
+            const auto abcdsr1_address = abcdsr0_address + sizeof(std::uint32_t);
+            auto abcdsr0 = read_mmio32(abcdsr0_address);
+            auto abcdsr1 = read_mmio32(abcdsr1_address);
             abcdsr0 = (operation.value & 0x1u) != 0u ? (abcdsr0 | mask) : (abcdsr0 & ~mask);
             abcdsr1 = (operation.value & 0x2u) != 0u ? (abcdsr1 | mask) : (abcdsr1 & ~mask);
+            write_mmio32(abcdsr0_address, abcdsr0);
+            write_mmio32(abcdsr1_address, abcdsr1);
             return core::Ok();
         }
         case kind::apply_clock_gate_by_index:
@@ -1018,12 +1058,16 @@ inline auto apply_route_operation(const device::runtime::RouteOperation& descrip
         }
 
         const auto mask = field_mask(abcdsr_field);
-        auto& abcdsr0 = mmio32(abcdsr_field.reg.base_address + abcdsr_field.reg.offset_bytes);
-        auto& abcdsr1 = mmio32(abcdsr_field.reg.base_address + abcdsr_field.reg.offset_bytes +
-                               sizeof(std::uint32_t));
+        const auto abcdsr0_address =
+            abcdsr_field.reg.base_address + abcdsr_field.reg.offset_bytes;
+        const auto abcdsr1_address = abcdsr0_address + sizeof(std::uint32_t);
+        auto abcdsr0 = read_mmio32(abcdsr0_address);
+        auto abcdsr1 = read_mmio32(abcdsr1_address);
         const auto value = static_cast<std::uint32_t>(descriptor.value_int);
         abcdsr0 = (value & 0x1u) != 0u ? (abcdsr0 | mask) : (abcdsr0 & ~mask);
         abcdsr1 = (value & 0x2u) != 0u ? (abcdsr1 | mask) : (abcdsr1 & ~mask);
+        write_mmio32(abcdsr0_address, abcdsr0);
+        write_mmio32(abcdsr1_address, abcdsr1);
         return core::Ok();
     }
 

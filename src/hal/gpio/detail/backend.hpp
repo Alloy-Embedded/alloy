@@ -69,53 +69,52 @@ auto configure_microchip_pio(const GpioConfig& config) -> core::Result<void, cor
         return per_result;
     }
 
-    const auto drive_bits =
-        rt::field_bits(config.drive == PinDrive::OpenDrain ? PinHandle::pio_drive_enable_field
-                                                           : PinHandle::pio_drive_disable_field,
-                       1u);
+    const auto drive_field = config.drive == PinDrive::OpenDrain
+                                 ? PinHandle::pio_drive_enable_field
+                                 : PinHandle::pio_drive_disable_field;
+    const auto drive_bits = rt::field_bits(drive_field, 1u);
     if (drive_bits.is_err()) {
         return core::Err(core::ErrorCode{drive_bits.unwrap_err()});
     }
-    const auto drive_result = rt::write_register(PinHandle::pio_drive_enable_field.reg, drive_bits.unwrap());
+    const auto drive_result = rt::write_register(drive_field.reg, drive_bits.unwrap());
     if (drive_result.is_err()) {
         return drive_result;
     }
 
-    const auto pull_up_bits =
-        rt::field_bits(config.pull == PinPull::PullUp ? PinHandle::pio_pull_up_enable_field
-                                                      : PinHandle::pio_pull_up_disable_field,
-                       1u);
+    const auto pull_up_field = config.pull == PinPull::PullUp
+                                   ? PinHandle::pio_pull_up_enable_field
+                                   : PinHandle::pio_pull_up_disable_field;
+    const auto pull_up_bits = rt::field_bits(pull_up_field, 1u);
     if (pull_up_bits.is_err()) {
         return core::Err(core::ErrorCode{pull_up_bits.unwrap_err()});
     }
-    const auto pull_up_result =
-        rt::write_register(PinHandle::pio_pull_up_enable_field.reg, pull_up_bits.unwrap());
+    const auto pull_up_result = rt::write_register(pull_up_field.reg, pull_up_bits.unwrap());
     if (pull_up_result.is_err()) {
         return pull_up_result;
     }
 
-    const auto pull_down_bits = rt::field_bits(
-        config.pull == PinPull::PullDown ? PinHandle::pio_pull_down_enable_field
-                                         : PinHandle::pio_pull_down_disable_field,
-        1u);
+    const auto pull_down_field = config.pull == PinPull::PullDown
+                                     ? PinHandle::pio_pull_down_enable_field
+                                     : PinHandle::pio_pull_down_disable_field;
+    const auto pull_down_bits = rt::field_bits(pull_down_field, 1u);
     if (pull_down_bits.is_err()) {
         return core::Err(core::ErrorCode{pull_down_bits.unwrap_err()});
     }
     const auto pull_down_result =
-        rt::write_register(PinHandle::pio_pull_down_enable_field.reg, pull_down_bits.unwrap());
+        rt::write_register(pull_down_field.reg, pull_down_bits.unwrap());
     if (pull_down_result.is_err()) {
         return pull_down_result;
     }
 
     if (config.direction == PinDirection::Output) {
-        const auto state_bits = rt::field_bits(
-            config.initial_state == PinState::High ? PinHandle::pio_set_field
-                                                   : PinHandle::pio_clear_field,
-            1u);
+        const auto state_field = config.initial_state == PinState::High
+                                     ? PinHandle::pio_set_field
+                                     : PinHandle::pio_clear_field;
+        const auto state_bits = rt::field_bits(state_field, 1u);
         if (state_bits.is_err()) {
             return core::Err(core::ErrorCode{state_bits.unwrap_err()});
         }
-        const auto state_result = rt::write_register(PinHandle::pio_set_field.reg, state_bits.unwrap());
+        const auto state_result = rt::write_register(state_field.reg, state_bits.unwrap());
         if (state_result.is_err()) {
             return state_result;
         }
@@ -197,12 +196,13 @@ auto write_gpio(const GpioConfig& config, PinState state) -> core::Result<void, 
     }
 
     if constexpr (schema == rt::GpioSchema::microchip_pio_v) {
-        const auto bits = rt::field_bits(
-            state == PinState::High ? PinHandle::pio_set_field : PinHandle::pio_clear_field, 1u);
+        const auto state_field =
+            state == PinState::High ? PinHandle::pio_set_field : PinHandle::pio_clear_field;
+        const auto bits = rt::field_bits(state_field, 1u);
         if (bits.is_err()) {
             return core::Err(core::ErrorCode{bits.unwrap_err()});
         }
-        return rt::write_register(PinHandle::pio_set_field.reg, bits.unwrap());
+        return rt::write_register(state_field.reg, bits.unwrap());
     }
 
     if constexpr (schema == rt::GpioSchema::nxp_imxrt_gpio_v1) {
