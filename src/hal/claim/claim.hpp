@@ -29,7 +29,7 @@ struct interrupt_claim {
 
 #if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
 template <dma::PeripheralId Peripheral, dma::SignalId Signal>
-    requires(dma::BindingTraits<Peripheral, Signal>::kPresent)
+requires(dma::BindingTraits<Peripheral, Signal>::kPresent)
 struct dma_claim {
     static constexpr auto peripheral_id = Peripheral;
     static constexpr auto signal_id = Signal;
@@ -44,7 +44,7 @@ struct dma_claim {
 #endif
 
 template <typename Connector>
-    requires(Connector::valid)
+requires(Connector::valid)
 struct connector_claim {
     using connector_type = Connector;
     using peripheral = peripheral_claim<typename Connector::peripheral_type>;
@@ -72,15 +72,18 @@ struct connector_claim {
     }
 
     [[nodiscard]] static consteval auto pins() {
-        return []<std::size_t... Index>(std::index_sequence<Index...>) {
+        constexpr auto build_pins = []<std::size_t... Index>(std::index_sequence<Index...>) {
             return std::array<std::string_view, sizeof...(Index)>{pin_name_at<Index>()...};
-        }(std::make_index_sequence<Connector::binding_count>{});
+        };
+        return build_pins(std::make_index_sequence<Connector::binding_count>{});
     }
 
     [[nodiscard]] static consteval auto signals() {
-        return []<std::size_t... Index>(std::index_sequence<Index...>) {
+        constexpr auto build_signals =
+            []<std::size_t... Index>(std::index_sequence<Index...>) {
             return std::array<std::string_view, sizeof...(Index)>{signal_name_at<Index>()...};
-        }(std::make_index_sequence<Connector::binding_count>{});
+        };
+        return build_signals(std::make_index_sequence<Connector::binding_count>{});
     }
 };
 

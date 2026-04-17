@@ -235,7 +235,7 @@ struct uart_register_bank<SemanticTraits, runtime::UartSchema::microchip_usart_z
 }  // namespace detail
 
 template <typename Connector>
-    requires(Connector::valid)
+requires(Connector::valid)
 class port_handle {
    public:
     using connector_type = Connector;
