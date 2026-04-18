@@ -1,5 +1,8 @@
 name: CI Build and Test
 
+env:
+  ALLOY_DEVICES_REF: 686bd9c5140fb69f085ee511c4705f8b52ec1c32
+
 on:
   push:
     branches: [ main, develop ]
@@ -56,6 +59,7 @@ jobs:
       with:
         repository: Alloy-Embedded/alloy-devices
         path: alloy-devices
+        ref: ${{ env.ALLOY_DEVICES_REF }}
 
     - name: Install dependencies (Ubuntu)
       if: runner.os == 'Linux'
@@ -93,16 +97,9 @@ jobs:
         echo "CC=$(brew --prefix llvm@21)/bin/clang" >> $GITHUB_ENV
         echo "CXX=$(brew --prefix llvm@21)/bin/clang++" >> $GITHUB_ENV
 
-    - name: Cache CMake build directory
-      uses: actions/cache@v3
-      with:
-        path: build-host
-        key: ${{ runner.os }}-${{ matrix.compiler }}-cmake-${{ hashFiles('**/CMakeLists.txt', 'CMakePresets.json', 'cmake/**') }}
-        restore-keys: |
-          ${{ runner.os }}-${{ matrix.compiler }}-cmake-
-
     - name: Configure CMake (Host)
       run: |
+        rm -rf build-host
         cmake -B build-host \
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Debug \
@@ -178,6 +175,7 @@ jobs:
       with:
         repository: Alloy-Embedded/alloy-devices
         path: alloy-devices
+        ref: ${{ env.ALLOY_DEVICES_REF }}
 
     - name: Install ARM GCC Toolchain
       run: |
@@ -243,6 +241,7 @@ jobs:
       with:
         repository: Alloy-Embedded/alloy-devices
         path: alloy-devices
+        ref: ${{ env.ALLOY_DEVICES_REF }}
 
     - name: Install ARM GCC Toolchain
       run: |
@@ -309,6 +308,7 @@ jobs:
       with:
         repository: Alloy-Embedded/alloy-devices
         path: alloy-devices
+        ref: ${{ env.ALLOY_DEVICES_REF }}
 
     - name: Install validation dependencies
       run: |
