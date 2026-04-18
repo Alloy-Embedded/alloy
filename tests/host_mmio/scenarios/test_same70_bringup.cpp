@@ -235,8 +235,8 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
         alloy::hal::UartConfig{
             .baudrate = alloy::hal::Baudrate::e115200,
             .data_bits = alloy::hal::DataBits::Eight,
-            .stop_bits = alloy::hal::StopBits::One,
             .parity = alloy::hal::Parity::None,
+            .stop_bits = alloy::hal::StopBits::One,
             .flow_control = alloy::hal::FlowControl::None,
             .peripheral_clock_hz = 12'000'000u,
         },

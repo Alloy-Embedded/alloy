@@ -667,7 +667,7 @@ inline auto write_register(const RegisterRef& reg, std::uint32_t value)
     return core::Ok<std::uint32_t>(std::uint32_t{value});
 }
 
-[[nodiscard]] constexpr auto field_bits(const FieldRef& field, std::uint32_t value)
+[[nodiscard]] inline auto field_bits(const FieldRef& field, std::uint32_t value)
     -> core::Result<std::uint32_t, core::ErrorCode> {
     if (!field.valid) {
         return core::Err(core::ErrorCode::NotSupported);
@@ -675,7 +675,7 @@ inline auto write_register(const RegisterRef& reg, std::uint32_t value)
     return core::Ok((value << field.bit_offset) & field_mask(field));
 }
 
-[[nodiscard]] constexpr auto indexed_field_bits(const IndexedFieldRef& field, std::uint32_t value)
+[[nodiscard]] inline auto indexed_field_bits(const IndexedFieldRef& field, std::uint32_t value)
     -> core::Result<std::uint32_t, core::ErrorCode> {
     if (!field.valid) {
         return core::Err(core::ErrorCode::NotSupported);
