@@ -88,70 +88,17 @@ set(EXTRA_COMPONENT_DIRS
     "${CMAKE_SOURCE_DIR}/boards"
 )
 
-# Function: Automatically detect required ESP-IDF components from source files
-# Scans source files for #include directives and maps them to ESP-IDF components
-function(alloy_detect_esp_components OUTPUT_VAR)
-    set(DETECTED_COMPONENTS "")
-
-    # Get all source files passed as arguments (after OUTPUT_VAR)
-    set(SOURCE_FILES ${ARGN})
-
-    foreach(SOURCE_FILE ${SOURCE_FILES})
-        if(EXISTS "${SOURCE_FILE}")
-            file(READ "${SOURCE_FILE}" FILE_CONTENT)
-
-            # WiFi components
-            if(FILE_CONTENT MATCHES "#include [\"<]esp_wifi\\.h[\">]")
-                list(APPEND DETECTED_COMPONENTS esp_wifi esp_netif nvs_flash wpa_supplicant)
-            endif()
-
-            # Bluetooth components
-            if(FILE_CONTENT MATCHES "#include [\"<]esp_bt")
-                list(APPEND DETECTED_COMPONENTS bt nvs_flash)
-            endif()
-
-            # HTTP Server
-            if(FILE_CONTENT MATCHES "#include [\"<]esp_http_server\\.h[\">]")
-                list(APPEND DETECTED_COMPONENTS esp_http_server)
-            endif()
-
-            # MQTT Client
-            if(FILE_CONTENT MATCHES "#include [\"<]mqtt_client\\.h[\">]")
-                list(APPEND DETECTED_COMPONENTS mqtt)
-            endif()
-
-            # HTTP Client
-            if(FILE_CONTENT MATCHES "#include [\"<]esp_http_client\\.h[\">]")
-                list(APPEND DETECTED_COMPONENTS esp_http_client)
-            endif()
-
-            # HTTPS/TLS
-            if(FILE_CONTENT MATCHES "#include [\"<]esp_tls\\.h[\">]")
-                list(APPEND DETECTED_COMPONENTS esp-tls mbedtls)
-            endif()
-        endif()
-    endforeach()
-
-    # Remove duplicates
-    if(DETECTED_COMPONENTS)
-        list(REMOVE_DUPLICATES DETECTED_COMPONENTS)
-    endif()
-
-    # Return detected components
-    set(${OUTPUT_VAR} ${DETECTED_COMPONENTS} PARENT_SCOPE)
-endfunction()
-
-# Disable ESP-IDF components we don't need by default (reduces build time and size)
-# Note: Auto-detected components will override this exclusion list
+# Disable ESP-IDF components not used by the bare-metal HAL runtime.
 set(EXCLUDE_COMPONENTS
-    "bt"                    # Bluetooth (enable via auto-detection)
-    "lwip"                  # TCP/IP stack (auto-enabled with WiFi)
-    "mbedtls"               # TLS library (enable via auto-detection)
-    "esp_http_client"       # HTTP client (enable via auto-detection)
-    "esp_http_server"       # HTTP server (enable via auto-detection)
-    "fatfs"                 # FAT filesystem
-    "wear_levelling"        # Flash wear levelling
-    "spiffs"                # SPIFFS filesystem
+    "bt"                # Bluetooth
+    "lwip"              # TCP/IP stack
+    "mbedtls"           # TLS
+    "esp_http_client"   # HTTP client
+    "esp_http_server"   # HTTP server
+    "mqtt"              # MQTT client
+    "fatfs"             # FAT filesystem
+    "wear_levelling"    # Flash wear levelling
+    "spiffs"            # SPIFFS filesystem
 )
 
 # ESP32 chip target

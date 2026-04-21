@@ -433,11 +433,6 @@ if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
     add_subdirectory(examples/spi_probe)
 endif()
 
-# Universal RTOS example - demonstrates RTOS with multi-task scheduling
-if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD STREQUAL "nucleo_f401re")
-    add_subdirectory(examples/rtos/simple_tasks)
-endif()
-
 # Board-specific examples
 if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_UART_LOGGER)
     add_subdirectory(examples/uart_logger)
