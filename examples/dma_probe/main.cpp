@@ -1,21 +1,14 @@
 #include BOARD_HEADER
 
-#ifndef BOARD_UART_HEADER
-    #error "dma_probe requires BOARD_UART_HEADER for the selected board"
-#endif
-
 #ifndef BOARD_DMA_HEADER
     #error "dma_probe requires BOARD_DMA_HEADER for the selected board"
 #endif
 
-#include BOARD_UART_HEADER
 #include BOARD_DMA_HEADER
 
 #include <cstdint>
 
 #include "hal/systick.hpp"
-#include "logger/logger.hpp"
-#include "logger/sinks/uart_sink.hpp"
 
 namespace {
 
@@ -26,41 +19,12 @@ namespace {
     }
 }
 
-template <typename DmaChannel>
-void log_dma_binding(const char* label) {
-    constexpr auto descriptor = DmaChannel::descriptor();
-    LOG_INFO(
-        "%s binding=%u controller=%u request=%u route=%u conflict=%u channel=%d",
-        label, static_cast<unsigned>(descriptor.binding_id),
-        static_cast<unsigned>(descriptor.controller_id),
-        static_cast<unsigned>(descriptor.request_line_id),
-        static_cast<unsigned>(descriptor.route_id),
-        static_cast<unsigned>(descriptor.conflict_group_id), descriptor.channel_index);
-}
-
 }  // namespace
 
 int main() {
     board::init();
 
     auto uart = board::make_debug_uart();
-    if (const auto result = uart.configure(); result.is_err()) {
-        blink_error(100);
-    }
-
-    auto uart_sink = alloy::logger::make_uart_sink(uart);
-    alloy::logger::Logger::remove_all_sinks();
-    alloy::logger::Logger::configure({
-        .default_level = alloy::logger::Level::Info,
-        .enable_timestamps = false,
-        .enable_colors = false,
-        .enable_source_location = true,
-        .timestamp_precision = alloy::logger::TimestampPrecision::Milliseconds,
-    });
-
-    if (!alloy::logger::Logger::add_sink(&uart_sink)) {
-        blink_error(150);
-    }
 
     [[maybe_unused]] auto tx_dma = board::make_debug_uart_tx_dma({
         .direction = alloy::hal::dma::Direction::memory_to_peripheral,
@@ -76,21 +40,14 @@ int main() {
     });
 
     if (const auto result = uart.configure_tx_dma(tx_dma); result.is_err()) {
-        blink_error(200);
+        blink_error(100);
     }
     if (const auto result = uart.configure_rx_dma(rx_dma); result.is_err()) {
-        blink_error(250);
+        blink_error(150);
     }
-
-    LOG_INFO("dma probe ready");
-    LOG_INFO("debug-uart tx-reg=0x%08lx rx-reg=0x%08lx",
-             static_cast<unsigned long>(decltype(uart)::tx_data_register_address()),
-             static_cast<unsigned long>(decltype(uart)::rx_data_register_address()));
-    log_dma_binding<decltype(tx_dma)>("debug-uart-tx");
-    log_dma_binding<decltype(rx_dma)>("debug-uart-rx");
 
     while (true) {
         board::led::toggle();
-        alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(1000);
+        alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(500);
     }
 }

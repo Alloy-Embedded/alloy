@@ -64,9 +64,9 @@ Record:
 ## Stage 5
 
 - `dma_probe`:
-  - flashed: `no`
-  - pass/fail: `blocked`
-  - notes: `current observability depends on debug UART; next step is LED-only or memory-visible DMA validation`
+  - flashed: `yes`
+  - pass/fail: `pass`
+  - notes: `500 ms blink after LED-only DMA validation rewrite`
 
 ## Stage 6
 
@@ -77,11 +77,8 @@ Record:
 
 ## Summary
 
-- overall status:
-- overall status: `board bring-up and main typed HAL paths validated on hardware except uart/vcom and dma probe`
+- overall status: `board bring-up and typed HAL paths validated on hardware; only uart/vcom remains open`
 - blockers:
   - `uart/vcom path on EDBG still silent`
-  - `dma_probe` still tied to UART-based observability
 - follow-ups:
-  - `convert dma_probe to hardware-visible validation without UART`
   - `resume uart/vcom debug with logic analyzer or electrical review of EDBG path`
