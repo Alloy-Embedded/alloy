@@ -36,7 +36,7 @@ int main() {
     auto rtc = alloy::hal::rtc::open<kRtcPeripheral>({
         .enable_write_access = true,
         .enter_init_mode = true,
-        .enable_alarm_interrupt = true,
+        .enable_alarm_interrupt = false,
     });
 
     if (!rtc.configure().is_ok()) {
@@ -45,8 +45,6 @@ int main() {
     [[maybe_unused]] const auto init_ready = rtc.init_ready();
     [[maybe_unused]] const auto time_result = rtc.read_time();
     [[maybe_unused]] const auto date_result = rtc.read_date();
-    [[maybe_unused]] const auto alarm_pending = rtc.alarm_pending();
-    [[maybe_unused]] const auto clear_result = rtc.clear_alarm();
     [[maybe_unused]] const auto leave_result = rtc.leave_init_mode();
     [[maybe_unused]] const auto disable_result = rtc.disable_write_access();
 

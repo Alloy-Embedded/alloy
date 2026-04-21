@@ -257,7 +257,7 @@ auto configure_microchip_usart_zw(const UartConfig& config) -> core::Result<void
         return reset_result;
     }
 
-    const auto mr_value = build_register_value(std::array{
+    auto mr_value = build_register_value(std::array{
         FieldWrite{PortHandle::us_usart_mode_field, 0u},
         FieldWrite{PortHandle::us_usclks_field, 0u},
         FieldWrite{PortHandle::us_chrl_field, 3u},
@@ -265,7 +265,12 @@ auto configure_microchip_usart_zw(const UartConfig& config) -> core::Result<void
     if (mr_value.is_err()) {
         return core::Err(core::ErrorCode{mr_value.unwrap_err()});
     }
-    if (const auto mr_result = rt::write_register(PortHandle::us_mr_reg, mr_value.unwrap());
+    auto mr_register_value = mr_value.unwrap();
+    // The runtime contract does not publish US_MR parity/stop fields yet, but
+    // the USART ZW schema requires 8N1 for the public Alloy UART contract.
+    mr_register_value |= (0x4u << 9u);  // PAR = no parity
+
+    if (const auto mr_result = rt::write_register(PortHandle::us_mr_reg, mr_register_value);
         mr_result.is_err()) {
         return mr_result;
     }
@@ -307,6 +312,16 @@ auto configure_uart(const PortHandle& handle) -> core::Result<void, core::ErrorC
     if (const auto operations_result = rt::apply_route_operations(PortHandle::operations());
         operations_result.is_err()) {
         return operations_result;
+    }
+
+    if constexpr (requires { PortHandle::peripheral_id; }) {
+        if constexpr (PortHandle::peripheral_id != alloy::device::runtime::PeripheralId::none) {
+            if (const auto enable_result =
+                    rt::enable_peripheral_runtime_typed<PortHandle::peripheral_id>();
+                enable_result.is_err()) {
+                return enable_result;
+            }
+        }
     }
 
     if constexpr (PortHandle::is_st_style) {

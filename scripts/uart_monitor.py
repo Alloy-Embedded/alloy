@@ -67,6 +67,8 @@ def monitor_uart(port, baudrate=115200):
             stopbits=serial.STOPBITS_ONE,
             timeout=0.1
         )
+        ser.dtr = True
+        ser.rts = False
 
         # Clear any existing data
         ser.reset_input_buffer()

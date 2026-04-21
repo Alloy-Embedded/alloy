@@ -429,6 +429,11 @@ if((ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld"
     add_subdirectory(examples/can_probe)
 endif()
 
+if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld")
+    add_subdirectory(examples/uart_path_probe)
+    add_subdirectory(examples/manual_uart_probe)
+endif()
+
 # Tests
 if(ALLOY_BUILD_TESTS)
     add_subdirectory(tests)

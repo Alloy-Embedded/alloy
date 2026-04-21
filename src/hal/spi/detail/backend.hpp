@@ -516,6 +516,16 @@ auto configure_spi(const PortHandle& port) -> core::Result<void, core::ErrorCode
         return operations_result;
     }
 
+    if constexpr (requires { PortHandle::peripheral_id; }) {
+        if constexpr (PortHandle::peripheral_id != alloy::device::runtime::PeripheralId::none) {
+            if (const auto enable_result =
+                    rt::enable_peripheral_runtime_typed<PortHandle::peripheral_id>();
+                enable_result.is_err()) {
+                return enable_result;
+            }
+        }
+    }
+
     switch (rt::spi_schema_for<PortHandle>()) {
         case rt::SpiSchema::st_spi2s1_v3_3_cube:
         case rt::SpiSchema::st_spi2s1_v2_2_cube:

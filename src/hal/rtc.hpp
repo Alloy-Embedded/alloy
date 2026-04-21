@@ -30,7 +30,10 @@ class handle {
     [[nodiscard]] constexpr auto config() const -> const Config& { return config_; }
 
     [[nodiscard]] auto configure() const -> core::Result<void, core::ErrorCode> {
-        core::Result<void, core::ErrorCode> result = core::Ok();
+        core::Result<void, core::ErrorCode> result = detail::runtime::enable_peripheral_runtime_typed<Peripheral>();
+        if (result.is_err() && result.err() != core::ErrorCode::NotSupported) {
+            return result;
+        }
         if (config_.enable_write_access) {
             result = enable_write_access();
             if (!result.is_ok()) {
@@ -83,8 +86,32 @@ class handle {
 
         if constexpr (semantic_traits::kInitField.valid) {
             return detail::runtime::modify_field(semantic_traits::kInitField, 1u);
+        } else if constexpr (semantic_traits::kUpdateTimeField.valid &&
+                             semantic_traits::kUpdateCalendarField.valid) {
+            auto result = detail::runtime::modify_field(semantic_traits::kUpdateTimeField, 1u);
+            if (!result.is_ok()) {
+                return result;
+            }
+            result = detail::runtime::modify_field(semantic_traits::kUpdateCalendarField, 1u);
+            if (!result.is_ok()) {
+                return result;
+            }
+            if constexpr (semantic_traits::kUpdateAckField.valid) {
+                constexpr auto kPollLimit = 1'000'000u;
+                for (std::uint32_t remaining = kPollLimit; remaining > 0u; --remaining) {
+                    const auto value = detail::runtime::read_field(semantic_traits::kUpdateAckField);
+                    if (value.is_err()) {
+                        return core::Err(core::ErrorCode{value.unwrap_err()});
+                    }
+                    if (value.unwrap() != 0u) {
+                        return core::Ok();
+                    }
+                }
+                return core::Err(core::ErrorCode::Timeout);
+            }
+            return core::Ok();
         } else {
-            return core::Err(core::ErrorCode::NotSupported);
+            return core::Ok();
         }
     }
 
@@ -93,8 +120,16 @@ class handle {
 
         if constexpr (semantic_traits::kInitField.valid) {
             return detail::runtime::modify_field(semantic_traits::kInitField, 0u);
+        } else if constexpr (semantic_traits::kUpdateAckField.valid &&
+                             semantic_traits::kClearTimeEventField.valid &&
+                             semantic_traits::kClearCalendarEventField.valid) {
+            auto result = detail::runtime::modify_field(semantic_traits::kClearTimeEventField, 1u);
+            if (!result.is_ok()) {
+                return result;
+            }
+            return detail::runtime::modify_field(semantic_traits::kClearCalendarEventField, 1u);
         } else {
-            return core::Err(core::ErrorCode::NotSupported);
+            return core::Ok();
         }
     }
 

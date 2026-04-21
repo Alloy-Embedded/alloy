@@ -96,10 +96,14 @@ def build(cfg: BoardConfig, target: str, jobs: int) -> None:
 
 
 def artifact(cfg: BoardConfig, target: str) -> Path:
-    elf = cfg.build_dir / "examples" / target / f"{target}.elf"
-    if not elf.exists():
-        raise SystemExit(die(f"artifact not found: {elf}"))
-    return elf
+    candidates = (
+        cfg.build_dir / "examples" / target / f"{target}.elf",
+        cfg.build_dir / "examples" / target / target,
+    )
+    for path in candidates:
+        if path.exists():
+            return path
+    raise SystemExit(die(f"artifact not found: {candidates[0]} or {candidates[1]}"))
 
 
 def auto_port(cfg: BoardConfig) -> str:
@@ -130,7 +134,7 @@ def cmd_flash(args: argparse.Namespace) -> None:
         configure(cfg, args.build_type)
         build(cfg, args.target, args.jobs)
     elf = artifact(cfg, args.target)
-    run(list(cfg.openocd_args) + ["-c", f"program {elf} verify reset exit"])
+    run(list(cfg.openocd_args) + ["-c", f'program "{elf}" verify reset exit'])
 
 
 def cmd_monitor(args: argparse.Namespace) -> None:

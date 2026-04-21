@@ -11,6 +11,7 @@
 #include "hal/detail/runtime_ops.hpp"
 #include "hal/gpio/detail/backend.hpp"
 #include "hal/pwm.hpp"
+#include "hal/rtc.hpp"
 #include "hal/spi.hpp"
 #include "hal/timer.hpp"
 #include "hal/uart/detail/backend.hpp"
@@ -45,6 +46,7 @@ constexpr auto kResetControllerBase = std::uintptr_t{0x400e1800u};
 constexpr auto kPioBBase = std::uintptr_t{0x400e1000u};
 constexpr auto kPioCBase = std::uintptr_t{0x400e1200u};
 constexpr auto kUsart0Base = std::uintptr_t{0x40024000u};
+constexpr auto kRtcBase = std::uintptr_t{0x400E1860u};
 constexpr auto kXdmacBase = std::uintptr_t{0x40078000u};
 constexpr auto kTc0Base = std::uintptr_t{0x4000C000u};
 constexpr auto kPwm0Base = std::uintptr_t{0x40020000u};
@@ -296,7 +298,7 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
     REQUIRE(mmio.peek(kPioCBase + 0x34u) == (1u << kLedLine));
     REQUIRE(mmio.peek(kPioCBase + 0x10u) == (1u << kLedLine));
     REQUIRE(mmio.peek(kUsart0Base + 0x00u) == 0x0000'0050u);
-    REQUIRE(mmio.peek(kUsart0Base + 0x04u) == 0x0000'00c0u);
+    REQUIRE(mmio.peek(kUsart0Base + 0x04u) == 0x0000'08c0u);
     REQUIRE(mmio.peek(kUsart0Base + 0x20u) == 7u);
     REQUIRE(mmio.peek(kUsart0Base + 0x1cu) == 0x41u);
 
@@ -318,7 +320,7 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
         access{.kind = access_kind::write, .address = kPioCBase + 0x34u, .value = 1u << kLedLine, .mask = 0u},
         access{.kind = access_kind::write, .address = kPioCBase + 0x10u, .value = 1u << kLedLine, .mask = 0u},
         access{.kind = access_kind::write, .address = kUsart0Base + 0x00u, .value = 0x0000'01acu, .mask = 0u},
-        access{.kind = access_kind::write, .address = kUsart0Base + 0x04u, .value = 0x0000'00c0u, .mask = 0u},
+        access{.kind = access_kind::write, .address = kUsart0Base + 0x04u, .value = 0x0000'08c0u, .mask = 0u},
         access{.kind = access_kind::write, .address = kUsart0Base + 0x20u, .value = 7u, .mask = 0u},
         access{.kind = access_kind::write, .address = kUsart0Base + 0x00u, .value = 0x0000'0050u, .mask = 0u},
     };
@@ -335,6 +337,59 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
             access{.kind = access_kind::read, .address = kUsart0Base + 0x14u, .value = 0x0000'0002u, .mask = 0u});
     REQUIRE(trace.entries()[ready_index + 1u] ==
             access{.kind = access_kind::write, .address = kUsart0Base + 0x1cu, .value = 0x41u, .mask = 0u});
+}
+
+TEST_CASE("host mmio enables SAME70 board debug usart clock before configure",
+          "[host-mmio][bring-up][same70][uart][board]") {
+    trace_log trace;
+    mmio_space mmio{trace};
+    runtime_mmio_scope scope{mmio};
+
+    auto uart = board::make_debug_uart({
+        .baudrate = alloy::hal::Baudrate::e115200,
+        .data_bits = alloy::hal::DataBits::Eight,
+        .parity = alloy::hal::Parity::None,
+        .stop_bits = alloy::hal::StopBits::One,
+        .flow_control = alloy::hal::FlowControl::None,
+        .peripheral_clock_hz = 12'000'000u,
+    });
+
+    mmio.preload(kUsart0Base + 0x14u, 0x0000'0002u);
+
+    REQUIRE(uart.configure().is_ok());
+    REQUIRE(uart.write_byte(std::byte{0x41}).is_ok());
+
+    REQUIRE(mmio.peek(kPmcPcer0) == ((1u << 11u) | (1u << 13u)));
+    REQUIRE(mmio.peek(kPioBBase + 0x74u) == ((1u << kTxLine) | (1u << kRxLine)));
+    REQUIRE(mmio.peek(kUsart0Base + 0x00u) == 0x0000'0050u);
+    REQUIRE(mmio.peek(kUsart0Base + 0x04u) == 0x0000'08c0u);
+    REQUIRE(mmio.peek(kUsart0Base + 0x20u) == 7u);
+    REQUIRE(mmio.peek(kUsart0Base + 0x1cu) == 0x41u);
+}
+
+TEST_CASE("host mmio covers SAME70 RTC update handshake",
+          "[host-mmio][bring-up][same70][rtc]") {
+    trace_log trace;
+    mmio_space mmio{trace};
+    runtime_mmio_scope scope{mmio};
+
+    mmio.preload(kRtcBase + 0x18u, 0x0000'0001u);
+    mmio.preload(kRtcBase + 0x08u, 0x0000'1234u);
+    mmio.preload(kRtcBase + 0x0Cu, 0x0000'5678u);
+
+    auto rtc = alloy::hal::rtc::open<alloy::device::runtime::PeripheralId::RTC>({
+        .enable_write_access = true,
+        .enter_init_mode = true,
+        .enable_alarm_interrupt = false,
+    });
+
+    REQUIRE(rtc.configure().is_ok());
+    REQUIRE(rtc.read_time().is_ok());
+    REQUIRE(rtc.read_date().is_ok());
+    REQUIRE(rtc.leave_init_mode().is_ok());
+
+    REQUIRE(mmio.peek(kRtcBase + 0x00u) == 0x0000'0003u);
+    REQUIRE(mmio.peek(kRtcBase + 0x1Cu) == 0x0000'0018u);
 }
 
 TEST_CASE("host mmio covers typed SAME70 timer control",
