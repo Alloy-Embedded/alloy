@@ -1,7 +1,15 @@
 # public-hal-api Specification
 
 ## Purpose
-TBD - created by archiving change consume-runtime-device-contract. Update Purpose after archive.
+The public HAL is the single, coherent API surface that application code and board helpers use
+to configure and operate peripherals.
+
+The runtime exposes one primary API per peripheral class — UART, SPI, I2C, DMA, timer, PWM,
+ADC, DAC, RTC, CAN, and watchdog — backed by generated device descriptors from `alloy-devices`.
+Convenience wrappers and board helpers are thin shims over this API, not separate tiers.
+
+Users should not need family-private glue, raw register sequences, or vendor-specific headers
+to configure any foundational peripheral. The public API is the only supported path.
 ## Requirements
 ### Requirement: Public HAL Shall Hide Compile-Time Runtime-Lite Machinery
 

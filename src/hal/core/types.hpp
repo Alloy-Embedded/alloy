@@ -203,44 +203,17 @@ struct GpioConfig {
 // - SpiBitOrder (MsbFirst, LsbFirst)
 // - SpiDataSize (Bits8, Bits16)
 // - SpiConfig
-
-/**
- * @brief SPI chip select mode
- */
-enum class SpiCsMode : uint8_t {
-    Hardware = 0,  ///< Hardware-controlled chip select
-    Software = 1,  ///< Software-controlled chip select (manual toggle)
-};
+// - SpiCsMode
 
 // ============================================================================
 // Timer/PWM Types
 // ============================================================================
 
-/**
- * @brief PWM polarity
- */
-enum class PwmPolarity : uint8_t {
-    Normal = 0,    ///< Normal polarity (high = active)
-    Inverted = 1,  ///< Inverted polarity (low = active)
-};
-
-/**
- * @brief PWM alignment mode
- */
-enum class PwmAlignment : uint8_t {
-    Edge = 0,    ///< Edge-aligned PWM
-    Center = 1,  ///< Center-aligned PWM
-};
-
-/**
- * @brief PWM configuration structure
- */
-struct PwmConfig {
-    uint32_t frequency_hz = 1000;     ///< PWM frequency in Hz (default 1 kHz)
-    uint8_t duty_cycle_percent = 50;  ///< Duty cycle 0-100% (default 50%)
-    PwmPolarity polarity = PwmPolarity::Normal;
-    PwmAlignment alignment = PwmAlignment::Edge;
-};
+// NOTE: PWM types live in the unified runtime path now.
+// Use the types from hal/pwm.hpp or hal/pwm/types.hpp instead:
+// - PwmPolarity (Normal, Inverted)
+// - PwmAlignment (Edge, Center)
+// - PwmConfig
 
 // ============================================================================
 // ADC Types

@@ -1,7 +1,14 @@
 # board-bringup Specification
 
 ## Purpose
-TBD - created by archiving change rebuild-runtime-around-alloy-devices. Update Purpose after archive.
+Boards are declarative, thin shims over the runtime.  A board declares which physical resources
+(pins, peripheral instances, clock profiles) map to which logical roles, and calls
+`board::init()` to bring the hardware up through the descriptor-driven runtime path.
+
+Board headers expose typed helpers (`make_uart()`, `make_spi()`, etc.) backed by the public
+HAL API.  They do not contain raw register sequences, handwritten startup glue, or
+family-private APIs.  Board-level code that a user reads is a table of hardware choices, not
+a driver.
 ## Requirements
 ### Requirement: Boards Shall Be Declarative
 

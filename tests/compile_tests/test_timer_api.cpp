@@ -18,7 +18,9 @@ static_assert(Timer::valid);
 
 int main() {
 #if ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE
-    auto timer = alloy::hal::timer::open<Timer::peripheral_id>();
+    auto timer = alloy::hal::timer::open<Timer::peripheral_id>(
+        alloy::hal::timer::Config{.period = 1000u, .apply_period = true});
+    [[maybe_unused]] const auto configure_result = timer.configure();
     [[maybe_unused]] const auto start_result = timer.start();
     [[maybe_unused]] const auto stop_result = timer.stop();
     [[maybe_unused]] const auto period_result = timer.set_period(1000u);

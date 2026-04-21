@@ -18,7 +18,10 @@ static_assert(Pwm::valid);
 
 int main() {
 #if ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE
-    auto pwm = alloy::hal::pwm::open<Pwm::peripheral_id, Pwm::channel_index>();
+    auto pwm = alloy::hal::pwm::open<Pwm::peripheral_id, Pwm::channel_index>(
+        alloy::hal::pwm::Config{
+            .period = 1000u, .apply_period = true, .duty_cycle = 500u, .apply_duty_cycle = true});
+    [[maybe_unused]] const auto configure_result = pwm.configure();
     [[maybe_unused]] const auto start_result = pwm.start();
     [[maybe_unused]] const auto stop_result = pwm.stop();
     [[maybe_unused]] const auto period_result = pwm.set_period(1000u);

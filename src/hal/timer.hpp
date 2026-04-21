@@ -11,13 +11,38 @@ namespace alloy::hal::timer {
 #if ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE
 using PeripheralId = device::runtime::PeripheralId;
 
+struct Config {
+    std::uint32_t period = 0u;
+    bool apply_period = false;
+    bool start_immediately = false;
+};
+
 template <PeripheralId Peripheral>
 class handle {
    public:
     using semantic_traits = device::runtime::TimerSemanticTraits<Peripheral>;
+    using config_type = Config;
 
     static constexpr auto peripheral_id = Peripheral;
     static constexpr bool valid = semantic_traits::kPresent;
+
+    constexpr explicit handle(Config config = {}) : config_(config) {}
+
+    [[nodiscard]] constexpr auto config() const -> const Config& { return config_; }
+
+    [[nodiscard]] auto configure() const -> core::Result<void, core::ErrorCode> {
+        core::Result<void, core::ErrorCode> result = core::Ok();
+        if (config_.apply_period) {
+            result = set_period(config_.period);
+            if (!result.is_ok()) {
+                return result;
+            }
+        }
+        if (config_.start_immediately) {
+            result = start();
+        }
+        return result;
+    }
 
     [[nodiscard]] auto start() const -> core::Result<void, core::ErrorCode> {
         static_assert(valid, "Requested timer is not published for the selected device.");
@@ -76,13 +101,16 @@ class handle {
             return false;
         }
     }
+
+   private:
+    Config config_{};
 };
 
 template <PeripheralId Peripheral>
-[[nodiscard]] constexpr auto open() -> handle<Peripheral> {
+[[nodiscard]] constexpr auto open(Config config = {}) -> handle<Peripheral> {
     static_assert(handle<Peripheral>::valid,
                   "Requested timer is not published for the selected device.");
-    return {};
+    return handle<Peripheral>{config};
 }
 #endif
 

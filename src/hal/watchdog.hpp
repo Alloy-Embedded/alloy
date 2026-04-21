@@ -8,41 +8,6 @@
 
 namespace alloy::hal {
 
-using namespace alloy::core;
-
-class Watchdog {
-   public:
-    template <typename WatchdogPolicy>
-    static void disable() {
-        WatchdogPolicy::disable();
-    }
-
-    template <typename WatchdogPolicy>
-    static void enable() {
-        WatchdogPolicy::enable();
-    }
-
-    template <typename WatchdogPolicy>
-    static void enable_with_timeout(u16 timeout_ms) {
-        WatchdogPolicy::enable_with_timeout(timeout_ms);
-    }
-
-    template <typename WatchdogPolicy>
-    static void feed() {
-        WatchdogPolicy::feed();
-    }
-
-    template <typename WatchdogPolicy>
-    [[nodiscard]] static auto is_enabled() -> bool {
-        return WatchdogPolicy::is_enabled();
-    }
-
-    template <typename WatchdogPolicy>
-    [[nodiscard]] static auto get_remaining_time_ms() -> u16 {
-        return WatchdogPolicy::get_remaining_time_ms();
-    }
-};
-
 #if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
 namespace watchdog {
 
@@ -50,6 +15,18 @@ namespace watchdog {
     -> std::uint32_t {
     return field.bit_width >= 32u ? 0xFFFF'FFFFu : ((std::uint32_t{1u} << field.bit_width) - 1u);
 }
+
+/// Configuration applied when opening or reconfiguring a watchdog handle.
+/// Defaults are no-ops — the watchdog state is unchanged unless explicitly
+/// requested.
+struct Config {
+    /// If true, configure() calls disable().  No-op on hardware that does not
+    /// support software disable (e.g. STM32 IWDG); the error is surfaced to
+    /// the caller only when configure() is called explicitly.
+    bool disable_on_configure = false;
+    /// If true, configure() calls refresh() after any disable step.
+    bool refresh_on_configure = false;
+};
 
 template <device::runtime::PeripheralId Peripheral>
 class handle {
@@ -59,7 +36,7 @@ class handle {
     static constexpr auto peripheral_id = Peripheral;
     static constexpr bool valid = semantic_traits::kPresent;
 
-    [[nodiscard]] static auto disable() -> core::Result<void, core::ErrorCode> {
+    [[nodiscard]] auto disable() const -> core::Result<void, core::ErrorCode> {
         static_assert(valid, "Requested watchdog is not published for the selected device.");
 
         if constexpr (!semantic_traits::kConfigRegister.valid ||
@@ -81,7 +58,7 @@ class handle {
         }
     }
 
-    [[nodiscard]] static auto enable() -> core::Result<void, core::ErrorCode> {
+    [[nodiscard]] auto enable() const -> core::Result<void, core::ErrorCode> {
         static_assert(valid, "Requested watchdog is not published for the selected device.");
 
         if constexpr (semantic_traits::kEnableField.valid) {
@@ -95,7 +72,7 @@ class handle {
         }
     }
 
-    [[nodiscard]] static auto refresh() -> core::Result<void, core::ErrorCode> {
+    [[nodiscard]] auto refresh() const -> core::Result<void, core::ErrorCode> {
         static_assert(valid, "Requested watchdog is not published for the selected device.");
 
         if constexpr (semantic_traits::kRestartField.valid) {
@@ -108,13 +85,38 @@ class handle {
             return core::Err(core::ErrorCode::NotSupported);
         }
     }
+
+    /// Apply \p cfg to this handle.  Returns the first error encountered;
+    /// subsequent steps are skipped on failure.  Calling with a default-
+    /// constructed Config is a no-op.
+    [[nodiscard]] auto configure(Config cfg = {}) const -> core::Result<void, core::ErrorCode> {
+        if (cfg.disable_on_configure) {
+            if (auto r = disable(); !r.is_ok()) {
+                return r;
+            }
+        }
+        if (cfg.refresh_on_configure) {
+            if (auto r = refresh(); !r.is_ok()) {
+                return r;
+            }
+        }
+        return core::Ok();
+    }
 };
 
+/// Open a watchdog handle for \p Peripheral and apply \p config.  The handle
+/// is lightweight (zero stored state); configure() can be called again later
+/// to reapply any of the Config actions.
+///
+/// Errors from config application are silently discarded here.  Callers that
+/// need the Result should call handle::configure() directly after open().
 template <device::runtime::PeripheralId Peripheral>
-[[nodiscard]] constexpr auto open() -> handle<Peripheral> {
+[[nodiscard]] auto open(Config config = {}) -> handle<Peripheral> {
     static_assert(handle<Peripheral>::valid,
                   "Requested watchdog is not published for the selected device.");
-    return {};
+    handle<Peripheral> h{};
+    [[maybe_unused]] const auto r = h.configure(config);
+    return h;
 }
 
 }  // namespace watchdog

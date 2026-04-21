@@ -20,7 +20,10 @@ static_assert(Dac::valid);
 
 int main() {
 #if ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE && defined(ALLOY_TEST_HAS_RUNTIME_DAC)
-    auto dac = alloy::hal::dac::open<Dac::peripheral_id, Dac::channel_index>();
+    auto dac = alloy::hal::dac::open<Dac::peripheral_id, Dac::channel_index>(
+        alloy::hal::dac::Config{
+            .enable_on_configure = true, .write_initial_value = true, .initial_value = 0u});
+    [[maybe_unused]] const auto configure_result = dac.configure();
     [[maybe_unused]] const auto enable_result = dac.enable();
     [[maybe_unused]] const auto ready = dac.ready();
     [[maybe_unused]] const auto write_result = dac.write(0x123u);

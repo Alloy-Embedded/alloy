@@ -80,6 +80,9 @@ add_test(
         --pair manual_disable_same70_watchdog:runtime_disable_same70_watchdog
         --pair manual_set_same70_pioc8_high:runtime_set_same70_pioc8_high
         --pair manual_set_same70_usart0_chrl:runtime_set_same70_usart0_chrl
+        --pair manual_set_same70_tc0_period:runtime_set_same70_tc0_period
+        --pair manual_set_same70_pwm0_period:runtime_set_same70_pwm0_period
+        --pair manual_set_same70_pwm0_duty:runtime_set_same70_pwm0_duty
 )
 set_tests_properties(assembly.same70.runtime_zero_overhead PROPERTIES
     LABELS "perf;assembly;same70;zero-overhead"

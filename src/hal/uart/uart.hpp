@@ -12,6 +12,7 @@
 #include "core/result.hpp"
 
 #include "device/runtime.hpp"
+#include "hal/dma/bindings.hpp"
 
 namespace alloy::hal::uart {
 
@@ -368,6 +369,52 @@ class port_handle {
 
     [[nodiscard]] auto flush() const -> core::Result<void, core::ErrorCode> {
         return detail::flush_uart(*this);
+    }
+
+    template <typename DmaChannel>
+    [[nodiscard]] auto configure_tx_dma(const DmaChannel& channel) const
+        -> core::Result<void, core::ErrorCode> {
+        static_assert(DmaChannel::valid);
+        static_assert(DmaChannel::peripheral_id == peripheral_id);
+        static_assert(DmaChannel::signal_id == alloy::hal::dma::SignalId::signal_TX);
+        return channel.configure();
+    }
+
+    template <typename DmaChannel>
+    [[nodiscard]] auto configure_rx_dma(const DmaChannel& channel) const
+        -> core::Result<void, core::ErrorCode> {
+        static_assert(DmaChannel::valid);
+        static_assert(DmaChannel::peripheral_id == peripheral_id);
+        static_assert(DmaChannel::signal_id == alloy::hal::dma::SignalId::signal_RX);
+        return channel.configure();
+    }
+
+    [[nodiscard]] static constexpr auto tx_data_register_address() -> std::uintptr_t {
+        if constexpr (tdr_reg.valid) {
+            return tdr_reg.base_address + tdr_reg.offset_bytes;
+        } else if constexpr (dr_reg.valid) {
+            return dr_reg.base_address + dr_reg.offset_bytes;
+        } else if constexpr (us_thr_reg.valid) {
+            return us_thr_reg.base_address + us_thr_reg.offset_bytes;
+        } else if constexpr (thr_reg.valid) {
+            return thr_reg.base_address + thr_reg.offset_bytes;
+        } else {
+            return 0u;
+        }
+    }
+
+    [[nodiscard]] static constexpr auto rx_data_register_address() -> std::uintptr_t {
+        if constexpr (rdr_reg.valid) {
+            return rdr_reg.base_address + rdr_reg.offset_bytes;
+        } else if constexpr (dr_reg.valid) {
+            return dr_reg.base_address + dr_reg.offset_bytes;
+        } else if constexpr (us_rhr_reg.valid) {
+            return us_rhr_reg.base_address + us_rhr_reg.offset_bytes;
+        } else if constexpr (rhr_reg.valid) {
+            return rhr_reg.base_address + rhr_reg.offset_bytes;
+        } else {
+            return 0u;
+        }
     }
 
    private:

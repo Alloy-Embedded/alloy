@@ -18,7 +18,9 @@ static_assert(Adc::valid);
 
 int main() {
 #if ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE
-    auto adc = alloy::hal::adc::open<Adc::peripheral_id>();
+    auto adc = alloy::hal::adc::open<Adc::peripheral_id>(
+        alloy::hal::adc::Config{.enable_on_configure = true});
+    [[maybe_unused]] const auto configure_result = adc.configure();
     [[maybe_unused]] const auto enable_result = adc.enable();
     [[maybe_unused]] const auto start_result = adc.start();
     [[maybe_unused]] const auto ready = adc.ready();

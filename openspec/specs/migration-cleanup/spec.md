@@ -1,7 +1,13 @@
 # migration-cleanup Specification
 
 ## Purpose
-TBD - created by archiving change consume-runtime-lite-device-contract. Update Purpose after archive.
+Migration cleanup defines the rules for retiring legacy code as the runtime converges on the
+descriptor-driven public HAL surface.
+
+When a foundational peripheral class gains a finished public API path, any residual
+family-private glue for that class is either deleted from the active path or clearly
+marked as temporary adaptation.  Documentation and examples stop teaching the old path
+the moment the new path is the documented default.
 ## Requirements
 ### Requirement: Reflection-Table Dependency Shall Be Removed From Foundational Hot Paths
 

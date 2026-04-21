@@ -2,10 +2,16 @@
 #include "host_mmio/framework/register_expect.hpp"
 #include "host_mmio/framework/runtime_mmio.hpp"
 
+#include "boards/same70_xplained/board_dma.hpp"
+#include "boards/same70_xplained/board_spi.hpp"
+#include "boards/same70_xplained/board_uart.hpp"
+#include "device/runtime.hpp"
+#include "hal/dma.hpp"
 #include "hal/detail/resolved_route.hpp"
 #include "hal/detail/runtime_ops.hpp"
 #include "hal/gpio/detail/backend.hpp"
 #include "hal/pwm.hpp"
+#include "hal/spi.hpp"
 #include "hal/timer.hpp"
 #include "hal/uart/detail/backend.hpp"
 #include "hal/types.hpp"
@@ -27,14 +33,19 @@ namespace route = alloy::hal::detail::route;
 namespace gpio_detail = alloy::hal::gpio::detail;
 namespace uart_detail = alloy::hal::uart::detail;
 
+using RegisterId = alloy::device::runtime::RegisterId;
+using FieldId = alloy::device::runtime::FieldId;
+
 constexpr auto kPmcBase = std::uintptr_t{0x400e0600u};
 constexpr auto kPmcPcer0 = std::uintptr_t{0x400e0610u};
+constexpr auto kPmcPcer1 = std::uintptr_t{0x400e0700u};
 constexpr auto kWdtBase = std::uintptr_t{0x400e1850u};
 constexpr auto kRswdtBase = std::uintptr_t{0x400e1900u};
 constexpr auto kResetControllerBase = std::uintptr_t{0x400e1800u};
 constexpr auto kPioBBase = std::uintptr_t{0x400e1000u};
 constexpr auto kPioCBase = std::uintptr_t{0x400e1200u};
 constexpr auto kUsart0Base = std::uintptr_t{0x40024000u};
+constexpr auto kXdmacBase = std::uintptr_t{0x40078000u};
 constexpr auto kTc0Base = std::uintptr_t{0x4000C000u};
 constexpr auto kPwm0Base = std::uintptr_t{0x40020000u};
 constexpr auto kLedLine = std::uint16_t{8u};
@@ -52,6 +63,16 @@ constexpr auto kWatchdogGuardValue = std::uint32_t{0x0fffu};
     };
 }
 
+[[nodiscard]] constexpr auto register_address(const rt::RegisterRef& reg) -> std::uintptr_t {
+    return reg.base_address + reg.offset_bytes;
+}
+
+template <RegisterId Id>
+[[nodiscard]] consteval auto register_address() -> std::uintptr_t {
+    constexpr auto reg = rt::register_ref<Id>();
+    return register_address(reg);
+}
+
 [[nodiscard]] constexpr auto field_ref(std::uintptr_t base_address, std::uint32_t register_offset_bytes,
                                        std::uint16_t bit_offset,
                                        std::uint16_t bit_width = 1u) -> rt::FieldRef {
@@ -61,6 +82,19 @@ constexpr auto kWatchdogGuardValue = std::uint32_t{0x0fffu};
         .bit_width = bit_width,
         .valid = true,
     };
+}
+
+template <std::size_t N>
+[[nodiscard]] auto build_register_value(const std::array<std::pair<rt::FieldRef, std::uint32_t>, N>& fields)
+    -> std::uint32_t {
+    auto value = std::uint32_t{0u};
+    for (const auto& [field, field_value] : fields) {
+        if (!field.valid) {
+            continue;
+        }
+        value |= rt::field_bits(field, field_value).unwrap();
+    }
+    return value;
 }
 
 template <std::uint16_t Line>
@@ -336,6 +370,74 @@ TEST_CASE("host mmio covers typed SAME70 pwm control",
     REQUIRE(mmio.peek(kPwm0Base + 0x204u) == 0x0000'0080u);
     REQUIRE(mmio.peek(kPwm0Base + 0x04u) == 0x0000'0000u);
     REQUIRE(mmio.peek(kPwm0Base + 0x28u) == 0x0000'0001u);
+}
+
+TEST_CASE("host mmio covers typed SAME70 uart dma configuration",
+          "[host-mmio][bring-up][same70][dma]") {
+    trace_log trace;
+    mmio_space mmio{trace};
+    runtime_mmio_scope scope{mmio};
+
+    auto uart = board::make_debug_uart();
+    auto tx_dma = board::make_debug_uart_tx_dma({
+        .direction = alloy::hal::dma::Direction::memory_to_peripheral,
+        .channel_index = 0,
+    });
+    auto rx_dma = board::make_debug_uart_rx_dma({
+        .direction = alloy::hal::dma::Direction::peripheral_to_memory,
+        .channel_index = 1,
+    });
+
+    REQUIRE(uart.configure_tx_dma(tx_dma).is_ok());
+    REQUIRE(uart.configure_rx_dma(rx_dma).is_ok());
+
+    REQUIRE(mmio.peek(kPmcPcer1) == rt::field_mask(rt::field_ref<FieldId::field_pmc_pcer1_pid58>()));
+    REQUIRE(mmio.peek(kXdmacBase + 0x20u) == 0x0000'0002u);
+    REQUIRE(mmio.peek(kXdmacBase + 0x78u) == 0x0701'0011u);
+    REQUIRE(mmio.peek(kXdmacBase + 0xB8u) == 0x0804'0001u);
+}
+
+TEST_CASE("host mmio covers typed SAME70 spi shared-bus reconfiguration",
+          "[host-mmio][bring-up][same70][shared-bus]") {
+    trace_log trace;
+    mmio_space mmio{trace};
+    runtime_mmio_scope scope{mmio};
+
+    using SpiHandle = board::BoardSpi;
+
+    auto bus = alloy::hal::spi::open_shared_bus<board::BoardSpiConnector>(alloy::hal::spi::Config{
+        alloy::hal::SpiMode::Mode0, 1'000'000u, alloy::hal::SpiBitOrder::MsbFirst,
+        alloy::hal::SpiDataSize::Bits8, board::kBoardSpiPeripheralClockHz});
+    auto slow_device = bus.device(alloy::hal::spi::Config{
+        alloy::hal::SpiMode::Mode3, 500'000u, alloy::hal::SpiBitOrder::MsbFirst,
+        alloy::hal::SpiDataSize::Bits8, board::kBoardSpiPeripheralClockHz});
+
+    REQUIRE(bus.configure().is_ok());
+    const auto bus_csr = mmio.peek(register_address(SpiHandle::csr_reg));
+
+    REQUIRE(slow_device.configure().is_ok());
+    const auto slow_csr = mmio.peek(register_address(SpiHandle::csr_reg));
+
+    const auto expected_bus_csr = build_register_value(std::array{
+        std::pair{SpiHandle::cpol_field, 0u},
+        std::pair{SpiHandle::ncpha_field, 1u},
+        std::pair{SpiHandle::bits_field, 0u},
+        std::pair{SpiHandle::scbr_field, 12u},
+        std::pair{SpiHandle::dlybs_field, 0u},
+        std::pair{SpiHandle::dlybct_field, 0u},
+    });
+    const auto expected_slow_csr = build_register_value(std::array{
+        std::pair{SpiHandle::cpol_field, 1u},
+        std::pair{SpiHandle::ncpha_field, 0u},
+        std::pair{SpiHandle::bits_field, 0u},
+        std::pair{SpiHandle::scbr_field, 24u},
+        std::pair{SpiHandle::dlybs_field, 0u},
+        std::pair{SpiHandle::dlybct_field, 0u},
+    });
+
+    REQUIRE(bus_csr == expected_bus_csr);
+    REQUIRE(slow_csr == expected_slow_csr);
+    REQUIRE(bus_csr != slow_csr);
 }
 
 }  // namespace alloy::test::mmio

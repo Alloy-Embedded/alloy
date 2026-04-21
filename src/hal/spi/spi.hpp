@@ -8,6 +8,7 @@
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "device/runtime.hpp"
+#include "hal/dma/bindings.hpp"
 #include "hal/spi/detail/backend.hpp"
 #include "hal/spi/types.hpp"
 
@@ -123,6 +124,44 @@ requires(Connector::valid) class port_handle {
 
     [[nodiscard]] auto is_busy() const -> bool { return detail::spi_is_busy(*this); }
 
+    template <typename DmaChannel>
+    [[nodiscard]] auto configure_tx_dma(const DmaChannel& channel) const
+        -> core::Result<void, core::ErrorCode> {
+        static_assert(DmaChannel::valid);
+        static_assert(DmaChannel::peripheral_id == peripheral_id);
+        static_assert(DmaChannel::signal_id == alloy::hal::dma::SignalId::signal_TX);
+        return channel.configure();
+    }
+
+    template <typename DmaChannel>
+    [[nodiscard]] auto configure_rx_dma(const DmaChannel& channel) const
+        -> core::Result<void, core::ErrorCode> {
+        static_assert(DmaChannel::valid);
+        static_assert(DmaChannel::peripheral_id == peripheral_id);
+        static_assert(DmaChannel::signal_id == alloy::hal::dma::SignalId::signal_RX);
+        return channel.configure();
+    }
+
+    [[nodiscard]] static constexpr auto tx_data_register_address() -> std::uintptr_t {
+        if constexpr (tdr_reg.valid) {
+            return tdr_reg.base_address + tdr_reg.offset_bytes;
+        } else if constexpr (dr_reg.valid) {
+            return dr_reg.base_address + dr_reg.offset_bytes;
+        } else {
+            return 0u;
+        }
+    }
+
+    [[nodiscard]] static constexpr auto rx_data_register_address() -> std::uintptr_t {
+        if constexpr (rdr_reg.valid) {
+            return rdr_reg.base_address + rdr_reg.offset_bytes;
+        } else if constexpr (dr_reg.valid) {
+            return dr_reg.base_address + dr_reg.offset_bytes;
+        } else {
+            return 0u;
+        }
+    }
+
    private:
     Config config_{};
 };
@@ -133,6 +172,92 @@ template <typename Connector>
                   "Requested SPI connector has no valid descriptor-backed route for the selected "
                   "device/package.");
     return port_handle<Connector>{config};
+}
+
+template <typename Connector>
+class shared_device;
+
+template <typename Connector>
+class shared_bus {
+   public:
+    using connector_type = Connector;
+    using config_type = Config;
+
+    static constexpr bool valid = port_handle<Connector>::valid;
+
+    constexpr explicit shared_bus(Config config = {}) : config_(config) {}
+
+    [[nodiscard]] constexpr auto config() const -> const Config& { return config_; }
+
+    [[nodiscard]] auto configure() const -> core::Result<void, core::ErrorCode> {
+        return open<Connector>(config_).configure();
+    }
+
+    [[nodiscard]] constexpr auto device(Config config) const -> shared_device<Connector> {
+        return shared_device<Connector>{config};
+    }
+
+   private:
+    Config config_{};
+};
+
+template <typename Connector>
+class shared_device {
+   public:
+    using connector_type = Connector;
+    using config_type = Config;
+
+    static constexpr bool valid = port_handle<Connector>::valid;
+
+    constexpr explicit shared_device(Config config = {}) : config_(config) {}
+
+    [[nodiscard]] constexpr auto config() const -> const Config& { return config_; }
+
+    [[nodiscard]] auto configure() const -> core::Result<void, core::ErrorCode> {
+        return open<Connector>(config_).configure();
+    }
+
+    [[nodiscard]] auto transfer(std::span<const std::uint8_t> tx_buffer,
+                                std::span<std::uint8_t> rx_buffer) const
+        -> core::Result<void, core::ErrorCode> {
+        auto port = open<Connector>(config_);
+        const auto configured = port.configure();
+        if (!configured.is_ok()) {
+            return configured;
+        }
+        return port.transfer(tx_buffer, rx_buffer);
+    }
+
+    [[nodiscard]] auto transmit(std::span<const std::uint8_t> tx_buffer) const
+        -> core::Result<void, core::ErrorCode> {
+        auto port = open<Connector>(config_);
+        const auto configured = port.configure();
+        if (!configured.is_ok()) {
+            return configured;
+        }
+        return port.transmit(tx_buffer);
+    }
+
+    [[nodiscard]] auto receive(std::span<std::uint8_t> rx_buffer) const
+        -> core::Result<void, core::ErrorCode> {
+        auto port = open<Connector>(config_);
+        const auto configured = port.configure();
+        if (!configured.is_ok()) {
+            return configured;
+        }
+        return port.receive(rx_buffer);
+    }
+
+   private:
+    Config config_{};
+};
+
+template <typename Connector>
+[[nodiscard]] constexpr auto open_shared_bus(Config config = {}) -> shared_bus<Connector> {
+    static_assert(shared_bus<Connector>::valid,
+                  "Requested SPI connector has no valid descriptor-backed route for the selected "
+                  "device/package.");
+    return shared_bus<Connector>{config};
 }
 
 }  // namespace alloy::hal::spi

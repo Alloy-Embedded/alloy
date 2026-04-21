@@ -222,7 +222,7 @@ if(DEFINED BOARD_HEADER_PATH)
     add_compile_definitions(BOARD_HEADER=<${BOARD_HEADER_PATH}>)
     message(STATUS "  Board Header: ${BOARD_HEADER_PATH}")
 
-    foreach(_board_aux_header IN ITEMS uart i2c spi dma)
+    foreach(_board_aux_header IN ITEMS uart i2c spi dma analog watchdog)
         string(REPLACE "board.hpp" "board_${_board_aux_header}.hpp" _board_aux_header_path "${BOARD_HEADER_PATH}")
         if(EXISTS "${CMAKE_SOURCE_DIR}/${_board_aux_header_path}")
             string(TOUPPER "${_board_aux_header}" _board_aux_header_define)
@@ -424,6 +424,10 @@ if(ALLOY_BOARD_MANIFEST_FOUND AND NOT ALLOY_BOARD STREQUAL "host")
     add_subdirectory(examples/blink)
 endif()
 
+if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE)
+    add_subdirectory(examples/analog_probe)
+endif()
+
 if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_PERIPHERAL_EXAMPLES)
     add_subdirectory(examples/i2c_scan)
     add_subdirectory(examples/spi_probe)
@@ -447,6 +451,19 @@ endif()
 if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE AND
    ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE)
     add_subdirectory(examples/timer_pwm_probe)
+endif()
+
+if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE)
+    add_subdirectory(examples/rtc_probe)
+endif()
+
+if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE)
+    add_subdirectory(examples/watchdog_probe)
+endif()
+
+if((ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld") AND
+   ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE)
+    add_subdirectory(examples/can_probe)
 endif()
 
 # TODO: Add more boards as they implement board.hpp abstraction:

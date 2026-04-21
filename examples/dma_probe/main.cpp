@@ -62,7 +62,12 @@ int main() {
         blink_error(150);
     }
 
-    [[maybe_unused]] auto tx_dma = board::make_debug_uart_tx_dma();
+    [[maybe_unused]] auto tx_dma = board::make_debug_uart_tx_dma({
+        .direction = alloy::hal::dma::Direction::memory_to_peripheral,
+        .mode = alloy::hal::dma::Mode::normal,
+        .priority = alloy::hal::dma::Priority::medium,
+        .data_width = alloy::hal::dma::DataWidth::bits8,
+    });
     [[maybe_unused]] auto rx_dma = board::make_debug_uart_rx_dma({
         .direction = alloy::hal::dma::Direction::peripheral_to_memory,
         .mode = alloy::hal::dma::Mode::normal,
@@ -70,14 +75,17 @@ int main() {
         .data_width = alloy::hal::dma::DataWidth::bits8,
     });
 
-    if (const auto result = tx_dma.configure(); result.is_err()) {
+    if (const auto result = uart.configure_tx_dma(tx_dma); result.is_err()) {
         blink_error(200);
     }
-    if (const auto result = rx_dma.configure(); result.is_err()) {
+    if (const auto result = uart.configure_rx_dma(rx_dma); result.is_err()) {
         blink_error(250);
     }
 
     LOG_INFO("dma probe ready");
+    LOG_INFO("debug-uart tx-reg=0x%08lx rx-reg=0x%08lx",
+             static_cast<unsigned long>(decltype(uart)::tx_data_register_address()),
+             static_cast<unsigned long>(decltype(uart)::rx_data_register_address()));
     log_dma_binding<decltype(tx_dma)>("debug-uart-tx");
     log_dma_binding<decltype(rx_dma)>("debug-uart-rx");
 
