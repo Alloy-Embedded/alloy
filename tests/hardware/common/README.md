@@ -16,12 +16,16 @@ The initial board set is:
 | Family | Board | Mandatory smoke | Extended smoke | Primary observables |
 |---|---|---|---|---|
 | Microchip SAME70 | `same70_xplained` | `blink`, `uart_logger` | `dma_probe` | LED, debug UART, DMA binding log |
-| STM32G0 | `nucleo_g071rb` | `blink`, `uart_logger` | — | LED, ST-LINK virtual COM |
-| STM32F4 | `nucleo_f401re` | `blink`, `uart_logger` | `dma_probe` | LED, ST-LINK virtual COM, DMA binding log |
+| STM32G0 | `nucleo_g071rb` | `blink`, `uart_logger` | `watchdog_probe`, `rtc_probe`, `timer_pwm_probe`, `analog_probe` | LED, ST-LINK virtual COM |
+| STM32F4 | `nucleo_f401re` | `blink`, `uart_logger` | `watchdog_probe`, `rtc_probe`, `timer_pwm_probe`, `analog_probe`, `dma_probe` | LED, ST-LINK virtual COM, DMA binding log |
 
 ## Execution Model
 
 Hardware runbooks are board-lab procedures, not default CI tests.
+
+When a board family has enough public examples, it should expose one build target that assembles
+the full firmware bundle for the runbook. This is a build convenience only; flashing and pass/fail
+observation still remain manual lab steps.
 
 Every runbook follows the same flow:
 

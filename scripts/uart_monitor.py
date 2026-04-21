@@ -1,32 +1,37 @@
 #!/usr/bin/env python3
-"""
-UART Monitor Script for SAME70 Xplained Ultra
-Automatically finds the board and displays UART output
-Press Ctrl+C to exit
-"""
+"""Simple UART monitor."""
 
-import serial
-import serial.tools.list_ports
+import argparse
 import sys
 import time
 
-def find_same70_port():
-    """Find the SAME70 Xplained Ultra board"""
-    print("🔍 Searching for SAME70 Xplained Ultra...")
 
-    ports = serial.tools.list_ports.comports()
+def _serial_modules():
+    try:
+        import serial
+        import serial.tools.list_ports
+    except ModuleNotFoundError as exc:
+        print("pyserial not installed. Install with: python3 -m pip install pyserial", file=sys.stderr)
+        raise SystemExit(1) from exc
+    return serial, serial.tools.list_ports
+
+def find_port():
+    """Find a likely board UART port."""
+    print("Searching serial ports...")
+    _, list_ports = _serial_modules()
+
+    ports = list_ports.comports()
 
     for port in ports:
-        # SAME70 Xplained Ultra shows up as EDBG device
         if 'usbmodem' in port.device or 'ttyACM' in port.device or 'EDBG' in str(port.description):
-            print(f"✓ Found board: {port.device}")
+            print(f"Found port: {port.device}")
             print(f"  Description: {port.description}")
             print(f"  Manufacturer: {port.manufacturer}")
             return port.device
 
     # If not found by name, list all available ports
     if ports:
-        print("\n📋 Available serial ports:")
+        print("\nAvailable serial ports:")
         for i, port in enumerate(ports):
             print(f"  [{i}] {port.device} - {port.description}")
 
@@ -46,9 +51,10 @@ def find_same70_port():
 
 def monitor_uart(port, baudrate=115200):
     """Monitor UART output"""
+    serial, _ = _serial_modules()
     try:
         print(f"\n{'='*60}")
-        print(f"📡 Opening {port} at {baudrate} baud")
+        print(f"Opening {port} at {baudrate} baud")
         print(f"{'='*60}")
         print("Press Ctrl+C to exit\n")
 
@@ -65,7 +71,7 @@ def monitor_uart(port, baudrate=115200):
         # Clear any existing data
         ser.reset_input_buffer()
 
-        print("✓ Port opened successfully")
+        print("Port opened successfully")
         print("Waiting for data...\n")
 
         byte_count = 0
@@ -88,13 +94,13 @@ def monitor_uart(port, baudrate=115200):
             else:
                 # Show status every 5 seconds if no data
                 if time.time() - last_data_time > 5:
-                    print(f"\r⏱  Waiting... ({byte_count} bytes received)", end='', flush=True)
+                    print(f"\rWaiting... ({byte_count} bytes received)", end='', flush=True)
                     last_data_time = time.time()
 
                 time.sleep(0.01)
 
     except serial.SerialException as e:
-        print(f"\n❌ Serial error: {e}")
+        print(f"\nSerial error: {e}")
         print("\nTroubleshooting:")
         print("  1. Check if the board is connected")
         print("  2. Try pressing RESET button on the board")
@@ -102,34 +108,37 @@ def monitor_uart(port, baudrate=115200):
         return 1
     except KeyboardInterrupt:
         print(f"\n\n{'='*60}")
-        print(f"✓ Monitor closed. Total bytes received: {byte_count}")
+        print(f"Monitor closed. Total bytes received: {byte_count}")
         print(f"{'='*60}")
         return 0
     except Exception as e:
-        print(f"\n❌ Error: {e}")
+        print(f"\nError: {e}")
         return 1
     finally:
         if 'ser' in locals() and ser.is_open:
             ser.close()
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port")
+    parser.add_argument("--baud", type=int, default=115200)
+    args = parser.parse_args()
+
     print("=" * 60)
-    print("SAME70 UART Monitor")
+    print("Alloy UART Monitor")
     print("=" * 60)
 
-    # Find the port
-    port = find_same70_port()
+    port = args.port or find_port()
 
     if not port:
-        print("\n❌ No board found!")
+        print("\nNo serial port found")
         print("\nMake sure:")
         print("  1. Board is connected via USB")
-        print("  2. USB cable supports data (not just power)")
+        print("  2. USB cable supports data")
         print("  3. Board is powered on")
         return 1
 
-    # Monitor the UART
-    return monitor_uart(port)
+    return monitor_uart(port, args.baud)
 
 if __name__ == "__main__":
     sys.exit(main())

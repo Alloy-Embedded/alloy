@@ -55,30 +55,6 @@ function(alloy_validate_arm_toolchain)
 endfunction()
 
 #
-# Validate Xtensa ESP32 toolchain (xtensa-esp32-elf-gcc)
-#
-function(alloy_validate_xtensa_toolchain)
-    alloy_check_command(xtensa-esp32-elf-gcc found version)
-
-    if(found)
-        message(STATUS "Xtensa ESP32 toolchain found: ${version}")
-    else()
-        message(FATAL_ERROR
-            "Xtensa ESP32 toolchain not found!\n"
-            "\n"
-            "  Required: xtensa-esp32-elf-gcc\n"
-            "\n"
-            "  Install instructions:\n"
-            "    Install ESP-IDF framework which includes the toolchain:\n"
-            "    https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/\n"
-            "\n"
-            "    Or download standalone toolchain:\n"
-            "    https://github.com/espressif/crosstool-NG/releases\n"
-        )
-    endif()
-endfunction()
-
-#
 # Auto-detect and validate toolchain based on board
 #
 function(alloy_validate_toolchain)
@@ -93,12 +69,6 @@ function(alloy_validate_toolchain)
         return()
     endif()
 
-    # Determine required toolchain based on board
-    if(ALLOY_BOARD STREQUAL "esp32_devkit")
-        alloy_validate_xtensa_toolchain()
-    elseif(ALLOY_BOARD MATCHES "^(bluepill|stm32f407vg|arduino_zero|rp_pico|nucleo_g0b1re|nucleo_g071rb|nucleo_f401re|same70_xplained|same70_xpld)$")
-        alloy_validate_arm_toolchain()
-    else()
-        message(WARNING "Unknown board '${ALLOY_BOARD}', cannot validate toolchain")
-    endif()
+    # All active embedded boards use the ARM toolchain
+    alloy_validate_arm_toolchain()
 endfunction()

@@ -1,4 +1,4 @@
-# STM32F4 Hardware Spot-Check
+# STM32F4 Hardware Validation Bundle
 
 Representative board:
 
@@ -9,6 +9,7 @@ Representative board:
 - selected next Renode family after SAME70
 - exposes debug UART and typed DMA helpers through the board layer
 - gives the validation ladder one representative Cortex-M4F silicon target
+- covers runtime DMA and the public analog/timing/watchdog examples on a second vendor family
 
 ## Required Equipment
 
@@ -16,8 +17,8 @@ Representative board:
 - ST-LINK USB connection for flashing/debug
 - serial terminal attached to the ST-LINK virtual COM port
 
-The repo currently stops at build artifacts. Flash with the ST-LINK/OpenOCD flow already used in
-the lab.
+The repo does not hardcode a flashing tool here. Use the ST-LINK/OpenOCD flow already used in the
+lab.
 
 ## Configure And Build
 
@@ -27,16 +28,22 @@ cmake -S . -B build/hw/f401 \
   -DALLOY_BUILD_TESTS=ON \
   -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake
 
-cmake --build build/hw/f401 --target blink uart_logger dma_probe --parallel 8
+cmake --build build/hw/f401 --target stm32f4_hardware_validation_bundle --parallel 8
 ```
 
 Artifacts land under:
 
 - `build/hw/f401/examples/blink/`
 - `build/hw/f401/examples/uart_logger/`
+- `build/hw/f401/examples/watchdog_probe/`
+- `build/hw/f401/examples/analog_probe/`
+- `build/hw/f401/examples/rtc_probe/`
+- `build/hw/f401/examples/timer_pwm_probe/`
 - `build/hw/f401/examples/dma_probe/`
 
-## Mandatory Checks
+Run the suite in order. Stop on the first hard-fault/reset-loop.
+
+## Stage 1: Bring-Up
 
 ### `blink`
 
@@ -54,7 +61,45 @@ Artifacts land under:
   - repeated `heartbeat loop=<n>` lines about once per second
   - LED keeps toggling while logging runs
 
-## Extended Check
+## Stage 2: Safe Board Services
+
+### `watchdog_probe`
+
+- flash `build/hw/f401/examples/watchdog_probe/watchdog_probe.elf`
+- acceptance:
+  - board keeps blinking at 2 Hz
+  - no reset-loop while the refresh loop runs
+  - repeated manual resets reproduce the same behavior
+
+### `rtc_probe`
+
+- flash `build/hw/f401/examples/rtc_probe/rtc_probe.elf`
+- acceptance:
+  - board boots and keeps blinking
+  - no hard-fault/reset-loop after RTC configure path
+
+## Stage 3: Timing And Analog
+
+### `timer_pwm_probe`
+
+- flash `build/hw/f401/examples/timer_pwm_probe/timer_pwm_probe.elf`
+- serial settings:
+  - `115200 8N1`
+- acceptance:
+  - `timer/pwm probe ready`
+  - period/duty logs appear once
+  - board keeps running without reset-loop
+
+### `analog_probe`
+
+- flash `build/hw/f401/examples/analog_probe/analog_probe.elf`
+- serial settings:
+  - `115200 8N1`
+- acceptance:
+  - `analog probe ready`
+  - board keeps running without reset-loop
+
+## Stage 4: DMA
 
 ### `dma_probe`
 
@@ -72,3 +117,5 @@ Artifacts land under:
 - this is the first ST family where both future Renode coverage and current hardware DMA coverage
   can meet on the same representative board
 - failures here should be compared against the future `stm32f4` Renode bring-up once it lands
+
+Use [CHECKLIST.md](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/tests/hardware/stm32f4/CHECKLIST.md) to record the run.

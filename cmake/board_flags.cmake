@@ -131,19 +131,9 @@ function(alloy_get_linker_script out_linker_script)
     set(boards_dir "${ALLOY_ROOT}/boards")
 
     # Map board names to linker script locations
-    if(ALLOY_BOARD STREQUAL "bluepill")
-        set(linker_script "${boards_dir}/stm32f103c8/STM32F103C8.ld")
-    elseif(ALLOY_BOARD STREQUAL "esp32_devkit")
-        set(linker_script "${boards_dir}/esp32_devkit/esp32.ld")
-    elseif(ALLOY_BOARD STREQUAL "stm32f407vg")
-        set(linker_script "${boards_dir}/stm32f407vg/STM32F407VG.ld")
-    elseif(ALLOY_BOARD STREQUAL "arduino_zero")
-        set(linker_script "${boards_dir}/arduino_zero/ATSAMD21G18.ld")
-    elseif(ALLOY_BOARD STREQUAL "rp_pico")
-        set(linker_script "${boards_dir}/raspberry_pi_pico/RP2040.ld")
-    elseif(ALLOY_BOARD STREQUAL "rp2040_zero")
-        set(linker_script "${boards_dir}/waveshare_rp2040_zero/RP2040.ld")
-    elseif(ALLOY_BOARD STREQUAL "same70_xpld")
+    # Active boards resolve their linker script via the board manifest.
+    # This legacy path is kept as a fallback for same70_xpld only.
+    if(ALLOY_BOARD STREQUAL "same70_xpld")
         set(linker_script "${boards_dir}/atmel_same70_xpld/ATSAME70Q21.ld")
     else()
         set(linker_script "")

@@ -18,25 +18,20 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Alloy configuration variables
 set(ALLOY_ROOT ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Alloy framework root directory")
-set(ALLOY_BOARD "host" CACHE STRING "Target board (host, bluepill, esp32_devkit, stm32f407vg, arduino_zero, rp_pico)")
+set(ALLOY_BOARD "host" CACHE STRING "Target board (host, same70_xplained, nucleo_f401re, nucleo_g071rb, nucleo_g0b1re)")
 set(ALLOY_MCU "" CACHE STRING "Target MCU (set by board configuration)")
 set(ALLOY_ARCH "" CACHE STRING "Target architecture (set by board configuration)")
 
-# Platform abstraction configuration (new system)
-# ALLOY_PLATFORM is the HAL platform (same70, linux, esp32, stm32f4, etc.)
+# Platform abstraction configuration
+# ALLOY_PLATFORM is the HAL platform (same70, linux, stm32f4, stm32g0)
 # It will be auto-detected from ALLOY_BOARD if not explicitly set
-set(ALLOY_PLATFORM "" CACHE STRING "HAL platform (same70, linux, esp32, stm32f4, nrf52)")
+set(ALLOY_PLATFORM "" CACHE STRING "HAL platform (same70, linux, stm32f4, stm32g0)")
 
 # Board options
 set_property(CACHE ALLOY_BOARD PROPERTY STRINGS
     "host"
-    "bluepill"           # STM32F103C8 Blue Pill
-    "esp32_devkit"       # ESP32 DevKit
-    "stm32f407vg"        # STM32F407VG Discovery
-    "arduino_zero"       # ATSAMD21G18 Arduino Zero
-    "rp_pico"            # RP2040 Raspberry Pi Pico
-    "rp2040_zero"        # Waveshare RP2040-Zero
-    "same70_xpld"        # Atmel SAME70 Xplained
+    "same70_xplained"    # Atmel/Microchip SAME70 Xplained Ultra
+    "same70_xpld"        # Atmel SAME70 Xplained (alias)
     "nucleo_g0b1re"      # STM32 Nucleo-G0B1RE
     "nucleo_g071rb"      # STM32 Nucleo-G071RB
     "nucleo_f401re"      # STM32 Nucleo-F401RE
@@ -145,11 +140,6 @@ if(ALLOY_BUILD_TESTS)
     list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 endif()
 
-# ESP32 boards require ESP-IDF integration
-if(ALLOY_BOARD MATCHES "^esp32")
-    include(cmake/platform/esp32_integration.cmake)
-endif()
-
 # Auto-detect platform from board if not explicitly set
 if(NOT ALLOY_PLATFORM)
     if(ALLOY_BOARD_MANIFEST_FOUND)
@@ -162,16 +152,6 @@ if(NOT ALLOY_PLATFORM)
         set(ALLOY_PLATFORM "same70")
     elseif(ALLOY_BOARD STREQUAL "host")
         set(ALLOY_PLATFORM "linux")
-    elseif(ALLOY_BOARD MATCHES "^esp32")
-        set(ALLOY_PLATFORM "esp32")
-    elseif(ALLOY_BOARD MATCHES "^stm32f4" OR ALLOY_BOARD STREQUAL "stm32f407vg")
-        set(ALLOY_PLATFORM "stm32f4")
-    elseif(ALLOY_BOARD MATCHES "^stm32f1" OR ALLOY_BOARD STREQUAL "bluepill")
-        set(ALLOY_PLATFORM "stm32f1")
-    elseif(ALLOY_BOARD MATCHES "samd21" OR ALLOY_BOARD STREQUAL "arduino_zero")
-        set(ALLOY_PLATFORM "samd21")
-    elseif(ALLOY_BOARD MATCHES "rp2040" OR ALLOY_BOARD MATCHES "rp_pico")
-        set(ALLOY_PLATFORM "rp2040")
     elseif(ALLOY_BOARD STREQUAL "nucleo_g0b1re" OR ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD MATCHES "^stm32g0")
         set(ALLOY_PLATFORM "stm32g0")
     elseif(ALLOY_BOARD STREQUAL "nucleo_f401re" OR ALLOY_BOARD MATCHES "^stm32f4" OR ALLOY_BOARD MATCHES "^nucleo_f4")
@@ -197,14 +177,6 @@ if(ALLOY_BOARD_MANIFEST_FOUND)
     elseif(ALLOY_BOARD_DEVICE_ARCH)
         set(ALLOY_ARCH "arm-${ALLOY_BOARD_DEVICE_ARCH}" CACHE STRING "Target architecture (resolved from board manifest)" FORCE)
     endif()
-elseif(ALLOY_BOARD STREQUAL "arduino_zero")
-    set(BOARD_HEADER_PATH "boards/arduino_zero/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/atsamd21/startup.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/arduino_zero/ATSAMD21G18.ld")
-elseif(ALLOY_BOARD STREQUAL "waveshare_rp2040_zero" OR ALLOY_BOARD STREQUAL "rp_pico")
-    set(BOARD_HEADER_PATH "boards/waveshare_rp2040_zero/board.hpp")
-    set(STARTUP_SOURCE "${CMAKE_SOURCE_DIR}/boards/common/startup/rp2040/startup.cpp")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/boards/waveshare_rp2040_zero/RP2040.ld")
 else()
     message(WARNING "Board '${ALLOY_BOARD}' not configured for board abstraction layer")
 endif()
@@ -295,10 +267,7 @@ else()
     # Board may use new system (boards/<board>/board.cmake)
 endif()
 
-# Validate toolchain for selected board (skip for ESP32, handled by ESP-IDF)
-if(NOT ALLOY_BOARD MATCHES "^esp32")
-    alloy_validate_toolchain()
-endif()
+alloy_validate_toolchain()
 
 # Display configuration
 message(STATUS "========================================")
@@ -338,7 +307,6 @@ set(ALLOY_CORE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/concepts.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/error.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/error_code.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/esp_error.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/memory.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/result.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scoped_device.hpp
@@ -460,15 +428,6 @@ if((ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld"
    ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE)
     add_subdirectory(examples/can_probe)
 endif()
-
-# TODO: Add more boards as they implement board.hpp abstraction:
-# if(ALLOY_BOARD STREQUAL "stm32f103_bluepill")
-#     add_subdirectory(examples/blink)
-# endif()
-#
-# if(ALLOY_BOARD STREQUAL "arduino_zero")
-#     add_subdirectory(examples/blink)
-# endif()
 
 # Tests
 if(ALLOY_BUILD_TESTS)

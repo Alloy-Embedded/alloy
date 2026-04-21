@@ -188,13 +188,11 @@ Hardware validation is intentionally representative, not exhaustive. The initial
 Current foundation boards:
 
 - `same70_xplained`
-  - mandatory: `blink`, `uart_logger`
-  - extended: `dma_probe`
+  - full validation bundle: `same70_hardware_validation_bundle`
 - `nucleo_g071rb`
-  - mandatory: `blink`, `uart_logger`
+  - full validation bundle: `stm32g0_hardware_validation_bundle`
 - `nucleo_f401re`
-  - mandatory: `blink`, `uart_logger`
-  - extended: `dma_probe`
+  - full validation bundle: `stm32f4_hardware_validation_bundle`
 
 Representative configure/build pattern:
 

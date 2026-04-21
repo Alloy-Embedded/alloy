@@ -31,21 +31,6 @@ function(alloy_board_to_platform BOARD_NAME OUT_PLATFORM)
     if(BOARD_NAME STREQUAL "same70_xplained" OR BOARD_NAME STREQUAL "same70_xpld")
         set(${OUT_PLATFORM} "same70" PARENT_SCOPE)
 
-    elseif(BOARD_NAME STREQUAL "stm32f407_discovery" OR BOARD_NAME STREQUAL "stm32f407vg")
-        set(${OUT_PLATFORM} "stm32f4" PARENT_SCOPE)
-
-    elseif(BOARD_NAME STREQUAL "bluepill" OR BOARD_NAME STREQUAL "stm32f103c8")
-        set(${OUT_PLATFORM} "stm32f1" PARENT_SCOPE)
-
-    elseif(BOARD_NAME MATCHES "^esp32")
-        set(${OUT_PLATFORM} "esp32" PARENT_SCOPE)
-
-    elseif(BOARD_NAME STREQUAL "arduino_zero" OR BOARD_NAME MATCHES "samd21")
-        set(${OUT_PLATFORM} "samd21" PARENT_SCOPE)
-
-    elseif(BOARD_NAME MATCHES "rp2040" OR BOARD_NAME MATCHES "rp_pico")
-        set(${OUT_PLATFORM} "rp2040" PARENT_SCOPE)
-
     elseif(BOARD_NAME STREQUAL "nucleo_g0b1re" OR BOARD_NAME STREQUAL "nucleo_g071rb" OR BOARD_NAME MATCHES "stm32g0")
         set(${OUT_PLATFORM} "stm32g0" PARENT_SCOPE)
 

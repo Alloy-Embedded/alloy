@@ -89,6 +89,18 @@ cmake -B build -S . \
 cmake --build build --target blink
 ```
 
+## Board Workflow
+
+Use [Board Tooling](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/BOARD_TOOLING.md).
+
+Short path:
+
+```bash
+python3 scripts/alloyctl.py bundle --board same70_xplained
+python3 scripts/alloyctl.py flash --board same70_xplained --target uart_logger
+python3 scripts/alloyctl.py monitor --board same70_xplained
+```
+
 ## Runtime Shape
 
 The active source-level boundary is:
