@@ -482,7 +482,7 @@ TEST_CASE("Task scheduling", "[rtos][integration]") {
 ```yaml
 # Root: Strict checks
 # src/: Balanced for production
-# src/hal/vendors/: Lenient for generated
+# generated runtime imports: use local override files where needed
 # tests/: Permissive for tests
 ```
 

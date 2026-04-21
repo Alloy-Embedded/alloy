@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <span>
 
 #include "device/selected.hpp"
@@ -60,6 +61,34 @@ inline constexpr auto spi_semantic_peripherals =
 inline constexpr auto dma_semantic_peripherals =
     std::span{selected::runtime_driver_contract::kDmaSemanticPeripherals};
     #endif
+#if ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE
+inline constexpr auto adc_semantic_peripherals =
+    std::span{selected::runtime_driver_contract::kAdcSemanticPeripherals};
+#endif
+#if ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE
+inline constexpr auto dac_semantic_peripherals =
+    std::span{selected::runtime_driver_contract::kDacSemanticPeripherals};
+#endif
+#if ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE
+inline constexpr auto can_semantic_peripherals =
+    std::span{selected::runtime_driver_contract::kCanSemanticPeripherals};
+#endif
+#if ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE
+inline constexpr auto rtc_semantic_peripherals =
+    std::span{selected::runtime_driver_contract::kRtcSemanticPeripherals};
+#endif
+#if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
+inline constexpr auto watchdog_semantic_peripherals =
+    std::span{selected::runtime_driver_contract::kWatchdogSemanticPeripherals};
+#endif
+#if ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE
+inline constexpr auto timer_semantic_peripherals =
+    std::span{selected::runtime_driver_contract::kTimerSemanticPeripherals};
+#endif
+#if ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE
+inline constexpr auto pwm_semantic_peripherals =
+    std::span{selected::runtime_driver_contract::kPwmSemanticPeripherals};
+#endif
 inline constexpr const auto& gpio_semantic_pin_ids =
     selected::runtime_driver_contract::kGpioSemanticPins;
 inline constexpr const auto& uart_semantic_peripheral_ids =
@@ -72,6 +101,34 @@ inline constexpr const auto& spi_semantic_peripheral_ids =
 inline constexpr const auto& dma_semantic_peripheral_ids =
     selected::runtime_driver_contract::kDmaSemanticPeripherals;
     #endif
+#if ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE
+inline constexpr const auto& adc_semantic_peripheral_ids =
+    selected::runtime_driver_contract::kAdcSemanticPeripherals;
+#endif
+#if ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE
+inline constexpr const auto& dac_semantic_peripheral_ids =
+    selected::runtime_driver_contract::kDacSemanticPeripherals;
+#endif
+#if ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE
+inline constexpr const auto& can_semantic_peripheral_ids =
+    selected::runtime_driver_contract::kCanSemanticPeripherals;
+#endif
+#if ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE
+inline constexpr const auto& rtc_semantic_peripheral_ids =
+    selected::runtime_driver_contract::kRtcSemanticPeripherals;
+#endif
+#if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
+inline constexpr const auto& watchdog_semantic_peripheral_ids =
+    selected::runtime_driver_contract::kWatchdogSemanticPeripherals;
+#endif
+#if ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE
+inline constexpr const auto& timer_semantic_peripheral_ids =
+    selected::runtime_driver_contract::kTimerSemanticPeripherals;
+#endif
+#if ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE
+inline constexpr const auto& pwm_semantic_peripheral_ids =
+    selected::runtime_driver_contract::kPwmSemanticPeripherals;
+#endif
 
 template <PeripheralId Id>
 using PeripheralInstanceTraits = device_contract::PeripheralInstanceTraits<Id>;
@@ -119,6 +176,53 @@ using SpiSemanticTraits = selected::runtime_driver_contract::SpiSemanticTraits<I
 template <PeripheralId Peripheral, SignalId Signal>
 using DmaSemanticTraits = selected::runtime_driver_contract::DmaSemanticTraits<Peripheral, Signal>;
     #endif
+
+#if ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using AdcSemanticTraits = selected::runtime_driver_contract::AdcSemanticTraits<Id>;
+#endif
+
+#if ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using DacSemanticTraits = selected::runtime_driver_contract::DacSemanticTraits<Id>;
+
+template <PeripheralId Id, std::size_t Channel>
+using DacChannelSemanticTraits =
+    selected::runtime_driver_contract::DacChannelSemanticTraits<Id, Channel>;
+#endif
+
+#if ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using CanSemanticTraits = selected::runtime_driver_contract::CanSemanticTraits<Id>;
+#endif
+
+#if ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using RtcSemanticTraits = selected::runtime_driver_contract::RtcSemanticTraits<Id>;
+#endif
+
+#if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using WatchdogSemanticTraits = selected::runtime_driver_contract::WatchdogSemanticTraits<Id>;
+#endif
+
+#if ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using TimerSemanticTraits = selected::runtime_driver_contract::TimerSemanticTraits<Id>;
+
+template <PeripheralId Id, std::size_t Channel>
+using TimerChannelSemanticTraits =
+    selected::runtime_driver_contract::TimerChannelSemanticTraits<Id, Channel>;
+#endif
+
+#if ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using PwmSemanticTraits = selected::runtime_driver_contract::PwmSemanticTraits<Id>;
+
+template <PeripheralId Id, std::size_t Channel>
+using PwmChannelSemanticTraits =
+    selected::runtime_driver_contract::PwmChannelSemanticTraits<Id, Channel>;
+#endif
 
 }  // namespace runtime
 #endif

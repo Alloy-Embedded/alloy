@@ -38,8 +38,6 @@ endif()
 # Directories to scan for source files
 set(HAL_CORE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/hal/core")
 set(HAL_API_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/hal/api")
-set(HAL_VENDORS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors")
-
 # Expected core source files (from CMakeLists.txt)
 # Note: These files don't exist yet - they are planned for future implementation
 # The current build system is header-only for the remaining legacy HAL API layers
@@ -51,11 +49,9 @@ set(EXPECTED_CORE_SOURCES
 
 # Platform directories (each platform uses GLOB for its own sources)
 set(PLATFORM_DIRS
-    "src/hal/vendors/st/stm32f4"
-    "src/hal/vendors/st/stm32f7"
-    "src/hal/vendors/st/stm32g0"
-    "src/hal/vendors/arm/same70"
-    "src/hal/vendors/atmel/same70"
+    "src/device"
+    "src/arch"
+    "src/hal/host"
 )
 
 # Files to exclude from orphan detection (intentionally not compiled)

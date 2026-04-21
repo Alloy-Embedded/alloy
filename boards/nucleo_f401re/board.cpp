@@ -13,6 +13,7 @@
 #include "hal/gpio.hpp"
 #include "hal/systick.hpp"
 
+#include "device/clock_config.hpp"
 #include "device/system_clock.hpp"
 
 using namespace alloy::hal;
@@ -55,7 +56,11 @@ static bool board_initialized = false;
  * Clock configuration is defined in ClockConfig struct in board_config.hpp.
  */
 static inline void configure_system_clock() {
+#if ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE
+    static_cast<void>(alloy::device::clock_config::apply_default());
+#else
     static_cast<void>(alloy::device::system_clock::apply_default());
+#endif
 }
 
 // =============================================================================

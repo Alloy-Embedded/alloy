@@ -13,6 +13,7 @@ Exemplos principais:
 - `i2c_scan`: configuração de `I2C` e varredura de endereços
 - `spi_probe`: configuração de `SPI` e transferência simples
 - `dma_probe`: seleção tipada de bindings `DMA` no caminho oficial de board/runtime
+- `timer_pwm_probe`: uso tipado de `timer` e `pwm` no caminho runtime oficial
 
 Disponibilidade atual por perfil de board:
 
@@ -23,3 +24,5 @@ Disponibilidade atual por perfil de board:
   `same70_xpld`
 - `dma_probe`: boards com `board::make_debug_uart_*_dma()`; hoje isso cobre
   `same70_xpld` e `nucleo_f401re` no nível de binding tipado
+- `timer_pwm_probe`: boards que publicam `TimerSemanticTraits` e `PwmSemanticTraits`;
+  hoje isso cobre `same70_xpld`, `nucleo_g071rb` e `nucleo_f401re`

@@ -161,19 +161,11 @@ Logger::set_level(Level::Debug);  // All levels including DEBUG
 Logger::set_level(Level::Warn);   // Only WARN and ERROR
 ```
 
-### Change UART Pins
+### Change UART Source
 
-For different boards or UART peripherals, modify the pin configuration:
-
-```cpp
-// Example: Using UART0 instead of UART1
-using UartTxPin = GpioPin<peripherals::PIOA, 10>;  // UART0 TX
-using UartPolicy = Same70UartHardwarePolicy<peripherals::UART0>;
-
-auto uart = Uart<PeripheralId::UART0, UartPolicy>::quick_setup_tx_only<UartTxPin>(
-    BaudRate{115200}
-);
-```
+For another board or debug UART, switch the board helper used by the example.
+The runtime path is `board::make_debug_uart()` / `board::make_debug_uart_tx_dma()`,
+not handwritten vendor glue.
 
 ### Add Multiple Sinks
 

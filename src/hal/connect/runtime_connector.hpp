@@ -7,6 +7,7 @@
 
 #include "hal/detail/resolved_route.hpp"
 
+#include "device/connectors.hpp"
 #include "device/runtime.hpp"
 
 namespace alloy::hal::connection {
@@ -411,6 +412,22 @@ struct runtime_binding {
     static constexpr auto signal_id = SignalIdValue;
 };
 
+template <typename Binding, device::runtime::PeripheralId PeripheralIdValue>
+consteval auto connector_binding_present() -> bool {
+    if constexpr (Binding::pin_id == device::runtime::PinId::none ||
+                  Binding::signal_id == device::runtime::SignalId::none) {
+        return false;
+    } else {
+#if ALLOY_DEVICE_CONNECTORS_AVAILABLE
+        return device::connectors::ConnectorTraits<Binding::pin_id, PeripheralIdValue,
+                                                   Binding::signal_id>::kPresent;
+#else
+        return device::runtime::RouteTraits<Binding::pin_id, PeripheralIdValue,
+                                            Binding::signal_id>::kPresent;
+#endif
+    }
+}
+
 template <std::size_t Capacity>
 consteval void append_operation(route::List<route::Operation, Capacity>& list,
                                 const route::Operation& operation) {
@@ -426,13 +443,19 @@ struct runtime_connector {
     static constexpr auto peripheral_id = PeripheralIdValue;
     static constexpr auto binding_count = sizeof...(Bindings);
     static constexpr auto package_name = std::string_view{};
+#if ALLOY_DEVICE_CONNECTORS_AVAILABLE
     static constexpr auto valid =
         ((Bindings::pin_id != device::runtime::PinId::none &&
           Bindings::signal_id != device::runtime::SignalId::none) &&
          ...) &&
-        ((device::runtime::RouteTraits<Bindings::pin_id, PeripheralIdValue,
-                                       Bindings::signal_id>::kPresent) &&
-         ...);
+        (connector_binding_present<Bindings, PeripheralIdValue>() && ...);
+#else
+    static constexpr auto valid =
+        ((Bindings::pin_id != device::runtime::PinId::none &&
+          Bindings::signal_id != device::runtime::SignalId::none) &&
+         ...) &&
+        (connector_binding_present<Bindings, PeripheralIdValue>() && ...);
+#endif
 
     template <std::size_t Index>
     using binding_type = std::tuple_element_t<Index, binding_tuple>;

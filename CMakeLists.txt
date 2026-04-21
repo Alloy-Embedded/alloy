@@ -444,6 +444,11 @@ if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_DMA_PROBE AND
     add_subdirectory(examples/dma_probe)
 endif()
 
+if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE AND
+   ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE)
+    add_subdirectory(examples/timer_pwm_probe)
+endif()
+
 # TODO: Add more boards as they implement board.hpp abstraction:
 # if(ALLOY_BOARD STREQUAL "stm32f103_bluepill")
 #     add_subdirectory(examples/blink)

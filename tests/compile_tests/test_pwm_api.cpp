@@ -1,0 +1,29 @@
+#include "hal/pwm.hpp"
+
+static_assert(alloy::device::SelectedRuntimeDescriptors::available);
+
+#if ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE
+using PeripheralId = alloy::hal::pwm::PeripheralId;
+
+#if defined(ALLOY_BOARD_NUCLEO_G071RB) || defined(ALLOY_BOARD_NUCLEO_G0B1RE)
+using Pwm = alloy::hal::pwm::handle<PeripheralId::TIM1, 0u>;
+#elif defined(ALLOY_BOARD_NUCLEO_F401RE)
+using Pwm = alloy::hal::pwm::handle<PeripheralId::TIM1, 0u>;
+#elif defined(ALLOY_BOARD_SAME70_XPLD) || defined(ALLOY_BOARD_SAME70_XPLAINED)
+using Pwm = alloy::hal::pwm::handle<PeripheralId::PWM0, 0u>;
+#endif
+
+static_assert(Pwm::valid);
+#endif
+
+int main() {
+#if ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE
+    auto pwm = alloy::hal::pwm::open<Pwm::peripheral_id, Pwm::channel_index>();
+    [[maybe_unused]] const auto start_result = pwm.start();
+    [[maybe_unused]] const auto stop_result = pwm.stop();
+    [[maybe_unused]] const auto period_result = pwm.set_period(1000u);
+    [[maybe_unused]] const auto duty_result = pwm.set_duty_cycle(500u);
+    [[maybe_unused]] const auto freq_result = pwm.set_frequency(1000u);
+#endif
+    return 0;
+}

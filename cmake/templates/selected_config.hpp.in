@@ -8,6 +8,19 @@
 #define ALLOY_DEVICE_STARTUP_AVAILABLE @ALLOY_DEVICE_STARTUP_AVAILABLE_INT@
 #define ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE @ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT@
 #define ALLOY_DEVICE_SYSTEM_CLOCK_AVAILABLE @ALLOY_DEVICE_SYSTEM_CLOCK_AVAILABLE_INT@
+#define ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE @ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE_INT@
+#define ALLOY_DEVICE_CONNECTORS_AVAILABLE @ALLOY_DEVICE_CONNECTORS_AVAILABLE_INT@
+#define ALLOY_DEVICE_CAPABILITIES_AVAILABLE @ALLOY_DEVICE_CAPABILITIES_AVAILABLE_INT@
+#define ALLOY_DEVICE_INTERRUPT_STUBS_AVAILABLE @ALLOY_DEVICE_INTERRUPT_STUBS_AVAILABLE_INT@
+#define ALLOY_DEVICE_SYSTEM_SEQUENCES_AVAILABLE @ALLOY_DEVICE_SYSTEM_SEQUENCES_AVAILABLE_INT@
+#define ALLOY_DEVICE_LOW_POWER_AVAILABLE @ALLOY_DEVICE_LOW_POWER_AVAILABLE_INT@
+#define ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE @ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE_INT@
+#define ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE @ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE_INT@
+#define ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE @ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE_INT@
+#define ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE @ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE_INT@
+#define ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE @ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE_INT@
+#define ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE @ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE_INT@
+#define ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE @ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE_INT@
 
 #if @ALLOY_DEVICE_RUNTIME_AVAILABLE_INT@
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/types.hpp"
@@ -23,6 +36,27 @@
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/i2c.hpp"
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/spi.hpp"
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/uart.hpp"
+#if @ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/adc.hpp"
+#endif
+#if @ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/dac.hpp"
+#endif
+#if @ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/can.hpp"
+#endif
+#if @ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/rtc.hpp"
+#endif
+#if @ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/watchdog.hpp"
+#endif
+#if @ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/timer.hpp"
+#endif
+#if @ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/driver_semantics/pwm.hpp"
+#endif
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/peripheral_instances.hpp"
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/pins.hpp"
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/register_fields.hpp"
@@ -30,6 +64,25 @@
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/routes.hpp"
 #if @ALLOY_DEVICE_SYSTEM_CLOCK_AVAILABLE_INT@
 #include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/system_clock.hpp"
+#endif
+#if @ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/clock_profiles.hpp"
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/clock_config.hpp"
+#endif
+#if @ALLOY_DEVICE_CONNECTORS_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/connectors.hpp"
+#endif
+#if @ALLOY_DEVICE_CAPABILITIES_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/capabilities.hpp"
+#endif
+#if @ALLOY_DEVICE_INTERRUPT_STUBS_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/interrupt_stubs.hpp"
+#endif
+#if @ALLOY_DEVICE_SYSTEM_SEQUENCES_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/system_sequences.hpp"
+#endif
+#if @ALLOY_DEVICE_LOW_POWER_AVAILABLE_INT@
+#include "@ALLOY_DEVICE_SELECTED_VENDOR@/@ALLOY_DEVICE_SELECTED_FAMILY@/generated/runtime/devices/@ALLOY_DEVICE_SELECTED_NAME@/low_power.hpp"
 #endif
 #endif
 
@@ -48,6 +101,20 @@ inline constexpr std::string_view arch = "@ALLOY_DEVICE_SELECTED_ARCH@";
 inline constexpr bool startup_available = @ALLOY_DEVICE_STARTUP_AVAILABLE_INT@ != 0;
 inline constexpr bool dma_bindings_available = @ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE_INT@ != 0;
 inline constexpr bool system_clock_available = @ALLOY_DEVICE_SYSTEM_CLOCK_AVAILABLE_INT@ != 0;
+inline constexpr bool clock_config_available = @ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE_INT@ != 0;
+inline constexpr bool connectors_available = @ALLOY_DEVICE_CONNECTORS_AVAILABLE_INT@ != 0;
+inline constexpr bool capabilities_available = @ALLOY_DEVICE_CAPABILITIES_AVAILABLE_INT@ != 0;
+inline constexpr bool interrupt_stubs_available = @ALLOY_DEVICE_INTERRUPT_STUBS_AVAILABLE_INT@ != 0;
+inline constexpr bool system_sequences_available = @ALLOY_DEVICE_SYSTEM_SEQUENCES_AVAILABLE_INT@ != 0;
+inline constexpr bool low_power_available = @ALLOY_DEVICE_LOW_POWER_AVAILABLE_INT@ != 0;
+inline constexpr bool adc_semantics_available = @ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE_INT@ != 0;
+inline constexpr bool dac_semantics_available = @ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE_INT@ != 0;
+inline constexpr bool can_semantics_available = @ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE_INT@ != 0;
+inline constexpr bool rtc_semantics_available = @ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE_INT@ != 0;
+inline constexpr bool watchdog_semantics_available =
+    @ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE_INT@ != 0;
+inline constexpr bool timer_semantics_available = @ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE_INT@ != 0;
+inline constexpr bool pwm_semantics_available = @ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE_INT@ != 0;
 
 #if @ALLOY_DEVICE_RUNTIME_AVAILABLE_INT@
 namespace runtime_family_contract =
@@ -62,6 +129,30 @@ namespace runtime_dma_driver_contract = runtime_driver_contract;
 
 #if @ALLOY_DEVICE_STARTUP_AVAILABLE_INT@
 namespace startup_device_contract = runtime_device_contract;
+#endif
+
+#if @ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE_INT@
+namespace runtime_clock_device_contract = runtime_device_contract;
+#endif
+
+#if @ALLOY_DEVICE_CONNECTORS_AVAILABLE_INT@
+namespace runtime_connector_device_contract = runtime_device_contract;
+#endif
+
+#if @ALLOY_DEVICE_CAPABILITIES_AVAILABLE_INT@
+namespace runtime_capability_device_contract = runtime_device_contract;
+#endif
+
+#if @ALLOY_DEVICE_INTERRUPT_STUBS_AVAILABLE_INT@
+namespace runtime_interrupt_stub_device_contract = runtime_device_contract;
+#endif
+
+#if @ALLOY_DEVICE_SYSTEM_SEQUENCES_AVAILABLE_INT@
+namespace runtime_sequence_device_contract = runtime_device_contract;
+#endif
+
+#if @ALLOY_DEVICE_LOW_POWER_AVAILABLE_INT@
+namespace runtime_low_power_device_contract = runtime_device_contract;
 #endif
 
 }  // namespace alloy::device::selected

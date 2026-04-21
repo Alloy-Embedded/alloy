@@ -14,9 +14,12 @@
 #include "hal/detail/runtime_ops.hpp"
 #include "hal/gpio.hpp"
 #include "hal/systick.hpp"
-#include "hal/vendors/arm/cortex_m7/init_hooks.hpp"
+#include "hal/watchdog.hpp"
+#include "arch/cortex_m/init_hooks.hpp"
 
+#include "device/clock_config.hpp"
 #include "device/runtime.hpp"
+#include "device/system_sequences.hpp"
 #include "device/system_clock.hpp"
 
 using namespace alloy::hal;
@@ -31,10 +34,28 @@ using alloy::hal::detail::runtime::register_ref;
 using alloy::hal::detail::runtime::write_register;
 
 using BoardLed = alloy::hal::pin<"PC8">;
+
+void disable_startup_control_peripheral(alloy::device::runtime::PeripheralId peripheral_id) {
+#if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
+    if (peripheral_id == alloy::device::runtime::PeripheralId::WDT) {
+        alloy::hal::watchdog::open<alloy::device::runtime::PeripheralId::WDT>().disable().unwrap();
+        return;
+    }
+    if (peripheral_id == alloy::device::runtime::PeripheralId::RSWDT) {
+        alloy::hal::watchdog::open<alloy::device::runtime::PeripheralId::RSWDT>()
+            .disable()
+            .unwrap();
+        return;
+    }
+#else
+    static_cast<void>(peripheral_id);
+#endif
+}
+
 template <alloy::device::runtime::RegisterId RegisterId,
           alloy::device::runtime::FieldId DisableFieldId,
           alloy::device::runtime::FieldId GuardFieldId>
-void disable_watchdog() {
+void disable_watchdog_from_fields() {
     constexpr auto reg = register_ref<RegisterId>();
     constexpr auto disable_field = field_ref<DisableFieldId>();
     constexpr auto guard_field = field_ref<GuardFieldId>();
@@ -111,15 +132,38 @@ void init() {
 
     // Step 1: Disable watchdog timers
     // SAME70 mode registers are write-once after reset, so disable them before other bring-up.
-    disable_watchdog<alloy::device::runtime::RegisterId::register_wdt_mr,
-                     alloy::device::runtime::FieldId::field_wdt_mr_wddis,
-                     alloy::device::runtime::FieldId::field_wdt_mr_wdd>();
-    disable_watchdog<alloy::device::runtime::RegisterId::register_rswdt_mr,
-                     alloy::device::runtime::FieldId::field_rswdt_mr_wddis,
-                     alloy::device::runtime::FieldId::field_rswdt_mr_allones>();
+#if ALLOY_DEVICE_SYSTEM_SEQUENCES_AVAILABLE && ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
+    for (const auto& step : alloy::device::system_sequences::steps) {
+        if (step.sequence_id != alloy::device::system_sequences::SequenceId::default_bringup) {
+            continue;
+        }
+        if (step.kind_id != alloy::device::system_sequences::StepKindId::startup_control) {
+            continue;
+        }
+        disable_startup_control_peripheral(step.peripheral_id);
+    }
+#elif ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
+    alloy::hal::watchdog::open<alloy::device::runtime::PeripheralId::WDT>().disable().unwrap();
+    alloy::hal::watchdog::open<alloy::device::runtime::PeripheralId::RSWDT>()
+        .disable()
+        .unwrap();
+#else
+    disable_watchdog_from_fields<alloy::device::runtime::RegisterId::register_wdt_mr,
+                                 alloy::device::runtime::FieldId::field_wdt_mr_wddis,
+                                 alloy::device::runtime::FieldId::field_wdt_mr_wdd>();
+    disable_watchdog_from_fields<alloy::device::runtime::RegisterId::register_rswdt_mr,
+                                 alloy::device::runtime::FieldId::field_rswdt_mr_wddis,
+                                 alloy::device::runtime::FieldId::field_rswdt_mr_allones>();
+#endif
 
     // Step 2: Configure system clock from the published device contract
-    if (!alloy::device::system_clock::apply_default()) {
+    bool clock_ok = false;
+#if ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE
+    clock_ok = alloy::device::clock_config::apply_default();
+#else
+    clock_ok = alloy::device::system_clock::apply_default();
+#endif
+    if (!clock_ok) {
         // Clock initialization failed - system will continue at default frequency
     }
 

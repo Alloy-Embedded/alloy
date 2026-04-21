@@ -2,18 +2,17 @@
 
 #include "device/runtime.hpp"
 #include "hal/detail/runtime_ops.hpp"
+#include "hal/watchdog.hpp"
 
 namespace rt = alloy::hal::detail::runtime;
 
 namespace {
 
-using RegisterId = alloy::device::runtime::RegisterId;
 using FieldId = alloy::device::runtime::FieldId;
 
 constexpr auto kWdtMrAddress = std::uintptr_t{0x400E1854u};
 constexpr auto kGpiocSodrAddress = std::uintptr_t{0x400E1230u};
 constexpr auto kUsart0UsMrAddress = std::uintptr_t{0x40024004u};
-constexpr auto kWatchdogGuardValue = std::uint32_t{0x0FFFu};
 constexpr auto kPioLine8Mask = std::uint32_t{1u << 8u};
 constexpr auto kUsartChrlEightBits = std::uint32_t{3u};
 constexpr auto kUsartChrlMask = std::uint32_t{0x3u << 6u};
@@ -25,13 +24,8 @@ extern "C" __attribute__((noinline, used)) void manual_disable_same70_watchdog()
 }
 
 extern "C" __attribute__((noinline, used)) void runtime_disable_same70_watchdog() {
-    constexpr auto reg = rt::register_ref<RegisterId::register_wdt_mr>();
-    constexpr auto disable_field = rt::field_ref<FieldId::field_wdt_mr_wddis>();
-    constexpr auto guard_field = rt::field_ref<FieldId::field_wdt_mr_wdd>();
-
-    const auto disable_bits = rt::field_bits(disable_field, 1u).unwrap();
-    const auto guard_bits = rt::field_bits(guard_field, kWatchdogGuardValue).unwrap();
-    static_cast<void>(rt::write_register(reg, disable_bits | guard_bits));
+    static_cast<void>(
+        alloy::hal::watchdog::open<alloy::device::runtime::PeripheralId::WDT>().disable());
 }
 
 extern "C" __attribute__((noinline, used)) void manual_set_same70_pioc8_high() {

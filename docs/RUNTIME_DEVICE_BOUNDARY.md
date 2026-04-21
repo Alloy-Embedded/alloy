@@ -53,7 +53,7 @@ Generated vendor and family paths SHALL NOT appear directly in new runtime code.
 The following are not allowed outside the device import layer and generator
 integration code:
 
-- includes of `hal/vendors/.../generated/...`
+- includes of deleted legacy paths such as `hal/vendors/...`
 - includes of published family paths such as `st/...`, `microchip/...`, or
   `nxp/...`
 - filesystem references to `alloy-devices` from runtime source files

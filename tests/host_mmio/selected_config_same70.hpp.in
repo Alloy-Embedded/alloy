@@ -8,22 +8,49 @@
 #define ALLOY_DEVICE_STARTUP_AVAILABLE 1
 #define ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE 1
 #define ALLOY_DEVICE_SYSTEM_CLOCK_AVAILABLE 1
+#define ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE 1
+#define ALLOY_DEVICE_CONNECTORS_AVAILABLE 1
+#define ALLOY_DEVICE_CAPABILITIES_AVAILABLE 1
+#define ALLOY_DEVICE_INTERRUPT_STUBS_AVAILABLE 1
+#define ALLOY_DEVICE_SYSTEM_SEQUENCES_AVAILABLE 1
+#define ALLOY_DEVICE_LOW_POWER_AVAILABLE 1
+#define ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE 1
+#define ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE 1
+#define ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE 1
+#define ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE 1
+#define ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE 1
+#define ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE 1
+#define ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE 1
 
 #include "microchip/same70/generated/runtime/types.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/clock_bindings.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/dma_bindings.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/common.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/adc.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/can.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/dac.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/dma.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/gpio.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/i2c.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/pwm.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/rtc.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/spi.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/timer.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/uart.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/driver_semantics/watchdog.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/peripheral_instances.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/pins.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/register_fields.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/registers.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/routes.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/system_clock.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/clock_profiles.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/clock_config.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/connectors.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/capabilities.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/interrupt_stubs.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/system_sequences.hpp"
+#include "microchip/same70/generated/runtime/devices/atsame70q21b/low_power.hpp"
 #include "microchip/same70/generated/runtime/devices/atsame70q21b/startup.hpp"
 
 namespace alloy::device::selected {
@@ -37,6 +64,19 @@ inline constexpr std::string_view arch = "cortex-m7";
 inline constexpr bool startup_available = true;
 inline constexpr bool dma_bindings_available = true;
 inline constexpr bool system_clock_available = true;
+inline constexpr bool clock_config_available = true;
+inline constexpr bool connectors_available = true;
+inline constexpr bool capabilities_available = true;
+inline constexpr bool interrupt_stubs_available = true;
+inline constexpr bool system_sequences_available = true;
+inline constexpr bool low_power_available = true;
+inline constexpr bool adc_semantics_available = true;
+inline constexpr bool dac_semantics_available = true;
+inline constexpr bool can_semantics_available = true;
+inline constexpr bool rtc_semantics_available = true;
+inline constexpr bool watchdog_semantics_available = true;
+inline constexpr bool timer_semantics_available = true;
+inline constexpr bool pwm_semantics_available = true;
 
 namespace runtime_family_contract = ::microchip::same70::generated::runtime;
 namespace runtime_device_contract = runtime_family_contract::devices::atsame70q21b;
@@ -44,5 +84,11 @@ namespace runtime_driver_contract = runtime_device_contract::driver_semantics;
 namespace runtime_dma_device_contract = runtime_device_contract;
 namespace runtime_dma_driver_contract = runtime_driver_contract;
 namespace startup_device_contract = runtime_device_contract;
+namespace runtime_clock_device_contract = runtime_device_contract;
+namespace runtime_connector_device_contract = runtime_device_contract;
+namespace runtime_capability_device_contract = runtime_device_contract;
+namespace runtime_interrupt_stub_device_contract = runtime_device_contract;
+namespace runtime_sequence_device_contract = runtime_device_contract;
+namespace runtime_low_power_device_contract = runtime_device_contract;
 
 }  // namespace alloy::device::selected

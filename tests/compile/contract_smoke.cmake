@@ -11,6 +11,10 @@ function(alloy_add_device_contract_smoke TARGET_NAME)
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_uart_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_i2c_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_spi_api.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_timer_api.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_pwm_api.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_adc_api.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_dac_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_board_led_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_board_uart_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_board_dma_api.cpp

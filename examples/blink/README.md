@@ -123,7 +123,7 @@ examples/blink/main.cpp (portable application)
         ↓
 boards/<board>/board.cpp (board-specific)
         ↓
-src/hal/platform/<vendor>/ (platform layer)
+typed runtime + HAL layer
         ↓
     Hardware registers
 ```

@@ -1,0 +1,76 @@
+#pragma once
+
+#include <cstddef>
+#include <cstdint>
+
+#include "device/runtime.hpp"
+#include "hal/detail/runtime_ops.hpp"
+
+namespace alloy::hal::dac {
+
+#if ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE
+using PeripheralId = device::runtime::PeripheralId;
+
+template <PeripheralId Peripheral, std::size_t Channel>
+class handle {
+  public:
+    using peripheral_traits = device::runtime::DacSemanticTraits<Peripheral>;
+    using channel_traits = device::runtime::DacChannelSemanticTraits<Peripheral, Channel>;
+
+    static constexpr auto peripheral_id = Peripheral;
+    static constexpr auto channel_index = Channel;
+    static constexpr bool valid = peripheral_traits::kPresent && channel_traits::kPresent;
+
+    [[nodiscard]] auto enable() const -> core::Result<void, core::ErrorCode> {
+        static_assert(valid, "Requested DAC channel is not published for the selected device.");
+
+        if constexpr (channel_traits::kEnableField.valid) {
+            return detail::runtime::modify_field(channel_traits::kEnableField, 1u);
+        }
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    [[nodiscard]] auto disable() const -> core::Result<void, core::ErrorCode> {
+        static_assert(valid, "Requested DAC channel is not published for the selected device.");
+
+        if constexpr (channel_traits::kDisableField.valid) {
+            return detail::runtime::modify_field(channel_traits::kDisableField, 1u);
+        }
+        if constexpr (channel_traits::kEnableField.valid) {
+            return detail::runtime::modify_field(channel_traits::kEnableField, 0u);
+        }
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    [[nodiscard]] auto ready() const -> bool {
+        static_assert(valid, "Requested DAC channel is not published for the selected device.");
+
+        if constexpr (channel_traits::kReadyField.valid) {
+            const auto state = detail::runtime::read_field(channel_traits::kReadyField);
+            return state.is_ok() && state.unwrap() != 0u;
+        }
+        return true;
+    }
+
+    [[nodiscard]] auto write(std::uint32_t value) const -> core::Result<void, core::ErrorCode> {
+        static_assert(valid, "Requested DAC channel is not published for the selected device.");
+
+        if constexpr (channel_traits::kDataField.valid) {
+            return detail::runtime::modify_field(channel_traits::kDataField, value);
+        }
+        if constexpr (peripheral_traits::kDataRegister.valid) {
+            return detail::runtime::write_register(peripheral_traits::kDataRegister, value);
+        }
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+};
+
+template <PeripheralId Peripheral, std::size_t Channel>
+[[nodiscard]] constexpr auto open() -> handle<Peripheral, Channel> {
+    static_assert(handle<Peripheral, Channel>::valid,
+                  "Requested DAC channel is not published for the selected device.");
+    return {};
+}
+#endif
+
+}  // namespace alloy::hal::dac

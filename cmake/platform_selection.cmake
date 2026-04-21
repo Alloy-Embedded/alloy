@@ -173,9 +173,8 @@ endif()
 # Platform Source Files
 # ------------------------------------------------------------------------------
 
-# Platform implementations are located in: src/hal/vendors/<vendor>/<family>/
-# The platform directory is determined by the platform-specific config file
-# (e.g., cmake/platforms/stm32f4.cmake sets ALLOY_PLATFORM_DIR)
+# Platform configs must set a stable include anchor via ALLOY_PLATFORM_DIR.
+# Descriptor-driven builds no longer rely on vendor generated header trees.
 
 # Note: ALLOY_PLATFORM_DIR should be set by the platform-specific CMake file
 # If not set, we'll use a fallback (though this may not work for all platforms)
@@ -188,7 +187,7 @@ if(NOT DEFINED ALLOY_PLATFORM_DIR)
         "Config file: ${PLATFORM_CONFIG_FILE}\n"
         "\n"
         "The platform configuration file must set ALLOY_PLATFORM_DIR.\n"
-        "Example: set(ALLOY_PLATFORM_DIR \${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/st/stm32f4)"
+        "Example: set(ALLOY_PLATFORM_DIR \${CMAKE_CURRENT_SOURCE_DIR}/src/device)"
     )
 endif()
 

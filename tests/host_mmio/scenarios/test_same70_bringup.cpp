@@ -5,6 +5,8 @@
 #include "hal/detail/resolved_route.hpp"
 #include "hal/detail/runtime_ops.hpp"
 #include "hal/gpio/detail/backend.hpp"
+#include "hal/pwm.hpp"
+#include "hal/timer.hpp"
 #include "hal/uart/detail/backend.hpp"
 #include "hal/types.hpp"
 
@@ -33,6 +35,8 @@ constexpr auto kResetControllerBase = std::uintptr_t{0x400e1800u};
 constexpr auto kPioBBase = std::uintptr_t{0x400e1000u};
 constexpr auto kPioCBase = std::uintptr_t{0x400e1200u};
 constexpr auto kUsart0Base = std::uintptr_t{0x40024000u};
+constexpr auto kTc0Base = std::uintptr_t{0x4000C000u};
+constexpr auto kPwm0Base = std::uintptr_t{0x40020000u};
 constexpr auto kLedLine = std::uint16_t{8u};
 constexpr auto kTxLine = std::uint16_t{1u};
 constexpr auto kRxLine = std::uint16_t{0u};
@@ -297,6 +301,41 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
             access{.kind = access_kind::read, .address = kUsart0Base + 0x14u, .value = 0x0000'0002u, .mask = 0u});
     REQUIRE(trace.entries()[ready_index + 1u] ==
             access{.kind = access_kind::write, .address = kUsart0Base + 0x1cu, .value = 0x41u, .mask = 0u});
+}
+
+TEST_CASE("host mmio covers typed SAME70 timer control",
+          "[host-mmio][bring-up][same70][timer]") {
+    trace_log trace;
+    mmio_space mmio{trace};
+    runtime_mmio_scope scope{mmio};
+
+    auto timer = alloy::hal::timer::open<alloy::device::runtime::PeripheralId::TC0>();
+
+    REQUIRE(timer.start().is_ok());
+    REQUIRE(timer.set_period(0x1234u).is_ok());
+    REQUIRE(timer.stop().is_ok());
+
+    REQUIRE(mmio.peek(kTc0Base + 0x00u) == 0x0000'0006u);
+    REQUIRE(mmio.peek(kTc0Base + 0x1Cu) == 0x0000'1234u);
+}
+
+TEST_CASE("host mmio covers typed SAME70 pwm control",
+          "[host-mmio][bring-up][same70][pwm]") {
+    trace_log trace;
+    mmio_space mmio{trace};
+    runtime_mmio_scope scope{mmio};
+
+    auto pwm = alloy::hal::pwm::open<alloy::device::runtime::PeripheralId::PWM0, 0u>();
+
+    REQUIRE(pwm.set_period(0x0200u).is_ok());
+    REQUIRE(pwm.set_duty_cycle(0x0080u).is_ok());
+    REQUIRE(pwm.start().is_ok());
+    REQUIRE(pwm.stop().is_ok());
+
+    REQUIRE(mmio.peek(kPwm0Base + 0x20Cu) == 0x0000'0200u);
+    REQUIRE(mmio.peek(kPwm0Base + 0x204u) == 0x0000'0080u);
+    REQUIRE(mmio.peek(kPwm0Base + 0x04u) == 0x0000'0000u);
+    REQUIRE(mmio.peek(kPwm0Base + 0x28u) == 0x0000'0001u);
 }
 
 }  // namespace alloy::test::mmio

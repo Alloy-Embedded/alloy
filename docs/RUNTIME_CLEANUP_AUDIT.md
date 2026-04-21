@@ -24,7 +24,7 @@ The categories are:
 | [`src/hal/dma`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/dma) | rewrite | DMA now consumes typed runtime bindings and driver semantics, but the runtime still needs a fuller transfer engine and cleanup of residual vendor-specific corners | keep converging on the same descriptor-driven execution model used by GPIO/UART/I2C/SPI |
 | [`src/hal/interface`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/interface) | delete | old abstraction layer has been removed | keep docs and comments from recreating it |
 | [`src/hal/deprecated`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/deprecated) | delete | explicitly obsolete | delete once no includes remain |
-| [`src/hal/vendors`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/vendors) | rewrite then delete large parts | currently mixes temporary low-level helpers with public runtime behavior | preserve only small private adapters that survive descriptor-driven rebuild |
+| [`src/hal/vendors`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/vendors) | delete | the legacy vendor tree has been removed from the active runtime path | keep it gone; new runtime/platform code belongs under `src/device`, `src/arch`, or `src/hal/host` |
 | [`src/startup`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/startup) | delete | handwritten startup has been replaced by generated startup sources from `alloy-devices` | keep deleting any residue that recreates local startup ownership |
 | [`boards`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/boards) | rewrite | boards should stay, but become declarative and side-effect safe | rebuild `board.hpp` and `board.cpp` around runtime APIs |
 | [`examples`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/examples) | rewrite | examples still teach the wrong path in places | rebuild on the single public API |
@@ -38,9 +38,9 @@ These files or areas actively fight the target architecture:
 | Path | Status | Reason |
 |---|---|---|
 | [`boards/same70_xplained/board_config.cpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/boards/same70_xplained/board_config.cpp) | delete | dead legacy SAME70 bring-up path with raw watchdog/PMC writes | remove it once no build references remain |
-| [`src/hal/adc.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/adc.hpp) | delete | stale universal shim that points to the old platform split | remove it with the other dead top-level shims |
-| [`src/hal/pwm.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/pwm.hpp) | delete | same as `adc.hpp` | remove it if no active include remains |
-| [`src/hal/timer.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/timer.hpp) | delete | same as `adc.hpp` | remove it if no active include remains |
+| [`src/hal/adc.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/adc.hpp) | keep | new typed HAL entry point backed by generated runtime semantics | expand only on the runtime contract path |
+| [`src/hal/pwm.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/pwm.hpp) | keep | new typed HAL entry point backed by generated runtime semantics | keep replacing old example and board glue with it |
+| [`src/hal/timer.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/timer.hpp) | keep | new typed HAL entry point backed by generated runtime semantics | keep replacing old example and board glue with it |
 | [`examples/uart_logger/main.cpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/examples/uart_logger/main.cpp) | keep | already uses `board::make_debug_uart()` and the logger sink on the runtime path | preserve it as the canonical UART example |
 
 ## Keep With Minimal Churn
@@ -59,9 +59,8 @@ These areas do not need broad redesign right now:
 These should not accumulate more usage:
 
 - [`src/hal/deprecated`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/deprecated)
-- obsolete top-level shims such as [`src/hal/adc.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/adc.hpp), [`src/hal/pwm.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/pwm.hpp), and [`src/hal/timer.hpp`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/timer.hpp)
 - handwritten startup trees under [`src/startup`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/startup)
-- new additions to [`src/hal/vendors`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/src/hal/vendors) unless they are temporary private shims
+- any reintroduction of a public vendor tree such as `src/hal/vendors`
 
 ## Cleanup Order
 

@@ -25,7 +25,7 @@ message(STATUS "Configuring for SAME70 platform (ARM Cortex-M7)")
 # ------------------------------------------------------------------------------
 
 # Set platform directory for this family
-set(ALLOY_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/vendors/atmel/same70)
+set(ALLOY_PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/device)
 
 # Add src/ to include path so startup code can find headers
 # This is needed because target_include_directories() in CMakeLists.txt

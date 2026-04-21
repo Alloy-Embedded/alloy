@@ -216,7 +216,7 @@ TEST_CASE("BUG #28: Platform directory configuration", "[regression][cmake][bug2
     WARN("All platform cmake files must set ALLOY_PLATFORM_DIR");
 
     INFO("Required in platform cmake file:");
-    INFO("set(ALLOY_PLATFORM_DIR ${CMAKE_SOURCE_DIR}/src/hal/vendors/PLATFORM)");
+    INFO("set(ALLOY_PLATFORM_DIR ${CMAKE_SOURCE_DIR}/src/device)");
 
     REQUIRE(true); // Documentation test
 }
