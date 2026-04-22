@@ -21,7 +21,7 @@ namespace board {
 
 namespace {
 
-using BoardLed = alloy::hal::pin<"PA5">;
+using BoardLed = alloy::device::pin<alloy::device::PinId::PA5>;
 
 auto& led_handle() {
     static auto handle = alloy::hal::gpio::open<BoardLed>({

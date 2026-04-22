@@ -10,13 +10,13 @@ namespace board {
 /// safe to open and use (disable is idempotent, refresh key-write is benign
 /// when the watchdog is not running).
 using BoardWatchdog = alloy::hal::watchdog::handle<
-    alloy::device::runtime::PeripheralId::WDT>;
+    alloy::device::PeripheralId::WDT>;
 
 inline constexpr bool kBoardWatchdogCanDisable = true;
 
 [[nodiscard]] inline auto make_watchdog(
     alloy::hal::watchdog::Config config = {}) -> BoardWatchdog {
-    return alloy::hal::watchdog::open<alloy::device::runtime::PeripheralId::WDT>(config);
+    return alloy::hal::watchdog::open<alloy::device::PeripheralId::WDT>(config);
 }
 
 }  // namespace board

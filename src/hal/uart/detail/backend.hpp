@@ -39,18 +39,36 @@ template <std::size_t N>
     return core::Ok(static_cast<std::uint32_t>(value));
 }
 
+[[nodiscard]] constexpr auto signal_matches_role(std::string_view signal_name,
+                                                 std::string_view role_name) -> bool {
+    if (signal_name == role_name) {
+        return true;
+    }
+    if (role_name == "tx") {
+        return signal_name.starts_with("tx");
+    }
+    if (role_name == "rx") {
+        return signal_name.starts_with("rx");
+    }
+    if (role_name == "cts" || role_name == "rts") {
+        return signal_name.starts_with(role_name);
+    }
+    return false;
+}
+
 template <typename PortHandle, std::size_t... Index>
-[[nodiscard]] constexpr auto has_signal_impl(std::string_view signal_name,
+[[nodiscard]] constexpr auto has_signal_impl(std::string_view role_name,
                                              std::index_sequence<Index...>) -> bool {
     using connector_type = typename PortHandle::connector_type;
-    return (((connector_type::template binding_type<Index>::signal_type::name) == signal_name) ||
+    return (signal_matches_role(connector_type::template binding_type<Index>::signal_type::name,
+                                role_name) ||
             ...);
 }
 
 template <typename PortHandle>
-[[nodiscard]] constexpr auto has_signal(std::string_view signal_name) -> bool {
+[[nodiscard]] constexpr auto has_signal(std::string_view role_name) -> bool {
     using connector_type = typename PortHandle::connector_type;
-    return has_signal_impl<PortHandle>(signal_name,
+    return has_signal_impl<PortHandle>(role_name,
                                        std::make_index_sequence<connector_type::binding_count>{});
 }
 
@@ -315,7 +333,7 @@ auto configure_uart(const PortHandle& handle) -> core::Result<void, core::ErrorC
     }
 
     if constexpr (requires { PortHandle::peripheral_id; }) {
-        if constexpr (PortHandle::peripheral_id != alloy::device::runtime::PeripheralId::none) {
+        if constexpr (PortHandle::peripheral_id != alloy::device::PeripheralId::none) {
             if (const auto enable_result =
                     rt::enable_peripheral_runtime_typed<PortHandle::peripheral_id>();
                 enable_result.is_err()) {

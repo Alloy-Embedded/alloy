@@ -16,9 +16,8 @@
 
 #include <cstdint>
 
-#include "hal/connect/tags.hpp"
-
 #include "device/clock_config.hpp"
+#include "device/runtime.hpp"
 
 namespace board::same70_xplained {
 
@@ -47,7 +46,7 @@ struct ClockConfig {
 // =============================================================================
 
 struct LedConfig {
-    using led_green = alloy::hal::pin<"PC8">;
+    using led_green = alloy::device::pin<alloy::device::PinId::PC8>;
 
     static constexpr bool led_green_active_high = false;  // Active LOW
 
@@ -59,7 +58,7 @@ struct LedConfig {
 // =============================================================================
 
 struct ButtonConfig {
-    using button0 = alloy::hal::pin<"PA11">;
+    using button0 = alloy::device::pin<alloy::device::PinId::PA11>;
 
     static constexpr bool button0_active_high = false;  // Active LOW
 };

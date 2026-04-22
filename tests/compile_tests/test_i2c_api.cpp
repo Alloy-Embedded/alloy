@@ -2,8 +2,8 @@
 #include <cstdint>
 #include <string_view>
 
-#include "hal/connect/runtime_connector.hpp"
-#include "hal/connect/tags.hpp"
+#include "device/runtime.hpp"
+#include "hal/connect/connector.hpp"
 #include "hal/i2c.hpp"
 
 #include "device/traits.hpp"
@@ -55,14 +55,10 @@ void exercise_i2c_backend() {
 static_assert(alloy::device::SelectedDeviceTraits::available);
 
 #if defined(ALLOY_BOARD_SAME70_XPLD)
-using I2cConnector = alloy::hal::connection::runtime_connector<
-    alloy::hal::peripheral<"TWIHS0">, alloy::device::runtime::PeripheralId::TWIHS0,
-    alloy::hal::connection::runtime_binding<alloy::hal::scl<alloy::hal::pin<"PA4">>,
-                                            alloy::device::runtime::PinId::PA4,
-                                            alloy::device::runtime::SignalId::signal_twck0>,
-    alloy::hal::connection::runtime_binding<alloy::hal::sda<alloy::hal::pin<"PA3">>,
-                                            alloy::device::runtime::PinId::PA3,
-                                            alloy::device::runtime::SignalId::signal_twd0>>;
+using I2cConnector = alloy::hal::connection::connector<
+    alloy::device::PeripheralId::TWIHS0,
+    alloy::hal::connection::scl<alloy::device::PinId::PA4, alloy::device::SignalId::signal_twck0>,
+    alloy::hal::connection::sda<alloy::device::PinId::PA3, alloy::device::SignalId::signal_twd0>>;
 using I2cPort = decltype(alloy::hal::i2c::open<I2cConnector>());
 static_assert(I2cPort::valid);
 static_assert(I2cPort::peripheral_name == std::string_view{"TWIHS0"});

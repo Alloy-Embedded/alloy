@@ -1,22 +1,25 @@
 #pragma once
 
-#include "hal/connect/fixed_string.hpp"
+#include "device/runtime.hpp"
 
 namespace alloy::hal::connection {
 
-template <FixedString Name>
+template <device::PeripheralId Id>
 struct peripheral {
-    static constexpr auto name = std::string_view{Name};
+    static constexpr auto id = Id;
+    static constexpr auto name = device::peripheral<Id>::name;
 };
 
-template <FixedString Name>
+template <device::PinId Id>
 struct pin {
-    static constexpr auto name = std::string_view{Name};
+    static constexpr auto id = Id;
+    static constexpr auto name = device::pin<Id>::name;
 };
 
-template <FixedString Name>
+template <device::SignalId Id>
 struct signal {
-    static constexpr auto name = std::string_view{Name};
+    static constexpr auto id = Id;
+    static constexpr auto name = device::signal<Id>::name;
 };
 
 template <typename Signal, typename Pin>
@@ -29,43 +32,43 @@ struct binding {
 
 namespace alloy::hal {
 
-template <connection::FixedString Name>
-using peripheral = connection::peripheral<Name>;
+template <device::PeripheralId Id>
+using peripheral = connection::peripheral<Id>;
 
-template <connection::FixedString Name>
-using pin = connection::pin<Name>;
+template <device::PinId Id>
+using pin = connection::pin<Id>;
 
-template <connection::FixedString Name>
-using signal = connection::signal<Name>;
+template <device::SignalId Id>
+using signal = connection::signal<Id>;
 
 template <typename Signal, typename Pin>
 using bind = connection::binding<Signal, Pin>;
 
-template <typename Pin>
-using tx = bind<signal<"tx">, Pin>;
+template <typename Pin, typename Signal>
+using tx = bind<Signal, Pin>;
 
-template <typename Pin>
-using rx = bind<signal<"rx">, Pin>;
+template <typename Pin, typename Signal>
+using rx = bind<Signal, Pin>;
 
-template <typename Pin>
-using cts = bind<signal<"cts">, Pin>;
+template <typename Pin, typename Signal>
+using cts = bind<Signal, Pin>;
 
-template <typename Pin>
-using rts = bind<signal<"rts">, Pin>;
+template <typename Pin, typename Signal>
+using rts = bind<Signal, Pin>;
 
-template <typename Pin>
-using sck = bind<signal<"sck">, Pin>;
+template <typename Pin, typename Signal>
+using sck = bind<Signal, Pin>;
 
-template <typename Pin>
-using miso = bind<signal<"miso">, Pin>;
+template <typename Pin, typename Signal>
+using miso = bind<Signal, Pin>;
 
-template <typename Pin>
-using mosi = bind<signal<"mosi">, Pin>;
+template <typename Pin, typename Signal>
+using mosi = bind<Signal, Pin>;
 
-template <typename Pin>
-using scl = bind<signal<"scl">, Pin>;
+template <typename Pin, typename Signal>
+using scl = bind<Signal, Pin>;
 
-template <typename Pin>
-using sda = bind<signal<"sda">, Pin>;
+template <typename Pin, typename Signal>
+using sda = bind<Signal, Pin>;
 
 }  // namespace alloy::hal

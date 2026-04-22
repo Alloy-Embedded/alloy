@@ -10,7 +10,7 @@
 namespace alloy::hal::dac {
 
 #if ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE
-using PeripheralId = device::runtime::PeripheralId;
+using PeripheralId = device::PeripheralId;
 
 struct Config {
     bool enable_on_configure = true;
@@ -21,8 +21,8 @@ struct Config {
 template <PeripheralId Peripheral, std::size_t Channel>
 class handle {
   public:
-    using peripheral_traits = device::runtime::DacSemanticTraits<Peripheral>;
-    using channel_traits = device::runtime::DacChannelSemanticTraits<Peripheral, Channel>;
+    using peripheral_traits = device::DacSemanticTraits<Peripheral>;
+    using channel_traits = device::DacChannelSemanticTraits<Peripheral, Channel>;
     using config_type = Config;
 
     static constexpr auto peripheral_id = Peripheral;

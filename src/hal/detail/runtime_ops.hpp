@@ -29,13 +29,21 @@ struct MmioHooks {
 }  // namespace test_support
 #endif
 
-using RegisterRef = device::runtime::RuntimeRegisterRef;
-using FieldRef = device::runtime::RuntimeFieldRef;
-using IndexedFieldRef = device::runtime::RuntimeIndexedFieldRef;
+using RegisterRef = device::RuntimeRegisterRef;
+using FieldRef = device::RuntimeFieldRef;
+using IndexedFieldRef = device::RuntimeIndexedFieldRef;
+using RegisterId = device::RegisterId;
+using FieldId = device::FieldId;
+using PortId = device::PortId;
+using PinId = device::PinId;
+using PeripheralId = device::PeripheralId;
+using ClockGateId = device::ClockGateId;
+using ResetId = device::ResetId;
+using RouteOperation = device::RouteOperation;
 
-inline constexpr auto kInvalidRegisterRef = device::runtime::invalid_register_ref;
-inline constexpr auto kInvalidFieldRef = device::runtime::invalid_field_ref;
-inline constexpr auto kInvalidIndexedFieldRef = device::runtime::invalid_indexed_field_ref;
+inline constexpr auto kInvalidRegisterRef = device::invalid_register_ref;
+inline constexpr auto kInvalidFieldRef = device::invalid_field_ref;
+inline constexpr auto kInvalidIndexedFieldRef = device::invalid_indexed_field_ref;
 
 [[nodiscard]] constexpr auto ascii_lower(char ch) -> char {
     return ch >= 'A' && ch <= 'Z' ? static_cast<char>(ch - 'A' + 'a') : ch;
@@ -144,9 +152,9 @@ inline void write_mmio32(std::uintptr_t address, std::uint32_t value) {
     mmio32(address) = value;
 }
 
-template <device::runtime::RegisterId Id>
+template <RegisterId Id>
 [[nodiscard]] consteval auto register_ref() -> RegisterRef {
-    using traits = device::runtime::RegisterTraits<Id>;
+    using traits = device::RegisterTraits<Id>;
     if constexpr (!traits::kPresent) {
         return kInvalidRegisterRef;
     } else {
@@ -154,9 +162,9 @@ template <device::runtime::RegisterId Id>
     }
 }
 
-template <device::runtime::FieldId Id>
+template <FieldId Id>
 [[nodiscard]] consteval auto field_ref() -> FieldRef {
-    using traits = device::runtime::RegisterFieldTraits<Id>;
+    using traits = device::RegisterFieldTraits<Id>;
     if constexpr (!traits::kPresent) {
         return kInvalidFieldRef;
     } else {

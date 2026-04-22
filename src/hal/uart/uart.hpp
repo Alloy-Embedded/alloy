@@ -241,13 +241,13 @@ class port_handle {
     static_assert(Connector::valid);
 
     using connector_type = Connector;
-    using runtime_peripheral_id = device::runtime::PeripheralId;
+    using runtime_peripheral_id = device::PeripheralId;
 
     static constexpr auto package_name = Connector::package_name;
     static constexpr auto peripheral_name = Connector::peripheral_type::name;
     static constexpr auto peripheral_id = Connector::peripheral_id;
-    using peripheral_traits = device::runtime::PeripheralInstanceTraits<peripheral_id>;
-    using semantic_traits = device::runtime::UartSemanticTraits<peripheral_id>;
+    using peripheral_traits = device::PeripheralInstanceTraits<peripheral_id>;
+    using semantic_traits = device::UartSemanticTraits<peripheral_id>;
     static constexpr auto schema =
         semantic_traits::kPresent ? detail::runtime::to_uart_schema(semantic_traits::kSchemaId)
                                   : detail::runtime::to_uart_schema(peripheral_traits::kSchemaId);

@@ -2,10 +2,55 @@
 
 #include <cstddef>
 #include <span>
+#include <string_view>
 
 #include "device/selected.hpp"
 
 namespace alloy::device {
+
+namespace detail {
+
+template <auto Value>
+[[nodiscard]] consteval auto enum_name() -> std::string_view {
+#if defined(__clang__) || defined(__GNUC__)
+    constexpr std::string_view function = __PRETTY_FUNCTION__;
+    constexpr std::string_view needle = "Value = ";
+#elif defined(_MSC_VER)
+    constexpr std::string_view function = __FUNCSIG__;
+    constexpr std::string_view needle = "enum_name<";
+#else
+    #error Unsupported compiler for compile-time enum name extraction.
+#endif
+
+    const auto start = function.find(needle);
+    static_assert(start != std::string_view::npos,
+                  "Unable to parse compiler function signature for enum name extraction.");
+
+    auto value_start = start + needle.size();
+#if defined(_MSC_VER)
+    const auto value_end = function.find(">(void)", value_start);
+#else
+    auto value_end = function.find(';', value_start);
+    const auto bracket_end = function.find(']', value_start);
+    if (value_end == std::string_view::npos ||
+        (bracket_end != std::string_view::npos && bracket_end < value_end)) {
+        value_end = bracket_end;
+    }
+#endif
+
+    auto value = function.substr(value_start, value_end - value_start);
+    if (const auto scope = value.rfind("::"); scope != std::string_view::npos) {
+        value.remove_prefix(scope + 2u);
+    }
+    return value;
+}
+
+[[nodiscard]] constexpr auto trim_prefix(std::string_view text, std::string_view prefix)
+    -> std::string_view {
+    return text.starts_with(prefix) ? text.substr(prefix.size()) : text;
+}
+
+}  // namespace detail
 
 #if ALLOY_DEVICE_RUNTIME_AVAILABLE
 namespace runtime {
@@ -225,6 +270,148 @@ using PwmChannelSemanticTraits =
 #endif
 
 }  // namespace runtime
+
+using BackendSchemaId = runtime::BackendSchemaId;
+using PeripheralClassId = runtime::PeripheralClassId;
+using SignalId = runtime::SignalId;
+using PortId = runtime::PortId;
+using AccessKindId = runtime::AccessKindId;
+using RouteKindId = runtime::RouteKindId;
+using OperationKindId = runtime::OperationKindId;
+using OperationSubjectKindId = runtime::OperationSubjectKindId;
+using ActiveLevelId = runtime::ActiveLevelId;
+
+using PeripheralId = runtime::PeripheralId;
+using ClockGateId = runtime::ClockGateId;
+using ResetId = runtime::ResetId;
+using ClockSelectorId = runtime::ClockSelectorId;
+using PinId = runtime::PinId;
+using RegisterId = runtime::RegisterId;
+using FieldId = runtime::FieldId;
+using RouteId = runtime::RouteId;
+using RouteOperation = runtime::RouteOperation;
+using RouteDescriptor = runtime::RouteDescriptor;
+using RuntimeRegisterRef = runtime::RuntimeRegisterRef;
+using RuntimeFieldRef = runtime::RuntimeFieldRef;
+using RuntimeIndexedFieldRef = runtime::RuntimeIndexedFieldRef;
+
+inline constexpr auto invalid_register_ref = runtime::invalid_register_ref;
+inline constexpr auto invalid_field_ref = runtime::invalid_field_ref;
+inline constexpr auto invalid_indexed_field_ref = runtime::invalid_indexed_field_ref;
+
+inline constexpr auto peripherals = runtime::peripherals;
+inline constexpr auto pins = runtime::pins;
+inline constexpr auto registers = runtime::registers;
+inline constexpr auto fields = runtime::fields;
+
+template <PeripheralId Id>
+using PeripheralInstanceTraits = runtime::PeripheralInstanceTraits<Id>;
+
+template <PinId Id>
+using PinTraits = runtime::PinTraits<Id>;
+
+template <RegisterId Id>
+using RegisterTraits = runtime::RegisterTraits<Id>;
+
+template <FieldId Id>
+using RegisterFieldTraits = runtime::RegisterFieldTraits<Id>;
+
+template <ClockGateId Id>
+using ClockGateTraits = runtime::ClockGateTraits<Id>;
+
+template <ResetId Id>
+using ResetTraits = runtime::ResetTraits<Id>;
+
+template <ClockSelectorId Id>
+using ClockSelectorTraits = runtime::ClockSelectorTraits<Id>;
+
+template <PeripheralId Id>
+using PeripheralClockBindingTraits = runtime::PeripheralClockBindingTraits<Id>;
+
+template <PinId Pin, PeripheralId Peripheral, SignalId Signal>
+using RouteTraits = runtime::RouteTraits<Pin, Peripheral, Signal>;
+
+template <PeripheralId Peripheral, SignalId... Signals>
+using ConnectionGroupTraits = runtime::ConnectionGroupTraits<Peripheral, Signals...>;
+
+template <PinId Id>
+using GpioSemanticTraits = runtime::GpioSemanticTraits<Id>;
+
+template <PeripheralId Id>
+using UartSemanticTraits = runtime::UartSemanticTraits<Id>;
+
+template <PeripheralId Id>
+using I2cSemanticTraits = runtime::I2cSemanticTraits<Id>;
+
+template <PeripheralId Id>
+using SpiSemanticTraits = runtime::SpiSemanticTraits<Id>;
+
+    #if ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE
+template <PeripheralId Peripheral, SignalId Signal>
+using DmaSemanticTraits = runtime::DmaSemanticTraits<Peripheral, Signal>;
+    #endif
+
+#if ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using AdcSemanticTraits = runtime::AdcSemanticTraits<Id>;
+#endif
+
+#if ALLOY_DEVICE_DAC_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using DacSemanticTraits = runtime::DacSemanticTraits<Id>;
+
+template <PeripheralId Id, std::size_t Channel>
+using DacChannelSemanticTraits = runtime::DacChannelSemanticTraits<Id, Channel>;
+#endif
+
+#if ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using CanSemanticTraits = runtime::CanSemanticTraits<Id>;
+#endif
+
+#if ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using RtcSemanticTraits = runtime::RtcSemanticTraits<Id>;
+#endif
+
+#if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using WatchdogSemanticTraits = runtime::WatchdogSemanticTraits<Id>;
+#endif
+
+#if ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using TimerSemanticTraits = runtime::TimerSemanticTraits<Id>;
+
+template <PeripheralId Id, std::size_t Channel>
+using TimerChannelSemanticTraits = runtime::TimerChannelSemanticTraits<Id, Channel>;
+#endif
+
+#if ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE
+template <PeripheralId Id>
+using PwmSemanticTraits = runtime::PwmSemanticTraits<Id>;
+
+template <PeripheralId Id, std::size_t Channel>
+using PwmChannelSemanticTraits = runtime::PwmChannelSemanticTraits<Id, Channel>;
+#endif
+
+template <PinId Id>
+struct pin {
+    static constexpr auto id = Id;
+    static constexpr auto name = detail::enum_name<Id>();
+};
+
+template <PeripheralId Id>
+struct peripheral {
+    static constexpr auto id = Id;
+    static constexpr auto name = detail::enum_name<Id>();
+};
+
+template <SignalId Id>
+struct signal {
+    static constexpr auto id = Id;
+    static constexpr auto name = detail::trim_prefix(detail::enum_name<Id>(), "signal_");
+};
 #endif
 
 struct SelectedRuntimeDescriptors {

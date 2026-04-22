@@ -1,8 +1,8 @@
 #include <string_view>
 
 #include "hal/claim.hpp"
-#include "hal/connect/runtime_connector.hpp"
-#include "hal/connect/tags.hpp"
+#include "device/runtime.hpp"
+#include "hal/connect/connector.hpp"
 
 #include "device/traits.hpp"
 
@@ -25,19 +25,15 @@ consteval auto connector_is_usable() -> bool {
 static_assert(alloy::device::SelectedDeviceTraits::available);
 
 #if defined(ALLOY_BOARD_NUCLEO_G071RB)
-using DebugUart = connection::runtime_connector<
-    peripheral<"USART2">, alloy::device::runtime::PeripheralId::USART2,
-    connection::runtime_binding<tx<pin<"PA2">>, alloy::device::runtime::PinId::PA2,
-                                alloy::device::runtime::SignalId::signal_tx>,
-    connection::runtime_binding<rx<pin<"PA3">>, alloy::device::runtime::PinId::PA3,
-                                alloy::device::runtime::SignalId::signal_rx>>;
+using DebugUart = connection::connector<
+    alloy::device::PeripheralId::USART2,
+    connection::tx<alloy::device::PinId::PA2, alloy::device::SignalId::signal_tx>,
+    connection::rx<alloy::device::PinId::PA3, alloy::device::SignalId::signal_rx>>;
 
-using InvalidUart = connection::runtime_connector<
-    peripheral<"USART2">, alloy::device::runtime::PeripheralId::USART2,
-    connection::runtime_binding<tx<pin<"PA2">>, alloy::device::runtime::PinId::PA2,
-                                alloy::device::runtime::SignalId::signal_tx>,
-    connection::runtime_binding<rx<pin<"PZ99">>, alloy::device::runtime::PinId::none,
-                                alloy::device::runtime::SignalId::signal_rx>>;
+using InvalidUart = connection::connector<
+    alloy::device::PeripheralId::USART2,
+    connection::tx<alloy::device::PinId::PA2, alloy::device::SignalId::signal_tx>,
+    connection::rx<alloy::device::PinId::none, alloy::device::SignalId::signal_rx>>;
 
 static_assert(DebugUart::valid);
 static_assert(connector_is_usable<DebugUart>());
@@ -51,19 +47,15 @@ static_assert(DebugUartClaim::pin_count == 2);
 static_assert(DebugUartClaim::pins()[0] == std::string_view{"PA2"});
 static_assert(DebugUartClaim::signals()[1] == std::string_view{"rx"});
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
-using DebugUart = connection::runtime_connector<
-    peripheral<"USART2">, alloy::device::runtime::PeripheralId::USART2,
-    connection::runtime_binding<tx<pin<"PA2">>, alloy::device::runtime::PinId::PA2,
-                                alloy::device::runtime::SignalId::signal_tx>,
-    connection::runtime_binding<rx<pin<"PA3">>, alloy::device::runtime::PinId::PA3,
-                                alloy::device::runtime::SignalId::signal_rx>>;
+using DebugUart = connection::connector<
+    alloy::device::PeripheralId::USART2,
+    connection::tx<alloy::device::PinId::PA2, alloy::device::SignalId::signal_tx>,
+    connection::rx<alloy::device::PinId::PA3, alloy::device::SignalId::signal_rx>>;
 
-using InvalidUart = connection::runtime_connector<
-    peripheral<"USART2">, alloy::device::runtime::PeripheralId::USART2,
-    connection::runtime_binding<tx<pin<"PA2">>, alloy::device::runtime::PinId::PA2,
-                                alloy::device::runtime::SignalId::signal_tx>,
-    connection::runtime_binding<rx<pin<"PZ99">>, alloy::device::runtime::PinId::none,
-                                alloy::device::runtime::SignalId::signal_rx>>;
+using InvalidUart = connection::connector<
+    alloy::device::PeripheralId::USART2,
+    connection::tx<alloy::device::PinId::PA2, alloy::device::SignalId::signal_tx>,
+    connection::rx<alloy::device::PinId::none, alloy::device::SignalId::signal_rx>>;
 
 static_assert(DebugUart::valid);
 static_assert(connector_is_usable<DebugUart>());
@@ -71,19 +63,15 @@ static_assert(!InvalidUart::valid);
 using DebugUartViaFunction = DebugUart;
 static_assert(DebugUartViaFunction::valid);
 #elif defined(ALLOY_BOARD_SAME70_XPLD)
-using DebugUart = connection::runtime_connector<
-    peripheral<"USART1">, alloy::device::runtime::PeripheralId::USART1,
-    connection::runtime_binding<tx<pin<"PB4">>, alloy::device::runtime::PinId::PB4,
-                                alloy::device::runtime::SignalId::signal_txd1>,
-    connection::runtime_binding<rx<pin<"PA21">>, alloy::device::runtime::PinId::PA21,
-                                alloy::device::runtime::SignalId::signal_rxd1>>;
+using DebugUart = connection::connector<
+    alloy::device::PeripheralId::USART1,
+    connection::tx<alloy::device::PinId::PB4, alloy::device::SignalId::signal_txd1>,
+    connection::rx<alloy::device::PinId::PA21, alloy::device::SignalId::signal_rxd1>>;
 
-using InvalidUart = connection::runtime_connector<
-    peripheral<"USART1">, alloy::device::runtime::PeripheralId::USART1,
-    connection::runtime_binding<tx<pin<"PB4">>, alloy::device::runtime::PinId::PB4,
-                                alloy::device::runtime::SignalId::signal_txd1>,
-    connection::runtime_binding<rx<pin<"PZ99">>, alloy::device::runtime::PinId::none,
-                                alloy::device::runtime::SignalId::signal_rxd1>>;
+using InvalidUart = connection::connector<
+    alloy::device::PeripheralId::USART1,
+    connection::tx<alloy::device::PinId::PB4, alloy::device::SignalId::signal_txd1>,
+    connection::rx<alloy::device::PinId::none, alloy::device::SignalId::signal_rxd1>>;
 
 static_assert(DebugUart::valid);
 static_assert(connector_is_usable<DebugUart>());

@@ -2,25 +2,18 @@
 
 #include <cstdint>
 
-#include "hal/connect/runtime_connector.hpp"
-#include "hal/connect/tags.hpp"
+#include "device/runtime.hpp"
+#include "hal/connect/connector.hpp"
 #include "hal/i2c.hpp"
 
 #include "board.hpp"
 
 namespace board {
 
-using BoardI2cSclPin = alloy::hal::pin<"PA4">;
-using BoardI2cSdaPin = alloy::hal::pin<"PA3">;
-
-using BoardI2cConnector = alloy::hal::connection::runtime_connector<
-    alloy::hal::peripheral<"TWIHS0">, alloy::device::runtime::PeripheralId::TWIHS0,
-    alloy::hal::connection::runtime_binding<alloy::hal::scl<BoardI2cSclPin>,
-                                            alloy::device::runtime::PinId::PA4,
-                                            alloy::device::runtime::SignalId::signal_twck0>,
-    alloy::hal::connection::runtime_binding<alloy::hal::sda<BoardI2cSdaPin>,
-                                            alloy::device::runtime::PinId::PA3,
-                                            alloy::device::runtime::SignalId::signal_twd0>>;
+using BoardI2cConnector = alloy::hal::connection::connector<
+    alloy::device::PeripheralId::TWIHS0,
+    alloy::hal::connection::scl<alloy::device::PinId::PA4, alloy::device::SignalId::signal_twck0>,
+    alloy::hal::connection::sda<alloy::device::PinId::PA3, alloy::device::SignalId::signal_twd0>>;
 using BoardI2c = alloy::hal::i2c::port_handle<BoardI2cConnector>;
 
 inline constexpr std::uint32_t kBoardI2cPeripheralClockHz =

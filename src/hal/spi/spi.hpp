@@ -29,13 +29,13 @@ template <typename Connector>
 requires(Connector::valid) class port_handle {
    public:
     using connector_type = Connector;
-    using runtime_peripheral_id = device::runtime::PeripheralId;
+    using runtime_peripheral_id = device::PeripheralId;
 
     static constexpr auto package_name = Connector::package_name;
     static constexpr auto peripheral_name = Connector::peripheral_type::name;
     static constexpr auto peripheral_id = Connector::peripheral_id;
-    using peripheral_traits = device::runtime::PeripheralInstanceTraits<peripheral_id>;
-    using semantic_traits = device::runtime::SpiSemanticTraits<peripheral_id>;
+    using peripheral_traits = device::PeripheralInstanceTraits<peripheral_id>;
+    using semantic_traits = device::SpiSemanticTraits<peripheral_id>;
     static constexpr auto schema =
         peripheral_id == runtime_peripheral_id::none
             ? detail::runtime::SpiSchema::unknown

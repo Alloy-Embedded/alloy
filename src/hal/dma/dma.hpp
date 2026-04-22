@@ -14,7 +14,7 @@ template <PeripheralId Peripheral, SignalId Signal>
 class channel_handle {
    public:
     using binding_traits = BindingTraits<Peripheral, Signal>;
-    using semantic_traits = device::runtime::DmaSemanticTraits<Peripheral, Signal>;
+    using semantic_traits = device::DmaSemanticTraits<Peripheral, Signal>;
     using controller_traits = ControllerTraits<binding_traits::kControllerId>;
 
     static constexpr auto peripheral_id = Peripheral;
@@ -32,7 +32,7 @@ class channel_handle {
     static constexpr auto router_peripheral_id = semantic_traits::kRouterPeripheralId;
     static constexpr auto controller_base_address =
         controller_traits::kPresent
-            ? device::runtime::PeripheralInstanceTraits<controller_peripheral_id>::kBaseAddress
+            ? device::PeripheralInstanceTraits<controller_peripheral_id>::kBaseAddress
             : std::uintptr_t{0u};
     static constexpr int fixed_channel_index = semantic_traits::kChannelIndex;
     static constexpr int request_value = semantic_traits::kRequestValue;

@@ -23,7 +23,7 @@ using namespace alloy::hal;
 
 namespace {
 
-using PeripheralId = alloy::device::runtime::PeripheralId;
+using PeripheralId = alloy::device::PeripheralId;
 constexpr auto kRtcPeripheral = PeripheralId::RTC;
 
 [[noreturn]] void blink_error(std::uint32_t period_ms) {

@@ -9,7 +9,7 @@
 namespace alloy::hal::timer {
 
 #if ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE
-using PeripheralId = device::runtime::PeripheralId;
+using PeripheralId = device::PeripheralId;
 
 struct Config {
     std::uint32_t period = 0u;
@@ -20,7 +20,7 @@ struct Config {
 template <PeripheralId Peripheral>
 class handle {
    public:
-    using semantic_traits = device::runtime::TimerSemanticTraits<Peripheral>;
+    using semantic_traits = device::TimerSemanticTraits<Peripheral>;
     using config_type = Config;
 
     static constexpr auto peripheral_id = Peripheral;

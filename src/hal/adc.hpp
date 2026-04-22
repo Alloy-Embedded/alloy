@@ -9,7 +9,7 @@
 namespace alloy::hal::adc {
 
 #if ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE
-using PeripheralId = device::runtime::PeripheralId;
+using PeripheralId = device::PeripheralId;
 
 struct Config {
     bool enable_on_configure = true;
@@ -19,7 +19,7 @@ struct Config {
 template <PeripheralId Peripheral>
 class handle {
   public:
-    using semantic_traits = device::runtime::AdcSemanticTraits<Peripheral>;
+    using semantic_traits = device::AdcSemanticTraits<Peripheral>;
     using config_type = Config;
 
     static constexpr auto peripheral_id = Peripheral;

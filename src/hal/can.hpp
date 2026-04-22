@@ -9,7 +9,7 @@
 namespace alloy::hal::can {
 
 #if ALLOY_DEVICE_CAN_SEMANTICS_AVAILABLE
-using PeripheralId = device::runtime::PeripheralId;
+using PeripheralId = device::PeripheralId;
 
 struct nominal_timing_config {
     std::uint32_t prescaler = 1u;
@@ -30,7 +30,7 @@ struct Config {
 template <PeripheralId Peripheral>
 class handle {
    public:
-    using semantic_traits = device::runtime::CanSemanticTraits<Peripheral>;
+    using semantic_traits = device::CanSemanticTraits<Peripheral>;
     using config_type = Config;
 
     static constexpr auto peripheral_id = Peripheral;

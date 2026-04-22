@@ -30,8 +30,8 @@ namespace rt = alloy::hal::detail::runtime;
 
 using RuntimeRegisterRef = rt::RegisterRef;
 using RuntimeFieldRef = rt::FieldRef;
-using RuntimePinId = device::runtime::PinId;
-using RuntimePeripheralId = device::runtime::PeripheralId;
+using RuntimePinId = device::PinId;
+using RuntimePeripheralId = device::PeripheralId;
 
 template <std::size_t Capacity>
 struct StringList {
@@ -43,12 +43,6 @@ struct StringList {
     [[nodiscard]] constexpr auto operator[](std::size_t index) const -> std::string_view {
         return items[index];
     }
-};
-
-struct ParsedPin {
-    char port_letter = '\0';
-    int line_index = -1;
-    bool valid = false;
 };
 
 [[nodiscard]] constexpr auto ascii_lower(char ch) -> char {
@@ -133,46 +127,19 @@ template <auto Value>
     return name;
 }
 
-template <auto Value>
-[[nodiscard]] constexpr auto selected_scoped_enum_matches(std::string_view query) -> bool {
-    return ascii_iequals(selected_scoped_enum_name<Value>(), query);
-}
-
-[[nodiscard]] consteval auto parse_pin_name(std::string_view pin_name) -> ParsedPin {
-    if (pin_name.size() < 3u || pin_name[0] != 'P') {
-        return {};
-    }
-
-    auto line_index = 0;
-    for (std::size_t index = 2; index < pin_name.size(); ++index) {
-        const auto ch = pin_name[index];
-        if (ch < '0' || ch > '9') {
-            return {};
-        }
-        line_index = (line_index * 10) + static_cast<int>(ch - '0');
-    }
-
-    return {
-        .port_letter = pin_name[1],
-        .line_index = line_index,
-        .valid = true,
-    };
-}
-
 template <std::size_t... Index>
-[[nodiscard]] consteval auto find_gpio_peripheral_id_impl(char port_letter,
+[[nodiscard]] consteval auto find_gpio_peripheral_id_impl(device::PortId port_id,
                                                           std::index_sequence<Index...>)
     -> RuntimePeripheralId {
     auto resolved = RuntimePeripheralId::none;
+    const auto target_instance = port_id == device::PortId::none ? -1 : (static_cast<int>(port_id) - 1);
 
     auto match = [&]<std::size_t I>() consteval {
         constexpr auto peripheral_id = device::runtime::runtime_peripheral_ids[I];
-        using traits = device::runtime::PeripheralInstanceTraits<peripheral_id>;
-        if constexpr (traits::kPresent && traits::kPeripheralClassId ==
-                                              device::runtime::PeripheralClassId::class_gpio) {
-            constexpr auto peripheral_name = selected_scoped_enum_name<peripheral_id>();
-            if (resolved == RuntimePeripheralId::none && !peripheral_name.empty() &&
-                peripheral_name.back() == port_letter) {
+        using traits = device::PeripheralInstanceTraits<peripheral_id>;
+        if constexpr (traits::kPresent &&
+                      traits::kPeripheralClassId == device::PeripheralClassId::class_gpio) {
+            if (resolved == RuntimePeripheralId::none && traits::kInstance == target_instance) {
                 resolved = peripheral_id;
             }
         }
@@ -182,31 +149,9 @@ template <std::size_t... Index>
     return resolved;
 }
 
-template <std::size_t... Index>
-[[nodiscard]] consteval auto find_runtime_pin_id_impl(std::string_view pin_name,
-                                                      std::index_sequence<Index...>)
-    -> RuntimePinId {
-    auto resolved = RuntimePinId::none;
-
-    auto match = [&]<std::size_t I>() consteval {
-        constexpr auto pin_id = device::runtime::runtime_pin_ids[I];
-        if (resolved == RuntimePinId::none && selected_scoped_enum_matches<pin_id>(pin_name)) {
-            resolved = pin_id;
-        }
-    };
-
-    (match.template operator()<Index>(), ...);
-    return resolved;
-}
-
-[[nodiscard]] consteval auto find_runtime_pin_id(std::string_view pin_name) -> RuntimePinId {
-    return find_runtime_pin_id_impl(
-        pin_name, std::make_index_sequence<std::size(device::runtime::runtime_pin_ids)>{});
-}
-
-[[nodiscard]] consteval auto find_gpio_peripheral_id(char port_letter) -> RuntimePeripheralId {
+[[nodiscard]] consteval auto find_gpio_peripheral_id(device::PortId port_id) -> RuntimePeripheralId {
     return find_gpio_peripheral_id_impl(
-        port_letter,
+        port_id,
         std::make_index_sequence<std::size(device::runtime::runtime_peripheral_ids)>{});
 }
 
@@ -383,11 +328,16 @@ template <std::size_t... Index>
 template <typename Pin>
 struct pin_handle {
     static constexpr bool available = device::SelectedRuntimeDescriptors::available;
-    static constexpr auto parsed_pin = detail::parse_pin_name(Pin::name);
-    static constexpr auto peripheral_id =
-        available && parsed_pin.valid ? detail::find_gpio_peripheral_id(parsed_pin.port_letter)
-                                      : detail::RuntimePeripheralId::none;
-    using peripheral_traits = device::runtime::PeripheralInstanceTraits<peripheral_id>;
+    static_assert(requires { Pin::id; }, "GPIO pin_handle requires a typed pin with a PinId.");
+    static constexpr auto pin_id = Pin::id;
+    using pin_traits = device::PinTraits<pin_id>;
+    static constexpr auto peripheral_id = [] {
+        if constexpr (!available || pin_id == detail::RuntimePinId::none || !pin_traits::kPresent) {
+            return detail::RuntimePeripheralId::none;
+        }
+        return detail::find_gpio_peripheral_id(pin_traits::kPortId);
+    }();
+    using peripheral_traits = device::PeripheralInstanceTraits<peripheral_id>;
 
     static constexpr auto peripheral_name =
         peripheral_id == detail::RuntimePeripheralId::none
@@ -398,20 +348,11 @@ struct pin_handle {
         peripheral_id == detail::RuntimePeripheralId::none
             ? hal::detail::runtime::GpioSchema::unknown
             : hal::detail::runtime::to_gpio_schema(peripheral_traits::kSchemaId);
-    static constexpr auto pin_id = [] {
-        if constexpr (!available) {
-            return detail::RuntimePinId::none;
-        }
-        if constexpr (schema == hal::detail::runtime::GpioSchema::st_gpio && parsed_pin.valid) {
-            return detail::RuntimePinId::none;
-        }
-        return detail::find_runtime_pin_id(Pin::name);
-    }();
-    using semantic_traits = device::runtime::GpioSemanticTraits<pin_id>;
+    using semantic_traits = device::GpioSemanticTraits<pin_id>;
     static constexpr auto line_index =
-        parsed_pin.valid
-            ? parsed_pin.line_index
-            : (semantic_traits::kPresent ? static_cast<int>(semantic_traits::kLineIndex) : -1);
+        pin_traits::kPresent ? static_cast<int>(pin_traits::kPinNumber)
+                             : (semantic_traits::kPresent ? static_cast<int>(semantic_traits::kLineIndex)
+                                                          : -1);
 
     static constexpr auto direction_field = [] {
         if constexpr (schema == hal::detail::runtime::GpioSchema::nxp_imxrt_gpio_v1) {

@@ -4,22 +4,18 @@
 
 #if defined(ALLOY_BOARD_NUCLEO_G071RB)
 #include "hal/adc.hpp"
-#include "hal/connect/runtime_connector.hpp"
-#include "hal/connect/tags.hpp"
+#include "device/runtime.hpp"
+#include "hal/connect/connector.hpp"
 #include "hal/uart.hpp"
 
 namespace {
 
 using DmaPeripheralId = alloy::hal::dma::PeripheralId;
 using DmaSignalId = alloy::hal::dma::SignalId;
-using UartConnector = alloy::hal::connection::runtime_connector<
-    alloy::hal::peripheral<"USART1">, alloy::device::runtime::PeripheralId::USART1,
-    alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PA9">>,
-                                            alloy::device::runtime::PinId::PA9,
-                                            alloy::device::runtime::SignalId::signal_tx>,
-    alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PA10">>,
-                                            alloy::device::runtime::PinId::PA10,
-                                            alloy::device::runtime::SignalId::signal_rx>>;
+using UartConnector = alloy::hal::connection::connector<
+    alloy::device::PeripheralId::USART1,
+    alloy::hal::connection::tx<alloy::device::PinId::PA9, alloy::device::SignalId::signal_tx>,
+    alloy::hal::connection::rx<alloy::device::PinId::PA10, alloy::device::SignalId::signal_rx>>;
 
 }  // namespace
 
@@ -40,22 +36,18 @@ void compile_peripheral_dma_api() {
 #elif defined(ALLOY_BOARD_NUCLEO_F401RE)
 
 #include "hal/adc.hpp"
-#include "hal/connect/runtime_connector.hpp"
-#include "hal/connect/tags.hpp"
+#include "device/runtime.hpp"
+#include "hal/connect/connector.hpp"
 #include "hal/uart.hpp"
 
 namespace {
 
 using DmaPeripheralId = alloy::hal::dma::PeripheralId;
 using DmaSignalId = alloy::hal::dma::SignalId;
-using UartConnector = alloy::hal::connection::runtime_connector<
-    alloy::hal::peripheral<"USART2">, alloy::device::runtime::PeripheralId::USART2,
-    alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PA2">>,
-                                            alloy::device::runtime::PinId::PA2,
-                                            alloy::device::runtime::SignalId::signal_tx>,
-    alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PA3">>,
-                                            alloy::device::runtime::PinId::PA3,
-                                            alloy::device::runtime::SignalId::signal_rx>>;
+using UartConnector = alloy::hal::connection::connector<
+    alloy::device::PeripheralId::USART2,
+    alloy::hal::connection::tx<alloy::device::PinId::PA2, alloy::device::SignalId::signal_tx>,
+    alloy::hal::connection::rx<alloy::device::PinId::PA3, alloy::device::SignalId::signal_rx>>;
 
 }  // namespace
 
@@ -76,8 +68,8 @@ void compile_peripheral_dma_api() {
 #elif defined(ALLOY_BOARD_SAME70_XPLD)
 
 #include "hal/adc.hpp"
-#include "hal/connect/runtime_connector.hpp"
-#include "hal/connect/tags.hpp"
+#include "device/runtime.hpp"
+#include "hal/connect/connector.hpp"
 #include "hal/dac.hpp"
 #include "hal/i2c.hpp"
 #include "hal/pwm.hpp"
@@ -88,33 +80,22 @@ namespace {
 
 using DmaPeripheralId = alloy::hal::dma::PeripheralId;
 using DmaSignalId = alloy::hal::dma::SignalId;
-using UartConnector = alloy::hal::connection::runtime_connector<
-    alloy::hal::peripheral<"USART1">, alloy::device::runtime::PeripheralId::USART1,
-    alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PB4">>,
-                                            alloy::device::runtime::PinId::PB4,
-                                            alloy::device::runtime::SignalId::signal_txd1>,
-    alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PA21">>,
-                                            alloy::device::runtime::PinId::PA21,
-                                            alloy::device::runtime::SignalId::signal_rxd1>>;
-using SpiConnector = alloy::hal::connection::runtime_connector<
-    alloy::hal::peripheral<"SPI0">, alloy::device::runtime::PeripheralId::SPI0,
-    alloy::hal::connection::runtime_binding<alloy::hal::sck<alloy::hal::pin<"PD22">>,
-                                            alloy::device::runtime::PinId::PD22,
-                                            alloy::device::runtime::SignalId::signal_spck>,
-    alloy::hal::connection::runtime_binding<alloy::hal::miso<alloy::hal::pin<"PD20">>,
-                                            alloy::device::runtime::PinId::PD20,
-                                            alloy::device::runtime::SignalId::signal_miso>,
-    alloy::hal::connection::runtime_binding<alloy::hal::mosi<alloy::hal::pin<"PD21">>,
-                                            alloy::device::runtime::PinId::PD21,
-                                            alloy::device::runtime::SignalId::signal_mosi>>;
-using I2cConnector = alloy::hal::connection::runtime_connector<
-    alloy::hal::peripheral<"TWIHS0">, alloy::device::runtime::PeripheralId::TWIHS0,
-    alloy::hal::connection::runtime_binding<alloy::hal::scl<alloy::hal::pin<"PA4">>,
-                                            alloy::device::runtime::PinId::PA4,
-                                            alloy::device::runtime::SignalId::signal_twck0>,
-    alloy::hal::connection::runtime_binding<alloy::hal::sda<alloy::hal::pin<"PA3">>,
-                                            alloy::device::runtime::PinId::PA3,
-                                            alloy::device::runtime::SignalId::signal_twd0>>;
+using UartConnector = alloy::hal::connection::connector<
+    alloy::device::PeripheralId::USART1,
+    alloy::hal::connection::tx<alloy::device::PinId::PB4, alloy::device::SignalId::signal_txd1>,
+    alloy::hal::connection::rx<alloy::device::PinId::PA21,
+                               alloy::device::SignalId::signal_rxd1>>;
+using SpiConnector = alloy::hal::connection::connector<
+    alloy::device::PeripheralId::SPI0,
+    alloy::hal::connection::sck<alloy::device::PinId::PD22, alloy::device::SignalId::signal_spck>,
+    alloy::hal::connection::miso<alloy::device::PinId::PD20,
+                                 alloy::device::SignalId::signal_miso>,
+    alloy::hal::connection::mosi<alloy::device::PinId::PD21,
+                                 alloy::device::SignalId::signal_mosi>>;
+using I2cConnector = alloy::hal::connection::connector<
+    alloy::device::PeripheralId::TWIHS0,
+    alloy::hal::connection::scl<alloy::device::PinId::PA4, alloy::device::SignalId::signal_twck0>,
+    alloy::hal::connection::sda<alloy::device::PinId::PA3, alloy::device::SignalId::signal_twd0>>;
 
 }  // namespace
 

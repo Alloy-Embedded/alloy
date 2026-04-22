@@ -20,15 +20,23 @@ struct EmptyRequirements {
     [[nodiscard]] constexpr auto size() const -> std::size_t { return 0u; }
 };
 
-using RegisterRef = device::runtime::RuntimeRegisterRef;
-using FieldRef = device::runtime::RuntimeFieldRef;
+using RegisterRef = device::RuntimeRegisterRef;
+using FieldRef = device::RuntimeFieldRef;
+using RegisterId = device::RegisterId;
+using FieldId = device::FieldId;
+using PortId = device::PortId;
+using PinId = device::PinId;
+using PeripheralId = device::PeripheralId;
+using SignalId = device::SignalId;
+using PeripheralClassId = device::PeripheralClassId;
+using RouteOperation = device::RouteOperation;
 
-inline constexpr auto kInvalidRegisterRef = device::runtime::invalid_register_ref;
-inline constexpr auto kInvalidFieldRef = device::runtime::invalid_field_ref;
+inline constexpr auto kInvalidRegisterRef = device::invalid_register_ref;
+inline constexpr auto kInvalidFieldRef = device::invalid_field_ref;
 
-template <device::runtime::RegisterId Id>
+template <RegisterId Id>
 [[nodiscard]] consteval auto register_ref() -> RegisterRef {
-    using traits = device::runtime::RegisterTraits<Id>;
+    using traits = device::RegisterTraits<Id>;
     if constexpr (!traits::kPresent) {
         return kInvalidRegisterRef;
     } else {
@@ -36,9 +44,9 @@ template <device::runtime::RegisterId Id>
     }
 }
 
-template <device::runtime::FieldId Id>
+template <FieldId Id>
 [[nodiscard]] consteval auto field_ref() -> FieldRef {
-    using traits = device::runtime::RegisterFieldTraits<Id>;
+    using traits = device::RegisterFieldTraits<Id>;
     if constexpr (!traits::kPresent) {
         return kInvalidFieldRef;
     } else {
@@ -69,20 +77,20 @@ template <typename SchemaId>
 }
 
 struct RuntimePinLocation {
-    device::runtime::PortId port_id = device::runtime::PortId::none;
+    PortId port_id = PortId::none;
     int pin_number = -1;
     bool valid = false;
 };
 
 template <std::size_t... Index>
-[[nodiscard]] consteval auto find_runtime_pin_location_impl(device::runtime::PinId pin_id,
+[[nodiscard]] consteval auto find_runtime_pin_location_impl(PinId pin_id,
                                                             std::index_sequence<Index...>)
     -> RuntimePinLocation {
     auto resolved = RuntimePinLocation{};
 
     auto match = [&]<std::size_t I>() consteval {
         constexpr auto candidate = device::runtime::runtime_pin_ids[I];
-        using traits = device::runtime::PinTraits<candidate>;
+        using traits = device::PinTraits<candidate>;
         if (resolved.valid || candidate != pin_id || !traits::kPresent) {
             return;
         }
@@ -98,32 +106,31 @@ template <std::size_t... Index>
     return resolved;
 }
 
-[[nodiscard]] consteval auto find_runtime_pin_location(device::runtime::PinId pin_id)
+[[nodiscard]] consteval auto find_runtime_pin_location(PinId pin_id)
     -> RuntimePinLocation {
     return find_runtime_pin_location_impl(
         pin_id, std::make_index_sequence<std::size(device::runtime::runtime_pin_ids)>{});
 }
 
-[[nodiscard]] consteval auto port_instance(device::runtime::PortId port_id) -> int {
-    if (port_id == device::runtime::PortId::none) {
+[[nodiscard]] consteval auto port_instance(PortId port_id) -> int {
+    if (port_id == PortId::none) {
         return -1;
     }
     return static_cast<int>(port_id) - 1;
 }
 
 template <std::size_t... Index>
-[[nodiscard]] consteval auto find_gpio_peripheral_id_impl(device::runtime::PortId port_id,
+[[nodiscard]] consteval auto find_gpio_peripheral_id_impl(PortId port_id,
                                                           std::index_sequence<Index...>)
-    -> device::runtime::PeripheralId {
+    -> PeripheralId {
     const auto target_instance = port_instance(port_id);
-    auto resolved = device::runtime::PeripheralId::none;
+    auto resolved = PeripheralId::none;
 
     auto match = [&]<std::size_t I>() consteval {
         constexpr auto peripheral_id = device::runtime::runtime_peripheral_ids[I];
-        using traits = device::runtime::PeripheralInstanceTraits<peripheral_id>;
-        if constexpr (traits::kPresent && traits::kPeripheralClassId ==
-                                              device::runtime::PeripheralClassId::class_gpio) {
-            if (resolved == device::runtime::PeripheralId::none &&
+        using traits = device::PeripheralInstanceTraits<peripheral_id>;
+        if constexpr (traits::kPresent && traits::kPeripheralClassId == PeripheralClassId::class_gpio) {
+            if (resolved == PeripheralId::none &&
                 traits::kInstance == target_instance) {
                 resolved = peripheral_id;
             }
@@ -134,8 +141,8 @@ template <std::size_t... Index>
     return resolved;
 }
 
-[[nodiscard]] consteval auto find_gpio_peripheral_id(device::runtime::PortId port_id)
-    -> device::runtime::PeripheralId {
+[[nodiscard]] consteval auto find_gpio_peripheral_id(PortId port_id)
+    -> PeripheralId {
     return find_gpio_peripheral_id_impl(
         port_id, std::make_index_sequence<std::size(device::runtime::runtime_peripheral_ids)>{});
 }

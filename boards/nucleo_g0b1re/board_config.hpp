@@ -10,9 +10,8 @@
 
 #include <cstdint>
 
-#include "hal/connect/tags.hpp"
-
 #include "device/system_clock.hpp"
+#include "device/runtime.hpp"
 
 namespace nucleo_g0b1re {
 
@@ -22,7 +21,7 @@ namespace nucleo_g0b1re {
 
 struct LedConfig {
     /// Green LED (LD4) on PA5 - Arduino D13 compatible pin
-    using led_green = alloy::hal::pin<"PA5">;
+    using led_green = alloy::device::pin<alloy::device::PinId::PA5>;
 
     /// LED is active HIGH (turns on when pin is HIGH)
     static constexpr bool led_green_active_high = true;
@@ -34,7 +33,7 @@ struct LedConfig {
 
 struct ButtonConfig {
     /// User button (B1) on PC13 - Active LOW (pressed = LOW)
-    using button_user = alloy::hal::pin<"PC13">;
+    using button_user = alloy::device::pin<alloy::device::PinId::PC13>;
 
     /// Button is active LOW
     static constexpr bool button_active_high = false;

@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <string_view>
 
+#include "hal/connect/fixed_string.hpp"
 #include "hal/connect/runtime_connector.hpp"
 #include "hal/connect/tags.hpp"
 #include "hal/dma/bindings.hpp"

@@ -33,20 +33,20 @@ using alloy::hal::detail::runtime::field_ref;
 using alloy::hal::detail::runtime::register_ref;
 using alloy::hal::detail::runtime::write_register;
 
-using BoardLed = alloy::hal::pin<"PC8">;
+using BoardLed = alloy::device::pin<alloy::device::PinId::PC8>;
 
 constexpr std::uintptr_t kMatrixBase = 0x40088000u;
 constexpr std::uintptr_t kMatrixCcfgSysio = kMatrixBase + 0x0114u;
 constexpr std::uint32_t kMatrixSysioPb4 = 1u << 4u;
 
-void disable_startup_control_peripheral(alloy::device::runtime::PeripheralId peripheral_id) {
+void disable_startup_control_peripheral(alloy::device::PeripheralId peripheral_id) {
 #if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
-    if (peripheral_id == alloy::device::runtime::PeripheralId::WDT) {
-        alloy::hal::watchdog::open<alloy::device::runtime::PeripheralId::WDT>().disable().unwrap();
+    if (peripheral_id == alloy::device::PeripheralId::WDT) {
+        alloy::hal::watchdog::open<alloy::device::PeripheralId::WDT>().disable().unwrap();
         return;
     }
-    if (peripheral_id == alloy::device::runtime::PeripheralId::RSWDT) {
-        alloy::hal::watchdog::open<alloy::device::runtime::PeripheralId::RSWDT>()
+    if (peripheral_id == alloy::device::PeripheralId::RSWDT) {
+        alloy::hal::watchdog::open<alloy::device::PeripheralId::RSWDT>()
             .disable()
             .unwrap();
         return;
@@ -56,9 +56,8 @@ void disable_startup_control_peripheral(alloy::device::runtime::PeripheralId per
 #endif
 }
 
-template <alloy::device::runtime::RegisterId RegisterId,
-          alloy::device::runtime::FieldId DisableFieldId,
-          alloy::device::runtime::FieldId GuardFieldId>
+template <alloy::device::RegisterId RegisterId, alloy::device::FieldId DisableFieldId,
+          alloy::device::FieldId GuardFieldId>
 void disable_watchdog_from_fields() {
     constexpr auto reg = register_ref<RegisterId>();
     constexpr auto disable_field = field_ref<DisableFieldId>();
@@ -153,17 +152,17 @@ void init() {
         disable_startup_control_peripheral(step.peripheral_id);
     }
 #elif ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
-    alloy::hal::watchdog::open<alloy::device::runtime::PeripheralId::WDT>().disable().unwrap();
-    alloy::hal::watchdog::open<alloy::device::runtime::PeripheralId::RSWDT>()
+    alloy::hal::watchdog::open<alloy::device::PeripheralId::WDT>().disable().unwrap();
+    alloy::hal::watchdog::open<alloy::device::PeripheralId::RSWDT>()
         .disable()
         .unwrap();
 #else
-    disable_watchdog_from_fields<alloy::device::runtime::RegisterId::register_wdt_mr,
-                                 alloy::device::runtime::FieldId::field_wdt_mr_wddis,
-                                 alloy::device::runtime::FieldId::field_wdt_mr_wdd>();
-    disable_watchdog_from_fields<alloy::device::runtime::RegisterId::register_rswdt_mr,
-                                 alloy::device::runtime::FieldId::field_rswdt_mr_wddis,
-                                 alloy::device::runtime::FieldId::field_rswdt_mr_allones>();
+    disable_watchdog_from_fields<alloy::device::RegisterId::register_wdt_mr,
+                                 alloy::device::FieldId::field_wdt_mr_wddis,
+                                 alloy::device::FieldId::field_wdt_mr_wdd>();
+    disable_watchdog_from_fields<alloy::device::RegisterId::register_rswdt_mr,
+                                 alloy::device::FieldId::field_rswdt_mr_wddis,
+                                 alloy::device::FieldId::field_rswdt_mr_allones>();
 #endif
 
     // Step 2: Configure system clock from the published device contract

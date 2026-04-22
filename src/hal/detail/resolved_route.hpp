@@ -8,6 +8,9 @@
 
 namespace alloy::hal::detail::route {
 
+using RuntimeFieldRef = device::RuntimeFieldRef;
+using PeripheralId = device::PeripheralId;
+
 enum class OperationKind : std::uint8_t {
     invalid,
     set_field,
@@ -20,9 +23,9 @@ enum class OperationKind : std::uint8_t {
 
 struct Operation {
     OperationKind kind = OperationKind::invalid;
-    device::runtime::RuntimeFieldRef primary{};
-    device::runtime::RuntimeFieldRef secondary{};
-    device::runtime::PeripheralId peripheral_id = device::runtime::PeripheralId::none;
+    RuntimeFieldRef primary{};
+    RuntimeFieldRef secondary{};
+    PeripheralId peripheral_id = PeripheralId::none;
     std::uint16_t lookup_index = 0u;
     std::uint32_t value = 0u;
 };
@@ -39,8 +42,7 @@ struct List {
     }
 };
 
-[[nodiscard]] constexpr auto equal_field(device::runtime::RuntimeFieldRef lhs,
-                                         device::runtime::RuntimeFieldRef rhs) -> bool {
+[[nodiscard]] constexpr auto equal_field(RuntimeFieldRef lhs, RuntimeFieldRef rhs) -> bool {
     return lhs.valid == rhs.valid && lhs.reg.base_address == rhs.reg.base_address &&
            lhs.reg.offset_bytes == rhs.reg.offset_bytes && lhs.bit_offset == rhs.bit_offset &&
            lhs.bit_width == rhs.bit_width;

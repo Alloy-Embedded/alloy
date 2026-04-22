@@ -8,7 +8,7 @@
 namespace alloy::hal::rtc {
 
 #if ALLOY_DEVICE_RTC_SEMANTICS_AVAILABLE
-using PeripheralId = device::runtime::PeripheralId;
+using PeripheralId = device::PeripheralId;
 
 struct Config {
     bool enable_write_access = false;
@@ -19,7 +19,7 @@ struct Config {
 template <PeripheralId Peripheral>
 class handle {
    public:
-    using semantic_traits = device::runtime::RtcSemanticTraits<Peripheral>;
+    using semantic_traits = device::RtcSemanticTraits<Peripheral>;
     using config_type = Config;
 
     static constexpr auto peripheral_id = Peripheral;

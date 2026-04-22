@@ -1300,6 +1300,16 @@ auto configure_i2c(const PortHandle& port) -> core::Result<void, core::ErrorCode
         return operations_result;
     }
 
+    if constexpr (requires { PortHandle::peripheral_id; }) {
+        if constexpr (PortHandle::peripheral_id != alloy::device::PeripheralId::none) {
+            if (const auto enable_result =
+                    rt::enable_peripheral_runtime_typed<PortHandle::peripheral_id>();
+                enable_result.is_err()) {
+                return enable_result;
+            }
+        }
+    }
+
     switch (rt::i2c_schema_for<PortHandle>()) {
         case rt::I2cSchema::st_i2c2_v1_1_cube:
             return configure_st_i2c_v2<PortHandle>(port.config());

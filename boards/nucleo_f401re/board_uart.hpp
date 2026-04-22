@@ -2,25 +2,18 @@
 
 #include <cstdint>
 
-#include "hal/connect/runtime_connector.hpp"
-#include "hal/connect/tags.hpp"
+#include "device/runtime.hpp"
+#include "hal/connect/connector.hpp"
 #include "hal/uart.hpp"
 
 #include "board.hpp"
 
 namespace board {
 
-using DebugUartTxPin = alloy::hal::pin<"PA2">;
-using DebugUartRxPin = alloy::hal::pin<"PA3">;
-
-using DebugUartConnector = alloy::hal::connection::runtime_connector<
-    alloy::hal::peripheral<"USART2">, alloy::device::runtime::PeripheralId::USART2,
-    alloy::hal::connection::runtime_binding<alloy::hal::tx<DebugUartTxPin>,
-                                            alloy::device::runtime::PinId::PA2,
-                                            alloy::device::runtime::SignalId::signal_tx>,
-    alloy::hal::connection::runtime_binding<alloy::hal::rx<DebugUartRxPin>,
-                                            alloy::device::runtime::PinId::PA3,
-                                            alloy::device::runtime::SignalId::signal_rx>>;
+using DebugUartConnector = alloy::hal::connection::connector<
+    alloy::device::PeripheralId::USART2,
+    alloy::hal::connection::tx<alloy::device::PinId::PA2, alloy::device::SignalId::signal_tx>,
+    alloy::hal::connection::rx<alloy::device::PinId::PA3, alloy::device::SignalId::signal_rx>>;
 using DebugUart = alloy::hal::uart::port_handle<DebugUartConnector>;
 
 inline constexpr std::uint32_t kDebugUartPeripheralClockHz = nucleo_f401re::ClockConfig::apb1_hz;

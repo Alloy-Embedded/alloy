@@ -28,10 +28,10 @@ struct Config {
     bool refresh_on_configure = false;
 };
 
-template <device::runtime::PeripheralId Peripheral>
+template <device::PeripheralId Peripheral>
 class handle {
    public:
-    using semantic_traits = device::runtime::WatchdogSemanticTraits<Peripheral>;
+    using semantic_traits = device::WatchdogSemanticTraits<Peripheral>;
 
     static constexpr auto peripheral_id = Peripheral;
     static constexpr bool valid = semantic_traits::kPresent;
@@ -110,7 +110,7 @@ class handle {
 ///
 /// Errors from config application are silently discarded here.  Callers that
 /// need the Result should call handle::configure() directly after open().
-template <device::runtime::PeripheralId Peripheral>
+template <device::PeripheralId Peripheral>
 [[nodiscard]] auto open(Config config = {}) -> handle<Peripheral> {
     static_assert(handle<Peripheral>::valid,
                   "Requested watchdog is not published for the selected device.");

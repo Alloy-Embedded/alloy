@@ -517,7 +517,7 @@ auto configure_spi(const PortHandle& port) -> core::Result<void, core::ErrorCode
     }
 
     if constexpr (requires { PortHandle::peripheral_id; }) {
-        if constexpr (PortHandle::peripheral_id != alloy::device::runtime::PeripheralId::none) {
+        if constexpr (PortHandle::peripheral_id != alloy::device::PeripheralId::none) {
             if (const auto enable_result =
                     rt::enable_peripheral_runtime_typed<PortHandle::peripheral_id>();
                 enable_result.is_err()) {

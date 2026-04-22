@@ -24,7 +24,7 @@ using namespace alloy::hal;
 
 namespace {
 
-using PeripheralId = alloy::device::runtime::PeripheralId;
+using PeripheralId = alloy::device::PeripheralId;
 
 #if defined(ALLOY_BOARD_SAME70_XPLAINED) || defined(ALLOY_BOARD_SAME70_XPLD)
 constexpr auto kTimerPeripheral = PeripheralId::TC0;

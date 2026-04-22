@@ -9,13 +9,13 @@ namespace board {
 /// NOTE: IWDG cannot be disabled once started.  The probe only calls
 /// refresh() — safe even when IWDG has not been armed.
 using BoardWatchdog = alloy::hal::watchdog::handle<
-    alloy::device::runtime::PeripheralId::IWDG>;
+    alloy::device::PeripheralId::IWDG>;
 
 inline constexpr bool kBoardWatchdogCanDisable = false;
 
 [[nodiscard]] inline auto make_watchdog(
     alloy::hal::watchdog::Config config = {}) -> BoardWatchdog {
-    return alloy::hal::watchdog::open<alloy::device::runtime::PeripheralId::IWDG>(config);
+    return alloy::hal::watchdog::open<alloy::device::PeripheralId::IWDG>(config);
 }
 
 }  // namespace board

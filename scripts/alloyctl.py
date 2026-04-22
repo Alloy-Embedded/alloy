@@ -6,6 +6,7 @@ import glob
 import shutil
 import subprocess
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -17,6 +18,7 @@ class BoardConfig:
     board: str
     build_dir: Path
     bundle_target: str
+    firmware_targets: tuple[str, ...]
     openocd_args: tuple[str, ...]
     uart_globs: tuple[str, ...]
     uart_baud: int
@@ -27,6 +29,8 @@ BOARDS: dict[str, BoardConfig] = {
         "same70_xplained",
         ROOT / "build" / "hw" / "same70",
         "same70_hardware_validation_bundle",
+        ("blink", "uart_logger", "watchdog_probe", "analog_probe", "rtc_probe",
+         "timer_pwm_probe", "i2c_scan", "spi_probe", "dma_probe", "can_probe"),
         ("openocd", "-f", "board/atmel_same70_xplained.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
         115200,
@@ -35,6 +39,8 @@ BOARDS: dict[str, BoardConfig] = {
         "same70_xplained",
         ROOT / "build" / "hw" / "same70",
         "same70_hardware_validation_bundle",
+        ("blink", "uart_logger", "watchdog_probe", "analog_probe", "rtc_probe",
+         "timer_pwm_probe", "i2c_scan", "spi_probe", "dma_probe", "can_probe"),
         ("openocd", "-f", "board/atmel_same70_xplained.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
         115200,
@@ -43,6 +49,8 @@ BOARDS: dict[str, BoardConfig] = {
         "nucleo_g071rb",
         ROOT / "build" / "hw" / "g071",
         "stm32g0_hardware_validation_bundle",
+        ("blink", "uart_logger", "watchdog_probe", "rtc_probe", "timer_pwm_probe",
+         "analog_probe"),
         ("openocd", "-f", "interface/stlink.cfg", "-f", "target/stm32g0x.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
         115200,
@@ -51,6 +59,8 @@ BOARDS: dict[str, BoardConfig] = {
         "nucleo_f401re",
         ROOT / "build" / "hw" / "f401",
         "stm32f4_hardware_validation_bundle",
+        ("blink", "uart_logger", "watchdog_probe", "rtc_probe", "timer_pwm_probe",
+         "analog_probe", "dma_probe"),
         ("openocd", "-f", "interface/stlink.cfg", "-f", "target/stm32f4x.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
         115200,
@@ -81,6 +91,15 @@ def run(cmd: list[str]) -> None:
         subprocess.run(cmd, cwd=ROOT, check=True)
     except KeyboardInterrupt:
         raise SystemExit(130)
+
+
+def run_soft(cmd: list[str]) -> int:
+    print("+", " ".join(cmd))
+    try:
+        completed = subprocess.run(cmd, cwd=ROOT, check=False)
+    except KeyboardInterrupt:
+        raise SystemExit(130)
+    return completed.returncode
 
 
 def is_configured(cfg: BoardConfig) -> bool:
@@ -119,6 +138,10 @@ def build(cfg: BoardConfig, target: str, jobs: int) -> None:
     run(["cmake", "--build", str(cfg.build_dir), "--target", target, f"-j{jobs}"])
 
 
+def build_many(cfg: BoardConfig, targets: tuple[str, ...], jobs: int) -> None:
+    run(["cmake", "--build", str(cfg.build_dir), "--target", *targets, f"-j{jobs}"])
+
+
 def artifact(cfg: BoardConfig, target: str) -> Path:
     candidates = (
         cfg.build_dir / "examples" / target / f"{target}.elf",
@@ -151,7 +174,7 @@ def cmd_build(args: argparse.Namespace) -> None:
 def cmd_bundle(args: argparse.Namespace) -> None:
     cfg = board_config(args.board)
     configure(cfg, args.build_type, build_tests=True)
-    build(cfg, cfg.bundle_target, args.jobs)
+    build_many(cfg, targets, args.jobs)
 
 
 def cmd_flash(args: argparse.Namespace) -> None:
@@ -185,6 +208,82 @@ def cmd_monitor(args: argparse.Namespace) -> None:
     port = args.port or auto_port(cfg)
     baud = args.baud if args.baud is not None else cfg.uart_baud
     run([sys.executable, str(ROOT / "scripts" / "uart_monitor.py"), "--port", port, "--baud", str(baud)])
+
+
+def monitor_for(cfg: BoardConfig, port: str | None, baud: int, seconds: float) -> int:
+    resolved_port = port or auto_port(cfg)
+    cmd = [
+        sys.executable,
+        str(ROOT / "scripts" / "uart_monitor.py"),
+        "--port",
+        resolved_port,
+        "--baud",
+        str(baud),
+    ]
+    print("+", " ".join(cmd), f"(for {seconds:.1f}s)")
+    process = subprocess.Popen(cmd, cwd=ROOT)
+    try:
+        process.wait(timeout=seconds)
+    except subprocess.TimeoutExpired:
+        process.terminate()
+        try:
+            process.wait(timeout=2.0)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+        return 0
+    return process.returncode
+
+
+def flash_with_retry(cfg: BoardConfig, target: str, attempts: int, delay_seconds: float) -> int:
+    cmd = list(cfg.openocd_args) + ["-c", f'program "{artifact(cfg, target)}" verify reset exit']
+    last_rc = 1
+    for attempt in range(1, attempts + 1):
+        if attempt > 1:
+            print(f"retrying flash for {target} ({attempt}/{attempts}) after {delay_seconds:.1f}s")
+            time.sleep(delay_seconds)
+        last_rc = run_soft(cmd)
+        if last_rc == 0:
+            return 0
+    return last_rc
+
+
+def cmd_sweep(args: argparse.Namespace) -> None:
+    cfg = board_config(args.board)
+    require_tool("openocd")
+
+    targets = tuple(args.targets) if args.targets else cfg.firmware_targets
+    if not targets:
+        raise SystemExit(die(f"no firmware targets configured for board: {cfg.board}"))
+
+    if (not is_configured(cfg) or cache_value(cfg, "ALLOY_BUILD_TESTS") != "OFF" or
+            cache_value(cfg, "ALLOY_BOARD") != cfg.board or
+            cache_value(cfg, "CMAKE_BUILD_TYPE") != args.build_type):
+        configure(cfg, args.build_type, build_tests=False)
+
+    build_many(cfg, targets, args.jobs)
+
+    summary: list[tuple[str, str]] = []
+    baud = args.baud if args.baud is not None else cfg.uart_baud
+    port = args.port or auto_port(cfg)
+
+    for target in targets:
+        print(f"\n=== {target} ===")
+        flash_rc = flash_with_retry(cfg, target, args.flash_retries, args.retry_delay_seconds)
+        if flash_rc != 0:
+            summary.append((target, f"flash_failed({flash_rc})"))
+            continue
+
+        time.sleep(args.settle_seconds)
+        monitor_rc = monitor_for(cfg, port, baud, args.monitor_seconds)
+        if monitor_rc == 0:
+            summary.append((target, "ok"))
+        else:
+            summary.append((target, f"monitor_failed({monitor_rc})"))
+
+    print("\n=== sweep summary ===")
+    for target, status in summary:
+        print(f"{target}: {status}")
 
 
 def cmd_gdbserver(args: argparse.Namespace) -> None:
@@ -230,6 +329,18 @@ def main() -> int:
     gdb_p.add_argument("--board", required=True, choices=sorted(BOARDS))
     gdb_p.add_argument("--gdb-port", type=int, default=3333)
     gdb_p.set_defaults(func=cmd_gdbserver)
+
+    sweep_p = sub.add_parser("sweep")
+    add_build_args(sweep_p)
+    sweep_p.add_argument("--port")
+    sweep_p.add_argument("--baud", type=int)
+    sweep_p.add_argument("--monitor-seconds", type=float, default=5.0)
+    sweep_p.add_argument("--settle-seconds", type=float, default=1.0)
+    sweep_p.add_argument("--flash-retries", type=int, default=2)
+    sweep_p.add_argument("--retry-delay-seconds", type=float, default=1.0)
+    sweep_p.add_argument("--target", dest="targets", action="append")
+    sweep_p.add_argument("-j", "--jobs", type=int, default=8)
+    sweep_p.set_defaults(func=cmd_sweep)
 
     args = p.parse_args()
     args.func(args)

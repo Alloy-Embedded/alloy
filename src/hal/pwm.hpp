@@ -10,7 +10,7 @@
 namespace alloy::hal::pwm {
 
 #if ALLOY_DEVICE_PWM_SEMANTICS_AVAILABLE
-using PeripheralId = device::runtime::PeripheralId;
+using PeripheralId = device::PeripheralId;
 
 struct Config {
     std::uint32_t period = 0u;
@@ -23,8 +23,8 @@ struct Config {
 template <PeripheralId Peripheral, std::size_t Channel>
 class handle {
    public:
-    using peripheral_traits = device::runtime::PwmSemanticTraits<Peripheral>;
-    using channel_traits = device::runtime::PwmChannelSemanticTraits<Peripheral, Channel>;
+    using peripheral_traits = device::PwmSemanticTraits<Peripheral>;
+    using channel_traits = device::PwmChannelSemanticTraits<Peripheral, Channel>;
     using config_type = Config;
 
     static constexpr auto peripheral_id = Peripheral;

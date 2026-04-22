@@ -2,29 +2,21 @@
 
 #include <cstdint>
 
-#include "hal/connect/runtime_connector.hpp"
-#include "hal/connect/tags.hpp"
+#include "device/runtime.hpp"
+#include "hal/connect/connector.hpp"
 #include "hal/spi.hpp"
 
 #include "board.hpp"
 
 namespace board {
 
-using BoardSpiSckPin = alloy::hal::pin<"PD22">;
-using BoardSpiMisoPin = alloy::hal::pin<"PD20">;
-using BoardSpiMosiPin = alloy::hal::pin<"PD21">;
-
-using BoardSpiConnector = alloy::hal::connection::runtime_connector<
-    alloy::hal::peripheral<"SPI0">, alloy::device::runtime::PeripheralId::SPI0,
-    alloy::hal::connection::runtime_binding<alloy::hal::sck<BoardSpiSckPin>,
-                                            alloy::device::runtime::PinId::PD22,
-                                            alloy::device::runtime::SignalId::signal_spck>,
-    alloy::hal::connection::runtime_binding<alloy::hal::miso<BoardSpiMisoPin>,
-                                            alloy::device::runtime::PinId::PD20,
-                                            alloy::device::runtime::SignalId::signal_miso>,
-    alloy::hal::connection::runtime_binding<alloy::hal::mosi<BoardSpiMosiPin>,
-                                            alloy::device::runtime::PinId::PD21,
-                                            alloy::device::runtime::SignalId::signal_mosi>>;
+using BoardSpiConnector = alloy::hal::connection::connector<
+    alloy::device::PeripheralId::SPI0,
+    alloy::hal::connection::sck<alloy::device::PinId::PD22, alloy::device::SignalId::signal_spck>,
+    alloy::hal::connection::miso<alloy::device::PinId::PD20,
+                                 alloy::device::SignalId::signal_miso>,
+    alloy::hal::connection::mosi<alloy::device::PinId::PD21,
+                                 alloy::device::SignalId::signal_mosi>>;
 using BoardSpi = alloy::hal::spi::port_handle<BoardSpiConnector>;
 
 inline constexpr std::uint32_t kBoardSpiPeripheralClockHz =
