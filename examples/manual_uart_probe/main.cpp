@@ -12,10 +12,12 @@
 namespace {
 
 constexpr std::uintptr_t kPmcBase = 0x400E0600u;
+constexpr std::uintptr_t kMatrixBase = 0x40088000u;
 constexpr std::uintptr_t kPioABase = 0x400E0E00u;
 constexpr std::uintptr_t kPioBBase = 0x400E1000u;
 constexpr std::uintptr_t kUsart1Base = 0x40028000u;
 
+constexpr std::uintptr_t kMatrixCcfgSysio = kMatrixBase + 0x0114u;
 constexpr std::uintptr_t kPmcPcer0 = kPmcBase + 0x0010u;
 
 constexpr std::uintptr_t kPioPdr = 0x0004u;
@@ -34,6 +36,7 @@ constexpr std::uint32_t kPidUsart1 = 14u;
 
 constexpr std::uint32_t kPa21 = 21u;
 constexpr std::uint32_t kPb4 = 4u;
+constexpr std::uint32_t kMatrixSysioPb4 = 1u << 4u;
 
 constexpr std::uint32_t kUsCrRstrx = 1u << 2u;
 constexpr std::uint32_t kUsCrRsttx = 1u << 3u;
@@ -92,6 +95,9 @@ void usart1_init_8n1() {
     enable_peripheral(kPidPiob);
     enable_peripheral(kPidUsart1);
 
+    // PB4 shares the system/JTAG TDI function on SAME70 Xplained.
+    mmio32(kMatrixCcfgSysio) |= kMatrixSysioPb4;
+
     // SAME70 Xplained Ultra EDBG VCOM:
     // PB4 -> USART1_TXD1, selector D (3)
     // PA21 -> USART1_RXD1, selector A (0)
@@ -129,7 +135,7 @@ int main() {
 
     while (true) {
         board::led::toggle();
-        usart1_write("manual usart1 pb4/pa21 8n1\r\n");
+        usart1_write("manual usart1 pb4/pa21 115200 8n1\r\n");
         usart1_flush();
         alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(250);
     }

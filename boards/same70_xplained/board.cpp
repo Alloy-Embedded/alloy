@@ -35,6 +35,10 @@ using alloy::hal::detail::runtime::write_register;
 
 using BoardLed = alloy::hal::pin<"PC8">;
 
+constexpr std::uintptr_t kMatrixBase = 0x40088000u;
+constexpr std::uintptr_t kMatrixCcfgSysio = kMatrixBase + 0x0114u;
+constexpr std::uint32_t kMatrixSysioPb4 = 1u << 4u;
+
 void disable_startup_control_peripheral(alloy::device::runtime::PeripheralId peripheral_id) {
 #if ALLOY_DEVICE_WATCHDOG_SEMANTICS_AVAILABLE
     if (peripheral_id == alloy::device::runtime::PeripheralId::WDT) {
@@ -80,6 +84,12 @@ auto& led_handle() {
         .initial_state = LedConfig::led_green_active_high ? PinState::Low : PinState::High,
     });
     return handle;
+}
+
+void release_debug_uart_tx_from_system_io() {
+    auto value = alloy::hal::detail::runtime::read_mmio32(kMatrixCcfgSysio);
+    value |= kMatrixSysioPb4;
+    alloy::hal::detail::runtime::write_mmio32(kMatrixCcfgSysio, value);
 }
 
 }  // namespace
@@ -159,7 +169,7 @@ void init() {
     // Step 2: Configure system clock from the published device contract
     bool clock_ok = false;
 #if ALLOY_DEVICE_CLOCK_CONFIG_AVAILABLE
-    clock_ok = alloy::device::clock_config::apply_default();
+    clock_ok = alloy::device::clock_config::apply_profile<ClockConfig::system_clock_profile>();
 #else
     clock_ok = alloy::device::system_clock::apply_default();
 #endif
@@ -171,6 +181,8 @@ void init() {
     SysTickTimer::init_ms<BoardSysTick>(1);
 
     // Step 4: Initialize board peripherals
+    // PB4 is multiplexed with JTAG TDI on SAME70 Xplained EDBG VCOM.
+    release_debug_uart_tx_from_system_io();
     led::init();
 
     // Step 5: Enable interrupts

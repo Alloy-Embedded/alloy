@@ -19,6 +19,7 @@ class BoardConfig:
     bundle_target: str
     openocd_args: tuple[str, ...]
     uart_globs: tuple[str, ...]
+    uart_baud: int
 
 
 BOARDS: dict[str, BoardConfig] = {
@@ -28,6 +29,7 @@ BOARDS: dict[str, BoardConfig] = {
         "same70_hardware_validation_bundle",
         ("openocd", "-f", "board/atmel_same70_xplained.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
+        115200,
     ),
     "same70_xpld": BoardConfig(
         "same70_xplained",
@@ -35,6 +37,7 @@ BOARDS: dict[str, BoardConfig] = {
         "same70_hardware_validation_bundle",
         ("openocd", "-f", "board/atmel_same70_xplained.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
+        115200,
     ),
     "nucleo_g071rb": BoardConfig(
         "nucleo_g071rb",
@@ -42,6 +45,7 @@ BOARDS: dict[str, BoardConfig] = {
         "stm32g0_hardware_validation_bundle",
         ("openocd", "-f", "interface/stlink.cfg", "-f", "target/stm32g0x.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
+        115200,
     ),
     "nucleo_f401re": BoardConfig(
         "nucleo_f401re",
@@ -49,6 +53,7 @@ BOARDS: dict[str, BoardConfig] = {
         "stm32f4_hardware_validation_bundle",
         ("openocd", "-f", "interface/stlink.cfg", "-f", "target/stm32f4x.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
+        115200,
     ),
 }
 
@@ -72,10 +77,29 @@ def require_tool(name: str) -> None:
 
 def run(cmd: list[str]) -> None:
     print("+", " ".join(cmd))
-    subprocess.run(cmd, cwd=ROOT, check=True)
+    try:
+        subprocess.run(cmd, cwd=ROOT, check=True)
+    except KeyboardInterrupt:
+        raise SystemExit(130)
 
 
-def configure(cfg: BoardConfig, build_type: str) -> None:
+def is_configured(cfg: BoardConfig) -> bool:
+    return (cfg.build_dir / "CMakeCache.txt").exists()
+
+
+def cache_value(cfg: BoardConfig, key: str) -> str | None:
+    cache = cfg.build_dir / "CMakeCache.txt"
+    if not cache.exists():
+        return None
+    prefix = f"{key}:"
+    for line in cache.read_text().splitlines():
+        if line.startswith(prefix):
+            _, value = line.split("=", 1)
+            return value.strip()
+    return None
+
+
+def configure(cfg: BoardConfig, build_type: str, build_tests: bool) -> None:
     run(
         [
             "cmake",
@@ -84,7 +108,7 @@ def configure(cfg: BoardConfig, build_type: str) -> None:
             "-B",
             str(cfg.build_dir),
             f"-DALLOY_BOARD={cfg.board}",
-            "-DALLOY_BUILD_TESTS=ON",
+            f"-DALLOY_BUILD_TESTS={'ON' if build_tests else 'OFF'}",
             "-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake",
             f"-DCMAKE_BUILD_TYPE={build_type}",
         ]
@@ -117,13 +141,16 @@ def auto_port(cfg: BoardConfig) -> str:
 
 def cmd_build(args: argparse.Namespace) -> None:
     cfg = board_config(args.board)
-    configure(cfg, args.build_type)
+    if (not is_configured(cfg) or cache_value(cfg, "ALLOY_BUILD_TESTS") != "OFF" or
+            cache_value(cfg, "ALLOY_BOARD") != cfg.board or
+            cache_value(cfg, "CMAKE_BUILD_TYPE") != args.build_type):
+        configure(cfg, args.build_type, build_tests=False)
     build(cfg, args.target, args.jobs)
 
 
 def cmd_bundle(args: argparse.Namespace) -> None:
     cfg = board_config(args.board)
-    configure(cfg, args.build_type)
+    configure(cfg, args.build_type, build_tests=True)
     build(cfg, cfg.bundle_target, args.jobs)
 
 
@@ -131,15 +158,33 @@ def cmd_flash(args: argparse.Namespace) -> None:
     cfg = board_config(args.board)
     require_tool("openocd")
     if args.build_first:
-        configure(cfg, args.build_type)
+        if (not is_configured(cfg) or cache_value(cfg, "ALLOY_BUILD_TESTS") != "OFF" or
+                cache_value(cfg, "ALLOY_BOARD") != cfg.board or
+                cache_value(cfg, "CMAKE_BUILD_TYPE") != args.build_type):
+            configure(cfg, args.build_type, build_tests=False)
         build(cfg, args.target, args.jobs)
     elf = artifact(cfg, args.target)
-    run(list(cfg.openocd_args) + ["-c", f'program "{elf}" verify reset exit'])
+    cmd = list(cfg.openocd_args)
+    if args.recover:
+        cmd.extend(
+            [
+                "-c",
+                "adapter speed 500",
+                "-c",
+                "reset_config srst_only srst_nogate connect_assert_srst",
+                "-c",
+                "init",
+            ]
+        )
+    cmd.extend(["-c", f'program "{elf}" verify reset exit'])
+    run(cmd)
 
 
 def cmd_monitor(args: argparse.Namespace) -> None:
-    port = args.port or auto_port(board_config(args.board))
-    run([sys.executable, str(ROOT / "scripts" / "uart_monitor.py"), "--port", port, "--baud", str(args.baud)])
+    cfg = board_config(args.board)
+    port = args.port or auto_port(cfg)
+    baud = args.baud if args.baud is not None else cfg.uart_baud
+    run([sys.executable, str(ROOT / "scripts" / "uart_monitor.py"), "--port", port, "--baud", str(baud)])
 
 
 def cmd_gdbserver(args: argparse.Namespace) -> None:
@@ -171,13 +216,14 @@ def main() -> int:
     add_build_args(flash_p)
     flash_p.add_argument("--target", required=True)
     flash_p.add_argument("--build-first", action="store_true")
+    flash_p.add_argument("--recover", action="store_true")
     flash_p.add_argument("-j", "--jobs", type=int, default=8)
     flash_p.set_defaults(func=cmd_flash)
 
     mon_p = sub.add_parser("monitor")
     mon_p.add_argument("--board", required=True, choices=sorted(BOARDS))
     mon_p.add_argument("--port")
-    mon_p.add_argument("--baud", type=int, default=115200)
+    mon_p.add_argument("--baud", type=int)
     mon_p.set_defaults(func=cmd_monitor)
 
     gdb_p = sub.add_parser("gdbserver")

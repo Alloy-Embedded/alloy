@@ -52,7 +52,7 @@ Renode bring-up coverage for every published MCU today.
 Current UART coverage by board:
 
 - `same70_xplained`
-  - banner observed on `USART0` terminal
+  - banner observed on `USART1` EDBG VCOM
   - boot marker/stage verified
   - exact UART byte count verified
 - `nucleo_g071rb`

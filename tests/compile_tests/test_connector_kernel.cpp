@@ -72,18 +72,18 @@ using DebugUartViaFunction = DebugUart;
 static_assert(DebugUartViaFunction::valid);
 #elif defined(ALLOY_BOARD_SAME70_XPLD)
 using DebugUart = connection::runtime_connector<
-    peripheral<"USART0">, alloy::device::runtime::PeripheralId::USART0,
-    connection::runtime_binding<tx<pin<"PB1">>, alloy::device::runtime::PinId::PB1,
-                                alloy::device::runtime::SignalId::signal_txd0>,
-    connection::runtime_binding<rx<pin<"PB0">>, alloy::device::runtime::PinId::PB0,
-                                alloy::device::runtime::SignalId::signal_rxd0>>;
+    peripheral<"USART1">, alloy::device::runtime::PeripheralId::USART1,
+    connection::runtime_binding<tx<pin<"PB4">>, alloy::device::runtime::PinId::PB4,
+                                alloy::device::runtime::SignalId::signal_txd1>,
+    connection::runtime_binding<rx<pin<"PA21">>, alloy::device::runtime::PinId::PA21,
+                                alloy::device::runtime::SignalId::signal_rxd1>>;
 
 using InvalidUart = connection::runtime_connector<
-    peripheral<"USART0">, alloy::device::runtime::PeripheralId::USART0,
-    connection::runtime_binding<tx<pin<"PB1">>, alloy::device::runtime::PinId::PB1,
-                                alloy::device::runtime::SignalId::signal_txd0>,
+    peripheral<"USART1">, alloy::device::runtime::PeripheralId::USART1,
+    connection::runtime_binding<tx<pin<"PB4">>, alloy::device::runtime::PinId::PB4,
+                                alloy::device::runtime::SignalId::signal_txd1>,
     connection::runtime_binding<rx<pin<"PZ99">>, alloy::device::runtime::PinId::none,
-                                alloy::device::runtime::SignalId::signal_rxd0>>;
+                                alloy::device::runtime::SignalId::signal_rxd1>>;
 
 static_assert(DebugUart::valid);
 static_assert(connector_is_usable<DebugUart>());

@@ -4,16 +4,14 @@
     #error "analog_probe requires BOARD_ANALOG_HEADER for the selected board"
 #endif
 
-#ifndef BOARD_UART_HEADER
-    #error "analog_probe requires BOARD_UART_HEADER for the selected board"
+#include BOARD_ANALOG_HEADER
+
+#ifdef BOARD_UART_HEADER
+    #include BOARD_UART_HEADER
 #endif
 
-#include BOARD_ANALOG_HEADER
-#include BOARD_UART_HEADER
-
+#include "examples/common/uart_console.hpp"
 #include "hal/systick.hpp"
-
-#include <cstddef>
 
 namespace {
 
@@ -24,22 +22,17 @@ namespace {
     }
 }
 
-template <typename Uart>
-void write_uart_text(Uart& uart, const char* text) {
-    while (*text != '\0') {
-        static_cast<void>(uart.write_byte(static_cast<std::byte>(*text++)));
-    }
-}
-
 }  // namespace
 
 int main() {
     board::init();
 
+#ifdef BOARD_UART_HEADER
     auto uart = board::make_debug_uart();
-    if (const auto result = uart.configure(); result.is_err()) {
-        blink_error(100);
-    }
+    const auto uart_ready = uart.configure().is_ok();
+#else
+    constexpr auto uart_ready = false;
+#endif
 
     auto adc = board::make_adc({.enable_on_configure = true, .start_immediately = false});
     if (const auto result = adc.configure(); result.is_err()) {
@@ -50,7 +43,11 @@ int main() {
     [[maybe_unused]] const auto adc_ready = adc.ready();
     [[maybe_unused]] const auto adc_value = adc.read();
 
-    write_uart_text(uart, "analog probe ready\r\n");
+#ifdef BOARD_UART_HEADER
+    if (uart_ready) {
+        alloy::examples::uart_console::write_line(uart, "analog probe ready");
+    }
+#endif
 
     #if defined(ALLOY_BOARD_NUCLEO_G071RB) || defined(ALLOY_BOARD_SAME70_XPLAINED) || \
         defined(ALLOY_BOARD_SAME70_XPLD)
@@ -63,11 +60,24 @@ int main() {
             blink_error(200);
         }
         [[maybe_unused]] const auto dac_write = dac.write(0x123u);
-        write_uart_text(uart, "dac active\r\n");
+#ifdef BOARD_UART_HEADER
+        if (uart_ready) {
+            alloy::examples::uart_console::write_line(uart, "dac active");
+        }
+#endif
     #endif
 
+    std::uint32_t loop_count = 0u;
     while (true) {
         board::led::toggle();
+#ifdef BOARD_UART_HEADER
+        if (uart_ready) {
+            alloy::examples::uart_console::write_text(uart, "analog loop=");
+            alloy::examples::uart_console::write_unsigned(uart, loop_count);
+            alloy::examples::uart_console::write_text(uart, "\r\n");
+        }
+#endif
         alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(1000);
+        ++loop_count;
     }
 }

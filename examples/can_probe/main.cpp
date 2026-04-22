@@ -4,6 +4,9 @@
     #error "can_probe currently supports SAME70 boards only."
 #endif
 
+#include BOARD_UART_HEADER
+
+#include "examples/common/uart_console.hpp"
 #include "device/runtime.hpp"
 #include "hal/can.hpp"
 #include "hal/systick.hpp"
@@ -27,6 +30,12 @@ constexpr auto kCanPeripheral = PeripheralId::MCAN0;
 int main() {
     board::init();
 
+    auto uart = board::make_debug_uart();
+    const auto uart_ready = uart.configure().is_ok();
+    if (uart_ready) {
+        alloy::examples::uart_console::write_line(uart, "can probe ready");
+    }
+
     auto can = alloy::hal::can::open<kCanPeripheral>({
         .enter_init_mode = true,
         .enable_configuration = true,
@@ -43,6 +52,9 @@ int main() {
     });
 
     if (!can.configure().is_ok()) {
+        if (uart_ready) {
+            alloy::examples::uart_console::write_line(uart, "can configure failed");
+        }
         blink_error(100);
     }
     [[maybe_unused]] const auto irq_result = can.enable_rx_fifo0_interrupt();
@@ -50,8 +62,21 @@ int main() {
     [[maybe_unused]] const auto tx_result = can.request_tx(0u);
     [[maybe_unused]] const auto leave_result = can.leave_init_mode();
 
+    if (uart_ready) {
+        alloy::examples::uart_console::write_line(uart, "can configured");
+    }
+
+    std::uint32_t loop_count = 0u;
     while (true) {
         board::led::toggle();
+#ifdef BOARD_UART_HEADER
+        if (uart_ready) {
+            alloy::examples::uart_console::write_text(uart, "can loop=");
+            alloy::examples::uart_console::write_unsigned(uart, loop_count);
+            alloy::examples::uart_console::write_text(uart, "\r\n");
+        }
+#endif
         SysTickTimer::delay_ms<board::BoardSysTick>(500);
+        ++loop_count;
     }
 }

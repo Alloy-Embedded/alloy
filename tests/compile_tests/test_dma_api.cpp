@@ -23,9 +23,9 @@ using UartTxDma = alloy::hal::dma::channel_handle<PeripheralId::USART2, SignalId
 using UartTxDmaClaim = alloy::hal::claim::dma_claim<PeripheralId::USART2, SignalId::signal_TX>;
 constexpr auto kDmaConfig = alloy::hal::dma::Config{};
     #elif defined(ALLOY_BOARD_SAME70_XPLD) || defined(ALLOY_BOARD_SAME70_XPLAINED)
-static_assert(alloy::hal::dma::BindingTraits<PeripheralId::USART0, SignalId::signal_TX>::kPresent);
-using UartTxDma = alloy::hal::dma::channel_handle<PeripheralId::USART0, SignalId::signal_TX>;
-using UartTxDmaClaim = alloy::hal::claim::dma_claim<PeripheralId::USART0, SignalId::signal_TX>;
+static_assert(alloy::hal::dma::BindingTraits<PeripheralId::USART1, SignalId::signal_TX>::kPresent);
+using UartTxDma = alloy::hal::dma::channel_handle<PeripheralId::USART1, SignalId::signal_TX>;
+using UartTxDmaClaim = alloy::hal::claim::dma_claim<PeripheralId::USART1, SignalId::signal_TX>;
 constexpr auto kDmaConfig = alloy::hal::dma::Config{.channel_index = 0};
     #endif
 

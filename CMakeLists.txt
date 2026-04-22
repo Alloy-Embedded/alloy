@@ -434,6 +434,11 @@ if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld")
     add_subdirectory(examples/manual_uart_probe)
 endif()
 
+if(ALLOY_BOARD STREQUAL "nucleo_g071rb")
+    add_subdirectory(examples/early_boot_probe)
+    add_subdirectory(examples/clock_boot_probe)
+endif()
+
 # Tests
 if(ALLOY_BUILD_TESTS)
     add_subdirectory(tests)

@@ -43,17 +43,22 @@ constexpr auto kPmcPcer1 = std::uintptr_t{0x400e0700u};
 constexpr auto kWdtBase = std::uintptr_t{0x400e1850u};
 constexpr auto kRswdtBase = std::uintptr_t{0x400e1900u};
 constexpr auto kResetControllerBase = std::uintptr_t{0x400e1800u};
+constexpr auto kPioABase = std::uintptr_t{0x400e0e00u};
 constexpr auto kPioBBase = std::uintptr_t{0x400e1000u};
 constexpr auto kPioCBase = std::uintptr_t{0x400e1200u};
-constexpr auto kUsart0Base = std::uintptr_t{0x40024000u};
+constexpr auto kMatrixBase = std::uintptr_t{0x40088000u};
+constexpr auto kMatrixCcfgSysio = kMatrixBase + 0x0114u;
+constexpr auto kMatrixSysioPb4 = 1u << 4u;
+constexpr auto kUsart1Base = std::uintptr_t{0x40028000u};
 constexpr auto kRtcBase = std::uintptr_t{0x400E1860u};
 constexpr auto kXdmacBase = std::uintptr_t{0x40078000u};
 constexpr auto kTc0Base = std::uintptr_t{0x4000C000u};
 constexpr auto kPwm0Base = std::uintptr_t{0x40020000u};
 constexpr auto kLedLine = std::uint16_t{8u};
-constexpr auto kTxLine = std::uint16_t{1u};
-constexpr auto kRxLine = std::uint16_t{0u};
-constexpr auto kSame70PioSelectorB = std::uint32_t{2u};
+constexpr auto kTxLine = std::uint16_t{4u};
+constexpr auto kRxLine = std::uint16_t{21u};
+constexpr auto kSame70PioSelectorA = std::uint32_t{0u};
+constexpr auto kSame70PioSelectorD = std::uint32_t{3u};
 constexpr auto kWatchdogGuardValue = std::uint32_t{0x0fffu};
 
 [[nodiscard]] constexpr auto register_ref(std::uintptr_t base_address, std::uint32_t offset_bytes)
@@ -150,24 +155,24 @@ class same70_debug_uart_handle {
     static constexpr bool is_microchip_uart_r = false;
     static constexpr bool is_microchip_usart_zw = true;
 
-    static constexpr auto us_cr_reg = register_ref(kUsart0Base, 0x00u);
-    static constexpr auto us_mr_reg = register_ref(kUsart0Base, 0x04u);
-    static constexpr auto us_brgr_reg = register_ref(kUsart0Base, 0x20u);
-    [[maybe_unused]] static constexpr auto us_csr_reg = register_ref(kUsart0Base, 0x14u);
-    static constexpr auto us_thr_reg = register_ref(kUsart0Base, 0x1cu);
-    static constexpr auto us_rstrx_field = field_ref(kUsart0Base, 0x00u, 2u);
-    static constexpr auto us_rsttx_field = field_ref(kUsart0Base, 0x00u, 3u);
-    static constexpr auto us_rxdis_field = field_ref(kUsart0Base, 0x00u, 5u);
-    static constexpr auto us_txdis_field = field_ref(kUsart0Base, 0x00u, 7u);
-    static constexpr auto us_rststa_field = field_ref(kUsart0Base, 0x00u, 8u);
-    static constexpr auto us_usart_mode_field = field_ref(kUsart0Base, 0x04u, 0u, 4u);
-    static constexpr auto us_usclks_field = field_ref(kUsart0Base, 0x04u, 4u, 2u);
-    static constexpr auto us_chrl_field = field_ref(kUsart0Base, 0x04u, 6u, 2u);
-    static constexpr auto us_cd_field = field_ref(kUsart0Base, 0x20u, 0u, 16u);
-    static constexpr auto us_rxen_field = field_ref(kUsart0Base, 0x00u, 4u);
-    static constexpr auto us_txen_field = field_ref(kUsart0Base, 0x00u, 6u);
-    static constexpr auto us_txrdy_field = field_ref(kUsart0Base, 0x14u, 1u);
-    static constexpr auto us_txchr_field = field_ref(kUsart0Base, 0x1cu, 0u, 9u);
+    static constexpr auto us_cr_reg = register_ref(kUsart1Base, 0x00u);
+    static constexpr auto us_mr_reg = register_ref(kUsart1Base, 0x04u);
+    static constexpr auto us_brgr_reg = register_ref(kUsart1Base, 0x20u);
+    [[maybe_unused]] static constexpr auto us_csr_reg = register_ref(kUsart1Base, 0x14u);
+    static constexpr auto us_thr_reg = register_ref(kUsart1Base, 0x1cu);
+    static constexpr auto us_rstrx_field = field_ref(kUsart1Base, 0x00u, 2u);
+    static constexpr auto us_rsttx_field = field_ref(kUsart1Base, 0x00u, 3u);
+    static constexpr auto us_rxdis_field = field_ref(kUsart1Base, 0x00u, 5u);
+    static constexpr auto us_txdis_field = field_ref(kUsart1Base, 0x00u, 7u);
+    static constexpr auto us_rststa_field = field_ref(kUsart1Base, 0x00u, 8u);
+    static constexpr auto us_usart_mode_field = field_ref(kUsart1Base, 0x04u, 0u, 4u);
+    static constexpr auto us_usclks_field = field_ref(kUsart1Base, 0x04u, 4u, 2u);
+    static constexpr auto us_chrl_field = field_ref(kUsart1Base, 0x04u, 6u, 2u);
+    static constexpr auto us_cd_field = field_ref(kUsart1Base, 0x20u, 0u, 16u);
+    static constexpr auto us_rxen_field = field_ref(kUsart1Base, 0x00u, 4u);
+    static constexpr auto us_txen_field = field_ref(kUsart1Base, 0x00u, 6u);
+    static constexpr auto us_txrdy_field = field_ref(kUsart1Base, 0x14u, 1u);
+    static constexpr auto us_txchr_field = field_ref(kUsart1Base, 0x1cu, 0u, 9u);
 
     explicit same70_debug_uart_handle(alloy::hal::UartConfig config) : config_{config} {}
 
@@ -260,8 +265,8 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
     mmio_space mmio{trace};
     runtime_mmio_scope scope{mmio};
 
-    configure_same70_peripheral_mux(kPioBBase, kTxLine, kSame70PioSelectorB);
-    configure_same70_peripheral_mux(kPioBBase, kRxLine, kSame70PioSelectorB);
+    configure_same70_peripheral_mux(kPioBBase, kTxLine, kSame70PioSelectorD);
+    configure_same70_peripheral_mux(kPioABase, kRxLine, kSame70PioSelectorA);
 
     const auto gpio_result = gpio_detail::configure_microchip_pio<same70_pio_pin_handle<kLedLine>>({
         .direction = alloy::hal::PinDirection::Output,
@@ -273,7 +278,7 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
 
     same70_debug_uart_handle uart_handle{
         alloy::hal::UartConfig{
-            .baudrate = alloy::hal::Baudrate::e115200,
+            .baudrate = alloy::hal::Baudrate::e57600,
             .data_bits = alloy::hal::DataBits::Eight,
             .parity = alloy::hal::Parity::None,
             .stop_bits = alloy::hal::StopBits::One,
@@ -284,45 +289,48 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
     const auto uart_result = uart_detail::configure_uart(uart_handle);
     REQUIRE(uart_result.is_ok());
 
-    mmio.preload(kUsart0Base + 0x14u, 0x0000'0002u);
+    mmio.preload(kUsart1Base + 0x14u, 0x0000'0002u);
     const auto tx_result = uart_detail::write_uart_byte(uart_handle, std::byte{0x41});
     REQUIRE(tx_result.is_ok());
 
-    REQUIRE(mmio.peek(kPioBBase + 0x04u) == 0x0000'0001u);
+    REQUIRE(mmio.peek(kPioABase + 0x04u) == (1u << kRxLine));
+    REQUIRE(mmio.peek(kPioABase + 0x70u) == 0x0000'0000u);
+    REQUIRE(mmio.peek(kPioABase + 0x74u) == 0x0000'0000u);
+    REQUIRE(mmio.peek(kPioBBase + 0x04u) == (1u << kTxLine));
     REQUIRE(mmio.peek(kPioBBase + 0x70u) == 0x0000'0000u);
-    REQUIRE(mmio.peek(kPioBBase + 0x74u) == 0x0000'0003u);
+    REQUIRE(mmio.peek(kPioBBase + 0x74u) == (1u << kTxLine));
     REQUIRE(mmio.peek(kPioCBase + 0x00u) == (1u << kLedLine));
     REQUIRE(mmio.peek(kPioCBase + 0x54u) == (1u << kLedLine));
     REQUIRE(mmio.peek(kPioCBase + 0x60u) == (1u << kLedLine));
     REQUIRE(mmio.peek(kPioCBase + 0x90u) == (1u << kLedLine));
     REQUIRE(mmio.peek(kPioCBase + 0x34u) == (1u << kLedLine));
     REQUIRE(mmio.peek(kPioCBase + 0x10u) == (1u << kLedLine));
-    REQUIRE(mmio.peek(kUsart0Base + 0x00u) == 0x0000'0050u);
-    REQUIRE(mmio.peek(kUsart0Base + 0x04u) == 0x0000'08c0u);
-    REQUIRE(mmio.peek(kUsart0Base + 0x20u) == 7u);
-    REQUIRE(mmio.peek(kUsart0Base + 0x1cu) == 0x41u);
+    REQUIRE(mmio.peek(kUsart1Base + 0x00u) == 0x0000'0050u);
+    REQUIRE(mmio.peek(kUsart1Base + 0x04u) == 0x0000'08c0u);
+    REQUIRE(mmio.peek(kUsart1Base + 0x20u) == 13u);
+    REQUIRE(mmio.peek(kUsart1Base + 0x1cu) == 0x41u);
 
     const auto expected_prefix = std::array{
         access{.kind = access_kind::write, .address = kPioBBase + 0x04u, .value = 1u << kTxLine, .mask = 0u},
         access{.kind = access_kind::read, .address = kPioBBase + 0x70u, .value = 0u, .mask = 0u},
         access{.kind = access_kind::read, .address = kPioBBase + 0x74u, .value = 0u, .mask = 0u},
-        access{.kind = access_kind::write, .address = kPioBBase + 0x70u, .value = 0u, .mask = 0u},
+        access{.kind = access_kind::write, .address = kPioBBase + 0x70u, .value = 1u << kTxLine, .mask = 0u},
         access{.kind = access_kind::write, .address = kPioBBase + 0x74u, .value = 1u << kTxLine, .mask = 0u},
-        access{.kind = access_kind::write, .address = kPioBBase + 0x04u, .value = 1u << kRxLine, .mask = 0u},
-        access{.kind = access_kind::read, .address = kPioBBase + 0x70u, .value = 0u, .mask = 0u},
-        access{.kind = access_kind::read, .address = kPioBBase + 0x74u, .value = 1u << kTxLine, .mask = 0u},
-        access{.kind = access_kind::write, .address = kPioBBase + 0x70u, .value = 0u, .mask = 0u},
-        access{.kind = access_kind::write, .address = kPioBBase + 0x74u, .value = (1u << kTxLine) | (1u << kRxLine), .mask = 0u},
+        access{.kind = access_kind::write, .address = kPioABase + 0x04u, .value = 1u << kRxLine, .mask = 0u},
+        access{.kind = access_kind::read, .address = kPioABase + 0x70u, .value = 0u, .mask = 0u},
+        access{.kind = access_kind::read, .address = kPioABase + 0x74u, .value = 0u, .mask = 0u},
+        access{.kind = access_kind::write, .address = kPioABase + 0x70u, .value = 0u, .mask = 0u},
+        access{.kind = access_kind::write, .address = kPioABase + 0x74u, .value = 0u, .mask = 0u},
         access{.kind = access_kind::write, .address = kPioCBase + 0x00u, .value = 1u << kLedLine, .mask = 0u},
         access{.kind = access_kind::write, .address = kPioCBase + 0x54u, .value = 1u << kLedLine, .mask = 0u},
         access{.kind = access_kind::write, .address = kPioCBase + 0x60u, .value = 1u << kLedLine, .mask = 0u},
         access{.kind = access_kind::write, .address = kPioCBase + 0x90u, .value = 1u << kLedLine, .mask = 0u},
         access{.kind = access_kind::write, .address = kPioCBase + 0x34u, .value = 1u << kLedLine, .mask = 0u},
         access{.kind = access_kind::write, .address = kPioCBase + 0x10u, .value = 1u << kLedLine, .mask = 0u},
-        access{.kind = access_kind::write, .address = kUsart0Base + 0x00u, .value = 0x0000'01acu, .mask = 0u},
-        access{.kind = access_kind::write, .address = kUsart0Base + 0x04u, .value = 0x0000'08c0u, .mask = 0u},
-        access{.kind = access_kind::write, .address = kUsart0Base + 0x20u, .value = 7u, .mask = 0u},
-        access{.kind = access_kind::write, .address = kUsart0Base + 0x00u, .value = 0x0000'0050u, .mask = 0u},
+        access{.kind = access_kind::write, .address = kUsart1Base + 0x00u, .value = 0x0000'01acu, .mask = 0u},
+        access{.kind = access_kind::write, .address = kUsart1Base + 0x04u, .value = 0x0000'08c0u, .mask = 0u},
+        access{.kind = access_kind::write, .address = kUsart1Base + 0x20u, .value = 13u, .mask = 0u},
+        access{.kind = access_kind::write, .address = kUsart1Base + 0x00u, .value = 0x0000'0050u, .mask = 0u},
     };
 
     REQUIRE(trace.entries().size() >= expected_prefix.size() + 2u);
@@ -334,9 +342,9 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
     const auto ready_index = expected_prefix.size();
     INFO(describe_trace(trace));
     REQUIRE(trace.entries()[ready_index] ==
-            access{.kind = access_kind::read, .address = kUsart0Base + 0x14u, .value = 0x0000'0002u, .mask = 0u});
+            access{.kind = access_kind::read, .address = kUsart1Base + 0x14u, .value = 0x0000'0002u, .mask = 0u});
     REQUIRE(trace.entries()[ready_index + 1u] ==
-            access{.kind = access_kind::write, .address = kUsart0Base + 0x1cu, .value = 0x41u, .mask = 0u});
+            access{.kind = access_kind::write, .address = kUsart1Base + 0x1cu, .value = 0x41u, .mask = 0u});
 }
 
 TEST_CASE("host mmio enables SAME70 board debug usart clock before configure",
@@ -346,7 +354,7 @@ TEST_CASE("host mmio enables SAME70 board debug usart clock before configure",
     runtime_mmio_scope scope{mmio};
 
     auto uart = board::make_debug_uart({
-        .baudrate = alloy::hal::Baudrate::e115200,
+        .baudrate = alloy::hal::Baudrate::e57600,
         .data_bits = alloy::hal::DataBits::Eight,
         .parity = alloy::hal::Parity::None,
         .stop_bits = alloy::hal::StopBits::One,
@@ -354,17 +362,19 @@ TEST_CASE("host mmio enables SAME70 board debug usart clock before configure",
         .peripheral_clock_hz = 12'000'000u,
     });
 
-    mmio.preload(kUsart0Base + 0x14u, 0x0000'0002u);
+    mmio.preload(kUsart1Base + 0x14u, 0x0000'0002u);
 
     REQUIRE(uart.configure().is_ok());
     REQUIRE(uart.write_byte(std::byte{0x41}).is_ok());
 
-    REQUIRE(mmio.peek(kPmcPcer0) == ((1u << 11u) | (1u << 13u)));
-    REQUIRE(mmio.peek(kPioBBase + 0x74u) == ((1u << kTxLine) | (1u << kRxLine)));
-    REQUIRE(mmio.peek(kUsart0Base + 0x00u) == 0x0000'0050u);
-    REQUIRE(mmio.peek(kUsart0Base + 0x04u) == 0x0000'08c0u);
-    REQUIRE(mmio.peek(kUsart0Base + 0x20u) == 7u);
-    REQUIRE(mmio.peek(kUsart0Base + 0x1cu) == 0x41u);
+    REQUIRE(mmio.peek(kPmcPcer0) == ((1u << 10u) | (1u << 11u) | (1u << 14u)));
+    REQUIRE(mmio.peek(kPioABase + 0x74u) == 0u);
+    REQUIRE(mmio.peek(kPioBBase + 0x70u) == (1u << kTxLine));
+    REQUIRE(mmio.peek(kPioBBase + 0x74u) == (1u << kTxLine));
+    REQUIRE(mmio.peek(kUsart1Base + 0x00u) == 0x0000'0050u);
+    REQUIRE(mmio.peek(kUsart1Base + 0x04u) == 0x0000'08c0u);
+    REQUIRE(mmio.peek(kUsart1Base + 0x20u) == 13u);
+    REQUIRE(mmio.peek(kUsart1Base + 0x1cu) == 0x41u);
 }
 
 TEST_CASE("host mmio covers SAME70 RTC update handshake",

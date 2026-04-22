@@ -1378,10 +1378,6 @@ auto scan_i2c_bus(const PortHandle& port, std::span<std::uint8_t> found_devices)
         return core::Err(core::ErrorCode::InvalidParameter);
     }
 
-    if (rt::i2c_schema_for<PortHandle>() == rt::I2cSchema::microchip_twihs_z) {
-        return core::Err(core::ErrorCode::NotSupported);
-    }
-
     auto count = std::size_t{0u};
     constexpr auto kFirstAddress = std::uint16_t{0x08u};
     constexpr auto kLastAddress = std::uint16_t{0x77u};
@@ -1394,6 +1390,13 @@ auto scan_i2c_bus(const PortHandle& port, std::span<std::uint8_t> found_devices)
                 return core::Err(core::ErrorCode::BufferFull);
             }
             found_devices[count++] = static_cast<std::uint8_t>(address);
+            continue;
+        }
+
+        if constexpr (rt::i2c_schema_for<PortHandle>() == rt::I2cSchema::microchip_twihs_z) {
+            if (result.error() == core::ErrorCode::I2cNack) {
+                continue;
+            }
         }
     }
 

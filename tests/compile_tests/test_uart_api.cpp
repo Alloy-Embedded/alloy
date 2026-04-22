@@ -86,17 +86,17 @@ static_assert(uart_is_usable<DebugUart>());
 }
 #elif defined(ALLOY_BOARD_SAME70_XPLD)
 using DebugUartConnector = alloy::hal::connection::runtime_connector<
-    alloy::hal::peripheral<"USART0">, alloy::device::runtime::PeripheralId::USART0,
-    alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PB1">>,
-                                            alloy::device::runtime::PinId::PB1,
-                                            alloy::device::runtime::SignalId::signal_txd0>,
-    alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PB0">>,
-                                            alloy::device::runtime::PinId::PB0,
-                                            alloy::device::runtime::SignalId::signal_rxd0>>;
+    alloy::hal::peripheral<"USART1">, alloy::device::runtime::PeripheralId::USART1,
+    alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PB4">>,
+                                            alloy::device::runtime::PinId::PB4,
+                                            alloy::device::runtime::SignalId::signal_txd1>,
+    alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PA21">>,
+                                            alloy::device::runtime::PinId::PA21,
+                                            alloy::device::runtime::SignalId::signal_rxd1>>;
 using DebugUart = decltype(alloy::hal::uart::open<DebugUartConnector>(
     {.baudrate = alloy::hal::Baudrate::e115200}));
 static_assert(DebugUart::valid);
-static_assert(DebugUart::peripheral_name == std::string_view{"USART0"});
+static_assert(DebugUart::peripheral_name == std::string_view{"USART1"});
 static_assert(uart_is_usable<DebugUart>());
 [[maybe_unused]] void compile_same70_uart_backend() {
     exercise_uart_backend<DebugUart>(12'000'000u);

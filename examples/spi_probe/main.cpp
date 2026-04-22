@@ -14,6 +14,7 @@
     #include BOARD_UART_HEADER
 #endif
 
+#include "examples/common/uart_console.hpp"
 #include "hal/systick.hpp"
 
 namespace {
@@ -24,20 +25,6 @@ namespace {
         alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(period_ms);
     }
 }
-
-#ifdef BOARD_UART_HEADER
-auto write_uart_text(const decltype(board::make_debug_uart())& uart, const char* text) -> void {
-    auto length = std::size_t{0};
-    while (text[length] != '\0') {
-        ++length;
-    }
-
-    const auto bytes =
-        std::span{reinterpret_cast<const std::byte*>(text), static_cast<std::size_t>(length)};
-    static_cast<void>(uart.write(bytes));
-    static_cast<void>(uart.flush());
-}
-#endif
 
 }  // namespace
 
@@ -55,7 +42,7 @@ int main() {
     if (const auto result = bus.configure(); result.is_err()) {
 #ifdef BOARD_UART_HEADER
         if (uart_ready) {
-            write_uart_text(uart, "spi configure failed\r\n");
+            alloy::examples::uart_console::write_line(uart, "spi configure failed");
         }
 #endif
         blink_error(200);
@@ -63,12 +50,21 @@ int main() {
 
 #ifdef BOARD_UART_HEADER
     if (uart_ready) {
-        write_uart_text(uart, "spi probe ready\r\n");
+        alloy::examples::uart_console::write_line(uart, "spi probe ready");
     }
 #endif
 
+    std::uint32_t loop_count = 0u;
     while (true) {
         board::led::toggle();
+#ifdef BOARD_UART_HEADER
+        if (uart_ready) {
+            alloy::examples::uart_console::write_text(uart, "spi loop=");
+            alloy::examples::uart_console::write_unsigned(uart, loop_count);
+            alloy::examples::uart_console::write_text(uart, "\r\n");
+        }
+#endif
         alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(500);
+        ++loop_count;
     }
 }

@@ -6,6 +6,11 @@
 
 #include BOARD_WATCHDOG_HEADER
 
+#ifdef BOARD_UART_HEADER
+    #include BOARD_UART_HEADER
+#endif
+
+#include "examples/common/uart_console.hpp"
 #include "hal/systick.hpp"
 
 // ---------------------------------------------------------------------------
@@ -45,6 +50,16 @@ namespace {
 int main() {
     board::init();
 
+#ifdef BOARD_UART_HEADER
+    auto uart = board::make_debug_uart();
+    const auto uart_ready = uart.configure().is_ok();
+    if (uart_ready) {
+        alloy::examples::uart_console::write_line(uart, "watchdog probe ready");
+    }
+#else
+    constexpr auto uart_ready = false;
+#endif
+
     // On platforms that support software disable (same70 WDT / RSWDT),
     // open the handle with disable_on_configure = true.  On STM32 IWDG the
     // disable step is skipped because Config::disable_on_configure is false.
@@ -58,6 +73,11 @@ int main() {
     // Explicit configure() call to demonstrate the reconfigure path and
     // surface any error.
     if (const auto r = wdt.configure({.refresh_on_configure = true}); !r.is_ok()) {
+#ifdef BOARD_UART_HEADER
+        if (uart_ready) {
+            alloy::examples::uart_console::write_line(uart, "watchdog configure failed");
+        }
+#endif
         blink_error(200);
     }
 
@@ -71,6 +91,13 @@ int main() {
         // Refresh every second (every other 500 ms toggle).
         if ((count & 1u) == 0u) {
             [[maybe_unused]] const auto r = wdt.refresh();
+#ifdef BOARD_UART_HEADER
+            if (uart_ready) {
+                alloy::examples::uart_console::write_text(uart, "watchdog refresh=");
+                alloy::examples::uart_console::write_unsigned(uart, count >> 1u);
+                alloy::examples::uart_console::write_text(uart, "\r\n");
+            }
+#endif
         }
         ++count;
     }

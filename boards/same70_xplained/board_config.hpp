@@ -18,7 +18,7 @@
 
 #include "hal/connect/tags.hpp"
 
-#include "device/system_clock.hpp"
+#include "device/clock_config.hpp"
 
 namespace board::same70_xplained {
 
@@ -27,11 +27,11 @@ namespace board::same70_xplained {
 // =============================================================================
 
 struct ClockConfig {
-    static_assert(alloy::device::SelectedSystemClockProfiles::available);
+    static_assert(alloy::device::SelectedClockConfig::available);
 
     static constexpr auto system_clock_profile =
-        alloy::device::system_clock::ProfileId::default_safe_internal_12mhz;
-    using SystemClockProfile = alloy::device::system_clock::ProfileTraits<system_clock_profile>;
+        alloy::device::clock_config::ProfileId::plla_150mhz;
+    using SystemClockProfile = alloy::device::clock_config::ProfileTraits<system_clock_profile>;
 
     static_assert(SystemClockProfile::kPresent);
 

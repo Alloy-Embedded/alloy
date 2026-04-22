@@ -28,12 +28,12 @@
  *
  * ## Hardware Configuration
  *
- * - **MCU:** ATSAME70Q21B (ARM Cortex-M7 @ 12 MHz)
+ * - **MCU:** ATSAME70Q21B (ARM Cortex-M7 @ 150 MHz)
  * - **LED:** Green LED on PC8 (active LOW)
  * - **Button:** SW0 on PA11 (active LOW)
- * - **Debug UART:** UART1 on EDBG virtual COM port
+ * - **Debug UART:** USART1 on EDBG virtual COM port (PB4 TX / PA21 RX)
  *
- * @note Clock runs at 12 MHz using internal RC oscillator
+ * @note Board bring-up selects the external 12 MHz crystal + PLLA 150 MHz profile.
  */
 
 #include <cstdint>
@@ -111,7 +111,7 @@ void toggle();
  *
  * Initializes all board peripherals and subsystems:
  * - Disables watchdog timers
- * - Configures system clock (12 MHz RC oscillator)
+ * - Configures system clock (external crystal + PLLA 150 MHz)
  * - Initializes SysTick timer (1ms period)
  * - Configures board resources through descriptor-driven drivers
  * - Enables interrupts

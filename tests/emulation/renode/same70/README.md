@@ -10,7 +10,7 @@ This scenario is the first Renode-backed validation layer for Alloy.
   - load the Alloy-generated startup
   - reach `main()`
   - run `board::init()`
-  - configure the debug UART (`USART0`)
+  - configure the debug UART (`USART1`)
   - emit a deterministic boot banner
   - prove the expected boot stage / marker / transmitted byte count from SRAM symbols
 

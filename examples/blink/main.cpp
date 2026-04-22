@@ -21,7 +21,7 @@
  *
  * ## Expected Behavior
  *
- * The onboard green LED blinks with a 500ms ON / 500ms OFF pattern (1 Hz).
+ * The onboard green LED blinks with a 500ms ON / 500ms OFF pattern.
  *
  * ## How It Works
  *
@@ -49,21 +49,51 @@
     #error "Unsupported board! Define ALLOY_BOARD_* in your build system."
 #endif
 
-#include "hal/systick.hpp"
+#include <cstdint>
 
-using namespace alloy::hal;
+#if defined(ALLOY_BOARD_SAME70_XPLAINED) || defined(ALLOY_BOARD_SAME70_XPLD)
+    #include "same70_xplained/board_uart.hpp"
+#elif defined(ALLOY_BOARD_NUCLEO_G0B1RE)
+    #include "nucleo_g0b1re/board_uart.hpp"
+#elif defined(ALLOY_BOARD_NUCLEO_G071RB)
+    #include "nucleo_g071rb/board_uart.hpp"
+#elif defined(ALLOY_BOARD_NUCLEO_F401RE)
+    #include "nucleo_f401re/board_uart.hpp"
+#endif
+
+#include "../common/uart_console.hpp"
+
+namespace {
+
+inline void busy_delay() {
+    for (volatile std::uint32_t i = 0; i < 2'000'000u; ++i) {
+    }
+}
+
+}  // namespace
 
 int main() {
     // Initialize all board hardware (clock, GPIO, SysTick, etc.)
     board::init();
 
+    auto uart = board::make_debug_uart();
+    const auto uart_ready = uart.configure().is_ok();
+    if (uart_ready) {
+        alloy::examples::uart_console::write_line(uart, "blink ready");
+    }
+
+    std::uint32_t loop_count = 0u;
+
     // Blink LED forever - same code works on all boards!
     while (true) {
-        board::led::on();
-        SysTickTimer::delay_ms<board::BoardSysTick>(500);
-
-        board::led::off();
-        SysTickTimer::delay_ms<board::BoardSysTick>(500);
+        board::led::toggle();
+        busy_delay();
+        ++loop_count;
+        if (uart_ready) {
+            alloy::examples::uart_console::write_text(uart, "blink loop=");
+            alloy::examples::uart_console::write_unsigned(uart, loop_count);
+            alloy::examples::uart_console::write_text(uart, "\r\n");
+        }
     }
 
     return 0;

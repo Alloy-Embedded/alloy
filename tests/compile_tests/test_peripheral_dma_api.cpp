@@ -89,13 +89,13 @@ namespace {
 using DmaPeripheralId = alloy::hal::dma::PeripheralId;
 using DmaSignalId = alloy::hal::dma::SignalId;
 using UartConnector = alloy::hal::connection::runtime_connector<
-    alloy::hal::peripheral<"USART0">, alloy::device::runtime::PeripheralId::USART0,
-    alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PB1">>,
-                                            alloy::device::runtime::PinId::PB1,
-                                            alloy::device::runtime::SignalId::signal_txd0>,
-    alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PB0">>,
-                                            alloy::device::runtime::PinId::PB0,
-                                            alloy::device::runtime::SignalId::signal_rxd0>>;
+    alloy::hal::peripheral<"USART1">, alloy::device::runtime::PeripheralId::USART1,
+    alloy::hal::connection::runtime_binding<alloy::hal::tx<alloy::hal::pin<"PB4">>,
+                                            alloy::device::runtime::PinId::PB4,
+                                            alloy::device::runtime::SignalId::signal_txd1>,
+    alloy::hal::connection::runtime_binding<alloy::hal::rx<alloy::hal::pin<"PA21">>,
+                                            alloy::device::runtime::PinId::PA21,
+                                            alloy::device::runtime::SignalId::signal_rxd1>>;
 using SpiConnector = alloy::hal::connection::runtime_connector<
     alloy::hal::peripheral<"SPI0">, alloy::device::runtime::PeripheralId::SPI0,
     alloy::hal::connection::runtime_binding<alloy::hal::sck<alloy::hal::pin<"PD22">>,
@@ -120,11 +120,11 @@ using I2cConnector = alloy::hal::connection::runtime_connector<
 
 void compile_peripheral_dma_api() {
     auto uart = alloy::hal::uart::open<UartConnector>({});
-    auto uart_tx_dma = alloy::hal::dma::open<DmaPeripheralId::USART0, DmaSignalId::signal_TX>({
+    auto uart_tx_dma = alloy::hal::dma::open<DmaPeripheralId::USART1, DmaSignalId::signal_TX>({
         .direction = alloy::hal::dma::Direction::memory_to_peripheral,
         .channel_index = 0,
     });
-    auto uart_rx_dma = alloy::hal::dma::open<DmaPeripheralId::USART0, DmaSignalId::signal_RX>({
+    auto uart_rx_dma = alloy::hal::dma::open<DmaPeripheralId::USART1, DmaSignalId::signal_RX>({
         .direction = alloy::hal::dma::Direction::peripheral_to_memory,
         .channel_index = 1,
     });

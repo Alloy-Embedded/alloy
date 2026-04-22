@@ -5,9 +5,9 @@ Suporte de board no caminho runtime atual.
 ## Estado Atual
 
 - MCU: `ATSAME70Q21B`
-- clock seguro atual: `12 MHz`
+- clock oficial atual: `12 MHz crystal + PLLA 150 MHz`
 - LED onboard: `PC8` ativo em nível baixo
-- UART de debug: `USART0`
+- UART de debug: `USART1` em `PB4`/`PA21` via EDBG VCOM, `115200 8N1`
 - helpers públicos de board:
   - `board::init()`
   - `board::led::{init,on,off,toggle}`
@@ -54,5 +54,5 @@ int main() {
 
 ## Limites Conhecidos
 
-- o profile default continua em `12 MHz`; o próximo passo aqui é promover um profile de desempenho como escolha oficial de board quando o hardware target estiver validado
-- `DMA` agora usa o contrato `runtime` publicado, e a board fixa canais padrão para o `USART0` de debug
+- `board::init()` libera `PB4` do bloco JTAG/System I/O para a VCOM da EDBG
+- `DMA` continua publicado separadamente; valide o binding disponível antes de assumir que ele segue o mesmo caminho da UART de debug
