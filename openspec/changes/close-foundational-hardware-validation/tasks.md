@@ -1,7 +1,7 @@
 ## 1. OpenSpec Baseline
 
-- [ ] 1.1 Add runtime-validation and runtime-tooling deltas for foundational hardware closure
-- [ ] 1.2 Add runtime-release-discipline delta for silicon-backed foundational claims
+- [x] 1.1 Add runtime-validation and runtime-tooling deltas for foundational hardware closure
+- [x] 1.2 Add runtime-release-discipline delta for silicon-backed foundational claims
 
 ## 2. STM32G0 Hardware Closure
 
@@ -19,9 +19,9 @@
 
 ## 4. Tooling Hardening For Real Boards
 
-- [ ] 4.1 Add supported recovery flows to `alloyctl` where the repo can guarantee them
-- [ ] 4.2 Document recovery/debug expectations in public board tooling docs
-- [ ] 4.3 Keep SAME70 and STM32 board flows aligned enough to be teachable as one product story
+- [x] 4.1 Add supported recovery flows to `alloyctl` where the repo can guarantee them
+- [x] 4.2 Document recovery/debug expectations in public board tooling docs
+- [x] 4.3 Keep SAME70 and STM32 board flows aligned enough to be teachable as one product story
 
 ## 5. Release Claims
 
@@ -30,5 +30,5 @@
 
 ## 6. Validation
 
-- [ ] 6.1 Verify documented hardware flows still pass automated tooling checks where possible
-- [ ] 6.2 Validate the change with `openspec validate close-foundational-hardware-validation --strict`
+- [x] 6.1 Verify documented hardware flows still pass automated tooling checks where possible
+- [x] 6.2 Validate the change with `openspec validate close-foundational-hardware-validation --strict`

@@ -17,18 +17,17 @@ Representative board:
 - ST-LINK USB connection for flashing/debug
 - serial terminal attached to the ST-LINK virtual COM port
 
-The repo does not hardcode a flashing tool here. Use the ST-LINK/OpenOCD flow already used in the
-lab.
+Supported repo flow:
+
+- `python3 scripts/alloyctl.py bundle --board nucleo_g071rb -j8`
+- `python3 scripts/alloyctl.py flash --board nucleo_g071rb --target <example>`
+- `python3 scripts/alloyctl.py recover --board nucleo_g071rb --target <example>` if the board is trapped by bad firmware
+- `python3 scripts/alloyctl.py monitor --board nucleo_g071rb`
 
 ## Configure And Build
 
 ```bash
-cmake -S . -B build/hw/g071 \
-  -DALLOY_BOARD=nucleo_g071rb \
-  -DALLOY_BUILD_TESTS=ON \
-  -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake
-
-cmake --build build/hw/g071 --target stm32g0_hardware_validation_bundle --parallel 8
+python3 scripts/alloyctl.py bundle --board nucleo_g071rb -j8
 ```
 
 Artifacts land under:
@@ -46,13 +45,13 @@ Run the suite in order. Stop on the first hard-fault/reset-loop.
 
 ### `blink`
 
-- flash `build/hw/g071/examples/blink/blink.elf`
+- flash `python3 scripts/alloyctl.py flash --board nucleo_g071rb --target blink`
 - acceptance:
   - LD4 begins visible 1 Hz blinking shortly after reset
 
 ### `uart_logger`
 
-- flash `build/hw/g071/examples/uart_logger/uart_logger.elf`
+- flash `python3 scripts/alloyctl.py flash --board nucleo_g071rb --target uart_logger`
 - serial settings:
   - `115200 8N1`
 - acceptance:
@@ -64,7 +63,7 @@ Run the suite in order. Stop on the first hard-fault/reset-loop.
 
 ### `watchdog_probe`
 
-- flash `build/hw/g071/examples/watchdog_probe/watchdog_probe.elf`
+- flash `python3 scripts/alloyctl.py flash --board nucleo_g071rb --target watchdog_probe`
 - acceptance:
   - board keeps blinking at 2 Hz
   - no reset-loop while the refresh loop runs
@@ -72,7 +71,7 @@ Run the suite in order. Stop on the first hard-fault/reset-loop.
 
 ### `rtc_probe`
 
-- flash `build/hw/g071/examples/rtc_probe/rtc_probe.elf`
+- flash `python3 scripts/alloyctl.py flash --board nucleo_g071rb --target rtc_probe`
 - acceptance:
   - board boots and keeps blinking
   - no hard-fault/reset-loop after RTC configure path
@@ -81,7 +80,7 @@ Run the suite in order. Stop on the first hard-fault/reset-loop.
 
 ### `timer_pwm_probe`
 
-- flash `build/hw/g071/examples/timer_pwm_probe/timer_pwm_probe.elf`
+- flash `python3 scripts/alloyctl.py flash --board nucleo_g071rb --target timer_pwm_probe`
 - serial settings:
   - `115200 8N1`
 - acceptance:
@@ -91,7 +90,7 @@ Run the suite in order. Stop on the first hard-fault/reset-loop.
 
 ### `analog_probe`
 
-- flash `build/hw/g071/examples/analog_probe/analog_probe.elf`
+- flash `python3 scripts/alloyctl.py flash --board nucleo_g071rb --target analog_probe`
 - serial settings:
   - `115200 8N1`
 - acceptance:

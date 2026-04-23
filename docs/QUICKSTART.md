@@ -41,6 +41,7 @@ Notes:
 - `flash` uses OpenOCD and requires a working probe connection
 - `monitor` auto-detects the UART port when possible; pass `--port` if multiple candidates exist
 - if you only want to build, replace `flash` with `build`
+- if an STM32 board is trapped by bad firmware, use `python3 scripts/alloyctl.py recover --board <board> --target blink`
 
 ## Configure And Build Explicitly
 

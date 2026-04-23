@@ -29,19 +29,27 @@ observation still remain manual lab steps.
 
 Every runbook follows the same flow:
 
-1. Configure a board-specific build directory with the ARM toolchain.
-2. Build the firmware targets listed in the runbook.
-3. Flash the generated `.elf`/`.hex`/`.bin` with the probe flow already used in the lab.
-4. Observe LED and UART behavior.
-5. Record pass/fail and any anomalies in the PR, issue, or lab notebook.
+1. Build the board bundle through `alloyctl`.
+2. Flash or recover the selected firmware through `alloyctl`.
+3. Observe LED and UART behavior.
+4. Record pass/fail and any anomalies in the checklist.
 
-Representative configure pattern:
+Representative build pattern:
 
 ```bash
-cmake -S . -B build/hw/<board> \
-  -DALLOY_BOARD=<board> \
-  -DALLOY_BUILD_TESTS=ON \
-  -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake
+python3 scripts/alloyctl.py bundle --board <board> -j8
+```
+
+Representative flash pattern:
+
+```bash
+python3 scripts/alloyctl.py flash --board <board> --target <example>
+```
+
+Representative recovery pattern for STM32 boards:
+
+```bash
+python3 scripts/alloyctl.py recover --board <board> --target <example>
 ```
 
 ## Acceptance Rules

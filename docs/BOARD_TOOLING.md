@@ -14,6 +14,7 @@ This is the supported board-oriented UX for:
 - explain
 - diff
 - flash
+- recover
 - monitor
 - gdbserver
 - sweep
@@ -82,6 +83,26 @@ Current flash backend:
 - SAME70: `openocd -f board/atmel_same70_xplained.cfg`
 - STM32G0: `openocd -f interface/stlink.cfg -f target/stm32g0x.cfg`
 - STM32F4: `openocd -f interface/stlink.cfg -f target/stm32f4x.cfg`
+
+Supported recovery path:
+
+- use one public command first:
+
+```bash
+python3 scripts/alloyctl.py recover --board nucleo_g071rb --target blink
+python3 scripts/alloyctl.py recover --board nucleo_f401re --target blink
+```
+
+- STM32 boards can also use `python3 scripts/alloyctl.py flash --board <board> --target <target> --recover`
+- when `STM32_Programmer_CLI` is installed, `alloyctl` prefers it automatically for STM32 recovery
+- otherwise `alloyctl` falls back to the slower `openocd` recovery path
+
+Force one backend explicitly:
+
+```bash
+python3 scripts/alloyctl.py flash --board nucleo_g071rb --target blink --recover --flash-backend stm32cube
+python3 scripts/alloyctl.py flash --board nucleo_g071rb --target blink --recover --flash-backend openocd
+```
 
 ## UART monitor
 

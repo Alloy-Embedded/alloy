@@ -32,6 +32,7 @@ class BoardConfig:
     openocd_args: tuple[str, ...]
     uart_globs: tuple[str, ...]
     uart_baud: int
+    stm32_programmer_supported: bool = False
 
 
 @dataclass(frozen=True)
@@ -72,6 +73,7 @@ BOARDS: dict[str, BoardConfig] = {
         ("openocd", "-f", "interface/stlink.cfg", "-f", "target/stm32g0x.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
         115200,
+        True,
     ),
     "nucleo_f401re": BoardConfig(
         "nucleo_f401re",
@@ -82,6 +84,7 @@ BOARDS: dict[str, BoardConfig] = {
         ("openocd", "-f", "interface/stlink.cfg", "-f", "target/stm32f4x.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
         115200,
+        True,
     ),
 }
 
@@ -147,6 +150,17 @@ def board_config(name: str) -> BoardConfig:
 def require_tool(name: str) -> None:
     if shutil.which(name) is None:
         raise SystemExit(die(f"missing tool: {name}"))
+
+
+def find_stm32_programmer_cli() -> str | None:
+    candidates = (
+        shutil.which("STM32_Programmer_CLI"),
+        "/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/Resources/bin/STM32_Programmer_CLI",
+    )
+    for candidate in candidates:
+        if candidate and Path(candidate).exists():
+            return candidate
+    return None
 
 
 def run(cmd: list[str]) -> None:
@@ -250,6 +264,17 @@ def artifact(cfg: BoardConfig, target: str) -> Path:
     raise SystemExit(die(f"artifact not found: {candidates[0]} or {candidates[1]}"))
 
 
+def stm32_program_image(cfg: BoardConfig, target: str) -> Path:
+    candidates = (
+        cfg.build_dir / "examples" / target / f"{target}.hex",
+        cfg.build_dir / "examples" / target / f"{target}.bin",
+    )
+    for path in candidates:
+        if path.exists():
+            return path
+    raise SystemExit(die(f"stm32 programmer image not found: {candidates[0]} or {candidates[1]}"))
+
+
 def auto_port(cfg: BoardConfig) -> str:
     ports: list[str] = []
     for pattern in cfg.uart_globs:
@@ -301,10 +326,29 @@ def cmd_bundle(args: argparse.Namespace) -> None:
 
 def cmd_flash(args: argparse.Namespace) -> None:
     cfg = board_config(args.board)
-    require_tool("openocd")
     if args.build_first:
         ensure_configured(cfg, args.build_type, build_tests=False)
         build(cfg, args.target, args.jobs)
+    backend = args.flash_backend
+    if backend == "auto":
+        if args.recover and cfg.stm32_programmer_supported and find_stm32_programmer_cli():
+            backend = "stm32cube"
+        else:
+            backend = "openocd"
+
+    if backend == "stm32cube":
+        if not cfg.stm32_programmer_supported:
+            raise SystemExit(die(f"flash backend 'stm32cube' is not supported for board: {cfg.board}"))
+        cli = find_stm32_programmer_cli()
+        if cli is None:
+            raise SystemExit(die("STM32_Programmer_CLI not found"))
+        image = stm32_program_image(cfg, args.target)
+        if args.recover:
+            run([cli, "-c", "port=SWD", "mode=UR", "reset=HWrst", "freq=100", "-e", "all"])
+        run([cli, "-c", "port=SWD", "mode=UR", "reset=HWrst", "freq=100", "-w", str(image), "-v", "-rst"])
+        return
+
+    require_tool("openocd")
     elf = artifact(cfg, args.target)
     cmd = list(cfg.openocd_args)
     if args.recover:
@@ -327,6 +371,12 @@ def cmd_monitor(args: argparse.Namespace) -> None:
     port = args.port or auto_port(cfg)
     baud = args.baud if args.baud is not None else cfg.uart_baud
     run([sys.executable, str(ROOT / "scripts" / "uart_monitor.py"), "--port", port, "--baud", str(baud)])
+
+
+def cmd_recover(args: argparse.Namespace) -> None:
+    args.recover = True
+    args.build_first = True
+    cmd_flash(args)
 
 
 def monitor_for(cfg: BoardConfig, port: str | None, baud: int, seconds: float) -> int:
@@ -609,8 +659,16 @@ def main() -> int:
     flash_p.add_argument("--target", required=True)
     flash_p.add_argument("--build-first", action="store_true")
     flash_p.add_argument("--recover", action="store_true")
+    flash_p.add_argument("--flash-backend", default="auto", choices=("auto", "openocd", "stm32cube"))
     flash_p.add_argument("-j", "--jobs", type=int, default=8)
     flash_p.set_defaults(func=cmd_flash)
+
+    recover_p = sub.add_parser("recover")
+    add_build_args(recover_p)
+    recover_p.add_argument("--target", required=True)
+    recover_p.add_argument("--flash-backend", default="auto", choices=("auto", "openocd", "stm32cube"))
+    recover_p.add_argument("-j", "--jobs", type=int, default=8)
+    recover_p.set_defaults(func=cmd_recover)
 
     mon_p = sub.add_parser("monitor")
     mon_p.add_argument("--board", required=True)

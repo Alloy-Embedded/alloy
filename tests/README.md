@@ -199,17 +199,21 @@ Current foundation boards:
 Representative configure/build pattern:
 
 ```bash
-cmake -S . -B build/hw/<board> \
-  -DALLOY_BOARD=<board> \
-  -DALLOY_BUILD_TESTS=ON \
-  -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-none-eabi.cmake
-
-cmake --build build/hw/<board> --target <targets...> --parallel 8
+python3 scripts/alloyctl.py bundle --board <board> -j8
 ```
 
-The repo currently stops at build artifacts (`.elf`, `.hex`, `.bin`). Flashing and UART capture are
-board-lab responsibilities and are intentionally documented in the runbooks instead of being faked as
-portable CI targets.
+Flashing and UART capture remain board-lab responsibilities, but the supported repo flow is now:
+
+```bash
+python3 scripts/alloyctl.py flash --board <board> --target <example>
+python3 scripts/alloyctl.py monitor --board <board>
+```
+
+For trapped STM32 boards:
+
+```bash
+python3 scripts/alloyctl.py recover --board <board> --target <example>
+```
 
 ### Apple Silicon Renode
 
