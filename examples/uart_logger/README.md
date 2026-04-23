@@ -134,19 +134,22 @@ make monitor SERIAL_PORT=COM3
 // 1. Initialize board
 board::init();
 
-// 2. Configure UART (TX-only for logging)
-auto uart = Uart<>::quick_setup_tx_only<TxPin>(BaudRate{115200});
-uart.initialize();
+// 2. Configure board-provided debug UART
+auto uart = board::make_debug_uart();
+uart.configure();
 
-// 3. Create UART sink for logger
-UartSink<decltype(uart)> uart_sink(uart);
-Logger::add_sink(&uart_sink);
+// 3. Create ready-to-use UART logger
+auto app_logger = alloy::logger::make_uart_logger(uart, {
+    .default_level = alloy::logger::Level::Info,
+    .enable_timestamps = false,
+    .line_ending = alloy::logger::LineEnding::CRLF,
+});
 
 // 4. Use logger macros
-LOG_INFO("Application started");
-LOG_DEBUG("Value: %d", value);
-LOG_WARN("Warning message");
-LOG_ERROR("Error occurred");
+LOG_INFO_TO(app_logger, "Application started");
+LOG_DEBUG_TO(app_logger, "Value: %d", value);
+LOG_WARN_TO(app_logger, "Warning message");
+LOG_ERROR_TO(app_logger, "Error occurred");
 ```
 
 ## Customization
@@ -156,9 +159,9 @@ LOG_ERROR("Error occurred");
 Edit `main.cpp`:
 
 ```cpp
-Logger::set_level(Level::Info);   // Only INFO, WARN, ERROR
-Logger::set_level(Level::Debug);  // All levels including DEBUG
-Logger::set_level(Level::Warn);   // Only WARN and ERROR
+app_logger.set_level(Level::Info);   // Only INFO, WARN, ERROR
+app_logger.set_level(Level::Debug);  // All levels including DEBUG
+app_logger.set_level(Level::Warn);   // Only WARN and ERROR
 ```
 
 ### Change UART Source
@@ -173,16 +176,17 @@ You can output logs to multiple destinations:
 
 ```cpp
 // UART sink
-UartSink<decltype(uart)> uart_sink(uart);
-Logger::add_sink(&uart_sink);
+auto uart_sink = alloy::logger::make_uart_sink(uart);
+app_logger.add_sink(uart_sink);
 
 // File sink (if filesystem available)
 FileSink file_sink("/logs/system.log");
-Logger::add_sink(&file_sink);
+app_logger.add_sink(file_sink);
 
 // Memory buffer sink
-MemorySink<1024> memory_sink;
-Logger::add_sink(&memory_sink);
+char log_buffer[1024];
+BufferSink memory_sink(log_buffer, sizeof(log_buffer));
+app_logger.add_sink(memory_sink);
 ```
 
 ## Performance Notes

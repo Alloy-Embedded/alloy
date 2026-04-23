@@ -2,81 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
-
-namespace alloy::logger {
-
-/**
- * Log severity levels (in order of increasing severity)
- */
-enum class Level : uint8_t {
-    Trace = 0,  // Very detailed diagnostic information
-    Debug = 1,  // Debug information useful during development
-    Info = 2,   // Informational messages about normal operation
-    Warn = 3,   // Warning messages about potential issues
-    Error = 4,  // Error messages about failures
-};
-
-/**
- * Convert log level to string representation
- */
-inline const char* level_to_string(Level level) {
-    switch (level) {
-        case Level::Trace:
-            return "TRACE";
-        case Level::Debug:
-            return "DEBUG";
-        case Level::Info:
-            return "INFO";
-        case Level::Warn:
-            return "WARN";
-        case Level::Error:
-            return "ERROR";
-        default:
-            return "UNKNOWN";
-    }
-}
-
-/**
- * Convert log level to short string (5 chars, padded)
- */
-inline const char* level_to_short_string(Level level) {
-    switch (level) {
-        case Level::Trace:
-            return "TRACE";
-        case Level::Debug:
-            return "DEBUG";
-        case Level::Info:
-            return "INFO ";
-        case Level::Warn:
-            return "WARN ";
-        case Level::Error:
-            return "ERROR";
-        default:
-            return "?????";
-    }
-}
-
-/**
- * Timestamp precision configuration
- */
-enum class TimestampPrecision : uint8_t {
-    Seconds,       // [s]
-    Milliseconds,  // [s.mmm]
-    Microseconds,  // [s.uuuuuu]
-};
-
-/**
- * Logger configuration structure
- */
-struct Config {
-    Level default_level = Level::Info;
-    bool enable_timestamps = true;
-    bool enable_colors = false;
-    bool enable_source_location = true;
-    TimestampPrecision timestamp_precision = TimestampPrecision::Microseconds;
-};
-
-}  // namespace alloy::logger
+#include <string_view>
 
 // ============================================================================
 // Compile-Time Configuration Macros
@@ -149,3 +75,121 @@ struct Config {
 #ifndef LOG_TIMESTAMP_PRECISION
     #define LOG_TIMESTAMP_PRECISION 2
 #endif
+
+namespace alloy::logger {
+
+/**
+ * Log severity levels (in order of increasing severity)
+ */
+enum class Level : std::uint8_t {
+    Trace = 0,  // Very detailed diagnostic information
+    Debug = 1,  // Debug information useful during development
+    Info = 2,   // Informational messages about normal operation
+    Warn = 3,   // Warning messages about potential issues
+    Error = 4,  // Error messages about failures
+};
+
+/**
+ * Convert log level to string representation
+ */
+inline auto level_to_string(Level level) -> const char* {
+    switch (level) {
+        case Level::Trace:
+            return "TRACE";
+        case Level::Debug:
+            return "DEBUG";
+        case Level::Info:
+            return "INFO";
+        case Level::Warn:
+            return "WARN";
+        case Level::Error:
+            return "ERROR";
+        default:
+            return "UNKNOWN";
+    }
+}
+
+/**
+ * Convert log level to padded string representation used by the text formatter.
+ */
+inline auto level_to_short_string(Level level) -> const char* {
+    switch (level) {
+        case Level::Trace:
+            return "TRACE";
+        case Level::Debug:
+            return "DEBUG";
+        case Level::Info:
+            return "INFO ";
+        case Level::Warn:
+            return "WARN ";
+        case Level::Error:
+            return "ERROR";
+        default:
+            return "?????";
+    }
+}
+
+/**
+ * Timestamp precision configuration.
+ */
+enum class TimestampPrecision : std::uint8_t {
+    Seconds,
+    Milliseconds,
+    Microseconds,
+};
+
+/**
+ * Line ending policy for text sinks.
+ */
+enum class LineEnding : std::uint8_t {
+    None,
+    LF,
+    CRLF,
+};
+
+/**
+ * Lightweight source-location payload used by instance-based loggers.
+ */
+struct SourceLocation {
+    const char* file = nullptr;
+    int line = 0;
+};
+
+/**
+ * Immutable view over a single log emission.
+ *
+ * `payload` is the message body only. `rendered` is the fully formatted text
+ * that was emitted by the logger, including prefix and line ending.
+ */
+struct RecordView {
+    Level level = Level::Info;
+    std::uint64_t timestamp_us = 0u;
+    SourceLocation source_location{};
+    std::string_view payload{};
+    std::string_view rendered{};
+};
+
+using TimestampProvider = std::uint64_t (*)();
+
+/**
+ * Logger configuration structure.
+ *
+ * The logger stays text-first for now, but configuration is instance-local so
+ * each board or subsystem can tune timestamps, colors, and line endings
+ * independently.
+ */
+struct Config {
+    Level default_level = Level::Info;
+    bool enable_timestamps = (LOG_ENABLE_TIMESTAMPS != 0);
+    bool enable_colors = (LOG_ENABLE_COLORS != 0);
+    bool enable_source_location = (LOG_ENABLE_SOURCE_LOCATION != 0);
+    TimestampPrecision timestamp_precision =
+        (LOG_TIMESTAMP_PRECISION == 0)
+            ? TimestampPrecision::Seconds
+            : ((LOG_TIMESTAMP_PRECISION == 1) ? TimestampPrecision::Milliseconds
+                                              : TimestampPrecision::Microseconds);
+    LineEnding line_ending = LineEnding::LF;
+    TimestampProvider timestamp_provider = nullptr;
+};
+
+}  // namespace alloy::logger

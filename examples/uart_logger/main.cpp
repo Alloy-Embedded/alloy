@@ -49,7 +49,7 @@
 #include "hal/systick.hpp"
 
 #include "logger/logger.hpp"
-#include "logger/sinks/uart_sink.hpp"
+#include "logger/uart_logger.hpp"
 
 namespace {
 
@@ -70,30 +70,26 @@ int main() {
         blink_error(100);
     }
 
-    auto uart_sink = alloy::logger::make_uart_sink(uart);
-    alloy::logger::Logger::remove_all_sinks();
-    alloy::logger::Logger::configure({
+    auto app_logger = alloy::logger::make_uart_logger(uart, {
         .default_level = alloy::logger::Level::Info,
         .enable_timestamps = false,
         .enable_colors = false,
         .enable_source_location = true,
         .timestamp_precision = alloy::logger::TimestampPrecision::Milliseconds,
+        .line_ending = alloy::logger::LineEnding::CRLF,
     });
 
-    if (!alloy::logger::Logger::add_sink(&uart_sink)) {
-        blink_error(150);
-    }
-
-    LOG_INFO("uart logger ready");
+    LOG_INFO_TO(app_logger, "uart logger ready");
 
     std::uint32_t loop_count = 0;
     while (true) {
-        LOG_INFO("heartbeat loop=%lu", static_cast<unsigned long>(loop_count));
+        LOG_INFO_TO(app_logger, "heartbeat loop=%lu", static_cast<unsigned long>(loop_count));
         if ((loop_count % 5u) == 0u) {
-            LOG_WARN("demo warning loop=%lu", static_cast<unsigned long>(loop_count));
+            LOG_WARN_TO(app_logger, "demo warning loop=%lu", static_cast<unsigned long>(loop_count));
         }
         if ((loop_count % 11u) == 0u) {
-            LOG_ERROR("demo error loop=%lu", static_cast<unsigned long>(loop_count));
+            LOG_ERROR_TO(app_logger, "demo error loop=%lu",
+                         static_cast<unsigned long>(loop_count));
         }
 
         board::led::toggle();

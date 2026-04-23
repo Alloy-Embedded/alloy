@@ -1,21 +1,30 @@
 # Alloy Universal Logger
 
-Professional, zero-cost, platform-agnostic logging system for embedded systems.
+Header-only logging core for embedded systems with:
+
+- explicit logger instances for board or subsystem ownership
+- lightweight non-owning sink registration via `SinkRef`
+- legacy `Logger`/`LOG_*` compatibility for older code paths
+- typed UART sinks that work directly with Alloy HAL UART handles
 
 ## Quick Start
 
 ```cpp
-#include "logger/logger.hpp"
-#include "logger/platform/uart_sink.hpp"
+#include "logger/uart_logger.hpp"
 
-// Create and register a sink
-logger::UartSink<Uart1> uart_sink;
-logger::Logger::add_sink(&uart_sink);
+auto uart = board::make_debug_uart();
+static_cast<void>(uart.configure());
 
-// Log messages
-LOG_INFO("Application started");
-LOG_WARN("Temperature: %.1f°C", temp);
-LOG_ERROR("Connection failed");
+auto app_logger = alloy::logger::make_uart_logger(uart, {
+    .default_level = alloy::logger::Level::Info,
+    .enable_timestamps = false,
+    .enable_source_location = true,
+    .line_ending = alloy::logger::LineEnding::CRLF,
+});
+
+LOG_INFO_TO(app_logger, "Application started");
+LOG_WARN_TO(app_logger, "Temperature: %.1f C", temp);
+LOG_ERROR_TO(app_logger, "Connection failed");
 
 // Output:
 // [0.123456] INFO  [main.cpp:42] Application started
@@ -26,9 +35,11 @@ LOG_ERROR("Connection failed");
 ## Features
 
 - ✅ **Zero-Cost**: Disabled logs completely removed at compile-time
-- ✅ **Universal**: Single API across bare-metal, RTOS, ESP-IDF, host
+- ✅ **Instance-first**: Explicit ownership instead of hidden global state
+- ✅ **Universal**: Same sink and formatting path across bare-metal, RTOS, and host
 - ✅ **Rich Context**: Microsecond timestamps, file/line, log levels
-- ✅ **Flexible Output**: Multiple sinks (UART, file, network, custom)
+- ✅ **Flexible Output**: Multiple sinks via `SinkRef`, with or without inheritance
+- ✅ **Record-Aware**: Sinks can consume `RecordView` instead of reparsing text
 - ✅ **Minimal**: < 2KB flash, < 1KB RAM
 - ✅ **Thread-Safe**: Automatic synchronization on RTOS
 
@@ -64,13 +75,19 @@ target_compile_definitions(my_target PRIVATE
 ### Runtime
 
 ```cpp
-// Change log level dynamically
-Logger::set_level(Level::Error);  // Only show ERROR logs
+// Instance-local runtime policy
+app_logger.set_level(Level::Error);  // Only show ERROR logs
 
-// Enable colors (if compiled with LOG_ENABLE_COLORS=1)
-Logger::enable_colors(true);
+// Change line endings per sink environment
+app_logger.set_line_ending(LineEnding::CRLF);
 
-// Flush all sinks
+// Provide timestamps explicitly when you want them
+app_logger.set_timestamp_provider([]() -> std::uint64_t {
+    return alloy::systick::micros();
+});
+
+// The legacy global wrapper still exists
+Logger::set_level(Level::Warn);
 Logger::flush();
 ```
 
@@ -79,10 +96,10 @@ Logger::flush();
 ### UART Sink (Bare-metal, RTOS, ESP32)
 
 ```cpp
-#include "logger/platform/uart_sink.hpp"
+#include "logger/uart_logger.hpp"
 
-logger::UartSink<Uart1> uart_sink;
-Logger::add_sink(&uart_sink);
+auto uart = board::make_debug_uart();
+auto app_logger = logger::make_uart_logger(uart);
 ```
 
 ### Buffer Sink (Testing, Deferred Output)
@@ -97,31 +114,67 @@ Logger::add_sink(&buffer_sink);
 // Later: read buffer_sink.data()
 ```
 
+### Ring Buffer Sink (Fast Deferred Inspection)
+
+```cpp
+#include "logger/sinks/ring_buffer_sink.hpp"
+
+logger::RingBufferSink<512, 16> ring_sink;
+app_logger.add_sink(ring_sink);
+
+LOG_WARN_TO(app_logger, "brownout margin low");
+
+const auto latest = ring_sink.latest();
+// latest.payload  -> "brownout margin low"
+// latest.rendered -> full formatted line
+```
+
+### Async UART Logger (Deferred Drain)
+
+```cpp
+#include "logger/uart_logger.hpp"
+
+auto uart = board::make_debug_uart();
+auto async_logger =
+    logger::make_async_uart_logger<decltype(uart), 1024, 32>(uart, {
+        .default_level = logger::Level::Debug,
+        .enable_timestamps = false,
+    });
+
+LOG_INFO_TO(async_logger, "boot");
+
+// Drain later from the main loop or a low-priority task
+const auto stats = async_logger.pump_all();
+```
+
 ### Coming Soon
 
-- **ESP-IDF Sink**: Bridge to `ESP_LOG` system
-- **File Sink**: Log to SD card or filesystem
-- **Console Sink**: Color output for host development
-- **Network Sink**: UDP/syslog remote logging
+- richer record-oriented formatting policies
+- asynchronous or deferred sinks for DMA/ring-buffer backends
+- board-level helpers that wire debug UART logging in one call
 
 ## Creating Custom Sinks
 
 ```cpp
 #include "logger/sink.hpp"
 
-class MySink : public logger::Sink {
+class MySink {
 public:
-    void write(const char* data, size_t length) override {
-        // Write to your output device
-        my_device.send(data, length);
+    void write_record(const logger::RecordView& record) {
+        trace_backend.push(record.level, record.timestamp_us, record.payload);
     }
 
-    void flush() override {
+    void write(std::string_view text) {
+        // Write to your output device
+        my_device.send(text.data(), text.size());
+    }
+
+    void flush() {
         // Optional: flush buffered data
         my_device.flush();
     }
 
-    bool is_ready() const override {
+    bool is_ready() const {
         // Optional: check if sink is ready
         return my_device.is_initialized();
     }
@@ -129,7 +182,7 @@ public:
 
 // Usage
 MySink my_sink;
-Logger::add_sink(&my_sink);
+app_logger.add_sink(my_sink);
 ```
 
 ## Examples
@@ -141,14 +194,14 @@ Complete example: [`examples/logger_basic/`](../../examples/logger_basic/)
 ### Multiple Sinks
 
 ```cpp
-logger::UartSink<Uart1> uart_sink;
+logger::UartSink<decltype(uart)> uart_sink(uart);
 char buffer[1024];
 logger::BufferSink buffer_sink(buffer, sizeof(buffer));
 
-Logger::add_sink(&uart_sink);   // Log to UART
-Logger::add_sink(&buffer_sink);  // Also save to buffer
+app_logger.add_sink(uart_sink);
+app_logger.add_sink(buffer_sink);
 
-LOG_INFO("Goes to both outputs");
+LOG_INFO_TO(app_logger, "Goes to both outputs");
 ```
 
 ### Conditional Logging
@@ -274,7 +327,7 @@ system_reset();
 
 ### Logs Not Appearing
 
-1. Check sink is registered: `Logger::add_sink(&my_sink)`
+1. Check sink is registered: `app_logger.add_sink(my_sink)`
 2. Check sink is ready: `my_sink.is_ready()`
 3. Check log level: `Logger::set_level(Level::Trace)`
 4. Check compile-time level: `LOG_MIN_LEVEL`
@@ -288,7 +341,7 @@ SysTick not initialized yet. Ensure `Board::initialize()` or `systick::init()` c
 Include proper headers:
 ```cpp
 #include "logger/logger.hpp"  // Core logger
-#include "logger/platform/uart_sink.hpp"  // If using UART sink
+#include "logger/sinks/uart_sink.hpp"  // If using UART sink
 ```
 
 ## Documentation

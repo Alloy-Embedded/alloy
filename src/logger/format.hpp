@@ -2,172 +2,237 @@
 
 #include <cstdarg>
 #include <cstdio>
-#include <cstring>
+#include <cstdint>
+#include <string_view>
 
 #include "types.hpp"
 
 namespace alloy::logger {
 
-/**
- * Format utilities for logger messages
- */
-class Formatter {
+namespace detail {
+
+class BufferWriter {
    public:
-    /**
-     * Format timestamp into buffer
-     *
-     * @param buffer Output buffer
-     * @param size Buffer size
-     * @param timestamp_us Timestamp in microseconds
-     * @param precision Timestamp precision
-     * @return Number of characters written
-     */
-    static size_t format_timestamp(char* buffer, size_t size, uint64_t timestamp_us,
-                                   TimestampPrecision precision) {
-        if (timestamp_us == 0) {
-            // Before SysTick initialization
-            return snprintf(buffer, size, "[BOOT] ");
-        }
-
-        switch (precision) {
-            case TimestampPrecision::Seconds: {
-                uint32_t seconds = static_cast<uint32_t>(timestamp_us / 1000000);
-                return snprintf(buffer, size, "[%lu] ", seconds);
-            }
-
-            case TimestampPrecision::Milliseconds: {
-                uint32_t seconds = static_cast<uint32_t>(timestamp_us / 1000000);
-                uint32_t millis = static_cast<uint32_t>((timestamp_us % 1000000) / 1000);
-                return snprintf(buffer, size, "[%lu.%03lu] ", seconds, millis);
-            }
-
-            case TimestampPrecision::Microseconds: {
-                uint32_t seconds = static_cast<uint32_t>(timestamp_us / 1000000);
-                uint32_t micros = static_cast<uint32_t>(timestamp_us % 1000000);
-                return snprintf(buffer, size, "[%lu.%06lu] ", seconds, micros);
-            }
-
-            default:
-                return snprintf(buffer, size, "[?] ");
+    constexpr BufferWriter(char* buffer, size_t capacity) : buffer_(buffer), capacity_(capacity) {
+        if (buffer_ != nullptr && capacity_ > 0u) {
+            buffer_[0] = '\0';
         }
     }
 
-    /**
-     * Format log level into buffer
-     *
-     * @param buffer Output buffer
-     * @param size Buffer size
-     * @param level Log level
-     * @param use_colors Whether to use ANSI color codes
-     * @return Number of characters written
-     */
-    static size_t format_level(char* buffer, size_t size, Level level, bool use_colors) {
-        if (use_colors) {
-            const char* color = get_level_color(level);
-            const char* reset = "\033[0m";
-            return snprintf(buffer, size, "%s%-5s%s ", color, level_to_string(level), reset);
-        }
-        return snprintf(buffer, size, "%-5s ", level_to_string(level));
+    [[nodiscard]] constexpr auto size() const -> size_t { return size_; }
+
+    [[nodiscard]] constexpr auto remaining() const -> size_t {
+        return (capacity_ > size_) ? (capacity_ - size_) : 0u;
     }
 
-    /**
-     * Format source location into buffer
-     *
-     * @param buffer Output buffer
-     * @param size Buffer size
-     * @param file Source file path
-     * @param line Line number
-     * @return Number of characters written
-     */
-    static size_t format_source_location(char* buffer, size_t size, const char* file, int line) {
-        // Extract just filename from path
-        const char* filename = get_filename(file);
-        return snprintf(buffer, size, "[%s:%d] ", filename, line);
+    auto append_char(char value) -> void {
+        if (buffer_ == nullptr || remaining() <= 1u) {
+            return;
+        }
+        buffer_[size_++] = value;
+        buffer_[size_] = '\0';
     }
 
-    /**
-     * Format complete log message prefix
-     *
-     * @param buffer Output buffer
-     * @param size Buffer size
-     * @param timestamp_us Timestamp in microseconds
-     * @param level Log level
-     * @param file Source file (can be nullptr)
-     * @param line Line number
-     * @param config Logger configuration
-     * @return Number of characters written
-     */
-    static size_t format_prefix(char* buffer, size_t size, uint64_t timestamp_us, Level level,
-                                const char* file, int line, const Config& config) {
-        size_t pos = 0;
-
-        // Timestamp
-        if (config.enable_timestamps && pos < size) {
-            pos += format_timestamp(buffer + pos, size - pos, timestamp_us,
-                                    config.timestamp_precision);
+    auto append(std::string_view text) -> void {
+        for (const char value : text) {
+            append_char(value);
         }
-
-        // Log level
-        if (pos < size) {
-            pos += format_level(buffer + pos, size - pos, level, config.enable_colors);
-        }
-
-        // Source location
-        if (config.enable_source_location && file != nullptr && pos < size) {
-            pos += format_source_location(buffer + pos, size - pos, file, line);
-        }
-
-        return pos;
     }
 
-    /**
-     * Format message with printf-style arguments
-     *
-     * @param buffer Output buffer
-     * @param size Buffer size
-     * @param fmt Format string
-     * @param args Variable arguments
-     * @return Number of characters written
-     */
-    static size_t format_message(char* buffer, size_t size, const char* fmt, va_list args) {
-        return vsnprintf(buffer, size, fmt, args);
+    auto append_unsigned(std::uint64_t value) -> void {
+        char scratch[20]{};
+        size_t count = 0u;
+        do {
+            scratch[count++] = static_cast<char>('0' + (value % 10u));
+            value /= 10u;
+        } while (value != 0u && count < sizeof(scratch));
+
+        while (count > 0u) {
+            append_char(scratch[--count]);
+        }
+    }
+
+    auto append_zero_padded(std::uint32_t value, size_t width) -> void {
+        char scratch[10]{};
+        size_t count = 0u;
+        do {
+            scratch[count++] = static_cast<char>('0' + (value % 10u));
+            value /= 10u;
+        } while (value != 0u && count < sizeof(scratch));
+
+        while (count < width && count < sizeof(scratch)) {
+            scratch[count++] = '0';
+        }
+
+        while (count > 0u) {
+            append_char(scratch[--count]);
+        }
     }
 
    private:
-    /**
-     * Get ANSI color code for log level
-     */
-    static const char* get_level_color(Level level) {
-        switch (level) {
-            case Level::Trace:
-                return "\033[90m";  // Gray
-            case Level::Debug:
-                return "\033[36m";  // Cyan
-            case Level::Info:
-                return "\033[32m";  // Green
-            case Level::Warn:
-                return "\033[33m";  // Yellow
-            case Level::Error:
-                return "\033[31m";  // Red
-            default:
-                return "\033[0m";  // Reset
-        }
+    char* buffer_ = nullptr;
+    size_t capacity_ = 0u;
+    size_t size_ = 0u;
+};
+
+inline auto level_color(Level level) -> const char* {
+    switch (level) {
+        case Level::Trace:
+            return "\033[90m";
+        case Level::Debug:
+            return "\033[36m";
+        case Level::Info:
+            return "\033[32m";
+        case Level::Warn:
+            return "\033[33m";
+        case Level::Error:
+            return "\033[31m";
+        default:
+            return "\033[0m";
+    }
+}
+
+inline auto filename_from_path(const char* path) -> const char* {
+    if (path == nullptr) {
+        return "";
     }
 
-    /**
-     * Extract filename from full path
-     */
-    static const char* get_filename(const char* path) {
-        if (path == nullptr)
-            return "";
-
-        const char* filename = path;
-        for (const char* p = path; *p != '\0'; ++p) {
-            if (*p == '/' || *p == '\\') {
-                filename = p + 1;
-            }
+    const char* filename = path;
+    for (const char* cursor = path; *cursor != '\0'; ++cursor) {
+        if (*cursor == '/' || *cursor == '\\') {
+            filename = cursor + 1;
         }
-        return filename;
+    }
+    return filename;
+}
+
+}  // namespace detail
+
+/**
+ * Format utilities for logger messages.
+ *
+ * Prefix formatting is done with a bounded writer so truncation never causes
+ * the cursor to walk past the actual buffer capacity.
+ */
+class Formatter {
+   public:
+    static auto format_timestamp(char* buffer, size_t size, std::uint64_t timestamp_us,
+                                 TimestampPrecision precision) -> size_t {
+        detail::BufferWriter writer(buffer, size);
+
+        if (timestamp_us == 0u) {
+            writer.append("[BOOT] ");
+            return writer.size();
+        }
+
+        const auto seconds = timestamp_us / 1'000'000ull;
+        const auto micros = static_cast<std::uint32_t>(timestamp_us % 1'000'000ull);
+
+        writer.append_char('[');
+        writer.append_unsigned(seconds);
+
+        switch (precision) {
+            case TimestampPrecision::Seconds:
+                break;
+            case TimestampPrecision::Milliseconds:
+                writer.append_char('.');
+                writer.append_zero_padded(micros / 1'000u, 3u);
+                break;
+            case TimestampPrecision::Microseconds:
+                writer.append_char('.');
+                writer.append_zero_padded(micros, 6u);
+                break;
+        }
+
+        writer.append("] ");
+        return writer.size();
+    }
+
+    static auto format_level(char* buffer, size_t size, Level level, bool use_colors) -> size_t {
+        detail::BufferWriter writer(buffer, size);
+
+        if (use_colors) {
+            writer.append(detail::level_color(level));
+            writer.append(level_to_short_string(level));
+            writer.append("\033[0m ");
+            return writer.size();
+        }
+
+        writer.append(level_to_short_string(level));
+        writer.append_char(' ');
+        return writer.size();
+    }
+
+    static auto format_source_location(char* buffer, size_t size, const char* file, int line)
+        -> size_t {
+        detail::BufferWriter writer(buffer, size);
+        writer.append_char('[');
+        writer.append(detail::filename_from_path(file));
+        writer.append_char(':');
+        writer.append_unsigned(line < 0 ? 0u : static_cast<std::uint32_t>(line));
+        writer.append("] ");
+        return writer.size();
+    }
+
+    static auto format_prefix(char* buffer, size_t size, std::uint64_t timestamp_us, Level level,
+                              SourceLocation source_location, const Config& config) -> size_t {
+        detail::BufferWriter writer(buffer, size);
+
+        if (config.enable_timestamps) {
+            char local[32]{};
+            const auto timestamp_len =
+                format_timestamp(local, sizeof(local), timestamp_us, config.timestamp_precision);
+            writer.append(std::string_view{local, timestamp_len});
+        }
+
+        {
+            char local[32]{};
+            const auto level_len =
+                format_level(local, sizeof(local), level, config.enable_colors);
+            writer.append(std::string_view{local, level_len});
+        }
+
+        if (config.enable_source_location && source_location.file != nullptr) {
+            char local[96]{};
+            const auto source_len = format_source_location(local, sizeof(local), source_location.file,
+                                                           source_location.line);
+            writer.append(std::string_view{local, source_len});
+        }
+
+        return writer.size();
+    }
+
+    static auto format_message(char* buffer, size_t size, const char* fmt, va_list args) -> size_t {
+        if (buffer == nullptr || size == 0u) {
+            return 0u;
+        }
+
+        const int written = vsnprintf(buffer, size, fmt, args);
+        if (written <= 0) {
+            buffer[0] = '\0';
+            return 0u;
+        }
+
+        const auto normalized = static_cast<size_t>(written);
+        if (normalized >= size) {
+            return size - 1u;
+        }
+        return normalized;
+    }
+
+    static auto append_line_ending(char* buffer, size_t size, LineEnding line_ending) -> size_t {
+        detail::BufferWriter writer(buffer, size);
+        switch (line_ending) {
+            case LineEnding::None:
+                break;
+            case LineEnding::LF:
+                writer.append_char('\n');
+                break;
+            case LineEnding::CRLF:
+                writer.append("\r\n");
+                break;
+        }
+        return writer.size();
     }
 };
 

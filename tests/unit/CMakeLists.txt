@@ -52,6 +52,12 @@ alloy_add_catch2_test(test_clock_concept
     LABELS unit
 )
 
+# Test: Logger Core and Sink Integration
+alloy_add_catch2_test(test_logger
+    SOURCES test_logger.cpp
+    LABELS unit
+)
+
 # ==============================================================================
 # Test Summary
 # ==============================================================================
@@ -60,4 +66,5 @@ message(STATUS "========================================")
 message(STATUS "Unit Tests Configured:")
 message(STATUS "  ✓ Core: Result<T,E>, Error")
 message(STATUS "  ✓ HAL:  GPIO, Clock Concepts")
+message(STATUS "  ✓ Utility: Logger core")
 message(STATUS "========================================")

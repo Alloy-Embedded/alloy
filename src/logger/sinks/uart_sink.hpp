@@ -8,8 +8,9 @@
 
 #pragma once
 
+#include <concepts>
 #include <cstddef>
-#include <cstring>
+#include <span>
 
 #include "logger/sink.hpp"
 
@@ -65,12 +66,28 @@ class UartSink : public Sink {
             return;
         }
 
-        for (size_t i = 0; i < size; ++i) {
-            const auto result =
-                uart_.write_byte(static_cast<std::byte>(static_cast<unsigned char>(data[i])));
+        if constexpr (requires(const UartImpl& uart, std::span<const std::byte> bytes) {
+                          { uart.write(bytes) };
+                      }) {
+            const auto bytes = std::span{
+                reinterpret_cast<const std::byte*>(data),
+                size,
+            };
+            const auto result = uart_.write(bytes);
             if (result.is_err()) {
                 ready_ = false;
-                break;
+            } else if (result.unwrap() != size) {
+                ready_ = false;
+            }
+            return;
+        } else {
+            for (size_t i = 0; i < size; ++i) {
+                const auto result =
+                    uart_.write_byte(static_cast<std::byte>(static_cast<unsigned char>(data[i])));
+                if (result.is_err()) {
+                    ready_ = false;
+                    break;
+                }
             }
         }
     }
