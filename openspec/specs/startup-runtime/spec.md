@@ -1,7 +1,12 @@
 # startup-runtime Specification
 
 ## Purpose
-TBD - created by archiving change rebuild-runtime-around-alloy-devices. Update Purpose after archive.
+Startup runtime defines how reset handling, memory initialization, vector integration, and early
+architecture bootstrap live inside `alloy` while consuming startup descriptors published by
+`alloy-devices`.
+
+Startup is part of the runtime product, not a board-local afterthought. Boards and examples should
+link a descriptor-backed startup path without carrying handwritten family startup trees.
 ## Requirements
 ### Requirement: Startup Behavior Shall Live in the Runtime
 
@@ -36,4 +41,3 @@ can bind to without recreating dynamic interrupt ownership outside the generated
 - **WHEN** the runtime attaches an interrupt-driven completion path
 - **THEN** it binds through generated interrupt ids and startup stubs
 - **AND** it does not depend on handwritten family-wide interrupt registries
-

@@ -1,7 +1,12 @@
 # runtime-device-boundary Specification
 
 ## Purpose
-TBD - created by archiving change consume-runtime-device-contract. Update Purpose after archive.
+The runtime-device boundary defines the only supported generated C++ contract between
+`alloy-devices` and `alloy`.
+
+`alloy` consumes typed runtime artifacts from the published device contract through a stable import
+layer in `src/device/**`. Reflection-oriented or legacy generated headers are allowed only for
+smoke, tooling, or migration shims, never as the normal hot-path dependency.
 ## Requirements
 ### Requirement: Alloy Hot Path Shall Target Runtime-Lite Contract
 
@@ -59,4 +64,3 @@ an implementation detail.
 - **WHEN** `alloy` requires generated contract features not present in an older `alloy-devices` publish
 - **THEN** the incompatibility is detected and reported explicitly
 - **AND** it is not left to fail later as an unclear compile or link break
-

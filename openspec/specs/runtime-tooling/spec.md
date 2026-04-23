@@ -1,7 +1,11 @@
 # runtime-tooling Specification
 
 ## Purpose
-TBD - created by archiving change build-runtime-tooling-and-user-experience. Update Purpose after archive.
+Runtime tooling defines the stable user-facing product layer for board-oriented configure, build,
+flash, monitor, validation, diagnostics, and downstream consumption.
+
+The goal is that users can discover what is supported, how to run it, and why a configuration
+fails without reading internal CMake files or runtime implementation details first.
 ## Requirements
 ### Requirement: Runtime Tooling Shall Expose Stable Board-Oriented Entry Points
 
@@ -50,4 +54,3 @@ The official example set SHALL cover the primary public runtime surface.
 #### Scenario: User looks for a CAN or RTC example
 - **WHEN** a primary public HAL class is documented as supported
 - **THEN** the repo provides at least one official example or explicit cookbook path for that class
-

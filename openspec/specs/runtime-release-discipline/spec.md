@@ -1,7 +1,11 @@
 # runtime-release-discipline Specification
 
 ## Purpose
-TBD - created by archiving change harden-runtime-production-readiness. Update Purpose after archive.
+Runtime release discipline defines what `alloy` must publish and validate before making support or
+compatibility claims.
+
+Releases need explicit support tiers, declared `alloy-devices` compatibility, documented migration
+notes for breaking public changes, and enforced validation gates that keep those claims honest.
 ## Requirements
 ### Requirement: Releases Shall Publish Explicit Support Tiers
 
@@ -29,4 +33,3 @@ Breaking changes affecting the public runtime story SHALL include migration note
 - **WHEN** a public HAL configuration or entry path changes incompatibly
 - **THEN** the release documents the migration
 - **AND** at least one canonical example is updated to the new shape
-

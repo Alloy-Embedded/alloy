@@ -1,7 +1,12 @@
 # runtime-async-model Specification
 
 ## Purpose
-TBD - created by archiving change add-runtime-async-time-and-event-model. Update Purpose after archive.
+The runtime async model defines the portable time, event, completion, and low-power coordination
+surface that sits on top of the public HAL.
+
+Blocking code remains valid on its own, while interrupt-driven and DMA-driven paths can surface
+typed completions and optional async adapters without forcing one executor model or penalizing the
+blocking hot path.
 ## Requirements
 ### Requirement: Runtime Shall Expose A Monotonic Time Service
 
@@ -39,4 +44,3 @@ The runtime SHALL describe how time and wakeup-capable events interact with low-
 #### Scenario: Timer wakeup from low power
 - **WHEN** a board enters a supported low-power mode with a valid timer wake source
 - **THEN** the runtime documents and enforces the wakeup path through the same time/event model
-
