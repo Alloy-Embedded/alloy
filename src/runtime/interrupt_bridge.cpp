@@ -1,9 +1,12 @@
+#include "dma_event.hpp"
 #include "event.hpp"
+#include "interrupt_event.hpp"
 
 #include <cstdint>
 
 #include "device/interrupt_stubs.hpp"
 #include "device/runtime.hpp"
+#include "hal/dma.hpp"
 #include "hal/detail/runtime_ops.hpp"
 
 namespace alloy::runtime::detail {
@@ -12,7 +15,7 @@ namespace rt = alloy::hal::detail::runtime;
 
 template <device::interrupt_stubs::InterruptId Id>
 inline auto signal_interrupt_token() -> void {
-    alloy::interrupt_event::token<Id>::signal();
+    alloy::runtime::interrupt_event::token<Id>::signal();
 }
 
 template <typename InterruptEnum>
@@ -58,7 +61,7 @@ inline auto signal_xdmac_interrupt_if_present() -> void {
 template <hal::dma::PeripheralId Peripheral, hal::dma::SignalId Signal>
 inline auto signal_dma_token_if_present() -> void {
     if constexpr (hal::dma::BindingTraits<Peripheral, Signal>::kPresent) {
-        alloy::dma_event::token<Peripheral, Signal>::signal();
+        alloy::runtime::dma_event::token<Peripheral, Signal>::signal();
     }
 }
 

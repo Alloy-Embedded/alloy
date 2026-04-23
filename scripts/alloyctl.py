@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import argparse
+import difflib
 import glob
+import json
 import shutil
 import subprocess
 import sys
@@ -14,6 +16,14 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 @dataclass(frozen=True)
+class ConnectorInfo:
+    alias: str
+    peripheral: str
+    bindings: tuple[str, ...]
+    note: str = ""
+
+
+@dataclass(frozen=True)
 class BoardConfig:
     board: str
     build_dir: Path
@@ -22,6 +32,14 @@ class BoardConfig:
     openocd_args: tuple[str, ...]
     uart_globs: tuple[str, ...]
     uart_baud: int
+
+
+@dataclass(frozen=True)
+class BoardInsight:
+    display_name: str
+    clock_summary: str
+    debug_uart_summary: str
+    connectors: tuple[ConnectorInfo, ...]
 
 
 BOARDS: dict[str, BoardConfig] = {
@@ -67,16 +85,62 @@ BOARDS: dict[str, BoardConfig] = {
     ),
 }
 
+BOARD_INSIGHTS: dict[str, BoardInsight] = {
+    "same70_xplained": BoardInsight(
+        display_name="SAME70 Xplained Ultra",
+        clock_summary="clock_config::plla_150mhz (external 12 MHz crystal -> 150 MHz SYSCLK/HCLK/PCLK)",
+        debug_uart_summary="USART1 @ 115200 8N1 on PB4(TX)/PA21(RX)",
+        connectors=(
+            ConnectorInfo("debug-uart", "USART1", ("PB4 -> TXD1", "PA21 -> RXD1"),
+                          "official EDBG virtual COM path"),
+            ConnectorInfo("i2c", "TWIHS0", ("PA4 -> TWCK0", "PA3 -> TWD0")),
+            ConnectorInfo("spi", "SPI0", ("PD22 -> SPCK", "PD20 -> MISO", "PD21 -> MOSI")),
+        ),
+    ),
+    "nucleo_g071rb": BoardInsight(
+        display_name="Nucleo-G071RB",
+        clock_summary="system_clock::default_pll_64mhz (HSI + PLL -> 64 MHz SYSCLK/PCLK)",
+        debug_uart_summary="USART2 @ 115200 8N1 on PA2(TX)/PA3(RX)",
+        connectors=(
+            ConnectorInfo("debug-uart", "USART2", ("PA2 -> TX", "PA3 -> RX"),
+                          "official ST-LINK VCP path"),
+        ),
+    ),
+    "nucleo_f401re": BoardInsight(
+        display_name="Nucleo-F401RE",
+        clock_summary="system_clock::default_hse_pll_84mhz (external 8 MHz HSE + PLL -> 84 MHz SYSCLK)",
+        debug_uart_summary="USART2 @ 115200 8N1 on PA2(TX)/PA3(RX)",
+        connectors=(
+            ConnectorInfo("debug-uart", "USART2", ("PA2 -> TX", "PA3 -> RX"),
+                          "official ST-LINK VCP path"),
+        ),
+    ),
+}
+
+MANIFEST_PATH = ROOT / "docs" / "RELEASE_MANIFEST.json"
+
 
 def die(msg: str) -> int:
     print(msg, file=sys.stderr)
     return 1
 
 
+def load_manifest() -> dict:
+    return json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+
+
+def suggest(value: str, options: list[str]) -> str:
+    match = difflib.get_close_matches(value, options, n=1)
+    return f"; did you mean '{match[0]}'?" if match else ""
+
+
 def board_config(name: str) -> BoardConfig:
     cfg = BOARDS.get(name)
     if cfg is None:
-        raise SystemExit(die(f"unsupported board: {name}"))
+        options = sorted(BOARDS)
+        raise SystemExit(
+            die(f"unsupported board: {name}; supported boards: {', '.join(options)}{suggest(name, options)}")
+        )
     return cfg
 
 
@@ -193,6 +257,29 @@ def auto_port(cfg: BoardConfig) -> str:
     if not ports:
         raise SystemExit(die("no serial port found; use --port"))
     return ports[0]
+
+
+def board_insight(cfg: BoardConfig) -> BoardInsight:
+    insight = BOARD_INSIGHTS.get(cfg.board)
+    if insight is None:
+        raise SystemExit(die(f"missing board insight for: {cfg.board}"))
+    return insight
+
+
+def board_release_entry(manifest: dict, cfg: BoardConfig) -> dict:
+    entry = manifest["boards"].get(cfg.board)
+    if entry is None:
+        raise SystemExit(die(f"missing release manifest entry for board: {cfg.board}"))
+    return entry
+
+
+def known_examples(cfg: BoardConfig) -> tuple[str, ...]:
+    return cfg.firmware_targets
+
+
+def format_lines(lines: list[str]) -> None:
+    for line in lines:
+        print(line)
 
 
 def cmd_build(args: argparse.Namespace) -> None:
@@ -334,12 +421,171 @@ def cmd_validate(args: argparse.Namespace) -> None:
     run(["cmake", "--workflow", "--preset", preset])
 
 
+def cmd_explain(args: argparse.Namespace) -> None:
+    manifest = load_manifest()
+    cfg = board_config(args.board)
+    insight = board_insight(cfg)
+    release = board_release_entry(manifest, cfg)
+    connectors = {item.alias: item for item in insight.connectors}
+    gates = manifest["release_gates"]
+    peripheral_classes = manifest["peripheral_classes"]
+
+    selectors = [bool(args.connector), bool(args.clock), bool(args.peripheral), bool(args.gate), bool(args.example)]
+    if sum(selectors) > 1:
+        raise SystemExit(die("use only one of --connector, --clock, --peripheral, --gate, or --example"))
+
+    if args.connector:
+        connector = connectors.get(args.connector)
+        options = sorted(connectors)
+        if connector is None:
+            raise SystemExit(
+                die(
+                    f"unsupported connector alias '{args.connector}' for {cfg.board}; "
+                    f"supported connectors: {', '.join(options)}{suggest(args.connector, options)}"
+                )
+            )
+        lines = [
+            f"board: {cfg.board}",
+            f"connector: {connector.alias}",
+            f"peripheral: {connector.peripheral}",
+            "bindings:",
+            *[f"  - {binding}" for binding in connector.bindings],
+        ]
+        if connector.note:
+            lines.append(f"note: {connector.note}")
+        format_lines(lines)
+        return
+
+    if args.clock:
+        format_lines(
+            [
+                f"board: {cfg.board}",
+                f"clock: {insight.clock_summary}",
+                f"debug-uart: {insight.debug_uart_summary}",
+                f"required gates: {', '.join(release['required_gates'])}",
+            ]
+        )
+        return
+
+    if args.peripheral:
+        entry = peripheral_classes.get(args.peripheral)
+        options = sorted(peripheral_classes)
+        if entry is None:
+            raise SystemExit(
+                die(
+                    f"unsupported peripheral class '{args.peripheral}'; "
+                    f"supported classes: {', '.join(options)}{suggest(args.peripheral, options)}"
+                )
+            )
+        format_lines(
+            [
+                f"peripheral-class: {args.peripheral}",
+                f"tier: {entry['tier']}",
+                f"required gates: {', '.join(entry['required_gates'])}",
+            ]
+        )
+        return
+
+    if args.gate:
+        entry = gates.get(args.gate)
+        options = sorted(gates)
+        if entry is None:
+            raise SystemExit(
+                die(
+                    f"unsupported release gate '{args.gate}'; "
+                    f"supported gates: {', '.join(options)}{suggest(args.gate, options)}"
+                )
+            )
+        lines = [
+            f"gate: {args.gate}",
+            f"kind: {entry['kind']}",
+        ]
+        for key in ("command", "target", "label", "preset", "presets", "notes"):
+            if key in entry:
+                value = entry[key]
+                if isinstance(value, list):
+                    value = ", ".join(value)
+                lines.append(f"{key}: {value}")
+        format_lines(lines)
+        return
+
+    if args.example:
+        examples = known_examples(cfg)
+        if args.example not in examples:
+            options = sorted(examples)
+            raise SystemExit(
+                die(
+                    f"unsupported example '{args.example}' for {cfg.board}; "
+                    f"supported examples: {', '.join(options)}{suggest(args.example, options)}"
+                )
+            )
+        required = "yes" if args.example in release["required_examples"] else "no"
+        format_lines(
+            [
+                f"board: {cfg.board}",
+                f"example: {args.example}",
+                f"in-board-bundle: yes",
+                f"required-for-release: {required}",
+            ]
+        )
+        return
+
+    format_lines(
+        [
+            f"board: {cfg.board}",
+            f"display-name: {insight.display_name}",
+            f"tier: {release['tier']}",
+            f"clock: {insight.clock_summary}",
+            f"debug-uart: {insight.debug_uart_summary}",
+            f"required examples: {', '.join(release['required_examples'])}",
+            f"required gates: {', '.join(release['required_gates'])}",
+            f"known connector aliases: {', '.join(item.alias for item in insight.connectors)}",
+            f"notes: {release['notes']}",
+        ]
+    )
+
+
+def cmd_diff(args: argparse.Namespace) -> None:
+    manifest = load_manifest()
+    left = board_config(args.from_board)
+    right = board_config(args.to_board)
+    left_release = board_release_entry(manifest, left)
+    right_release = board_release_entry(manifest, right)
+    left_insight = board_insight(left)
+    right_insight = board_insight(right)
+
+    left_examples = set(left_release["required_examples"])
+    right_examples = set(right_release["required_examples"])
+    left_gates = set(left_release["required_gates"])
+    right_gates = set(right_release["required_gates"])
+    left_connectors = {item.alias for item in left_insight.connectors}
+    right_connectors = {item.alias for item in right_insight.connectors}
+
+    format_lines(
+        [
+            f"from: {left.board}",
+            f"to: {right.board}",
+            f"tier: {left_release['tier']} -> {right_release['tier']}",
+            f"clock: {left_insight.clock_summary}",
+            f"clock(target): {right_insight.clock_summary}",
+            f"debug-uart: {left_insight.debug_uart_summary}",
+            f"debug-uart(target): {right_insight.debug_uart_summary}",
+            f"required examples only in {left.board}: {', '.join(sorted(left_examples - right_examples)) or 'none'}",
+            f"required examples only in {right.board}: {', '.join(sorted(right_examples - left_examples)) or 'none'}",
+            f"required gates only in {left.board}: {', '.join(sorted(left_gates - right_gates)) or 'none'}",
+            f"required gates only in {right.board}: {', '.join(sorted(right_gates - left_gates)) or 'none'}",
+            f"connector aliases only in {left.board}: {', '.join(sorted(left_connectors - right_connectors)) or 'none'}",
+            f"connector aliases only in {right.board}: {', '.join(sorted(right_connectors - left_connectors)) or 'none'}",
+        ]
+    )
+
+
 def main() -> int:
     p = argparse.ArgumentParser(prog="alloyctl", description="Board-aware Alloy helper")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     def add_build_args(sp: argparse.ArgumentParser) -> None:
-        sp.add_argument("--board", required=True, choices=sorted(BOARDS))
+        sp.add_argument("--board", required=True)
         sp.add_argument("--build-type", default="Debug", choices=("Debug", "Release", "MinSizeRel", "RelWithDebInfo"))
 
     cfg_p = sub.add_parser("configure")
@@ -367,27 +613,19 @@ def main() -> int:
     flash_p.set_defaults(func=cmd_flash)
 
     mon_p = sub.add_parser("monitor")
-    mon_p.add_argument("--board", required=True, choices=sorted(BOARDS))
+    mon_p.add_argument("--board", required=True)
     mon_p.add_argument("--port")
     mon_p.add_argument("--baud", type=int)
     mon_p.set_defaults(func=cmd_monitor)
 
     gdb_p = sub.add_parser("gdbserver")
-    gdb_p.add_argument("--board", required=True, choices=sorted(BOARDS))
+    gdb_p.add_argument("--board", required=True)
     gdb_p.add_argument("--gdb-port", type=int, default=3333)
     gdb_p.set_defaults(func=cmd_gdbserver)
 
     validate_p = sub.add_parser("validate")
-    validate_p.add_argument(
-        "--board",
-        required=True,
-        choices=("host", *sorted(BOARDS)),
-    )
-    validate_p.add_argument(
-        "--kind",
-        default="runtime",
-        choices=("runtime", "smoke", "zero-overhead"),
-    )
+    validate_p.add_argument("--board", required=True)
+    validate_p.add_argument("--kind", default="runtime")
     validate_p.set_defaults(func=cmd_validate)
 
     sweep_p = sub.add_parser("sweep")
@@ -401,6 +639,20 @@ def main() -> int:
     sweep_p.add_argument("--target", dest="targets", action="append")
     sweep_p.add_argument("-j", "--jobs", type=int, default=8)
     sweep_p.set_defaults(func=cmd_sweep)
+
+    explain_p = sub.add_parser("explain")
+    explain_p.add_argument("--board", required=True)
+    explain_p.add_argument("--connector")
+    explain_p.add_argument("--clock", action="store_true")
+    explain_p.add_argument("--peripheral")
+    explain_p.add_argument("--gate")
+    explain_p.add_argument("--example")
+    explain_p.set_defaults(func=cmd_explain)
+
+    diff_p = sub.add_parser("diff")
+    diff_p.add_argument("--from", dest="from_board", required=True)
+    diff_p.add_argument("--to", dest="to_board", required=True)
+    diff_p.set_defaults(func=cmd_diff)
 
     args = p.parse_args()
     args.func(args)

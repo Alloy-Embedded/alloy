@@ -15,6 +15,9 @@ REQUIRED_DOCS = (
     REPO_ROOT / "docs" / "QUICKSTART.md",
     REPO_ROOT / "docs" / "BOARD_TOOLING.md",
     REPO_ROOT / "docs" / "CMAKE_CONSUMPTION.md",
+    REPO_ROOT / "docs" / "COOKBOOK.md",
+    REPO_ROOT / "docs" / "MIGRATION_GUIDE.md",
+    REPO_ROOT / "docs" / "SUPPORT_MATRIX.md",
     REPO_ROOT / "boards" / "same70_xplained" / "README.md",
     REPO_ROOT / "boards" / "nucleo_g071rb" / "README.md",
     REPO_ROOT / "boards" / "nucleo_f401re" / "README.md",
@@ -54,6 +57,8 @@ REQUIRED_ALLOYCTL_COMMANDS = (
     "gdbserver",
     "validate",
     "sweep",
+    "explain",
+    "diff",
 )
 
 
@@ -67,6 +72,18 @@ def load_presets() -> dict:
 
 
 def run_help(*args: str) -> tuple[int, str]:
+    completed = subprocess.run(
+        [sys.executable, str(ALLOYCTL_PATH), *args],
+        cwd=REPO_ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    return completed.returncode, completed.stdout
+
+
+def run_cmd(*args: str) -> tuple[int, str]:
     completed = subprocess.run(
         [sys.executable, str(ALLOYCTL_PATH), *args],
         cwd=REPO_ROOT,
@@ -111,6 +128,42 @@ def main() -> int:
         rc, _ = run_help(command, "--help")
         if rc != 0:
             errors.append(f"alloyctl {command} --help failed")
+
+    runtime_checks = (
+        (("configure", "--board", "same70_xplained"), False),
+        (("configure", "--board", "nucleo_g071rb"), False),
+        (("configure", "--board", "nucleo_f401re"), False),
+        (("build", "--board", "same70_xplained", "--target", "blink", "-j2"), False),
+        (("build", "--board", "nucleo_g071rb", "--target", "blink", "-j2"), False),
+        (("build", "--board", "nucleo_f401re", "--target", "blink", "-j2"), False),
+        (("explain", "--board", "same70_xplained"), True),
+        (("explain", "--board", "same70_xplained", "--connector", "debug-uart"), True),
+        (("explain", "--board", "same70_xplained", "--clock"), True),
+        (("explain", "--board", "same70_xplained", "--peripheral", "dma"), True),
+        (("diff", "--from", "same70_xplained", "--to", "nucleo_g071rb"), True),
+    )
+
+    for check, require_output in runtime_checks:
+        rc, output = run_cmd(*check)
+        if rc != 0:
+            errors.append(f"alloyctl {' '.join(check)} failed")
+            continue
+        if require_output and not output.strip():
+            errors.append(f"alloyctl {' '.join(check)} produced no output")
+
+    diagnostic_checks = (
+        (("explain", "--board", "same70_xplained", "--connector", "debug-uartx"), "supported connectors"),
+        (("validate", "--board", "same70_xplained", "--kind", "runtimex"), "supported kinds"),
+        (("configure", "--board", "same70_xplainedx"), "supported boards"),
+    )
+
+    for check, needle in diagnostic_checks:
+        rc, output = run_cmd(*check)
+        if rc == 0:
+            errors.append(f"alloyctl {' '.join(check)} unexpectedly succeeded")
+            continue
+        if needle not in output:
+            errors.append(f"alloyctl {' '.join(check)} did not report actionable diagnostics")
 
     if errors:
         print("Runtime tooling violations found:")

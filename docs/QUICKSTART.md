@@ -85,4 +85,11 @@ After `blink`, the recommended examples are:
 - `uart_logger`
 - `dma_probe` on boards that publish the required DMA helpers
 
-See [../examples/README.md](../examples/README.md) for the official runtime-path examples.
+Use:
+
+```bash
+python3 scripts/alloyctl.py explain --board same70_xplained
+python3 scripts/alloyctl.py diff --from same70_xplained --to nucleo_g071rb
+```
+
+See [COOKBOOK.md](COOKBOOK.md) and [../examples/README.md](../examples/README.md) for the official runtime-path examples.

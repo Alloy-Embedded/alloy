@@ -11,9 +11,12 @@ This is the supported board-oriented UX for:
 - configure
 - build
 - bundle
+- explain
+- diff
 - flash
 - monitor
 - gdbserver
+- sweep
 - validation through workflow presets
 
 Supported boards:
@@ -40,6 +43,21 @@ python3 scripts/alloyctl.py configure --board nucleo_g071rb --build-tests
 ```bash
 python3 scripts/alloyctl.py build --board same70_xplained --target uart_logger
 python3 scripts/alloyctl.py build --board nucleo_g071rb --target analog_probe
+```
+
+## Explain
+
+```bash
+python3 scripts/alloyctl.py explain --board same70_xplained
+python3 scripts/alloyctl.py explain --board same70_xplained --connector debug-uart
+python3 scripts/alloyctl.py explain --board same70_xplained --clock
+python3 scripts/alloyctl.py explain --board same70_xplained --peripheral dma
+```
+
+## Diff
+
+```bash
+python3 scripts/alloyctl.py diff --from same70_xplained --to nucleo_g071rb
 ```
 
 ## Build full hardware bundle
@@ -72,6 +90,12 @@ python3 scripts/alloyctl.py monitor --board same70_xplained
 python3 scripts/alloyctl.py monitor --board nucleo_f401re --port /dev/cu.usbmodem1234
 ```
 
+## Sweep
+
+```bash
+python3 scripts/alloyctl.py sweep --board same70_xplained -j8
+```
+
 ## GDB server
 
 ```bash
@@ -96,4 +120,4 @@ Current validation mapping:
 - `nucleo_g071rb` -> `stm32g0-runtime-validation`, `stm32g0-renode-smoke`
 - `nucleo_f401re` -> `stm32f4-runtime-validation`, `stm32f4-renode-smoke`
 
-For a shorter getting-started path, use [QUICKSTART.md](QUICKSTART.md).
+For a shorter getting-started path, use [QUICKSTART.md](QUICKSTART.md). For canonical examples, use [COOKBOOK.md](COOKBOOK.md).

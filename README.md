@@ -19,7 +19,9 @@ See:
 
 - [Quickstart](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/QUICKSTART.md)
 - [Board Tooling](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/BOARD_TOOLING.md)
+- [Cookbook](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/COOKBOOK.md)
 - [Downstream CMake Consumption](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/CMAKE_CONSUMPTION.md)
+- [Migration Guide](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/MIGRATION_GUIDE.md)
 - [Runtime Device Boundary](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RUNTIME_DEVICE_BOUNDARY.md)
 - [Runtime Release Discipline](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RELEASE_DISCIPLINE.md)
 - [Support Matrix](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/SUPPORT_MATRIX.md)
@@ -36,6 +38,8 @@ python3 scripts/alloyctl.py monitor --board nucleo_g071rb
 ```
 
 The supported board-oriented flow is documented in [docs/QUICKSTART.md](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/QUICKSTART.md) and [docs/BOARD_TOOLING.md](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/BOARD_TOOLING.md).
+
+For canonical usage paths and migration notes, use [docs/COOKBOOK.md](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/COOKBOOK.md) and [docs/MIGRATION_GUIDE.md](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/MIGRATION_GUIDE.md).
 
 ## Validated Targets
 
@@ -177,7 +181,9 @@ Core checks used by the rebuilt runtime:
 - [Architecture](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/ARCHITECTURE.md)
 - [Quickstart](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/QUICKSTART.md)
 - [Board Tooling](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/BOARD_TOOLING.md)
+- [Cookbook](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/COOKBOOK.md)
 - [Downstream CMake Consumption](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/CMAKE_CONSUMPTION.md)
+- [Migration Guide](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/MIGRATION_GUIDE.md)
 - [Runtime Async Model](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RUNTIME_ASYNC_MODEL.md)
 - [Runtime Release Discipline](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RELEASE_DISCIPLINE.md)
 - [Support Matrix](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/SUPPORT_MATRIX.md)
