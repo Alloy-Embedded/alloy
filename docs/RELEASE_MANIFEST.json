@@ -2,7 +2,7 @@
   "schema_version": 1,
   "alloy_devices": {
     "policy": "pinned-commit",
-    "ref": "686bd9c5140fb69f085ee511c4705f8b52ec1c32",
+    "ref": "fa0630fe1501e7435463c1a2f2df4e9858e507b4",
     "compatibility_note": "Alloy releases are validated against this published alloy-devices commit. Updating the commit requires updating this manifest, the workflow pins, and rerunning the foundational release gates."
   },
   "support_tiers": [

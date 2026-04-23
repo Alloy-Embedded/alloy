@@ -5,17 +5,17 @@
 
 ## 2. STM32G0 Hardware Closure
 
-- [ ] 2.1 Recover the board if needed and stabilize the supported flash path
-- [ ] 2.2 Run the declared `stm32g0` validation bundle on hardware
-- [ ] 2.3 Record results in `tests/hardware/stm32g0/CHECKLIST.md`
-- [ ] 2.4 Convert any hardware-only failures into host-MMIO or emulation coverage where possible
+- [x] 2.1 Recover the board if needed and stabilize the supported flash path
+- [x] 2.2 Run the declared `stm32g0` validation bundle on hardware
+- [x] 2.3 Record results in `tests/hardware/stm32g0/CHECKLIST.md`
+- [x] 2.4 Convert any hardware-only failures into host-MMIO or emulation coverage where possible
 
 ## 3. STM32F4 Hardware Closure
 
 - [ ] 3.1 Stabilize the supported flash/monitor path for `nucleo_f401re`
 - [ ] 3.2 Run the declared `stm32f4` validation bundle on hardware
 - [ ] 3.3 Record results in `tests/hardware/stm32f4/CHECKLIST.md`
-- [ ] 3.4 Convert any hardware-only failures into host-MMIO or emulation coverage where possible
+- [x] 3.4 Convert any hardware-only failures into host-MMIO or emulation coverage where possible
 
 ## 4. Tooling Hardening For Real Boards
 

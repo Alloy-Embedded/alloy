@@ -157,7 +157,7 @@ TEST_CASE("host mmio covers descriptor-driven STM32G0 gpio and uart bring-up",
             .uart_cr1_initial_value = 0x0000'000Cu,
             .uart_cr1_enabled_value = 0x0000'000Du,
             .uart_brr_address = kUsart2BrrAddress,
-            .uart_brr_value = 556u,
+            .uart_brr_value = 139u,
             .uart_data_address = kUsart2TdrAddress,
             .uart_data_value = 0x41u,
         });

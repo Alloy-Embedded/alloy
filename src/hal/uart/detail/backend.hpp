@@ -506,6 +506,16 @@ template <typename PortHandle>
     if constexpr (!PortHandle::is_st_style || PortHandle::peripheral_id == device::PeripheralId::none) {
         return rt::kInvalidFieldRef;
     } else {
+        if constexpr (PortHandle::peripheral_id == device::PeripheralId::USART1) {
+            if constexpr (requires { device::FieldId::field_usart1_cr3_dmat; }) {
+                return rt::field_ref<device::FieldId::field_usart1_cr3_dmat>();
+            }
+        }
+        if constexpr (PortHandle::peripheral_id == device::PeripheralId::USART2) {
+            if constexpr (requires { device::FieldId::field_usart2_cr3_dmat; }) {
+                return rt::field_ref<device::FieldId::field_usart2_cr3_dmat>();
+            }
+        }
         constexpr auto cr3_reg = rt::find_runtime_register_ref_by_suffix(PortHandle::peripheral_id, "cr3");
         if constexpr (!cr3_reg.valid) {
             return rt::kInvalidFieldRef;
@@ -520,6 +530,16 @@ template <typename PortHandle>
     if constexpr (!PortHandle::is_st_style || PortHandle::peripheral_id == device::PeripheralId::none) {
         return rt::kInvalidFieldRef;
     } else {
+        if constexpr (PortHandle::peripheral_id == device::PeripheralId::USART1) {
+            if constexpr (requires { device::FieldId::field_usart1_cr3_dmar; }) {
+                return rt::field_ref<device::FieldId::field_usart1_cr3_dmar>();
+            }
+        }
+        if constexpr (PortHandle::peripheral_id == device::PeripheralId::USART2) {
+            if constexpr (requires { device::FieldId::field_usart2_cr3_dmar; }) {
+                return rt::field_ref<device::FieldId::field_usart2_cr3_dmar>();
+            }
+        }
         constexpr auto cr3_reg = rt::find_runtime_register_ref_by_suffix(PortHandle::peripheral_id, "cr3");
         if constexpr (!cr3_reg.valid) {
             return rt::kInvalidFieldRef;

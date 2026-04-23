@@ -33,29 +33,29 @@ python3 scripts/alloyctl.py flash --board nucleo_f401re --target time_probe --bu
 
 | Check | Result | Notes |
 |---|---|---|
-| `blink` | ☐ pass / ☐ fail | LED visible, no stuck-on/stuck-off state |
-| `uart_logger` | ☐ pass / ☐ fail | `uart logger ready` + heartbeat on VCOM |
+| `blink` | ☑ pass / ☐ fail | Hardware run passed |
+| `uart_logger` | ☑ pass / ☐ fail | VCOM path alive on hardware |
 
 ## Stage 2: Safe Board Services
 
 | Check | Result | Notes |
 |---|---|---|
-| `watchdog_probe` | ☐ pass / ☐ fail | No reset loop after watchdog configure/refresh |
-| `rtc_probe` | ☐ pass / ☐ fail | Board stays alive after RTC configure |
+| `watchdog_probe` | ☑ pass / ☐ fail | Hardware run passed |
+| `rtc_probe` | ☑ pass / ☐ fail | Hardware run passed |
 
 ## Stage 3: Timing And Analog
 
 | Check | Result | Notes |
 |---|---|---|
-| `timer_pwm_probe` | ☐ pass / ☐ fail | Timer/PWM bring-up + observable loop |
-| `analog_probe` | ☐ pass / ☐ fail | ADC/DAC configure path stable |
-| `time_probe` | ☐ pass / ☐ fail | `time loop=... uptime_ms=...` prints cleanly |
+| `timer_pwm_probe` | ☑ pass / ☐ fail | Hardware run passed |
+| `analog_probe` | ☑ pass / ☐ fail | Hardware run passed |
+| `time_probe` | ☑ pass / ☐ fail | Hardware run passed |
 
 ## Stage 4: DMA
 
 | Check | Result | Notes |
 |---|---|---|
-| `dma_probe` | ☐ pass / ☐ fail | DMA binding/config stable on hardware |
+| `dma_probe` | ☐ pass / ☐ fail | Hardware gap was traced to missing published DMA stream IRQ descriptors; codegen + host-MMIO are fixed, hardware rerun still pending |
 
 ## Evidence
 
@@ -69,5 +69,5 @@ python3 scripts/alloyctl.py flash --board nucleo_f401re --target time_probe --bu
 
 ## Summary
 
-- overall status:
-- follow-up issues:
+- overall status: stage 1 through stage 3 passed on hardware; DMA publish path fixed and pending hardware rerun
+- follow-up issues: rerun `dma_probe` on hardware against the republished `alloy-devices` contract to close the last STM32F4 board gap

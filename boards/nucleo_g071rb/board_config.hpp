@@ -46,8 +46,9 @@ struct ButtonConfig {
 struct ClockConfig {
     static_assert(alloy::device::SelectedSystemClockProfiles::available);
 
+    // Keep the board constants aligned with the published default bring-up profile.
     static constexpr auto system_clock_profile =
-        alloy::device::system_clock::ProfileId::default_pll_64mhz;
+        alloy::device::system_clock::ProfileId::safe_hsi16;
     using SystemClockProfile = alloy::device::system_clock::ProfileTraits<system_clock_profile>;
 
     static_assert(SystemClockProfile::kPresent);

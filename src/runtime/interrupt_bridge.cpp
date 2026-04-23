@@ -25,6 +25,12 @@ template <typename InterruptEnum>
 inline constexpr bool has_dma_channel23_interrupt_v = requires { InterruptEnum::DMA_Channel2_3; };
 
 template <typename InterruptEnum>
+inline constexpr bool has_dma1_stream5_interrupt_v = requires { InterruptEnum::DMA1_Stream5; };
+
+template <typename InterruptEnum>
+inline constexpr bool has_dma1_stream6_interrupt_v = requires { InterruptEnum::DMA1_Stream6; };
+
+template <typename InterruptEnum>
 inline constexpr bool has_usart1_interrupt_v = requires { InterruptEnum::USART1; };
 
 template <typename InterruptEnum>
@@ -41,6 +47,20 @@ template <typename InterruptEnum>
 inline auto signal_dma_channel23_interrupt_if_present() -> void {
     if constexpr (has_dma_channel23_interrupt_v<InterruptEnum>) {
         signal_interrupt_token<InterruptEnum::DMA_Channel2_3>();
+    }
+}
+
+template <typename InterruptEnum>
+inline auto signal_dma1_stream5_interrupt_if_present() -> void {
+    if constexpr (has_dma1_stream5_interrupt_v<InterruptEnum>) {
+        signal_interrupt_token<InterruptEnum::DMA1_Stream5>();
+    }
+}
+
+template <typename InterruptEnum>
+inline auto signal_dma1_stream6_interrupt_if_present() -> void {
+    if constexpr (has_dma1_stream6_interrupt_v<InterruptEnum>) {
+        signal_interrupt_token<InterruptEnum::DMA1_Stream6>();
     }
 }
 
@@ -76,6 +96,18 @@ inline constexpr bool has_dma1_isr_tcif2_v = requires { FieldEnum::field_dma1_is
 
 template <typename FieldEnum>
 inline constexpr bool has_dma1_ifcr_ctcif5_v = requires { FieldEnum::field_dma1_ifcr_ctcif5; };
+
+template <typename FieldEnum>
+inline constexpr bool has_dma1_hisr_tcif5_v = requires { FieldEnum::field_dma1_hisr_tcif5; };
+
+template <typename FieldEnum>
+inline constexpr bool has_dma1_hifcr_ctcif5_v = requires { FieldEnum::field_dma1_hifcr_ctcif5; };
+
+template <typename FieldEnum>
+inline constexpr bool has_dma1_hisr_tcif6_v = requires { FieldEnum::field_dma1_hisr_tcif6; };
+
+template <typename FieldEnum>
+inline constexpr bool has_dma1_hifcr_ctcif6_v = requires { FieldEnum::field_dma1_hifcr_ctcif6; };
 
 template <device::FieldId StatusFieldId, device::FieldId ClearFieldId, hal::dma::PeripheralId Peripheral,
           hal::dma::SignalId Signal>
@@ -120,6 +152,26 @@ inline auto bridge_stm32g0_dma_channel2() -> void {
     }
 }
 
+template <typename FieldEnum>
+inline auto bridge_stm32f4_dma_stream5() -> void {
+    if constexpr (has_dma1_hisr_tcif5_v<FieldEnum> && has_dma1_hifcr_ctcif5_v<FieldEnum>) {
+        bridge_dma_transfer_complete_if_set<FieldEnum::field_dma1_hisr_tcif5,
+                                            FieldEnum::field_dma1_hifcr_ctcif5,
+                                            hal::dma::PeripheralId::USART2,
+                                            hal::dma::SignalId::signal_RX>();
+    }
+}
+
+template <typename FieldEnum>
+inline auto bridge_stm32f4_dma_stream6() -> void {
+    if constexpr (has_dma1_hisr_tcif6_v<FieldEnum> && has_dma1_hifcr_ctcif6_v<FieldEnum>) {
+        bridge_dma_transfer_complete_if_set<FieldEnum::field_dma1_hisr_tcif6,
+                                            FieldEnum::field_dma1_hifcr_ctcif6,
+                                            hal::dma::PeripheralId::USART2,
+                                            hal::dma::SignalId::signal_TX>();
+    }
+}
+
 }  // namespace alloy::runtime::detail
 
 extern "C" void DMA_Channel1_IRQHandler() {
@@ -140,6 +192,28 @@ extern "C" void DMA_Channel2_3_IRQHandler() {
         alloy::runtime::detail::signal_dma_channel23_interrupt_if_present<
             alloy::device::interrupt_stubs::InterruptId>();
         alloy::runtime::detail::bridge_stm32g0_dma_channel2<alloy::device::FieldId>();
+    }
+#endif
+}
+
+extern "C" void DMA1_Stream5_IRQHandler() {
+#if ALLOY_DEVICE_INTERRUPT_STUBS_AVAILABLE
+    if constexpr (alloy::runtime::detail::has_dma1_stream5_interrupt_v<
+                      alloy::device::interrupt_stubs::InterruptId>) {
+        alloy::runtime::detail::signal_dma1_stream5_interrupt_if_present<
+            alloy::device::interrupt_stubs::InterruptId>();
+        alloy::runtime::detail::bridge_stm32f4_dma_stream5<alloy::device::FieldId>();
+    }
+#endif
+}
+
+extern "C" void DMA1_Stream6_IRQHandler() {
+#if ALLOY_DEVICE_INTERRUPT_STUBS_AVAILABLE
+    if constexpr (alloy::runtime::detail::has_dma1_stream6_interrupt_v<
+                      alloy::device::interrupt_stubs::InterruptId>) {
+        alloy::runtime::detail::signal_dma1_stream6_interrupt_if_present<
+            alloy::device::interrupt_stubs::InterruptId>();
+        alloy::runtime::detail::bridge_stm32f4_dma_stream6<alloy::device::FieldId>();
     }
 #endif
 }

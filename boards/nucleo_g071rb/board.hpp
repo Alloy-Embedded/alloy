@@ -28,12 +28,13 @@
  *
  * ## Hardware Configuration
  *
- * - **MCU:** STM32G071RBT6 (ARM Cortex-M0+ @ 64 MHz)
+ * - **MCU:** STM32G071RBT6 (ARM Cortex-M0+)
  * - **LED:** Green LED (LD4) on PA5 (active HIGH)
  * - **Button:** User button (B1) on PC13 (active LOW)
  * - **Debug UART:** USART2 on ST-Link virtual COM port (PA2/PA3)
  *
- * @note Clock runs at 64 MHz using HSI oscillator
+ * @note The published device contract selects the validated `safe_hsi16`
+ *       profile as default bring-up for this board.
  */
 
 #include <cstdint>

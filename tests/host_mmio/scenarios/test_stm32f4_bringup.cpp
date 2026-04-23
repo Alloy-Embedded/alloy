@@ -4,10 +4,15 @@
 #include "host_mmio/framework/stm32_gpio_uart_expect.hpp"
 
 #include "boards/nucleo_f401re/board_uart.hpp"
+#include "device/interrupt_stubs.hpp"
 #include "device/runtime.hpp"
+#include "hal/dma.hpp"
 #include "hal/detail/runtime_ops.hpp"
 #include "hal/gpio/detail/backend.hpp"
 #include "hal/types.hpp"
+#include "async.hpp"
+#include "runtime/dma_event.hpp"
+#include "runtime/interrupt_event.hpp"
 
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -49,6 +54,10 @@ constexpr auto kUsart2SrAddress =
     stm32_mmio::register_address<alloy::device::runtime::RegisterId::register_usart2_sr>();
 constexpr auto kUsart2DrAddress =
     stm32_mmio::register_address<alloy::device::runtime::RegisterId::register_usart2_dr>();
+constexpr auto kDma1HisrAddress =
+    stm32_mmio::register_address(rt::find_runtime_register_ref_by_suffix(PeripheralId::DMA1, "hisr"));
+constexpr auto kDma1HifcrAddress =
+    stm32_mmio::register_address(rt::find_runtime_register_ref_by_suffix(PeripheralId::DMA1, "hifcr"));
 
 struct stm32f4_led_pin_handle {
     static constexpr bool valid = true;
@@ -135,6 +144,60 @@ TEST_CASE("host mmio covers descriptor-driven STM32F4 gpio and uart bring-up",
             .uart_data_address = kUsart2DrAddress,
             .uart_data_value = 0x41u,
         });
+}
+
+TEST_CASE("host mmio bridges STM32F4 DMA stream 5 IRQ into UART RX completion",
+          "[host-mmio][bring-up][stm32f4][event]") {
+    trace_log trace;
+    mmio_space mmio{trace};
+    runtime_mmio_scope scope{mmio};
+
+    using InterruptId = alloy::device::interrupt_stubs::InterruptId;
+    using DmaRxCompletion = alloy::runtime::dma_event::token<
+        alloy::hal::dma::PeripheralId::USART2,
+        alloy::hal::dma::SignalId::signal_RX>;
+    using DmaStream5Interrupt =
+        alloy::runtime::interrupt_event::token<InterruptId::DMA1_Stream5>;
+
+    DmaRxCompletion::reset();
+    DmaStream5Interrupt::reset();
+
+    mmio.preload(kDma1HisrAddress,
+                 rt::field_mask(rt::field_ref<FieldId::field_dma1_hisr_tcif5>()));
+
+    DMA1_Stream5_IRQHandler();
+
+    REQUIRE(DmaStream5Interrupt::ready());
+    REQUIRE(DmaRxCompletion::ready());
+    REQUIRE(mmio.peek(kDma1HifcrAddress) ==
+            rt::field_mask(rt::field_ref<FieldId::field_dma1_hifcr_ctcif5>()));
+}
+
+TEST_CASE("host mmio bridges STM32F4 DMA stream 6 IRQ into UART TX completion",
+          "[host-mmio][bring-up][stm32f4][event]") {
+    trace_log trace;
+    mmio_space mmio{trace};
+    runtime_mmio_scope scope{mmio};
+
+    using InterruptId = alloy::device::interrupt_stubs::InterruptId;
+    using DmaTxCompletion = alloy::runtime::dma_event::token<
+        alloy::hal::dma::PeripheralId::USART2,
+        alloy::hal::dma::SignalId::signal_TX>;
+    using DmaStream6Interrupt =
+        alloy::runtime::interrupt_event::token<InterruptId::DMA1_Stream6>;
+
+    DmaTxCompletion::reset();
+    DmaStream6Interrupt::reset();
+
+    mmio.preload(kDma1HisrAddress,
+                 rt::field_mask(rt::field_ref<FieldId::field_dma1_hisr_tcif6>()));
+
+    DMA1_Stream6_IRQHandler();
+
+    REQUIRE(DmaStream6Interrupt::ready());
+    REQUIRE(DmaTxCompletion::ready());
+    REQUIRE(mmio.peek(kDma1HifcrAddress) ==
+            rt::field_mask(rt::field_ref<FieldId::field_dma1_hifcr_ctcif6>()));
 }
 
 }  // namespace alloy::test::mmio

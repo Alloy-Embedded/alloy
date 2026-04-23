@@ -32,23 +32,23 @@ python3 scripts/alloyctl.py flash --board nucleo_g071rb --target time_probe --bu
 
 | Check | Result | Notes |
 |---|---|---|
-| `blink` | ☐ pass / ☐ fail | LED visible, no stuck-on/stuck-off state |
-| `uart_logger` | ☐ pass / ☐ fail | `uart logger ready` + heartbeat on VCOM |
+| `blink` | ☑ pass / ☐ fail | Recovery flow succeeded and LED blink is visible on hardware |
+| `uart_logger` | ☑ pass / ☐ fail | VCOM path alive on hardware |
 
 ## Stage 2: Safe Board Services
 
 | Check | Result | Notes |
 |---|---|---|
-| `watchdog_probe` | ☐ pass / ☐ fail | No reset loop after watchdog configure/refresh |
-| `rtc_probe` | ☐ pass / ☐ fail | Board stays alive after RTC configure |
+| `watchdog_probe` | ☑ pass / ☐ fail | Hardware run passed |
+| `rtc_probe` | ☑ pass / ☐ fail | Hardware run passed |
 
 ## Stage 3: Timing And Analog
 
 | Check | Result | Notes |
 |---|---|---|
-| `timer_pwm_probe` | ☐ pass / ☐ fail | Timer/PWM bring-up + observable loop |
-| `analog_probe` | ☐ pass / ☐ fail | ADC/DAC configure path stable |
-| `time_probe` | ☐ pass / ☐ fail | `time loop=... uptime_ms=...` prints cleanly |
+| `timer_pwm_probe` | ☑ pass / ☐ fail | Hardware run passed |
+| `analog_probe` | ☑ pass / ☐ fail | Hardware run passed |
+| `time_probe` | ☑ pass / ☐ fail | Hardware run passed |
 
 ## Evidence
 
@@ -57,10 +57,10 @@ python3 scripts/alloyctl.py flash --board nucleo_g071rb --target time_probe --bu
 - flash flow used:
 - monitor command used:
 - serial port used:
-- recovery required: `yes/no`
-- recovery backend: `stm32cube/openocd/n/a`
+- recovery required: `yes`
+- recovery backend: `stm32cube`
 
 ## Summary
 
-- overall status:
-- follow-up issues:
+- overall status: stage 1 through stage 3 passed on hardware
+- follow-up issues: none in the published default clock path; generated contract now selects `safe_hsi16` as the validated default bring-up profile
