@@ -29,7 +29,7 @@ BOARDS: dict[str, BoardConfig] = {
         "same70_xplained",
         ROOT / "build" / "hw" / "same70",
         "same70_hardware_validation_bundle",
-        ("blink", "uart_logger", "watchdog_probe", "analog_probe", "rtc_probe",
+        ("blink", "time_probe", "uart_logger", "watchdog_probe", "analog_probe", "rtc_probe",
          "timer_pwm_probe", "i2c_scan", "spi_probe", "dma_probe", "can_probe"),
         ("openocd", "-f", "board/atmel_same70_xplained.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
@@ -39,7 +39,7 @@ BOARDS: dict[str, BoardConfig] = {
         "same70_xplained",
         ROOT / "build" / "hw" / "same70",
         "same70_hardware_validation_bundle",
-        ("blink", "uart_logger", "watchdog_probe", "analog_probe", "rtc_probe",
+        ("blink", "time_probe", "uart_logger", "watchdog_probe", "analog_probe", "rtc_probe",
          "timer_pwm_probe", "i2c_scan", "spi_probe", "dma_probe", "can_probe"),
         ("openocd", "-f", "board/atmel_same70_xplained.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
@@ -49,7 +49,7 @@ BOARDS: dict[str, BoardConfig] = {
         "nucleo_g071rb",
         ROOT / "build" / "hw" / "g071",
         "stm32g0_hardware_validation_bundle",
-        ("blink", "uart_logger", "watchdog_probe", "rtc_probe", "timer_pwm_probe",
+        ("blink", "time_probe", "uart_logger", "watchdog_probe", "rtc_probe", "timer_pwm_probe",
          "analog_probe"),
         ("openocd", "-f", "interface/stlink.cfg", "-f", "target/stm32g0x.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
@@ -59,7 +59,7 @@ BOARDS: dict[str, BoardConfig] = {
         "nucleo_f401re",
         ROOT / "build" / "hw" / "f401",
         "stm32f4_hardware_validation_bundle",
-        ("blink", "uart_logger", "watchdog_probe", "rtc_probe", "timer_pwm_probe",
+        ("blink", "time_probe", "uart_logger", "watchdog_probe", "rtc_probe", "timer_pwm_probe",
          "analog_probe", "dma_probe"),
         ("openocd", "-f", "interface/stlink.cfg", "-f", "target/stm32f4x.cfg"),
         ("/dev/cu.usbmodem*", "/dev/ttyACM*", "/dev/cu.usbserial*"),
@@ -102,6 +102,31 @@ def run_soft(cmd: list[str]) -> int:
     return completed.returncode
 
 
+VALIDATION_PRESETS: dict[str, dict[str, str]] = {
+    "host": {
+        "runtime": "host-mmio-validation",
+    },
+    "same70_xplained": {
+        "runtime": "same70-runtime-validation",
+        "smoke": "same70-renode-smoke",
+        "zero-overhead": "same70-zero-overhead",
+    },
+    "same70_xpld": {
+        "runtime": "same70-runtime-validation",
+        "smoke": "same70-renode-smoke",
+        "zero-overhead": "same70-zero-overhead",
+    },
+    "nucleo_g071rb": {
+        "runtime": "stm32g0-runtime-validation",
+        "smoke": "stm32g0-renode-smoke",
+    },
+    "nucleo_f401re": {
+        "runtime": "stm32f4-runtime-validation",
+        "smoke": "stm32f4-renode-smoke",
+    },
+}
+
+
 def is_configured(cfg: BoardConfig) -> bool:
     return (cfg.build_dir / "CMakeCache.txt").exists()
 
@@ -116,6 +141,14 @@ def cache_value(cfg: BoardConfig, key: str) -> str | None:
             _, value = line.split("=", 1)
             return value.strip()
     return None
+
+
+def ensure_configured(cfg: BoardConfig, build_type: str, build_tests: bool) -> None:
+    expected_build_tests = "ON" if build_tests else "OFF"
+    if (not is_configured(cfg) or cache_value(cfg, "ALLOY_BUILD_TESTS") != expected_build_tests or
+            cache_value(cfg, "ALLOY_BOARD") != cfg.board or
+            cache_value(cfg, "CMAKE_BUILD_TYPE") != build_type):
+        configure(cfg, build_type, build_tests=build_tests)
 
 
 def configure(cfg: BoardConfig, build_type: str, build_tests: bool) -> None:
@@ -164,27 +197,26 @@ def auto_port(cfg: BoardConfig) -> str:
 
 def cmd_build(args: argparse.Namespace) -> None:
     cfg = board_config(args.board)
-    if (not is_configured(cfg) or cache_value(cfg, "ALLOY_BUILD_TESTS") != "OFF" or
-            cache_value(cfg, "ALLOY_BOARD") != cfg.board or
-            cache_value(cfg, "CMAKE_BUILD_TYPE") != args.build_type):
-        configure(cfg, args.build_type, build_tests=False)
+    ensure_configured(cfg, args.build_type, build_tests=False)
     build(cfg, args.target, args.jobs)
+
+
+def cmd_configure(args: argparse.Namespace) -> None:
+    cfg = board_config(args.board)
+    ensure_configured(cfg, args.build_type, build_tests=args.build_tests)
 
 
 def cmd_bundle(args: argparse.Namespace) -> None:
     cfg = board_config(args.board)
-    configure(cfg, args.build_type, build_tests=True)
-    build_many(cfg, targets, args.jobs)
+    ensure_configured(cfg, args.build_type, build_tests=True)
+    build(cfg, cfg.bundle_target, args.jobs)
 
 
 def cmd_flash(args: argparse.Namespace) -> None:
     cfg = board_config(args.board)
     require_tool("openocd")
     if args.build_first:
-        if (not is_configured(cfg) or cache_value(cfg, "ALLOY_BUILD_TESTS") != "OFF" or
-                cache_value(cfg, "ALLOY_BOARD") != cfg.board or
-                cache_value(cfg, "CMAKE_BUILD_TYPE") != args.build_type):
-            configure(cfg, args.build_type, build_tests=False)
+        ensure_configured(cfg, args.build_type, build_tests=False)
         build(cfg, args.target, args.jobs)
     elf = artifact(cfg, args.target)
     cmd = list(cfg.openocd_args)
@@ -256,10 +288,7 @@ def cmd_sweep(args: argparse.Namespace) -> None:
     if not targets:
         raise SystemExit(die(f"no firmware targets configured for board: {cfg.board}"))
 
-    if (not is_configured(cfg) or cache_value(cfg, "ALLOY_BUILD_TESTS") != "OFF" or
-            cache_value(cfg, "ALLOY_BOARD") != cfg.board or
-            cache_value(cfg, "CMAKE_BUILD_TYPE") != args.build_type):
-        configure(cfg, args.build_type, build_tests=False)
+    ensure_configured(cfg, args.build_type, build_tests=False)
 
     build_many(cfg, targets, args.jobs)
 
@@ -292,6 +321,19 @@ def cmd_gdbserver(args: argparse.Namespace) -> None:
     run(list(cfg.openocd_args) + ["-c", f"gdb_port {args.gdb_port}", "-c", "init", "-c", "reset halt"])
 
 
+def cmd_validate(args: argparse.Namespace) -> None:
+    presets = VALIDATION_PRESETS.get(args.board)
+    if presets is None:
+        raise SystemExit(die(f"unsupported board: {args.board}"))
+
+    preset = presets.get(args.kind)
+    if preset is None:
+        supported_kinds = ", ".join(sorted(presets))
+        raise SystemExit(die(f"validation kind '{args.kind}' is not supported for {args.board}; supported kinds: {supported_kinds}"))
+
+    run(["cmake", "--workflow", "--preset", preset])
+
+
 def main() -> int:
     p = argparse.ArgumentParser(prog="alloyctl", description="Board-aware Alloy helper")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -299,6 +341,11 @@ def main() -> int:
     def add_build_args(sp: argparse.ArgumentParser) -> None:
         sp.add_argument("--board", required=True, choices=sorted(BOARDS))
         sp.add_argument("--build-type", default="Debug", choices=("Debug", "Release", "MinSizeRel", "RelWithDebInfo"))
+
+    cfg_p = sub.add_parser("configure")
+    add_build_args(cfg_p)
+    cfg_p.add_argument("--build-tests", action="store_true")
+    cfg_p.set_defaults(func=cmd_configure)
 
     build_p = sub.add_parser("build")
     add_build_args(build_p)
@@ -329,6 +376,19 @@ def main() -> int:
     gdb_p.add_argument("--board", required=True, choices=sorted(BOARDS))
     gdb_p.add_argument("--gdb-port", type=int, default=3333)
     gdb_p.set_defaults(func=cmd_gdbserver)
+
+    validate_p = sub.add_parser("validate")
+    validate_p.add_argument(
+        "--board",
+        required=True,
+        choices=("host", *sorted(BOARDS)),
+    )
+    validate_p.add_argument(
+        "--kind",
+        default="runtime",
+        choices=("runtime", "smoke", "zero-overhead"),
+    )
+    validate_p.set_defaults(func=cmd_validate)
 
     sweep_p = sub.add_parser("sweep")
     add_build_args(sweep_p)

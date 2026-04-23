@@ -3,6 +3,7 @@ if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld")
 
     set(ALLOY_SAME70_HARDWARE_TARGETS
         blink
+        time_probe
         uart_logger
         watchdog_probe
         analog_probe

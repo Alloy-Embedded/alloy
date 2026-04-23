@@ -1,3 +1,4 @@
+#include <array>
 #include <cstddef>
 
 #include "hal/dma.hpp"
@@ -7,6 +8,7 @@
 #include "device/runtime.hpp"
 #include "hal/connect/connector.hpp"
 #include "hal/uart.hpp"
+#include "async.hpp"
 
 namespace {
 
@@ -23,7 +25,18 @@ void compile_peripheral_dma_api() {
     auto uart = alloy::hal::uart::open<UartConnector>({});
     auto uart_tx_dma = alloy::hal::dma::open<DmaPeripheralId::USART1, DmaSignalId::signal_TX>(
         {.direction = alloy::hal::dma::Direction::memory_to_peripheral});
+    auto uart_rx_dma = alloy::hal::dma::open<DmaPeripheralId::USART1, DmaSignalId::signal_RX>(
+        {.direction = alloy::hal::dma::Direction::peripheral_to_memory});
     [[maybe_unused]] const auto uart_tx_result = uart.configure_tx_dma(uart_tx_dma);
+    [[maybe_unused]] const auto uart_rx_result = uart.configure_rx_dma(uart_rx_dma);
+    [[maybe_unused]] const auto uart_dma_write =
+        uart.write_dma(uart_tx_dma, std::to_array<std::byte>({std::byte{0x41}, std::byte{0x42}}));
+    [[maybe_unused]] auto uart_dma_read_buffer = std::to_array<std::byte>({std::byte{0x00}, std::byte{0x00}});
+    [[maybe_unused]] const auto uart_dma_read = uart.read_dma(uart_rx_dma, uart_dma_read_buffer);
+    [[maybe_unused]] const auto uart_dma_async = alloy::async::uart::write_dma(
+        uart, uart_tx_dma, std::to_array<std::byte>({std::byte{0x41}, std::byte{0x42}}));
+    [[maybe_unused]] const auto uart_dma_read_async = alloy::async::uart::read_dma(
+        uart, uart_rx_dma, uart_dma_read_buffer);
     [[maybe_unused]] constexpr auto uart_tx_addr = decltype(uart)::tx_data_register_address();
     [[maybe_unused]] constexpr auto uart_rx_addr = decltype(uart)::rx_data_register_address();
 
@@ -39,6 +52,7 @@ void compile_peripheral_dma_api() {
 #include "device/runtime.hpp"
 #include "hal/connect/connector.hpp"
 #include "hal/uart.hpp"
+#include "async.hpp"
 
 namespace {
 
@@ -55,7 +69,18 @@ void compile_peripheral_dma_api() {
     auto uart = alloy::hal::uart::open<UartConnector>({});
     auto uart_tx_dma = alloy::hal::dma::open<DmaPeripheralId::USART2, DmaSignalId::signal_TX>(
         {.direction = alloy::hal::dma::Direction::memory_to_peripheral});
+    auto uart_rx_dma = alloy::hal::dma::open<DmaPeripheralId::USART2, DmaSignalId::signal_RX>(
+        {.direction = alloy::hal::dma::Direction::peripheral_to_memory});
     [[maybe_unused]] const auto uart_tx_result = uart.configure_tx_dma(uart_tx_dma);
+    [[maybe_unused]] const auto uart_rx_result = uart.configure_rx_dma(uart_rx_dma);
+    [[maybe_unused]] const auto uart_dma_write =
+        uart.write_dma(uart_tx_dma, std::to_array<std::byte>({std::byte{0x41}, std::byte{0x42}}));
+    [[maybe_unused]] auto uart_dma_read_buffer = std::to_array<std::byte>({std::byte{0x00}, std::byte{0x00}});
+    [[maybe_unused]] const auto uart_dma_read = uart.read_dma(uart_rx_dma, uart_dma_read_buffer);
+    [[maybe_unused]] const auto uart_dma_async = alloy::async::uart::write_dma(
+        uart, uart_tx_dma, std::to_array<std::byte>({std::byte{0x41}, std::byte{0x42}}));
+    [[maybe_unused]] const auto uart_dma_read_async = alloy::async::uart::read_dma(
+        uart, uart_rx_dma, uart_dma_read_buffer);
     [[maybe_unused]] constexpr auto uart_tx_addr = decltype(uart)::tx_data_register_address();
     [[maybe_unused]] constexpr auto uart_rx_addr = decltype(uart)::rx_data_register_address();
 

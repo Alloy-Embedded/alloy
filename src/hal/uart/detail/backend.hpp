@@ -8,10 +8,13 @@
 #include <utility>
 
 #include "hal/detail/runtime_ops.hpp"
+#include "hal/dma/detail/backend.hpp"
+#include "hal/dma/types.hpp"
 #include "hal/types.hpp"
 
 #include "core/error_code.hpp"
 #include "core/result.hpp"
+#include "event.hpp"
 
 namespace alloy::hal::uart::detail {
 
@@ -496,6 +499,98 @@ auto flush_uart(const PortHandle&) -> core::Result<void, core::ErrorCode> {
     }
 
     return core::Err(core::ErrorCode::NotSupported);
+}
+
+template <typename PortHandle>
+[[nodiscard]] inline auto st_tx_dma_field() -> rt::FieldRef {
+    if constexpr (!PortHandle::is_st_style || PortHandle::peripheral_id == device::PeripheralId::none) {
+        return rt::kInvalidFieldRef;
+    } else {
+        constexpr auto cr3_reg = rt::find_runtime_register_ref_by_suffix(PortHandle::peripheral_id, "cr3");
+        if constexpr (!cr3_reg.valid) {
+            return rt::kInvalidFieldRef;
+        } else {
+            return rt::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, 7u);
+        }
+    }
+}
+
+template <typename PortHandle>
+[[nodiscard]] inline auto st_rx_dma_field() -> rt::FieldRef {
+    if constexpr (!PortHandle::is_st_style || PortHandle::peripheral_id == device::PeripheralId::none) {
+        return rt::kInvalidFieldRef;
+    } else {
+        constexpr auto cr3_reg = rt::find_runtime_register_ref_by_suffix(PortHandle::peripheral_id, "cr3");
+        if constexpr (!cr3_reg.valid) {
+            return rt::kInvalidFieldRef;
+        } else {
+            return rt::find_runtime_field_ref_by_register_and_offset(cr3_reg.register_id, 6u);
+        }
+    }
+}
+
+template <typename PortHandle, typename DmaChannel>
+auto write_uart_dma(const PortHandle&, const DmaChannel& channel, std::span<const std::byte> buffer)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (!PortHandle::valid) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+
+    if (buffer.empty()) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+    if (channel.config().direction != dma::Direction::memory_to_peripheral) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+
+    const auto tx_dma_field = st_tx_dma_field<PortHandle>();
+    if (!tx_dma_field.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    using Completion = alloy::dma_event::token<DmaChannel::peripheral_id, DmaChannel::signal_id>;
+    Completion::reset();
+
+    const auto start_result = dma::detail::start_transfer(
+        channel, PortHandle::tx_data_register_address(),
+        reinterpret_cast<std::uintptr_t>(buffer.data()), buffer.size_bytes());
+    if (start_result.is_err()) {
+        return start_result;
+    }
+
+    return rt::modify_field(tx_dma_field, 1u);
+}
+
+template <typename PortHandle, typename DmaChannel>
+auto read_uart_dma(const PortHandle&, const DmaChannel& channel, std::span<std::byte> buffer)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (!PortHandle::valid) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+
+    if (buffer.empty()) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+    if (channel.config().direction != dma::Direction::peripheral_to_memory) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+
+    const auto rx_dma_field = st_rx_dma_field<PortHandle>();
+    if (!rx_dma_field.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
+    using Completion = alloy::dma_event::token<DmaChannel::peripheral_id, DmaChannel::signal_id>;
+    Completion::reset();
+
+    const auto start_result = dma::detail::start_transfer(
+        channel, PortHandle::rx_data_register_address(),
+        reinterpret_cast<std::uintptr_t>(buffer.data()), buffer.size_bytes());
+    if (start_result.is_err()) {
+        return start_result;
+    }
+
+    return rt::modify_field(rx_dma_field, 1u);
 }
 
 }  // namespace alloy::hal::uart::detail

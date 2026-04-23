@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "alloy_devices": {
+    "policy": "pinned-commit",
+    "ref": "686bd9c5140fb69f085ee511c4705f8b52ec1c32",
+    "compatibility_note": "Alloy releases are validated against this published alloy-devices commit. Updating the commit requires updating this manifest, the workflow pins, and rerunning the foundational release gates."
+  },
+  "support_tiers": [
+    "foundational",
+    "representative",
+    "experimental",
+    "deprecated"
+  ],
+  "release_gates": {
+    "runtime-device-boundary": {
+      "kind": "script",
+      "command": "python3 scripts/check_runtime_device_boundary.py"
+    },
+    "release-discipline": {
+      "kind": "script",
+      "command": "python3 scripts/check_release_discipline.py"
+    },
+    "descriptor-contract-smoke": {
+      "kind": "build",
+      "target": "alloy-device-contract-smoke"
+    },
+    "host-mmio": {
+      "kind": "ctest-label",
+      "label": "host-mmio"
+    },
+    "renode-runtime-validation": {
+      "kind": "ctest-preset",
+      "presets": [
+        "same70-runtime-validation",
+        "stm32g0-runtime-validation",
+        "stm32f4-runtime-validation"
+      ]
+    },
+    "same70-zero-overhead": {
+      "kind": "ctest-preset",
+      "preset": "same70-zero-overhead"
+    },
+    "foundational-example-coverage": {
+      "kind": "build-targets",
+      "notes": "Required example coverage is declared per foundational board in this manifest and reviewed in the release checklist."
+    }
+  },
+  "boards": {
+    "same70_xplained": {
+      "tier": "foundational",
+      "required_gates": [
+        "runtime-device-boundary",
+        "release-discipline",
+        "descriptor-contract-smoke",
+        "host-mmio",
+        "renode-runtime-validation",
+        "same70-zero-overhead",
+        "foundational-example-coverage"
+      ],
+      "required_examples": [
+        "blink",
+        "time_probe",
+        "uart_logger",
+        "dma_probe"
+      ],
+      "notes": "Primary foundational Microchip validation board."
+    },
+    "nucleo_g071rb": {
+      "tier": "foundational",
+      "required_gates": [
+        "runtime-device-boundary",
+        "release-discipline",
+        "descriptor-contract-smoke",
+        "host-mmio",
+        "renode-runtime-validation",
+        "foundational-example-coverage"
+      ],
+      "required_examples": [
+        "blink",
+        "time_probe"
+      ],
+      "notes": "Primary foundational STM32G0 validation board."
+    },
+    "nucleo_f401re": {
+      "tier": "foundational",
+      "required_gates": [
+        "runtime-device-boundary",
+        "release-discipline",
+        "descriptor-contract-smoke",
+        "host-mmio",
+        "renode-runtime-validation",
+        "foundational-example-coverage"
+      ],
+      "required_examples": [
+        "blink",
+        "time_probe"
+      ],
+      "notes": "Primary foundational STM32F4 validation board."
+    },
+    "nucleo_g0b1re": {
+      "tier": "experimental",
+      "required_gates": [
+        "foundational-example-coverage"
+      ],
+      "required_examples": [
+        "blink"
+      ],
+      "notes": "Build-covered board that is not yet part of the foundational runtime-validation ladder."
+    }
+  },
+  "peripheral_classes": {
+    "runtime-device-boundary": {
+      "tier": "foundational",
+      "required_gates": [
+        "runtime-device-boundary",
+        "descriptor-contract-smoke"
+      ]
+    },
+    "clock-reset-startup": {
+      "tier": "foundational",
+      "required_gates": [
+        "descriptor-contract-smoke",
+        "host-mmio",
+        "renode-runtime-validation"
+      ]
+    },
+    "gpio": {
+      "tier": "foundational",
+      "required_gates": [
+        "descriptor-contract-smoke",
+        "host-mmio",
+        "renode-runtime-validation"
+      ]
+    },
+    "uart": {
+      "tier": "foundational",
+      "required_gates": [
+        "descriptor-contract-smoke",
+        "host-mmio",
+        "renode-runtime-validation"
+      ]
+    },
+    "time": {
+      "tier": "foundational",
+      "required_gates": [
+        "descriptor-contract-smoke",
+        "foundational-example-coverage"
+      ]
+    },
+    "interrupt-event": {
+      "tier": "foundational",
+      "required_gates": [
+        "descriptor-contract-smoke",
+        "host-mmio"
+      ]
+    },
+    "dma": {
+      "tier": "foundational",
+      "required_gates": [
+        "descriptor-contract-smoke",
+        "host-mmio",
+        "foundational-example-coverage"
+      ]
+    },
+    "i2c": {
+      "tier": "representative",
+      "required_gates": [
+        "descriptor-contract-smoke"
+      ]
+    },
+    "spi": {
+      "tier": "representative",
+      "required_gates": [
+        "descriptor-contract-smoke"
+      ]
+    },
+    "timer": {
+      "tier": "representative",
+      "required_gates": [
+        "descriptor-contract-smoke"
+      ]
+    },
+    "pwm": {
+      "tier": "representative",
+      "required_gates": [
+        "descriptor-contract-smoke",
+        "same70-zero-overhead"
+      ]
+    },
+    "rtc": {
+      "tier": "representative",
+      "required_gates": [
+        "descriptor-contract-smoke",
+        "host-mmio"
+      ]
+    },
+    "watchdog": {
+      "tier": "representative",
+      "required_gates": [
+        "descriptor-contract-smoke",
+        "host-mmio"
+      ]
+    },
+    "adc": {
+      "tier": "representative",
+      "required_gates": [
+        "descriptor-contract-smoke"
+      ]
+    },
+    "dac": {
+      "tier": "representative",
+      "required_gates": [
+        "descriptor-contract-smoke"
+      ]
+    },
+    "low-power": {
+      "tier": "representative",
+      "required_gates": [
+        "descriptor-contract-smoke",
+        "host-mmio"
+      ]
+    },
+    "can": {
+      "tier": "experimental",
+      "required_gates": [
+        "descriptor-contract-smoke"
+      ]
+    }
+  }
+}

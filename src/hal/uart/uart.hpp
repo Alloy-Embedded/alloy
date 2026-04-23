@@ -389,6 +389,24 @@ class port_handle {
         return channel.configure();
     }
 
+    template <typename DmaChannel>
+    [[nodiscard]] auto write_dma(const DmaChannel& channel, std::span<const std::byte> buffer) const
+        -> core::Result<void, core::ErrorCode> {
+        static_assert(DmaChannel::valid);
+        static_assert(DmaChannel::peripheral_id == peripheral_id);
+        static_assert(DmaChannel::signal_id == alloy::hal::dma::SignalId::signal_TX);
+        return detail::write_uart_dma(*this, channel, buffer);
+    }
+
+    template <typename DmaChannel>
+    [[nodiscard]] auto read_dma(const DmaChannel& channel, std::span<std::byte> buffer) const
+        -> core::Result<void, core::ErrorCode> {
+        static_assert(DmaChannel::valid);
+        static_assert(DmaChannel::peripheral_id == peripheral_id);
+        static_assert(DmaChannel::signal_id == alloy::hal::dma::SignalId::signal_RX);
+        return detail::read_uart_dma(*this, channel, buffer);
+    }
+
     [[nodiscard]] static constexpr auto tx_data_register_address() -> std::uintptr_t {
         if constexpr (tdr_reg.valid) {
             return tdr_reg.base_address + tdr_reg.offset_bytes;

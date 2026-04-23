@@ -150,6 +150,23 @@ For each change:
   - Testing performed
   - Breaking changes (if any)
 
+## Breaking Change Discipline
+
+If your change breaks any part of the active runtime story, the PR must carry migration guidance in the same change.
+
+Breaking-change triggers:
+
+- public HAL shape
+- build or board-selection model
+- runtime/device contract expectations
+- board migration path
+
+Required additions for a breaking change:
+
+- migration notes in docs, changelog, or release notes
+- at least one updated canonical example showing the new path
+- updated support or release docs if the support claim changed
+
 ## Testing
 
 Alloy uses **Catch2 v3** as the testing framework for C++ unit tests. All tests run automatically in CI on every push and pull request.

@@ -29,6 +29,31 @@ on:
   workflow_dispatch:
 
 jobs:
+  release-discipline:
+    name: Release Discipline
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Checkout alloy-devices
+      uses: actions/checkout@v4
+      with:
+        repository: Alloy-Embedded/alloy-devices
+        path: alloy-devices
+        ref: ${{ env.ALLOY_DEVICES_REF }}
+
+    - name: Check runtime device boundary
+      run: |
+        python3 scripts/check_runtime_device_boundary.py
+
+    - name: Check release discipline
+      run: |
+        python3 scripts/check_release_discipline.py
+
   # ==============================================================================
   # Host Tests (Unit, Integration, Regression)
   # ==============================================================================
@@ -394,19 +419,24 @@ jobs:
         cd build-validation
         cmake --build . --target validate-build-system
 
+    - name: Validate Downstream CMake Package Flow
+      run: |
+        python3 scripts/check_downstream_package.py --alloy-build-dir build-validation --downstream-build-dir build/downstream-package-smoke-ci
+
   # ==============================================================================
   # Summary Report
   # ==============================================================================
   summary:
     name: CI Summary
     runs-on: ubuntu-latest
-    needs: [host-tests, embedded-builds, descriptor-contract-smoke, renode-runtime-validation, build-system-validation]
+    needs: [release-discipline, host-tests, embedded-builds, descriptor-contract-smoke, renode-runtime-validation, build-system-validation]
     if: always()
 
     steps:
     - name: Check Results
       run: |
         echo "=== CI Pipeline Summary ==="
+        echo "Release Discipline: ${{ needs.release-discipline.result }}"
         echo "Host Tests: ${{ needs.host-tests.result }}"
         echo "Embedded Builds: ${{ needs.embedded-builds.result }}"
         echo "Descriptor Contract Smoke: ${{ needs.descriptor-contract-smoke.result }}"
@@ -415,6 +445,7 @@ jobs:
 
     - name: Fail if any job failed
       if: |
+        needs.release-discipline.result == 'failure' ||
         needs.host-tests.result == 'failure' ||
         needs.embedded-builds.result == 'failure' ||
         needs.descriptor-contract-smoke.result == 'failure' ||

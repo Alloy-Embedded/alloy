@@ -53,6 +53,7 @@ alloy_add_host_mmio_contract_test(test_host_mmio_stm32g0
     TEST_PREFIX
         "host_mmio.stm32g0::"
     SOURCES
+        ${CMAKE_SOURCE_DIR}/src/runtime/interrupt_bridge.cpp
         scenarios/test_stm32g0_bringup.cpp
     LABELS
         host-mmio

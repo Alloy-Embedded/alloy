@@ -11,12 +11,30 @@
 #include BOARD_DMA_HEADER
 #include BOARD_UART_HEADER
 
+#include <cstddef>
 #include <cstdint>
 
+#include "event.hpp"
 #include "examples/common/uart_console.hpp"
 #include "hal/systick.hpp"
+#include "time.hpp"
 
 namespace {
+
+using BoardTime = alloy::time::source<board::BoardSysTick>;
+using Duration = alloy::time::Duration;
+using Deadline = alloy::time::Deadline;
+using DebugUartTxCompletion =
+    alloy::dma_event::token<board::DebugUartTxDma::peripheral_id, board::DebugUartTxDma::signal_id>;
+
+constexpr auto kHeartbeatPeriod = Duration::from_millis(500);
+constexpr auto kTransferPeriod = Duration::from_seconds(2);
+constexpr auto kTransferTimeout = Duration::from_millis(50);
+constexpr char kDmaPayload[] = "dma completion observed\r\n";
+
+[[nodiscard]] auto dma_payload() -> std::span<const std::byte> {
+    return {reinterpret_cast<const std::byte*>(kDmaPayload), sizeof(kDmaPayload) - 1u};
+}
 
 [[noreturn]] void blink_error(std::uint32_t period_ms) {
     while (true) {
@@ -66,17 +84,52 @@ int main() {
         alloy::examples::uart_console::write_line(uart, "dma bindings configured");
     }
 
-    std::uint32_t loop_count = 0u;
+    auto next_tick = BoardTime::deadline_after(kHeartbeatPeriod);
+    auto next_transfer = BoardTime::deadline_after(kTransferPeriod);
+    std::uint32_t completion_count = 0u;
+
     while (true) {
+        BoardTime::sleep_until(next_tick);
+        next_tick = Deadline::at(next_tick.instant() + kHeartbeatPeriod);
         board::led::toggle();
+
+        if (!BoardTime::expired(next_transfer)) {
+            continue;
+        }
+
+        next_transfer = Deadline::at(next_transfer.instant() + kTransferPeriod);
+        DebugUartTxCompletion::reset();
+
+        if (const auto tx_result = uart.write_dma(tx_dma, dma_payload()); tx_result.is_err()) {
+#ifdef BOARD_UART_HEADER
+            if (uart_ready) {
+                alloy::examples::uart_console::write_line(uart, "dma transfer start failed");
+            }
+#endif
+            blink_error(100);
+        }
+
+        if (const auto completion = DebugUartTxCompletion::wait_for<BoardTime>(kTransferTimeout);
+            completion.is_err()) {
+#ifdef BOARD_UART_HEADER
+            if (uart_ready) {
+                alloy::examples::uart_console::write_line(uart, "dma completion timeout");
+            }
+#endif
+            blink_error(150);
+        }
+
+        ++completion_count;
+
 #ifdef BOARD_UART_HEADER
         if (uart_ready) {
-            alloy::examples::uart_console::write_text(uart, "dma loop=");
-            alloy::examples::uart_console::write_unsigned(uart, loop_count);
+            alloy::examples::uart_console::write_text(uart, "dma completion count=");
+            alloy::examples::uart_console::write_unsigned(uart, completion_count);
+            alloy::examples::uart_console::write_text(uart, " uptime_ms=");
+            alloy::examples::uart_console::write_unsigned(
+                uart, static_cast<std::uint32_t>(BoardTime::uptime().as_millis()));
             alloy::examples::uart_console::write_text(uart, "\r\n");
         }
 #endif
-        alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(500);
-        ++loop_count;
     }
 }

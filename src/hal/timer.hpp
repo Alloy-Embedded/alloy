@@ -75,6 +75,17 @@ class handle {
         static_assert(valid, "Requested timer is not published for the selected device.");
 
         if constexpr (semantic_traits::kPeriodField.valid) {
+            constexpr bool kDirectRegisterWrite = semantic_traits::kPeriodField.field_id ==
+                                                      device::FieldId::none &&
+                                                  semantic_traits::kPeriodField.bit_offset == 0u;
+            if constexpr (kDirectRegisterWrite) {
+                const auto bits = detail::runtime::field_bits(semantic_traits::kPeriodField, period);
+                if (bits.is_err()) {
+                    return core::Err(core::ErrorCode{bits.unwrap_err()});
+                }
+                return detail::runtime::write_register(semantic_traits::kPeriodField.reg,
+                                                      bits.unwrap());
+            }
             return detail::runtime::modify_field(semantic_traits::kPeriodField, period);
         } else {
             return core::Err(core::ErrorCode::NotSupported);

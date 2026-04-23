@@ -1,7 +1,9 @@
 #pragma once
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <type_traits>
 #include <utility>
 
@@ -60,6 +62,10 @@ template <typename SchemaId>
             return 2u;
     }
     return 0u;
+}
+
+[[nodiscard]] constexpr auto data_width_bytes(DataWidth data_width) -> std::size_t {
+    return static_cast<std::size_t>(data_width);
 }
 
 template <typename ChannelHandle>
@@ -309,6 +315,250 @@ inline auto configure_microchip_xdmac(const ChannelHandle& handle, std::size_t c
             return core::Err(core::ErrorCode{cc_value.unwrap_err()});
         }
         return rt::write_register(cc_reg, cc_value.unwrap());
+    }
+}
+
+template <typename ChannelHandle>
+[[nodiscard]] inline auto resolve_transfer_count(const ChannelHandle& handle,
+                                                 std::uintptr_t peripheral_address,
+                                                 std::uintptr_t memory_address,
+                                                 std::size_t size_bytes)
+    -> core::Result<std::uint32_t, core::ErrorCode> {
+    if (size_bytes == 0u) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    }
+
+    const auto unit_size = data_width_bytes(handle.config().data_width);
+    if ((size_bytes % unit_size) != 0u || (peripheral_address % unit_size) != 0u ||
+        (memory_address % unit_size) != 0u) {
+        return core::Err(core::ErrorCode::DmaAlignmentError);
+    }
+
+    const auto transfer_count = size_bytes / unit_size;
+    if (transfer_count > std::numeric_limits<std::uint16_t>::max()) {
+        return core::Err(core::ErrorCode::DmaTransferError);
+    }
+
+    return core::Ok(static_cast<std::uint32_t>(transfer_count));
+}
+
+[[nodiscard]] constexpr auto st_dma_channel_clear_mask(std::size_t channel_index) -> std::uint32_t {
+    return static_cast<std::uint32_t>(0x0Fu << (channel_index * 4u));
+}
+
+[[nodiscard]] constexpr auto st_dma_stream_clear_mask(std::size_t channel_index) -> std::uint32_t {
+    constexpr auto kMasks = std::uint32_t{0x3Du};
+    constexpr auto kShifts = std::array<std::uint32_t, 4u>{0u, 6u, 16u, 22u};
+    return kMasks << kShifts[channel_index % 4u];
+}
+
+template <typename ChannelHandle>
+inline auto start_st_dma_channel_transfer(const ChannelHandle& handle, std::size_t channel_index,
+                                          std::uintptr_t peripheral_address,
+                                          std::uintptr_t memory_address, std::size_t size_bytes)
+    -> core::Result<void, core::ErrorCode> {
+    const auto transfer_count =
+        resolve_transfer_count(handle, peripheral_address, memory_address, size_bytes);
+    if (transfer_count.is_err()) {
+        return core::Err(core::ErrorCode{transfer_count.unwrap_err()});
+    }
+
+    const auto controller_base = ChannelHandle::controller_base_address;
+    const auto channel_offset = 0x08u + (static_cast<std::uint32_t>(channel_index) * 0x14u);
+    const auto cr = rt::RegisterRef{
+        .register_id = device::runtime::RegisterId::none,
+        .base_address = controller_base,
+        .offset_bytes = channel_offset,
+        .valid = true,
+    };
+    const auto cndtr = rt::RegisterRef{
+        .register_id = device::runtime::RegisterId::none,
+        .base_address = controller_base,
+        .offset_bytes = channel_offset + 0x04u,
+        .valid = true,
+    };
+    const auto cpar = rt::RegisterRef{
+        .register_id = device::runtime::RegisterId::none,
+        .base_address = controller_base,
+        .offset_bytes = channel_offset + 0x08u,
+        .valid = true,
+    };
+    const auto cmar = rt::RegisterRef{
+        .register_id = device::runtime::RegisterId::none,
+        .base_address = controller_base,
+        .offset_bytes = channel_offset + 0x0Cu,
+        .valid = true,
+    };
+    const auto ifcr = rt::RegisterRef{
+        .register_id = device::runtime::RegisterId::none,
+        .base_address = controller_base,
+        .offset_bytes = 0x04u,
+        .valid = true,
+    };
+
+    const auto current_cr = rt::read_register(cr);
+    if (current_cr.is_err()) {
+        return core::Err(core::ErrorCode{current_cr.unwrap_err()});
+    }
+    if ((current_cr.unwrap() & 0x1u) != 0u) {
+        return core::Err(core::ErrorCode::DmaChannelBusy);
+    }
+
+    if (const auto disable_result = rt::write_register(cr, 0u); disable_result.is_err()) {
+        return disable_result;
+    }
+    if (const auto route_result = configure_st_dmamux_route<ChannelHandle>(channel_index);
+        route_result.is_err()) {
+        return route_result;
+    }
+    if (const auto clear_result = rt::write_register(ifcr, st_dma_channel_clear_mask(channel_index));
+        clear_result.is_err()) {
+        return clear_result;
+    }
+    if (const auto peripheral_result =
+            rt::write_register(cpar, static_cast<std::uint32_t>(peripheral_address));
+        peripheral_result.is_err()) {
+        return peripheral_result;
+    }
+    if (const auto memory_result =
+            rt::write_register(cmar, static_cast<std::uint32_t>(memory_address));
+        memory_result.is_err()) {
+        return memory_result;
+    }
+    if (const auto count_result = rt::write_register(cndtr, transfer_count.unwrap());
+        count_result.is_err()) {
+        return count_result;
+    }
+
+    auto cr_value = st_channel_cr_value(handle.config());
+    cr_value |= (1u << 1u);  // TCIE
+    cr_value |= (1u << 0u);  // EN
+    return rt::write_register(cr, cr_value);
+}
+
+template <typename ChannelHandle>
+inline auto start_st_dma_stream_transfer(const ChannelHandle& handle, std::size_t channel_index,
+                                         std::uintptr_t peripheral_address,
+                                         std::uintptr_t memory_address, std::size_t size_bytes)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (ChannelHandle::channel_selector < 0) {
+        return core::Err(core::ErrorCode::NotSupported);
+    } else {
+        const auto transfer_count =
+            resolve_transfer_count(handle, peripheral_address, memory_address, size_bytes);
+        if (transfer_count.is_err()) {
+            return core::Err(core::ErrorCode{transfer_count.unwrap_err()});
+        }
+
+        const auto controller_base = ChannelHandle::controller_base_address;
+        const auto stream_offset = 0x10u + (static_cast<std::uint32_t>(channel_index) * 0x18u);
+        const auto cr = rt::RegisterRef{
+            .register_id = device::runtime::RegisterId::none,
+            .base_address = controller_base,
+            .offset_bytes = stream_offset,
+            .valid = true,
+        };
+        const auto ndtr = rt::RegisterRef{
+            .register_id = device::runtime::RegisterId::none,
+            .base_address = controller_base,
+            .offset_bytes = stream_offset + 0x04u,
+            .valid = true,
+        };
+        const auto par = rt::RegisterRef{
+            .register_id = device::runtime::RegisterId::none,
+            .base_address = controller_base,
+            .offset_bytes = stream_offset + 0x08u,
+            .valid = true,
+        };
+        const auto m0ar = rt::RegisterRef{
+            .register_id = device::runtime::RegisterId::none,
+            .base_address = controller_base,
+            .offset_bytes = stream_offset + 0x0Cu,
+            .valid = true,
+        };
+        const auto fcr = rt::RegisterRef{
+            .register_id = device::runtime::RegisterId::none,
+            .base_address = controller_base,
+            .offset_bytes = stream_offset + 0x14u,
+            .valid = true,
+        };
+        const auto ifcr = rt::RegisterRef{
+            .register_id = device::runtime::RegisterId::none,
+            .base_address = controller_base,
+            .offset_bytes = channel_index < 4u ? 0x08u : 0x0Cu,
+            .valid = true,
+        };
+
+        const auto current_cr = rt::read_register(cr);
+        if (current_cr.is_err()) {
+            return core::Err(core::ErrorCode{current_cr.unwrap_err()});
+        }
+        if ((current_cr.unwrap() & 0x1u) != 0u) {
+            return core::Err(core::ErrorCode::DmaChannelBusy);
+        }
+
+        if (const auto disable_result = rt::write_register(cr, 0u); disable_result.is_err()) {
+            return disable_result;
+        }
+        if (const auto fifo_result = rt::write_register(fcr, 0x21u); fifo_result.is_err()) {
+            return fifo_result;
+        }
+        if (const auto clear_result = rt::write_register(ifcr, st_dma_stream_clear_mask(channel_index));
+            clear_result.is_err()) {
+            return clear_result;
+        }
+        if (const auto peripheral_result =
+                rt::write_register(par, static_cast<std::uint32_t>(peripheral_address));
+            peripheral_result.is_err()) {
+            return peripheral_result;
+        }
+        if (const auto memory_result =
+                rt::write_register(m0ar, static_cast<std::uint32_t>(memory_address));
+            memory_result.is_err()) {
+            return memory_result;
+        }
+        if (const auto count_result = rt::write_register(ndtr, transfer_count.unwrap());
+            count_result.is_err()) {
+            return count_result;
+        }
+
+        auto cr_value = st_stream_cr_value(handle.config(), ChannelHandle::channel_selector);
+        cr_value |= (1u << 4u);  // TCIE
+        cr_value |= (1u << 0u);  // EN
+        return rt::write_register(cr, cr_value);
+    }
+}
+
+template <typename ChannelHandle>
+inline auto start_transfer(const ChannelHandle& handle, std::uintptr_t peripheral_address,
+                           std::uintptr_t memory_address, std::size_t size_bytes)
+    -> core::Result<void, core::ErrorCode> {
+    if constexpr (!ChannelHandle::valid) {
+        return core::Err(core::ErrorCode::InvalidParameter);
+    } else {
+        const auto dependency_result = enable_runtime_dependencies<ChannelHandle>();
+        if (dependency_result.is_err()) {
+            return dependency_result;
+        }
+
+        const auto resolved_channel_index = resolve_channel_index(handle);
+        if (resolved_channel_index.is_err()) {
+            return core::Err(core::ErrorCode{resolved_channel_index.unwrap_err()});
+        }
+
+        if constexpr (ChannelHandle::schema == DmaSchema::st_dma) {
+            if constexpr (ChannelHandle::channel_selector >= 0) {
+                return start_st_dma_stream_transfer(handle, resolved_channel_index.unwrap(),
+                                                    peripheral_address, memory_address,
+                                                    size_bytes);
+            } else {
+                return start_st_dma_channel_transfer(handle, resolved_channel_index.unwrap(),
+                                                     peripheral_address, memory_address,
+                                                     size_bytes);
+            }
+        }
+
+        return core::Err(core::ErrorCode::NotSupported);
     }
 }
 

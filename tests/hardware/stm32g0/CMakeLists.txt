@@ -3,6 +3,7 @@ if(ALLOY_BOARD STREQUAL "nucleo_g071rb" OR ALLOY_BOARD STREQUAL "nucleo_g0b1re")
 
     set(ALLOY_STM32G0_HARDWARE_TARGETS
         blink
+        time_probe
         uart_logger
         watchdog_probe
         analog_probe

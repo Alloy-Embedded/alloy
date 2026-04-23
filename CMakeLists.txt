@@ -51,6 +51,9 @@ include(flash_targets)
 include(memory_analysis)
 include(board_manifest)
 include(alloy_devices)
+include(CMakePackageConfigHelpers)
+
+set(ALLOY_TARGET_COMPILE_DEFINITIONS "")
 
 # Resolve board metadata early so the descriptor-driven path does not depend on
 # the legacy board/platform switch blocks below.
@@ -192,6 +195,7 @@ if(DEFINED BOARD_HEADER_PATH)
     # Define BOARD_HEADER as a macro that expands to the header path
     # Use angle brackets for include: #include BOARD_HEADER expands to #include <boards/...>
     add_compile_definitions(BOARD_HEADER=<${BOARD_HEADER_PATH}>)
+    list(APPEND ALLOY_TARGET_COMPILE_DEFINITIONS BOARD_HEADER=<${BOARD_HEADER_PATH}>)
     message(STATUS "  Board Header: ${BOARD_HEADER_PATH}")
 
     foreach(_board_aux_header IN ITEMS uart i2c spi dma analog watchdog)
@@ -199,6 +203,7 @@ if(DEFINED BOARD_HEADER_PATH)
         if(EXISTS "${CMAKE_SOURCE_DIR}/${_board_aux_header_path}")
             string(TOUPPER "${_board_aux_header}" _board_aux_header_define)
             add_compile_definitions(BOARD_${_board_aux_header_define}_HEADER=<${_board_aux_header_path}>)
+            list(APPEND ALLOY_TARGET_COMPILE_DEFINITIONS BOARD_${_board_aux_header_define}_HEADER=<${_board_aux_header_path}>)
             message(STATUS "  Board ${_board_aux_header} Header: ${_board_aux_header_path}")
         endif()
     endforeach()
@@ -206,6 +211,7 @@ if(DEFINED BOARD_HEADER_PATH)
     # Define ALLOY_BOARD_* for conditional compilation in examples
     string(TOUPPER "${ALLOY_BOARD}" ALLOY_BOARD_UPPER)
     add_compile_definitions(ALLOY_BOARD_${ALLOY_BOARD_UPPER})
+    list(APPEND ALLOY_TARGET_COMPILE_DEFINITIONS ALLOY_BOARD_${ALLOY_BOARD_UPPER})
     message(STATUS "  Board Define: ALLOY_BOARD_${ALLOY_BOARD_UPPER}")
 endif()
 
@@ -309,9 +315,6 @@ set(ALLOY_CORE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/error_code.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/memory.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/result.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scoped_device.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scoped_i2c.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scoped_spi.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/types.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/units.hpp
 )
@@ -321,6 +324,7 @@ if(ALLOY_PLATFORM_SOURCES OR ALLOY_ACTIVE_STARTUP_SOURCE OR ALLOY_ACTIVE_STARTUP
     # Platform has .cpp files - create STATIC library
     # Include platform sources + startup code (if board defines one)
     set(HAL_SOURCES ${ALLOY_PLATFORM_SOURCES} ${ALLOY_CORE_SOURCES})
+    list(APPEND HAL_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/runtime/interrupt_bridge.cpp)
     if(ALLOY_ACTIVE_STARTUP_SOURCE AND EXISTS "${ALLOY_ACTIVE_STARTUP_SOURCE}")
         list(APPEND HAL_SOURCES ${ALLOY_ACTIVE_STARTUP_SOURCE})
     endif()
@@ -343,21 +347,32 @@ if(ALLOY_PLATFORM_SOURCES OR ALLOY_ACTIVE_STARTUP_SOURCE OR ALLOY_ACTIVE_STARTUP
     # STATIC library - use PUBLIC
     target_include_directories(alloy-hal
         PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}
             ${CMAKE_CURRENT_SOURCE_DIR}/src
             ${ALLOY_PLATFORM_DIR}
             ${ALLOY_DEVICE_INCLUDE_DIRS}
     )
     target_compile_features(alloy-hal PUBLIC cxx_std_23)
+    if(ALLOY_TARGET_COMPILE_DEFINITIONS)
+        target_compile_definitions(alloy-hal PUBLIC ${ALLOY_TARGET_COMPILE_DEFINITIONS})
+    endif()
 else()
     # INTERFACE library - use INTERFACE
     target_include_directories(alloy-hal
         INTERFACE
+            ${CMAKE_CURRENT_SOURCE_DIR}
             ${CMAKE_CURRENT_SOURCE_DIR}/src
             ${ALLOY_PLATFORM_DIR}
             ${ALLOY_DEVICE_INCLUDE_DIRS}
     )
     target_compile_features(alloy-hal INTERFACE cxx_std_23)
+    if(ALLOY_TARGET_COMPILE_DEFINITIONS)
+        target_compile_definitions(alloy-hal INTERFACE ${ALLOY_TARGET_COMPILE_DEFINITIONS})
+    endif()
 endif()
+
+add_library(Alloy::hal ALIAS alloy-hal)
+set_target_properties(alloy-hal PROPERTIES EXPORT_NAME hal)
 
 # Export HAL library for use by examples and tests
 set(ALLOY_HAL_LIBRARY alloy-hal CACHE INTERNAL "Alloy HAL library target")
@@ -390,6 +405,7 @@ endif()
 # Universal blink example - demonstrates board abstraction power
 if(ALLOY_BOARD_MANIFEST_FOUND AND NOT ALLOY_BOARD STREQUAL "host")
     add_subdirectory(examples/blink)
+    add_subdirectory(examples/time_probe)
 endif()
 
 if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_ADC_SEMANTICS_AVAILABLE)
@@ -446,6 +462,40 @@ endif()
 
 # Export compile commands for IDEs
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# ==============================================================================
+# Build-Tree CMake Package Export
+# ============================================================================== 
+
+set(ALLOY_PACKAGE_CONFIG_DIR "${CMAKE_BINARY_DIR}/generated/cmake")
+file(MAKE_DIRECTORY "${ALLOY_PACKAGE_CONFIG_DIR}")
+
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates/AlloyConfig.cmake.in"
+    "${ALLOY_PACKAGE_CONFIG_DIR}/AlloyConfig.cmake"
+    INSTALL_DESTINATION "${ALLOY_PACKAGE_CONFIG_DIR}"
+    NO_SET_AND_CHECK_MACRO
+    NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
+
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates/AlloyHelpers.cmake.in"
+    "${ALLOY_PACKAGE_CONFIG_DIR}/AlloyHelpers.cmake"
+    @ONLY
+)
+
+write_basic_package_version_file(
+    "${ALLOY_PACKAGE_CONFIG_DIR}/AlloyConfigVersion.cmake"
+    VERSION "${PROJECT_VERSION}"
+    COMPATIBILITY SameMajorVersion
+)
+
+export(TARGETS alloy-hal
+    NAMESPACE Alloy::
+    FILE "${ALLOY_PACKAGE_CONFIG_DIR}/AlloyTargets.cmake"
+)
+
+message(STATUS "Alloy build-tree package config: ${ALLOY_PACKAGE_CONFIG_DIR}")
 
 # ==============================================================================
 # Build System Validation Targets

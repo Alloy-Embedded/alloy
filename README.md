@@ -17,9 +17,25 @@ Current direction:
 
 See:
 
+- [Quickstart](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/QUICKSTART.md)
+- [Board Tooling](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/BOARD_TOOLING.md)
+- [Downstream CMake Consumption](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/CMAKE_CONSUMPTION.md)
 - [Runtime Device Boundary](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RUNTIME_DEVICE_BOUNDARY.md)
+- [Runtime Release Discipline](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RELEASE_DISCIPLINE.md)
+- [Support Matrix](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/SUPPORT_MATRIX.md)
 - [Code Generation Contract](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/CODE_GENERATION.md)
 - [Architecture](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/ARCHITECTURE.md)
+
+## Quickstart
+
+Fastest supported path to `blink` on a foundational board:
+
+```bash
+python3 scripts/alloyctl.py flash --board nucleo_g071rb --target blink --build-first
+python3 scripts/alloyctl.py monitor --board nucleo_g071rb
+```
+
+The supported board-oriented flow is documented in [docs/QUICKSTART.md](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/QUICKSTART.md) and [docs/BOARD_TOOLING.md](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/BOARD_TOOLING.md).
 
 ## Validated Targets
 
@@ -32,9 +48,12 @@ Foundational runtime path:
 
 Additional board packages exist in [boards](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/boards), but the boards above are the ones used as the active runtime validation set.
 
+Release support tiers and peripheral-class status now live in [docs/SUPPORT_MATRIX.md](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/SUPPORT_MATRIX.md).
+
 ## Current Examples
 
 - `blink`
+- `time_probe`
 - `uart_logger`
 - `i2c_scan`
 - `spi_probe`
@@ -45,6 +64,16 @@ Additional board packages exist in [boards](/Users/lgili/Documents/01%20-%20Code
 - `rtos/simple_tasks`
 
 Examples live under [examples](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/examples).
+
+## Blocking, Event, Async
+
+`alloy` keeps one primary HAL shape in `src/hal/*`.
+
+- blocking code calls the HAL directly
+- event-driven code uses the same HAL operation and waits on typed runtime completion tokens
+- async integration is optional and lives in separate adapters under `src/async.hpp`
+
+See [Runtime Async Model](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RUNTIME_ASYNC_MODEL.md) and [examples](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/examples/README.md).
 
 ## Build
 
@@ -136,6 +165,7 @@ Import happens through:
 Core checks used by the rebuilt runtime:
 
 - `python3 scripts/check_runtime_device_boundary.py`
+- `python3 scripts/check_release_discipline.py`
 - host-MMIO suites
 - compile smoke through `alloy-device-contract-smoke`
 - selected board/example builds
@@ -145,11 +175,21 @@ Core checks used by the rebuilt runtime:
 ## Documentation
 
 - [Architecture](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/ARCHITECTURE.md)
+- [Quickstart](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/QUICKSTART.md)
+- [Board Tooling](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/BOARD_TOOLING.md)
+- [Downstream CMake Consumption](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/CMAKE_CONSUMPTION.md)
+- [Runtime Async Model](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RUNTIME_ASYNC_MODEL.md)
+- [Runtime Release Discipline](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RELEASE_DISCIPLINE.md)
+- [Support Matrix](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/SUPPORT_MATRIX.md)
+- [Release Checklist](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RELEASE_CHECKLIST.md)
 - [Runtime Device Boundary](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RUNTIME_DEVICE_BOUNDARY.md)
 - [Runtime Cleanup Audit](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RUNTIME_CLEANUP_AUDIT.md)
 - [Code Generation Contract](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/CODE_GENERATION.md)
 - [Porting a New Board](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/PORTING_NEW_BOARD.md)
 - [Porting a New Platform](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/PORTING_NEW_PLATFORM.md)
+- [Nucleo-G071RB board page](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/boards/nucleo_g071rb/README.md)
+- [Nucleo-F401RE board page](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/boards/nucleo_f401re/README.md)
+- [SAME70 Xplained board page](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/boards/same70_xplained/README.md)
 
 ## Status
 

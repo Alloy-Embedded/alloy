@@ -99,6 +99,17 @@ class handle {
         static_assert(valid, "Requested PWM channel is not published for the selected device.");
 
         if constexpr (channel_traits::kPeriodField.valid) {
+            constexpr bool kDirectRegisterWrite = channel_traits::kPeriodField.field_id ==
+                                                      device::FieldId::none &&
+                                                  channel_traits::kPeriodField.bit_offset == 0u;
+            if constexpr (kDirectRegisterWrite) {
+                const auto bits = detail::runtime::field_bits(channel_traits::kPeriodField, period);
+                if (bits.is_err()) {
+                    return core::Err(core::ErrorCode{bits.unwrap_err()});
+                }
+                return detail::runtime::write_register(channel_traits::kPeriodField.reg,
+                                                      bits.unwrap());
+            }
             return detail::runtime::modify_field(channel_traits::kPeriodField, period);
         } else {
             return core::Err(core::ErrorCode::NotSupported);
@@ -110,6 +121,17 @@ class handle {
         static_assert(valid, "Requested PWM channel is not published for the selected device.");
 
         if constexpr (channel_traits::kDutyField.valid) {
+            constexpr bool kDirectRegisterWrite = channel_traits::kDutyField.field_id ==
+                                                      device::FieldId::none &&
+                                                  channel_traits::kDutyField.bit_offset == 0u;
+            if constexpr (kDirectRegisterWrite) {
+                const auto bits = detail::runtime::field_bits(channel_traits::kDutyField, duty);
+                if (bits.is_err()) {
+                    return core::Err(core::ErrorCode{bits.unwrap_err()});
+                }
+                return detail::runtime::write_register(channel_traits::kDutyField.reg,
+                                                      bits.unwrap());
+            }
             return detail::runtime::modify_field(channel_traits::kDutyField, duty);
         } else {
             return core::Err(core::ErrorCode::NotSupported);

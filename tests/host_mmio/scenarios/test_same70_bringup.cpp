@@ -16,6 +16,7 @@
 #include "hal/timer.hpp"
 #include "hal/uart/detail/backend.hpp"
 #include "hal/types.hpp"
+#include "low_power.hpp"
 
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -51,12 +52,31 @@ constexpr auto kRtcBase = std::uintptr_t{0x400E1860u};
 constexpr auto kXdmacBase = std::uintptr_t{0x40078000u};
 constexpr auto kTc0Base = std::uintptr_t{0x4000C000u};
 constexpr auto kPwm0Base = std::uintptr_t{0x40020000u};
+constexpr auto kScbScrAddress = std::uintptr_t{0xE000ED10u};
+constexpr auto kScbScrSleepdeepMask = std::uint32_t{1u << 2u};
 constexpr auto kLedLine = std::uint16_t{8u};
 constexpr auto kTxLine = std::uint16_t{4u};
 constexpr auto kRxLine = std::uint16_t{21u};
 constexpr auto kSame70PioSelectorA = std::uint32_t{0u};
 constexpr auto kSame70PioSelectorD = std::uint32_t{3u};
 constexpr auto kWatchdogGuardValue = std::uint32_t{0x0fffu};
+
+[[nodiscard]] constexpr auto same70_usart_cd(std::uint32_t peripheral_clock_hz,
+                                             std::uint32_t baudrate) -> std::uint32_t {
+    return (peripheral_clock_hz + ((16u * baudrate) / 2u)) / (16u * baudrate);
+}
+
+[[nodiscard]] constexpr auto same70_spi_scbr(std::uint32_t peripheral_clock_hz,
+                                             std::uint32_t target_clock_hz) -> std::uint32_t {
+    auto divider = (peripheral_clock_hz + target_clock_hz - 1u) / target_clock_hz;
+    if (divider == 0u) {
+        divider = 1u;
+    }
+    if (divider > 255u) {
+        divider = 255u;
+    }
+    return divider;
+}
 
 [[nodiscard]] constexpr auto register_ref(std::uintptr_t base_address, std::uint32_t offset_bytes)
     -> rt::RegisterRef {
@@ -183,6 +203,43 @@ class same70_debug_uart_handle {
     alloy::hal::UartConfig config_{};
 };
 
+struct low_power_test_state {
+    mmio_space* mmio = nullptr;
+    bool before_called = false;
+    bool after_called = false;
+    bool wait_called = false;
+    alloy::device::low_power::ModeId before_mode = alloy::device::low_power::ModeId::none;
+    alloy::device::low_power::ModeId after_mode = alloy::device::low_power::ModeId::none;
+    std::uint32_t scr_during_wait = 0u;
+};
+
+[[nodiscard]] auto active_low_power_test_state() -> low_power_test_state*& {
+    static auto* state = static_cast<low_power_test_state*>(nullptr);
+    return state;
+}
+
+void low_power_before_entry(alloy::device::low_power::ModeId mode) {
+    auto* state = active_low_power_test_state();
+    REQUIRE(state != nullptr);
+    state->before_called = true;
+    state->before_mode = mode;
+}
+
+void low_power_after_wakeup(alloy::device::low_power::ModeId mode) {
+    auto* state = active_low_power_test_state();
+    REQUIRE(state != nullptr);
+    state->after_called = true;
+    state->after_mode = mode;
+}
+
+void low_power_wait_hook() {
+    auto* state = active_low_power_test_state();
+    REQUIRE(state != nullptr);
+    REQUIRE(state->mmio != nullptr);
+    state->wait_called = true;
+    state->scr_during_wait = state->mmio->peek(kScbScrAddress);
+}
+
 void disable_same70_watchdog(const rt::RegisterRef& reg, const rt::FieldRef& disable_field,
                              const rt::FieldRef& guard_field) {
     const auto disable_bits = rt::field_bits(disable_field, 1u).unwrap();
@@ -275,12 +332,12 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
 
     same70_debug_uart_handle uart_handle{
         alloy::hal::UartConfig{
-            .baudrate = alloy::hal::Baudrate::e57600,
+            .baudrate = board::kDebugUartBaudrate,
             .data_bits = alloy::hal::DataBits::Eight,
             .parity = alloy::hal::Parity::None,
             .stop_bits = alloy::hal::StopBits::One,
             .flow_control = alloy::hal::FlowControl::None,
-            .peripheral_clock_hz = 12'000'000u,
+            .peripheral_clock_hz = board::kDebugUartPeripheralClockHz,
         },
     };
     const auto uart_result = uart_detail::configure_uart(uart_handle);
@@ -294,7 +351,7 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
     REQUIRE(mmio.peek(kPioABase + 0x70u) == 0x0000'0000u);
     REQUIRE(mmio.peek(kPioABase + 0x74u) == 0x0000'0000u);
     REQUIRE(mmio.peek(kPioBBase + 0x04u) == (1u << kTxLine));
-    REQUIRE(mmio.peek(kPioBBase + 0x70u) == 0x0000'0000u);
+    REQUIRE(mmio.peek(kPioBBase + 0x70u) == (1u << kTxLine));
     REQUIRE(mmio.peek(kPioBBase + 0x74u) == (1u << kTxLine));
     REQUIRE(mmio.peek(kPioCBase + 0x00u) == (1u << kLedLine));
     REQUIRE(mmio.peek(kPioCBase + 0x54u) == (1u << kLedLine));
@@ -304,7 +361,9 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
     REQUIRE(mmio.peek(kPioCBase + 0x10u) == (1u << kLedLine));
     REQUIRE(mmio.peek(kUsart1Base + 0x00u) == 0x0000'0050u);
     REQUIRE(mmio.peek(kUsart1Base + 0x04u) == 0x0000'08c0u);
-    REQUIRE(mmio.peek(kUsart1Base + 0x20u) == 13u);
+    REQUIRE(mmio.peek(kUsart1Base + 0x20u) ==
+            same70_usart_cd(board::kDebugUartPeripheralClockHz,
+                            static_cast<std::uint32_t>(board::kDebugUartBaudrate)));
     REQUIRE(mmio.peek(kUsart1Base + 0x1cu) == 0x41u);
 
     const auto expected_prefix = std::array{
@@ -326,7 +385,11 @@ TEST_CASE("host mmio covers SAME70-style gpio and uart initialization with produ
         access{.kind = access_kind::write, .address = kPioCBase + 0x10u, .value = 1u << kLedLine, .mask = 0u},
         access{.kind = access_kind::write, .address = kUsart1Base + 0x00u, .value = 0x0000'01acu, .mask = 0u},
         access{.kind = access_kind::write, .address = kUsart1Base + 0x04u, .value = 0x0000'08c0u, .mask = 0u},
-        access{.kind = access_kind::write, .address = kUsart1Base + 0x20u, .value = 13u, .mask = 0u},
+        access{.kind = access_kind::write,
+               .address = kUsart1Base + 0x20u,
+               .value = same70_usart_cd(board::kDebugUartPeripheralClockHz,
+                                        static_cast<std::uint32_t>(board::kDebugUartBaudrate)),
+               .mask = 0u},
         access{.kind = access_kind::write, .address = kUsart1Base + 0x00u, .value = 0x0000'0050u, .mask = 0u},
     };
 
@@ -351,12 +414,12 @@ TEST_CASE("host mmio enables SAME70 board debug usart clock before configure",
     runtime_mmio_scope scope{mmio};
 
     auto uart = board::make_debug_uart({
-        .baudrate = alloy::hal::Baudrate::e57600,
+        .baudrate = board::kDebugUartBaudrate,
         .data_bits = alloy::hal::DataBits::Eight,
         .parity = alloy::hal::Parity::None,
         .stop_bits = alloy::hal::StopBits::One,
         .flow_control = alloy::hal::FlowControl::None,
-        .peripheral_clock_hz = 12'000'000u,
+        .peripheral_clock_hz = board::kDebugUartPeripheralClockHz,
     });
 
     mmio.preload(kUsart1Base + 0x14u, 0x0000'0002u);
@@ -370,7 +433,9 @@ TEST_CASE("host mmio enables SAME70 board debug usart clock before configure",
     REQUIRE(mmio.peek(kPioBBase + 0x74u) == (1u << kTxLine));
     REQUIRE(mmio.peek(kUsart1Base + 0x00u) == 0x0000'0050u);
     REQUIRE(mmio.peek(kUsart1Base + 0x04u) == 0x0000'08c0u);
-    REQUIRE(mmio.peek(kUsart1Base + 0x20u) == 13u);
+    REQUIRE(mmio.peek(kUsart1Base + 0x20u) ==
+            same70_usart_cd(board::kDebugUartPeripheralClockHz,
+                            static_cast<std::uint32_t>(board::kDebugUartBaudrate)));
     REQUIRE(mmio.peek(kUsart1Base + 0x1cu) == 0x41u);
 }
 
@@ -455,8 +520,8 @@ TEST_CASE("host mmio covers typed SAME70 uart dma configuration",
 
     REQUIRE(mmio.peek(kPmcPcer1) == rt::field_mask(rt::field_ref<FieldId::field_pmc_pcer1_pid58>()));
     REQUIRE(mmio.peek(kXdmacBase + 0x20u) == 0x0000'0002u);
-    REQUIRE(mmio.peek(kXdmacBase + 0x78u) == 0x0701'0011u);
-    REQUIRE(mmio.peek(kXdmacBase + 0xB8u) == 0x0804'0001u);
+    REQUIRE(mmio.peek(kXdmacBase + 0x78u) == 0x0901'0011u);
+    REQUIRE(mmio.peek(kXdmacBase + 0xB8u) == 0x0A04'0001u);
 }
 
 TEST_CASE("host mmio covers typed SAME70 spi shared-bus reconfiguration",
@@ -484,7 +549,8 @@ TEST_CASE("host mmio covers typed SAME70 spi shared-bus reconfiguration",
         std::pair{SpiHandle::cpol_field, 0u},
         std::pair{SpiHandle::ncpha_field, 1u},
         std::pair{SpiHandle::bits_field, 0u},
-        std::pair{SpiHandle::scbr_field, 12u},
+        std::pair{SpiHandle::scbr_field,
+                  same70_spi_scbr(board::kBoardSpiPeripheralClockHz, 1'000'000u)},
         std::pair{SpiHandle::dlybs_field, 0u},
         std::pair{SpiHandle::dlybct_field, 0u},
     });
@@ -492,7 +558,8 @@ TEST_CASE("host mmio covers typed SAME70 spi shared-bus reconfiguration",
         std::pair{SpiHandle::cpol_field, 1u},
         std::pair{SpiHandle::ncpha_field, 0u},
         std::pair{SpiHandle::bits_field, 0u},
-        std::pair{SpiHandle::scbr_field, 24u},
+        std::pair{SpiHandle::scbr_field,
+                  same70_spi_scbr(board::kBoardSpiPeripheralClockHz, 500'000u)},
         std::pair{SpiHandle::dlybs_field, 0u},
         std::pair{SpiHandle::dlybct_field, 0u},
     });
@@ -500,6 +567,48 @@ TEST_CASE("host mmio covers typed SAME70 spi shared-bus reconfiguration",
     REQUIRE(bus_csr == expected_bus_csr);
     REQUIRE(slow_csr == expected_slow_csr);
     REQUIRE(bus_csr != slow_csr);
+}
+
+TEST_CASE("host mmio exposes SAME70 low-power coordination hooks and wake-capable sources",
+          "[host-mmio][bring-up][same70][low-power]") {
+    trace_log trace;
+    mmio_space mmio{trace};
+    runtime_mmio_scope scope{mmio};
+
+    using ModeId = alloy::device::low_power::ModeId;
+    using namespace alloy::low_power;
+    constexpr auto wakeup_source = alloy::device::low_power::wakeup_sources.front().wakeup_source_id;
+    using WakeupCompletion = wakeup_token<wakeup_source>;
+
+    low_power_test_state state{.mmio = &mmio};
+    active_low_power_test_state() = &state;
+    mmio.preload(kScbScrAddress, 0x0000'0010u);
+    WakeupCompletion::reset();
+
+    const auto previous_hooks = set_hooks({low_power_before_entry, low_power_after_wakeup});
+    const auto previous_wait_hook = detail::test_support::set_wait_hook(low_power_wait_hook);
+
+    const auto result = enter(ModeId::deep_sleep);
+
+    static_cast<void>(detail::test_support::set_wait_hook(previous_wait_hook));
+    static_cast<void>(set_hooks(previous_hooks));
+    active_low_power_test_state() = nullptr;
+
+    REQUIRE(result.is_ok());
+    REQUIRE(state.before_called);
+    REQUIRE(state.after_called);
+    REQUIRE(state.wait_called);
+    REQUIRE(state.before_mode == ModeId::deep_sleep);
+    REQUIRE(state.after_mode == ModeId::deep_sleep);
+    REQUIRE((state.scr_during_wait & kScbScrSleepdeepMask) != 0u);
+    REQUIRE(mmio.peek(kScbScrAddress) == 0x0000'0010u);
+
+    REQUIRE(!alloy::device::low_power::wakeup_sources.empty());
+    REQUIRE(wakeup_source_valid_in(ModeId::deep_sleep, wakeup_source));
+    REQUIRE(completion_valid_in<WakeupCompletion>(ModeId::deep_sleep));
+
+    WakeupCompletion::signal();
+    REQUIRE(WakeupCompletion::ready());
 }
 
 }  // namespace alloy::test::mmio

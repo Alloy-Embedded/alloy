@@ -2,6 +2,8 @@
 
 `tests/` owns the runtime-validation stack for Alloy. The structure is intentionally split by validation layer so the project can scale from compile smoke to emulation and a small number of hardware spot-checks.
 
+Release support claims are published separately in [docs/SUPPORT_MATRIX.md](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/SUPPORT_MATRIX.md) and backed by [docs/RELEASE_MANIFEST.json](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RELEASE_MANIFEST.json).
+
 ## Validation Taxonomy
 
 - `compile/`

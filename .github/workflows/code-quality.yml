@@ -28,6 +28,14 @@ jobs:
       run: |
         python3 scripts/check_runtime_device_boundary.py
 
+    - name: Check release discipline
+      run: |
+        python3 scripts/check_release_discipline.py
+
+    - name: Check runtime tooling docs and entry points
+      run: |
+        python3 scripts/check_runtime_tooling.py
+
     - name: Run clang-format check
       run: |
         echo "🔍 Checking code formatting with clang-format..."

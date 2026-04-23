@@ -50,6 +50,10 @@ jobs:
       run: |
         python3 scripts/check_runtime_device_boundary.py
 
+    - name: Check release discipline
+      run: |
+        python3 scripts/check_release_discipline.py
+
     - name: Check clang-format
       run: |
         echo "🔍 Checking code formatting with clang-format..."
