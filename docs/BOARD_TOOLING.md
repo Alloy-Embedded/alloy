@@ -19,6 +19,10 @@ This is the supported board-oriented UX for:
 - gdbserver
 - sweep
 - validation through workflow presets
+- compile-commands (clangd/LSP bootstrap)
+- info (machine-readable environment report)
+- doctor (preflight diagnostics)
+- new (downstream starter scaffold)
 
 Supported boards:
 
@@ -160,5 +164,48 @@ Current validation mapping:
 - `same70_xplained` -> `same70-runtime-validation`, `same70-renode-smoke`, `same70-zero-overhead`
 - `nucleo_g071rb` -> `stm32g0-runtime-validation`, `stm32g0-renode-smoke`
 - `nucleo_f401re` -> `stm32f4-runtime-validation`, `stm32f4-renode-smoke`
+
+## Compile Commands (clangd/LSP)
+
+```bash
+python3 scripts/alloyctl.py compile-commands --board same70_xplained
+python3 scripts/alloyctl.py compile-commands --board nucleo_g071rb --configure
+```
+
+Symlinks `compile_commands.json` at the repo root to the selected board's build directory so a
+clangd-backed IDE picks up the current configure. Pass `--configure` to configure the board build
+first when the file is missing. Pass `--copy` to copy instead of symlink.
+
+## Info
+
+```bash
+python3 scripts/alloyctl.py info
+```
+
+Prints a stable JSON document with: alloy version, pinned `alloy-devices` ref (and whether it
+matches the local checkout), board tier membership, required release gates per board, detected
+tool versions (cmake, ninja, arm-none-eabi-gcc, openocd, python), and current repo git sha. Use
+this for bug reports and release audit.
+
+## Doctor
+
+```bash
+python3 scripts/alloyctl.py doctor
+```
+
+Preflight check: confirms cmake, the ARM bare-metal toolchain, openocd, and `pyserial` are on
+PATH, and that the sibling `../alloy-devices` checkout matches the ref pinned in
+`docs/RELEASE_MANIFEST.json`. Any failure prints a hint and exits non-zero.
+
+## New (downstream starter)
+
+```bash
+python3 scripts/alloyctl.py new --board same70_xplained --path ./my-firmware
+python3 scripts/alloyctl.py new --board nucleo_g071rb --path ./my-firmware --name my_fw
+```
+
+Scaffolds a minimal downstream firmware project targeting a foundational board. The generated
+tree uses the documented CMake package consumption path — see
+[CMAKE_CONSUMPTION.md](CMAKE_CONSUMPTION.md).
 
 For a shorter getting-started path, use [QUICKSTART.md](QUICKSTART.md). For canonical examples, use [COOKBOOK.md](COOKBOOK.md).

@@ -24,6 +24,10 @@
       "kind": "script",
       "command": "python3 scripts/check_blocking_only_path.py"
     },
+    "alloyctl-tooling-parity": {
+      "kind": "script",
+      "command": "python3 scripts/check_alloyctl_tooling_parity.py"
+    },
     "descriptor-contract-smoke": {
       "kind": "build",
       "target": "alloy-device-contract-smoke"

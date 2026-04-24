@@ -5,6 +5,7 @@ import argparse
 import difflib
 import glob
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -785,6 +786,281 @@ def cmd_explain(args: argparse.Namespace) -> None:
     )
 
 
+def _read_project_version() -> str:
+    cml = ROOT / "CMakeLists.txt"
+    try:
+        text = cml.read_text(encoding="utf-8")
+    except OSError:
+        return "unknown"
+    match = re.search(r"project\(alloy\s*\n\s*VERSION\s+([0-9][0-9A-Za-z.\-+]*)", text)
+    return match.group(1) if match else "unknown"
+
+
+def _read_release_manifest() -> dict:
+    path = ROOT / "docs" / "RELEASE_MANIFEST.json"
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def _detect_tool_version(executable: str, args: tuple[str, ...] = ("--version",)) -> dict:
+    path = shutil.which(executable)
+    if path is None:
+        return {"found": False, "path": None, "version": None}
+    try:
+        completed = subprocess.run([path, *args], capture_output=True, text=True, timeout=10)
+    except (OSError, subprocess.TimeoutExpired) as err:
+        return {"found": True, "path": path, "version": None, "error": str(err)}
+    raw = (completed.stdout or completed.stderr or "").strip().splitlines()
+    first = raw[0] if raw else ""
+    return {"found": True, "path": path, "version": first}
+
+
+def _detect_python_package(name: str) -> dict:
+    try:
+        import importlib.metadata as md
+    except ImportError:
+        return {"found": False, "name": name, "version": None}
+    try:
+        return {"found": True, "name": name, "version": md.version(name)}
+    except md.PackageNotFoundError:
+        return {"found": False, "name": name, "version": None}
+
+
+def _current_git_sha() -> str | None:
+    try:
+        completed = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, timeout=5
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    sha = completed.stdout.strip()
+    return sha or None
+
+
+def _detected_alloy_devices_ref() -> str | None:
+    candidate = ROOT.parent / "alloy-devices"
+    if not (candidate / ".git").exists():
+        return None
+    try:
+        completed = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=candidate, capture_output=True, text=True, timeout=5
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    sha = completed.stdout.strip()
+    return sha or None
+
+
+def _board_summary_for_info() -> list[dict]:
+    manifest = _read_release_manifest()
+    boards = manifest.get("boards", {}) if isinstance(manifest, dict) else {}
+    out: list[dict] = []
+    for name in sorted(boards):
+        entry = boards[name]
+        out.append(
+            {
+                "board": name,
+                "tier": entry.get("tier"),
+                "required_gates": list(entry.get("required_gates", []) or []),
+                "required_examples": list(entry.get("required_examples", []) or []),
+                "configured": name in BOARDS,
+            }
+        )
+    return out
+
+
+def cmd_compile_commands(args: argparse.Namespace) -> None:
+    cfg = board_config(args.board)
+    src = cfg.build_dir / "compile_commands.json"
+    if not src.exists():
+        if args.configure:
+            ensure_configured(cfg, args.build_type, build_tests=False)
+        else:
+            print(
+                f"error: {src} not found. Configure first or re-run with --configure.",
+                file=sys.stderr,
+            )
+            raise SystemExit(2)
+    if not src.exists():
+        print(f"error: {src} still missing after configure", file=sys.stderr)
+        raise SystemExit(2)
+    dest = ROOT / "compile_commands.json"
+    if dest.is_symlink() or dest.exists():
+        dest.unlink()
+    if args.copy:
+        shutil.copy2(src, dest)
+        print(f"copied {src} -> {dest}")
+    else:
+        dest.symlink_to(src)
+        print(f"linked {dest} -> {src}")
+
+
+def cmd_info(args: argparse.Namespace) -> None:
+    del args  # signature required by argparse dispatch
+    manifest = _read_release_manifest()
+    manifest_ref = None
+    if isinstance(manifest, dict):
+        manifest_ref = (manifest.get("alloy_devices") or {}).get("ref")
+    detected_ref = _detected_alloy_devices_ref()
+    info = {
+        "alloy_version": _read_project_version(),
+        "git_sha": _current_git_sha(),
+        "alloy_devices": {
+            "manifest_ref": manifest_ref,
+            "detected_ref": detected_ref,
+            "aligned": (manifest_ref is not None and manifest_ref == detected_ref),
+        },
+        "boards": _board_summary_for_info(),
+        "release_gates": sorted((manifest.get("release_gates") or {}).keys())
+            if isinstance(manifest, dict) else [],
+        "tools": {
+            "cmake": _detect_tool_version("cmake"),
+            "ninja": _detect_tool_version("ninja"),
+            "arm_none_eabi_gcc": _detect_tool_version("arm-none-eabi-gcc"),
+            "openocd": _detect_tool_version("openocd"),
+            "python": {
+                "found": True,
+                "path": sys.executable,
+                "version": sys.version.split()[0],
+            },
+        },
+        "python_packages": {
+            "pyserial": _detect_python_package("pyserial"),
+        },
+    }
+    print(json.dumps(info, indent=2, sort_keys=True))
+
+
+def cmd_doctor(args: argparse.Namespace) -> None:
+    del args  # signature required by argparse dispatch
+    failures: list[str] = []
+
+    def check(label: str, ok: bool, hint: str) -> None:
+        status = "ok" if ok else "FAIL"
+        print(f"[{status}] {label}")
+        if not ok:
+            print(f"       hint: {hint}")
+            failures.append(label)
+
+    cmake = _detect_tool_version("cmake")
+    check("cmake >= 3.25 on PATH", cmake["found"],
+          "install cmake 3.25 or newer; see docs/QUICKSTART.md")
+
+    gcc = _detect_tool_version("arm-none-eabi-gcc")
+    check("arm-none-eabi-gcc on PATH", gcc["found"],
+          "install the ARM bare-metal toolchain via scripts/install-xpack-toolchain.sh")
+
+    openocd = _detect_tool_version("openocd")
+    check("openocd on PATH", openocd["found"],
+          "install OpenOCD for flash/debug flows")
+
+    pyserial = _detect_python_package("pyserial")
+    check("python pyserial", pyserial["found"],
+          "pip install pyserial (needed for alloyctl monitor)")
+
+    manifest = _read_release_manifest()
+    manifest_ref = (manifest.get("alloy_devices") or {}).get("ref") if isinstance(manifest, dict) else None
+    detected_ref = _detected_alloy_devices_ref()
+    aligned = manifest_ref is not None and manifest_ref == detected_ref
+    label = "alloy-devices ref aligned with RELEASE_MANIFEST.json"
+    if detected_ref is None:
+        check(label, False,
+              "../alloy-devices checkout not found; clone it next to the alloy repo")
+    else:
+        check(label, aligned,
+              f"check out ref {manifest_ref} in ../alloy-devices (current: {detected_ref})")
+
+    if failures:
+        print(f"\n{len(failures)} check(s) failed.", file=sys.stderr)
+        raise SystemExit(1)
+    print("\nAll preflight checks passed.")
+
+
+def cmd_new(args: argparse.Namespace) -> None:
+    if args.board not in BOARDS:
+        available = ", ".join(sorted(BOARDS))
+        print(f"error: board '{args.board}' not available. Choose from: {available}", file=sys.stderr)
+        raise SystemExit(2)
+    dest = Path(args.path).resolve()
+    if dest.exists() and any(dest.iterdir()):
+        print(f"error: destination {dest} exists and is not empty", file=sys.stderr)
+        raise SystemExit(2)
+    dest.mkdir(parents=True, exist_ok=True)
+    project_name = args.name or dest.name.replace("-", "_")
+
+    (dest / "CMakeLists.txt").write_text(
+        _starter_cmakelists(project_name, args.board), encoding="utf-8"
+    )
+    (dest / "src").mkdir(exist_ok=True)
+    (dest / "src" / "main.cpp").write_text(_starter_main_cpp(), encoding="utf-8")
+    (dest / "README.md").write_text(_starter_readme(project_name, args.board), encoding="utf-8")
+    (dest / ".gitignore").write_text("build/\ncompile_commands.json\n", encoding="utf-8")
+    print(f"scaffolded {project_name} (board={args.board}) at {dest}")
+    print("next steps:")
+    print(f"  cd {dest}")
+    print("  cmake -S . -B build -DALLOY_ROOT=/path/to/alloy")
+    print("  cmake --build build -j8")
+
+
+def _starter_cmakelists(name: str, board: str) -> str:
+    return f"""cmake_minimum_required(VERSION 3.25)
+
+# Starter firmware generated by `alloyctl new`.
+# See docs/CMAKE_CONSUMPTION.md in the alloy repo for the supported integration path.
+
+set(ALLOY_BOARD {board} CACHE STRING "Target alloy board")
+set(ALLOY_ROOT "" CACHE PATH "Path to the alloy repo checkout")
+
+if(NOT ALLOY_ROOT)
+    message(FATAL_ERROR "Set -DALLOY_ROOT=/path/to/alloy when configuring this project.")
+endif()
+
+project({name} LANGUAGES C CXX ASM)
+
+add_subdirectory(${{ALLOY_ROOT}} ${{CMAKE_BINARY_DIR}}/_alloy)
+
+add_executable({name} src/main.cpp)
+target_link_libraries({name} PRIVATE alloy::alloy)
+"""
+
+
+def _starter_main_cpp() -> str:
+    return """// Starter firmware — mirrors examples/blink/main.cpp from the alloy repo.
+// Replace with your application. See docs/COOKBOOK.md for canonical patterns.
+
+#include "board/board.hpp"
+
+int main() {
+    board::init();
+    auto led = board::make_led();
+    while (true) {
+        led.toggle();
+        for (volatile int i = 0; i < 1'000'000; ++i) { }
+    }
+}
+"""
+
+
+def _starter_readme(name: str, board: str) -> str:
+    return f"""# {name}
+
+Starter firmware generated by `alloyctl new` for `{board}`.
+
+## Build
+
+```bash
+cmake -S . -B build -DALLOY_ROOT=/path/to/alloy
+cmake --build build -j8
+```
+
+See [docs/CMAKE_CONSUMPTION.md](https://github.com/) in the alloy repo for the supported
+CMake consumption path and [docs/COOKBOOK.md](https://github.com/) for common runtime
+patterns.
+"""
+
+
 def cmd_diff(args: argparse.Namespace) -> None:
     manifest = load_manifest()
     left = board_config(args.from_board)
@@ -910,6 +1186,29 @@ def main() -> int:
     diff_p.add_argument("--from", dest="from_board", required=True)
     diff_p.add_argument("--to", dest="to_board", required=True)
     diff_p.set_defaults(func=cmd_diff)
+
+    cc_p = sub.add_parser(
+        "compile-commands",
+        help="expose compile_commands.json at the repo root for clangd/LSP",
+    )
+    add_build_args(cc_p)
+    cc_p.add_argument("--configure", action="store_true",
+                      help="configure the board build dir first if compile_commands.json is missing")
+    cc_p.add_argument("--copy", action="store_true",
+                      help="copy the file instead of symlinking")
+    cc_p.set_defaults(func=cmd_compile_commands)
+
+    info_p = sub.add_parser("info", help="print machine-readable environment report (JSON)")
+    info_p.set_defaults(func=cmd_info)
+
+    doctor_p = sub.add_parser("doctor", help="preflight check: toolchain, probe, python deps, ref")
+    doctor_p.set_defaults(func=cmd_doctor)
+
+    new_p = sub.add_parser("new", help="scaffold a downstream firmware starter for a board")
+    new_p.add_argument("--board", required=True, help="foundational board to target")
+    new_p.add_argument("--path", required=True, help="destination directory for the new project")
+    new_p.add_argument("--name", help="override project name (defaults to the destination basename)")
+    new_p.set_defaults(func=cmd_new)
 
     args = p.parse_args()
     args.func(args)

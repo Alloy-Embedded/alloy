@@ -43,6 +43,26 @@ Notes:
 - if you only want to build, replace `flash` with `build`
 - if an STM32 board is trapped by bad firmware, use `python3 scripts/alloyctl.py recover --board <board> --target blink`
 - if you want to inspect the supported recovery path before touching hardware, add `--dry-run`
+- before the first flash, run `python3 scripts/alloyctl.py doctor` to verify the toolchain, probe
+  tooling, python deps, and the pinned `alloy-devices` ref match the repo state
+
+## Preflight And IDE Bootstrap
+
+```bash
+python3 scripts/alloyctl.py doctor
+python3 scripts/alloyctl.py compile-commands --board same70_xplained --configure
+python3 scripts/alloyctl.py info
+```
+
+- `doctor` verifies the host toolchain, probe tooling, python deps, and the device-contract ref
+- `compile-commands` exposes `compile_commands.json` at the repo root for clangd/LSP-backed IDEs
+- `info` prints a machine-readable JSON environment report for bug reports or release audit
+
+To bootstrap a downstream firmware project:
+
+```bash
+python3 scripts/alloyctl.py new --board same70_xplained --path ./my-firmware
+```
 
 ## Configure And Build Explicitly
 
