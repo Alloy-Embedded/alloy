@@ -43,6 +43,15 @@
     "foundational-example-coverage": {
       "kind": "build-targets",
       "notes": "Required example coverage is declared per foundational board in this manifest and reviewed in the release checklist."
+    },
+    "hardware-spot-check": {
+      "kind": "checklist",
+      "checklists": [
+        "tests/hardware/same70/CHECKLIST.md",
+        "tests/hardware/stm32g0/CHECKLIST.md",
+        "tests/hardware/stm32f4/CHECKLIST.md"
+      ],
+      "notes": "Representative on-silicon validation recorded per foundational board. Manual lab evidence, not CI-executed."
     }
   },
   "boards": {
@@ -165,52 +174,60 @@
     "i2c": {
       "tier": "representative",
       "required_gates": [
-        "descriptor-contract-smoke"
+        "descriptor-contract-smoke",
+        "hardware-spot-check"
       ]
     },
     "spi": {
       "tier": "representative",
       "required_gates": [
-        "descriptor-contract-smoke"
+        "descriptor-contract-smoke",
+        "hardware-spot-check"
       ]
     },
     "timer": {
       "tier": "representative",
       "required_gates": [
-        "descriptor-contract-smoke"
+        "descriptor-contract-smoke",
+        "hardware-spot-check"
       ]
     },
     "pwm": {
       "tier": "representative",
       "required_gates": [
         "descriptor-contract-smoke",
-        "same70-zero-overhead"
+        "same70-zero-overhead",
+        "hardware-spot-check"
       ]
     },
     "rtc": {
       "tier": "representative",
       "required_gates": [
         "descriptor-contract-smoke",
-        "host-mmio"
+        "host-mmio",
+        "hardware-spot-check"
       ]
     },
     "watchdog": {
       "tier": "representative",
       "required_gates": [
         "descriptor-contract-smoke",
-        "host-mmio"
+        "host-mmio",
+        "hardware-spot-check"
       ]
     },
     "adc": {
       "tier": "representative",
       "required_gates": [
-        "descriptor-contract-smoke"
+        "descriptor-contract-smoke",
+        "hardware-spot-check"
       ]
     },
     "dac": {
       "tier": "representative",
       "required_gates": [
-        "descriptor-contract-smoke"
+        "descriptor-contract-smoke",
+        "hardware-spot-check"
       ]
     },
     "low-power": {
@@ -223,8 +240,10 @@
     "can": {
       "tier": "experimental",
       "required_gates": [
-        "descriptor-contract-smoke"
-      ]
+        "descriptor-contract-smoke",
+        "hardware-spot-check"
+      ],
+      "notes": "SAME70 bring-up boot/loop banner validated. Deterministic traffic assertion still pending; blocks promotion."
     }
   }
 }

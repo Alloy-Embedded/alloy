@@ -1,7 +1,7 @@
 name: C++ Unit Tests
 
 env:
-  ALLOY_DEVICES_REF: 686bd9c5140fb69f085ee511c4705f8b52ec1c32
+  ALLOY_DEVICES_REF: fa0630fe1501e7435463c1a2f2df4e9858e507b4
 
 on:
   push:

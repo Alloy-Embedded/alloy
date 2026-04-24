@@ -456,7 +456,7 @@ consteval auto resolve_binding_signal_id() -> device::runtime::SignalId {
                 "Requested explicit signal alias is not valid for this pin/peripheral on the "
                 "selected device/package. Retry with a published connector alias from "
                 "alloyctl explain --board <board> --connector <alias> or choose the canonical "
-                "signal published by alloy-devices.");
+                "signal published by the selected device descriptor set.");
             return device::runtime::SignalId::none;
         }
     } else {

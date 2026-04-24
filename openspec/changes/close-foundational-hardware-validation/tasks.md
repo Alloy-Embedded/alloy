@@ -12,9 +12,9 @@
 
 ## 3. STM32F4 Hardware Closure
 
-- [ ] 3.1 Stabilize the supported flash/monitor path for `nucleo_f401re`
-- [ ] 3.2 Run the declared `stm32f4` validation bundle on hardware
-- [ ] 3.3 Record results in `tests/hardware/stm32f4/CHECKLIST.md`
+- [x] 3.1 Stabilize the supported flash/monitor path for `nucleo_f401re`
+- [ ] 3.2 Run the declared `stm32f4` validation bundle on hardware (stages 1-3 done, DMA rerun pending)
+- [ ] 3.3 Record results in `tests/hardware/stm32f4/CHECKLIST.md` (stages 1-3 recorded, DMA pending rerun)
 - [x] 3.4 Convert any hardware-only failures into host-MMIO or emulation coverage where possible
 
 ## 4. Tooling Hardening For Real Boards
@@ -25,8 +25,8 @@
 
 ## 5. Release Claims
 
-- [ ] 5.1 Update support matrix and release manifest with real hardware evidence
-- [ ] 5.2 Downgrade any board claim that is not actually supported by current evidence
+- [x] 5.1 Update support matrix and release manifest with real hardware evidence
+- [x] 5.2 Downgrade any board claim that is not actually supported by current evidence
 
 ## 6. Validation
 
