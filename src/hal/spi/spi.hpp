@@ -5,6 +5,7 @@
 #include <span>
 #include <string_view>
 
+#include "hal/connect/connector.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "device/runtime.hpp"
@@ -18,6 +19,9 @@ using Config = SpiConfig;
 using Mode = SpiMode;
 using BitOrder = SpiBitOrder;
 using DataSize = SpiDataSize;
+
+template <device::PeripheralId PeripheralIdValue, typename... Bindings>
+using route = connection::connector<PeripheralIdValue, Bindings...>;
 
 namespace detail {
 
@@ -169,8 +173,10 @@ requires(Connector::valid) class port_handle {
 template <typename Connector>
 [[nodiscard]] constexpr auto open(Config config = {}) -> port_handle<Connector> {
     static_assert(port_handle<Connector>::valid,
-                  "Requested SPI connector has no valid descriptor-backed route for the selected "
-                  "device/package.");
+                  "Requested SPI route has no valid descriptor-backed route for the selected "
+                  "device/package. If you used ergonomic role aliases such as hal::sck<Pin>, "
+                  "hal::miso<Pin>, or hal::mosi<Pin>, retry with an explicit expert signal alias. "
+                  "Canonical forms remain supported.");
     return port_handle<Connector>{config};
 }
 
@@ -255,8 +261,10 @@ class shared_device {
 template <typename Connector>
 [[nodiscard]] constexpr auto open_shared_bus(Config config = {}) -> shared_bus<Connector> {
     static_assert(shared_bus<Connector>::valid,
-                  "Requested SPI connector has no valid descriptor-backed route for the selected "
-                  "device/package.");
+                  "Requested SPI route has no valid descriptor-backed route for the selected "
+                  "device/package. If you used ergonomic role aliases such as hal::sck<Pin>, "
+                  "hal::miso<Pin>, or hal::mosi<Pin>, retry with an explicit expert signal alias. "
+                  "Canonical forms remain supported.");
     return shared_bus<Connector>{config};
 }
 

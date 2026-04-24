@@ -29,6 +29,14 @@ The runtime must scale by descriptor schema, not by vendor or family switches.
 - New runtime code must not hardcode register offsets that already exist in `alloy-devices`.
 - Legacy handwritten registries and vendor glue are being removed incrementally.
 
+## Type-Driven Runtime Policy
+
+- Performance-sensitive runtime paths in `src/hal`, `src/runtime`, and `src/device` must select behavior through types, enums, and templates.
+- Public HAL routing, connector resolution, and backend register or field selection must not depend on textual matching such as `std::string_view`, suffix parsing, or name lookup tables.
+- Text is acceptable only in explicitly text-oriented surfaces such as docs, logs, CLI output, diagnostics, OpenSpec metadata, and developer tooling under `scripts/`.
+- Compile-time descriptor metadata may expose names for reporting or introspection, but runtime control flow must consume typed identifiers instead of comparing those names.
+- If a backend needs schema-specific branching, encode that choice in descriptor traits or typed tags at compile time rather than vendor or family string switches.
+
 ## Key References
 
 - [RUNTIME_DEVICE_BOUNDARY.md](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/docs/RUNTIME_DEVICE_BOUNDARY.md)

@@ -11,6 +11,8 @@
 
 namespace {
 
+// This file intentionally keeps raw register bring-up isolated from the board-oriented examples.
+
 constexpr std::uintptr_t kPmcBase = 0x400E0600u;
 constexpr std::uintptr_t kMatrixBase = 0x40088000u;
 constexpr std::uintptr_t kPioABase = 0x400E0E00u;

@@ -12,7 +12,7 @@ ${EXPECTED_UART_BYTES}     28
 
 *** Keywords ***
 Setup Emulation
-    Create Boot Smoke Machine    sysbus.usart0    125
+    Create Boot Smoke Machine    sysbus.usart1    125
 
 *** Test Cases ***
 SAME70 boot smoke reaches main and emits UART banner

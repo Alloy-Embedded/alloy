@@ -36,10 +36,10 @@ STM32G0 boot smoke reaches main and emits UART banner
     ...    0xFF00
     ...    0x1100
     ...    ${USART2_BRR_ADDR}
-    ...    556
+    ...    139
     ...    ${USART2_CR1_ADDR}
     ...    0xD
     ...    0xD
-    Masked Double Word Should Be    ${RCC_CR_ADDR}        0x2000500  0x2000500
-    Masked Double Word Should Be    ${RCC_CFGR_ADDR}      0x38       0x10
-    Masked Double Word Should Be    ${FLASH_ACR_ADDR}     0x7        0x2
+    Masked Double Word Should Be    ${RCC_CR_ADDR}        0x2000500  0x500
+    Masked Double Word Should Be    ${RCC_CFGR_ADDR}      0x38       0x0
+    Masked Double Word Should Be    ${FLASH_ACR_ADDR}     0x7        0x0

@@ -20,6 +20,86 @@ struct FieldWrite {
     std::uint32_t value = 0u;
 };
 
+enum class register_id {
+    cr1,
+    cr2,
+    ccr,
+    trise,
+    sr1,
+    sr2,
+    dr,
+    icr,
+    cr,
+    mmr,
+    iadr,
+    cwgr,
+    sr,
+    rhr,
+    thr,
+    isr,
+    txdr,
+    rxdr,
+    timingr,
+};
+
+enum class field_id {
+    pe,
+    ack,
+    start,
+    stop,
+    freq,
+    ccr,
+    f_s,
+    duty,
+    trise,
+    sb,
+    addr,
+    txe,
+    rxne,
+    btf,
+    af,
+    berr,
+    arlo,
+    busy,
+    dr,
+    sadd,
+    rd_wrn,
+    nbytes,
+    autoend,
+    txis,
+    tc,
+    stopf,
+    txdata,
+    rxdata,
+    nackf,
+    stopcf,
+    nackcf,
+    berrcf,
+    arlocf,
+    msen,
+    msdis,
+    svdis,
+    swrst,
+    iadrsz,
+    mread,
+    dadr,
+    iadr,
+    cldiv,
+    chdiv,
+    ckdiv,
+    hold,
+    txcomp,
+    rxrdy,
+    txrdy,
+    nack,
+    arblst,
+    presc,
+    scll,
+    sclh,
+    sdadel,
+    scldel,
+};
+
 template <std::size_t N>
 [[nodiscard]] auto build_register_value(const std::array<FieldWrite, N>& fields)
     -> core::Result<std::uint32_t, core::ErrorCode> {
@@ -37,222 +117,214 @@ template <std::size_t N>
     return core::Ok(static_cast<std::uint32_t>(value));
 }
 
-template <typename PortHandle>
-[[nodiscard]] constexpr auto reg(std::string_view name) -> rt::RegisterRef {
-    if (name == "CR1") {
+template <typename PortHandle, register_id Register>
+[[nodiscard]] constexpr auto reg() -> rt::RegisterRef {
+    if constexpr (Register == register_id::cr1) {
         return PortHandle::cr1_reg;
-    }
-    if (name == "CR2") {
+    } else if constexpr (Register == register_id::cr2) {
         return PortHandle::cr2_reg;
-    }
-    if (name == "CCR") {
+    } else if constexpr (Register == register_id::ccr) {
         return PortHandle::ccr_reg;
-    }
-    if (name == "TRISE") {
+    } else if constexpr (Register == register_id::trise) {
         return PortHandle::trise_reg;
-    }
-    if (name == "SR1") {
+    } else if constexpr (Register == register_id::sr1) {
         return PortHandle::sr1_reg;
-    }
-    if (name == "SR2") {
+    } else if constexpr (Register == register_id::sr2) {
         return PortHandle::sr2_reg;
-    }
-    if (name == "DR") {
+    } else if constexpr (Register == register_id::dr) {
         return PortHandle::dr_reg;
-    }
-    if (name == "ICR") {
+    } else if constexpr (Register == register_id::icr) {
         return PortHandle::icr_reg;
-    }
-    if (name == "CR") {
+    } else if constexpr (Register == register_id::cr) {
         return PortHandle::cr_reg;
-    }
-    if (name == "MMR") {
+    } else if constexpr (Register == register_id::mmr) {
         return PortHandle::mmr_reg;
-    }
-    if (name == "IADR") {
+    } else if constexpr (Register == register_id::iadr) {
         return PortHandle::iadr_reg;
-    }
-    if (name == "CWGR") {
+    } else if constexpr (Register == register_id::cwgr) {
         return PortHandle::cwgr_reg;
-    }
-    if (name == "SR") {
+    } else if constexpr (Register == register_id::sr) {
         return PortHandle::sr_reg;
-    }
-    if (name == "RHR") {
+    } else if constexpr (Register == register_id::rhr) {
         return PortHandle::rhr_reg;
-    }
-    if (name == "THR") {
+    } else if constexpr (Register == register_id::thr) {
         return PortHandle::thr_reg;
+    } else if constexpr (Register == register_id::timingr) {
+        if constexpr (requires { PortHandle::timingr_reg; }) {
+            return PortHandle::timingr_reg;
+        } else {
+            return rt::kInvalidRegisterRef;
+        }
+    } else if constexpr (Register == register_id::isr) {
+        if constexpr (requires { PortHandle::isr_reg; }) {
+            return PortHandle::isr_reg;
+        } else {
+            return rt::kInvalidRegisterRef;
+        }
+    } else if constexpr (Register == register_id::txdr) {
+        if constexpr (requires { PortHandle::txdr_reg; }) {
+            return PortHandle::txdr_reg;
+        } else {
+            return rt::kInvalidRegisterRef;
+        }
+    } else if constexpr (Register == register_id::rxdr) {
+        if constexpr (requires { PortHandle::rxdr_reg; }) {
+            return PortHandle::rxdr_reg;
+        } else {
+            return rt::kInvalidRegisterRef;
+        }
+    } else {
+        return rt::kInvalidRegisterRef;
     }
-    return rt::kInvalidRegisterRef;
 }
 
-template <typename PortHandle>
-[[nodiscard]] constexpr auto field(std::string_view reg_name, std::string_view field_name)
-    -> rt::FieldRef {
-    if (reg_name == "CR1" && field_name == "PE") {
+template <typename PortHandle, register_id Register, field_id Field>
+[[nodiscard]] constexpr auto field() -> rt::FieldRef {
+    if constexpr (Register == register_id::cr1 && Field == field_id::pe) {
         return PortHandle::pe_field;
-    }
-    if (reg_name == "CR1" && field_name == "ACK") {
+    } else if constexpr (Register == register_id::cr1 && Field == field_id::ack) {
         return PortHandle::ack_field;
-    }
-    if (reg_name == "CR1" && field_name == "START") {
+    } else if constexpr (Register == register_id::cr1 && Field == field_id::start) {
         return PortHandle::start_field;
-    }
-    if (reg_name == "CR1" && field_name == "STOP") {
+    } else if constexpr (Register == register_id::cr1 && Field == field_id::stop) {
         return PortHandle::stop_field;
-    }
-    if (reg_name == "CR2" && field_name == "FREQ") {
+    } else if constexpr (Register == register_id::cr2 && Field == field_id::freq) {
         return PortHandle::freq_field;
-    }
-    if (reg_name == "CCR" && field_name == "CCR") {
+    } else if constexpr (Register == register_id::ccr && Field == field_id::ccr) {
         return PortHandle::ccr_field;
-    }
-    if (reg_name == "CCR" && field_name == "F_S") {
+    } else if constexpr (Register == register_id::ccr && Field == field_id::f_s) {
         return PortHandle::fs_field;
-    }
-    if (reg_name == "CCR" && field_name == "DUTY") {
+    } else if constexpr (Register == register_id::ccr && Field == field_id::duty) {
         return PortHandle::duty_field;
-    }
-    if (reg_name == "TRISE" && field_name == "TRISE") {
+    } else if constexpr (Register == register_id::trise && Field == field_id::trise) {
         return PortHandle::trise_field;
-    }
-    if (reg_name == "SR1" && field_name == "SB") {
+    } else if constexpr (Register == register_id::sr1 && Field == field_id::sb) {
         return PortHandle::sb_field;
-    }
-    if (reg_name == "SR1" && field_name == "ADDR") {
+    } else if constexpr (Register == register_id::sr1 && Field == field_id::addr) {
         return PortHandle::addr_field;
-    }
-    if (reg_name == "SR1" && (field_name == "TXE" || field_name == "TxE")) {
+    } else if constexpr (Register == register_id::sr1 && Field == field_id::txe) {
         return PortHandle::txe_field;
-    }
-    if (reg_name == "SR1" && (field_name == "RXNE" || field_name == "RxNE")) {
+    } else if constexpr (Register == register_id::sr1 && Field == field_id::rxne) {
         return PortHandle::rxne_field;
-    }
-    if (reg_name == "SR1" && field_name == "BTF") {
+    } else if constexpr (Register == register_id::sr1 && Field == field_id::btf) {
         return PortHandle::btf_field;
-    }
-    if (reg_name == "SR1" && field_name == "AF") {
+    } else if constexpr (Register == register_id::sr1 && Field == field_id::af) {
         return PortHandle::af_field;
-    }
-    if (reg_name == "SR1" && field_name == "BERR") {
+    } else if constexpr (Register == register_id::sr1 && Field == field_id::berr) {
         return PortHandle::berr_field;
-    }
-    if (reg_name == "SR1" && field_name == "ARLO") {
+    } else if constexpr (Register == register_id::sr1 && Field == field_id::arlo) {
         return PortHandle::arlo_field;
-    }
-    if (reg_name == "SR2" && field_name == "BUSY") {
+    } else if constexpr (Register == register_id::sr2 && Field == field_id::busy) {
         return PortHandle::busy_field;
-    }
-    if (reg_name == "DR" && field_name == "DR") {
+    } else if constexpr (Register == register_id::dr && Field == field_id::dr) {
         return PortHandle::dr_data_field;
-    }
-    if (reg_name == "CR2" && field_name == "SADD") {
+    } else if constexpr (Register == register_id::cr2 && Field == field_id::sadd) {
         return PortHandle::sadd_field;
-    }
-    if (reg_name == "CR2" && field_name == "RD_WRN") {
+    } else if constexpr (Register == register_id::cr2 && Field == field_id::rd_wrn) {
         return PortHandle::rd_wrn_field;
-    }
-    if (reg_name == "CR2" && field_name == "NBYTES") {
+    } else if constexpr (Register == register_id::cr2 && Field == field_id::start) {
+        return PortHandle::start_field;
+    } else if constexpr (Register == register_id::cr2 && Field == field_id::nbytes) {
         return PortHandle::nbytes_field;
-    }
-    if (reg_name == "CR2" && field_name == "AUTOEND") {
+    } else if constexpr (Register == register_id::cr2 && Field == field_id::autoend) {
         return PortHandle::autoend_field;
-    }
-    if (reg_name == "ISR" && field_name == "TXIS") {
+    } else if constexpr (Register == register_id::isr && Field == field_id::txis) {
         return PortHandle::txis_field;
-    }
-    if (reg_name == "ISR" && field_name == "TC") {
+    } else if constexpr (Register == register_id::isr && Field == field_id::tc) {
         return PortHandle::tc_field;
-    }
-    if (reg_name == "ISR" && field_name == "STOPF") {
+    } else if constexpr (Register == register_id::isr && Field == field_id::stopf) {
         return PortHandle::stopf_field;
-    }
-    if (reg_name == "TXDR" && field_name == "TXDATA") {
+    } else if constexpr (Register == register_id::isr && Field == field_id::rxne) {
+        return PortHandle::rxne_field;
+    } else if constexpr (Register == register_id::txdr && Field == field_id::txdata) {
         return PortHandle::txdata_field;
-    }
-    if (reg_name == "RXDR" && field_name == "RXDATA") {
+    } else if constexpr (Register == register_id::rxdr && Field == field_id::rxdata) {
         return PortHandle::rxdata_field;
-    }
-    if (reg_name == "THR" && field_name == "TXDATA") {
+    } else if constexpr (Register == register_id::thr && Field == field_id::txdata) {
         return PortHandle::txdata_field;
-    }
-    if (reg_name == "RHR" && field_name == "RXDATA") {
+    } else if constexpr (Register == register_id::rhr && Field == field_id::rxdata) {
         return PortHandle::rxdata_field;
-    }
-    if (reg_name == "ISR" && field_name == "NACKF") {
+    } else if constexpr (Register == register_id::isr && Field == field_id::nackf) {
         return PortHandle::nackf_field;
-    }
-    if (reg_name == "ISR" && field_name == "BERR") {
+    } else if constexpr (Register == register_id::isr && Field == field_id::berr) {
         return PortHandle::berr_isr_field;
-    }
-    if (reg_name == "ISR" && field_name == "ARLO") {
+    } else if constexpr (Register == register_id::isr && Field == field_id::arlo) {
         return PortHandle::arlo_isr_field;
-    }
-    if (reg_name == "ICR" && field_name == "STOPCF") {
+    } else if constexpr (Register == register_id::icr && Field == field_id::stopcf) {
         return PortHandle::stopcf_field;
-    }
-    if (reg_name == "ICR" && field_name == "NACKCF") {
+    } else if constexpr (Register == register_id::icr && Field == field_id::nackcf) {
         return PortHandle::nackcf_field;
-    }
-    if (reg_name == "ICR" && field_name == "BERRCF") {
+    } else if constexpr (Register == register_id::icr && Field == field_id::berrcf) {
         return PortHandle::berrcf_field;
-    }
-    if (reg_name == "ICR" && field_name == "ARLOCF") {
+    } else if constexpr (Register == register_id::icr && Field == field_id::arlocf) {
         return PortHandle::arlocf_field;
-    }
-    if (reg_name == "CR" && field_name == "MSEN") {
+    } else if constexpr (Register == register_id::cr && Field == field_id::msen) {
         return PortHandle::msen_field;
-    }
-    if (reg_name == "CR" && field_name == "MSDIS") {
+    } else if constexpr (Register == register_id::cr && Field == field_id::msdis) {
         return PortHandle::msdis_field;
-    }
-    if (reg_name == "CR" && field_name == "SVDIS") {
+    } else if constexpr (Register == register_id::cr && Field == field_id::svdis) {
         return PortHandle::svdis_field;
-    }
-    if (reg_name == "CR" && field_name == "SWRST") {
+    } else if constexpr (Register == register_id::cr && Field == field_id::swrst) {
         return PortHandle::swrst_field;
-    }
-    if (reg_name == "MMR" && field_name == "IADRSZ") {
+    } else if constexpr (Register == register_id::mmr && Field == field_id::iadrsz) {
         return PortHandle::iadrsz_field;
-    }
-    if (reg_name == "MMR" && field_name == "MREAD") {
+    } else if constexpr (Register == register_id::mmr && Field == field_id::mread) {
         return PortHandle::mread_field;
-    }
-    if (reg_name == "MMR" && field_name == "DADR") {
+    } else if constexpr (Register == register_id::mmr && Field == field_id::dadr) {
         return PortHandle::dadr_field;
-    }
-    if (reg_name == "IADR" && field_name == "IADR") {
+    } else if constexpr (Register == register_id::iadr && Field == field_id::iadr) {
         return PortHandle::iadr_field;
-    }
-    if (reg_name == "CWGR" && field_name == "CLDIV") {
+    } else if constexpr (Register == register_id::cwgr && Field == field_id::cldiv) {
         return PortHandle::cldiv_field;
-    }
-    if (reg_name == "CWGR" && field_name == "CHDIV") {
+    } else if constexpr (Register == register_id::cwgr && Field == field_id::chdiv) {
         return PortHandle::chdiv_field;
-    }
-    if (reg_name == "CWGR" && field_name == "CKDIV") {
+    } else if constexpr (Register == register_id::cwgr && Field == field_id::ckdiv) {
         return PortHandle::ckdiv_field;
-    }
-    if (reg_name == "CWGR" && field_name == "HOLD") {
+    } else if constexpr (Register == register_id::cwgr && Field == field_id::hold) {
         return PortHandle::hold_field;
-    }
-    if (reg_name == "SR" && field_name == "TXCOMP") {
+    } else if constexpr (Register == register_id::sr && Field == field_id::txcomp) {
         return PortHandle::txcomp_field;
-    }
-    if (reg_name == "SR" && field_name == "RXRDY") {
+    } else if constexpr (Register == register_id::sr && Field == field_id::rxrdy) {
         return PortHandle::rxrdy_field;
-    }
-    if (reg_name == "SR" && field_name == "TXRDY") {
+    } else if constexpr (Register == register_id::sr && Field == field_id::txrdy) {
         return PortHandle::txrdy_field;
-    }
-    if (reg_name == "SR" && field_name == "NACK") {
+    } else if constexpr (Register == register_id::sr && Field == field_id::nack) {
         return PortHandle::nack_field;
-    }
-    if (reg_name == "SR" && field_name == "ARBLST") {
+    } else if constexpr (Register == register_id::sr && Field == field_id::arblst) {
         return PortHandle::arblst_field;
+    } else if constexpr (Register == register_id::timingr && Field == field_id::presc) {
+        if constexpr (requires { PortHandle::presc_field; }) {
+            return PortHandle::presc_field;
+        } else {
+            return rt::kInvalidFieldRef;
+        }
+    } else if constexpr (Register == register_id::timingr && Field == field_id::scll) {
+        if constexpr (requires { PortHandle::scll_field; }) {
+            return PortHandle::scll_field;
+        } else {
+            return rt::kInvalidFieldRef;
+        }
+    } else if constexpr (Register == register_id::timingr && Field == field_id::sclh) {
+        if constexpr (requires { PortHandle::sclh_field; }) {
+            return PortHandle::sclh_field;
+        } else {
+            return rt::kInvalidFieldRef;
+        }
+    } else if constexpr (Register == register_id::timingr && Field == field_id::sdadel) {
+        if constexpr (requires { PortHandle::sdadel_field; }) {
+            return PortHandle::sdadel_field;
+        } else {
+            return rt::kInvalidFieldRef;
+        }
+    } else if constexpr (Register == register_id::timingr && Field == field_id::scldel) {
+        if constexpr (requires { PortHandle::scldel_field; }) {
+            return PortHandle::scldel_field;
+        } else {
+            return rt::kInvalidFieldRef;
+        }
+    } else {
+        return rt::kInvalidFieldRef;
     }
-    return rt::kInvalidFieldRef;
 }
 
 [[nodiscard]] constexpr auto i2c_speed_hz(Speed speed) -> std::uint32_t {
@@ -301,11 +373,11 @@ auto write_field_mask(const rt::RegisterRef& reg, const std::array<FieldWrite, N
 
 template <typename PortHandle>
 auto clear_st_i2c_v2_flags() -> core::Result<void, core::ErrorCode> {
-    constexpr auto icr_reg = reg<PortHandle>("ICR");
-    constexpr auto stopcf = field<PortHandle>("ICR", "STOPCF");
-    constexpr auto nackcf = field<PortHandle>("ICR", "NACKCF");
-    constexpr auto berrcf = field<PortHandle>("ICR", "BERRCF");
-    constexpr auto arlocf = field<PortHandle>("ICR", "ARLOCF");
+    constexpr auto icr_reg = reg<PortHandle, register_id::icr>();
+    constexpr auto stopcf = field<PortHandle, register_id::icr, field_id::stopcf>();
+    constexpr auto nackcf = field<PortHandle, register_id::icr, field_id::nackcf>();
+    constexpr auto berrcf = field<PortHandle, register_id::icr, field_id::berrcf>();
+    constexpr auto arlocf = field<PortHandle, register_id::icr, field_id::arlocf>();
     if (!icr_reg.valid) {
         return core::Err(core::ErrorCode::NotSupported);
     }
@@ -316,9 +388,9 @@ auto clear_st_i2c_v2_flags() -> core::Result<void, core::ErrorCode> {
 
 template <typename PortHandle>
 [[nodiscard]] auto check_st_i2c_v2_error() -> core::Result<void, core::ErrorCode> {
-    constexpr auto nackf = field<PortHandle>("ISR", "NACKF");
-    constexpr auto berr = field<PortHandle>("ISR", "BERR");
-    constexpr auto arlo = field<PortHandle>("ISR", "ARLO");
+    constexpr auto nackf = field<PortHandle, register_id::isr, field_id::nackf>();
+    constexpr auto berr = field<PortHandle, register_id::isr, field_id::berr>();
+    constexpr auto arlo = field<PortHandle, register_id::isr, field_id::arlo>();
 
     if (berr.valid) {
         const auto value = rt::read_field(berr);
@@ -383,15 +455,15 @@ auto write_st_i2c_v2(std::uint16_t address, std::span<const std::uint8_t> buffer
         return core::Err(core::ErrorCode::OutOfRange);
     }
 
-    constexpr auto cr2_reg = reg<PortHandle>("CR2");
-    constexpr auto sadd = field<PortHandle>("CR2", "SADD");
-    constexpr auto rd_wrn = field<PortHandle>("CR2", "RD_WRN");
-    constexpr auto start = field<PortHandle>("CR2", "START");
-    constexpr auto nbytes = field<PortHandle>("CR2", "NBYTES");
-    constexpr auto autoend = field<PortHandle>("CR2", "AUTOEND");
-    constexpr auto txis = field<PortHandle>("ISR", "TXIS");
-    constexpr auto stopf = field<PortHandle>("ISR", "STOPF");
-    constexpr auto txdata = field<PortHandle>("TXDR", "TXDATA");
+    constexpr auto cr2_reg = reg<PortHandle, register_id::cr2>();
+    constexpr auto sadd = field<PortHandle, register_id::cr2, field_id::sadd>();
+    constexpr auto rd_wrn = field<PortHandle, register_id::cr2, field_id::rd_wrn>();
+    constexpr auto start = field<PortHandle, register_id::cr2, field_id::start>();
+    constexpr auto nbytes = field<PortHandle, register_id::cr2, field_id::nbytes>();
+    constexpr auto autoend = field<PortHandle, register_id::cr2, field_id::autoend>();
+    constexpr auto txis = field<PortHandle, register_id::isr, field_id::txis>();
+    constexpr auto stopf = field<PortHandle, register_id::isr, field_id::stopf>();
+    constexpr auto txdata = field<PortHandle, register_id::txdr, field_id::txdata>();
     if (!cr2_reg.valid || !sadd.valid || !rd_wrn.valid || !start.valid || !nbytes.valid ||
         !autoend.valid || !txis.valid || !stopf.valid || !txdata.valid) {
         return core::Err(core::ErrorCode::NotSupported);
@@ -440,15 +512,15 @@ auto read_st_i2c_v2(std::uint16_t address, std::span<std::uint8_t> buffer)
         return core::Ok();
     }
 
-    constexpr auto cr2_reg = reg<PortHandle>("CR2");
-    constexpr auto sadd = field<PortHandle>("CR2", "SADD");
-    constexpr auto rd_wrn = field<PortHandle>("CR2", "RD_WRN");
-    constexpr auto start = field<PortHandle>("CR2", "START");
-    constexpr auto nbytes = field<PortHandle>("CR2", "NBYTES");
-    constexpr auto autoend = field<PortHandle>("CR2", "AUTOEND");
-    constexpr auto rxne = field<PortHandle>("ISR", "RXNE");
-    constexpr auto stopf = field<PortHandle>("ISR", "STOPF");
-    constexpr auto rxdata = field<PortHandle>("RXDR", "RXDATA");
+    constexpr auto cr2_reg = reg<PortHandle, register_id::cr2>();
+    constexpr auto sadd = field<PortHandle, register_id::cr2, field_id::sadd>();
+    constexpr auto rd_wrn = field<PortHandle, register_id::cr2, field_id::rd_wrn>();
+    constexpr auto start = field<PortHandle, register_id::cr2, field_id::start>();
+    constexpr auto nbytes = field<PortHandle, register_id::cr2, field_id::nbytes>();
+    constexpr auto autoend = field<PortHandle, register_id::cr2, field_id::autoend>();
+    constexpr auto rxne = field<PortHandle, register_id::isr, field_id::rxne>();
+    constexpr auto stopf = field<PortHandle, register_id::isr, field_id::stopf>();
+    constexpr auto rxdata = field<PortHandle, register_id::rxdr, field_id::rxdata>();
     if (!cr2_reg.valid || !sadd.valid || !rd_wrn.valid || !start.valid || !nbytes.valid ||
         !autoend.valid || !rxne.valid || !stopf.valid || !rxdata.valid) {
         return core::Err(core::ErrorCode::NotSupported);
@@ -503,18 +575,18 @@ auto write_read_st_i2c_v2(std::uint16_t address, std::span<const std::uint8_t> w
         return core::Err(core::ErrorCode::OutOfRange);
     }
 
-    constexpr auto cr2_reg = reg<PortHandle>("CR2");
-    constexpr auto sadd = field<PortHandle>("CR2", "SADD");
-    constexpr auto rd_wrn = field<PortHandle>("CR2", "RD_WRN");
-    constexpr auto start = field<PortHandle>("CR2", "START");
-    constexpr auto nbytes = field<PortHandle>("CR2", "NBYTES");
-    constexpr auto autoend = field<PortHandle>("CR2", "AUTOEND");
-    constexpr auto txis = field<PortHandle>("ISR", "TXIS");
-    constexpr auto tc = field<PortHandle>("ISR", "TC");
-    constexpr auto rxne = field<PortHandle>("ISR", "RXNE");
-    constexpr auto stopf = field<PortHandle>("ISR", "STOPF");
-    constexpr auto txdata = field<PortHandle>("TXDR", "TXDATA");
-    constexpr auto rxdata = field<PortHandle>("RXDR", "RXDATA");
+    constexpr auto cr2_reg = reg<PortHandle, register_id::cr2>();
+    constexpr auto sadd = field<PortHandle, register_id::cr2, field_id::sadd>();
+    constexpr auto rd_wrn = field<PortHandle, register_id::cr2, field_id::rd_wrn>();
+    constexpr auto start = field<PortHandle, register_id::cr2, field_id::start>();
+    constexpr auto nbytes = field<PortHandle, register_id::cr2, field_id::nbytes>();
+    constexpr auto autoend = field<PortHandle, register_id::cr2, field_id::autoend>();
+    constexpr auto txis = field<PortHandle, register_id::isr, field_id::txis>();
+    constexpr auto tc = field<PortHandle, register_id::isr, field_id::tc>();
+    constexpr auto rxne = field<PortHandle, register_id::isr, field_id::rxne>();
+    constexpr auto stopf = field<PortHandle, register_id::isr, field_id::stopf>();
+    constexpr auto txdata = field<PortHandle, register_id::txdr, field_id::txdata>();
+    constexpr auto rxdata = field<PortHandle, register_id::rxdr, field_id::rxdata>();
     if (!cr2_reg.valid || !sadd.valid || !rd_wrn.valid || !start.valid || !nbytes.valid ||
         !autoend.valid || !txis.valid || !tc.valid || !rxne.valid || !stopf.valid ||
         !txdata.valid || !rxdata.valid) {
@@ -633,15 +705,15 @@ auto wait_st_i2c_v1_ready(const rt::FieldRef& ready, const rt::FieldRef& af,
 
 template <typename PortHandle>
 auto start_st_i2c_v1(std::uint16_t address, bool read) -> core::Result<void, core::ErrorCode> {
-    constexpr auto sr1_reg = reg<PortHandle>("SR1");
-    constexpr auto sr2_reg = reg<PortHandle>("SR2");
-    constexpr auto dr = field<PortHandle>("DR", "DR");
-    constexpr auto start = field<PortHandle>("CR1", "START");
-    constexpr auto sb = field<PortHandle>("SR1", "SB");
-    constexpr auto addrf = field<PortHandle>("SR1", "ADDR");
-    constexpr auto af = field<PortHandle>("SR1", "AF");
-    constexpr auto arlo = field<PortHandle>("SR1", "ARLO");
-    constexpr auto berr = field<PortHandle>("SR1", "BERR");
+    constexpr auto sr1_reg = reg<PortHandle, register_id::sr1>();
+    constexpr auto sr2_reg = reg<PortHandle, register_id::sr2>();
+    constexpr auto dr = field<PortHandle, register_id::dr, field_id::dr>();
+    constexpr auto start = field<PortHandle, register_id::cr1, field_id::start>();
+    constexpr auto sb = field<PortHandle, register_id::sr1, field_id::sb>();
+    constexpr auto addrf = field<PortHandle, register_id::sr1, field_id::addr>();
+    constexpr auto af = field<PortHandle, register_id::sr1, field_id::af>();
+    constexpr auto arlo = field<PortHandle, register_id::sr1, field_id::arlo>();
+    constexpr auto berr = field<PortHandle, register_id::sr1, field_id::berr>();
     if (!sr1_reg.valid || !sr2_reg.valid || !dr.valid || !start.valid || !sb.valid ||
         !addrf.valid) {
         return core::Err(core::ErrorCode::NotSupported);
@@ -683,14 +755,14 @@ auto write_st_i2c_v1(std::uint16_t address, std::span<const std::uint8_t> buffer
         return core::Err(core::ErrorCode::OutOfRange);
     }
 
-    constexpr auto busy = field<PortHandle>("SR2", "BUSY");
-    constexpr auto txe = field<PortHandle>("SR1", "TxE");
-    constexpr auto btf = field<PortHandle>("SR1", "BTF");
-    constexpr auto af = field<PortHandle>("SR1", "AF");
-    constexpr auto arlo = field<PortHandle>("SR1", "ARLO");
-    constexpr auto berr = field<PortHandle>("SR1", "BERR");
-    constexpr auto stop = field<PortHandle>("CR1", "STOP");
-    constexpr auto dr = field<PortHandle>("DR", "DR");
+    constexpr auto busy = field<PortHandle, register_id::sr2, field_id::busy>();
+    constexpr auto txe = field<PortHandle, register_id::sr1, field_id::txe>();
+    constexpr auto btf = field<PortHandle, register_id::sr1, field_id::btf>();
+    constexpr auto af = field<PortHandle, register_id::sr1, field_id::af>();
+    constexpr auto arlo = field<PortHandle, register_id::sr1, field_id::arlo>();
+    constexpr auto berr = field<PortHandle, register_id::sr1, field_id::berr>();
+    constexpr auto stop = field<PortHandle, register_id::cr1, field_id::stop>();
+    constexpr auto dr = field<PortHandle, register_id::dr, field_id::dr>();
     if (!txe.valid || !btf.valid || !stop.valid || !dr.valid) {
         return core::Err(core::ErrorCode::NotSupported);
     }
@@ -732,14 +804,14 @@ auto read_st_i2c_v1(std::uint16_t address, std::span<std::uint8_t> buffer)
         return core::Ok();
     }
 
-    constexpr auto busy = field<PortHandle>("SR2", "BUSY");
-    constexpr auto ack = field<PortHandle>("CR1", "ACK");
-    constexpr auto stop = field<PortHandle>("CR1", "STOP");
-    constexpr auto rxne = field<PortHandle>("SR1", "RxNE");
-    constexpr auto af = field<PortHandle>("SR1", "AF");
-    constexpr auto arlo = field<PortHandle>("SR1", "ARLO");
-    constexpr auto berr = field<PortHandle>("SR1", "BERR");
-    constexpr auto dr = field<PortHandle>("DR", "DR");
+    constexpr auto busy = field<PortHandle, register_id::sr2, field_id::busy>();
+    constexpr auto ack = field<PortHandle, register_id::cr1, field_id::ack>();
+    constexpr auto stop = field<PortHandle, register_id::cr1, field_id::stop>();
+    constexpr auto rxne = field<PortHandle, register_id::sr1, field_id::rxne>();
+    constexpr auto af = field<PortHandle, register_id::sr1, field_id::af>();
+    constexpr auto arlo = field<PortHandle, register_id::sr1, field_id::arlo>();
+    constexpr auto berr = field<PortHandle, register_id::sr1, field_id::berr>();
+    constexpr auto dr = field<PortHandle, register_id::dr, field_id::dr>();
     if (!ack.valid || !stop.valid || !rxne.valid || !dr.valid) {
         return core::Err(core::ErrorCode::NotSupported);
     }
@@ -796,16 +868,16 @@ auto write_read_st_i2c_v1(std::uint16_t address, std::span<const std::uint8_t> w
         return core::Err(core::ErrorCode::OutOfRange);
     }
 
-    constexpr auto busy = field<PortHandle>("SR2", "BUSY");
-    constexpr auto txe = field<PortHandle>("SR1", "TxE");
-    constexpr auto btf = field<PortHandle>("SR1", "BTF");
-    constexpr auto af = field<PortHandle>("SR1", "AF");
-    constexpr auto arlo = field<PortHandle>("SR1", "ARLO");
-    constexpr auto berr = field<PortHandle>("SR1", "BERR");
-    constexpr auto ack = field<PortHandle>("CR1", "ACK");
-    constexpr auto stop = field<PortHandle>("CR1", "STOP");
-    constexpr auto rxne = field<PortHandle>("SR1", "RxNE");
-    constexpr auto dr = field<PortHandle>("DR", "DR");
+    constexpr auto busy = field<PortHandle, register_id::sr2, field_id::busy>();
+    constexpr auto txe = field<PortHandle, register_id::sr1, field_id::txe>();
+    constexpr auto btf = field<PortHandle, register_id::sr1, field_id::btf>();
+    constexpr auto af = field<PortHandle, register_id::sr1, field_id::af>();
+    constexpr auto arlo = field<PortHandle, register_id::sr1, field_id::arlo>();
+    constexpr auto berr = field<PortHandle, register_id::sr1, field_id::berr>();
+    constexpr auto ack = field<PortHandle, register_id::cr1, field_id::ack>();
+    constexpr auto stop = field<PortHandle, register_id::cr1, field_id::stop>();
+    constexpr auto rxne = field<PortHandle, register_id::sr1, field_id::rxne>();
+    constexpr auto dr = field<PortHandle, register_id::dr, field_id::dr>();
     if (!txe.valid || !btf.valid || !ack.valid || !stop.valid || !rxne.valid || !dr.valid) {
         return core::Err(core::ErrorCode::NotSupported);
     }
@@ -867,8 +939,8 @@ auto write_read_st_i2c_v1(std::uint16_t address, std::span<const std::uint8_t> w
 
 template <typename PortHandle>
 [[nodiscard]] auto check_microchip_twihs_error() -> core::Result<void, core::ErrorCode> {
-    constexpr auto nack = field<PortHandle>("SR", "NACK");
-    constexpr auto arblst = field<PortHandle>("SR", "ARBLST");
+    constexpr auto nack = field<PortHandle, register_id::sr, field_id::nack>();
+    constexpr auto arblst = field<PortHandle, register_id::sr, field_id::arblst>();
 
     if (arblst.valid) {
         const auto value = rt::read_field(arblst);
@@ -920,11 +992,11 @@ auto configure_microchip_twihs_address(std::uint16_t address, bool read,
         return core::Err(core::ErrorCode::OutOfRange);
     }
 
-    constexpr auto mmr_reg = reg<PortHandle>("MMR");
-    constexpr auto iadr_reg = reg<PortHandle>("IADR");
-    constexpr auto iadrsz = field<PortHandle>("MMR", "IADRSZ");
-    constexpr auto mread = field<PortHandle>("MMR", "MREAD");
-    constexpr auto dadr = field<PortHandle>("MMR", "DADR");
+    constexpr auto mmr_reg = reg<PortHandle, register_id::mmr>();
+    constexpr auto iadr_reg = reg<PortHandle, register_id::iadr>();
+    constexpr auto iadrsz = field<PortHandle, register_id::mmr, field_id::iadrsz>();
+    constexpr auto mread = field<PortHandle, register_id::mmr, field_id::mread>();
+    constexpr auto dadr = field<PortHandle, register_id::mmr, field_id::dadr>();
     if (!mmr_reg.valid || !iadr_reg.valid || !iadrsz.valid || !mread.valid || !dadr.valid) {
         return core::Err(core::ErrorCode::NotSupported);
     }
@@ -955,11 +1027,11 @@ auto write_microchip_twihs(std::uint16_t address, std::span<const std::uint8_t> 
         return core::Err(core::ErrorCode::OutOfRange);
     }
 
-    constexpr auto cr_reg = reg<PortHandle>("CR");
-    constexpr auto txrdy = field<PortHandle>("SR", "TXRDY");
-    constexpr auto txcomp = field<PortHandle>("SR", "TXCOMP");
-    constexpr auto txdata = field<PortHandle>("THR", "TXDATA");
-    constexpr auto stop = field<PortHandle>("CR", "STOP");
+    constexpr auto cr_reg = reg<PortHandle, register_id::cr>();
+    constexpr auto txrdy = field<PortHandle, register_id::sr, field_id::txrdy>();
+    constexpr auto txcomp = field<PortHandle, register_id::sr, field_id::txcomp>();
+    constexpr auto txdata = field<PortHandle, register_id::thr, field_id::txdata>();
+    constexpr auto stop = field<PortHandle, register_id::cr, field_id::stop>();
     if (!cr_reg.valid || !txrdy.valid || !txcomp.valid || !txdata.valid || !stop.valid) {
         return core::Err(core::ErrorCode::NotSupported);
     }
@@ -998,12 +1070,12 @@ auto read_microchip_twihs(std::uint16_t address, std::span<std::uint8_t> buffer,
         return core::Ok();
     }
 
-    constexpr auto cr_reg = reg<PortHandle>("CR");
-    constexpr auto start = field<PortHandle>("CR", "START");
-    constexpr auto stop = field<PortHandle>("CR", "STOP");
-    constexpr auto rxrdy = field<PortHandle>("SR", "RXRDY");
-    constexpr auto txcomp = field<PortHandle>("SR", "TXCOMP");
-    constexpr auto rxdata = field<PortHandle>("RHR", "RXDATA");
+    constexpr auto cr_reg = reg<PortHandle, register_id::cr>();
+    constexpr auto start = field<PortHandle, register_id::cr, field_id::start>();
+    constexpr auto stop = field<PortHandle, register_id::cr, field_id::stop>();
+    constexpr auto rxrdy = field<PortHandle, register_id::sr, field_id::rxrdy>();
+    constexpr auto txcomp = field<PortHandle, register_id::sr, field_id::txcomp>();
+    constexpr auto rxdata = field<PortHandle, register_id::rhr, field_id::rxdata>();
     if (!cr_reg.valid || !start.valid || !stop.valid || !rxrdy.valid || !txcomp.valid ||
         !rxdata.valid) {
         return core::Err(core::ErrorCode::NotSupported);
@@ -1057,14 +1129,14 @@ auto configure_st_i2c_v2(const I2cConfig& config) -> core::Result<void, core::Er
         return core::Err(core::ErrorCode::NotSupported);
     }
 
-    constexpr auto cr1 = reg<PortHandle>("CR1");
-    constexpr auto timingr = reg<PortHandle>("TIMINGR");
-    constexpr auto pe = field<PortHandle>("CR1", "PE");
-    constexpr auto presc = field<PortHandle>("TIMINGR", "PRESC");
-    constexpr auto scll = field<PortHandle>("TIMINGR", "SCLL");
-    constexpr auto sclh = field<PortHandle>("TIMINGR", "SCLH");
-    constexpr auto sdadel = field<PortHandle>("TIMINGR", "SDADEL");
-    constexpr auto scldel = field<PortHandle>("TIMINGR", "SCLDEL");
+    constexpr auto cr1 = reg<PortHandle, register_id::cr1>();
+    constexpr auto timingr = reg<PortHandle, register_id::timingr>();
+    constexpr auto pe = field<PortHandle, register_id::cr1, field_id::pe>();
+    constexpr auto presc = field<PortHandle, register_id::timingr, field_id::presc>();
+    constexpr auto scll = field<PortHandle, register_id::timingr, field_id::scll>();
+    constexpr auto sclh = field<PortHandle, register_id::timingr, field_id::sclh>();
+    constexpr auto sdadel = field<PortHandle, register_id::timingr, field_id::sdadel>();
+    constexpr auto scldel = field<PortHandle, register_id::timingr, field_id::scldel>();
     if (!cr1.valid || !timingr.valid || !pe.valid) {
         return core::Err(core::ErrorCode::NotSupported);
     }
@@ -1122,17 +1194,17 @@ auto configure_st_i2c_v1(const I2cConfig& config) -> core::Result<void, core::Er
         return core::Err(core::ErrorCode::NotSupported);
     }
 
-    constexpr auto cr1_reg = reg<PortHandle>("CR1");
-    constexpr auto cr2_reg = reg<PortHandle>("CR2");
-    constexpr auto ccr_reg = reg<PortHandle>("CCR");
-    constexpr auto trise_reg = reg<PortHandle>("TRISE");
-    constexpr auto pe = field<PortHandle>("CR1", "PE");
-    constexpr auto ack = field<PortHandle>("CR1", "ACK");
-    constexpr auto freq = field<PortHandle>("CR2", "FREQ");
-    constexpr auto ccr_field = field<PortHandle>("CCR", "CCR");
-    constexpr auto duty = field<PortHandle>("CCR", "DUTY");
-    constexpr auto f_s = field<PortHandle>("CCR", "F_S");
-    constexpr auto trise = field<PortHandle>("TRISE", "TRISE");
+    constexpr auto cr1_reg = reg<PortHandle, register_id::cr1>();
+    constexpr auto cr2_reg = reg<PortHandle, register_id::cr2>();
+    constexpr auto ccr_reg = reg<PortHandle, register_id::ccr>();
+    constexpr auto trise_reg = reg<PortHandle, register_id::trise>();
+    constexpr auto pe = field<PortHandle, register_id::cr1, field_id::pe>();
+    constexpr auto ack = field<PortHandle, register_id::cr1, field_id::ack>();
+    constexpr auto freq = field<PortHandle, register_id::cr2, field_id::freq>();
+    constexpr auto ccr_field = field<PortHandle, register_id::ccr, field_id::ccr>();
+    constexpr auto duty = field<PortHandle, register_id::ccr, field_id::duty>();
+    constexpr auto f_s = field<PortHandle, register_id::ccr, field_id::f_s>();
+    constexpr auto trise = field<PortHandle, register_id::trise, field_id::trise>();
     if (!cr1_reg.valid || !cr2_reg.valid || !ccr_reg.valid || !trise_reg.valid || !pe.valid ||
         !freq.valid || !ccr_field.valid || !f_s.valid || !trise.valid) {
         return core::Err(core::ErrorCode::NotSupported);
@@ -1211,16 +1283,16 @@ auto configure_microchip_twihs(const I2cConfig& config) -> core::Result<void, co
         return core::Err(core::ErrorCode::NotSupported);
     }
 
-    constexpr auto cr_reg = reg<PortHandle>("CR");
-    constexpr auto cwgr_reg = reg<PortHandle>("CWGR");
-    constexpr auto swrst = field<PortHandle>("CR", "SWRST");
-    constexpr auto msdis = field<PortHandle>("CR", "MSDIS");
-    constexpr auto svdis = field<PortHandle>("CR", "SVDIS");
-    constexpr auto msen = field<PortHandle>("CR", "MSEN");
-    constexpr auto cldiv = field<PortHandle>("CWGR", "CLDIV");
-    constexpr auto chdiv = field<PortHandle>("CWGR", "CHDIV");
-    constexpr auto ckdiv = field<PortHandle>("CWGR", "CKDIV");
-    constexpr auto hold = field<PortHandle>("CWGR", "HOLD");
+    constexpr auto cr_reg = reg<PortHandle, register_id::cr>();
+    constexpr auto cwgr_reg = reg<PortHandle, register_id::cwgr>();
+    constexpr auto swrst = field<PortHandle, register_id::cr, field_id::swrst>();
+    constexpr auto msdis = field<PortHandle, register_id::cr, field_id::msdis>();
+    constexpr auto svdis = field<PortHandle, register_id::cr, field_id::svdis>();
+    constexpr auto msen = field<PortHandle, register_id::cr, field_id::msen>();
+    constexpr auto cldiv = field<PortHandle, register_id::cwgr, field_id::cldiv>();
+    constexpr auto chdiv = field<PortHandle, register_id::cwgr, field_id::chdiv>();
+    constexpr auto ckdiv = field<PortHandle, register_id::cwgr, field_id::ckdiv>();
+    constexpr auto hold = field<PortHandle, register_id::cwgr, field_id::hold>();
     if (!cr_reg.valid || !cwgr_reg.valid || !swrst.valid || !msdis.valid || !svdis.valid ||
         !msen.valid || !cldiv.valid || !chdiv.valid || !ckdiv.valid) {
         return core::Err(core::ErrorCode::NotSupported);

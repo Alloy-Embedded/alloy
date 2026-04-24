@@ -4,6 +4,82 @@
 
 namespace alloy::hal::connection {
 
+namespace detail {
+
+enum class role_id : unsigned char {
+    tx,
+    rx,
+    cts,
+    rts,
+    sck,
+    miso,
+    mosi,
+    scl,
+    sda,
+};
+
+struct tx_role {
+    static constexpr auto id = role_id::tx;
+    static constexpr auto default_signal_id = device::SignalId::signal_tx;
+};
+
+struct rx_role {
+    static constexpr auto id = role_id::rx;
+    static constexpr auto default_signal_id = device::SignalId::signal_rx;
+};
+
+struct cts_role {
+    static constexpr auto id = role_id::cts;
+    static constexpr auto default_signal_id = device::SignalId::signal_cts;
+};
+
+struct rts_role {
+    static constexpr auto id = role_id::rts;
+    static constexpr auto default_signal_id = device::SignalId::signal_rts;
+};
+
+struct sck_role {
+    static constexpr auto id = role_id::sck;
+    static constexpr auto default_signal_id = device::SignalId::signal_sck;
+};
+
+struct miso_role {
+    static constexpr auto id = role_id::miso;
+    static constexpr auto default_signal_id = device::SignalId::signal_miso;
+};
+
+struct mosi_role {
+    static constexpr auto id = role_id::mosi;
+    static constexpr auto default_signal_id = device::SignalId::signal_mosi;
+};
+
+struct scl_role {
+    static constexpr auto id = role_id::scl;
+    static constexpr auto default_signal_id = device::SignalId::signal_scl;
+};
+
+struct sda_role {
+    static constexpr auto id = role_id::sda;
+    static constexpr auto default_signal_id = device::SignalId::signal_sda;
+};
+
+template <typename Role, device::PinId PinIdValue,
+          device::SignalId SignalIdValue = device::SignalId::none>
+struct role_binding {
+    using role_type = Role;
+    struct pin_type {
+        static constexpr auto id = PinIdValue;
+        static constexpr auto name = device::pin<PinIdValue>::name;
+    };
+
+    static constexpr auto pin_id = PinIdValue;
+    static constexpr auto requested_signal_id = SignalIdValue;
+    static constexpr auto default_signal_id = Role::default_signal_id;
+    static constexpr auto role_id = Role::id;
+};
+
+}  // namespace detail
+
 template <device::PeripheralId Id>
 struct peripheral {
     static constexpr auto id = Id;
@@ -44,31 +120,40 @@ using signal = connection::signal<Id>;
 template <typename Signal, typename Pin>
 using bind = connection::binding<Signal, Pin>;
 
-template <typename Pin, typename Signal>
-using tx = bind<Signal, Pin>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using tx = connection::detail::role_binding<connection::detail::tx_role, PinIdValue,
+                                            SignalIdValue>;
 
-template <typename Pin, typename Signal>
-using rx = bind<Signal, Pin>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using rx = connection::detail::role_binding<connection::detail::rx_role, PinIdValue,
+                                            SignalIdValue>;
 
-template <typename Pin, typename Signal>
-using cts = bind<Signal, Pin>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using cts = connection::detail::role_binding<connection::detail::cts_role, PinIdValue,
+                                             SignalIdValue>;
 
-template <typename Pin, typename Signal>
-using rts = bind<Signal, Pin>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using rts = connection::detail::role_binding<connection::detail::rts_role, PinIdValue,
+                                             SignalIdValue>;
 
-template <typename Pin, typename Signal>
-using sck = bind<Signal, Pin>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using sck = connection::detail::role_binding<connection::detail::sck_role, PinIdValue,
+                                             SignalIdValue>;
 
-template <typename Pin, typename Signal>
-using miso = bind<Signal, Pin>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using miso = connection::detail::role_binding<connection::detail::miso_role, PinIdValue,
+                                              SignalIdValue>;
 
-template <typename Pin, typename Signal>
-using mosi = bind<Signal, Pin>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using mosi = connection::detail::role_binding<connection::detail::mosi_role, PinIdValue,
+                                              SignalIdValue>;
 
-template <typename Pin, typename Signal>
-using scl = bind<Signal, Pin>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using scl = connection::detail::role_binding<connection::detail::scl_role, PinIdValue,
+                                             SignalIdValue>;
 
-template <typename Pin, typename Signal>
-using sda = bind<Signal, Pin>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using sda = connection::detail::role_binding<connection::detail::sda_role, PinIdValue,
+                                             SignalIdValue>;
 
 }  // namespace alloy::hal

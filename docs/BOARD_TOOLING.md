@@ -55,11 +55,21 @@ python3 scripts/alloyctl.py explain --board same70_xplained --clock
 python3 scripts/alloyctl.py explain --board same70_xplained --peripheral dma
 ```
 
+`explain` is the supported place to answer board-oriented questions before editing code:
+
+- which published connector alias should I use on this board?
+- what clock profile and debug UART does this board actually ship with?
+- what release gates or examples are part of the supported story?
+
+If you mistype a connector alias, `alloyctl` now prints the valid alternatives with the board-visible peripheral path.
+
 ## Diff
 
 ```bash
 python3 scripts/alloyctl.py diff --from same70_xplained --to nucleo_g071rb
 ```
+
+Use `diff` for migration work, not just inspection. The output highlights clock, debug-UART, connector, example, and release-gate differences that usually force code or validation changes.
 
 ## Build full hardware bundle
 
@@ -76,6 +86,7 @@ python3 scripts/alloyctl.py bundle --board nucleo_f401re
 ```bash
 python3 scripts/alloyctl.py flash --board same70_xplained --target uart_logger --build-first
 python3 scripts/alloyctl.py flash --board nucleo_f401re --target dma_probe --build-first
+python3 scripts/alloyctl.py flash --board nucleo_f401re --target dma_probe --recover --dry-run
 ```
 
 Current flash backend:
@@ -91,11 +102,20 @@ Supported recovery path:
 ```bash
 python3 scripts/alloyctl.py recover --board nucleo_g071rb --target blink
 python3 scripts/alloyctl.py recover --board nucleo_f401re --target blink
+python3 scripts/alloyctl.py recover --board nucleo_g071rb --target blink --dry-run
 ```
+
+Use `--dry-run` when you want the maintained public recovery plan without touching hardware. The output tells you which backend `alloyctl` selected and the supported steps it will run.
 
 - STM32 boards can also use `python3 scripts/alloyctl.py flash --board <board> --target <target> --recover`
 - when `STM32_Programmer_CLI` is installed, `alloyctl` prefers it automatically for STM32 recovery
 - otherwise `alloyctl` falls back to the slower `openocd` recovery path
+
+Board-aware debug and recovery guidance:
+
+- `same70_xplained`: use the EDBG path exposed by the board and confirm logs with `monitor` on the published debug UART
+- `nucleo_g071rb`: recover with the public ST-LINK flow first, then reflash `blink` or another small probe before resuming broader bring-up
+- `nucleo_f401re`: use the same ST-LINK recovery flow; after recovery, validate with `blink` first if a larger target previously failed to flash
 
 Force one backend explicitly:
 

@@ -419,3 +419,5 @@ struct SelectedRuntimeDescriptors {
 };
 
 }  // namespace alloy::device
+
+#include "device/dev.hpp"

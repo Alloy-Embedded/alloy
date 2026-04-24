@@ -6,6 +6,10 @@ Os exemplos oficiais agora seguem o caminho runtime-driven:
 - `board::make_*()`
 - HAL pública única em `src/hal/*`
 
+Isso continua valendo mesmo depois da façade ergonômica em `alloy::dev::*`: os exemplos
+board-oriented permanecem no caminho `board::*`, e a HAL direta fica reservada para probes
+isolados de bring-up ou troubleshooting expert.
+
 Exemplos principais:
 
 - `blink`: LED e board abstraction básica
@@ -19,6 +23,11 @@ Exemplos principais:
 - `rtc_probe`: uso tipado de `RTC` no caminho runtime oficial
 - `can_probe`: uso tipado de `CAN` no caminho runtime oficial
 - `watchdog_probe`: demonstração segura do `watchdog` runtime — abre o handle, valida os traits em compile-time, chama `disable()` onde suportado e `refresh()` no loop; **nunca** chama `enable()` para não armar o IWDG de forma irrecuperável
+
+Exceções deliberadas:
+
+- `uart_path_probe`: probe SAME70 de rota UART direta para validar conectores públicos específicos
+- `manual_uart_probe`: bring-up SAME70 por registrador cru para depuração de board/peripheral path
 
 ## Blocking, Event, Async
 
@@ -34,6 +43,11 @@ Exemplos canônicos dessa camada:
 - `dma_probe`: inicia `uart.write_dma(...)` e espera a conclusão pelo token tipado de DMA, sem API paralela específica da família
 
 O layer async não substitui o HAL principal. Ele só adapta operações já existentes quando o projeto decide incluir os headers opcionais.
+
+Regra editorial:
+
+- exemplos listados como canônicos neste índice devem continuar usando `board::init()` e `board::make_*()`
+- exemplos de HAL direta ou MMIO cru devem deixar claro que não são o caminho público normal
 
 Disponibilidade atual por perfil de board:
 

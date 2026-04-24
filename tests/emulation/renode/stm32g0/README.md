@@ -72,8 +72,8 @@ cmake --preset stm32g0-renode-debug \
 
 - this is still a narrow boot scenario; it is not a full STM32G0 peripheral test suite
 - the platform intentionally stays a thin overlay over the official Renode CPU asset
-- the current `stm32g0.repl` RCC model is partial, so the scenario asserts modeled clock-switch
-  state (`RCC_CR`, `RCC_CFGR`, `FLASH_ACR`) plus GPIO/UART side effects instead of relying on
-  RCC gate readback
+- the current board default is the published `safe_hsi16` profile, so the scenario asserts the
+  modeled HSI16 bring-up state (`RCC_CR`, `RCC_CFGR`, `FLASH_ACR`) plus GPIO/UART side effects
+  instead of relying on RCC gate readback or the older 64 MHz PLL path
 - ST-family overlay/assertion reuse now lives in `tests/emulation/renode/common/`; further
   expansion should build on that shared path instead of adding new per-board scaffolding

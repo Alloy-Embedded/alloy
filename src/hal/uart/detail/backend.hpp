@@ -4,9 +4,9 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
-#include <string_view>
 #include <utility>
 
+#include "hal/connect/tags.hpp"
 #include "hal/detail/runtime_ops.hpp"
 #include "hal/dma/detail/backend.hpp"
 #include "hal/dma/types.hpp"
@@ -19,6 +19,7 @@
 namespace alloy::hal::uart::detail {
 
 namespace rt = alloy::hal::detail::runtime;
+namespace conn = alloy::hal::connection;
 
 struct FieldWrite {
     rt::FieldRef field{};
@@ -42,37 +43,27 @@ template <std::size_t N>
     return core::Ok(static_cast<std::uint32_t>(value));
 }
 
-[[nodiscard]] constexpr auto signal_matches_role(std::string_view signal_name,
-                                                 std::string_view role_name) -> bool {
-    if (signal_name == role_name) {
-        return true;
+template <conn::detail::role_id RoleId, typename Binding>
+[[nodiscard]] consteval auto binding_matches_role() -> bool {
+    if constexpr (requires { Binding::role_id; }) {
+        return Binding::role_id == RoleId;
+    } else {
+        return false;
     }
-    if (role_name == "tx") {
-        return signal_name.starts_with("tx");
-    }
-    if (role_name == "rx") {
-        return signal_name.starts_with("rx");
-    }
-    if (role_name == "cts" || role_name == "rts") {
-        return signal_name.starts_with(role_name);
-    }
-    return false;
 }
 
-template <typename PortHandle, std::size_t... Index>
-[[nodiscard]] constexpr auto has_signal_impl(std::string_view role_name,
-                                             std::index_sequence<Index...>) -> bool {
+template <typename PortHandle, conn::detail::role_id RoleId, std::size_t... Index>
+[[nodiscard]] constexpr auto has_signal_impl(std::index_sequence<Index...>) -> bool {
     using connector_type = typename PortHandle::connector_type;
-    return (signal_matches_role(connector_type::template binding_type<Index>::signal_type::name,
-                                role_name) ||
+    return (binding_matches_role<RoleId, typename connector_type::template binding_type<Index>>() ||
             ...);
 }
 
-template <typename PortHandle>
-[[nodiscard]] constexpr auto has_signal(std::string_view role_name) -> bool {
+template <typename PortHandle, conn::detail::role_id RoleId>
+[[nodiscard]] constexpr auto has_signal() -> bool {
     using connector_type = typename PortHandle::connector_type;
-    return has_signal_impl<PortHandle>(role_name,
-                                       std::make_index_sequence<connector_type::binding_count>{});
+    return has_signal_impl<PortHandle, RoleId>(
+        std::make_index_sequence<connector_type::binding_count>{});
 }
 
 [[nodiscard]] constexpr auto baud_value(Baudrate baudrate) -> std::uint32_t {
@@ -102,7 +93,8 @@ auto configure_st_uart(const UartConfig& config) -> core::Result<void, core::Err
     if (config.flow_control != FlowControl::None) {
         return core::Err(core::ErrorCode::NotSupported);
     }
-    if (!has_signal<PortHandle>("tx") && !has_signal<PortHandle>("rx")) {
+    if (!has_signal<PortHandle, conn::detail::role_id::tx>() &&
+        !has_signal<PortHandle, conn::detail::role_id::rx>()) {
         return core::Err(core::ErrorCode::InvalidParameter);
     }
 
@@ -123,8 +115,10 @@ auto configure_st_uart(const UartConfig& config) -> core::Result<void, core::Err
 
     const auto enable_value = build_register_value(std::array{
         FieldWrite{PortHandle::ue_field, 0u},
-        FieldWrite{PortHandle::re_field, has_signal<PortHandle>("rx") ? 1u : 0u},
-        FieldWrite{PortHandle::te_field, has_signal<PortHandle>("tx") ? 1u : 0u},
+        FieldWrite{PortHandle::re_field,
+               has_signal<PortHandle, conn::detail::role_id::rx>() ? 1u : 0u},
+        FieldWrite{PortHandle::te_field,
+               has_signal<PortHandle, conn::detail::role_id::tx>() ? 1u : 0u},
         FieldWrite{PortHandle::pce_field, config.parity == Parity::None ? 0u : 1u},
         FieldWrite{PortHandle::ps_field, config.parity == Parity::Odd ? 1u : 0u},
         FieldWrite{PortHandle::m1_field.valid ? PortHandle::m0_field : PortHandle::m_field,
@@ -176,7 +170,8 @@ auto configure_microchip_uart_r(const UartConfig& config) -> core::Result<void, 
         config.stop_bits != StopBits::One) {
         return core::Err(core::ErrorCode::NotSupported);
     }
-    if (!has_signal<PortHandle>("tx") && !has_signal<PortHandle>("rx")) {
+    if (!has_signal<PortHandle, conn::detail::role_id::tx>() &&
+        !has_signal<PortHandle, conn::detail::role_id::rx>()) {
         return core::Err(core::ErrorCode::InvalidParameter);
     }
 
@@ -240,8 +235,10 @@ auto configure_microchip_uart_r(const UartConfig& config) -> core::Result<void, 
     }
 
     const auto enable_mask = build_register_value(std::array{
-        FieldWrite{PortHandle::rxen_field, has_signal<PortHandle>("rx") ? 1u : 0u},
-        FieldWrite{PortHandle::txen_field, has_signal<PortHandle>("tx") ? 1u : 0u},
+        FieldWrite{PortHandle::rxen_field,
+               has_signal<PortHandle, conn::detail::role_id::rx>() ? 1u : 0u},
+        FieldWrite{PortHandle::txen_field,
+               has_signal<PortHandle, conn::detail::role_id::tx>() ? 1u : 0u},
     });
     if (enable_mask.is_err()) {
         return core::Err(core::ErrorCode{enable_mask.unwrap_err()});
@@ -259,7 +256,8 @@ auto configure_microchip_usart_zw(const UartConfig& config) -> core::Result<void
         config.stop_bits != StopBits::One || config.parity != Parity::None) {
         return core::Err(core::ErrorCode::NotSupported);
     }
-    if (!has_signal<PortHandle>("tx") && !has_signal<PortHandle>("rx")) {
+    if (!has_signal<PortHandle, conn::detail::role_id::tx>() &&
+        !has_signal<PortHandle, conn::detail::role_id::rx>()) {
         return core::Err(core::ErrorCode::InvalidParameter);
     }
 
@@ -314,8 +312,10 @@ auto configure_microchip_usart_zw(const UartConfig& config) -> core::Result<void
     }
 
     const auto enable_mask = build_register_value(std::array{
-        FieldWrite{PortHandle::us_rxen_field, has_signal<PortHandle>("rx") ? 1u : 0u},
-        FieldWrite{PortHandle::us_txen_field, has_signal<PortHandle>("tx") ? 1u : 0u},
+        FieldWrite{PortHandle::us_rxen_field,
+               has_signal<PortHandle, conn::detail::role_id::rx>() ? 1u : 0u},
+        FieldWrite{PortHandle::us_txen_field,
+               has_signal<PortHandle, conn::detail::role_id::tx>() ? 1u : 0u},
     });
     if (enable_mask.is_err()) {
         return core::Err(core::ErrorCode{enable_mask.unwrap_err()});
@@ -506,16 +506,14 @@ template <typename PortHandle>
     if constexpr (!PortHandle::is_st_style || PortHandle::peripheral_id == device::PeripheralId::none) {
         return rt::kInvalidFieldRef;
     } else {
+#if defined(ALLOY_BOARD_NUCLEO_G071RB) || defined(ALLOY_BOARD_NUCLEO_G0B1RE) || defined(ALLOY_BOARD_NUCLEO_F401RE)
         if constexpr (PortHandle::peripheral_id == device::PeripheralId::USART1) {
-            if constexpr (requires { device::FieldId::field_usart1_cr3_dmat; }) {
-                return rt::field_ref<device::FieldId::field_usart1_cr3_dmat>();
-            }
+            return rt::field_ref<device::FieldId::field_usart1_cr3_dmat>();
         }
         if constexpr (PortHandle::peripheral_id == device::PeripheralId::USART2) {
-            if constexpr (requires { device::FieldId::field_usart2_cr3_dmat; }) {
-                return rt::field_ref<device::FieldId::field_usart2_cr3_dmat>();
-            }
+            return rt::field_ref<device::FieldId::field_usart2_cr3_dmat>();
         }
+#endif
         constexpr auto cr3_reg = rt::find_runtime_register_ref_by_suffix(PortHandle::peripheral_id, "cr3");
         if constexpr (!cr3_reg.valid) {
             return rt::kInvalidFieldRef;
@@ -530,16 +528,14 @@ template <typename PortHandle>
     if constexpr (!PortHandle::is_st_style || PortHandle::peripheral_id == device::PeripheralId::none) {
         return rt::kInvalidFieldRef;
     } else {
+#if defined(ALLOY_BOARD_NUCLEO_G071RB) || defined(ALLOY_BOARD_NUCLEO_G0B1RE) || defined(ALLOY_BOARD_NUCLEO_F401RE)
         if constexpr (PortHandle::peripheral_id == device::PeripheralId::USART1) {
-            if constexpr (requires { device::FieldId::field_usart1_cr3_dmar; }) {
-                return rt::field_ref<device::FieldId::field_usart1_cr3_dmar>();
-            }
+            return rt::field_ref<device::FieldId::field_usart1_cr3_dmar>();
         }
         if constexpr (PortHandle::peripheral_id == device::PeripheralId::USART2) {
-            if constexpr (requires { device::FieldId::field_usart2_cr3_dmar; }) {
-                return rt::field_ref<device::FieldId::field_usart2_cr3_dmar>();
-            }
+            return rt::field_ref<device::FieldId::field_usart2_cr3_dmar>();
         }
+#endif
         constexpr auto cr3_reg = rt::find_runtime_register_ref_by_suffix(PortHandle::peripheral_id, "cr3");
         if constexpr (!cr3_reg.valid) {
             return rt::kInvalidFieldRef;

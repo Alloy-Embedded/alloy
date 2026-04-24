@@ -138,6 +138,7 @@ def main() -> int:
         (("build", "--board", "nucleo_g071rb", "--target", "blink", "-j2"), False),
         (("build", "--board", "nucleo_f401re", "--target", "blink", "-j2"), False),
         (("recover", "--board", "nucleo_g071rb", "--target", "blink", "--help"), True),
+        (("recover", "--board", "nucleo_g071rb", "--target", "blink", "--dry-run"), True),
         (("explain", "--board", "same70_xplained"), True),
         (("explain", "--board", "same70_xplained", "--connector", "debug-uart"), True),
         (("explain", "--board", "same70_xplained", "--clock"), True),
@@ -153,8 +154,30 @@ def main() -> int:
         if require_output and not output.strip():
             errors.append(f"alloyctl {' '.join(check)} produced no output")
 
+    for check, needle in (
+        (("explain", "--board", "same70_xplained", "--connector", "debug-uart"), "ergonomic-route:"),
+        (("explain", "--board", "same70_xplained", "--connector", "debug-uart"), "canonical-route:"),
+        (("explain", "--board", "same70_xplained", "--connector", "debug-uart"), "migration-guidance:"),
+        (("explain", "--board", "same70_xplained", "--connector", "debug-uart"), "\n>\ncanonical-route:"),
+        (("explain", "--board", "same70_xplained", "--connector", "debug-uart"), "\n>"),
+        (("explain", "--board", "same70_xplained", "--clock"), "board-clock-profile:"),
+        (("explain", "--board", "same70_xplained", "--clock"), "clock-guidance:"),
+        (("recover", "--board", "nucleo_g071rb", "--target", "blink", "--dry-run"), "selected-backend:"),
+        (("recover", "--board", "nucleo_g071rb", "--target", "blink", "--dry-run"), "planned-steps:"),
+        (("diff", "--from", "same70_xplained", "--to", "nucleo_g071rb"), "sample ergonomic route"),
+        (("diff", "--from", "same70_xplained", "--to", "nucleo_g071rb"), "migration watchpoints:"),
+        (("diff", "--from", "same70_xplained", "--to", "nucleo_g071rb"), "\n>"),
+    ):
+        rc, output = run_cmd(*check)
+        if rc != 0:
+            errors.append(f"alloyctl {' '.join(check)} failed")
+            continue
+        if needle not in output:
+            errors.append(f"alloyctl {' '.join(check)} did not report expected ergonomic diagnostics")
+
     diagnostic_checks = (
         (("explain", "--board", "same70_xplained", "--connector", "debug-uartx"), "supported connectors"),
+        (("explain", "--board", "same70_xplained", "--connector", "debug-uartx"), "valid alternatives"),
         (("validate", "--board", "same70_xplained", "--kind", "runtimex"), "supported kinds"),
         (("configure", "--board", "same70_xplainedx"), "supported boards"),
     )

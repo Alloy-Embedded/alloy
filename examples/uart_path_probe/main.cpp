@@ -7,11 +7,12 @@
     #error "uart_path_probe is SAME70-only"
 #endif
 
-#include "hal/connect/connector.hpp"
 #include "hal/systick.hpp"
 #include "hal/uart.hpp"
 
 namespace {
+
+// This is an expert SAME70 route probe. The canonical examples stay on board::make_*().
 
 template <typename Uart>
 [[noreturn]] void blink_loop(Uart& uart, const char* banner, std::uint32_t period_ms) {
@@ -31,24 +32,24 @@ template <typename Uart>
 }
 
 #if defined(ALLOY_UART_PROBE_USART0_PB01)
-using ProbeConnector = alloy::hal::connection::connector<
-    alloy::device::PeripheralId::USART0,
-    alloy::hal::connection::tx<alloy::device::PinId::PB1, alloy::device::SignalId::signal_txd0>,
-    alloy::hal::connection::rx<alloy::device::PinId::PB0, alloy::device::SignalId::signal_rxd0>>;
+using ProbeConnector = alloy::hal::uart::route<
+    alloy::dev::periph::USART0,
+    alloy::hal::tx<alloy::dev::pin::PB1, alloy::dev::sig::signal_txd0>,
+    alloy::hal::rx<alloy::dev::pin::PB0, alloy::dev::sig::signal_rxd0>>;
 constexpr auto kBanner = "same70 probe USART0 PB1/PB0\r\n";
 constexpr auto kBlinkMs = 111u;
 #elif defined(ALLOY_UART_PROBE_UART1_PA56)
-using ProbeConnector = alloy::hal::connection::connector<
-    alloy::device::PeripheralId::UART1,
-    alloy::hal::connection::tx<alloy::device::PinId::PA6, alloy::device::SignalId::signal_utxd1>,
-    alloy::hal::connection::rx<alloy::device::PinId::PA5, alloy::device::SignalId::signal_urxd1>>;
+using ProbeConnector = alloy::hal::uart::route<
+    alloy::dev::periph::UART1,
+    alloy::hal::tx<alloy::dev::pin::PA6, alloy::dev::sig::signal_utxd1>,
+    alloy::hal::rx<alloy::dev::pin::PA5, alloy::dev::sig::signal_urxd1>>;
 constexpr auto kBanner = "same70 probe UART1 PA6/PA5\r\n";
 constexpr auto kBlinkMs = 222u;
 #elif defined(ALLOY_UART_PROBE_USART1_PB4_PA21)
-using ProbeConnector = alloy::hal::connection::connector<
-    alloy::device::PeripheralId::USART1,
-    alloy::hal::connection::tx<alloy::device::PinId::PB4, alloy::device::SignalId::signal_txd1>,
-    alloy::hal::connection::rx<alloy::device::PinId::PA21, alloy::device::SignalId::signal_rxd1>>;
+using ProbeConnector = alloy::hal::uart::route<
+    alloy::dev::periph::USART1,
+    alloy::hal::tx<alloy::dev::pin::PB4, alloy::dev::sig::signal_txd1>,
+    alloy::hal::rx<alloy::dev::pin::PA21, alloy::dev::sig::signal_rxd1>>;
 constexpr auto kBanner = "same70 probe USART1 PB4/PA21\r\n";
 constexpr auto kBlinkMs = 333u;
 #else

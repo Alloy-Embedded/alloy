@@ -8,6 +8,7 @@
 #include "hal/types.hpp"
 #include "hal/uart/detail/backend.hpp"
 
+#include "hal/connect/connector.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 
@@ -17,6 +18,9 @@
 namespace alloy::hal::uart {
 
 using Config = UartConfig;
+
+template <device::PeripheralId PeripheralIdValue, typename... Bindings>
+using route = connection::connector<PeripheralIdValue, Bindings...>;
 
 namespace detail {
 
@@ -442,8 +446,10 @@ class port_handle {
 template <typename Connector>
 [[nodiscard]] constexpr auto open(Config config = {}) -> port_handle<Connector> {
     static_assert(port_handle<Connector>::valid,
-                  "Requested UART connector has no valid descriptor-backed route for the selected "
-                  "device/package.");
+                  "Requested UART route has no valid descriptor-backed route for the selected "
+                  "device/package. If you used ergonomic role aliases such as hal::tx<Pin> or "
+                  "hal::rx<Pin>, retry with an explicit expert signal alias such as "
+                  "hal::tx<Pin, alloy::dev::sig::signal_txd1>. Canonical forms remain supported." );
     return port_handle<Connector>{config};
 }
 

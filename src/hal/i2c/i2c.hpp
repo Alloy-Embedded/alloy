@@ -3,8 +3,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
-#include <string_view>
 
+#include "hal/connect/connector.hpp"
 #include "core/error_code.hpp"
 #include "core/result.hpp"
 #include "device/runtime.hpp"
@@ -17,6 +17,9 @@ namespace alloy::hal::i2c {
 using Config = I2cConfig;
 using Addressing = I2cAddressing;
 using Speed = I2cSpeed;
+
+template <device::PeripheralId PeripheralIdValue, typename... Bindings>
+using route = connection::connector<PeripheralIdValue, Bindings...>;
 
 namespace detail {
 
@@ -196,8 +199,10 @@ requires(Connector::valid) class port_handle {
 template <typename Connector>
 [[nodiscard]] constexpr auto open(Config config = {}) -> port_handle<Connector> {
     static_assert(port_handle<Connector>::valid,
-                  "Requested I2C connector has no valid descriptor-backed route for the selected "
-                  "device/package.");
+                  "Requested I2C route has no valid descriptor-backed route for the selected "
+                  "device/package. If you used ergonomic role aliases such as hal::scl<Pin> or "
+                  "hal::sda<Pin>, retry with an explicit expert signal alias. Canonical forms "
+                  "remain supported.");
     return port_handle<Connector>{config};
 }
 
@@ -284,8 +289,10 @@ class shared_device {
 template <typename Connector>
 [[nodiscard]] constexpr auto open_shared_bus(Config config = {}) -> shared_bus<Connector> {
     static_assert(shared_bus<Connector>::valid,
-                  "Requested I2C connector has no valid descriptor-backed route for the selected "
-                  "device/package.");
+                  "Requested I2C route has no valid descriptor-backed route for the selected "
+                  "device/package. If you used ergonomic role aliases such as hal::scl<Pin> or "
+                  "hal::sda<Pin>, retry with an explicit expert signal alias. Canonical forms "
+                  "remain supported.");
     return shared_bus<Connector>{config};
 }
 

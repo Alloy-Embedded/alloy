@@ -5,38 +5,40 @@
 
 namespace alloy::hal::connection {
 
-template <typename Binding>
-using connector_binding = runtime_binding<Binding, Binding::pin_type::id, Binding::signal_type::id>;
+template <device::PeripheralId PeripheralIdValue, typename Binding>
+using connector_binding = runtime_binding<
+    Binding, Binding::pin_type::id,
+    detail::runtime_connector_detail::resolve_binding_signal_id<Binding, PeripheralIdValue>()>;
 
-template <device::PinId PinIdValue, device::SignalId SignalIdValue>
-using tx = alloy::hal::tx<pin<PinIdValue>, signal<SignalIdValue>>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using tx = alloy::hal::tx<PinIdValue, SignalIdValue>;
 
-template <device::PinId PinIdValue, device::SignalId SignalIdValue>
-using rx = alloy::hal::rx<pin<PinIdValue>, signal<SignalIdValue>>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using rx = alloy::hal::rx<PinIdValue, SignalIdValue>;
 
-template <device::PinId PinIdValue, device::SignalId SignalIdValue>
-using cts = alloy::hal::cts<pin<PinIdValue>, signal<SignalIdValue>>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using cts = alloy::hal::cts<PinIdValue, SignalIdValue>;
 
-template <device::PinId PinIdValue, device::SignalId SignalIdValue>
-using rts = alloy::hal::rts<pin<PinIdValue>, signal<SignalIdValue>>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using rts = alloy::hal::rts<PinIdValue, SignalIdValue>;
 
-template <device::PinId PinIdValue, device::SignalId SignalIdValue>
-using sck = alloy::hal::sck<pin<PinIdValue>, signal<SignalIdValue>>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using sck = alloy::hal::sck<PinIdValue, SignalIdValue>;
 
-template <device::PinId PinIdValue, device::SignalId SignalIdValue>
-using miso = alloy::hal::miso<pin<PinIdValue>, signal<SignalIdValue>>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using miso = alloy::hal::miso<PinIdValue, SignalIdValue>;
 
-template <device::PinId PinIdValue, device::SignalId SignalIdValue>
-using mosi = alloy::hal::mosi<pin<PinIdValue>, signal<SignalIdValue>>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using mosi = alloy::hal::mosi<PinIdValue, SignalIdValue>;
 
-template <device::PinId PinIdValue, device::SignalId SignalIdValue>
-using scl = alloy::hal::scl<pin<PinIdValue>, signal<SignalIdValue>>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using scl = alloy::hal::scl<PinIdValue, SignalIdValue>;
 
-template <device::PinId PinIdValue, device::SignalId SignalIdValue>
-using sda = alloy::hal::sda<pin<PinIdValue>, signal<SignalIdValue>>;
+template <device::PinId PinIdValue, device::SignalId SignalIdValue = device::SignalId::none>
+using sda = alloy::hal::sda<PinIdValue, SignalIdValue>;
 
 template <device::PeripheralId PeripheralIdValue, typename... Bindings>
 using connector = runtime_connector<peripheral<PeripheralIdValue>, PeripheralIdValue,
-                                    connector_binding<Bindings>...>;
+                                    connector_binding<PeripheralIdValue, Bindings>...>;
 
 }  // namespace alloy::hal::connection

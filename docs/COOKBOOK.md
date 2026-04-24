@@ -2,6 +2,10 @@
 
 Official examples for the active runtime path.
 
+The cookbook keeps board-oriented examples on `board::init()` plus `board::make_*()`.
+Use the ergonomic direct-HAL route spellings when you are teaching manual connector setup,
+not when pointing users to the canonical in-repo examples.
+
 ## Canonical Examples
 
 | Task | Example | Primary board |
@@ -50,5 +54,6 @@ python3 scripts/alloyctl.py explain --board same70_xplained --clock
 ## Rules
 
 - examples under `examples/` are the official runtime-path documentation
+- board-oriented examples remain on the existing `board::*` path even after the ergonomic alias layer
 - new examples should use `src/hal/**`, `src/time.hpp`, `src/event.hpp`, `src/async.hpp`, and `src/low_power.hpp`
 - examples should not introduce alternate vendor-specific API layers

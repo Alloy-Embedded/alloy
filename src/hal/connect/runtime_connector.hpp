@@ -16,6 +16,9 @@ namespace detail::runtime_connector_detail {
 
 namespace route = alloy::hal::detail::route;
 
+template <typename>
+inline constexpr bool kDependentFalse = false;
+
 struct EmptyRequirements {
     [[nodiscard]] constexpr auto size() const -> std::size_t { return 0u; }
 };
@@ -413,25 +416,62 @@ template <typename Binding, device::runtime::PinId PinIdValue,
           device::runtime::SignalId SignalIdValue>
 struct runtime_binding {
     using binding_type = Binding;
-    using signal_type = typename Binding::signal_type;
+    using signal_type = device::signal<SignalIdValue>;
     using pin_type = typename Binding::pin_type;
     static constexpr auto pin_id = PinIdValue;
     static constexpr auto signal_id = SignalIdValue;
+    static constexpr auto requested_signal_id = Binding::requested_signal_id;
+    static constexpr auto default_signal_id = Binding::default_signal_id;
+    static constexpr auto role_id = Binding::role_id;
 };
 
-template <typename Binding, device::runtime::PeripheralId PeripheralIdValue>
+template <device::runtime::PinId PinIdValue, device::runtime::PeripheralId PeripheralIdValue,
+          device::runtime::SignalId SignalIdValue>
 consteval auto connector_binding_present() -> bool {
-    if constexpr (Binding::pin_id == device::runtime::PinId::none ||
-                  Binding::signal_id == device::runtime::SignalId::none) {
+    if constexpr (PinIdValue == device::runtime::PinId::none ||
+                  SignalIdValue == device::runtime::SignalId::none) {
         return false;
     } else {
 #if ALLOY_DEVICE_CONNECTORS_AVAILABLE
-        return device::connectors::ConnectorTraits<Binding::pin_id, PeripheralIdValue,
-                                                   Binding::signal_id>::kPresent;
+        return device::connectors::ConnectorTraits<PinIdValue, PeripheralIdValue,
+                                                   SignalIdValue>::kPresent;
 #else
-        return device::runtime::RouteTraits<Binding::pin_id, PeripheralIdValue,
-                                            Binding::signal_id>::kPresent;
+        return device::runtime::RouteTraits<PinIdValue, PeripheralIdValue,
+                                            SignalIdValue>::kPresent;
 #endif
+    }
+}
+
+template <typename Binding, device::runtime::PeripheralId PeripheralIdValue>
+consteval auto resolve_binding_signal_id() -> device::runtime::SignalId {
+    if constexpr (Binding::pin_id == device::runtime::PinId::none) {
+        return device::runtime::SignalId::none;
+    } else if constexpr (Binding::requested_signal_id != device::runtime::SignalId::none) {
+        if constexpr (connector_binding_present<Binding::pin_id, PeripheralIdValue,
+                                               Binding::requested_signal_id>()) {
+            return Binding::requested_signal_id;
+        } else {
+            static_assert(
+                kDependentFalse<Binding>,
+                "Requested explicit signal alias is not valid for this pin/peripheral on the "
+                "selected device/package. Retry with a published connector alias from "
+                "alloyctl explain --board <board> --connector <alias> or choose the canonical "
+                "signal published by alloy-devices.");
+            return device::runtime::SignalId::none;
+        }
+    } else {
+        if constexpr (connector_binding_present<Binding::pin_id, PeripheralIdValue,
+                                               Binding::default_signal_id>()) {
+            return Binding::default_signal_id;
+        } else {
+            static_assert(
+                kDependentFalse<Binding>,
+                "Could not infer a valid signal for this ergonomic role alias on the selected "
+                "device/package. Retry with an explicit expert signal alias such as "
+                "alloy::dev::sig::signal_* or inspect the published connector aliases with "
+                "alloyctl explain --board <board> --connector <alias>.");
+            return device::runtime::SignalId::none;
+        }
     }
 }
 
@@ -445,7 +485,7 @@ template <typename Peripheral, device::runtime::PeripheralId PeripheralIdValue,
           typename... Bindings>
 struct runtime_connector {
     using peripheral_type = Peripheral;
-    using binding_tuple = std::tuple<typename Bindings::binding_type...>;
+    using binding_tuple = std::tuple<Bindings...>;
 
     static constexpr auto peripheral_id = PeripheralIdValue;
     static constexpr auto binding_count = sizeof...(Bindings);
@@ -455,13 +495,15 @@ struct runtime_connector {
         ((Bindings::pin_id != device::runtime::PinId::none &&
           Bindings::signal_id != device::runtime::SignalId::none) &&
          ...) &&
-        (connector_binding_present<Bindings, PeripheralIdValue>() && ...);
+                (connector_binding_present<Bindings::pin_id, PeripheralIdValue, Bindings::signal_id>() &&
+                 ...);
 #else
     static constexpr auto valid =
         ((Bindings::pin_id != device::runtime::PinId::none &&
           Bindings::signal_id != device::runtime::SignalId::none) &&
          ...) &&
-        (connector_binding_present<Bindings, PeripheralIdValue>() && ...);
+                (connector_binding_present<Bindings::pin_id, PeripheralIdValue, Bindings::signal_id>() &&
+                 ...);
 #endif
 
     template <std::size_t Index>

@@ -42,6 +42,7 @@ Notes:
 - `monitor` auto-detects the UART port when possible; pass `--port` if multiple candidates exist
 - if you only want to build, replace `flash` with `build`
 - if an STM32 board is trapped by bad firmware, use `python3 scripts/alloyctl.py recover --board <board> --target blink`
+- if you want to inspect the supported recovery path before touching hardware, add `--dry-run`
 
 ## Configure And Build Explicitly
 
@@ -92,5 +93,7 @@ Use:
 python3 scripts/alloyctl.py explain --board same70_xplained
 python3 scripts/alloyctl.py diff --from same70_xplained --to nucleo_g071rb
 ```
+
+Use `explain --connector ...` before writing a raw route, and use `diff --from ... --to ...` before migrating code between boards so the published clock, debug UART, and release-gate differences are visible up front.
 
 See [COOKBOOK.md](COOKBOOK.md) and [../examples/README.md](../examples/README.md) for the official runtime-path examples.

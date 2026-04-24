@@ -180,6 +180,60 @@ def run_soft(cmd: list[str]) -> int:
     return completed.returncode
 
 
+def select_flash_backend(cfg: BoardConfig, requested_backend: str, recover: bool) -> str:
+    if requested_backend != "auto":
+        return requested_backend
+    if recover and cfg.stm32_programmer_supported and find_stm32_programmer_cli():
+        return "stm32cube"
+    return "openocd"
+
+
+def flash_plan_lines(cfg: BoardConfig, target: str, backend: str, recover: bool) -> list[str]:
+    action = "recover-and-flash" if recover else "flash"
+    lines = [
+        f"board: {cfg.board}",
+        f"target: {target}",
+        f"action: {action}",
+        f"selected-backend: {backend}",
+    ]
+
+    if backend == "stm32cube":
+        lines.extend(
+            [
+                "supported-flow: STM32CubeProgrammer connect-under-reset path",
+                "planned-steps:",
+                "  - connect over SWD with hardware reset",
+            ]
+        )
+        if recover:
+            lines.append("  - mass erase before flashing")
+        lines.extend(
+            [
+                "  - write image, verify, then reset",
+                f"tool-detection: {'STM32_Programmer_CLI found' if find_stm32_programmer_cli() else 'STM32_Programmer_CLI not found'}",
+            ]
+        )
+        return lines
+
+    lines.extend(
+        [
+            "supported-flow: OpenOCD board/probe path",
+            "planned-steps:",
+        ]
+    )
+    if recover:
+        lines.append("  - connect under reset with conservative adapter speed")
+    else:
+        lines.append("  - connect with the board's published OpenOCD config")
+    lines.extend(
+        [
+            "  - program image, verify, then reset",
+            f"openocd-config: {' '.join(cfg.openocd_args)}",
+        ]
+    )
+    return lines
+
+
 VALIDATION_PRESETS: dict[str, dict[str, str]] = {
     "host": {
         "runtime": "host-mmio-validation",
@@ -307,6 +361,130 @@ def format_lines(lines: list[str]) -> None:
         print(line)
 
 
+def connector_summary(connector: ConnectorInfo) -> str:
+    bindings = ", ".join(connector.bindings)
+    summary = f"{connector.alias}: {connector.peripheral} via {bindings}"
+    if connector.note:
+        summary += f" ({connector.note})"
+    return summary
+
+
+def connector_alternative_lines(connectors: dict[str, ConnectorInfo]) -> list[str]:
+    return ["valid alternatives:", *[f"  - {connector_summary(connectors[name])}" for name in sorted(connectors)]]
+
+
+def board_clock_guidance(cfg: BoardConfig, insight: BoardInsight) -> str:
+    return (
+        f"Use the published {cfg.board} clock profile as-is for bring-up and migration work; "
+        "do not carry raw clock assumptions across boards."
+    )
+
+
+def board_debug_guidance(cfg: BoardConfig, insight: BoardInsight) -> str:
+    return (
+        f"Use the documented {cfg.board} debug UART path first when validating logs, flash recovery, "
+        "or monitor output."
+    )
+
+
+def migration_watchpoints(left: BoardConfig, right: BoardConfig, left_insight: BoardInsight,
+                          right_insight: BoardInsight, left_release: dict, right_release: dict) -> list[str]:
+    notes = [
+        f"retune clock assumptions from '{left_insight.clock_summary}' to '{right_insight.clock_summary}'",
+        f"move debug and monitor expectations from '{left_insight.debug_uart_summary}' to '{right_insight.debug_uart_summary}'",
+    ]
+
+    left_connectors = {item.alias for item in left_insight.connectors}
+    right_connectors = {item.alias for item in right_insight.connectors}
+    dropped_connectors = sorted(left_connectors - right_connectors)
+    added_connectors = sorted(right_connectors - left_connectors)
+    if dropped_connectors:
+        notes.append(f"replace source-only connector aliases: {', '.join(dropped_connectors)}")
+    if added_connectors:
+        notes.append(f"consider target-only connector aliases: {', '.join(added_connectors)}")
+
+    left_gates = set(left_release["required_gates"])
+    right_gates = set(right_release["required_gates"])
+    if left_gates != right_gates:
+        notes.append(
+            f"re-run target release gates: {', '.join(sorted(right_gates)) or 'none'}"
+        )
+
+    left_examples = set(left_release["required_examples"])
+    right_examples = set(right_release["required_examples"])
+    if left_examples != right_examples:
+        notes.append(
+            f"recheck required example coverage on target: {', '.join(sorted(right_examples)) or 'none'}"
+        )
+    return notes
+
+
+def route_family_name(peripheral: str) -> str:
+    if peripheral.startswith(("USART", "UART")):
+        return "uart"
+    if peripheral.startswith("SPI"):
+        return "spi"
+    if peripheral.startswith(("TWI", "I2C")):
+        return "i2c"
+    if peripheral.startswith("CAN"):
+        return "can"
+    return "connection"
+
+
+def split_binding(binding: str) -> tuple[str, str]:
+    pin, signal = (part.strip() for part in binding.split("->", 1))
+    return pin, signal
+
+
+def signal_role_name(signal: str) -> str:
+    signal_lower = signal.lower()
+    for prefix in ("tx", "rx", "cts", "rts", "sck", "miso", "mosi", "scl", "sda"):
+        if signal_lower.startswith(prefix):
+            return prefix
+    return signal_lower
+
+
+def ergonomic_binding(binding: str) -> str:
+    pin, signal = split_binding(binding)
+    role = signal_role_name(signal)
+    pin_text = f"alloy::dev::pin::{pin}"
+    signal_lower = signal.lower()
+    if signal_lower == role:
+        return f"alloy::hal::{role}<{pin_text}>"
+    return f"alloy::hal::{role}<{pin_text}, alloy::dev::sig::signal_{signal_lower}>"
+
+
+def canonical_binding(binding: str) -> str:
+    pin, signal = split_binding(binding)
+    role = signal_role_name(signal)
+    return (
+        f"alloy::hal::{role}<alloy::device::PinId::{pin}, "
+        f"alloy::device::SignalId::signal_{signal.lower()}>"
+    )
+
+
+def ergonomic_route(connector: ConnectorInfo) -> str:
+    family = route_family_name(connector.peripheral)
+    joined = ",\n    ".join(ergonomic_binding(binding) for binding in connector.bindings)
+    return (
+        f"alloy::hal::{family}::route<\n"
+        f"    alloy::dev::periph::{connector.peripheral},\n"
+        f"    {joined}\n"
+        f">"
+    )
+
+
+def canonical_route(connector: ConnectorInfo) -> str:
+    family = route_family_name(connector.peripheral)
+    joined = ",\n    ".join(canonical_binding(binding) for binding in connector.bindings)
+    return (
+        f"alloy::hal::{family}::route<\n"
+        f"    alloy::device::PeripheralId::{connector.peripheral},\n"
+        f"    {joined}\n"
+        f">"
+    )
+
+
 def cmd_build(args: argparse.Namespace) -> None:
     cfg = board_config(args.board)
     ensure_configured(cfg, args.build_type, build_tests=False)
@@ -326,15 +504,14 @@ def cmd_bundle(args: argparse.Namespace) -> None:
 
 def cmd_flash(args: argparse.Namespace) -> None:
     cfg = board_config(args.board)
-    if args.build_first:
+    if args.build_first and not args.dry_run:
         ensure_configured(cfg, args.build_type, build_tests=False)
         build(cfg, args.target, args.jobs)
-    backend = args.flash_backend
-    if backend == "auto":
-        if args.recover and cfg.stm32_programmer_supported and find_stm32_programmer_cli():
-            backend = "stm32cube"
-        else:
-            backend = "openocd"
+    backend = select_flash_backend(cfg, args.flash_backend, args.recover)
+
+    if args.dry_run:
+        format_lines(flash_plan_lines(cfg, args.target, backend, args.recover))
+        return
 
     if backend == "stm32cube":
         if not cfg.stm32_programmer_supported:
@@ -488,21 +665,26 @@ def cmd_explain(args: argparse.Namespace) -> None:
         connector = connectors.get(args.connector)
         options = sorted(connectors)
         if connector is None:
+            message = (
+                f"unsupported connector alias '{args.connector}' for {cfg.board} ({insight.display_name}); "
+                f"supported connectors: {', '.join(options)}{suggest(args.connector, options)}"
+            )
             raise SystemExit(
-                die(
-                    f"unsupported connector alias '{args.connector}' for {cfg.board}; "
-                    f"supported connectors: {', '.join(options)}{suggest(args.connector, options)}"
-                )
+                die("\n".join([message, *connector_alternative_lines(connectors)]))
             )
         lines = [
             f"board: {cfg.board}",
+            f"board-name: {insight.display_name}",
             f"connector: {connector.alias}",
+            f"ergonomic-route: {ergonomic_route(connector)}",
+            f"canonical-route: {canonical_route(connector)}",
             f"peripheral: {connector.peripheral}",
             "bindings:",
             *[f"  - {binding}" for binding in connector.bindings],
         ]
         if connector.note:
             lines.append(f"note: {connector.note}")
+        lines.append(f"migration-guidance: prefer this published connector alias on {cfg.board} before spelling a raw route")
         format_lines(lines)
         return
 
@@ -510,9 +692,12 @@ def cmd_explain(args: argparse.Namespace) -> None:
         format_lines(
             [
                 f"board: {cfg.board}",
-                f"clock: {insight.clock_summary}",
-                f"debug-uart: {insight.debug_uart_summary}",
+                f"board-name: {insight.display_name}",
+                f"board-clock-profile: {insight.clock_summary}",
+                f"board-debug-uart: {insight.debug_uart_summary}",
                 f"required gates: {', '.join(release['required_gates'])}",
+                f"clock-guidance: {board_clock_guidance(cfg, insight)}",
+                f"debug-guidance: {board_debug_guidance(cfg, insight)}",
             ]
         )
         return
@@ -585,11 +770,16 @@ def cmd_explain(args: argparse.Namespace) -> None:
             f"board: {cfg.board}",
             f"display-name: {insight.display_name}",
             f"tier: {release['tier']}",
-            f"clock: {insight.clock_summary}",
-            f"debug-uart: {insight.debug_uart_summary}",
+            f"board-clock-profile: {insight.clock_summary}",
+            f"board-debug-uart: {insight.debug_uart_summary}",
             f"required examples: {', '.join(release['required_examples'])}",
             f"required gates: {', '.join(release['required_gates'])}",
             f"known connector aliases: {', '.join(item.alias for item in insight.connectors)}",
+            "connector summary:",
+            *[f"  - {connector_summary(item)}" for item in insight.connectors],
+            f"sample ergonomic route: {ergonomic_route(insight.connectors[0])}",
+            f"clock-guidance: {board_clock_guidance(cfg, insight)}",
+            f"debug-guidance: {board_debug_guidance(cfg, insight)}",
             f"notes: {release['notes']}",
         ]
     )
@@ -610,15 +800,17 @@ def cmd_diff(args: argparse.Namespace) -> None:
     right_gates = set(right_release["required_gates"])
     left_connectors = {item.alias for item in left_insight.connectors}
     right_connectors = {item.alias for item in right_insight.connectors}
+    shared_connectors = sorted(left_connectors & right_connectors)
+    watchpoints = migration_watchpoints(left, right, left_insight, right_insight, left_release, right_release)
 
     format_lines(
         [
             f"from: {left.board}",
             f"to: {right.board}",
             f"tier: {left_release['tier']} -> {right_release['tier']}",
-            f"clock: {left_insight.clock_summary}",
+            f"clock(source): {left_insight.clock_summary}",
             f"clock(target): {right_insight.clock_summary}",
-            f"debug-uart: {left_insight.debug_uart_summary}",
+            f"debug-uart(source): {left_insight.debug_uart_summary}",
             f"debug-uart(target): {right_insight.debug_uart_summary}",
             f"required examples only in {left.board}: {', '.join(sorted(left_examples - right_examples)) or 'none'}",
             f"required examples only in {right.board}: {', '.join(sorted(right_examples - left_examples)) or 'none'}",
@@ -626,6 +818,11 @@ def cmd_diff(args: argparse.Namespace) -> None:
             f"required gates only in {right.board}: {', '.join(sorted(right_gates - left_gates)) or 'none'}",
             f"connector aliases only in {left.board}: {', '.join(sorted(left_connectors - right_connectors)) or 'none'}",
             f"connector aliases only in {right.board}: {', '.join(sorted(right_connectors - left_connectors)) or 'none'}",
+            f"connector aliases shared by both boards: {', '.join(shared_connectors) or 'none'}",
+            f"sample ergonomic route ({left.board}): {ergonomic_route(left_insight.connectors[0])}",
+            f"sample ergonomic route ({right.board}): {ergonomic_route(right_insight.connectors[0])}",
+            "migration watchpoints:",
+            *[f"  - {note}" for note in watchpoints],
         ]
     )
 
@@ -659,6 +856,7 @@ def main() -> int:
     flash_p.add_argument("--target", required=True)
     flash_p.add_argument("--build-first", action="store_true")
     flash_p.add_argument("--recover", action="store_true")
+    flash_p.add_argument("--dry-run", action="store_true")
     flash_p.add_argument("--flash-backend", default="auto", choices=("auto", "openocd", "stm32cube"))
     flash_p.add_argument("-j", "--jobs", type=int, default=8)
     flash_p.set_defaults(func=cmd_flash)
@@ -666,6 +864,7 @@ def main() -> int:
     recover_p = sub.add_parser("recover")
     add_build_args(recover_p)
     recover_p.add_argument("--target", required=True)
+    recover_p.add_argument("--dry-run", action="store_true")
     recover_p.add_argument("--flash-backend", default="auto", choices=("auto", "openocd", "stm32cube"))
     recover_p.add_argument("-j", "--jobs", type=int, default=8)
     recover_p.set_defaults(func=cmd_recover)

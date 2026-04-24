@@ -24,6 +24,9 @@ using State = PinState;
 using Pull = PinPull;
 using Drive = PinDrive;
 
+template <device::PinId Id>
+using pin = device::pin<Id>;
+
 namespace detail {
 
 namespace rt = alloy::hal::detail::runtime;
@@ -619,6 +622,11 @@ template <typename Pin>
     static_assert(pin_handle<Pin>::valid,
                   "Requested GPIO pin is not available for the selected device/package.");
     return pin_handle<Pin>{config};
+}
+
+template <device::PinId PinIdValue>
+[[nodiscard]] constexpr auto open(Config config = {}) -> pin_handle<pin<PinIdValue>> {
+    return open<pin<PinIdValue>>(config);
 }
 
 }  // namespace alloy::hal::gpio
