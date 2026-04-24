@@ -28,6 +28,10 @@
       "kind": "script",
       "command": "python3 scripts/check_alloyctl_tooling_parity.py"
     },
+    "docs-site": {
+      "kind": "script",
+      "command": "python3 scripts/check_docs_site.py"
+    },
     "descriptor-contract-smoke": {
       "kind": "build",
       "target": "alloy-device-contract-smoke"

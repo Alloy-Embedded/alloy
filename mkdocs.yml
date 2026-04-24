@@ -1,0 +1,71 @@
+site_name: Alloy
+site_description: C++23 bare-metal HAL and runtime with descriptor-driven device boundary
+site_url: https://lgili.github.io/alloy/
+repo_url: https://github.com/lgili/alloy
+repo_name: lgili/alloy
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - content.action.edit
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - User Guide:
+      - Quickstart: QUICKSTART.md
+      - Board Tooling: BOARD_TOOLING.md
+      - Cookbook: COOKBOOK.md
+      - Support Matrix: SUPPORT_MATRIX.md
+      - CMake Consumption: CMAKE_CONSUMPTION.md
+      - Migration Guide: MIGRATION_GUIDE.md
+  - Reference:
+      - Runtime Async Model: RUNTIME_ASYNC_MODEL.md
+      - Runtime Device Boundary: RUNTIME_DEVICE_BOUNDARY.md
+      - Porting A New Board: PORTING_NEW_BOARD.md
+      - Porting A New Platform: PORTING_NEW_PLATFORM.md
+  - Internals:
+      - Architecture: ARCHITECTURE.md
+      - Code Generation: CODE_GENERATION.md
+      - Release Discipline: RELEASE_DISCIPLINE.md
+      - Release Checklist: RELEASE_CHECKLIST.md
+      - Runtime Cleanup Audit: RUNTIME_CLEANUP_AUDIT.md
+      - Docs Site: DOCS_SITE.md
+
+strict: true

@@ -116,4 +116,4 @@ python3 scripts/alloyctl.py diff --from same70_xplained --to nucleo_g071rb
 
 Use `explain --connector ...` before writing a raw route, and use `diff --from ... --to ...` before migrating code between boards so the published clock, debug UART, and release-gate differences are visible up front.
 
-See [COOKBOOK.md](COOKBOOK.md) and [../examples/README.md](../examples/README.md) for the official runtime-path examples.
+See [COOKBOOK.md](COOKBOOK.md) and the [`examples/` tree on GitHub](https://github.com/lgili/alloy/tree/main/examples) for the official runtime-path examples.
