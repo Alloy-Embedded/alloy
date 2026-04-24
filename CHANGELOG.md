@@ -1,236 +1,96 @@
 # Changelog
 
-All notable changes to Alloy Framework will be documented in this file.
+All notable changes to this project are documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project
+aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once the public
+API stabilises past `0.x`.
 
 ## [Unreleased]
 
-### Added
-- Nothing yet
+## [0.1.0] — 2026-04-24
 
-### Changed
-- Nothing yet
-
-### Deprecated
-- Nothing yet
-
-### Removed
-- Nothing yet
-
-### Fixed
-- Nothing yet
-
-### Security
-- Nothing yet
-
----
-
-## [1.0.0] - 2025-11-15
-
-### Project Consolidation Release
-
-This is the first official release after major project consolidation. The framework was renamed from CoreZero to Alloy and underwent extensive refactoring.
+The first tagged `alloy` release. Establishes the C++23 bare-metal HAL surface, the
+descriptor-driven device boundary, the runtime async model, foundational-board hardware
+validation, tooling parity, and the public docs site.
 
 ### Added
 
-#### Core Features
-- **Modern C++20 HAL**: Policy-based hardware abstraction layer with concepts
-- **Multi-platform Support**: STM32F4, STM32F7, STM32G0, SAME70
-- **Result<T,E> Type**: Rust-inspired error handling (zero exceptions)
-- **C++20 Concepts**: Compile-time API validation
+#### Public HAL surface
 
-#### Supported Boards
-- Nucleo-F401RE (STM32F4 @ 84 MHz)
-- Nucleo-F722ZE (STM32F7 @ 216 MHz)
-- Nucleo-G071RB (STM32G0 @ 64 MHz)
-- Nucleo-G0B1RE (STM32G0 @ 64 MHz)
+- C++23 public HAL with a uniform `Config` + `handle<PeripheralId>` + `configure()` +
+  `open<P>(...)` pattern across GPIO, UART, I2C, SPI, DMA, Timer, PWM, ADC, DAC, RTC, CAN,
+  and watchdog.
+- Board helper layer (`board::init()`, `board::make_*()`) on three foundational boards:
+  `same70_xplained`, `nucleo_g071rb`, `nucleo_f401re`.
+- Descriptor-driven device boundary: peripheral topology, clock trees, DMA channels, and
+  interrupt routing come from the external `alloy-devices` artifact, pinned at commit
+  `fa0630fe1501e7435463c1a2f2df4e9858e507b4` for this release.
 
-#### Code Generation
-- Unified SVD-to-C++ code generator (`tools/codegen/codegen.py`)
-- Multi-vendor support (ST, Atmel, Espressif, Raspberry Pi)
-- Template-based generation with Jinja2
-- Metadata tracking for generated files
+#### Runtime async model
 
-#### Testing Infrastructure
-- 49 unit tests (core functionality)
-- 20 integration tests (component interaction)
-- 31 regression tests (bug documentation)
-- 3 hardware validation tests (bare-metal LED/button tests)
-- Total: 103 tests with Catch2 v3
+- `src/time.hpp` — portable `Duration`, `Instant`, `Deadline`, `time::source<TickSource>`.
+- `src/event.hpp` — typed `runtime::event::completion<Tag>` with `wait_for` returning
+  `core::Result<void, core::ErrorCode>`; `Timeout` is a first-class recoverable outcome.
+- `src/async.hpp` — optional scheduler-friendly adapter that wraps the same HAL operations as
+  the blocking+completion path.
+- Canonical example `examples/async_uart_timeout/` demonstrating the three observable outcomes:
+  success, timeout, recovery.
+- Host unit coverage `tests/unit/test_async_completion_timeout.cpp` proving the reusable-token
+  timeout semantics on a deterministic mock time source.
+- `scripts/check_blocking_only_path.py` guard (+ `blocking-only-path` release gate) enforcing
+  that blocking+completion examples never depend on `src/async.hpp`.
 
-#### CI/CD
-- Multi-OS builds (Ubuntu + macOS)
-- Multi-compiler (GCC 11 + Clang 14)
-- Embedded builds for all boards
-- Code quality gates (clang-format, clang-tidy, cppcheck)
-- Automated release workflow
+#### Hardware validation
 
-#### Documentation
-- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - 815 lines
-- [PORTING_NEW_BOARD.md](docs/PORTING_NEW_BOARD.md) - 726 lines
-- [PORTING_NEW_PLATFORM.md](docs/PORTING_NEW_PLATFORM.md) - 876 lines
-- [CODE_GENERATION.md](docs/CODE_GENERATION.md) - 1181 lines
-- [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) - Complete migration guide
+- SAME70: all foundational + representative examples flashed and validated on silicon; full
+  telemetry captured in `tests/hardware/same70/CHECKLIST.md`.
+- STM32G0 (`nucleo_g071rb`) and STM32F4 (`nucleo_f401re`) bring-up runs captured in their
+  respective `tests/hardware/*/CHECKLIST.md` files.
+- Renode runtime validation covering `same70-runtime-validation`,
+  `stm32g0-runtime-validation`, and `stm32f4-runtime-validation` presets.
+- `same70-zero-overhead` gate asserting the blocking path pays no runtime cost for the async
+  adapter layer.
 
-### Changed
+#### Tooling
 
-#### Directory Structure
-- Moved generated files to `/generated/` subdirectories
-- Consolidated `platform/` → `vendors/` directory structure
-- Organized by vendor (st, arm, atmel, espressif, raspberrypi)
+- `alloyctl configure | build | bundle | flash | recover | monitor | gdbserver | validate |
+  sweep | explain | diff` as the stable board-oriented UX.
+- `alloyctl compile-commands` — symlink or copy `compile_commands.json` at the repo root for
+  clangd/LSP.
+- `alloyctl info` — machine-readable JSON environment report (version, pinned `alloy-devices`
+  ref alignment, board tiers, required gates, tool versions, repo git sha).
+- `alloyctl doctor` — preflight check for cmake, arm-none-eabi-gcc, openocd, pyserial, and
+  device-contract ref alignment.
+- `alloyctl new` — scaffold a downstream firmware starter for a foundational board.
+- `scripts/check_alloyctl_tooling_parity.py` covering the four new subcommands
+  (`alloyctl-tooling-parity` release gate).
 
-**Before**:
-```
-src/hal/platform/st/stm32f4/
-├── registers/
-└── bitfields/
-```
+#### Docs site
 
-**After**:
-```
-src/hal/vendors/st/stm32f4/
-├── generated/
-│   ├── registers/
-│   └── bitfields/
-├── gpio.hpp
-└── clock_platform.hpp
-```
+- MkDocs Material configuration at `mkdocs.yml` with User Guide / Reference / Internals
+  navigation split.
+- `docs/index.md` landing page and `docs/DOCS_SITE.md` build-and-publish guide.
+- `.github/workflows/docs.yml` builds and deploys to GitHub Pages on push to `main`.
+- `scripts/check_docs_site.py` runs `mkdocs build --strict` as the `docs-site` release gate.
 
-#### API Standardization
-- **GPIO API**: Added `write(bool)` method, `read()` returns `Result<bool, ErrorCode>`
-- **Clock API**: All methods return `Result<void, ErrorCode>`
-- **Clock API**: Added `enable_uart_clock()`, `enable_spi_clock()`, `enable_i2c_clock()`
-- **Concepts**: Added `ClockPlatform` and `GpioPin` concepts for compile-time validation
+#### Release discipline
 
-#### Build System
-- Platform selection: `ALLOY_PLATFORM` (linux, stm32f4, stm32f7, stm32g0)
-- Board selection: `ALLOY_BOARD` (nucleo_f401re, nucleo_f722ze, etc.)
-- Explicit source lists (removed excessive GLOB usage)
-- Build system validation (`validate-build-system` target)
+- `docs/RELEASE_MANIFEST.json` enumerating release gates, board tiers, required examples per
+  foundational board, and the `alloy-devices` compatibility pin.
+- `scripts/check_changelog_present.py` enforcing that the version declared in `CMakeLists.txt`
+  has a matching changelog section (`changelog-present` release gate).
+- `docs/RELEASE_NOTES_v0.1.0.md` as the canonical release-body text for this cut.
 
-#### Testing
-- Migrated from Google Test to Catch2 v3
-- Organized tests: unit/ integration/ regression/ hardware/
-- All tests use `Result<T,E>` pattern consistently
+### Known gaps
 
-### Deprecated
+- CAN peripheral class remains `experimental`: boot/loop banner validated on SAME70, but a
+  deterministic traffic assertion is still pending and blocks promotion.
+- Alternate UART route probes on SAME70 (`usart0_pb01`, `uart1_pa56`) are build-only on the
+  current lab wiring; they need a second USB-UART adapter to produce honest on-silicon
+  evidence.
+- STM32F4 DMA validation on the `nucleo_f401re` bundle is tracked in the foundational hardware
+  validation change; the build is in the bundle but the lab rerun with a probe is still open.
 
-- Old `COREZERO_*` CMake variables (use `ALLOY_*` instead)
-- Platform name `host` (use `linux` instead)
-- Direct include of generated files without `/generated/` path
-
-### Removed
-
-- `src/hal/platform/` directory (consolidated to `vendors/`)
-- Old code generation scripts (replaced by unified `codegen.py`)
-- Google Test framework (migrated to Catch2 v3)
-- Manual test frameworks (all tests now use Catch2)
-
-### Fixed
-
-- **30+ bugs** documented and tested in regression test suite:
-  - GPIO read/write edge cases
-  - Clock initialization race conditions
-  - UART buffer overflow handling
-  - SPI/I2C timing issues
-  - Result<T,E> error propagation
-
-### Security
-
-- No security vulnerabilities in this release
-- Static analysis passes (clang-tidy + cppcheck)
-- Zero dynamic allocation in core HAL
-- No unsafe C-style casts
-
----
-
-## Technical Details
-
-### Build Artifacts
-
-Each release includes:
-- Binary packages for all supported boards (.elf, .bin, .hex, .map)
-- Size reports (Flash/RAM usage)
-- SHA256 checksums
-- Version metadata
-- Documentation package
-
-### Test Coverage
-
-| Category | Count | Coverage |
-|----------|-------|----------|
-| Unit Tests | 49 | Core functionality |
-| Integration Tests | 20 | Component interaction |
-| Regression Tests | 31 | Bug prevention |
-| Hardware Tests | 3 | Bare-metal validation |
-| **Total** | **103** | **Comprehensive** |
-
-### Binary Sizes (MinSizeRel)
-
-| Board | Blink Example | Flash | RAM |
-|-------|---------------|-------|-----|
-| Nucleo-F401RE | blink.elf | 3028 bytes | 112 bytes |
-| Nucleo-F722ZE | blink.elf | 3028 bytes | 112 bytes |
-| Nucleo-G071RB | blink.elf | 2632 bytes | 96 bytes |
-| Nucleo-G0B1RE | blink.elf | 2632 bytes | 96 bytes |
-
-### Platforms
-
-| Platform | MCU Family | Clock Speed | Status |
-|----------|------------|-------------|--------|
-| STM32F4 | Cortex-M4 | up to 84 MHz | ✅ Tested |
-| STM32F7 | Cortex-M7 | up to 216 MHz | ✅ Tested |
-| STM32G0 | Cortex-M0+ | up to 64 MHz | ✅ Tested |
-| SAME70 | Cortex-M7 | up to 300 MHz | ⏸️ Pending |
-
-### Code Generation
-
-- **759 generated files** across all platforms
-- **677 hand-written files** (drivers, policies, boards)
-- SVD sources: CMSIS-SVD repository
-- Template engine: Jinja2
-- Generation time: ~2 seconds for all platforms
-
----
-
-## Migration from CoreZero
-
-See [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for complete migration instructions.
-
-**Quick summary**:
-1. Update includes: `hal/platform/` → `hal/vendors/` + `/generated/`
-2. Update CMake variables: `COREZERO_*` → `ALLOY_*`
-3. Update GPIO API: `read()` now returns `Result<bool, ErrorCode>`
-4. Update Clock API: All methods return `Result<void, ErrorCode>`
-5. Migrate tests: Google Test → Catch2 v3
-
----
-
-## Contributors
-
-- Primary development: Alloy Framework Team
-- Code generation: Based on CMSIS-SVD
-- Inspired by: Rust embedded ecosystem, Modern C++ best practices
-
----
-
-## Links
-
-- **Repository**: https://github.com/your-org/corezero
-- **Documentation**: https://github.com/your-org/corezero/tree/main/docs
-- **Issues**: https://github.com/your-org/corezero/issues
-- **Releases**: https://github.com/your-org/corezero/releases
-
----
-
-**Versioning**: We use [Semantic Versioning](https://semver.org/):
-- **Major** version (X.0.0): Breaking API changes
-- **Minor** version (0.X.0): New features, backward compatible
-- **Patch** version (0.0.X): Bug fixes, backward compatible
-
----
-
-[Unreleased]: https://github.com/your-org/corezero/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/your-org/corezero/releases/tag/v1.0.0
+[Unreleased]: https://github.com/lgili/alloy/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/lgili/alloy/releases/tag/v0.1.0

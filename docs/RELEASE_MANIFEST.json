@@ -32,6 +32,10 @@
       "kind": "script",
       "command": "python3 scripts/check_docs_site.py"
     },
+    "changelog-present": {
+      "kind": "script",
+      "command": "python3 scripts/check_changelog_present.py"
+    },
     "descriptor-contract-smoke": {
       "kind": "build",
       "target": "alloy-device-contract-smoke"

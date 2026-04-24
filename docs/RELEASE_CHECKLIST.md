@@ -52,3 +52,10 @@ Use this checklist before cutting a release or tagging a version that claims pro
 - describe the validated `alloy-devices` compatibility pin or policy
 - call out any downgraded support tiers
 - avoid claiming production support for paths that are only `representative` or `experimental`
+- check that `CHANGELOG.md` at the repo root has a section matching the version in
+  `CMakeLists.txt` — enforced by the `changelog-present` release gate
+  (`scripts/check_changelog_present.py`)
+- add `docs/RELEASE_NOTES_vX.Y.Z.md` as the canonical release-body text and reference it from
+  the GitHub release draft
+- run the docs site gate (`scripts/check_docs_site.py`) and the tooling-parity gate
+  (`scripts/check_alloyctl_tooling_parity.py`) before tagging
