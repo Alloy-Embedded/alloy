@@ -1,6 +1,6 @@
 ## 1. OpenSpec Baseline
 
-- [ ] 1.1 Add public-hal-api, runtime-validation, and runtime-release-discipline deltas
+- [x] 1.1 Add public-hal-api, runtime-validation, and runtime-release-discipline deltas
 
 ## 2. Promote Representative Peripheral Classes
 

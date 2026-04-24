@@ -28,6 +28,12 @@ function(alloy_add_device_contract_smoke TARGET_NAME)
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_runtime_event_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_blocking_only_completion_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_runtime_low_power_api.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_seed_ssd1306.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_seed_bme280.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_seed_w25q.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_seed_at24mac402.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_seed_ksz8081.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_driver_seed_is42s16100f.cpp
         ${ALLOY_ACTIVE_STARTUP_SOURCE}
         ${ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE}
     )

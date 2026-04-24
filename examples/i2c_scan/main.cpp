@@ -48,33 +48,27 @@ int main() {
 
     alloy::examples::uart_console::write_line(uart, "i2c scan ready");
 
-    std::array<std::uint8_t, 16> found{};
+    // Manual scan so progress is visible per address (avoids looking hung).
+    std::array<std::uint8_t, 0> empty_buf{};
     while (true) {
-        const auto scan_result = bus.scan_bus(found);
-        if (scan_result.is_err()) {
-            alloy::examples::uart_console::write_line(uart, "i2c scan failed");
-            board::led::toggle();
-            alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(1000);
-            continue;
+        alloy::examples::uart_console::write_line(uart, "i2c scan: probing 0x08..0x77");
+        std::uint8_t found_count = 0u;
+        for (std::uint8_t addr = 0x08; addr <= 0x77; ++addr) {
+            alloy::examples::uart_console::write_text(uart, "  0x");
+            alloy::examples::uart_console::write_hex_byte(uart, addr);
+            const auto r = bus.write(addr, std::span<const std::uint8_t>{empty_buf});
+            if (r.is_ok()) {
+                alloy::examples::uart_console::write_line(uart, " ACK");
+                ++found_count;
+            } else {
+                alloy::examples::uart_console::write_text(uart, " .\r\n");
+            }
         }
-
-        const auto count = scan_result.unwrap();
-        if (count == 0u) {
-            alloy::examples::uart_console::write_line(uart, "i2c scan none");
-            board::led::toggle();
-            alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(2000);
-            continue;
-        }
-
-        alloy::examples::uart_console::write_line(uart, "i2c scan addresses:");
-        for (std::size_t index = 0; index < count; ++index) {
-            alloy::examples::uart_console::write_text(uart, "0x");
-            alloy::examples::uart_console::write_hex_byte(uart, found[index]);
-            alloy::examples::uart_console::write_text(uart, " ");
-        }
-        alloy::examples::uart_console::write_text(uart, "\r\n");
+        alloy::examples::uart_console::write_text(uart, "i2c scan done: ");
+        alloy::examples::uart_console::write_hex_byte(uart, found_count);
+        alloy::examples::uart_console::write_line(uart, " device(s)");
 
         board::led::toggle();
-        alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(2000);
+        alloy::hal::SysTickTimer::delay_ms<board::BoardSysTick>(1000);
     }
 }

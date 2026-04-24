@@ -418,6 +418,66 @@ struct SelectedRuntimeDescriptors {
     static constexpr bool available = selected::runtime_available;
 };
 
+#if ALLOY_DEVICE_RUNTIME_AVAILABLE
+template <PeripheralId Id>
+[[nodiscard]] constexpr auto base() noexcept -> std::uintptr_t {
+    using traits = PeripheralInstanceTraits<Id>;
+    static_assert(traits::kPresent, "alloy::device::base<>: peripheral not present on this device");
+    return traits::kBaseAddress;
+}
+#endif
+
 }  // namespace alloy::device
+
+#if ALLOY_DEVICE_RUNTIME_AVAILABLE
+namespace alloy::clock {
+
+namespace detail {
+
+template <alloy::device::PeripheralId Id>
+inline constexpr auto clock_gate_register_address() noexcept -> std::uintptr_t {
+    using binding = alloy::device::PeripheralClockBindingTraits<Id>;
+    static_assert(binding::kPresent, "alloy::clock: peripheral has no clock binding");
+    using gate = alloy::device::ClockGateTraits<binding::kClockGateId>;
+    static_assert(gate::kPresent, "alloy::clock: clock gate not present");
+    using reg = alloy::device::RegisterTraits<gate::kRegisterId>;
+    static_assert(reg::kPresent, "alloy::clock: gate register not present");
+    return reg::kBaseAddress + reg::kOffsetBytes;
+}
+
+template <alloy::device::PeripheralId Id>
+inline constexpr auto clock_gate_bitmask() noexcept -> std::uint32_t {
+    using binding = alloy::device::PeripheralClockBindingTraits<Id>;
+    using gate = alloy::device::ClockGateTraits<binding::kClockGateId>;
+    using field = alloy::device::RegisterFieldTraits<gate::kFieldId>;
+    static_assert(field::kPresent, "alloy::clock: gate field not present");
+    return (std::uint32_t{1u} << field::kBitOffset);
+}
+
+}  // namespace detail
+
+// Write-one-to-set enable (SAM E70 PMC PCERx semantics). Writing 0 bits is a no-op
+// on the vendors that match this contract; on families whose enable register is
+// masked-modify, the runtime-lite contract carries that via a different register
+// kind and this helper will fail its static_assert at instantiation.
+template <alloy::device::PeripheralId Id>
+inline auto enable() noexcept -> void {
+    auto* reg = reinterpret_cast<volatile std::uint32_t*>(detail::clock_gate_register_address<Id>());
+    *reg = detail::clock_gate_bitmask<Id>();
+}
+
+template <alloy::device::PeripheralId Id>
+inline auto disable() noexcept -> void {
+    // Disable counterpart register is at +4 on SAM E70 (PCDR0/PCDR1 follow PCER0/PCER1).
+    // For a fully portable impl, the contract needs to emit an explicit kDisableRegisterId;
+    // until then we derive the disable register address by offset convention for the
+    // currently admitted families. Callers on other vendors must not use this helper.
+    auto* reg = reinterpret_cast<volatile std::uint32_t*>(detail::clock_gate_register_address<Id>() +
+                                                          0x04u);
+    *reg = detail::clock_gate_bitmask<Id>();
+}
+
+}  // namespace alloy::clock
+#endif
 
 #include "device/dev.hpp"

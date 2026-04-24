@@ -129,6 +129,36 @@ def die(msg: str) -> int:
     return 1
 
 
+def resolve_board(explicit: str | None) -> str:
+    """Return a board name. Fall back to the unique configured build dir, then
+    to a pinned `.alloyctl-board` file at the repo root. Raise if ambiguous."""
+    if explicit:
+        return explicit
+    pinned = ROOT / ".alloyctl-board"
+    if pinned.exists():
+        name = pinned.read_text(encoding="utf-8").strip()
+        if name:
+            return name
+    configured = [
+        name for name, cfg in BOARDS.items()
+        if (cfg.build_dir / "CMakeCache.txt").exists()
+    ]
+    # Deduplicate entries that share the same build_dir (e.g. same70_xplained + same70_xpld).
+    unique = sorted({BOARDS[n].build_dir: n for n in configured}.values())
+    if len(unique) == 1:
+        return unique[0]
+    if len(unique) == 0:
+        raise SystemExit(die(
+            "no board configured — run with --board <name>, or "
+            "`alloyctl configure --board <name>` first. "
+            f"known boards: {', '.join(sorted(BOARDS))}"
+        ))
+    raise SystemExit(die(
+        f"multiple boards configured ({', '.join(unique)}); pass --board explicitly "
+        f"or pin one with: echo <board> > .alloyctl-board"
+    ))
+
+
 def load_manifest() -> dict:
     return json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
 
@@ -555,6 +585,97 @@ def cmd_recover(args: argparse.Namespace) -> None:
     args.recover = True
     args.build_first = True
     cmd_flash(args)
+
+
+def cmd_run(args: argparse.Namespace) -> None:
+    """Build -> program -> open monitor -> reset (so early probe output is captured).
+
+    One-shot helper for hardware probes. Works for any board registered in
+    BOARDS and any cmake target that produces
+    `examples/<target>/<target>.elf` (or .hex/.bin for STM32 programmer).
+
+    Flow is ordered so the serial port is already open when the target comes
+    out of reset — probes that print once and then enter a blink loop still
+    get their output captured.
+    """
+    args.board = resolve_board(getattr(args, "board", None))
+    cfg = board_config(args.board)
+    ensure_configured(cfg, args.build_type, build_tests=False)
+    build(cfg, args.target, args.jobs)
+
+    backend = select_flash_backend(cfg, args.flash_backend, False)
+    port = args.port or auto_port(cfg)
+    baud = args.baud if args.baud is not None else cfg.uart_baud
+
+    # Step 1: program the target (no reset yet). openocd needs the chip halted
+    # to flash anyway, so there's no boot output to miss during this step.
+    if backend == "stm32cube":
+        if not cfg.stm32_programmer_supported:
+            raise SystemExit(die(f"flash backend 'stm32cube' is not supported for board: {cfg.board}"))
+        cli = find_stm32_programmer_cli()
+        if cli is None:
+            raise SystemExit(die("STM32_Programmer_CLI not found"))
+        image = stm32_program_image(cfg, args.target)
+        run([cli, "-c", "port=SWD", "mode=UR", "reset=HWrst", "freq=100",
+             "-w", str(image), "-v"])
+    else:
+        require_tool("openocd")
+        elf = artifact(cfg, args.target)
+        # Program without resetting here; `run_soft` tolerates non-zero rc
+        # from openocd-on-shutdown (its "exit" can return 1 on some versions)
+        # so long as `program ... verify` itself prints "Verified OK".
+        rc = run_soft(list(cfg.openocd_args)
+                      + ["-c", f'program "{elf}" verify exit'])
+        if rc not in (0, 1):  # treat 1 as "verify ok, exit noise" — common
+            raise SystemExit(die(f"openocd program failed (rc={rc})"))
+
+    # Step 2: open the serial port IN-PROCESS (not via subprocess). A Python
+    # subprocess takes ~1 s to cold-start + import pyserial + open the port,
+    # which means probes that print once right after reset lose their output.
+    # By opening the port here, before issuing the reset, we guarantee the
+    # FIFO is drained live.
+    try:
+        import serial  # type: ignore
+    except ModuleNotFoundError:
+        raise SystemExit(die(
+            "pyserial not installed. install with: python3 -m pip install pyserial"
+        ))
+    print(f"+ opening {port} @ {baud} 8N1")
+    try:
+        ser = serial.Serial(port=port, baudrate=baud, bytesize=8,
+                            parity="N", stopbits=1, timeout=0.05)
+    except serial.SerialException as exc:
+        raise SystemExit(die(f"could not open {port}: {exc}"))
+    ser.reset_input_buffer()
+
+    # Step 3: trigger a clean reset now that the port is open.
+    print(f"+ resetting target via {backend} ...")
+    if backend == "stm32cube":
+        cli = find_stm32_programmer_cli()
+        if cli is not None:
+            run_soft([cli, "-c", "port=SWD", "mode=UR",
+                      "reset=HWrst", "freq=100", "-rst"])
+    else:
+        run_soft(list(cfg.openocd_args)
+                 + ["-c", "init", "-c", "reset run", "-c", "exit"])
+
+    # Step 4: monitor loop — print bytes as they arrive. Ctrl+C exits.
+    print("-" * 60)
+    print(f"monitor: {port} @ {baud} 8N1 — Ctrl+C to exit")
+    print("-" * 60)
+    try:
+        while True:
+            data = ser.read(4096)
+            if data:
+                sys.stdout.write(data.decode("utf-8", errors="replace"))
+                sys.stdout.flush()
+    except KeyboardInterrupt:
+        print("\n-- monitor closed --")
+    finally:
+        try:
+            ser.close()
+        except Exception:
+            pass
 
 
 def monitor_for(cfg: BoardConfig, port: str | None, baud: int, seconds: float) -> int:
@@ -1203,6 +1324,27 @@ def main() -> int:
 
     doctor_p = sub.add_parser("doctor", help="preflight check: toolchain, probe, python deps, ref")
     doctor_p.set_defaults(func=cmd_doctor)
+
+    run_p = sub.add_parser(
+        "run",
+        help="build + flash + open serial monitor for an example target (openocd-only, no bossac)",
+    )
+    run_p.add_argument(
+        "--board",
+        help="board name (auto-detected from the single configured build dir, or from .alloyctl-board)",
+    )
+    run_p.add_argument("--build-type", default="Debug",
+                       choices=("Debug", "Release", "MinSizeRel", "RelWithDebInfo"))
+    run_p.add_argument("--target", required=True,
+                       help="cmake target name (e.g. driver_at24mac402_probe)")
+    run_p.add_argument("--flash-backend", default="auto",
+                       choices=("auto", "openocd", "stm32cube"))
+    run_p.add_argument("-j", "--jobs", type=int, default=8)
+    run_p.add_argument("--port", help="override serial port (default: auto-detect)")
+    run_p.add_argument("--baud", type=int, help="override serial baud (default: board setting)")
+    run_p.add_argument("--settle-seconds", type=float, default=0.5,
+                       help="delay between flash reset and monitor open")
+    run_p.set_defaults(func=cmd_run)
 
     new_p = sub.add_parser("new", help="scaffold a downstream firmware starter for a board")
     new_p.add_argument("--board", required=True, help="foundational board to target")

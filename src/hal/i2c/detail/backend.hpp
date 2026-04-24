@@ -937,47 +937,38 @@ auto write_read_st_i2c_v1(std::uint16_t address, std::span<const std::uint8_t> w
     return rt::modify_field(ack, 1u);
 }
 
-template <typename PortHandle>
-[[nodiscard]] auto check_microchip_twihs_error() -> core::Result<void, core::ErrorCode> {
-    constexpr auto nack = field<PortHandle, register_id::sr, field_id::nack>();
-    constexpr auto arblst = field<PortHandle, register_id::sr, field_id::arblst>();
-
-    if (arblst.valid) {
-        const auto value = rt::read_field(arblst);
-        if (value.is_err()) {
-            return core::Err(core::ErrorCode{value.unwrap_err()});
-        }
-        if (value.unwrap() != 0u) {
-            return core::Err(core::ErrorCode::I2cArbitrationLost);
-        }
-    }
-
-    if (nack.valid) {
-        const auto value = rt::read_field(nack);
-        if (value.is_err()) {
-            return core::Err(core::ErrorCode{value.unwrap_err()});
-        }
-        if (value.unwrap() != 0u) {
-            return core::Err(core::ErrorCode::I2cNack);
-        }
-    }
-
-    return core::Ok();
-}
+// TWIHS SR bit layout is fixed by the Microchip SAM datasheet (41.9.17).
+// SR.NACK, SR.TXCOMP, SR.OVRE, etc. are **read-to-clear**, so each separate
+// field read destroys status bits observed on prior reads. We must read SR
+// once per poll iteration and decode every flag from that snapshot.
+inline constexpr std::uint32_t kTwihsSrTxcomp = 1u << 0;
+inline constexpr std::uint32_t kTwihsSrRxrdy  = 1u << 1;
+inline constexpr std::uint32_t kTwihsSrTxrdy  = 1u << 2;
+inline constexpr std::uint32_t kTwihsSrNack   = 1u << 8;
+inline constexpr std::uint32_t kTwihsSrArblst = 1u << 9;
 
 template <typename PortHandle>
-auto wait_microchip_twihs_ready(const rt::FieldRef& ready) -> core::Result<void, core::ErrorCode> {
+auto wait_microchip_twihs_ready(std::uint32_t ready_mask) -> core::Result<void, core::ErrorCode> {
+    constexpr auto sr_reg = reg<PortHandle, register_id::sr>();
+    if (!sr_reg.valid) {
+        return core::Err(core::ErrorCode::NotSupported);
+    }
+
     constexpr auto kPollLimit = 1'000'000u;
     for (std::uint32_t remaining = kPollLimit; remaining > 0u; --remaining) {
-        if (const auto error = check_microchip_twihs_error<PortHandle>(); error.is_err()) {
-            return error;
+        const auto snapshot = rt::read_register(sr_reg);
+        if (snapshot.is_err()) {
+            return core::Err(core::ErrorCode{snapshot.unwrap_err()});
         }
+        const auto sr = snapshot.unwrap();
 
-        const auto value = rt::read_field(ready);
-        if (value.is_err()) {
-            return core::Err(core::ErrorCode{value.unwrap_err()});
+        if ((sr & kTwihsSrArblst) != 0u) {
+            return core::Err(core::ErrorCode::I2cArbitrationLost);
         }
-        if (value.unwrap() != 0u) {
+        if ((sr & kTwihsSrNack) != 0u) {
+            return core::Err(core::ErrorCode::I2cNack);
+        }
+        if ((sr & ready_mask) != 0u) {
             return core::Ok();
         }
     }
@@ -1020,6 +1011,18 @@ auto configure_microchip_twihs_address(std::uint16_t address, bool read,
     return rt::write_register(mmr_reg, mmr_value.unwrap());
 }
 
+// TWIHS CR bit layout is fixed by the schema (Microchip SAM datasheet
+// 41.8.1 TWIHS_CR). The generated driver_semantics still leaves
+// kStartField/kStopField as kInvalidFieldRef, so we use raw CR bit writes
+// for START/STOP/QUICK here instead of going through field<> — these are
+// write-only, set-only-on-1 registers so a direct write is correct.
+inline constexpr std::uint32_t kTwihsCrStart = 1u << 0;
+inline constexpr std::uint32_t kTwihsCrStop  = 1u << 1;
+
+template <typename PortHandle>
+auto read_microchip_twihs(std::uint16_t address, std::span<std::uint8_t> buffer,
+                          std::span<const std::uint8_t> internal_address) -> core::Result<void, core::ErrorCode>;
+
 template <typename PortHandle>
 auto write_microchip_twihs(std::uint16_t address, std::span<const std::uint8_t> buffer)
     -> core::Result<void, core::ErrorCode> {
@@ -1027,12 +1030,18 @@ auto write_microchip_twihs(std::uint16_t address, std::span<const std::uint8_t> 
         return core::Err(core::ErrorCode::OutOfRange);
     }
 
+    if (buffer.empty()) {
+        // Address-only probe (scan). Issue a one-byte master read which
+        // forces the hardware to drive START + addr + R + (N)ACK + STOP.
+        // NACK is surfaced via SR.NACK by check_microchip_twihs_error;
+        // any other outcome counts as "device present".
+        std::array<std::uint8_t, 1> discard{};
+        return read_microchip_twihs<PortHandle>(address, discard, {});
+    }
+
     constexpr auto cr_reg = reg<PortHandle, register_id::cr>();
-    constexpr auto txrdy = field<PortHandle, register_id::sr, field_id::txrdy>();
-    constexpr auto txcomp = field<PortHandle, register_id::sr, field_id::txcomp>();
-    constexpr auto txdata = field<PortHandle, register_id::thr, field_id::txdata>();
-    constexpr auto stop = field<PortHandle, register_id::cr, field_id::stop>();
-    if (!cr_reg.valid || !txrdy.valid || !txcomp.valid || !txdata.valid || !stop.valid) {
+    constexpr auto thr_reg = reg<PortHandle, register_id::thr>();
+    if (!cr_reg.valid || !thr_reg.valid) {
         return core::Err(core::ErrorCode::NotSupported);
     }
 
@@ -1042,26 +1051,36 @@ auto write_microchip_twihs(std::uint16_t address, std::span<const std::uint8_t> 
         return mmr_result;
     }
 
+    // TWIHS_THR is write-only; use write_register (not modify_field) so we
+    // never read-modify-write the register — reads return 0 per datasheet
+    // but some errata re-export the last value, which corrupts the byte.
     for (std::size_t index = 0; index < buffer.size(); ++index) {
-        if (const auto tx_ready = wait_microchip_twihs_ready<PortHandle>(txrdy); tx_ready.is_err()) {
+        if (const auto tx_ready = wait_microchip_twihs_ready<PortHandle>(kTwihsSrTxrdy);
+            tx_ready.is_err()) {
             return tx_ready;
         }
-        if (const auto tx_result = rt::modify_field(txdata, buffer[index]); tx_result.is_err()) {
+        if (const auto tx_result = rt::write_register(thr_reg, buffer[index]); tx_result.is_err()) {
             return tx_result;
         }
     }
 
-    const auto stop_result =
-        write_field_mask(cr_reg, std::array<FieldWrite, 1>{FieldWrite{stop, 1u}});
-    if (stop_result.is_err()) {
+    // modm: TWIHS_CR.STOP must be written only after TXRDY re-asserts
+    // following the final THR write (i.e. the last byte has moved from THR
+    // into the shift register). Setting STOP earlier kills the in-flight
+    // byte and the slave NACKs / the bus hangs.
+    if (const auto tx_drained = wait_microchip_twihs_ready<PortHandle>(kTwihsSrTxrdy);
+        tx_drained.is_err()) {
+        return tx_drained;
+    }
+    if (const auto stop_result = rt::write_register(cr_reg, kTwihsCrStop); stop_result.is_err()) {
         return stop_result;
     }
-    return wait_microchip_twihs_ready<PortHandle>(txcomp);
+    return wait_microchip_twihs_ready<PortHandle>(kTwihsSrTxcomp);
 }
 
 template <typename PortHandle>
 auto read_microchip_twihs(std::uint16_t address, std::span<std::uint8_t> buffer,
-                          std::span<const std::uint8_t> internal_address = {})
+                          std::span<const std::uint8_t> internal_address)
     -> core::Result<void, core::ErrorCode> {
     if (address > 0x7Fu) {
         return core::Err(core::ErrorCode::OutOfRange);
@@ -1071,13 +1090,8 @@ auto read_microchip_twihs(std::uint16_t address, std::span<std::uint8_t> buffer,
     }
 
     constexpr auto cr_reg = reg<PortHandle, register_id::cr>();
-    constexpr auto start = field<PortHandle, register_id::cr, field_id::start>();
-    constexpr auto stop = field<PortHandle, register_id::cr, field_id::stop>();
-    constexpr auto rxrdy = field<PortHandle, register_id::sr, field_id::rxrdy>();
-    constexpr auto txcomp = field<PortHandle, register_id::sr, field_id::txcomp>();
     constexpr auto rxdata = field<PortHandle, register_id::rhr, field_id::rxdata>();
-    if (!cr_reg.valid || !start.valid || !stop.valid || !rxrdy.valid || !txcomp.valid ||
-        !rxdata.valid) {
+    if (!cr_reg.valid || !rxdata.valid) {
         return core::Err(core::ErrorCode::NotSupported);
     }
 
@@ -1087,30 +1101,31 @@ auto read_microchip_twihs(std::uint16_t address, std::span<std::uint8_t> buffer,
         return mmr_result;
     }
 
+    // TWIHS CR.START (bit 0) / CR.STOP (bit 1) are fixed by the schema;
+    // see the kTwihsCr* constants above write_microchip_twihs.
     if (buffer.size() == 1u) {
-        const auto command_result = write_field_mask(
-            cr_reg, std::array<FieldWrite, 2>{FieldWrite{start, 1u}, FieldWrite{stop, 1u}});
-        if (command_result.is_err()) {
+        if (const auto command_result =
+                rt::write_register(cr_reg, kTwihsCrStart | kTwihsCrStop);
+            command_result.is_err()) {
             return command_result;
         }
     } else {
-        const auto command_result =
-            write_field_mask(cr_reg, std::array<FieldWrite, 1>{FieldWrite{start, 1u}});
-        if (command_result.is_err()) {
+        if (const auto command_result = rt::write_register(cr_reg, kTwihsCrStart);
+            command_result.is_err()) {
             return command_result;
         }
     }
 
     for (std::size_t index = 0; index < buffer.size(); ++index) {
         if (index + 1u == buffer.size() && buffer.size() > 1u) {
-            const auto stop_result =
-                write_field_mask(cr_reg, std::array<FieldWrite, 1>{FieldWrite{stop, 1u}});
-            if (stop_result.is_err()) {
+            if (const auto stop_result = rt::write_register(cr_reg, kTwihsCrStop);
+                stop_result.is_err()) {
                 return stop_result;
             }
         }
 
-        if (const auto rx_ready = wait_microchip_twihs_ready<PortHandle>(rxrdy); rx_ready.is_err()) {
+        if (const auto rx_ready = wait_microchip_twihs_ready<PortHandle>(kTwihsSrRxrdy);
+            rx_ready.is_err()) {
             return rx_ready;
         }
         const auto value = rt::read_field(rxdata);
@@ -1120,7 +1135,7 @@ auto read_microchip_twihs(std::uint16_t address, std::span<std::uint8_t> buffer,
         buffer[index] = static_cast<std::uint8_t>(value.unwrap());
     }
 
-    return wait_microchip_twihs_ready<PortHandle>(txcomp);
+    return wait_microchip_twihs_ready<PortHandle>(kTwihsSrTxcomp);
 }
 
 template <typename PortHandle>
@@ -1350,15 +1365,36 @@ auto configure_microchip_twihs(const I2cConfig& config) -> core::Result<void, co
         return cwgr_result;
     }
 
-    const auto enable_mask = build_register_value(std::array<FieldWrite, 3>{
-        FieldWrite{svdis, 1u},
+    // SAME70 datasheet: in TWIHS_CR, MSDIS has priority over MSEN when both
+    // are written together. modm writes MSDIS, SVDIS, MSEN in three separate
+    // transactions. Follow the same pattern.
+    const auto msdis_mask = build_register_value(std::array<FieldWrite, 1>{
         FieldWrite{msdis, 1u},
+    });
+    if (msdis_mask.is_err()) {
+        return core::Err(core::ErrorCode{msdis_mask.unwrap_err()});
+    }
+    if (const auto r = rt::write_register(cr_reg, msdis_mask.unwrap()); r.is_err()) {
+        return r;
+    }
+
+    const auto svdis_mask = build_register_value(std::array<FieldWrite, 1>{
+        FieldWrite{svdis, 1u},
+    });
+    if (svdis_mask.is_err()) {
+        return core::Err(core::ErrorCode{svdis_mask.unwrap_err()});
+    }
+    if (const auto r = rt::write_register(cr_reg, svdis_mask.unwrap()); r.is_err()) {
+        return r;
+    }
+
+    const auto msen_mask = build_register_value(std::array<FieldWrite, 1>{
         FieldWrite{msen, 1u},
     });
-    if (enable_mask.is_err()) {
-        return core::Err(core::ErrorCode{enable_mask.unwrap_err()});
+    if (msen_mask.is_err()) {
+        return core::Err(core::ErrorCode{msen_mask.unwrap_err()});
     }
-    return rt::write_register(cr_reg, enable_mask.unwrap());
+    return rt::write_register(cr_reg, msen_mask.unwrap());
 }
 
 template <typename PortHandle>

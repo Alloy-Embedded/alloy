@@ -393,7 +393,10 @@ if(ALLOY_BOARD STREQUAL "host" AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/hal/ho
     add_subdirectory(src/hal/host)
 endif()
 
-# add_subdirectory(src/drivers)
+option(ALLOY_BUILD_DRIVERS "Build the alloy seed driver library interface target" ON)
+if(ALLOY_BUILD_DRIVERS AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/drivers/CMakeLists.txt)
+    add_subdirectory(drivers)
+endif()
 
 # ==============================================================================
 # Examples - Board Abstraction Layer
@@ -449,6 +452,9 @@ endif()
 if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld")
     add_subdirectory(examples/uart_path_probe)
     add_subdirectory(examples/manual_uart_probe)
+    add_subdirectory(examples/driver_at24mac402_probe)
+    add_subdirectory(examples/driver_ksz8081_probe)
+    add_subdirectory(examples/driver_is42s16100f_probe)
 endif()
 
 if(ALLOY_BOARD STREQUAL "nucleo_g071rb")
