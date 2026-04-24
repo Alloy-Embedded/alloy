@@ -1,6 +1,6 @@
 ## 1. OpenSpec Baseline
 
-- [ ] 1.1 Add runtime-async-model, public-hal-api, and runtime-validation deltas
+- [x] 1.1 Add runtime-async-model, public-hal-api, and runtime-validation deltas
 
 ## 2. Real Driver Path
 
