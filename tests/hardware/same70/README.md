@@ -137,6 +137,22 @@ Run the suite in order. Stop on the first hard-fault/reset-loop.
   - one `debug-uart-rx binding=...` line
   - board does not hard-fault or reset-loop after DMA setup
 
+### `async_uart_timeout`
+
+Canonical runtime async-model completion+timeout probe. Validates on silicon
+that the three outcomes (success, timeout, recovery) are actually observable
+on the SAME70 debug UART path the rest of the bundle exercises.
+
+- flash `build/hw/same70/examples/async_uart_timeout/async_uart_timeout.elf`
+- serial settings:
+  - `115200 8N1`
+- acceptance:
+  - `async uart timeout ready`
+  - periodic `async success=<n>` lines every ~2s
+  - periodic `async timeout=<n>` and `async recovered=<n>` lines every ~5s
+  - steady `async loop success=... timeout=... recovered=... uptime_ms=...` summary line per heartbeat
+  - board does not hard-fault or reset-loop after a timeout event
+
 ## Stage 6: CAN
 
 ### `can_probe`

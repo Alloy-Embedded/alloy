@@ -26,6 +26,7 @@ function(alloy_add_device_contract_smoke TARGET_NAME)
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_board_dma_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_runtime_time_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_runtime_event_api.cpp
+        ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_blocking_only_completion_api.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_runtime_low_power_api.cpp
         ${ALLOY_ACTIVE_STARTUP_SOURCE}
         ${ALLOY_ACTIVE_STARTUP_DESCRIPTOR_SOURCE}

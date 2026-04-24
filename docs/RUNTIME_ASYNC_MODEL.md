@@ -130,7 +130,20 @@ Current default policy is intentionally conservative:
 Representative validation:
 
 - compile smoke in `tests/compile_tests/test_runtime_low_power_api.cpp`
-- host-MMIO wakeup-capable path in `tests/host_mmio/scenarios/test_same70_bringup.cpp`
+- observable `enter → wait → wake` coverage on SAME70 in
+  `tests/host_mmio/scenarios/test_same70_bringup.cpp`
+  ("host mmio exposes SAME70 low-power coordination hooks and wake-capable sources")
+  — the test asserts `before_entry`, `wait_hook`, `after_wakeup` all fire for
+  `deep_sleep`, that the first published wake source is valid in that mode,
+  and that the `wakeup_token` completes when signalled
+
+Supported vs. representative today:
+
+- supported: SAME70 `deep_sleep` with the first published wake source, validated
+  by the host-MMIO test above
+- representative (API present, evidence not yet expanded): any other mode or
+  wake source not yet listed as a required low-power gate in
+  `docs/RELEASE_MANIFEST.json`
 
 ## Recommended Use
 

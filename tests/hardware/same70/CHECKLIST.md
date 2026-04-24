@@ -183,3 +183,4 @@ Record:
   - `the two alternate uart_path_probe variants need external wiring or a second USB-UART adapter for honest hardware validation`
 - follow-ups:
   - `add an alloyctl hardware sweep mode that waits for serial reopen and can reset after monitor attach`
+  - `next sweep must validate async_uart_timeout (canonical runtime async-model completion+timeout probe); build is already in the SAME70 bundle via tests/hardware/same70/CMakeLists.txt`

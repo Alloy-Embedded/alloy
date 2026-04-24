@@ -20,6 +20,10 @@
       "kind": "script",
       "command": "python3 scripts/check_release_discipline.py"
     },
+    "blocking-only-path": {
+      "kind": "script",
+      "command": "python3 scripts/check_blocking_only_path.py"
+    },
     "descriptor-contract-smoke": {
       "kind": "build",
       "target": "alloy-device-contract-smoke"
