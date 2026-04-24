@@ -421,9 +421,7 @@ struct SelectedRuntimeDescriptors {
 #if ALLOY_DEVICE_RUNTIME_AVAILABLE
 template <PeripheralId Id>
 [[nodiscard]] constexpr auto base() noexcept -> std::uintptr_t {
-    using traits = PeripheralInstanceTraits<Id>;
-    static_assert(traits::kPresent, "alloy::device::base<>: peripheral not present on this device");
-    return traits::kBaseAddress;
+    return selected::runtime_device_contract::peripheral_base<Id>();
 }
 #endif
 
