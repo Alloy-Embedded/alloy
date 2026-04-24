@@ -425,6 +425,7 @@ endif()
 if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_BOARD_SUPPORTS_DMA_PROBE AND
    ALLOY_DEVICE_DMA_BINDINGS_AVAILABLE)
     add_subdirectory(examples/dma_probe)
+    add_subdirectory(examples/async_uart_timeout)
 endif()
 
 if(ALLOY_BOARD_MANIFEST_FOUND AND ALLOY_DEVICE_TIMER_SEMANTICS_AVAILABLE AND

@@ -12,6 +12,7 @@ if(ALLOY_BOARD STREQUAL "same70_xplained" OR ALLOY_BOARD STREQUAL "same70_xpld")
         i2c_scan
         spi_probe
         dma_probe
+        async_uart_timeout
         can_probe
     )
 

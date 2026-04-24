@@ -70,9 +70,10 @@
         "blink",
         "time_probe",
         "uart_logger",
-        "dma_probe"
+        "dma_probe",
+        "async_uart_timeout"
       ],
-      "notes": "Primary foundational Microchip validation board."
+      "notes": "Primary foundational Microchip validation board. async_uart_timeout is the canonical runtime async-model completion+timeout example."
     },
     "nucleo_g071rb": {
       "tier": "foundational",

@@ -58,6 +58,12 @@ alloy_add_catch2_test(test_logger
     LABELS unit
 )
 
+# Test: Runtime async-model canonical completion+timeout primitive
+alloy_add_catch2_test(test_async_completion_timeout
+    SOURCES test_async_completion_timeout.cpp
+    LABELS unit
+)
+
 # ==============================================================================
 # Test Summary
 # ==============================================================================

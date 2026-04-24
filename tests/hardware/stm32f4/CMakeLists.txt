@@ -10,6 +10,7 @@ if(ALLOY_BOARD STREQUAL "nucleo_f401re")
         rtc_probe
         timer_pwm_probe
         dma_probe
+        async_uart_timeout
     )
 
     set(ALLOY_STM32F4_HARDWARE_AVAILABLE_TARGETS)

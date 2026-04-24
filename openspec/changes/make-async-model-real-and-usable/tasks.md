@@ -4,13 +4,13 @@
 
 ## 2. Real Driver Path
 
-- [ ] 2.1 Choose one canonical async/event path for the first closure
-- [ ] 2.2 Implement timeout + completion flow on that path
-- [ ] 2.3 Add an official example showing the recommended usage
+- [x] 2.1 Choose one canonical async/event path for the first closure (UART+DMA completion)
+- [x] 2.2 Implement timeout + completion flow on that path (`runtime::event::completion::wait_for` returns `Err(Timeout)`)
+- [x] 2.3 Add an official example showing the recommended usage (`examples/async_uart_timeout/`)
 
 ## 3. Validation
 
-- [ ] 3.1 Add host-MMIO or equivalent coverage for the chosen path
+- [x] 3.1 Add host-MMIO or equivalent coverage for the chosen path (`tests/unit/test_async_completion_timeout.cpp`)
 - [ ] 3.2 Keep zero-overhead expectations explicit for the blocking-only path
 - [ ] 3.3 Add any required hardware or emulation spot-check for the chosen path
 
@@ -21,7 +21,7 @@
 
 ## 5. Docs
 
-- [ ] 5.1 Update `docs/RUNTIME_ASYNC_MODEL.md`
+- [x] 5.1 Update `docs/RUNTIME_ASYNC_MODEL.md`
 - [ ] 5.2 Update cookbook/example references
 
 ## 6. Validation
