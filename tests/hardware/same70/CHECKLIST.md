@@ -211,3 +211,30 @@ Record:
 
 - overall status: `all three driver seed probes passed on hardware`
 - blockers: `none`
+
+---
+
+## 2026-04-25 DMA Fix Revalidation
+
+- date: `2026-04-25`
+- operator: `lgili`
+- serial port: `/dev/cu.usbmodem11103`
+- terminal: `115200 8N1`
+- context: previous dma_probe record (2026-04-24) only captured boot banner; actual DMA
+  transfer was timing out (blink_error 150ms). Root cause: three bugs in xdmac_cc_value():
+  SAM bit at CC[16] instead of CC[15], DAM bit at CC[18] instead of CC[17], and SIF/DIF
+  both 0 (AHB_IF0) when SAME70 XDMAC MASTER1 (IF1) is required for flash and peripheral
+  bridge access. Fixed in `src/hal/dma/detail/backend.hpp`.
+
+- `dma_probe`:
+  - flashed: `yes`
+  - pass/fail: `pass`
+  - notes: `dma probe ready / dma bindings configured / dma completion observed (DMA TX payload) / dma completion count=N uptime_ms=... repeating every 2s; XDMAC CC=0x0900E011 confirmed correct SAM/DAM/SIF/DIF`
+
+## 2026-04-25 DMA Summary
+
+- overall status: `SAME70 dma_probe fully validated; DMA TX payload transfers correctly via XDMAC`
+- blockers: `none`
+- follow-ups:
+  - `validate dma_probe on nucleo_g071rb (STM32G0 board_dma.hpp added in same commit)`
+  - `STM32F4 DMA remains blocked on republished alloy-devices descriptors`

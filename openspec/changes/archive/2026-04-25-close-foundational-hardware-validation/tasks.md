@@ -15,6 +15,12 @@
 - [x] 3.1 Stabilize the supported flash/monitor path for `nucleo_f401re`
 - [ ] 3.2 Run the declared `stm32f4` validation bundle on hardware (stages 1-3 done, DMA rerun pending) [BLOCKED: requires STM32F4 hardware + republished alloy-devices DMA descriptors]
 - [ ] 3.3 Record results in `tests/hardware/stm32f4/CHECKLIST.md` (stages 1-3 recorded, DMA pending rerun) [BLOCKED: depends on 3.2]
+
+## Addendum: SAME70 DMA Revalidation (2026-04-25)
+
+- [x] A.1 Fix XDMAC CC register bugs (SAM/DAM bit positions off-by-one; SIF/DIF must use IF1 for flash+peripheral on SAM E70 bus matrix)
+- [x] A.2 Revalidate `dma_probe` on `same70_xplained` — confirmed `dma completion count=N uptime_ms=...` repeating every 2s
+- [x] A.3 Record in `tests/hardware/same70/CHECKLIST.md` under 2026-04-25 DMA Fix Revalidation
 - [x] 3.4 Convert any hardware-only failures into host-MMIO or emulation coverage where possible
 
 ## 4. Tooling Hardening For Real Boards
