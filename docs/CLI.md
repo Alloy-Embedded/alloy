@@ -76,8 +76,12 @@ is marked `TODO`.
 
 `<version>` defaults to the toolchain's `default_version`. Pass `--force` to reinstall.
 
-The pin file ships `arm-none-eabi-gcc` and `openocd` entries by default; tests and
-maintainers can override the file via the `ALLOY_TOOLCHAIN_PINS` environment variable.
+The pin file ships `arm-none-eabi-gcc`, `openocd`, `xtensa-esp32s3-elf-gcc` (ESP32-S3),
+and `riscv32-esp-elf-gcc` (ESP32-C3) entries by default; tests and maintainers can
+override the file via the `ALLOY_TOOLCHAIN_PINS` environment variable. The Espressif
+pins cover the bare-metal compile path only; pulling the full ESP-IDF framework
+(FreeRTOS, WiFi, BLE, NVS) is tracked separately and not implied by installing the
+toolchain.
 
 ### `alloy toolchain list`
 

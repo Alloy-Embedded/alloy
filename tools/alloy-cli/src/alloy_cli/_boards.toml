@@ -67,3 +67,21 @@ device = "avr128da32"
 mcu = "AVR128DA32"
 toolchain = "avr-gcc"
 debug_probe = "nedbg"
+
+[esp32c3_devkitm]
+display_name = "ESP32-C3 DevKitM"
+vendor = "espressif"
+family = "esp32c3"
+device = "esp32c3"
+mcu = "ESP32-C3"
+toolchain = "riscv32-esp-elf-gcc"
+debug_probe = "builtin-jtag"
+
+[esp32s3_devkitc]
+display_name = "ESP32-S3 DevKitC"
+vendor = "espressif"
+family = "esp32s3"
+device = "esp32s3"
+mcu = "ESP32-S3"
+toolchain = "xtensa-esp32s3-elf-gcc"
+debug_probe = "builtin-jtag"

@@ -334,7 +334,14 @@ class BoardLayer:
     has_openocd: bool
 
 
-def _layer_from_in_tree_board(board: Board, alloy_root: Path) -> BoardLayer:
+def _layer_from_in_tree_board(
+    board: Board, alloy_root: Path, env: Environment
+) -> tuple[BoardLayer, list[str]]:
+    """Build a board layer by copying the matching in-tree board folder.
+
+    Returns the layer plus a list of human-facing warnings (e.g. when the in-tree
+    board ships no linker script and we have to render a TODO placeholder).
+    """
     src = alloy_root / "boards" / board.name
     if not src.is_dir():
         raise ScaffoldError(
@@ -353,12 +360,43 @@ def _layer_from_in_tree_board(board: Board, alloy_root: Path) -> BoardLayer:
     )
     arch = _arch_for_board(alloy_root, board)
 
-    return BoardLayer(
+    rendered: list[tuple[str, str]] = []
+    warnings: list[str] = []
+    if linker_candidates:
+        linker_script_name = linker_candidates[0].name
+    else:
+        # Some in-tree boards (ESP32-C3, ESP32-S3) ship no linker script because
+        # the runtime relies on a vendor-supplied linker fragment that does not yet
+        # have a bare-metal substitute. Render a TODO placeholder so the project
+        # still validates against the ALLOY_BOARD=custom contract; the user must
+        # supply real memory regions before the build will produce a firmware image.
+        linker_script_name = "linker.ld"
+        ctx = {
+            "vendor": board.vendor,
+            "family": board.family,
+            "device": board.device,
+            "mcu": board.mcu or board.device,
+            "flash_origin": "0x00000000  /* TODO: set from datasheet */",
+            "flash_length": "/* TODO */ 64K",
+            "ram_origin": "0x20000000  /* TODO: set from datasheet */",
+            "ram_length": "/* TODO */ 16K",
+            "derived_from_descriptor": False,
+        }
+        rendered.append(
+            (linker_script_name, env.get_template("board_skeleton/linker.ld.j2").render(**ctx))
+        )
+        warnings.append(
+            f"boards/{board.name}/ in the active SDK does not ship a linker script. "
+            f"A TODO placeholder was written to board/{linker_script_name}; fill in "
+            "the FLASH/RAM origin and length for your target before building."
+        )
+
+    layer = BoardLayer(
         header_name="board.hpp",
-        linker_script_name=linker_candidates[0].name if linker_candidates else "linker.ld",
+        linker_script_name=linker_script_name,
         sources=sources,
         files_to_copy=tuple((p, p.name) for p in board_files if p.is_file()),
-        rendered_files=(),
+        rendered_files=tuple(rendered),
         vendor=board.vendor,
         family=board.family,
         device=board.device,
@@ -369,6 +407,7 @@ def _layer_from_in_tree_board(board: Board, alloy_root: Path) -> BoardLayer:
         toolchain=board.toolchain,
         has_openocd=board.has_openocd,
     )
+    return layer, warnings
 
 
 _ARCH_BY_BOARD_FALLBACK = {
@@ -496,6 +535,13 @@ def _toolchain_for_arch(arch: str) -> str:
         return "avr-gcc"
     if arch == "native":
         return "gcc"
+    if arch == "xtensa":
+        # Today only the ESP32-S3 (LX7) is wired through this arch label. When the LX6
+        # family lands, the arch enum splits into xtensa-lx6 / xtensa-lx7 and this
+        # branch follows suit. See OpenSpec change add-esp32-classic-family.
+        return "xtensa-esp32s3-elf-gcc"
+    if arch == "riscv32":
+        return "riscv32-esp-elf-gcc"
     return "arm-none-eabi-gcc"
 
 
@@ -509,12 +555,12 @@ def _build_layer(
     env: Environment,
 ) -> tuple[BoardLayer, list[str]]:
     if board_name is not None:
-        return _layer_from_in_tree_board(get_board(board_name), alloy_root), []
+        return _layer_from_in_tree_board(get_board(board_name), alloy_root, env)
 
     assert mcu is not None
     catalog_match = find_board_by_mcu(mcu)
     if catalog_match is not None:
-        return _layer_from_in_tree_board(catalog_match, alloy_root), []
+        return _layer_from_in_tree_board(catalog_match, alloy_root, env)
 
     if devices_root is None:
         raise ScaffoldError(

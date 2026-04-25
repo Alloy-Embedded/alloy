@@ -79,3 +79,71 @@ sha256 = "TODO"
 archive = "tar.gz"
 strip_components = 1
 bin_subdir = "bin"
+
+# Espressif cross-toolchains. Archives come from dl.espressif.com; sha256 fields are
+# TODO until the maintainer downloads and validates each release for the supported
+# host platforms. The `archive = "tar.xz"` choice matches the published bundles.
+
+[xtensa-esp32s3-elf-gcc]
+default_version = "esp-13.2.0_20240530"
+binary = "xtensa-esp32s3-elf-gcc"
+
+[xtensa-esp32s3-elf-gcc.versions."esp-13.2.0_20240530".darwin-arm64]
+url = "https://github.com/espressif/crosstool-NG/releases/download/esp-13.2.0_20240530/xtensa-esp32s3-elf-13.2.0_20240530-aarch64-apple-darwin.tar.xz"
+sha256 = "TODO"
+archive = "tar.xz"
+strip_components = 1
+bin_subdir = "bin"
+
+[xtensa-esp32s3-elf-gcc.versions."esp-13.2.0_20240530".darwin-x64]
+url = "https://github.com/espressif/crosstool-NG/releases/download/esp-13.2.0_20240530/xtensa-esp32s3-elf-13.2.0_20240530-x86_64-apple-darwin.tar.xz"
+sha256 = "TODO"
+archive = "tar.xz"
+strip_components = 1
+bin_subdir = "bin"
+
+[xtensa-esp32s3-elf-gcc.versions."esp-13.2.0_20240530".linux-x64]
+url = "https://github.com/espressif/crosstool-NG/releases/download/esp-13.2.0_20240530/xtensa-esp32s3-elf-13.2.0_20240530-x86_64-linux-gnu.tar.xz"
+sha256 = "TODO"
+archive = "tar.xz"
+strip_components = 1
+bin_subdir = "bin"
+
+[xtensa-esp32s3-elf-gcc.versions."esp-13.2.0_20240530".linux-arm64]
+url = "https://github.com/espressif/crosstool-NG/releases/download/esp-13.2.0_20240530/xtensa-esp32s3-elf-13.2.0_20240530-aarch64-linux-gnu.tar.xz"
+sha256 = "TODO"
+archive = "tar.xz"
+strip_components = 1
+bin_subdir = "bin"
+
+[riscv32-esp-elf-gcc]
+default_version = "esp-13.2.0_20240530"
+binary = "riscv32-esp-elf-gcc"
+
+[riscv32-esp-elf-gcc.versions."esp-13.2.0_20240530".darwin-arm64]
+url = "https://github.com/espressif/crosstool-NG/releases/download/esp-13.2.0_20240530/riscv32-esp-elf-13.2.0_20240530-aarch64-apple-darwin.tar.xz"
+sha256 = "TODO"
+archive = "tar.xz"
+strip_components = 1
+bin_subdir = "bin"
+
+[riscv32-esp-elf-gcc.versions."esp-13.2.0_20240530".darwin-x64]
+url = "https://github.com/espressif/crosstool-NG/releases/download/esp-13.2.0_20240530/riscv32-esp-elf-13.2.0_20240530-x86_64-apple-darwin.tar.xz"
+sha256 = "TODO"
+archive = "tar.xz"
+strip_components = 1
+bin_subdir = "bin"
+
+[riscv32-esp-elf-gcc.versions."esp-13.2.0_20240530".linux-x64]
+url = "https://github.com/espressif/crosstool-NG/releases/download/esp-13.2.0_20240530/riscv32-esp-elf-13.2.0_20240530-x86_64-linux-gnu.tar.xz"
+sha256 = "TODO"
+archive = "tar.xz"
+strip_components = 1
+bin_subdir = "bin"
+
+[riscv32-esp-elf-gcc.versions."esp-13.2.0_20240530".linux-arm64]
+url = "https://github.com/espressif/crosstool-NG/releases/download/esp-13.2.0_20240530/riscv32-esp-elf-13.2.0_20240530-aarch64-linux-gnu.tar.xz"
+sha256 = "TODO"
+archive = "tar.xz"
+strip_components = 1
+bin_subdir = "bin"

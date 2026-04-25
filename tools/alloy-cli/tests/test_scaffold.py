@@ -51,10 +51,12 @@ def _make_runtime_remote(path: Path, *, tag: str = "v0.1.0") -> None:
     # Fake board manifest fragment: just enough for arch lookup to succeed.
     (path / "cmake" / "board_manifest.cmake").write_text(
         '# fake manifest\n'
-        '#   BOARD_NAME STREQUAL "nucleo_g071rb"\n'
-        '#   set(_arch "cortex-m0plus")\n'
         'BOARD_NAME STREQUAL "nucleo_g071rb"\n'
         'set(_arch "cortex-m0plus")\n'
+        'BOARD_NAME STREQUAL "esp32c3_devkitm"\n'
+        'set(_arch "riscv32")\n'
+        'BOARD_NAME STREQUAL "esp32s3_devkitc"\n'
+        'set(_arch "xtensa")\n'
     )
     (path / "CMakeLists.txt").write_text(
         "cmake_minimum_required(VERSION 3.25)\nproject(alloy_stub)\n"
@@ -65,6 +67,8 @@ def _make_runtime_remote(path: Path, *, tag: str = "v0.1.0") -> None:
         ("nucleo_g071rb", "namespace board { void init(); }"),
         ("same70_xplained", "namespace board { void init(); }"),
         ("raspberry_pi_pico", "namespace board { void init(); }"),
+        ("esp32c3_devkitm", "namespace board { void init(); }"),
+        ("esp32s3_devkitc", "namespace board { void init(); }"),
     ):
         bd = path / "boards" / board_name
         bd.mkdir(parents=True)
@@ -73,8 +77,10 @@ def _make_runtime_remote(path: Path, *, tag: str = "v0.1.0") -> None:
         (bd / "board.cpp").write_text("void board::init() {}\n")
         (bd / "syscalls.cpp").write_text("// stub syscalls\n")
 
-    # Linker script naming follows the real convention (MCU.ld) for two boards and a
-    # generic name for one, so the copier handles both.
+    # Linker script naming follows the real convention (MCU.ld) for boards that ship
+    # one. ESP32 boards have no in-tree linker scripts (the runtime relies on
+    # vendor-supplied linker fragments), so the scaffold layer falls back to the
+    # generic linker.ld name driven by the descriptor template.
     (path / "boards" / "nucleo_g071rb" / "STM32G071RBT6.ld").write_text("/* stub */\n")
     (path / "boards" / "same70_xplained" / "ATSAME70Q21.ld").write_text("/* stub */\n")
     (path / "boards" / "raspberry_pi_pico" / "rp2040.ld").write_text("/* stub */\n")
@@ -338,3 +344,53 @@ def test_cli_boards_lists_with_mcu(installed_sdk, capsys):
     assert rc == 0
     out = capsys.readouterr().out
     assert "STM32G071RBT6" in out
+
+
+# --- ESP32-C3 / ESP32-S3 (catalog + toolchain mapping) ---------------------------------
+
+
+def test_scaffold_esp32c3_catalog_match(installed_sdk, tmp_path):
+    dest = tmp_path / "esp32c3proj"
+    result = scaffold.scaffold(board_name="esp32c3_devkitm", destination=dest)
+    assert result.layer.vendor == "espressif"
+    assert result.layer.family == "esp32c3"
+    assert result.layer.arch == "riscv32"
+    assert result.layer.toolchain == "riscv32-esp-elf-gcc"
+    # The in-tree board ships no linker script -> placeholder is rendered with a warning.
+    assert (dest / "board" / "linker.ld").is_file()
+    assert any("does not ship a linker script" in w for w in result.warnings)
+
+
+def test_scaffold_esp32s3_catalog_match(installed_sdk, tmp_path):
+    dest = tmp_path / "esp32s3proj"
+    result = scaffold.scaffold(board_name="esp32s3_devkitc", destination=dest)
+    assert result.layer.arch == "xtensa"
+    assert result.layer.toolchain == "xtensa-esp32s3-elf-gcc"
+    assert any("does not ship a linker script" in w for w in result.warnings)
+
+
+def test_scaffold_with_mcu_esp32c3_aliases_to_board(installed_sdk, tmp_path):
+    dest = tmp_path / "viacli3"
+    result = scaffold.scaffold(mcu="ESP32-C3", destination=dest)
+    assert result.layer.family == "esp32c3"
+    assert result.layer.toolchain == "riscv32-esp-elf-gcc"
+
+
+def test_scaffold_with_mcu_esp32s3_aliases_to_board(installed_sdk, tmp_path):
+    dest = tmp_path / "viaclis3"
+    result = scaffold.scaffold(mcu="ESP32-S3", destination=dest)
+    assert result.layer.family == "esp32s3"
+    assert result.layer.toolchain == "xtensa-esp32s3-elf-gcc"
+
+
+def test_cli_boards_lists_esp_targets(installed_sdk, capsys):
+    rc = cli_main(["boards"])
+    assert rc == 0
+    out = capsys.readouterr().out
+    assert "esp32c3_devkitm" in out and "ESP32-C3" in out
+    assert "esp32s3_devkitc" in out and "ESP32-S3" in out
+
+
+def test_toolchain_for_arch_maps_xtensa_and_riscv():
+    assert scaffold._toolchain_for_arch("xtensa") == "xtensa-esp32s3-elf-gcc"
+    assert scaffold._toolchain_for_arch("riscv32") == "riscv32-esp-elf-gcc"

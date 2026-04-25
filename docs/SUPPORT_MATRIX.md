@@ -10,6 +10,7 @@ Machine-readable source of truth:
 
 - `foundational`: included in the active release-validation ladder and eligible for release claims
 - `representative`: supported on the runtime path with targeted validation, but not claimed as equally covered as the foundational set
+- `compile-only`: buildable through the runtime CMake path; no hardware validation claim. Useful as a CLI scaffolding target (`alloy new --board <name>`) while bring-up runbooks are written
 - `experimental`: buildable or partially validated, but not part of the active release contract
 - `deprecated`: still documented for migration, not expanded further, and scheduled for removal
 
@@ -21,6 +22,8 @@ Machine-readable source of truth:
 | `nucleo_g071rb` | `foundational` | descriptor smoke, host-MMIO, Renode runtime validation, canonical examples | Primary STM32G0 release board |
 | `nucleo_f401re` | `foundational` | descriptor smoke, host-MMIO, Renode runtime validation, canonical examples | Primary STM32F4 release board |
 | `nucleo_g0b1re` | `experimental` | embedded build coverage for `blink` only | Not part of the foundational release ladder |
+| `esp32c3_devkitm` | `compile-only` | board files, descriptors, CMake presets, build CI; no hardware validation claim | Foundational compile-only target for `alloy new --mcu ESP32-C3`. See OpenSpec change `add-esp-toolchain-pins`. |
+| `esp32s3_devkitc` | `compile-only` | board files, descriptors, CMake presets, build CI; no hardware validation claim | Foundational compile-only target for `alloy new --mcu ESP32-S3`. See OpenSpec change `add-esp-toolchain-pins`. |
 
 Notes:
 
