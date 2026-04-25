@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "alloy-cli"
+version = "0.1.0"
+description = "Alloy multi-vendor bare-metal runtime CLI: scaffold, build, flash, and monitor projects."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Alloy Contributors" }]
+keywords = ["embedded", "bare-metal", "mcu", "arm", "cortex-m", "alloy"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Embedded Systems",
+]
+dependencies = [
+    "tomli>=2.0; python_version < '3.11'",
+    "jinja2>=3.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+alloy = "alloy_cli.main:main"
+
+[project.urls]
+Homepage = "https://github.com/Alloy-Embedded/alloy"
+Source = "https://github.com/Alloy-Embedded/alloy"
+Issues = "https://github.com/Alloy-Embedded/alloy/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/alloy_cli"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/alloy_cli/_toolchain_pins.toml" = "alloy_cli/_toolchain_pins.toml"
+"src/alloy_cli/_boards.toml" = "alloy_cli/_boards.toml"
+"src/alloy_cli/_templates" = "alloy_cli/_templates"
+"src/alloy_cli/_templates/board_skeleton" = "alloy_cli/_templates/board_skeleton"

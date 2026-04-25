@@ -10,6 +10,7 @@ Machine-readable source of truth:
 
 - `foundational`: included in the active release-validation ladder and eligible for release claims
 - `representative`: supported on the runtime path with targeted validation, but not claimed as equally covered as the foundational set
+- `compile-only`: buildable through the runtime CMake path; no hardware validation claim. Useful as a CLI scaffolding target (`alloy new --board <name>`) while bring-up runbooks are written
 - `experimental`: buildable or partially validated, but not part of the active release contract
 - `deprecated`: still documented for migration, not expanded further, and scheduled for removal
 
@@ -21,11 +22,31 @@ Machine-readable source of truth:
 | `nucleo_g071rb` | `foundational` | descriptor smoke, host-MMIO, Renode runtime validation, canonical examples | Primary STM32G0 release board |
 | `nucleo_f401re` | `foundational` | descriptor smoke, host-MMIO, Renode runtime validation, canonical examples | Primary STM32F4 release board |
 | `nucleo_g0b1re` | `experimental` | embedded build coverage for `blink` only | Not part of the foundational release ladder |
+| `esp32c3_devkitm` | `compile-only` | board files, descriptors, CMake presets, build CI; no hardware validation claim | Foundational compile-only target for `alloy new --mcu ESP32-C3`. See OpenSpec change `add-esp-toolchain-pins`. |
+| `esp32s3_devkitc` | `compile-only` | board files, descriptors, CMake presets, build CI; no hardware validation claim | Foundational compile-only target for `alloy new --mcu ESP32-S3`. See OpenSpec change `add-esp-toolchain-pins`. |
 
 Notes:
 
 - `host` is a validation target, not a shipping board tier
 - additional board packages may exist in `boards/`, but they do not inherit a release claim until they appear here and in the release manifest
+
+## CLI Scaffolding Coverage
+
+`alloy new` supports two project shapes:
+
+- **Foundational board copy** (`alloy new --board <name>` or `alloy new --mcu <part>` when
+  the catalog matches): copies an in-tree board into `<project>/board/`. Available for
+  every entry in the table above plus the experimental boards still cadastered in
+  [`tools/alloy-cli/src/alloy_cli/_boards.toml`](/Users/lgili/Documents/01%20-%20Codes/01%20-%20Github/alloy/tools/alloy-cli/src/alloy_cli/_boards.toml).
+- **Custom-board skeleton** (`alloy new --mcu <part>` without a catalog match): generates
+  a board skeleton from the `alloy-devices` descriptor. Available for any vendor/family/
+  device tuple that ships a descriptor in the active SDK; the foundational descriptor set
+  is whichever `alloy-devices` ref is pinned for the active runtime release.
+
+The scaffolder never invents a board: if no descriptor matches `--mcu`, it fails with a
+pointer to `alloy-devices` so the missing facts can be added there first. See
+[CUSTOM_BOARDS.md](CUSTOM_BOARDS.md) for the runtime contract every scaffolded project
+relies on.
 
 ## Peripheral Class Tiers
 

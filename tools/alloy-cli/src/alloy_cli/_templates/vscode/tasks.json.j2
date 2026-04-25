@@ -1,0 +1,36 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "alloy: configure",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["--preset", "debug"],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "alloy: build",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["--build", "--preset", "debug"],
+            "group": { "kind": "build", "isDefault": true },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "alloy: flash",
+            "type": "shell",
+            "command": "alloy",
+            "args": ["flash", "--board", "custom", "--target", "{{ project }}", "--build-first"],
+            "problemMatcher": []
+        },
+        {
+            "label": "alloy: monitor",
+            "type": "shell",
+            "command": "alloy",
+            "args": ["monitor", "--board", "custom"],
+            "isBackground": true,
+            "problemMatcher": []
+        }
+    ]
+}

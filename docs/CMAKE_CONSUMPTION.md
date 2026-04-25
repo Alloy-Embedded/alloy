@@ -1,5 +1,13 @@
 # Downstream CMake Consumption
 
+For projects that own their board (the typical user-app case), use the custom-board path
+in [CUSTOM_BOARDS.md](CUSTOM_BOARDS.md). That recipe consumes the runtime through
+`add_subdirectory(${ALLOY_ROOT})` with `ALLOY_BOARD=custom`, so the board lives in the
+user's repo and the alloy runtime stays untouched. `alloy new` wires this up automatically.
+
+The package-style path documented below is for downstream projects that link against an
+already-configured `alloy` build tree (e.g. CI integration tests, in-tree examples).
+
 `alloy` publishes a supported build-tree package config for downstream consumers.
 
 This is the supported package-style path:

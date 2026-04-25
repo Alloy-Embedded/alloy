@@ -1,119 +1,153 @@
 # Alloy Quickstart
 
-This is the shortest supported path from clone to a visible `blink` or runtime validation result.
+The shortest supported path from "nothing installed" to a flashing project.
 
-## Supported Entry Points
-
-Use one of these public flows:
-
-- `python3 scripts/alloyctl.py ...` for board-oriented configure, build, flash, monitor, and validation
-- `cmake --preset ...`, `cmake --build --preset ...`, and `cmake --workflow --preset ...` for explicit preset-oriented validation
-
-If a flow is not documented here or in [BOARD_TOOLING.md](BOARD_TOOLING.md), it is not part of the supported product story.
-
-## Fastest Path To Blink
-
-Choose one foundational board:
-
-### SAME70 Xplained
+## TL;DR
 
 ```bash
-python3 scripts/alloyctl.py flash --board same70_xplained --target blink --build-first
-python3 scripts/alloyctl.py monitor --board same70_xplained
+pipx install alloy-cli              # one-time
+alloy sdk install v0.1.0            # downloads alloy + alloy-devices
+alloy toolchain install arm-none-eabi-gcc
+alloy new ./myproj --mcu STM32G071RBT6
+cd myproj && code .                 # open in VS Code
+cmake --preset debug && cmake --build --preset debug
+alloy flash --board custom --target myproj --build-first
 ```
 
-### Nucleo-G071RB
+The rest of this document explains each step and points at deeper docs.
+
+## Install the CLI
+
+The user-facing entry point is the `alloy-cli` Python package. Install it once with `pipx`
+or `uv`:
 
 ```bash
-python3 scripts/alloyctl.py flash --board nucleo_g071rb --target blink --build-first
-python3 scripts/alloyctl.py monitor --board nucleo_g071rb
+pipx install alloy-cli
+# or:
+uv tool install alloy-cli
+
+# while alloy-cli is not yet on PyPI, install from a local checkout:
+pipx install --editable tools/alloy-cli
 ```
 
-### Nucleo-F401RE
+Verify:
 
 ```bash
-python3 scripts/alloyctl.py flash --board nucleo_f401re --target blink --build-first
-python3 scripts/alloyctl.py monitor --board nucleo_f401re
+alloy --version
+alloy --help
 ```
 
-Notes:
+`alloy --help` lists the native commands (`new`, `boards`, `sdk`, `toolchain`) and the
+runtime-delegated commands (`build`, `flash`, `monitor`, `doctor`, `info`, ...). For the
+full subcommand reference see [CLI.md](CLI.md).
 
-- `flash` uses OpenOCD and requires a working probe connection
-- `monitor` auto-detects the UART port when possible; pass `--port` if multiple candidates exist
-- if you only want to build, replace `flash` with `build`
-- if an STM32 board is trapped by bad firmware, use `python3 scripts/alloyctl.py recover --board <board> --target blink`
-- if you want to inspect the supported recovery path before touching hardware, add `--dry-run`
-- before the first flash, run `python3 scripts/alloyctl.py doctor` to verify the toolchain, probe
-  tooling, python deps, and the pinned `alloy-devices` ref match the repo state
+## Install an SDK and toolchain
 
-## Preflight And IDE Bootstrap
+`alloy sdk install <version>` downloads the alloy runtime and the matching
+`alloy-devices` descriptors into `~/.alloy/sdk/<version>/`:
 
 ```bash
-python3 scripts/alloyctl.py doctor
-python3 scripts/alloyctl.py compile-commands --board same70_xplained --configure
-python3 scripts/alloyctl.py info
+alloy sdk install v0.1.0
+alloy sdk list           # active version is marked with *
+alloy sdk path           # prints the active runtime path
 ```
 
-- `doctor` verifies the host toolchain, probe tooling, python deps, and the device-contract ref
-- `compile-commands` exposes `compile_commands.json` at the repo root for clangd/LSP-backed IDEs
-- `info` prints a machine-readable JSON environment report for bug reports or release audit
-
-To bootstrap a downstream firmware project:
+`alloy toolchain install <name>` downloads a pinned cross-toolchain into
+`~/.alloy/toolchains/<name>/<version>/`:
 
 ```bash
-python3 scripts/alloyctl.py new --board same70_xplained --path ./my-firmware
+alloy toolchain install arm-none-eabi-gcc
+alloy toolchain list
+alloy toolchain which arm-none-eabi-gcc
 ```
 
-## Configure And Build Explicitly
+> The `--version` and SHA pins in `_toolchain_pins.toml` are validated as part of each
+> alloy release. Pre-release builds may ship pins marked `TODO`; in that case
+> `alloy toolchain install` refuses with a clear message.
 
-If you want the CMake build directory prepared before building:
+## Scaffold a project
+
+Every new project owns its `board/` directory. The runtime stays untouched; you edit pin
+assignments in your repo. Pick `--board` for a foundational board or `--mcu` for any MCU
+that has an `alloy-devices` descriptor:
 
 ```bash
-python3 scripts/alloyctl.py configure --board nucleo_g071rb
-python3 scripts/alloyctl.py build --board nucleo_g071rb --target blink
+# Existing foundational board: copies boards/nucleo_g071rb/ from the SDK into board/
+alloy new ./blink --board nucleo_g071rb
+
+# MCU mapped to a foundational board (alias to the above)
+alloy new ./blink --mcu STM32G071RBT6
+
+# MCU without a foundational board: generates a skeleton you fill in
+alloy new ./controller --mcu STM32G474RET6
 ```
 
-`configure` produces a board-specific build directory under `build/hw/...`.
+The generated tree:
 
-## Run Validation
+```
+myproj/
+├── CMakeLists.txt        # ALLOY_BOARD=custom + cache vars (see CUSTOM_BOARDS.md)
+├── CMakePresets.json     # debug / release presets
+├── board/                # board.hpp, board_config.hpp, board.cpp, syscalls.cpp, *.ld
+├── src/main.cpp
+├── .vscode/              # clangd, build/flash/monitor tasks, OpenOCD launch
+├── .gitignore
+└── README.md
+```
 
-Host runtime validation:
+If the `--mcu` lookup found a descriptor without memory regions, the linker script ships
+with TODO markers and the CLI prints a one-line warning.
+
+See [CUSTOM_BOARDS.md](CUSTOM_BOARDS.md) for the runtime contract the generated
+CMakeLists wires up.
+
+## Build, flash, monitor
+
+From inside the project tree:
 
 ```bash
-python3 scripts/alloyctl.py validate --board host
+cmake --preset debug
+cmake --build --preset debug
+
+alloy flash   --board custom --target myproj --build-first
+alloy monitor --board custom
 ```
 
-Board-family runtime validation via workflow presets:
+The `flash` and `monitor` subcommands delegate to the active SDK; they expect a probe to
+be reachable and (for `flash`) the toolchain on PATH. See
+[BOARD_TOOLING.md](BOARD_TOOLING.md) for probe-specific notes.
+
+## Validate the host environment
+
+Before bringing up new hardware:
 
 ```bash
-python3 scripts/alloyctl.py validate --board same70_xplained
-python3 scripts/alloyctl.py validate --board nucleo_g071rb
-python3 scripts/alloyctl.py validate --board nucleo_f401re
+alloy doctor                  # toolchain, probe tooling, python deps, descriptor ref
+alloy info                    # JSON environment report (handy for bug reports)
 ```
 
-Optional validation kinds:
+`doctor` exits non-zero with an actionable diagnostic when a prerequisite is missing.
+
+## Working inside the alloy runtime checkout
+
+If you are contributing to alloy itself rather than building an application, run the CLI
+from inside the runtime checkout (or set `ALLOY_ROOT=$PWD`). The same subcommands work
+without an installed SDK because the runtime locator falls back to the working directory:
 
 ```bash
-python3 scripts/alloyctl.py validate --board same70_xplained --kind zero-overhead
-python3 scripts/alloyctl.py validate --board nucleo_g071rb --kind smoke
-python3 scripts/alloyctl.py validate --board nucleo_f401re --kind smoke
+cd /path/to/alloy
+alloy configure --board nucleo_g071rb
+alloy build --board nucleo_g071rb --target blink
 ```
 
-## Canonical Next Examples
+The legacy `python3 scripts/alloyctl.py ...` form remains a working alias during the
+transition; new docs and examples should use `alloy`.
 
-After `blink`, the recommended examples are:
+## Where to next
 
-- `time_probe`
-- `uart_logger`
-- `dma_probe` on boards that publish the required DMA helpers
-
-Use:
-
-```bash
-python3 scripts/alloyctl.py explain --board same70_xplained
-python3 scripts/alloyctl.py diff --from same70_xplained --to nucleo_g071rb
-```
-
-Use `explain --connector ...` before writing a raw route, and use `diff --from ... --to ...` before migrating code between boards so the published clock, debug UART, and release-gate differences are visible up front.
-
-See [COOKBOOK.md](COOKBOOK.md) and the [`examples/` tree on GitHub](https://github.com/lgili/alloy/tree/main/examples) for the official runtime-path examples.
+- [CLI.md](CLI.md) -- full subcommand reference
+- [CUSTOM_BOARDS.md](CUSTOM_BOARDS.md) -- the `ALLOY_BOARD=custom` contract
+- [BOARD_TOOLING.md](BOARD_TOOLING.md) -- probe and flashing notes per board
+- [CMAKE_CONSUMPTION.md](CMAKE_CONSUMPTION.md) -- alternative consumption paths
+- [COOKBOOK.md](COOKBOOK.md) -- canonical runtime patterns
+- [SUPPORT_MATRIX.md](SUPPORT_MATRIX.md) -- foundational boards and known descriptors

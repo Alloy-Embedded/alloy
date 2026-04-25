@@ -1,0 +1,62 @@
+/*
+ * Generated skeleton linker script for {{ mcu }}.
+ *{% if derived_from_descriptor %}
+ * Memory regions below were derived from the alloy-devices capabilities.json
+ * for {{ vendor }}/{{ family }}/{{ device }}. Verify them against the datasheet
+ * before flashing real hardware.
+ *{% else %}
+ * The descriptor for {{ vendor }}/{{ family }}/{{ device }} did not declare
+ * memory regions in a recognised shape. Replace the TODO values below with
+ * the FLASH/RAM origin and length from your MCU's datasheet.
+ *{% endif %}
+ */
+
+ENTRY(Reset_Handler)
+
+MEMORY
+{
+    FLASH (rx)  : ORIGIN = {{ flash_origin }}, LENGTH = {{ flash_length }}
+    RAM   (rwx) : ORIGIN = {{ ram_origin }},   LENGTH = {{ ram_length }}
+}
+
+_stack_size = 4K;
+_heap_size  = 0K;
+PROVIDE(__stack_top = ORIGIN(RAM) + LENGTH(RAM));
+
+SECTIONS
+{
+    .isr_vector :
+    {
+        . = ALIGN(4);
+        KEEP(*(.isr_vector))
+        . = ALIGN(4);
+    } > FLASH
+
+    .text :
+    {
+        . = ALIGN(4);
+        *(.text*)
+        *(.rodata*)
+        . = ALIGN(4);
+        _etext = .;
+    } > FLASH
+
+    .data : AT(_etext)
+    {
+        . = ALIGN(4);
+        _sdata = .;
+        *(.data*)
+        . = ALIGN(4);
+        _edata = .;
+    } > RAM
+
+    .bss :
+    {
+        . = ALIGN(4);
+        _sbss = .;
+        *(.bss*)
+        *(COMMON)
+        . = ALIGN(4);
+        _ebss = .;
+    } > RAM
+}

@@ -1,0 +1,87 @@
+# Board catalog used by `alloy new` to drive scaffolding.
+#
+# This is intentionally a thin metadata layer. The runtime side of board configuration
+# stays in cmake/board_manifest.cmake inside the runtime checkout; this catalog only
+# captures what the scaffolder needs:
+#   - which toolchain to install
+#   - which OpenOCD config to suggest in launch.json
+#   - the canonical CMake board name (matches ALLOY_BOARD)
+#
+# Keep entries sorted by family then board.
+
+[same70_xplained]
+display_name = "SAME70 Xplained"
+vendor = "microchip"
+family = "same70"
+device = "atsame70q21b"
+mcu = "ATSAME70Q21B"
+toolchain = "arm-none-eabi-gcc"
+openocd_config = "board/atmel_same70_xplained.cfg"
+debug_probe = "edbg"
+
+[nucleo_g071rb]
+display_name = "Nucleo G071RB"
+vendor = "st"
+family = "stm32g0"
+device = "stm32g071rb"
+mcu = "STM32G071RBT6"
+toolchain = "arm-none-eabi-gcc"
+openocd_config_files = ["interface/stlink.cfg", "target/stm32g0x.cfg"]
+debug_probe = "stlink"
+
+[nucleo_g0b1re]
+display_name = "Nucleo G0B1RE"
+vendor = "st"
+family = "stm32g0"
+device = "stm32g0b1re"
+mcu = "STM32G0B1RET6"
+toolchain = "arm-none-eabi-gcc"
+openocd_config_files = ["interface/stlink.cfg", "target/stm32g0x.cfg"]
+debug_probe = "stlink"
+
+[nucleo_f401re]
+display_name = "Nucleo F401RE"
+vendor = "st"
+family = "stm32f4"
+device = "stm32f401re"
+mcu = "STM32F401RET6"
+toolchain = "arm-none-eabi-gcc"
+openocd_config_files = ["interface/stlink.cfg", "target/stm32f4x.cfg"]
+debug_probe = "stlink"
+
+[raspberry_pi_pico]
+display_name = "Raspberry Pi Pico"
+vendor = "raspberrypi"
+family = "rp2040"
+device = "rp2040"
+mcu = "RP2040"
+toolchain = "arm-none-eabi-gcc"
+openocd_config_files = ["interface/cmsis-dap.cfg", "target/rp2040.cfg"]
+debug_probe = "picoprobe"
+
+[avr128da32_curiosity_nano]
+display_name = "AVR128DA32 Curiosity Nano"
+vendor = "microchip"
+family = "avr-da"
+device = "avr128da32"
+mcu = "AVR128DA32"
+toolchain = "avr-gcc"
+debug_probe = "nedbg"
+
+[esp32c3_devkitm]
+display_name = "ESP32-C3 DevKitM"
+vendor = "espressif"
+family = "esp32c3"
+device = "esp32c3"
+mcu = "ESP32-C3"
+toolchain = "riscv32-esp-elf-gcc"
+debug_probe = "builtin-jtag"
+
+[esp32s3_devkitc]
+display_name = "ESP32-S3 DevKitC"
+vendor = "espressif"
+family = "esp32s3"
+device = "esp32s3"
+mcu = "ESP32-S3"
+toolchain = "xtensa-esp-elf-gcc"
+debug_probe = "builtin-jtag"
