@@ -1,6 +1,13 @@
 include_guard(GLOBAL)
 
+# Capture the alloy runtime root at the time this file is parsed so the function
+# below resolves source paths against the runtime tree even when alloy is
+# consumed via add_subdirectory() from a downstream project (CMAKE_SOURCE_DIR
+# would otherwise point at the consuming project's root).
+get_filename_component(_alloy_contract_smoke_runtime_root "${CMAKE_CURRENT_LIST_DIR}/../.." ABSOLUTE)
+
 function(alloy_add_device_contract_smoke TARGET_NAME)
+    set(CMAKE_SOURCE_DIR "${_alloy_contract_smoke_runtime_root}")
     add_library(${TARGET_NAME} OBJECT
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_device_import_layer.cpp
         ${CMAKE_SOURCE_DIR}/tests/compile_tests/test_startup_contract.cpp

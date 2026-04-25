@@ -8,10 +8,18 @@ cmake_minimum_required(VERSION 3.25)
 # in-tree foundational boards.
 
 set(ALLOY_BOARD "custom" CACHE STRING "" FORCE)
-set(ALLOY_CUSTOM_BOARD_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/board.hpp"
-    CACHE FILEPATH "" FORCE)
-set(ALLOY_CUSTOM_LINKER_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/custom.ld"
-    CACHE FILEPATH "" FORCE)
+
+# Allow the negative-test driver to omit a required variable so the manifest's
+# fail-fast path is exercised. Set ALLOY_CUSTOM_OMIT=ALLOY_CUSTOM_BOARD_HEADER
+# (or any other required name) to skip the corresponding default below.
+if(NOT "${ALLOY_CUSTOM_OMIT}" STREQUAL "ALLOY_CUSTOM_BOARD_HEADER")
+    set(ALLOY_CUSTOM_BOARD_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/board.hpp"
+        CACHE FILEPATH "" FORCE)
+endif()
+if(NOT "${ALLOY_CUSTOM_OMIT}" STREQUAL "ALLOY_CUSTOM_LINKER_SCRIPT")
+    set(ALLOY_CUSTOM_LINKER_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/custom.ld"
+        CACHE FILEPATH "" FORCE)
+endif()
 set(ALLOY_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 
 # Required device tuple. Defaults match a known descriptor for the convenience

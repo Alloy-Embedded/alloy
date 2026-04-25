@@ -89,7 +89,7 @@ def main() -> int:
         configure_args(
             neg_build,
             devices_root,
-            extra=["-UALLOY_CUSTOM_BOARD_HEADER", "-DALLOY_CUSTOM_BOARD_HEADER="],
+            extra=["-DALLOY_CUSTOM_OMIT=ALLOY_CUSTOM_BOARD_HEADER"],
         ),
         expect_fail=True,
     )
