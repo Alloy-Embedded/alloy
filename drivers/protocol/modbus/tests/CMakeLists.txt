@@ -15,3 +15,15 @@ alloy_add_catch2_test(test_modbus_rtu_frame
     LIBS alloy::modbus
     LABELS unit modbus
 )
+
+alloy_add_catch2_test(test_modbus_rs485_de
+    SOURCES test_rs485_de.cpp
+    LIBS alloy::modbus
+    LABELS unit modbus
+)
+
+alloy_add_catch2_test(test_modbus_var
+    SOURCES test_var.cpp
+    LIBS alloy::modbus
+    LABELS unit modbus
+)

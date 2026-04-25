@@ -46,20 +46,24 @@ mergeable. Host-only tests cover every phase that does not require hardware.
       frame encode→loopback→decode — all covered in `test_rtu_frame.cpp`.
 
 ## 5. RS-485 DE pin helper
-- [ ] 5.1 Implement `transport/rs485_de.hpp`: stream decorator that toggles a GPIO
-      around `write()` and waits on the wrapped stream's `flush()`.
-- [ ] 5.2 Test: instrument a fake GPIO + loopback stream and assert DE goes high
-      before the first byte and low after the last byte's TC.
+- [x] 5.1 Implement `transport/rs485_de.hpp`: stream decorator (`Rs485DeStream<Stream,
+      Pin>`) satisfying `ByteStream`; `DePin` concept requires `set_high()`/`set_low()`;
+      DE is asserted on `write()` and de-asserted after `flush()`.
+- [x] 5.2 Tests in `tests/test_rs485_de.cpp`: `FakeDePin` instruments state transitions;
+      6 cases, 32 assertions verify DE high/low sequencing, pass-through of read/wait_idle,
+      re-assertion across multiple write/flush cycles, and ByteStream concept satisfaction.
 
 ## 6. Variable registry
-- [ ] 6.1 Implement `var.hpp`: `var<T>` template with address, access, name, and
-      optional metadata struct. `T` constrained to `int16_t`, `uint16_t`, `int32_t`,
-      `uint32_t`, `float`, `double`, `bool`. Word order per-var, default ABCD.
-- [ ] 6.2 Implement word-order conversion utilities and cover with
-      `tests/word_order_test.cpp` (all four orders, all multi-register types).
-- [ ] 6.3 Implement a small registry that the slave indexes by address.
-- [ ] 6.4 Validate at compile time that a registry's footprint estimate is below a
-      configurable cap (`ALLOY_MODBUS_REGISTRY_MAX_BYTES`, default 8 KB).
+- [x] 6.1 Implement `var.hpp`: `VarValueType` concept (bool, int16/uint16, int32/uint32,
+      float, double); `WordOrder` enum (ABCD/CDAB/BADC/DCBA); `Access` enum;
+      `var_reg_count<T>()` consteval; `Var<T>` descriptor with `encode()`/`decode()`.
+- [x] 6.2 `encode_words<T>()` / `decode_words<T>()` constexpr; all four word orders
+      for 2-register and 4-register types; verified with round-trips and known IEEE 754
+      reference frames. Tests in `tests/test_var.cpp` (24 cases, 88 assertions).
+- [x] 6.3 Implement `registry.hpp`: type-erased `VarDescriptor`; `Registry<N>` with
+      O(N) `find(address)` and range iteration; `make_registry(Var<Ts>...)` factory.
+- [x] 6.4 Compile-time footprint check: `static_assert(N * sizeof(VarDescriptor) <=
+      ALLOY_MODBUS_REGISTRY_MAX_BYTES)` (default 8 KB, user-overridable via macro).
 
 ## 7. Slave server
 - [ ] 7.1 Implement `slave.hpp` / `slave.cpp`: cooperative `poll(timeout)` consuming
