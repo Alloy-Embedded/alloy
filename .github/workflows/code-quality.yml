@@ -32,6 +32,20 @@ jobs:
       run: |
         python3 scripts/check_release_discipline.py
 
+    - name: Ban raw peripheral base-address literals in src/hal
+      run: |
+        # alloy::device::base<>() must be used instead of inline hex constants.
+        # Exempt: comments, generated/ subdirectories.
+        if grep -rn --include="*.hpp" --include="*.cpp" \
+             -E "0x4[0-9A-Fa-f]{7}[uU]?" src/hal/ \
+             | grep -v "generated/" \
+             | grep -v "^[^:]*:[^:]*:[[:space:]]*//" ; then
+          echo "ERROR: raw peripheral base-address literals found in src/hal/"
+          echo "Use alloy::device::base<PeripheralId::...>() instead."
+          exit 1
+        fi
+        echo "OK: no raw peripheral base-address literals in src/hal/"
+
     - name: Check runtime tooling docs and entry points
       run: |
         python3 scripts/check_runtime_tooling.py
