@@ -26,6 +26,35 @@ namespace alloy::modbus {
 // Enumerations
 // ============================================================================
 
+// Type tag: used by the discovery FC to describe each variable's C++ type on wire.
+enum class VarType : std::uint8_t {
+    Bool    = 0,
+    Int16   = 1,
+    Uint16  = 2,
+    Int32   = 3,
+    Uint32  = 4,
+    Float   = 5,
+    Double  = 6,
+};
+
+// Map a VarValueType to its VarType tag.
+template <typename T> consteval VarType var_type_tag() noexcept;
+template <> consteval VarType var_type_tag<bool>()           noexcept { return VarType::Bool;   }
+template <> consteval VarType var_type_tag<std::int16_t>()   noexcept { return VarType::Int16;  }
+template <> consteval VarType var_type_tag<std::uint16_t>()  noexcept { return VarType::Uint16; }
+template <> consteval VarType var_type_tag<std::int32_t>()   noexcept { return VarType::Int32;  }
+template <> consteval VarType var_type_tag<std::uint32_t>()  noexcept { return VarType::Uint32; }
+template <> consteval VarType var_type_tag<float>()          noexcept { return VarType::Float;  }
+template <> consteval VarType var_type_tag<double>()         noexcept { return VarType::Double; }
+
+// Optional rich metadata attached to a variable for discovery sub-function 0x02.
+struct VarMeta {
+    std::string_view unit;
+    std::string_view desc;
+    float range_min{0.0f};
+    float range_max{0.0f};
+};
+
 enum class WordOrder : std::uint8_t {
     ABCD,  // big-endian, MSW first (Modbus default)
     CDAB,  // word-swapped (LSW first, bytes in each word unchanged)

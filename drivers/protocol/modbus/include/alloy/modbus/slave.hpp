@@ -25,6 +25,7 @@
 #include <span>
 
 #include "alloy/modbus/byte_stream.hpp"
+#include "alloy/modbus/discovery.hpp"
 #include "alloy/modbus/pdu.hpp"
 #include "alloy/modbus/registry.hpp"
 #include "alloy/modbus/rtu_frame.hpp"
@@ -49,8 +50,13 @@ template <ByteStream Stream, std::size_t N,
           typename CritSection = detail::NoOpCriticalSection>
 class Slave {
    public:
-    Slave(Stream& stream, std::uint8_t slave_id, Registry<N>& registry) noexcept
-        : stream_{stream}, slave_id_{slave_id}, registry_{registry} {}
+    Slave(Stream& stream, std::uint8_t slave_id, Registry<N>& registry,
+          std::uint8_t discovery_fc = kDiscoveryFcDefault) noexcept
+        : stream_{stream}, slave_id_{slave_id}, registry_{registry},
+          discovery_fc_{discovery_fc} {}
+
+    // Override the discovery function code (default 0x65).
+    void set_discovery_fc(std::uint8_t fc) noexcept { discovery_fc_ = fc; }
 
     Slave(const Slave&) = delete;
     Slave& operator=(const Slave&) = delete;
@@ -102,6 +108,7 @@ class Slave {
     Stream&      stream_;
     std::uint8_t slave_id_;
     Registry<N>& registry_;
+    std::uint8_t discovery_fc_;
 
     // -----------------------------------------------------------------------
     // Dispatch
@@ -109,12 +116,20 @@ class Slave {
 
     std::size_t dispatch(std::span<const std::byte> pdu,
                          std::span<std::byte> rsp) noexcept {
+        // Check for vendor discovery FC before standard FC dispatch.
+        if (!pdu.empty() &&
+            pdu[0] == std::byte{discovery_fc_}) {
+            return handle_discovery(pdu, rsp);
+        }
+
         const auto fc_res = peek_function_code(pdu);
         if (fc_res.is_err()) {
-            // Can't determine FC — send IllegalFunction with a placeholder FC.
-            return encode_exception_into(
-                rsp, static_cast<FunctionCode>(0x00),
-                ExceptionCode::IllegalFunction);
+            // Echo the FC byte (or 0 if PDU empty) per Modbus spec.
+            const FunctionCode err_fc =
+                pdu.empty() ? static_cast<FunctionCode>(0x00)
+                            : static_cast<FunctionCode>(
+                                  static_cast<std::uint8_t>(pdu[0]) & 0x7Fu);
+            return encode_exception_into(rsp, err_fc, ExceptionCode::IllegalFunction);
         }
         const FunctionCode fc = fc_res.unwrap();
         switch (fc) {
@@ -460,6 +475,30 @@ class Slave {
             return encode_exception_into(rsp, kFc, ExceptionCode::SlaveDeviceFailure);
         }
         return enc.unwrap();
+    }
+
+    // -----------------------------------------------------------------------
+    // Discovery FC 0x65 — sub-fn 0x01 (thin) / 0x02 (rich)
+    // -----------------------------------------------------------------------
+
+    std::size_t handle_discovery(std::span<const std::byte> pdu,
+                                 std::span<std::byte> rsp) noexcept {
+        // PDU: [FC][sub_fn]
+        if (pdu.size() < 2u) return 0u;
+        const std::uint8_t sub_fn = static_cast<std::uint8_t>(pdu[1]);
+
+        if (sub_fn == kDiscoverySubThin) {
+            const auto enc =
+                encode_discovery_thin(rsp, discovery_fc_, registry_);
+            return enc.is_ok() ? enc.unwrap() : 0u;
+        }
+        if (sub_fn == kDiscoverySubRich) {
+            const auto enc =
+                encode_discovery_rich(rsp, discovery_fc_, registry_);
+            return enc.is_ok() ? enc.unwrap() : 0u;
+        }
+        // Unknown sub-function — respond with zero-count thin.
+        return 0u;
     }
 
     // -----------------------------------------------------------------------

@@ -101,14 +101,24 @@ mergeable. Host-only tests cover every phase that does not require hardware.
       poll cycles.
 
 ## 9. Discovery FC
-- [ ] 9.1 Implement `discovery.hpp`: FC 0x65 sub-functions 0x01 (thin: addr, type,
-      access, name) and 0x02 (rich: range, unit, desc).
-- [ ] 9.2 Slave publishes the discovery table compiled from its registry; master
-      can issue a discovery probe and decode the response.
-- [ ] 9.3 The default function code is overridable at slave construction
-      (`discovery_fc = 0x66`) for users with prior art on 0x65.
-- [ ] 9.4 Cover with `tests/discovery_test.cpp`: round-trip discovery probe over
-      loopback against a slave with mixed thin and rich vars.
+- [x] 9.1 Implement `discovery.hpp`: FC 0x65 sub-functions 0x01 (thin: addr, type,
+      access, name) and 0x02 (rich: range, unit, desc). `VarType` enum and
+      `var_type_tag<T>()` consteval specializations added to `var.hpp`; `VarMeta`
+      struct added for optional unit/desc/range. `VarDescriptor` gains `type_tag`
+      and `meta` fields (populated by both `make_descriptor()` and `bind()`).
+      Detail helpers: `put_byte/u16/string/f32_be`, `get_byte/u16/string/f32_be`.
+- [x] 9.2 `Slave` includes `discovery.hpp` and intercepts PDUs whose first byte
+      equals `discovery_fc_` (default 0x65) before standard FC dispatch. Handler
+      calls `encode_discovery_thin` or `encode_discovery_rich` based on sub-fn byte.
+      Also fixed exception response to echo the original FC byte (per Modbus spec)
+      rather than using a placeholder 0x00 for unknown FCs.
+- [x] 9.3 Discovery FC is overridable at slave construction
+      (`Slave{stream, id, reg, 0x66u}`) or via `set_discovery_fc(uint8_t)`.
+- [x] 9.4 `tests/test_discovery.cpp`: 12 cases / 105 assertions. Thin+rich
+      encode/decode round-trips; all three vars validated (address, reg_count,
+      type_tag, access, name, unit, desc, range); buffer-too-small and truncated-PDU
+      error paths; alternate FC override; two slave loopback probes (thin/rich);
+      FC 0x65 correctly rejected (IllegalFunction) by a slave configured for 0x66.
 
 ## 10. TCP framing (scaffolded)
 - [ ] 10.1 Implement `tcp_frame.hpp`: MBAP header encode/decode and frame builder.

@@ -33,9 +33,13 @@ namespace alloy::modbus {
 struct VarDescriptor {
     std::uint16_t    address;     // first Modbus register
     std::uint8_t     reg_count;   // number of 16-bit registers
+    VarType          type_tag;    // C++ type (used by discovery FC)
     Access           access;
     WordOrder        word_order;
     std::string_view name;
+
+    // Optional rich metadata for discovery sub-function 0x02. Null = thin only.
+    const VarMeta*   meta{nullptr};
 
     // Bound-mode fields: null in metadata-only mode.
     void* data{nullptr};
@@ -126,6 +130,7 @@ template <VarValueType T>
     return VarDescriptor{
         .address    = v.address,
         .reg_count  = static_cast<std::uint8_t>(Var<T>::kRegCount),
+        .type_tag   = var_type_tag<T>(),
         .access     = v.access,
         .word_order = v.word_order,
         .name       = v.name,
@@ -135,13 +140,16 @@ template <VarValueType T>
 // Bound descriptor: attaches a data pointer and typed encode/decode fns.
 // Not constexpr (data is a runtime address).
 template <VarValueType T>
-[[nodiscard]] VarDescriptor bind(const Var<T>& v, T& value) noexcept {
+[[nodiscard]] VarDescriptor bind(const Var<T>& v, T& value,
+                                  const VarMeta* meta = nullptr) noexcept {
     return VarDescriptor{
         .address    = v.address,
         .reg_count  = static_cast<std::uint8_t>(Var<T>::kRegCount),
+        .type_tag   = var_type_tag<T>(),
         .access     = v.access,
         .word_order = v.word_order,
         .name       = v.name,
+        .meta       = meta,
         .data       = &value,
         .encode_fn  = VarTraits<T>::encode,
         .decode_fn  = VarTraits<T>::decode,
