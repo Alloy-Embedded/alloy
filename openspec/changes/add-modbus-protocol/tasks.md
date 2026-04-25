@@ -121,10 +121,17 @@ mergeable. Host-only tests cover every phase that does not require hardware.
       FC 0x65 correctly rejected (IllegalFunction) by a slave configured for 0x66.
 
 ## 10. TCP framing (scaffolded)
-- [ ] 10.1 Implement `tcp_frame.hpp`: MBAP header encode/decode and frame builder.
-      Compiles unconditionally; not exposed to the slave/master until a TCP stream
-      adapter exists.
-- [ ] 10.2 Cover with `tests/tcp_framing_test.cpp` against published MBAP examples.
+- [x] 10.1 Implement `tcp_frame.hpp`: MBAP header (7 B) encode/decode and frame
+      builder. `encode_tcp_frame(out, tx_id, unit_id, pdu)` → Result<size_t, TcpError>;
+      `decode_tcp_frame(adu)` → Result<TcpFrame, TcpError> (zero-copy pdu subspan).
+      Constants: `kMbapHeaderBytes=7`, `kTcpMaxPduBytes=253`, `kTcpMaxAduBytes=260`.
+      Compiles unconditionally; not wired to slave/master until a TCP stream adapter
+      exists. Error cases: BufferTooSmall, Truncated, BadProtocol, PduTooLarge.
+- [x] 10.2 `tests/test_tcp_frame.cpp`: 12 cases / 55 assertions. Published MBAP
+      reference frame encode+decode; round-trips for max-size PDU, empty PDU,
+      and transaction_id preservation; protocol-id rejection; truncated-ADU and
+      declared-length-mismatch errors; buffer-too-small and PDU-too-large encode
+      errors; zero-copy subspan verification; FC03 integration round-trip.
 - [ ] 10.3 Document in the user guide that TCP transport is pending the network HAL.
 
 ## 11. Examples

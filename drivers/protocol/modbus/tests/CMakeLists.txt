@@ -45,3 +45,9 @@ alloy_add_catch2_test(test_modbus_discovery
     LIBS alloy::modbus
     LABELS unit modbus
 )
+
+alloy_add_catch2_test(test_modbus_tcp_frame
+    SOURCES test_tcp_frame.cpp
+    LIBS alloy::modbus
+    LABELS unit modbus
+)
